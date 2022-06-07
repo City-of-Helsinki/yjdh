@@ -11,14 +11,17 @@ import {
   $ButtonContainer,
   $SpinnerWrapper,
 } from 'tet/admin/components/editor/imageUpload/ImageUpload.sc';
-import { uploadImage } from 'tet/admin/backend-api/backend-api';
+import { uploadImage, deleteImage } from 'tet/admin/backend-api/backend-api';
 import useLinkedEventsErrorHandler from 'tet/admin/hooks/backend/useLinkedEventsErrorHandler';
 import useConfirm from 'shared/hooks/useConfirm';
+import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
+import TextInput from 'tet/admin/components/editor/TextInput';
 
 const ImageUpload = () => {
   const { t } = useTranslation();
   const locale = useLocale();
   const { confirm } = useConfirm();
+  const { name } = useValidationRules();
   const {
     setValue,
     getValues,
@@ -37,13 +40,14 @@ const ImageUpload = () => {
 
   const image_url = getValues('image_url') as string;
   const image = getValues('image');
+  const photographer_name = getValues('photographer_name');
 
   const onChange = async (files: File[]) => {
     setFile(files[0]);
     setValue('image', files[0]); // setting this makes it possible to upload the image when saving the form
     setIsUploading(true);
     try {
-      const uploadedImage = await uploadImage(files[0], 'Testi Kuvaaja');
+      const uploadedImage = await uploadImage(files[0], photographer_name);
       console.log(uploadedImage);
       setValue('image_url', uploadedImage.url, { shouldDirty: true });
       setValue('image_id', uploadedImage['@id']);
@@ -55,7 +59,7 @@ const ImageUpload = () => {
     }
   };
 
-  const deleteImage = async () => {
+  const removeImage = async () => {
     const isConfirmed = await confirm({
       header: t('common:editor.posting.imageUpload.deleteConfirmTitle'),
       content: t('common:editor.posting.imageUpload.deleteConfirmContent'),
@@ -65,9 +69,19 @@ const ImageUpload = () => {
 
     if (isConfirmed) {
       setUploaded(false);
-      setValue('image_url', '');
-      setValue('image_id', '');
-      setValue('image', null);
+      setIsUploading(true);
+      try {
+        await deleteImage();
+        setValue('image_url', '');
+        setValue('image_id', '');
+        setValue('image', null);
+        setValue('photographer_name', '');
+        setIsUploading(false);
+        setUploaded(true);
+      } catch (err) {
+        handleUploadError(err);
+        setIsUploading(false);
+      }
     }
   };
 
@@ -96,9 +110,15 @@ const ImageUpload = () => {
             <$ImageContainer>{image_url && <img src={image_url} width="100%" height="100%" />}</$ImageContainer>
             {image_url && (
               <$ButtonContainer>
-                <Button onClick={deleteImage}>{t('common:editor.posting.imageUpload.deleteImage')}</Button>
+                <Button onClick={removeImage}>{t('common:editor.posting.imageUpload.deleteImage')}</Button>
               </$ButtonContainer>
             )}
+            <TextInput
+              id="photographer_name"
+              label={t('common:editor.posting.imageUpload.photographerName')}
+              placeholder={t('common:editor.posting.imageUpload.photographerName')}
+              registerOptions={name}
+            />
           </>
         )}
       </$GridCell>

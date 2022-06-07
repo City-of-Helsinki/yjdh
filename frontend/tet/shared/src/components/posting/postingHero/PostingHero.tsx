@@ -87,6 +87,7 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
               alt="event placeholder"
               priority
             />
+            <span>{posting.photographer_name}</span>
           </$ImageContainer>
           <$HeroContentWrapper>
             <$Keywords>

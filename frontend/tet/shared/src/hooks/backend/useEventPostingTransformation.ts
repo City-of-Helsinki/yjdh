@@ -57,6 +57,7 @@ const useEventPostingTransformation = (): Transformations => {
     if (event.images && event.images.length) {
       imageFields.image_url = event.images[0].url;
       imageFields.image_id = event.images[0]['@id'];
+      imageFields.photographer_name = event.images[0].photographer_name;
     }
 
     return {

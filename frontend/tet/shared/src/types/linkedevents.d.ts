@@ -50,6 +50,7 @@ export type CustomData = {
 
 export type ImageObject = IdObject & {
   url: string;
+  photographer_name?: string;
 };
 
 export type TetEvent = {

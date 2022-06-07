@@ -121,7 +121,8 @@
 				"uploadSuccess": "Image upload was successful and will be saved when you save the advertisement",
 				"deleteConfirmTitle": "EN Haluatko varmasti poistaa kuvan?",
 				"deleteConfirmContent": "EN Kuva poistetaan ilmoitukselta kokonaan. Toiminto on peruuttamaton",
-				"deleteButton": "EN Poista kuva"
+				"deleteButton": "EN Poista kuva",
+				"photographerName": "Photographer name"
 			}
     },
 		"classification": {

@@ -121,7 +121,8 @@
 				"uploadSuccess": "SV Kuva ladattu onnistuneesti ja tallentuu ilmoitukselle, kun tallennat ilmoituksen.",
 				"deleteConfirmTitle": "SV Haluatko varmasti poistaa kuvan?",
 				"deleteConfirmContent": "SV Kuva poistetaan ilmoitukselta kokonaan. Toiminto on peruuttamaton",
-				"deleteButton": "SV Poista kuva"
+				"deleteButton": "SV Poista kuva",
+				"photographerName": "Fotografens namn"
 			}
     },
 		"classification": {

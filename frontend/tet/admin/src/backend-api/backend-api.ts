@@ -38,3 +38,10 @@ export const uploadImage = async (image: File, photographerName: string): Promis
   });
   return response.data;
 };
+
+export const deleteImage = async (): Promise<string> => {
+  if (MOCK_UPLOAD) {
+    await new Promise((r) => setTimeout(r, 2000));
+    return 'success';
+  }
+};

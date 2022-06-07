@@ -40,6 +40,7 @@ export const initialPosting: TetPosting = {
   image: null,
   image_url: '',
   image_id: '',
+  photographer_name: '',
 };
 
 export const PreviewContext = React.createContext<PreviewContextObj>({

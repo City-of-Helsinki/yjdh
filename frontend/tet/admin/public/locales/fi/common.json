@@ -120,7 +120,8 @@
 				"uploadSuccess": "Kuva ladattu onnistuneesti ja tallentuu ilmoitukselle, kun tallennat ilmoituksen.",
 				"deleteConfirmTitle": "Haluatko varmasti poistaa kuvan?",
 				"deleteConfirmContent": "Kuva poistetaan ilmoitukselta kokonaan. Toiminto on peruuttamaton",
-				"deleteButton": "Poista kuva"
+				"deleteButton": "Poista kuva",
+				"photographerName": "Valokuvaajan nimi"
 			}
     },
 		"classification": {
