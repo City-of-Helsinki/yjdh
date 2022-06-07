@@ -11,6 +11,10 @@ export const $ImageContainer = styled.div<ImageProps>`
   }
 `;
 
+export const $PhotographerField = styled.div`
+  margin-top: ${(props) => props.theme.spacing.m};
+`;
+
 export const $ButtonContainer = styled.div`
   margin-top: ${(props) => props.theme.spacing.m};
 `;

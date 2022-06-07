@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, FileInput, LoadingSpinner } from 'hds-react';
+import { Button, FileInput, LoadingSpinner, IconTrash } from 'hds-react';
 import useLocale from 'shared/hooks/useLocale';
 import { useTranslation } from 'next-i18next';
 import FormSection from 'shared/components/forms/section/FormSection';
@@ -10,6 +10,7 @@ import {
   $ImageContainer,
   $ButtonContainer,
   $SpinnerWrapper,
+  $PhotographerField,
 } from 'tet/admin/components/editor/imageUpload/ImageUpload.sc';
 import { uploadImage, deleteImage } from 'tet/admin/backend-api/backend-api';
 import useLinkedEventsErrorHandler from 'tet/admin/hooks/backend/useLinkedEventsErrorHandler';
@@ -21,7 +22,7 @@ const ImageUpload = () => {
   const { t } = useTranslation();
   const locale = useLocale();
   const { confirm } = useConfirm();
-  const { name } = useValidationRules();
+  const { notRequiredName } = useValidationRules();
   const {
     setValue,
     getValues,
@@ -110,15 +111,19 @@ const ImageUpload = () => {
             <$ImageContainer>{image_url && <img src={image_url} width="100%" height="100%" />}</$ImageContainer>
             {image_url && (
               <$ButtonContainer>
-                <Button onClick={removeImage}>{t('common:editor.posting.imageUpload.deleteImage')}</Button>
+                <Button variant="danger" iconLeft={<IconTrash />} onClick={removeImage}>
+                  {t('common:editor.posting.imageUpload.deleteImage')}
+                </Button>
               </$ButtonContainer>
             )}
-            <TextInput
-              id="photographer_name"
-              label={t('common:editor.posting.imageUpload.photographerName')}
-              placeholder={t('common:editor.posting.imageUpload.photographerName')}
-              registerOptions={name}
-            />
+            <$PhotographerField>
+              <TextInput
+                id="photographer_name"
+                label={t('common:editor.posting.imageUpload.photographerName')}
+                placeholder={t('common:editor.posting.imageUpload.photographerName')}
+                registerOptions={notRequiredName}
+              />
+            </$PhotographerField>
           </>
         )}
       </$GridCell>
