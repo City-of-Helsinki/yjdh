@@ -38,7 +38,7 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
   return (
     <>
       <FormProvider {...methods}>
-        <form aria-label="add/modify tet posting">
+        <form aria-label={t('common:editor.formLabel')}>
           <HiddenIdInput id="id" initialValue={initialValue?.id} />
           <EditorErrorNotification />
           <p>* {t('common:editor.requiredInfo')}</p>
