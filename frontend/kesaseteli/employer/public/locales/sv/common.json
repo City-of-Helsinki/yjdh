@@ -139,7 +139,7 @@
         "WrongBBANFormat": "Kontrollera kontonumret",
         "ChecksumNotNumber": "Kontrollera kontonumret",
         "WrongIBANChecksum":"Kontrollera kontonumret",
-        "WrongAccountBankBranchChecksum": "SWE Tarkista tilinumero"
+        "WrongAccountBankBranchChecksum": "Kontrollera kontonumret"
       },
       "notification": {
         "title": "Fyll i de uppgifter som fattas eller är felaktiga"
