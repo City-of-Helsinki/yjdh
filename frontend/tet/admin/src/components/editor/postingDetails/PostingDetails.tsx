@@ -115,8 +115,8 @@ const PostingDetails: React.FC = () => {
         <$GridCell $colSpan={6}>
           <TextInput
             id="website_url"
-            label={t('common:editor.posting.title')}
-            placeholder={t('common:editor.posting.title')}
+            label={t('common:editor.posting.website')}
+            placeholder={t('common:editor.posting.website')}
             registerOptions={website}
           />
         </$GridCell>

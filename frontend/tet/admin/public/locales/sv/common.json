@@ -106,6 +106,7 @@
 			"contactLanguageFi": "Finska",
 			"contactLanguageSv": "Svenska",
 			"contactLanguageEn": "Engelska",
+			"website": "Website",
 			"validation": {
 				"required": "Uppgiften är nödvändig",
 				"email": "Vänligen mata in e-post i rätt format",

@@ -105,6 +105,7 @@
 			"contactLanguageFi": "Suomi",
 			"contactLanguageSv": "Ruotsi",
 			"contactLanguageEn": "Englanti",
+			"website": "Verkkosivut",
 			"validation": {
 				"required": "Tieto vaaditaan",
 				"email": "Syötä sähköposti oikeassa muodossa",

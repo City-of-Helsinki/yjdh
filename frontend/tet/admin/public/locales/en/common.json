@@ -106,6 +106,7 @@
 			"contactLanguageFi": "Finnish",
 			"contactLanguageSv": "Swedish",
 			"contactLanguageEn": "English",
+			"website": "Hemsida",
 			"validation": {
 				"required": "Required information",
 				"email": "Enter e-mail in the correct format",
