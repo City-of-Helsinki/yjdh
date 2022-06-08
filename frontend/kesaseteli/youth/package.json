@@ -19,7 +19,7 @@
   "dependencies": {
     "@frontend/shared": "*",
     "@frontend/kesaseteli-shared": "*",
-    "@sentry/browser": "^6.17.3",
+    "@sentry/browser": "^7.1.1",
     "axios": "^0.27.2",
     "babel-plugin-import": "^1.13.3",
     "dotenv": "^16.0.0",
