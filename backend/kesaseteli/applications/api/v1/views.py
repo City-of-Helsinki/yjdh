@@ -296,7 +296,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             if (
                 youth_application.is_active
                 and not youth_application.is_rejected
-                and youth_application.need_additional_info
+                and youth_application.can_set_additional_info
             ):
                 return HttpResponseRedirect(
                     youth_application.additional_info_page_url(pk=youth_application.pk)
