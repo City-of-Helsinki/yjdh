@@ -209,7 +209,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def accept(self, request, *args, **kwargs) -> HttpResponse:
         youth_application: YouthApplication = self.get_object().lock_for_update()
 
-        if settings.DISABLE_VTJ:
+        if settings.NEXT_PUBLIC_DISABLE_VTJ:
             encrypted_handler_vtj_json = None
         else:
             try:
@@ -254,7 +254,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def reject(self, request, *args, **kwargs) -> HttpResponse:
         youth_application: YouthApplication = self.get_object().lock_for_update()
 
-        if settings.DISABLE_VTJ:
+        if settings.NEXT_PUBLIC_DISABLE_VTJ:
             encrypted_handler_vtj_json = None
         else:
             try:
@@ -308,12 +308,11 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         elif youth_application.has_activation_link_expired:
             return HttpResponseRedirect(youth_application.expired_page_url())
         elif youth_application.activate():
-            if settings.DISABLE_VTJ:
+            if settings.NEXT_PUBLIC_DISABLE_VTJ:
                 if youth_application.need_additional_info:
                     return self._set_application_needs_additional_info(
                         youth_application=youth_application
                     )
-
                 LOGGER.info(
                     f"Activated youth application {youth_application.pk}: "
                     "VTJ is disabled, sending application to be processed by a handler"
@@ -429,7 +428,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
                 ]
             )
 
-            if settings.DISABLE_VTJ:
+            if settings.NEXT_PUBLIC_DISABLE_VTJ:
                 was_email_sent = youth_application.send_activation_email(
                     request, youth_application.language
                 )
