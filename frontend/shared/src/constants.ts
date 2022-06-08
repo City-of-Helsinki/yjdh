@@ -26,3 +26,5 @@ export const DATE_VTJ_REGEX = /^\d{4}(0?[1-9]|1[0-2])(0?[1-9]|[12]\d|3[01])$/;
 // a modification of finnish ssn regex https://regex101.com/library/HPFWw6 that does not accept "fake" (keinotunnus) ssn's:
 // https://www.tuomas.salste.net/doc/tunnus/henkilotunnus.html#keinotunnus (more info only in finnish)
 export const FINNISH_SSN_REGEX = /^\d{6}[+Aa-][0-8]\d{2}[\dA-z]$/;
+export const WEBSITE_URL =
+  /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
