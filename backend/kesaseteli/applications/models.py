@@ -725,7 +725,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
                  additional info has been provided or not.
         """
         if settings.DISABLE_VTJ:
-            return not self.is_applicant_in_target_group
+            return not (self.is_9th_grader_age and self.attends_helsinkian_school)
 
         return (
             self.is_applicant_dead_according_to_vtj

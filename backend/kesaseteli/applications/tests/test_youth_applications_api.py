@@ -794,7 +794,10 @@ def test_youth_applications_activate_unexpired_active(
 
     assert response.status_code == status.HTTP_302_FOUND
 
-    if active_youth_application.need_additional_info:
+    if (
+        active_youth_application.status
+        == YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+    ):
         assert response.url == active_youth_application.additional_info_page_url(
             pk=active_youth_application.pk
         )
@@ -922,7 +925,10 @@ def test_youth_applications_activate_expired_active(
 
     assert response.status_code == status.HTTP_302_FOUND
 
-    if active_youth_application.need_additional_info:
+    if (
+        active_youth_application.status
+        == YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+    ):
         assert response.url == active_youth_application.additional_info_page_url(
             pk=active_youth_application.pk
         )
