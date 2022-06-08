@@ -8,7 +8,7 @@ import {
 
 type Props = {
   title: string;
-  body: string | string[];
+  body: string | string[] | JSX.Element;
   icon: JSX.Element;
 };
 

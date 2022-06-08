@@ -4,6 +4,7 @@ import {
   IconGlobe,
   IconInfoCircle,
   IconLocation,
+  Link,
   Tag,
 } from 'hds-react';
 import dynamic from 'next/dynamic';
@@ -55,6 +56,8 @@ const keywordList = (list: OptionType[], color: string): JSX.Element => (
   </>
 );
 
+const stripHttp = (url: string) => url.replace(/^https?:\/\//i, '');
+
 const PostingContent: React.FC<Props> = ({ posting }) => {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -68,6 +71,16 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
   const contact = [posting.contact_phone, posting.contact_email];
 
   const date = `${posting.start_date} - ${posting.end_date ?? ''}`;
+  const websiteLink = posting.website_url ? (
+    <Link
+      href={posting.website_url}
+      external
+      openInNewTab
+      rel="noopener noreferrer"
+    >
+      {stripHttp(posting.website_url)}
+    </Link>
+  ) : null;
   const languages = posting.languages.map((language) => language.label);
 
   return (
@@ -99,6 +112,13 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
             body={contact}
             icon={<IconInfoCircle />}
           />
+          {websiteLink && (
+            <PostingInfoItem
+              title="Verkkosivut"
+              body={websiteLink}
+              icon={<IconGlobe />}
+            />
+          )}
           <PostingInfoItem
             title={t('common:postingTemplate.languages')}
             body={languages}
