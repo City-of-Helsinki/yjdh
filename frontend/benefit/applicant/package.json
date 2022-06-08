@@ -39,7 +39,7 @@
     "react-loading-skeleton": "^3.0.3",
     "react-pdf": "^5.7.2",
     "react-query": "^3.34.0",
-    "react-toastify": "^8.2.0",
+    "react-toastify": "^9.0.4",
     "snakecase-keys": "^4.0.2",
     "styled-components": "^5.3.1",
     "uuid": "^8.3.2",
