@@ -13,7 +13,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@sentry/browser": "^6.17.3",
+    "@sentry/browser": "^7.1.1",
     "axios": "^0.27.2",
     "cors": "^2.8.5",
     "date-fns": "^2.22.1",
