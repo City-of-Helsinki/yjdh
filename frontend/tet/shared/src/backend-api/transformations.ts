@@ -81,5 +81,12 @@ export const tetPostingToEvent = ({
   date_published: publish
     ? new Date().toISOString()
     : posting.date_published || null,
-  images: posting.image_id ? [{ '@id': posting.image_id }] : [],
+  images: posting.image_id
+    ? [
+        {
+          '@id': posting.image_id,
+          photographer_name: posting.photographer_name,
+        },
+      ]
+    : [],
 });
