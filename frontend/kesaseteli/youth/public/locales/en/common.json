@@ -87,7 +87,7 @@
       "sent" : "Thanks! Your specified information has been sent!",
       "notFound": "Your application is not found"
     },
-    "paragraph_1": "",
+    "paragraph_1": "Your application needs more information. Choose from the options below and write your explanation.",
     "paragraph_2": "",
     "form" : {
       "reasons": "Title",
