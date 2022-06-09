@@ -125,6 +125,36 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
   });
 
   describe('vtj data', () => {
+    describe('When NEXT_PUBLIC_DISABLE_VTJ ', () => {
+      // How to mock process.env: https://medium.com/weekly-webtips/how-to-mock-process-env-when-writing-unit-tests-with-jest-80940f367c2c
+      const originalEnv = process.env;
+      beforeEach(() => {
+        jest.resetModules();
+      });
+      it('doesnt show vtj data', async () => {
+        process.env = {
+          ...originalEnv,
+          NEXT_PUBLIC_DISABLE_VTJ: '1',
+        };
+        const application = fakeActivatedYouthApplication({
+          status: 'awaiting_manual_processing',
+        });
+        expectToGetYouthApplication(application);
+        await renderPage(HandlerIndex, {
+          query: { id: application.id },
+        });
+        const indexPageApi = await getIndexPageApi(application);
+        await indexPageApi.expectations.pageIsLoaded();
+
+        indexPageApi.expectations.vtjInfoIsNotPresent();
+        await indexPageApi.expectations.actionButtonsArePresent();
+        indexPageApi.expectations.actionButtonsAreEnabled();
+      });
+      afterEach(() => {
+        process.env = originalEnv;
+      });
+    });
+
     it(`shows vtjData without errors`, async () => {
       const { age, social_security_number } = fakeYouthTargetGroupAge();
       const application = fakeActivatedYouthApplication({
@@ -155,7 +185,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         `${LahiosoiteS} ${application.postcode} ${PostitoimipaikkaS}`
       );
       for (const exception of VTJ_EXCEPTIONS) {
-        await indexPageApi.expectations.vtjErrorMessageIsNotPresent(exception, {
+        indexPageApi.expectations.vtjErrorMessageIsNotPresent(exception, {
           age,
           last_name: application.last_name,
           social_security_number,
@@ -164,13 +194,14 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       }
     });
 
-    it(`shows error when vtjData is not found`, async () => {
+    it(`shows error when vtjData is not found and disables action buttons`, async () => {
       const social_security_number = fakeYouthTargetGroupAgeSSN();
       const application = fakeActivatedYouthApplication({
         social_security_number,
         encrypted_handler_vtj_json: {
           Henkilo: { Henkilotunnus: { '@voimassaolokoodi': '0' } },
         },
+        status: 'awaiting_manual_processing',
       });
       expectToGetYouthApplication(application);
       await renderPage(HandlerIndex, {
@@ -182,6 +213,8 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       await indexPageApi.expectations.vtjErrorMessageIsPresent('notFound', {
         social_security_number,
       });
+      await indexPageApi.expectations.actionButtonsArePresent();
+      indexPageApi.expectations.actionButtonsAreDisabled();
     });
 
     it(`shows warning when vtjData has different last name`, async () => {
@@ -218,7 +251,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         await indexPageApi.expectations.pageIsLoaded();
         // eslint-disable-next-line unicorn/prefer-ternary
         if ([16, 17].includes(age)) {
-          await indexPageApi.expectations.vtjErrorMessageIsNotPresent(
+          indexPageApi.expectations.vtjErrorMessageIsNotPresent(
             'notInTargetAgeGroup',
             { age }
           );
@@ -332,7 +365,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       });
       const indexPageApi = await getIndexPageApi(application);
       await indexPageApi.expectations.pageIsLoaded();
-      await indexPageApi.expectations.vtjErrorMessageIsNotPresent(
+      indexPageApi.expectations.vtjErrorMessageIsNotPresent(
         'differentPostCode',
         { postcode: '00100' }
       );
@@ -371,9 +404,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       });
       const indexPageApi = await getIndexPageApi(application);
       await indexPageApi.expectations.pageIsLoaded();
-      await indexPageApi.expectations.vtjErrorMessageIsNotPresent(
-        'outsideHelsinki'
-      );
+      indexPageApi.expectations.vtjErrorMessageIsNotPresent('outsideHelsinki');
     });
 
     it(`shows 'is dead' -error when applicant has died`, async () => {
