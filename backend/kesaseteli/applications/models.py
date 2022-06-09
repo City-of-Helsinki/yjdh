@@ -265,7 +265,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             )
 
     def fetch_vtj_json(self, end_user: str):
-        if settings.DISABLE_VTJ:
+        if settings.NEXT_PUBLIC_DISABLE_VTJ:
             # Not fetching data because VTJ integration is disabled and not mocked
             return None
         elif settings.NEXT_PUBLIC_MOCK_FLAG:
@@ -552,7 +552,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             self.status in YouthApplicationStatus.acceptable_values()
             and HandlerPermission.has_user_permission(handler)
             and (
-                settings.DISABLE_VTJ
+                settings.NEXT_PUBLIC_DISABLE_VTJ
                 or self.is_valid_encrypted_handler_vtj_json(encrypted_handler_vtj_json)
             )
             and not self.has_youth_summer_voucher
@@ -614,7 +614,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             self.status in YouthApplicationStatus.rejectable_values()
             and HandlerPermission.has_user_permission(handler)
             and (
-                settings.DISABLE_VTJ
+                settings.NEXT_PUBLIC_DISABLE_VTJ
                 or self.is_valid_encrypted_handler_vtj_json(encrypted_handler_vtj_json)
             )
         )
@@ -724,7 +724,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
                  otherwise False. Note that this value does NOT change based on whether
                  additional info has been provided or not.
         """
-        if settings.DISABLE_VTJ:
+        if settings.NEXT_PUBLIC_DISABLE_VTJ:
             return not (self.is_9th_grader_age and self.attends_helsinkian_school)
 
         return (
