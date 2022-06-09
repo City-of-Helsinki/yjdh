@@ -771,7 +771,7 @@ def test_youth_applications_activate_unexpired_active(
     rejected_application_exists,
     youth_application_factory,
 ):
-    settings.NEXT_PUBLIC_DISABLE_VTJ = NEXT_PUBLIC_DISABLE_VTJ
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     active_youth_application = youth_application_factory(language=language)
     old_status = active_youth_application.status
     old_handler = active_youth_application.handler
@@ -842,7 +842,7 @@ def test_youth_applications_activate_expired_inactive(
     youth_application_factory,
     need_additional_info,
 ):
-    settings.NEXT_PUBLIC_DISABLE_VTJ = NEXT_PUBLIC_DISABLE_VTJ
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     inactive_youth_application = youth_application_factory(language=language)
 
     old_status = inactive_youth_application.status
@@ -902,7 +902,7 @@ def test_youth_applications_activate_expired_active(
     rejected_application_exists,
     youth_application_factory,
 ):
-    settings.NEXT_PUBLIC_DISABLE_VTJ = NEXT_PUBLIC_DISABLE_VTJ
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     active_youth_application = youth_application_factory(language=language)
     old_status = active_youth_application.status
     old_handler = active_youth_application.handler
@@ -1453,7 +1453,7 @@ def test_youth_application_processing_email_sending_on_activate(
     disable_vtj,
     expect_success,
 ):
-    settings.NEXT_PUBLIC_DISABLE_VTJ = NEXT_PUBLIC_DISABLE_VTJ
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     youth_application = InactiveNoNeedAdditionalInfoYouthApplicationFactory()
     assert not youth_application.is_active
     assert not youth_application.has_activation_link_expired
@@ -1531,7 +1531,7 @@ def test_youth_application_processing_email_language_on_activate(
     expected_email_language,
     expect_success,
 ):
-    settings.NEXT_PUBLIC_DISABLE_VTJ = NEXT_PUBLIC_DISABLE_VTJ
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     youth_application = InactiveNoNeedAdditionalInfoYouthApplicationFactory(
         language=youth_application_language
     )
@@ -1574,7 +1574,7 @@ def test_youth_application_processing_email_language_after_additional_info(
     expected_email_language,
     expect_success,
 ):
-    settings.NEXT_PUBLIC_DISABLE_VTJ = NEXT_PUBLIC_DISABLE_VTJ
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     youth_application = AdditionalInfoRequestedYouthApplicationFactory(
         language=youth_application_language
     )
@@ -2268,7 +2268,7 @@ def test_youth_applications_set_excess_additional_info(
     application does not matter and does not change anything.
     """
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
-    settings.NEXT_PUBLIC_DISABLE_VTJ = NEXT_PUBLIC_DISABLE_VTJ
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
 
     source_app = AdditionalInfoRequestedYouthApplicationFactory()
@@ -2356,7 +2356,7 @@ def test_youth_applications_set_valid_additional_info(
     expected_status_code,
 ):
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
-    settings.NEXT_PUBLIC_DISABLE_VTJ = NEXT_PUBLIC_DISABLE_VTJ
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
 
     source_app = AdditionalInfoRequestedYouthApplicationFactory()
