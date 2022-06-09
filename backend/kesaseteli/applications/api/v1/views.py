@@ -283,7 +283,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
 
     @transaction.atomic
     @action(methods=["get"], detail=True)
-    def activate(self, request, *args, **kwargs) -> HttpResponse:
+    def activate(self, request, *args, **kwargs) -> HttpResponse:  # noqa: C901
         youth_application: YouthApplication = self.get_object()
 
         # Lock same person's applications to prevent activation of more than one of them
@@ -296,7 +296,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             if (
                 youth_application.is_active
                 and not youth_application.is_rejected
-                and youth_application.need_additional_info
+                and youth_application.can_set_additional_info
             ):
                 return HttpResponseRedirect(
                     youth_application.additional_info_page_url(pk=youth_application.pk)
@@ -309,6 +309,11 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             return HttpResponseRedirect(youth_application.expired_page_url())
         elif youth_application.activate():
             if settings.DISABLE_VTJ:
+                if youth_application.need_additional_info:
+                    return self._set_application_needs_additional_info(
+                        youth_application=youth_application
+                    )
+
                 LOGGER.info(
                     f"Activated youth application {youth_application.pk}: "
                     "VTJ is disabled, sending application to be processed by a handler"
@@ -344,16 +349,8 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
                         )
                 return HttpResponseRedirect(youth_application.accepted_page_url())
             elif youth_application.need_additional_info:
-                LOGGER.info(
-                    f"Activated youth application {youth_application.pk}: "
-                    "Additional info is needed, redirecting user to page to provide it"
-                )
-                youth_application.status = (
-                    YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
-                )
-                youth_application.save()
-                return HttpResponseRedirect(
-                    youth_application.additional_info_page_url(pk=youth_application.pk)
+                return self._set_application_needs_additional_info(
+                    youth_application=youth_application
                 )
 
             return HttpResponseRedirect(youth_application.activated_page_url())
@@ -361,6 +358,20 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         return HttpResponse(
             status=status.HTTP_401_UNAUTHORIZED,
             content="Unable to activate youth application",
+        )
+
+    @staticmethod
+    def _set_application_needs_additional_info(youth_application) -> HttpResponse:
+        LOGGER.info(
+            f"Activated youth application {youth_application.pk}: "
+            "Additional info is needed, redirecting user to page to provide it"
+        )
+        youth_application.status = (
+            YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+        )
+        youth_application.save()
+        return HttpResponseRedirect(
+            youth_application.additional_info_page_url(pk=youth_application.pk)
         )
 
     @classmethod

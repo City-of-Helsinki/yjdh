@@ -794,7 +794,10 @@ def test_youth_applications_activate_unexpired_active(
 
     assert response.status_code == status.HTTP_302_FOUND
 
-    if active_youth_application.need_additional_info:
+    if (
+        active_youth_application.status
+        == YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+    ):
         assert response.url == active_youth_application.additional_info_page_url(
             pk=active_youth_application.pk
         )
@@ -922,7 +925,10 @@ def test_youth_applications_activate_expired_active(
 
     assert response.status_code == status.HTTP_302_FOUND
 
-    if active_youth_application.need_additional_info:
+    if (
+        active_youth_application.status
+        == YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+    ):
         assert response.url == active_youth_application.additional_info_page_url(
             pk=active_youth_application.pk
         )
@@ -979,30 +985,57 @@ def test_youth_applications_dual_activate_unexpired_inactive(
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize(
+    "app_factory,expected_status",
+    [
+        (
+            InactiveNoNeedAdditionalInfoYouthApplicationFactory,
+            YouthApplicationStatus.AWAITING_MANUAL_PROCESSING,
+        ),
+        (
+            InactiveNeedAdditionalInfoYouthApplicationFactory,
+            YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+        ),
+    ],
+)
 @override_settings(DISABLE_VTJ=True)
-def test_youth_applications_reactivate_unexpired_inactive(
+def test_youth_applications_reactivate_unexpired_inactive__vtj_disabled(
+    app_factory,
+    expected_status,
     api_client,
     make_youth_application_activation_link_unexpired,
 ):
     """
-    User tries to reactivate the already active application, he/she should
-    get redirected to the already_activated page.
+    When user tries to activate and reactivate an application, he/she should
+    get redirected to the correct url.
+
+    - Application should get the expected status on the first activation
+    - User should get redirected correctly when trying to reactivate the
+      application.
     """
-    app = InactiveNoNeedAdditionalInfoYouthApplicationFactory(
-        # Activated i.e. waiting for processing
-        status=YouthApplicationStatus.AWAITING_MANUAL_PROCESSING,
+    app = app_factory(
         # Disabled VTJ means there's no VTJ data
         encrypted_original_vtj_json=None,
         encrypted_handler_vtj_json=None,
     )
 
-    response = api_client.get(get_activation_url(app.pk))
+    # Activate and reactivate
+    for i in range(2):
+        response = api_client.get(get_activation_url(app.pk))
+        app.refresh_from_db()
+        assert app.status == expected_status
 
-    app.refresh_from_db()
-    assert response.status_code == status.HTTP_302_FOUND
-    assert response.url == app.already_activated_page_url()
-    assert app.encrypted_original_vtj_json is None
-    assert app.encrypted_handler_vtj_json is None
+        assert response.status_code == status.HTTP_302_FOUND
+
+        if i == 0 and app.status == YouthApplicationStatus.AWAITING_MANUAL_PROCESSING:
+            assert response.url == app.activated_page_url()
+        elif app.status == YouthApplicationStatus.AWAITING_MANUAL_PROCESSING:
+            assert response.url == app.already_activated_page_url()
+        else:
+            assert response.url == app.additional_info_page_url(pk=app.pk)
+
+        assert app.encrypted_original_vtj_json is None
+        assert app.encrypted_handler_vtj_json is None
 
 
 @override_settings(
