@@ -1487,7 +1487,7 @@ def test_youth_application_processing_email_sending_after_additional_info(
     disable_vtj,
     expect_success,
 ):
-    settings.DISABLE_VTJ = disable_vtj
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     youth_application = AdditionalInfoRequestedYouthApplicationFactory()
     assert youth_application.need_additional_info
     assert youth_application.can_set_additional_info
@@ -2441,7 +2441,7 @@ def test_youth_applications_set_invalid_additional_info(
     expected_status_code,
 ):
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
-    settings.DISABLE_VTJ = disable_vtj
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
 
     source_app = AdditionalInfoRequestedYouthApplicationFactory()
@@ -2499,7 +2499,7 @@ def test_youth_applications_set_partial_additional_info(
     expected_status_code,
 ):
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
-    settings.DISABLE_VTJ = disable_vtj
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
 
     source_app = AdditionalInfoRequestedYouthApplicationFactory()
