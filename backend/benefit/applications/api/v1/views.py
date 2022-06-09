@@ -13,7 +13,6 @@ from rest_framework import filters as drf_filters, status
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
-from shared.audit_log.viewsets import AuditLoggingModelViewSet
 from sql_util.aggregates import SubqueryCount
 
 from applications.api.v1.serializers import (
@@ -26,6 +25,7 @@ from applications.models import Application, ApplicationBatch
 from applications.services.applications_csv_report import ApplicationsCsvService
 from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
 from messages.models import MessageType
+from shared.audit_log.viewsets import AuditLoggingModelViewSet
 from users.utils import get_company_from_request
 
 

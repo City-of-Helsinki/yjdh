@@ -3,7 +3,6 @@ from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 from rest_framework import viewsets
 from rest_framework.exceptions import NotFound
-from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
 from applications.models import Application
 from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
@@ -11,6 +10,7 @@ from messages.automatic_messages import notify_applicant_by_email_about_new_mess
 from messages.models import Message
 from messages.permissions import HasMessagePermission
 from messages.serializers import MessageSerializer, NoteSerializer
+from shared.audit_log.viewsets import AuditLoggingModelViewSet
 from users.utils import get_company_from_request
 
 
