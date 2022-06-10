@@ -120,12 +120,11 @@
 			"imageUpload": {
 				"label": "Ladda ner en bild av en arbetsplats eller uppgift genom att dra den nedan",
 				"helperText": "Bredd min 400px, max 2000px. Storlek max 4MB*.jpg*.png",
-				"saveImage": "SV Tallenna kuva ilmoitukselle",
-				"deleteImage": "SV Poista tai vaihda kuva",
-				"uploadSuccess": "SV Kuva ladattu onnistuneesti ja tallentuu ilmoitukselle, kun tallennat ilmoituksen.",
-				"deleteConfirmTitle": "SV Haluatko varmasti poistaa kuvan?",
-				"deleteConfirmContent": "SV Kuva poistetaan ilmoitukselta kokonaan. Toiminto on peruuttamaton",
-				"deleteButton": "SV Poista kuva",
+				"saveImage": "Spara bilden för PRAO-platsen",
+				"deleteImage": "Bort eller ändra bilden",
+				"deleteConfirmTitle": "Är du säker på att du vill ta bort bilden?",
+				"deleteConfirmContent": "Bilden kommer att tas bort helt från meddelandet. Funktionen är oåterkallelig.",
+				"deleteButton": "Bort bilden",
 				"photographerName": "Fotografens namn"
 			}
     },

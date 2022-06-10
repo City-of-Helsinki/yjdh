@@ -18,7 +18,11 @@ import useConfirm from 'shared/hooks/useConfirm';
 import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
 import TextInput from 'tet/admin/components/editor/TextInput';
 
-const ImageUpload = () => {
+type Props = {
+  isNewPosting: boolean;
+};
+
+const ImageUpload: React.FC<Props> = ({ isNewPosting }) => {
   const { t } = useTranslation();
   const locale = useLocale();
   const { confirm } = useConfirm();
@@ -60,28 +64,36 @@ const ImageUpload = () => {
     }
   };
 
-  const removeImage = async () => {
-    const isConfirmed = await confirm({
-      header: t('common:editor.posting.imageUpload.deleteConfirmTitle'),
-      content: t('common:editor.posting.imageUpload.deleteConfirmContent'),
-      submitButtonLabel: t('common:editor.posting.imageUpload.deleteButton'),
-      submitButtonVariant: 'danger',
-    });
+  const clearImageData = () => {
+    setValue('image_url', '');
+    setValue('image_id', '');
+    setValue('image', null);
+    setValue('photographer_name', '');
+  };
 
-    if (isConfirmed) {
-      setUploaded(false);
-      setIsUploading(true);
-      try {
-        await deleteImage();
-        setValue('image_url', '');
-        setValue('image_id', '');
-        setValue('image', null);
-        setValue('photographer_name', '');
-        setIsUploading(false);
-        setUploaded(true);
-      } catch (err) {
-        handleUploadError(err);
-        setIsUploading(false);
+  const removeImage = async () => {
+    if (isNewPosting) {
+      clearImageData();
+    } else {
+      const isConfirmed = await confirm({
+        header: t('common:editor.posting.imageUpload.deleteConfirmTitle'),
+        content: t('common:editor.posting.imageUpload.deleteConfirmContent'),
+        submitButtonLabel: t('common:editor.posting.imageUpload.deleteButton'),
+        submitButtonVariant: 'danger',
+      });
+
+      if (isConfirmed) {
+        setUploaded(false);
+        setIsUploading(true);
+        try {
+          await deleteImage();
+          clearImageData();
+          setIsUploading(false);
+          setUploaded(true);
+        } catch (err) {
+          handleUploadError(err);
+          setIsUploading(false);
+        }
       }
     }
   };

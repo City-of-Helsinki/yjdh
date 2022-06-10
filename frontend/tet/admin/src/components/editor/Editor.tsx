@@ -18,6 +18,7 @@ import useLeaveConfirm from 'shared/hooks/useLeaveConfirm';
 type EditorProps = {
   // eslint-disable-next-line react/require-default-props
   initialValue?: TetPosting;
+  isNewPosting?: boolean;
 };
 
 export type EditorSectionProps = {
@@ -25,7 +26,7 @@ export type EditorSectionProps = {
 };
 
 // add new posting / edit existing
-const Editor: React.FC<EditorProps> = ({ initialValue }) => {
+const Editor: React.FC<EditorProps> = ({ initialValue, isNewPosting = false }) => {
   const { t } = useTranslation();
   const methods = useForm<TetPosting>({
     reValidateMode: 'onChange',
@@ -47,7 +48,7 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
           <p>* {t('common:editor.requiredInfo')}</p>
           <EmployerInfo />
           <CompanyInfo />
-          <ImageUpload />
+          <ImageUpload isNewPosting={isNewPosting} />
           <ContactPerson />
           <PostingDetails />
           <Classification />
