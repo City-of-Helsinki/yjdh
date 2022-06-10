@@ -4,6 +4,7 @@ from urllib.parse import urljoin
 import requests
 from django.conf import settings
 from requests.exceptions import ConnectionError, HTTPError, RequestException, Timeout
+from rest_framework.exceptions import PermissionDenied, ValidationError
 
 from events.exceptions import LinkedEventsException
 
@@ -67,6 +68,7 @@ class LinkedEventsClient:
                 raise LinkedEventsException(
                     code=503, detail="Server error from Linked Events."
                 )
+            # TODO 403 is actually configuration error in Linked Events for the TET API key
             elif e.response.status_code == 401 or e.response.status_code == 403:
                 raise LinkedEventsException(
                     code=500,
@@ -165,4 +167,23 @@ class LinkedEventsClient:
         r = requests.get(url, headers=self._headers())
         # TODO better error handling
         r.raise_for_status()
+        return r.json()
+
+    def upload_image(self, body, files):
+        r = requests.post(
+            urljoin(settings.LINKEDEVENTS_URL, "image/"),
+            headers={"apikey": settings.LINKEDEVENTS_API_KEY},
+            data=body,
+            files=files,
+        )
+        LOGGER.warning(r.text)
+        try:
+            r.raise_for_status()
+        except HTTPError as e:
+            if e.response.status_code == 400:
+                raise ValidationError(detail="File not accepted")
+            else:
+                raise PermissionDenied(detail="Could not upload")  # TODO what here?
+        except RequestException:
+            raise LinkedEventsException(code=503)
         return r.json()
