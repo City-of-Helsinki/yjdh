@@ -4,12 +4,14 @@ export const $Bar = styled.div`
   background-color: ${(props) => props.theme.colors.alert};
 `;
 
-export const $BackLink = styled.div`
+export const $BackLink = styled.a`
   display: inline-flex;
   align-items: center;
   font-weight: medium;
   font-size: ${(props) => props.theme.fontSize.heading.xs};
-  cursor: pointer;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
 `;
 
 export const $PreviewText = styled.span`

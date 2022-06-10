@@ -46,7 +46,7 @@
     "jobPostings": {
       "title": "TET-paikkailmoitukset",
       "noPostingsFound": "Sinulla ei ole vielä yhtään TET-paikkaa.",
-      "addNewPosting": "Lisää uusi harjoittelupaikka",
+      "addNewPosting": "Lisää uusi TET-paikka",
 			"publishedPostings": "TET-paikat",
 			"draftPostings": "Keskeneräiset ilmoitukset",
 			"openSpots_one": "{{count}} TET-paikka",
@@ -63,6 +63,7 @@
     }
   },
   "editor": {
+		"formLabel": "Lisää TET-paikka tai muokkaa",
 		"companyInfo": "Työnantajan tiedot",
     "helsinkiCity": "Helsingin kaupunki",
 		"companyInfoFetch": "Tiedot on haettu tunnistautumisen yhteydessä.",
@@ -101,6 +102,8 @@
       "endDateLabel": "Päättyen",
 			"endDateHelperText": "Jos TET-paikka on jatkuva, jätä päättymisaika tyhjäksi",
       "spotsLabel": "TET-paikat",
+			"spotsIncrease": "Lisää yhdellä",
+			"spotsDecrease": "Vähennä yhdellä",
 			"contactFirstName": "Etunimi",
 			"contactLastName": "Sukunimi",
 			"contactPhone": "Puhelin",

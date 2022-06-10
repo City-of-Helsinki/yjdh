@@ -64,6 +64,7 @@
     }
   },
   "editor": {
+		"formLabel": "New TET advertisement or edit",
 		"companyInfo": "Employer information",
     "helsinkiCity": "City of Helsinki",
 		"companyInfoFetch": "The information has been fetched during authentication.",
@@ -102,6 +103,8 @@
       "endDateLabel": "End date",
 			"endDateHelperText": "If the TET-position is continuously open, leave the end time blank",
       "spotsLabel": "Number of open spots",
+			"spotsIncrease": "Increase by one",
+			"spotsDecrease": "Decrease by one",
 			"contactFirstName": "First name",
 			"contactLastName": "Last name",
 			"contactPhone": "Telephone",
