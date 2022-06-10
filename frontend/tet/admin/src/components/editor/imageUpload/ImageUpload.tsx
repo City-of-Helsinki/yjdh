@@ -86,14 +86,15 @@ const ImageUpload: React.FC<Props> = ({ isNewPosting }) => {
         setUploaded(false);
         setIsUploading(true);
         try {
-          await deleteImage();
+          const id = getValues('id');
+          await deleteImage(id);
           clearImageData();
-          setIsUploading(false);
           setUploaded(true);
         } catch (err) {
           handleUploadError(err);
-          setIsUploading(false);
         }
+
+        setIsUploading(false);
       }
     }
   };
