@@ -104,7 +104,7 @@ env = environ.Env(
         int,
         12 * 60 * 60,
     ),
-    DISABLE_VTJ=(bool, False),
+    NEXT_PUBLIC_DISABLE_VTJ=(bool, False),
     VTJ_PERSONAL_ID_QUERY_URL=(
         str,
         "https://vtj-integration-test.agw.arodevtest.hel.fi/api/HenkilonTunnuskysely",
@@ -125,7 +125,7 @@ if DEBUG and not SECRET_KEY:
 ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
 SOCIAL_SECURITY_NUMBER_HASH_KEY = env.str("SOCIAL_SECURITY_NUMBER_HASH_KEY")
 ENABLE_ADMIN = env.bool("ENABLE_ADMIN")
-DISABLE_VTJ = env.bool("DISABLE_VTJ")
+NEXT_PUBLIC_DISABLE_VTJ = env.bool("NEXT_PUBLIC_DISABLE_VTJ")
 VTJ_PERSONAL_ID_QUERY_URL = env.str("VTJ_PERSONAL_ID_QUERY_URL")
 VTJ_USERNAME = env.str("VTJ_USERNAME")
 VTJ_PASSWORD = env.str("VTJ_PASSWORD")
