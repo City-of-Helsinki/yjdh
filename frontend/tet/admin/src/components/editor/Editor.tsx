@@ -13,6 +13,7 @@ import { DevTool } from '@hookform/devtools';
 import EmployerInfo from 'tet/admin/components/editor/employerInfo/EmployerInfo';
 import ImageUpload from 'tet/admin/components/editor/imageUpload/ImageUpload';
 import { initialPosting } from 'tet/admin/store/PreviewContext';
+import useLeaveConfirm from 'shared/hooks/useLeaveConfirm';
 
 type EditorProps = {
   // eslint-disable-next-line react/require-default-props
@@ -32,11 +33,13 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
     criteriaMode: 'all',
     defaultValues: initialValue || initialPosting,
   });
+  const message = t('common:editor.leaveConfirm');
+  useLeaveConfirm(methods.formState.isDirty, message);
 
   return (
     <>
       <FormProvider {...methods}>
-        <form aria-label="add/modify tet posting">
+        <form aria-label={t('common:editor.formLabel')}>
           <HiddenIdInput id="id" initialValue={initialValue?.id} />
           <HiddenIdInput id="image_url" initialValue={initialValue?.image_url} />
           <HiddenIdInput id="image_id" initialValue={initialValue?.image_id} />

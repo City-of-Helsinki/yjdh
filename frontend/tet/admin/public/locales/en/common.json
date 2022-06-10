@@ -64,6 +64,7 @@
     }
   },
   "editor": {
+		"formLabel": "New TET advertisement or edit",
 		"companyInfo": "Employer information",
     "helsinkiCity": "City of Helsinki",
 		"companyInfoFetch": "The information has been fetched during authentication.",
@@ -81,6 +82,7 @@
 		"preview": "Preview",
     "loadingError": "Error while loading the event. Please try again later.",
     "language": "Language of the TET workplace",
+		"leaveConfirm": "No changes have been saved. Do you still want to leave?",
     "employerInfo": {
 			"contactPerson": "Contact person",
       "header": "Unit details",
@@ -97,6 +99,8 @@
       "startDateLabel": "Start date",
       "endDateLabel": "End date",
       "spotsLabel": "Number of open spots",
+			"spotsIncrease": "Increase by one",
+			"spotsDecrease": "Decrease by one",
 			"contactFirstName": "First name",
 			"contactLastName": "Last name",
 			"contactPhone": "Telephone",
@@ -155,7 +159,8 @@
     "privacyPolicy": "Privacy policy",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
     "feedback": "Give feedback",
-    "feedbackLink": "https://www.hel.fi/helsinki/en/administration/participate/feedback"
+    "feedbackLink": "https://www.hel.fi/helsinki/en/administration/participate/feedback",
+		"newTab": "link opens in a new tab"
   },
   "languages": {
     "fi": "Suomeksi",

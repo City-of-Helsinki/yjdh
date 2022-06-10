@@ -95,11 +95,8 @@
         "contact_person_name": "Name of the contact person",
         "contact_person_email": "Email of the contact person",
         "street_address": "Company street address",
+        "bank_account_number": "ENG Tilinumero",
         "contact_person_phone_number": "Telephone number",
-        "is_separate_invoicer": "The billing is handled by an other person",
-        "invoicer_name": "Name of the billing contact person",
-        "invoicer_email": "Email of the billing contact person",
-        "invoicer_phone_number": "Phone number of the billing contact person",
         "employee_name": "Name of the employee",
         "employee_ssn": "Social security number",
         "summer_voucher_exception_reason": "Grade or birth year",
@@ -124,7 +121,8 @@
         "format": "Use format",
         "attachments": "You may add a maximum of 5 attachments. The approved file forms are: pdf, jpg, png. The maximum size 10MB.",
         "employment_contract": "Attach here the employment contract of the youth employed with the Summer Job Voucher.",
-        "payslip": "Attach here the pay statement of the youth employed with the Summer Job Voucher."
+        "payslip": "Attach here the pay statement of the youth employed with the Summer Job Voucher.",
+        "bank_account": "ENG Syötä IBAN-muodossa"
       },
       "errors": {
         "required": "Information is missing or is incorrect",
@@ -133,7 +131,15 @@
         "validate": "The information you entered is in an incorrect format",
         "selectionGroups": "Select an option",
         "checkboxRequired": "Selection is mandatory",
-        "attachments": "Add at least one file"
+        "attachments": "Add at least one file",
+        "employmentsRequired": "ENG Lisää ainakin yksi työsuhde",
+        "NoIBANProvided": "ENG Tilinumero puuttuu",
+        "NoIBANCountry": "ENG Maakoodi puuttuu",
+        "WrongBBANLength": "ENG Tarkista tilinumeron pituus",
+        "WrongBBANFormat": "ENG Tarkista tilinumero",
+        "ChecksumNotNumber": "ENG Tarkista tilinumero",
+        "WrongIBANChecksum":"ENG Tarkista tilinumero",
+        "WrongAccountBankBranchChecksum": "ENG Tarkista tilinumero"
       },
       "notification": {
         "title": "Fill in the missing or incorrect information"

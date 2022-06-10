@@ -1,12 +1,14 @@
-import { Link } from 'hds-react';
+import { Button } from 'hds-react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { LatLngExpression } from 'leaflet';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import MarkerClusterGroup from 'react-leaflet-markercluster';
+import { useTheme } from 'styled-components';
 import {
   $Address,
   $Date,
@@ -49,6 +51,8 @@ const Map: React.FC<Props> = ({
   showLink,
 }) => {
   const { t } = useTranslation();
+  const router = useRouter();
+  const theme = useTheme();
 
   const centerPosition =
     postings.length === 1 && zoomToPosition
@@ -57,6 +61,12 @@ const Map: React.FC<Props> = ({
           postings[0].location.position.coordinates[0],
         ]
       : center;
+  const readMoreHandler = (id: string): void => {
+    void router.push({
+      pathname: '/postings/show',
+      query: { id },
+    });
+  };
 
   return (
     <$MapWrapper>
@@ -86,9 +96,19 @@ const Map: React.FC<Props> = ({
                 <$Date>{getDateString(posting)}</$Date>
                 <$Address>{getAddressString(posting)}</$Address>
                 {showLink && (
-                  <Link href={`/postings/show?id=${posting.id}`} size="L">
-                    {t(`common:map.readMore`)}
-                  </Link>
+                  <Button
+                    style={{
+                      fontSize: '20px',
+                      backgroundColor: `${theme.colors.black60}`,
+                      borderColor: `${theme.colors.black60}`,
+                    }}
+                    role="link"
+                    size="small"
+                    type="button"
+                    onClick={() => readMoreHandler(posting.id)}
+                  >
+                    {t('common:map.readMore')}
+                  </Button>
                 )}
               </Popup>
             </Marker>

@@ -3,15 +3,17 @@ import { IconArrowLeft } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 const BackButton: React.FC = () => {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const $BackButton = styled.div`
+  const $BackButton = styled.a`
     display: inline-flex;
     align-items: center;
-    cursor: pointer;
+    color: inherit;
+    text-decoration: none;
     font-size: ${(props) => props.theme.fontSize.body.l};
     font-weight: normal;
   `;
@@ -21,10 +23,12 @@ const BackButton: React.FC = () => {
   };
 
   return (
-    <$BackButton onClick={clickHandler}>
-      <IconArrowLeft />
-      <span>{t('common:application.backToFrontPage')}</span>
-    </$BackButton>
+    <Link href="/" passHref>
+      <$BackButton>
+        <IconArrowLeft />
+        <span>{t('common:application.backToFrontPage')}</span>
+      </$BackButton>
+    </Link>
   );
 };
 

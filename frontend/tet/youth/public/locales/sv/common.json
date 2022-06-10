@@ -49,7 +49,9 @@
 		"searchResults_other": "{{count}} sökresultat",
 		"readMore": "Läs mer",
 		"showMore": "Visa fler resultat",
-		"languages": "Språk"
+		"languages": "Språk",
+		"noResultsLinks": "Inga händelser hittades som matchade dina sökkriterier. Testa att klicka på någon av dessa:",
+		"fewResultsLinks": "Också prova följande sökord:"
 	},
   "footer": {
     "copyrightText": "Helsingfors stad",
@@ -59,7 +61,10 @@
     "privacyPolicy": "Registerbeskrivning",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Register för administration av grundläggande utbildning.pdf",
     "feedback": "Ge feedback",
-    "feedbackLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/delta/feedback"
+    "feedbackLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/delta/feedback",
+		"moreInfo": "Mer information",
+		"moreInfoLink": "https://nuorten.hel.fi/sv/",
+		"newTab": "länken öppnas i en ny flik"
   },
   "languages": {
     "fi": "På finska",

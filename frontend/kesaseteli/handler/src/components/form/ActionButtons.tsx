@@ -1,6 +1,7 @@
 import { Button, IconCheck, IconCross } from 'hds-react';
 import useCompleteYouthApplicationQuery from 'kesaseteli/handler/hooks/backend/useCompleteYouthApplicationQuery';
 import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
+import isVtjDisabled from 'kesaseteli-shared/flags/is-vtj-disabled';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -21,8 +22,14 @@ const ActionButtons: React.FC<Props> = ({ application, ...gridCellprops }) => {
   const { id, encrypted_handler_vtj_json } = application;
   const { confirm } = useConfirm();
   const { isLoading, mutate } = useCompleteYouthApplicationQuery(id);
+  const isVtjEnabled = !isVtjDisabled();
   const vtjDataNotFound =
-    !encrypted_handler_vtj_json || !('Henkilo' in encrypted_handler_vtj_json);
+    isVtjEnabled &&
+    (!encrypted_handler_vtj_json ||
+      !('Henkilo' in encrypted_handler_vtj_json) ||
+      encrypted_handler_vtj_json?.Henkilo?.Henkilotunnus?.[
+        '@voimassaolokoodi'
+      ] === '0');
   const icon = React.useMemo(
     () => ({
       accept: <IconCheck aria-hidden />,

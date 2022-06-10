@@ -44,8 +44,16 @@ const TextInput = <T,>({
   errorText,
   registerOptions = {},
   onChange,
-  ...$gridCellProps
+  ...rest
 }: TextInputProps<T>): React.ReactElement<T> => {
+  const { $colSpan, $rowSpan, $colStart, alignSelf, justifySelf } = rest;
+  const $gridCellProps = {
+    $colSpan,
+    $rowSpan,
+    $colStart,
+    alignSelf,
+    justifySelf,
+  };
   const { register, watch } = useFormContext<T>();
   const value = watch(id) as string;
   const preventScrolling = React.useCallback(

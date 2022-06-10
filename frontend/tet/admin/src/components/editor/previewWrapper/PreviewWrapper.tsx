@@ -29,7 +29,7 @@ const PreviewBar: React.FC<BarProps> = ({ hasMargin, allowPublish, onPublish }) 
     <$Bar style={hasMargin ? { marginBottom: '20px' } : {}}>
       <Container>
         <$BarWrapper style={{ minHeight: '3.5rem' }}>
-          <$BackLink onClick={() => setPreviewVisibility(false)}>
+          <$BackLink href="javascipt:void(0)" onClick={() => setPreviewVisibility(false)}>
             <IconArrowLeft />
             <span>{t('common:editor.backToEdit')}</span>
           </$BackLink>

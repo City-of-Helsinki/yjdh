@@ -7,7 +7,7 @@ import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/compone
 import JEST_TIMEOUT from 'shared/__tests__/utils/jest-timeout';
 import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 import Application from 'shared/types/application';
-import ContactPerson from 'shared/types/contact_person';
+import ContactPerson from 'shared/types/contact-info';
 
 type StepExpections = {
   stepIsLoaded: () => Promise<void>;
