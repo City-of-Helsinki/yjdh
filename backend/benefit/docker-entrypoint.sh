@@ -20,6 +20,12 @@ if [[ "$LOAD_FIXTURES" = "1" ]]; then
     ./manage.py set_group_permissions
 fi
 
+# Compile translations on startup
+if [[ "$COMPILE_TRANSLATIONS" = "1" ]]; then
+    echo "Compiling translations..."
+    ./manage.py compilemessages
+fi
+
 # Create admin user. Generate password if there isn't one in the
 # environment variables. Password is not printed to log, but needs to be
 # changed at the pod command line
@@ -41,7 +47,7 @@ fi
 if [[ ! -z "$@" ]]; then
     "$@"
 elif [[ "$DEV_SERVER" = "1" ]]; then
-    python ./manage.py runserver 0.0.0.0:8000
+    python -Wd ./manage.py runserver 0.0.0.0:8000
 else
     uwsgi --ini .prod/uwsgi.ini
 fi

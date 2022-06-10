@@ -70,40 +70,40 @@
       "termsAndConditionsLink": "https://nuorten.helsinki/sv/studier-och-jobb/sommarsedeln/kesatyonhakijalle/",
       "sendButton": "Skicka informationen",
       "requiredInfo": "Alla fält som är märkta med * är obligatoriska",
-      "sendItAnyway": "SWE Mikäli tiedot ovat mielestäsi oikein, voit lähettää ne meille tarkastettavaksi. Palaamme asiaan kun olemme käsitelleet tietosi.",
-      "forceSubmitLink": "SWE Lähetä"
+      "sendItAnyway": "Om du anser uppgifterna är rätt, kan du skicka in din ansökan för kontroll. Vi återkommer då vi behandlat ditt ärende.",
+      "forceSubmitLink": "Skicka"
     },
     "checkNotification" : {
-      "label" : "SWE Hups! Jokin tiedoista ei ole oikein",
-      "recheck" : "SWE Tarkistathan, että olet kirjoittanut nimesi ja henkilötunnuksesi kuten ne ovat Kela-kortissasi.",
-      "validation": "SWE Tarkista seuraavat kentät: {{ fields}}"
+      "label" : "Ops! Någon av uppgifterna ör inte rätt.",
+      "recheck" : "Kontrollera att du skrivit ditt nan och personnumret, som de är på ditt FPA-kort.",
+      "validation": "Kontrollera följande fält: {{ fields}}"
     }
   },
   "additionalInfo": {
-    "title": "SWE Tarkenna hakemustasi",
+    "title": "Kontrollera din ansökan",
     "notification": {
-      "confirmed": "SWE Sähköpostiosoite on vahvistettu",
-      "confirmedDescription": "SWE Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      "sent" : "SWE Kiitos! Tarkennus lähetetty!",
-      "notFound": "SWE Hakemusta ei löytynyt"
+      "confirmed": "E-post adressen är begräftad",
+      "confirmedDescription": "",
+      "sent" : "Tack! din tilläggsinformation har skickats!",
+      "notFound": "Din ansökan hittas inte!"
     },
-    "paragraph_1": "SWE Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    "paragraph_2": "SWE Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "paragraph_1": "Din ansökan behöver mer information. Välj bland alternativen nedan och skriv din förklaring.",
+    "paragraph_2": "",
     "form" : {
-      "reasons": "SWE Otsikko",
-      "reasonsPlaceholder": "SWE Valitse seuraavista vaihtoehdoista",
-      "additional_info_description": "SWE Lisätiedot",
+      "reasons": "Rubrik",
+      "reasonsPlaceholder": "Välj av följande alternativ",
+      "additional_info_description": "Tilläggsuppgifter",
       "additional_info_attachments": "SWE Liitetiedostot",
       "additional_info_attachmentsHelper": "SWE Voit lisätä korkeintaan 5 liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Maksimikoko 10MB",
-      "sendButton": "Lähetä tiedot"
+      "sendButton": "Skicka uppgifterna"
     },
     "reasons": {
-      "unlisted_school": "SWE Kouluani ei löytynyt listalta",
-      "student_in_helsinki_but_not_resident": "SWE En asu Helsingissä, mutta käyn Helsinkiläistä koulua",
-      "moving_to_helsinki": "SWE En asu vielä Helsingissä, mutta olen muuttamassa Helsinkiin",
-      "underage_or_overage": "SWE En kuulu iän puolesta kohderyhmään, mutta vuosiluokan puolesta kyllä",
-      "personal_info_differs_from_vtj": "SWE Henkilötietoni poikkeavat väestötietojärjestelmän tiedoista",
-      "other": "SWE Muu, kerro alla"
+      "unlisted_school": "Min skola finns inte på listan",
+      "student_in_helsinki_but_not_resident": "Jag bor inte i Helsingfors, men jag går i skola i Helsingfors.",
+      "moving_to_helsinki": "Jag bor inte ännu i Helsingfors, men håller på att flytta dit före 1. juni.",
+      "underage_or_overage": "jag hör inte baserat på åldern till Mina målgruppen, en hör i skolan till rätt årsklass.",
+      "personal_info_differs_from_vtj": "Mina personuppgifter avviker från uppgifterna i folkregistret.",
+      "other": "Annan orsak, skriv här nedan"
     }
   },
   "errors": {
@@ -114,8 +114,8 @@
     "validate": "Den inmatade uppgiftern är i fel format"
   },
   "assistive": {
-    "clearChoice": "SWE Tyhjennä valinta",
-    "clearAllChoices": "SWE Tyhjennä kaikki valinnat"
+    "clearChoice": "Töm valet",
+    "clearAllChoices": "Töm alla val"
   },
   "notificationPages": {
     "thankyou" : {

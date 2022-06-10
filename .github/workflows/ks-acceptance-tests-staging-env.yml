@@ -8,9 +8,10 @@ on:
       - '.github/workflows/ks-staging-env-acceptance-tests.yml'
       - '**/browser-tests/**'
 env:
-  EMPLOYER_URL: https://yjdh-kesaseteli-ui-stg.apps.platta.hel.fi
-  YOUTH_URL: https://yjdh-youth-ui-stg.apps.platta.hel.fi
-  HANDLER_URL: https://yjdh-handler-ui-stg.apps.platta.hel.fi
+  EMPLOYER_URL: https://yjdh-kesaseteli-ui-stg.apps.platta.hel.fi # https://yjdh-kesaseteli-ui.stage.hel.ninja
+  YOUTH_URL: https://kesaseteli-youth-ui.stage.hel.ninja # https://yjdh-youth-ui-stg.apps.platta.hel.fi #
+  HANDLER_URL: https://kesaseteli-handler-ui.stage.hel.ninja # https://yjdh-handler-ui-stg.apps.platta.hel.fi
+  NEXT_PUBLIC_BACKEND_URL: https://kesaseteli-api.stage.hel.ninja
   BRANCH: main
 jobs:
   acceptance-tests:
