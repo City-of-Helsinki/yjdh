@@ -109,7 +109,7 @@
 			"contactLanguageFi": "Finnish",
 			"contactLanguageSv": "Swedish",
 			"contactLanguageEn": "English",
-			"website": "Hemsida",
+			"website": "Website",
 			"validation": {
 				"required": "Required information",
 				"email": "Enter e-mail in the correct format",
@@ -157,6 +157,7 @@
     "sv": "På svenska",
     "en": "In English"
   },
+	"opensInNewPage": "Link opens to a different website",
   "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/",
   "error": {
     "generic": {

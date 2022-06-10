@@ -76,6 +76,8 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
       href={posting.website_url}
       external
       openInNewTab
+      openInNewTabAriaLabel={t('common:footer.newTab')}
+      openInExternalDomainAriaLabel={t('common:opensInNewPage')}
       rel="noopener noreferrer"
     >
       {stripHttp(posting.website_url)}
@@ -114,7 +116,7 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
           />
           {websiteLink && (
             <PostingInfoItem
-              title="Verkkosivut"
+              title={t('common:editor.posting.website')}
               body={websiteLink}
               icon={<IconGlobe />}
             />
