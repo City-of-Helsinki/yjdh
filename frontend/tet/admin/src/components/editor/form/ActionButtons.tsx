@@ -83,7 +83,7 @@ const ActionButtons: React.FC = () => {
     ) {
       setShowInfoDialog(true);
     } else {
-      const event = tetPostingToEvent(posting, false);
+      const event = tetPostingToEvent({ posting });
 
       upsertTetPosting.mutate({
         id: posting.id,

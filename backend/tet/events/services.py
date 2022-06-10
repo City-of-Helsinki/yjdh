@@ -5,6 +5,7 @@ from django.conf import settings
 from django.http import HttpRequest
 from rest_framework.exceptions import PermissionDenied, ValidationError
 
+from events.exceptions import LinkedEventsException
 from events.linkedevents import LinkedEventsClient
 from events.transformations import (
     enrich_create_event,
@@ -155,6 +156,7 @@ class ServiceClient:
         event = self._get_event_and_raise_for_unauthorized(request, event_id)
         event["images"] = []
         updated_event = self.client.update_event(event_id, event)
+        self.sync_photographer_name(event)
 
         return reduce_get_event(updated_event)
 
@@ -162,6 +164,7 @@ class ServiceClient:
         self._get_event_and_raise_for_unauthorized(request, event_id)
         event = enrich_update_event(validated_data, request.user)
         updated_event = self.client.update_event(event_id, event)
+        self.sync_photographer_name(event)
 
         return reduce_get_event(updated_event)
 
@@ -199,3 +202,14 @@ class ServiceClient:
             "@id": uploaded_image["@id"],
             "url": uploaded_image["url"],
         }
+
+    def sync_photographer_name(self, event):
+        if event['images']:
+            image = event['images'][0]
+            image_id = image['@id'].split('/')[-2]
+            try:
+                # TODO get name from frontend or Linked Events
+                self.client.update_image(image_id, {"photographer_name": image["photographer_name"], "name": "test"})
+            except LinkedEventsException as e:
+                LOGGER.warning(f"Updating image failed: {e.detail}")
+

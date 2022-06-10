@@ -176,7 +176,6 @@ class LinkedEventsClient:
             data=body,
             files=files,
         )
-        LOGGER.warning(r.text)
         try:
             r.raise_for_status()
         except HTTPError as e:
@@ -187,3 +186,11 @@ class LinkedEventsClient:
         except RequestException:
             raise LinkedEventsException(code=503)
         return r.json()
+
+    def update_image(self, image_id, image):
+        return self._api_call(
+            requests_method=requests.put,
+            resource="image",
+            resource_id=image_id,
+            json=image,
+        )

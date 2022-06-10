@@ -23,8 +23,8 @@ class TetUpsertEventSerializer(Serializer):
         child=CharField(max_length=3000, allow_blank=True), allow_empty=True
     )
     location = DictField(child=URLField())
-    keywords = ListField(child=DictField(child=URLField()), min_length=1, max_length=30)
-    images = ListField(min_length=0, max_length=1)
+    keywords = ListField(child=DictField(child=URLField()), min_length=0, max_length=30)
+    images = ListField(min_length=0, max_length=1)  # TODO add argument child
     start_time = CharField(max_length=30, allow_null=True)
     end_time = CharField(max_length=30, allow_null=True)
     date_published = CharField(max_length=30, allow_null=True)
