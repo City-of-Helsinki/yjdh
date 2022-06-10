@@ -13,7 +13,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@sentry/browser": "^7.0.0",
+    "@sentry/browser": "^7.1.1",
     "axios": "^0.27.2",
     "cors": "^2.8.5",
     "date-fns": "^2.22.1",
@@ -31,7 +31,7 @@
     "react-loading-skeleton": "^3.0.3",
     "react-query": "^3.34.0",
     "react-table": "^7.7.0",
-    "react-toastify": "^9.0.3",
+    "react-toastify": "^9.0.4",
     "styled-components": "^5.3.1",
     "uuid": "^8.3.2"
   },

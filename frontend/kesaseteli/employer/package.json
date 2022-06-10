@@ -19,7 +19,7 @@
   "dependencies": {
     "@frontend/kesaseteli-shared": "*",
     "@frontend/shared": "*",
-    "@sentry/browser": "^7.0.0",
+    "@sentry/browser": "^7.1.1",
     "@sentry/utils": "^7.0.0",
     "axios": "^0.27.2",
     "babel-plugin-import": "^1.13.3",
@@ -38,7 +38,7 @@
     "react-input-mask": "^2.0.4",
     "react-loading-skeleton": "^3.0.3",
     "react-query": "^3.34.0",
-    "react-toastify": "^9.0.3",
+    "react-toastify": "^9.0.4",
     "react-use": "^17.3.2",
     "styled-components": "^5.3.1",
     "ts-node": "^10.0.0"
