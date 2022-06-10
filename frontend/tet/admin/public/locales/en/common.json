@@ -100,7 +100,7 @@
       "workHoursNotice": "The working hours are always the same (30 h per week).",
       "startDateLabel": "Start date",
       "endDateLabel": "End date",
-			"endDateHelperText": "EN Jos TET-paikka on jatkuva, jätä päättymisaika tyhjäksi",
+			"endDateHelperText": "If the TET-position is continuously open, leave the end time blank",
       "spotsLabel": "Number of open spots",
 			"contactFirstName": "First name",
 			"contactLastName": "Last name",
