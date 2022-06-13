@@ -21,8 +21,8 @@ const PostingInfoItem: React.FC<Props> = ({ title, body, icon }) => {
         <span>{title}</span>
       </$Header>
       <$List>
-        {list.map((item) => (
-          <li>{item}</li>
+        {list.map((item, index) => (
+          <li key={index}>{item}</li>
         ))}
       </$List>
     </$InfoItem>
