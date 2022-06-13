@@ -44,5 +44,5 @@ export const deleteImage = async (id: string): Promise<string> => {
     await new Promise((r) => setTimeout(r, 2000));
     return 'success';
   }
-  await axios.delete(`${getBackendDomain()}${BackendEndpoint.TET_POSTINGS}/${id}/image/`);
+  await axios.delete(`${getBackendDomain()}${BackendEndpoint.TET_POSTINGS}${id}/image/`);
 };
