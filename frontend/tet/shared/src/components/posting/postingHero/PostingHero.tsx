@@ -42,7 +42,7 @@ const PostingHero: React.FC<Props> = ({
   const city = posting?.location?.city ? `, ${posting.location.city}` : '';
   const name = posting?.location?.name ?? '';
   const address = name + street_address + postal_code + city;
-  const imageUrl = posting?.image_url?.length
+  const imageUrl = posting.image_url?.length
     ? posting.image_url
     : '/event_placeholder_B.jpg';
 
@@ -56,16 +56,9 @@ const PostingHero: React.FC<Props> = ({
             </$BackButton>
           )}
           <$ImageContainer imageUrl={imageUrl}>
-            <Image
-              width="100%"
-              height="100%"
-              layout="responsive"
-              objectFit="cover"
-              src={imageUrl}
-              alt="event placeholder"
-              priority
-            />
-            <span>{posting.photographer_name}</span>
+            {posting.photographer_name?.length && (
+              <span>Kuva: {posting.photographer_name}</span>
+            )}
           </$ImageContainer>
           <$HeroContentWrapper>
             <$Title>{posting.org_name}</$Title>

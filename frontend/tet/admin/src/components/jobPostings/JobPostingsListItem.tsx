@@ -31,17 +31,7 @@ const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting }) =>
 
   return (
     <$PostingCard>
-      <$ImageContainer>
-        <Image
-          width="100%"
-          height="100%"
-          layout="responsive"
-          objectFit="cover"
-          src={imageUrl}
-          alt="event placeholder"
-          priority={true}
-        />
-      </$ImageContainer>
+      <$ImageContainer imageUrl={imageUrl}></$ImageContainer>
       <$PostingCardBody>
         <$PostingHeader>
           <div>

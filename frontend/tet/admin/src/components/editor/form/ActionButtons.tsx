@@ -24,7 +24,7 @@ const ActionButtons: React.FC = () => {
     getValues,
     handleSubmit,
     trigger,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isDirty },
     reset,
   } = useFormContext<TetPosting>();
   const theme = useTheme();
@@ -58,15 +58,10 @@ const ActionButtons: React.FC = () => {
   };
 
   const saveHandler = async (validatedPosting: TetPosting): void => {
-    console.log(validatedPosting);
-    // Upload image if user has selected a new image
-    // const imageId = validatedPosting.image ? await uploadImage(validatedPosting.image)['@id'] : undefined;
-
     const event = tetPostingToEvent({
       posting: validatedPosting,
-      // imageId,
     });
-    console.log(event);
+    reset({ ...posting }, { keepValues: true });
     upsertTetPosting.mutate({
       id: validatedPosting.id,
       event,

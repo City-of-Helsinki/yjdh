@@ -35,12 +35,25 @@ export const $BackButton = styled.div`
 `;
 
 export const $ImageContainer = styled.div<ImageProps>`
+  position: relative;
+  min-height: 300px;
   width: 100%;
+  background-image: url(${(props) => props.imageUrl});
   background-color: ${(props) => props.theme.colors.black30};
   background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 
   @media (min-width: ${(props) => props.theme.breakpoints.l}) {
     width: 60%;
+  }
+
+  span {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: ${(props) => props.theme.spacing.xs2};
+    background-color: ${(props) => props.theme.colors.black30};
   }
 `;
 
