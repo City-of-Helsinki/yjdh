@@ -10,7 +10,6 @@ from rest_framework import filters as drf_filters, status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
 from applications.api.v1.serializers import ApplicationBatchSerializer
 from applications.enums import ApplicationBatchStatus
@@ -19,6 +18,7 @@ from applications.services.ahjo_integration import export_application_batch
 from applications.services.talpa_integration import TalpaService
 from common.authentications import RobotBasicAuthentication
 from common.permissions import BFIsHandler
+from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
 
 class ApplicationBatchFilter(filters.FilterSet):

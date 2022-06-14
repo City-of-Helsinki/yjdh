@@ -1,7 +1,6 @@
 import pytest
 from django.test import override_settings
 from rest_framework.reverse import reverse
-from shared.audit_log.models import AuditLogEntry
 
 from applications.api.v1.serializers import (
     EmployerApplicationSerializer,
@@ -13,6 +12,7 @@ from common.tests.factories import (
     EmployerApplicationFactory,
     EmployerSummerVoucherFactory,
 )
+from shared.audit_log.models import AuditLogEntry
 
 
 def get_list_url():

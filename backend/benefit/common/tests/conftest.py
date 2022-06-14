@@ -7,6 +7,7 @@ from django.utils.translation import activate
 from freezegun import freeze_time
 from langdetect import DetectorFactory
 from rest_framework.test import APIClient
+
 from shared.common.tests.conftest import *  # noqa
 from shared.common.tests.conftest import store_tokens_in_session
 

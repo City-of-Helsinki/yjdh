@@ -1,11 +1,11 @@
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from rest_framework import filters as drf_filters
-from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
 from calculator.api.v1.serializers import PreviousBenefitSerializer
 from calculator.models import PreviousBenefit
 from common.permissions import BFIsHandler
+from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
 
 class PreviousBenefitFilter(filters.FilterSet):
