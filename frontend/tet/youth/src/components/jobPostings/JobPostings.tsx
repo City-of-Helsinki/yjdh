@@ -69,23 +69,13 @@ const Postings: React.FC = () => {
     }
   };
 
-  const showNoResults =
-    searchParams &&
-    results.isSuccess &&
-    searchParams.text &&
-    searchParams.text.indexOf(' ') >= 0 &&
-    results?.data.meta.count < 5;
-
   return (
     <div>
       <JobPostingSearch initParams={searchParams} onSearchByFilters={searchHandler}></JobPostingSearch>
       {postings()}
-      {showNoResults && (
-        <NoResults
-          zeroResults={results.data.meta.count === 0}
-          params={searchParams}
-          onSearchByFilters={searchHandler}
-        />
+
+      {results.isSuccess && (
+        <NoResults params={searchParams} onSearchByFilters={searchHandler} resultsTotal={results?.data.meta.count} />
       )}
     </div>
   );
