@@ -1,6 +1,5 @@
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
-
-import { APPLICATION_STATUSES } from '../constants';
 
 export const getApplicationStepFromString = (step: string): number => {
   try {

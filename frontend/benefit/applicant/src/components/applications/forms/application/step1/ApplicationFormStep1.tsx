@@ -1,8 +1,8 @@
-import { APPLICATION_FIELDS_STEP1_KEYS } from 'benefit/applicant/constants';
 import DeMinimisContext from 'benefit/applicant/context/DeMinimisContext';
 import { useAlertBeforeLeaving } from 'benefit/applicant/hooks/useAlertBeforeLeaving';
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
+import { APPLICATION_FIELDS_STEP1_KEYS } from 'benefit-shared/constants';
 import { Select, SelectionGroup, TextArea, TextInput } from 'hds-react';
 import React from 'react';
 import { $RadioButton } from 'shared/components/forms/fields/Fields.sc';

@@ -1,9 +1,9 @@
 import useApplicationsQuery from 'benefit/handler/hooks/useApplicationsQuery';
+import { getBatchDataReceived } from 'benefit/handler/utils/common';
 import {
   ApplicationData,
   ApplicationListItemData,
-} from 'benefit/handler/types/application';
-import { getBatchDataReceived } from 'benefit/handler/utils/common';
+} from 'benefit-shared/types/application';
 import { TFunction, useTranslation } from 'next-i18next';
 import isServerSide from 'shared/server/is-server-side';
 import { getFullName } from 'shared/utils/application.utils';

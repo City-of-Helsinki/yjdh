@@ -1,5 +1,5 @@
-import { APPLICATION_STATUSES } from 'benefit/handler/constants';
-import { ApplicationListItemData } from 'benefit/handler/types/application';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import { ApplicationListItemData } from 'benefit-shared/types/application';
 import { IconSpeechbubbleText, StatusLabel } from 'hds-react';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';

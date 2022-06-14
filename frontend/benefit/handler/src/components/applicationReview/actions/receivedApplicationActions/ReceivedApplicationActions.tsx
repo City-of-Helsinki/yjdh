@@ -1,10 +1,7 @@
-import { APPLICATION_STATUSES } from 'benefit/handler/constants';
 import useHandlerReviewActions from 'benefit/handler/hooks/useHandlerReviewActions';
 import useUpdateApplicationQuery from 'benefit/handler/hooks/useUpdateApplicationQuery';
-import {
-  Application,
-  ApplicationData,
-} from 'benefit/handler/types/application';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import { Application, ApplicationData } from 'benefit-shared/types/application';
 import { Button } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -12,6 +9,7 @@ import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
+import { stringToFloatValue } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
 
 export type Props = {
@@ -26,13 +24,26 @@ const ReceivedApplicationActions: React.FC<Props> = ({ application }) => {
   const { mutate: updateApplication } = useUpdateApplicationQuery();
 
   const handleStatusChange = (): void => {
-    const currentApplicationData: ApplicationData = snakecaseKeys(
+    const currentApplicationData = snakecaseKeys(
       {
         ...application,
+        calculation: application.calculation ? {
+          ...application.calculation,
+          monthlyPay: stringToFloatValue(application.calculation.monthlyPay),
+          otherExpenses: stringToFloatValue(
+            application.calculation.otherExpenses
+          ),
+          vacationMoney: stringToFloatValue(
+            application.calculation.vacationMoney
+          ),
+          overrideMonthlyBenefitAmount: stringToFloatValue(
+            application.calculation.overrideMonthlyBenefitAmount
+          ),
+        }: undefined,
         status: APPLICATION_STATUSES.HANDLING,
       },
       { deep: true }
-    );
+    ) as ApplicationData;
     updateApplication(currentApplicationData);
   };
 

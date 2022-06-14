@@ -1,16 +1,15 @@
-import { APPLICATION_STATUSES, ROUTES } from 'benefit/applicant/constants';
+import { ROUTES } from 'benefit/applicant/constants';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
-import {
-  Application,
-  ApplicationData,
-} from 'benefit/applicant/types/application';
 import { getApplicationStepString } from 'benefit/applicant/utils/common';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import { Application, ApplicationData } from 'benefit-shared/types/application';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import { useEffect } from 'react';
 import hdsToast from 'shared/components/toast/Toast';
+import { stringToFloatValue } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
 
 type ExtendedComponentProps = {
@@ -53,13 +52,26 @@ const useApplicationFormStep5 = (
   const { onBack, onSave, onDelete } = useFormActions(application);
 
   const handleStepChange = (nextStep: number): void => {
-    const currentApplicationData: ApplicationData = snakecaseKeys(
+    const currentApplicationData = snakecaseKeys(
       {
         ...application,
         applicationStep: getApplicationStepString(nextStep),
+        calculation: application.calculation ? {
+          ...application.calculation,
+          monthlyPay: stringToFloatValue(application.calculation.monthlyPay),
+          otherExpenses: stringToFloatValue(
+            application.calculation.otherExpenses
+          ),
+          vacationMoney: stringToFloatValue(
+            application.calculation.vacationMoney
+          ),
+          overrideMonthlyBenefitAmount: stringToFloatValue(
+            application.calculation.overrideMonthlyBenefitAmount
+          ),
+        } : undefined,
       },
       { deep: true }
-    );
+    ) as ApplicationData;
     updateApplicationStep5(currentApplicationData);
   };
 
@@ -79,13 +91,26 @@ const useApplicationFormStep5 = (
               : APPLICATION_STATUSES.HANDLING,
         }
       : { applicationStep: getApplicationStepString(6) };
-    const currentApplicationData: ApplicationData = snakecaseKeys(
+    const currentApplicationData = snakecaseKeys(
       {
         ...application,
         ...submitFields,
+        calculation: application.calculation ? {
+          ...application.calculation,
+          monthlyPay: stringToFloatValue(application.calculation.monthlyPay),
+          otherExpenses: stringToFloatValue(
+            application.calculation.otherExpenses
+          ),
+          vacationMoney: stringToFloatValue(
+            application.calculation.vacationMoney
+          ),
+          overrideMonthlyBenefitAmount: stringToFloatValue(
+            application.calculation.overrideMonthlyBenefitAmount
+          ),
+        } : undefined,
       },
       { deep: true }
-    );
+    ) as ApplicationData;
     if (isSubmit && onSubmit) {
       onSubmit();
     }

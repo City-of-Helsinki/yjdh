@@ -1,5 +1,5 @@
 import SummarySection from 'benefit/applicant/components/summarySection/SummarySection';
-import { Application, DeMinimisAid } from 'benefit/applicant/types/application';
+import { Application, DeMinimisAid } from 'benefit-shared/types/application';
 import { Button, IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';

@@ -1,5 +1,5 @@
-import { APPLICATION_STATUSES } from 'benefit/handler/constants';
-import { Application } from 'benefit/handler/types/application';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import { Application } from 'benefit-shared/types/application';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';

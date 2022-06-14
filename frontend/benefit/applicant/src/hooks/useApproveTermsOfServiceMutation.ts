@@ -1,12 +1,11 @@
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
-import { useMutation, UseMutationResult } from 'react-query';
-import useBackendAPI from 'shared/hooks/useBackendAPI';
-
 import {
   ApplicantConsents,
   ApproveTermsOfServiceResponseData,
   User,
-} from '../types/application';
+} from 'benefit-shared/types/application';
+import { useMutation, UseMutationResult } from 'react-query';
+import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 const useApproveTermsOfServiceMutation = (): UseMutationResult<
   ApproveTermsOfServiceResponseData,

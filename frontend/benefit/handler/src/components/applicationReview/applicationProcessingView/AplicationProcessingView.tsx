@@ -1,6 +1,6 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
-import { APPLICATION_STATUSES } from 'benefit/handler/constants';
 import AppContext from 'benefit/handler/context/AppContext';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { TextArea } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';

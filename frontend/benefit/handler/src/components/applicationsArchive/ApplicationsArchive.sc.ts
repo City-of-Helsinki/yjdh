@@ -1,4 +1,4 @@
-import { APPLICATION_STATUSES } from 'benefit/handler/constants';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import styled from 'styled-components';
 
 type StatusProps = {

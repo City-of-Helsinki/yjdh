@@ -1,5 +1,5 @@
-import { APPLICATION_STATUSES } from 'benefit/handler/constants';
 import { HandledAplication } from 'benefit/handler/types/application';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Button, Dialog, IconTrash, TextArea } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';

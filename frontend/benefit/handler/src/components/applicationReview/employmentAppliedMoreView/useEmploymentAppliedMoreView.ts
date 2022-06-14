@@ -1,10 +1,8 @@
-import { CALCULATION_EMPLOYMENT_KEYS } from 'benefit/handler/constants';
 import useHandlerReviewActions from 'benefit/handler/hooks/useHandlerReviewActions';
-import {
-  Application,
-  CalculationFormProps,
-} from 'benefit/handler/types/application';
+import { CalculationFormProps } from 'benefit/handler/types/application';
 import { ErrorData } from 'benefit/handler/types/common';
+import { CALCULATION_EMPLOYMENT_KEYS } from 'benefit-shared/constants';
+import { Application } from 'benefit-shared/types/application';
 import { FormikProps, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
 import { useTranslation } from 'next-i18next';

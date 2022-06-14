@@ -1,6 +1,6 @@
 import AttachmentsIngress from 'benefit/applicant/components/attachmentsIngress/AttachmentsIngress';
-import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
+import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit-shared/constants';
 import React from 'react';
 import { $Hr } from 'shared/components/forms/section/FormSection.sc';
 import { useTheme } from 'styled-components';
