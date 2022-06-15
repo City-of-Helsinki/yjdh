@@ -4,12 +4,12 @@ from django.conf import settings
 from django.http import HttpRequest
 from requests.exceptions import RequestException
 from rest_framework.exceptions import NotFound
-from shared.oidc.utils import get_organization_roles
-from shared.ytj.ytj_client import YTJClient
 
 from common.tests.factories import CompanyFactory
 from companies.models import Company
 from companies.tests.data.company_data import DUMMY_ORG_ROLES
+from shared.oidc.utils import get_organization_roles
+from shared.ytj.ytj_client import YTJClient
 
 LOGGER = logging.getLogger(__name__)
 

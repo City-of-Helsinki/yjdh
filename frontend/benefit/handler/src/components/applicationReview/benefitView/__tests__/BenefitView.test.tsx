@@ -1,7 +1,7 @@
 import { RenderResult } from '@testing-library/react';
 import renderComponent from 'benefit/handler/__tests__/utils/render-component';
-import { BENEFIT_TYPES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
+import { BENEFIT_TYPES } from 'benefit-shared/constants';
 import { axe } from 'jest-axe';
 import React from 'react';
 

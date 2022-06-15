@@ -1,7 +1,7 @@
 import NotificationView from 'benefit/applicant/components/notificationView/NotificationView';
 import SummarySection from 'benefit/applicant/components/summarySection/SummarySection';
-import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
+import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit-shared/constants';
 import { Button, IconPen } from 'hds-react';
 import isEmpty from 'lodash/isEmpty';
 import noop from 'lodash/noop';

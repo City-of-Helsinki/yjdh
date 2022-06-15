@@ -49,7 +49,9 @@
 		"searchResults_other": "{{count}} sökresultat",
 		"readMore": "Läs mer",
 		"showMore": "Visa fler resultat",
-		"languages": "Språk"
+		"languages": "Språk",
+		"noResultsLinks": "Inga händelser hittades som matchade dina sökkriterier. Testa att klicka på någon av dessa:",
+		"fewResultsLinks": "Också prova följande sökord:"
 	},
   "footer": {
     "copyrightText": "Helsingfors stad",

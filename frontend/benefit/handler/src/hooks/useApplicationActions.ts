@@ -1,11 +1,9 @@
-import {
-  Application,
-  ApplicationData,
-} from 'benefit/handler/types/application';
 import { getApplicationStepString } from 'benefit/handler/utils/common';
+import { APPLICATION_STATUSES } from 'benefit-shared//constants';
+import { Application, ApplicationData } from 'benefit-shared/types/application';
+import { stringToFloatValue } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
 
-import { APPLICATION_STATUSES } from '../constants';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 
 type ExtendedComponentProps = {
@@ -27,16 +25,33 @@ const useApplicationActions = (
     logEntryComment?: string,
     grantedAsDeMinimisAid?: boolean
   ): void => {
-    const currentApplicationData: ApplicationData = snakecaseKeys(
+    const currentApplicationData = snakecaseKeys(
       {
         ...application,
         status,
         logEntryComment,
-        calculation: { ...application.calculation, grantedAsDeMinimisAid },
+        calculation: application.calculation
+          ? {
+              ...application.calculation,
+              monthlyPay: stringToFloatValue(
+                application.calculation.monthlyPay
+              ),
+              otherExpenses: stringToFloatValue(
+                application.calculation.otherExpenses
+              ),
+              vacationMoney: stringToFloatValue(
+                application.calculation.vacationMoney
+              ),
+              overrideMonthlyBenefitAmount: stringToFloatValue(
+                application.calculation.overrideMonthlyBenefitAmount
+              ),
+              grantedAsDeMinimisAid,
+            }
+          : undefined,
         applicationStep: getApplicationStepString(1),
       },
       { deep: true }
-    );
+    ) as ApplicationData;
     updateApplicationQuery.mutate(currentApplicationData);
     window.scrollTo(0, 0);
   };

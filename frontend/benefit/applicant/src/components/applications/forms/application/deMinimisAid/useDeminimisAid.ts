@@ -1,11 +1,9 @@
-import {
-  DE_MINIMIS_AID_KEYS,
-  SUPPORTED_LANGUAGES,
-} from 'benefit/applicant/constants';
+import { SUPPORTED_LANGUAGES } from 'benefit/applicant/constants';
 import DeMinimisContext from 'benefit/applicant/context/DeMinimisContext';
 import { useTranslation } from 'benefit/applicant/i18n';
-import { DeMinimisAid } from 'benefit/applicant/types/application';
 import { getErrorText } from 'benefit/applicant/utils/forms';
+import { DE_MINIMIS_AID_KEYS } from 'benefit-shared/constants';
+import { DeMinimisAid } from 'benefit-shared/types/application';
 import { FormikProps, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';

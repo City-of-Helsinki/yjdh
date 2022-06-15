@@ -1,14 +1,14 @@
-import {
-  APPLICATION_FIELDS_STEP1_KEYS,
-  ORGANIZATION_TYPES,
-} from 'benefit/applicant/constants';
 import DeMinimisContext from 'benefit/applicant/context/DeMinimisContext';
 import useCompanyQuery from 'benefit/applicant/hooks/useCompanyQuery';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import { useTranslation } from 'benefit/applicant/i18n';
-import { Application, DeMinimisAid } from 'benefit/applicant/types/application';
 import { getLanguageOptions } from 'benefit/applicant/utils/common';
 import { getErrorText } from 'benefit/applicant/utils/forms';
+import {
+  APPLICATION_FIELDS_STEP1_KEYS,
+  ORGANIZATION_TYPES,
+} from 'benefit-shared/constants';
+import { Application, DeMinimisAid } from 'benefit-shared/types/application';
 import { FormikProps, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
@@ -32,14 +32,14 @@ type ExtendedComponentProps = {
   handleSave: () => void;
   handleDelete?: () => void;
   clearDeminimisAids: () => void;
-  formik: FormikProps<Application>;
+  formik: FormikProps<Partial<Application>>;
   deMinimisAidSet: DeMinimisAid[];
   languageOptions: OptionType[];
   getDefaultSelectValue: (fieldName: keyof Application) => OptionType;
 };
 
 const useApplicationFormStep1 = (
-  application: Application
+  application: Partial<Application>
 ): ExtendedComponentProps => {
   const { t } = useTranslation();
   const { setDeMinimisAids } = React.useContext(DeMinimisContext);
@@ -53,7 +53,7 @@ const useApplicationFormStep1 = (
   const organizationType = data?.organization_type;
 
   const formik = useFormik({
-    initialValues: application || {},
+    initialValues: application,
     validationSchema: getValidationSchema(organizationType, t),
     validateOnChange: true,
     validateOnBlur: true,
@@ -134,7 +134,7 @@ const useApplicationFormStep1 = (
 
   const getDefaultSelectValue = (fieldName: keyof Application): OptionType =>
     languageOptions.find(
-      (o) => o.value === application?.[fieldName]?.toString()
+      (o) => o.value === String(application?.[fieldName])
     ) || {
       label: '',
       value: '',

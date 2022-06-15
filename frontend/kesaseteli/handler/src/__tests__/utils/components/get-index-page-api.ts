@@ -89,6 +89,13 @@ const getIndexPageApi = async (
         name: translations.handlerApplication.vtjInfo.title,
       });
     },
+    vtjInfoIsNotPresent: (): void => {
+      expect(
+        screen.queryByRole('heading', {
+          name: translations.handlerApplication.vtjInfo.title,
+        })
+      ).not.toBeInTheDocument();
+    },
     vtjFieldValueIsPresent: async (
       key: keyof typeof translations.handlerApplication.vtjInfo,
       value: string
@@ -110,10 +117,10 @@ const getIndexPageApi = async (
         )
       );
     },
-    vtjErrorMessageIsNotPresent: async (
+    vtjErrorMessageIsNotPresent: (
       key: VtjExceptionType,
       params?: Record<string, string | number>
-    ): Promise<void> => {
+    ): void => {
       expect(
         screen.queryByText(
           replaced(
@@ -144,7 +151,30 @@ const getIndexPageApi = async (
         })
       ).not.toBeInTheDocument();
     },
-
+    actionButtonsAreEnabled: (): void => {
+      expect(
+        screen.getByRole('button', {
+          name: translations.handlerApplication.accept,
+        })
+      ).toBeEnabled();
+      expect(
+        screen.getByRole('button', {
+          name: translations.handlerApplication.reject,
+        })
+      ).toBeEnabled();
+    },
+    actionButtonsAreDisabled: (): void => {
+      expect(
+        screen.getByRole('button', {
+          name: translations.handlerApplication.accept,
+        })
+      ).toBeDisabled();
+      expect(
+        screen.getByRole('button', {
+          name: translations.handlerApplication.reject,
+        })
+      ).toBeDisabled();
+    },
     statusNotificationIsPresent: async (
       status: keyof typeof translations.handlerApplication.notification
     ): Promise<HTMLElement> =>

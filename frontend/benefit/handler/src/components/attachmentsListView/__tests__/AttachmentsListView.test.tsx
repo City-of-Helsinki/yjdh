@@ -1,6 +1,6 @@
 import { RenderResult } from '@testing-library/react';
 import renderComponent from 'benefit/handler/__tests__/utils/render-component';
-import { ATTACHMENT_TYPES } from 'benefit/handler/constants';
+import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import { axe } from 'jest-axe';
 import React from 'react';
 

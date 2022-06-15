@@ -6,7 +6,6 @@ import factory
 import factory.fuzzy
 from django.db.models.signals import post_save
 from faker import Faker
-from shared.common.tests.factories import HandlerUserFactory, UserFactory
 
 from applications.enums import (
     AdditionalInfoUserReason,
@@ -31,6 +30,7 @@ from applications.tests.data.mock_vtj import (
     mock_vtj_person_id_query_not_found_content,
 )
 from companies.models import Company
+from shared.common.tests.factories import HandlerUserFactory, UserFactory
 
 
 class CompanyFactory(factory.django.DjangoModelFactory):
@@ -493,7 +493,7 @@ class YouthSummerVoucherFactory(factory.django.DjangoModelFactory):
     # NOTE: Difference from production use:
     # - This does not generate a gapless sequence
     summer_voucher_serial_number = factory.Faker(
-        "pyint", min_value=1, max_value=(2 ** 63) - 1
+        "pyint", min_value=1, max_value=(2**63) - 1
     )
     summer_voucher_exception_reason = ""
 

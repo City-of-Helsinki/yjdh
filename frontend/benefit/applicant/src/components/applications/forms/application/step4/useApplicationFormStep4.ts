@@ -1,9 +1,9 @@
-import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import useRemoveAttachmentQuery from 'benefit/applicant/hooks/useRemoveAttachmentQuery';
 import useUploadAttachmentQuery from 'benefit/applicant/hooks/useUploadAttachmentQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
-import { Application } from 'benefit/applicant/types/application';
+import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
+import { Application } from 'benefit-shared/types/application';
 import { TFunction } from 'next-i18next';
 import { useEffect } from 'react';
 import showErrorToast from 'shared/components/toast/show-error-toast';
