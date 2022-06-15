@@ -472,7 +472,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       });
     });
     describe(`when clicking confirm button on ${operationType}-confirmation dialog`, () => {
-      it.skip(`shows a message that application is ${status}`, async () => {
+      it(`shows a message that application is ${status}`, async () => {
         const application = fakeActivatedYouthApplication({
           status: 'awaiting_manual_processing',
         });
