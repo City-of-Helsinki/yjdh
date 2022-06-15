@@ -13,6 +13,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import HTTPError
 
+from shared.helsinki_profile.hp_client import HelsinkiProfileClient
 from shared.oidc.utils import (
     get_checksum_header,
     get_userinfo,
@@ -63,6 +64,10 @@ class EauthAuthenticationRequestView(View):
         user_info = get_userinfo(request)
 
         user_ssn = user_info.get("national_id_num")
+        if user_ssn is None:
+            profile = HelsinkiProfileClient().get_profile(request)
+            user_ssn = profile["user_ssn"]
+
         register_info = self.register_user(user_ssn)
 
         session_id = register_info.get("sessionId")
