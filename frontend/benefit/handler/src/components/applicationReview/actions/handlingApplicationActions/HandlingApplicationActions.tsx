@@ -1,9 +1,7 @@
 import Messenger from 'benefit/handler/components/messenger/Messenger';
-import {
-  APPLICATION_STATUSES,
-  HANDLED_STATUSES,
-} from 'benefit/handler/constants';
-import { Application } from 'benefit/handler/types/application';
+import { HANDLED_STATUSES } from 'benefit/handler/constants';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import { Application } from 'benefit-shared/types/application';
 import {
   Button,
   IconArrowUndo,

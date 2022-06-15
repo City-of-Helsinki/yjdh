@@ -95,7 +95,7 @@
         "contact_person_name": "Name of the contact person",
         "contact_person_email": "Email of the contact person",
         "street_address": "Company street address",
-        "bank_account_number": "ENG Tilinumero",
+        "bank_account_number": "Account number",
         "contact_person_phone_number": "Telephone number",
         "employee_name": "Name of the employee",
         "employee_ssn": "Social security number",
@@ -122,7 +122,7 @@
         "attachments": "You may add a maximum of 5 attachments. The approved file forms are: pdf, jpg, png. The maximum size 10MB.",
         "employment_contract": "Attach here the employment contract of the youth employed with the Summer Job Voucher.",
         "payslip": "Attach here the pay statement of the youth employed with the Summer Job Voucher.",
-        "bank_account": "ENG Syötä IBAN-muodossa"
+        "bank_account": "Fill in the account number in IBAN- format"
       },
       "errors": {
         "required": "Information is missing or is incorrect",
@@ -132,14 +132,14 @@
         "selectionGroups": "Select an option",
         "checkboxRequired": "Selection is mandatory",
         "attachments": "Add at least one file",
-        "employmentsRequired": "ENG Lisää ainakin yksi työsuhde",
-        "NoIBANProvided": "ENG Tilinumero puuttuu",
-        "NoIBANCountry": "ENG Maakoodi puuttuu",
-        "WrongBBANLength": "ENG Tarkista tilinumeron pituus",
-        "WrongBBANFormat": "ENG Tarkista tilinumero",
-        "ChecksumNotNumber": "ENG Tarkista tilinumero",
-        "WrongIBANChecksum":"ENG Tarkista tilinumero",
-        "WrongAccountBankBranchChecksum": "ENG Tarkista tilinumero"
+        "employmentsRequired": "Add at least one employment",
+        "NoIBANProvided": "Account number missing",
+        "NoIBANCountry": "Country code missing",
+        "WrongBBANLength": "Check the length of account number",
+        "WrongBBANFormat": "Check the account number",
+        "ChecksumNotNumber": "Check the account number",
+        "WrongIBANChecksum":"Check the account number",
+        "WrongAccountBankBranchChecksum": "Check the account number"
       },
       "notification": {
         "title": "Fill in the missing or incorrect information"

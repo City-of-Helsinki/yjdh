@@ -5,10 +5,6 @@ import pytest
 from django.conf import settings
 from django.test import override_settings
 from rest_framework.reverse import reverse
-from shared.common.lang_test_utils import (
-    assert_email_body_language,
-    assert_email_subject_language,
-)
 
 from applications.enums import ApplicationStatus
 from applications.tests.factories import HandlingApplicationFactory
@@ -20,6 +16,10 @@ from common.tests.conftest import get_client_user
 from companies.tests.factories import CompanyFactory
 from messages.models import Message, MessageType
 from messages.tests.factories import MessageFactory
+from shared.common.lang_test_utils import (
+    assert_email_body_language,
+    assert_email_subject_language,
+)
 
 SAMPLE_MESSAGE_PAYLOAD = {
     "content": "Sample message",

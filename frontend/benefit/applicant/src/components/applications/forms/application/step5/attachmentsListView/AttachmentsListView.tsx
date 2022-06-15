@@ -1,4 +1,4 @@
-import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
+import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import { IconPaperclip } from 'hds-react';
 import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';

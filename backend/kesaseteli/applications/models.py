@@ -19,17 +19,6 @@ from django.utils.translation import gettext, gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
 from localflavor.generic.models import IBANField
 from requests.exceptions import ReadTimeout
-from shared.common.utils import MatchesAnyOfQuerySet, social_security_number_birthdate
-from shared.common.validators import (
-    validate_json,
-    validate_name,
-    validate_optional_json,
-    validate_phone_number,
-    validate_postcode,
-)
-from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
-from shared.models.mixins import LockForUpdateMixin
-from shared.vtj.vtj_client import VTJClient
 
 from applications.api.v1.validators import validate_additional_info_user_reasons
 from applications.enums import (
@@ -55,6 +44,17 @@ from common.utils import (
     validate_finnish_social_security_number,
 )
 from companies.models import Company
+from shared.common.utils import MatchesAnyOfQuerySet, social_security_number_birthdate
+from shared.common.validators import (
+    validate_json,
+    validate_name,
+    validate_optional_json,
+    validate_phone_number,
+    validate_postcode,
+)
+from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
+from shared.models.mixins import LockForUpdateMixin
+from shared.vtj.vtj_client import VTJClient
 
 
 class School(TimeStampedModel, UUIDModel):

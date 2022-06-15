@@ -1,7 +1,7 @@
-import { APPLICATION_STATUSES } from 'benefit/applicant/constants';
 import { useTranslation } from 'benefit/applicant/i18n';
-import { ApplicationListItemData } from 'benefit/applicant/types/application';
 import { Loading } from 'benefit/applicant/types/common';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import { ApplicationListItemData } from 'benefit-shared/types/application';
 import { Button, IconSpeechbubbleText, StatusLabel } from 'hds-react';
 import React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';

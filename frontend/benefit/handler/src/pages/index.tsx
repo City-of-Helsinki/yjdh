@@ -1,8 +1,8 @@
 import ApplicationList from 'benefit/handler/components/applicationList/ApplicationList';
 import MainIngress from 'benefit/handler/components/mainIngress/MainIngress';
-import { APPLICATION_STATUSES } from 'benefit/handler/constants';
 import AppContext from 'benefit/handler/context/AppContext';
 import FrontPageProvider from 'benefit/handler/context/FrontPageProvider';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { GetStaticProps, NextPage } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';

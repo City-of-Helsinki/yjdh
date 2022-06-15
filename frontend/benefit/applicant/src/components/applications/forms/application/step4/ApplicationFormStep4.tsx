@@ -1,9 +1,7 @@
 import CredentialsIngress from 'benefit/applicant/components/credentialsIngress/CredentialsIngress';
-import {
-  ATTACHMENT_TYPES,
-  EMPLOYEE_CONSENT_FILE_PREFIX,
-} from 'benefit/applicant/constants';
+import { EMPLOYEE_CONSENT_FILE_PREFIX } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
+import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import {
   Button,
   IconArrowRight,

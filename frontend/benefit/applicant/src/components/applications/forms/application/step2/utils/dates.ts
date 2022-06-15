@@ -1,7 +1,5 @@
-import {
-  APPLICATION_START_DATE,
-  BENEFIT_TYPES,
-} from 'benefit/applicant/constants';
+import { APPLICATION_START_DATE } from 'benefit/applicant/constants';
+import { BENEFIT_TYPES } from 'benefit-shared/constants';
 import addMonths from 'date-fns/addMonths';
 import subDays from 'date-fns/subDays';
 import { parseDate } from 'shared/utils/date.utils';

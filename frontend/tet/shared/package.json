@@ -16,7 +16,7 @@
   "dependencies": {
     "@frontend/shared": "*",
     "axios": "^0.27.2",
-    "hds-react": "^1.10.0",
+    "hds-react": "^1.15.0",
     "next": "^11.1.4",
     "next-i18next": "^10.5.0",
     "react-query": "^3.34.0",
