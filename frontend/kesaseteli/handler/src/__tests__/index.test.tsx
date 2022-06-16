@@ -140,7 +140,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
           status: 'awaiting_manual_processing',
         });
         expectToGetYouthApplication(application);
-        await renderPage(HandlerIndex, {
+        renderPage(HandlerIndex, {
           query: { id: application.id },
         });
         const indexPageApi = await getIndexPageApi(application);
