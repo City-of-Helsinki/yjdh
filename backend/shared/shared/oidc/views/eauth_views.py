@@ -11,8 +11,9 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import ensure_csrf_cookie
 from requests.auth import HTTPBasicAuth
-from requests.exceptions import HTTPError
+from requests.exceptions import HTTPError, RequestException
 
+from shared.helsinki_profile.exceptions import HelsinkiProfileException
 from shared.helsinki_profile.hp_client import HelsinkiProfileClient
 from shared.oidc.utils import (
     get_checksum_header,
@@ -57,16 +58,30 @@ class EauthAuthenticationRequestView(View):
         return response.json()
 
     def get(self, request):
-        """Eauth client authentication initialization HTTP endpoint"""
-        if not (request.session.get("oidc_access_token")):
+        """Eauth client authentication initialization HTTP endpoint
+
+        NOTE: We should avoid raising exceptions from the method, because it results in user's auth flow
+        ending on Django's 500 error page. We should instead call `self.login_failure()` to redirect the
+        user to the login error page in the UI.
+        """
+        oidc_access_token = request.session.get('oidc_access_token')
+        if not oidc_access_token:
             return self.login_failure()
 
         user_info = get_userinfo(request)
 
         user_ssn = user_info.get("national_id_num")
         if user_ssn is None:
-            profile = HelsinkiProfileClient().get_profile(request)
+            try:
+                profile = HelsinkiProfileClient().get_profile(oidc_access_token)
+            except HelsinkiProfileException as e:
+                logger.warning(f"Reading nationalIdentificationNumber from Helsinki Profile API failed: {str(e)}")
+                return self.login_failure()
             user_ssn = profile["user_ssn"]
+
+        if user_ssn is None:
+            logger.warning("Cannot use eauthorizations API due to missing nationalIdentificationNumber")
+            return self.login_failure()
 
         register_info = self.register_user(user_ssn)
 
