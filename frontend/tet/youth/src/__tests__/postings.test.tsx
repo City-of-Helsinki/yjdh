@@ -1,8 +1,16 @@
 import Postings from 'tet/youth/pages';
 import { axe } from 'jest-axe';
 import React from 'react';
-
+import renderPage from 'tet/youth/__tests__/utils/components/render-page';
+import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
+import { fakeEventListYouth } from 'tet-shared/__tests__/utils/fake-objects';
 import renderComponent from 'tet/youth/__tests__/utils/components/render-component';
+import {
+  expectToGetEventsPageFromBackend,
+  expectToGetAllEventsFromBackend,
+  expectAttributesFromLinkedEvents,
+  expectWorkingMethodsFromLinkedEvents,
+} from 'tet/youth/__tests__/utils/backend/backend-nocks';
 
 jest.mock('next/router');
 

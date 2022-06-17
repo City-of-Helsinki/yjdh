@@ -9,6 +9,7 @@ import {
   Place,
   TetEvent,
   TetEvents,
+  LinkedEventsPagedResponse,
 } from 'tet-shared/types/linkedevents';
 import TetPosting from 'tet-shared/types/tetposting';
 
@@ -137,5 +138,21 @@ export const fakeEventListAdmin = (
   return {
     draft,
     published,
+  };
+};
+
+export const fakeEventListYouth = (
+  titles: string[]
+): LinkedEventsPagedResponse<TetEvent> => {
+  const events = titles.map((title) =>
+    fakeTetEvent({ name: fakeLocalizedObject(title) })
+  );
+  return {
+    data: events,
+    meta: {
+      count: events.length,
+      next: null,
+      previous: null,
+    },
   };
 };
