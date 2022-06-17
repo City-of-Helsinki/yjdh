@@ -11,7 +11,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import ensure_csrf_cookie
 from requests.auth import HTTPBasicAuth
-from requests.exceptions import HTTPError, RequestException
+from requests.exceptions import HTTPError
 
 from shared.helsinki_profile.exceptions import HelsinkiProfileException
 from shared.helsinki_profile.hp_client import HelsinkiProfileClient
@@ -27,6 +27,9 @@ logger = logging.getLogger(__name__)
 class EauthAuthenticationRequestView(View):
     """
     Eauth client authentication HTTP endpoint
+
+    See [AUTHENTICATION](https://github.com/City-of-Helsinki/yjdh/blob/develop/AUTHENTICATION.md) for details
+    about the auth flow.
 
     Docs that describe the flow (only in Finnish):
     https://palveluhallinta.suomi.fi/fi/tuki/artikkelit/592d774503f6d100018db5dd
@@ -64,23 +67,29 @@ class EauthAuthenticationRequestView(View):
         ending on Django's 500 error page. We should instead call `self.login_failure()` to redirect the
         user to the login error page in the UI.
         """
-        oidc_access_token = request.session.get('oidc_access_token')
+        oidc_access_token = request.session.get("oidc_access_token")
         if not oidc_access_token:
             return self.login_failure()
 
         user_info = get_userinfo(request)
 
+        # When authenticating via Tunnistus service, we can read `user_ssn` from `user_info`,
+        # but for authentication via Tunnistamo, we need to call Helsinki Profile GraphQL API.
         user_ssn = user_info.get("national_id_num")
         if user_ssn is None:
             try:
                 profile = HelsinkiProfileClient().get_profile(oidc_access_token)
             except HelsinkiProfileException as e:
-                logger.warning(f"Reading nationalIdentificationNumber from Helsinki Profile API failed: {str(e)}")
+                logger.warning(
+                    f"Reading nationalIdentificationNumber from Helsinki Profile API failed: {str(e)}"
+                )
                 return self.login_failure()
             user_ssn = profile["user_ssn"]
 
         if user_ssn is None:
-            logger.warning("Cannot use eauthorizations API due to missing nationalIdentificationNumber")
+            logger.warning(
+                "Cannot use eauthorizations API due to missing nationalIdentificationNumber"
+            )
             return self.login_failure()
 
         register_info = self.register_user(user_ssn)
