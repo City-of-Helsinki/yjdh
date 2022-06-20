@@ -18,11 +18,12 @@ import { Field } from 'shared/components/forms/fields/types';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useLocale from 'shared/hooks/useLocale';
 import { Language } from 'shared/i18n/i18n';
+import ExportFileType from 'shared/types/export-file-type';
 import {
   convertToBackendDateFormat,
   convertToUIDateFormat,
 } from 'shared/utils/date.utils';
-import { downloadCSVFile } from 'shared/utils/file.utils';
+import { downloadFile } from 'shared/utils/file.utils';
 import { DefaultTheme, useTheme } from 'styled-components';
 
 type ExtendedComponentProps = {
@@ -31,7 +32,7 @@ type ExtendedComponentProps = {
   theme: DefaultTheme;
   language: Language;
   exportApplications: (
-    exportApplicationsRoute: EXPORT_APPLICATIONS_ROUTES,
+    exportApplicationsRoute: string,
     proposalForDecision: PROPOSALS_FOR_DESISION
   ) => void;
   formik: FormikProps<ExportApplicationInTimeRangeFormProps>;
@@ -43,7 +44,9 @@ type ExtendedComponentProps = {
   lastRejectedApplicationsExportDate: string;
 };
 
-const useApplicationReports = (): ExtendedComponentProps => {
+const useApplicationReports = (
+  type: ExportFileType
+): ExtendedComponentProps => {
   const language = useLocale();
   const theme = useTheme();
   const { t } = useTranslation();
@@ -82,15 +85,16 @@ const useApplicationReports = (): ExtendedComponentProps => {
     ) => {
       const data = await handleResponse<string>(
         axios.get(
-          `${BackendEndpoint.HANDLER_APPLICATIONS}${exportApplicationsRoute}/`
+          `${BackendEndpoint.HANDLER_APPLICATIONS}${exportApplicationsRoute}_${type}/`
+          // {responseType: 'arraybuffer'}
         )
       );
-      downloadCSVFile(data);
+      downloadFile(data, type);
       void queryClient.invalidateQueries(
         getReportsApplicationBatchesQueryKey(proposalForDecision)
       );
     },
-    [axios, handleResponse, queryClient]
+    [axios, handleResponse, queryClient, type]
   );
 
   const formik = useFormik<ExportApplicationInTimeRangeFormProps>({
@@ -132,7 +136,7 @@ const useApplicationReports = (): ExtendedComponentProps => {
   const exportApplicationsInTimeRange = useCallback(async () => {
     const data = await handleResponse<string>(
       axios.get(
-        `${BackendEndpoint.HANDLER_APPLICATIONS}${EXPORT_APPLICATIONS_ROUTES.IN_TIME_RANGE}/`,
+        `${BackendEndpoint.HANDLER_APPLICATIONS}${EXPORT_APPLICATIONS_ROUTES.IN_TIME_RANGE}_${type}/`,
         {
           params: {
             handled_at_after: convertToBackendDateFormat(startDate),
@@ -141,8 +145,8 @@ const useApplicationReports = (): ExtendedComponentProps => {
         }
       )
     );
-    downloadCSVFile(data);
-  }, [axios, handleResponse, startDate, endDate]);
+    downloadFile(data, type);
+  }, [handleResponse, axios, type, startDate, endDate]);
 
   return {
     t,

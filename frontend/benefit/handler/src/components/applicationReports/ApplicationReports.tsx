@@ -7,6 +7,7 @@ import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import DateInputWithSeparator from 'shared/components/forms/fields/dateInputWithSeparator/DateInputWithSeparator';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import ExportFileType from 'shared/types/export-file-type';
 import {
   convertToUIDateFormat,
   getCorrectEndDate,
@@ -16,7 +17,7 @@ import { $Heading } from '../applicationsArchive/ApplicationsArchive.sc';
 import ReportsSection from './ReportsSection';
 import { useApplicationReports } from './useApplicationReports';
 
-const ApplicationReports: React.FC = () => {
+const ApplicationReports: React.FC = (fileType: ExportFileType) => {
   const {
     t,
     translationsBase,
@@ -26,16 +27,16 @@ const ApplicationReports: React.FC = () => {
     exportApplicationsInTimeRange,
     lastAcceptedApplicationsExportDate,
     lastRejectedApplicationsExportDate,
-  } = useApplicationReports();
+  } = useApplicationReports(fileType);
 
   return (
     <Container>
       <$Heading>{`${t(`${translationsBase}.headings.main`)}`}</$Heading>
 
       <ReportsSection
-        onDownloadButtonClick={() =>
+        onDownloadButtonClick={(type: ExportFileType) =>
           exportApplications(
-            EXPORT_APPLICATIONS_ROUTES.ACCEPTED,
+            EXPORT_APPLICATIONS_ROUTES.ACCEPTED + type,
             PROPOSALS_FOR_DESISION.ACCEPTED
           )
         }
@@ -56,11 +57,10 @@ const ApplicationReports: React.FC = () => {
           )}`}</p>
         </$GridCell>
       </ReportsSection>
-
       <ReportsSection
-        onDownloadButtonClick={() =>
+        onDownloadButtonClick={(type: ExportFileType) =>
           exportApplications(
-            EXPORT_APPLICATIONS_ROUTES.REJECTED,
+            EXPORT_APPLICATIONS_ROUTES.REJECTED + type,
             PROPOSALS_FOR_DESISION.REJECTED
           )
         }

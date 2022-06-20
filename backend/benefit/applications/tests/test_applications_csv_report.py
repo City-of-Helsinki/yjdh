@@ -72,7 +72,8 @@ def test_applications_csv_export_new_applications(handler_api_client):
 
     _get_csv(
         handler_api_client,
-        reverse("v1:handler-application-list") + "export_new_rejected_applications/",
+        reverse("v1:handler-application-list")
+        + "export_new_rejected_applications_csv/",
         [application3.application_number],
     )
     assert ApplicationBatch.objects.all().count() == 1
@@ -88,7 +89,8 @@ def test_applications_csv_export_new_applications(handler_api_client):
 
     _get_csv(
         handler_api_client,
-        reverse("v1:handler-application-list") + "export_new_accepted_applications/",
+        reverse("v1:handler-application-list")
+        + "export_new_accepted_applications_csv/",
         [application1.application_number, application2.application_number],
     )
     assert ApplicationBatch.objects.all().count() == 2
@@ -106,13 +108,15 @@ def test_applications_csv_export_new_applications(handler_api_client):
     # re-running the request results in an empty response and doesn't create new batches
     _get_csv(
         handler_api_client,
-        reverse("v1:handler-application-list") + "export_new_rejected_applications/",
+        reverse("v1:handler-application-list")
+        + "export_new_rejected_applications_csv/",
         [],
         expect_empty=True,
     )
     _get_csv(
         handler_api_client,
-        reverse("v1:handler-application-list") + "export_new_accepted_applications/",
+        reverse("v1:handler-application-list")
+        + "export_new_accepted_applications_csv/",
         [],
         expect_empty=True,
     )

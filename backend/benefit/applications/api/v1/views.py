@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core import exceptions
 from django.db import transaction
 from django.db.models import Q
-from django.http import FileResponse, StreamingHttpResponse
+from django.http import FileResponse, HttpResponse, StreamingHttpResponse
 from django.utils import timezone
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
@@ -27,6 +27,7 @@ from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepte
 from messages.models import MessageType
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
 from users.utils import get_company_from_request
+from applications.services.ahjo_integration import generate_zip, prepare_pdf_files
 
 
 class BaseApplicationFilter(filters.FilterSet):
@@ -340,19 +341,33 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         filtered_queryset = self.filter_queryset(queryset)
         return self._csv_response(filtered_queryset)
 
-    CSV_ORDERING = "application_number"
+    APPLICATION_ORDERING = "application_number"
 
     @action(methods=["GET"], detail=False)
     @transaction.atomic
-    def export_new_accepted_applications(self, request) -> StreamingHttpResponse:
+    def export_new_accepted_applications_csv(self, request) -> StreamingHttpResponse:
         return self._csv_response(
             self._create_application_batch(ApplicationStatus.ACCEPTED)
         )
 
     @action(methods=["GET"], detail=False)
     @transaction.atomic
-    def export_new_rejected_applications(self, request) -> StreamingHttpResponse:
+    def export_new_rejected_applications_csv(self, request) -> StreamingHttpResponse:
         return self._csv_response(
+            self._create_application_batch(ApplicationStatus.REJECTED)
+        )
+
+    @action(methods=["GET"], detail=False)
+    @transaction.atomic
+    def export_new_accepted_applications_pdf(self, request) -> HttpResponse:
+        return self._pdf_response(
+            self._create_application_batch(ApplicationStatus.ACCEPTED)
+        )
+
+    @action(methods=["GET"], detail=False)
+    @transaction.atomic
+    def export_new_rejected_applications_pdf(self, request) -> HttpResponse:
+        return self._pdf_response(
             self._create_application_batch(ApplicationStatus.REJECTED)
         )
 
@@ -377,7 +392,9 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         return self.get_queryset().filter(pk__in=application_ids)
 
     def _csv_response(self, queryset) -> StreamingHttpResponse:
-        csv_service = ApplicationsCsvService(queryset.order_by(self.CSV_ORDERING))
+        csv_service = ApplicationsCsvService(
+            queryset.order_by(self.APPLICATION_ORDERING)
+        )
         file_name = format_lazy(
             _("Helsinki-lisän hakemukset viety {date}"),
             date=timezone.now().strftime("%Y%m%d_%H%M%S"),
@@ -386,6 +403,19 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
             csv_service.get_csv_string_lines_generator(), content_type="text/csv"
         )
         response["Content-Disposition"] = "attachment; filename={file_name}.csv".format(
+            file_name=file_name
+        )
+        return response
+
+    def _pdf_response(self, queryset) -> HttpResponse:
+        pdf_files = prepare_pdf_files(queryset.order_by(self.APPLICATION_ORDERING))
+        zip_file = generate_zip(pdf_files)
+        file_name = format_lazy(
+            _("Helsinki-lisän hakemukset viety {date}"),
+            date=timezone.now().strftime("%Y%m%d_%H%M%S"),
+        )
+        response = HttpResponse(zip_file, content_type="application/x-zip-compressed")
+        response["Content-Disposition"] = "attachment; filename={file_name}.zip".format(
             file_name=file_name
         )
         return response
