@@ -48,7 +48,12 @@ const PostingHero: React.FC<Props> = ({
       <Container>
         <$HeroWrapper>
           {showBackButton && (
-            <$BackButton id="backButton" onClick={onReturnClick}>
+            <$BackButton
+              href="javascript:void(0)"
+              id="backButton"
+              onClick={onReturnClick}
+              aria-label={t('common:filters.searchJobs')}
+            >
               <IconArrowLeft size="m" />
             </$BackButton>
           )}

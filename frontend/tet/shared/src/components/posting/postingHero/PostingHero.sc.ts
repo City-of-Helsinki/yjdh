@@ -20,10 +20,11 @@ export const $HeroWrapper = styled.div`
   }
 `;
 
-export const $BackButton = styled.div`
+export const $BackButton = styled.a`
   position: absolute;
   top: 1rem;
   left: 1rem;
+  color: inherit;
   background-color: ${(props) => props.theme.colors.white};
   padding: ${(props) => props.theme.spacing.xs3};
   cursor: pointer;
