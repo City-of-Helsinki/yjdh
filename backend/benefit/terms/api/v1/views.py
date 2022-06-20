@@ -31,9 +31,6 @@ class ApproveTermsOfServiceView(APIView):
     )
     def post(self, request):
         approve_terms = ApproveTermsSerializer(data=request.data)
-        approve_terms.is_valid(
-            raise_exception=True
-        )  # validate the terms and applicant consents
         user = request.user
 
         company = get_company_from_request(request)
@@ -44,10 +41,6 @@ class ApproveTermsOfServiceView(APIView):
                 )
             )
         if TermsOfServiceApproval.terms_approval_needed(user, company):
-            if not approve_terms:
-                raise serializers.ValidationError(
-                    {"approve_terms": _("Terms must be approved")}
-                )
             approval = TermsOfServiceApproval.objects.create(
                 user=user,
                 terms=approve_terms.validated_data["terms"],
