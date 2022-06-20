@@ -1,5 +1,8 @@
 import PageComponent from '@frontend/shared/browser-tests/page-models/PageComponent';
-import { getErrorMessage } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import {
+  getErrorMessage,
+  setDataToPrintOnFailure,
+} from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import { t } from 'testcafe';
 
 import ActivatedYouthApplication from '../../src/types/activated-youth-application';
@@ -110,7 +113,7 @@ export default class HandlerForm<
       throw new Error('you need either expected application or value to test');
     }
     const value = expectedValue ?? this.expectedApplication?.[key as keyof A];
-
+    setDataToPrintOnFailure(t, String(key), value);
     return t
       .expect(this.applicationField(key).textContent)
       .contains(value as string, await getErrorMessage(t));
