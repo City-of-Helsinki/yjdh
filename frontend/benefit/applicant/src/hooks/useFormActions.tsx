@@ -3,17 +3,21 @@ import {
   getApplicationStepFromString,
   getApplicationStepString,
 } from 'benefit/applicant/utils/common';
+import {
+  Application,
+  ApplicationData,
+  Employee,
+} from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect } from 'react';
 import hdsToast from 'shared/components/toast/Toast';
 import { getFullName } from 'shared/utils/application.utils';
 import { convertToBackendDateFormat, parseDate } from 'shared/utils/date.utils';
-import { getNumberValue } from 'shared/utils/string.utils';
+import { getNumberValue, stringToFloatValue } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
 
 import DeMinimisContext from '../context/DeMinimisContext';
-import { Application, ApplicationData, Employee } from '../types/application';
 import useCreateApplicationQuery from './useCreateApplicationQuery';
 import useDeleteApplicationQuery from './useDeleteApplicationQuery';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
@@ -21,11 +25,11 @@ import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 interface FormActions {
   onNext: (values: Application) => Promise<ApplicationData | void>;
   onBack: () => Promise<ApplicationData | void>;
-  onSave: (values: Application) => Promise<ApplicationData | void>;
+  onSave: (values: Partial<Application>) => Promise<ApplicationData | void>;
   onDelete: (id: string) => void;
 }
 
-const useFormActions = (application: Application): FormActions => {
+const useFormActions = (application: Partial<Application>): FormActions => {
   const router = useRouter();
   const currentStep = getApplicationStepFromString(
     application.applicationStep ?? ''
@@ -89,19 +93,19 @@ const useFormActions = (application: Application): FormActions => {
     const employee: Employee | undefined = currentValues?.employee ?? undefined;
     if (employee) {
       employee.commissionAmount = employee.commissionAmount
-        ? getNumberValue(employee.commissionAmount.toString())
+        ? String(getNumberValue(employee.commissionAmount.toString()))
         : undefined;
       employee.workingHours = employee.workingHours
-        ? getNumberValue(employee.workingHours.toString())
+        ? String(getNumberValue(employee.workingHours.toString()))
         : undefined;
       employee.monthlyPay = employee.monthlyPay
-        ? getNumberValue(employee.monthlyPay.toString())
+        ? String(getNumberValue(employee.monthlyPay.toString()))
         : undefined;
       employee.otherExpenses = employee.otherExpenses
-        ? getNumberValue(employee.otherExpenses.toString())
+        ? String(getNumberValue(employee.otherExpenses.toString()))
         : undefined;
       employee.vacationMoney = employee.vacationMoney
-        ? getNumberValue(employee.vacationMoney.toString())
+        ? String(getNumberValue(employee.vacationMoney.toString()))
         : undefined;
     }
 
@@ -129,14 +133,26 @@ const useFormActions = (application: Application): FormActions => {
     };
   };
 
-  const getData = (values: Application, step: number): ApplicationData =>
+  const getData = (
+    values: Partial<Application>,
+    step: number
+  ): ApplicationData =>
     snakecaseKeys(
       {
         ...values,
         applicationStep: getApplicationStepString(step),
+        calculation: values.calculation ? {
+          ...values.calculation,
+          monthlyPay: stringToFloatValue(values.calculation.monthlyPay),
+          otherExpenses: stringToFloatValue(values.calculation.otherExpenses),
+          vacationMoney: stringToFloatValue(values.calculation.vacationMoney),
+          overrideMonthlyBenefitAmount: stringToFloatValue(
+            values.calculation.overrideMonthlyBenefitAmount
+          ),
+        }: undefined,
       },
       { deep: true }
-    );
+    ) as ApplicationData;
 
   const onNext = async (
     currentValues: Application

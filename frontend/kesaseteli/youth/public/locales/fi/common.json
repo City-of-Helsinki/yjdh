@@ -58,7 +58,7 @@
       "last_name": "Sukunimi",
       "social_security_number": "Henkilötunnus",
       "postcode": "Postinumero",
-      "schoolsDropdown": "Koulu",
+      "selectedSchool": "Koulu",
       "schoolsLoading": "Ladataan vaihtoehtoja...",
       "schoolsPlaceholder": "Valitse koulusi listalta",
       "is_unlisted_school": "Koulua ei löydy listalta",
@@ -69,25 +69,26 @@
       "termsAndConditions": "Olen lukenut palvelun <a>käyttöehdot</a> ja hyväksyn ne.",
       "termsAndConditionsLink": "https://kesasethttps://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/nuorelle/",
       "sendButton": "Lähetä tiedot",
-      "requiredInfo": "Kaikki * merkityt kentät ovat pakollisia",
+      "requiredInfo": "Kaikki * merkityt kentät ovat pakollisia julkaisuun",
       "sendItAnyway": "Mikäli tiedot ovat mielestäsi oikein, voit lähettää ne meille tarkastettavaksi. Palaamme asiaan kun olemme käsitelleet tietosi.",
       "forceSubmitLink": "Lähetä"
     },
     "checkNotification" : {
       "label" : "Hups! Jokin tiedoista ei ole oikein",
-      "message" : "Tarkistathan, että olet kirjoittanut nimesi ja henkilötunnuksesi kuten ne ovat Kela-kortissasi."
+      "recheck" : "Tarkistathan, että olet kirjoittanut nimesi ja henkilötunnuksesi kuten ne ovat Kela-kortissasi.",
+      "validation": "Tarkista seuraavat kentät: {{ fields}}"
     }
   },
   "additionalInfo": {
     "title": "Tarkenna hakemustasi",
     "notification" : {
       "confirmed" : "Sähköpostiosoite on vahvistettu",
-      "confirmedDescription" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "confirmedDescription" : "",
       "sent" : "Kiitos! Tarkennus on nyt lähetetty.",
       "notFound":  "Hakemusta ei löytynyt"
     },
-    "paragraph_1": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    "paragraph_2": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "paragraph_1": "Hakemuksesi tarvitsee lisätietoja. Valitse alla olevista vaihtoehdoista ja kirjoita sille perustelu.",
+    "paragraph_2": "",
     "form" : {
       "reasons": "Otsikko",
       "reasonsPlaceholder": "Valitse seuraavista vaihtoehdoista",
@@ -99,7 +100,7 @@
     "reasons": {
       "unlisted_school": "Kouluani ei löytynyt listalta",
       "student_in_helsinki_but_not_resident": "En asu Helsingissä, mutta käyn Helsinkiläistä koulua",
-      "moving_to_helsinki": "En asu vielä Helsingissä, mutta olen muuttamassa Helsinkiin",
+      "moving_to_helsinki": "En asu vielä Helsingissä, mutta olen muuttamassa Helsinkiin ennen 1. kesäkuuta",
       "underage_or_overage": "En kuulu iän puolesta kohderyhmään, mutta vuosiluokan puolesta kyllä",
       "personal_info_differs_from_vtj": "Henkilötietoni poikkeavat väestötietojärjestelmän tiedoista",
       "other": "Muu, kerro alla"
@@ -125,7 +126,7 @@
     "emailInUse" : {
       "title": "Hups! Sähköposti on jo käytössä.",
       "message": "Jos kyseessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen.",
-      "goToFrontendPage": "Tarkista tiedot ja lähetä uudelleen"
+      "goToFrontendPage": "Tarkista tiedot ja lähetä kesäsetelihakemus uudelleen"
     },
     "alreadyAssigned" : {
       "title": "Hups! Olet jo aikaisemmin lähettänyt Kesäsetelihakemuksen ja se on nyt käsittelyssä.",
@@ -135,6 +136,11 @@
     "activated" : {
       "title": "Vahvistus onnistui",
       "message": "Hienoa! Olet lähettänyt tietosi järjestelmään ja hakemuksesi käsitellään mahdollisimman pian - viimeistään kuukauden kuluessa. Saat Kesäsetelin ja käyttöohjeet sähköpostiisi kun hakemuksesi on tarkastettu!",
+      "goToFrontendPage": ""
+    },
+    "accepted" : {
+      "title": "Hienoa! Olet lähettänyt tietosi järjestelmään",
+      "message": " Saat pian kesäsetelin ohjeineen sähköpostiisi",
       "goToFrontendPage": ""
     },
     "expired" : {
@@ -150,7 +156,7 @@
     "inadmissibleData" : {
       "title": "Hups! Antamillasi tiedoilla ei voi hakea Kesäseteliä.",
       "message": "Tarkistahan tietosi ja lähetä rekisteröitymislomake uudestaan.",
-      "goToFrontendPage": "Tarkista tiedot ja lähetä kesäseteli uudelleen"
+      "goToFrontendPage": "Tarkista tiedot ja lähetä kesäsetelihakemus uudelleen"
     }
   }
 }

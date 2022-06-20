@@ -1,9 +1,10 @@
-from common.permissions import BFIsAuthenticated
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from common.permissions import BFIsAuthenticated
 from users.api.v1.serializers import UserSerializer
 
 

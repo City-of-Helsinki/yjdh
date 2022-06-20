@@ -46,6 +46,7 @@ env:
   NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
   NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
   CORS_ALLOW_ALL_ORIGINS: 1
+  NEXT_SHARP_PATH: /app/node_modules/sharp
 jobs:
   build:
     if: ${{ github.actor != 'dependabot[bot]' }}
@@ -94,6 +95,7 @@ jobs:
           DOCKER_BUILD_ARG_NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
           DOCKER_BUILD_ARG_NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
           DOCKER_BUILD_ARG_NEXT_PUBLIC_MOCK_FLAG: ${{ env.NEXT_PUBLIC_MOCK_FLAG }}
+          DOCKER_BUILD_ARG_NEXT_SHARP_PATH: ${{ env.NEXT_SHARP_PATH }}
           DOCKER_BUILD_ARG_PROJECT: ${{ matrix.project }}
           DOCKER_BUILD_ARG_FOLDER: ${{ matrix.folder }}
           DOCKER_BUILD_ARG_SERVICE: ${{ matrix.service }}
@@ -216,20 +218,7 @@ jobs:
           EAUTH_REDIRECT_URL: ${{ env.EMPLOYER_URL }}
           EAUTH_REDIRECT_URL_FAILURE: ${{ env.EMPLOYER_URL }}/login?error=true
           LOGOUT_REDIRECT_URL: ${{ env.ADMIN_URL }}/login?logout=true
-
-      - name: Deploy Cronjobs
-        if: matrix.database
-        uses: City-of-Helsinki/setup-cronjob-action@main
-        with:
-          image_repository: ghcr.io/city-of-helsinki/${{ github.event.repository.name }}
-          image_tag:  ${{ github.sha }}
-          kubeconfig_raw: ${{ secrets.KUBECONFIG_RAW}}
-          target_namespace: ${{ secrets.K8S_NAMESPACE }}
-          name: te-hourly-cronjob
-          single_run: true
-          secret_name: te-hourly-cronjob-secret
-          command: "{/bin/sh}"
-          args: "{-c,cd /app && /usr/bin/timeout --kill-after=20m 19m python manage.py runjobs hourly 2>&1}"
+          NEXT_SHARP_PATH: ${ env.NEXT_SHARP_PATH }
 
       - name: Create PR comment for ${{ matrix.service }}
         uses: marocchino/sticky-pull-request-comment@v2

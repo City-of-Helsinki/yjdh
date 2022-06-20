@@ -63,7 +63,7 @@ class Step1 extends WizardStep {
   });
 
   public fillEmployerInfo(iban: string): Promise<void> {
-    return Step1.fillInput(this.bankAccountNumber, iban);
+    return this.fillInput(this.bankAccountNumber, iban);
   }
 
   public async fillContactPerson(
@@ -72,18 +72,18 @@ class Step1 extends WizardStep {
     phoneNumber: string,
     email: string
   ): Promise<void> {
-    await Step1.fillInput(this.firstName, firstName);
-    await Step1.fillInput(this.lastName, lastName);
-    await Step1.fillInput(this.phoneNumber, phoneNumber);
-    return Step1.fillInput(this.email, email);
+    await this.fillInput(this.firstName, firstName);
+    await this.fillInput(this.lastName, lastName);
+    await this.fillInput(this.phoneNumber, phoneNumber);
+    return this.fillInput(this.email, email);
   }
 
   public selectNoDeMinimis(): Promise<void> {
-    return Step1.clickSelectRadioButton(this.deMinimisAidFalse);
+    return this.clickSelectRadioButton(this.deMinimisAidFalse);
   }
 
   public selectNocoOperationNegotiations(): Promise<void> {
-    return Step1.clickSelectRadioButton(this.coOperationNegotiationsFalse);
+    return this.clickSelectRadioButton(this.coOperationNegotiationsFalse);
   }
 }
 

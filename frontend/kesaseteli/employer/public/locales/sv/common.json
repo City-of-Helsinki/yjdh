@@ -95,11 +95,8 @@
         "contact_person_name": "Kontakt personens namn",
         "contact_person_email": "Kontakt personens epost",
         "street_address": "Arbetsplatsens gatuadress",
+        "bank_account_number": "Kontonummer",
         "contact_person_phone_number": "Telefonnummer",
-        "is_separate_invoicer": "Faktureringen sköts av en annan person",
-        "invoicer_name": "Kontakt person för faktureringen",
-        "invoicer_email": "E-posten för kontaktperson för fakturan",
-        "invoicer_phone_number": "Telefonnummer för kontaktperson för fakturan ",
         "employee_name": "Arbetstagarens namn",
         "employee_ssn": "Personnummer",
         "summer_voucher_exception_reason": "Årsklass eller födelseår",
@@ -124,7 +121,8 @@
         "format": "Använd ett format",
         "attachments": "Du kan lägga till upp till 5 bilagor. Tillåtna filformat: pdf, jpg och png. Maximal storlek 10 MB",
         "employment_contract": "Bifoga här arbetskontraktet för sommarjobbaren du anställt med Sommarjobbsedeln.",
-        "payslip": "Bifoga här löneintyget för sommarjobbaren du anställt med Sommarjobbsedeln."
+        "payslip": "Bifoga här löneintyget för sommarjobbaren du anställt med Sommarjobbsedeln.",
+        "bank_account": "Fyll i kontonumret i IBAN-format"
       },
       "errors": {
         "required": "Uppgifter fattas eller är ofullständiga",
@@ -133,7 +131,15 @@
         "validate": "Den inmatade uppgiftern är i fel format",
         "selectionGroups": "Välj något alternativ",
         "checkboxRequired": "Obligatoriskt val",
-        "attachments": "Lägg till åtminstone en fil"
+        "attachments": "Lägg till åtminstone en fil",
+        "employmentsRequired": "Lägg till åtminstone en anställning",
+        "NoIBANProvided": "Kontonumret fattas",
+        "NoIBANCountry": "Landskoden fattas",
+        "WrongBBANLength": "Kontrollera kontonumret",
+        "WrongBBANFormat": "Kontrollera kontonumret",
+        "ChecksumNotNumber": "Kontrollera kontonumret",
+        "WrongIBANChecksum":"Kontrollera kontonumret",
+        "WrongAccountBankBranchChecksum": "Kontrollera kontonumret"
       },
       "notification": {
         "title": "Fyll i de uppgifter som fattas eller är felaktiga"

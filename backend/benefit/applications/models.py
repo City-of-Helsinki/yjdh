@@ -1,5 +1,14 @@
 from datetime import datetime
 
+from django.conf import settings
+from django.core.validators import MaxLengthValidator, MinLengthValidator
+from django.db import connection, models
+from django.db.models import OuterRef, Subquery
+from django.utils.translation import gettext_lazy as _
+from encrypted_fields.fields import EncryptedCharField, SearchField
+from phonenumber_field.modelfields import PhoneNumberField
+from simple_history.models import HistoricalRecords
+
 from applications.enums import (
     AhjoDecision,
     ApplicationBatchStatus,
@@ -12,15 +21,6 @@ from applications.enums import (
 from common.localized_iban_field import LocalizedIBANField
 from common.utils import DurationMixin
 from companies.models import Company
-from django.conf import settings
-from django.core.validators import MaxLengthValidator, MinLengthValidator
-from django.db import connection, models
-from django.db.models import OuterRef, Subquery
-from django.utils.translation import gettext_lazy as _
-from encrypted_fields.fields import EncryptedCharField, SearchField
-from phonenumber_field.modelfields import PhoneNumberField
-from simple_history.models import HistoricalRecords
-
 from shared.models.abstract_models import TimeStampedModel, UUIDModel
 
 # todo: move to some better location?

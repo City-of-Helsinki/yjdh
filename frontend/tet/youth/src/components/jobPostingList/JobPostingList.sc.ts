@@ -9,3 +9,8 @@ export const $ButtonLoaderContainer = styled.div`
   margin-top: 4rem;
   margin-bottom: 2rem;
 `;
+
+export const $MapButtonWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;

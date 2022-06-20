@@ -10,6 +10,12 @@ from unittest import mock
 import faker
 import pytest
 import pytz
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import override_settings
+from freezegun import freeze_time
+from PIL import Image
+from rest_framework.reverse import reverse
+
 from applications.api.v1.serializers import (
     ApplicantApplicationSerializer,
     AttachmentSerializer,
@@ -42,18 +48,12 @@ from common.tests.conftest import get_client_user
 from common.utils import duration_in_months
 from companies.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import override_settings
-from freezegun import freeze_time
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
 from helsinkibenefit.tests.conftest import *  # noqa
-from PIL import Image
-from rest_framework.reverse import reverse
-from terms.models import TermsOfServiceApproval
-from terms.tests.conftest import *  # noqa
-
 from shared.audit_log import models as audit_models
 from shared.service_bus.enums import YtjOrganizationCode
+from terms.models import TermsOfServiceApproval
+from terms.tests.conftest import *  # noqa
 
 
 def get_detail_url(application):

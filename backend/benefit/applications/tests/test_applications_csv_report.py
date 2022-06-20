@@ -1,24 +1,31 @@
 from datetime import date, datetime
 from decimal import Decimal
 
+from dateutil.relativedelta import relativedelta
+from django.http import StreamingHttpResponse
+from rest_framework.reverse import reverse
+
 from applications.enums import AhjoDecision, ApplicationStatus, BenefitType
 from applications.models import ApplicationBatch
+from applications.tests.common import (
+    check_csv_cell_list_lines_generator,
+    check_csv_string_lines_generator,
+)
 from applications.tests.conftest import *  # noqa
 from applications.tests.conftest import split_lines_at_semicolon
 from applications.tests.factories import DecidedApplicationFactory, DeMinimisAidFactory
 from calculator.tests.factories import PaySubsidyFactory
 from common.tests.conftest import *  # noqa
 from companies.tests.conftest import *  # noqa
-from dateutil.relativedelta import relativedelta
 from helsinkibenefit.tests.conftest import *  # noqa
-from rest_framework.reverse import reverse
 from terms.tests.conftest import *  # noqa
 
 
 def _get_csv(handler_api_client, url, expected_application_numbers, expect_empty=False):
     response = handler_api_client.get(url)
     assert response.status_code == 200
-    csv_lines = split_lines_at_semicolon(response.content.decode("utf-8"))
+    assert isinstance(response, StreamingHttpResponse)
+    csv_lines = split_lines_at_semicolon(response.getvalue().decode("utf-8"))
     if expect_empty:
         assert len(csv_lines) == 2
         assert csv_lines[1][0] == '"Ei löytynyt ehdot täyttäviä hakemuksia"'
@@ -317,6 +324,18 @@ def test_applications_csv_output(applications_csv_service):  # noqa: C901
                 Decimal(csv_lines[2][idx])
                 == application2.calculation.calculated_benefit_amount
             )
+
+
+def test_applications_csv_cell_list_lines_generator(applications_csv_service):
+    check_csv_cell_list_lines_generator(
+        applications_csv_service, expected_row_count_with_header=3
+    )
+
+
+def test_applications_csv_string_lines_generator(applications_csv_service):
+    check_csv_string_lines_generator(
+        applications_csv_service, expected_row_count_with_header=3
+    )
 
 
 def test_applications_csv_two_ahjo_rows(applications_csv_service_with_one_application):

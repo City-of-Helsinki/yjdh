@@ -1,6 +1,6 @@
-import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
-import { Application } from 'benefit/applicant/types/application';
+import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit-shared/constants';
+import { Application } from 'benefit-shared/types/application';
 import isEmpty from 'lodash/isEmpty';
 import { BenefitAttachment } from 'shared/types/attachment';
 

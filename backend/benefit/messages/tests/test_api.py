@@ -2,6 +2,10 @@ import uuid
 from copy import deepcopy
 
 import pytest
+from django.conf import settings
+from django.test import override_settings
+from rest_framework.reverse import reverse
+
 from applications.enums import ApplicationStatus
 from applications.tests.factories import HandlingApplicationFactory
 from applications.tests.test_applications_api import (
@@ -10,12 +14,8 @@ from applications.tests.test_applications_api import (
 )
 from common.tests.conftest import get_client_user
 from companies.tests.factories import CompanyFactory
-from django.conf import settings
-from django.test import override_settings
 from messages.models import Message, MessageType
 from messages.tests.factories import MessageFactory
-from rest_framework.reverse import reverse
-
 from shared.common.lang_test_utils import (
     assert_email_body_language,
     assert_email_subject_language,

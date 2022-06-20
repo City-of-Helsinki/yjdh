@@ -1,7 +1,7 @@
-from companies.models import Company
-from companies.services import get_or_create_organisation_with_business_id
 from django.conf import settings
 
+from companies.models import Company
+from companies.services import get_or_create_organisation_with_business_id
 from shared.oidc.utils import get_organization_roles
 
 

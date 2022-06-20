@@ -1,6 +1,6 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
-import { APPLICATION_STATUSES, BENEFIT_TYPES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
+import { APPLICATION_STATUSES, BENEFIT_TYPES } from 'benefit-shared/constants';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import {

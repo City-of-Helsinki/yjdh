@@ -1,6 +1,6 @@
-import { IconArrowLeft, IconLocation, Tag } from 'hds-react';
+import { IconArrowLeft, IconLocation } from 'hds-react';
+import noop from 'lodash/noop';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Container from 'tet-shared/components/container/Container';
@@ -13,63 +13,42 @@ import {
   $HeroContentWrapper,
   $HeroWrapper,
   $ImageContainer,
-  $Keywords,
   $PostingHero,
   $Spots,
   $Subtitle,
   $Title,
 } from 'tet-shared/components/posting/postingHero/PostingHero.sc';
-import { OptionType } from 'tet-shared/types/classification';
 import TetPosting from 'tet-shared/types/tetposting';
 
 type Props = {
   posting: TetPosting;
-  showBackButton: boolean;
+  showBackButton?: boolean;
+  onReturnClick?: () => void;
 };
 
-const keywordList = (list: OptionType[], color: string): JSX.Element => (
-  <>
-    {list.map((keyword: OptionType) => (
-      <li>
-        <Tag
-          theme={{
-            '--tag-background': `var(--color-${color})`,
-            '--tag-color': 'var(--color-black-90)',
-            '--tag-focus-outline-color': 'var(--color-black-90)',
-          }}
-        >
-          {keyword.name}
-        </Tag>
-      </li>
-    ))}
-  </>
-);
-
-const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
+const PostingHero: React.FC<Props> = ({
+  posting,
+  showBackButton,
+  onReturnClick,
+}) => {
   const { t } = useTranslation();
-  const router = useRouter();
   const date = `${posting.start_date} - ${posting.end_date ?? ''}`;
-  const street_address = posting.location.street_address
+  const street_address = posting?.location?.street_address
     ? `, ${posting.location.street_address}`
     : '';
-  const postal_code = posting.location.postal_code
+  const postal_code = posting?.location?.postal_code
     ? `, ${posting.location.postal_code}`
     : '';
-  const city = posting.location.city ? `, ${posting.location.city}` : '';
-  const address = posting.location.name + street_address + postal_code + city;
-
-  const backButtonHandler = (): void => {
-    // TODO we should know that the user hasn't navigated to this page via a
-    // link from another site
-    void router.back();
-  };
+  const city = posting?.location?.city ? `, ${posting.location.city}` : '';
+  const name = posting?.location?.name ?? '';
+  const address = name + street_address + postal_code + city;
 
   return (
     <$PostingHero>
       <Container>
         <$HeroWrapper>
           {showBackButton && (
-            <$BackButton id="backButton" onClick={backButtonHandler}>
+            <$BackButton id="backButton" onClick={onReturnClick}>
               <IconArrowLeft size="m" />
             </$BackButton>
           )}
@@ -85,14 +64,6 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
             />
           </$ImageContainer>
           <$HeroContentWrapper>
-            <$Keywords>
-              {keywordList(posting.keywords_working_methods, 'success-light')}
-              {keywordList(
-                posting.keywords_attributes,
-                'coat-of-arms-medium-light'
-              )}
-              {keywordList(posting.keywords, 'engel-medium-light')}
-            </$Keywords>
             <$Title>{posting.org_name}</$Title>
             <$Subtitle id="postingTitle">{posting.title}</$Subtitle>
             <$Date>{date}</$Date>
@@ -116,6 +87,11 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
       </Container>
     </$PostingHero>
   );
+};
+
+PostingHero.defaultProps = {
+  showBackButton: false,
+  onReturnClick: () => noop,
 };
 
 export default PostingHero;

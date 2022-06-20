@@ -1,5 +1,6 @@
 # Register your models here.
 from django.contrib import admin  # noqa
+
 from terms.models import (
     ApplicantConsent,
     ApplicantTermsApproval,

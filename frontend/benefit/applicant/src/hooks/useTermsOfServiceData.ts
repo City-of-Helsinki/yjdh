@@ -1,4 +1,5 @@
 import { useTranslation } from 'benefit/applicant/i18n';
+import { TermsProp, User } from 'benefit-shared/types/application';
 import { TFunction } from 'next-i18next';
 import React from 'react';
 import { Language } from 'shared/i18n/i18n';
@@ -6,7 +7,6 @@ import { capitalize } from 'shared/utils/string.utils';
 import { DefaultTheme, useTheme } from 'styled-components';
 
 import { LOCAL_STORAGE_KEYS } from '../constants';
-import { TermsProp, User } from '../types/application';
 import useLocale from './useLocale';
 import useUserQuery from './useUserQuery';
 

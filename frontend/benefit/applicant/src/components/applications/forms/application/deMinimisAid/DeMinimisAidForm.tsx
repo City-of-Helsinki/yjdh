@@ -1,9 +1,9 @@
 import {
   DE_MINIMIS_AID_GRANTED_AT_MAX_DATE,
-  DE_MINIMIS_AID_KEYS,
   MAX_DEMINIMIS_AID_TOTAL_AMOUNT,
 } from 'benefit/applicant/constants';
-import { DeMinimisAid } from 'benefit/applicant/types/application';
+import { DE_MINIMIS_AID_KEYS } from 'benefit-shared/constants';
+import { DeMinimisAid } from 'benefit-shared/types/application';
 import { Button, DateInput, IconPlusCircle, TextInput } from 'hds-react';
 import sumBy from 'lodash/sumBy';
 import React from 'react';

@@ -4,6 +4,7 @@ from datetime import date
 from unittest.mock import patch
 
 import pytest
+
 from applications.enums import ApplicationStatus, BenefitType
 from applications.services.ahjo_integration import (
     export_application_batch,
@@ -16,7 +17,6 @@ from calculator.models import Calculation
 from calculator.tests.factories import PaySubsidyFactory
 from companies.tests.factories import CompanyFactory
 from helsinkibenefit.tests.conftest import *  # noqa
-
 from shared.service_bus.enums import YtjOrganizationCode
 
 

@@ -3,14 +3,14 @@ from functools import partial
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from rest_framework.reverse import reverse_lazy
+
+from common.permissions import HandlerPermission
+from common.urls import handler_403_url
 from shared.common.decorators import (
     is_request_user_unauthenticated,
     permit_view_if_permissions_or_redirect,
     set_use_original_redirect_url_into_session,
 )
-
-from common.permissions import HandlerPermission
-from common.urls import handler_403_url
 
 
 def redirect_to_handler_403_url(request: HttpRequest) -> HttpResponse:

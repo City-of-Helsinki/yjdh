@@ -1,4 +1,5 @@
-import { ATTACHMENT_TYPES, ROUTES } from 'benefit/handler/constants';
+import { ROUTES } from 'benefit/handler/constants';
+import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import { Button, IconGlyphEuro, IconPlus } from 'hds-react';
 import noop from 'lodash/noop';
 import { useRouter } from 'next/router';

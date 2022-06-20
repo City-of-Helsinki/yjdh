@@ -6,7 +6,6 @@ import factory
 import factory.fuzzy
 from django.db.models.signals import post_save
 from faker import Faker
-from shared.common.tests.factories import HandlerUserFactory, UserFactory
 
 from applications.enums import (
     AdditionalInfoUserReason,
@@ -26,8 +25,12 @@ from applications.models import (
     YouthApplication,
     YouthSummerVoucher,
 )
-from applications.tests.data.mock_vtj import mock_vtj_person_id_query_found_content
+from applications.tests.data.mock_vtj import (
+    mock_vtj_person_id_query_found_content,
+    mock_vtj_person_id_query_not_found_content,
+)
 from companies.models import Company
+from shared.common.tests.factories import HandlerUserFactory, UserFactory
 
 
 class CompanyFactory(factory.django.DjangoModelFactory):
@@ -88,6 +91,7 @@ class EmployerSummerVoucherFactory(factory.django.DjangoModelFactory):
     hired_without_voucher_assessment = factory.Faker(
         "random_element", elements=HiredWithoutVoucherAssessment.values
     )
+    is_exported = False
 
     class Meta:
         model = EmployerSummerVoucher
@@ -98,6 +102,7 @@ class EmployerApplicationFactory(factory.django.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     status = factory.Faker("random_element", elements=EmployerApplicationStatus.values)
     street_address = factory.Faker("street_address")
+    bank_account_number = factory.Faker("iban")
     contact_person_name = factory.Faker("name")
     contact_person_email = factory.Faker("email")
     contact_person_phone_number = factory.Faker("phone_number")
@@ -218,6 +223,10 @@ def copy_created_at(youth_application) -> Optional[datetime]:
     return youth_application.created_at
 
 
+def copy_encrypted_original_vtj_json(youth_application) -> Optional[str]:
+    return youth_application.encrypted_original_vtj_json
+
+
 def determine_handler(youth_application):
     if youth_application.status in YouthApplicationStatus.handled_values():
         return HandlerUserFactory()
@@ -290,6 +299,19 @@ def determine_additional_info_description(youth_application):
     return ""
 
 
+def determine_vtj_json_for_vtj_test_case(youth_application):
+    vtj_test_case = youth_application.last_name
+    if vtj_test_case not in VtjTestCase.values:
+        raise ValueError(f"Invalid VtjTestCase value {vtj_test_case}")
+
+    return YouthApplication.get_mocked_vtj_json_for_vtj_test_case(
+        vtj_test_case=vtj_test_case,
+        first_name=youth_application.first_name,
+        last_name=youth_application.last_name,
+        social_security_number=youth_application.social_security_number,
+    )
+
+
 def determine_automatically_acceptable_vtj_json(youth_application):
     return mock_vtj_person_id_query_found_content(
         first_name=youth_application.first_name,
@@ -339,6 +361,8 @@ class AbstractYouthApplicationFactory(factory.django.DjangoModelFactory):
     additional_info_description = factory.LazyAttribute(
         determine_additional_info_description
     )
+    encrypted_original_vtj_json = mock_vtj_person_id_query_not_found_content()
+    encrypted_handler_vtj_json = mock_vtj_person_id_query_not_found_content()
 
     youth_summer_voucher = factory.Maybe(
         "_is_accepted",
@@ -398,9 +422,10 @@ class InactiveNoNeedAdditionalInfoYouthApplicationFactory(
         determine_target_group_social_security_number
     )
     is_unlisted_school = False
-    encrypted_vtj_json = factory.LazyAttribute(
+    encrypted_original_vtj_json = factory.LazyAttribute(
         determine_automatically_acceptable_vtj_json
     )
+    encrypted_handler_vtj_json = factory.LazyAttribute(copy_encrypted_original_vtj_json)
 
 
 class InactiveNeedAdditionalInfoYouthApplicationFactory(
@@ -410,12 +435,19 @@ class InactiveNeedAdditionalInfoYouthApplicationFactory(
         determine_target_group_social_security_number
     )
     is_unlisted_school = True
-    encrypted_vtj_json = factory.LazyAttribute(determine_need_additional_info_vtj_json)
+    encrypted_original_vtj_json = factory.LazyAttribute(
+        determine_need_additional_info_vtj_json
+    )
+    encrypted_handler_vtj_json = factory.LazyAttribute(copy_encrypted_original_vtj_json)
 
 
 class InactiveVtjTestCaseYouthApplicationFactory(InactiveYouthApplicationFactory):
     first_name = VtjTestCase.first_name()
     last_name = factory.Faker("random_element", elements=VtjTestCase.values)
+    encrypted_original_vtj_json = factory.LazyAttribute(
+        determine_vtj_json_for_vtj_test_case
+    )
+    encrypted_handler_vtj_json = factory.LazyAttribute(copy_encrypted_original_vtj_json)
 
 
 class AcceptableYouthApplicationFactory(AbstractYouthApplicationFactory):
@@ -461,7 +493,7 @@ class YouthSummerVoucherFactory(factory.django.DjangoModelFactory):
     # NOTE: Difference from production use:
     # - This does not generate a gapless sequence
     summer_voucher_serial_number = factory.Faker(
-        "pyint", min_value=1, max_value=(2 ** 63) - 1
+        "pyint", min_value=1, max_value=(2**63) - 1
     )
     summer_voucher_exception_reason = ""
 

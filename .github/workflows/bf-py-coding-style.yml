@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up Python 3.8
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: '3.8'
 
@@ -40,11 +40,20 @@ jobs:
       - name: Install dependencies
         run: cd backend/benefit && pip install -r requirements.txt -r requirements-dev.txt
 
-      - name: Formatting
+      - name: (BF) Formatting
         run: cd backend/benefit && black --check .
 
-      - name: Linting
-        run: cd backend/benefit && flake8 --config ../shared/precommit-setup.cfg
+      - name: (BF) Linting
+        run: cd backend/benefit && flake8
 
-      - name: Import sorting
-        run: cd backend/benefit && isort -c --settings-path ../shared/precommit-setup.cfg .
+      - name: (BF) Import sorting
+        run: cd backend/benefit && isort -c .
+
+      - name: (Shared) Formatting
+        run: cd backend/shared && black --check .
+
+      - name: (Shared) Linting
+        run: cd backend/shared && flake8
+
+      - name: (Shared) Import sorting
+        run: cd backend/shared && isort -c .

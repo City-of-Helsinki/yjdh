@@ -1,6 +1,6 @@
 import factory
-from companies.models import Company
 
+from companies.models import Company
 from shared.service_bus.enums import YtjOrganizationCode
 
 

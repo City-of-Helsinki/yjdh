@@ -2,6 +2,7 @@ from datetime import date
 from decimal import Decimal
 
 import pytest
+
 from applications.tests.conftest import *  # noqa
 from calculator.enums import RowType
 from helsinkibenefit.tests.conftest import *  # noqa

@@ -1,4 +1,4 @@
-import { Application } from './application';
+import { Application } from 'benefit-shared/types/application';
 
 export type DynamicFormStepComponentProps = {
   data: Application;

@@ -1,4 +1,5 @@
 import factory
+
 from messages.models import Message, MessageType
 
 

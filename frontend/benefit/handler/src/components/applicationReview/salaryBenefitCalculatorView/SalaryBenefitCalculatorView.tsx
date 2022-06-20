@@ -1,10 +1,8 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
 import { CALCULATION_TYPES } from 'benefit/handler/constants';
 import { useCalculatorData } from 'benefit/handler/hooks/useCalculatorData';
-import {
-  PaySubsidy,
-  SalaryBenefitCalculatorViewProps,
-} from 'benefit/handler/types/application';
+import { SalaryBenefitCalculatorViewProps } from 'benefit/handler/types/application';
+import { PaySubsidy } from 'benefit-shared/types/application';
 import {
   Button,
   DateInput,

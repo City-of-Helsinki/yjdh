@@ -1,18 +1,20 @@
-import { APPLICATION_STATUSES } from 'benefit/applicant/constants';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import useLocale from 'benefit/applicant/hooks/useLocale';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import {
+  APPLICATION_STATUSES,
+  VALIDATION_MESSAGE_KEYS,
+} from 'benefit-shared/constants';
+import {
   Application,
   ApplicationData,
   TermsProp,
-} from 'benefit/applicant/types/application';
-import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
+} from 'benefit-shared/types/application';
 import { TFunction } from 'next-i18next';
 import React, { useState } from 'react';
 import { invertBooleanArray } from 'shared/utils/array.utils';
-import { capitalize } from 'shared/utils/string.utils';
+import { capitalize, stringToFloatValue } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
 
 type ExtendedComponentProps = {
@@ -77,7 +79,7 @@ const useApplicationFormStep6 = (
 
   const handleSubmit = (): void => {
     if (!getErrors()) {
-      const currentApplicationData: ApplicationData = snakecaseKeys(
+      const currentApplicationData = snakecaseKeys(
         {
           ...application,
           approveTerms: {
@@ -91,9 +93,22 @@ const useApplicationFormStep6 = (
             application.status === APPLICATION_STATUSES.DRAFT
               ? APPLICATION_STATUSES.RECEIVED
               : APPLICATION_STATUSES.HANDLING,
+          calculation: application.calculation ? {
+            ...application.calculation,
+            monthlyPay: stringToFloatValue(application.calculation.monthlyPay),
+            otherExpenses: stringToFloatValue(
+              application.calculation.otherExpenses
+            ),
+            vacationMoney: stringToFloatValue(
+              application.calculation.vacationMoney
+            ),
+            overrideMonthlyBenefitAmount: stringToFloatValue(
+              application.calculation.overrideMonthlyBenefitAmount
+            ),
+          }: undefined,
         },
         { deep: true }
-      );
+      ) as ApplicationData;
       if (onSubmit) {
         onSubmit();
       }

@@ -18,7 +18,6 @@ from rest_framework.generics import ListAPIView
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_UPDATE_STATUSES,
@@ -34,6 +33,7 @@ from applications.api.v1.serializers import (
     EmployerSummerVoucherSerializer,
     SchoolSerializer,
     YouthApplicationAdditionalInfoSerializer,
+    YouthApplicationHandlingSerializer,
     YouthApplicationSerializer,
     YouthApplicationStatusSerializer,
 )
@@ -49,6 +49,8 @@ from applications.models import (
     YouthApplication,
 )
 from common.decorators import enforce_handler_view_adfs_login
+from shared.audit_log.viewsets import AuditLoggingModelViewSet
+from shared.vtj.vtj_client import VTJClient
 
 LOGGER = logging.getLogger(__name__)
 
@@ -133,8 +135,19 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             )
             return Response(serializer.data)
 
+    @transaction.atomic
     @enforce_handler_view_adfs_login
     def retrieve(self, request, *args, **kwargs):
+        youth_application: YouthApplication = self.get_object().lock_for_update()
+        # Update unhandled youth applications' encrypted_handler_vtj_json so
+        # handlers can accept/reject using it
+        if not youth_application.is_handled:
+            youth_application.encrypted_handler_vtj_json = (
+                youth_application.fetch_vtj_json(
+                    end_user=VTJClient.get_end_user(request)
+                )
+            )
+            youth_application.save(update_fields=["encrypted_handler_vtj_json"])
         return super().retrieve(request, *args, **kwargs)
 
     @action(methods=["get"], detail=True)
@@ -196,8 +209,27 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def accept(self, request, *args, **kwargs) -> HttpResponse:
         youth_application: YouthApplication = self.get_object().lock_for_update()
 
+        if settings.NEXT_PUBLIC_DISABLE_VTJ:
+            encrypted_handler_vtj_json = None
+        else:
+            try:
+                serializer = YouthApplicationHandlingSerializer(
+                    data=request.data, context=self.get_serializer_context()
+                )
+                serializer.is_valid(raise_exception=True)
+            except ValidationError as e:
+                LOGGER.error(
+                    f"Youth application was not changed to accepted state because of "
+                    f"validation error. Validation error codes: {str(e.get_codes())}"
+                )
+                raise
+
+            encrypted_handler_vtj_json = serializer.validated_data[
+                "encrypted_handler_vtj_json"
+            ]
+
         if not youth_application.is_accepted and youth_application.accept_manually(
-            handler=request.user
+            handler=request.user, encrypted_handler_vtj_json=encrypted_handler_vtj_json
         ):
             was_email_sent = (
                 youth_application.youth_summer_voucher.send_youth_summer_voucher_email(
@@ -222,8 +254,27 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def reject(self, request, *args, **kwargs) -> HttpResponse:
         youth_application: YouthApplication = self.get_object().lock_for_update()
 
+        if settings.NEXT_PUBLIC_DISABLE_VTJ:
+            encrypted_handler_vtj_json = None
+        else:
+            try:
+                serializer = YouthApplicationHandlingSerializer(
+                    data=request.data, context=self.get_serializer_context()
+                )
+                serializer.is_valid(raise_exception=True)
+            except ValidationError as e:
+                LOGGER.error(
+                    f"Youth application was not changed to rejected state because of "
+                    f"validation error. Validation error codes: {str(e.get_codes())}"
+                )
+                raise
+
+            encrypted_handler_vtj_json = serializer.validated_data[
+                "encrypted_handler_vtj_json"
+            ]
+
         if not youth_application.is_rejected and youth_application.reject(
-            handler=request.user
+            handler=request.user, encrypted_handler_vtj_json=encrypted_handler_vtj_json
         ):
             with self.record_action(additional_information="reject"):
                 return HttpResponse(status=status.HTTP_200_OK)
@@ -232,7 +283,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
 
     @transaction.atomic
     @action(methods=["get"], detail=True)
-    def activate(self, request, *args, **kwargs) -> HttpResponse:
+    def activate(self, request, *args, **kwargs) -> HttpResponse:  # noqa: C901
         youth_application: YouthApplication = self.get_object()
 
         # Lock same person's applications to prevent activation of more than one of them
@@ -241,19 +292,27 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         )
         list(same_persons_apps)  # Force evaluation of queryset to lock its rows
 
-        if same_persons_apps.active().exists():
-            if youth_application.is_active and youth_application.need_additional_info:
+        if same_persons_apps.active().non_rejected().exists():
+            if (
+                youth_application.is_active
+                and not youth_application.is_rejected
+                and youth_application.can_set_additional_info
+            ):
                 return HttpResponseRedirect(
                     youth_application.additional_info_page_url(pk=youth_application.pk)
                 )
-            else:  # not the active one or does not need additional info
+            else:  # not the active non-rejected one or does not need additional info
                 return HttpResponseRedirect(
                     youth_application.already_activated_page_url()
                 )
         elif youth_application.has_activation_link_expired:
             return HttpResponseRedirect(youth_application.expired_page_url())
         elif youth_application.activate():
-            if settings.DISABLE_VTJ:
+            if settings.NEXT_PUBLIC_DISABLE_VTJ:
+                if youth_application.need_additional_info:
+                    return self._set_application_needs_additional_info(
+                        youth_application=youth_application
+                    )
                 LOGGER.info(
                     f"Activated youth application {youth_application.pk}: "
                     "VTJ is disabled, sending application to be processed by a handler"
@@ -289,16 +348,8 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
                         )
                 return HttpResponseRedirect(youth_application.accepted_page_url())
             elif youth_application.need_additional_info:
-                LOGGER.info(
-                    f"Activated youth application {youth_application.pk}: "
-                    "Additional info is needed, redirecting user to page to provide it"
-                )
-                youth_application.status = (
-                    YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
-                )
-                youth_application.save()
-                return HttpResponseRedirect(
-                    youth_application.additional_info_page_url(pk=youth_application.pk)
+                return self._set_application_needs_additional_info(
+                    youth_application=youth_application
                 )
 
             return HttpResponseRedirect(youth_application.activated_page_url())
@@ -306,6 +357,20 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         return HttpResponse(
             status=status.HTTP_401_UNAUTHORIZED,
             content="Unable to activate youth application",
+        )
+
+    @staticmethod
+    def _set_application_needs_additional_info(youth_application) -> HttpResponse:
+        LOGGER.info(
+            f"Activated youth application {youth_application.pk}: "
+            "Additional info is needed, redirecting user to page to provide it"
+        )
+        youth_application.status = (
+            YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+        )
+        youth_application.save()
+        return HttpResponseRedirect(
+            youth_application.additional_info_page_url(pk=youth_application.pk)
         )
 
     @classmethod
@@ -325,7 +390,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def create(self, request, *args, **kwargs):  # noqa: C901
         try:
             # This function is based on CreateModelMixin class's create function.
-            serializer = self.get_serializer(data=request.data)
+            serializer = self.get_serializer(data=request.data, hide_vtj_data=True)
             serializer.is_valid(raise_exception=True)
 
             # Data is valid but let's check other criteria before creating the object
@@ -349,7 +414,21 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             # Send the localized activation/additional info request email
             youth_application = serializer.instance
 
-            if settings.DISABLE_VTJ:
+            # Fetch the VTJ JSON data and save it
+            youth_application.encrypted_original_vtj_json = (
+                youth_application.fetch_vtj_json(end_user="")
+            )
+            youth_application.encrypted_handler_vtj_json = (
+                youth_application.encrypted_original_vtj_json
+            )
+            youth_application.save(
+                update_fields=[
+                    "encrypted_original_vtj_json",
+                    "encrypted_handler_vtj_json",
+                ]
+            )
+
+            if settings.NEXT_PUBLIC_DISABLE_VTJ:
                 was_email_sent = youth_application.send_activation_email(
                     request, youth_application.language
                 )

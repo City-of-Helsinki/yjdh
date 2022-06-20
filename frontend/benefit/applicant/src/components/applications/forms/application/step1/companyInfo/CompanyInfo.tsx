@@ -1,6 +1,6 @@
-import { ORGANIZATION_TYPES } from 'benefit/applicant/constants';
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
-import { Application } from 'benefit/applicant/types/application';
+import { ORGANIZATION_TYPES } from 'benefit-shared/constants';
+import { Application } from 'benefit-shared/types/application';
 import { FormikProps } from 'formik';
 import { SelectionGroup, TextInput } from 'hds-react';
 import React from 'react';
@@ -25,7 +25,7 @@ export interface CompanyInfoProps {
   getErrorMessage: (fieldName: string) => string | undefined;
   fields: CompanyInfoFields;
   translationsBase: string;
-  formik: FormikProps<Application>;
+  formik: FormikProps<Partial<Application>>;
 }
 
 const CompanyInfo: React.FC<CompanyInfoProps> = ({

@@ -1,7 +1,7 @@
-from common.utils import update_object
-from companies.models import Company
 from requests import HTTPError
 
+from common.utils import update_object
+from companies.models import Company
 from shared.service_bus.service_bus_client import ServiceBusClient
 from shared.yrtti.yrtti_client import YRTTIClient
 

@@ -1,3 +1,5 @@
+from django.contrib import admin
+
 from applications.models import (
     Application,
     ApplicationBasis,
@@ -8,7 +10,6 @@ from applications.models import (
     Employee,
 )
 from calculator.admin import CalculationInline
-from django.contrib import admin
 
 
 class ApplicationBasisInline(admin.TabularInline):

@@ -1,4 +1,5 @@
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
+import { User, UserData } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
@@ -8,7 +9,6 @@ import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useLocale from 'shared/hooks/useLocale';
 
 import { LOCAL_STORAGE_KEYS } from '../constants';
-import { User, UserData } from '../types/application';
 
 // check that authentication is still alive in every 5 minutes
 const FIVE_MINUTES = 5 * 60 * 1000;

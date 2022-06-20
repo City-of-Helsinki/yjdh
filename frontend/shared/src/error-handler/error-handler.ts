@@ -11,7 +11,7 @@ const handleError = (
 ): void => {
   if (isError(error)) {
     // eslint-disable-next-line no-console
-    console.error('Unexpected backend error', error);
+    console.error('Unexpected backend error', error.message);
     if (/40[13]/.test(error.message)) {
       if (redirectUnauthorized) {
         void goToPage('/login?sessionExpired=true');

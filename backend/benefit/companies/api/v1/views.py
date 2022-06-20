@@ -1,10 +1,5 @@
 import logging
 
-from common.permissions import BFIsAuthenticated, TermsOfServiceAccepted
-from companies.api.v1.serializers import CompanySerializer
-from companies.models import Company
-from companies.services import get_or_create_organisation_with_business_id
-from companies.tests.data.company_data import get_dummy_company_data
 from django.conf import settings
 from django.db import transaction
 from django.http import HttpRequest
@@ -14,6 +9,11 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from common.permissions import BFIsAuthenticated, TermsOfServiceAccepted
+from companies.api.v1.serializers import CompanySerializer
+from companies.models import Company
+from companies.services import get_or_create_organisation_with_business_id
+from companies.tests.data.company_data import get_dummy_company_data
 from shared.oidc.utils import get_organization_roles
 
 LOGGER = logging.getLogger(__name__)

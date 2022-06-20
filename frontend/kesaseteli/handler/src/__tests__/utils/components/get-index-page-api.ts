@@ -89,6 +89,13 @@ const getIndexPageApi = async (
         name: translations.handlerApplication.vtjInfo.title,
       });
     },
+    vtjInfoIsNotPresent: (): void => {
+      expect(
+        screen.queryByRole('heading', {
+          name: translations.handlerApplication.vtjInfo.title,
+        })
+      ).not.toBeInTheDocument();
+    },
     vtjFieldValueIsPresent: async (
       key: keyof typeof translations.handlerApplication.vtjInfo,
       value: string
@@ -110,10 +117,10 @@ const getIndexPageApi = async (
         )
       );
     },
-    vtjErrorMessageIsNotPresent: async (
+    vtjErrorMessageIsNotPresent: (
       key: VtjExceptionType,
       params?: Record<string, string | number>
-    ): Promise<void> => {
+    ): void => {
       expect(
         screen.queryByText(
           replaced(
@@ -144,24 +151,47 @@ const getIndexPageApi = async (
         })
       ).not.toBeInTheDocument();
     },
-
+    actionButtonsAreEnabled: (): void => {
+      expect(
+        screen.getByRole('button', {
+          name: translations.handlerApplication.accept,
+        })
+      ).toBeEnabled();
+      expect(
+        screen.getByRole('button', {
+          name: translations.handlerApplication.reject,
+        })
+      ).toBeEnabled();
+    },
+    actionButtonsAreDisabled: (): void => {
+      expect(
+        screen.getByRole('button', {
+          name: translations.handlerApplication.accept,
+        })
+      ).toBeDisabled();
+      expect(
+        screen.getByRole('button', {
+          name: translations.handlerApplication.reject,
+        })
+      ).toBeDisabled();
+    },
     statusNotificationIsPresent: async (
       status: keyof typeof translations.handlerApplication.notification
     ): Promise<HTMLElement> =>
       screen.findByRole('heading', {
         name: translations.handlerApplication.notification[status],
       }),
-    showsConfirmDialog: async (type: CompleteOperation) => {
+    showsConfirmDialog: async (type: CompleteOperation['type']) => {
       const dialog = await screen.findByRole('dialog');
       return within(dialog).findByText(translations.dialog[type].content);
     },
   };
   const actions = {
-    clickCompleteButton: (type: CompleteOperation): void => {
+    clickCompleteButton: (type: CompleteOperation['type']): void => {
       userEvent.click(screen.getByTestId(`${type}-button`));
     },
     clickConfirmButton: async (
-      type: CompleteOperation,
+      type: CompleteOperation['type'],
       errorCode?: 400 | 500
     ) => {
       if (!expectedApplication) {
@@ -172,11 +202,11 @@ const getIndexPageApi = async (
       if (errorCode) {
         expectToPatchYouthApplicationError(
           type,
-          expectedApplication.id,
+          expectedApplication,
           errorCode
         );
       } else {
-        expectToPatchYouthApplication(type, expectedApplication.id);
+        expectToPatchYouthApplication(type, expectedApplication);
         expectToGetYouthApplication({
           ...expectedApplication,
           status: type === 'accept' ? 'accepted' : 'rejected',

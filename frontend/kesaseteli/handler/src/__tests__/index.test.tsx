@@ -1,4 +1,3 @@
-import { FinnishSSN } from 'finnish-ssn';
 import { axe } from 'jest-axe';
 import {
   expectToGetYouthApplication,
@@ -14,7 +13,10 @@ import {
   fakeActivatedYouthApplication,
   fakeExpiredVtjAddress,
   fakeFutureVtjAddress,
+  fakeSSN,
   fakeValidVtjAddress,
+  fakeYouthTargetGroupAge,
+  fakeYouthTargetGroupAgeSSN,
 } from 'kesaseteli-shared/__tests__/utils/fake-objects';
 import {
   YOUTH_APPLICATION_STATUS_COMPLETED,
@@ -123,9 +125,38 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
   });
 
   describe('vtj data', () => {
+    describe('When NEXT_PUBLIC_DISABLE_VTJ ', () => {
+      // How to mock process.env: https://medium.com/weekly-webtips/how-to-mock-process-env-when-writing-unit-tests-with-jest-80940f367c2c
+      const originalEnv = process.env;
+      beforeEach(() => {
+        jest.resetModules();
+      });
+      it('doesnt show vtj data', async () => {
+        process.env = {
+          ...originalEnv,
+          NEXT_PUBLIC_DISABLE_VTJ: '1',
+        };
+        const application = fakeActivatedYouthApplication({
+          status: 'awaiting_manual_processing',
+        });
+        expectToGetYouthApplication(application);
+        await renderPage(HandlerIndex, {
+          query: { id: application.id },
+        });
+        const indexPageApi = await getIndexPageApi(application);
+        await indexPageApi.expectations.pageIsLoaded();
+
+        indexPageApi.expectations.vtjInfoIsNotPresent();
+        await indexPageApi.expectations.actionButtonsArePresent();
+        indexPageApi.expectations.actionButtonsAreEnabled();
+      });
+      afterEach(() => {
+        process.env = originalEnv;
+      });
+    });
+
     it(`shows vtjData without errors`, async () => {
-      const age = 15;
-      const social_security_number = FinnishSSN.createWithAge(age);
+      const { age, social_security_number } = fakeYouthTargetGroupAge();
       const application = fakeActivatedYouthApplication({
         social_security_number,
       });
@@ -137,7 +168,8 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       await indexPageApi.expectations.pageIsLoaded();
 
       const { LahiosoiteS, PostitoimipaikkaS } =
-        application.vtj_data.Henkilo.VakinainenKotimainenLahiosoite;
+        application.encrypted_handler_vtj_json.Henkilo
+          .VakinainenKotimainenLahiosoite;
 
       await indexPageApi.expectations.vtjInfoIsPresent();
       await indexPageApi.expectations.vtjFieldValueIsPresent(
@@ -153,7 +185,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         `${LahiosoiteS} ${application.postcode} ${PostitoimipaikkaS}`
       );
       for (const exception of VTJ_EXCEPTIONS) {
-        await indexPageApi.expectations.vtjErrorMessageIsNotPresent(exception, {
+        indexPageApi.expectations.vtjErrorMessageIsNotPresent(exception, {
           age,
           last_name: application.last_name,
           social_security_number,
@@ -162,11 +194,14 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       }
     });
 
-    it(`shows error when vtjData is not found`, async () => {
-      const social_security_number = FinnishSSN.createWithAge(16);
+    it(`shows error when vtjData is not found and disables action buttons`, async () => {
+      const social_security_number = fakeYouthTargetGroupAgeSSN();
       const application = fakeActivatedYouthApplication({
         social_security_number,
-        vtj_data: { Henkilo: { Henkilotunnus: { '@voimassaolokoodi': '0' } } },
+        encrypted_handler_vtj_json: {
+          Henkilo: { Henkilotunnus: { '@voimassaolokoodi': '0' } },
+        },
+        status: 'awaiting_manual_processing',
       });
       expectToGetYouthApplication(application);
       await renderPage(HandlerIndex, {
@@ -178,12 +213,16 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       await indexPageApi.expectations.vtjErrorMessageIsPresent('notFound', {
         social_security_number,
       });
+      await indexPageApi.expectations.actionButtonsArePresent();
+      indexPageApi.expectations.actionButtonsAreDisabled();
     });
 
     it(`shows warning when vtjData has different last name`, async () => {
       const application = fakeActivatedYouthApplication({
         last_name: 'Nieminen',
-        vtj_data: { Henkilo: { NykyinenSukunimi: { Sukunimi: 'Virtanen' } } },
+        encrypted_handler_vtj_json: {
+          Henkilo: { NykyinenSukunimi: { Sukunimi: 'Virtanen' } },
+        },
       });
       expectToGetYouthApplication(application);
       await renderPage(HandlerIndex, {
@@ -198,10 +237,11 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       );
     });
 
-    for (const age of [1, 14, 15, 16, 17, 99]) {
+    for (const age of [2, 15, 16, 17, 18, 110]) {
+      const classYear = new Date().getFullYear() - age;
       it(`shows warning when applicant is not in target age group, age: ${age}`, async () => {
         const application = fakeActivatedYouthApplication({
-          social_security_number: FinnishSSN.createWithAge(age),
+          social_security_number: fakeSSN(classYear),
         });
         expectToGetYouthApplication(application);
         await renderPage(HandlerIndex, {
@@ -210,8 +250,8 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         const indexPageApi = await getIndexPageApi(application);
         await indexPageApi.expectations.pageIsLoaded();
         // eslint-disable-next-line unicorn/prefer-ternary
-        if ([15, 16].includes(age)) {
-          await indexPageApi.expectations.vtjErrorMessageIsNotPresent(
+        if ([16, 17].includes(age)) {
+          indexPageApi.expectations.vtjErrorMessageIsNotPresent(
             'notInTargetAgeGroup',
             { age }
           );
@@ -228,7 +268,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       const permanentAddress = fakeValidVtjAddress();
       const temporaryAddress = fakeValidVtjAddress();
       const application = fakeActivatedYouthApplication({
-        vtj_data: {
+        encrypted_handler_vtj_json: {
           Henkilo: {
             VakinainenKotimainenLahiosoite: permanentAddress,
             TilapainenKotimainenLahiosoite: temporaryAddress,
@@ -252,7 +292,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       const permanentAddress = fakeExpiredVtjAddress();
       const temporaryAddress = fakeValidVtjAddress();
       const application = fakeActivatedYouthApplication({
-        vtj_data: {
+        encrypted_handler_vtj_json: {
           Henkilo: {
             VakinainenKotimainenLahiosoite: permanentAddress,
             TilapainenKotimainenLahiosoite: temporaryAddress,
@@ -275,7 +315,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
 
     it(`shows 'address not found' -error when both addresses are currently invalid`, async () => {
       const application = fakeActivatedYouthApplication({
-        vtj_data: {
+        encrypted_handler_vtj_json: {
           Henkilo: {
             VakinainenKotimainenLahiosoite: fakeExpiredVtjAddress(),
             TilapainenKotimainenLahiosoite: fakeFutureVtjAddress(),
@@ -296,7 +336,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
     it(`shows 'different postcode' -error when application has different post code`, async () => {
       const application = fakeActivatedYouthApplication({
         postcode: '00100',
-        vtj_data: {
+        encrypted_handler_vtj_json: {
           Henkilo: { VakinainenKotimainenLahiosoite: { Postinumero: '00540' } },
         },
       });
@@ -315,7 +355,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
     it(`doesn't show 'different postcode' -error when application has same post code`, async () => {
       const application = fakeActivatedYouthApplication({
         postcode: '00100',
-        vtj_data: {
+        encrypted_handler_vtj_json: {
           Henkilo: { VakinainenKotimainenLahiosoite: { Postinumero: '00100' } },
         },
       });
@@ -325,7 +365,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       });
       const indexPageApi = await getIndexPageApi(application);
       await indexPageApi.expectations.pageIsLoaded();
-      await indexPageApi.expectations.vtjErrorMessageIsNotPresent(
+      indexPageApi.expectations.vtjErrorMessageIsNotPresent(
         'differentPostCode',
         { postcode: '00100' }
       );
@@ -333,7 +373,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
 
     it(`shows 'outside Helsinki' -error when city is not Helsinki`, async () => {
       const application = fakeActivatedYouthApplication({
-        vtj_data: {
+        encrypted_handler_vtj_json: {
           Henkilo: {
             VakinainenKotimainenLahiosoite: { PostitoimipaikkaS: 'Vaasa' },
           },
@@ -352,7 +392,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
 
     it(`doesn't show 'outside Helsinki' -error when city is Helsinki`, async () => {
       const application = fakeActivatedYouthApplication({
-        vtj_data: {
+        encrypted_handler_vtj_json: {
           Henkilo: {
             VakinainenKotimainenLahiosoite: { PostitoimipaikkaS: 'Helsinki' },
           },
@@ -364,14 +404,14 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       });
       const indexPageApi = await getIndexPageApi(application);
       await indexPageApi.expectations.pageIsLoaded();
-      await indexPageApi.expectations.vtjErrorMessageIsNotPresent(
-        'outsideHelsinki'
-      );
+      indexPageApi.expectations.vtjErrorMessageIsNotPresent('outsideHelsinki');
     });
 
     it(`shows 'is dead' -error when applicant has died`, async () => {
       const application = fakeActivatedYouthApplication({
-        vtj_data: { Henkilo: { Kuolintiedot: { Kuollut: '1' } } },
+        encrypted_handler_vtj_json: {
+          Henkilo: { Kuolintiedot: { Kuollut: '1' } },
+        },
       });
       expectToGetYouthApplication(application);
       await renderPage(HandlerIndex, {
@@ -447,6 +487,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         await indexPageApi.actions.clickConfirmButton(operationType);
         await indexPageApi.expectations.statusNotificationIsPresent(status);
       });
+
       it(`shows error toast when backend returns bad request`, async () => {
         const application = fakeActivatedYouthApplication({
           status: 'awaiting_manual_processing',

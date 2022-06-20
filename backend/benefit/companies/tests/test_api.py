@@ -2,6 +2,10 @@ import re
 from copy import deepcopy
 
 import pytest
+from django.conf import settings
+from django.test import override_settings
+from requests import HTTPError
+
 from applications.tests.conftest import *  # noqa
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
@@ -10,12 +14,8 @@ from companies.tests.data.company_data import (
     DUMMY_YRTTI_RESPONSE,
     get_dummy_company_data,
 )
-from django.conf import settings
-from django.test import override_settings
-from requests import HTTPError
-from terms.tests.factories import TermsOfServiceApprovalFactory
-
 from shared.service_bus.enums import YtjOrganizationCode
+from terms.tests.factories import TermsOfServiceApprovalFactory
 
 
 def get_company_api_url(business_id=""):

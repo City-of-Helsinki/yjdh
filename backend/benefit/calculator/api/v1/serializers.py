@@ -1,3 +1,7 @@
+from dateutil.relativedelta import relativedelta
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+
 from applications.enums import ApplicationStatus
 from calculator.models import (
     Calculation,
@@ -6,9 +10,6 @@ from calculator.models import (
     PreviousBenefit,
     TrainingCompensation,
 )
-from dateutil.relativedelta import relativedelta
-from django.utils.translation import gettext_lazy as _
-from rest_framework import serializers
 from users.api.v1.serializers import UserSerializer
 from users.models import User
 

@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
-from messages.models import MessageType
 from rest_framework import permissions
+
+from messages.models import MessageType
 from users.utils import get_company_from_request
 
 

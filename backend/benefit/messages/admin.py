@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import display
 from django.utils.translation import gettext_lazy as _
+
 from messages.models import Message
 
 
