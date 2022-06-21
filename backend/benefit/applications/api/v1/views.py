@@ -22,12 +22,12 @@ from applications.api.v1.serializers import (
 )
 from applications.enums import ApplicationBatchStatus, ApplicationStatus
 from applications.models import Application, ApplicationBatch
+from applications.services.ahjo_integration import generate_zip, prepare_pdf_files
 from applications.services.applications_csv_report import ApplicationsCsvService
 from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
 from messages.models import MessageType
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
 from users.utils import get_company_from_request
-from applications.services.ahjo_integration import generate_zip, prepare_pdf_files
 
 
 class BaseApplicationFilter(filters.FilterSet):

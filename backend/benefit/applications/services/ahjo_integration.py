@@ -1,3 +1,4 @@
+import logging
 import os
 import zipfile
 from io import BytesIO
@@ -50,7 +51,7 @@ JINJA_TEMPLATES_SINGLE = {
         "file_name": "[{company_name}] Työllisyydenhoidon Helsinki-lisä, kielteiset päätökset yrityksille.pdf",
     },
 }
-
+LOGGER = logging.getLogger(__name__)
 
 def _get_template(path):
     template_loader = jinja2.FileSystemLoader(searchpath=PDF_PATH)

@@ -11,7 +11,7 @@ export enum ROUTES {
 export enum EXPORT_APPLICATIONS_ROUTES {
   ACCEPTED = 'export_new_accepted_applications',
   REJECTED = 'export_new_rejected_applications',
-  IN_TIME_RANGE = 'export',
+  IN_TIME_RANGE = 'export_csv',
 }
 
 export enum SUPPORTED_LANGUAGES {

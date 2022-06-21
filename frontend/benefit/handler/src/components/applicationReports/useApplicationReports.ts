@@ -32,6 +32,7 @@ type ExtendedComponentProps = {
   theme: DefaultTheme;
   language: Language;
   exportApplications: (
+    type: ExportFileType,
     exportApplicationsRoute: string,
     proposalForDecision: PROPOSALS_FOR_DESISION
   ) => void;
@@ -44,9 +45,7 @@ type ExtendedComponentProps = {
   lastRejectedApplicationsExportDate: string;
 };
 
-const useApplicationReports = (
-  type: ExportFileType
-): ExtendedComponentProps => {
+const useApplicationReports = (): ExtendedComponentProps => {
   const language = useLocale();
   const theme = useTheme();
   const { t } = useTranslation();
@@ -80,13 +79,17 @@ const useApplicationReports = (
 
   const exportApplications = useCallback(
     async (
+      type: ExportFileType,
       exportApplicationsRoute: EXPORT_APPLICATIONS_ROUTES,
       proposalForDecision: PROPOSALS_FOR_DESISION
     ) => {
+      console.log(
+        `${BackendEndpoint.HANDLER_APPLICATIONS}${exportApplicationsRoute}_${type}/`
+      );
       const data = await handleResponse<string>(
         axios.get(
-          `${BackendEndpoint.HANDLER_APPLICATIONS}${exportApplicationsRoute}_${type}/`
-          // {responseType: 'arraybuffer'}
+          `${BackendEndpoint.HANDLER_APPLICATIONS}${exportApplicationsRoute}_${type}/`,
+          { responseType: 'arraybuffer' }
         )
       );
       downloadFile(data, type);
@@ -94,7 +97,7 @@ const useApplicationReports = (
         getReportsApplicationBatchesQueryKey(proposalForDecision)
       );
     },
-    [axios, handleResponse, queryClient, type]
+    [axios, handleResponse, queryClient]
   );
 
   const formik = useFormik<ExportApplicationInTimeRangeFormProps>({
@@ -136,7 +139,7 @@ const useApplicationReports = (
   const exportApplicationsInTimeRange = useCallback(async () => {
     const data = await handleResponse<string>(
       axios.get(
-        `${BackendEndpoint.HANDLER_APPLICATIONS}${EXPORT_APPLICATIONS_ROUTES.IN_TIME_RANGE}_${type}/`,
+        `${BackendEndpoint.HANDLER_APPLICATIONS}${EXPORT_APPLICATIONS_ROUTES.IN_TIME_RANGE}/`,
         {
           params: {
             handled_at_after: convertToBackendDateFormat(startDate),
@@ -145,8 +148,8 @@ const useApplicationReports = (
         }
       )
     );
-    downloadFile(data, type);
-  }, [handleResponse, axios, type, startDate, endDate]);
+    downloadFile(data, 'csv');
+  }, [handleResponse, axios, startDate, endDate]);
 
   return {
     t,
