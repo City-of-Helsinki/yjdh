@@ -1,15 +1,14 @@
-import { APPLICATION_STATUSES, ROUTES } from 'benefit/applicant/constants';
+import { ROUTES } from 'benefit/applicant/constants';
 import FrontPageContext from 'benefit/applicant/context/FrontPageContext';
 import useApplicationsQuery from 'benefit/applicant/hooks/useApplicationsQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import {
   ApplicationAllowedAction,
   ApplicationListItemData,
-} from 'benefit/applicant/types/application';
+} from 'benefit-shared/types/application';
 import { IconPen } from 'hds-react';
 import camelCase from 'lodash/camelCase';
-// eslint-disable-next-line you-dont-need-lodash-underscore/find
-import find from 'lodash/find';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import isServerSide from 'shared/server/is-server-side';
@@ -65,7 +64,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
   const { errors, setError } = React.useContext(FrontPageContext);
 
   useEffect(() => {
-    if (error && !find(errors, error)) {
+    if (error && !errors.includes(error)) {
       setError(error);
     }
   }, [errors, error, setError]);

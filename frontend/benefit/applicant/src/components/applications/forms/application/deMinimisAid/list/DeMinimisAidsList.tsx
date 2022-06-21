@@ -1,8 +1,6 @@
 import { $Notification } from 'benefit/applicant/components/Notification/Notification.sc';
-import {
-  DE_MINIMIS_AID_KEYS,
-  MAX_DEMINIMIS_AID_TOTAL_AMOUNT,
-} from 'benefit/applicant/constants';
+import { MAX_DEMINIMIS_AID_TOTAL_AMOUNT } from 'benefit/applicant/constants';
+import { DE_MINIMIS_AID_KEYS } from 'benefit-shared/constants';
 import { Button, IconMinusCircle } from 'hds-react';
 import sumBy from 'lodash/sumBy';
 import React from 'react';

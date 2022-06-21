@@ -4,7 +4,6 @@ import re
 import pytest
 from django.test import override_settings, RequestFactory
 from rest_framework.exceptions import PermissionDenied
-from shared.common.tests.factories import StaffUserFactory, UserFactory
 
 from events.services import ServiceClient
 from events.tests.data.linked_events_responses import (
@@ -18,6 +17,7 @@ from events.tests.data.linked_events_responses import (
     SAMPLE_EVENTS,
 )
 from events.utils import PROVIDER_BUSINESS_ID_FIELD
+from shared.common.tests.factories import StaffUserFactory, UserFactory
 
 LOGGER = logging.getLogger(__name__)
 

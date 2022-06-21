@@ -50,6 +50,7 @@
 		"readMore": "Läs mer",
 		"showMore": "Visa fler resultat",
 		"languages": "Språk",
+		"noResultsText": "Din sökning matchade inte några PRAO-platser. Försök att begränsa dina sökord.", 
 		"noResultsLinks": "Inga händelser hittades som matchade dina sökkriterier. Testa att klicka på någon av dessa:",
 		"fewResultsLinks": "Också prova följande sökord:"
 	},

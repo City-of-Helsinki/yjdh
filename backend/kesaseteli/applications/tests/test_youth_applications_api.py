@@ -22,18 +22,6 @@ from django.utils.html import strip_tags
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.reverse import reverse
-from shared.audit_log.models import AuditLogEntry
-from shared.common.lang_test_utils import (
-    assert_email_body_language,
-    assert_email_subject_language,
-)
-from shared.common.tests.conftest import (
-    staff_client,
-    staff_superuser_client,
-    superuser_client,
-)
-from shared.common.tests.factories import UserFactory
-from shared.common.tests.test_validators import get_invalid_postcode_values
 
 from applications.api.v1.serializers import YouthApplicationSerializer
 from applications.enums import (
@@ -64,6 +52,18 @@ from common.tests.factories import (
 )
 from common.urls import handler_403_url, handler_youth_application_processing_url
 from common.utils import normalize_whitespace
+from shared.audit_log.models import AuditLogEntry
+from shared.common.lang_test_utils import (
+    assert_email_body_language,
+    assert_email_subject_language,
+)
+from shared.common.tests.conftest import (
+    staff_client,
+    staff_superuser_client,
+    superuser_client,
+)
+from shared.common.tests.factories import UserFactory
+from shared.common.tests.test_validators import get_invalid_postcode_values
 
 
 def reverse_youth_application_action(action, pk):

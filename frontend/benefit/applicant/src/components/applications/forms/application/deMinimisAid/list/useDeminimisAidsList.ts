@@ -1,6 +1,6 @@
 import DeMinimisContext from 'benefit/applicant/context/DeMinimisContext';
 import { useTranslation } from 'benefit/applicant/i18n';
-import { DeMinimisAid } from 'benefit/applicant/types/application';
+import { DeMinimisAid } from 'benefit-shared/types/application';
 import { TFunction } from 'next-i18next';
 import React from 'react';
 // import * as Yup from 'yup';

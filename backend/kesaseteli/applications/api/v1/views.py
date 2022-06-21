@@ -18,8 +18,6 @@ from rest_framework.generics import ListAPIView
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from shared.audit_log.viewsets import AuditLoggingModelViewSet
-from shared.vtj.vtj_client import VTJClient
 
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_UPDATE_STATUSES,
@@ -51,6 +49,8 @@ from applications.models import (
     YouthApplication,
 )
 from common.decorators import enforce_handler_view_adfs_login
+from shared.audit_log.viewsets import AuditLoggingModelViewSet
+from shared.vtj.vtj_client import VTJClient
 
 LOGGER = logging.getLogger(__name__)
 

@@ -44,4 +44,3 @@ export const waitFor = (
 // re-export everything
 export * from '@testing-library/react';
 export { default as userEvent } from '@testing-library/user-event';
-export { specialChars } from '@testing-library/user-event';

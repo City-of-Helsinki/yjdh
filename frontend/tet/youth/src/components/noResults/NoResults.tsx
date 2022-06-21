@@ -7,10 +7,10 @@ import { useTranslation } from 'next-i18next';
 type Props = {
   params: QueryParams;
   onSearchByFilters: (value: QueryParams) => void;
-  zeroResults: Boolean;
+  resultsTotal: number;
 };
 
-const NoResults: React.FC<Props> = ({ params, onSearchByFilters, zeroResults }) => {
+const NoResults: React.FC<Props> = ({ params, onSearchByFilters, resultsTotal }) => {
   const { t } = useTranslation();
   const searchHandler = (searchText: string) => {
     onSearchByFilters({
@@ -52,22 +52,29 @@ const NoResults: React.FC<Props> = ({ params, onSearchByFilters, zeroResults }) 
     }
   };
 
-  return (
-    <>
-      {zeroResults ? (
-        <$Title>{t('common:postings.noResultsLinks')}</$Title>
-      ) : (
-        <$Title>{t('common:postings.fewResultsLinks')}</$Title>
-      )}
-      <$Links>
-        {searchWords().map((word) => (
-          <Link size="L" onClick={() => searchHandler(word)} href="javascript:void(0)">
-            {word}
-          </Link>
-        ))}
-      </$Links>
-    </>
-  );
+  if (resultsTotal >= 5) {
+    return null;
+  }
+  if (params.text && params.text.indexOf(' ') >= 0) {
+    return (
+      <>
+        {resultsTotal === 0 ? (
+          <$Title>{t('common:postings.noResultsLinks')}</$Title>
+        ) : (
+          <$Title>{t('common:postings.fewResultsLinks')}</$Title>
+        )}
+        <$Links>
+          {searchWords().map((word) => (
+            <Link size="L" onClick={() => searchHandler(word)} href="javascript:void(0)">
+              {word}
+            </Link>
+          ))}
+        </$Links>
+      </>
+    );
+  } else {
+    return <$Title>{t('common:postings.noResultsText')}</$Title>;
+  }
 };
 
 export default NoResults;

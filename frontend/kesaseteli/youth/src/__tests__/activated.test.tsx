@@ -16,7 +16,7 @@ describe('frontend/kesaseteli/youth/src/pages/activated.tsx', () => {
 
   it('loads the page', async () => {
     const spyPush = jest.fn();
-    await renderPage(ActivatedPage, { push: spyPush });
+    renderPage(ActivatedPage, { push: spyPush });
     const emailInUseApi = getNotificationPageApi('activated');
     await emailInUseApi.expectations.pageIsLoaded();
   });

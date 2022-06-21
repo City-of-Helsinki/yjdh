@@ -1,6 +1,6 @@
 import SummarySection from 'benefit/applicant/components/summarySection/SummarySection';
-import { BENEFIT_TYPES } from 'benefit/applicant/constants';
-import { Application } from 'benefit/applicant/types/application';
+import { BENEFIT_TYPES } from 'benefit-shared/constants';
+import { Application } from 'benefit-shared/types/application';
 import { Button, IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';

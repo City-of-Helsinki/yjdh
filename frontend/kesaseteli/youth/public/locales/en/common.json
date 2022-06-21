@@ -99,7 +99,7 @@
     },
     "reasons": {
       "unlisted_school": "My school is not on the list",
-      "student_in_helsinki_but_not_resident": "I don't live Helsinki, but my school is in Helsink",
+      "student_in_helsinki_but_not_resident": "I don't live Helsinki, but my school is in Helsinki",
       "moving_to_helsinki": "I don't yet live in Helsinki, but I am moving there before 1 of June",
       "underage_or_overage": "I don't belong to the target group based on my age, but based on the year class at school I do belong to the target group",
       "personal_info_differs_from_vtj": "My personal information differs from those at the Population Information System",

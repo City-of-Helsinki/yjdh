@@ -10,7 +10,7 @@ describe('frontend/kesaseteli/youth/src/components/header/Header.tsx', () => {
     const spyRouterPush = jest.fn();
     renderComponent(<Header />, { push: spyRouterPush });
     for (const lang of SUPPORTED_LANGUAGES) {
-      headerApi.actions.changeLanguage('fi', lang);
+      await headerApi.actions.changeLanguage('fi', lang);
       await waitFor(() =>
         expect(spyRouterPush).toHaveBeenCalledWith(undefined, undefined, {
           locale: String(lang),

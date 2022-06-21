@@ -10,10 +10,10 @@ describe('EmpoymentView', () => {
   const initialProps = {
     data: {
       employee: {
-        workingHours: 18,
-        monthlyPay: 3000,
-        otherExpenses: 100,
-        vacationMoney: 2000,
+        workingHours: '18',
+        monthlyPay: '3000',
+        otherExpenses: '100',
+        vacationMoney: '2000',
         collectiveBargainingAgreement: 'agreement',
       },
     },
