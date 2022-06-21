@@ -17,7 +17,7 @@ import { $Heading } from '../applicationsArchive/ApplicationsArchive.sc';
 import ReportsSection from './ReportsSection';
 import { useApplicationReports } from './useApplicationReports';
 
-const ApplicationReports: React.FC = (fileType: ExportFileType) => {
+const ApplicationReports: React.FC = () => {
   const {
     t,
     translationsBase,
@@ -27,16 +27,18 @@ const ApplicationReports: React.FC = (fileType: ExportFileType) => {
     exportApplicationsInTimeRange,
     lastAcceptedApplicationsExportDate,
     lastRejectedApplicationsExportDate,
-  } = useApplicationReports(fileType);
+  } = useApplicationReports();
 
   return (
     <Container>
       <$Heading>{`${t(`${translationsBase}.headings.main`)}`}</$Heading>
 
       <ReportsSection
+        types={['csv', 'pdf']}
         onDownloadButtonClick={(type: ExportFileType) =>
           exportApplications(
-            EXPORT_APPLICATIONS_ROUTES.ACCEPTED + type,
+            type,
+            EXPORT_APPLICATIONS_ROUTES.ACCEPTED,
             PROPOSALS_FOR_DESISION.ACCEPTED
           )
         }
@@ -58,9 +60,11 @@ const ApplicationReports: React.FC = (fileType: ExportFileType) => {
         </$GridCell>
       </ReportsSection>
       <ReportsSection
+        types={['csv', 'pdf']}
         onDownloadButtonClick={(type: ExportFileType) =>
           exportApplications(
-            EXPORT_APPLICATIONS_ROUTES.REJECTED + type,
+            type,
+            EXPORT_APPLICATIONS_ROUTES.REJECTED,
             PROPOSALS_FOR_DESISION.REJECTED
           )
         }
@@ -83,6 +87,7 @@ const ApplicationReports: React.FC = (fileType: ExportFileType) => {
       </ReportsSection>
 
       <ReportsSection
+        types={['csv']}
         onDownloadButtonClick={exportApplicationsInTimeRange}
         header={`${t(
           `${translationsBase}.headings.downloadApplicationsInTimeRange`

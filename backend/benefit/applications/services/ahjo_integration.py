@@ -5,7 +5,7 @@ from io import BytesIO
 import jinja2
 import pdfkit
 from django.utils import timezone
-
+import logging
 from applications.enums import ApplicationStatus, OrganizationType
 
 PDF_PATH = os.path.join(os.path.dirname(__file__) + "/pdf_templates")
@@ -50,7 +50,7 @@ JINJA_TEMPLATES_SINGLE = {
         "file_name": "[{company_name}] Työllisyydenhoidon Helsinki-lisä, kielteiset päätökset yrityksille.pdf",
     },
 }
-
+LOGGER = logging.getLogger(__name__)
 
 def _get_template(path):
     template_loader = jinja2.FileSystemLoader(searchpath=PDF_PATH)
