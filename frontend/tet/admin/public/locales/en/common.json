@@ -150,6 +150,7 @@
     "accessibilityStatement": "Accessibility statement",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/information/accessibility",
     "privacyPolicy": "Privacy policy",
+		"privacyPolicyPDF": "Opens a pdf-file",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
     "feedback": "Give feedback",
     "feedbackLink": "https://www.hel.fi/helsinki/en/administration/participate/feedback",
