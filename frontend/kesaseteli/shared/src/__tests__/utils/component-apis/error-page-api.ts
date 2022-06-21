@@ -1,12 +1,12 @@
 import { expectToLogout } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
-import { expectBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
+import { waitForLoadingCompleted } from 'shared/__tests__/utils/component.utils';
 import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 
 const ErrorPageApi = {
   expectations: {
     displayErrorPage: async (): Promise<void> => {
+      await waitForLoadingCompleted();
       await waitFor(() => {
-        expectBackendRequestsToComplete();
         expect(
           screen.getByRole('heading', {
             name: /(palvelussa on valitettavasti tapahtunut virhe)|(errorpage.title)/i,
@@ -16,21 +16,20 @@ const ErrorPageApi = {
     },
   },
   actions: {
-    clickToRefreshPage: async (): Promise<void> => {
+    clickToRefreshPage: async (): Promise<void> =>
       userEvent.click(
         screen.getByRole('button', {
           name: /(lataa sivu uudelleen)|(errorpage.retry)/i,
         })
-      );
-    },
+      ),
     clickLogoutButton: async (): Promise<void> => {
       const logout = expectToLogout();
-      userEvent.click(
+      await userEvent.click(
         screen.getByRole('button', {
           name: /(kirjaudu ulos)|(errorpage.logout)/i,
         })
       );
-      await waitFor(() => logout.done());
+      return waitFor(() => logout.done());
     },
   },
 };
