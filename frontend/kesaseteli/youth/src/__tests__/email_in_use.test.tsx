@@ -18,7 +18,7 @@ describe('frontend/kesaseteli/youth/src/pages/email_in_use.tsx', () => {
 
   it('redirects to main page when clicking the button', async () => {
     const spyPush = jest.fn();
-    await renderPage(EmailInUsePage, { push: spyPush });
+    renderPage(EmailInUsePage, { push: spyPush });
     const emailInUseApi = getNotificationPageApi('emailInUse');
     await emailInUseApi.expectations.pageIsLoaded();
     await emailInUseApi.actions.clickGoToFrontPageButton();
@@ -28,7 +28,7 @@ describe('frontend/kesaseteli/youth/src/pages/email_in_use.tsx', () => {
   });
 
   it('shows default activation link expiration time (12 hours)', async () => {
-    await renderPage(EmailInUsePage);
+    renderPage(EmailInUsePage);
     const thankYouPageApi = getNotificationPageApi('emailInUse');
     await thankYouPageApi.expectations.pageIsLoaded();
     await thankYouPageApi.expectations.notificationMessageIsPresent(12);
@@ -45,7 +45,7 @@ describe('frontend/kesaseteli/youth/src/pages/email_in_use.tsx', () => {
         ...originalEnv,
         NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: String(3600 * 2),
       };
-      await renderPage(EmailInUsePage);
+      renderPage(EmailInUsePage);
       const emailInUseApi = getNotificationPageApi('emailInUse');
       await emailInUseApi.expectations.pageIsLoaded();
       await emailInUseApi.expectations.notificationMessageIsPresent(2);

@@ -26,6 +26,7 @@ setup(
         "mozilla_django_oidc",
         "django_auth_adfs",
         "django-extensions",
+        "djangosaml2",
     ],
     setup_requires=["pytest-runner"],
     tests_require=["pytest", "pytest-django"],

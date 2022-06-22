@@ -31,13 +31,13 @@ const getNotificationPageApi = (
       },
     },
     actions: {
-      async clickGoToFrontPageButton() {
+      async clickGoToFrontPageButton(): Promise<void> {
         const button = await screen.findByRole('button', {
           name: regexp(
             translations.notificationPages[notificationPage].goToFrontendPage
           ),
         });
-        userEvent.click(button);
+        return userEvent.click(button);
       },
     },
   };

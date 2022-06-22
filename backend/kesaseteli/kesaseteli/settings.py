@@ -1,9 +1,17 @@
+import base64
 import os
+import tempfile
 
 import environ
+import saml2
+import saml2.saml
 import sentry_sdk
+from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
+from saml2.sigver import get_xmlsec_binary
 from sentry_sdk.integrations.django import DjangoIntegration
+
+from shared.suomi_fi.utils import get_contact_person_configuration
 
 checkout_dir = environ.Path(__file__) - 2
 assert os.path.exists(checkout_dir("manage.py"))
@@ -25,6 +33,7 @@ env = environ.Env(
     STATIC_URL=(str, "/static/"),
     YOUTH_URL=(str, "https://localhost:3100"),
     HANDLER_URL=(str, "https://localhost:3200"),
+    NEXT_PUBLIC_BACKEND_URL=(str, "https://localhost:8000"),
     ALLOWED_HOSTS=(list, ["*"]),
     USE_X_FORWARDED_HOST=(bool, False),
     DATABASE_URL=(
@@ -112,6 +121,22 @@ env = environ.Env(
     VTJ_USERNAME=(str, ""),
     VTJ_PASSWORD=(str, ""),
     VTJ_TIMEOUT=(int, 30),
+    ENABLE_SUOMIFI=(bool, False),
+    SUOMIFI_TEST=(bool, False),
+    # base64 encoded public key certificate (e.g. base64 -w 0 public.pem)
+    SUOMIFI_KEY=(str, None),
+    # base64 encoded private key (e.g. base64 -w 0 private.key)
+    SUOMIFI_CERT=(str, None),
+    SUOMIFI_SERVICE_NAME_EXTRA=(str, ""),
+    SUOMIFI_TECHNICAL_FIRST_NAME=(str, None),
+    SUOMIFI_TECHNICAL_LAST_NAME=(str, None),
+    SUOMIFI_TECHNICAL_EMAIL=(str, None),
+    SUOMIFI_SUPPORT_FIRST_NAME=(str, None),
+    SUOMIFI_SUPPORT_LAST_NAME=(str, None),
+    SUOMIFI_SUPPORT_EMAIL=(str, None),
+    SUOMIFI_ADMINISTRATIVE_FIRST_NAME=(str, None),
+    SUOMIFI_ADMINISTRATIVE_LAST_NAME=(str, None),
+    SUOMIFI_ADMINISTRATIVE_EMAIL=(str, None),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -130,6 +155,7 @@ VTJ_PERSONAL_ID_QUERY_URL = env.str("VTJ_PERSONAL_ID_QUERY_URL")
 VTJ_USERNAME = env.str("VTJ_USERNAME")
 VTJ_PASSWORD = env.str("VTJ_PASSWORD")
 VTJ_TIMEOUT = env.int("VTJ_TIMEOUT")
+ENABLE_SUOMIFI = env("ENABLE_SUOMIFI")
 
 DB_PREFIX = {
     None: env.str("DB_PREFIX"),
@@ -166,6 +192,7 @@ MEDIA_URL = env.str("MEDIA_URL")
 STATIC_URL = env.str("STATIC_URL")
 YOUTH_URL = env.str("YOUTH_URL")
 HANDLER_URL = env.str("HANDLER_URL")
+NEXT_PUBLIC_BACKEND_URL = env("NEXT_PUBLIC_BACKEND_URL")
 
 ROOT_URLCONF = "kesaseteli.urls"
 WSGI_APPLICATION = "kesaseteli.wsgi.application"
@@ -198,6 +225,9 @@ INSTALLED_APPS = [
     "companies",
 ]
 
+if ENABLE_SUOMIFI:
+    INSTALLED_APPS.append("djangosaml2")
+
 if ENABLE_ADMIN:
     INSTALLED_APPS.append("django.contrib.admin")
 
@@ -213,6 +243,12 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
 ]
+
+if ENABLE_SUOMIFI:
+    MIDDLEWARE.insert(
+        MIDDLEWARE.index("simple_history.middleware.HistoryRequestMiddleware"),
+        "djangosaml2.middleware.SamlSessionMiddleware",
+    )
 
 TEMPLATES = [
     {
@@ -307,6 +343,7 @@ SESSION_COOKIE_SECURE = True
 AUTHENTICATION_BACKENDS = (
     "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
     "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
+    "shared.suomi_fi.auth.SuomiFiSAML2AuthenticationBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
 
@@ -355,6 +392,235 @@ ADFS_LOGIN_REDIRECT_URL = env.str("ADFS_LOGIN_REDIRECT_URL")
 ADFS_LOGIN_REDIRECT_URL_FAILURE = env.str("ADFS_LOGIN_REDIRECT_URL_FAILURE")
 
 ADFS_CONTROLLER_GROUP_UUIDS = env.list("ADFS_CONTROLLER_GROUP_UUIDS")
+
+
+# Suomi.fi (djangosaml2)
+
+SAML_SESSION_COOKIE_NAME = "kesaseteli_saml_session"
+SAML_CREATE_UNKNOWN_USER = True
+SAML_DJANGO_USER_MAIN_ATTRIBUTE = "username"
+SAML_USE_NAME_ID_AS_USERNAME = True  # Suomi.fi session ID as username
+ACS_DEFAULT_REDIRECT_URL = reverse_lazy("eauth_authentication_init")
+SUOMIFI_TEST = env("SUOMIFI_TEST")
+if NEXT_PUBLIC_MOCK_FLAG:
+    SUOMIFI_SERVICE_NAME_EXTRA = "MOCK"
+else:
+    SUOMIFI_SERVICE_NAME_EXTRA = env("SUOMIFI_SERVICE_NAME_EXTRA")
+
+SUOMIFI_IDP_METADATA_FILENAME = (
+    "idp-metadata-secondary.xml"
+    if SUOMIFI_TEST
+    else "idp-metadata-tunnistautuminen.xml"
+)
+SUOMIFI_IDP_METADATA_PATH = parent_dir(
+    f"shared/shared/suomi_fi/metadata/{SUOMIFI_IDP_METADATA_FILENAME}"
+)
+SUOMIFI_CERT = env("SUOMIFI_CERT")
+SUOMIFI_KEY = env("SUOMIFI_KEY")
+SUOMIFI_SERVICE_NAME_FI = " ".join(
+    filter(None, ["Nuorten kesäseteli", env("SUOMIFI_SERVICE_NAME_EXTRA")])
+)
+SUOMIFI_SERVICE_NAME_SV = " ".join(
+    filter(None, ["Sommarsedel för unga", env("SUOMIFI_SERVICE_NAME_EXTRA")])
+)
+SUOMIFI_SERVICE_NAME_EN = " ".join(
+    filter(None, ["Summer Job Voucher for youth", env("SUOMIFI_SERVICE_NAME_EXTRA")])
+)
+
+SAML_CONFIG = {
+    "xmlsec_binary": get_xmlsec_binary(),
+    "entity_attributes": [
+        {
+            "format": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+            "name": "FinnishAuthMethod",
+            "values": [
+                "http://ftn.ficora.fi/2017/loa3",  # korkea, fLoA3
+                "http://eidas.europa.eu/LoA/high",  # korkea, eLoA3
+                "http://ftn.ficora.fi/2017/loa2",  # korotettu, fLoA2
+                "http://eidas.europa.eu/LoA/substantial",  # korotettu, eLoA2
+            ],
+        },
+        {
+            "friendly_name": "EidasSupport",
+            "name": "urn:oid:1.2.246.517.3003.111.14",
+            "format": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+            "values": ["full"],  # full or none
+        },
+        {
+            "friendly_name": "VtjVerificationRequired",
+            "name": "urn:oid:1.2.246.517.3003.111.3",
+            "format": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+            "values": ["true"],
+        },
+        {
+            "friendly_name": "SkipEndpointValidationWhenSigned",
+            "name": "urn:oid:1.2.246.517.3003.111.4",
+            "format": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+            "values": ["true"],
+        },
+    ],
+    "entityid": f"{NEXT_PUBLIC_BACKEND_URL}/saml2/metadata/",
+    "attribute_map_dir": parent_dir("shared/shared/suomi_fi/attributemaps"),
+    "allow_unknown_attributes": True,
+    # ServiceName
+    # pysaml2 only supports a single value here. FI and SV injected in the metadata.
+    "name": SUOMIFI_SERVICE_NAME_EN,
+    "service": {
+        "sp": {
+            "name_id_format": saml2.saml.NAMEID_FORMAT_TRANSIENT,
+            "endpoints": {
+                "assertion_consumer_service": [
+                    (f"{NEXT_PUBLIC_BACKEND_URL}/saml2/acs/", saml2.BINDING_HTTP_POST),
+                ],
+                "single_logout_service": [
+                    (
+                        f"{NEXT_PUBLIC_BACKEND_URL}/saml2/ls/",
+                        saml2.BINDING_HTTP_REDIRECT,
+                    ),
+                ],
+            },
+            "name_id_format_allow_create": True,
+            "required_attributes": [
+                "nationalIdentificationNumber",
+                "electronicIdentificationNumber",
+                "sn",
+                "givenName",
+            ],
+            "optional_attributes": [
+                "FirstName",
+                "FamilyName",
+                "PersonIdentifier",
+                "DateOfBirth",
+                "displayName",
+                "cn",
+            ],
+            "requested_authn_context": {
+                "authn_context_class_ref": [
+                    "http://ftn.ficora.fi/2017/loa3",  # korkea, fLoA3
+                    # "http://eidas.europa.eu/LoA/high",  # korkea, eLoA3
+                    "http://ftn.ficora.fi/2017/loa2",  # korotettu, fLoA2
+                    # "http://eidas.europa.eu/LoA/substantial",  # korotettu, eLoA2
+                ],
+                "comparison": "exact",
+            },
+            "authn_requests_signed": True,
+            "logout_requests_signed": True,
+            "logout_responses_signed": True,
+            "allow_unsolicited": False,
+            "ui_info": {
+                "display_name": [
+                    {"text": "Nuorten kesäseteli", "lang": "fi"},
+                    {"text": "Sommarsedel för unga", "lang": "sv"},
+                    {"text": "Summer Job Voucher for youth", "lang": "en"},
+                ],
+                "description": [
+                    {"text": "Nuorten kesäseteli", "lang": "fi"},
+                    {"text": "Sommarsedel för unga", "lang": "sv"},
+                    {"text": "Summer Job Voucher for youth", "lang": "en"},
+                ],
+                "information_url": [
+                    {
+                        "text": "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/",
+                        "lang": "fi",
+                    },
+                    {
+                        "text": "https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/",
+                        "lang": "sv",
+                    },
+                    {
+                        "text": "https://nuorten.hel.fi/en/studies-and-work/the-summer-job-voucher/",
+                        "lang": "en",
+                    },
+                ],
+            },
+        },
+    },
+    "metadata": {
+        "local": [SUOMIFI_IDP_METADATA_PATH],
+    },
+    "debug": DEBUG,
+    "contact_person": list(
+        filter(
+            None,
+            [
+                # Mandatory
+                get_contact_person_configuration(
+                    first_name=env("SUOMIFI_TECHNICAL_FIRST_NAME"),
+                    last_name=env("SUOMIFI_TECHNICAL_LAST_NAME"),
+                    email=env("SUOMIFI_TECHNICAL_EMAIL"),
+                    company="Helsingin kaupunki",
+                    contact_type="technical",
+                ),
+                get_contact_person_configuration(
+                    first_name=env("SUOMIFI_SUPPORT_FIRST_NAME"),
+                    last_name=env("SUOMIFI_SUPPORT_LAST_NAME"),
+                    email=env("SUOMIFI_SUPPORT_EMAIL"),
+                    company="Helsingin kaupunki",
+                    contact_type="support",
+                ),
+                get_contact_person_configuration(
+                    first_name=env("SUOMIFI_ADMINISTRATIVE_FIRST_NAME"),
+                    last_name=env("SUOMIFI_ADMINISTRATIVE_LAST_NAME"),
+                    email=env("SUOMIFI_ADMINISTRATIVE_EMAIL"),
+                    company="Helsingin kaupunki",
+                    contact_type="administrative",
+                ),
+            ],
+        )
+    ),
+    "organization": {
+        "name": [
+            ("Helsingin kaupunki", "fi"),
+            ("Helsingfors stad", "sv"),
+            ("City of Helsinki", "en"),
+        ],
+        "display_name": [
+            ("Helsingin kaupunki", "fi"),
+            ("Helsingfors stad", "sv"),
+            ("City of Helsinki", "en"),
+        ],
+        "url": [
+            ("https://www.hel.fi/helsinki/fi", "fi"),
+            ("https://www.hel.fi/helsinki/sv", "sv"),
+            ("https://www.hel.fi/helsinki/en", "en"),
+        ],
+    },
+}
+
+if SUOMIFI_CERT and SUOMIFI_KEY:
+    # Cert/key is base64 encoded into a one line string
+    # This allows to put the key as a singleline string into an environment variable.
+    # Example encode base64 -w 0 dev-public.pem > dev-public.pem.b64
+
+    with tempfile.NamedTemporaryFile(delete=False) as f:
+        f.write(base64.b64decode(SUOMIFI_CERT))
+        suomifi_cert_filename = f.name
+    with tempfile.NamedTemporaryFile(delete=False) as f:
+        f.write(base64.b64decode(SUOMIFI_KEY))
+        suomifi_key_filename = f.name
+
+    SAML_CONFIG.update(
+        {
+            "key_file": suomifi_key_filename,
+            "cert_file": suomifi_cert_filename,
+            "encryption_keypairs": [
+                {
+                    "key_file": suomifi_key_filename,
+                    "cert_file": suomifi_cert_filename,
+                }
+            ],
+        }
+    )
+
+if SUOMIFI_TEST:
+    # Test authentication method which is only available in the customer testing environment
+    SAML_CONFIG["entity_attributes"][0]["values"].append(
+        "urn:oid:1.2.246.517.3002.110.999"
+    )
+    SAML_CONFIG["service"]["sp"]["requested_authn_context"][
+        "authn_context_class_ref"
+    ].append("urn:oid:1.2.246.517.3002.110.999")
+
 # End of Authentication
 
 FIELD_ENCRYPTION_KEYS = [ENCRYPTION_KEY]

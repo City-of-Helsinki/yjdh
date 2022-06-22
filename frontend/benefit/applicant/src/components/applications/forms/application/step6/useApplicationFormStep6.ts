@@ -93,19 +93,23 @@ const useApplicationFormStep6 = (
             application.status === APPLICATION_STATUSES.DRAFT
               ? APPLICATION_STATUSES.RECEIVED
               : APPLICATION_STATUSES.HANDLING,
-          calculation: application.calculation ? {
-            ...application.calculation,
-            monthlyPay: stringToFloatValue(application.calculation.monthlyPay),
-            otherExpenses: stringToFloatValue(
-              application.calculation.otherExpenses
-            ),
-            vacationMoney: stringToFloatValue(
-              application.calculation.vacationMoney
-            ),
-            overrideMonthlyBenefitAmount: stringToFloatValue(
-              application.calculation.overrideMonthlyBenefitAmount
-            ),
-          }: undefined,
+          calculation: application.calculation
+            ? {
+                ...application.calculation,
+                monthlyPay: stringToFloatValue(
+                  application.calculation.monthlyPay
+                ),
+                otherExpenses: stringToFloatValue(
+                  application.calculation.otherExpenses
+                ),
+                vacationMoney: stringToFloatValue(
+                  application.calculation.vacationMoney
+                ),
+                overrideMonthlyBenefitAmount: stringToFloatValue(
+                  application.calculation.overrideMonthlyBenefitAmount
+                ),
+              }
+            : undefined,
         },
         { deep: true }
       ) as ApplicationData;
