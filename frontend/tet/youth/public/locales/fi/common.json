@@ -104,5 +104,9 @@
 		"showList": "Näytä tulokset listana",
 		"showMap": "Näytä tulokset kartalla",
     "helsinkiCity": "Helsingin kaupunki"
+	},
+	"accessibility": {
+		"eventsLoading": "TET-paikkoja haetaan",
+		"eventsReady": "TET-paikkojen haku valmistui"
 	}
 }

@@ -104,5 +104,9 @@
 		"showList": "Show results in a list",
 		"showMap": "Show results on a map",
     "helsinkiCity": "City of Helsinki"
+	},
+	"accessibility": {
+		"eventsLoading": "TET jobs search is loading",
+		"eventsReady": "TET jobs search is ready"
 	}
 }

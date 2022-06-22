@@ -29,9 +29,9 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
 
   const { t, i18n } = useTranslation();
   const languageOptions = [
-    { name: 'fi', value: 'fi', label: t('common:languages.fi') },
-    { name: 'sv', value: 'sv', label: t('common:languages.sv') },
-    { name: 'en', value: 'en', label: t('common:languages.en') },
+    { name: 'fi', value: 'fi', label: t('common:editor.posting.contactLanguageFi') },
+    { name: 'sv', value: 'sv', label: t('common:editor.posting.contactLanguageSv') },
+    { name: 'en', value: 'en', label: t('common:editor.posting.contactLanguageEn') },
   ];
   const { isLoading, error, workMethodsList, workFeaturesList } = useKeywordType('id');
 
