@@ -2,9 +2,17 @@ from django.conf import settings
 from django.http import HttpRequest, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from djangosaml2.views import AssertionConsumerServiceView, MetadataView
+from djangosaml2.views import AssertionConsumerServiceView, LoginView, MetadataView
 from saml2.md import ServiceName
 from saml2.metadata import entity_descriptor
+
+
+class SuomiFiSAML2AuthenticationRequestView(LoginView):
+    """Override Suomi.fi SAML2 client authentication request get method."""
+
+    def get(self, request):
+        # TODO: Implement differences from base class method
+        return super().get(request)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
