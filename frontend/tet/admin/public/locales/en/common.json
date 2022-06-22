@@ -129,7 +129,8 @@
 				"deleteConfirmTitle": "Are you sure you want to delete the image?",
 				"deleteConfirmContent": "The image will be completely removed from the notification. The function is irreversible.",
 				"deleteButton": "Delete image",
-				"photographerName": "Photographer name"
+				"photographerName": "Photographer name",
+        "photographerNameHelperText": "If required by the image license, provide the photographer's name here. The name will appear below the image."
 			}
     },
 		"classification": {

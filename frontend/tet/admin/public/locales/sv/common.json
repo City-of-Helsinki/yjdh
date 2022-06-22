@@ -129,7 +129,8 @@
 				"deleteConfirmTitle": "Är du säker på att du vill ta bort bilden?",
 				"deleteConfirmContent": "Bilden kommer att tas bort helt från meddelandet. Funktionen är oåterkallelig.",
 				"deleteButton": "Bort bilden",
-				"photographerName": "Fotografens namn"
+				"photographerName": "Fotografens namn",
+        "photographerNameHelperText": "Om licensvillkoren för bilden kräver, skriv fotografens namn här. Namnet kommer att visas under bilden."
 			}
     },
 		"classification": {

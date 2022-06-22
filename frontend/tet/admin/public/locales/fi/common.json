@@ -83,7 +83,7 @@
     "language": "TET-paikan kielisyys",
 		"leaveConfirm": "Muutoksia ei ole tallennettu. Haluatko silti poistua?",
 		"draftInfoHeader": "Täytä vaaditut kentät",
-		"draftInfoContent": "Täytä <1>tehtävänimike</1>, <1>toimipiste</1> ja <1>osoite</1> tallentaaksesi keskeneräisen ilmoituksen", 
+		"draftInfoContent": "Täytä <1>tehtävänimike</1>, <1>toimipiste</1> ja <1>osoite</1> tallentaaksesi keskeneräisen ilmoituksen",
 		"close": "Sulje",
     "employerInfo": {
 			"contactPerson": "Yhteyshenkilö",
@@ -128,7 +128,8 @@
 				"deleteConfirmTitle": "Haluatko varmasti poistaa kuvan?",
 				"deleteConfirmContent": "Kuva poistetaan ilmoitukselta kokonaan. Toiminto on peruuttamaton",
 				"deleteButton": "Poista kuva",
-				"photographerName": "Valokuvaajan nimi"
+				"photographerName": "Valokuvaajan nimi",
+        "photographerNameHelperText": "Jos kuvan lisenssiehdot vaativat valokuvaajan nimen ilmoittamisen, kirjoita se tähän. Nimi tulee näkyviin kuvan alle."
 			}
     },
 		"classification": {

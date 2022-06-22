@@ -134,7 +134,7 @@ const ImageUpload: React.FC<Props> = ({ isNewPosting }) => {
                 id="photographer_name"
                 label={t('common:editor.posting.imageUpload.photographerName')}
                 placeholder={t('common:editor.posting.imageUpload.photographerName')}
-                helperText="Ilmoita kuvaajan nimi, jos kuva ei ole ottamasi, ja sen lisenssiehdot näin vaativat. Kuvaajan nimi tulee näkyviin kuvan alle."
+                helperText={t('common:editor.posting.imageUpload.photographerNameHelperText')}
                 registerOptions={notRequiredName}
               />
             </$PhotographerField>
