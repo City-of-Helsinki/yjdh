@@ -8,6 +8,10 @@ from rest_framework import routers
 from applications.api.v1 import views as application_views
 from applications.views import EmployerApplicationExcelDownloadView
 from companies.api.v1.views import GetCompanyView
+from shared.suomi_fi.views import (
+    SuomiFiAssertionConsumerServiceView,
+    SuomiFiMetadataView,
+)
 
 router = routers.DefaultRouter()
 router.register(r"employerapplications", application_views.EmployerApplicationViewSet)
@@ -29,6 +33,23 @@ urlpatterns = [
     ),
     path("logout/", LogoutView.as_view(), name="logout"),
 ]
+
+if settings.ENABLE_SUOMIFI:
+    urlpatterns.append(
+        path(
+            "saml2/acs/",
+            SuomiFiAssertionConsumerServiceView.as_view(),
+            name="suomifi_saml2_acs",
+        )
+    )
+    urlpatterns.append(
+        path(
+            "saml2/metadata/",
+            SuomiFiMetadataView.as_view(),
+            name="suomifi_saml2_metadata",
+        )
+    )
+    urlpatterns.append(path("saml2/", include("djangosaml2.urls")))
 
 
 if settings.ENABLE_ADMIN:
