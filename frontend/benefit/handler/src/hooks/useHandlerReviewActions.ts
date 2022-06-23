@@ -72,21 +72,25 @@ const useHandlerReviewActions = (
     return snakecaseKeys(
       {
         ...application,
-        calculation: application.calculation ? {
-          ...application.calculation,
-          monthlyPay: stringToFloatValue(application.calculation.monthlyPay),
-          otherExpenses: stringToFloatValue(
-            application.calculation.otherExpenses
-          ),
-          vacationMoney: stringToFloatValue(
-            application.calculation.vacationMoney
-          ),
-          overrideMonthlyBenefitAmount: stringToFloatValue(
-            application.calculation.overrideMonthlyBenefitAmount
-          ),
-          startDate,
-          endDate,
-        } : undefined,
+        calculation: application.calculation
+          ? {
+              ...application.calculation,
+              monthlyPay: stringToFloatValue(
+                application.calculation.monthlyPay
+              ),
+              otherExpenses: stringToFloatValue(
+                application.calculation.otherExpenses
+              ),
+              vacationMoney: stringToFloatValue(
+                application.calculation.vacationMoney
+              ),
+              overrideMonthlyBenefitAmount: stringToFloatValue(
+                application.calculation.overrideMonthlyBenefitAmount
+              ),
+              startDate,
+              endDate,
+            }
+          : undefined,
       },
       { deep: true }
     ) as ApplicationData;
@@ -133,19 +137,21 @@ const useHandlerReviewActions = (
     return snakecaseKeys(
       {
         ...application,
-        calculation: application.calculation ? {
-          ...application.calculation,
-          startDate,
-          endDate,
-          monthlyPay: stringToFloatValue(monthlyPay),
-          otherExpenses: stringToFloatValue(otherExpenses),
-          vacationMoney: stringToFloatValue(vacationMoney),
-          overrideMonthlyBenefitAmount: stringToFloatValue(
-            overrideMonthlyBenefitAmount
-          ),
-          stateAidMaxPercentage,
-          overrideMonthlyBenefitAmountComment,
-        }: undefined,
+        calculation: application.calculation
+          ? {
+              ...application.calculation,
+              startDate,
+              endDate,
+              monthlyPay: stringToFloatValue(monthlyPay),
+              otherExpenses: stringToFloatValue(otherExpenses),
+              vacationMoney: stringToFloatValue(vacationMoney),
+              overrideMonthlyBenefitAmount: stringToFloatValue(
+                overrideMonthlyBenefitAmount
+              ),
+              stateAidMaxPercentage,
+              overrideMonthlyBenefitAmountComment,
+            }
+          : undefined,
         paySubsidies,
         trainingCompensations,
       },

@@ -141,15 +141,21 @@ const useFormActions = (application: Partial<Application>): FormActions => {
       {
         ...values,
         applicationStep: getApplicationStepString(step),
-        calculation: values.calculation ? {
-          ...values.calculation,
-          monthlyPay: stringToFloatValue(values.calculation.monthlyPay),
-          otherExpenses: stringToFloatValue(values.calculation.otherExpenses),
-          vacationMoney: stringToFloatValue(values.calculation.vacationMoney),
-          overrideMonthlyBenefitAmount: stringToFloatValue(
-            values.calculation.overrideMonthlyBenefitAmount
-          ),
-        }: undefined,
+        calculation: values.calculation
+          ? {
+              ...values.calculation,
+              monthlyPay: stringToFloatValue(values.calculation.monthlyPay),
+              otherExpenses: stringToFloatValue(
+                values.calculation.otherExpenses
+              ),
+              vacationMoney: stringToFloatValue(
+                values.calculation.vacationMoney
+              ),
+              overrideMonthlyBenefitAmount: stringToFloatValue(
+                values.calculation.overrideMonthlyBenefitAmount
+              ),
+            }
+          : undefined,
       },
       { deep: true }
     ) as ApplicationData;

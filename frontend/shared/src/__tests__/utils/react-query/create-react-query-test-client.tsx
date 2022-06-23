@@ -1,6 +1,20 @@
 import { AxiosInstance } from 'axios';
-import { QueryClient, QueryFunctionContext, QueryKey } from 'react-query';
+import {
+  QueryClient,
+  QueryFunctionContext,
+  QueryKey,
+  setLogger,
+} from 'react-query';
 import { isString } from 'shared/utils/type-guards';
+
+// silence react-query errors: https://tkdodo.eu/blog/testing-react-query#silence-the-error-console
+/* eslint-disable no-console */
+setLogger({
+  log: console.log,
+  warn: console.warn,
+  error: () => {},
+});
+/* eslint-enable no-console */
 
 const createReactQueryTestClient = (
   axios: AxiosInstance,

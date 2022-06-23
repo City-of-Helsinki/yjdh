@@ -36,6 +36,13 @@ const YouthForm: React.FC = () => {
               saveQuery={submitQuery}
               onSuccess={handleSaveSuccess}
               onError={handleErrorResponse}
+              onInvalidForm={(errors) => {
+                // this helps debugging when react tests fail
+                if (process.env.NODE_ENV === 'test') {
+                  // eslint-disable-next-line no-console
+                  console.log('invalid form', errors);
+                }
+              }}
             >
               {t(`common:youthApplication.form.sendButton`)}
             </SaveFormButton>
