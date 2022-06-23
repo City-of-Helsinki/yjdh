@@ -14,23 +14,29 @@ TEMPLATE_ID_BENEFIT_WITH_DE_MINIMIS_AID = "benefit_with_de_minimis_aid"
 TEMPLATE_ID_BENEFIT_WITHOUT_DE_MINIMIS_AID = "benefit_without_de_minimis_aid"
 TEMPLATE_ID_BENEFIT_DECLINED = "benefit_declined"
 TEMPLATE_ID_COMPOSED_ACCEPTED_PUBLIC = "composed_accepted_public"
+TEMPLATE_ID_COMPOSED_DECLINED_PUBLIC = "composed_declined_public"
 TEMPLATE_ID_COMPOSED_ACCEPTED_PRIVATE = "composed_accepted_private"
 TEMPLATE_ID_COMPOSED_DECLINED_PRIVATE = "composed_declined_private"
 
 JINJA_TEMPLATES_COMPOSED = {
     TEMPLATE_ID_COMPOSED_ACCEPTED_PUBLIC: {
         "path": "composed_accepted_public.html",
-        "file_name": "Liite 1 Helsinki-lisä 2021 koontiliite yhteisöille "
+        "file_name": "Liite 1 Helsinki-lisä koontiliite "
         "julkinen.pdf",
+    },
+    TEMPLATE_ID_COMPOSED_DECLINED_PUBLIC: {
+        "path": "composed_rejected_public.html",
+        "file_name": "Liite 1 Helsinki-lisä koontiliite "
+                     "julkinen.pdf",
     },
     TEMPLATE_ID_COMPOSED_ACCEPTED_PRIVATE: {
         "path": "composed_accepted_private.html",
-        "file_name": "Helsinki-lisä 2021 koontiliite yhteisöille "
+        "file_name": "Helsinki-lisä koontiliite "
         "salassa pidettävä.pdf",
     },
     TEMPLATE_ID_COMPOSED_DECLINED_PRIVATE: {
         "path": "benefit_declined.html",  # Composed decline template reuse single company decline template
-        "file_name": "Helsinki-lisä 2021 kielteiset päätökset koontiliite "
+        "file_name": "Helsinki-lisä kielteiset päätökset koontiliite "
         "yrityksille salassa pidettävä.pdf",
     },
 }
@@ -52,6 +58,7 @@ JINJA_TEMPLATES_SINGLE = {
     },
 }
 LOGGER = logging.getLogger(__name__)
+
 
 def _get_template(path):
     template_loader = jinja2.FileSystemLoader(searchpath=PDF_PATH)
@@ -143,6 +150,16 @@ def generate_composed_files(accepted_apps=[], rejected_apps=[]):
 
     # Rejected applications
     if len(rejected_apps):
+
+        template_config = JINJA_TEMPLATES_COMPOSED[TEMPLATE_ID_COMPOSED_DECLINED_PUBLIC]
+        public_declined_template = _get_template(template_config["path"])
+        file_name = template_config["file_name"]
+        html =public_declined_template.render(
+            apps=rejected_apps,
+            year=timezone.now().year,
+        )
+        files.append((file_name, pdfkit.from_string(html, False), html))
+
         template_config = JINJA_TEMPLATES_COMPOSED[
             TEMPLATE_ID_COMPOSED_DECLINED_PRIVATE
         ]
