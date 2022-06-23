@@ -506,6 +506,8 @@ SAML_CONFIG = {
             "authn_requests_signed": True,
             "logout_requests_signed": True,
             "logout_responses_signed": True,
+            "signing_algorithm": saml2.xmldsig.SIG_RSA_SHA256,
+            "digest_algorithm": saml2.xmldsig.DIGEST_SHA256,
             "allow_unsolicited": False,
             "ui_info": {
                 "display_name": [
