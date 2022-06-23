@@ -31,6 +31,8 @@ const ActionButtons: React.FC = () => {
   const posting = getValues();
   const [showInfoDialog, setShowInfoDialog] = React.useState(false);
 
+  console.log('test');
+
   const allowPublish = posting.date_published === null;
   const allowDelete = !!posting.id;
 
