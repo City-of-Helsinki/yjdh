@@ -27,4 +27,4 @@ export const DATE_VTJ_REGEX = /^\d{4}(0?[1-9]|1[0-2])(0?[1-9]|[12]\d|3[01])$/;
 // https://www.tuomas.salste.net/doc/tunnus/henkilotunnus.html#keinotunnus (more info only in finnish)
 export const FINNISH_SSN_REGEX = /^\d{6}[+Aa-][0-8]\d{2}[\dA-z]$/;
 export const WEBSITE_URL =
-  /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi; // TODO can contain path after the domain part, like "www.hel.fi/kasvatuksen-ja-koulutuksen-toimiala/"
+  /(https?:\/\/(?:www\.|(?!www))[\da-z][\da-z-]+[\da-z]\.\S{2,}|www\.[\da-z][\da-z-]+[\da-z]\.\S{2,}|https?:\/\/(?:www\.|(?!www))[\da-z]+\.\S{2,}|www\.[\da-z]+\.\S{2,})/gi;

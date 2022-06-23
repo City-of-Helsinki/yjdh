@@ -56,7 +56,7 @@ const keywordList = (list: OptionType[], color: string): JSX.Element => (
   </>
 );
 
-const stripHttp = (url: string) => url.replace(/^https?:\/\//i, '');
+const stripHttp = (url: string): string => url.replace(/^https?:\/\//i, '');
 
 const PostingContent: React.FC<Props> = ({ posting }) => {
   const { t } = useTranslation();

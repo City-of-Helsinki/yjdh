@@ -46,7 +46,7 @@ export const isoDateToHdsFormat = (date: string | null): string => {
   }.${newDate.getFullYear()}`;
 };
 
-export const ensureScheme = (url: string | undefined) => {
+export const ensureScheme = (url: string | undefined): string => {
   if (!url) {
     return '';
   }
