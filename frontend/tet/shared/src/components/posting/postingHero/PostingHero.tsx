@@ -49,6 +49,7 @@ const PostingHero: React.FC<Props> = ({
         <$HeroWrapper>
           {showBackButton && (
             <$BackButton
+              // eslint-disable-next-line no-script-url
               href="javascript:void(0)"
               id="backButton"
               onClick={onReturnClick}

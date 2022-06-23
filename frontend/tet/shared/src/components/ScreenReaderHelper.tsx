@@ -12,8 +12,8 @@ const SRHelper = styled.div`
   border: 0;
 `;
 
-const ScreenReaderHelper: React.FC = ({ children }) => {
-  return <SRHelper>{children}</SRHelper>;
-};
+const ScreenReaderHelper: React.FC = ({ children }) => (
+  <SRHelper>{children}</SRHelper>
+);
 
 export default ScreenReaderHelper;
