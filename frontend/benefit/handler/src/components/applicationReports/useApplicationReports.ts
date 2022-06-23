@@ -83,9 +83,6 @@ const useApplicationReports = (): ExtendedComponentProps => {
       exportApplicationsRoute: EXPORT_APPLICATIONS_ROUTES,
       proposalForDecision: PROPOSALS_FOR_DESISION
     ) => {
-      console.log(
-        `${BackendEndpoint.HANDLER_APPLICATIONS}${exportApplicationsRoute}_${type}/`
-      );
       const data = await handleResponse<string>(
         axios.get(
           `${BackendEndpoint.HANDLER_APPLICATIONS}${exportApplicationsRoute}_${type}/`,
