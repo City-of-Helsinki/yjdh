@@ -342,11 +342,17 @@ SESSION_COOKIE_SECURE = True
 # SAML SLO requires allowing sessiond to be passed
 SESSION_COOKIE_SAMESITE = "None"
 
-AUTHENTICATION_BACKENDS = (
-    "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
+AUTHENTICATION_BACKENDS = [
     "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
-    "shared.suomi_fi.auth.SuomiFiSAML2AuthenticationBackend",
     "django.contrib.auth.backends.ModelBackend",
+]
+
+# If Suomi.fi not enabled we will enable the legacy Kesäseteli auth.
+AUTHENTICATION_BACKENDS.insert(
+    0,
+    "shared.suomi_fi.auth.SuomiFiSAML2AuthenticationBackend"
+    if ENABLE_SUOMIFI
+    else "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
 )
 
 OIDC_RP_SIGN_ALGO = "RS256"
