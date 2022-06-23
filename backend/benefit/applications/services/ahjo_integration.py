@@ -52,6 +52,7 @@ JINJA_TEMPLATES_SINGLE = {
 }
 LOGGER = logging.getLogger(__name__)
 
+
 def _get_template(path):
     template_loader = jinja2.FileSystemLoader(searchpath=PDF_PATH)
     env = jinja2.Environment(loader=template_loader, autoescape=True)
