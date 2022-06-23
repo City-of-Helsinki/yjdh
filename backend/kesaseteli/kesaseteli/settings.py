@@ -339,6 +339,8 @@ else:
 # Authentication
 SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE")
 SESSION_COOKIE_SECURE = True
+# SAML SLO requires allowing sessiond to be passed
+SESSION_COOKIE_SAMESITE = "None"
 
 AUTHENTICATION_BACKENDS = (
     "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
