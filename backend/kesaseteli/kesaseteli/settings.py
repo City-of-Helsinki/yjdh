@@ -398,6 +398,10 @@ ADFS_CONTROLLER_GROUP_UUIDS = env.list("ADFS_CONTROLLER_GROUP_UUIDS")
 
 # Suomi.fi (djangosaml2)
 
+SAML_ATTRIBUTE_MAPPING = {
+    "givenName": ("first_name",),
+    "sn": ("last_name",),
+}
 SAML_SESSION_COOKIE_NAME = "kesaseteli_saml_session"
 SAML_CREATE_UNKNOWN_USER = True
 SAML_DJANGO_USER_MAIN_ATTRIBUTE = "username"
