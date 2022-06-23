@@ -339,6 +339,8 @@ else:
 # Authentication
 SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE")
 SESSION_COOKIE_SECURE = True
+# SAML SLO requires allowing sessiond to be passed
+SESSION_COOKIE_SAMESITE = "None"
 
 AUTHENTICATION_BACKENDS = (
     "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
@@ -506,6 +508,8 @@ SAML_CONFIG = {
             "authn_requests_signed": True,
             "logout_requests_signed": True,
             "logout_responses_signed": True,
+            "signing_algorithm": saml2.xmldsig.SIG_RSA_SHA256,
+            "digest_algorithm": saml2.xmldsig.DIGEST_SHA256,
             "allow_unsolicited": False,
             "ui_info": {
                 "display_name": [
