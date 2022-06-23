@@ -1,4 +1,4 @@
-import { ATTACHMENT_TYPES } from 'benefit/handler/constants';
+import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import { IconPlus } from 'hds-react';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';

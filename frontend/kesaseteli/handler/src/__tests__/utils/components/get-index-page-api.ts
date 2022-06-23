@@ -7,7 +7,10 @@ import getHandlerTranslationsApi from 'kesaseteli/handler/__tests__/utils/i18n/g
 import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
 import VtjExceptionType from 'kesaseteli/handler/types/vtj-exception-type';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
-import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
+import {
+  waitForBackendRequestsToComplete,
+  waitForLoadingCompleted,
+} from 'shared/__tests__/utils/component.utils';
 import {
   BoundFunctions,
   queries,
@@ -34,7 +37,7 @@ const getIndexPageApi = async (
       await screen.findByRole('heading', {
         name: translations.handlerApplication.title,
       });
-      await waitForBackendRequestsToComplete();
+      await waitForLoadingCompleted();
     },
     applicationWasNotFound: async () => {
       await screen.findByRole('heading', {
@@ -178,18 +181,21 @@ const getIndexPageApi = async (
     statusNotificationIsPresent: async (
       status: keyof typeof translations.handlerApplication.notification
     ): Promise<HTMLElement> =>
-      screen.findByRole('heading', {
-        name: translations.handlerApplication.notification[status],
-      }),
+      screen.findByRole(
+        'heading',
+        {
+          name: translations.handlerApplication.notification[status],
+        },
+        { timeout: 20_000 }
+      ),
     showsConfirmDialog: async (type: CompleteOperation['type']) => {
       const dialog = await screen.findByRole('dialog');
       return within(dialog).findByText(translations.dialog[type].content);
     },
   };
   const actions = {
-    clickCompleteButton: (type: CompleteOperation['type']): void => {
-      userEvent.click(screen.getByTestId(`${type}-button`));
-    },
+    clickCompleteButton: (type: CompleteOperation['type']) =>
+      userEvent.click(screen.getByTestId(`${type}-button`)),
     clickConfirmButton: async (
       type: CompleteOperation['type'],
       errorCode?: 400 | 500
@@ -213,16 +219,16 @@ const getIndexPageApi = async (
         });
       }
       const dialog = await screen.findByRole('dialog');
-      userEvent.click(
+      await userEvent.click(
         within(dialog).getByRole('button', {
           name: translations.dialog[type].submit,
         })
       );
       await waitForBackendRequestsToComplete();
     },
-    clickCancelButton: async () => {
+    clickCancelButton: async (): Promise<void> => {
       const dialog = await screen.findByRole('dialog');
-      userEvent.click(
+      return userEvent.click(
         within(dialog).getByRole('button', { name: translations.dialog.cancel })
       );
     },

@@ -1,5 +1,5 @@
-import { ApplicationData } from 'benefit/handler/types/application';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
+import { ApplicationData } from 'benefit-shared/types/application';
 import { useTranslation } from 'next-i18next';
 import { useQuery, UseQueryResult } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';

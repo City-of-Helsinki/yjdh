@@ -1,6 +1,6 @@
 import { ROUTES } from 'benefit/handler/constants';
 import AppContext from 'benefit/handler/context/AppContext';
-import { Application } from 'benefit/handler/types/application';
+import { Application } from 'benefit-shared/types/application';
 import { Button } from 'hds-react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
@@ -44,14 +44,16 @@ const NotificationView: React.FC<Props> = ({ data }) => {
         )}
         <$NotificationTitle>
           {t(
-            `${translationsBase}.${handledApplication?.status ?? 'error'}.title`
+            `${translationsBase}.${String(
+              handledApplication?.status ?? 'error'
+            )}.title`
           )}
         </$NotificationTitle>
         <$NotificationMessage>
           {t(
-            `${translationsBase}.${
+            `${translationsBase}.${String(
               handledApplication?.status ?? 'error'
-            }.message`,
+            )}.message`,
             { applicationNum: data?.applicationNumber }
           )}
         </$NotificationMessage>

@@ -20,7 +20,7 @@ describe('frontend/kesaseteli/youth/src/pages/thankyou.tsx', () => {
 
   it('redirects to main page when clicking go to main page -button', async () => {
     const spyPush = jest.fn();
-    await renderPage(ThankYouPage, { push: spyPush });
+    renderPage(ThankYouPage, { push: spyPush });
     const thankYouPageApi = getThankYouPageApi();
     await thankYouPageApi.expectations.pageIsLoaded();
     await thankYouPageApi.actions.clickGoToFrontPageButton();
@@ -30,7 +30,7 @@ describe('frontend/kesaseteli/youth/src/pages/thankyou.tsx', () => {
   });
 
   it('shows default activation link expiration time (12 hours)', async () => {
-    await renderPage(ThankYouPage);
+    renderPage(ThankYouPage);
     const thankYouPageApi = getThankYouPageApi();
     await thankYouPageApi.expectations.pageIsLoaded();
     await thankYouPageApi.expectations.activationInfoTextIsPresent('12');
@@ -47,7 +47,7 @@ describe('frontend/kesaseteli/youth/src/pages/thankyou.tsx', () => {
         ...originalEnv,
         NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: String(3600 * 2),
       };
-      await renderPage(ThankYouPage);
+      renderPage(ThankYouPage);
       const thankYouPageApi = getThankYouPageApi();
       await thankYouPageApi.expectations.pageIsLoaded();
       await thankYouPageApi.expectations.activationInfoTextIsPresent('2');
@@ -58,7 +58,7 @@ describe('frontend/kesaseteli/youth/src/pages/thankyou.tsx', () => {
   });
 
   it('doesnt show activation link with default settings', async () => {
-    await renderPage(ThankYouPage);
+    renderPage(ThankYouPage);
     const thankYouPageApi = getThankYouPageApi();
     await thankYouPageApi.expectations.pageIsLoaded();
     await thankYouPageApi.expectations.activationLinkIsNotPresent();
@@ -77,7 +77,7 @@ describe('frontend/kesaseteli/youth/src/pages/thankyou.tsx', () => {
 
     it('shows activation link when query id is present', async () => {
       const id = faker.datatype.uuid();
-      await renderPage(ThankYouPage, { query: { id } });
+      renderPage(ThankYouPage, { query: { id } });
       const thankYouPageApi = getThankYouPageApi();
       await thankYouPageApi.expectations.pageIsLoaded();
       await thankYouPageApi.expectations.activationLinkIsPresent(
@@ -86,7 +86,7 @@ describe('frontend/kesaseteli/youth/src/pages/thankyou.tsx', () => {
     });
 
     it('deosnt show activation link when query id is not present', async () => {
-      await renderPage(ThankYouPage);
+      renderPage(ThankYouPage);
       const thankYouPageApi = getThankYouPageApi();
       await thankYouPageApi.expectations.pageIsLoaded();
       await thankYouPageApi.expectations.activationLinkIsNotPresent();

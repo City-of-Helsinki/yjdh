@@ -1,8 +1,6 @@
 import pytest
 from django.contrib.auth.models import Permission
 from rest_framework.test import APIClient
-from shared.common.tests.conftest import *  # noqa
-from shared.common.tests.conftest import store_tokens_in_session
 
 from applications.enums import AttachmentType, EmployerApplicationStatus
 from applications.models import School
@@ -20,6 +18,8 @@ from common.tests.factories import (
     RejectedYouthApplicationFactory,
     YouthApplicationFactory,
 )
+from shared.common.tests.conftest import *  # noqa
+from shared.common.tests.conftest import store_tokens_in_session
 
 
 @pytest.fixture

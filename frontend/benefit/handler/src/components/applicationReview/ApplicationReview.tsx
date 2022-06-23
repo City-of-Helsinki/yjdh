@@ -1,9 +1,6 @@
 import ApplicationHeader from 'benefit/handler/components/applicationHeader/ApplicationHeader';
-import {
-  APPLICATION_STATUSES,
-  BENEFIT_TYPES,
-  HANDLED_STATUSES,
-} from 'benefit/handler/constants';
+import { HANDLED_STATUSES } from 'benefit/handler/constants';
+import { APPLICATION_STATUSES, BENEFIT_TYPES } from 'benefit-shared/constants';
 import { LoadingSpinner, StatusLabel } from 'hds-react';
 import * as React from 'react';
 import { ReactElement } from 'react';

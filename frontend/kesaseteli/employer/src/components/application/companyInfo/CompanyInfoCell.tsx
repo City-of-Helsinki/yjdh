@@ -1,20 +1,15 @@
 import { $CompanyInfoCell } from 'kesaseteli/employer/components/application/companyInfo/CompanyInfo.sc';
-import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
 import React from 'react';
-import LoadingSkeleton from 'react-loading-skeleton';
 import Company from 'shared/types/company';
 
 type Props = { field: keyof Company };
 
 const CompanyInfoCell: React.FC<Props> = ({ field }: Props) => {
-  const { applicationQuery } = useApplicationApi();
+  const { getValue } = useApplicationFormField<string>(`company.${field}`);
   return (
     <$CompanyInfoCell aria-labelledby={field} role="gridcell">
-      {applicationQuery.isSuccess ? (
-        applicationQuery.data.company?.[field]
-      ) : (
-        <LoadingSkeleton width="90%" />
-      )}
+      {getValue() ?? '-'}
     </$CompanyInfoCell>
   );
 };

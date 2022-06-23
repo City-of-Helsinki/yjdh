@@ -14,6 +14,9 @@ RUN apt-install.sh \
         libpq-dev \
         build-essential \
         gettext \
+        xmlsec1 \
+        libsasl2-dev \
+        libssl-dev \
     && pip install -U pip \
     && pip install --no-cache-dir -r /app/requirements.txt \
     && pip install --no-cache-dir  -r /app/requirements-prod.txt \

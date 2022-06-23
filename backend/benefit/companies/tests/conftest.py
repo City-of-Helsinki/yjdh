@@ -2,7 +2,6 @@ import re
 
 import pytest
 from django.conf import settings
-from shared.service_bus.enums import YtjOrganizationCode
 
 from common.tests.conftest import *  # noqa
 from companies.tests.data.company_data import (
@@ -10,6 +9,7 @@ from companies.tests.data.company_data import (
     get_dummy_company_data,
 )
 from companies.tests.factories import CompanyFactory
+from shared.service_bus.enums import YtjOrganizationCode
 
 COMPANY_ROLE_JSON = [
     {

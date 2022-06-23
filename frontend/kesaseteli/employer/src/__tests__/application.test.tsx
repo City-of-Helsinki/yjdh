@@ -31,10 +31,10 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
     const application = fakeObjectFactory.fakeApplication();
     const { id } = application;
 
-    it('Should redirect when unauthorized', async () => {
+    it('Should redirect to login when unauthorized', async () => {
       expectUnauthorizedReply();
       const spyPush = jest.fn();
-      await renderPage(ApplicationPage, { push: spyPush });
+      renderPage(ApplicationPage, { push: spyPush });
       await waitFor(() =>
         expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/login`)
       );
@@ -44,7 +44,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
       it('Should route to index page with default lang when applicaton id and locale is missing', async () => {
         expectAuthorizedReply();
         const spyReplace = jest.fn();
-        await renderPage(ApplicationPage, {
+        renderPage(ApplicationPage, {
           replace: spyReplace,
           query: {},
         });
@@ -61,7 +61,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
         expectAuthorizedReply();
         const locale: Language = 'en';
         const spyReplace = jest.fn();
-        await renderPage(ApplicationPage, {
+        renderPage(ApplicationPage, {
           replace: spyReplace,
           query: {},
           locale,
@@ -80,7 +80,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           expectAuthorizedReply();
           expectToGetApplicationErrorFromBackend(id);
           const spyPush = jest.fn();
-          await renderPage(ApplicationPage, { query: { id }, push: spyPush });
+          renderPage(ApplicationPage, { query: { id }, push: spyPush });
           await waitFor(() => {
             expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`);
           });
@@ -91,27 +91,27 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
         it('shows validation errors and disables continue button when missing values', async () => {
           expectAuthorizedReply();
           expectToGetApplicationFromBackend(application);
-          await renderPage(ApplicationPage, { query: { id } });
+          renderPage(ApplicationPage, { query: { id } });
           const applicationPage = getApplicationPageApi(application);
           const required =
             /(tieto puuttuu tai on virheellinen)|(errors.required)/i;
           await applicationPage.step1.expectations.stepIsLoaded();
-          applicationPage.step1.actions.typeContactPersonName('');
+          await applicationPage.step1.actions.typeContactPersonName('');
           await applicationPage.step1.expectations.inputHasError(
             'contact_person_name',
             required
           );
-          applicationPage.step1.actions.typeContactPersonEmail('');
+          await applicationPage.step1.actions.typeContactPersonEmail('');
           await applicationPage.step1.expectations.inputHasError(
             'contact_person_email',
             required
           );
-          applicationPage.step1.actions.typeStreetAddress('');
+          await applicationPage.step1.actions.typeStreetAddress('');
           await applicationPage.step1.expectations.inputHasError(
             'street_address',
             required
           );
-          applicationPage.step1.actions.typeContactPersonPhone('');
+          await applicationPage.step1.actions.typeContactPersonPhone('');
           await applicationPage.step1.expectations.inputHasError(
             'contact_person_phone_number',
             required
@@ -121,25 +121,33 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
         it('shows validation errors when value is too long', async () => {
           expectAuthorizedReply();
           expectToGetApplicationFromBackend(application);
-          await renderPage(ApplicationPage, { query: { id } });
+          renderPage(ApplicationPage, { query: { id } });
           const applicationPage = getApplicationPageApi(application);
           await applicationPage.step1.expectations.stepIsLoaded();
-          applicationPage.step1.actions.typeContactPersonName('a'.repeat(257)); // max limit is 256
+          await applicationPage.step1.actions.typeContactPersonName(
+            'a'.repeat(257)
+          ); // max limit is 256
           await applicationPage.step1.expectations.inputHasError(
             'contact_person_name',
             /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
           );
-          applicationPage.step1.actions.typeContactPersonEmail('john@doe');
+          await applicationPage.step1.actions.typeContactPersonEmail(
+            'john@doe'
+          );
           await applicationPage.step1.expectations.inputHasError(
             'contact_person_email',
             /(syöttämäsi tieto on virheellistä muotoa)|(errors.pattern)/i
           );
-          applicationPage.step1.actions.typeStreetAddress('s'.repeat(257)); // max limit is 64
+          await applicationPage.step1.actions.typeStreetAddress(
+            's'.repeat(257)
+          ); // max limit is 64
           await applicationPage.step1.expectations.inputHasError(
             'street_address',
             /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
           );
-          applicationPage.step1.actions.typeContactPersonPhone('1'.repeat(65)); // max limit is 64
+          await applicationPage.step1.actions.typeContactPersonPhone(
+            '1'.repeat(65)
+          ); // max limit is 64
           await applicationPage.step1.expectations.inputHasError(
             'contact_person_phone_number',
             /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
@@ -149,7 +157,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
         it('saves application when next button is clicked', async () => {
           expectAuthorizedReply();
           expectToGetApplicationFromBackend(application);
-          await renderPage(ApplicationPage, { query: { id } });
+          renderPage(ApplicationPage, { query: { id } });
           const applicationPage = getApplicationPageApi(application);
           await applicationPage.step1.expectations.stepIsLoaded();
           applicationPage.step1.expectations.displayCompanyData();
@@ -166,14 +174,14 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           const contact_person_email = 'john@doe.com';
           const contact_person_phone_number = '+358503758288';
           const street_address = 'Pohjoisesplanadi 11-13, 00170 Helsinki';
-          applicationPage.step1.actions.typeContactPersonName(
+          await applicationPage.step1.actions.typeContactPersonName(
             contact_person_name
           );
-          applicationPage.step1.actions.typeContactPersonEmail(
+          await applicationPage.step1.actions.typeContactPersonEmail(
             contact_person_email
           );
-          applicationPage.step1.actions.typeStreetAddress(street_address);
-          applicationPage.step1.actions.typeContactPersonPhone(
+          await applicationPage.step1.actions.typeStreetAddress(street_address);
+          await applicationPage.step1.actions.typeContactPersonPhone(
             contact_person_phone_number
           );
           await applicationPage.step1.actions.clickNextButtonAndExpectToSaveApplication();
@@ -183,7 +191,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
         it('can traverse between wizard steps', async () => {
           expectAuthorizedReply();
           expectToGetApplicationFromBackend(application);
-          await renderPage(ApplicationPage, { query: { id } });
+          renderPage(ApplicationPage, { query: { id } });
           const applicationPage = getApplicationPageApi(application);
           await applicationPage.step1.expectations.stepIsLoaded();
           await applicationPage.step1.actions.clickNextButton();

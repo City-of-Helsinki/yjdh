@@ -1,7 +1,7 @@
-import { APPLICATION_FIELDS_STEP1_KEYS } from 'benefit/applicant/constants';
 import useCompanyQuery from 'benefit/applicant/hooks/useCompanyQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
-import { Application } from 'benefit/applicant/types/application';
+import { APPLICATION_FIELDS_STEP1_KEYS } from 'benefit-shared/constants';
+import { Application } from 'benefit-shared/types/application';
 import { FormikProps } from 'formik';
 import { TFunction } from 'next-i18next';
 import React from 'react';
@@ -38,7 +38,7 @@ interface CompanyInfoProps {
 
 const useCompanyInfo = (
   fields: CompanyInfoFields,
-  formik: FormikProps<Application>
+  formik: FormikProps<Partial<Application>>
 ): CompanyInfoProps => {
   const { t } = useTranslation();
 

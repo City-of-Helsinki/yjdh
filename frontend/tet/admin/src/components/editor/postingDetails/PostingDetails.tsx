@@ -50,14 +50,6 @@ const PostingDetails: React.FC = () => {
           row-gap: ${theme.spacing.xl};
         `}
       >
-        <$GridCell $colSpan={6}>
-          <TextInput
-            id="title"
-            label={t('common:editor.posting.title')}
-            placeholder={t('common:editor.posting.title')}
-            registerOptions={name}
-          />
-        </$GridCell>
         <$GridCell $colSpan={3}>
           <DateInput
             id="start_date"
@@ -73,28 +65,29 @@ const PostingDetails: React.FC = () => {
             required={false}
             registerOptions={{ pattern: date.pattern }}
             minDate={minDate}
+            helperText={t('common:editor.posting.endDateHelperText')}
+          />
+        </$GridCell>
+        <$GridCell $colSpan={3}>
+          <NumberInput
+            id="spots"
+            label={t('common:editor.posting.spotsLabel')}
+            registerOptions={{ required: required }}
+            required={true}
+          />
+        </$GridCell>
+        <$GridCell $colSpan={3}>
+          <Dropdown
+            id="languages"
+            options={languageOptions}
+            initialValue={[languageOptions[0]]}
+            label={t('common:editor.posting.contactLanguage')}
+            registerOptions={{
+              required: required,
+            }}
           />
         </$GridCell>
         <$GridCell $colSpan={3}></$GridCell>
-      </$GridCell>
-      <$GridCell $colSpan={2}>
-        <NumberInput
-          id="spots"
-          label={t('common:editor.posting.spotsLabel')}
-          registerOptions={{ required: required }}
-          required={true}
-        />
-      </$GridCell>
-      <$GridCell $colSpan={3}>
-        <Dropdown
-          id="languages"
-          options={languageOptions}
-          initialValue={[languageOptions[0]]}
-          label={t('common:editor.posting.contactLanguage')}
-          registerOptions={{
-            required: required,
-          }}
-        />
       </$GridCell>
       <$GridCell as={$Grid} $colSpan={12}>
         <$GridCell $colSpan={6}>

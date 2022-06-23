@@ -4,12 +4,13 @@ import {
   $Header,
   $InfoItem,
   $List,
+  $Title,
 } from 'tet-shared//components/posting/postingInfoItem/PostingInfoItem.sc';
 
 type Props = {
   title: string;
   body: string | string[] | JSX.Element;
-  icon: JSX.Element;
+  icon?: JSX.Element;
 };
 
 const PostingInfoItem: React.FC<Props> = ({ title, body, icon }) => {
@@ -17,8 +18,14 @@ const PostingInfoItem: React.FC<Props> = ({ title, body, icon }) => {
   return (
     <$InfoItem>
       <$Header>
-        {icon}
-        <span>{title}</span>
+        {icon ? (
+          <>
+            {icon}
+            <$Title>{title}</$Title>
+          </>
+        ) : (
+          <span>{title}</span>
+        )}
       </$Header>
       <$List>
         {list.map((item, index) => (

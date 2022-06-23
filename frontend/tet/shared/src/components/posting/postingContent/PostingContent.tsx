@@ -118,7 +118,6 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
             <PostingInfoItem
               title={t('common:editor.posting.website')}
               body={websiteLink}
-              icon={<IconGlobe />}
             />
           )}
           <PostingInfoItem

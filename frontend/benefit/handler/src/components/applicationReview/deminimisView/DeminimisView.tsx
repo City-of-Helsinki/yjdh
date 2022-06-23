@@ -1,9 +1,7 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
-import { APPLICATION_STATUSES } from 'benefit/handler/constants';
-import {
-  ApplicationReviewViewProps,
-  DeMinimisAid,
-} from 'benefit/handler/types/application';
+import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import { DeMinimisAid } from 'benefit-shared/types/application';
 import sumBy from 'lodash/sumBy';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';

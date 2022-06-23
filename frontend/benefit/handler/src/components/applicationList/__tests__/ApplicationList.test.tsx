@@ -1,6 +1,6 @@
 import { RenderResult } from '@testing-library/react';
 import renderComponent from 'benefit/handler/__tests__/utils/render-component';
-import { APPLICATION_STATUSES } from 'benefit/handler/constants';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { axe } from 'jest-axe';
 import React from 'react';
 

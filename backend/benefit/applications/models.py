@@ -7,7 +7,6 @@ from django.db.models import OuterRef, Subquery
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
 from phonenumber_field.modelfields import PhoneNumberField
-from shared.models.abstract_models import TimeStampedModel, UUIDModel
 from simple_history.models import HistoricalRecords
 
 from applications.enums import (
@@ -22,6 +21,7 @@ from applications.enums import (
 from common.localized_iban_field import LocalizedIBANField
 from common.utils import DurationMixin
 from companies.models import Company
+from shared.models.abstract_models import TimeStampedModel, UUIDModel
 
 # todo: move to some better location?
 APPLICATION_LANGUAGE_CHOICES = (

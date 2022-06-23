@@ -1,5 +1,5 @@
-import { TermsProp, TextProp } from 'benefit/applicant/types/application';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
+import { TermsProp, TextProp } from 'benefit-shared/types/application';
 import { Link } from 'hds-react';
 import * as React from 'react';
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';

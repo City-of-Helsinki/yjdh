@@ -1,7 +1,7 @@
 import NotificationView from 'benefit/applicant/components/notificationView/NotificationView';
 import PdfViewer from 'benefit/applicant/components/pdfViewer/PdfViewer';
-import { TextProp } from 'benefit/applicant/types/application';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
+import { TextProp } from 'benefit-shared/types/application';
 import { Button } from 'hds-react';
 import noop from 'lodash/noop';
 import * as React from 'react';

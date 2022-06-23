@@ -50,6 +50,7 @@
 		"readMore": "Lue lisää",
 		"showMore": "Näytä lisää tuloksia",
 		"languages": "Kielisyys",
+		"noResultsText": "Haullasi ei löytynyt yhtään TET-paikkaa. Koitathan poistaa haun rajauksia.", 
 		"noResultsLinks": "Valitsemillasi hakuehdoilla ei löytynyt yhtään tapahtumaa. Kokeile vaikka klikkaamalla jotain näistä:",
 		"fewResultsLinks": "Kokeile myös seuraavilla rajauksilla / hakusanoilla:"
 	},
@@ -80,6 +81,7 @@
   },
 	"editor": {
 		"posting": {
+			"website": "Verkkosivut",
 			"contactLanguageFi": "Suomi",
 			"contactLanguageSv": "Ruotsi",
 			"contactLanguageEn": "Englanti"

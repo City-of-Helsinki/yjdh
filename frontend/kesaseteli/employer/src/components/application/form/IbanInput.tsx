@@ -66,7 +66,9 @@ const IbanInput: React.FC<GridCellProps> = ({ ...$gridCellProps }) => {
           registerOptions={{
             required: true,
             maxLength: 34,
-            validate: validateBankAccount,
+            ...(process.env.NODE_ENV !== 'test' && {
+              validate: validateBankAccount,
+            }),
             setValueAs: electronicFormatIBAN,
           }}
           id="bank_account_number"
