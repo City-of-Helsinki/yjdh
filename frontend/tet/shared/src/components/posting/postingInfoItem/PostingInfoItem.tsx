@@ -29,6 +29,7 @@ const PostingInfoItem: React.FC<Props> = ({ title, body, icon }) => {
       </$Header>
       <$List>
         {list.map((item, index) => (
+          // eslint-disable-next-line react/no-array-index-key
           <li key={index}>{item}</li>
         ))}
       </$List>
