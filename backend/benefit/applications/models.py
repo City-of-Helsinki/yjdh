@@ -374,7 +374,7 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
                 "-created_at"
             )  # the latest transition to one of the statuses listed in to_statuses
             .first()
-        ):
+        ) :
             return getattr(log_entry, field_name)
         else:
             return None

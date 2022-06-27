@@ -1108,7 +1108,7 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
             )
             .order_by("-modified_at")
             .first()
-        ):
+        ) :
             return last_submitted_history_entry.modified_at
         else:
             return (
