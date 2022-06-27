@@ -81,9 +81,9 @@
     },
     "form": {
       "selectionGroups": {
-        "summer_voucher_exception_reason": {
+        "target_group": {
           "9th_grader": "9 klassist",
-          "born_2004": "Född 2004"
+          "secondary_target_group": "Född 2004"
         },
         "hired_without_voucher_assessment": {
           "yes": "Jo",
@@ -99,7 +99,7 @@
         "contact_person_phone_number": "Telefonnummer",
         "employee_name": "Arbetstagarens namn",
         "employee_ssn": "Personnummer",
-        "summer_voucher_exception_reason": "Årsklass eller födelseår",
+        "target_group": "Årsklass eller födelseår",
         "employee_home_city": "Hemort",
         "employee_postcode": "Post nummer",
         "employee_phone_number": "Telefonnummer",

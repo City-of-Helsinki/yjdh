@@ -165,7 +165,7 @@ def test_excel_view_download_content(  # noqa: C901
             elif excel_field.title == SPECIAL_CASE_FIELD_TITLE:
                 assert (
                     output_column.value
-                    == voucher.get_summer_voucher_exception_reason_display()
+                    == voucher.get_target_group_display()
                 )
             elif excel_field.title == EMPLOYMENT_START_DATE_FIELD_TITLE:
                 assert output_column.value == voucher.employment_start_date.strftime(

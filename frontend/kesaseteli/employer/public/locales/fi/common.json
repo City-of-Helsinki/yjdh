@@ -81,9 +81,9 @@
     },
     "form": {
       "selectionGroups": {
-        "summer_voucher_exception_reason": {
-          "9th_grader": "9.-luokkalainen",
-          "born_2004": "Syntynyt vuonna 2004"
+        "target_group": {
+          "primary_target_group": "9.-luokkalainen",
+          "secondary_target_group": "Syntynyt vuonna 2004"
         },
         "hired_without_voucher_assessment": {
           "yes": "Kyllä",
@@ -99,7 +99,7 @@
         "contact_person_phone_number": "Yhteyshenkilön puhelinnumero",
         "employee_name": "Työntekijän nimi",
         "employee_ssn": "Henkilötunnus",
-        "summer_voucher_exception_reason": "Vuosiluokka tai syntymävuosi",
+        "target_group": "Vuosiluokka tai syntymävuosi",
         "employee_home_city": "Kotipaikka",
         "employee_postcode": "Postinumero",
         "employee_phone_number": "Puhelinnumero",

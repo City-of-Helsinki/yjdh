@@ -115,7 +115,7 @@ FIELDS = [
     ExcelField(
         SPECIAL_CASE_FIELD_TITLE,
         "%s",
-        ["summer_voucher_exception_reason"],
+        ["target_group"],
         30,
         "white",
     ),
