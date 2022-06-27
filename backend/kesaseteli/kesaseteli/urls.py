@@ -34,7 +34,7 @@ urlpatterns = [
     path("logout/", LogoutView.as_view(), name="logout"),
 ]
 
-if settings.ENABLE_SUOMIFI:
+if settings.NEXT_PUBLIC_ENABLE_SUOMIFI:
     urlpatterns.append(
         path(
             "saml2/acs/",

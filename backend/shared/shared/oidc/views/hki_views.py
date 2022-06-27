@@ -119,7 +119,7 @@ class HelsinkiOIDCUserInfoView(View):
         return JsonResponse(userinfo)
 
     def get(self, request):
-        suomifi_enabled = getattr(settings, "ENABLE_SUOMIFI", False)
+        suomifi_enabled = getattr(settings, "NEXT_PUBLIC_ENABLE_SUOMIFI", False)
         response = HttpResponse("Unauthorized", status=401)
 
         if suomifi_enabled and request.user.is_authenticated:
