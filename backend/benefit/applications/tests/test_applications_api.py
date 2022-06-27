@@ -2085,7 +2085,7 @@ def test_handler_application_default_ordering(handler_api_client):
             )
             .order_by("-created_at")
             .first()
-        ) :
+        ):
             handled_at_key = log_entry.created_at.timestamp()
 
         return (
