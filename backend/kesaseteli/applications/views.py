@@ -1,6 +1,6 @@
 from datetime import date
 
-from django.contrib.admin.views.decorators import staff_member_required
+from common.decorators import enforce_handler_view_adfs_login
 from django.db.models import OuterRef, Subquery
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -16,7 +16,6 @@ from applications.exporters.excel_exporter import (
 from applications.models import EmployerSummerVoucher
 
 
-@method_decorator(staff_member_required, name="dispatch")
 class EmployerApplicationExcelDownloadView(TemplateView):
     """
     TODO: This should be removed after the actual controller UI is implemented.
@@ -26,6 +25,7 @@ class EmployerApplicationExcelDownloadView(TemplateView):
 
     template_name = "application_excel_download.html"
 
+    @enforce_handler_view_adfs_login
     def get(self, request, *args, **kwargs):
         columns = request.GET.get("columns", ExcelColumns.REPORTING.value)
         if columns not in ExcelColumns.values:
