@@ -27,14 +27,14 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
 
   it(`shows error toast when backend returns bad request`, async () => {
     expectToGetYouthApplicationStatusErrorFromBackend(APPLICATION_ID, 400);
-    await renderPage(AdditionalInfoPage, { query: { id: APPLICATION_ID } });
+    renderPage(AdditionalInfoPage, { query: { id: APPLICATION_ID } });
     await headerApi.expectations.errorToastIsShown();
   });
 
   it(`redirects to 500 -error page when backend returns unexpected error`, async () => {
     expectToGetYouthApplicationStatusErrorFromBackend(APPLICATION_ID, 500);
     const spyPush = jest.fn();
-    await renderPage(AdditionalInfoPage, {
+    renderPage(AdditionalInfoPage, {
       push: spyPush,
       query: { id: APPLICATION_ID },
     });
@@ -44,7 +44,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
   });
 
   it(`shows that application is not found when id query param is not present`, async () => {
-    await renderPage(AdditionalInfoPage, { query: {} });
+    renderPage(AdditionalInfoPage, { query: {} });
     await getAdditionalInfoPageApi().expectations.notificationIsPresent(
       'notFound'
     );
@@ -52,7 +52,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
 
   it(`shows that application is not found when backend returns 404`, async () => {
     expectToGetYouthApplicationStatusErrorFromBackend(APPLICATION_ID, 404);
-    await renderPage(AdditionalInfoPage, { query: { id: APPLICATION_ID } });
+    renderPage(AdditionalInfoPage, { query: { id: APPLICATION_ID } });
     await getAdditionalInfoPageApi().expectations.notificationIsPresent(
       'notFound'
     );
@@ -63,7 +63,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
       expectToGetYouthApplicationStatus(APPLICATION_ID, {
         status: 'additional_information_requested',
       });
-      await renderPage(AdditionalInfoPage, {
+      renderPage(AdditionalInfoPage, {
         query: { id: APPLICATION_ID },
       });
       const additionalInfoPageApi = getAdditionalInfoPageApi();
@@ -79,7 +79,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
     describe(`when application status is "${status as string}"`, () => {
       it('shows that additional info is sent', async () => {
         expectToGetYouthApplicationStatus(APPLICATION_ID, { status });
-        await renderPage(AdditionalInfoPage, {
+        renderPage(AdditionalInfoPage, {
           query: { id: APPLICATION_ID },
         });
         const additionalInfoPageApi = getAdditionalInfoPageApi();
@@ -95,7 +95,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
     describe(`when application status is "${status as string}"`, () => {
       it('shows that application is not found', async () => {
         expectToGetYouthApplicationStatus(APPLICATION_ID, { status });
-        await renderPage(AdditionalInfoPage, {
+        renderPage(AdditionalInfoPage, {
           query: { id: APPLICATION_ID },
         });
         const additionalInfoPageApi = getAdditionalInfoPageApi();
@@ -110,7 +110,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
       expectToGetYouthApplicationStatus(APPLICATION_ID, {
         status: 'additional_information_requested',
       });
-      await renderPage(AdditionalInfoPage, {
+      renderPage(AdditionalInfoPage, {
         query: { id: APPLICATION_ID },
       });
       const additionalInfoPageApi = getAdditionalInfoPageApi(APPLICATION_ID);
@@ -130,7 +130,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
         expectToGetYouthApplicationStatus(APPLICATION_ID, {
           status: 'additional_information_requested',
         });
-        await renderPage(AdditionalInfoPage, {
+        renderPage(AdditionalInfoPage, {
           query: { id: APPLICATION_ID },
         });
         const { additional_info_description, additional_info_user_reasons } =
@@ -151,7 +151,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
         expectToGetYouthApplicationStatus(APPLICATION_ID, {
           status: 'additional_information_requested',
         });
-        await renderPage(AdditionalInfoPage, {
+        renderPage(AdditionalInfoPage, {
           query: { id: APPLICATION_ID },
           locale: 'sv',
         });

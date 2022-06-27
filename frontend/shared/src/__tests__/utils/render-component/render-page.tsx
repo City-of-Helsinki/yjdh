@@ -4,7 +4,7 @@ import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import createAxiosTestContext from 'shared/__tests__/utils/create-axios-test-context';
 import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
-import { act, render } from 'shared/__tests__/utils/test-utils';
+import { render } from 'shared/__tests__/utils/test-utils';
 import BackendAPIContext from 'shared/backend-api/BackendAPIContext';
 import ConfirmDialog from 'shared/components/confirm-dialog/ConfirmDialog';
 import Portal from 'shared/components/confirm-dialog/Portal';
@@ -35,10 +35,7 @@ const renderPage =
     AuthProvider,
     confirmDialog,
   }: Props) =>
-  async (
-    Page: NextPage,
-    router: Partial<NextRouter> = {}
-  ): Promise<QueryClient> => {
+  (Page: NextPage, router: Partial<NextRouter> = {}): QueryClient => {
     const axios = createAxiosTestContext(backendUrl);
     const queryClient = createReactQueryTestClient(axios, backendUrl);
     const children = (
@@ -55,33 +52,25 @@ const renderPage =
       </ThemeProvider>
     );
 
-    // act because of async handlers in react-hook-form and react-query
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      render(
-        <BackendAPIContext.Provider value={createAxiosTestContext(backendUrl)}>
-          <QueryClientProvider client={queryClient}>
-            <DialogContextProvider>
-              {AuthProvider ? (
-                <AuthProvider>{children}</AuthProvider>
-              ) : (
-                children
-              )}
-              <HiddenLoadingIndicator />
-              {confirmDialog && (
-                <>
-                  <Portal>
-                    <ConfirmDialog />
-                  </Portal>
-                  <div id={PORTAL_ID} />
-                </>
-              )}
-            </DialogContextProvider>
-          </QueryClientProvider>
-        </BackendAPIContext.Provider>,
-        { isReady: true, locale: DEFAULT_LANGUAGE, ...router }
-      );
-    });
+    render(
+      <BackendAPIContext.Provider value={createAxiosTestContext(backendUrl)}>
+        <QueryClientProvider client={queryClient}>
+          <DialogContextProvider>
+            {AuthProvider ? <AuthProvider>{children}</AuthProvider> : children}
+            <HiddenLoadingIndicator />
+            {confirmDialog && (
+              <>
+                <Portal>
+                  <ConfirmDialog />
+                </Portal>
+                <div id={PORTAL_ID} />
+              </>
+            )}
+          </DialogContextProvider>
+        </QueryClientProvider>
+      </BackendAPIContext.Provider>,
+      { isReady: true, locale: DEFAULT_LANGUAGE, ...router }
+    );
     return queryClient;
   };
 

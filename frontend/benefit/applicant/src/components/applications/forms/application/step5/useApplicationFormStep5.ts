@@ -56,19 +56,23 @@ const useApplicationFormStep5 = (
       {
         ...application,
         applicationStep: getApplicationStepString(nextStep),
-        calculation: application.calculation ? {
-          ...application.calculation,
-          monthlyPay: stringToFloatValue(application.calculation.monthlyPay),
-          otherExpenses: stringToFloatValue(
-            application.calculation.otherExpenses
-          ),
-          vacationMoney: stringToFloatValue(
-            application.calculation.vacationMoney
-          ),
-          overrideMonthlyBenefitAmount: stringToFloatValue(
-            application.calculation.overrideMonthlyBenefitAmount
-          ),
-        } : undefined,
+        calculation: application.calculation
+          ? {
+              ...application.calculation,
+              monthlyPay: stringToFloatValue(
+                application.calculation.monthlyPay
+              ),
+              otherExpenses: stringToFloatValue(
+                application.calculation.otherExpenses
+              ),
+              vacationMoney: stringToFloatValue(
+                application.calculation.vacationMoney
+              ),
+              overrideMonthlyBenefitAmount: stringToFloatValue(
+                application.calculation.overrideMonthlyBenefitAmount
+              ),
+            }
+          : undefined,
       },
       { deep: true }
     ) as ApplicationData;
@@ -95,19 +99,23 @@ const useApplicationFormStep5 = (
       {
         ...application,
         ...submitFields,
-        calculation: application.calculation ? {
-          ...application.calculation,
-          monthlyPay: stringToFloatValue(application.calculation.monthlyPay),
-          otherExpenses: stringToFloatValue(
-            application.calculation.otherExpenses
-          ),
-          vacationMoney: stringToFloatValue(
-            application.calculation.vacationMoney
-          ),
-          overrideMonthlyBenefitAmount: stringToFloatValue(
-            application.calculation.overrideMonthlyBenefitAmount
-          ),
-        } : undefined,
+        calculation: application.calculation
+          ? {
+              ...application.calculation,
+              monthlyPay: stringToFloatValue(
+                application.calculation.monthlyPay
+              ),
+              otherExpenses: stringToFloatValue(
+                application.calculation.otherExpenses
+              ),
+              vacationMoney: stringToFloatValue(
+                application.calculation.vacationMoney
+              ),
+              overrideMonthlyBenefitAmount: stringToFloatValue(
+                application.calculation.overrideMonthlyBenefitAmount
+              ),
+            }
+          : undefined,
       },
       { deep: true }
     ) as ApplicationData;

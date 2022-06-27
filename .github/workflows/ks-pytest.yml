@@ -55,6 +55,11 @@ jobs:
           apt-get update
           apt-get install -y gettext
 
+      - name: Install xmlsec1 dependency
+        run: |
+          apt-get update
+          apt-get install -y xmlsec1 libsasl2-dev libssl-dev
+
       - name: Install dependencies
         run: cd backend/kesaseteli && pip install -r requirements.txt -r requirements-dev.txt codecov
 

@@ -1,4 +1,6 @@
+import { LoadingSpinner } from 'hds-react';
 import React from 'react';
+import { $HiddenLoadingIndicator } from 'shared/components/hidden-loading-indicator/HiddenLoadingIndicator.sc';
 import WizardContext, {
   Handler,
   WizardProps,
@@ -14,6 +16,7 @@ type Step = {
  * Loosely based on https://github.com/devrnt/react-use-wizard
  */
 const Wizard: React.FC<WizardProps> = React.memo(
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   ({ initialStep = 0, header, children, footer }) => {
     const [step, setStep] = React.useState<Step>({
       active: initialStep,
@@ -117,7 +120,13 @@ const Wizard: React.FC<WizardProps> = React.memo(
     return (
       <WizardContext.Provider value={wizardValue}>
         {header}
-        {activeStepContent}
+        {isLoading ? (
+          <$HiddenLoadingIndicator>
+            <LoadingSpinner data-testid="hidden-loading-indicator" />
+          </$HiddenLoadingIndicator>
+        ) : (
+          activeStepContent
+        )}
         {footer}
       </WizardContext.Provider>
     );
