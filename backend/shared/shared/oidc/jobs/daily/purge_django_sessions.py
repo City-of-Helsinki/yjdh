@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 from django.core import management
 from django_extensions.management.jobs import DailyJob
 =======
@@ -11,6 +12,11 @@ from applications.models import Attachment
 
 =======
 >>>>>>> 78c324b9 (FIX remove unused imports)
+=======
+from django_extensions.management.jobs import DailyJob
+from django.core import management
+
+>>>>>>> 748ab5133845f50888ec860d7a1392382c6b4106
 
 class Job(DailyJob):
     help = "Purge expired Django sessions by running clearsessions management command."
