@@ -342,11 +342,17 @@ SESSION_COOKIE_SECURE = True
 # SAML SLO requires allowing sessiond to be passed
 SESSION_COOKIE_SAMESITE = "None"
 
-AUTHENTICATION_BACKENDS = (
-    "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
+AUTHENTICATION_BACKENDS = [
     "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
-    "shared.suomi_fi.auth.SuomiFiSAML2AuthenticationBackend",
     "django.contrib.auth.backends.ModelBackend",
+]
+
+# If Suomi.fi not enabled we will enable the legacy Kesäseteli auth.
+AUTHENTICATION_BACKENDS.insert(
+    0,
+    "shared.suomi_fi.auth.SuomiFiSAML2AuthenticationBackend"
+    if ENABLE_SUOMIFI
+    else "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
 )
 
 OIDC_RP_SIGN_ALGO = "RS256"
@@ -398,6 +404,10 @@ ADFS_CONTROLLER_GROUP_UUIDS = env.list("ADFS_CONTROLLER_GROUP_UUIDS")
 
 # Suomi.fi (djangosaml2)
 
+SAML_ATTRIBUTE_MAPPING = {
+    "givenName": ("first_name",),
+    "sn": ("last_name",),
+}
 SAML_SESSION_COOKIE_NAME = "kesaseteli_saml_session"
 SAML_CREATE_UNKNOWN_USER = True
 SAML_DJANGO_USER_MAIN_ATTRIBUTE = "username"

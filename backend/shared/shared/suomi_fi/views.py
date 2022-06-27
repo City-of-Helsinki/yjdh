@@ -16,9 +16,12 @@ class SuomiFiAssertionConsumerServiceView(AssertionConsumerServiceView):
     def post_login_hook(
         self, request: HttpRequest, user: settings.AUTH_USER_MODEL, session_info: dict
     ) -> None:
-        """
-        Get required information from session_info and push it to the session."""
-        # TODO Get national identification number and store it into the session.
+        """Pick national identification number from ava and put it to the session."""
+        ava = session_info.get("ava", {})
+
+        if user_ssn := ava.get("nationalIdentificationNumber"):
+            request.saml_session["national_id_num"] = user_ssn[0]
+
         super(SuomiFiAssertionConsumerServiceView, self).post_login_hook(
             request, user, session_info
         )

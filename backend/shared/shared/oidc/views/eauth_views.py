@@ -67,24 +67,33 @@ class EauthAuthenticationRequestView(View):
         ending on Django's 500 error page. We should instead call `self.login_failure()` to redirect the
         user to the login error page in the UI.
         """
-        oidc_access_token = request.session.get("oidc_access_token")
-        if not oidc_access_token:
-            return self.login_failure()
 
-        user_info = get_userinfo(request)
+        suomifi_enabled = getattr(settings, "ENABLE_SUOMIFI", False)
 
-        # When authenticating via Tunnistus service, we can read `user_ssn` from `user_info`,
-        # but for authentication via Tunnistamo, we need to call Helsinki Profile GraphQL API.
-        user_ssn = user_info.get("national_id_num")
-        if user_ssn is None:
-            try:
-                profile = HelsinkiProfileClient().get_profile(oidc_access_token)
-            except HelsinkiProfileException as e:
-                logger.warning(
-                    f"Reading nationalIdentificationNumber from Helsinki Profile API failed: {str(e)}"
-                )
+        if suomifi_enabled:
+            # Suomi.fi SAML authentication has been enabled
+            user_ssn = request.saml_session.get("national_id_num")
+            if not user_ssn:
                 return self.login_failure()
-            user_ssn = profile["user_ssn"]
+        else:
+            if not request.session.get("oidc_access_token"):
+                return self.login_failure()
+
+            user_info = get_userinfo(request)
+            user_ssn = user_info.get("national_id_num")
+
+            # When authenticating via Tunnistamo, we need to call Helsinki Profile GraphQL API
+            if user_ssn is None:
+                try:
+                    profile = HelsinkiProfileClient().get_profile(
+                        request.session.get("oidc_access_token")
+                    )
+                except HelsinkiProfileException as e:
+                    logger.warning(
+                        f"Reading nationalIdentificationNumber from Helsinki Profile API failed: {str(e)}"
+                    )
+                    return self.login_failure()
+                user_ssn = profile["user_ssn"]
 
         if user_ssn is None:
             logger.warning(
