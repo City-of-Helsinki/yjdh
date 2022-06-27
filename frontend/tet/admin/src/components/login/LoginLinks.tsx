@@ -1,9 +1,13 @@
+import React from 'react';
 import { Card, Button } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import { $LoginLinks } from './LoginLinks.sc';
+import useLogin from 'tet/admin/hooks/backend/useLogin';
 
 const LoginLinks = () => {
   const { t } = useTranslation();
+  const loginAdfs = useLogin('adfs');
+  const loginOidc = useLogin('oidc');
 
   return (
     <$LoginLinks>
@@ -20,7 +24,9 @@ const LoginLinks = () => {
           '--padding-vertical': 'var(--spacing-m)',
         }}
       >
-        <Button role="link">{t('common:loginPage.companyLoginButton')}</Button>
+        <Button role="link" onClick={loginOidc} data-testid="oidcLoginButton">
+          {t('common:loginPage.companyLoginButton')}
+        </Button>
       </Card>
       <Card
         border
@@ -35,7 +41,9 @@ const LoginLinks = () => {
           '--padding-vertical': 'var(--spacing-m)',
         }}
       >
-        <Button role="link">{t('common:loginPage.cityLoginButton')}</Button>
+        <Button role="link" onClick={loginAdfs} data-testid="adfsLoginButton">
+          {t('common:loginPage.cityLoginButton')}
+        </Button>
       </Card>
     </$LoginLinks>
   );

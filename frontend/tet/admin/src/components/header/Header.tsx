@@ -34,10 +34,11 @@ const Header: React.FC = () => {
     [router, asPath],
   );
 
-  const login = useLogin();
+  // TODO login should probably be replaced with router.push('/login')`
+  const login = useLogin('adfs');
   const userQuery = useUserQuery();
 
-  const logout = useLogout();
+  const logout: () => void = useLogout();
 
   const isLoading = userQuery.isLoading;
   const isLoginPage = asPath?.startsWith('/login');
@@ -57,7 +58,7 @@ const Header: React.FC = () => {
               loginLabel: t('common:header.loginLabel'),
               logoutLabel: t('common:header.logoutLabel'),
               onLogin: login,
-              onLogout: logout as () => void,
+              onLogout: logout,
               userName: userQuery.isSuccess ? userQuery.data.name : undefined,
               userAriaLabelPrefix: t('common:header.userAriaLabelPrefix'),
             }

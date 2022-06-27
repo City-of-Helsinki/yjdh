@@ -22,7 +22,6 @@ const Login: NextPage = () => {
   const {
     query: { logout, error, sessionExpired },
   } = useRouter();
-  const login = useLogin();
 
   const notificationLabelKey = React.useMemo((): string => {
     if (logout) {
@@ -109,9 +108,6 @@ const Login: NextPage = () => {
         <$Notification label={t(notificationLabelKey)} type={notificationType} size="large">
           {notificationContent}
         </$Notification>
-        <Button theme="coat" iconLeft={<IconSignin />} onClick={login}>
-          {t(`common:header.loginLabel`)}
-        </Button>
       </Container>
     </>
   );

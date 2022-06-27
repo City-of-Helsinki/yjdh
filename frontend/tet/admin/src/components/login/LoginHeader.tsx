@@ -1,6 +1,8 @@
 import { useTranslation } from 'next-i18next';
-import { $LoginHeader, $LoginHeaderTitle, $LoginHeaderSubtitle } from './LoginHeader.sc';
+import React from 'react';
 import Container from 'shared/components/container/Container';
+
+import { $LoginHeader, $LoginHeaderSubtitle, $LoginHeaderTitle } from './LoginHeader.sc';
 
 const LoginHeader = () => {
   const { t } = useTranslation();
