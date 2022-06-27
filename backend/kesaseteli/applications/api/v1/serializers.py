@@ -340,7 +340,7 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
             )
             .order_by("modified_at")
             .first()
-        ) :
+        ):
             return hisory_entry.modified_at
         else:
             return None
