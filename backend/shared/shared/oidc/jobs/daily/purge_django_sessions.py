@@ -1,8 +1,6 @@
 from django_extensions.management.jobs import DailyJob
 from django.core import management
 
-from applications.models import Attachment
-
 
 class Job(DailyJob):
     help = "Purge expired Django sessions by running clearsessions management command."
