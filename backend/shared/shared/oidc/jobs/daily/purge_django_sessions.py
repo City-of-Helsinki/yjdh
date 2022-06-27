@@ -1,5 +1,5 @@
-from django_extensions.management.jobs import DailyJob
 from django.core import management
+from django_extensions.management.jobs import DailyJob
 
 
 class Job(DailyJob):
