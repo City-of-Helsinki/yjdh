@@ -1,10 +1,10 @@
 import AttachmentsListView from 'benefit/handler/components/attachmentsListView/AttachmentsListView';
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
+import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import {
   APPLICATION_STATUSES,
   ATTACHMENT_TYPES,
-} from 'benefit/handler/constants';
-import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
+} from 'benefit-shared/constants';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';

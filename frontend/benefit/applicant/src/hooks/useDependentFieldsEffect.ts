@@ -1,4 +1,4 @@
-import { BENEFIT_TYPES } from 'benefit/applicant/constants';
+import { BENEFIT_TYPES } from 'benefit-shared/constants';
 import React from 'react';
 
 interface FieldValues {

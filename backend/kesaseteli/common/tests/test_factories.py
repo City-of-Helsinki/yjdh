@@ -27,7 +27,7 @@ from common.tests.factories import (
 
 
 @freeze_time()
-@override_settings(DISABLE_VTJ=False, NEXT_PUBLIC_MOCK_FLAG=True)
+@override_settings(NEXT_PUBLIC_DISABLE_VTJ=False, NEXT_PUBLIC_MOCK_FLAG=True)
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "youth_application_factory,expected_statuses,expected_attribute_values",

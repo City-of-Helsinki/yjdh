@@ -1,13 +1,13 @@
 import { $Notification } from 'benefit/applicant/components/Notification/Notification.sc';
-import {
-  APPLICATION_FIELDS_STEP2,
-  APPLICATION_START_DATE,
-  BENEFIT_TYPES,
-  ORGANIZATION_TYPES,
-} from 'benefit/applicant/constants';
+import { APPLICATION_START_DATE } from 'benefit/applicant/constants';
 import { useAlertBeforeLeaving } from 'benefit/applicant/hooks/useAlertBeforeLeaving';
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
+import {
+  APPLICATION_FIELDS_STEP2,
+  BENEFIT_TYPES,
+  ORGANIZATION_TYPES,
+} from 'benefit-shared/constants';
 import { DateInput, Select, SelectionGroup, TextInput } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import React from 'react';

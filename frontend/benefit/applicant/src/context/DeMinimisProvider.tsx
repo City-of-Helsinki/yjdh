@@ -1,4 +1,4 @@
-import { DeMinimisAid } from 'benefit/applicant//types/application';
+import { DeMinimisAid } from 'benefit-shared/types/application';
 import React from 'react';
 
 import DeMinimisContext from './DeMinimisContext';

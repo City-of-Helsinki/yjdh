@@ -1,5 +1,5 @@
-import { BatchData } from 'benefit/handler/types/application';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
+import { BatchData } from 'benefit-shared/types/application';
 import { useQuery, UseQueryResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 

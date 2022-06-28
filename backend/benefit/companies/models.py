@@ -1,8 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from shared.models.abstract_models import AbstractCompany
 
 from common.localized_iban_field import LocalizedIBANField
+from shared.models.abstract_models import AbstractCompany
 
 
 class Company(AbstractCompany):

@@ -44,16 +44,16 @@ Sentry.init({
 
 setLogger({
   log: (message) => {
-    Sentry.captureMessage(String(message), Sentry.Severity.Log);
+    Sentry.captureMessage(String(message), 'log');
   },
   warn: (message) => {
-    Sentry.captureMessage(String(message), Sentry.Severity.Warning);
+    Sentry.captureMessage(String(message), 'warning');
   },
   error: (error) => {
     if (isError(error)) {
       Sentry.captureException(error);
     } else {
-      Sentry.captureMessage(String(error), Sentry.Severity.Log);
+      Sentry.captureMessage(String(error), 'log');
     }
   },
 });

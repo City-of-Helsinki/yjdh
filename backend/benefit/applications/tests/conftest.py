@@ -1,6 +1,5 @@
 import factory
 import pytest
-from shared.service_bus.enums import YtjOrganizationCode
 
 from applications.enums import BenefitType
 from applications.models import Application
@@ -17,6 +16,7 @@ from applications.tests.factories import (
 from common.tests.conftest import *  # noqa
 from companies.tests.conftest import *  # noqa
 from helsinkibenefit.tests.conftest import *  # noqa
+from shared.service_bus.enums import YtjOrganizationCode
 from terms.tests.conftest import *  # noqa
 from terms.tests.factories import TermsOfServiceApprovalFactory
 

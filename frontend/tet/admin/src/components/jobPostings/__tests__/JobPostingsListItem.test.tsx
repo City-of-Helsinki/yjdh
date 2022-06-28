@@ -40,7 +40,7 @@ describe('JobPostingsListItem', () => {
     expect(screen.queryByRole('list')).toBeNull();
 
     const menuButton = await screen.findByRole('button');
-    userEvent.click(menuButton);
+    await userEvent.click(menuButton);
     const list = screen.getByRole('list');
     expect(within(list).queryByText(/julkaise nyt/i)).toBeNull();
     await within(list).findByText(/muokkaa/i);
@@ -54,7 +54,7 @@ describe('JobPostingsListItem', () => {
     expect(screen.queryByRole('list')).toBeNull();
 
     const menuButton = await screen.findByRole('button');
-    userEvent.click(menuButton);
+    await userEvent.click(menuButton);
     const list = screen.getByRole('list');
     await within(list).findByText(/julkaise nyt/i);
     await within(list).findByText(/muokkaa/i);

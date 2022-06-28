@@ -1,11 +1,9 @@
-import { APPLICATION_STATUSES } from 'benefit/handler/constants';
 import AppContext from 'benefit/handler/context/AppContext';
 import { useApplicationActions } from 'benefit/handler/hooks/useApplicationActions';
 import useHandlerReviewActions from 'benefit/handler/hooks/useHandlerReviewActions';
-import {
-  Application,
-  HandledAplication,
-} from 'benefit/handler/types/application';
+import { HandledAplication } from 'benefit/handler/types/application';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import { Application } from 'benefit-shared/types/application';
 import { TFunction, useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import useToggle from 'shared/hooks/useToggle';

@@ -64,6 +64,7 @@
     }
   },
   "editor": {
+		"formLabel": "New TET advertisement or edit",
 		"companyInfo": "Employer information",
     "helsinkiCity": "City of Helsinki",
 		"companyInfoFetch": "The information has been fetched during authentication.",
@@ -82,6 +83,9 @@
     "loadingError": "Error while loading the event. Please try again later.",
     "language": "Language of the TET workplace",
 		"leaveConfirm": "No changes have been saved. Do you still want to leave?",
+		"draftInfoHeader": "Fill required fields",
+		"draftInfoContent": "Fill <1>Job title</1>, <1>Unit or department</1> and <1>Address</1> to save draft of the TET advertisement",
+		"close": "Close",
     "employerInfo": {
 			"contactPerson": "Contact person",
       "header": "Unit details",
@@ -97,7 +101,10 @@
       "workHoursNotice": "The working hours are always the same (30 h per week).",
       "startDateLabel": "Start date",
       "endDateLabel": "End date",
+			"endDateHelperText": "If the TET-position is continuously open, leave the end time blank",
       "spotsLabel": "Number of open spots",
+			"spotsIncrease": "Increase by one",
+			"spotsDecrease": "Decrease by one",
 			"contactFirstName": "First name",
 			"contactLastName": "Last name",
 			"contactPhone": "Telephone",
@@ -106,6 +113,7 @@
 			"contactLanguageFi": "Finnish",
 			"contactLanguageSv": "Swedish",
 			"contactLanguageEn": "English",
+			"website": "Website",
 			"validation": {
 				"required": "Required information",
 				"email": "Enter e-mail in the correct format",
@@ -143,6 +151,7 @@
     "accessibilityStatement": "Accessibility statement",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/information/accessibility",
     "privacyPolicy": "Privacy policy",
+		"privacyPolicyPDF": "Opens a pdf-file",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
     "feedback": "Give feedback",
     "feedbackLink": "https://www.hel.fi/helsinki/en/administration/participate/feedback",
@@ -153,6 +162,7 @@
     "sv": "På svenska",
     "en": "In English"
   },
+	"opensInNewPage": "Link opens to a different website",
   "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/",
   "error": {
     "generic": {

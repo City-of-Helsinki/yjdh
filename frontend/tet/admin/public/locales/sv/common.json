@@ -64,6 +64,7 @@
     }
   },
   "editor": {
+		"formLabel": "Ny PRAO-plats eller regidera",
 		"companyInfo": "Arbetsgivarinformation",
     "helsinkiCity": "Helsingfors stad",
 		"companyInfoFetch": "Informationen har hämtats under autentiseringen.",
@@ -82,6 +83,9 @@
     "loadingError": "Ett fel inträffade när händelsen skulle laddas. Vänligen försök igen senare.",
     "language": "PRAO-platsens språk",
 		"leaveConfirm": "Inga ändringar har sparats. Vill du fortfarande lämna?",
+		"draftInfoHeader": "Fyll i de obligatoriska fälten",
+		"draftInfoContent": "Fyll i <strong>befattning</strong>, <strong>verksmhetsställe</strong> och <strong>adress</strong> för att spara ofullständiga PRAO-platsen",
+		"close": "stänga",
     "employerInfo": {
 			"contactPerson": "Kontaktperson",
       "header": "Uppgifter om verksamhetsställe",
@@ -97,7 +101,10 @@
       "workHoursNotice": "Arbetstiden är alltid densamma, 30 timmar i veckan.",
       "startDateLabel": "Börjar",
       "endDateLabel": "Slutar",
+			"endDateHelperText": "Om tiden på PRAO-platsen är kontinuerlig, lämna sluttiden tom",
       "spotsLabel": "Arbetspraktikplatser",
+			"spotsIncrease": "Öka med en",
+			"spotsDecrease": "Minska med en",
 			"contactFirstName": "Förnamn",
 			"contactLastName": "Efternamn",
 			"contactPhone": "Telefon",
@@ -106,6 +113,7 @@
 			"contactLanguageFi": "Finska",
 			"contactLanguageSv": "Svenska",
 			"contactLanguageEn": "Engelska",
+			"website": "Hemsida",
 			"validation": {
 				"required": "Uppgiften är nödvändig",
 				"email": "Vänligen mata in e-post i rätt format",
@@ -143,11 +151,13 @@
     "accessibilityStatement": "Tillgänglighetsutlåtande",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/information/tillganglighet",
     "privacyPolicy": "Registerbeskrivning",
+		"privacyPolicyPDF": "Öppnar en pdf-fil",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Register för administration av grundläggande utbildning.pdf",
     "feedback": "Ge feedback",
     "feedbackLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/delta/feedback",
 		"newTab": "länken öppnas i en ny flik"
   },
+	"opensInNewPage": "Länken öppnas till en annan webbplats",
   "languages": {
     "fi": "Suomeksi",
     "sv": "På svenska",

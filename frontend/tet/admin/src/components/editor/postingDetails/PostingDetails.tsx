@@ -20,7 +20,7 @@ import isBefore from 'date-fns/isBefore';
 const PostingDetails: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { required, name, description, date } = useValidationRules();
+  const { required, name, description, date, website } = useValidationRules();
   const { control, setValue } = useFormContext<TetPosting>();
 
   const languageOptions = useLanguageOptions();
@@ -50,15 +50,6 @@ const PostingDetails: React.FC = () => {
           row-gap: ${theme.spacing.xl};
         `}
       >
-        <$GridCell $colSpan={6}>
-          <TextInput
-            id="title"
-            testId="posting-form-title"
-            label={t('common:editor.posting.title')}
-            placeholder={t('common:editor.posting.title')}
-            registerOptions={name}
-          />
-        </$GridCell>
         <$GridCell $colSpan={3}>
           <DateInput
             id="start_date"
@@ -76,30 +67,31 @@ const PostingDetails: React.FC = () => {
             required={false}
             registerOptions={{ pattern: date.pattern }}
             minDate={minDate}
+            helperText={t('common:editor.posting.endDateHelperText')}
+          />
+        </$GridCell>
+        <$GridCell $colSpan={3}>
+          <NumberInput
+            id="spots"
+            testId="posting-form-spots"
+            label={t('common:editor.posting.spotsLabel')}
+            registerOptions={{ required: required }}
+            required={true}
+          />
+        </$GridCell>
+        <$GridCell $colSpan={3}>
+          <Dropdown
+            id="languages"
+            testId="posting-form-languages"
+            options={languageOptions}
+            initialValue={[languageOptions[0]]}
+            label={t('common:editor.posting.contactLanguage')}
+            registerOptions={{
+              required: required,
+            }}
           />
         </$GridCell>
         <$GridCell $colSpan={3}></$GridCell>
-      </$GridCell>
-      <$GridCell $colSpan={2}>
-        <NumberInput
-          id="spots"
-          testId="posting-form-spots"
-          label={t('common:editor.posting.spotsLabel')}
-          registerOptions={{ required: required }}
-          required={true}
-        />
-      </$GridCell>
-      <$GridCell $colSpan={3}>
-        <Dropdown
-          id="languages"
-          testId="posting-form-languages"
-          options={languageOptions}
-          initialValue={[languageOptions[0]]}
-          label={t('common:editor.posting.contactLanguage')}
-          registerOptions={{
-            required: required,
-          }}
-        />
       </$GridCell>
       <$GridCell as={$Grid} $colSpan={12}>
         <$GridCell $colSpan={6}>
@@ -114,6 +106,16 @@ const PostingDetails: React.FC = () => {
             label={t('common:editor.posting.description')}
             registerOptions={description}
             required={true}
+          />
+        </$GridCell>
+      </$GridCell>
+      <$GridCell as={$Grid} $colSpan={12}>
+        <$GridCell $colSpan={6}>
+          <TextInput
+            id="website_url"
+            label={t('common:editor.posting.website')}
+            placeholder={t('common:editor.posting.website')}
+            registerOptions={website}
           />
         </$GridCell>
       </$GridCell>

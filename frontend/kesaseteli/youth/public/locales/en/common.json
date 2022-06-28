@@ -70,40 +70,40 @@
       "termsAndConditionsLink": "https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/for-summer-job-seekers/",
       "sendButton": "Submit information",
       "requiredInfo": "All fields marked with * are required",
-      "sendItAnyway": "ENG Mikäli tiedot ovat mielestäsi oikein, voit lähettää ne meille tarkastettavaksi. Palaamme asiaan kun olemme käsitelleet tietosi.",
-      "forceSubmitLink": "ENG Lähetä"
+      "sendItAnyway": "If you think the information is right, you can send in the application for control. we will be in touch with you after we checked your information.",
+      "forceSubmitLink": "Send"
     },
     "checkNotification" : {
-      "label" : "ENG Hups! Jokin tiedoista ei ole oikein",
-      "recheck" : "ENG Tarkistathan, että olet kirjoittanut nimesi ja henkilötunnuksesi kuten ne ovat Kela-kortissasi.",
-      "validation": "ENG Tarkista seuraavat kentät: {{ fields}}"
+      "label" : "Oops! Some information is not correct.",
+      "recheck" : "Check, that you have written your name and personal number as it is on your KELA-card.",
+      "validation": "Check following form fields: {{ fields}}"
     }
   },
   "additionalInfo": {
-    "title": "ENG Tarkenna hakemustasi",
+    "title": "Please, check your application",
     "notification" : {
-      "confirmed": "ENG Sähköpostiosoite on vahvistettu",
-      "confirmedDescription": "ENG Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      "sent" : "ENG Kiitos! Tarkennus lähetetty!",
-      "notFound": "ENG Hakemusta ei löytynyt"
+      "confirmed": " Your e-mail address is confirmed",
+      "confirmedDescription": "",
+      "sent" : "Thanks! Your specified information has been sent!",
+      "notFound": "Your application is not found"
     },
-    "paragraph_1": "ENG Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    "paragraph_2": "ENG Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "paragraph_1": "Your application needs more information. Choose from the options below and write your explanation.",
+    "paragraph_2": "",
     "form" : {
-      "reasons": "ENG Otsikko",
-      "reasonsPlaceholder": "ENG Valitse seuraavista vaihtoehdoista",
-      "additional_info_description": "ENG Lisätiedot",
+      "reasons": "Title",
+      "reasonsPlaceholder": "Choose from following options",
+      "additional_info_description": "More information",
       "additional_info_attachments": "ENG Liitetiedostot",
       "additional_info_attachmentsHelper": "ENG Voit lisätä korkeintaan 5 liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Maksimikoko 10MB",
-      "sendButton": "Lähetä tiedot"
+      "sendButton": "Send the information"
     },
     "reasons": {
-      "unlisted_school": "ENG Kouluani ei löytynyt listalta",
-      "student_in_helsinki_but_not_resident": "ENG En asu Helsingissä, mutta käyn Helsinkiläistä koulua",
-      "moving_to_helsinki": "ENG En asu vielä Helsingissä, mutta olen muuttamassa Helsinkiin",
-      "underage_or_overage": "ENG En kuulu iän puolesta kohderyhmään, mutta vuosiluokan puolesta kyllä",
-      "personal_info_differs_from_vtj": "ENG Henkilötietoni poikkeavat väestötietojärjestelmän tiedoista",
-      "other": "ENG Muu, kerro alla"
+      "unlisted_school": "My school is not on the list",
+      "student_in_helsinki_but_not_resident": "I don't live Helsinki, but my school is in Helsinki",
+      "moving_to_helsinki": "I don't yet live in Helsinki, but I am moving there before 1 of June",
+      "underage_or_overage": "I don't belong to the target group based on my age, but based on the year class at school I do belong to the target group",
+      "personal_info_differs_from_vtj": "My personal information differs from those at the Population Information System",
+      "other": "Other reason, specify here below"
     }
   },
   "errors": {
@@ -114,8 +114,8 @@
     "validate": "The information you entered is in an incorrect format"
   },
   "assistive": {
-    "clearChoice": "ENG Tyhjennä valinta",
-    "clearAllChoices": "ENG Tyhjennä kaikki valinnat"
+    "clearChoice": "Clear the selection",
+    "clearAllChoices": "Clear all selected"
   },
   "notificationPages": {
     "thankyou" : {
@@ -126,7 +126,7 @@
     "emailInUse" : {
       "title": "Oops! The email is already in use.",
       "message": " If you made a mistake, please wait {{ expirationHours }} hours and try again.",
-      "goToFrontendPage": "ENG Tarkista tiedot ja lähetä kesäseteli uudelleen"
+      "goToFrontendPage": "Check your information and send the application for the Summer Job Voucher again."
     },
     "alreadyAssigned" : {
       "title": "Oops! You already sent a Summer Job Voucher application, which is being processed now.",
@@ -154,9 +154,9 @@
       "goToFrontendPage": ""
     },
     "inadmissibleData" : {
-      "title": "ENG Hups! Antamillasi tiedoilla ei voi hakea Kesäseteliä.",
-      "message": "ENG Tarkistahan tietosi ja lähetä rekisteröitymislomake uudestaan.",
-      "goToFrontendPage": "ENG Tarkista tiedot ja lähetä kesäseteli uudelleen"
+      "title": "Oops! Based on the given information it is not possible to get the Summer Job Voucher",
+      "message": "Check your information and send the registration form again.",
+      "goToFrontendPage": "Check your information and send the application for the Summer Job Voucher again."
     }
   }
 }

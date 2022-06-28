@@ -39,7 +39,7 @@ describe('frontend/tet/admin/src/pages/editstatic.tsx', () => {
   it('should redirect when unauthorized', async () => {
     expectUnauthorizedReply();
     const spyPush = jest.fn();
-    await renderPage(EditStaticPage, { push: spyPush });
+    renderPage(EditStaticPage, { push: spyPush });
     await waitFor(() => expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/login`));
   });
 
@@ -50,7 +50,7 @@ describe('frontend/tet/admin/src/pages/editstatic.tsx', () => {
     expectToGetSingleEventFromBackend(event);
 
     const spyPush = jest.fn();
-    await renderPage(EditStaticPage, { push: spyPush, query: { id: event.id } });
+    renderPage(EditStaticPage, { push: spyPush, query: { id: event.id } });
 
     await waitForBackendRequestsToComplete();
 

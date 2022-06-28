@@ -3,6 +3,7 @@ import React from 'react';
 import { useFormContext, Controller, RegisterOptions } from 'react-hook-form';
 import Id from 'shared/types/id';
 import TetPosting from 'tet-shared/types/tetposting';
+import { useTranslation } from 'next-i18next';
 
 type SpotsType = Pick<TetPosting, 'spots'>;
 
@@ -19,6 +20,7 @@ const asNumber = (value?: string | number | undefined): number | undefined => Nu
 
 const NumberInput: React.FC<Props> = ({ id, registerOptions, label, required = false, testId }) => {
   const { control } = useFormContext<SpotsType>();
+  const { t } = useTranslation();
   return (
     <Controller
       name={id}
@@ -30,6 +32,8 @@ const NumberInput: React.FC<Props> = ({ id, registerOptions, label, required = f
           value={value}
           min={1}
           step={1}
+          minusStepButtonAriaLabel={t('common:editor.posting.spotsDecrease')}
+          plusStepButtonAriaLabel={t('common:editor.posting.spotsIncrease')}
           required={required}
           onChange={onChange}
           errorText={error ? error.message : ''}

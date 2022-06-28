@@ -1,5 +1,5 @@
-import { PaySubsidy } from 'benefit/handler/types/application';
 import { ErrorData } from 'benefit/handler/types/common';
+import { PaySubsidy } from 'benefit-shared/types/application';
 import camelCase from 'lodash/camelCase';
 import { useTranslation } from 'next-i18next';
 import React from 'react';

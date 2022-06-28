@@ -16,7 +16,7 @@ describe('frontend/kesaseteli/youth/src/pages/accepted.tsx', () => {
 
   it('loads the page', async () => {
     const spyPush = jest.fn();
-    await renderPage(AcceptedPage, { push: spyPush });
+    renderPage(AcceptedPage, { push: spyPush });
     const emailInUseApi = getNotificationPageApi('accepted');
     await emailInUseApi.expectations.pageIsLoaded();
   });

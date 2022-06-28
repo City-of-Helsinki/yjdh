@@ -18,7 +18,7 @@ describe('frontend/kesaseteli/youth/src/pages/inadmissible_data.tsx', () => {
 
   it('redirects to main page when clicking the button', async () => {
     const spyPush = jest.fn();
-    await renderPage(InadmissibleDataPage, { push: spyPush });
+    renderPage(InadmissibleDataPage, { push: spyPush });
     const emailInUseApi = getNotificationPageApi('inadmissibleData');
     await emailInUseApi.expectations.pageIsLoaded();
     await emailInUseApi.actions.clickGoToFrontPageButton();

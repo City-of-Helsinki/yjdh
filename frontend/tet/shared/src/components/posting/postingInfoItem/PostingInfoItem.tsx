@@ -4,12 +4,13 @@ import {
   $Header,
   $InfoItem,
   $List,
+  $Title,
 } from 'tet-shared//components/posting/postingInfoItem/PostingInfoItem.sc';
 
 type Props = {
   title: string;
-  body: string | string[];
-  icon: JSX.Element;
+  body: string | string[] | JSX.Element;
+  icon?: JSX.Element;
 };
 
 const PostingInfoItem: React.FC<Props> = ({ title, body, icon }) => {
@@ -17,16 +18,27 @@ const PostingInfoItem: React.FC<Props> = ({ title, body, icon }) => {
   return (
     <$InfoItem>
       <$Header>
-        {icon}
-        <span>{title}</span>
+        {icon ? (
+          <>
+            {icon}
+            <$Title>{title}</$Title>
+          </>
+        ) : (
+          <span>{title}</span>
+        )}
       </$Header>
       <$List>
-        {list.map((item) => (
-          <li>{item}</li>
+        {list.map((item, index) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <li key={index}>{item}</li>
         ))}
       </$List>
     </$InfoItem>
   );
+};
+
+PostingInfoItem.defaultProps = {
+  icon: null,
 };
 
 export default PostingInfoItem;

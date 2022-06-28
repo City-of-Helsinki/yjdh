@@ -8,14 +8,15 @@ import { Language } from 'shared/i18n/i18n';
 
 type Props = {
   id: Id<TetPosting>;
-  testId?: string;
   label: string;
   registerOptions?: RegisterOptions;
   required: boolean;
   minDate?: Date;
+  helperText?: string;
+  testId?: string;
 };
 
-const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = false, minDate, testId }) => {
+const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = false, minDate, helperText , testId}) => {
   const { control } = useFormContext<TetPosting>();
   const { i18n } = useTranslation();
   return (
@@ -24,8 +25,8 @@ const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = fal
       render={({ field: { onChange, value }, fieldState: { error, invalid } }) => (
         <HdsDateInput
           disableConfirmation
-          data-testid={testId}
           id={id}
+          data-testid={testId}
           label={label}
           onChange={onChange}
           value={value ? String(value) : ''}
@@ -34,6 +35,7 @@ const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = fal
           language={i18n.language as Language}
           errorText={error ? error.message : ''}
           minDate={minDate}
+          helperText={helperText}
         />
       )}
       control={control}
@@ -43,3 +45,4 @@ const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = fal
 };
 
 export default DateInput;
+

@@ -22,18 +22,6 @@ from django.utils.html import strip_tags
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.reverse import reverse
-from shared.audit_log.models import AuditLogEntry
-from shared.common.lang_test_utils import (
-    assert_email_body_language,
-    assert_email_subject_language,
-)
-from shared.common.tests.conftest import (
-    staff_client,
-    staff_superuser_client,
-    superuser_client,
-)
-from shared.common.tests.factories import UserFactory
-from shared.common.tests.test_validators import get_invalid_postcode_values
 
 from applications.api.v1.serializers import YouthApplicationSerializer
 from applications.enums import (
@@ -64,6 +52,18 @@ from common.tests.factories import (
 )
 from common.urls import handler_403_url, handler_youth_application_processing_url
 from common.utils import normalize_whitespace
+from shared.audit_log.models import AuditLogEntry
+from shared.common.lang_test_utils import (
+    assert_email_body_language,
+    assert_email_subject_language,
+)
+from shared.common.tests.conftest import (
+    staff_client,
+    staff_superuser_client,
+    superuser_client,
+)
+from shared.common.tests.factories import UserFactory
+from shared.common.tests.test_validators import get_invalid_postcode_values
 
 
 def reverse_youth_application_action(action, pk):
@@ -637,7 +637,7 @@ def test_youth_applications_detail_fetch_vtj_json_end_user(
 
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
-    DISABLE_VTJ=False,
+    NEXT_PUBLIC_DISABLE_VTJ=False,
 )
 @pytest.mark.django_db
 def test_youth_application_post_fetch_vtj_json_empty_end_user(api_client):
@@ -704,7 +704,7 @@ def test_youth_applications_activate_unexpired_inactive(
     rejected_application_exists,
     expected_status_code,
 ):
-    settings.DISABLE_VTJ = disable_vtj
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     inactive_youth_application = InactiveNoNeedAdditionalInfoYouthApplicationFactory(
         language=language
     )
@@ -771,7 +771,7 @@ def test_youth_applications_activate_unexpired_active(
     rejected_application_exists,
     youth_application_factory,
 ):
-    settings.DISABLE_VTJ = disable_vtj
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     active_youth_application = youth_application_factory(language=language)
     old_status = active_youth_application.status
     old_handler = active_youth_application.handler
@@ -794,7 +794,10 @@ def test_youth_applications_activate_unexpired_active(
 
     assert response.status_code == status.HTTP_302_FOUND
 
-    if active_youth_application.need_additional_info:
+    if (
+        active_youth_application.status
+        == YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+    ):
         assert response.url == active_youth_application.additional_info_page_url(
             pk=active_youth_application.pk
         )
@@ -839,7 +842,7 @@ def test_youth_applications_activate_expired_inactive(
     youth_application_factory,
     need_additional_info,
 ):
-    settings.DISABLE_VTJ = disable_vtj
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     inactive_youth_application = youth_application_factory(language=language)
 
     old_status = inactive_youth_application.status
@@ -899,7 +902,7 @@ def test_youth_applications_activate_expired_active(
     rejected_application_exists,
     youth_application_factory,
 ):
-    settings.DISABLE_VTJ = disable_vtj
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     active_youth_application = youth_application_factory(language=language)
     old_status = active_youth_application.status
     old_handler = active_youth_application.handler
@@ -922,7 +925,10 @@ def test_youth_applications_activate_expired_active(
 
     assert response.status_code == status.HTTP_302_FOUND
 
-    if active_youth_application.need_additional_info:
+    if (
+        active_youth_application.status
+        == YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+    ):
         assert response.url == active_youth_application.additional_info_page_url(
             pk=active_youth_application.pk
         )
@@ -938,7 +944,7 @@ def test_youth_applications_activate_expired_active(
 
 
 @pytest.mark.django_db
-@override_settings(DISABLE_VTJ=True)
+@override_settings(NEXT_PUBLIC_DISABLE_VTJ=True)
 def test_youth_applications_dual_activate_unexpired_inactive(
     api_client,
     make_youth_application_activation_link_unexpired,
@@ -978,9 +984,63 @@ def test_youth_applications_dual_activate_unexpired_inactive(
     assert response_2.url == app_2.already_activated_page_url()
 
 
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "app_factory,expected_status",
+    [
+        (
+            InactiveNoNeedAdditionalInfoYouthApplicationFactory,
+            YouthApplicationStatus.AWAITING_MANUAL_PROCESSING,
+        ),
+        (
+            InactiveNeedAdditionalInfoYouthApplicationFactory,
+            YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+        ),
+    ],
+)
+@override_settings(NEXT_PUBLIC_DISABLE_VTJ=True)
+def test_youth_applications_reactivate_unexpired_inactive__vtj_disabled(
+    app_factory,
+    expected_status,
+    api_client,
+    make_youth_application_activation_link_unexpired,
+):
+    """
+    When user tries to activate and reactivate an application, he/she should
+    get redirected to the correct url.
+
+    - Application should get the expected status on the first activation
+    - User should get redirected correctly when trying to reactivate the
+      application.
+    """
+    app = app_factory(
+        # Disabled VTJ means there's no VTJ data
+        encrypted_original_vtj_json=None,
+        encrypted_handler_vtj_json=None,
+    )
+
+    # Activate and reactivate
+    for i in range(2):
+        response = api_client.get(get_activation_url(app.pk))
+        app.refresh_from_db()
+        assert app.status == expected_status
+
+        assert response.status_code == status.HTTP_302_FOUND
+
+        if i == 0 and app.status == YouthApplicationStatus.AWAITING_MANUAL_PROCESSING:
+            assert response.url == app.activated_page_url()
+        elif app.status == YouthApplicationStatus.AWAITING_MANUAL_PROCESSING:
+            assert response.url == app.already_activated_page_url()
+        else:
+            assert response.url == app.additional_info_page_url(pk=app.pk)
+
+        assert app.encrypted_original_vtj_json is None
+        assert app.encrypted_handler_vtj_json is None
+
+
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
-    DISABLE_VTJ=True,
+    NEXT_PUBLIC_DISABLE_VTJ=True,
 )
 @pytest.mark.django_db
 @pytest.mark.parametrize(
@@ -1009,7 +1069,7 @@ def test_youth_application_post_valid_social_security_number(api_client, test_va
 
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
-    DISABLE_VTJ=True,
+    NEXT_PUBLIC_DISABLE_VTJ=True,
 )
 @pytest.mark.django_db
 def test_youth_application_post_response_excludes_vtj_data_fields(api_client):
@@ -1026,7 +1086,7 @@ def test_youth_application_post_response_excludes_vtj_data_fields(api_client):
 @freeze_time()
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
-    DISABLE_VTJ=True,
+    NEXT_PUBLIC_DISABLE_VTJ=True,
 )
 @pytest.mark.django_db
 @pytest.mark.parametrize("random_seed", list(range(20)))
@@ -1163,7 +1223,7 @@ def test_youth_application_post_valid_random_data(  # noqa: C901
 
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
-    DISABLE_VTJ=True,
+    NEXT_PUBLIC_DISABLE_VTJ=True,
 )
 @pytest.mark.django_db
 def test_youth_application_post_valid_audit_log(api_client):
@@ -1183,7 +1243,7 @@ def test_youth_application_post_valid_audit_log(api_client):
 @pytest.mark.django_db
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
-    DISABLE_VTJ=True,
+    NEXT_PUBLIC_DISABLE_VTJ=True,
     EMAIL_USE_TLS=False,
     EMAIL_HOST="",  # Use inexistent email host to ensure emails will never go anywhere
 )
@@ -1282,7 +1342,7 @@ def test_youth_application_additional_info_request_email_language(api_client, la
 @pytest.mark.django_db
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
-    DISABLE_VTJ=False,
+    NEXT_PUBLIC_DISABLE_VTJ=False,
     EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
     DEFAULT_FROM_EMAIL="Test sender <testsender@hel.fi>",
 )
@@ -1313,7 +1373,7 @@ def test_youth_application_activation_email_sending(
 @pytest.mark.django_db
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
-    DISABLE_VTJ=False,
+    NEXT_PUBLIC_DISABLE_VTJ=False,
     EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
     DEFAULT_FROM_EMAIL="Test sender <testsender@hel.fi>",
 )
@@ -1393,7 +1453,7 @@ def test_youth_application_processing_email_sending_on_activate(
     disable_vtj,
     expect_success,
 ):
-    settings.DISABLE_VTJ = disable_vtj
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     youth_application = InactiveNoNeedAdditionalInfoYouthApplicationFactory()
     assert not youth_application.is_active
     assert not youth_application.has_activation_link_expired
@@ -1427,7 +1487,7 @@ def test_youth_application_processing_email_sending_after_additional_info(
     disable_vtj,
     expect_success,
 ):
-    settings.DISABLE_VTJ = disable_vtj
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     youth_application = AdditionalInfoRequestedYouthApplicationFactory()
     assert youth_application.need_additional_info
     assert youth_application.can_set_additional_info
@@ -1471,7 +1531,7 @@ def test_youth_application_processing_email_language_on_activate(
     expected_email_language,
     expect_success,
 ):
-    settings.DISABLE_VTJ = disable_vtj
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     youth_application = InactiveNoNeedAdditionalInfoYouthApplicationFactory(
         language=youth_application_language
     )
@@ -1514,7 +1574,7 @@ def test_youth_application_processing_email_language_after_additional_info(
     expected_email_language,
     expect_success,
 ):
-    settings.DISABLE_VTJ = disable_vtj
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     youth_application = AdditionalInfoRequestedYouthApplicationFactory(
         language=youth_application_language
     )
@@ -1577,6 +1637,7 @@ def test_youth_summer_voucher_email_language(api_client, language):
     NEXT_PUBLIC_MOCK_FLAG=True,
     EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
     DEFAULT_FROM_EMAIL="Test sender <testsender@hel.fi>",
+    HANDLER_EMAIL="Test handler <testhandler@hel.fi>",
 )
 @pytest.mark.parametrize("language", get_supported_languages())
 def test_youth_summer_voucher_email_sending(api_client, language):
@@ -1597,6 +1658,7 @@ def test_youth_summer_voucher_email_sending(api_client, language):
     )
     assert youth_summer_voucher_email.from_email == "Test sender <testsender@hel.fi>"
     assert youth_summer_voucher_email.to == [acceptable_youth_application.email]
+    assert youth_summer_voucher_email.bcc == ["Test handler <testhandler@hel.fi>"]
 
 
 @pytest.mark.django_db
@@ -1792,7 +1854,7 @@ def get_expected_reason(
 @freeze_time("2022-02-02")
 @override_settings(
     NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS=60 * 60 * 12,  # 12h
-    DISABLE_VTJ=True,
+    NEXT_PUBLIC_DISABLE_VTJ=True,
     NEXT_PUBLIC_MOCK_FLAG=True,
 )
 @pytest.mark.django_db
@@ -1904,6 +1966,7 @@ def test_youth_applications_accept_acceptable(
     expected_status_code,
     expected_redirect_to,
 ):
+    settings.NEXT_PUBLIC_DISABLE_VTJ = False
     assert (expected_status_code == status.HTTP_302_FOUND) == (
         expected_redirect_to is not None
     )
@@ -1963,6 +2026,41 @@ def test_youth_applications_accept_acceptable(
         assert response.url == RedirectTo.get_redirect_url(
             expected_redirect_to, "accept", acceptable_youth_application.pk
         )
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("send_vtj_data", [True, False])
+def test_youth_applications_accept_acceptable__vtj_disabled(
+    acceptable_youth_application, settings, staff_client, send_vtj_data
+):
+    """
+    When VTJ integration has been disabled do not expect any input to
+    encrypted_handler_vtj_json field and store it as an empty JSON object.
+    """
+    settings.NEXT_PUBLIC_DISABLE_VTJ = True
+    acceptable_youth_application.encrypted_original_vtj_json = None
+    acceptable_youth_application.encrypted_handler_vtj_json = None
+    acceptable_youth_application.save()
+    old_youth_summer_voucher_count = YouthSummerVoucher.objects.count()
+    assert not acceptable_youth_application.has_youth_summer_voucher
+
+    response = staff_client.patch(
+        reverse_youth_application_action("accept", acceptable_youth_application.pk),
+        data=json.dumps(get_test_handling_data()) if send_vtj_data else None,
+        content_type="application/json",
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    acceptable_youth_application.refresh_from_db()
+    assert acceptable_youth_application.status == YouthApplicationStatus.ACCEPTED
+    assert acceptable_youth_application.encrypted_original_vtj_json is None
+    assert acceptable_youth_application.encrypted_handler_vtj_json is None
+    assert acceptable_youth_application.has_youth_summer_voucher
+    assert YouthSummerVoucher.objects.count() == old_youth_summer_voucher_count + 1
+    assert (
+        acceptable_youth_application.youth_summer_voucher.summer_voucher_serial_number
+        == YouthSummerVoucher.objects.count()
+    )
 
 
 @pytest.mark.django_db
@@ -2051,6 +2149,7 @@ def test_youth_applications_reject_rejectable(
     expected_status_code,
     expected_redirect_to,
 ):
+    settings.NEXT_PUBLIC_DISABLE_VTJ = False
     assert (expected_status_code == status.HTTP_302_FOUND) == (
         expected_redirect_to is not None
     )
@@ -2104,6 +2203,35 @@ def test_youth_applications_reject_rejectable(
         )
 
 
+@pytest.mark.django_db
+@pytest.mark.parametrize("send_vtj_data", [True, False])
+def test_youth_applications_reject_rejectable__vtj_disabled(
+    rejectable_youth_application, settings, staff_client, send_vtj_data
+):
+    """
+    When VTJ integration has been disabled do not expect any input to
+    encrypted_handler_vtj_json field and store it as an empty JSON object.
+    """
+    settings.NEXT_PUBLIC_DISABLE_VTJ = True
+    rejectable_youth_application.encrypted_original_vtj_json = None
+    rejectable_youth_application.encrypted_handler_vtj_json = None
+    rejectable_youth_application.save()
+    assert not rejectable_youth_application.has_youth_summer_voucher
+
+    response = staff_client.patch(
+        reverse_youth_application_action("reject", rejectable_youth_application.pk),
+        data=json.dumps(get_test_handling_data()) if send_vtj_data else None,
+        content_type="application/json",
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    rejectable_youth_application.refresh_from_db()
+    assert rejectable_youth_application.status == YouthApplicationStatus.REJECTED
+    assert rejectable_youth_application.encrypted_original_vtj_json is None
+    assert rejectable_youth_application.encrypted_handler_vtj_json is None
+    assert not rejectable_youth_application.has_youth_summer_voucher
+
+
 @freeze_time()
 @pytest.mark.django_db
 @pytest.mark.parametrize("mock_flag", [False, True])
@@ -2140,7 +2268,7 @@ def test_youth_applications_set_excess_additional_info(
     application does not matter and does not change anything.
     """
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
-    settings.DISABLE_VTJ = disable_vtj
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
 
     source_app = AdditionalInfoRequestedYouthApplicationFactory()
@@ -2228,7 +2356,7 @@ def test_youth_applications_set_valid_additional_info(
     expected_status_code,
 ):
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
-    settings.DISABLE_VTJ = disable_vtj
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
 
     source_app = AdditionalInfoRequestedYouthApplicationFactory()
@@ -2313,7 +2441,7 @@ def test_youth_applications_set_invalid_additional_info(
     expected_status_code,
 ):
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
-    settings.DISABLE_VTJ = disable_vtj
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
 
     source_app = AdditionalInfoRequestedYouthApplicationFactory()
@@ -2371,7 +2499,7 @@ def test_youth_applications_set_partial_additional_info(
     expected_status_code,
 ):
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
-    settings.DISABLE_VTJ = disable_vtj
+    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
 
     source_app = AdditionalInfoRequestedYouthApplicationFactory()

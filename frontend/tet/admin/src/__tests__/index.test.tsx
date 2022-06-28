@@ -27,7 +27,7 @@ describe('frontend/tet/admin/src/pages/index.tsx', () => {
   it('should redirect when unauthorized', async () => {
     expectUnauthorizedReply();
     const spyPush = jest.fn();
-    await renderPage(IndexPage, { push: spyPush });
+    renderPage(IndexPage, { push: spyPush });
     await waitFor(() => expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/login`));
   });
 
@@ -38,7 +38,7 @@ describe('frontend/tet/admin/src/pages/index.tsx', () => {
       expectWorkingMethodsFromLinkedEvents();
       expectAttributesFromLinkedEvents();
 
-      await renderPage(IndexPage);
+      renderPage(IndexPage);
 
       await screen.findByText(/Sinulla ei ole vielä yhtään TET-paikkaa/);
     });

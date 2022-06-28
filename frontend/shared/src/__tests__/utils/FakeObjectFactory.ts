@@ -87,7 +87,6 @@ class FakeObjectFactory {
     };
   }
 
-
   public fakeAttachment(type?: AttachmentType): KesaseteliAttachment {
     return {
       id: this.generateId(),
@@ -155,7 +154,11 @@ class FakeObjectFactory {
     return generateArray(() => this.fakeEmployment(), count);
   }
 
-  public fakeApplication(company?: Company, language?: Language, id?: string): Application {
+  public fakeApplication(
+    company?: Company,
+    language?: Language,
+    id?: string
+  ): Application {
     return getFormApplication({
       id: id ?? this.generateId(),
       company: company ?? this.fakeCompany,

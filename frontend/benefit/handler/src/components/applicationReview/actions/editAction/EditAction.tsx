@@ -1,6 +1,6 @@
-import { APPLICATION_STATUSES } from 'benefit/handler/constants';
 import { useApplicationActions } from 'benefit/handler/hooks/useApplicationActions';
-import { Application } from 'benefit/handler/types/application';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import { Application } from 'benefit-shared/types/application';
 import { Button, IconLock, IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
