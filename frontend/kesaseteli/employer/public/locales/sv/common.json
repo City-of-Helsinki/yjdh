@@ -82,8 +82,8 @@
     "form": {
       "selectionGroups": {
         "target_group": {
-          "9th_grader": "9 klassist",
-          "secondary_target_group": "Född 2004"
+          "9th_grader": "Niondeklassist, tiondeklassist eller Valmaklassist",
+          "secondary_target_group": "Annan åldersgrupp"
         },
         "hired_without_voucher_assessment": {
           "yes": "Jo",

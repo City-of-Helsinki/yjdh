@@ -1,8 +1,8 @@
 import { IconCross, IconPaperclip } from 'hds-react';
 import * as React from 'react';
+import useGetAbbreviatedFileName from 'shared/hooks/useGetAbbreviatedFileName';
 
 import { $ActionContainer, $Container, $Title } from './AttachmentsItem.sc';
-import useGetAbbreviatedFileName from 'shared/hooks/useGetAbbreviatedFileName';
 
 export interface AttachmentItemProps {
   id: string;

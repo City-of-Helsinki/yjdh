@@ -6,48 +6,84 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('applications', '0030_add_bank_account_number'),
+        ("applications", "0030_add_bank_account_number"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='employersummervoucher',
-            old_name='summer_voucher_exception_reason',
-            new_name='target_group',
+            model_name="employersummervoucher",
+            old_name="summer_voucher_exception_reason",
+            new_name="target_group",
         ),
         migrations.RenameField(
-            model_name='historicalemployersummervoucher',
-            old_name='summer_voucher_exception_reason',
-            new_name='target_group',
+            model_name="historicalemployersummervoucher",
+            old_name="summer_voucher_exception_reason",
+            new_name="target_group",
         ),
         migrations.RenameField(
-            model_name='historicalyouthsummervoucher',
-            old_name='summer_voucher_exception_reason',
-            new_name='target_group',
+            model_name="historicalyouthsummervoucher",
+            old_name="summer_voucher_exception_reason",
+            new_name="target_group",
         ),
         migrations.RenameField(
-            model_name='youthsummervoucher',
-            old_name='summer_voucher_exception_reason',
-            new_name='target_group',
+            model_name="youthsummervoucher",
+            old_name="summer_voucher_exception_reason",
+            new_name="target_group",
         ),
         migrations.AlterField(
-            model_name='employersummervoucher',
-            name='target_group',
-            field=models.CharField(blank=True, choices=[('primary_target_group', 'primary target group'), ('secondary_target_group', 'secondary target group')], help_text='Special case of admitting the summer voucher.', max_length=256, verbose_name='summer voucher exception class'),
+            model_name="employersummervoucher",
+            name="target_group",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("primary_target_group", "primary target group"),
+                    ("secondary_target_group", "secondary target group"),
+                ],
+                help_text="Special case of admitting the summer voucher.",
+                max_length=256,
+                verbose_name="summer voucher exception class",
+            ),
         ),
         migrations.AlterField(
-            model_name='historicalemployersummervoucher',
-            name='target_group',
-            field=models.CharField(blank=True, choices=[('primary_target_group', 'primary target group'), ('secondary_target_group', 'secondary target group')], help_text='Summer voucher\'s target group type', max_length=256, verbose_name='summer voucher target group'),
+            model_name="historicalemployersummervoucher",
+            name="target_group",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("primary_target_group", "primary target group"),
+                    ("secondary_target_group", "secondary target group"),
+                ],
+                help_text="Summer voucher's target group type",
+                max_length=256,
+                verbose_name="summer voucher target group",
+            ),
         ),
         migrations.AlterField(
-            model_name='historicalyouthsummervoucher',
-            name='target_group',
-            field=models.CharField(blank=True, choices=[('primary_target_group', 'primary target group'), ('secondary_target_group', 'secondary target group')], help_text='Summer voucher\'s target group type', max_length=256, verbose_name='summer voucher target group'),
+            model_name="historicalyouthsummervoucher",
+            name="target_group",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("primary_target_group", "primary target group"),
+                    ("secondary_target_group", "secondary target group"),
+                ],
+                help_text="Summer voucher's target group type",
+                max_length=256,
+                verbose_name="summer voucher target group",
+            ),
         ),
         migrations.AlterField(
-            model_name='youthsummervoucher',
-            name='target_group',
-            field=models.CharField(blank=True, choices=[('primary_target_group', 'primary target group'), ('secondary_target_group', 'secondary target group')], help_text='Summer voucher\'s target group type', max_length=256, verbose_name='summer voucher target group'),
+            model_name="youthsummervoucher",
+            name="target_group",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("primary_target_group", "primary target group"),
+                    ("secondary_target_group", "secondary target group"),
+                ],
+                help_text="Summer voucher's target group type",
+                max_length=256,
+                verbose_name="summer voucher target group",
+            ),
         ),
     ]

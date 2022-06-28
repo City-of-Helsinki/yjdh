@@ -82,8 +82,8 @@
     "form": {
       "selectionGroups": {
         "target_group": {
-          "primary_target_group": "primary target group",
-          "secondary_target_group": "Born in 2004"
+          "primary_target_group": "9th grader, 10th grader or Valma grader",
+          "secondary_target_group": "\t\nOther age group"
         },
         "hired_without_voucher_assessment": {
           "yes": "Yes",
