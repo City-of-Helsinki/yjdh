@@ -58,7 +58,7 @@ class EauthAuthenticationRequestView(View):
     def get(self, request):
         """Eauth client authentication initialization HTTP endpoint"""
 
-        suomifi_enabled = getattr(settings, "ENABLE_SUOMIFI", False)
+        suomifi_enabled = getattr(settings, "NEXT_PUBLIC_ENABLE_SUOMIFI", False)
 
         if suomifi_enabled:
             # Suomi.fi SAML authentication has been enabled

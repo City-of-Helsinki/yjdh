@@ -121,7 +121,7 @@ env = environ.Env(
     VTJ_USERNAME=(str, ""),
     VTJ_PASSWORD=(str, ""),
     VTJ_TIMEOUT=(int, 30),
-    ENABLE_SUOMIFI=(bool, False),
+    NEXT_PUBLIC_ENABLE_SUOMIFI=(bool, False),
     SUOMIFI_TEST=(bool, False),
     # base64 encoded public key certificate (e.g. base64 -w 0 public.pem)
     SUOMIFI_KEY=(str, None),
@@ -155,7 +155,7 @@ VTJ_PERSONAL_ID_QUERY_URL = env.str("VTJ_PERSONAL_ID_QUERY_URL")
 VTJ_USERNAME = env.str("VTJ_USERNAME")
 VTJ_PASSWORD = env.str("VTJ_PASSWORD")
 VTJ_TIMEOUT = env.int("VTJ_TIMEOUT")
-ENABLE_SUOMIFI = env("ENABLE_SUOMIFI")
+NEXT_PUBLIC_ENABLE_SUOMIFI = env("NEXT_PUBLIC_ENABLE_SUOMIFI")
 
 DB_PREFIX = {
     None: env.str("DB_PREFIX"),
@@ -225,7 +225,7 @@ INSTALLED_APPS = [
     "companies",
 ]
 
-if ENABLE_SUOMIFI:
+if NEXT_PUBLIC_ENABLE_SUOMIFI:
     INSTALLED_APPS.append("djangosaml2")
 
 if ENABLE_ADMIN:
@@ -244,7 +244,7 @@ MIDDLEWARE = [
     "simple_history.middleware.HistoryRequestMiddleware",
 ]
 
-if ENABLE_SUOMIFI:
+if NEXT_PUBLIC_ENABLE_SUOMIFI:
     MIDDLEWARE.insert(
         MIDDLEWARE.index("simple_history.middleware.HistoryRequestMiddleware"),
         "djangosaml2.middleware.SamlSessionMiddleware",
@@ -351,7 +351,7 @@ AUTHENTICATION_BACKENDS = [
 AUTHENTICATION_BACKENDS.insert(
     0,
     "shared.suomi_fi.auth.SuomiFiSAML2AuthenticationBackend"
-    if ENABLE_SUOMIFI
+    if NEXT_PUBLIC_ENABLE_SUOMIFI
     else "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
 )
 

@@ -1,13 +1,27 @@
+import isSuomiFiEnabled from 'kesaseteli-shared/flags/is-suomi-fi-enabled';
+import isRealIntegrationsEnabled from 'shared/flags/is-real-integrations-enabled';
+
+const suomiFiEndpoint = {
+  LOGIN: '/saml2/login/',
+  LOGOUT: '/saml2/logout/',
+};
+
+const helsinkiProfileEndpoint = {
+  LOGIN: '/oidc/authenticate/',
+  LOGOUT: '/oidc/logout/',
+};
+
 export const BackendEndpoint = {
   ADDITIONAL_INFO: '/v1/additional_info/',
   EMPLOYER_APPLICATIONS: '/v1/employerapplications/',
   EMPLOYER_SUMMER_VOUCHERS: '/v1/employersummervouchers/',
   ATTACHMENTS: '/attachments/',
-  LOGIN: '/oidc/authenticate/',
-  LOGOUT: '/oidc/logout/',
   USER: '/oidc/userinfo/',
   YOUTH_APPLICATIONS: '/v1/youthapplications/',
   SCHOOLS: '/v1/schools/',
+  ...(isRealIntegrationsEnabled() && isSuomiFiEnabled()
+    ? suomiFiEndpoint
+    : helsinkiProfileEndpoint),
 } as const;
 
 export const BackendEndPoints = Object.values(BackendEndpoint);
