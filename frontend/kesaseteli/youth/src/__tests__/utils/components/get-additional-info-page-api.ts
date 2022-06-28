@@ -9,7 +9,10 @@ import AdditionalInfoApplication from 'kesaseteli-shared/types/additional-info-a
 import AdditionalInfoFormData from 'kesaseteli-shared/types/additional-info-form-data';
 import AdditionalInfoReasonType from 'kesaseteli-shared/types/additional-info-reason-type';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
-import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
+import {
+  waitForBackendRequestsToComplete,
+  waitForLoadingCompleted,
+} from 'shared/__tests__/utils/component.utils';
 import { screen, userEvent } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
@@ -33,11 +36,13 @@ const getAdditionalInfoPageApi = (
   return {
     expectations: {
       async formIsPresent() {
+        await waitForLoadingCompleted();
         await screen.findByRole('heading', {
           name: translations.additionalInfo.title,
         });
       },
       async notificationIsPresent(type: NotificationType) {
+        await waitForBackendRequestsToComplete();
         await screen.findByRole('heading', {
           name: translations.additionalInfo.notification[type],
         });
@@ -66,13 +71,14 @@ const getAdditionalInfoPageApi = (
         const dropdownToggle = await screen.findByRole('button', {
           name: regexp(translations.additionalInfo.form.reasons),
         });
-        dropdownToggle.click();
+        await userEvent.click(dropdownToggle);
         for (const reason of reasons) {
           const option = await screen.findByText(
             translations.additionalInfo.reasons[reason]
           );
-          userEvent.click(option);
+          option.click();
         }
+        await userEvent.click(dropdownToggle);
         application.additional_info_user_reasons = reasons;
       },
       async inputDescription(description: string) {
@@ -81,9 +87,9 @@ const getAdditionalInfoPageApi = (
             translations.additionalInfo.form.additional_info_description
           ),
         });
-        userEvent.clear(textArea);
+        await userEvent.clear(textArea);
         if (description?.length > 0) {
-          userEvent.type(textArea, description);
+          await userEvent.type(textArea, description);
         }
         (application as AdditionalInfoApplication).additional_info_description =
           description;
@@ -107,12 +113,12 @@ const getAdditionalInfoPageApi = (
             status: 'additional_information_provided',
           });
         }
-        userEvent.click(
+        await userEvent.click(
           screen.getByRole('button', {
             name: translations.additionalInfo.form.sendButton,
           })
         );
-        await waitForBackendRequestsToComplete();
+        await waitForLoadingCompleted();
       },
     },
   };

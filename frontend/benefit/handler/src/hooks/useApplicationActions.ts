@@ -30,20 +30,24 @@ const useApplicationActions = (
         ...application,
         status,
         logEntryComment,
-        calculation: application.calculation ? {
-          ...application.calculation,
-          monthlyPay: stringToFloatValue(application.calculation.monthlyPay),
-          otherExpenses: stringToFloatValue(
-            application.calculation.otherExpenses
-          ),
-          vacationMoney: stringToFloatValue(
-            application.calculation.vacationMoney
-          ),
-          overrideMonthlyBenefitAmount: stringToFloatValue(
-            application.calculation.overrideMonthlyBenefitAmount
-          ),
-          grantedAsDeMinimisAid,
-        } : undefined,
+        calculation: application.calculation
+          ? {
+              ...application.calculation,
+              monthlyPay: stringToFloatValue(
+                application.calculation.monthlyPay
+              ),
+              otherExpenses: stringToFloatValue(
+                application.calculation.otherExpenses
+              ),
+              vacationMoney: stringToFloatValue(
+                application.calculation.vacationMoney
+              ),
+              overrideMonthlyBenefitAmount: stringToFloatValue(
+                application.calculation.overrideMonthlyBenefitAmount
+              ),
+              grantedAsDeMinimisAid,
+            }
+          : undefined,
         applicationStep: getApplicationStepString(1),
       },
       { deep: true }

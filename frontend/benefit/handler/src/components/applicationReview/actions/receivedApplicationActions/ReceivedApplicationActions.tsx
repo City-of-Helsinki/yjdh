@@ -27,19 +27,23 @@ const ReceivedApplicationActions: React.FC<Props> = ({ application }) => {
     const currentApplicationData = snakecaseKeys(
       {
         ...application,
-        calculation: application.calculation ? {
-          ...application.calculation,
-          monthlyPay: stringToFloatValue(application.calculation.monthlyPay),
-          otherExpenses: stringToFloatValue(
-            application.calculation.otherExpenses
-          ),
-          vacationMoney: stringToFloatValue(
-            application.calculation.vacationMoney
-          ),
-          overrideMonthlyBenefitAmount: stringToFloatValue(
-            application.calculation.overrideMonthlyBenefitAmount
-          ),
-        }: undefined,
+        calculation: application.calculation
+          ? {
+              ...application.calculation,
+              monthlyPay: stringToFloatValue(
+                application.calculation.monthlyPay
+              ),
+              otherExpenses: stringToFloatValue(
+                application.calculation.otherExpenses
+              ),
+              vacationMoney: stringToFloatValue(
+                application.calculation.vacationMoney
+              ),
+              overrideMonthlyBenefitAmount: stringToFloatValue(
+                application.calculation.overrideMonthlyBenefitAmount
+              ),
+            }
+          : undefined,
         status: APPLICATION_STATUSES.HANDLING,
       },
       { deep: true }
