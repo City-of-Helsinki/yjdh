@@ -9,7 +9,7 @@ class HelsinkiProfileClient:
     """
     Client for reading data from the Helsinki Profile GraphQL API
 
-    See [AUTHENTICATION](https://github.com/City-of-Helsinki/yjdh/blob/develop/AUTHENTICATION.md) for details
+    See [backend/README.md](https://github.com/City-of-Helsinki/yjdh/blob/develop/backend/README.md) for details
     about the auth flow.
 
     https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/6172606574/Full+Helsinki-profile+with+citizen+profile+and+API+authorization+support+features
