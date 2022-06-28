@@ -57,12 +57,21 @@ class EauthAuthenticationRequestView(View):
 
     def get(self, request):
         """Eauth client authentication initialization HTTP endpoint"""
-        if not (request.session.get("oidc_access_token")):
-            return self.login_failure()
 
-        user_info = get_userinfo(request)
+        suomifi_enabled = getattr(settings, "NEXT_PUBLIC_ENABLE_SUOMIFI", False)
 
-        user_ssn = user_info.get("national_id_num")
+        if suomifi_enabled:
+            # Suomi.fi SAML authentication has been enabled
+            user_ssn = request.saml_session.get("national_id_num")
+            if not user_ssn:
+                return self.login_failure()
+        else:
+            if not request.session.get("oidc_access_token"):
+                return self.login_failure()
+
+            user_info = get_userinfo(request)
+            user_ssn = user_info.get("national_id_num")
+
         register_info = self.register_user(user_ssn)
 
         session_id = register_info.get("sessionId")

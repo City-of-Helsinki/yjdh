@@ -12,7 +12,7 @@ For contact persons Suomi.fi authentication requires at least a technical contac
 
 ### Configuration
 - `NEXT_PUBLIC_BACKEND_URL` Required for SAML metadata configuration
-- `ENABLE_SUOMIFI` Enable Suomi.fi auth
+- `NEXT_PUBLIC_ENABLE_SUOMIFI` Enable Suomi.fi auth
 - `SUOMIFI_TEST` Use Suomi.fi test IDP
 - `SUOMIFI_SERVICE_NAME_EXTRA` Extra string to attach to the `ServiceName`
 - `SUOMIFI_TECHNICAL_FIRST_NAME`

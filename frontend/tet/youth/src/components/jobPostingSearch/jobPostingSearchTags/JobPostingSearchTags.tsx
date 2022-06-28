@@ -32,7 +32,11 @@ const PostingSearchTags: React.FC<Props> = ({
     <$Tags id="searchTags">
       {initParams?.text && (
         <li>
-          <Tag className="searchTag" onDelete={() => onRemoveFilter('text')}>
+          <Tag
+            className="searchTag"
+            onDelete={() => onRemoveFilter('text')}
+            deleteButtonAriaLabel={t('common:filters.removeFilter', { filter: initParams.text })}
+          >
             {initParams.text}
           </Tag>
         </li>
@@ -42,6 +46,7 @@ const PostingSearchTags: React.FC<Props> = ({
           <li>
             <Tag
               onDelete={() => onRemoveKeyword(keyword)}
+              deleteButtonAriaLabel={t('common:filters.removeFilter', { filter: keyword.label })}
               theme={{
                 '--tag-background': `var(--color-engel-medium-light)`,
                 '--tag-color': 'theme.colors.black80',
@@ -57,6 +62,7 @@ const PostingSearchTags: React.FC<Props> = ({
           <Tag
             onDelete={() => onRemoveFilter(['start', 'end'])}
             className="searchTag"
+            deleteButtonAriaLabel={t('common:filters.removeDateFilter')}
             theme={{
               '--tag-background': `var(--color-summer-medium-light)`,
               '--tag-color': 'theme.colors.black90',
@@ -72,6 +78,7 @@ const PostingSearchTags: React.FC<Props> = ({
           <Tag
             onDelete={() => onRemoveFilter('language')}
             className="searchTag"
+            deleteButtonAriaLabel={t('common:filters.removeLanguageFilter')}
             theme={{
               '--tag-background': `var(--color-coat-of-arms-light)`,
               '--tag-color': 'theme.colors.black90',
@@ -84,7 +91,7 @@ const PostingSearchTags: React.FC<Props> = ({
       )}
       {Object.keys(initParams).length > 0 && (
         <li>
-          <$RemoveButton id="removeAllSearches" onClick={() => onRemoveFilter('all')}>
+          <$RemoveButton id="removeAllSearches" onClick={() => onRemoveFilter('all')} role="button">
             {t('common:filters.clearFilters')}
           </$RemoveButton>
         </li>

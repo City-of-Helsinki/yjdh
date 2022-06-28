@@ -34,7 +34,6 @@ export const $SearchText = styled.div`
 export const $Filters = styled.div`
   display: inline-flex;
   flex-wrap: wrap;
-  color: ${(props) => props.theme.colors.white};
   font-size: ${(props) => props.theme.fontSize.body.l};
   font-weight: bold;
   width: 100%;
