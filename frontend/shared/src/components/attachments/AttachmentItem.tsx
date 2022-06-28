@@ -2,6 +2,7 @@ import { IconCross, IconPaperclip } from 'hds-react';
 import * as React from 'react';
 
 import { $ActionContainer, $Container, $Title } from './AttachmentsItem.sc';
+import useGetAbbreviatedFileName from 'shared/hooks/useGetAbbreviatedFileName';
 
 export interface AttachmentItemProps {
   id: string;
@@ -27,11 +28,13 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
     onRemove(id);
   };
 
+  const abbreviation = useGetAbbreviatedFileName(name);
+
   return (
     <$Container>
       <$Title onClick={handleClick} aria-label={name} href="#">
         <IconPaperclip aria-label={name} />
-        {name}
+        {abbreviation}
       </$Title>
       <$ActionContainer onClick={handleRemove} aria-label={removeText} href="#">
         <IconCross aria-label={removeText} />
