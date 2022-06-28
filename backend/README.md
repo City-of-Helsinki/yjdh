@@ -1,9 +1,15 @@
-# Authentication in YJDH
+# YJDH Django backend
+
+Refer to [top level README](https://github.com/City-of-Helsinki/yjdh/blob/develop/README.md) about running YJDH services locally, which also runs the backend for the service under development.
+
+[kesaseteli/README.md](https://github.com/City-of-Helsinki/yjdh/blob/develop/backend/kesaseteli/README.md) or [benefit/README.md](https://github.com/City-of-Helsinki/yjdh/blob/develop/backend/benefit/README.md) contain more information about the local setup. This applies to TET pretty well.
+
+## Authentication in YJDH
 
 The authentication setups used by YJDH projects are described in this document. The emphasis is on
 short descriptions of the concrete flows with pointers to code.  
 
-## Suomi.fi
+### Suomi.fi
 
 All YJDH projects perform the following things:
 

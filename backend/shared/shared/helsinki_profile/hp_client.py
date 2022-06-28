@@ -88,6 +88,7 @@ class HelsinkiProfileClient:
             response = requests.get(
                 settings.TUNNISTAMO_API_TOKENS_ENDPOINT,
                 headers={"Authorization": f"Bearer {oidc_access_token}"},
+                timeout=10,
             )
             response.raise_for_status()
             data = response.json()
