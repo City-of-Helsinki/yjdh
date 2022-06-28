@@ -67,6 +67,7 @@ describe('transformations', () => {
       contact_phone: posting.contact_phone,
       contact_first_name: posting.contact_first_name,
       contact_last_name: posting.contact_last_name,
+      website_url: '',
     });
 
     expect(event.start_time).toBe(posting.start_date);

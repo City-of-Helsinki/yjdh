@@ -35,7 +35,7 @@ django_env = environ.Env(
     MEDIA_URL=(str, "/media/"),
     STATIC_URL=(str, "/static/"),
     ALLOWED_HOSTS=(list, ["*"]),
-    USE_X_FORWARDED_HOST=(bool, False),
+    USE_X_FORWARDED_HOST=(bool, True),
     DATABASE_URL=(
         str,
         "postgres:///tet",
@@ -53,6 +53,8 @@ django_env = environ.Env(
     OIDC_RP_CLIENT_ID=(str, ""),
     OIDC_RP_CLIENT_SECRET=(str, ""),
     OIDC_OP_BASE_URL=(str, ""),
+    TUNNISTAMO_API_TOKENS_ENDPOINT=(str, ""),
+    HELSINKI_PROFILE_API_URL=(str, ""),
     LOGIN_REDIRECT_URL=(str, "/"),
     LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
     LOGOUT_REDIRECT_URL=(str, "/"),
@@ -187,6 +189,8 @@ CSRF_TRUSTED_ORIGINS = django_env.list("CSRF_TRUSTED_ORIGINS")
 CSRF_COOKIE_NAME = django_env.str("CSRF_COOKIE_NAME")
 CSRF_COOKIE_SECURE = True
 
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # Audit log
 ENABLE_SEND_AUDIT_LOG = django_env("ENABLE_SEND_AUDIT_LOG")
 AUDIT_LOG_ORIGIN = django_env.str("AUDIT_LOG_ORIGIN")
@@ -244,18 +248,21 @@ AUTHENTICATION_BACKENDS = (
 )
 
 OIDC_RP_SIGN_ALGO = "RS256"
-OIDC_RP_SCOPES = "openid profile"
+HELSINKI_PROFILE_SCOPE = "https://api.hel.fi/auth/helsinkiprofile"
+OIDC_RP_SCOPES = f"openid profile {HELSINKI_PROFILE_SCOPE}"
 
 OIDC_RP_CLIENT_ID = django_env.str("OIDC_RP_CLIENT_ID")
 OIDC_RP_CLIENT_SECRET = django_env.str("OIDC_RP_CLIENT_SECRET")
 
 OIDC_OP_BASE_URL = django_env.str("OIDC_OP_BASE_URL")
-OIDC_OP_AUTHORIZATION_ENDPOINT = f"{OIDC_OP_BASE_URL}/auth"
+OIDC_OP_AUTHORIZATION_ENDPOINT = f"{OIDC_OP_BASE_URL}/authorize"
 OIDC_OP_TOKEN_ENDPOINT = f"{OIDC_OP_BASE_URL}/token"
 OIDC_OP_USER_ENDPOINT = f"{OIDC_OP_BASE_URL}/userinfo"
-OIDC_OP_JWKS_ENDPOINT = f"{OIDC_OP_BASE_URL}/certs"
-OIDC_OP_LOGOUT_ENDPOINT = f"{OIDC_OP_BASE_URL}/logout"
+OIDC_OP_JWKS_ENDPOINT = f"{OIDC_OP_BASE_URL}/jwks"
+OIDC_OP_LOGOUT_ENDPOINT = f"{OIDC_OP_BASE_URL}/end-session"
 OIDC_OP_LOGOUT_CALLBACK_URL = django_env.str("OIDC_OP_LOGOUT_CALLBACK_URL")
+TUNNISTAMO_API_TOKENS_ENDPOINT = django_env.str("TUNNISTAMO_API_TOKENS_ENDPOINT")
+HELSINKI_PROFILE_API_URL = django_env.str("HELSINKI_PROFILE_API_URL")
 LOGOUT_REDIRECT_URL = django_env.str("LOGOUT_REDIRECT_URL")
 
 LOGIN_REDIRECT_URL = django_env.str("LOGIN_REDIRECT_URL")

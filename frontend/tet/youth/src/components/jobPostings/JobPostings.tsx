@@ -6,8 +6,11 @@ import { QueryParams } from 'tet/youth/types/queryparams';
 import { useRouter } from 'next/router';
 import useGetPostings from 'tet/youth/hooks/backend/useGetPostings';
 import NoResults from 'tet/youth/components/noResults/NoResults';
+import ScreenReaderHelper from 'tet-shared/components/ScreenReaderHelper';
+import { useTranslation } from 'next-i18next';
 
 const Postings: React.FC = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const initMap = Object.prototype.hasOwnProperty.call(router.query, 'init_map') && Boolean(router.query.init_map);
   const params = { ...router.query };
@@ -73,10 +76,12 @@ const Postings: React.FC = () => {
     <div>
       <JobPostingSearch initParams={searchParams} onSearchByFilters={searchHandler}></JobPostingSearch>
       {postings()}
-
       {results.isSuccess && (
         <NoResults params={searchParams} onSearchByFilters={searchHandler} resultsTotal={results?.data.meta.count} />
       )}
+      <ScreenReaderHelper aria-live="polite" aria-atomic={true}>
+        {results.isLoading ? t('common:accessibility.eventsLoading') : t('common:accessibility.eventsReady')}
+      </ScreenReaderHelper>
     </div>
   );
 };

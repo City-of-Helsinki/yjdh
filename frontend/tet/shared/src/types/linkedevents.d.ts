@@ -46,6 +46,7 @@ export type CustomData = {
   contact_first_name: string;
   contact_last_name: string;
   editor_email?: string;
+  website_url?: string;
 };
 
 export type ImageObject = IdObject & {

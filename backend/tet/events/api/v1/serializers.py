@@ -15,6 +15,7 @@ class CustomDataSerializer(Serializer):
     contact_phone = CharField(max_length=30, allow_blank=True)
     contact_last_name = CharField(max_length=250, allow_blank=True)
     contact_first_name = CharField(max_length=250, allow_blank=True)
+    website_url = URLField(max_length=2048, allow_blank=True)
 
 
 class TetUpsertEventSerializer(Serializer):

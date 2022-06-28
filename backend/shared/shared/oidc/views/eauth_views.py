@@ -13,6 +13,8 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import HTTPError
 
+from shared.helsinki_profile.exceptions import HelsinkiProfileException
+from shared.helsinki_profile.hp_client import HelsinkiProfileClient
 from shared.oidc.utils import (
     get_checksum_header,
     get_userinfo,
@@ -25,6 +27,9 @@ logger = logging.getLogger(__name__)
 class EauthAuthenticationRequestView(View):
     """
     Eauth client authentication HTTP endpoint
+
+    See [AUTHENTICATION](https://github.com/City-of-Helsinki/yjdh/blob/develop/AUTHENTICATION.md) for details
+    about the auth flow.
 
     Docs that describe the flow (only in Finnish):
     https://palveluhallinta.suomi.fi/fi/tuki/artikkelit/592d774503f6d100018db5dd
@@ -56,13 +61,46 @@ class EauthAuthenticationRequestView(View):
         return response.json()
 
     def get(self, request):
-        """Eauth client authentication initialization HTTP endpoint"""
-        if not (request.session.get("oidc_access_token")):
+        """Eauth client authentication initialization HTTP endpoint
+
+        NOTE: We should avoid raising exceptions from the method, because it results in user's auth flow
+        ending on Django's 500 error page. We should instead call `self.login_failure()` to redirect the
+        user to the login error page in the UI.
+        """
+
+        suomifi_enabled = getattr(settings, "NEXT_PUBLIC_ENABLE_SUOMIFI", False)
+
+        if suomifi_enabled:
+            # Suomi.fi SAML authentication has been enabled
+            user_ssn = request.saml_session.get("national_id_num")
+            if not user_ssn:
+                return self.login_failure()
+        else:
+            if not request.session.get("oidc_access_token"):
+                return self.login_failure()
+
+            user_info = get_userinfo(request)
+            user_ssn = user_info.get("national_id_num")
+
+            # When authenticating via Tunnistamo, we need to call Helsinki Profile GraphQL API
+            if user_ssn is None:
+                try:
+                    profile = HelsinkiProfileClient().get_profile(
+                        request.session.get("oidc_access_token")
+                    )
+                except HelsinkiProfileException as e:
+                    logger.warning(
+                        f"Reading nationalIdentificationNumber from Helsinki Profile API failed: {str(e)}"
+                    )
+                    return self.login_failure()
+                user_ssn = profile["user_ssn"]
+
+        if user_ssn is None:
+            logger.warning(
+                "Cannot use eauthorizations API due to missing nationalIdentificationNumber"
+            )
             return self.login_failure()
 
-        user_info = get_userinfo(request)
-
-        user_ssn = user_info.get("national_id_num")
         register_info = self.register_user(user_ssn)
 
         session_id = register_info.get("sessionId")
