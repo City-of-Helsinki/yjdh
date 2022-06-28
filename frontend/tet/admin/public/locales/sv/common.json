@@ -113,6 +113,7 @@
 			"contactLanguageFi": "Finska",
 			"contactLanguageSv": "Svenska",
 			"contactLanguageEn": "Engelska",
+			"website": "Hemsida",
 			"validation": {
 				"required": "Uppgiften är nödvändig",
 				"email": "Vänligen mata in e-post i rätt format",
@@ -156,6 +157,7 @@
     "feedbackLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/delta/feedback",
 		"newTab": "länken öppnas i en ny flik"
   },
+	"opensInNewPage": "Länken öppnas till en annan webbplats",
   "languages": {
     "fi": "Suomeksi",
     "sv": "På svenska",

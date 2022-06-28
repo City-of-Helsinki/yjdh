@@ -112,6 +112,7 @@
 			"contactLanguageFi": "Suomi",
 			"contactLanguageSv": "Ruotsi",
 			"contactLanguageEn": "Englanti",
+			"website": "Verkkosivut",
 			"validation": {
 				"required": "Tieto vaaditaan",
 				"email": "Syötä sähköposti oikeassa muodossa",
@@ -160,6 +161,7 @@
     "sv": "På svenska",
     "en": "In English"
   },
+	"opensInNewPage": "Linkki avautuu toiselle verkkosivulle",
   "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
   "error": {
     "generic": {
