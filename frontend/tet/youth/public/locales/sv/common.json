@@ -38,6 +38,9 @@
 		"endDate": "Slutdatum",
 		"language": "Välj språk",
 		"clearFilters": "Töm sökkriterier",
+		"removeFilter": "Ta borrt sökkrit: {{filter}}",
+		"removeDateFilter": "Ta borrt datumsökkrit",
+		"removeLanguageFilter": "Ta borrt språksökkrit",
     "combobox": {
       "toggleButtonAriaLabel": "Visa/dölj alternativ",
       "clearButtonAriaLabel": "Rensa valen",
@@ -60,6 +63,7 @@
     "accessibilityStatement": "Tillgänglighetsutlåtande",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/information/tillganglighet",
     "privacyPolicy": "Registerbeskrivning",
+		"privacyPolicyPDF": "Öppnar en pdf-fil",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Register för administration av grundläggande utbildning.pdf",
     "feedback": "Ge feedback",
     "feedbackLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/delta/feedback",
@@ -100,5 +104,9 @@
 		"showList": "visa resultat i en lista",
 		"showMap": "Visa resultat på en karta",
     "helsinkiCity": "Helsingfors stad"
+	},
+	"accessibility": {
+		"eventsLoading": "Sök efter PRAO-platser laddar",
+		"eventsReady": "Sök efter PRAO-platser är redo"
 	}
 }

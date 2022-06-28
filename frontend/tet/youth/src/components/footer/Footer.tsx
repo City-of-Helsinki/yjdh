@@ -28,7 +28,9 @@ const FooterSection: React.FC = () => {
           target="_blank"
           href={t('common:footer.privacyPolicyLink')}
           label={t('common:footer.privacyPolicy')}
-          aria-label={`${t('common:footer.privacyPolicy')} - ${t('common:footer.newTab')}`}
+          aria-label={`${t('common:footer.privacyPolicy')} - ${t('common:footer.privacyPolicyPDF')} - ${t(
+            'common:footer.newTab',
+          )}`}
           icon={<IconLinkExternal />}
         />
         <Footer.Item
