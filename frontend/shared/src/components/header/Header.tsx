@@ -36,6 +36,7 @@ export type HeaderProps = {
     userName?: string;
   };
   theme?: ThemeOption;
+  hideLogin?: boolean;
   onTitleClick?: () => void;
 };
 
@@ -51,6 +52,7 @@ const Header: React.FC<HeaderProps> = ({
   customItems,
   onLanguageChange,
   login,
+  hideLogin,
   theme,
   onTitleClick,
 }) => {
@@ -114,7 +116,7 @@ const Header: React.FC<HeaderProps> = ({
               {item}
             </Navigation.Item>
           ))}
-          {login && (
+          {login && !hideLogin && (
             <Navigation.User
               authenticated={login.isAuthenticated}
               buttonAriaLabel={
@@ -173,6 +175,7 @@ Header.defaultProps = {
   navigationVariant: undefined,
   onLanguageChange: undefined,
   login: undefined,
+  hideLogin: false,
   theme: undefined,
   onTitleClick: undefined,
 };
