@@ -28,7 +28,7 @@ class EauthAuthenticationRequestView(View):
     """
     Eauth client authentication HTTP endpoint
 
-    See [AUTHENTICATION](https://github.com/City-of-Helsinki/yjdh/blob/develop/AUTHENTICATION.md) for details
+    See [backend/README.md](https://github.com/City-of-Helsinki/yjdh/blob/develop/backend/README.md) for details
     about the auth flow.
 
     Docs that describe the flow (only in Finnish):
