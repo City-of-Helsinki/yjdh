@@ -62,6 +62,7 @@
 			"published": "Julkaistu",
 			"notPublished": "Ei julkaistu",
 			"total": "kpl",
+			"resultsError": "TET-paikkojen haussa tapahtui virhe",
 			"menu": {
 				"publishNow": "Julkaise nyt",
 				"edit": "Muokkaa",

@@ -55,7 +55,8 @@
 		"languages": "Language",
 		"noResultsText": "Your search did not match any TET-positions. Please try to clear your search.", 
 		"noResultsLinks": "No events were found matching your search criteria. Try clicking on any of these:",
-		"fewResultsLinks": "Also try the following keywords:"
+		"fewResultsLinks": "Also try the following keywords:",
+		"resultsError": "An error occured while looking up TET jobs"
 	},
   "footer": {
     "copyrightText": "City of Helsinki",

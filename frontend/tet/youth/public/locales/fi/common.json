@@ -55,7 +55,8 @@
 		"languages": "Kielisyys",
 		"noResultsText": "Haullasi ei löytynyt yhtään TET-paikkaa. Koitathan poistaa haun rajauksia.", 
 		"noResultsLinks": "Valitsemillasi hakuehdoilla ei löytynyt yhtään tapahtumaa. Kokeile vaikka klikkaamalla jotain näistä:",
-		"fewResultsLinks": "Kokeile myös seuraavilla rajauksilla / hakusanoilla:"
+		"fewResultsLinks": "Kokeile myös seuraavilla rajauksilla / hakusanoilla:",
+		"resultsError": "TET-paikkojen haussa tapahtui virhe"
 	},
   "footer": {
     "copyrightText": "Helsingin kaupunki",
