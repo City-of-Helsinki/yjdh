@@ -59,7 +59,7 @@ const ActionButtons: React.FC = () => {
     }
   };
 
-  const saveHandler = async (validatedPosting: TetPosting): void => {
+  const saveHandler = async (validatedPosting: TetPosting): Promise<void> => {
     const event = tetPostingToEvent({
       posting: validatedPosting,
     });
