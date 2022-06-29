@@ -176,7 +176,6 @@ class ServiceClient:
         # We rely on Linked Events to perform validation
         # The only thing we check is that the file is under MAX_UPLOAD_SIZE
         # to avoid uploading large files.
-        # TODO check photographer name length as well?
         image = request.FILES.get("image")
 
         if image is None:
@@ -188,13 +187,11 @@ class ServiceClient:
         if image.content_type == "image/heic":
             # `image.content_type` can be spoofed, but if the image is not of the correct format
             # the transformation will fail and cause a 400 error
-            # TODO implement heic -> jpeg transformation
+            # TODO implement heic -> jpeg transformation (TETP-251)
             raise ValidationError(detail="Transformation from heic not implemented")
 
-        photographer = request.POST.get("photographer_name")
-
         uploaded_image = self.client.upload_image(
-            {"photographer_name": photographer},
+            {"photographer_name": ""},
             {"image": (image.name, image.file, image.content_type)},
         )
 
@@ -204,12 +201,14 @@ class ServiceClient:
         }
 
     def sync_photographer_name(self, event):
-        if event['images']:
-            image = event['images'][0]
-            image_id = image['@id'].split('/')[-2]
+        if event["images"]:
+            image = event["images"][0]
+            image_id = image["@id"].split("/")[-2]
             try:
                 # TODO get name from frontend or Linked Events
-                self.client.update_image(image_id, {"photographer_name": image["photographer_name"], "name": "test"})
+                self.client.update_image(
+                    image_id,
+                    {"photographer_name": image["photographer_name"], "name": "test"},
+                )
             except LinkedEventsException as e:
                 LOGGER.warning(f"Updating image failed: {e.detail}")
-

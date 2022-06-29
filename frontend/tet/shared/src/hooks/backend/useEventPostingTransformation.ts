@@ -25,6 +25,12 @@ type Transformations = {
   getLocalizedString: (obj: LocalizedObject | undefined) => string;
 };
 
+type ImageFields = {
+  image_url: string;
+  image_id: string;
+  photographer_name: string;
+}
+
 const useEventPostingTransformation = (): Transformations => {
   const locale = useLocale();
   const keywordResult = useKeywordType();
@@ -53,12 +59,12 @@ const useEventPostingTransformation = (): Transformations => {
     const parsedSpots = parseInt(event.custom_data?.spots || '', 10);
     const spots = parsedSpots >= 0 ? parsedSpots : 1;
 
-    const imageFields: any = {};
-    if (event.images && event.images.length) {
-      imageFields.image_url = event.images[0].url;
-      imageFields.image_id = event.images[0]['@id'];
-      imageFields.photographer_name = event.images[0].photographer_name;
-    }
+    const imageFields: ImageFields | null = (event.images && event.images.length > 0) ?
+    {
+      image_url: event.images[0].url,
+      image_id: event.images[0]['@id'],
+      photographer_name: event.images[0].photographer_name,
+    } : null;
 
     return {
       id: event.id,
