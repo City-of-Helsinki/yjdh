@@ -18,7 +18,7 @@ describe('frontend/kesaseteli/youth/src/pages/expired.tsx', () => {
 
   it('redirects to main page when clicking the button', async () => {
     const spyPush = jest.fn();
-    await renderPage(ExpiredPage, { push: spyPush });
+    renderPage(ExpiredPage, { push: spyPush });
     const expiredPageApi = getNotificationPageApi('expired');
     await expiredPageApi.expectations.pageIsLoaded();
     await expiredPageApi.actions.clickGoToFrontPageButton();
@@ -28,7 +28,7 @@ describe('frontend/kesaseteli/youth/src/pages/expired.tsx', () => {
   });
 
   it('shows default activation link expiration time (12 hours)', async () => {
-    await renderPage(ExpiredPage);
+    renderPage(ExpiredPage);
     const expiredPageApi = getNotificationPageApi('expired');
     await expiredPageApi.expectations.pageIsLoaded();
     await expiredPageApi.expectations.notificationMessageIsPresent(12);
@@ -45,7 +45,7 @@ describe('frontend/kesaseteli/youth/src/pages/expired.tsx', () => {
         ...originalEnv,
         NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: String(3600 * 2),
       };
-      await renderPage(ExpiredPage);
+      renderPage(ExpiredPage);
       const expiredPageApi = getNotificationPageApi('expired');
       await expiredPageApi.expectations.pageIsLoaded();
       await expiredPageApi.expectations.notificationMessageIsPresent(2);

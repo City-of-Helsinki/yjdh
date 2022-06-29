@@ -9,10 +9,10 @@ export const $Header = styled.h3`
   flex-flow: row nowrap;
   align-items: center;
   font-size: ${(props) => props.theme.fontSize.heading.xs};
+`;
 
-  span {
-    margin-left: ${(props) => props.theme.spacing.m};
-  }
+export const $Title = styled.span`
+  margin-left: ${(props) => props.theme.spacing.m};
 `;
 
 export const $List = styled.ul`

@@ -120,6 +120,7 @@
 			"contactLanguageFi": "Suomi",
 			"contactLanguageSv": "Ruotsi",
 			"contactLanguageEn": "Englanti",
+			"website": "Verkkosivut",
 			"validation": {
 				"required": "Tieto vaaditaan",
 				"email": "Syötä sähköposti oikeassa muodossa",
@@ -157,6 +158,7 @@
     "accessibilityStatement": "Saavutettavuusseloste",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/tietoa-hel-fista/saavutettavuus/saavutettavuusselosteet",
     "privacyPolicy": "Rekisteriseloste",
+		"privacyPolicyPDF": "Avaa pdf-tiedoston",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
     "feedback": "Anna palautetta",
     "feedbackLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/osallistu-ja-vaikuta/palaute",
@@ -167,6 +169,7 @@
     "sv": "På svenska",
     "en": "In English"
   },
+	"opensInNewPage": "Linkki avautuu toiselle verkkosivulle",
   "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
   "error": {
     "generic": {

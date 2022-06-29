@@ -97,11 +97,6 @@ const Login: NextPage = () => {
 
   return (
     <>
-      <Head>
-        <title>
-          {t(notificationLabelKey)} | {t(`common:appName`)}
-        </title>
-      </Head>
       <LoginHeader />
       <Container>
         <LoginLinks />
@@ -110,6 +105,7 @@ const Login: NextPage = () => {
         </$Notification>
       </Container>
     </>
+
   );
 };
 

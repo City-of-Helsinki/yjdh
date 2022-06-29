@@ -63,23 +63,32 @@ const usePageContent = (): ExtendedComponentProps => {
     ? camelcaseKeys(
         {
           ...existingApplication,
-          calculation: existingApplication.calculation ? {
-            ...existingApplication.calculation,
-            monthly_pay: String(
-              stringToFloatValue(existingApplication.calculation.monthly_pay)
-            ),
-            other_expenses: String(
-              stringToFloatValue(existingApplication.calculation.other_expenses)
-            ),
-            vacation_money: String(
-              stringToFloatValue(existingApplication.calculation.vacation_money)
-            ),
-            override_monthly_benefit_amount: String(
-              stringToFloatValue(
-                existingApplication.calculation.override_monthly_benefit_amount
-              )
-            ),
-          }: undefined,
+          calculation: existingApplication.calculation
+            ? {
+                ...existingApplication.calculation,
+                monthly_pay: String(
+                  stringToFloatValue(
+                    existingApplication.calculation.monthly_pay
+                  )
+                ),
+                other_expenses: String(
+                  stringToFloatValue(
+                    existingApplication.calculation.other_expenses
+                  )
+                ),
+                vacation_money: String(
+                  stringToFloatValue(
+                    existingApplication.calculation.vacation_money
+                  )
+                ),
+                override_monthly_benefit_amount: String(
+                  stringToFloatValue(
+                    existingApplication.calculation
+                      .override_monthly_benefit_amount
+                  )
+                ),
+              }
+            : undefined,
         },
         {
           deep: true,

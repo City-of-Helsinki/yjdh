@@ -1,12 +1,16 @@
 version: "3.8"
 services:
   postgres:
-    image: postgres:12
+    build:
+      context: ./backend
+      dockerfile: ./docker/finnish_postgres.Dockerfile
     restart: on-failure
     environment:
       POSTGRES_USER: kesaseteli
       POSTGRES_PASSWORD: kesaseteli
       POSTGRES_DB: kesaseteli
+      LC_COLLATE: 'fi_FI.UTF-8'
+      LC_CTYPE: 'fi_FI.UTF-8'
     ports:
       - 5434:5432
     volumes:
