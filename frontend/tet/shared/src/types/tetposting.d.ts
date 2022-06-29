@@ -4,7 +4,8 @@ type TetPosting = {
   id?: string;
   title: string;
   description: string;
-  org_name: string;
+  org_name: string; // this is actually department name, comes from the form field
+  organization_name: string; // organization name from suomi.fi / City of Helsinki
   location: LocationType;
   spots: number;
   start_date: string;

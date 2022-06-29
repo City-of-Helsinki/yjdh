@@ -3,8 +3,9 @@ import axios from 'axios';
 
 export const BackendEndpoint = {
   TET_POSTINGS: '/v1/events/',
-  LOGIN: '/oauth2/login',
-  LOGOUT: '/oauth2/logout',
+  LOGIN_ADFS: '/oauth2/login',
+  LOGIN_OIDC: '/oidc/authenticate/',
+  LOGOUT: '/logout/', // Backend redirects to correct logout endpoint based on login type
   USER: '/userinfo/',
   IMAGE: '/v1/images/',
 } as const;

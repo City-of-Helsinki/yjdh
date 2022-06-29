@@ -72,6 +72,7 @@ const useEventPostingTransformation = (): Transformations => {
       title: getLocalizedString(event.name),
       description: getLocalizedString(event.description),
       org_name: event.custom_data?.org_name || '',
+      organization_name: event.provider?.fi || '',
       // note that with GET /event/ all but @id are empty
       location: {
         name: getLocalizedString(event.location.name),

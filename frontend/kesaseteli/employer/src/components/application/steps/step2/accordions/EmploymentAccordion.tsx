@@ -5,7 +5,6 @@ import TextInput, {
   TextInputProps,
 } from 'kesaseteli/employer/components/application/form/TextInput';
 import useAccordionStateLocalStorage from 'kesaseteli/employer/hooks/application/useAccordionStateLocalStorage';
-import useToggleSerialNumberInput from 'kesaseteli/employer/hooks/application/useToggleSerialNumberInput';
 import useGetEmploymentErrors from 'kesaseteli/employer/hooks/employments/useGetEmploymentErrors';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -63,9 +62,6 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
     [index]
   );
 
-  const [showSerialNumberInput, toggleShowSerialNumberInput] =
-    useToggleSerialNumberInput(index);
-
   return (
     <$Accordion
       id={`accordion-${index}`}
@@ -87,13 +83,12 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
           }}
         />
         <SelectionGroup
-          id={getId('summer_voucher_exception_reason')}
+          id={getId('target_group')}
           showTitle={false}
           validation={{
             required: true,
           }}
           values={EMPLOYEE_EXCEPTION_REASON}
-          onChange={toggleShowSerialNumberInput}
           $colSpan={2}
         />
         <FormSectionDivider $colSpan={2} />
@@ -128,12 +123,10 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
           id={getId('employee_school')}
           validation={{ required: true, maxLength: 256 }}
         />
-        {showSerialNumberInput && (
-          <TextInput
-            id={getId('summer_voucher_serial_number')}
-            validation={{ required: true, maxLength: 64 }}
-          />
-        )}
+        <TextInput
+          id={getId('summer_voucher_serial_number')}
+          validation={{ required: true, maxLength: 64 }}
+        />
         <FormSectionDivider $colSpan={2} />
         <FormSectionHeading
           header={t('common:application.step2.attachments_section')}

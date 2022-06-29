@@ -197,7 +197,7 @@ def test_youth_summer_voucher_factory():
 
     for youth_summer_voucher in youth_summer_vouchers:
         assert youth_summer_voucher.summer_voucher_serial_number >= 1
-        assert youth_summer_voucher.summer_voucher_exception_reason == ""
+        assert youth_summer_voucher.target_group == ""
 
     summer_voucher_serial_numbers = [
         youth_summer_voucher.summer_voucher_serial_number

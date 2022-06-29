@@ -162,7 +162,7 @@ class ServiceClient:
 
     def update_tet_event(self, event_id, validated_data, request: HttpRequest):
         self._get_event_and_raise_for_unauthorized(request, event_id)
-        event = enrich_update_event(validated_data, request.user)
+        event = enrich_update_event(validated_data, request)
         updated_event = self.client.update_event(event_id, event)
         self.sync_photographer_name(event)
 
