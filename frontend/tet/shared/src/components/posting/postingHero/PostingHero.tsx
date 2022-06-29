@@ -1,6 +1,5 @@
 import { IconArrowLeft, IconLocation } from 'hds-react';
 import noop from 'lodash/noop';
-import Image from 'next/image';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Container from 'tet-shared/components/container/Container';

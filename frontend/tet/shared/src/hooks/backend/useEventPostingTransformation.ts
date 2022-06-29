@@ -55,7 +55,8 @@ const useEventPostingTransformation = (): Transformations => {
    *
    * @param event
    */
-  const eventToTetPosting = (event: TetEvent): TetPosting => {
+   // eslint-disable-next-line sonarjs/cognitive-complexity
+   const eventToTetPosting = (event: TetEvent): TetPosting => {
     const parsedSpots = parseInt(event.custom_data?.spots || '', 10);
     const spots = parsedSpots >= 0 ? parsedSpots : 1;
 
