@@ -96,11 +96,6 @@ const Login: NextPage = () => {
 
   return (
     <Container>
-      <Head>
-        <title>
-          {t(notificationLabelKey)} | {t(`common:appName`)}
-        </title>
-      </Head>
       <$Notification label={t(notificationLabelKey)} type={notificationType} size="large">
         {notificationContent}
       </$Notification>

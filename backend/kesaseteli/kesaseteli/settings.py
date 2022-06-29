@@ -121,7 +121,7 @@ env = environ.Env(
     VTJ_USERNAME=(str, ""),
     VTJ_PASSWORD=(str, ""),
     VTJ_TIMEOUT=(int, 30),
-    ENABLE_SUOMIFI=(bool, False),
+    NEXT_PUBLIC_ENABLE_SUOMIFI=(bool, False),
     SUOMIFI_TEST=(bool, False),
     # base64 encoded public key certificate (e.g. base64 -w 0 public.pem)
     SUOMIFI_KEY=(str, None),
@@ -155,7 +155,7 @@ VTJ_PERSONAL_ID_QUERY_URL = env.str("VTJ_PERSONAL_ID_QUERY_URL")
 VTJ_USERNAME = env.str("VTJ_USERNAME")
 VTJ_PASSWORD = env.str("VTJ_PASSWORD")
 VTJ_TIMEOUT = env.int("VTJ_TIMEOUT")
-ENABLE_SUOMIFI = env("ENABLE_SUOMIFI")
+NEXT_PUBLIC_ENABLE_SUOMIFI = env("NEXT_PUBLIC_ENABLE_SUOMIFI")
 
 DB_PREFIX = {
     None: env.str("DB_PREFIX"),
@@ -225,7 +225,7 @@ INSTALLED_APPS = [
     "companies",
 ]
 
-if ENABLE_SUOMIFI:
+if NEXT_PUBLIC_ENABLE_SUOMIFI:
     INSTALLED_APPS.append("djangosaml2")
 
 if ENABLE_ADMIN:
@@ -244,7 +244,7 @@ MIDDLEWARE = [
     "simple_history.middleware.HistoryRequestMiddleware",
 ]
 
-if ENABLE_SUOMIFI:
+if NEXT_PUBLIC_ENABLE_SUOMIFI:
     MIDDLEWARE.insert(
         MIDDLEWARE.index("simple_history.middleware.HistoryRequestMiddleware"),
         "djangosaml2.middleware.SamlSessionMiddleware",
@@ -342,11 +342,17 @@ SESSION_COOKIE_SECURE = True
 # SAML SLO requires allowing sessiond to be passed
 SESSION_COOKIE_SAMESITE = "None"
 
-AUTHENTICATION_BACKENDS = (
-    "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
+AUTHENTICATION_BACKENDS = [
     "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
-    "shared.suomi_fi.auth.SuomiFiSAML2AuthenticationBackend",
     "django.contrib.auth.backends.ModelBackend",
+]
+
+# If Suomi.fi not enabled we will enable the legacy Kesäseteli auth.
+AUTHENTICATION_BACKENDS.insert(
+    0,
+    "shared.suomi_fi.auth.SuomiFiSAML2AuthenticationBackend"
+    if NEXT_PUBLIC_ENABLE_SUOMIFI
+    else "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
 )
 
 OIDC_RP_SIGN_ALGO = "RS256"
@@ -398,6 +404,10 @@ ADFS_CONTROLLER_GROUP_UUIDS = env.list("ADFS_CONTROLLER_GROUP_UUIDS")
 
 # Suomi.fi (djangosaml2)
 
+SAML_ATTRIBUTE_MAPPING = {
+    "givenName": ("first_name",),
+    "sn": ("last_name",),
+}
 SAML_SESSION_COOKIE_NAME = "kesaseteli_saml_session"
 SAML_CREATE_UNKNOWN_USER = True
 SAML_DJANGO_USER_MAIN_ATTRIBUTE = "username"

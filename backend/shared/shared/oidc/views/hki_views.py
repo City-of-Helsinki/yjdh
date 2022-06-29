@@ -119,9 +119,18 @@ class HelsinkiOIDCUserInfoView(View):
         return JsonResponse(userinfo)
 
     def get(self, request):
+        suomifi_enabled = getattr(settings, "NEXT_PUBLIC_ENABLE_SUOMIFI", False)
         response = HttpResponse("Unauthorized", status=401)
 
-        if request.user.is_authenticated:
+        if suomifi_enabled and request.user.is_authenticated:
+            # TODO Refactor this SAML related userinfo e.g. to a separate view
+            userinfo = {
+                "given_name": request.user.first_name,
+                "family_name": request.user.last_name,
+                "name": request.user.get_full_name(),
+            }
+            response = JsonResponse(userinfo)
+        elif request.user.is_authenticated:
             try:
                 access_token = request.session.get("oidc_access_token")
 

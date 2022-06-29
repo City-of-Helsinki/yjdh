@@ -35,7 +35,7 @@ const EditStaticPage: NextPage = () => {
     return (
       <>
         <HeaderLinks />
-        <EditById title={t('common:editor.editTitle')} data={posting} />;
+        <EditById title={t('common:editor.editTitle')} data={posting} />
       </>
     );
   } else {

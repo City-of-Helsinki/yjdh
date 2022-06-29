@@ -115,6 +115,7 @@ const useEventPostingTransformation = (): Transformations => {
             );
           })
         : [],
+      website_url: event.custom_data.website_url,
       spots,
     };
   };

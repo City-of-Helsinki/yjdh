@@ -20,7 +20,7 @@ import isBefore from 'date-fns/isBefore';
 const PostingDetails: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { required, name, description, date } = useValidationRules();
+  const { required, name, description, date, website } = useValidationRules();
   const { control, setValue } = useFormContext<TetPosting>();
 
   const languageOptions = useLanguageOptions();
@@ -101,6 +101,16 @@ const PostingDetails: React.FC = () => {
             label={t('common:editor.posting.description')}
             registerOptions={description}
             required={true}
+          />
+        </$GridCell>
+      </$GridCell>
+      <$GridCell as={$Grid} $colSpan={12}>
+        <$GridCell $colSpan={6}>
+          <TextInput
+            id="website_url"
+            label={t('common:editor.posting.website')}
+            placeholder={t('common:editor.posting.website')}
+            registerOptions={website}
           />
         </$GridCell>
       </$GridCell>
