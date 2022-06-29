@@ -49,6 +49,16 @@ def get_organization_name(request: HttpRequest):
     if settings.NEXT_PUBLIC_MOCK_FLAG:
         return "Test Company"
 
-    # TODO using the YTJ API will be implemented in TETP-214
+    try:
+        organization_roles = get_organization_roles(request)
+    except RequestException:
+        raise PermissionDenied(
+            detail="Unable to fetch organization roles from eauthorizations API"
+        )
 
-    raise PermissionDenied(detail="Fetching company name not implemented")
+    name = organization_roles.get("name")
+
+    if not name:
+        raise PermissionDenied(detail="Empty name, not able to use the service")
+
+    return name
