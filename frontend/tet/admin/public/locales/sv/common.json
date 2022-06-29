@@ -21,7 +21,7 @@
   "loginPage": {
 		"pageHeading": "PRAO-platsannonser",
 		"pageText": "Välkommen till PRAO-platsers aviseringstjänst. Tjänsten låter dig meddela och hantera din organisations PRAO-platser. Välj nedan om du vill anmäla en ny PRAO-plats som representant för ett privat företag eller Helsingfors stad.",
-		"companyLoginHeading": "Privat företag",
+		"companyLoginHeading": "Privat företag (i bruk hösten 2022)",
 		"companyLoginText": "Jag är representant for en privat organisation",
 		"companyLoginButton": "Suomi.fi autentisering",
 		"cityLoginHeading": "Helsingfors stad",

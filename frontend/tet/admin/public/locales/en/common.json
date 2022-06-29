@@ -21,7 +21,7 @@
   "loginPage": {
 		"pageHeading": "TET-position advertisements",
 		"pageText": "Welcome to the TET-positions service. The service allows you to report and manage your organisation's TET-positions. Select below if you want to report a new TET-position as a representative of a private company or the City of Helsinki.",
-		"companyLoginHeading": "Private organisation",
+		"companyLoginHeading": "Private organisation (in use in autumn 2022)",
 		"companyLoginText": "I am a representative for a private organisation",
 		"companyLoginButton": "Suomi.fi authentication",
 		"cityLoginHeading": "City of Helsinki",
