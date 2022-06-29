@@ -109,9 +109,7 @@ class FakeObjectFactory {
   public fakeEmployment(): Required<Employment> {
     return {
       id: this.generateId(),
-      summer_voucher_exception_reason: faker.random.arrayElement(
-        EMPLOYEE_EXCEPTION_REASON
-      ),
+      target_group: faker.random.arrayElement(EMPLOYEE_EXCEPTION_REASON),
       employee_name: faker.name.findName(),
       employee_school: faker.commerce.department(),
       employee_ssn: '111111-111C',

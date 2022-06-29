@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.http import HttpResponse, JsonResponse
+from django.shortcuts import redirect
 from django.views import View
 
 from events.utils import get_organization_name
@@ -27,3 +29,19 @@ class UserInfoView(View):
             return JsonResponse(userinfo)
         else:
             return HttpResponse("Unauthorized", status=401)
+
+
+class TetLogoutView(View):
+    """Log out user based on login type"""
+
+    http_method_names = ["get"]
+
+    def get(self, request):
+        user = request.user
+        if user.is_authenticated:
+            if user.is_staff:
+                return redirect("/oauth2/logout")
+            else:
+                return redirect("/oidc/logout/")
+        else:
+            return redirect(settings.LOGIN_REDIRECT_URL)
