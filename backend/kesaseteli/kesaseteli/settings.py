@@ -414,6 +414,7 @@ SAML_DJANGO_USER_MAIN_ATTRIBUTE = "username"
 SAML_USE_NAME_ID_AS_USERNAME = True  # Suomi.fi session ID as username
 SAML_IGNORE_LOGOUT_ERRORS = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+CSRF_USE_SESSIONS = True
 
 ACS_DEFAULT_REDIRECT_URL = reverse_lazy("eauth_authentication_init")
 SUOMIFI_TEST = env("SUOMIFI_TEST")
