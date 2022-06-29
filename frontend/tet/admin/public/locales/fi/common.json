@@ -39,7 +39,7 @@
       "bullet3": "Työnantajaorganisaation nimi, Y-tunnus ja osoite (syötetään asiointipalveluun)",
       "moreInfo": "Lisätietoja henkilötietojen käsittelystä (mm. oikeusperusteet ja säilytysajat) TET-paikkojen ilmoituspalvelussa löydät <a>opintohallintorekisteristä</a>",
       "registerRights1": "Rekisteröidyllä on oikeuksia liittyen henkilötietoihin ja niiden käsittelyyn Helsingin kaupungilla.",
-      "registerRights2": "Rekisteröity voi muun muassa tarkistaa mitä tietoja hänestä on kerätty. Lisätietoja oikeuksista ja niiden toteuttamisesta <a>Helsingin kaupungin tietosuojasivulla</a>."
+      "registerRights2": "Rekisteröity voi muun muassa tarkistaa mitä tietoja hänestä on kerätty. Lisätietoja oikeuksista ja niiden toteuttamisesta ax 2000<a>Helsingin kaupungin tietosuojasivulla</a>."
     }
   },
 	"dialog": {
@@ -92,7 +92,7 @@
     "language": "TET-paikan kielisyys",
 		"leaveConfirm": "Muutoksia ei ole tallennettu. Haluatko silti poistua?",
 		"draftInfoHeader": "Täytä vaaditut kentät",
-		"draftInfoContent": "Täytä <1>tehtävänimike</1>, <1>toimipiste</1> ja <1>osoite</1> tallentaaksesi keskeneräisen ilmoituksen", 
+		"draftInfoContent": "Täytä <1>tehtävänimike</1>, <1>toimipiste</1> ja <1>osoite</1> tallentaaksesi keskeneräisen ilmoituksen",
 		"close": "Sulje",
     "employerInfo": {
 			"contactPerson": "Yhteyshenkilö",
@@ -129,6 +129,17 @@
 				"phone": "Syötä oikeassa muodossa",
 				"name": "Syötä nimi ilman erikoismerkkejä ja kirjaimia",
 				"isSet": "Valitse vähintään yksi"
+			},
+			"imageUpload": {
+				"label": "Lataa kuva toimipisteestä tai työtehtävästä raahaamalla se alle",
+				"helperText": "Leveys min 400px, max 2000px. Koko max 4MB*.jpg*.png",
+				"saveImage": "Tallenna kuva ilmoitukselle",
+				"deleteImage": "Poista tai vaihda kuva",
+				"deleteConfirmTitle": "Haluatko varmasti poistaa kuvan?",
+				"deleteConfirmContent": "Kuva poistetaan ilmoitukselta kokonaan. Toiminto on peruuttamaton",
+				"deleteButton": "Poista kuva",
+				"photographerName": "Valokuvaajan nimi",
+        "photographerNameHelperText": "Jos kuvan lisenssiehdot vaativat valokuvaajan nimen ilmoittamisen, kirjoita se tähän. Nimi tulee näkyviin kuvan alle."
 			}
     },
 		"classification": {

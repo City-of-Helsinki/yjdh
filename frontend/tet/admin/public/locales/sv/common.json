@@ -130,6 +130,17 @@
 				"phone": "Vänligen mata in i rätt format",
 				"name": "Mata in namn utan specialtecken och -bokstäver",
 				"isSet": "Välj minst en"
+			},
+			"imageUpload": {
+				"label": "Ladda ner en bild av en arbetsplats eller uppgift genom att dra den nedan",
+				"helperText": "Bredd min 400px, max 2000px. Storlek max 4MB*.jpg*.png",
+				"saveImage": "Spara bilden för PRAO-platsen",
+				"deleteImage": "Bort eller ändra bilden",
+				"deleteConfirmTitle": "Är du säker på att du vill ta bort bilden?",
+				"deleteConfirmContent": "Bilden kommer att tas bort helt från meddelandet. Funktionen är oåterkallelig.",
+				"deleteButton": "Bort bilden",
+				"photographerName": "Fotografens namn",
+        "photographerNameHelperText": "Om licensvillkoren för bilden kräver, skriv fotografens namn här. Namnet kommer att visas under bilden."
 			}
     },
 		"classification": {

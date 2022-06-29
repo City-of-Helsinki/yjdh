@@ -19,6 +19,10 @@ type TetPosting = {
   keywords_working_methods: OptionType[];
   keywords_attributes: OptionType[];
   languages: OptionType[];
+  image?: File; // image file that user has selected
+  image_url?: string; // this is shown to user
+  image_id?: string; // if set, this becomes the TET posting's image
+  photographer_name?: string;
   website_url?: string;
 };
 

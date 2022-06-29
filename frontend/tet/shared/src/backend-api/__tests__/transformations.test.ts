@@ -38,7 +38,7 @@ describe('transformations', () => {
       ],
     });
 
-    const event = tetPostingToEvent(posting);
+    const event = tetPostingToEvent({ posting });
 
     expect(event.date_published).toBeNull();
     expect(event.publication_status).toBeUndefined();
@@ -82,7 +82,7 @@ describe('transformations', () => {
 
   it('can transform draft posting to a published event', () => {
     const posting = fakeTetPosting();
-    const event = tetPostingToEvent(posting, true);
+    const event = tetPostingToEvent({ posting, publish: true });
 
     const currentTimeISO = new Date().toISOString();
 
@@ -93,7 +93,7 @@ describe('transformations', () => {
   it('published event keeps its date_published', () => {
     const datePublished = '2022-03-22';
     const posting = fakeTetPosting({ date_published: datePublished });
-    const event = tetPostingToEvent(posting);
+    const event = tetPostingToEvent({ posting });
 
     expect(event.date_published).toBe(datePublished);
 

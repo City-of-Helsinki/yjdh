@@ -1,8 +1,13 @@
 import styled from 'styled-components';
 
+interface ImageProps {
+  imageUrl: string;
+}
+
 export const $PostingCard = styled.div`
   display: flex;
   flex-flow: column nowrap;
+  min-height: 400px;
   align-items: flex-start;
   background-color: ${(props) => props.theme.colors.black5};
   margin-bottom: ${(props) => props.theme.spacing.m};
@@ -14,20 +19,18 @@ export const $PostingCard = styled.div`
   }
 `;
 
-export const $ImageContainer = styled.div`
+export const $ImageContainer = styled.div<ImageProps>`
   width: 100%;
   height: 300px;
-  background-color: ${(props) => props.theme.colors.black10};
-  display: flex;
-  flex-flow: column nowrap;
-
-  img {
-    width: 100%;
-  }
+  background-image: url(${(props) => props.imageUrl});
+  background-color: ${(props) => props.theme.colors.black30};
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 
   @media (min-width: ${(props) => props.theme.breakpoints.m}) {
     width: 400px;
-    height: 100%;
+    height: auto;
   }
 `;
 

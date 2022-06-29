@@ -1,7 +1,3 @@
-/* TODO
- * This will go to tet/shared (copied from tet/youth TETP-73 branch)
- */
-
 export type LinkedEventsPagedResponse<T> = {
   meta: {
     count: number;
@@ -49,6 +45,11 @@ export type CustomData = {
   website_url?: string;
 };
 
+export type ImageObject = IdObject & {
+  url?: string;
+  photographer_name?: string;
+};
+
 export type TetEvent = {
   id: string;
   name: LocalizedObject;
@@ -65,6 +66,7 @@ export type TetEvent = {
   event_status: string;
   publication_status: string;
   in_language: IdObject[];
+  images: ImageObject[];
   provider: LocalizedObject;
 };
 
@@ -79,6 +81,7 @@ export type TetEventPayload = {
   date_published: string | null;
   publication_status?: string;
   in_language: IdObject[];
+  images: ImageObject[];
 };
 
 export type TetUpsert = {
