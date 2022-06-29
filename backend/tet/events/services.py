@@ -142,6 +142,7 @@ class ServiceClient:
             validated_data, self._get_publisher(request.user), request
         )
         created_event = self.client.create_event(event)
+        self.sync_photographer_name(event)
         return reduce_get_event(created_event)
 
     def publish_job_posting(self, event_id, request: HttpRequest):
@@ -156,7 +157,6 @@ class ServiceClient:
         event = self._get_event_and_raise_for_unauthorized(request, event_id)
         event["images"] = []
         updated_event = self.client.update_event(event_id, event)
-        self.sync_photographer_name(event)
 
         return reduce_get_event(updated_event)
 

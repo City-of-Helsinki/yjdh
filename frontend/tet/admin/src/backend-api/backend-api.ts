@@ -18,17 +18,7 @@ export const getBackendDomain = (): string => process.env.NEXT_PUBLIC_BACKEND_UR
 
 export const getBackendUrl = (path: BackendPath): string => `${getBackendDomain()}${path}`;
 
-const MOCK_UPLOAD = false;
-
 export const uploadImage = async (image: File, photographerName: string): Promise<ImageObject> => {
-  if (MOCK_UPLOAD) {
-    await new Promise((r) => setTimeout(r, 2000));
-    return {
-      url: 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/media/images/testimage_9gcuSik.png',
-      '@id': 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/image/4234/',
-    };
-  }
-
   const formData = new FormData();
   formData.append('image', image);
   formData.append('photographer_name', photographerName);
@@ -40,10 +30,6 @@ export const uploadImage = async (image: File, photographerName: string): Promis
   return response.data;
 };
 
-export const deleteImage = async (id: string): Promise<string> => {
-  if (MOCK_UPLOAD) {
-    await new Promise((r) => setTimeout(r, 2000));
-    return 'success';
-  }
+export const deleteImage = async (id: string): Promise<void> => {
   await axios.delete(`${getBackendDomain()}${BackendEndpoint.TET_POSTINGS}${id}/image/`);
 };

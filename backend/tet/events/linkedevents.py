@@ -182,7 +182,7 @@ class LinkedEventsClient:
             if e.response.status_code == 400:
                 raise ValidationError(detail="File not accepted")
             else:
-                raise PermissionDenied(detail="Could not upload")  # TODO what here?
+                raise PermissionDenied(detail="Could not upload")
         except RequestException:
             raise LinkedEventsException(code=503)
         return r.json()
