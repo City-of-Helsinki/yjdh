@@ -63,7 +63,7 @@ const NoResults: React.FC<Props> = ({ params, onSearchByFilters, resultsTotal })
         ) : (
           <$Title>{t('common:postings.fewResultsLinks')}</$Title>
         )}
-        <$Links>
+        <$Links data-testid="search-word-links">
           {searchWords().map((word) => (
             <Link size="L" onClick={() => searchHandler(word)} href="javascript:void(0)">
               {word}
