@@ -32,10 +32,8 @@ test('user can authenticate and log out', async (t) => {
   await t.click(loginLink);
   const suomiFiData = await doLogin(t, 'fi');
   await header.userIsLoggedIn(suomiFiData.user);
-  //TODO
-  //await header.clickLogoutButton();
-  //t.expect(loginLink.exists);
-  //await header.userIsLoggedOut();
+  await header.clickLogoutButton();
+  t.expect(loginLink.exists);
 });
 
 test('user can change languages', async (t) => {
