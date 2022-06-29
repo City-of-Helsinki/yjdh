@@ -6,6 +6,7 @@ export const $PostingCard = styled.div`
   align-items: flex-start;
   background-color: ${(props) => props.theme.colors.black5};
   margin-bottom: ${(props) => props.theme.spacing.m};
+  cursor: pointer;
 
   @media (min-width: ${(props) => props.theme.breakpoints.m}) {
     flex-flow: row nowrap;

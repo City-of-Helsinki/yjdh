@@ -45,7 +45,7 @@ env:
   NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
   NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: 60
   CORS_ALLOW_ALL_ORIGINS: 1
-  DISABLE_VTJ: 1
+  NEXT_PUBLIC_DISABLE_VTJ: 0
 jobs:
   build:
     if: ${{ github.actor != 'dependabot[bot]' }}
@@ -93,6 +93,7 @@ jobs:
           DOCKER_BUILD_ARG_NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
           DOCKER_BUILD_ARG_NEXT_PUBLIC_MOCK_FLAG: ${{ env.NEXT_PUBLIC_MOCK_FLAG }}
           DOCKER_BUILD_ARG_NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: ${{ env.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS }}
+          DOCKER_BUILD_ARG_NEXT_PUBLIC_DISABLE_VTJ: ${{ env.NEXT_PUBLIC_DISABLE_VTJ }}
           DOCKER_BUILD_ARG_PROJECT: ${{ matrix.project }}
           DOCKER_BUILD_ARG_FOLDER: ${{ matrix.folder }}
           DOCKER_BUILD_ARG_SERVICE: ${{ matrix.service }}
@@ -163,7 +164,7 @@ jobs:
           echo "K8S_SECRET_LOGOUT_REDIRECT_URL=${{ env.EMPLOYER_URL }}/login?logout=true" >> $GITHUB_ENV
           echo "K8S_SECRET_YOUTH_URL=${{ env.YOUTH_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_HANDLER_URL=${{ env.HANDLER_URL }}" >> $GITHUB_ENV
-          echo "K8S_SECRET_DISABLE_VTJ=${{ env.DISABLE_VTJ }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_NEXT_PUBLIC_DISABLE_VTJ=${{ env.NEXT_PUBLIC_DISABLE_VTJ }}" >> $GITHUB_ENV
           echo "K8S_SECRET_NEXT_PUBLIC_MOCK_FLAG=${{ env.NEXT_PUBLIC_MOCK_FLAG }}" >> $GITHUB_ENV
           echo "K8S_SECRET_NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS=${{ env.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS }}" >> $GITHUB_ENV
           echo "K8S_SECRET_DATABASE_DB=${{ github.event.repository.name }}-${{ matrix.service }}-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
@@ -207,21 +208,6 @@ jobs:
           K8S_SECRET_ALLOWED_HOSTS: "*"
           APP_MIGRATE_COMMAND: ${{ matrix.database == true && '/app/.prod/on_deploy.sh' || ''}}
           LOGOUT_REDIRECT_URL: ${{ env.EMPLOYER_URL }}/login?logout=true
-
-      - name: Deploy Cronjobs
-        if: matrix.database
-        uses: City-of-Helsinki/setup-cronjob-action@main
-        with:
-          image_repository: ghcr.io/city-of-helsinki/${{ github.event.repository.name }}
-          image_tag:  ${{ github.sha }}
-          kubeconfig_raw: ${{ secrets.KUBECONFIG_RAW}}
-          target_namespace: ${{ secrets.K8S_NAMESPACE }}
-          name: kesaseteli-hourly-cronjob
-          single_run: true
-          secret_name: kesaseteli-hourly-cronjob-secret
-          command: "{/bin/sh}"
-          args: "{-c,cd /app && /usr/bin/timeout --kill-after=20m 19m python manage.py runjobs hourly 2>&1}"
-
       - name: Create PR comment for ${{ matrix.service }}
         uses: marocchino/sticky-pull-request-comment@v2
         with:
@@ -285,6 +271,7 @@ jobs:
           HANDLER_URL: ${{ env.HANDLER_URL }}
           NEXT_PUBLIC_BACKEND_URL: ${{ env.NEXT_PUBLIC_BACKEND_URL }}
           NEXT_PUBLIC_MOCK_FLAG: ${{ env.NEXT_PUBLIC_MOCK_FLAG }}
+          NEXT_PUBLIC_DISABLE_VTJ: ${{ env.NEXT_PUBLIC_DISABLE_VTJ }}
           NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: ${{ env.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS }}
 
       - name: Upload Acceptance Test results for ${{ matrix.service }}

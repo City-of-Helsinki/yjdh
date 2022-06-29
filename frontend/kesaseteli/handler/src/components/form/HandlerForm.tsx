@@ -7,6 +7,7 @@ import {
   YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION,
   YOUTH_APPLICATION_STATUS_WAITING_FOR_YOUTH_ACTION,
 } from 'kesaseteli-shared/constants/youth-application-status';
+import isVtjDisabled from 'kesaseteli-shared/flags/is-vtj-disabled';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -26,7 +27,6 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const {
-    id,
     receipt_confirmed_at,
     first_name,
     last_name,
@@ -89,7 +89,7 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
         value={convertToUIDateAndTimeFormat(receipt_confirmed_at)}
       />
       <$GridCell $colSpan={1} $rowSpan={additionalInfoProvided ? 12 : 8}>
-        <VtjInfo application={application} />
+        {!isVtjDisabled() && <VtjInfo application={application} />}
       </$GridCell>
       <Field type="name" value={`${first_name} ${last_name}`} />
       <Field type="social_security_number" value={social_security_number} />
@@ -135,7 +135,10 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
         </>
       )}
       {waitingForHandlerAction ? (
-        <ActionButtons id={id} $rowSpan={additionalInfoProvided ? 12 : 8} />
+        <ActionButtons
+          application={application}
+          $rowSpan={additionalInfoProvided ? 12 : 8}
+        />
       ) : (
         <$GridCell>
           <$Notification

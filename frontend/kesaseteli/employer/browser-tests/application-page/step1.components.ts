@@ -5,7 +5,8 @@ import {
   withinContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import Company from '@frontend/shared/src/types/company';
-import ContactPerson from '@frontend/shared/src/types/contact_person';
+import ContactInfo from '@frontend/shared/src/types/contact-info';
+import { friendlyFormatIBAN } from 'ibantools';
 import TestController from 'testcafe';
 
 export const getStep1Components = (t: TestController) => {
@@ -85,24 +86,9 @@ export const getStep1Components = (t: TestController) => {
           name: /^työpaikan lähiosoite/i,
         });
       },
-      separateInvoicerCheckbox() {
-        return withinForm().getByLabelText(
-          /^laskutusta hoitaa yrityksessä eri yhteyshenkilö/i
-        );
-      },
-      invoicerNameInput() {
+      bankAccountNumberInput() {
         return withinForm().findByRole('textbox', {
-          name: /^laskutuksen yhteyshenkilön nimi/i,
-        });
-      },
-      invoicerEmailInput() {
-        return withinForm().findByRole('textbox', {
-          name: /^laskutuksen yhteyshenkilön sähköposti/i,
-        });
-      },
-      invoicerPhoneInput() {
-        return withinForm().findByRole('textbox', {
-          name: /^laskutuksen yhteyshenkilön puhelinnumero/i,
+          name: /^tilinumero/i,
         });
       },
     };
@@ -114,8 +100,9 @@ export const getStep1Components = (t: TestController) => {
         contact_person_name,
         contact_person_email,
         contact_person_phone_number,
+        bank_account_number,
         street_address,
-      }: ContactPerson) {
+      }: ContactInfo) {
         await t.expect(formSelector().exists).ok(await getErrorMessage(t));
         await t
           .expect(selectors.contactPersonNameInput().value)
@@ -126,6 +113,12 @@ export const getStep1Components = (t: TestController) => {
         await t
           .expect(selectors.streetAddessInput().value)
           .eql(street_address, await getErrorMessage(t));
+        await t
+          .expect(selectors.bankAccountNumberInput().value)
+          .eql(
+            friendlyFormatIBAN(bank_account_number) ?? '',
+            await getErrorMessage(t)
+          );
         await t
           .expect(selectors.contactPersonPhoneInput().value)
           .eql(contact_person_phone_number, await getErrorMessage(t));
@@ -165,34 +158,12 @@ export const getStep1Components = (t: TestController) => {
           address
         );
       },
-      async selectSeparateInvoicerCheckbox(expectedValue = true) {
-        const currentValue = await selectors.separateInvoicerCheckbox().checked;
-        if (currentValue !== expectedValue) {
-          await t.click(selectors.separateInvoicerCheckbox());
-        }
-      },
-      fillInvoicerName(name?: string) {
+      fillBankAccountNumber(address: string) {
         return fillInput(
           t,
-          'invoicer_name',
-          selectors.invoicerNameInput(),
-          name
-        );
-      },
-      fillInvoicerEmail(email?: string) {
-        return fillInput(
-          t,
-          'invoicer_email',
-          selectors.invoicerEmailInput(),
-          email
-        );
-      },
-      fillInvoicerPhone(phone?: string) {
-        return fillInput(
-          t,
-          'invoicer_phone_number',
-          selectors.invoicerPhoneInput(),
-          phone
+          'street_address',
+          selectors.bankAccountNumberInput(),
+          address
         );
       },
     };

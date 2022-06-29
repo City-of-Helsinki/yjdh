@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import TetPosting from 'tet-shared/types/tetposting';
+import { ensureScheme } from 'tet-shared/backend-api/transformations';
 
 type PreviewContextObj = {
   showPreview: boolean;
@@ -55,7 +56,11 @@ const PreviewContextProvider: React.FC = (props) => {
   const [formValid, setFormValid] = useState(false);
 
   const setTetPostingData = (posting: TetPosting) => {
-    setTetPosting(posting);
+    const url = ensureScheme(posting?.website_url);
+    setTetPosting({
+      ...posting,
+      website_url: url,
+    });
   };
 
   const contextValue: PreviewContextObj = {

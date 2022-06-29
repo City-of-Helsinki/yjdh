@@ -1,14 +1,14 @@
+import { SUPPORTED_LANGUAGES } from 'benefit/applicant/constants';
+import useFormActions from 'benefit/applicant/hooks/useFormActions';
+import { useTranslation } from 'benefit/applicant/i18n';
+import { getErrorText } from 'benefit/applicant/utils/forms';
 import {
   APPLICATION_FIELDS_STEP2,
   APPLICATION_FIELDS_STEP2_KEYS,
   EMPLOYEE_KEYS,
-  SUPPORTED_LANGUAGES,
-} from 'benefit/applicant/constants';
-import useFormActions from 'benefit/applicant/hooks/useFormActions';
-import { useTranslation } from 'benefit/applicant/i18n';
-import { Application } from 'benefit/applicant/types/application';
-import { getErrorText } from 'benefit/applicant/utils/forms';
-import { PAY_SUBSIDY_OPTIONS } from 'benefit-shared/constants';
+  PAY_SUBSIDY_OPTIONS,
+} from 'benefit-shared/constants';
+import { Application } from 'benefit-shared/types/application';
 import isAfter from 'date-fns/isAfter';
 import isWithinInterval from 'date-fns/isWithinInterval';
 import { FormikProps, useFormik } from 'formik';
@@ -55,7 +55,7 @@ type UseApplicationFormStep2Props = {
   clearDatesValues: () => void;
   clearPaySubsidyValues: () => void;
   setEndDate: () => void;
-  formik: FormikProps<Application>;
+  formik: FormikProps<Partial<Application>>;
   subsidyOptions: OptionType[];
   getSelectValue: (fieldName: keyof Application) => OptionType | null;
 };
@@ -251,7 +251,7 @@ const useApplicationFormStep2 = (
 
   const getSelectValue = (fieldName: keyof Application): OptionType | null =>
     subsidyOptions.find(
-      (o) => o.value?.toString() === values?.[fieldName]?.toString()
+      (o) => o.value?.toString() === String(values?.[fieldName])
     ) ?? null;
 
   let language = SUPPORTED_LANGUAGES.FI;

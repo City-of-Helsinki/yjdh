@@ -4,13 +4,14 @@ import {
 } from 'benefit/applicant/constants';
 import useApplicationQuery from 'benefit/applicant/hooks/useApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
-import { Application } from 'benefit/applicant/types/application';
 import { getApplicationStepFromString } from 'benefit/applicant/utils/common';
+import { Application } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { StepProps } from 'shared/components/stepper/Step';
+import { stringToFloatValue } from 'shared/utils/string.utils';
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -59,9 +60,40 @@ const usePageContent = (): ExtendedComponentProps => {
   }, [router]);
 
   const application: Application = existingApplication
-    ? camelcaseKeys(existingApplication, {
-        deep: true,
-      })
+    ? camelcaseKeys(
+        {
+          ...existingApplication,
+          calculation: existingApplication.calculation
+            ? {
+                ...existingApplication.calculation,
+                monthly_pay: String(
+                  stringToFloatValue(
+                    existingApplication.calculation.monthly_pay
+                  )
+                ),
+                other_expenses: String(
+                  stringToFloatValue(
+                    existingApplication.calculation.other_expenses
+                  )
+                ),
+                vacation_money: String(
+                  stringToFloatValue(
+                    existingApplication.calculation.vacation_money
+                  )
+                ),
+                override_monthly_benefit_amount: String(
+                  stringToFloatValue(
+                    existingApplication.calculation
+                      .override_monthly_benefit_amount
+                  )
+                ),
+              }
+            : undefined,
+        },
+        {
+          deep: true,
+        }
+      )
     : APPLICATION_INITIAL_VALUES;
 
   const steps = React.useMemo((): StepProps[] => {

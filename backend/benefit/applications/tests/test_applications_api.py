@@ -15,8 +15,6 @@ from django.test import override_settings
 from freezegun import freeze_time
 from PIL import Image
 from rest_framework.reverse import reverse
-from shared.audit_log import models as audit_models
-from shared.service_bus.enums import YtjOrganizationCode
 
 from applications.api.v1.serializers import (
     ApplicantApplicationSerializer,
@@ -52,6 +50,8 @@ from companies.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
 from helsinkibenefit.tests.conftest import *  # noqa
+from shared.audit_log import models as audit_models
+from shared.service_bus.enums import YtjOrganizationCode
 from terms.models import TermsOfServiceApproval
 from terms.tests.conftest import *  # noqa
 

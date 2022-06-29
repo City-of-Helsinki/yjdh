@@ -1,12 +1,16 @@
 version: "3.8"
 services:
   postgres:
-    image: postgres:12
+    build:
+      context: ./backend
+      dockerfile: ./docker/finnish_postgres.Dockerfile
     restart: on-failure
     environment:
       POSTGRES_USER: kesaseteli
       POSTGRES_PASSWORD: kesaseteli
       POSTGRES_DB: kesaseteli
+      LC_COLLATE: 'fi_FI.UTF-8'
+      LC_CTYPE: 'fi_FI.UTF-8'
     ports:
       - 5434:5432
     volumes:
@@ -18,11 +22,6 @@ services:
       context: ./backend
       dockerfile: ./docker/kesaseteli.Dockerfile
       target: development
-    # Entrypoint is overridden because although "django-admin compilemessages" is run as
-    # a part of Docker image build, the resulting files are overridden by volume mount
-    # in this docker-compose file and thus have to be regenerated.
-    entrypoint:
-      bash -c "django-admin compilemessages && /entrypoint/docker-entrypoint.sh"
     env_file:
       - .env.kesaseteli
     environment:

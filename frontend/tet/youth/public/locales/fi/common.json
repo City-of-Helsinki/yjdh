@@ -17,7 +17,7 @@
   },
 	"frontPage": {
 		"heading": "Muistathan etsiä TET-paikkasi ajoissa",
-		"search": "Etsi",
+		"search": "Hae",
 		"fetch": "Hae",
 		"advancedSearch": "Tarkennettu haku",
 		"boxTitle": "Mikä TET-paikka?",
@@ -38,6 +38,9 @@
 		"endDate": "Päättymispäivä",
 		"language": "Valitse kieli",
 		"clearFilters": "Tyhjennä hakuehdot",
+		"removeFilter": "Poista suodatin: {{filter}}",
+		"removeDateFilter": "Poista päivämääräsuodatin",
+		"removeLanguageFilter": "Poista kielen suodatin",
     "combobox": {
       "toggleButtonAriaLabel": "Näytä/piilota vaihtoehdot",
       "clearButtonAriaLabel": "Tyhjennä valinnat",
@@ -49,7 +52,10 @@
 		"searchResults_other": "{{count}} hakutulosta",
 		"readMore": "Lue lisää",
 		"showMore": "Näytä lisää tuloksia",
-		"languages": "Kielisyys"
+		"languages": "Kielisyys",
+		"noResultsText": "Haullasi ei löytynyt yhtään TET-paikkaa. Koitathan poistaa haun rajauksia.", 
+		"noResultsLinks": "Valitsemillasi hakuehdoilla ei löytynyt yhtään tapahtumaa. Kokeile vaikka klikkaamalla jotain näistä:",
+		"fewResultsLinks": "Kokeile myös seuraavilla rajauksilla / hakusanoilla:"
 	},
   "footer": {
     "copyrightText": "Helsingin kaupunki",
@@ -57,9 +63,13 @@
     "accessibilityStatement": "Saavutettavuusseloste",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/tietoa-hel-fista/saavutettavuus/saavutettavuusselosteet",
     "privacyPolicy": "Rekisteriseloste",
+		"privacyPolicyPDF": "Avaa pdf-tiedoston",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
     "feedback": "Anna palautetta",
-    "feedbackLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/osallistu-ja-vaikuta/palaute"
+    "feedbackLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/osallistu-ja-vaikuta/palaute",
+		"moreInfo": "Lisää tietoa",
+		"moreInfoLink": "https://nuorten.hel.fi/",
+		"newTab": "linkki avautuu uuteen välilehteen"
   },
   "languages": {
     "fi": "Suomeksi",
@@ -75,6 +85,7 @@
   },
 	"editor": {
 		"posting": {
+			"website": "Verkkosivut",
 			"contactLanguageFi": "Suomi",
 			"contactLanguageSv": "Ruotsi",
 			"contactLanguageEn": "Englanti"
@@ -94,5 +105,9 @@
 		"showList": "Näytä tulokset listana",
 		"showMap": "Näytä tulokset kartalla",
     "helsinkiCity": "Helsingin kaupunki"
+	},
+	"accessibility": {
+		"eventsLoading": "TET-paikkoja haetaan",
+		"eventsReady": "TET-paikkojen haku valmistui"
 	}
 }

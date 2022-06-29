@@ -1,4 +1,4 @@
-import { ATTACHMENT_TYPES } from 'benefit/handler/constants';
+import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import { IconLinkExternal, IconPaperclip } from 'hds-react';
 import * as React from 'react';
 import {

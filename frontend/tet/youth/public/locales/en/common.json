@@ -38,6 +38,9 @@
 		"endDate": "End date",
 		"language": "Choose language",
 		"clearFilters": "Clear filters",
+		"removeFilter": "Remove filter: {{filter}}",
+		"removeDateFilter": "Remove date filter",
+		"removeLanguageFilter": "Remove language filter",
     "combobox": {
       "toggleButtonAriaLabel": "Show/hide options",
       "clearButtonAriaLabel": "Clear selection",
@@ -49,7 +52,10 @@
 		"searchResults_other": "{{count}} search results",
 		"readMore": "Read more",
 		"showMore": "Show more results",
-		"languages": "Language"
+		"languages": "Language",
+		"noResultsText": "Your search did not match any TET-positions. Please try to clear your search.", 
+		"noResultsLinks": "No events were found matching your search criteria. Try clicking on any of these:",
+		"fewResultsLinks": "Also try the following keywords:"
 	},
   "footer": {
     "copyrightText": "City of Helsinki",
@@ -57,9 +63,13 @@
     "accessibilityStatement": "Accessibility statement",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/information/accessibility",
     "privacyPolicy": "Privacy policy",
+		"privacyPolicyPDF": "Opens a pdf-file",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
     "feedback": "Give feedback",
-    "feedbackLink": "https://www.hel.fi/helsinki/en/administration/participate/feedback"
+    "feedbackLink": "https://www.hel.fi/helsinki/en/administration/participate/feedback",
+		"moreInfo": "More information",
+		"moreInfoLink": "https://nuorten.hel.fi/en/",
+		"newTab": "link opens in a new tab"
   },
   "languages": {
     "fi": "Suomeksi",
@@ -75,6 +85,7 @@
   },
 	"editor": {
 		"posting": {
+			"website": "Website",
 			"contactLanguageFi": "Finnish",
 			"contactLanguageSv": "Swedish",
 			"contactLanguageEn": "English"
@@ -94,5 +105,9 @@
 		"showList": "Show results in a list",
 		"showMap": "Show results on a map",
     "helsinkiCity": "City of Helsinki"
+	},
+	"accessibility": {
+		"eventsLoading": "TET jobs search is loading",
+		"eventsReady": "TET jobs search is ready"
 	}
 }

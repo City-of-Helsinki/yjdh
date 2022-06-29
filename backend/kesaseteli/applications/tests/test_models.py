@@ -1,9 +1,88 @@
+import itertools
+import operator
+from typing import List
+
 import pytest
+from django.core import mail
 from django.db import transaction
 from django.db.utils import IntegrityError
+from django.test import override_settings
+from freezegun import freeze_time
 
-from applications.models import YouthSummerVoucher
-from common.tests.factories import AwaitingManualProcessingYouthApplicationFactory
+from applications.enums import EmployerApplicationStatus
+from applications.models import EmployerSummerVoucher, YouthSummerVoucher
+from common.tests.factories import (
+    AwaitingManualProcessingYouthApplicationFactory,
+    EmployerApplicationFactory,
+    EmployerSummerVoucherFactory,
+    YouthSummerVoucherFactory,
+)
+from common.utils import utc_datetime
+
+
+def create_test_employer_summer_vouchers(year) -> List[EmployerSummerVoucher]:
+    """
+    Create EmployerSummerVouchers for given year sorted by last_submitted_at
+    """
+    vouchers: List[EmployerSummerVoucher] = []
+    for created_at, last_submitted_at_list in [
+        (utc_datetime(year, 1, 13), [utc_datetime(year, 1, 18)]),
+        (utc_datetime(year, 2, 1), []),
+        (utc_datetime(year, 1, 1), [utc_datetime(year, 2, 9)]),
+        (utc_datetime(year, 2, 21), []),
+        (utc_datetime(year, 2, 20), [utc_datetime(year, 2, 22)]),
+        (utc_datetime(year, 3, 2), []),
+        (utc_datetime(year, 3, 8), [utc_datetime(year, 3, 10)]),
+        (
+            utc_datetime(year, 1, 3),
+            [
+                utc_datetime(year, 3, 3),
+                utc_datetime(year, 3, 5),
+                utc_datetime(year, 3, 11),
+            ],
+        ),
+        (utc_datetime(year, 1, 1), [utc_datetime(year, 3, 12)]),
+        (
+            utc_datetime(year, 3, 10),
+            [utc_datetime(year, 3, 11), utc_datetime(year, 9, 1)],
+        ),
+        (utc_datetime(year, 2, 5), [utc_datetime(year, 9, 2)]),
+    ]:
+        with freeze_time(created_at):
+            vouchers.append(
+                EmployerSummerVoucherFactory(
+                    application=EmployerApplicationFactory(
+                        status=EmployerApplicationStatus.SUBMITTED
+                    )
+                )
+            )
+            for last_submitted_at in last_submitted_at_list:
+                with freeze_time(last_submitted_at):
+                    vouchers[-1].save()
+
+    return sorted(vouchers, key=operator.attrgetter("last_submitted_at"))
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("year", [2021, 2022])
+def test_employer_summer_voucher_last_submitted_at(year):
+    """
+    Test EmployerSummerVoucher instances' last_submitted_at property
+    """
+    vouchers = create_test_employer_summer_vouchers(year=year)
+
+    assert len(vouchers) == 11
+    assert vouchers[0].last_submitted_at == utc_datetime(year, 1, 18)
+    assert vouchers[1].last_submitted_at == utc_datetime(year, 2, 1)
+    assert vouchers[2].last_submitted_at == utc_datetime(year, 2, 9)
+    assert vouchers[3].last_submitted_at == utc_datetime(year, 2, 21)
+    assert vouchers[4].last_submitted_at == utc_datetime(year, 2, 22)
+    assert vouchers[5].last_submitted_at == utc_datetime(year, 3, 2)
+    assert vouchers[6].last_submitted_at == utc_datetime(year, 3, 10)
+    assert vouchers[7].last_submitted_at == utc_datetime(year, 3, 11)
+    assert vouchers[8].last_submitted_at == utc_datetime(year, 3, 12)
+    assert vouchers[9].last_submitted_at == utc_datetime(year, 9, 1)
+    assert vouchers[10].last_submitted_at == utc_datetime(year, 9, 2)
 
 
 @pytest.mark.django_db(transaction=True, reset_sequences=True)
@@ -165,3 +244,55 @@ def test_youth_summer_voucher_sequentiality_complex_transaction_nesting():
             "summer_voucher_serial_number", flat=True
         )
     ) == list(range(1, 11))
+
+
+@pytest.mark.django_db
+@override_settings(
+    DEFAULT_FROM_EMAIL="Test sender <testsender@hel.fi>",
+    HANDLER_EMAIL="Test handler <testhandler@hel.fi>",
+)
+@pytest.mark.parametrize(
+    "to_youth,to_handler", itertools.product((True, False), repeat=2)
+)
+def test_youth_summer_voucher_sending(to_youth, to_handler):
+    usv = YouthSummerVoucherFactory()
+
+    usv.send_youth_summer_voucher_email(
+        language=usv.youth_application.language,
+        send_to_youth=to_youth,
+        send_to_handler=to_handler,
+    )
+
+    if not to_youth and not to_handler:
+        assert len(mail.outbox) == 0
+    else:
+        assert len(mail.outbox) == 1
+        m = mail.outbox[0]
+
+        assert m.from_email == "Test sender <testsender@hel.fi>"
+        if to_youth:
+            assert m.to == [usv.youth_application.email]
+        else:
+            assert m.to == []
+
+        if to_handler:
+            assert m.bcc == ["Test handler <testhandler@hel.fi>"]
+        else:
+            assert m.bcc == []
+
+
+@pytest.mark.django_db
+@override_settings(
+    DEFAULT_FROM_EMAIL="Test sender <testsender@hel.fi>",
+    HANDLER_EMAIL="Test handler <testhandler@hel.fi>",
+)
+def test_youth_summer_voucher_sending__no_optional_arguments():
+    usv = YouthSummerVoucherFactory()
+
+    usv.send_youth_summer_voucher_email(language=usv.youth_application.language)
+
+    assert len(mail.outbox) == 1
+    m = mail.outbox[0]
+    assert m.from_email == "Test sender <testsender@hel.fi>"
+    assert m.to == [usv.youth_application.email]
+    assert m.bcc == ["Test handler <testhandler@hel.fi>"]

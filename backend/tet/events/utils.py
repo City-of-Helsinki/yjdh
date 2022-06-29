@@ -4,6 +4,7 @@ from django.conf import settings
 from django.http import HttpRequest
 from requests import RequestException
 from rest_framework.exceptions import PermissionDenied
+
 from shared.oidc.utils import get_organization_roles
 
 # TET service uses Linked Events `provider` field to store data that needs to be searchable

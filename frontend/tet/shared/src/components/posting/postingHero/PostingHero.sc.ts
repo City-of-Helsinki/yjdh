@@ -20,10 +20,11 @@ export const $HeroWrapper = styled.div`
   }
 `;
 
-export const $BackButton = styled.div`
+export const $BackButton = styled.a`
   position: absolute;
   top: 1rem;
   left: 1rem;
+  color: inherit;
   background-color: ${(props) => props.theme.colors.white};
   padding: ${(props) => props.theme.spacing.xs3};
   cursor: pointer;
@@ -48,19 +49,6 @@ export const $HeroContentWrapper = styled.div`
   @media (min-width: ${(props) => props.theme.breakpoints.l}) {
     padding: ${(props) => props.theme.spacing.l};
     width: 40%;
-  }
-`;
-
-export const $Keywords = styled.ul`
-  display: inline-flex;
-  flex-flow: row wrap;
-  list-style: none;
-  padding-left: 0;
-  margin-top: 0;
-
-  li {
-    margin-right: ${(props) => props.theme.spacing.xs};
-    margin-top: ${(props) => props.theme.spacing.xs};
   }
 `;
 

@@ -1,4 +1,4 @@
-import { DeMinimisAid } from 'benefit/applicant/types/application';
+import { DeMinimisAid } from 'benefit-shared/types/application';
 import noop from 'lodash/noop';
 import React, { Dispatch, SetStateAction } from 'react';
 

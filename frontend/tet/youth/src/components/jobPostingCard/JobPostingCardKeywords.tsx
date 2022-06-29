@@ -3,6 +3,8 @@ import { Tag } from 'hds-react';
 import { OptionType } from 'tet-shared/types/classification';
 import JobPosting from 'tet-shared/types/tetposting';
 import styled from 'styled-components';
+import { useTheme } from 'styled-components';
+import useMediaQuery from 'shared/hooks/useMediaQuery';
 
 const $KeywordList = styled.ul`
   display: inline-flex;
@@ -22,6 +24,8 @@ type Props = {
 };
 
 const JobPostingCardKeywords: React.FC<Props> = ({ jobPosting }) => {
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(`(min-width: ${theme.breakpoints.m})`);
   const keywordList = (list: OptionType[], color: string) => {
     return (
       <>
@@ -45,8 +49,8 @@ const JobPostingCardKeywords: React.FC<Props> = ({ jobPosting }) => {
   return (
     <$KeywordList>
       {keywordList(jobPosting.keywords_working_methods, 'success-light')}
-      {keywordList(jobPosting.keywords_attributes, 'coat-of-arms-medium-light')}
-      {keywordList(jobPosting.keywords, 'engel-medium-light')}
+      {isDesktop && keywordList(jobPosting.keywords_attributes, 'coat-of-arms-medium-light')}
+      {isDesktop && keywordList(jobPosting.keywords, 'engel-medium-light')}
     </$KeywordList>
   );
 };

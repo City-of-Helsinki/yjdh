@@ -14,9 +14,9 @@ type Props = {
 };
 
 const EmploymentSummary: React.FC<Props> = ({ index }) => {
-  const { applicationQuery } = useApplicationApi<Employment>(
-    (application) => application.summer_vouchers[index]
-  );
+  const { applicationQuery } = useApplicationApi<Employment>({
+    select: (application) => application.summer_vouchers[index],
+  });
 
   const { t } = useTranslation();
 

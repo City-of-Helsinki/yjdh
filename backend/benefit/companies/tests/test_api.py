@@ -5,7 +5,6 @@ import pytest
 from django.conf import settings
 from django.test import override_settings
 from requests import HTTPError
-from shared.service_bus.enums import YtjOrganizationCode
 
 from applications.tests.conftest import *  # noqa
 from companies.api.v1.serializers import CompanySerializer
@@ -15,6 +14,7 @@ from companies.tests.data.company_data import (
     DUMMY_YRTTI_RESPONSE,
     get_dummy_company_data,
 )
+from shared.service_bus.enums import YtjOrganizationCode
 from terms.tests.factories import TermsOfServiceApprovalFactory
 
 

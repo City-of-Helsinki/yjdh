@@ -1,4 +1,4 @@
-import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
+import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import camelCase from 'lodash/camelCase';
 import * as React from 'react';
 import AttachmentsListBase from 'shared/components/attachments/AttachmentsList';

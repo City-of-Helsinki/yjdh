@@ -1,6 +1,6 @@
+import cloneDeep from 'lodash/cloneDeep';
 import { isRecord } from 'shared/utils/object.utils';
 import { isString } from 'shared/utils/type-guards';
-
 /**
  * Functionality loosely based on https://github.com/rluque8/nested-mask-attributes + added check for finnish ssn
  */
@@ -47,9 +47,9 @@ export const maskAttribute = (
   object: Record<string, unknown>,
   attributes: string[]
 ): typeof object => {
-  const copyObject = { ...object };
-  recursiveMask(copyObject, attributes);
-  return copyObject;
+  const clonedObject = cloneDeep(object);
+  recursiveMask(clonedObject, attributes);
+  return clonedObject;
 };
 
 export const ATTRIBUTES_TO_MASK = [
@@ -57,12 +57,8 @@ export const ATTRIBUTES_TO_MASK = [
   'contact_person_email',
   'contact_person_phone_number',
   'street_address',
-  'invoicer_email',
-  'invoicer_name',
-  'invoicer_phone_number',
-  'first_name',
+  'bank_account_number',
   'last_name',
-  'name',
   'social_security_number',
   'email',
   'phone_number',

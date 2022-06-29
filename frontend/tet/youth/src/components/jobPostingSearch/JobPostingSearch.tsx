@@ -29,9 +29,9 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
 
   const { t, i18n } = useTranslation();
   const languageOptions = [
-    { name: 'fi', value: 'fi', label: t('common:languages.fi') },
-    { name: 'sv', value: 'sv', label: t('common:languages.sv') },
-    { name: 'en', value: 'en', label: t('common:languages.en') },
+    { name: 'fi', value: 'fi', label: t('common:editor.posting.contactLanguageFi') },
+    { name: 'sv', value: 'sv', label: t('common:editor.posting.contactLanguageSv') },
+    { name: 'en', value: 'en', label: t('common:editor.posting.contactLanguageEn') },
   ];
   const { isLoading, error, workMethodsList, workFeaturesList } = useKeywordType('id');
 
@@ -51,7 +51,7 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
 
     setStartTime(initParams.hasOwnProperty('start') ? convertToUIDateFormat(initParams.start as string) : '');
     setEndTime(initParams.hasOwnProperty('end') ? convertToUIDateFormat(initParams.end as string) : '');
-    setSearchText(initParams.text ?? '');
+    setSearchText(initParams.hasOwnProperty('text') ? initParams.text : '');
     setChosenLanguage(initParams.language ?? '');
   }, [initParams]);
 
@@ -59,7 +59,7 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
     const keywords = [...chosenWorkFeatures];
     if (workMethod.length) keywords.push(workMethod);
     onSearchByFilters({
-      text: searchText,
+      text: searchText.length ? searchText : initParams.text,
       start: convertToBackendDateFormat(startTime),
       end: convertToBackendDateFormat(endTime),
       keyword: keywords.join(keywords.length > 1 ? ',' : ''),
@@ -116,6 +116,7 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
                 onSubmit={() => searchHandler()}
                 onChange={(value) => setSearchText(value)}
                 placeholder={t('common:filters.searchPlaceholder')}
+                searchButtonAriaLabel={t('common:filters.searchJobs')}
               />
             </$GridCell>
           </$GridCell>

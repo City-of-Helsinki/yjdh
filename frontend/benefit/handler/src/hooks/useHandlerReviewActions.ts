@@ -1,3 +1,11 @@
+import { ROUTES } from 'benefit/handler/constants';
+import AppContext from 'benefit/handler/context/AppContext';
+import {
+  CalculationFormProps,
+  HandledAplication,
+} from 'benefit/handler/types/application';
+import { Application, ApplicationData } from 'benefit-shared/types/application';
+import { ErrorData } from 'benefit-shared/types/common';
 import camelcaseKeys from 'camelcase-keys';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
@@ -6,15 +14,6 @@ import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import { stringToFloatValue } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
 
-import { ROUTES } from '../constants';
-import AppContext from '../context/AppContext';
-import {
-  Application,
-  ApplicationData,
-  CalculationFormProps,
-  HandledAplication,
-} from '../types/application';
-import { ErrorData } from '../types/common';
 import { useApplicationActions } from './useApplicationActions';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 
@@ -73,14 +72,28 @@ const useHandlerReviewActions = (
     return snakecaseKeys(
       {
         ...application,
-        calculation: {
-          ...application.calculation,
-          startDate,
-          endDate,
-        },
+        calculation: application.calculation
+          ? {
+              ...application.calculation,
+              monthlyPay: stringToFloatValue(
+                application.calculation.monthlyPay
+              ),
+              otherExpenses: stringToFloatValue(
+                application.calculation.otherExpenses
+              ),
+              vacationMoney: stringToFloatValue(
+                application.calculation.vacationMoney
+              ),
+              overrideMonthlyBenefitAmount: stringToFloatValue(
+                application.calculation.overrideMonthlyBenefitAmount
+              ),
+              startDate,
+              endDate,
+            }
+          : undefined,
       },
       { deep: true }
-    );
+    ) as ApplicationData;
   };
 
   const getSalaryBenefitData = (
@@ -124,24 +137,26 @@ const useHandlerReviewActions = (
     return snakecaseKeys(
       {
         ...application,
-        calculation: {
-          ...application.calculation,
-          startDate,
-          endDate,
-          monthlyPay: stringToFloatValue(monthlyPay),
-          otherExpenses: stringToFloatValue(otherExpenses),
-          vacationMoney: stringToFloatValue(vacationMoney),
-          stateAidMaxPercentage,
-          overrideMonthlyBenefitAmount: stringToFloatValue(
-            overrideMonthlyBenefitAmount
-          ),
-          overrideMonthlyBenefitAmountComment,
-        },
+        calculation: application.calculation
+          ? {
+              ...application.calculation,
+              startDate,
+              endDate,
+              monthlyPay: stringToFloatValue(monthlyPay),
+              otherExpenses: stringToFloatValue(otherExpenses),
+              vacationMoney: stringToFloatValue(vacationMoney),
+              overrideMonthlyBenefitAmount: stringToFloatValue(
+                overrideMonthlyBenefitAmount
+              ),
+              stateAidMaxPercentage,
+              overrideMonthlyBenefitAmountComment,
+            }
+          : undefined,
         paySubsidies,
         trainingCompensations,
       },
       { deep: true }
-    );
+    ) as ApplicationData;
   };
 
   useEffect(() => {

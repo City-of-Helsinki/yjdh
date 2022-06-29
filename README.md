@@ -1,5 +1,7 @@
 # YJDH services
 
+[backend/README.md](https://github.com/City-of-Helsinki/yjdh/blob/develop/backend/README.md) contains information about authentication and backend development.
+
 ## kesaseteli employer
 
 YJDH-Kesäseteli service for employers to fulfill employee applications
@@ -62,7 +64,7 @@ YJDH-Benefit
 
 ## TET Admin
 
-YJDH-TET-Admin is a UI for Helsinki city employees to add TET job postings.
+YJDH-TET-Admin is a UI for Helsinki city employees or private employers to add TET job advertisements (also called job postings in the code).
 
 ### tet-admin development with Docker
 
@@ -70,14 +72,35 @@ YJDH-TET-Admin is a UI for Helsinki city employees to add TET job postings.
 
 2. Copy the contents of `.env.tet.example` to `.env.tet` and modify it if needed.
 
-3. Run `yarn tet-admin` or, if you want to rebuild, then `yarn tet-admin --build`
+3. Run `yarn tet-admin up` or, if you want to rebuild, then `yarn tet-admin up --build`
   - The Frontend is now running at [localhost:3002](https://localhost:3002)
   - The backend is now running at [localhost:8000](https://localhost:8000)
+
+Running `yarn tet-admin down` brings down all services.
+
+## TET Youth
+
+YJDH-TET-Youth is a UI for pupils to search for TET job advertisements.
+
+### tet-youth development with Docker
+
+1. Run `yarn` to install necessary packages
+
+2. Copy the contents of `.env.tet.example` to `.env.tet` and modify it if needed.
+
+3. Run `yarn tet-youth up` or, if you want to rebuild, then `yarn tet-youth up --build`
+  - The Frontend is now running at [localhost:3002](https://localhost:3002)
+  - The backend is now running at [localhost:8000](https://localhost:8000)
+
+Running `yarn tet-youth down` brings down all services.
 
 ## Setting up Husky pre-commit hooks:
 
 1. Run `yarn install` and `yarn prepare` on project root
 2. Try `git commit -m foo`. It does not commit anything for real but pre-commit hook should be triggered.
+
+If the pre-commit hook hangs, or you want to push changes with failing tests, you can disable the hook with
+`npx husky uninstall`. Running `yarn prepare` reactivates the hook.
 
 ## Known errors
 

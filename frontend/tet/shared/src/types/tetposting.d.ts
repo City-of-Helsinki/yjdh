@@ -19,6 +19,7 @@ type TetPosting = {
   keywords_working_methods: OptionType[];
   keywords_attributes: OptionType[];
   languages: OptionType[];
+  website_url?: string;
 };
 
 export type TetPostings = {

@@ -24,7 +24,7 @@ COPY --chown=appuser:appuser $PROJECT/$FOLDER/package.json $PROJECT/$FOLDER/pack
 COPY --chown=appuser:appuser $PROJECT/shared/package.json* $PROJECT/shared/package.json
 COPY --chown=appuser:appuser shared/package.json shared/package.json
 
-RUN yarn --frozen-lockfile --check-files && yarn cache clean --force
+RUN yarn --frozen-lockfile --check-files --network-timeout 600000 && yarn cache clean --force
 
 # Copy all files
 COPY --chown=appuser:appuser . .
@@ -57,6 +57,7 @@ FROM appbase as staticbuilder
 ARG NEXT_PUBLIC_BACKEND_URL
 ARG NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS
 ARG NEXT_PUBLIC_MOCK_FLAG
+ARG NEXT_PUBLIC_DISABLE_VTJ
 ARG NEXT_PUBLIC_SENTRY_DSN
 ARG NEXT_PUBLIC_SENTRY_ENVIRONMENT
 ARG NEXT_PUBLIC_LINKEDEVENTS_URL

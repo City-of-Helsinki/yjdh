@@ -3,13 +3,13 @@ import {
   STATE_AID_MAX_PERCENTAGE_OPTIONS,
 } from 'benefit/handler/constants';
 import useHandlerReviewActions from 'benefit/handler/hooks/useHandlerReviewActions';
-import {
-  Application,
-  CalculationFormProps,
-  TrainingCompensation,
-} from 'benefit/handler/types/application';
+import { CalculationFormProps } from 'benefit/handler/types/application';
 import { ErrorData } from 'benefit/handler/types/common';
 import { PAY_SUBSIDY_OPTIONS } from 'benefit-shared/constants';
+import {
+  Application,
+  TrainingCompensation,
+} from 'benefit-shared/types/application';
 import { FormikProps, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
 import { useTranslation } from 'next-i18next';

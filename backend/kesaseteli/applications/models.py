@@ -1,7 +1,8 @@
 import json
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from email.mime.image import MIMEImage
 from pathlib import Path
+from typing import Optional
 from urllib.parse import quote, urljoin
 
 import jsonpath_ng
@@ -16,18 +17,8 @@ from django.urls import reverse
 from django.utils import timezone, translation
 from django.utils.translation import gettext, gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
+from localflavor.generic.models import IBANField
 from requests.exceptions import ReadTimeout
-from shared.common.utils import MatchesAnyOfQuerySet, social_security_number_birthdate
-from shared.common.validators import (
-    validate_json,
-    validate_name,
-    validate_optional_json,
-    validate_phone_number,
-    validate_postcode,
-)
-from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
-from shared.models.mixins import LockForUpdateMixin
-from shared.vtj.vtj_client import VTJClient
 
 from applications.api.v1.validators import validate_additional_info_user_reasons
 from applications.enums import (
@@ -53,6 +44,17 @@ from common.utils import (
     validate_finnish_social_security_number,
 )
 from companies.models import Company
+from shared.common.utils import MatchesAnyOfQuerySet, social_security_number_birthdate
+from shared.common.validators import (
+    validate_json,
+    validate_name,
+    validate_optional_json,
+    validate_phone_number,
+    validate_postcode,
+)
+from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
+from shared.models.mixins import LockForUpdateMixin
+from shared.vtj.vtj_client import VTJClient
 
 
 class School(TimeStampedModel, UUIDModel):
@@ -263,7 +265,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             )
 
     def fetch_vtj_json(self, end_user: str):
-        if settings.DISABLE_VTJ:
+        if settings.NEXT_PUBLIC_DISABLE_VTJ:
             # Not fetching data because VTJ integration is disabled and not mocked
             return None
         elif settings.NEXT_PUBLIC_MOCK_FLAG:
@@ -549,7 +551,10 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         return (
             self.status in YouthApplicationStatus.acceptable_values()
             and HandlerPermission.has_user_permission(handler)
-            and self.is_valid_encrypted_handler_vtj_json(encrypted_handler_vtj_json)
+            and (
+                settings.NEXT_PUBLIC_DISABLE_VTJ
+                or self.is_valid_encrypted_handler_vtj_json(encrypted_handler_vtj_json)
+            )
             and not self.has_youth_summer_voucher
         )
 
@@ -578,9 +583,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         except ValidationError:
             return False
         vtj_json_dict = json.loads(encrypted_handler_vtj_json)
-        return (
-            "@xmlns" in vtj_json_dict and "vtjkysely" in vtj_json_dict["@xmlns"]
-        ) or (vtj_json_dict == {} and settings.DISABLE_VTJ)
+        return "@xmlns" in vtj_json_dict and "vtjkysely" in vtj_json_dict["@xmlns"]
 
     @transaction.atomic
     def accept_manually(self, handler, encrypted_handler_vtj_json) -> bool:
@@ -610,7 +613,10 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         return (
             self.status in YouthApplicationStatus.rejectable_values()
             and HandlerPermission.has_user_permission(handler)
-            and self.is_valid_encrypted_handler_vtj_json(encrypted_handler_vtj_json)
+            and (
+                settings.NEXT_PUBLIC_DISABLE_VTJ
+                or self.is_valid_encrypted_handler_vtj_json(encrypted_handler_vtj_json)
+            )
         )
 
     @transaction.atomic
@@ -718,6 +724,9 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
                  otherwise False. Note that this value does NOT change based on whether
                  additional info has been provided or not.
         """
+        if settings.NEXT_PUBLIC_DISABLE_VTJ:
+            return not (self.is_9th_grader_age and self.attends_helsinkian_school)
+
         return (
             self.is_applicant_dead_according_to_vtj
             or not self.is_social_security_number_valid_according_to_vtj
@@ -872,13 +881,23 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
             content_id="helsinki_logo",
         )
 
-    def send_youth_summer_voucher_email(self, language) -> bool:
+    def send_youth_summer_voucher_email(
+        self, language, send_to_youth=True, send_to_handler=True
+    ) -> bool:
         """
         Send youth summer voucher email with given language to the applicant.
 
         :param language: The language to be used in the email
+        :param send_to_youth: Send the voucher to youth's email
+        :param send_to_handler: Send a copy of the voucher to the handler email
         :return: True if email was sent, otherwise False.
         """
+        recipient_list = [self.youth_application.email] if send_to_youth else None
+        bcc = [settings.HANDLER_EMAIL] if send_to_handler else None
+
+        if not (recipient_list or bcc):
+            return False
+
         with translation.override(language):
             context = {
                 "first_name": self.youth_application.first_name,
@@ -894,7 +913,8 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
                 subject=self.email_subject(language),
                 message=get_template("youth_summer_voucher_email.txt").render(context),
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[self.youth_application.email],
+                recipient_list=recipient_list,
+                bcc=bcc,
                 error_message=_("Unable to send youth summer voucher email"),
                 html_message=get_template("youth_summer_voucher_email.html").render(
                     context
@@ -934,6 +954,10 @@ class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
         max_length=256,
         blank=True,
         verbose_name=_("invoicer work address"),
+    )
+    bank_account_number = IBANField(
+        verbose_name=_("bank account number"),
+        blank=True,
     )
 
     # contact information
@@ -1075,6 +1099,23 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     )
 
     ordering = models.IntegerField(default=0)
+
+    @property
+    def last_submitted_at(self) -> Optional[datetime]:
+        if (
+            last_submitted_history_entry := self.history.filter(
+                pk=self.pk, application__status=EmployerApplicationStatus.SUBMITTED
+            )
+            .order_by("-modified_at")
+            .first()
+        ):
+            return last_submitted_history_entry.modified_at
+        else:
+            return (
+                self.modified_at
+                if self.application.status == EmployerApplicationStatus.SUBMITTED
+                else None
+            )
 
     class Meta:
         verbose_name = _("summer voucher")

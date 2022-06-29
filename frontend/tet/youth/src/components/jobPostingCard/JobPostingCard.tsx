@@ -27,6 +27,7 @@ type Props = {
 const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
   const theme = useTheme();
   const router = useRouter();
+  const params = router.query;
   const { t } = useTranslation();
 
   const date = `${jobPosting.start_date} - ${jobPosting.end_date ?? ''}`;
@@ -37,14 +38,23 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
   const languages = jobPosting.languages.map((language: OptionType) => language.label).join(', ');
 
   const readMoreHandler = () => {
-    void router.push({
-      pathname: '/postings/show',
-      query: { id: jobPosting.id },
-    });
+    void router.push(
+      {
+        pathname: '/postings/show',
+        query: {
+          id: jobPosting.id,
+          ...params,
+        },
+      },
+      {
+        pathname: '/postings/show',
+        query: { id: jobPosting.id },
+      },
+    );
   };
 
   return (
-    <$PostingCard>
+    <$PostingCard onClick={readMoreHandler}>
       <$ImageContainer>
         <Image
           width="100%"
@@ -77,7 +87,6 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
             role="link"
             size="small"
             type="button"
-            onClick={readMoreHandler}
           >
             {t('common:postings.readMore')}
           </Button>

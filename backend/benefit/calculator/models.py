@@ -7,7 +7,6 @@ from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
-from shared.models.abstract_models import TimeStampedModel, UUIDModel
 from simple_history.models import HistoricalRecords
 
 from applications.models import Application, PAY_SUBSIDY_PERCENT_CHOICES
@@ -21,6 +20,7 @@ from common.utils import (
     to_decimal,
 )
 from companies.models import Company
+from shared.models.abstract_models import TimeStampedModel, UUIDModel
 
 STATE_AID_MAX_PERCENTAGE_CHOICES = (
     (50, "50%"),

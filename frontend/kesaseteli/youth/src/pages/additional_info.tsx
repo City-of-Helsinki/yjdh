@@ -32,7 +32,7 @@ const AdditionalInfo: NextPage = () => {
   }
 
   return (
-    <Container>
+    <Container data-testid="additional-info">
       <Head>
         <title>{`${t(`common:appName`)} - ${t(
           'common:additionalInfo.title'

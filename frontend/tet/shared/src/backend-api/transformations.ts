@@ -46,6 +46,13 @@ export const isoDateToHdsFormat = (date: string | null): string => {
   }.${newDate.getFullYear()}`;
 };
 
+export const ensureScheme = (url: string | undefined): string => {
+  if (!url) {
+    return '';
+  }
+  return /^https?:/i.test(url) ? url : `http://${url}`;
+};
+
 export const tetPostingToEvent = (
   posting: TetPosting,
   publish = false
@@ -53,7 +60,7 @@ export const tetPostingToEvent = (
   name: setLocalizedString(posting.title),
   location: { '@id': posting.location.value },
   description: setLocalizedString(posting.description),
-  start_time: hdsDateToIsoFormat(posting.start_date) ?? '',
+  start_time: hdsDateToIsoFormat(posting.start_date),
   end_time: hdsDateToIsoFormat(posting.end_date),
   keywords: [
     ...posting.keywords_working_methods.map((option) => option.value),
@@ -67,6 +74,7 @@ export const tetPostingToEvent = (
     contact_phone: posting.contact_phone,
     contact_first_name: posting.contact_first_name,
     contact_last_name: posting.contact_last_name,
+    website_url: ensureScheme(posting.website_url),
   },
   in_language: posting.languages.map((lang) => ({
     '@id': `http://localhost:8080/v1/language/${lang.value}/`,

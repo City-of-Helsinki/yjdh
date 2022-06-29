@@ -6,7 +6,6 @@ import factory
 import factory.fuzzy
 from django.db.models.signals import post_save
 from faker import Faker
-from shared.common.tests.factories import HandlerUserFactory, UserFactory
 
 from applications.enums import (
     AdditionalInfoUserReason,
@@ -31,6 +30,7 @@ from applications.tests.data.mock_vtj import (
     mock_vtj_person_id_query_not_found_content,
 )
 from companies.models import Company
+from shared.common.tests.factories import HandlerUserFactory, UserFactory
 
 
 class CompanyFactory(factory.django.DjangoModelFactory):
@@ -91,6 +91,7 @@ class EmployerSummerVoucherFactory(factory.django.DjangoModelFactory):
     hired_without_voucher_assessment = factory.Faker(
         "random_element", elements=HiredWithoutVoucherAssessment.values
     )
+    is_exported = False
 
     class Meta:
         model = EmployerSummerVoucher
@@ -101,6 +102,7 @@ class EmployerApplicationFactory(factory.django.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     status = factory.Faker("random_element", elements=EmployerApplicationStatus.values)
     street_address = factory.Faker("street_address")
+    bank_account_number = factory.Faker("iban")
     contact_person_name = factory.Faker("name")
     contact_person_email = factory.Faker("email")
     contact_person_phone_number = factory.Faker("phone_number")
@@ -491,7 +493,7 @@ class YouthSummerVoucherFactory(factory.django.DjangoModelFactory):
     # NOTE: Difference from production use:
     # - This does not generate a gapless sequence
     summer_voucher_serial_number = factory.Faker(
-        "pyint", min_value=1, max_value=(2 ** 63) - 1
+        "pyint", min_value=1, max_value=(2**63) - 1
     )
     summer_voucher_exception_reason = ""
 

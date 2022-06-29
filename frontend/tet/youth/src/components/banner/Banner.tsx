@@ -18,7 +18,7 @@ const Banner = () => {
           <$Title>{t('common:frontPage.heading')}</$Title>
           {isSmall && (
             <$ImageWrapper>
-              <img src="/lippakioski.png" alt="canteen counter" />
+              <img src="/lippakioski.png" />
             </$ImageWrapper>
           )}
         </$BannerWrapper>
