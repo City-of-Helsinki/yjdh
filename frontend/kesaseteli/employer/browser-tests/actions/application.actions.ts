@@ -56,9 +56,7 @@ export const fillStep2EmployeeForm = async (
   const step2Employment = await step2.employmentAccordion(index);
   await step2Employment.actions.fillEmployeeName(employment.employee_name);
   await step2Employment.actions.fillSsn(employment.employee_ssn);
-  await step2Employment.actions.selectGradeOrBirthYear(
-    employment.summer_voucher_exception_reason
-  );
+  await step2Employment.actions.selectTargetGroup(employment.target_group);
   await step2Employment.actions.fillHomeCity(employment.employee_home_city);
   await step2Employment.actions.fillPostcode(employment.employee_postcode);
   await step2Employment.actions.fillPhoneNumber(
@@ -68,11 +66,9 @@ export const fillStep2EmployeeForm = async (
     employment.employment_postcode
   );
   await step2Employment.actions.fillSchool(employment.employee_school);
-  if (employment.summer_voucher_exception_reason === '9th_grader') {
-    await step2Employment.actions.fillSerialNumber(
-      employment.summer_voucher_serial_number
-    );
-  }
+  await step2Employment.actions.fillSerialNumber(
+    employment.summer_voucher_serial_number
+  );
   await step2Employment.actions.removeExistingAttachments();
   await Promise.all(
     employment.employment_contract.map(async (attachment) =>
