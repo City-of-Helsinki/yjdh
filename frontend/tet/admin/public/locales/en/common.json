@@ -55,6 +55,7 @@
 			"published": "Published",
 			"notPublished": "Unpublished",
 			"total": " pcs",
+			"resultsError": "An error occured while looking up TET jobs",
 			"menu": {
 				"publishNow": "Publish now",
 				"edit": "Edit",

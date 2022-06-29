@@ -12,6 +12,7 @@ import { TetEvents } from 'tet-shared/types/linkedevents';
 import theme from 'shared/styles/theme';
 import useConfirm from 'shared/hooks/useConfirm';
 import useEventPostingTransformation from 'tet-shared/hooks/backend/useEventPostingTransformation';
+import ErrorText from 'tet-shared/components/ErrorText/ErrorText';
 
 const JobPostings: React.FC = () => {
   const { t } = useTranslation();
@@ -25,10 +26,7 @@ const JobPostings: React.FC = () => {
   }
 
   if (error) {
-    // TODO check that error is 403
-    // TODO add to translations
-    // TODO implement error view for this
-    return <div>Virhe latauksessa. Yritä uudestaan tai pyydä sovellukseen käyttöoikeus...</div>;
+    return <ErrorText>{t('common:application.jobPostings.resultsError')}</ErrorText>;
   }
 
   const postings = eventsToTetPostings(data);

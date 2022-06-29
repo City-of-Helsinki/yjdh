@@ -55,6 +55,7 @@
 			"published": "Publicerad",
 			"notPublished": "Ej publicerad",
 			"total": "st.",
+			"resultsError": "Ett fel uppstod under PRAO-platser sökningen",
 			"menu": {
 				"publishNow": "Publicera nu",
 				"edit": "Redigera",
