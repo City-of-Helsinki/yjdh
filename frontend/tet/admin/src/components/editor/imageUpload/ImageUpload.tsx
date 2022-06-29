@@ -33,8 +33,6 @@ const ImageUpload: React.FC<Props> = ({ isNewPosting }) => {
     watch,
     formState: { isSubmitting },
   } = useFormContext<TetPosting>();
-  const [file, setFile] = React.useState<File>(); // TODO needed?
-  const [uploaded, setUploaded] = React.useState<boolean>(false);
   const [isUploading, setIsUploading] = React.useState<boolean>(false);
   const handleUploadError = useLinkedEventsErrorHandler({
     errorTitle: t('common:api.saveErrorTitle'),
@@ -44,11 +42,9 @@ const ImageUpload: React.FC<Props> = ({ isNewPosting }) => {
   watch('image_url', 'image');
 
   const image_url = getValues('image_url') as string;
-  const image = getValues('image');
   const photographer_name = getValues('photographer_name');
 
   const onChange = async (files: File[]) => {
-    setFile(files[0]);
     setValue('image', files[0]); // setting this makes it possible to upload the image when saving the form
     setIsUploading(true);
     try {
@@ -57,7 +53,6 @@ const ImageUpload: React.FC<Props> = ({ isNewPosting }) => {
       setValue('image_url', uploadedImage.url, { shouldDirty: true });
       setValue('image_id', uploadedImage['@id']);
       setIsUploading(false);
-      setUploaded(true);
     } catch (err) {
       handleUploadError(err);
       setIsUploading(false);
@@ -83,13 +78,11 @@ const ImageUpload: React.FC<Props> = ({ isNewPosting }) => {
       });
 
       if (isConfirmed) {
-        setUploaded(false);
         setIsUploading(true);
         try {
           const id = getValues('id');
           await deleteImage(id);
           clearImageData();
-          setUploaded(true);
         } catch (err) {
           handleUploadError(err);
         }

@@ -203,12 +203,15 @@ class ServiceClient:
     def sync_photographer_name(self, event):
         if event["images"]:
             image = event["images"][0]
+            if "photographer_name" not in image:
+                # The photographer name is not set, no need to do anything
+                return
+
             image_id = image["@id"].split("/")[-2]
             try:
-                # TODO get name from frontend or Linked Events
                 self.client.update_image(
                     image_id,
-                    {"photographer_name": image["photographer_name"], "name": "test"},
+                    {"photographer_name": image["photographer_name"], "name": "notset"},
                 )
             except LinkedEventsException as e:
                 LOGGER.warning(f"Updating image failed: {e.detail}")
