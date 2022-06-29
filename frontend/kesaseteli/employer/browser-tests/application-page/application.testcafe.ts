@@ -65,7 +65,7 @@ if (isRealIntegrationsEnabled()) {
   });
 }
 
-test.only('can fill and send application and create another', async (t: TestController) => {
+test('can fill and send application and create another', async (t: TestController) => {
   const application = await loginAndfillApplication(t);
   const thankYouPage = getThankYouPageComponents(t);
   await thankYouPage.header();
