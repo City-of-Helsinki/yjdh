@@ -207,7 +207,7 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "summer_voucher_serial_number",
-            "summer_voucher_exception_reason",
+            "target_group",
             "employee_name",
             "employee_school",
             "employee_ssn",
@@ -260,13 +260,6 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
             return
 
         required_fields = self.REQUIRED_FIELDS_FOR_SUBMITTED_SUMMER_VOUCHERS[:]
-
-        if (
-            data.get("summer_voucher_exception_reason")
-            == SummerVoucherExceptionReason.BORN_2004
-        ):
-            # If the student was born 2004, the summer voucher serial number is not required.
-            required_fields.remove("summer_voucher_serial_number")
 
         for field_name in required_fields:
             if data.get(field_name) in [None, "", []]:

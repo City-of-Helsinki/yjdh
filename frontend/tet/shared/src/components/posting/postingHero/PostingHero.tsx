@@ -70,8 +70,9 @@ const PostingHero: React.FC<Props> = ({
             />
           </$ImageContainer>
           <$HeroContentWrapper>
-            <$Title>{posting.org_name}</$Title>
+            <$Title>{posting.organization_name}</$Title>
             <$Subtitle id="postingTitle">{posting.title}</$Subtitle>
+            <$Title>{posting.org_name}</$Title>
             <$Date>{date}</$Date>
             <$Spots>
               {t('common:postingTemplate.spots')}: {posting.spots}

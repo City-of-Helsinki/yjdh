@@ -97,14 +97,11 @@ export const getStep2Components = (t: TestController) => {
           name: /^henkilötunnus/i,
         });
       },
-      gradeOrBirthYearRadioInput(
-        type: EmploymentExceptionReason = '9th_grader'
+      targetGroupInput(
+        type: EmploymentExceptionReason = 'primary_target_group'
       ) {
         return withinThisAccordion().findByRole('radio', {
-          name: getSelectionGroupTranslation(
-            'summer_voucher_exception_reason',
-            type
-          ),
+          name: getSelectionGroupTranslation('target_group', type),
         });
       },
       homeCityInput() {
@@ -231,11 +228,8 @@ export const getStep2Components = (t: TestController) => {
       fillSsn(ssn?: string) {
         return fillInput(t, 'employee_ssn', selectors.ssnInput(), ssn);
       },
-      selectGradeOrBirthYear(type?: EmploymentExceptionReason) {
-        return clickSelectRadioButton(
-          t,
-          selectors.gradeOrBirthYearRadioInput(type)
-        );
+      selectTargetGroup(type?: EmploymentExceptionReason) {
+        return clickSelectRadioButton(t, selectors.targetGroupInput(type));
       },
       fillHomeCity(city?: string) {
         return fillInput(

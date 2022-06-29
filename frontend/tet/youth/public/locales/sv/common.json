@@ -55,7 +55,8 @@
 		"languages": "Språk",
 		"noResultsText": "Din sökning matchade inte några PRAO-platser. Försök att begränsa dina sökord.", 
 		"noResultsLinks": "Inga händelser hittades som matchade dina sökkriterier. Testa att klicka på någon av dessa:",
-		"fewResultsLinks": "Också prova följande sökord:"
+		"fewResultsLinks": "Också prova följande sökord:",
+		"resultsError": "Ett fel uppstod under PRAO-platser sökningen"
 	},
   "footer": {
     "copyrightText": "Helsingfors stad",
@@ -72,9 +73,9 @@
 		"newTab": "länken öppnas i en ny flik"
   },
   "languages": {
-    "fi": "På finska",
+    "fi": "Suomeksi",
     "sv": "På svenska",
-    "en": "På engelska"
+    "en": "In English"
   },
   "termsAndConditionsLink": "https://kesaseteli.fi/sv/med-sommarsedeln-i-handen-ar-du-ett-steg-narmare-dina-drommars-sommarjobb/at-arbetsgivaren/",
   "error": {

@@ -130,10 +130,8 @@ export const getSummaryComponents = async (t: TestController) => {
             value ?? String(employment[field])
           );
 
-        const expectEmploymentSelectionHasValue = (
-          field:
-            | 'summer_voucher_exception_reason'
-            | 'hired_without_voucher_assessment'
+        const expectTargetGroupHasValue = (
+          field: 'target_group' | 'hired_without_voucher_assessment'
         ) => {
           const value = employment[field];
           if (!value) {
@@ -162,9 +160,7 @@ export const getSummaryComponents = async (t: TestController) => {
         const header = selectors.employmentHeading();
         await expectElementHasValue(header, employment.employee_name);
         await expectElementHasValue(header, employment.employee_ssn);
-        await expectEmploymentSelectionHasValue(
-          'summer_voucher_exception_reason'
-        );
+        await expectTargetGroupHasValue('target_group');
         await expectEmploymentFieldhasValue('employee_postcode');
         await expectEmploymentFieldhasValue('employee_home_city');
         await expectEmploymentFieldhasValue('employee_phone_number');
@@ -181,9 +177,7 @@ export const getSummaryComponents = async (t: TestController) => {
         await expectEmploymentFieldhasValue('employment_work_hours');
         await expectEmploymentFieldhasValue('employment_salary_paid');
         await expectEmploymentFieldhasValue('employment_description');
-        await expectEmploymentSelectionHasValue(
-          'hired_without_voucher_assessment'
-        );
+        await expectTargetGroupHasValue('hired_without_voucher_assessment');
       },
     };
     await expectations.isPresent();
