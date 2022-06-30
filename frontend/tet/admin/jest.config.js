@@ -17,4 +17,5 @@ module.exports = {
     '<rootDir>src/__tests__/utils/init-i18n.ts',
   ],
   coveragePathIgnorePatterns: ['<rootDir>/tet/admin/src/pages/'],
+  verbose: true,
 };

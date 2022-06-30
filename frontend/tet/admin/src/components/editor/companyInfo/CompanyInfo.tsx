@@ -22,7 +22,9 @@ const CompanyInfo: React.FC = () => {
   const { getLocalizedString } = useEventPostingTransformation();
   const { getValues } = useFormContext<TetPosting>();
 
-  const keywordsResults = useQuery(['keywords', addressSearch], () => getAddressList(addressSearch));
+  const keywordsResults = useQuery(['keywords', addressSearch], () => getAddressList(addressSearch), {
+    enabled: !!addressSearch,
+  });
 
   const keywords: LocationType[] = React.useMemo(() => {
     return keywordsResults.data
@@ -70,6 +72,7 @@ const CompanyInfo: React.FC = () => {
           <$GridCell $colSpan={6}>
             <TextInput
               id="title"
+              testId="posting-form-title"
               label={t('common:editor.posting.title')}
               placeholder={t('common:editor.posting.title')}
               registerOptions={name}
@@ -80,6 +83,7 @@ const CompanyInfo: React.FC = () => {
           <$GridCell $colSpan={6}>
             <TextInput
               id="org_name"
+              testId="posting-form-org_name"
               label={t('common:editor.employerInfo.departmentLabel')}
               placeholder={t('common:editor.employerInfo.departmentLabel')}
               registerOptions={name}
@@ -88,6 +92,7 @@ const CompanyInfo: React.FC = () => {
           <$GridCell $colSpan={6}>
             <ComboboxSingleSelect<TetPosting, LocationType>
               id="location"
+              testId={'posting-form-location'}
               required={true}
               label={t('common:editor.employerInfo.address')}
               placeholder={t('common:editor.employerInfo.streetAddress')}

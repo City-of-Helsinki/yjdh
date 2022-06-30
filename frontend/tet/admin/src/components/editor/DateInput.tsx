@@ -13,9 +13,10 @@ type Props = {
   required: boolean;
   minDate?: Date;
   helperText?: string;
+  testId?: string;
 };
 
-const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = false, minDate, helperText }) => {
+const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = false, minDate, helperText, testId }) => {
   const { control } = useFormContext<TetPosting>();
   const { i18n } = useTranslation();
   return (
@@ -25,6 +26,7 @@ const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = fal
         <HdsDateInput
           disableConfirmation
           id={id}
+          data-testid={testId}
           label={label}
           onChange={onChange}
           value={value ? String(value) : ''}

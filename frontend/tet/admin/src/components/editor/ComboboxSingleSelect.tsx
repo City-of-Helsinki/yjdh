@@ -7,6 +7,7 @@ import { useTranslation } from 'next-i18next';
 
 type Props<T, O extends Option> = {
   id: Id<T>;
+  testId?: string;
   initialValue?: O;
   label: React.ReactNode;
   options: O[];
@@ -24,6 +25,7 @@ export type Option = {
 
 const ComboboxSingleSelect = <T, O extends Option>({
   id,
+  testId,
   filter,
   validation = {},
   label,
@@ -45,6 +47,7 @@ const ComboboxSingleSelect = <T, O extends Option>({
       render={({ field: { ref, value, onChange, ...field }, fieldState: { error, invalid, ...fieldState } }) => (
         <HdsCombobox<O>
           {...field}
+          data-testid={testId}
           value={value as O}
           id={id}
           required={required}

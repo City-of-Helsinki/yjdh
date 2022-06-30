@@ -13,6 +13,7 @@ type DropdownFields<O extends OptionType> = {
 
 type Props<O extends OptionType> = {
   id: Id<DropdownFields<O>>;
+  testId?: string;
   options: O[];
   initialValue: O[];
   label: string;
@@ -21,6 +22,7 @@ type Props<O extends OptionType> = {
 
 const Dropdown = <O extends OptionType>({
   id,
+  testId,
   options,
   label,
   registerOptions,
@@ -32,6 +34,7 @@ const Dropdown = <O extends OptionType>({
       name={id}
       render={({ field: { value, onChange }, fieldState: { error, invalid } }) => (
         <HdsSelect<O>
+          data-testid={testId}
           multiselect
           required
           value={value as O[]}

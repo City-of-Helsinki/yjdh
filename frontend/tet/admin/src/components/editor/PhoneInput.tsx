@@ -11,9 +11,10 @@ type Props = {
   label: string;
   placeholder: string;
   registerOptions: RegisterOptions;
+  testId?: string;
 };
 
-const PhoneInput: React.FC<Props> = ({ id, label, placeholder, registerOptions }) => {
+const PhoneInput: React.FC<Props> = ({ id, label, placeholder, registerOptions, testId }) => {
   const { control } = useFormContext<PhoneType>();
   return (
     <Controller
@@ -21,6 +22,7 @@ const PhoneInput: React.FC<Props> = ({ id, label, placeholder, registerOptions }
       render={({ field: { onChange, value }, fieldState: { error, invalid } }) => (
         <HdsPhoneInput
           id={id}
+          data-testid={testId}
           label={label}
           placeholder={placeholder}
           onChange={onChange}

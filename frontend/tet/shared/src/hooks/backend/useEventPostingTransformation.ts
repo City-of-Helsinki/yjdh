@@ -29,7 +29,7 @@ type ImageFields = {
   image_url: string;
   image_id: string;
   photographer_name: string;
-}
+};
 
 const useEventPostingTransformation = (): Transformations => {
   const locale = useLocale();
@@ -55,17 +55,19 @@ const useEventPostingTransformation = (): Transformations => {
    *
    * @param event
    */
-   // eslint-disable-next-line sonarjs/cognitive-complexity
-   const eventToTetPosting = (event: TetEvent): TetPosting => {
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+  const eventToTetPosting = (event: TetEvent): TetPosting => {
     const parsedSpots = parseInt(event.custom_data?.spots || '', 10);
     const spots = parsedSpots >= 0 ? parsedSpots : 1;
 
-    const imageFields: ImageFields | null = (event.images && event.images.length > 0) ?
-    {
-      image_url: event.images[0].url,
-      image_id: event.images[0]['@id'],
-      photographer_name: event.images[0].photographer_name,
-    } : null;
+    const imageFields: ImageFields | null =
+      event.images && event.images.length > 0
+        ? {
+            image_url: event.images[0].url,
+            image_id: event.images[0]['@id'],
+            photographer_name: event.images[0].photographer_name,
+          }
+        : null;
 
     return {
       id: event.id,

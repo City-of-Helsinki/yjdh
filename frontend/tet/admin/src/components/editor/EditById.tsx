@@ -3,7 +3,7 @@ import TetPosting from 'tet-shared/types/tetposting';
 import Editor from 'tet/admin/components/editor/Editor';
 import { $Heading, $HeadingContainer } from 'tet/admin/components/jobPostings/JobPostings.sc';
 import PreviewWrapper from 'tet/admin/components/editor/previewWrapper/PreviewWrapper';
-import PostingContainer from 'tet/shared/src/components/posting/PostingContainer';
+import PostingContainer from 'tet-shared/components/posting/PostingContainer';
 import { PreviewContext } from 'tet/admin/store/PreviewContext';
 import Container from 'shared/components/container/Container';
 import BackButton from 'tet/admin/components/BackButton';
