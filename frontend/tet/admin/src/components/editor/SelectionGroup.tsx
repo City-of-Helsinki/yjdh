@@ -7,13 +7,14 @@ import { OptionType } from 'tet-shared/types/classification';
 
 type Props = {
   fieldId: Id<Pick<TetPosting, 'keywords_working_methods' | 'keywords_attributes'>>;
+  testId?: string;
   label: string;
   options: OptionType[];
   required: boolean;
   rules?: () => true | string;
 };
 
-const SelectionGroup: React.FC<Props> = ({ fieldId, label, options, required, rules }) => {
+const SelectionGroup: React.FC<Props> = ({ fieldId, label, options, required, rules, testId }) => {
   const { control, setValue, getValues, clearErrors } = useFormContext<TetPosting>();
   const checkboxChangeHandler = (option: OptionType) => {
     const values = getValues(fieldId);
@@ -40,11 +41,16 @@ const SelectionGroup: React.FC<Props> = ({ fieldId, label, options, required, ru
         validate: rules,
       }}
       render={({ field: { ref, value, ...field }, fieldState: { error, invalid, ...fieldState } }) => (
-        <HdsSelectionGroup label={label} errorText={error && error.message ? error.message : ''} required={required}>
+        <HdsSelectionGroup
+          data-testid={testId}
+          label={label}
+          errorText={error && error.message ? error.message : ''}
+          required={required}
+        >
           {options.map((option) => (
             <Checkbox
-              id={option.value}
               key={option.value}
+              id={option.value}
               label={option.label}
               checked={value && Array.isArray(value) ? value.some((item) => item.value === option.value) : false}
               onChange={() => checkboxChangeHandler(option)}

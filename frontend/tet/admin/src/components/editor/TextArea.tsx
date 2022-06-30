@@ -6,18 +6,20 @@ import Id from 'shared/types/id';
 
 type Props = {
   id: Id<TetPosting>;
+  testId?: string;
   label: string;
   registerOptions: RegisterOptions;
   required: boolean;
 };
 
-const TextArea: React.FC<Props> = ({ id, label, registerOptions, required = false }) => {
+const TextArea: React.FC<Props> = ({ id, label, registerOptions, required = false, testId }) => {
   const { control } = useFormContext<TetPosting>();
   return (
     <Controller
       name={id}
       render={({ field: { onChange, value }, fieldState: { error, invalid } }) => (
         <HdsTextArea
+          data-testid={testId}
           id={id}
           label={label}
           onChange={onChange}
