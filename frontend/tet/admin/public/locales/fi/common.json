@@ -144,7 +144,7 @@
     },
 		"classification": {
 			"classifications": "Luokittelut",
-			"workMethod": "Työtapa",
+			"workMethod": "Millainen TET?",
 			"workFeature": "Työn ominaisuudet",
 			"keywords": "Avainsanat",
 			"search": "Hae"
