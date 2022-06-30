@@ -4,8 +4,8 @@ import {
   getBackendDomain,
 } from 'kesaseteli-shared/backend-api/backend-api';
 import { QueryClient, QueryFunctionContext, QueryKey } from 'react-query';
-import { isString } from 'shared/utils/type-guards';
 import { getLastCookieValue } from 'shared/cookies/get-last-cookie-value';
+import { isString } from 'shared/utils/type-guards';
 
 const createAxios = (): AxiosInstance =>
   Axios.create({

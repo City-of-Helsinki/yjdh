@@ -28,7 +28,7 @@
   },
   "thankyouPage": {
     "thankyouMessageLabel": "Hakemus on lähetetty.",
-    "thankyouMessageContent": "Jää odottamaan hakemuksen käsittelyä. Olemme sinuun yhteydessä, kun käsittely on valmis, jolloin saat laskutusluvan. Voit nyt sulkea tämän sivun.",
+    "thankyouMessageContent": "Olemme yhteydessä jos tarvitsemme lisätietoja hakemuksen käsittelyä varten. Voit nyt kirjautua ulos ja sulkea tämän sivun.",
     "createNewApplication": "Tee uusi hakemus",
     "title": "Hakemus {{submitted_at}}"
   },

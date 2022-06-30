@@ -9,6 +9,7 @@ export const getLastCookieValue = (key: string): string => {
   }
   // https://stackoverflow.com/questions/10730362/get-cookie-by-name
   const matches = document.cookie.matchAll(
+    // eslint-disable-next-line security/detect-non-literal-regexp
     new RegExp(`(^| )${key}=([^;]+)`, 'g')
   );
   // eslint-disable-next-line unicorn/prefer-spread

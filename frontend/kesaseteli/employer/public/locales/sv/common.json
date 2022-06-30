@@ -27,8 +27,8 @@
     "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig. "
   },
   "thankyouPage": {
-    "thankyouMessageLabel": "Ansökan är skickad.",
-    "thankyouMessageContent": "Vänta på att ansökan behandlas. Vi tar kontakt när ansökan har behandlats, då får du med samma rätten att fakturera.  Nu kan stänga sidan.",
+    "thankyouMessageLabel": "Ansökan har lämnats in.",
+    "thankyouMessageContent": "Vi kontaktar dig om vi behöver mer information för att behandla din ansökan. Du kan nu logga ut och stänga denna sida.",
     "createNewApplication": "Gör en ny ansökan",
     "title": "Ansökan {{submitted_at}}"
   },
