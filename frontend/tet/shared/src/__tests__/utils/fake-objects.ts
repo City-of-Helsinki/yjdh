@@ -5,11 +5,11 @@ import { formatDate } from 'shared/utils/date.utils';
 import { LocationType, OptionType } from 'tet-shared/types/classification';
 import {
   CustomData,
+  LinkedEventsPagedResponse,
   LocalizedObject,
   Place,
   TetEvent,
   TetEvents,
-  LinkedEventsPagedResponse,
 } from 'tet-shared/types/linkedevents';
 import TetPosting from 'tet-shared/types/tetposting';
 
