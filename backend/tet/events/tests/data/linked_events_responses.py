@@ -40,6 +40,7 @@ ADD_EVENT_PAYLOAD = json.loads(
         "contact_first_name": "API",
         "contact_last_name": "Tester"
     },
+    "images": [],
     "in_language": [
         {
             "@id": "http://localhost:8080/v1/language/fi/"

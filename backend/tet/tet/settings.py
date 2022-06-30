@@ -310,7 +310,7 @@ AZURE_ACCOUNT_NAME = django_env("AZURE_ACCOUNT_NAME")
 AZURE_ACCOUNT_KEY = django_env("AZURE_ACCOUNT_KEY")
 AZURE_CONTAINER = django_env("AZURE_CONTAINER")
 
-MAX_UPLOAD_SIZE = 10485760  # 10MB
+MAX_UPLOAD_SIZE = 4194304  # 4MB
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.

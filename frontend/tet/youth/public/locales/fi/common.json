@@ -32,7 +32,7 @@
 	"filters": {
 		"searchJobs": "Hae TET-paikkoja",
 		"searchPlaceholder": "Kirjoita hakusana",
-		"workMethod": "Työtapa",
+		"workMethod": "Millainen TET?",
 		"workFeatures": "Työn ominaisuudet",
 		"startDate": "Alkamispäivä",
 		"endDate": "Päättymispäivä",
@@ -53,7 +53,8 @@
 		"readMore": "Lue lisää",
 		"showMore": "Näytä lisää tuloksia",
 		"languages": "Kielisyys",
-		"noResultsText": "Haullasi ei löytynyt yhtään TET-paikkaa. Koitathan poistaa haun rajauksia.", 
+		"noResultsText": "Haullasi ei löytynyt yhtään TET-paikkaa. Koitathan poistaa haun rajauksia.",
+		"fewResultsText": "Koita poistaa rajauksia löytääksesi enemmän TET-paikkoja",
 		"noResultsLinks": "Valitsemillasi hakuehdoilla ei löytynyt yhtään tapahtumaa. Kokeile vaikka klikkaamalla jotain näistä:",
 		"fewResultsLinks": "Kokeile myös seuraavilla rajauksilla / hakusanoilla:",
 		"resultsError": "TET-paikkojen haussa tapahtui virhe"

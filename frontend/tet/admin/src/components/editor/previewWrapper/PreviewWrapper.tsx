@@ -61,7 +61,10 @@ const PreviewWrapper: React.FC<{ posting: TetPosting }> = ({ children, posting }
       });
 
       if (isConfirmed) {
-        const event = tetPostingToEvent(posting, true);
+        const event = tetPostingToEvent({
+          posting,
+          publish: true,
+        });
 
         upsertTetPosting.mutate({
           id: posting.id,

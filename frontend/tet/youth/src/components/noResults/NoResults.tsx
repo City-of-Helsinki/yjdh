@@ -73,7 +73,7 @@ const NoResults: React.FC<Props> = ({ params, onSearchByFilters, resultsTotal })
       </>
     );
   } else {
-    return <$Title>{t('common:postings.noResultsText')}</$Title>;
+    return <$Title>{t('common:postings.fewResultsText')}</$Title>;
   }
 };
 

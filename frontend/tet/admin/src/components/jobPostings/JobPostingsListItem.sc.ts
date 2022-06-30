@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 
+interface ImageProps {
+  imageUrl: string;
+}
+
 export const $PostingCard = styled.div`
   display: flex;
   flex-flow: column nowrap;
@@ -13,16 +17,14 @@ export const $PostingCard = styled.div`
   }
 `;
 
-export const $ImageContainer = styled.div`
+export const $ImageContainer = styled.div<ImageProps>`
   width: 100%;
   height: 250px;
-  background-color: ${(props) => props.theme.colors.black10};
-  display: flex;
-  flex-flow: column nowrap;
-
-  img {
-    width: 100%;
-  }
+  background-image: url(${(props) => props.imageUrl});
+  background-color: ${(props) => props.theme.colors.black30};
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 
   @media (min-width: ${(props) => props.theme.breakpoints.s}) {
     width: 195px;
