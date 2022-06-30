@@ -1,5 +1,6 @@
-import isSuomiFiEnabled from '../flags/is-suomi-fi-enabled';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
+
+import isSuomiFiEnabled from '../flags/is-suomi-fi-enabled';
 
 const suomiFiEndpoint = {
   LOGIN: '/saml2/login/',

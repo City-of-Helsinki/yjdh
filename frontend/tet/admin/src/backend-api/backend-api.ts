@@ -1,4 +1,4 @@
-import { ImageObject } from 'tet-shared/types/linkedevents';
+import { ImageObject } from '@frontend/tet-shared/src/types/linkedevents';
 import Axios from 'axios';
 
 const axios = Axios.create({
