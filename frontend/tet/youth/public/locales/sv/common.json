@@ -32,7 +32,7 @@
 	"filters": {
 		"searchJobs": "Sök efter PRAO-platser",
 		"searchPlaceholder": "Uppge sökord",
-		"workMethod": "Välj arbetssätt",
+		"workMethod": "Vilken sort PRAO?",
 		"workFeatures": "Arbetets karaktär",
 		"startDate": "Startdatum",
 		"endDate": "Slutdatum",
@@ -53,8 +53,8 @@
 		"readMore": "Läs mer",
 		"showMore": "Visa fler resultat",
 		"languages": "Språk",
-		"noResultsText": "Din sökning matchade inte några PRAO-platser. Försök att begränsa dina sökord.", 
-		"fewResultsText": "Försök att rensa sökningen för att hitta fler PRAO-platser", 
+		"noResultsText": "Din sökning matchade inte några PRAO-platser. Försök att begränsa dina sökord.",
+		"fewResultsText": "Försök att rensa sökningen för att hitta fler PRAO-platser",
 		"noResultsLinks": "Inga händelser hittades som matchade dina sökkriterier. Testa att klicka på någon av dessa:",
 		"fewResultsLinks": "Också prova följande sökord:",
 		"resultsError": "Ett fel uppstod under PRAO-platser sökningen"

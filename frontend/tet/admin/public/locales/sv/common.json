@@ -145,7 +145,7 @@
     },
 		"classification": {
 			"classifications": "Klassificeringar",
-			"workMethod": "Arbetssätt",
+			"workMethod": "Vilken sort PRAO?",
 			"workFeature": "Arbetets karaktär",
 			"keywords": "Nyckelord",
 			"search": "Sök"
