@@ -1,5 +1,11 @@
 import { ImageObject } from 'tet-shared/types/linkedevents';
-import axios from 'axios';
+import Axios from 'axios';
+
+const axios = Axios.create({
+  withCredentials: true,
+  xsrfCookieName: 'yjdhcsrftoken',
+  xsrfHeaderName: 'X-CSRFToken',
+});
 
 export const BackendEndpoint = {
   TET_POSTINGS: '/v1/events/',
