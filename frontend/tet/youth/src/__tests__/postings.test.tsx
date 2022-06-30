@@ -43,6 +43,7 @@ describe('frontend/tet/youth/src/pages/postings.tsx', () => {
     expect(results).toHaveNoViolations();
   });
 
+  //List items are not currently found after renderPage(). Nock urls seem to be correct after yarn test:debug-nock
   it.skip('should show tet postings markers on the map', async () => {
     expectToGetEventsPageFromBackend(postings);
     expectToGetAllEventsFromBackend(postings);
@@ -60,6 +61,7 @@ describe('frontend/tet/youth/src/pages/postings.tsx', () => {
     expectToGetAllEventsFromBackend(postings);
     renderPage(Postings);
     //set url params
+    //Check that filters have correct values
   });
 
   it.skip('should show all the postings if there are no filters', async () => {
