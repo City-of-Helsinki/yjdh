@@ -1,12 +1,16 @@
-
 # TET Job Search
 
-## TODO
+Local development is usually easiest when setting `NEXT_PUBLIC_MOCK_FLAG=1`.
+It mocks authentication but not Linked Events, so you still need to set `LINKEDEVENTS_URL` and `LINKEDEVENTS_API_KEY`.
 
-Some corners were cut to get initial working pipelines for the projects,
-make sure to fix these in `admin`, `employer` and `youth`:
+The mock flag doesn't check authorization, so it's always a good idea to test with `NEXT_PUBLIC_MOCK_FLAG=0` as well to verify that the requests actually work.
 
-* remove `--pass-with-no-tests` from `yarn test`
-* review .eslint rules for tet apps
-* move under tet/shared
-  * `admin/src/query-client`
+The OIDC (suomi.fi) authentication as a nice test setup that works from localhost. For this you need to define variables that are not set in `.env.tet.example`:
+
+```bash
+OIDC_RP_CLIENT_ID=
+OIDC_RP_CLIENT_SECRET=
+EAUTHORIZATIONS_CLIENT_ID=
+EAUTHORIZATIONS_CLIENT_SECRET=
+EAUTHORIZATIONS_API_OAUTH_SECRET=
+```
