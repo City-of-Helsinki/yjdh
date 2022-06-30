@@ -13,28 +13,22 @@ const BackendAPIProvider: React.FC<BackendAPIProviderProps> = ({
   baseURL,
   headers,
   children,
-}): JSX.Element => {
-  const axiosContext = React.useMemo(
-    () =>
-      Axios.create({
-        baseURL,
-        headers: {
-          'Content-Type': 'application/json',
-          ...headers,
-        },
-        withCredentials: true,
-        xsrfCookieName: 'yjdhcsrftoken',
-        xsrfHeaderName: 'X-CSRFToken',
-      }),
-    [baseURL, headers]
-  );
-
-  return (
-    <BackendAPIContext.Provider value={axiosContext}>
-      {children}
-    </BackendAPIContext.Provider>
-  );
-};
+}): JSX.Element => (
+  <BackendAPIContext.Provider
+    value={Axios.create({
+      baseURL,
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers,
+      },
+      withCredentials: true,
+      xsrfCookieName: 'yjdhcsrftoken',
+      xsrfHeaderName: 'X-CSRFToken',
+    })}
+  >
+    {children}
+  </BackendAPIContext.Provider>
+);
 
 BackendAPIProvider.defaultProps = {
   headers: undefined,
