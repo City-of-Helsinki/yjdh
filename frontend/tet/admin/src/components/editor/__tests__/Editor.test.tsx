@@ -56,6 +56,9 @@ describe('frontend/tet/admin/src/components/editor/Editor', () => {
         renderResult: { container },
       } = renderComponent(<Editor />);
       const editorApi = getEditorApi(posting);
+
+      // TODO to get the error you need to click publish button instead of send button
+      // because send button was changed to allow saving the form with partial data
       await editorApi.actions.clickSendButton();
 
       await waitForBackendRequestsToComplete();
@@ -77,6 +80,8 @@ describe('frontend/tet/admin/src/components/editor/Editor', () => {
       await editorApi.expectations.textInputHasError('description');
     });
     // TODO doesn't find role "heading"
+    // to get the error you need to click publish button instead of send button
+    // because send button was changed to allow saving the form with partial data
     it.skip('shows error notification if form is not valid', async () => {
       expectWorkingMethodsFromLinkedEvents();
       expectAttributesFromLinkedEvents();
