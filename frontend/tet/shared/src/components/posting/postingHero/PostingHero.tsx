@@ -61,7 +61,7 @@ const PostingHero: React.FC<Props> = ({
             </$BackButton>
           )}
           <$ImageContainer imageUrl={imageUrl}>
-            {posting.photographer_name?.length && (
+            {!!posting.photographer_name?.length && (
               <span>Kuva: {posting.photographer_name}</span>
             )}
           </$ImageContainer>
