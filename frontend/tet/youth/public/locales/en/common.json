@@ -54,6 +54,7 @@
 		"showMore": "Show more results",
 		"languages": "Language",
 		"noResultsText": "Your search did not match any TET-positions. Please try to clear your search.", 
+		"fewResultsText": "Try to clear your search to find more TET-positions", 
 		"noResultsLinks": "No events were found matching your search criteria. Try clicking on any of these:",
 		"fewResultsLinks": "Also try the following keywords:",
 		"resultsError": "An error occured while looking up TET jobs"

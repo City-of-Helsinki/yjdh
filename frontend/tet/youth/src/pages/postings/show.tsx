@@ -39,7 +39,7 @@ const ShowPostingPage: NextPage = () => {
     return (
       <>
         <HeaderLinks />
-        <PostingContainer posting={eventToTetPosting(data)} showBackButton={true} onReturnClick={returnHandler} />;
+        <PostingContainer posting={eventToTetPosting(data)} showBackButton={true} onReturnClick={returnHandler} />
       </>
     );
   } else {
