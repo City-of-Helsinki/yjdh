@@ -27,6 +27,7 @@ export const initialPosting: TetPosting = {
     },
   },
   org_name: '',
+  organization_name: '',
   spots: 1,
   start_date: '',
   contact_email: '',
@@ -38,6 +39,10 @@ export const initialPosting: TetPosting = {
   keywords_working_methods: [],
   keywords_attributes: [],
   languages: [],
+  image: null,
+  image_url: '',
+  image_id: '',
+  photographer_name: '',
 };
 
 export const PreviewContext = React.createContext<PreviewContextObj>({

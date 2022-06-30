@@ -81,9 +81,9 @@
     },
     "form": {
       "selectionGroups": {
-        "summer_voucher_exception_reason": {
-          "9th_grader": "9th grader",
-          "born_2004": "Born in 2004"
+        "target_group": {
+          "primary_target_group": "9th grader, 10th grader or Valma grader",
+          "secondary_target_group": "\t\nOther age group"
         },
         "hired_without_voucher_assessment": {
           "yes": "Yes",
@@ -99,7 +99,7 @@
         "contact_person_phone_number": "Telephone number",
         "employee_name": "Name of the employee",
         "employee_ssn": "Social security number",
-        "summer_voucher_exception_reason": "Grade or birth year",
+        "target_group": "Grade or birth year",
         "employee_home_city": "Domicile",
         "employee_postcode": "Postal code of the workplace",
         "employee_phone_number": "Phone number",

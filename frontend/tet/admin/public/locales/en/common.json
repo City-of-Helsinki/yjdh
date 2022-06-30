@@ -19,6 +19,14 @@
     "pageNotFoundContent": "Oh no, something went wrong. Click <lnk>here</lnk> to go back to the front page."
   },
   "loginPage": {
+		"pageHeading": "TET-position advertisements",
+		"pageText": "Welcome to the TET-positions service. The service allows you to report and manage your organisation's TET-positions. Select below if you want to report a new TET-position as a representative of a private company or the City of Helsinki.",
+		"companyLoginHeading": "Private organisation (in use in autumn 2022)",
+		"companyLoginText": "I am a representative for a private organisation",
+		"companyLoginButton": "Suomi.fi authentication",
+		"cityLoginHeading": "City of Helsinki",
+		"cityLoginText": "I am a representative for the City of Helsinki",
+		"cityLoginButton": "Log in for the City of Helsinki",
     "logoutMessageLabel": "You have logged out",
     "errorLabel": "An unexpected error occurred. Please sign in again. ",
     "sessionExpiredLabel": "User session expired. Sign in again",
@@ -55,6 +63,7 @@
 			"published": "Published",
 			"notPublished": "Unpublished",
 			"total": " pcs",
+			"resultsError": "An error occured while looking up TET jobs",
 			"menu": {
 				"publishNow": "Publish now",
 				"edit": "Edit",
@@ -121,11 +130,22 @@
 				"phone": "Enter the correct format",
 				"name": "Enter the name without special characters or letters",
 				"isSet": "Choose at least one"
+			},
+			"imageUpload": {
+				"label": "Upload an image of a workplace or task by dragging it below",
+				"helperText": "Width min 400px, max 2000px. Size max 4MB*.jpg*.png",
+				"saveImage": "Save the image for advertisement",
+				"deleteImage": "Delete or change image",
+				"deleteConfirmTitle": "Are you sure you want to delete the image?",
+				"deleteConfirmContent": "The image will be completely removed from the notification. The function is irreversible.",
+				"deleteButton": "Delete image",
+				"photographerName": "Photographer name",
+        "photographerNameHelperText": "If required by the image license, provide the photographer's name here. The name will appear below the image."
 			}
     },
 		"classification": {
 			"classifications": "Classification",
-			"workMethod": "Work method",
+			"workMethod": "What kind of TET?",
 			"workFeature": "Characteristics of work",
 			"keywords": "Tags",
 			"search": "Search"

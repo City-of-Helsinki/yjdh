@@ -61,7 +61,7 @@ class AttachmentFactory(factory.django.DjangoModelFactory):
 
 class EmployerSummerVoucherFactory(factory.django.DjangoModelFactory):
     summer_voucher_serial_number = factory.Faker("md5")
-    summer_voucher_exception_reason = factory.Faker(
+    target_group = factory.Faker(
         "random_element", elements=SummerVoucherExceptionReason.values
     )
 
@@ -493,9 +493,9 @@ class YouthSummerVoucherFactory(factory.django.DjangoModelFactory):
     # NOTE: Difference from production use:
     # - This does not generate a gapless sequence
     summer_voucher_serial_number = factory.Faker(
-        "pyint", min_value=1, max_value=(2**63) - 1
+        "pyint", min_value=1, max_value=(2 ** 63) - 1
     )
-    summer_voucher_exception_reason = ""
+    target_group = ""
 
     class Meta:
         model = YouthSummerVoucher

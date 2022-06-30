@@ -5,16 +5,16 @@ import {
 } from 'kesaseteli-shared/backend-api/backend-api';
 import { QueryClient, QueryFunctionContext, QueryKey } from 'react-query';
 import { isString } from 'shared/utils/type-guards';
+import { getLastCookieValue } from 'shared/cookies/get-last-cookie-value';
 
 const createAxios = (): AxiosInstance =>
   Axios.create({
     baseURL: getBackendDomain(),
     headers: {
       'Content-Type': 'application/json',
+      'X-CSRFToken': getLastCookieValue('yjdhcsrftoken'),
     },
     withCredentials: true,
-    xsrfCookieName: 'yjdhcsrftoken',
-    xsrfHeaderName: 'X-CSRFToken',
   });
 
 const createQueryClient = (): QueryClient =>

@@ -36,6 +36,7 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
   const city = jobPosting.location.city ? `, ${jobPosting.location.city}` : '';
   const address = jobPosting.location.name + street_address + postal_code + city;
   const languages = jobPosting.languages.map((language: OptionType) => language.label).join(', ');
+  const imageUrl = jobPosting?.image_url?.length ? jobPosting.image_url : '/event_placeholder_B.jpg';
 
   const readMoreHandler = () => {
     void router.push(
@@ -55,19 +56,10 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
 
   return (
     <$PostingCard onClick={readMoreHandler}>
-      <$ImageContainer>
-        <Image
-          width="100%"
-          height="100%"
-          layout="responsive"
-          objectFit="cover"
-          src="/event_placeholder_B.jpg"
-          alt="event placeholder"
-          priority={true}
-        />
-      </$ImageContainer>
+      <$ImageContainer imageUrl={imageUrl}></$ImageContainer>
       <$PostingCardBody>
         <JobPostingCardKeywords jobPosting={jobPosting} />
+        <$PostingSubtitle>{jobPosting.organization_name}</$PostingSubtitle>
         <$PostingTitle>{jobPosting.org_name}</$PostingTitle>
         <$PostingSubtitle>{jobPosting.title}</$PostingSubtitle>
         <$PostingDate>{date}</$PostingDate>

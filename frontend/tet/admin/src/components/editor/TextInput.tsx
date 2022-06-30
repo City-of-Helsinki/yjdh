@@ -10,9 +10,10 @@ type Props = {
   placeholder: string;
   registerOptions: RegisterOptions;
   testId?: string;
+  helperText?: string;
 };
 
-const TextInput: React.FC<Props> = ({ id, label, placeholder, registerOptions, testId }) => {
+const TextInput: React.FC<Props> = ({ id, label, placeholder, registerOptions, helperText, testId }) => {
   const { control } = useFormContext<TetPosting>();
   return (
     <Controller
@@ -28,6 +29,7 @@ const TextInput: React.FC<Props> = ({ id, label, placeholder, registerOptions, t
           required={Boolean(registerOptions.required)}
           invalid={invalid}
           errorText={error ? error.message : ''}
+          helperText={helperText}
         />
       )}
       control={control}

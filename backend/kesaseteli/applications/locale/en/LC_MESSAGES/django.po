@@ -144,10 +144,10 @@ msgstr ""
 msgid "payslip"
 msgstr ""
 
-msgid "9th grader"
+msgid "primary target group"
 msgstr ""
 
-msgid "born 2004"
+msgid "secondary target group"
 msgstr ""
 
 msgid "yes"

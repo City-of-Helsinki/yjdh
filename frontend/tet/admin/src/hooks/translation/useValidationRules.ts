@@ -35,6 +35,16 @@ const useValidationRules = () => {
         message: `${maxMessage} [128]`,
       },
     },
+    notRequiredName: {
+      pattern: {
+        value: NAMES_REGEX,
+        message: correctName,
+      },
+      maxLength: {
+        value: 128,
+        message: `${maxMessage} [128]`,
+      },
+    },
     phone: {
       maxLength: {
         value: 64,

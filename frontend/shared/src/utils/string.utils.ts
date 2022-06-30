@@ -5,6 +5,7 @@ import { isString } from 'shared/utils/type-guards';
 
 export const getInitials = (name: string): string =>
   name
+    // eslint-disable-next-line security/detect-unsafe-regex
     .match(/(^\S\S?|\b\S)?/g)
     ?.join('')
     .match(/(^\S|\S$)?/g)

@@ -6,7 +6,7 @@ from django.views.decorators.http import require_GET
 from rest_framework import routers
 
 from events.api.v1 import views as event_views
-from tet.views import UserInfoView
+from tet.views import TetLogoutView, UserInfoView
 
 router = routers.DefaultRouter()
 router.register(r"events", event_views.JobPostingsViewSet, basename="jobpostings")
@@ -14,7 +14,10 @@ router.register(r"events", event_views.JobPostingsViewSet, basename="jobpostings
 urlpatterns = [
     path("v1/", include((router.urls, "v1"), namespace="v1")),
     path("v1/events/<pk>/publish/", event_views.PublishTetPostingView.as_view()),
+    path("v1/events/<pk>/image/", event_views.DeletePostingImageView.as_view()),
+    path("v1/images/", event_views.ImageView.as_view()),
     path("userinfo/", UserInfoView.as_view(), name="userinfo"),
+    path("logout/", TetLogoutView.as_view(), name="tet_logout"),
     path("oidc/", include("shared.oidc.urls")),
 ]
 

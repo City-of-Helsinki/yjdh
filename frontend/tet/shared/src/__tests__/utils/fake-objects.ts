@@ -57,6 +57,7 @@ export const fakeTetPosting = (overrides?: Partial<TetPosting>): TetPosting =>
       title: faker.lorem.paragraph(),
       description: faker.lorem.paragraph(),
       org_name: faker.lorem.paragraph(),
+      organization_name: faker.lorem.paragraph(),
       spots: 1,
       start_date: '10-10-2022',
       contact_email: faker.internet.email(),
@@ -120,6 +121,10 @@ export const fakeTetEvent = (overrides?: Partial<TetEvent>): TetEvent =>
       publication_status: 'public',
       event_status: 'EventScheduled',
       in_language: [{ '@id': faker.internet.url() }],
+      images: [],
+      provider: {
+        fi: 'Helsingin kaupunki',
+      },
     },
     overrides
   );
