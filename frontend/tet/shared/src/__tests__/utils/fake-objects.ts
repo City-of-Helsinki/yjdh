@@ -5,6 +5,7 @@ import { formatDate } from 'shared/utils/date.utils';
 import { LocationType, OptionType } from 'tet-shared/types/classification';
 import {
   CustomData,
+  LinkedEventsPagedResponse,
   LocalizedObject,
   Place,
   TetEvent,
@@ -142,5 +143,21 @@ export const fakeEventListAdmin = (
   return {
     draft,
     published,
+  };
+};
+
+export const fakeEventListYouth = (
+  titles: string[]
+): LinkedEventsPagedResponse<TetEvent> => {
+  const events = titles.map((title) =>
+    fakeTetEvent({ name: fakeLocalizedObject(title) })
+  );
+  return {
+    data: events,
+    meta: {
+      count: events.length,
+      next: null,
+      previous: null,
+    },
   };
 };
