@@ -18,11 +18,12 @@ import { Field } from 'shared/components/forms/fields/types';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useLocale from 'shared/hooks/useLocale';
 import { Language } from 'shared/i18n/i18n';
+import ExportFileType from 'shared/types/export-file-type';
 import {
   convertToBackendDateFormat,
   convertToUIDateFormat,
 } from 'shared/utils/date.utils';
-import { downloadCSVFile } from 'shared/utils/file.utils';
+import { downloadFile } from 'shared/utils/file.utils';
 import { DefaultTheme, useTheme } from 'styled-components';
 
 type ExtendedComponentProps = {
@@ -31,7 +32,8 @@ type ExtendedComponentProps = {
   theme: DefaultTheme;
   language: Language;
   exportApplications: (
-    exportApplicationsRoute: EXPORT_APPLICATIONS_ROUTES,
+    type: ExportFileType,
+    exportApplicationsRoute: string,
     proposalForDecision: PROPOSALS_FOR_DESISION
   ) => void;
   formik: FormikProps<ExportApplicationInTimeRangeFormProps>;
@@ -77,15 +79,17 @@ const useApplicationReports = (): ExtendedComponentProps => {
 
   const exportApplications = useCallback(
     async (
+      type: ExportFileType,
       exportApplicationsRoute: EXPORT_APPLICATIONS_ROUTES,
       proposalForDecision: PROPOSALS_FOR_DESISION
     ) => {
       const data = await handleResponse<string>(
         axios.get(
-          `${BackendEndpoint.HANDLER_APPLICATIONS}${exportApplicationsRoute}/`
+          `${BackendEndpoint.HANDLER_APPLICATIONS}${exportApplicationsRoute}_${type}/`,
+          { responseType: 'arraybuffer' }
         )
       );
-      downloadCSVFile(data);
+      downloadFile(data, type);
       void queryClient.invalidateQueries(
         getReportsApplicationBatchesQueryKey(proposalForDecision)
       );
@@ -141,8 +145,8 @@ const useApplicationReports = (): ExtendedComponentProps => {
         }
       )
     );
-    downloadCSVFile(data);
-  }, [axios, handleResponse, startDate, endDate]);
+    downloadFile(data, 'csv');
+  }, [handleResponse, axios, startDate, endDate]);
 
   return {
     t,

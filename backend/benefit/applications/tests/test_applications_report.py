@@ -1,3 +1,5 @@
+import io
+import zipfile
 from datetime import date, datetime
 from decimal import Decimal
 
@@ -39,7 +41,15 @@ def _get_csv(handler_api_client, url, expected_application_numbers, expect_empty
     return csv_lines
 
 
-def _create_applications_for_csv_export():
+def _get_pdf_zip(handler_api_client, url):
+    response = handler_api_client.get(url)
+    assert response.status_code == 200
+    file_like_object = io.BytesIO(response.content)
+    archive = zipfile.ZipFile(file_like_object)
+    return archive
+
+
+def _create_applications_for_export():
     application1 = DecidedApplicationFactory(status=ApplicationStatus.ACCEPTED)
     application1.log_entries.filter(to_status=ApplicationStatus.ACCEPTED).update(
         created_at=datetime(2022, 1, 1)
@@ -67,12 +77,13 @@ def test_applications_csv_export_new_applications(handler_api_client):
         application2,
         application3,
         application4,
-    ) = _create_applications_for_csv_export()
+    ) = _create_applications_for_export()
     ApplicationBatch.objects.all().delete()
 
     _get_csv(
         handler_api_client,
-        reverse("v1:handler-application-list") + "export_new_rejected_applications/",
+        reverse("v1:handler-application-list")
+        + "export_new_rejected_applications_csv/",
         [application3.application_number],
     )
     assert ApplicationBatch.objects.all().count() == 1
@@ -88,7 +99,8 @@ def test_applications_csv_export_new_applications(handler_api_client):
 
     _get_csv(
         handler_api_client,
-        reverse("v1:handler-application-list") + "export_new_accepted_applications/",
+        reverse("v1:handler-application-list")
+        + "export_new_accepted_applications_csv/",
         [application1.application_number, application2.application_number],
     )
     assert ApplicationBatch.objects.all().count() == 2
@@ -106,13 +118,15 @@ def test_applications_csv_export_new_applications(handler_api_client):
     # re-running the request results in an empty response and doesn't create new batches
     _get_csv(
         handler_api_client,
-        reverse("v1:handler-application-list") + "export_new_rejected_applications/",
+        reverse("v1:handler-application-list")
+        + "export_new_rejected_applications_csv/",
         [],
         expect_empty=True,
     )
     _get_csv(
         handler_api_client,
-        reverse("v1:handler-application-list") + "export_new_accepted_applications/",
+        reverse("v1:handler-application-list")
+        + "export_new_accepted_applications_csv/",
         [],
         expect_empty=True,
     )
@@ -138,7 +152,7 @@ def test_applications_csv_export_with_date_range(handler_api_client):
         application2,
         application3,
         application4,
-    ) = _create_applications_for_csv_export()
+    ) = _create_applications_for_export()
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list") + "export_csv/",
@@ -570,3 +584,42 @@ def test_write_applications_csv_file(applications_csv_service, tmp_path):
     with open(output_file, encoding="utf-8") as f:
         contents = f.read()
         assert "äöÄÖtest" in contents
+
+
+def test_applications_pdf_zip_export_new_applications(handler_api_client):
+    # create 1 rejected, 2 accepted and 1 cancelled application
+    _create_applications_for_export()
+
+    rejected_archive = _get_pdf_zip(
+        handler_api_client,
+        reverse("v1:handler-application-list")
+        + "export_new_rejected_applications_pdf/",
+    )
+    # 1 rejected + 2 composed files == 3
+    assert len(rejected_archive.infolist()) == 3
+
+    # re-running the request results in an empty response and doesn't create new batches
+    rejected_archive = _get_pdf_zip(
+        handler_api_client,
+        reverse("v1:handler-application-list")
+        + "export_new_rejected_applications_pdf/",
+    )
+    assert len(rejected_archive.infolist()) == 0
+
+    # accepted applications
+    accepted_archive = _get_pdf_zip(
+        handler_api_client,
+        reverse("v1:handler-application-list")
+        + "export_new_accepted_applications_pdf/",
+    )
+
+    # 2 accepted + 2 composed files == 3
+    assert len(accepted_archive.infolist()) == 4
+
+    # re-running the request results in an empty response and doesn't create new batches
+    accepted_archive = _get_pdf_zip(
+        handler_api_client,
+        reverse("v1:handler-application-list")
+        + "export_new_accepted_applications_pdf/",
+    )
+    assert len(accepted_archive.infolist()) == 0

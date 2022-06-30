@@ -419,9 +419,9 @@
       "endDate": "Päättyen"
     },
     "buttons": {
-      "downloadAcceptedApplications": "Hyväksyt hakemukset CSV",
-      "downloadRejectedApplications": "Hylätyt hakemukset CSV",
-      "downloadApplicationsInTimeRange": "Kaikki hakemukset valitulta ajalta CSV"
+      "downloadAcceptedApplications": "Hyväksytyt hakemukset",
+      "downloadRejectedApplications": "Hylätyt hakemukset",
+      "downloadApplicationsInTimeRange": "Kaikki hakemukset valitulta ajalta"
     }
   },
   "login": {

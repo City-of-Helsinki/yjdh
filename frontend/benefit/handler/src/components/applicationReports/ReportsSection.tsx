@@ -6,17 +6,20 @@ import {
   $GridCell,
   $Hr,
 } from 'shared/components/forms/section/FormSection.sc';
+import ExportFileType from 'shared/types/export-file-type';
 import { useTheme } from 'styled-components';
 
 export type ReportsSectionProp = {
+  types: ExportFileType[];
   children?: React.ReactNode;
   withDivider?: boolean;
   header: string;
   buttonText: string;
-  onDownloadButtonClick: () => void;
+  onDownloadButtonClick: (type: ExportFileType) => void;
 };
 
 const ReportsSection: React.FC<ReportsSectionProp> = ({
+  types,
   children,
   header,
   buttonText,
@@ -26,15 +29,15 @@ const ReportsSection: React.FC<ReportsSectionProp> = ({
   const theme = useTheme();
 
   return (
-    <$Grid>
-      <$GridCell $colSpan={11}>
+    <$Grid columns={1}>
+      <$GridCell>
         <$GridCell>
           {' '}
           <Heading header={header} as="h2" size="m" />
         </$GridCell>
 
         {children && (
-          <$GridCell $colSpan={11}>
+          <$GridCell>
             <$Grid
               css={`
                 font-size: ${theme.fontSize.body.l};
@@ -44,22 +47,26 @@ const ReportsSection: React.FC<ReportsSectionProp> = ({
             </$Grid>
           </$GridCell>
         )}
-
-        <$GridCell $colSpan={5}>
-          <Button
-            theme="coat"
-            iconLeft={<IconDownload />}
-            css={`
-              margin-top: ${theme.spacing.l};
-            `}
-            onClick={onDownloadButtonClick}
-          >
-            {buttonText}
-          </Button>
+        <$GridCell>
+          <$Grid columns={3}>
+            {types.map((type: ExportFileType) => (
+              <$GridCell>
+                <Button
+                  theme="coat"
+                  iconLeft={<IconDownload />}
+                  css={`
+                    margin-top: ${theme.spacing.l};
+                  `}
+                  onClick={() => onDownloadButtonClick(type)}
+                >
+                  {buttonText} {String(type).toUpperCase()}
+                </Button>
+              </$GridCell>
+            ))}
+          </$Grid>
         </$GridCell>
-
         {withDivider && (
-          <$GridCell $colStart={1} $colSpan={11}>
+          <$GridCell>
             <$Hr
               css={`
                 margin-top: ${theme.spacing.l};

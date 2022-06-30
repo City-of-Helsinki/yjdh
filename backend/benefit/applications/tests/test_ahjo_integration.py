@@ -111,7 +111,7 @@ def test_generate_composed_template_html(mock_pdf_convert):
     files = generate_composed_files(
         [accepted_app_1, accepted_app_2], [rejected_app_1, rejected_app_2]
     )
-    assert len(files) == 3
+    assert len(files) == 4
 
     # files[0]: Public accepted composed files
     # files[1]: Private accepted composed files
@@ -171,7 +171,7 @@ def test_export_application_batch(application_batch):
         == application_batch.applications.exclude(
             status=ApplicationStatus.CANCELLED
         ).count()
-        + 3
+        + 4
     )
 
 
