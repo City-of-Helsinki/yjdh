@@ -86,7 +86,12 @@ jobs:
 
       - name: Build ${{ matrix.service }}
         if: github.event_name == 'pull_request' || github.event.inputs.build_required == 'true'
-        uses: andersinno/kolga-build-action@v2
+        # uses: andersinno/kolga-build-action@v2 temporary disabled due to build problem
+        # https://helsinkisolutionoffice.atlassian.net/browse/DEVOPS-424
+        uses: docker://ghcr.io/andersinno/kolga:2c6028bb7f478301d53928b0a72d5e87f58c0ac8-production
+        with:
+          entrypoint: /app/devops
+          args: create_images
         env:
           DOCKER_BUILD_ARG_NEXT_PUBLIC_BACKEND_URL: ${{ env.NEXT_PUBLIC_BACKEND_URL }}
           DOCKER_BUILD_ARG_NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
@@ -273,7 +278,7 @@ jobs:
           HANDLER_URL: ${{ env.HANDLER_URL }}
           NEXT_PUBLIC_BACKEND_URL: ${{ env.NEXT_PUBLIC_BACKEND_URL }}
           NEXT_PUBLIC_MOCK_FLAG: ${{ env.NEXT_PUBLIC_MOCK_FLAG }}
-          NEXT_PUBLIC_ENABLE_SUOMIFI: ${{ NEXT_PUBLIC_ENABLE_SUOMIFI }}
+          NEXT_PUBLIC_ENABLE_SUOMIFI: ${{ env.NEXT_PUBLIC_ENABLE_SUOMIFI }}
           NEXT_PUBLIC_DISABLE_VTJ: ${{ env.NEXT_PUBLIC_DISABLE_VTJ }}
           NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: ${{ env.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS }}
 
