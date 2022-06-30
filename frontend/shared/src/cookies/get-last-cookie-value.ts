@@ -7,7 +7,6 @@ export const getLastCookieValue = (key: string): string => {
   if (typeof document === 'undefined' || !key) {
     return '';
   }
-  console.log('document.cookie', document.cookie);
   // https://stackoverflow.com/questions/10730362/get-cookie-by-name
   const matches = document.cookie.matchAll(
     // eslint-disable-next-line security/detect-non-literal-regexp
@@ -15,6 +14,5 @@ export const getLastCookieValue = (key: string): string => {
   );
   // eslint-disable-next-line unicorn/prefer-spread
   const lastMatch = Array.from(matches).pop();
-  console.log('lastMatch', lastMatch);
   return lastMatch?.[2] ?? '';
 };
