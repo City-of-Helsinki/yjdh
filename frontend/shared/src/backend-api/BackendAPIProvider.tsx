@@ -1,8 +1,8 @@
 import Axios from 'axios';
 import React from 'react';
 import { Headers } from 'shared/types/common';
-
 import BackendAPIContext from './BackendAPIContext';
+import { getLastCookieValue } from 'shared/cookies/get-last-cookie-value';
 
 export interface BackendAPIProviderProps {
   baseURL: string;
@@ -13,28 +13,21 @@ const BackendAPIProvider: React.FC<BackendAPIProviderProps> = ({
   baseURL,
   headers,
   children,
-}): JSX.Element => {
-  const axiosContext = React.useMemo(
-    () =>
-      Axios.create({
-        baseURL,
-        headers: {
-          'Content-Type': 'application/json',
-          ...headers,
-        },
-        withCredentials: true,
-        xsrfCookieName: 'yjdhcsrftoken',
-        xsrfHeaderName: 'X-CSRFToken',
-      }),
-    [baseURL, headers]
-  );
-
-  return (
-    <BackendAPIContext.Provider value={axiosContext}>
-      {children}
-    </BackendAPIContext.Provider>
-  );
-};
+}): JSX.Element => (
+  <BackendAPIContext.Provider
+    value={Axios.create({
+      baseURL,
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getLastCookieValue('yjdhcsrftoken'),
+        ...headers,
+      },
+      withCredentials: true,
+    })}
+  >
+    {children}
+  </BackendAPIContext.Provider>
+);
 
 BackendAPIProvider.defaultProps = {
   headers: undefined,
