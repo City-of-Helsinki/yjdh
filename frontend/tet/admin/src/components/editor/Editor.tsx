@@ -11,12 +11,14 @@ import HiddenIdInput from 'tet/admin/components/editor/HiddenIdInput';
 import Classification from 'tet/admin/components/editor/classification/Classification';
 import { DevTool } from '@hookform/devtools';
 import EmployerInfo from 'tet/admin/components/editor/employerInfo/EmployerInfo';
+import ImageUpload from 'tet/admin/components/editor/imageUpload/ImageUpload';
 import { initialPosting } from 'tet/admin/store/PreviewContext';
 import useLeaveConfirm from 'shared/hooks/useLeaveConfirm';
 
 type EditorProps = {
   // eslint-disable-next-line react/require-default-props
   initialValue?: TetPosting;
+  isNewPosting?: boolean;
 };
 
 export type EditorSectionProps = {
@@ -24,7 +26,7 @@ export type EditorSectionProps = {
 };
 
 // add new posting / edit existing
-const Editor: React.FC<EditorProps> = ({ initialValue }) => {
+const Editor: React.FC<EditorProps> = ({ initialValue, isNewPosting = false }) => {
   const { t } = useTranslation();
   const methods = useForm<TetPosting>({
     reValidateMode: 'onChange',
@@ -40,10 +42,13 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
       <FormProvider {...methods}>
         <form aria-label={t('common:editor.formLabel')}>
           <HiddenIdInput id="id" initialValue={initialValue?.id} />
+          <HiddenIdInput id="image_url" initialValue={initialValue?.image_url} />
+          <HiddenIdInput id="image_id" initialValue={initialValue?.image_id} />
           <EditorErrorNotification />
           <p>* {t('common:editor.requiredInfo')}</p>
           <EmployerInfo />
           <CompanyInfo />
+          <ImageUpload isNewPosting={isNewPosting} />
           <ContactPerson />
           <PostingDetails />
           <Classification />

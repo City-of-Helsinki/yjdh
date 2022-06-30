@@ -23,7 +23,7 @@ const Classification: React.FC = () => {
   const { getValues } = useFormContext<TetPosting>();
   const methodsAndFeatures = useKeywordType();
 
-  const keywordsResults = useQuery(['keywords', search], () => getWorkKeywords(search));
+  const keywordsResults = useQuery(['keywords', search], () => getWorkKeywords(search), { enabled: !!search });
 
   const keywords = React.useMemo(() => {
     return !keywordsResults.isLoading && keywordsResults.data
@@ -60,6 +60,7 @@ const Classification: React.FC = () => {
         <$GridCell $colSpan={4}>
           <SelectionGroup
             required={true}
+            testId="posting-form-keywords_working_methods"
             fieldId="keywords_working_methods"
             label={t('common:editor.classification.workMethod')}
             rules={isSetRule}
@@ -69,6 +70,7 @@ const Classification: React.FC = () => {
         <$GridCell $colSpan={4}>
           <SelectionGroup
             required={false}
+            testId="posting-form-keywords_attributes"
             fieldId="keywords_attributes"
             label={t('common:editor.classification.workFeature')}
             options={methodsAndFeatures.workFeaturesList}
@@ -77,6 +79,7 @@ const Classification: React.FC = () => {
         <$GridCell $colSpan={4}>
           <Combobox<OptionType>
             id={'keywords'}
+            testId="posting-form-keywords"
             multiselect
             required={false}
             label={t('common:editor.classification.keywords')}

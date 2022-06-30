@@ -5,6 +5,7 @@ import { formatDate } from 'shared/utils/date.utils';
 import { LocationType, OptionType } from 'tet-shared/types/classification';
 import {
   CustomData,
+  LinkedEventsPagedResponse,
   LocalizedObject,
   Place,
   TetEvent,
@@ -57,6 +58,7 @@ export const fakeTetPosting = (overrides?: Partial<TetPosting>): TetPosting =>
       title: faker.lorem.paragraph(),
       description: faker.lorem.paragraph(),
       org_name: faker.lorem.paragraph(),
+      organization_name: faker.lorem.paragraph(),
       spots: 1,
       start_date: '10-10-2022',
       contact_email: faker.internet.email(),
@@ -120,6 +122,10 @@ export const fakeTetEvent = (overrides?: Partial<TetEvent>): TetEvent =>
       publication_status: 'public',
       event_status: 'EventScheduled',
       in_language: [{ '@id': faker.internet.url() }],
+      images: [],
+      provider: {
+        fi: 'Helsingin kaupunki',
+      },
     },
     overrides
   );
@@ -137,5 +143,21 @@ export const fakeEventListAdmin = (
   return {
     draft,
     published,
+  };
+};
+
+export const fakeEventListYouth = (
+  titles: string[]
+): LinkedEventsPagedResponse<TetEvent> => {
+  const events = titles.map((title) =>
+    fakeTetEvent({ name: fakeLocalizedObject(title) })
+  );
+  return {
+    data: events,
+    meta: {
+      count: events.length,
+      next: null,
+      previous: null,
+    },
   };
 };

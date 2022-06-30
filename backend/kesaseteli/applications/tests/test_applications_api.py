@@ -146,7 +146,7 @@ def test_update_summer_voucher_with_invalid_data(
     api_client, application, summer_voucher
 ):
     data = EmployerApplicationSerializer(application).data
-    data["summer_vouchers"][0]["summer_voucher_exception_reason"] = "test"
+    data["summer_vouchers"][0]["target_group"] = "test"
 
     response = api_client.put(
         get_detail_url(application),
@@ -154,7 +154,7 @@ def test_update_summer_voucher_with_invalid_data(
     )
 
     assert response.status_code == 400
-    assert "summer_voucher_exception_reason" in str(response.data)
+    assert "target_group" in str(response.data)
 
 
 @pytest.mark.django_db

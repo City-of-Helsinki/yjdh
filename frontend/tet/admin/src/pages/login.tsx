@@ -12,6 +12,8 @@ import getServerSideTranslations from 'shared/i18n/get-server-side-translations'
 import { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
 import { $InfoboxContent } from 'tet/admin/components/login/InfoboxContent.sc';
+import LoginLinks from 'tet/admin/components/login/LoginLinks';
+import LoginHeader from 'tet/admin/components/login/LoginHeader';
 
 const Login: NextPage = () => {
   const queryClient = useQueryClient();
@@ -20,7 +22,6 @@ const Login: NextPage = () => {
   const {
     query: { logout, error, sessionExpired },
   } = useRouter();
-  const login = useLogin();
 
   const notificationLabelKey = React.useMemo((): string => {
     if (logout) {
@@ -95,14 +96,16 @@ const Login: NextPage = () => {
   }, [logout, queryClient]);
 
   return (
-    <Container>
-      <$Notification label={t(notificationLabelKey)} type={notificationType} size="large">
-        {notificationContent}
-      </$Notification>
-      <Button theme="coat" iconLeft={<IconSignin />} onClick={login}>
-        {t(`common:header.loginLabel`)}
-      </Button>
-    </Container>
+    <>
+      <LoginHeader />
+      <Container>
+        <LoginLinks />
+        <$Notification label={t(notificationLabelKey)} type={notificationType} size="large">
+          {notificationContent}
+        </$Notification>
+      </Container>
+    </>
+
   );
 };
 

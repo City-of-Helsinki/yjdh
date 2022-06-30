@@ -13,6 +13,7 @@ type ComboboxFields<O extends Option> = {
 
 type Props<O extends Option> = {
   id: Id<ComboboxFields<O>>;
+  testId?: string;
   initialValue?: O;
   label: React.ReactNode;
   options: O[];
@@ -27,6 +28,7 @@ type Props<O extends Option> = {
 
 const Combobox = <O extends Option>({
   id,
+  testId,
   multiselect = false,
   filter,
   initialValue,
@@ -50,6 +52,7 @@ const Combobox = <O extends Option>({
       render={({ field: { ref, value, onChange, ...field }, fieldState: { error, invalid, ...fieldState } }) => (
         <HdsCombobox<O>
           {...field}
+          data-testid={testId}
           value={value as O[]}
           id={id}
           multiselect

@@ -1,5 +1,5 @@
 from rest_framework import status
-from rest_framework.generics import UpdateAPIView
+from rest_framework.generics import CreateAPIView, DestroyAPIView, UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
@@ -54,6 +54,25 @@ class PublishTetPostingView(UpdateAPIView):
     def update(self, request, pk=None):
         if pk is not None:
             event = ServiceClient().publish_job_posting(pk, request)
+            return Response(event)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class ImageView(CreateAPIView):
+    permission_classes = [TetAPIPermission]
+
+    def create(self, request):
+        response = ServiceClient().upload_image(request)
+        return Response(response)
+
+
+class DeletePostingImageView(DestroyAPIView):
+    permission_classes = [TetAPIPermission]
+
+    def delete(self, request, pk=None):
+        if pk is not None:
+            event = ServiceClient().delete_job_posting_image(pk, request)
             return Response(event)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)

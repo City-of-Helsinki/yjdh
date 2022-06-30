@@ -12,7 +12,7 @@ export type EmployeeHiredWithoutVoucherAssessment =
 
 type Employment = {
   id: string;
-  summer_voucher_exception_reason?: EmploymentExceptionReason;
+  target_group?: EmploymentExceptionReason;
   employee_name?: string;
   employee_ssn?: string;
   employee_phone_number?: string;

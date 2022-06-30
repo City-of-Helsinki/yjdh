@@ -145,10 +145,10 @@ msgstr ""
 msgid "payslip"
 msgstr ""
 
-msgid "9th grader"
+msgid "primary target group"
 msgstr "yhdeksäsluokkalainen"
 
-msgid "born 2004"
+msgid "secondary target group"
 msgstr "syntynyt 2004"
 
 msgid "yes"

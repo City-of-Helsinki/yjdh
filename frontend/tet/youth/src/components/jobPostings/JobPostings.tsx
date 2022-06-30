@@ -8,6 +8,7 @@ import useGetPostings from 'tet/youth/hooks/backend/useGetPostings';
 import NoResults from 'tet/youth/components/noResults/NoResults';
 import ScreenReaderHelper from 'tet-shared/components/ScreenReaderHelper';
 import { useTranslation } from 'next-i18next';
+import ErrorText from 'tet-shared/components/ErrorText/ErrorText';
 
 const Postings: React.FC = () => {
   const { t } = useTranslation();
@@ -53,8 +54,7 @@ const Postings: React.FC = () => {
     }
 
     if (results.error) {
-      //TODO
-      return <div>Virhe datan latauksessa</div>;
+      return <ErrorText>{t('common:postings.resultsError')}</ErrorText>;
     }
 
     if (results.data) {
@@ -67,8 +67,7 @@ const Postings: React.FC = () => {
         />
       );
     } else {
-      //TODO
-      return <div>Ei hakutuloksia</div>;
+      return <ErrorText>{t('common:postings.resultsError')}</ErrorText>;
     }
   };
 

@@ -3,8 +3,9 @@ from datetime import date
 
 from django.conf import settings
 from django.http import HttpRequest
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 
+from events.exceptions import LinkedEventsException
 from events.linkedevents import LinkedEventsClient
 from events.transformations import (
     enrich_create_event,
@@ -141,6 +142,7 @@ class ServiceClient:
             validated_data, self._get_publisher(request.user), request
         )
         created_event = self.client.create_event(event)
+        self.sync_photographer_name(event)
         return reduce_get_event(created_event)
 
     def publish_job_posting(self, event_id, request: HttpRequest):
@@ -151,13 +153,65 @@ class ServiceClient:
 
         return reduce_get_event(updated_event)
 
+    def delete_job_posting_image(self, event_id, request: HttpRequest):
+        event = self._get_event_and_raise_for_unauthorized(request, event_id)
+        event["images"] = []
+        updated_event = self.client.update_event(event_id, event)
+
+        return reduce_get_event(updated_event)
+
     def update_tet_event(self, event_id, validated_data, request: HttpRequest):
         self._get_event_and_raise_for_unauthorized(request, event_id)
-        event = enrich_update_event(validated_data, request.user)
+        event = enrich_update_event(validated_data, request)
         updated_event = self.client.update_event(event_id, event)
+        self.sync_photographer_name(event)
 
         return reduce_get_event(updated_event)
 
     def delete_event(self, event_id, request: HttpRequest):
         self._get_event_and_raise_for_unauthorized(request, event_id)
         return self.client.delete_event(event_id)
+
+    def upload_image(self, request: HttpRequest):
+        # We rely on Linked Events to perform validation
+        # The only thing we check is that the file is under MAX_UPLOAD_SIZE
+        # to avoid uploading large files.
+        image = request.FILES.get("image")
+
+        if image is None:
+            raise ValidationError(detail="Image not set")
+
+        if image.size > settings.MAX_UPLOAD_SIZE:
+            raise ValidationError(detail="File size too big")
+
+        if image.content_type == "image/heic":
+            # `image.content_type` can be spoofed, but if the image is not of the correct format
+            # the transformation will fail and cause a 400 error
+            # TODO implement heic -> jpeg transformation (TETP-251)
+            raise ValidationError(detail="Transformation from heic not implemented")
+
+        uploaded_image = self.client.upload_image(
+            {"photographer_name": ""},
+            {"image": (image.name, image.file, image.content_type)},
+        )
+
+        return {
+            "@id": uploaded_image["@id"],
+            "url": uploaded_image["url"],
+        }
+
+    def sync_photographer_name(self, event):
+        if event["images"]:
+            image = event["images"][0]
+            if "photographer_name" not in image:
+                # The photographer name is not set, no need to do anything
+                return
+
+            image_id = image["@id"].split("/")[-2]
+            try:
+                self.client.update_image(
+                    image_id,
+                    {"photographer_name": image["photographer_name"], "name": "notset"},
+                )
+            except LinkedEventsException as e:
+                LOGGER.warning(f"Updating image failed: {e.detail}")

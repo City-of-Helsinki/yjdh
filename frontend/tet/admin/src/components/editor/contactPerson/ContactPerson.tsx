@@ -26,6 +26,7 @@ const ContactPerson: React.FC = () => {
         <$GridCell $colSpan={3}>
           <TextInput
             id="contact_first_name"
+            testId="posting-form-contact_first_name"
             label={t('common:editor.posting.contactFirstName')}
             placeholder={t('common:editor.posting.contactFirstName')}
             registerOptions={name}
@@ -34,6 +35,7 @@ const ContactPerson: React.FC = () => {
         <$GridCell $colSpan={3}>
           <TextInput
             id="contact_last_name"
+            testId="posting-form-contact_last_name"
             label={t('common:editor.posting.contactLastName')}
             placeholder={t('common:editor.posting.contactLastName')}
             registerOptions={name}
@@ -42,6 +44,7 @@ const ContactPerson: React.FC = () => {
         <$GridCell $colSpan={2}>
           <PhoneInput
             id="contact_phone"
+            testId="posting-form-contact_phone"
             label={t('common:editor.posting.contactPhone')}
             placeholder={t('common:editor.posting.contactPhone')}
             registerOptions={phone}
@@ -50,6 +53,7 @@ const ContactPerson: React.FC = () => {
         <$GridCell $colSpan={4}>
           <TextInput
             id="contact_email"
+            testId="posting-form-contact_email"
             label={t('common:editor.posting.contactEmail')}
             placeholder={t('common:editor.posting.contactEmail')}
             registerOptions={email}

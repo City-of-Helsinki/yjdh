@@ -27,8 +27,8 @@
     "infoContent": "You should identify yourself to be able to advance to the service. You can choose yourself which identification method you want to use. Click on the bottom below to identify yourself."
   },
   "thankyouPage": {
-    "thankyouMessageLabel": "The application is submitted.",
-    "thankyouMessageContent": "Please wait for your application to be handled. We will be in touch with you once the handling process is finished, and you will then be permited the billing license. You may now close this page. ",
+    "thankyouMessageLabel": "The application has been submitted.",
+    "thankyouMessageContent": "We will contact you if we need more information to process your application. You can now log out and close this page.",
     "createNewApplication": "Create new application",
     "title": "Application {{submitted_at}}"
   },
@@ -81,9 +81,9 @@
     },
     "form": {
       "selectionGroups": {
-        "summer_voucher_exception_reason": {
-          "9th_grader": "9th grader",
-          "born_2004": "Born in 2004"
+        "target_group": {
+          "primary_target_group": "9th grader, 10th grader or Valma grader",
+          "secondary_target_group": "\t\nOther age group"
         },
         "hired_without_voucher_assessment": {
           "yes": "Yes",
@@ -99,7 +99,7 @@
         "contact_person_phone_number": "Telephone number",
         "employee_name": "Name of the employee",
         "employee_ssn": "Social security number",
-        "summer_voucher_exception_reason": "Grade or birth year",
+        "target_group": "Grade or birth year",
         "employee_home_city": "Domicile",
         "employee_postcode": "Postal code of the workplace",
         "employee_phone_number": "Phone number",

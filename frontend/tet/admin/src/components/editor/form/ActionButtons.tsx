@@ -24,12 +24,14 @@ const ActionButtons: React.FC = () => {
     getValues,
     handleSubmit,
     trigger,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isDirty },
     reset,
   } = useFormContext<TetPosting>();
   const theme = useTheme();
   const posting = getValues();
   const [showInfoDialog, setShowInfoDialog] = React.useState(false);
+
+  console.log('test');
 
   const allowPublish = posting.date_published === null;
   const allowDelete = !!posting.id;
@@ -57,8 +59,11 @@ const ActionButtons: React.FC = () => {
     }
   };
 
-  const saveHandler = (validatedPosting: TetPosting): void => {
-    const event = tetPostingToEvent(validatedPosting);
+  const saveHandler = async (validatedPosting: TetPosting): Promise<void> => {
+    const event = tetPostingToEvent({
+      posting: validatedPosting,
+    });
+    reset({ ...posting }, { keepValues: true });
     upsertTetPosting.mutate({
       id: validatedPosting.id,
       event,
@@ -75,7 +80,7 @@ const ActionButtons: React.FC = () => {
     ) {
       setShowInfoDialog(true);
     } else {
-      const event = tetPostingToEvent(posting, false);
+      const event = tetPostingToEvent({ posting });
 
       upsertTetPosting.mutate({
         id: posting.id,
@@ -94,7 +99,10 @@ const ActionButtons: React.FC = () => {
     });
 
     if (isConfirmed) {
-      const event = tetPostingToEvent(validatedPosting, true);
+      const event = tetPostingToEvent({
+        posting: validatedPosting,
+        publish: true,
+      });
 
       upsertTetPosting.mutate({
         id: validatedPosting.id,

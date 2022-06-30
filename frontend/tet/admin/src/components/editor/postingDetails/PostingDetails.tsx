@@ -53,6 +53,7 @@ const PostingDetails: React.FC = () => {
         <$GridCell $colSpan={3}>
           <DateInput
             id="start_date"
+            testId="posting-form-start_date"
             label={t('common:editor.posting.startDateLabel')}
             required={true}
             registerOptions={{ required: required, pattern: date.pattern }}
@@ -61,6 +62,7 @@ const PostingDetails: React.FC = () => {
         <$GridCell $colSpan={3}>
           <DateInput
             id="end_date"
+            testId="posting-form-end_date"
             label={t('common:editor.posting.endDateLabel')}
             required={false}
             registerOptions={{ pattern: date.pattern }}
@@ -71,6 +73,7 @@ const PostingDetails: React.FC = () => {
         <$GridCell $colSpan={3}>
           <NumberInput
             id="spots"
+            testId="posting-form-spots"
             label={t('common:editor.posting.spotsLabel')}
             registerOptions={{ required: required }}
             required={true}
@@ -79,6 +82,7 @@ const PostingDetails: React.FC = () => {
         <$GridCell $colSpan={3}>
           <Dropdown
             id="languages"
+            testId="posting-form-languages"
             options={languageOptions}
             initialValue={[languageOptions[0]]}
             label={t('common:editor.posting.contactLanguage')}
@@ -98,6 +102,7 @@ const PostingDetails: React.FC = () => {
         <$GridCell $colSpan={12}>
           <TextArea
             id="description"
+            testId="posting-form-description"
             label={t('common:editor.posting.description')}
             registerOptions={description}
             required={true}

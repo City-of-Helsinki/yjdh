@@ -46,6 +46,12 @@ export const isoDateToHdsFormat = (date: string | null): string => {
   }.${newDate.getFullYear()}`;
 };
 
+type PostingToEventArguments = {
+  posting: TetPosting;
+  publish?: boolean;
+  imageId?: string;
+};
+
 export const ensureScheme = (url: string | undefined): string => {
   if (!url) {
     return '';
@@ -53,10 +59,10 @@ export const ensureScheme = (url: string | undefined): string => {
   return /^https?:/i.test(url) ? url : `http://${url}`;
 };
 
-export const tetPostingToEvent = (
-  posting: TetPosting,
-  publish = false
-): TetEventPayload => ({
+export const tetPostingToEvent = ({
+  posting,
+  publish = false,
+}: PostingToEventArguments): TetEventPayload => ({
   name: setLocalizedString(posting.title),
   location: { '@id': posting.location.value },
   description: setLocalizedString(posting.description),
@@ -83,4 +89,12 @@ export const tetPostingToEvent = (
   date_published: publish
     ? new Date().toISOString()
     : posting.date_published || null,
+  images: posting.image_id
+    ? [
+        {
+          '@id': posting.image_id,
+          photographer_name: posting.photographer_name,
+        },
+      ]
+    : [],
 });

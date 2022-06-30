@@ -1,6 +1,5 @@
 import { IconArrowLeft, IconLocation } from 'hds-react';
 import noop from 'lodash/noop';
-import Image from 'next/image';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Container from 'tet-shared/components/container/Container';
@@ -42,6 +41,9 @@ const PostingHero: React.FC<Props> = ({
   const city = posting?.location?.city ? `, ${posting.location.city}` : '';
   const name = posting?.location?.name ?? '';
   const address = name + street_address + postal_code + city;
+  const imageUrl = posting.image_url?.length
+    ? posting.image_url
+    : '/event_placeholder_B.jpg';
 
   return (
     <$PostingHero>
@@ -58,20 +60,15 @@ const PostingHero: React.FC<Props> = ({
               <IconArrowLeft size="m" />
             </$BackButton>
           )}
-          <$ImageContainer imageUrl="https://kirkanta.kirjastot.fi/files/images/medium/kallio-4f901aa2.jpg">
-            <Image
-              width="100%"
-              height="100%"
-              layout="responsive"
-              objectFit="cover"
-              src="/event_placeholder_B.jpg"
-              alt="event placeholder"
-              priority
-            />
+          <$ImageContainer imageUrl={imageUrl}>
+            {!!posting.photographer_name?.length && (
+              <span>Kuva: {posting.photographer_name}</span>
+            )}
           </$ImageContainer>
           <$HeroContentWrapper>
-            <$Title>{posting.org_name}</$Title>
+            <$Title>{posting.organization_name}</$Title>
             <$Subtitle id="postingTitle">{posting.title}</$Subtitle>
+            <$Title>{posting.org_name}</$Title>
             <$Date>{date}</$Date>
             <$Spots>
               {t('common:postingTemplate.spots')}: {posting.spots}

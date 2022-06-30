@@ -10,6 +10,7 @@ type SpotsType = Pick<TetPosting, 'spots'>;
 // TODO add minusStepButtonAriaLabel and plusStepButtonAriaLabel
 type Props = {
   id: Id<SpotsType>;
+  testId?: string;
   label: string;
   registerOptions: RegisterOptions;
   required: boolean;
@@ -17,7 +18,7 @@ type Props = {
 
 const asNumber = (value?: string | number | undefined): number | undefined => Number(value) || undefined;
 
-const NumberInput: React.FC<Props> = ({ id, registerOptions, label, required = false }) => {
+const NumberInput: React.FC<Props> = ({ id, registerOptions, label, required = false, testId }) => {
   const { control } = useFormContext<SpotsType>();
   const { t } = useTranslation();
   return (
@@ -26,6 +27,7 @@ const NumberInput: React.FC<Props> = ({ id, registerOptions, label, required = f
       render={({ field: { onChange, value }, fieldState: { error, invalid } }) => (
         <HdsNumberInput
           id={id}
+          data-testid={testId}
           label={label}
           value={value}
           min={1}

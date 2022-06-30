@@ -4,6 +4,7 @@ from urllib.parse import urljoin
 import requests
 from django.conf import settings
 from requests.exceptions import ConnectionError, HTTPError, RequestException, Timeout
+from rest_framework.exceptions import PermissionDenied, ValidationError
 
 from events.exceptions import LinkedEventsException
 
@@ -67,6 +68,7 @@ class LinkedEventsClient:
                 raise LinkedEventsException(
                     code=503, detail="Server error from Linked Events."
                 )
+            # TODO 403 is actually configuration error in Linked Events for the TET API key
             elif e.response.status_code == 401 or e.response.status_code == 403:
                 raise LinkedEventsException(
                     code=500,
@@ -166,3 +168,68 @@ class LinkedEventsClient:
         # TODO better error handling
         r.raise_for_status()
         return r.json()
+
+    def upload_image(self, body, files):
+        r = requests.post(
+            urljoin(settings.LINKEDEVENTS_URL, "image/"),
+            headers={"apikey": settings.LINKEDEVENTS_API_KEY},
+            data=body,
+            files=files,
+        )
+        try:
+            r.raise_for_status()
+        except HTTPError as e:
+            if e.response.status_code == 400:
+                raise ValidationError(detail="File not accepted")
+            else:
+                raise PermissionDenied(detail="Could not upload")
+        except RequestException:
+            raise LinkedEventsException(code=503)
+        return r.json()
+
+    def update_image(self, image_id, image):
+        return self._api_call(
+            requests_method=requests.put,
+            resource="image",
+            resource_id=image_id,
+            json=image,
+        )
+
+    def delete_image(self, id):
+        params = {
+            "data_source": "tet",
+            "nocache": True,
+        }
+        r = requests.delete(
+            urljoin(settings.LINKEDEVENTS_URL, f"image/{id}"),
+            headers=self._headers(),
+            params=params,
+            timeout=settings.LINKEDEVENTS_TIMEOUT,
+        )
+        return r.status_code
+
+    def get_images(self):
+        """
+        Used by the job clean_unused_images
+
+        Returns a generator that yields one page of images at a time.
+        """
+        r = requests.get(
+            urljoin(settings.LINKEDEVENTS_URL, "image/"),
+            params={
+                "data_source": "tet",
+                "nocache": True,
+            },
+            timeout=settings.LINKEDEVENTS_TIMEOUT,
+        )
+        r.raise_for_status()
+        data = r.json()
+        yield data["data"]
+
+        while data["meta"]["next"] is not None:
+            r = requests.get(
+                data["meta"]["next"], timeout=settings.LINKEDEVENTS_TIMEOUT
+            )
+            r.raise_for_status()
+            data = r.json()
+            yield data["data"]

@@ -27,8 +27,8 @@
     "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig. "
   },
   "thankyouPage": {
-    "thankyouMessageLabel": "Ansökan är skickad.",
-    "thankyouMessageContent": "Vänta på att ansökan behandlas. Vi tar kontakt när ansökan har behandlats, då får du med samma rätten att fakturera.  Nu kan stänga sidan.",
+    "thankyouMessageLabel": "Ansökan har lämnats in.",
+    "thankyouMessageContent": "Vi kontaktar dig om vi behöver mer information för att behandla din ansökan. Du kan nu logga ut och stänga denna sida.",
     "createNewApplication": "Gör en ny ansökan",
     "title": "Ansökan {{submitted_at}}"
   },
@@ -81,9 +81,9 @@
     },
     "form": {
       "selectionGroups": {
-        "summer_voucher_exception_reason": {
-          "9th_grader": "9 klassist",
-          "born_2004": "Född 2004"
+        "target_group": {
+          "primary_target_group": "Niondeklassist, tiondeklassist eller Valmaklassist",
+          "secondary_target_group": "Annan åldersgrupp"
         },
         "hired_without_voucher_assessment": {
           "yes": "Jo",
@@ -99,7 +99,7 @@
         "contact_person_phone_number": "Telefonnummer",
         "employee_name": "Arbetstagarens namn",
         "employee_ssn": "Personnummer",
-        "summer_voucher_exception_reason": "Årsklass eller födelseår",
+        "target_group": "Årsklass eller födelseår",
         "employee_home_city": "Hemort",
         "employee_postcode": "Post nummer",
         "employee_phone_number": "Telefonnummer",

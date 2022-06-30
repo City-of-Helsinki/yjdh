@@ -837,7 +837,7 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         validators=[MinValueValidator(1)],
         verbose_name=_("summer voucher id"),
     )
-    summer_voucher_exception_reason = models.CharField(
+    target_group = models.CharField(
         max_length=256,
         blank=True,
         verbose_name=_("summer voucher exception class"),
@@ -1014,7 +1014,7 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     summer_voucher_serial_number = models.CharField(
         max_length=256, blank=True, verbose_name=_("summer voucher id")
     )
-    summer_voucher_exception_reason = models.CharField(
+    target_group = models.CharField(
         max_length=256,
         blank=True,
         verbose_name=_("summer voucher exception class"),
