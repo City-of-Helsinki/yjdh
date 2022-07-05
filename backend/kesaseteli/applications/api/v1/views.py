@@ -11,6 +11,9 @@ from django.shortcuts import redirect
 from django.utils import translation
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
+
+# FIXME: The issue with CSRF excemptions needs to be solved before the application is put into maintenance mode
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -18,9 +21,6 @@ from rest_framework.generics import ListAPIView
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-
-# FIXME: The issue with CSRF excemptions needs to be solved before the application is put into maintenance mode
-from django.views.decorators.csrf import csrf_exempt
 
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_UPDATE_STATUSES,

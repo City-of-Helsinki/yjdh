@@ -9,11 +9,7 @@ from PIL import Image, UnidentifiedImageError
 from rest_framework import serializers
 
 from applications.api.v1.validators import validate_additional_info_user_reasons
-from applications.enums import (
-    AttachmentType,
-    EmployerApplicationStatus,
-    SummerVoucherExceptionReason,
-)
+from applications.enums import AttachmentType, EmployerApplicationStatus
 from applications.models import (
     Attachment,
     EmployerApplication,
