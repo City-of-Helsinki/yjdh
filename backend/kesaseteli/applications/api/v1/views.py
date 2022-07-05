@@ -28,7 +28,6 @@ from applications.api.v1.permissions import (
     EmployerApplicationPermission,
     EmployerSummerVoucherPermission,
     get_user_company,
-    StaffPermission,
 )
 from applications.api.v1.serializers import (
     AttachmentSerializer,
@@ -52,6 +51,7 @@ from applications.models import (
     YouthApplication,
 )
 from common.decorators import enforce_handler_view_adfs_login
+from common.permissions import HandlerPermission
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
 from shared.vtj.vtj_client import VTJClient
 
@@ -555,7 +555,7 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
     serializer_class = EmployerSummerVoucherSerializer
     permission_classes = [
         IsAuthenticated,
-        StaffPermission | EmployerSummerVoucherPermission,
+        HandlerPermission | EmployerSummerVoucherPermission,
     ]
 
     def get_queryset(self):
