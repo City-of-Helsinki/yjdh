@@ -5,8 +5,8 @@ from typing import List
 
 import openpyxl
 import pytest
-from django.conf import settings
 from django.shortcuts import reverse
+from django.test import override_settings
 from django.urls.exceptions import NoReverseMatch
 from freezegun import freeze_time
 
@@ -17,6 +17,7 @@ from applications.exporters.excel_exporter import (
     EMPLOYMENT_START_DATE_FIELD_TITLE,
     ExcelField,
     FIELDS,
+    get_attachment_uri,
     get_exportable_fields,
     get_reporting_columns,
     get_talpa_columns,
@@ -31,6 +32,7 @@ from applications.exporters.excel_exporter import (
 )
 from applications.models import EmployerSummerVoucher
 from applications.tests.test_models import create_test_employer_summer_vouchers
+from common.urls import handler_403_url
 
 
 def excel_download_url():
@@ -42,26 +44,27 @@ def get_field_titles(fields: List[ExcelField]) -> List[str]:
 
 
 @pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_excel_view_get_with_authenticated_user(staff_client):
     response = staff_client.get(excel_download_url())
     assert response.status_code == 200
 
 
 @pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_excel_view_get_with_unauthenticated_user(user_client):
     try:
         response = user_client.get(excel_download_url())
     except NoReverseMatch as e:
         # If ENABLE_ADMIN is off redirecting to Django admin login will not work
-        assert not settings.ENABLE_ADMIN
         assert str(e) == "'admin' is not a registered namespace"
     else:
-        assert settings.ENABLE_ADMIN
         assert response.status_code == 302
-        assert response.url == "/admin/login/?next=/excel-download/"
+        assert response.url == handler_403_url()
 
 
 @pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_excel_view_download_unhandled(
     staff_client, submitted_summer_voucher, submitted_employment_contract_attachment
 ):
@@ -79,6 +82,7 @@ def test_excel_view_download_unhandled(
 
 
 @pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_excel_view_download_no_unhandled_applications(staff_client):
     response = staff_client.get(f"{excel_download_url()}?download=unhandled")
 
@@ -87,6 +91,7 @@ def test_excel_view_download_no_unhandled_applications(staff_client):
 
 
 @pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_excel_view_download_annual(
     staff_client, submitted_summer_voucher, submitted_employment_contract_attachment
 ):
@@ -104,6 +109,7 @@ def test_excel_view_download_annual(
 
 
 @pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
     "download_url,expected_output_excel_fields",
     [
@@ -187,6 +193,14 @@ def test_excel_view_download_content(  # noqa: C901
                 assert (output_column.value is None and salary_paid is None) or Decimal(
                     output_column.value
                 ) == salary_paid
+            elif excel_field.model_fields == ["attachments"]:
+                expected_attachment_uri = get_attachment_uri(
+                    voucher, excel_field, voucher.attachments, response.wsgi_request
+                )
+                if expected_attachment_uri == "":
+                    assert output_column.value is None
+                else:
+                    assert output_column.value == expected_attachment_uri
             elif excel_field.model_fields == [] and excel_field.value == "":
                 assert output_column.value is None
             elif excel_field.model_fields == [] and excel_field.value != "":
@@ -197,6 +211,32 @@ def test_excel_view_download_content(  # noqa: C901
                 assert (
                     output_column.value == excel_field.value % values_tuple
                 ), excel_field.title
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.parametrize(
+    "download_url",
+    [
+        (
+            f"{excel_download_url()}?download={download}"
+            + ("" if columns is None else f"&columns={columns}")
+        )
+        for columns in ExcelColumns.values + [None]
+        for download in ["unhandled", "annual"]
+    ],
+)
+def test_excel_view_download_with_unauthenticated_user(  # noqa: C901
+    user_client,
+    download_url,
+):
+    create_test_employer_summer_vouchers(year=2021)
+
+    with freeze_time(datetime.datetime(2021, 12, 31)):
+        response = user_client.get(download_url)
+
+    assert response.status_code == 302
+    assert response.url == handler_403_url()
 
 
 def test_unique_fields_besides_padding_fields():
