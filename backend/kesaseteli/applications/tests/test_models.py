@@ -12,6 +12,7 @@ from freezegun import freeze_time
 from applications.enums import EmployerApplicationStatus
 from applications.models import EmployerSummerVoucher, YouthSummerVoucher
 from common.tests.factories import (
+    AttachmentFactory,
     AwaitingManualProcessingYouthApplicationFactory,
     EmployerApplicationFactory,
     EmployerSummerVoucherFactory,
@@ -25,14 +26,14 @@ def create_test_employer_summer_vouchers(year) -> List[EmployerSummerVoucher]:
     Create EmployerSummerVouchers for given year sorted by last_submitted_at
     """
     vouchers: List[EmployerSummerVoucher] = []
-    for created_at, last_submitted_at_list in [
-        (utc_datetime(year, 1, 13), [utc_datetime(year, 1, 18)]),
-        (utc_datetime(year, 2, 1), []),
-        (utc_datetime(year, 1, 1), [utc_datetime(year, 2, 9)]),
-        (utc_datetime(year, 2, 21), []),
-        (utc_datetime(year, 2, 20), [utc_datetime(year, 2, 22)]),
-        (utc_datetime(year, 3, 2), []),
-        (utc_datetime(year, 3, 8), [utc_datetime(year, 3, 10)]),
+    for created_at, last_submitted_at_list, attachment_count in [
+        (utc_datetime(year, 1, 13), [utc_datetime(year, 1, 18)], 0),
+        (utc_datetime(year, 2, 1), [], 0),
+        (utc_datetime(year, 1, 1), [utc_datetime(year, 2, 9)], 1),
+        (utc_datetime(year, 2, 21), [], 3),
+        (utc_datetime(year, 2, 20), [utc_datetime(year, 2, 22)], 10),
+        (utc_datetime(year, 3, 2), [], 5),
+        (utc_datetime(year, 3, 8), [utc_datetime(year, 3, 10)], 4),
         (
             utc_datetime(year, 1, 3),
             [
@@ -40,25 +41,29 @@ def create_test_employer_summer_vouchers(year) -> List[EmployerSummerVoucher]:
                 utc_datetime(year, 3, 5),
                 utc_datetime(year, 3, 11),
             ],
+            0,
         ),
-        (utc_datetime(year, 1, 1), [utc_datetime(year, 3, 12)]),
+        (utc_datetime(year, 1, 1), [utc_datetime(year, 3, 12)], 1),
         (
             utc_datetime(year, 3, 10),
             [utc_datetime(year, 3, 11), utc_datetime(year, 9, 1)],
+            0,
         ),
-        (utc_datetime(year, 2, 5), [utc_datetime(year, 9, 2)]),
+        (utc_datetime(year, 2, 5), [utc_datetime(year, 9, 2)], 1),
     ]:
         with freeze_time(created_at):
-            vouchers.append(
-                EmployerSummerVoucherFactory(
-                    application=EmployerApplicationFactory(
-                        status=EmployerApplicationStatus.SUBMITTED
-                    )
+            voucher = EmployerSummerVoucherFactory(
+                application=EmployerApplicationFactory(
+                    status=EmployerApplicationStatus.SUBMITTED
                 )
+            )
+            AttachmentFactory.create_batch(
+                size=attachment_count, summer_voucher=voucher
             )
             for last_submitted_at in last_submitted_at_list:
                 with freeze_time(last_submitted_at):
-                    vouchers[-1].save()
+                    voucher.save()
+            vouchers.append(voucher)
 
     return sorted(vouchers, key=operator.attrgetter("last_submitted_at"))
 
