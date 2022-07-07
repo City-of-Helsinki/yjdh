@@ -9,7 +9,7 @@ def get_contact_person_configuration(
     phone: str = None,
     contact_type: str = None,
 ) -> Optional[dict]:
-    """Get contact person configuration."""
+    """Get contact person configuration. TESTING"""
     if not (first_name and last_name and email and contact_type):
         return None
 
