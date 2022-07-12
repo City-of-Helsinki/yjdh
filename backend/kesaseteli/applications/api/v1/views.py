@@ -11,9 +11,6 @@ from django.shortcuts import redirect
 from django.utils import translation
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
-
-# FIXME: The issue with CSRF excemptions needs to be solved before the application is put into maintenance mode
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -527,7 +524,6 @@ class EmployerApplicationViewSet(AuditLoggingModelViewSet):
             status__in=ALLOWED_APPLICATION_VIEW_STATUSES,
         )
 
-    @csrf_exempt
     def create(self, request, *args, **kwargs):
         """
         Allow only 1 (DRAFT) application per user & company.
@@ -536,7 +532,6 @@ class EmployerApplicationViewSet(AuditLoggingModelViewSet):
             raise ValidationError("Company & user can have only one draft application")
         return super().create(request, *args, **kwargs)
 
-    @csrf_exempt
     def update(self, request, *args, **kwargs):
         """
         Allow to update only DRAFT status applications.
@@ -604,7 +599,6 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
         url_path="attachments",
         parser_classes=(MultiPartParser,),
     )
-    @csrf_exempt
     def post_attachment(self, request, *args, **kwargs):
         """
         Upload a single file as attachment
@@ -637,7 +631,6 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
         detail=True,
         url_path="attachments/(?P<attachment_pk>[^/.]+)",
     )
-    @csrf_exempt
     def handle_attachment(self, request, attachment_pk, *args, **kwargs):
         obj = self.get_object()
 
