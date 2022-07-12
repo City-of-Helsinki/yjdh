@@ -1,6 +1,5 @@
 from datetime import date
 
-from common.decorators import enforce_handler_view_adfs_login
 from django.db.models import OuterRef, Subquery
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -13,6 +12,7 @@ from applications.exporters.excel_exporter import (
     get_xlsx_filename,
 )
 from applications.models import EmployerSummerVoucher
+from common.decorators import enforce_handler_view_adfs_login
 
 
 class EmployerApplicationExcelDownloadView(TemplateView):

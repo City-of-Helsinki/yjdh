@@ -19,16 +19,12 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-# FIXME: The issue with CSRF excemptions needs to be solved before the application is put into maintenance mode
-from django.views.decorators.csrf import csrf_exempt
-
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_UPDATE_STATUSES,
     ALLOWED_APPLICATION_VIEW_STATUSES,
     EmployerApplicationPermission,
     EmployerSummerVoucherPermission,
     get_user_company,
-    StaffPermission,
 )
 from applications.api.v1.serializers import (
     AttachmentSerializer,
@@ -52,6 +48,7 @@ from applications.models import (
     YouthApplication,
 )
 from common.decorators import enforce_handler_view_adfs_login
+from common.permissions import HandlerPermission
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
 from shared.vtj.vtj_client import VTJClient
 
@@ -527,7 +524,6 @@ class EmployerApplicationViewSet(AuditLoggingModelViewSet):
             status__in=ALLOWED_APPLICATION_VIEW_STATUSES,
         )
 
-    @csrf_exempt
     def create(self, request, *args, **kwargs):
         """
         Allow only 1 (DRAFT) application per user & company.
@@ -536,7 +532,6 @@ class EmployerApplicationViewSet(AuditLoggingModelViewSet):
             raise ValidationError("Company & user can have only one draft application")
         return super().create(request, *args, **kwargs)
 
-    @csrf_exempt
     def update(self, request, *args, **kwargs):
         """
         Allow to update only DRAFT status applications.
@@ -555,7 +550,7 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
     serializer_class = EmployerSummerVoucherSerializer
     permission_classes = [
         IsAuthenticated,
-        StaffPermission | EmployerSummerVoucherPermission,
+        HandlerPermission | EmployerSummerVoucherPermission,
     ]
 
     def get_queryset(self):
@@ -604,7 +599,6 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
         url_path="attachments",
         parser_classes=(MultiPartParser,),
     )
-    @csrf_exempt
     def post_attachment(self, request, *args, **kwargs):
         """
         Upload a single file as attachment
@@ -637,7 +631,6 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
         detail=True,
         url_path="attachments/(?P<attachment_pk>[^/.]+)",
     )
-    @csrf_exempt
     def handle_attachment(self, request, attachment_pk, *args, **kwargs):
         obj = self.get_object()
 

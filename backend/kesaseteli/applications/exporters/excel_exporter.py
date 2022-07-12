@@ -87,16 +87,6 @@ REMOVABLE_TALPA_FIELD_TITLES = [
     HIRED_WITHOUT_VOUCHER_ASSESSMENT_FIELD_TITLE,
     _("Työnantajan kokemus"),
     _("Muuta"),
-    _("Liite: Työsopimus 1"),
-    _("Liite: Työsopimus 2"),
-    _("Liite: Työsopimus 3"),
-    _("Liite: Työsopimus 4"),
-    _("Liite: Työsopimus 5"),
-    _("Liite: Palkkalaskelma 1"),
-    _("Liite: Palkkalaskelma 2"),
-    _("Liite: Palkkalaskelma 3"),
-    _("Liite: Palkkalaskelma 4"),
-    _("Liite: Palkkalaskelma 5"),
 ]
 
 

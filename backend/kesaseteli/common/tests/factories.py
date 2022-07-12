@@ -493,7 +493,7 @@ class YouthSummerVoucherFactory(factory.django.DjangoModelFactory):
     # NOTE: Difference from production use:
     # - This does not generate a gapless sequence
     summer_voucher_serial_number = factory.Faker(
-        "pyint", min_value=1, max_value=(2 ** 63) - 1
+        "pyint", min_value=1, max_value=(2**63) - 1
     )
     target_group = ""
 
