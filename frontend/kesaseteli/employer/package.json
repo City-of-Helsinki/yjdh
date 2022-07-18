@@ -29,7 +29,7 @@
     "lodash": "^4.17.21",
     "next": "^11.1.4",
     "next-compose-plugins": "^2.2.1",
-    "next-i18next": "^10.5.0",
+    "next-i18next": "^11.2.2",
     "next-plugin-custom-babel-config": "^1.0.5",
     "next-transpile-modules": "^9.0.0",
     "react": "^18.0.0",
