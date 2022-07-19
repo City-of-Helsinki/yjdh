@@ -31,12 +31,15 @@ SALARY_PAID_FIELD_TITLE = _("Maksettu palkka")
 SPECIAL_CASE_FIELD_TITLE = _("Erikoistapaus (esim yhdeksäsluokkalainen)")
 SUM_FIELD_TITLE = _("Summa")
 WORK_HOURS_FIELD_TITLE = _("Työtunnit")
+INVOICER_EMAIL_FIELD_TITLE = _("Laskuttajan sähköposti")
+INVOICER_NAME_FIELD_TITLE = _("Laskuttajan nimi")
+INVOICER_PHONE_NUMBER_FIELD_TITLE = _("Laskuttajan Puhelin")
 
 REMOVABLE_REPORTING_FIELD_TITLES = [
     _("Y-tunnus"),
     _("Yhdyshenkilö"),
     _("Erillinen laskuttaja"),
-    _("Laskuttajan nimi"),
+    INVOICER_NAME_FIELD_TITLE,
     _("Raporttiin luokittelu"),
     _("Liite: Työsopimus 1"),
     _("Liite: Työsopimus 2"),
@@ -68,9 +71,9 @@ REMOVABLE_TALPA_FIELD_TITLES = [
     _("Yhdyshenkilön sähköposti"),
     _("Yhdyshenkilön Puhelin"),
     _("Erillinen laskuttaja"),
-    _("Laskuttajan nimi"),
-    _("Laskuttajan sähköposti"),
-    _("Laskuttajan Puhelin"),
+    INVOICER_NAME_FIELD_TITLE,
+    INVOICER_EMAIL_FIELD_TITLE,
+    INVOICER_PHONE_NUMBER_FIELD_TITLE,
     _("Yrityksen toimiala"),
     _("Työn suorituspaikan postinumero"),
     EMPLOYMENT_START_DATE_FIELD_TITLE,
@@ -166,17 +169,17 @@ FIELDS = [
         "#E7E3F9",
     ),
     ExcelField(
-        _("Laskuttajan nimi"), "%s", ["application__invoicer_name"], 30, "#E7E3F9"
+        INVOICER_NAME_FIELD_TITLE, "%s", ["application__invoicer_name"], 30, "#E7E3F9"
     ),
     ExcelField(
-        _("Laskuttajan sähköposti"),
+        INVOICER_EMAIL_FIELD_TITLE,
         "%s",
         ["application__invoicer_email"],
         30,
         "#E7E3F9",
     ),
     ExcelField(
-        _("Laskuttajan Puhelin"),
+        INVOICER_PHONE_NUMBER_FIELD_TITLE,
         "%s",
         ["application__invoicer_phone_number"],
         30,
