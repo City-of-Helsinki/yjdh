@@ -35,12 +35,8 @@ WORK_HOURS_FIELD_TITLE = _("Työtunnit")
 REMOVABLE_REPORTING_FIELD_TITLES = [
     _("Y-tunnus"),
     _("Yhdyshenkilö"),
-    _("Yhdyshenkilön sähköposti"),
-    _("Yhdyshenkilön Puhelin"),
     _("Erillinen laskuttaja"),
     _("Laskuttajan nimi"),
-    _("Laskuttajan sähköposti"),
-    _("Laskuttajan Puhelin"),
     _("Raporttiin luokittelu"),
     _("Liite: Työsopimus 1"),
     _("Liite: Työsopimus 2"),
