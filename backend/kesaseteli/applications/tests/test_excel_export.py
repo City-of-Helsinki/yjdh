@@ -22,6 +22,9 @@ from applications.exporters.excel_exporter import (
     get_reporting_columns,
     get_talpa_columns,
     HIRED_WITHOUT_VOUCHER_ASSESSMENT_FIELD_TITLE,
+    INVOICER_EMAIL_FIELD_TITLE,
+    INVOICER_NAME_FIELD_TITLE,
+    INVOICER_PHONE_NUMBER_FIELD_TITLE,
     ORDER_FIELD_TITLE,
     RECEIVED_DATE_FIELD_TITLE,
     REMOVABLE_REPORTING_FIELD_TITLES,
@@ -41,6 +44,11 @@ def excel_download_url():
 
 def get_field_titles(fields: List[ExcelField]) -> List[str]:
     return [field.title for field in fields]
+
+
+def check_removable_field_titles(removable_field_titles):
+    assert len(removable_field_titles) == len(set(removable_field_titles))
+    assert set(removable_field_titles) <= set(get_field_titles(FIELDS))
 
 
 @pytest.mark.django_db
@@ -201,6 +209,16 @@ def test_excel_view_download_content(  # noqa: C901
                     assert output_column.value is None
                 else:
                     assert output_column.value == expected_attachment_uri
+            elif (
+                excel_field.title
+                in (
+                    INVOICER_EMAIL_FIELD_TITLE,
+                    INVOICER_NAME_FIELD_TITLE,
+                    INVOICER_PHONE_NUMBER_FIELD_TITLE,
+                )
+                and not voucher.application.is_separate_invoicer
+            ):
+                assert output_column.value is None, excel_field.title
             elif excel_field.model_fields == [] and excel_field.value == "":
                 assert output_column.value is None
             elif excel_field.model_fields == [] and excel_field.value != "":
@@ -293,3 +311,11 @@ def test_talpa_fields():
         set(field_titles) - set(REMOVABLE_TALPA_FIELD_TITLES)
     )
     assert get_talpa_columns() == get_exportable_fields(ExcelColumns.TALPA.value)
+
+
+def test_removable_reporting_field_titles():
+    check_removable_field_titles(REMOVABLE_REPORTING_FIELD_TITLES)
+
+
+def test_removable_talpa_field_titles():
+    check_removable_field_titles(REMOVABLE_TALPA_FIELD_TITLES)
