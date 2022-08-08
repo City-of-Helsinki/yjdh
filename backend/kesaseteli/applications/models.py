@@ -840,8 +840,8 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     target_group = models.CharField(
         max_length=256,
         blank=True,
-        verbose_name=_("summer voucher exception class"),
-        help_text=_("Special case of admitting the summer voucher."),
+        verbose_name=_("summer voucher target group"),
+        help_text=_("Summer voucher's target group type"),
         choices=SummerVoucherExceptionReason.choices,
     )
 
@@ -1017,8 +1017,8 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     target_group = models.CharField(
         max_length=256,
         blank=True,
-        verbose_name=_("summer voucher exception class"),
-        help_text=_("Special case of admitting the summer voucher."),
+        verbose_name=_("summer voucher target group"),
+        help_text=_("Summer voucher's target group type"),
         choices=SummerVoucherExceptionReason.choices,
     )
 
