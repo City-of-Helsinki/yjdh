@@ -1543,19 +1543,13 @@ def test_youth_application_additional_info_request_email_link_path(api_client):
     EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
     DEFAULT_FROM_EMAIL="Test sender <testsender@hel.fi>",
     HANDLER_EMAIL="Test handler <testhandler@hel.fi>",
+    NEXT_PUBLIC_DISABLE_VTJ=True,
 )
-@pytest.mark.parametrize(
-    "disable_vtj,expect_success",
-    [(disable_vtj, disable_vtj is True) for disable_vtj in [True]],
-)
-def test_youth_application_processing_email_sending_on_activate(
+def test_youth_application_processing_email_sending_on_activate__vtj_disabled(
     settings,
     api_client,
     make_youth_application_activation_link_unexpired,
-    disable_vtj,
-    expect_success,
 ):
-    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     youth_application = InactiveNoNeedAdditionalInfoYouthApplicationFactory()
     assert not youth_application.is_active
     assert not youth_application.has_activation_link_expired
@@ -1563,14 +1557,11 @@ def test_youth_application_processing_email_sending_on_activate(
     start_mail_count = len(mail.outbox)
     api_client.get(get_activation_url(youth_application.pk))
 
-    if expect_success:
-        assert len(mail.outbox) == start_mail_count + 1
-        processing_email = mail.outbox[-1]
-        assert processing_email.subject == youth_application.processing_email_subject()
-        assert processing_email.from_email == "Test sender <testsender@hel.fi>"
-        assert processing_email.to == ["Test handler <testhandler@hel.fi>"]
-    else:
-        assert len(mail.outbox) == start_mail_count
+    assert len(mail.outbox) == start_mail_count + 1
+    processing_email = mail.outbox[-1]
+    assert processing_email.subject == youth_application.processing_email_subject()
+    assert processing_email.from_email == "Test sender <testsender@hel.fi>"
+    assert processing_email.to == ["Test handler <testhandler@hel.fi>"]
 
 
 @pytest.mark.django_db
@@ -1579,15 +1570,11 @@ def test_youth_application_processing_email_sending_on_activate(
     DEFAULT_FROM_EMAIL="Test sender <testsender@hel.fi>",
     HANDLER_EMAIL="Test handler <testhandler@hel.fi>",
 )
-@pytest.mark.parametrize(
-    "disable_vtj,expect_success",
-    [(disable_vtj, disable_vtj is True) for disable_vtj in [True]],
-)
+@pytest.mark.parametrize("disable_vtj", [False, True])
 def test_youth_application_processing_email_sending_after_additional_info(
     settings,
     api_client,
     disable_vtj,
-    expect_success,
 ):
     settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     youth_application = AdditionalInfoRequestedYouthApplicationFactory()
@@ -1599,41 +1586,29 @@ def test_youth_application_processing_email_sending_after_additional_info(
         data=json.dumps(get_test_additional_info()),
         content_type="application/json",
     )
-    if expect_success:
-        assert len(mail.outbox) == start_mail_count + 1
-        processing_email = mail.outbox[-1]
-        assert processing_email.subject == youth_application.processing_email_subject()
-        assert processing_email.from_email == "Test sender <testsender@hel.fi>"
-        assert processing_email.to == ["Test handler <testhandler@hel.fi>"]
-    else:
-        assert len(mail.outbox) == start_mail_count
+    assert len(mail.outbox) == start_mail_count + 1
+    processing_email = mail.outbox[-1]
+    assert processing_email.subject == youth_application.processing_email_subject()
+    assert processing_email.from_email == "Test sender <testsender@hel.fi>"
+    assert processing_email.to == ["Test handler <testhandler@hel.fi>"]
 
 
 @pytest.mark.django_db
-@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
-@pytest.mark.parametrize(
-    "disable_vtj,youth_application_language,expected_email_language,expect_success",
-    [
-        (
-            disable_vtj,
-            language,
-            "fi",
-            disable_vtj is True,
-        )
-        for disable_vtj in [True]
-        for language in get_supported_languages()
-    ],
+@override_settings(
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+    NEXT_PUBLIC_DISABLE_VTJ=True,
 )
-def test_youth_application_processing_email_language_on_activate(
+@pytest.mark.parametrize(
+    "youth_application_language,expected_email_language",
+    [(language, "fi") for language in get_supported_languages()],
+)
+def test_youth_application_processing_email_language_on_activate__vtj_disabled(
     settings,
     api_client,
     make_youth_application_activation_link_unexpired,
-    disable_vtj,
     youth_application_language,
     expected_email_language,
-    expect_success,
 ):
-    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     youth_application = InactiveNoNeedAdditionalInfoYouthApplicationFactory(
         language=youth_application_language
     )
@@ -1642,31 +1617,18 @@ def test_youth_application_processing_email_language_on_activate(
     assert not youth_application.need_additional_info
     start_mail_count = len(mail.outbox)
     api_client.get(get_activation_url(youth_application.pk))
-    if expect_success:
-        assert len(mail.outbox) == start_mail_count + 1
-        processing_email = mail.outbox[-1]
-        assert_email_subject_language(processing_email.subject, expected_email_language)
-        assert_email_body_language(processing_email.body, expected_email_language)
-    else:
-        assert len(mail.outbox) == start_mail_count
+    assert len(mail.outbox) == start_mail_count + 1
+    processing_email = mail.outbox[-1]
+    assert_email_subject_language(processing_email.subject, expected_email_language)
+    assert_email_body_language(processing_email.body, expected_email_language)
 
 
 @pytest.mark.django_db
-@override_settings(
-    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
-)
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+@pytest.mark.parametrize("disable_vtj", [False, True])
 @pytest.mark.parametrize(
-    "disable_vtj,youth_application_language,expected_email_language,expect_success",
-    [
-        (
-            disable_vtj,
-            language,
-            "fi",
-            disable_vtj is True,
-        )
-        for disable_vtj in [True]
-        for language in get_supported_languages()
-    ],
+    "youth_application_language,expected_email_language",
+    [(language, "fi") for language in get_supported_languages()],
 )
 def test_youth_application_processing_email_language_after_additional_info(
     settings,
@@ -1674,7 +1636,6 @@ def test_youth_application_processing_email_language_after_additional_info(
     disable_vtj,
     youth_application_language,
     expected_email_language,
-    expect_success,
 ):
     settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     youth_application = AdditionalInfoRequestedYouthApplicationFactory(
@@ -1688,13 +1649,10 @@ def test_youth_application_processing_email_language_after_additional_info(
         data=json.dumps(get_test_additional_info()),
         content_type="application/json",
     )
-    if expect_success:
-        assert len(mail.outbox) == start_mail_count + 1
-        processing_email = mail.outbox[-1]
-        assert_email_subject_language(processing_email.subject, expected_email_language)
-        assert_email_body_language(processing_email.body, expected_email_language)
-    else:
-        assert len(mail.outbox) == start_mail_count
+    assert len(mail.outbox) == start_mail_count + 1
+    processing_email = mail.outbox[-1]
+    assert_email_subject_language(processing_email.subject, expected_email_language)
+    assert_email_body_language(processing_email.body, expected_email_language)
 
 
 @pytest.mark.django_db
