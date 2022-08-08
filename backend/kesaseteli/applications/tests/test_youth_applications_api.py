@@ -3,7 +3,7 @@ import operator
 import re
 import unicodedata
 import uuid
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from difflib import SequenceMatcher
 from enum import auto, Enum
 from functools import reduce
@@ -19,6 +19,7 @@ from django.core import mail
 from django.test import override_settings
 from django.utils import timezone
 from django.utils.html import strip_tags
+from faker import Faker
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.reverse import reverse
@@ -31,7 +32,10 @@ from applications.enums import (
     YouthApplicationStatus,
 )
 from applications.models import YouthApplication, YouthSummerVoucher
-from applications.tests.data.mock_vtj import mock_vtj_person_id_query_not_found_content
+from applications.tests.data.mock_vtj import (
+    mock_vtj_person_id_query_found_content,
+    mock_vtj_person_id_query_not_found_content,
+)
 from common.permissions import HandlerPermission
 from common.tests.conftest import (
     api_client,
@@ -64,6 +68,14 @@ from shared.common.tests.conftest import (
 )
 from shared.common.tests.factories import UserFactory
 from shared.common.tests.test_validators import get_invalid_postcode_values
+
+
+def get_random_social_security_number_for_year(year):
+    # Freeze time to last day of year to ensure a social security number with given year
+    # is created, see Faker's fi_FI ssn provider:
+    # https://github.com/joke2k/faker/blob/v8.7.0/faker/providers/ssn/fi_FI/__init__.py#L29-L31
+    with freeze_time(date(year=year, month=12, day=31)):
+        return Faker(locale="fi").ssn(min_age=0, max_age=1)
 
 
 def reverse_youth_application_action(action, pk):
@@ -681,66 +693,156 @@ def test_youth_applications_detail_vtj_data_fields(
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize(
-    "language,disable_vtj,rejected_application_exists,expected_status_code",
-    [
-        (
-            language,
-            disable_vtj,
-            rejected_application_exists,
-            status.HTTP_302_FOUND if disable_vtj else status.HTTP_501_NOT_IMPLEMENTED,
-        )
-        for language in get_supported_languages()
-        for rejected_application_exists in [False, True]
-        for disable_vtj in [True]
-    ],
-)
-def test_youth_applications_activate_unexpired_inactive(
+@pytest.mark.parametrize("disable_vtj", [False, True])
+def test_youth_applications_activate_unexpired_inactive_with_rejection(
     api_client,
     make_youth_application_activation_link_unexpired,
     settings,
-    language,
     disable_vtj,
-    rejected_application_exists,
-    expected_status_code,
 ):
     settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
-    inactive_youth_application = InactiveNoNeedAdditionalInfoYouthApplicationFactory(
-        language=language
+
+    app: YouthApplication = InactiveNeedAdditionalInfoYouthApplicationFactory()
+
+    assert not app.has_youth_summer_voucher
+    assert not app.is_active
+    assert not app.has_activation_link_expired
+
+    RejectedYouthApplicationFactory.create(
+        email=app.email,
+        social_security_number=app.social_security_number,
     )
-    assert not inactive_youth_application.has_youth_summer_voucher
-    old_status = inactive_youth_application.status
 
-    assert not inactive_youth_application.is_active
-    assert not inactive_youth_application.has_activation_link_expired
-    assert inactive_youth_application.language == language
+    response = api_client.get(get_activation_url(app.pk))
 
-    if rejected_application_exists:
-        RejectedYouthApplicationFactory.create(
-            email=inactive_youth_application.email,
-            social_security_number=inactive_youth_application.social_security_number,
+    assert response.status_code == status.HTTP_302_FOUND
+    assert response.url == app.additional_info_page_url(app.pk)
+
+    app.refresh_from_db()
+
+    assert not app.has_youth_summer_voucher
+    assert app.is_active
+    assert app.status == YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+    assert app.handler is None
+    assert app.handled_at is None
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_DISABLE_VTJ=False)
+@pytest.mark.parametrize("application_year", [2022, 2023])
+@pytest.mark.parametrize("applicant_age", [15, 16, 17, 18])
+@pytest.mark.parametrize("is_helsinkian", [False, True])
+@pytest.mark.parametrize("attends_helsinkian_school", [False, True])
+@pytest.mark.parametrize("is_alive", [False, True])
+def test_youth_applications_activate_unexpired_inactive__vtj_enabled(
+    api_client,
+    make_youth_application_activation_link_unexpired,
+    settings,
+    application_year,
+    applicant_age,
+    is_helsinkian,
+    attends_helsinkian_school,
+    is_alive,
+):
+    social_security_number = get_random_social_security_number_for_year(
+        year=application_year - applicant_age
+    )
+    application_date = date(year=application_year, month=5, day=1)
+
+    with freeze_time(application_date):
+        app: YouthApplication = (
+            InactiveNoNeedAdditionalInfoYouthApplicationFactory.build(
+                is_unlisted_school=not attends_helsinkian_school,
+                social_security_number=social_security_number,
+                encrypted_handler_vtj_json=None,
+            )
         )
+        app.encrypted_original_vtj_json = mock_vtj_person_id_query_found_content(
+            first_name=app.first_name,
+            last_name=app.last_name,
+            social_security_number=app.social_security_number,
+            is_alive=is_alive,
+            is_home_municipality_helsinki=is_helsinkian,
+        )
+        app.save()
 
-    response = api_client.get(get_activation_url(inactive_youth_application.pk))
+    # Make sure the source object is set up correctly
+    assert not app.is_active
+    assert not app.has_activation_link_expired
+    assert app.is_unlisted_school == (not attends_helsinkian_school)
+    assert app.is_applicant_dead_according_to_vtj == (not is_alive)
+    assert app.is_social_security_number_valid_according_to_vtj
+    assert app.is_last_name_as_in_vtj
+    assert app.created_at.year == application_year
+    assert (app.created_at.year - app.birthdate.year) == applicant_age
+    assert not app.has_youth_summer_voucher
 
-    assert response.status_code == expected_status_code
-    if response.status_code == status.HTTP_302_FOUND:
-        assert response.url == inactive_youth_application.activated_page_url()
+    response = api_client.get(get_activation_url(app.pk))
 
-    inactive_youth_application.refresh_from_db()
-    assert not inactive_youth_application.has_youth_summer_voucher
+    assert response.status_code == status.HTTP_302_FOUND
+    app.refresh_from_db()
 
-    if response.status_code == status.HTTP_501_NOT_IMPLEMENTED:
-        assert not inactive_youth_application.is_active
-        assert inactive_youth_application.status == old_status
+    if is_alive and (
+        (applicant_age == 16 and (is_helsinkian or attends_helsinkian_school))
+        or (applicant_age == 17 and is_helsinkian)
+    ):
+        assert response.url == app.accepted_page_url()
+        assert app.status == YouthApplicationStatus.ACCEPTED
     else:
-        assert inactive_youth_application.is_active
-        assert (
-            inactive_youth_application.status
-            == YouthApplicationStatus.AWAITING_MANUAL_PROCESSING
+        assert response.url == app.additional_info_page_url(app.pk)
+        assert app.status == YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_DISABLE_VTJ=True)
+@pytest.mark.parametrize("application_year", [2022, 2023])
+@pytest.mark.parametrize("applicant_age", [15, 16, 17, 18])
+@pytest.mark.parametrize("is_helsinkian", [False, True])
+@pytest.mark.parametrize("attends_helsinkian_school", [False, True])
+def test_youth_applications_activate_unexpired_inactive__vtj_disabled(
+    api_client,
+    make_youth_application_activation_link_unexpired,
+    settings,
+    application_year,
+    applicant_age,
+    is_helsinkian,
+    attends_helsinkian_school,
+):
+    social_security_number = get_random_social_security_number_for_year(
+        year=application_year - applicant_age
+    )
+    application_date = date(year=application_year, month=5, day=1)
+
+    with freeze_time(application_date):
+        app: YouthApplication = InactiveNoNeedAdditionalInfoYouthApplicationFactory(
+            is_unlisted_school=not attends_helsinkian_school,
+            social_security_number=social_security_number,
+            encrypted_original_vtj_json=None,
+            encrypted_handler_vtj_json=None,
         )
-    assert inactive_youth_application.handler is None
-    assert inactive_youth_application.handled_at is None
+
+    # Make sure the source object is set up correctly
+    assert not app.is_active
+    assert not app.has_activation_link_expired
+    assert app.is_unlisted_school == (not attends_helsinkian_school)
+    assert app.created_at.year == application_year
+    assert (app.created_at.year - app.birthdate.year) == applicant_age
+    assert not app.has_youth_summer_voucher
+
+    response = api_client.get(get_activation_url(app.pk))
+
+    assert response.status_code == status.HTTP_302_FOUND
+    app.refresh_from_db()
+
+    if applicant_age == 16 and attends_helsinkian_school:
+        assert response.url == app.activated_page_url()
+        assert app.status == YouthApplicationStatus.AWAITING_MANUAL_PROCESSING
+    else:
+        assert response.url == app.additional_info_page_url(app.pk)
+        assert app.status == YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+
+    assert app.encrypted_original_vtj_json is None
+    assert app.encrypted_handler_vtj_json is None
 
 
 @pytest.mark.django_db

@@ -333,6 +333,21 @@ def determine_need_additional_info_vtj_json(youth_application):
 
 
 def determine_target_group_social_security_number(youth_application):
+    # NOTE: Faker generates a Finnish social security number with a birthdate
+    # today - random days between [min_age * 365, max_age * 365), see
+    # https://github.com/joke2k/faker/blob/v8.7.0/faker/providers/ssn/fi_FI/__init__.py#L29-L31
+    #
+    # Example with ssn(min_age=16, max_age=17):
+    # If today is 2022-12-31 then birthdate is in inclusive range [2006-01-01, 2006-12-31]
+    # If today is 2022-12-30 then birthdate is in inclusive range [2005-12-31, 2006-12-30]
+    # ...
+    # If today is 2022-01-01 then birthdate is in inclusive range [2005-01-02, 2006-01-01]
+    #
+    # So ONLY with the last day of the year will this be returning birthdate with
+    # today.year - ssn.birthdate.year == 16 only, otherwise the value might be 17 also.
+    #
+    # See YouthApplication.is_9th_grader_age and
+    #     YouthApplication.is_upper_secondary_education_1st_year_student_age
     return Faker(locale="fi").ssn(min_age=16, max_age=17)
 
 
