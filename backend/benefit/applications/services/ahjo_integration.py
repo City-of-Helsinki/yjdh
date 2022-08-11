@@ -21,20 +21,19 @@ TEMPLATE_ID_COMPOSED_DECLINED_PRIVATE = "composed_declined_private"
 JINJA_TEMPLATES_COMPOSED = {
     TEMPLATE_ID_COMPOSED_ACCEPTED_PUBLIC: {
         "path": "composed_accepted_public.html",
-        "file_name": "Liite 1 Helsinki-lisä koontiliite julkinen.pdf",
+        "file_name": "Liite 1 Helsinki-lisä hyväksytyt päätökset koontiliite julkinen.pdf",
     },
     TEMPLATE_ID_COMPOSED_DECLINED_PUBLIC: {
         "path": "composed_rejected_public.html",
-        "file_name": "Liite 1 Helsinki-lisä koontiliite julkinen.pdf",
+        "file_name": "Liite 1 Helsinki-lisä kielteiset päätökset koontiliite julkinen.pdf",
     },
     TEMPLATE_ID_COMPOSED_ACCEPTED_PRIVATE: {
         "path": "composed_accepted_private.html",
-        "file_name": "Helsinki-lisä koontiliite salassa pidettävä.pdf",
+        "file_name": "Helsinki-lisä hyväksytyt päätökset koontiliite salassa pidettävä.pdf",
     },
     TEMPLATE_ID_COMPOSED_DECLINED_PRIVATE: {
         "path": "benefit_declined.html",  # Composed decline template reuse single company decline template
-        "file_name": "Helsinki-lisä kielteiset päätökset koontiliite "
-        "yrityksille salassa pidettävä.pdf",
+        "file_name": "Helsinki-lisä kielteiset päätökset koontiliite salassa pidettävä.pdf",
     },
 }
 
