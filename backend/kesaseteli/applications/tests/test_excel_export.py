@@ -5,6 +5,7 @@ from typing import List
 
 import openpyxl
 import pytest
+from django.http import StreamingHttpResponse
 from django.shortcuts import reverse
 from django.test import override_settings
 from django.urls.exceptions import NoReverseMatch
@@ -86,7 +87,7 @@ def test_excel_view_download_unhandled(
     assert submitted_summer_voucher.is_exported is True
     # Cannot decode an xlsx file
     with pytest.raises(UnicodeDecodeError):
-        response.content.decode()
+        response.getvalue().decode()
 
 
 @pytest.mark.django_db
@@ -113,7 +114,7 @@ def test_excel_view_download_annual(
     assert submitted_summer_voucher.is_exported is False
     # Cannot decode an xlsx file
     with pytest.raises(UnicodeDecodeError):
-        response.content.decode()
+        response.getvalue().decode()
 
 
 @pytest.mark.django_db
@@ -144,9 +145,9 @@ def test_excel_view_download_content(  # noqa: C901
     with freeze_time(datetime.datetime(2021, 12, 31)):
         response = staff_client.get(download_url)
 
-    assert type(response.content) == bytes
+    assert isinstance(response, StreamingHttpResponse)
 
-    workbook = openpyxl.load_workbook(filename=BytesIO(response.content))
+    workbook = openpyxl.load_workbook(filename=BytesIO(response.getvalue()))
     active_worksheet = workbook.active
 
     rows_generator = active_worksheet.rows
