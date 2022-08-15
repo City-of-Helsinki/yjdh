@@ -7,6 +7,7 @@ import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import DateInputWithSeparator from 'shared/components/forms/fields/dateInputWithSeparator/DateInputWithSeparator';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import ExportFileType from 'shared/types/export-file-type';
 import {
   convertToUIDateFormat,
   getCorrectEndDate,
@@ -33,8 +34,10 @@ const ApplicationReports: React.FC = () => {
       <$Heading>{`${t(`${translationsBase}.headings.main`)}`}</$Heading>
 
       <ReportsSection
-        onDownloadButtonClick={() =>
+        types={['csv', 'pdf']}
+        onDownloadButtonClick={(type: ExportFileType) =>
           exportApplications(
+            type,
             EXPORT_APPLICATIONS_ROUTES.ACCEPTED,
             PROPOSALS_FOR_DESISION.ACCEPTED
           )
@@ -56,10 +59,11 @@ const ApplicationReports: React.FC = () => {
           )}`}</p>
         </$GridCell>
       </ReportsSection>
-
       <ReportsSection
-        onDownloadButtonClick={() =>
+        types={['csv', 'pdf']}
+        onDownloadButtonClick={(type: ExportFileType) =>
           exportApplications(
+            type,
             EXPORT_APPLICATIONS_ROUTES.REJECTED,
             PROPOSALS_FOR_DESISION.REJECTED
           )
@@ -83,6 +87,7 @@ const ApplicationReports: React.FC = () => {
       </ReportsSection>
 
       <ReportsSection
+        types={['csv']}
         onDownloadButtonClick={exportApplicationsInTimeRange}
         header={`${t(
           `${translationsBase}.headings.downloadApplicationsInTimeRange`

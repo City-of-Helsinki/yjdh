@@ -16,7 +16,9 @@ class ApplicationStatus(models.TextChoices):
 
     @classmethod
     def is_editable_status(cls, user, status):
-        if not user.is_authenticated:
+        if settings.DISABLE_AUTHENTICATION:
+            return True
+        elif not user.is_authenticated:
             return False
         elif user.is_handler():
             return cls.is_handler_editable_status(status, None)
