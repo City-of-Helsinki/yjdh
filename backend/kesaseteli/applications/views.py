@@ -31,8 +31,9 @@ class EmployerApplicationExcelDownloadView(TemplateView):
         ).order_by("-modified_at")
         return (
             EmployerSummerVoucher.objects.select_related(
-                "application", "application__company"
+                "application", "application__company", "application__user"
             )
+            .prefetch_related("attachments")
             .annotate(submitted_at=Subquery(newest_submitted.values("modified_at")[:1]))
             .order_by("submitted_at")
         )
