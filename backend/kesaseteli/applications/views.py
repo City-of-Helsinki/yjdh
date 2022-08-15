@@ -1,7 +1,8 @@
 from datetime import date
+from typing import Generator, Union
 
 from django.db.models import OuterRef, QuerySet, Subquery
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import FileResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateView
@@ -54,19 +55,24 @@ class EmployerApplicationExcelDownloadView(TemplateView):
         else:
             return super().get(request, *args, **kwargs)
 
-    def get_xlsx_response(self, queryset, columns: ExcelColumns) -> HttpResponse:
+    def get_xlsx_response(
+        self, queryset: QuerySet[EmployerSummerVoucher], columns: ExcelColumns
+    ) -> FileResponse:
         """
-        Generate a HttpResponse with an xlsx attachment.
+        Generate a FileResponse with an xlsx attachment.
         """
-        filename = get_xlsx_filename(columns)
-        response = HttpResponse(
+
+        def stream_xlsx_output(xlsx_output) -> Generator[bytes, None, None]:
+            yield xlsx_output
+
+        return FileResponse(
+            stream_xlsx_output(
+                export_applications_as_xlsx_output(queryset, columns, self.request)
+            ),
+            as_attachment=True,
+            filename=get_xlsx_filename(columns),
             content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
-        response["Content-Disposition"] = "attachment; filename=%s" % filename
-        response.content = export_applications_as_xlsx_output(
-            queryset, columns, self.request
-        )
-        return response
 
     def render_error(self, error) -> HttpResponseRedirect:
         """
@@ -82,7 +88,7 @@ class EmployerApplicationExcelDownloadView(TemplateView):
 
     def export_and_download_unhandled_applications(
         self, columns: ExcelColumns
-    ) -> HttpResponse:
+    ) -> Union[FileResponse, HttpResponseRedirect]:
         """
         Export unhandled applications and redirect back to the excel download page.
         The user will see a new xlsx file generated in the generated files list.
@@ -101,7 +107,7 @@ class EmployerApplicationExcelDownloadView(TemplateView):
 
     def export_and_download_annual_applications(
         self, columns: ExcelColumns
-    ) -> HttpResponse:
+    ) -> Union[FileResponse, HttpResponseRedirect]:
         """
         Export all applications from the ongoing year to xlsx file and download the file.
         The file is returned as a response, thus automatically downloaded. The genearted xlsx
