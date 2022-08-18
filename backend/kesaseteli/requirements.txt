@@ -194,12 +194,16 @@ urllib3==1.26.5
     #   sentry-sdk
 wcwidth==0.2.5
     # via prompt-toolkit
+xlsx-streaming==1.1.0
+    # via -r requirements.in
 xlsxwriter==3.0.1
     # via -r requirements.in
 xmlschema==1.11.2
     # via pysaml2
 zipp==3.8.0
     # via importlib-resources
+zipstream==1.1.4
+    # via xlsx-streaming
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
