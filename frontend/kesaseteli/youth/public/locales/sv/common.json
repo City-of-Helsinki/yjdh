@@ -101,7 +101,7 @@
       "unlisted_school": "Min skola finns inte på listan",
       "student_in_helsinki_but_not_resident": "Jag bor inte i Helsingfors, men jag går i skola i Helsingfors.",
       "moving_to_helsinki": "Jag bor inte ännu i Helsingfors, men håller på att flytta dit före 1. juni.",
-      "underage_or_overage": "jag hör inte baserat på åldern till Mina målgruppen, en hör i skolan till rätt årsklass.",
+      "underage_or_overage": "Jag hör inte baserat på åldern till målgruppen, en hör i skolan till rätt årsklass.",
       "personal_info_differs_from_vtj": "Mina personuppgifter avviker från uppgifterna i folkregistret.",
       "other": "Annan orsak, skriv här nedan"
     }
