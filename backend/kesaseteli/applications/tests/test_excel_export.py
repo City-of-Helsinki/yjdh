@@ -206,10 +206,7 @@ def test_excel_view_download_content(  # noqa: C901
                 expected_attachment_uri = get_attachment_uri(
                     voucher, excel_field, voucher.attachments, response.wsgi_request
                 )
-                if expected_attachment_uri == "":
-                    assert output_column.value is None
-                else:
-                    assert output_column.value == expected_attachment_uri
+                assert output_column.value == expected_attachment_uri
             elif (
                 excel_field.title
                 in (
@@ -219,10 +216,8 @@ def test_excel_view_download_content(  # noqa: C901
                 )
                 and not voucher.application.is_separate_invoicer
             ):
-                assert output_column.value is None, excel_field.title
-            elif excel_field.model_fields == [] and excel_field.value == "":
-                assert output_column.value is None
-            elif excel_field.model_fields == [] and excel_field.value != "":
+                assert output_column.value == "", excel_field.title
+            elif excel_field.model_fields == []:
                 assert output_column.value == excel_field.value
             else:
                 query = EmployerSummerVoucher.objects.filter(pk=voucher.pk)

@@ -332,16 +332,16 @@ def handle_special_cases(value, attr_str, summer_voucher, field: ExcelField, req
     return value
 
 
-def write_data_row(
-    ws,
-    row_number,
+def generate_data_row(
     summer_voucher,
     fields: List[ExcelField],
     request,
-):
+    is_template: bool = False,
+) -> list:
+    result = []
     for column_number, field in enumerate(fields):
         if field.title == ORDER_FIELD_TITLE:
-            cell_value = row_number
+            cell_value = summer_voucher.row_number
         elif field.title == RECEIVED_DATE_FIELD_TITLE:
             cell_value = summer_voucher.submitted_at.astimezone().strftime("%d/%m/%Y")
         else:
@@ -356,6 +356,38 @@ def write_data_row(
 
             cell_value = field.value % tuple(values)
 
+        if is_template and cell_value in [None, ""]:
+            # Assume string type for empty values in template and
+            # place a placeholder for xlsx-streaming package to infer cell type from
+            cell_value = "placeholder value"
+
+        result.append(cell_value)
+
+    return result
+
+
+def generate_data_rows(
+    summer_vouchers,
+    fields: List[ExcelField],
+    request,
+    is_template: bool = False,
+):
+    return (
+        generate_data_row(summer_voucher, fields, request, is_template)
+        for summer_voucher in summer_vouchers
+    )
+
+
+def write_data_row(
+    ws,
+    row_number,
+    summer_voucher,
+    fields: List[ExcelField],
+    request,
+    is_template: bool = False,
+):
+    data_row = generate_data_row(summer_voucher, fields, request, is_template)
+    for column_number, cell_value in enumerate(data_row):
         ws.write(row_number, column_number, cell_value)
 
 
@@ -364,6 +396,7 @@ def populate_workbook(
     summer_vouchers: QuerySet[EmployerSummerVoucher],
     columns: ExcelColumns,
     request,
+    is_template: bool = False,
 ):
     """
     Fill the workbook with information from the summer vouchers queryset. Field names and values are
@@ -378,19 +411,16 @@ def populate_workbook(
     for column, field in enumerate(exportable_fields):
         set_header_and_formatting(wb, ws, column, field, header_format)
     for row_number, summer_voucher in enumerate(summer_vouchers, 1):
-        write_data_row(ws, row_number, summer_voucher, exportable_fields, request)
+        write_data_row(
+            ws, row_number, summer_voucher, exportable_fields, request, is_template
+        )
     wb.close()
 
 
-def export_applications_as_xlsx_output(
+def generate_xlsx_template(
     summer_vouchers: QuerySet[EmployerSummerVoucher], columns: ExcelColumns, request
-) -> bytes:
-    """
-    Creates an xlsx file in memory, without saving it on the disk. Return the output value as bytes.
-    """
+):
     output = io.BytesIO()
-
     wb = Workbook(output)
-    populate_workbook(wb, summer_vouchers, columns, request)
-
-    return output.getvalue()
+    populate_workbook(wb, summer_vouchers[0:1], columns, request, is_template=True)
+    return output
