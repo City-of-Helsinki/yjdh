@@ -30,7 +30,7 @@ const TextInput: React.FC<TextInputProps> = ({
   const { getValue, getError, fieldName, getErrorText } =
     useApplicationFormField<string>(id);
 
-  const errorText = React.useMemo((): string | undefined => {
+  const errorText = (): string | undefined => {
     const errorType = getError()?.type;
     const text = getErrorText();
     if (!text || !errorType) {
@@ -43,25 +43,16 @@ const TextInput: React.FC<TextInputProps> = ({
       return `${text}. ${helperText}`;
     }
     return text;
-  }, [t, getError, getErrorText, helperFormat]);
+  };
 
-  // TODO: This can be removed after backend supports invalid values in draft save
-  const setValueForBackend = React.useCallback(
-    (newValue: string) =>
-      // getError does not always update: https://github.com/react-hook-form/react-hook-form/issues/2893
-      // if value hasnt changed (getValue is same as new value), then error is present and invalid value is changed to undefined
-      // to prevent backend to fail
-      getError() && getValue() === newValue ? undefined : newValue,
-    [getError, getValue]
-  );
   return (
     <TextInputBase<ApplicationFormData>
-      registerOptions={{ ...validation, setValueAs: setValueForBackend }}
+      registerOptions={{ ...validation }}
       type={type}
       id={id}
       placeholder={placeholder}
       initialValue={getValue()}
-      errorText={errorText}
+      errorText={errorText()}
       label={t(`common:application.form.inputs.${fieldName}`)}
       {...$gridCellProps}
     />

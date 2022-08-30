@@ -21,7 +21,7 @@ type Props = {
 // TODO: This can be removed after backend supports invalid values in draft save
 const convertDateForBackend = (dateString: string): string | undefined => {
   const result = convertToBackendDateFormat(dateString);
-  return isEmpty(result) ? undefined : result;
+  return isEmpty(result) || dateString.length < 8 ? undefined : result;
 };
 
 const DateInput = ({
@@ -31,16 +31,8 @@ const DateInput = ({
 }: Props): ReturnType<typeof HdsDateInput> => {
   const { t } = useTranslation();
 
-  const {
-    defaultLabel,
-    getValue,
-    getError,
-    getErrorText,
-    setError,
-    clearErrors,
-    setValue,
-    clearValue,
-  } = useApplicationFormField<string>(id);
+  const { defaultLabel, getValue, getError, getErrorText, setError } =
+    useApplicationFormField<string>(id);
 
   const date = convertToUIDateFormat(getValue());
 
@@ -62,27 +54,11 @@ const DateInput = ({
     }
   }, [errorType, errorMessage, setError, t]);
 
-  // TODO: This can be removed after backend supports invalid values in draft save
-  const handleChange = React.useCallback(
-    (dateString?: string) => {
-      const uiDate = convertToUIDateFormat(dateString);
-      if (isEmpty(uiDate)) {
-        setError({ type: 'pattern' });
-        clearValue();
-      } else {
-        clearErrors();
-        setValue(uiDate);
-      }
-    },
-    [setError, clearValue, setValue, clearErrors]
-  );
-
   return (
     <DateInputBase<ApplicationFormData>
       id={id}
       registerOptions={{ ...validation, setValueAs: convertDateForBackend }}
       initialValue={date}
-      onChange={handleChange}
       errorText={getErrorText()}
       label={defaultLabel}
       {...$gridCellProps}
