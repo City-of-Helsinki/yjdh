@@ -846,35 +846,28 @@ def test_youth_applications_activate_unexpired_inactive__vtj_disabled(
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize("disable_vtj", [False, True])
+@pytest.mark.parametrize("mock_flag", [False, True])
+@pytest.mark.parametrize("rejected_application_exists", [False, True])
 @pytest.mark.parametrize(
-    "language,disable_vtj,rejected_application_exists,youth_application_factory",
+    "youth_application_factory",
     [
-        (
-            language,
-            disable_vtj,
-            rejected_application_exists,
-            youth_application_factory,
-        )
-        for language in get_supported_languages()
-        for rejected_application_exists in [False, True]
-        for disable_vtj in [True]
-        for youth_application_factory in [
-            AwaitingManualProcessingYouthApplicationFactory,
-            AdditionalInfoRequestedYouthApplicationFactory,
-        ]
+        AwaitingManualProcessingYouthApplicationFactory,
+        AdditionalInfoRequestedYouthApplicationFactory,
     ],
 )
 def test_youth_applications_activate_unexpired_active(
     api_client,
     make_youth_application_activation_link_unexpired,
     settings,
-    language,
     disable_vtj,
+    mock_flag,
     rejected_application_exists,
     youth_application_factory,
 ):
     settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
-    active_youth_application = youth_application_factory(language=language)
+    settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
+    active_youth_application = youth_application_factory()
     old_status = active_youth_application.status
     old_handler = active_youth_application.handler
     old_handled_at = active_youth_application.handled_at
@@ -882,7 +875,6 @@ def test_youth_applications_activate_unexpired_active(
     # Make sure the source object is set up correctly
     assert active_youth_application.is_active
     assert not active_youth_application.has_activation_link_expired
-    assert active_youth_application.language == language
     assert not active_youth_application.has_additional_info
     assert not active_youth_application.has_youth_summer_voucher
 
@@ -977,35 +969,28 @@ def test_youth_applications_activate_expired_inactive(
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize("disable_vtj", [False, True])
+@pytest.mark.parametrize("mock_flag", [False, True])
+@pytest.mark.parametrize("rejected_application_exists", [False, True])
 @pytest.mark.parametrize(
-    "language,disable_vtj,rejected_application_exists,youth_application_factory",
+    "youth_application_factory",
     [
-        (
-            language,
-            disable_vtj,
-            rejected_application_exists,
-            youth_application_factory,
-        )
-        for language in get_supported_languages()
-        for disable_vtj in [True]
-        for rejected_application_exists in [False, True]
-        for youth_application_factory in [
-            AwaitingManualProcessingYouthApplicationFactory,
-            AdditionalInfoRequestedYouthApplicationFactory,
-        ]
+        AwaitingManualProcessingYouthApplicationFactory,
+        AdditionalInfoRequestedYouthApplicationFactory,
     ],
 )
 def test_youth_applications_activate_expired_active(
     api_client,
     make_youth_application_activation_link_expired,
     settings,
-    language,
     disable_vtj,
+    mock_flag,
     rejected_application_exists,
     youth_application_factory,
 ):
     settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
-    active_youth_application = youth_application_factory(language=language)
+    settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
+    active_youth_application = youth_application_factory()
     old_status = active_youth_application.status
     old_handler = active_youth_application.handler
     old_handled_at = active_youth_application.handled_at
@@ -1013,7 +998,6 @@ def test_youth_applications_activate_expired_active(
     # Make sure the source object is set up correctly
     assert active_youth_application.is_active
     assert active_youth_application.has_activation_link_expired
-    assert active_youth_application.language == language
     assert not active_youth_application.has_additional_info
     assert not active_youth_application.has_youth_summer_voucher
 

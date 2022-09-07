@@ -10,7 +10,6 @@ import { EMAIL_REGEX } from 'shared/constants';
 const EmployerForm: React.FC = () => {
   const { t } = useTranslation();
   const stepTitle = t('common:application.step1.header');
-
   return (
     <>
       <FormSection
