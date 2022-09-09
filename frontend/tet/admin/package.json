@@ -22,7 +22,7 @@
     "axios": "^0.27.2",
     "babel-plugin-import": "^1.13.3",
     "dotenv": "^16.0.0",
-    "hds-react": "^1.15.0",
+    "hds-react": "^2.2.0",
     "leaflet": "^1.7.1",
     "next": "^11.1.4",
     "next-compose-plugins": "^2.2.1",
