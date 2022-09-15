@@ -24,7 +24,7 @@
     "babel-plugin-import": "^1.13.3",
     "dotenv": "^16.0.0",
     "finnish-ssn": "^2.0.4",
-    "hds-react": "^1.15.0",
+    "hds-react": "^2.3.0",
     "lodash": "^4.17.21",
     "next": "^11.1.4",
     "next-compose-plugins": "^2.2.1",
