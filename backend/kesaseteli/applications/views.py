@@ -3,6 +3,7 @@ from functools import partial
 from typing import Union
 
 import xlsx_streaming
+from django.conf import settings
 from django.db.models import OuterRef, QuerySet, Subquery, Window
 from django.db.models.functions import RowNumber
 from django.http import HttpResponseRedirect, StreamingHttpResponse
@@ -80,7 +81,7 @@ class EmployerApplicationExcelDownloadView(TemplateView):
                 qs=queryset,
                 xlsx_template=generate_xlsx_template(queryset, columns, self.request),
                 serializer=serializer,
-                batch_size=50,
+                batch_size=settings.EXCEL_DOWNLOAD_BATCH_SIZE,
             ),
             content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )

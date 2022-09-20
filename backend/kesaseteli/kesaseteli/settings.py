@@ -137,6 +137,7 @@ env = environ.Env(
     SUOMIFI_ADMINISTRATIVE_FIRST_NAME=(str, None),
     SUOMIFI_ADMINISTRATIVE_LAST_NAME=(str, None),
     SUOMIFI_ADMINISTRATIVE_EMAIL=(str, None),
+    EXCEL_DOWNLOAD_BATCH_SIZE=(int, 50),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -156,6 +157,7 @@ VTJ_USERNAME = env.str("VTJ_USERNAME")
 VTJ_PASSWORD = env.str("VTJ_PASSWORD")
 VTJ_TIMEOUT = env.int("VTJ_TIMEOUT")
 NEXT_PUBLIC_ENABLE_SUOMIFI = env("NEXT_PUBLIC_ENABLE_SUOMIFI")
+EXCEL_DOWNLOAD_BATCH_SIZE = env.int("EXCEL_DOWNLOAD_BATCH_SIZE")
 
 DB_PREFIX = {
     None: env.str("DB_PREFIX"),
