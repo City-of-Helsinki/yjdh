@@ -4,7 +4,7 @@ from typing import Union
 
 import xlsx_streaming
 from django.conf import settings
-from django.db.models import OuterRef, QuerySet, Subquery, Window
+from django.db.models import F, OuterRef, QuerySet, Subquery, Window
 from django.db.models.functions import RowNumber
 from django.http import HttpResponseRedirect, StreamingHttpResponse
 from django.shortcuts import render
@@ -45,8 +45,16 @@ class EmployerApplicationExcelDownloadView(TemplateView):
             )
             .prefetch_related("attachments")
             .annotate(submitted_at=Subquery(newest_submitted.values("modified_at")[:1]))
-            .order_by("submitted_at")
-            .annotate(row_number=Window(expression=RowNumber()))
+            # Use created_at and primary key as the secondary and tertiary ordering
+            # parameters to force a predictable although slightly arbitrary ordering for
+            # queryset rows with identical submitted_at values.
+            .order_by("submitted_at", "created_at", "pk")
+            .annotate(
+                row_number=Window(
+                    expression=RowNumber(),
+                    order_by=[F("submitted_at"), F("created_at"), F("pk")],
+                )
+            )
         )
 
     @enforce_handler_view_adfs_login

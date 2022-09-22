@@ -49,7 +49,9 @@ def create_test_employer_summer_vouchers(year) -> List[EmployerSummerVoucher]:
             [utc_datetime(year, 3, 11), utc_datetime(year, 9, 1)],
             0,
         ),
+        (utc_datetime(year, 2, 1), [utc_datetime(year, 9, 2)], 1),
         (utc_datetime(year, 2, 5), [utc_datetime(year, 9, 2)], 1),
+        (utc_datetime(year, 2, 2), [utc_datetime(year, 9, 2)], 1),
     ]:
         with freeze_time(created_at):
             voucher = EmployerSummerVoucherFactory(
@@ -76,7 +78,7 @@ def test_employer_summer_voucher_last_submitted_at(year):
     """
     vouchers = create_test_employer_summer_vouchers(year=year)
 
-    assert len(vouchers) == 11
+    assert len(vouchers) == 13
     assert vouchers[0].last_submitted_at == utc_datetime(year, 1, 18)
     assert vouchers[1].last_submitted_at == utc_datetime(year, 2, 1)
     assert vouchers[2].last_submitted_at == utc_datetime(year, 2, 9)
@@ -88,6 +90,8 @@ def test_employer_summer_voucher_last_submitted_at(year):
     assert vouchers[8].last_submitted_at == utc_datetime(year, 3, 12)
     assert vouchers[9].last_submitted_at == utc_datetime(year, 9, 1)
     assert vouchers[10].last_submitted_at == utc_datetime(year, 9, 2)
+    assert vouchers[11].last_submitted_at == utc_datetime(year, 9, 2)
+    assert vouchers[12].last_submitted_at == utc_datetime(year, 9, 2)
 
 
 @pytest.mark.django_db(transaction=True, reset_sequences=True)
