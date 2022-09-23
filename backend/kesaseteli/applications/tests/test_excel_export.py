@@ -36,6 +36,10 @@ from applications.exporters.excel_exporter import (
 )
 from applications.models import EmployerSummerVoucher
 from applications.tests.test_models import create_test_employer_summer_vouchers
+from common.tests.factories import (
+    EmployerApplicationFactory,
+    EmployerSummerVoucherFactory,
+)
 from common.urls import handler_403_url
 
 
@@ -101,6 +105,24 @@ def test_excel_view_download_no_unhandled_applications(staff_client):
 
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.parametrize("columns", ExcelColumns.values)
+def test_excel_view_download_no_annual_applications(staff_client, columns):
+    # Create draft applications with/without voucher, these should not be returned
+    EmployerSummerVoucherFactory(
+        application=EmployerApplicationFactory(status=EmployerApplicationStatus.DRAFT)
+    )
+    EmployerApplicationFactory(status=EmployerApplicationStatus.DRAFT)
+
+    response = staff_client.get(
+        f"{excel_download_url()}?download=annual&columns={columns}"
+    )
+
+    assert response.status_code == 200
+    assert "Hakemuksia ei löytynyt." in response.content.decode()
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_excel_view_download_annual(
     staff_client, submitted_summer_voucher, submitted_employment_contract_attachment
 ):
@@ -140,7 +162,15 @@ def test_excel_view_download_content(  # noqa: C901
     download_url,
     expected_output_excel_fields: List[ExcelField],
 ):
-    vouchers = create_test_employer_summer_vouchers(year=2021)
+    def employer_summer_voucher_sorting_key(voucher: EmployerSummerVoucher):
+        # Sorting key should be the same as what is used to order by queryset results
+        # in Excel download, see EmployerApplicationExcelDownloadView
+        return voucher.last_submitted_at, voucher.created_at, voucher.pk
+
+    vouchers: List[EmployerSummerVoucher] = sorted(
+        create_test_employer_summer_vouchers(year=2021),
+        key=employer_summer_voucher_sorting_key,
+    )
 
     with freeze_time(datetime.datetime(2021, 12, 31)):
         response = staff_client.get(download_url)
@@ -169,7 +199,7 @@ def test_excel_view_download_content(  # noqa: C901
     for row_number, (data_row, voucher) in enumerate(zip(data_rows, vouchers), start=1):
         for output_column, excel_field in zip(data_row, expected_output_excel_fields):
             if excel_field.title == ORDER_FIELD_TITLE:
-                assert output_column.value == row_number
+                assert output_column.value == row_number, "Incorrect output sorting"
             elif excel_field.title == RECEIVED_DATE_FIELD_TITLE:
                 assert (
                     output_column.value
@@ -206,10 +236,7 @@ def test_excel_view_download_content(  # noqa: C901
                 expected_attachment_uri = get_attachment_uri(
                     voucher, excel_field, voucher.attachments, response.wsgi_request
                 )
-                if expected_attachment_uri == "":
-                    assert output_column.value is None
-                else:
-                    assert output_column.value == expected_attachment_uri
+                assert output_column.value == expected_attachment_uri
             elif (
                 excel_field.title
                 in (
@@ -219,10 +246,8 @@ def test_excel_view_download_content(  # noqa: C901
                 )
                 and not voucher.application.is_separate_invoicer
             ):
-                assert output_column.value is None, excel_field.title
-            elif excel_field.model_fields == [] and excel_field.value == "":
-                assert output_column.value is None
-            elif excel_field.model_fields == [] and excel_field.value != "":
+                assert output_column.value == "", excel_field.title
+            elif excel_field.model_fields == []:
                 assert output_column.value == excel_field.value
             else:
                 query = EmployerSummerVoucher.objects.filter(pk=voucher.pk)

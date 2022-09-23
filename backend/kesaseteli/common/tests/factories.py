@@ -30,7 +30,10 @@ from applications.tests.data.mock_vtj import (
     mock_vtj_person_id_query_not_found_content,
 )
 from companies.models import Company
-from shared.common.tests.factories import HandlerUserFactory, UserFactory
+from shared.common.tests.factories import (
+    DuplicateAllowingUserFactory,
+    HandlerUserFactory,
+)
 
 
 class CompanyFactory(factory.django.DjangoModelFactory):
@@ -99,7 +102,7 @@ class EmployerSummerVoucherFactory(factory.django.DjangoModelFactory):
 
 class EmployerApplicationFactory(factory.django.DjangoModelFactory):
     company = factory.SubFactory(CompanyFactory)
-    user = factory.SubFactory(UserFactory)
+    user = factory.SubFactory(DuplicateAllowingUserFactory)
     status = factory.Faker("random_element", elements=EmployerApplicationStatus.values)
     street_address = factory.Faker("street_address")
     bank_account_number = factory.Faker("iban")
