@@ -21,4 +21,5 @@ python-stdnum
 requests
 sentry-sdk
 xlsxwriter
+xlsx-streaming
 -e file:../shared
