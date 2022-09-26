@@ -176,7 +176,7 @@ def test_get_company_from_yrtti(
 
 
 @pytest.mark.django_db
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False, DISABLE_TOS_APPROVAL_CHECK=False)
 def test_get_company_from_service_bus_and_yrtti_results_in_error(
     api_client, requests_mock, mock_get_organisation_roles_and_create_company
 ):
