@@ -95,7 +95,8 @@ class AttachmentField(FileField):
 
         url_pattern_name = "v1:applicant-application-download-attachment"
         request = self.context.get("request")
-        if request and get_request_user_from_context(self).is_handler():
+        requested_user = get_request_user_from_context(self)
+        if request and not isinstance(requested_user, AnonymousUser) and requested_user.is_handler():
             url_pattern_name = "v1:handler-application-download-attachment"
 
         path = reverse(
