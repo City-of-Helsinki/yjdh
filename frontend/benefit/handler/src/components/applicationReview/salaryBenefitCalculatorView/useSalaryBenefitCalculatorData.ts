@@ -58,7 +58,7 @@ const useSalaryBenefitCalculatorData = (
   );
 
   const { calculateSalaryBenefit, calculationsErrors } =
-    useHandlerReviewActions(application);
+    useHandlerReviewActions(application, isManualCalculator);
 
   const [newTrainingCompensation, setNewTrainingCompensation] =
     useState<TrainingCompensation>({

@@ -96,7 +96,11 @@ class AttachmentField(FileField):
         url_pattern_name = "v1:applicant-application-download-attachment"
         request = self.context.get("request")
         requested_user = get_request_user_from_context(self)
-        if request and not isinstance(requested_user, AnonymousUser) and requested_user.is_handler():
+        if (
+            request
+            and not isinstance(requested_user, AnonymousUser)
+            and requested_user.is_handler()
+        ):
             url_pattern_name = "v1:handler-application-download-attachment"
 
         path = reverse(
@@ -858,7 +862,6 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             last_possible_end_date = get_date_range_end_with_days360(
                 obj.start_date, aggregated_info.months_remaining
             )
-
         return {
             "months_used": to_decimal(
                 aggregated_info.months_used, decimal_places=2, allow_null=True
