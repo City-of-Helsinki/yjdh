@@ -14,7 +14,7 @@
         <th class="text-right" scope="col">Yhteensä</th>
         </tr>
         {% for app in apps %}
-            {% if app.ahjo_rows.count() < 2 %}
+            {% if app.ahjo_rows.count() == 0 %}
             <tr>
                 <td>{{ app.ahjo_application_number }}</td>
                 <td>{{ app.company_name }}</td>
