@@ -83,9 +83,10 @@ const useApplicationReports = (): ExtendedComponentProps => {
       exportApplicationsRoute: EXPORT_APPLICATIONS_ROUTES,
       proposalForDecision: PROPOSALS_FOR_DESISION
     ) => {
+      const urlSafeType: string = String(type).toLowerCase().replace('/', '_');
       const data = await handleResponse<string>(
         axios.get(
-          `${BackendEndpoint.HANDLER_APPLICATIONS}${exportApplicationsRoute}_${type}/`,
+          `${BackendEndpoint.HANDLER_APPLICATIONS}${exportApplicationsRoute}_${urlSafeType}/`,
           { responseType: 'arraybuffer' }
         )
       );

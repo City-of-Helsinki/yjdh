@@ -1,7 +1,9 @@
+from typing import List, Tuple
+
 from django.conf import settings
 from django.core import exceptions
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.http import FileResponse, HttpResponse, StreamingHttpResponse
 from django.utils import timezone
 from django.utils.text import format_lazy
@@ -100,7 +102,7 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
     ]
     search_fields = ["company_name", "company_contact_person_email"]
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Application]:
         user = self.request.user
         # FIXME: Remove DISABLE_AUTHENTICATION line when FE implemented authentication
         if not settings.DISABLE_AUTHENTICATION:
@@ -345,33 +347,19 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
 
     @action(methods=["GET"], detail=False)
     @transaction.atomic
-    def export_new_accepted_applications_csv(self, request) -> StreamingHttpResponse:
-        return self._csv_response(
+    def export_new_accepted_applications_csv_pdf(self, request) -> HttpResponse:
+        return self._csv_pdf_response(
             self._create_application_batch(ApplicationStatus.ACCEPTED)
         )
 
     @action(methods=["GET"], detail=False)
     @transaction.atomic
-    def export_new_rejected_applications_csv(self, request) -> StreamingHttpResponse:
-        return self._csv_response(
+    def export_new_rejected_applications_csv_pdf(self, request) -> HttpResponse:
+        return self._csv_pdf_response(
             self._create_application_batch(ApplicationStatus.REJECTED)
         )
 
-    @action(methods=["GET"], detail=False)
-    @transaction.atomic
-    def export_new_accepted_applications_pdf(self, request) -> HttpResponse:
-        return self._pdf_response(
-            self._create_application_batch(ApplicationStatus.ACCEPTED)
-        )
-
-    @action(methods=["GET"], detail=False)
-    @transaction.atomic
-    def export_new_rejected_applications_pdf(self, request) -> HttpResponse:
-        return self._pdf_response(
-            self._create_application_batch(ApplicationStatus.REJECTED)
-        )
-
-    def _create_application_batch(self, status):
+    def _create_application_batch(self, status) -> QuerySet[Application]:
         """
         Create a new application batch out of the existing applications in the given status
         that are not yet assigned to a batch.
@@ -391,31 +379,41 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
             queryset.update(batch=batch)
         return self.get_queryset().filter(pk__in=application_ids)
 
-    def _csv_response(self, queryset) -> StreamingHttpResponse:
-        csv_service = ApplicationsCsvService(
-            queryset.order_by(self.APPLICATION_ORDERING)
-        )
-        file_name = format_lazy(
+    @staticmethod
+    def _export_filename_without_suffix():
+        return format_lazy(
             _("Helsinki-lisän hakemukset viety {date}"),
             date=timezone.now().strftime("%Y%m%d_%H%M%S"),
+        )
+
+    def _csv_response(self, queryset: QuerySet[Application]) -> StreamingHttpResponse:
+        csv_service = ApplicationsCsvService(
+            queryset.order_by(self.APPLICATION_ORDERING)
         )
         response = StreamingHttpResponse(
             csv_service.get_csv_string_lines_generator(), content_type="text/csv"
         )
-        response["Content-Disposition"] = "attachment; filename={file_name}.csv".format(
-            file_name=file_name
+        response["Content-Disposition"] = "attachment; filename={filename}.csv".format(
+            filename=self._export_filename_without_suffix()
         )
         return response
 
-    def _pdf_response(self, queryset) -> HttpResponse:
-        pdf_files = prepare_pdf_files(queryset.order_by(self.APPLICATION_ORDERING))
-        zip_file = generate_zip(pdf_files)
-        file_name = format_lazy(
-            _("Helsinki-lisän hakemukset viety {date}"),
-            date=timezone.now().strftime("%Y%m%d_%H%M%S"),
+    def _csv_pdf_response(self, queryset: QuerySet[Application]) -> HttpResponse:
+        export_filename_without_suffix = self._export_filename_without_suffix()
+        csv_filename = f"{export_filename_without_suffix}.csv"
+        zip_filename = f"{export_filename_without_suffix}.zip"
+        ordered_queryset = queryset.order_by(self.APPLICATION_ORDERING)
+        csv_service = ApplicationsCsvService(ordered_queryset)
+        csv_file_content: bytes = csv_service.get_csv_string().encode("utf-8")
+        csv_file_info: Tuple[str, bytes, str] = (
+            csv_filename,
+            csv_file_content,
+            "",  # No HTML content
         )
-        response = HttpResponse(zip_file, content_type="application/x-zip-compressed")
-        response["Content-Disposition"] = "attachment; filename={file_name}.zip".format(
-            file_name=file_name
+        pdf_files: List[Tuple[str, bytes, str]] = prepare_pdf_files(ordered_queryset)
+        zip_file: bytes = generate_zip([csv_file_info] + pdf_files)
+        response: HttpResponse = HttpResponse(
+            zip_file, content_type="application/x-zip-compressed"
         )
+        response["Content-Disposition"] = f"attachment; filename={zip_filename}"
         return response

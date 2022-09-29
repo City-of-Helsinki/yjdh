@@ -1,13 +1,18 @@
 import logging
 import os
 import zipfile
+from collections import defaultdict
 from io import BytesIO
+from typing import List, Tuple
 
 import jinja2
 import pdfkit
+from django.db.models import QuerySet
 from django.utils import timezone
 
 from applications.enums import ApplicationStatus, OrganizationType
+from applications.models import Application
+from companies.models import Company
 
 PDF_PATH = os.path.join(os.path.dirname(__file__) + "/pdf_templates")
 TEMPLATE_ID_BENEFIT_WITH_DE_MINIMIS_AID = "benefit_with_de_minimis_aid"
@@ -62,20 +67,24 @@ def _get_template(path):
     return env.get_template(path)
 
 
-def prepare_pdf_files(apps):
-    pdf_files = []
+def prepare_pdf_files(apps: QuerySet[Application]) -> List[Tuple[str, bytes, str]]:
+    pdf_files: List[Tuple[str, bytes, str]] = []
     # SINGLE COMPANY/ASSOCIATION PER DECISION PER FILE
-    accepted_apps = [app for app in apps if app.status == ApplicationStatus.ACCEPTED]
-    rejected_apps = [app for app in apps if app.status == ApplicationStatus.REJECTED]
-    accepted_groups = {}
+    accepted_apps: List[Application] = [
+        app for app in apps if app.status == ApplicationStatus.ACCEPTED
+    ]
+    rejected_apps: List[Application] = [
+        app for app in apps if app.status == ApplicationStatus.REJECTED
+    ]
+    accepted_groups = defaultdict(list)
     for app in accepted_apps:
-        accepted_groups.setdefault(app.company, []).append(app)
+        accepted_groups[app.company].append(app)
     for group, grouped_accepted_apps in accepted_groups.items():
         pdf_files.append(generate_single_approved_file(group, grouped_accepted_apps))
 
-    declined_groups = {}
+    declined_groups = defaultdict(list)
     for app in rejected_apps:
-        declined_groups.setdefault(app.company, []).append(app)
+        declined_groups[app.company].append(app)
     for group, grouped_rejected_apps in declined_groups.items():
         pdf_files.append(generate_single_declined_file(group, grouped_rejected_apps))
 
@@ -85,16 +94,20 @@ def prepare_pdf_files(apps):
     return pdf_files
 
 
-def generate_single_declined_file(company, apps):
+def generate_single_declined_file(
+    company: Company, apps: List[Application]
+) -> Tuple[str, bytes, str]:
     template_config = JINJA_TEMPLATES_SINGLE[TEMPLATE_ID_BENEFIT_DECLINED]
-    file_name = template_config["file_name"].format(company_name=company.name)
+    file_name: str = template_config["file_name"].format(company_name=company.name)
     temp = _get_template(template_config["path"])
-    html = temp.render(apps=apps)
-    single_pdf = pdfkit.from_string(html, False)
+    html: str = temp.render(apps=apps)
+    single_pdf: bytes = pdfkit.from_string(html, False)
     return file_name, single_pdf, html
 
 
-def generate_single_approved_file(company, apps):
+def generate_single_approved_file(
+    company: Company, apps: List[Application]
+) -> Tuple[str, bytes, str]:
     # FIXME: Need to change the logic later when we have multiple benefit per application
     # Association without business activity
     if (
@@ -105,29 +118,31 @@ def generate_single_approved_file(company, apps):
         template_config = JINJA_TEMPLATES_SINGLE[
             TEMPLATE_ID_BENEFIT_WITHOUT_DE_MINIMIS_AID
         ]
-        file_name = template_config["file_name"].format(company_name=company.name)
+        file_name: str = template_config["file_name"].format(company_name=company.name)
         temp = _get_template(template_config["path"])
-        html = temp.render(apps=apps)
+        html: str = temp.render(apps=apps)
     # Company and Association with business activity
     else:
         template_config = JINJA_TEMPLATES_SINGLE[
             TEMPLATE_ID_BENEFIT_WITH_DE_MINIMIS_AID
         ]
-        file_name = template_config["file_name"].format(company_name=company.name)
+        file_name: str = template_config["file_name"].format(company_name=company.name)
         temp = _get_template(template_config["path"])
-        html = temp.render(apps=apps)
-    single_pdf = pdfkit.from_string(html, False)
+        html: str = temp.render(apps=apps)
+    single_pdf: bytes = pdfkit.from_string(html, False)
     return file_name, single_pdf, html
 
 
-def generate_composed_files(accepted_apps=[], rejected_apps=[]):
-    files = []
+def generate_composed_files(
+    accepted_apps: List[Application] = [], rejected_apps: List[Application] = []
+) -> List[Tuple[str, bytes, str]]:
+    files: List[Tuple[str, bytes, str]] = []
     # Accepted applications
     if len(accepted_apps):
         template_config = JINJA_TEMPLATES_COMPOSED[TEMPLATE_ID_COMPOSED_ACCEPTED_PUBLIC]
         public_accepted_template = _get_template(template_config["path"])
-        file_name = template_config["file_name"]
-        html = public_accepted_template.render(
+        file_name: str = template_config["file_name"]
+        html: str = public_accepted_template.render(
             apps=accepted_apps,
             year=timezone.now().year,
         )
@@ -137,8 +152,8 @@ def generate_composed_files(accepted_apps=[], rejected_apps=[]):
             TEMPLATE_ID_COMPOSED_ACCEPTED_PRIVATE
         ]
         private_accepted_template = _get_template(template_config["path"])
-        file_name = template_config["file_name"]
-        html = private_accepted_template.render(
+        file_name: str = template_config["file_name"]
+        html: str = private_accepted_template.render(
             apps=accepted_apps,
             year=timezone.now().year,
         )
@@ -149,8 +164,8 @@ def generate_composed_files(accepted_apps=[], rejected_apps=[]):
 
         template_config = JINJA_TEMPLATES_COMPOSED[TEMPLATE_ID_COMPOSED_DECLINED_PUBLIC]
         public_declined_template = _get_template(template_config["path"])
-        file_name = template_config["file_name"]
-        html = public_declined_template.render(
+        file_name: str = template_config["file_name"]
+        html: str = public_declined_template.render(
             apps=rejected_apps,
             year=timezone.now().year,
         )
@@ -160,8 +175,8 @@ def generate_composed_files(accepted_apps=[], rejected_apps=[]):
             TEMPLATE_ID_COMPOSED_DECLINED_PRIVATE
         ]
         private_declined_template = _get_template(template_config["path"])
-        file_name = template_config["file_name"]
-        html = private_declined_template.render(
+        file_name: str = template_config["file_name"]
+        html: str = private_declined_template.render(
             apps=rejected_apps,
             year=timezone.now().year,
         )
@@ -169,7 +184,7 @@ def generate_composed_files(accepted_apps=[], rejected_apps=[]):
     return files
 
 
-def generate_zip(files):
+def generate_zip(files: List[Tuple[str, bytes, str]]) -> bytes:
     mem_zip = BytesIO()
 
     with zipfile.ZipFile(mem_zip, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
@@ -179,8 +194,8 @@ def generate_zip(files):
     return mem_zip.getvalue()
 
 
-def export_application_batch(batch):
-    pdf_files = prepare_pdf_files(
+def export_application_batch(batch) -> bytes:
+    pdf_files: List[Tuple[str, bytes, str]] = prepare_pdf_files(
         batch.applications.select_related("company")
         .select_related("employee")
         .order_by("application_number")
