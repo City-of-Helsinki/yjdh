@@ -15,6 +15,7 @@ from applications.models import Application
 from companies.models import Company
 
 PDF_PATH = os.path.join(os.path.dirname(__file__) + "/pdf_templates")
+BENEFIT_TEMPLATE_FILENAME = "benefit_template.html"
 TEMPLATE_ID_BENEFIT_WITH_DE_MINIMIS_AID = "benefit_with_de_minimis_aid"
 TEMPLATE_ID_BENEFIT_WITHOUT_DE_MINIMIS_AID = "benefit_without_de_minimis_aid"
 TEMPLATE_ID_BENEFIT_DECLINED = "benefit_declined"
@@ -23,39 +24,94 @@ TEMPLATE_ID_COMPOSED_DECLINED_PUBLIC = "composed_declined_public"
 TEMPLATE_ID_COMPOSED_ACCEPTED_PRIVATE = "composed_accepted_private"
 TEMPLATE_ID_COMPOSED_DECLINED_PRIVATE = "composed_declined_private"
 
+ACCEPTED_TITLE = "Työllisyydenhoidon Helsinki-lisän myöntäminen työnantajille"
+REJECTED_TITLE = (
+    "Työllisyydenhoidon Helsinki-lisä, kielteiset päätökset työnantajille"
+)
+
+
 JINJA_TEMPLATES_COMPOSED = {
     TEMPLATE_ID_COMPOSED_ACCEPTED_PUBLIC: {
-        "path": "composed_accepted_public.html",
+        "path": BENEFIT_TEMPLATE_FILENAME,
         "file_name": "Liite 1 Helsinki-lisä hyväksytyt päätökset koontiliite julkinen.pdf",
+        "context": {
+            "title": ACCEPTED_TITLE,
+            "show_ahjo_rows": True,
+            "show_de_minimis_aid_footer": False,
+            "show_employee_names": False,
+            "show_sums": True,
+        },
     },
     TEMPLATE_ID_COMPOSED_DECLINED_PUBLIC: {
-        "path": "composed_rejected_public.html",
+        "path": BENEFIT_TEMPLATE_FILENAME,
         "file_name": "Liite 1 Helsinki-lisä kielteiset päätökset koontiliite julkinen.pdf",
+        "context": {
+            "title": "Työllisyydenhoidon Helsinki-lisä työnantajille",
+            "show_ahjo_rows": False,
+            "show_de_minimis_aid_footer": False,
+            "show_employee_names": False,
+            "show_sums": False,
+        },
     },
     TEMPLATE_ID_COMPOSED_ACCEPTED_PRIVATE: {
-        "path": "composed_accepted_private.html",
+        "path": BENEFIT_TEMPLATE_FILENAME,
         "file_name": "Helsinki-lisä hyväksytyt päätökset koontiliite salassa pidettävä.pdf",
+        "context": {
+            "title": ACCEPTED_TITLE,
+            "show_ahjo_rows": True,
+            "show_de_minimis_aid_footer": False,
+            "show_employee_names": True,
+            "show_sums": True,
+        },
     },
     TEMPLATE_ID_COMPOSED_DECLINED_PRIVATE: {
-        "path": "benefit_declined.html",  # Composed decline template reuse single company decline template
+        "path": BENEFIT_TEMPLATE_FILENAME,
         "file_name": "Helsinki-lisä kielteiset päätökset koontiliite salassa pidettävä.pdf",
+        "context": {
+            "title": REJECTED_TITLE,
+            "show_ahjo_rows": False,
+            "show_de_minimis_aid_footer": False,
+            "show_employee_names": True,
+            "show_sums": False,
+        },
     },
 }
 
 JINJA_TEMPLATES_SINGLE = {
     TEMPLATE_ID_BENEFIT_WITH_DE_MINIMIS_AID: {
-        "path": "benefit_with_de_minimis_aid.html",
+        "path": BENEFIT_TEMPLATE_FILENAME,
         "file_name": "[{company_name}] Liite 2 hakijakohtainen de minimis "
         "yritykset.pdf",
+        "context": {
+            "title": ACCEPTED_TITLE,
+            "show_ahjo_rows": True,
+            "show_de_minimis_aid_footer": True,
+            "show_employee_names": True,
+            "show_sums": True,
+        },
     },
     TEMPLATE_ID_BENEFIT_WITHOUT_DE_MINIMIS_AID: {
-        "path": "benefit_without_de_minimis_aid.html",
+        "path": BENEFIT_TEMPLATE_FILENAME,
         "file_name": "[{company_name}] Liite 3 hakijakohtainen ei de"
         "minimis yritykset.pdf",
+        "context": {
+            "title": ACCEPTED_TITLE,
+            "show_ahjo_rows": True,
+            "show_de_minimis_aid_footer": False,
+            "show_employee_names": True,
+            "show_sums": True,
+        },
     },
     TEMPLATE_ID_BENEFIT_DECLINED: {
-        "path": "benefit_declined.html",
+        "path": BENEFIT_TEMPLATE_FILENAME,
         "file_name": "[{company_name}] Työllisyydenhoidon Helsinki-lisä, kielteiset päätökset yrityksille.pdf",
+        "context": {
+            "title": REJECTED_TITLE,
+            "show_ahjo_rows": False,
+            "show_de_minimis_aid_footer": False,
+            "show_employee_names": True,
+            "show_sums": False,
+        },
     },
 }
 LOGGER = logging.getLogger(__name__)
@@ -100,7 +156,12 @@ def generate_single_declined_file(
     template_config = JINJA_TEMPLATES_SINGLE[TEMPLATE_ID_BENEFIT_DECLINED]
     file_name: str = template_config["file_name"].format(company_name=company.name)
     temp = _get_template(template_config["path"])
-    html: str = temp.render(apps=apps)
+    html: str = temp.render(
+        {
+            **template_config["context"],
+            "apps": apps,
+        }
+    )
     single_pdf: bytes = pdfkit.from_string(html, False)
     return file_name, single_pdf, html
 
@@ -120,7 +181,12 @@ def generate_single_approved_file(
         ]
         file_name: str = template_config["file_name"].format(company_name=company.name)
         temp = _get_template(template_config["path"])
-        html: str = temp.render(apps=apps)
+        html: str = temp.render(
+            {
+                **template_config["context"],
+                "apps": apps,
+            }
+        )
     # Company and Association with business activity
     else:
         template_config = JINJA_TEMPLATES_SINGLE[
@@ -128,7 +194,12 @@ def generate_single_approved_file(
         ]
         file_name: str = template_config["file_name"].format(company_name=company.name)
         temp = _get_template(template_config["path"])
-        html: str = temp.render(apps=apps)
+        html: str = temp.render(
+            {
+                **template_config["context"],
+                "apps": apps,
+            }
+        )
     single_pdf: bytes = pdfkit.from_string(html, False)
     return file_name, single_pdf, html
 
@@ -143,8 +214,11 @@ def generate_composed_files(
         public_accepted_template = _get_template(template_config["path"])
         file_name: str = template_config["file_name"]
         html: str = public_accepted_template.render(
-            apps=accepted_apps,
-            year=timezone.now().year,
+            {
+                **template_config["context"],
+                "apps": accepted_apps,
+                "year": timezone.now().year,
+            }
         )
         files.append((file_name, pdfkit.from_string(html, False), html))
 
@@ -154,8 +228,11 @@ def generate_composed_files(
         private_accepted_template = _get_template(template_config["path"])
         file_name: str = template_config["file_name"]
         html: str = private_accepted_template.render(
-            apps=accepted_apps,
-            year=timezone.now().year,
+            {
+                **template_config["context"],
+                "apps": accepted_apps,
+                "year": timezone.now().year,
+            }
         )
         files.append((file_name, pdfkit.from_string(html, False), html))
 
@@ -166,8 +243,11 @@ def generate_composed_files(
         public_declined_template = _get_template(template_config["path"])
         file_name: str = template_config["file_name"]
         html: str = public_declined_template.render(
-            apps=rejected_apps,
-            year=timezone.now().year,
+            {
+                **template_config["context"],
+                "apps": rejected_apps,
+                "year": timezone.now().year,
+            }
         )
         files.append((file_name, pdfkit.from_string(html, False), html))
 
@@ -177,8 +257,11 @@ def generate_composed_files(
         private_declined_template = _get_template(template_config["path"])
         file_name: str = template_config["file_name"]
         html: str = private_declined_template.render(
-            apps=rejected_apps,
-            year=timezone.now().year,
+            {
+                **template_config["context"],
+                "apps": rejected_apps,
+                "year": timezone.now().year,
+            }
         )
         files.append((file_name, pdfkit.from_string(html, False), html))
     return files
