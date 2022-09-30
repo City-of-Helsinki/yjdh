@@ -46,7 +46,7 @@ JINJA_TEMPLATES_COMPOSED = {
         "path": BENEFIT_TEMPLATE_FILENAME,
         "file_name": "Liite 1 Helsinki-lisä kielteiset päätökset koontiliite julkinen.pdf",
         "context": {
-            "title": "Työllisyydenhoidon Helsinki-lisä työnantajille",
+            "title": REJECTED_TITLE,
             "show_ahjo_rows": False,
             "show_de_minimis_aid_footer": False,
             "show_employee_names": False,
