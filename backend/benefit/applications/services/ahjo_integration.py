@@ -2,17 +2,25 @@ import logging
 import os
 import zipfile
 from collections import defaultdict
+from dataclasses import dataclass
 from io import BytesIO
-from typing import List, Tuple
+from typing import List, Optional
 
 import jinja2
 import pdfkit
 from django.db.models import QuerySet
-from django.utils import timezone
 
 from applications.enums import ApplicationStatus, OrganizationType
 from applications.models import Application
 from companies.models import Company
+
+
+@dataclass
+class ExportFileInfo:
+    filename: str
+    file_content: bytes
+    html_content: str
+
 
 PDF_PATH = os.path.join(os.path.dirname(__file__) + "/pdf_templates")
 BENEFIT_TEMPLATE_FILENAME = "benefit_template.html"
@@ -23,6 +31,17 @@ TEMPLATE_ID_COMPOSED_ACCEPTED_PUBLIC = "composed_accepted_public"
 TEMPLATE_ID_COMPOSED_DECLINED_PUBLIC = "composed_declined_public"
 TEMPLATE_ID_COMPOSED_ACCEPTED_PRIVATE = "composed_accepted_private"
 TEMPLATE_ID_COMPOSED_DECLINED_PRIVATE = "composed_declined_private"
+
+COMPOSED_ACCEPTED_TEMPLATE_IDS = [
+    TEMPLATE_ID_COMPOSED_ACCEPTED_PUBLIC,
+    TEMPLATE_ID_COMPOSED_ACCEPTED_PRIVATE,
+]
+
+COMPOSED_DECLINED_TEMPLATE_IDS = [
+    TEMPLATE_ID_COMPOSED_DECLINED_PUBLIC,
+    TEMPLATE_ID_COMPOSED_DECLINED_PRIVATE,
+]
+
 
 ACCEPTED_TITLE = "Työllisyydenhoidon Helsinki-lisän myöntäminen työnantajille"
 REJECTED_TITLE = (
@@ -123,8 +142,8 @@ def _get_template(path):
     return env.get_template(path)
 
 
-def prepare_pdf_files(apps: QuerySet[Application]) -> List[Tuple[str, bytes, str]]:
-    pdf_files: List[Tuple[str, bytes, str]] = []
+def prepare_pdf_files(apps: QuerySet[Application]) -> List[ExportFileInfo]:
+    pdf_files: List[ExportFileInfo] = []
     # SINGLE COMPANY/ASSOCIATION PER DECISION PER FILE
     accepted_apps: List[Application] = [
         app for app in apps if app.status == ApplicationStatus.ACCEPTED
@@ -150,25 +169,32 @@ def prepare_pdf_files(apps: QuerySet[Application]) -> List[Tuple[str, bytes, str
     return pdf_files
 
 
+def generate_pdf(
+    apps: List[Application], template_config: dict, company: Optional[Company] = None
+) -> ExportFileInfo:
+    template = _get_template(template_config["path"])
+    file_name: str = template_config["file_name"]
+    if company:
+        file_name = file_name.format(company_name=company.name)
+    html: str = template.render({**template_config["context"], "apps": apps})
+    return ExportFileInfo(
+        filename=file_name,
+        file_content=pdfkit.from_string(html, False),
+        html_content=html,
+    )
+
+
 def generate_single_declined_file(
     company: Company, apps: List[Application]
-) -> Tuple[str, bytes, str]:
-    template_config = JINJA_TEMPLATES_SINGLE[TEMPLATE_ID_BENEFIT_DECLINED]
-    file_name: str = template_config["file_name"].format(company_name=company.name)
-    temp = _get_template(template_config["path"])
-    html: str = temp.render(
-        {
-            **template_config["context"],
-            "apps": apps,
-        }
+) -> ExportFileInfo:
+    return generate_pdf(
+        apps, JINJA_TEMPLATES_SINGLE[TEMPLATE_ID_BENEFIT_DECLINED], company
     )
-    single_pdf: bytes = pdfkit.from_string(html, False)
-    return file_name, single_pdf, html
 
 
 def generate_single_approved_file(
     company: Company, apps: List[Application]
-) -> Tuple[str, bytes, str]:
+) -> ExportFileInfo:
     # FIXME: Need to change the logic later when we have multiple benefit per application
     # Association without business activity
     if (
@@ -176,109 +202,39 @@ def generate_single_approved_file(
         == OrganizationType.ASSOCIATION
         and not apps[0].association_has_business_activities
     ):
-        template_config = JINJA_TEMPLATES_SINGLE[
-            TEMPLATE_ID_BENEFIT_WITHOUT_DE_MINIMIS_AID
-        ]
-        file_name: str = template_config["file_name"].format(company_name=company.name)
-        temp = _get_template(template_config["path"])
-        html: str = temp.render(
-            {
-                **template_config["context"],
-                "apps": apps,
-            }
-        )
+        template_id = TEMPLATE_ID_BENEFIT_WITHOUT_DE_MINIMIS_AID
     # Company and Association with business activity
     else:
-        template_config = JINJA_TEMPLATES_SINGLE[
-            TEMPLATE_ID_BENEFIT_WITH_DE_MINIMIS_AID
-        ]
-        file_name: str = template_config["file_name"].format(company_name=company.name)
-        temp = _get_template(template_config["path"])
-        html: str = temp.render(
-            {
-                **template_config["context"],
-                "apps": apps,
-            }
-        )
-    single_pdf: bytes = pdfkit.from_string(html, False)
-    return file_name, single_pdf, html
+        template_id = TEMPLATE_ID_BENEFIT_WITH_DE_MINIMIS_AID
+    return generate_pdf(apps, JINJA_TEMPLATES_SINGLE[template_id], company)
 
 
 def generate_composed_files(
-    accepted_apps: List[Application] = [], rejected_apps: List[Application] = []
-) -> List[Tuple[str, bytes, str]]:
-    files: List[Tuple[str, bytes, str]] = []
-    # Accepted applications
-    if len(accepted_apps):
-        template_config = JINJA_TEMPLATES_COMPOSED[TEMPLATE_ID_COMPOSED_ACCEPTED_PUBLIC]
-        public_accepted_template = _get_template(template_config["path"])
-        file_name: str = template_config["file_name"]
-        html: str = public_accepted_template.render(
-            {
-                **template_config["context"],
-                "apps": accepted_apps,
-                "year": timezone.now().year,
-            }
-        )
-        files.append((file_name, pdfkit.from_string(html, False), html))
-
-        template_config = JINJA_TEMPLATES_COMPOSED[
-            TEMPLATE_ID_COMPOSED_ACCEPTED_PRIVATE
-        ]
-        private_accepted_template = _get_template(template_config["path"])
-        file_name: str = template_config["file_name"]
-        html: str = private_accepted_template.render(
-            {
-                **template_config["context"],
-                "apps": accepted_apps,
-                "year": timezone.now().year,
-            }
-        )
-        files.append((file_name, pdfkit.from_string(html, False), html))
-
-    # Rejected applications
-    if len(rejected_apps):
-
-        template_config = JINJA_TEMPLATES_COMPOSED[TEMPLATE_ID_COMPOSED_DECLINED_PUBLIC]
-        public_declined_template = _get_template(template_config["path"])
-        file_name: str = template_config["file_name"]
-        html: str = public_declined_template.render(
-            {
-                **template_config["context"],
-                "apps": rejected_apps,
-                "year": timezone.now().year,
-            }
-        )
-        files.append((file_name, pdfkit.from_string(html, False), html))
-
-        template_config = JINJA_TEMPLATES_COMPOSED[
-            TEMPLATE_ID_COMPOSED_DECLINED_PRIVATE
-        ]
-        private_declined_template = _get_template(template_config["path"])
-        file_name: str = template_config["file_name"]
-        html: str = private_declined_template.render(
-            {
-                **template_config["context"],
-                "apps": rejected_apps,
-                "year": timezone.now().year,
-            }
-        )
-        files.append((file_name, pdfkit.from_string(html, False), html))
-    return files
+    accepted_apps: List[Application], rejected_apps: List[Application]
+) -> List[ExportFileInfo]:
+    return [
+        generate_pdf(accepted_apps, JINJA_TEMPLATES_COMPOSED[template_id])
+        for template_id in COMPOSED_ACCEPTED_TEMPLATE_IDS
+        if accepted_apps
+    ] + [
+        generate_pdf(rejected_apps, JINJA_TEMPLATES_COMPOSED[template_id])
+        for template_id in COMPOSED_DECLINED_TEMPLATE_IDS
+        if rejected_apps
+    ]
 
 
-def generate_zip(files: List[Tuple[str, bytes, str]]) -> bytes:
+def generate_zip(files: List[ExportFileInfo]) -> bytes:
     mem_zip = BytesIO()
 
     with zipfile.ZipFile(mem_zip, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
         for f in files:
-            zf.writestr(f[0], f[1])
+            zf.writestr(f.filename, f.file_content)
 
     return mem_zip.getvalue()
 
 
 def export_application_batch(batch) -> bytes:
-    pdf_files: List[Tuple[str, bytes, str]] = prepare_pdf_files(
+    pdf_files: List[ExportFileInfo] = prepare_pdf_files(
         batch.applications.select_related("company")
         .select_related("employee")
         .order_by("application_number")

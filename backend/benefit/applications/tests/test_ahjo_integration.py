@@ -1,6 +1,7 @@
 import io
 import zipfile
 from datetime import date
+from typing import List
 from unittest.mock import patch
 
 import pytest
@@ -8,6 +9,7 @@ import pytest
 from applications.enums import ApplicationStatus, BenefitType
 from applications.services.ahjo_integration import (
     export_application_batch,
+    ExportFileInfo,
     generate_composed_files,
     generate_single_approved_file,
     generate_single_declined_file,
@@ -53,7 +55,7 @@ def test_generate_single_approved_template_html(
         app.calculation.calculated_benefit_amount = 1000
         app.calculation.save()
     # Only assert html content for easier comparison
-    _, _, html = generate_single_approved_file(apps[0].company, apps)
+    html = generate_single_approved_file(apps[0].company, apps).html_content
     for app in apps:
         _assert_html_content(
             html,
@@ -73,7 +75,7 @@ def test_generate_single_declined_template_html(mock_pdf_convert):
         3, company=company, status=ApplicationStatus.REJECTED
     )
     # Only assert html content for easier comparison
-    _, _, html = generate_single_declined_file(apps[0].company, apps)
+    html = generate_single_declined_file(apps[0].company, apps).html_content
     for app in apps:
         _assert_html_content(
             html,
@@ -108,7 +110,7 @@ def test_generate_composed_template_html(mock_pdf_convert):
     )
 
     # Only assert html content for easier comparison
-    files = generate_composed_files(
+    files: List[ExportFileInfo] = generate_composed_files(
         [accepted_app_1, accepted_app_2], [rejected_app_1, rejected_app_2]
     )
     assert len(files) == 4
@@ -117,7 +119,7 @@ def test_generate_composed_template_html(mock_pdf_convert):
     # files[1]: Private accepted composed files
     # files[2]: Private rejected composed files
     _assert_html_content(
-        files[0][2],
+        files[0].html_content,
         (
             accepted_app_1.ahjo_application_number,
             accepted_app_2.ahjo_application_number,
@@ -130,7 +132,7 @@ def test_generate_composed_template_html(mock_pdf_convert):
         ),
     )
     _assert_html_content(
-        files[1][2],
+        files[1].html_content,
         (
             accepted_app_1.ahjo_application_number,
             accepted_app_2.ahjo_application_number,
@@ -138,7 +140,7 @@ def test_generate_composed_template_html(mock_pdf_convert):
         (rejected_app_1.ahjo_application_number,),
     )
     _assert_html_content(
-        files[2][2],
+        files[2].html_content,
         (
             rejected_app_1.ahjo_application_number,
             rejected_app_2.ahjo_application_number,
@@ -210,7 +212,9 @@ def test_multiple_benefit_per_application(mock_pdf_convert):
     application.refresh_from_db()
     application.calculation.init_calculator()
     application.calculation.calculate()
-    _, _, html = generate_single_approved_file(application.company, [application])
+    html = generate_single_approved_file(
+        application.company, [application]
+    ).html_content
     assert (
         html.count(application.ahjo_application_number) == 2
     )  # Make sure there are two rows in the report
