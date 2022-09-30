@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List
 
 from django.conf import settings
 from django.core import exceptions
@@ -24,7 +24,11 @@ from applications.api.v1.serializers import (
 )
 from applications.enums import ApplicationBatchStatus, ApplicationStatus
 from applications.models import Application, ApplicationBatch
-from applications.services.ahjo_integration import generate_zip, prepare_pdf_files
+from applications.services.ahjo_integration import (
+    ExportFileInfo,
+    generate_zip,
+    prepare_pdf_files,
+)
 from applications.services.applications_csv_report import ApplicationsCsvService
 from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
 from messages.models import MessageType
@@ -405,12 +409,12 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         ordered_queryset = queryset.order_by(self.APPLICATION_ORDERING)
         csv_service = ApplicationsCsvService(ordered_queryset)
         csv_file_content: bytes = csv_service.get_csv_string().encode("utf-8")
-        csv_file_info: Tuple[str, bytes, str] = (
-            csv_filename,
-            csv_file_content,
-            "",  # No HTML content
+        csv_file_info: ExportFileInfo = ExportFileInfo(
+            filename=csv_filename,
+            file_content=csv_file_content,
+            html_content="",  # No HTML content
         )
-        pdf_files: List[Tuple[str, bytes, str]] = prepare_pdf_files(ordered_queryset)
+        pdf_files: List[ExportFileInfo] = prepare_pdf_files(ordered_queryset)
         zip_file: bytes = generate_zip([csv_file_info] + pdf_files)
         response: HttpResponse = HttpResponse(
             zip_file, content_type="application/x-zip-compressed"
