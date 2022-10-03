@@ -181,7 +181,7 @@ def test_export_application_batch(application_batch):
 def test_multiple_benefit_per_application(mock_pdf_convert):
     mock_pdf_convert.return_value = {}
     # Test case data and expected results collected from
-    # calculator/tests/Helsinki-lisä laskurin testitapaukset.xlsx/ Sheet Palkan Helsinki-lisä / Column E
+    # calculator/tests/Helsinki-lisa laskurin testitapaukset.xlsx/ Sheet Palkan Helsinki-lisä / Column E
     application = ApplicationFactory(
         association_has_business_activities=True,
         company__company_form="ry",

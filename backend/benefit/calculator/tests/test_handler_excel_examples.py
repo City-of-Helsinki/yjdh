@@ -284,7 +284,7 @@ SHEETS_TO_TEST = [
 def test_cases_from_excel(request, api_client):
 
     excel_file_name = os.path.join(
-        request.fspath.dirname, "Helsinki-lisä laskurin testitapaukset.xlsx"
+        request.fspath.dirname, "Helsinki-lisa laskurin testitapaukset.xlsx"
     )
     wb = load_workbook(filename=excel_file_name, data_only=True)  # do not load formulas
     for sheet_name, test_handler_class in SHEETS_TO_TEST:
