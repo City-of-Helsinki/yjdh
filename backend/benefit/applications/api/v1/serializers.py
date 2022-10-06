@@ -95,7 +95,10 @@ class AttachmentField(FileField):
 
         url_pattern_name = "v1:applicant-application-download-attachment"
         request = self.context.get("request")
-        if request and get_request_user_from_context(self).is_handler():
+        user = get_request_user_from_context(self)
+        if settings.DISABLE_AUTHENTICATION or (
+            user and user.is_authenticated and user.is_handler()
+        ):
             url_pattern_name = "v1:handler-application-download-attachment"
 
         path = reverse(
@@ -463,7 +466,6 @@ class ApplicationBatchSerializer(serializers.ModelSerializer):
 
 
 class BaseApplicationSerializer(DynamicFieldsModelSerializer):
-
     """
     Fields in the Company model come from YTJ/other source and are not editable by user, and are listed
     in read_only_fields. If sent in the request, these fields are ignored.
@@ -1555,7 +1557,6 @@ class ApplicantApplicationStatusChoiceField(serializers.ChoiceField):
 
 
 class ApplicantApplicationSerializer(BaseApplicationSerializer):
-
     status = ApplicantApplicationStatusChoiceField(
         choices=ApplicationStatus.choices,
         validators=[ApplicantApplicationStatusValidator()],
