@@ -308,7 +308,7 @@ def test_application_edit_pay_subsidy_invalid_values(
 ):
     data = HandlerApplicationSerializer(handling_application).data
 
-    previous_data = copy.deepcopy(data["pay_subsidies"])
+    previous_pay_subsidies = copy.deepcopy(data["pay_subsidies"])
 
     data["pay_subsidies"] = [
         {
@@ -333,7 +333,90 @@ def test_application_edit_pay_subsidy_invalid_values(
 
     handling_application.refresh_from_db()
     data_after = HandlerApplicationSerializer(handling_application).data
-    assert previous_data == data_after["pay_subsidies"]
+    assert previous_pay_subsidies == data_after["pay_subsidies"]
+
+
+def test_application_edit_pay_subsidy_empty_date_values(
+    handler_api_client, handling_application
+):
+    data = HandlerApplicationSerializer(handling_application).data
+
+    previous_pay_subsidies = copy.deepcopy(data["pay_subsidies"])
+
+    data["pay_subsidies"] = [
+        {
+            "start_date": None,
+            "end_date": None,
+            "pay_subsidy_percent": 100,
+            "work_time_percent": 40,
+        },
+        {
+            "start_date": None,
+            "end_date": None,
+            "pay_subsidy_percent": 40,
+            "work_time_percent": 40,
+        },
+    ]
+
+    response = handler_api_client.put(
+        get_handler_detail_url(handling_application),
+        data,
+    )
+    assert response.status_code == 400
+
+    handling_application.refresh_from_db()
+    data_after = HandlerApplicationSerializer(handling_application).data
+    assert previous_pay_subsidies == data_after["pay_subsidies"]
+
+
+def test_application_pay_subsidy_empty_date_values_ignored_when_on_manual_calculator(
+    handler_api_client, handling_application
+):
+    """
+    paysubsidy validation should be skipped when manual calculator is toggled on
+    (When override_monthly_benefit_amount is not None)
+    """
+    data = HandlerApplicationSerializer(handling_application).data
+    data["calculation"]["start_date"] = str(handling_application.start_date)
+    data["calculation"]["end_date"] = str(handling_application.end_date)
+    data["calculation"]["override_monthly_benefit_amount"] = "100.00"
+    data["calculation"][
+        "override_monthly_benefit_amount_comment"
+    ] = "This is a comment."
+
+    data["pay_subsidies"] = [
+        {
+            "start_date": None,
+            "end_date": None,
+            "pay_subsidy_percent": 100,
+            "work_time_percent": 40,
+        },
+        {
+            "start_date": None,
+            "end_date": None,
+            "pay_subsidy_percent": 40,
+            "work_time_percent": 40,
+        },
+    ]
+
+    response = handler_api_client.put(
+        get_handler_detail_url(handling_application),
+        data,
+    )
+    assert response.status_code == 200
+
+    handling_application.refresh_from_db()
+    data_after = HandlerApplicationSerializer(handling_application).data
+    assert data_after["calculation"]["start_date"] == data["calculation"]["start_date"]
+    assert data_after["calculation"]["end_date"] == data["calculation"]["end_date"]
+    assert (
+        data_after["calculation"]["override_monthly_benefit_amount"]
+        == data["calculation"]["override_monthly_benefit_amount"]
+    )
+    assert (
+        data_after["calculation"]["override_monthly_benefit_amount_comment"]
+        == data["calculation"]["override_monthly_benefit_amount_comment"]
+    )
 
 
 def test_assign_handler(handler_api_client, received_application):
