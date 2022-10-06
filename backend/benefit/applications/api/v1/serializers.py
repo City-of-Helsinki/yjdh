@@ -859,7 +859,6 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             last_possible_end_date = get_date_range_end_with_days360(
                 obj.start_date, aggregated_info.months_remaining
             )
-
         return {
             "months_used": to_decimal(
                 aggregated_info.months_used, decimal_places=2, allow_null=True
