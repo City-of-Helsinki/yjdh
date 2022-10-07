@@ -10,7 +10,7 @@ import jinja2
 import pdfkit
 from django.db.models import QuerySet
 
-from applications.enums import ApplicationStatus, OrganizationType
+from applications.enums import ApplicationStatus
 from applications.models import Application
 from companies.models import Company
 
@@ -195,18 +195,15 @@ def generate_single_declined_file(
 def generate_single_approved_file(
     company: Company, apps: List[Application]
 ) -> ExportFileInfo:
-    # FIXME: Need to change the logic later when we have multiple benefit per application
-    # Association without business activity
-    if (
-        OrganizationType.resolve_organization_type(company.company_form_code)
-        == OrganizationType.ASSOCIATION
-        and not apps[0].association_has_business_activities
-    ):
-        template_id = TEMPLATE_ID_BENEFIT_WITHOUT_DE_MINIMIS_AID
-    # Company and Association with business activity
-    else:
-        template_id = TEMPLATE_ID_BENEFIT_WITH_DE_MINIMIS_AID
-    return generate_pdf(apps, JINJA_TEMPLATES_SINGLE[template_id], company)
+    return generate_pdf(
+        apps=apps,
+        template_config=JINJA_TEMPLATES_SINGLE[
+            TEMPLATE_ID_BENEFIT_WITH_DE_MINIMIS_AID
+            if any(app.de_minimis_aid for app in apps)
+            else TEMPLATE_ID_BENEFIT_WITHOUT_DE_MINIMIS_AID
+        ],
+        company=company,
+    )
 
 
 def generate_composed_files(
