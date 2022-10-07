@@ -34,7 +34,7 @@ const ApplicationReports: React.FC = () => {
       <$Heading>{`${t(`${translationsBase}.headings.main`)}`}</$Heading>
 
       <ReportsSection
-        types={['csv/pdf']}
+        exportFileType="csv/pdf"
         onDownloadButtonClick={(type: ExportFileType) =>
           exportApplications(
             type,
@@ -60,7 +60,7 @@ const ApplicationReports: React.FC = () => {
         </$GridCell>
       </ReportsSection>
       <ReportsSection
-        types={['csv/pdf']}
+        exportFileType="csv/pdf"
         onDownloadButtonClick={(type: ExportFileType) =>
           exportApplications(
             type,
@@ -87,7 +87,7 @@ const ApplicationReports: React.FC = () => {
       </ReportsSection>
 
       <ReportsSection
-        types={['csv']}
+        exportFileType="csv"
         onDownloadButtonClick={exportApplicationsInTimeRange}
         header={`${t(
           `${translationsBase}.headings.downloadApplicationsInTimeRange`
