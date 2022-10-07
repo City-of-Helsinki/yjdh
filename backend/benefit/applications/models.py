@@ -16,7 +16,6 @@ from applications.enums import (
     ApplicationStep,
     AttachmentType,
     BenefitType,
-    OrganizationType,
 )
 from common.localized_iban_field import LocalizedIBANField
 from common.utils import DurationMixin
@@ -337,14 +336,8 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
         return None
 
     @property
-    def ahjo_application_number(self):
-        # Adding prefix to application number before sending to AHJO based on the company form
-        if (
-            OrganizationType.resolve_organization_type(self.company.company_form_code)
-            == OrganizationType.ASSOCIATION
-        ):
-            return "R{}".format(self.application_number)
-        return "Y{}".format(self.application_number)
+    def ahjo_application_number(self) -> str:
+        return str(self.application_number)
 
     @property
     def ahjo_rows(self):

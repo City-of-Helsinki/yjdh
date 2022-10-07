@@ -1968,6 +1968,7 @@ def test_application_number(api_client, application):
     assert next_application.application_number == application.application_number + 2
 
 
+@override_settings(DISABLE_TOS_APPROVAL_CHECK=False)
 def test_application_api_before_accept_tos(api_client, application):
     # Clear user TOS approval
     TermsOfServiceApproval.objects.all().delete()
