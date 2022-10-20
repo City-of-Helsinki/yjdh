@@ -1525,6 +1525,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         return get_request_user_from_context(self)
 
     def logged_in_user_is_admin(self):
+        if settings.DISABLE_AUTHENTICATION:
+            return True
         user = get_request_user_from_context(self)
         if user and hasattr(user, "is_handler"):
             return user.is_handler()
