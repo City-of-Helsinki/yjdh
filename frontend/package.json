@@ -64,7 +64,11 @@
     "te-yout:start": "npx lerna run --scope  @frontend/te-yout --stream start",
     "te-yout:test": " yarn --cwd tet/youth test",
     "te-yout:browser-test": "yarn --cwd tet/youth browser-test",
-    "te-yout:browser-test:ci": "yarn --cwd tet/youth browser-test:ci"
+    "te-yout:browser-test:ci": "yarn --cwd tet/youth browser-test:ci",
+    "deps:check": "yarn dlx npm-check-updates@latest --configFileName ncurc.yml --deep --mergeConfig",
+    "deps:update": "yarn dlx npm-check-updates@latest --configFileName ncurc.yml -u --deep --mergeConfig",
+    "check:install": "yarn dlx @yarnpkg/doctor@3.1.4 .",
+    "nuke:node_modules": "rimraf '**/node_modules'"
   },
   "dependencies": {},
   "devDependencies": {
@@ -93,6 +97,7 @@
     "@types/react-leaflet-markercluster": "^3.0.0",
     "@types/react-pdf": "^5.7.2",
     "@types/react-table": "^7.7.0",
+    "@types/rimraf": "^3",
     "@types/slack-node": "^0.1.4",
     "@types/styled-components": "^5.1.24",
     "@types/uuid": "^8.3.1",
@@ -152,6 +157,7 @@
     "prettier": "^2.5.1",
     "pretty": "^2.0.0",
     "react-i18next": "^11.11.0",
+    "rimraf": "3.0.2",
     "slack-node": "^0.2.0",
     "testcafe": "^1.19.0",
     "testcafe-reporter-custom": "^1.2.1",
