@@ -28,7 +28,7 @@
     "ks-youth:start": "npx lerna run --scope  @frontend/youth --stream start",
     "bf-appl:start": "npx lerna run --scope  @frontend/applicant --stream start",
     "bf-hdlr:start": "npx lerna run --scope  @frontend/bf-handler --stream start",
-    "release": "cross-env HUSKY_BYPASS=true && lerna publish",
+    "release": "npx cross-env HUSKY_BYPASS=true && lerna publish",
     "husky:pre-commit": "npx lerna run --concurrency 1 --stream pre-commit",
     "lint": "npx lerna run lint",
     "test": "npx lerna run test --stream",
@@ -70,7 +70,6 @@
     "check:install": "yarn dlx @yarnpkg/doctor@3.1.4 .",
     "nuke:node_modules": "rimraf '**/node_modules'"
   },
-  "dependencies": {},
   "devDependencies": {
     "@axe-core/react": "^4.3.2",
     "@babel/core": "^7.16.7",

@@ -1,0 +1,11 @@
+# npm-check-updates configuration used by yarn deps:check && yarn deps:update
+# convenience scripts.
+# @link https://github.com/raineorshine/npm-check-updates
+
+# Add here exclusions on packages if any
+reject: [
+    # next wont be upddated yet to 12
+    'next',
+    '@next/eslint-plugin-next',
+    'next-i18next'
+  ]

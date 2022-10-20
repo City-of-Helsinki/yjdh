@@ -1,5 +1,5 @@
 # =======================================
-FROM helsinkitest/node:14-slim as appbase
+FROM helsinkitest/node:16-slim as appbase
 # =======================================
 
 # Use non-root user
@@ -10,21 +10,17 @@ ARG PROJECT
 ARG FOLDER
 ARG SERVICE
 
-# Yarn
-ENV YARN_VERSION 1.22.10
-
-RUN yarn policies set-version $YARN_VERSION
-RUN yarn config set ignore-engines true
 
 WORKDIR /app
 
 # Install dependencies
+COPY yarn.lock .yarnrc.yml .yarn/ ./.yarn/
 COPY --chown=appuser:appuser package.json yarn.lock lerna.json ./
 COPY --chown=appuser:appuser $PROJECT/$FOLDER/package.json $PROJECT/$FOLDER/package.json
 COPY --chown=appuser:appuser $PROJECT/shared/package.json* $PROJECT/shared/package.json
 COPY --chown=appuser:appuser shared/package.json shared/package.json
 
-RUN yarn --frozen-lockfile --check-files --network-timeout 600000 && yarn cache clean --force
+RUN yarn install --immutable --inline-builds --network-timeout 600000 && yarn cache clean
 
 # Copy all files
 COPY --chown=appuser:appuser . .
@@ -92,7 +88,7 @@ RUN rm -rf node_modules
 RUN yarn cache clean
 
 # ==========================================
-FROM helsinkitest/node:14-slim AS production
+FROM helsinkitest/node:16-slim AS production
 # ==========================================
 
 ARG PORT
@@ -112,7 +108,7 @@ COPY --chown=appuser:appuser $PROJECT/shared/package.json $PROJECT/shared/packag
 COPY --chown=appuser:appuser shared/package.json shared/package.json
 
 # Install production dependencies
-RUN yarn install --production --check-files --ignore-scripts --prefer-offline && yarn cache clean --force
+RUN yarn workspaces focus --production && yarn cache clean
 
 # Copy files needed by nextjs
 COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/.next $PROJECT/$FOLDER/.next

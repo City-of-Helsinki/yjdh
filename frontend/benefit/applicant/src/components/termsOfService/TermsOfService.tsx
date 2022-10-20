@@ -38,7 +38,7 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({
           <$PageHeading>{t('common:serviceName')}</$PageHeading>
         </$GridCell>
         <$GridCell $colSpan={12}>
-          <h2 css={{ marginBottom: 0 }}>
+          <h2 style={{ marginBottom: 0 }}>
             {t('common:login.termsOfServiceHeader')}
           </h2>
         </$GridCell>

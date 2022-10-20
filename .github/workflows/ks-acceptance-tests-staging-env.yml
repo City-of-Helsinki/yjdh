@@ -54,7 +54,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - name: Install dependencies
-        run: yarn --prefer-offline --frozen-lockfile --check-files --production=false
+        run: yarn install --immutable --inline-builds
       - name: Run TestCafe tests for Staging
         id: testcafe
         run: yarn --cwd ${{ matrix.context }} browser-test:ci -q attemptLimit=3,successThreshold=1

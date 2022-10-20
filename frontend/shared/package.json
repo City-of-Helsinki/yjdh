@@ -5,11 +5,11 @@
     "./"
   ],
   "scripts": {
-    "lint": "eslint --ext js,ts,tsx src browser-tests",
+    "lint": "npx eslint --ext js,ts,tsx src browser-tests",
     "pre-commit": "lint-staged -c ../.lintstagedrc.js",
-    "test": "cross-env TZ=Europe/Helsinki jest",
-    "test:staged": "cross-env TZ=Europe/Helsinki yarn test --watchAll=false --findRelatedTests",
-    "test:coverage": "cross-env TZ=Europe/Helsinki yarn test --verbose --coverage"
+    "test": "npx cross-env TZ=Europe/Helsinki jest",
+    "test:staged": "npx cross-env TZ=Europe/Helsinki yarn test --watchAll=false --findRelatedTests",
+    "test:coverage": "npx cross-env TZ=Europe/Helsinki yarn test --verbose --coverage"
   },
   "license": "MIT",
   "dependencies": {

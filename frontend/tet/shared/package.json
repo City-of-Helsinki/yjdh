@@ -5,10 +5,11 @@
     "./"
   ],
   "scripts": {
-    "lint": "eslint --ext js,ts,tsx src",
+    "lint": "npx eslint --ext js,ts,tsx src",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
-    "test": "jest --passWithNoTests",
-    "test:debug-nock": "cross-env DEBUG=nock.* yarn test",
+    "typecheck": "tsc --project ./tsconfig.json --noEmit",
+    "test": "npx jest --passWithNoTests",
+    "test:debug-nock": "npx cross-env DEBUG=nock.* yarn test",
     "test:staged": "yarn test --watchAll=false --findRelatedTests --pass-with-no-tests",
     "test:coverage": "yarn test --verbose --coverage --pass-with-no-tests"
   },
@@ -19,9 +20,9 @@
     "hds-react": "^1.15.0",
     "next": "^11.1.4",
     "next-i18next": "^10.5.0",
-    "react-query": "^3.34.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-query": "^3.34.0",
     "styled-components": "^5.3.1"
   },
   "devDependencies": {

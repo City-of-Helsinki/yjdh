@@ -5,9 +5,10 @@
     "./"
   ],
   "scripts": {
-    "lint": "eslint --ext js,ts,tsx src",
+    "lint": "npx eslint --ext js,ts,tsx src",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
-    "test": "jest --passWithNoTests",
+    "typecheck": "tsc --project ./tsconfig.json --noEmit",
+    "test": "npx jest --passWithNoTests",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",
     "test:coverage": "yarn test --verbose --coverage"
   },

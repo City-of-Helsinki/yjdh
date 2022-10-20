@@ -6,8 +6,9 @@
     "build": "next build",
     "start": "NODE_ENV=production PORT=3000 node ../../start.js ",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
-    "test": "jest --runInBand --no-cache --passWithNoTests",
-    "test:debug-dom": "cross-env DEBUG_PRINT_LIMIT=1000000 yarn test",
+    "typecheck": "tsc --project ./tsconfig.json --noEmit",
+    "test": "npx jest --runInBand --no-cache --passWithNoTests",
+    "test:debug-dom": "npx cross-env DEBUG_PRINT_LIMIT=1000000 yarn test",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",
     "test:coverage": "yarn test:debug-dom --verbose --coverage",
     "lint": "next lint"
