@@ -79,7 +79,7 @@
   },
   "menuToggleAriaLabel": "Menu",
   "errorPage": {
-    "title": "Palvelussa on valitettavsti tapahtunut virhe",
+    "title": "Palvelussa on valitettavasti tapahtunut virhe",
     "message": "Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
     "home": "Palaa etusivulle",
     "logout": "Kirjaudu ulos"
@@ -431,5 +431,6 @@
       "logoutInfoContent": "Du har nu loggats ut. Om du vill fortsätta använda tjänsten, logga in på nytt genom att klicka på knappen nedan.",
       "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig. "
     }
-  }
+  },
+  "select": "Valitse"
 }

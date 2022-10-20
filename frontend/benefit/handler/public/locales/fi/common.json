@@ -79,7 +79,7 @@
   },
   "menuToggleAriaLabel": "Menu",
   "errorPage": {
-    "title": "Palvelussa on valitettavsti tapahtunut virhe",
+    "title": "Palvelussa on valitettavasti tapahtunut virhe",
     "message": "Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
     "home": "Palaa etusivulle",
     "logout": "Kirjaudu ulos"
@@ -432,5 +432,6 @@
     "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
     "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
     "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Voit valita itse, mitä tunnistustapaa haluat käyttää. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi."
-  }
+  },
+  "select": "Valitse"
 }

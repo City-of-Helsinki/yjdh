@@ -115,15 +115,15 @@ const useHandlerReviewActions = (
     const paySubsidies = values.paySubsidies?.map((item) => ({
       ...item,
       workTimePercent: stringToFloatValue(item.workTimePercent),
-      startDate: convertToBackendDateFormat(item.startDate),
-      endDate: convertToBackendDateFormat(item.endDate),
+      startDate: convertToBackendDateFormat(item.startDate) || null,
+      endDate: convertToBackendDateFormat(item.endDate) || null,
     }));
 
     const trainingCompensations = values.trainingCompensations?.map((item) => ({
       ...item,
       monthlyAmount: stringToFloatValue(item.monthlyAmount),
-      startDate: convertToBackendDateFormat(item.startDate),
-      endDate: convertToBackendDateFormat(item.endDate),
+      startDate: convertToBackendDateFormat(item.startDate) || null,
+      endDate: convertToBackendDateFormat(item.endDate) || null,
     }));
 
     const {
