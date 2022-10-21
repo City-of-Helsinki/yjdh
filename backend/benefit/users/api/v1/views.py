@@ -24,6 +24,6 @@ class CurrentUserView(APIView):
         return Response(serializer.data)
 
     def _get_current_user(self, request):
-        if not request.user.is_authenticated and not settings.DISABLE_AUTHENTICATION:
+        if not request.user.is_authenticated and not settings.NEXT_PUBLIC_MOCK_FLAG:
             raise PermissionDenied
         return request.user

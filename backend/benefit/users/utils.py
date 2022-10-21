@@ -20,7 +20,7 @@ def get_business_id_from_request(request):
 
 
 def get_company_from_request(request):
-    if settings.DISABLE_AUTHENTICATION:
+    if settings.NEXT_PUBLIC_MOCK_FLAG:
         return Company.objects.all().order_by("name").first()
 
     if business_id := get_business_id_from_request(request):

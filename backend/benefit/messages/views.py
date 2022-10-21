@@ -29,7 +29,7 @@ class ApplicantMessageViewSet(AuditLoggingModelViewSet):
         return super().list(request, *args, **kwargs)
 
     def get_queryset(self):
-        if settings.DISABLE_AUTHENTICATION:
+        if settings.NEXT_PUBLIC_MOCK_FLAG:
             return Application.objects.get(
                 id=self.kwargs["application_pk"]
             ).messages.get_messages_qs()
