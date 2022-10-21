@@ -64,7 +64,7 @@ def test_logout_view(user_client, user):
 
 @pytest.mark.django_db
 @override_settings(
-    MOCK_FLAG=True,
+    NEXT_PUBLIC_MOCK_FLAG=True,
     ROOT_URLCONF=__name__,
     LOGOUT_REDIRECT_URL="http://example.com/logged_out/?status=logout",
 )
