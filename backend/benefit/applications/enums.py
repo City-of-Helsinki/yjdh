@@ -16,7 +16,7 @@ class ApplicationStatus(models.TextChoices):
 
     @classmethod
     def is_editable_status(cls, user, status):
-        if settings.DISABLE_AUTHENTICATION:
+        if settings.NEXT_PUBLIC_MOCK_FLAG:
             return True
         elif not user.is_authenticated:
             return False

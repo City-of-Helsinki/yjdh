@@ -42,7 +42,7 @@ class MessageSerializer(serializers.ModelSerializer):
         except Application.DoesNotExist:
             raise NotFound(_("Application not found"))
 
-        if settings.DISABLE_AUTHENTICATION:
+        if settings.NEXT_PUBLIC_MOCK_FLAG:
             if not (user and user.is_authenticated):
                 user = get_user_model().objects.all().order_by("username").first()
         elif not user.is_handler():

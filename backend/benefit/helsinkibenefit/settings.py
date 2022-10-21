@@ -105,7 +105,6 @@ env = environ.Env(
     EMAIL_TIMEOUT=(int, 15),
     DEFAULT_FROM_EMAIL=(str, "Helsinki-lisä <helsinkilisa@hel.fi>"),
     WKHTMLTOPDF_BIN=(str, "/usr/bin/wkhtmltopdf"),
-    DISABLE_AUTHENTICATION=(bool, False),
     DUMMY_COMPANY_FORM_CODE=(
         int,
         YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT,
@@ -333,7 +332,6 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
 )
 
-DISABLE_AUTHENTICATION = env.bool("DISABLE_AUTHENTICATION")
 DISABLE_TOS_APPROVAL_CHECK = env.bool("DISABLE_TOS_APPROVAL_CHECK")
 
 OIDC_RP_SIGN_ALGO = "RS256"
