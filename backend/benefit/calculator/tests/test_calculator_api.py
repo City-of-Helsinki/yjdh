@@ -369,7 +369,78 @@ def test_application_edit_pay_subsidy_empty_date_values(
     assert previous_pay_subsidies == data_after["pay_subsidies"]
 
 
-def test_application_pay_subsidy_empty_date_values_ignored_when_on_manual_calculator(
+def test_ignore_pay_subsidy_dates_when_application_is_received(
+    handler_api_client, received_application
+):
+    """
+    paysubsidy validation should be skipped when application isn't yet opened by handler
+    """
+    data = HandlerApplicationSerializer(received_application).data
+
+    data["pay_subsidies"] = [
+        {
+            "start_date": None,
+            "end_date": None,
+            "pay_subsidy_percent": 100,
+            "work_time_percent": 40,
+        },
+        {
+            "start_date": None,
+            "end_date": None,
+            "pay_subsidy_percent": 40,
+            "work_time_percent": 40,
+        },
+    ]
+
+    response = handler_api_client.put(
+        get_handler_detail_url(received_application),
+        data,
+    )
+    assert response.status_code == 200
+
+
+@pytest.mark.parametrize(
+    "status",
+    [
+        ApplicationStatus.HANDLING,
+        ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+        ApplicationStatus.ACCEPTED,
+        ApplicationStatus.REJECTED,
+    ],
+)
+def test_validate_pay_subsidy_dates_when_application_is_handled(
+    handler_api_client, application, status
+):
+    """
+    paysubsidy should be validated when application has gone through the handling state
+    """
+    application.status = status
+    application.save()
+    data = HandlerApplicationSerializer(application).data
+
+    data["pay_subsidies"] = [
+        {
+            "start_date": None,
+            "end_date": None,
+            "pay_subsidy_percent": 100,
+            "work_time_percent": 40,
+        },
+        {
+            "start_date": None,
+            "end_date": None,
+            "pay_subsidy_percent": 40,
+            "work_time_percent": 40,
+        },
+    ]
+
+    response = handler_api_client.put(
+        get_handler_detail_url(application),
+        data,
+    )
+    assert response.status_code == 400
+
+
+def test_ignore_pay_subsidy_dates_when_on_manual_calculator(
     handler_api_client, handling_application
 ):
     """
