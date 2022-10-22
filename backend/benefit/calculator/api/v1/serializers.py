@@ -216,17 +216,28 @@ class PaySubsidySerializer(serializers.ModelSerializer):
 
     def _is_manual_mode(self):
         return (
-            self.context["request"].data["calculation"][
+            self.context["request"].data["calculation"] is not None
+            and self.context["request"].data["calculation"][
                 "override_monthly_benefit_amount"
             ]
             is not None
         )
 
+    HANDLING_STARTED_STATUSES = [
+        ApplicationStatus.HANDLING,
+        ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+        ApplicationStatus.ACCEPTED,
+        ApplicationStatus.REJECTED,
+    ]
+
+    def _is_handling_started(self):
+        return self.context["request"].data["status"] in self.HANDLING_STARTED_STATUSES
+
     def validate(self, data):
         request = self.context.get("request")
         if request is None:
             return data
-        if not self._is_manual_mode():
+        if self._is_handling_started() and not self._is_manual_mode():
             if data.get("start_date") is None:
                 raise serializers.ValidationError(_("Start date cannot be empty"))
             if data.get("end_date") is None:
