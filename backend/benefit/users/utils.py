@@ -1,8 +1,22 @@
+from typing import Union
+
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser, AnonymousUser
 
 from companies.models import Company
 from companies.services import get_or_create_organisation_with_business_id
 from shared.oidc.utils import get_organization_roles
+
+
+def set_mock_user_name(
+    user: Union[AbstractUser, AnonymousUser]
+) -> Union[AbstractUser, AnonymousUser]:
+    """
+    Set mock user name for user and return the user.
+    """
+    user.first_name = "Test"
+    user.last_name = "User"
+    return user
 
 
 def get_request_user_from_context(serializer):
