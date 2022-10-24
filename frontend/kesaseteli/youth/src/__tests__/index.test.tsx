@@ -7,11 +7,11 @@ import {
   expectToReplyValidationErrorWhenCreatingYouthApplication,
 } from 'kesaseteli/youth/__tests__/utils/backend/backend-nocks';
 import getIndexPageApi from 'kesaseteli/youth/__tests__/utils/components/get-index-page-api';
+import renderComponent from 'kesaseteli/youth/__tests__/utils/components/render-component';
 import renderPage from 'kesaseteli/youth/__tests__/utils/components/render-page';
 import { REDIRECT_ERROR_TYPES } from 'kesaseteli/youth/components/constants/creation-error-types';
 import YouthIndex from 'kesaseteli/youth/pages';
 import headerApi from 'kesaseteli-shared/__tests__/utils/component-apis/header-api';
-import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import { fakeBackendValidationErrorResponse } from 'kesaseteli-shared/__tests__/utils/fake-objects';
 import YOUTH_FORM_FIELDS from 'kesaseteli-shared/constants/youth-form-fields';
 import YouthFormFields from 'kesaseteli-shared/types/youth-form-fields';

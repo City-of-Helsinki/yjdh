@@ -1,14 +1,8 @@
 import i18n from 'kesaseteli/handler/__tests__/utils/i18n/i18n-test'
-import Header from 'kesaseteli/handler/components/header/Header';
 import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
-import renderPageF from 'shared/__tests__/utils/render-component/render-page';
+import renderComponentF from 'shared/__tests__/utils/render-component/render-component';
 
-const render = renderPageF({
-  backendUrl: getBackendDomain(),
-  i18n,
-  Header,
-  confirmDialog: true,
-});
+const render = renderComponentF(i18n,getBackendDomain());
 
 const renderPage = (
   ...params: Parameters<typeof render>

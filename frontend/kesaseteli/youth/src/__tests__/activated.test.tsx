@@ -1,8 +1,8 @@
 import { axe } from 'jest-axe';
 import getNotificationPageApi from 'kesaseteli/youth/__tests__/utils/components/get-notification-page-api';
+import renderComponent from 'kesaseteli/youth/__tests__/utils/components/render-component';
 import renderPage from 'kesaseteli/youth/__tests__/utils/components/render-page';
 import ActivatedPage from 'kesaseteli/youth/pages/activated';
-import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
 
 describe('frontend/kesaseteli/youth/src/pages/activated.tsx', () => {

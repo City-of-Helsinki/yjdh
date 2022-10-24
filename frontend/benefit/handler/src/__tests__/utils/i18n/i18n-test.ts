@@ -2,7 +2,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 
-import common from '../../public/locales/fi/common.json';
+import common from '../../../../public/locales/fi/common.json';
 
 const translations = {
   common,

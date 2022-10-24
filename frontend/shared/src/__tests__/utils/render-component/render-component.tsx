@@ -9,6 +9,8 @@ import BackendAPIContext from 'shared/backend-api/BackendAPIContext';
 import HiddenLoadingIndicator from 'shared/components/hidden-loading-indicator/HiddenLoadingIndicator';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
+import { I18nextProvider } from 'react-i18next';
+import { i18n as I18n } from 'i18next';
 
 export type Result = {
   queryClient: QueryClient;
@@ -16,14 +18,16 @@ export type Result = {
 };
 
 const renderComponent =
-  (backendUrl = 'http://localhost:8000') =>
+  (i18n?: I18n, backendUrl = 'http://localhost:8000') =>
   (Element: JSX.Element, router: Partial<NextRouter> = {}): Result => {
     const axios = createAxiosTestContext(backendUrl);
     const queryClient = createReactQueryTestClient(axios, backendUrl);
     const renderResult = render(
       <BackendAPIContext.Provider value={createAxiosTestContext(backendUrl)}>
         <QueryClientProvider client={queryClient}>
-          <ThemeProvider theme={theme}>{Element}</ThemeProvider>
+          <ThemeProvider theme={theme}>
+            <I18nextProvider i18n={i18n}>{Element}</I18nextProvider>
+          </ThemeProvider>
           <HiddenLoadingIndicator />
         </QueryClientProvider>
       </BackendAPIContext.Provider>,

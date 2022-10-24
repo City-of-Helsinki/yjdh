@@ -1,10 +1,10 @@
+import renderComponent from 'kesaseteli/employer/__tests__/utils/components/render-component';
 import Header from 'kesaseteli/employer/components/header/Header';
 import {
   expectAuthorizedReply,
   expectUnauthorizedReply,
 } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
 import headerApi from 'kesaseteli-shared/__tests__/utils/component-apis/header-api';
-import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import { getBackendUrl } from 'kesaseteli-shared/backend-api/backend-api';
 import React from 'react';
 import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';

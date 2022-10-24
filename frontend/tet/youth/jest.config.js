@@ -14,7 +14,6 @@ module.exports = {
   },
   setupFilesAfterEnv: [
     '<rootDir>/../../shared/src/__tests__/utils/setupTests.ts',
-    '<rootDir>src/__tests__/utils/init-i18n.ts',
   ],
   coveragePathIgnorePatterns: ['<rootDir>/tet/youth/src/pages/'],
 };

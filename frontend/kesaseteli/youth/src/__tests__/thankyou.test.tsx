@@ -1,9 +1,9 @@
 import faker from 'faker';
 import { axe } from 'jest-axe';
 import getThankYouPageApi from 'kesaseteli/youth/__tests__/utils/components/get-thankyou-page-api';
+import renderComponent from 'kesaseteli/youth/__tests__/utils/components/render-component';
 import renderPage from 'kesaseteli/youth/__tests__/utils/components/render-page';
 import ThankYouPage from 'kesaseteli/youth/pages/thankyou';
-import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import { getBackendUrl } from 'kesaseteli-shared/backend-api/backend-api';
 import React from 'react';
 import { waitFor } from 'shared/__tests__/utils/test-utils';

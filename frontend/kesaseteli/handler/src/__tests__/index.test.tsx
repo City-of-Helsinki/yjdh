@@ -4,11 +4,11 @@ import {
   expectToGetYouthApplicationError,
 } from 'kesaseteli/handler/__tests__/utils/backend/backend-nocks';
 import getIndexPageApi from 'kesaseteli/handler/__tests__/utils/components/get-index-page-api';
+import renderComponent from 'kesaseteli/handler/__tests__/utils/components/render-component';
 import renderPage from 'kesaseteli/handler/__tests__/utils/components/render-page';
 import VTJ_EXCEPTIONS from 'kesaseteli/handler/constants/vtj-exceptions';
 import HandlerIndex from 'kesaseteli/handler/pages';
 import headerApi from 'kesaseteli-shared/__tests__/utils/component-apis/header-api';
-import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import {
   fakeActivatedYouthApplication,
   fakeExpiredVtjAddress,

@@ -8,7 +8,7 @@ import {
 import en from '../../public/locales/en/common.json';
 import fi from '../../public/locales/fi/common.json';
 import sv from '../../public/locales/sv/common.json';
-import ApplicantTranslations from '../../test/i18n/applicant-translations';
+import ApplicantTranslations from '../../src/__tests__/utils/i18n/applicant-translations';
 
 abstract class ApplicantPageComponent extends TranslatedComponent<ApplicantTranslations> {
   protected constructor(options?: Options) {

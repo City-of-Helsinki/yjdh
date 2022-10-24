@@ -13,7 +13,6 @@ module.exports = {
   },
   setupFilesAfterEnv: [
     '<rootDir>/../../shared/src/__tests__/utils/setupTests.ts',
-    '<rootDir>/test/i18n/i18n-test.ts',
   ],
   coveragePathIgnorePatterns: [
     '<rootDir>/src/pages/',

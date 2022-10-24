@@ -4,10 +4,10 @@ import {
   expectToGetYouthApplicationStatusErrorFromBackend,
 } from 'kesaseteli/youth/__tests__/utils/backend/backend-nocks';
 import getAdditionalInfoPageApi from 'kesaseteli/youth/__tests__/utils/components/get-additional-info-page-api';
+import renderComponent from 'kesaseteli/youth/__tests__/utils/components/render-component';
 import renderPage from 'kesaseteli/youth/__tests__/utils/components/render-page';
 import AdditionalInfoPage from 'kesaseteli/youth/pages/additional_info';
 import headerApi from 'kesaseteli-shared/__tests__/utils/component-apis/header-api';
-import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import { fakeAdditionalInfoApplication } from 'kesaseteli-shared/__tests__/utils/fake-objects';
 import YouthApplicationStatusType from 'kesaseteli-shared/types/youth-application-status-type';
 import React from 'react';

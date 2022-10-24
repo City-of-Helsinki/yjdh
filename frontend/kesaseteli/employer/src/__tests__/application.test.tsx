@@ -1,5 +1,6 @@
 import { axe } from 'jest-axe';
 import getApplicationPageApi from 'kesaseteli/employer/__tests__/utils/components/get-application-page-api';
+import renderComponent from 'kesaseteli/employer/__tests__/utils/components/render-component';
 import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
 import ApplicationPage from 'kesaseteli/employer/pages/application';
 import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
@@ -9,7 +10,6 @@ import {
   expectToGetApplicationFromBackend,
   expectUnauthorizedReply,
 } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
-import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
 import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 import { waitFor } from 'shared/__tests__/utils/test-utils';

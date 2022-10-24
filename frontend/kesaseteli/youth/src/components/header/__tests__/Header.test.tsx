@@ -1,6 +1,6 @@
+import renderComponent from 'kesaseteli/youth/__tests__/utils/components/render-component';
 import Header from 'kesaseteli/youth/components/header/Header';
 import headerApi from 'kesaseteli-shared/__tests__/utils/component-apis/header-api';
-import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';

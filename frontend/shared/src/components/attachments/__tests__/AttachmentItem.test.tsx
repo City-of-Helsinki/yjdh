@@ -5,7 +5,7 @@ import renderComponent from 'shared/__tests__/utils/render-component/render-comp
 
 import AttachmentItem, { AttachmentItemProps } from '../AttachmentItem';
 
-const render = renderComponent('http://localhost:8000');
+const render = renderComponent(undefined, 'http://localhost:8000');
 
 describe('AttachmentItem', () => {
   const initialProps: AttachmentItemProps = {

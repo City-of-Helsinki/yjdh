@@ -13,12 +13,14 @@ let consoleWarnSpy: jest.SpyInstance;
 let consoleErrorSpy: jest.SpyInstance;
 beforeAll(() => {
   const messagesToIgnore = [
-    'Warning: You seem to have overlapping act() calls, this is not supported',
+    'You seem to have overlapping act() calls, this is not supported',
     'When testing, code that causes React state updates should be wrapped into act(...)',
     'Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component',
     'Using ReactElement as a label is against good usability and accessibility practices. Please prefer plain strings.',
-    'react-i18next:: You will need to pass in an i18next instance by using initReactI18next',
     'downshift: A component has changed the uncontrolled prop',
+    'Element type is invalid: expected a string',
+    'React.createElement: type is invalid',
+    ' A title element received an array with more than 1 element as children',
   ];
 
   const filterErrors = (...args: string[]) => {

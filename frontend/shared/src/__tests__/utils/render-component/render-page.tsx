@@ -18,9 +18,12 @@ import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
+import { I18nextProvider } from 'react-i18next';
+import { i18n as I18n } from 'i18next';
 
 type Props = {
   backendUrl: string;
+  i18n: I18n;
   Header: React.FC;
   Footer?: React.FC;
   AuthProvider?: React.FC;
@@ -30,6 +33,7 @@ type Props = {
 const renderPage =
   ({
     backendUrl = 'http://localhost:8000',
+    i18n,
     Header,
     Footer,
     AuthProvider,
@@ -55,18 +59,24 @@ const renderPage =
     render(
       <BackendAPIContext.Provider value={createAxiosTestContext(backendUrl)}>
         <QueryClientProvider client={queryClient}>
-          <DialogContextProvider>
-            {AuthProvider ? <AuthProvider>{children}</AuthProvider> : children}
-            <HiddenLoadingIndicator />
-            {confirmDialog && (
-              <>
-                <Portal>
-                  <ConfirmDialog />
-                </Portal>
-                <div id={PORTAL_ID} />
-              </>
-            )}
-          </DialogContextProvider>
+          <I18nextProvider i18n={i18n}>
+            <DialogContextProvider>
+              {AuthProvider ? (
+                <AuthProvider>{children}</AuthProvider>
+              ) : (
+                children
+              )}
+              <HiddenLoadingIndicator />
+              {confirmDialog && (
+                <>
+                  <Portal>
+                    <ConfirmDialog />
+                  </Portal>
+                  <div id={PORTAL_ID} />
+                </>
+              )}
+            </DialogContextProvider>
+          </I18nextProvider>
         </QueryClientProvider>
       </BackendAPIContext.Provider>,
       { isReady: true, locale: DEFAULT_LANGUAGE, ...router }

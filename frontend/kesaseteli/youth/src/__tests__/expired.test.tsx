@@ -1,8 +1,8 @@
 import { axe } from 'jest-axe';
 import getNotificationPageApi from 'kesaseteli/youth/__tests__/utils/components/get-notification-page-api';
+import renderComponent from 'kesaseteli/youth/__tests__/utils/components/render-component';
 import renderPage from 'kesaseteli/youth/__tests__/utils/components/render-page';
 import ExpiredPage from 'kesaseteli/youth/pages/expired';
-import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';

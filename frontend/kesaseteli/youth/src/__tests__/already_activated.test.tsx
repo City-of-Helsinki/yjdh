@@ -1,6 +1,6 @@
 import { axe } from 'jest-axe';
+import renderComponent from 'kesaseteli/youth/__tests__/utils/components/render-component';
 import AlreadyActivatedPage from 'kesaseteli/youth/pages/already_activated';
-import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
 
 describe('frontend/kesaseteli/youth/src/pages/already_activated.tsx', () => {
