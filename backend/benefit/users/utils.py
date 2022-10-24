@@ -27,7 +27,7 @@ def get_request_user_from_context(serializer):
 
 
 def get_business_id_from_request(request):
-    if request.user.is_authenticated:
+    if request and request.user and request.user.is_authenticated:
         organization_roles = get_organization_roles(request)
         return organization_roles.get("identifier")
     return None
