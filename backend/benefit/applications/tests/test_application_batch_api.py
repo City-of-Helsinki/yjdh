@@ -8,6 +8,7 @@ import pytest
 import pytz
 from django.conf import settings
 from django.http import StreamingHttpResponse
+from django.test import override_settings
 from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers import ApplicationBatchSerializer
@@ -22,11 +23,13 @@ def get_batch_detail_url(application_batch):
     return reverse("v1:applicationbatch-detail", kwargs={"pk": application_batch.id})
 
 
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_get_application_batch_unauthenticated(anonymous_client, application_batch):
     response = anonymous_client.get(get_batch_detail_url(application_batch))
     assert response.status_code == 403
 
 
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_get_application_batch_as_applicant(api_client, application_batch):
     response = api_client.get(get_batch_detail_url(application_batch))
     assert response.status_code == 403
