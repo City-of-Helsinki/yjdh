@@ -1,5 +1,6 @@
 import decimal
 
+from django.test import override_settings
 from rest_framework.reverse import reverse
 
 from applications.tests.conftest import *  # noqa
@@ -12,11 +13,13 @@ def get_previous_benefits_detail_url(previous_benefit):
     return reverse("v1:previousbenefit-detail", kwargs={"pk": previous_benefit.id})
 
 
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_get_previous_benefit_unauthenticated(anonymous_client, previous_benefit):
     response = anonymous_client.get(get_previous_benefits_detail_url(previous_benefit))
     assert response.status_code == 403
 
 
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_get_previous_benefit_applicant(api_client, previous_benefit):
     response = api_client.get(get_previous_benefits_detail_url(previous_benefit))
     assert response.status_code == 403
@@ -41,11 +44,13 @@ def test_previous_benefits_list(handler_api_client, previous_benefit):
     assert response.status_code == 200
 
 
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_previous_benefits_list_as_applicant(api_client, previous_benefit):
     response = api_client.get(reverse("v1:previousbenefit-list"))
     assert response.status_code == 403
 
 
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_previous_benefits_list_unauthenticated(anonymous_client, previous_benefit):
     response = anonymous_client.get(reverse("v1:previousbenefit-list"))
     assert response.status_code == 403
@@ -76,6 +81,7 @@ def test_create_previous_benefit(handler_api_client, previous_benefit):
     assert response.status_code == 201
 
 
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_create_previous_benefit_unauthenticated(anonymous_client, previous_benefit):
     data = PreviousBenefitSerializer(previous_benefit).data
     previous_benefit.delete()
@@ -88,6 +94,7 @@ def test_create_previous_benefit_unauthenticated(anonymous_client, previous_bene
     assert response.status_code == 403
 
 
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_create_previous_benefit_as_applicant(api_client, previous_benefit):
     data = PreviousBenefitSerializer(previous_benefit).data
     previous_benefit.delete()
@@ -100,6 +107,7 @@ def test_create_previous_benefit_as_applicant(api_client, previous_benefit):
     assert response.status_code == 403
 
 
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_previous_benefit_put_as_applicant(api_client, previous_benefit):
     data = PreviousBenefitSerializer(previous_benefit).data
     data["monthly_amount"] = "1234.56"
@@ -110,6 +118,7 @@ def test_previous_benefit_put_as_applicant(api_client, previous_benefit):
     assert response.status_code == 403
 
 
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_previous_benefit_put_unauthenticated(anonymous_client, previous_benefit):
     data = PreviousBenefitSerializer(previous_benefit).data
     data["monthly_amount"] = "1234.56"
@@ -148,6 +157,7 @@ def test_previous_benefit_delete(handler_api_client, previous_benefit):
     assert PreviousBenefit.objects.all().count() == 0
 
 
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_previous_benefit_delete_unauthenticated(anonymous_client, previous_benefit):
     """
     modify existing previous_benefit
@@ -159,6 +169,7 @@ def test_previous_benefit_delete_unauthenticated(anonymous_client, previous_bene
     assert PreviousBenefit.objects.all().count() == 1
 
 
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_previous_benefit_delete_as_applicant(api_client, previous_benefit):
     """
     modify existing previous_benefit

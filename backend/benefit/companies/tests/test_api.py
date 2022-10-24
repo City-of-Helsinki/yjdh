@@ -34,6 +34,7 @@ def set_up_ytj_mock_requests(
     requests_mock.get(business_details_url, json=business_details_response)
 
 
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.django_db
 def test_get_company_unauthenticated(anonymous_client):
     response = anonymous_client.get(get_company_api_url())
