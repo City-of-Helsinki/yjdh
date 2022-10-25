@@ -9,7 +9,7 @@
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "typecheck": "tsc --project ./tsconfig.json --noEmit",
     "test": "npx jest --passWithNoTests",
-    "test:debug-nock": "npx cross-env DEBUG=nock.* yarn test",
+    "test:debug-nock": "npx cross-env DEBUG=nock.\\* yarn test",
     "test:staged": "yarn test --watchAll=false --findRelatedTests --pass-with-no-tests",
     "test:coverage": "yarn test --verbose --coverage --pass-with-no-tests"
   },

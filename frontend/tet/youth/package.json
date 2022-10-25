@@ -9,7 +9,7 @@
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "typecheck": "tsc --project ./tsconfig.json --noEmit",
     "test": "npx jest --runInBand --no-cache",
-    "test:debug-nock": "npx cross-env DEBUG=nock.* yarn test",
+    "test:debug-nock": "npx cross-env DEBUG=nock.\\* yarn test",
     "test:debug-dom": "npx cross-env DEBUG_PRINT_LIMIT=1000000 yarn test",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",
     "test:coverage": "yarn test:debug-dom --verbose --coverage",

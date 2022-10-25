@@ -1,8 +1,9 @@
-import renderComponent from 'tet/admin/__tests__/utils/components/render-component';
-import IndexPage from 'tet/admin/pages';
+import { screen } from '@testing-library/react';
 import { axe } from 'jest-axe';
 import React from 'react';
-import { fakeEventListAdmin } from 'tet-shared/__tests__/utils/fake-objects';
+import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
+import { waitFor } from 'shared/__tests__/utils/test-utils';
+import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 import {
   expectAttributesFromLinkedEvents,
   expectAuthorizedReply,
@@ -10,10 +11,10 @@ import {
   expectUnauthorizedReply,
   expectWorkingMethodsFromLinkedEvents,
 } from 'tet/admin/__tests__/utils/backend/backend-nocks';
+import renderComponent from 'tet/admin/__tests__/utils/components/render-component';
 import renderPage from 'tet/admin/__tests__/utils/components/render-page';
-import { waitFor } from 'shared/__tests__/utils/test-utils';
-import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
-import { screen } from '@testing-library/react';
+import IndexPage from 'tet/admin/pages';
+import { fakeEventListAdmin } from 'tet-shared/__tests__/utils/fake-objects';
 
 describe('frontend/tet/admin/src/pages/index.tsx', () => {
   it('should have no accessibility violations', async () => {
@@ -39,7 +40,7 @@ describe('frontend/tet/admin/src/pages/index.tsx', () => {
       expectAttributesFromLinkedEvents();
 
       renderPage(IndexPage);
-
+      await waitForBackendRequestsToComplete();
       await screen.findByText(/Sinulla ei ole vielä yhtään TET-paikkaa/);
     });
   });
