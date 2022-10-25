@@ -11,6 +11,7 @@ module.exports = {
     [`^shared\/(.*)$`]: '<rootDir>/../../shared/src/$1',
     [`^tet-shared\/(.*)$`]: '<rootDir>../shared/src/$1',
     [`^tet/youth\/(.*)$`]: '<rootDir>src/$1',
+    "^uuid$": "uuid",
   },
   setupFilesAfterEnv: [
     '<rootDir>/../../shared/src/__tests__/utils/setupTests.ts',

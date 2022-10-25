@@ -4,6 +4,7 @@ module.exports = {
   moduleNameMapper: {
     [`^shared\/(.*)$`]: '<rootDir>/../../shared/src/$1',
     [`^tet-shared\/(.*)$`]: '<rootDir>../shared/src/$1',
+    "^uuid$": "uuid",
   },
   setupFilesAfterEnv: [
     '<rootDir>/../../shared/src/__tests__/utils/setupTests.ts',

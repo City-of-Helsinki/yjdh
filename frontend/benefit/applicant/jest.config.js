@@ -10,6 +10,7 @@ module.exports = {
     [`^shared\/(.*)$`]: '<rootDir>/../../shared/src/$1',
     [`^benefit-shared\/(.*)$`]: '<rootDir>../shared/src/$1',
     [`benefit/applicant\/(.*)$`]: '<rootDir>/src/$1',
+    "^uuid$": "uuid",
   },
   setupFilesAfterEnv: [
     '<rootDir>/../../shared/src/__tests__/utils/setupTests.ts',
