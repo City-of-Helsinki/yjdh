@@ -17,6 +17,8 @@
   "dependencies": {
     "@frontend/benefit-shared": "*",
     "@frontend/shared": "*",
+    "@sentry/browser": "^7.16.0",
+    "@sentry/utils": "^7.16.0",
     "axios": "^0.27.2",
     "babel-plugin-import": "^1.13.3",
     "camelcase-keys": "^7.0.2",
