@@ -96,7 +96,7 @@ class AttachmentField(FileField):
         url_pattern_name = "v1:applicant-application-download-attachment"
         request = self.context.get("request")
         user = get_request_user_from_context(self)
-        if settings.DISABLE_AUTHENTICATION or (
+        if settings.NEXT_PUBLIC_MOCK_FLAG or (
             user and user.is_authenticated and user.is_handler()
         ):
             url_pattern_name = "v1:handler-application-download-attachment"
@@ -1387,7 +1387,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                 instance.applicant_terms_approval.delete()
 
             approved_by = get_request_user_from_context(self)
-            if settings.DISABLE_AUTHENTICATION and isinstance(
+            if settings.NEXT_PUBLIC_MOCK_FLAG and isinstance(
                 approved_by, AnonymousUser
             ):
                 approved_by = (
@@ -1525,13 +1525,15 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         return get_request_user_from_context(self)
 
     def logged_in_user_is_admin(self):
+        if settings.NEXT_PUBLIC_MOCK_FLAG:
+            return True
         user = get_request_user_from_context(self)
         if user and hasattr(user, "is_handler"):
             return user.is_handler()
         return False
 
     def get_logged_in_user_company(self):
-        if settings.DISABLE_AUTHENTICATION:
+        if settings.NEXT_PUBLIC_MOCK_FLAG:
             return Company.objects.all().order_by("name").first()
         return get_company_from_request(self.context.get("request"))
 
@@ -1781,7 +1783,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         # Assign current user to the application.calculation.handler
         # NOTE: This handler might be overridden if there is a handler pk included in the request post data
         handler = get_request_user_from_context(self)
-        if settings.DISABLE_AUTHENTICATION and isinstance(handler, AnonymousUser):
+        if settings.NEXT_PUBLIC_MOCK_FLAG and isinstance(handler, AnonymousUser):
             handler = get_user_model().objects.all().order_by("username").first()
         if instance.status in HandlerApplicationStatusValidator.ASSIGN_HANDLER_STATUSES:
             instance.calculation.handler = handler

@@ -1,8 +1,22 @@
+from typing import Union
+
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser, AnonymousUser
 
 from companies.models import Company
 from companies.services import get_or_create_organisation_with_business_id
 from shared.oidc.utils import get_organization_roles
+
+
+def set_mock_user_name(
+    user: Union[AbstractUser, AnonymousUser]
+) -> Union[AbstractUser, AnonymousUser]:
+    """
+    Set mock user name for user and return the user.
+    """
+    user.first_name = "Test"
+    user.last_name = "User"
+    return user
 
 
 def get_request_user_from_context(serializer):
@@ -13,14 +27,14 @@ def get_request_user_from_context(serializer):
 
 
 def get_business_id_from_request(request):
-    if request.user.is_authenticated:
+    if request and request.user and request.user.is_authenticated:
         organization_roles = get_organization_roles(request)
         return organization_roles.get("identifier")
     return None
 
 
 def get_company_from_request(request):
-    if settings.DISABLE_AUTHENTICATION:
+    if settings.NEXT_PUBLIC_MOCK_FLAG:
         return Company.objects.all().order_by("name").first()
 
     if business_id := get_business_id_from_request(request):

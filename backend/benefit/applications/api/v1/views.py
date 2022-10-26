@@ -108,12 +108,9 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
 
     def get_queryset(self) -> QuerySet[Application]:
         user = self.request.user
-        # FIXME: Remove DISABLE_AUTHENTICATION line when FE implemented authentication
-        if not settings.DISABLE_AUTHENTICATION:
-            if not user.is_authenticated:
-                return Application.objects.none()
-        qs = Application.objects.all().select_related("company", "employee")
-        return qs
+        if not settings.NEXT_PUBLIC_MOCK_FLAG and not user.is_authenticated:
+            return Application.objects.none()
+        return Application.objects.all().select_related("company", "employee")
 
     EXCLUDE_FIELDS_FROM_SIMPLE_LIST = [
         "applicant_terms_approval",
@@ -279,8 +276,7 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        # FIXME: Remove this when FE implemented authentication
-        if settings.DISABLE_AUTHENTICATION:
+        if settings.NEXT_PUBLIC_MOCK_FLAG:
             return qs
         company = get_company_from_request(self.request)
         if company:

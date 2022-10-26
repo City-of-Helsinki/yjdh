@@ -76,36 +76,33 @@ class GetCompanyView(APIView):
         if settings.NEXT_PUBLIC_MOCK_FLAG:
             return self.get_mock(request, format)
 
-        if settings.DISABLE_AUTHENTICATION:
-            company = Company.objects.all().order_by("name").first()
-        else:
-            try:
-                organization_roles = get_organization_roles(request)
-            except HTTPError:
-                return self.organization_roles_error
+        try:
+            organization_roles = get_organization_roles(request)
+        except HTTPError:
+            return self.organization_roles_error
 
-            business_id = organization_roles.get("identifier")
+        business_id = organization_roles.get("identifier")
+        try:
+            company = get_or_create_organisation_with_business_id(business_id)
+        except HTTPError:
+            # Since YTJ public API is not 100% reliable, we can use the Company data
+            # saved in our DB as a fallback data, this Company data should be the
+            # data that we got from the latest request to YTJ
             try:
-                company = get_or_create_organisation_with_business_id(business_id)
-            except HTTPError:
-                # Since YTJ public API is not 100% reliable, we can use the Company data
-                # saved in our DB as a fallback data, this Company data should be the
-                # data that we got from the latest request to YTJ
-                try:
-                    company = Company.objects.get(business_id=business_id)
-                except Company.DoesNotExist:
-                    # Throw error if API failed or no object found in both places
-                    return self.ytj_api_error
-            except (ValueError, KeyError) as err:
-                LOGGER.debug(
-                    "Could not handle the response from Palveluväylä and YRTTI API, error: {}".format(
-                        err
-                    )
+                company = Company.objects.get(business_id=business_id)
+            except Company.DoesNotExist:
+                # Throw error if API failed or no object found in both places
+                return self.ytj_api_error
+        except (ValueError, KeyError) as err:
+            LOGGER.debug(
+                "Could not handle the response from Palveluväylä and YRTTI API, error: {}".format(
+                    err
                 )
-                return Response(
-                    "Could not handle the response from Palveluväylä and YRTTI API",
-                    status.HTTP_500_INTERNAL_SERVER_ERROR,
-                )
+            )
+            return Response(
+                "Could not handle the response from Palveluväylä and YRTTI API",
+                status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
         company_data = CompanySerializer(company).data
 
         return Response(company_data)
