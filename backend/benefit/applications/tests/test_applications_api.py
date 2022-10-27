@@ -64,7 +64,6 @@ def get_handler_detail_url(application):
     return reverse("v1:handler-application-detail", kwargs={"pk": application.id})
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
     "view_name",
     [
@@ -86,7 +85,6 @@ def test_applications_unauthenticated(anonymous_client, application, view_name):
     assert audit_event["target"]["type"] == "Application"
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
     "view_name",
     [
@@ -221,7 +219,6 @@ def test_applications_simple_list_filter(
     assert response.status_code == 200
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize("url_func", [get_detail_url, get_handler_detail_url])
 def test_application_single_read_unauthenticated(
     anonymous_client, application, url_func
@@ -230,7 +227,6 @@ def test_application_single_read_unauthenticated(
     assert response.status_code == 403
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_application_single_read_unauthorized(
     api_client, anonymous_application, mock_get_organisation_roles_and_create_company
 ):
@@ -314,7 +310,6 @@ def test_application_template(api_client):
     )  # as of 2021-06-16, just a dummy implementation exists
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_application_post_success_unauthenticated(anonymous_client, application):
     data = ApplicantApplicationSerializer(application).data
     application.delete()
@@ -525,7 +520,6 @@ def test_application_post_invalid_employee_data(api_client, application):
     )  # Check if the error still there
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_application_put_edit_fields_unauthenticated(anonymous_client, application):
     data = ApplicantApplicationSerializer(application).data
     data["company_contact_person_phone_number"] = "+358505658789"
@@ -536,7 +530,6 @@ def test_application_put_edit_fields_unauthenticated(anonymous_client, applicati
     assert response.status_code == 403
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_application_put_edit_fields_unauthorized(
     api_client, anonymous_application, mock_get_organisation_roles_and_create_company
 ):
@@ -869,14 +862,12 @@ def test_association_immediate_manager_check_valid(api_client, association_appli
     assert response.status_code == 200
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.django_db
 def test_application_delete_unauthenticated(anonymous_client, application):
     response = anonymous_client.delete(get_detail_url(application))
     assert response.status_code == 403
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.django_db
 def test_application_delete_unauthorized(
     api_client, anonymous_application, mock_get_organisation_roles_and_create_company
@@ -1400,7 +1391,6 @@ def test_application_last_modified_at_draft(api_client, application):
     assert data["last_modified_at"] == datetime(2021, 6, 4, tzinfo=pytz.UTC)
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
     "status",
     [
@@ -1572,7 +1562,6 @@ def _add_pdf_attachment(
         return attachment
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.django_db
 def test_attachment_delete_unauthenticated(request, anonymous_client, application):
     attachment = _add_pdf_attachment(request, application)
@@ -1586,7 +1575,6 @@ def test_attachment_delete_unauthenticated(request, anonymous_client, applicatio
     assert response.status_code == 403
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.django_db
 def test_attachment_delete_unauthorized(
     request,
@@ -1605,7 +1593,6 @@ def test_attachment_delete_unauthorized(
     assert response.status_code == 404
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
     "status,expected_code",
     [
@@ -1637,7 +1624,6 @@ def test_attachment_delete(request, api_client, application, status, expected_co
         assert application.attachments.count() == 1
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
     "status,upload_result",
     [
@@ -1673,7 +1659,6 @@ def test_pdf_attachment_upload_and_download_as_applicant(
     assert bytes[:4].decode("utf-8") == "%PDF"
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
     "status,upload_result",
     [
@@ -1707,7 +1692,6 @@ def test_pdf_attachment_upload_and_download_as_handler(
     assert file_dl.status_code == 200
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.django_db
 def test_attachment_download_unauthenticated(request, anonymous_client, application):
     attachment = _add_pdf_attachment(request, application)
@@ -1721,7 +1705,6 @@ def test_attachment_download_unauthenticated(request, anonymous_client, applicat
     assert response.status_code == 403
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.django_db
 def test_attachment_download_unauthorized(
     request,
@@ -1740,7 +1723,6 @@ def test_attachment_download_unauthorized(
     assert response.status_code == 404
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
     "status",
     [
@@ -1986,7 +1968,6 @@ def test_application_number(api_client, application):
     assert next_application.application_number == application.application_number + 2
 
 
-@override_settings(DISABLE_TOS_APPROVAL_CHECK=False, NEXT_PUBLIC_MOCK_FLAG=False)
 def test_application_api_before_accept_tos(api_client, application):
     # Clear user TOS approval
     TermsOfServiceApproval.objects.all().delete()

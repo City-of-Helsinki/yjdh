@@ -27,7 +27,6 @@ SAMPLE_MESSAGE_PAYLOAD = {
 }
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
     "view_name",
     [
@@ -45,7 +44,6 @@ def test_list_message_unauthenticated(
     assert result.status_code == 403
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
     "view_name",
     [
@@ -137,7 +135,6 @@ def test_list_notes(handler_api_client, handling_application):
     assert len(result.data) == 2
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
     "view_name",
     [
@@ -156,7 +153,6 @@ def test_create_message_unauthenticated(
     assert result.status_code == 403
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
     "view_name",
     [
@@ -181,7 +177,6 @@ def test_create_message_unauthorized(api_client, handling_application, view_name
     assert result.status_code == 403
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_create_applicant_message_invalid(
     api_client, application, mock_get_organisation_roles_and_create_company
 ):
@@ -224,7 +219,6 @@ def test_create_applicant_message_invalid(
     )
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_create_handler_message_invalid(handler_api_client, handling_application):
     msg = deepcopy(SAMPLE_MESSAGE_PAYLOAD)
     msg["message_type"] = MessageType.APPLICANT_MESSAGE
@@ -241,7 +235,6 @@ def test_create_handler_message_invalid(handler_api_client, handling_application
     )
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
     "status,expected_result",
     [
@@ -339,7 +332,6 @@ def test_create_message(
     assert message_qs.first().sender.id == user.id
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
     "view_name",
     [
@@ -365,7 +357,6 @@ def test_update_message_unauthenticated(
     assert result.status_code == 403
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
     "view_name,msg_type",
     [
@@ -406,7 +397,6 @@ def test_update_message_unauthorized(
         assert result.status_code == 403
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_update_message_not_allowed(
     api_client,
     handler_api_client,
@@ -431,7 +421,6 @@ def test_update_message_not_allowed(
     assert result.status_code == 403
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
     "view_name",
     [
@@ -453,7 +442,6 @@ def test_delete_message_unauthenticated(
     assert result.status_code == 403
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
     "view_name",
     [
@@ -520,7 +508,6 @@ def test_delete_message(
     assert Message.objects.count() == 0
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_applications_list_with_message_count(
     api_client, handling_application, handler_api_client
 ):
@@ -602,7 +589,6 @@ def test_list_messages_read_receipt(
         assert Message.objects.filter(seen_by_handler=True).count() == 2
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_applications_list_with_message_count_multiple_messages(
     api_client, handling_application, handler_api_client
 ):
