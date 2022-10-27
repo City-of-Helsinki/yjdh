@@ -18,6 +18,11 @@ def _api_client():
 
 @pytest.fixture(autouse=True)
 def setup_test_environment(settings):
+    settings.MAILER_EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
+    settings.DEFAULT_FROM_EMAIL = "noreply@foo.bar"
+    settings.LANGUAGE_CODE = "fi"
+    settings.DISABLE_TOS_APPROVAL_CHECK = False
+    settings.NEXT_PUBLIC_MOCK_FLAG = False
     factory.random.reseed_random("777")
     DetectorFactory.seed = 0
     random.seed(777)
