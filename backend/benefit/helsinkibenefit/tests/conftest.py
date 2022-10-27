@@ -16,10 +16,3 @@ def django_db_setup(django_db_setup, django_db_blocker):
 @pytest.fixture(scope="session")
 def django_db_modify_db_settings():
     pass
-
-
-@pytest.fixture(autouse=True)
-def force_settings(settings):
-    settings.MAILER_EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
-    settings.DEFAULT_FROM_EMAIL = "noreply@foo.bar"
-    settings.LANGUAGE_CODE = "fi"

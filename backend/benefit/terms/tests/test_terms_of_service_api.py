@@ -2,7 +2,6 @@ from datetime import date, timedelta
 
 import pytest
 from django.conf import settings
-from django.test import override_settings
 from django.urls import reverse
 
 from common.tests.conftest import *  # noqa
@@ -184,7 +183,6 @@ def test_approve_terms_too_many_consents(
     )
 
 
-@override_settings(DISABLE_TOS_APPROVAL_CHECK=False, NEXT_PUBLIC_MOCK_FLAG=False)
 def test_validate_tos_approval_by_session(
     api_client,
     terms_of_service,
