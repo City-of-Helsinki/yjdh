@@ -8,19 +8,27 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import Content from 'shared/components/content/Content';
 import HiddenLoadingIndicator from 'shared/components/hidden-loading-indicator/HiddenLoadingIndicator';
 import initLocale from 'shared/components/hocs/initLocale';
-import Layout from 'shared/components/layout/Layout';
+import DefaultLayout from 'shared/components/layout/Layout';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import HDSToastContainer from 'shared/components/toast/ToastContainer';
 import useIsRouting from 'shared/hooks/useIsRouting';
 import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import maskGDPRData from 'shared/utils/mask-gdpr-data';
-import { isError } from 'shared/utils/type-guards';
+import { isError, isParsableSafeInteger } from 'shared/utils/type-guards';
 import { ThemeProvider } from 'styled-components';
 
 type Props = AppProps & {
   header?: React.ReactNode;
   footer?: React.ReactNode;
+  layout?: React.FC;
+  title?: string;
+};
+
+const getSentryTracesSampleRate = (): number => {
+  const sampleRate = process.env.NEXT_PUBLIC_SENTRY_TRACE_SAMPLE_RATE;
+  // default value 1.0 means sentry races 100% of errors.
+  return isParsableSafeInteger(sampleRate) ? parseFloat(sampleRate) : 1;
 };
 
 // Centralized logging with Sentry. See more:
@@ -30,6 +38,9 @@ Sentry.init({
   environment: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT || 'development',
   attachStacktrace: Boolean(process.env.NEXT_PUBLIC_SENTRY_ATTACH_STACKTRACE),
   maxBreadcrumbs: Number(process.env.NEXT_PUBLIC_SENTRY_MAX_BREADCRUMBS) || 100,
+  // Adjust this value in production, or use tracesSampler for greater control
+  // @see https://develop.sentry.dev/sdk/performance/
+  tracesSampleRate: getSentryTracesSampleRate(),
   beforeBreadcrumb(breadcrumb: Sentry.Breadcrumb) {
     return {
       ...breadcrumb,
@@ -58,24 +69,32 @@ setLogger({
   },
 });
 
-const BaseApp: React.FC<Props> = ({ Component, pageProps, header, footer }) => {
+const BaseApp: React.FC<Props> = ({
+  Component,
+  pageProps,
+  header,
+  footer,
+  layout,
+  title,
+}) => {
   const { t } = useTranslation();
   const isRouting = useIsRouting();
+  const LayoutComponent = layout ?? DefaultLayout;
   return (
     <>
       <ThemeProvider theme={theme}>
         <Head>
-          <title>{t('common:appName')}</title>
+          <title>{title ?? t('common:appName')}</title>
         </Head>
         <GlobalStyling />
-        <Layout>
+        <LayoutComponent>
           {header}
           <HDSToastContainer />
           <Content>
             {isRouting ? <PageLoadingSpinner /> : <Component {...pageProps} />}
           </Content>
           {footer}
-        </Layout>
+        </LayoutComponent>
       </ThemeProvider>
       <HiddenLoadingIndicator />
       {process.env.NODE_ENV === 'development' &&
@@ -87,6 +106,8 @@ const BaseApp: React.FC<Props> = ({ Component, pageProps, header, footer }) => {
 BaseApp.defaultProps = {
   header: null,
   footer: null,
+  title: undefined,
+  layout: undefined,
 };
 
 export default initLocale(BaseApp);
