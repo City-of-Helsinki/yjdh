@@ -17,10 +17,10 @@
     "browser-test:ci": "testcafe 'chrome:headless --disable-gpu --window-size=\"1249,720\"  --ignore-certificate-errors-spki-list=\"8sg/cl7YabrOFqSqH+Bu0e+P27Av33gWgi8Lq28DW1I=,gJt+wt/T3afCRkxtMMSjXcl/99sgzWc2kk1c1PC9tG0=,zrQI2/1q8i2SRPmMZ1sMntIkG+lMW0legPFokDo3nrY=\"' --screenshots path=report --video report --reporter spec,custom,html:report/index.html browser-tests/"
   },
   "dependencies": {
-    "@frontend/shared": "*",
     "@frontend/kesaseteli-shared": "*",
+    "@frontend/shared": "*",
     "@sentry/browser": "^7.16.0",
-    "@sentry/utils": "^7.16.0",
+    "@sentry/nextjs": "^7.16.0",
     "axios": "^0.27.2",
     "babel-plugin-import": "^1.13.3",
     "dotenv": "^16.0.0",
