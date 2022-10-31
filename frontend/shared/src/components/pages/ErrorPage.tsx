@@ -12,6 +12,7 @@ import {
 } from './ErrorPage.sc';
 
 export type ErrorPageProps = {
+  errorId?: string;
   title: string;
   message: string;
   retry?: () => void;
@@ -19,6 +20,7 @@ export type ErrorPageProps = {
 };
 
 const ErrorPage: React.FC<ErrorPageProps> = ({
+  errorId,
   title,
   message,
   retry,
@@ -31,6 +33,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
         <$IconAlertCircle size="xl" />
         <$ErrorPageTitle>{title}</$ErrorPageTitle>
         <$ErrorPageMessage>{message}</$ErrorPageMessage>
+        {errorId && <$ErrorPageMessage>({errorId})</$ErrorPageMessage>}
         {(retry || logout) && (
           <$ActionsContainer>
             {retry && (
@@ -51,6 +54,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
 };
 
 ErrorPage.defaultProps = {
+  errorId: undefined,
   retry: undefined,
   logout: undefined,
 };
