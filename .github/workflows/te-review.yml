@@ -96,6 +96,13 @@ jobs:
           entrypoint: /app/devops
           args: create_images
         env:
+          # Don't need to lint / typecheck for e2e, they're done in another workflow
+          DOCKER_BUILD_ARG_NEXTJS_IGNORE_ESLINT: true
+          # TODO we need separate typecheck to te-*-frontend-test.yml workflow
+          DOCKER_BUILD_ARG_NEXTJS_IGNORE_TYPECHECK: false
+          DOCKER_BUILD_ARG_NEXT_DISABLE_SOURCEMAPS: true
+          DOCKER_BUILD_ARG_NEXT_TELEMETRY_DISABLED: true
+          DOCKER_BUILD_ARG_NEXTJS_SENTRY_UPLOAD_DRY_RUN: true
           DOCKER_BUILD_ARG_NEXT_PUBLIC_BACKEND_URL: ${{ env.NEXT_PUBLIC_BACKEND_URL }}
           DOCKER_BUILD_ARG_NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
           DOCKER_BUILD_ARG_NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
