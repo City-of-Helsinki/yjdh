@@ -43,10 +43,9 @@ env:
   ADMIN_URL: https://te-admn-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   NEXT_PUBLIC_BACKEND_URL: https://te-bknd-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   NEXT_PUBLIC_MOCK_FLAG: 1
-  NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
-  NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
   CORS_ALLOW_ALL_ORIGINS: 1
   NEXT_SHARP_PATH: /app/node_modules/sharp
+
 jobs:
   build:
     if: ${{ github.actor != 'dependabot[bot]' }}
@@ -106,6 +105,7 @@ jobs:
           DOCKER_BUILD_ARG_NEXT_PUBLIC_BACKEND_URL: ${{ env.NEXT_PUBLIC_BACKEND_URL }}
           DOCKER_BUILD_ARG_NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
           DOCKER_BUILD_ARG_NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
+          DOCKER_BUILD_ARG_SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           DOCKER_BUILD_ARG_NEXT_PUBLIC_MOCK_FLAG: ${{ env.NEXT_PUBLIC_MOCK_FLAG }}
           DOCKER_BUILD_ARG_NEXT_SHARP_PATH: ${{ env.NEXT_SHARP_PATH }}
           DOCKER_BUILD_ARG_PROJECT: ${{ matrix.project }}
