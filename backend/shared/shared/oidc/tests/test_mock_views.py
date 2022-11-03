@@ -4,37 +4,7 @@ import pytest
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import override_settings
-from django.urls import path, reverse
-
-from shared.oidc.views.mock_views import (
-    MockAuthenticationRequestView,
-    MockLogoutCallbackView,
-    MockLogoutView,
-    MockUserInfoView,
-)
-
-urlpatterns = [
-    path(
-        "oidc/authenticate/",
-        MockAuthenticationRequestView.as_view(),
-        name="oidc_authentication_init",
-    ),
-    path(
-        "oidc/logout/",
-        MockLogoutView.as_view(),
-        name="oidc_logout",
-    ),
-    path(
-        "oidc/logout_callback/",
-        MockLogoutCallbackView.as_view(),
-        name="oidc_logout_callback",
-    ),
-    path(
-        "oidc/userinfo/",
-        MockUserInfoView.as_view(),
-        name="oidc_userinfo",
-    ),
-]
+from django.urls import reverse
 
 
 @pytest.mark.django_db
@@ -45,7 +15,6 @@ urlpatterns = [
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=True,
     LOGIN_REDIRECT_URL="http://example.com/login/",
-    ROOT_URLCONF=__name__,
 )
 def test_login_view(
     settings, client, oidc_mock_user_is_staff, oidc_mock_user_is_superuser
@@ -90,7 +59,6 @@ def test_login_view(
 @pytest.mark.django_db
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=True,
-    ROOT_URLCONF=__name__,
     LOGOUT_REDIRECT_URL="http://example.com/logged_out/?status=logout",
 )
 def test_logout_view(user_client, user):
@@ -104,7 +72,6 @@ def test_logout_view(user_client, user):
 @pytest.mark.django_db
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=True,
-    ROOT_URLCONF=__name__,
     LOGOUT_REDIRECT_URL="http://example.com/logged_out/?status=logout",
 )
 def test_logout_callback_view(user_client, user):
@@ -115,7 +82,7 @@ def test_logout_callback_view(user_client, user):
 
 
 @pytest.mark.django_db
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=True, ROOT_URLCONF=__name__)
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
 def test_userinfo_view(user_client, user):
     logout_url = reverse("oidc_userinfo")
     response = user_client.get(logout_url)
