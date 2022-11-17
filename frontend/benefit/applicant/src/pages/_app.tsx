@@ -14,17 +14,14 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
-import Content from 'shared/components/content/Content';
-import ToastContainer from 'shared/components/toast/ToastContainer';
-import GlobalStyling from 'shared/styles/globalStyling';
-import theme from 'shared/styles/theme';
-import { ThemeProvider } from 'styled-components';
+import BaseApp from 'shared/components/app/BaseApp';
+import isServerSide from 'shared/server/is-server-side';
 
 import { ROUTES } from '../constants';
 
 const queryClient = new QueryClient();
 
-const App: React.FC<AppProps> = ({ Component, pageProps }) => {
+const App: React.FC<AppProps> = (appProps) => {
   const locale = useLocale();
 
   const router = useRouter();
@@ -45,15 +42,11 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
     >
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <ThemeProvider theme={theme}>
-            <GlobalStyling />
-            <Layout>
-              <ToastContainer />
-              <Content>
-                <Component {...pageProps} />
-              </Content>
-            </Layout>
-          </ThemeProvider>
+          <BaseApp
+            layout={Layout}
+            title={!isServerSide() && document.title}
+            {...appProps}
+          />
         </AuthProvider>
       </QueryClientProvider>
     </BackendAPIProvider>

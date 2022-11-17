@@ -1,16 +1,21 @@
 import io
 import zipfile
 from datetime import date
+from typing import List
 from unittest.mock import patch
 
 import pytest
 
 from applications.enums import ApplicationStatus, BenefitType
+from applications.models import Application
 from applications.services.ahjo_integration import (
+    ACCEPTED_TITLE,
     export_application_batch,
+    ExportFileInfo,
     generate_composed_files,
     generate_single_approved_file,
     generate_single_declined_file,
+    REJECTED_TITLE,
 )
 from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
 from calculator.models import Calculation
@@ -18,6 +23,15 @@ from calculator.tests.factories import PaySubsidyFactory
 from companies.tests.factories import CompanyFactory
 from helsinkibenefit.tests.conftest import *  # noqa
 from shared.service_bus.enums import YtjOrganizationCode
+
+DE_MINIMIS_AID_PARTIAL_TEXT = (
+    # In English ~= "support is granted as insignificant i.e. de minimis support"
+    "tuki myönnetään vähämerkityksisenä eli ns. de minimis -tukena"
+)
+
+
+def normalize_whitespace(text: str) -> str:
+    return " ".join(text.split())
 
 
 def _assert_html_content(html, include_keys=(), excluded_keys=()):
@@ -28,32 +42,54 @@ def _assert_html_content(html, include_keys=(), excluded_keys=()):
 
 
 @pytest.mark.parametrize(
-    "company_form_code, de_minimis_aid",
+    "company_form_code,company_form,de_minimis_aids,should_show_de_minimis_aid_footer",
     [
-        (YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT, False),
-        (YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT, False),
-        (YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT, True),
+        (
+            YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT,
+            "ry",
+            [False, False, False],
+            False,
+        ),
+        (
+            YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT,
+            "oy",
+            [False, False, False],
+            False,
+        ),
+        (
+            YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT,
+            "oy",
+            [False, True, False],
+            True,
+        ),
+        (YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT, "oy", [True, True, True], True),
     ],
 )
 @patch("applications.services.ahjo_integration.pdfkit.from_string")
 def test_generate_single_approved_template_html(
-    mock_pdf_convert, company_form_code, de_minimis_aid
+    mock_pdf_convert,
+    company_form_code: YtjOrganizationCode,
+    company_form: str,
+    de_minimis_aids: List[bool],
+    should_show_de_minimis_aid_footer: bool,
 ):
     mock_pdf_convert.return_value = {}
     company = CompanyFactory(
-        company_form_code=YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT
+        company_form_code=company_form_code, company_form=company_form
     )
-    apps = DecidedApplicationFactory.create_batch(
-        3,
-        company=company,
-        de_minimis_aid=de_minimis_aid,
-        status=ApplicationStatus.ACCEPTED,
-    )
+    apps: List[Application] = [
+        DecidedApplicationFactory(
+            company=company,
+            de_minimis_aid=de_minimis_aid,
+            status=ApplicationStatus.ACCEPTED,
+        )
+        for de_minimis_aid in de_minimis_aids
+    ]
     for app in apps:
         app.calculation.calculated_benefit_amount = 1000
         app.calculation.save()
     # Only assert html content for easier comparison
-    _, _, html = generate_single_approved_file(apps[0].company, apps)
+    html = generate_single_approved_file(apps[0].company, apps).html_content
     for app in apps:
         _assert_html_content(
             html,
@@ -63,6 +99,14 @@ def test_generate_single_approved_template_html(
                 app.employee.last_name,
             ),
         )
+    whitespace_normalized_html = normalize_whitespace(html)
+    assert (
+        normalize_whitespace(ACCEPTED_TITLE).casefold()
+        in whitespace_normalized_html.casefold()
+    )
+    assert (
+        DE_MINIMIS_AID_PARTIAL_TEXT.casefold() in whitespace_normalized_html.casefold()
+    ) == should_show_de_minimis_aid_footer
 
 
 @patch("applications.services.ahjo_integration.pdfkit.from_string")
@@ -73,7 +117,7 @@ def test_generate_single_declined_template_html(mock_pdf_convert):
         3, company=company, status=ApplicationStatus.REJECTED
     )
     # Only assert html content for easier comparison
-    _, _, html = generate_single_declined_file(apps[0].company, apps)
+    html = generate_single_declined_file(apps[0].company, apps).html_content
     for app in apps:
         _assert_html_content(
             html,
@@ -83,6 +127,16 @@ def test_generate_single_declined_template_html(mock_pdf_convert):
                 app.employee.last_name,
             ),
         )
+
+    whitespace_normalized_html = normalize_whitespace(html)
+    assert (
+        normalize_whitespace(REJECTED_TITLE).casefold()
+        in whitespace_normalized_html.casefold()
+    )
+    assert (
+        DE_MINIMIS_AID_PARTIAL_TEXT.casefold()
+        not in whitespace_normalized_html.casefold()
+    )
 
 
 @patch("applications.services.ahjo_integration.pdfkit.from_string")
@@ -108,7 +162,7 @@ def test_generate_composed_template_html(mock_pdf_convert):
     )
 
     # Only assert html content for easier comparison
-    files = generate_composed_files(
+    files: List[ExportFileInfo] = generate_composed_files(
         [accepted_app_1, accepted_app_2], [rejected_app_1, rejected_app_2]
     )
     assert len(files) == 4
@@ -117,7 +171,7 @@ def test_generate_composed_template_html(mock_pdf_convert):
     # files[1]: Private accepted composed files
     # files[2]: Private rejected composed files
     _assert_html_content(
-        files[0][2],
+        files[0].html_content,
         (
             accepted_app_1.ahjo_application_number,
             accepted_app_2.ahjo_application_number,
@@ -130,7 +184,7 @@ def test_generate_composed_template_html(mock_pdf_convert):
         ),
     )
     _assert_html_content(
-        files[1][2],
+        files[1].html_content,
         (
             accepted_app_1.ahjo_application_number,
             accepted_app_2.ahjo_application_number,
@@ -138,7 +192,7 @@ def test_generate_composed_template_html(mock_pdf_convert):
         (rejected_app_1.ahjo_application_number,),
     )
     _assert_html_content(
-        files[2][2],
+        files[2].html_content,
         (
             rejected_app_1.ahjo_application_number,
             rejected_app_2.ahjo_application_number,
@@ -179,7 +233,7 @@ def test_export_application_batch(application_batch):
 def test_multiple_benefit_per_application(mock_pdf_convert):
     mock_pdf_convert.return_value = {}
     # Test case data and expected results collected from
-    # calculator/tests/Helsinki-lisä laskurin testitapaukset.xlsx/ Sheet Palkan Helsinki-lisä / Column E
+    # calculator/tests/Helsinki-lisa laskurin testitapaukset.xlsx/ Sheet Palkan Helsinki-lisä / Column E
     application = ApplicationFactory(
         association_has_business_activities=True,
         company__company_form="ry",
@@ -210,7 +264,9 @@ def test_multiple_benefit_per_application(mock_pdf_convert):
     application.refresh_from_db()
     application.calculation.init_calculator()
     application.calculation.calculate()
-    _, _, html = generate_single_approved_file(application.company, [application])
+    html = generate_single_approved_file(
+        application.company, [application]
+    ).html_content
     assert (
         html.count(application.ahjo_application_number) == 2
     )  # Make sure there are two rows in the report

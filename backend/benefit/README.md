@@ -1,4 +1,14 @@
-## DEBUGGING
+## Notes for developers
+
+### Please take NEXT_PUBLIC_MOCK_FLAG into account
+
+Since [PR #1477](https://github.com/City-of-Helsinki/yjdh/pull/1477) (October 2022)
+NEXT_PUBLIC_MOCK_FLAG has been used for disabling authentication and for mocking
+company information in the backend.
+
+Please **take NEXT_PUBLIC_MOCK_FLAG into account when changing/adding code which handles
+permissions, authentication** etc. There are automated backend tests related to
+NEXT_PUBLIC_MOCK_FLAG's functionality but they are not fully comprehensive.
 
 ## Development without Docker
 
@@ -78,9 +88,13 @@ In `backend/benefit/`:
 
 ### Testing and debugging
 
-To run the backend without integrations, set NEXT_PUBLIC_MOCK_FLAG=1 in .env.benefit-backend
-If NEXT_PUBLIC_MOCK_FLAG is set, additionally DUMMY_COMPANY_FORM_CODE can be set to test with different
-company_form parameters.
+To run the backend without integrations/authentication, set NEXT_PUBLIC_MOCK_FLAG=1 in
+.env.benefit-backend If NEXT_PUBLIC_MOCK_FLAG is set, additionally
+DUMMY_COMPANY_FORM_CODE can be set to test with different company_form parameters.
+
+**Using LOAD_FIXTURES=1 is recommended for local testing** as it loads e.g. default
+terms which are required for an applicant to be able to successfully send in an
+application using the applicant UI.
 
 ## Keeping Python requirements up to date
 

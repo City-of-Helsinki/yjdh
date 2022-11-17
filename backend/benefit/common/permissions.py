@@ -8,16 +8,14 @@ from users.utils import get_company_from_request
 
 class BFIsAuthenticated(permissions.IsAuthenticated):
     def has_permission(self, request, view):
-        # FIXME: Remove this permission when FE implemented authentication
-        if settings.DISABLE_AUTHENTICATION:
+        if settings.NEXT_PUBLIC_MOCK_FLAG:
             return True
         return super().has_permission(request, view)
 
 
 class BFIsApplicant(BFIsAuthenticated):
     def has_permission(self, request, view):
-        # FIXME: Remove this permission when FE implemented authentication
-        if settings.DISABLE_AUTHENTICATION:
+        if settings.NEXT_PUBLIC_MOCK_FLAG:
             return True
         if request.user and request.user.is_staff:
             # Handlers are never applicants. This restriction is needed in order to limit
@@ -28,8 +26,7 @@ class BFIsApplicant(BFIsAuthenticated):
 
 class BFIsHandler(permissions.IsAdminUser):
     def has_permission(self, request, view):
-        # FIXME: Remove this permission when FE implemented authentication
-        if settings.DISABLE_AUTHENTICATION:
+        if settings.NEXT_PUBLIC_MOCK_FLAG:
             return True
         return super().has_permission(request, view)
 
@@ -38,7 +35,7 @@ class TermsOfServiceAccepted(permissions.BasePermission):
     message = _("You have to accept Terms of Service before doing any action")
 
     def has_permission(self, request, view):
-        if settings.DISABLE_AUTHENTICATION or settings.DISABLE_TOS_APPROVAL_CHECK:
+        if settings.NEXT_PUBLIC_MOCK_FLAG or settings.DISABLE_TOS_APPROVAL_CHECK:
             return True
         user = request.user
         # Checking the session first before querying the database

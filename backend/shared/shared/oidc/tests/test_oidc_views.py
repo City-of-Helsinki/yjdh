@@ -56,7 +56,7 @@ def test_logout_view_without_oidc_info(user_client, user):
 @pytest.mark.django_db
 @override_settings(
     LOGOUT_REDIRECT_URL="http://example.com/logged_out/?status=logout",
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_logout_callback_view(requests_mock, user_client, user):
     matcher = re.compile(re.escape(settings.OIDC_OP_LOGOUT_ENDPOINT))

@@ -1,11 +1,15 @@
 import io
-import zipfile
+import os.path
+from collections import defaultdict
 from datetime import date, datetime
 from decimal import Decimal
+from typing import Dict, List
+from zipfile import ZipFile
 
 from dateutil.relativedelta import relativedelta
-from django.http import StreamingHttpResponse
+from django.http import HttpResponse, StreamingHttpResponse
 from rest_framework.reverse import reverse
+from rest_framework.test import APIClient
 
 from applications.enums import AhjoDecision, ApplicationStatus, BenefitType
 from applications.models import ApplicationBatch
@@ -23,12 +27,20 @@ from helsinkibenefit.tests.conftest import *  # noqa
 from terms.tests.conftest import *  # noqa
 
 
-def _get_csv(handler_api_client, url, expected_application_numbers, expect_empty=False):
-    response = handler_api_client.get(url)
-    assert response.status_code == 200
-    assert isinstance(response, StreamingHttpResponse)
-    csv_lines = split_lines_at_semicolon(response.getvalue().decode("utf-8"))
-    if expect_empty:
+def get_filenames_grouped_by_extension_from_zip(
+    archive: ZipFile,
+) -> Dict[str, List[str]]:
+    extension_to_filenames = defaultdict(list)
+    for filename in archive.namelist():
+        file_extension = os.path.splitext(filename)[1]
+        extension_to_filenames[file_extension].append(filename)
+    return extension_to_filenames
+
+
+def _test_csv(
+    csv_lines: List[List[str]], expected_application_numbers: List[int]
+) -> None:
+    if not expected_application_numbers:
         assert len(csv_lines) == 2
         assert csv_lines[1][0] == '"Ei löytynyt ehdot täyttäviä hakemuksia"'
     else:
@@ -38,15 +50,38 @@ def _get_csv(handler_api_client, url, expected_application_numbers, expect_empty
             csv_lines[1:], expected_application_numbers
         ):
             assert int(line[0]) == expected_application_number
+
+
+def _get_csv_from_zip(zip_content: bytes) -> bytes:
+    archive: ZipFile = ZipFile(io.BytesIO(zip_content))
+    csv_names = get_filenames_grouped_by_extension_from_zip(archive).get(".csv", [])
+    assert len(csv_names) == 1, "There must be a single .csv file in the zip file"
+    return archive.read(csv_names[0])
+
+
+def _get_csv(
+    handler_api_client: APIClient,
+    url: str,
+    expected_application_numbers: List[int],
+    from_zip: bool = False,
+) -> List[List[str]]:
+    response = handler_api_client.get(url)
+    assert response.status_code == 200
+    if from_zip:
+        assert isinstance(response, HttpResponse)
+        csv_content: bytes = _get_csv_from_zip(response.content)
+    else:
+        assert isinstance(response, StreamingHttpResponse)
+        csv_content: bytes = response.getvalue()
+    csv_lines = split_lines_at_semicolon(csv_content.decode("utf-8"))
+    _test_csv(csv_lines, expected_application_numbers)
     return csv_lines
 
 
-def _get_pdf_zip(handler_api_client, url):
+def _get_csv_pdf_zip(handler_api_client: APIClient, url: str) -> ZipFile:
     response = handler_api_client.get(url)
     assert response.status_code == 200
-    file_like_object = io.BytesIO(response.content)
-    archive = zipfile.ZipFile(file_like_object)
-    return archive
+    return ZipFile(io.BytesIO(response.content))
 
 
 def _create_applications_for_export():
@@ -83,8 +118,9 @@ def test_applications_csv_export_new_applications(handler_api_client):
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_new_rejected_applications_csv/",
+        + "export_new_rejected_applications_csv_pdf/",
         [application3.application_number],
+        from_zip=True,
     )
     assert ApplicationBatch.objects.all().count() == 1
     assert ApplicationBatch.objects.all().first().applications.count() == 1
@@ -100,8 +136,9 @@ def test_applications_csv_export_new_applications(handler_api_client):
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_new_accepted_applications_csv/",
+        + "export_new_accepted_applications_csv_pdf/",
         [application1.application_number, application2.application_number],
+        from_zip=True,
     )
     assert ApplicationBatch.objects.all().count() == 2
     assert set(
@@ -119,16 +156,16 @@ def test_applications_csv_export_new_applications(handler_api_client):
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_new_rejected_applications_csv/",
+        + "export_new_rejected_applications_csv_pdf/",
         [],
-        expect_empty=True,
+        from_zip=True,
     )
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_new_accepted_applications_csv/",
+        + "export_new_accepted_applications_csv_pdf/",
         [],
-        expect_empty=True,
+        from_zip=True,
     )
     assert ApplicationBatch.objects.all().count() == 2
 
@@ -212,7 +249,6 @@ def test_applications_csv_export_with_date_range(handler_api_client):
         reverse("v1:handler-application-list")
         + "export_csv/?handled_at_after=2022-02-02&handled_at_before=2022-02-28",
         [],
-        expect_empty=True,
     )
 
     _get_csv(
@@ -238,7 +274,6 @@ def test_applications_csv_export_with_date_range(handler_api_client):
         reverse("v1:handler-application-list")
         + "export_csv/?handled_at_after=2022-02-01&status=handling",
         [],
-        expect_empty=True,
     )
 
 
@@ -586,40 +621,59 @@ def test_write_applications_csv_file(applications_csv_service, tmp_path):
         assert "äöÄÖtest" in contents
 
 
-def test_applications_pdf_zip_export_new_applications(handler_api_client):
-    # create 1 rejected, 2 accepted and 1 cancelled application
+def test_applications_csv_pdf_zip_export_new_applications(handler_api_client):
+    # create 1 rejected, 2 accepted and 1 application in handling
     _create_applications_for_export()
 
-    rejected_archive = _get_pdf_zip(
+    rejected_archive = _get_csv_pdf_zip(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_new_rejected_applications_pdf/",
+        + "export_new_rejected_applications_csv_pdf/",
     )
-    # 1 rejected + 2 composed files == 3
-    assert len(rejected_archive.infolist()) == 3
+    # 1 rejected PDF + 2 composed PDFs + 1 CSV == 4
+    assert len(rejected_archive.infolist()) == 4
+    extension_to_filenames = get_filenames_grouped_by_extension_from_zip(
+        rejected_archive
+    )
+    assert len(extension_to_filenames.get(".csv", [])) == 1
+    assert len(extension_to_filenames.get(".pdf", [])) == 3
 
     # re-running the request results in an empty response and doesn't create new batches
-    rejected_archive = _get_pdf_zip(
+    rejected_archive = _get_csv_pdf_zip(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_new_rejected_applications_pdf/",
+        + "export_new_rejected_applications_csv_pdf/",
     )
-    assert len(rejected_archive.infolist()) == 0
+    assert len(rejected_archive.infolist()) == 1  # Only csv for signifying empty
+    extension_to_filenames: dict = get_filenames_grouped_by_extension_from_zip(
+        rejected_archive
+    )
+    assert len(extension_to_filenames.get(".csv", [])) == 1
 
     # accepted applications
-    accepted_archive = _get_pdf_zip(
+    accepted_archive = _get_csv_pdf_zip(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_new_accepted_applications_pdf/",
+        + "export_new_accepted_applications_csv_pdf/",
     )
 
-    # 2 accepted + 2 composed files == 3
-    assert len(accepted_archive.infolist()) == 4
+    # 2 accepted PDFs + 2 composed PDFs + 1 CSV == 5
+    assert len(accepted_archive.infolist()) == 5
+    extension_to_filenames: dict = get_filenames_grouped_by_extension_from_zip(
+        accepted_archive
+    )
+    assert len(extension_to_filenames.get(".csv", [])) == 1
+    assert len(extension_to_filenames.get(".pdf", [])) == 4
 
     # re-running the request results in an empty response and doesn't create new batches
-    accepted_archive = _get_pdf_zip(
+    accepted_archive = _get_csv_pdf_zip(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_new_accepted_applications_pdf/",
+        + "export_new_accepted_applications_csv_pdf/",
     )
-    assert len(accepted_archive.infolist()) == 0
+    assert len(accepted_archive.infolist()) == 1  # Only csv for signifying empty
+    extension_to_filenames: dict = get_filenames_grouped_by_extension_from_zip(
+        accepted_archive
+    )
+    assert len(extension_to_filenames.get(".csv", [])) == 1
+    assert len(extension_to_filenames.get(".pdf", [])) == 0

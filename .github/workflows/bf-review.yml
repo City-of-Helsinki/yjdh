@@ -42,7 +42,6 @@ env:
   HANDLER_URL: https://helsinkibenefit-bf-hndl-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   NEXT_PUBLIC_BACKEND_URL: https://helsinkibenefit-bf-bknd-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   NEXT_PUBLIC_MOCK_FLAG: 1
-  DISABLE_AUTHENTICATION: 1
   CORS_ALLOW_ALL_ORIGINS: 1
 jobs:
   build:
@@ -87,8 +86,18 @@ jobs:
           entrypoint: /app/devops
           args: create_images
         env:
+          # Don't need to lint / typecheck for e2e, they're done in another workflow
+          DOCKER_BUILD_ARG_NEXTJS_IGNORE_ESLINT: true
+          # TODO we need separate typecheck to bf-*-frontend-test.yml workflow
+          DOCKER_BUILD_ARG_NEXTJS_IGNORE_TYPECHECK: false
+          DOCKER_BUILD_ARG_NEXT_DISABLE_SOURCEMAPS: true
+          DOCKER_BUILD_ARG_NEXT_TELEMETRY_DISABLED: true
+          DOCKER_BUILD_ARG_NEXTJS_SENTRY_UPLOAD_DRY_RUN: true
           DOCKER_BUILD_ARG_NEXT_PUBLIC_BACKEND_URL: ${{ env.NEXT_PUBLIC_BACKEND_URL }}
           DOCKER_BUILD_ARG_NEXT_PUBLIC_MOCK_FLAG: ${{ env.NEXT_PUBLIC_MOCK_FLAG }}
+          DOCKER_BUILD_ARG_NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+          DOCKER_BUILD_ARG_NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
+          DOCKER_BUILD_ARG_SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           DOCKER_BUILD_ARG_PROJECT: ${{ matrix.project }}
           DOCKER_BUILD_ARG_FOLDER: ${{ matrix.folder }}
           DOCKER_BUILD_ARG_SERVICE: ${{ matrix.service }}
@@ -156,7 +165,6 @@ jobs:
           echo "K8S_SECRET_APPLICANT_URL=${{ env.APPLICANT_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_HANDLER_URL=${{ env.HANDLER_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_NEXT_PUBLIC_MOCK_FLAG=${{ env.NEXT_PUBLIC_MOCK_FLAG }}" >> $GITHUB_ENV
-          echo "K8S_SECRET_DISABLE_AUTHENTICATION=${{ env.DISABLE_AUTHENTICATION }}" >> $GITHUB_ENV
           echo "K8S_SECRET_DATABASE_DB=${{ github.event.repository.name }}-${{ matrix.service }}-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
           echo "K8S_SECRET_DATABASE_HOST=${{ secrets.K8S_SECRET_DATABASE_HOST_REVIEW }}" >> $GITHUB_ENV
           echo "K8S_SECRET_DATABASE_PORT=${{ secrets.K8S_SECRET_DATABASE_PORT_REVIEW }}" >> $GITHUB_ENV

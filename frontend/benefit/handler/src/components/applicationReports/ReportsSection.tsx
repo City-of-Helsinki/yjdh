@@ -10,7 +10,7 @@ import ExportFileType from 'shared/types/export-file-type';
 import { useTheme } from 'styled-components';
 
 export type ReportsSectionProp = {
-  types: ExportFileType[];
+  exportFileType: ExportFileType;
   children?: React.ReactNode;
   withDivider?: boolean;
   header: string;
@@ -19,7 +19,7 @@ export type ReportsSectionProp = {
 };
 
 const ReportsSection: React.FC<ReportsSectionProp> = ({
-  types,
+  exportFileType,
   children,
   header,
   buttonText,
@@ -49,20 +49,18 @@ const ReportsSection: React.FC<ReportsSectionProp> = ({
         )}
         <$GridCell>
           <$Grid columns={3}>
-            {types.map((type: ExportFileType) => (
-              <$GridCell>
-                <Button
-                  theme="coat"
-                  iconLeft={<IconDownload />}
-                  css={`
-                    margin-top: ${theme.spacing.l};
-                  `}
-                  onClick={() => onDownloadButtonClick(type)}
-                >
-                  {buttonText} {String(type).toUpperCase()}
-                </Button>
-              </$GridCell>
-            ))}
+            <$GridCell>
+              <Button
+                theme="coat"
+                iconLeft={<IconDownload />}
+                css={`
+                  margin-top: ${theme.spacing.l};
+                `}
+                onClick={() => onDownloadButtonClick(exportFileType)}
+              >
+                {buttonText} {String(exportFileType).toUpperCase()}
+              </Button>
+            </$GridCell>
           </$Grid>
         </$GridCell>
         {withDivider && (

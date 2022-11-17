@@ -10,10 +10,7 @@ class HasMessagePermission(permissions.BasePermission):
     message = _("You don't have permission to change this message")
 
     def has_object_permission(self, request, view, obj):
-        if (
-            settings.DISABLE_AUTHENTICATION
-            or request.method in permissions.SAFE_METHODS
-        ):
+        if settings.NEXT_PUBLIC_MOCK_FLAG or request.method in permissions.SAFE_METHODS:
             return True
         # Updating message is not allowed for now
         if request.method == "PUT":

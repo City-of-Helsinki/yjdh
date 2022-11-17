@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound, PermissionDenied
@@ -30,7 +32,7 @@ class MessageSerializer(serializers.ModelSerializer):
         ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
     ]
 
-    def validate(self, data):
+    def validate(self, data):  # noqa: C901
         request = self.context.get("request")
         user = get_request_user_from_context(self)
         application_id = self.context["view"].kwargs["application_pk"]
@@ -40,7 +42,10 @@ class MessageSerializer(serializers.ModelSerializer):
         except Application.DoesNotExist:
             raise NotFound(_("Application not found"))
 
-        if not user.is_handler():
+        if settings.NEXT_PUBLIC_MOCK_FLAG:
+            if not (user and user.is_authenticated):
+                user = get_user_model().objects.all().order_by("username").first()
+        elif not user.is_handler():
             company = get_company_from_request(request)
             if company != application.company:
                 raise PermissionDenied(_("You are not allowed to do this action"))
@@ -56,7 +61,6 @@ class MessageSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     _("Applicant is not allowed to do this action")
                 )
-
         elif data["message_type"] == MessageType.APPLICANT_MESSAGE:
             raise serializers.ValidationError(
                 _("Handler is not allowed to do this action")

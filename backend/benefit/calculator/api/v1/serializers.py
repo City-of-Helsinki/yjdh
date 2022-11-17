@@ -67,7 +67,7 @@ class CalculationSerializer(serializers.ModelSerializer):
 
     def _validate_date_range(self, start_date, end_date):
         # Only validate date range if both of them are set
-        if not (start_date is None and end_date is None):
+        if start_date is not None and end_date is not None:
             # validation is more relaxed as it's assumed that the handlers know what they're doing
             if (
                 start_date + relativedelta(months=self.CALCULATION_MAX_MONTHS)
@@ -123,6 +123,7 @@ class CalculationSerializer(serializers.ModelSerializer):
                     _("Handler can not be unassigned in this status")
                 )
         else:
+
             if (
                 self.parent.instance.status
                 not in self.HANDLER_CAN_BE_ASSIGNED_IN_STATUSES
@@ -203,6 +204,8 @@ class UpdateOrderedListSerializer(serializers.ListSerializer):
 
 class PaySubsidySerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(required=False)
+    start_date = serializers.DateField(allow_null=True, required=False)
+    end_date = serializers.DateField(allow_null=True, required=False)
 
     work_time_percent = serializers.DecimalField(
         max_digits=PaySubsidy.work_time_percent.field.max_digits,
@@ -210,6 +213,36 @@ class PaySubsidySerializer(serializers.ModelSerializer):
         min_value=1,
         max_value=PaySubsidy.DEFAULT_WORK_TIME_PERCENT,
     )
+
+    def _is_manual_mode(self):
+        return (
+            self.context["request"].data["calculation"] is not None
+            and self.context["request"].data["calculation"][
+                "override_monthly_benefit_amount"
+            ]
+            is not None
+        )
+
+    HANDLING_STARTED_STATUSES = [
+        ApplicationStatus.HANDLING,
+        ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+        ApplicationStatus.ACCEPTED,
+        ApplicationStatus.REJECTED,
+    ]
+
+    def _is_handling_started(self):
+        return self.context["request"].data["status"] in self.HANDLING_STARTED_STATUSES
+
+    def validate(self, data):
+        request = self.context.get("request")
+        if request is None:
+            return data
+        if self._is_handling_started() and not self._is_manual_mode():
+            if data.get("start_date") is None:
+                raise serializers.ValidationError(_("Start date cannot be empty"))
+            if data.get("end_date") is None:
+                raise serializers.ValidationError(_("End date cannot be empty"))
+        return data
 
     class Meta:
         model = PaySubsidy

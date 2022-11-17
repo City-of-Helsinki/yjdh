@@ -53,6 +53,7 @@ export const maskAttribute = (
 };
 
 export const ATTRIBUTES_TO_MASK = [
+  // kesaseteli attributes
   'contact_person_name',
   'contact_person_email',
   'contact_person_phone_number',
@@ -65,6 +66,15 @@ export const ATTRIBUTES_TO_MASK = [
   'employee_name',
   'employee_ssn',
   'employee_phone_number',
+  // benefit attributes
+  'lastName',
+  'phoneNumber',
+  'bankAccountNumber',
+  'socialSecurityNumber',
+  'companyBankAccountNumber',
+  'companyContactPersonLastName',
+  'companyContactPersonPhoneNumber',
+  'companyContactPersonEmail',
 ];
 
 const maskGDPRData = <O>(obj: O): Partial<O> => {

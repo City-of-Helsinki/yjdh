@@ -3,7 +3,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import AuthProvider from 'benefit/handler/auth/AuthProvider';
 import Footer from 'benefit/handler/components/footer/Footer';
 import Header from 'benefit/handler/components/header/Header';
-import Layout from 'benefit/handler/components/layout/Layout';
 import AppContextProvider from 'benefit/handler/context/AppContextProvider';
 import {
   getBackendDomain,
@@ -14,16 +13,12 @@ import { appWithTranslation } from 'next-i18next';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
-import Content from 'shared/components/content/Content';
-import HDSToastContainer from 'shared/components/toast/ToastContainer';
+import BaseApp from 'shared/components/app/BaseApp';
 import useLocale from 'shared/hooks/useLocale';
-import GlobalStyling from 'shared/styles/globalStyling';
-import theme from 'shared/styles/theme';
-import { ThemeProvider } from 'styled-components';
 
 const queryClient = new QueryClient();
 
-const App: React.FC<AppProps> = ({ Component, pageProps }) => {
+const App: React.FC<AppProps> = (appProps) => {
   const locale = useLocale();
   return (
     <BackendAPIProvider
@@ -33,17 +28,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
       <AppContextProvider>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <ThemeProvider theme={theme}>
-              <GlobalStyling />
-              <Layout>
-                <Header />
-                <HDSToastContainer />
-                <Content>
-                  <Component {...pageProps} />
-                </Content>
-                <Footer />
-              </Layout>
-            </ThemeProvider>
+            <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
           </AuthProvider>
         </QueryClientProvider>
       </AppContextProvider>
