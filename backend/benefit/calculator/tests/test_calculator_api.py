@@ -21,6 +21,24 @@ from common.tests.conftest import get_client_user
 from common.utils import duration_in_months, to_decimal
 
 
+def _set_two_pay_subsidies_with_empty_dates(data: dict) -> dict:
+    data["pay_subsidies"] = [
+        {
+            "start_date": None,
+            "end_date": None,
+            "pay_subsidy_percent": 100,
+            "work_time_percent": 40,
+        },
+        {
+            "start_date": None,
+            "end_date": None,
+            "pay_subsidy_percent": 40,
+            "work_time_percent": 40,
+        },
+    ]
+    return data
+
+
 def test_application_retrieve_calculation_as_handler(
     handler_api_client, handling_application
 ):
@@ -343,20 +361,7 @@ def test_application_edit_pay_subsidy_empty_date_values(
 
     previous_pay_subsidies = copy.deepcopy(data["pay_subsidies"])
 
-    data["pay_subsidies"] = [
-        {
-            "start_date": None,
-            "end_date": None,
-            "pay_subsidy_percent": 100,
-            "work_time_percent": 40,
-        },
-        {
-            "start_date": None,
-            "end_date": None,
-            "pay_subsidy_percent": 40,
-            "work_time_percent": 40,
-        },
-    ]
+    _set_two_pay_subsidies_with_empty_dates(data)
 
     response = handler_api_client.put(
         get_handler_detail_url(handling_application),
@@ -377,20 +382,7 @@ def test_ignore_pay_subsidy_dates_when_application_is_received(
     """
     data = HandlerApplicationSerializer(received_application).data
 
-    data["pay_subsidies"] = [
-        {
-            "start_date": None,
-            "end_date": None,
-            "pay_subsidy_percent": 100,
-            "work_time_percent": 40,
-        },
-        {
-            "start_date": None,
-            "end_date": None,
-            "pay_subsidy_percent": 40,
-            "work_time_percent": 40,
-        },
-    ]
+    _set_two_pay_subsidies_with_empty_dates(data)
 
     response = handler_api_client.put(
         get_handler_detail_url(received_application),
@@ -418,26 +410,30 @@ def test_validate_pay_subsidy_dates_when_application_is_handled(
     application.save()
     data = HandlerApplicationSerializer(application).data
 
-    data["pay_subsidies"] = [
-        {
-            "start_date": None,
-            "end_date": None,
-            "pay_subsidy_percent": 100,
-            "work_time_percent": 40,
-        },
-        {
-            "start_date": None,
-            "end_date": None,
-            "pay_subsidy_percent": 40,
-            "work_time_percent": 40,
-        },
-    ]
+    _set_two_pay_subsidies_with_empty_dates(data)
 
     response = handler_api_client.put(
         get_handler_detail_url(application),
         data,
     )
     assert response.status_code == 400
+
+
+def test_ignore_pay_subsidy_dates_in_received_to_handling_transition(
+    handler_api_client, received_application
+):
+    """
+    paysubsidy validation should be skipped when application is first moved to handling
+    """
+    data = HandlerApplicationSerializer(received_application).data
+    _set_two_pay_subsidies_with_empty_dates(data)
+    data["status"] = ApplicationStatus.HANDLING
+
+    response = handler_api_client.put(
+        get_handler_detail_url(received_application),
+        data,
+    )
+    assert response.status_code == 200
 
 
 def test_ignore_pay_subsidy_dates_when_on_manual_calculator(
@@ -455,20 +451,7 @@ def test_ignore_pay_subsidy_dates_when_on_manual_calculator(
         "override_monthly_benefit_amount_comment"
     ] = "This is a comment."
 
-    data["pay_subsidies"] = [
-        {
-            "start_date": None,
-            "end_date": None,
-            "pay_subsidy_percent": 100,
-            "work_time_percent": 40,
-        },
-        {
-            "start_date": None,
-            "end_date": None,
-            "pay_subsidy_percent": 40,
-            "work_time_percent": 40,
-        },
-    ]
+    _set_two_pay_subsidies_with_empty_dates(data)
 
     response = handler_api_client.put(
         get_handler_detail_url(handling_application),
