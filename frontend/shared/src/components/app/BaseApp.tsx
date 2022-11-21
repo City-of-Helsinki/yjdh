@@ -35,6 +35,7 @@ const getSentryTracesSampleRate = (): number => {
 // https://docs.sentry.io/platforms/javascript/configuration/options
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN || '',
+  debug: true,
   environment: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT || 'development',
   attachStacktrace: Boolean(process.env.NEXT_PUBLIC_SENTRY_ATTACH_STACKTRACE),
   maxBreadcrumbs: Number(process.env.NEXT_PUBLIC_SENTRY_MAX_BREADCRUMBS) || 100,

@@ -13,7 +13,7 @@ import { useQueryClient } from 'react-query';
 import Container from 'shared/components/container/Container';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { useTheme } from 'styled-components';
-
+import { AxiosError } from 'axios';
 import { IS_CLIENT, LOCAL_STORAGE_KEYS } from '../constants';
 
 type NotificationProps = Pick<HDSNotificationProps, 'type' | 'label'> & {
@@ -78,6 +78,31 @@ const Login: NextPage = () => {
         data-testid="loginButton"
       >
         {t('common:login.login')}
+      </Button>
+      <br />
+      <br />
+      <Button
+        theme="coat"
+        onClick={() => {
+          throw new AxiosError(
+            'there is some error message with ssn: 111111-111C should be masked',
+            '400',
+            {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              response: {
+                status: 400,
+                data: {
+                  firstName: 'Jaakko',
+                  lastName: 'Nenonen',
+                  phoneNumber: '12345',
+                },
+              },
+            }
+          );
+        }}
+      >
+        Log error
       </Button>
     </Container>
   );
