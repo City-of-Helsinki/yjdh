@@ -7,8 +7,53 @@ from django.db.models import Q
 from shared.common.utils import (
     _ALWAYS_FALSE_Q_FILTER,
     any_of_q_filter,
+    set_setting_to_value_or_del_with_none,
     social_security_number_birthdate,
 )
+
+_TEST_SETTING_NAMES = [
+    "INEXISTENT_SETTING",
+    "EXISTING_TRUE_SETTING",
+    "EXISTING_FALSE_SETTING",
+]
+
+
+@pytest.fixture
+def _test_settings(settings):
+    settings.EXISTING_TRUE_SETTING = True
+    settings.EXISTING_FALSE_SETTING = False
+    if hasattr(settings, "INEXISTENT_SETTING"):
+        delattr(settings, "INEXISTENT_SETTING")
+    return settings
+
+
+def test_test_settings(_test_settings):
+    assert getattr(_test_settings, "EXISTING_TRUE_SETTING") is True
+    assert getattr(_test_settings, "EXISTING_FALSE_SETTING") is False
+    assert not hasattr(_test_settings, "INEXISTENT_SETTING")
+
+
+@pytest.mark.parametrize("setting_name", _TEST_SETTING_NAMES)
+def test_setting_deletion_with_set_setting_to_value_or_del_with_none(
+    _test_settings, setting_name
+):
+    set_setting_to_value_or_del_with_none(setting_name, None)
+    assert not hasattr(_test_settings, setting_name)
+
+
+@pytest.mark.parametrize(
+    "setting_name,setting_value",
+    [
+        (setting_name, setting_value)
+        for setting_name in _TEST_SETTING_NAMES
+        for setting_value in [False, True, 1, "test"]
+    ],
+)
+def test_setting_value_with_set_setting_to_value_or_del_with_none(
+    _test_settings, setting_name, setting_value
+):
+    set_setting_to_value_or_del_with_none(setting_name, setting_value)
+    assert getattr(_test_settings, setting_name) == setting_value
 
 
 @pytest.mark.parametrize(

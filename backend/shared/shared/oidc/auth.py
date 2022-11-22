@@ -1,6 +1,7 @@
 import logging
 
 import requests
+from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
 from django.urls import reverse
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
@@ -18,6 +19,16 @@ LOGGER = logging.getLogger(__name__)
 class HelsinkiOIDCAuthenticationBackend(OIDCAuthenticationBackend):
     """Override Mozilla Django OIDC authentication."""
 
+    @staticmethod
+    def should_personally_identifiable_info_be_saved() -> bool:
+        """
+        Should personally identifiable information be saved to user model?
+
+        :return: True if OIDC_SAVE_PERSONALLY_IDENTIFIABLE_INFO setting exists
+                 and is truthy, otherwise False.
+        """
+        return bool(getattr(settings, "OIDC_SAVE_PERSONALLY_IDENTIFIABLE_INFO", False))
+
     def verify_claims(self, claims):
         """Override the original verify_claims method because it verifies the claim from the email and
         email is not a mandatory field for suomi.fi authentication."""
@@ -31,12 +42,21 @@ class HelsinkiOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         return self.UserModel.objects.filter(username__iexact=username)
 
     def create_user(self, claims):
-        """Return object for a newly created user account. Takte the values from the userinfo fields"""
+        """
+        Return object for a newly created user account.
+
+        :return: User with username set to "sub" claim, and if and only if personally
+                 identifiable information should be saved then with first_name set to
+                 "given_name" claim, last_name set to "family_name" claim and email set
+                 to "email" claim. In case personally identifiable information shouldn't
+                 be saved then first_name, last_name and email are set to empty strings.
+        """
+        save_pii = self.should_personally_identifiable_info_be_saved()
         return self.UserModel.objects.create_user(
             username=claims.get("sub"),
-            first_name=claims.get("given_name"),
-            last_name=claims.get("family_name"),
-            email=claims.get("email"),
+            first_name=claims.get("given_name") if save_pii else "",
+            last_name=claims.get("family_name") if save_pii else "",
+            email=claims.get("email") if save_pii else "",
         )
 
     def authenticate(self, request, **kwargs):
