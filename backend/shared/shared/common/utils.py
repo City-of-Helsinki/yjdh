@@ -16,6 +16,18 @@ from stdnum.fi.hetu import (
 _ALWAYS_FALSE_Q_FILTER = Q(pk=None)  # A hack but works as primary keys can't be null
 
 
+def set_setting_to_value_or_del_with_none(setting_name: str, setting_value) -> None:
+    """
+    Set setting <setting_name> to value <setting_value> if <setting_value> is not None,
+    otherwise delete the setting <setting_name> if it exists.
+    """
+    if setting_value is None:
+        if hasattr(settings, setting_name):
+            delattr(settings, setting_name)
+    else:
+        setattr(settings, setting_name, setting_value)
+
+
 def any_of_q_filter(**kwargs):
     """
     Return Q filters combined with | i.e. match any of the given keyword arguments.

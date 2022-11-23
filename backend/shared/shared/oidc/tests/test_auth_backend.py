@@ -1,5 +1,6 @@
 import datetime
 import re
+from typing import Optional
 from unittest import mock
 
 import pytest
@@ -11,8 +12,19 @@ from django.test import override_settings, RequestFactory
 from django.utils import timezone
 
 from shared.common.tests.conftest import store_tokens_in_session
+from shared.common.utils import set_setting_to_value_or_del_with_none
 from shared.oidc.auth import HelsinkiOIDCAuthenticationBackend
 from shared.oidc.utils import store_token_info_in_oidc_session
+
+
+@pytest.fixture
+def _test_claims() -> dict:
+    return {
+        "sub": "testuser",
+        "given_name": "test_given_name",
+        "family_name": "test_family_name",
+        "email": "test_email",
+    }
 
 
 def check_token_info(request, token_info):
@@ -36,11 +48,18 @@ def check_token_info(request, token_info):
     ) < datetime.timedelta(seconds=10)
 
 
-def check_user_info(user, claims):
+def check_user_with_personal_info(user, claims):
     assert user.username == claims["sub"]
     assert user.first_name == claims["given_name"]
     assert user.last_name == claims["family_name"]
     assert user.email == claims["email"]
+
+
+def check_user_without_personal_info(user, claims):
+    assert user.username == claims["sub"]
+    assert user.first_name == ""
+    assert user.last_name == ""
+    assert user.email == ""
 
 
 @pytest.mark.django_db
@@ -49,18 +68,25 @@ def check_user_info(user, claims):
     OIDC_OP_USER_ENDPOINT="http://example.com/userinfo/",
     NEXT_PUBLIC_MOCK_FLAG=False,
 )
-def test_authenticate(requests_mock):
+@pytest.mark.parametrize(
+    "oidc_save_personally_identifiable_info,expect_personal_info_removal",
+    [(None, True), (False, True), (True, False)],  # None means no setting at all
+)
+def test_authenticate(
+    settings,
+    _test_claims,
+    requests_mock,
+    oidc_save_personally_identifiable_info: Optional[bool],
+    expect_personal_info_removal: bool,
+):
+    set_setting_to_value_or_del_with_none(
+        "OIDC_SAVE_PERSONALLY_IDENTIFIABLE_INFO",
+        oidc_save_personally_identifiable_info,
+    )
     auth_backend = HelsinkiOIDCAuthenticationBackend()
 
-    claims = {
-        "sub": "testuser",
-        "given_name": "test_given_name",
-        "family_name": "test_family_name",
-        "email": "test_email",
-    }
-
     matcher = re.compile(re.escape(settings.OIDC_OP_USER_ENDPOINT))
-    requests_mock.get(matcher, json=claims)
+    requests_mock.get(matcher, json=_test_claims)
 
     state = "test"
     code = "test"
@@ -89,7 +115,11 @@ def test_authenticate(requests_mock):
             user = auth_backend.authenticate(request)
 
     check_token_info(request, token_info)
-    check_user_info(user, claims)
+
+    if expect_personal_info_removal:
+        check_user_without_personal_info(user, _test_claims)
+    else:
+        check_user_with_personal_info(user, _test_claims)
 
 
 @pytest.mark.django_db
@@ -111,19 +141,28 @@ def test_filter_users_by_claims_no_user():
 
 
 @pytest.mark.django_db
-def test_create_user():
+@pytest.mark.parametrize(
+    "oidc_save_personally_identifiable_info",
+    [None, False],  # None means no setting at all
+)
+def test_create_user_when_personal_info_should_not_be_saved(
+    _test_claims, oidc_save_personally_identifiable_info: Optional[bool]
+):
+    set_setting_to_value_or_del_with_none(
+        "OIDC_SAVE_PERSONALLY_IDENTIFIABLE_INFO",
+        oidc_save_personally_identifiable_info,
+    )
     auth_backend = HelsinkiOIDCAuthenticationBackend()
+    user = auth_backend.create_user(_test_claims)
+    check_user_without_personal_info(user, _test_claims)
 
-    claims = {
-        "sub": "testuser",
-        "given_name": "test_given_name",
-        "family_name": "test_family_name",
-        "email": "test_email",
-    }
 
-    user = auth_backend.create_user(claims)
-
-    check_user_info(user, claims)
+@pytest.mark.django_db
+@override_settings(OIDC_SAVE_PERSONALLY_IDENTIFIABLE_INFO=True)
+def test_create_user_when_personal_info_should_be_saved(_test_claims):
+    auth_backend = HelsinkiOIDCAuthenticationBackend()
+    user = auth_backend.create_user(_test_claims)
+    check_user_with_personal_info(user, _test_claims)
 
 
 @pytest.mark.django_db
