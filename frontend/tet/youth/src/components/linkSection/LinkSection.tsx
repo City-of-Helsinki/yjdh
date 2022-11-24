@@ -1,9 +1,10 @@
+import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Linkbox from 'tet/youth/components/linkbox/Linkbox';
-import { $LinkSection, $Links } from './LinkSection.sc';
-import { useTranslation } from 'next-i18next';
 
-const LinkSection = () => {
+import { $Links, $LinkSection } from './LinkSection.sc';
+
+const LinkSection: React.FC = () => {
   const { t } = useTranslation();
   return (
     <$LinkSection>

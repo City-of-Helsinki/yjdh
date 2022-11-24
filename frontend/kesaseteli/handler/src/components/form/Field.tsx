@@ -40,11 +40,4 @@ const Field: React.FC<Props> = ({
   );
 };
 
-Field.defaultProps = {
-  id: undefined,
-  type: undefined,
-  value: '-',
-  children: null,
-};
-
 export default Field;

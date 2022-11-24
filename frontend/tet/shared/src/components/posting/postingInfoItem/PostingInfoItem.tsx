@@ -37,8 +37,4 @@ const PostingInfoItem: React.FC<Props> = ({ title, body, icon }) => {
   );
 };
 
-PostingInfoItem.defaultProps = {
-  icon: null,
-};
-
 export default PostingInfoItem;

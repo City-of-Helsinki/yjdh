@@ -93,13 +93,4 @@ const StepperActions: React.FC<StepperActionsProps> = ({
   );
 };
 
-const defaultProps = {
-  lastStep: false,
-  handleBack: undefined,
-  handleDelete: undefined,
-  disabledNext: false,
-};
-
-StepperActions.defaultProps = defaultProps;
-
 export default StepperActions;

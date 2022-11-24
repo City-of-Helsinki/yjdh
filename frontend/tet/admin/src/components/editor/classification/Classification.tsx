@@ -1,18 +1,18 @@
+import { useTranslation } from 'next-i18next';
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
+import { useQuery } from 'react-query';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { useTranslation } from 'next-i18next';
-import { useTheme } from 'styled-components';
-import { getWorkKeywords, keywordToOptionType } from 'tet-shared/backend-api/linked-events-api';
-import { useQuery } from 'react-query';
-import { OptionType } from 'tet-shared/types/classification';
-import Combobox from 'tet/admin/components/editor/Combobox';
-import SelectionGroup from 'tet/admin/components/editor/SelectionGroup';
-import { useFormContext } from 'react-hook-form';
-import TetPosting from 'tet-shared/types/tetposting';
-import EditorLoadingError from 'tet/admin/components/editor/EditorLoadingError';
 import { Language } from 'shared/i18n/i18n';
+import { useTheme } from 'styled-components';
+import Combobox from 'tet/admin/components/editor/Combobox';
+import EditorLoadingError from 'tet/admin/components/editor/EditorLoadingError';
+import SelectionGroup from 'tet/admin/components/editor/SelectionGroup';
+import { getWorkKeywords, keywordToOptionType } from 'tet-shared/backend-api/linked-events-api';
 import useKeywordType from 'tet-shared/hooks/backend/useKeywordType';
+import { OptionType } from 'tet-shared/types/classification';
+import TetPosting from 'tet-shared/types/tetposting';
 
 export type FilterFunction = (options: OptionType[], search: string) => OptionType[];
 
@@ -25,28 +25,28 @@ const Classification: React.FC = () => {
 
   const keywordsResults = useQuery(['keywords', search], () => getWorkKeywords(search), { enabled: !!search });
 
-  const keywords = React.useMemo(() => {
-    return !keywordsResults.isLoading && keywordsResults.data
-      ? keywordsResults.data.map((k) => keywordToOptionType(k, i18n.language as Language))
-      : [];
-  }, [keywordsResults]);
+  const keywords = React.useMemo(
+    () =>
+      !keywordsResults.isLoading && keywordsResults.data
+        ? keywordsResults.data.map((k) => keywordToOptionType(k, i18n.language as Language))
+        : [],
+    [i18n.language, keywordsResults.data, keywordsResults.isLoading],
+  );
 
   if (methodsAndFeatures.isLoading) {
     return <div>Lataa</div>;
   }
 
-  const filterHandler: FilterFunction = (options, search) => {
-    setSearch(search);
+  const filterHandler: FilterFunction = (options, searchText) => {
+    setSearch(searchText);
     return options;
   };
 
   if (methodsAndFeatures.error) {
     return <EditorLoadingError error={methodsAndFeatures.error} />;
   }
-
-  const isSetRule = () => {
-    return getValues('keywords_working_methods').length > 0 ? true : t('common:editor.posting.validation.isSet');
-  };
+  const isSetRule = (): string | true =>
+    getValues('keywords_working_methods').length > 0 ? true : t<string>('common:editor.posting.validation.isSet');
 
   return (
     <FormSection header={t('common:editor.classification.classifications')}>
@@ -59,13 +59,13 @@ const Classification: React.FC = () => {
       >
         <$GridCell $colSpan={4}>
           <SelectionGroup
-            required={true}
+            required
             testId="posting-form-keywords_working_methods"
             fieldId="keywords_working_methods"
             label={t('common:editor.classification.workMethod')}
             rules={isSetRule}
             options={methodsAndFeatures.workMethodsList}
-          ></SelectionGroup>
+          />
         </$GridCell>
         <$GridCell $colSpan={4}>
           <SelectionGroup
@@ -74,18 +74,18 @@ const Classification: React.FC = () => {
             fieldId="keywords_attributes"
             label={t('common:editor.classification.workFeature')}
             options={methodsAndFeatures.workFeaturesList}
-          ></SelectionGroup>
+          />
         </$GridCell>
         <$GridCell $colSpan={4}>
           <Combobox<OptionType>
-            id={'keywords'}
+            id="keywords"
             testId="posting-form-keywords"
             multiselect
             required={false}
             label={t('common:editor.classification.keywords')}
             placeholder={t('common:editor.classification.search')}
             options={keywords}
-            optionLabelField={'label'}
+            optionLabelField="label"
             filter={filterHandler}
           />
         </$GridCell>

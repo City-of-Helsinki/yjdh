@@ -1,18 +1,19 @@
 import { Button } from 'hds-react';
-import * as React from 'react';
-import Container from 'shared/components/container/Container';
-import { useTranslation } from 'next-i18next';
-import { $Heading, $HeadingContainer } from './JobPostings.sc';
-import { useQuery } from 'react-query';
-import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
-import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import { useRouter } from 'next/router';
-import JobPostingsList from 'tet/admin/components/jobPostings/JobPostingsList';
-import { TetEvents } from 'tet-shared/types/linkedevents';
-import theme from 'shared/styles/theme';
+import { useTranslation } from 'next-i18next';
+import * as React from 'react';
+import { useQuery } from 'react-query';
+import Container from 'shared/components/container/Container';
+import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useConfirm from 'shared/hooks/useConfirm';
-import useEventPostingTransformation from 'tet-shared/hooks/backend/useEventPostingTransformation';
+import theme from 'shared/styles/theme';
+import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
+import JobPostingsList from 'tet/admin/components/jobPostings/JobPostingsList';
 import ErrorText from 'tet-shared/components/ErrorText/ErrorText';
+import useEventPostingTransformation from 'tet-shared/hooks/backend/useEventPostingTransformation';
+import { TetEvents } from 'tet-shared/types/linkedevents';
+
+import { $Heading, $HeadingContainer } from './JobPostings.sc';
 
 const JobPostings: React.FC = () => {
   const { t } = useTranslation();
@@ -31,7 +32,7 @@ const JobPostings: React.FC = () => {
 
   const postings = eventsToTetPostings(data);
 
-  const confirmTerms = async () => {
+  const confirmTerms = async (): Promise<void> => {
     const isConfirmed = await confirm({
       header: t('common:application.createTerms'),
       submitButtonLabel: t('common:application.accept'),
@@ -46,9 +47,7 @@ const JobPostings: React.FC = () => {
     postings.draft.length > 0 || postings.published.length > 0 ? (
       <JobPostingsList draft={postings.draft} published={postings.published} />
     ) : (
-      <>
-        <p>{t('common:application.jobPostings.noPostingsFound')}</p>
-      </>
+      <p>{t('common:application.jobPostings.noPostingsFound')}</p>
     );
 
   return (

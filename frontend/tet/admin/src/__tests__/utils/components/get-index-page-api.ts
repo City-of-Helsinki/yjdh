@@ -5,7 +5,7 @@ const getIndexPageApi = () => ({
   expectations: {
     pageIsLoaded() {
       return screen.findByRole('heading', {
-        name: /tet\-paikkailmoitukset/i,
+        name: /tet-paikkailmoitukset/i,
       });
     },
   },

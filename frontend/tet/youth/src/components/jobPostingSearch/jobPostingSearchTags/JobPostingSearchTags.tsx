@@ -1,10 +1,11 @@
-import React from 'react';
 import { Tag } from 'hds-react';
-import { QueryParams } from 'tet/youth/types/queryparams';
-import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import { $Tags, $RemoveButton } from './JobPostingSearchTags.sc';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
+import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import { QueryParams } from 'tet/youth/types/queryparams';
 import { OptionType } from 'tet-shared/types/classification';
+
+import { $RemoveButton, $Tags } from './JobPostingSearchTags.sc';
 
 type Props = {
   initParams: QueryParams;
@@ -21,9 +22,9 @@ const PostingSearchTags: React.FC<Props> = ({
   onRemoveKeyword,
   languageOptions,
 }) => {
-  const startText = `${initParams.hasOwnProperty('start') ? convertToUIDateFormat(initParams.start as string) : ''}`;
-  const endText = `${initParams.hasOwnProperty('end') ? convertToUIDateFormat(initParams.end as string) : ''}`;
-  const dateText = startText + (startText.length || endText.length ? '-' : '') + endText;
+  const startText = `${initParams.start ? convertToUIDateFormat(initParams.start) : ''}`;
+  const endText = `${initParams.end ? convertToUIDateFormat(initParams.end) : ''}`;
+  const dateText = startText + (startText.length > 0 || endText.length > 0 ? '-' : '') + endText;
   const chosenLanguage = languageOptions.find((language) => language.value === initParams?.language);
 
   const { t } = useTranslation();

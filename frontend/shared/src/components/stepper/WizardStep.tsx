@@ -40,8 +40,4 @@ const WizardStep: React.FC<Props> = ({ title, index = 0 }) => {
   );
 };
 
-WizardStep.defaultProps = {
-  index: 0,
-};
-
 export default WizardStep;

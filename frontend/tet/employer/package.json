@@ -10,7 +10,7 @@
     "test:debug-dom": "cross-env DEBUG_PRINT_LIMIT=1000000 yarn test",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",
     "test:coverage": "yarn test:debug-dom --verbose --coverage",
-    "lint": "next lint"
+    "lint": "eslint --ext js,ts,tsx src"
   },
   "dependencies": {
     "@frontend/shared": "*",

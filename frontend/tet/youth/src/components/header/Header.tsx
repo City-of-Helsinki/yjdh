@@ -1,12 +1,11 @@
+import { IconGlobe, LogoLanguage, Navigation } from 'hds-react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import { MAIN_CONTENT_ID } from 'shared/constants';
+import useLocale from 'shared/hooks/useLocale';
 import { SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 import { OptionType } from 'shared/types/common';
-
-import { IconGlobe, LogoLanguage, Navigation } from 'hds-react';
-import useLocale from 'shared/hooks/useLocale';
-import { MAIN_CONTENT_ID } from 'shared/constants';
 
 const Header: React.FC = () => {
   const { t } = useTranslation();
@@ -36,7 +35,7 @@ const Header: React.FC = () => {
     [router, asPath],
   );
 
-  const titleClickHandler = () => {
+  const titleClickHandler = (): void => {
     void router.push('/');
   };
 

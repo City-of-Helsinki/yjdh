@@ -1,4 +1,4 @@
-import { t, Selector } from 'testcafe';
+import { Selector, t } from 'testcafe';
 
 class Frontpage {
   quickSearchInput = Selector('#searchText');

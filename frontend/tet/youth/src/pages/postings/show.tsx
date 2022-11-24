@@ -1,20 +1,20 @@
 import type { NextPage } from 'next';
-import React from 'react';
 import { GetStaticProps } from 'next';
-import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { useRouter } from 'next/router';
-import PostingContainer from 'tet/shared/src/components/posting/PostingContainer';
-import useGetSingePosting from 'tet/youth/hooks/backend/useGetSingePosting';
+import React from 'react';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import PageNotFound from 'shared/components/pages/PageNotFound';
-import useEventPostingTransformation from 'tet-shared/hooks/backend/useEventPostingTransformation';
+import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
+import PostingContainer from 'tet/shared/src/components/posting/PostingContainer';
+import useGetSinglePosting from 'tet/youth/hooks/backend/useGetSinglePosting';
 import HeaderLinks from 'tet-shared/components/HeaderLinks';
+import useEventPostingTransformation from 'tet-shared/hooks/backend/useEventPostingTransformation';
 
 const ShowPostingPage: NextPage = () => {
   const router = useRouter();
   const { eventToTetPosting, keywordResult } = useEventPostingTransformation();
   const id = router.query.id as string;
-  const { isLoading, data, error } = useGetSingePosting(id);
+  const { isLoading, data, error } = useGetSinglePosting(id);
 
   const returnHandler = (): void => {
     const params = router.query;
@@ -39,12 +39,11 @@ const ShowPostingPage: NextPage = () => {
     return (
       <>
         <HeaderLinks />
-        <PostingContainer posting={eventToTetPosting(data)} showBackButton={true} onReturnClick={returnHandler} />
+        <PostingContainer posting={eventToTetPosting(data)} showBackButton onReturnClick={returnHandler} />
       </>
     );
-  } else {
-    return <PageNotFound />;
   }
+  return <PageNotFound />;
 };
 
 export const getStaticProps: GetStaticProps = getServerSideTranslations('common');

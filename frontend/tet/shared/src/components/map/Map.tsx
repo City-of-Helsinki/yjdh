@@ -119,12 +119,4 @@ const Map: React.FC<Props> = ({
   );
 };
 
-Map.defaultProps = {
-  center: [60.1699, 24.9384], // Helsinki location
-  height: '400px',
-  zoom: 11,
-  zoomToPosition: false,
-  showLink: false,
-};
-
 export default Map;

@@ -70,11 +70,4 @@ const Actions: React.FC<ActionProps> = ({
   );
 };
 
-Actions.defaultProps = {
-  customItems: [],
-  placeholder: '',
-  notification: '',
-  maxLength: 1024,
-};
-
 export default Actions;
