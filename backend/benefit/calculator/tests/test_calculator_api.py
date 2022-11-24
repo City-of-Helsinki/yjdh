@@ -2,6 +2,7 @@ import copy
 import decimal
 from unittest import mock
 
+import factory
 import pytest
 
 from applications.api.v1.serializers import (
@@ -10,6 +11,7 @@ from applications.api.v1.serializers import (
 )
 from applications.enums import ApplicationStatus, BenefitType, OrganizationType
 from applications.tests.conftest import *  # noqa
+from applications.tests.factories import ReceivedApplicationFactory
 from applications.tests.test_applications_api import (
     add_attachments_to_application,
     get_detail_url,
@@ -357,6 +359,8 @@ def test_application_edit_pay_subsidy_invalid_values(
 def test_application_edit_pay_subsidy_empty_date_values(
     handler_api_client, handling_application
 ):
+    handling_application.benefit_type = BenefitType.SALARY_BENEFIT
+    handling_application.save()
     data = HandlerApplicationSerializer(handling_application).data
 
     previous_pay_subsidies = copy.deepcopy(data["pay_subsidies"])
@@ -391,6 +395,62 @@ def test_ignore_pay_subsidy_dates_when_application_is_received(
     assert response.status_code == 200
 
 
+@pytest.mark.parametrize("benefit_type", BenefitType.values)
+@pytest.mark.parametrize(
+    "override_monthly_benefit_amount,override_monthly_benefit_amount_comment",
+    [(None, ""), (100, "Test comment")],
+)
+def test_pay_subsidies_validation_in_handling(
+    handler_api_client,
+    mock_get_organisation_roles_and_create_company,
+    override_monthly_benefit_amount,
+    override_monthly_benefit_amount_comment,
+    benefit_type,
+):
+    expect_validation_error = (
+        benefit_type == BenefitType.SALARY_BENEFIT
+        and override_monthly_benefit_amount is None
+    )
+    with factory.Faker.override_default_locale("fi_FI"):
+        handling_application = ReceivedApplicationFactory(
+            status=ApplicationStatus.HANDLING,
+            apprenticeship_program=False,
+            benefit_type=benefit_type,
+            calculation__override_monthly_benefit_amount=override_monthly_benefit_amount,
+            calculation__override_monthly_benefit_amount_comment=override_monthly_benefit_amount_comment,
+            company=mock_get_organisation_roles_and_create_company,
+            pay_subsidy_granted=True,
+            pay_subsidy_percent=100,
+            additional_pay_subsidy_percent=40,
+        )
+    data = HandlerApplicationSerializer(handling_application).data
+    _set_two_pay_subsidies_with_empty_dates(data)
+
+    # Make sure the test data has been set up correctly
+    assert data["benefit_type"] == benefit_type
+    assert (data["calculation"]["override_monthly_benefit_amount"] is None) == (
+        override_monthly_benefit_amount is None
+    )
+    assert (
+        data["calculation"]["override_monthly_benefit_amount_comment"]
+        == override_monthly_benefit_amount_comment
+    )
+
+    response = handler_api_client.put(
+        get_handler_detail_url(handling_application),
+        data,
+    )
+
+    if expect_validation_error:
+        assert response.status_code == 400
+        assert "pay_subsidies" in response.json()
+        assert {"start_date": ["Start date cannot be empty"]} in response.json()[
+            "pay_subsidies"
+        ]
+    else:
+        assert response.status_code == 200
+
+
 @pytest.mark.parametrize(
     "status",
     [
@@ -407,6 +467,7 @@ def test_validate_pay_subsidy_dates_when_application_is_handled(
     paysubsidy should be validated when application has gone through the handling state
     """
     application.status = status
+    application.benefit_type = BenefitType.SALARY_BENEFIT
     application.save()
     data = HandlerApplicationSerializer(application).data
 

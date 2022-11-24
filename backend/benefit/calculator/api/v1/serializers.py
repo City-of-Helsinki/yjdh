@@ -2,7 +2,7 @@ from dateutil.relativedelta import relativedelta
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from applications.enums import ApplicationStatus
+from applications.enums import ApplicationStatus, BenefitType
 from applications.models import Application
 from calculator.models import (
     Calculation,
@@ -224,6 +224,11 @@ class PaySubsidySerializer(serializers.ModelSerializer):
             is not None
         )
 
+    def _is_salary_benefit_type(self):
+        return (
+            self.context["request"].data["benefit_type"] == BenefitType.SALARY_BENEFIT
+        )
+
     HANDLING_STARTED_STATUSES: set = {
         ApplicationStatus.HANDLING,
         ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
@@ -245,7 +250,11 @@ class PaySubsidySerializer(serializers.ModelSerializer):
         )
 
     def _are_dates_required(self):
-        return self._has_handling_started() and not self._is_manual_mode()
+        return (
+            self._has_handling_started()
+            and self._is_salary_benefit_type()
+            and not self._is_manual_mode()
+        )
 
     def validate(self, data):
         request = self.context.get("request")
