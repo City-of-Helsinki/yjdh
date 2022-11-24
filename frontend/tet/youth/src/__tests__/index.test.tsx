@@ -1,15 +1,14 @@
-import IndexPage from 'tet/youth/pages';
+import faker from 'faker';
 import { axe } from 'jest-axe';
 import React from 'react';
-
+import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
+import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 import renderComponent from 'tet/youth/__tests__/utils/components/render-component';
 import renderPage from 'tet/youth/__tests__/utils/components/render-page';
-import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
+import IndexPage from 'tet/youth/pages';
+import { isoDateToHdsFormat } from 'tet-shared/backend-api/transformations';
 
 import getYouthTranslationsApi from './utils/i18n/get-youth-translations';
-import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
-import faker from 'faker';
-import { isoDateToHdsFormat } from 'tet-shared/backend-api/transformations';
 
 jest.mock('next/router');
 
@@ -23,7 +22,7 @@ describe('frontend/tet/youth/src/pages/index.tsx', () => {
       writable: true,
       value: jest.fn().mockImplementation((query) => ({
         matches: false,
-        media: query,
+        media: query as unknown,
         onchange: null,
         addListener: jest.fn(), // Deprecated
         removeListener: jest.fn(), // Deprecated

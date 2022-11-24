@@ -1,9 +1,8 @@
-import React from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
 import { Combobox as HdsCombobox } from 'hds-react';
-import Id from 'shared/types/id';
-import { RegisterOptions } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
+import { Controller, RegisterOptions, useFormContext } from 'react-hook-form';
+import Id from 'shared/types/id';
 
 type Props<T, O extends Option> = {
   id: Id<T>;
@@ -13,7 +12,7 @@ type Props<T, O extends Option> = {
   options: O[];
   placeholder: string;
   validation?: RegisterOptions<T>;
-  filter: any;
+  filter: (options: O[], search: string) => O[];
   optionLabelField: keyof O;
   disabled?: boolean;
   required: boolean;
@@ -44,7 +43,7 @@ const ComboboxSingleSelect = <T, O extends Option>({
       data-testid={id}
       control={control}
       rules={validation}
-      render={({ field: { ref, value, onChange, ...field }, fieldState: { error, invalid, ...fieldState } }) => (
+      render={({ field: { ref, value, onChange, ...field }, fieldState: { error, invalid } }) => (
         <HdsCombobox<O>
           {...field}
           data-testid={testId}
@@ -66,6 +65,13 @@ const ComboboxSingleSelect = <T, O extends Option>({
       )}
     />
   );
+};
+
+ComboboxSingleSelect.defaultProps = {
+  testId: undefined,
+  initialValue: undefined,
+  validation: {},
+  disabled: false,
 };
 
 export default ComboboxSingleSelect;

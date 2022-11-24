@@ -1,10 +1,11 @@
-import React from 'react';
-import { Card, Button } from 'hds-react';
+import { Button, Card } from 'hds-react';
 import { useTranslation } from 'next-i18next';
-import { $LoginLinks } from './LoginLinks.sc';
+import React from 'react';
 import useLogin from 'tet/admin/hooks/backend/useLogin';
 
-const LoginLinks = () => {
+import { $LoginLinks } from './LoginLinks.sc';
+
+const LoginLinks: React.FC = () => {
   const { t } = useTranslation();
   const loginAdfs = useLogin('adfs');
   const loginOidc = useLogin('oidc');

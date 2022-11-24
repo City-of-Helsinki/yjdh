@@ -1,8 +1,8 @@
-import React from 'react';
-import TetPosting from 'tet-shared/types/tetposting';
-import { useFormContext, Controller, RegisterOptions } from 'react-hook-form';
 import { TextArea as HdsTextArea } from 'hds-react';
+import React from 'react';
+import { Controller, RegisterOptions, useFormContext } from 'react-hook-form';
 import Id from 'shared/types/id';
+import TetPosting from 'tet-shared/types/tetposting';
 
 type Props = {
   id: Id<TetPosting>;
@@ -31,8 +31,12 @@ const TextArea: React.FC<Props> = ({ id, label, registerOptions, required = fals
       )}
       control={control}
       rules={registerOptions}
-    ></Controller>
+    />
   );
+};
+
+TextArea.defaultProps = {
+  testId: undefined,
 };
 
 export default TextArea;

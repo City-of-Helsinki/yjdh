@@ -1,7 +1,7 @@
-import * as React from 'react';
-import TetPosting from 'tet-shared/types/tetposting';
 import { useTranslation } from 'next-i18next';
+import * as React from 'react';
 import JobPostingsSection from 'tet/admin/components/jobPostings/JobPostingsSection';
+import TetPosting from 'tet-shared/types/tetposting';
 
 type JobPostingsListProps = {
   draft: TetPosting[];
@@ -17,13 +17,13 @@ const JobPostingsList: React.FC<JobPostingsListProps> = ({ draft, published }) =
         postingsTotal={published.length}
         postings={published}
         sectionId="published"
-      ></JobPostingsSection>
+      />
       <JobPostingsSection
         title={t('common:application.jobPostings.draftPostings')}
         postingsTotal={draft.length}
         postings={draft}
         sectionId="draft"
-      ></JobPostingsSection>
+      />
     </>
   );
 };

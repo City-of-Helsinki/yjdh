@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import TetPosting from 'tet-shared/types/tetposting';
 import { ensureScheme } from 'tet-shared/backend-api/transformations';
+import TetPosting from 'tet-shared/types/tetposting';
 
 type PreviewContextObj = {
   showPreview: boolean;
@@ -49,17 +49,17 @@ export const PreviewContext = React.createContext<PreviewContextObj>({
   showPreview: false,
   tetPosting: initialPosting,
   formValid: false,
-  setPreviewVisibility: (visibility: boolean) => {},
-  setTetPostingData: (data: TetPosting) => {},
-  setFormValid: (isValid: boolean) => {},
+  setPreviewVisibility: () => {},
+  setTetPostingData: () => {},
+  setFormValid: () => {},
 });
 
-const PreviewContextProvider: React.FC = (props) => {
+const PreviewContextProvider: React.FC = ({ children }) => {
   const [showPreview, setShowPreview] = useState(false);
   const [tetPosting, setTetPosting] = useState<TetPosting>(initialPosting);
   const [formValid, setFormValid] = useState(false);
 
-  const setTetPostingData = (posting: TetPosting) => {
+  const setTetPostingData = (posting: TetPosting): void => {
     const url = ensureScheme(posting?.website_url);
     setTetPosting({
       ...posting,
@@ -76,7 +76,7 @@ const PreviewContextProvider: React.FC = (props) => {
     setFormValid,
   };
 
-  return <PreviewContext.Provider value={contextValue}>{props.children}</PreviewContext.Provider>;
+  return <PreviewContext.Provider value={contextValue}>{children}</PreviewContext.Provider>;
 };
 
 export default PreviewContextProvider;

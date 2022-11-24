@@ -1,24 +1,24 @@
+import { Button } from 'hds-react';
+import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 import * as React from 'react';
+import { useTheme } from 'styled-components';
 import {
-  $PostingCard,
   $ImageContainer,
+  $PostingAddress,
+  $PostingCard,
   $PostingCardBody,
   $PostingCardBodyFooter,
-  $PostingTitle,
-  $PostingSubtitle,
-  $PostingDescription,
-  $PostingAddress,
   $PostingDate,
+  $PostingDescription,
   $PostingLanguages,
+  $PostingSubtitle,
+  $PostingTitle,
 } from 'tet/youth/components/jobPostingCard/JobPostingCard.sc';
-import JobPostingCardKeywords from './JobPostingCardKeywords';
-import { useRouter } from 'next/router';
-import { Button } from 'hds-react';
-import { useTheme } from 'styled-components';
 import { OptionType } from 'tet-shared/types/classification';
-import { useTranslation } from 'next-i18next';
 import JobPosting from 'tet-shared/types/tetposting';
-import Image from 'next/image';
+
+import JobPostingCardKeywords from './JobPostingCardKeywords';
 
 type Props = {
   jobPosting: JobPosting;
@@ -38,7 +38,7 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
   const languages = jobPosting.languages.map((language: OptionType) => language.label).join(', ');
   const imageUrl = jobPosting?.image_url?.length ? jobPosting.image_url : '/event_placeholder_B.jpg';
 
-  const readMoreHandler = () => {
+  const readMoreHandler = (): void => {
     void router.push(
       {
         pathname: '/postings/show',
@@ -56,7 +56,7 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
 
   return (
     <$PostingCard onClick={readMoreHandler}>
-      <$ImageContainer imageUrl={imageUrl}></$ImageContainer>
+      <$ImageContainer imageUrl={imageUrl} />
       <$PostingCardBody>
         <JobPostingCardKeywords jobPosting={jobPosting} />
         <$PostingSubtitle>{jobPosting.organization_name}</$PostingSubtitle>

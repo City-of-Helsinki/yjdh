@@ -1,11 +1,9 @@
-import React from 'react';
-import TetPosting from 'tet-shared/types/tetposting';
-import { useFormContext, Controller, RegisterOptions, NestedValue } from 'react-hook-form';
 import { Select as HdsSelect } from 'hds-react';
+import React from 'react';
+import { Controller, NestedValue, RegisterOptions, useFormContext } from 'react-hook-form';
 import Id from 'shared/types/id';
 import { OptionType } from 'tet-shared/types/classification';
-
-type LanguagesType = Pick<TetPosting, 'languages'>;
+import TetPosting from 'tet-shared/types/tetposting';
 
 type DropdownFields<O extends OptionType> = {
   languages: NestedValue<O[]>;
@@ -15,7 +13,6 @@ type Props<O extends OptionType> = {
   id: Id<DropdownFields<O>>;
   testId?: string;
   options: O[];
-  initialValue: O[];
   label: string;
   registerOptions: RegisterOptions;
 };
@@ -53,8 +50,12 @@ const Dropdown = <O extends OptionType>({
       )}
       rules={registerOptions}
       control={control}
-    ></Controller>
+    />
   );
+};
+
+Dropdown.defaultProps = {
+  testId: undefined,
 };
 
 export default Dropdown;

@@ -9,9 +9,7 @@ export const BackendEndpoint = {
   KEYWORD: 'keyword/',
 } as const;
 
-export const singleEvent = (id: string) => {
-  return `event/${id}?include=location,keywords`;
-};
+export const singleEvent = (id: string): string => `event/${id}?include=location,keywords`;
 
 export const BackendEndPoints = Object.values(BackendEndpoint);
 

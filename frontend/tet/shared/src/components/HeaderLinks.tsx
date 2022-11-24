@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import React from 'react';
 
-const HeaderLinks = (): JSX.Element => (
+const HeaderLinks: React.FC = () => (
   <Head>
     <link
       rel="stylesheet"

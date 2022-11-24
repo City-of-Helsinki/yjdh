@@ -1,7 +1,7 @@
 import Script from 'next/script';
 import React from 'react';
 
-const MapScripts = (): JSX.Element => (
+const MapScripts: React.FC = () => (
   <Script
     src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
     // eslint-disable-next-line no-secrets/no-secrets

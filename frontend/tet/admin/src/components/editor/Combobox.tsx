@@ -1,10 +1,8 @@
-import React from 'react';
-import TetPosting from 'tet-shared/types/tetposting';
-import { Controller, useFormContext } from 'react-hook-form';
 import { Combobox as HdsCombobox } from 'hds-react';
-import Id from 'shared/types/id';
-import { RegisterOptions, NestedValue } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
+import { Controller, NestedValue, RegisterOptions, useFormContext } from 'react-hook-form';
+import Id from 'shared/types/id';
 import { Option } from 'tet-shared/types/classification';
 
 type ComboboxFields<O extends Option> = {
@@ -20,7 +18,7 @@ type Props<O extends Option> = {
   placeholder: string;
   multiselect?: boolean;
   validation?: RegisterOptions<ComboboxFields<O>>;
-  filter: any;
+  filter: (options: O[], search: string) => O[];
   optionLabelField: keyof O;
   disabled?: boolean;
   required: boolean;
@@ -29,9 +27,7 @@ type Props<O extends Option> = {
 const Combobox = <O extends Option>({
   id,
   testId,
-  multiselect = false,
   filter,
-  initialValue,
   validation = {},
   label,
   optionLabelField,
@@ -49,7 +45,7 @@ const Combobox = <O extends Option>({
       data-testid={id}
       control={control}
       rules={validation}
-      render={({ field: { ref, value, onChange, ...field }, fieldState: { error, invalid, ...fieldState } }) => (
+      render={({ field: { ref, value, onChange, ...field }, fieldState: { error, invalid } }) => (
         <HdsCombobox<O>
           {...field}
           data-testid={testId}
@@ -74,6 +70,14 @@ const Combobox = <O extends Option>({
       )}
     />
   );
+};
+
+Combobox.defaultProps = {
+  testId: undefined,
+  initialValue: undefined,
+  multiselect: false,
+  validation: {},
+  disabled: false,
 };
 
 export default Combobox;

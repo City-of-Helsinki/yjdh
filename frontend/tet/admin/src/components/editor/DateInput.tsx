@@ -1,10 +1,10 @@
-import React from 'react';
-import TetPosting from 'tet-shared/types/tetposting';
-import { useFormContext, Controller, RegisterOptions } from 'react-hook-form';
 import { DateInput as HdsDateInput } from 'hds-react';
-import Id from 'shared/types/id';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
+import { Controller, RegisterOptions, useFormContext } from 'react-hook-form';
 import { Language } from 'shared/i18n/i18n';
+import Id from 'shared/types/id';
+import TetPosting from 'tet-shared/types/tetposting';
 
 type Props = {
   id: Id<TetPosting>;
@@ -16,7 +16,7 @@ type Props = {
   testId?: string;
 };
 
-const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = false, minDate, helperText , testId}) => {
+const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = false, minDate, helperText, testId }) => {
   const { control } = useFormContext<TetPosting>();
   const { i18n } = useTranslation();
   return (
@@ -40,9 +40,15 @@ const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = fal
       )}
       control={control}
       rules={registerOptions}
-    ></Controller>
+    />
   );
 };
 
-export default DateInput;
+DateInput.defaultProps = {
+  testId: undefined,
+  registerOptions: {},
+  minDate: undefined,
+  helperText: undefined,
+};
 
+export default DateInput;

@@ -1,19 +1,18 @@
+import { Button, IconArrowLeft, IconUpload } from 'hds-react';
+import { useTranslation } from 'next-i18next';
 import React, { useContext } from 'react';
+import useConfirm from 'shared/hooks/useConfirm';
 import {
+  $BackLink,
   $Bar,
   $BarWrapper,
-  $BackLink,
   $PreviewText,
 } from 'tet/admin/components/editor/previewWrapper/PreviewWrapper.sc';
-import { Button } from 'hds-react';
-import Container from 'tet-shared/components/container/Container';
-import { IconArrowLeft, IconUpload } from 'hds-react';
-import { PreviewContext } from 'tet/admin/store/PreviewContext';
-import { useTranslation } from 'next-i18next';
-import TetPosting from 'tet-shared/types/tetposting';
-import useConfirm from 'shared/hooks/useConfirm';
-import { tetPostingToEvent } from 'tet-shared/backend-api/transformations';
 import useUpsertTetPosting from 'tet/admin/hooks/backend/useUpsertTetPosting';
+import { PreviewContext } from 'tet/admin/store/PreviewContext';
+import { tetPostingToEvent } from 'tet-shared/backend-api/transformations';
+import Container from 'tet-shared/components/container/Container';
+import TetPosting from 'tet-shared/types/tetposting';
 
 type BarProps = {
   hasMargin?: boolean;
@@ -45,6 +44,10 @@ const PreviewBar: React.FC<BarProps> = ({ hasMargin, allowPublish, onPublish }) 
   );
 };
 
+PreviewBar.defaultProps = {
+  hasMargin: false,
+};
+
 const PreviewWrapper: React.FC<{ posting: TetPosting }> = ({ children, posting }) => {
   const upsertTetPosting = useUpsertTetPosting();
   const { confirm } = useConfirm();
@@ -53,7 +56,7 @@ const PreviewWrapper: React.FC<{ posting: TetPosting }> = ({ children, posting }
 
   const allowPublish = posting.date_published === null && formValid;
 
-  const publishPostingHandler = async () => {
+  const publishPostingHandler = async (): Promise<void> => {
     if (posting) {
       const isConfirmed = await confirm({
         header: t('common:publish.confirmation', { posting: posting.title }),
@@ -82,7 +85,7 @@ const PreviewWrapper: React.FC<{ posting: TetPosting }> = ({ children, posting }
     <>
       <PreviewBar allowPublish={allowPublish} onPublish={publishPostingHandler} />
       <div>{children}</div>
-      <PreviewBar hasMargin={true} allowPublish={allowPublish} onPublish={publishPostingHandler} />
+      <PreviewBar hasMargin allowPublish={allowPublish} onPublish={publishPostingHandler} />
     </>
   );
 };

@@ -1,16 +1,15 @@
+import { Button, DateInput, IconGlobe, IconGroup, SearchInput, Select } from 'hds-react';
+import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { SearchInput, Select, DateInput, IconGroup, IconGlobe } from 'hds-react';
-import { Button } from 'hds-react';
-import { QueryParams } from 'tet/youth/types/queryparams';
 import Container from 'shared/components/container/Container';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { $Search } from 'tet/youth/components/jobPostingSearch/JobPostingSearch.sc';
-import { useTranslation } from 'next-i18next';
-import { convertToBackendDateFormat, convertToUIDateFormat } from 'shared/utils/date.utils';
-import PostingSearchTags from 'tet/youth/components/jobPostingSearch/jobPostingSearchTags/JobPostingSearchTags';
 import { Language } from 'shared/i18n/i18n';
-import { OptionType } from 'tet-shared/types/classification';
+import { convertToBackendDateFormat, convertToUIDateFormat } from 'shared/utils/date.utils';
+import { $Search } from 'tet/youth/components/jobPostingSearch/JobPostingSearch.sc';
+import PostingSearchTags from 'tet/youth/components/jobPostingSearch/jobPostingSearchTags/JobPostingSearchTags';
+import { QueryParams } from 'tet/youth/types/queryparams';
 import useKeywordType from 'tet-shared/hooks/backend/useKeywordType';
+import { OptionType } from 'tet-shared/types/classification';
 
 type Props = {
   initParams: QueryParams;
@@ -38,9 +37,9 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
   React.useEffect(() => {
     if (initParams.keyword) {
       const paramKeywords = initParams.keyword.split(',');
-      const features = workFeaturesList.filter((feature) => paramKeywords.some((keyword) => keyword === feature.value));
+      const features = workFeaturesList.filter((feature) => paramKeywords.includes(feature.value));
       setChosenWorkFeatures(features.map((feature) => feature.value));
-      const method = workMethodsList.find((method) => paramKeywords.some((keyword) => keyword === method.value));
+      const method = workMethodsList.find((m) => paramKeywords.includes(m.value));
       if (method) {
         setWorkMethod(method.value);
         setInitKeywords([...features, method]);
@@ -49,17 +48,17 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
       }
     }
 
-    setStartTime(initParams.hasOwnProperty('start') ? convertToUIDateFormat(initParams.start as string) : '');
-    setEndTime(initParams.hasOwnProperty('end') ? convertToUIDateFormat(initParams.end as string) : '');
-    setSearchText(initParams.hasOwnProperty('text') ? initParams.text : '');
+    setStartTime(initParams.start ? convertToUIDateFormat(initParams.start) : '');
+    setEndTime(initParams.end ? convertToUIDateFormat(initParams.end) : '');
+    setSearchText(initParams.text ? initParams.text : '');
     setChosenLanguage(initParams.language ?? '');
-  }, [initParams]);
+  }, [initParams, workFeaturesList, workMethodsList]);
 
-  const searchHandler = () => {
+  const searchHandler = (): void => {
     const keywords = [...chosenWorkFeatures];
-    if (workMethod.length) keywords.push(workMethod);
+    if (workMethod.length > 0) keywords.push(workMethod);
     onSearchByFilters({
-      text: searchText.length ? searchText : initParams.text,
+      text: searchText.length > 0 ? searchText : initParams.text,
       start: convertToBackendDateFormat(startTime),
       end: convertToBackendDateFormat(endTime),
       keyword: keywords.join(keywords.length > 1 ? ',' : ''),
@@ -67,21 +66,7 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
     });
   };
 
-  const removeKeyWordHandler = (keyword: OptionType) => {
-    const remainingKeywords = initKeywords
-      .filter((initKeyword) => initKeyword.value !== keyword.value)
-      .map((initKeyword) => initKeyword.value);
-    if (remainingKeywords.length) {
-      onSearchByFilters({
-        ...initParams,
-        keyword: remainingKeywords.join(remainingKeywords.length > 1 ? ',' : ''),
-      });
-    } else {
-      removeFilterHandler('keyword');
-    }
-  };
-
-  const removeFilterHandler = (removeKeys: keyof QueryParams | Array<keyof QueryParams> | 'all') => {
+  const removeFilterHandler = (removeKeys: keyof QueryParams | Array<keyof QueryParams> | 'all'): void => {
     let searchObj = { ...initParams };
     if (removeKeys === 'all') {
       searchObj = {};
@@ -93,11 +78,25 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
     onSearchByFilters(searchObj);
   };
 
-  const onWorkFeatureChange = (features: OptionType[]) => {
+  const removeKeyWordHandler = (keyword: OptionType): void => {
+    const remainingKeywords = initKeywords
+      .filter((initKeyword) => initKeyword.value !== keyword.value)
+      .map((initKeyword) => initKeyword.value);
+    if (remainingKeywords.length > 0) {
+      onSearchByFilters({
+        ...initParams,
+        keyword: remainingKeywords.join(remainingKeywords.length > 1 ? ',' : ''),
+      });
+    } else {
+      removeFilterHandler('keyword');
+    }
+  };
+
+  const onWorkFeatureChange = (features: OptionType[]): void => {
     setChosenWorkFeatures(features.map((feature) => feature.value));
   };
 
-  const searchSubmitHandler = (e: React.FormEvent) => {
+  const searchSubmitHandler = (e: React.FormEvent): void => {
     e.preventDefault();
     searchHandler();
   };
@@ -126,11 +125,11 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
               label=""
               placeholder={t('common:filters.workMethod')}
               onChange={(val: OptionType) => setWorkMethod(val.value)}
-              value={workMethods.find((method) => method.value === workMethod) as OptionType}
+              value={workMethods.find((method) => method.value === workMethod)}
               icon={<IconGroup />}
               options={workMethods}
-              optionLabelField={'label'}
-            ></Select>
+              optionLabelField="label"
+            />
           </$GridCell>
           <$GridCell $colSpan={3}>
             <Select<OptionType>
@@ -138,15 +137,13 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
               label=""
               placeholder={t('common:filters.workFeatures')}
               onChange={(features: OptionType[]) => onWorkFeatureChange(features)}
-              value={workFeatures.filter((feature) =>
-                chosenWorkFeatures.some((chosenFeature) => chosenFeature === feature.value),
-              )}
+              value={workFeatures.filter((feature) => chosenWorkFeatures.includes(feature.value))}
               icon={<IconGroup />}
               options={workFeatures}
-              optionLabelField={'label'}
+              optionLabelField="label"
               clearButtonAriaLabel={t('common:filters.combobox.clearButtonAriaLabel')}
               selectedItemRemoveButtonAriaLabel={t('common:filters.combobox.selectedItemRemoveButtonAriaLabel')}
-            ></Select>
+            />
           </$GridCell>
           <$GridCell $colSpan={3}>
             <DateInput
@@ -155,7 +152,7 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
               value={startTime}
               language={i18n.language as Language}
               placeholder={t('common:filters.startDate')}
-            ></DateInput>
+            />
           </$GridCell>
           <$GridCell $colSpan={3}>
             <DateInput
@@ -164,7 +161,7 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
               value={endTime}
               language={i18n.language as Language}
               placeholder={t('common:filters.endDate')}
-            ></DateInput>
+            />
           </$GridCell>
           <$GridCell $colSpan={3}>
             <Select
@@ -175,8 +172,8 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
               placeholder={t('common:filters.language')}
               onChange={(val: OptionType) => setChosenLanguage(val.value)}
               value={languageOptions.find((language) => language.value === chosenLanguage)}
-              optionLabelField={'label'}
-            ></Select>
+              optionLabelField="label"
+            />
           </$GridCell>
           <$GridCell $colSpan={3}>
             <Button

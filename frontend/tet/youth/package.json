@@ -14,7 +14,7 @@
     "test:coverage": "yarn test:debug-dom --verbose --coverage",
     "browser-test": "testcafe 'chrome --allow-insecure-localhost --ignore-certificate-errors --ignore-urlfetcher-cert-requests --window-size=\"1249,720\"' browser-tests/",
     "browser-test:ci": "testcafe 'chrome:headless --disable-gpu --window-size=\"1249,720\"  --ignore-certificate-errors-spki-list=\"8sg/cl7YabrOFqSqH+Bu0e+P27Av33gWgi8Lq28DW1I=,gJt+wt/T3afCRkxtMMSjXcl/99sgzWc2kk1c1PC9tG0=,zrQI2/1q8i2SRPmMZ1sMntIkG+lMW0legPFokDo3nrY=\"' --screenshots path=report --video report --reporter spec,custom,html:report/index.html browser-tests/",
-    "lint": "next lint"
+    "lint": "eslint --ext js,ts,tsx src browser-tests"
   },
   "dependencies": {
     "@frontend/shared": "*",

@@ -1,43 +1,43 @@
+import isBefore from 'date-fns/isBefore';
+import { Notification } from 'hds-react';
+import { useTranslation } from 'next-i18next';
 import React from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { useTranslation } from 'next-i18next';
+import { DATE_UI_REGEX } from 'shared/constants';
+import { parseDate } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 import DateInput from 'tet/admin/components/editor/DateInput';
-import TextInput from 'tet/admin/components/editor/TextInput';
-import TextArea from 'tet/admin/components/editor/TextArea';
-import NumberInput from 'tet/admin/components/editor/NumberInput';
-import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
-import { Notification } from 'hds-react';
 import Dropdown from 'tet/admin/components/editor/Dropdown';
+import NumberInput from 'tet/admin/components/editor/NumberInput';
+import TextArea from 'tet/admin/components/editor/TextArea';
+import TextInput from 'tet/admin/components/editor/TextInput';
+import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
 import useLanguageOptions from 'tet-shared/hooks/translation/useLanguageOptions';
-import { useFormContext, useWatch } from 'react-hook-form';
 import TetPosting from 'tet-shared/types/tetposting';
-import { parseDate, isValidDate } from 'shared/utils/date.utils';
-import { DATE_UI_REGEX } from 'shared/constants';
-import isBefore from 'date-fns/isBefore';
 
 const PostingDetails: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { required, name, description, date, website } = useValidationRules();
+  const { required, description, date, website } = useValidationRules();
   const { control, setValue } = useFormContext<TetPosting>();
 
   const languageOptions = useLanguageOptions();
   const startDate = useWatch({
-    control: control,
+    control,
     name: 'start_date',
   });
   const endDate = useWatch({
-    control: control,
+    control,
     name: 'end_date',
   });
 
   React.useEffect(() => {
-    if (isBefore(parseDate(endDate) as Date, parseDate(startDate) as Date)) {
+    if (isBefore(parseDate(endDate), parseDate(startDate))) {
       setValue('end_date', '');
     }
-  }, [startDate, endDate]);
+  }, [startDate, endDate, setValue]);
 
   const minDate = DATE_UI_REGEX.test(startDate) ? parseDate(startDate) : undefined;
 
@@ -55,8 +55,8 @@ const PostingDetails: React.FC = () => {
             id="start_date"
             testId="posting-form-start_date"
             label={t('common:editor.posting.startDateLabel')}
-            required={true}
-            registerOptions={{ required: required, pattern: date.pattern }}
+            required
+            registerOptions={{ required, pattern: date.pattern }}
           />
         </$GridCell>
         <$GridCell $colSpan={3}>
@@ -75,8 +75,8 @@ const PostingDetails: React.FC = () => {
             id="spots"
             testId="posting-form-spots"
             label={t('common:editor.posting.spotsLabel')}
-            registerOptions={{ required: required }}
-            required={true}
+            registerOptions={{ required }}
+            required
           />
         </$GridCell>
         <$GridCell $colSpan={3}>
@@ -84,14 +84,13 @@ const PostingDetails: React.FC = () => {
             id="languages"
             testId="posting-form-languages"
             options={languageOptions}
-            initialValue={[languageOptions[0]]}
             label={t('common:editor.posting.contactLanguage')}
             registerOptions={{
-              required: required,
+              required,
             }}
           />
         </$GridCell>
-        <$GridCell $colSpan={3}></$GridCell>
+        <$GridCell $colSpan={3} />
       </$GridCell>
       <$GridCell as={$Grid} $colSpan={12}>
         <$GridCell $colSpan={6}>
@@ -105,7 +104,7 @@ const PostingDetails: React.FC = () => {
             testId="posting-form-description"
             label={t('common:editor.posting.description')}
             registerOptions={description}
-            required={true}
+            required
           />
         </$GridCell>
       </$GridCell>

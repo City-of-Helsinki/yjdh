@@ -1,8 +1,8 @@
-import { BackendEndpoint, getBackendDomain } from 'tet/admin/backend-api/backend-api';
 import nock from 'nock';
-import { TetEvent, TetEvents } from 'tet-shared/types/linkedevents';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
+import { BackendEndpoint, getBackendDomain } from 'tet/admin/backend-api/backend-api';
+import { TetEvent, TetEvents } from 'tet-shared/types/linkedevents';
 
 const fakeObjectFactory = new FakeObjectFactory();
 

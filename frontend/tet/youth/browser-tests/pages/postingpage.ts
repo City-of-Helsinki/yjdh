@@ -6,7 +6,7 @@ class Postingpage {
   // TODO why is this not found?
   backButton = Selector('#backButton');
 
-  goBack = () => t.click(this.backButton);
+  goBack = (): TestControllerPromise => t.click(this.backButton);
 }
 
 export default new Postingpage();

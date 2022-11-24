@@ -1,15 +1,16 @@
-import React from 'react';
-import Image from 'next/image';
-import { $ImageWrapper, $PageContent, $Textbox, $TextboxTitle, $ButtonWrapper } from './PageContent.sc';
-import { useTranslation } from 'next-i18next';
 import { Button, IconMap } from 'hds-react';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
+import React from 'react';
 
-const PageContent = () => {
+import { $ButtonWrapper, $ImageWrapper, $PageContent, $Textbox, $TextboxTitle } from './PageContent.sc';
+
+const PageContent: React.FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const showMapHandler = () => {
-    router.push(
+  const showMapHandler = (): void => {
+    void router.push(
       {
         pathname: '/postings',
         query: {
@@ -19,6 +20,7 @@ const PageContent = () => {
       '/postings',
     );
   };
+  /* eslint-disable no-secrets/no-secrets */
   return (
     <>
       <$ButtonWrapper>
@@ -35,7 +37,7 @@ const PageContent = () => {
             objectFit="contain"
             src="/etela-haaga_kirjasto_230421_kuva_jussi_hellsten_0693.jpg"
             alt="etela haaga kirjasto"
-            priority={true}
+            priority
           />
         </$ImageWrapper>
         <$Textbox>
@@ -45,6 +47,7 @@ const PageContent = () => {
       </$PageContent>
     </>
   );
+  /* eslint-enable no-secrets/no-secrets */
 };
 
 export default PageContent;

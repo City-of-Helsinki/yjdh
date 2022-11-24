@@ -1,8 +1,8 @@
-import React from 'react';
-import TetPosting from 'tet-shared/types/tetposting';
-import { useFormContext, Controller, RegisterOptions } from 'react-hook-form';
 import { TextInput as HdsTextInput } from 'hds-react';
+import React from 'react';
+import { Controller, RegisterOptions, useFormContext } from 'react-hook-form';
 import Id from 'shared/types/id';
+import TetPosting from 'tet-shared/types/tetposting';
 
 type Props = {
   id: Id<TetPosting>;
@@ -34,8 +34,12 @@ const TextInput: React.FC<Props> = ({ id, label, placeholder, registerOptions, h
       )}
       control={control}
       rules={registerOptions}
-    ></Controller>
+    />
   );
 };
 
+TextInput.defaultProps = {
+  testId: undefined,
+  helperText: undefined,
+};
 export default TextInput;

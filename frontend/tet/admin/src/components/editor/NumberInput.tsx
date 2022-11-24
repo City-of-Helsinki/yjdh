@@ -1,9 +1,9 @@
 import { NumberInput as HdsNumberInput } from 'hds-react';
+import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { useFormContext, Controller, RegisterOptions } from 'react-hook-form';
+import { Controller, RegisterOptions, useFormContext } from 'react-hook-form';
 import Id from 'shared/types/id';
 import TetPosting from 'tet-shared/types/tetposting';
-import { useTranslation } from 'next-i18next';
 
 type SpotsType = Pick<TetPosting, 'spots'>;
 
@@ -16,15 +16,13 @@ type Props = {
   required: boolean;
 };
 
-const asNumber = (value?: string | number | undefined): number | undefined => Number(value) || undefined;
-
 const NumberInput: React.FC<Props> = ({ id, registerOptions, label, required = false, testId }) => {
   const { control } = useFormContext<SpotsType>();
   const { t } = useTranslation();
   return (
     <Controller
       name={id}
-      render={({ field: { onChange, value }, fieldState: { error, invalid } }) => (
+      render={({ field: { onChange, value }, fieldState: { error } }) => (
         <HdsNumberInput
           id={id}
           data-testid={testId}
@@ -43,6 +41,10 @@ const NumberInput: React.FC<Props> = ({ id, registerOptions, label, required = f
       rules={registerOptions}
     />
   );
+};
+
+NumberInput.defaultProps = {
+  testId: undefined,
 };
 
 export default NumberInput;

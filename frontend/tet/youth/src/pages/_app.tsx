@@ -1,20 +1,21 @@
 // import 'react-toastify/dist/ReactToastify.css';
 
-import createQueryClient from 'tet/youth/query-client/create-query-client';
 import { AppProps } from 'next/app';
+import Script from 'next/script';
 import { appWithTranslation } from 'next-i18next';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
 import BaseApp from 'shared/components/app/BaseApp';
-import Header from 'tet/youth/components/header/Header';
 import Footer from 'tet/youth/components/footer/Footer';
-import Script from 'next/script';
+import Header from 'tet/youth/components/header/Header';
+import createQueryClient from 'tet/youth/query-client/create-query-client';
 
 const queryClient = createQueryClient();
 
 const App: React.FC<AppProps> = (appProps) => (
   <>
     <Script
+      id="matomo-script"
       strategy="afterInteractive"
       dangerouslySetInnerHTML={{
         __html: `
