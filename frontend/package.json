@@ -64,7 +64,8 @@
     "te-yout:start": "npx lerna run --scope  @frontend/te-yout --stream start",
     "te-yout:test": " yarn --cwd tet/youth test",
     "te-yout:browser-test": "yarn --cwd tet/youth browser-test",
-    "te-yout:browser-test:ci": "yarn --cwd tet/youth browser-test:ci"
+    "te-yout:browser-test:ci": "yarn --cwd tet/youth browser-test:ci",
+    "" : ""
   },
   "dependencies": {},
   "devDependencies": {
