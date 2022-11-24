@@ -16,7 +16,6 @@ import { initialPosting } from 'tet/admin/store/PreviewContext';
 import TetPosting from 'tet-shared/types/tetposting';
 
 type EditorProps = {
-  // eslint-disable-next-line react/require-default-props
   initialValue?: TetPosting;
   isNewPosting?: boolean;
 };
@@ -58,10 +57,6 @@ const Editor: React.FC<EditorProps> = ({ initialValue, isNewPosting = false }) =
       <DevTool control={methods.control} />
     </>
   );
-};
-
-Editor.defaultProps = {
-  isNewPosting: false,
 };
 
 export default Editor;

@@ -67,11 +67,4 @@ const ComboboxSingleSelect = <T, O extends Option>({
   );
 };
 
-ComboboxSingleSelect.defaultProps = {
-  testId: undefined,
-  initialValue: undefined,
-  validation: {},
-  disabled: false,
-};
-
 export default ComboboxSingleSelect;

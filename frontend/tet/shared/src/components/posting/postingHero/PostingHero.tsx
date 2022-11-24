@@ -1,5 +1,4 @@
 import { IconArrowLeft, IconLocation } from 'hds-react';
-import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Container from 'tet-shared/components/container/Container';
@@ -90,11 +89,6 @@ const PostingHero: React.FC<Props> = ({
       </Container>
     </$PostingHero>
   );
-};
-
-PostingHero.defaultProps = {
-  showBackButton: false,
-  onReturnClick: () => noop,
 };
 
 export default PostingHero;

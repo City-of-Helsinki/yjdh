@@ -67,8 +67,4 @@ const Checkbox = <T,>({
   );
 };
 
-Checkbox.defaultProps = {
-  onChange: noop,
-};
-
 export default Checkbox;

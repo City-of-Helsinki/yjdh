@@ -3,7 +3,6 @@ import PdfViewer from 'benefit/applicant/components/pdfViewer/PdfViewer';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { TextProp } from 'benefit-shared/types/application';
 import { Button } from 'hds-react';
-import noop from 'lodash/noop';
 import * as React from 'react';
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import FormSection from 'shared/components/forms/section/FormSection';
@@ -108,12 +107,5 @@ const ApplicationFormStep6: React.FC<
     </form>
   );
 };
-
-const defaultProps = {
-  isSubmittedApplication: false,
-  onSubmit: noop,
-};
-
-ApplicationFormStep6.defaultProps = defaultProps;
 
 export default ApplicationFormStep6;

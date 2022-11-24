@@ -62,9 +62,4 @@ const SelectionGroup: React.FC<Props> = ({ fieldId, label, options, required, ru
   );
 };
 
-SelectionGroup.defaultProps = {
-  testId: undefined,
-  rules: undefined,
-};
-
 export default SelectionGroup;

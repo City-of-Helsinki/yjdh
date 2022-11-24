@@ -43,8 +43,4 @@ const NumberInput: React.FC<Props> = ({ id, registerOptions, label, required = f
   );
 };
 
-NumberInput.defaultProps = {
-  testId: undefined,
-};
-
 export default NumberInput;

@@ -72,12 +72,4 @@ const Combobox = <O extends Option>({
   );
 };
 
-Combobox.defaultProps = {
-  testId: undefined,
-  initialValue: undefined,
-  multiselect: false,
-  validation: {},
-  disabled: false,
-};
-
 export default Combobox;

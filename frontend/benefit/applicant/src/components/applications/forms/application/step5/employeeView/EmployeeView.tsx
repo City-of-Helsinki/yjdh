@@ -198,8 +198,4 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
   );
 };
 
-EmployeeView.defaultProps = {
-  isReadOnly: undefined,
-};
-
 export default EmployeeView;

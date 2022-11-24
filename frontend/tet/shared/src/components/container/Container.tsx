@@ -14,10 +14,4 @@ const Container: React.FC<ContainerProps> = ({
   </$Container>
 );
 
-const defaultProps = {
-  backgroundColor: '',
-};
-
-Container.defaultProps = defaultProps;
-
 export default Container;

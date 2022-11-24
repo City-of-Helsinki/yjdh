@@ -38,8 +38,4 @@ const TextInput: React.FC<Props> = ({ id, label, placeholder, registerOptions, h
   );
 };
 
-TextInput.defaultProps = {
-  testId: undefined,
-  helperText: undefined,
-};
 export default TextInput;

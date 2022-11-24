@@ -35,9 +35,4 @@ const EmploymentFieldSummary: React.FC<Props> = ({
   );
 };
 
-EmploymentFieldSummary.defaultProps = {
-  children: null,
-  select: undefined,
-};
-
 export default EmploymentFieldSummary;

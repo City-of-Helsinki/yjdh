@@ -38,8 +38,4 @@ const PhoneInput: React.FC<Props> = ({ id, label, placeholder, registerOptions, 
   );
 };
 
-PhoneInput.defaultProps = {
-  testId: undefined,
-};
-
 export default PhoneInput;

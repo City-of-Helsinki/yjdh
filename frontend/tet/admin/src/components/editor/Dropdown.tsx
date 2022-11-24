@@ -54,8 +54,4 @@ const Dropdown = <O extends OptionType>({
   );
 };
 
-Dropdown.defaultProps = {
-  testId: undefined,
-};
-
 export default Dropdown;

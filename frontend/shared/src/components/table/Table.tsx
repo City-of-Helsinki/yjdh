@@ -1,6 +1,5 @@
 import equal from 'fast-deep-equal';
 import { Checkbox, IconAngleDown, RadioButton } from 'hds-react';
-import noop from 'lodash/noop';
 import React, { useCallback, useEffect } from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import {
@@ -374,27 +373,5 @@ TableProps<D>): React.ReactElement => {
     </div>
   );
 };
-
-const defaultProps = {
-  loading: false,
-  canSelectRows: false,
-  canSelectOneRow: false,
-  globalFilter: undefined,
-  getCellProps: () => ({}),
-  renderTableToolsTop: undefined,
-  renderSubComponent: undefined,
-  renderMainHeader: undefined,
-  renderEmptyStateRow: undefined,
-  renderPaginator: undefined,
-  renderTableToolsBottom: undefined,
-  onSelectionChange: noop,
-  onSortedColChange: noop,
-  onSortedColsChange: noop,
-  minimizeAllText: 'Minimize all',
-  noMatchesText: 'No matches',
-  sortBy: undefined,
-};
-
-Table.defaultProps = defaultProps;
 
 export default Table;

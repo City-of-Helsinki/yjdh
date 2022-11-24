@@ -44,11 +44,4 @@ const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = fal
   );
 };
 
-DateInput.defaultProps = {
-  testId: undefined,
-  registerOptions: {},
-  minDate: undefined,
-  helperText: undefined,
-};
-
 export default DateInput;

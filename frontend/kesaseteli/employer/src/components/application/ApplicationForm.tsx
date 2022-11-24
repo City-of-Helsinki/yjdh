@@ -33,8 +33,5 @@ const ApplicationForm: React.FC<Props> = ({ title, step, children }: Props) => {
   }
   return <PageLoadingSpinner />;
 };
-ApplicationForm.defaultProps = {
-  title: undefined,
-};
 
 export default ApplicationForm;

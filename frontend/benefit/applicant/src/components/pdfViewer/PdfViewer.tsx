@@ -78,11 +78,4 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
   );
 };
 
-const defaultProps = {
-  documentMarginLeft: '0',
-  scale: undefined,
-};
-
-PdfViewer.defaultProps = defaultProps;
-
 export default PdfViewer;

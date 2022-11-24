@@ -35,8 +35,4 @@ const TextArea: React.FC<Props> = ({ id, label, registerOptions, required = fals
   );
 };
 
-TextArea.defaultProps = {
-  testId: undefined,
-};
-
 export default TextArea;

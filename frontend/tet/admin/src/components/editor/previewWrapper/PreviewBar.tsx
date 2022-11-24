@@ -40,8 +40,4 @@ const PreviewBar: React.FC<BarProps> = ({ hasMargin, allowPublish, onPublish }) 
   );
 };
 
-PreviewBar.defaultProps = {
-  hasMargin: false,
-};
-
 export default PreviewBar;
