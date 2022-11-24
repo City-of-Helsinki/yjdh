@@ -29,11 +29,19 @@ STATE_AID_MAX_PERCENTAGE_CHOICES = (
 
 
 class CalculationManager(models.Manager):
-    def create_for_application(self, application):
+    def create_for_application(
+        self, application: Application, **kwargs
+    ) -> "Calculation":
+        """
+        Create Calculation object for application with Calculation attributes optionally
+        overridden by the kwargs values.
+        """
         if hasattr(application, "calculation"):
             raise BenefitAPIException(_("Calculation already exists"))
         calculation = Calculation(application=application)
         calculation.reset_values()
+        for attribute_name, attribute_value in kwargs.items():
+            setattr(calculation, attribute_name, attribute_value)
         calculation.save()
         return calculation
 
