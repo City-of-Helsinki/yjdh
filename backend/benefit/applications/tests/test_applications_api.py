@@ -1136,6 +1136,7 @@ def test_application_status_change_as_applicant(
     "from_status,to_status,expected_code",
     [
         (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 404),
+        (ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING, 200),
         (
             ApplicationStatus.HANDLING,
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,

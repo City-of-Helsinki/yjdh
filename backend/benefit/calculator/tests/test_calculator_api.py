@@ -2,6 +2,7 @@ import copy
 import decimal
 from unittest import mock
 
+import factory
 import pytest
 
 from applications.api.v1.serializers import (
@@ -10,6 +11,7 @@ from applications.api.v1.serializers import (
 )
 from applications.enums import ApplicationStatus, BenefitType, OrganizationType
 from applications.tests.conftest import *  # noqa
+from applications.tests.factories import ReceivedApplicationFactory
 from applications.tests.test_applications_api import (
     add_attachments_to_application,
     get_detail_url,
@@ -19,6 +21,24 @@ from calculator.api.v1.serializers import CalculationSerializer
 from calculator.tests.factories import CalculationFactory, PaySubsidyFactory
 from common.tests.conftest import get_client_user
 from common.utils import duration_in_months, to_decimal
+
+
+def _set_two_pay_subsidies_with_empty_dates(data: dict) -> dict:
+    data["pay_subsidies"] = [
+        {
+            "start_date": None,
+            "end_date": None,
+            "pay_subsidy_percent": 100,
+            "work_time_percent": 40,
+        },
+        {
+            "start_date": None,
+            "end_date": None,
+            "pay_subsidy_percent": 40,
+            "work_time_percent": 40,
+        },
+    ]
+    return data
 
 
 def test_application_retrieve_calculation_as_handler(
@@ -339,24 +359,13 @@ def test_application_edit_pay_subsidy_invalid_values(
 def test_application_edit_pay_subsidy_empty_date_values(
     handler_api_client, handling_application
 ):
+    handling_application.benefit_type = BenefitType.SALARY_BENEFIT
+    handling_application.save()
     data = HandlerApplicationSerializer(handling_application).data
 
     previous_pay_subsidies = copy.deepcopy(data["pay_subsidies"])
 
-    data["pay_subsidies"] = [
-        {
-            "start_date": None,
-            "end_date": None,
-            "pay_subsidy_percent": 100,
-            "work_time_percent": 40,
-        },
-        {
-            "start_date": None,
-            "end_date": None,
-            "pay_subsidy_percent": 40,
-            "work_time_percent": 40,
-        },
-    ]
+    _set_two_pay_subsidies_with_empty_dates(data)
 
     response = handler_api_client.put(
         get_handler_detail_url(handling_application),
@@ -377,26 +386,69 @@ def test_ignore_pay_subsidy_dates_when_application_is_received(
     """
     data = HandlerApplicationSerializer(received_application).data
 
-    data["pay_subsidies"] = [
-        {
-            "start_date": None,
-            "end_date": None,
-            "pay_subsidy_percent": 100,
-            "work_time_percent": 40,
-        },
-        {
-            "start_date": None,
-            "end_date": None,
-            "pay_subsidy_percent": 40,
-            "work_time_percent": 40,
-        },
-    ]
+    _set_two_pay_subsidies_with_empty_dates(data)
 
     response = handler_api_client.put(
         get_handler_detail_url(received_application),
         data,
     )
     assert response.status_code == 200
+
+
+@pytest.mark.parametrize("benefit_type", BenefitType.values)
+@pytest.mark.parametrize(
+    "override_monthly_benefit_amount,override_monthly_benefit_amount_comment",
+    [(None, ""), (100, "Test comment")],
+)
+def test_pay_subsidies_validation_in_handling(
+    handler_api_client,
+    mock_get_organisation_roles_and_create_company,
+    override_monthly_benefit_amount,
+    override_monthly_benefit_amount_comment,
+    benefit_type,
+):
+    expect_validation_error = (
+        benefit_type == BenefitType.SALARY_BENEFIT
+        and override_monthly_benefit_amount is None
+    )
+    with factory.Faker.override_default_locale("fi_FI"):
+        handling_application = ReceivedApplicationFactory(
+            status=ApplicationStatus.HANDLING,
+            apprenticeship_program=False,
+            benefit_type=benefit_type,
+            calculation__override_monthly_benefit_amount=override_monthly_benefit_amount,
+            calculation__override_monthly_benefit_amount_comment=override_monthly_benefit_amount_comment,
+            company=mock_get_organisation_roles_and_create_company,
+            pay_subsidy_granted=True,
+            pay_subsidy_percent=100,
+            additional_pay_subsidy_percent=40,
+        )
+    data = HandlerApplicationSerializer(handling_application).data
+    _set_two_pay_subsidies_with_empty_dates(data)
+
+    # Make sure the test data has been set up correctly
+    assert data["benefit_type"] == benefit_type
+    assert (data["calculation"]["override_monthly_benefit_amount"] is None) == (
+        override_monthly_benefit_amount is None
+    )
+    assert (
+        data["calculation"]["override_monthly_benefit_amount_comment"]
+        == override_monthly_benefit_amount_comment
+    )
+
+    response = handler_api_client.put(
+        get_handler_detail_url(handling_application),
+        data,
+    )
+
+    if expect_validation_error:
+        assert response.status_code == 400
+        assert "pay_subsidies" in response.json()
+        assert {"start_date": ["Start date cannot be empty"]} in response.json()[
+            "pay_subsidies"
+        ]
+    else:
+        assert response.status_code == 200
 
 
 @pytest.mark.parametrize(
@@ -415,29 +467,34 @@ def test_validate_pay_subsidy_dates_when_application_is_handled(
     paysubsidy should be validated when application has gone through the handling state
     """
     application.status = status
+    application.benefit_type = BenefitType.SALARY_BENEFIT
     application.save()
     data = HandlerApplicationSerializer(application).data
 
-    data["pay_subsidies"] = [
-        {
-            "start_date": None,
-            "end_date": None,
-            "pay_subsidy_percent": 100,
-            "work_time_percent": 40,
-        },
-        {
-            "start_date": None,
-            "end_date": None,
-            "pay_subsidy_percent": 40,
-            "work_time_percent": 40,
-        },
-    ]
+    _set_two_pay_subsidies_with_empty_dates(data)
 
     response = handler_api_client.put(
         get_handler_detail_url(application),
         data,
     )
     assert response.status_code == 400
+
+
+def test_ignore_pay_subsidy_dates_in_received_to_handling_transition(
+    handler_api_client, received_application
+):
+    """
+    paysubsidy validation should be skipped when application is first moved to handling
+    """
+    data = HandlerApplicationSerializer(received_application).data
+    _set_two_pay_subsidies_with_empty_dates(data)
+    data["status"] = ApplicationStatus.HANDLING
+
+    response = handler_api_client.put(
+        get_handler_detail_url(received_application),
+        data,
+    )
+    assert response.status_code == 200
 
 
 def test_ignore_pay_subsidy_dates_when_on_manual_calculator(
@@ -455,20 +512,7 @@ def test_ignore_pay_subsidy_dates_when_on_manual_calculator(
         "override_monthly_benefit_amount_comment"
     ] = "This is a comment."
 
-    data["pay_subsidies"] = [
-        {
-            "start_date": None,
-            "end_date": None,
-            "pay_subsidy_percent": 100,
-            "work_time_percent": 40,
-        },
-        {
-            "start_date": None,
-            "end_date": None,
-            "pay_subsidy_percent": 40,
-            "work_time_percent": 40,
-        },
-    ]
+    _set_two_pay_subsidies_with_empty_dates(data)
 
     response = handler_api_client.put(
         get_handler_detail_url(handling_application),

@@ -1,6 +1,6 @@
-from django.conf import settings
 from django.urls import include, path
 
+from shared.common.views import MockEnabledProxyView
 from shared.oidc.views.eauth_views import (
     EauthAuthenticationCallbackView,
     EauthAuthenticationRequestView,
@@ -13,80 +13,65 @@ from shared.oidc.views.hki_views import (
     HelsinkiOIDCLogoutView,
     HelsinkiOIDCUserInfoView,
 )
+from shared.oidc.views.mock_views import (
+    MockAuthenticationRequestView,
+    MockLogoutCallbackView,
+    MockLogoutView,
+    MockUserInfoView,
+)
 
-urlpatterns = []
-
-if settings.NEXT_PUBLIC_MOCK_FLAG:
-    from shared.oidc.views.mock_views import (
-        MockAuthenticationRequestView,
-        MockLogoutCallbackView,
-        MockLogoutView,
-        MockUserInfoView,
-    )
-
-    urlpatterns += [
-        path(
-            "authenticate/",
-            MockAuthenticationRequestView.as_view(),
-            name="oidc_authentication_init",
+urlpatterns = [
+    path(
+        "authenticate/",
+        MockEnabledProxyView(
+            real_view_class=HelsinkiOIDCAuthenticationRequestView,
+            mock_view_class=MockAuthenticationRequestView,
         ),
-        path(
-            "logout/",
-            MockLogoutView.as_view(),
-            name="oidc_logout",
+        name="oidc_authentication_init",
+    ),
+    path(
+        "logout/",
+        MockEnabledProxyView(
+            real_view_class=HelsinkiOIDCLogoutView,
+            mock_view_class=MockLogoutView,
         ),
-        path(
-            "logout_callback/",
-            MockLogoutCallbackView.as_view(),
-            name="oidc_logout_callback",
+        name="oidc_logout",
+    ),
+    path(
+        "logout_callback/",
+        MockEnabledProxyView(
+            real_view_class=HelsinkiOIDCLogoutCallbackView,
+            mock_view_class=MockLogoutCallbackView,
         ),
-        path(
-            "userinfo/",
-            MockUserInfoView.as_view(),
-            name="oidc_userinfo",
+        name="oidc_logout_callback",
+    ),
+    path(
+        "userinfo/",
+        MockEnabledProxyView(
+            real_view_class=HelsinkiOIDCUserInfoView,
+            mock_view_class=MockUserInfoView,
         ),
-    ]
-else:
-    urlpatterns += [
-        path(
-            "authenticate/",
-            HelsinkiOIDCAuthenticationRequestView.as_view(),
-            name="oidc_authentication_init",
-        ),
-        path(
-            "callback/",
-            HelsinkiOIDCAuthenticationCallbackView.as_view(),
-            name="oidc_authentication_callback",
-        ),
-        path(
-            "logout/",
-            HelsinkiOIDCLogoutView.as_view(),
-            name="oidc_logout",
-        ),
-        path(
-            "logout_callback/",
-            HelsinkiOIDCLogoutCallbackView.as_view(),
-            name="oidc_logout_callback",
-        ),
-        path(
-            "userinfo/",
-            HelsinkiOIDCUserInfoView.as_view(),
-            name="oidc_userinfo",
-        ),
-        path(
-            "backchannel/logout/",
-            HelsinkiOIDCBackchannelLogoutView.as_view(),
-            name="oidc_backchannel_logout",
-        ),
-        path("", include("mozilla_django_oidc.urls")),
-        path(
-            "eauthorizations/authenticate/",
-            EauthAuthenticationRequestView.as_view(),
-            name="eauth_authentication_init",
-        ),
-        path(
-            "eauthorizations/callback/",
-            EauthAuthenticationCallbackView.as_view(),
-            name="eauth_authentication_callback",
-        ),
-    ]
+        name="oidc_userinfo",
+    ),
+    path(
+        "callback/",
+        HelsinkiOIDCAuthenticationCallbackView.as_view(),
+        name="oidc_authentication_callback",
+    ),
+    path(
+        "backchannel/logout/",
+        HelsinkiOIDCBackchannelLogoutView.as_view(),
+        name="oidc_backchannel_logout",
+    ),
+    path("", include("mozilla_django_oidc.urls")),
+    path(
+        "eauthorizations/authenticate/",
+        EauthAuthenticationRequestView.as_view(),
+        name="eauth_authentication_init",
+    ),
+    path(
+        "eauthorizations/callback/",
+        EauthAuthenticationCallbackView.as_view(),
+        name="eauth_authentication_callback",
+    ),
+]

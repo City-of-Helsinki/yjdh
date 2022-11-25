@@ -1,8 +1,8 @@
-import React from 'react';
-import TetPosting from 'tet-shared/types/tetposting';
-import { useFormContext, Controller, RegisterOptions } from 'react-hook-form';
 import { PhoneInput as HdsPhoneInput } from 'hds-react';
+import React from 'react';
+import { Controller, RegisterOptions, useFormContext } from 'react-hook-form';
 import Id from 'shared/types/id';
+import TetPosting from 'tet-shared/types/tetposting';
 
 type PhoneType = Pick<TetPosting, 'contact_phone'>;
 

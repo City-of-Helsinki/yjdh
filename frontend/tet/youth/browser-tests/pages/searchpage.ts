@@ -1,4 +1,4 @@
-import { t, Selector } from 'testcafe';
+import { Selector, t } from 'testcafe';
 
 class Searchpage {
   searchInput = Selector('input').withAttribute('placeholder', /kirjoita hakusana/i);

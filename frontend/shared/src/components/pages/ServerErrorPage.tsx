@@ -28,8 +28,4 @@ const ServerErrorPage: React.FC<Props> = ({ logout }) => {
   );
 };
 
-ServerErrorPage.defaultProps = {
-  logout: undefined,
-};
-
 export default ServerErrorPage;

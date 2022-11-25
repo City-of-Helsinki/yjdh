@@ -31,8 +31,4 @@ const EmploymentAccordionHeader: React.FC<Props> = ({
   );
 };
 
-EmploymentAccordionHeader.defaultProps = {
-  displayError: false,
-};
-
 export default EmploymentAccordionHeader;

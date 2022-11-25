@@ -24,9 +24,4 @@ const VtjErrorNotification: React.FC<Props> = ({ reason, type, params }) => {
   );
 };
 
-VtjErrorNotification.defaultProps = {
-  params: undefined,
-  type: 'alert',
-};
-
 export default VtjErrorNotification;

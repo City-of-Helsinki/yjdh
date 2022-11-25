@@ -1,9 +1,9 @@
+import { Notification } from 'hds-react';
+import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { useTranslation } from 'next-i18next';
 import { useTheme } from 'styled-components';
-import { Notification } from 'hds-react';
 import useUserQuery from 'tet/admin/hooks/backend/useUserQuery';
 
 const EmployerInfo: React.FC = () => {
@@ -12,7 +12,7 @@ const EmployerInfo: React.FC = () => {
   const userQuery = useUserQuery();
 
   return (
-    <FormSection withoutDivider={true} header={t('common:editor.companyInfo')}>
+    <FormSection withoutDivider header={t('common:editor.companyInfo')}>
       <$GridCell
         as={$Grid}
         $colSpan={12}

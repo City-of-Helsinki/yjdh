@@ -1,26 +1,24 @@
-import renderComponent from 'tet/admin/__tests__/utils/components/render-component';
-import EditStaticPage from 'tet/admin/pages/editstatic';
 import { axe } from 'jest-axe';
 import React from 'react';
+import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
+import { waitFor } from 'shared/__tests__/utils/test-utils';
+import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 import {
-  expectUnauthorizedReply,
-  expectAuthorizedReply,
   expectAttributesFromLinkedEvents,
-  expectWorkingMethodsFromLinkedEvents,
+  expectAuthorizedReply,
   expectToGetSingleEventFromBackend,
+  expectUnauthorizedReply,
+  expectWorkingMethodsFromLinkedEvents,
 } from 'tet/admin/__tests__/utils/backend/backend-nocks';
+import getFormPageApi from 'tet/admin/__tests__/utils/components/get-form-page-api';
+import renderComponent from 'tet/admin/__tests__/utils/components/render-component';
 import renderPage from 'tet/admin/__tests__/utils/components/render-page';
 import getTetAdminTranslationsApi from 'tet/admin/__tests__/utils/i18n/get-tet-admin-translations-api';
-import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
-import getFormPageApi from 'tet/admin/__tests__/utils/components/get-form-page-api';
+import EditStaticPage from 'tet/admin/pages/editstatic';
 import { fakeTetEvent } from 'tet-shared/__tests__/utils/fake-objects';
-import { screen, userEvent, within, waitFor } from 'shared/__tests__/utils/test-utils';
-import { TetEvent } from 'tet-shared/types/linkedevents';
-import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 
 const {
   translations: { [DEFAULT_LANGUAGE]: translations },
-  regexp,
 } = getTetAdminTranslationsApi();
 
 const event = fakeTetEvent({

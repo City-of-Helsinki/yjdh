@@ -30,8 +30,4 @@ const BackendAPIProvider: React.FC<BackendAPIProviderProps> = ({
   </BackendAPIContext.Provider>
 );
 
-BackendAPIProvider.defaultProps = {
-  headers: undefined,
-};
-
 export default BackendAPIProvider;

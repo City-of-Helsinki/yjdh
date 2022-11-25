@@ -40,11 +40,4 @@ const Drawer: React.FC<DrawerProps> = ({
   );
 };
 
-Drawer.defaultProps = {
-  title: undefined,
-  closeText: undefined,
-  footer: null,
-  onClose: undefined,
-};
-
 export default Drawer;

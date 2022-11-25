@@ -1,34 +1,34 @@
-import React from 'react';
-import {
-  $SearchBar,
-  $SearchBarWrapper,
-  $SearchText,
-  $Filters,
-  $SearchField,
-  $DateField,
-  $ButtonContainer,
-  $FiltersLink,
-} from './QuickSearch.sc';
-import { convertToBackendDateFormat } from 'shared/utils/date.utils';
-import { TextInput, Button, DateInput, IconSearch, IconAngleRight } from 'hds-react';
+import { Button, DateInput, IconAngleRight, IconSearch, TextInput } from 'hds-react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import Link from 'next/link';
+import React from 'react';
 import { Language } from 'shared/i18n/i18n';
 
-const QuickSearch = () => {
+import {
+  $ButtonContainer,
+  $DateField,
+  $Filters,
+  $FiltersLink,
+  $SearchBar,
+  $SearchBarWrapper,
+  $SearchField,
+  $SearchText,
+} from './QuickSearch.sc';
+
+const QuickSearch: React.FC = () => {
   const router = useRouter();
   const [searchText, setSearchText] = React.useState<string>('');
   const [startTime, setStartTime] = React.useState('');
   const { t, i18n } = useTranslation();
 
-  const searchHandler = () => {
+  const searchHandler = (): void => {
     const searchQuery = {
       ...(searchText.length > 0 && { text: searchText }),
       ...(startTime.length > 0 && { start: startTime }),
     };
 
-    router.push({
+    void router.push({
       pathname: '/postings',
       query: {
         ...searchQuery,
@@ -48,7 +48,7 @@ const QuickSearch = () => {
               id="searchText"
               data-testid="quickSearchInput"
               placeholder={t('common:filters.searchPlaceholder')}
-            ></TextInput>
+            />
           </$SearchField>
           <$DateField>
             <DateInput
@@ -58,7 +58,7 @@ const QuickSearch = () => {
               value={startTime}
               language={i18n.language as Language}
               placeholder={t('common:filters.startDate')}
-            ></DateInput>
+            />
           </$DateField>
           <$ButtonContainer>
             <Button

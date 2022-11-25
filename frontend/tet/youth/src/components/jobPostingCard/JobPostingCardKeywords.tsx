@@ -1,10 +1,8 @@
 import * as React from 'react';
-import { Tag } from 'hds-react';
-import { OptionType } from 'tet-shared/types/classification';
-import JobPosting from 'tet-shared/types/tetposting';
-import styled from 'styled-components';
-import { useTheme } from 'styled-components';
 import useMediaQuery from 'shared/hooks/useMediaQuery';
+import styled, { useTheme } from 'styled-components';
+import KeyWordList from 'tet/youth/components/keywordList/KeyWordList';
+import JobPosting from 'tet-shared/types/tetposting';
 
 const $KeywordList = styled.ul`
   display: inline-flex;
@@ -26,31 +24,11 @@ type Props = {
 const JobPostingCardKeywords: React.FC<Props> = ({ jobPosting }) => {
   const theme = useTheme();
   const isDesktop = useMediaQuery(`(min-width: ${theme.breakpoints.m})`);
-  const keywordList = (list: OptionType[], color: string) => {
-    return (
-      <>
-        {list.map((keyword: OptionType) => (
-          <li>
-            <Tag
-              theme={{
-                '--tag-background': `var(--color-${color})`,
-                '--tag-color': 'var(--color-black-90)',
-                '--tag-focus-outline-color': 'var(--color-black-90)',
-              }}
-            >
-              {keyword.name}
-            </Tag>
-          </li>
-        ))}
-      </>
-    );
-  };
-
   return (
     <$KeywordList>
-      {keywordList(jobPosting.keywords_working_methods, 'success-light')}
-      {isDesktop && keywordList(jobPosting.keywords_attributes, 'coat-of-arms-medium-light')}
-      {isDesktop && keywordList(jobPosting.keywords, 'engel-medium-light')}
+      <KeyWordList list={jobPosting.keywords_working_methods} color="success-light" />
+      {isDesktop && <KeyWordList list={jobPosting.keywords_attributes} color="coat-of-arms-medium-light" />}
+      {isDesktop && <KeyWordList list={jobPosting.keywords} color="engel-medium-light" />}
     </$KeywordList>
   );
 };

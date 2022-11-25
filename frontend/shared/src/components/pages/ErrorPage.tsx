@@ -53,10 +53,4 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
   );
 };
 
-ErrorPage.defaultProps = {
-  errorId: undefined,
-  retry: undefined,
-  logout: undefined,
-};
-
 export default ErrorPage;

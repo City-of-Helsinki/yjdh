@@ -1,27 +1,27 @@
+import { IconCalendar, IconEye, IconEyeCrossed, IconGroup, IconMenuDots } from 'hds-react';
+import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import TetPosting from 'tet-shared/types/tetposting';
 import {
-  $PostingCard,
   $ImageContainer,
+  $MenuContainer,
+  $PostingCard,
   $PostingCardBody,
-  $PostingTitle,
+  $PostingDates,
   $PostingDescription,
-  $PostingHeader,
   $PostingFooter,
   $PostingFooterInfo,
-  $MenuContainer,
-  $PostingDates,
+  $PostingHeader,
+  $PostingTitle,
 } from 'tet/admin/components/jobPostings/JobPostingsListItem.sc';
-import { IconMenuDots, IconCalendar, IconGroup, IconEye, IconEyeCrossed } from 'hds-react';
-import { useTranslation } from 'next-i18next';
 import JobPostingsListItemMenu from 'tet/admin/components/jobPostings/JobPostingsListItemMenu';
-import Image from 'next/image';
+import TetPosting from 'tet-shared/types/tetposting';
+
 type JobPostingsListItemProps = {
   posting: TetPosting;
 };
 
 const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting }) => {
-  //const startingDate = DateTime.fromISO(posting.start_date).toFormat('dd.mm.yyyy');
+  // const startingDate = DateTime.fromISO(posting.start_date).toFormat('dd.mm.yyyy');
   const [showMenu, setShowMenu] = React.useState(false);
   const { t } = useTranslation();
 
@@ -31,7 +31,7 @@ const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting }) =>
 
   return (
     <$PostingCard>
-      <$ImageContainer imageUrl={imageUrl}></$ImageContainer>
+      <$ImageContainer imageUrl={imageUrl} />
       <$PostingCardBody>
         <$PostingHeader>
           <div>

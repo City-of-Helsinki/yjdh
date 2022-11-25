@@ -45,8 +45,4 @@ const AttachmentsListView: React.FC<AttachmentsListViewProps> = ({
   ) : null;
 };
 
-AttachmentsListView.defaultProps = {
-  title: undefined,
-};
-
 export default AttachmentsListView;

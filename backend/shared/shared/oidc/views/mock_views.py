@@ -61,7 +61,10 @@ class MockAuthenticationRequestView(View):
     @method_decorator(ensure_csrf_cookie)
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            user = UserFactory()
+            user = UserFactory(
+                is_staff=getattr(settings, "OIDC_MOCK_USER_IS_STAFF", False),
+                is_superuser=getattr(settings, "OIDC_MOCK_USER_IS_SUPERUSER", False),
+            )
             auth.login(
                 request, user, backend="django.contrib.auth.backends.ModelBackend"
             )

@@ -1,13 +1,14 @@
-import { linkedEventsUrl } from '@frontend/te-yout/src/backend-api/backend-api';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/http-utils/http-request-hook';
 import requestLogger, { filterLoggedRequests } from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import frontpage from './pages/frontpage';
-import searchpage from './pages/searchpage';
-import { Selector } from 'testcafe';
-import postingpage from './pages/postingpage';
 import { getUrl } from '@frontend/shared/browser-tests/utils/url.utils';
 import faker from 'faker';
+import { Selector } from 'testcafe';
+
+import { linkedEventsUrl } from '../src/backend-api/backend-api';
+import frontpage from './pages/frontpage';
+import postingpage from './pages/postingpage';
+import searchpage from './pages/searchpage';
 
 const url = getUrl(process.env.YOUTH_URL ?? 'https://localhost:3001');
 
@@ -25,7 +26,7 @@ fixture('Frontpage')
 const formatDate = (date: Date): string => `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
 
 // This works locally but not on the review environment
-test.skip('simple test', async (t) => {
+test.skip('simple test', async () => {
   const searchTerm = faker.lorem.word();
 
   await frontpage.fillSearch(searchTerm);

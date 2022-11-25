@@ -52,8 +52,4 @@ const Messages: React.FC<ComponentProps> = ({ data, variant, withScroll }) => {
   );
 };
 
-Messages.defaultProps = {
-  withScroll: false,
-};
-
 export default Messages;

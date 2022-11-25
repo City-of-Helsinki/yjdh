@@ -1,9 +1,9 @@
+import { Checkbox, SelectionGroup as HdsSelectionGroup } from 'hds-react';
 import React from 'react';
-import TetPosting from 'tet-shared/types/tetposting';
 import { Controller, useFormContext } from 'react-hook-form';
-import { SelectionGroup as HdsSelectionGroup, Checkbox } from 'hds-react';
 import Id from 'shared/types/id';
 import { OptionType } from 'tet-shared/types/classification';
+import TetPosting from 'tet-shared/types/tetposting';
 
 type Props = {
   fieldId: Id<Pick<TetPosting, 'keywords_working_methods' | 'keywords_attributes'>>;
@@ -16,13 +16,13 @@ type Props = {
 
 const SelectionGroup: React.FC<Props> = ({ fieldId, label, options, required, rules, testId }) => {
   const { control, setValue, getValues, clearErrors } = useFormContext<TetPosting>();
-  const checkboxChangeHandler = (option: OptionType) => {
+  const checkboxChangeHandler = (option: OptionType): void => {
     const values = getValues(fieldId);
     if (Array.isArray(values)) {
-      let list: OptionType[] = [...values];
+      const list: OptionType[] = [...values];
       const index = list.findIndex((item) => item.value === option.value);
       if (index === -1) {
-        list = list.concat(option);
+        list.push(option);
         if (required) {
           clearErrors(fieldId);
         }
@@ -40,7 +40,7 @@ const SelectionGroup: React.FC<Props> = ({ fieldId, label, options, required, ru
       rules={{
         validate: rules,
       }}
-      render={({ field: { ref, value, ...field }, fieldState: { error, invalid, ...fieldState } }) => (
+      render={({ field: { value }, fieldState: { error } }) => (
         <HdsSelectionGroup
           data-testid={testId}
           label={label}

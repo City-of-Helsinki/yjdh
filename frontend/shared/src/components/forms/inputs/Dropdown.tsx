@@ -75,9 +75,4 @@ const Dropdown = <T, O extends Option>({
   );
 };
 
-Dropdown.defaultProps = {
-  type: 'select',
-  multiselect: false,
-};
-
 export default Dropdown;

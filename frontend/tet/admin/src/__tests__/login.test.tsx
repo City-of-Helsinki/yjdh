@@ -1,7 +1,7 @@
-import renderComponent from 'tet/admin/__tests__/utils/components/render-component';
-import LoginPage from 'tet/admin/pages/login';
 import { axe } from 'jest-axe';
 import React from 'react';
+import renderComponent from 'tet/admin/__tests__/utils/components/render-component';
+import LoginPage from 'tet/admin/pages/login';
 
 jest.mock('next/router', () => ({
   useRouter: () => ({
