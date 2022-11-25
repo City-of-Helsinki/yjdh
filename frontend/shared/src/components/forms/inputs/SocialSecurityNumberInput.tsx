@@ -84,8 +84,4 @@ const SocialSecurityNumberInput = <T,>({
   );
 };
 
-SocialSecurityNumberInput.defaultProps = {
-  placeholder: undefined,
-};
-
 export default SocialSecurityNumberInput;

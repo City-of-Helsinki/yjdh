@@ -77,9 +77,4 @@ const SelectionGroup = <T,>({
   );
 };
 
-SelectionGroup.defaultProps = {
-  direction: 'horizontal',
-  label: undefined,
-};
-
 export default SelectionGroup;

@@ -1,10 +1,9 @@
-import { screen } from '@testing-library/react';
-import renderComponent from 'tet/admin/__tests__/utils/components/render-component';
 import React from 'react';
+import { screen, userEvent, within } from 'shared/__tests__/utils/test-utils';
+import renderComponent from 'tet/admin/__tests__/utils/components/render-component';
 import { fakeTetPosting, getPastDate } from 'tet-shared/__tests__/utils/fake-objects';
+
 import JobPostingsListItem from '../JobPostingsListItem';
-import { within } from '@testing-library/dom';
-import userEvent from '@testing-library/user-event';
 
 const notPublished = fakeTetPosting({ title: 'Not published', date_published: null, spots: 3 });
 const published = fakeTetPosting({
@@ -18,7 +17,7 @@ describe('JobPostingsListItem', () => {
   it('should show that posting is published if date_published is not null', async () => {
     renderComponent(<JobPostingsListItem posting={published} />);
 
-    await screen.findByText(/Julkaistu/i);
+    await screen.findByText(/julkaistu/i);
   });
 
   it('should show that posting is not published if date_published is null', async () => {
@@ -36,13 +35,13 @@ describe('JobPostingsListItem', () => {
   it('should show correct menu items for the published posting, when menu is open', async () => {
     renderComponent(<JobPostingsListItem posting={published} />);
 
-    //Expect list to be hidden before click
-    expect(screen.queryByRole('list')).toBeNull();
+    // Expect list to be hidden before click
+    expect(screen.queryByRole('list')).not.toBeInTheDocument();
 
     const menuButton = await screen.findByRole('button');
     await userEvent.click(menuButton);
     const list = screen.getByRole('list');
-    expect(within(list).queryByText(/julkaise nyt/i)).toBeNull();
+    expect(within(list).queryByText(/julkaise nyt/i)).not.toBeInTheDocument();
     await within(list).findByText(/muokkaa/i);
     await within(list).findByText(/tee kopio/i);
     await within(list).findByText(/poista/i);
@@ -51,7 +50,7 @@ describe('JobPostingsListItem', () => {
   it('should show correct menu items for the not published posting, when menu is open', async () => {
     renderComponent(<JobPostingsListItem posting={notPublished} />);
 
-    expect(screen.queryByRole('list')).toBeNull();
+    expect(screen.queryByRole('list')).not.toBeInTheDocument();
 
     const menuButton = await screen.findByRole('button');
     await userEvent.click(menuButton);

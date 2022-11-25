@@ -1,8 +1,7 @@
-import ShowPostingPage from 'tet/youth/pages';
 import { axe } from 'jest-axe';
 import React from 'react';
-
 import renderComponent from 'tet/youth/__tests__/utils/components/render-component';
+import ShowPostingPage from 'tet/youth/pages';
 
 jest.mock('next/router');
 
@@ -12,7 +11,7 @@ describe('frontend/tet/youth/src/pages/postings/show.tsx', () => {
       writable: true,
       value: jest.fn().mockImplementation((query) => ({
         matches: false,
-        media: query,
+        media: query as unknown,
         onchange: null,
         addListener: jest.fn(), // Deprecated
         removeListener: jest.fn(), // Deprecated

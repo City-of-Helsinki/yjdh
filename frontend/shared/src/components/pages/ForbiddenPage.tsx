@@ -28,8 +28,4 @@ const ForbiddenPage: React.FC = () => {
   );
 };
 
-ForbiddenPage.defaultProps = {
-  helpdeskEmail: undefined,
-};
-
 export default ForbiddenPage;

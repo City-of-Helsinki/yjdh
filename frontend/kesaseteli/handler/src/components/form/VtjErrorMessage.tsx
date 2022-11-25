@@ -16,8 +16,4 @@ const VtjErrorMessage: React.FC<Props> = ({ reason, params }) => {
   );
 };
 
-VtjErrorMessage.defaultProps = {
-  params: undefined,
-};
-
 export default VtjErrorMessage;

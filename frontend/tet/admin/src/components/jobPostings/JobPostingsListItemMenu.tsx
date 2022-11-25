@@ -25,8 +25,8 @@ const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) 
 
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent): void => {
-      if (ref.current && !ref.current.contains(event.target as HTMLElement)) {
-        onClickOutside && onClickOutside();
+      if (ref.current && !ref.current.contains(event.target as HTMLElement) && typeof onClickOutside === 'function') {
+        onClickOutside();
       }
     };
     document.addEventListener('click', handleClickOutside, true);
@@ -50,10 +50,7 @@ const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) 
     });
   };
 
-  const deletePostingHandler = async () => {
-    await showConfirm();
-  };
-  const showConfirm = async () => {
+  const showConfirm = async (): Promise<void> => {
     const isConfirmed = await confirm({
       header: t('common:delete.confirmation', { posting: posting.title }),
       submitButtonLabel: t('common:delete.deletePosting'),
@@ -64,7 +61,9 @@ const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) 
     }
   };
 
-  const publishPostingHandler = async () => {
+  const deletePostingHandler = (): Promise<void> => showConfirm();
+
+  const publishPostingHandler = async (): Promise<void> => {
     const isConfirmed = await confirm({
       header: t('common:publish.confirmation', { posting: posting.title }),
       content: t('common:application.publishTerms'),
@@ -98,7 +97,7 @@ const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) 
           <span>{t('common:application.jobPostings.menu.copy')}</span>
         </$MenuItem>
         <$MenuItem onClick={deletePostingHandler}>
-          <IconCrossCircle color={'#b01038'} />
+          <IconCrossCircle color="#b01038" />
           <span>{t('common:application.jobPostings.menu.delete')}</span>
         </$MenuItem>
       </ul>

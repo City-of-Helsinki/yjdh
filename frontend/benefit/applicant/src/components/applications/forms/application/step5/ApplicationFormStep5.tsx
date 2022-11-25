@@ -4,7 +4,6 @@ import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit-shared/constants';
 import { Button, IconPen } from 'hds-react';
 import isEmpty from 'lodash/isEmpty';
-import noop from 'lodash/noop';
 import React from 'react';
 import { getFullName } from 'shared/utils/application.utils';
 import { useTheme } from 'styled-components';
@@ -177,13 +176,5 @@ const ApplicationFormStep5: React.FC<
     </>
   );
 };
-
-const defaultProps = {
-  isReadOnly: false,
-  isSubmittedApplication: false,
-  onSubmit: noop,
-};
-
-ApplicationFormStep5.defaultProps = defaultProps;
 
 export default ApplicationFormStep5;

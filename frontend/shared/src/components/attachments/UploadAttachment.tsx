@@ -78,12 +78,4 @@ const UploadAttachment: React.FC<UploadAttachmentProps> = ({
   );
 };
 
-UploadAttachment.defaultProps = {
-  ariaUploadText: undefined,
-  icon: undefined,
-  variant: undefined,
-  name: undefined,
-  buttonRef: undefined,
-};
-
 export default UploadAttachment;

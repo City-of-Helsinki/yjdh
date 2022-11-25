@@ -1,12 +1,12 @@
-import { Footer } from 'hds-react';
+import { Footer, IconLinkExternal } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { IconLinkExternal } from 'hds-react';
 
 // import { $FooterWrapper } from './Footer.sc';
 
 const FooterSection: React.FC = () => {
   const { t } = useTranslation();
+  const newTabText = t('common:footer.newTab');
   return (
     <Footer title={t('common:appName')} theme="dark">
       <Footer.Base
@@ -19,7 +19,7 @@ const FooterSection: React.FC = () => {
           target="_blank"
           href={t('common:footer.accessibilityStatementLink')}
           label={t('common:footer.accessibilityStatement')}
-          aria-label={`${t('common:footer.accessibilityStatement')} - ${t('common:footer.newTab')}`}
+          aria-label={`${t('common:footer.accessibilityStatement')} - ${newTabText}`}
           icon={<IconLinkExternal />}
         />
         <Footer.Item
@@ -39,7 +39,7 @@ const FooterSection: React.FC = () => {
           target="_blank"
           href={t('common:footer.feedbackLink')}
           label={t('common:footer.feedback')}
-          aria-label={`${t('common:footer.feedback')} - ${t('common:footer.newTab')}`}
+          aria-label={`${t('common:footer.feedback')} - ${newTabText}`}
           icon={<IconLinkExternal />}
         />
         <Footer.Item
@@ -48,7 +48,7 @@ const FooterSection: React.FC = () => {
           target="_blank"
           href={t('common:footer.moreInfoLink')}
           label={t('common:footer.moreInfo')}
-          aria-label={`${t('common:footer.moreInfo')} - ${t('common:footer.newTab')}`}
+          aria-label={`${t('common:footer.moreInfo')} - ${newTabText}`}
           icon={<IconLinkExternal />}
         />
       </Footer.Base>

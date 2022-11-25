@@ -33,8 +33,4 @@ const Stepper: React.FC<StepperProps> = ({ activeStep = 1, steps }) => (
   </$StepsContainer>
 );
 
-Stepper.defaultProps = {
-  activeStep: 1,
-};
-
 export default Stepper;

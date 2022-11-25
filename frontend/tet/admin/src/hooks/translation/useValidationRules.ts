@@ -1,11 +1,13 @@
 import { useTranslation } from 'next-i18next';
-import { EMAIL_REGEX, NAMES_REGEX, PHONE_NUMBER_REGEX, DATE_UI_REGEX, WEBSITE_URL } from 'shared/constants';
+import { RegisterOptions } from 'react-hook-form';
+import { DATE_UI_REGEX, EMAIL_REGEX, NAMES_REGEX, PHONE_NUMBER_REGEX, WEBSITE_URL } from 'shared/constants';
 
-const useValidationRules = () => {
+const useValidationRules = (): RegisterOptions & Record<string, RegisterOptions> => {
   const { t } = useTranslation();
   const maxMessage = t('common:editor.posting.validation.max');
   const requiredMessage = t('common:editor.posting.validation.required');
   const correctName = t('common:editor.posting.validation.name');
+  const phoneMessage = t('common:editor.posting.validation.phone');
 
   return {
     required: {
@@ -15,12 +17,10 @@ const useValidationRules = () => {
     date: {
       pattern: {
         value: DATE_UI_REGEX,
-        message: t('common:editor.posting.validation.phone'),
+        message: phoneMessage,
       },
     },
-    maxLength: {
-      message: t('common:editor.posting.validation.max'),
-    },
+    maxlength: t('common:editor.posting.validation.max'),
     name: {
       required: {
         value: true,
@@ -52,7 +52,7 @@ const useValidationRules = () => {
       },
       pattern: {
         value: PHONE_NUMBER_REGEX,
-        message: t('common:editor.posting.validation.phone'),
+        message: phoneMessage,
       },
       required: {
         value: true,
@@ -86,7 +86,7 @@ const useValidationRules = () => {
     website: {
       pattern: {
         value: WEBSITE_URL,
-        message: t('common:editor.posting.validation.phone'),
+        message: phoneMessage,
       },
       maxLength: {
         value: 2048,

@@ -1,5 +1,4 @@
 import { Button, CommonButtonProps } from 'hds-react';
-import noop from 'lodash/noop';
 import React from 'react';
 import {
   SubmitErrorHandler,
@@ -70,13 +69,6 @@ const SaveFormButton = <
       {children}
     </ButtonComponent>
   );
-};
-
-SaveFormButton.defaultProps = {
-  onInvalidForm: noop,
-  onSuccess: undefined,
-  onError: undefined,
-  asLink: false,
 };
 
 export default SaveFormButton;

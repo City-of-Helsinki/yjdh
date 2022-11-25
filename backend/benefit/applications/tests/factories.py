@@ -138,7 +138,7 @@ class ReceivedApplicationFactory(ApplicationFactory):
 
     @factory.post_generation
     def calculation(self, created, extracted, **kwargs):
-        self.calculation = Calculation.objects.create_for_application(self)
+        self.calculation = Calculation.objects.create_for_application(self, **kwargs)
         self.calculation.init_calculator()
         self.calculation.calculate()
 

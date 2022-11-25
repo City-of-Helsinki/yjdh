@@ -58,7 +58,4 @@ const DateInput = <T,>({
   );
 };
 
-DateInput.defaultProps = {
-  errorText: undefined,
-};
 export default DateInput;

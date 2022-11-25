@@ -1,4 +1,4 @@
-import { Button, IconCross, IconEye, IconUpload, IconSaveDiskette } from 'hds-react';
+import { Button, IconCross, IconEye, IconSaveDiskette, IconUpload } from 'hds-react';
 import cloneDeep from 'lodash/cloneDeep';
 import { useTranslation } from 'next-i18next';
 import React, { useContext } from 'react';
@@ -7,12 +7,12 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import useConfirm from 'shared/hooks/useConfirm';
 import { useTheme } from 'styled-components';
-import useDeleteTetPosting from 'tet/admin/hooks/backend/useDeleteTetPosting';
-import { PreviewContext } from 'tet/admin/store/PreviewContext';
-import TetPosting from 'tet-shared/types/tetposting';
-import { tetPostingToEvent } from 'tet-shared/backend-api/transformations';
-import useUpsertTetPosting from 'tet/admin/hooks/backend/useUpsertTetPosting';
 import InfoDialog from 'tet/admin/components/InfoDialog';
+import useDeleteTetPosting from 'tet/admin/hooks/backend/useDeleteTetPosting';
+import useUpsertTetPosting from 'tet/admin/hooks/backend/useUpsertTetPosting';
+import { PreviewContext } from 'tet/admin/store/PreviewContext';
+import { tetPostingToEvent } from 'tet-shared/backend-api/transformations';
+import TetPosting from 'tet-shared/types/tetposting';
 
 const ActionButtons: React.FC = () => {
   const { setPreviewVisibility, setTetPostingData, setFormValid } = useContext(PreviewContext);
@@ -24,19 +24,17 @@ const ActionButtons: React.FC = () => {
     getValues,
     handleSubmit,
     trigger,
-    formState: { isSubmitting, isDirty },
+    formState: { isSubmitting },
     reset,
   } = useFormContext<TetPosting>();
   const theme = useTheme();
   const posting = getValues();
   const [showInfoDialog, setShowInfoDialog] = React.useState(false);
 
-  console.log('test');
-
   const allowPublish = posting.date_published === null;
   const allowDelete = !!posting.id;
 
-  const showPreview = async () => {
+  const showPreview = async (): Promise<void> => {
     const isValid = await trigger();
     const values = getValues();
     setTetPostingData(cloneDeep(values));
@@ -44,11 +42,7 @@ const ActionButtons: React.FC = () => {
     setPreviewVisibility(true);
   };
 
-  const deletePostingHandler = async () => {
-    await showDeleteConfirm();
-  };
-
-  const showDeleteConfirm = async () => {
+  const showDeleteConfirm = async (): Promise<void> => {
     const isConfirmed = await confirm({
       header: t('common:delete.confirmation', { posting: posting.title }),
       submitButtonLabel: t('common:delete.deletePosting'),
@@ -58,6 +52,8 @@ const ActionButtons: React.FC = () => {
       deleteTetPosting.mutate(posting);
     }
   };
+
+  const deletePostingHandler = async (): Promise<void> => showDeleteConfirm();
 
   const saveHandler = async (validatedPosting: TetPosting): Promise<void> => {
     const event = tetPostingToEvent({

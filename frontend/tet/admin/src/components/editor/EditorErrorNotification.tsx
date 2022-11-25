@@ -13,7 +13,7 @@ const EditorErrorNotification: React.FC = () => {
   const noTetErrors = Object.keys(errors).length === 0;
 
   if (isSubmitted && !noTetErrors) {
-    return <ErrorSummary label={t(`common:editor.notificationTitle`)} autofocus></ErrorSummary>;
+    return <ErrorSummary label={t(`common:editor.notificationTitle`)} autofocus />;
   }
 
   return null;

@@ -1,10 +1,9 @@
-import { BackendEndpoint } from 'tet/youth/backend-api/backend-api';
 import { useTranslation } from 'next-i18next';
 import { useQuery, UseQueryResult } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
-import { LinkedEventsPagedResponse, TetEvent } from 'tet-shared/types/linkedevents';
+import { BackendEndpoint, createAxios, handleResponse } from 'tet/youth/backend-api/backend-api'; // TODO to shared
 import { QueryParams } from 'tet/youth/types/queryparams';
-import { createAxios, handleResponse } from 'tet/youth/backend-api/backend-api'; //TODO to shared
+import { LinkedEventsPagedResponse, TetEvent } from 'tet-shared/types/linkedevents';
 
 const useGetPostings = (params: QueryParams): UseQueryResult<LinkedEventsPagedResponse<TetEvent>, Error> => {
   const axios = createAxios();

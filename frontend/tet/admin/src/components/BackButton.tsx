@@ -1,12 +1,10 @@
-import React from 'react';
 import { IconArrowLeft } from 'hds-react';
-import { useTranslation } from 'next-i18next';
-import styled from 'styled-components';
-import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { useTranslation } from 'next-i18next';
+import React from 'react';
+import styled from 'styled-components';
 
 const BackButton: React.FC = () => {
-  const router = useRouter();
   const { t } = useTranslation();
 
   const $BackButton = styled.a`
@@ -17,10 +15,6 @@ const BackButton: React.FC = () => {
     font-size: ${(props) => props.theme.fontSize.body.l};
     font-weight: normal;
   `;
-
-  const clickHandler = () => {
-    void router.push('/');
-  };
 
   return (
     <Link href="/" passHref>

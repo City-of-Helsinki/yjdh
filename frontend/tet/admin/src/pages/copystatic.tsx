@@ -1,17 +1,17 @@
-import React from 'react';
 import { GetStaticProps, NextPage } from 'next';
-import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
-import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import EditById from 'tet/admin/components/editor/EditById';
-import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
-import { TetEvent } from 'tet-shared/types/linkedevents';
-import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
+import { useTranslation } from 'next-i18next';
+import React from 'react';
 import { useQuery } from 'react-query';
-import PageNotFound from 'shared/components/pages/PageNotFound';
 import withAuth from 'shared/components/hocs/withAuth';
+import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
+import PageNotFound from 'shared/components/pages/PageNotFound';
+import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
+import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
+import EditById from 'tet/admin/components/editor/EditById';
 import EditorLoadingError from 'tet/admin/components/editor/EditorLoadingError';
 import useEventPostingTransformation from 'tet-shared/hooks/backend/useEventPostingTransformation';
+import { TetEvent } from 'tet-shared/types/linkedevents';
 
 const CopyStaticPage: NextPage = () => {
   const { t } = useTranslation();
@@ -35,9 +35,8 @@ const CopyStaticPage: NextPage = () => {
     posting.date_published = null;
 
     return <EditById title={t('common:editor.copyTitle')} data={posting} />;
-  } else {
-    return <PageNotFound />;
   }
+  return <PageNotFound />;
 };
 
 export const getStaticProps: GetStaticProps = getServerSideTranslations('common');

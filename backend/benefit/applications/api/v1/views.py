@@ -108,9 +108,9 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
 
     def get_queryset(self) -> QuerySet[Application]:
         user = self.request.user
-        if not settings.NEXT_PUBLIC_MOCK_FLAG and not user.is_authenticated:
-            return Application.objects.none()
-        return Application.objects.all().select_related("company", "employee")
+        if settings.NEXT_PUBLIC_MOCK_FLAG or user.is_authenticated:
+            return Application.objects.all().select_related("company", "employee")
+        return Application.objects.none()
 
     EXCLUDE_FIELDS_FROM_SIMPLE_LIST = [
         "applicant_terms_approval",

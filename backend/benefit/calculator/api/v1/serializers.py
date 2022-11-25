@@ -2,7 +2,8 @@ from dateutil.relativedelta import relativedelta
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from applications.enums import ApplicationStatus
+from applications.enums import ApplicationStatus, BenefitType
+from applications.models import Application
 from calculator.models import (
     Calculation,
     CalculationRow,
@@ -223,25 +224,51 @@ class PaySubsidySerializer(serializers.ModelSerializer):
             is not None
         )
 
-    HANDLING_STARTED_STATUSES = [
+    def _is_salary_benefit_type(self):
+        return (
+            self.context["request"].data["benefit_type"] == BenefitType.SALARY_BENEFIT
+        )
+
+    HANDLING_STARTED_STATUSES: set = {
         ApplicationStatus.HANDLING,
         ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
         ApplicationStatus.ACCEPTED,
         ApplicationStatus.REJECTED,
-    ]
+    }
 
-    def _is_handling_started(self):
-        return self.context["request"].data["status"] in self.HANDLING_STARTED_STATUSES
+    ALLOW_EMPTY_DATES_IN_STATUS_TRANSITIONS: set = {
+        (ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING)
+    }
+
+    def _has_handling_started(self):
+        application = Application.objects.get(pk=self.context["request"].data["id"])
+        old_status = application.status
+        new_status = self.context["request"].data["status"]
+        return (
+            (old_status, new_status) not in self.ALLOW_EMPTY_DATES_IN_STATUS_TRANSITIONS
+            and new_status in self.HANDLING_STARTED_STATUSES
+        )
+
+    def _are_dates_required(self):
+        return (
+            self._has_handling_started()
+            and self._is_salary_benefit_type()
+            and not self._is_manual_mode()
+        )
 
     def validate(self, data):
         request = self.context.get("request")
         if request is None:
             return data
-        if self._is_handling_started() and not self._is_manual_mode():
+        if self._are_dates_required():
             if data.get("start_date") is None:
-                raise serializers.ValidationError(_("Start date cannot be empty"))
+                raise serializers.ValidationError(
+                    {"start_date": _("Start date cannot be empty")}
+                )
             if data.get("end_date") is None:
-                raise serializers.ValidationError(_("End date cannot be empty"))
+                raise serializers.ValidationError(
+                    {"end_date": _("End date cannot be empty")}
+                )
         return data
 
     class Meta:

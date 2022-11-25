@@ -1,13 +1,9 @@
+import { screen } from 'shared/__tests__/utils/test-utils';
 import getTetAdminTranslationsApi from 'tet/admin/__tests__/utils/i18n/get-tet-admin-translations-api';
-import { screen, userEvent, within, waitFor } from 'shared/__tests__/utils/test-utils';
-import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 const getFormPageApi = () => {
-  const {
-    translations: { [DEFAULT_LANGUAGE]: translations },
-    regexp,
-  } = getTetAdminTranslationsApi();
+  const { regexp } = getTetAdminTranslationsApi();
 
   return {
     expectations: {

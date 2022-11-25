@@ -1,5 +1,4 @@
 import { Tab, TabPanel, Tabs } from 'hds-react';
-import noop from 'lodash/noop';
 import * as React from 'react';
 import { $TabList } from 'shared/components/benefit/tabs/Tabs.sc';
 import Drawer from 'shared/components/drawer/Drawer';
@@ -78,13 +77,6 @@ const Messenger: React.FC<ComponentProps> = ({
       </Tabs>
     </Drawer>
   );
-};
-
-Messenger.defaultProps = {
-  customItemsMessages: [],
-  customItemsNotes: [],
-  onClose: () => noop,
-  isReadOnly: false,
 };
 
 export default Messenger;

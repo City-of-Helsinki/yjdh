@@ -44,8 +44,4 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
   );
 };
 
-ErrorPage.defaultProps = {
-  showActions: undefined,
-};
-
 export default ErrorPage;

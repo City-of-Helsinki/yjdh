@@ -1,6 +1,6 @@
-import useUserQuery from 'tet/admin/hooks/backend/useUserQuery';
 import React from 'react';
 import AuthContext from 'shared/auth/AuthContext';
+import useUserQuery from 'tet/admin/hooks/backend/useUserQuery';
 
 const FIVE_MINUTES = 5 * 60 * 1000;
 

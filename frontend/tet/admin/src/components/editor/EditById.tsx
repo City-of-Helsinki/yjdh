@@ -1,12 +1,12 @@
-import React, { useContext, useState, useEffect } from 'react';
-import TetPosting from 'tet-shared/types/tetposting';
-import Editor from 'tet/admin/components/editor/Editor';
-import { $Heading, $HeadingContainer } from 'tet/admin/components/jobPostings/JobPostings.sc';
-import PreviewWrapper from 'tet/admin/components/editor/previewWrapper/PreviewWrapper';
-import PostingContainer from 'tet-shared/components/posting/PostingContainer';
-import { PreviewContext } from 'tet/admin/store/PreviewContext';
+import React, { useContext, useEffect, useState } from 'react';
 import Container from 'shared/components/container/Container';
 import BackButton from 'tet/admin/components/BackButton';
+import Editor from 'tet/admin/components/editor/Editor';
+import PreviewWrapper from 'tet/admin/components/editor/previewWrapper/PreviewWrapper';
+import { $Heading, $HeadingContainer } from 'tet/admin/components/jobPostings/JobPostings.sc';
+import { PreviewContext } from 'tet/admin/store/PreviewContext';
+import PostingContainer from 'tet-shared/components/posting/PostingContainer';
+import TetPosting from 'tet-shared/types/tetposting';
 
 type EditByIdProps = {
   title: string;
@@ -20,6 +20,7 @@ const EditById: React.FC<EditByIdProps> = ({ title, data }) => {
   useEffect(() => {
     // If initial, use data from query and not from previewContext
     if (isInitialRender) setIsInitialRender(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (showPreview) {
@@ -30,15 +31,13 @@ const EditById: React.FC<EditByIdProps> = ({ title, data }) => {
     );
   }
   return (
-    <>
-      <Container>
-        <BackButton />
-        <$HeadingContainer>
-          <$Heading>{title}</$Heading>
-        </$HeadingContainer>
-        <Editor initialValue={isInitialRender ? data : tetPosting} />
-      </Container>
-    </>
+    <Container>
+      <BackButton />
+      <$HeadingContainer>
+        <$Heading>{title}</$Heading>
+      </$HeadingContainer>
+      <Editor initialValue={isInitialRender ? data : tetPosting} />
+    </Container>
   );
 };
 

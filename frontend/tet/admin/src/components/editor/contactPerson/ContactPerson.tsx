@@ -1,17 +1,15 @@
+import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { useTranslation } from 'next-i18next';
 import { useTheme } from 'styled-components';
-import TetPosting from 'tet-shared/types/tetposting';
-import TextInput from 'tet/admin/components/editor/TextInput';
-import { EditorSectionProps } from 'tet/admin/components/editor/Editor';
 import PhoneInput from 'tet/admin/components/editor/PhoneInput';
+import TextInput from 'tet/admin/components/editor/TextInput';
 import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
 
 const ContactPerson: React.FC = () => {
   const { t } = useTranslation();
-  const { required, name, email, phone } = useValidationRules();
+  const { name, email, phone } = useValidationRules();
   const theme = useTheme();
 
   return (

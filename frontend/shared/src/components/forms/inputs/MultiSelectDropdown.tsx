@@ -82,9 +82,4 @@ const MultiSelectDropdown = <T, O extends Option>({
   );
 };
 
-MultiSelectDropdown.defaultProps = {
-  type: 'select',
-  multiselect: false,
-};
-
 export default MultiSelectDropdown;

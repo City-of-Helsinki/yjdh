@@ -2,12 +2,12 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import BaseHeader from 'shared/components/header/Header';
+import useGoToFrontPage from 'shared/hooks/useGoToFrontPage';
 import { SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 import { OptionType } from 'shared/types/common';
 import useLogin from 'tet/admin/hooks/backend/useLogin';
-import useUserQuery from 'tet/admin/hooks/backend/useUserQuery';
 import useLogout from 'tet/admin/hooks/backend/useLogout';
-import useGoToFrontPage from 'shared/hooks/useGoToFrontPage';
+import useUserQuery from 'tet/admin/hooks/backend/useUserQuery';
 
 const Header: React.FC = () => {
   const { t } = useTranslation();
@@ -40,7 +40,6 @@ const Header: React.FC = () => {
 
   const logout: () => void = useLogout();
 
-  const isLoading = userQuery.isLoading;
   const isLoginPage = asPath?.startsWith('/login');
 
   return (
@@ -52,7 +51,7 @@ const Header: React.FC = () => {
       onLanguageChange={handleLanguageChange}
       onTitleClick={goToFrontPage}
       login={
-        !isLoading
+        !userQuery.isLoading
           ? {
               isAuthenticated: !isLoginPage && userQuery.isSuccess,
               loginLabel: t('common:header.loginLabel'),

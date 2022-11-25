@@ -34,9 +34,4 @@ const LocationMap: React.FC<Props> = ({ posting, height, zoom }) => {
   );
 };
 
-LocationMap.defaultProps = {
-  height: '400px',
-  zoom: 11,
-};
-
 export default LocationMap;

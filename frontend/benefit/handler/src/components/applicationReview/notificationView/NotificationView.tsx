@@ -69,8 +69,4 @@ const NotificationView: React.FC<Props> = ({ data }) => {
   );
 };
 
-NotificationView.defaultProps = {
-  data: {},
-};
-
 export default NotificationView;

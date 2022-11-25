@@ -76,11 +76,4 @@ const SelectionGroup = <V extends readonly string[]>({
   );
 };
 
-SelectionGroup.defaultProps = {
-  direction: 'horizontal',
-  validation: undefined,
-  showTitle: true,
-  onChange: noop,
-};
-
 export default SelectionGroup;

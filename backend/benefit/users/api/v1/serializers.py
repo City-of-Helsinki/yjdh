@@ -1,3 +1,4 @@
+from django.conf import settings
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
@@ -67,7 +68,9 @@ class UserSerializer(serializers.ModelSerializer):
     )
 
     def is_terms_of_service_approval_needed(self, obj):
-        if hasattr(obj, "is_handler") and obj.is_handler():
+        if settings.NEXT_PUBLIC_MOCK_FLAG or (
+            hasattr(obj, "is_handler") and obj.is_handler()
+        ):
             return False
         return TermsOfServiceApproval.terms_approval_needed(
             obj, get_company_from_request(self.context.get("request"))

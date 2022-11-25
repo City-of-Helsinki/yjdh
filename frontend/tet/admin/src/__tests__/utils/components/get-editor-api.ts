@@ -1,9 +1,9 @@
-import { screen, userEvent, within, waitFor } from 'shared/__tests__/utils/test-utils';
-import TetPosting from 'tet-shared/types/tetposting';
-import { escapeRegExp } from 'shared/utils/regex.utils';
-import getTetAdminTranslationsApi from 'tet/admin/__tests__/utils/i18n/get-tet-admin-translations-api';
+import { screen, userEvent, within } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
+import getTetAdminTranslationsApi from 'tet/admin/__tests__/utils/i18n/get-tet-admin-translations-api';
+import TetPosting from 'tet-shared/types/tetposting';
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const getEditorApi = (expectedPosting?: TetPosting, lang?: Language) => {
   const {
     translations: { [lang ?? DEFAULT_LANGUAGE]: translations },
@@ -46,7 +46,7 @@ const getEditorApi = (expectedPosting?: TetPosting, lang?: Language) => {
       const parent = field?.parentElement?.parentElement;
       await within(parent).findByText(requiredText);
     },
-    selectionGroupHasError: async (labelText: string): Promise<void> => {
+    selectionGroupHasError: async (): Promise<void> => {
       await screen.findByText(regexp(translations.editor.classification.workMethod));
     },
     errorNotificationIsShown: async (): Promise<void> => {
@@ -57,7 +57,7 @@ const getEditorApi = (expectedPosting?: TetPosting, lang?: Language) => {
   };
   const actions = {
     async clickSendButton() {
-      userEvent.click(
+      await userEvent.click(
         screen.getByRole('button', {
           name: regexp(translations.editor.saveDraft),
         }),

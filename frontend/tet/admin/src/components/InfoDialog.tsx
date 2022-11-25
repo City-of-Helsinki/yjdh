@@ -1,6 +1,6 @@
-import React from 'react';
 import { Button, Dialog, IconInfoCircle } from 'hds-react';
-import { useTranslation, Trans } from 'next-i18next';
+import { Trans, useTranslation } from 'next-i18next';
+import React from 'react';
 
 type Props = {
   isOpen: boolean;

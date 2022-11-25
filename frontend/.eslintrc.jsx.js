@@ -20,7 +20,13 @@ module.exports = {
       },
     },
     {
-      files: ['*.components.ts'],
+      files: ['*.tsx'],
+      rules: {
+        'react/require-default-props': 'off',
+      },
+    },
+    {
+      files: ['*.components.ts', '*page.ts', '*.testcafe.ts'],
       rules: {
         'security/detect-non-literal-fs-filename': 'off',
         '@typescript-eslint/explicit-module-boundary-types': 'off',

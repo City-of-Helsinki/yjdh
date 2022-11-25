@@ -90,11 +90,4 @@ const hdsToast = ({
   );
 };
 
-const defaultProps = {
-  autoDismissTime: AUTO_DISMISS_TIME,
-  toastId: '',
-};
-
-NotificationWrapper.defaultProps = defaultProps;
-
 export default hdsToast;

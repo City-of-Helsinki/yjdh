@@ -52,11 +52,4 @@ const Checkbox: React.FC<Props> = ({
   );
 };
 
-Checkbox.defaultProps = {
-  validation: {},
-  onChange: noop,
-  initialValue: false,
-  label: null,
-};
-
 export default Checkbox;

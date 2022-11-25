@@ -1,8 +1,8 @@
-import { LinkedEventsError } from 'tet-shared/types/linkedevents';
-import showErrorToast from 'shared/components/toast/show-error-toast';
-import { useTranslation } from 'next-i18next';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
+import showErrorToast from 'shared/components/toast/show-error-toast';
+import { LinkedEventsError } from 'tet-shared/types/linkedevents';
 
 type ErrorHandlerFn = (error: AxiosError<LinkedEventsError>) => void;
 

@@ -1,8 +1,9 @@
-import React from 'react';
 import { Link } from 'hds-react';
-import { $Title, $Links } from './NoResults.sc';
-import { QueryParams } from 'tet/youth/types/queryparams';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
+import { QueryParams } from 'tet/youth/types/queryparams';
+
+import { $Links, $Title } from './NoResults.sc';
 
 type Props = {
   params: QueryParams;
@@ -12,14 +13,14 @@ type Props = {
 
 const NoResults: React.FC<Props> = ({ params, onSearchByFilters, resultsTotal }) => {
   const { t } = useTranslation();
-  const searchHandler = (searchText: string) => {
+  const searchHandler = (searchText: string): void => {
     onSearchByFilters({
       ...params,
       text: searchText,
     });
   };
 
-  const ignoredWords = [
+  const ignoredWords = new Set([
     'että',
     'jotta',
     'joten',
@@ -40,22 +41,16 @@ const NoResults: React.FC<Props> = ({ params, onSearchByFilters, resultsTotal })
     'sillä',
     'and',
     'och',
-  ];
-  const searchWords = () => {
-    if (params && params.hasOwnProperty('text')) {
-      const searchWords = params.text.toLowerCase().split(' ');
-      return searchWords.filter((word) => {
-        return !ignoredWords.includes(word);
-      });
-    } else {
-      return [];
-    }
+  ]);
+  const searchWords = (): string[] => {
+    const words = params.text?.toLowerCase().split(' ') ?? [];
+    return words.filter((word) => !ignoredWords.has(word));
   };
 
   if (resultsTotal >= 5) {
     return null;
   }
-  if (params.text && params.text.indexOf(' ') >= 0) {
+  if (params.text?.includes(' ')) {
     return (
       <>
         {resultsTotal === 0 ? (
@@ -65,6 +60,7 @@ const NoResults: React.FC<Props> = ({ params, onSearchByFilters, resultsTotal })
         )}
         <$Links data-testid="search-word-links">
           {searchWords().map((word) => (
+            // eslint-disable-next-line jsx-a11y/anchor-is-valid,no-script-url
             <Link size="L" onClick={() => searchHandler(word)} href="javascript:void(0)">
               {word}
             </Link>
@@ -72,9 +68,8 @@ const NoResults: React.FC<Props> = ({ params, onSearchByFilters, resultsTotal })
         </$Links>
       </>
     );
-  } else {
-    return <$Title>{t('common:postings.fewResultsText')}</$Title>;
   }
+  return <$Title>{t('common:postings.fewResultsText')}</$Title>;
 };
 
 export default NoResults;
