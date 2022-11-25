@@ -116,14 +116,14 @@ env = environ.Env(
     DISABLE_TOS_APPROVAL_CHECK=(bool, False),
     YRTTI_BASIC_INFO_PATH=(
         str,
-        "https://yrtti-integration-dev.agw.arodevtest.hel.fi/api/BasicInfo",
+        "https://yrtti-integration-test.agw.arodevtest.hel.fi/api/BasicInfo",
     ),
     YRTTI_AUTH_USERNAME=(str, "sample_username"),
     YRTTI_AUTH_PASSWORD=(str, "sample_password"),
     YRTTI_TIMEOUT=(int, 30),
     SERVICE_BUS_INFO_PATH=(
         str,
-        "https://ytj-integration-dev.agw.arodevtest.hel.fi/api/GetCompany",
+        "https://ytj-integration-test.agw.arodevtest.hel.fi/api/GetCompany",
     ),
     SERVICE_BUS_AUTH_USERNAME=(str, "sample_username"),
     SERVICE_BUS_AUTH_PASSWORD=(str, "sample_password"),
