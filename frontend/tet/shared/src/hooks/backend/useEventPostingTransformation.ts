@@ -138,26 +138,11 @@ const useEventPostingTransformation = (): Transformations => {
     };
   };
 
-  const eventsToTetPostings = (events: TetEvents | undefined): TetPostings => {
-    const postings: TetPostings = {
-      draft: [],
-      published: [],
-    };
-
-    if (!events) {
-      return postings;
-    }
-
-    if (events.draft.length > 0) {
-      postings.draft = events.draft.map((e) => eventToTetPosting(e));
-    }
-
-    if (events.published.length > 0) {
-      postings.published = events.published.map((e) => eventToTetPosting(e));
-    }
-
-    return postings;
-  };
+  const eventsToTetPostings = (events: TetEvents | undefined): TetPostings => ({
+    draft: (events?.draft ?? []).map((e) => eventToTetPosting(e)),
+    published: (events?.published ?? []).map((e) => eventToTetPosting(e)),
+    expired: (events?.expired ?? []).map((e) => eventToTetPosting(e)),
+  });
 
   return {
     eventToTetPosting,
