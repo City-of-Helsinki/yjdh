@@ -8,6 +8,7 @@
  * while this file contains plain functions that operate solely on the data passed to them.
  */
 
+import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import {
   LocalizedObject,
   TetEventPayload,
@@ -18,34 +19,6 @@ import getServerEndDate from 'tet-shared/utils/get-server-end-date';
 export const setLocalizedString = (str: string): LocalizedObject => ({
   fi: str,
 });
-
-export const hdsDateToIsoFormat = (str: string | undefined): string | null => {
-  if (!str) {
-    return null;
-  }
-  const match = str.match(/^(\d+)\.(\d+)\.(\d+)/);
-  if (match) {
-    const ensurePadding = (dayOrMonth: string): string =>
-      dayOrMonth.length < 2 ? `0${dayOrMonth}` : dayOrMonth;
-
-    return `${match[3]}-${ensurePadding(match[2])}-${ensurePadding(match[1])}`;
-  }
-
-  // Returning str in case it was already in ISO format
-  // If not, Linked Events will return 400
-  return str;
-};
-
-export const isoDateToHdsFormat = (date: string | null): string => {
-  if (!date) {
-    return '';
-  }
-
-  const newDate = new Date(date);
-  return `${newDate.getDate()}.${
-    newDate.getMonth() + 1
-  }.${newDate.getFullYear()}`;
-};
 
 type PostingToEventArguments = {
   posting: TetPosting;
@@ -67,8 +40,8 @@ export const tetPostingToEvent = ({
   name: setLocalizedString(posting.title),
   location: { '@id': posting.location.value },
   description: setLocalizedString(posting.description),
-  start_time: hdsDateToIsoFormat(posting.start_date),
-  end_time: hdsDateToIsoFormat(getServerEndDate(posting.end_date)),
+  start_time: convertToBackendDateFormat(posting.start_date),
+  end_time: convertToBackendDateFormat(getServerEndDate(posting.end_date)),
   keywords: [
     ...posting.keywords_working_methods.map((option) => option.value),
     ...posting.keywords_attributes.map((option) => option.value),

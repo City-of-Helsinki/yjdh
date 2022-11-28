@@ -3,10 +3,10 @@ import { axe } from 'jest-axe';
 import React from 'react';
 import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
+import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import renderComponent from 'tet/youth/__tests__/utils/components/render-component';
 import renderPage from 'tet/youth/__tests__/utils/components/render-page';
 import IndexPage from 'tet/youth/pages';
-import { isoDateToHdsFormat } from 'tet-shared/backend-api/transformations';
 
 import getYouthTranslationsApi from './utils/i18n/get-youth-translations';
 
@@ -47,7 +47,7 @@ describe('frontend/tet/youth/src/pages/index.tsx', () => {
       renderPage(IndexPage, { push: spyPush });
 
       const text = faker.lorem.paragraph();
-      const start = isoDateToHdsFormat(faker.date.soon().toISOString());
+      const start = convertToUIDateFormat(faker.date.soon().toISOString());
       const searchField = screen.getByTestId('quickSearchInput');
       const startField = screen.getByTestId('startInput');
 

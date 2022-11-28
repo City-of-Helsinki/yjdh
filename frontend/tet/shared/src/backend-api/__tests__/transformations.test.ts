@@ -1,9 +1,5 @@
 import { fakeTetPosting } from 'tet-shared/__tests__/utils/fake-objects';
-import {
-  hdsDateToIsoFormat,
-  isoDateToHdsFormat,
-  tetPostingToEvent,
-} from 'tet-shared/backend-api/transformations';
+import { tetPostingToEvent } from 'tet-shared/backend-api/transformations';
 import { OptionType } from 'tet-shared/types/classification';
 
 const optionTypeForId = (id: string): OptionType => ({
@@ -13,15 +9,6 @@ const optionTypeForId = (id: string): OptionType => ({
 });
 
 describe('transformations', () => {
-  it('can transform HDS date into ISO format', () => {
-    expect(hdsDateToIsoFormat('4.5.2022')).toBe('2022-05-04');
-    expect(hdsDateToIsoFormat('10.12.2022')).toBe('2022-12-10');
-  });
-
-  it('can transform ISO date into HDS format', () => {
-    expect(isoDateToHdsFormat('2022-12-10')).toBe('10.12.2022');
-    expect(isoDateToHdsFormat('2022-05-04')).toBe('4.5.2022');
-  });
 
   it('can transform draft posting to event', () => {
     const posting = fakeTetPosting({

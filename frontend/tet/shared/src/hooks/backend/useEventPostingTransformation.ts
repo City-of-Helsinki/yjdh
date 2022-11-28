@@ -1,5 +1,5 @@
 import useLocale from 'shared/hooks/useLocale';
-import { isoDateToHdsFormat } from 'tet-shared/backend-api/transformations';
+import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import useKeywordType, {
   UseKeywordResult,
 } from 'tet-shared/hooks/backend/useKeywordType';
@@ -85,8 +85,8 @@ const useEventPostingTransformation = (): Transformations => {
         postal_code: event.location.postal_code ?? '',
         position: event.location.position,
       },
-      start_date: isoDateToHdsFormat(event.start_time) ?? '',
-      end_date: isoDateToHdsFormat(event.end_time),
+      start_date: convertToUIDateFormat(event.start_time) ?? '',
+      end_date: convertToUIDateFormat(event.end_time),
       date_published: event.date_published,
       contact_email: event.custom_data?.contact_email || '',
       contact_first_name: event.custom_data?.contact_first_name || '',
