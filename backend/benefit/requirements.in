@@ -18,6 +18,7 @@ drf-spectacular
 elasticsearch
 factory-boy # TODO: added temporarily so that NEXT_PUBLIC_MOCK_FLAG can be set on dev env, remove when authentication done
 filetype
+helsinki-profile-gdpr-api
 jinja2
 mozilla_django_oidc
 pdfkit
