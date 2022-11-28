@@ -13,6 +13,7 @@ import {
   TetEventPayload,
 } from 'tet-shared/types/linkedevents';
 import TetPosting from 'tet-shared/types/tetposting';
+import getServerEndDate from 'tet-shared/utils/get-server-end-date';
 
 export const setLocalizedString = (str: string): LocalizedObject => ({
   fi: str,
@@ -67,7 +68,7 @@ export const tetPostingToEvent = ({
   location: { '@id': posting.location.value },
   description: setLocalizedString(posting.description),
   start_time: hdsDateToIsoFormat(posting.start_date),
-  end_time: hdsDateToIsoFormat(posting.end_date),
+  end_time: hdsDateToIsoFormat(getServerEndDate(posting.end_date)),
   keywords: [
     ...posting.keywords_working_methods.map((option) => option.value),
     ...posting.keywords_attributes.map((option) => option.value),

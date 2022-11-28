@@ -15,6 +15,7 @@ import {
 } from 'tet/admin/components/jobPostings/JobPostingsListItem.sc';
 import JobPostingsListItemMenu from 'tet/admin/components/jobPostings/JobPostingsListItemMenu';
 import TetPosting from 'tet-shared/types/tetposting';
+import getUiEndDate from 'tet-shared/utils/get-ui-end-date';
 
 type JobPostingsListItemProps = {
   posting: TetPosting;
@@ -26,7 +27,7 @@ const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting }) =>
   const { t } = useTranslation();
 
   const startDate = posting.start_date;
-  const endDate = posting.end_date;
+  const endDate = getUiEndDate(posting.end_date);
   const imageUrl = posting?.image_url?.length ? posting.image_url : '/event_placeholder_B.jpg';
 
   return (

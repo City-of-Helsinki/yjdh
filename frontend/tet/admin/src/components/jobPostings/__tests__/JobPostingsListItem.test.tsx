@@ -2,6 +2,7 @@ import React from 'react';
 import { screen, userEvent, within } from 'shared/__tests__/utils/test-utils';
 import renderComponent from 'tet/admin/__tests__/utils/components/render-component';
 import { fakeTetPosting, getPastDate } from 'tet-shared/__tests__/utils/fake-objects';
+import { furthestUiEndDate } from 'tet-shared/constants/furthest-end-date';
 
 import JobPostingsListItem from '../JobPostingsListItem';
 
@@ -11,6 +12,10 @@ const published = fakeTetPosting({
   org_name: 'published-organization',
   description: 'published-description',
   date_published: getPastDate(),
+});
+
+const never_expiring = fakeTetPosting({
+  end_date: furthestUiEndDate,
 });
 
 describe('JobPostingsListItem', () => {
@@ -61,10 +66,20 @@ describe('JobPostingsListItem', () => {
     await within(list).findByText(/poista/i);
   });
 
-  it('it should show title, organization name and description', async () => {
+  it('it should show title, organization name, description and dates', async () => {
     renderComponent(<JobPostingsListItem posting={published} />);
 
     await screen.findByText(new RegExp(`${published.title} - ${published.org_name}`, 'i'));
     await screen.findByText(new RegExp(`${published.description}`, 'i'));
+    await screen.findByText(new RegExp(`${published.start_date}-${published.end_date}$`, 'i'), {
+      normalizer: (str) => str.replace(/\s/g, ''),
+    });
+  });
+
+  it('it should hide end date when furthest end date special value used', async () => {
+    renderComponent(<JobPostingsListItem posting={never_expiring} />);
+    await screen.findByText(new RegExp(`^${never_expiring.start_date}-$`, 'i'), {
+      normalizer: (str) => str.replace(/\s/g, ''),
+    });
   });
 });

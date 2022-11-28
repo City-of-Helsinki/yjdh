@@ -71,7 +71,7 @@ describe('transformations', () => {
     });
 
     expect(event.start_time).toBe(posting.start_date);
-    expect(event.end_time).toBeNull();
+    expect(event.end_time).toBe(posting.end_date);
 
     expect(event.in_language).toStrictEqual(
       posting.languages.map((l) => ({

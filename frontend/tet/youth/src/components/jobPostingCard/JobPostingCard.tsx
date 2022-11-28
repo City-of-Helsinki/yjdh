@@ -17,6 +17,7 @@ import {
 } from 'tet/youth/components/jobPostingCard/JobPostingCard.sc';
 import { OptionType } from 'tet-shared/types/classification';
 import JobPosting from 'tet-shared/types/tetposting';
+import getUiEndDate from 'tet-shared/utils/get-ui-end-date';
 
 import JobPostingCardKeywords from './JobPostingCardKeywords';
 
@@ -30,7 +31,7 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
   const params = router.query;
   const { t } = useTranslation();
 
-  const date = `${jobPosting.start_date} - ${jobPosting.end_date ?? ''}`;
+  const date = `${jobPosting.start_date} - ${getUiEndDate(jobPosting.end_date)}`;
   const street_address = jobPosting.location.street_address ? `, ${jobPosting.location.street_address}` : '';
   const postal_code = jobPosting.location.postal_code ? `, ${jobPosting.location.postal_code}` : '';
   const city = jobPosting.location.city ? `, ${jobPosting.location.city}` : '';
