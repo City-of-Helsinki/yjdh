@@ -61,6 +61,7 @@ export const fakeTetPosting = (overrides?: Partial<TetPosting>): TetPosting =>
       organization_name: faker.lorem.paragraph(),
       spots: 1,
       start_date: '10-10-2022',
+      end_date: '12-31-2030',
       contact_email: faker.internet.email(),
       contact_first_name: faker.name.firstName(),
       contact_last_name: faker.name.lastName(),
@@ -132,17 +133,21 @@ export const fakeTetEvent = (overrides?: Partial<TetEvent>): TetEvent =>
 
 export const fakeEventListAdmin = (
   draftTitles: string[],
-  publishedTitles: string[]
+  publishedTitles: string[],
+  expiredTitles: string[]
 ): TetEvents => {
-  const draft = draftTitles.map((draftTitle) =>
-    fakeTetEvent({ name: fakeLocalizedObject(draftTitle) })
+  const [draft, published, expired] = [
+    draftTitles,
+    publishedTitles,
+    expiredTitles,
+  ].map((list) =>
+    list.map((title) => fakeTetEvent({ name: fakeLocalizedObject(title) }))
   );
-  const published = publishedTitles.map((publishedTitle) =>
-    fakeTetEvent({ name: fakeLocalizedObject(publishedTitle) })
-  );
+
   return {
     draft,
     published,
+    expired,
   };
 };
 
