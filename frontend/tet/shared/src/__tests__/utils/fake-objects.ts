@@ -20,6 +20,7 @@ export const fakeLocalizedObject = (text?: string): LocalizedObject => ({
 });
 
 export const getPastDate = (): string => formatDate(faker.date.past());
+export const getRecentDate = (): string => formatDate(faker.date.recent());
 
 // Coordinates come in order '[longitude, latitude]' from linked events api
 export const fakeLocation = (overrides?: Partial<LocationType>): LocationType =>

@@ -14,15 +14,15 @@ import {
   $PostingTitle,
 } from 'tet/admin/components/jobPostings/JobPostingsListItem.sc';
 import JobPostingsListItemMenu from 'tet/admin/components/jobPostings/JobPostingsListItemMenu';
-import TetPosting from 'tet-shared/types/tetposting';
+import TetPosting, { TetPostings } from 'tet-shared/types/tetposting';
 import getUiEndDate from 'tet-shared/utils/get-ui-end-date';
 
-type JobPostingsListItemProps = {
+export type JobPostingsListItemProps = {
   posting: TetPosting;
+  sectionId: keyof TetPostings;
 };
 
-const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting }) => {
-  // const startingDate = DateTime.fromISO(posting.start_date).toFormat('dd.mm.yyyy');
+const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting, sectionId }) => {
   const [showMenu, setShowMenu] = React.useState(false);
   const { t } = useTranslation();
 
@@ -51,7 +51,12 @@ const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting }) =>
               />
             </button>
             {posting.id && (
-              <JobPostingsListItemMenu posting={posting} show={showMenu} onClickOutside={() => setShowMenu(false)} />
+              <JobPostingsListItemMenu
+                posting={posting}
+                sectionId={sectionId}
+                show={showMenu}
+                onClickOutside={() => setShowMenu(false)}
+              />
             )}
           </$MenuContainer>
         </$PostingHeader>
