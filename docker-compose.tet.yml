@@ -31,23 +31,6 @@ services:
       - postgres
     container_name: te-bknd
 
-  te-empl:
-     build:
-       context: ./frontend
-       target: development
-       args:
-         PORT: 3000
-         PROJECT: tet
-         FOLDER: employer
-         SERVICE: te-empl
-     volumes:
-       - ./frontend:/app
-       - /app/node_modules
-       - /app/.next
-     env_file:
-       - .env.tet
-     container_name: te-empl
-
   te-yout:
      build:
        context: ./frontend
@@ -86,7 +69,6 @@ services:
     depends_on:
       - postgres
       - te-bknd
-      - te-empl
       - te-admn
       - te-yout
     build:
@@ -96,7 +78,6 @@ services:
       - ./localdevelopment/tet/nginx/:/etc/nginx/
     ports:
       - 127.0.0.1:8000:8000
-      - 127.0.0.1:3000:3000
       - 127.0.0.1:3001:3001
       - 127.0.0.1:3002:3002
 
