@@ -29,6 +29,7 @@ type TetPosting = {
 export type TetPostings = {
   draft: TetPosting[];
   published: TetPosting[];
+  expired: TetPosting[];
 };
 
 export default TetPosting;

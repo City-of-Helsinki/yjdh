@@ -44,8 +44,8 @@ const JobPostings: React.FC = () => {
   };
 
   const content =
-    postings.draft.length > 0 || postings.published.length > 0 ? (
-      <JobPostingsList draft={postings.draft} published={postings.published} />
+    postings.draft.length > 0 || postings.published.length > 0 || postings.expired.length > 0 ? (
+      <JobPostingsList {...postings} />
     ) : (
       <p>{t('common:application.jobPostings.noPostingsFound')}</p>
     );

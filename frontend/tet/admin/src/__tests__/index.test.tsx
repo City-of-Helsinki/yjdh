@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/react';
 import { axe } from 'jest-axe';
 import React from 'react';
+import { waitForLoadingCompleted } from 'shared/__tests__/utils/component.utils';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 import {
@@ -34,12 +35,12 @@ describe('frontend/tet/admin/src/pages/index.tsx', () => {
   describe('when authorized', () => {
     it('should show TET postings from backend', async () => {
       expectAuthorizedReply();
-      expectToGetEventsFromBackend(fakeEventListAdmin([], []));
+      expectToGetEventsFromBackend(fakeEventListAdmin([], [], []));
       expectWorkingMethodsFromLinkedEvents();
       expectAttributesFromLinkedEvents();
 
       renderPage(IndexPage);
-
+      await waitForLoadingCompleted();
       await screen.findByText(/Sinulla ei ole vielä yhtään TET-paikkaa/);
     });
   });
