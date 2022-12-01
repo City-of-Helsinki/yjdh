@@ -13,7 +13,7 @@ from events.tests.data.linked_events_responses import (
     EVENT_RESPONSE_OTHERUSER,
     EVENT_RESPONSE_TEST_COMPANY,
     EVENT_RESPONSE_TESTUSER_EMAIL,
-    EVENT_RESPONSE_TESTUSER_OID,
+    EVENT_RESPONSE_TESTUSER_OID_UNEXPIRED,
     SAMPLE_EVENTS,
 )
 from events.utils import PROVIDER_BUSINESS_ID_FIELD, PROVIDER_NAME_FIELD
@@ -70,7 +70,7 @@ def mock_django_request(is_staff=True, email=None, username=None):
     LINKEDEVENTS_API_KEY="test",
 )
 def test_get_postings(requests_mock):
-    """Test that posts are filtered by user's email and divide into published/draft works"""
+    """Test that posts are filtered by user's email and divide into published/draft/expired works"""
     requests_mock.get("http://localhost/event/", json=SAMPLE_EVENTS)
 
     request_with_adfs_auth = mock_django_request(
@@ -80,6 +80,7 @@ def test_get_postings(requests_mock):
 
     assert len(postings["published"]) == 1
     assert len(postings["draft"]) == 1
+    assert len(postings["expired"]) == 1
 
     request_with_adfs_auth = mock_django_request(
         is_staff=True, email="hasnopostings@example.org"
@@ -88,6 +89,7 @@ def test_get_postings(requests_mock):
 
     assert len(postings["published"]) == 0
     assert len(postings["draft"]) == 0
+    assert len(postings["expired"]) == 0
 
     request_with_adfs_auth = mock_django_request(
         is_staff=True, email="otheruser@example.org"
@@ -96,15 +98,17 @@ def test_get_postings(requests_mock):
 
     assert len(postings["published"]) == 1
     assert len(postings["draft"]) == 0
+    assert len(postings["expired"]) == 0
 
-    # Test request for a company user should find published posting
+    # Test request for a company user should find expired posting
     # linked_events_responses.EVENT_RESPONSE_TEST_COMPANY
 
     request_with_oidc_auth = mock_django_request(is_staff=False)
     postings = ServiceClient().list_job_postings_for_user(request_with_oidc_auth)
 
-    assert len(postings["published"]) == 1
+    assert len(postings["published"]) == 0
     assert len(postings["draft"]) == 0
+    assert len(postings["expired"]) == 1
 
 
 @pytest.mark.django_db
@@ -141,7 +145,7 @@ def test_edit_tet_posting(requests_mock):
     )
     requests_mock.get(
         "http://localhost/event/tet:test-user-oid-set/",
-        json=EVENT_RESPONSE_TESTUSER_OID,
+        json=EVENT_RESPONSE_TESTUSER_OID_UNEXPIRED,
     )
     requests_mock.get(
         "http://localhost/event/tet:other-user/", json=EVENT_RESPONSE_OTHERUSER

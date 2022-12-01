@@ -57,12 +57,6 @@
 !benefit/shared/package.json
 !benefit/shared/tsconfig.json
 
-!tet/employer/next.config.js
-!tet/employer/next-i18next.config.js
-!tet/employer/package.json
-!tet/employer/public
-!tet/employer/src
-!tet/employer/tsconfig.json
 !tet/youth/next.config.js
 !tet/youth/next-i18next.config.js
 !tet/youth/package.json

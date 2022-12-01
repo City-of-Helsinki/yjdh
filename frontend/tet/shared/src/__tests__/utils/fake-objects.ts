@@ -20,6 +20,7 @@ export const fakeLocalizedObject = (text?: string): LocalizedObject => ({
 });
 
 export const getPastDate = (): string => formatDate(faker.date.past());
+export const getRecentDate = (): string => formatDate(faker.date.recent());
 
 // Coordinates come in order '[longitude, latitude]' from linked events api
 export const fakeLocation = (overrides?: Partial<LocationType>): LocationType =>
@@ -60,7 +61,8 @@ export const fakeTetPosting = (overrides?: Partial<TetPosting>): TetPosting =>
       org_name: faker.lorem.paragraph(),
       organization_name: faker.lorem.paragraph(),
       spots: 1,
-      start_date: '10-10-2022',
+      start_date: '2022-10-10',
+      end_date: '2030-12-31',
       contact_email: faker.internet.email(),
       contact_first_name: faker.name.firstName(),
       contact_last_name: faker.name.lastName(),
@@ -114,7 +116,7 @@ export const fakeTetEvent = (overrides?: Partial<TetEvent>): TetEvent =>
       short_description: fakeLocalizedObject(),
       keywords: [],
       custom_data: fakeCustomData(),
-      start_time: '10-10-2022',
+      start_time: '2022-10-10',
       end_time: null,
       date_published: null,
       created_time: null,
@@ -132,17 +134,21 @@ export const fakeTetEvent = (overrides?: Partial<TetEvent>): TetEvent =>
 
 export const fakeEventListAdmin = (
   draftTitles: string[],
-  publishedTitles: string[]
+  publishedTitles: string[],
+  expiredTitles: string[]
 ): TetEvents => {
-  const draft = draftTitles.map((draftTitle) =>
-    fakeTetEvent({ name: fakeLocalizedObject(draftTitle) })
+  const [draft, published, expired] = [
+    draftTitles,
+    publishedTitles,
+    expiredTitles,
+  ].map((list) =>
+    list.map((title) => fakeTetEvent({ name: fakeLocalizedObject(title) }))
   );
-  const published = publishedTitles.map((publishedTitle) =>
-    fakeTetEvent({ name: fakeLocalizedObject(publishedTitle) })
-  );
+
   return {
     draft,
     published,
+    expired,
   };
 };
 

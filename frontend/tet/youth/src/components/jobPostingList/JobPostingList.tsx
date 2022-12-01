@@ -1,7 +1,7 @@
 import { Button, IconLayers, IconMap } from 'hds-react';
 import dynamic from 'next/dynamic';
 import { useTranslation } from 'next-i18next';
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { UseQueryResult } from 'react-query';
 import Container from 'shared/components/container/Container';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
@@ -23,10 +23,8 @@ type Props = {
 const JobPostingList: React.FC<Props> = ({ firstPostingsPage, allPostings, initMap }) => {
   const { t } = useTranslation();
   const { eventToTetPosting } = useEventPostingTransformation();
-  const eventsToPostings = useCallback(
-    (events: TetEvent[]): TetPosting[] => events.map((event) => eventToTetPosting(event)),
-    [eventToTetPosting],
-  );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const eventsToPostings = (events: TetEvent[]): TetPosting[] => events.map((event) => eventToTetPosting(event));
   const total = firstPostingsPage?.meta.count;
   const [showMap, setShowMap] = React.useState(false);
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -41,7 +39,7 @@ const JobPostingList: React.FC<Props> = ({ firstPostingsPage, allPostings, initM
   );
   const allPostingsList = useMemo(
     () => (allPostings.isLoading || allPostings.error ? [] : eventsToPostings(allPostings.data.data)),
-    [allPostings.data.data, allPostings.error, allPostings.isLoading, eventsToPostings],
+    [allPostings, eventsToPostings],
   );
   const lastShown = currentPage * 10 <= total - 1 ? currentPage * 10 : total;
 
