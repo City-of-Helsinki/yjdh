@@ -1,11 +1,11 @@
 from dateutil.relativedelta import relativedelta
 from django.utils import timezone
-from django_extensions.management.jobs import MonthlyJob
+from django_extensions.management.jobs import DailyJob
 
 from applications.models import EmployerApplication
 
 
-class Job(MonthlyJob):
+class Job(DailyJob):
     help = "Clean applications older than five years."
 
     def execute(self):
