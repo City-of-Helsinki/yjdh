@@ -5,6 +5,7 @@ from django_extensions.management.jobs import DailyJob
 from applications.models import Attachment
 
 
+
 class Job(DailyJob):
     help = "Clean attachments older than one year."
 
@@ -15,4 +16,4 @@ class Job(DailyJob):
         for attachment in attachments:
             attachment.attachment_file.delete()
 
-        attachments.delete()
+        deleted_count, _ = attachments.delete()
