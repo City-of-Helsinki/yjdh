@@ -5,6 +5,8 @@ from typing import List, Optional
 import factory
 import factory.fuzzy
 from django.db.models.signals import post_save
+from django.utils import timezone
+from django.utils.timezone import get_current_timezone
 from faker import Faker
 
 from applications.enums import (
@@ -222,8 +224,12 @@ def get_test_phone_number() -> str:
     return Faker(locale="fi").phone_number().replace("(+358)", "+358")
 
 
-def copy_created_at(youth_application) -> Optional[datetime]:
-    return youth_application.created_at
+def determine_modified_at(youth_application) -> Optional[datetime]:
+    return Faker().date_time_between_dates(
+        youth_application.created_at + timedelta(days=10),
+        youth_application.created_at + timedelta(days=20),
+        tzinfo=get_current_timezone(),
+    )
 
 
 def copy_encrypted_original_vtj_json(youth_application) -> Optional[str]:
@@ -238,13 +244,21 @@ def determine_handler(youth_application):
 
 def determine_handled_at(youth_application):
     if youth_application.status in YouthApplicationStatus.handled_values():
-        return youth_application.created_at
+        return Faker().date_time_between_dates(
+            youth_application.created_at + timedelta(days=3),
+            youth_application.created_at + timedelta(days=10),
+            tzinfo=get_current_timezone(),
+        )
     return None
 
 
 def determine_receipt_confirmed_at(youth_application):
     if youth_application.status in YouthApplicationStatus.active_values():
-        return youth_application.created_at
+        return Faker().date_time_between_dates(
+            youth_application.created_at,
+            youth_application.created_at + timedelta(days=1),
+            tzinfo=get_current_timezone(),
+        )
     return None
 
 
@@ -284,7 +298,11 @@ def determine_youth_application_has_additional_info(youth_application):
 
 def determine_additional_info_provided_at(youth_application):
     if youth_application._has_additional_info:
-        return youth_application.created_at
+        return Faker().date_time_between_dates(
+            youth_application.created_at + timedelta(days=1),
+            youth_application.created_at + timedelta(days=3),
+            tzinfo=get_current_timezone(),
+        )
     return None
 
 
@@ -356,8 +374,8 @@ def determine_target_group_social_security_number(youth_application):
 
 @factory.django.mute_signals(post_save)
 class AbstractYouthApplicationFactory(factory.django.DjangoModelFactory):
-    created_at = datetime.now()
-    modified_at = factory.LazyAttribute(copy_created_at)
+    created_at = timezone.now()
+    modified_at = factory.LazyAttribute(determine_modified_at)
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
     social_security_number = factory.Faker("ssn", locale="fi")  # Must be Finnish
@@ -459,13 +477,23 @@ class InactiveNeedAdditionalInfoYouthApplicationFactory(
     encrypted_handler_vtj_json = factory.LazyAttribute(copy_encrypted_original_vtj_json)
 
 
-class InactiveVtjTestCaseYouthApplicationFactory(InactiveYouthApplicationFactory):
+class VtjTestCaseYouthApplicationFactory(YouthApplicationFactory):
     first_name = VtjTestCase.first_name()
     last_name = factory.Faker("random_element", elements=VtjTestCase.values)
     encrypted_original_vtj_json = factory.LazyAttribute(
         determine_vtj_json_for_vtj_test_case
     )
     encrypted_handler_vtj_json = factory.LazyAttribute(copy_encrypted_original_vtj_json)
+
+
+class InactiveVtjTestCaseYouthApplicationFactory(VtjTestCaseYouthApplicationFactory):
+    status = YouthApplicationStatus.SUBMITTED.value
+
+
+class ActiveVtjTestCaseYouthApplicationFactory(VtjTestCaseYouthApplicationFactory):
+    status = factory.Faker(
+        "random_element", elements=YouthApplicationStatus.active_values()
+    )
 
 
 class AcceptableYouthApplicationFactory(AbstractYouthApplicationFactory):

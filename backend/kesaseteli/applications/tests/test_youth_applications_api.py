@@ -414,6 +414,7 @@ def test_youth_applications_process_valid_pk(
         )
 
 
+@override_settings(NEXT_PUBLIC_DISABLE_VTJ=True)
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "mock_flag,client_fixture_func,expected_status_code,expected_redirect_to",

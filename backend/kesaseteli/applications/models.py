@@ -675,17 +675,17 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         )
 
     @property
-    def vtj_last_name(self):
+    def vtj_last_name(self) -> Optional[str]:
         if vtj_last_names := self._vtj_values("$.Henkilo.NykyinenSukunimi.Sukunimi"):
             return vtj_last_names[0]
-        return None
+        return ""
 
     @property
     def attends_helsinkian_school(self) -> bool:
         return not self.is_unlisted_school
 
     @property
-    def vtj_home_municipality(self):
+    def vtj_home_municipality(self) -> Optional[str]:
         if vtj_home_municipality := self._vtj_values("$.Henkilo.Kotikunta.KuntaS"):
             return vtj_home_municipality[0]
         return ""
