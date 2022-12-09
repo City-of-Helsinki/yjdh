@@ -4,7 +4,7 @@ import pytest
 from dateutil.relativedelta import relativedelta
 from freezegun import freeze_time
 
-from applications.jobs.monthly import (
+from applications.jobs.daily import (
     clean_old_attachments,
     clean_old_employer_applications,
 )
