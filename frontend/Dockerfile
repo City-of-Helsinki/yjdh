@@ -8,7 +8,6 @@ USER appuser
 # Build ARGS
 ARG PROJECT
 ARG FOLDER
-ARG SERVICE
 
 # Yarn
 ENV YARN_VERSION 1.22.10
@@ -19,7 +18,7 @@ RUN yarn config set ignore-engines true
 WORKDIR /app
 
 # Install dependencies
-COPY --chown=appuser:appuser package.json yarn.lock lerna.json ./
+COPY --chown=appuser:appuser package.json yarn.lock ./
 COPY --chown=appuser:appuser $PROJECT/$FOLDER/package.json $PROJECT/$FOLDER/package.json
 COPY --chown=appuser:appuser $PROJECT/shared/package.json* $PROJECT/shared/package.json
 COPY --chown=appuser:appuser shared/package.json shared/package.json
@@ -37,7 +36,8 @@ FROM appbase as development
 # This prevents Docker Compose from crashing due to out of memory errors
 ENV NODE_OPTIONS="--max_old_space_size=2048"
 
-ARG SERVICE
+ARG PROJECT
+ARG FOLDER
 # Use non-root user
 USER appuser
 WORKDIR /app
@@ -47,7 +47,7 @@ COPY --chown=appuser:appuser . .
 
 ENV NEXT_TELEMETRY_DISABLED 1
 # Bake package.json start command into the image
-ENV DEV_START "yarn $SERVICE:dev"
+ENV DEV_START "yarn --cwd $PROJECT/$FOLDER dev"
 CMD ["sh", "-c", "${DEV_START}"]
 
 # ===================================
@@ -100,7 +100,6 @@ FROM helsinkitest/node:14-slim AS production
 ARG PORT
 ARG PROJECT
 ARG FOLDER
-ARG SERVICE
 
 # Use non-root user
 USER appuser
@@ -119,20 +118,17 @@ RUN yarn install --production --check-files --ignore-scripts --prefer-offline &&
 # Copy files needed by nextjs
 COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/.next $PROJECT/$FOLDER/.next
 COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/next-i18next.config.js app/$PROJECT/$FOLDER/next.config.js $PROJECT/$FOLDER/
-COPY --from=staticbuilder --chown=appuser:appuser app/next.config.js app/start.js ./
+COPY --from=staticbuilder --chown=appuser:appuser app/next.config.js ./
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-server.js shared/src/server/
 
 # Copy public directory
 COPY --chown=appuser:appuser $PROJECT/$FOLDER/public $PROJECT/$FOLDER/public
 
-
-# install lerna
-RUN yarn add -W lerna
-
 # Expose port
 EXPOSE $PORT
 
 ENV NEXT_TELEMETRY_DISABLED 1
+
 # Start nextjs server
-ENV PROD_START "yarn $SERVICE:start"
+ENV PROD_START "yarn --cwd $PROJECT/$FOLDER start"
 CMD ["sh", "-c", "${PROD_START}"]

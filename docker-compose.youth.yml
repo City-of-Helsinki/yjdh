@@ -43,7 +43,6 @@ services:
         PORT: 3100
         PROJECT: kesaseteli
         FOLDER: youth
-        SERVICE: ks-youth
     volumes:
       - ./frontend:/app
       - /app/node_modules

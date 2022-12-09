@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "PORT=3200 node ../../start.js",
+    "dev": "PORT=3200 node ../../shared/src/server/next-server.js",
     "build": "next build",
-    "start": "NODE_ENV=production PORT=3200 node ../../start.js ",
+    "start": "NODE_ENV=production PORT=3200 node ../../shared/src/server/next-server.js",
     "lint": "eslint --ext js,ts,tsx src browser-tests",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest --runInBand --no-cache",

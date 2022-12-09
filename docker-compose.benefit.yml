@@ -42,7 +42,6 @@ services:
         PORT: 3000
         PROJECT: benefit
         FOLDER: applicant
-        SERVICE: bf-appl
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -59,7 +58,6 @@ services:
         PORT: 3100
         PROJECT: benefit
         FOLDER: handler
-        SERVICE: bf-hdlr
     volumes:
       - ./frontend:/app
       - /app/node_modules
