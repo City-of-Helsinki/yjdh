@@ -138,7 +138,7 @@ if (!isRealIntegrationsEnabled()) {
     await new NotificationPage('accepted', 'sv').isLoaded();
   });
 
-  test("If I'm 9th grader and live outside Helsinki and I attend other unlisted school, then application is automatically accepted", async () => {
+  test("If I'm 9th grader and live outside Helsinki and I attend other unlisted school, then I need to also give additional info application", async () => {
     await youthForm.sendYouthApplication(
       fakeYouthApplication({
         ...is9thGraderAge(),
