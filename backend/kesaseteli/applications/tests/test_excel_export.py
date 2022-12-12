@@ -1,4 +1,5 @@
-import datetime
+import random
+from datetime import date, datetime, timedelta
 from decimal import Decimal
 from io import BytesIO
 from typing import List
@@ -9,9 +10,16 @@ from django.http import StreamingHttpResponse
 from django.shortcuts import reverse
 from django.test import override_settings
 from django.urls.exceptions import NoReverseMatch
+from django.utils import translation
+from django.utils.timezone import localdate
 from freezegun import freeze_time
 
-from applications.enums import EmployerApplicationStatus, ExcelColumns
+from applications.enums import (
+    EmployerApplicationStatus,
+    ExcelColumns,
+    VtjTestCase,
+    YouthApplicationStatus,
+)
 from applications.exporters.excel_exporter import (
     APPLICATION_LANGUAGE_FIELD_TITLE,
     EMPLOYMENT_END_DATE_FIELD_TITLE,
@@ -34,17 +42,27 @@ from applications.exporters.excel_exporter import (
     SPECIAL_CASE_FIELD_TITLE,
     WORK_HOURS_FIELD_TITLE,
 )
-from applications.models import EmployerSummerVoucher
+from applications.models import EmployerSummerVoucher, YouthApplication
 from applications.tests.test_models import create_test_employer_summer_vouchers
+from applications.views import YouthApplicationExcelExportViewSet
 from common.tests.factories import (
+    ActiveVtjTestCaseYouthApplicationFactory,
+    ActiveYouthApplicationFactory,
     EmployerApplicationFactory,
     EmployerSummerVoucherFactory,
+    InactiveYouthApplicationFactory,
+    YouthApplicationFactory,
 )
 from common.urls import handler_403_url
+from shared.audit_log.models import AuditLogEntry
 
 
 def excel_download_url():
     return reverse("excel-download")
+
+
+def youth_excel_download_url():
+    return reverse("youth-excel-download")
 
 
 def get_field_titles(fields: List[ExcelField]) -> List[str]:
@@ -123,6 +141,33 @@ def test_excel_view_download_no_annual_applications(staff_client, columns):
 
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_youth_excel_download_no_youth_applications(staff_client):
+    response = staff_client.get(youth_excel_download_url())
+    assert response.status_code == 200
+    assert "Hakemuksia ei löytynyt." in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_youth_excel_download_writes_audit_log(staff_client, youth_application):
+    old_audit_log_entry_count = AuditLogEntry.objects.count()
+    response = staff_client.get(youth_excel_download_url())
+
+    assert AuditLogEntry.objects.count() == old_audit_log_entry_count + 1
+    audit_event = AuditLogEntry.objects.first().message["audit_event"]
+    assert audit_event["actor"]["role"] == "USER"
+    assert audit_event["actor"]["user_id"] == str(response.wsgi_request.user.pk)
+    assert audit_event["status"] == "SUCCESS"
+    assert audit_event["operation"] == "READ"
+    assert audit_event["target"]["id"] == ""
+    assert audit_event["target"]["type"] == "YouthApplication"
+    assert (
+        audit_event["additional_information"]
+        == "YouthApplicationExcelExportViewSet.list"
+    )
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_excel_view_download_annual(
     staff_client, submitted_summer_voucher, submitted_employment_contract_attachment
 ):
@@ -172,7 +217,7 @@ def test_excel_view_download_content(  # noqa: C901
         key=employer_summer_voucher_sorting_key,
     )
 
-    with freeze_time(datetime.datetime(2021, 12, 31)):
+    with freeze_time(datetime(2021, 12, 31)):
         response = staff_client.get(download_url)
 
     assert isinstance(response, StreamingHttpResponse)
@@ -258,6 +303,109 @@ def test_excel_view_download_content(  # noqa: C901
 
 
 @pytest.mark.django_db
+@override_settings(
+    EXCEL_DOWNLOAD_BATCH_SIZE=3,
+    NEXT_PUBLIC_MOCK_FLAG=False,
+)
+def test_youth_excel_download_content(staff_client):  # noqa: C901
+    def youth_application_sorting_key(app: YouthApplication):
+        # Sorting key should be the same as what is used to order by queryset results
+        return app.created_at, app.pk
+
+    InactiveYouthApplicationFactory()  # This should not be exported
+    apps = (
+        ActiveYouthApplicationFactory.create_batch(size=12)
+        + [
+            YouthApplicationFactory(status=status)
+            for status in YouthApplicationStatus.active_values()
+        ]
+        + [
+            ActiveVtjTestCaseYouthApplicationFactory(last_name=vtj_test_case)
+            for vtj_test_case in VtjTestCase.values
+        ]
+    )
+    # Update created_at specially as its initial save uses auto_now_add
+    for app in apps:
+        app.created_at -= timedelta(seconds=random.randint(0, 60 * 60 * 24 * 10))
+        app.save(update_fields=["created_at"])
+        app.refresh_from_db()
+    assert min(app.created_at for app in apps) != max(app.created_at for app in apps)
+    apps = sorted(apps, key=youth_application_sorting_key)
+
+    with translation.override("en"):  # Should still use Finnish translations
+        response = staff_client.get(youth_excel_download_url())
+
+    assert isinstance(response, StreamingHttpResponse)
+
+    workbook = openpyxl.load_workbook(filename=BytesIO(response.getvalue()))
+    active_worksheet = workbook.active
+
+    rows_generator = active_worksheet.rows
+    header_row = next(rows_generator)
+    data_rows = [next(rows_generator) for _ in apps]
+    with pytest.raises(StopIteration):
+        next(rows_generator)
+
+    output_column_names = [column.value for column in header_row]
+    with translation.override("fi"):  # Make extra sure to test for Finnish column names
+        expected_output_columns_names = (
+            YouthApplicationExcelExportViewSet.output_column_names()
+        )
+    assert output_column_names == expected_output_columns_names
+
+    source_fields = YouthApplicationExcelExportViewSet.source_fields()
+    for data_row, app in zip(data_rows, apps):
+        for output_cell, source_field in zip(data_row, source_fields):
+            output_value = output_cell.value
+            if source_field == "application_date":
+                assert date.fromisoformat(output_value) == localdate(app.created_at)
+            elif source_field == "id":
+                assert output_value == str(app.id)
+            elif source_field.endswith("application_year"):
+                assert int(output_value) == localdate(app.created_at).year
+            elif source_field == "summer_voucher_serial_number":
+                if output_value is None:
+                    assert not app.has_youth_summer_voucher
+                else:
+                    assert (
+                        int(output_value)
+                        == app.youth_summer_voucher.summer_voucher_serial_number
+                    )
+            elif source_field == "birth_year":
+                assert int(output_value) == app.birthdate.year
+            elif source_field == "birthdate":
+                assert date.fromisoformat(output_value) == app.birthdate
+            elif source_field == "is_unlisted_school":
+                assert output_value in ["Kyllä", "Ei"]
+                assert (output_value == "Kyllä") == app.is_unlisted_school
+            elif source_field == "additional_info_user_reasons":
+                if output_value == "":
+                    assert app.additional_info_user_reasons == []
+                else:
+                    assert output_value.split(", ") == sorted(
+                        app.additional_info_user_reasons
+                    )
+            elif source_field == "confirmation_date":
+                assert date.fromisoformat(output_value) == localdate(
+                    app.receipt_confirmed_at
+                )
+            elif source_field.endswith("additional_info_providing_date"):
+                if output_value == "":
+                    assert app.additional_info_provided_at is None
+                else:
+                    assert date.fromisoformat(output_value) == localdate(
+                        app.additional_info_provided_at
+                    )
+            elif source_field == "handling_date":
+                if output_value == "":
+                    assert app.handled_at is None
+                else:
+                    assert date.fromisoformat(output_value) == localdate(app.handled_at)
+            else:
+                assert output_value == getattr(app, source_field), source_field
+
+
+@pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
     "download_url",
@@ -268,15 +416,15 @@ def test_excel_view_download_content(  # noqa: C901
         )
         for columns in ExcelColumns.values + [None]
         for download in ["unhandled", "annual"]
-    ],
+    ]
+    + [youth_excel_download_url()],
 )
 def test_excel_view_download_with_unauthenticated_user(  # noqa: C901
-    user_client,
-    download_url,
+    user_client, download_url, accepted_youth_application
 ):
     create_test_employer_summer_vouchers(year=2021)
 
-    with freeze_time(datetime.datetime(2021, 12, 31)):
+    with freeze_time(datetime(2021, 12, 31)):
         response = user_client.get(download_url)
 
     assert response.status_code == 302

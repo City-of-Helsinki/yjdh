@@ -1,4 +1,5 @@
 import os
+import random
 from datetime import timedelta
 
 import factory.random
@@ -13,6 +14,7 @@ from common.tests.conftest import *  # noqa
 def setup_test_environment(settings):
     DetectorFactory.seed = 0
     factory.random.reseed_random("888")
+    random.seed(888)
 
 
 @pytest.fixture
