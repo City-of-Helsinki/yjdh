@@ -95,6 +95,33 @@ def test_employer_summer_voucher_last_submitted_at(year):
 
 
 @pytest.mark.django_db(transaction=True, reset_sequences=True)
+def test_youth_summer_voucher_get_last_used_serial_number():
+    assert YouthSummerVoucher.objects.count() == 0
+    assert YouthSummerVoucher.get_last_used_serial_number() is None
+    for ordinal_number in range(1, 10):
+        summer_voucher = (
+            AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
+        )
+        assert YouthSummerVoucher.get_last_used_serial_number() is not None
+        assert (
+            YouthSummerVoucher.get_last_used_serial_number()
+            == summer_voucher.summer_voucher_serial_number
+        )
+
+
+@pytest.mark.django_db(transaction=True, reset_sequences=True)
+def test_youth_summer_voucher_first_serial_number():
+    assert YouthSummerVoucher.objects.count() == 0
+    summer_voucher = (
+        AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
+    )
+    assert (
+        summer_voucher.summer_voucher_serial_number
+        == YouthSummerVoucher.SERIAL_NUMBER_SEQUENCE_INITIAL_VALUE
+    )
+
+
+@pytest.mark.django_db(transaction=True, reset_sequences=True)
 def test_youth_summer_voucher_sequentiality():
     assert YouthSummerVoucher.objects.count() == 0
     for ordinal_number in range(1, 10):

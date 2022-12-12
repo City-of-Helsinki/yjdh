@@ -1,24 +1,24 @@
 import json
-import operator
 import re
 import unicodedata
 import uuid
 from datetime import date, datetime, timedelta
 from difflib import SequenceMatcher
 from enum import auto, Enum
-from functools import reduce
-from typing import List, Optional
+from typing import List, NamedTuple, Optional
 from unittest import mock
 from urllib.parse import urlparse
 
 import factory.random
 import pytest
+from dateutil.relativedelta import relativedelta
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.models import AnonymousUser
 from django.core import mail
 from django.test import override_settings
 from django.utils import timezone
 from django.utils.html import strip_tags
+from django.utils.timezone import localdate
 from faker import Faker
 from freezegun import freeze_time
 from rest_framework import status
@@ -51,7 +51,6 @@ from common.tests.factories import (
     InactiveNoNeedAdditionalInfoYouthApplicationFactory,
     InactiveYouthApplicationFactory,
     RejectedYouthApplicationFactory,
-    UnhandledYouthApplicationFactory,
     YouthApplicationFactory,
 )
 from common.urls import handler_403_url, handler_youth_application_processing_url
@@ -68,6 +67,24 @@ from shared.common.tests.conftest import (
 )
 from shared.common.tests.factories import UserFactory
 from shared.common.tests.test_validators import get_invalid_postcode_values
+
+
+def create_same_person_previous_year_accepted_application(
+    app: YouthApplication,
+) -> YouthApplication:
+    with freeze_time(app.created_at - relativedelta(years=1)):
+        result = AcceptedYouthApplicationFactory(
+            first_name=app.first_name,
+            last_name=app.last_name,
+            social_security_number=app.social_security_number,
+            email=app.email,
+        )
+    result.refresh_from_db()
+    assert result.email == app.email
+    assert result.social_security_number == app.social_security_number
+    assert result.created_at.year == app.created_at.year - 1
+    assert result.status == YouthApplicationStatus.ACCEPTED
+    return result
 
 
 def get_random_social_security_number_for_year(year):
@@ -455,30 +472,28 @@ def test_youth_applications_detail_valid_pk(
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "mock_flag,action,method,client_fixture_func,expected_status_code,expected_redirect_to",
-    reduce(
-        operator.add,
-        [
-            [
-                # Without mock flag
-                (False, action, method, unauth_api_client, 302, RedirectTo.adfs_login),
-                (False, action, method, api_client, 302, RedirectTo.handler_403),
-                (False, action, method, staff_client, 404, None),
-                (False, action, method, superuser_client, 404, None),
-                # With mock flag
-                (True, action, method, unauth_api_client, 404, None),
-                (True, action, method, api_client, 404, None),
-                (True, action, method, staff_client, 404, None),
-                (True, action, method, superuser_client, 404, None),
-            ]
-            for action, method in [
-                ("accept", "patch"),
-                ("detail", "get"),
-                ("process", "get"),
-                ("reject", "patch"),
-            ]
-        ],
-    ),
+    "mock_flag,client_fixture_func,expected_status_code,expected_redirect_to",
+    [
+        # Without mock flag
+        (False, unauth_api_client, 302, RedirectTo.adfs_login),
+        (False, api_client, 302, RedirectTo.handler_403),
+        (False, staff_client, 404, None),
+        (False, superuser_client, 404, None),
+        # With mock flag
+        (True, unauth_api_client, 404, None),
+        (True, api_client, 404, None),
+        (True, staff_client, 404, None),
+        (True, superuser_client, 404, None),
+    ],
+)
+@pytest.mark.parametrize(
+    "action,method",
+    [
+        ("accept", "patch"),
+        ("detail", "get"),
+        ("process", "get"),
+        ("reject", "patch"),
+    ],
 )
 def test_youth_applications_adfs_login_enforced_action_unused_pk(
     request,
@@ -766,6 +781,9 @@ def test_youth_applications_activate_unexpired_inactive__vtj_enabled(
             is_home_municipality_helsinki=is_helsinkian,
         )
         app.save()
+        app.refresh_from_db()
+
+    create_same_person_previous_year_accepted_application(app)
 
     # Make sure the source object is set up correctly
     assert not app.is_active
@@ -778,7 +796,8 @@ def test_youth_applications_activate_unexpired_inactive__vtj_enabled(
     assert (app.created_at.year - app.birthdate.year) == applicant_age
     assert not app.has_youth_summer_voucher
 
-    response = api_client.get(get_activation_url(app.pk))
+    with freeze_time(application_date):
+        response = api_client.get(get_activation_url(app.pk))
 
     assert response.status_code == status.HTTP_302_FOUND
     app.refresh_from_db()
@@ -821,6 +840,9 @@ def test_youth_applications_activate_unexpired_inactive__vtj_disabled(
             encrypted_original_vtj_json=None,
             encrypted_handler_vtj_json=None,
         )
+        app.refresh_from_db()
+
+    create_same_person_previous_year_accepted_application(app)
 
     # Make sure the source object is set up correctly
     assert not app.is_active
@@ -830,7 +852,8 @@ def test_youth_applications_activate_unexpired_inactive__vtj_disabled(
     assert (app.created_at.year - app.birthdate.year) == applicant_age
     assert not app.has_youth_summer_voucher
 
-    response = api_client.get(get_activation_url(app.pk))
+    with freeze_time(application_date):
+        response = api_client.get(get_activation_url(app.pk))
 
     assert response.status_code == status.HTTP_302_FOUND
     app.refresh_from_db()
@@ -872,6 +895,8 @@ def test_youth_applications_activate_unexpired_active(
     old_status = active_youth_application.status
     old_handler = active_youth_application.handler
     old_handled_at = active_youth_application.handled_at
+
+    create_same_person_previous_year_accepted_application(active_youth_application)
 
     # Make sure the source object is set up correctly
     assert active_youth_application.is_active
@@ -939,6 +964,7 @@ def test_youth_applications_activate_expired_inactive(
 ):
     settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     inactive_youth_application = youth_application_factory(language=language)
+    create_same_person_previous_year_accepted_application(inactive_youth_application)
 
     old_status = inactive_youth_application.status
 
@@ -992,6 +1018,7 @@ def test_youth_applications_activate_expired_active(
     settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
     active_youth_application = youth_application_factory()
+    create_same_person_previous_year_accepted_application(active_youth_application)
     old_status = active_youth_application.status
     old_handler = active_youth_application.handler
     old_handled_at = active_youth_application.handled_at
@@ -1879,84 +1906,39 @@ def test_youth_application_post_invalid_social_security_number(api_client, test_
     assert "social_security_number" in response.data
 
 
-def get_expected_reason(
-    same_email,
-    same_social_security_number,
-    is_existing_active,
-    is_existing_expired,
-    is_existing_rejected,
-) -> Optional[YouthApplicationRejectedReason]:
-    if is_existing_rejected:
-        return None
-    elif (same_email or same_social_security_number) and is_existing_active:
-        return YouthApplicationRejectedReason.ALREADY_ASSIGNED
-    elif same_email and (is_existing_active or not is_existing_expired):
-        return YouthApplicationRejectedReason.EMAIL_IN_USE
-    else:
-        return None
+class PostErrorCodeTestData(NamedTuple):
+    existing_app: YouthApplication
+    new_app: YouthApplication
 
 
-@freeze_time("2022-02-02")
-@override_settings(
-    NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS=60 * 60 * 12,  # 12h
-    NEXT_PUBLIC_DISABLE_VTJ=True,
-    NEXT_PUBLIC_MOCK_FLAG=True,
-)
-@pytest.mark.django_db
-@pytest.mark.parametrize(
-    "same_email,"
-    "same_social_security_number,"
-    "is_existing_active,"
-    "is_existing_expired,"
-    "is_existing_rejected,"
-    "expected_reason",
-    [
-        (
-            same_email,
-            same_social_security_number,
-            is_existing_active,
-            is_existing_expired,
-            is_existing_rejected,
-            get_expected_reason(
-                same_email,
-                same_social_security_number,
-                is_existing_active,
-                is_existing_expired,
-                is_existing_rejected,
-            ),
-        )
-        for same_email in [False, True]
-        for same_social_security_number in [False, True]
-        for is_existing_active in [False, True]
-        for is_existing_expired in [False, True]
-        for is_existing_rejected in [False, True]
-    ],
-)
-def test_youth_application_post_error_codes(
-    api_client,
-    same_email,
-    same_social_security_number,
-    is_existing_active,
-    is_existing_expired,
-    is_existing_rejected,
-    expected_reason,
-):
-    now = timezone.now()
+def create_post_error_code_test_data(
+    settings,
+    same_email: bool,
+    same_social_security_number: bool,
+    is_existing_active: bool,
+    is_existing_expired: bool,
+    is_existing_current_year: bool,
+    existing_status: YouthApplicationStatus,
+) -> PostErrorCodeTestData:
+    existing_created_at = timezone.now() - relativedelta(
+        years=0 if is_existing_current_year else 1
+    )
 
     # Create the existing youth application
-    existing_app = (
-        RejectedYouthApplicationFactory.create()
-        if is_existing_rejected
-        else UnhandledYouthApplicationFactory.create()
+    existing_app = YouthApplicationFactory(status=existing_status)
+    existing_app.created_at = existing_created_at
+    existing_app.receipt_confirmed_at = (
+        existing_created_at if is_existing_active else None
     )
-    existing_app.receipt_confirmed_at = now if is_existing_active else None
+
     if is_existing_expired:
         # Make the saved youth application expired
-        existing_app.created_at = (
-            now - YouthApplication.expiration_duration() - timedelta(hours=1)
-        )
+        settings.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS = 0
     else:
-        existing_app.created_at = now
+        # Make the saved youth application unexpired
+        settings.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS = int(
+            timedelta(days=365 * 100).total_seconds()
+        )
     existing_app.save()
     existing_app.refresh_from_db()
 
@@ -1970,20 +1952,196 @@ def test_youth_application_post_error_codes(
     # Check that the test objects are set up correctly
     assert is_existing_expired == existing_app.has_activation_link_expired
     assert is_existing_active == existing_app.is_active
+    assert is_existing_current_year == (
+        localdate(existing_app.created_at).year == localdate().year
+    )
+    assert existing_status == existing_app.status
     assert same_email == (new_app.email == existing_app.email)
     assert same_social_security_number == (
         new_app.social_security_number == existing_app.social_security_number
     )
+    return PostErrorCodeTestData(existing_app=existing_app, new_app=new_app)
 
-    data = YouthApplicationSerializer(new_app).data
+
+def get_expected_reason(
+    same_email: bool,
+    same_social_security_number: bool,
+    is_existing_active: bool,
+    is_existing_expired: bool,
+    is_existing_current_year: bool,
+    existing_status: YouthApplicationStatus,
+) -> Optional[YouthApplicationRejectedReason]:
+    if (
+        existing_status == YouthApplicationStatus.REJECTED
+        or not is_existing_current_year
+    ):
+        return None
+    elif (same_email or same_social_security_number) and is_existing_active:
+        return YouthApplicationRejectedReason.ALREADY_ASSIGNED
+    elif same_email and (is_existing_active or not is_existing_expired):
+        return YouthApplicationRejectedReason.EMAIL_IN_USE
+    else:
+        return None
+
+
+@freeze_time("2022-02-02")
+@override_settings(
+    NEXT_PUBLIC_DISABLE_VTJ=True,
+    NEXT_PUBLIC_MOCK_FLAG=True,
+)
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "same_email,"
+    "same_social_security_number,"
+    "is_existing_active,"
+    "is_existing_expired,"
+    "is_existing_current_year,"
+    "existing_status,"
+    "expected_reason",
+    [
+        (
+            same_email,
+            same_social_security_number,
+            is_existing_active,
+            is_existing_expired,
+            is_existing_current_year,
+            existing_status,
+            get_expected_reason(
+                same_email,
+                same_social_security_number,
+                is_existing_active,
+                is_existing_expired,
+                is_existing_current_year,
+                existing_status,
+            ),
+        )
+        for same_email in [False, True]
+        for same_social_security_number in [False, True]
+        for is_existing_active in [False, True]
+        for is_existing_expired in [False, True]
+        for is_existing_current_year in [False, True]
+        for existing_status in [
+            YouthApplicationStatus.SUBMITTED,
+            YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+            YouthApplicationStatus.ACCEPTED,
+            YouthApplicationStatus.REJECTED,
+        ]
+        if get_expected_reason(
+            same_email,
+            same_social_security_number,
+            is_existing_active,
+            is_existing_expired,
+            is_existing_current_year,
+            existing_status,
+        )
+        is not None
+    ],
+)
+def test_youth_application_post_rejection(
+    api_client,
+    settings,
+    same_email: bool,
+    same_social_security_number: bool,
+    is_existing_active: bool,
+    is_existing_expired: bool,
+    is_existing_current_year: bool,
+    existing_status: YouthApplicationStatus,
+    expected_reason,
+):
+    test_data: PostErrorCodeTestData = create_post_error_code_test_data(
+        settings,
+        same_email,
+        same_social_security_number,
+        is_existing_active,
+        is_existing_expired,
+        is_existing_current_year,
+        existing_status,
+    )
+    data = YouthApplicationSerializer(test_data.new_app).data
     response = api_client.post(get_list_url(), data)
 
-    if expected_reason is None:
-        assert response.status_code == status.HTTP_201_CREATED
-    else:
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert response.headers.get("Content-Type") == "application/json"
-        assert response.json() == expected_reason.json()
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.headers.get("Content-Type") == "application/json"
+    assert response.json() == expected_reason.json()
+
+
+@freeze_time("2022-02-02")
+@override_settings(
+    NEXT_PUBLIC_DISABLE_VTJ=True,
+    NEXT_PUBLIC_MOCK_FLAG=True,
+)
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "same_email,"
+    "same_social_security_number,"
+    "is_existing_active,"
+    "is_existing_expired,"
+    "is_existing_current_year,"
+    "existing_status,"
+    "expected_reason",
+    [
+        (
+            same_email,
+            same_social_security_number,
+            is_existing_active,
+            is_existing_expired,
+            is_existing_current_year,
+            existing_status,
+            get_expected_reason(
+                same_email,
+                same_social_security_number,
+                is_existing_active,
+                is_existing_expired,
+                is_existing_current_year,
+                existing_status,
+            ),
+        )
+        for same_email in [False, True]
+        for same_social_security_number in [False, True]
+        for is_existing_active in [False, True]
+        for is_existing_expired in [False, True]
+        for is_existing_current_year in [False, True]
+        for existing_status in [
+            YouthApplicationStatus.SUBMITTED,
+            YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+            YouthApplicationStatus.ACCEPTED,
+            YouthApplicationStatus.REJECTED,
+        ]
+        if get_expected_reason(
+            same_email,
+            same_social_security_number,
+            is_existing_active,
+            is_existing_expired,
+            is_existing_current_year,
+            existing_status,
+        )
+        is None
+    ],
+)
+def test_youth_application_post_success(
+    api_client,
+    settings,
+    same_email: bool,
+    same_social_security_number: bool,
+    is_existing_active: bool,
+    is_existing_expired: bool,
+    is_existing_current_year: bool,
+    existing_status: YouthApplicationStatus,
+    expected_reason,
+):
+    test_data: PostErrorCodeTestData = create_post_error_code_test_data(
+        settings,
+        same_email,
+        same_social_security_number,
+        is_existing_active,
+        is_existing_expired,
+        is_existing_current_year,
+        existing_status,
+    )
+    data = YouthApplicationSerializer(test_data.new_app).data
+    response = api_client.post(get_list_url(), data)
+
+    assert response.status_code == status.HTTP_201_CREATED
 
 
 @pytest.mark.django_db
@@ -2012,11 +2170,12 @@ def test_youth_applications_accept_acceptable(
     expected_redirect_to,
 ):
     settings.NEXT_PUBLIC_DISABLE_VTJ = False
+    settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
     assert (expected_status_code == status.HTTP_302_FOUND) == (
         expected_redirect_to is not None
     )
-    settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
+    create_same_person_previous_year_accepted_application(acceptable_youth_application)
     old_status = acceptable_youth_application.status
     old_modified_at = acceptable_youth_application.modified_at
     old_youth_summer_voucher_count = YouthSummerVoucher.objects.count()
@@ -2037,9 +2196,10 @@ def test_youth_applications_accept_acceptable(
         )
         assert acceptable_youth_application.has_youth_summer_voucher
         assert YouthSummerVoucher.objects.count() == old_youth_summer_voucher_count + 1
+        assert YouthSummerVoucher.get_last_used_serial_number() is not None
         assert (
             acceptable_youth_application.youth_summer_voucher.summer_voucher_serial_number
-            == YouthSummerVoucher.objects.count()
+            == YouthSummerVoucher.get_last_used_serial_number()
         )
         audit_event = AuditLogEntry.objects.first().message["audit_event"]
         assert audit_event["status"] == "SUCCESS"
@@ -2076,7 +2236,10 @@ def test_youth_applications_accept_acceptable(
 @pytest.mark.django_db
 @pytest.mark.parametrize("send_vtj_data", [True, False])
 def test_youth_applications_accept_acceptable__vtj_disabled(
-    acceptable_youth_application, settings, staff_client, send_vtj_data
+    acceptable_youth_application,
+    settings,
+    staff_client,
+    send_vtj_data,
 ):
     """
     When VTJ integration has been disabled do not expect any input to
@@ -2086,6 +2249,7 @@ def test_youth_applications_accept_acceptable__vtj_disabled(
     acceptable_youth_application.encrypted_original_vtj_json = None
     acceptable_youth_application.encrypted_handler_vtj_json = None
     acceptable_youth_application.save()
+    create_same_person_previous_year_accepted_application(acceptable_youth_application)
     old_youth_summer_voucher_count = YouthSummerVoucher.objects.count()
     assert not acceptable_youth_application.has_youth_summer_voucher
 
@@ -2102,9 +2266,10 @@ def test_youth_applications_accept_acceptable__vtj_disabled(
     assert acceptable_youth_application.encrypted_handler_vtj_json is None
     assert acceptable_youth_application.has_youth_summer_voucher
     assert YouthSummerVoucher.objects.count() == old_youth_summer_voucher_count + 1
+    assert YouthSummerVoucher.get_last_used_serial_number() is not None
     assert (
         acceptable_youth_application.youth_summer_voucher.summer_voucher_serial_number
-        == YouthSummerVoucher.objects.count()
+        == YouthSummerVoucher.get_last_used_serial_number()
     )
 
 
