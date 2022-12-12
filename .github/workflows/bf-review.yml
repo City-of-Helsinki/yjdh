@@ -102,7 +102,6 @@ jobs:
           DOCKER_BUILD_ARG_SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           DOCKER_BUILD_ARG_PROJECT: ${{ matrix.project }}
           DOCKER_BUILD_ARG_FOLDER: ${{ matrix.folder }}
-          DOCKER_BUILD_ARG_SERVICE: ${{ matrix.service }}
           DOCKER_BUILD_ARG_PORT: ${{ matrix.port }}
           DOCKER_BUILD_SOURCE: ${{ matrix.dockerfile }}
           DOCKER_BUILD_CONTEXT: ${{ matrix.context }}

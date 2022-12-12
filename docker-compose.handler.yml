@@ -43,7 +43,6 @@ services:
         PORT: 3100
         PROJECT: kesaseteli
         FOLDER: youth
-        SERVICE: ks-youth
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -60,7 +59,6 @@ services:
         PORT: 3200
         PROJECT: kesaseteli
         FOLDER: handler
-        SERVICE: ks-hdlr
     volumes:
       - ./frontend:/app
       - /app/node_modules
