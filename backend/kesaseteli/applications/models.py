@@ -126,6 +126,48 @@ class YouthApplicationQuerySet(MatchesAnyOfQuerySet, models.QuerySet):
         """
         return self.exclude(status=YouthApplicationStatus.REJECTED.value)
 
+    def created_this_year(self):
+        """
+        Return youth applications created this year
+        """
+        return self.filter(created_at__year=timezone.localdate().year)
+
+    def is_email_or_social_security_number_active_this_year(
+        self, email, social_security_number
+    ) -> bool:
+        """
+        Is there an active non-rejected youth application created this year present in
+        this queryset that uses the given email and/or social security number?
+
+        :return: True if there is at least one active non-rejected youth application
+                 created this year present in this queryset that uses the given email
+                 and/or social security number, otherwise False.
+        """
+        return (
+            self.matches_email_or_social_security_number(email, social_security_number)
+            .created_this_year()
+            .active()
+            .non_rejected()
+            .exists()
+        )
+
+    def is_email_used_this_year(self, email) -> bool:
+        """
+        Is the given email used by an unexpired non-rejected or active non-rejected
+        youth application created this year present in this queryset?
+
+        :return: True if the given email is used by an unexpired non-rejected or active
+                 non-rejected youth application created this year present in this
+                 queryset, otherwise False.
+        """
+        return (
+            self.filter(email=email)
+            .created_this_year()
+            .unexpired_or_active()
+            .non_rejected()
+            .exists()
+        )
+
 
 class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     first_name = models.CharField(
@@ -768,44 +810,6 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         self.status = YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED
         self.save()
 
-    @classmethod
-    def is_email_or_social_security_number_active(
-        cls, email, social_security_number
-    ) -> bool:
-        """
-        Is there an active non-rejected youth application created that uses the same
-        email or social security number as this youth application?
-
-        :return: True if this youth application's email or social security number are
-                 used by at least one active non-rejected youth application, otherwise
-                 False.
-        """
-        return (
-            cls.objects.matches_email_or_social_security_number(
-                email, social_security_number
-            )
-            .active()
-            .non_rejected()
-            .exists()
-        )
-
-    @classmethod
-    def is_email_used(cls, email) -> bool:
-        """
-        Is this youth application's email used by unexpired or active youth application
-        which has not been rejected?
-
-        :return: True if this youth application's email is used by at least one
-                 unexpired or active youth application which has not been rejected,
-                 otherwise False.
-        """
-        return (
-            cls.objects.filter(email=email)
-            .unexpired_or_active()
-            .non_rejected()
-            .exists()
-        )
-
     @property
     def name(self):
         return f"{self.first_name.strip()} {self.last_name.strip()}".strip()
@@ -826,6 +830,9 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
 
 
 class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
+    _SERIAL_NUMBER_SEQUENCE_NAME = "youth_summer_voucher_serial_numbers"
+    SERIAL_NUMBER_SEQUENCE_INITIAL_VALUE = 1
+
     youth_application = models.OneToOneField(
         YouthApplication,
         on_delete=models.CASCADE,
@@ -848,9 +855,13 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     @staticmethod
     def get_next_serial_number() -> int:
         return sequences.get_next_value(
-            sequence_name="youth_summer_voucher_serial_numbers",
-            initial_value=1,
+            sequence_name=YouthSummerVoucher._SERIAL_NUMBER_SEQUENCE_NAME,
+            initial_value=YouthSummerVoucher.SERIAL_NUMBER_SEQUENCE_INITIAL_VALUE,
         )
+
+    @staticmethod
+    def get_last_used_serial_number() -> Optional[int]:
+        return sequences.get_last_value(YouthSummerVoucher._SERIAL_NUMBER_SEQUENCE_NAME)
 
     @property
     def year(self) -> int:
