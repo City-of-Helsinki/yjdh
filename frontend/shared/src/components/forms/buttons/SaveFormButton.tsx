@@ -37,7 +37,7 @@ const SaveFormButton = <
 }: Props<FormData, BackendResponseData>): React.ReactElement => {
   const { handleSubmit, formState } = useFormContext<FormData>();
 
-  const onDefaultError = useErrorHandler(false);
+  const onDefaultError = useErrorHandler();
 
   const isSaving = React.useMemo(
     () => saveQuery.isLoading || formState.isSubmitting,
