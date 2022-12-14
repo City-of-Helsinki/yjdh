@@ -59,6 +59,10 @@ class AuditLoggingModelViewSet(ModelViewSet):
         with self.record_action():
             return super().retrieve(request, *args, **kwargs)
 
+    def list(self, request, *args, **kwargs):
+        with self.record_action():
+            return super().list(request, *args, **kwargs)
+
     @transaction.atomic
     def perform_create(self, serializer):
         with self.record_action():

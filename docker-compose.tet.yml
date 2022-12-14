@@ -39,7 +39,6 @@ services:
          PORT: 3000
          PROJECT: tet
          FOLDER: youth
-         SERVICE: te-yout
      volumes:
        - ./frontend:/app
        - /app/node_modules
@@ -56,7 +55,6 @@ services:
          PORT: 3000
          PROJECT: tet
          FOLDER: admin
-         SERVICE: te-admn
      volumes:
        - ./frontend:/app
        - /app/node_modules
