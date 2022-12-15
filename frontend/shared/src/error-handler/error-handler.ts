@@ -7,17 +7,21 @@ const handleError = (
   error: Error | unknown,
   t: TFunction,
   goToPage: GoToPageFunction,
-  redirectUnauthorized: boolean
+  onLoginPage: boolean
 ): void => {
   if (isError(error)) {
-    // eslint-disable-next-line no-console
-    console.error('Unexpected backend error', error.message);
     if (/40[13]/.test(error.message)) {
-      if (redirectUnauthorized) {
+      if (!onLoginPage) {
         void goToPage('/login?sessionExpired=true');
       }
     } else if (/5\d{2}/.test(error.message)) {
-      void goToPage('/500');
+      // eslint-disable-next-line no-console
+      console.error('Unexpected backend error', error.message);
+      if (onLoginPage) {
+        void goToPage('/login?error=true');
+      } else {
+        void goToPage('/500');
+      }
     } else {
       showErrorToast(
         t('common:error.generic.label'),

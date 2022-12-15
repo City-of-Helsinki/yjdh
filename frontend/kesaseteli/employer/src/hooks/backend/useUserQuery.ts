@@ -16,7 +16,7 @@ const useUserQuery = <T = User>({
   const isRouting = useIsRouting();
   return useQuery(BackendEndpoint.USER as QueryKey, {
     enabled: !isRouting,
-    onError: useErrorHandler(false),
+    onError: useErrorHandler(),
     select,
     refetchInterval,
   });
