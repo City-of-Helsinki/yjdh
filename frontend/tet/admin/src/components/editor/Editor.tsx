@@ -1,4 +1,3 @@
-import { DevTool } from '@hookform/devtools';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -37,25 +36,22 @@ const Editor: React.FC<EditorProps> = ({ initialValue, isNewPosting = false }) =
   useLeaveConfirm(methods.formState.isDirty, message);
 
   return (
-    <>
-      <FormProvider {...methods}>
-        <form aria-label={t('common:editor.formLabel')}>
-          <HiddenIdInput id="id" initialValue={initialValue?.id} />
-          <HiddenIdInput id="image_url" initialValue={initialValue?.image_url} />
-          <HiddenIdInput id="image_id" initialValue={initialValue?.image_id} />
-          <EditorErrorNotification />
-          <p>* {t('common:editor.requiredInfo')}</p>
-          <EmployerInfo />
-          <CompanyInfo />
-          <ImageUpload isNewPosting={isNewPosting} />
-          <ContactPerson />
-          <PostingDetails />
-          <Classification />
-          <ActionButtons />
-        </form>
-      </FormProvider>
-      <DevTool control={methods.control} />
-    </>
+    <FormProvider {...methods}>
+      <form aria-label={t('common:editor.formLabel')}>
+        <HiddenIdInput id="id" initialValue={initialValue?.id} />
+        <HiddenIdInput id="image_url" initialValue={initialValue?.image_url} />
+        <HiddenIdInput id="image_id" initialValue={initialValue?.image_id} />
+        <EditorErrorNotification />
+        <p>* {t('common:editor.requiredInfo')}</p>
+        <EmployerInfo />
+        <CompanyInfo />
+        <ImageUpload isNewPosting={isNewPosting} />
+        <ContactPerson />
+        <PostingDetails />
+        <Classification />
+        <ActionButtons />
+      </form>
+    </FormProvider>
   );
 };
 

@@ -69,7 +69,6 @@
     "@commitlint/config-conventional": "^16.0.0",
     "@faker-js/faker": "^6.0.0-alpha.6",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
-    "@hookform/devtools": "^4.1.0",
     "@next/eslint-plugin-next": "^11.1.4",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
