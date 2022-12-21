@@ -27,7 +27,7 @@ type Props = AppProps & {
 
 const getSentryTracesSampleRate = (): number => {
   const sampleRate = process.env.NEXT_PUBLIC_SENTRY_TRACE_SAMPLE_RATE;
-  // default value 1.0 means sentry races 100% of errors.
+  // default value 1.0 means sentry raises 100% of errors.
   return isParsableSafeInteger(sampleRate) ? parseFloat(sampleRate) : 1;
 };
 
@@ -36,7 +36,7 @@ const getSentryTracesSampleRate = (): number => {
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN || '',
   environment: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT || 'development',
-  attachStacktrace: Boolean(process.env.NEXT_PUBLIC_SENTRY_ATTACH_STACKTRACE),
+  attachStacktrace: true,
   maxBreadcrumbs: Number(process.env.NEXT_PUBLIC_SENTRY_MAX_BREADCRUMBS) || 100,
   // Adjust this value in production, or use tracesSampler for greater control
   // @see https://develop.sentry.dev/sdk/performance/
