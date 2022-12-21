@@ -3,11 +3,13 @@ django-auth-adfs
 django-cors-headers
 django-environ
 django-extensions
+django-helusers
 django-searchable-encrypted-fields
 django-simple-history
 django-storages[azure]
 djangorestframework
 django~=3.2
+drf-oidc-auth
 elasticsearch
 factory-boy
 filetype
