@@ -20,7 +20,7 @@ azure-storage-common==2.1.0
     # via azure-storage-blob
 cachetools==5.2.0
     # via django-helusers
-certifi==2021.5.30
+certifi==2022.12.7
     # via
     #   elasticsearch
     #   requests
@@ -45,7 +45,7 @@ defusedxml==0.7.1
     #   pysaml2
 deprecation==2.1.0
     # via django-helusers
-django==3.2.4
+django==3.2.16
     # via
     #   -r requirements.in
     #   django-auth-adfs
@@ -164,7 +164,7 @@ six==1.16.0
     #   pyopenssl
     #   pysaml2
     #   python-dateutil
-sqlparse==0.4.1
+sqlparse==0.4.2
     # via django
 text-unidecode==1.3
     # via faker
