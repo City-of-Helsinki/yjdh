@@ -50,6 +50,12 @@ django_env = environ.Env(
     CSRF_COOKIE_NAME=(str, "yjdhcsrftoken"),
     NEXT_PUBLIC_MOCK_FLAG=(bool, False),
     SESSION_COOKIE_AGE=(int, 3600 * 2),
+    TOKEN_AUTH_ACCEPTED_AUDIENCE=(str, "https://api.hel.fi/auth/tetgdprapitest"),
+    TOKEN_AUTH_ACCEPTED_SCOPE_PREFIX=(str, "https://api.hel.fi/auth/tetgdprapitest"),
+    TOKEN_AUTH_AUTHSERVER_URL=(str, "https://tunnistamo.test.hel.ninja/openid"),
+    TOKEN_AUTH_FIELD_FOR_CONSENTS=(str, "https://api.hel.fi/auth"),
+    TOKEN_AUTH_REQUIRE_SCOPE_PREFIX=(bool, False),
+    OIDC_LEEWAY=(int, 60 * 60 * 2),
     OIDC_RP_CLIENT_ID=(str, ""),
     OIDC_RP_CLIENT_SECRET=(str, ""),
     OIDC_OP_BASE_URL=(str, ""),
@@ -92,6 +98,8 @@ django_env = environ.Env(
     LINKEDEVENTS_URL=(str, ""),
     LINKEDEVENTS_API_KEY=(str, ""),
     LINKEDEVENTS_TIMEOUT=(int, 20),
+    GDPR_API_QUERY_SCOPE=(str, "https://api.hel.fi/auth/tetgdprapitest.gdprquery"),
+    GDPR_API_DELETE_SCOPE=(str, "https://api.hel.fi/auth/tetgdprapitest.gdprdelete"),
 )
 
 if os.path.exists(env_file):
@@ -247,6 +255,19 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
 )
 
+OIDC_API_TOKEN_AUTH = {
+    "AUDIENCE": django_env.str("TOKEN_AUTH_ACCEPTED_AUDIENCE"),
+    "API_SCOPE_PREFIX": django_env.str("TOKEN_AUTH_ACCEPTED_SCOPE_PREFIX"),
+    "ISSUER": django_env.str("TOKEN_AUTH_AUTHSERVER_URL"),
+    "API_AUTHORIZATION_FIELD": django_env.str("TOKEN_AUTH_FIELD_FOR_CONSENTS"),
+    "REQUIRE_API_SCOPE_FOR_AUTHENTICATION": django_env.bool(
+        "TOKEN_AUTH_REQUIRE_SCOPE_PREFIX"
+    ),
+    "USER_RESOLVER": "tet.views.resolve_user",
+}
+
+OIDC_AUTH = {"OIDC_LEEWAY": django_env.int("OIDC_LEEWAY")}
+
 OIDC_RP_SIGN_ALGO = "RS256"
 HELSINKI_PROFILE_SCOPE = "https://api.hel.fi/auth/helsinkiprofile"
 OIDC_RP_SCOPES = f"openid profile {HELSINKI_PROFILE_SCOPE}"
@@ -312,6 +333,9 @@ AZURE_ACCOUNT_KEY = django_env("AZURE_ACCOUNT_KEY")
 AZURE_CONTAINER = django_env("AZURE_CONTAINER")
 
 MAX_UPLOAD_SIZE = 4194304  # 4MB
+
+GDPR_API_QUERY_SCOPE = django_env("GDPR_API_QUERY_SCOPE")
+GDPR_API_DELETE_SCOPE = django_env("GDPR_API_DELETE_SCOPE")
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.
