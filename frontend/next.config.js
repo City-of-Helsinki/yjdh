@@ -71,7 +71,7 @@ const nextConfig = (override) => ({
    // outputStandalone: true
   },
   sentry: {
-    hideSourceMaps: true,
+    hideSourceMaps: disableSourceMaps,
     autoInstrumentServerFunctions: !NEXTJS_DISABLE_SENTRY
   },
   typescript: {
