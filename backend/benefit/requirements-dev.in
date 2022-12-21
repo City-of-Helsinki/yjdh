@@ -3,12 +3,12 @@ black
 flake8
 ipython
 isort
+langdetect
+openpyxl # for the Excel testcases from the handlers
 pip-tools
 pytest
 pytest-cov
 pytest-django
 pytest-freezegun
 requests-mock
-Werkzeug
-openpyxl # for the Excel testcases from the handlers
-langdetect
+werkzeug

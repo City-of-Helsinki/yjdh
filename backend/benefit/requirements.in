@@ -1,30 +1,30 @@
-Django~=3.2
+-e file:../shared
+babel
 django-cors-headers
 django-environ
 django-extensions
-djangorestframework
+django-filter
+django-localflavor~=3.1
+django-phonenumber-field[phonenumbers]
+django-searchable-encrypted-fields
 django-simple-history
+django-sql-utils
+django-storages[azure]
+django_auth_adfs
+djangorestframework
+django~=3.2
+drf-nested-routers
+drf-spectacular
+elasticsearch
+factory-boy # TODO: added temporarily so that NEXT_PUBLIC_MOCK_FLAG can be set on dev env, remove when authentication done
+filetype
+jinja2
+mozilla_django_oidc
+pdfkit
+pillow
 psycopg2
 python-dateutil
-sentry-sdk
-requests
-django-phonenumber-field[phonenumbers]
-django-localflavor~=3.1
-django-searchable-encrypted-fields
-mozilla_django_oidc
-django_auth_adfs
 pyyaml
+requests
+sentry-sdk
 uritemplate
-drf-spectacular
-django-filter
-django-storages[azure]
-Pillow
-filetype
-elasticsearch
-Jinja2
-pdfkit
-Babel
-factory-boy # TODO: added temporarily so that NEXT_PUBLIC_MOCK_FLAG can be set on dev env, remove when authentication done
-drf-nested-routers
-django-sql-utils
--e file:../shared

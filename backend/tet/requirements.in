@@ -1,20 +1,20 @@
-Django~=3.2
+-e file:../shared
 django-auth-adfs
 django-cors-headers
 django-environ
 django-extensions
-djangorestframework
 django-searchable-encrypted-fields
 django-simple-history
 django-storages[azure]
+djangorestframework
+django~=3.2
 elasticsearch
 factory-boy
 filetype
 mozilla-django-oidc
-Pillow
+pillow
 psycopg2
 python-stdnum
 requests
 sentry-sdk
 xlsxwriter
--e file:../shared

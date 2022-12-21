@@ -11,4 +11,4 @@ pytest-django
 pytest-freezegun
 pytest-xdist[psutil]
 requests-mock
-Werkzeug
+werkzeug
