@@ -113,7 +113,9 @@ class TetGDPRAPIView(APIView):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_200_OK)
+        return Response(
+            data={}, content_type="application/json", status=status.HTTP_200_OK
+        )
 
     def delete(self, request, *args, **kwargs):
         return Response(status=status.HTTP_204_NO_CONTENT)
