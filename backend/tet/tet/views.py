@@ -20,6 +20,7 @@ from rest_framework.views import APIView
 
 from events.utils import get_organization_name
 from shared.azure_adfs.auth import is_adfs_login
+from shared.oidc.mixins import ForceAmrClaimToListMixin
 
 LOGGER = logging.getLogger(__name__)
 User = get_user_model()
@@ -97,20 +98,24 @@ class GDPRScopesPermission(IsAuthenticated):
         return False
 
 
+class TetApiTokenAuthentication(ForceAmrClaimToListMixin, ApiTokenAuthentication):
+    """
+    Tunnistamo's "amr" claim is not always a list so using ForceAmrClaimToListMixin
+    to force it to be a list in order to pass "amr" claim validation in authlib:
+    https://github.com/lepture/authlib/blob/v1.2.0/authlib/oidc/core/claims.py#L101-L113
+    """
+
+    pass
+
+
 class TetGDPRAPIView(APIView):
     """
     A dummy GDPR API view which returns success on both get and delete operations
     """
 
     renderer_classes = [JSONRenderer]
-    authentication_classes = [ApiTokenAuthentication]
+    authentication_classes = [TetApiTokenAuthentication]
     permission_classes = [GDPRScopesPermission]
-
-    def dispatch(self, request, *args, **kwargs):
-        LOGGER.warning(
-            f'TetGDPRAPIView auth="{request.META.get("HTTP_AUTHORIZATION")}"'
-        )  # DEBUG!
-        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         return Response(
