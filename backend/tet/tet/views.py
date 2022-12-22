@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 from django.conf import settings
@@ -20,6 +21,7 @@ from rest_framework.views import APIView
 from events.utils import get_organization_name
 from shared.azure_adfs.auth import is_adfs_login
 
+LOGGER = logging.getLogger(__name__)
 User = get_user_model()
 
 
@@ -103,6 +105,12 @@ class TetGDPRAPIView(APIView):
     renderer_classes = [JSONRenderer]
     authentication_classes = [ApiTokenAuthentication]
     permission_classes = [GDPRScopesPermission]
+
+    def dispatch(self, request, *args, **kwargs):
+        LOGGER.warning(
+            f'TetGDPRAPIView auth="{request.META.get("HTTP_AUTHORIZATION")}"'
+        )  # DEBUG!
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         return Response(status=status.HTTP_200_OK)
