@@ -9,7 +9,7 @@ django-simple-history
 django-storages[azure]
 djangorestframework
 django~=3.2
-drf-oidc-auth==0.10.0  # For GDPR API to work, otherwise got 'Invalid claim: "amr"'
+drf-oidc-auth
 elasticsearch
 factory-boy
 filetype

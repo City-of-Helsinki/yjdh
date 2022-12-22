@@ -8,6 +8,8 @@
     # via -r requirements.in
 asgiref==3.3.4
     # via django
+authlib==1.2.0
+    # via drf-oidc-auth
 azure-common==1.1.27
     # via
     #   azure-storage-blob
@@ -29,8 +31,10 @@ chardet==4.0.0
     # via requests
 cryptography==3.4.7
     # via
+    #   authlib
     #   azure-storage-common
     #   django-auth-adfs
+    #   drf-oidc-auth
     #   josepy
     #   mozilla-django-oidc
     #   pyopenssl
@@ -81,7 +85,7 @@ djangorestframework==3.12.4
     #   drf-oidc-auth
 djangosaml2==1.5.0
     # via yjdh-backend-shared
-drf-oidc-auth==0.10.0
+drf-oidc-auth==3.0.0
     # via -r requirements.in
 ecdsa==0.18.0
     # via python-jose
@@ -95,8 +99,6 @@ faker==8.7.0
     # via factory-boy
 filetype==1.0.7
     # via -r requirements.in
-future==0.18.2
-    # via pyjwkest
 idna==2.10
     # via requests
 importlib-resources==5.8.0
@@ -121,10 +123,6 @@ pycparser==2.20
     # via cffi
 pycryptodome==3.10.1
     # via django-searchable-encrypted-fields
-pycryptodomex==3.16.0
-    # via pyjwkest
-pyjwkest==1.4.2
-    # via drf-oidc-auth
 pyjwt==2.1.0
     # via django-auth-adfs
 pyopenssl==20.0.1
@@ -152,8 +150,8 @@ requests==2.25.1
     #   azure-storage-common
     #   django-auth-adfs
     #   django-helusers
+    #   drf-oidc-auth
     #   mozilla-django-oidc
-    #   pyjwkest
     #   pysaml2
 rsa==4.9
     # via python-jose
@@ -163,7 +161,6 @@ six==1.16.0
     # via
     #   ecdsa
     #   mozilla-django-oidc
-    #   pyjwkest
     #   pyopenssl
     #   pysaml2
     #   python-dateutil
