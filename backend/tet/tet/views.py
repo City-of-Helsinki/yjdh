@@ -106,12 +106,6 @@ class TetGDPRAPIView(APIView):
     authentication_classes = [ApiTokenAuthentication]
     permission_classes = [GDPRScopesPermission]
 
-    def dispatch(self, request, *args, **kwargs):
-        LOGGER.warning(
-            f'TetGDPRAPIView auth="{request.META.get("HTTP_AUTHORIZATION")}"'
-        )  # DEBUG!
-        return super().dispatch(request, *args, **kwargs)
-
     def get(self, request, *args, **kwargs):
         return Response(
             data={}, content_type="application/json", status=status.HTTP_200_OK
