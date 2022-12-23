@@ -51,11 +51,11 @@ django_env = environ.Env(
     NEXT_PUBLIC_MOCK_FLAG=(bool, False),
     SESSION_COOKIE_AGE=(int, 3600 * 2),
     TOKEN_AUTH_ACCEPTED_AUDIENCE=(str, "https://api.hel.fi/auth/tetgdprapitest"),
-    TOKEN_AUTH_ACCEPTED_SCOPE_PREFIX=(str, "https://api.hel.fi/auth/tetgdprapitest"),
+    TOKEN_AUTH_ACCEPTED_SCOPE_PREFIX=(str, "tetgdprapitest"),
     TOKEN_AUTH_AUTHSERVER_URL=(str, "https://tunnistamo.test.hel.ninja/openid"),
     TOKEN_AUTH_FIELD_FOR_CONSENTS=(str, "https://api.hel.fi/auth"),
     TOKEN_AUTH_REQUIRE_SCOPE_PREFIX=(bool, False),
-    OIDC_LEEWAY=(int, 60 * 60 * 2),
+    OIDC_LEEWAY=(int, 60 * 60),  # TODO: Maybe OIDC_LEEWAY could be removed? See HL-601
     OIDC_RP_CLIENT_ID=(str, ""),
     OIDC_RP_CLIENT_SECRET=(str, ""),
     OIDC_OP_BASE_URL=(str, ""),
@@ -98,8 +98,8 @@ django_env = environ.Env(
     LINKEDEVENTS_URL=(str, ""),
     LINKEDEVENTS_API_KEY=(str, ""),
     LINKEDEVENTS_TIMEOUT=(int, 20),
-    GDPR_API_QUERY_SCOPE=(str, "https://api.hel.fi/auth/tetgdprapitest.gdprquery"),
-    GDPR_API_DELETE_SCOPE=(str, "https://api.hel.fi/auth/tetgdprapitest.gdprdelete"),
+    GDPR_API_QUERY_SCOPE=(str, "tetgdprapitest.gdprquery"),
+    GDPR_API_DELETE_SCOPE=(str, "tetgdprapitest.gdprdelete"),
 )
 
 if os.path.exists(env_file):
