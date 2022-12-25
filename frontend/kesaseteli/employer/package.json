@@ -27,7 +27,7 @@
     "hds-react": "^1.15.0",
     "ibantools": "^4.1.5",
     "lodash": "^4.17.21",
-    "next": "^11.1.4",
+    "next": "^12.0.9",
     "next-compose-plugins": "^2.2.1",
     "next-i18next": "^10.5.0",
     "next-plugin-custom-babel-config": "^1.0.5",
