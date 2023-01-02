@@ -43,6 +43,9 @@ if [[ "$CREATE_SUPERUSER" = "1" ]]; then
     fi
 fi
 
+# Copy a general "out of order" placeholder before proper terms PDF is uploaded
+mkdir -p $MEDIA_ROOT && cp /app/terms/files/service_unavailable.pdf $MEDIA_ROOT/
+
 # Start server
 if [[ ! -z "$@" ]]; then
     "$@"

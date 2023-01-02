@@ -5,9 +5,9 @@
     "fields": {
       "terms_type": "terms_of_service",
       "effective_from": "2021-01-01",
-      "terms_pdf_fi": "/var/media/please_upload_actual_pdf_manually.pdf",
-      "terms_pdf_sv": "/var/media/please_upload_actual_pdf_manually.pdf",
-      "terms_pdf_en": "/var/media/please_upload_actual_pdf_manually.pdf",
+      "terms_pdf_fi": "/service_unavailable.pdf",
+      "terms_pdf_sv": "/service_unavailable.pdf",
+      "terms_pdf_en": "/service_unavailable.pdf",
       "created_at": "2021-01-01T00:00:00+02:00",
       "modified_at": "2021-01-01T00:00:00+02:00"
     }
@@ -30,9 +30,9 @@
     "fields": {
       "terms_type": "applicant_terms",
       "effective_from": "2021-01-01",
-      "terms_pdf_fi": "/var/media/please_upload_actual_pdf_manually.pdf",
-      "terms_pdf_sv": "/var/media/please_upload_actual_pdf_manually.pdf",
-      "terms_pdf_en": "/var/media/please_upload_actual_pdf_manually.pdf",
+      "terms_pdf_fi": "/service_unavailable.pdf",
+      "terms_pdf_sv": "/service_unavailable.pdf",
+      "terms_pdf_en": "/service_unavailable.pdf",
       "created_at": "2021-01-01T00:00:00+02:00",
       "modified_at": "2021-01-01T00:00:00+02:00"
     }
