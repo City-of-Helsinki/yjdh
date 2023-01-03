@@ -24,8 +24,11 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({
     useTermsOfServiceData(setIsTermsOfSerivceApproved);
 
   const { mutate } = useApproveTermsOfServiceMutation();
-
   const logout = useLogout();
+  
+  const isContinueAllowed =
+    !termsInEffectUrl.includes('service_unavailable.pdf') ||
+    process.env.NODE_ENV === 'development';
 
   return (
     <Container>
@@ -66,25 +69,27 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({
         <$GridCell $colSpan={12}>
           <$Hr />
         </$GridCell>
-        <$GridCell $colSpan={7} css={{ display: 'flex' }}>
-          <Button
-            theme="coat"
-            variant="primary"
-            onClick={() =>
-              user?.termsOfServiceApprovalNeeded
-                ? mutate(user, {
-                    onSuccess: () => approveTermsOfService(),
-                  })
-                : approveTermsOfService()
-            }
-            css={{ marginRight: theme.spacing.s }}
-          >
-            {t('common:applications.actions.continueToService')}
-          </Button>
-          <Button theme="black" variant="secondary" onClick={logout}>
-            {t('common:applications.actions.pauseAndExit')}
-          </Button>
-        </$GridCell>
+        {isContinueAllowed ? (
+          <$GridCell $colSpan={7} css={{ display: 'flex' }}>
+            <Button
+              theme="coat"
+              variant="primary"
+              onClick={() =>
+                user?.termsOfServiceApprovalNeeded
+                  ? mutate(user, {
+                      onSuccess: () => approveTermsOfService(),
+                    })
+                  : approveTermsOfService()
+              }
+              css={{ marginRight: theme.spacing.s }}
+            >
+              {t('common:applications.actions.continueToService')}
+            </Button>
+            <Button theme="black" variant="secondary" onClick={logout}>
+              {t('common:applications.actions.pauseAndExit')}
+            </Button>
+          </$GridCell>
+        ) : null}
       </FormSection>
     </Container>
   );
