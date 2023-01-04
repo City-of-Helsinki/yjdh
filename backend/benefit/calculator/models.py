@@ -128,6 +128,8 @@ class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
     granted_as_de_minimis_aid = models.BooleanField(default=False)
 
     target_group_check = models.BooleanField(default=False)
+    target_group_decision = models.BooleanField(blank=True, null=True)
+    target_group_comment = models.CharField(max_length=256, blank=True)
 
     override_monthly_benefit_amount_comment = models.CharField(
         max_length=256,

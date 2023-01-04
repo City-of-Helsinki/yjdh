@@ -216,6 +216,16 @@ class ApplicationsCsvService(CsvExportBase):
                 default_value=None,
             ),
             CsvDefaultColumn(
+                "Otetaan kohderyhmään?",
+                "calculation.target_group_decision",
+                format_bool,
+                default_value=None,
+            ),
+            CsvDefaultColumn(
+                "Kohderyhmä perustelu",
+                "calculation.target_group_comment",
+            ),
+            CsvDefaultColumn(
                 "Hyväksymisen/hylkäyksen/peruutuksen syy", "latest_decision_comment"
             ),
             CsvDefaultColumn("Päättäjän nimike", "batch.decision_maker_title"),

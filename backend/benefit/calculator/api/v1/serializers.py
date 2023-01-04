@@ -154,6 +154,8 @@ class CalculationSerializer(serializers.ModelSerializer):
             "state_aid_max_percentage",
             "granted_as_de_minimis_aid",
             "target_group_check",
+            "target_group_decision",
+            "target_group_comment",
             "calculated_benefit_amount",
             "override_monthly_benefit_amount",
             "override_monthly_benefit_amount_comment",
