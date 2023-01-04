@@ -137,3 +137,33 @@ def social_security_number_birthdate(social_security_number) -> date:
     century_char = compacted_social_security_number[6]
     century = {"+": 1800, "-": 1900, "A": 2000}[century_char]
     return date(year=century + year_mod_100, month=month, day=day)
+
+
+def create_finnish_social_security_number(
+    birthdate: date, individual_number: int
+) -> str:
+    """
+    Create a Finnish social security number based on birthdate and individual number
+
+    :param birthdate: Date of birth
+    :param individual_number: Integer value where 2 <= individual_number <= 999
+    :return: Finnish social security number in format <ddmmyyciiis> where
+             dd = day of birth with leading zeroes,
+             mm = month of birth with leading zeroes,
+             yy = year of birth modulo 100 with leading zeroes,
+             c = century of birth ("+" = 1800, "-" = 1900, "A" = 2000),
+             iii = individual number in range 2–999 with leading zeroes,
+             s = checksum value calculated from <ddmmyyiii>.
+    :raises ValueError: if not (1800 <= birthdate.year <= 2099)
+    :raises ValueError: if not (2 <= individual_number <= 999)
+    """
+    if not (1800 <= birthdate.year <= 2099):
+        raise ValueError("Invalid birthdate year, only years 1800–2099 are supported")
+    if not (2 <= individual_number <= 999):
+        raise ValueError("Invalid individual number, must be in range 2–999")
+    ddmmyy: str = f"{birthdate.day:02}{birthdate.month:02}{birthdate.year % 100:02}"
+    iii: str = f"{individual_number:003}"
+    ddmmyyiii: str = f"{ddmmyy}{iii}"
+    century_char: str = {18: "+", 19: "-", 20: "A"}[birthdate.year // 100]
+    checksum_char: str = "0123456789ABCDEFHJKLMNPRSTUVWXY"[int(ddmmyyiii) % 31]
+    return f"{ddmmyy}{century_char}{iii}{checksum_char}"
