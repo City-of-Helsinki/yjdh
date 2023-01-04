@@ -7,7 +7,6 @@ import factory.fuzzy
 from django.db.models.signals import post_save
 from django.utils import timezone
 from django.utils.timezone import get_current_timezone
-from faker import Faker
 
 from applications.enums import (
     AdditionalInfoUserReason,
@@ -31,6 +30,7 @@ from applications.tests.data.mock_vtj import (
     mock_vtj_person_id_query_found_content,
     mock_vtj_person_id_query_not_found_content,
 )
+from common.tests.faker import get_faker
 from common.utils import get_random_social_security_number_for_year
 from companies.models import Company
 from shared.common.tests.factories import (
@@ -212,7 +212,7 @@ def get_unlisted_test_schools() -> List[str]:
 
 
 def determine_school(youth_application) -> str:
-    return Faker().random_element(
+    return get_faker().random_element(
         get_unlisted_test_schools()
         if youth_application.is_unlisted_school
         else get_listed_test_schools()
@@ -222,11 +222,11 @@ def determine_school(youth_application) -> str:
 def get_test_phone_number() -> str:
     # PHONE_NUMBER_REGEX didn't accept phone numbers starting with (+358) but did with
     # +358 so removing the parentheses to make the generated phone numbers fit it
-    return Faker(locale="fi").phone_number().replace("(+358)", "+358")
+    return get_faker().phone_number().replace("(+358)", "+358")
 
 
 def determine_modified_at(youth_application) -> Optional[datetime]:
-    return Faker().date_time_between_dates(
+    return get_faker().date_time_between_dates(
         youth_application.created_at + timedelta(days=10),
         youth_application.created_at + timedelta(days=20),
         tzinfo=get_current_timezone(),
@@ -245,7 +245,7 @@ def determine_handler(youth_application):
 
 def determine_handled_at(youth_application):
     if youth_application.status in YouthApplicationStatus.handled_values():
-        return Faker().date_time_between_dates(
+        return get_faker().date_time_between_dates(
             youth_application.created_at + timedelta(days=3),
             youth_application.created_at + timedelta(days=10),
             tzinfo=get_current_timezone(),
@@ -255,7 +255,7 @@ def determine_handled_at(youth_application):
 
 def determine_receipt_confirmed_at(youth_application):
     if youth_application.status in YouthApplicationStatus.active_values():
-        return Faker().date_time_between_dates(
+        return get_faker().date_time_between_dates(
             youth_application.created_at,
             youth_application.created_at + timedelta(days=1),
             tzinfo=get_current_timezone(),
@@ -274,7 +274,7 @@ def determine_is_unlisted_school(youth_application):
         youth_application.status
         in YouthApplicationStatus.can_have_additional_info_values()
     ):
-        return Faker().boolean()
+        return get_faker().boolean()
     else:
         return False
 
@@ -293,13 +293,13 @@ def determine_youth_application_has_additional_info(youth_application):
             in YouthApplicationStatus.must_have_additional_info_values()
         ):
             return True
-        return Faker().boolean()
+        return get_faker().boolean()
     return False
 
 
 def determine_additional_info_provided_at(youth_application):
     if youth_application._has_additional_info:
-        return Faker().date_time_between_dates(
+        return get_faker().date_time_between_dates(
             youth_application.created_at + timedelta(days=1),
             youth_application.created_at + timedelta(days=3),
             tzinfo=get_current_timezone(),
@@ -310,14 +310,14 @@ def determine_additional_info_provided_at(youth_application):
 def determine_additional_info_user_reasons(youth_application):
     if youth_application._has_additional_info:
         return list(
-            Faker().random_elements(AdditionalInfoUserReason.values, unique=True)
+            get_faker().random_elements(AdditionalInfoUserReason.values, unique=True)
         )
     return []
 
 
 def determine_additional_info_description(youth_application):
     if youth_application._has_additional_info:
-        return Faker().sentence()
+        return get_faker().sentence()
     return ""
 
 
