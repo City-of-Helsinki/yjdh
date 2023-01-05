@@ -4,11 +4,13 @@ import pytest
 import stdnum.exceptions
 from django.db.models import Q
 
+from shared.common.tests.utils import (
+    create_finnish_social_security_number,
+    set_setting_to_value_or_del_with_none,
+)
 from shared.common.utils import (
     _ALWAYS_FALSE_Q_FILTER,
     any_of_q_filter,
-    create_finnish_social_security_number,
-    set_setting_to_value_or_del_with_none,
     social_security_number_birthdate,
     validate_finnish_social_security_number,
 )

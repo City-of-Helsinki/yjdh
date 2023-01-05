@@ -4,18 +4,17 @@ import pytest
 import stdnum.fi.hetu
 from django.core.exceptions import ValidationError
 
+from common.tests.utils import get_random_social_security_number_for_year
 from common.utils import (
     are_same_text_lists,
     are_same_texts,
-    get_random_social_security_number_for_year,
     has_whitespace,
     is_uppercase,
     normalize_for_string_comparison,
-    normalize_whitespace,
-    utc_datetime,
     validate_finnish_social_security_number,
     validate_optional_finnish_social_security_number,
 )
+from shared.common.tests.utils import normalize_whitespace, utc_datetime
 from shared.common.utils import social_security_number_birthdate
 
 

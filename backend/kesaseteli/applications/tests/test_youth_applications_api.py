@@ -52,11 +52,8 @@ from common.tests.factories import (
     RejectedYouthApplicationFactory,
     YouthApplicationFactory,
 )
+from common.tests.utils import get_random_social_security_number_for_year
 from common.urls import handler_403_url, handler_youth_application_processing_url
-from common.utils import (
-    get_random_social_security_number_for_year,
-    normalize_whitespace,
-)
 from shared.audit_log.models import AuditLogEntry
 from shared.common.lang_test_utils import (
     assert_email_body_language,
@@ -69,6 +66,7 @@ from shared.common.tests.conftest import (
 )
 from shared.common.tests.factories import UserFactory
 from shared.common.tests.test_validators import get_invalid_postcode_values
+from shared.common.tests.utils import normalize_whitespace
 
 
 def create_same_person_previous_year_accepted_application(

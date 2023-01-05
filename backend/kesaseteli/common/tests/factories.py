@@ -31,7 +31,7 @@ from applications.tests.data.mock_vtj import (
     mock_vtj_person_id_query_not_found_content,
 )
 from common.tests.faker import get_faker
-from common.utils import get_random_social_security_number_for_year
+from common.tests.utils import get_random_social_security_number_for_year
 from companies.models import Company
 from shared.common.tests.factories import (
     DuplicateAllowingUserFactory,

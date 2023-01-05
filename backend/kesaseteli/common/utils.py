@@ -1,18 +1,13 @@
 import logging
-from datetime import date, datetime, timezone
+from datetime import date
 from email.mime.image import MIMEImage
-from functools import partial
 from typing import List, Optional
 
-from dateutil.relativedelta import relativedelta
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 from stdnum.fi.hetu import is_valid as is_valid_finnish_social_security_number
-
-from common.tests.faker import get_faker
-from shared.common.utils import create_finnish_social_security_number
 
 LOGGER = logging.getLogger(__name__)
 
@@ -20,10 +15,6 @@ LOGGER = logging.getLogger(__name__)
 def has_whitespace(value):
     value_without_whitespace = "".join(value.split())
     return value != value_without_whitespace
-
-
-def normalize_whitespace(value):
-    return " ".join(value.split())
 
 
 def is_uppercase(value):
@@ -122,23 +113,6 @@ def validate_finnish_social_security_number(value):
         )
 
 
-def get_random_social_security_number_for_year(year: int) -> str:
-    """
-    Create a random non-temporary Finnish social security number for the given year
-    """
-    start_of_year: datetime = datetime(year=year, month=1, day=1, tzinfo=timezone.utc)
-    return create_finnish_social_security_number(
-        birthdate=get_faker()
-        .date_time_between(
-            start_of_year,
-            start_of_year + relativedelta(years=1, seconds=-1),  # Inclusive range
-            tzinfo=timezone.utc,
-        )
-        .date(),
-        individual_number=get_faker().pyint(2, 899),  # Inclusive range
-    )
-
-
 def validate_optional_finnish_social_security_number(value):
     """
     Raise a ValidationError if the given value is not None, an empty string or an
@@ -169,7 +143,3 @@ def getattr_nested(obj, attrs: list):
             with translation.override("fi"):
                 value = getattr(obj, f"get_{attr}_display")()
         return value
-
-
-# Create datetime with UTC timezone
-utc_datetime = partial(datetime, tzinfo=timezone.utc)
