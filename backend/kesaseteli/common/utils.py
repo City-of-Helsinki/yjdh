@@ -1,7 +1,6 @@
 import logging
-from datetime import date, datetime, timezone
+from datetime import date
 from email.mime.image import MIMEImage
-from functools import partial
 from typing import List, Optional
 
 from django.core.exceptions import ValidationError
@@ -16,10 +15,6 @@ LOGGER = logging.getLogger(__name__)
 def has_whitespace(value):
     value_without_whitespace = "".join(value.split())
     return value != value_without_whitespace
-
-
-def normalize_whitespace(value):
-    return " ".join(value.split())
 
 
 def is_uppercase(value):
@@ -148,7 +143,3 @@ def getattr_nested(obj, attrs: list):
             with translation.override("fi"):
                 value = getattr(obj, f"get_{attr}_display")()
         return value
-
-
-# Create datetime with UTC timezone
-utc_datetime = partial(datetime, tzinfo=timezone.utc)

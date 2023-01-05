@@ -18,7 +18,7 @@ from common.tests.factories import (
     EmployerSummerVoucherFactory,
     YouthSummerVoucherFactory,
 )
-from common.utils import utc_datetime
+from shared.common.tests.utils import utc_datetime
 
 
 def create_test_employer_summer_vouchers(year) -> List[EmployerSummerVoucher]:

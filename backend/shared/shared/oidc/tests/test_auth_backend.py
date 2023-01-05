@@ -12,7 +12,7 @@ from django.test import override_settings, RequestFactory
 from django.utils import timezone
 
 from shared.common.tests.conftest import store_tokens_in_session
-from shared.common.utils import set_setting_to_value_or_del_with_none
+from shared.common.tests.utils import set_setting_to_value_or_del_with_none
 from shared.oidc.auth import HelsinkiOIDCAuthenticationBackend
 from shared.oidc.utils import store_token_info_in_oidc_session
 
