@@ -1,19 +1,21 @@
 from datetime import datetime, timezone
 
 import pytest
+import stdnum.fi.hetu
 from django.core.exceptions import ValidationError
 
+from common.tests.utils import get_random_social_security_number_for_year
 from common.utils import (
     are_same_text_lists,
     are_same_texts,
     has_whitespace,
     is_uppercase,
     normalize_for_string_comparison,
-    normalize_whitespace,
-    utc_datetime,
     validate_finnish_social_security_number,
     validate_optional_finnish_social_security_number,
 )
+from shared.common.tests.utils import normalize_whitespace, utc_datetime
+from shared.common.utils import social_security_number_birthdate
 
 
 def get_empty_values():
@@ -155,3 +157,11 @@ def test_utc_datetime(args):
     result = utc_datetime(*args)
     assert result == datetime(*args, tzinfo=timezone.utc)
     assert result.tzinfo == timezone.utc
+
+
+@pytest.mark.parametrize("year", [1800, 2022, 2023, 2099])
+def test_get_random_social_security_number_for_year(year):
+    for _ in range(1000):
+        result = get_random_social_security_number_for_year(year)
+        assert stdnum.fi.hetu.validate(result, allow_temporary=False)
+        assert social_security_number_birthdate(result).year == year

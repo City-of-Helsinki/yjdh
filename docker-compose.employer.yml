@@ -43,7 +43,6 @@ services:
         PORT: 3100
         PROJECT: kesaseteli
         FOLDER: employer
-        SERVICE: ks-empl
     volumes:
       - ./frontend:/app
       - /app/node_modules

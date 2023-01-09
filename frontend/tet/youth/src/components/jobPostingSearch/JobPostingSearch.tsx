@@ -52,11 +52,14 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
     setEndTime(initParams.end ? convertToUIDateFormat(initParams.end) : '');
     setSearchText(initParams.text ? initParams.text : '');
     setChosenLanguage(initParams.language ?? '');
-  }, [initParams, workFeaturesList, workMethodsList]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initParams]);
 
   const searchHandler = (): void => {
     const keywords = [...chosenWorkFeatures];
-    if (workMethod.length > 0) keywords.push(workMethod);
+    if (workMethod.length > 0) {
+      keywords.push(workMethod);
+    }
     onSearchByFilters({
       text: searchText.length > 0 ? searchText : initParams.text,
       start: convertToBackendDateFormat(startTime),

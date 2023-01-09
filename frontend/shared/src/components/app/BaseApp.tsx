@@ -15,7 +15,7 @@ import useIsRouting from 'shared/hooks/useIsRouting';
 import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import maskGDPRData from 'shared/utils/mask-gdpr-data';
-import { isError, isParsableSafeInteger } from 'shared/utils/type-guards';
+import { isError } from 'shared/utils/type-guards';
 import { ThemeProvider } from 'styled-components';
 
 type Props = AppProps & {
@@ -25,22 +25,16 @@ type Props = AppProps & {
   title?: string;
 };
 
-const getSentryTracesSampleRate = (): number => {
-  const sampleRate = process.env.NEXT_PUBLIC_SENTRY_TRACE_SAMPLE_RATE;
-  // default value 1.0 means sentry races 100% of errors.
-  return isParsableSafeInteger(sampleRate) ? parseFloat(sampleRate) : 1;
-};
-
 // Centralized logging with Sentry. See more:
 // https://docs.sentry.io/platforms/javascript/configuration/options
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN || '',
   environment: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT || 'development',
-  attachStacktrace: Boolean(process.env.NEXT_PUBLIC_SENTRY_ATTACH_STACKTRACE),
+  attachStacktrace: true,
   maxBreadcrumbs: Number(process.env.NEXT_PUBLIC_SENTRY_MAX_BREADCRUMBS) || 100,
   // Adjust this value in production, or use tracesSampler for greater control
   // @see https://develop.sentry.dev/sdk/performance/
-  tracesSampleRate: getSentryTracesSampleRate(),
+  tracesSampleRate: 1,
   beforeBreadcrumb(breadcrumb: Sentry.Breadcrumb) {
     return {
       ...breadcrumb,

@@ -12,6 +12,31 @@ from django_auth_adfs.exceptions import MFARequired
 LOGGER = logging.getLogger(__name__)
 
 
+def adfs_login_group_name():
+    """
+    Name of the user group that signifies that the user has logged in using ADFS i.e.
+    HelsinkiAdfsAuthCodeBackend at some point
+
+    :return: Value of settings.ADFS_LOGIN_GROUP_NAME if it exists, otherwise
+             "ADFS login"
+    """
+    return getattr(django_settings, "ADFS_LOGIN_GROUP_NAME", "ADFS login")
+
+
+def is_adfs_login(user) -> bool:
+    """
+    Has user logged in using ADFS i.e. HelsinkiAdfsAuthCodeBackend at some point?
+
+    .. warning::
+       Return value of True does NOT mean that user is currently logged in and active
+       also, it only means that user has logged in using ADFS at some point in the past.
+
+    :return: True if user has logged in using HelsinkiAdfsAuthCodeBackend as some point,
+             otherwise False.
+    """
+    return user.groups.filter(name=adfs_login_group_name()).exists()
+
+
 class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
     def get_member_objects_from_graph_api(
         self, user_oid: str, graph_api_access_token: str
@@ -148,6 +173,14 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
         return response_json["access_token"]
 
     def assign_local_groups(self, user):
+        # Set group membership which tells if user was logged in using ADFS
+        adfs_login_group, _ = Group.objects.get_or_create(name=adfs_login_group_name())
+        if user.is_authenticated:
+            user.groups.add(adfs_login_group)
+        else:
+            # NOTE: This code is not used when called with logged in users
+            user.groups.remove(adfs_login_group)
+
         if handlers_group_name := getattr(django_settings, "HANDLERS_GROUP_NAME", None):
             try:
                 handler_group = Group.objects.get(name=handlers_group_name)
@@ -157,7 +190,7 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
                 if user.is_staff:
                     user.groups.add(handler_group)
                 else:
-                    # safety - shouldn't be ever needed
+                    # Removal is possible if user has been a handler but is no more
                     user.groups.remove(handler_group)
 
     def authenticate(self, request=None, authorization_code=None, **kwargs):

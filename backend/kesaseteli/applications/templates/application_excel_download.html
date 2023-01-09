@@ -15,6 +15,11 @@
         </div>
 
         <h1>Lataa Excel tiedostoja</h1>
+
+        <br/>
+        <h2>Työnantajien kesäsetelihakemukset:</h2>
+        <br/>
+
         <p>
             {% trans 'Luo uusi excel tiedosto kaikista järjestelmän käsittelemättömistä hakemuksista. Kun hakemus lisätään käsittelemättömien hakemusten excel tiedostoon, se merkataan järjestelmässä "käsitellyiksi" eikä sitä tuoda enää seuraavaan käsittelemättömien hakemusten exceliin.' %}
         </p>
@@ -36,4 +41,13 @@
         <div class="col-xs-6">
             <a href="{% url 'excel-download' %}?download=annual&columns=talpa" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">{% trans 'Lataa Talpa-Excel kaikista tämän vuoden hakemuksista' %}</a>
         </div>
+
+        <br/>
+        <h2>Nuorten kesäsetelihakemukset:</h2>
+        <br/>
+
+        <div class="col-xs-6">
+            <a href="{% url 'youth-excel-download' %}" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">{% trans 'Lataa Excel kaikista nuorten vahvistetuista kesäsetelihakemuksista' %}</a>
+        </div>
+
 </div>

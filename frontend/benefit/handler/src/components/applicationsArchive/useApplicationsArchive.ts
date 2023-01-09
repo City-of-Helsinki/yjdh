@@ -5,7 +5,6 @@ import {
   ApplicationListItemData,
 } from 'benefit-shared/types/application';
 import { TFunction, useTranslation } from 'next-i18next';
-import isServerSide from 'shared/server/is-server-side';
 import { getFullName } from 'shared/utils/application.utils';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 
@@ -53,7 +52,7 @@ const useApplicationsArchive = (): ApplicationListProps => {
       };
     });
 
-  const shouldShowSkeleton = !isServerSide() && query.isLoading;
+  const shouldShowSkeleton = query.isLoading;
 
   const shouldHideList =
     Boolean(query.error) ||

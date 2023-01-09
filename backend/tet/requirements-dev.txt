@@ -54,8 +54,10 @@ mccabe==0.6.1
     # via flake8
 mypy-extensions==0.4.3
     # via black
-packaging==21.0
-    # via pytest
+packaging==22.0
+    # via
+    #   -c requirements.txt
+    #   pytest
 parso==0.8.2
     # via jedi
 pathspec==0.9.0
@@ -88,8 +90,6 @@ pyflakes==2.4.0
     # via flake8
 pygments==2.9.0
     # via ipython
-pyparsing==2.4.7
-    # via packaging
 pytest==6.2.4
     # via
     #   -r requirements-dev.in

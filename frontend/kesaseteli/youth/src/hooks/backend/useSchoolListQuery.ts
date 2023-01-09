@@ -5,7 +5,7 @@ import useErrorHandler from 'shared/hooks/useErrorHandler';
 const useSchoolListQuery = (): UseQueryResult<string[]> =>
   useQuery(BackendEndpoint.SCHOOLS, {
     staleTime: Infinity,
-    onError: useErrorHandler(false),
+    onError: useErrorHandler(),
   });
 
 export default useSchoolListQuery;

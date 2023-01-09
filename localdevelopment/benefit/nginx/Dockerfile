@@ -1,6 +1,6 @@
-FROM nginx:latest
+FROM nginx:1.23.3-alpine-slim
 
-RUN apt-get update && apt-get install -y openssl
+RUN apk update && apk add bash openssl
 
 COPY entrypoint.sh /usr/local/bin
 

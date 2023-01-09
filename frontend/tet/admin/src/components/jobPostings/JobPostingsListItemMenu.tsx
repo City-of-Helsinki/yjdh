@@ -3,23 +3,26 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import useConfirm from 'shared/hooks/useConfirm';
+import { JobPostingsListItemProps } from 'tet/admin/components/jobPostings/JobPostingsListItem';
 import { $Menu, $MenuItem } from 'tet/admin/components/jobPostings/JobPostingsListItemMenu.sc';
 import useDeleteTetPosting from 'tet/admin/hooks/backend/useDeleteTetPosting';
 import usePublishTetPosting from 'tet/admin/hooks/backend/usePublishTetPosting';
-import TetPosting from 'tet-shared/types/tetposting';
 
-type JobPostingsListItemMenuProps = {
-  posting: TetPosting;
+type JobPostingsListItemMenuProps = JobPostingsListItemProps & {
   onClickOutside: () => void;
   show: boolean;
 };
 
-const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) => {
+const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = ({
+  posting,
+  sectionId,
+  onClickOutside,
+  show,
+}) => {
   const { t } = useTranslation();
   const { confirm } = useConfirm();
   const ref = React.useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const { posting, onClickOutside, show } = props;
   const deleteTetPosting = useDeleteTetPosting();
   const publishTetPosting = usePublishTetPosting();
 
@@ -82,16 +85,18 @@ const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) 
   return (
     <$Menu ref={ref}>
       <ul>
-        {!posting.date_published && (
+        {sectionId === 'draft' && (
           <$MenuItem onClick={publishPostingHandler}>
             <IconEye />
             <span>{t('common:application.jobPostings.menu.publishNow')}</span>
           </$MenuItem>
         )}
-        <$MenuItem onClick={editPostingHandler}>
-          <IconPen />
-          <span>{t('common:application.jobPostings.menu.edit')}</span>
-        </$MenuItem>
+        {sectionId !== 'expired' && (
+          <$MenuItem onClick={editPostingHandler}>
+            <IconPen />
+            <span>{t('common:application.jobPostings.menu.edit')}</span>
+          </$MenuItem>
+        )}
         <$MenuItem onClick={copyPostingHandler}>
           <IconPlusCircle />
           <span>{t('common:application.jobPostings.menu.copy')}</span>

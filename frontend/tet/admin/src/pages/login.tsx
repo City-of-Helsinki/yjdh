@@ -40,13 +40,6 @@ const Login: NextPage = () => {
     }
   }, [logout, queryClient]);
 
-  if (error || logout) {
-    return null;
-  }
-  if (sessionExpired) {
-    return t(`common:loginPage.logoutInfoContent`);
-  }
-
   return (
     <>
       <LoginHeader />

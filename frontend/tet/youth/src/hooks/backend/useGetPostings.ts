@@ -20,6 +20,7 @@ const useGetPostings = (params: QueryParams): UseQueryResult<LinkedEventsPagedRe
         params: {
           data_source: 'tet',
           show_all: true,
+          start: 'today',
           page_size: 100,
           ...params,
         },

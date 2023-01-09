@@ -6,7 +6,10 @@ from django.urls import include, path
 from rest_framework import routers
 
 from applications.api.v1 import views as application_views
-from applications.views import EmployerApplicationExcelDownloadView
+from applications.views import (
+    EmployerApplicationExcelDownloadView,
+    YouthApplicationExcelExportViewSet,
+)
 from companies.api.v1.views import GetCompanyView
 from shared.suomi_fi.views import (
     SuomiFiAssertionConsumerServiceView,
@@ -30,6 +33,11 @@ urlpatterns = [
         "excel-download/",
         EmployerApplicationExcelDownloadView.as_view(),
         name="excel-download",
+    ),
+    path(
+        "excel-download/confirmed-youth-applications/",
+        YouthApplicationExcelExportViewSet.as_view({"get": "list"}),
+        name="youth-excel-download",
     ),
     path("logout/", LogoutView.as_view(), name="logout"),
 ]

@@ -33,7 +33,7 @@ const useHandleYouthApplicationSubmit = (): ReturnType => {
   const router = useRouter();
   const locale = useLocale();
   const goToPage = useGoToPage();
-  const handleDefaultError = useErrorHandler(false);
+  const handleDefaultError = useErrorHandler();
 
   const [submitError, setSubmitError] = React.useState<SubmitError | null>(
     null

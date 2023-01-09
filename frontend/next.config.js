@@ -71,7 +71,7 @@ const nextConfig = (override) => ({
    // outputStandalone: true
   },
   sentry: {
-    hideSourceMaps: true,
+    hideSourceMaps: disableSourceMaps,
     autoInstrumentServerFunctions: !NEXTJS_DISABLE_SENTRY
   },
   typescript: {
@@ -148,7 +148,6 @@ if (!NEXTJS_DISABLE_SENTRY) {
     // https://github.com/getsentry/sentry-webpack-plugin#options.
     // silent: isProd, // Suppresses all logs
     dryRun: NEXTJS_SENTRY_UPLOAD_DRY_RUN,
-    authToken: process.env?.SENTRY_AUTH_TOKEN,
   });
 }
 else {

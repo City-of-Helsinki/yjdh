@@ -8,7 +8,7 @@ const useYouthApplicationStatusQuery = (
   id?: string,
   options?: UseQueryOptions<YouthApplicationStatus>
 ): UseQueryResult<YouthApplicationStatus> => {
-  const handleError = useErrorHandler(false);
+  const handleError = useErrorHandler();
   return useQuery({
     queryKey: id ? getYouthApplicationStatusQueryKey(id) : undefined,
     enabled: Boolean(id),

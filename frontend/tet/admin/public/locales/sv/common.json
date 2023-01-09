@@ -58,6 +58,7 @@
       "addNewPosting": "Lägg till ny praktikplats",
 			"publishedPostings": "PRAO-platser",
 			"draftPostings": "Halvfärdiga annonser",
+      "expiredPostings": "Utgångna annonser",
 			"openSpots_one": "{{count}} PRAO-plats",
 			"openSpots_other": "{{count}} PRAO-platser",
 			"published": "Publicerad",

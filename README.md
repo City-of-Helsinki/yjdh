@@ -91,7 +91,7 @@ YJDH-TET-Youth is a UI for pupils to search for TET job advertisements.
 2. Copy the contents of `.env.tet.example` to `.env.tet` and modify it if needed.
 
 3. Run `yarn tet-youth up` or, if you want to rebuild, then `yarn tet-youth up --build`
-  - The Frontend is now running at [localhost:3002](https://localhost:3001)
+  - The Frontend is now running at [localhost:3001](https://localhost:3001)
   - The backend is now running at [localhost:8000](https://localhost:8000)
 
 Running `yarn tet-youth down` brings down all services.

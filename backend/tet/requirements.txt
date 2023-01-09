@@ -8,6 +8,8 @@
     # via -r requirements.in
 asgiref==3.3.4
     # via django
+authlib==1.2.0
+    # via drf-oidc-auth
 azure-common==1.1.27
     # via
     #   azure-storage-blob
@@ -16,6 +18,8 @@ azure-storage-blob==2.1.0
     # via django-storages
 azure-storage-common==2.1.0
     # via azure-storage-blob
+cachetools==5.2.0
+    # via django-helusers
 certifi==2021.5.30
     # via
     #   elasticsearch
@@ -27,8 +31,10 @@ chardet==4.0.0
     # via requests
 cryptography==3.4.7
     # via
+    #   authlib
     #   azure-storage-common
     #   django-auth-adfs
+    #   drf-oidc-auth
     #   josepy
     #   mozilla-django-oidc
     #   pyopenssl
@@ -37,16 +43,20 @@ defusedxml==0.7.1
     # via
     #   djangosaml2
     #   pysaml2
+deprecation==2.1.0
+    # via django-helusers
 django==3.2.4
     # via
     #   -r requirements.in
     #   django-auth-adfs
     #   django-cors-headers
     #   django-extensions
+    #   django-helusers
     #   django-searchable-encrypted-fields
     #   django-storages
     #   djangorestframework
     #   djangosaml2
+    #   drf-oidc-auth
     #   mozilla-django-oidc
     #   yjdh-backend-shared
 django-auth-adfs==1.7.0
@@ -61,6 +71,8 @@ django-extensions==3.1.3
     # via
     #   -r requirements.in
     #   yjdh-backend-shared
+django-helusers==0.7.1
+    # via -r requirements.in
 django-searchable-encrypted-fields==0.1.9
     # via -r requirements.in
 django-simple-history==3.0.0
@@ -68,9 +80,15 @@ django-simple-history==3.0.0
 django-storages[azure]==1.11.1
     # via -r requirements.in
 djangorestframework==3.12.4
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   drf-oidc-auth
 djangosaml2==1.5.0
     # via yjdh-backend-shared
+drf-oidc-auth==3.0.0
+    # via -r requirements.in
+ecdsa==0.18.0
+    # via python-jose
 elasticsearch==7.14.0
     # via -r requirements.in
 elementpath==2.5.3
@@ -91,10 +109,16 @@ mozilla-django-oidc==1.2.4
     # via
     #   -r requirements.in
     #   yjdh-backend-shared
+packaging==22.0
+    # via deprecation
 pillow==8.3.1
     # via -r requirements.in
 psycopg2==2.8.6
     # via -r requirements.in
+pyasn1==0.4.8
+    # via
+    #   python-jose
+    #   rsa
 pycparser==2.20
     # via cffi
 pycryptodome==3.10.1
@@ -112,6 +136,8 @@ python-dateutil==2.8.1
     #   azure-storage-common
     #   faker
     #   pysaml2
+python-jose==3.3.0
+    # via django-helusers
 python-stdnum==1.17
     # via -r requirements.in
 pytz==2021.1
@@ -123,12 +149,17 @@ requests==2.25.1
     #   -r requirements.in
     #   azure-storage-common
     #   django-auth-adfs
+    #   django-helusers
+    #   drf-oidc-auth
     #   mozilla-django-oidc
     #   pysaml2
+rsa==4.9
+    # via python-jose
 sentry-sdk==1.4.1
     # via -r requirements.in
 six==1.16.0
     # via
+    #   ecdsa
     #   mozilla-django-oidc
     #   pyopenssl
     #   pysaml2

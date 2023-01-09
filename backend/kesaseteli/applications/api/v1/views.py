@@ -286,13 +286,17 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def activate(self, request, *args, **kwargs) -> HttpResponse:  # noqa: C901
         youth_application: YouthApplication = self.get_object()
 
-        # Lock same person's applications to prevent activation of more than one of them
-        same_persons_apps = YouthApplication.objects.select_for_update().filter(
-            social_security_number=youth_application.social_security_number
+        # Lock same person's this year's applications to prevent multiple activations
+        same_persons_this_year_apps = (
+            YouthApplication.objects.filter(
+                social_security_number=youth_application.social_security_number
+            )
+            .created_this_year()
+            .select_for_update()
         )
-        list(same_persons_apps)  # Force evaluation of queryset to lock its rows
+        list(same_persons_this_year_apps)  # Force evaluation to lock queryset's rows
 
-        if same_persons_apps.active().non_rejected().exists():
+        if same_persons_this_year_apps.active().non_rejected().exists():
             if (
                 youth_application.is_active
                 and not youth_application.is_rejected
@@ -397,13 +401,13 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             email = serializer.validated_data["email"]
             social_security_number = serializer.validated_data["social_security_number"]
 
-            if YouthApplication.is_email_or_social_security_number_active(
+            if YouthApplication.objects.is_email_or_social_security_number_active_this_year(
                 email, social_security_number
             ):
                 return self.error_response_with_logging(
                     YouthApplicationRejectedReason.ALREADY_ASSIGNED
                 )
-            elif YouthApplication.is_email_used(email):
+            elif YouthApplication.objects.is_email_used_this_year(email):
                 return self.error_response_with_logging(
                     YouthApplicationRejectedReason.EMAIL_IN_USE
                 )

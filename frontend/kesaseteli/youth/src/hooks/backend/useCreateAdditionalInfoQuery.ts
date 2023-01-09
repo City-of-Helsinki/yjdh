@@ -39,7 +39,7 @@ const useCreateAdditionalInfoQuery = (
         void onSuccess(data, operation, context);
       }
     },
-    onError: useErrorHandler(false),
+    onError: useErrorHandler(),
     ...restOptions,
   });
 };

@@ -10,6 +10,9 @@ Please **take NEXT_PUBLIC_MOCK_FLAG into account when changing/adding code which
 permissions, authentication** etc. There are automated backend tests related to
 NEXT_PUBLIC_MOCK_FLAG's functionality but they are not fully comprehensive.
 
+A better way to fix this would be implementing [HL-582](https://helsinkisolutionoffice.atlassian.net/browse/HL-582)
+i.e. "Mock both applicant and handler logins (Applicant uses OIDC, handler uses ADFS)".
+
 ## Development without Docker
 
 Prerequisites:

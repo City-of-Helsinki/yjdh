@@ -1,3 +1,4 @@
+import copy
 import json
 
 from events.utils import PROVIDER_BUSINESS_ID_FIELD, PROVIDER_NAME_FIELD
@@ -114,7 +115,7 @@ ADD_EVENT_RESPONSE = json.loads(
     "last_modified_time": "2022-03-09T13:21:42.665373Z",
     "date_published": null,
     "start_time": "2022-04-01",
-    "end_time": "2022-05-01",
+    "end_time": "2070-05-01",
     "created_by": "API key from data source tet",
     "last_modified_by": "API key from data source tet",
     "custom_data": {
@@ -259,7 +260,7 @@ EVENT_RESPONSE_TESTUSER_EMAIL = json.loads(
 )
 
 
-EVENT_RESPONSE_TESTUSER_OID = json.loads(
+EVENT_RESPONSE_TESTUSER_OID_EXPIRED = json.loads(
     """
         {
             "id": "tet:test-user-oid-set",
@@ -332,7 +333,7 @@ EVENT_RESPONSE_TESTUSER_OID = json.loads(
             "last_modified_time": "2022-03-08T12:49:03.450105Z",
             "date_published": "2022-03-07T22:00:00Z",
             "start_time": "2022-04-01",
-            "end_time": null,
+            "end_time": "2022-05-01",
             "created_by": " - ",
             "last_modified_by": " - ",
             "custom_data": {
@@ -380,6 +381,10 @@ EVENT_RESPONSE_TESTUSER_OID = json.loads(
 """
 )
 
+EVENT_RESPONSE_TESTUSER_OID_UNEXPIRED = copy.deepcopy(
+    EVENT_RESPONSE_TESTUSER_OID_EXPIRED
+)
+EVENT_RESPONSE_TESTUSER_OID_UNEXPIRED["end_time"] = None
 
 EVENT_RESPONSE_OTHERUSER = json.loads(
     """
@@ -669,10 +674,11 @@ EVENT_RESPONSE_NO_CUSTOM_DATA = json.loads(
 
 
 SAMPLE_EVENTS = {
-    "meta": {"count": 5, "next": None, "previous": None},
+    "meta": {"count": 6, "next": None, "previous": None},
     "data": [
         EVENT_RESPONSE_TESTUSER_EMAIL,
-        EVENT_RESPONSE_TESTUSER_OID,
+        EVENT_RESPONSE_TESTUSER_OID_EXPIRED,
+        EVENT_RESPONSE_TESTUSER_OID_UNEXPIRED,
         EVENT_RESPONSE_OTHERUSER,
         EVENT_RESPONSE_TEST_COMPANY,
         EVENT_RESPONSE_NO_CUSTOM_DATA,

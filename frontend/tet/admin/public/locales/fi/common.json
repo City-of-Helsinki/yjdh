@@ -57,6 +57,7 @@
       "addNewPosting": "Lisää uusi TET-paikka",
 			"publishedPostings": "TET-paikat",
 			"draftPostings": "Keskeneräiset ilmoitukset",
+      "expiredPostings": "Päättyneet ilmoitukset",
 			"openSpots_one": "{{count}} TET-paikka",
 			"openSpots_other": "{{count}} TET-paikkaa",
 			"published": "Julkaistu",

@@ -84,7 +84,6 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
         />
         <SelectionGroup
           id={getId('target_group')}
-          showTitle={false}
           validation={{
             required: true,
           }}

@@ -8,7 +8,12 @@ from django.contrib.auth.models import Group
 from django.test import override_settings
 from django.urls import reverse
 
-from shared.azure_adfs.auth import HelsinkiAdfsAuthCodeBackend, provider_config
+from shared.azure_adfs.auth import (
+    adfs_login_group_name,
+    HelsinkiAdfsAuthCodeBackend,
+    is_adfs_login,
+    provider_config,
+)
 from shared.common.tests import get_default_test_host
 
 
@@ -153,8 +158,11 @@ def test_authenticate(user):
             auth_user = auth_backend.authenticate(authorization_code="test")
 
     assert auth_user == user
+    assert auth_user.is_authenticated
     assert auth_user.is_staff
-    assert user.groups.filter(name=settings.HANDLERS_GROUP_NAME).exists()
+    assert auth_user.groups.filter(name=settings.HANDLERS_GROUP_NAME).exists()
+    assert auth_user.groups.filter(name=adfs_login_group_name()).exists()
+    assert is_adfs_login(auth_user)
 
 
 @override_settings(

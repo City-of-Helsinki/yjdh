@@ -93,6 +93,7 @@ export type TetUpsert = {
 export type TetEvents = {
   draft: TetEvent[];
   published: TetEvent[];
+  expired: TetEvent[];
 };
 
 export type ErrorData = {

@@ -2,13 +2,13 @@ import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import JobPostingsListItem from 'tet/admin/components/jobPostings/JobPostingsListItem';
 import { $HeadingContainer, $Title, $Total } from 'tet/admin/components/jobPostings/JobPostingsSectio.sc';
-import TetPosting from 'tet-shared/types/tetposting';
+import TetPosting, { TetPostings } from 'tet-shared/types/tetposting';
 
 type JobPostingsSectionProps = {
   title: string;
   postingsTotal: number;
   postings: TetPosting[];
-  sectionId: string;
+  sectionId: keyof TetPostings;
 };
 
 const JobPostingsSection: React.FC<JobPostingsSectionProps> = ({ title, postingsTotal, postings, sectionId }) => {
@@ -22,7 +22,7 @@ const JobPostingsSection: React.FC<JobPostingsSectionProps> = ({ title, postings
         </$Total>
       </$HeadingContainer>
       {postings.map((posting) => (
-        <JobPostingsListItem key={posting.id} posting={posting} />
+        <JobPostingsListItem key={posting.id} posting={posting} sectionId={sectionId} />
       ))}
     </div>
   );

@@ -4,11 +4,18 @@ import useGoToPage from 'shared/hooks/useGoToPage';
 
 type ErrorHandlerFunction = (error: Error | unknown) => void;
 
-const useErrorHandler = (redirectUnauthorized = true): ErrorHandlerFunction => {
+type Props = {
+  onAuthError?: () => void;
+  onServerError?: () => void;
+  onCommonError?: () => void;
+};
+
+const useErrorHandler = (props: Props = {}): ErrorHandlerFunction => {
   const { t } = useTranslation();
   const goToPage = useGoToPage();
+
   return (error: Error | unknown) =>
-    handleError(error, t, goToPage, redirectUnauthorized);
+    handleError({ error, t, goToPage, ...props });
 };
 
 export default useErrorHandler;

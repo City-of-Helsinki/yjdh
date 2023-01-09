@@ -1,8 +1,10 @@
 import logging
 from datetime import date
 
+from dateutil.parser import isoparse
 from django.conf import settings
 from django.http import HttpRequest
+from django.utils import timezone
 from rest_framework.exceptions import PermissionDenied, ValidationError
 
 from events.exceptions import LinkedEventsException
@@ -19,6 +21,13 @@ LOGGER = logging.getLogger(__name__)
 
 def is_published(posting):
     return posting["publication_status"] == "public"
+
+
+def is_expired(posting):
+    return (
+        posting["end_time"] is not None
+        and isoparse(posting["end_time"]).date() < timezone.now().date()
+    )
 
 
 def _user_matches(event, user):
@@ -125,7 +134,10 @@ class ServiceClient:
 
         return {
             "draft": [p for p in job_postings if not is_published(p)],
-            "published": [p for p in job_postings if is_published(p)],
+            "published": [
+                p for p in job_postings if is_published(p) and not is_expired(p)
+            ],
+            "expired": [p for p in job_postings if is_published(p) and is_expired(p)],
         }
 
     # not MVP?

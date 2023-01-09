@@ -58,6 +58,7 @@
       "addNewPosting": "Add new training advertisement",
 			"publishedPostings": "TET advertisements",
 			"draftPostings": "Incomplete advertisements",
+      "expiredPostings": "Expired advertisements",
 			"openSpots_one": "{{count}} TET advertisement",
 			"openSpots_other": "{{count}} TET advertisements",
 			"published": "Published",

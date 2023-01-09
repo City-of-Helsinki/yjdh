@@ -1,8 +1,11 @@
 import json
+from datetime import datetime
+from typing import Optional, Union
 
 import filetype
 from django.conf import settings
 from django.db import transaction
+from django.utils import timezone, translation
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from PIL import Image, UnidentifiedImageError
@@ -604,4 +607,89 @@ class YouthApplicationHandlingSerializer(serializers.ModelSerializer):
         model = YouthApplication
         fields = [
             "encrypted_handler_vtj_json",
+        ]
+
+
+class YouthApplicationExcelExportSerializer(serializers.ModelSerializer):
+    application_year = serializers.SerializerMethodField()
+    application_date = serializers.SerializerMethodField()
+    birth_year = serializers.IntegerField(source="birthdate.year")
+    birthdate = serializers.SerializerMethodField()
+    confirmation_date = serializers.SerializerMethodField()
+    handling_date = serializers.SerializerMethodField()
+    additional_info_providing_date = serializers.SerializerMethodField()
+    additional_info_user_reasons = serializers.SerializerMethodField()
+    summer_voucher_serial_number = serializers.SerializerMethodField()
+    is_unlisted_school = serializers.SerializerMethodField()
+
+    @staticmethod
+    def to_isoformat_localdate(value: datetime) -> str:
+        return timezone.localdate(value).isoformat() if value else ""
+
+    @staticmethod
+    def to_local_year(value: datetime) -> int:
+        return timezone.localdate(value).year
+
+    def get_summer_voucher_serial_number(self, obj: YouthApplication) -> Optional[int]:
+        if not obj.has_youth_summer_voucher:
+            return None
+        return obj.youth_summer_voucher.summer_voucher_serial_number
+
+    def get_birthdate(self, obj: YouthApplication) -> str:
+        return obj.birthdate.isoformat()
+
+    def get_application_year(self, obj: YouthApplication) -> int:
+        return self.to_local_year(obj.created_at)
+
+    def get_application_date(self, obj: YouthApplication) -> str:
+        return self.to_isoformat_localdate(obj.created_at)
+
+    def get_confirmation_date(self, obj: YouthApplication) -> str:
+        return self.to_isoformat_localdate(obj.receipt_confirmed_at)
+
+    def get_additional_info_providing_date(self, obj: YouthApplication) -> str:
+        return self.to_isoformat_localdate(obj.additional_info_provided_at)
+
+    def get_handling_date(self, obj: YouthApplication) -> str:
+        return self.to_isoformat_localdate(obj.handled_at)
+
+    def get_additional_info_user_reasons(self, obj: YouthApplication) -> str:
+        return ", ".join(sorted(obj.additional_info_user_reasons))
+
+    def get_is_unlisted_school(self, obj: YouthApplication) -> str:
+        with translation.override("fi"):
+            return str(_("Kyllä") if obj.is_unlisted_school else _("Ei"))
+
+    @staticmethod
+    def get_placeholder_value(field: str) -> Union[int, str]:
+        if field in ["application_year", "birth_year"]:
+            return 1  # Placeholder integer value
+        else:
+            return "placeholder_value"
+
+    class Meta:
+        model = YouthApplication
+        fields = read_only_fields = [
+            "additional_info_description",
+            "additional_info_providing_date",
+            "additional_info_user_reasons",
+            "application_date",
+            "application_year",
+            "birth_year",
+            "birthdate",
+            "confirmation_date",
+            "email",
+            "first_name",
+            "handling_date",
+            "id",
+            "is_unlisted_school",
+            "language",
+            "last_name",
+            "phone_number",
+            "postcode",
+            "school",
+            "status",
+            "summer_voucher_serial_number",
+            "vtj_home_municipality",
+            "vtj_last_name",
         ]

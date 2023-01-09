@@ -15,9 +15,10 @@ import JobPostings from '../JobPostings';
 describe('JobPostings', () => {
   const draftTitles = ['draft-1', 'draft-2'];
   const publishedTitles = ['published-1', 'published-2', 'published-3'];
-  const events = fakeEventListAdmin(draftTitles, publishedTitles);
+  const expiredTitles = ['expired-1', 'expired-2'];
+  const events = fakeEventListAdmin(draftTitles, publishedTitles, expiredTitles);
 
-  it('should list unpublished postings in unpublished list and published postings in published list', async () => {
+  it('should list unpublished postings in unpublished list and published postings in published list and expired postings in expired list', async () => {
     expectToGetEventsFromBackend(events);
     expectWorkingMethodsFromLinkedEvents();
     expectAttributesFromLinkedEvents();
@@ -26,6 +27,7 @@ describe('JobPostings', () => {
 
     const publishedList = await screen.findByTestId('published-list');
     const draftList = await screen.findByTestId('draft-list');
+    const expiredList = await screen.findByTestId('expired-list');
 
     for (const title of draftTitles) {
       await within(draftList).findByText(new RegExp(title, 'i'));
@@ -33,6 +35,10 @@ describe('JobPostings', () => {
 
     for (const title of publishedTitles) {
       await within(publishedList).findByText(new RegExp(title, 'i'));
+    }
+
+    for (const title of expiredTitles) {
+      await within(expiredList).findByText(new RegExp(title, 'i'));
     }
   });
 
@@ -45,8 +51,10 @@ describe('JobPostings', () => {
 
     const publishedList = await screen.findByTestId('published-list');
     const draftList = await screen.findByTestId('draft-list');
+    const expiredList = await screen.findByTestId('expired-list');
 
-    await within(draftList).findByText(new RegExp(`${draftTitles.length} kpl`, 'i'));
     await within(publishedList).findByText(new RegExp(`${publishedTitles.length} kpl`, 'i'));
+    await within(draftList).findByText(new RegExp(`${draftTitles.length} kpl`, 'i'));
+    await within(expiredList).findByText(new RegExp(`${expiredTitles.length} kpl`, 'i'));
   });
 });

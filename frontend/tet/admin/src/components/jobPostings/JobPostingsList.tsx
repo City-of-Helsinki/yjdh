@@ -1,14 +1,9 @@
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import JobPostingsSection from 'tet/admin/components/jobPostings/JobPostingsSection';
-import TetPosting from 'tet-shared/types/tetposting';
+import { TetPostings } from 'tet-shared/types/tetposting';
 
-type JobPostingsListProps = {
-  draft: TetPosting[];
-  published: TetPosting[];
-};
-
-const JobPostingsList: React.FC<JobPostingsListProps> = ({ draft, published }) => {
+const JobPostingsList: React.FC<TetPostings> = ({ draft, published, expired }) => {
   const { t } = useTranslation();
   return (
     <>
@@ -23,6 +18,12 @@ const JobPostingsList: React.FC<JobPostingsListProps> = ({ draft, published }) =
         postingsTotal={draft.length}
         postings={draft}
         sectionId="draft"
+      />
+      <JobPostingsSection
+        title={t('common:application.jobPostings.expiredPostings')}
+        postingsTotal={expired.length}
+        postings={expired}
+        sectionId="expired"
       />
     </>
   );
