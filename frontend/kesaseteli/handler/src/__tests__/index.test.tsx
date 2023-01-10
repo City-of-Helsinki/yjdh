@@ -49,7 +49,11 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
     const spyPush = jest.fn();
     renderPage(HandlerIndex, { push: spyPush, query: { id: '123-abc' } });
     await waitFor(() =>
-      expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`)
+      expect(spyPush).toHaveBeenCalledWith(
+        `${DEFAULT_LANGUAGE}/500`,
+        undefined,
+        { shallow: false }
+      )
     );
   });
 
@@ -520,7 +524,11 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         await indexPageApi.expectations.showsConfirmDialog(operationType);
         await indexPageApi.actions.clickConfirmButton(operationType, 500);
         await waitFor(() =>
-          expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`)
+          expect(spyPush).toHaveBeenCalledWith(
+            `${DEFAULT_LANGUAGE}/500`,
+            undefined,
+            { shallow: false }
+          )
         );
       });
     });

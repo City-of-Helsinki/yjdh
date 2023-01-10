@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import handleError from 'shared/error-handler/error-handler';
 import useGoToPage from 'shared/hooks/useGoToPage';
@@ -12,10 +13,11 @@ type Props = {
 
 const useErrorHandler = (props: Props = {}): ErrorHandlerFunction => {
   const { t } = useTranslation();
+  const { pathname } = useRouter();
   const goToPage = useGoToPage();
 
   return (error: Error | unknown) =>
-    handleError({ error, t, goToPage, ...props });
+    handleError({ error, t, pathname, goToPage, ...props });
 };
 
 export default useErrorHandler;

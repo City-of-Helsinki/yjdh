@@ -213,7 +213,11 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
         backendExpectation: expectToCreateYouthApplication,
       });
       await waitFor(() =>
-        expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/thankyou`)
+        expect(spyPush).toHaveBeenCalledWith(
+          `${DEFAULT_LANGUAGE}/thankyou`,
+          undefined,
+          { shallow: false }
+        )
       );
     });
 
@@ -227,7 +231,11 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
         backendExpectation: expectToCreateYouthApplication,
       });
       await waitFor(() =>
-        expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/thankyou`)
+        expect(spyPush).toHaveBeenCalledWith(
+          `${DEFAULT_LANGUAGE}/thankyou`,
+          undefined,
+          { shallow: false }
+        )
       );
     });
 
@@ -244,7 +252,11 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
         backendExpectation: expectToCreateYouthApplication,
       });
       await waitFor(() =>
-        expect(spyPush).toHaveBeenCalledWith(`${language}/thankyou`)
+        expect(spyPush).toHaveBeenCalledWith(
+          `${language}/thankyou`,
+          undefined,
+          { shallow: false }
+        )
       );
     });
 
@@ -271,7 +283,11 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
         backendExpectation: expectToReplyErrorWhenCreatingYouthApplication(500),
       });
       await waitFor(() =>
-        expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`)
+        expect(spyPush).toHaveBeenCalledWith(
+          `${DEFAULT_LANGUAGE}/500`,
+          undefined,
+          { shallow: false }
+        )
       );
     });
 
@@ -290,9 +306,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
           ),
         });
         await waitFor(() =>
-          expect(spyPush).toHaveBeenCalledWith(
-            `${DEFAULT_LANGUAGE}/${errorType}`
-          )
+          expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/${errorType}`)
         );
       });
     }
@@ -354,7 +368,11 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
           backendExpectation: expectToCreateYouthApplication,
         });
         await waitFor(() =>
-          expect(spyPush).toHaveBeenCalledWith(`${language}/thankyou`)
+          expect(spyPush).toHaveBeenCalledWith(
+            `${language}/thankyou`,
+            undefined,
+            { shallow: false }
+          )
         );
       });
 
@@ -395,7 +413,11 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
             expectToReplyErrorWhenCreatingYouthApplication(500),
         });
         await waitFor(() =>
-          expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`)
+          expect(spyPush).toHaveBeenCalledWith(
+            `${DEFAULT_LANGUAGE}/500`,
+            undefined,
+            { shallow: false }
+          )
         );
       });
 
@@ -420,9 +442,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
             ),
           });
           await waitFor(() =>
-            expect(spyPush).toHaveBeenCalledWith(
-              `${DEFAULT_LANGUAGE}/${errorType}`
-            )
+            expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/${errorType}`)
           );
         });
       }

@@ -23,7 +23,9 @@ describe('frontend/kesaseteli/youth/src/pages/inadmissible_data.tsx', () => {
     await emailInUseApi.expectations.pageIsLoaded();
     await emailInUseApi.actions.clickGoToFrontPageButton();
     await waitFor(() =>
-      expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/`)
+      expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/`, undefined, {
+        shallow: false,
+      })
     );
   });
 });

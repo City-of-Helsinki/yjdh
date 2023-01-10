@@ -38,7 +38,9 @@ describe('frontend/tet/admin/src/pages/editstatic.tsx', () => {
     expectUnauthorizedReply();
     const spyPush = jest.fn();
     renderPage(EditStaticPage, { push: spyPush });
-    await waitFor(() => expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/login`));
+    await waitFor(() =>
+      expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/login`, undefined, { shallow: false }),
+    );
   });
 
   // this test occasionally fails
