@@ -35,7 +35,6 @@ from messages.models import MessageType
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
 from users.utils import get_company_from_request
 
-
 class BaseApplicationFilter(filters.FilterSet):
 
     status = filters.MultipleChoiceFilter(
@@ -154,7 +153,9 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         )
 
         serializer = self.serializer_class(qs, many=True, context=context)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        ordered = sorted(serializer.data, key=lambda application:application["submitted_at"], reverse=True)
+
+        return Response(ordered, status=status.HTTP_200_OK)
 
     @action(
         methods=("POST",),
