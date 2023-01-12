@@ -154,10 +154,16 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         )
 
         serializer = self.serializer_class(qs, many=True, context=context)
+
+        order_key = request.GET.get("order_key", "created_at")
+
+        order_by = request.GET.get("order_by", "asc")
+        is_order_descending = order_by.lower() == "desc" or False
+
         ordered_data = sorted(
             serializer.data,
-            key=lambda item: item["submitted_at"],
-            reverse=True,
+            key=lambda item: item[order_key],
+            reverse=is_order_descending,
         )
 
         return Response(ordered_data, status=status.HTTP_200_OK)
