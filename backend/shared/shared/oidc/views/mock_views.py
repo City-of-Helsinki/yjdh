@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from django.conf import settings
 from django.contrib import auth
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -64,6 +66,7 @@ class MockAuthenticationRequestView(View):
             user = UserFactory(
                 is_staff=getattr(settings, "OIDC_MOCK_USER_IS_STAFF", False),
                 is_superuser=getattr(settings, "OIDC_MOCK_USER_IS_SUPERUSER", False),
+                uuid=uuid4(),
             )
             auth.login(
                 request, user, backend="django.contrib.auth.backends.ModelBackend"

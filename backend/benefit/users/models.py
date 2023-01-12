@@ -6,7 +6,7 @@ from helsinki_gdpr.models import SerializableMixin
 
 
 class User(AbstractUser, SerializableMixin):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, editable=False)  # Helsinki-profiili id?
 
     class Meta:
         db_table = "bf_users_user"

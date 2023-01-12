@@ -211,6 +211,7 @@ INSTALLED_APPS = [
     "encrypted_fields",
     "mozilla_django_oidc",
     "django_auth_adfs",
+    "helusers.apps.HelusersConfig",
 ]
 
 AUTH_USER_MODEL = "users.User"
@@ -437,6 +438,7 @@ HANDLERS_GROUP_NAME = "Application handlers"
 
 GDPR_API_QUERY_SCOPE = env("GDPR_API_QUERY_SCOPE")
 GDPR_API_DELETE_SCOPE = env("GDPR_API_DELETE_SCOPE")
+GDPR_API_MODEL = "users.User"
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.
