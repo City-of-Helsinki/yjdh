@@ -23,7 +23,7 @@ const useApplicationList = (
   status: APPLICATION_STATUSES[]
 ): ApplicationListProps => {
   const { t } = useTranslation();
-  const query = useApplicationsQuery(status);
+  const query = useApplicationsQuery(status, 'submitted_at', 'desc');
 
   const list = query.data?.map(
     (application: ApplicationData): ApplicationListItemData => {
