@@ -1,4 +1,8 @@
 {
-  "high": true,
-  "allowlist": ["requestretry"]
+  "critical": true,
+  "allowlist": [
+    "parse-url",
+    "shell-quote",
+    "loader-utils"
+  ]
 }
