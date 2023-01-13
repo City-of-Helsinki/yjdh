@@ -2057,22 +2057,7 @@ def test_application_status_last_changed_at(api_client, handling_application):
 
 
 def test_handler_application_default_ordering(handler_api_client):
-    f = faker.Faker()
-    combos = [
-        (ReceivedApplicationFactory, ApplicationStatus.RECEIVED),
-        (HandlingApplicationFactory, ApplicationStatus.HANDLING),
-        (DecidedApplicationFactory, ApplicationStatus.ACCEPTED),
-    ]
-    for _ in range(5):
-        for class_name, status in combos:
-            application = class_name()
-            random_datetime = f.past_datetime()
-            application.log_entries.filter(to_status=status).update(
-                created_at=random_datetime
-            )
-            Calculation.objects.filter(application__id=application.pk).update(
-                modified_at=random_datetime
-            )
+    _create_random_applications()
 
     def _expected_sort_key(obj):
         handled_at_key = None
@@ -2103,3 +2088,58 @@ def test_handler_application_default_ordering(handler_api_client):
     )
     returned_application_ids = [elem["id"] for elem in response.data]
     assert expected_application_ids == returned_application_ids
+
+
+def test_handler_application_ordering_by_key(handler_api_client):
+    _create_random_applications()
+    order_key = "application_number"
+
+    def _map_application_data_by_key(items, key):
+        return [str(elem[key]) for elem in items]
+
+    def _get_expected_sorting_values(key, reverse=False):
+        items = sorted(
+            Application.objects.all().values(),
+            key=lambda item: item[order_key],
+            reverse=reverse,
+        )
+        return _map_application_data_by_key(items, order_key)
+
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list"),
+        {"order_by": "asc", "order_key": order_key},
+    )
+
+    expected_application_values = _get_expected_sorting_values(order_key, False)
+    returned_application_values = _map_application_data_by_key(response.data, order_key)
+    assert expected_application_values == returned_application_values
+
+    # Now swap the order
+
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list"),
+        {"order_by": "desc", "order_key": order_key},
+    )
+
+    expected_application_values = _get_expected_sorting_values(order_key, True)
+    returned_application_values = _map_application_data_by_key(response.data, order_key)
+    assert expected_application_values == returned_application_values
+
+
+def _create_random_applications():
+    f = faker.Faker()
+    combos = [
+        (ReceivedApplicationFactory, ApplicationStatus.RECEIVED),
+        (HandlingApplicationFactory, ApplicationStatus.HANDLING),
+        (DecidedApplicationFactory, ApplicationStatus.ACCEPTED),
+    ]
+    for _ in range(5):
+        for class_name, status in combos:
+            application = class_name()
+            random_datetime = f.past_datetime()
+            application.log_entries.filter(to_status=status).update(
+                created_at=random_datetime
+            )
+            Calculation.objects.filter(application__id=application.pk).update(
+                modified_at=random_datetime
+            )
