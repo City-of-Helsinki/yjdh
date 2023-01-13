@@ -1,7 +1,9 @@
 from io import StringIO
+
 from django.core.management import call_command
-from applications.models import Application
+
 from applications.enums import ApplicationStatus
+from applications.models import Application
 
 
 def test_seed_applications_with_arguments():

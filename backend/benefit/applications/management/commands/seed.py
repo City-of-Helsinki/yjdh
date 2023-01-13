@@ -1,8 +1,10 @@
+import os
+
 from django.core.management.base import BaseCommand
+
+from applications.enums import ApplicationStatus
 from applications.models import Application, ApplicationBasis
 from applications.tests.factories import ApplicationFactory
-from applications.enums import ApplicationStatus
-import os
 
 
 class Command(BaseCommand):
