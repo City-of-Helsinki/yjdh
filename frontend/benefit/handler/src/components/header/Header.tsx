@@ -5,20 +5,14 @@ import BaseHeader from 'shared/components/header/Header';
 import { useHeader } from './useHeader';
 
 const Header: React.FC = () => {
-  const {
-    t,
-    languageOptions,
-    navigationItems,
-    isNavigationVisible,
-    handleLanguageChange,
-  } = useHeader();
+  const { t, navigationItems, isNavigationVisible, handleLanguageChange } =
+    useHeader();
 
   return (
     <BaseHeader
       title={t('common:appName')}
       titleUrl={ROUTES.HOME}
       menuToggleAriaLabel={t('common:menuToggleAriaLabel')}
-      languages={languageOptions}
       isNavigationVisible={isNavigationVisible}
       navigationItems={navigationItems}
       onLanguageChange={handleLanguageChange}
