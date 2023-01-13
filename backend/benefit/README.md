@@ -95,6 +95,9 @@ To run the backend without integrations/authentication, set NEXT_PUBLIC_MOCK_FLA
 .env.benefit-backend If NEXT_PUBLIC_MOCK_FLAG is set, additionally
 DUMMY_COMPANY_FORM_CODE can be set to test with different company_form parameters.
 
+To seed the database with some mock application data, run `python manage.py seed`
+, which by default generates 10 applications for each of the seven possible application statuses. To generate more applications, use the optional `--number` flag, for example, running `python manage.py seed --number=30` creates 30 applications of each status. **Note that running the command deletes all previous application data from the database.**
+
 **Using LOAD_FIXTURES=1 is recommended for local testing** as it loads e.g. default
 terms which are required for an applicant to be able to successfully send in an
 application using the applicant UI.
