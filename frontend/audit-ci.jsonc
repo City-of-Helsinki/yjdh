@@ -1,0 +1,13 @@
+{
+  "high": true,
+  "allowlist": [
+    "json5",                // jest, eslint, testcafe, next, babel 
+    "parse-url",            // lerna
+    "parse-path",           // lerna
+    "shell-quote",          // next
+    "loader-utils",         // next
+    "moment",               // testcafe
+    "jsonwebtoken",         // testcafe 
+    "requestretry"          // slack-node
+  ]
+}
