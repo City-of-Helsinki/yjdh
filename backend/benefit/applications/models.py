@@ -21,6 +21,7 @@ from common.localized_iban_field import LocalizedIBANField
 from common.utils import DurationMixin
 from companies.models import Company
 from shared.models.abstract_models import TimeStampedModel, UUIDModel
+from users.models import User
 
 # todo: move to some better location?
 APPLICATION_LANGUAGE_CHOICES = (

@@ -19,7 +19,5 @@ class User(AbstractUser, SerializableMixin):
         {"name": "last_name"},
         {"name": "email"},
         {"name": "date_joined", "accessor": lambda x: x.strftime("%d-%m-%Y %H:%M:%S")},
-        {"name": "last_login", "accessor": lambda x: x.strftime("%d-%m-%Y %H:%M:%S")},
-        {"name": "terms_of_service_approvals"},
-        {"name": "calculations"},
+        {"name": "last_login", "accessor": lambda x: x.strftime("%d-%m-%Y %H:%M:%S") if x else None},
     )

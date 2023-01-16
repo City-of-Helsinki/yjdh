@@ -57,4 +57,5 @@ class UserUuidGDPRAPIView(GDPRAPIView):
 
     def delete(self) -> Response:
         """Deletion is not possible (due legal reasons)."""
+        # TODO: maybe user data can be deleted?
         return Response(status=status.HTTP_403_FORBIDDEN)
