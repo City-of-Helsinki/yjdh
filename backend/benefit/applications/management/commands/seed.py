@@ -45,6 +45,6 @@ def run_seed(number):
     """Delete all existing applications and create applications for all statuses"""
     clear_applications()
 
-    for i in range(number):
+    for _ in range(number):
         for status in ApplicationStatus.values:
             create_application(status)
