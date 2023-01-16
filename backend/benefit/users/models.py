@@ -1,4 +1,4 @@
-import uuid
+from uuid import uuid4
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -6,7 +6,7 @@ from helsinki_gdpr.models import SerializableMixin
 
 
 class User(AbstractUser, SerializableMixin):
-    id = models.UUIDField(primary_key=True, editable=False)  # Helsinki-profiili id?
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
 
     class Meta:
         db_table = "bf_users_user"

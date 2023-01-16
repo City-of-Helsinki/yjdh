@@ -66,7 +66,7 @@ class MockAuthenticationRequestView(View):
             user = UserFactory(
                 is_staff=getattr(settings, "OIDC_MOCK_USER_IS_STAFF", False),
                 is_superuser=getattr(settings, "OIDC_MOCK_USER_IS_SUPERUSER", False),
-                uuid=uuid4(),
+                username=uuid4(),
             )
             auth.login(
                 request, user, backend="django.contrib.auth.backends.ModelBackend"
