@@ -132,16 +132,18 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
         factory_related_name="application",
     )
 
-    attachment = factory.RelatedFactory(
-        AttachmentFactory,
-        factory_related_name="application",
-    )
-
     class Meta:
         model = Application
 
 
-class ReceivedApplicationFactory(ApplicationFactory):
+class ApplicationWithAttachmentFactory(ApplicationFactory):
+    attachment = factory.RelatedFactory(
+        "applications.tests.factories.AttachmentFactory",
+        factory_related_name="application",
+    )
+
+
+class ReceivedApplicationFactory(ApplicationWithAttachmentFactory):
     status = ApplicationStatus.RECEIVED
     applicant_terms_approval = factory.RelatedFactory(
         "terms.tests.factories.ApplicantTermsApprovalFactory",
@@ -204,7 +206,7 @@ class HandlingApplicationFactory(ReceivedApplicationFactory):
         assert len(self.ahjo_rows) == 1
 
 
-class CancelledApplicationFactory(ApplicationFactory):
+class CancelledApplicationFactory(ApplicationWithAttachmentFactory):
     status = ApplicationStatus.CANCELLED
 
     @factory.post_generation

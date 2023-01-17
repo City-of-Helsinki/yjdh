@@ -9,7 +9,7 @@ from applications.enums import ApplicationStatus
 from applications.models import Application, ApplicationBasis
 from applications.tests.factories import (
     AdditionalInformationNeededApplicationFactory,
-    ApplicationFactory,
+    ApplicationWithAttachmentFactory,
     CancelledApplicationFactory,
     DecidedApplicationFactory,
     HandlingApplicationFactory,
@@ -53,7 +53,7 @@ def run_seed(number):
 
     factories = (
         AdditionalInformationNeededApplicationFactory,
-        ApplicationFactory,
+        ApplicationWithAttachmentFactory,
         CancelledApplicationFactory,
         DecidedApplicationFactory,
         HandlingApplicationFactory,
