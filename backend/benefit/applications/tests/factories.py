@@ -1,4 +1,5 @@
 import itertools
+import os
 import random
 from datetime import date, timedelta
 
@@ -11,6 +12,9 @@ from applications.models import (
     APPLICATION_LANGUAGE_CHOICES,
     ApplicationBasis,
     ApplicationBatch,
+    Attachment,
+    ATTACHMENT_CONTENT_TYPE_CHOICES,
+    AttachmentType,
     DeMinimisAid,
     Employee,
 )
@@ -18,6 +22,20 @@ from calculator.models import Calculation
 from companies.tests.factories import CompanyFactory
 from shared.service_bus.enums import YtjOrganizationCode
 from users.tests.factories import HandlerFactory
+
+
+class AttachmentFactory(factory.django.DjangoModelFactory):
+    attachment_type = factory.Faker(
+        "random_element", elements=[v for v in AttachmentType.values]
+    )
+    content_type = ATTACHMENT_CONTENT_TYPE_CHOICES[0][0]
+    attachment_file = factory.django.FileField(
+        from_path=f"{os.path.dirname(os.path.realpath(__file__))}/valid_pdf_file.pdf",
+        filename="attachment_pdf_file.pdf",
+    )
+
+    class Meta:
+        model = Attachment
 
 
 class DeMinimisAidFactory(factory.django.DjangoModelFactory):
@@ -114,6 +132,11 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
         factory_related_name="application",
     )
 
+    attachment = factory.RelatedFactory(
+        AttachmentFactory,
+        factory_related_name="application",
+    )
+
     class Meta:
         model = Application
 
@@ -181,8 +204,41 @@ class HandlingApplicationFactory(ReceivedApplicationFactory):
         assert len(self.ahjo_rows) == 1
 
 
+class CancelledApplicationFactory(ApplicationFactory):
+    status = ApplicationStatus.CANCELLED
+
+    @factory.post_generation
+    def cancelled_log_event(self, created, extracted, **kwargs):
+        self.log_entries.create(
+            from_status=ApplicationStatus.DRAFT,
+            to_status=ApplicationStatus.CANCELLED,
+        )
+
+
 class DecidedApplicationFactory(HandlingApplicationFactory):
     status = ApplicationStatus.ACCEPTED
+
+    @factory.post_generation
+    def handling_log_event(self, created, extracted, **kwargs):
+        self.log_entries.create(
+            from_status=ApplicationStatus.HANDLING,
+            to_status=self.status,
+        )
+
+
+class AdditionalInformationNeededApplicationFactory(HandlingApplicationFactory):
+    status = ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED
+
+    @factory.post_generation
+    def handling_log_event(self, created, extracted, **kwargs):
+        self.log_entries.create(
+            from_status=ApplicationStatus.HANDLING,
+            to_status=self.status,
+        )
+
+
+class RejectedApplicationFactory(HandlingApplicationFactory):
+    status = ApplicationStatus.REJECTED
 
     @factory.post_generation
     def handling_log_event(self, created, extracted, **kwargs):

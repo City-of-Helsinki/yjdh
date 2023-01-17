@@ -1,10 +1,21 @@
 import os
+import shutil
 
+import faker
 from django.core.management.base import BaseCommand
 
+import helsinkibenefit.settings as settings
 from applications.enums import ApplicationStatus
 from applications.models import Application, ApplicationBasis
-from applications.tests.factories import ApplicationFactory
+from applications.tests.factories import (
+    AdditionalInformationNeededApplicationFactory,
+    ApplicationFactory,
+    CancelledApplicationFactory,
+    DecidedApplicationFactory,
+    HandlingApplicationFactory,
+    ReceivedApplicationFactory,
+    RejectedApplicationFactory,
+)
 
 
 class Command(BaseCommand):
@@ -29,22 +40,34 @@ class Command(BaseCommand):
 
 def clear_applications():
     """Clear all seeded applications and application basis records,
-    which are not deleted with on_delete=CASCADE"""
+    which are not deleted with on_delete=CASCADE and delete the media folder"""
     Application.objects.all().delete()
     ApplicationBasis.objects.all().delete()
-
-
-def create_application(status):
-    """Create an application"""
-    application = ApplicationFactory()
-    application.status = status
-    application.save()
+    shutil.rmtree(settings.MEDIA_ROOT)
 
 
 def run_seed(number):
     """Delete all existing applications and create applications for all statuses"""
+    f = faker.Faker()
     clear_applications()
 
-    for _ in range(number):
-        for status in ApplicationStatus.values:
-            create_application(status)
+    factories = (
+        AdditionalInformationNeededApplicationFactory,
+        ApplicationFactory,
+        CancelledApplicationFactory,
+        DecidedApplicationFactory,
+        HandlingApplicationFactory,
+        ReceivedApplicationFactory,
+        RejectedApplicationFactory,
+    )
+
+    for factory in factories:
+        for _ in range(number):
+            random_datetime = f.past_datetime()
+            application = factory()
+            application.created_at = random_datetime
+            application.save()
+
+            application.log_entries.filter(to_status=application.status).update(
+                created_at=random_datetime
+            )
