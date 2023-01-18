@@ -29,7 +29,13 @@ describe('frontend/tet/admin/src/pages/index.tsx', () => {
     expectUnauthorizedReply();
     const spyPush = jest.fn();
     renderPage(IndexPage, { push: spyPush });
-    await waitFor(() => expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/login`));
+    await waitFor(() =>
+      expect(spyPush).toHaveBeenCalledWith(
+        `${DEFAULT_LANGUAGE}/login?sessionExpired=true`,
+        undefined,
+        { shallow: false }
+      )
+    );
   });
 
   describe('when authorized', () => {

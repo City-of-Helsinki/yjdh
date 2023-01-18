@@ -4,11 +4,15 @@ import pytest
 import stdnum.exceptions
 from django.db.models import Q
 
+from shared.common.tests.utils import (
+    create_finnish_social_security_number,
+    set_setting_to_value_or_del_with_none,
+)
 from shared.common.utils import (
     _ALWAYS_FALSE_Q_FILTER,
     any_of_q_filter,
-    set_setting_to_value_or_del_with_none,
     social_security_number_birthdate,
+    validate_finnish_social_security_number,
 )
 
 _TEST_SETTING_NAMES = [
@@ -90,6 +94,75 @@ def test_any_of_q_filter(input_kwargs, expected_q_filter):
 )
 def test_valid_social_security_number_birthdate(test_value, expected_result):
     assert social_security_number_birthdate(test_value) == expected_result
+
+
+@pytest.mark.parametrize(
+    "expected_result,birthdate,individual_number",
+    [
+        ("010100+002H", date(year=1800, month=1, day=1), 2),
+        ("010203-1230", date(year=1903, month=2, day=1), 123),
+        ("121212A899H", date(year=2012, month=12, day=12), 899),
+        ("111111-002V", date(year=1911, month=11, day=11), 2),
+        ("111111-111C", date(year=1911, month=11, day=11), 111),
+        ("111111A111C", date(year=2011, month=11, day=11), 111),
+        ("111111-900U", date(year=1911, month=11, day=11), 900),
+        ("111111-9991", date(year=1911, month=11, day=11), 999),
+        ("300522A0024", date(year=2022, month=5, day=30), 2),
+        ("311299A999E", date(year=2099, month=12, day=31), 999),
+    ],
+)
+def test_valid_create_finnish_social_security_number(
+    expected_result: str, birthdate: date, individual_number: int
+):
+    assert validate_finnish_social_security_number(
+        expected_result, allow_temporary=True
+    )
+    assert (
+        create_finnish_social_security_number(birthdate, individual_number)
+        == expected_result
+    )
+
+
+@pytest.mark.parametrize(
+    "birthdate",
+    [
+        date(year=1800, month=1, day=1),
+        date(year=1934, month=10, day=25),
+        date(year=2022, month=5, day=30),
+        date(year=2023, month=8, day=19),
+        date(year=2099, month=12, day=31),
+    ],
+)
+def test_valid_consecutive_create_finnish_social_security_number(birthdate: date):
+    """
+    Testing consecutive social security numbers for validity to ensure all their parts
+    are calculated correctly, including the checksum (i.e. the last character).
+    """
+    for individual_number in range(2, 900):
+        result = create_finnish_social_security_number(birthdate, individual_number)
+        assert len(result) == 11
+        assert validate_finnish_social_security_number(result, allow_temporary=True)
+        individual_number_from_result: int = int(result[-4:-1])
+        assert individual_number_from_result == individual_number
+        assert social_security_number_birthdate(result) == birthdate
+
+
+@pytest.mark.parametrize(
+    "birthdate,individual_number",
+    [
+        (date(year=1799, month=12, day=31), 2),  # Birth year < 1800
+        (date(year=2100, month=1, day=1), 2),  # Birth year > 2099
+        (date(year=2000, month=1, day=1), -1),  # Individual number < 2
+        (date(year=2000, month=1, day=1), 0),  # Individual number < 2
+        (date(year=2000, month=1, day=1), 1),  # Individual number < 2
+        (date(year=2000, month=1, day=1), 1000),  # Individual number > 999
+    ],
+)
+def test_invalid_create_finnish_social_security_number(
+    birthdate: date, individual_number: int
+):
+    with pytest.raises(ValueError):
+        assert create_finnish_social_security_number(birthdate, individual_number)
 
 
 @pytest.mark.django_db

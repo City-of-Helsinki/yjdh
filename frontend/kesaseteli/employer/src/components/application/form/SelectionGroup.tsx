@@ -17,7 +17,6 @@ type Props<V extends readonly string[]> = {
   id: ApplicationFieldPath;
   direction?: SelectionGroupProps['direction'];
   values: V;
-  showTitle?: boolean;
   onChange?: (value?: string) => void;
 } & GridCellProps;
 
@@ -26,7 +25,6 @@ const SelectionGroup = <V extends readonly string[]>({
   validation,
   direction,
   values,
-  showTitle,
   onChange = noop,
   ...$gridCellProps
 }: Props<V>): ReturnType<typeof HdsSelectionGroup> => {
@@ -66,9 +64,7 @@ const SelectionGroup = <V extends readonly string[]>({
           ? `${t('common:application.form.errors.selectionGroups')}`
           : undefined
       }
-      label={
-        showTitle ? t(`common:application.form.inputs.${fieldName}`) : undefined
-      }
+      label={t(`common:application.form.inputs.${fieldName}`)}
       onChange={handleChange}
       getValueText={getValueText}
       {...$gridCellProps}

@@ -19,7 +19,6 @@ from django.test import override_settings
 from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.timezone import localdate
-from faker import Faker
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.reverse import reverse
@@ -53,8 +52,8 @@ from common.tests.factories import (
     RejectedYouthApplicationFactory,
     YouthApplicationFactory,
 )
+from common.tests.utils import get_random_social_security_number_for_year
 from common.urls import handler_403_url, handler_youth_application_processing_url
-from common.utils import normalize_whitespace
 from shared.audit_log.models import AuditLogEntry
 from shared.common.lang_test_utils import (
     assert_email_body_language,
@@ -67,6 +66,7 @@ from shared.common.tests.conftest import (
 )
 from shared.common.tests.factories import UserFactory
 from shared.common.tests.test_validators import get_invalid_postcode_values
+from shared.common.tests.utils import normalize_whitespace
 
 
 def create_same_person_previous_year_accepted_application(
@@ -85,14 +85,6 @@ def create_same_person_previous_year_accepted_application(
     assert result.created_at.year == app.created_at.year - 1
     assert result.status == YouthApplicationStatus.ACCEPTED
     return result
-
-
-def get_random_social_security_number_for_year(year):
-    # Freeze time to last day of year to ensure a social security number with given year
-    # is created, see Faker's fi_FI ssn provider:
-    # https://github.com/joke2k/faker/blob/v8.7.0/faker/providers/ssn/fi_FI/__init__.py#L29-L31
-    with freeze_time(date(year=year, month=12, day=31)):
-        return Faker(locale="fi").ssn(min_age=0, max_age=1)
 
 
 def reverse_youth_application_action(action, pk):

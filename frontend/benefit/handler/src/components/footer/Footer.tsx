@@ -17,8 +17,8 @@ const FooterSection: React.FC = () => {
     <$FooterWrapper>
       <Footer title={t('common:appName')} theme="dark">
         <Footer.Base
-          copyrightHolder={t('footer:copyrightText')}
-          copyrightText={t('footer:allRightsReservedText')}
+          copyrightHolder={t('footer.copyrightText')}
+          copyrightText={t('footer.allRightsReservedText')}
         />
       </Footer>
     </$FooterWrapper>

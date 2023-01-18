@@ -6,6 +6,7 @@ import { isError } from 'shared/utils/type-guards';
 type Params = {
   error: Error | unknown;
   t: TFunction;
+  pathname: string;
   goToPage: GoToPageFunction;
   onAuthError?: () => void;
   onServerError?: () => void;
@@ -13,9 +14,13 @@ type Params = {
 };
 
 const handleError = (args: Params): void => {
-  const { error, t, goToPage } = args;
+  const { error, t, pathname, goToPage } = args;
   const {
-    onAuthError = () => goToPage('/login?sessionExpired=true'),
+    onAuthError = () => {
+      if (pathname !== '/login') {
+        goToPage('/login?sessionExpired=true');
+      }
+    },
     onServerError = () => goToPage('/500'),
     onCommonError = () =>
       showErrorToast(

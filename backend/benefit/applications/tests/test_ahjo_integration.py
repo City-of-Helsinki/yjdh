@@ -22,16 +22,13 @@ from calculator.models import Calculation
 from calculator.tests.factories import PaySubsidyFactory
 from companies.tests.factories import CompanyFactory
 from helsinkibenefit.tests.conftest import *  # noqa
+from shared.common.tests.utils import normalize_whitespace
 from shared.service_bus.enums import YtjOrganizationCode
 
 DE_MINIMIS_AID_PARTIAL_TEXT = (
     # In English ~= "support is granted as insignificant i.e. de minimis support"
     "tuki myönnetään vähämerkityksisenä eli ns. de minimis -tukena"
 )
-
-
-def normalize_whitespace(text: str) -> str:
-    return " ".join(text.split())
 
 
 def _assert_html_content(html, include_keys=(), excluded_keys=()):

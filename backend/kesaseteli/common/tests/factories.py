@@ -7,7 +7,6 @@ import factory.fuzzy
 from django.db.models.signals import post_save
 from django.utils import timezone
 from django.utils.timezone import get_current_timezone
-from faker import Faker
 
 from applications.enums import (
     AdditionalInfoUserReason,
@@ -31,6 +30,8 @@ from applications.tests.data.mock_vtj import (
     mock_vtj_person_id_query_found_content,
     mock_vtj_person_id_query_not_found_content,
 )
+from common.tests.faker import get_faker
+from common.tests.utils import get_random_social_security_number_for_year
 from companies.models import Company
 from shared.common.tests.factories import (
     DuplicateAllowingUserFactory,
@@ -211,7 +212,7 @@ def get_unlisted_test_schools() -> List[str]:
 
 
 def determine_school(youth_application) -> str:
-    return Faker().random_element(
+    return get_faker().random_element(
         get_unlisted_test_schools()
         if youth_application.is_unlisted_school
         else get_listed_test_schools()
@@ -221,11 +222,11 @@ def determine_school(youth_application) -> str:
 def get_test_phone_number() -> str:
     # PHONE_NUMBER_REGEX didn't accept phone numbers starting with (+358) but did with
     # +358 so removing the parentheses to make the generated phone numbers fit it
-    return Faker(locale="fi").phone_number().replace("(+358)", "+358")
+    return get_faker().phone_number().replace("(+358)", "+358")
 
 
 def determine_modified_at(youth_application) -> Optional[datetime]:
-    return Faker().date_time_between_dates(
+    return get_faker().date_time_between_dates(
         youth_application.created_at + timedelta(days=10),
         youth_application.created_at + timedelta(days=20),
         tzinfo=get_current_timezone(),
@@ -244,7 +245,7 @@ def determine_handler(youth_application):
 
 def determine_handled_at(youth_application):
     if youth_application.status in YouthApplicationStatus.handled_values():
-        return Faker().date_time_between_dates(
+        return get_faker().date_time_between_dates(
             youth_application.created_at + timedelta(days=3),
             youth_application.created_at + timedelta(days=10),
             tzinfo=get_current_timezone(),
@@ -254,7 +255,7 @@ def determine_handled_at(youth_application):
 
 def determine_receipt_confirmed_at(youth_application):
     if youth_application.status in YouthApplicationStatus.active_values():
-        return Faker().date_time_between_dates(
+        return get_faker().date_time_between_dates(
             youth_application.created_at,
             youth_application.created_at + timedelta(days=1),
             tzinfo=get_current_timezone(),
@@ -273,7 +274,7 @@ def determine_is_unlisted_school(youth_application):
         youth_application.status
         in YouthApplicationStatus.can_have_additional_info_values()
     ):
-        return Faker().boolean()
+        return get_faker().boolean()
     else:
         return False
 
@@ -292,13 +293,13 @@ def determine_youth_application_has_additional_info(youth_application):
             in YouthApplicationStatus.must_have_additional_info_values()
         ):
             return True
-        return Faker().boolean()
+        return get_faker().boolean()
     return False
 
 
 def determine_additional_info_provided_at(youth_application):
     if youth_application._has_additional_info:
-        return Faker().date_time_between_dates(
+        return get_faker().date_time_between_dates(
             youth_application.created_at + timedelta(days=1),
             youth_application.created_at + timedelta(days=3),
             tzinfo=get_current_timezone(),
@@ -309,14 +310,14 @@ def determine_additional_info_provided_at(youth_application):
 def determine_additional_info_user_reasons(youth_application):
     if youth_application._has_additional_info:
         return list(
-            Faker().random_elements(AdditionalInfoUserReason.values, unique=True)
+            get_faker().random_elements(AdditionalInfoUserReason.values, unique=True)
         )
     return []
 
 
 def determine_additional_info_description(youth_application):
     if youth_application._has_additional_info:
-        return Faker().sentence()
+        return get_faker().sentence()
     return ""
 
 
@@ -354,22 +355,7 @@ def determine_need_additional_info_vtj_json(youth_application):
 
 
 def determine_target_group_social_security_number(youth_application):
-    # NOTE: Faker generates a Finnish social security number with a birthdate
-    # today - random days between [min_age * 365, max_age * 365), see
-    # https://github.com/joke2k/faker/blob/v8.7.0/faker/providers/ssn/fi_FI/__init__.py#L29-L31
-    #
-    # Example with ssn(min_age=16, max_age=17):
-    # If today is 2022-12-31 then birthdate is in inclusive range [2006-01-01, 2006-12-31]
-    # If today is 2022-12-30 then birthdate is in inclusive range [2005-12-31, 2006-12-30]
-    # ...
-    # If today is 2022-01-01 then birthdate is in inclusive range [2005-01-02, 2006-01-01]
-    #
-    # So ONLY with the last day of the year will this be returning birthdate with
-    # today.year - ssn.birthdate.year == 16 only, otherwise the value might be 17 also.
-    #
-    # See YouthApplication.is_9th_grader_age and
-    #     YouthApplication.is_upper_secondary_education_1st_year_student_age
-    return Faker(locale="fi").ssn(min_age=16, max_age=17)
+    return get_random_social_security_number_for_year(date.today().year - 16)
 
 
 @factory.django.mute_signals(post_save)

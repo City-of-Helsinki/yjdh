@@ -1,8 +1,41 @@
 # YJDH services
 
-[backend/README.md](https://github.com/City-of-Helsinki/yjdh/blob/develop/backend/README.md) contains information about authentication and backend development.
+Yhteisöjen ja järjestöjen digitaalinen Helsinki (= YJDH).
 
-## kesaseteli employer
+This monorepo contains code for four different employment services:
+
+1. Kesäseteli
+2. Benefit
+3. TET Youth
+4. TET Admin
+
+## Requirements
+
+* Docker@^19.03.0 (or higher)
+* NodeJS@^14.0.0
+* Yarn@^1.22
+
+---
+
+## Get started
+
+Follow these instructions to spin up a service:
+
+* Kesäseteli:
+	* [kesaseteli-employer](#kesaseteli-employer-development-with-docker)
+	* [kesaseteli-youth](#kesaseteli-youth-development-with-docker)
+	* [kesaseteli-handler](#kesaseteli-handler-development-with-docker)
+* Benefit aka. Helsinki-lisä:
+  * [benefit](#benefit)
+* TET:
+   * [tet-admin](#tet-admin-development-with-docker) 
+   * [tet-youth](#tet-youth-development-with-docker) 
+
+There is additional README's about [authentication and backend development](https://github.com/City-of-Helsinki/yjdh/tree/develop/backend) and [frontend development](https://github.com/City-of-Helsinki/yjdh/tree/develop/frontend).
+
+---
+
+## Kesäseteli employer
 
 YJDH-Kesäseteli service for employers to fulfill employee applications
 
@@ -17,11 +50,11 @@ YJDH-Kesäseteli service for employers to fulfill employee applications
   - The backend is now running at [localhost:8000](https://localhost:8000)
 4. If services fail to get up, `yarn clean` or `docker system prune --all` might help.
 
-## kesaseteli youth
+## Kesäseteli youth
 
 YJDH-Kesäseteli service for young people to send kesäseteli applications
 
-### kesaseteli-youth Development with Docker
+### kesaseteli-youth development with Docker
 
 1. Run `yarn` to install necessary packages
 
@@ -32,35 +65,43 @@ YJDH-Kesäseteli service for young people to send kesäseteli applications
   - The backend is now running at [localhost:8000](https://localhost:8000)
 4. If services fail to get up, `yarn clean` might help.
 
-## kesaseteli handler
+## Kesäseteli handler
 
 YJDH-Kesäseteli service for young people to send kesäseteli applications
 
-### kesaseteli-handler Development with Docker
+### kesaseteli-handler development with Docker
 
 1. Run `yarn` to install necessary packages
 
 2. Copy the contents of `.env.kesaseteli.example` to `.env.kesaseteli` and modify it if needed.
 
 3. Run `yarn handler` or, if you want to rebuild, then `yarn handler --build`
-- The Frontend is now running at [localhost:3200](https://localhost:3200)
-- The backend is now running at [localhost:8000](https://localhost:8000)
+  - The Frontend is now running at [localhost:3200](https://localhost:3200)
+  - The backend is now running at [localhost:8000](https://localhost:8000)
+
 4. If services fail to get up, `yarn clean` might help.
-5. 
+
+---
+
 ## Benefit
 
-YJDH-Benefit
+YJDH-Benefit provides two services for applying and for handling the application of discretionary support:
 
-### Benefit Development with Docker
+* Service for a private or third-sector employer that hires an unemployed Helsinki resident
+* Service for the City Of Helsinki backoffice to handle aforementioned applications
+
+### Benefit development with Docker
 
 1. Run `yarn` to install necessary packages
 
-2. Copy the contents of `.env.benefit-*.example` to `.env.benefit-*` and modify them if needed.
+2. Copy the contents of `.env.benefit-*.example` to `.env.benefit-*` and modify them if needed. Or better yet, get one from a fellow contributor.
 
-3. Run `yarn benefit` or, if you want to rebuild, then `yarn benefit --build`
+3. Run `yarn benefit up` or, if you want to rebuild, then `yarn benefit up --build`
   - The Applicant Frontend is now running at [localhost:3000](https://localhost:3000)
   - The Handler Frontend is now running at [localhost:3100](https://localhost:3100)
   - The backend is now running at [localhost:8000](https://localhost:8000)
+
+---
 
 ## TET Admin
 
@@ -80,6 +121,8 @@ YJDH-TET-Admin is a UI for Helsinki city employees or private employers to add T
 
 Running `yarn tet-admin down` brings down all services.
 
+---
+
 ## TET Youth
 
 YJDH-TET-Youth is a UI for pupils to search for TET job advertisements.
@@ -96,6 +139,8 @@ YJDH-TET-Youth is a UI for pupils to search for TET job advertisements.
 
 Running `yarn tet-youth down` brings down all services.
 
+---
+
 ## Setting up Husky pre-commit hooks:
 
 1. Run `yarn install` and `yarn prepare` on project root
@@ -104,19 +149,19 @@ Running `yarn tet-youth down` brings down all services.
 If the pre-commit hook hangs, or you want to push changes with failing tests, you can disable the hook with
 `npx husky uninstall`. Running `yarn prepare` reactivates the hook.
 
+---
+
 ## Known errors
 
 1.  If github action deploy fail with error like this in your pull-request:
     
+```
+  Error: rendered manifests contain a resource that already exists. 
+  Unable to continue with install: Service "yjdh-135-send-localization-param-to-suomifi-yjdh-ks-service" 
+  in namespace "yjdh-yjdh-135-send-localization-param-to-suomifi-227" exists and cannot be 
+  imported into the current release: invalid ownership metadata; annotation validation error: 
+  key "meta.helm.sh/release-name" must equal "yjdh-135-send-localization-par-review-yjdh-ks-bknd": 
+  current value is "yjdh-135-send-localization-par-review-yjdh-ks-empl"
+```
 
-    Error: rendered manifests contain a resource that already exists. 
-    Unable to continue with install: Service "yjdh-135-send-localization-param-to-suomifi-yjdh-ks-service" 
-    in namespace "yjdh-yjdh-135-send-localization-param-to-suomifi-227" exists and cannot be 
-    imported into the current release: invalid ownership metadata; annotation validation error: 
-    key "meta.helm.sh/release-name" must equal "yjdh-135-send-localization-par-review-yjdh-ks-bknd": 
-    current value is "yjdh-135-send-localization-par-review-yjdh-ks-empl"
-
-   The reason is that your pr's branch name is too long. You have to rename it and create new pr.
-   Instructions: https://stackoverflow.com/questions/30590083/how-do-i-rename-both-a-git-local-and-remote-branch-name
-
-
+The reason for this is that your pr's branch name is too long. You have to rename it and create a new pr. See instructions at [StackOverflow](https://stackoverflow.com/questions/30590083/how-do-i-rename-both-a-git-local-and-remote-branch-name).
