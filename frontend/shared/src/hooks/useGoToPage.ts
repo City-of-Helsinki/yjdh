@@ -7,24 +7,19 @@ import GoToPageFunction from 'shared/types/go-to-page-function';
 const useGoToPage = (): GoToPageFunction => {
   const router = useRouter();
   const locale = useLocale();
-  const isRouting = useIsRouting();
-
+  const isAlreadyRouting = useIsRouting();
   return React.useCallback(
-    (pagePath, options): void => {
-      if (isRouting) {
-        // if already routing dont re-route;
+    (pagePath, operation = 'push'): void => {
+      // if already routing, or we're trying to route to same path (including query params), do nothing
+      if (isAlreadyRouting || pagePath === router.asPath) {
         return;
       }
       const path = `${locale}${pagePath || '/'}`;
-      if (options) {
-        const { operation, asPath, ...routerOptions } = options;
-        const op = operation ?? 'push';
-        void router[op](path, asPath ?? path, routerOptions);
-      } else {
-        void router.push(path);
-      }
+      // use shallow route when we are already on the same path (ignoring query params)
+      const shallow = pagePath === router.pathname;
+      void router[operation](path, undefined, { shallow });
     },
-    [locale, router, isRouting]
+    [locale, router, isAlreadyRouting]
   );
 };
 
