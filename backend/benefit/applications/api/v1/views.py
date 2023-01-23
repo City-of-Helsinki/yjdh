@@ -1,3 +1,4 @@
+import re
 from typing import List
 
 from django.conf import settings
@@ -153,20 +154,20 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
             exclude_fields | (extra_exclude_fields - fields)
         )
 
+        order_by = request.GET.get("order_by")
+
+        if (
+            order_by
+            and re.sub(r"^-", "", order_by)
+            in ApplicantApplicationSerializer.Meta.fields
+        ):
+            serializer = self.serializer_class(
+                qs.order_by(order_by), many=True, context=context
+            )
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
         serializer = self.serializer_class(qs, many=True, context=context)
-
-        order_key = request.GET.get("order_key", "created_at")
-
-        order_by = request.GET.get("order_by", "asc")
-        is_order_descending = order_by.lower() == "desc" or False
-
-        ordered_data = sorted(
-            serializer.data,
-            key=lambda item: item[order_key],
-            reverse=is_order_descending,
-        )
-
-        return Response(ordered_data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(
         methods=("POST",),
