@@ -7,8 +7,7 @@ import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 const useApplicationsQuery = (
   status: string[],
-  orderKey = 'id',
-  orderBy = 'asc'
+  orderBy = 'id'
 ): UseQueryResult<ApplicationData[], Error> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
@@ -31,7 +30,6 @@ const useApplicationsQuery = (
           params: {
             status: status.join(','),
             order_by: orderBy,
-            order_key: orderKey,
           },
         }
       );

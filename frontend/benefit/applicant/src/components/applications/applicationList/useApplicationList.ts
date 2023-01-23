@@ -62,8 +62,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
   const router = useRouter();
   const { data, error, isLoading } = useApplicationsQuery(
     status,
-    'submitted_at',
-    'desc'
+    '-submitted_at'
   );
   const { errors, setError } = React.useContext(FrontPageContext);
 
