@@ -2090,9 +2090,9 @@ def test_handler_application_default_ordering(handler_api_client):
     assert expected_application_ids == returned_application_ids
 
 
-def test_handler_application_ordering_by_key(handler_api_client):
+def test_handler_application_order_by(handler_api_client):
     _create_random_applications()
-    order_key = "application_number"
+    key = "application_number"
 
     def _map_application_data_by_key(items, key):
         return [str(elem[key]) for elem in items]
@@ -2100,29 +2100,28 @@ def test_handler_application_ordering_by_key(handler_api_client):
     def _get_expected_sorting_values(key, reverse=False):
         items = sorted(
             Application.objects.all().values(),
-            key=lambda item: item[order_key],
+            key=lambda item: item[key],
             reverse=reverse,
         )
-        return _map_application_data_by_key(items, order_key)
+        return _map_application_data_by_key(items, key)
 
     response = handler_api_client.get(
         reverse("v1:handler-application-simplified-application-list"),
-        {"order_by": "asc", "order_key": order_key},
+        {"order_by": key},
     )
 
-    expected_application_values = _get_expected_sorting_values(order_key, False)
-    returned_application_values = _map_application_data_by_key(response.data, order_key)
+    expected_application_values = _get_expected_sorting_values(key, False)
+    returned_application_values = _map_application_data_by_key(response.data, key)
     assert expected_application_values == returned_application_values
 
     # Now swap the order
-
     response = handler_api_client.get(
         reverse("v1:handler-application-simplified-application-list"),
-        {"order_by": "desc", "order_key": order_key},
+        {"order_by": "-" + key},
     )
 
-    expected_application_values = _get_expected_sorting_values(order_key, True)
-    returned_application_values = _map_application_data_by_key(response.data, order_key)
+    expected_application_values = _get_expected_sorting_values(key, True)
+    returned_application_values = _map_application_data_by_key(response.data, key)
     assert expected_application_values == returned_application_values
 
 
