@@ -171,6 +171,13 @@ and redoc documentation at [https://localhost:8000/api_docs/redoc/](https://loca
     def get_available_benefit_types(self, obj):
   ```
 
+## Scheduled jobs
+
+Jobs can be scheduled using the Django extensions-package and setting the jobs to run as a cronjob. 
+Currently configured jobs (registered in the `applications/jobs`-directory):
+
+- Daily: check applications that have been in the cancelled state for 30 or more days and delete them.
+
 ## Code format
 
 This project uses
