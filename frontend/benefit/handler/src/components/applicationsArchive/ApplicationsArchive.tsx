@@ -114,7 +114,7 @@ const ApplicationsArchive: React.FC = () => {
   }
 
   return (
-    <Container data-testid={`application-list-archived`}>
+    <Container data-testid="application-list-archived">
       <$Heading as="h1" data-testid="main-ingress">{`${t(
         'common:header.navigation.archive'
       )}`}</$Heading>
