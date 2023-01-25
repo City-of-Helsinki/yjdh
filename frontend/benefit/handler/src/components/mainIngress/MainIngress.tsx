@@ -16,7 +16,7 @@ const MainIngress: React.FC = () => {
   return (
     <Container>
       <$Container>
-        <$HeadingContainer>
+        <$HeadingContainer data-testid="main-ingress">
           <$Heading>{t('common:mainIngress.heading')}</$Heading>
         </$HeadingContainer>
 

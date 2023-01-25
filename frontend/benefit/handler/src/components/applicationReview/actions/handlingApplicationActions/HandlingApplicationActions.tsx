@@ -25,9 +25,13 @@ import { useHandlingApplicationActions } from './useHandlingApplicationActions';
 
 export type Props = {
   application: Application;
+  'data-testid'?: string;
 };
 
-const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
+const HandlingApplicationActions: React.FC<Props> = ({
+  application,
+  'data-testid': dataTestId,
+}) => {
   const {
     t,
     onDone,
@@ -43,7 +47,7 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
     isConfirmationModalOpen,
   } = useHandlingApplicationActions(application);
   return (
-    <$Wrapper>
+    <$Wrapper data-testid={dataTestId}>
       <$Column>
         {application.status === APPLICATION_STATUSES.HANDLING && (
           <Button onClick={onDone} theme="coat" disabled={isDisabledDoneButton}>

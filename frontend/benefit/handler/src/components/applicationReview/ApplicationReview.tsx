@@ -65,8 +65,8 @@ const ApplicationReview: React.FC = () => {
 
   return (
     <>
-      <ApplicationHeader data={application} />
-      <Container>
+      <ApplicationHeader data={application} data-testid="application-header" />
+      <Container data-testid="application-body">
         {application.status === APPLICATION_STATUSES.INFO_REQUIRED && (
           <StatusLabel
             css={`
@@ -103,13 +103,19 @@ const ApplicationReview: React.FC = () => {
       </Container>
       <StickyActionBar>
         {application.status === APPLICATION_STATUSES.RECEIVED && (
-          <ReceivedApplicationActions application={application} />
+          <ReceivedApplicationActions
+            application={application}
+            data-testid="received-application-actions"
+          />
         )}
         {(application.status === APPLICATION_STATUSES.HANDLING ||
           application.status === APPLICATION_STATUSES.INFO_REQUIRED ||
           (application.status &&
             HANDLED_STATUSES.includes(application.status))) && (
-          <HandlingApplicationActions application={application} />
+          <HandlingApplicationActions
+            application={application}
+            data-testid="handling-application-actions"
+          />
         )}
       </StickyActionBar>
       <$StickyBarSpacing />

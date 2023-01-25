@@ -114,8 +114,10 @@ const ApplicationsArchive: React.FC = () => {
   }
 
   return (
-    <Container>
-      <$Heading>{`${t('common:header.navigation.archive')}`}</$Heading>
+    <Container data-testid={`application-list-archived`}>
+      <$Heading as="h1" data-testid="main-ingress">{`${t(
+        'common:header.navigation.archive'
+      )}`}</$Heading>
       {list.length > 0 && (
         <$ArchiveCount>{`${t(`${translationsBase}.total.count`, {
           count: list.length,

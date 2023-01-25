@@ -14,9 +14,13 @@ import snakecaseKeys from 'snakecase-keys';
 
 export type Props = {
   application: Application;
+  'data-testid'?: string;
 };
 
-const ReceivedApplicationActions: React.FC<Props> = ({ application }) => {
+const ReceivedApplicationActions: React.FC<Props> = ({
+  application,
+  'data-testid': dataTestId,
+}) => {
   const translationsBase = 'common:review.actions';
   const { t } = useTranslation();
   const { onSaveAndClose } = useHandlerReviewActions(application);
@@ -52,7 +56,7 @@ const ReceivedApplicationActions: React.FC<Props> = ({ application }) => {
   };
 
   return (
-    <$Grid>
+    <$Grid data-testid={dataTestId}>
       <$GridCell $colSpan={2}>
         <Button onClick={handleStatusChange} theme="coat">
           {t(`${translationsBase}.handle`)}
