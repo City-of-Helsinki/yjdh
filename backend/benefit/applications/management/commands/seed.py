@@ -49,6 +49,7 @@ def clear_applications():
 def run_seed(number):
     """Delete all existing applications and create applications for all statuses"""
     f = faker.Faker()
+
     clear_applications()
 
     factories = (
@@ -68,6 +69,4 @@ def run_seed(number):
             application.created_at = random_datetime
             application.save()
 
-            application.log_entries.filter(to_status=application.status).update(
-                created_at=random_datetime
-            )
+            application.log_entries.all().update(created_at=random_datetime)
