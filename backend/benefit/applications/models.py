@@ -320,7 +320,9 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
 
     bases = models.ManyToManyField("ApplicationBasis", related_name="applications")
 
-    history = HistoricalRecords(table_name="bf_applications_application_history")
+    history = HistoricalRecords(
+        table_name="bf_applications_application_history", cascade_delete_history=True
+    )
 
     @property
     def calculated_benefit_amount(self):
@@ -399,7 +401,11 @@ class DeMinimisAid(UUIDModel, TimeStampedModel):
     )
     granted_at = models.DateField(verbose_name=_("benefit granted at"))
     ordering = models.IntegerField(default=0)
-    history = HistoricalRecords(table_name="applications_deminimisaid_history")
+    history = HistoricalRecords(
+        # TODO this table name is inconsistent with the others, it lacks the bf_ prefix
+        table_name="applications_deminimisaid_history",
+        cascade_delete_history=True,
+    )
 
     def __str__(self):
         return "{}: {} {}".format(self.pk, self.application.pk, self.granter)
@@ -424,7 +430,8 @@ class ApplicationLogEntry(UUIDModel, TimeStampedModel):
     comment = models.TextField(blank=True)
 
     history = HistoricalRecords(
-        table_name="bf_applications_applicationlogentry_history"
+        table_name="bf_applications_applicationlogentry_history",
+        cascade_delete_history=True,
     )
 
     def __str__(self):
@@ -530,7 +537,10 @@ class ApplicationBasis(UUIDModel, TimeStampedModel):
     identifier = models.CharField(max_length=64, unique=True)
     is_active = models.BooleanField(default=True)
 
-    history = HistoricalRecords(table_name="bf_applications_applicationbasis_history")
+    history = HistoricalRecords(
+        table_name="bf_applications_applicationbasis_history",
+        cascade_delete_history=True,
+    )
 
     def __str__(self):
         return self.identifier
