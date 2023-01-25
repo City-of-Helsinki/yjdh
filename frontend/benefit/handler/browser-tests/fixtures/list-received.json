@@ -1,0 +1,132 @@
+[
+    {
+        "id": "1e0bcc35-f3c9-47ec-b402-20b1a6f0df99",
+        "status": "received",
+        "employee": {
+            "id": "0d1df3c9-8517-4410-bbf9-610bdb734c28",
+            "first_name": "Robert",
+            "last_name": "Harrell",
+            "social_security_number": "020122-745T",
+            "phone_number": "050100003",
+            "email": "xxxxxxxx@example.com",
+            "employee_language": "en",
+            "job_title": "Editor, film/video",
+            "monthly_pay": "4369.00",
+            "vacation_money": "3279.00",
+            "other_expenses": "3686.00",
+            "working_hours": "30.0",
+            "collective_bargaining_agreement": "around",
+            "is_living_in_helsinki": false,
+            "commission_amount": null,
+            "commission_description": "",
+            "created_at": "2023-01-17T14:29:01.828339+02:00",
+            "birthday": "2022-01-02"
+        },
+        "application_number": 125009,
+        "company": {
+            "id": "32b43c6e-6565-40ec-a058-6fb9cf9a2a4a",
+            "name": "Nelson, Cruz and Strong",
+            "business_id": "7217053-8",
+            "company_form": "oy",
+            "company_form_code": 16,
+            "street_address": "667 Debra Islands Apt. 291",
+            "postcode": "07437",
+            "city": "Garciamouth",
+            "bank_account_number": "FI8745197225024744",
+            "organization_type": "company"
+        },
+        "company_name": "Account although.",
+        "company_form": "Pressure.",
+        "company_form_code": 16,
+        "submitted_at": "2023-01-19T11:12:02.568577Z",
+        "official_company_street_address": "69910 Lisa Alley",
+        "official_company_city": "Maryview",
+        "official_company_postcode": "98588",
+        "use_alternative_address": true,
+        "alternative_company_street_address": "414 Stanley Stream Suite 011",
+        "alternative_company_city": "Leefort",
+        "alternative_company_postcode": "61569",
+        "company_department": "88367 Sharon Islands Apt. 775",
+        "company_bank_account_number": "FI1211862700106625",
+        "company_contact_person_first_name": "Jessica",
+        "company_contact_person_last_name": "Rush",
+        "company_contact_person_phone_number": "050100003",
+        "company_contact_person_email": "jmiller@example.org",
+        "association_has_business_activities": null,
+        "association_immediate_manager_check": null,
+        "applicant_language": "fi",
+        "co_operation_negotiations": true,
+        "co_operation_negotiations_description": "Drive enter nature possible husband we practice. On civil machine worker ten. Create level big determine culture hotel newspaper.",
+        "pay_subsidy_granted": false,
+        "pay_subsidy_percent": null,
+        "additional_pay_subsidy_percent": null,
+        "apprenticeship_program": false,
+        "archived": true,
+        "application_step": "step_1",
+        "benefit_type": "employment_benefit",
+        "start_date": "2023-03-11",
+        "end_date": "2023-06-30",
+        "de_minimis_aid": true,
+        "last_modified_at": "2023-01-19T11:14:17.148083Z",
+        "created_at": "2023-01-06T13:26:41+02:00",
+        "additional_information_needed_by": null,
+        "unread_messages_count": 0,
+        "duration_in_months_rounded": 3.67,
+        "calculation": {
+            "id": "9661915d-8121-4046-bfb0-0433d596e6ed",
+            "monthly_pay": "4369.00",
+            "vacation_money": "3279.00",
+            "other_expenses": "3686.00",
+            "start_date": "2023-03-11",
+            "end_date": "2023-06-30",
+            "state_aid_max_percentage": 50,
+            "granted_as_de_minimis_aid": false,
+            "target_group_check": false,
+            "calculated_benefit_amount": "1833.00",
+            "override_monthly_benefit_amount": null,
+            "override_monthly_benefit_amount_comment": "",
+            "rows": [
+                {
+                    "id": "8cff9c90-76a5-4434-bb7f-5738e905239a",
+                    "row_type": "helsinki_benefit_monthly_eur",
+                    "ordering": 0,
+                    "description_fi": "Helsinki-lisä / kk",
+                    "amount": "500.00"
+                },
+                {
+                    "id": "6b08ffec-8422-41d4-8d77-2ef88fa26ad6",
+                    "row_type": "helsinki_benefit_total_eur",
+                    "ordering": 1,
+                    "description_fi": "Helsinki-lisä yhteensä",
+                    "amount": "1833.00"
+                }
+            ],
+            "handler_details": {
+                "id": "c67252c3-9040-4660-87b9-b1991f47d485",
+                "first_name": "",
+                "last_name": "",
+                "terms_of_service_approvals": [],
+                "terms_of_service_approval_needed": false,
+                "terms_of_service_in_effect": {
+                    "id": "a850d6bc-f692-4ff0-841b-7181804b3969",
+                    "terms_type": "terms_of_service",
+                    "effective_from": "2021-01-01",
+                    "terms_pdf_fi": "http://localhost:8000/media/var/media/please_upload_actual_pdf_manually.pdf",
+                    "terms_pdf_en": "http://localhost:8000/media/var/media/please_upload_actual_pdf_manually.pdf",
+                    "terms_pdf_sv": "http://localhost:8000/media/var/media/please_upload_actual_pdf_manually.pdf",
+                    "applicant_consents": [
+                        {
+                            "id": "fe6675f8-d6e0-4f4b-9e69-765f492baf65",
+                            "text_fi": "Hyväksyn ehdot",
+                            "text_en": "translation TBD",
+                            "text_sv": "translation TBD"
+                        }
+                    ]
+                }
+            },
+            "duration_in_months_rounded": 3.67
+        },
+        "batch": null,
+        "handled_at": "2023-01-06T11:26:41Z"
+    }
+]

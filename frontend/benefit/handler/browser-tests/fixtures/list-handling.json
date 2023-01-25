@@ -1,0 +1,132 @@
+[
+    {
+        "id": "f6346b49-9f4d-435c-94ff-17bda3bf0a8d",
+        "status": "additional_information_needed",
+        "employee": {
+            "id": "e2a748dc-46cd-48fc-9a11-e35e3a7d046d",
+            "first_name": "Richard",
+            "last_name": "Mitchell",
+            "social_security_number": "121003A2034",
+            "phone_number": "050100000",
+            "email": "xxxxxxxx@example.net",
+            "employee_language": "fi",
+            "job_title": "Ship broker",
+            "monthly_pay": "1015.00",
+            "vacation_money": "1052.00",
+            "other_expenses": "1762.00",
+            "working_hours": "27.0",
+            "collective_bargaining_agreement": "catch",
+            "is_living_in_helsinki": false,
+            "commission_amount": null,
+            "commission_description": "",
+            "created_at": "2023-01-17T14:29:01.229270+02:00",
+            "birthday": "2003-10-12"
+        },
+        "application_number": 125006,
+        "company": {
+            "id": "461cf3c5-76fd-4b71-8aa7-6264adc15a89",
+            "name": "Choi PLC",
+            "business_id": "8495050-6",
+            "company_form": "oy",
+            "company_form_code": 16,
+            "street_address": "803 Kenneth Lights Apt. 807",
+            "postcode": "81998",
+            "city": "New Gabrielaside",
+            "bank_account_number": "FI2811021616285221",
+            "organization_type": "company"
+        },
+        "company_name": "Identify.",
+        "company_form": "Down.",
+        "company_form_code": 16,
+        "submitted_at": "2023-01-17T12:29:01.385653Z",
+        "official_company_street_address": "960 Jamie Ferry Apt. 233",
+        "official_company_city": "Middletonville",
+        "official_company_postcode": "52222",
+        "use_alternative_address": true,
+        "alternative_company_street_address": "6221 Tamara Lane",
+        "alternative_company_city": "West Richardside",
+        "alternative_company_postcode": "49539",
+        "company_department": "404 Edwards Views",
+        "company_bank_account_number": "FI0846203257489775",
+        "company_contact_person_first_name": "Natalie",
+        "company_contact_person_last_name": "Gutierrez",
+        "company_contact_person_phone_number": "050100000",
+        "company_contact_person_email": "xxxxxx@example.net",
+        "association_has_business_activities": null,
+        "association_immediate_manager_check": null,
+        "applicant_language": "fi",
+        "co_operation_negotiations": false,
+        "co_operation_negotiations_description": "",
+        "pay_subsidy_granted": false,
+        "pay_subsidy_percent": null,
+        "additional_pay_subsidy_percent": null,
+        "apprenticeship_program": true,
+        "archived": false,
+        "application_step": "step_1",
+        "benefit_type": "employment_benefit",
+        "start_date": "2023-03-25",
+        "end_date": "2023-05-31",
+        "de_minimis_aid": true,
+        "last_modified_at": "2023-01-17T12:29:01.535747Z",
+        "created_at": "2022-12-20T20:10:10+02:00",
+        "additional_information_needed_by": "2023-01-03",
+        "unread_messages_count": 0,
+        "duration_in_months_rounded": 2.2,
+        "calculation": {
+            "id": "2177e6d1-1910-488e-815a-a4acc116c01b",
+            "monthly_pay": "1015.00",
+            "vacation_money": "1052.00",
+            "other_expenses": "1762.00",
+            "start_date": "2023-03-25",
+            "end_date": "2023-05-31",
+            "state_aid_max_percentage": 50,
+            "granted_as_de_minimis_aid": false,
+            "target_group_check": false,
+            "calculated_benefit_amount": "1100.00",
+            "override_monthly_benefit_amount": null,
+            "override_monthly_benefit_amount_comment": "",
+            "rows": [
+                {
+                    "id": "b487efa8-2799-4f62-99fb-a10a3e29782f",
+                    "row_type": "helsinki_benefit_monthly_eur",
+                    "ordering": 0,
+                    "description_fi": "Helsinki-lisä / kk",
+                    "amount": "500.00"
+                },
+                {
+                    "id": "91b4e591-d897-428a-9d9f-b0f062d62100",
+                    "row_type": "helsinki_benefit_total_eur",
+                    "ordering": 1,
+                    "description_fi": "Helsinki-lisä yhteensä",
+                    "amount": "1100.00"
+                }
+            ],
+            "handler_details": {
+                "id": "9a17fcce-6c3f-46e1-96b6-d92d2ce88e76",
+                "first_name": "Jeff",
+                "last_name": "Zamora",
+                "terms_of_service_approvals": [],
+                "terms_of_service_approval_needed": false,
+                "terms_of_service_in_effect": {
+                    "id": "a850d6bc-f692-4ff0-841b-7181804b3969",
+                    "terms_type": "terms_of_service",
+                    "effective_from": "2021-01-01",
+                    "terms_pdf_fi": "http://localhost:8000/media/var/media/please_upload_actual_pdf_manually.pdf",
+                    "terms_pdf_en": "http://localhost:8000/media/var/media/please_upload_actual_pdf_manually.pdf",
+                    "terms_pdf_sv": "http://localhost:8000/media/var/media/please_upload_actual_pdf_manually.pdf",
+                    "applicant_consents": [
+                        {
+                            "id": "fe6675f8-d6e0-4f4b-9e69-765f492baf65",
+                            "text_fi": "Hyväksyn ehdot",
+                            "text_en": "translation TBD",
+                            "text_sv": "translation TBD"
+                        }
+                    ]
+                }
+            },
+            "duration_in_months_rounded": 2.2
+        },
+        "batch": null,
+        "handled_at": null
+    }
+]
