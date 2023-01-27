@@ -11,7 +11,7 @@ from applications.models import Application, Attachment
 from applications.tests.factories import CancelledApplicationFactory
 
 
-def test_seed_applications_with_arguments():
+def test_seed_applications_with_arguments(set_debug_to_true):
     amount = 10
     statuses = ApplicationStatus.values
     total_created = len(ApplicationStatus.values) * amount
@@ -23,6 +23,14 @@ def test_seed_applications_with_arguments():
     )
     assert seeded_applications.count() == total_created
     assert f"Created {total_created} applications" in out.getvalue()
+
+
+def test_seed_is_not_allowed_when_debug_is_false(set_debug_to_false):
+    out = StringIO()
+    call_command("seed", stdout=out)
+    assert (
+        "Seeding is allowed only when the DEBUG variable set to True" in out.getvalue()
+    )
 
 
 def test_delete_cancelled_applications_older_than_30_days():
