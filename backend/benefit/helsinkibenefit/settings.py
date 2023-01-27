@@ -37,6 +37,11 @@ env = environ.Env(
     MAIL_MAILGUN_API=(str, ""),
     SENTRY_DSN=(str, ""),
     SENTRY_ENVIRONMENT=(str, ""),
+    SENTRY_ATTACH_STACKTRACE=(bool, False),
+    SENTRY_MAX_BREADCRUMBS=(int, 0),
+    SENTRY_REQUEST_BODIES=(str, "never"),
+    SENTRY_SEND_DEFAULT_PII=(bool, False),
+    SENTRY_WITH_LOCALS=(bool, False),
     CORS_ALLOWED_ORIGINS=(list, []),
     CORS_ALLOW_ALL_ORIGINS=(bool, False),
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
@@ -151,10 +156,23 @@ DATABASES = {"default": env.db()}
 
 CACHES = {"default": env.cache()}
 
+SENTRY_ATTACH_STACKTRACE = env.bool("SENTRY_ATTACH_STACKTRACE")
+SENTRY_MAX_BREADCRUMBS = env.int("SENTRY_MAX_BREADCRUMBS")
+SENTRY_REQUEST_BODIES = env.str("SENTRY_REQUEST_BODIES")
+SENTRY_SEND_DEFAULT_PII = env.bool("SENTRY_SEND_DEFAULT_PII")
+SENTRY_WITH_LOCALS = env.bool("SENTRY_WITH_LOCALS")
+SENTRY_DSN = env.str("SENTRY_DSN")
+SENTRY_ENVIRONMENT = env.str("SENTRY_ENVIRONMENT")
+
 sentry_sdk.init(
-    dsn=env.str("SENTRY_DSN"),
+    attach_stacktrace=SENTRY_ATTACH_STACKTRACE,
+    max_breadcrumbs=SENTRY_MAX_BREADCRUMBS,
+    request_bodies=SENTRY_REQUEST_BODIES,
+    send_default_pii=SENTRY_SEND_DEFAULT_PII,
+    with_locals=SENTRY_WITH_LOCALS,
+    dsn=SENTRY_DSN,
     release="n/a",
-    environment=env("SENTRY_ENVIRONMENT"),
+    environment=SENTRY_ENVIRONMENT,
     integrations=[DjangoIntegration()],
 )
 
