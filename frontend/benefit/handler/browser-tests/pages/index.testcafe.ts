@@ -18,11 +18,11 @@ const url = getFrontendUrl(`/`);
 
 const mockHook = RequestMock()
   .onRequestTo(
-    `${getBackendDomain()}/v1/handlerapplications/simplified_list/?status=handling,additional_information_needed`
+    `${getBackendDomain()}/v1/handlerapplications/simplified_list/?status=handling,additional_information_needed&order_by=-submitted_at`
   )
   .respond(jsonInProgressApplication)
   .onRequestTo(
-    `${getBackendDomain()}/v1/handlerapplications/simplified_list/?status=received`
+    `${getBackendDomain()}/v1/handlerapplications/simplified_list/?status=received&order_by=-submitted_at`
   )
   .respond(jsonReceivedApplication);
 
@@ -49,8 +49,6 @@ test('Frontpage has applications "received" and "in progress"', async () => {
 
   const receivedApplications = new ApplicationList('received');
   await receivedApplications.hasItemsListed();
-  const link = await receivedApplications.getListedItemLink(
-    'Nelson, Cruz and Strong'
-  );
+  const link = await receivedApplications.getListedItemLink('Salinas Inc');
   await t.click(link);
 });
