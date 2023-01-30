@@ -204,3 +204,8 @@ env variables / settings are provided by Azure blob storage:
 - `AZURE_ACCOUNT_NAME`
 - `AZURE_ACCOUNT_KEY`
 - `AZURE_CONTAINER`
+
+## Sentry error monitoring
+The `local`, `development` and `testing` environments are connected to the Sentry instance at [`https://sentry.test.hel.ninja/`](https://sentry.test.hel.ninja/) under the `yjdh-benefit`-team. 
+There are separate Sentry projects for the Django api (`yjdh-benefit-api`), handler UI (`yjdh-benefit-handler`) and applicant UI (`yjdh-benefit-applicant`). 
+To limit the amount of possibly sensitive data sent to Sentry, the same configuration as in kesaseteli is used by default, see [`https://github.com/City-of-Helsinki/yjdh/pull/779`](https://github.com/City-of-Helsinki/yjdh/pull/779).
