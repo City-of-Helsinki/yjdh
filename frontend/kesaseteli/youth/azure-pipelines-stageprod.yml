@@ -42,7 +42,7 @@ resources:
   - repository: yjdh-kesaseteli-pipelines
     type: git
     # Azure DevOps project/repository
-    name: yjdh/yjdh-kesaseteli-pipelines
+    name: yjdh-kesaseteli/yjdh-kesaseteli-pipelines
 
 extends:
   # Filename in Azure DevOps Repository (note possible -ui or -api)
