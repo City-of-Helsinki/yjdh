@@ -20,6 +20,8 @@ describe('frontend/tet/admin/src/pages/copystatic.tsx', () => {
     expectUnauthorizedReply();
     const spyPush = jest.fn();
     renderPage(CopyStaticPage, { push: spyPush });
-    await waitFor(() => expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/login`));
+    await waitFor(() =>
+      expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/login`, undefined, { shallow: false }),
+    );
   });
 });

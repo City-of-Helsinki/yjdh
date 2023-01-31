@@ -21,7 +21,10 @@ const translationsBase = 'common:applications.list';
 
 const useApplicationsArchive = (): ApplicationListProps => {
   const { t } = useTranslation();
-  const query = useApplicationsQuery(['accepted', 'rejected', 'cancelled']);
+  const query = useApplicationsQuery(
+    ['accepted', 'rejected', 'cancelled'],
+    '-submitted_at'
+  );
 
   const list = query.data
     ?.sort(

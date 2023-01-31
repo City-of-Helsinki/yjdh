@@ -39,7 +39,11 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
       query: { id: APPLICATION_ID },
     });
     await waitFor(() =>
-      expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`)
+      expect(spyPush).toHaveBeenCalledWith(
+        `${DEFAULT_LANGUAGE}/500`,
+        undefined,
+        { shallow: false }
+      )
     );
   });
 

@@ -36,7 +36,11 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
       const spyPush = jest.fn();
       renderPage(ApplicationPage, { push: spyPush });
       await waitFor(() =>
-        expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/login`)
+        expect(spyPush).toHaveBeenCalledWith(
+          `${DEFAULT_LANGUAGE}/login?sessionExpired=true`,
+          undefined,
+          { shallow: false }
+        )
       );
     });
 
@@ -51,8 +55,8 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
         await waitFor(() =>
           expect(spyReplace).toHaveBeenCalledWith(
             `${DEFAULT_LANGUAGE}/`,
-            `${DEFAULT_LANGUAGE}/`,
-            {}
+            undefined,
+            { shallow: false }
           )
         );
       });
@@ -67,11 +71,9 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           locale,
         });
         await waitFor(() =>
-          expect(spyReplace).toHaveBeenCalledWith(
-            `${locale}/`,
-            `${locale}/`,
-            {}
-          )
+          expect(spyReplace).toHaveBeenCalledWith(`${locale}/`, undefined, {
+            shallow: false,
+          })
         );
       });
 
@@ -82,7 +84,11 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           const spyPush = jest.fn();
           renderPage(ApplicationPage, { query: { id }, push: spyPush });
           await waitFor(() => {
-            expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`);
+            expect(spyPush).toHaveBeenCalledWith(
+              `${DEFAULT_LANGUAGE}/500`,
+              undefined,
+              { shallow: false }
+            );
           });
         });
       });

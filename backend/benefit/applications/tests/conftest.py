@@ -153,7 +153,23 @@ def auto_accept_tos(autouse_django_db, accept_tos):
     return accept_tos
 
 
+@pytest.fixture()
+def set_debug_to_true(settings):
+    settings.DEBUG = True
+
+
+@pytest.fixture()
+def set_debug_to_false(settings):
+    settings.DEBUG = False
+
+
 def split_lines_at_semicolon(csv_string):
     # split CSV into lines and columns without using the csv library
     csv_lines = csv_string.splitlines()
     return [line.split(";") for line in csv_lines]
+
+
+def delete_attachments(application):
+    """Delete attachment files from the given applications"""
+    for attachment in application.attachments.all():
+        attachment.attachment_file.delete()

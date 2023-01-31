@@ -70,9 +70,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
           </$DataColumn>
           {createdAt && (
             <$DataColumn>
-              <$DataHeader>
-                {t(`${translationBase}.common.created`)}
-              </$DataHeader>
+              <$DataHeader>{t(`${translationBase}.common.saved`)}</$DataHeader>
               <$DataValue>{createdAt}</$DataValue>
             </$DataColumn>
           )}

@@ -33,7 +33,11 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
     const spyPush = jest.fn();
     renderPage(IndexPage, { push: spyPush });
     await waitFor(() =>
-      expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/login`)
+      expect(spyPush).toHaveBeenCalledWith(
+        `${DEFAULT_LANGUAGE}/login?sessionExpired=true`,
+        undefined,
+        { shallow: false }
+      )
     );
   });
 
@@ -45,7 +49,11 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
         const spyPush = jest.fn();
         renderPage(IndexPage, { push: spyPush });
         await waitFor(() =>
-          expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`)
+          expect(spyPush).toHaveBeenCalledWith(
+            `${DEFAULT_LANGUAGE}/500`,
+            undefined,
+            { shallow: false }
+          )
         );
       });
       it('Should show errorPage when applications creation error', async () => {
@@ -55,7 +63,11 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
         const spyPush = jest.fn();
         renderPage(IndexPage, { push: spyPush });
         await waitFor(() =>
-          expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`)
+          expect(spyPush).toHaveBeenCalledWith(
+            `${DEFAULT_LANGUAGE}/500`,
+            undefined,
+            { shallow: false }
+          )
         );
       });
     });

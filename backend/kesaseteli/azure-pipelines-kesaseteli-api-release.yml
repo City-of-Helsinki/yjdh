@@ -34,7 +34,7 @@ resources:
   - repository: yjdh-kesaseteli-pipelines
     type: git
     # project/repository
-    name: yjdh/yjdh-kesaseteli-pipelines
+    name: yjdh-kesaseteli/yjdh-kesaseteli-pipelines
 
 extends:
   template: azure-pipelines-kesaseteli-api-release.yml@yjdh-kesaseteli-pipelines

@@ -36,9 +36,7 @@ const ThankYouPage: NextPage = () => {
   if (applicationQuery.isSuccess) {
     const application = applicationQuery.data;
     if (applicationId && application.status === 'draft') {
-      void goToPage(`/application?id=${applicationId}`, {
-        operation: 'replace',
-      });
+      void goToPage(`/application?id=${applicationId}`, 'replace');
     }
     return (
       <Container>
