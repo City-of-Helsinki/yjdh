@@ -11,8 +11,8 @@ import { RequestMock, t } from 'testcafe';
 const getBackendDomain = (): string =>
   process.env.NEXT_PUBLIC_BACKEND_URL || 'https://localhost:8000';
 
-import jsonInProgressApplication from '../fixtures/list-handling.json';
-import jsonReceivedApplication from '../fixtures/list-received.json';
+import jsonInProgressApplication from '../json/list-handling.json';
+import jsonReceivedApplication from '../json/list-received.json';
 
 const url = getFrontendUrl(`/`);
 

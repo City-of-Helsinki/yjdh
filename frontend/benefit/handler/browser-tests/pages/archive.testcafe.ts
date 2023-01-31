@@ -12,7 +12,7 @@ const getBackendDomain = (): string =>
   process.env.NEXT_PUBLIC_BACKEND_URL || 'https://localhost:8000';
 
 const url = getFrontendUrl('/archive');
-import jsonArchivedList from '../fixtures/list-archived.json';
+import jsonArchivedList from '../json/list-archived.json';
 
 const mockHook = RequestMock()
   .onRequestTo(
