@@ -95,6 +95,9 @@ To run the backend without integrations/authentication, set NEXT_PUBLIC_MOCK_FLA
 .env.benefit-backend If NEXT_PUBLIC_MOCK_FLAG is set, additionally
 DUMMY_COMPANY_FORM_CODE can be set to test with different company_form parameters.
 
+To seed the database with some mock application data, run `python manage.py seed`
+, which by default generates 10 applications for each of the seven possible application statuses and one attachment with a .pdf-file for each of them. To generate more applications, use the optional `--number` flag, for example, running `python manage.py seed --number=30` creates 30 applications of each status. **Note that running the command deletes all previous application data from the database and clears the media folder.**
+
 **Using LOAD_FIXTURES=1 is recommended for local testing** as it loads e.g. default
 terms which are required for an applicant to be able to successfully send in an
 application using the applicant UI.
@@ -168,6 +171,13 @@ and redoc documentation at [https://localhost:8000/api_docs/redoc/](https://loca
     def get_available_benefit_types(self, obj):
   ```
 
+## Scheduled jobs
+
+Jobs can be scheduled using the Django extensions-package and setting the jobs to run as a cronjob. 
+Currently configured jobs (registered in the `applications/jobs`-directory):
+
+- Daily: check applications that have been in the cancelled state for 30 or more days and delete them.
+
 ## Code format
 
 This project uses
@@ -194,3 +204,8 @@ env variables / settings are provided by Azure blob storage:
 - `AZURE_ACCOUNT_NAME`
 - `AZURE_ACCOUNT_KEY`
 - `AZURE_CONTAINER`
+
+## Sentry error monitoring
+The `local`, `development` and `testing` environments are connected to the Sentry instance at [`https://sentry.test.hel.ninja/`](https://sentry.test.hel.ninja/) under the `yjdh-benefit`-team. 
+There are separate Sentry projects for the Django api (`yjdh-benefit-api`), handler UI (`yjdh-benefit-handler`) and applicant UI (`yjdh-benefit-applicant`). 
+To limit the amount of possibly sensitive data sent to Sentry, the same configuration as in kesaseteli is used by default, see [`https://github.com/City-of-Helsinki/yjdh/pull/779`](https://github.com/City-of-Helsinki/yjdh/pull/779).

@@ -6,7 +6,8 @@ import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 const useApplicationsQuery = (
-  status: string[]
+  status: string[],
+  orderBy = 'id'
 ): UseQueryResult<ApplicationData[], Error> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
@@ -24,9 +25,13 @@ const useApplicationsQuery = (
     ['applicationsList', ...status],
     async () => {
       const res = axios.get<ApplicationData[]>(
-        `${
-          BackendEndpoint.HANDLER_APPLICATIONS_SIMPLIFIED
-        }?status=${status.join(',')}`
+        `${BackendEndpoint.APPLICATIONS_SIMPLIFIED}`,
+        {
+          params: {
+            status: status.join(','),
+            order_by: orderBy,
+          },
+        }
       );
       return handleResponse(res);
     },
