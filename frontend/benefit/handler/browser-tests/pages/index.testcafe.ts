@@ -26,7 +26,7 @@ const mockHook = RequestMock()
   )
   .respond(jsonReceivedApplication);
 
-fixture('Frontpage')
+fixture('Index page')
   .page(url)
   .requestHooks(mockHook, requestLogger)
   .beforeEach(async (t) => {
@@ -37,7 +37,7 @@ fixture('Frontpage')
     console.log(filterLoggedRequests(requestLogger))
   );
 
-test('Frontpage has applications "received" and "in progress"', async () => {
+test('Index page has applications in states "received" and "handling"', async () => {
   const mainIngress = new MainIngress();
   await mainIngress.isLoaded();
   await mainIngress.hasHeading('Hakemukset', 'h1');
