@@ -6,7 +6,7 @@ import ApplicationList from '../page-model/ApplicationList';
 
 import MainIngress from '../page-model/MainIngress';
 import { getFrontendUrl } from '../utils/url.utils';
-import { RequestMock, t } from 'testcafe';
+import { RequestMock } from 'testcafe';
 
 const getBackendDomain = (): string =>
   process.env.NEXT_PUBLIC_BACKEND_URL || 'https://localhost:8000';
@@ -49,6 +49,5 @@ test('Frontpage has applications "received" and "in progress"', async () => {
 
   const receivedApplications = new ApplicationList('received');
   await receivedApplications.hasItemsListed();
-  const link = await receivedApplications.getListedItemLink('Salinas Inc');
-  await t.click(link);
+  await receivedApplications.clickListedItemLink('Salinas Inc');
 });

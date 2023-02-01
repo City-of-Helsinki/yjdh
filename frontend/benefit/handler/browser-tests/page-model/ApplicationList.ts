@@ -15,6 +15,11 @@ class ApplicationList extends HandlerPageComponent {
     return this.component.findByText(name);
   }
 
+  async clickListedItemLink(name: string) {
+    const link = await this.getListedItemLink(name);
+    t.click(link);
+  }
+
   async hasItemsListed() {
     const items = this.getListedItems();
     const count = (await items.count) - 1;
