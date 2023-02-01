@@ -1,17 +1,24 @@
-import { t } from 'testcafe';
+import { Selector, t } from 'testcafe';
 
 import HandlerPageComponent from './HandlerPageComponent';
 
 class MainIngress extends HandlerPageComponent {
-  public constructor() {
+  private selector;
+  private text;
+
+  public constructor(text: string, selector: string) {
     super({ datatestId: 'main-ingress' });
+    this.text = text;
+    this.selector = selector;
   }
 
-  public async hasHeading(
-    text: string,
-    selector = 'h1'
-  ): Promise<NodeSnapshot> {
-    return this.component.findByText(text, { selector });
+  public async isVisible(): Promise<void> {
+    await this.isLoaded();
+    const heading = this.component.findByText(this.text, {
+      selector: this.selector,
+    });
+    const isElementVisible = await heading.visible;
+    return t.expect(isElementVisible).ok();
   }
 }
 

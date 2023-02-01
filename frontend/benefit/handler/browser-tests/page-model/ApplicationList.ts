@@ -1,29 +1,24 @@
 import { t } from 'testcafe';
-
 import HandlerPageComponent from './HandlerPageComponent';
 
 class ApplicationList extends HandlerPageComponent {
-  public constructor(status: string) {
-    super({ datatestId: `application-list-${status}` });
+  public constructor(status: Array<string>) {
+    super({ datatestId: `application-list-${status.join(',')}` });
   }
 
-  private getListedItems = (): SelectorPromise => {
-    return this.component.findAllByRole('row');
-  };
-
-  getListedItemLink(name: string): SelectorPromise {
+  private getListedItemLink(name: string): SelectorPromise {
     return this.component.findByText(name);
   }
 
-  async clickListedItemLink(name: string) {
+  async clickListedItemLink(name: string): Promise<void> {
     const link = await this.getListedItemLink(name);
-    t.click(link);
+    return t.click(link);
   }
 
-  async hasItemsListed() {
-    const items = this.getListedItems();
-    const count = (await items.count) - 1;
-    return t.expect(count).gte(1);
+  async hasItemsListed(countExpected = 1): Promise<void> {
+    const rows = this.component.findAllByRole('row');
+    const countMinusHeader = (await rows.count) - 1;
+    return t.expect(countMinusHeader).eql(countExpected);
   }
 }
 

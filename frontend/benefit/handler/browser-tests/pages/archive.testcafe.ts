@@ -1,18 +1,15 @@
+import { RequestMock } from 'testcafe';
 import requestLogger, {
   filterLoggedRequests,
 } from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import ApplicationList from '../page-model/ApplicationList';
-import { RequestMock } from 'testcafe';
-
 import MainIngress from '../page-model/MainIngress';
-import { getFrontendUrl } from '../utils/url.utils';
-
-const getBackendDomain = (): string =>
-  process.env.NEXT_PUBLIC_BACKEND_URL || 'https://localhost:8000';
+import { getBackendDomain, getFrontendUrl } from '../utils/url.utils';
+import fi from '../../public/locales/fi/common.json';
+import jsonArchivedList from '../json/list-archived.json';
 
 const url = getFrontendUrl('/archive');
-import jsonArchivedList from '../json/list-archived.json';
 
 const mockHook = RequestMock()
   .onRequestTo(
@@ -31,12 +28,10 @@ fixture('Archive')
     console.log(filterLoggedRequests(requestLogger))
   );
 
-test('Archive has applications "handled"', async () => {
-  const mainIngress = new MainIngress();
+test('Archive has applications in state "accepted", "rejected" and "cancelled"', async () => {
+  const mainIngress = new MainIngress(fi.header.navigation.archive, 'h1');
+  await mainIngress.isVisible();
 
-  await mainIngress.isLoaded();
-  await mainIngress.hasHeading('Arkisto', 'h1');
-
-  const archivedApplications = new ApplicationList('archived');
-  await archivedApplications.hasItemsListed();
+  const archivedApplications = new ApplicationList(['archived']);
+  await archivedApplications.hasItemsListed(30);
 });
