@@ -1,8 +1,14 @@
+from datetime import datetime
+from typing import Optional
 from uuid import uuid4
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from helsinki_gdpr.models import SerializableMixin
+
+
+def format_date(date: datetime) -> Optional[str]:
+    return date.strftime("%d-%m-%Y %H:%M:%S") if date else None
 
 
 class User(AbstractUser, SerializableMixin):
@@ -18,6 +24,6 @@ class User(AbstractUser, SerializableMixin):
         {"name": "first_name"},
         {"name": "last_name"},
         {"name": "email"},
-        {"name": "date_joined", "accessor": lambda x: x.strftime("%d-%m-%Y %H:%M:%S")},
-        {"name": "last_login", "accessor": lambda x: x.strftime("%d-%m-%Y %H:%M:%S") if x else None},
+        {"name": "date_joined", "accessor": lambda x: format_date(x)},
+        {"name": "last_login", "accessor": lambda x: format_date(x)},
     )

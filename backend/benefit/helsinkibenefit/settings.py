@@ -215,7 +215,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "django_filters",
-    "drf_spectacular",  # OpenAPI documentation
+    "drf_spectacular",
     "phonenumber_field",
     "django_extensions",
     "encrypted_fields",

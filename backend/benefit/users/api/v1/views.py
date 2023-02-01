@@ -3,14 +3,16 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import PermissionDenied
+from django.db import DatabaseError, transaction
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
-from helsinki_gdpr.views import GDPRAPIView
+from helsinki_gdpr.views import DeletionNotAllowed, DryRunException, GDPRAPIView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from common.permissions import BFIsAuthenticated
+from users.api.v1.permissions import BFGDPRScopesPermission
 from users.api.v1.serializers import UserSerializer
 from users.utils import set_mock_user_name
 
@@ -43,11 +45,11 @@ class CurrentUserView(APIView):
 class UserUuidGDPRAPIView(GDPRAPIView):
     """
     GDPR-API view that is used from Helsinki-profiili to query what data this app has
-    on person. Usually used for delete the data too but not in this case.
+    on person.
     """
-    if settings.NEXT_PUBLIC_MOCK_FLAG:
-        authentication_classes = []
-        permission_classes = []
+
+    permission_classes = [BFGDPRScopesPermission]
+    authentication_classes = []
 
     def get_object(self) -> AbstractBaseUser:
         """Get user by Helsinki-profiili UUID that is stored as username."""
@@ -55,7 +57,16 @@ class UserUuidGDPRAPIView(GDPRAPIView):
         self.check_object_permissions(self.request, obj)
         return obj
 
-    def delete(self) -> Response:
-        """Deletion is not possible (due legal reasons)."""
-        # TODO: maybe user data can be deleted?
-        return Response(status=status.HTTP_403_FORBIDDEN)
+    def delete(self, *args, **kwargs):
+        """Delete all data related to the given user."""
+        try:
+            with transaction.atomic():
+                user = self.get_object()
+                user.delete()
+                self.check_dry_run()
+        except DryRunException:
+            pass
+        except DatabaseError:
+            raise DeletionNotAllowed()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
