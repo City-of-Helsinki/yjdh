@@ -43,9 +43,7 @@ class CurrentUserView(APIView):
 
 
 class UserUuidGDPRAPIView(GDPRAPIView):
-    """
-    GDPR-API view that is used from Helsinki profile to query and delete user data.
-    """
+    """GDPR API view that is used from Helsinki profile to query and delete user data."""
 
     permission_classes = [BFGDPRScopesPermission]
     authentication_classes = []
