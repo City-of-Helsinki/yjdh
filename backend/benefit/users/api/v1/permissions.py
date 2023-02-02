@@ -10,13 +10,13 @@ class BFGDPRScopesPermission(GDPRScopesPermission):
     """
 
     def has_permission(self, request, view):
-        # if settings.NEXT_PUBLIC_MOCK_FLAG:
-            # return True
+        if settings.NEXT_PUBLIC_MOCK_FLAG:
+            return True
         return super().has_permission(request, view)
 
     def has_object_permission(self, request, _, obj):
-        # if settings.NEXT_PUBLIC_MOCK_FLAG:
-            # return True
+        if settings.NEXT_PUBLIC_MOCK_FLAG:
+            return True
         if obj:
             return request.user == obj
         return False
