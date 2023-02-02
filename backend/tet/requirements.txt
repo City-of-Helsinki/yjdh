@@ -45,7 +45,7 @@ defusedxml==0.7.1
     #   pysaml2
 deprecation==2.1.0
     # via django-helusers
-django==3.2.4
+django==3.2.17
     # via
     #   -r requirements.in
     #   django-auth-adfs
