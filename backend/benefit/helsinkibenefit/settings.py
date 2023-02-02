@@ -294,7 +294,7 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.BrowsableAPIRenderer",
     ),
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.SessionAuthentication"
+        "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "common.permissions.BFIsAuthenticated",
@@ -360,6 +360,7 @@ OIDC_API_TOKEN_AUTH = {
     "ISSUER": env.str("TOKEN_AUTH_AUTHSERVER_URL"),
     "API_AUTHORIZATION_FIELD": env.str("TOKEN_AUTH_FIELD_FOR_CONSENTS"),
     "REQUIRE_API_SCOPE_FOR_AUTHENTICATION": env.bool("TOKEN_AUTH_REQUIRE_SCOPE_PREFIX"),
+    "USER_RESOLVER": "shared.helsinki_profile.authentications.resolve_user",
 }
 
 OIDC_AUTH = {"OIDC_LEEWAY": env.int("OIDC_LEEWAY")}

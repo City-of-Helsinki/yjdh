@@ -12,6 +12,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from common.permissions import BFIsAuthenticated
+from shared.helsinki_profile.authentications import (
+    HelsinkiProfileApiTokenAuthentication,
+)
 from users.api.v1.permissions import BFGDPRScopesPermission
 from users.api.v1.serializers import UserSerializer
 from users.utils import set_mock_user_name
@@ -46,7 +49,7 @@ class UserUuidGDPRAPIView(GDPRAPIView):
     """GDPR API view that is used from Helsinki profile to query and delete user data."""
 
     permission_classes = [BFGDPRScopesPermission]
-    authentication_classes = []
+    authentication_classes = [HelsinkiProfileApiTokenAuthentication]
 
     def get_object(self) -> AbstractBaseUser:
         """Get user by Helsinki-profile user ID that is stored as username."""
