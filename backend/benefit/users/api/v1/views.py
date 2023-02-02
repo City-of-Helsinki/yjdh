@@ -44,15 +44,14 @@ class CurrentUserView(APIView):
 
 class UserUuidGDPRAPIView(GDPRAPIView):
     """
-    GDPR-API view that is used from Helsinki-profiili to query what data this app has
-    on person.
+    GDPR-API view that is used from Helsinki profile to query and delete user data.
     """
 
     permission_classes = [BFGDPRScopesPermission]
     authentication_classes = []
 
     def get_object(self) -> AbstractBaseUser:
-        """Get user by Helsinki-profiili UUID that is stored as username."""
+        """Get user by Helsinki-profile user ID that is stored as username."""
         obj = get_object_or_404(User, username=self.kwargs["uuid"])
         self.check_object_permissions(self.request, obj)
         return obj

@@ -9,7 +9,7 @@ class UserFactory(factory.django.DjangoModelFactory):
 
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
-    username = factory.Faker("uuid4")
+    username = factory.Faker("username")
     email = factory.Faker("email")
 
     class Meta:
@@ -33,7 +33,7 @@ class HandlerUserFactory(UserFactory):
 
     is_active = True
     is_staff = factory.Faker("boolean")
-    is_superuser = factory.Maybe("is_staff", factory.Faker("boolean"), True)
+    is_superuser = factory.Maybe("is_staff", factory.Faker("boolean"), True)  # type: ignore
 
 
 class StaffUserFactory(UserFactory):
@@ -62,3 +62,12 @@ class StaffSuperuserFactory(UserFactory):
     is_active = True
     is_staff = True
     is_superuser = True
+
+
+class HelsinkiProfileUserFactory(UserFactory):
+    """
+    Helsinki-profile linked users' usernames are UUID's.
+    """
+    username = factory.Faker(
+        "uuid4"
+    )
