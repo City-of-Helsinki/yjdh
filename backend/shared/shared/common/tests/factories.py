@@ -68,6 +68,5 @@ class HelsinkiProfileUserFactory(UserFactory):
     """
     Helsinki-profile linked users' usernames are UUID's.
     """
-    username = factory.Faker(
-        "uuid4"
-    )
+
+    username = factory.Faker("uuid4")
