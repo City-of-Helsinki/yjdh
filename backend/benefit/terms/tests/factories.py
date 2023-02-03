@@ -10,7 +10,7 @@ from terms.models import (
     Terms,
     TermsOfServiceApproval,
 )
-from users.tests.factories import UserFactory
+from shared.common.tests.factories import UserFactory
 
 
 class ApplicantConsentFactory(factory.django.DjangoModelFactory):

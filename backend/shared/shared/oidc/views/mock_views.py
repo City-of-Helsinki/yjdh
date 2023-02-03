@@ -1,5 +1,3 @@
-from uuid import uuid4
-
 from django.conf import settings
 from django.contrib import auth
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse

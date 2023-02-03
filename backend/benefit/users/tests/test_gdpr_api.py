@@ -86,7 +86,9 @@ def test_delete_profile_data_from_gdpr_api(gdpr_api_client, user, requests_mock)
         user, [settings.GDPR_API_DELETE_SCOPE], requests_mock
     )
     gdpr_api_client.credentials(HTTP_AUTHORIZATION=auth_header)
-    response = gdpr_api_client.delete(reverse("gdpr_v1", kwargs={"uuid": user.username}))
+    response = gdpr_api_client.delete(
+        reverse("gdpr_v1", kwargs={"uuid": user.username})
+    )
     assert response.status_code == 204
     with pytest.raises(User.DoesNotExist):
         User.objects.get(username=user.username)
