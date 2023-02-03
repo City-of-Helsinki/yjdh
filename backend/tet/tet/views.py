@@ -5,13 +5,13 @@ from django.contrib.auth import get_user_model
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.views import View
-from events.utils import get_organization_name
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from events.utils import get_organization_name
 from shared.azure_adfs.auth import is_adfs_login
 from shared.helsinki_profile.authentications import (
     HelsinkiProfileApiTokenAuthentication,
