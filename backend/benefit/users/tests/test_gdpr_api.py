@@ -1,5 +1,4 @@
 import datetime
-from typing import Optional
 
 import pytest
 from django.conf import settings
@@ -14,12 +13,6 @@ from users.models import format_date
 from .keys import rsa_key
 
 User = get_user_model()
-
-
-def extract_value(gdpr_api_response: dict, key: str) -> Optional[str]:
-    """Extract value from GDPR API response."""
-    user: dict = gdpr_api_response["children"]
-    return next((item["value"] for item in user if item["key"] == key), None)
 
 
 def get_api_token_for_user_with_scopes(user, scopes: list, requests_mock):
