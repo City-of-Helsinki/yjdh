@@ -54,9 +54,6 @@ CMD ["sh", "-c", "${DEV_START}"]
 FROM appbase as staticbuilder
 # ===================================
 
-ENV NEXTJS_IGNORE_ESLINT=1
-ENV NEXTJS_IGNORE_TYPECHECK=0
-ENV NEXTJS_DISABLE_SENTRY=1
 # Set environmental variables for frontend (used in CI)
 ARG NEXT_PUBLIC_BACKEND_URL
 ARG NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS
