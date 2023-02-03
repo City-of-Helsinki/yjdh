@@ -27,7 +27,7 @@ fixture('Frontpage')
     console.log(filterLoggedRequests(requestLogger))
   );
 
-test('Oppisopimus', async () => {
+test('Company', async () => {
   const termsAndConditions = new TermsOfService();
   await termsAndConditions.isLoaded();
   await termsAndConditions.clickContinueButton();
