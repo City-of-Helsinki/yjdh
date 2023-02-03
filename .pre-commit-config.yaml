@@ -23,4 +23,3 @@ repos:
     hooks:
       - id: isort
         files: ^backend/
-        args: [--settings-file, backend/shared/precommit-setup.cfg]

@@ -3,6 +3,7 @@ import factory
 from applications.enums import ApplicationStatus
 from applications.tests.factories import ApplicationFactory
 from companies.tests.factories import CompanyFactory
+from shared.common.tests.factories import UserFactory
 from terms.models import (
     AbstractTermsApproval,
     ApplicantConsent,
@@ -10,7 +11,6 @@ from terms.models import (
     Terms,
     TermsOfServiceApproval,
 )
-from shared.common.tests.factories import UserFactory
 
 
 class ApplicantConsentFactory(factory.django.DjangoModelFactory):
