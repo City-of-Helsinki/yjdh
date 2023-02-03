@@ -1,10 +1,17 @@
 import logging
+from typing import Optional
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.views import View
+
+# TECHNICAL DEBT:
+# Import using a private module i.e. one starting with a single underscore.
+# "from helusers.oidc import ApiTokenAuthentication" lead to problems as we don't
+# use django-helusers package's user model.
+from helusers._oidc_auth_impl import ApiTokenAuthentication
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
@@ -13,9 +20,7 @@ from rest_framework.views import APIView
 
 from events.utils import get_organization_name
 from shared.azure_adfs.auth import is_adfs_login
-from shared.helsinki_profile.authentications import (
-    HelsinkiProfileApiTokenAuthentication,
-)
+from shared.oidc.mixins import ForceAmrClaimToListMixin
 
 LOGGER = logging.getLogger(__name__)
 User = get_user_model()
@@ -93,13 +98,23 @@ class GDPRScopesPermission(IsAuthenticated):
         return False
 
 
+class TetApiTokenAuthentication(ForceAmrClaimToListMixin, ApiTokenAuthentication):
+    """
+    Tunnistamo's "amr" claim is not always a list so using ForceAmrClaimToListMixin
+    to force it to be a list in order to pass "amr" claim validation in authlib:
+    https://github.com/lepture/authlib/blob/v1.2.0/authlib/oidc/core/claims.py#L101-L113
+    """
+
+    pass
+
+
 class TetGDPRAPIView(APIView):
     """
     A dummy GDPR API view which returns success on both get and delete operations
     """
 
     renderer_classes = [JSONRenderer]
-    authentication_classes = [HelsinkiProfileApiTokenAuthentication]
+    authentication_classes = [TetApiTokenAuthentication]
     permission_classes = [GDPRScopesPermission]
 
     def get(self, request, *args, **kwargs):
@@ -109,3 +124,23 @@ class TetGDPRAPIView(APIView):
 
     def delete(self, request, *args, **kwargs):
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+def resolve_user(_, payload) -> Optional[User]:
+    """
+    User resolver function for django-helusers ApiTokenAuthentication.
+
+    :param _: request
+    :param payload: JWT token payload
+
+    Configured using settings.OIDC_API_TOKEN_AUTH["USER_RESOLVER"], e.g.
+        OIDC_API_TOKEN_AUTH = {
+            ...
+            "USER_RESOLVER": "tet.views.resolve_user"
+            ...
+        }
+    """
+    try:
+        return User.objects.get(username=payload["sub"])
+    except User.objects.DoesNotExist:
+        return None

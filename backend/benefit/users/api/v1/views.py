@@ -12,9 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from common.permissions import BFIsAuthenticated
-from shared.helsinki_profile.authentications import (
-    HelsinkiProfileApiTokenAuthentication,
-)
+from users.api.v1.authentications import HelsinkiProfileApiTokenAuthentication
 from users.api.v1.permissions import BFGDPRScopesPermission
 from users.api.v1.serializers import UserSerializer
 from users.utils import set_mock_user_name
@@ -26,9 +24,8 @@ User = get_user_model()
     description="API for retrieving information about the currently logged in user."
 )
 class CurrentUserView(APIView):
-
-    # TermsOfServiceAccepted is not required here, so that the frontend is able to check if terms
-    # approval is required.
+    # TermsOfServiceAccepted is not required here, so that the frontend is able to
+    # check if terms approval is required.
     permission_classes = [BFIsAuthenticated]
 
     def get(self, request):
