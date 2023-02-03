@@ -155,7 +155,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   }
 
   return (
-    <Container>
+    <Container data-testid={`application-list-${status.join(',')}`}>
       <$Heading>{`${heading} (${list.length})`}</$Heading>
       {!shouldHideList ? (
         <Table data={list} columns={columns} />

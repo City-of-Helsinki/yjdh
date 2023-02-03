@@ -108,6 +108,7 @@
         "companyForm": "Yritysmuoto",
         "handledAt": "Käsittelypvm",
         "dataReceived": "Ladattu",
+        "status": "Käsittelyn tulos",
         "statusArchive": "Käsittelyn tulos",
         "statuses": {
           "cancelled": "Peruutettu",
