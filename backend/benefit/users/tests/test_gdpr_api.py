@@ -60,7 +60,8 @@ def get_api_token_for_user_with_scopes(user, scopes: list, requests_mock):
     return auth_header
 
 
-def test_get_profile_data_from_gdpr_api(gdpr_api_client, user, requests_mock):
+def test_get_profile_data_from_gdpr_api(gdpr_api_client, requests_mock):
+    user = HelsinkiProfileUserFactory()
     auth_header = get_api_token_for_user_with_scopes(
         user, [settings.GDPR_API_QUERY_SCOPE], requests_mock
     )
@@ -70,8 +71,8 @@ def test_get_profile_data_from_gdpr_api(gdpr_api_client, user, requests_mock):
             {"key": "FIRST_NAME", "value": user.first_name},
             {"key": "LAST_NAME", "value": user.last_name},
             {"key": "EMAIL", "value": user.email},
-            {"key": "DATE_JOINED", "value": format_date(user.date_joined)},
-            {"key": "LAST_LOGIN", "value": format_date(user.last_login)},
+            {"key": "DATE_JOINED", "value": format_date(user.date_joined)},  # type: ignore
+            {"key": "LAST_LOGIN", "value": format_date(user.last_login)},  # type: ignore
         ],
     }
     gdpr_api_client.credentials(HTTP_AUTHORIZATION=auth_header)
@@ -80,7 +81,8 @@ def test_get_profile_data_from_gdpr_api(gdpr_api_client, user, requests_mock):
     assert response.json() == valid_response
 
 
-def test_delete_profile_data_from_gdpr_api(gdpr_api_client, user, requests_mock):
+def test_delete_profile_data_from_gdpr_api(gdpr_api_client, requests_mock):
+    user = HelsinkiProfileUserFactory()
     auth_header = get_api_token_for_user_with_scopes(
         user, [settings.GDPR_API_DELETE_SCOPE], requests_mock
     )
@@ -93,7 +95,8 @@ def test_delete_profile_data_from_gdpr_api(gdpr_api_client, user, requests_mock)
         User.objects.get(username=user.username)
 
 
-def test_gdpr_api_requires_authentication(gdpr_api_client, user):
+def test_gdpr_api_requires_authentication(gdpr_api_client):
+    user = HelsinkiProfileUserFactory()
     response = gdpr_api_client.get(reverse("gdpr_v1", kwargs={"uuid": user.username}))
     assert response.status_code == 401
 
@@ -103,7 +106,8 @@ def test_gdpr_api_requires_authentication(gdpr_api_client, user):
     assert response.status_code == 401
 
 
-def test_user_can_only_access_his_own_profile(gdpr_api_client, user, requests_mock):
+def test_user_can_only_access_his_own_profile(gdpr_api_client, requests_mock):
+    user = HelsinkiProfileUserFactory()
     auth_header = get_api_token_for_user_with_scopes(
         user,
         [settings.GDPR_API_QUERY_SCOPE, settings.GDPR_API_DELETE_SCOPE],
