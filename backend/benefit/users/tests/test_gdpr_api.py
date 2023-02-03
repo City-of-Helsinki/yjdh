@@ -1,5 +1,4 @@
 import datetime
-import json
 from typing import Optional
 
 import pytest
@@ -9,6 +8,7 @@ from django.urls import reverse
 from helusers.settings import api_token_auth_settings
 from jose import jwt
 
+from shared.common.tests.factories import HelsinkiProfileUserFactory
 from users.models import format_date
 
 from .keys import rsa_key
@@ -61,27 +61,26 @@ def get_api_token_for_user_with_scopes(user, scopes: list, requests_mock):
 
 
 def test_get_profile_data_from_gdpr_api(gdpr_api_client, user, requests_mock):
-    """Test that the profile data is valid."""
     auth_header = get_api_token_for_user_with_scopes(
         user, [settings.GDPR_API_QUERY_SCOPE], requests_mock
     )
+    valid_response = {
+        "key": "USER",
+        "children": [
+            {"key": "FIRST_NAME", "value": user.first_name},
+            {"key": "LAST_NAME", "value": user.last_name},
+            {"key": "EMAIL", "value": user.email},
+            {"key": "DATE_JOINED", "value": format_date(user.date_joined)},
+            {"key": "LAST_LOGIN", "value": format_date(user.last_login)},
+        ],
+    }
     gdpr_api_client.credentials(HTTP_AUTHORIZATION=auth_header)
     response = gdpr_api_client.get(reverse("gdpr_v1", kwargs={"uuid": user.username}))
-    response_dict = json.loads(response.content)
     assert response.status_code == 200
-    assert extract_value(response_dict, "FIRST_NAME") == user.first_name
-    assert extract_value(response_dict, "LAST_NAME") == user.last_name
-    assert extract_value(response_dict, "EMAIL") == user.email
-    assert extract_value(response_dict, "DATE_JOINED") == format_date(
-        user.date_joined  # type: ignore
-    )
-    assert extract_value(response_dict, "LAST_LOGIN") == format_date(
-        user.last_login  # type: ignore
-    )
+    assert response.json() == valid_response
 
 
 def test_delete_profile_data_from_gdpr_api(gdpr_api_client, user, requests_mock):
-    """Test that the profile data is deleted."""
     auth_header = get_api_token_for_user_with_scopes(
         user, [settings.GDPR_API_DELETE_SCOPE], requests_mock
     )
@@ -92,3 +91,33 @@ def test_delete_profile_data_from_gdpr_api(gdpr_api_client, user, requests_mock)
     assert response.status_code == 204
     with pytest.raises(User.DoesNotExist):
         User.objects.get(username=user.username)
+
+
+def test_gdpr_api_requires_authentication(gdpr_api_client, user):
+    response = gdpr_api_client.get(reverse("gdpr_v1", kwargs={"uuid": user.username}))
+    assert response.status_code == 401
+
+    response = gdpr_api_client.delete(
+        reverse("gdpr_v1", kwargs={"uuid": user.username})
+    )
+    assert response.status_code == 401
+
+
+def test_user_can_only_access_his_own_profile(gdpr_api_client, user, requests_mock):
+    auth_header = get_api_token_for_user_with_scopes(
+        user,
+        [settings.GDPR_API_QUERY_SCOPE, settings.GDPR_API_DELETE_SCOPE],
+        requests_mock,
+    )
+    gdpr_api_client.credentials(HTTP_AUTHORIZATION=auth_header)
+
+    another_user = HelsinkiProfileUserFactory()
+    response = gdpr_api_client.get(
+        reverse("gdpr_v1", kwargs={"uuid": another_user.username})
+    )
+    assert response.status_code == 403
+
+    response = gdpr_api_client.delete(
+        reverse("gdpr_v1", kwargs={"uuid": another_user.username})
+    )
+    assert response.status_code == 403
