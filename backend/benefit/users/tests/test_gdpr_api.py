@@ -81,7 +81,7 @@ def test_get_profile_data_from_gdpr_api(gdpr_api_client, user, requests_mock):
 
 
 def test_delete_profile_data_from_gdpr_api(gdpr_api_client, user, requests_mock):
-    """Test that the profile data is deleted without authentication."""
+    """Test that the profile data is deleted."""
     auth_header = get_api_token_for_user_with_scopes(
         user, [settings.GDPR_API_DELETE_SCOPE], requests_mock
     )
