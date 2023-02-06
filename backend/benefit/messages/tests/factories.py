@@ -5,7 +5,9 @@ from messages.models import Message, MessageType
 
 class MessageFactory(factory.django.DjangoModelFactory):
     content = factory.Faker("sentence", nb_words=32)
-    sender = factory.SubFactory("users.tests.factories.UserFactory")
+    sender = factory.SubFactory(
+        "shared.common.tests.factories.HelsinkiProfileUserFactory"
+    )
     application = factory.SubFactory(
         "applications.tests.factories.HandlingApplicationFactory"
     )

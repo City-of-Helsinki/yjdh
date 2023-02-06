@@ -21,7 +21,7 @@ from messages.views import (
     HandlerNoteViewSet,
 )
 from terms.api.v1.views import ApproveTermsOfServiceView
-from users.api.v1.views import CurrentUserView
+from users.api.v1.views import CurrentUserView, UserUuidGDPRAPIView
 
 router = routers.DefaultRouter()
 router.register(
@@ -56,6 +56,7 @@ router.register(r"previousbenefits", calculator_views.PreviousBenefitViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("gdpr-api/v1/user/<uuid:uuid>", UserUuidGDPRAPIView.as_view(), name="gdpr_v1"),
     path("v1/", include((router.urls, "v1"), namespace="v1")),
     path("v1/", include(applicant_app_router.urls)),
     path("v1/", include(handler_app_router.urls)),

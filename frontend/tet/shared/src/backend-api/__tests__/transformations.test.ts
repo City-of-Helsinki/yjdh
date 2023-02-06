@@ -9,7 +9,6 @@ const optionTypeForId = (id: string): OptionType => ({
 });
 
 describe('transformations', () => {
-
   it('can transform draft posting to event', () => {
     const posting = fakeTetPosting({
       keywords: [

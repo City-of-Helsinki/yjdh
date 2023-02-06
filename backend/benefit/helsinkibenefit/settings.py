@@ -71,6 +71,12 @@ env = environ.Env(
         "d5c8a2743d726a33dbd637fac39d6f0712dcee4af36142fb4fb15afa17b1d9bf",
     ),
     SESSION_COOKIE_AGE=(int, 60 * 60 * 2),
+    TOKEN_AUTH_ACCEPTED_AUDIENCE=(str, "https://api.hel.fi/auth/helsinkibenefit"),
+    TOKEN_AUTH_ACCEPTED_SCOPE_PREFIX=(str, "helsinkibenefit"),
+    TOKEN_AUTH_AUTHSERVER_URL=(str, "https://api.hel.fi/sso/openid"),
+    TOKEN_AUTH_FIELD_FOR_CONSENTS=(str, "https://api.hel.fi/auth"),
+    TOKEN_AUTH_REQUIRE_SCOPE_PREFIX=(bool, True),
+    OIDC_LEEWAY=(int, 60 * 60 * 2),
     OIDC_RP_CLIENT_ID=(str, ""),
     OIDC_RP_CLIENT_SECRET=(str, ""),
     OIDC_OP_BASE_URL=(str, ""),
@@ -133,6 +139,8 @@ env = environ.Env(
     SERVICE_BUS_AUTH_USERNAME=(str, "sample_username"),
     SERVICE_BUS_AUTH_PASSWORD=(str, "sample_password"),
     SERVICE_BUS_TIMEOUT=(int, 30),
+    GDPR_API_QUERY_SCOPE=(str, "helsinkibenefit.gdprquery"),
+    GDPR_API_DELETE_SCOPE=(str, "helsinkibenefit.gdprdelete"),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -207,12 +215,13 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "django_filters",
-    "drf_spectacular",  # OpenAPI documentation
+    "drf_spectacular",
     "phonenumber_field",
     "django_extensions",
     "encrypted_fields",
     "mozilla_django_oidc",
     "django_auth_adfs",
+    "helusers.apps.HelusersConfig",
 ]
 
 AUTH_USER_MODEL = "users.User"
@@ -285,7 +294,7 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.BrowsableAPIRenderer",
     ),
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.SessionAuthentication"
+        "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "common.permissions.BFIsAuthenticated",
@@ -344,6 +353,17 @@ AUTHENTICATION_BACKENDS = (
 )
 
 DISABLE_TOS_APPROVAL_CHECK = env.bool("DISABLE_TOS_APPROVAL_CHECK")
+
+OIDC_API_TOKEN_AUTH = {
+    "AUDIENCE": env.str("TOKEN_AUTH_ACCEPTED_AUDIENCE"),
+    "API_SCOPE_PREFIX": env.str("TOKEN_AUTH_ACCEPTED_SCOPE_PREFIX"),
+    "ISSUER": env.str("TOKEN_AUTH_AUTHSERVER_URL"),
+    "API_AUTHORIZATION_FIELD": env.str("TOKEN_AUTH_FIELD_FOR_CONSENTS"),
+    "REQUIRE_API_SCOPE_FOR_AUTHENTICATION": env.bool("TOKEN_AUTH_REQUIRE_SCOPE_PREFIX"),
+    "USER_RESOLVER": "users.api.v1.authentications.resolve_user",
+}
+
+OIDC_AUTH = {"OIDC_LEEWAY": env.int("OIDC_LEEWAY")}
 
 OIDC_RP_SIGN_ALGO = "RS256"
 OIDC_RP_SCOPES = "openid profile"
@@ -426,6 +446,10 @@ SERVICE_BUS_AUTH_USERNAME = env("SERVICE_BUS_AUTH_USERNAME")
 SERVICE_BUS_AUTH_PASSWORD = env("SERVICE_BUS_AUTH_PASSWORD")
 
 HANDLERS_GROUP_NAME = "Application handlers"
+
+GDPR_API_QUERY_SCOPE = env("GDPR_API_QUERY_SCOPE")
+GDPR_API_DELETE_SCOPE = env("GDPR_API_DELETE_SCOPE")
+GDPR_API_MODEL = "users.User"
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.

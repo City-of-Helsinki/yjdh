@@ -12,9 +12,9 @@ class ForceAmrClaimToListMixin:
         To fix the claim validation issue, convert the id_token amr to list
         when a string is given.
         """
-        if id_token["amr"] and not isinstance(id_token["amr"], list):
+        if id_token.get("amr") and not isinstance(id_token["amr"], list):
             id_token["amr"] = [id_token["amr"]]
 
     def validate_claims(self, id_token):
         self.__convert_amr_to_list(id_token)
-        super().validate_claims(id_token)
+        super().validate_claims(id_token)  # type: ignore

@@ -33,7 +33,7 @@ class HandlerUserFactory(UserFactory):
 
     is_active = True
     is_staff = factory.Faker("boolean")
-    is_superuser = factory.Maybe("is_staff", factory.Faker("boolean"), True)
+    is_superuser = factory.Maybe("is_staff", factory.Faker("boolean"), True)  # type: ignore
 
 
 class StaffUserFactory(UserFactory):
@@ -62,3 +62,11 @@ class StaffSuperuserFactory(UserFactory):
     is_active = True
     is_staff = True
     is_superuser = True
+
+
+class HelsinkiProfileUserFactory(UserFactory):
+    """
+    Helsinki-profile linked users' usernames are UUID's.
+    """
+
+    username = factory.Faker("uuid4")

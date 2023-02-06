@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import View
 
-from shared.common.tests.factories import UserFactory
+from shared.common.tests.factories import HelsinkiProfileUserFactory
 
 
 class MockLogoutView(View):
@@ -61,11 +61,11 @@ class MockAuthenticationRequestView(View):
     @method_decorator(ensure_csrf_cookie)
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            user = UserFactory(
+            user = HelsinkiProfileUserFactory(
                 is_staff=getattr(settings, "OIDC_MOCK_USER_IS_STAFF", False),
                 is_superuser=getattr(settings, "OIDC_MOCK_USER_IS_SUPERUSER", False),
             )
             auth.login(
-                request, user, backend="django.contrib.auth.backends.ModelBackend"
+                request, user, backend="django.contrib.auth.backends.ModelBackend"  # type: ignore
             )
         return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL or "/")
