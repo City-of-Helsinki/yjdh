@@ -206,7 +206,10 @@
       "noSupport": "Ei puolleta",
       "support": "Puolletaan",
       "reason": "Perustelu",
-      "editEndDate": "Hakemusta muokattava viimeistään {{date}}"
+      "editEndDate": "Hakemusta muokattava viimeistään {{date}}",
+      "ssn": "Henkilötunnus",
+      "email": "Sähköposti",
+      "phone": "Puhelinnumero"
     },
     "summary": {
       "accepted": {
