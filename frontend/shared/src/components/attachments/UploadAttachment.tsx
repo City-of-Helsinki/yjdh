@@ -69,6 +69,7 @@ const UploadAttachment: React.FC<UploadAttachmentProps> = ({
         style={{ display: 'none' }}
         name={name}
         ref={uploadRef}
+        accept={allowedFileTypes.join(', ')}
         onChange={handleUpload}
         data-testid={name}
         id={`upload_attachment_${attachmentType}`}
