@@ -200,9 +200,9 @@
       "endDate": "Päättyen",
       "jobTitle": "Tehtävänimike",
       "workingHours": "Työaika: {{workingHours}} t / viikko",
-      "monthlyPay": "Bruttopalkka {{monthlyPay}} €/kk",
-      "otherExpenses": "Sivukulut {{otherExpenses}} €/kk",
-      "vacationMoney": "Lomaraha {{vacationMoney}} €",
+      "monthlyPay": "Bruttopalkka: {{monthlyPay}} € / kk",
+      "otherExpenses": "Sivukulut: {{otherExpenses}} € / kk",
+      "vacationMoney": "Lomaraha: {{vacationMoney}} €",
       "noSupport": "Ei puolleta",
       "support": "Puolletaan",
       "reason": "Perustelu",
@@ -241,11 +241,11 @@
       },
       "endDate": { "label": "Päättyen", "placeholder": "Päättyen" },
       "monthlyPay": {
-        "label": "Bruttopalkka €/kk",
+        "label": "Bruttopalkka € / kk",
         "placeholder": "Bruttopalkka"
       },
       "otherExpenses": {
-        "label": "Sivukulut €/kk",
+        "label": "Sivukulut € / kk",
         "placeholder": "Sivukulut"
       },
       "vacationMoney": {
@@ -261,8 +261,8 @@
         "placeholder": "Palkkatukiprosentti"
       },
       "overrideMonthlyBenefitAmount": {
-        "label": "Helsinki-lisää €/kk",
-        "placeholder": "Helsinki-lisää €/kk"
+        "label": "Helsinki-lisää € / kk",
+        "placeholder": "Helsinki-lisää € / kk"
       },
       "overrideMonthlyBenefitAmountComment": {
         "label": "Perustelu",
@@ -273,8 +273,8 @@
         "placeholder": "Työaika %"
       },
       "monthlyAmount": {
-        "label": "Koulutuskorvaus €/kk",
-        "placeholder": "Koulutuskorvaus €/kk"
+        "label": "Koulutuskorvaus € / kk",
+        "placeholder": "Koulutuskorvaus € / kk"
       }
     },
     "notifications": {
@@ -298,8 +298,8 @@
     },
     "salary": {
       "header": "Palkan Helsinki-lisää haettu ajalle",
-      "monthlyPay": "Bruttopalkka €/kk",
-      "otherExpenses": "Sivukulut €/kk",
+      "monthlyPay": "Bruttopalkka € / kk",
+      "otherExpenses": "Sivukulut € / kk",
       "vacationMoney": "Lomaraha €",
       "startEndDates": "{{startDate}} - {{endDate}} ({{period}} kk)",
       "maximumAid": "Valtiotukimaksimi",
