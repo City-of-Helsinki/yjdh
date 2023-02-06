@@ -43,3 +43,22 @@ export const stringToFloatValue = (
 export const formatStringFloatValue = (
   value: number | string | undefined
 ): string => value?.toString().replace('.', ',') || '';
+
+export const formatFloatToCurrency = (
+  value: string | number,
+  currency: 'EUR' | null,
+  locale = 'fi-FI'
+): string => {
+  const parsedValue = typeof value === 'string' ? parseFloat(value) : value;
+  const currencyOptions = currency
+    ? {
+        style: 'currency',
+        currency,
+      }
+    : {};
+
+  return parsedValue.toLocaleString(locale, {
+    minimumFractionDigits: 2,
+    ...currencyOptions,
+  });
+};
