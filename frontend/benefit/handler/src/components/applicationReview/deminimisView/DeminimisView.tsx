@@ -13,7 +13,7 @@ import {
 } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import { formatStringFloatValue } from 'shared/utils/string.utils';
+import { formatFloatToCurrency } from 'shared/utils/string.utils';
 
 const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
@@ -50,8 +50,9 @@ const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
                 <$SummaryTableValue>{aid.granter}</$SummaryTableValue>
               </$GridCell>
               <$GridCell $colSpan={2}>
-                <$SummaryTableValue>{`${formatStringFloatValue(
-                  aid.amount || ''
+                <$SummaryTableValue>{`${formatFloatToCurrency(
+                  aid.amount || '',
+                  null
                 )} €`}</$SummaryTableValue>
               </$GridCell>
               <$GridCell>
@@ -68,9 +69,10 @@ const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           </$GridCell>
           <$GridCell $colSpan={2}>
             <$SummaryTableValue isBold>
-              {`${sumBy(data.deMinimisAidSet, (grant) =>
-                Number(grant.amount)
-              )} €`}
+              {formatFloatToCurrency(
+                sumBy(data.deMinimisAidSet, (grant) => Number(grant.amount)),
+                'EUR'
+              )}
             </$SummaryTableValue>
           </$GridCell>
         </>

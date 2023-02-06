@@ -8,7 +8,7 @@ import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { formatStringFloatValue } from 'shared/utils/string.utils';
+import { formatFloatToCurrency } from 'shared/utils/string.utils';
 
 import AttachmentsListView from '../../attachmentsListView/AttachmentsListView';
 import EmploymentActions from './employmentActions/EmploymentActions';
@@ -33,17 +33,23 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         </$ViewField>
         <$ViewField>
           {t(`${translationsBase}.fields.workingHours`, {
-            workingHours: formatStringFloatValue(data.employee?.workingHours),
+            workingHours: formatFloatToCurrency(
+              data.employee?.workingHours,
+              null
+            ),
           })}
         </$ViewField>
         <$ViewField>
           {t(`${translationsBase}.fields.monthlyPay`, {
-            monthlyPay: formatStringFloatValue(data.employee?.monthlyPay),
+            monthlyPay: formatFloatToCurrency(data.employee?.monthlyPay, null),
           })}
         </$ViewField>
         <$ViewField>
           {t(`${translationsBase}.fields.otherExpenses`, {
-            otherExpenses: formatStringFloatValue(data.employee?.otherExpenses),
+            otherExpenses: formatFloatToCurrency(
+              data.employee?.otherExpenses,
+              null
+            ),
           })}
         </$ViewField>
         <$ViewField
@@ -54,7 +60,10 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           `}
         >
           {t(`${translationsBase}.fields.vacationMoney`, {
-            vacationMoney: formatStringFloatValue(data.employee?.vacationMoney),
+            vacationMoney: formatFloatToCurrency(
+              data.employee?.vacationMoney,
+              null
+            ),
           })}
         </$ViewField>
         <$ViewField>{data.employee?.collectiveBargainingAgreement}</$ViewField>
