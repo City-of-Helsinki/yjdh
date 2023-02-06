@@ -199,7 +199,7 @@
       "startDate": "Alkaen",
       "endDate": "Päättyen",
       "jobTitle": "Tehtävänimike",
-      "workingHours": "Työaika: {{workingHours}} t / viikko",
+      "workingHours": "Työaika: {{workingHours}} tuntia viikossa",
       "monthlyPay": "Bruttopalkka: {{monthlyPay}} € / kk",
       "otherExpenses": "Sivukulut: {{otherExpenses}} € / kk",
       "vacationMoney": "Lomaraha: {{vacationMoney}} €",
