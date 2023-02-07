@@ -45,7 +45,7 @@ test('Index page has applications in states "received" and "handling"', async (t
   await mainIngress.isLoaded();
 
   const inProgressApplications = new ApplicationList(status.inProgress);
-  await inProgressApplications.hasItemsListed(22);
+  await inProgressApplications.hasItemsListed(20);
 
   const receivedApplications = new ApplicationList(status.received);
   await receivedApplications.hasItemsListed(8);
