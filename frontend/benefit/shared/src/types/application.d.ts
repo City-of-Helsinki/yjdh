@@ -185,6 +185,7 @@ export type Application = {
   company?: Company;
   archived?: boolean;
   createdAt?: string | null;
+  modifiedAt?: string | null;
   applicationStep?: string | null;
   attachments?: BenefitAttachment[];
   // create_application_for_company ? not present in the UI?
@@ -331,7 +332,7 @@ export type ApplicationData = {
   end_date?: string;
   de_minimis_aid?: boolean;
   de_minimis_aid_set: DeMinimisAidData[]; // required
-  last_modified_at?: string;
+  modified_at?: string;
   attachments?: AttachmentData[];
   create_application_for_company?: string;
   created_at?: string;
