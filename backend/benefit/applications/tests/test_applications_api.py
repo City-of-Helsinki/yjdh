@@ -488,7 +488,7 @@ def test_application_post_invalid_employee_data(api_client, application):
 
     del data["id"]
     data["employee"]["monthly_pay"] = "30000000.00"  # value too high
-    data["employee"]["social_security_number"] = "080597-953X"  # invalid checksum
+    data["employee"]["social_security_number"] = "260778-323X"  # invalid checksum
     data["employee"]["employee_language"] = None  # non-null required
     data["employee"]["phone_number"] = "+359505658789"  # Invalid country code
     data["employee"]["working_hours"] = 16  # Must be > 18 hour per weeek
@@ -576,9 +576,10 @@ def test_application_put_edit_employee(api_client, application):
     """
     modify existing application
     """
+    new_ssn = "260778-323Y"
     data = ApplicantApplicationSerializer(application).data
     data["employee"]["phone_number"] = "0505658789"
-    data["employee"]["social_security_number"] = "080597-953Y"
+    data["employee"]["social_security_number"] = new_ssn
     old_employee_pk = application.employee.pk
     response = api_client.put(
         get_detail_url(application),
@@ -590,7 +591,7 @@ def test_application_put_edit_employee(api_client, application):
     )  # normalized format
     application.refresh_from_db()
     assert application.employee.phone_number == "+358505658789"
-    assert application.employee.social_security_number == "080597-953Y"
+    assert application.employee.social_security_number == new_ssn
     assert old_employee_pk == application.employee.pk
 
 
@@ -1743,7 +1744,6 @@ def test_attachment_upload_invalid_status(request, api_client, application, stat
 
 @pytest.mark.parametrize("extension", ["pdf", "png", "jpg"])
 def test_invalid_attachment_upload(api_client, application, extension):
-
     tmp_file = tempfile.NamedTemporaryFile(suffix=f".{extension}")
     tmp_file.write(b"invalid data " * 100)
     tmp_file.seek(0)
@@ -1764,7 +1764,6 @@ def test_invalid_attachment_upload(api_client, application, extension):
 
 
 def test_too_many_attachments(request, api_client, application):
-
     for _ in range(AttachmentSerializer.MAX_ATTACHMENTS_PER_APPLICATION):
         response = _upload_pdf(request, api_client, application)
         assert response.status_code == 201
