@@ -26,6 +26,7 @@
     },
     "pageHeaders": {
       "created": "Created",
+      "saved": "Saved",
       "sent": "Application number: {{applicationNumber}}  |  Submitted {{submittedAt}}",
       "new": "New application",
       "edit": "Application",

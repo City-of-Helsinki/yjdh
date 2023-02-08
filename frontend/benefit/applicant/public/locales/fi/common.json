@@ -26,6 +26,7 @@
     },
     "pageHeaders": {
       "created": "Luotu",
+      "saved": "Tallennettu",
       "sent": "Hakemusnumero: {{applicationNumber}}  |  Lähetetty {{submittedAt}}",
       "new": "Uusi hakemus",
       "edit": "Hakemus",
