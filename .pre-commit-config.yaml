@@ -1,21 +1,25 @@
+fail_fast: true
+
 default_language_version:
-    python: python3
+  python: python3
+
 repos:
   - repo: https://github.com/psf/black
     rev: 22.3.0
     hooks:
       - id: black
+        args: [--preview]
+        files: ^backend/
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
         files: ^backend/
   - repo: https://github.com/pycqa/flake8
     rev: 4.0.1
     hooks:
       - id: flake8
+        additional_dependencies: [flake8-isort, flake8-black]
         exclude: migrations|snapshots
         files: ^backend/
         args: [--config, backend/shared/precommit-setup.cfg]
-  - repo: https://github.com/pycqa/isort
-    rev: 5.10.1
-    hooks:
-      - id: isort
-        files: ^backend/
-        args: [--settings-file, backend/shared/precommit-setup.cfg]

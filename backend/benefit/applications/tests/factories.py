@@ -21,7 +21,7 @@ from applications.models import (
 from calculator.models import Calculation
 from companies.tests.factories import CompanyFactory
 from shared.service_bus.enums import YtjOrganizationCode
-from users.tests.factories import HandlerFactory
+from users.tests.factories import BFHandlerUserFactory
 
 
 class AttachmentFactory(factory.django.DjangoModelFactory):
@@ -193,7 +193,7 @@ class HandlingApplicationFactory(ReceivedApplicationFactory):
         self.calculation.start_date = self.start_date
         self.calculation.end_date = self.end_date
         self.calculation.state_aid_max_percentage = 50
-        self.calculation.handler = HandlerFactory()
+        self.calculation.handler = BFHandlerUserFactory()
         self.calculation.save()
         PaySubsidyFactory(
             application=self,

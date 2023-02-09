@@ -7,11 +7,16 @@ import { $SupportingContentSection } from './SupportingContent.sc';
 const SupportingContent: React.FC = () => {
   const { t } = useTranslation();
   const translationBase = 'common:supportingContent';
+  
+  const emailAddress = t(`${translationBase}.contact.emailAddress`);
+  const href = `mailto:${emailAddress}`;
 
   return (
     <Container>
       <$SupportingContentSection>
-        {t(`${translationBase}.contact.text`)}
+        <span>{t(`${translationBase}.contact.text`)} </span>
+        <a href={href}>{emailAddress}</a>
+        <span>.</span>
       </$SupportingContentSection>
     </Container>
   );

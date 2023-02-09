@@ -1,21 +1,10 @@
-import factory
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
+from shared.common.tests.factories import StaffUserFactory
 
 
-class UserFactory(factory.django.DjangoModelFactory):
-    first_name = factory.Faker("first_name")
-    last_name = factory.Faker("last_name")
-    username = factory.Sequence(lambda n: f"{factory.Faker('user_name')} {n}")
-    email = factory.Faker("email")
+class BFHandlerUserFactory(StaffUserFactory):
+    """
+    Handlers are users with `is_staff=True`.
+    Overrided just for clear naming.
+    """
 
-    class Meta:
-        model = User
-
-
-class HandlerFactory(UserFactory):
-    is_staff = True
-
-    class Meta:
-        model = get_user_model()
+    pass

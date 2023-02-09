@@ -58,8 +58,10 @@ mypy-extensions==0.4.3
     # via black
 openpyxl==3.0.9
     # via -r requirements-dev.in
-packaging==20.9
-    # via pytest
+packaging==21.3
+    # via
+    #   -c requirements.txt
+    #   pytest
 parso==0.8.2
     # via jedi
 pathspec==0.9.0
@@ -88,8 +90,10 @@ pyflakes==2.4.0
     # via flake8
 pygments==2.8.1
     # via ipython
-pyparsing==2.4.7
-    # via packaging
+pyparsing==3.0.9
+    # via
+    #   -c requirements.txt
+    #   packaging
 pytest==6.2.3
     # via
     #   -r requirements-dev.in

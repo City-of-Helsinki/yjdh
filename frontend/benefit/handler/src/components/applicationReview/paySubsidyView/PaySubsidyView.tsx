@@ -56,11 +56,20 @@ const PaySubsidyView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           </$ViewField>
         )}
       </$GridCell>
-      <AttachmentsListView
-        title={t('common:attachments.types.paySubsidyDecision.title')}
-        type={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
-        attachments={data.attachments || []}
-      />
+      <$GridCell $colSpan={12}>
+        <AttachmentsListView
+          title={t('common:attachments.types.paySubsidyDecision.title')}
+          type={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
+          attachments={data.attachments || []}
+        />
+      </$GridCell>
+      <$GridCell $colSpan={12}>
+        <AttachmentsListView
+          title={t('common:attachments.types.educationContract.title')}
+          type={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
+          attachments={data.attachments || []}
+        />
+      </$GridCell>
     </ReviewSection>
   );
 };
