@@ -13,4 +13,5 @@ class Job(DailyJob):
     help = "Django daily jobs are executed here."
 
     def execute(self):
-        call_command("delete_cancelled")
+        call_command("delete_applications", days_to_keep=30, status="cancelled")
+        call_command("delete_applications", days_to_keep=180, status="draft")

@@ -1,13 +1,18 @@
+import random
+from datetime import timedelta
+
 import factory
 import pytest
+from django.utils import timezone
 
-from applications.enums import BenefitType
+from applications.enums import ApplicationStatus, BenefitType
 from applications.models import Application
 from applications.services.applications_csv_report import ApplicationsCsvService
 from applications.services.talpa_integration import TalpaService
 from applications.tests.factories import (
     ApplicationBatchFactory,
     ApplicationFactory,
+    CancelledApplicationFactory,
     DecidedApplicationFactory,
     EmployeeFactory,
     HandlingApplicationFactory,
@@ -148,6 +153,63 @@ def accept_tos(
     )
 
 
+@pytest.fixture()
+def cancelled_applications():
+    for _ in range(5):
+        CancelledApplicationFactory()
+
+    applications = Application.objects.filter(status=ApplicationStatus.CANCELLED)
+    yield applications
+    for application in applications:
+        _delete_attachments(application)
+
+
+@pytest.fixture()
+def cancelled_delete_date():
+    """Return a random date between 30 and 365 days ago"""
+    return timezone.now() - timedelta(days=random.randint(30, 365))
+
+
+@pytest.fixture()
+def cancelled_to_delete(cancelled_delete_date, cancelled_applications):
+    cancelled_applications.update(modified_at=cancelled_delete_date)
+    yield cancelled_applications
+
+
+@pytest.fixture()
+def draft_applications():
+    for _ in range(5):
+        ApplicationFactory()
+
+    applications = Application.objects.filter(status=ApplicationStatus.DRAFT)
+    yield applications
+    for application in applications:
+        _delete_attachments(application)
+
+
+@pytest.fixture()
+def draft_delete_date():
+    """Return a random date between 180 and 365 days ago"""
+    return timezone.now() - timedelta(days=random.randint(180, 365))
+
+
+@pytest.fixture()
+def drafts_to_delete(draft_delete_date, draft_applications):
+    draft_applications.update(modified_at=draft_delete_date)
+    yield draft_applications
+
+
+@pytest.fixture()
+def draft_keep_date():
+    return timezone.now() - timedelta(days=random.randint(1, 59))
+
+
+@pytest.fixture()
+def drafts_to_keep(draft_keep_date, draft_applications):
+    draft_applications.update(modified_at=draft_keep_date)
+    yield draft_applications
+
+
 @pytest.fixture(autouse=True)
 def auto_accept_tos(autouse_django_db, accept_tos):
     return accept_tos
@@ -169,7 +231,7 @@ def split_lines_at_semicolon(csv_string):
     return [line.split(";") for line in csv_lines]
 
 
-def delete_attachments(application):
-    """Delete attachment files from the given applications"""
+def _delete_attachments(application: Application):
+    """Delete attachment files from the given application"""
     for attachment in application.attachments.all():
         attachment.attachment_file.delete()
