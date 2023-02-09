@@ -32,8 +32,13 @@ const EmployeeView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         <$ViewField>
           {getFullName(data.employee?.firstName, data.employee?.lastName)}
         </$ViewField>
-        <$ViewField>{data.employee?.socialSecurityNumber}</$ViewField>
-        <$ViewField>{data.employee?.phoneNumber}</$ViewField>
+        <$ViewField>
+          {t(`${translationsBase}.fields.ssn`)}:{' '}
+          {data.employee?.socialSecurityNumber}
+        </$ViewField>
+        <$ViewField>
+          {t(`${translationsBase}.fields.phone`)}: {data.employee?.phoneNumber}
+        </$ViewField>
         <$ViewField>
           {t(`${translationsBase}.fields.isLivingInHelsinki`)}
           {': '}
