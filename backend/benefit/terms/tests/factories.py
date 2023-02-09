@@ -1,3 +1,5 @@
+from datetime import timezone
+
 import factory
 
 from applications.enums import ApplicationStatus
@@ -41,7 +43,7 @@ class TermsFactory(factory.django.DjangoModelFactory):
 
 
 class AbstractTermsApprovalFactory(factory.django.DjangoModelFactory):
-    approved_at = factory.Faker("date_time")
+    approved_at = factory.Faker("date_time", tzinfo=timezone.utc)
     approved_by = factory.SubFactory(UserFactory)
     terms = factory.SubFactory(TermsFactory)
 
