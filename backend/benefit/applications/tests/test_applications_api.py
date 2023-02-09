@@ -1382,14 +1382,14 @@ def add_attachments_to_application(request, application):
     _add_pdf_attachment(request, application, AttachmentType.EMPLOYEE_CONSENT)
 
 
-def test_application_last_modified_at_draft(api_client, application):
+def test_application_modified_at_draft(api_client, application):
     """
     DRAFT application's last_modified_at is visible to applicant
     """
     application.status = ApplicationStatus.DRAFT
     application.save()
     data = ApplicantApplicationSerializer(application).data
-    assert data["last_modified_at"] == datetime(2021, 6, 4, tzinfo=pytz.UTC)
+    assert data["modified_at"] == datetime(2021, 6, 4, tzinfo=pytz.UTC)
 
 
 @pytest.mark.parametrize(
@@ -1402,14 +1402,14 @@ def test_application_last_modified_at_draft(api_client, application):
         ApplicationStatus.REJECTED,
     ],
 )
-def test_application_last_modified_at_non_draft(api_client, application, status):
+def test_application_modified_at_non_draft(api_client, application, status):
     """
     non-DRAFT application's last_modified_at is not visible to applicant
     """
     application.status = status
     application.save()
     data = ApplicantApplicationSerializer(application).data
-    assert data["last_modified_at"] is None
+    assert data["modified_at"] is None
 
 
 @pytest.mark.parametrize(

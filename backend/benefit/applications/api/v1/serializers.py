@@ -565,7 +565,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "end_date",
             "de_minimis_aid",
             "de_minimis_aid_set",
-            "last_modified_at",
+            "modified_at",
             "created_at",
             "additional_information_needed_by",
             "status_last_changed_at",
@@ -590,7 +590,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "official_company_city",
             "official_company_postcode",
             "available_benefit_types",
-            "last_modified_at",
+            "modified_at",
             "created_at",
             "additional_information_needed_by",
             "status_last_changed_at",
@@ -708,8 +708,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
 
     submitted_at = serializers.SerializerMethodField("get_submitted_at")
 
-    last_modified_at = serializers.SerializerMethodField(
-        "get_last_modified_at",
+    modified_at = serializers.SerializerMethodField(
+        "get_modified_at",
         help_text="Last modified timestamp. Only handlers see the timestamp of non-draft applications.",
     )
 
@@ -872,7 +872,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
     def get_submitted_at(self, obj):
         return getattr(obj, "submitted_at", None)
 
-    def get_last_modified_at(self, obj):
+    def get_modified_at(self, obj):
         if not self.logged_in_user_is_admin() and obj.status != ApplicationStatus.DRAFT:
             return None
         return obj.modified_at
