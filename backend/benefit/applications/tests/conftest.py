@@ -210,6 +210,17 @@ def drafts_to_keep(draft_keep_date, draft_applications):
     yield draft_applications
 
 
+@pytest.fixture()
+def draft_notification_date():
+    return timezone.now() - timedelta(days=166)
+
+
+@pytest.fixture()
+def drafts_about_to_be_deleted(draft_notification_date, draft_applications):
+    draft_applications.update(modified_at=draft_notification_date)
+    yield draft_applications
+
+
 @pytest.fixture(autouse=True)
 def auto_accept_tos(autouse_django_db, accept_tos):
     return accept_tos

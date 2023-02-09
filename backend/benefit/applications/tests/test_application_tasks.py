@@ -129,3 +129,18 @@ def test_delete_draft_applications_older_than_180_days(
         f"Deleted {total_applications - remaining_applications.count()} applications with status {status}"
         in out.getvalue()
     )
+
+
+def test_user_is_notified_of_upcoming_application_deletion(drafts_about_to_be_deleted):
+    out = StringIO()
+    call_command(
+        "check_drafts_to_delete",
+        days_to_deletion=14,
+        days_to_keep=180,
+        stdout=out,
+    )
+
+    assert (
+        f"Notified users of {drafts_about_to_be_deleted.count()} applications about upcoming application deletion"
+        in out.getvalue()
+    )
