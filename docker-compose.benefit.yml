@@ -82,6 +82,14 @@ services:
       - 127.0.0.1:3000:3000
       - 127.0.0.1:3100:3100
 
+  mailhog:
+    image: 'mailhog/mailhog:latest'
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+      - default
+
 volumes:
   pgdata:
     driver: local
