@@ -15,3 +15,4 @@ class Job(DailyJob):
     def execute(self):
         call_command("delete_applications", days_to_keep=30, status="cancelled")
         call_command("delete_applications", days_to_keep=180, status="draft")
+        call_command("check_drafts_to_delete", days_to_deletion=14, days_to_keep=180)
