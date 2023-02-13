@@ -26,6 +26,7 @@
     },
     "pageHeaders": {
       "created": "Skapats",
+      "saved": "Sparad",
       "sent": "Ansökningsnummer: {{applicationNumber}}  |  Skickad {{submittedAt}}",
       "new": "Ny ansökan",
       "edit": "Ansökan",
