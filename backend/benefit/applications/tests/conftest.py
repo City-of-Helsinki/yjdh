@@ -1,5 +1,8 @@
+import os
+
 import factory
 import pytest
+from django.conf import settings
 
 from applications.enums import BenefitType
 from applications.models import Application
@@ -173,3 +176,12 @@ def delete_attachments(application):
     """Delete attachment files from the given applications"""
     for attachment in application.attachments.all():
         attachment.attachment_file.delete()
+
+
+def pytest_sessionfinish(session, exitstatus):
+    # Delete all files in the media folder
+    files_in_media = os.listdir(settings.MEDIA_ROOT)
+    number_of_files = len(files_in_media)
+    for file in files_in_media:
+        os.remove(os.path.join(settings.MEDIA_ROOT, file))
+    print(f"\nTests finished, deleted {number_of_files} files in the media folder")
