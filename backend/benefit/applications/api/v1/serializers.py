@@ -1,4 +1,4 @@
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from typing import Dict, List
 
 import filetype
@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.db import transaction
 from django.forms import ImageField, ValidationError as DjangoFormsValidationError
+from django.utils import timezone
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
@@ -1427,7 +1428,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             approval = ApplicantTermsApproval.objects.create(
                 application=instance,
                 terms=approve_terms["terms"],
-                approved_at=datetime.now(),
+                approved_at=timezone.now(),
                 approved_by=approved_by,
             )
             approval.selected_applicant_consents.set(

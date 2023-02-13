@@ -13,7 +13,7 @@ const url = getFrontendUrl('/archive');
 
 const mockHook = RequestMock()
   .onRequestTo(
-    `${getBackendDomain()}/v1/handlerapplications/simplified_list/?status=accepted,rejected,cancelled`
+    `${getBackendDomain()}/v1/handlerapplications/simplified_list/?status=accepted,rejected,cancelled&order_by=-submitted_at`
   )
   .respond(jsonArchivedList);
 
@@ -33,5 +33,5 @@ test('Archive has applications in state "accepted", "rejected" and "cancelled"',
   await mainIngress.isVisible();
 
   const archivedApplications = new ApplicationList(['archived']);
-  await archivedApplications.hasItemsListed(30);
+  await archivedApplications.hasItemsListed(4);
 });

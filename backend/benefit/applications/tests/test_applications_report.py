@@ -1,7 +1,7 @@
 import io
 import os.path
 from collections import defaultdict
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from decimal import Decimal
 from typing import Dict, List
 from zipfile import ZipFile
@@ -87,21 +87,21 @@ def _get_csv_pdf_zip(handler_api_client: APIClient, url: str) -> ZipFile:
 def _create_applications_for_export():
     application1 = DecidedApplicationFactory(status=ApplicationStatus.ACCEPTED)
     application1.log_entries.filter(to_status=ApplicationStatus.ACCEPTED).update(
-        created_at=datetime(2022, 1, 1)
+        created_at=datetime(2022, 1, 1, tzinfo=timezone.utc)
     )
     application2 = DecidedApplicationFactory(status=ApplicationStatus.ACCEPTED)
     application2.log_entries.filter(to_status=ApplicationStatus.ACCEPTED).update(
-        created_at=datetime(2022, 2, 1)
+        created_at=datetime(2022, 2, 1, tzinfo=timezone.utc)
     )
     application3 = DecidedApplicationFactory(status=ApplicationStatus.REJECTED)
     application3.log_entries.filter(to_status=ApplicationStatus.REJECTED).update(
-        created_at=datetime(2022, 3, 1)
+        created_at=datetime(2022, 3, 1, tzinfo=timezone.utc)
     )
     application4 = DecidedApplicationFactory(
         status=ApplicationStatus.HANDLING
     )  # should be excluded
     application4.log_entries.filter(to_status=ApplicationStatus.HANDLING).update(
-        created_at=datetime(2022, 2, 1)
+        created_at=datetime(2022, 2, 1, tzinfo=timezone.utc)
     )
     return (application1, application2, application3, application4)
 
