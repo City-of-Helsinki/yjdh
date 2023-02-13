@@ -142,8 +142,8 @@ const PageContent: React.FC = () => {
         <>
           <$PageSubHeading>
             {`${t(
-              'common:applications.pageHeaders.created'
-            )} ${convertToUIDateAndTimeFormat(application?.createdAt)}`}
+              'common:applications.pageHeaders.saved'
+            )} ${convertToUIDateAndTimeFormat(application?.modifiedAt)}`}
           </$PageSubHeading>
           {(currentStep === 1 || currentStep === 2) && (
             <$PageHeadingHelperText>

@@ -18,15 +18,21 @@ const ContactPersonView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
       header={t(`${translationsBase}.headings.heading2`)}
       action={data.status !== APPLICATION_STATUSES.RECEIVED ? <span /> : null}
     >
-      <$GridCell $colSpan={3}>
+      <$GridCell $colSpan={6}>
         <$ViewField>
           {getFullName(
             data.companyContactPersonFirstName,
             data.companyContactPersonLastName
           )}
         </$ViewField>
-        <$ViewField>{data.companyContactPersonPhoneNumber}</$ViewField>
-        <$ViewField>{data.companyContactPersonEmail}</$ViewField>
+        <$ViewField>
+          {t(`${translationsBase}.fields.phone`)}:{' '}
+          {data.companyContactPersonPhoneNumber}
+        </$ViewField>
+        <$ViewField>
+          {t(`${translationsBase}.fields.email`)}:{' '}
+          {data.companyContactPersonEmail}
+        </$ViewField>
         <$ViewField>
           {t(`${translationsBase}.fields.applicantLanguage`)}
           {': '}
