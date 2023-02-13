@@ -2,6 +2,8 @@ import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 
 export enum ROUTES {
   HOME = '/',
+  LOGIN = '/login',
+
   // temporary urls, not defined yet
   APPLICATIONS_PROCESSED = '/processed',
   APPLICATIONS_ARCHIVE = '/archive',
