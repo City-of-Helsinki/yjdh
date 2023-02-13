@@ -25,6 +25,7 @@ pdfkit
 pillow
 psycopg2
 python-dateutil
+python-stdnum
 pyyaml
 requests
 sentry-sdk

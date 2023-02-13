@@ -1,4 +1,3 @@
-import re
 from datetime import date, timedelta
 from typing import Dict, List
 
@@ -16,6 +15,7 @@ from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from rest_framework.fields import FileField
 from rest_framework.reverse import reverse
+from stdnum.fi import hetu
 
 from applications.api.v1.status_transition_validator import (
     ApplicantApplicationStatusValidator,
@@ -53,7 +53,6 @@ from common.utils import (
     PhoneNumberField,
     to_decimal,
     update_object,
-    xgroup,
 )
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
@@ -249,32 +248,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
     Employee objects are meant to be edited together with their Application object.
     """
 
-    SSN_REGEX = r"^(\d{6})[aA+-](\d{3})([0-9A-FHJ-NPR-Ya-fhj-npr-y])$"
-
-    SSN_CHEKSUM = {
-        int(k): v
-        for k, v in xgroup(
-            (
-                "0    0    16    H "
-                "1    1    17    J "
-                "2    2    18    K "
-                "3    3    19    L "
-                "4    4    20    M "
-                "5    5    21    N "
-                "6    6    22    P "
-                "7    7    23    R "
-                "8    8    24    S "
-                "9    9    25    T "
-                "10    A    26    U "
-                "11    B    27    V "
-                "12    C    28    W "
-                "13    D    29    X "
-                "14    E    30    Y "
-                "15    F"
-            ).split()
-        )
-    }
-
     phone_number = PhoneNumberField(
         allow_blank=True,
         help_text=(
@@ -310,24 +283,11 @@ class EmployeeSerializer(serializers.ModelSerializer):
         ]
 
     def validate_social_security_number(self, value):
-        """
-        For more info about the checksum validation, see "Miten henkilötunnukset tarkistusmerkki lasketaan?" in
-        https://dvv.fi/henkilotunnus
-        """
         if value == "":
             return value
 
-        m = re.match(self.SSN_REGEX, value)
-        if not m:
+        if not hetu.is_valid(value):
             raise serializers.ValidationError(_("Social security number invalid"))
-
-        expect_checksum = EmployeeSerializer.SSN_CHEKSUM[
-            int((m.group(1) + m.group(2)).lstrip("0")) % 31
-        ].lower()
-        if expect_checksum != m.group(3).lower():
-            raise serializers.ValidationError(
-                _("Social security number checksum invalid")
-            )
 
         return value
 
