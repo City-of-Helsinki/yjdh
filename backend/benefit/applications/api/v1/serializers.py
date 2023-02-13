@@ -719,8 +719,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
 
     submitted_at = serializers.SerializerMethodField("get_submitted_at")
 
-    last_modified_at = serializers.SerializerMethodField(
-        "get_last_modified_at",
+    modified_at = serializers.SerializerMethodField(
+        "get_modified_at",
         help_text=(
             "Last modified timestamp. Only handlers see the timestamp of non-draft"
             " applications."
