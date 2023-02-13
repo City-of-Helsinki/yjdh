@@ -143,7 +143,7 @@ class ApplicationWithAttachmentFactory(ApplicationFactory):
     )
 
 
-class ReceivedApplicationFactory(ApplicationWithAttachmentFactory):
+class ReceivedApplicationFactory(ApplicationFactory):
     status = ApplicationStatus.RECEIVED
     applicant_terms_approval = factory.RelatedFactory(
         "terms.tests.factories.ApplicantTermsApprovalFactory",
