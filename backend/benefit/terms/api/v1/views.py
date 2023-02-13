@@ -1,6 +1,5 @@
-from datetime import datetime
-
 from django.conf import settings
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework import serializers
@@ -22,11 +21,9 @@ class ApproveTermsOfServiceView(APIView):
 
     @extend_schema(
         description=(
-            (
-                "Approve the terms of service"
-                "Separate approval is needed for each current user+current company combination"
-                "The terms and consents being approved must be the terms and consents in effect (see UserSerializer)"
-            )
+            "Approve the terms of serviceSeparate approval is needed for each current"
+            " user+current company combinationThe terms and consents being approved"
+            " must be the terms and consents in effect (see UserSerializer)"
         )
     )
     def post(self, request):
@@ -52,7 +49,7 @@ class ApproveTermsOfServiceView(APIView):
                 user=user,
                 terms=approve_terms.validated_data["terms"],
                 company=company,
-                approved_at=datetime.now(),
+                approved_at=timezone.now(),
                 approved_by=user,
             )
             approval.selected_applicant_consents.set(
