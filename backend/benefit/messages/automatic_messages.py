@@ -50,9 +50,9 @@ def send_email_to_applicant(
     application: Application, subject: str = None, message: str = None
 ) -> int:
     """
-    :param user: The handler who is setting the application to ADDITIONAL_INFORMATION_REQUESTED status
     :param application: The application being reopened
-    :param application: The last response date
+    :param subject: The subject of the email
+    :param message: The body of the email
     """
     if not application.company_contact_person_email:
         # company_contact_person_email is a required field for submitted applications
@@ -92,7 +92,7 @@ def send_application_reopened_message(
     """
     :param user: The handler who is setting the application to ADDITIONAL_INFORMATION_REQUESTED status
     :param application: The application being reopened
-    :param application: The last response date
+    :param additional_information_needed_by: The date by which the applicant must provide the additional information
     """
     with translation.override(application.applicant_language):
         Message.objects.create(
