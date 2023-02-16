@@ -145,6 +145,8 @@ env = environ.Env(
 if os.path.exists(env_file):
     env.read_env(env_file)
 
+os.environ["HTTPS"] = "on"
+
 BASE_DIR = str(checkout_dir)
 
 DEBUG = env.bool("DEBUG")
