@@ -13,7 +13,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            "--days_to_keep",
+            "--keep",
             type=int,
             default=30,
             help="The number of days to keep the applications",
@@ -31,7 +31,7 @@ class Command(BaseCommand):
             self.stdout.write(f"Status {options['status']} is not allowed")
             return
         number_of_deleted_applications = _delete_applications(
-            options["days_to_keep"], options["status"]
+            options["keep"], options["status"]
         )
         self.stdout.write(
             f"Deleted {number_of_deleted_applications} applications with status {options['status']}"

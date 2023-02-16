@@ -100,7 +100,7 @@ def test_delete_draft_applications_older_than_180_days(
     ]
 
     total_applications = Application.objects.filter(status=status).count()
-    call_command("delete_applications", days_to_keep=180, status=status, stdout=out)
+    call_command("delete_applications", keep=180, status=status, stdout=out)
 
     # Query the remaining applications after the command has been executed
     remaining_applications = Application.objects.filter(
@@ -135,8 +135,8 @@ def test_user_is_notified_of_upcoming_application_deletion(drafts_about_to_be_de
     out = StringIO()
     call_command(
         "check_drafts_to_delete",
-        days_to_deletion=14,
-        days_to_keep=180,
+        notify=14,
+        keep=180,
         stdout=out,
     )
 

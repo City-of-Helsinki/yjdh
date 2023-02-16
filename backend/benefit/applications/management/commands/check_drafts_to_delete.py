@@ -20,14 +20,14 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            "--days_to_deletion",
+            "--notify",
             type=int,
             default=14,
             help="The number of days before the deletion date and when to notify the applicant",
         )
 
         parser.add_argument(
-            "--days_to_keep",
+            "--keep",
             type=int,
             default=180,
             help="The number of days to keep the applications",
@@ -35,7 +35,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         number_of_notified_applications = notify_applications(
-            options["days_to_deletion"], options["days_to_keep"]
+            options["notify"], options["keep"]
         )
         self.stdout.write(
             f"Notified users of {number_of_notified_applications} applications about upcoming application deletion"
