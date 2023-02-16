@@ -6,7 +6,7 @@ from rest_framework.exceptions import NotFound
 
 from applications.models import Application
 from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
-from messages.automatic_messages import notify_applicant_by_email_about_new_message
+from messages.automatic_messages import send_email_to_applicant
 from messages.models import Message
 from messages.permissions import HasMessagePermission
 from messages.serializers import MessageSerializer, NoteSerializer
@@ -49,7 +49,7 @@ class HandlerMessageViewSet(ApplicantMessageViewSet):
 
     def perform_create(self, serializer):
         message = serializer.save()
-        notify_applicant_by_email_about_new_message(message.application)
+        send_email_to_applicant(message.application)
 
     def get_queryset(self):
         try:
