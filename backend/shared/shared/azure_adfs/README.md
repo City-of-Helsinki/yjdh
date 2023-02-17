@@ -1,6 +1,6 @@
 ## YJDH Azure ADFS component
 
-Azure ADFS authentication using the django library `django-auth-adfs`.
+Azure ADFS authentication using the django library `django-auth-adfs`. More information about `django-auth-adfs` in [this guide](https://django-auth-adfs.readthedocs.io/en/latest/azure_ad_config_guide.html).
 
 Custom logic was written for the callback view `HelsinkiOAuth2CallbackView` and the authentication backend `HelsinkiAdfsAuthCodeBackend`.
 
@@ -60,8 +60,6 @@ To start using this package, follow these steps:
 5. The authentication flow can now be initiated from `/oauth2/login`
 
 6. Django tends to use http:// instead of https:// in OAUTH2 for localhost. To send the correct protocol URL you must set `os.environ["HTTPS"] = "on"` in `settings.py`. This enforces HTTPS and tells Django to use HTTPS explicitly.
-
-More information from [this guide](https://django-auth-adfs.readthedocs.io/en/latest/azure_ad_config_guide.html).
 
 ### Optional Django settings
 
