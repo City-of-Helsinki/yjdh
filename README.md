@@ -153,8 +153,8 @@ If the pre-commit hook hangs, or you want to push changes with failing tests, yo
 
 ### Pre-commit (backend)
 
-1. Install [pre-commit](https://pre-commit.com/)
-2. Run `pre-commit install`
+1. [Pre-commit](https://pre-commit.com/) should be installed to your virtual environment from `requirements-dev.txt`. If not, install it with `pip install pre-commit`.
+2. Run `pre-commit install`.
 
 Hooks now run when committing. You can run hooks manually by `pre-commit run`
 

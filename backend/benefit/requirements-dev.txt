@@ -16,6 +16,8 @@ certifi==2020.12.5
     # via
     #   -c requirements.txt
     #   requests
+cfgv==3.3.1
+    # via pre-commit
 chardet==4.0.0
     # via
     #   -c requirements.txt
@@ -28,12 +30,18 @@ coverage==5.5
     # via pytest-cov
 decorator==5.0.7
     # via ipython
+distlib==0.3.6
+    # via virtualenv
 et-xmlfile==1.1.0
     # via openpyxl
+filelock==3.9.0
+    # via virtualenv
 flake8==4.0.1
     # via -r requirements-dev.in
 freezegun==1.1.0
     # via pytest-freezegun
+identify==2.5.18
+    # via pre-commit
 idna==2.10
     # via
     #   -c requirements.txt
@@ -56,6 +64,8 @@ mccabe==0.6.1
     # via flake8
 mypy-extensions==0.4.3
     # via black
+nodeenv==1.7.0
+    # via pre-commit
 openpyxl==3.0.9
     # via -r requirements-dev.in
 packaging==21.3
@@ -75,9 +85,13 @@ pickleshare==0.7.5
 pip-tools==6.6.2
     # via -r requirements-dev.in
 platformdirs==2.5.2
-    # via black
+    # via
+    #   black
+    #   virtualenv
 pluggy==0.13.1
     # via pytest
+pre-commit==3.0.4
+    # via -r requirements-dev.in
 prompt-toolkit==3.0.18
     # via ipython
 ptyprocess==0.7.0
@@ -110,6 +124,10 @@ python-dateutil==2.8.1
     # via
     #   -c requirements.txt
     #   freezegun
+pyyaml==5.4.1
+    # via
+    #   -c requirements.txt
+    #   pre-commit
 requests==2.25.1
     # via
     #   -c requirements.txt
@@ -140,6 +158,8 @@ urllib3==1.26.4
     # via
     #   -c requirements.txt
     #   requests
+virtualenv==20.19.0
+    # via pre-commit
 wcwidth==0.2.5
     # via prompt-toolkit
 werkzeug==2.0.1
