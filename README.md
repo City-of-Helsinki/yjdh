@@ -141,13 +141,22 @@ Running `yarn tet-youth down` brings down all services.
 
 ---
 
-## Setting up Husky pre-commit hooks:
+## Setting up pre-commit hooks
+
+### Husky (frontend)
 
 1. Run `yarn install` and `yarn prepare` on project root
 2. Try `git commit -m foo`. It does not commit anything for real but pre-commit hook should be triggered.
 
 If the pre-commit hook hangs, or you want to push changes with failing tests, you can disable the hook with
 `npx husky uninstall`. Running `yarn prepare` reactivates the hook.
+
+### Pre-commit (backend)
+
+1. Install [pre-commit](https://pre-commit.com/)
+2. Run `pre-commit install`
+
+Hooks now run when committing. You can run hooks manually by `pre-commit run`
 
 ---
 
