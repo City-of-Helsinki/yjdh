@@ -40,7 +40,7 @@ const Header: React.FC = () => {
         onLogin: !isLoading ? login : noop,
         onLogout: !isLoading ? logout : noop,
         userName: isSuccess
-          ? getFullName(data?.given_name, data?.family_name)
+          ? getFullName(data?.first_name, data?.last_name)
           : undefined,
         userAriaLabelPrefix: t('common:header.userAriaLabelPrefix'),
       }}
