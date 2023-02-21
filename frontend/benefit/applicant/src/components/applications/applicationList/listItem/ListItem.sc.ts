@@ -4,23 +4,31 @@ interface AvatarProps {
   $backgroundColor: keyof DefaultTheme['colors'];
 }
 
+const pxShowAsTable = '880px';
+
 export const $ListItemWrapper = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
 export const $ListItem = styled.li`
-  display: flex;
+  display: block;
   background-color: ${(props) => props.theme.colors.white};
   padding: ${(props) => props.theme.spacing.xs};
   justify-content: space-between;
+  @media screen and (min-width: ${pxShowAsTable}) {
+    display: flex;
+  }
 `;
 
 export const $ItemContent = styled.div`
   display: grid;
-  grid-template-columns: 60px 3fr repeat(4, minmax(100px, 2fr));
   grid-gap: ${(props) => props.theme.spacing.m};
   width: 100%;
+  margin-bottom: 1em;
+  @media screen and (min-width: ${pxShowAsTable}) {
+    grid-template-columns: 60px 3fr repeat(4, minmax(100px, 2fr));
+  }
 `;
 
 export const $Avatar = styled.div<AvatarProps>`

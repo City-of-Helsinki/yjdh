@@ -103,6 +103,8 @@ const ListItem: React.FC<ListItemProps> = (props) => {
                 css={`
                   font-weight: 600;
                   text-align: center;
+                  max-width: 160px;
+                  box-sizing: border-box;
                 `}
                 type="alert"
               >
