@@ -186,7 +186,9 @@ python-dateutil==2.8.1
 python-jose==3.3.0
     # via django-helusers
 python-stdnum==1.16
-    # via django-localflavor
+    # via
+    #   -r requirements.in
+    #   django-localflavor
 pytz==2021.1
     # via
     #   babel

@@ -28,9 +28,12 @@
                 {% endif %}
                 <td>{{ app.start_date.strftime("%d.%m.%Y") }} - {{ app.end_date.strftime("%d.%m.%Y")}}</td>
                 <td>{{ app.get_benefit_type_display() }}</td>
-                {% if show_sums %}
+                {% if show_sums and app.calculated_benefit_amount and app.calculation.duration_in_months %}
                     <td class="text-right">{{ "%.0f €" | format(app.calculated_benefit_amount/(app.calculation.duration_in_months | round(2)))}} </td>
                     <td class="text-right"><strong>{{ "%.0f €" | format(app.calculated_benefit_amount)}}</strong></td>
+                {% else %}
+                    <td class="text-right">0 €</td>
+                    <td class="text-right"><strong>0 €</strong></td>
                 {% endif %}
             </tr>
             {% else %}
@@ -54,9 +57,18 @@
         {% endfor %}
 
         {% if show_sums %}
+            {% set benefit = namespace(amounts=0) %}
+            {% for app in apps %}
+                {% if app.calculated_benefit_amount is not none %}
+                    {% set benefit.amounts = benefit.amounts + app.calculated_benefit_amount %}
+                {% endif %}
+            {% endfor %}
             <tr>
-                <td colspan="8" class="footer text-right"> Kaikki yhteensä <strong>{{ "%.0f €" | format(apps | sum
-                        (attribute='calculated_benefit_amount'))}}</strong></td>
+                <td colspan="8" class="footer text-right"> Kaikki yhteensä 
+                    <strong>
+                        {{ "%.0f €" | format(benefit.amounts) }}
+                    </strong>
+                </td>
             </tr>
         {% endif %}
     </table>

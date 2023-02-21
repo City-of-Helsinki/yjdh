@@ -12,7 +12,9 @@
     "drawer": {
       "title": "Hakemuksen viestit"
     },
-    "languageMenuButtonAriaLabel": "Select language"
+    "languageMenuButtonAriaLabel": "Select language",
+    "logoutLabel": "Log out",
+    "loginLabel": "Log in"
   },
   "notifications": {
     "accepted": {

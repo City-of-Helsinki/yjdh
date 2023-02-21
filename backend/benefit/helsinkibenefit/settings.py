@@ -145,6 +145,8 @@ env = environ.Env(
 if os.path.exists(env_file):
     env.read_env(env_file)
 
+os.environ["HTTPS"] = "on"
+
 BASE_DIR = str(checkout_dir)
 
 DEBUG = env.bool("DEBUG")
@@ -335,10 +337,7 @@ NEXT_PUBLIC_MOCK_FLAG = env.bool("NEXT_PUBLIC_MOCK_FLAG")
 DUMMY_COMPANY_FORM_CODE = env.int("DUMMY_COMPANY_FORM_CODE")
 ENABLE_DEBUG_ENV = env.bool("ENABLE_DEBUG_ENV")
 
-if NEXT_PUBLIC_MOCK_FLAG:
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-else:
-    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 # Authentication settings begin
 SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE")
