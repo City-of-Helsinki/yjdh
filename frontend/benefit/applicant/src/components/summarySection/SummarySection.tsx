@@ -8,9 +8,19 @@ import {
   $Section,
   GridProps,
 } from 'shared/components/forms/section/FormSection.sc';
-import { useTheme } from 'styled-components';
+import { breakpoints, respondAbove } from 'shared/styles/mediaQueries';
+import styled, { useTheme } from 'styled-components';
 
 import { $Wrapper } from './SummarySection.sc';
+
+const $MyWrapper = styled($Wrapper)`
+  ${$Action} {
+    position: relative;
+    ${respondAbove('sm')`
+      position: absolute;
+    `}
+  }
+`;
 
 export type SummarySectionProps = {
   children?: React.ReactNode;
@@ -33,9 +43,8 @@ const SummarySection: React.FC<SummarySectionProps> = ({
 }) => {
   const theme = useTheme();
   return (
-    <$Wrapper>
+    <$MyWrapper>
       <$Section paddingBottom={paddingBottom}>
-        {action && <$Action>{action}</$Action>}
         {header && (
           <Heading
             header={header}
@@ -58,6 +67,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
             {children}
           </$Grid>
         )}
+        {action && <$Action>{action}</$Action>}
         {!withoutDivider && (
           <$Hr
             css={`
@@ -66,7 +76,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
           />
         )}
       </$Section>
-    </$Wrapper>
+    </$MyWrapper>
   );
 };
 

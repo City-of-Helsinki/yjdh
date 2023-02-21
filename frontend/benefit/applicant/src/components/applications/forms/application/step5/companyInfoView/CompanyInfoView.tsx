@@ -45,7 +45,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
               variant="supplementary"
               iconLeft={<IconPen />}
             >
-              {t(`common:applications.actions.edit`)}
+              xxx {t(`common:applications.actions.edit`)}
             </Button>
           )
         }
@@ -72,7 +72,23 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
         </$GridCell>
       </SummarySection>
       {data.alternativeCompanyStreetAddress && (
-        <SummarySection>
+        <SummarySection
+          action={
+            !isReadOnly && (
+              <Button
+                theme="black"
+                css={`
+                  margin-top: ${theme.spacing.s};
+                `}
+                onClick={() => handleStepChange(1)}
+                variant="supplementary"
+                iconLeft={<IconPen />}
+              >
+                xxx {t(`common:applications.actions.edit`)}
+              </Button>
+            )
+          }
+        >
           <$GridCell
             $colSpan={12}
             css={`
@@ -99,6 +115,21 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
       )}
       <SummarySection
         header={t(`${translationsBase}.company.heading2Short`)}
+        action={
+          !isReadOnly && (
+            <Button
+              theme="black"
+              css={`
+                margin-top: ${theme.spacing.s};
+              `}
+              onClick={() => handleStepChange(1)}
+              variant="supplementary"
+              iconLeft={<IconPen />}
+            >
+              xxx {t(`common:applications.actions.edit`)}
+            </Button>
+          )
+        }
         withoutDivider
       >
         <$GridCell $colSpan={3}>
@@ -120,6 +151,21 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
         </$GridCell>
       </SummarySection>
       <SummarySection
+        action={
+          !isReadOnly && (
+            <Button
+              theme="black"
+              css={`
+                margin-top: ${theme.spacing.s};
+              `}
+              onClick={() => handleStepChange(1)}
+              variant="supplementary"
+              iconLeft={<IconPen />}
+            >
+              xxx {t(`common:applications.actions.edit`)}
+            </Button>
+          )
+        }
         gap={theme.spacing.xs3}
         header={t(`${translationsBase}.company.heading3`)}
         withoutDivider
@@ -177,7 +223,24 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
           </$GridCell>
         )}
       </SummarySection>
-      <SummarySection header={t(`${translationsBase}.company.heading5`)}>
+      <SummarySection
+        action={
+          !isReadOnly && (
+            <Button
+              theme="black"
+              css={`
+                margin-top: ${theme.spacing.s};
+              `}
+              onClick={() => handleStepChange(1)}
+              variant="supplementary"
+              iconLeft={<IconPen />}
+            >
+              xxx {t(`common:applications.actions.edit`)}
+            </Button>
+          )
+        }
+        header={t(`${translationsBase}.company.heading5`)}
+      >
         <$GridCell $colStart={1} $colSpan={12}>
           {t(
             `${translationsBase}.company.fields.coOperationNegotiations.label`
