@@ -255,5 +255,8 @@ def pytest_sessionfinish(session, exitstatus):
     files_in_media = os.listdir(settings.MEDIA_ROOT)
     number_of_files = len(files_in_media)
     for file in files_in_media:
-        os.remove(os.path.join(settings.MEDIA_ROOT, file))
+        try:
+            os.remove(os.path.join(settings.MEDIA_ROOT, file))
+        except OSError as e:
+            print(f"Error while deleting file in media folder: {e}")
     print(f"\nTests finished, deleted {number_of_files} files in the media folder")
