@@ -6,6 +6,8 @@ import { Button, IconSpeechbubbleText, StatusLabel } from 'hds-react';
 import React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import { respondAbove } from 'shared/styles/mediaQueries';
+import styled from 'styled-components';
 
 import {
   $Avatar,
@@ -22,6 +24,17 @@ import {
 } from './ListItem.sc';
 
 export type ListItemProps = ApplicationListItemData | Loading;
+
+const $StatusLabel = styled(StatusLabel)`
+  font-weight: 600;
+  text-align: center;
+  box-sizing: border-box;
+  max-width: 160px;
+  margin-right: var(--spacing-s);
+  ${respondAbove('sm')`
+    max-width: none;
+  `}
+`;
 
 const ListItem: React.FC<ListItemProps> = (props) => {
   const { t } = useTranslation();
@@ -99,15 +112,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
               <$DataHeader>
                 {t(`${translationBase}.common.editEndDate`)}
               </$DataHeader>
-              <StatusLabel
-                css={`
-                  font-weight: 600;
-                  text-align: center;
-                `}
-                type="alert"
-              >
-                {editEndDate}
-              </StatusLabel>
+              <$StatusLabel type="alert">{editEndDate}</$StatusLabel>
             </$DataColumn>
           )}
         </$ItemContent>
