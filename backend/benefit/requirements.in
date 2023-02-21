@@ -1,5 +1,6 @@
 -e file:../shared
 babel
+boto3
 django-cors-headers
 django-environ
 django-extensions

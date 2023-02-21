@@ -22,6 +22,12 @@ babel==2.9.1
     # via -r requirements.in
 cachetools==5.2.0
     # via django-helusers
+boto3==1.26.70
+    # via -r requirements.in
+botocore==1.29.70
+    # via
+    #   boto3
+    #   s3transfer
 certifi==2020.12.5
     # via
     #   elasticsearch
@@ -133,6 +139,10 @@ inflection==0.5.1
     # via drf-spectacular
 jinja2==3.0.1
     # via -r requirements.in
+jmespath==1.0.1
+    # via
+    #   boto3
+    #   botocore
 josepy==1.8.0
     # via mozilla-django-oidc
 jsonschema==3.2.0
@@ -181,6 +191,7 @@ python-dateutil==2.8.1
     # via
     #   -r requirements.in
     #   azure-storage-common
+    #   botocore
     #   faker
     #   pysaml2
 python-jose==3.3.0
@@ -209,6 +220,8 @@ requests==2.25.1
     #   pysaml2
 rsa==4.9
     # via python-jose
+s3transfer==0.6.0
+    # via boto3
 sentry-sdk==1.0.0
     # via -r requirements.in
 six==1.16.0
@@ -232,6 +245,7 @@ uritemplate==3.0.1
     #   drf-spectacular
 urllib3==1.26.4
     # via
+    #   botocore
     #   elasticsearch
     #   requests
     #   sentry-sdk
