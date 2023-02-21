@@ -11,3 +11,4 @@ pytest-freezegun
 pytest-xdist[psutil]
 requests-mock
 werkzeug
+pre-commit
