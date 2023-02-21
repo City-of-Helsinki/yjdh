@@ -39,7 +39,7 @@ test('Company', async () => {
   const step1 = new Step1();
   await step1.isLoaded(60_000);
 
-  await step1.fillEmployerInfo('6051437344779954');
+  await step1.fillEmployerInfo('6051437344779954', false);
   await step1.fillContactPerson(
     'Raven',
     'Stamm',

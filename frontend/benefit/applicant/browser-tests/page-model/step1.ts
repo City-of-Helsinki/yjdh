@@ -81,9 +81,14 @@ class Step1 extends WizardStep {
       .coOperationNegotiations.no,
   });
 
-  public async fillEmployerInfo(iban: string): Promise<void> {
-    await this.clickSelectRadioButton(this.hasImmediateManagerCheckbox);
-    await this.clickSelectRadioButton(this.businessActivitiesFalse);
+  public async fillEmployerInfo(
+    iban: string,
+    isAssociation: boolean
+  ): Promise<void> {
+    if (isAssociation) {
+      await this.clickSelectRadioButton(this.hasImmediateManagerCheckbox);
+      await this.clickSelectRadioButton(this.businessActivitiesFalse);
+    }
     await this.fillInput(this.bankAccountNumber, iban);
   }
 
