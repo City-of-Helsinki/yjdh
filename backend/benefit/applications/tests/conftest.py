@@ -1,8 +1,10 @@
+import os
 import random
 from datetime import timedelta
 
 import factory
 import pytest
+from django.conf import settings
 from django.utils import timezone
 
 from applications.enums import ApplicationStatus, BenefitType
@@ -246,3 +248,15 @@ def _delete_attachments(application: Application):
     """Delete attachment files from the given application"""
     for attachment in application.attachments.all():
         attachment.attachment_file.delete()
+
+
+def pytest_sessionfinish(session, exitstatus):
+    # Delete all files in the media folder
+    files_in_media = os.listdir(settings.MEDIA_ROOT)
+    number_of_files = len(files_in_media)
+    for file in files_in_media:
+        try:
+            os.remove(os.path.join(settings.MEDIA_ROOT, file))
+        except OSError as e:
+            print(f"Error while deleting file in media folder: {e}")
+    print(f"\nTests finished, deleted {number_of_files} files in the media folder")

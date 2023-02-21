@@ -19,16 +19,25 @@ def applicant_consent():
 
 @pytest.fixture
 def applicant_terms():
-    return TermsFactory(
+    terms = TermsFactory(
         terms_type=TermsType.APPLICANT_TERMS, effective_from=date.today()
     )
+    yield terms
+    terms.terms_pdf_fi.delete()
+    terms.terms_pdf_en.delete()
+    terms.terms_pdf_sv.delete()
 
 
 @pytest.fixture
 def terms_of_service():
-    return TermsFactory(
+    terms = TermsFactory(
         terms_type=TermsType.TERMS_OF_SERVICE, effective_from=date(2021, 1, 1)
     )
+    yield terms
+
+    terms.terms_pdf_fi.delete()
+    terms.terms_pdf_en.delete()
+    terms.terms_pdf_sv.delete()
 
 
 @pytest.fixture
