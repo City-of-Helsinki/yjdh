@@ -27,7 +27,7 @@ fixture('Frontpage')
     console.log(filterLoggedRequests(requestLogger))
   );
 
-test('Company', async () => {
+test('Oppisopimus', async () => {
   const termsAndConditions = new TermsOfService();
   await termsAndConditions.isLoaded();
   await termsAndConditions.clickContinueButton();
@@ -39,21 +39,21 @@ test('Company', async () => {
   const step1 = new Step1();
   await step1.isLoaded(60_000);
 
-  await step1.fillEmployerInfo('6051437344779954', false);
+  await step1.fillEmployerInfo('3943561142000926', true);
   await step1.fillContactPerson(
-    'Raven',
-    'Stamm',
-    '050001234',
-    'Raven_Stamm@example.net'
+    'Waild',
+    'Ömoussons',
+    '0400123456',
+    'need.email@example.com'
   );
-  await step1.selectNoDeMinimis();
+
   await step1.selectNocoOperationNegotiations();
   await step1.clickSubmit();
 
   const step2 = new Step2();
   await step2.isLoaded();
 
-  await step2.fillEmployeeInfo('Larry', 'Blick', '010101-150J', '040444321');
+  await step2.fillEmployeeInfo('Truu', 'Koos', '121148-8060', '0501234555');
   await step2.fillPaidSubsidyGrant();
   await step2.selectBenefitType('salary');
   const currentYear: number = new Date().getFullYear();
@@ -62,12 +62,12 @@ test('Company', async () => {
     `28.2.${currentYear + 1}`
   );
   await step2.fillEmploymentInfo(
-    'Kuljettaja',
-    '30',
-    'Logistiikka TES',
-    '2300',
-    '300',
-    '500'
+    'Kirjanpitäjä',
+    '37',
+    'Taloushallintoalan TES',
+    '2050',
+    '400',
+    '600'
   );
   await step2.clickSubmit();
 

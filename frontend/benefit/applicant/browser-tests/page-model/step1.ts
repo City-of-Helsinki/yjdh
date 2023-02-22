@@ -38,6 +38,18 @@ class Step1 extends WizardStep {
     ),
   });
 
+  private businessActivitiesFalse = this.within(
+    this.component.getByRole('group', {
+      name: this.regexp(
+        this.translations.applications.sections.company.fields
+          .associationHasBusinessActivities.label
+      ),
+    })
+  ).findByRole('radio', {
+    name: this.translations.applications.sections.company.fields
+      .associationHasBusinessActivities.no,
+  });
+
   private deMinimisAidFalse = this.within(
     this.component.getByRole('group', {
       name: this.regexp(
@@ -48,6 +60,13 @@ class Step1 extends WizardStep {
   ).findByRole('radio', {
     name: this.translations.applications.sections.company.fields.deMinimisAid
       .no,
+  });
+
+  hasImmediateManagerCheckbox = this.component.findByRole('checkbox', {
+    name: this.regexp(
+      this.translations.applications.sections.company.fields
+        .associationImmediateManagerCheck.placeholder
+    ),
   });
 
   private coOperationNegotiationsFalse = this.within(
@@ -62,8 +81,15 @@ class Step1 extends WizardStep {
       .coOperationNegotiations.no,
   });
 
-  public fillEmployerInfo(iban: string): Promise<void> {
-    return this.fillInput(this.bankAccountNumber, iban);
+  public async fillEmployerInfo(
+    iban: string,
+    isAssociation: boolean
+  ): Promise<void> {
+    if (isAssociation) {
+      await this.clickSelectRadioButton(this.hasImmediateManagerCheckbox);
+      await this.clickSelectRadioButton(this.businessActivitiesFalse);
+    }
+    await this.fillInput(this.bankAccountNumber, iban);
   }
 
   public async fillContactPerson(
@@ -76,6 +102,10 @@ class Step1 extends WizardStep {
     await this.fillInput(this.lastName, lastName);
     await this.fillInput(this.phoneNumber, phoneNumber);
     return this.fillInput(this.email, email);
+  }
+
+  public selectNoBusinessActivities(): Promise<void> {
+    return this.clickSelectRadioButton(this.businessActivitiesFalse);
   }
 
   public selectNoDeMinimis(): Promise<void> {
