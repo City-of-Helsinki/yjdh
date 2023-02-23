@@ -5,7 +5,7 @@ django-cors-headers
 django-environ
 django-extensions
 django-filter
-django-localflavor~=3.1
+django-localflavor
 django-phonenumber-field[phonenumbers]
 django-searchable-encrypted-fields
 django-simple-history
@@ -13,7 +13,7 @@ django-sql-utils
 django-storages[azure]
 django_auth_adfs
 djangorestframework
-django~=3.2
+django
 drf-nested-routers
 drf-spectacular
 elasticsearch
