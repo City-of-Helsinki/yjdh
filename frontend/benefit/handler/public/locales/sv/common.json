@@ -14,7 +14,10 @@
     },
     "languageMenuButtonAriaLabel": "Ändra språk",
     "logoutLabel": "Logga ut",
-    "loginLabel": "Logga in"
+    "loginLabel": "Logga in",
+    "userAriaLabelPrefix": "Käyttäjä:",
+    "linkSkipToContent": "Hyppää pääsisältöön",
+    "menuToggleAriaLabel": "Valikko"
   },
   "notifications": {
     "accepted": {
