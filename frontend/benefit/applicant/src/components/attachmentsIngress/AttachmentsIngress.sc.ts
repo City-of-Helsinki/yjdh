@@ -7,7 +7,7 @@ export const $TextContainer = styled.div`
   margin-bottom: ${(props) => props.theme.spacing.l};
 `;
 
-export const $Heading = styled.h1`
+export const $Heading = styled.h2`
   font-size: ${(props) => props.theme.fontSize.heading.m};
   font-weight: 500;
   margin: 0;
