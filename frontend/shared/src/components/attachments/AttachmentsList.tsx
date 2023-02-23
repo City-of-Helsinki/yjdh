@@ -48,7 +48,7 @@ const AttachmentsList = <T extends Attachment>({
   required,
   name,
   buttonRef,
-  as,
+  as = 'div',
 }: Props<T>): JSX.Element => {
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.attachments';
