@@ -369,6 +369,7 @@
     "loginLabel": "Logga in i tjänsten",
     "logoutLabel": "Logga ut",
     "userAriaLabelPrefix": "Användaren:",
+    "linkSkipToContent": "Hoppa till huvudinnehåll",
     "messages": "Meddelanden",
     "drawer": {
       "title": "Meddelanden om ansökan"
