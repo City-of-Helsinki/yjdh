@@ -29,6 +29,7 @@ type Props<T extends Attachment> = {
   required?: boolean;
   buttonRef?: React.Ref<HTMLButtonElement>;
   name?: string;
+  as?: 'div' | 'li';
 };
 
 const AttachmentsList = <T extends Attachment>({
@@ -47,6 +48,7 @@ const AttachmentsList = <T extends Attachment>({
   required,
   name,
   buttonRef,
+  as,
 }: Props<T>): JSX.Element => {
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.attachments';
@@ -58,7 +60,7 @@ const AttachmentsList = <T extends Attachment>({
   const uploadText = t(`${translationsBase}.add`);
 
   return (
-    <$Container>
+    <$Container as={as}>
       <$Heading>
         {title} {required && ' *'}
       </$Heading>
