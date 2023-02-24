@@ -106,7 +106,6 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               disabled={isLoading || !!error}
               name={fields.useAlternativeAddress.name}
               label={fields.useAlternativeAddress.label}
-              required
               checked={formik.values.useAlternativeAddress === true}
               errorText={getErrorMessage(fields.useAlternativeAddress.name)}
               onChange={formik.handleChange}
