@@ -19,7 +19,7 @@ export const $PageHeading = styled.h1`
   margin: 0;
 `;
 
-export const $PageSubHeading = styled.h3`
+export const $PageSubHeading = styled.p`
   color: ${(props) => props.theme.colors.coatOfArms};
   font-size: ${(props) => props.theme.fontSize.heading.s};
   font-weight: 500;

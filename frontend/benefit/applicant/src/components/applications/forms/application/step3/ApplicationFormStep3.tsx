@@ -30,42 +30,49 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
   return (
     <>
       <AttachmentsIngress />
-      {(benefitType === BENEFIT_TYPES.SALARY ||
-        benefitType === BENEFIT_TYPES.EMPLOYMENT) && (
-        <>
+      <ul>
+        {(benefitType === BENEFIT_TYPES.SALARY ||
+          benefitType === BENEFIT_TYPES.EMPLOYMENT) && (
+          <>
+            <AttachmentsList
+              as="li"
+              attachments={attachments}
+              attachmentType={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
+              required
+            />
+            {apprenticeshipProgram && (
+              <AttachmentsList
+                as="li"
+                attachments={attachments}
+                attachmentType={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
+                required
+              />
+            )}
+            {paySubsidyGranted && (
+              <AttachmentsList
+                as="li"
+                attachments={attachments}
+                attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
+                showMessage={showSubsidyMessage}
+                required
+              />
+            )}
+          </>
+        )}
+        {benefitType === BENEFIT_TYPES.COMMISSION && (
           <AttachmentsList
+            as="li"
             attachments={attachments}
-            attachmentType={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
+            attachmentType={ATTACHMENT_TYPES.COMMISSION_CONTRACT}
             required
           />
-          {apprenticeshipProgram && (
-            <AttachmentsList
-              attachments={attachments}
-              attachmentType={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
-              required
-            />
-          )}
-          {paySubsidyGranted && (
-            <AttachmentsList
-              attachments={attachments}
-              attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
-              showMessage={showSubsidyMessage}
-              required
-            />
-          )}
-        </>
-      )}
-      {benefitType === BENEFIT_TYPES.COMMISSION && (
+        )}
         <AttachmentsList
+          as="li"
           attachments={attachments}
-          attachmentType={ATTACHMENT_TYPES.COMMISSION_CONTRACT}
-          required
+          attachmentType={ATTACHMENT_TYPES.HELSINKI_BENEFIT_VOUCHER}
         />
-      )}
-      <AttachmentsList
-        attachments={attachments}
-        attachmentType={ATTACHMENT_TYPES.HELSINKI_BENEFIT_VOUCHER}
-      />
+      </ul>
       <$Hr
         css={`
           margin: ${theme.spacing.l} 0;
