@@ -38,14 +38,13 @@ from users.utils import get_company_from_request
 
 
 class BaseApplicationFilter(filters.FilterSet):
-
     status = filters.MultipleChoiceFilter(
         field_name="status",
         widget=CSVWidget,
         choices=ApplicationStatus.choices,
         help_text=(
-            "Filter by application status."
-            " Multiple statuses may be specified as a comma-separated list, such as 'status=draft,received'",
+            "Filter by application status. Multiple statuses may be specified as a"
+            " comma-separated list, such as 'status=draft,received'",
         ),
     )
 
@@ -64,7 +63,6 @@ class ApplicantApplicationFilter(BaseApplicationFilter):
 
 
 class HandlerApplicationFilter(BaseApplicationFilter):
-
     # the date when application was last set to either REJECTED, ACCEPTED or CANCELLED status
     handled_at = DateFromToRangeFilter(method="filter_handled_at")
 
@@ -246,7 +244,10 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
             return self._attachment_not_found()
 
     @extend_schema(
-        description="Get a partial application object (not saved in database), with various fields pre-filled"
+        description=(
+            "Get a partial application object (not saved in database), with various"
+            " fields pre-filled"
+        )
     )
     @action(detail=False, methods=["get"])
     def get_application_template(self, request, pk=None):
@@ -270,7 +271,10 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
 
 
 @extend_schema(
-    description="API for create/read/update/delete operations on Helsinki benefit applications for applicants"
+    description=(
+        "API for create/read/update/delete operations on Helsinki benefit applications"
+        " for applicants"
+    )
 )
 class ApplicantApplicationViewSet(BaseApplicationViewSet):
     serializer_class = ApplicantApplicationSerializer
@@ -299,7 +303,10 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
 
 
 @extend_schema(
-    description="API for create/read/update/delete operations on Helsinki benefit applications for application handlers"
+    description=(
+        "API for create/read/update/delete operations on Helsinki benefit applications"
+        " for application handlers"
+    )
 )
 class HandlerApplicationViewSet(BaseApplicationViewSet):
     serializer_class = HandlerApplicationSerializer

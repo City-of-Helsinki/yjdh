@@ -22,14 +22,13 @@ from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
 
 class ApplicationBatchFilter(filters.FilterSet):
-
     status = filters.MultipleChoiceFilter(
         field_name="status",
         widget=CSVWidget,
         choices=ApplicationBatchStatus.choices,
         help_text=(
-            "Filter by application batch status."
-            " Multiple statuses may be specified as a comma-separated list, such as 'status=draft,decided'",
+            "Filter by application batch status. Multiple statuses may be specified as"
+            " a comma-separated list, such as 'status=draft,decided'",
         ),
     )
 
@@ -41,7 +40,10 @@ class ApplicationBatchFilter(filters.FilterSet):
 
 
 @extend_schema(
-    description="API for create/read/update/delete/export operations on Helsinki benefit application batches"
+    description=(
+        "API for create/read/update/delete/export operations on Helsinki benefit"
+        " application batches"
+    )
 )
 class ApplicationBatchViewSet(AuditLoggingModelViewSet):
     queryset = ApplicationBatch.objects.all()
@@ -75,7 +77,8 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             return Response(
                 {
                     "detail": _(
-                        "Application status cannot be exported because of invalid status"
+                        "Application status cannot be exported because of invalid"
+                        " status"
                     )
                 },
                 status=status.HTTP_400_BAD_REQUEST,
@@ -117,7 +120,8 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             return Response(
                 {
                     "detail": _(
-                        "There is no available application to export, please try again later"
+                        "There is no available application to export, please try again"
+                        " later"
                     )
                 },
                 status=status.HTTP_400_BAD_REQUEST,

@@ -64,7 +64,6 @@ def address_property(field_suffix):
 
 
 class ApplicationManager(models.Manager):
-
     HANDLED_STATUSES = [
         ApplicationStatus.REJECTED,
         ApplicationStatus.ACCEPTED,
@@ -519,7 +518,10 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
         return self.AHJO_DECISION_LOGIC[self.status]
 
     def __str__(self):
-        return f"Application batch {self.applications.count()} {self.proposal_for_decision} {self.status}"
+        return (
+            "Application batch"
+            f" {self.applications.count()} {self.proposal_for_decision} {self.status}"
+        )
 
     class Meta:
         db_table = "bf_applicationbatch"

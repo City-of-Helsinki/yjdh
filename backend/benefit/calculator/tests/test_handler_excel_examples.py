@@ -91,7 +91,6 @@ class SalaryBenefitExcelTest(ExcelTestCase):
         )
 
     def _setup_db_objects(self):
-
         self.application = ApplicationFactory()
         self.application.status = ApplicationStatus.RECEIVED
         self.application.save()
@@ -231,7 +230,6 @@ class EmployeeBenefitExcelTest(SalaryBenefitExcelTest):
         )
 
     def _setup_db_objects(self):
-
         self.application = ApplicationFactory()
         self.application.status = ApplicationStatus.RECEIVED
         self.application.save()
@@ -282,7 +280,6 @@ SHEETS_TO_TEST = [
 
 
 def test_cases_from_excel(request, api_client):
-
     excel_file_name = os.path.join(
         request.fspath.dirname, "Helsinki-lisa laskurin testitapaukset.xlsx"
     )

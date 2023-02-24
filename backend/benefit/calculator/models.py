@@ -325,7 +325,10 @@ class PaySubsidy(UUIDModel, TimeStampedModel, DurationMixin):
                 )
 
     def __str__(self):
-        return f"PaySubsidy {self.start_date} - {self.end_date} of {self.pay_subsidy_percent}%"
+        return (
+            f"PaySubsidy {self.start_date} - {self.end_date} of"
+            f" {self.pay_subsidy_percent}%"
+        )
 
     class Meta:
         db_table = "bf_calculator_paysubsidy"
@@ -371,7 +374,10 @@ class PreviousBenefit(UUIDModel, TimeStampedModel, DurationMixin):
     history = HistoricalRecords(table_name="bf_calculator_previousbenefit_history")
 
     def __str__(self):
-        return f"PreviousBenefit  {self.start_date}-{self.end_date} for {self.company.name}"
+        return (
+            f"PreviousBenefit  {self.start_date}-{self.end_date} for"
+            f" {self.company.name}"
+        )
 
     class Meta:
         db_table = "bf_calculator_previousbenefit"
@@ -403,7 +409,10 @@ class TrainingCompensation(UUIDModel, TimeStampedModel, DurationMixin):
     history = HistoricalRecords(table_name="bf_calculator_trainingcompensation_history")
 
     def __str__(self):
-        return f"TrainingCompensation {self.start_date} - {self.end_date} of {self.monthly_amount} eur"
+        return (
+            f"TrainingCompensation {self.start_date} - {self.end_date} of"
+            f" {self.monthly_amount} eur"
+        )
 
     class Meta:
         db_table = "bf_calculator_trainingcompensation"
@@ -413,7 +422,6 @@ class TrainingCompensation(UUIDModel, TimeStampedModel, DurationMixin):
 
 
 class CalculationRow(UUIDModel, TimeStampedModel, DurationMixin):
-
     proxy_row_type = None
 
     def __init__(self, *args, **kwargs):

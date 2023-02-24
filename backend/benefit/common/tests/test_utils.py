@@ -90,7 +90,6 @@ def test_get_date_range_end_with_days360(date1, months, expected_result):
 
 
 def test_get_date_range_end_with_days360_combinations():
-
     if os.getenv("DAYS_360_FULL_TEST") == "1":
         # The nested loops test a huge number of combinations. Takes a long time to run,
         # only run this while debugging.
@@ -98,7 +97,8 @@ def test_get_date_range_end_with_days360_combinations():
         months_range = range(0, 1200)
     else:
         print(
-            "DAYS_360_FULL_TEST not set, test only a few combinations to make sure the test code doesn't rot"
+            "DAYS_360_FULL_TEST not set, test only a few combinations to make sure the"
+            " test code doesn't rot"
         )
         day_offsets = range(0, 100, 20)  # offset from 2022-01-01
         months_range = range(0, 1200, 100)

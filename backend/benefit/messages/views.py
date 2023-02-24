@@ -15,7 +15,6 @@ from users.utils import get_company_from_request
 
 
 class ApplicantMessageViewSet(AuditLoggingModelViewSet):
-
     serializer_class = MessageSerializer
     permission_classes = [
         BFIsApplicant,
