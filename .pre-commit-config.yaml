@@ -5,12 +5,14 @@ default_language_version:
 
 repos:
   - repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 23.1.0
     hooks:
       - id: black
         name: (BF) black
-        args: [--preview]
         files: ^backend/benefit
+  - repo: https://github.com/psf/black
+    rev: 22.3.0
+    hooks:
       - id: black
         name: (KS) black
         args: [--preview]
