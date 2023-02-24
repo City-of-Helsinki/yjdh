@@ -28,7 +28,8 @@ const Header: React.FC = () => {
     <BaseHeader
       title={t('common:appName')}
       titleUrl={ROUTES.HOME}
-      menuToggleAriaLabel={t('common:menuToggleAriaLabel')}
+      skipToContentLabel={t('common:header.linkSkipToContent')}
+      menuToggleAriaLabel={t('common:header.menuToggleAriaLabel')}
       isNavigationVisible={isNavigationVisible}
       navigationItems={navigationItems}
       onLanguageChange={handleLanguageChange}

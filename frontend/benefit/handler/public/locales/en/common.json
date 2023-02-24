@@ -14,7 +14,10 @@
     },
     "languageMenuButtonAriaLabel": "Select language",
     "logoutLabel": "Log out",
-    "loginLabel": "Log in"
+    "loginLabel": "Log in",
+    "userAriaLabelPrefix": "User:",
+    "linkSkipToContent": "Skip to main content",
+    "menuToggleAriaLabel": "Menu"
   },
   "notifications": {
     "accepted": {

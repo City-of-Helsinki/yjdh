@@ -369,6 +369,7 @@
     "loginLabel": "Kirjaudu palveluun",
     "logoutLabel": "Kirjaudu ulos",
     "userAriaLabelPrefix": "Käyttäjä:",
+    "linkSkipToContent": "Hyppää pääsisältöön",
     "messages": "Viestit",
     "drawer": {
       "title": "Hakemuksen viestit"
@@ -420,7 +421,7 @@
   "credentialsIngress": {
     "text": "Helsinki-lisällä työllistettävää henkilöä on tiedotettava hänen henkilötietojensa käsittelystä. Tulosta tiedoksianto ja pyydä siihen allekirjoitus työllistettävältä."
   },
-  "menuToggleAriaLabel": "Menu",
+  "menuToggleAriaLabel": "Valikko",
   "form": {
     "validation": {
       "required": "Tämä kenttä on pakollinen",
