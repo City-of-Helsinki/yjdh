@@ -152,6 +152,22 @@ def test_applications_filter_by_ssn(api_client, application, association_applica
     assert response.status_code == 200
 
 
+def test_applications_filter_by_application_number(
+    handler_api_client, received_application
+):
+    url = (
+        reverse("v1:handler-application-list")
+        + f"?application_number={received_application.application_number}"
+    )
+    response = handler_api_client.get(url)
+    assert len(response.data) == 1
+    assert (
+        response.data[0]["application_number"]
+        == received_application.application_number
+    )
+    assert response.status_code == 200
+
+
 def test_applications_simple_list_as_handler(handler_api_client, received_application):
     response = handler_api_client.get(
         reverse("v1:handler-application-simplified-application-list")
