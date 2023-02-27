@@ -327,7 +327,7 @@ def test_send_audit_log_missing_configuration(user, fixed_datetime):
 @pytest.mark.django_db
 @override_settings(
     ELASTICSEARCH_HOST="example.com",
-    ELASTICSEARCH_PORT="1234",
+    ELASTICSEARCH_PORT=1234,
     ELASTICSEARCH_USERNAME="e_user",
     ELASTICSEARCH_PASSWORD="e_password",
     ENABLE_SEND_AUDIT_LOG=True,
