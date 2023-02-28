@@ -1,7 +1,5 @@
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.base_user import AbstractBaseUser
-from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import PermissionDenied
 from django.db import DatabaseError, transaction
 from django.shortcuts import get_object_or_404
@@ -15,7 +13,6 @@ from common.permissions import BFIsAuthenticated
 from users.api.v1.authentications import HelsinkiProfileApiTokenAuthentication
 from users.api.v1.permissions import BFGDPRScopesPermission
 from users.api.v1.serializers import UserSerializer
-from users.utils import set_mock_user_name
 
 User = get_user_model()
 
@@ -35,10 +32,8 @@ class CurrentUserView(APIView):
         return Response(serializer.data)
 
     def _get_current_user(self, request):
-        if not request.user.is_authenticated and not settings.NEXT_PUBLIC_MOCK_FLAG:
+        if not request.user.is_authenticated:
             raise PermissionDenied
-        if settings.NEXT_PUBLIC_MOCK_FLAG and isinstance(request.user, AnonymousUser):
-            set_mock_user_name(request.user)
         return request.user
 
 

@@ -27,7 +27,9 @@ def test_get_member_objects(requests_mock):
     auth_backend = HelsinkiAdfsAuthCodeBackend()
 
     member_objects_response = {
-        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#Collection(Edm.String)",
+        "@odata.context": (
+            "https://graph.microsoft.com/v1.0/$metadata#Collection(Edm.String)"
+        ),
         "value": [
             "fee2c45b-915a-4a64-b130-f4eb9e75525e",
             "4fe90ae7-065a-478b-9400-e0a0e1cbd540",
@@ -56,7 +58,9 @@ def test_update_user_groups_from_graph_api(requests_mock, user):
     auth_backend = HelsinkiAdfsAuthCodeBackend()
 
     member_objects_response = {
-        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#Collection(Edm.String)",
+        "@odata.context": (
+            "https://graph.microsoft.com/v1.0/$metadata#Collection(Edm.String)"
+        ),
         "value": [
             "fee2c45b-915a-4a64-b130-f4eb9e75525e",
             "4fe90ae7-065a-478b-9400-e0a0e1cbd540",
@@ -116,8 +120,12 @@ def test_get_graph_api_access_token(requests_mock):
         "scope": "https://graph.microsoft.com/user.read",
         "expires_in": 3269,
         "ext_expires_in": 0,
-        "access_token": "eyJ0eXAiOiJKV1QiLCJub25jZSI6IkFRQUJBQUFBQUFCbmZpRy1tQTZOVGFlN0NkV1c",
-        "refresh_token": "OAQABAAAAAABnfiG-mA6NTae7CdWW7QfdAALzDWjw6qSn4GUDfxWzJDZ6lk9qRw4An",
+        "access_token": (
+            "eyJ0eXAiOiJKV1QiLCJub25jZSI6IkFRQUJBQUFBQUFCbmZpRy1tQTZOVGFlN0NkV1c"
+        ),
+        "refresh_token": (
+            "OAQABAAAAAABnfiG-mA6NTae7CdWW7QfdAALzDWjw6qSn4GUDfxWzJDZ6lk9qRw4An"
+        ),
     }
 
     matcher = re.compile(re.escape("https://login.microsoftonline.com/"))
@@ -191,7 +199,7 @@ def test_adfs_callback(client, user):
             update_user_groups_from_graph_api=mock.MagicMock,
             update_userinfo_from_graph_api=mock.MagicMock,
         ):
-            callback_url = f"{reverse('callback')}?code=test"
+            callback_url = f"{reverse('django_auth_adfs:callback')}?code=test"
             response = client.get(callback_url)
 
     assert response.status_code == 302
@@ -225,7 +233,7 @@ def test_adfs_callback_original_redirect(client, user, original_redirect_url):
             session["USE_ORIGINAL_REDIRECT_URL"] = True
             session.save()
             state = base64.urlsafe_b64encode(original_redirect_url.encode())
-            callback_url = reverse("callback")
+            callback_url = reverse("django_auth_adfs:callback")
             # Make sure the session variable is set up correctly
             assert "USE_ORIGINAL_REDIRECT_URL" in client.session
             assert client.session["USE_ORIGINAL_REDIRECT_URL"] is True
@@ -242,7 +250,7 @@ def test_adfs_callback_original_redirect(client, user, original_redirect_url):
     NEXT_PUBLIC_MOCK_FLAG=False, ADFS_LOGIN_REDIRECT_URL_FAILURE="http://example.com"
 )
 def test_adfs_callback_no_code(client):
-    callback_url = reverse("callback")
+    callback_url = reverse("django_auth_adfs:callback")
     response = client.get(callback_url)
 
     assert response.status_code == 302
