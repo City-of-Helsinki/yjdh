@@ -9,32 +9,20 @@ type $StepContainerProps = Props & {
 const getActiveColor = (isActive: boolean, theme: DefaultTheme): string =>
   isActive ? theme.colors.black90 : theme.colors.black20;
 
-export const $StepsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  align-items: center;
-`;
-
-export const $StepContainer = styled.div<$StepContainerProps>`
+const circleSize = 36;
+export const $StepCircle = styled.div<Props>`
   display: flex;
   align-items: center;
-  flex-direction: column;
-  z-index: 1;
-  cursor: ${({ isActive }) => (isActive ? 'pointer' : 'auto')};
-`;
-
-export const $StepCircle = styled.div<Props>`
-  height: 36px;
-  width: 36px;
+  justify-content: center;
+  height: ${circleSize}px;
+  width: ${circleSize}px;
   border-radius: 50%;
-  border: 4px solid
+  border: ${(props) => (props.isActive ? '4px' : '2px')} solid
     ${({ isActive, theme }) => getActiveColor(isActive || false, theme)};
   text-align: center;
   color: ${({ isActive, theme }) => getActiveColor(isActive || false, theme)};
   font-weight: 600;
-  line-height: 36px;
   font-size: ${(props) => props.theme.fontSize.body.m};
-  justify-self: center;
 `;
 
 export const $StepTitle = styled.p<Props>`
@@ -50,10 +38,16 @@ export const $StepTitle = styled.p<Props>`
 
 export const $Divider = styled.div<Props>`
   width: 72px;
-  height: 4px;
-  margin: 4px;
+  height: 2px;
+  margin: 2px;
   background: ${({ isActive, theme }) =>
     getActiveColor(isActive || false, theme)};
+`;
+
+export const $StepContainer = styled.div<$StepContainerProps>`
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  align-items: center;
 `;
 
 type AriaProps = {

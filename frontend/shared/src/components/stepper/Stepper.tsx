@@ -5,7 +5,7 @@ import {
   $Divider,
   $StepCircle,
   $StepItem,
-  $StepsContainer,
+  $StepContainer,
   $StepTitle,
 } from './Stepper.sc';
 
@@ -20,7 +20,7 @@ const Stepper: React.FC<StepperProps> = ({
   steps,
   as: containerTag,
 }) => (
-  <$StepsContainer as={containerTag}>
+  <$StepContainer as={containerTag}>
     {steps.map((step, index) => (
       <React.Fragment key={step.title}>
         <$StepItem
@@ -38,7 +38,7 @@ const Stepper: React.FC<StepperProps> = ({
         <$StepTitle isActive={index < activeStep}>{step.title}</$StepTitle>
       </React.Fragment>
     ))}
-  </$StepsContainer>
+  </$StepContainer>
 );
 
 export default Stepper;
