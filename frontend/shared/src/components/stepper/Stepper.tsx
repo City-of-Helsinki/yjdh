@@ -4,8 +4,8 @@ import { StepProps } from './Step';
 import {
   $Divider,
   $StepCircle,
-  $StepItem,
   $StepContainer,
+  $StepItem,
   $StepTitle,
 } from './Stepper.sc';
 
