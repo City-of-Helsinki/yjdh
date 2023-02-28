@@ -28,7 +28,9 @@ const Stepper: React.FC<StepperProps> = ({
           aria-label={`${index + 1}. ${step.title}`}
           aria-current={activeStep - 1 === index ? 'step' : false}
         >
-          <$StepCircle isActive={index < activeStep}>{index + 1}</$StepCircle>
+          <$StepCircle isActive={index < activeStep}>
+            <span>{index + 1}</span>
+          </$StepCircle>
 
           {index < steps.length - 1 && (
             <$Divider isActive={index < activeStep - 1} />

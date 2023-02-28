@@ -135,7 +135,7 @@ const PageContent: React.FC = () => {
           </$PageHeading>
         </$HeaderItem>
         <$HeaderItem>
-          <Stepper steps={steps} activeStep={currentStep} />
+          <Stepper steps={steps} activeStep={currentStep} as="ol" />
         </$HeaderItem>
       </$PageHeader>
       {id && application?.createdAt && !isSubmittedApplication && (
