@@ -55,3 +55,21 @@ export const $Divider = styled.div<Props>`
   background: ${({ isActive, theme }) =>
     getActiveColor(isActive || false, theme)};
 `;
+
+type AriaProps = {
+  'aria-current'?:
+    | boolean
+    | 'time'
+    | 'step'
+    | 'false'
+    | 'true'
+    | 'page'
+    | 'location'
+    | 'date';
+  'aria-label'?: string;
+};
+
+export const $StepItem = styled.div<AriaProps>`
+  display: flex;
+  align-items: center;
+`;
