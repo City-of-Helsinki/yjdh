@@ -3,6 +3,8 @@ fail_fast: true
 default_language_version:
   python: python3
 
+exclude: ^.*\b(migrations)\b.*$
+
 repos:
   - repo: https://github.com/psf/black
     rev: 23.1.0
