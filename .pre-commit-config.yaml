@@ -10,20 +10,14 @@ repos:
       - id: black
         name: (BF) black
         files: ^backend/benefit
-  - repo: https://github.com/psf/black
-    rev: 22.3.0
-    hooks:
       - id: black
         name: (KS) black
-        args: [--preview]
         files: ^backend/kesaseteli
       - id: black
         name: (TET) black
-        args: [--preview]
         files: ^backend/tet
       - id: black
         name: (Shared) black
-        args: [--preview]
         files: ^backend/shared
   - repo: https://github.com/pycqa/isort
     rev: 5.12.0
@@ -45,7 +39,7 @@ repos:
         args: [--settings-file, backend/shared/setup.cfg]
         files: ^backend/shared
   - repo: https://github.com/pycqa/flake8
-    rev: 4.0.1
+    rev: 6.0.0
     hooks:
       - id: flake8
         name: (BF) flake8
