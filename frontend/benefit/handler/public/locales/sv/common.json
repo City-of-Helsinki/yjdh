@@ -14,7 +14,10 @@
     },
     "languageMenuButtonAriaLabel": "Ändra språk",
     "logoutLabel": "Logga ut",
-    "loginLabel": "Logga in"
+    "loginLabel": "Logga in",
+    "userAriaLabelPrefix": "Käyttäjä:",
+    "linkSkipToContent": "Hyppää pääsisältöön",
+    "menuToggleAriaLabel": "Valikko"
   },
   "notifications": {
     "accepted": {
@@ -216,7 +219,7 @@
     "summary": {
       "accepted": {
         "title": "Käsittely valmis",
-        "description": "Hakemus on hyväksytty ja Työllistämisen Helsinki-lisää on myönnetty ({{months}} kuukaudelle) aikavälille {{startDate}}–{{endDate}}",
+        "description": "Hakemus on hyväksytty ja Työllistämisen Helsinki-lisää on myönnetty ({{months}} kuukaudelle) aikavälille {{startDate}} – {{endDate}}",
         "row1": "Myönnetty Helsinki-lisä per kuukausi",
         "row2": "Myönnetty Helsinki-lisä yhteensä",
         "deMinimis": "Myönnetään de minimis-tukena",

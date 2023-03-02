@@ -369,6 +369,7 @@
     "loginLabel": "Sign in to the service",
     "logoutLabel": "Log out",
     "userAriaLabelPrefix": "User:",
+    "linkSkipToContent": "Skip to content",
     "messages": "Messages",
     "drawer": {
       "title": "Application’s messages"

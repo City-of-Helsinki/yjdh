@@ -86,6 +86,7 @@ class HandlerApplicationFilter(BaseApplicationFilter):
         fields = {
             "batch": ["exact", "isnull"],
             "archived": ["exact"],
+            "application_number": ["exact"],
             "employee__social_security_number": ["exact"],
             "company__business_id": ["exact"],
             "benefit_type": ["exact"],

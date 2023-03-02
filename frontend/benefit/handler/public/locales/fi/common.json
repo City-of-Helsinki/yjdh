@@ -14,7 +14,10 @@
     },
     "languageMenuButtonAriaLabel": "Valitse kieli",
     "logoutLabel": "Kirjaudu ulos",
-    "loginLabel": "Kirjaudu sisään"
+    "loginLabel": "Kirjaudu sisään",
+    "userAriaLabelPrefix": "Käyttäjä:",
+    "linkSkipToContent": "Hyppää pääsisältöön",
+    "menuToggleAriaLabel": "Valikko"
   },
   "notifications": {
     "accepted": {
@@ -79,7 +82,6 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "menuToggleAriaLabel": "Menu",
   "errorPage": {
     "title": "Palvelussa on valitettavasti tapahtunut virhe",
     "message": "Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
@@ -216,7 +218,7 @@
     "summary": {
       "accepted": {
         "title": "Käsittely valmis",
-        "description": "Hakemus on hyväksytty ja Työllistämisen Helsinki-lisää on myönnetty ({{months}} kuukaudelle) aikavälille {{startDate}}–{{endDate}}",
+        "description": "Hakemus on hyväksytty ja Työllistämisen Helsinki-lisää on myönnetty ({{months}} kuukaudelle) aikavälille {{startDate}} – {{endDate}}",
         "row1": "Myönnetty Helsinki-lisä per kuukausi",
         "row2": "Myönnetty Helsinki-lisä yhteensä",
         "deMinimis": "Myönnetään de minimis-tukena",

@@ -11,6 +11,7 @@ export type AttachmentsListProps = {
   showMessage?: boolean;
   attachments?: BenefitAttachment[];
   required?: boolean;
+  as?: 'div' | 'li';
 };
 
 const AttachmentsList: React.FC<AttachmentsListProps> = ({
@@ -18,6 +19,7 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
   showMessage = true,
   attachments,
   required,
+  as,
 }) => {
   const {
     t,
@@ -35,6 +37,7 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
 
   return (
     <AttachmentsListBase
+      as={as}
       title={t(`${translationsBase}.types.${camelCase(attachmentType)}.title`)}
       attachmentType={attachmentType}
       name={attachmentType}
