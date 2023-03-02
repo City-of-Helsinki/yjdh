@@ -3,5 +3,6 @@ extend-exclude = '''
 (
   .pytest_cache
   | var/media
+  | migrations
 )
 '''

@@ -6,7 +6,7 @@
 #
 attrs==21.4.0
     # via pytest
-black==22.3.0
+black==23.1.0
     # via -r requirements-dev.in
 certifi==2021.5.30
     # via
@@ -32,7 +32,7 @@ execnet==1.9.0
     # via pytest-xdist
 filelock==3.9.0
     # via virtualenv
-flake8==4.0.1
+flake8==6.0.0
     # via -r requirements-dev.in
 freezegun==1.2.1
     # via pytest-freezegun
@@ -48,7 +48,7 @@ isort==5.12.0
     # via -r requirements-dev.in
 langdetect==1.0.9
     # via -r requirements-dev.in
-mccabe==0.6.1
+mccabe==0.7.0
     # via flake8
 mypy-extensions==0.4.3
     # via black
@@ -56,8 +56,10 @@ nodeenv==1.7.0
     # via pre-commit
 openpyxl==3.0.10
     # via -r requirements-dev.in
-packaging==21.3
-    # via pytest
+packaging==23.0
+    # via
+    #   black
+    #   pytest
 pathspec==0.9.0
     # via black
 pep517==0.12.0
@@ -78,12 +80,10 @@ py==1.11.0
     # via
     #   pytest
     #   pytest-forked
-pycodestyle==2.8.0
+pycodestyle==2.10.0
     # via flake8
-pyflakes==2.4.0
+pyflakes==3.0.1
     # via flake8
-pyparsing==3.0.9
-    # via packaging
 pytest==7.1.2
     # via
     #   -r requirements-dev.in
