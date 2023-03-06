@@ -14,13 +14,16 @@ import { useErrorPage } from './useErrorPage';
 export interface ErrorPageProps {
   title: string;
   message: string;
-  showActions?: boolean;
+  showActions?: {
+    linkToRoot: boolean;
+    linkToLogout: boolean;
+  };
 }
 
 const ErrorPage: React.FC<ErrorPageProps> = ({
   title,
   message,
-  showActions = false,
+  showActions,
 }) => {
   const { t, handleBackClick, handleLogout } = useErrorPage();
   return (
@@ -29,14 +32,18 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
         <$IconAlertCircle size="xl" />
         <$ErrorPageTitle>{title}</$ErrorPageTitle>
         <$ErrorPageMessage>{message}</$ErrorPageMessage>
-        {showActions && (
+        {!!showActions && (
           <$ActionsContainer>
-            <Button theme="coat" onClick={handleBackClick}>
-              {t('common:errorPage.home')}
-            </Button>
-            <Button theme="coat" onClick={handleLogout}>
-              {t('common:errorPage.logout')}
-            </Button>
+            {showActions?.linkToRoot && (
+              <Button theme="coat" onClick={handleBackClick}>
+                {t('common:errorPage.home')}
+              </Button>
+            )}
+            {showActions?.linkToLogout && (
+              <Button theme="coat" onClick={handleLogout}>
+                {t('common:errorPage.logout')}
+              </Button>
+            )}
           </$ActionsContainer>
         )}
       </$ErrorPageContainer>

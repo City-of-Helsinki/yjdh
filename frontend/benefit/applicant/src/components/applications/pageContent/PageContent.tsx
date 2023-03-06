@@ -68,7 +68,7 @@ const PageContent: React.FC = () => {
       <ErrorPage
         title={t('common:errorPage.title')}
         message={t('common:errorPage.message')}
-        showActions
+        showActions={{ linkToRoot: true, linkToLogout: true }}
       />
     );
   }
@@ -120,7 +120,7 @@ const PageContent: React.FC = () => {
         <ErrorPage
           title={t('common:errorPage.title')}
           message={t('common:errorPage.message')}
-          showActions
+          showActions={{ linkToRoot: true, linkToLogout: true }}
         />
       </Container>
     );
