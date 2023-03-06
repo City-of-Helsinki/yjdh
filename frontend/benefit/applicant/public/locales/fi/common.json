@@ -492,6 +492,11 @@
       "title": "Tapahtui virhe",
       "tooBig": "Liite on liian suuri.",
       "fileType": "Liite on väärässä muodossa."
+    },
+    "notFound": {
+      "title": "Pahoittelut, sivua ei löytynyt.",
+      "text": "Virhe 404: Hakemasi sivun osoite on voinut muuttua tai sivu on poistettu."
+    }
     }
   },
   "upload": {

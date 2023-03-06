@@ -492,6 +492,11 @@
       "title": "Ett fel uppstod",
       "tooBig": "Storleken på bilagan är för stor.",
       "fileType": "Typen av bilaga är inte tillåten."
+    },
+    "notFound": {
+      "title": "Tyvärr hittas inte sidan du sökte.",
+      "text": "Fel 404: Kontrollera att sidans adress är rätt skriven. Vi kan också ha tagit bort eller flyttat sidan."
+    }
     }
   },
   "upload": {
