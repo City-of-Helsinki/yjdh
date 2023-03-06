@@ -1,5 +1,11 @@
 import { DefaultTheme } from 'styled-components';
 
+const stepperColors = {
+  black: 'var(--color-black-90)',
+  white: 'var(--color-white)',
+  grey: 'var(--color-black-30)',
+};
+
 const theme: DefaultTheme = {
   colors: {
     brick: 'var(--color-brick)',
@@ -137,6 +143,15 @@ const theme: DefaultTheme = {
     l: '992px',
     xl: '1248px',
   },
+  stepper: {
+    '--hds-not-selected-step-label-color': stepperColors.black,
+    '--hds-step-background-color': stepperColors.white,
+    '--hds-step-content-color': stepperColors.black,
+    '--hds-stepper-background-color': stepperColors.white,
+    '--hds-stepper-color': stepperColors.black,
+    '--hds-stepper-disabled-color': stepperColors.grey,
+    '--hds-stepper-focus-border-color': stepperColors.black,
+  }
 };
 
 export default theme;
