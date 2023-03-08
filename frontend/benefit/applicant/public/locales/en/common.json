@@ -492,6 +492,13 @@
       "title": "Error occurred",
       "tooBig": "The attachemnt size is too big.",
       "fileType": "The attachment file type is not allowed."
+    },
+    "notFound": {
+      "title": "Sorry, the page you were looking for was not found.",
+      "text": "Error 404: Check that you have typed in the page address correctly. We may have deleted or moved the content."
+    },
+    "backend": {
+      "Request failed with status code 500": "System error. Please try again later."
     }
   },
   "upload": {

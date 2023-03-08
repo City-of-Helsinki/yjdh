@@ -67,16 +67,18 @@ const useFormActions = (application: Partial<Application>): FormActions => {
 
     if (error) {
       const errorData = camelcaseKeys(error.response?.data ?? {});
-
+      const isContentTypeHTML = typeof errorData === 'string';
       hdsToast({
         autoDismissTime: 0,
         type: 'error',
         labelText: t('common:error.generic.label'),
-        text: Object.entries(errorData).map(([key, value]) => (
-          <a key={key} href={`#${key}`}>
-            {value}
-          </a>
-        )),
+        text: isContentTypeHTML
+          ? t('common:error.generic.text')
+          : Object.entries(errorData).map(([key, value]) => (
+              <a key={key} href={`#${key}`}>
+                {value}
+              </a>
+            )),
       });
     }
   }, [

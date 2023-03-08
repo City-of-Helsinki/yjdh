@@ -17,6 +17,12 @@ export const getLanguageOptions = (
   return createOptions(Object.values(SUPPORTED_LANGUAGES));
 };
 
+export const translateBackendErrorMessage = (
+  t: TFunction,
+  error: Error
+): string =>
+  t(`common:error.backend.${error.message}`) || t('common:notifications.error.title');
+
 export const getApplicationStepFromString = (step: string): number => {
   try {
     return parseInt(step.split('_')[1], 10);

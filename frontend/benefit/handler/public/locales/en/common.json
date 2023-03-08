@@ -98,6 +98,10 @@
       "title": "Error occurred",
       "tooBig": "The attachemnt size is too big.",
       "fileType": "The attachment file type is not allowed."
+    },
+    "notFound": {
+      "title": "Pahoittelut, sivua ei löytynyt.",
+      "text": "Virhe 404: Hakemasi sivun osoite on voinut muuttua tai sivu on poistettu."
     }
   },
   "applications": {

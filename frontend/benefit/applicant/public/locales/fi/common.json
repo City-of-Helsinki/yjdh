@@ -80,8 +80,8 @@
         "deMinimisAidsNo": "Onko hakijalle myönnetty deminimis-tukea?",
         "notifications": {
           "companyInformation": {
-            "label": "Tiedot haettu Yritys- ja yhteisötietojärjestelmästä",
-            "content": "Organisaatiosi perustiedot on haettu Yritys- ja yhteisötietojärjestelmästä. Halutessasi voit vaihtaa tilalle toisen postiosoitteen, johon Helsinki-lisä-päätös toimitetaan."
+            "label": "Tiedot haetaan Yritys- ja yhteisötietojärjestelmästä",
+            "content": "Organisaatiosi perustiedot haetaan Yritys- ja yhteisötietojärjestelmästä. Halutessasi voit vaihtaa tilalle toisen postiosoitteen, johon Helsinki-lisä-päätös toimitetaan."
           },
           "deMinimisAidMaxAmount": {
             "label": "Enimmäismäärä ylitetty",
@@ -492,6 +492,13 @@
       "title": "Tapahtui virhe",
       "tooBig": "Liite on liian suuri.",
       "fileType": "Liite on väärässä muodossa."
+    },
+    "notFound": {
+      "title": "Pahoittelut, sivua ei löytynyt.",
+      "text": "Virhe 404: Hakemasi sivun osoite on voinut muuttua tai sivu on poistettu."
+    },
+    "backend": {
+      "Request failed with status code 500": "Virhe taustajärjestelmässä. Kokeile myöhemmin uudestaan."
     }
   },
   "upload": {
