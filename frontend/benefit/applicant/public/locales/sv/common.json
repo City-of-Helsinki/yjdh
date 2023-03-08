@@ -496,7 +496,9 @@
     "notFound": {
       "title": "Tyvärr hittas inte sidan du sökte.",
       "text": "Fel 404: Kontrollera att sidans adress är rätt skriven. Vi kan också ha tagit bort eller flyttat sidan."
-    }
+    },
+    "backend": {
+      "Request failed with status code 500": "Fel i systemet. Vänligen försök igen senare."
     }
   },
   "upload": {
