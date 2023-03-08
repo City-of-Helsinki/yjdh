@@ -20,6 +20,7 @@ import { useTheme } from 'styled-components';
 
 import { $CompanyInfoRow, $Notification } from './CompanyInfo.sc';
 import useCompanyInfo, { CompanyInfoFields } from './useCompanyInfo';
+import { translateBackendErrorMessage } from 'benefit/applicant/utils/common';
 
 export interface CompanyInfoProps {
   getErrorMessage: (fieldName: string) => string | undefined;
@@ -89,15 +90,20 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
           </$GridCell>
           <$GridCell $colSpan={6} $rowSpan={2}>
             <$Notification
-              label={t(
-                `${translationsBase}.notifications.companyInformation.label`
-              )}
+              label={
+                error?.message
+                  ? t('error.generic.label')
+                  : t(
+                      `${translationsBase}.notifications.companyInformation.label`
+                    )
+              }
               type={error ? 'error' : 'info'}
             >
-              {error?.message ||
-                t(
-                  `${translationsBase}.notifications.companyInformation.content`
-                )}
+              {error?.message && translateBackendErrorMessage(t, error)
+                ? translateBackendErrorMessage(t, error)
+                : t(
+                    `${translationsBase}.notifications.companyInformation.content`
+                  )}
             </$Notification>
           </$GridCell>
           <$GridCell $colSpan={6}>

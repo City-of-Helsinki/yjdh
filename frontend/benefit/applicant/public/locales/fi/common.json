@@ -496,7 +496,9 @@
     "notFound": {
       "title": "Pahoittelut, sivua ei löytynyt.",
       "text": "Virhe 404: Hakemasi sivun osoite on voinut muuttua tai sivu on poistettu."
-    }
+    },
+    "backend": {
+      "Request failed with status code 500": "Virhe taustajärjestelmässä. Kokeile myöhemmin uudestaan."
     }
   },
   "upload": {
