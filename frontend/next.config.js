@@ -58,6 +58,27 @@ if (NEXTJS_SENTRY_DEBUG) {
   );
 }
 
+console.warn(
+  `${pc.yellow(
+    'notice'
+  )}- ${process.env.SENTRY_AUTH_TOKEN})`
+);
+console.warn(
+  `${pc.yellow(
+    'notice'
+  )}- ${process.env.SENTRY_ORG})`
+);
+console.warn(
+  `${pc.yellow(
+    'notice'
+  )}- ${process.env.SENTRY_URL})`
+);
+console.warn(
+  `${pc.yellow(
+    'notice'
+  )}- ${process.env.SENTRY_PROJECT})`
+);
+
 const nextConfig = (override) => ({
   productionBrowserSourceMaps: !disableSourceMaps,
   poweredByHeader: false,
@@ -148,6 +169,9 @@ if (!NEXTJS_DISABLE_SENTRY) {
     // https://github.com/getsentry/sentry-webpack-plugin#options.
     // silent: isProd, // Suppresses all logs
     dryRun: NEXTJS_SENTRY_UPLOAD_DRY_RUN,
+    validate:true,
+    silent:false,
+    debug: true,
   });
 }
 else {
