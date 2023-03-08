@@ -8,6 +8,7 @@
     "loader-utils",         // next
     "moment",               // testcafe
     "jsonwebtoken",         // testcafe 
+    "http-cache-semantics", // testcafe
     "requestretry"          // slack-node
   ]
 }
