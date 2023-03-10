@@ -74,7 +74,8 @@ JINJA_TEMPLATES_COMPOSED = {
     },
     TEMPLATE_ID_COMPOSED_ACCEPTED_PRIVATE: {
         "path": BENEFIT_TEMPLATE_FILENAME,
-        "file_name": "Helsinki-lisä hyväksytyt päätökset koontiliite salassa pidettävä.pdf",
+        "file_name": "Liite 2 Helsinki-lisä hyväksytyt päätökset "
+        "koontiliite salassa pidettävä.pdf",
         "context": {
             "title": ACCEPTED_TITLE,
             "show_ahjo_rows": True,
@@ -85,7 +86,8 @@ JINJA_TEMPLATES_COMPOSED = {
     },
     TEMPLATE_ID_COMPOSED_DECLINED_PRIVATE: {
         "path": BENEFIT_TEMPLATE_FILENAME,
-        "file_name": "Helsinki-lisä kielteiset päätökset koontiliite salassa pidettävä.pdf",
+        "file_name": "Liite 2 Helsinki-lisä kielteiset päätökset "
+        "koontiliite salassa pidettävä.pdf",
         "context": {
             "title": REJECTED_TITLE,
             "show_ahjo_rows": False,
@@ -99,8 +101,7 @@ JINJA_TEMPLATES_COMPOSED = {
 JINJA_TEMPLATES_SINGLE = {
     TEMPLATE_ID_BENEFIT_WITH_DE_MINIMIS_AID: {
         "path": BENEFIT_TEMPLATE_FILENAME,
-        "file_name": "[{company_name}] Liite 2 hakijakohtainen de minimis "
-        "yritykset.pdf",
+        "file_name": "Liite {attachment_number} [{company_name}] hakemukset (de minimis).pdf",
         "context": {
             "title": ACCEPTED_TITLE,
             "show_ahjo_rows": True,
@@ -111,8 +112,7 @@ JINJA_TEMPLATES_SINGLE = {
     },
     TEMPLATE_ID_BENEFIT_WITHOUT_DE_MINIMIS_AID: {
         "path": BENEFIT_TEMPLATE_FILENAME,
-        "file_name": "[{company_name}] Liite 3 hakijakohtainen ei de"
-        "minimis yritykset.pdf",
+        "file_name": "Liite {attachment_number} [{company_name}] hakemukset.pdf",
         "context": {
             "title": ACCEPTED_TITLE,
             "show_ahjo_rows": True,
@@ -123,7 +123,8 @@ JINJA_TEMPLATES_SINGLE = {
     },
     TEMPLATE_ID_BENEFIT_DECLINED: {
         "path": BENEFIT_TEMPLATE_FILENAME,
-        "file_name": "[{company_name}] Työllisyydenhoidon Helsinki-lisä, kielteiset päätökset yrityksille.pdf",
+        "file_name": "Liite {attachment_number} [{company_name}] Työllisyydenhoidon Helsinki-lisä, "
+        "kielteiset päätökset.pdf",
         "context": {
             "title": REJECTED_TITLE,
             "show_ahjo_rows": False,
@@ -142,8 +143,64 @@ def _get_template(path):
     return env.get_template(path)
 
 
+def _get_granted_as_de_minimis_aid(app):
+    if app.calculation:
+        return app.calculation.granted_as_de_minimis_aid
+    return False
+
+
+def gather_accepted_files(accepted_apps, accepted_groups, attachment_number):
+    accepted_files: List[ExportFileInfo] = []
+    for app in accepted_apps:
+        accepted_groups[app.company].append(app)
+    for group, grouped_accepted_apps in accepted_groups.items():
+        apps_pay_as_de_minimis = list(
+            filter(
+                lambda app: _get_granted_as_de_minimis_aid(app),
+                grouped_accepted_apps,
+            )
+        )
+        apps_pay_as_default = list(
+            filter(
+                lambda app: not _get_granted_as_de_minimis_aid(app),
+                grouped_accepted_apps,
+            )
+        )
+
+        if apps_pay_as_default:
+            accepted_files.append(
+                generate_single_approved_file(
+                    group, apps_pay_as_default, attachment_number
+                )
+            )
+            attachment_number += 1
+        if apps_pay_as_de_minimis:
+            accepted_files.append(
+                generate_single_approved_file(
+                    group, apps_pay_as_de_minimis, attachment_number
+                )
+            )
+            attachment_number += 1
+    return accepted_files, attachment_number
+
+
+def gather_rejected_files(rejected_apps, rejected_groups, attachment_number):
+    rejected_files: List[ExportFileInfo] = []
+    for app in rejected_apps:
+        rejected_groups[app.company].append(app)
+    for group, grouped_rejected_apps in rejected_groups.items():
+        rejected_files.append(
+            generate_single_declined_file(
+                group, grouped_rejected_apps, attachment_number
+            )
+        )
+        attachment_number += 1
+    return rejected_files, attachment_number
+
+
 def prepare_pdf_files(apps: QuerySet[Application]) -> List[ExportFileInfo]:
     pdf_files: List[ExportFileInfo] = []
+
     # SINGLE COMPANY/ASSOCIATION PER DECISION PER FILE
     accepted_apps: List[Application] = [
         app for app in apps if app.status == ApplicationStatus.ACCEPTED
@@ -151,31 +208,48 @@ def prepare_pdf_files(apps: QuerySet[Application]) -> List[ExportFileInfo]:
     rejected_apps: List[Application] = [
         app for app in apps if app.status == ApplicationStatus.REJECTED
     ]
-    accepted_groups = defaultdict(list)
-    for app in accepted_apps:
-        accepted_groups[app.company].append(app)
-    for group, grouped_accepted_apps in accepted_groups.items():
-        pdf_files.append(generate_single_approved_file(group, grouped_accepted_apps))
-
-    declined_groups = defaultdict(list)
-    for app in rejected_apps:
-        declined_groups[app.company].append(app)
-    for group, grouped_rejected_apps in declined_groups.items():
-        pdf_files.append(generate_single_declined_file(group, grouped_rejected_apps))
 
     # COMPOSED FILES
-    pdf_files += generate_composed_files(accepted_apps, rejected_apps)
+    pdf_files += generate_composed_files(
+        accepted_apps,
+        rejected_apps,
+        1,
+    )
+
+    # Start with three as Liite 1 and 2 is fixed for public/secret record
+    attachment_number = 3
+
+    if accepted_apps:
+        app_files, attachment_number = gather_accepted_files(
+            accepted_apps, defaultdict(list), attachment_number
+        )
+        pdf_files += app_files
+    if rejected_apps:
+        app_files, attachment_number = gather_rejected_files(
+            rejected_apps, defaultdict(list), attachment_number
+        )
+        pdf_files += app_files
 
     return pdf_files
 
 
 def generate_pdf(
-    apps: List[Application], template_config: dict, company: Optional[Company] = None
+    apps: List[Application],
+    template_config: dict,
+    attachment_number: int,
+    company: Optional[Company] = None,
 ) -> ExportFileInfo:
     template = _get_template(template_config["path"])
     file_name: str = template_config["file_name"]
+
     if company:
-        file_name = file_name.format(company_name=company.name)
+        file_name = file_name.format(
+            company_name=company.name, attachment_number=attachment_number
+        )
+    else:
+        file_name = file_name.format(
+            company_name="", attachment_number=attachment_number
+        )
     html: str = template.render({**template_config["context"], "apps": apps})
     return ExportFileInfo(
         filename=file_name,
@@ -185,36 +259,52 @@ def generate_pdf(
 
 
 def generate_single_declined_file(
-    company: Company, apps: List[Application]
+    company: Company, apps: List[Application], attachment_number: int
 ) -> ExportFileInfo:
     return generate_pdf(
-        apps, JINJA_TEMPLATES_SINGLE[TEMPLATE_ID_BENEFIT_DECLINED], company
+        apps=apps,
+        template_config=JINJA_TEMPLATES_SINGLE[TEMPLATE_ID_BENEFIT_DECLINED],
+        company=company,
+        attachment_number=attachment_number,
     )
 
 
 def generate_single_approved_file(
-    company: Company, apps: List[Application]
+    company: Company, apps: List[Application], attachment_number: int
 ) -> ExportFileInfo:
     return generate_pdf(
         apps=apps,
         template_config=JINJA_TEMPLATES_SINGLE[
             TEMPLATE_ID_BENEFIT_WITH_DE_MINIMIS_AID
-            if any(app.de_minimis_aid for app in apps)
+            if any(filter(_get_granted_as_de_minimis_aid, apps))
             else TEMPLATE_ID_BENEFIT_WITHOUT_DE_MINIMIS_AID
         ],
         company=company,
+        attachment_number=attachment_number,
     )
 
 
 def generate_composed_files(
-    accepted_apps: List[Application], rejected_apps: List[Application]
+    accepted_apps: List[Application],
+    rejected_apps: List[Application],
+    attachment_number: int,
 ) -> List[ExportFileInfo]:
     return [
-        generate_pdf(accepted_apps, JINJA_TEMPLATES_COMPOSED[template_id])
+        generate_pdf(
+            apps=accepted_apps,
+            template_config=JINJA_TEMPLATES_COMPOSED[template_id],
+            company=None,
+            attachment_number=attachment_number,
+        )
         for template_id in COMPOSED_ACCEPTED_TEMPLATE_IDS
         if accepted_apps
     ] + [
-        generate_pdf(rejected_apps, JINJA_TEMPLATES_COMPOSED[template_id])
+        generate_pdf(
+            apps=rejected_apps,
+            template_config=JINJA_TEMPLATES_COMPOSED[template_id],
+            company=None,
+            attachment_number=attachment_number,
+        )
         for template_id in COMPOSED_DECLINED_TEMPLATE_IDS
         if rejected_apps
     ]
@@ -231,10 +321,12 @@ def generate_zip(files: List[ExportFileInfo]) -> bytes:
 
 
 def export_application_batch(batch) -> bytes:
-    pdf_files: List[ExportFileInfo] = prepare_pdf_files(
+    apps = (
         batch.applications.select_related("company")
         .select_related("employee")
         .order_by("application_number")
         .all()
     )
+
+    pdf_files: List[ExportFileInfo] = prepare_pdf_files(apps)
     return generate_zip(pdf_files)
