@@ -77,7 +77,7 @@
         "deMinimisAidsHeading": "List here all forms of de minimis aid received by the organisation during the current year and the previous two tax years",
         "deMinimisAidsAdd": "Add",
         "deMinimisAidsRemove": "Delete",
-        "deMinimisAidsNo": "Has the applicant been granted a deminimis-aid?",
+        "deMinimisAidsNo": "The applicant has not listed any previous de minimis aids.",
         "notifications": {
           "companyInformation": {
             "label": "Data retrieved from the Business Information System",

@@ -9,7 +9,6 @@ import {
   $SummaryTableHeader,
   $SummaryTableValue,
   $ViewField,
-  $ViewFieldBold,
 } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
@@ -79,8 +78,7 @@ const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
       ) : (
         <$GridCell $colSpan={12}>
           <$ViewField>
-            {t(`${translationsBase}.fields.deMinimisAidsNo`)}{' '}
-            <$ViewFieldBold>{t('common:utility.no')}</$ViewFieldBold>
+            {t(`${translationsBase}.fields.deMinimisAidsNo`)}
           </$ViewField>
         </$GridCell>
       )}

@@ -77,7 +77,7 @@
         "deMinimisAidsHeading": "Lista här samtliga de minimis-stöd som beviljats organisationen under det innevarande året eller under de två föregående skatteåren",
         "deMinimisAidsAdd": "Lägg till",
         "deMinimisAidsRemove": "Ta bort",
-        "deMinimisAidsNo": "Har den sökande beviljats ​​ett deminimis-bidrag?",
+        "deMinimisAidsNo": "Sökanden har inte angett några tidigare de minimis -stöd.",
         "notifications": {
           "companyInformation": {
             "label": "Uppgifterna har hämtats från Företags- och organisationsdatasystemet",
