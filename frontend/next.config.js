@@ -61,22 +61,28 @@ if (NEXTJS_SENTRY_DEBUG) {
 console.warn(
   `${pc.yellow(
     'notice'
-  )}- ${process.env.SENTRY_AUTH_TOKEN})`
+  )}-TOKEN ${process.env.SENTRY_AUTH_TOKEN}`
 );
 console.warn(
   `${pc.yellow(
     'notice'
-  )}- ${process.env.SENTRY_ORG})`
+  )}-ORG ${process.env.SENTRY_ORG}`
 );
 console.warn(
   `${pc.yellow(
     'notice'
-  )}- ${process.env.SENTRY_URL})`
+  )}-URL ${process.env.SENTRY_URL}`
 );
 console.warn(
   `${pc.yellow(
     'notice'
-  )}- ${process.env.SENTRY_PROJECT})`
+  )}-PROJECT ${process.env.SENTRY_PROJECT}`
+);
+
+console.warn(
+  `${pc.yellow(
+    'notice'
+  )}-RELEASE: ${process.env.SENTRY_RELEASE}`
 );
 
 const nextConfig = (override) => ({
