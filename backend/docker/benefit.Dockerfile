@@ -3,18 +3,20 @@ FROM helsinkitest/python:3.9-slim as appbase
 # ==============================
 RUN mkdir /entrypoint
 
+ARG SENTRY_RELEASE
+ENV SENTRY_RELEASE=$SENTRY_RELEASE
 COPY --chown=appuser:appuser benefit/requirements.txt /app/requirements.txt
 COPY --chown=appuser:appuser benefit/requirements-prod.txt /app/requirements-prod.txt
 COPY --chown=appuser:appuser benefit/.prod/escape_json.c /app/.prod/escape_json.c
 COPY --chown=appuser:appuser shared /shared/
 
 RUN apt-install.sh \
-        git \
-        netcat \
-        libpq-dev \
-        build-essential \
-        wkhtmltopdf \
-        gettext \
+    git \
+    netcat \
+    libpq-dev \
+    build-essential \
+    wkhtmltopdf \
+    gettext \
     && pip install -U pip \
     && pip install --no-cache-dir -r /app/requirements.txt \
     && pip install --no-cache-dir  -r /app/requirements-prod.txt \
@@ -32,7 +34,7 @@ FROM appbase as development
 
 COPY --chown=appuser:appuser benefit/requirements-dev.txt /app/requirements-dev.txt
 RUN apt-install.sh \
-        build-essential \
+    build-essential \
     && pip install --no-cache-dir -r /app/requirements-dev.txt \
     && apt-cleanup.sh build-essential
 
@@ -50,8 +52,6 @@ EXPOSE 8000/tcp
 # ==============================
 FROM appbase as production
 # ==============================
-
-ARG SENTRY_RELEASE
 
 RUN SECRET_KEY="only-used-for-collectstatic" python manage.py collectstatic
 
