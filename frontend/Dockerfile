@@ -122,6 +122,8 @@ RUN yarn install --production --check-files --ignore-scripts --prefer-offline &&
 # Copy files needed by nextjs
 COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/.next $PROJECT/$FOLDER/.next
 COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/next-i18next.config.js app/$PROJECT/$FOLDER/next.config.js $PROJECT/$FOLDER/
+COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/sentry.client.config.js app/$PROJECT/$FOLDER/sentry.client.config.js $PROJECT/$FOLDER/
+COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/sentry.server.config.js app/$PROJECT/$FOLDER/sentry.server.config.js $PROJECT/$FOLDER/
 COPY --from=staticbuilder --chown=appuser:appuser app/next.config.js ./
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-server.js shared/src/server/
 

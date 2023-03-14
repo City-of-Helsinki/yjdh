@@ -40,6 +40,8 @@
 !kesaseteli/shared/tsconfig.json
 
 !benefit/applicant/next.config.js
+!benefit/applicant/sentry.client.config.js
+!benefit/applicant/sentry.server.config.js
 !benefit/applicant/next-i18next.config.js
 !benefit/applicant/package.json
 !benefit/applicant/public
