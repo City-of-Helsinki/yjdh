@@ -151,6 +151,8 @@ if (!NEXTJS_DISABLE_SENTRY) {
     validate:true,
     silent:false,
     debug: true,
+    include: '.',
+    ignore: ['node_modules'],
   });
 }
 else {
