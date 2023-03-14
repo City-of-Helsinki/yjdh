@@ -51,6 +51,8 @@ EXPOSE 8000/tcp
 FROM appbase as production
 # ==============================
 
+ARG SENTRY_RELEASE
+
 RUN SECRET_KEY="only-used-for-collectstatic" python manage.py collectstatic
 
 USER appuser

@@ -40,6 +40,7 @@ env = environ.Env(
     SENTRY_ATTACH_STACKTRACE=(bool, False),
     SENTRY_MAX_BREADCRUMBS=(int, 0),
     SENTRY_REQUEST_BODIES=(str, "never"),
+    SENTRY_RELEASE=(str, ""),
     SENTRY_SEND_DEFAULT_PII=(bool, False),
     SENTRY_WITH_LOCALS=(bool, False),
     CORS_ALLOWED_ORIGINS=(list, []),
@@ -178,7 +179,7 @@ sentry_sdk.init(
     send_default_pii=env.bool("SENTRY_SEND_DEFAULT_PII"),
     with_locals=env.bool("SENTRY_WITH_LOCALS"),
     dsn=env.str("SENTRY_DSN"),
-    release="n/a",
+    release=env.str("SENTRY_RELEASE"),
     environment=env.str("SENTRY_ENVIRONMENT"),
     integrations=[DjangoIntegration()],
 )
