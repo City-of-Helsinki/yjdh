@@ -4,7 +4,6 @@ FROM helsinkitest/python:3.9-slim as appbase
 RUN mkdir /entrypoint
 
 ARG SENTRY_RELEASE
-ENV SENTRY_RELEASE=$SENTRY_RELEASE
 COPY --chown=appuser:appuser benefit/requirements.txt /app/requirements.txt
 COPY --chown=appuser:appuser benefit/requirements-prod.txt /app/requirements-prod.txt
 COPY --chown=appuser:appuser benefit/.prod/escape_json.c /app/.prod/escape_json.c
@@ -52,7 +51,8 @@ EXPOSE 8000/tcp
 # ==============================
 FROM appbase as production
 # ==============================
-
+ARG SENTRY_RELEASE
+ENV SENTRY_RELEASE=$SENTRY_RELEASE
 RUN SECRET_KEY="only-used-for-collectstatic" python manage.py collectstatic
 
 USER appuser
