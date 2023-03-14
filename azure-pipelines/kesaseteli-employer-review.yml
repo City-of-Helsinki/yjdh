@@ -41,10 +41,10 @@ resources:
   - repository: yjdh-kesaseteli-pipelines
     type: git
     # Azure DevOps project/repository
-    name: yjdh/yjdh-kesaseteli-pipelines
+    name: yjdh-kesaseteli/yjdh-kesaseteli-pipelines
 
 extends:
   # Filename in Azure DevOps Repository (note possible -ui or -api)
   # Django example: azure-pipelines-PROJECTNAME-api-release.yml
   # Drupal example: azure-pipelines-drupal-release.yml
-  template: azure-pipelines-kesaseteli-employer-review.yml@kesaseteli-pipelines
+  template: azure-pipelines-kesaseteli-employer-review.yml@yjdh-kesaseteli-pipelines
