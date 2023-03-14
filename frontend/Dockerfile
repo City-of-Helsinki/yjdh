@@ -102,6 +102,8 @@ FROM helsinkitest/node:14-slim AS production
 ARG PORT
 ARG PROJECT
 ARG FOLDER
+ARG SENTRY_RELEASE
+
 
 # Use non-root user
 USER appuser
