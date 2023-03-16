@@ -151,7 +151,14 @@ if (!NEXTJS_DISABLE_SENTRY) {
     validate:true,
     silent:false,
     debug: true,
-    include: '.',
+    include: [
+      {
+        paths: ['./_next/static/chunks'],
+      },
+      {
+        paths: ['.'],
+      },
+    ],
     ignore: ['node_modules'],
   });
 }
