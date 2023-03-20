@@ -121,6 +121,8 @@ COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/.next $PR
 COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/next-i18next.config.js app/$PROJECT/$FOLDER/next.config.js $PROJECT/$FOLDER/
 COPY --from=staticbuilder --chown=appuser:appuser app/next.config.js ./
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-server.js shared/src/server/
+COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/shared/sentry.client.config.js $PROJECT/$FOLDER/
+COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/shared/sentry.server.config.js $PROJECT/$FOLDER/
 
 # Copy public directory
 COPY --chown=appuser:appuser $PROJECT/$FOLDER/public $PROJECT/$FOLDER/public
