@@ -28,6 +28,8 @@ COPY --chown=appuser:appuser $PROJECT/shared/package.json* $PROJECT/shared/packa
 COPY --chown=appuser:appuser shared/package.json shared/package.json
 
 RUN yarn --frozen-lockfile --check-files --network-timeout 600000 && yarn cache clean --force
+COPY --chown=appuser:appuser shared/sentry.client.config.js $PROJECT/$FOLDER/sentry.client.config.js
+COPY --chown=appuser:appuser shared/sentry.server.config.js $PROJECT/$FOLDER/sentry.server.config.js
 
 # Copy all files
 COPY --chown=appuser:appuser . .
@@ -127,8 +129,6 @@ COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/.next $PR
 COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/next-i18next.config.js app/$PROJECT/$FOLDER/next.config.js $PROJECT/$FOLDER/
 COPY --from=staticbuilder --chown=appuser:appuser app/next.config.js ./
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-server.js shared/src/server/
-COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/shared/sentry.client.config.js $PROJECT/$FOLDER/
-COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/shared/sentry.server.config.js $PROJECT/$FOLDER/
 
 # Copy public directory
 COPY --chown=appuser:appuser $PROJECT/$FOLDER/public $PROJECT/$FOLDER/public
