@@ -9,16 +9,20 @@ Project is automatically deployed to testing environment when pushing to develop
 
 ## Requirements
 
-- Node 14.x
+- Node 16.x
 - Lerna  
 - Yarn
 - Git
 - Docker
 
-### install node with nvm
+### Install NodeJS
 
-    nvm install 14 --lts
-
+    # Use node manager (n or nvm, for example)
+    n 16
+    nvm install 16 --lts
+    # Alternative methods
+    https://nodejs.org/dist/
+    https://nodejs.org/en/download/package-manager
 
 ## Available Scripts
 
