@@ -126,7 +126,7 @@ const ApplicationsArchive: React.FC = () => {
       {!shouldHideList ? (
         <Table data={list} columns={columns} />
       ) : (
-        <$Empty>{t(`${translationsBase}.messages.empty`)}</$Empty>
+        <$Empty>{t(`${translationsBase}.messages.empty.archive`)}</$Empty>
       )}
     </Container>
   );

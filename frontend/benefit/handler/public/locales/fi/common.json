@@ -130,7 +130,8 @@
       "messages": {
         "empty": {
           "received": "Ei yhtään saapunutta hakemusta",
-          "handling": "Ei yhtään käsittelyssä olevaa hakemusta"
+          "handling": "Ei yhtään käsittelyssä olevaa hakemusta",
+          "archive": "Ei yhtään arkistoitua hakemusta"
         }
       },
       "headings": {
