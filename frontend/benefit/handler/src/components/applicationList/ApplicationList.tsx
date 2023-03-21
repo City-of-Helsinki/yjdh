@@ -9,7 +9,7 @@ import { $Link } from 'shared/components/table/Table.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
-import { $CellContent, $Empty, $Heading } from './ApplicationList.sc';
+import { $CellContent, $EmptyHeading, $Heading } from './ApplicationList.sc';
 import { useApplicationList } from './useApplicationList';
 
 type ColumnType = Column<ApplicationListItemData>;
@@ -160,7 +160,11 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       {!shouldHideList ? (
         <Table data={list} columns={columns} />
       ) : (
-        <$Empty>{t(`${translationsBase}.messages.empty`)}</$Empty>
+        <$EmptyHeading>
+          {status.includes(APPLICATION_STATUSES.HANDLING)
+            ? t(`${translationsBase}.messages.empty.handling`)
+            : t(`${translationsBase}.messages.empty.received`)}
+        </$EmptyHeading>
       )}
     </Container>
   );
