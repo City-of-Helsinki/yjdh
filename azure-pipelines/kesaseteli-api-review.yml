@@ -36,6 +36,7 @@ resources:
   # Azure DevOps repository
   - repository: yjdh-kesaseteli-pipelines
     type: git
+    ref: refs/heads/review-environments
     # Azure DevOps project/repository
     name: yjdh/yjdh-kesaseteli-pipelines
 
