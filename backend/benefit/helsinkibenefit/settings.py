@@ -81,10 +81,13 @@ env = environ.Env(
     OIDC_RP_CLIENT_SECRET=(str, ""),
     OIDC_OP_BASE_URL=(str, ""),
     OIDC_SAVE_PERSONALLY_IDENTIFIABLE_INFO=(bool, True),
+    OIDC_OP_LOGOUT_CALLBACK_URL=(str, "/"),
+    TUNNISTAMO_API_TOKENS_ENDPOINT=(str, ""),
+    HELSINKI_PROFILE_SCOPE=(str, "https://api.hel.fi/auth/helsinkiprofile"),
+    HELSINKI_PROFILE_API_URL=(str, "https://api.hel.fi/profiili/graphql/"),
     LOGIN_REDIRECT_URL=(str, "/"),
     LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
     LOGOUT_REDIRECT_URL=(str, "/"),
-    OIDC_OP_LOGOUT_CALLBACK_URL=(str, "/"),
     ADFS_LOGIN_REDIRECT_URL=(str, "/"),
     ADFS_LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
     EAUTHORIZATIONS_BASE_URL=(str, "https://asiointivaltuustarkastus.test.suomi.fi"),
@@ -367,10 +370,14 @@ OIDC_API_TOKEN_AUTH = {
     "USER_RESOLVER": "users.api.v1.authentications.resolve_user",
 }
 
+TUNNISTAMO_API_TOKENS_ENDPOINT = env.str("TUNNISTAMO_API_TOKENS_ENDPOINT")
+HELSINKI_PROFILE_SCOPE = env.str("HELSINKI_PROFILE_SCOPE")
+HELSINKI_PROFILE_API_URL = env.str("HELSINKI_PROFILE_API_URL")
+
+OIDC_RP_SCOPES = f"openid profile {HELSINKI_PROFILE_SCOPE}"
 OIDC_AUTH = {"OIDC_LEEWAY": env.int("OIDC_LEEWAY")}
 
 OIDC_RP_SIGN_ALGO = "RS256"
-OIDC_RP_SCOPES = "openid profile"
 
 OIDC_RP_CLIENT_ID = env.str("OIDC_RP_CLIENT_ID")
 OIDC_RP_CLIENT_SECRET = env.str("OIDC_RP_CLIENT_SECRET")
