@@ -48,7 +48,7 @@ env = environ.Env(
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
     CSRF_TRUSTED_ORIGINS=(list, ["localhost:3000", "localhost:3100"]),
     CSRF_COOKIE_NAME=(str, "yjdhcsrftoken"),
-    YTJ_BASE_URL=(str, "http://avoindata.prh.fi/opendata/tr/v1"),
+    YTJ_BASE_URL=(str, "https://avoindata.prh.fi"),
     YTJ_TIMEOUT=(int, 30),
     # Source: YTJ-rajapinnan koodiston kuvaus, available at https://liityntakatalogi.suomi.fi/dataset/xroadytj-services
     # file: suomi_fi_palveluvayla_ytj_rajapinta_koodistot_v1_4.xlsx
@@ -137,20 +137,23 @@ env = environ.Env(
     ENABLE_DEBUG_ENV=(bool, False),
     TALPA_ROBOT_AUTH_CREDENTIAL=(str, "username:password"),
     DISABLE_TOS_APPROVAL_CHECK=(bool, False),
-    YRTTI_BASIC_INFO_PATH=(
+    YRTTI_BASE_URL=(
         str,
-        "https://yrtti-integration-test.agw.arodevtest.hel.fi/api/BasicInfo",
+        "https://yrtti-integration-test.agw.arodevtest.hel.fi/api",
     ),
     YRTTI_AUTH_USERNAME=(str, "sample_username"),
     YRTTI_AUTH_PASSWORD=(str, "sample_password"),
     YRTTI_TIMEOUT=(int, 30),
-    SERVICE_BUS_INFO_PATH=(
+    YRTTI_SEARCH_LIMIT=(int, 10),
+    YRTTI_DISABLE=(bool, False),
+    SERVICE_BUS_BASE_URL=(
         str,
-        "https://ytj-integration-test.agw.arodevtest.hel.fi/api/GetCompany",
+        "https://ytj-integration-test.agw.arodevtest.hel.fi/api",
     ),
     SERVICE_BUS_AUTH_USERNAME=(str, "sample_username"),
     SERVICE_BUS_AUTH_PASSWORD=(str, "sample_password"),
     SERVICE_BUS_TIMEOUT=(int, 30),
+    SERVICE_BUS_SEARCH_LIMIT=(int, 10),
     GDPR_API_QUERY_SCOPE=(str, "helsinkibenefit.gdprquery"),
     GDPR_API_DELETE_SCOPE=(str, "helsinkibenefit.gdprdelete"),
     USE_S3=(bool, False),
@@ -460,14 +463,17 @@ WKHTMLTOPDF_BIN = env("WKHTMLTOPDF_BIN")
 TALPA_ROBOT_AUTH_CREDENTIAL = env("TALPA_ROBOT_AUTH_CREDENTIAL")
 
 YRTTI_TIMEOUT = env("YRTTI_TIMEOUT")
-YRTTI_BASIC_INFO_PATH = env("YRTTI_BASIC_INFO_PATH")
+YRTTI_BASE_URL = env("YRTTI_BASE_URL")
 YRTTI_AUTH_USERNAME = env("YRTTI_AUTH_USERNAME")
 YRTTI_AUTH_PASSWORD = env("YRTTI_AUTH_PASSWORD")
+YRTTI_SEARCH_LIMIT = env("YRTTI_SEARCH_LIMIT")
+YRTTI_DISABLE = env("YRTTI_DISABLE")
 
 SERVICE_BUS_TIMEOUT = env("SERVICE_BUS_TIMEOUT")
-SERVICE_BUS_INFO_PATH = env("SERVICE_BUS_INFO_PATH")
+SERVICE_BUS_BASE_URL = env("SERVICE_BUS_BASE_URL")
 SERVICE_BUS_AUTH_USERNAME = env("SERVICE_BUS_AUTH_USERNAME")
 SERVICE_BUS_AUTH_PASSWORD = env("SERVICE_BUS_AUTH_PASSWORD")
+SERVICE_BUS_SEARCH_LIMIT = env("SERVICE_BUS_SEARCH_LIMIT")
 
 HANDLERS_GROUP_NAME = "Application handlers"
 

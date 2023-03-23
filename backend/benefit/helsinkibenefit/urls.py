@@ -14,7 +14,11 @@ from rest_framework_nested import routers
 from applications.api.v1 import application_batch_views, views as application_views
 from calculator.api.v1 import views as calculator_views
 from common.debug_util import debug_env
-from companies.api.v1.views import GetCompanyView
+from companies.api.v1.views import (
+    GetOrganisationByIdView,
+    GetUsersOrganizationView,
+    SearchOrganisationsView,
+)
 from messages.views import (
     ApplicantMessageViewSet,
     HandlerMessageViewSet,
@@ -61,7 +65,9 @@ urlpatterns = [
     path("v1/", include(applicant_app_router.urls)),
     path("v1/", include(handler_app_router.urls)),
     path("v1/terms/approve_terms_of_service/", ApproveTermsOfServiceView.as_view()),
-    path("v1/company/", GetCompanyView.as_view()),
+    path("v1/company/", GetUsersOrganizationView.as_view()),
+    path("v1/company/search/<str:name>/", SearchOrganisationsView.as_view()),
+    path("v1/company/get/<str:business_id>/", GetOrganisationByIdView.as_view()),
     path("v1/users/me/", CurrentUserView.as_view()),
     path("oidc/", include("shared.oidc.urls")),
     path("oauth2/", include("shared.azure_adfs.urls")),

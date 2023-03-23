@@ -97,7 +97,9 @@ class AttachmentType(models.TextChoices):
         "education contract of the apprenticeship office"
     )
     HELSINKI_BENEFIT_VOUCHER = "helsinki_benefit_voucher", _("helsinki benefit voucher")
-    EMPLOYEE_CONSENT = "employee_consent", _("helsinki benefit voucher")
+    EMPLOYEE_CONSENT = "employee_consent", _("employee consent")
+    FULL_APPLICATION = "full_application", _("full application")
+    OTHER_ATTACHMENT = "other_attachment", _("other attachment")
 
 
 class AttachmentRequirement(models.TextChoices):
@@ -126,3 +128,8 @@ class AhjoDecision(models.TextChoices):
     # The possible decisions for Ahjo processing
     DECIDED_ACCEPTED = ApplicationBatchStatus.DECIDED_ACCEPTED
     DECIDED_REJECTED = ApplicationBatchStatus.DECIDED_REJECTED
+
+
+class ApplicationOrigin(models.TextChoices):
+    HANDLER = "handler", _("Handler")
+    APPLICANT = "applicant", _("Applicant")

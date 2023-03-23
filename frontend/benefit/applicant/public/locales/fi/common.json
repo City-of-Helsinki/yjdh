@@ -432,7 +432,7 @@
         "min": "Arvon tulee olla vähintään {{min}}"
       },
       "phoneNumber": {
-        "max": "Arvon enimmäispituus on {{max}}"
+        "max": "Kentän maksimipituus on {{max}}"
       },
       "string": {
         "max": "Tämä kenttä voi olla korkeintaan {{max}} merkkiä pitkä",

@@ -126,6 +126,8 @@ export enum ATTACHMENT_TYPES {
   EDUCATION_CONTRACT = 'education_contract',
   HELSINKI_BENEFIT_VOUCHER = 'helsinki_benefit_voucher',
   EMPLOYEE_CONSENT = 'employee_consent',
+  FULL_APPLICATION = 'full_application',
+  OTHER_ATTACHMENT = 'other_attachment',
 }
 
 export enum APPLICATION_STATUSES {
@@ -137,6 +139,11 @@ export enum APPLICATION_STATUSES {
   REJECTED = 'rejected',
   CANCELLED = 'cancelled',
   HANDLING = 'handling',
+}
+
+export enum APPLICATION_ORIGINS {
+  APPLICANT = 'applicant',
+  HANDLER = 'handler',
 }
 
 export enum BATCH_STATUSES {

@@ -13,6 +13,7 @@ from simple_history.models import HistoricalRecords
 from applications.enums import (
     AhjoDecision,
     ApplicationBatchStatus,
+    ApplicationOrigin,
     ApplicationStatus,
     ApplicationStep,
     AttachmentType,
@@ -136,6 +137,13 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
         verbose_name=_("status"),
         choices=ApplicationStatus.choices,
         default=ApplicationStatus.DRAFT,
+    )
+
+    application_origin = models.CharField(
+        max_length=64,
+        verbose_name=_("application origin"),
+        choices=ApplicationOrigin.choices,
+        default=ApplicationOrigin.APPLICANT,
     )
 
     application_number = models.IntegerField(

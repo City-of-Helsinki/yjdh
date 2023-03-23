@@ -1,3 +1,4 @@
+import { PROPOSALS_FOR_DECISION } from 'benefit-shared/constants';
 import { Language } from 'shared/i18n/i18n';
 import { BenefitAttachment } from 'shared/types/attachment';
 import { DefaultTheme } from 'styled-components';
@@ -5,6 +6,7 @@ import { DefaultTheme } from 'styled-components';
 import {
   APPLICATION_FIELDS_STEP1_KEYS,
   APPLICATION_FIELDS_STEP2_KEYS,
+  APPLICATION_ORIGINS,
   APPLICATION_STATUSES,
   ATTACHMENT_TYPES,
   BATCH_STATUSES,
@@ -15,7 +17,7 @@ import {
   MESSAGE_TYPES,
   ORGANIZATION_TYPES,
   PAY_SUBSIDY_OPTIONS,
-  PROPOSALS_FOR_DECISION,
+  PROPOSALS_FOR_DESISION,
 } from '../constants';
 
 // handler
@@ -382,6 +384,7 @@ export type ApplicationData = {
   batch?: BatchData;
   latest_decision_comment?: string;
   unread_messages_count?: number;
+  application_origin?: APPLICATION_ORIGINS;
 };
 
 export type EmployeeData = {
@@ -444,7 +447,7 @@ export type Company = {
   streetAddress: string;
   postcode: string;
   city: string;
-  bankAccountNumber: string;
+  bankAccountNumber?: string;
   organizationType: ORGANIZATION_TYPES;
 };
 
@@ -472,6 +475,7 @@ export type ApplicationListItemData = {
   dataReceived?: string;
   unreadMessagesCount?: number;
   batch?: BatchData | string;
+  applicationOrigin?: APPLICATION_ORIGINS;
 };
 
 export type TextProp = 'textFi' | 'textEn' | 'textSv';

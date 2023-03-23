@@ -305,7 +305,7 @@ def test_application_single_read_as_applicant(
 @pytest.mark.parametrize(
     "status, expected_result",
     [
-        (ApplicationStatus.DRAFT, 404),
+        (ApplicationStatus.DRAFT, 200),
         (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, 200),
         (ApplicationStatus.RECEIVED, 200),
         (ApplicationStatus.HANDLING, 200),
@@ -1173,7 +1173,7 @@ def test_application_status_change_as_applicant(
 @pytest.mark.parametrize(
     "from_status,to_status,expected_code",
     [
-        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 404),
+        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 200),
         (ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING, 200),
         (
             ApplicationStatus.HANDLING,
@@ -1701,7 +1701,7 @@ def test_pdf_attachment_upload_and_download_as_applicant(
 @pytest.mark.parametrize(
     "status,upload_result",
     [
-        (ApplicationStatus.DRAFT, 404),
+        (ApplicationStatus.DRAFT, 201),
         (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, 201),
         (ApplicationStatus.HANDLING, 201),
         (ApplicationStatus.ACCEPTED, 403),

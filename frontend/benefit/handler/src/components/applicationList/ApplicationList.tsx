@@ -1,9 +1,14 @@
-import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import { allApplicationStatuses } from 'benefit/handler/pages';
+import {
+  APPLICATION_ORIGINS,
+  APPLICATION_STATUSES,
+} from 'benefit-shared/constants';
 import {
   IconSpeechbubbleText,
   LoadingSpinner,
   StatusLabel,
   Table,
+  Tag,
 } from 'hds-react';
 import * as React from 'react';
 import { $Link } from 'shared/components/table/Table.sc';
@@ -17,6 +22,16 @@ export interface ApplicationListProps {
   heading: string;
   status: APPLICATION_STATUSES[];
 }
+
+const buildApplicationUrl = (
+  id: string,
+  status: APPLICATION_STATUSES
+): string => {
+  if (status === APPLICATION_STATUSES.DRAFT) {
+    return `/new-application?id=${String(id)}`;
+  }
+  return `/application?id=${String(id)}`;
+};
 
 const ApplicationList: React.FC<ApplicationListProps> = ({
   heading,
@@ -39,13 +54,20 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     unreadMessagesCount?: number;
     additionalInformationNeededBy?: string | Date;
     status?: APPLICATION_STATUSES;
+    applicationOrigin?: APPLICATION_ORIGINS;
   }
+
+  const isAllStatuses: boolean = status === allApplicationStatuses;
 
   const columns = React.useMemo(() => {
     const cols = [
       {
-        transform: ({ id, companyName }: TableTransforms) => (
-          <$Link href={`/application?id=${String(id)}`}>
+        transform: ({
+          id,
+          companyName,
+          status: applicationStatus,
+        }: TableTransforms) => (
+          <$Link href={buildApplicationUrl(id, applicationStatus)}>
             {String(companyName)}
           </$Link>
         ),
@@ -56,11 +78,6 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       {
         headerName: getHeader('companyId'),
         key: 'companyId',
-        isSortable: true,
-      },
-      {
-        headerName: getHeader('submittedAt'),
-        key: 'submittedAt',
         isSortable: true,
       },
       {
@@ -75,7 +92,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       },
     ];
 
-    if (status.includes(APPLICATION_STATUSES.HANDLING)) {
+    if (status.includes(APPLICATION_STATUSES.HANDLING) && !isAllStatuses) {
       cols.push({
         headerName: getHeader('handlerName'),
         key: 'handlerName',
@@ -83,7 +100,49 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       });
     }
 
-    if (status.includes(APPLICATION_STATUSES.INFO_REQUIRED)) {
+    if (!status.includes(APPLICATION_STATUSES.DRAFT) || isAllStatuses) {
+      cols.push({
+        headerName: getHeader('submittedAt'),
+        key: 'submittedAt',
+        isSortable: true,
+      });
+    }
+
+    if (isAllStatuses) {
+      cols.push({
+        transform: ({ status: applicationStatus }: TableTransforms) => (
+          <div>
+            <Tag>
+              {t(
+                `common:applications.list.columns.applicationStatuses.${applicationStatus}`
+              )}
+            </Tag>
+          </div>
+        ),
+        headerName: getHeader('applicationStatus'),
+        key: 'status',
+        isSortable: true,
+      });
+    }
+
+    if (status.includes(APPLICATION_STATUSES.RECEIVED) && !isAllStatuses) {
+      cols.push({
+        transform: ({ applicationOrigin }: TableTransforms) => (
+          <div>
+            <Tag>
+              {t(
+                `common:applications.list.columns.applicationOrigins.${applicationOrigin}`
+              )}
+            </Tag>
+          </div>
+        ),
+        headerName: getHeader('origin'),
+        key: 'applicationOrigin',
+        isSortable: true,
+      });
+    }
+
+    if (status.includes(APPLICATION_STATUSES.INFO_REQUIRED) && !isAllStatuses) {
       cols.push({
         transform: ({
           additionalInformationNeededBy,
@@ -122,7 +181,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     });
 
     return cols.filter(Boolean);
-  }, [t, getHeader, status, theme]);
+  }, [t, getHeader, status, theme, isAllStatuses]);
 
   if (shouldShowSkeleton) {
     return (
@@ -133,7 +192,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     );
   }
 
-  const statusAsString = status.join(',');
+  const statusAsString = isAllStatuses ? 'all' : status.join(',');
   return (
     <div data-testid={`application-list-${statusAsString}`}>
       {!shouldHideList ? (

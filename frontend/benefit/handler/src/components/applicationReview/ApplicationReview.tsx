@@ -1,6 +1,10 @@
 import ApplicationHeader from 'benefit/handler/components/applicationHeader/ApplicationHeader';
 import { HANDLED_STATUSES } from 'benefit/handler/constants';
-import { APPLICATION_STATUSES, BENEFIT_TYPES } from 'benefit-shared/constants';
+import {
+  APPLICATION_ORIGINS,
+  APPLICATION_STATUSES,
+  BENEFIT_TYPES,
+} from 'benefit-shared/constants';
 import { LoadingSpinner, StatusLabel } from 'hds-react';
 import * as React from 'react';
 import { ReactElement } from 'react';
@@ -13,6 +17,7 @@ import { useTheme } from 'styled-components';
 import HandlingApplicationActions from './actions/handlingApplicationActions/HandlingApplicationActions';
 import ReceivedApplicationActions from './actions/receivedApplicationActions/ReceivedApplicationActions';
 import ApplicationProcessingView from './applicationProcessingView/AplicationProcessingView';
+import AttachmentsView from './attachmentsView/AttachmentsView';
 import BenefitView from './benefitView/BenefitView';
 import CompanyInfoView from './companyInfoView/CompanyInfoView';
 import ConsentView from './consentView/ConsentView';
@@ -89,7 +94,11 @@ const ApplicationReview: React.FC = () => {
         <PaySubsidyView data={application} />
         <BenefitView data={application} />
         <EmploymentView data={application} />
-        <ConsentView data={application} />
+        {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER ? (
+          <AttachmentsView data={application} />
+        ) : (
+          <ConsentView data={application} />
+        )}
         {application.status === APPLICATION_STATUSES.HANDLING && (
           <>
             <CalculatorView />
