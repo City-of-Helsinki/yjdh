@@ -83,10 +83,16 @@ def test_eauth_authentication_init_view(requests_mock, user_client, user):
         "userId": "test_user",
     }
 
+    print("EAUTHORIZATIONS_BASE_URL") 
+    print(settings.EAUTHORIZATIONS_BASE_URL) 
+
     matcher = re.compile(re.escape(settings.EAUTHORIZATIONS_BASE_URL))
     requests_mock.get(matcher, json=register_user_info)
 
     authentication_url = reverse("eauth_authentication_init")
+
+    print("authentication_url") 
+    print(authentication_url) 
 
     userinfo = {
         "national_id_num": "210281-9988",
@@ -96,6 +102,9 @@ def test_eauth_authentication_init_view(requests_mock, user_client, user):
         "shared.oidc.views.eauth_views.get_userinfo", return_value=userinfo
     ):
         response = user_client.get(authentication_url)
+
+    print("response")
+    print(response)
 
     assert response.status_code == 302
     assert settings.EAUTHORIZATIONS_BASE_URL in response.url
