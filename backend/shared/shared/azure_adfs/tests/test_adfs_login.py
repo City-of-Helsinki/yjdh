@@ -211,6 +211,8 @@ def test_adfs_callback(client, user):
     ],
 )
 def test_adfs_callback_original_redirect(client, user, original_redirect_url):
+    print("debug: original_redirect_url")
+    print(original_redirect_url)
     with mock.patch("shared.azure_adfs.auth.provider_config"):
         with mock.patch.multiple(
             "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
