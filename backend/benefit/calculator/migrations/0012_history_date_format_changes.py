@@ -4,55 +4,79 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('calculator', '0011_make_calculation_fields_nullable'),
+        ("calculator", "0011_make_calculation_fields_nullable"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='historicalcalculation',
-            options={'get_latest_by': ('history_date', 'history_id'), 'ordering': ('-history_date', '-history_id'), 'verbose_name': 'historical calculation', 'verbose_name_plural': 'historical calculations'},
+            name="historicalcalculation",
+            options={
+                "get_latest_by": ("history_date", "history_id"),
+                "ordering": ("-history_date", "-history_id"),
+                "verbose_name": "historical calculation",
+                "verbose_name_plural": "historical calculations",
+            },
         ),
         migrations.AlterModelOptions(
-            name='historicalcalculationrow',
-            options={'get_latest_by': ('history_date', 'history_id'), 'ordering': ('-history_date', '-history_id'), 'verbose_name': 'historical calculation row', 'verbose_name_plural': 'historical calculation rows'},
+            name="historicalcalculationrow",
+            options={
+                "get_latest_by": ("history_date", "history_id"),
+                "ordering": ("-history_date", "-history_id"),
+                "verbose_name": "historical calculation row",
+                "verbose_name_plural": "historical calculation rows",
+            },
         ),
         migrations.AlterModelOptions(
-            name='historicalpaysubsidy',
-            options={'get_latest_by': ('history_date', 'history_id'), 'ordering': ('-history_date', '-history_id'), 'verbose_name': 'historical pay subsidy', 'verbose_name_plural': 'historical pay subsidies'},
+            name="historicalpaysubsidy",
+            options={
+                "get_latest_by": ("history_date", "history_id"),
+                "ordering": ("-history_date", "-history_id"),
+                "verbose_name": "historical pay subsidy",
+                "verbose_name_plural": "historical pay subsidies",
+            },
         ),
         migrations.AlterModelOptions(
-            name='historicalpreviousbenefit',
-            options={'get_latest_by': ('history_date', 'history_id'), 'ordering': ('-history_date', '-history_id'), 'verbose_name': 'historical Previously granted benefit', 'verbose_name_plural': 'historical Previously granted benefits'},
+            name="historicalpreviousbenefit",
+            options={
+                "get_latest_by": ("history_date", "history_id"),
+                "ordering": ("-history_date", "-history_id"),
+                "verbose_name": "historical Previously granted benefit",
+                "verbose_name_plural": "historical Previously granted benefits",
+            },
         ),
         migrations.AlterModelOptions(
-            name='historicaltrainingcompensation',
-            options={'get_latest_by': ('history_date', 'history_id'), 'ordering': ('-history_date', '-history_id'), 'verbose_name': 'historical training compensation', 'verbose_name_plural': 'historical training compensations'},
+            name="historicaltrainingcompensation",
+            options={
+                "get_latest_by": ("history_date", "history_id"),
+                "ordering": ("-history_date", "-history_id"),
+                "verbose_name": "historical training compensation",
+                "verbose_name_plural": "historical training compensations",
+            },
         ),
         migrations.AlterField(
-            model_name='historicalcalculation',
-            name='history_date',
+            model_name="historicalcalculation",
+            name="history_date",
             field=models.DateTimeField(db_index=True),
         ),
         migrations.AlterField(
-            model_name='historicalcalculationrow',
-            name='history_date',
+            model_name="historicalcalculationrow",
+            name="history_date",
             field=models.DateTimeField(db_index=True),
         ),
         migrations.AlterField(
-            model_name='historicalpaysubsidy',
-            name='history_date',
+            model_name="historicalpaysubsidy",
+            name="history_date",
             field=models.DateTimeField(db_index=True),
         ),
         migrations.AlterField(
-            model_name='historicalpreviousbenefit',
-            name='history_date',
+            model_name="historicalpreviousbenefit",
+            name="history_date",
             field=models.DateTimeField(db_index=True),
         ),
         migrations.AlterField(
-            model_name='historicaltrainingcompensation',
-            name='history_date',
+            model_name="historicaltrainingcompensation",
+            name="history_date",
             field=models.DateTimeField(db_index=True),
         ),
     ]
