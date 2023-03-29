@@ -59,6 +59,8 @@ COPY --chown=appuser:appuser /kesaseteli/ /app/
 
 RUN SECRET_KEY="only-used-for-collectstatic" python manage.py collectstatic
 
+# review environment stores attachements in this directory
+RUN chgrp -R 0 /var/media && chmod g+w -R /var/media
 USER appuser
 
 # Compile messages as a part of Docker image build so it doesn't have to be done during
