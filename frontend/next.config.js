@@ -1,11 +1,10 @@
 const webpack = require('webpack');
 const path = require('path');
 const withPlugins = require('next-compose-plugins');
-const withCustomBabelConfig = require('next-plugin-custom-babel-config');
+const { withSentryConfig } = require('@sentry/nextjs');
 const withTranspileModules = require('next-transpile-modules');
 // https://nextjs.org/docs/api-reference/next.config.js/introduction
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
-const { withSentryConfig } = require('@sentry/nextjs');
 const pc = require('picocolors');
 const packageJson = require('./package.json');
 const { parsed: env } = require('dotenv').config({
@@ -61,19 +60,18 @@ if (NEXTJS_SENTRY_DEBUG) {
 const nextConfig = (override) => ({
   productionBrowserSourceMaps: !disableSourceMaps,
   poweredByHeader: false,
-  // swcMinify: true,
+  swcMinify: true,
   compiler: {
-  //  styledComponents: true,
+    styledComponents: true,
   },
   experimental: {
-    reactRoot: true
-   // externalDir: true,
-   // outputStandalone: true
+   externalDir: true,
+   //output: 'standalone'
   },
-  sentry: {
-    hideSourceMaps: disableSourceMaps,
-    autoInstrumentServerFunctions: !NEXTJS_DISABLE_SENTRY
-  },
+  // sentry: {
+  //   hideSourceMaps: disableSourceMaps,
+  //   autoInstrumentServerFunctions: !NEXTJS_DISABLE_SENTRY
+  // },
   typescript: {
     /** Do not run TypeScript during production builds (`next build`). */
     ignoreBuildErrors: NEXTJS_IGNORE_TYPECHECK,
@@ -86,7 +84,7 @@ const nextConfig = (override) => ({
   webpack: (config) => {
     config.resolve.fallback = {
       fs: false,
-      path: require.resolve('path-browserify'),
+    //   path: require.resolve('path-browserify'),
     };
 
     const babelRule = config.module.rules.find((rule) =>
@@ -108,7 +106,6 @@ const nextConfig = (override) => ({
         __SENTRY_TRACING__: NEXTJS_SENTRY_TRACING,
       })
     );
-
 
     config.module.rules.push({
       test: /\.test.tsx$/,
@@ -160,10 +157,6 @@ else {
 
 const plugins = [
   [withTranspileModules, { transpileModules: ['@frontend'] }],
-  [
-    withCustomBabelConfig,
-    { babelConfigFile: path.resolve('../../babel.config.js') },
-  ],
 ];
 
-module.exports = (override) => withPlugins(plugins, nextConfig(override));
+module.exports = async (phase) => withPlugins(plugins, nextConfig(phase))(phase, { undefined });
