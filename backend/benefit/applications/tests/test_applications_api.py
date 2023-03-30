@@ -152,6 +152,28 @@ def test_applications_filter_by_ssn(api_client, application, association_applica
     assert response.status_code == 200
 
 
+def test_applications_filter_by_employee_first_name(api_client, application):
+    url = (
+        reverse("v1:applicant-application-list")
+        + f"?employee_first_name={application.employee.first_name}"
+    )
+    response = api_client.get(url)
+    assert len(response.data) == 1
+    assert response.data[0]["id"] == str(application.id)
+    assert response.status_code == 200
+
+
+def test_applications_filter_by_employee_last_name(api_client, application):
+    url = (
+        reverse("v1:applicant-application-list")
+        + f"?employee_last_name={application.employee.last_name}"
+    )
+    response = api_client.get(url)
+    assert len(response.data) == 1
+    assert response.data[0]["id"] == str(application.id)
+    assert response.status_code == 200
+
+
 def test_applications_filter_by_application_number(
     handler_api_client, received_application
 ):
