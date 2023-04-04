@@ -69,14 +69,6 @@ const nextConfig = (override) => ({
       fs: false,
     };
 
-    const babelRule = config.module.rules.find((rule) =>
-      Array.isArray(rule.use)
-        ? rule.use.find((u) => u.loader?.match(/next.*babel.*loader/i))
-        : rule.use?.loader?.match(/next.*babel.*loader/i),
-    );
-    if (babelRule) {
-      babelRule.include.push(path.resolve('../../'));
-    }
     config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /\/(__tests__|test)\// }));
 
     // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/tree-shaking/
