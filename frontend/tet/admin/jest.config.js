@@ -1,6 +1,11 @@
 const sharedConfig = require('../../jest.config.js');
+const nextJest = require('next/jest');
 
-module.exports = {
+const createJestConfig = nextJest({
+  dir: './',
+});
+
+const config = {
   ...sharedConfig,
   globals: {
     'ts-jest': {
@@ -19,3 +24,5 @@ module.exports = {
   coveragePathIgnorePatterns: ['<rootDir>/tet/admin/src/pages/'],
   verbose: true,
 };
+
+module.exports = createJestConfig(config);
