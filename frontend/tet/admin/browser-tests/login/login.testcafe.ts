@@ -7,7 +7,7 @@ import { getBackendDomain } from '@frontend/te-admin/src/backend-api/backend-api
 
 import getTetAdminTranslationsApi from '../../src/__tests__/utils/i18n/get-tet-admin-translations-api';
 import { getFrontendUrl } from '../utils/url.utils';
-import { Selector, t } from 'testcafe';
+import { Selector } from 'testcafe';
 import { doLogin, SuomiFiData } from '@frontend/shared/browser-tests/actions/login-action';
 
 const url = getFrontendUrl('/');
@@ -25,9 +25,7 @@ fixture('Frontpage')
   );
 
 test('user can authenticate and log out', async (t) => {
-  //await doEmployerLogin(t, 'fi');
   const header = new Header(translationsApi);
-  await header.userIsLoggedOut();
   const loginLink = Selector('button').withAttribute('data-testid', 'oidcLoginButton');
   await t.click(loginLink);
   const suomiFiData = await doLogin(t, 'fi');
