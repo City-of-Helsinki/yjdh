@@ -1,4 +1,5 @@
 version: "3.8"
+name: yjdh-tet
 services:
   postgres:
     image: postgres:12
@@ -10,10 +11,10 @@ services:
     ports:
       - 5434:5432
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - te-pgdata:/var/lib/postgresql/data
     container_name: te-db
 
-  te-bknd:
+  backend:
     build:
       context: ./backend
       dockerfile: ./docker/tet.Dockerfile
@@ -28,10 +29,10 @@ services:
       - ./backend/shared:/shared
       - ./backend/tet/media:/var/media
     depends_on:
-      - postgres
-    container_name: te-bknd
+      - te-postgres
+    container_name: te-backend
 
-  te-admn:
+  admin:
      build:
        context: ./frontend
        target: development
@@ -47,13 +48,13 @@ services:
        - .env.tet
      environment:
        NEXT_PUBLIC_MOCK_FLAG: 1
-     container_name: te-admn
+     container_name: te-admin
 
-  te-local-proxy:
+  local-proxy:
     depends_on:
       - postgres
-      - te-bknd
-      - te-admn
+      - backend
+      - admin
     build:
       context: ./localdevelopment/tet-admin/nginx
     container_name: te-local-proxy
@@ -64,7 +65,7 @@ services:
       - 127.0.0.1:3002:3002
 
 volumes:
-  pgdata:
+  te-pgdata:
     driver: local
 
 networks:
