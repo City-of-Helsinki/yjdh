@@ -25,12 +25,12 @@ fixture('Frontpage')
 
 const formatDate = (date: Date): string => `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
 
-const IS_LOCAL_TEST_RUN = process.env?.LOCAL_TEST_RUN === '1' ? true : false;
+const IS_LOCAL_TEST_RUN = process.env?.LOCAL_TEST_RUN === '1';
 
-test('simple test', async (runner) => {
+test('simple test', async () => {
   // This works locally but not on the review environment
   if (!IS_LOCAL_TEST_RUN) {
-    return true;
+    return;
   }
   const searchTerm = faker.lorem.word();
 
@@ -43,7 +43,7 @@ test('simple test', async (runner) => {
 // you can delete the simple test above.
 test('user can search and navigate', async (t) => {
   if (!IS_LOCAL_TEST_RUN) {
-    return true;
+    return;
   }
 
   // Generate some data to test with
@@ -54,8 +54,8 @@ test('user can search and navigate', async (t) => {
   const startDate = formatDate(start);
   const endDate = formatDate(end);
   // Should find working method https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:2/
-  const workMethodText = 'varjosta';
-  const languageText = 'suomeksi'; // Should find Finnish language
+  const workMethodText = 'Varjostus';
+  const languageText = 'Suomi';
   const searchTerm = faker.lorem.word();
 
   await frontpage.fillSearch(searchTerm);
