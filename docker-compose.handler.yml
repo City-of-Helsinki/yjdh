@@ -1,4 +1,5 @@
 version: "3.8"
+name: yjdh-kesaseteli
 services:
   postgres:
     build:
@@ -14,10 +15,10 @@ services:
     ports:
       - 5434:5432
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ks-pgdata:/var/lib/postgresql/data
     container_name: kesaseteli-db
 
-  kesaseteli-backend:
+  backend:
     build:
       context: ./backend
       dockerfile: ./docker/kesaseteli.Dockerfile
@@ -35,7 +36,7 @@ services:
       - postgres
     container_name: kesaseteli-backend
 
-  kesaseteli-youth:
+  youth:
     build:
       context: ./frontend
       target: development
@@ -51,7 +52,7 @@ services:
       - .env.kesaseteli
     container_name: kesaseteli-youth
 
-  kesaseteli-handler:
+  handler:
     build:
       context: ./frontend
       target: development
@@ -67,15 +68,15 @@ services:
       - .env.kesaseteli
     container_name: kesaseteli-handler
 
-  kesaseteli-local-proxy:
+  local-proxy:
     depends_on:
       - postgres
-      - kesaseteli-backend
-      - kesaseteli-handler
-      - kesaseteli-youth
+      - backend
+      - handler
+      - youth
     build:
       context: ./localdevelopment/handler/nginx
-    container_name: handler-local-proxy
+    container_name: kesaseteli-handler-local-proxy
     volumes:
       - ./localdevelopment/handler/nginx/:/etc/nginx/
     ports:
@@ -84,7 +85,7 @@ services:
       - 127.0.0.1:3200:3200
 
 volumes:
-  pgdata:
+  ks-pgdata:
     driver: local
 
 networks:
