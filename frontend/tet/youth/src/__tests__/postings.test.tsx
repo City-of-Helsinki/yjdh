@@ -14,8 +14,6 @@ import renderPage from 'tet/youth/__tests__/utils/components/render-page';
 import Postings from 'tet/youth/pages';
 import { fakeEventListYouth } from 'tet-shared/__tests__/utils/fake-objects';
 
-jest.mock('next/router');
-
 const postings = fakeEventListYouth(['Avustaja', 'Kirjasto']);
 
 describe('frontend/tet/youth/src/pages/postings.tsx', () => {
