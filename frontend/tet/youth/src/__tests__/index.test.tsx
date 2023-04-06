@@ -10,8 +10,6 @@ import IndexPage from 'tet/youth/pages';
 
 import getYouthTranslationsApi from './utils/i18n/get-youth-translations';
 
-jest.mock('next/router');
-
 describe('frontend/tet/youth/src/pages/index.tsx', () => {
   const {
     translations: { [DEFAULT_LANGUAGE]: translations },
