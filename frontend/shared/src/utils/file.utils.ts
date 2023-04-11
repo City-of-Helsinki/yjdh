@@ -1,12 +1,19 @@
+import { format } from 'date-fns';
 import fileDownload from 'js-file-download';
 import ExportFileType from 'shared/types/export-file-type';
 
+import { DATE_FORMATS } from './date.utils';
+
 export const downloadFile = (data: string, type: ExportFileType): void => {
+  const now = new Date();
+  const dateFormat = `${DATE_FORMATS.BACKEND_DATE} HH.mm.ss`;
+  const dateString = format(now, dateFormat);
+
   if (type === 'csv') {
     // eslint-disable-next-line security/detect-non-literal-fs-filename
-    fileDownload(data, 'report.csv', 'text/csv;charset=utf-8');
+    fileDownload(data, `hl ${dateString}.csv`, 'text/csv;charset=utf-8');
   } else {
-    fileDownload(data, 'report.zip');
+    fileDownload(data, `hl ${dateString}.zip`);
   }
 };
 

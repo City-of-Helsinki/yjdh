@@ -31,7 +31,7 @@
                 {% if show_sums and app.calculated_benefit_amount and app.calculation.duration_in_months %}
                     <td class="text-right">{{ "%.0f €" | format(app.calculated_benefit_amount/(app.calculation.duration_in_months | round(2)))}} </td>
                     <td class="text-right"><strong>{{ "%.0f €" | format(app.calculated_benefit_amount)}}</strong></td>
-                {% else %}
+                {% elif show_sums %}
                     <td class="text-right">0 €</td>
                     <td class="text-right"><strong>0 €</strong></td>
                 {% endif %}

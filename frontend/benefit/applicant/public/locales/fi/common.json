@@ -77,7 +77,7 @@
         "deMinimisAidsHeading": "Listaa tähän kaikki organisaatiolle kuluvan vuoden ja kahden edellisen verovuoden aikana myönnetyt de minimis -tuet",
         "deMinimisAidsAdd": "Lisää",
         "deMinimisAidsRemove": "Poista",
-        "deMinimisAidsNo": "Onko hakijalle myönnetty deminimis-tukea?",
+        "deMinimisAidsNo": "Hakija ei ole ilmoittanut aiemmista de minimis -tuista.",
         "notifications": {
           "companyInformation": {
             "label": "Tiedot haetaan Yritys- ja yhteisötietojärjestelmästä",
