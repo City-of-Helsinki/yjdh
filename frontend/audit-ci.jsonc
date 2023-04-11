@@ -9,6 +9,7 @@
     "moment",               // testcafe
     "jsonwebtoken",         // testcafe 
     "http-cache-semantics", // testcafe
-    "requestretry"          // slack-node
+    "requestretry",         // slack-node
+    "decode-uri-component"  // testcafe, lerna 
   ]
 }
