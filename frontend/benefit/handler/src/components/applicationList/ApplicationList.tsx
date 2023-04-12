@@ -1,8 +1,7 @@
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
-import { IconSpeechbubbleText, StatusLabel } from 'hds-react';
+import { IconSpeechbubbleText, LoadingSpinner, StatusLabel } from 'hds-react';
 import * as React from 'react';
-import LoadingSkeleton from 'react-loading-skeleton';
 import Container from 'shared/components/container/Container';
 import { COLUMN_WIDTH } from 'shared/components/table/constants';
 import Table, { Column } from 'shared/components/table/Table';
@@ -10,7 +9,7 @@ import { $Link } from 'shared/components/table/Table.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
-import { $CellContent, $Empty, $Heading } from './ApplicationList.sc';
+import { $CellContent, $EmptyHeading, $Heading } from './ApplicationList.sc';
 import { useApplicationList } from './useApplicationList';
 
 type ColumnType = Column<ApplicationListItemData>;
@@ -149,7 +148,8 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   if (shouldShowSkeleton) {
     return (
       <Container>
-        <LoadingSkeleton width="100%" height="50px" />
+        {heading && <$Heading>{`${heading} (0)`}</$Heading>}
+        <LoadingSpinner small />
       </Container>
     );
   }
@@ -160,7 +160,11 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       {!shouldHideList ? (
         <Table data={list} columns={columns} />
       ) : (
-        <$Empty>{t(`${translationsBase}.messages.empty`)}</$Empty>
+        <$EmptyHeading>
+          {status.includes(APPLICATION_STATUSES.HANDLING)
+            ? t(`${translationsBase}.messages.empty.handling`)
+            : t(`${translationsBase}.messages.empty.received`)}
+        </$EmptyHeading>
       )}
     </Container>
   );

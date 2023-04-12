@@ -9,12 +9,19 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import * as React from 'react';
 import { useEffect } from 'react';
 import theme from 'shared/styles/theme';
+import styled from 'styled-components';
+
+const $Wrapper = styled.aside`
+  background-color: ${(props) => props.style.backgroundColor};
+  height: 100%;
+`;
 
 const ApplicantIndex: NextPage = () => {
   const {
     setIsFooterVisible,
     setIsNavigationVisible,
     setLayoutBackgroundColor,
+    layoutBackgroundColor,
   } = React.useContext(AppContext);
 
   // configure page specific settings
@@ -24,7 +31,7 @@ const ApplicantIndex: NextPage = () => {
     setLayoutBackgroundColor(theme.colors.silverLight);
     return () => {
       setIsNavigationVisible(false);
-      setLayoutBackgroundColor(theme.colors.white);
+      setLayoutBackgroundColor(theme.colors.silver);
     };
   }, [setIsFooterVisible, setIsNavigationVisible, setLayoutBackgroundColor]);
 
@@ -32,18 +39,20 @@ const ApplicantIndex: NextPage = () => {
 
   return (
     <FrontPageProvider>
-      <MainIngress />
-      <ApplicationList
-        heading={t('common:applications.list.headings.handling')}
-        status={[
-          APPLICATION_STATUSES.HANDLING,
-          APPLICATION_STATUSES.INFO_REQUIRED,
-        ]}
-      />
-      <ApplicationList
-        heading={t('common:applications.list.headings.received')}
-        status={[APPLICATION_STATUSES.RECEIVED]}
-      />
+      <$Wrapper style={{ backgroundColor: layoutBackgroundColor }}>
+        <MainIngress />
+        <ApplicationList
+          heading={t('common:applications.list.headings.handling')}
+          status={[
+            APPLICATION_STATUSES.HANDLING,
+            APPLICATION_STATUSES.INFO_REQUIRED,
+          ]}
+        />
+        <ApplicationList
+          heading={t('common:applications.list.headings.received')}
+          status={[APPLICATION_STATUSES.RECEIVED]}
+        />
+      </$Wrapper>
     </FrontPageProvider>
   );
 };

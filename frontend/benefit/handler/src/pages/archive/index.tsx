@@ -17,7 +17,7 @@ const ArchiveIndex: NextPage = () => {
   useEffect(() => {
     setIsNavigationVisible(true);
     setIsFooterVisible(true);
-    setLayoutBackgroundColor(theme.colors.silverLight);
+    setLayoutBackgroundColor(theme.colors.white);
     return () => {
       setIsNavigationVisible(false);
       setIsFooterVisible(true);
