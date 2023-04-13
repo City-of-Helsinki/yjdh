@@ -1,3 +1,5 @@
+from typing import Union
+
 from django.db import transaction
 from django.http import HttpResponse, StreamingHttpResponse
 from django.utils import timezone
@@ -12,8 +14,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from applications.api.v1.serializers.batch import ApplicationBatchSerializer
-from applications.enums import ApplicationBatchStatus
-from applications.models import ApplicationBatch
+from applications.enums import ApplicationBatchStatus, ApplicationStatus
+from applications.models import Application, ApplicationBatch
 from applications.services.ahjo_integration import export_application_batch
 from applications.services.talpa_integration import TalpaService
 from common.authentications import RobotBasicAuthentication
@@ -139,3 +141,71 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         )
         approved_batches.all().update(status=ApplicationBatchStatus.SENT_TO_TALPA)
         return response
+
+    @action(methods=["POST"], detail=False)
+    @transaction.atomic
+    def create_batch(self, request):
+        def create_application_batch_by_ids(app_status, apps):
+            status_map = BatchUtils.get_matching_status_map(app_status)
+            matching_status = status_map[app_status]
+            if matching_status is False or not apps:
+                return None
+
+            if apps:
+                batch = ApplicationBatch.objects.create(
+                    proposal_for_decision=matching_status
+                )
+                return batch
+
+        app_status = request.data["status"]
+        app_ids = request.data["application_ids"]
+
+        if (
+            app_status not in [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED]
+            or not type(app_ids) == list
+        ):
+            return Response(
+                {"detail": "Status or application id is not valid"},
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )
+
+        apps = Application.objects.filter(
+            status=app_status, batch__isnull=True, pk__in=app_ids
+        )
+
+        # First try to find an existing batch
+        batch = (
+            ApplicationBatch.objects.filter(
+                status=ApplicationBatchStatus.DRAFT, proposal_for_decision=app_status
+            ).first()
+            or None
+        )
+
+        # No existing one, will create one
+        if batch is None:
+            batch = create_application_batch_by_ids(
+                app_status,
+                apps,
+            )
+
+        if batch:
+            apps.update(batch=batch)
+            batch = ApplicationBatchSerializer(batch)
+            return Response(batch.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(
+                {"detail": "Unable to create batch."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class BatchUtils:
+    def get_matching_status_map(
+        status: Union[ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED]
+    ):
+        status_map = {
+            ApplicationStatus.ACCEPTED: ApplicationBatchStatus.DECIDED_ACCEPTED,
+            ApplicationStatus.REJECTED: ApplicationBatchStatus.DECIDED_REJECTED,
+        }
+        if status not in status_map:
+            return False
+        return status_map
