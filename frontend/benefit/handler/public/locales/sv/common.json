@@ -3,7 +3,7 @@
   "header": {
     "navigation": {
       "applications": "Hakemukset",
-      "processed": "Käsitellyt",
+      "batches": "Koonnit",
       "archive": "Arkisto",
       "reports": "Raportointi"
     },
@@ -130,14 +130,21 @@
       },
       "messages": {
         "empty": {
-          "received": "Ei yhtään saapunutta hakemusta",
-          "handling": "Ei yhtään käsittelyssä olevaa hakemusta",
-          "archive": "Ei yhtään arkistoitua hakemusta"
+          "handling": "Ei yhtään käsittelyssä olevaa hakemusta.",
+          "accepted": "Ei yhtään käsiteltyä myönteistä hakemusta.",
+          "rejected": "Ei yhtään käsiteltyä kielteistä hakemusta.",
+          "received": "Ei yhtään saapunutta hakemusta.",
+          "archived": "Ei yhtään arkistoitua hakemusta.",
+          "additional_information_needed": "Ei yhtään lisätietoja odottavaa hakemusta."
         }
       },
       "headings": {
+        "all": "Kaikki",
         "received": "Saapuneet",
-        "handling": "Käsittelyssä"
+        "handling": "Käsittelyssä",
+        "accepted": "Myönteiset",
+        "rejected": "Kielteiset",
+        "infoRequired": "Odottaa lisätietoja"
       },
       "errors": {
         "fetch": {
@@ -148,6 +155,9 @@
       "total": {
         "count_one": "{{count}} hakemus",
         "count_other": "{{count}} hakemusta"
+      },
+      "actions": {
+        "addToBatch": "Lisää valitut koontiin"
       }
     },
     "actions": {
@@ -449,5 +459,15 @@
     "logoutInfoContent": "Du har nu loggats ut. Om du vill fortsätta använda tjänsten, logga in på nytt genom att klicka på knappen nedan.",
     "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig."
   },
-  "select": "Valitse"
+  "select": "Valitse",
+  "batches": {
+    "notifications": {
+      "addToBatch": {
+        "success": {
+          "heading": "Koontiin siirto onnistui!",
+          "text": "Olet muodostanut {{ count }} hakemuksesta koonnin."
+        }
+      }
+    }
+  }
 }

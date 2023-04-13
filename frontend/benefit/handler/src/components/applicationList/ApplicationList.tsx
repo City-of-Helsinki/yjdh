@@ -154,16 +154,17 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     );
   }
 
+  const statusAsString = status.join(',');
   return (
-    <Container data-testid={`application-list-${status.join(',')}`}>
-      <$Heading>{`${heading} (${list.length})`}</$Heading>
+    <Container data-testid={`application-list-${statusAsString}`}>
       {!shouldHideList ? (
-        <Table data={list} columns={columns} />
+        <>
+          <$Heading>{`${heading} (${list.length})`}</$Heading>
+          <Table data={list} columns={columns} />
+        </>
       ) : (
         <$EmptyHeading>
-          {status.includes(APPLICATION_STATUSES.HANDLING)
-            ? t(`${translationsBase}.messages.empty.handling`)
-            : t(`${translationsBase}.messages.empty.received`)}
+          {t(`${translationsBase}.messages.empty.${statusAsString}`)}
         </$EmptyHeading>
       )}
     </Container>
