@@ -6,7 +6,7 @@ export const BackendEndpoint = {
   OAUTH_LOGOUT: '/oauth2/logout',
   LOGOUT: '/oidc/logout/',
   USER: '/oidc/userinfo/',
-  USER_ME: 'v1/users/me',
+  USER_ME: 'v1/users/me/',
   COMPANY: '/v1/company/',
   APPLICATIONS: '/v1/applications/',
   APPLICATIONS_SIMPLIFIED: '/v1/applications/simplified_list/',
