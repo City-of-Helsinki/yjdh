@@ -63,7 +63,6 @@ const Header: React.FC = () => {
             }
           : undefined
       }
-      hideLogin={isLoginPage}
     />
   );
 };
