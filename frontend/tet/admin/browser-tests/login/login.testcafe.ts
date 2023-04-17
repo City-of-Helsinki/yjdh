@@ -25,7 +25,9 @@ fixture('Frontpage')
   );
 
 test('user can authenticate and log out', async (t) => {
+  //await doEmployerLogin(t, 'fi');
   const header = new Header(translationsApi);
+  await header.userIsLoggedOut();
   const loginLink = Selector('button').withAttribute('data-testid', 'oidcLoginButton');
   await t.click(loginLink);
   const suomiFiData = await doLogin(t, 'fi');
