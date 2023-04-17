@@ -10,6 +10,9 @@
     "tet/*",
     "shared"
   ],
+  "engines" : { 
+    "node" : ">=16.19.0 <17.0.0"
+  },
   "scripts": {
     "audit": "npx lerna-audit --level=high --groups=dependencies",
     "build": "npx lerna run build",

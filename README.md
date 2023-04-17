@@ -12,7 +12,7 @@ This monorepo contains code for four different employment services:
 ## Requirements
 
 * Docker@^19.03.0 (or higher)
-* NodeJS@^14.0.0
+* NodeJS@^16.19.0
 * Yarn@^1.22
 
 ---

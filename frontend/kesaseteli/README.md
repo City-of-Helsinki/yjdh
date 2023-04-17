@@ -19,15 +19,15 @@ Project is automatically deployed to testing environment when pushing to develop
 
 ## Requirements
 
-- Node 14.x
-- Lerna  
+- Node 16.x
+- Lerna
 - Yarn
 - Git
 - Docker
 
 ### install node with nvm
 
-    nvm install 14 --lts
+    nvm install 16 --lts
 
 
 ## Available Scripts

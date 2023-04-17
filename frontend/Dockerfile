@@ -1,5 +1,5 @@
 # =======================================
-FROM helsinkitest/node:14-slim as appbase
+FROM helsinkitest/node:16-slim as appbase
 # =======================================
 
 # Use non-root user
@@ -95,7 +95,7 @@ RUN rm -rf node_modules
 RUN yarn cache clean
 
 # ==========================================
-FROM helsinkitest/node:14-slim AS production
+FROM helsinkitest/node:16-slim AS production
 # ==========================================
 
 ARG PORT
