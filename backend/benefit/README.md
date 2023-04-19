@@ -67,7 +67,7 @@ at the Azure portal. Use the values from the key vault of the dev or test enviro
 
 In the project root folder, run:
 
-`docker-compose -f docker-compose.benefit.yml up`
+`docker compose -f docker-compose.benefit.yml up`
 
 This will bring up Postgres, backend, as well as the handler and applicant UIs.
 Note - in order to run the handler and applicant UIs, you need to set up
