@@ -12,6 +12,7 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import Container from 'shared/components/container/Container';
 import theme from 'shared/styles/theme';
+
 import { $BackgroundWrapper } from '../components/layout/Layout';
 
 const ApplicantIndex: NextPage = () => {

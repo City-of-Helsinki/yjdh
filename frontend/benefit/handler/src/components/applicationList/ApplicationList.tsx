@@ -10,6 +10,7 @@ import Container from 'shared/components/container/Container';
 import { $Link } from 'shared/components/table/Table.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
+
 import { $CellContent, $EmptyHeading, $Heading } from './ApplicationList.sc';
 import { useApplicationList } from './useApplicationList';
 
