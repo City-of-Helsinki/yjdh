@@ -20,10 +20,11 @@ interface ApplicationListProps {
 const translationsBase = 'common:applications.list';
 
 const useApplicationList = (
-  status: APPLICATION_STATUSES[]
+  status: APPLICATION_STATUSES[],
+  excludeBatched?: boolean
 ): ApplicationListProps => {
   const { t } = useTranslation();
-  const query = useApplicationsQuery(status, '-submitted_at');
+  const query = useApplicationsQuery(status, '-submitted_at', excludeBatched);
 
   const list = query.data?.map(
     (application: ApplicationData): ApplicationListItemData => {
