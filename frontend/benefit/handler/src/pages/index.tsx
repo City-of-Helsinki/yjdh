@@ -12,12 +12,7 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import Container from 'shared/components/container/Container';
 import theme from 'shared/styles/theme';
-import styled from 'styled-components';
-
-const $Wrapper = styled.aside`
-  background-color: ${(props) => props.style.backgroundColor};
-  height: 100%;
-`;
+import { $BackgroundWrapper } from '../components/layout/Layout';
 
 const ApplicantIndex: NextPage = () => {
   const {
@@ -43,7 +38,7 @@ const ApplicantIndex: NextPage = () => {
 
   return (
     <FrontPageProvider>
-      <$Wrapper style={{ backgroundColor: layoutBackgroundColor }}>
+      <$BackgroundWrapper backgroundColor={layoutBackgroundColor}>
         <MainIngress />
         <Container>
           <Tabs>
@@ -103,7 +98,7 @@ const ApplicantIndex: NextPage = () => {
             </Tabs.TabPanel>
           </Tabs>
         </Container>
-      </$Wrapper>
+      </$BackgroundWrapper>
     </FrontPageProvider>
   );
 };
