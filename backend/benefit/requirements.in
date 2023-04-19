@@ -16,7 +16,7 @@ djangorestframework
 django
 drf-nested-routers
 drf-spectacular
-elasticsearch
+elasticsearch~=7.17 # TODO: remove and update to 8.x when elasticsearch servers are updated to elasticsearch 8
 factory-boy # TODO: added temporarily so that NEXT_PUBLIC_MOCK_FLAG can be set on dev env, remove when authentication done
 filetype
 helsinki-profile-gdpr-api
