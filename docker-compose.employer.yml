@@ -15,7 +15,7 @@ services:
     ports:
       - 5434:5432
     volumes:
-      - ks-pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     container_name: kesaseteli-db
 
   backend:
@@ -69,7 +69,7 @@ services:
       - 127.0.0.1:3000:3000
 
 volumes:
-  ks-pgdata:
+  pgdata:
     driver: local
 
 networks:

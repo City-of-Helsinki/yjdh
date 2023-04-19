@@ -15,7 +15,7 @@ services:
     ports:
       - 5434:5432
     volumes:
-      - te-pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     container_name: te-db
 
   backend:
@@ -85,7 +85,7 @@ services:
       - 127.0.0.1:3002:3002
 
 volumes:
-  te-pgdata:
+  pgdata:
     driver: local
 
 networks:
