@@ -152,7 +152,8 @@
         }
       },
       "total": {
-        "count": "Arkistoidut ({{count}})"
+        "count_one": "{{count}} hakemus",
+        "count_other": "{{count}} hakemusta"
       },
       "actions": {
         "addToBatch": "Lisää valitut koontiin"

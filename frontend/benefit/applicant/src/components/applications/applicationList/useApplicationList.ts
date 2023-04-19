@@ -114,6 +114,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       application_number: applicationNum,
       additional_information_needed_by,
       unread_messages_count,
+      batch,
     } = application;
 
     const statusText = getStatusTranslation(appStatus);
@@ -141,6 +142,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       allowedAction,
       status: appStatus,
       unreadMessagesCount: unread_messages_count ?? 0,
+      batch,
     };
     const draftProps = { modifiedAt: modifiedAtWithTime, applicationNum };
     const submittedProps = {
