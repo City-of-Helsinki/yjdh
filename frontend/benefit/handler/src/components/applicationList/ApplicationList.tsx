@@ -140,7 +140,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         <>
           <$Heading>{`${heading} (${list.length})`}</$Heading>
           <Table
-            theme={{ '--header-background-color': theme.colors.coatOfArms }}
+            theme={theme.components.table}
             indexKey="id"
             rows={list}
             cols={columns}

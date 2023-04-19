@@ -41,7 +41,7 @@ const ApplicantIndex: NextPage = () => {
       <$BackgroundWrapper backgroundColor={layoutBackgroundColor}>
         <MainIngress />
         <Container>
-          <Tabs>
+          <Tabs theme={theme.components.tabs}>
             <Tabs.TabList style={{ marginBottom: 'var(--spacing-m)' }}>
               <Tabs.Tab>{t(`${translationBase}.all`)}</Tabs.Tab>
               <Tabs.Tab>{t(`${translationBase}.received`)}</Tabs.Tab>
