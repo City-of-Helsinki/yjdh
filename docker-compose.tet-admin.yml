@@ -2,7 +2,9 @@ version: "3.8"
 name: yjdh-tet
 services:
   postgres:
-    image: postgres:12
+    build:
+      dockerfile: ./docker/finnish_postgres.Dockerfile
+      context: ./backend
     restart: on-failure
     environment:
       POSTGRES_USER: tet
