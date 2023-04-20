@@ -10,16 +10,24 @@ import styled from 'styled-components';
 
 import { useApplicationsHandled } from './useApplicationsHandled';
 
+const $HintText = styled.p`
+  margin-top: 0;
+  margin-bottom: var(--spacing-s);
+`;
+
 export const $TableFooter = styled.footer`
-  box-sizing: border-box;
   background: ${(props) => props.theme.colors.black10};
   width: 100%;
-  height: 80px;
+  padding: var(--spacing-s);
   display: flex;
-  align-items: center;
-  padding-left: 25px;
-  input {
-    margin: 0 20px;
+  flex-flow: row wrap;
+  box-sizing: border-box;
+  ${$HintText} {
+    flex-basis: 100%;
+    margin-top: 0;
+    &:empty {
+      margin: 0;
+    }
   }
 `;
 
@@ -117,6 +125,20 @@ const ApplicationsHandled: React.FC<Props> = ({
             setSelectedRows={setSelectedRows}
           />
           <$TableFooter>
+            <$HintText>
+              {selectedRows.length > 0 ? (
+                <span>
+                  {selectedRows.length > 1
+                    ? t(
+                        `${translationsBase}.selectedApplications.count_other`,
+                        { count: selectedRows.length }
+                      )
+                    : t(`${translationsBase}.selectedApplications.count_one`, {
+                        count: selectedRows.length,
+                      })}
+                </span>
+              ) : null}
+            </$HintText>
             <Button
               theme="coat"
               onClick={() => handleBatchChange()}

@@ -155,6 +155,10 @@
         "count_one": "{{count}} hakemus",
         "count_other": "{{count}} hakemusta"
       },
+      "selectedApplications": {
+        "count_one": "Valittu {{count}} hakemus",
+        "count_other": "Valittu {{count}} hakemusta"
+      },
       "actions": {
         "addToBatch": "Lisää valitut koontiin"
       }
