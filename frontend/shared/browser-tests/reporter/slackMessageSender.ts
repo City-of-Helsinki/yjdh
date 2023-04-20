@@ -59,20 +59,23 @@ export const createSlackMessageSender = (): SlackMessageSender => {
     // send report only when something has failed
     const message = messages.join('\n');
     if (amountOfFailedTests > 0) {
-      sendMessage(
-        message,
-        amountOfFailedTests
-          ? {
-              attachments: [
-                ...errorMessages.map((msg) => ({ color: 'danger', text: msg })),
-                {
-                  color: 'danger',
-                  text: bold(`${amountOfFailedTests} test failed!`),
-                },
-              ],
-            }
-          : undefined
-      );
+      console.log('Slack message', message);
+      if (process.env.TESTCAFE_SLACK_WEBHOOK) {
+        sendMessage(
+          message,
+          amountOfFailedTests
+            ? {
+                attachments: [
+                  ...errorMessages.map((msg) => ({ color: 'danger', text: msg })),
+                  {
+                    color: 'danger',
+                    text: bold(`${amountOfFailedTests} test failed!`),
+                  },
+                ],
+              }
+            : undefined
+        );
+      }
     }
   };
 
