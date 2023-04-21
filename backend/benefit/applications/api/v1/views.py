@@ -18,11 +18,11 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from sql_util.aggregates import SubqueryCount
 
-from applications.api.v1.serializers import (
+from applications.api.v1.serializers.application import (
     ApplicantApplicationSerializer,
-    AttachmentSerializer,
     HandlerApplicationSerializer,
 )
+from applications.api.v1.serializers.attachment import AttachmentSerializer
 from applications.enums import ApplicationBatchStatus, ApplicationStatus
 from applications.models import Application, ApplicationBatch
 from applications.services.ahjo_integration import (
