@@ -1,4 +1,5 @@
 version: "3.8"
+name: yjdh-kesaseteli
 services:
   postgres:
     build:
@@ -17,7 +18,7 @@ services:
       - pgdata:/var/lib/postgresql/data
     container_name: kesaseteli-db
 
-  kesaseteli-backend:
+  backend:
     build:
       context: ./backend
       dockerfile: ./docker/kesaseteli.Dockerfile
@@ -35,7 +36,7 @@ services:
       - postgres
     container_name: kesaseteli-backend
 
-  kesaseteli-employer:
+  employer:
     build:
       context: ./frontend
       target: development
@@ -53,14 +54,14 @@ services:
       - PORT=3000
     container_name: kesaseteli-employer
 
-  kesaseteli-local-proxy:
+  local-proxy:
     depends_on:
       - postgres
-      - kesaseteli-backend
-      - kesaseteli-employer
+      - backend
+      - employer
     build:
       context: ./localdevelopment/employer/nginx
-    container_name: employer-local-proxy
+    container_name: kesaseteli-employer-local-proxy
     volumes:
       - ./localdevelopment/employer/nginx/:/etc/nginx/
     ports:
