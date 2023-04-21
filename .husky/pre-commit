@@ -1,4 +1,11 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-cd frontend && yarn husky:pre-commit
+set +e
+git status | grep -e "frontend/" &> /dev/null
+RUN_FRONTEND_PRECOMMIT=$?
+set -e
+
+if [ $RUN_FRONTEND_PRECOMMIT == "0" ]; then
+    cd frontend && yarn husky:pre-commit
+fi

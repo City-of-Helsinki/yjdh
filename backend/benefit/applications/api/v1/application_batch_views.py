@@ -11,7 +11,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from applications.api.v1.serializers import ApplicationBatchSerializer
+from applications.api.v1.serializers.batch import ApplicationBatchSerializer
 from applications.enums import ApplicationBatchStatus
 from applications.models import ApplicationBatch
 from applications.services.ahjo_integration import export_application_batch

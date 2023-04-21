@@ -10,7 +10,7 @@ from django.conf import settings
 from django.http import StreamingHttpResponse
 from rest_framework.reverse import reverse
 
-from applications.api.v1.serializers import ApplicationBatchSerializer
+from applications.api.v1.serializers.batch import ApplicationBatchSerializer
 from applications.enums import AhjoDecision, ApplicationBatchStatus, ApplicationStatus
 from applications.models import Application, ApplicationBatch
 from applications.tests.conftest import *  # noqa

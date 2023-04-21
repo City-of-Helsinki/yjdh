@@ -15,11 +15,11 @@ from freezegun import freeze_time
 from PIL import Image
 from rest_framework.reverse import reverse
 
-from applications.api.v1.serializers import (
+from applications.api.v1.serializers.application import (
     ApplicantApplicationSerializer,
-    AttachmentSerializer,
     HandlerApplicationSerializer,
 )
+from applications.api.v1.serializers.attachment import AttachmentSerializer
 from applications.api.v1.status_transition_validator import (
     ApplicantApplicationStatusValidator,
 )
