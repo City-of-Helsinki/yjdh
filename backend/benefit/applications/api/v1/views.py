@@ -424,7 +424,7 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         csv_filename = f"{export_filename_without_suffix}.csv"
         zip_filename = f"{export_filename_without_suffix}.zip"
         ordered_queryset = queryset.order_by(self.APPLICATION_ORDERING)
-        csv_service = ApplicationsCsvService(ordered_queryset)
+        csv_service = ApplicationsCsvService(ordered_queryset, True)
         csv_file_content: bytes = csv_service.get_csv_string().encode("utf-8")
         csv_file_info: ExportFileInfo = ExportFileInfo(
             filename=csv_filename,
