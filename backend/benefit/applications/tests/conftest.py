@@ -101,7 +101,9 @@ def applications_csv_service_with_one_application(applications_csv_service):
 
 
 @pytest.fixture
-def pruned_applications_csv_service_with_one_application(applications_csv_service, application_batch):
+def pruned_applications_csv_service_with_one_application(
+    applications_csv_service, application_batch
+):
     application1 = application_batch.applications.all().first()
     return ApplicationsCsvService(Application.objects.filter(pk=application1.pk), True)
 
