@@ -74,6 +74,8 @@ class ApplicationsCsvService(CsvExportBase):
 
     For easier processing, if an application would need two Ahjo rows, the two rows are produced in the output.
 
+    If the prune_data_for_talpa flag is set, then only the columns needed for Talpa are included in the output.
+
 
     """
 
