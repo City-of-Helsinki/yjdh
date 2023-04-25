@@ -77,12 +77,41 @@ class ApplicationsCsvService(CsvExportBase):
 
     """
 
-    def __init__(self, applications):
+    def __init__(self, applications, prune_data_for_talpa=False):
         self.applications = applications
         self.export_notes = []
+        self.prune_data_for_talpa = prune_data_for_talpa
 
     @property
     def CSV_COLUMNS(self):
+        """Return only columns that are needed for Talpa"""
+        if self.prune_data_for_talpa:
+            talpa_columns = [
+                CsvColumn("Hakemusnumero", "application_number"),
+                CsvColumn("Työnantajan tyyppi", get_organization_type),
+                CsvColumn("Työnantajan tilinumero", "company_bank_account_number"),
+                CsvColumn("Työnantajan nimi", "company_name"),
+                CsvColumn("Työnantajan Y-tunnus", "company.business_id"),
+                CsvColumn("Työnantajan katuosoite", "effective_company_street_address"),
+                CsvColumn("Työnantajan postinumero", "effective_company_postcode"),
+                CsvColumn("Työnantajan postitoimipaikka", "effective_company_city"),
+                CsvDefaultColumn(
+                    "Helsinki-lisän määrä lopullinen",
+                    "calculation.calculated_benefit_amount",
+                ),
+                CsvDefaultColumn("Päättäjän nimike", "batch.decision_maker_title"),
+                CsvDefaultColumn("Päättäjän nimi", "batch.decision_maker_name"),
+                CsvDefaultColumn("Päätöspykälä", "batch.section_of_the_law"),
+                CsvDefaultColumn("Päätöspäivä", "batch.decision_date"),
+                CsvDefaultColumn(
+                    "Asiantarkastajan nimi", "batch.expert_inspector_name"
+                ),
+                CsvDefaultColumn(
+                    "Asiantarkastajan email", "batch.expert_inspector_email"
+                ),
+            ]
+            return talpa_columns
+
         columns = [
             CsvColumn("Hakemusnumero", "application_number"),
             CsvColumn("Hakemusrivi", "application_row_idx"),
@@ -332,6 +361,7 @@ class ApplicationsCsvService(CsvExportBase):
             )
 
         columns.append(CsvColumn("Huom", get_export_notes))
+
         return columns
 
     MAX_AHJO_ROWS = 2
