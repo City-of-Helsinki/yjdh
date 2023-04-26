@@ -370,7 +370,7 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
     @transaction.atomic
     def export_new_accepted_applications_csv_pdf(self, request) -> HttpResponse:
         return self._csv_pdf_response(
-            self._create_application_batch(ApplicationStatus.ACCEPTED)
+            self._create_application_batch(ApplicationStatus.ACCEPTED), True
         )
 
     @action(methods=["GET"], detail=False)
@@ -419,12 +419,16 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         )
         return response
 
-    def _csv_pdf_response(self, queryset: QuerySet[Application]) -> HttpResponse:
+    """Generate a response with a CSV file and PDF files containing application data."""
+
+    def _csv_pdf_response(
+        self, queryset: QuerySet[Application], prune_data_for_talpa: bool = False
+    ) -> HttpResponse:
         export_filename_without_suffix = self._export_filename_without_suffix()
         csv_filename = f"{export_filename_without_suffix}.csv"
         zip_filename = f"{export_filename_without_suffix}.zip"
         ordered_queryset = queryset.order_by(self.APPLICATION_ORDERING)
-        csv_service = ApplicationsCsvService(ordered_queryset)
+        csv_service = ApplicationsCsvService(ordered_queryset, prune_data_for_talpa)
         csv_file_content: bytes = csv_service.get_csv_string().encode("utf-8")
         csv_file_info: ExportFileInfo = ExportFileInfo(
             filename=csv_filename,
