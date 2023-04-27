@@ -5,7 +5,7 @@ export enum ROUTES {
   LOGIN = '/login',
 
   // temporary urls, not defined yet
-  APPLICATIONS_PROCESSED = '/processed',
+  APPLICATIONS_BATCHES = '/batches',
   APPLICATIONS_ARCHIVE = '/archive',
   APPLICATIONS_REPORTS = '/reports',
 }

@@ -6,7 +6,6 @@ import {
   Table,
 } from 'hds-react';
 import * as React from 'react';
-import Container from 'shared/components/container/Container';
 import { $Link } from 'shared/components/table/Table.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
@@ -127,20 +126,20 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
 
   if (shouldShowSkeleton) {
     return (
-      <Container>
+      <>
         {heading && <$Heading>{`${heading} (0)`}</$Heading>}
         <LoadingSpinner small />
-      </Container>
+      </>
     );
   }
 
   const statusAsString = status.join(',');
   return (
-    <Container data-testid={`application-list-${statusAsString}`}>
+    <React.Fragment data-testid={`application-list-${statusAsString}`}>
       {!shouldHideList ? (
         <>
-          <$Heading>{`${heading} (${list.length})`}</$Heading>
           <Table
+            heading={`${heading} (${list.length})`}
             theme={theme.components.table}
             indexKey="id"
             rows={list}
@@ -152,7 +151,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
           {t(`${translationsBase}.messages.empty.${statusAsString}`)}
         </$EmptyHeading>
       )}
-    </Container>
+    </React.Fragment>
   );
 };
 
