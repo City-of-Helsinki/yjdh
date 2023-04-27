@@ -142,7 +142,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
 
     @action(methods=["POST"], detail=False)
     @transaction.atomic
-    def create_batch(self, request):
+    def add_to_batch(self, request):
         app_status = request.data["status"]
         app_ids = request.data["application_ids"]
 
@@ -182,6 +182,8 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             return Response(batch.data, status=status.HTTP_200_OK)
         else:
             return Response(
-                {"detail": "Unable to create batch."},
+                {
+                    "detail": "Unable to create a new batch or merge application to existing one."
+                },
                 status=status.HTTP_406_NOT_ACCEPTABLE,
             )

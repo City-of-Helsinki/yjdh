@@ -89,7 +89,7 @@ def test_application_batch_creation(handler_api_client, application_batch):
         app.save()
 
     response = handler_api_client.post(
-        "/v1/applicationbatches/create_batch/",
+        reverse("v1:applicationbatch-add-to-batch"),
         {
             "status": ApplicationStatus.ACCEPTED,
             "application_ids": [apps[0].id, apps[1].id, apps[2].id, apps[3].id],
@@ -104,7 +104,7 @@ def test_application_batch_creation(handler_api_client, application_batch):
     assert response.status_code == 200
 
     response = handler_api_client.post(
-        "/v1/applicationbatches/create_batch/",
+        reverse("v1:applicationbatch-add-to-batch"),
         {
             "status": ApplicationStatus.REJECTED,
             "application_ids": [apps[0].id, apps[1].id, apps[2].id, apps[3].id],
@@ -120,7 +120,7 @@ def test_application_batch_creation(handler_api_client, application_batch):
 
     # Wrong type for application_ids
     response = handler_api_client.post(
-        "/v1/applicationbatches/create_batch/",
+        reverse("v1:applicationbatch-add-to-batch"),
         {
             "status": ApplicationStatus.ACCEPTED,
             "application_ids": "04e9f0e3-5090-44e1-b35f-c536e598ceba",
@@ -130,7 +130,7 @@ def test_application_batch_creation(handler_api_client, application_batch):
 
     # Wrong status
     response = handler_api_client.post(
-        "/v1/applicationbatches/create_batch/",
+        reverse("v1:applicationbatch-add-to-batch"),
         {"status": ApplicationStatus.DRAFT, "application_ids": [apps[0].id]},
     )
     assert response.status_code == 406

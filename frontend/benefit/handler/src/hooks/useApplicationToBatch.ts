@@ -28,7 +28,7 @@ const useAddToBatchQuery = (): UseMutationResult<Payload, Error> => {
     ({ applicationIds, status }: Payload) =>
       handleResponse<Payload>(
         axios.post<Payload>(
-          `${BackendEndpoint.APPLICATION_BATCHES}create_batch/`,
+          `${BackendEndpoint.APPLICATION_BATCHES}add_to_batch/`,
           {
             application_ids: applicationIds,
             status,
@@ -38,8 +38,10 @@ const useAddToBatchQuery = (): UseMutationResult<Payload, Error> => {
     {
       onSuccess: (_, { applicationIds }) => {
         showSuccessToast(
-          'Hakemuksia siirretty koontiin',
-          `Olet siirtänyt ${applicationIds.length} hakemusta odottamaan Ahjoon vientiä.`
+          t('batches.notifications.addToBatch.success.heading'),
+          t('batches.notifications.addToBatch.success.text', {
+            count: applicationIds.length,
+          })
         );
         void queryClient.invalidateQueries('applicationsList');
       },
