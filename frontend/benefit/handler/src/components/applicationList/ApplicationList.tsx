@@ -1,18 +1,18 @@
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
-import { ApplicationListItemData } from 'benefit-shared/types/application';
-import { IconSpeechbubbleText, LoadingSpinner, StatusLabel } from 'hds-react';
+import {
+  IconSpeechbubbleText,
+  LoadingSpinner,
+  StatusLabel,
+  Table,
+} from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
-import { COLUMN_WIDTH } from 'shared/components/table/constants';
-import Table, { Column } from 'shared/components/table/Table';
 import { $Link } from 'shared/components/table/Table.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
 import { $CellContent, $EmptyHeading, $Heading } from './ApplicationList.sc';
 import { useApplicationList } from './useApplicationList';
-
-type ColumnType = Column<ApplicationListItemData>;
 
 export interface ApplicationListProps {
   heading: string;
@@ -34,74 +34,62 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
 
   const theme = useTheme();
 
-  const columns: ColumnType[] = React.useMemo(() => {
-    const cols: ColumnType[] = [
+  interface TableTransforms {
+    id?: string;
+    companyName?: string;
+    unreadMessagesCount?: number;
+    additionalInformationNeededBy?: string | Date;
+    status?: APPLICATION_STATUSES;
+  }
+
+  const columns = React.useMemo(() => {
+    const cols = [
       {
-        // eslint-disable-next-line react/display-name
-        Cell: ({
-          cell: {
-            row: {
-              original: { id, companyName },
-            },
-          },
-        }) => (
-          <$Link
-            href={`/application?id=${id}`}
-            rel="noopener noreferrer"
-            aria-label={companyName}
-          >
-            {companyName}
+        transform: ({ id, companyName }: TableTransforms) => (
+          <$Link href={`/application?id=${String(id)}`}>
+            {String(companyName)}
           </$Link>
         ),
-        Header: getHeader('companyName'),
-        accessor: 'companyName',
-        width: COLUMN_WIDTH.L,
+        headerName: getHeader('companyName'),
+        key: 'companyName',
+        isSortable: true,
       },
       {
-        Header: getHeader('companyId'),
-        accessor: 'companyId',
-        disableSortBy: true,
-        width: COLUMN_WIDTH.S,
+        headerName: getHeader('companyId'),
+        key: 'companyId',
+        isSortable: true,
       },
       {
-        Header: getHeader('submittedAt'),
-        accessor: 'submittedAt',
-        disableSortBy: true,
-        width: COLUMN_WIDTH.S,
+        headerName: getHeader('submittedAt'),
+        key: 'submittedAt',
+        isSortable: true,
       },
       {
-        Header: getHeader('applicationNum'),
-        accessor: 'applicationNum',
-        disableSortBy: true,
-        width: COLUMN_WIDTH.S,
+        headerName: getHeader('applicationNum'),
+        key: 'applicationNum',
+        isSortable: true,
       },
       {
-        Header: getHeader('employeeName'),
-        accessor: 'employeeName',
-        disableSortBy: true,
-        width: COLUMN_WIDTH.M,
+        headerName: getHeader('employeeName'),
+        key: 'employeeName',
+        isSortable: true,
       },
     ];
 
     if (status.includes(APPLICATION_STATUSES.HANDLING)) {
       cols.push({
-        Header: getHeader('handlerName'),
-        accessor: 'handlerName',
-        disableSortBy: true,
-        width: COLUMN_WIDTH.M,
+        headerName: getHeader('handlerName'),
+        key: 'handlerName',
+        isSortable: true,
       });
     }
 
     if (status.includes(APPLICATION_STATUSES.INFO_REQUIRED)) {
       cols.push({
-        // eslint-disable-next-line react/display-name
-        Cell: ({
-          cell: {
-            row: {
-              original: { additionalInformationNeededBy, status: itemStatus },
-            },
-          },
-        }) => (
+        transform: ({
+          additionalInformationNeededBy,
+          status: itemStatus,
+        }: TableTransforms) => (
           <div>
             {itemStatus === APPLICATION_STATUSES.INFO_REQUIRED ? (
               <StatusLabel type="alert">
@@ -115,35 +103,27 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
             ) : null}
           </div>
         ),
-        Header: getHeader('additionalInformationNeededBy'),
-        accessor: 'additionalInformationNeededBy',
-        disableSortBy: true,
+        headerName: getHeader('additionalInformationNeededBy'),
+        key: 'additionalInformationNeededBy',
+        isSortable: false,
       });
     }
 
     cols.push({
-      // eslint-disable-next-line react/display-name
-      Cell: ({
-        cell: {
-          row: {
-            original: { unreadMessagesCount },
-          },
-        },
-      }) => (
+      transform: ({ unreadMessagesCount }: TableTransforms) => (
         <$CellContent>
           {Number(unreadMessagesCount) > 0 ? (
             <IconSpeechbubbleText color={theme.colors.coatOfArms} />
           ) : null}
         </$CellContent>
       ),
-      Header: getHeader('unreadMessagesCount'),
-      accessor: 'unreadMessagesCount',
-      disableSortBy: true,
-      width: COLUMN_WIDTH.XS,
+      headerName: getHeader('unreadMessagesCount'),
+      key: 'unreadMessagesCount',
+      isSortable: false,
     });
 
     return cols.filter(Boolean);
-  }, [t, getHeader, status, theme.colors.coatOfArms]);
+  }, [t, getHeader, status, theme]);
 
   if (shouldShowSkeleton) {
     return (
@@ -154,16 +134,22 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     );
   }
 
+  const statusAsString = status.join(',');
   return (
-    <Container data-testid={`application-list-${status.join(',')}`}>
-      <$Heading>{`${heading} (${list.length})`}</$Heading>
+    <Container data-testid={`application-list-${statusAsString}`}>
       {!shouldHideList ? (
-        <Table data={list} columns={columns} />
+        <>
+          <$Heading>{`${heading} (${list.length})`}</$Heading>
+          <Table
+            theme={theme.components.table}
+            indexKey="id"
+            rows={list}
+            cols={columns}
+          />
+        </>
       ) : (
         <$EmptyHeading>
-          {status.includes(APPLICATION_STATUSES.HANDLING)
-            ? t(`${translationsBase}.messages.empty.handling`)
-            : t(`${translationsBase}.messages.empty.received`)}
+          {t(`${translationsBase}.messages.empty.${statusAsString}`)}
         </$EmptyHeading>
       )}
     </Container>

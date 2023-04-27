@@ -438,6 +438,7 @@ export type ApplicationListItemData = {
   allowedAction?: ApplicationAllowedAction;
   dataReceived?: string;
   unreadMessagesCount?: number;
+  batch: BatchData | null;
 };
 
 export type TextProp = 'textFi' | 'textEn' | 'textSv';

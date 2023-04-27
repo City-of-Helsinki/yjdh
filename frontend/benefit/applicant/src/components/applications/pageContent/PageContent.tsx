@@ -24,11 +24,11 @@ import ErrorPage from '../../errorPage/ErrorPage';
 import { usePageContent } from './usePageContent';
 
 const stepperCss = {
-  "pointer-events": "none",
+  'pointer-events': 'none',
   p: {
-    "text-decoration": "none !important",
-  }
-}
+    'text-decoration': 'none !important',
+  },
+};
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const PageContent: React.FC = () => {
@@ -146,7 +146,7 @@ const PageContent: React.FC = () => {
             selectedStep={currentStep - 1}
             onStepClick={(e) => e.stopPropagation()}
             css={stepperCss}
-            theme={theme.stepper}
+            theme={theme.components.stepper}
           />
         </$HeaderItem>
       </$PageHeader>

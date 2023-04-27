@@ -3,7 +3,7 @@
   "header": {
     "navigation": {
       "applications": "Hakemukset",
-      "processed": "Käsitellyt",
+      "batches": "Koonnit",
       "archive": "Arkisto",
       "reports": "Raportointi"
     },
@@ -129,14 +129,21 @@
       },
       "messages": {
         "empty": {
-          "received": "Ei yhtään saapunutta hakemusta",
-          "handling": "Ei yhtään käsittelyssä olevaa hakemusta",
-          "archive": "Ei yhtään arkistoitua hakemusta"
+          "handling": "Ei yhtään käsittelyssä olevaa hakemusta.",
+          "accepted": "Ei yhtään käsiteltyä myönteistä hakemusta.",
+          "rejected": "Ei yhtään käsiteltyä kielteistä hakemusta.",
+          "received": "Ei yhtään saapunutta hakemusta.",
+          "archived": "Ei yhtään arkistoitua hakemusta.",
+          "additional_information_needed": "Ei yhtään lisätietoja odottavaa hakemusta."
         }
       },
       "headings": {
+        "all": "Kaikki",
         "received": "Saapuneet",
-        "handling": "Käsittelyssä"
+        "handling": "Käsittelyssä",
+        "accepted": "Myönteiset",
+        "rejected": "Kielteiset",
+        "infoRequired": "Odottaa lisätietoja"
       },
       "errors": {
         "fetch": {
@@ -147,6 +154,13 @@
       "total": {
         "count_one": "{{count}} hakemus",
         "count_other": "{{count}} hakemusta"
+      },
+      "selectedApplications": {
+        "count_one": "Valittu {{count}} hakemus",
+        "count_other": "Valittu {{count}} hakemusta"
+      },
+      "actions": {
+        "addToBatch": "Lisää valitut koontiin"
       }
     },
     "actions": {
@@ -448,5 +462,15 @@
     "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
     "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Voit valita itse, mitä tunnistustapaa haluat käyttää. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi."
   },
-  "select": "Valitse"
+  "select": "Valitse",
+  "batches": {
+    "notifications": {
+      "addToBatch": {
+        "success": {
+          "heading": "Koontiin siirto onnistui!",
+          "text": "Olet muodostanut {{ count }} hakemuksesta koonnin."
+        }
+      }
+    }
+  }
 }

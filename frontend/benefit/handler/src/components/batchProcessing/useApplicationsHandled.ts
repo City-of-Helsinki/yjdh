@@ -1,5 +1,6 @@
 import useApplicationsQuery from 'benefit/handler/hooks/useApplicationsQuery';
 import { getBatchDataReceived } from 'benefit/handler/utils/common';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import {
   ApplicationData,
   ApplicationListItemData,
@@ -19,12 +20,12 @@ interface ApplicationListProps {
 
 const translationsBase = 'common:applications.list';
 
-const useApplicationsArchive = (): ApplicationListProps => {
+const useApplicationsHandled = (
+  status: APPLICATION_STATUSES,
+  excludeBatched = false
+): ApplicationListProps => {
   const { t } = useTranslation();
-  const query = useApplicationsQuery(
-    ['accepted', 'rejected', 'cancelled'],
-    '-submitted_at'
-  );
+  const query = useApplicationsQuery([status], '-submitted_at', excludeBatched);
 
   const list = query.data
     ?.sort(
@@ -38,13 +39,14 @@ const useApplicationsArchive = (): ApplicationListProps => {
         company,
         handled_at,
         application_number: applicationNum,
-        status,
+        status: appStatus,
         batch,
       } = application;
 
       return {
         id,
-        status,
+        status: appStatus,
+        batch,
         companyName: company ? company.name : '-',
         companyId: company ? company.business_id : '-',
         employeeName:
@@ -52,7 +54,6 @@ const useApplicationsArchive = (): ApplicationListProps => {
         handledAt: convertToUIDateFormat(handled_at) || '-',
         dataReceived: getBatchDataReceived(status, batch?.created_at),
         applicationNum,
-        batch: batch ?? null,
       };
     });
 
@@ -77,4 +78,4 @@ const useApplicationsArchive = (): ApplicationListProps => {
   };
 };
 
-export { useApplicationsArchive };
+export { useApplicationsHandled };

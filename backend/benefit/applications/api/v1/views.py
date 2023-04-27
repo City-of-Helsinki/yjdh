@@ -154,16 +154,16 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         )
 
         order_by = request.GET.get("order_by")
-
         if (
             order_by
             and re.sub(r"^-", "", order_by)
             in ApplicantApplicationSerializer.Meta.fields
         ):
-            serializer = self.serializer_class(
-                qs.order_by(order_by), many=True, context=context
-            )
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            qs = qs.order_by(order_by)
+
+        exclude_batched = request.GET.get("exclude_batched") == "1"
+        if exclude_batched:
+            qs = qs.filter(batch__isnull=True)
 
         serializer = self.serializer_class(qs, many=True, context=context)
         return Response(serializer.data, status=status.HTTP_200_OK)

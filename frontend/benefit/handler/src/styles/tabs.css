@@ -1,0 +1,16 @@
+/* Hack for HDS tabs as currently theming is broken or there's a problem with styled-components or babel */
+/* This could be revisited once Next v12 is merged */
+[class*='Tabs-module_tablist'] [role='tablist'] li span {
+  color: var(--color-coat-of-arms);
+}
+
+[class*='Tabs-module_tablist'] [role='tablist'] li[aria-selected='true'] span {
+  color: var(--color-black);
+}
+
+[class*='Tabs-module_tablist']
+  [role='tablist']
+  li[aria-selected='true']
+  span:before {
+  background-color: var(--color-black);
+}

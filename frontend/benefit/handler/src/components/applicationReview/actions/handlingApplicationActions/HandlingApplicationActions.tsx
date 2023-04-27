@@ -69,6 +69,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
             onClick={onBackToHandling}
             theme="black"
             variant="secondary"
+            disabled={!!application.batch}
             iconLeft={<IconArrowUndo />}
           >
             {t(`${translationsBase}.backToHandling`)}

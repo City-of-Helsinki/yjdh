@@ -1,9 +1,14 @@
 import { DefaultTheme } from 'styled-components';
 
-const stepperColors = {
-  black: 'var(--color-black-90)',
-  white: 'var(--color-white)',
-  grey: 'var(--color-black-30)',
+const colors = {
+  coatOfArms: 'var(--color-coat-of-arms)',
+  components: {
+    stepper: {
+      black: 'var(--color-black-90)',
+      white: 'var(--color-white)',
+      grey: 'var(--color-black-30)',
+    },
+  },
 };
 
 const theme: DefaultTheme = {
@@ -16,7 +21,7 @@ const theme: DefaultTheme = {
     busLight: 'var(--color-bus-light)',
     busMediumLight: 'var(--color-bus-medium-light)',
     busDark: 'var(--color-bus-dark)',
-    coatOfArms: 'var(--color-coat-of-arms)',
+    coatOfArms: colors.coatOfArms as 'var(--color-coat-of-arms)',
     coatOfArmsLight: 'var(--color-coat-of-arms-light)',
     coatOfArmsMediumLight: 'var(--color-coat-of-arms-medium-light)',
     coatOfArmsDark: 'var(--color-coat-of-arms-dark)',
@@ -143,15 +148,24 @@ const theme: DefaultTheme = {
     l: '992px',
     xl: '1248px',
   },
-  stepper: {
-    '--hds-not-selected-step-label-color': stepperColors.black,
-    '--hds-step-background-color': stepperColors.white,
-    '--hds-step-content-color': stepperColors.black,
-    '--hds-stepper-background-color': stepperColors.white,
-    '--hds-stepper-color': stepperColors.black,
-    '--hds-stepper-disabled-color': stepperColors.grey,
-    '--hds-stepper-focus-border-color': stepperColors.black,
-  }
+  components: {
+    tabs: {
+      '--tab-color': colors.coatOfArms,
+      '--tab-active-border-color': 'var(--color-black)',
+    },
+    table: {
+      '--header-background-color': colors.coatOfArms,
+    },
+    stepper: {
+      '--hds-not-selected-step-label-color': colors.components.stepper.black,
+      '--hds-step-background-color': colors.components.stepper.white,
+      '--hds-step-content-color': colors.components.stepper.black,
+      '--hds-stepper-background-color': colors.components.stepper.white,
+      '--hds-stepper-color': colors.components.stepper.black,
+      '--hds-stepper-disabled-color': colors.components.stepper.grey,
+      '--hds-stepper-focus-border-color': colors.components.stepper.black,
+    },
+  },
 };
 
 export default theme;

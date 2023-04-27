@@ -2161,6 +2161,26 @@ def test_handler_application_order_by(handler_api_client):
     assert expected_application_values == returned_application_values
 
 
+def test_handler_application_exlude_batched(handler_api_client):
+    batch = ApplicationBatchFactory()
+    apps = [DecidedApplicationFactory(), DecidedApplicationFactory()]
+
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list"),
+        {"exclude_batched": "1"},
+    )
+    assert len(response.data) == 2
+
+    apps[0].batch = batch
+    apps[0].save()
+
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list"),
+        {"exclude_batched": "1"},
+    )
+    assert len(response.data) == 1
+
+
 def _create_random_applications():
     f = faker.Faker()
     combos = [

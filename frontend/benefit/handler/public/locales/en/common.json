@@ -3,7 +3,7 @@
   "header": {
     "navigation": {
       "applications": "Hakemukset",
-      "processed": "Käsitellyt",
+      "batches": "Koonnit",
       "archive": "Arkisto",
       "reports": "Raportointi"
     },
@@ -82,7 +82,6 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "menuToggleAriaLabel": "Menu",
   "errorPage": {
     "title": "Palvelussa on valitettavasti tapahtunut virhe",
     "message": "Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
@@ -130,14 +129,21 @@
       },
       "messages": {
         "empty": {
-          "received": "Ei yhtään saapunutta hakemusta",
-          "handling": "Ei yhtään käsittelyssä olevaa hakemusta",
-          "archive": "Ei yhtään arkistoitua hakemusta"
+          "handling": "Ei yhtään käsittelyssä olevaa hakemusta.",
+          "accepted": "Ei yhtään käsiteltyä myönteistä hakemusta.",
+          "rejected": "Ei yhtään käsiteltyä kielteistä hakemusta.",
+          "received": "Ei yhtään saapunutta hakemusta.",
+          "archived": "Ei yhtään arkistoitua hakemusta.",
+          "additional_information_needed": "Ei yhtään lisätietoja odottavaa hakemusta."
         }
       },
       "headings": {
+        "all": "Kaikki",
         "received": "Saapuneet",
-        "handling": "Käsittelyssä"
+        "handling": "Käsittelyssä",
+        "accepted": "Myönteiset",
+        "rejected": "Kielteiset",
+        "infoRequired": "Odottaa lisätietoja"
       },
       "errors": {
         "fetch": {
@@ -148,6 +154,13 @@
       "total": {
         "count_one": "{{count}} hakemus",
         "count_other": "{{count}} hakemusta"
+      },
+      "selectedApplications": {
+        "count_one": "Valittu {{count}} hakemus",
+        "count_other": "Valittu {{count}} hakemusta"
+      },
+      "actions": {
+        "addToBatch": "Lisää valitut koontiin"
       }
     },
     "actions": {
@@ -449,5 +462,15 @@
     "logoutInfoContent": "You have been logged out. If you want to continue to use the service, you have to log in again click the button here below.",
     "infoContent": "You should identify yourself to be able to advance to the service. You can choose yourself which identification method you want to use. Click on the bottom below to identify yourself."
   },
-  "select": "Valitse"
+  "select": "Valitse",
+  "batches": {
+    "notifications": {
+      "addToBatch": {
+        "success": {
+          "heading": "Koontiin siirto onnistui!",
+          "text": "Olet muodostanut {{ count }} hakemuksesta koonnin."
+        }
+      }
+    }
+  }
 }
