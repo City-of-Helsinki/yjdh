@@ -161,7 +161,7 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         ):
             qs = qs.order_by(order_by)
 
-        exclude_batched = request.GET.get("exclude_batched") == "1" or False
+        exclude_batched = request.GET.get("exclude_batched") == "1"
         if exclude_batched:
             qs = qs.filter(batch__isnull=True)
 
