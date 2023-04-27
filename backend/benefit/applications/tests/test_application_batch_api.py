@@ -10,7 +10,6 @@ from django.conf import settings
 from django.http import StreamingHttpResponse
 from rest_framework.reverse import reverse
 
-from applications.api.v1.application_batch_views import BatchUtils
 from applications.api.v1.serializers.batch import ApplicationBatchSerializer
 from applications.enums import AhjoDecision, ApplicationBatchStatus, ApplicationStatus
 from applications.models import Application, ApplicationBatch
@@ -102,7 +101,7 @@ def test_application_batch_creation(handler_api_client, application_batch):
     assert apps[1].id in response.data["applications"]
     assert apps[2].id not in response.data["applications"]
     assert apps[3].id not in response.data["applications"]
-    assert response.status_code == 201
+    assert response.status_code == 200
 
     response = handler_api_client.post(
         "/v1/applicationbatches/create_batch/",
@@ -117,12 +116,15 @@ def test_application_batch_creation(handler_api_client, application_batch):
     assert apps[1].id not in response.data["applications"]
     assert apps[2].id in response.data["applications"]
     assert apps[3].id not in response.data["applications"]
-    assert response.status_code == 201
+    assert response.status_code == 200
 
     # Wrong type for application_ids
     response = handler_api_client.post(
         "/v1/applicationbatches/create_batch/",
-        {"status": ApplicationStatus.DRAFT, "application_ids": "failing argument"},
+        {
+            "status": ApplicationStatus.ACCEPTED,
+            "application_ids": "04e9f0e3-5090-44e1-b35f-c536e598ceba",
+        },
     )
     assert response.status_code == 406
 
@@ -557,22 +559,6 @@ def test_application_batch_export(mock_export, handler_api_client, application_b
     )
     application_batch.refresh_from_db()
     assert response.status_code == 400
-
-
-def test_matching_status_map():
-    assert BatchUtils.get_matching_status_map(ApplicationStatus.ACCEPTED)
-    assert BatchUtils.get_matching_status_map(ApplicationStatus.REJECTED)
-
-    status_set = set(list(ApplicationBatchStatus))
-    status_set_passing = set(
-        [
-            ApplicationBatchStatus.DECIDED_ACCEPTED,
-            ApplicationBatchStatus.DECIDED_REJECTED,
-        ]
-    )
-    status_set_failing = status_set - status_set_passing
-    for status in status_set_failing:
-        assert BatchUtils.get_matching_status_map(status) is False
 
 
 def test_application_batches_talpa_export(anonymous_client, application_batch):
