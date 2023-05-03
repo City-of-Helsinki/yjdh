@@ -1,4 +1,6 @@
 import { $Heading } from 'benefit/handler/components/applicationsArchive/ApplicationsArchive.sc';
+import BatchProposals from 'benefit/handler/components/batchProcessing/BatchProposals';
+import { $BackgroundWrapper } from 'benefit/handler/components/layout/Layout';
 import AppContext from 'benefit/handler/context/AppContext';
 import { Tabs } from 'hds-react';
 import { GetStaticProps, NextPage } from 'next';
@@ -8,12 +10,6 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import Container from 'shared/components/container/Container';
 import theme from 'shared/styles/theme';
-import styled from 'styled-components';
-
-export const $Wrapper = styled.aside`
-  background-color: ${(props) => props.style.backgroundColor};
-  height: 100%;
-`;
 
 const BatchIndex: NextPage = () => {
   const {
@@ -37,7 +33,7 @@ const BatchIndex: NextPage = () => {
   }, [setIsFooterVisible, setIsNavigationVisible, setLayoutBackgroundColor]);
 
   return (
-    <$Wrapper style={{ backgroundColor: layoutBackgroundColor }}>
+    <$BackgroundWrapper backgroundColor={layoutBackgroundColor}>
       <Container data-testid="batch-proposal">
         <$Heading data-testid="main-ingress">
           {`${t('common:header.navigation.batches')}`}
@@ -45,15 +41,15 @@ const BatchIndex: NextPage = () => {
 
         <Tabs>
           <Tabs.TabList style={{ marginBottom: 'var(--spacing-m)' }}>
-            <Tabs.Tab>Odottaa Ahjoon vientiä</Tabs.Tab>
+            <Tabs.Tab>{t('common:batches.tabs.pending')}</Tabs.Tab>
           </Tabs.TabList>
 
           <Tabs.TabPanel>
-            <p>Ahjoon vienti taulukko</p>
+            <BatchProposals />
           </Tabs.TabPanel>
         </Tabs>
       </Container>
-    </$Wrapper>
+    </$BackgroundWrapper>
   );
 };
 

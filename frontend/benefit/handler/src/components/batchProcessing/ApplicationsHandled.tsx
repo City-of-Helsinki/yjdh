@@ -107,7 +107,7 @@ const ApplicationsHandled: React.FC<Props> = ({
   }
 
   return (
-    <Container data-testid="application-list-archived">
+    <div data-testid="application-list-archived">
       {!shouldHideList ? (
         <>
           <Table
@@ -153,7 +153,7 @@ const ApplicationsHandled: React.FC<Props> = ({
           {t(`${translationsBase}.messages.empty.${status}`)}
         </$EmptyHeading>
       )}
-    </Container>
+    </div>
   );
 };
 

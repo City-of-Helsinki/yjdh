@@ -135,23 +135,21 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
 
   const statusAsString = status.join(',');
   return (
-    <React.Fragment data-testid={`application-list-${statusAsString}`}>
+    <div data-testid={`application-list-${statusAsString}`}>
       {!shouldHideList ? (
-        <>
-          <Table
-            heading={`${heading} (${list.length})`}
-            theme={theme.components.table}
-            indexKey="id"
-            rows={list}
-            cols={columns}
-          />
-        </>
+        <Table
+          heading={`${heading} (${list.length})`}
+          theme={theme.components.table}
+          indexKey="id"
+          rows={list}
+          cols={columns}
+        />
       ) : (
         <$EmptyHeading>
           {t(`${translationsBase}.messages.empty.${statusAsString}`)}
         </$EmptyHeading>
       )}
-    </React.Fragment>
+    </div>
   );
 };
 

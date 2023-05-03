@@ -1,13 +1,13 @@
 import {
   EXPORT_APPLICATIONS_IN_TIME_RANGE_FORM_KEYS,
   EXPORT_APPLICATIONS_ROUTES,
-  PROPOSALS_FOR_DESISION,
 } from 'benefit/handler/constants';
 import useReportsApplicationBatchesQuery, {
   getReportsApplicationBatchesQueryKey,
 } from 'benefit/handler/hooks/useReportsApplicationBatchesQuery';
 import { ExportApplicationInTimeRangeFormProps } from 'benefit/handler/types/application';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
+import { PROPOSALS_FOR_DECISION } from 'benefit-shared/constants';
 import { FormikProps, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
 import noop from 'lodash/noop';
@@ -34,7 +34,7 @@ type ExtendedComponentProps = {
   exportApplications: (
     type: ExportFileType,
     exportApplicationsRoute: string,
-    proposalForDecision: PROPOSALS_FOR_DESISION
+    proposalForDecision: PROPOSALS_FOR_DECISION
   ) => void;
   formik: FormikProps<ExportApplicationInTimeRangeFormProps>;
   fields: {
@@ -56,7 +56,7 @@ const useApplicationReports = (): ExtendedComponentProps => {
   const queryClient = useQueryClient();
 
   const { data: lastAcceptedApplicationBatches } =
-    useReportsApplicationBatchesQuery(PROPOSALS_FOR_DESISION.ACCEPTED);
+    useReportsApplicationBatchesQuery(PROPOSALS_FOR_DECISION.ACCEPTED);
   const lastAcceptedApplicationsExportDate =
     lastAcceptedApplicationBatches && lastAcceptedApplicationBatches.length > 0
       ? convertToUIDateFormat(
@@ -67,7 +67,7 @@ const useApplicationReports = (): ExtendedComponentProps => {
       : '';
 
   const { data: lastRejectedApplicationBatches } =
-    useReportsApplicationBatchesQuery(PROPOSALS_FOR_DESISION.REJECTED);
+    useReportsApplicationBatchesQuery(PROPOSALS_FOR_DECISION.REJECTED);
   const lastRejectedApplicationsExportDate =
     lastRejectedApplicationBatches && lastRejectedApplicationBatches.length > 0
       ? convertToUIDateFormat(
@@ -81,7 +81,7 @@ const useApplicationReports = (): ExtendedComponentProps => {
     async (
       type: ExportFileType,
       exportApplicationsRoute: EXPORT_APPLICATIONS_ROUTES,
-      proposalForDecision: PROPOSALS_FOR_DESISION
+      proposalForDecision: PROPOSALS_FOR_DECISION
     ) => {
       const urlSafeType: string = String(type).toLowerCase().replace('/', '_');
       const data = await handleResponse<string>(

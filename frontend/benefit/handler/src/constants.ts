@@ -22,11 +22,6 @@ export enum SUPPORTED_LANGUAGES {
   EN = 'en',
 }
 
-export enum PROPOSALS_FOR_DESISION {
-  ACCEPTED = 'accepted',
-  REJECTED = 'rejected',
-}
-
 export const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES.FI;
 
 export const COMMON_I18N_NAMESPACES = ['common'] as const;

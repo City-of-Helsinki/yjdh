@@ -387,7 +387,8 @@
     "no": "Ei",
     "and": "ja",
     "home": "Palaa etusivulle",
-    "check": "Tarkastele"
+    "check": "Tarkastele",
+    "loading": "Ladataan …"
   },
   "upload": {
     "isUploading": "Uploading...",
@@ -464,13 +465,39 @@
   },
   "select": "Valitse",
   "batches": {
+    "single": "Koonti",
+    "multiple": "Koonnit",
+    "tabs": {
+      "pending": "Odottaa Ahjoon vientiä"
+    },
+    "list": {
+      "columns": {
+        "createdAt": "Luotu",
+        "status": "Tila",
+        "statuses": {
+          "accepted": "Myönteiset",
+          "rejected": "Kielteiset"
+        },
+        "handler": "Käsittelijä"
+      },
+      "empty": "Tyhjä koonti"
+    },
     "notifications": {
       "addToBatch": {
         "success": {
           "heading": "Koontiin siirto onnistui!",
           "text": "Olet muodostanut {{ count }} hakemuksesta koonnin."
         }
+      },
+      "registerToAhjo": {
+        "awaiting_ahjo_decision": "Koonti merkitty Ahjoon viedyksi",
+        "draft": "Koonti palautettu takaisin odottamaan päätösvalmistelua"
       }
+    },
+    "actions": {
+      "markAsRegisteredToAhjo": "Merkitse Ahjoon viedyksi",
+      "markedAsRegisteredToAhjo": "Viety Ahjoon",
+      "downloadFiles": "Lataa liitteet"
     }
   }
 }
