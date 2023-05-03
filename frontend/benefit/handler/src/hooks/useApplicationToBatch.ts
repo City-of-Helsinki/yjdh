@@ -27,7 +27,7 @@ const useAddToBatchQuery = (): UseMutationResult<Payload, Error> => {
     'addApplicationToBatch',
     ({ applicationIds, status }: Payload) =>
       handleResponse<Payload>(
-        axios.patch<Payload>(`${HandlerEndpoint.BATCH_ASSIGN}`, {
+        axios.patch<Payload>(`${HandlerEndpoint.BATCH_APP_ASSIGN}`, {
           application_ids: applicationIds,
           status,
         })
