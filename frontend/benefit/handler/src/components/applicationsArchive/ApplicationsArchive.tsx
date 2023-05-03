@@ -1,17 +1,13 @@
 import { ApplicationListItemData } from 'benefit-shared/types/application';
+import { LoadingSpinner } from 'hds-react';
 import * as React from 'react';
-import LoadingSkeleton from 'react-loading-skeleton';
 import Container from 'shared/components/container/Container';
 import { COLUMN_WIDTH } from 'shared/components/table/constants';
 import Table, { Column } from 'shared/components/table/Table';
 import { $Link } from 'shared/components/table/Table.sc';
 
-import {
-  $ArchiveCount,
-  $Empty,
-  $Heading,
-  $Status,
-} from './ApplicationsArchive.sc';
+import { $EmptyHeading } from '../applicationList/ApplicationList.sc';
+import { $ArchiveCount, $Heading, $Status } from './ApplicationsArchive.sc';
 import { useApplicationsArchive } from './useApplicationsArchive';
 
 type ColumnType = Column<ApplicationListItemData>;
@@ -108,7 +104,13 @@ const ApplicationsArchive: React.FC = () => {
   if (shouldShowSkeleton) {
     return (
       <Container>
-        <LoadingSkeleton width="100%" height="50px" />
+        <$Heading as="h1">{`${t(
+          'common:header.navigation.archive'
+        )}`}</$Heading>
+        <$ArchiveCount>{`${t(`${translationsBase}.total.count`, {
+          count: 0,
+        })}`}</$ArchiveCount>
+        <LoadingSpinner small />
       </Container>
     );
   }
@@ -118,15 +120,15 @@ const ApplicationsArchive: React.FC = () => {
       <$Heading as="h1" data-testid="main-ingress">{`${t(
         'common:header.navigation.archive'
       )}`}</$Heading>
-      {list.length > 0 && (
-        <$ArchiveCount>{`${t(`${translationsBase}.total.count`, {
-          count: list.length,
-        })}`}</$ArchiveCount>
-      )}
+      <$ArchiveCount>{`${t(`${translationsBase}.total.count`, {
+        count: list.length,
+      })}`}</$ArchiveCount>
       {!shouldHideList ? (
         <Table data={list} columns={columns} />
       ) : (
-        <$Empty>{t(`${translationsBase}.messages.empty.archive`)}</$Empty>
+        <$EmptyHeading>
+          {t(`${translationsBase}.messages.empty.archived`)}
+        </$EmptyHeading>
       )}
     </Container>
   );
