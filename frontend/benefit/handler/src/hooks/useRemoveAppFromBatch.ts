@@ -24,7 +24,7 @@ const useRemoveAppFromBatch = (): UseMutationResult<Payload, Error> => {
     'removeApplicationFromBatch',
     ({ appIds, batchId }: Payload) =>
       handleResponse<Payload>(
-        axios.patch<Payload>(HandlerEndpoint.BATCH_DEASSIGN(batchId), {
+        axios.patch<Payload>(HandlerEndpoint.BATCH_APP_DEASSIGN(batchId), {
           application_ids: appIds,
         })
       ),

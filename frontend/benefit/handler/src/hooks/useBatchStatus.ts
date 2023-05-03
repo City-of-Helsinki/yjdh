@@ -25,7 +25,7 @@ const useBatchStatus = (): UseMutationResult<null, Error, Payload> => {
     'changeBatchStatus',
     ({ batchId, status }: Payload) =>
       handleResponse<null>(
-        axios.patch<null>(HandlerEndpoint.BATCH_STATUS_ASSIGN(batchId), {
+        axios.patch<null>(HandlerEndpoint.BATCH_STATUS_CHANGE(batchId), {
           status,
         })
       ),

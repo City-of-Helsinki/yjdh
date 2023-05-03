@@ -19,10 +19,10 @@ export const BackendEndpoint = {
 const singleBatchBase = (id: string): string =>
   `${BackendEndpoint.APPLICATION_BATCHES}${id}/`;
 export const HandlerEndpoint = {
-  BATCH_ASSIGN: `${BackendEndpoint.APPLICATION_BATCHES}assign_applications/`,
-  BATCH_DEASSIGN: (id: string): string =>
+  BATCH_APP_ASSIGN: `${BackendEndpoint.APPLICATION_BATCHES}assign_applications/`,
+  BATCH_APP_DEASSIGN: (id: string): string =>
     `${singleBatchBase(id)}deassign_applications/`,
-  BATCH_STATUS_ASSIGN: (id: string): string => `${singleBatchBase(id)}status/`,
+  BATCH_STATUS_CHANGE: (id: string): string => `${singleBatchBase(id)}status/`,
 } as const;
 
 export const BackendEndPoints = Object.values(BackendEndpoint);
