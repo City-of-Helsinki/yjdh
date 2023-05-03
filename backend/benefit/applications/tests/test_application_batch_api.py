@@ -10,16 +10,22 @@ from django.conf import settings
 from django.http import StreamingHttpResponse
 from rest_framework.reverse import reverse
 
-from applications.api.v1.serializers.batch import ApplicationBatchSerializer
+from applications.api.v1.serializers.application import ApplicationBatchSerializer
 from applications.enums import AhjoDecision, ApplicationBatchStatus, ApplicationStatus
 from applications.models import Application, ApplicationBatch
 from applications.tests.conftest import *  # noqa
-from applications.tests.factories import ApplicationBatchFactory, ApplicationFactory
+from applications.tests.factories import (
+    ApplicationBatchFactory,
+    ApplicationFactory,
+    DecidedApplicationFactory,
+)
 from applications.tests.test_applications_api import get_handler_detail_url
 
 
-def get_batch_detail_url(application_batch):
-    return reverse("v1:applicationbatch-detail", kwargs={"pk": application_batch.id})
+def get_batch_detail_url(application_batch, uri=""):
+    return (
+        reverse("v1:applicationbatch-detail", kwargs={"pk": application_batch.id}) + uri
+    )
 
 
 def test_get_application_batch_unauthenticated(anonymous_client, application_batch):
@@ -77,7 +83,7 @@ def test_applications_batch_list_with_filter(handler_api_client, application_bat
     )
 
 
-def test_application_batch_creation(handler_api_client, application_batch):
+def test_application_batch_creation(handler_api_client):
     apps = [
         ApplicationFactory(status=ApplicationStatus.ACCEPTED),
         ApplicationFactory(status=ApplicationStatus.ACCEPTED),
@@ -88,23 +94,23 @@ def test_application_batch_creation(handler_api_client, application_batch):
     for app in apps:
         app.save()
 
-    response = handler_api_client.post(
-        reverse("v1:applicationbatch-add-to-batch"),
+    response = handler_api_client.patch(
+        reverse("v1:applicationbatch-assign-applications"),
         {
             "status": ApplicationStatus.ACCEPTED,
             "application_ids": [apps[0].id, apps[1].id, apps[2].id, apps[3].id],
         },
     )
 
-    assert len(response.data["applications"]) == 4
+    assert len(response.data["applications"]) == 2
     assert apps[0].id in response.data["applications"]
     assert apps[1].id in response.data["applications"]
     assert apps[2].id not in response.data["applications"]
     assert apps[3].id not in response.data["applications"]
     assert response.status_code == 200
 
-    response = handler_api_client.post(
-        reverse("v1:applicationbatch-add-to-batch"),
+    response = handler_api_client.patch(
+        reverse("v1:applicationbatch-assign-applications"),
         {
             "status": ApplicationStatus.REJECTED,
             "application_ids": [apps[0].id, apps[1].id, apps[2].id, apps[3].id],
@@ -119,8 +125,8 @@ def test_application_batch_creation(handler_api_client, application_batch):
     assert response.status_code == 200
 
     # Wrong type for application_ids
-    response = handler_api_client.post(
-        reverse("v1:applicationbatch-add-to-batch"),
+    response = handler_api_client.patch(
+        reverse("v1:applicationbatch-assign-applications"),
         {
             "status": ApplicationStatus.ACCEPTED,
             "application_ids": "04e9f0e3-5090-44e1-b35f-c536e598ceba",
@@ -129,11 +135,95 @@ def test_application_batch_creation(handler_api_client, application_batch):
     assert response.status_code == 406
 
     # Wrong status
-    response = handler_api_client.post(
-        reverse("v1:applicationbatch-add-to-batch"),
+    response = handler_api_client.patch(
+        reverse("v1:applicationbatch-assign-applications"),
         {"status": ApplicationStatus.DRAFT, "application_ids": [apps[0].id]},
     )
     assert response.status_code == 406
+
+
+def test_deassign_applications_from_batch(handler_api_client, application_batch):
+    url = get_batch_detail_url(application_batch, "deassign_applications/")
+    apps = Application.objects.filter(batch=application_batch)
+
+    first_app_id = apps[0].id
+    last_app_id = apps[1].id
+
+    assert len(apps) == 2
+
+    app_list = [first_app_id]
+    apps = [
+        DecidedApplicationFactory(),
+        DecidedApplicationFactory(),
+        DecidedApplicationFactory(),
+    ]
+    for app in apps:
+        app.batch = application_batch
+        app_list.append(app.id)
+        app.save()
+
+    apps = Application.objects.filter(batch=application_batch)
+    assert len(apps) == 5
+
+    response = handler_api_client.patch(
+        url,
+        {
+            "application_ids": app_list,
+            "batch_id": application_batch.id,
+        },
+    )
+    assert response.status_code == 200
+    apps = Application.objects.filter(batch=application_batch)
+    assert len(apps) == 1
+    assert str(apps.first().id) == str(last_app_id)
+
+    # No applications found
+    response = handler_api_client.patch(
+        url,
+        {
+            "application_ids": [first_app_id],
+        },
+    )
+
+    assert response.status_code == 404
+
+    # No batch found
+    application_batch.delete()
+    response = handler_api_client.patch(
+        url,
+        {
+            "application_ids": [last_app_id],
+        },
+    )
+
+    assert response.status_code == 404
+
+
+def test_batch_status_change(handler_api_client, application_batch):
+    url = get_batch_detail_url(application_batch, "status/")
+
+    assert application_batch.status == ApplicationBatchStatus.DRAFT
+    response = handler_api_client.patch(
+        url, {"status": ApplicationBatchStatus.AWAITING_AHJO_DECISION}
+    )
+    assert response.status_code == 200
+    assert response.data["status"] == ApplicationBatchStatus.AWAITING_AHJO_DECISION
+
+    response = handler_api_client.patch(url, {"status": ApplicationBatchStatus.DRAFT})
+    assert response.status_code == 200
+    assert response.data["status"] == ApplicationBatchStatus.DRAFT
+
+    failing_statuses = [
+        ApplicationBatchStatus.COMPLETED,
+        ApplicationBatchStatus.DECIDED_ACCEPTED,
+        ApplicationBatchStatus.DECIDED_REJECTED,
+        ApplicationBatchStatus.AHJO_REPORT_CREATED,
+        ApplicationBatchStatus.RETURNED,
+        ApplicationBatchStatus.SENT_TO_TALPA,
+    ]
+    for status in failing_statuses:
+        response = handler_api_client.patch(url, {"status": status})
+        assert response.status_code == 406
 
 
 @pytest.mark.parametrize(
