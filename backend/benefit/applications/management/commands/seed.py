@@ -7,9 +7,10 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from applications.enums import ApplicationStatus
-from applications.models import Application, ApplicationBasis
+from applications.models import Application, ApplicationBasis, ApplicationBatch
 from applications.tests.factories import (
     AdditionalInformationNeededApplicationFactory,
+    ApplicationBatchFactory,
     ApplicationWithAttachmentFactory,
     CancelledApplicationFactory,
     DecidedApplicationFactory,
@@ -18,6 +19,7 @@ from applications.tests.factories import (
     RejectedApplicationFactory,
 )
 from terms.models import Terms
+from users.models import User
 
 
 class Command(BaseCommand):
@@ -32,7 +34,10 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        total_created = len(ApplicationStatus.values) * options["number"]
+        batch_count = 2
+        total_created = (len(ApplicationStatus.values) + batch_count) * options[
+            "number"
+        ]
         if not settings.DEBUG:
             self.stdout.write(
                 "Seeding is allowed only when the DEBUG variable set to True"
@@ -51,14 +56,34 @@ def clear_applications():
             attachment.attachment_file.delete()
     applications.delete()
 
+    ApplicationBatch.objects.all().delete()
+
     ApplicationBasis.objects.all().delete()
     Terms.objects.all().delete()
+    User.objects.filter(last_login=None).exclude(username="admin").delete()
 
 
 def run_seed(number):
     """Delete all existing applications and create applications for all statuses,
     with cancelled applications being modified 30 days ago and drafts being modified 180 and 166 days ago
     """
+
+    def _create_batch(status: ApplicationStatus):
+        batch = ApplicationBatchFactory()
+
+        # Need to delete a few applications that are made for the batch for testing purposes
+        Application.objects.filter(batch=batch).delete()
+
+        apps = []
+        for _ in range(number):
+            if status == ApplicationStatus.ACCEPTED:
+                apps.append(DecidedApplicationFactory())
+            elif status == ApplicationStatus.REJECTED:
+                apps.append(RejectedApplicationFactory())
+        batch.applications.set(apps)
+        batch.proposal_for_decision = status
+        batch.save()
+
     f = faker.Faker()
 
     clear_applications()
@@ -81,6 +106,9 @@ def run_seed(number):
             application.save()
 
             application.log_entries.all().update(created_at=random_datetime)
+
+    _create_batch(ApplicationStatus.ACCEPTED)
+    _create_batch(ApplicationStatus.REJECTED)
 
     cancelled_deletion_threshold = _past_datetime(30)
     draft_deletion_threshold = _past_datetime(180)
