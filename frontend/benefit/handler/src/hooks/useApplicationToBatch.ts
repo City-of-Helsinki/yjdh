@@ -1,4 +1,4 @@
-import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
+import { HandlerEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { useTranslation } from 'next-i18next';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
@@ -27,13 +27,10 @@ const useAddToBatchQuery = (): UseMutationResult<Payload, Error> => {
     'addApplicationToBatch',
     ({ applicationIds, status }: Payload) =>
       handleResponse<Payload>(
-        axios.post<Payload>(
-          `${BackendEndpoint.APPLICATION_BATCHES}add_to_batch/`,
-          {
-            application_ids: applicationIds,
-            status,
-          }
-        )
+        axios.patch<Payload>(`${HandlerEndpoint.BATCH_ASSIGN}`, {
+          application_ids: applicationIds,
+          status,
+        })
       ),
     {
       onSuccess: (_, { applicationIds }) => {

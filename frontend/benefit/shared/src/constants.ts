@@ -138,3 +138,13 @@ export enum APPLICATION_STATUSES {
   CANCELLED = 'cancelled',
   HANDLING = 'handling',
 }
+
+export enum BATCH_STATUSES {
+  DRAFT = 'draft',
+  AWAITING_FOR_DECISION = 'awaiting_ahjo_decision',
+}
+
+export enum PROPOSALS_FOR_DECISION {
+  ACCEPTED = 'accepted',
+  REJECTED = 'rejected',
+}
