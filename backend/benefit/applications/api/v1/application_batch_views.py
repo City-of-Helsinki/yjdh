@@ -11,7 +11,10 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from applications.api.v1.serializers.batch import ApplicationBatchSerializer
+from applications.api.v1.serializers.batch import (
+    ApplicationBatchListSerializer,
+    ApplicationBatchSerializer,
+)
 from applications.enums import ApplicationBatchStatus, ApplicationStatus
 from applications.models import Application, ApplicationBatch
 from applications.services.ahjo_integration import export_application_batch
@@ -60,6 +63,15 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         "applications__company_contact_person_email",
     ]
 
+    def get_serializer_class(self):
+        """
+        ApplicationBatchSerializer for default behaviour on mutation functions,
+        ApplicationBatchListSerializer for listing applications on a batch
+        """
+        if self.action in ["create", "update", "partial_update", "destroy"]:
+            return ApplicationBatchSerializer
+
+        return ApplicationBatchListSerializer
     @action(methods=("GET",), detail=True, url_path="export")
     def export_batch(self, request, *args, **kwargs):
         """
