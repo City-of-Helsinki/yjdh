@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.http import HttpResponse, StreamingHttpResponse
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
@@ -72,6 +73,25 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             return ApplicationBatchSerializer
 
         return ApplicationBatchListSerializer
+
+    def get_batch(self, id: str) -> ApplicationBatch:
+        """
+        Just a wrapper for Django's get_object_or_404 function
+        """
+        return get_object_or_404(ApplicationBatch, id=id)
+
+    @transaction.atomic
+    def destroy(self, request, pk=None):
+        """
+        Override default destroy(), batch can only be deleted if it's status is "draft"
+        """
+        batch = self.get_batch(pk)
+        if batch.status == ApplicationBatchStatus.DRAFT:
+            batch.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+
     @action(methods=("GET",), detail=True, url_path="export")
     def export_batch(self, request, *args, **kwargs):
         """
@@ -152,9 +172,13 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         approved_batches.all().update(status=ApplicationBatchStatus.SENT_TO_TALPA)
         return response
 
-    @action(methods=["POST"], detail=False)
+    @action(methods=["PATCH"], detail=False)
     @transaction.atomic
-    def add_to_batch(self, request):
+    def assign_applications(self, request):
+        """
+        Assign one or more applications to a batch. If there's no batch for given app status,
+        create one as a draft and assign all applications to it.
+        """
         app_status = request.data["status"]
         app_ids = request.data["application_ids"]
 
@@ -199,3 +223,48 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
                 },
                 status=status.HTTP_406_NOT_ACCEPTABLE,
             )
+
+    @action(methods=["PATCH"], detail=True)
+    @transaction.atomic
+    def deassign_applications(self, request, pk=None):
+        """
+        Remove one or more applications from a specific batch
+        """
+        application_ids = request.data.get("application_ids")
+        batch = self.get_batch(pk)
+
+        apps = Application.objects.filter(
+            pk__in=application_ids,
+            status__in=["accepted", "rejected"],
+            batch=batch,
+        )
+        if apps:
+            for app in apps:
+                app.batch = None
+                app.save()
+            return Response(status=status.HTTP_200_OK)
+        return Response(
+            {"detail": "Applications were not applicable to be detached."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    @action(methods=["PATCH"], detail=True)
+    @transaction.atomic
+    def status(self, request, pk=None):
+        """
+        Assign a new status for batch: as pending for Ahjo proposal or switch back to draft
+        """
+        new_status = request.data["status"]
+        batch = self.get_batch(pk)
+        if new_status not in [
+            ApplicationBatchStatus.DRAFT,
+            ApplicationBatchStatus.AWAITING_AHJO_DECISION,
+        ]:
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+
+        batch.status = new_status
+        batch.save()
+
+        return Response(
+            {"id": batch.id, "status": batch.status}, status=status.HTTP_200_OK
+        )
