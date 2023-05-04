@@ -188,8 +188,9 @@ class SalaryBenefitCalculator2021(HelsinkiBenefitCalculator):
     """
 
     # The maximum amount of pay subsidy depends on the pay subsidy percent in the pay subsidy decision.
-    PAY_SUBSIDY_MAX_FOR_100_PERCENT = 1800
-    DEFAULT_PAY_SUBSIDY_MAX = 1400
+    PAY_SUBSIDY_MAX_FOR_100_PERCENT = 2020
+    PAY_SUBSIDY_MAX_FOR_70_PERCENT = 1770
+    PAY_SUBSIDY_MAX_FOR_50_PERCENT = 1260
     SALARY_BENEFIT_MAX = 800
 
     def can_calculate(self):
@@ -209,10 +210,14 @@ class SalaryBenefitCalculator2021(HelsinkiBenefitCalculator):
     def get_maximum_monthly_pay_subsidy(self, pay_subsidy):
         if pay_subsidy.pay_subsidy_percent == 100:
             return self.PAY_SUBSIDY_MAX_FOR_100_PERCENT
+        elif pay_subsidy.pay_subsidy_percent == 70:
+            return self.PAY_SUBSIDY_MAX_FOR_70_PERCENT
         else:
-            return self.DEFAULT_PAY_SUBSIDY_MAX
+            return self.PAY_SUBSIDY_MAX_FOR_50_PERCENT
 
     def create_deduction_rows(self, benefit_sub_range):
+        # Create the rows for the calculation
+        # that display the deduction amounts for pay subsidy and training compensation
         if benefit_sub_range.pay_subsidy or benefit_sub_range.training_compensation:
             self._create_row(
                 DescriptionRow,

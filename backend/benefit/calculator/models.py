@@ -24,6 +24,7 @@ from shared.models.abstract_models import TimeStampedModel, UUIDModel
 
 STATE_AID_MAX_PERCENTAGE_CHOICES = (
     (50, "50%"),
+    (70, "70%"),
     (100, "100%"),
 )
 

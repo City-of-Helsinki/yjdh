@@ -38,9 +38,8 @@ APPLICATION_LANGUAGE_CHOICES = (
 )
 
 PAY_SUBSIDY_PERCENT_CHOICES = (
-    (30, "30%"),
-    (40, "40%"),
     (50, "50%"),
+    (70, "70%"),
     (100, "100%"),
 )
 
