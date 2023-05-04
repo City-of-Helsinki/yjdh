@@ -259,10 +259,18 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         if new_status not in [
             ApplicationBatchStatus.DRAFT,
             ApplicationBatchStatus.AWAITING_AHJO_DECISION,
+            ApplicationBatchStatus.SENT_TO_TALPA,
         ]:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 
         batch.status = new_status
+
+        applications = Application.objects.filter(batch=batch)
+        if new_status == ApplicationBatchStatus.SENT_TO_TALPA:
+            for app in applications:
+                app.archived = True
+                app.save()
+
         batch.save()
 
         return Response(
