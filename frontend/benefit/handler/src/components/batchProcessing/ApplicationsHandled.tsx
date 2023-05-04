@@ -1,4 +1,7 @@
-import { $EmptyHeading } from 'benefit/handler/components/applicationList/ApplicationList.sc';
+import {
+  $EmptyHeading,
+  $Heading,
+} from 'benefit/handler/components/applicationList/ApplicationList.sc';
 import useAddToBatchQuery from 'benefit/handler/hooks/useApplicationToBatch';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Button, LoadingSpinner, Table } from 'hds-react';
@@ -101,6 +104,10 @@ const ApplicationsHandled: React.FC<Props> = ({
   if (shouldShowSkeleton) {
     return (
       <Container>
+        <$Heading>
+          {t(`common:applications.list.headings.${status}`)}{' '}
+          {t(`common:applications.list.headings.decisions`)}
+        </$Heading>
         <LoadingSpinner small />
       </Container>
     );
@@ -116,9 +123,9 @@ const ApplicationsHandled: React.FC<Props> = ({
             rows={applications}
             initialSortingColumnKey="applicationNum"
             initialSortingOrder="asc"
-            heading={`${t(
-              `common:applications.list.headings.${status}`
-            )} päätökset (${applications.length})`}
+            heading={`${t(`common:applications.list.headings.${status}`)} ${t(
+              `common:applications.list.headings.decisions`
+            )} (${applications.length})`}
             cols={columns}
             checkboxSelection
             selectedRows={selectedRows}
