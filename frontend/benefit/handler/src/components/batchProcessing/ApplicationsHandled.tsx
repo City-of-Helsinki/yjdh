@@ -9,30 +9,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Container from 'shared/components/container/Container';
 import { $Link } from 'shared/components/table/Table.sc';
 import theme from 'shared/styles/theme';
-import styled from 'styled-components';
 
 import { useApplicationsHandled } from './useApplicationsHandled';
-
-const $HintText = styled.p`
-  margin-top: 0;
-  margin-bottom: var(--spacing-s);
-`;
-
-export const $TableFooter = styled.footer`
-  background: ${(props) => props.theme.colors.black10};
-  width: 100%;
-  padding: var(--spacing-s);
-  display: flex;
-  flex-flow: row wrap;
-  box-sizing: border-box;
-  ${$HintText} {
-    flex-basis: 100%;
-    margin-top: 0;
-    &:empty {
-      margin: 0;
-    }
-  }
-`;
+import { $HintText, $TableFooter } from './BatchProposal.sc';
 
 type Props = {
   status: APPLICATION_STATUSES;
