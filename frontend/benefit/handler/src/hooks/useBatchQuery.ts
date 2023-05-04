@@ -1,11 +1,14 @@
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
+import { BATCH_STATUSES } from 'benefit-shared/constants';
 import { BatchProposal } from 'benefit-shared/types/application';
 import { useTranslation } from 'next-i18next';
 import { useQuery, UseQueryResult } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
-const useBatchQuery = (): UseQueryResult<BatchProposal[], Error> => {
+const useBatchQuery = (
+  status: BATCH_STATUSES
+): UseQueryResult<BatchProposal[], Error> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
 
@@ -20,7 +23,7 @@ const useBatchQuery = (): UseQueryResult<BatchProposal[], Error> => {
     ['applicationsList'],
     async () => {
       const res = axios.get<BatchProposal[]>(
-        `${BackendEndpoint.APPLICATION_BATCHES}?status=draft`
+        `${BackendEndpoint.APPLICATION_BATCHES}?status=${status}`
       );
       return handleResponse(res);
     },

@@ -1,7 +1,8 @@
-import { $Heading } from 'benefit/handler/components/applicationsArchive/ApplicationsArchive.sc';
+import { $Heading } from 'benefit/handler/components/applicationList/ApplicationList.sc';
 import BatchProposals from 'benefit/handler/components/batchProcessing/BatchProposals';
 import { $BackgroundWrapper } from 'benefit/handler/components/layout/Layout';
 import AppContext from 'benefit/handler/context/AppContext';
+import { BATCH_STATUSES } from 'benefit-shared/constants';
 import { Tabs } from 'hds-react';
 import { GetStaticProps, NextPage } from 'next';
 import { useTranslation } from 'next-i18next';
@@ -42,10 +43,17 @@ const BatchIndex: NextPage = () => {
         <Tabs>
           <Tabs.TabList style={{ marginBottom: 'var(--spacing-m)' }}>
             <Tabs.Tab>{t('common:batches.tabs.pending')}</Tabs.Tab>
+            <Tabs.Tab>{t('common:batches.tabs.toPaymentAndArchive')}</Tabs.Tab>
           </Tabs.TabList>
 
           <Tabs.TabPanel>
-            <BatchProposals />
+            <$Heading>{t('common:batches.tabs.pending')}</$Heading>
+            <BatchProposals status={BATCH_STATUSES.DRAFT} />
+          </Tabs.TabPanel>
+
+          <Tabs.TabPanel>
+            <$Heading>{t('common:batches.tabs.toPaymentAndArchive')}</$Heading>
+            <BatchProposals status={BATCH_STATUSES.AWAITING_FOR_DECISION} />
           </Tabs.TabPanel>
         </Tabs>
       </Container>

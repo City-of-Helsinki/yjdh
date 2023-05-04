@@ -1,4 +1,5 @@
 import useBatchQuery from 'benefit/handler/hooks/useBatchQuery';
+import { BATCH_STATUSES } from 'benefit-shared/constants';
 import {
   ApplicationInBatch,
   BatchProposal,
@@ -18,9 +19,9 @@ export interface BatchListProps {
 
 const translationsBase = 'common:applications.list';
 
-const useBatchProposal = (): BatchListProps => {
+const useBatchProposal = (filterByStatus: BATCH_STATUSES): BatchListProps => {
   const { t } = useTranslation();
-  const query = useBatchQuery();
+  const query = useBatchQuery(filterByStatus);
 
   let batches: BatchProposal[] = [];
   if (query.data) {
