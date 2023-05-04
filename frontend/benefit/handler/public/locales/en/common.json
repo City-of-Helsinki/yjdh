@@ -469,7 +469,8 @@
     "single": "Koonti",
     "multiple": "Koonnit",
     "tabs": {
-      "pending": "Odottaa Ahjoon vientiä"
+      "pending": "Odottaa Ahjoon vientiä",
+      "toPaymentAndArchive": "Odottaa maksuun tai arkistoon vientiä"
     },
     "list": {
       "columns": {

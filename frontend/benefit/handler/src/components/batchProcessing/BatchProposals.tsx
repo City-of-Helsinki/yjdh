@@ -1,3 +1,4 @@
+import { BATCH_STATUSES } from 'benefit-shared/constants';
 import { BatchProposal } from 'benefit-shared/types/application';
 import { LoadingSpinner } from 'hds-react';
 import * as React from 'react';
@@ -6,14 +7,18 @@ import { $Empty } from '../applicationList/ApplicationList.sc';
 import BatchApplicationList from './BatchApplicationList';
 import { BatchListProps, useBatchProposal } from './useBatches';
 
-const BatchProposals: React.FC = () => {
+type BatchProps = {
+  status: BATCH_STATUSES;
+};
+
+const BatchProposals: React.FC<BatchProps> = ({ status }: BatchProps) => {
   const {
     t,
     batches,
     shouldShowSkeleton,
     shouldHideList,
     translationsBase,
-  }: BatchListProps = useBatchProposal();
+  }: BatchListProps = useBatchProposal(status);
   const list = React.useMemo(() => batches, [batches]);
 
   if (shouldShowSkeleton) {

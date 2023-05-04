@@ -10,8 +10,8 @@ import Container from 'shared/components/container/Container';
 import { $Link } from 'shared/components/table/Table.sc';
 import theme from 'shared/styles/theme';
 
-import { useApplicationsHandled } from './useApplicationsHandled';
 import { $HintText, $TableFooter } from './BatchProposal.sc';
+import { useApplicationsHandled } from './useApplicationsHandled';
 
 type Props = {
   status: APPLICATION_STATUSES;
