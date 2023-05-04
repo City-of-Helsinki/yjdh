@@ -17,6 +17,7 @@ trigger: none
 #
 # Opt out of pull request validation 
 pr:
+  drafts: false
   # PR target branch
   branches:
     include:
@@ -26,10 +27,13 @@ pr:
       - backend/kesaseteli/**
       - frontend/kesaseteli/**
       - frontend/shared/**
-      - frontend/*
       - azure-pipelines/kesaseteli-review.yml
     exclude:
       - README.md
+      - backend/benefit/**
+      - backend/tet/**
+      - frontend/benefit/**
+      - frontend/tet/**
       - frontend/**/browser-tests
       - frontend/**/__tests__
 
