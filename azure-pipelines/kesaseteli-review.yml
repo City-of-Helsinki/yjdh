@@ -23,13 +23,19 @@ pr:
     - develop
   paths:
     include:
+      - azure-pipelines/kesaseteli-review.yml
+      - backend/docker/kesaseteli.Dockerfile
       - backend/kesaseteli/**
+      - backend/shared/**
+      - frontend/*
       - frontend/kesaseteli/**
       - frontend/shared/**
-      - frontend/*
-      - azure-pipelines/kesaseteli-review.yml
     exclude:
       - README.md
+      - backend/benefit/**
+      - backend/tet/**
+      - frontend/benefit/**
+      - frontend/tet/**
       - frontend/**/browser-tests
       - frontend/**/__tests__
 
