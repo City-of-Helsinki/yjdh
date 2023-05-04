@@ -127,7 +127,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   if (shouldShowSkeleton) {
     return (
       <>
-        {heading && <$Heading>{`${heading} (0)`}</$Heading>}
+        {heading && <$Heading>{`${heading}`}</$Heading>}
         <LoadingSpinner small />
       </>
     );
