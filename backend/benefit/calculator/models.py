@@ -528,10 +528,13 @@ class SalaryCostsRow(CalculationRow):
     proxy_row_type = RowType.SALARY_COSTS_EUR
     description_fi_template = "Palkkakustannukset / kk"
 
+    """Calculate the amount of salary costs for the application. 
+    Notice that the vacation money is reported per month by the applicant."""
+
     def calculate_amount(self):
         return (
             self.calculation.monthly_pay
-            + self.calculation.vacation_money / self.calculation.duration_in_months
+            + self.calculation.vacation_money
             + self.calculation.other_expenses
         )
 
