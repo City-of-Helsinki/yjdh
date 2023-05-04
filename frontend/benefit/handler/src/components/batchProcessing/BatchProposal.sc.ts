@@ -34,11 +34,22 @@ export const $TableWrapper = styled.div`
 
 export const $TableBody = styled.div``;
 
+export const $HintText = styled.p`
+  margin-top: 0;
+  margin-bottom: var(--spacing-s);
+  flex-basis: 100%;
+  margin-top: 0;
+  &:empty {
+    margin: 0;
+  }
+`;
+
 export const $TableFooter = styled.footer`
+  display: flex;
+  flex-flow: row wrap;
   background: #efefef;
   width: 100%;
   padding: var(--spacing-s);
-  display: flex;
   align-items: center;
   box-sizing: border-box;
 `;
