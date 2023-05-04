@@ -1,6 +1,7 @@
 import { HandlerEndpoint } from 'benefit-shared/backend-api/backend-api';
+import { BATCH_STATUSES } from 'benefit-shared/constants';
 import { useTranslation } from 'next-i18next';
-import { useMutation, UseMutationResult } from 'react-query';
+import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import showSuccessToast from 'shared/components/toast/show-success-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
@@ -13,6 +14,7 @@ type Payload = {
 const useBatchStatus = (): UseMutationResult<null, Error, Payload> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
 
   const handleError = (): void => {
     showErrorToast(
@@ -35,6 +37,9 @@ const useBatchStatus = (): UseMutationResult<null, Error, Payload> => {
           t(`common:batches.notifications.registerToAhjo.${status}`),
           ''
         );
+        if (status === BATCH_STATUSES.DRAFT) {
+          void queryClient.invalidateQueries('applicationsList');
+        }
       },
       onError: () => handleError(),
     }

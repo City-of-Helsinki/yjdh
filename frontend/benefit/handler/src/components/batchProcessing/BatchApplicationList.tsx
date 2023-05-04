@@ -49,6 +49,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
     proposal_for_decision: proposalForDecision,
   } = batch;
 
+  const IS_DRAFT = status === BATCH_STATUSES.DRAFT;
   const [isAtAhjo, setIsAtAhjo] = React.useState<ButtonAhjoStates>('primary');
   const [isDownloadingAttachments, setIsDownloadingAttachments] =
     React.useState(false);
@@ -64,15 +65,21 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
     }
   }, [isDownloading]);
 
+  const markAsDraft = (): void =>
+    changeBatchStatus({
+      batchId: id,
+      status: BATCH_STATUSES.DRAFT,
+    });
+
   const handleBatchStatusChange = (): void => {
-    if (isAtAhjo === 'secondary') {
-      changeBatchStatus({ batchId: id, status: BATCH_STATUSES.DRAFT });
-      setIsAtAhjo('primary');
-    } else {
+    if (isAtAhjo === 'primary') {
       changeBatchStatus({
         batchId: id,
         status: BATCH_STATUSES.AWAITING_FOR_DECISION,
       });
+      setIsAtAhjo('secondary');
+    } else {
+      markAsDraft();
       setIsAtAhjo('secondary');
     }
   };
@@ -123,16 +130,17 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
       isSortable: true,
     },
     {
-      transform: ({ id: appId }: { id: string }) => (
-        <Button
-          theme="black"
-          variant="supplementary"
-          iconLeft={<IconArrowUndo />}
-          onClick={() => handleAppRemoval(appId)}
-        >
-          {' '}
-        </Button>
-      ),
+      transform: ({ id: appId }: { id: string }) =>
+        IS_DRAFT ? (
+          <Button
+            theme="black"
+            variant="supplementary"
+            iconLeft={<IconArrowUndo />}
+            onClick={() => handleAppRemoval(appId)}
+          >
+            {' '}
+          </Button>
+        ) : null,
       headerName: '',
       key: 'remove',
     },
@@ -163,6 +171,47 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
     );
   };
 
+  const footerContentDraft = (): JSX.Element => (
+    <>
+      <Button
+        theme="black"
+        variant="secondary"
+        iconLeft={<IconDownload />}
+        isLoading={isDownloadingAttachments}
+        disabled={isDownloadingAttachments}
+        loadingText={t('common:utility.loading')}
+        onClick={() => handleDownloadBatchFiles()}
+      >
+        {t('common:batches.actions.downloadFiles')}
+      </Button>
+      <Button
+        theme="coat"
+        style={{ marginLeft: 'var(--spacing-s)' }}
+        variant={isAtAhjo}
+        iconLeft={isAtAhjo === 'secondary' ? <IconCheckCircleFill /> : null}
+        disabled={status === BATCH_STATUSES.AWAITING_FOR_DECISION}
+        className="table-custom-action"
+        onClick={() => handleBatchStatusChange()}
+      >
+        {isAtAhjo === 'primary'
+          ? t('common:batches.actions.markAsRegisteredToAhjo')
+          : t('common:batches.actions.markedAsRegisteredToAhjo')}
+      </Button>
+    </>
+  );
+
+  const footerContentAhjo = (): JSX.Element => (
+    <Button
+      theme="coat"
+      variant="secondary"
+      iconLeft={<IconCheckCircleFill />}
+      className="table-custom-action"
+      onClick={() => markAsDraft()}
+    >
+      {t('common:batches.actions.markedAsRegisteredToAhjo')}
+    </Button>
+  );
+
   return (
     <$TableWrapper>
       <$HorizontalList>
@@ -186,32 +235,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
             cols={cols}
           />
           <$TableFooter>
-            <Button
-              theme="black"
-              variant="secondary"
-              iconLeft={<IconDownload />}
-              isLoading={isDownloadingAttachments}
-              disabled={isDownloadingAttachments}
-              loadingText={t('common:utility.loading')}
-              onClick={() => handleDownloadBatchFiles()}
-            >
-              {t('common:batches.actions.downloadFiles')}
-            </Button>
-            <Button
-              theme="coat"
-              style={{ marginLeft: 'var(--spacing-s)' }}
-              variant={isAtAhjo}
-              iconLeft={
-                isAtAhjo === 'secondary' ? <IconCheckCircleFill /> : null
-              }
-              disabled={status === BATCH_STATUSES.AWAITING_FOR_DECISION}
-              className="table-custom-action"
-              onClick={() => handleBatchStatusChange()}
-            >
-              {isAtAhjo === 'primary'
-                ? t('common:batches.actions.markAsRegisteredToAhjo')
-                : t('common:batches.actions.markedAsRegisteredToAhjo')}
-            </Button>
+            {IS_DRAFT ? footerContentDraft() : footerContentAhjo()}
           </$TableFooter>
         </$TableBody>
       ) : (
