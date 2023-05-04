@@ -1,5 +1,5 @@
 # =======================================
-FROM helsinkitest/node:16-slim as appbase
+FROM helsinkitest/node:18-slim as appbase
 # =======================================
 
 # Install ca-certificates so that Sentry can upload source maps
@@ -99,7 +99,7 @@ RUN rm -rf node_modules
 RUN yarn cache clean
 
 # ==========================================
-FROM helsinkitest/node:16-slim AS production
+FROM helsinkitest/node:18-slim AS production
 # ==========================================
 
 ARG PORT

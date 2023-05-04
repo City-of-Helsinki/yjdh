@@ -9,7 +9,7 @@ Project is automatically deployed to testing environment when pushing to develop
 
 ## Requirements
 
-- Node 18.x (match with dockerfile: helsinkitest/node:16-slim)
+- Node 18.x (match with dockerfile: helsinkitest/node:18-slim)
 - Yarn
 - Git
 - Docker
