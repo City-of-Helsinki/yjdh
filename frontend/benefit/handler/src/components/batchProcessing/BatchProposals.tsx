@@ -23,11 +23,9 @@ const BatchProposals: React.FC = () => {
   return (
     <div data-testid="batch-application-list">
       {!shouldHideList ? (
-        list.map((batch: BatchProposal) =>
-          batch?.status === 'draft' ? (
-            <BatchApplicationList batch={batch} key={batch.id} />
-          ) : null
-        )
+        list.map((batch: BatchProposal) => (
+          <BatchApplicationList batch={batch} key={batch.id} />
+        ))
       ) : (
         <$Empty>{t(`${translationsBase}.messages.empty.handling`)}</$Empty>
       )}

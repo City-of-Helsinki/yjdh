@@ -20,7 +20,7 @@ const useBatchQuery = (): UseQueryResult<BatchProposal[], Error> => {
     ['applicationsList'],
     async () => {
       const res = axios.get<BatchProposal[]>(
-        BackendEndpoint.APPLICATION_BATCHES
+        `${BackendEndpoint.APPLICATION_BATCHES}?status=draft`
       );
       return handleResponse(res);
     },
