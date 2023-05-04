@@ -3,3 +3,8 @@
 [class*='Table-module_actionContainer'] {
   min-height: 44px;
 }
+
+[class*='Table-module_actionContainer']
+  [class*='Table-module_heading'][role='heading'] {
+  font-weight: 500;
+}
