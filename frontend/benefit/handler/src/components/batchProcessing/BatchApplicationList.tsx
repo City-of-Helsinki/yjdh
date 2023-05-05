@@ -65,10 +65,10 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
     }
   }, [isDownloading]);
 
-  const markAsDraft = (): void =>
+  const markBatchAs = (markBatchAsStatus: BATCH_STATUSES): void =>
     changeBatchStatus({
       batchId: id,
-      status: BATCH_STATUSES.DRAFT,
+      status: markBatchAsStatus,
     });
 
   const handleBatchStatusChange = (): void => {
@@ -79,7 +79,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
       });
       setIsAtAhjo('secondary');
     } else {
-      markAsDraft();
+      markBatchAs(BATCH_STATUSES.DRAFT);
       setIsAtAhjo('secondary');
     }
   };
@@ -201,15 +201,23 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
   );
 
   const footerContentAhjo = (): JSX.Element => (
-    <Button
-      theme="coat"
-      variant="secondary"
-      iconLeft={<IconCheckCircleFill />}
-      className="table-custom-action"
-      onClick={() => markAsDraft()}
-    >
-      {t('common:batches.actions.markedAsRegisteredToAhjo')}
-    </Button>
+    <>
+      <Button
+        theme="coat"
+        variant="primary"
+        onClick={() => markBatchAs(BATCH_STATUSES.SENT_TO_TALPA)}
+      >
+        {t('common:batches.actions.markToPaymentAndArchive')}
+      </Button>
+      <Button
+        theme="black"
+        variant="supplementary"
+        iconLeft={<IconArrowUndo />}
+        onClick={() => markBatchAs(BATCH_STATUSES.DRAFT)}
+      >
+        {t('common:batches.actions.markAsWaitingForAhjo')}
+      </Button>
+    </>
   );
 
   return (
