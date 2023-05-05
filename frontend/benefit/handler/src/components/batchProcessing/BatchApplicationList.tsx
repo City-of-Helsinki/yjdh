@@ -29,6 +29,7 @@ import {
   $TableFooter,
   $TableWrapper,
 } from '../table/TableExtras.sc';
+import BatchFooterAhjo from './BatchFooter';
 
 type ButtonAhjoStates = 'primary' | 'secondary';
 
@@ -54,6 +55,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
   const applications = React.useMemo(() => apps, [apps]);
 
   const IS_DRAFT = status === BATCH_STATUSES.DRAFT;
+
   const [isCollapsed, setIsCollapsed] = React.useState(true);
   const [isAtAhjo, setIsAtAhjo] = React.useState<ButtonAhjoStates>('primary');
   const [isDownloadingAttachments, setIsDownloadingAttachments] =
@@ -176,57 +178,6 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
     );
   };
 
-  const footerContentDraft = (): JSX.Element => (
-    <>
-      <Button
-        theme="black"
-        variant="secondary"
-        iconLeft={<IconDownload />}
-        isLoading={isDownloadingAttachments}
-        disabled={isDownloadingAttachments}
-        loadingText={t('common:utility.loading')}
-        onClick={() => handleDownloadBatchFiles()}
-      >
-        {t('common:batches.actions.downloadFiles')}
-      </Button>
-      <Button
-        theme="coat"
-        style={{ marginLeft: 'var(--spacing-s)' }}
-        variant={isAtAhjo}
-        iconLeft={isAtAhjo === 'secondary' ? <IconCheckCircleFill /> : null}
-        disabled={status === BATCH_STATUSES.AWAITING_FOR_DECISION}
-        className="table-custom-action"
-        onClick={() => handleBatchStatusChange()}
-      >
-        {isAtAhjo === 'primary'
-          ? t('common:batches.actions.markAsRegisteredToAhjo')
-          : t('common:batches.actions.markedAsRegisteredToAhjo')}
-      </Button>
-    </>
-  );
-
-  const footerContentAhjo = (): JSX.Element => (
-    <>
-      <Button
-        theme="coat"
-        variant="primary"
-        onClick={() => markBatchAs(BATCH_STATUSES.SENT_TO_TALPA)}
-      >
-        {proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED
-          ? t('common:batches.actions.markToPaymentAndArchive')
-          : t('common:batches.actions.markToArchive')}
-      </Button>
-      <Button
-        theme="black"
-        variant="supplementary"
-        iconLeft={<IconArrowUndo />}
-        onClick={() => markBatchAs(BATCH_STATUSES.DRAFT)}
-      >
-        {t('common:batches.actions.markAsWaitingForAhjo')}
-      </Button>
-    </>
-  );
-
   return (
     <$TableWrapper>
       <$HorizontalList>
@@ -261,7 +212,37 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
             cols={cols}
           />
           <$TableFooter>
-            {IS_DRAFT ? footerContentDraft() : footerContentAhjo()}
+            {status === BATCH_STATUSES.AWAITING_FOR_DECISION ? (
+              <BatchFooterAhjo batch={batch} />
+            ) : (
+              <>
+                <Button
+                  theme="black"
+                  variant="secondary"
+                  iconLeft={<IconDownload />}
+                  isLoading={isDownloadingAttachments}
+                  disabled={isDownloadingAttachments}
+                  loadingText={t('common:utility.loading')}
+                  onClick={() => handleDownloadBatchFiles()}
+                >
+                  {t('common:batches.actions.downloadFiles')}
+                </Button>
+                <Button
+                  theme="coat"
+                  style={{ marginLeft: 'var(--spacing-s)' }}
+                  variant={isAtAhjo}
+                  iconLeft={
+                    isAtAhjo === 'secondary' ? <IconCheckCircleFill /> : null
+                  }
+                  className="table-custom-action"
+                  onClick={() => handleBatchStatusChange()}
+                >
+                  {isAtAhjo === 'primary'
+                    ? t('common:batches.actions.markAsRegisteredToAhjo')
+                    : t('common:batches.actions.markedAsRegisteredToAhjo')}
+                </Button>
+              </>
+            )}
           </$TableFooter>
         </$TableBody>
       ) : (

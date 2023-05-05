@@ -142,6 +142,8 @@ export enum APPLICATION_STATUSES {
 export enum BATCH_STATUSES {
   DRAFT = 'draft',
   AWAITING_FOR_DECISION = 'awaiting_ahjo_decision',
+  DECIDED_ACCEPTED = 'accepted',
+  DECIDED_REJECTED = 'rejected',
   SENT_TO_TALPA = 'sent_to_talpa',
 }
 
