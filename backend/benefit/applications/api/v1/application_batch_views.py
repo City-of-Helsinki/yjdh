@@ -274,5 +274,10 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         batch.save()
 
         return Response(
-            {"id": batch.id, "status": batch.status}, status=status.HTTP_200_OK
+            {
+                "id": batch.id,
+                "status": batch.status,
+                "decision": batch.proposal_for_decision,
+            },
+            status=status.HTTP_200_OK,
         )

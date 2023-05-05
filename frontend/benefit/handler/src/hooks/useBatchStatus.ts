@@ -1,5 +1,8 @@
 import { HandlerEndpoint } from 'benefit-shared/backend-api/backend-api';
-import { BATCH_STATUSES } from 'benefit-shared/constants';
+import {
+  BATCH_STATUSES,
+  PROPOSALS_FOR_DECISION,
+} from 'benefit-shared/constants';
 import { useTranslation } from 'next-i18next';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
@@ -7,8 +10,8 @@ import showSuccessToast from 'shared/components/toast/show-success-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 type Payload = {
-  batchId: string;
-  status: string;
+  id: string;
+  status: BATCH_STATUSES;
 };
 
 const useBatchStatus = (): UseMutationResult<null, Error, Payload> => {
@@ -25,19 +28,38 @@ const useBatchStatus = (): UseMutationResult<null, Error, Payload> => {
 
   return useMutation<null, Error, Payload>(
     'changeBatchStatus',
-    ({ batchId, status }: Payload) =>
+    ({ id, status }: Payload) =>
       handleResponse<null>(
-        axios.patch<null>(HandlerEndpoint.BATCH_STATUS_CHANGE(batchId), {
+        axios.patch<null>(HandlerEndpoint.BATCH_STATUS_CHANGE(id), {
           status,
         })
       ),
     {
-      onSuccess: (_, { status }) => {
-        showSuccessToast(
-          t(`common:batches.notifications.registerToAhjo.${status}`),
-          ''
-        );
-        if (status === BATCH_STATUSES.DRAFT) {
+      onSuccess: ({
+        status: backendStatus,
+        decision,
+      }: {
+        status: BATCH_STATUSES;
+        decision: PROPOSALS_FOR_DECISION;
+      }) => {
+        if (backendStatus === BATCH_STATUSES.SENT_TO_TALPA) {
+          showSuccessToast(
+            t(
+              `common:batches.notifications.registerToAhjo.${backendStatus}.${decision}`
+            ),
+            ''
+          );
+        } else {
+          showSuccessToast(
+            t(`common:batches.notifications.registerToAhjo.${backendStatus}`),
+            ''
+          );
+        }
+
+        if (
+          backendStatus === BATCH_STATUSES.SENT_TO_TALPA ||
+          backendStatus === BATCH_STATUSES.DRAFT
+        ) {
           void queryClient.invalidateQueries('applicationsList');
         }
       },

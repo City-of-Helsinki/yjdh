@@ -494,7 +494,11 @@
       },
       "registerToAhjo": {
         "awaiting_ahjo_decision": "Koonti merkitty Ahjoon viedyksi",
-        "draft": "Koonti palautettu takaisin odottamaan päätösvalmistelua"
+        "draft": "Koonti palautettu takaisin odottamaan päätösvalmistelua",
+        "sent_to_talpa": {
+          "accepted": "Koonti lähetetty Talpaan ja arkistoitu",
+          "rejected": "Koonti arkistoitu"
+        }
       }
     },
     "actions": {
