@@ -67,14 +67,14 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
 
   const markBatchAs = (markBatchAsStatus: BATCH_STATUSES): void =>
     changeBatchStatus({
-      batchId: id,
+      id,
       status: markBatchAsStatus,
     });
 
   const handleBatchStatusChange = (): void => {
     if (isAtAhjo === 'primary') {
       changeBatchStatus({
-        batchId: id,
+        id,
         status: BATCH_STATUSES.AWAITING_FOR_DECISION,
       });
       setIsAtAhjo('secondary');
