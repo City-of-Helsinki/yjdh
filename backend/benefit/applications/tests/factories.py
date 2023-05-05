@@ -103,7 +103,7 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     additional_pay_subsidy_percent = None
 
     apprenticeship_program = factory.Faker("boolean")
-    archived = factory.Faker("boolean")
+    archived = False
     application_step = ApplicationStep.STEP_1
     benefit_type = BenefitType.EMPLOYMENT_BENEFIT
     start_date = factory.Faker(

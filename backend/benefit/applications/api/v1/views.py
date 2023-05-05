@@ -165,6 +165,8 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         if exclude_batched:
             qs = qs.filter(batch__isnull=True)
 
+        qs = qs.filter(archived=request.GET.get("filter_archived") == "1")
+
         serializer = self.serializer_class(qs, many=True, context=context)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
