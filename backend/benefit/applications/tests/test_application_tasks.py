@@ -15,7 +15,7 @@ from applications.tests.factories import CancelledApplicationFactory
 def test_seed_applications_with_arguments(set_debug_to_true):
     amount = 10
     statuses = ApplicationStatus.values
-    batch_count = 2
+    batch_count = 4
     total_created = (len(ApplicationStatus.values) + batch_count) * amount
     out = StringIO()
     call_command("seed", number=amount, stdout=out)

@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from applications.enums import ApplicationStatus
+from applications.enums import ApplicationBatchStatus, ApplicationStatus
 from applications.models import Application, ApplicationBasis, ApplicationBatch
 from applications.tests.factories import (
     AdditionalInformationNeededApplicationFactory,
@@ -34,7 +34,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        batch_count = 2
+        batch_count = 4
         total_created = (len(ApplicationStatus.values) + batch_count) * options[
             "number"
         ]
@@ -68,7 +68,9 @@ def run_seed(number):
     with cancelled applications being modified 30 days ago and drafts being modified 180 and 166 days ago
     """
 
-    def _create_batch(status: ApplicationStatus):
+    def _create_batch(
+        status: ApplicationBatchStatus, proposal_for_decision: ApplicationStatus
+    ):
         batch = ApplicationBatchFactory()
 
         # Need to delete a few applications that are made for the batch for testing purposes
@@ -76,12 +78,13 @@ def run_seed(number):
 
         apps = []
         for _ in range(number):
-            if status == ApplicationStatus.ACCEPTED:
+            if proposal_for_decision == ApplicationStatus.ACCEPTED:
                 apps.append(DecidedApplicationFactory())
-            elif status == ApplicationStatus.REJECTED:
+            elif proposal_for_decision == ApplicationStatus.REJECTED:
                 apps.append(RejectedApplicationFactory())
         batch.applications.set(apps)
-        batch.proposal_for_decision = status
+        batch.proposal_for_decision = proposal_for_decision
+        batch.status = status
         batch.save()
 
     f = faker.Faker()
@@ -107,8 +110,15 @@ def run_seed(number):
 
             application.log_entries.all().update(created_at=random_datetime)
 
-    _create_batch(ApplicationStatus.ACCEPTED)
-    _create_batch(ApplicationStatus.REJECTED)
+    _create_batch(ApplicationBatchStatus.DRAFT, ApplicationStatus.ACCEPTED)
+    _create_batch(ApplicationBatchStatus.DRAFT, ApplicationStatus.REJECTED)
+
+    _create_batch(
+        ApplicationBatchStatus.AWAITING_AHJO_DECISION, ApplicationStatus.ACCEPTED
+    )
+    _create_batch(
+        ApplicationBatchStatus.AWAITING_AHJO_DECISION, ApplicationStatus.REJECTED
+    )
 
     cancelled_deletion_threshold = _past_datetime(30)
     draft_deletion_threshold = _past_datetime(180)
