@@ -213,7 +213,9 @@ def test_batch_status_change(handler_api_client, application_batch):
     assert response.status_code == 200
     assert response.data["status"] == ApplicationBatchStatus.DRAFT
 
-    response = handler_api_client.patch(url, {"status": ApplicationBatchStatus.SENT_TO_TALPA})
+    response = handler_api_client.patch(
+        url, {"status": ApplicationBatchStatus.SENT_TO_TALPA}
+    )
     assert response.status_code == 200
     assert response.data["status"] == ApplicationBatchStatus.SENT_TO_TALPA
 
