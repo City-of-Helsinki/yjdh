@@ -1,11 +1,12 @@
 import pytest
+from django.urls import reverse
 from rest_framework import status
 
 from applications.models import School
 
 
 def get_schools_api_url():
-    return "/v1/schools/"
+    return reverse("school-list")
 
 
 @pytest.mark.django_db

@@ -1,7 +1,9 @@
 from datetime import datetime, timezone
 
 from dateutil.relativedelta import relativedelta
+from django.test import Client
 
+from applications.models import Company
 from common.tests.faker import get_faker
 from shared.common.tests.utils import create_finnish_social_security_number
 
@@ -21,3 +23,13 @@ def get_random_social_security_number_for_year(year: int) -> str:
         .date(),
         individual_number=get_faker().pyint(2, 899),  # Inclusive range
     )
+
+
+def set_company_business_id_to_client(company: Company, client: Client) -> None:
+    """
+    Set company's business ID to client's session so the given company is fetched when
+    calling companies.services.get_or_create_company_using_organization_roles
+    """
+    session = client.session
+    session.update({"organization_roles": {"identifier": company.business_id}})
+    session.save()

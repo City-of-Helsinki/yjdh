@@ -25,8 +25,8 @@ router.register(
 
 urlpatterns = [
     path("v1/", include((router.urls, "v1"), namespace="v1")),
-    path("v1/company/", GetCompanyView.as_view()),
-    path("v1/schools/", application_views.SchoolListView.as_view()),
+    path("v1/company/", GetCompanyView.as_view(), name="company"),
+    path("v1/schools/", application_views.SchoolListView.as_view(), name="school-list"),
     path("oidc/", include("shared.oidc.urls")),
     path("oauth2/", include("shared.azure_adfs.urls")),
     path(

@@ -51,6 +51,18 @@ def test_application_put(api_client, application):
 
 
 @pytest.mark.django_db
+def test_application_post_not_allowed(api_client, application):
+    data = EmployerApplicationSerializer(application).data
+    data["invoicer_name"] = "test"
+    response = api_client.post(
+        get_detail_url(application),
+        data,
+    )
+
+    assert response.status_code == 405
+
+
+@pytest.mark.django_db
 def test_application_put_invalid_data(api_client, application):
     data = EmployerApplicationSerializer(application).data
     data["language"] = "asd"
