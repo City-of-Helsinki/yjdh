@@ -45,9 +45,11 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
     id,
     status,
     created_at,
-    applications,
+    applications: apps,
     proposal_for_decision: proposalForDecision,
   } = batch;
+
+  const applications = React.useMemo(() => apps, [apps]);
 
   const IS_DRAFT = status === BATCH_STATUSES.DRAFT;
   const [isAtAhjo, setIsAtAhjo] = React.useState<ButtonAhjoStates>('primary');
