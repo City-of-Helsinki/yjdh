@@ -69,4 +69,9 @@ export const $TableFooter = styled.footer`
   padding: var(--spacing-s);
   align-items: center;
   box-sizing: border-box;
+
+  form {
+    display: grid;
+    width: 100%;
+  }
 `;

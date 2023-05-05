@@ -8,6 +8,7 @@ import {
 import { BatchProposal } from 'benefit-shared/types/application';
 import {
   Button,
+  DateInput,
   IconAngleDown,
   IconAngleUp,
   IconArrowUndo,
@@ -15,12 +16,15 @@ import {
   IconCrossCircleFill,
   IconDownload,
   Table,
+  TextInput,
 } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import theme from 'shared/styles/theme';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 import styled from 'styled-components';
+
+import { useFormik } from 'formik';
 
 import { $Empty } from '../applicationList/ApplicationList.sc';
 import {
@@ -29,6 +33,10 @@ import {
   $TableFooter,
   $TableWrapper,
 } from '../table/TableExtras.sc';
+
+import FormSection from 'shared/components/forms/section/FormSection';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import { date, object, string } from 'yup';
 
 type ButtonAhjoStates = 'primary' | 'secondary';
 
@@ -54,6 +62,8 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
   const applications = React.useMemo(() => apps, [apps]);
 
   const IS_DRAFT = status === BATCH_STATUSES.DRAFT;
+
+  const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
   const [isCollapsed, setIsCollapsed] = React.useState(true);
   const [isAtAhjo, setIsAtAhjo] = React.useState<ButtonAhjoStates>('primary');
   const [isDownloadingAttachments, setIsDownloadingAttachments] =
@@ -205,25 +215,154 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
     </>
   );
 
+  const schema = object({
+    decision_maker_name: string().required(),
+    decision_maker_title: string().required(),
+    section_of_the_law: string().required(),
+    decision_date: date().required(),
+    expert_inspector_name: string().required(),
+    expert_inspector_title: string().required(),
+  });
+
+  const formik = useFormik<any>({
+    initialValues: {
+      decision_maker_name: '',
+      decision_maker_title: '',
+      section_of_the_law: '',
+      decision_date: '',
+      expert_inspector_name: '',
+      expert_inspector_title: '',
+    },
+    validationSchema: schema,
+    validateOnChange: true,
+    validateOnBlur: true,
+    enableReinitialize: true,
+    onSubmit: (values) => markBatchAs(BATCH_STATUSES.SENT_TO_TALPA),
+  });
+
+  const handleSubmit = (e): void => {
+    e.preventDefault();
+    void formik.validateForm().then((errs) => {
+      const fieldName = Object.keys(errs);
+      console.log(errs);
+      console.log(fieldName);
+
+      if (!fieldName && !errs) {
+        setIsSubmitted(true);
+        // return formik.submitForm();
+      }
+    });
+  };
+
   const footerContentAhjo = (): JSX.Element => (
     <>
-      <Button
-        theme="coat"
-        variant="primary"
-        onClick={() => markBatchAs(BATCH_STATUSES.SENT_TO_TALPA)}
-      >
-        {proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED
-          ? t('common:batches.actions.markToPaymentAndArchive')
-          : t('common:batches.actions.markToArchive')}
-      </Button>
-      <Button
-        theme="black"
-        variant="supplementary"
-        iconLeft={<IconArrowUndo />}
-        onClick={() => markBatchAs(BATCH_STATUSES.DRAFT)}
-      >
-        {t('common:batches.actions.markAsWaitingForAhjo')}
-      </Button>
+      {!isSubmitted ? (
+        <form onSubmit={handleSubmit} noValidate>
+          <FormSection>
+            <$GridCell $colSpan={3}>
+              <TextInput
+                onChange={formik.handleChange}
+                label={'t Päättäjän nimi'}
+                id="decision_maker_name"
+                name="decision_maker_name"
+                errorText={formik.errors.decision_maker_name}
+                value={formik.values.decision_maker_name ?? ''}
+                required
+              />
+            </$GridCell>
+
+            <$GridCell $colSpan={3}>
+              <TextInput
+                onChange={formik.handleChange}
+                label={'t Päättäjän titteli'}
+                id="decision_maker_title"
+                name="decision_maker_title"
+                errorText={formik.errors.decision_maker_title}
+                value={formik.values.decision_maker_title ?? ''}
+                required
+              />
+            </$GridCell>
+
+            <$GridCell $colSpan={2}>
+              <TextInput
+                onChange={formik.handleChange}
+                label={'t pykälä'}
+                id="section_of_the_law"
+                name="section_of_the_law"
+                errorText={formik.errors.section_of_the_law}
+                value={formik.values.section_of_the_law ?? ''}
+                required
+              />
+            </$GridCell>
+
+            <$GridCell $colSpan={2}>
+              <DateInput
+                onChange={(value) =>
+                  formik.setFieldValue('decision_date', value)
+                }
+                label={'t Päätöksen päivämäärä'}
+                id="decision_date"
+                name="decision_date"
+                errorText={formik.errors.decision_date}
+                value={formik.values.decision_date ?? ''}
+                language="fi"
+                required
+              ></DateInput>
+            </$GridCell>
+          </FormSection>
+
+          <FormSection>
+            <$GridCell $colSpan={3}>
+              <TextInput
+                onChange={formik.handleChange}
+                label={'t Asiantarkastajan nimi'}
+                id="expert_inspector_name"
+                name="expert_inspector_name"
+                errorText={formik.errors.expert_inspector_name}
+                value={formik.values.expert_inspector_name ?? ''}
+                required
+              />
+            </$GridCell>
+
+            <$GridCell $colSpan={3}>
+              <TextInput
+                onChange={formik.handleChange}
+                label={'t Asiantarkastajan titteli'}
+                id="expert_inspector_title"
+                name="expert_inspector_title"
+                errorText={formik.errors.expert_inspector_title}
+                value={formik.values.expert_inspector_title ?? ''}
+                required
+              />
+            </$GridCell>
+          </FormSection>
+
+          <FormSection>
+            <$GridCell $colSpan={3}>
+              <Button
+                type="submit"
+                theme="coat"
+                variant="primary"
+                // onClick={() => markBatchAs(BATCH_STATUSES.SENT_TO_TALPA)}
+              >
+                {proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED
+                  ? t('common:batches.actions.markToPaymentAndArchive')
+                  : t('common:batches.actions.markToArchive')}
+              </Button>
+            </$GridCell>
+            <$GridCell $colSpan={4} alignSelf="end">
+              <Button
+                theme="black"
+                variant="supplementary"
+                iconLeft={<IconArrowUndo />}
+                onClick={() => markBatchAs(BATCH_STATUSES.DRAFT)}
+              >
+                {t('common:batches.actions.markAsWaitingForAhjo')}
+              </Button>
+            </$GridCell>
+          </FormSection>
+        </form>
+      ) : null}
     </>
   );
 

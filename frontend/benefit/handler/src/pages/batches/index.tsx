@@ -48,7 +48,7 @@ const BatchIndex: NextPage = () => {
 
           <Tabs.TabPanel>
             <$Heading>{t('common:batches.tabs.pending')}</$Heading>
-            <BatchProposals status={BATCH_STATUSES.DRAFT} />
+            <BatchProposals status={BATCH_STATUSES.AWAITING_FOR_DECISION} />
           </Tabs.TabPanel>
 
           <Tabs.TabPanel>
