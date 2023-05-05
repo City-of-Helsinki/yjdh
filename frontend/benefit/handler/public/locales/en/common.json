@@ -500,6 +500,9 @@
     "actions": {
       "markAsRegisteredToAhjo": "Merkitse Ahjoon viedyksi",
       "markedAsRegisteredToAhjo": "Viety Ahjoon",
+      "markToPaymentAndArchive": "Merkitse maksuun ja arkistoi",
+      "markToArchive": "Arkistoi",
+      "markAsWaitingForAhjo": "Palauta odottamaan Ahjoon vientiä",
       "downloadFiles": "Lataa liitteet"
     }
   }
