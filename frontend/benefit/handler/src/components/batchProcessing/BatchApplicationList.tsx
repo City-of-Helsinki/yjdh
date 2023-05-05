@@ -238,7 +238,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
         <$TableBody>
           <Table
             indexKey="id"
-            theme={{ '--header-background-color': theme.colors.coatOfArms }}
+            theme={theme.components.table}
             rows={applications}
             initialSortingColumnKey="application_number"
             initialSortingOrder="asc"
