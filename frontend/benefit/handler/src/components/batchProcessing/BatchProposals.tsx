@@ -3,7 +3,7 @@ import { BatchProposal } from 'benefit-shared/types/application';
 import { LoadingSpinner } from 'hds-react';
 import * as React from 'react';
 
-import { $Empty } from '../applicationList/ApplicationList.sc';
+import { $EmptyHeading } from '../applicationList/ApplicationList.sc';
 import BatchApplicationList from './BatchApplicationList';
 import { BatchListProps, useBatchProposal } from './useBatches';
 
@@ -12,14 +12,8 @@ type BatchProps = {
 };
 
 const BatchProposals: React.FC<BatchProps> = ({ status }: BatchProps) => {
-  const {
-    t,
-    batches,
-    shouldShowSkeleton,
-    shouldHideList,
-    translationsBase,
-  }: BatchListProps = useBatchProposal(status);
-  const list = React.useMemo(() => batches, [batches]);
+  const { t, batches, shouldShowSkeleton, shouldHideList }: BatchListProps =
+    useBatchProposal(status);
 
   if (shouldShowSkeleton) {
     return <LoadingSpinner small />;
@@ -28,11 +22,11 @@ const BatchProposals: React.FC<BatchProps> = ({ status }: BatchProps) => {
   return (
     <div data-testid="batch-application-list">
       {!shouldHideList ? (
-        list.map((batch: BatchProposal) => (
+        batches.map((batch: BatchProposal) => (
           <BatchApplicationList batch={batch} key={batch.id} />
         ))
       ) : (
-        <$Empty>{t(`${translationsBase}.messages.empty.handling`)}</$Empty>
+        <$EmptyHeading>{t(`common:batches.empty`)}</$EmptyHeading>
       )}
     </div>
   );

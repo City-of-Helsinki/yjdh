@@ -466,6 +466,7 @@
   },
   "select": "Valitse",
   "batches": {
+    "empty": "Ei yhtään koontia.",
     "single": "Koonti",
     "multiple": "Koonnit",
     "tabs": {
