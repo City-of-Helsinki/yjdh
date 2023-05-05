@@ -15,6 +15,8 @@ const BatchProposals: React.FC<BatchProps> = ({ status }: BatchProps) => {
   const { t, batches, shouldShowSkeleton, shouldHideList }: BatchListProps =
     useBatchProposal(status);
 
+  const list = React.useMemo(() => batches, [batches]);
+
   if (shouldShowSkeleton) {
     return <LoadingSpinner small />;
   }
@@ -22,7 +24,7 @@ const BatchProposals: React.FC<BatchProps> = ({ status }: BatchProps) => {
   return (
     <div data-testid="batch-application-list">
       {!shouldHideList ? (
-        batches.map((batch: BatchProposal) => (
+        list.map((batch: BatchProposal) => (
           <BatchApplicationList batch={batch} key={batch.id} />
         ))
       ) : (
