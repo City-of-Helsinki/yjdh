@@ -8,6 +8,8 @@ import {
 import { BatchProposal } from 'benefit-shared/types/application';
 import {
   Button,
+  IconAngleDown,
+  IconAngleUp,
   IconArrowUndo,
   IconCheckCircleFill,
   IconCrossCircleFill,
@@ -52,6 +54,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
   const applications = React.useMemo(() => apps, [apps]);
 
   const IS_DRAFT = status === BATCH_STATUSES.DRAFT;
+  const [isCollapsed, setIsCollapsed] = React.useState(true);
   const [isAtAhjo, setIsAtAhjo] = React.useState<ButtonAhjoStates>('primary');
   const [isDownloadingAttachments, setIsDownloadingAttachments] =
     React.useState(false);
@@ -209,7 +212,9 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
         variant="primary"
         onClick={() => markBatchAs(BATCH_STATUSES.SENT_TO_TALPA)}
       >
-        {t('common:batches.actions.markToPaymentAndArchive')}
+        {proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED
+          ? t('common:batches.actions.markToPaymentAndArchive')
+          : t('common:batches.actions.markToArchive')}
       </Button>
       <Button
         theme="black"
@@ -233,9 +238,20 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
           <dt>{t('common:batches.list.columns.createdAt')}</dt>
           <dd>{convertToUIDateAndTimeFormat(created_at)}</dd>
         </div>
+        <div>
+          {applications.length > 0 ? (
+            <button onClick={() => setIsCollapsed(!isCollapsed)}>
+              {isCollapsed ? <IconAngleDown /> : <IconAngleUp />}
+            </button>
+          ) : null}
+        </div>
       </$HorizontalList>
       {applications?.length ? (
-        <$TableBody>
+        <$TableBody
+          css={`
+            display: ${isCollapsed ? 'none' : 'block'};
+          `}
+        >
           <Table
             indexKey="id"
             theme={theme.components.table}
