@@ -28,6 +28,10 @@ type Props = {
   zoomToPosition?: boolean;
   showLink?: boolean;
 };
+// DEFAULT COORDINATE FOR THE MAP TO CENTER TO
+// Number format is stupid due to linter...
+const defaultCoordinate: number[] = [60.172_207, 24.938_881_7];
+
 const getDateString = (posting: TetPosting): string =>
   `${posting.start_date} - ${posting.end_date ?? ''}`;
 
@@ -44,9 +48,9 @@ const getAddressString = (posting: TetPosting): string => {
 
 const Map: React.FC<Props> = ({
   postings,
-  center,
+  center = defaultCoordinate,
   height,
-  zoom,
+  zoom = 12,
   zoomToPosition,
   showLink,
 }) => {
@@ -54,19 +58,14 @@ const Map: React.FC<Props> = ({
   const router = useRouter();
   const theme = useTheme();
 
-  // DEFAULT COORDINATE FOR THE MAP TO CENTER TO
-  const defaultCoordinate = [60.172207, 24.9388817];
   const centerPosition =
     postings.length === 1 && zoomToPosition
       ? [
           postings[0].location.position.coordinates[1],
           postings[0].location.position.coordinates[0],
         ]
-      : center
-      ? center
-      : defaultCoordinate;
+      : center;
 
-  const zoomLevel = zoom ? zoom : 12; // Default zoom if not specified.
   const readMoreHandler = (id: string): void => {
     void router.push({
       pathname: '/postings/show',
@@ -78,7 +77,7 @@ const Map: React.FC<Props> = ({
     <$MapWrapper>
       <MapContainer
         center={centerPosition as LatLngExpression}
-        zoom={zoomLevel}
+        zoom={zoom}
         style={{ height }}
       >
         <TileLayer
