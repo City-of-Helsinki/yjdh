@@ -19,11 +19,20 @@ const useBatchQuery = (
     );
   };
 
+  const params: {
+    status: BATCH_STATUSES;
+  } = {
+    status,
+  };
+
   return useQuery<BatchProposal[], Error>(
     ['applicationsList'],
     async () => {
       const res = axios.get<BatchProposal[]>(
-        `${BackendEndpoint.APPLICATION_BATCHES}?status=${status}`
+        `${BackendEndpoint.APPLICATION_BATCHES}`,
+        {
+          params,
+        }
       );
       return handleResponse(res);
     },
