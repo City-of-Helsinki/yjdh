@@ -26,7 +26,7 @@ import {
   $TableBody,
   $TableFooter,
   $TableWrapper,
-} from './BatchProposal.sc';
+} from '../table/TableExtras.sc';
 
 type ButtonAhjoStates = 'primary' | 'secondary';
 

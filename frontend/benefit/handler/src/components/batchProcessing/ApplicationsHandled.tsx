@@ -10,7 +10,7 @@ import Container from 'shared/components/container/Container';
 import { $Link } from 'shared/components/table/Table.sc';
 import theme from 'shared/styles/theme';
 
-import { $HintText, $TableFooter } from './BatchProposal.sc';
+import { $HintText, $TableFooter } from '../table/TableExtras.sc';
 import { useApplicationsHandled } from './useApplicationsHandled';
 
 type Props = {
