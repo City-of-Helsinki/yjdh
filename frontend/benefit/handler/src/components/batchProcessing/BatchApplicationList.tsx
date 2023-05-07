@@ -1,3 +1,7 @@
+import parse from 'date-fns/parse';
+import format from 'date-fns/format';
+import isValid from 'date-fns/isValid';
+
 import useBatchStatus from 'benefit/handler/hooks/useBatchStatus';
 import useDownloadBatchFiles from 'benefit/handler/hooks/useDownloadBatchFiles';
 import useRemoveAppFromBatch from 'benefit/handler/hooks/useRemoveAppFromBatch';
@@ -37,6 +41,9 @@ import {
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { date, object, string } from 'yup';
+import { getErrorText } from 'benefit/handler/utils/forms';
+import useUserQuery from 'benefit/handler/hooks/useUserQuery';
+import { getFullName } from 'shared/utils/application.utils';
 
 type ButtonAhjoStates = 'primary' | 'secondary';
 
@@ -59,6 +66,8 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
     proposal_for_decision: proposalForDecision,
   } = batch;
 
+  const userQuery = useUserQuery();
+  const { isLoading, isSuccess, data: user } = userQuery;
   const applications = React.useMemo(() => apps, [apps]);
 
   const IS_DRAFT = status === BATCH_STATUSES.DRAFT;
@@ -214,27 +223,51 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
       </Button>
     </>
   );
+  const yearFromNow = new Date(new Date().getFullYear() - 1, 0, 1);
 
+  const parseLocalizedDateString = (_: string, dateString: string) => {
+    const parsed = parse(dateString, 'd.M.yyyy', new Date());
+    if (isValid(parsed)) {
+      return new Date(format(parsed, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
+    }
+  };
+
+  const translationRequired = t('common:form.validation.required');
+  const translationInvalidName = t('common:form.validation.name.invalid');
+
+  const stringRequired = string()
+    .matches(/^(.*)\s(\w+)/, translationInvalidName)
+    .required(translationRequired);
   const schema = object({
-    decision_maker_name: string().required(),
-    decision_maker_title: string().required(),
-    section_of_the_law: string().required(),
-    decision_date: date().required(),
-    expert_inspector_name: string().required(),
-    expert_inspector_title: string().required(),
+    decision_maker_name: stringRequired,
+    decision_maker_title: string().required(translationRequired),
+    section_of_the_law: string()
+      .matches(/^§\d+$/, t('common:batches.form.errors.section_of_the_law'))
+      .required(translationRequired),
+    decision_date: date()
+      .min(
+        yearFromNow,
+        t('common:form.validation.date.min', {
+          min: String(new Date().getFullYear() - 1),
+        })
+      )
+      .transform(parseLocalizedDateString)
+      .required(t('common:form.validation.date.format')),
+    expert_inspector_name: stringRequired,
+    expert_inspector_title: string().required(translationRequired),
   });
 
   const formik = useFormik<any>({
     initialValues: {
-      decision_maker_name: '',
+      decision_maker_name: getFullName(user?.first_name, user?.last_name),
       decision_maker_title: '',
-      section_of_the_law: '',
-      decision_date: '',
+      section_of_the_law: '§',
+      decision_date: format(new Date(), 'd.M.yyyy'),
       expert_inspector_name: '',
       expert_inspector_title: '',
     },
     validationSchema: schema,
-    validateOnChange: true,
+    validateOnChange: false,
     validateOnBlur: true,
     enableReinitialize: true,
     onSubmit: (values) => markBatchAs(BATCH_STATUSES.SENT_TO_TALPA),
@@ -245,124 +278,131 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
     void formik.validateForm().then((errs) => {
       const fieldName = Object.keys(errs);
       console.log(errs);
-      console.log(fieldName);
+      console.log(formik.values);
 
       if (!fieldName && !errs) {
         setIsSubmitted(true);
-        // return formik.submitForm();
+        return formik.submitForm();
       }
     });
   };
 
+  const getErrorMessage = (fieldName: string): string | undefined =>
+    getErrorText(formik.errors, formik.touched, fieldName, t, true);
+
   const footerContentAhjo = (): JSX.Element => (
     <>
-      {!isSubmitted ? (
-        <form onSubmit={handleSubmit} noValidate>
-          <FormSection>
-            <$GridCell $colSpan={3}>
-              <TextInput
-                onChange={formik.handleChange}
-                label={'t Päättäjän nimi'}
-                id="decision_maker_name"
-                name="decision_maker_name"
-                errorText={formik.errors.decision_maker_name}
-                value={formik.values.decision_maker_name ?? ''}
-                required
-              />
-            </$GridCell>
+      <form onSubmit={handleSubmit} noValidate>
+        <FormSection>
+          <$GridCell $colSpan={3}>
+            <TextInput
+              onChange={formik.handleChange}
+              label={'t Päättäjän nimi'}
+              id={`decision_maker_name_${batch.id}`}
+              name="decision_maker_name"
+              errorText={getErrorMessage('decision_maker_name')}
+              invalid={!!formik.errors.decision_maker_name}
+              value={formik.values.decision_maker_name ?? ''}
+              required
+            />
+          </$GridCell>
 
-            <$GridCell $colSpan={3}>
-              <TextInput
-                onChange={formik.handleChange}
-                label={'t Päättäjän titteli'}
-                id="decision_maker_title"
-                name="decision_maker_title"
-                errorText={formik.errors.decision_maker_title}
-                value={formik.values.decision_maker_title ?? ''}
-                required
-              />
-            </$GridCell>
+          <$GridCell $colSpan={3}>
+            <TextInput
+              onChange={formik.handleChange}
+              label={'t Päättäjän titteli'}
+              id={`decision_maker_title${batch.id}`}
+              name="decision_maker_title"
+              errorText={getErrorMessage('decision_maker_title')}
+              invalid={!!formik.errors.decision_maker_title}
+              value={formik.values.decision_maker_title ?? ''}
+              required
+            />
+          </$GridCell>
 
-            <$GridCell $colSpan={2}>
-              <TextInput
-                onChange={formik.handleChange}
-                label={'t pykälä'}
-                id="section_of_the_law"
-                name="section_of_the_law"
-                errorText={formik.errors.section_of_the_law}
-                value={formik.values.section_of_the_law ?? ''}
-                required
-              />
-            </$GridCell>
+          <$GridCell $colSpan={2}>
+            <TextInput
+              onChange={formik.handleChange}
+              label={'t pykälä'}
+              id={`section_of_the_law${batch.id}`}
+              name="section_of_the_law"
+              errorText={getErrorMessage('section_of_the_law')}
+              invalid={!!formik.errors.section_of_the_law}
+              value={formik.values.section_of_the_law ?? ''}
+              required
+            />
+          </$GridCell>
 
-            <$GridCell $colSpan={2}>
-              <DateInput
-                onChange={(value) =>
-                  formik.setFieldValue('decision_date', value)
-                }
-                label={'t Päätöksen päivämäärä'}
-                id="decision_date"
-                name="decision_date"
-                errorText={formik.errors.decision_date}
-                value={formik.values.decision_date ?? ''}
-                language="fi"
-                required
-              ></DateInput>
-            </$GridCell>
-          </FormSection>
+          <$GridCell $colSpan={3}>
+            <DateInput
+              minDate={yearFromNow}
+              onChange={(value) => formik.setFieldValue('decision_date', value)}
+              label={'t Päätöksen päivämäärä'}
+              id={`decision_date${batch.id}`}
+              name="decision_date"
+              errorText={getErrorMessage('decision_date')}
+              invalid={!!formik.errors.decision_date}
+              value={formik.values.decision_date ?? ''}
+              language="fi"
+              required
+            ></DateInput>
+          </$GridCell>
+        </FormSection>
 
-          <FormSection>
-            <$GridCell $colSpan={3}>
-              <TextInput
-                onChange={formik.handleChange}
-                label={'t Asiantarkastajan nimi'}
-                id="expert_inspector_name"
-                name="expert_inspector_name"
-                errorText={formik.errors.expert_inspector_name}
-                value={formik.values.expert_inspector_name ?? ''}
-                required
-              />
-            </$GridCell>
+        <FormSection>
+          <$GridCell $colSpan={3}>
+            <TextInput
+              onChange={formik.handleChange}
+              label={'t Asiantarkastajan nimi'}
+              id={`expert_inspector_name${batch.id}`}
+              name="expert_inspector_name"
+              errorText={getErrorMessage('expert_inspector_name')}
+              invalid={!!formik.errors.expert_inspector_name}
+              value={formik.values.expert_inspector_name ?? ''}
+              required
+            />
+          </$GridCell>
 
-            <$GridCell $colSpan={3}>
-              <TextInput
-                onChange={formik.handleChange}
-                label={'t Asiantarkastajan titteli'}
-                id="expert_inspector_title"
-                name="expert_inspector_title"
-                errorText={formik.errors.expert_inspector_title}
-                value={formik.values.expert_inspector_title ?? ''}
-                required
-              />
-            </$GridCell>
-          </FormSection>
+          <$GridCell $colSpan={3}>
+            <TextInput
+              onChange={formik.handleChange}
+              label={'t Asiantarkastajan titteli'}
+              id={`expert_inspector_title_${batch.id}`}
+              name="expert_inspector_title"
+              errorText={getErrorMessage('expert_inspector_title')}
+              invalid={!!formik.errors.expert_inspector_title}
+              value={formik.values.expert_inspector_title ?? ''}
+              required
+            />
+          </$GridCell>
+        </FormSection>
 
-          <FormSection>
-            <$GridCell $colSpan={3}>
-              <Button
-                type="submit"
-                theme="coat"
-                variant="primary"
-                // onClick={() => markBatchAs(BATCH_STATUSES.SENT_TO_TALPA)}
-              >
-                {proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED
-                  ? t('common:batches.actions.markToPaymentAndArchive')
-                  : t('common:batches.actions.markToArchive')}
-              </Button>
-            </$GridCell>
-            <$GridCell $colSpan={4} alignSelf="end">
-              <Button
-                theme="black"
-                variant="supplementary"
-                iconLeft={<IconArrowUndo />}
-                onClick={() => markBatchAs(BATCH_STATUSES.DRAFT)}
-              >
-                {t('common:batches.actions.markAsWaitingForAhjo')}
-              </Button>
-            </$GridCell>
-          </FormSection>
-        </form>
-      ) : null}
+        <FormSection>
+          <$GridCell $colSpan={3}>
+            <Button
+              disabled={isSubmitted}
+              type="submit"
+              theme="coat"
+              variant="primary"
+              // onClick={() => markBatchAs(BATCH_STATUSES.SENT_TO_TALPA)}
+            >
+              {proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED
+                ? t('common:batches.actions.markToPaymentAndArchive')
+                : t('common:batches.actions.markToArchive')}
+            </Button>
+          </$GridCell>
+          <$GridCell $colSpan={4} alignSelf="end">
+            <Button
+              theme="black"
+              variant="supplementary"
+              iconLeft={<IconArrowUndo />}
+              onClick={() => markBatchAs(BATCH_STATUSES.DRAFT)}
+            >
+              {t('common:batches.actions.markAsWaitingForAhjo')}
+            </Button>
+          </$GridCell>
+        </FormSection>
+      </form>
     </>
   );
 

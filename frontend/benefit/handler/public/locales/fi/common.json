@@ -417,7 +417,7 @@
         "mustNotInThePast": "Päivämäärä ei voi olla menneisyydessä",
         "min": "Päivämäärän on oltava aikaisintaan {{min}}",
         "max": "Päivämäärän on oltava viimeistään {{max}}",
-        "format": "This date is incorrect"
+        "format": "Päivämäärän on oltava muotoa pp.kk.vvvv"
       },
       "time": {
         "min": "Arvon tulee olla aikaisintaan {{min}}",
@@ -434,6 +434,9 @@
       },
       "ssn": {
         "invalid": "Virheellinen henkilötunnus"
+      },
+      "name": {
+        "invalid": "Etunimi ja sukunimi vaaditaan"
       }
     }
   },
@@ -508,6 +511,16 @@
       "markToArchive": "Arkistoi",
       "markAsWaitingForAhjo": "Palauta odottamaan Ahjoon vientiä",
       "downloadFiles": "Lataa liitteet"
+    },
+    "form": {
+      "errors": {
+        "decision_maker_name": "Pakollinen tieto",
+        "decision_maker_title": "Pakollinen tieto",
+        "section_of_the_law": "Pykälän on oltava muodossa §1234",
+        "decision_date": "Pakollinen tieto",
+        "errorsexpert_inspector_name": "Pakollinen tieto",
+        "expert_inspector_title": "Pakollinen tieto"
+      }
     }
   }
 }
