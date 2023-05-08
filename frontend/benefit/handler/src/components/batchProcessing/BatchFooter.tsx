@@ -1,5 +1,3 @@
-import useBatchStatus from 'benefit/handler/hooks/useBatchStatus';
-import useUserQuery from 'benefit/handler/hooks/useUserQuery';
 import { getErrorText } from 'benefit/handler/utils/forms';
 import {
   BATCH_STATUSES,
@@ -16,8 +14,9 @@ import React, { useEffect } from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { date, object, string } from 'yup';
+import useBatchComplete from 'benefit/handler/hooks/useBatchComplete';
 
-const parseLocalizedDateString = (_: string, dateString: string) => {
+export const parseLocalizedDateString = (_: string, dateString: string) => {
   const parsed = parse(dateString, 'd.M.yyyy', new Date());
   if (isValid(parsed)) {
     return new Date(format(parsed, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
@@ -31,7 +30,7 @@ type BatchProps = {
 const BatchFooterAhjo: React.FC<BatchProps> = ({ batch }: BatchProps) => {
   const { t } = useTranslation();
   const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
-  const { isSuccess, isError, mutate: changeBatchStatus } = useBatchStatus();
+  const { isSuccess, isError, mutate: changeBatchStatus } = useBatchComplete();
 
   useEffect(() => {
     if (isSuccess || isError) {
@@ -43,6 +42,7 @@ const BatchFooterAhjo: React.FC<BatchProps> = ({ batch }: BatchProps) => {
     changeBatchStatus({
       id: batch.id,
       status: markBatchAsStatus,
+      form: formik.values,
     });
   const translationRequired = t('common:form.validation.required');
   const translationInvalidName = t('common:form.validation.name.invalid');
