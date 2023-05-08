@@ -74,7 +74,7 @@ def test_create_for_application_fail(received_application):
 
 
 @pytest.mark.parametrize(
-    "pay_subsidy_percent, max_subsidy", [(40, 1400), (50, 1400), (100, 1800)]
+    "pay_subsidy_percent, max_subsidy", [(70, 1770), (50, 1260), (100, 2020)]
 )
 def test_pay_subsidy_maximum(handling_application, pay_subsidy_percent, max_subsidy):
     assert handling_application.pay_subsidies.count() == 1
