@@ -160,6 +160,25 @@ Hooks now run when committing. You can run hooks manually by `pre-commit run`
 
 ---
 
+## Release tags
+
+Release pipelines are triggered by git tag. Release tag syntax is '\<service>-\<application>-\<vx.y.z>' for example 'kesaseteli-backend-v1.0.0'.
+
+Git tags '\<service >-\<application>' -prefixes are
+
+ - benefit-backend
+ - benefit-applicant
+ - benefit-handler
+ - kesaseteli-backend
+ - kesaseteli-employer
+ - kesaseteli-handler
+ - kesaseteli-youth
+ - tet-backend
+ - tet-admin
+ - tet-youth
+
+---
+
 ## Known errors
 
 1.  If github action deploy fail with error like this in your pull-request:
