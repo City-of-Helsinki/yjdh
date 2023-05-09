@@ -248,7 +248,7 @@ def test_multiple_benefit_per_application(mock_pdf_convert):
         override_monthly_benefit_amount=None,
     )
     pay_subsidy = PaySubsidyFactory(
-        pay_subsidy_percent=40, start_date=date(2021, 7, 10), end_date=date(2021, 9, 10)
+        pay_subsidy_percent=50, start_date=date(2021, 7, 10), end_date=date(2021, 9, 10)
     )
     application.pay_subsidies.add(pay_subsidy)
     application.save()
@@ -268,8 +268,8 @@ def test_multiple_benefit_per_application(mock_pdf_convert):
             application.ahjo_application_number,
             application.employee.first_name,
             application.employee.last_name,
-            "691",
-            "340",
+            "441",
+            "895",
             "1600",
             "800",
         ),
