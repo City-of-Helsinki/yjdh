@@ -571,8 +571,10 @@ class PaySubsidyMonthlyRow(CalculationRow):
     * 100% pay subsidy has been granted for 6 months
     * Pay subsidy is calcuated using formula:
       min(1800, (monthly_pay+additional_expenses)/0.8*0.65) + vacation_money/6/0.8*0.65
+      min(2020, (monthly_pay / work_time_fraction * 0.65) * 1.23
     """
     MAX_WORK_TIME_FRACTION_FOR_FULL_PAY_SUBSIDY = decimal.Decimal("0.65")
+    GROSS_WEIGHT_COEFFICIENT_FOR_FULL_PAY_SUBSIDY = decimal.Decimal("1.23")
 
     def __init__(self, *args, **kwargs):
         self.pay_subsidy = kwargs.pop("pay_subsidy", None)
@@ -586,6 +588,9 @@ class PaySubsidyMonthlyRow(CalculationRow):
         palkkatukipäätöksen mukainen prosenttiosuus lomarahasta."
         Therefore, the pay subsidy limit does not apply to the vacation_money
         """
+        """
+        1.7.2023 voimaantulevan lain mukaan lomarahaa ja sivukuluja ei oteta enää huomioon palkkatuen määrää laskiessa
+        """
         assert self.max_subsidy is not None
         assert self.pay_subsidy is not None
 
@@ -596,39 +601,26 @@ class PaySubsidyMonthlyRow(CalculationRow):
         pay_subsidy_fraction = self.pay_subsidy.pay_subsidy_percent * decimal.Decimal(
             "0.01"
         )
-
+        # Pay subsidy max is 100%:
         if (
             pay_subsidy_fraction == 1
             and work_time_fraction > self.MAX_WORK_TIME_FRACTION_FOR_FULL_PAY_SUBSIDY
         ):
-            full_time_salary_cost_excluding_vacation_money = (
-                self.calculation.monthly_pay + self.calculation.other_expenses
-            ) / work_time_fraction
-            full_time_vacation_money = (
-                self.calculation.vacation_money / work_time_fraction
-            ) / self.calculation.duration_in_months
-            subsidy_amount = (
-                min(
-                    self.max_subsidy,
-                    full_time_salary_cost_excluding_vacation_money
-                    * self.MAX_WORK_TIME_FRACTION_FOR_FULL_PAY_SUBSIDY,
+            full_time_salary_cost = (self.calculation.monthly_pay) / work_time_fraction
+
+            subsidy_amount = min(
+                self.max_subsidy,
+                (
+                    full_time_salary_cost
+                    * self.MAX_WORK_TIME_FRACTION_FOR_FULL_PAY_SUBSIDY
                 )
-                + full_time_vacation_money
-                * self.MAX_WORK_TIME_FRACTION_FOR_FULL_PAY_SUBSIDY
+                * self.GROSS_WEIGHT_COEFFICIENT_FOR_FULL_PAY_SUBSIDY,
             )
+        # Pay subsidy max is less than 100% (50% or 70%):
         else:
-            salary_cost_excluding_vacation_money = (
-                self.calculation.monthly_pay + self.calculation.other_expenses
-            )
-            monthly_vacation_money = (
-                self.calculation.vacation_money / self.calculation.duration_in_months
-            )
-            subsidy_amount = (
-                min(
-                    self.max_subsidy,
-                    pay_subsidy_fraction * salary_cost_excluding_vacation_money,
-                )
-                + monthly_vacation_money * pay_subsidy_fraction
+            subsidy_amount = min(
+                self.max_subsidy,
+                pay_subsidy_fraction * self.calculation.monthly_pay,
             )
         return subsidy_amount
 
