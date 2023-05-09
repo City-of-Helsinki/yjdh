@@ -2,17 +2,9 @@
 # an update to the specified branches or you push specified tags.
 trigger:
   batch: true
-  branches:
+  tags:
     include:
-    - main
-  paths:
-    include:
-    - frontend/tet/youth/**
-    - frontend/*
-    exclude:
-    - frontend/**/browser-tests 
-    - frontend/**/__tests__ 
-    - README.md
+      - tet-youth-*
 
 # Pull request (PR) triggers cause a pipeline to run whenever a pull request is 
 # opened with one of the specified target branches, or when updates are made to 
