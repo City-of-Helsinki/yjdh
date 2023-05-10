@@ -2,7 +2,7 @@ import json
 import re
 import unicodedata
 import uuid
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from difflib import SequenceMatcher
 from enum import auto, Enum
 from typing import List, NamedTuple, Optional
@@ -1170,7 +1170,7 @@ def test_youth_application_post_valid_social_security_number(api_client, test_va
     response = api_client.post(get_list_url(), data)
 
     assert response.status_code == status.HTTP_201_CREATED
-    assert "social_security_number" in response.data
+    assert "social_security_number" not in response.data  # Should not be returned back
 
 
 @override_settings(
@@ -1252,40 +1252,14 @@ def test_youth_application_post_valid_random_data(  # noqa: C901
     )
 
     # Check response content
-    for manually_checked_field in manually_checked_fields:
-        if manually_checked_field == "id":
-            assert YouthApplication.objects.filter(pk=response.data["id"]).exists()
-        elif manually_checked_field == "created_at":
-            assert datetime.fromisoformat(response.data["created_at"]) == timezone.now()
-        elif manually_checked_field == "modified_at":
-            assert (
-                datetime.fromisoformat(response.data["modified_at"]) == timezone.now()
-            )
-        elif manually_checked_field == "encrypted_original_vtj_json":
-            # VTJ data should not be shown to the applicant
-            assert "encrypted_original_vtj_json" not in response.data
-        elif manually_checked_field == "encrypted_handler_vtj_json":
-            # VTJ data should not be shown to the applicant
-            assert "encrypted_handler_vtj_json" not in response.data
-        else:
-            assert False, f"Please add manual check for field {manually_checked_field}"
+    assert list(response.data.keys()) == ["id"]
+    assert YouthApplication.objects.filter(pk=response.data["id"]).exists()
 
-    for required_field in required_fields:
-        assert (
-            response.data[required_field] == data[required_field]
-        ), f"{required_field} response data incorrect"
+    # VTJ data should not be shown to the applicant
+    assert "encrypted_original_vtj_json" not in response.data
 
-    for optional_field in optional_fields:
-        assert response.data[optional_field] == data.get(
-            optional_field,
-            YouthApplication._meta.get_field(optional_field).get_default(),
-        ), f"{optional_field} response data incorrect"
-
-    for read_only_field in read_only_fields:
-        assert (
-            response.data[read_only_field]
-            == YouthApplication._meta.get_field(read_only_field).get_default()
-        ), f"{read_only_field} response data incorrect"
+    # VTJ data should not be shown to the applicant
+    assert "encrypted_handler_vtj_json" not in response.data
 
     # Check created youth application
     created_app = YouthApplication.objects.get(pk=response.data["id"])

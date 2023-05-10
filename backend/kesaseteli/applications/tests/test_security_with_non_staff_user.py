@@ -754,14 +754,7 @@ def test_youth_application_list_empty_post(user_client):
 def test_youth_application_list_valid_post(user_client):
     """
     Test that a valid post request to the youth application list endpoint creates a new
-    youth application and only returns the posted data itself, the created youth
-    application's ID, status, created_at, modified_at, receipt_confirmed_at, handled_at,
-    handler, additional_info_description, additional_info_provided_at and
-    additional_info_user_reasons fields and nothing else.
-
-    The posted data contains personal data like e.g. person's name and their social
-    security number and that data is returned in the response. This is ok because the
-    user posted the data themselves.
+    youth application and only returns its ID and nothing else.
     """
 
     list_url = reverse("v1:youthapplication-list")
@@ -807,30 +800,7 @@ def test_youth_application_list_valid_post(user_client):
     assert "encrypted_original_vtj_json" not in response.data
     assert "encrypted_handler_vtj_json" not in response.data
 
-    assert response.data == {
-        # The posted data itself:
-        # NOTE: This is PERSONAL DATA but posted by the user so can be returned to them
-        "first_name": "First name",
-        "last_name": "Last name",
-        "social_security_number": "111111-111C",
-        "school": "Test school",
-        "is_unlisted_school": False,
-        "email": "test@example.org",
-        "phone_number": "+358 12 3456789",
-        "postcode": "00100",
-        "language": "fi",
-        # New field values i.e. these were not posted by the user:
-        "id": str(created_app.id),
-        "status": "submitted",
-        "created_at": "2022-02-02T02:00:00+02:00",
-        "modified_at": "2022-02-02T02:00:00+02:00",
-        "receipt_confirmed_at": None,
-        "handled_at": None,
-        "handler": None,
-        "additional_info_description": "",
-        "additional_info_provided_at": None,
-        "additional_info_user_reasons": [],
-    }
+    assert response.data == {"id": str(created_app.id)}
 
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
