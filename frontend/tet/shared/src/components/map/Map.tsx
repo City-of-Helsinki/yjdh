@@ -28,6 +28,10 @@ type Props = {
   zoomToPosition?: boolean;
   showLink?: boolean;
 };
+// DEFAULT COORDINATE FOR THE MAP TO CENTER TO
+// Number format is stupid due to linter...
+const defaultCoordinate: number[] = [60.172_207, 24.938_881_7];
+
 const getDateString = (posting: TetPosting): string =>
   `${posting.start_date} - ${posting.end_date ?? ''}`;
 
@@ -44,9 +48,9 @@ const getAddressString = (posting: TetPosting): string => {
 
 const Map: React.FC<Props> = ({
   postings,
-  center,
+  center = defaultCoordinate,
   height,
-  zoom,
+  zoom = 12,
   zoomToPosition,
   showLink,
 }) => {
@@ -61,6 +65,7 @@ const Map: React.FC<Props> = ({
           postings[0].location.position.coordinates[0],
         ]
       : center;
+
   const readMoreHandler = (id: string): void => {
     void router.push({
       pathname: '/postings/show',
