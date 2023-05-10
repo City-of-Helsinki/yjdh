@@ -14,7 +14,7 @@ const Step3Summary: React.FC = () => {
   const { applicationId } = useApplicationApi();
   const goToThankYouPage = React.useCallback(() => {
     if (applicationId) {
-      void goToPage(`/thankyou?id=${applicationId}`);
+      goToPage(`/thankyou?id=${applicationId}`);
     }
   }, [applicationId, goToPage]);
   const title = t('common:application.step3.header');

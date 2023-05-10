@@ -22,13 +22,13 @@ const ApplicationPage: NextPage = () => {
   const goToPage = useGoToPage();
 
   if (!isRouterLoading && !applicationId) {
-    void goToPage('/', 'replace');
+    goToPage('/', 'replace');
     return null;
   }
 
   if (applicationQuery.isSuccess) {
     if (applicationQuery.data.status !== 'draft' && applicationId) {
-      void goToPage(`/thankyou?id=${applicationId}`, 'replace');
+      goToPage(`/thankyou?id=${applicationId}`, 'replace');
     }
 
     return (

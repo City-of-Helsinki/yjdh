@@ -51,7 +51,7 @@ const Login: NextPage = () => {
     if (logout) {
       clearLocalStorage('application');
 
-      void queryClient.removeQueries();
+      queryClient.removeQueries();
     }
   }, [logout, queryClient]);
 

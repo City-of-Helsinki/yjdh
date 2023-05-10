@@ -1,5 +1,6 @@
 import useUserQuery from 'kesaseteli/employer/hooks/backend/useUserQuery';
 import React from 'react';
+import type { AuthContextType } from 'shared/auth/AuthContext';
 import AuthContext from 'shared/auth/AuthContext';
 
 // check that authentication is still alive in every 5 minutes
@@ -12,14 +13,23 @@ const AuthProvider = <P,>({
     select: (user) => Boolean(user),
     refetchInterval: FIVE_MINUTES,
   });
+
+  const authContextProps = React.useMemo(
+    (): AuthContextType => ({
+      isAuthenticated: userQuery.isSuccess && userQuery.data,
+      isLoading: userQuery.isLoading,
+      isError: userQuery.isError,
+    }),
+    [
+      userQuery.isSuccess,
+      userQuery.data,
+      userQuery.isLoading,
+      userQuery.isError,
+    ]
+  );
+
   return (
-    <AuthContext.Provider
-      value={{
-        isAuthenticated: userQuery.isSuccess && userQuery.data,
-        isLoading: userQuery.isLoading,
-        isError: userQuery.isError,
-      }}
-    >
+    <AuthContext.Provider value={authContextProps}>
       {children}
     </AuthContext.Provider>
   );
