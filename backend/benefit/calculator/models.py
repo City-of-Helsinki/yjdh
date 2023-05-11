@@ -729,7 +729,7 @@ class SalaryBenefitTotalRow(CalculationRow, TotalRowMixin):
 
     def calculate_amount(self):
         return to_decimal(
-            self.calculation.duration_in_months
+            self.calculation.duration_in_months_rounded
             * self.calculation.calculator.get_amount(
                 RowType.HELSINKI_BENEFIT_MONTHLY_EUR
             ),
@@ -749,7 +749,7 @@ class SalaryBenefitSubTotalRow(CalculationRow, TotalRowMixin):
 
     def calculate_amount(self):
         return to_decimal(
-            duration_in_months(self.start_date, self.end_date)
+            duration_in_months(self.start_date, self.end_date, 2)
             * self.calculation.calculator.get_amount(
                 RowType.HELSINKI_BENEFIT_MONTHLY_EUR
             ),
