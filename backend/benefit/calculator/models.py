@@ -574,7 +574,7 @@ class PaySubsidyMonthlyRow(CalculationRow):
       min(2020, (monthly_pay / work_time_fraction * 0.65) * 1.23
     """
     MAX_WORK_TIME_FRACTION_FOR_FULL_PAY_SUBSIDY = decimal.Decimal("0.65")
-    GROSS_WEIGHT_COEFFICIENT_FOR_FULL_PAY_SUBSIDY = decimal.Decimal("1.23")
+    GROSS_WAGE_COEFFICIENT_FOR_FULL_PAY_SUBSIDY = decimal.Decimal("1.23")
 
     def __init__(self, *args, **kwargs):
         self.pay_subsidy = kwargs.pop("pay_subsidy", None)
@@ -604,7 +604,6 @@ class PaySubsidyMonthlyRow(CalculationRow):
         # Pay subsidy max is 100%:
         if (
             pay_subsidy_fraction == 1
-            and work_time_fraction > self.MAX_WORK_TIME_FRACTION_FOR_FULL_PAY_SUBSIDY
         ):
             full_time_salary_cost = (self.calculation.monthly_pay) / work_time_fraction
 
@@ -614,7 +613,7 @@ class PaySubsidyMonthlyRow(CalculationRow):
                     full_time_salary_cost
                     * self.MAX_WORK_TIME_FRACTION_FOR_FULL_PAY_SUBSIDY
                 )
-                * self.GROSS_WEIGHT_COEFFICIENT_FOR_FULL_PAY_SUBSIDY,
+                * self.GROSS_WAGE_COEFFICIENT_FOR_FULL_PAY_SUBSIDY,
             )
         # Pay subsidy max is less than 100% (50% or 70%):
         else:
