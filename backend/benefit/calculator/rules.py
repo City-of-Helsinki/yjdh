@@ -2,12 +2,15 @@ import collections
 import datetime
 import decimal
 import logging
+from typing import Union
 
 from django.db import transaction
 
 from applications.enums import ApplicationStatus, BenefitType
 from calculator.enums import RowType
 from calculator.models import (
+    Calculation,
+    CalculationRow,
     DateRangeDescriptionRow,
     DescriptionRow,
     EmployeeBenefitMonthlyRow,
@@ -34,17 +37,17 @@ BenefitSubRange = collections.namedtuple(
 
 
 class HelsinkiBenefitCalculator:
-    def __init__(self, calculation):
+    def __init__(self, calculation: Calculation):
         self.calculation = calculation
         self._row_counter = 0
 
     @staticmethod
-    def get_calculator(calculation):
+    def get_calculator(calculation: Calculation):
         # in future, one might use e.g. application date to determine the correct calculator
         if calculation.override_monthly_benefit_amount is not None:
             return ManualOverrideCalculator(calculation)
         elif calculation.application.benefit_type == BenefitType.SALARY_BENEFIT:
-            return SalaryBenefitCalculator2021(calculation)
+            return SalaryBenefitCalculator2023(calculation)
         elif calculation.application.benefit_type == BenefitType.EMPLOYMENT_BENEFIT:
             return EmployeeBenefitCalculator2021(calculation)
         else:
@@ -77,7 +80,12 @@ class HelsinkiBenefitCalculator:
                 # change day is the day after end_date
                 change_days.add(item.end_date + datetime.timedelta(days=1))
 
-        def get_item_in_effect(items, day):
+        def get_item_in_effect(
+            items: list[PaySubsidy], day: datetime.date
+        ) -> Union[PaySubsidy, None]:
+            # Return the first item in the list whose start date is less than or equal to the given day,
+            # and whose end date is greater than or equal to the given day.
+            # If no such item is found, it returns None.
             for item in items:
                 if item.start_date <= day <= item.end_date:
                     return item
@@ -102,7 +110,7 @@ class HelsinkiBenefitCalculator:
         assert ranges[-1].end_date == self.calculation.end_date
         return ranges
 
-    def get_amount(self, row_type, default=None):
+    def get_amount(self, row_type: RowType, default=None):
         # This function is used by the various CalculationRow to retrieve a previously calculated value
         row = (
             self.calculation.rows.order_by("-ordering")
@@ -146,7 +154,7 @@ class HelsinkiBenefitCalculator:
                 self.calculation.calculated_benefit_amount = None
             self.calculation.save()
 
-    def _create_row(self, row_class, **kwargs):
+    def _create_row(self, row_class: CalculationRow, **kwargs):
         row = row_class(
             calculation=self.calculation, ordering=self._row_counter, **kwargs
         )
@@ -169,7 +177,7 @@ class DummyBenefitCalculator(HelsinkiBenefitCalculator):
             SalaryBenefitTotalRow,
         )
 
-    def get_amount(self, row_type, default=None):
+    def get_amount(self, row_type: RowType, default=None):
         return decimal.Decimal(0)
 
 
@@ -182,9 +190,9 @@ class ManualOverrideCalculator(HelsinkiBenefitCalculator):
         )
 
 
-class SalaryBenefitCalculator2021(HelsinkiBenefitCalculator):
+class SalaryBenefitCalculator2023(HelsinkiBenefitCalculator):
     """
-    Calculation of salary benefit, according to rules in effect 2021 (and possibly onwards)
+    Calculation of salary benefit, according to rules in effect starting from 1.7.2023
     """
 
     # The maximum amount of pay subsidy depends on the pay subsidy percent in the pay subsidy decision.
