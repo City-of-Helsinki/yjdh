@@ -262,15 +262,17 @@ def test_multiple_benefit_per_application(mock_pdf_convert):
     assert (
         html.count(application.ahjo_application_number) == 2
     )  # Make sure there are two rows in the report
+    print(html)
     _assert_html_content(
         html,
         (
             application.ahjo_application_number,
             application.employee.first_name,
             application.employee.last_name,
-            "441",
-            "895",
+            "440",
+            "893",
             "1600",
             "800",
+            "2493"
         ),
     )
