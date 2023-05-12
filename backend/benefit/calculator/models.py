@@ -559,7 +559,7 @@ class StateAidMaxMonthlyRow(CalculationRow):
 
 class PaySubsidyMonthlyRow(CalculationRow):
     proxy_row_type = RowType.PAY_SUBSIDY_MONTHLY_EUR
-    description_fi_template = "Palkkatuki (enintään {row.max_subsidy} €)"
+    description_fi_template = "Palkkatuki"
 
     """
     Special rule regarding a 100% pay subsidy. The 100% subsidy is limited so, that it's only possible
@@ -602,9 +602,7 @@ class PaySubsidyMonthlyRow(CalculationRow):
             "0.01"
         )
         # Pay subsidy max is 100%:
-        if (
-            pay_subsidy_fraction == 1
-        ):
+        if pay_subsidy_fraction == 1:
             full_time_salary_cost = (self.calculation.monthly_pay) / work_time_fraction
 
             subsidy_amount = min(
@@ -669,7 +667,7 @@ class TotalDeductionsMonthlyRow(CalculationRow):
 
 class SalaryBenefitMonthlyRow(CalculationRow):
     proxy_row_type = RowType.HELSINKI_BENEFIT_MONTHLY_EUR
-    description_fi_template = "Helsinki-lisä / kk (enintään {row.max_benefit} €)"
+    description_fi_template = "Helsinki-lisä / kk"
 
     def __init__(self, *args, **kwargs):
         self.max_benefit = kwargs.pop("max_benefit", None)
