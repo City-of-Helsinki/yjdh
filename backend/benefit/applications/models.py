@@ -485,6 +485,9 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
     expert_inspector_email = models.EmailField(
         blank=True, verbose_name=_("Expert inspector's email address")
     )
+    expert_inspector_title = models.CharField(
+        max_length=64, blank=True, verbose_name=_("Expert inspector's title")
+    )
 
     def save(self, *args, **kwargs):
         # Deny any attempt to create more than one draft for accepted or rejected batch
