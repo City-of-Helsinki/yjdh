@@ -10,6 +10,7 @@ import showSuccessToast from 'shared/components/toast/show-success-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import format from 'date-fns/format';
 import parse from 'date-fns/parse';
+import { AxiosError, AxiosResponse } from 'axios';
 
 type TalpaForm = {
   decision_maker_name: string;
@@ -31,19 +32,48 @@ type Response = {
   decision: PROPOSALS_FOR_DECISION;
 };
 
-const useBatchComplete = (): UseMutationResult<Response, Error, Payload> => {
+interface BatchErrorResponse extends AxiosResponse {
+  status: 406;
+  data: {
+    errorKey: string;
+  };
+}
+
+interface BatchError extends AxiosError {
+  response: BatchErrorResponse;
+}
+
+const useBatchComplete = (): UseMutationResult<
+  Response,
+  BatchError,
+  Payload
+> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
-  const handleError = (): void => {
+  const handleError = (errorResponse: BatchError): void => {
+    if (
+      errorResponse.response?.data &&
+      errorResponse.response?.data?.errorKey
+    ) {
+      const { errorKey } = errorResponse?.response?.data;
+      showErrorToast(
+        t(`common:batches.notifications.errors.${errorKey}.title`),
+        t(`common:batches.notifications.errors.${errorKey}.message`)
+      );
+      return;
+    }
+
     showErrorToast(
       t('common:applications.list.errors.fetch.label'),
-      t('common:applications.list.errors.fetch.text', { status: 'error' })
+      t('common:applications.list.errors.fetch.text', {
+        status: 'unknown error',
+      })
     );
   };
 
-  return useMutation<Response, Error, Payload>(
+  return useMutation<Response, BatchError, Payload>(
     'changeBatchStatus',
     ({ id, status, form }: Payload) => {
       const parsed = parse(form.decision_date, 'd.M.yyyy', new Date());
@@ -70,7 +100,7 @@ const useBatchComplete = (): UseMutationResult<Response, Error, Payload> => {
         );
         void queryClient.invalidateQueries('applicationsList');
       },
-      onError: () => handleError(),
+      onError: (errorResponse: BatchError) => handleError(errorResponse),
     }
   );
 };
