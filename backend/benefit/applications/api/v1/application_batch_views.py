@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.forms import ValidationError
 from django.http import HttpResponse, StreamingHttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -259,19 +260,30 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         if new_status not in [
             ApplicationBatchStatus.DRAFT,
             ApplicationBatchStatus.AWAITING_AHJO_DECISION,
-            ApplicationBatchStatus.SENT_TO_TALPA,
+            ApplicationBatchStatus.DECIDED_ACCEPTED,
+            ApplicationBatchStatus.DECIDED_REJECTED,
         ]:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 
+        if new_status in [
+            ApplicationBatchStatus.DECIDED_ACCEPTED,
+            ApplicationBatchStatus.DECIDED_REJECTED,
+        ]:
+            # Archive all applications if this batch will be completed
+            Application.objects.filter(batch=batch).update(archived=True)
+
+            for key in request.data:
+                setattr(batch, key, request.data.get(key))
+
         batch.status = new_status
 
-        applications = Application.objects.filter(batch=batch)
-        if new_status == ApplicationBatchStatus.SENT_TO_TALPA:
-            for app in applications:
-                app.archived = True
-                app.save()
-
-        batch.save()
+        try:
+            batch.save()
+        except ValidationError:
+            return Response(
+                {"errorKey": "batchDraftAlreadyExists"},
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )
 
         return Response(
             {

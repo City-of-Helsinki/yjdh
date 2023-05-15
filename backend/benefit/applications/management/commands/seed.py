@@ -71,7 +71,9 @@ def run_seed(number):
     def _create_batch(
         status: ApplicationBatchStatus, proposal_for_decision: ApplicationStatus
     ):
-        batch = ApplicationBatchFactory()
+        batch = ApplicationBatchFactory(
+            status=status, proposal_for_decision=proposal_for_decision
+        )
 
         # Need to delete a few applications that are made for the batch for testing purposes
         Application.objects.filter(batch=batch).delete()
@@ -83,8 +85,6 @@ def run_seed(number):
             elif proposal_for_decision == ApplicationStatus.REJECTED:
                 apps.append(RejectedApplicationFactory())
         batch.applications.set(apps)
-        batch.proposal_for_decision = proposal_for_decision
-        batch.status = status
         batch.save()
 
     f = faker.Faker()
