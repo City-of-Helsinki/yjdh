@@ -11,7 +11,12 @@ ES_STATUS_CREATED = "created"
 LOGGER = logging.getLogger(__name__)
 
 
-def send_audit_log_to_elastic_search():
+def send_audit_log_to_elastic_search() -> int:
+    """
+    Send AuditLogEntry to Elasticsearch.
+
+    :return: The number of AuditLogEntry objects sent to Elasticsearch.
+    """
     if not (
         settings.ELASTICSEARCH_HOST
         and settings.ELASTICSEARCH_PORT
@@ -22,7 +27,7 @@ def send_audit_log_to_elastic_search():
         LOGGER.warning(
             "Trying to send audit log to Elasticsearch without proper configuration, process skipped"
         )
-        return
+        return 0
     es = Elasticsearch(
         [
             {
@@ -34,6 +39,7 @@ def send_audit_log_to_elastic_search():
         http_auth=(settings.ELASTICSEARCH_USERNAME, settings.ELASTICSEARCH_PASSWORD),
     )
     entries = AuditLogEntry.objects.filter(is_sent=False).order_by("created_at")
+    sent_entries_count = 0
 
     for entry in entries:
         message_body = entry.message.copy()
@@ -49,11 +55,21 @@ def send_audit_log_to_elastic_search():
         if rs.get("result") == ES_STATUS_CREATED:
             entry.is_sent = True
             entry.save()
+            sent_entries_count += 1
+
+    return sent_entries_count
 
 
-def clear_audit_log_entries(days_to_keep=30):
+def clear_audit_log_entries(days_to_keep=30) -> int:
+    """
+    Delete AuditLogEntry entries that have been sent to Elasticsearch and are older than
+    `days_to_keep` days.
+
+    :return: The number of deleted AuditLogEntry objects
+    """
     # Only remove entries older than `X` days
     sent_entries = AuditLogEntry.objects.filter(
         is_sent=True, created_at__lte=(timezone.now() - timedelta(days=days_to_keep))
     )
-    sent_entries.delete()
+    deleted_count, _ = sent_entries.delete()
+    return deleted_count
