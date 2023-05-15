@@ -202,27 +202,21 @@ def test_deassign_applications_from_batch(handler_api_client, application_batch)
 def test_batch_status_change(handler_api_client, application_batch):
     url = get_batch_detail_url(application_batch, "status/")
 
-    assert application_batch.status == ApplicationBatchStatus.DRAFT
-    response = handler_api_client.patch(
-        url, {"status": ApplicationBatchStatus.AWAITING_AHJO_DECISION}
-    )
-    assert response.status_code == 200
-    assert response.data["status"] == ApplicationBatchStatus.AWAITING_AHJO_DECISION
+    ok_statuses = [
+        ApplicationBatchStatus.DRAFT,
+        ApplicationBatchStatus.AWAITING_AHJO_DECISION,
+        ApplicationBatchStatus.DECIDED_ACCEPTED,
+        ApplicationBatchStatus.DECIDED_REJECTED,
+    ]
 
-    response = handler_api_client.patch(url, {"status": ApplicationBatchStatus.DRAFT})
-    assert response.status_code == 200
-    assert response.data["status"] == ApplicationBatchStatus.DRAFT
-
-    response = handler_api_client.patch(
-        url, {"status": ApplicationBatchStatus.SENT_TO_TALPA}
-    )
-    assert response.status_code == 200
-    assert response.data["status"] == ApplicationBatchStatus.SENT_TO_TALPA
+    for status in ok_statuses:
+        response = handler_api_client.patch(url, {"status": status})
+        assert response.status_code == 200
+        assert response.data["status"] == status
 
     failing_statuses = [
         ApplicationBatchStatus.COMPLETED,
-        ApplicationBatchStatus.DECIDED_ACCEPTED,
-        ApplicationBatchStatus.DECIDED_REJECTED,
+        ApplicationBatchStatus.SENT_TO_TALPA,
         ApplicationBatchStatus.AHJO_REPORT_CREATED,
         ApplicationBatchStatus.RETURNED,
     ]
