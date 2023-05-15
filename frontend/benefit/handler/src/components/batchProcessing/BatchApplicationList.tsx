@@ -29,7 +29,7 @@ import {
   $TableFooter,
   $TableWrapper,
 } from '../table/TableExtras.sc';
-import BatchFooterAhjo from './BatchFooter';
+import BatchCompletionForm from './BatchCompletionForm';
 
 type ButtonAhjoStates = 'primary' | 'secondary';
 
@@ -213,7 +213,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
           />
           <$TableFooter>
             {status === BATCH_STATUSES.AWAITING_FOR_DECISION ? (
-              <BatchFooterAhjo batch={batch} />
+              <BatchCompletionForm batch={batch} />
             ) : (
               <>
                 <Button

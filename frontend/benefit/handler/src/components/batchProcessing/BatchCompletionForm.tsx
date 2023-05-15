@@ -27,7 +27,7 @@ type BatchProps = {
   batch: BatchProposal;
 };
 
-const BatchFooterAhjo: React.FC<BatchProps> = ({ batch }: BatchProps) => {
+const BatchCompletionForm: React.FC<BatchProps> = ({ batch }: BatchProps) => {
   const { t } = useTranslation();
   const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
   const { isSuccess, isError, mutate: changeBatchStatus } = useBatchComplete();
@@ -109,7 +109,7 @@ const BatchFooterAhjo: React.FC<BatchProps> = ({ batch }: BatchProps) => {
         <$GridCell $colSpan={3}>
           <TextInput
             onChange={formik.handleChange}
-            label="t Päättäjän nimi"
+            label={t('common:batches.form.fields.decisionMakerName')}
             id={`decision_maker_name_${batch.id}`}
             name="decision_maker_name"
             errorText={getErrorMessage('decision_maker_name')}
@@ -122,7 +122,7 @@ const BatchFooterAhjo: React.FC<BatchProps> = ({ batch }: BatchProps) => {
         <$GridCell $colSpan={3}>
           <TextInput
             onChange={formik.handleChange}
-            label="t Päättäjän titteli"
+            label={t('common:batches.form.fields.decisionMakerTitle')}
             id={`decision_maker_title${batch.id}`}
             name="decision_maker_title"
             errorText={getErrorMessage('decision_maker_title')}
@@ -135,7 +135,7 @@ const BatchFooterAhjo: React.FC<BatchProps> = ({ batch }: BatchProps) => {
         <$GridCell $colSpan={2}>
           <TextInput
             onChange={formik.handleChange}
-            label="t pykälä"
+            label={t('common:batches.form.fields.sectionOfTheLaw')}
             id={`section_of_the_law${batch.id}`}
             name="section_of_the_law"
             errorText={getErrorMessage('section_of_the_law')}
@@ -149,7 +149,7 @@ const BatchFooterAhjo: React.FC<BatchProps> = ({ batch }: BatchProps) => {
           <DateInput
             minDate={yearFromNow}
             onChange={(value) => formik.setFieldValue('decision_date', value)}
-            label="t Päätöksen päivämäärä"
+            label={t('common:batches.form.fields.decisionDate')}
             id={`decision_date${batch.id}`}
             name="decision_date"
             errorText={getErrorMessage('decision_date')}
@@ -165,7 +165,7 @@ const BatchFooterAhjo: React.FC<BatchProps> = ({ batch }: BatchProps) => {
         <$GridCell $colSpan={3}>
           <TextInput
             onChange={formik.handleChange}
-            label="t Asiantarkastajan nimi"
+            label={t('common:batches.form.fields.expertInspectorName')}
             id={`expert_inspector_name${batch.id}`}
             name="expert_inspector_name"
             errorText={getErrorMessage('expert_inspector_name')}
@@ -178,7 +178,7 @@ const BatchFooterAhjo: React.FC<BatchProps> = ({ batch }: BatchProps) => {
         <$GridCell $colSpan={3}>
           <TextInput
             onChange={formik.handleChange}
-            label="t Asiantarkastajan titteli"
+            label={t('common:batches.form.fields.expertInspectorTtitle')}
             id={`expert_inspector_title_${batch.id}`}
             name="expert_inspector_title"
             errorText={getErrorMessage('expert_inspector_title')}
@@ -216,4 +216,4 @@ const BatchFooterAhjo: React.FC<BatchProps> = ({ batch }: BatchProps) => {
     </form>
   );
 };
-export default BatchFooterAhjo;
+export default BatchCompletionForm;
