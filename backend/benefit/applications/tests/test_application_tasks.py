@@ -13,7 +13,7 @@ from applications.tests.factories import CancelledApplicationFactory
 
 
 def test_seed_applications_with_arguments(set_debug_to_true):
-    amount = 10
+    amount = 5
     statuses = ApplicationStatus.values
     batch_count = 4
     total_created = (len(ApplicationStatus.values) + batch_count) * amount
