@@ -148,8 +148,8 @@
       },
       "errors": {
         "fetch": {
-          "label": "Error occurred",
-          "text": "Unable to fetch applications with status {{status}}"
+          "label": "Virhe noudettaessa hakemuksia",
+          "text": "Hakemuksien nouto epäonnistui (status: {{status}})"
         }
       },
       "total": {
@@ -500,6 +500,12 @@
         "draft": "Koonti palautettu takaisin odottamaan päätösvalmistelua",
         "accepted": "Koonti lähetetty Talpaan ja arkistoitu",
         "rejected": "Koonti arkistoitu"
+      },
+      "errors": {
+        "batchDraftAlreadyExists": {
+          "title": "Uuden Ahjo-koonnin valmistelu on jo käynnissä",
+          "message": "Voit palauttaa tämän koonnin takaisin käsittelyyn vasta, kun jo valmistelussa oleva keskeneräinen koonti on viety Ahjoon"
+        }
       }
     },
     "actions": {
