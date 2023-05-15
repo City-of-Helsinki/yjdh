@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.validators import MaxLengthValidator, MinLengthValidator
 from django.db import connection, models
 from django.db.models import OuterRef, Subquery
+from django.forms import ValidationError
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
 from phonenumber_field.modelfields import PhoneNumberField
@@ -484,6 +485,29 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
     expert_inspector_email = models.EmailField(
         blank=True, verbose_name=_("Expert inspector's email address")
     )
+
+    def save(self, *args, **kwargs):
+        # Deny any attempt to create more than one draft for accepted or rejected batch
+        def _restrict_one_draft_per_decision(self):
+            restrict_statuses = [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED]
+
+            if (
+                self.proposal_for_decision in restrict_statuses
+                and self.status == ApplicationBatchStatus.DRAFT
+            ):
+                drafts = ApplicationBatch.objects.filter(
+                    status=self.status, proposal_for_decision=self.proposal_for_decision
+                ).exclude(id=self.id)
+                if len(drafts) > 0:
+                    raise ValidationError(
+                        (
+                            "Too many existing drafts of type "
+                            + self.proposal_for_decision
+                        )
+                    )
+
+        _restrict_one_draft_per_decision(self)
+        super().save(*args, **kwargs)
 
     @property
     def applications_can_be_modified(self):
