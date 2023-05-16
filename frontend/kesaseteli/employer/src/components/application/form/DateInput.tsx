@@ -18,7 +18,6 @@ type Props = {
   id: ApplicationFieldPath;
 } & GridCellProps;
 
-// TODO: This can be removed after backend supports invalid values in draft save
 const convertDateForBackend = (dateString: string): string | undefined => {
   const result = convertToBackendDateFormat(dateString);
   return isEmpty(result) || dateString.length < 8 ? undefined : result;
@@ -45,9 +44,10 @@ const DateInput = ({
       ['pattern', 'required'].includes(errorType) &&
       !errorMessage
     ) {
+      const errorTypeMessage = t(`common:application.form.errors.${errorType}`);
       setError({
         type: errorType,
-        message: `${t(`common:application.form.errors.${errorType}`)}. ${t(
+        message: `${errorTypeMessage}. ${t(
           'common:application.form.helpers.date'
         )}`,
       });

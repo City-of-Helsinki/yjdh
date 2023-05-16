@@ -488,7 +488,9 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             # Return success creating the object
             headers = self.get_success_headers(serializer.data)
             return Response(
-                serializer.data, status=status.HTTP_201_CREATED, headers=headers
+                data={"id": serializer.data["id"]},
+                status=status.HTTP_201_CREATED,
+                headers=headers,
             )
         except ValidationError as e:
             LOGGER.error(
