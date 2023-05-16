@@ -1,6 +1,6 @@
 import pytest
 
-from applications.api.v1.serializers import (
+from applications.api.v1.serializers.application import (
     ApplicantApplicationSerializer,
     BaseApplicationSerializer,
     HandlerApplicationSerializer,

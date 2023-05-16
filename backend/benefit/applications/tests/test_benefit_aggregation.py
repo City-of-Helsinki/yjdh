@@ -5,7 +5,7 @@ from decimal import Decimal
 import pytest
 from django.utils import translation
 
-from applications.api.v1.serializers import ApplicantApplicationSerializer
+from applications.api.v1.serializers.application import ApplicantApplicationSerializer
 from applications.enums import BenefitType
 from applications.models import Application
 from applications.tests.conftest import *  # noqa

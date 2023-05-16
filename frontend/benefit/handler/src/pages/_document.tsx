@@ -1,3 +1,3 @@
-import ServerDocument from 'shared/server/ServerDocument';
+import BenefitDocument from 'benefit-shared/pages/BenefitDocument';
 
-export default ServerDocument;
+export default BenefitDocument;

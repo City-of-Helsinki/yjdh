@@ -25,18 +25,18 @@ const ThankYouPage: NextPage = () => {
 
   const createNewApplicationClick = React.useCallback((): void => {
     queryClient.clear();
-    void goToPage('/');
+    goToPage('/');
   }, [queryClient, goToPage]);
 
   if (!isRouterLoading && !applicationId) {
-    void goToPage('/');
+    goToPage('/');
     return null;
   }
 
   if (applicationQuery.isSuccess) {
     const application = applicationQuery.data;
     if (applicationId && application.status === 'draft') {
-      void goToPage(`/application?id=${applicationId}`, 'replace');
+      goToPage(`/application?id=${applicationId}`, 'replace');
     }
     return (
       <Container>

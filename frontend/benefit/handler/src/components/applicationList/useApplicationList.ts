@@ -20,10 +20,11 @@ interface ApplicationListProps {
 const translationsBase = 'common:applications.list';
 
 const useApplicationList = (
-  status: APPLICATION_STATUSES[]
+  status: APPLICATION_STATUSES[],
+  excludeBatched?: boolean
 ): ApplicationListProps => {
   const { t } = useTranslation();
-  const query = useApplicationsQuery(status, '-submitted_at');
+  const query = useApplicationsQuery(status, '-submitted_at', excludeBatched);
 
   const list = query.data?.map(
     (application: ApplicationData): ApplicationListItemData => {
@@ -37,6 +38,7 @@ const useApplicationList = (
         additional_information_needed_by,
         status: applicationStatus,
         unread_messages_count,
+        batch,
       } = application;
 
       return {
@@ -57,6 +59,7 @@ const useApplicationList = (
             calculation?.handler_details?.last_name
           ) || '-',
         unreadMessagesCount: unread_messages_count ?? 0,
+        batch: batch ?? null,
       };
     }
   );

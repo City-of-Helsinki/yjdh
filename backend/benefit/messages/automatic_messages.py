@@ -8,6 +8,7 @@ from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from sentry_sdk import capture_message
 
+from applications.models import Application
 from messages.models import Message, MessageType
 
 LOGGER = logging.getLogger(__name__)
@@ -16,29 +17,6 @@ APPLICATION_REOPENED_MESSAGE = _(
     "Your application has been opened for editing. Please make the corrections by "
     "{additional_information_needed_by}, otherwise the application cannot be processed."
 )
-
-
-def send_application_reopened_message(
-    user, application, additional_information_needed_by
-):
-    """
-    :param user: The handler who is setting the application to ADDITIONAL_INFORMATION_REQUESTED status
-    :param application: The application being reopened
-    :param application: The last response date
-    """
-    with translation.override(application.applicant_language):
-        Message.objects.create(
-            sender=user,
-            application=application,
-            message_type=MessageType.HANDLER_MESSAGE,
-            content=format_lazy(
-                APPLICATION_REOPENED_MESSAGE,
-                additional_information_needed_by=additional_information_needed_by.strftime(
-                    "%d.%m.%Y"
-                ),
-            ),
-        )
-    notify_applicant_by_email_about_new_message(application)
 
 
 def _message_notification_email_subject():
@@ -68,11 +46,13 @@ def _message_notification_email_body(application):
     )
 
 
-def notify_applicant_by_email_about_new_message(application):
+def send_email_to_applicant(
+    application: Application, subject: str = None, message: str = None
+) -> int:
     """
-    :param user: The handler who is setting the application to ADDITIONAL_INFORMATION_REQUESTED status
     :param application: The application being reopened
-    :param application: The last response date
+    :param subject: The subject of the email
+    :param message: The body of the email
     """
     if not application.company_contact_person_email:
         # company_contact_person_email is a required field for submitted applications
@@ -84,8 +64,10 @@ def notify_applicant_by_email_about_new_message(application):
     with translation.override(application.applicant_language):
         try:
             return send_mail(
-                subject=_message_notification_email_subject(),
-                message=_message_notification_email_body(application),
+                subject=subject if subject else _message_notification_email_subject(),
+                message=message
+                if message
+                else _message_notification_email_body(application),
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[application.company_contact_person_email],
                 fail_silently=False,
@@ -102,3 +84,26 @@ def notify_applicant_by_email_about_new_message(application):
                 "error",
             )
             return 0
+
+
+def send_application_reopened_message(
+    user, application, additional_information_needed_by
+):
+    """
+    :param user: The handler who is setting the application to ADDITIONAL_INFORMATION_REQUESTED status
+    :param application: The application being reopened
+    :param additional_information_needed_by: The date by which the applicant must provide the additional information
+    """
+    with translation.override(application.applicant_language):
+        Message.objects.create(
+            sender=user,
+            application=application,
+            message_type=MessageType.HANDLER_MESSAGE,
+            content=format_lazy(
+                APPLICATION_REOPENED_MESSAGE,
+                additional_information_needed_by=additional_information_needed_by.strftime(
+                    "%d.%m.%Y"
+                ),
+            ),
+        )
+    send_email_to_applicant(application)

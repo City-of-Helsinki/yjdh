@@ -1,3 +1,5 @@
+from datetime import timezone
+
 import factory
 
 from applications.enums import ApplicationStatus
@@ -23,9 +25,9 @@ class ApplicantConsentFactory(factory.django.DjangoModelFactory):
 
 
 class TermsFactory(factory.django.DjangoModelFactory):
-    terms_pdf_fi = factory.django.FileField(filename="terms_fi.pdf")
-    terms_pdf_en = factory.django.FileField(filename="terms_en.pdf")
-    terms_pdf_sv = factory.django.FileField(filename="terms_sv.pdf")
+    terms_pdf_fi = "terms_fi.pdf"
+    terms_pdf_en = "terms_en.pdf"
+    terms_pdf_sv = "terms_sv.pdf"
 
     applicant_consent_1 = factory.RelatedFactory(
         ApplicantConsentFactory,
@@ -41,7 +43,7 @@ class TermsFactory(factory.django.DjangoModelFactory):
 
 
 class AbstractTermsApprovalFactory(factory.django.DjangoModelFactory):
-    approved_at = factory.Faker("date_time")
+    approved_at = factory.Faker("date_time", tzinfo=timezone.utc)
     approved_by = factory.SubFactory(UserFactory)
     terms = factory.SubFactory(TermsFactory)
 

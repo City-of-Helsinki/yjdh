@@ -26,6 +26,7 @@
     },
     "pageHeaders": {
       "created": "Created",
+      "saved": "Saved",
       "sent": "Application number: {{applicationNumber}}  |  Submitted {{submittedAt}}",
       "new": "New application",
       "edit": "Application",
@@ -76,7 +77,7 @@
         "deMinimisAidsHeading": "List here all forms of de minimis aid received by the organisation during the current year and the previous two tax years",
         "deMinimisAidsAdd": "Add",
         "deMinimisAidsRemove": "Delete",
-        "deMinimisAidsNo": "Has the applicant been granted a deminimis-aid?",
+        "deMinimisAidsNo": "The applicant has not listed any previous de minimis aids.",
         "notifications": {
           "companyInformation": {
             "label": "Data retrieved from the Business Information System",
@@ -368,6 +369,7 @@
     "loginLabel": "Sign in to the service",
     "logoutLabel": "Log out",
     "userAriaLabelPrefix": "User:",
+    "linkSkipToContent": "Skip to content",
     "messages": "Messages",
     "drawer": {
       "title": "Application’s messages"
@@ -490,6 +492,13 @@
       "title": "Error occurred",
       "tooBig": "The attachemnt size is too big.",
       "fileType": "The attachment file type is not allowed."
+    },
+    "notFound": {
+      "title": "Sorry, the page you were looking for was not found.",
+      "text": "Error 404: Check that you have typed in the page address correctly. We may have deleted or moved the content."
+    },
+    "backend": {
+      "Request failed with status code 500": "System error. Please try again later."
     }
   },
   "upload": {

@@ -12,3 +12,4 @@ pytest-django
 pytest-freezegun
 requests-mock
 werkzeug
+pre-commit

@@ -45,7 +45,7 @@ env = environ.Env(
     CORS_ALLOWED_ORIGINS=(list, []),
     CORS_ALLOW_ALL_ORIGINS=(bool, False),
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
-    CSRF_TRUSTED_ORIGINS=(list, []),
+    CSRF_TRUSTED_ORIGINS=(list, ["localhost:3000", "localhost:3100"]),
     CSRF_COOKIE_NAME=(str, "yjdhcsrftoken"),
     YTJ_BASE_URL=(str, "http://avoindata.prh.fi/opendata/tr/v1"),
     YTJ_TIMEOUT=(int, 30),
@@ -66,6 +66,14 @@ env = environ.Env(
         str,
         "ee235e39ebc238035a6264c063dd829d4b6d2270604b57ee1f463e676ec44669",
     ),
+    EMPLOYEE_FIRST_NAME_HASH_KEY=(
+        str,
+        "02c5b8605cd4f9c188eee422209069b7bd3a607f0ae0a166eab0da223d1b6735",
+    ),
+    EMPLOYEE_LAST_NAME_HASH_KEY=(
+        str,
+        "af1b5a67d11197865a731c26bf9659716b9ded71c2802b4363856fe613b6b527",
+    ),
     PREVIOUS_BENEFITS_SOCIAL_SECURITY_NUMBER_HASH_KEY=(
         str,
         "d5c8a2743d726a33dbd637fac39d6f0712dcee4af36142fb4fb15afa17b1d9bf",
@@ -81,10 +89,13 @@ env = environ.Env(
     OIDC_RP_CLIENT_SECRET=(str, ""),
     OIDC_OP_BASE_URL=(str, ""),
     OIDC_SAVE_PERSONALLY_IDENTIFIABLE_INFO=(bool, True),
+    OIDC_OP_LOGOUT_CALLBACK_URL=(str, "/"),
+    TUNNISTAMO_API_TOKENS_ENDPOINT=(str, ""),
+    HELSINKI_PROFILE_SCOPE=(str, "https://api.hel.fi/auth/helsinkiprofile"),
+    HELSINKI_PROFILE_API_URL=(str, "https://api.hel.fi/profiili/graphql/"),
     LOGIN_REDIRECT_URL=(str, "/"),
     LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
     LOGOUT_REDIRECT_URL=(str, "/"),
-    OIDC_OP_LOGOUT_CALLBACK_URL=(str, "/"),
     ADFS_LOGIN_REDIRECT_URL=(str, "/"),
     ADFS_LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
     EAUTHORIZATIONS_BASE_URL=(str, "https://asiointivaltuustarkastus.test.suomi.fi"),
@@ -104,7 +115,7 @@ env = environ.Env(
     AUDIT_LOG_ORIGIN=(str, "helsinki-benefit-api"),
     ELASTICSEARCH_APP_AUDIT_LOG_INDEX=(str, "helsinki_benefit_audit_log"),
     ELASTICSEARCH_HOST=(str, ""),
-    ELASTICSEARCH_PORT=(str, ""),
+    ELASTICSEARCH_PORT=(int, 9200),
     ELASTICSEARCH_USERNAME=(str, ""),
     ELASTICSEARCH_PASSWORD=(str, ""),
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
@@ -141,9 +152,16 @@ env = environ.Env(
     SERVICE_BUS_TIMEOUT=(int, 30),
     GDPR_API_QUERY_SCOPE=(str, "helsinkibenefit.gdprquery"),
     GDPR_API_DELETE_SCOPE=(str, "helsinkibenefit.gdprdelete"),
+    USE_S3=(bool, False),
+    S3_ENDPOINT_URL=(str, ""),
+    S3_ACCESS_KEY_ID=(str, ""),
+    S3_SECRET_ACCESS_KEY=(str, ""),
+    S3_STORAGE_BUCKET_NAME=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
+
+os.environ["HTTPS"] = "on"
 
 BASE_DIR = str(checkout_dir)
 
@@ -153,6 +171,10 @@ if DEBUG and not SECRET_KEY:
     SECRET_KEY = "xxx"
 ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
 SOCIAL_SECURITY_NUMBER_HASH_KEY = env.str("SOCIAL_SECURITY_NUMBER_HASH_KEY")
+
+EMPLOYEE_FIRST_NAME_HASH_KEY = env.str("EMPLOYEE_FIRST_NAME_HASH_KEY")
+EMPLOYEE_LAST_NAME_HASH_KEY = env.str("EMPLOYEE_LAST_NAME_HASH_KEY")
+
 PREVIOUS_BENEFITS_SOCIAL_SECURITY_NUMBER_HASH_KEY = env.str(
     "PREVIOUS_BENEFITS_SOCIAL_SECURITY_NUMBER_HASH_KEY"
 )
@@ -335,10 +357,7 @@ NEXT_PUBLIC_MOCK_FLAG = env.bool("NEXT_PUBLIC_MOCK_FLAG")
 DUMMY_COMPANY_FORM_CODE = env.int("DUMMY_COMPANY_FORM_CODE")
 ENABLE_DEBUG_ENV = env.bool("ENABLE_DEBUG_ENV")
 
-if NEXT_PUBLIC_MOCK_FLAG:
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-else:
-    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 # Authentication settings begin
 SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE")
@@ -363,10 +382,14 @@ OIDC_API_TOKEN_AUTH = {
     "USER_RESOLVER": "users.api.v1.authentications.resolve_user",
 }
 
+TUNNISTAMO_API_TOKENS_ENDPOINT = env.str("TUNNISTAMO_API_TOKENS_ENDPOINT")
+HELSINKI_PROFILE_SCOPE = env.str("HELSINKI_PROFILE_SCOPE")
+HELSINKI_PROFILE_API_URL = env.str("HELSINKI_PROFILE_API_URL")
+
+OIDC_RP_SCOPES = f"openid profile {HELSINKI_PROFILE_SCOPE}"
 OIDC_AUTH = {"OIDC_LEEWAY": env.int("OIDC_LEEWAY")}
 
 OIDC_RP_SIGN_ALGO = "RS256"
-OIDC_RP_SCOPES = "openid profile"
 
 OIDC_RP_CLIENT_ID = env.str("OIDC_RP_CLIENT_ID")
 OIDC_RP_CLIENT_SECRET = env.str("OIDC_RP_CLIENT_SECRET")
@@ -375,11 +398,11 @@ OIDC_OP_BASE_URL = env.str("OIDC_OP_BASE_URL")
 OIDC_SAVE_PERSONALLY_IDENTIFIABLE_INFO = env.bool(
     "OIDC_SAVE_PERSONALLY_IDENTIFIABLE_INFO"
 )
-OIDC_OP_AUTHORIZATION_ENDPOINT = f"{OIDC_OP_BASE_URL}/auth"
+OIDC_OP_AUTHORIZATION_ENDPOINT = f"{OIDC_OP_BASE_URL}/authorize"
 OIDC_OP_TOKEN_ENDPOINT = f"{OIDC_OP_BASE_URL}/token"
 OIDC_OP_USER_ENDPOINT = f"{OIDC_OP_BASE_URL}/userinfo"
-OIDC_OP_JWKS_ENDPOINT = f"{OIDC_OP_BASE_URL}/certs"
-OIDC_OP_LOGOUT_ENDPOINT = f"{OIDC_OP_BASE_URL}/logout"
+OIDC_OP_JWKS_ENDPOINT = f"{OIDC_OP_BASE_URL}/jwks"
+OIDC_OP_LOGOUT_ENDPOINT = f"{OIDC_OP_BASE_URL}/end-session"
 OIDC_OP_LOGOUT_CALLBACK_URL = env.str("OIDC_OP_LOGOUT_CALLBACK_URL")
 # Language selection is done with accept-language header in this project
 OIDC_DISABLE_LANGUAGE_COOKIE = True
@@ -458,3 +481,14 @@ if os.path.exists(local_settings_path):
     with open(local_settings_path) as fp:
         code = compile(fp.read(), local_settings_path, "exec")
     exec(code, globals(), locals())
+
+# S3 settings
+
+USE_S3 = env("USE_S3")
+
+if USE_S3:
+    AWS_S3_ENDPOINT_URL = env("S3_ENDPOINT_URL")
+    DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+    AWS_ACCESS_KEY_ID = env("S3_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = env("S3_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = env("S3_STORAGE_BUCKET_NAME")

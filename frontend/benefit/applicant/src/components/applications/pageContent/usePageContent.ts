@@ -7,15 +7,15 @@ import { useTranslation } from 'benefit/applicant/i18n';
 import { getApplicationStepFromString } from 'benefit/applicant/utils/common';
 import { Application } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
+import { StepperProps, StepState } from 'hds-react';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
-import { StepProps } from 'shared/components/stepper/Step';
 import { stringToFloatValue } from 'shared/utils/string.utils';
 
 type ExtendedComponentProps = {
   t: TFunction;
-  steps: StepProps[];
+  steps: StepperProps['steps'];
   currentStep: number;
   application: Application;
   isReadOnly: string | string[] | undefined;
@@ -25,6 +25,9 @@ type ExtendedComponentProps = {
   isSubmittedApplication: boolean;
   handleSubmit: () => void;
 };
+
+const isApplicationLoaded = (id: number | string, status: string): boolean =>
+  id && status !== 'idle' && status !== 'loading';
 
 const usePageContent = (): ExtendedComponentProps => {
   const router = useRouter();
@@ -44,11 +47,7 @@ const usePageContent = (): ExtendedComponentProps => {
   } = useApplicationQuery(id);
 
   useEffect(() => {
-    if (
-      id &&
-      existingApplicationStatus !== 'idle' &&
-      existingApplicationStatus !== 'loading'
-    ) {
+    if (isApplicationLoaded(id, existingApplicationStatus)) {
       setIsLoading(false);
     }
   }, [existingApplicationStatus, id, existingApplication]);
@@ -96,7 +95,11 @@ const usePageContent = (): ExtendedComponentProps => {
       )
     : APPLICATION_INITIAL_VALUES;
 
-  const steps = React.useMemo((): StepProps[] => {
+  const currentStep = getApplicationStepFromString(
+    application.applicationStep || DEFAULT_APPLICATION_STEP
+  );
+
+  const steps = React.useMemo((): StepperProps['steps'] => {
     const applicationSteps: string[] = [
       'employer',
       'hired',
@@ -105,10 +108,11 @@ const usePageContent = (): ExtendedComponentProps => {
       'summary',
       'send',
     ];
-    return applicationSteps.map((step) => ({
-      title: t(`common:applications.steps.${step}`),
+    return applicationSteps.map((step, index) => ({
+      label: t(`common:applications.steps.${step}`),
+      state: currentStep > index ? StepState.available : StepState.disabled,
     }));
-  }, [t]);
+  }, [t, currentStep]);
 
   const handleSubmit = (): void => setIsSubmittedApplication(true);
 
@@ -116,9 +120,7 @@ const usePageContent = (): ExtendedComponentProps => {
     t,
     id,
     steps,
-    currentStep: getApplicationStepFromString(
-      application.applicationStep || DEFAULT_APPLICATION_STEP
-    ),
+    currentStep,
     application,
     isLoading,
     isError: Boolean(id && existingApplicationError),

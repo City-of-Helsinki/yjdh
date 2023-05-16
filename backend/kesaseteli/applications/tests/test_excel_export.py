@@ -9,10 +9,10 @@ import pytest
 from django.http import StreamingHttpResponse
 from django.shortcuts import reverse
 from django.test import override_settings
-from django.urls.exceptions import NoReverseMatch
 from django.utils import translation
 from django.utils.timezone import localdate
 from freezegun import freeze_time
+from rest_framework import status
 
 from applications.enums import (
     EmployerApplicationStatus,
@@ -76,6 +76,16 @@ def check_removable_field_titles(removable_field_titles):
 
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.parametrize("http_method", ["delete", "patch", "post", "put"])
+def test_excel_view_unallowed_methods(request, staff_client, http_method):
+    client_http_method_func = getattr(staff_client, http_method)
+    assert callable(client_http_method_func)
+    response = client_http_method_func(excel_download_url())
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_excel_view_get_with_authenticated_user(staff_client):
     response = staff_client.get(excel_download_url())
     assert response.status_code == 200
@@ -84,14 +94,9 @@ def test_excel_view_get_with_authenticated_user(staff_client):
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_excel_view_get_with_unauthenticated_user(user_client):
-    try:
-        response = user_client.get(excel_download_url())
-    except NoReverseMatch as e:
-        # If ENABLE_ADMIN is off redirecting to Django admin login will not work
-        assert str(e) == "'admin' is not a registered namespace"
-    else:
-        assert response.status_code == 302
-        assert response.url == handler_403_url()
+    response = user_client.get(excel_download_url())
+    assert response.status_code == 302
+    assert response.url == handler_403_url()
 
 
 @pytest.mark.django_db
@@ -163,6 +168,51 @@ def test_youth_excel_download_writes_audit_log(staff_client, youth_application):
     assert (
         audit_event["additional_information"]
         == "YouthApplicationExcelExportViewSet.list"
+    )
+
+
+@pytest.mark.django_db
+@pytest.mark.xfail(reason="Audit log writing should be added to this endpoint")
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.parametrize(
+    "download_url,expected_audit_log_additional_information",
+    [
+        (
+            f"{excel_download_url()}?download=unhandled",
+            "EmployerApplicationExcelDownloadView.get unhandled",
+        ),
+        (
+            f"{excel_download_url()}?download=annual",
+            "EmployerApplicationExcelDownloadView.get annual",
+        ),
+    ],
+)
+def test_excel_download_writes_audit_log(
+    staff_client, download_url, expected_audit_log_additional_information
+):
+    """
+    Test that audit log is written when downloading employer summer voucher Excel files.
+
+    NOTE:
+        Tested values MAY NEED UPDATING when audit logging is added to the endpoint!
+    """
+    create_test_employer_summer_vouchers(year=2021)
+
+    old_audit_log_entry_count = AuditLogEntry.objects.count()
+    with freeze_time(datetime(2021, 12, 31)):
+        response = staff_client.get(download_url)
+
+    assert AuditLogEntry.objects.count() == old_audit_log_entry_count + 1
+    audit_event = AuditLogEntry.objects.first().message["audit_event"]
+    assert audit_event["actor"]["role"] == "USER"
+    assert audit_event["actor"]["user_id"] == str(response.wsgi_request.user.pk)
+    assert audit_event["status"] == "SUCCESS"
+    assert audit_event["operation"] == "READ"
+    assert audit_event["target"]["id"] == ""
+    assert audit_event["target"]["type"] == "EmployerSummerVoucher"
+    assert (
+        audit_event["additional_information"]
+        == expected_audit_log_additional_information
     )
 
 
@@ -419,7 +469,7 @@ def test_youth_excel_download_content(staff_client):  # noqa: C901
     ]
     + [youth_excel_download_url()],
 )
-def test_excel_view_download_with_unauthenticated_user(  # noqa: C901
+def test_excel_view_download_with_unauthenticated_user(
     user_client, download_url, accepted_youth_application
 ):
     create_test_employer_summer_vouchers(year=2021)

@@ -3,23 +3,67 @@ fail_fast: true
 default_language_version:
   python: python3
 
+exclude: ^.*\b(migrations)\b.*$
+
 repos:
   - repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 23.1.0
     hooks:
       - id: black
-        args: [--preview]
-        files: ^backend/
+        name: (BF) black
+        files: ^backend/benefit
+      - id: black
+        name: (KS) black
+        files: ^backend/kesaseteli
+      - id: black
+        name: (TET) black
+        files: ^backend/tet
+      - id: black
+        name: (Shared) black
+        files: ^backend/shared
   - repo: https://github.com/pycqa/isort
     rev: 5.12.0
     hooks:
       - id: isort
-        files: ^backend/
+        name: (BF) isort
+        args: [--settings-file, backend/benefit/setup.cfg]
+        files: ^backend/benefit
+      - id: isort
+        name: (KS) isort
+        args: [--settings-file, backend/kesaseteli/setup.cfg]
+        files: ^backend/kesaseteli
+      - id: isort
+        name: (TET) isort
+        args: [--settings-file, backend/tet/setup.cfg]
+        files: ^backend/tet
+      - id: isort
+        name: (Shared) isort
+        args: [--settings-file, backend/shared/setup.cfg]
+        files: ^backend/shared
   - repo: https://github.com/pycqa/flake8
-    rev: 4.0.1
+    rev: 6.0.0
     hooks:
       - id: flake8
+        name: (BF) flake8
         additional_dependencies: [flake8-isort, flake8-black]
         exclude: migrations|snapshots
-        files: ^backend/
-        args: [--config, backend/shared/precommit-setup.cfg]
+        files: ^backend/benefit
+        args: [--config, backend/benefit/setup.cfg]
+      - id: flake8
+        name: (KS) flake8
+        additional_dependencies: [flake8-isort, flake8-black]
+        exclude: migrations|snapshots
+        files: ^backend/kesaseteli
+        args: [--config, backend/kesaseteli/setup.cfg]
+      - id: flake8
+        name: (TET) flake8
+        additional_dependencies: [flake8-isort, flake8-black]
+        exclude: migrations|snapshots
+        files: ^backend/tet
+        args: [--config, backend/tet/setup.cfg]
+      - id: flake8
+        name: (Shared) flake8
+        additional_dependencies: [flake8-isort, flake8-black]
+        exclude: migrations|snapshots
+        files: ^backend/shared
+        args: [--config, backend/shared/setup.cfg]

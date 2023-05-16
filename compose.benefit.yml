@@ -1,0 +1,134 @@
+version: "3.8"
+name: yjdh-benefit
+services:
+  postgres:
+    build:
+      context: ./backend
+      dockerfile: ./docker/finnish_postgres.Dockerfile
+    restart: on-failure
+    environment:
+      POSTGRES_USER: benefit
+      POSTGRES_PASSWORD: benefit
+      POSTGRES_DB: benefit
+      LC_COLLATE: 'fi_FI.UTF-8'
+      LC_CTYPE: 'fi_FI.UTF-8'
+    ports:
+      - 5434:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    container_name: benefit-db
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./docker/benefit.Dockerfile
+      target: development
+    env_file:
+      - .env.benefit-backend
+    environment:
+      DATABASE_URL: postgres://benefit:benefit@benefit-db/benefit
+      DATABASE_HOST: benefit-db.helsinki
+    volumes:
+      - ./backend/benefit:/app
+      - ./backend/shared:/shared
+    depends_on:
+      - postgres
+      - minio
+    container_name: benefit-backend
+
+  applicant:
+    build:
+      context: ./frontend
+      target: development
+      args:
+        PORT: 3000
+        PROJECT: benefit
+        FOLDER: applicant
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env.benefit-applicant
+    container_name: benefit-applicant
+
+  handler:
+    build:
+      context: ./frontend
+      target: development
+      args:
+        PORT: 3100
+        PROJECT: benefit
+        FOLDER: handler
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env.benefit-handler
+    container_name: benefit-handler
+
+  local-proxy:
+    depends_on:
+      - postgres
+      - backend
+      - applicant
+      - handler
+    build:
+      context: ./localdevelopment/benefit/nginx
+    container_name: benefit-local-proxy
+    volumes:
+      - ./localdevelopment/benefit/nginx/:/etc/nginx/
+    ports:
+      - 127.0.0.1:8000:8000
+      - 127.0.0.1:3000:3000
+      - 127.0.0.1:3100:3100
+
+  mailhog:
+    image: 'mailhog/mailhog@sha256:8d76a3d4ffa32a3661311944007a415332c4bb855657f4f6c57996405c009bea'
+    ports:
+      - 1025:1025
+      - 8025:8025
+    container_name: benefit-mailhog
+    networks:
+      - default
+
+  minio:
+    image: minio/minio@sha256:b6ee4f78beddd690e4b4b0fe95bd88ea93925ef15e4e7f4a9de7312a9fe2e1f6
+    ports:
+      - 9000:9000
+      - 9090:9090
+    container_name: benefit-minio
+    volumes:
+      - s3-volume:/data
+    environment:
+      - MINIO_ROOT_USER=minio-root
+      - MINIO_ROOT_PASSWORD=minio-pass
+    command: server --console-address :9090 --address :9000 /data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:9000/minio/health/live"
+        ]
+      retries: 3
+      timeout: 5s
+  # Create an initial bucket for local development
+  createbucket:
+    image: minio/mc@sha256:0099b4225101e65c636838bf56be2a717fa71c80a718bee0c6eb6ecf767c41a0
+    container_name: benefit-minio-client
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c ' mc config host add s3 http://minio:9000 minio-root minio-pass --api S3v4; [[ ! -z "`mc ls s3 | grep local-s3-bucket`" ]] || mc mb s3/local-s3-bucket; exit 0; '
+volumes:
+  pgdata:
+    driver: local
+  s3-volume:
+    driver: local
+
+networks:
+  default:
+    name: helsinki

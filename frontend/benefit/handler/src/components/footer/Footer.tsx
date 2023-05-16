@@ -7,14 +7,15 @@ import { $FooterWrapper } from './Footer.sc';
 
 const FooterSection: React.FC = () => {
   const { t } = useTranslation();
-  const { isFooterVisible } = React.useContext(AppContext);
+  const { isFooterVisible, layoutBackgroundColor } =
+    React.useContext(AppContext);
 
   if (!isFooterVisible) {
     return null;
   }
 
   return (
-    <$FooterWrapper>
+    <$FooterWrapper layoutBackgroundColor={layoutBackgroundColor}>
       <Footer title={t('common:appName')} theme="dark">
         <Footer.Base
           copyrightHolder={t('footer.copyrightText')}

@@ -11,9 +11,9 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from applications.api.v1.serializers import ApplicationBatchSerializer
-from applications.enums import ApplicationBatchStatus
-from applications.models import ApplicationBatch
+from applications.api.v1.serializers.batch import ApplicationBatchSerializer
+from applications.enums import ApplicationBatchStatus, ApplicationStatus
+from applications.models import Application, ApplicationBatch
 from applications.services.ahjo_integration import export_application_batch
 from applications.services.talpa_integration import TalpaService
 from common.authentications import RobotBasicAuthentication
@@ -22,14 +22,13 @@ from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
 
 class ApplicationBatchFilter(filters.FilterSet):
-
     status = filters.MultipleChoiceFilter(
         field_name="status",
         widget=CSVWidget,
         choices=ApplicationBatchStatus.choices,
         help_text=(
-            "Filter by application batch status."
-            " Multiple statuses may be specified as a comma-separated list, such as 'status=draft,decided'",
+            "Filter by application batch status. Multiple statuses may be specified as"
+            " a comma-separated list, such as 'status=draft,decided'",
         ),
     )
 
@@ -41,7 +40,10 @@ class ApplicationBatchFilter(filters.FilterSet):
 
 
 @extend_schema(
-    description="API for create/read/update/delete/export operations on Helsinki benefit application batches"
+    description=(
+        "API for create/read/update/delete/export operations on Helsinki benefit"
+        " application batches"
+    )
 )
 class ApplicationBatchViewSet(AuditLoggingModelViewSet):
     queryset = ApplicationBatch.objects.all()
@@ -75,7 +77,8 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             return Response(
                 {
                     "detail": _(
-                        "Application status cannot be exported because of invalid status"
+                        "Application status cannot be exported because of invalid"
+                        " status"
                     )
                 },
                 status=status.HTTP_400_BAD_REQUEST,
@@ -117,7 +120,8 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             return Response(
                 {
                     "detail": _(
-                        "There is no available application to export, please try again later"
+                        "There is no available application to export, please try again"
+                        " later"
                     )
                 },
                 status=status.HTTP_400_BAD_REQUEST,
@@ -135,3 +139,51 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         )
         approved_batches.all().update(status=ApplicationBatchStatus.SENT_TO_TALPA)
         return response
+
+    @action(methods=["POST"], detail=False)
+    @transaction.atomic
+    def add_to_batch(self, request):
+        app_status = request.data["status"]
+        app_ids = request.data["application_ids"]
+
+        def create_application_batch_by_ids(app_status, apps):
+            if apps:
+                batch = ApplicationBatch.objects.create(
+                    proposal_for_decision=app_status
+                )
+                return batch
+
+        if (
+            app_status not in [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED]
+            or type(app_ids) != list
+        ):
+            return Response(
+                {"detail": "Status or application id is not valid"},
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )
+
+        apps = Application.objects.filter(
+            status=app_status, batch__isnull=True, pk__in=app_ids
+        )
+
+        # Try finding an existing batch
+        batch = (
+            ApplicationBatch.objects.filter(
+                status=ApplicationBatchStatus.DRAFT, proposal_for_decision=app_status
+            ).first()
+        ) or create_application_batch_by_ids(
+            app_status,
+            apps,
+        )
+
+        if batch:
+            apps.update(batch=batch)
+            batch = ApplicationBatchSerializer(batch)
+            return Response(batch.data, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {
+                    "detail": "Unable to create a new batch or merge application to existing one."
+                },
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )

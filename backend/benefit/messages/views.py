@@ -6,8 +6,8 @@ from rest_framework.exceptions import NotFound
 
 from applications.models import Application
 from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
-from messages.automatic_messages import notify_applicant_by_email_about_new_message
-from messages.models import Message
+from messages.automatic_messages import send_email_to_applicant
+from messages.models import Message, MessageType
 from messages.permissions import HasMessagePermission
 from messages.serializers import MessageSerializer, NoteSerializer
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
@@ -15,7 +15,6 @@ from users.utils import get_company_from_request
 
 
 class ApplicantMessageViewSet(AuditLoggingModelViewSet):
-
     serializer_class = MessageSerializer
     permission_classes = [
         BFIsApplicant,
@@ -49,7 +48,12 @@ class HandlerMessageViewSet(ApplicantMessageViewSet):
 
     def perform_create(self, serializer):
         message = serializer.save()
-        notify_applicant_by_email_about_new_message(message.application)
+        # Never send email if it's a handler's note!
+        if message.message_type in [
+            MessageType.HANDLER_MESSAGE,
+            MessageType.APPLICANT_MESSAGE,
+        ]:
+            send_email_to_applicant(message.application)
 
     def get_queryset(self):
         try:

@@ -316,8 +316,9 @@ def test_send_audit_log_missing_configuration(user, fixed_datetime):
     assert AuditLogEntry.objects.count() == 1
     entry = AuditLogEntry.objects.first()
     assert entry.is_sent is False
-    send_audit_log_to_elastic_search()
+    sent_entries_count = send_audit_log_to_elastic_search()
     assert entry.is_sent is False
+    assert sent_entries_count == 0
 
 
 @pytest.mark.parametrize(
@@ -327,7 +328,7 @@ def test_send_audit_log_missing_configuration(user, fixed_datetime):
 @pytest.mark.django_db
 @override_settings(
     ELASTICSEARCH_HOST="example.com",
-    ELASTICSEARCH_PORT="1234",
+    ELASTICSEARCH_PORT=1234,
     ELASTICSEARCH_USERNAME="e_user",
     ELASTICSEARCH_PASSWORD="e_password",
     ENABLE_SEND_AUDIT_LOG=True,
@@ -346,8 +347,9 @@ def test_send_audit_log_success(user, fixed_datetime, result_value, expected_sta
 
     with mock.patch("elasticsearch.Elasticsearch.index") as elasticsearch_index_mock:
         elasticsearch_index_mock.return_value = {"result": result_value}
-        send_audit_log_to_elastic_search()
+        sent_entries_count = send_audit_log_to_elastic_search()
         assert AuditLogEntry.objects.first().is_sent == expected_status
+        assert sent_entries_count == (1 if expected_status else 0)
 
 
 @pytest.mark.django_db
@@ -393,7 +395,8 @@ def test_clear_audit_log(user, fixed_datetime):
     expired_sent_log.created_at = timezone.now() - timedelta(days=35)
     expired_sent_log.save()
 
-    clear_audit_log_entries()
+    deleted_count = clear_audit_log_entries()
     assert AuditLogEntry.objects.count() == 2
     assert AuditLogEntry.objects.filter(id=new_sent_log.id).exists()
     assert AuditLogEntry.objects.filter(id=expired_unsent_log.id).exists()
+    assert deleted_count == 1

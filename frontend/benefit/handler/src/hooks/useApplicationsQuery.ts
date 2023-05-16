@@ -7,7 +7,8 @@ import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 const useApplicationsQuery = (
   status: string[],
-  orderBy = 'id'
+  orderBy = 'id',
+  excludeBatched = false
 ): UseQueryResult<ApplicationData[], Error> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
@@ -21,16 +22,22 @@ const useApplicationsQuery = (
     );
   };
 
+  const defaultParams = {
+    status: status.join(','),
+    order_by: orderBy,
+  };
+
+  const params = !excludeBatched
+    ? defaultParams
+    : { ...defaultParams, exclude_batched: '1' };
+
   return useQuery<ApplicationData[], Error>(
     ['applicationsList', ...status],
     async () => {
       const res = axios.get<ApplicationData[]>(
-        `${BackendEndpoint.APPLICATIONS_SIMPLIFIED}`,
+        `${BackendEndpoint.HANDLER_APPLICATIONS_SIMPLIFIED}`,
         {
-          params: {
-            status: status.join(','),
-            order_by: orderBy,
-          },
+          params,
         }
       );
       return handleResponse(res);

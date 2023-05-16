@@ -64,7 +64,6 @@ def address_property(field_suffix):
 
 
 class ApplicationManager(models.Manager):
-
     HANDLED_STATUSES = [
         ApplicationStatus.REJECTED,
         ApplicationStatus.ACCEPTED,
@@ -519,7 +518,10 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
         return self.AHJO_DECISION_LOGIC[self.status]
 
     def __str__(self):
-        return f"Application batch {self.applications.count()} {self.proposal_for_decision} {self.status}"
+        return (
+            "Application batch"
+            f" {self.applications.count()} {self.proposal_for_decision} {self.status}"
+        )
 
     class Meta:
         db_table = "bf_applicationbatch"
@@ -559,16 +561,28 @@ class Employee(UUIDModel, TimeStampedModel):
         on_delete=models.CASCADE,
     )
 
-    first_name = models.CharField(
+    encrypted_first_name = EncryptedCharField(
         max_length=128, verbose_name=_("first name"), blank=True
     )
-    last_name = models.CharField(
+
+    encrypted_last_name = EncryptedCharField(
         max_length=128, verbose_name=_("last name"), blank=True
+    )
+
+    first_name = SearchField(
+        hash_key=settings.EMPLOYEE_FIRST_NAME_HASH_KEY,
+        encrypted_field_name="encrypted_first_name",
+    )
+
+    last_name = SearchField(
+        hash_key=settings.EMPLOYEE_LAST_NAME_HASH_KEY,
+        encrypted_field_name="encrypted_last_name",
     )
 
     encrypted_social_security_number = EncryptedCharField(
         max_length=11, verbose_name=_("social security number"), blank=True
     )
+
     social_security_number = SearchField(
         hash_key=settings.SOCIAL_SECURITY_NUMBER_HASH_KEY,
         encrypted_field_name="encrypted_social_security_number",

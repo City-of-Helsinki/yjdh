@@ -12,7 +12,7 @@ This monorepo contains code for four different employment services:
 ## Requirements
 
 * Docker@^19.03.0 (or higher)
-* NodeJS@^14.0.0
+* NodeJS@^16.19.0
 * Yarn@^1.22
 
 ---
@@ -141,13 +141,41 @@ Running `yarn tet-youth down` brings down all services.
 
 ---
 
-## Setting up Husky pre-commit hooks:
+## Setting up pre-commit hooks
+
+### Husky (frontend)
 
 1. Run `yarn install` and `yarn prepare` on project root
 2. Try `git commit -m foo`. It does not commit anything for real but pre-commit hook should be triggered.
 
 If the pre-commit hook hangs, or you want to push changes with failing tests, you can disable the hook with
 `npx husky uninstall`. Running `yarn prepare` reactivates the hook.
+
+### Pre-commit (backend)
+
+1. [Pre-commit](https://pre-commit.com/) should be installed to your virtual environment from `requirements-dev.txt`. If not, install it with `pip install pre-commit`.
+2. Run `pre-commit install`.
+
+Hooks now run when committing. You can run hooks manually by `pre-commit run`
+
+---
+
+## Release tags
+
+Release pipelines are triggered by git tag. Release tag syntax is '\<service>-\<application>-\<vx.y.z>' for example 'kesaseteli-backend-v1.0.0'.
+
+Git tags '\<service >-\<application>' -prefixes are
+
+ - benefit-backend
+ - benefit-applicant
+ - benefit-handler
+ - kesaseteli-backend
+ - kesaseteli-employer
+ - kesaseteli-handler
+ - kesaseteli-youth
+ - tet-backend
+ - tet-admin
+ - tet-youth
 
 ---
 

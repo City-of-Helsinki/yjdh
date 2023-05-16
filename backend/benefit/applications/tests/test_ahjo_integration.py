@@ -39,27 +39,24 @@ def _assert_html_content(html, include_keys=(), excluded_keys=()):
 
 
 @pytest.mark.parametrize(
-    "company_form_code,company_form,de_minimis_aids,should_show_de_minimis_aid_footer",
+    "company_form_code,company_form,should_show_de_minimis_aid_footer",
     [
         (
             YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT,
             "ry",
-            [False, False, False],
             False,
         ),
         (
             YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT,
             "oy",
-            [False, False, False],
             False,
         ),
         (
             YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT,
             "oy",
-            [False, True, False],
             True,
         ),
-        (YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT, "oy", [True, True, True], True),
+        (YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT, "oy", True),
     ],
 )
 @patch("applications.services.ahjo_integration.pdfkit.from_string")
@@ -67,7 +64,6 @@ def test_generate_single_approved_template_html(
     mock_pdf_convert,
     company_form_code: YtjOrganizationCode,
     company_form: str,
-    de_minimis_aids: List[bool],
     should_show_de_minimis_aid_footer: bool,
 ):
     mock_pdf_convert.return_value = {}
@@ -77,16 +73,15 @@ def test_generate_single_approved_template_html(
     apps: List[Application] = [
         DecidedApplicationFactory(
             company=company,
-            de_minimis_aid=de_minimis_aid,
             status=ApplicationStatus.ACCEPTED,
         )
-        for de_minimis_aid in de_minimis_aids
     ]
     for app in apps:
         app.calculation.calculated_benefit_amount = 1000
+        app.calculation.granted_as_de_minimis_aid = should_show_de_minimis_aid_footer
         app.calculation.save()
     # Only assert html content for easier comparison
-    html = generate_single_approved_file(apps[0].company, apps).html_content
+    html = generate_single_approved_file(apps[0].company, apps, 3).html_content
     for app in apps:
         _assert_html_content(
             html,
@@ -114,7 +109,7 @@ def test_generate_single_declined_template_html(mock_pdf_convert):
         3, company=company, status=ApplicationStatus.REJECTED
     )
     # Only assert html content for easier comparison
-    html = generate_single_declined_file(apps[0].company, apps).html_content
+    html = generate_single_declined_file(apps[0].company, apps, 4).html_content
     for app in apps:
         _assert_html_content(
             html,
@@ -160,7 +155,7 @@ def test_generate_composed_template_html(mock_pdf_convert):
 
     # Only assert html content for easier comparison
     files: List[ExportFileInfo] = generate_composed_files(
-        [accepted_app_1, accepted_app_2], [rejected_app_1, rejected_app_2]
+        [accepted_app_1, accepted_app_2], [rejected_app_1, rejected_app_2], 5
     )
     assert len(files) == 4
 
@@ -262,7 +257,7 @@ def test_multiple_benefit_per_application(mock_pdf_convert):
     application.calculation.init_calculator()
     application.calculation.calculate()
     html = generate_single_approved_file(
-        application.company, [application]
+        application.company, [application], 6
     ).html_content
     assert (
         html.count(application.ahjo_application_number) == 2

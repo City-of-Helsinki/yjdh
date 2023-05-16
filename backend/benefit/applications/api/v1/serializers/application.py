@@ -1,29 +1,28 @@
-import re
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from typing import Dict, List
 
-import filetype
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.db import transaction
-from django.forms import ImageField, ValidationError as DjangoFormsValidationError
+from django.utils import timezone
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
-from rest_framework.fields import FileField
-from rest_framework.reverse import reverse
 
+from applications.api.v1.serializers.attachment import AttachmentSerializer
+from applications.api.v1.serializers.batch import ApplicationBatchSerializer
+from applications.api.v1.serializers.de_minimis import DeMinimisAidSerializer
+from applications.api.v1.serializers.employee import EmployeeSerializer
+from applications.api.v1.serializers.utils import DynamicFieldsModelSerializer
 from applications.api.v1.status_transition_validator import (
     ApplicantApplicationStatusValidator,
-    ApplicationBatchStatusValidator,
     HandlerApplicationStatusValidator,
 )
 from applications.benefit_aggregation import get_former_benefit_info
 from applications.enums import (
-    ApplicationBatchStatus,
     ApplicationStatus,
     AttachmentRequirement,
     AttachmentType,
@@ -33,10 +32,7 @@ from applications.enums import (
 from applications.models import (
     Application,
     ApplicationBasis,
-    ApplicationBatch,
     ApplicationLogEntry,
-    Attachment,
-    DeMinimisAid,
     Employee,
 )
 from calculator.api.v1.serializers import (
@@ -52,11 +48,9 @@ from common.utils import (
     PhoneNumberField,
     to_decimal,
     update_object,
-    xgroup,
 )
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
-from helsinkibenefit.settings import MAX_UPLOAD_SIZE, MINIMUM_WORKING_HOURS_PER_WEEK
 from messages.automatic_messages import send_application_reopened_message
 from terms.api.v1.serializers import (
     ApplicantTermsApprovalSerializer,
@@ -66,403 +60,6 @@ from terms.api.v1.serializers import (
 from terms.enums import TermsType
 from terms.models import ApplicantTermsApproval, Terms
 from users.utils import get_company_from_request, get_request_user_from_context
-
-
-class DynamicFieldsModelSerializer(serializers.ModelSerializer):
-    """
-    A ModelSerializer that takes an additional `fields` argument that
-    controls which fields should be displayed and exclude_fields parameter argument that controls
-    which fields should not be displayed and exclude_fields parameter argument that controls which
-    fields should not be displayed.
-    """
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Empty "fields" argument is treated the same as no argument at all
-        fields = self.context.get("fields", []) or self.fields.keys()
-        exclude_fields = self.context.get("exclude_fields", [])
-
-        existing = set(self.fields)
-        allowed = set(fields) - set(exclude_fields)
-        for field_name in existing - allowed:
-            self.fields.pop(field_name)
-
-
-class AttachmentField(FileField):
-    def to_representation(self, value):
-        if not value:
-            return None
-
-        url_pattern_name = "v1:applicant-application-download-attachment"
-        request = self.context.get("request")
-        user = get_request_user_from_context(self)
-        if settings.NEXT_PUBLIC_MOCK_FLAG or (
-            user and user.is_authenticated and user.is_handler()
-        ):
-            url_pattern_name = "v1:handler-application-download-attachment"
-
-        path = reverse(
-            url_pattern_name,
-            kwargs={
-                "pk": value.instance.application.pk,
-                "attachment_pk": value.instance.pk,
-            },
-        )
-        if request is not None:
-            return request.build_absolute_uri(path)
-        return path
-
-
-class AttachmentSerializer(serializers.ModelSerializer):
-    # this limit is a security feature, not a business rule
-
-    MAX_ATTACHMENTS_PER_APPLICATION = 20
-
-    attachment_file = AttachmentField()
-
-    class Meta:
-        model = Attachment
-        fields = [
-            "id",
-            "application",
-            "attachment_type",
-            "attachment_file",
-            "attachment_file_name",
-            "content_type",
-            "created_at",
-        ]
-        read_only_fields = ["created_at"]
-
-    attachment_file_name = serializers.SerializerMethodField(
-        "get_attachment_file_name",
-        help_text="The name of the uploaded file",
-    )
-
-    def get_attachment_file_name(self, obj):
-        return obj.attachment_file.name
-
-    ATTACHMENT_MODIFICATION_ALLOWED_STATUSES = (
-        ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
-        ApplicationStatus.DRAFT,
-    )
-
-    def validate(self, data):
-        """
-        Rudimentary validation of file content to guard against accidentally uploading
-        invalid files.
-        """
-
-        if data["attachment_file"].size > MAX_UPLOAD_SIZE:
-            raise serializers.ValidationError(
-                format_lazy(
-                    _("Upload file size cannot be greater than {size} bytes"),
-                    size=MAX_UPLOAD_SIZE,
-                )
-            )
-
-        if (
-            len(data["application"].attachments.all())
-            >= self.MAX_ATTACHMENTS_PER_APPLICATION
-        ):
-            raise serializers.ValidationError(_("Too many attachments"))
-        if data["content_type"] == "application/pdf":
-            if not self._is_valid_pdf(data["attachment_file"]):
-                raise serializers.ValidationError(_("Not a valid pdf file"))
-        elif not self._is_valid_image(data["attachment_file"]):
-            # only pdf and image files are listed in ATTACHMENT_CONTENT_TYPE_CHOICES, so if we get here,
-            # the content type is an image file
-            raise serializers.ValidationError(_("Not a valid image file"))
-        return data
-
-    def _is_valid_image(self, uploaded_file):
-        try:
-            im = ImageField()
-            # check if the file is a valid image
-            im.to_python(uploaded_file)
-        except DjangoFormsValidationError:
-            return False
-        else:
-            return True
-
-    def _is_valid_pdf(self, uploaded_file):
-        file_pos = uploaded_file.tell()
-        mime_type = None
-        if file_type_guess := filetype.guess(uploaded_file):
-            mime_type = file_type_guess.mime
-        uploaded_file.seek(file_pos)  # restore position
-        return mime_type == "application/pdf"
-
-
-class DeMinimisAidSerializer(serializers.ModelSerializer):
-    """
-    De minimis aid objects are meant to be edited together with their Application object.
-    The "ordering" field is not editable and is ignored if present in POST/PUT data.
-    The ordering of the DeMinimisAid objects is determined by their order in the "de_minimis_aid_set" list
-    in the Application.
-    """
-
-    MAX_AID_AMOUNT = 200000
-    amount = serializers.DecimalField(
-        max_digits=DeMinimisAid.amount.field.max_digits,
-        decimal_places=DeMinimisAid.amount.field.decimal_places,
-        min_value=1,
-        max_value=MAX_AID_AMOUNT,
-        help_text="see MAX_AMOUNT",
-    )
-
-    def validate_granted_at(self, value):
-        min_date = date(date.today().year - 4, 1, 1)
-        if value < min_date:
-            raise serializers.ValidationError(_("Grant date too much in past"))
-        elif value > date.today():
-            raise serializers.ValidationError(_("Grant date can not be in the future"))
-        return value
-
-    class Meta:
-        model = DeMinimisAid
-        fields = [
-            "id",
-            "granter",
-            "granted_at",
-            "amount",
-            "ordering",
-        ]
-        read_only_fields = [
-            "ordering",
-        ]
-        extra_kwargs = {
-            "granter": {
-                "help_text": "Granter of the benefit",
-            },
-            "granted_at": {
-                "help_text": "Date max. four years into past",
-            },
-            "ordering": {
-                "help_text": "Note: read-only field, ignored on input",
-            },
-        }
-
-
-class EmployeeSerializer(serializers.ModelSerializer):
-    """
-    Employee objects are meant to be edited together with their Application object.
-    """
-
-    SSN_REGEX = r"^(\d{6})[aA+-](\d{3})([0-9A-FHJ-NPR-Ya-fhj-npr-y])$"
-
-    SSN_CHEKSUM = {
-        int(k): v
-        for k, v in xgroup(
-            (
-                "0    0    16    H "
-                "1    1    17    J "
-                "2    2    18    K "
-                "3    3    19    L "
-                "4    4    20    M "
-                "5    5    21    N "
-                "6    6    22    P "
-                "7    7    23    R "
-                "8    8    24    S "
-                "9    9    25    T "
-                "10    A    26    U "
-                "11    B    27    V "
-                "12    C    28    W "
-                "13    D    29    X "
-                "14    E    30    Y "
-                "15    F"
-            ).split()
-        )
-    }
-
-    phone_number = PhoneNumberField(
-        allow_blank=True,
-        help_text="Employee phone number normalized (start with zero, without country code)",
-    )
-
-    class Meta:
-        model = Employee
-        fields = [
-            "id",
-            "first_name",
-            "last_name",
-            "social_security_number",
-            "phone_number",
-            "email",
-            "employee_language",
-            "job_title",
-            "monthly_pay",
-            "vacation_money",
-            "other_expenses",
-            "working_hours",
-            "collective_bargaining_agreement",
-            "is_living_in_helsinki",
-            "commission_amount",
-            "commission_description",
-            "created_at",
-            "birthday",
-        ]
-        read_only_fields = [
-            "ordering",
-            "birthday",
-        ]
-
-    def validate_social_security_number(self, value):
-        """
-        For more info about the checksum validation, see "Miten henkilötunnukset tarkistusmerkki lasketaan?" in
-        https://dvv.fi/henkilotunnus
-        """
-        if value == "":
-            return value
-
-        m = re.match(self.SSN_REGEX, value)
-        if not m:
-            raise serializers.ValidationError(_("Social security number invalid"))
-
-        expect_checksum = EmployeeSerializer.SSN_CHEKSUM[
-            int((m.group(1) + m.group(2)).lstrip("0")) % 31
-        ].lower()
-        if expect_checksum != m.group(3).lower():
-            raise serializers.ValidationError(
-                _("Social security number checksum invalid")
-            )
-
-        return value
-
-    def validate_working_hours(self, value):
-        if value and value < MINIMUM_WORKING_HOURS_PER_WEEK:
-            raise serializers.ValidationError(
-                format_lazy(
-                    _("Working hour must be greater than {min_hour} per week"),
-                    min_hour=MINIMUM_WORKING_HOURS_PER_WEEK,
-                )
-            )
-        return value
-
-    def validate_monthly_pay(self, value):
-        if value is not None and value <= 0:
-            raise serializers.ValidationError(_("Monthly pay must be greater than 0"))
-        return value
-
-    def validate_vacation_money(self, value):
-        if value is not None and value < 0:
-            raise serializers.ValidationError(
-                _("Vacation money must be a positive number")
-            )
-        return value
-
-    def validate_other_expenses(self, value):
-        if value is not None and value < 0:
-            raise serializers.ValidationError(
-                _("Other expenses must be a positive number")
-            )
-        return value
-
-
-class ApplicationBatchSerializer(serializers.ModelSerializer):
-    """
-    Grouping of applications for batch processing.
-    One Application can belong to at most one ApplicationBatch at a time.
-    """
-
-    status = serializers.ChoiceField(
-        choices=ApplicationBatchStatus.choices,
-        validators=[ApplicationBatchStatusValidator()],
-        help_text="Status of the application, visible to the applicant",
-    )
-
-    applications = serializers.PrimaryKeyRelatedField(
-        many=True,
-        read_only=False,
-        queryset=Application.objects.all(),
-        help_text="Applications in this batch (read-only)",
-    )
-
-    proposal_for_decision = serializers.ChoiceField(
-        choices=[ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
-        help_text="Proposed decision for Ahjo",
-    )
-
-    class Meta:
-        model = ApplicationBatch
-        fields = [
-            "id",
-            "status",
-            "applications",
-            "proposal_for_decision",
-            "decision_maker_title",
-            "decision_maker_name",
-            "section_of_the_law",
-            "decision_date",
-            "expert_inspector_name",
-            "expert_inspector_email",
-            "created_at",
-        ]
-        read_only_fields = [
-            "created_at",
-        ]
-        extra_kwargs = {
-            "decision_maker_title": {
-                "help_text": "Title of the decision maker in Ahjo",
-            },
-            "decision_maker_name": {
-                "help_text": "Nameof the decision maker in Ahjo",
-            },
-            "section_of_the_law": {
-                "help_text": "Section of the law that the Ahjo decision is based on",
-            },
-            "decision_date": {
-                "help_text": "Date of decision in Ahjo",
-            },
-            "expert_inspector_name": {
-                "help_text": "The name of application handler at the city of Helsinki (for Talpa)",
-            },
-            "expert_inspector_email": {
-                "help_text": "The email of application handler at the city of Helsinki (for Talpa)",
-            },
-        }
-
-    @transaction.atomic
-    def update(self, instance, validated_data):
-        applications = validated_data.pop("applications", None)
-        application_batch = super().update(instance, validated_data)
-        if applications is not None:
-            self._update_applications(application_batch, applications)
-        return application_batch
-
-    @transaction.atomic
-    def create(self, validated_data):
-        applications = validated_data.pop("applications", None)
-        application_batch = super().create(validated_data)
-        if applications is not None:
-            self._update_applications(application_batch, applications)
-        return application_batch
-
-    def _update_applications(self, application_batch, applications):
-        if {application.pk for application in application_batch.applications.all()} != {
-            application.pk for application in applications
-        }:
-            if not application_batch.applications_can_be_modified:
-                raise serializers.ValidationError(
-                    {
-                        "applications": _(
-                            "Applications in a batch can not be changed when batch is in this status"
-                        )
-                    }
-                )
-
-            for application in applications:
-                if str(application.status) != str(
-                    application_batch.proposal_for_decision
-                ):
-                    raise serializers.ValidationError(
-                        {
-                            "applications": _(
-                                "This application has invalid status and can not be added to this batch"
-                            )
-                        }
-                    )
-
-        application_batch.applications.set(applications)
 
 
 class BaseApplicationSerializer(DynamicFieldsModelSerializer):
@@ -512,8 +109,10 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
 
     de_minimis_aid_set = DeMinimisAidSerializer(
         many=True,
-        help_text="List of de minimis aid associated with this application."
-        "Total amount must be less than MAX_AID_AMOUNT",
+        help_text=(
+            "List of de minimis aid associated with this application."
+            "Total amount must be less than MAX_AID_AMOUNT"
+        ),
     )
 
     class Meta:
@@ -565,7 +164,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "end_date",
             "de_minimis_aid",
             "de_minimis_aid_set",
-            "last_modified_at",
+            "modified_at",
             "created_at",
             "additional_information_needed_by",
             "status_last_changed_at",
@@ -590,7 +189,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "official_company_city",
             "official_company_postcode",
             "available_benefit_types",
-            "last_modified_at",
+            "modified_at",
             "created_at",
             "additional_information_needed_by",
             "status_last_changed_at",
@@ -600,39 +199,64 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         ]
         extra_kwargs = {
             "company_name": {
-                "help_text": "The application should retain the Company name, as it was at the time the"
-                " application was created, to maintain historical accuracy.",
+                "help_text": (
+                    "The application should retain the Company name, as it was at the"
+                    " time the application was created, to maintain historical"
+                    " accuracy."
+                ),
             },
             "company_form": {
-                "help_text": "Finnish company form from official sources (YTJ) at the time the application was created",
+                "help_text": (
+                    "Finnish company form from official sources (YTJ) at the time the"
+                    " application was created"
+                ),
             },
             "company_form_code": {
-                "help_text": "Company form code from official sources (YTJ) at the time the application was created",
+                "help_text": (
+                    "Company form code from official sources (YTJ) at the time the"
+                    " application was created"
+                ),
             },
             "official_company_street_address": {
-                "help_text": "Company street address from official sources (YTJ/other) at"
-                "the time the application was created",
+                "help_text": (
+                    "Company street address from official sources (YTJ/other) at"
+                    "the time the application was created"
+                ),
             },
             "official_company_city": {
-                "help_text": "Company city from official sources (YTJ/other) at"
-                "the time the application was created",
+                "help_text": (
+                    "Company city from official sources (YTJ/other) at"
+                    "the time the application was created"
+                ),
             },
             "official_company_postcode": {
-                "help_text": "Company post code from official sources (YTJ/other) at"
-                "the time the application was created",
+                "help_text": (
+                    "Company post code from official sources (YTJ/other) at"
+                    "the time the application was created"
+                ),
             },
             "use_alternative_address": {
-                "help_text": "The user has an option of using an alternative address."
-                "This will then be used instead of the address fetched from YTJ/PRH.",
+                "help_text": (
+                    "The user has an option of using an alternative address.This will"
+                    " then be used instead of the address fetched from YTJ/PRH."
+                ),
             },
             "alternative_company_street_address": {
-                "help_text": "User-supplied address, to be used in Helsinki Benefit related issues",
+                "help_text": (
+                    "User-supplied address, to be used in Helsinki Benefit related"
+                    " issues"
+                ),
             },
             "alternative_company_city": {
-                "help_text": "User-supplied city, to be used in Helsinki Benefit related issues",
+                "help_text": (
+                    "User-supplied city, to be used in Helsinki Benefit related issues"
+                ),
             },
             "alternative_company_postcode": {
-                "help_text": "User-supplied postcode, to be used in Helsinki Benefit related issues",
+                "help_text": (
+                    "User-supplied postcode, to be used in Helsinki Benefit related"
+                    " issues"
+                ),
             },
             "company_department": {
                 "help_text": "Company department address",
@@ -647,24 +271,32 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                 "help_text": "Last name of the contact person",
             },
             "company_contact_person_phone_number": {
-                "help_text": "Phone number of the contact person, must a Finnish phone number",
+                "help_text": (
+                    "Phone number of the contact person, must a Finnish phone number"
+                ),
             },
             "company_contact_person_email": {
                 "help_text": "Email address of the contact person",
             },
             "association_has_business_activities": {
-                "help_text": "field is visible and yes/no answer is required/allowed"
-                "only if applicant is an association",
+                "help_text": (
+                    "field is visible and yes/no answer is required/allowed"
+                    "only if applicant is an association"
+                ),
             },
             "association_immediate_manager_check": {
-                "help_text": "field is visible and yes answer is allowed (and required)"
-                "only if applicant is an association",
+                "help_text": (
+                    "field is visible and yes answer is allowed (and required)"
+                    "only if applicant is an association"
+                ),
             },
             "applicant_language": {
                 "help_text": "Language to be used when contacting the contact person",
             },
             "co_operation_negotiations": {
-                "help_text": "If set to True, then the negotiations description must be filled",
+                "help_text": (
+                    "If set to True, then the negotiations description must be filled"
+                ),
             },
             "co_operation_negotiations_description": {
                 "help_text": "Free text entered by the applicant",
@@ -676,13 +308,19 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                 "help_text": "Percentage of the pay subsidy granted",
             },
             "additional_pay_subsidy_percent": {
-                "help_text": "Percentage of the pay subsidy granted (If there is another pay subsidy grant)",
+                "help_text": (
+                    "Percentage of the pay subsidy granted (If there is another pay"
+                    " subsidy grant)"
+                ),
             },
             "apprenticeship_program": {
                 "help_text": "Is the employee in apprenticeship program?",
             },
             "archived": {
-                "help_text": "Flag indicating the application is archived and should not usually be shown to the user",
+                "help_text": (
+                    "Flag indicating the application is archived and should not usually"
+                    " be shown to the user"
+                ),
             },
             "benefit_type": {
                 "help_text": "Benefit type of this application",
@@ -708,14 +346,20 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
 
     submitted_at = serializers.SerializerMethodField("get_submitted_at")
 
-    last_modified_at = serializers.SerializerMethodField(
-        "get_last_modified_at",
-        help_text="Last modified timestamp. Only handlers see the timestamp of non-draft applications.",
+    modified_at = serializers.SerializerMethodField(
+        "get_modified_at",
+        help_text=(
+            "Last modified timestamp. Only handlers see the timestamp of non-draft"
+            " applications."
+        ),
     )
 
     former_benefit_info = serializers.SerializerMethodField(
         "get_former_benefit_info",
-        help_text="Aggregated information about previously granted benefits for the same employee and company",
+        help_text=(
+            "Aggregated information about previously granted benefits for the same"
+            " employee and company"
+        ),
     )
 
     warnings = serializers.SerializerMethodField("get_warnings")
@@ -733,24 +377,33 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
     )
     applicant_terms_approval_needed = serializers.SerializerMethodField(
         "get_applicant_terms_approval_needed",
-        help_text="Applicant needs to provide approve_terms field in any future submit operation",
+        help_text=(
+            "Applicant needs to provide approve_terms field in any future submit"
+            " operation"
+        ),
     )
     applicant_terms_in_effect = serializers.SerializerMethodField(
         "get_applicant_terms_in_effect",
         help_text=(
-            "The applicant terms that need to be approved when applicant submits this application."
-            "These terms are not necessarily yet approved by the applicant - see applicant_terms_approval"
+            "The applicant terms that need to be approved when applicant submits this"
+            " application.These terms are not necessarily yet approved by the applicant"
+            " - see applicant_terms_approval"
         ),
     )
 
     available_benefit_types = serializers.SerializerMethodField(
         "get_available_benefit_types",
-        help_text="Available benefit types depend on organization type of the applicant",
+        help_text=(
+            "Available benefit types depend on organization type of the applicant"
+        ),
     )
 
     company_contact_person_phone_number = PhoneNumberField(
         allow_blank=True,
-        help_text="Company contact person phone number normalized (start with zero, without country code)",
+        help_text=(
+            "Company contact person phone number normalized (start with zero, without"
+            " country code)"
+        ),
     )
     unread_messages_count = serializers.IntegerField(
         read_only=True, help_text="Count of unread messages"
@@ -760,7 +413,10 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         required=False,
         allow_blank=True,
         write_only=True,
-        help_text="If application status is changed in the request, set the comment field in the ApplicationLogEntry",
+        help_text=(
+            "If application status is changed in the request, set the comment field in"
+            " the ApplicationLogEntry"
+        ),
     )
 
     def get_applicant_terms_approval_needed(self, obj):
@@ -840,7 +496,6 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             return None
 
     def get_former_benefit_info(self, obj):
-
         if not hasattr(obj, "calculation"):
             return {}
 
@@ -872,7 +527,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
     def get_submitted_at(self, obj):
         return getattr(obj, "submitted_at", None)
 
-    def get_last_modified_at(self, obj):
+    def get_modified_at(self, obj):
         if not self.logged_in_user_is_admin() and obj.status != ApplicationStatus.DRAFT:
             return None
         return obj.modified_at
@@ -923,7 +578,6 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
     def _validate_association_immediate_manager_check(
         self, company, association_immediate_manager_check
     ):
-
         """
         Validate association_immediate_manager_check:
         * company: the organization applying for the benefit
@@ -946,7 +600,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             raise serializers.ValidationError(
                 {
                     "association_immediate_manager_check": _(
-                        "for companies, association_immediate_manager_check must always be null"
+                        "for companies, association_immediate_manager_check must always"
+                        " be null"
                     )
                 }
             )
@@ -974,7 +629,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             raise serializers.ValidationError(
                 {
                     "de_minimis_aid_set": _(
-                        "This application has non-null de_minimis_aid but is applied by an association"
+                        "This application has non-null de_minimis_aid but is applied by"
+                        " an association"
                     )
                 }
             )
@@ -983,7 +639,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             raise serializers.ValidationError(
                 {
                     "de_minimis_aid_set": _(
-                        "This application has de_minimis_aid set but does not define any"
+                        "This application has de_minimis_aid set but does not"
+                        " define any"
                     )
                 }
             )
@@ -1052,7 +709,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             raise serializers.ValidationError(
                 {
                     "co_operation_negotiations_description": _(
-                        "This application can not have a description for co-operation negotiations"
+                        "This application can not have a description for co-operation"
+                        " negotiations"
                     )
                 }
             )
@@ -1396,7 +1054,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             approval = ApplicantTermsApproval.objects.create(
                 application=instance,
                 terms=approve_terms["terms"],
-                approved_at=datetime.now(),
+                approved_at=timezone.now(),
                 approved_by=approved_by,
             )
             approval.selected_applicant_consents.set(
@@ -1561,7 +1219,10 @@ class ApplicantApplicationSerializer(BaseApplicationSerializer):
     status = ApplicantApplicationStatusChoiceField(
         choices=ApplicationStatus.choices,
         validators=[ApplicantApplicationStatusValidator()],
-        help_text="Status of the application, statuses that are visible to the applicant are limited",
+        help_text=(
+            "Status of the application, statuses that are visible to the applicant are"
+            " limited"
+        ),
     )
 
     def get_company_for_new_application(self, validated_data):
@@ -1624,8 +1285,9 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         required=False,
         queryset=Company.objects.all(),
         help_text=(
-            "To be used when a logged-in application handler creates a new application based on a paper application"
-            "received via mail. Ordinary applicants can only create applications for their own company."
+            "To be used when a logged-in application handler creates a new application"
+            " based on a paper applicationreceived via mail. Ordinary applicants can"
+            " only create applications for their own company."
         ),
     )
 
@@ -1641,7 +1303,9 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
 
     handled_at = serializers.SerializerMethodField(
         "get_handled_at",
-        help_text="Timestamp when the application was handled (accepted/rejected/cancelled)",
+        help_text=(
+            "Timestamp when the application was handled (accepted/rejected/cancelled)"
+        ),
     )
 
     def get_handled_at(self, obj):

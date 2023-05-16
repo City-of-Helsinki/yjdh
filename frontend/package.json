@@ -10,6 +10,9 @@
     "tet/*",
     "shared"
   ],
+  "engines" : { 
+    "node" : ">=16.19.0 <17.0.0"
+  },
   "scripts": {
     "audit": "npx lerna-audit --level=high --groups=dependencies",
     "build": "npx lerna run build",
@@ -47,18 +50,18 @@
     "ks-youth:browser-test:ci": "yarn --cwd kesaseteli/youth browser-test:ci",
     "shared:test": " yarn --cwd shared test",
     "ks-shared:test": " yarn --cwd kesaseteli/shared test",
-    "te-admn:build": "npx lerna run --scope @frontend/te-admn --stream build",
-    "te-admn:dev": "npx lerna run --scope @frontend/te-admn --stream dev",
-    "te-admn:start": "npx lerna run --scope  @frontend/te-admn --stream start",
-    "te-admn:test": " yarn --cwd tet/admin test",
-    "te-admn:browser-test": "yarn --cwd tet/admin browser-test",
-    "te-admn:browser-test:ci": "yarn --cwd tet/admin browser-test:ci",
-    "te-yout:build": "npx lerna run --scope @frontend/te-yout --stream build",
-    "te-yout:dev": "npx lerna run --scope @frontend/te-yout --stream dev",
-    "te-yout:start": "npx lerna run --scope  @frontend/te-yout --stream start",
-    "te-yout:test": " yarn --cwd tet/youth test",
-    "te-yout:browser-test": "yarn --cwd tet/youth browser-test",
-    "te-yout:browser-test:ci": "yarn --cwd tet/youth browser-test:ci"
+    "te-admin:build": "npx lerna run --scope @frontend/te-admin --stream build",
+    "te-admin:dev": "npx lerna run --scope @frontend/te-admin --stream dev",
+    "te-admin:start": "npx lerna run --scope  @frontend/te-admin --stream start",
+    "te-admin:test": " yarn --cwd tet/admin test",
+    "te-admin:browser-test": "yarn --cwd tet/admin browser-test",
+    "te-admin:browser-test:ci": "yarn --cwd tet/admin browser-test:ci",
+    "te-youth:build": "npx lerna run --scope @frontend/te-youth --stream build",
+    "te-youth:dev": "npx lerna run --scope @frontend/te-youth --stream dev",
+    "te-youth:start": "npx lerna run --scope  @frontend/te-youth --stream start",
+    "te-youth:test": " yarn --cwd tet/youth test",
+    "te-youth:browser-test": "yarn --cwd tet/youth browser-test",
+    "te-youth:browser-test:ci": "yarn --cwd tet/youth browser-test:ci"
   },
   "dependencies": {},
   "devDependencies": {

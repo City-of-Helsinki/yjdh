@@ -8,6 +8,8 @@
     "loader-utils",         // next
     "moment",               // testcafe
     "jsonwebtoken",         // testcafe 
-    "requestretry"          // slack-node
+    "http-cache-semantics", // testcafe
+    "requestretry",         // slack-node
+    "decode-uri-component"  // testcafe, lerna 
   ]
 }

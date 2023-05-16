@@ -1,4 +1,5 @@
 version: "3.8"
+name: yjdh-kesaseteli
 services:
   postgres:
     build:
@@ -6,81 +7,82 @@ services:
       dockerfile: ./docker/finnish_postgres.Dockerfile
     restart: on-failure
     environment:
-      POSTGRES_USER: benefit
-      POSTGRES_PASSWORD: benefit
-      POSTGRES_DB: benefit
+      POSTGRES_USER: kesaseteli
+      POSTGRES_PASSWORD: kesaseteli
+      POSTGRES_DB: kesaseteli
       LC_COLLATE: 'fi_FI.UTF-8'
       LC_CTYPE: 'fi_FI.UTF-8'
     ports:
       - 5434:5432
     volumes:
       - pgdata:/var/lib/postgresql/data
-    container_name: benefit-db
+    container_name: kesaseteli-db
 
-  django:
+  backend:
     build:
       context: ./backend
-      dockerfile: ./docker/benefit.Dockerfile
+      dockerfile: ./docker/kesaseteli.Dockerfile
       target: development
     env_file:
-      - .env.benefit-backend
+      - .env.kesaseteli
     environment:
-      DATABASE_URL: postgres://benefit:benefit@benefit-db/benefit
-      DATABASE_HOST: benefit-db.helsinki
+      DATABASE_URL: postgres://kesaseteli:kesaseteli@kesaseteli-db/kesaseteli
+      DATABASE_HOST: kesaseteli-db.helsinki
     volumes:
-      - ./backend/benefit:/app
+      - ./backend/kesaseteli:/app
       - ./backend/shared:/shared
+      - ./backend/kesaseteli/media:/var/media
     depends_on:
       - postgres
-    container_name: benefit-backend
+    container_name: kesaseteli-backend
 
-  applicant:
+  youth:
     build:
       context: ./frontend
       target: development
       args:
-        PORT: 3000
-        PROJECT: benefit
-        FOLDER: applicant
+        PORT: 3100
+        PROJECT: kesaseteli
+        FOLDER: youth
     volumes:
       - ./frontend:/app
       - /app/node_modules
       - /app/.next
     env_file:
-      - .env.benefit-applicant
-    container_name: benefit-applicant
+      - .env.kesaseteli
+    container_name: kesaseteli-youth
 
   handler:
     build:
       context: ./frontend
       target: development
       args:
-        PORT: 3100
-        PROJECT: benefit
+        PORT: 3200
+        PROJECT: kesaseteli
         FOLDER: handler
     volumes:
       - ./frontend:/app
       - /app/node_modules
       - /app/.next
     env_file:
-      - .env.benefit-handler
-    container_name: benefit-handler
+      - .env.kesaseteli
+    container_name: kesaseteli-handler
 
   local-proxy:
     depends_on:
       - postgres
-      - django
-      - applicant
+      - backend
       - handler
+      - youth
     build:
-      context: ./localdevelopment/benefit/nginx
-    container_name: benefit-local-proxy
+      context: ./localdevelopment/handler/nginx
+    container_name: kesaseteli-handler-local-proxy
     volumes:
-      - ./localdevelopment/benefit/nginx/:/etc/nginx/
+      - ./localdevelopment/handler/nginx/:/etc/nginx/
     ports:
       - 127.0.0.1:8000:8000
-      - 127.0.0.1:3000:3000
       - 127.0.0.1:3100:3100
+      - 127.0.0.1:3200:3200
 
 volumes:
   pgdata:

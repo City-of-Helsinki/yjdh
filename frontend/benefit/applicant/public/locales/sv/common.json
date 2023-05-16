@@ -26,6 +26,7 @@
     },
     "pageHeaders": {
       "created": "Skapats",
+      "saved": "Sparad",
       "sent": "Ansökningsnummer: {{applicationNumber}}  |  Skickad {{submittedAt}}",
       "new": "Ny ansökan",
       "edit": "Ansökan",
@@ -76,7 +77,7 @@
         "deMinimisAidsHeading": "Lista här samtliga de minimis-stöd som beviljats organisationen under det innevarande året eller under de två föregående skatteåren",
         "deMinimisAidsAdd": "Lägg till",
         "deMinimisAidsRemove": "Ta bort",
-        "deMinimisAidsNo": "Har den sökande beviljats ​​ett deminimis-bidrag?",
+        "deMinimisAidsNo": "Sökanden har inte angett några tidigare de minimis -stöd.",
         "notifications": {
           "companyInformation": {
             "label": "Uppgifterna har hämtats från Företags- och organisationsdatasystemet",
@@ -368,6 +369,7 @@
     "loginLabel": "Logga in i tjänsten",
     "logoutLabel": "Logga ut",
     "userAriaLabelPrefix": "Användaren:",
+    "linkSkipToContent": "Hoppa till huvudinnehåll",
     "messages": "Meddelanden",
     "drawer": {
       "title": "Meddelanden om ansökan"
@@ -490,6 +492,13 @@
       "title": "Ett fel uppstod",
       "tooBig": "Storleken på bilagan är för stor.",
       "fileType": "Typen av bilaga är inte tillåten."
+    },
+    "notFound": {
+      "title": "Tyvärr hittas inte sidan du sökte.",
+      "text": "Fel 404: Kontrollera att sidans adress är rätt skriven. Vi kan också ha tagit bort eller flyttat sidan."
+    },
+    "backend": {
+      "Request failed with status code 500": "Fel i systemet. Vänligen försök igen senare."
     }
   },
   "upload": {

@@ -2,7 +2,7 @@ name: Audit check if packages edited
 on:
   pull_request:
     paths:
-      - '**/package.json'
+      - 'frontend/**'
       -  '.github/workflows/audit.yml'
   workflow_dispatch:
 defaults:
@@ -17,7 +17,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '16'
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
@@ -31,4 +31,4 @@ jobs:
       - name: Install dependencies
         run: yarn --prefer-offline --frozen-lockfile --check-files
       - name: Run audit
-        run: yarn audit-ci
+        run: yarn audit-ci --config audit-ci.jsonc

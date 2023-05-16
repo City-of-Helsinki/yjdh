@@ -18,11 +18,11 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from sql_util.aggregates import SubqueryCount
 
-from applications.api.v1.serializers import (
+from applications.api.v1.serializers.application import (
     ApplicantApplicationSerializer,
-    AttachmentSerializer,
     HandlerApplicationSerializer,
 )
+from applications.api.v1.serializers.attachment import AttachmentSerializer
 from applications.enums import ApplicationBatchStatus, ApplicationStatus
 from applications.models import Application, ApplicationBatch
 from applications.services.ahjo_integration import (
@@ -38,14 +38,13 @@ from users.utils import get_company_from_request
 
 
 class BaseApplicationFilter(filters.FilterSet):
-
     status = filters.MultipleChoiceFilter(
         field_name="status",
         widget=CSVWidget,
         choices=ApplicationStatus.choices,
         help_text=(
-            "Filter by application status."
-            " Multiple statuses may be specified as a comma-separated list, such as 'status=draft,received'",
+            "Filter by application status. Multiple statuses may be specified as a"
+            " comma-separated list, such as 'status=draft,received'",
         ),
     )
 
@@ -64,7 +63,6 @@ class ApplicantApplicationFilter(BaseApplicationFilter):
 
 
 class HandlerApplicationFilter(BaseApplicationFilter):
-
     # the date when application was last set to either REJECTED, ACCEPTED or CANCELLED status
     handled_at = DateFromToRangeFilter(method="filter_handled_at")
 
@@ -88,6 +86,7 @@ class HandlerApplicationFilter(BaseApplicationFilter):
         fields = {
             "batch": ["exact", "isnull"],
             "archived": ["exact"],
+            "application_number": ["exact"],
             "employee__social_security_number": ["exact"],
             "company__business_id": ["exact"],
             "benefit_type": ["exact"],
@@ -155,16 +154,16 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         )
 
         order_by = request.GET.get("order_by")
-
         if (
             order_by
             and re.sub(r"^-", "", order_by)
             in ApplicantApplicationSerializer.Meta.fields
         ):
-            serializer = self.serializer_class(
-                qs.order_by(order_by), many=True, context=context
-            )
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            qs = qs.order_by(order_by)
+
+        exclude_batched = request.GET.get("exclude_batched") == "1"
+        if exclude_batched:
+            qs = qs.filter(batch__isnull=True)
 
         serializer = self.serializer_class(qs, many=True, context=context)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -246,7 +245,10 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
             return self._attachment_not_found()
 
     @extend_schema(
-        description="Get a partial application object (not saved in database), with various fields pre-filled"
+        description=(
+            "Get a partial application object (not saved in database), with various"
+            " fields pre-filled"
+        )
     )
     @action(detail=False, methods=["get"])
     def get_application_template(self, request, pk=None):
@@ -270,7 +272,10 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
 
 
 @extend_schema(
-    description="API for create/read/update/delete operations on Helsinki benefit applications for applicants"
+    description=(
+        "API for create/read/update/delete operations on Helsinki benefit applications"
+        " for applicants"
+    )
 )
 class ApplicantApplicationViewSet(BaseApplicationViewSet):
     serializer_class = ApplicantApplicationSerializer
@@ -299,7 +304,10 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
 
 
 @extend_schema(
-    description="API for create/read/update/delete operations on Helsinki benefit applications for application handlers"
+    description=(
+        "API for create/read/update/delete operations on Helsinki benefit applications"
+        " for application handlers"
+    )
 )
 class HandlerApplicationViewSet(BaseApplicationViewSet):
     serializer_class = HandlerApplicationSerializer
@@ -362,7 +370,7 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
     @transaction.atomic
     def export_new_accepted_applications_csv_pdf(self, request) -> HttpResponse:
         return self._csv_pdf_response(
-            self._create_application_batch(ApplicationStatus.ACCEPTED)
+            self._create_application_batch(ApplicationStatus.ACCEPTED), True
         )
 
     @action(methods=["GET"], detail=False)
@@ -411,12 +419,16 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         )
         return response
 
-    def _csv_pdf_response(self, queryset: QuerySet[Application]) -> HttpResponse:
+    """Generate a response with a CSV file and PDF files containing application data."""
+
+    def _csv_pdf_response(
+        self, queryset: QuerySet[Application], prune_data_for_talpa: bool = False
+    ) -> HttpResponse:
         export_filename_without_suffix = self._export_filename_without_suffix()
         csv_filename = f"{export_filename_without_suffix}.csv"
         zip_filename = f"{export_filename_without_suffix}.zip"
         ordered_queryset = queryset.order_by(self.APPLICATION_ORDERING)
-        csv_service = ApplicationsCsvService(ordered_queryset)
+        csv_service = ApplicationsCsvService(ordered_queryset, prune_data_for_talpa)
         csv_file_content: bytes = csv_service.get_csv_string().encode("utf-8")
         csv_file_info: ExportFileInfo = ExportFileInfo(
             filename=csv_filename,

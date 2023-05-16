@@ -58,7 +58,7 @@ const getEmployeeFullName = (firstName: string, lastName: string): string => {
 };
 
 const getOrderBy = (status: string[]): string =>
-  status.includes('draft') ? '-created_at' : '-submitted_at';
+  status.includes('draft') ? '-modified_at' : '-submitted_at';
 
 const useApplicationList = (status: string[]): ApplicationListProps => {
   const { t } = useTranslation();
@@ -109,12 +109,12 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       id = '',
       status: appStatus,
       employee,
-      last_modified_at,
-      created_at,
+      modified_at,
       submitted_at,
       application_number: applicationNum,
       additional_information_needed_by,
       unread_messages_count,
+      batch,
     } = application;
 
     const statusText = getStatusTranslation(appStatus);
@@ -128,9 +128,9 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
     const submittedAt = submitted_at
       ? convertToUIDateFormat(submitted_at)
       : '-';
-    const createdAt = created_at && convertToUIDateAndTimeFormat(created_at);
-    const modifiedAt =
-      last_modified_at && convertToUIDateFormat(last_modified_at);
+    const modifiedAtWithTime =
+      modified_at && convertToUIDateAndTimeFormat(modified_at);
+    const modifiedAt = modified_at && convertToUIDateFormat(modified_at);
     const editEndDate =
       additional_information_needed_by &&
       convertToUIDateFormat(additional_information_needed_by);
@@ -142,8 +142,9 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       allowedAction,
       status: appStatus,
       unreadMessagesCount: unread_messages_count ?? 0,
+      batch,
     };
-    const draftProps = { createdAt, applicationNum };
+    const draftProps = { modifiedAt: modifiedAtWithTime, applicationNum };
     const submittedProps = {
       submittedAt,
       applicationNum,

@@ -23,7 +23,7 @@ export const $TableCell = styled.div`
   overflow: hidden;
   border-bottom: solid 1px ${(props) => props.theme.colors.black20};
   line-height: ${(props) => props.theme.spacing.l};
-
+  background-color: ${(props) => props.theme.colors.white};
   &:last-child {
     border-right: none;
   }
@@ -32,6 +32,7 @@ export const $TableCell = styled.div`
 export const $HeaderCell = styled($TableCell)`
   border: none;
   white-space: normal;
+  background-color: ${(props) => props.theme.colors.coatOfArms};
   //not implemented
   /*
   .selector,

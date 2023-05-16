@@ -3,24 +3,23 @@ import json
 import os
 import re
 import tempfile
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from decimal import Decimal
 from unittest import mock
 
 import faker
 import pytest
-import pytz
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import override_settings
 from freezegun import freeze_time
 from PIL import Image
 from rest_framework.reverse import reverse
 
-from applications.api.v1.serializers import (
+from applications.api.v1.serializers.application import (
     ApplicantApplicationSerializer,
-    AttachmentSerializer,
     HandlerApplicationSerializer,
 )
+from applications.api.v1.serializers.attachment import AttachmentSerializer
 from applications.api.v1.status_transition_validator import (
     ApplicantApplicationStatusValidator,
 )
@@ -150,6 +149,44 @@ def test_applications_filter_by_ssn(api_client, application, association_applica
     response = api_client.get(url)
     assert len(response.data) == 1
     assert response.data[0]["id"] == str(application.id)
+    assert response.status_code == 200
+
+
+def test_applications_filter_by_employee_first_name(api_client, application):
+    url = (
+        reverse("v1:applicant-application-list")
+        + f"?employee_first_name={application.employee.first_name}"
+    )
+    response = api_client.get(url)
+    assert len(response.data) == 1
+    assert response.data[0]["id"] == str(application.id)
+    assert response.status_code == 200
+
+
+def test_applications_filter_by_employee_last_name(api_client, application):
+    url = (
+        reverse("v1:applicant-application-list")
+        + f"?employee_last_name={application.employee.last_name}"
+    )
+    response = api_client.get(url)
+    assert len(response.data) == 1
+    assert response.data[0]["id"] == str(application.id)
+    assert response.status_code == 200
+
+
+def test_applications_filter_by_application_number(
+    handler_api_client, received_application
+):
+    url = (
+        reverse("v1:handler-application-list")
+        + f"?application_number={received_application.application_number}"
+    )
+    response = handler_api_client.get(url)
+    assert len(response.data) == 1
+    assert (
+        response.data[0]["application_number"]
+        == received_application.application_number
+    )
     assert response.status_code == 200
 
 
@@ -354,7 +391,7 @@ def test_application_post_success(api_client, application):
         == data["company_contact_person_phone_number"]
     )
     assert datetime.fromisoformat(data["created_at"]) == datetime(
-        2021, 6, 4, tzinfo=pytz.UTC
+        2021, 6, 4, tzinfo=timezone.utc
     )
     assert new_application.application_step == data["application_step"]
     assert {v.identifier for v in new_application.bases.all()} == {
@@ -488,7 +525,7 @@ def test_application_post_invalid_employee_data(api_client, application):
 
     del data["id"]
     data["employee"]["monthly_pay"] = "30000000.00"  # value too high
-    data["employee"]["social_security_number"] = "080597-953X"  # invalid checksum
+    data["employee"]["social_security_number"] = "260778-323X"  # invalid checksum
     data["employee"]["employee_language"] = None  # non-null required
     data["employee"]["phone_number"] = "+359505658789"  # Invalid country code
     data["employee"]["working_hours"] = 16  # Must be > 18 hour per weeek
@@ -576,9 +613,10 @@ def test_application_put_edit_employee(api_client, application):
     """
     modify existing application
     """
+    new_ssn = "260778-323Y"
     data = ApplicantApplicationSerializer(application).data
     data["employee"]["phone_number"] = "0505658789"
-    data["employee"]["social_security_number"] = "080597-953Y"
+    data["employee"]["social_security_number"] = new_ssn
     old_employee_pk = application.employee.pk
     response = api_client.put(
         get_detail_url(application),
@@ -590,7 +628,7 @@ def test_application_put_edit_employee(api_client, application):
     )  # normalized format
     application.refresh_from_db()
     assert application.employee.phone_number == "+358505658789"
-    assert application.employee.social_security_number == "080597-953Y"
+    assert application.employee.social_security_number == new_ssn
     assert old_employee_pk == application.employee.pk
 
 
@@ -1124,7 +1162,7 @@ def test_application_status_change_as_applicant(
         assert application.log_entries.all().first().to_status == to_status
         if to_status == ApplicationStatus.RECEIVED:
             assert response.data["submitted_at"] == datetime.now().replace(
-                tzinfo=pytz.utc
+                tzinfo=timezone.utc
             )
         else:
             assert response.data["submitted_at"] is None
@@ -1235,7 +1273,7 @@ def test_application_status_change_as_handler(
                 response.data["latest_decision_comment"] == expected_log_entry_comment
             )
             assert response.data["handled_at"] == datetime.now().replace(
-                tzinfo=pytz.utc
+                tzinfo=timezone.utc
             )
         else:
             assert response.data["latest_decision_comment"] is None
@@ -1382,14 +1420,14 @@ def add_attachments_to_application(request, application):
     _add_pdf_attachment(request, application, AttachmentType.EMPLOYEE_CONSENT)
 
 
-def test_application_last_modified_at_draft(api_client, application):
+def test_application_modified_at_draft(api_client, application):
     """
     DRAFT application's last_modified_at is visible to applicant
     """
     application.status = ApplicationStatus.DRAFT
     application.save()
     data = ApplicantApplicationSerializer(application).data
-    assert data["last_modified_at"] == datetime(2021, 6, 4, tzinfo=pytz.UTC)
+    assert data["modified_at"] == datetime(2021, 6, 4, tzinfo=timezone.utc)
 
 
 @pytest.mark.parametrize(
@@ -1402,14 +1440,14 @@ def test_application_last_modified_at_draft(api_client, application):
         ApplicationStatus.REJECTED,
     ],
 )
-def test_application_last_modified_at_non_draft(api_client, application, status):
+def test_application_modified_at_non_draft(api_client, application, status):
     """
     non-DRAFT application's last_modified_at is not visible to applicant
     """
     application.status = status
     application.save()
     data = ApplicantApplicationSerializer(application).data
-    assert data["last_modified_at"] is None
+    assert data["modified_at"] is None
 
 
 @pytest.mark.parametrize(
@@ -1743,7 +1781,6 @@ def test_attachment_upload_invalid_status(request, api_client, application, stat
 
 @pytest.mark.parametrize("extension", ["pdf", "png", "jpg"])
 def test_invalid_attachment_upload(api_client, application, extension):
-
     tmp_file = tempfile.NamedTemporaryFile(suffix=f".{extension}")
     tmp_file.write(b"invalid data " * 100)
     tmp_file.seek(0)
@@ -1764,7 +1801,6 @@ def test_invalid_attachment_upload(api_client, application, extension):
 
 
 def test_too_many_attachments(request, api_client, application):
-
     for _ in range(AttachmentSerializer.MAX_ATTACHMENTS_PER_APPLICATION):
         response = _upload_pdf(request, api_client, application)
         assert response.status_code == 201
@@ -2052,7 +2088,7 @@ def test_application_status_last_changed_at(api_client, handling_application):
     response = api_client.get(get_detail_url(handling_application))
     assert response.status_code == 200
     assert response.data["status_last_changed_at"] == datetime(
-        2021, 12, 1, tzinfo=pytz.UTC
+        2021, 12, 1, tzinfo=timezone.utc
     )
 
 
@@ -2125,6 +2161,26 @@ def test_handler_application_order_by(handler_api_client):
     assert expected_application_values == returned_application_values
 
 
+def test_handler_application_exlude_batched(handler_api_client):
+    batch = ApplicationBatchFactory()
+    apps = [DecidedApplicationFactory(), DecidedApplicationFactory()]
+
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list"),
+        {"exclude_batched": "1"},
+    )
+    assert len(response.data) == 2
+
+    apps[0].batch = batch
+    apps[0].save()
+
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list"),
+        {"exclude_batched": "1"},
+    )
+    assert len(response.data) == 1
+
+
 def _create_random_applications():
     f = faker.Faker()
     combos = [
@@ -2135,7 +2191,7 @@ def _create_random_applications():
     for _ in range(5):
         for class_name, status in combos:
             application = class_name()
-            random_datetime = f.past_datetime()
+            random_datetime = f.past_datetime(tzinfo=timezone.utc)
             application.log_entries.filter(to_status=status).update(
                 created_at=random_datetime
             )

@@ -5,7 +5,7 @@ from unittest import mock
 import factory
 import pytest
 
-from applications.api.v1.serializers import (
+from applications.api.v1.serializers.application import (
     ApplicantApplicationSerializer,
     HandlerApplicationSerializer,
 )

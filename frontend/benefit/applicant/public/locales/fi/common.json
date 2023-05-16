@@ -26,6 +26,7 @@
     },
     "pageHeaders": {
       "created": "Luotu",
+      "saved": "Tallennettu",
       "sent": "Hakemusnumero: {{applicationNumber}}  |  Lähetetty {{submittedAt}}",
       "new": "Uusi hakemus",
       "edit": "Hakemus",
@@ -76,11 +77,11 @@
         "deMinimisAidsHeading": "Listaa tähän kaikki organisaatiolle kuluvan vuoden ja kahden edellisen verovuoden aikana myönnetyt de minimis -tuet",
         "deMinimisAidsAdd": "Lisää",
         "deMinimisAidsRemove": "Poista",
-        "deMinimisAidsNo": "Onko hakijalle myönnetty deminimis-tukea?",
+        "deMinimisAidsNo": "Hakija ei ole ilmoittanut aiemmista de minimis -tuista.",
         "notifications": {
           "companyInformation": {
-            "label": "Tiedot haettu Yritys- ja yhteisötietojärjestelmästä",
-            "content": "Organisaatiosi perustiedot on haettu Yritys- ja yhteisötietojärjestelmästä. Halutessasi voit vaihtaa tilalle toisen postiosoitteen, johon Helsinki-lisä-päätös toimitetaan."
+            "label": "Tiedot haetaan Yritys- ja yhteisötietojärjestelmästä",
+            "content": "Organisaatiosi perustiedot haetaan Yritys- ja yhteisötietojärjestelmästä. Halutessasi voit vaihtaa tilalle toisen postiosoitteen, johon Helsinki-lisä-päätös toimitetaan."
           },
           "deMinimisAidMaxAmount": {
             "label": "Enimmäismäärä ylitetty",
@@ -368,6 +369,7 @@
     "loginLabel": "Kirjaudu palveluun",
     "logoutLabel": "Kirjaudu ulos",
     "userAriaLabelPrefix": "Käyttäjä:",
+    "linkSkipToContent": "Hyppää pääsisältöön",
     "messages": "Viestit",
     "drawer": {
       "title": "Hakemuksen viestit"
@@ -419,7 +421,7 @@
   "credentialsIngress": {
     "text": "Helsinki-lisällä työllistettävää henkilöä on tiedotettava hänen henkilötietojensa käsittelystä. Tulosta tiedoksianto ja pyydä siihen allekirjoitus työllistettävältä."
   },
-  "menuToggleAriaLabel": "Menu",
+  "menuToggleAriaLabel": "Valikko",
   "form": {
     "validation": {
       "required": "Tämä kenttä on pakollinen",
@@ -490,6 +492,13 @@
       "title": "Tapahtui virhe",
       "tooBig": "Liite on liian suuri.",
       "fileType": "Liite on väärässä muodossa."
+    },
+    "notFound": {
+      "title": "Pahoittelut, sivua ei löytynyt.",
+      "text": "Virhe 404: Hakemasi sivun osoite on voinut muuttua tai sivu on poistettu."
+    },
+    "backend": {
+      "Request failed with status code 500": "Virhe taustajärjestelmässä. Kokeile myöhemmin uudestaan."
     }
   },
   "upload": {

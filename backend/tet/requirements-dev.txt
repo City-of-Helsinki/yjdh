@@ -10,12 +10,14 @@ attrs==21.2.0
     # via pytest
 backcall==0.2.0
     # via ipython
-black==22.3.0
+black==23.1.0
     # via -r requirements-dev.in
 certifi==2021.5.30
     # via
     #   -c requirements.txt
     #   requests
+cfgv==3.3.1
+    # via pre-commit
 chardet==4.0.0
     # via
     #   -c requirements.txt
@@ -28,12 +30,18 @@ coverage==5.5
     # via pytest-cov
 decorator==5.0.9
     # via ipython
+distlib==0.3.6
+    # via virtualenv
 execnet==1.8.1
     # via pytest-xdist
-flake8==4.0.1
+filelock==3.9.0
+    # via virtualenv
+flake8==6.0.0
     # via -r requirements-dev.in
 freezegun==1.1.0
     # via pytest-freezegun
+identify==2.5.18
+    # via pre-commit
 idna==2.10
     # via
     #   -c requirements.txt
@@ -44,19 +52,22 @@ ipython==7.24.1
     # via -r requirements-dev.in
 ipython-genutils==0.2.0
     # via traitlets
-isort==5.10.1
+isort==5.12.0
     # via -r requirements-dev.in
 jedi==0.18.0
     # via ipython
 matplotlib-inline==0.1.2
     # via ipython
-mccabe==0.6.1
+mccabe==0.7.0
     # via flake8
 mypy-extensions==0.4.3
     # via black
+nodeenv==1.7.0
+    # via pre-commit
 packaging==22.0
     # via
     #   -c requirements.txt
+    #   black
     #   pytest
 parso==0.8.2
     # via jedi
@@ -71,9 +82,13 @@ pickleshare==0.7.5
 pip-tools==6.6.2
     # via -r requirements-dev.in
 platformdirs==2.5.2
-    # via black
+    # via
+    #   black
+    #   virtualenv
 pluggy==0.13.1
     # via pytest
+pre-commit==3.0.4
+    # via -r requirements-dev.in
 prompt-toolkit==3.0.18
     # via ipython
 psutil==5.8.0
@@ -84,9 +99,9 @@ py==1.10.0
     # via
     #   pytest
     #   pytest-forked
-pycodestyle==2.8.0
+pycodestyle==2.10.0
     # via flake8
-pyflakes==2.4.0
+pyflakes==3.0.1
     # via flake8
 pygments==2.9.0
     # via ipython
@@ -112,6 +127,8 @@ python-dateutil==2.8.1
     # via
     #   -c requirements.txt
     #   freezegun
+pyyaml==6.0
+    # via pre-commit
 requests==2.25.1
     # via
     #   -c requirements.txt
@@ -141,6 +158,8 @@ urllib3==1.26.5
     # via
     #   -c requirements.txt
     #   requests
+virtualenv==20.19.0
+    # via pre-commit
 wcwidth==0.2.5
     # via prompt-toolkit
 werkzeug==2.0.1

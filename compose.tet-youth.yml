@@ -1,7 +1,10 @@
 version: "3.8"
+name: yjdh-tet
 services:
   postgres:
-    image: postgres:12
+    build:
+      dockerfile: ./docker/finnish_postgres.Dockerfile
+      context: ./backend
     restart: on-failure
     environment:
       POSTGRES_USER: tet
@@ -13,7 +16,7 @@ services:
       - pgdata:/var/lib/postgresql/data
     container_name: te-db
 
-  te-bknd:
+  backend:
     build:
       context: ./backend
       dockerfile: ./docker/tet.Dockerfile
@@ -29,9 +32,9 @@ services:
       - ./backend/tet/media:/var/media
     depends_on:
       - postgres
-    container_name: te-bknd
+    container_name: te-backend
 
-  te-yout:
+  youth:
      build:
        context: ./frontend
        target: development
@@ -45,39 +48,23 @@ services:
        - /app/.next
      env_file:
        - .env.tet
-     container_name: te-yout
+     environment:
+       NEXT_PUBLIC_MOCK_FLAG: 1
+     container_name: te-youth
 
-  te-admn:
-     build:
-       context: ./frontend
-       target: development
-       args:
-         PORT: 3000
-         PROJECT: tet
-         FOLDER: admin
-     volumes:
-       - ./frontend:/app
-       - /app/node_modules
-       - /app/.next
-     env_file:
-       - .env.tet
-     container_name: te-admn
-
-  te-local-proxy:
+  local-proxy:
     depends_on:
       - postgres
-      - te-bknd
-      - te-admn
-      - te-yout
+      - backend
+      - youth
     build:
-      context: ./localdevelopment/tet/nginx
+      context: ./localdevelopment/tet-youth/nginx
     container_name: te-local-proxy
     volumes:
-      - ./localdevelopment/tet/nginx/:/etc/nginx/
+      - ./localdevelopment/tet-youth/nginx/:/etc/nginx/
     ports:
       - 127.0.0.1:8000:8000
       - 127.0.0.1:3001:3001
-      - 127.0.0.1:3002:3002
 
 volumes:
   pgdata:

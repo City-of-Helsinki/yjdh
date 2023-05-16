@@ -1,7 +1,7 @@
 import io
 import os.path
 from collections import defaultdict
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from decimal import Decimal
 from typing import Dict, List
 from zipfile import ZipFile
@@ -87,21 +87,21 @@ def _get_csv_pdf_zip(handler_api_client: APIClient, url: str) -> ZipFile:
 def _create_applications_for_export():
     application1 = DecidedApplicationFactory(status=ApplicationStatus.ACCEPTED)
     application1.log_entries.filter(to_status=ApplicationStatus.ACCEPTED).update(
-        created_at=datetime(2022, 1, 1)
+        created_at=datetime(2022, 1, 1, tzinfo=timezone.utc)
     )
     application2 = DecidedApplicationFactory(status=ApplicationStatus.ACCEPTED)
     application2.log_entries.filter(to_status=ApplicationStatus.ACCEPTED).update(
-        created_at=datetime(2022, 2, 1)
+        created_at=datetime(2022, 2, 1, tzinfo=timezone.utc)
     )
     application3 = DecidedApplicationFactory(status=ApplicationStatus.REJECTED)
     application3.log_entries.filter(to_status=ApplicationStatus.REJECTED).update(
-        created_at=datetime(2022, 3, 1)
+        created_at=datetime(2022, 3, 1, tzinfo=timezone.utc)
     )
     application4 = DecidedApplicationFactory(
         status=ApplicationStatus.HANDLING
     )  # should be excluded
     application4.log_entries.filter(to_status=ApplicationStatus.HANDLING).update(
-        created_at=datetime(2022, 2, 1)
+        created_at=datetime(2022, 2, 1, tzinfo=timezone.utc)
     )
     return (application1, application2, application3, application4)
 
@@ -275,6 +275,57 @@ def test_applications_csv_export_with_date_range(handler_api_client):
         + "export_csv/?handled_at_after=2022-02-01&status=handling",
         [],
     )
+
+
+def test_pruned_applications_csv_output(
+    pruned_applications_csv_service_with_one_application,
+):
+    csv_lines = split_lines_at_semicolon(
+        pruned_applications_csv_service_with_one_application.get_csv_string()
+    )
+    application = (
+        pruned_applications_csv_service_with_one_application.get_applications()[0]
+    )
+    # Assert that there are 15 column headers in the pruned CSV
+    assert len(csv_lines[0]) == 15
+
+    assert csv_lines[0][0] == '"Hakemusnumero"'
+    assert csv_lines[0][1] == '"Työnantajan tyyppi"'
+    assert csv_lines[0][2] == '"Työnantajan tilinumero"'
+    assert csv_lines[0][3] == '"Työnantajan nimi"'
+    assert csv_lines[0][4] == '"Työnantajan Y-tunnus"'
+    assert csv_lines[0][5] == '"Työnantajan katuosoite"'
+    assert csv_lines[0][6] == '"Työnantajan postinumero"'
+    assert csv_lines[0][7] == '"Työnantajan postitoimipaikka"'
+    assert csv_lines[0][8] == '"Helsinki-lisän määrä lopullinen"'
+    assert csv_lines[0][9] == '"Päättäjän nimike"'
+    assert csv_lines[0][10] == '"Päättäjän nimi"'
+    assert csv_lines[0][11] == '"Päätöspykälä"'
+    assert csv_lines[0][12] == '"Päätöspäivä"'
+    assert csv_lines[0][13] == '"Asiantarkastajan nimi"'
+    assert csv_lines[0][14] == '"Asiantarkastajan email"'
+
+    # Assert that there are 15 columns in the pruned CSV
+    assert len(csv_lines[1]) == 15
+
+    assert int(csv_lines[1][0]) == application.application_number
+    assert csv_lines[1][1] == '"Yritys"'
+    assert csv_lines[1][2] == f'"{application.company_bank_account_number}"'
+    assert csv_lines[1][3] == f'"{application.company_name}"'
+    assert csv_lines[1][4] == f'"{application.company.business_id}"'
+    assert csv_lines[1][5] == f'"{application.effective_company_street_address}"'
+    assert csv_lines[1][6] == f'"{application.effective_company_postcode}"'
+    assert csv_lines[1][7] == f'"{application.effective_company_city}"'
+    assert str(csv_lines[1][8]) == str(
+        application.calculation.calculated_benefit_amount
+    )
+
+    assert csv_lines[1][9] == f'"{application.batch.decision_maker_title}"'
+    assert csv_lines[1][10] == f'"{application.batch.decision_maker_name}"'
+    assert csv_lines[1][11] == f'"{application.batch.section_of_the_law}"'
+    assert csv_lines[1][12] == f'"{application.batch.decision_date}"'
+    assert csv_lines[1][13] == f'"{application.batch.expert_inspector_name}"'
+    assert csv_lines[1][14] == f'"{application.batch.expert_inspector_email}"'
 
 
 def test_applications_csv_output(applications_csv_service):  # noqa: C901

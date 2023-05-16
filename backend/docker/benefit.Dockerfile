@@ -1,5 +1,5 @@
 # ==============================
-FROM helsinkitest/python:3.8-slim as appbase
+FROM helsinkitest/python:3.9-slim as appbase
 # ==============================
 RUN mkdir /entrypoint
 

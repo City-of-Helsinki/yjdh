@@ -1,4 +1,5 @@
 import 'react-toastify/dist/ReactToastify.css';
+import '../styles/globals.css';
 
 import AuthProvider from 'benefit/applicant/auth/AuthProvider';
 import Layout from 'benefit/applicant/components/layout/Layout';

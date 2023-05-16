@@ -61,7 +61,7 @@ jobs:
           apt-get install -y xmlsec1 libsasl2-dev libssl-dev
 
       - name: Install dependencies
-        run: cd backend/kesaseteli && pip install -r requirements.txt -r requirements-dev.txt codecov
+        run: cd backend/kesaseteli && pip install -r requirements.txt -r requirements-dev.txt
 
       - name: Compile messages
         run: cd backend/kesaseteli && python manage.py compilemessages
@@ -70,6 +70,3 @@ jobs:
         run: pytest backend/kesaseteli/ -ra -vv --doctest-modules --cov=. -n auto --dist loadfile --pyargs shared
         env:
           DATABASE_URL: postgres://kesaseteli:kesaseteli@postgres/kesaseteli
-
-      - name: Coverage
-        run: codecov

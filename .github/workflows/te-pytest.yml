@@ -52,12 +52,9 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install dependencies
-        run: cd backend/tet && pip install -r requirements.txt -r requirements-dev.txt codecov
+        run: cd backend/tet && pip install -r requirements.txt -r requirements-dev.txt
 
       - name: Run tests
         run: pytest backend/tet/ -ra -vv --doctest-modules --cov=. -n auto --dist loadfile --pyargs shared
         env:
           DATABASE_URL: postgres://tet:tet@postgres/tet
-
-      - name: Coverage
-        run: codecov

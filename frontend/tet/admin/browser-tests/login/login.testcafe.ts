@@ -3,7 +3,7 @@ import { HttpRequestHook } from '@frontend/shared/browser-tests/http-utils/http-
 import Header from '@frontend/shared/browser-tests/page-models/Header';
 import requestLogger, { filterLoggedRequests } from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import { getBackendDomain } from '@frontend/te-admn/src/backend-api/backend-api';
+import { getBackendDomain } from '@frontend/te-admin/src/backend-api/backend-api';
 
 import getTetAdminTranslationsApi from '../../src/__tests__/utils/i18n/get-tet-admin-translations-api';
 import { getFrontendUrl } from '../utils/url.utils';

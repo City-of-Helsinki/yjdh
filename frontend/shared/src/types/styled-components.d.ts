@@ -138,5 +138,23 @@ declare module 'styled-components' {
       l: '992px';
       xl: '1248px';
     };
+    components: {
+      stepper: {
+        '--hds-not-selected-step-label-color': string;
+        '--hds-step-background-color': string;
+        '--hds-step-content-color': string;
+        '--hds-stepper-background-color': string;
+        '--hds-stepper-color': string;
+        '--hds-stepper-disabled-color': string;
+        '--hds-stepper-focus-border-color': string;
+      };
+      tabs: {
+        '--tab-color': string;
+        '--tab-active-border-color': string;
+      };
+      table: {
+        '--header-background-color': string;
+      };
+    };
   }
 }

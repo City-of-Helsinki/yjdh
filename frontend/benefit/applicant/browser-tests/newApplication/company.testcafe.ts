@@ -1,9 +1,10 @@
+import { t } from 'testcafe';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/http-utils/http-request-hook';
 import requestLogger, {
   filterLoggedRequests,
 } from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-
+import Login from '../page-model/login';
 import MainIngress from '../page-model/MainIngress';
 import Step1 from '../page-model/step1';
 import Step2 from '../page-model/step2';
@@ -27,7 +28,9 @@ fixture('Frontpage')
     console.log(filterLoggedRequests(requestLogger))
   );
 
-test('Oppisopimus', async () => {
+test('Company', async () => {
+  await t.click(Login.loginButton);
+
   const termsAndConditions = new TermsOfService();
   await termsAndConditions.isLoaded();
   await termsAndConditions.clickContinueButton();
@@ -39,7 +42,7 @@ test('Oppisopimus', async () => {
   const step1 = new Step1();
   await step1.isLoaded(60_000);
 
-  await step1.fillEmployerInfo('6051437344779954');
+  await step1.fillEmployerInfo('6051437344779954', false);
   await step1.fillContactPerson(
     'Raven',
     'Stamm',

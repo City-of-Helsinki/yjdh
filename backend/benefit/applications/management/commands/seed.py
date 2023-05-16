@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 import faker
 import pytz
@@ -57,7 +57,7 @@ def clear_applications():
 
 def run_seed(number):
     """Delete all existing applications and create applications for all statuses,
-    with cancelled applications being modified 31 days ago
+    with cancelled applications being modified 30 days ago and drafts being modified 180 and 166 days ago
     """
     f = faker.Faker()
 
@@ -82,7 +82,22 @@ def run_seed(number):
 
             application.log_entries.all().update(created_at=random_datetime)
 
-    thirtyone_days_ago = timezone.now() - timedelta(days=31)
+    cancelled_deletion_threshold = _past_datetime(30)
+    draft_deletion_threshold = _past_datetime(180)
+    draft_notify_threshold = _past_datetime(180 - 14)
 
-    applications = Application.objects.filter(status=ApplicationStatus.CANCELLED)
-    applications.update(modified_at=thirtyone_days_ago)
+    cancelled_applications = Application.objects.filter(
+        status=ApplicationStatus.CANCELLED
+    )
+    cancelled_applications.update(modified_at=cancelled_deletion_threshold)
+
+    ids = Application.objects.filter(status=ApplicationStatus.DRAFT).values_list(
+        "pk", flat=True
+    )[0:5]
+    # Update the first 5 drafts to be deleted, then the rest to be notified
+    Application.objects.filter(pk__in=ids).update(modified_at=draft_deletion_threshold)
+    Application.objects.exclude(pk__in=ids).update(modified_at=draft_notify_threshold)
+
+
+def _past_datetime(days: int) -> datetime:
+    return timezone.now() - timedelta(days=days)

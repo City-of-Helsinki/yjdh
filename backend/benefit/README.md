@@ -67,7 +67,7 @@ at the Azure portal. Use the values from the key vault of the dev or test enviro
 
 In the project root folder, run:
 
-`docker-compose -f docker-compose.benefit.yml up`
+`docker compose -f compose.benefit.yml up`
 
 This will bring up Postgres, backend, as well as the handler and applicant UIs.
 Note - in order to run the handler and applicant UIs, you need to set up
@@ -97,6 +97,9 @@ DUMMY_COMPANY_FORM_CODE can be set to test with different company_form parameter
 
 To seed the database with some mock application data, run `python manage.py seed`
 , which by default generates 10 applications for each of the seven possible application statuses and one attachment with a .pdf-file for each of them. To generate more applications, use the optional `--number` flag, for example, running `python manage.py seed --number=30` creates 30 applications of each status. **Note that running the command deletes all previous application data from the database and clears the media folder.**
+
+[Mailhog](https://github.com/mailhog) is available for the local development environment (localhost:8025)[http://localhost:8025/] for previewing 
+and testing the emails sent by the application after setting the `EMAIL_HOST` and `EMAIL_PORT` as in the `.env.benefit-backend.example`.
 
 **Using LOAD_FIXTURES=1 is recommended for local testing** as it loads e.g. default
 terms which are required for an applicant to be able to successfully send in an
@@ -204,6 +207,23 @@ env variables / settings are provided by Azure blob storage:
 - `AZURE_ACCOUNT_NAME`
 - `AZURE_ACCOUNT_KEY`
 - `AZURE_CONTAINER`
+
+An AWS S3 compatible disk storage can be configured with the following environment variables.
+
+- `USE_S3`
+- `S3_ENDPOINT_URL`
+- `S3_ACCESS_KEY_ID`
+- `S3_SECRET_ACCESS_KEY`
+- `S3_STORAGE_BUCKET_NAME`
+
+[MinIO](https://min.io/) can been configured to work as the AWS S3 compatible file storage on the local development environment. The MinIO admin panel can be accessed at (localhost:9090)[http://localhost:9090/].
+See `.env.benefit-backend.example` for the  Minio variables and credentials.
+
+**Note**
+As tests freeze time with [freezegun](https://github.com/spulec/freezegun), the MinIO requests fail when running tests with exception `botocore.exceptions.ClientError: An error occurred (RequestTimeTooSkewed) when calling the PutObject operation: The difference between the request time and the server's time is too large.`
+
+Switch from MinIO to the local disk by setting `USE_S3=0` before running the pytest tests. For now, the only workaround to run tests with S3 enabled is to set host machine date to the date that is used in tests: `2021-06-04 00:00:00 (UTC)`.
+
 
 ## Sentry error monitoring
 The `local`, `development` and `testing` environments are connected to the Sentry instance at [`https://sentry.test.hel.ninja/`](https://sentry.test.hel.ninja/) under the `yjdh-benefit`-team. 

@@ -1,4 +1,5 @@
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
+import { translateBackendErrorMessage } from 'benefit/applicant/utils/common';
 import { ORGANIZATION_TYPES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import { FormikProps } from 'formik';
@@ -89,15 +90,20 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
           </$GridCell>
           <$GridCell $colSpan={6} $rowSpan={2}>
             <$Notification
-              label={t(
-                `${translationsBase}.notifications.companyInformation.label`
-              )}
+              label={
+                error?.message
+                  ? t('error.generic.label')
+                  : t(
+                      `${translationsBase}.notifications.companyInformation.label`
+                    )
+              }
               type={error ? 'error' : 'info'}
             >
-              {error?.message ||
-                t(
-                  `${translationsBase}.notifications.companyInformation.content`
-                )}
+              {error?.message && translateBackendErrorMessage(t, error)
+                ? translateBackendErrorMessage(t, error)
+                : t(
+                    `${translationsBase}.notifications.companyInformation.content`
+                  )}
             </$Notification>
           </$GridCell>
           <$GridCell $colSpan={6}>
@@ -106,7 +112,6 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               disabled={isLoading || !!error}
               name={fields.useAlternativeAddress.name}
               label={fields.useAlternativeAddress.label}
-              required
               checked={formik.values.useAlternativeAddress === true}
               errorText={getErrorMessage(fields.useAlternativeAddress.name)}
               onChange={formik.handleChange}
