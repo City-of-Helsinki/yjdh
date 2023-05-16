@@ -273,6 +273,6 @@ def test_multiple_benefit_per_application(mock_pdf_convert):
             "893",
             "1600",
             "800",
-            "2493"
+            "2493",
         ),
     )

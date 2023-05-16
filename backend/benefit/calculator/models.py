@@ -528,7 +528,7 @@ class SalaryCostsRow(CalculationRow):
     proxy_row_type = RowType.SALARY_COSTS_EUR
     description_fi_template = "Palkkakustannukset / kk"
 
-    """Calculate the amount of salary costs for the application. 
+    """Calculate the amount of salary costs for the application.
     Notice that the vacation money is reported per month by the applicant."""
 
     def calculate_amount(self):
@@ -570,7 +570,6 @@ class PaySubsidyMonthlyRow(CalculationRow):
     * vacation money = 498,85
     * 100% pay subsidy has been granted for 6 months
     * Pay subsidy is calcuated using formula:
-      min(1800, (monthly_pay+additional_expenses)/0.8*0.65) + vacation_money/6/0.8*0.65
       min(2020, (monthly_pay / work_time_fraction * 0.65) * 1.23
     """
     MAX_WORK_TIME_FRACTION_FOR_FULL_PAY_SUBSIDY = decimal.Decimal("0.65")
@@ -582,12 +581,6 @@ class PaySubsidyMonthlyRow(CalculationRow):
         super().__init__(*args, **kwargs)
 
     def calculate_amount(self):
-        """
-        Rule regarding the vacation money:
-        "Palkkatuen enimmäismäärä yritykselle vuonna 2021 on 1400 €/kk, jonka lisäksi maksetaan enintään
-        palkkatukipäätöksen mukainen prosenttiosuus lomarahasta."
-        Therefore, the pay subsidy limit does not apply to the vacation_money
-        """
         """
         1.7.2023 voimaantulevan lain mukaan lomarahaa ja sivukuluja ei oteta enää huomioon palkkatuen määrää laskiessa
         """
