@@ -1,4 +1,9 @@
+import FormSection from 'shared/components/forms/section/FormSection';
 import styled from 'styled-components';
+
+type CollapsedProps = {
+  isCollapsed: boolean;
+};
 
 export const $HorizontalList = styled.dl`
   box-sizing: border-box;
@@ -49,7 +54,9 @@ export const $TableWrapper = styled.div`
   margin-bottom: var(--spacing-l);
 `;
 
-export const $TableBody = styled.div``;
+export const $TableBody = styled.div<CollapsedProps>`
+  display: ${(props) => (props.isCollapsed ? 'none' : 'block')};
+`;
 
 export const $HintText = styled.p`
   margin-top: 0;
@@ -58,6 +65,14 @@ export const $HintText = styled.p`
   margin-top: 0;
   &:empty {
     margin: 0;
+  }
+`;
+
+export const $FormSection = styled(FormSection)`
+  margin-bottom: var(--spacing-m);
+
+  + hr {
+    display: none;
   }
 `;
 
