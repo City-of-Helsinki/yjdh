@@ -28,9 +28,6 @@ COPY --chown=appuser:appuser $PROJECT/shared/package.json* $PROJECT/shared/packa
 COPY --chown=appuser:appuser shared/package.json shared/package.json
 
 RUN yarn --frozen-lockfile --check-files --network-timeout 600000 && yarn cache clean --force
-# these are needed for building the app for sentry to work, content is identical for now
-COPY --chown=appuser:appuser shared/sentry.client.config.js $PROJECT/$FOLDER/sentry.client.config.js
-COPY --chown=appuser:appuser shared/sentry.client.config.js $PROJECT/$FOLDER/sentry.server.config.js
 
 # Copy all files
 COPY --chown=appuser:appuser . .
