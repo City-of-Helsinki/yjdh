@@ -6,15 +6,6 @@ import showErrorToast from 'shared/components/toast/show-error-toast';
 import showSuccessToast from 'shared/components/toast/show-success-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
-type TalpaForm = {
-  decision_maker_name: string;
-  decision_maker_title: string;
-  section_of_the_law: string;
-  decision_date: string;
-  expert_inspector_name: string;
-  expert_inspector_title: string;
-};
-
 type Payload = {
   id: string;
   status: BATCH_STATUSES;

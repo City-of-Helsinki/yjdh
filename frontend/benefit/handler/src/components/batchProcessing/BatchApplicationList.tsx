@@ -1,5 +1,3 @@
-import useBatchStatus from 'benefit/handler/hooks/useBatchStatus';
-import useDownloadBatchFiles from 'benefit/handler/hooks/useDownloadBatchFiles';
 import useRemoveAppFromBatch from 'benefit/handler/hooks/useRemoveAppFromBatch';
 import {
   BATCH_STATUSES,
@@ -13,7 +11,6 @@ import {
   IconArrowUndo,
   IconCheckCircleFill,
   IconCrossCircleFill,
-  IconDownload,
   Table,
 } from 'hds-react';
 import { useTranslation } from 'next-i18next';
@@ -29,9 +26,8 @@ import {
   $TableFooter,
   $TableWrapper,
 } from '../table/TableExtras.sc';
-import BatchCompletionForm from './BatchCompletionForm';
-
-type ButtonAhjoStates = 'primary' | 'secondary';
+import BatchActionsCompletion from './BatchActionsCompletion';
+import BatchActionsToAhjo from './BatchActionsToAhjo';
 
 type BatchProps = {
   batch: BatchProposal;
@@ -55,49 +51,11 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
   const applications = React.useMemo(() => apps, [apps]);
 
   const IS_DRAFT = status === BATCH_STATUSES.DRAFT;
+  const [isCollapsed, setIsCollapsed] = React.useState<boolean>(!IS_DRAFT);
 
-  const [isCollapsed, setIsCollapsed] = React.useState(true);
-  const [isAtAhjo, setIsAtAhjo] = React.useState<ButtonAhjoStates>('primary');
-  const [isDownloadingAttachments, setIsDownloadingAttachments] =
-    React.useState(false);
-
-  const { isLoading: isDownloading, mutate: downloadBatchFiles } =
-    useDownloadBatchFiles();
   const { mutate: removeApp } = useRemoveAppFromBatch();
-  const { mutate: changeBatchStatus } = useBatchStatus();
-
-  React.useEffect(() => {
-    if (!isDownloading) {
-      setIsDownloadingAttachments(false);
-    }
-  }, [isDownloading]);
-
-  const markBatchAs = (markBatchAsStatus: BATCH_STATUSES): void =>
-    changeBatchStatus({
-      id,
-      status: markBatchAsStatus,
-    });
-
-  const handleBatchStatusChange = (): void => {
-    if (isAtAhjo === 'primary') {
-      changeBatchStatus({
-        id,
-        status: BATCH_STATUSES.AWAITING_FOR_DECISION,
-      });
-      setIsAtAhjo('secondary');
-    } else {
-      markBatchAs(BATCH_STATUSES.DRAFT);
-      setIsAtAhjo('secondary');
-    }
-  };
-
-  const handleDownloadBatchFiles = (): void => {
-    setIsDownloadingAttachments(true);
-    downloadBatchFiles(id);
-  };
-
   const handleAppRemoval = (appId: string): void => {
-    const selectedApp = applications.find((app) => app.id === appId);
+    const selectedApp = apps.find((app) => app.id === appId);
     if (
       // eslint-disable-next-line no-alert
       window.confirm(
@@ -191,18 +149,14 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
         </div>
         <div>
           {applications.length > 0 ? (
-            <button onClick={() => setIsCollapsed(!isCollapsed)}>
+            <button type="button" onClick={() => setIsCollapsed(!isCollapsed)}>
               {isCollapsed ? <IconAngleDown /> : <IconAngleUp />}
             </button>
           ) : null}
         </div>
       </$HorizontalList>
       {applications?.length ? (
-        <$TableBody
-          css={`
-            display: ${isCollapsed ? 'none' : 'block'};
-          `}
-        >
+        <$TableBody isCollapsed={isCollapsed} aria-hidden={isCollapsed}>
           <Table
             indexKey="id"
             theme={theme.components.table}
@@ -213,35 +167,9 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
           />
           <$TableFooter>
             {status === BATCH_STATUSES.AWAITING_FOR_DECISION ? (
-              <BatchCompletionForm batch={batch} />
+              <BatchActionsCompletion batch={batch} />
             ) : (
-              <>
-                <Button
-                  theme="black"
-                  variant="secondary"
-                  iconLeft={<IconDownload />}
-                  isLoading={isDownloadingAttachments}
-                  disabled={isDownloadingAttachments}
-                  loadingText={t('common:utility.loading')}
-                  onClick={() => handleDownloadBatchFiles()}
-                >
-                  {t('common:batches.actions.downloadFiles')}
-                </Button>
-                <Button
-                  theme="coat"
-                  style={{ marginLeft: 'var(--spacing-s)' }}
-                  variant={isAtAhjo}
-                  iconLeft={
-                    isAtAhjo === 'secondary' ? <IconCheckCircleFill /> : null
-                  }
-                  className="table-custom-action"
-                  onClick={() => handleBatchStatusChange()}
-                >
-                  {isAtAhjo === 'primary'
-                    ? t('common:batches.actions.markAsRegisteredToAhjo')
-                    : t('common:batches.actions.markedAsRegisteredToAhjo')}
-                </Button>
-              </>
+              <BatchActionsToAhjo batch={batch} />
             )}
           </$TableFooter>
         </$TableBody>
