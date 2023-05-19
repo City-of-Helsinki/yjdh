@@ -92,7 +92,7 @@ COPY --chown=appuser:appuser . .
 # Build application
 WORKDIR /app/$PROJECT/$FOLDER/
 
-RUN yarn build
+RUN NODE_OPTIONS=--openssl-legacy-provider yarn build
 
 # Clean all dependencies (this should avoid caching + missing /pages directory problem)
 RUN rm -rf node_modules
