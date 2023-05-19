@@ -2,13 +2,13 @@ name: (TET) Youth Frontend Lint, Unit and Component tests
 
 on:
   push:
-    branches: [ develop, main ]
+    branches: [develop, main]
   pull_request:
     paths:
-      - 'frontend/shared/**'
-      - 'frontend/*'
-      - 'frontend/tet/**'
-      - '.github/workflows/te-yout-frontend-tests.yml'
+      - "frontend/shared/**"
+      - "frontend/*"
+      - "frontend/tet/**"
+      - ".github/workflows/te-yout-frontend-tests.yml"
       - "!**/browser-tests/**"
       - "!**/README.md"
   workflow_dispatch:
@@ -78,7 +78,7 @@ jobs:
       - name: Check that building dev application works
         env:
           NEXTJS_DISABLE_SENTRY: true
-        run: yarn build
+        run: NODE_OPTIONS=--openssl-legacy-provider yarn build
       - name: Frontend build failure slack notification
         uses: rtCamp/action-slack-notify@v2
         env:
