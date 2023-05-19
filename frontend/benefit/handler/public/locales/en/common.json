@@ -502,7 +502,7 @@
         "rejected": "Koonti arkistoitu"
       },
       "errors": {
-        "batchDraftAlreadyExists": {
+        "batchInvalidDraftAlreadyExists": {
           "title": "Uuden Ahjo-koonnin valmistelu on jo käynnissä",
           "message": "Voit palauttaa tämän koonnin takaisin käsittelyyn vasta, kun jo valmistelussa oleva keskeneräinen koonti on viety Ahjoon"
         }

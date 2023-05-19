@@ -18,6 +18,11 @@ from applications.api.v1.serializers.batch import (
     ApplicationBatchSerializer,
 )
 from applications.enums import ApplicationBatchStatus, ApplicationStatus
+from applications.exceptions import (
+    BatchCompletionDecisionDateError,
+    BatchCompletionRequiredFieldsError,
+    BatchTooManyDraftsError,
+)
 from applications.models import Application, ApplicationBatch
 from applications.services.ahjo_integration import export_application_batch
 from applications.services.talpa_integration import TalpaService
@@ -272,6 +277,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             # Archive all applications if this batch will be completed
             Application.objects.filter(batch=batch).update(archived=True)
 
+            # Patch all required fields for batch completion
             for key in request.data:
                 setattr(batch, key, request.data.get(key))
 
@@ -279,9 +285,23 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
 
         try:
             batch.save()
+        except BatchCompletionDecisionDateError:
+            return Response(
+                {"errorKey": "batchInvalidDecisionDate"},
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )
+        except BatchTooManyDraftsError:
+            return Response(
+                {"errorKey": "batchInvalidDraftAlreadyExists"},
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )
+        except BatchCompletionRequiredFieldsError:
+            return Response(
+                {"errorKey": "batchInvalidCompletionRequiredFieldsMissing"},
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )
         except ValidationError:
             return Response(
-                {"errorKey": "batchDraftAlreadyExists"},
                 status=status.HTTP_406_NOT_ACCEPTABLE,
             )
 
