@@ -1,11 +1,13 @@
 import base64
 import copy
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 from unittest.mock import patch
 
+import factory
 import pytest
 import pytz
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.http import StreamingHttpResponse
 from rest_framework.reverse import reverse
@@ -20,6 +22,32 @@ from applications.tests.factories import (
     DecidedApplicationFactory,
 )
 from applications.tests.test_applications_api import get_handler_detail_url
+
+
+def get_valid_batch_completion_data():
+    return {
+        "decision_maker_title": factory.Faker("job").evaluate("", "", {"locale": "fi"}),
+        "decision_maker_name": factory.Faker("name").evaluate("", "", {"locale": "fi"}),
+        "section_of_the_law": "$1234",
+        "decision_date": date.today(),
+        "expert_inspector_name": factory.Faker("name").evaluate(
+            "", "", {"locale": "fi"}
+        ),
+        "expert_inspector_title": factory.Faker("job").evaluate(
+            "", "", {"locale": "fi"}
+        ),
+    }
+
+
+def fill_as_valid_batch_completion_and_save(
+    batch: ApplicationBatch, status: ApplicationBatchStatus = None
+):
+    data = get_valid_batch_completion_data()
+    for key in data:
+        setattr(batch, key, data[key])
+    if status:
+        batch.status = status
+    batch.save()
 
 
 def get_batch_detail_url(application_batch, uri=""):
@@ -205,8 +233,6 @@ def test_batch_status_change(handler_api_client, application_batch):
     ok_statuses = [
         ApplicationBatchStatus.DRAFT,
         ApplicationBatchStatus.AWAITING_AHJO_DECISION,
-        ApplicationBatchStatus.DECIDED_ACCEPTED,
-        ApplicationBatchStatus.DECIDED_REJECTED,
     ]
 
     for status in ok_statuses:
@@ -219,10 +245,35 @@ def test_batch_status_change(handler_api_client, application_batch):
         ApplicationBatchStatus.SENT_TO_TALPA,
         ApplicationBatchStatus.AHJO_REPORT_CREATED,
         ApplicationBatchStatus.RETURNED,
+        ApplicationBatchStatus.DECIDED_ACCEPTED,
+        ApplicationBatchStatus.DECIDED_REJECTED,
     ]
     for status in failing_statuses:
         response = handler_api_client.patch(url, {"status": status})
         assert response.status_code == 406
+
+    for i, status in enumerate(
+        [
+            ApplicationBatchStatus.DECIDED_ACCEPTED,
+            ApplicationBatchStatus.DECIDED_REJECTED,
+        ]
+    ):
+        plus_or_minus = 1 if i == 0 else -1
+
+        payload = get_valid_batch_completion_data()
+        payload["status"] = status
+        payload["decision_date"] = date.today() + relativedelta(
+            days=(plus_or_minus * 1), months=(plus_or_minus * 3)
+        )
+
+        response = handler_api_client.patch(url, payload)
+        assert response.status_code == 406
+
+        payload["decision_date"] = date.today() + relativedelta(
+            months=(plus_or_minus * 3)
+        )
+        response = handler_api_client.patch(url, payload)
+        assert response.status_code == 200
 
 
 @pytest.mark.parametrize(
@@ -293,7 +344,8 @@ def test_get_application_with_ahjo_decision(
         application_batch.proposal_for_decision = AhjoDecision.DECIDED_REJECTED
 
     application_batch.applications.all().update(status=status, company=company)
-    application_batch.save()
+
+    fill_as_valid_batch_completion_and_save(application_batch)
     application = application_batch.applications.all().first()
     response = handler_api_client.get(get_handler_detail_url(application))
     assert response.status_code == 200
@@ -487,7 +539,7 @@ def test_application_batch_status_change(
     modify existing application_batch
     """
     application_batch.status = from_status
-    application_batch.save()
+    fill_as_valid_batch_completion_and_save(application_batch)
     data = ApplicationBatchSerializer(application_batch).data
     data["status"] = to_status
 
@@ -662,17 +714,19 @@ def test_application_batches_talpa_export(anonymous_client, application_batch):
 
     # Export invalid batch
     application_batch.status = ApplicationBatchStatus.DECIDED_REJECTED
-    application_batch.save()
+    fill_as_valid_batch_completion_and_save(application_batch)
     response = anonymous_client.get(reverse("v1:applicationbatch-talpa-export-batch"))
     assert response.status_code == 400
     assert "There is no available application to export" in response.data["detail"]
 
     application_batch.status = ApplicationBatchStatus.DECIDED_ACCEPTED
     application_batch.save()
+
     # Let's create another accepted batch
-    app_batch_2 = ApplicationBatchFactory(
-        status=ApplicationBatchStatus.DECIDED_ACCEPTED
-    )
+    app_batch_2 = ApplicationBatchFactory()
+    app_batch_2.status = ApplicationBatchStatus.DECIDED_ACCEPTED
+    fill_as_valid_batch_completion_and_save(app_batch_2)
+
     # Export accepted batches then change it status
     response = anonymous_client.get(reverse("v1:applicationbatch-talpa-export-batch"))
 
