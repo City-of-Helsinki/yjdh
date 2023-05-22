@@ -403,7 +403,7 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
     @staticmethod
     def _export_filename_without_suffix():
         return format_lazy(
-            _("Helsinki-lisän hakemukset viety {date}"),
+            _("Helsinki-lisan hakemukset viety {date}"),
             date=timezone.now().strftime("%Y%m%d_%H%M%S"),
         )
 
