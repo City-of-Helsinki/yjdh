@@ -4,7 +4,6 @@ import uuid
 from datetime import date, datetime
 from unittest.mock import patch
 
-import factory
 import pytest
 import pytz
 from dateutil.relativedelta import relativedelta
@@ -21,21 +20,18 @@ from applications.tests.factories import (
     ApplicationFactory,
     DecidedApplicationFactory,
 )
+from applications.tests.faker import get_faker
 from applications.tests.test_applications_api import get_handler_detail_url
 
 
 def get_valid_batch_completion_data():
     return {
-        "decision_maker_title": factory.Faker("job").evaluate("", "", {"locale": "fi"}),
-        "decision_maker_name": factory.Faker("name").evaluate("", "", {"locale": "fi"}),
+        "decision_maker_title": get_faker().job(),
+        "decision_maker_name": get_faker().name(),
         "section_of_the_law": "$1234",
         "decision_date": date.today(),
-        "expert_inspector_name": factory.Faker("name").evaluate(
-            "", "", {"locale": "fi"}
-        ),
-        "expert_inspector_title": factory.Faker("job").evaluate(
-            "", "", {"locale": "fi"}
-        ),
+        "expert_inspector_name": get_faker().name(),
+        "expert_inspector_title": get_faker().job(),
     }
 
 
