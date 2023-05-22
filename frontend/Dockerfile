@@ -38,7 +38,7 @@ FROM appbase as development
 
 # Set V8 max heap size to 2GB (default is 512MB)
 # This prevents Docker Compose from crashing due to out of memory errors
-ENV NODE_OPTIONS="--max_old_space_size=2048"
+ENV NODE_OPTIONS="--max_old_space_size=2048 --openssl-legacy-provider"
 
 ARG PROJECT
 ARG FOLDER
@@ -101,6 +101,8 @@ RUN yarn cache clean
 # ==========================================
 FROM helsinkitest/node:18-slim AS production
 # ==========================================
+
+ENV NODE_OPTIONS="--openssl-legacy-provider"
 
 ARG PORT
 ARG PROJECT
