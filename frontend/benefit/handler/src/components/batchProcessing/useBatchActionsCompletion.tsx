@@ -24,7 +24,6 @@ interface ApplicationListProps {
   t: TFunction;
   formik: FormikProps<BatchCompletionFormValues>;
   yearFromNow: Date;
-  markBatchAs: (status: BATCH_STATUSES) => void;
   isSuccess: boolean;
   isError: boolean;
 }
@@ -34,7 +33,7 @@ const useBatchActionsCompletion = (
   proposalForDecision: PROPOSALS_FOR_DECISION
 ): ApplicationListProps => {
   const { t } = useTranslation();
-  const { isSuccess, isError, mutate: changeBatchStatus } = useBatchComplete();
+  const { isSuccess, isError, mutate: completeBatch } = useBatchComplete();
 
   const parseLocalizedDateString = (
     _: string,
@@ -97,7 +96,7 @@ const useBatchActionsCompletion = (
     status: BATCH_STATUSES,
     form?: BatchCompletionFormValues
   ): void =>
-    changeBatchStatus({
+    completeBatch({
       id,
       status,
       form,
@@ -130,7 +129,6 @@ const useBatchActionsCompletion = (
     t,
     formik,
     yearFromNow: years.min,
-    markBatchAs,
     isSuccess,
     isError,
   };
