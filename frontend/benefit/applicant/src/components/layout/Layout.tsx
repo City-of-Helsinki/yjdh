@@ -10,7 +10,7 @@ import { $Main } from './Layout.sc';
 
 const Footer = dynamic(
   () => import('benefit/applicant/components/footer/Footer'),
-  { ssr: false }
+  { ssr: true }
 );
 
 type Props = { children: React.ReactNode };

@@ -1,3 +1,4 @@
+import useBatchStatus from 'benefit/handler/hooks/useBatchStatus';
 import { getErrorText } from 'benefit/handler/utils/forms';
 import {
   BATCH_STATUSES,
@@ -22,8 +23,14 @@ const BatchActionsCompletion: React.FC<BatchProps> = ({
   const { id, proposal_for_decision: proposalForDecision } = batch;
   const { t } = useTranslation();
   const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
-  const { formik, markBatchAs, yearFromNow, isSuccess, isError } =
-    useBatchActionsCompletion(id, proposalForDecision);
+  const { formik, yearFromNow, isSuccess, isError } = useBatchActionsCompletion(
+    id,
+    proposalForDecision
+  );
+  const { mutate: changeBatchStatus } = useBatchStatus();
+
+  const handleBatchStatusChange = (): void =>
+    changeBatchStatus({ id, status: BATCH_STATUSES.DRAFT });
 
   useEffect(() => {
     if (isSuccess || isError) {
@@ -154,7 +161,7 @@ const BatchActionsCompletion: React.FC<BatchProps> = ({
             theme="black"
             variant="supplementary"
             iconLeft={<IconArrowUndo />}
-            onClick={() => markBatchAs(BATCH_STATUSES.DRAFT)}
+            onClick={() => handleBatchStatusChange()}
           >
             {t('common:batches.actions.markAsWaitingForAhjo')}
           </Button>

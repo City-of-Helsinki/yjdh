@@ -1,4 +1,3 @@
-import { AxiosError, AxiosResponse } from 'axios';
 import { HandlerEndpoint } from 'benefit-shared/backend-api/backend-api';
 import {
   BATCH_STATUSES,
@@ -32,36 +31,12 @@ type Response = {
   decision: PROPOSALS_FOR_DECISION;
 };
 
-interface BatchErrorResponse extends AxiosResponse {
-  status: 406;
-  data: {
-    errorKey: string;
-  };
-}
-
-interface BatchError extends AxiosError {
-  response: BatchErrorResponse;
-}
-
-const useBatchComplete = (): UseMutationResult<
-  Response,
-  BatchError,
-  Payload
-> => {
+const useBatchComplete = (): UseMutationResult<Response, Error, Payload> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
-  const handleError = (errorResponse: BatchError): void => {
-    if (errorResponse.response?.data?.errorKey) {
-      const { errorKey } = errorResponse.response.data;
-      showErrorToast(
-        t(`common:batches.notifications.errors.${errorKey}.title`),
-        t(`common:batches.notifications.errors.${errorKey}.message`)
-      );
-      return;
-    }
-
+  const handleError = (): void => {
     showErrorToast(
       t('common:applications.list.errors.fetch.label'),
       t('common:applications.list.errors.fetch.text', {
@@ -70,7 +45,7 @@ const useBatchComplete = (): UseMutationResult<
     );
   };
 
-  return useMutation<Response, BatchError, Payload>(
+  return useMutation<Response, Error, Payload>(
     'changeBatchStatus',
     ({ id, status, form }: Payload) => {
       const parsed = parse(String(form.decision_date), 'd.M.yyyy', new Date());
@@ -97,7 +72,7 @@ const useBatchComplete = (): UseMutationResult<
         );
         void queryClient.invalidateQueries('applicationsList');
       },
-      onError: (errorResponse: BatchError) => handleError(errorResponse),
+      onError: () => handleError(),
     }
   );
 };

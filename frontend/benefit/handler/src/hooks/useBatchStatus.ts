@@ -1,3 +1,4 @@
+import { AxiosError, AxiosResponse } from 'axios';
 import { HandlerEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { BATCH_STATUSES } from 'benefit-shared/constants';
 import { useTranslation } from 'next-i18next';
@@ -15,19 +16,39 @@ type Response = {
   status: BATCH_STATUSES;
 };
 
-const useBatchStatus = (): UseMutationResult<Response, Error, Payload> => {
+interface BatchErrorResponse extends AxiosResponse {
+  status: 406;
+  data: {
+    errorKey: string;
+  };
+}
+
+interface BatchError extends AxiosError {
+  response: BatchErrorResponse;
+}
+
+const useBatchStatus = (): UseMutationResult<Response, BatchError, Payload> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
-  const handleError = (): void => {
+  const handleError = (errorResponse: BatchError): void => {
+    if (errorResponse.response?.data?.errorKey) {
+      const { errorKey } = errorResponse.response.data;
+      showErrorToast(
+        t(`common:batches.notifications.errors.${errorKey}.title`),
+        t(`common:batches.notifications.errors.${errorKey}.message`)
+      );
+      return;
+    }
+
     showErrorToast(
       t('common:applications.list.errors.fetch.label'),
       t('common:applications.list.errors.fetch.text', { status: 'error' })
     );
   };
 
-  return useMutation<Response, Error, Payload>(
+  return useMutation<Response, BatchError, Payload>(
     'changeBatchStatus',
     ({ id, status }: Payload) => {
       const request = axios.patch<Response>(
@@ -49,7 +70,7 @@ const useBatchStatus = (): UseMutationResult<Response, Error, Payload> => {
           void queryClient.invalidateQueries('applicationsList');
         }
       },
-      onError: () => handleError(),
+      onError: (e: BatchError) => handleError(e),
     }
   );
 };
