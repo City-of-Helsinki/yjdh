@@ -94,7 +94,7 @@ msgstr ""
 msgid ""
 "This application has non-null de_minimis_aid but is applied by an association"
 msgstr ""
-"Tässä hakemuksessa on ei-nolla de_minimis_aid, mutta hakija on yhdistys"
+"Tässä hakemuksessa on ei-nolla de_minimis_aid, mutta hakija on yhteisö"
 
 msgid "This application has de_minimis_aid set but does not define any"
 msgstr "Tässä hakemuksessa on valittu de_minimis_aid, mutta sitä ei määritetä"
@@ -138,7 +138,7 @@ msgid "This field is required before submitting the application"
 msgstr "Tämä kenttä on pakollinen ennen hakemuksen lähettämistä"
 
 msgid "This field can be set for associations only"
-msgstr "Tämä kenttä voidaan valita vain yhdistyksille"
+msgstr "Tämä kenttä voidaan valita vain yhteisöille"
 
 msgid "This benefit type can not be selected"
 msgstr "Tätä avustustyyppiä ei voida valita"
@@ -261,7 +261,7 @@ msgid "Company"
 msgstr "Yritys"
 
 msgid "Association"
-msgstr "Yhdistys"
+msgstr "Yhteisö"
 
 msgid "employment contract"
 msgstr "työsopimus"
