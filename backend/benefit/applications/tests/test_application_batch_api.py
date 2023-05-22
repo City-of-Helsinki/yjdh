@@ -422,12 +422,12 @@ def test_application_batch_put_edit_fields(handler_api_client, application_batch
     data = ApplicationBatchSerializer(application_batch).data
     data["proposal_for_decision"] = AhjoDecision.DECIDED_ACCEPTED
     application_batch.applications.all().update(status=ApplicationStatus.ACCEPTED)
-    data["decision_maker_title"] = "abcd"
-    data["decision_maker_name"] = "Matti Haavikko"
-    data["section_of_the_law"] = "abcd"
+    data["decision_maker_title"] = get_faker().job()
+    data["decision_maker_name"] = get_faker().name()
+    data["section_of_the_law"] = "$1234"
     data["decision_date"] = "2021-08-02"
-    data["expert_inspector_name"] = "Matti Haavikko"
-    data["expert_inspector_email"] = "test@example.com"
+    data["expert_inspector_name"] = get_faker().name()
+    data["expert_inspector_email"] = get_faker().email()
 
     response = handler_api_client.put(
         get_batch_detail_url(application_batch),
@@ -435,15 +435,15 @@ def test_application_batch_put_edit_fields(handler_api_client, application_batch
     )
     assert response.status_code == 200
     assert response.data["proposal_for_decision"] == AhjoDecision.DECIDED_ACCEPTED
-    assert response.data["decision_maker_title"] == "abcd"
-    assert response.data["decision_maker_name"] == "Matti Haavikko"
-    assert response.data["section_of_the_law"] == "abcd"
-    assert response.data["decision_date"] == "2021-08-02"
-    assert response.data["expert_inspector_name"] == "Matti Haavikko"
-    assert response.data["expert_inspector_email"] == "test@example.com"
+    assert response.data["decision_maker_title"] == data["decision_maker_title"]
+    assert response.data["decision_maker_name"] == data["decision_maker_name"]
+    assert response.data["section_of_the_law"] == data["section_of_the_law"]
+    assert response.data["decision_date"] == data["decision_date"]
+    assert response.data["expert_inspector_name"] == data["expert_inspector_name"]
+    assert response.data["expert_inspector_email"] == data["expert_inspector_email"]
 
     application_batch.refresh_from_db()
-    assert application_batch.decision_maker_title == "abcd"
+    assert application_batch.decision_maker_title == data["decision_maker_title"]
 
 
 def test_application_batch_put_read_only_fields(handler_api_client, application_batch):
