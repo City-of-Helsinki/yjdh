@@ -223,53 +223,60 @@ def test_deassign_applications_from_batch(handler_api_client, application_batch)
     assert response.status_code == 404
 
 
-def test_batch_status_change(handler_api_client, application_batch):
+@pytest.mark.parametrize(
+    "batch_status,status_code,changed_status",
+    [
+        (ApplicationBatchStatus.COMPLETED, 406, None),
+        (ApplicationBatchStatus.SENT_TO_TALPA, 406, None),
+        (ApplicationBatchStatus.AHJO_REPORT_CREATED, 406, None),
+        (ApplicationBatchStatus.RETURNED, 406, None),
+        (ApplicationBatchStatus.DECIDED_ACCEPTED, 406, None),
+        (ApplicationBatchStatus.DECIDED_REJECTED, 406, None),
+        (ApplicationBatchStatus.DRAFT, 200, ApplicationBatchStatus.DRAFT),
+        (
+            ApplicationBatchStatus.AWAITING_AHJO_DECISION,
+            200,
+            ApplicationBatchStatus.AWAITING_AHJO_DECISION,
+        ),
+    ],
+)
+def test_batch_status_change(
+    handler_api_client, application_batch, batch_status, status_code, changed_status
+):
     url = get_batch_detail_url(application_batch, "status/")
+    response = handler_api_client.patch(url, {"status": batch_status})
+    assert response.status_code == status_code
+    if changed_status:
+        assert response.data["status"] == changed_status
 
-    ok_statuses = [
-        ApplicationBatchStatus.DRAFT,
-        ApplicationBatchStatus.AWAITING_AHJO_DECISION,
-    ]
 
-    for status in ok_statuses:
-        response = handler_api_client.patch(url, {"status": status})
-        assert response.status_code == 200
-        assert response.data["status"] == status
+@pytest.mark.parametrize(
+    "batch_status,delta_months,delta_days",
+    [
+        (ApplicationBatchStatus.DECIDED_ACCEPTED, 3, 1),
+        (ApplicationBatchStatus.DECIDED_ACCEPTED, -3, -1),
+        (ApplicationBatchStatus.DECIDED_REJECTED, 3, 1),
+        (ApplicationBatchStatus.DECIDED_REJECTED, -3, -1),
+    ],
+)
+def test_batch_status_decided(
+    handler_api_client, application_batch, batch_status, delta_months, delta_days
+):
+    url = get_batch_detail_url(application_batch, "status/")
+    payload = get_valid_batch_completion_data()
+    payload["status"] = batch_status
 
-    failing_statuses = [
-        ApplicationBatchStatus.COMPLETED,
-        ApplicationBatchStatus.SENT_TO_TALPA,
-        ApplicationBatchStatus.AHJO_REPORT_CREATED,
-        ApplicationBatchStatus.RETURNED,
-        ApplicationBatchStatus.DECIDED_ACCEPTED,
-        ApplicationBatchStatus.DECIDED_REJECTED,
-    ]
-    for status in failing_statuses:
-        response = handler_api_client.patch(url, {"status": status})
-        assert response.status_code == 406
+    # With months and a day over the range
+    payload["decision_date"] = date.today() + relativedelta(
+        days=delta_days, months=delta_months
+    )
+    response = handler_api_client.patch(url, payload)
+    assert response.status_code == 406
 
-    for i, status in enumerate(
-        [
-            ApplicationBatchStatus.DECIDED_ACCEPTED,
-            ApplicationBatchStatus.DECIDED_REJECTED,
-        ]
-    ):
-        plus_or_minus = 1 if i == 0 else -1
-
-        payload = get_valid_batch_completion_data()
-        payload["status"] = status
-        payload["decision_date"] = date.today() + relativedelta(
-            days=(plus_or_minus * 1), months=(plus_or_minus * 3)
-        )
-
-        response = handler_api_client.patch(url, payload)
-        assert response.status_code == 406
-
-        payload["decision_date"] = date.today() + relativedelta(
-            months=(plus_or_minus * 3)
-        )
-        response = handler_api_client.patch(url, payload)
-        assert response.status_code == 200
+    # With exact months
+    payload["decision_date"] = date.today() + relativedelta(months=(delta_months))
+    response = handler_api_client.patch(url, payload)
+    assert response.status_code == 200
 
 
 @pytest.mark.parametrize(
