@@ -38,13 +38,23 @@ def get_filenames_grouped_by_extension_from_zip(
 
 
 def _test_csv(
-    csv_lines: List[List[str]], expected_application_numbers: List[int]
+    csv_lines: List[List[str]],
+    expected_application_numbers: List[int],
+    expected_without_quotes: bool = False,
 ) -> None:
+    # print(expected_without_quotes)
+    if expected_without_quotes:
+        not_found_message = "Ei löytynyt ehdot täyttäviä hakemuksia"
+        application_number = "Hakemusnumero"
+    else:
+        not_found_message = '"Ei löytynyt ehdot täyttäviä hakemuksia"'
+        application_number = '"Hakemusnumero"'
+
     if not expected_application_numbers:
         assert len(csv_lines) == 2
-        assert csv_lines[1][0] == '"Ei löytynyt ehdot täyttäviä hakemuksia"'
+        assert csv_lines[1][0] == not_found_message
     else:
-        assert csv_lines[0][0] == '"Hakemusnumero"'
+        assert csv_lines[0][0] == application_number
         assert len(csv_lines) == len(expected_application_numbers) + 1
         for line, expected_application_number in zip(
             csv_lines[1:], expected_application_numbers
@@ -64,6 +74,7 @@ def _get_csv(
     url: str,
     expected_application_numbers: List[int],
     from_zip: bool = False,
+    expected_without_quotes: bool = False,
 ) -> List[List[str]]:
     response = handler_api_client.get(url)
     assert response.status_code == 200
@@ -74,7 +85,7 @@ def _get_csv(
         assert isinstance(response, StreamingHttpResponse)
         csv_content: bytes = response.getvalue()
     csv_lines = split_lines_at_semicolon(csv_content.decode("utf-8"))
-    _test_csv(csv_lines, expected_application_numbers)
+    _test_csv(csv_lines, expected_application_numbers, expected_without_quotes)
     return csv_lines
 
 
@@ -139,6 +150,7 @@ def test_applications_csv_export_new_applications(handler_api_client):
         + "export_new_accepted_applications_csv_pdf/",
         [application1.application_number, application2.application_number],
         from_zip=True,
+        expected_without_quotes=True,
     )
     assert ApplicationBatch.objects.all().count() == 2
     assert set(
@@ -166,6 +178,7 @@ def test_applications_csv_export_new_applications(handler_api_client):
         + "export_new_accepted_applications_csv_pdf/",
         [],
         from_zip=True,
+        expected_without_quotes=True,
     )
     assert ApplicationBatch.objects.all().count() == 2
 
