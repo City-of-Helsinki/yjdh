@@ -23,6 +23,13 @@ export type EditorSectionProps = {
   initialValue: TetPosting;
 };
 
+// Known issue with react-hook-form library, errors out with:
+// Type of property 'prototype' circularly references itself in mapped type '{ [K in keyof Blob]-?: PathImpl<K & string, Blob[K]>; }'.
+// More at: https://github.com/orgs/react-hook-form/discussions/7764
+
+// @ts-ignore
+const RenderHiddenIdInput = (id: string, value: string): JSXElement => <HiddenIdInput id={id} initialValue={value} />;
+
 // add new posting / edit existing
 const Editor: React.FC<EditorProps> = ({ initialValue, isNewPosting = false }) => {
   const { t } = useTranslation();
@@ -38,9 +45,9 @@ const Editor: React.FC<EditorProps> = ({ initialValue, isNewPosting = false }) =
   return (
     <FormProvider {...methods}>
       <form aria-label={t('common:editor.formLabel')}>
-        <HiddenIdInput id="id" initialValue={initialValue?.id} />
-        <HiddenIdInput id="image_url" initialValue={initialValue?.image_url} />
-        <HiddenIdInput id="image_id" initialValue={initialValue?.image_id} />
+        {RenderHiddenIdInput('id', initialValue?.id)}
+        {RenderHiddenIdInput('image_url', initialValue?.image_url)}
+        {RenderHiddenIdInput('image_id', initialValue?.image_id)}
         <EditorErrorNotification />
         <p>* {t('common:editor.requiredInfo')}</p>
         <EmployerInfo />
