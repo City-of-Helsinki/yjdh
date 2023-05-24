@@ -456,6 +456,8 @@
   "login": {
     "login": "Sign in to the service",
     "logoutMessageLabel": "You have logged out",
+    "userStateErrorLabel": "Kirjautumisessa on häiriö",
+    "userStateErrorContent": "Kirjautumisessa on vikaa tai taustajärjestelmään ei saada yhteyttä. Yritä myöhemmin uudelleen.",
     "errorLabel": "An unexpected error occurred. Please, sign in again. ",
     "sessionExpiredLabel": "User session expired. Sign in again",
     "infoLabel": "Using the service requires strong authentication",

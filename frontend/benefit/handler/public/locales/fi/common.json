@@ -90,8 +90,8 @@
   },
   "error": {
     "generic": {
-      "label": "Error occurred",
-      "text": "Please try again later."
+      "label": "Odottamaton virhe",
+      "text": "Yritä myöhemmin uudestaan."
     },
     "attachments": {
       "title": "Error occurred",
@@ -456,6 +456,8 @@
   "login": {
     "login": "Kirjaudu palveluun",
     "logoutMessageLabel": "Olet kirjautunut ulos",
+    "userStateErrorLabel": "Kirjautumisessa on häiriö",
+    "userStateErrorContent": "Kirjautumisessa on vikaa tai taustajärjestelmään ei saada yhteyttä. Yritä myöhemmin uudelleen.",
     "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään",
     "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
     "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
