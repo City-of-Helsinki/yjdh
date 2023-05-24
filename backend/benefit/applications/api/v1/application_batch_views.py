@@ -241,7 +241,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
 
         apps = Application.objects.filter(
             pk__in=application_ids,
-            status__in=["accepted", "rejected"],
+            status__in=[ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
             batch=batch,
         )
         if apps:
