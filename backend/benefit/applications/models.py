@@ -529,8 +529,7 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
                 if len(drafts) > 0:
                     raise BatchTooManyDraftsError(
                         (
-                            "Too many existing drafts of type "
-                            + self.proposal_for_decision
+                            f"Too many existing drafts of type {self.proposal_for_decision}"
                         )
                     )
 
