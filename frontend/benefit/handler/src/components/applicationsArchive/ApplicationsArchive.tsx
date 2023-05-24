@@ -1,4 +1,5 @@
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import Fuse from 'fuse.js';
 import { LoadingSpinner, Table, TextInput } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
@@ -8,7 +9,6 @@ import { useTheme } from 'styled-components';
 import { $EmptyHeading } from '../applicationList/ApplicationList.sc';
 import { $ArchiveCount, $Heading, $Status } from './ApplicationsArchive.sc';
 import { useApplicationsArchive } from './useApplicationsArchive';
-import Fuse from 'fuse.js';
 
 const ApplicationsArchive: React.FC = () => {
   const {
@@ -20,11 +20,11 @@ const ApplicationsArchive: React.FC = () => {
     getHeader,
   } = useApplicationsArchive();
   const theme = useTheme();
-
-  const [filterValue, setFilterValue] = React.useState('');
-
-  const handleChangeSearchValue = (e) => setFilterValue(e.target.value);
-
+  const [filterValue, setFilterValue] = React.useState<string>('');
+  const handleChangeSearchValue = (
+    e: React.FormEvent<HTMLInputElement>
+  ): void => setFilterValue(e.currentTarget.value);
+  let filteredList = list;
   const fuse = new Fuse(list, {
     threshold: 0,
     ignoreLocation: true,
@@ -36,8 +36,6 @@ const ApplicationsArchive: React.FC = () => {
       'companyName',
     ],
   });
-
-  let filteredList = list;
   if (filterValue.length > 1) {
     const fuseList = fuse.search(filterValue);
     filteredList = fuseList.map((item) => item.item);
