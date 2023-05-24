@@ -73,9 +73,9 @@ class CsvExportBase:
         with open(path, encoding=self.FILE_ENCODING, mode="w") as f:
             f.write(csv_string)
 
-    def get_csv_string(self) -> str:
+    def get_csv_string(self, remove_quotes: bool = False) -> str:
         return "".join(  # Lines end with '\r\n' already so no need to add newlines here
-            self.get_csv_string_lines_generator()
+            self.get_csv_string_lines_generator(remove_quotes=remove_quotes)
         )
 
     def get_csv_cell_list_lines_generator(
@@ -116,16 +116,19 @@ class CsvExportBase:
                 line.append(cell_value)
             yield line
 
-    def get_csv_string_lines_generator(self) -> Generator[str, None, None]:
+    def get_csv_string_lines_generator(
+        self, remove_quotes: bool = False
+    ) -> Generator[str, None, None]:
         """
         Generate CSV's string lines using self.get_csv_cell_list_lines_generator().
 
         :return: Generator which generates list of strings that each end with '\r\n'.
+        Passing remove_quotes=True will disable quoting of values as it is required by the Talpa integration.
         """
+        quoting = csv.QUOTE_NONE if remove_quotes else csv.QUOTE_NONNUMERIC
+
         io = StringIO()
-        csv_writer = csv.writer(
-            io, delimiter=self.CSV_DELIMITER, quoting=csv.QUOTE_NONNUMERIC
-        )
+        csv_writer = csv.writer(io, delimiter=self.CSV_DELIMITER, quoting=quoting)
         line_length_set = set()
         for line in self.get_csv_cell_list_lines_generator():
             line_length_set.add(len(line))
