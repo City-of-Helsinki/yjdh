@@ -96,7 +96,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             batch.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=("GET",), detail=True, url_path="export")
     def export_batch(self, request, *args, **kwargs):
@@ -201,7 +201,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         ):
             return Response(
                 {"detail": "Status or application id is not valid"},
-                status=status.HTTP_406_NOT_ACCEPTABLE,
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         apps = Application.objects.filter(
@@ -227,7 +227,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
                 {
                     "detail": "Unable to create a new batch or merge application to existing one."
                 },
-                status=status.HTTP_406_NOT_ACCEPTABLE,
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
     @action(methods=["PATCH"], detail=True)
@@ -268,7 +268,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             ApplicationBatchStatus.DECIDED_ACCEPTED,
             ApplicationBatchStatus.DECIDED_REJECTED,
         ]:
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
         if new_status in [
             ApplicationBatchStatus.DECIDED_ACCEPTED,
@@ -288,21 +288,21 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         except BatchCompletionDecisionDateError:
             return Response(
                 {"errorKey": "batchInvalidDecisionDate"},
-                status=status.HTTP_406_NOT_ACCEPTABLE,
+                status=status.HTTP_400_BAD_REQUEST,
             )
         except BatchTooManyDraftsError:
             return Response(
                 {"errorKey": "batchInvalidDraftAlreadyExists"},
-                status=status.HTTP_406_NOT_ACCEPTABLE,
+                status=status.HTTP_400_BAD_REQUEST,
             )
         except BatchCompletionRequiredFieldsError:
             return Response(
                 {"errorKey": "batchInvalidCompletionRequiredFieldsMissing"},
-                status=status.HTTP_406_NOT_ACCEPTABLE,
+                status=status.HTTP_400_BAD_REQUEST,
             )
         except ValidationError:
             return Response(
-                status=status.HTTP_406_NOT_ACCEPTABLE,
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         return Response(

@@ -156,14 +156,14 @@ def test_application_batch_creation(handler_api_client):
             "application_ids": "04e9f0e3-5090-44e1-b35f-c536e598ceba",
         },
     )
-    assert response.status_code == 406
+    assert response.status_code == 400
 
     # Wrong status
     response = handler_api_client.patch(
         reverse("v1:applicationbatch-assign-applications"),
         {"status": ApplicationStatus.DRAFT, "application_ids": [apps[0].id]},
     )
-    assert response.status_code == 406
+    assert response.status_code == 400
 
 
 def test_deassign_applications_from_batch(handler_api_client, application_batch):
@@ -226,12 +226,12 @@ def test_deassign_applications_from_batch(handler_api_client, application_batch)
 @pytest.mark.parametrize(
     "batch_status,status_code,changed_status",
     [
-        (ApplicationBatchStatus.COMPLETED, 406, None),
-        (ApplicationBatchStatus.SENT_TO_TALPA, 406, None),
-        (ApplicationBatchStatus.AHJO_REPORT_CREATED, 406, None),
-        (ApplicationBatchStatus.RETURNED, 406, None),
-        (ApplicationBatchStatus.DECIDED_ACCEPTED, 406, None),
-        (ApplicationBatchStatus.DECIDED_REJECTED, 406, None),
+        (ApplicationBatchStatus.COMPLETED, 400, None),
+        (ApplicationBatchStatus.SENT_TO_TALPA, 400, None),
+        (ApplicationBatchStatus.AHJO_REPORT_CREATED, 400, None),
+        (ApplicationBatchStatus.RETURNED, 400, None),
+        (ApplicationBatchStatus.DECIDED_ACCEPTED, 400, None),
+        (ApplicationBatchStatus.DECIDED_REJECTED, 400, None),
         (ApplicationBatchStatus.DRAFT, 200, ApplicationBatchStatus.DRAFT),
         (
             ApplicationBatchStatus.AWAITING_AHJO_DECISION,
@@ -271,7 +271,7 @@ def test_batch_status_decided(
         days=delta_days, months=delta_months
     )
     response = handler_api_client.patch(url, payload)
-    assert response.status_code == 406
+    assert response.status_code == 400
 
     # With exact months
     payload["decision_date"] = date.today() + relativedelta(months=(delta_months))
