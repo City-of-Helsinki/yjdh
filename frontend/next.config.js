@@ -166,4 +166,4 @@ const plugins = [
   ],
 ];
 
-module.exports = (override) => withPlugins(plugins, nextConfig(override));
+module.exports = (override) => withPlugins(plugins, config(override));

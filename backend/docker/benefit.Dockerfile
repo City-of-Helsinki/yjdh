@@ -1,6 +1,8 @@
 # ==============================
 FROM helsinkitest/python:3.9-slim as appbase
 # ==============================
+ARG SENTRY_RELEASE
+
 RUN mkdir /entrypoint
 
 COPY --chown=appuser:appuser benefit/requirements.txt /app/requirements.txt
@@ -50,6 +52,8 @@ EXPOSE 8000/tcp
 # ==============================
 FROM appbase as production
 # ==============================
+ARG SENTRY_RELEASE
+ENV SENTRY_RELEASE=$SENTRY_RELEASE
 
 RUN SECRET_KEY="only-used-for-collectstatic" python manage.py collectstatic
 
