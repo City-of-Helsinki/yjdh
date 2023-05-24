@@ -1,5 +1,5 @@
 import { ApplicationListItemData } from 'benefit-shared/types/application';
-import { LoadingSpinner } from 'hds-react';
+import { LoadingSpinner, TextInput } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import { COLUMN_WIDTH } from 'shared/components/table/constants';
@@ -9,6 +9,7 @@ import { $Link } from 'shared/components/table/Table.sc';
 import { $EmptyHeading } from '../applicationList/ApplicationList.sc';
 import { $ArchiveCount, $Heading, $Status } from './ApplicationsArchive.sc';
 import { useApplicationsArchive } from './useApplicationsArchive';
+import Fuse from 'fuse.js';
 
 type ColumnType = Column<ApplicationListItemData>;
 
@@ -21,6 +22,10 @@ const ApplicationsArchive: React.FC = () => {
     translationsBase,
     getHeader,
   } = useApplicationsArchive();
+
+  const [inputSearchValue, setInputSearchValue] = React.useState('');
+
+  const changeHandler = (e) => setInputSearchValue(e.target.value);
 
   const columns: ColumnType[] = React.useMemo(() => {
     const cols: ColumnType[] = [
@@ -101,6 +106,28 @@ const ApplicationsArchive: React.FC = () => {
     return cols.filter(Boolean);
   }, [t, getHeader, translationsBase]);
 
+  // 2. Set up the Fuse instance
+  const fuse = new Fuse(list, {
+    threshold: 0,
+    keys: [
+      'applicationNum',
+      'companyId',
+      'employeeName',
+      'handledAt',
+      'companyName',
+    ],
+  });
+
+  console.log(fuse);
+
+  let filteredList = list;
+  // 3. Now search!
+  if (inputSearchValue.length) {
+    const fuseList = fuse.search(inputSearchValue);
+    filteredList = fuseList.map((item) => item.item);
+  }
+  console.log(filteredList);
+
   if (shouldShowSkeleton) {
     return (
       <Container>
@@ -121,10 +148,19 @@ const ApplicationsArchive: React.FC = () => {
         'common:header.navigation.archive'
       )}`}</$Heading>
       <$ArchiveCount>{`${t(`${translationsBase}.total.count`, {
-        count: list.length,
+        count: filteredList.length,
       })}`}</$ArchiveCount>
       {!shouldHideList ? (
-        <Table data={list} columns={columns} />
+        <>
+          <TextInput
+            id="filter"
+            label="Suodata"
+            placeholder="Hakusana"
+            onChange={changeHandler}
+            value={inputSearchValue}
+          />
+          <Table data={filteredList} columns={columns} />
+        </>
       ) : (
         <$EmptyHeading>
           {t(`${translationsBase}.messages.empty.archived`)}
