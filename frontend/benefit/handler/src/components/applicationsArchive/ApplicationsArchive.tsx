@@ -1,17 +1,14 @@
-import { ApplicationListItemData } from 'benefit-shared/types/application';
-import { LoadingSpinner, TextInput } from 'hds-react';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import { LoadingSpinner, Table, TextInput } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
-import { COLUMN_WIDTH } from 'shared/components/table/constants';
-import Table, { Column } from 'shared/components/table/Table';
 import { $Link } from 'shared/components/table/Table.sc';
+import { useTheme } from 'styled-components';
 
 import { $EmptyHeading } from '../applicationList/ApplicationList.sc';
 import { $ArchiveCount, $Heading, $Status } from './ApplicationsArchive.sc';
 import { useApplicationsArchive } from './useApplicationsArchive';
 import Fuse from 'fuse.js';
-
-type ColumnType = Column<ApplicationListItemData>;
 
 const ApplicationsArchive: React.FC = () => {
   const {
@@ -22,83 +19,11 @@ const ApplicationsArchive: React.FC = () => {
     translationsBase,
     getHeader,
   } = useApplicationsArchive();
+  const theme = useTheme();
 
   const [filterValue, setFilterValue] = React.useState('');
 
   const handleChangeSearchValue = (e) => setFilterValue(e.target.value);
-
-  const columns: ColumnType[] = React.useMemo(() => {
-    const cols: ColumnType[] = [
-      {
-        // eslint-disable-next-line react/display-name
-        Cell: ({
-          cell: {
-            row: {
-              original: { id, companyName },
-            },
-          },
-        }) => (
-          <$Link
-            href={`/application?id=${id}`}
-            rel="noopener noreferrer"
-            aria-label={companyName}
-          >
-            {companyName}
-          </$Link>
-        ),
-        Header: getHeader('companyName'),
-        accessor: 'companyName',
-        width: COLUMN_WIDTH.XL,
-        disableSortBy: true,
-      },
-      {
-        Header: getHeader('companyId'),
-        accessor: 'companyId',
-        disableSortBy: true,
-        width: COLUMN_WIDTH.S,
-      },
-      {
-        Header: getHeader('applicationNum'),
-        accessor: 'applicationNum',
-        disableSortBy: true,
-        width: COLUMN_WIDTH.S,
-      },
-
-      {
-        Header: t(
-          `${translationsBase}.columns.employeeNameArchive`
-        )?.toString(),
-        accessor: 'employeeName',
-        disableSortBy: true,
-        width: COLUMN_WIDTH.M,
-      },
-      {
-        Header: getHeader('handledAt'),
-        accessor: 'handledAt',
-        disableSortBy: true,
-        width: COLUMN_WIDTH.S,
-      },
-      {
-        // eslint-disable-next-line react/display-name
-        Cell: ({
-          cell: {
-            row: {
-              original: { status },
-            },
-          },
-        }) => (
-          <$Status status={status}>
-            {t(`${translationsBase}.columns.statuses.${status}`)?.toString()}
-          </$Status>
-        ),
-        Header: t(`${translationsBase}.columns.statusArchive`)?.toString(),
-        accessor: 'status',
-        width: COLUMN_WIDTH.L,
-        disableSortBy: true,
-      },
-    ];
-    return cols.filter(Boolean);
-  }, [t, getHeader, translationsBase]);
 
   const fuse = new Fuse(list, {
     threshold: 0,
@@ -117,6 +42,54 @@ const ApplicationsArchive: React.FC = () => {
     const fuseList = fuse.search(filterValue);
     filteredList = fuseList.map((item) => item.item);
   }
+
+  interface TableTransforms {
+    id?: string;
+    companyName?: string;
+    status?: APPLICATION_STATUSES;
+  }
+  const cols = [
+    {
+      transform: ({ id, companyName }: TableTransforms) => (
+        <$Link href={`/application?id=${String(id)}`}>
+          {String(companyName)}
+        </$Link>
+      ),
+      headerName: getHeader('companyName'),
+      key: 'companyName',
+      isSortable: true,
+    },
+    {
+      headerName: getHeader('companyId'),
+      key: 'companyId',
+      isSortable: true,
+    },
+    {
+      headerName: getHeader('applicationNum'),
+      key: 'applicationNum',
+      isSortable: true,
+    },
+    {
+      headerName: getHeader('employeeNameArchive'),
+      key: 'employeeName',
+      isSortable: true,
+    },
+    {
+      headerName: getHeader('handledAt'),
+      key: 'handledAt',
+      isSortable: true,
+    },
+    {
+      transform: ({ status }: TableTransforms) => (
+        <$Status status={status}>
+          {t(`${translationsBase}.columns.statuses.${status}`)?.toString()}
+        </$Status>
+      ),
+      headerName: t(`${translationsBase}.columns.statusArchive`)?.toString(),
+      key: 'status',
+      isSortable: true,
+    },
+  ];
 
   if (shouldShowSkeleton) {
     return (
@@ -150,7 +123,12 @@ const ApplicationsArchive: React.FC = () => {
             value={filterValue}
             css="margin-bottom: var(--spacing-m);"
           />
-          <Table data={filteredList} columns={columns} />
+          <Table
+            indexKey="id"
+            theme={theme.components.table}
+            rows={filteredList}
+            cols={cols}
+          />
         </>
       ) : (
         <$EmptyHeading>
