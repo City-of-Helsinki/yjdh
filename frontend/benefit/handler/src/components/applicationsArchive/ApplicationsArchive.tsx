@@ -1,5 +1,5 @@
 import { ApplicationListItemData } from 'benefit-shared/types/application';
-import { LoadingSpinner } from 'hds-react';
+import { LoadingSpinner, TextInput } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import { COLUMN_WIDTH } from 'shared/components/table/constants';
@@ -9,6 +9,7 @@ import { $Link } from 'shared/components/table/Table.sc';
 import { $EmptyHeading } from '../applicationList/ApplicationList.sc';
 import { $ArchiveCount, $Heading, $Status } from './ApplicationsArchive.sc';
 import { useApplicationsArchive } from './useApplicationsArchive';
+import Fuse from 'fuse.js';
 
 type ColumnType = Column<ApplicationListItemData>;
 
@@ -21,6 +22,10 @@ const ApplicationsArchive: React.FC = () => {
     translationsBase,
     getHeader,
   } = useApplicationsArchive();
+
+  const [filterValue, setFilterValue] = React.useState('');
+
+  const handleChangeSearchValue = (e) => setFilterValue(e.target.value);
 
   const columns: ColumnType[] = React.useMemo(() => {
     const cols: ColumnType[] = [
@@ -74,12 +79,6 @@ const ApplicationsArchive: React.FC = () => {
         width: COLUMN_WIDTH.S,
       },
       {
-        Header: getHeader('dataReceived'),
-        accessor: 'dataReceived',
-        disableSortBy: true,
-        width: COLUMN_WIDTH.S,
-      },
-      {
         // eslint-disable-next-line react/display-name
         Cell: ({
           cell: {
@@ -101,6 +100,24 @@ const ApplicationsArchive: React.FC = () => {
     return cols.filter(Boolean);
   }, [t, getHeader, translationsBase]);
 
+  const fuse = new Fuse(list, {
+    threshold: 0,
+    ignoreLocation: true,
+    keys: [
+      'applicationNum',
+      'companyId',
+      'employeeName',
+      'handledAt',
+      'companyName',
+    ],
+  });
+
+  let filteredList = list;
+  if (filterValue.length > 1) {
+    const fuseList = fuse.search(filterValue);
+    filteredList = fuseList.map((item) => item.item);
+  }
+
   if (shouldShowSkeleton) {
     return (
       <Container>
@@ -121,10 +138,20 @@ const ApplicationsArchive: React.FC = () => {
         'common:header.navigation.archive'
       )}`}</$Heading>
       <$ArchiveCount>{`${t(`${translationsBase}.total.count`, {
-        count: list.length,
+        count: filteredList.length,
       })}`}</$ArchiveCount>
       {!shouldHideList ? (
-        <Table data={list} columns={columns} />
+        <>
+          <TextInput
+            id="table-filter"
+            label={t('common:search.input.filter.label')}
+            placeholder={t('common:search.input.filter.placeholder')}
+            onChange={handleChangeSearchValue}
+            value={filterValue}
+            css="margin-bottom: var(--spacing-m);"
+          />
+          <Table data={filteredList} columns={columns} />
+        </>
       ) : (
         <$EmptyHeading>
           {t(`${translationsBase}.messages.empty.archived`)}

@@ -534,5 +534,14 @@
         "expert_inspector_title": "Pakollinen tieto"
       }
     }
+  },
+  "search": {
+    "input": {
+      "filter": {
+        "label": "Suodata",
+        "placeholder": "Avainsana"
+      }
+    },
+    "keyword": "Hakusana"
   }
 }
