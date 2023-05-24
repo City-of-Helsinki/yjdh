@@ -457,15 +457,15 @@ def validate_decision_date(value):
     Validate batch decision date: allow empty or
     +/- 3 months and a day from today
     """
-
-    max_value = date.today() + relativedelta(days=1, months=3)
-    min_value = date.today() + relativedelta(days=-1, months=-3)
+    months = 3
+    max_value = date.today() + relativedelta(days=1, months=months)
+    min_value = date.today() + relativedelta(days=-1, months=-months)
 
     if value:
         return (value < max_value and value > min_value) or value == ""
     else:
         raise BatchCompletionDecisionDateError(
-            "Decision date must be +/- 3 months from this date"
+            f"Decision date must be +/- {months} months from this date"
         )
 
 
@@ -529,8 +529,7 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
                 if len(drafts) > 0:
                     raise BatchTooManyDraftsError(
                         (
-                            "Too many existing drafts of type "
-                            + self.proposal_for_decision
+                            f"Too many existing drafts of type {self.proposal_for_decision}"
                         )
                     )
 
