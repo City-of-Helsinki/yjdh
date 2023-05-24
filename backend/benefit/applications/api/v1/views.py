@@ -153,7 +153,7 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
             exclude_fields | (extra_exclude_fields - fields)
         )
 
-        order_by = request.GET.get("order_by")
+        order_by = request.query_params.get("order_by")
         if (
             order_by
             and re.sub(r"^-", "", order_by)
@@ -161,11 +161,11 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         ):
             qs = qs.order_by(order_by)
 
-        exclude_batched = request.GET.get("exclude_batched") == "1"
+        exclude_batched = request.query_params.get("exclude_batched") == "1"
         if exclude_batched:
             qs = qs.filter(batch__isnull=True)
 
-        qs = qs.filter(archived=request.GET.get("filter_archived") == "1")
+        qs = qs.filter(archived=request.query_params.get("filter_archived") == "1")
 
         serializer = self.serializer_class(qs, many=True, context=context)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -371,7 +371,7 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
     @action(methods=["GET"], detail=False)
     @transaction.atomic
     def export_applications_in_batch(self, request) -> HttpResponse:
-        batch_id = request.GET.get("batch_id")
+        batch_id = request.query_params.get("batch_id")
         if batch_id:
             apps = Application.objects.filter(batch_id=batch_id)
             return self._csv_pdf_response(apps)
