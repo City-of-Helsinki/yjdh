@@ -17,7 +17,7 @@ type Response = {
 };
 
 interface BatchErrorResponse extends AxiosResponse {
-  status: 406;
+  status: 400;
   data: {
     errorKey: string;
   };
