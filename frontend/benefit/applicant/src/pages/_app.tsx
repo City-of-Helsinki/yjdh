@@ -1,5 +1,6 @@
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/globals.css';
+import 'benefit-shared/styles/app.css';
 
 import AuthProvider from 'benefit/applicant/auth/AuthProvider';
 import Layout from 'benefit/applicant/components/layout/Layout';
@@ -9,6 +10,7 @@ import {
   getBackendDomain,
   getHeaders,
 } from 'benefit-shared/backend-api/backend-api';
+import { setAppLoaded } from 'benefit-shared/utils/common';
 import { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
@@ -30,6 +32,7 @@ const App: React.FC<AppProps> = (appProps) => {
   const { t } = useTranslation();
 
   useEffect(() => {
+    setAppLoaded();
     if (router.route === ROUTES.HOME)
       document.title = t('common:pageTitles.home');
     else if (router.route === ROUTES.LOGIN)

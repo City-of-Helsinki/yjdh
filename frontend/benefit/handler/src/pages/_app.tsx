@@ -1,5 +1,6 @@
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/tabs.css';
+import 'benefit-shared/styles/app.css';
 
 import AuthProvider from 'benefit/handler/auth/AuthProvider';
 import Footer from 'benefit/handler/components/footer/Footer';
@@ -9,9 +10,10 @@ import {
   getBackendDomain,
   getHeaders,
 } from 'benefit-shared/backend-api/backend-api';
+import { setAppLoaded } from 'benefit-shared/utils/common';
 import { AppProps } from 'next/app';
 import { appWithTranslation } from 'next-i18next';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import BaseApp from 'shared/components/app/BaseApp';
@@ -21,6 +23,11 @@ const queryClient = new QueryClient();
 
 const App: React.FC<AppProps> = (appProps) => {
   const locale = useLocale();
+
+  useEffect(() => {
+    setAppLoaded();
+  }, []);
+
   return (
     <BackendAPIProvider
       baseURL={getBackendDomain()}

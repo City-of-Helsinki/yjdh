@@ -1,3 +1,4 @@
+import { LoadingSpinner } from 'hds-react';
 import { Head, Html, Main, NextScript } from 'next/document';
 import React from 'react';
 import PORTAL_ID from 'shared/constants/portal-id';
@@ -15,6 +16,13 @@ class BenefitDocument extends ServerDocument {
         </Head>
         <body>
           <Main />
+          <div
+            id="app-loader"
+            className="app-load-wrapper app-waits-for-client"
+            aria-hidden="true"
+          >
+            <LoadingSpinner />
+          </div>
           <div id={PORTAL_ID} />
           <NextScript />
         </body>
