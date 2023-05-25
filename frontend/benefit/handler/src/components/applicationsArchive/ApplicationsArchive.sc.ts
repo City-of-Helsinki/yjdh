@@ -5,14 +5,13 @@ type StatusProps = {
   status: APPLICATION_STATUSES;
 };
 
-export const $Heading = styled.p`
+export const $Heading = styled.h1`
+  font-weight: 400;
   font-size: ${(props) => props.theme.fontSize.heading.xl};
 `;
 
 export const $ArchiveCount = styled.p`
-  font-size: ${(props) => props.theme.fontSize.heading.m};
-  color: ${(props) => props.theme.colors.coatOfArms};
-  font-weight: 500;
+  font-size: ${(props) => props.theme.fontSize.heading.s};
 `;
 
 export const $Status = styled.p<StatusProps>`

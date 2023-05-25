@@ -1,25 +1,55 @@
 import base64
 import copy
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 from unittest.mock import patch
 
 import pytest
 import pytz
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.http import StreamingHttpResponse
 from rest_framework.reverse import reverse
 
-from applications.api.v1.serializers.batch import ApplicationBatchSerializer
+from applications.api.v1.serializers.application import ApplicationBatchSerializer
 from applications.enums import AhjoDecision, ApplicationBatchStatus, ApplicationStatus
 from applications.models import Application, ApplicationBatch
 from applications.tests.conftest import *  # noqa
-from applications.tests.factories import ApplicationBatchFactory, ApplicationFactory
+from applications.tests.factories import (
+    ApplicationBatchFactory,
+    ApplicationFactory,
+    DecidedApplicationFactory,
+)
+from applications.tests.faker import get_faker
 from applications.tests.test_applications_api import get_handler_detail_url
 
 
-def get_batch_detail_url(application_batch):
-    return reverse("v1:applicationbatch-detail", kwargs={"pk": application_batch.id})
+def get_valid_batch_completion_data():
+    return {
+        "decision_maker_title": get_faker().job(),
+        "decision_maker_name": get_faker().name(),
+        "section_of_the_law": "$1234",
+        "decision_date": date.today(),
+        "expert_inspector_name": get_faker().name(),
+        "expert_inspector_title": get_faker().job(),
+    }
+
+
+def fill_as_valid_batch_completion_and_save(
+    batch: ApplicationBatch, status: ApplicationBatchStatus = None
+):
+    data = get_valid_batch_completion_data()
+    for key in data:
+        setattr(batch, key, data[key])
+    if status:
+        batch.status = status
+    batch.save()
+
+
+def get_batch_detail_url(application_batch, uri=""):
+    return (
+        reverse("v1:applicationbatch-detail", kwargs={"pk": application_batch.id}) + uri
+    )
 
 
 def test_get_application_batch_unauthenticated(anonymous_client, application_batch):
@@ -77,7 +107,7 @@ def test_applications_batch_list_with_filter(handler_api_client, application_bat
     )
 
 
-def test_application_batch_creation(handler_api_client, application_batch):
+def test_application_batch_creation(handler_api_client):
     apps = [
         ApplicationFactory(status=ApplicationStatus.ACCEPTED),
         ApplicationFactory(status=ApplicationStatus.ACCEPTED),
@@ -88,23 +118,23 @@ def test_application_batch_creation(handler_api_client, application_batch):
     for app in apps:
         app.save()
 
-    response = handler_api_client.post(
-        reverse("v1:applicationbatch-add-to-batch"),
+    response = handler_api_client.patch(
+        reverse("v1:applicationbatch-assign-applications"),
         {
             "status": ApplicationStatus.ACCEPTED,
             "application_ids": [apps[0].id, apps[1].id, apps[2].id, apps[3].id],
         },
     )
 
-    assert len(response.data["applications"]) == 4
+    assert len(response.data["applications"]) == 2
     assert apps[0].id in response.data["applications"]
     assert apps[1].id in response.data["applications"]
     assert apps[2].id not in response.data["applications"]
     assert apps[3].id not in response.data["applications"]
     assert response.status_code == 200
 
-    response = handler_api_client.post(
-        reverse("v1:applicationbatch-add-to-batch"),
+    response = handler_api_client.patch(
+        reverse("v1:applicationbatch-assign-applications"),
         {
             "status": ApplicationStatus.REJECTED,
             "application_ids": [apps[0].id, apps[1].id, apps[2].id, apps[3].id],
@@ -119,21 +149,134 @@ def test_application_batch_creation(handler_api_client, application_batch):
     assert response.status_code == 200
 
     # Wrong type for application_ids
-    response = handler_api_client.post(
-        reverse("v1:applicationbatch-add-to-batch"),
+    response = handler_api_client.patch(
+        reverse("v1:applicationbatch-assign-applications"),
         {
             "status": ApplicationStatus.ACCEPTED,
             "application_ids": "04e9f0e3-5090-44e1-b35f-c536e598ceba",
         },
     )
-    assert response.status_code == 406
+    assert response.status_code == 400
 
     # Wrong status
-    response = handler_api_client.post(
-        reverse("v1:applicationbatch-add-to-batch"),
+    response = handler_api_client.patch(
+        reverse("v1:applicationbatch-assign-applications"),
         {"status": ApplicationStatus.DRAFT, "application_ids": [apps[0].id]},
     )
-    assert response.status_code == 406
+    assert response.status_code == 400
+
+
+def test_deassign_applications_from_batch(handler_api_client, application_batch):
+    url = get_batch_detail_url(application_batch, "deassign_applications/")
+    apps = Application.objects.filter(batch=application_batch)
+
+    first_app_id = apps[0].id
+    last_app_id = apps[1].id
+
+    assert len(apps) == 2
+
+    app_list = [first_app_id]
+    apps = [
+        DecidedApplicationFactory(),
+        DecidedApplicationFactory(),
+        DecidedApplicationFactory(),
+    ]
+    for app in apps:
+        app.batch = application_batch
+        app_list.append(app.id)
+        app.save()
+
+    apps = Application.objects.filter(batch=application_batch)
+    assert len(apps) == 5
+
+    response = handler_api_client.patch(
+        url,
+        {
+            "application_ids": app_list,
+            "batch_id": application_batch.id,
+        },
+    )
+    assert response.status_code == 200
+    apps = Application.objects.filter(batch=application_batch)
+    assert len(apps) == 1
+    assert str(apps.first().id) == str(last_app_id)
+
+    # No applications found
+    response = handler_api_client.patch(
+        url,
+        {
+            "application_ids": [first_app_id],
+        },
+    )
+
+    assert response.status_code == 404
+
+    # No batch found
+    application_batch.delete()
+    response = handler_api_client.patch(
+        url,
+        {
+            "application_ids": [last_app_id],
+        },
+    )
+
+    assert response.status_code == 404
+
+
+@pytest.mark.parametrize(
+    "batch_status,status_code,changed_status",
+    [
+        (ApplicationBatchStatus.COMPLETED, 400, None),
+        (ApplicationBatchStatus.SENT_TO_TALPA, 400, None),
+        (ApplicationBatchStatus.AHJO_REPORT_CREATED, 400, None),
+        (ApplicationBatchStatus.RETURNED, 400, None),
+        (ApplicationBatchStatus.DECIDED_ACCEPTED, 400, None),
+        (ApplicationBatchStatus.DECIDED_REJECTED, 400, None),
+        (ApplicationBatchStatus.DRAFT, 200, ApplicationBatchStatus.DRAFT),
+        (
+            ApplicationBatchStatus.AWAITING_AHJO_DECISION,
+            200,
+            ApplicationBatchStatus.AWAITING_AHJO_DECISION,
+        ),
+    ],
+)
+def test_batch_status_change(
+    handler_api_client, application_batch, batch_status, status_code, changed_status
+):
+    url = get_batch_detail_url(application_batch, "status/")
+    response = handler_api_client.patch(url, {"status": batch_status})
+    assert response.status_code == status_code
+    if changed_status:
+        assert response.data["status"] == changed_status
+
+
+@pytest.mark.parametrize(
+    "batch_status,delta_months,delta_days",
+    [
+        (ApplicationBatchStatus.DECIDED_ACCEPTED, 3, 1),
+        (ApplicationBatchStatus.DECIDED_ACCEPTED, -3, -1),
+        (ApplicationBatchStatus.DECIDED_REJECTED, 3, 1),
+        (ApplicationBatchStatus.DECIDED_REJECTED, -3, -1),
+    ],
+)
+def test_batch_status_decided(
+    handler_api_client, application_batch, batch_status, delta_months, delta_days
+):
+    url = get_batch_detail_url(application_batch, "status/")
+    payload = get_valid_batch_completion_data()
+    payload["status"] = batch_status
+
+    # With months and a day over the range
+    payload["decision_date"] = date.today() + relativedelta(
+        days=delta_days, months=delta_months
+    )
+    response = handler_api_client.patch(url, payload)
+    assert response.status_code == 400
+
+    # With exact months
+    payload["decision_date"] = date.today() + relativedelta(months=(delta_months))
+    response = handler_api_client.patch(url, payload)
+    assert response.status_code == 200
 
 
 @pytest.mark.parametrize(
@@ -204,7 +347,8 @@ def test_get_application_with_ahjo_decision(
         application_batch.proposal_for_decision = AhjoDecision.DECIDED_REJECTED
 
     application_batch.applications.all().update(status=status, company=company)
-    application_batch.save()
+
+    fill_as_valid_batch_completion_and_save(application_batch)
     application = application_batch.applications.all().first()
     response = handler_api_client.get(get_handler_detail_url(application))
     assert response.status_code == 200
@@ -278,12 +422,12 @@ def test_application_batch_put_edit_fields(handler_api_client, application_batch
     data = ApplicationBatchSerializer(application_batch).data
     data["proposal_for_decision"] = AhjoDecision.DECIDED_ACCEPTED
     application_batch.applications.all().update(status=ApplicationStatus.ACCEPTED)
-    data["decision_maker_title"] = "abcd"
-    data["decision_maker_name"] = "Matti Haavikko"
-    data["section_of_the_law"] = "abcd"
+    data["decision_maker_title"] = get_faker().job()
+    data["decision_maker_name"] = get_faker().name()
+    data["section_of_the_law"] = "$1234"
     data["decision_date"] = "2021-08-02"
-    data["expert_inspector_name"] = "Matti Haavikko"
-    data["expert_inspector_email"] = "test@example.com"
+    data["expert_inspector_name"] = get_faker().name()
+    data["expert_inspector_email"] = get_faker().email()
 
     response = handler_api_client.put(
         get_batch_detail_url(application_batch),
@@ -291,15 +435,15 @@ def test_application_batch_put_edit_fields(handler_api_client, application_batch
     )
     assert response.status_code == 200
     assert response.data["proposal_for_decision"] == AhjoDecision.DECIDED_ACCEPTED
-    assert response.data["decision_maker_title"] == "abcd"
-    assert response.data["decision_maker_name"] == "Matti Haavikko"
-    assert response.data["section_of_the_law"] == "abcd"
-    assert response.data["decision_date"] == "2021-08-02"
-    assert response.data["expert_inspector_name"] == "Matti Haavikko"
-    assert response.data["expert_inspector_email"] == "test@example.com"
+    assert response.data["decision_maker_title"] == data["decision_maker_title"]
+    assert response.data["decision_maker_name"] == data["decision_maker_name"]
+    assert response.data["section_of_the_law"] == data["section_of_the_law"]
+    assert response.data["decision_date"] == data["decision_date"]
+    assert response.data["expert_inspector_name"] == data["expert_inspector_name"]
+    assert response.data["expert_inspector_email"] == data["expert_inspector_email"]
 
     application_batch.refresh_from_db()
-    assert application_batch.decision_maker_title == "abcd"
+    assert application_batch.decision_maker_title == data["decision_maker_title"]
 
 
 def test_application_batch_put_read_only_fields(handler_api_client, application_batch):
@@ -398,7 +542,7 @@ def test_application_batch_status_change(
     modify existing application_batch
     """
     application_batch.status = from_status
-    application_batch.save()
+    fill_as_valid_batch_completion_and_save(application_batch)
     data = ApplicationBatchSerializer(application_batch).data
     data["status"] = to_status
 
@@ -573,17 +717,19 @@ def test_application_batches_talpa_export(anonymous_client, application_batch):
 
     # Export invalid batch
     application_batch.status = ApplicationBatchStatus.DECIDED_REJECTED
-    application_batch.save()
+    fill_as_valid_batch_completion_and_save(application_batch)
     response = anonymous_client.get(reverse("v1:applicationbatch-talpa-export-batch"))
     assert response.status_code == 400
     assert "There is no available application to export" in response.data["detail"]
 
     application_batch.status = ApplicationBatchStatus.DECIDED_ACCEPTED
     application_batch.save()
+
     # Let's create another accepted batch
-    app_batch_2 = ApplicationBatchFactory(
-        status=ApplicationBatchStatus.DECIDED_ACCEPTED
-    )
+    app_batch_2 = ApplicationBatchFactory()
+    app_batch_2.status = ApplicationBatchStatus.DECIDED_ACCEPTED
+    fill_as_valid_batch_completion_and_save(app_batch_2)
+
     # Export accepted batches then change it status
     response = anonymous_client.get(reverse("v1:applicationbatch-talpa-export-batch"))
 

@@ -143,12 +143,13 @@
         "handling": "Käsittelyssä",
         "accepted": "Myönteiset",
         "rejected": "Kielteiset",
-        "infoRequired": "Odottaa lisätietoja"
+        "infoRequired": "Odottaa lisätietoja",
+        "decisions": "päätökset"
       },
       "errors": {
         "fetch": {
-          "label": "Error occurred",
-          "text": "Unable to fetch applications with status {{status}}"
+          "label": "Virhe noudettaessa hakemuksia",
+          "text": "Hakemuksien nouto epäonnistui (status: {{status}})"
         }
       },
       "total": {
@@ -387,7 +388,8 @@
     "no": "Ei",
     "and": "ja",
     "home": "Palaa etusivulle",
-    "check": "Tarkastele"
+    "check": "Tarkastele",
+    "loading": "Ladataan …"
   },
   "upload": {
     "isUploading": "Uploading...",
@@ -415,7 +417,7 @@
         "mustNotInThePast": "Päivämäärä ei voi olla menneisyydessä",
         "min": "Päivämäärän on oltava aikaisintaan {{min}}",
         "max": "Päivämäärän on oltava viimeistään {{max}}",
-        "format": "This date is incorrect"
+        "format": "Päivämäärän on oltava muotoa pp.kk.vvvv"
       },
       "time": {
         "min": "Arvon tulee olla aikaisintaan {{min}}",
@@ -432,6 +434,9 @@
       },
       "ssn": {
         "invalid": "Virheellinen henkilötunnus"
+      },
+      "name": {
+        "invalid": "Etunimi ja sukunimi vaaditaan"
       }
     }
   },
@@ -466,13 +471,79 @@
   },
   "select": "Valitse",
   "batches": {
+    "empty": "Ei yhtään koontia.",
+    "single": "Koonti",
+    "multiple": "Koonnit",
+    "tabs": {
+      "pending": "Odottaa Ahjoon vientiä",
+      "toPaymentAndArchive": "Odottaa maksuun tai arkistoon vientiä"
+    },
+    "list": {
+      "columns": {
+        "createdAt": "Luotu",
+        "status": "Tila",
+        "statuses": {
+          "accepted": "Myönteiset",
+          "rejected": "Kielteiset"
+        },
+        "handler": "Käsittelijä"
+      },
+      "empty": "Tyhjä koonti"
+    },
     "notifications": {
       "addToBatch": {
         "success": {
           "heading": "Koontiin siirto onnistui!",
           "text": "Olet muodostanut {{ count }} hakemuksesta koonnin."
         }
+      },
+      "registerToAhjo": {
+        "awaiting_ahjo_decision": "Koonti merkitty Ahjoon viedyksi",
+        "draft": "Koonti palautettu takaisin odottamaan päätösvalmistelua",
+        "accepted": "Koonti lähetetty Talpaan ja arkistoitu",
+        "rejected": "Koonti arkistoitu"
+      },
+      "errors": {
+        "batchInvalidDraftAlreadyExists": {
+          "title": "Uuden Ahjo-koonnin valmistelu on jo käynnissä",
+          "message": "Voit palauttaa tämän koonnin takaisin käsittelyyn vasta, kun jo valmistelussa oleva keskeneräinen koonti on viety Ahjoon"
+        }
+      }
+    },
+    "actions": {
+      "markAsRegisteredToAhjo": "Merkitse Ahjoon viedyksi",
+      "markedAsRegisteredToAhjo": "Viety Ahjoon",
+      "markToPaymentAndArchive": "Merkitse maksuun ja arkistoi",
+      "markToArchive": "Arkistoi",
+      "markAsWaitingForAhjo": "Palauta odottamaan Ahjoon vientiä",
+      "downloadFiles": "Lataa liitteet"
+    },
+    "form": {
+      "fields": {
+        "decisionMakerName": "Päättäjän nimi",
+        "decisionMakerTitle": "Päättäjän titteli",
+        "sectionOfTheLaw": "Pykälä",
+        "decisionDate": "Päätöksen päivämäärä",
+        "expertInspectorName": "Asiantarkistajan nimi",
+        "expertInspectorTitle": "Asiantarkistajan titteli"
+      },
+      "errors": {
+        "decision_maker_name": "Pakollinen tieto",
+        "decision_maker_title": "Pakollinen tieto",
+        "section_of_the_law": "Pykälän on oltava muodossa §1234",
+        "decision_date": "Pakollinen tieto",
+        "expert_inspector_name": "Pakollinen tieto",
+        "expert_inspector_title": "Pakollinen tieto"
       }
     }
+  },
+  "search": {
+    "input": {
+      "filter": {
+        "label": "Suodata",
+        "placeholder": "Avainsana"
+      }
+    },
+    "keyword": "Hakusana"
   }
 }

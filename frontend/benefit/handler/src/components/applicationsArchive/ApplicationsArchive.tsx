@@ -1,20 +1,14 @@
-import { ApplicationListItemData } from 'benefit-shared/types/application';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import Fuse from 'fuse.js';
+import { LoadingSpinner, Table, TextInput } from 'hds-react';
 import * as React from 'react';
-import LoadingSkeleton from 'react-loading-skeleton';
 import Container from 'shared/components/container/Container';
-import { COLUMN_WIDTH } from 'shared/components/table/constants';
-import Table, { Column } from 'shared/components/table/Table';
 import { $Link } from 'shared/components/table/Table.sc';
+import { useTheme } from 'styled-components';
 
-import {
-  $ArchiveCount,
-  $Empty,
-  $Heading,
-  $Status,
-} from './ApplicationsArchive.sc';
+import { $EmptyHeading } from '../applicationList/ApplicationList.sc';
+import { $ArchiveCount, $Heading, $Status } from './ApplicationsArchive.sc';
 import { useApplicationsArchive } from './useApplicationsArchive';
-
-type ColumnType = Column<ApplicationListItemData>;
 
 const ApplicationsArchive: React.FC = () => {
   const {
@@ -25,90 +19,86 @@ const ApplicationsArchive: React.FC = () => {
     translationsBase,
     getHeader,
   } = useApplicationsArchive();
+  const theme = useTheme();
+  const [filterValue, setFilterValue] = React.useState<string>('');
+  const handleChangeSearchValue = (
+    e: React.FormEvent<HTMLInputElement>
+  ): void => setFilterValue(e.currentTarget.value);
+  let filteredList = list;
+  const fuse = new Fuse(list, {
+    threshold: 0,
+    ignoreLocation: true,
+    keys: [
+      'applicationNum',
+      'companyId',
+      'employeeName',
+      'handledAt',
+      'companyName',
+    ],
+  });
+  if (filterValue.length > 1) {
+    const fuseList = fuse.search(filterValue);
+    filteredList = fuseList.map((item) => item.item);
+  }
 
-  const columns: ColumnType[] = React.useMemo(() => {
-    const cols: ColumnType[] = [
-      {
-        // eslint-disable-next-line react/display-name
-        Cell: ({
-          cell: {
-            row: {
-              original: { id, companyName },
-            },
-          },
-        }) => (
-          <$Link
-            href={`/application?id=${id}`}
-            rel="noopener noreferrer"
-            aria-label={companyName}
-          >
-            {companyName}
-          </$Link>
-        ),
-        Header: getHeader('companyName'),
-        accessor: 'companyName',
-        width: COLUMN_WIDTH.XL,
-        disableSortBy: true,
-      },
-      {
-        Header: getHeader('companyId'),
-        accessor: 'companyId',
-        disableSortBy: true,
-        width: COLUMN_WIDTH.S,
-      },
-      {
-        Header: getHeader('applicationNum'),
-        accessor: 'applicationNum',
-        disableSortBy: true,
-        width: COLUMN_WIDTH.S,
-      },
-
-      {
-        Header: t(
-          `${translationsBase}.columns.employeeNameArchive`
-        )?.toString(),
-        accessor: 'employeeName',
-        disableSortBy: true,
-        width: COLUMN_WIDTH.M,
-      },
-      {
-        Header: getHeader('handledAt'),
-        accessor: 'handledAt',
-        disableSortBy: true,
-        width: COLUMN_WIDTH.S,
-      },
-      {
-        Header: getHeader('dataReceived'),
-        accessor: 'dataReceived',
-        disableSortBy: true,
-        width: COLUMN_WIDTH.S,
-      },
-      {
-        // eslint-disable-next-line react/display-name
-        Cell: ({
-          cell: {
-            row: {
-              original: { status },
-            },
-          },
-        }) => (
-          <$Status status={status}>
-            {t(`${translationsBase}.columns.statuses.${status}`)?.toString()}
-          </$Status>
-        ),
-        Header: t(`${translationsBase}.columns.statusArchive`)?.toString(),
-        accessor: 'status',
-        width: COLUMN_WIDTH.L,
-        disableSortBy: true,
-      },
-    ];
-    return cols.filter(Boolean);
-  }, [t, getHeader, translationsBase]);
+  interface TableTransforms {
+    id?: string;
+    companyName?: string;
+    status?: APPLICATION_STATUSES;
+  }
+  const cols = [
+    {
+      transform: ({ id, companyName }: TableTransforms) => (
+        <$Link href={`/application?id=${String(id)}`}>
+          {String(companyName)}
+        </$Link>
+      ),
+      headerName: getHeader('companyName'),
+      key: 'companyName',
+      isSortable: true,
+    },
+    {
+      headerName: getHeader('companyId'),
+      key: 'companyId',
+      isSortable: true,
+    },
+    {
+      headerName: getHeader('applicationNum'),
+      key: 'applicationNum',
+      isSortable: true,
+    },
+    {
+      headerName: getHeader('employeeNameArchive'),
+      key: 'employeeName',
+      isSortable: true,
+    },
+    {
+      headerName: getHeader('handledAt'),
+      key: 'handledAt',
+      isSortable: true,
+    },
+    {
+      transform: ({ status }: TableTransforms) => (
+        <$Status status={status}>
+          {t(`${translationsBase}.columns.statuses.${status}`)?.toString()}
+        </$Status>
+      ),
+      headerName: t(`${translationsBase}.columns.statusArchive`)?.toString(),
+      key: 'status',
+      isSortable: true,
+    },
+  ];
 
   if (shouldShowSkeleton) {
     return (
       <Container>
-        <LoadingSkeleton width="100%" height="50px" />
+        <$Heading as="h1">{`${t(
+          'common:header.navigation.archive'
+        )}`}</$Heading>
+        <$ArchiveCount>{`${t(`${translationsBase}.total.count`, {
+          count: 0,
+        })}`}</$ArchiveCount>
+        <LoadingSpinner small />
       </Container>
     );
   }
@@ -118,15 +108,30 @@ const ApplicationsArchive: React.FC = () => {
       <$Heading as="h1" data-testid="main-ingress">{`${t(
         'common:header.navigation.archive'
       )}`}</$Heading>
-      {list.length > 0 && (
-        <$ArchiveCount>{`${t(`${translationsBase}.total.count`, {
-          count: list.length,
-        })}`}</$ArchiveCount>
-      )}
+      <$ArchiveCount>{`${t(`${translationsBase}.total.count`, {
+        count: filteredList.length,
+      })}`}</$ArchiveCount>
       {!shouldHideList ? (
-        <Table data={list} columns={columns} />
+        <>
+          <TextInput
+            id="table-filter"
+            label={t('common:search.input.filter.label')}
+            placeholder={t('common:search.input.filter.placeholder')}
+            onChange={handleChangeSearchValue}
+            value={filterValue}
+            css="margin-bottom: var(--spacing-m);"
+          />
+          <Table
+            indexKey="id"
+            theme={theme.components.table}
+            rows={filteredList}
+            cols={cols}
+          />
+        </>
       ) : (
-        <$Empty>{t(`${translationsBase}.messages.empty.archive`)}</$Empty>
+        <$EmptyHeading>
+          {t(`${translationsBase}.messages.empty.archived`)}
+        </$EmptyHeading>
       )}
     </Container>
   );
