@@ -35,18 +35,31 @@ const Login: NextPage = () => {
     if (router.query.logout) {
       return { type: 'info', label: t('common:login.logoutMessageLabel') };
     }
+    if (router.query.userStateError) {
+      return {
+        type: 'error',
+        label: t('common:login.userStateErrorLabel'),
+        content: t('common:login.userStateErrorContent'),
+      };
+    }
     return {
       type: 'info',
       label: t('common:login.infoLabel'),
       content: t('common:login.infoContent'),
     };
-  }, [t, router.query.error, router.query.sessionExpired, router.query.logout]);
+  }, [
+    t,
+    router.query.error,
+    router.query.sessionExpired,
+    router.query.logout,
+    router.query.userStateError,
+  ]);
 
   useEffect(() => {
-    if (router.query.logout) {
-      void queryClient.clear();
+    if (router.query.logout || router.query.userStateError) {
+      queryClient.clear();
     }
-  }, [router.query.logout, queryClient]);
+  }, [router.query.logout, router.query.userStateError, queryClient]);
 
   return (
     <Container>

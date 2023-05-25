@@ -456,6 +456,8 @@
   "login": {
     "login": "Logga in i tjänsten",
     "logoutMessageLabel": "Du har loggat ut",
+    "userStateErrorLabel": "Kirjautumisessa on häiriö",
+    "userStateErrorContent": "Kirjautumisessa on vikaa tai taustajärjestelmään ei saada yhteyttä. Yritä myöhemmin uudelleen.",
     "errorLabel": "Ett okänt fel inträffade. Logga in på nytt.",
     "sessionExpiredLabel": "Användarsessionen föråldrades. Logga in på nytt.",
     "infoLabel": "Att använda tjänsten kräver stark autentisering",
