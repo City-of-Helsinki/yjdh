@@ -240,16 +240,21 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         application_ids = request.data.get("application_ids")
         batch = self.get_batch(pk)
 
-        apps = Application.objects.filter(
+        apps_in_batch = Application.objects.filter(batch=batch)
+
+        deassign_apps = apps_in_batch.filter(
             pk__in=application_ids,
             status__in=[ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
-            batch=batch,
         )
-        if apps:
-            for app in apps:
+
+        if deassign_apps:
+            for app in deassign_apps:
                 app.batch = None
                 app.save()
+            if len(apps_in_batch) == len(deassign_apps):
+                batch.delete()
             return Response(status=status.HTTP_200_OK)
+
         return Response(
             {"detail": "Applications were not applicable to be detached."},
             status=status.HTTP_404_NOT_FOUND,
