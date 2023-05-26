@@ -191,7 +191,8 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         def create_application_batch_by_ids(app_status, apps):
             if apps:
                 batch = ApplicationBatch.objects.create(
-                    proposal_for_decision=app_status
+                    proposal_for_decision=app_status,
+                    handler=request.user
                 )
                 return batch
 
