@@ -23,6 +23,7 @@ from applications.exceptions import (
     BatchCompletionRequiredFieldsError,
     BatchTooManyDraftsError,
 )
+from users.models import User
 from common.localized_iban_field import LocalizedIBANField
 from common.utils import DurationMixin
 from companies.models import Company
@@ -475,6 +476,13 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
     * Decision making in Ahjo
     * Transferring payment data to Talpa
     """
+
+    handler = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
 
     status = models.CharField(
         max_length=64,
