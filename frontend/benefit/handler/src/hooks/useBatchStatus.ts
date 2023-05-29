@@ -61,14 +61,13 @@ const useBatchStatus = (): UseMutationResult<Response, BatchError, Payload> => {
     },
     {
       onSuccess: ({ status: backendStatus }: Response) => {
+        setTimeout(() => {
+          void queryClient.invalidateQueries('applicationsList');
+        }, 25);
         showSuccessToast(
           t(`common:batches.notifications.registerToAhjo.${backendStatus}`),
           ''
         );
-
-        if (backendStatus === BATCH_STATUSES.DRAFT) {
-          void queryClient.invalidateQueries('applicationsList');
-        }
       },
       onError: (e: BatchError) => handleError(e),
     }
