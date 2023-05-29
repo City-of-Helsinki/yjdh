@@ -18,8 +18,8 @@ const useDownloadBatchFiles = (): UseMutationResult<
 
   const handleError = (): void => {
     showErrorToast(
-      t('common:applications.list.errors.fetch.label'),
-      t('common:applications.list.errors.fetch.text', { status: 'error' })
+      t('common:batches.notifications.errors.downloadError.title'),
+      t('common:batches.notifications.errors.downloadError.message')
     );
   };
 

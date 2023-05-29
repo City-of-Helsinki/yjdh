@@ -507,6 +507,10 @@
         "batchInvalidDraftAlreadyExists": {
           "title": "Uuden Ahjo-koonnin valmistelu on jo käynnissä",
           "message": "Voit palauttaa tämän koonnin takaisin käsittelyyn vasta, kun jo valmistelussa oleva keskeneräinen koonti on viety Ahjoon"
+        },
+        "downloadError": {
+          "title": "Liitetiedostojen lataus epäonnistui",
+          "message": "Tekninen virhe. Yhden tai useamman hakemuksen tiedot saattavat olla puuttellisia."
         }
       }
     },
