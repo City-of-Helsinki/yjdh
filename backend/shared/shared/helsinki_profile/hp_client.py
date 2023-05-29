@@ -92,6 +92,8 @@ class HelsinkiProfileClient:
             )
             response.raise_for_status()
             data = response.json()
+            print("Response from tunnistamo api tokens endpoint")
+            print(data)
         except RequestException as e:
             raise HelsinkiProfileException(str(e))
 

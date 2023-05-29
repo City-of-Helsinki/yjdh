@@ -83,30 +83,40 @@ def get_organization_roles(request: HttpRequest) -> dict:
 
 def store_token_info_in_session(request: HttpRequest, token_info: dict, prefix=""):
     session_dict = dict()
+    print("")
+    print("")
+    print("")
+    print("!!! store_token_info_in_session !!!", prefix)
+    print("")
 
     if id_token := token_info.get("id_token"):
         session_dict[f"{prefix}_id_token"] = id_token
-
+    print("ID TOKEN:", id_token)
     if access_token := token_info.get("access_token"):
         session_dict[f"{prefix}_access_token"] = access_token
-
+    print("ACCESS TOKEN:", access_token)
     if access_token_expires := token_info.get("expires_in"):
         session_dict[f"{prefix}_access_token_expires"] = (
             timezone.now()
             + timedelta(seconds=access_token_expires - 5)  # Add a bit of headroom
         ).isoformat()
+    print("ACCESS TOKEN expires:", access_token_expires)
 
     if refresh_token := token_info.get("refresh_token"):
         session_dict[f"{prefix}_refresh_token"] = refresh_token
+    print("REFRESH TOKEN :", refresh_token)
 
     if refresh_token_expires := token_info.get("refresh_expires_in"):
         session_dict[f"{prefix}_refresh_token_expires"] = (
             timezone.now()
             + timedelta(seconds=refresh_token_expires - 5)  # Add a bit of headroom
         ).isoformat()
+    print("REFRESH TOKEN expires:", refresh_token_expires)
 
     request.session.update(session_dict)
-
+    print("")
+    print("")
+    print("")
     return session_dict
 
 

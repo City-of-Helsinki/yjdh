@@ -86,6 +86,8 @@ class HelsinkiOIDCAuthenticationBackend(OIDCAuthenticationBackend):
             "redirect_uri": absolutify(self.request, reverse(reverse_url)),
         }
 
+        print("TOKEN PAYLOAD", token_payload)
+
         # Get the token
         try:
             token_info = self.get_token(token_payload)

@@ -47,6 +47,7 @@ class EauthAuthenticationRequestView(View):
         https://palveluhallinta.suomi.fi/fi/tuki/artikkelit/592d774503f6d100018db5dd
         """
         request_id = uuid4()
+        print("REGISTER USER HAS PERSON ID", person_id)
         path = f"/service/ypa/user/register/{settings.EAUTHORIZATIONS_CLIENT_ID}/{person_id}?requestId={request_id}"
 
         checksum_header = get_checksum_header(path)
@@ -57,6 +58,12 @@ class EauthAuthenticationRequestView(View):
                 "X-AsiointivaltuudetAuthorization": checksum_header,
             },
         )
+        print("")
+        print("")
+        print("SUOMIFI RESPONSE FROM REGISTER_USER", response)
+        print("")
+        print("")
+        print("")
         response.raise_for_status()
         return response.json()
 
@@ -68,22 +75,36 @@ class EauthAuthenticationRequestView(View):
         user to the login error page in the UI.
         """
 
-        suomifi_enabled = getattr(settings, "NEXT_PUBLIC_ENABLE_SUOMIFI", False)
+        print("")
+        print("")
+        print("")
+        print("START AUTH; REQUEST", request.__dict__)
+        print("")
+        print("")
+        print("")
 
+        suomifi_enabled = getattr(settings, "NEXT_PUBLIC_ENABLE_SUOMIFI", False)
         if suomifi_enabled:
+            print("SSN FROM SUOMI_FI ENABLED")
+
             # Suomi.fi SAML authentication has been enabled
+            print("REQUEST SSN FROM SAML SESSION")
             user_ssn = request.saml_session.get("national_id_num")
             if not user_ssn:
                 return self.login_failure()
         else:
+            print("SSN FROM SUOMI_FI DISABLED")
+
             if not request.session.get("oidc_access_token"):
                 return self.login_failure()
 
+            print("REQUEST SSN FROM OIDC USERINFO SESSION")
             user_info = get_userinfo(request)
             user_ssn = user_info.get("national_id_num")
 
             # When authenticating via Tunnistamo, we need to call Helsinki Profile GraphQL API
             if user_ssn is None:
+                print("REQUEST SSN FROM GRAPHQL")
                 try:
                     profile = HelsinkiProfileClient().get_profile(
                         request.session.get("oidc_access_token")
@@ -94,20 +115,29 @@ class EauthAuthenticationRequestView(View):
                     )
                     return self.login_failure()
                 user_ssn = profile["user_ssn"]
+                print("SET SSN FROM GRAPHQL")
+
+        print("GOT SSN; IT'S VALUE IS", user_ssn, user_ssn.__class__)
 
         if user_ssn is None:
+            print(" ### SSN IS NONE; WE ALREADY CALLED GRAPHQL !! PANIC!!!")
             logger.warning(
                 "Cannot use eauthorizations API due to missing nationalIdentificationNumber"
             )
             return self.login_failure()
+        print("")
+        print("")
+        print("")
 
         register_info = self.register_user(user_ssn)
 
         session_id = register_info.get("sessionId")
         user_id = register_info.get("userId")
+        print("REGISTER_INFO OK! SESSION, USER ID", session_id, user_id)
+        print("INIT EAUTH_SESSION ", session_id, user_id)
 
         store_token_info_in_eauth_session(request, {"id_token": session_id})
-
+        print("SESSION STORED OK, START EAUTH AUTHORIZATION")
         auth_url = settings.EAUTHORIZATIONS_BASE_URL + "/oauth/authorize"
 
         params = {
@@ -119,6 +149,8 @@ class EauthAuthenticationRequestView(View):
             "user": user_id,
         }
 
+        print("PARAMS:", params)
+
         lang = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
         if lang:
             params["lang"] = lang
@@ -126,6 +158,10 @@ class EauthAuthenticationRequestView(View):
         query = urlencode(params)
 
         redirect_url = "{url}?{query}".format(url=auth_url, query=query)
+        print("REDIRECT URL:", redirect_url)
+        print("")
+        print("")
+        print("")
 
         return HttpResponseRedirect(redirect_url)
 
@@ -154,6 +190,12 @@ class EauthAuthenticationCallbackView(View):
         return HttpResponseRedirect(url)
 
     def get_token_info(self, code):
+        print(
+            "START POST TO eauth_authentication_callback",
+            settings.EAUTHORIZATIONS_CLIENT_ID,
+            settings.EAUTHORIZATIONS_API_OAUTH_SECRET,
+            (settings.EAUTHORIZATIONS_BASE_URL + "/oauth/token"),
+        )
         """Return token object as a dictionary."""
         auth_header = HTTPBasicAuth(
             settings.EAUTHORIZATIONS_CLIENT_ID,
@@ -171,6 +213,8 @@ class EauthAuthenticationCallbackView(View):
         }
         query = urlencode(params)
 
+        print("PARAMS:", params)
+
         token_url = "{url}?{query}".format(url=token_endpoint_url, query=query)
         response = requests.post(
             token_url,
@@ -182,7 +226,12 @@ class EauthAuthenticationCallbackView(View):
 
     @method_decorator(ensure_csrf_cookie)
     def get(self, request):
-        """Eauth client authentication callback HTTP endpoint"""
+        print("")
+        print("")
+        print("")
+
+        """!!! Eauth client authentication callback HTTP endpoint !!!"""
+        print("Eauth client authentication callback HTTP endpoint")
         if request.GET.get("error"):
             if request.user.is_authenticated:
                 auth.logout(request)
@@ -191,6 +240,7 @@ class EauthAuthenticationCallbackView(View):
         elif "code" in request.GET:
             try:
                 token_info = self.get_token_info(request.GET["code"])
+                print("TOKEN_INFO", token_info)
                 store_token_info_in_eauth_session(request, token_info)
 
                 # Store organization roles in session
