@@ -210,16 +210,22 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         )
 
         # Try finding an existing batch
-        batch = (
-            ApplicationBatch.objects.filter(
-                status=ApplicationBatchStatus.DRAFT, proposal_for_decision=app_status
-            ).first()
-        ) or create_application_batch_by_ids(
-            app_status,
-            apps,
-        )
+        try:
+            batch = (
+                ApplicationBatch.objects.filter(
+                    status=ApplicationBatchStatus.DRAFT, proposal_for_decision=app_status
+                ).first()
+            ) or create_application_batch_by_ids(
+                app_status,
+                apps,
+            )
+        except BatchTooManyDraftsError:
+            return Response(
+                {"errorKey": "batchInvalidDraftAlreadyExists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        if batch:
+        if batch and batch.status == ApplicationBatchStatus.DRAFT:
             apps.update(batch=batch)
             batch = ApplicationBatchSerializer(batch)
             return Response(batch.data, status=status.HTTP_200_OK)
@@ -270,6 +276,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         batch = self.get_batch(pk)
         if new_status not in [
             ApplicationBatchStatus.DRAFT,
+            ApplicationBatchStatus.AHJO_REPORT_CREATED,
             ApplicationBatchStatus.AWAITING_AHJO_DECISION,
             ApplicationBatchStatus.DECIDED_ACCEPTED,
             ApplicationBatchStatus.DECIDED_REJECTED,

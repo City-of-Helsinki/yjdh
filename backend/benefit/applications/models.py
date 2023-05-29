@@ -532,7 +532,7 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
                 and self.status == ApplicationBatchStatus.DRAFT
             ):
                 drafts = ApplicationBatch.objects.filter(
-                    status=self.status, proposal_for_decision=self.proposal_for_decision
+                    status__in=[ApplicationBatchStatus.DRAFT, ApplicationBatchStatus.AHJO_REPORT_CREATED], proposal_for_decision=self.proposal_for_decision
                 ).exclude(id=self.id)
                 if len(drafts) > 0:
                     raise BatchTooManyDraftsError(
