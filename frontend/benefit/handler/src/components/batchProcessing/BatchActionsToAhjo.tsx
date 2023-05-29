@@ -2,7 +2,7 @@ import useBatchStatus from 'benefit/handler/hooks/useBatchStatus';
 import useDownloadBatchFiles from 'benefit/handler/hooks/useDownloadBatchFiles';
 import { BATCH_STATUSES } from 'benefit-shared/constants';
 import { BatchProposal } from 'benefit-shared/types/application';
-import { Button, IconCheckCircleFill, IconDownload } from 'hds-react';
+import { Button, IconCheckCircleFill, IconDownload, IconLock } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
@@ -18,15 +18,21 @@ const BatchActionsCompletion: React.FC<BatchProps> = ({
   const { t } = useTranslation();
   const { mutate: changeBatchStatus } = useBatchStatus();
 
-  const { isLoading: isDownloading, mutate: downloadBatchFiles } =
-    useDownloadBatchFiles();
-  const [isAtAhjo, setIsAtAhjo] = React.useState<ButtonAhjoStates>('primary');
+  const {
+    isError: isDownloadError,
+    isLoading: isDownloading,
+    mutate: downloadBatchFiles,
+  } = useDownloadBatchFiles();
+  const [isAtAhjo] = React.useState<ButtonAhjoStates>('primary');
 
   const [isDownloadingAttachments, setIsDownloadingAttachments] =
     React.useState(false);
 
   React.useEffect(() => {
     if (!isDownloading) {
+      setIsDownloadingAttachments(false);
+    }
+    if (isDownloadError) {
       setIsDownloadingAttachments(false);
     }
   }, [isDownloading]);
@@ -36,50 +42,77 @@ const BatchActionsCompletion: React.FC<BatchProps> = ({
     downloadBatchFiles(batch.id);
   };
 
-  const markBatchAs = (markBatchAsStatus: BATCH_STATUSES): void =>
+  const handleBatchStatusChange = (
+    status:
+      | BATCH_STATUSES.AWAITING_FOR_DECISION
+      | BATCH_STATUSES.AHJO_REPORT_CREATED
+      | BATCH_STATUSES.DRAFT
+  ): void => {
     changeBatchStatus({
       id: batch.id,
-      status: markBatchAsStatus,
+      status,
     });
-
-  const handleBatchStatusChange = (): void => {
-    if (isAtAhjo === 'primary') {
-      changeBatchStatus({
-        id: batch.id,
-        status: BATCH_STATUSES.AWAITING_FOR_DECISION,
-      });
-      setIsAtAhjo('secondary');
-    } else {
-      markBatchAs(BATCH_STATUSES.DRAFT);
-      setIsAtAhjo('primary');
+    if (status === BATCH_STATUSES.AHJO_REPORT_CREATED) {
+      handleDownloadBatchFiles();
     }
   };
 
   return (
     <>
-      <Button
-        theme="black"
-        variant="secondary"
-        iconLeft={<IconDownload />}
-        isLoading={isDownloadingAttachments}
-        disabled={isDownloadingAttachments}
-        loadingText={t('common:utility.loading')}
-        onClick={() => handleDownloadBatchFiles()}
-      >
-        {t('common:batches.actions.downloadFiles')}
-      </Button>
-      <Button
-        theme="coat"
-        style={{ marginLeft: 'var(--spacing-s)' }}
-        variant={isAtAhjo}
-        iconLeft={isAtAhjo === 'secondary' ? <IconCheckCircleFill /> : null}
-        className="table-custom-action"
-        onClick={() => handleBatchStatusChange()}
-      >
-        {isAtAhjo === 'primary'
-          ? t('common:batches.actions.markAsRegisteredToAhjo')
-          : t('common:batches.actions.markedAsRegisteredToAhjo')}
-      </Button>
+      {batch.status === BATCH_STATUSES.DRAFT ? (
+        <Button
+          theme="coat"
+          variant={isAtAhjo}
+          iconLeft={isAtAhjo === 'secondary' ? <IconCheckCircleFill /> : null}
+          className="table-custom-action"
+          onClick={() =>
+            handleBatchStatusChange(BATCH_STATUSES.AHJO_REPORT_CREATED)
+          }
+        >
+          {t('common:batches.actions.markAsReadyForAhjo')}
+        </Button>
+      ) : null}
+
+      {batch.status === BATCH_STATUSES.AHJO_REPORT_CREATED ? (
+        <>
+          <Button
+            theme="black"
+            disabled={isDownloadingAttachments}
+            variant="secondary"
+            style={{ minWidth: '180px' }}
+            iconLeft={<IconDownload />}
+            isLoading={isDownloadingAttachments}
+            loadingText={t('common:utility.loading')}
+            onClick={() => handleDownloadBatchFiles()}
+          >
+            {t('common:batches.actions.downloadFiles')}
+          </Button>
+          <Button
+            theme="coat"
+            disabled={isDownloadingAttachments}
+            style={{ marginLeft: 'var(--spacing-s)' }}
+            variant={isAtAhjo}
+            iconLeft={isAtAhjo === 'secondary' ? <IconCheckCircleFill /> : null}
+            className="table-custom-action"
+            onClick={() =>
+              handleBatchStatusChange(BATCH_STATUSES.AWAITING_FOR_DECISION)
+            }
+          >
+            {isAtAhjo === 'primary'
+              ? t('common:batches.actions.markAsRegisteredToAhjo')
+              : t('common:batches.actions.markedAsRegisteredToAhjo')}
+          </Button>
+          <div>
+            <span>Lukittu</span>
+            <button
+              disabled={isDownloadingAttachments}
+              onClick={() => handleBatchStatusChange(BATCH_STATUSES.DRAFT)}
+            >
+              <IconLock />
+            </button>
+          </div>
+        </>
+      ) : null}
     </>
   );
 };

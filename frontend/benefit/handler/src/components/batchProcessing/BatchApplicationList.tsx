@@ -50,8 +50,13 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
 
   const applications = React.useMemo(() => apps, [apps]);
 
-  const IS_DRAFT = status === BATCH_STATUSES.DRAFT;
-  const [isCollapsed, setIsCollapsed] = React.useState<boolean>(!IS_DRAFT);
+  const IS_WAITING_FOR_AHJO = [
+    BATCH_STATUSES.DRAFT,
+    BATCH_STATUSES.AHJO_REPORT_CREATED,
+  ].includes(status);
+  const [isCollapsed, setIsCollapsed] = React.useState<boolean>(
+    !IS_WAITING_FOR_AHJO
+  );
 
   const { mutate: removeApp } = useRemoveAppFromBatch();
   const handleAppRemoval = (appId: string): void => {
@@ -96,12 +101,13 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
     },
     {
       transform: ({ id: appId }: { id: string }) =>
-        IS_DRAFT ? (
+        IS_WAITING_FOR_AHJO ? (
           <Button
             theme="black"
             variant="supplementary"
             iconLeft={<IconArrowUndo />}
             onClick={() => handleAppRemoval(appId)}
+            disabled={status !== BATCH_STATUSES.DRAFT}
           >
             {' '}
           </Button>

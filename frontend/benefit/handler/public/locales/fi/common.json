@@ -499,6 +499,7 @@
       },
       "registerToAhjo": {
         "awaiting_ahjo_decision": "Koonti merkitty Ahjoon viedyksi",
+        "exported_ahjo_report": "Ahjo-valmistelu aloitettu, koonti lukittu",
         "draft": "Koonti palautettu takaisin odottamaan päätösvalmistelua",
         "accepted": "Koonti lähetetty Talpaan ja arkistoitu",
         "rejected": "Koonti arkistoitu"
@@ -511,6 +512,7 @@
       }
     },
     "actions": {
+      "markAsReadyForAhjo": "Aloita Ahjo-valmistelu",
       "markAsRegisteredToAhjo": "Merkitse Ahjoon viedyksi",
       "markedAsRegisteredToAhjo": "Viety Ahjoon",
       "markToPaymentAndArchive": "Merkitse maksuun ja arkistoi",

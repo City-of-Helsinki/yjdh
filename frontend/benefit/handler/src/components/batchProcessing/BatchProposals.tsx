@@ -8,7 +8,7 @@ import BatchApplicationList from './BatchApplicationList';
 import { BatchListProps, useBatchProposal } from './useBatches';
 
 type BatchProps = {
-  status: BATCH_STATUSES;
+  status: BATCH_STATUSES[];
 };
 
 const BatchProposals: React.FC<BatchProps> = ({ status }: BatchProps) => {
