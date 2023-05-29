@@ -34,6 +34,11 @@ export type BatchData = {
   created_at: string;
 };
 
+export type Handler = {
+  first_name: string;
+  last_name: string;
+};
+
 export type BatchProposal = {
   id: string;
   status: BATCH_STATUSES;
@@ -46,6 +51,7 @@ export type BatchProposal = {
   expert_inspector_name?: string;
   expert_inspector_email?: string;
   created_at: string;
+  handler?: Handler;
 };
 
 export type ApplicationInBatch = {
