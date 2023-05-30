@@ -506,8 +506,14 @@
       },
       "errors": {
         "batchInvalidDraftAlreadyExists": {
-          "title": "Uuden Ahjo-koonnin valmistelu on jo käynnissä",
-          "message": "Voit palauttaa tämän koonnin takaisin käsittelyyn vasta, kun jo valmistelussa oleva keskeneräinen koonti on viety Ahjoon"
+          "draft": {
+            "title": "Uuden Ahjo-koonnin valmistelu on jo käynnissä",
+            "message": "Voit palauttaa tämän koonnin takaisin käsittelyyn vasta, kun jo valmistelussa oleva keskeneräinen koonti on viety Ahjoon"
+          },
+          "locked": {
+            "title": "Hakemuksia ei voitu siirtää koontiin",
+            "message": "Kollegasi on valmistelemassa koontia Ahjoon. Voit luoda uuden Ahjo-koonnin, kun hän on ensin viimeistellyt koonnin."
+          }
         },
         "downloadError": {
           "title": "Liitetiedostojen lataus epäonnistui",

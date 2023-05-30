@@ -32,8 +32,8 @@ const useAddToBatchQuery = (): UseMutationResult<Payload, Error> => {
     if (errorResponse.response?.data?.errorKey) {
       const { errorKey } = errorResponse.response.data;
       showErrorToast(
-        t(`common:batches.notifications.errors.${errorKey}.title`),
-        t(`common:batches.notifications.errors.${errorKey}.message`)
+        t(`common:batches.notifications.errors.${errorKey}.locked.title`),
+        t(`common:batches.notifications.errors.${errorKey}.locked.message`)
       );
       return;
     } else {

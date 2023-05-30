@@ -32,12 +32,19 @@ const useBatchStatus = (): UseMutationResult<Response, BatchError, Payload> => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
-  const handleError = (errorResponse: BatchError): void => {
+  const handleError = (
+    errorResponse: BatchError,
+    previousStatus: BATCH_STATUSES
+  ): void => {
     if (errorResponse.response?.data?.errorKey) {
       const { errorKey } = errorResponse.response.data;
       showErrorToast(
-        t(`common:batches.notifications.errors.${errorKey}.title`),
-        t(`common:batches.notifications.errors.${errorKey}.message`)
+        t(
+          `common:batches.notifications.errors.${errorKey}.${previousStatus}.title`
+        ),
+        t(
+          `common:batches.notifications.errors.${errorKey}.${previousStatus}.message`
+        )
       );
       return;
     }
@@ -69,7 +76,8 @@ const useBatchStatus = (): UseMutationResult<Response, BatchError, Payload> => {
           ''
         );
       },
-      onError: (e: BatchError) => handleError(e),
+      onError: (e: BatchError, { status: previousStatus }) =>
+        handleError(e, previousStatus),
     }
   );
 };
