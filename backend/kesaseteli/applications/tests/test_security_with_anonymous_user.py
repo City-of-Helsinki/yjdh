@@ -3,7 +3,10 @@ from django.test import override_settings
 from rest_framework import status
 from rest_framework.reverse import reverse
 
-from common.tests.factories import AdditionalInfoRequestedYouthApplicationFactory
+from common.tests.factories import (
+    AcceptedYouthApplicationFactory,
+    AdditionalInfoRequestedYouthApplicationFactory,
+)
 from common.tests.utils import set_company_business_id_to_client
 
 
@@ -56,4 +59,23 @@ def test_youth_application_status_openly_accessible_to_anonymous_user(client):
     response = client.get(status_url)
     assert response.status_code == status.HTTP_200_OK
     assert response.data == {"status": "additional_information_requested"}
+    assert response.wsgi_request.user.is_anonymous
+
+
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.django_db
+def test_youth_application_fetch_employee_data_forbidden_to_anonymous_user(client):
+    AcceptedYouthApplicationFactory(
+        last_name="Doe",
+        youth_summer_voucher__summer_voucher_serial_number=123,
+    )
+    url = reverse("v1:youthapplication-fetch-employee-data")
+    response = client.post(
+        url,
+        data={
+            "employee_name": "John Doe",
+            "summer_voucher_serial_number": 123,
+        },
+    )
+    assert response.status_code == status.HTTP_403_FORBIDDEN
     assert response.wsgi_request.user.is_anonymous
