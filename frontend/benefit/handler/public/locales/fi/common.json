@@ -490,6 +490,9 @@
       },
       "empty": "Tyhjä koonti"
     },
+    "tooltips": {
+      "lockedBatch": "{{ name }} vie parhaillaan hakemuksia Ahjoon. Koontin ei juuri nyt voi tehdä muutoksia. Odota hetki tai avaa lukko."
+    },
     "notifications": {
       "addToBatch": {
         "success": {
@@ -528,7 +531,9 @@
       "markToPaymentAndArchive": "Merkitse maksuun ja arkistoi",
       "markToArchive": "Arkistoi",
       "markAsWaitingForAhjo": "Palauta odottamaan Ahjoon vientiä",
-      "downloadFiles": "Lataa liitteet"
+      "downloadFiles": "Lataa liitteet",
+      "deleteBatch": "Tyhjennä koonti",
+      "lockedBatch": "Lukittu"
     },
     "form": {
       "fields": {
