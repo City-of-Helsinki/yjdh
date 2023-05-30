@@ -1,6 +1,12 @@
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import Fuse from 'fuse.js';
-import { LoadingSpinner, Table, TextInput } from 'hds-react';
+import {
+  IconCheckCircleFill,
+  IconCrossCircleFill,
+  LoadingSpinner,
+  Table,
+  TextInput,
+} from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import { $Link } from 'shared/components/table/Table.sc';
@@ -80,7 +86,15 @@ const ApplicationsArchive: React.FC = () => {
     {
       transform: ({ status }: TableTransforms) => (
         <$Status status={status}>
-          {t(`${translationsBase}.columns.statuses.${status}`)?.toString()}
+          {status === APPLICATION_STATUSES.ACCEPTED ? (
+            <IconCheckCircleFill color="var(--color-tram)" />
+          ) : null}
+          {status === APPLICATION_STATUSES.REJECTED ? (
+            <IconCrossCircleFill color="var(--color-brick)" />
+          ) : null}
+          <span>
+            {t(`${translationsBase}.columns.statuses.${status}`)?.toString()}
+          </span>
         </$Status>
       ),
       headerName: t(`${translationsBase}.columns.statusArchive`)?.toString(),
@@ -95,9 +109,6 @@ const ApplicationsArchive: React.FC = () => {
         <$Heading as="h1">{`${t(
           'common:header.navigation.archive'
         )}`}</$Heading>
-        <$ArchiveCount>{`${t(`${translationsBase}.total.count`, {
-          count: 0,
-        })}`}</$ArchiveCount>
         <LoadingSpinner small />
       </Container>
     );
@@ -108,9 +119,6 @@ const ApplicationsArchive: React.FC = () => {
       <$Heading as="h1" data-testid="main-ingress">{`${t(
         'common:header.navigation.archive'
       )}`}</$Heading>
-      <$ArchiveCount>{`${t(`${translationsBase}.total.count`, {
-        count: filteredList.length,
-      })}`}</$ArchiveCount>
       {!shouldHideList ? (
         <>
           <TextInput
@@ -121,6 +129,9 @@ const ApplicationsArchive: React.FC = () => {
             value={filterValue}
             css="margin-bottom: var(--spacing-m);"
           />
+          <$ArchiveCount>{`${t(`${translationsBase}.total.count`, {
+            count: filteredList.length,
+          })}`}</$ArchiveCount>
           <Table
             indexKey="id"
             theme={theme.components.table}

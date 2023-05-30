@@ -15,6 +15,9 @@ export const $ArchiveCount = styled.p`
 `;
 
 export const $Status = styled.p<StatusProps>`
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
   color: ${(props) =>
     props.status === APPLICATION_STATUSES.CANCELLED
       ? props.theme.colors.error
