@@ -102,15 +102,15 @@ const BatchActionsCompletion: React.FC<BatchProps> = ({
               ? t('common:batches.actions.markAsRegisteredToAhjo')
               : t('common:batches.actions.markedAsRegisteredToAhjo')}
           </Button>
-          <div>
-            <span>Lukittu</span>
-            <button
-              disabled={isDownloadingAttachments}
-              onClick={() => handleBatchStatusChange(BATCH_STATUSES.DRAFT)}
-            >
-              <IconLock />
-            </button>
-          </div>
+          <Button
+            theme="coat"
+            style={{ marginLeft: 'auto' }}
+            iconLeft={<IconLock />}
+            disabled={isDownloadingAttachments}
+            onClick={() => handleBatchStatusChange(BATCH_STATUSES.DRAFT)}
+          >
+            Palauta muokattavaksi
+          </Button>
         </>
       ) : null}
     </>
