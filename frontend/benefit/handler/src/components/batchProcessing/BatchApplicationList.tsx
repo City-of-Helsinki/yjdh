@@ -149,12 +149,10 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
         <div>
           <dt>{t('common:batches.single')}</dt>
           <dd>{proposalForDecisionHeader()}</dd>
-          <div>
-            <dt>{t('common:batches.list.columns.handler')}</dt>
-            <dd>
-              {handler?.first_name} {handler?.last_name}
-            </dd>
-          </div>
+        </div>
+        <div>
+          <dt>{t('common:batches.list.columns.handler')}</dt>
+          <dd>{handler?.first_name}</dd>
         </div>
         <div>
           <dt>{t('common:batches.list.columns.createdAt')}</dt>

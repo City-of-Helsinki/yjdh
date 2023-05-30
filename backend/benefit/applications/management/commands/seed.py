@@ -85,6 +85,7 @@ def run_seed(number):
             elif proposal_for_decision == ApplicationStatus.REJECTED:
                 apps.append(RejectedApplicationFactory())
         batch.applications.set(apps)
+        batch.handler = User.objects.filter(is_staff=True).last()
         batch.save()
 
     f = faker.Faker()
