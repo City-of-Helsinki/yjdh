@@ -25,13 +25,11 @@ const useUserQuery = <T = User>(
       void router.push(`${locale}/login?logout=true`);
     } else if (/40[13]/.test(error.message)) {
       void router.push(`${locale}/login`);
-    } else {
-      if (
-        !process.env.NEXT_PUBLIC_MOCK_FLAG ||
-        process.env.NEXT_PUBLIC_MOCK_FLAG == '0'
-      ) {
-        void router.push(`${locale}/login?userStateError=true`);
-      }
+    } else if (
+      !process.env.NEXT_PUBLIC_MOCK_FLAG ||
+      process.env.NEXT_PUBLIC_MOCK_FLAG === '0'
+    ) {
+      void router.push(`${locale}/login?userStateError=true`);
     }
   };
 
