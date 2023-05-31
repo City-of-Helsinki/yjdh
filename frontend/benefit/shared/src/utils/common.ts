@@ -11,3 +11,15 @@ export const mapMessages = (data: MessageData[] | undefined): Message[] =>
         modifiedAt: convertToUIDateAndTimeFormat(message.modified_at),
       })
   ) || [];
+
+/**
+ * Used to prevent SSR-rendered unstyled HTML-elements from popping when performing page load
+ */
+export const setAppLoaded = (): void => {
+  if (typeof window !== 'undefined') {
+    const loader = document.querySelector('#app-loader');
+    if (loader) {
+      loader.classList.remove('app-waits-for-client');
+    }
+  }
+};

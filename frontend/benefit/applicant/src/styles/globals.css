@@ -13,3 +13,6 @@ ul, li {
   padding: 0;
 }
 
+.app-load-wrapper > div {
+  display: none;
+}
