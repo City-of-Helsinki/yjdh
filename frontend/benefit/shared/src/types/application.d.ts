@@ -7,6 +7,7 @@ import {
   APPLICATION_FIELDS_STEP2_KEYS,
   APPLICATION_STATUSES,
   ATTACHMENT_TYPES,
+  BATCH_STATUSES,
   BENEFIT_TYPES,
   CALCULATION_EMPLOYMENT_KEYS,
   DE_MINIMIS_AID_KEYS,
@@ -14,7 +15,7 @@ import {
   MESSAGE_TYPES,
   ORGANIZATION_TYPES,
   PAY_SUBSIDY_OPTIONS,
-  PROPOSALS_FOR_DESISION,
+  PROPOSALS_FOR_DECISION,
 } from '../constants';
 
 // handler
@@ -23,7 +24,7 @@ export type BatchData = {
   id: string;
   status: APPLICATION_STATUSES;
   applications: string[];
-  proposal_for_decision: PROPOSALS_FOR_DESISION;
+  proposal_for_decision: PROPOSALS_FOR_DECISION;
   decision_maker_title?: string;
   decision_maker_name?: string;
   section_of_the_law?: string;
@@ -31,6 +32,32 @@ export type BatchData = {
   expert_inspector_name?: string;
   expert_inspector_email?: string;
   created_at: string;
+};
+
+export type BatchProposal = {
+  id: string;
+  status: BATCH_STATUSES;
+  applications?: ApplicationInBatch[];
+  proposal_for_decision: PROPOSALS_FOR_DECISION;
+  decision_maker_title?: string;
+  decision_maker_name?: string;
+  section_of_the_law?: string;
+  decision_date?: string;
+  expert_inspector_name?: string;
+  expert_inspector_email?: string;
+  created_at: string;
+};
+
+export type ApplicationInBatch = {
+  id: string;
+  status: APPLICATION_STATUSES;
+  company?: CompanyData;
+  company_name: string;
+  employee?: EmployeeData;
+  application_number: number;
+  employee_name: string;
+  handled_at: string;
+  business_id: string;
 };
 
 interface ApplicationAllowedAction {
@@ -104,8 +131,8 @@ export type ApproveTerms = {
 export type Batch = {
   id: string;
   status: APPLICATION_STATUSES;
-  applications: string[];
-  proposalForDecision: PROPOSALS_FOR_DESISION;
+  applications: string[] | ApplicationData[];
+  proposalForDecision: PROPOSALS_FOR_DECISION;
   decisionMakerTitle?: string;
   decisionMakerName?: string;
   sectionOfTheLaw?: string;
@@ -438,7 +465,7 @@ export type ApplicationListItemData = {
   allowedAction?: ApplicationAllowedAction;
   dataReceived?: string;
   unreadMessagesCount?: number;
-  batch: BatchData | null;
+  batch?: BatchData | string;
 };
 
 export type TextProp = 'textFi' | 'textEn' | 'textSv';

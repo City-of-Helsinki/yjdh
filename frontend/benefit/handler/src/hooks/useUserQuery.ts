@@ -1,8 +1,6 @@
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
 import { useQuery, UseQueryResult } from 'react-query';
-import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useLocale from 'shared/hooks/useLocale';
 import User from 'shared/types/user';
@@ -13,11 +11,13 @@ const FIVE_MINUTES = 5 * 60 * 1000;
 const useUserQuery = <T = User>(
   select?: (user: User) => T
 ): UseQueryResult<T, Error> => {
-  const { t } = useTranslation();
   const router = useRouter();
-  const logout =
-    router.route === '/login' && router.asPath.includes('logout=true'); // router.query doesn't always contain the logout parameter
   const locale = useLocale();
+  // Don't fetch user state if status is logged out
+  const logout =
+    (router.route === '/login' || router.route === `${locale}/login`) &&
+    (router.asPath.includes('logout=true') ||
+      router.asPath.includes('userStateError=true'));
   const { axios, handleResponse } = useBackendAPI();
 
   const handleError = (error: Error): void => {
@@ -25,11 +25,11 @@ const useUserQuery = <T = User>(
       void router.push(`${locale}/login?logout=true`);
     } else if (/40[13]/.test(error.message)) {
       void router.push(`${locale}/login`);
-    } else {
-      showErrorToast(
-        t('common:error.generic.label'),
-        t('common:error.generic.text')
-      );
+    } else if (
+      !process.env.NEXT_PUBLIC_MOCK_FLAG ||
+      process.env.NEXT_PUBLIC_MOCK_FLAG === '0'
+    ) {
+      void router.push(`${locale}/login?userStateError=true`);
     }
   };
 

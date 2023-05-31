@@ -11,6 +11,7 @@ from applications.enums import EmployerApplicationStatus, YouthApplicationStatus
 from applications.models import Attachment, Company, YouthApplication
 from applications.tests.data.mock_vtj import mock_vtj_person_id_query_found_content
 from common.tests.factories import (
+    AcceptedYouthApplicationFactory,
     AdditionalInfoRequestedYouthApplicationFactory,
     AttachmentFactory,
     CompanyFactory,
@@ -22,6 +23,7 @@ from common.tests.factories import (
 )
 from common.tests.utils import set_company_business_id_to_client
 from common.urls import handler_403_url
+from shared.audit_log.models import AuditLogEntry
 from shared.common.tests.conftest import force_login_user
 from shared.common.tests.factories import UserFactory
 
@@ -1136,3 +1138,144 @@ def test_youth_application_additional_info_valid_post(user_client):
         "additional_info_user_reasons": ["other"],
         "additional_info_description": "Test description",
     }
+
+
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.django_db
+def test_youth_application_fetch_employee_data(user_client):
+    AcceptedYouthApplicationFactory(
+        first_name="John",
+        last_name="Doe",
+        youth_summer_voucher__summer_voucher_serial_number=123,
+        social_security_number="111111-111C",
+        phone_number="123456789",
+        postcode="00100",
+        school="Test school",
+        encrypted_original_vtj_json=mock_vtj_person_id_query_found_content(
+            first_name="John",
+            last_name="Doe",
+            social_security_number="111111-111C",
+            is_alive=True,
+            is_home_municipality_helsinki=True,
+        ),
+    )
+    AcceptedYouthApplicationFactory(
+        last_name="Wrong last name",
+        youth_summer_voucher__summer_voucher_serial_number=456,
+    )
+    AcceptedYouthApplicationFactory(
+        last_name="Doe",
+        youth_summer_voucher__summer_voucher_serial_number=789,
+    )
+    url = reverse("v1:youthapplication-fetch-employee-data")
+    for employee_name in ["Doe", "John Doe", "Doe John", "Mary Doe", "Doe Mary"]:
+        response = user_client.post(
+            url,
+            data={
+                "employee_name": employee_name,
+                "summer_voucher_serial_number": 123,
+            },
+        )
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data == {
+            "employee_name": "John Doe",
+            "employee_ssn": "111111-111C",
+            "employee_phone_number": "123456789",
+            "employee_home_city": "Helsinki",
+            "employee_postcode": "00100",
+            "employee_school": "Test school",
+        }
+    for employee_name in ["Wrong name", "Doette", "Johndoe", "Doejohn", "John-Doe"]:
+        response = user_client.post(
+            url,
+            data={
+                "employee_name": employee_name,
+                "summer_voucher_serial_number": 123,
+            },
+        )
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+    response = user_client.post(
+        url,
+        data={
+            "employee_name": "John Doe",
+            "summer_voucher_serial_number": 456,
+        },
+    )
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    response = user_client.post(
+        url,
+        data={
+            "employee_name": "Mary Doe",
+            "summer_voucher_serial_number": 789,
+        },
+    )
+    assert response.status_code == status.HTTP_200_OK
+
+
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.django_db
+def test_youth_application_fetch_employee_data_success_writes_audit_log(user_client):
+    youth_application = AcceptedYouthApplicationFactory(
+        first_name="Franklin",
+        last_name="Doe",
+        youth_summer_voucher__summer_voucher_serial_number=123,
+    )
+    url = reverse("v1:youthapplication-fetch-employee-data")
+    audit_log_entries_before = AuditLogEntry.objects.count()
+    response = user_client.post(
+        url,
+        data={
+            "employee_name": "Peter Doe",
+            "summer_voucher_serial_number": 123,
+        },
+    )
+    assert AuditLogEntry.objects.count() == audit_log_entries_before + 1
+    audit_event = AuditLogEntry.objects.first().message["audit_event"]
+    assert audit_event["actor"]["role"] == "USER"
+    assert audit_event["actor"]["user_id"] == str(response.wsgi_request.user.pk)
+    assert audit_event["status"] == "SUCCESS"
+    assert audit_event["operation"] == "CREATE"
+    assert audit_event["target"]["id"] == str(youth_application.id)
+    assert audit_event["target"]["type"] == "YouthApplication"
+    assert audit_event["additional_information"] == (
+        "YouthApplicationViewSet.fetch_employee_data called with "
+        'employee_name="Peter Doe" and summer_voucher_serial_number=123 '
+        "(POST used with CSRF as a GET). Found 1 match."
+    )
+
+
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.django_db
+def test_youth_application_fetch_employee_data_not_found_writes_audit_log(user_client):
+    url = reverse("v1:youthapplication-fetch-employee-data")
+    audit_log_entries_before = AuditLogEntry.objects.count()
+    response = user_client.post(
+        url,
+        data={
+            "employee_name": "Teppo Testaaja",
+            "summer_voucher_serial_number": 123456789,
+        },
+    )
+    assert AuditLogEntry.objects.count() == audit_log_entries_before + 1
+    audit_event = AuditLogEntry.objects.first().message["audit_event"]
+    assert audit_event["actor"]["role"] == "USER"
+    assert audit_event["actor"]["user_id"] == str(response.wsgi_request.user.pk)
+    assert audit_event["status"] == "SUCCESS"
+    assert audit_event["operation"] == "CREATE"
+    assert audit_event["target"]["id"] == ""
+    assert audit_event["target"]["type"] == "YouthApplication"
+    assert audit_event["additional_information"] == (
+        "YouthApplicationViewSet.fetch_employee_data called with "
+        'employee_name="Teppo Testaaja" and summer_voucher_serial_number=123456789 '
+        "(POST used with CSRF as a GET). Found no matches."
+    )
+
+
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.django_db
+def test_youth_application_fetch_employee_data_unallowed_methods(user_client):
+    url = reverse("v1:youthapplication-fetch-employee-data")
+    assert user_client.delete(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+    assert user_client.get(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+    assert user_client.patch(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+    assert user_client.put(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED

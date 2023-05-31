@@ -1,6 +1,7 @@
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/tabs.css';
 import 'benefit-shared/styles/app.css';
+import '../styles/tables.css';
 
 import AuthProvider from 'benefit/handler/auth/AuthProvider';
 import Footer from 'benefit/handler/components/footer/Footer';

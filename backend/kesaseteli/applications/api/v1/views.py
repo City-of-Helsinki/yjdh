@@ -3,14 +3,17 @@ from functools import cached_property
 
 from django.conf import settings
 from django.core import exceptions
-from django.db import transaction
-from django.db.models import F, Func
+from django.db import models, transaction
+from django.db.models import F, Func, Q
+from django.db.models.functions import Concat
 from django.db.utils import ProgrammingError
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
 from django.utils import translation
+from django.utils.decorators import method_decorator
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_protect
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -202,6 +205,82 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
                 f"validation error. Validation error codes: {str(e.get_codes())}"
             )
             raise
+
+    @transaction.atomic
+    @method_decorator(csrf_protect)
+    @action(methods=["post"], detail=False)
+    def fetch_employee_data(self, request, *args, **kwargs) -> HttpResponse:
+        if not request.user.is_authenticated:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        try:
+            employee_name = str(request.data.get("employee_name", "")).strip()
+            voucher_number = int(request.data.get("summer_voucher_serial_number", ""))
+        except (KeyError, ValueError, TypeError):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        youth_applications = (
+            self.queryset.accepted()
+            .filter(youth_summer_voucher__summer_voucher_serial_number=voucher_number)
+            .annotate(
+                employee_name=models.Value(
+                    employee_name, output_field=models.CharField()
+                )
+            )
+            .annotate(
+                last_name_with_leading_space=Concat(
+                    models.Value(" "), "last_name", output_field=models.CharField()
+                )
+            )
+            .annotate(
+                last_name_with_trailing_space=Concat(
+                    "last_name", models.Value(" "), output_field=models.CharField()
+                )
+            )
+            # If last_name is "Doe" then it matches e.g.
+            # employee_name "John Doe", "Doe John", "Doe", "Mary Doe", "Doe Mary":
+            #
+            # NOTE: The trailing and leading spaces are needed in order not to match
+            # e.g. last_name of "Korhonen" with employee_name of "N" or "Nen".
+            .filter(
+                Q(employee_name__iexact=F("last_name"))
+                | Q(employee_name__istartswith=F("last_name_with_trailing_space"))
+                | Q(employee_name__iendswith=F("last_name_with_leading_space"))
+            )
+        )
+        if not youth_applications.exists():
+            with self.record_action(
+                target=YouthApplication,
+                additional_information=(
+                    "YouthApplicationViewSet.fetch_employee_data called with "
+                    f'employee_name="{employee_name}" and '
+                    f"summer_voucher_serial_number={voucher_number} "
+                    "(POST used with CSRF as a GET). Found no matches."
+                ),
+            ):
+                return Response(status=status.HTTP_404_NOT_FOUND)
+        elif youth_applications.count() > 1:
+            return Response(status=status.HTTP_409_CONFLICT)  # Should never happen
+        youth_application: YouthApplication = youth_applications.first()
+
+        with self.record_action(
+            target=youth_application,
+            additional_information=(
+                "YouthApplicationViewSet.fetch_employee_data called with "
+                f'employee_name="{employee_name}" and '
+                f"summer_voucher_serial_number={voucher_number} "
+                "(POST used with CSRF as a GET). Found 1 match."
+            ),
+        ):
+            return Response(
+                data={
+                    "employee_name": youth_application.name,
+                    "employee_ssn": youth_application.social_security_number,
+                    "employee_phone_number": youth_application.phone_number,
+                    "employee_home_city": youth_application.vtj_home_municipality,
+                    "employee_postcode": youth_application.postcode,
+                    "employee_school": youth_application.school,
+                },
+                status=status.HTTP_200_OK,
+            )
 
     @transaction.atomic
     @action(methods=["patch"], detail=True)

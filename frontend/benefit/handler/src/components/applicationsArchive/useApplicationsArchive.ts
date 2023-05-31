@@ -23,7 +23,9 @@ const useApplicationsArchive = (): ApplicationListProps => {
   const { t } = useTranslation();
   const query = useApplicationsQuery(
     ['accepted', 'rejected', 'cancelled'],
-    '-submitted_at'
+    '-submitted_at',
+    false,
+    true
   );
 
   const list = query.data

@@ -5,7 +5,7 @@ export enum ROUTES {
   LOGIN = '/login',
 
   // temporary urls, not defined yet
-  APPLICATIONS_PROCESSED = '/processed',
+  APPLICATIONS_BATCHES = '/batches',
   APPLICATIONS_ARCHIVE = '/archive',
   APPLICATIONS_REPORTS = '/reports',
 }
@@ -20,11 +20,6 @@ export enum SUPPORTED_LANGUAGES {
   FI = 'fi',
   SV = 'sv',
   EN = 'en',
-}
-
-export enum PROPOSALS_FOR_DESISION {
-  ACCEPTED = 'accepted',
-  REJECTED = 'rejected',
 }
 
 export const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES.FI;

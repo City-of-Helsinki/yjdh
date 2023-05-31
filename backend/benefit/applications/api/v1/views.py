@@ -153,7 +153,7 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
             exclude_fields | (extra_exclude_fields - fields)
         )
 
-        order_by = request.GET.get("order_by")
+        order_by = request.query_params.get("order_by")
         if (
             order_by
             and re.sub(r"^-", "", order_by)
@@ -161,9 +161,11 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         ):
             qs = qs.order_by(order_by)
 
-        exclude_batched = request.GET.get("exclude_batched") == "1"
+        exclude_batched = request.query_params.get("exclude_batched") == "1"
         if exclude_batched:
             qs = qs.filter(batch__isnull=True)
+
+        qs = qs.filter(archived=request.query_params.get("filter_archived") == "1")
 
         serializer = self.serializer_class(qs, many=True, context=context)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -368,9 +370,18 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
 
     @action(methods=["GET"], detail=False)
     @transaction.atomic
+    def export_applications_in_batch(self, request) -> HttpResponse:
+        batch_id = request.query_params.get("batch_id")
+        if batch_id:
+            apps = Application.objects.filter(batch_id=batch_id)
+            return self._csv_pdf_response(apps)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=["GET"], detail=False)
+    @transaction.atomic
     def export_new_accepted_applications_csv_pdf(self, request) -> HttpResponse:
         return self._csv_pdf_response(
-            self._create_application_batch(ApplicationStatus.ACCEPTED), True
+            self._create_application_batch(ApplicationStatus.ACCEPTED), True, True
         )
 
     @action(methods=["GET"], detail=False)
@@ -403,7 +414,7 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
     @staticmethod
     def _export_filename_without_suffix():
         return format_lazy(
-            _("Helsinki-lisän hakemukset viety {date}"),
+            _("Helsinki-lisan hakemukset viety {date}"),
             date=timezone.now().strftime("%Y%m%d_%H%M%S"),
         )
 
@@ -419,17 +430,24 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         )
         return response
 
-    """Generate a response with a CSV file and PDF files containing application data."""
+    """Generate a response with a CSV file and PDF files containing application data.
+        Optionally prune data and remove quotes from the CSV file for Talpa.
+    """
 
     def _csv_pdf_response(
-        self, queryset: QuerySet[Application], prune_data_for_talpa: bool = False
+        self,
+        queryset: QuerySet[Application],
+        prune_data_for_talpa: bool = False,
+        remove_quotes: bool = False,
     ) -> HttpResponse:
         export_filename_without_suffix = self._export_filename_without_suffix()
         csv_filename = f"{export_filename_without_suffix}.csv"
         zip_filename = f"{export_filename_without_suffix}.zip"
         ordered_queryset = queryset.order_by(self.APPLICATION_ORDERING)
         csv_service = ApplicationsCsvService(ordered_queryset, prune_data_for_talpa)
-        csv_file_content: bytes = csv_service.get_csv_string().encode("utf-8")
+        csv_file_content: bytes = csv_service.get_csv_string(
+            prune_data_for_talpa
+        ).encode("utf-8")
         csv_file_info: ExportFileInfo = ExportFileInfo(
             filename=csv_filename,
             file_content=csv_file_content,

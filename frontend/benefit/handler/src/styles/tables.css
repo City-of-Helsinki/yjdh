@@ -1,0 +1,11 @@
+/* Unify table's heading area height when selection buttons are used */
+/* Reported to HDS team, this can be removed if heights are unified in the lib */
+[class*='Table-module_actionContainer'] {
+  min-height: 44px;
+  margin-top: var(--spacing-m);
+}
+
+[class*='Table-module_actionContainer']
+  [class*='Table-module_heading'][role='heading'] {
+  font-weight: 500;
+}

@@ -1,7 +1,5 @@
-import {
-  EXPORT_APPLICATIONS_ROUTES,
-  PROPOSALS_FOR_DESISION,
-} from 'benefit/handler/constants';
+import { EXPORT_APPLICATIONS_ROUTES } from 'benefit/handler/constants';
+import { PROPOSALS_FOR_DECISION } from 'benefit-shared/constants';
 import { DateInput } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
@@ -39,7 +37,7 @@ const ApplicationReports: React.FC = () => {
           exportApplications(
             type,
             EXPORT_APPLICATIONS_ROUTES.ACCEPTED,
-            PROPOSALS_FOR_DESISION.ACCEPTED
+            PROPOSALS_FOR_DECISION.ACCEPTED
           )
         }
         header={`${t(
@@ -65,7 +63,7 @@ const ApplicationReports: React.FC = () => {
           exportApplications(
             type,
             EXPORT_APPLICATIONS_ROUTES.REJECTED,
-            PROPOSALS_FOR_DESISION.REJECTED
+            PROPOSALS_FOR_DECISION.REJECTED
           )
         }
         header={`${t(

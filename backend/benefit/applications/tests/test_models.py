@@ -1,7 +1,11 @@
 import pytest
 
 from applications.enums import AhjoDecision, ApplicationBatchStatus
+from applications.exceptions import BatchCompletionRequiredFieldsError
 from applications.models import Application, ApplicationBatch, Employee
+from applications.tests.test_application_batch_api import (
+    fill_as_valid_batch_completion_and_save,
+)
 from helsinkibenefit.tests.conftest import *  # noqa
 
 
@@ -38,7 +42,15 @@ def test_application_batch(application_batch):
 )
 def test_application_batch_ahjo_decision(application_batch, status, expected_result):
     application_batch.status = status
-    application_batch.save()
+    if status in [
+        ApplicationBatchStatus.DECIDED_ACCEPTED,
+        ApplicationBatchStatus.DECIDED_REJECTED,
+    ]:
+        with pytest.raises(BatchCompletionRequiredFieldsError):
+            application_batch.save()
+        fill_as_valid_batch_completion_and_save(application_batch)
+    else:
+        application_batch.save()
     assert application_batch.ahjo_decision == expected_result
     assert all(
         [
@@ -62,7 +74,15 @@ def test_application_batch_ahjo_decision(application_batch, status, expected_res
 )
 def test_application_batch_modified(application_batch, status, expected_result):
     application_batch.status = status
-    application_batch.save()
+    if status in [
+        ApplicationBatchStatus.DECIDED_ACCEPTED,
+        ApplicationBatchStatus.DECIDED_REJECTED,
+    ]:
+        with pytest.raises(BatchCompletionRequiredFieldsError):
+            application_batch.save()
+        fill_as_valid_batch_completion_and_save(application_batch)
+    else:
+        application_batch.save()
     assert application_batch.applications_can_be_modified == expected_result
 
 

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const $Heading = styled.h2`
-  font-size: ${(props) => props.theme.fontSize.heading.s};
+  margin-top: var(--spacing-xl);
 `;
 
 export const $Empty = styled.div`

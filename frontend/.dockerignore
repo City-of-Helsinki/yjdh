@@ -11,6 +11,7 @@
 !shared/src
 !shared/package.json
 !shared/tsconfig.json
+!shared/sentry-config.js
 !tsconfig.json
 !yarn.lock
 
