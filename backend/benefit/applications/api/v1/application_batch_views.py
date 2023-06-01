@@ -1,5 +1,7 @@
 from django.db import transaction
+from django.forms import ValidationError
 from django.http import HttpResponse, StreamingHttpResponse
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
@@ -11,8 +13,16 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from applications.api.v1.serializers.batch import ApplicationBatchSerializer
+from applications.api.v1.serializers.batch import (
+    ApplicationBatchListSerializer,
+    ApplicationBatchSerializer,
+)
 from applications.enums import ApplicationBatchStatus, ApplicationStatus
+from applications.exceptions import (
+    BatchCompletionDecisionDateError,
+    BatchCompletionRequiredFieldsError,
+    BatchTooManyDraftsError,
+)
 from applications.models import Application, ApplicationBatch
 from applications.services.ahjo_integration import export_application_batch
 from applications.services.talpa_integration import TalpaService
@@ -59,6 +69,34 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         "applications__company_name",
         "applications__company_contact_person_email",
     ]
+
+    def get_serializer_class(self):
+        """
+        ApplicationBatchSerializer for default behaviour on mutation functions,
+        ApplicationBatchListSerializer for listing applications on a batch
+        """
+        if self.action in ["create", "update", "partial_update", "destroy"]:
+            return ApplicationBatchSerializer
+
+        return ApplicationBatchListSerializer
+
+    def get_batch(self, id: str) -> ApplicationBatch:
+        """
+        Just a wrapper for Django's get_object_or_404 function
+        """
+        return get_object_or_404(ApplicationBatch, id=id)
+
+    @transaction.atomic
+    def destroy(self, request, pk=None):
+        """
+        Override default destroy(), batch can only be deleted if it's status is "draft"
+        """
+        batch = self.get_batch(pk)
+        if batch.status == ApplicationBatchStatus.DRAFT:
+            batch.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=("GET",), detail=True, url_path="export")
     def export_batch(self, request, *args, **kwargs):
@@ -140,9 +178,13 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         approved_batches.all().update(status=ApplicationBatchStatus.SENT_TO_TALPA)
         return response
 
-    @action(methods=["POST"], detail=False)
+    @action(methods=["PATCH"], detail=False)
     @transaction.atomic
-    def add_to_batch(self, request):
+    def assign_applications(self, request):
+        """
+        Assign one or more applications to a batch. If there's no batch for given app status,
+        create one as a draft and assign all applications to it.
+        """
         app_status = request.data["status"]
         app_ids = request.data["application_ids"]
 
@@ -159,7 +201,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         ):
             return Response(
                 {"detail": "Status or application id is not valid"},
-                status=status.HTTP_406_NOT_ACCEPTABLE,
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         apps = Application.objects.filter(
@@ -185,5 +227,89 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
                 {
                     "detail": "Unable to create a new batch or merge application to existing one."
                 },
-                status=status.HTTP_406_NOT_ACCEPTABLE,
+                status=status.HTTP_400_BAD_REQUEST,
             )
+
+    @action(methods=["PATCH"], detail=True)
+    @transaction.atomic
+    def deassign_applications(self, request, pk=None):
+        """
+        Remove one or more applications from a specific batch
+        """
+        application_ids = request.data.get("application_ids")
+        batch = self.get_batch(pk)
+
+        apps = Application.objects.filter(
+            pk__in=application_ids,
+            status__in=[ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
+            batch=batch,
+        )
+        if apps:
+            for app in apps:
+                app.batch = None
+                app.save()
+            return Response(status=status.HTTP_200_OK)
+        return Response(
+            {"detail": "Applications were not applicable to be detached."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    @action(methods=["PATCH"], detail=True)
+    @transaction.atomic
+    def status(self, request, pk=None):
+        """
+        Assign a new status for batch: as pending for Ahjo proposal or switch back to draft
+        """
+        new_status = request.data["status"]
+        batch = self.get_batch(pk)
+        if new_status not in [
+            ApplicationBatchStatus.DRAFT,
+            ApplicationBatchStatus.AWAITING_AHJO_DECISION,
+            ApplicationBatchStatus.DECIDED_ACCEPTED,
+            ApplicationBatchStatus.DECIDED_REJECTED,
+        ]:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        if new_status in [
+            ApplicationBatchStatus.DECIDED_ACCEPTED,
+            ApplicationBatchStatus.DECIDED_REJECTED,
+        ]:
+            # Archive all applications if this batch will be completed
+            Application.objects.filter(batch=batch).update(archived=True)
+
+            # Patch all required fields for batch completion
+            for key in request.data:
+                setattr(batch, key, request.data.get(key))
+
+        batch.status = new_status
+
+        try:
+            batch.save()
+        except BatchCompletionDecisionDateError:
+            return Response(
+                {"errorKey": "batchInvalidDecisionDate"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except BatchTooManyDraftsError:
+            return Response(
+                {"errorKey": "batchInvalidDraftAlreadyExists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except BatchCompletionRequiredFieldsError:
+            return Response(
+                {"errorKey": "batchInvalidCompletionRequiredFieldsMissing"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except ValidationError:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return Response(
+            {
+                "id": batch.id,
+                "status": batch.status,
+                "decision": batch.proposal_for_decision,
+            },
+            status=status.HTTP_200_OK,
+        )

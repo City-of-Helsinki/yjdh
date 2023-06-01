@@ -2,6 +2,10 @@
 FROM helsinkitest/node:16-slim as appbase
 # =======================================
 
+# Install ca-certificates so that Sentry can upload source maps
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends ca-certificates
+
 # Use non-root user
 USER appuser
 
@@ -76,7 +80,7 @@ ARG SENTRY_ORG
 ARG SENTRY_PROJECT
 ARG SENTRY_AUTH_TOKEN
 ARG SENTRY_URL
-
+ARG SENTRY_RELEASE
 
 # Use non-root user
 USER appuser
@@ -101,6 +105,8 @@ FROM helsinkitest/node:16-slim AS production
 ARG PORT
 ARG PROJECT
 ARG FOLDER
+ARG SENTRY_RELEASE
+ENV SENTRY_RELEASE=$SENTRY_RELEASE
 
 # Use non-root user
 USER appuser

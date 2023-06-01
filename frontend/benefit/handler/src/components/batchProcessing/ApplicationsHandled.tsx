@@ -1,4 +1,7 @@
-import { $EmptyHeading } from 'benefit/handler/components/applicationList/ApplicationList.sc';
+import {
+  $EmptyHeading,
+  $Heading,
+} from 'benefit/handler/components/applicationList/ApplicationList.sc';
 import useAddToBatchQuery from 'benefit/handler/hooks/useApplicationToBatch';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Button, LoadingSpinner, Table } from 'hds-react';
@@ -6,30 +9,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Container from 'shared/components/container/Container';
 import { $Link } from 'shared/components/table/Table.sc';
 import theme from 'shared/styles/theme';
-import styled from 'styled-components';
 
+import { $HintText, $TableFooter } from '../table/TableExtras.sc';
 import { useApplicationsHandled } from './useApplicationsHandled';
-
-const $HintText = styled.p`
-  margin-top: 0;
-  margin-bottom: var(--spacing-s);
-`;
-
-export const $TableFooter = styled.footer`
-  background: ${(props) => props.theme.colors.black10};
-  width: 100%;
-  padding: var(--spacing-s);
-  display: flex;
-  flex-flow: row wrap;
-  box-sizing: border-box;
-  ${$HintText} {
-    flex-basis: 100%;
-    margin-top: 0;
-    &:empty {
-      margin: 0;
-    }
-  }
-`;
 
 type Props = {
   status: APPLICATION_STATUSES;
@@ -101,13 +83,17 @@ const ApplicationsHandled: React.FC<Props> = ({
   if (shouldShowSkeleton) {
     return (
       <Container>
+        <$Heading>
+          {t(`common:applications.list.headings.${status}`)}{' '}
+          {t(`common:applications.list.headings.decisions`)}
+        </$Heading>
         <LoadingSpinner small />
       </Container>
     );
   }
 
   return (
-    <Container data-testid="application-list-archived">
+    <div data-testid="application-list-archived">
       {!shouldHideList ? (
         <>
           <Table
@@ -116,9 +102,9 @@ const ApplicationsHandled: React.FC<Props> = ({
             rows={applications}
             initialSortingColumnKey="applicationNum"
             initialSortingOrder="asc"
-            heading={`${t(
-              `common:applications.list.headings.${status}`
-            )} päätökset (${applications.length})`}
+            heading={`${t(`common:applications.list.headings.${status}`)} ${t(
+              `common:applications.list.headings.decisions`
+            )} (${applications.length})`}
             cols={columns}
             checkboxSelection
             selectedRows={selectedRows}
@@ -153,7 +139,7 @@ const ApplicationsHandled: React.FC<Props> = ({
           {t(`${translationsBase}.messages.empty.${status}`)}
         </$EmptyHeading>
       )}
-    </Container>
+    </div>
   );
 };
 

@@ -10,11 +10,12 @@ import responseReceivedApplication from '../json/single-received.json';
 import responseToHandleApplication from '../json/single-handling.json';
 import ActionBarReceived from '../page-model/ActionBarReceived';
 import ActionBarHandling from '../page-model/ActionBarHandling';
+import handlerUser from '../utils/handlerUser';
 
 const getBackendDomain = (): string =>
   process.env.NEXT_PUBLIC_BACKEND_URL || 'https://localhost:8000';
 
-const applicationId = '87621891-6473-4185-92f3-8a87820a3998';
+export const applicationId = '87621891-6473-4185-92f3-8a87820a3998';
 
 let states = [
   'received',
@@ -27,6 +28,7 @@ let states = [
 const mock = RequestMock()
   .onRequestTo(`${getBackendDomain()}/v1/handlerapplications/${applicationId}/`)
   .respond((req, res) => {
+    console.log(req, res);
     if (states.pop() === 'received') {
       res.setBody(responseReceivedApplication);
     } else if (states.pop() === 'handling') {
@@ -39,10 +41,12 @@ const mock = RequestMock()
 const url = getFrontendUrl(`/application?id=${applicationId}`);
 
 fixture('Single application')
-  .page(url)
+  .page(getFrontendUrl('/fi/login'))
   .requestHooks(mock, requestLogger)
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
+    await t.useRole(handlerUser);
+    await t.navigateTo(url);
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console

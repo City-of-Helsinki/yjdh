@@ -1,5 +1,6 @@
-from datetime import datetime
+from datetime import date, datetime
 
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core.validators import MaxLengthValidator, MinLengthValidator
 from django.db import connection, models
@@ -16,6 +17,11 @@ from applications.enums import (
     ApplicationStep,
     AttachmentType,
     BenefitType,
+)
+from applications.exceptions import (
+    BatchCompletionDecisionDateError,
+    BatchCompletionRequiredFieldsError,
+    BatchTooManyDraftsError,
 )
 from common.localized_iban_field import LocalizedIBANField
 from common.utils import DurationMixin
@@ -446,6 +452,23 @@ class ApplicationLogEntry(UUIDModel, TimeStampedModel):
         ordering = ["application__created_at", "created_at"]
 
 
+def validate_decision_date(value):
+    """
+    Validate batch decision date: allow empty or
+    +/- 3 months and a day from today
+    """
+    months = 3
+    max_value = date.today() + relativedelta(days=1, months=months)
+    min_value = date.today() + relativedelta(days=-1, months=-months)
+
+    if value:
+        return (value < max_value and value > min_value) or value == ""
+    else:
+        raise BatchCompletionDecisionDateError(
+            f"Decision date must be +/- {months} months from this date"
+        )
+
+
 class ApplicationBatch(UUIDModel, TimeStampedModel):
     """
     Represents grouping of applications for:
@@ -476,7 +499,10 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
         max_length=16, blank=True, verbose_name=_("section of the law in Ahjo decision")
     )
     decision_date = models.DateField(
-        verbose_name=_("date of the decision in Ahjo"), null=True, blank=True
+        verbose_name=_("date of the decision in Ahjo"),
+        null=True,
+        blank=True,
+        validators=[validate_decision_date],
     )
     expert_inspector_name = models.CharField(
         max_length=128, blank=True, verbose_name=_("Expert inspector's name")
@@ -484,6 +510,56 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
     expert_inspector_email = models.EmailField(
         blank=True, verbose_name=_("Expert inspector's email address")
     )
+    expert_inspector_title = models.CharField(
+        max_length=64, blank=True, verbose_name=_("Expert inspector's title")
+    )
+
+    def clean(self):
+        # Deny any attempt to create more than one draft for accepted or rejected batch
+        def _clean_one_draft_per_decision(self):
+            proposal_states = [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED]
+
+            if (
+                self.proposal_for_decision in proposal_states
+                and self.status == ApplicationBatchStatus.DRAFT
+            ):
+                drafts = ApplicationBatch.objects.filter(
+                    status=self.status, proposal_for_decision=self.proposal_for_decision
+                ).exclude(id=self.id)
+                if len(drafts) > 0:
+                    raise BatchTooManyDraftsError(
+                        (
+                            f"Too many existing drafts of type {self.proposal_for_decision}"
+                        )
+                    )
+
+        def _clean_require_batch_data_on_completion(self):
+            if self.status not in [
+                ApplicationBatchStatus.DECIDED_ACCEPTED,
+                ApplicationBatchStatus.DECIDED_REJECTED,
+            ]:
+                return
+
+            if not all(
+                [
+                    self.decision_maker_title,
+                    self.decision_maker_name,
+                    self.section_of_the_law,
+                    validate_decision_date(self.decision_date),
+                    self.expert_inspector_name,
+                    self.expert_inspector_title,
+                ]
+            ):
+                raise BatchCompletionRequiredFieldsError(
+                    "Required batch fields are missing!"
+                )
+
+        _clean_require_batch_data_on_completion(self)
+        _clean_one_draft_per_decision(self)
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     @property
     def applications_can_be_modified(self):

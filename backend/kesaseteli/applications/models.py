@@ -126,6 +126,12 @@ class YouthApplicationQuerySet(MatchesAnyOfQuerySet, models.QuerySet):
         """
         return self.exclude(status=YouthApplicationStatus.REJECTED.value)
 
+    def accepted(self):
+        """
+        Return accepted youth applications
+        """
+        return self.filter(status=YouthApplicationStatus.ACCEPTED.value)
+
     def created_this_year(self):
         """
         Return youth applications created this year

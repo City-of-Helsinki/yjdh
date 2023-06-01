@@ -18,7 +18,7 @@ export type AppContextType = {
 const AppContext = React.createContext<AppContextType>({
   isNavigationVisible: false,
   isFooterVisible: true,
-  layoutBackgroundColor: theme.colors.silverLight,
+  layoutBackgroundColor: theme.colors.white,
   handledApplication: null,
   setIsNavigationVisible: noop,
   setIsFooterVisible: noop,

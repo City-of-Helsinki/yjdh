@@ -1,0 +1,48 @@
+{
+  "bootstrap-sha": "284ccb78ea46ae260f42b4aa600171a1bfd5a2a6",
+  "separate-pull-requests": true,
+  "sequential-calls": true,
+  "packages": {
+    "backend/benefit": {
+      "release-type": "python",
+      "package-name": "benefit-backend"
+    },
+    "frontend/benefit/applicant": {
+      "release-type": "node",
+      "package-name": "benefit-applicant"
+    },
+    "frontend/benefit/handler": {
+      "release-type": "node",
+      "package-name": "benefit-handler"
+    },
+    "backend/kesaseteli": {
+      "release-type": "python",
+      "package-name": "kesaseteli-backend"
+    },
+    "frontend/kesaseteli/employer": {
+      "release-type": "node",
+      "package-name": "kesaseteli-employer"
+    },
+    "frontend/kesaseteli/handler": {
+      "release-type": "node",
+      "package-name": "kesaseteli-handler"
+    },
+    "frontend/kesaseteli/youth": {
+      "release-type": "node",
+      "package-name": "kesaseteli-youth"
+    },
+    "backend/tet": {
+      "release-type": "python",
+      "package-name": "tet-backend"
+    },
+    "frontend/tet/admin": {
+      "release-type": "node",
+      "package-name": "tet-admin"
+    },
+    "frontend/tet/youth": {
+      "release-type": "node",
+      "package-name": "tet-youth"
+    }
+  },
+  "plugins": ["sentence-case"]
+}

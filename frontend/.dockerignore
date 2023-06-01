@@ -11,10 +11,13 @@
 !shared/src
 !shared/package.json
 !shared/tsconfig.json
+!shared/sentry-config.js
 !tsconfig.json
 !yarn.lock
 
 !kesaseteli/employer/next.config.js
+!kesaseteli/employer/sentry.client.config.js
+!kesaseteli/employer/sentry.server.config.js
 !kesaseteli/employer/next-i18next.config.js
 !kesaseteli/employer/public
 !kesaseteli/employer/src
@@ -22,6 +25,8 @@
 !kesaseteli/employer/tsconfig.json
 
 !kesaseteli/handler/next.config.js
+!kesaseteli/handler/sentry.client.config.js
+!kesaseteli/handler/sentry.server.config.js
 !kesaseteli/handler/next-i18next.config.js
 !kesaseteli/handler/public
 !kesaseteli/handler/src
@@ -29,6 +34,8 @@
 !kesaseteli/handler/tsconfig.json
 
 !kesaseteli/youth/next.config.js
+!kesaseteli/youth/sentry.client.config.js
+!kesaseteli/youth/sentry.server.config.js
 !kesaseteli/youth/next-i18next.config.js
 !kesaseteli/youth/public
 !kesaseteli/youth/src
@@ -40,6 +47,8 @@
 !kesaseteli/shared/tsconfig.json
 
 !benefit/applicant/next.config.js
+!benefit/applicant/sentry.client.config.js
+!benefit/applicant/sentry.server.config.js
 !benefit/applicant/next-i18next.config.js
 !benefit/applicant/package.json
 !benefit/applicant/public
@@ -47,6 +56,8 @@
 !benefit/applicant/tsconfig.json
 
 !benefit/handler/next.config.js
+!benefit/handler/sentry.client.config.js
+!benefit/handler/sentry.server.config.js
 !benefit/handler/next-i18next.config.js
 !benefit/handler/package.json
 !benefit/handler/public
@@ -58,12 +69,16 @@
 !benefit/shared/tsconfig.json
 
 !tet/youth/next.config.js
+!tet/youth/sentry.client.config.js
+!tet/youth/sentry.server.config.js
 !tet/youth/next-i18next.config.js
 !tet/youth/package.json
 !tet/youth/public
 !tet/youth/src
 !tet/youth/tsconfig.json
 !tet/admin/next.config.js
+!tet/admin/sentry.client.config.js
+!tet/admin/sentry.server.config.js
 !tet/admin/next-i18next.config.js
 !tet/admin/package.json
 !tet/admin/public

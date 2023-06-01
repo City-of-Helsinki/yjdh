@@ -2,11 +2,12 @@ from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
+from applications.api.v1.serializers.utils import ReadOnlySerializer
 from applications.api.v1.status_transition_validator import (
     ApplicationBatchStatusValidator,
 )
 from applications.enums import ApplicationBatchStatus, ApplicationStatus
-from applications.models import Application, ApplicationBatch
+from applications.models import Application, ApplicationBatch, Company, Employee
 
 
 class ApplicationBatchSerializer(serializers.ModelSerializer):
@@ -122,3 +123,65 @@ class ApplicationBatchSerializer(serializers.ModelSerializer):
                     )
 
         application_batch.applications.set(applications)
+
+
+class ApplicationBatchListSerializer(ApplicationBatchSerializer):
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        applications = BatchApplicationSerializer(
+            Application.objects.filter(batch=instance),
+            many=True,
+        ).data
+        representation["applications"] = applications
+        return representation
+
+
+class BatchCompanySerializer(ReadOnlySerializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        setattr(self.Meta, "read_only_fields", [*self.fields])
+
+    class Meta:
+        model = Company
+        fields = [
+            "name",
+            "business_id",
+        ]
+
+
+class BatchEmployeeSerializer(ReadOnlySerializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        setattr(self.Meta, "read_only_fields", [*self.fields])
+
+    class Meta:
+        model = Employee
+        fields = [
+            "first_name",
+            "last_name",
+        ]
+
+
+class BatchApplicationSerializer(ReadOnlySerializer):
+    company = BatchCompanySerializer(read_only=True)
+    employee = BatchEmployeeSerializer(read_only=True)
+    handled_at = serializers.SerializerMethodField(
+        "get_handled_at",
+        help_text=(
+            "Timestamp when the application was handled (accepted/rejected/cancelled)"
+        ),
+    )
+
+    def get_handled_at(self, obj):
+        return getattr(obj, "handled_at", None)
+
+    class Meta:
+        model = Application
+        fields = [
+            "id",
+            "status",
+            "company",
+            "application_number",
+            "handled_at",
+            "employee",
+        ]

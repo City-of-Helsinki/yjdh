@@ -2,7 +2,7 @@
 . "$(dirname "$0")/_/husky.sh"
 
 set +e
-git status | grep -e "frontend/" &> /dev/null
+git diff --name-only --cached | grep -e "frontend/" &> /dev/null
 RUN_FRONTEND_PRECOMMIT=$?
 set -e
 
