@@ -1,4 +1,5 @@
 import logging
+import uuid
 from functools import cached_property
 
 from django.conf import settings
@@ -210,13 +211,27 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     @method_decorator(csrf_protect)
     @action(methods=["post"], detail=False)
     def fetch_employee_data(self, request, *args, **kwargs) -> HttpResponse:
+        """
+        Fetch employee data to a particular EmployerSummerVoucher using the employee's
+        name and their YouthSummerVoucher's summer_voucher_serial_number
+        """
         if not request.user.is_authenticated:
             return Response(status=status.HTTP_403_FORBIDDEN)
         try:
+            employer_summer_voucher_id = uuid.UUID(
+                request.data.get("employer_summer_voucher_id", "")
+            )
             employee_name = str(request.data.get("employee_name", "")).strip()
             voucher_number = int(request.data.get("summer_voucher_serial_number", ""))
         except (KeyError, ValueError, TypeError):
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        employer_summer_vouchers = EmployerSummerVoucher.objects.filter(
+            id=employer_summer_voucher_id
+        )
+        if employer_summer_vouchers.count() != 1:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
         youth_applications = (
             self.queryset.accepted()
             .filter(youth_summer_voucher__summer_voucher_serial_number=voucher_number)
@@ -251,6 +266,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
                 target=YouthApplication,
                 additional_information=(
                     "YouthApplicationViewSet.fetch_employee_data called with "
+                    f'employer_summer_voucher_id="{employer_summer_voucher_id}", '
                     f'employee_name="{employee_name}" and '
                     f"summer_voucher_serial_number={voucher_number} "
                     "(POST used with CSRF as a GET). Found no matches."
@@ -265,6 +281,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             target=youth_application,
             additional_information=(
                 "YouthApplicationViewSet.fetch_employee_data called with "
+                f'employer_summer_voucher_id="{employer_summer_voucher_id}", '
                 f'employee_name="{employee_name}" and '
                 f"summer_voucher_serial_number={voucher_number} "
                 "(POST used with CSRF as a GET). Found 1 match."
@@ -272,6 +289,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         ):
             return Response(
                 data={
+                    "employer_summer_voucher_id": str(employer_summer_voucher_id),
                     "employee_name": youth_application.name,
                     "employee_ssn": youth_application.social_security_number,
                     "employee_phone_number": youth_application.phone_number,
