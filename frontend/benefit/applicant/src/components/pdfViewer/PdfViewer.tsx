@@ -1,6 +1,6 @@
 import { Button } from 'hds-react';
 import React from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
+import { Document, Page } from 'react-pdf';
 import {
   $Grid,
   $GridCell,
@@ -9,12 +9,6 @@ import { useTheme } from 'styled-components';
 
 import { $ActionsWrapper, $ViewerWrapper } from './PdfViewer.sc';
 import { usePdfViewer } from './usePdfViewer';
-
-// TODO: Test if it works in production
-// Update as of 2023-01-03: Not sure if this is necessary AT ALL
-if (process.env.NODE_ENV === 'production') {
-  pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-}
 
 type PdfViewerProps = {
   file: string;
