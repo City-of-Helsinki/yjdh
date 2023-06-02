@@ -15,17 +15,20 @@ import { useBatchActionsCompletion } from './useBatchActionsCompletion';
 
 type BatchProps = {
   batch: BatchProposal;
+  setBatchCloseAnimation: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const BatchActionsCompletion: React.FC<BatchProps> = ({
   batch,
+  setBatchCloseAnimation,
 }: BatchProps) => {
   const { id, proposal_for_decision: proposalForDecision } = batch;
   const { t } = useTranslation();
   const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
   const { formik, yearFromNow, isSuccess, isError } = useBatchActionsCompletion(
     id,
-    proposalForDecision
+    proposalForDecision,
+    setBatchCloseAnimation
   );
   const { mutate: changeBatchStatus } = useBatchStatus();
 

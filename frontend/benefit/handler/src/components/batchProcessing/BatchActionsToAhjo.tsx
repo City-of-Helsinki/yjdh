@@ -16,15 +16,17 @@ import useRemoveAppFromBatch from 'benefit/handler/hooks/useRemoveAppFromBatch';
 
 type BatchProps = {
   batch: BatchProposal;
+  setBatchCloseAnimation: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 type ButtonAhjoStates = 'primary' | 'secondary';
 
 const BatchActionsCompletion: React.FC<BatchProps> = ({
   batch,
+  setBatchCloseAnimation,
 }: BatchProps) => {
   const { t } = useTranslation();
-  const { mutate: changeBatchStatus } = useBatchStatus();
+  const { mutate: changeBatchStatus } = useBatchStatus(setBatchCloseAnimation);
 
   const {
     isError: isDownloadError,
@@ -32,7 +34,7 @@ const BatchActionsCompletion: React.FC<BatchProps> = ({
     mutate: downloadBatchFiles,
   } = useDownloadBatchFiles();
 
-  const { mutate: removeApp } = useRemoveAppFromBatch();
+  const { mutate: removeApp } = useRemoveAppFromBatch(setBatchCloseAnimation);
 
   const [isAtAhjo] = React.useState<ButtonAhjoStates>('primary');
   const [isBatchLocked, setIsBatchLocked] = React.useState<boolean>(

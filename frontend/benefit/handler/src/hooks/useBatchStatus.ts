@@ -14,6 +14,7 @@ type Payload = {
 
 type Response = {
   status: BATCH_STATUSES;
+  previousStatus: BATCH_STATUSES;
 };
 
 interface BatchErrorResponse extends AxiosResponse {
@@ -27,7 +28,11 @@ interface BatchError extends AxiosError {
   response: BatchErrorResponse;
 }
 
-const useBatchStatus = (): UseMutationResult<Response, BatchError, Payload> => {
+type SetStateFn = React.Dispatch<React.SetStateAction<boolean>>;
+
+const useBatchStatus = (
+  setBatchCloseAnimation?: SetStateFn
+): UseMutationResult<Response, BatchError, Payload> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
@@ -36,6 +41,7 @@ const useBatchStatus = (): UseMutationResult<Response, BatchError, Payload> => {
     errorResponse: BatchError,
     previousStatus: BATCH_STATUSES
   ): void => {
+    setBatchCloseAnimation(false);
     if (errorResponse.response?.data?.errorKey) {
       const { errorKey } = errorResponse.response.data;
       showErrorToast(
@@ -67,14 +73,23 @@ const useBatchStatus = (): UseMutationResult<Response, BatchError, Payload> => {
       return handleResponse<Response>(request);
     },
     {
-      onSuccess: ({ status: backendStatus }: Response) => {
-        setTimeout(() => {
-          void queryClient.invalidateQueries('applicationsList');
-        }, 25);
+      onSuccess: ({ status: backendStatus, previousStatus }: Response) => {
         showSuccessToast(
           t(`common:batches.notifications.registerToAhjo.${backendStatus}`),
           ''
         );
+        if (
+          previousStatus === BATCH_STATUSES.AWAITING_FOR_DECISION ||
+          (previousStatus === BATCH_STATUSES.AHJO_REPORT_CREATED &&
+            backendStatus === BATCH_STATUSES.AWAITING_FOR_DECISION)
+        ) {
+          setBatchCloseAnimation(true);
+          setTimeout(() => {
+            void queryClient.invalidateQueries('applicationsList');
+          }, 700);
+        } else {
+          void queryClient.invalidateQueries('applicationsList');
+        }
       },
       onError: (e: BatchError, { status: previousStatus }) =>
         handleError(e, previousStatus),

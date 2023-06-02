@@ -30,10 +30,15 @@ interface ApplicationListProps {
 
 const useBatchActionsCompletion = (
   id: string,
-  proposalForDecision: PROPOSALS_FOR_DECISION
+  proposalForDecision: PROPOSALS_FOR_DECISION,
+  setBatchCloseAnimation: React.Dispatch<React.SetStateAction<boolean>>
 ): ApplicationListProps => {
   const { t } = useTranslation();
-  const { isSuccess, isError, mutate: completeBatch } = useBatchComplete();
+  const {
+    isSuccess,
+    isError,
+    mutate: completeBatch,
+  } = useBatchComplete(setBatchCloseAnimation);
 
   const parseLocalizedDateString = (
     _: string,

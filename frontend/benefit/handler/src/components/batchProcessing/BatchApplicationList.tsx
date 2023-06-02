@@ -24,6 +24,7 @@ import {
   $HorizontalList,
   $TableBody,
   $TableFooter,
+  $TableGrid,
   $TableWrapper,
 } from '../table/TableExtras.sc';
 import BatchActionsCompletion from './BatchActionsCompletion';
@@ -58,6 +59,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
   const [isCollapsed, setIsCollapsed] = React.useState<boolean>(
     !IS_WAITING_FOR_AHJO
   );
+  const [batchCloseAnimation, setBatchCloseAnimation] = React.useState(false);
 
   const { mutate: removeApp } = useRemoveAppFromBatch();
   const handleAppRemoval = (appId: string): void => {
