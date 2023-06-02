@@ -35,6 +35,7 @@ const useBatchQuery = (
       return handleResponse(res);
     },
     {
+      refetchInterval: 60 * 1000,
       onError: () => handleError(),
     }
   );
