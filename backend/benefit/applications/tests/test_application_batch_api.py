@@ -228,7 +228,6 @@ def test_deassign_applications_from_batch(handler_api_client, application_batch)
     [
         (ApplicationBatchStatus.COMPLETED, 400, None),
         (ApplicationBatchStatus.SENT_TO_TALPA, 400, None),
-        (ApplicationBatchStatus.AHJO_REPORT_CREATED, 400, None),
         (ApplicationBatchStatus.RETURNED, 400, None),
         (ApplicationBatchStatus.DECIDED_ACCEPTED, 400, None),
         (ApplicationBatchStatus.DECIDED_REJECTED, 400, None),
@@ -237,6 +236,11 @@ def test_deassign_applications_from_batch(handler_api_client, application_batch)
             ApplicationBatchStatus.AWAITING_AHJO_DECISION,
             200,
             ApplicationBatchStatus.AWAITING_AHJO_DECISION,
+        ),
+        (
+            ApplicationBatchStatus.AHJO_REPORT_CREATED,
+            200,
+            ApplicationBatchStatus.AHJO_REPORT_CREATED,
         ),
     ],
 )
