@@ -29,10 +29,10 @@ jobs:
           fi
           echo $LABEL
 
-          release-please release-pr --token=${{ secrets.GITHUB_TOKEN }} --repo-url=$GITHUB_REPOSITORY $LABEL
+          release-please release-pr --target-branch=main --token=${{ secrets.GITHUB_TOKEN }} --repo-url=$GITHUB_REPOSITORY $LABEL
       # create release
       # rerun release-pr after release creation to fix manifest -file merge issue
       - name: Create github release
         run: |
-          release-please github-release --token=${{ secrets.GITHUB_TOKEN }} --repo-url=$GITHUB_REPOSITORY
-          release-please release-pr --token=${{ secrets.GITHUB_TOKEN }} --repo-url=$GITHUB_REPOSITORY
+          release-please github-release --target-branch=main --token=${{ secrets.GITHUB_TOKEN }} --repo-url=$GITHUB_REPOSITORY
+          release-please release-pr --target-branch=main --token=${{ secrets.GITHUB_TOKEN }} --repo-url=$GITHUB_REPOSITORY
