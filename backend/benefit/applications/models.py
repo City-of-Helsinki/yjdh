@@ -23,11 +23,11 @@ from applications.exceptions import (
     BatchCompletionRequiredFieldsError,
     BatchTooManyDraftsError,
 )
-from users.models import User
 from common.localized_iban_field import LocalizedIBANField
 from common.utils import DurationMixin
 from companies.models import Company
 from shared.models.abstract_models import TimeStampedModel, UUIDModel
+from users.models import User
 
 # todo: move to some better location?
 APPLICATION_LANGUAGE_CHOICES = (
@@ -532,7 +532,11 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
                 and self.status == ApplicationBatchStatus.DRAFT
             ):
                 drafts = ApplicationBatch.objects.filter(
-                    status__in=[ApplicationBatchStatus.DRAFT, ApplicationBatchStatus.AHJO_REPORT_CREATED], proposal_for_decision=self.proposal_for_decision
+                    status__in=[
+                        ApplicationBatchStatus.DRAFT,
+                        ApplicationBatchStatus.AHJO_REPORT_CREATED,
+                    ],
+                    proposal_for_decision=self.proposal_for_decision,
                 ).exclude(id=self.id)
                 if len(drafts) > 0:
                     raise BatchTooManyDraftsError(

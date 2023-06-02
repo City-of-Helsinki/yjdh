@@ -191,8 +191,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         def create_application_batch_by_ids(app_status, apps):
             if apps:
                 batch = ApplicationBatch.objects.create(
-                    proposal_for_decision=app_status,
-                    handler=request.user
+                    proposal_for_decision=app_status, handler=request.user
                 )
                 return batch
 
@@ -213,7 +212,8 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         try:
             batch = (
                 ApplicationBatch.objects.filter(
-                    status=ApplicationBatchStatus.DRAFT, proposal_for_decision=app_status
+                    status=ApplicationBatchStatus.DRAFT,
+                    proposal_for_decision=app_status,
                 ).first()
             ) or create_application_batch_by_ids(
                 app_status,
@@ -257,7 +257,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
                 app.save()
             remaining_apps = Application.objects.filter(batch=batch)
             if len(remaining_apps) == 0:
-               batch.delete()
+                batch.delete()
             return Response(status=status.HTTP_200_OK)
 
         return Response(
