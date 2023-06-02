@@ -389,7 +389,9 @@
     "and": "ja",
     "home": "Palaa etusivulle",
     "check": "Tarkastele",
-    "loading": "Ladataan …"
+    "loading": "Ladataan …",
+    "cancel": "Peruuta",
+    "confirm": "Vahvista"
   },
   "upload": {
     "isUploading": "Uploading...",
@@ -490,6 +492,9 @@
       },
       "empty": "Tyhjä koonti"
     },
+    "tooltips": {
+      "lockedBatch": "{{ name }} vie parhaillaan hakemuksia Ahjoon. Koontin ei juuri nyt voi tehdä muutoksia. Odota hetki tai avaa lukko."
+    },
     "notifications": {
       "addToBatch": {
         "success": {
@@ -499,14 +504,21 @@
       },
       "registerToAhjo": {
         "awaiting_ahjo_decision": "Koonti merkitty Ahjoon viedyksi",
+        "exported_ahjo_report": "Ahjo-valmistelu aloitettu, koonti lukittu",
         "draft": "Koonti palautettu takaisin odottamaan päätösvalmistelua",
         "accepted": "Koonti lähetetty Talpaan ja arkistoitu",
         "rejected": "Koonti arkistoitu"
       },
       "errors": {
         "batchInvalidDraftAlreadyExists": {
-          "title": "Uuden Ahjo-koonnin valmistelu on jo käynnissä",
-          "message": "Voit palauttaa tämän koonnin takaisin käsittelyyn vasta, kun jo valmistelussa oleva keskeneräinen koonti on viety Ahjoon"
+          "draft": {
+            "title": "Uuden Ahjo-koonnin valmistelu on jo käynnissä",
+            "message": "Voit palauttaa tämän koonnin takaisin käsittelyyn vasta, kun jo valmistelussa oleva keskeneräinen koonti on viety Ahjoon"
+          },
+          "locked": {
+            "title": "Hakemuksia ei voitu siirtää koontiin",
+            "message": "Kollegasi on valmistelemassa koontia Ahjoon. Voit luoda uuden Ahjo-koonnin, kun hän on ensin valmistellut koonnin loppuun."
+          }
         },
         "downloadError": {
           "title": "Liitetiedostojen lataus epäonnistui",
@@ -515,12 +527,23 @@
       }
     },
     "actions": {
+      "markAsReadyForAhjo": "Aloita Ahjo-valmistelu",
       "markAsRegisteredToAhjo": "Merkitse Ahjoon viedyksi",
       "markedAsRegisteredToAhjo": "Viety Ahjoon",
       "markToPaymentAndArchive": "Merkitse maksuun ja arkistoi",
       "markToArchive": "Arkistoi",
       "markAsWaitingForAhjo": "Palauta odottamaan Ahjoon vientiä",
-      "downloadFiles": "Lataa liitteet"
+      "downloadFiles": "Lataa liitteet",
+      "deleteBatch": "Tyhjennä koonti",
+      "lockedBatch": "Lukittu"
+    },
+    "dialog": {
+      "batchRemoval": {"heading": "Tyhjennä koonti", "text": "Oletko varma, että haluat tuhota koonnin?"},
+      "removeApplication": {"heading": "Poista hakemus koonnista", "text": "Oletko varma, että haluat poistaa hakemuksen koonnista? {{ applicationNumber }}"},
+      "batchFromLockedToDraft": {"heading": "Koonti lukittu", "text": "Haluatko vapauttaa koonnin ja tehdä siihen muutoksia?"},
+      "batchFromDraftToAhjo": {"heading": "Merkitse koonti Ahjoon viedyksi", "text": "Haluatko viedä koonnin Ahjoon?"},
+      "batchFromAhjoToDraft": {"heading": "Palauta odottamaan Ahjoon vientiä", "text": "Oletko varma, että haluat palauttaa koonnin odottamaan Ahjoon vientiä?"},
+      "batchFromAhjoToTalpa": {"heading": "Koonti on valmis", "text": "Haluatko merkitä koonnin valmiiksi ja arkistoida sen?"}
     },
     "form": {
       "fields": {
