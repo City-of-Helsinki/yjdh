@@ -57,7 +57,6 @@ const useBatchComplete = (
         ...form,
         decision_date: parsedAsDatenew,
       };
-
       const request = axios.patch<Response>(
         HandlerEndpoint.BATCH_STATUS_CHANGE(id),
         {

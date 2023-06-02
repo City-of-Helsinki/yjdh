@@ -3,7 +3,10 @@ import {
   BATCH_STATUSES,
   PROPOSALS_FOR_DECISION,
 } from 'benefit-shared/constants';
-import { BatchProposal } from 'benefit-shared/types/application';
+import {
+  ApplicationInBatch,
+  BatchProposal,
+} from 'benefit-shared/types/application';
 import {
   Button,
   IconAngleDown,
@@ -13,13 +16,16 @@ import {
   IconCrossCircleFill,
   Table,
 } from 'hds-react';
+import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import Modal from 'shared/components/modal/Modal';
 import theme from 'shared/styles/theme';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 import styled from 'styled-components';
 
 import { $Empty } from '../applicationList/ApplicationList.sc';
+import ConfirmModalContent from '../applicationReview/actions/ConfirmModalContent/confirm';
 import {
   $HorizontalList,
   $TableBody,
@@ -59,19 +65,22 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
   const [isCollapsed, setIsCollapsed] = React.useState<boolean>(
     !IS_WAITING_FOR_AHJO
   );
+  const [isConfirmAppRemoval, setConfirmAppRemoval] = React.useState(false);
+  const [appToRemove, setAppToRemove] =
+    React.useState<ApplicationInBatch | null>(null);
   const [batchCloseAnimation, setBatchCloseAnimation] = React.useState(false);
 
-  const { mutate: removeApp } = useRemoveAppFromBatch();
-  const handleAppRemoval = (appId: string): void => {
+  const { mutate: removeApp } = useRemoveAppFromBatch(setBatchCloseAnimation);
+  const openAppRemovalDialog = (appId: string): void => {
     const selectedApp = apps.find((app) => app.id === appId);
-    if (
-      // eslint-disable-next-line no-alert
-      window.confirm(
-        `Ota hakemus ${selectedApp.application_number} pois koonnista?`
-      )
-    ) {
-      removeApp({ appIds: [selectedApp.id], batchId: id });
-    }
+    setAppToRemove(selectedApp);
+    setConfirmAppRemoval(true);
+  };
+
+  const onAppRemovalSubmit = (): void => {
+    removeApp({ appIds: [appToRemove.id], batchId: id });
+    setConfirmAppRemoval(false);
+    setAppToRemove(null);
   };
 
   const cols = [
@@ -109,7 +118,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
             theme="black"
             variant="supplementary"
             iconLeft={<IconArrowUndo />}
-            onClick={() => handleAppRemoval(appId)}
+            onClick={() => openAppRemovalDialog(appId)}
             disabled={status !== BATCH_STATUSES.DRAFT}
           >
             {' '}
@@ -146,52 +155,85 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
   };
 
   return (
-    <$TableWrapper>
-      <$HorizontalList>
-        <div>
-          <dt>{t('common:batches.single')}</dt>
-          <dd>{proposalForDecisionHeader()}</dd>
-        </div>
-        <div>
-          <dt>{t('common:batches.list.columns.handler')}</dt>
-          <dd>{handler?.first_name}</dd>
-        </div>
-        <div>
-          <dt>{t('common:batches.list.columns.createdAt')}</dt>
-          <dd>{convertToUIDateAndTimeFormat(created_at)}</dd>
-        </div>
-        <div>
-          {applications.length > 0 ? (
-            <button type="button" onClick={() => setIsCollapsed(!isCollapsed)}>
-              {isCollapsed ? <IconAngleDown /> : <IconAngleUp />}
-            </button>
-          ) : null}
-        </div>
-      </$HorizontalList>
-      {applications?.length ? (
-        <$TableBody isCollapsed={isCollapsed} aria-hidden={isCollapsed}>
-          <Table
-            indexKey="id"
-            theme={theme.components.table}
-            rows={applications}
-            initialSortingColumnKey="application_number"
-            initialSortingOrder="asc"
-            cols={cols}
-          />
-          <$TableFooter>
-            {status === BATCH_STATUSES.AWAITING_FOR_DECISION ? (
-              <BatchActionsCompletion batch={batch} />
-            ) : (
-              <BatchActionsToAhjo batch={batch} />
-            )}
-          </$TableFooter>
-        </$TableBody>
-      ) : (
-        <$Empty css="margin: var(--spacing-s) 0;">
-          {t('common:batches.list.empty')}
-        </$Empty>
-      )}
-    </$TableWrapper>
+    <$TableGrid animateClose={batchCloseAnimation}>
+      <$TableWrapper>
+        <Modal
+          id={`batch-confirmation-modal-app-removal-${id}`}
+          isOpen={isConfirmAppRemoval}
+          submitButtonLabel=""
+          cancelButtonLabel=""
+          handleSubmit={noop}
+          handleToggle={noop}
+          variant="primary"
+          customContent={
+            isConfirmAppRemoval ? (
+              <ConfirmModalContent
+                variant="primary"
+                heading={t('common:batches.dialog.removeApplication.heading')}
+                text={t('common:batches.dialog.removeApplication.text', {
+                  applicationNumber: `${appToRemove.company_name} / ${appToRemove.employee_name} (${appToRemove.application_number})`,
+                })}
+                onClose={() => setConfirmAppRemoval(false)}
+                onSubmit={onAppRemovalSubmit}
+              />
+            ) : null
+          }
+        />
+        <$HorizontalList>
+          <div>
+            <dt>{t('common:batches.single')}</dt>
+            <dd>{proposalForDecisionHeader()}</dd>
+          </div>
+          <div>
+            <dt>{t('common:batches.list.columns.handler')}</dt>
+            <dd>{handler?.first_name}</dd>
+          </div>
+          <div>
+            <dt>{t('common:batches.list.columns.createdAt')}</dt>
+            <dd>{convertToUIDateAndTimeFormat(created_at)}</dd>
+          </div>
+          <div>
+            {applications.length > 0 ? (
+              <button
+                type="button"
+                onClick={() => setIsCollapsed(!isCollapsed)}
+              >
+                {isCollapsed ? <IconAngleDown /> : <IconAngleUp />}
+              </button>
+            ) : null}
+          </div>
+        </$HorizontalList>
+        {applications?.length ? (
+          <$TableBody isCollapsed={isCollapsed} aria-hidden={isCollapsed}>
+            <Table
+              indexKey="id"
+              theme={theme.components.table}
+              rows={applications}
+              initialSortingColumnKey="application_number"
+              initialSortingOrder="asc"
+              cols={cols}
+            />
+            <$TableFooter>
+              {status === BATCH_STATUSES.AWAITING_FOR_DECISION ? (
+                <BatchActionsCompletion
+                  batch={batch}
+                  setBatchCloseAnimation={setBatchCloseAnimation}
+                />
+              ) : (
+                <BatchActionsToAhjo
+                  batch={batch}
+                  setBatchCloseAnimation={setBatchCloseAnimation}
+                />
+              )}
+            </$TableFooter>
+          </$TableBody>
+        ) : (
+          <$Empty css="margin: var(--spacing-s) 0;">
+            {t('common:batches.list.empty')}
+          </$Empty>
+        )}
+      </$TableWrapper>
+    </$TableGrid>
   );
 };
 
