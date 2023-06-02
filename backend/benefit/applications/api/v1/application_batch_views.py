@@ -293,6 +293,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             for key in request.data:
                 setattr(batch, key, request.data.get(key))
 
+        previous_status = batch.status
         batch.status = new_status
 
         try:
@@ -321,6 +322,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             {
                 "id": batch.id,
                 "status": batch.status,
+                "previousStatus": previous_status,
                 "decision": batch.proposal_for_decision,
             },
             status=status.HTTP_200_OK,
