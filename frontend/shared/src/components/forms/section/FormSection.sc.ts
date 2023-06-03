@@ -7,6 +7,7 @@ type SpacingValue = DefaultTheme['spacing'][SpacingKeys];
 export type FormSectionProps = {
   children?: React.ReactNode;
   action?: React.ReactNode;
+  gridActions?: React.ReactNode;
   withoutDivider?: boolean;
   header?: string;
   paddingBottom?: boolean;

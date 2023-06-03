@@ -10,6 +10,7 @@ import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useRouterQueryParam from 'shared/hooks/useRouterQueryParam';
 import Application from 'shared/types/application';
 import DraftApplication from 'shared/types/draft-application';
+import { EmploymentBase } from 'shared/types/employment';
 
 export type ApplicationApi<T> = {
   applicationId?: string;
@@ -30,6 +31,12 @@ export type ApplicationApi<T> = {
   ) => void;
   addEmployment: (
     application: DraftApplication,
+    onSuccess?: () => void | Promise<void>
+  ) => void;
+  updateEmployment: (
+    application: DraftApplication,
+    index: number,
+    employment: EmploymentBase,
     onSuccess?: () => void | Promise<void>
   ) => void;
   removeEmployment: (
@@ -81,6 +88,26 @@ const useApplicationApi = <T = Application>(
     onSuccess: (application: DraftApplication) => void = noop
   ) => {
     const summer_vouchers = [...(draftApplication.summer_vouchers ?? []), {}];
+    return updateApplicationQuery.mutate(
+      { ...draftApplication, status: 'draft', summer_vouchers },
+      {
+        onSuccess: () => onSuccess(draftApplication),
+        onError: handleUpdateError,
+      }
+    );
+  };
+
+  const updateEmployment: ApplicationApi<T>['updateEmployment'] = (
+    draftApplication: DraftApplication,
+    index: number,
+    employment: EmploymentBase,
+    onSuccess: (application: DraftApplication) => void = noop
+  ) => {
+    const summer_vouchers = [...(draftApplication.summer_vouchers ?? [])];
+    if (summer_vouchers.length > index) {
+      summer_vouchers[index] = { ...summer_vouchers[index], ...employment };
+    }
+
     return updateApplicationQuery.mutate(
       { ...draftApplication, status: 'draft', summer_vouchers },
       {
@@ -145,6 +172,7 @@ const useApplicationApi = <T = Application>(
     updateApplication,
     sendApplication,
     addEmployment,
+    updateEmployment,
     removeEmployment,
   };
 };

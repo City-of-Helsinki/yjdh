@@ -10,17 +10,21 @@ export type EmploymentExceptionReason =
 export type EmployeeHiredWithoutVoucherAssessment =
   typeof EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT[number];
 
-type Employment = {
-  id: string;
-  target_group?: EmploymentExceptionReason;
+export type EmploymentBase = {
   employee_name?: string;
   employee_ssn?: string;
   employee_phone_number?: string;
   employee_home_city?: string;
   employee_postcode?: number;
+  employee_school?: string;
+};
+
+type Employment = {
+  id: string;
+  target_group?: EmploymentExceptionReason;
+  employee_name?: string;
   employment_postcode?: number;
   summer_voucher_serial_number: string;
-  employee_school?: string;
   employment_start_date?: string; // yyyy-MM-dd
   employment_end_date?: string; // yyyy-MM-dd
   employment_work_hours?: number;
@@ -30,6 +34,6 @@ type Employment = {
   attachments: KesaseteliAttachment[];
   employment_contract: KesaseteliAttachment[];
   payslip: KesaseteliAttachment[];
-};
+} & EmploymentBase;
 
 export default Employment;

@@ -1,3 +1,4 @@
+import { Button } from 'hds-react';
 import AttachmentInput from 'kesaseteli/employer/components/application/form/AttachmentInput';
 import DateInput from 'kesaseteli/employer/components/application/form/DateInput';
 import SelectionGroup from 'kesaseteli/employer/components/application/form/SelectionGroup';
@@ -5,17 +6,23 @@ import TextInput, {
   TextInputProps,
 } from 'kesaseteli/employer/components/application/form/TextInput';
 import useAccordionStateLocalStorage from 'kesaseteli/employer/hooks/application/useAccordionStateLocalStorage';
+import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import useEmploymentQuery from 'kesaseteli/employer/hooks/backend/useEmploymentQuery';
 import useGetEmploymentErrors from 'kesaseteli/employer/hooks/employments/useGetEmploymentErrors';
+import omit from 'lodash/omit';
 import { useTranslation } from 'next-i18next';
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 import FormSectionDivider from 'shared/components/forms/section/FormSectionDivider';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
+import showErrorToast from 'shared/components/toast/show-error-toast';
 import { CITY_REGEX, POSTAL_CODE_REGEX } from 'shared/constants';
 import {
   EMPLOYEE_EXCEPTION_REASON,
   EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT,
 } from 'shared/constants/employee-constants';
 import theme from 'shared/styles/theme';
+import Application from 'shared/types/application';
 import Employment from 'shared/types/employment';
 import { getDecimalNumberRegex } from 'shared/utils/regex.utils';
 
@@ -29,6 +36,50 @@ type Props = {
 
 const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
   const { t } = useTranslation();
+  const getEmploymentQuery = useEmploymentQuery();
+  const { getValues } = useFormContext<Application>();
+  const { applicationQuery, updateEmployment } = useApplicationApi();
+  const [isFetchEmployeeDataEnabled, setIsFetchEmployeeDataEnabled] =
+    useState<boolean>(false);
+
+  useEffect(() => {
+    enableFetchEmployeeDataButton();
+  }, []);
+
+  const enableFetchEmployeeDataButton = () => {
+    const formDataVoucher = getValues().summer_vouchers[index];
+    setIsFetchEmployeeDataEnabled(
+      formDataVoucher.employee_name.length > 0 &&
+        formDataVoucher.summer_voucher_serial_number.length > 0
+    );
+  };
+
+  const handleGetEmployeeData = useCallback(() => {
+    const formDataVoucher = getValues().summer_vouchers[index];
+    const summerVoucher = applicationQuery.data.summer_vouchers[index];
+    getEmploymentQuery.mutate(
+      {
+        employee_name: formDataVoucher.employee_name,
+        summer_voucher_serial_number:
+          formDataVoucher.summer_voucher_serial_number,
+        employer_summer_voucher_id: summerVoucher.id,
+      },
+      {
+        onSuccess: (data) =>
+          updateEmployment(
+            getValues(),
+            index,
+            omit(data, 'employer_summer_voucher_id')
+          ),
+        onError: () =>
+          showErrorToast(
+            t(`common:delete.errorTitle`),
+            t(`common:delete.errorMessage`)
+          ),
+      }
+    );
+  }, [getValues, applicationQuery.data, updateEmployment]);
+
   const { storageValue: isInitiallyOpen, persistToStorage } =
     useAccordionStateLocalStorage(index);
 
@@ -70,10 +121,29 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
       onToggle={handleToggle}
       headerBackgroundColor={headerBackgroundColor}
     >
-      <$AccordionFormSection columns={2} withoutDivider>
+      <$AccordionFormSection
+        columns={2}
+        withoutDivider
+        gridActions={
+          <Button
+            onClick={handleGetEmployeeData}
+            disabled={!isFetchEmployeeDataEnabled}
+            variant="secondary"
+            theme="black"
+          >
+            Get employee data
+          </Button>
+        }
+      >
         <TextInput
           id={getId('employee_name')}
           validation={{ required: true, maxLength: 256 }}
+          onChange={enableFetchEmployeeDataButton}
+        />
+        <TextInput
+          id={getId('summer_voucher_serial_number')}
+          validation={{ required: true, maxLength: 64 }}
+          onChange={enableFetchEmployeeDataButton}
         />
         <TextInput
           id={getId('employee_ssn')}
@@ -121,10 +191,6 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
         <TextInput
           id={getId('employee_school')}
           validation={{ required: true, maxLength: 256 }}
-        />
-        <TextInput
-          id={getId('summer_voucher_serial_number')}
-          validation={{ required: true, maxLength: 64 }}
         />
         <FormSectionDivider $colSpan={2} />
         <FormSectionHeading
