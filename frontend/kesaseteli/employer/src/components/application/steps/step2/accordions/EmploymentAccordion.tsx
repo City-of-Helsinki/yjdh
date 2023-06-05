@@ -34,25 +34,25 @@ type Props = {
 const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
   const { t } = useTranslation();
   const { getValues } = useFormContext<Application>();
-  const { applicationQuery, fetchEmployment } = useApplicationApi();
+  const { fetchEmployment } = useApplicationApi();
   const [isFetchEmployeeDataEnabled, setIsFetchEmployeeDataEnabled] =
     useState<boolean>(false);
 
-  useEffect(() => {
-    enableFetchEmployeeDataButton();
-  }, []);
-
-  const enableFetchEmployeeDataButton = () => {
+  const enableFetchEmployeeDataButton = useCallback(() => {
     const formDataVoucher = getValues().summer_vouchers[index];
     setIsFetchEmployeeDataEnabled(
       formDataVoucher.employee_name.length > 0 &&
         formDataVoucher.summer_voucher_serial_number.length > 0
     );
-  };
+  }, [getValues, index]);
+
+  useEffect(() => {
+    enableFetchEmployeeDataButton();
+  }, [enableFetchEmployeeDataButton]);
 
   const handleGetEmployeeData = useCallback(() => {
     fetchEmployment(getValues(), index);
-  }, [getValues, applicationQuery.data, fetchEmployment]);
+  }, [getValues, fetchEmployment, index]);
 
   const { storageValue: isInitiallyOpen, persistToStorage } =
     useAccordionStateLocalStorage(index);
