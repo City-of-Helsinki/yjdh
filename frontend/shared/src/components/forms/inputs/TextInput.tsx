@@ -75,9 +75,11 @@ const TextInput = <T,>({
     <$GridCell {...$gridCellProps}>
       <$TextInput
         {...registerEvents}
-        onChange={(e) => {
-          registerEvents.onChange(e);
-          onChange && onChange(e.target.value);
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          void registerEvents.onChange(e);
+          if (onChange) {
+            onChange(e.target.value);
+          }
         }}
         as={getComponentType(type)}
         key={id}
