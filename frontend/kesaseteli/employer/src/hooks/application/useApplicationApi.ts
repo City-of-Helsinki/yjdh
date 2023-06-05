@@ -1,9 +1,11 @@
 import Axios from 'axios';
 import useApplicationQuery from 'kesaseteli/employer/hooks/backend/useApplicationQuery';
 import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/backend/useUpdateApplicationQuery';
+import useEmploymentQuery from 'kesaseteli/employer/hooks/backend/useEmploymentQuery';
 import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import noop from 'lodash/noop';
+import omit from 'lodash/omit';
 import { ErrorOption } from 'react-hook-form';
 import { UseMutationResult, useQueryClient, UseQueryResult } from 'react-query';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
@@ -11,10 +13,8 @@ import useRouterQueryParam from 'shared/hooks/useRouterQueryParam';
 import Application from 'shared/types/application';
 import DraftApplication from 'shared/types/draft-application';
 import { EmploymentBase } from 'shared/types/employment';
-import { omit } from 'lodash';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import { useTranslation } from 'react-i18next';
-import useEmploymentQuery from 'kesaseteli/employer/hooks/backend/useEmploymentQuery';
 
 export type ApplicationApi<T> = {
   applicationId?: string;

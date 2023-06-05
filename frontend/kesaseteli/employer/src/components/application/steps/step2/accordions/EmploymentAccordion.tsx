@@ -7,9 +7,7 @@ import TextInput, {
 } from 'kesaseteli/employer/components/application/form/TextInput';
 import useAccordionStateLocalStorage from 'kesaseteli/employer/hooks/application/useAccordionStateLocalStorage';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
-import useEmploymentQuery from 'kesaseteli/employer/hooks/backend/useEmploymentQuery';
 import useGetEmploymentErrors from 'kesaseteli/employer/hooks/employments/useGetEmploymentErrors';
-import omit from 'lodash/omit';
 import { useTranslation } from 'next-i18next';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
