@@ -15,7 +15,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import FormSectionDivider from 'shared/components/forms/section/FormSectionDivider';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
-import showErrorToast from 'shared/components/toast/show-error-toast';
 import { CITY_REGEX, POSTAL_CODE_REGEX } from 'shared/constants';
 import {
   EMPLOYEE_EXCEPTION_REASON,
@@ -36,9 +35,8 @@ type Props = {
 
 const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
   const { t } = useTranslation();
-  const getEmploymentQuery = useEmploymentQuery();
   const { getValues } = useFormContext<Application>();
-  const { applicationQuery, updateEmployment } = useApplicationApi();
+  const { applicationQuery, fetchEmployment } = useApplicationApi();
   const [isFetchEmployeeDataEnabled, setIsFetchEmployeeDataEnabled] =
     useState<boolean>(false);
 
@@ -55,30 +53,8 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
   };
 
   const handleGetEmployeeData = useCallback(() => {
-    const formDataVoucher = getValues().summer_vouchers[index];
-    const summerVoucher = applicationQuery.data.summer_vouchers[index];
-    getEmploymentQuery.mutate(
-      {
-        employee_name: formDataVoucher.employee_name,
-        summer_voucher_serial_number:
-          formDataVoucher.summer_voucher_serial_number,
-        employer_summer_voucher_id: summerVoucher.id,
-      },
-      {
-        onSuccess: (data) =>
-          updateEmployment(
-            getValues(),
-            index,
-            omit(data, 'employer_summer_voucher_id')
-          ),
-        onError: () =>
-          showErrorToast(
-            t(`common:delete.errorTitle`),
-            t(`common:delete.errorMessage`)
-          ),
-      }
-    );
-  }, [getValues, applicationQuery.data, updateEmployment]);
+    fetchEmployment(getValues(), index);
+  }, [getValues, applicationQuery.data, fetchEmployment]);
 
   const { storageValue: isInitiallyOpen, persistToStorage } =
     useAccordionStateLocalStorage(index);
@@ -131,7 +107,7 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
             variant="secondary"
             theme="black"
           >
-            Get employee data
+            {t('common:application.step2.fetch_employment')}
           </Button>
         }
       >

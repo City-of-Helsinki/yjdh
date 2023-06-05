@@ -11,6 +11,10 @@ import useRouterQueryParam from 'shared/hooks/useRouterQueryParam';
 import Application from 'shared/types/application';
 import DraftApplication from 'shared/types/draft-application';
 import { EmploymentBase } from 'shared/types/employment';
+import { omit } from 'lodash';
+import showErrorToast from 'shared/components/toast/show-error-toast';
+import { useTranslation } from 'react-i18next';
+import useEmploymentQuery from 'kesaseteli/employer/hooks/backend/useEmploymentQuery';
 
 export type ApplicationApi<T> = {
   applicationId?: string;
@@ -28,6 +32,10 @@ export type ApplicationApi<T> = {
   sendApplication: (
     application: Application,
     onSuccess?: () => void | Promise<void>
+  ) => void;
+  fetchEmployment: (
+    application: DraftApplication,
+    employmentIndex: number
   ) => void;
   addEmployment: (
     application: DraftApplication,
@@ -63,6 +71,8 @@ const useApplicationApi = <T = Application>(
   const { value: applicationId, isRouterLoading } = useRouterQueryParam('id');
   const queryClient = useQueryClient();
   const onError = useErrorHandler();
+  const { t } = useTranslation();
+  const getEmploymentQuery = useEmploymentQuery();
 
   const applicationQuery = useApplicationQuery<T>(applicationId, select);
   const updateApplicationQuery = useUpdateApplicationQuery(applicationId);
@@ -81,6 +91,34 @@ const useApplicationApi = <T = Application>(
     } else {
       onError(error);
     }
+  };
+
+  const fetchEmployment: ApplicationApi<T>['fetchEmployment'] = (
+    draftApplication: DraftApplication,
+    employmentIndex: number
+  ) => {
+    const formDataVoucher = draftApplication.summer_vouchers[employmentIndex];
+    getEmploymentQuery.mutate(
+      {
+        employee_name: formDataVoucher.employee_name,
+        summer_voucher_serial_number:
+          formDataVoucher.summer_voucher_serial_number,
+        employer_summer_voucher_id: formDataVoucher.id,
+      },
+      {
+        onSuccess: (data) =>
+          updateEmployment(
+            draftApplication,
+            employmentIndex,
+            omit(data, 'employer_summer_voucher_id')
+          ),
+        onError: () =>
+          showErrorToast(
+            t('common:application.step2.fetch_employment_error_title'),
+            t('common:application.step2.fetch_employment_error_message')
+          ),
+      }
+    );
   };
 
   const addEmployment: ApplicationApi<T>['addEmployment'] = (
@@ -171,6 +209,7 @@ const useApplicationApi = <T = Application>(
     updateApplicationQuery,
     updateApplication,
     sendApplication,
+    fetchEmployment,
     addEmployment,
     updateEmployment,
     removeEmployment,
