@@ -34,7 +34,8 @@ export type ApplicationApi<T> = {
   ) => void;
   fetchEmployment: (
     application: DraftApplication,
-    employmentIndex: number
+    employmentIndex: number,
+    onSuccess?: () => void | Promise<void>
   ) => void;
   addEmployment: (
     application: DraftApplication,
@@ -128,7 +129,8 @@ const useApplicationApi = <T = Application>(
 
   const fetchEmployment: ApplicationApi<T>['fetchEmployment'] = (
     draftApplication: DraftApplication,
-    employmentIndex: number
+    employmentIndex: number,
+    onSuccess = noop
   ) => {
     const formDataVoucher = draftApplication.summer_vouchers[employmentIndex];
     getEmploymentQuery.mutate(
@@ -141,7 +143,12 @@ const useApplicationApi = <T = Application>(
       {
         onSuccess: (data) => {
           const { employer_summer_voucher_id, ...updatedData } = data;
-          updateEmployment(draftApplication, employmentIndex, updatedData);
+          updateEmployment(
+            draftApplication,
+            employmentIndex,
+            updatedData,
+            onSuccess
+          );
         },
         onError: () =>
           showErrorToast(

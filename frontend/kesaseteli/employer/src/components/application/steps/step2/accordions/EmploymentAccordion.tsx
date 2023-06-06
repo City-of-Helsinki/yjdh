@@ -33,8 +33,8 @@ type Props = {
 
 const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
   const { t } = useTranslation();
-  const { getValues } = useFormContext<Application>();
-  const { fetchEmployment } = useApplicationApi();
+  const { getValues, reset } = useFormContext<Application>();
+  const { fetchEmployment, applicationQuery } = useApplicationApi();
   const [isFetchEmployeeDataEnabled, setIsFetchEmployeeDataEnabled] =
     useState<boolean>(false);
 
@@ -51,8 +51,12 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
   }, [enableFetchEmployeeDataButton]);
 
   const handleGetEmployeeData = useCallback(() => {
-    fetchEmployment(getValues(), index);
-  }, [getValues, fetchEmployment, index]);
+    const handleReset = (): void => {
+      reset(applicationQuery.data);
+    };
+
+    fetchEmployment(getValues(), index, handleReset);
+  }, [getValues, fetchEmployment, index, reset, applicationQuery.data]);
 
   const { storageValue: isInitiallyOpen, persistToStorage } =
     useAccordionStateLocalStorage(index);
