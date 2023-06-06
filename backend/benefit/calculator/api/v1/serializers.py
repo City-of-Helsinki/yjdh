@@ -272,6 +272,15 @@ class PaySubsidySerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     {"end_date": _("End date cannot be empty")}
                 )
+            calculation = self.context["request"].data["calculation"]
+            if calculation["state_aid_max_percentage"] is None:
+                raise serializers.ValidationError(
+                    {
+                        "state_aid_max_percentage": _(
+                            "State aid maximum percentage cannot be empty"
+                        )
+                    }
+                )
         return data
 
     class Meta:
