@@ -17,7 +17,6 @@ import {
   MESSAGE_TYPES,
   ORGANIZATION_TYPES,
   PAY_SUBSIDY_OPTIONS,
-  PROPOSALS_FOR_DESISION,
 } from '../constants';
 
 // handler

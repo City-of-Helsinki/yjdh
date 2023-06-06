@@ -2,6 +2,7 @@ import os
 
 import environ
 import sentry_sdk
+from corsheaders.defaults import default_headers
 from django.utils.translation import gettext_lazy as _
 from sentry_sdk.integrations.django import DjangoIntegration
 
@@ -492,6 +493,12 @@ if os.path.exists(local_settings_path):
 # S3 settings
 
 USE_S3 = env("USE_S3")
+
+CORS_ALLOW_HEADERS = (
+    *default_headers,
+    "baggage",
+    "sentry-trace",
+)
 
 if USE_S3:
     AWS_S3_ENDPOINT_URL = env("S3_ENDPOINT_URL")
