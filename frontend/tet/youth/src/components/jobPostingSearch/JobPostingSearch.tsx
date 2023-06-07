@@ -35,7 +35,7 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
   const { isLoading, error, workMethodsList, workFeaturesList } = useKeywordType('id');
 
   React.useEffect(() => {
-    if (initParams.keyword) {
+    if (initParams.keyword && workFeaturesList) {
       const paramKeywords = initParams.keyword.split(',');
       const features = workFeaturesList.filter((feature) => paramKeywords.includes(feature.value));
       setChosenWorkFeatures(features.map((feature) => feature.value));
