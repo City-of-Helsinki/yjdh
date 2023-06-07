@@ -15,6 +15,7 @@ export type TextInputProps = {
   type?: TextInputBaseProps<ApplicationFormData>['type'];
   placeholder?: string;
   helperFormat?: string;
+  onChange?: (value: string) => void;
 } & GridCellProps;
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -23,6 +24,7 @@ const TextInput: React.FC<TextInputProps> = ({
   type = 'text',
   helperFormat,
   placeholder,
+  onChange,
   ...$gridCellProps
 }) => {
   const { t } = useTranslation();
@@ -54,6 +56,7 @@ const TextInput: React.FC<TextInputProps> = ({
       initialValue={getValue()}
       errorText={errorText()}
       label={t(`common:application.form.inputs.${fieldName}`)}
+      onChange={onChange}
       {...$gridCellProps}
     />
   );

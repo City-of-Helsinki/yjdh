@@ -65,7 +65,10 @@
       "employment_description_placeholder": "Kerro tähän työtehtävistä, joita nuori teki.",
       "add_employment": "Lisää uusi työsuhde",
       "save_employment": "Tallenna tiedot",
-      "remove_employment": "Poista tiedot"
+      "remove_employment": "Poista tiedot",
+      "fetch_employment": "Hae tiedot",
+      "fetch_employment_error_title": "Sattui virhe!",
+      "fetch_employment_error_message": "Ei hakenut työntekijän tietoja."
     },
     "step3": {
       "name": "Lähetä",
@@ -138,7 +141,7 @@
         "WrongBBANLength": "Tarkista tilinumeron pituus",
         "WrongBBANFormat": "Tarkista tilinumero",
         "ChecksumNotNumber": "Tarkista tilinumero",
-        "WrongIBANChecksum":"Tarkista tilinumero",
+        "WrongIBANChecksum": "Tarkista tilinumero",
         "WrongAccountBankBranchChecksum": "Tarkista tilinumero"
       },
       "notification": {

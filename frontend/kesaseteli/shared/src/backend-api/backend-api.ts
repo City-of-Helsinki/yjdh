@@ -19,6 +19,7 @@ export const BackendEndpoint = {
   ATTACHMENTS: '/attachments/',
   USER: '/oidc/userinfo/',
   YOUTH_APPLICATIONS: '/v1/youthapplications/',
+  EMPLOYMENT: '/v1/youthapplications/fetch_employee_data/',
   SCHOOLS: '/v1/schools/',
   ...(isRealIntegrationsEnabled() && isSuomiFiEnabled()
     ? suomiFiEndpoint

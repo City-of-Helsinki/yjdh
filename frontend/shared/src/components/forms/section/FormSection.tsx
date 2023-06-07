@@ -4,6 +4,7 @@ import Heading from '../heading/Heading';
 import {
   $Action,
   $Grid,
+  $GridCell,
   $Hr,
   $Section,
   FormSectionProps,
@@ -13,12 +14,14 @@ const FormSection: React.FC<FormSectionProps> = ({
   children,
   header,
   action,
+  gridActions,
   withoutDivider = false,
   paddingBottom = false,
   role,
   loading,
   'aria-label': ariaLabel,
   'data-testid': dataTestId,
+  columns,
   ...rest
 }) => (
   <$Section
@@ -29,8 +32,13 @@ const FormSection: React.FC<FormSectionProps> = ({
     {action && <$Action>{action}</$Action>}
     {header && <Heading header={header} loading={loading} {...rest} />}
     {children && (
-      <$Grid role={role} {...rest}>
-        {children}
+      <$Grid role={role} columns={columns} {...rest}>
+        <>
+          {gridActions && (
+            <$GridCell $colSpan={columns}>{gridActions}</$GridCell>
+          )}
+          {children}
+        </>
       </$Grid>
     )}
     {!withoutDivider && <$Hr />}

@@ -65,7 +65,10 @@
       "employment_description_placeholder": "Describe the the work tasks of the employee.",
       "add_employment": "Add a new employment",
       "save_employment": "Save the information",
-      "remove_employment": "Delete the information"
+      "remove_employment": "Delete the information",
+      "fetch_employment": "Load information",
+      "fetch_employment_error_title": "Error occured!",
+      "fetch_employment_error_message": "Could not fetch the info of the employee."
     },
     "step3": {
       "name": "Send",
@@ -138,7 +141,7 @@
         "WrongBBANLength": "Check the length of account number",
         "WrongBBANFormat": "Check the account number",
         "ChecksumNotNumber": "Check the account number",
-        "WrongIBANChecksum":"Check the account number",
+        "WrongIBANChecksum": "Check the account number",
         "WrongAccountBankBranchChecksum": "Check the account number"
       },
       "notification": {

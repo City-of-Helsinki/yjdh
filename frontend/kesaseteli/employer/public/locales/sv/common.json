@@ -65,7 +65,10 @@
       "employment_description_placeholder": "Skriv här vilka arbetsuppgifter den unga gjorde.",
       "add_employment": "Lägg till en ny anställning",
       "save_employment": "Spara informationen",
-      "remove_employment": "Ta bort uppgifterna"
+      "remove_employment": "Ta bort uppgifterna",
+      "fetch_employment": "Hämta uppgifter",
+      "fetch_employment_error_title": "Fel uppstod!",
+      "fetch_employment_error_message": "Kunde inte hämta arbetstagarens uppgifter."
     },
     "step3": {
       "name": "Skicka",
@@ -138,7 +141,7 @@
         "WrongBBANLength": "Kontrollera kontonumret",
         "WrongBBANFormat": "Kontrollera kontonumret",
         "ChecksumNotNumber": "Kontrollera kontonumret",
-        "WrongIBANChecksum":"Kontrollera kontonumret",
+        "WrongIBANChecksum": "Kontrollera kontonumret",
         "WrongAccountBankBranchChecksum": "Kontrollera kontonumret"
       },
       "notification": {
