@@ -1,5 +1,4 @@
 import Header from 'benefit/applicant/components/header/Header';
-import SupportingContent from 'benefit/applicant/components/supportingContent/SupportingContent';
 import TermsOfService from 'benefit/applicant/components/termsOfService/TermsOfService';
 import { IS_CLIENT, LOCAL_STORAGE_KEYS } from 'benefit/applicant/constants';
 import dynamic from 'next/dynamic';
@@ -39,10 +38,7 @@ const Layout: React.FC<Props> = ({ children, ...rest }) => {
           setIsTermsOfSerivceApproved={setIsTermsOfSerivceApproved}
         />
       ) : (
-        <>
-          {children}
-          <SupportingContent />
-        </>
+        children
       )}
       <Footer />
     </$Main>

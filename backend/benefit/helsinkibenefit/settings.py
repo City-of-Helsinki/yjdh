@@ -1,4 +1,5 @@
 import os
+from corsheaders.defaults import default_headers
 
 import environ
 import sentry_sdk
@@ -493,3 +494,9 @@ if USE_S3:
     AWS_ACCESS_KEY_ID = env("S3_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY = env("S3_SECRET_ACCESS_KEY")
     AWS_STORAGE_BUCKET_NAME = env("S3_STORAGE_BUCKET_NAME")
+
+CORS_ALLOW_HEADERS = (
+    *default_headers,
+    "baggage",
+    "sentry-trace",
+)

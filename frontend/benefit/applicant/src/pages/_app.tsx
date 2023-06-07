@@ -33,10 +33,23 @@ const App: React.FC<AppProps> = (appProps) => {
 
   useEffect(() => {
     setAppLoaded();
-    if (router.route === ROUTES.HOME)
-      document.title = t('common:pageTitles.home');
-    else if (router.route === ROUTES.LOGIN)
-      document.title = t('common:pageTitles.login');
+    switch (router.route) {
+      case ROUTES.HOME:
+        document.title = t('common:pageTitles.home');
+        break;
+
+      case ROUTES.LOGIN:
+        document.title = t('common:pageTitles.login');
+        break;
+
+      case ROUTES.ACCESSIBILITY_STATEMENT:
+        document.title = t('common:pageTitles.accessibilityStatement');
+        break;
+
+      default:
+        document.title = t('common:pageTitles.home');
+        break;
+    }
   }, [router, t]);
 
   return (

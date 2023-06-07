@@ -23,6 +23,16 @@ const useUserQuery = (
   const locale = useLocale();
   const { axios, handleResponse } = useBackendAPI();
 
+  const isEnabled = (): boolean => {
+    if (logout) {
+      return false;
+    }
+    if (router.route === '/accessibility-statement') {
+      return false;
+    }
+    return true;
+  };
+
   const handleError = (error: Error): void => {
     if (logout) {
       void router.push(`${locale}/login?logout=true`);
@@ -41,7 +51,7 @@ const useUserQuery = (
     () => handleResponse<UserData>(axios.get(BackendEndpoint.USER_ME)),
     {
       refetchInterval: FIVE_MINUTES,
-      enabled: !logout,
+      enabled: isEnabled(),
       retry: false,
       select: (data) => camelcaseKeys(data, { deep: true }),
       onError: (error) => handleError(error),
