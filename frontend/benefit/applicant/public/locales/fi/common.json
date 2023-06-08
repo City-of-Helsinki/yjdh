@@ -468,14 +468,22 @@
   },
   "select": "Valitse",
   "login": {
-    "login": "Kirjaudu palveluun",
+    "login": "Kirjaudu sisään",
     "logoutMessageLabel": "Olet kirjautunut ulos",
     "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään",
     "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
-    "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
+    "infoLabel": "Ongelmia kirjautumisessa?",
     "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
-    "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Voit valita itse, mitä tunnistustapaa haluat käyttää. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi.",
-    "termsOfServiceHeader": "Tietoa työnantajan edustajien henkilötietojen käsittelystä"
+    "infoContent": "Lähetä meille sähköposti osoitteeseen helsinkilisa@hel.fi.",
+    "termsOfServiceHeader": "Tietoa työnantajan edustajien henkilötietojen käsittelystä",
+    "header": "Kirjaudu Helsinki-lisän asiointipalveluun",
+    "infoText1": "Hae organisaatiollesi taloudellista tukea, Helsinki-lisää, työttömän helsinkiläisen työllistämiseen. Tarvitset Suomi.fi-valtuutuksen asioimiseen organisaatiosi puolesta.",
+    "smallHeader1": "Kirjaudu pankkitunnuksilla tai mobiilivarmenteella",
+    "infoText2": "Kun kirjaudut ensimmäisen kerran, sinulle luodaan automaattisesti oma Helsinki-profiili tunnus.",
+    "smallHeader2": "Hanki Suomi.fi -valtuutus",
+    "infoText3": "Jos sinulla ei ole vielä oikeutta asioida organisaatiosi puolesta, voit hankkia itsellesi Suomi.fi -valtuuden.",
+    "authorization": "Katso ohjeet valtuutuksen hankkimiseen",
+    "suomifiUrl": "https://www.suomi.fi/valtuudet"
   },
   "errorPage": {
     "title": "Palvelussa on valitettavasti tapahtunut virhe",

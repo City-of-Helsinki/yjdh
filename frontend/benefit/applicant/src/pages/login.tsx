@@ -1,6 +1,13 @@
+import {
+  $H1,
+  $H2,
+  $Hr,
+  $P,
+} from 'benefit/applicant/components/pages/Pages.sc';
 import useLogin from 'benefit/applicant/hooks/useLogin';
 import {
   Button,
+  IconLinkExternal,
   IconSignin,
   Notification,
   NotificationProps as HDSNotificationProps,
@@ -11,14 +18,19 @@ import { useTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
 import Container from 'shared/components/container/Container';
+import {
+  $Grid,
+  $GridCell,
+} from 'shared/components/forms/section/FormSection.sc';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
-import { useTheme } from 'styled-components';
 
 import { IS_CLIENT, LOCAL_STORAGE_KEYS } from '../constants';
 
-type NotificationProps = Pick<HDSNotificationProps, 'type' | 'label'> & {
-  content?: string;
-};
+type NotificationProps =
+  | (Pick<HDSNotificationProps, 'type' | 'label'> & {
+      content?: string;
+    })
+  | null;
 
 const Login: NextPage = () => {
   const queryClient = useQueryClient();
@@ -27,8 +39,6 @@ const Login: NextPage = () => {
     query: { logout, error, sessionExpired },
   } = useRouter();
   const login = useLogin();
-
-  const theme = useTheme();
 
   const notificationProps = React.useMemo((): NotificationProps => {
     if (error) {
@@ -40,11 +50,7 @@ const Login: NextPage = () => {
     if (logout) {
       return { type: 'info', label: t('common:login.logoutMessageLabel') };
     }
-    return {
-      type: 'info',
-      label: t('common:login.infoLabel'),
-      content: t('common:login.infoContent'),
-    };
+    return null;
   }, [t, error, sessionExpired, logout]);
 
   useEffect(() => {
@@ -61,24 +67,64 @@ const Login: NextPage = () => {
 
   return (
     <Container>
-      <Notification
-        type={notificationProps.type}
-        label={notificationProps.label}
-        size="large"
-        css={`
-          margin-bottom: ${theme.spacing.xl};
-        `}
-      >
-        {notificationProps.content}
-      </Notification>
-      <Button
-        theme="coat"
-        iconLeft={<IconSignin />}
-        onClick={login}
-        data-testid="loginButton"
-      >
-        {t('common:login.login')}
-      </Button>
+      <$Grid>
+        <$GridCell $colSpan={6}>
+          {notificationProps && (
+            <Notification
+              type={notificationProps.type}
+              label={notificationProps.label}
+              size="large"
+            >
+              {notificationProps.content}
+            </Notification>
+          )}
+          <$H1>{t('common:login.header')}</$H1>
+          <$P>{t('common:login.infoText1')}</$P>
+          <$Hr />
+          <$H2>{t('common:login.smallHeader1')}</$H2>
+          <$P>{t('common:login.infoText2')}</$P>
+          <$Grid>
+            <$GridCell $colSpan={8}>
+              <Button
+                theme="coat"
+                fullWidth
+                iconRight={<IconSignin />}
+                onClick={login}
+                data-testid="loginButton"
+              >
+                {t('common:login.login')}
+              </Button>
+            </$GridCell>
+          </$Grid>
+          <$Hr />
+          <$H2>{t('common:login.smallHeader2')}</$H2>
+          <$P>{t('common:login.infoText3')}</$P>
+          <$Grid>
+            <$GridCell $colSpan={8}>
+              <Button
+                theme="coat"
+                variant="secondary"
+                fullWidth
+                iconRight={<IconLinkExternal />}
+                onClick={() =>
+                  // eslint-disable-next-line security/detect-non-literal-fs-filename
+                  window.open(t('common:login.suomifiUrl'), '_blank')
+                }
+              >
+                {t('common:login.authorization')}
+              </Button>
+            </$GridCell>
+          </$Grid>
+          <$Hr />
+          <Notification
+            type="info"
+            label={t('common:login.infoLabel')}
+            size="default"
+          >
+            {t('common:login.infoContent')}
+          </Notification>
+        </$GridCell>
+      </$Grid>
     </Container>
   );
 };

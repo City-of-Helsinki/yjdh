@@ -3,18 +3,12 @@ import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
+import {
+  $Grid,
+  $GridCell,
+} from 'shared/components/forms/section/FormSection.sc';
 import useLocale from 'shared/hooks/useLocale';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
-import styled from 'styled-components';
-
-const $TextWrapper = styled.div`
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-`;
-
-const $TextContainer = styled.main`
-  grid-column: span 8;
-`;
 
 const AccessibilityStatement: NextPage = () => {
   const { t } = useTranslation();
@@ -38,8 +32,8 @@ const AccessibilityStatement: NextPage = () => {
       </Head>
 
       <Container>
-        <$TextWrapper>
-          <$TextContainer>
+        <$Grid>
+          <$GridCell $colSpan={8}>
             <h1>{t(`${tBase}.h1`)}</h1>
             <div id="section1">
               <h2>{t(`${tBase}.sections.section1.heading1`)}</h2>
@@ -122,8 +116,8 @@ const AccessibilityStatement: NextPage = () => {
               <h2>{t(`${tBase}.sections.section11.heading1`)}</h2>
               <p>{t(`${tBase}.sections.section11.content1`)}</p>
             </div>
-          </$TextContainer>
-        </$TextWrapper>
+          </$GridCell>
+        </$Grid>
       </Container>
     </>
   );
