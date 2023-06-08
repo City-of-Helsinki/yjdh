@@ -1143,6 +1143,9 @@ def test_youth_application_additional_info_valid_post(user_client):
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.django_db
 def test_youth_application_fetch_employee_data(user_client):
+    employer_summer_voucher = EmployerSummerVoucherFactory(
+        application=EmployerApplicationFactory()
+    )
     AcceptedYouthApplicationFactory(
         first_name="John",
         last_name="Doe",
@@ -1172,12 +1175,14 @@ def test_youth_application_fetch_employee_data(user_client):
         response = user_client.post(
             url,
             data={
+                "employer_summer_voucher_id": str(employer_summer_voucher.id),
                 "employee_name": employee_name,
                 "summer_voucher_serial_number": 123,
             },
         )
         assert response.status_code == status.HTTP_200_OK
         assert response.data == {
+            "employer_summer_voucher_id": str(employer_summer_voucher.id),
             "employee_name": "John Doe",
             "employee_ssn": "111111-111C",
             "employee_phone_number": "123456789",
@@ -1189,6 +1194,7 @@ def test_youth_application_fetch_employee_data(user_client):
         response = user_client.post(
             url,
             data={
+                "employer_summer_voucher_id": str(employer_summer_voucher.id),
                 "employee_name": employee_name,
                 "summer_voucher_serial_number": 123,
             },
@@ -1197,6 +1203,7 @@ def test_youth_application_fetch_employee_data(user_client):
     response = user_client.post(
         url,
         data={
+            "employer_summer_voucher_id": str(employer_summer_voucher.id),
             "employee_name": "John Doe",
             "summer_voucher_serial_number": 456,
         },
@@ -1205,16 +1212,29 @@ def test_youth_application_fetch_employee_data(user_client):
     response = user_client.post(
         url,
         data={
+            "employer_summer_voucher_id": str(employer_summer_voucher.id),
             "employee_name": "Mary Doe",
             "summer_voucher_serial_number": 789,
         },
     )
     assert response.status_code == status.HTTP_200_OK
+    response = user_client.post(
+        url,
+        data={
+            "employer_summer_voucher_id": "not a valid UUID",
+            "employee_name": "Mary Doe",
+            "summer_voucher_serial_number": 789,
+        },
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.django_db
 def test_youth_application_fetch_employee_data_success_writes_audit_log(user_client):
+    employer_summer_voucher = EmployerSummerVoucherFactory(
+        application=EmployerApplicationFactory()
+    )
     youth_application = AcceptedYouthApplicationFactory(
         first_name="Franklin",
         last_name="Doe",
@@ -1225,6 +1245,7 @@ def test_youth_application_fetch_employee_data_success_writes_audit_log(user_cli
     response = user_client.post(
         url,
         data={
+            "employer_summer_voucher_id": str(employer_summer_voucher.id),
             "employee_name": "Peter Doe",
             "summer_voucher_serial_number": 123,
         },
@@ -1239,6 +1260,7 @@ def test_youth_application_fetch_employee_data_success_writes_audit_log(user_cli
     assert audit_event["target"]["type"] == "YouthApplication"
     assert audit_event["additional_information"] == (
         "YouthApplicationViewSet.fetch_employee_data called with "
+        f'employer_summer_voucher_id="{employer_summer_voucher.id}", '
         'employee_name="Peter Doe" and summer_voucher_serial_number=123 '
         "(POST used with CSRF as a GET). Found 1 match."
     )
@@ -1247,11 +1269,15 @@ def test_youth_application_fetch_employee_data_success_writes_audit_log(user_cli
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.django_db
 def test_youth_application_fetch_employee_data_not_found_writes_audit_log(user_client):
+    employer_summer_voucher = EmployerSummerVoucherFactory(
+        application=EmployerApplicationFactory()
+    )
     url = reverse("v1:youthapplication-fetch-employee-data")
     audit_log_entries_before = AuditLogEntry.objects.count()
     response = user_client.post(
         url,
         data={
+            "employer_summer_voucher_id": str(employer_summer_voucher.id),
             "employee_name": "Teppo Testaaja",
             "summer_voucher_serial_number": 123456789,
         },
@@ -1266,6 +1292,7 @@ def test_youth_application_fetch_employee_data_not_found_writes_audit_log(user_c
     assert audit_event["target"]["type"] == "YouthApplication"
     assert audit_event["additional_information"] == (
         "YouthApplicationViewSet.fetch_employee_data called with "
+        f'employer_summer_voucher_id="{employer_summer_voucher.id}", '
         'employee_name="Teppo Testaaja" and summer_voucher_serial_number=123456789 '
         "(POST used with CSRF as a GET). Found no matches."
     )

@@ -1,3 +1,4 @@
+import { Button } from 'hds-react';
 import AttachmentInput from 'kesaseteli/employer/components/application/form/AttachmentInput';
 import DateInput from 'kesaseteli/employer/components/application/form/DateInput';
 import SelectionGroup from 'kesaseteli/employer/components/application/form/SelectionGroup';
@@ -5,9 +6,11 @@ import TextInput, {
   TextInputProps,
 } from 'kesaseteli/employer/components/application/form/TextInput';
 import useAccordionStateLocalStorage from 'kesaseteli/employer/hooks/application/useAccordionStateLocalStorage';
+import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useGetEmploymentErrors from 'kesaseteli/employer/hooks/employments/useGetEmploymentErrors';
 import { useTranslation } from 'next-i18next';
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 import FormSectionDivider from 'shared/components/forms/section/FormSectionDivider';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
 import { CITY_REGEX, POSTAL_CODE_REGEX } from 'shared/constants';
@@ -16,6 +19,7 @@ import {
   EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT,
 } from 'shared/constants/employee-constants';
 import theme from 'shared/styles/theme';
+import Application from 'shared/types/application';
 import Employment from 'shared/types/employment';
 import { getDecimalNumberRegex } from 'shared/utils/regex.utils';
 
@@ -29,6 +33,31 @@ type Props = {
 
 const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
   const { t } = useTranslation();
+  const { getValues, reset } = useFormContext<Application>();
+  const { fetchEmployment, applicationQuery } = useApplicationApi();
+  const [isFetchEmployeeDataEnabled, setIsFetchEmployeeDataEnabled] =
+    useState<boolean>(false);
+
+  const enableFetchEmployeeDataButton = useCallback(() => {
+    const formDataVoucher = getValues().summer_vouchers[index];
+    setIsFetchEmployeeDataEnabled(
+      formDataVoucher.employee_name.length > 0 &&
+        formDataVoucher.summer_voucher_serial_number.length > 0
+    );
+  }, [getValues, index]);
+
+  useEffect(() => {
+    enableFetchEmployeeDataButton();
+  }, [enableFetchEmployeeDataButton]);
+
+  const handleGetEmployeeData = useCallback(() => {
+    const handleReset = (): void => {
+      reset(applicationQuery.data);
+    };
+
+    fetchEmployment(getValues(), index, handleReset);
+  }, [getValues, fetchEmployment, index, reset, applicationQuery.data]);
+
   const { storageValue: isInitiallyOpen, persistToStorage } =
     useAccordionStateLocalStorage(index);
 
@@ -70,10 +99,29 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
       onToggle={handleToggle}
       headerBackgroundColor={headerBackgroundColor}
     >
-      <$AccordionFormSection columns={2} withoutDivider>
+      <$AccordionFormSection
+        columns={2}
+        withoutDivider
+        gridActions={
+          <Button
+            onClick={handleGetEmployeeData}
+            disabled={!isFetchEmployeeDataEnabled}
+            variant="secondary"
+            theme="black"
+          >
+            {t('common:application.step2.fetch_employment')}
+          </Button>
+        }
+      >
         <TextInput
           id={getId('employee_name')}
           validation={{ required: true, maxLength: 256 }}
+          onChange={enableFetchEmployeeDataButton}
+        />
+        <TextInput
+          id={getId('summer_voucher_serial_number')}
+          validation={{ required: true, maxLength: 64 }}
+          onChange={enableFetchEmployeeDataButton}
         />
         <TextInput
           id={getId('employee_ssn')}
@@ -121,10 +169,6 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
         <TextInput
           id={getId('employee_school')}
           validation={{ required: true, maxLength: 256 }}
-        />
-        <TextInput
-          id={getId('summer_voucher_serial_number')}
-          validation={{ required: true, maxLength: 64 }}
         />
         <FormSectionDivider $colSpan={2} />
         <FormSectionHeading

@@ -6,6 +6,8 @@ from rest_framework.reverse import reverse
 from common.tests.factories import (
     AcceptedYouthApplicationFactory,
     AdditionalInfoRequestedYouthApplicationFactory,
+    EmployerApplicationFactory,
+    EmployerSummerVoucherFactory,
 )
 from common.tests.utils import set_company_business_id_to_client
 
@@ -65,6 +67,9 @@ def test_youth_application_status_openly_accessible_to_anonymous_user(client):
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.django_db
 def test_youth_application_fetch_employee_data_forbidden_to_anonymous_user(client):
+    employer_summer_voucher = EmployerSummerVoucherFactory(
+        application=EmployerApplicationFactory()
+    )
     AcceptedYouthApplicationFactory(
         last_name="Doe",
         youth_summer_voucher__summer_voucher_serial_number=123,
@@ -73,6 +78,7 @@ def test_youth_application_fetch_employee_data_forbidden_to_anonymous_user(clien
     response = client.post(
         url,
         data={
+            "employer_summer_voucher_id": str(employer_summer_voucher.id),
             "employee_name": "John Doe",
             "summer_voucher_serial_number": 123,
         },

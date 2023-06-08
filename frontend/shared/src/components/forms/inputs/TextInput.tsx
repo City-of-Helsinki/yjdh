@@ -69,11 +69,19 @@ const TextInput = <T,>({
     [registerOptions.maxLength, type, value?.length]
   );
 
+  const registerEvents = { ...register(id, registerOptions) };
+
   return (
     <$GridCell {...$gridCellProps}>
       <$TextInput
+        {...registerEvents}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          void registerEvents.onChange(e);
+          if (onChange) {
+            onChange(e.target.value);
+          }
+        }}
         as={getComponentType(type)}
-        {...register(id, registerOptions)}
         key={id}
         id={id}
         data-testid={id}
