@@ -1,3 +1,5 @@
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+
 import { Button } from 'hds-react';
 import React from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';

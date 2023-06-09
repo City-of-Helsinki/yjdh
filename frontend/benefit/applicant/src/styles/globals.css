@@ -8,11 +8,16 @@ ul {
   list-style: none;
 }
 
-ul, li {
+ul,
+li {
   margin: 0;
   padding: 0;
 }
 
 .app-load-wrapper > div {
   display: none;
+}
+
+.annotationLayer > section {
+  border-style: none !important;
 }
