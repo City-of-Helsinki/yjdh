@@ -556,14 +556,6 @@
     "noMessages": "No messages",
     "close": "Close"
   },
-  "supportingContent": {
-    "contact": {
-      "title": "",
-      "text": "Do you need help? If anything is unclear, you can email us",
-      "emailAddress": "helsinkilisa@hel.fi",
-      "buttonText": ""
-    }
-  },
   "application": {
     "tooltipShowInfo": "Show information"
   },
