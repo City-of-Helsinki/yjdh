@@ -34,7 +34,7 @@
     "next-i18next": "^10.5.0",
     "next-plugin-custom-babel-config": "^1.0.5",
     "next-transpile-modules": "^9.0.0",
-    "pdfjs-dist": "3.6.172",
+    "pdfjs-dist": "3.7.107",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-input-mask": "^2.0.4",
