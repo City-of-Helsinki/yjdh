@@ -1,8 +1,8 @@
 import {
-  $H1,
-  $H2,
+  $Heading,
   $Hr,
-  $P,
+  $Paragraph,
+  $Subheading,
 } from 'benefit/applicant/components/pages/Pages.sc';
 import useLogin from 'benefit/applicant/hooks/useLogin';
 import {
@@ -78,11 +78,11 @@ const Login: NextPage = () => {
               {notificationProps.content}
             </Notification>
           )}
-          <$H1>{t('common:login.header')}</$H1>
-          <$P>{t('common:login.infoText1')}</$P>
+          <$Heading>{t('common:login.heading')}</$Heading>
+          <$Paragraph>{t('common:login.infoText1')}</$Paragraph>
           <$Hr />
-          <$H2>{t('common:login.smallHeader1')}</$H2>
-          <$P>{t('common:login.infoText2')}</$P>
+          <$Subheading>{t('common:login.subheading1')}</$Subheading>
+          <$Paragraph>{t('common:login.infoText2')}</$Paragraph>
           <$Grid>
             <$GridCell $colSpan={8}>
               <Button
@@ -97,8 +97,8 @@ const Login: NextPage = () => {
             </$GridCell>
           </$Grid>
           <$Hr />
-          <$H2>{t('common:login.smallHeader2')}</$H2>
-          <$P>{t('common:login.infoText3')}</$P>
+          <$Subheading>{t('common:login.subheading2')}</$Subheading>
+          <$Paragraph>{t('common:login.infoText3')}</$Paragraph>
           <$Grid>
             <$GridCell $colSpan={8}>
               <Button

@@ -1,12 +1,12 @@
 import styled, { DefaultTheme } from 'styled-components';
 
 interface MainProps {
-  $backgroundColor: keyof DefaultTheme['colors'];
+  backgroundColor: keyof DefaultTheme['colors'];
 }
 
 export const $Main = styled.main<MainProps>`
   ${(props) => `
-    background-color: ${props.theme.colors[props.$backgroundColor]};
+    background-color: ${props.theme.colors[props.backgroundColor]};
   `}
   display: flex;
   flex-direction: column;

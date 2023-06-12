@@ -35,7 +35,7 @@ const Layout: React.FC<Props> = ({ children, ...rest }) => {
   }, []);
 
   return (
-    <$Main $backgroundColor={bgColor} {...rest}>
+    <$Main backgroundColor={bgColor} {...rest}>
       <Header />
       {isAuthenticated && !isTermsOfServiceApproved ? (
         <TermsOfService

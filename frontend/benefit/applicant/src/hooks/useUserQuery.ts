@@ -13,6 +13,8 @@ import { LOCAL_STORAGE_KEYS } from '../constants';
 // check that authentication is still alive in every 5 minutes
 const FIVE_MINUTES = 5 * 60 * 1000;
 
+const UNAUTHORIZER_ROUTES = new Set(['/login', '/accessibility-statement']);
+
 const useUserQuery = (
   queryKeys?: string | unknown[]
 ): UseQueryResult<User, Error> => {
@@ -23,20 +25,13 @@ const useUserQuery = (
   const locale = useLocale();
   const { axios, handleResponse } = useBackendAPI();
 
-  const isEnabled = (): boolean => {
-    if (logout) {
-      return false;
-    }
-    if (router.route === '/accessibility-statement') {
-      return false;
-    }
-    return true;
-  };
-
   const handleError = (error: Error): void => {
     if (logout) {
       void router.push(`${locale}/login?logout=true`);
     } else if (/40[13]/.test(error.message)) {
+      if (UNAUTHORIZER_ROUTES.has(router.route)) {
+        return;
+      }
       void router.push(`${locale}/login`);
     } else {
       showErrorToast(
@@ -51,7 +46,7 @@ const useUserQuery = (
     () => handleResponse<UserData>(axios.get(BackendEndpoint.USER_ME)),
     {
       refetchInterval: FIVE_MINUTES,
-      enabled: isEnabled(),
+      enabled: !logout,
       retry: false,
       select: (data) => camelcaseKeys(data, { deep: true }),
       onError: (error) => handleError(error),

@@ -8,16 +8,16 @@ export const $Hr = styled.hr`
   width: 100%;
 `;
 
-export const $H1 = styled.h1`
+export const $Heading = styled.h1`
   font-size: ${(props) => props.theme.fontSize.heading.l};
   font-weight: 300;
 `;
 
-export const $P = styled.p`
+export const $Paragraph = styled.p`
   line-height: ${(props) => props.theme.lineHeight.l};
 `;
 
-export const $H2 = styled.h2`
+export const $Subheading = styled.h2`
   font-size: ${(props) => props.theme.fontSize.heading.s};
   font-weight: 700;
 `;
