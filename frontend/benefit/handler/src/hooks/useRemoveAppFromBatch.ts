@@ -1,6 +1,6 @@
 import { HandlerEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useTranslation } from 'next-i18next';
-import { useMutation, UseMutationResult } from 'react-query';
+import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
@@ -9,11 +9,15 @@ interface Payload {
   batchId?: string;
 }
 
-const useRemoveAppFromBatch = (): UseMutationResult<Payload, Error> => {
+const useRemoveAppFromBatch = (
+  setBatchCloseAnimation: React.Dispatch<React.SetStateAction<boolean>>
+): UseMutationResult<Payload, Error> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
 
   const handleError = (): void => {
+    setBatchCloseAnimation(false);
     showErrorToast(
       t('common:applications.list.errors.fetch.label'),
       t('common:applications.list.errors.fetch.text', { status: 'error' })
@@ -29,7 +33,12 @@ const useRemoveAppFromBatch = (): UseMutationResult<Payload, Error> => {
         })
       ),
     {
-      onSuccess: () => {},
+      onSuccess: () => {
+        setBatchCloseAnimation(true);
+        setTimeout(() => {
+          void queryClient.invalidateQueries('applicationsList');
+        }, 700);
+      },
       onError: () => handleError(),
     }
   );

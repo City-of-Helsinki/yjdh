@@ -8,6 +8,7 @@ from applications.api.v1.status_transition_validator import (
 )
 from applications.enums import ApplicationBatchStatus, ApplicationStatus
 from applications.models import Application, ApplicationBatch, Company, Employee
+from users.api.v1.serializers import UserSerializer
 
 
 class ApplicationBatchSerializer(serializers.ModelSerializer):
@@ -34,6 +35,14 @@ class ApplicationBatchSerializer(serializers.ModelSerializer):
         help_text="Proposed decision for Ahjo",
     )
 
+    handler = UserSerializer(
+        help_text=(
+            "The handler object, with fields, currently assigned to this calculation"
+            " and application (read-only)"
+        ),
+        read_only=True,
+    )
+
     class Meta:
         model = ApplicationBatch
         fields = [
@@ -48,6 +57,7 @@ class ApplicationBatchSerializer(serializers.ModelSerializer):
             "expert_inspector_name",
             "expert_inspector_email",
             "created_at",
+            "handler",
         ]
         read_only_fields = [
             "created_at",
@@ -165,6 +175,7 @@ class BatchEmployeeSerializer(ReadOnlySerializer):
 class BatchApplicationSerializer(ReadOnlySerializer):
     company = BatchCompanySerializer(read_only=True)
     employee = BatchEmployeeSerializer(read_only=True)
+
     handled_at = serializers.SerializerMethodField(
         "get_handled_at",
         help_text=(

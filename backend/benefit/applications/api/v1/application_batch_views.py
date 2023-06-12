@@ -191,7 +191,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         def create_application_batch_by_ids(app_status, apps):
             if apps:
                 batch = ApplicationBatch.objects.create(
-                    proposal_for_decision=app_status
+                    proposal_for_decision=app_status, handler=request.user
                 )
                 return batch
 
@@ -209,16 +209,23 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         )
 
         # Try finding an existing batch
-        batch = (
-            ApplicationBatch.objects.filter(
-                status=ApplicationBatchStatus.DRAFT, proposal_for_decision=app_status
-            ).first()
-        ) or create_application_batch_by_ids(
-            app_status,
-            apps,
-        )
+        try:
+            batch = (
+                ApplicationBatch.objects.filter(
+                    status=ApplicationBatchStatus.DRAFT,
+                    proposal_for_decision=app_status,
+                ).first()
+            ) or create_application_batch_by_ids(
+                app_status,
+                apps,
+            )
+        except BatchTooManyDraftsError:
+            return Response(
+                {"errorKey": "batchInvalidDraftAlreadyExists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        if batch:
+        if batch and batch.status == ApplicationBatchStatus.DRAFT:
             apps.update(batch=batch)
             batch = ApplicationBatchSerializer(batch)
             return Response(batch.data, status=status.HTTP_200_OK)
@@ -239,16 +246,20 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         application_ids = request.data.get("application_ids")
         batch = self.get_batch(pk)
 
-        apps = Application.objects.filter(
+        deassign_apps = Application.objects.filter(
+            batch=batch,
             pk__in=application_ids,
             status__in=[ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
-            batch=batch,
         )
-        if apps:
-            for app in apps:
+        if deassign_apps:
+            for app in deassign_apps:
                 app.batch = None
                 app.save()
+            remaining_apps = Application.objects.filter(batch=batch)
+            if len(remaining_apps) == 0:
+                batch.delete()
             return Response(status=status.HTTP_200_OK)
+
         return Response(
             {"detail": "Applications were not applicable to be detached."},
             status=status.HTTP_404_NOT_FOUND,
@@ -264,6 +275,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         batch = self.get_batch(pk)
         if new_status not in [
             ApplicationBatchStatus.DRAFT,
+            ApplicationBatchStatus.AHJO_REPORT_CREATED,
             ApplicationBatchStatus.AWAITING_AHJO_DECISION,
             ApplicationBatchStatus.DECIDED_ACCEPTED,
             ApplicationBatchStatus.DECIDED_REJECTED,
@@ -281,6 +293,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             for key in request.data:
                 setattr(batch, key, request.data.get(key))
 
+        previous_status = batch.status
         batch.status = new_status
 
         try:
@@ -309,6 +322,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             {
                 "id": batch.id,
                 "status": batch.status,
+                "previousStatus": previous_status,
                 "decision": batch.proposal_for_decision,
             },
             status=status.HTTP_200_OK,

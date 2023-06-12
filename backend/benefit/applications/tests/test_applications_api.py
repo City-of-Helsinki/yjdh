@@ -2181,6 +2181,30 @@ def test_handler_application_exlude_batched(handler_api_client):
     assert len(response.data) == 1
 
 
+def test_handler_application_filter_archived(handler_api_client):
+    apps = [
+        DecidedApplicationFactory(),
+        DecidedApplicationFactory(),
+        DecidedApplicationFactory(archived=True),
+    ]
+
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list")
+    )
+    assert len(response.data) == 2
+    for response_app in response.data:
+        assert response_app["id"] in [str(apps[0].id), str(apps[1].id)]
+        assert not response_app["archived"]
+
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list"),
+        {"filter_archived": "1"},
+    )
+    assert len(response.data) == 1
+    assert response.data[0]["id"] == str(apps[2].id)
+    assert response.data[0]["archived"]
+
+
 def _create_random_applications():
     f = faker.Faker()
     combos = [

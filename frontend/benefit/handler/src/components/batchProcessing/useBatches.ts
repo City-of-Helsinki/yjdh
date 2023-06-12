@@ -19,7 +19,7 @@ export interface BatchListProps {
 
 const translationsBase = 'common:applications.list';
 
-const useBatchProposal = (filterByStatus: BATCH_STATUSES): BatchListProps => {
+const useBatchProposal = (filterByStatus: BATCH_STATUSES[]): BatchListProps => {
   const { t } = useTranslation();
   const query = useBatchQuery(filterByStatus);
 

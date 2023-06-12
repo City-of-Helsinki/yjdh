@@ -27,6 +27,7 @@ from common.localized_iban_field import LocalizedIBANField
 from common.utils import DurationMixin
 from companies.models import Company
 from shared.models.abstract_models import TimeStampedModel, UUIDModel
+from users.models import User
 
 # todo: move to some better location?
 APPLICATION_LANGUAGE_CHOICES = (
@@ -476,6 +477,13 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
     * Transferring payment data to Talpa
     """
 
+    handler = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+
     status = models.CharField(
         max_length=64,
         verbose_name=_("status of batch"),
@@ -524,7 +532,11 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
                 and self.status == ApplicationBatchStatus.DRAFT
             ):
                 drafts = ApplicationBatch.objects.filter(
-                    status=self.status, proposal_for_decision=self.proposal_for_decision
+                    status__in=[
+                        ApplicationBatchStatus.DRAFT,
+                        ApplicationBatchStatus.AHJO_REPORT_CREATED,
+                    ],
+                    proposal_for_decision=self.proposal_for_decision,
                 ).exclude(id=self.id)
                 if len(drafts) > 0:
                     raise BatchTooManyDraftsError(
