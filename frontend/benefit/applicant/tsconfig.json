@@ -5,7 +5,7 @@
     "paths": {
       "benefit/applicant/*": ["benefit/applicant/src/*"],
       "benefit-shared/*": ["benefit/shared/src/*"],
-      "shared/*": ["shared/src/*","shared/browser-tests/*"]
+      "shared/*": ["shared/src/*", "shared/browser-tests/*"]
     }
   },
   "include": [
