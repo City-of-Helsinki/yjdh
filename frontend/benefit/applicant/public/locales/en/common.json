@@ -470,12 +470,20 @@
   "login": {
     "login": "Sign in to the service",
     "logoutMessageLabel": "You have logged out",
-    "errorLabel": "An unexpected error occurred. Please, sign in again. ",
+    "errorLabel": "An unexpected error occurred. Please, sign in again.",
     "sessionExpiredLabel": "User session expired. Sign in again",
-    "infoLabel": "Using the service requires strong authentication",
+    "infoLabel": "Problems logging in?",
     "logoutInfoContent": "You have been logged out. If you want to continue to use the service, you have to log in again click the button here below.",
-    "infoContent": "You should identify yourself to be able to advance to the service. You can choose yourself which identification method you want to use. Click on the bottom below to identify yourself.",
-    "termsOfServiceHeader": "Information about the processing of the employer representatives’ personal data"
+    "infoContent": "Send us an email to helsinkilisa@hel.fi.",
+    "termsOfServiceHeader": "Information about the processing of the employer representatives’ personal data",
+    "heading": "Log in to the Helsinki benefit service",
+    "infoText1": "Apply for Helsinki benefit, a discretionary support for a private or third-sector employer that hires an unemployed Helsinki resident. You need a Suomi.fi e-Authorization to do business on behalf of your organization.",
+    "subheading1": "Log in with you bank access codes or mobile certificate",
+    "infoText2": "When you log in for the first time, your own Helsinki profile is automatically created for you.",
+    "subheading2": "Acquire Suomi.fi e-Authorization",
+    "infoText3": "If you do not yet have the right to do business on behalf of your organization, you can get yourself a Suomi.fi e-Authorization.",
+    "authorization": "See the instructions for obtaining authorization",
+    "suomifiUrl": "https://www.suomi.fi/e-authorizations"
   },
   "errorPage": {
     "title": "An error has unfortunately occurred",
@@ -548,14 +556,6 @@
     "noMessages": "No messages",
     "close": "Close"
   },
-  "supportingContent": {
-    "contact": {
-      "title": "",
-      "text": "Do you need help? If anything is unclear, you can email us",
-      "emailAddress": "helsinkilisa@hel.fi",
-      "buttonText": ""
-    }
-  },
   "application": {
     "tooltipShowInfo": "Show information"
   },
@@ -564,6 +564,98 @@
     "home": "Helsinki benefit - Frontpage",
     "createApplication": "Helsinki benefit - Application - Create",
     "editApplication": "Helsinki benefit - Application - Edit",
-    "viewApplication": "Helsinki benefit - Application - View"
+    "viewApplication": "Helsinki benefit - Application - View",
+    "accessibilityStatement": "Helsinki benefit - Accessibility statement"
+  },
+  "accessibilityStatement": {
+    "h1": "Saavutettavuusseloste",
+    "sections": {
+      "section1": {
+        "heading1": "Digitaalinen työllisyyden Helsinki-lisä -asiointipalvelu",
+        "content1": "Tämä saavutettavuusseloste koskee digitaalista työllisyyden Helsinki-lisä -asiointipalvelua. Palvelun osoite on https://helsinki-lisa.hel.fi"
+      },
+      "section2": {
+        "heading1": "Helsingin kaupungin tavoite",
+        "content1": "Digitaalisten palveluiden saavutettavuudessa Helsingin tavoitteena on pyrkiä vähintään WCAG ohjeiston mukaiseen AA- tai sitä parempaan tasoon, mikäli se on kohtuudella mahdollista.",
+        "content2": "Helsingin tavoitteena on pyrkiä digitaalisten palveluiden saavutettavuudessa vähintään WCAG-ohjeistuksen mukaiseen AA- tai sitä parempaan tasoon."
+      },
+      "section3": {
+        "heading1": "Helsinki-lisä -asiointipalvelun saavutettavuuden tila",
+        "content1": "Helsinki-lisä -asiointipalvelu täyttää lain asettamat kriittiset saavutettavuusvaatimukset WCAG v2.1 -tason AA mukaisesti seuraavin havaituin puuttein.",
+        "heading2": "Ei-saavutettava sisältö, havaitut puutteet ja puutteiden korjaus",
+        "content2": "Jäljempänä on esitetty havaittuja vielä korjaamattomia puutteita.",
+        "list": {
+          "item1": {
+            "heading": "Ruudunlukuohjelman virheellinen kohdistusjärjestys",
+            "text": "Kun käyttäjä avaa uuden hakemuksen, ei ruudunlukuohjelman kohdistusta viedä lomakkeen alkuun, vaan kohdistus sijaitsee virheellisesti keskellä Työnantajan tiedot-osiota."
+          },
+          "item2": {
+            "heading": "Nykyistä työvaihetta ei välitetä avustavalle teknologialle",
+            "text": "Lomakkeen työvaihelistauksesta ei välity teknistä informaatiota avustavalle teknologialle siitä, missä työvaiheessa käyttäjä parhaillaan on."
+          },
+          "item3": {
+            "heading": "Useamman virheellisen lomakentän ilmoittaminen",
+            "text": "Palvelun virheilmoitukset esitetään useimmiten siten, että lomakkeen seuraavaan osioon siirtymisyrityksen yhteydessä käyttäjän selainkohdistus viedään lomakkeen ensimmäiseen virheelliseen lomakekenttään. Jos useammassa kentässä on virhe, muiden virheellisten kohtien löytäminen on hankalaa."
+          },
+          "item4": {
+            "heading": "Virheilmoitusten tekstit liian yleisluontoisia",
+            "text": "Monissa kentissä käytettiin samaa virheilmoitusta eli ”Virheellinen arvo”. Tämä virheilmoitus on esim. Etunimi, Sukunimi, Lomaraha ja Työaika tuntia viikossa -kentissä."
+          },
+          "item5": {
+            "heading": "Päivämäärien asettaminen ei onnistu tekstinsyöttökenttien avulla",
+            "text": "Ongelman vakavuutta pienentää se, että kalenteritoiminto on saavutettava ruudunlukuohjelmaa ja näppäimistöä käytettäessä."
+          }
+        },
+        "heading3": "Puutteiden korjaus",
+        "content3": "Havaittuja saavutettavuuspuutteita pyritään korjaamaan jatkuvasti. Tässä selosteessa havaittujen saavutettavuuspuutteiden listausta päivitetään sen mukaan, kun puutteita saadaan korjattua."
+      },
+      "section4": {
+        "heading1": "Saavutettavuusselosteen laatiminen",
+        "content1": "Tämä seloste on päivitetty 05.06.2023."
+      },
+      "section5": {
+        "heading1": "Saavutettavuuden arviointi",
+        "content1": "Saavutettavuuden arvioinnissa on noudatettu Helsingin kaupungin työohjetta ja menetelmiä, jotka pyrkivät varmistamaan sivuston saavutettavuuden kaikissa työvaiheissa.",
+        "content2": "Saavutettavuus on tarkistettu ulkopuolisen asiantuntijan suorittamana auditointina. Ulkopuolisen asiantuntija-auditoinnin on suorittanut Siteimprov 23.3.2022.",
+        "content3": "Saavutettavuus on tarkistettu käyttäen ohjelmallista saavutettavuustarkistusta sekä sivuston ja sisällön manuaalista tarkistusta. Ohjelmallinen tarkistus on suoritettu käyttäen Siteimproven saavutettavuuden automaattista testaustyökalua ja selainlaajennusta.",
+        "content4": "Manuaalisessa testauksessa on käytetty Chrome- ja Firefox-selaimia, niiden 200% tiloja sekä tietoteknisiä apuvälineitä, kuten ruudunlukuohjelmia, ohjaimia ja erikoisnäppäimistöjä. Mobiilitestaus toteutettiin iOS- ja Android-käyttöjärjestelmillä ja niille tarkoitetuilla ruudunlukuohjelmilla."
+      },
+      "section6": {
+        "heading1": "Saavutettavuusselosteen päivittäminen",
+        "content1": "Sivuston saavutettavuudesta huolehditaan jatkuvalla valvonnalla tekniikan tai sisällön muuttuessa, sekä määräajoin suoritettavalla tarkistuksella. Tätä selostetta päivitetään sivuston muutosten ja saavutettavuuden tarkistusten yhteydessä."
+      },
+      "section7": {
+        "heading1": "Huomasitko puutteita saavutettavuudessa?",
+        "content1": "Pyrimme jatkuvasti parantamaan verkkopalvelun saavutettavuutta. Jos löydät ongelmia, joita ei ole kuvattu tällä sivulla, ilmoita niistä meille ja teemme parhaamme puutteiden korjaamiseksi.",
+        "content2": "Anna palautetta tällä verkkolomakkeella ",
+        "content3": "Palautekanavan kautta voit myös pyytää saavutettavaan muotoon muokattuja tietoja Hel.fi-sivuston sisällöstä."
+      },
+      "section8": {
+        "heading1": "Tietojen pyytäminen saavutettavassa muodossa",
+        "content1": "Mikäli et koe saavasi sivuston sisältöä saavutettavassa muodossa, voit pyytää tietoja palautelomakkeella ",
+        "content1end": ". Tiedusteluun pyritään vastaamaan kohtuullisessa ajassa."
+      },
+      "section9": {
+        "heading1": "Saavutettavuuden valvonta",
+        "content1": "Etelä-Suomen aluehallintovirasto valvoo saavutettavuusvaatimusten toteutumista. Jos et ole tyytyväinen saamaasi vastaukseen tai et saa vastausta lainkaan kahden viikon aikana, voit antaa palautteen Etelä-Suomen aluehallintovirastoon.",
+        "contact1": "Etelä-Suomen aluehallintovirasto,",
+        "contact2": "Saavutettavuuden valvonnan yksikkö",
+        "contact3": "www.saavutettavuusvaatimukset.fi",
+        "contact4": "saavutettavuus@avi.fi",
+        "content2": "Helsinki-lisä -asiointi palvelun saavutettavuusselosteesta vastaa Helsingin kaupungin työllisyyspalvelut -yksikkö."
+      },
+      "section10": {
+        "heading1": "Helsingin kaupunki ja saavutettavuus",
+        "content1": "Kaupunki edistää digitaalisten palveluiden saavutettavuutta yhdenmukaistamalla julkaisutyötä ja järjestämällä saavutettavuuteen keskittyvää koulutusta henkilökunnalleen.",
+        "content2": "Sivustojen saavutettavuuden tasoa seurataan jatkuvasti sivustoja ylläpidettäessä. Havaittuihin puutteisiin reagoidaan välittömästi. Tarvittavat muutokset pyritään suorittamaan mahdollisimman nopeasti."
+      },
+      "section11": {
+        "heading1": "Vammaiset ja avustavien teknologioiden käyttäjät",
+        "content1": "Kaupunki tarjoaa neuvontaa ja tukea vammaisille ja avustavien teknologioiden käyttäjille. Tukea on saatavilla kaupungin sivuilla ilmoitetuilta neuvontasivuilta sekä puhelinneuvonnasta."
+      },
+      "section12": {
+        "heading1": "Palaute ja yhteystiedot"
+      }
+    }
   }
 }
