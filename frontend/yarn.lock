@@ -2730,10 +2730,10 @@
     parse-svg-path "^0.1.2"
     svg-arc-to-cubic-bezier "^3.2.0"
 
-"@react-pdf/renderer@^3.1.10":
-  version "3.1.11"
-  resolved "https://registry.yarnpkg.com/@react-pdf/renderer/-/renderer-3.1.11.tgz#7a7f80e2a021de6e12a1463847e5bc9ca39586c0"
-  integrity sha512-te/RTcyTkIg6zlvuoUYs5cEXPyZPjADrhcm/6EA2OudMmmwHlTrsinMgLuB8aGlSjmgo3anlu1soIC2j+KsyTQ==
+"@react-pdf/renderer@^3.1.12":
+  version "3.1.12"
+  resolved "https://registry.yarnpkg.com/@react-pdf/renderer/-/renderer-3.1.12.tgz#3c208a35662c561712acad1e06ccd0b753b2472a"
+  integrity sha512-y4H2ELH0okJP7+ig+uNjFAfuAanWiF3mxsKsE7ZBuhF4tabbMt9fX+pQ7qn4xrzEWX0vlso6s6ebkkeGdSGWzA==
   dependencies:
     "@babel/runtime" "^7.20.13"
     "@react-pdf/font" "^2.3.6"
@@ -11644,10 +11644,10 @@ react-merge-refs@1.1.0:
   resolved "https://registry.yarnpkg.com/react-merge-refs/-/react-merge-refs-1.1.0.tgz#73d88b892c6c68cbb7a66e0800faa374f4c38b06"
   integrity sha512-alTKsjEL0dKH/ru1Iyn7vliS2QRcBp9zZPGoWxUOvRGWPUYgjo+V01is7p04It6KhgrzhJGnIj9GgX8W4bZoCQ==
 
-react-pdf@^7.0.3:
-  version "7.0.3"
-  resolved "https://registry.yarnpkg.com/react-pdf/-/react-pdf-7.0.3.tgz#3d566cef40be8a761d33e53226cba8aeca131214"
-  integrity sha512-S+xF0dWo1mebcTgOpVejAdNscYY8MkoTantTFNJwvCs76ENZhoKXNS9AEPaa4/Aqw+01ByeejPX7RX4ypN3yHQ==
+react-pdf@^7.1.2:
+  version "7.1.2"
+  resolved "https://registry.yarnpkg.com/react-pdf/-/react-pdf-7.1.2.tgz#c6979cff9ac09c3e5ab7ea9e0182f79a499768e5"
+  integrity sha512-hmTUKh3WVYDJlP8XvebGN8HH0Gk/tXh9WgNAtvdHn79FHL78UEPSbVj3veHHGqmMa2hz1wJCItLUqGVP68Qsjw==
   dependencies:
     clsx "^1.2.1"
     make-cancellable-promise "^1.0.0"
