@@ -9,6 +9,7 @@ from calculator.models import (
     CalculationRow,
     PaySubsidy,
     PreviousBenefit,
+    STATE_AID_MAX_PERCENTAGE_CHOICES,
     TrainingCompensation,
 )
 from users.api.v1.serializers import UserSerializer
@@ -272,8 +273,15 @@ class PaySubsidySerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     {"end_date": _("End date cannot be empty")}
                 )
-            calculation = self.context["request"].data["calculation"]
-            if calculation["state_aid_max_percentage"] is None:
+            state_aid_max_input = self.context["request"].data["calculation"][
+                "state_aid_max_percentage"
+            ]
+            if (
+                state_aid_max_input is None
+                or state_aid_max_input == ""
+                or state_aid_max_input
+                not in [choice[0] for choice in STATE_AID_MAX_PERCENTAGE_CHOICES]
+            ):
                 raise serializers.ValidationError(
                     {
                         "state_aid_max_percentage": _(

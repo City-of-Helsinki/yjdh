@@ -513,7 +513,7 @@ msgid "End date cannot be empty"
 msgstr "Päättymispäivä ei voi olla tyhjä"
 
 msgid "State aid maximum percentage cannot be empty"
-msgstr "Valtiontuen maksimimäärä ei voi olla tyhjä"
+msgstr "Valtiontuen maksimimäärä ei voi olla tyhjä ja sen täytyy olla yksi alasvetovalikon arvoista"
 
 msgid "Description row, amount ignored"
 msgstr "Kuvausrivi, rahamäärä ohitettu"
