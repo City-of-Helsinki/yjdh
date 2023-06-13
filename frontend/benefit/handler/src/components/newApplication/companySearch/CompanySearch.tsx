@@ -57,14 +57,14 @@ const CompanySearch: React.FC = () => {
                 <SelectionGroup
                   label={t(`${translationsBase}.companySearch.select`)}
                 >
-                  {companies.map((company) => (
+                  {companies.map(({name, business_id: businessId}) => (
                     <RadioButton
-                      key={company.business_id}
-                      id={`v-radio-${company.business_id}`}
-                      name={`v-radio-${company.business_id}`}
-                      value={company.business_id}
-                      label={`${company.name} <${company.business_id}>`}
-                      checked={selectedCompany === company.business_id}
+                      key={businessId}
+                      id={`v-radio-${businessId}`}
+                      name={`v-radio-${businessId}`}
+                      value={businessId}
+                      label={`${name} <${businessId}>`}
+                      checked={selectedCompany === businessId}
                       onChange={(event) => onCompanyChange(event.target.value)}
                     />
                   ))}

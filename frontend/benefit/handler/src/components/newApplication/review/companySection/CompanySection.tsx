@@ -1,5 +1,4 @@
 import { ReviewChildProps } from 'benefit/handler/types/common';
-import { DeMinimisAid } from 'benefit-shared/types/application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
@@ -120,23 +119,21 @@ const CompanySection: React.FC<ReviewChildProps> = ({
                 )}
               </$SummaryTableHeader>
             </$GridCell>
-            {data.deMinimisAidSet?.map((aid: DeMinimisAid) => (
+            {data.deMinimisAidSet?.map(({ granter, grantedAt, amount }) => (
               <React.Fragment
-                key={`${aid.granter ?? ''}${convertToUIDateFormat(
-                  aid.grantedAt
-                )}`}
+                key={`${granter ?? ''}${convertToUIDateFormat(grantedAt)}`}
               >
                 <$GridCell $colStart={1} $colSpan={3}>
-                  <$SummaryTableValue>{aid.granter}</$SummaryTableValue>
+                  <$SummaryTableValue>{granter}</$SummaryTableValue>
                 </$GridCell>
                 <$GridCell $colSpan={2}>
                   <$SummaryTableValue>
-                    {formatStringFloatValue(aid.amount)}
+                    {formatStringFloatValue(amount)}
                   </$SummaryTableValue>
                 </$GridCell>
                 <$GridCell>
                   <$SummaryTableValue>
-                    {aid.grantedAt ? convertToUIDateFormat(aid.grantedAt) : ''}
+                    {grantedAt ? convertToUIDateFormat(grantedAt) : ''}
                   </$SummaryTableValue>
                 </$GridCell>
               </React.Fragment>

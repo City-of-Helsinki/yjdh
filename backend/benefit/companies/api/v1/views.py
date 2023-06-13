@@ -3,7 +3,7 @@ import logging
 from django.conf import settings
 from django.db import transaction
 from django.http import HttpRequest
-from django.utils.translation import gettext_lazy as _g
+from django.utils.translation import gettext_lazy as __
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from requests.exceptions import HTTPError
@@ -34,7 +34,7 @@ class GetUsersOrganizationView(APIView):
     @property
     def ytj_api_error(self):
         return Response(
-            _g(
+            __(
                 "YTJ API is under heavy load or no company found with the given business id"
             ),
             status.HTTP_404_NOT_FOUND,
@@ -43,7 +43,7 @@ class GetUsersOrganizationView(APIView):
     @property
     def organization_roles_error(self):
         return Response(
-            _g("Unable to fetch organization roles from eauthorizations API"),
+            __("Unable to fetch organization roles from eauthorizations API"),
             status.HTTP_401_UNAUTHORIZED,
         )
 
@@ -112,7 +112,7 @@ class GetUsersOrganizationView(APIView):
                 )
             )
             return Response(
-                _g("Could not handle the response from Palveluväylä and YRTTI API"),
+                __("Could not handle the response from Palveluväylä and YRTTI API"),
                 status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
         company_data = CompanySerializer(company).data
@@ -145,6 +145,6 @@ class GetOrganisationByIdView(APIView):
     @transaction.atomic
     def get(self, _: HttpRequest, business_id: str) -> Response:
         if not ytunnus.is_valid(business_id):
-            raise ValidationError(_g("Social security number invalid"))
+            raise ValidationError(__("Social security number invalid"))
         company = get_or_create_organisation_with_business_id(business_id)
         return Response(CompanySerializer(company).data)

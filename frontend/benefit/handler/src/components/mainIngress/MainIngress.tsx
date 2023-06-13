@@ -1,3 +1,4 @@
+import { ROUTES } from 'benefit/handler/constants';
 import { Button, IconPlus } from 'hds-react';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -24,7 +25,7 @@ const MainIngress: React.FC = () => {
 
         <$ActionContainer>
           <Button
-            onClick={() => router.push('/new-application')}
+            onClick={() => router.push(ROUTES.APPLICATION_FORM)}
             variant="secondary"
             iconLeft={<IconPlus />}
             theme="black"

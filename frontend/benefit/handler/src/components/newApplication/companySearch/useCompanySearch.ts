@@ -21,7 +21,7 @@ type ExtendedComponentProps = {
   errorMessage: NotificationText | null;
   noResults: NotificationText | null;
   companies: CompanySearchResult[];
-  selectedCompany: string | undefined;
+  selectedCompany: string | null;
   onCompanyChange: (businessId: string) => void;
   onSelectCompany: () => void;
   isLoading: boolean;
@@ -36,7 +36,7 @@ const useCompanySearch = (): ExtendedComponentProps => {
     null
   );
   const [companies, setCompanies] = useState<CompanySearchResult[]>([]);
-  const [selectedCompany, setSelectedCompany] = useState<string | undefined>();
+  const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { onCompanySelected } = useFormActions({});
 

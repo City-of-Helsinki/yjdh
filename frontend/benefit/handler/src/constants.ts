@@ -7,6 +7,7 @@ import {
 export enum ROUTES {
   HOME = '/',
   LOGIN = '/login',
+  APPLICATION = '/application',
   APPLICATION_FORM = '/new-application',
 
   // temporary urls, not defined yet

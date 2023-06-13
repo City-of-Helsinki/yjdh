@@ -1060,7 +1060,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         consent_count = instance.attachments.filter(
             attachment_type=AttachmentType.EMPLOYEE_CONSENT
         ).count()
-        if instance.application_origin != ApplicationOrigin.HANDLER:
+        if instance.application_origin == ApplicationOrigin.APPLICANT:
             if consent_count == 0:
                 raise serializers.ValidationError(
                     _("Application does not have the employee consent attachment")

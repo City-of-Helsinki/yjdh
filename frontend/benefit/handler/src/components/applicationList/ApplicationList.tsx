@@ -1,3 +1,4 @@
+import { ROUTES } from 'benefit/handler/constants';
 import { allApplicationStatuses } from 'benefit/handler/pages';
 import {
   APPLICATION_ORIGINS,
@@ -28,9 +29,9 @@ const buildApplicationUrl = (
   status: APPLICATION_STATUSES
 ): string => {
   if (status === APPLICATION_STATUSES.DRAFT) {
-    return `/new-application?id=${String(id)}`;
+    return `${ROUTES.APPLICATION_FORM}?id=${id}`;
   }
-  return `/application?id=${String(id)}`;
+  return `${ROUTES.APPLICATION}?id=${id}`;
 };
 
 const ApplicationList: React.FC<ApplicationListProps> = ({
