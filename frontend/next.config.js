@@ -33,6 +33,16 @@ const NEXTJS_SENTRY_TRACING = trueEnv.includes(
   process.env?.NEXTJS_SENTRY_TRACING ?? 'false'
 );
 
+// Get the app context ...
+let appName;
+if (process.cwd().indexOf('/app/') === 0) {
+  // ... from docker system
+  appName = process.cwd().split('/app/').pop();
+} else if (process.cwd().includes('/frontend/')) {
+  // ... from local system
+  appName = process.cwd().split('/frontend/').pop();
+}
+
 /**
  * A way to allow CI optimization when the build done there is not used
  * to deliver an image or deploy the files.
@@ -114,6 +124,17 @@ const nextConfig = (override) => ({
       test: /\.test.tsx$/,
       loader: 'ignore-loader',
     });
+
+    if (appName && appName === 'benefit/applicant') {
+      config.module.rules.push({
+        test: /pdfjs-dist\/build\/pdf\.worker\.js$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'static/chunks/[name].[hash][ext]',
+        },
+      });
+    }
+
     return config;
   },
   env: {
