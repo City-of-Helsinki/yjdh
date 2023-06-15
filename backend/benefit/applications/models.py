@@ -520,6 +520,16 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
         blank=True,
         validators=[validate_decision_date],
     )
+    p2p_inspector_name = models.CharField(
+        max_length=128, blank=True, verbose_name=_("P2P inspector's name")
+    )
+    p2p_inspector_email = models.EmailField(
+        blank=True, verbose_name=_("P2P inspector's email address")
+    )
+    p2p_checker_name = models.CharField(
+        max_length=64, blank=True, verbose_name=_("P2P acceptor's title")
+    )
+
     expert_inspector_name = models.CharField(
         max_length=128, blank=True, verbose_name=_("Expert inspector's name")
     )
