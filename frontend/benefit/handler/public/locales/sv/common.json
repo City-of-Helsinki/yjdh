@@ -22,15 +22,15 @@
   "notifications": {
     "accepted": {
       "title": "Hakemusta on puollettu",
-      "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti ja siirretty arkistoon."
+      "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti."
     },
     "rejected": {
       "title": "Hakemusta ei puollettu",
-      "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti ja siirretty arkistoon."
+      "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti."
     },
     "cancelled": {
       "title": "Hakemus on peruttu",
-      "message": "Hakemus {{applicationNum}} on peruttu onnistuneesti ja siirretty arkistoon."
+      "message": "Hakemus {{applicationNum}} on peruttu onnistuneesti."
     },
     "error": {
       "title": "Tapahtui tuntematon virhe",
@@ -538,12 +538,30 @@
       "lockedBatch": "Lukittu"
     },
     "dialog": {
-      "batchRemoval": {"heading": "Tyhjennä koonti", "text": "Oletko varma, että haluat tuhota koonnin?"},
-      "removeApplication": {"heading": "Poista hakemus koonnista", "text": "Oletko varma, että haluat poistaa hakemuksen koonnista? {{ applicationNumber }}"},
-      "batchFromLockedToDraft": {"heading": "Koonti lukittu", "text": "Haluatko vapauttaa koonnin ja tehdä siihen muutoksia?"},
-      "batchFromDraftToAhjo": {"heading": "Merkitse koonti Ahjoon viedyksi", "text": "Haluatko viedä koonnin Ahjoon?"},
-      "batchFromAhjoToDraft": {"heading": "Palauta odottamaan Ahjoon vientiä", "text": "Oletko varma, että haluat palauttaa koonnin odottamaan Ahjoon vientiä?"},
-      "batchFromAhjoToTalpa": {"heading": "Koonti on valmis", "text": "Haluatko merkitä koonnin valmiiksi ja arkistoida sen?"}
+      "batchRemoval": {
+        "heading": "Tyhjennä koonti",
+        "text": "Oletko varma, että haluat tuhota koonnin?"
+      },
+      "removeApplication": {
+        "heading": "Poista hakemus koonnista",
+        "text": "Oletko varma, että haluat poistaa hakemuksen koonnista? {{ applicationNumber }}"
+      },
+      "batchFromLockedToDraft": {
+        "heading": "Koonti lukittu",
+        "text": "Haluatko vapauttaa koonnin ja tehdä siihen muutoksia?"
+      },
+      "batchFromDraftToAhjo": {
+        "heading": "Merkitse koonti Ahjoon viedyksi",
+        "text": "Haluatko viedä koonnin Ahjoon?"
+      },
+      "batchFromAhjoToDraft": {
+        "heading": "Palauta odottamaan Ahjoon vientiä",
+        "text": "Oletko varma, että haluat palauttaa koonnin odottamaan Ahjoon vientiä?"
+      },
+      "batchFromAhjoToTalpa": {
+        "heading": "Koonti on valmis",
+        "text": "Haluatko merkitä koonnin valmiiksi ja arkistoida sen?"
+      }
     },
     "form": {
       "fields": {
