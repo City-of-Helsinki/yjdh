@@ -23,7 +23,11 @@ from applications.api.v1.serializers.application import (
     HandlerApplicationSerializer,
 )
 from applications.api.v1.serializers.attachment import AttachmentSerializer
-from applications.enums import ApplicationBatchStatus, ApplicationStatus
+from applications.enums import (
+    ApplicationBatchStatus,
+    ApplicationOrigin,
+    ApplicationStatus,
+)
 from applications.models import Application, ApplicationBatch
 from applications.services.ahjo_integration import (
     ExportFileInfo,
@@ -144,29 +148,8 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         Convenience action for the frontends that by default excludes the fields that are not normally
         needed in application listing pages.
         """
-        qs = self.filter_queryset(self.get_queryset())
         context = self.get_serializer_context()
-        fields = set(context.get("fields", []))
-        exclude_fields = set(context.get("exclude_fields", []))
-        extra_exclude_fields = set(self.EXCLUDE_FIELDS_FROM_SIMPLE_LIST)
-        context["exclude_fields"] = list(
-            exclude_fields | (extra_exclude_fields - fields)
-        )
-
-        order_by = request.query_params.get("order_by")
-        if (
-            order_by
-            and re.sub(r"^-", "", order_by)
-            in ApplicantApplicationSerializer.Meta.fields
-        ):
-            qs = qs.order_by(order_by)
-
-        exclude_batched = request.query_params.get("exclude_batched") == "1"
-        if exclude_batched:
-            qs = qs.filter(batch__isnull=True)
-
-        qs = qs.filter(archived=request.query_params.get("filter_archived") == "1")
-
+        qs = self._get_simplified_queryset(request, context)
         serializer = self.serializer_class(qs, many=True, context=context)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -199,6 +182,31 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def _get_simplified_queryset(self, request, context) -> QuerySet:
+        qs = self.filter_queryset(self.get_queryset())
+        fields = set(context.get("fields", []))
+        exclude_fields = set(context.get("exclude_fields", []))
+        extra_exclude_fields = set(self.EXCLUDE_FIELDS_FROM_SIMPLE_LIST)
+        context["exclude_fields"] = list(
+            exclude_fields | (extra_exclude_fields - fields)
+        )
+
+        order_by = request.query_params.get("order_by")
+        if (
+            order_by
+            and re.sub(r"^-", "", order_by)
+            in ApplicantApplicationSerializer.Meta.fields
+        ):
+            qs = qs.order_by(order_by)
+
+        exclude_batched = request.query_params.get("exclude_batched") == "1"
+        if exclude_batched:
+            qs = qs.filter(batch__isnull=True)
+
+        qs = qs.filter(archived=request.query_params.get("filter_archived") == "1")
+
+        return qs
 
     def _get_attachment(self, attachment_pk):
         try:
@@ -345,7 +353,6 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         return self._annotate_unread_messages_count(
             super()
             .get_queryset()
-            .exclude(status=ApplicationStatus.DRAFT)
             .select_related("batch", "calculation")
             .prefetch_related(
                 "pay_subsidies", "training_compensations", "calculation__rows"
@@ -359,6 +366,17 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         if exclude_fields := self.request.query_params.get("exclude_fields", None):
             context.update({"exclude_fields": exclude_fields.split(",")})
         return context
+
+    @action(methods=["get"], detail=False, url_path="simplified_list")
+    def simplified_application_list(self, request):
+        context = self.get_serializer_context()
+        qs = self._get_simplified_queryset(request, context)
+        qs = qs.exclude(
+            status=ApplicationStatus.DRAFT,
+            application_origin=ApplicationOrigin.APPLICANT,
+        )
+        serializer = self.serializer_class(qs, many=True, context=context)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(methods=["GET"], detail=False)
     def export_csv(self, request) -> StreamingHttpResponse:

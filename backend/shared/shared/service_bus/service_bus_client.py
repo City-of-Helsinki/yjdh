@@ -1,24 +1,68 @@
+from typing import Optional
+
 import requests
 from django.conf import settings
 
 
 class ServiceBusClient:
-    def __init__(self):
-        if not all([settings.SERVICE_BUS_INFO_PATH, settings.SERVICE_BUS_TIMEOUT]):
-            raise ValueError("Service bus client settings not configured.")
+    UNKNOWN_INDUSTRY = "n/a"
 
-    def _post(self, url: str, username: str, password: str, data: dict) -> dict:
+    def __init__(self):
+        if not all(
+            [
+                settings.SERVICE_BUS_BASE_URL,
+                settings.SERVICE_BUS_TIMEOUT,
+                settings.SERVICE_BUS_AUTH_USERNAME,
+                settings.SERVICE_BUS_AUTH_PASSWORD,
+            ]
+        ):
+            raise ValueError("Service bus client settings not configured.")
+        self.get_company_url = f"{settings.SERVICE_BUS_BASE_URL}/GetCompany"
+        self.search_company_url = f"{settings.SERVICE_BUS_BASE_URL}/SearchCompany"
+        self.credentials = (
+            settings.SERVICE_BUS_AUTH_USERNAME,
+            settings.SERVICE_BUS_AUTH_PASSWORD,
+        )
+        self.search_limit = settings.SERVICE_BUS_SEARCH_LIMIT or 10
+
+    def get_organisation_info_with_business_id(self, business_id: str) -> dict:
+        query = {"BusinessId": business_id}
+        service_bus_data = self._post(url=self.get_company_url, data=query)
+        try:
+            return self._get_organisation_data_from_service_bus_data(
+                service_bus_data["GetCompanyResult"]["Company"]
+            )
+        except (KeyError, TypeError, requests.HTTPError):
+            return {}
+
+    def search_companies(self, company_name: str) -> list:
+        query = {"SearchExpression": company_name, "FindAll": False}
+        service_bus_data = self._post(url=self.search_company_url, data=query)
+        try:
+            search_results = service_bus_data["SearchCompanyResult"]["SearchResults"][
+                "NameSearchQueryResult"
+            ]
+        except (KeyError, TypeError):
+            search_results = None
+
+        if search_results:
+            search_results = search_results[: self.search_limit]
+            return self._format_search_results(search_results)
+        return []
+
+    def _post(self, url: str, data: dict) -> dict:
         response = requests.post(
             url,
-            auth=(username, password),
+            auth=self.credentials,
             timeout=settings.SERVICE_BUS_TIMEOUT,
             json=data,
         )
         response.raise_for_status()
         return response.json()
 
-    def get_organisation_data_from_service_bus_data(
-        self, service_bus_data: dict
+    @classmethod
+    def _get_organisation_data_from_service_bus_data(
+        cls, service_bus_data: dict
     ) -> dict:
         """
         Get the required company fields from YTJ data. All data will be in Finnish
@@ -26,17 +70,15 @@ class ServiceBusClient:
         that hasn't been covered in the code
         """
 
-        address = self._get_address(
-            service_bus_data["PostalAddress"]["DomesticAddress"]
-        )
+        address = cls._get_address(service_bus_data["PostalAddress"]["DomesticAddress"])
         company_data = {
             "name": service_bus_data["TradeName"]["Name"],
             "business_id": service_bus_data["BusinessId"],
-            "company_form": self._get_company_form(service_bus_data["LegalForm"]),
-            "company_form_code": self._get_company_form_code(
+            "company_form": cls._get_company_form(service_bus_data["LegalForm"]),
+            "company_form_code": cls._get_company_form_code(
                 service_bus_data["LegalForm"]
             ),
-            "industry": self._get_industry(service_bus_data.get("BusinessLine")),
+            "industry": cls._get_industry(service_bus_data.get("BusinessLine", {})),
             "street_address": address["StreetAddress"],
             "postcode": address["PostalCode"],
             "city": address["City"],
@@ -44,18 +86,45 @@ class ServiceBusClient:
 
         return company_data
 
-    def get_organisation_info_with_business_id(self, business_id: str) -> dict:
-        query = {"BusinessId": business_id}
-        company_info_url = f"{settings.SERVICE_BUS_INFO_PATH}"
-        service_bus_data = self._post(
-            company_info_url,
-            username=settings.SERVICE_BUS_AUTH_USERNAME,
-            password=settings.SERVICE_BUS_AUTH_PASSWORD,
-            data=query,
+    @classmethod
+    def _get_company_form(cls, legal_form_json: dict) -> str:
+        # The LegalForm is a code, which is not human-readable.
+        # We'll try to get the description of the code in Finnish
+        company_form = cls._get_finnish_description(
+            legal_form_json["Type"]["Descriptions"]["CodeDescription"]
         )
-        return service_bus_data["GetCompanyResult"]["Company"]
+        if not company_form:
+            raise ValueError("Cannot get company form data")
+        return company_form["Description"]
 
-    def _get_address(self, address_json):
+    @classmethod
+    def _get_industry(cls, business_line_json: dict) -> str:
+        # The BusinessLine value is a code, which is not human-readable.
+        # We'll try to get the description of the code in Finnish
+        # In suomi.fi test env, some companies do not have this data, so assuming production
+        # env might have companies with missing data, too
+        try:
+            code_description = business_line_json["Type"]["Descriptions"][
+                "CodeDescription"
+            ]
+        except (KeyError, TypeError):
+            return cls.UNKNOWN_INDUSTRY
+
+        business_line = cls._get_finnish_description(code_description)
+        if not business_line:
+            raise ValueError("Cannot get company form data")
+        return business_line.get("Description", cls.UNKNOWN_INDUSTRY)
+
+    @staticmethod
+    def _format_search_results(search_results: list) -> list:
+        return [
+            {"name": company["Name"], "business_id": company["BusinessId"]}
+            for company in search_results
+            if company["Name"] and company["BusinessId"]
+        ]
+
+    @staticmethod
+    def _get_address(address_json: dict) -> dict:
         return {
             "StreetAddress": " ".join(
                 filter(
@@ -74,7 +143,8 @@ class ServiceBusClient:
             "City": address_json["City"],
         }
 
-    def _get_company_form_code(self, legal_form_json):
+    @staticmethod
+    def _get_company_form_code(legal_form_json: dict) -> int:
         # return the YRMU code from the response
         if "Type" not in legal_form_json:
             raise ValueError("Cannot determine company form")
@@ -87,34 +157,6 @@ class ServiceBusClient:
                 "Cannot determine company form - invalid SecondaryCode"
             ) from e
 
-    def _get_company_form(self, legal_form_json):
-        # The LegalForm is a code, which is not human-readable.
-        # We'll try to get the description of the code in Finnish
-        company_form = self._get_finnish_description(
-            legal_form_json["Type"]["Descriptions"]["CodeDescription"]
-        )
-        if not company_form:
-            raise ValueError("Cannot get company form data")
-        return company_form["Description"]
-
-    UNKNOWN_INDUSTRY = "n/a"
-
-    def _get_industry(self, business_line_json):
-        # The BusinessLine value is a code, which is not human-readable.
-        # We'll try to get the description of the code in Finnish
-        # In suomi.fi test env, some companies do not have this data, so assuming production
-        # env might have companies with missing data, too
-        try:
-            code_description = business_line_json["Type"]["Descriptions"][
-                "CodeDescription"
-            ]
-        except (KeyError, TypeError):
-            return self.UNKNOWN_INDUSTRY
-
-        business_line = self._get_finnish_description(code_description)
-        if not business_line:
-            raise ValueError("Cannot get company form data")
-        return business_line.get("Description", self.UNKNOWN_INDUSTRY)
-
-    def _get_finnish_description(self, descriptions):
+    @staticmethod
+    def _get_finnish_description(descriptions: dict) -> Optional[dict]:
         return next((desc for desc in descriptions if desc["Language"] == "fi"), None)

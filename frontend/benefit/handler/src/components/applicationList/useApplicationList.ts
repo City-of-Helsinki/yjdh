@@ -39,6 +39,7 @@ const useApplicationList = (
         status: applicationStatus,
         unread_messages_count,
         batch,
+        application_origin: applicationOrigin,
       } = application;
 
       return {
@@ -60,6 +61,7 @@ const useApplicationList = (
           ) || '-',
         unreadMessagesCount: unread_messages_count ?? 0,
         batch: batch ?? null,
+        applicationOrigin,
       };
     }
   );

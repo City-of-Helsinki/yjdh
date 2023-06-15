@@ -17,6 +17,8 @@ import PaySubsidyActions from './PaySubsidyActions/PaysubsidyActions';
 
 const PaySubsidyView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
+  const translationsAttachments =
+    'common:applications.sections.attachments.types';
   const { t } = useTranslation();
   return (
     <ReviewSection
@@ -58,14 +60,14 @@ const PaySubsidyView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
       </$GridCell>
       <$GridCell $colSpan={12}>
         <AttachmentsListView
-          title={t('common:attachments.types.paySubsidyDecision.title')}
+          title={t(`${translationsAttachments}.paySubsidyDecision.title`)}
           type={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
           attachments={data.attachments || []}
         />
       </$GridCell>
       <$GridCell $colSpan={12}>
         <AttachmentsListView
-          title={t('common:attachments.types.educationContract.title')}
+          title={t(`${translationsAttachments}.educationContract.title`)}
           type={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
           attachments={data.attachments || []}
         />

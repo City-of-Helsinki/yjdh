@@ -7,5 +7,6 @@ module.exports = {
       'error',
       { packageDir: [__dirname, join(__dirname, '../../')] },
     ],
+    'unicorn/no-thenable': 'off'
   },
 };

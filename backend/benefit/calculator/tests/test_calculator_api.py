@@ -568,7 +568,7 @@ def test_assign_handler(handler_api_client, received_application):
         (ApplicationStatus.ACCEPTED, 400),
         (ApplicationStatus.CANCELLED, 400),
         (ApplicationStatus.REJECTED, 400),
-        (ApplicationStatus.DRAFT, 404),
+        (ApplicationStatus.DRAFT, 400),
     ],
 )
 def test_assign_handler_invalid_status(

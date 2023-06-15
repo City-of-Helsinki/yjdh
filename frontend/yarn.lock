@@ -7025,6 +7025,11 @@ find-up@^5.0.0:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
 
+finnish-business-ids@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/finnish-business-ids/-/finnish-business-ids-3.1.1.tgz#cedde5d391bd290f9112e51d81cb2a340f4a7ee4"
+  integrity sha512-9MbFNBoLas7BoYw+rtPYy0xTAtfE1ResD0CUMEZLXuSythlpThZjuBHF35ELNIMslSnZnHRVpzYKrQrf9buWSQ==
+
 finnish-ssn@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/finnish-ssn/-/finnish-ssn-2.0.4.tgz#5614b48b91ba63f4a27367971797291a47628d8c"

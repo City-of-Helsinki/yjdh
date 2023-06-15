@@ -15,6 +15,15 @@ import theme from 'shared/styles/theme';
 import { useApplicationList } from '../components/applicationList/useApplicationList';
 import { $BackgroundWrapper } from '../components/layout/Layout';
 
+export const allApplicationStatuses: APPLICATION_STATUSES[] = [
+  APPLICATION_STATUSES.RECEIVED,
+  APPLICATION_STATUSES.HANDLING,
+  APPLICATION_STATUSES.INFO_REQUIRED,
+  APPLICATION_STATUSES.ACCEPTED,
+  APPLICATION_STATUSES.DRAFT,
+  APPLICATION_STATUSES.REJECTED,
+];
+
 const ApplicantIndex: NextPage = () => {
   const {
     setIsFooterVisible,
@@ -36,16 +45,7 @@ const ApplicantIndex: NextPage = () => {
 
   const translationBase = 'common:applications.list.headings';
 
-  const { t, list } = useApplicationList(
-    [
-      APPLICATION_STATUSES.RECEIVED,
-      APPLICATION_STATUSES.HANDLING,
-      APPLICATION_STATUSES.INFO_REQUIRED,
-      APPLICATION_STATUSES.ACCEPTED,
-      APPLICATION_STATUSES.REJECTED,
-    ],
-    true
-  );
+  const { t, list } = useApplicationList(allApplicationStatuses, true);
 
   const getListHeadingByStatus = (
     headingStatus: APPLICATION_STATUSES | 'all',
@@ -65,10 +65,11 @@ const ApplicantIndex: NextPage = () => {
           <Tabs theme={theme.components.tabs}>
             <Tabs.TabList style={{ marginBottom: 'var(--spacing-m)' }}>
               <Tabs.Tab>
-                {getListHeadingByStatus('all', [
-                  APPLICATION_STATUSES.RECEIVED,
-                  APPLICATION_STATUSES.HANDLING,
-                  APPLICATION_STATUSES.INFO_REQUIRED,
+                {getListHeadingByStatus('all', allApplicationStatuses)}
+              </Tabs.Tab>
+              <Tabs.Tab>
+                {getListHeadingByStatus(APPLICATION_STATUSES.DRAFT, [
+                  APPLICATION_STATUSES.DRAFT,
                 ])}
               </Tabs.Tab>
               <Tabs.Tab>
@@ -96,16 +97,15 @@ const ApplicantIndex: NextPage = () => {
 
             <Tabs.TabPanel>
               <ApplicationList
-                heading={t(`${translationBase}.received`)}
-                status={[APPLICATION_STATUSES.RECEIVED]}
+                heading={t(`${translationBase}.all`)}
+                status={allApplicationStatuses}
               />
+            </Tabs.TabPanel>
+
+            <Tabs.TabPanel>
               <ApplicationList
-                heading={t(`${translationBase}.handling`)}
-                status={[APPLICATION_STATUSES.HANDLING]}
-              />
-              <ApplicationList
-                heading={t(`${translationBase}.infoRequired`)}
-                status={[APPLICATION_STATUSES.INFO_REQUIRED]}
+                heading={t(`${translationBase}.draft`)}
+                status={[APPLICATION_STATUSES.DRAFT]}
               />
             </Tabs.TabPanel>
 

@@ -7,3 +7,6 @@ class TermsType(models.TextChoices):
     APPLICANT_TERMS = "applicant_terms", _(
         "Terms of application - show at application submit"
     )
+    HANDLER_TERMS = "handler_terms", _(
+        "Terms of application for handler - show at application submit for handler"
+    )

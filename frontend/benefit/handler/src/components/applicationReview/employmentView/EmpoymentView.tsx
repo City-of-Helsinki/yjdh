@@ -69,7 +69,9 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         <$ViewField>{data.employee?.collectiveBargainingAgreement}</$ViewField>
       </$GridCell>
       <AttachmentsListView
-        title={t('common:attachments.types.employmentContract.title')}
+        title={t(
+          'common:applications.sections.attachments.types.employmentContract.title'
+        )}
         type={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
         attachments={data.attachments || []}
       />
