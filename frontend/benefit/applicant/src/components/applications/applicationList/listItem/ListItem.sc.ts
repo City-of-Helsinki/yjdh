@@ -27,6 +27,10 @@ export const $ItemContent = styled.div`
   width: 100%;
   margin-bottom: var(--spacing-s);
 
+  ${respondAbove('xs')`
+    grid-template-columns: 1fr 1fr;
+  `};
+
   ${respondAbove('sm')`
     grid-template-columns: 60px 3fr repeat(4, minmax(100px, 3fr));
   `};
@@ -47,6 +51,10 @@ export const $Avatar = styled.div<AvatarProps>`
   width: 60px;
   min-height: 60px;
   min-width: 60px;
+  grid-column: 1 / -1;
+  ${respondAbove('sm')`
+    grid-column: 1;
+  `};
 `;
 
 export const $DataColumn = styled.div`
