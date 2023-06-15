@@ -40,7 +40,7 @@ import {
 import { getValidationSchema } from './utils/validation';
 
 type ExtendedComponentProps = {
-  id: string;
+  id: string | null;
   t: TFunction;
   isConfirmationModalOpen: boolean;
   setIsConfirmationModalOpen: React.Dispatch<boolean>;
@@ -79,10 +79,16 @@ export const useApplicationForm = (): ExtendedComponentProps => {
   const router = useRouter();
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
     React.useState(false);
-  const id = router?.query?.id?.toString() ?? undefined;
+  const id = router?.query?.id?.toString() ?? null;
   const [isLoading, setIsLoading] = React.useState<boolean>(!!id);
   const { stepState, dispatchStep, activeStep } = useSteps(id);
   let organizationType = 'company';
+
+  React.useEffect(() => {
+    if (id) {
+      dispatchStep({ type: 'setActive', payload: 1 });
+    }
+  }, [id, dispatchStep]);
 
   const {
     status: applicationDataStatus,
