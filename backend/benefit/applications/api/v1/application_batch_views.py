@@ -258,7 +258,9 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             remaining_apps = Application.objects.filter(batch=batch)
             if len(remaining_apps) == 0:
                 batch.delete()
-            return Response(status=status.HTTP_200_OK)
+            return Response(
+                {"remainingApps": len(remaining_apps)}, status=status.HTTP_200_OK
+            )
 
         return Response(
             {"detail": "Applications were not applicable to be detached."},
