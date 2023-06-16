@@ -13,7 +13,11 @@ import { formatFloatToCurrency } from 'shared/utils/string.utils';
 import AttachmentsListView from '../../attachmentsListView/AttachmentsListView';
 import EmploymentActions from './employmentActions/EmploymentActions';
 
-const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
+const EmploymentView: React.FC<ApplicationReviewViewProps> = ({
+  data,
+  isUploading,
+  handleUpload,
+}) => {
   const translationsBase = 'common:review';
   const { t } = useTranslation();
   return (
@@ -21,7 +25,10 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
       header={t(`${translationsBase}.headings.heading8`)}
       action={
         data.status !== APPLICATION_STATUSES.RECEIVED ? (
-          <EmploymentActions />
+          <EmploymentActions
+            handleUpload={handleUpload}
+            isUploading={isUploading}
+          />
         ) : null
       }
     >

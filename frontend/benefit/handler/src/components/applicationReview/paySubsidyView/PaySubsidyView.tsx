@@ -15,7 +15,11 @@ import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import AttachmentsListView from '../../attachmentsListView/AttachmentsListView';
 import PaySubsidyActions from './PaySubsidyActions/PaysubsidyActions';
 
-const PaySubsidyView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
+const PaySubsidyView: React.FC<ApplicationReviewViewProps> = ({
+  data,
+  isUploading,
+  handleUpload,
+}) => {
   const translationsBase = 'common:review';
   const translationsAttachments =
     'common:applications.sections.attachments.types';
@@ -25,7 +29,10 @@ const PaySubsidyView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
       header={t(`${translationsBase}.headings.heading6`)}
       action={
         data.status !== APPLICATION_STATUSES.RECEIVED ? (
-          <PaySubsidyActions />
+          <PaySubsidyActions
+            handleUpload={handleUpload}
+            isUploading={isUploading}
+          />
         ) : null
       }
     >
