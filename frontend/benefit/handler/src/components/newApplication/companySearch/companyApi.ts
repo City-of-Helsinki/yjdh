@@ -10,7 +10,8 @@ export const searchCompanies = async (
   name: string
 ): Promise<CompanySearchResult[]> => {
   const res = await axios.get<CompanySearchResult[]>(
-    `${getBackendUrl(BackendEndpoint.SEARCH_ORGANISATION)}${name}/`
+    `${getBackendUrl(BackendEndpoint.SEARCH_ORGANISATION)}${name}/`,
+    { withCredentials: true }
   );
   return res.data;
 };
@@ -19,7 +20,8 @@ export const getCompanyData = async (
   businessId: string
 ): Promise<CompanyData> => {
   const res = await axios.get<CompanyData>(
-    `${getBackendUrl(BackendEndpoint.GET_ORGANISATION)}${businessId}/`
+    `${getBackendUrl(BackendEndpoint.GET_ORGANISATION)}${businessId}/`,
+    { withCredentials: true }
   );
   return res.data;
 };

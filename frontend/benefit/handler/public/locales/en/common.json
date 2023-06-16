@@ -160,7 +160,8 @@
           "received": "Ei yhtään saapunutta hakemusta.",
           "archived": "Ei yhtään arkistoitua hakemusta.",
           "additional_information_needed": "Ei yhtään lisätietoja odottavaa hakemusta.",
-          "all": "Ei yhtään hakemusta."
+          "all": "Ei yhtään hakemusta.",
+          "draft": "Ei yhtään luonnosta."
         }
       },
       "headings": {

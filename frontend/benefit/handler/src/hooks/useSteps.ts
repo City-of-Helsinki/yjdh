@@ -78,7 +78,7 @@ const commonReducer =
     }
   };
 
-export const useSteps = (id: string): ExtendedComponentProps => {
+export const useSteps = (id: string | null): ExtendedComponentProps => {
   const { t } = useTranslation();
 
   const reducer = commonReducer(3);
