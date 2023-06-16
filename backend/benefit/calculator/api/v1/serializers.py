@@ -1,3 +1,5 @@
+from typing import Union
+
 from dateutil.relativedelta import relativedelta
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -260,6 +262,11 @@ class PaySubsidySerializer(serializers.ModelSerializer):
             and not self._is_manual_mode()
         )
 
+    def _is_invalid_state_aid_max(self, state_aid_max_input: Union[None, int]) -> bool:
+        return state_aid_max_input is None or state_aid_max_input not in [
+            choice[0] for choice in STATE_AID_MAX_PERCENTAGE_CHOICES
+        ]
+
     def validate(self, data):
         request = self.context.get("request")
         if request is None:
@@ -276,12 +283,7 @@ class PaySubsidySerializer(serializers.ModelSerializer):
             state_aid_max_input = self.context["request"].data["calculation"][
                 "state_aid_max_percentage"
             ]
-            if (
-                state_aid_max_input is None
-                or state_aid_max_input == ""
-                or state_aid_max_input
-                not in [choice[0] for choice in STATE_AID_MAX_PERCENTAGE_CHOICES]
-            ):
+            if self._is_invalid_state_aid_max(state_aid_max_input):
                 raise serializers.ValidationError(
                     {
                         "state_aid_max_percentage": _(
