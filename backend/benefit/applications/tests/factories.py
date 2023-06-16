@@ -299,6 +299,11 @@ class ApplicationBatchFactory(factory.django.DjangoModelFactory):
 
     expert_inspector_name = factory.Faker("name", locale="fi_FI")
     expert_inspector_email = factory.Faker("email", locale="fi_FI")
+    expert_inspector_title = factory.Faker("job", locale="fi_FI")
+
+    p2p_inspector_name = factory.Faker("name", locale="fi_FI")
+    p2p_inspector_email = factory.Faker("email", locale="fi_FI")
+    p2p_checker_name = factory.Faker("name", locale="fi_FI")
 
     class Meta:
         model = ApplicationBatch

@@ -33,6 +33,9 @@ def get_valid_batch_completion_data():
         "decision_date": date.today(),
         "expert_inspector_name": get_faker().name(),
         "expert_inspector_title": get_faker().job(),
+        "p2p_inspector_name": get_faker().name(),
+        "p2p_inspector_email": get_faker().email(),
+        "p2p_checker_name": get_faker().name(),
     }
 
 
