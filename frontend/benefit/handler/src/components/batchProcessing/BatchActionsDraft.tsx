@@ -28,7 +28,7 @@ type BatchProps = {
 
 type ButtonAhjoStates = 'primary' | 'secondary';
 
-const BatchActionsCompletion: React.FC<BatchProps> = ({
+const BatchActionsDraft: React.FC<BatchProps> = ({
   batch,
   setBatchCloseAnimation,
 }: BatchProps) => {
@@ -237,4 +237,4 @@ const BatchActionsCompletion: React.FC<BatchProps> = ({
     </>
   );
 };
-export default BatchActionsCompletion;
+export default BatchActionsDraft;

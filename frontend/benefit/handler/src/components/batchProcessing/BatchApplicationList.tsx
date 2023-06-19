@@ -33,8 +33,8 @@ import {
   $TableGrid,
   $TableWrapper,
 } from '../table/TableExtras.sc';
-import BatchActionsCompletion from './BatchActionsCompletion';
-import BatchActionsToAhjo from './BatchActionsToAhjo';
+import BatchActionsDraft from './BatchActionsDraft';
+import BatchActionsInspection from './BatchActionsInspection';
 
 type BatchProps = {
   batch: BatchProposal;
@@ -214,17 +214,26 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
               cols={cols}
             />
             <$TableFooter>
-              {status === BATCH_STATUSES.AWAITING_FOR_DECISION ? (
-                <BatchActionsCompletion
+              {[
+                BATCH_STATUSES.DRAFT,
+                BATCH_STATUSES.AHJO_REPORT_CREATED,
+              ].includes(status) ? (
+                <BatchActionsDraft
                   batch={batch}
                   setBatchCloseAnimation={setBatchCloseAnimation}
                 />
-              ) : (
-                <BatchActionsToAhjo
-                  batch={batch}
-                  setBatchCloseAnimation={setBatchCloseAnimation}
-                />
-              )}
+              ) : null}
+
+              {BATCH_STATUSES.AWAITING_FOR_DECISION === status ? (
+                <BatchActionsInspection batch={batch} />
+              ) : null}
+
+              {[
+                BATCH_STATUSES.DECIDED_ACCEPTED,
+                BATCH_STATUSES.DECIDED_REJECTED,
+              ].includes(status) ? (
+                <h2>TODO: Talpa CSV -lataus ja arkistoon</h2>
+              ) : null}
             </$TableFooter>
           </$TableBody>
         ) : (

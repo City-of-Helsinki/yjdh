@@ -10,7 +10,7 @@ COPY --chown=appuser:appuser shared /shared/
 
 RUN apt-install.sh \
         git \
-        netcat \
+        netcat-traditional \
         libpq-dev \
         build-essential \
         wkhtmltopdf \

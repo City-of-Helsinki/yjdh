@@ -1,4 +1,4 @@
-import useBatchComplete from 'benefit/handler/hooks/useBatchComplete';
+import useBatchInspected from 'benefit/handler/hooks/useBatchInspected';
 import {
   BATCH_STATUSES,
   PROPOSALS_FOR_DECISION,
@@ -18,6 +18,9 @@ export interface BatchCompletionFormValues {
   decision_date: Date | string | (readonly string[] & string);
   expert_inspector_name: string;
   expert_inspector_title: string;
+  p2p_inspector_name: string;
+  p2p_inspector_email: string;
+  p2p_checker_name: string;
 }
 
 interface ApplicationListProps {
@@ -28,17 +31,17 @@ interface ApplicationListProps {
   isError: boolean;
 }
 
-const useBatchActionsCompletion = (
+const useBatchActionsInspected = (
   id: string,
   proposalForDecision: PROPOSALS_FOR_DECISION,
-  setBatchCloseAnimation: React.Dispatch<React.SetStateAction<boolean>>
+  setBatchCloseAnimation?: React.Dispatch<React.SetStateAction<boolean>>
 ): ApplicationListProps => {
   const { t } = useTranslation();
   const {
     isSuccess,
     isError,
     mutate: completeBatch,
-  } = useBatchComplete(setBatchCloseAnimation);
+  } = useBatchInspected(setBatchCloseAnimation);
 
   const parseLocalizedDateString = (
     _: string,
@@ -86,15 +89,30 @@ const useBatchActionsCompletion = (
       .transform(parseLocalizedDateString)
       .required(t('common:form.validation.date.format')),
     anyString: string().required(translations.required),
+    email: string()
+      .required(translations.required)
+      .email(t('common:form.validation.email.invalid')),
   };
 
-  const schema = object({
+  const schemaRejected = object({
     decision_maker_name: requiredSchema.fullName,
     decision_maker_title: requiredSchema.anyString,
     section_of_the_law: requiredSchema.sectionOfTheLaw,
     decision_date: requiredSchema.finnishDate,
     expert_inspector_name: requiredSchema.fullName,
     expert_inspector_title: requiredSchema.anyString,
+  });
+
+  const schemaAccepted = object({
+    decision_maker_name: requiredSchema.fullName,
+    decision_maker_title: requiredSchema.anyString,
+    section_of_the_law: requiredSchema.sectionOfTheLaw,
+    decision_date: requiredSchema.finnishDate,
+    expert_inspector_name: requiredSchema.fullName,
+    expert_inspector_title: requiredSchema.anyString,
+    p2p_inspector_name: requiredSchema.anyString,
+    p2p_inspector_email: requiredSchema.email,
+    p2p_checker_name: requiredSchema.anyString,
   });
 
   const markBatchAs = (
@@ -115,8 +133,14 @@ const useBatchActionsCompletion = (
       decision_date: format(new Date(), 'd.M.yyyy'),
       expert_inspector_name: '',
       expert_inspector_title: '',
+      p2p_inspector_name: '',
+      p2p_inspector_email: '',
+      p2p_checker_name: '',
     },
-    validationSchema: schema,
+    validationSchema:
+      proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED
+        ? schemaAccepted
+        : schemaRejected,
     validateOnChange: false,
     validateOnBlur: true,
     enableReinitialize: true,
@@ -139,4 +163,4 @@ const useBatchActionsCompletion = (
   };
 };
 
-export { useBatchActionsCompletion };
+export { useBatchActionsInspected };

@@ -58,7 +58,13 @@ const BatchIndex: NextPage = () => {
 
           <Tabs.TabPanel>
             <$Heading>{t('common:batches.tabs.toPaymentAndArchive')}</$Heading>
-            <BatchProposals status={[BATCH_STATUSES.AWAITING_FOR_DECISION]} />
+            <BatchProposals
+              status={[
+                BATCH_STATUSES.AWAITING_FOR_DECISION,
+                BATCH_STATUSES.DECIDED_ACCEPTED,
+                BATCH_STATUSES.DECIDED_REJECTED,
+              ]}
+            />
           </Tabs.TabPanel>
         </Tabs>
       </Container>

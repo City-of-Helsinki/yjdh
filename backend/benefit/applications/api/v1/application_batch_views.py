@@ -286,12 +286,15 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             ApplicationBatchStatus.DECIDED_ACCEPTED,
             ApplicationBatchStatus.DECIDED_REJECTED,
         ]:
-            # Archive all applications if this batch will be completed
-            Application.objects.filter(batch=batch).update(archived=True)
-
-            # Patch all required fields for batch completion
+            # Patch all required fields after batch inspection
             for key in request.data:
                 setattr(batch, key, request.data.get(key))
+
+        if new_status in [
+            ApplicationBatchStatus.SENT_TO_TALPA,
+        ]:
+            # Archive all applications if this batch will be completed
+            Application.objects.filter(batch=batch).update(archived=True)
 
         previous_status = batch.status
         batch.status = new_status
