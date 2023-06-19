@@ -275,7 +275,7 @@ class EmployeeFactory(factory.django.DjangoModelFactory):
         model = Employee
 
 
-class ApplicationBatchFactory(factory.django.DjangoModelFactory):
+class BaseApplicationBatchFactory(factory.django.DjangoModelFactory):
     proposal_for_decision = AhjoDecision.DECIDED_ACCEPTED
     application_1 = factory.RelatedFactory(
         DecidedApplicationFactory,
@@ -288,14 +288,20 @@ class ApplicationBatchFactory(factory.django.DjangoModelFactory):
         factory_related_name="batch",
         status=factory.SelfAttribute("batch.proposal_for_decision"),
     )
-    decision_maker_title = factory.Faker("job", locale="fi_FI")
-    decision_maker_name = factory.Faker("name", locale="fi_FI")
-    section_of_the_law = factory.Faker("word", locale="fi_FI")
+
+    class Meta:
+        model = ApplicationBatch
+
+
+class ApplicationBatchFactory(BaseApplicationBatchFactory):
     decision_date = factory.Faker(
         "date_between_dates",
         date_start=factory.LazyAttribute(lambda _: date.today() - timedelta(days=30)),
         date_end=factory.LazyAttribute(lambda _: date.today()),
     )
+    decision_maker_title = factory.Faker("job", locale="fi_FI")
+    decision_maker_name = factory.Faker("name", locale="fi_FI")
+    section_of_the_law = factory.Faker("word", locale="fi_FI")
 
     expert_inspector_name = factory.Faker("name", locale="fi_FI")
     expert_inspector_email = factory.Faker("email", locale="fi_FI")
