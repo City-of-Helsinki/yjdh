@@ -946,7 +946,7 @@
       "markAsReadyForAhjo": "Aloita Ahjo-valmistelu",
       "markAsRegisteredToAhjo": "Merkitse Ahjoon viedyksi",
       "markedAsRegisteredToAhjo": "Viety Ahjoon",
-      "markToPaymentAndArchive": "Merkitse maksuun ja arkistoi",
+      "markToTalpa": "Merkitse maksuun ja arkistoi",
       "markToArchive": "Arkistoi",
       "markAsWaitingForAhjo": "Palauta odottamaan Ahjoon vientiä",
       "downloadFiles": "Lataa liitteet",
@@ -985,8 +985,11 @@
         "decisionMakerTitle": "Päättäjän titteli",
         "sectionOfTheLaw": "Pykälä",
         "decisionDate": "Päätöksen päivämäärä",
-        "expertInspectorName": "Asiantarkistajan nimi",
-        "expertInspectorTitle": "Asiantarkistajan titteli"
+        "expertInspectorName": "Asiantarkistajan nimi, Ahjo",
+        "expertInspectorTitle": "Asiantarkistajan titteli, Ahjo",
+        "p2pInspectorName": "Tarkastajan nimi, P2P",
+        "p2pInspectorEmail": "Tarkastajan sähköposti, P2P",
+        "p2pCheckerName": "Hyväksyjän nimi, P2P"
       },
       "errors": {
         "decision_maker_name": "Pakollinen tieto",
@@ -994,7 +997,10 @@
         "section_of_the_law": "Pykälän on oltava muodossa §1234",
         "decision_date": "Pakollinen tieto",
         "expert_inspector_name": "Pakollinen tieto",
-        "expert_inspector_title": "Pakollinen tieto"
+        "expert_inspector_title": "Pakollinen tieto",
+        "p2p_inspector_name": "Pakollinen tieto",
+        "p2p_inspector_email": "Pakollinen tieto",
+        "p2p_checker_name": "Pakollinen tieto"
       }
     }
   },

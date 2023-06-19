@@ -1,8 +1,11 @@
+from datetime import date
+
 import pytest
 
 from applications.enums import AhjoDecision, ApplicationBatchStatus
 from applications.exceptions import BatchCompletionRequiredFieldsError
 from applications.models import Application, ApplicationBatch, Employee
+from applications.tests.factories import BaseApplicationBatchFactory
 from applications.tests.test_application_batch_api import (
     fill_as_valid_batch_completion_and_save,
 )
@@ -46,7 +49,15 @@ def test_application_batch_ahjo_decision(application_batch, status, expected_res
         ApplicationBatchStatus.DECIDED_ACCEPTED,
         ApplicationBatchStatus.DECIDED_REJECTED,
     ]:
+        # need to create a new batch because factory has already created valid fields using ApplicationBatchFactory
+        application_batch.delete()
+        application_batch = BaseApplicationBatchFactory(
+            status=ApplicationBatchStatus.DRAFT,
+            proposal_for_decision=status,
+            decision_date=date.today(),
+        )
         with pytest.raises(BatchCompletionRequiredFieldsError):
+            application_batch.status = status
             application_batch.save()
         fill_as_valid_batch_completion_and_save(application_batch)
     else:
@@ -78,7 +89,16 @@ def test_application_batch_modified(application_batch, status, expected_result):
         ApplicationBatchStatus.DECIDED_ACCEPTED,
         ApplicationBatchStatus.DECIDED_REJECTED,
     ]:
+        # need to create a new batch because factory has already created valid fields using ApplicationBatchFactory
+        application_batch.delete()
+        application_batch = BaseApplicationBatchFactory(
+            status=ApplicationBatchStatus.DRAFT,
+            proposal_for_decision=status,
+            decision_date=date.today(),
+        )
+
         with pytest.raises(BatchCompletionRequiredFieldsError):
+            application_batch.status = status
             application_batch.save()
         fill_as_valid_batch_completion_and_save(application_batch)
     else:

@@ -34,7 +34,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        batch_count = 4
+        batch_count = 6
         total_created = (len(ApplicationStatus.values) + batch_count) * options[
             "number"
         ]
@@ -120,6 +120,9 @@ def run_seed(number):
     _create_batch(
         ApplicationBatchStatus.AWAITING_AHJO_DECISION, ApplicationStatus.REJECTED
     )
+
+    _create_batch(ApplicationBatchStatus.DECIDED_ACCEPTED, ApplicationStatus.ACCEPTED)
+    _create_batch(ApplicationBatchStatus.DECIDED_REJECTED, ApplicationStatus.REJECTED)
 
     cancelled_deletion_threshold = _past_datetime(30)
     draft_deletion_threshold = _past_datetime(180)

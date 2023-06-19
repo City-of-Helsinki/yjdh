@@ -33,6 +33,9 @@ def get_valid_batch_completion_data():
         "decision_date": date.today(),
         "expert_inspector_name": get_faker().name(),
         "expert_inspector_title": get_faker().job(),
+        "p2p_inspector_name": get_faker().name(),
+        "p2p_inspector_email": get_faker().email(),
+        "p2p_checker_name": get_faker().name(),
     }
 
 
@@ -245,8 +248,8 @@ def test_deassign_applications_from_batch_all(handler_api_client, application_ba
         (ApplicationBatchStatus.COMPLETED, 400, None),
         (ApplicationBatchStatus.SENT_TO_TALPA, 400, None),
         (ApplicationBatchStatus.RETURNED, 400, None),
-        (ApplicationBatchStatus.DECIDED_ACCEPTED, 400, None),
-        (ApplicationBatchStatus.DECIDED_REJECTED, 400, None),
+        (ApplicationBatchStatus.DECIDED_ACCEPTED, 200, None),
+        (ApplicationBatchStatus.DECIDED_REJECTED, 200, None),
         (ApplicationBatchStatus.DRAFT, 200, ApplicationBatchStatus.DRAFT),
         (
             ApplicationBatchStatus.AWAITING_AHJO_DECISION,

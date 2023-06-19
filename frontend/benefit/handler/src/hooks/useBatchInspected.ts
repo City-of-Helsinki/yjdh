@@ -18,6 +18,9 @@ type BatchCompletionDetails = {
   decision_date: string | Date;
   expert_inspector_name: string;
   expert_inspector_title: string;
+  p2p_inspector_name: string;
+  p2p_inspector_email: string;
+  p2p_checker_name: string;
 };
 
 type Payload = {
@@ -31,7 +34,7 @@ type Response = {
   decision: PROPOSALS_FOR_DECISION;
 };
 
-const useBatchComplete = (
+const useBatchInspected = (
   setBatchCloseAnimation: React.Dispatch<React.SetStateAction<boolean>>
 ): UseMutationResult<Response, Error, Payload> => {
   const { axios, handleResponse } = useBackendAPI();
@@ -67,12 +70,14 @@ const useBatchComplete = (
       return handleResponse<Response>(request);
     },
     {
-      onSuccess: ({ status: backendStatus }: Response) => {
+      onSuccess: ({ status: backendStatus, decision }: Response) => {
         showSuccessToast(
           t(`common:batches.notifications.registerToAhjo.${backendStatus}`),
           ''
         );
-        setBatchCloseAnimation(true);
+        if (decision === PROPOSALS_FOR_DECISION.REJECTED) {
+          setBatchCloseAnimation(true);
+        }
         setTimeout(() => {
           void queryClient.invalidateQueries('applicationsList');
         }, 700);
@@ -82,4 +87,4 @@ const useBatchComplete = (
   );
 };
 
-export default useBatchComplete;
+export default useBatchInspected;
