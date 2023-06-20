@@ -59,6 +59,7 @@ export const createSlackMessageSender = (): SlackMessageSender => {
     // send report only when something has failed
     const message = messages.join('\n');
     if (amountOfFailedTests > 0) {
+      // eslint-disable-next-line no-console
       console.log('Slack message', message);
       if (process.env.TESTCAFE_SLACK_WEBHOOK) {
         sendMessage(
@@ -66,7 +67,10 @@ export const createSlackMessageSender = (): SlackMessageSender => {
           amountOfFailedTests
             ? {
                 attachments: [
-                  ...errorMessages.map((msg) => ({ color: 'danger', text: msg })),
+                  ...errorMessages.map((msg) => ({
+                    color: 'danger',
+                    text: msg,
+                  })),
                   {
                     color: 'danger',
                     text: bold(`${amountOfFailedTests} test failed!`),
