@@ -1,9 +1,10 @@
 import { ROUTES } from 'benefit/handler/constants';
 import { allApplicationStatuses } from 'benefit/handler/pages';
 import {
-  APPLICATION_ORIGINS,
-  APPLICATION_STATUSES,
-} from 'benefit-shared/constants';
+  ApplicationListTableColumns,
+  ApplicationListTableTransforms,
+} from 'benefit/handler/types/applicationList';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import {
   IconSpeechbubbleText,
   LoadingSpinner,
@@ -13,7 +14,10 @@ import {
 } from 'hds-react';
 import * as React from 'react';
 import { $Link } from 'shared/components/table/Table.sc';
-import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import {
+  convertToUIDateFormat,
+  sortFinnishDate,
+} from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
 import { $CellContent, $EmptyHeading, $Heading } from './ApplicationList.sc';
@@ -49,25 +53,16 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
 
   const theme = useTheme();
 
-  interface TableTransforms {
-    id?: string;
-    companyName?: string;
-    unreadMessagesCount?: number;
-    additionalInformationNeededBy?: string | Date;
-    status?: APPLICATION_STATUSES;
-    applicationOrigin?: APPLICATION_ORIGINS;
-  }
-
   const isAllStatuses: boolean = status === allApplicationStatuses;
 
   const columns = React.useMemo(() => {
-    const cols = [
+    const cols: ApplicationListTableColumns[] = [
       {
         transform: ({
           id,
           companyName,
           status: applicationStatus,
-        }: TableTransforms) => (
+        }: ApplicationListTableTransforms) => (
           <$Link href={buildApplicationUrl(id, applicationStatus)}>
             {String(companyName)}
           </$Link>
@@ -106,16 +101,21 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         headerName: getHeader('submittedAt'),
         key: 'submittedAt',
         isSortable: true,
+        customSortCompareFunction: sortFinnishDate,
       });
     }
 
     if (isAllStatuses) {
       cols.push({
-        transform: ({ status: applicationStatus }: TableTransforms) => (
+        transform: ({
+          status: applicationStatus,
+        }: ApplicationListTableTransforms) => (
           <div>
             <Tag>
               {t(
-                `common:applications.list.columns.applicationStatuses.${applicationStatus}`
+                `common:applications.list.columns.applicationStatuses.${String(
+                  applicationStatus
+                )}`
               )}
             </Tag>
           </div>
@@ -128,11 +128,13 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
 
     if (status.includes(APPLICATION_STATUSES.RECEIVED) && !isAllStatuses) {
       cols.push({
-        transform: ({ applicationOrigin }: TableTransforms) => (
+        transform: ({ applicationOrigin }: ApplicationListTableTransforms) => (
           <div>
             <Tag>
               {t(
-                `common:applications.list.columns.applicationOrigins.${applicationOrigin}`
+                `common:applications.list.columns.applicationOrigins.${String(
+                  applicationOrigin
+                )}`
               )}
             </Tag>
           </div>
@@ -148,7 +150,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         transform: ({
           additionalInformationNeededBy,
           status: itemStatus,
-        }: TableTransforms) => (
+        }: ApplicationListTableTransforms) => (
           <div>
             {itemStatus === APPLICATION_STATUSES.INFO_REQUIRED ? (
               <StatusLabel type="alert">
@@ -169,7 +171,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     }
 
     cols.push({
-      transform: ({ unreadMessagesCount }: TableTransforms) => (
+      transform: ({ unreadMessagesCount }: ApplicationListTableTransforms) => (
         <$CellContent>
           {Number(unreadMessagesCount) > 0 ? (
             <IconSpeechbubbleText color={theme.colors.coatOfArms} />

@@ -9,6 +9,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Container from 'shared/components/container/Container';
 import { $Link } from 'shared/components/table/Table.sc';
 import theme from 'shared/styles/theme';
+import { sortFinnishDate } from 'shared/utils/date.utils';
 
 import { $HintText, $TableFooter } from '../table/TableExtras.sc';
 import { useApplicationsHandled } from './useApplicationsHandled';
@@ -75,6 +76,7 @@ const ApplicationsHandled: React.FC<Props> = ({
         headerName: getHeader('handledAt'),
         key: 'handledAt',
         isSortable: true,
+        customSortCompareFunction: sortFinnishDate,
       },
     ];
     return cols.filter(Boolean);
