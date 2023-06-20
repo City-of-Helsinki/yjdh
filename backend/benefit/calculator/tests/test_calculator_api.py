@@ -1,5 +1,6 @@
 import copy
 import decimal
+from datetime import datetime, timedelta
 from unittest import mock
 
 import factory
@@ -34,6 +35,26 @@ def _set_two_pay_subsidies_with_empty_dates(data: dict) -> dict:
         {
             "start_date": None,
             "end_date": None,
+            "pay_subsidy_percent": 40,
+            "work_time_percent": 40,
+        },
+    ]
+    return data
+
+
+def _set_two_pay_subsidies_with_non_empty_dates(data: dict) -> dict:
+    start = datetime.now() + timedelta(days=1)
+    end = datetime.now() + timedelta(weeks=8)
+    data["pay_subsidies"] = [
+        {
+            "start_date": start.strftime("%Y-%m-%d"),
+            "end_date": end.strftime("%Y-%m-%d"),
+            "pay_subsidy_percent": 100,
+            "work_time_percent": 40,
+        },
+        {
+            "start_date": start.strftime("%Y-%m-%d"),
+            "end_date": end.strftime("%Y-%m-%d"),
             "pay_subsidy_percent": 40,
             "work_time_percent": 40,
         },
@@ -393,6 +414,36 @@ def test_ignore_pay_subsidy_dates_when_application_is_received(
         data,
     )
     assert response.status_code == 200
+
+
+def test_subsidies_validation_when_state_aid_max_percentage_is_not_set(
+    handler_api_client,
+    mock_get_organisation_roles_and_create_company,
+):
+    with factory.Faker.override_default_locale("fi_FI"):
+        handling_application = ReceivedApplicationFactory(
+            status=ApplicationStatus.HANDLING,
+            apprenticeship_program=False,
+            benefit_type=BenefitType.SALARY_BENEFIT,
+            company=mock_get_organisation_roles_and_create_company,
+            pay_subsidy_granted=True,
+            pay_subsidy_percent=100,
+            additional_pay_subsidy_percent=40,
+        )
+
+        data = HandlerApplicationSerializer(handling_application).data
+        _set_two_pay_subsidies_with_non_empty_dates(data)
+        assert data["calculation"]["state_aid_max_percentage"] is None
+
+        response = handler_api_client.put(
+            get_handler_detail_url(handling_application), data
+        )
+
+        assert response.status_code == 400
+        assert "pay_subsidies" in response.json()
+        assert {
+            "state_aid_max_percentage": ["State aid maximum percentage cannot be empty"]
+        } in response.json()["pay_subsidies"]
 
 
 @pytest.mark.parametrize("benefit_type", BenefitType.values)

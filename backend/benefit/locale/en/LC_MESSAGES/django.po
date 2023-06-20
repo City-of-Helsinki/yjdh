@@ -513,6 +513,9 @@ msgstr ""
 msgid "State aid maximum %"
 msgstr ""
 
+msgid "State aid maximum percentage cannot be empty"
+msgstr ""
+
 msgid "Pay subsidy/month"
 msgstr ""
 
