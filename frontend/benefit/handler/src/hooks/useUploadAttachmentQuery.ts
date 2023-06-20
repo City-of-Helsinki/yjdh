@@ -18,7 +18,7 @@ const useUploadAttachmentQuery = (): UseMutationResult<
         ? Promise.reject(new Error('Missing application id'))
         : handleResponse<UploadAttachmentData>(
             axios.post(
-              `${BackendEndpoint.APPLICATIONS}${attachment?.applicationId}/attachments/`,
+              `${BackendEndpoint.HANDLER_APPLICATIONS}${attachment?.applicationId}/attachments/`,
               attachment.data,
               {
                 headers: {

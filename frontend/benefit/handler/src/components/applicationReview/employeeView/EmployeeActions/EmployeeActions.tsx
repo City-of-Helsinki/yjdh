@@ -1,4 +1,5 @@
 import { ROUTES } from 'benefit/handler/constants';
+import { UploadProps } from 'benefit/handler/types/application';
 import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import { Button, IconGlyphEuro, IconPlus } from 'hds-react';
 import noop from 'lodash/noop';
@@ -16,7 +17,10 @@ import { useTheme } from 'styled-components';
 
 import { $ActionsWrapper } from '../../ApplicationReview.sc';
 
-const EmployeeActions: React.FC = () => {
+const EmployeeActions: React.FC<UploadProps> = ({
+  isUploading,
+  handleUpload,
+}) => {
   const translationsBase = 'common:review.actions';
   const { t } = useTranslation();
   const router = useRouter();
@@ -42,8 +46,8 @@ const EmployeeActions: React.FC = () => {
           <UploadAttachment
             theme="black"
             variant="secondary"
-            onUpload={noop}
-            isUploading={false}
+            onUpload={handleUpload}
+            isUploading={isUploading}
             attachmentType={ATTACHMENT_TYPES.HELSINKI_BENEFIT_VOUCHER}
             allowedFileTypes={['application/pdf']}
             maxSize={ATTACHMENT_MAX_SIZE}

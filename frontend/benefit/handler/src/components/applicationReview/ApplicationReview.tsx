@@ -34,8 +34,14 @@ import SalaryBenefitCalculatorView from './salaryBenefitCalculatorView/SalaryBen
 import { useApplicationReview } from './useApplicationReview';
 
 const ApplicationReview: React.FC = () => {
-  const { application, handledApplication, isLoading, t } =
-    useApplicationReview();
+  const {
+    application,
+    handledApplication,
+    isLoading,
+    t,
+    isUploading,
+    handleUpload,
+  } = useApplicationReview();
   const theme = useTheme();
 
   const CalculatorView = (): ReactElement | null => {
@@ -90,14 +96,30 @@ const ApplicationReview: React.FC = () => {
         <ContactPersonView data={application} />
         <DeminimisView data={application} />
         <CoOperationNegotiationsView data={application} />
-        <EmployeeView data={application} />
-        <PaySubsidyView data={application} />
+        <EmployeeView
+          data={application}
+          handleUpload={handleUpload}
+          isUploading={isUploading}
+        />
+        <PaySubsidyView
+          data={application}
+          handleUpload={handleUpload}
+          isUploading={isUploading}
+        />
         <BenefitView data={application} />
-        <EmploymentView data={application} />
+        <EmploymentView
+          data={application}
+          handleUpload={handleUpload}
+          isUploading={isUploading}
+        />
         {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER ? (
           <AttachmentsView data={application} />
         ) : (
-          <ConsentView data={application} />
+          <ConsentView
+            data={application}
+            handleUpload={handleUpload}
+            isUploading={isUploading}
+          />
         )}
         {application.status === APPLICATION_STATUSES.HANDLING && (
           <>
