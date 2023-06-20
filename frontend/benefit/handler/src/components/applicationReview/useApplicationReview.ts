@@ -59,7 +59,6 @@ const useApplicationReview = (): ExtendedComponentProps => {
   }, [isUploadingError, t]);
 
   useEffect(() => {
-    // todo:custom error messages
     if (applicationDataError) {
       hdsToast({
         autoDismissTime: 5000,
