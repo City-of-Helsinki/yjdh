@@ -280,7 +280,7 @@ class PaySubsidySerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     {"end_date": _("End date cannot be empty")}
                 )
-            state_aid_max_input = self.context["request"].data["calculation"][
+            state_aid_max_input = request.data["calculation"][
                 "state_aid_max_percentage"
             ]
             if self._is_invalid_state_aid_max(state_aid_max_input):
