@@ -40,7 +40,7 @@ const useBatchActionsInspected = (
   const {
     isSuccess,
     isError,
-    mutate: completeBatch,
+    mutate: setBatchDecided,
   } = useBatchInspected(setBatchCloseAnimation);
 
   const parseLocalizedDateString = (
@@ -119,7 +119,7 @@ const useBatchActionsInspected = (
     status: BATCH_STATUSES,
     form?: BatchCompletionFormValues
   ): void =>
-    completeBatch({
+    setBatchDecided({
       id,
       status,
       form,

@@ -62,7 +62,6 @@ const BatchIndex: NextPage = () => {
               status={[
                 BATCH_STATUSES.AWAITING_FOR_DECISION,
                 BATCH_STATUSES.DECIDED_ACCEPTED,
-                BATCH_STATUSES.DECIDED_REJECTED,
               ]}
             />
           </Tabs.TabPanel>

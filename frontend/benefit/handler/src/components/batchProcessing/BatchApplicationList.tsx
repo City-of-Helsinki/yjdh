@@ -224,15 +224,14 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
                 />
               ) : null}
 
-              {BATCH_STATUSES.AWAITING_FOR_DECISION === status ? (
-                <BatchActionsInspection batch={batch} />
-              ) : null}
-
               {[
+                BATCH_STATUSES.AWAITING_FOR_DECISION,
                 BATCH_STATUSES.DECIDED_ACCEPTED,
-                BATCH_STATUSES.DECIDED_REJECTED,
               ].includes(status) ? (
-                <h2>TODO: Talpa CSV -lataus ja arkistoon</h2>
+                <BatchActionsInspection
+                  batch={batch}
+                  setBatchCloseAnimation={setBatchCloseAnimation}
+                />
               ) : null}
             </$TableFooter>
           </$TableBody>

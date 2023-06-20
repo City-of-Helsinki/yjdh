@@ -70,12 +70,12 @@ const useBatchInspected = (
       return handleResponse<Response>(request);
     },
     {
-      onSuccess: ({ status: backendStatus, decision }: Response) => {
+      onSuccess: ({ status: backendStatus }: Response) => {
         showSuccessToast(
           t(`common:batches.notifications.registerToAhjo.${backendStatus}`),
           ''
         );
-        if (decision === PROPOSALS_FOR_DECISION.REJECTED) {
+        if (backendStatus === BATCH_STATUSES.DECIDED_REJECTED) {
           setBatchCloseAnimation(true);
         }
         setTimeout(() => {
