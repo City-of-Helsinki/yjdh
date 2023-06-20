@@ -894,6 +894,12 @@
           "text": "Olet muodostanut {{ count }} hakemuksesta koonnin."
         }
       },
+      "removeFromBatch": {
+        "success": {
+          "headingAppRemoved": "Hakemus on poistettu koonnista",
+          "headingBatchRemoved": "Koonti poistettu"
+        }
+      },
       "registerToAhjo": {
         "awaiting_ahjo_decision": "Koonti merkitty Ahjoon viedyksi",
         "exported_ahjo_report": "Ahjo-valmistelu aloitettu, koonti lukittu",

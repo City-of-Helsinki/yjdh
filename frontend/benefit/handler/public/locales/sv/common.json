@@ -190,6 +190,12 @@
       },
       "actions": {
         "addToBatch": "Lisää valitut koontiin"
+      },
+      "removeFromBatch": {
+        "success": {
+          "headingAppRemoved": "Hakemus on poistettu koonnista",
+          "headingBatchRemoved": "Koonti poistettu"
+        }
       }
     },
     "pageHeaders": {
@@ -892,6 +898,12 @@
         "success": {
           "heading": "Koontiin siirto onnistui!",
           "text": "Olet muodostanut {{ count }} hakemuksesta koonnin."
+        }
+      },
+      "removeFromBatch": {
+        "success": {
+          "headingAppRemoved": "Hakemus on poistettu koonnista",
+          "headingBatchRemoved": "Koonti poistettu"
         }
       },
       "registerToAhjo": {
