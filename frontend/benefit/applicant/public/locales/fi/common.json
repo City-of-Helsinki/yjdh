@@ -519,8 +519,8 @@
     "errorMessage": "Jotakin meni vikaan. Ole hyvä ja kokeile uudelleen myöhemmin."
   },
   "pdfViewer": {
-    "previous": "Edellinen",
-    "next": "Seuraava",
+    "previous": "Edellinen sivu",
+    "next": "Seuraava sivu",
     "page": "Sivu",
     "terms": "Ehdot.PDF"
   },

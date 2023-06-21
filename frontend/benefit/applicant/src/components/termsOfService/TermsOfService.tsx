@@ -42,17 +42,20 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({
             {t('common:login.termsOfServiceHeader')}
           </h2>
         </$GridCell>
-        <$GridCell $colSpan={12}>
-          <PdfViewer
-            file={termsInEffectUrl}
-            scale={1.8}
-            documentMarginLeft="-70px"
-          />
+        <$GridCell
+          $colSpan={12}
+          css={`
+            margin-bottom: var(--spacing-xl);
+            margin-top: var(--spacing-xl);
+          `}
+        >
+          <PdfViewer file={termsInEffectUrl} scale={1.8} />
         </$GridCell>
         <$GridCell
           $colSpan={5}
           css={`
-            margin-bottom: var(--spacing-l);
+            margin-bottom: var(--spacing-xl);
+            margin-top: var(--spacing-xl);
           `}
         >
           <Button
