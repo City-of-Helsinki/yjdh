@@ -1,5 +1,6 @@
 import useRemoveAttachmentQuery from 'benefit/handler/hooks/useRemoveAttachmentQuery';
 import useUploadAttachmentQuery from 'benefit/handler/hooks/useUploadAttachmentQuery';
+import { ApplicationData } from 'benefit-shared/types/application';
 import { useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
 import React from 'react';
@@ -19,7 +20,7 @@ type ExtendedComponentProps = {
 };
 
 const useAttachmentsList = (
-  handleQuietSave: () => void
+  handleQuietSave: () => Promise<ApplicationData | void>
 ): ExtendedComponentProps => {
   const router = useRouter();
   const id = router?.query?.id;
@@ -63,12 +64,14 @@ const useAttachmentsList = (
     });
   };
 
-  const handleUpload = (attachment: FormData): void => {
-    handleQuietSave();
-    uploadAttachment({
-      applicationId,
-      data: attachment,
-    });
+  const handleUpload = async (attachment: FormData): Promise<void> => {
+    const response = await handleQuietSave();
+    if (response) {
+      uploadAttachment({
+        applicationId,
+        data: attachment,
+      });
+    }
   };
 
   return {
