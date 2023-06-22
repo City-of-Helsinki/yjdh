@@ -300,7 +300,7 @@ def test_pruned_applications_csv_output(
         pruned_applications_csv_service_with_one_application.get_applications()[0]
     )
     # Assert that there are 15 column headers in the pruned CSV
-    assert len(csv_lines[0]) == 15
+    assert len(csv_lines[0]) == 18
 
     assert csv_lines[0][0] == '"Hakemusnumero"'
     assert csv_lines[0][1] == '"Työnantajan tyyppi"'
@@ -315,11 +315,14 @@ def test_pruned_applications_csv_output(
     assert csv_lines[0][10] == '"Päättäjän nimi"'
     assert csv_lines[0][11] == '"Päätöspykälä"'
     assert csv_lines[0][12] == '"Päätöspäivä"'
-    assert csv_lines[0][13] == '"Asiantarkastajan nimi"'
-    assert csv_lines[0][14] == '"Asiantarkastajan email"'
+    assert csv_lines[0][13] == '"Asiantarkastajan nimi Ahjo"'
+    assert csv_lines[0][14] == '"Asiantarkastajan titteli Ahjo"'
+    assert csv_lines[0][15] == '"Asiantarkastajan nimi Talpa"'
+    assert csv_lines[0][16] == '"Asiantarkastajan email Talpa"'
+    assert csv_lines[0][17] == '"Hyväksyjän nimi Talpa"'
 
     # Assert that there are 15 columns in the pruned CSV
-    assert len(csv_lines[1]) == 15
+    assert len(csv_lines[1]) == 18
 
     assert int(csv_lines[1][0]) == application.application_number
     assert csv_lines[1][1] == '"Yritys"'
@@ -338,7 +341,10 @@ def test_pruned_applications_csv_output(
     assert csv_lines[1][11] == f'"{application.batch.section_of_the_law}"'
     assert csv_lines[1][12] == f'"{application.batch.decision_date}"'
     assert csv_lines[1][13] == f'"{application.batch.expert_inspector_name}"'
-    assert csv_lines[1][14] == f'"{application.batch.expert_inspector_email}"'
+    assert csv_lines[1][14] == f'"{application.batch.expert_inspector_title}"'
+    assert csv_lines[1][15] == f'"{application.batch.p2p_inspector_name}"'
+    assert csv_lines[1][16] == f'"{application.batch.p2p_inspector_email}"'
+    assert csv_lines[1][17] == f'"{application.batch.p2p_checker_name}"'
 
 
 def test_applications_csv_output(applications_csv_service):  # noqa: C901
