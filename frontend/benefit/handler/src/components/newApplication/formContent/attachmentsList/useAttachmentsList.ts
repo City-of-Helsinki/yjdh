@@ -57,11 +57,14 @@ const useAttachmentsList = (
     []
   );
 
-  const handleRemove = (attachmentId: string): void => {
-    removeAttachment({
-      applicationId,
-      attachmentId,
-    });
+  const handleRemove = async (attachmentId: string): Promise<void> => {
+    const response = await handleQuietSave();
+    if (response) {
+      removeAttachment({
+        applicationId,
+        attachmentId,
+      });
+    }
   };
 
   const handleUpload = async (attachment: FormData): Promise<void> => {
