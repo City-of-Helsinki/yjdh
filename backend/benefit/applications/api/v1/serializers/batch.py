@@ -56,6 +56,10 @@ class ApplicationBatchSerializer(serializers.ModelSerializer):
             "decision_date",
             "expert_inspector_name",
             "expert_inspector_email",
+            "expert_inspector_title",
+            "p2p_inspector_name",
+            "p2p_inspector_email",
+            "p2p_checker_name",
             "created_at",
             "handler",
         ]
