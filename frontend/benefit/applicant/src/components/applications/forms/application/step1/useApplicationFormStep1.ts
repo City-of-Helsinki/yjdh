@@ -26,6 +26,7 @@ type ExtendedComponentProps = {
     Field<APPLICATION_FIELDS_STEP1_KEYS>
   >;
   translationsBase: string;
+  showDeminimisSection: boolean;
   getErrorMessage: (fieldName: string) => string | undefined;
   handleSubmit: () => void;
   handleSave: () => void;
@@ -122,6 +123,10 @@ const useApplicationFormStep1 = (
     void setFieldValue(fields.deMinimisAid.name, null);
   }, [fields.deMinimisAid.name, setDeMinimisAids, setFieldValue]);
 
+  const showDeminimisSection =
+    values.associationHasBusinessActivities === true ||
+    organizationType === ORGANIZATION_TYPES.COMPANY;
+
   const languageOptions = React.useMemo(
     (): OptionType<string>[] => getLanguageOptions(t, 'languages'),
     [t]
@@ -140,6 +145,7 @@ const useApplicationFormStep1 = (
     fields,
     translationsBase,
     formik,
+    showDeminimisSection,
     getErrorMessage,
     handleSubmit,
     handleSave,

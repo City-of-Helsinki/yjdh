@@ -28,6 +28,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
     getErrorMessage,
     clearDeminimisAids,
     getDefaultSelectValue,
+    showDeminimisSection,
     languageOptions,
     fields,
     translationsBase,
@@ -160,7 +161,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           />
         </$GridCell>
       </FormSection>
-    
+    {showDeminimisSection && (
       <FormSection
         header={t(`${translationsBase}.heading3`)}
         tooltip={t(`${translationsBase}.tooltips.heading3`)}
@@ -209,7 +210,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           </>
         )}
       </FormSection>
-     
+    )}
       <FormSection paddingBottom header={t(`${translationsBase}.heading4`)}>
         <$GridCell $colSpan={8}>
           <SelectionGroup
