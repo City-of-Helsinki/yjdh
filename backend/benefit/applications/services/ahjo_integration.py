@@ -12,6 +12,7 @@ from django.db.models import QuerySet
 
 from applications.enums import ApplicationStatus
 from applications.models import Application
+from applications.services.applications_csv_report import ApplicationsCsvService
 from companies.models import Company
 
 
@@ -231,6 +232,25 @@ def prepare_pdf_files(apps: QuerySet[Application]) -> List[ExportFileInfo]:
         pdf_files += app_files
 
     return pdf_files
+
+
+def prepare_csv_file(
+    ordered_queryset: QuerySet[Application],
+    prune_data_for_talpa: bool = False,
+    export_filename: str = "",
+) -> ExportFileInfo:
+    csv_service = ApplicationsCsvService(ordered_queryset, prune_data_for_talpa)
+    csv_file_content: bytes = csv_service.get_csv_string(prune_data_for_talpa).encode(
+        "utf-8"
+    )
+    csv_filename = f"{export_filename}.csv"
+    csv_file_info: ExportFileInfo = ExportFileInfo(
+        filename=csv_filename,
+        file_content=csv_file_content,
+        html_content="",  # No HTML content
+    )
+
+    return csv_file_info
 
 
 def generate_pdf(
