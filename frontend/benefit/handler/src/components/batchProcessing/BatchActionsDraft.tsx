@@ -137,10 +137,8 @@ const BatchActionsDraft: React.FC<BatchProps> = ({
             {isModalBatchToDraft ? (
               <ConfirmModalContent
                 variant={variantForAction()}
-                heading={t(
-                  'common:batches.dialog.batchFromLockedToDraft.heading'
-                )}
-                text={t('common:batches.dialog.batchFromLockedToDraft.text')}
+                heading={t('common:batches.dialog.fromLockedToDraft.heading')}
+                text={t('common:batches.dialog.fromLockedToDraft.text')}
                 onClose={handleModalClose}
                 onSubmit={() => handleBatchStatusChange(BATCH_STATUSES.DRAFT)}
               />
@@ -149,9 +147,9 @@ const BatchActionsDraft: React.FC<BatchProps> = ({
               <ConfirmModalContent
                 variant={variantForAction()}
                 heading={t(
-                  'common:batches.dialog.batchFromDraftToAhjo.heading'
+                  'common:batches.dialog.fromDraftToInspection.heading'
                 )}
-                text={t('common:batches.dialog.batchFromDraftToAhjo.text')}
+                text={t('common:batches.dialog.fromDraftToInspection.text')}
                 onClose={handleModalClose}
                 onSubmit={() =>
                   handleBatchStatusChange(BATCH_STATUSES.AWAITING_FOR_DECISION)

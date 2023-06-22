@@ -8,7 +8,7 @@ import { BatchProposal } from 'benefit-shared/types/application';
 import { Button, DateInput, IconArrowUndo, TextInput } from 'hds-react';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import Modal from 'shared/components/modal/Modal';
 
@@ -18,40 +18,49 @@ import { useBatchActionsInspected } from './useBatchActionsInspected';
 
 type BatchProps = {
   batch: BatchProposal;
-  isSubmitted: boolean;
-  setIsSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
+  isInspectionFormSent: boolean;
+  setInspectionFormSent: React.Dispatch<React.SetStateAction<boolean>>;
   setBatchCloseAnimation: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+interface ModalTranslations {
+  heading: string;
+  text: string;
+}
+
 const BatchActionsInspectionForm: React.FC<BatchProps> = ({
   batch,
-  isSubmitted,
-  setIsSubmitted,
+  isInspectionFormSent,
+  setInspectionFormSent,
   setBatchCloseAnimation,
 }: BatchProps) => {
   const { id, proposal_for_decision: proposalForDecision } = batch;
   const { t } = useTranslation();
   const { formik, yearFromNow, isSuccess, isError } = useBatchActionsInspected(
-    id,
-    proposalForDecision,
+    batch,
     setBatchCloseAnimation
   );
+
   const { mutate: changeBatchStatus } = useBatchStatus();
   const [isModalBatchToDraft, setModalBatchToDraft] = React.useState(false);
-  const [isModalBatchToTalpa, setModalBatchToTalpa] = React.useState(false);
+  const [isModalBatchToCompletion, setModalBatchToCompletion] =
+    React.useState(false);
 
-  useEffect(() => {
-    if (isSuccess || isError) {
-      setIsSubmitted(false);
+  React.useEffect(() => {
+    if (isError) {
+      setInspectionFormSent(false);
     }
-  }, [isSuccess, isError, setIsSubmitted]);
+    if (isSuccess) {
+      setInspectionFormSent(true);
+    }
+  }, [isSuccess, isError, setInspectionFormSent]);
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(formik.errors, formik.touched, fieldName, t, true);
 
   const handleModalClose = (): void => {
     setModalBatchToDraft(false);
-    setModalBatchToTalpa(false);
-    setIsSubmitted(false);
+    setModalBatchToCompletion(false);
+    setInspectionFormSent(false);
   };
 
   const handleBatchStatusChange = (): void => {
@@ -63,13 +72,13 @@ const BatchActionsInspectionForm: React.FC<BatchProps> = ({
     formik
       .submitForm()
       .then(() => {
-        setModalBatchToTalpa(false);
-        setIsSubmitted(true);
+        setModalBatchToCompletion(false);
+        setInspectionFormSent(true);
         return true;
       })
       .catch(() => {
-        setModalBatchToTalpa(false);
-        setIsSubmitted(false);
+        setModalBatchToCompletion(false);
+        setInspectionFormSent(false);
         return false;
       });
 
@@ -81,21 +90,37 @@ const BatchActionsInspectionForm: React.FC<BatchProps> = ({
         if (Object.keys(errors).length > 0) {
           return null;
         }
-        setIsSubmitted(true);
-        setModalBatchToTalpa(true);
+        setInspectionFormSent(true);
+        setModalBatchToCompletion(true);
         return true;
       })
       .catch(() => {
-        setModalBatchToTalpa(false);
-        setIsSubmitted(false);
+        setModalBatchToCompletion(false);
+        setInspectionFormSent(false);
       });
+  };
+
+  const getModalTranslations = (): ModalTranslations | null => {
+    if (proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED) {
+      return {
+        heading: t('common:batches.dialog.fromInspectionToCompletion.heading'),
+        text: t('common:batches.dialog.fromInspectionToCompletion.text'),
+      };
+    }
+    if (proposalForDecision === PROPOSALS_FOR_DECISION.REJECTED) {
+      return {
+        heading: t('common:batches.dialog.fromCompletionToArchive.heading'),
+        text: t('common:batches.dialog.fromCompletionToArchive.text'),
+      };
+    }
+    return null;
   };
 
   return (
     <>
       <Modal
         id={`batch-confirmation-modal-${id}`}
-        isOpen={isModalBatchToDraft || isModalBatchToTalpa}
+        isOpen={isModalBatchToDraft || isModalBatchToCompletion}
         submitButtonLabel=""
         cancelButtonLabel=""
         handleSubmit={noop}
@@ -107,20 +132,18 @@ const BatchActionsInspectionForm: React.FC<BatchProps> = ({
               <ConfirmModalContent
                 variant="primary"
                 heading={t(
-                  'common:batches.dialog.batchFromAhjoToDraft.heading'
+                  'common:batches.dialog.fromInspectionToDraft.heading'
                 )}
-                text={t('common:batches.dialog.batchFromAhjoToDraft.text')}
+                text={t('common:batches.dialog.fromInspectionToDraft.text')}
                 onClose={handleModalClose}
                 onSubmit={handleBatchStatusChange}
               />
             ) : null}
-            {isModalBatchToTalpa ? (
+            {isModalBatchToCompletion ? (
               <ConfirmModalContent
                 variant="primary"
-                heading={t(
-                  'common:batches.dialog.batchFromAhjoToTalpa.heading'
-                )}
-                text={t('common:batches.dialog.batchFromAhjoToTalpa.text')}
+                heading={getModalTranslations().heading}
+                text={getModalTranslations().text}
                 onClose={handleModalClose}
                 onSubmit={() => void handleBatchToTalpa()}
               />
@@ -259,7 +282,7 @@ const BatchActionsInspectionForm: React.FC<BatchProps> = ({
         <$FormSection>
           <$GridCell $colSpan={3}>
             <Button
-              disabled={isSubmitted}
+              disabled={isInspectionFormSent}
               type="submit"
               theme="coat"
               variant="primary"

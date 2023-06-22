@@ -894,11 +894,12 @@
           "text": "Olet muodostanut {{ count }} hakemuksesta koonnin."
         }
       },
-      "registerToAhjo": {
+      "statusChange": {
         "awaiting_ahjo_decision": "Koonti merkitty Ahjoon viedyksi",
         "exported_ahjo_report": "Ahjo-valmistelu aloitettu, koonti lukittu",
+        "sent_to_talpa": "Koonti käsitelty ja arkistoitu",
         "draft": "Koonti palautettu takaisin odottamaan päätösvalmistelua",
-        "accepted": "Koonti lähetetty Talpaan ja arkistoitu",
+        "accepted": "Tarkastustiedot tallennettu",
         "rejected": "Koonti arkistoitu"
       },
       "errors": {
@@ -922,10 +923,12 @@
       "markAsReadyForAhjo": "Aloita Ahjo-valmistelu",
       "markAsRegisteredToAhjo": "Merkitse Ahjoon viedyksi",
       "markedAsRegisteredToAhjo": "Viety Ahjoon",
-      "markToTalpa": "Merkitse maksuun ja arkistoi",
+      "markToTalpa": "Hyväksy tarkastustiedot",
       "markToArchive": "Arkistoi",
       "markAsWaitingForAhjo": "Palauta odottamaan Ahjoon vientiä",
+      "returnToInspection": "Muokkaa tarkastustietoja",
       "downloadFiles": "Lataa liitteet",
+      "downloadP2PFile": "Lataa Talpa-tiedosto",
       "deleteBatch": "Tyhjennä koonti",
       "lockedBatch": "Lukittu"
     },
@@ -938,20 +941,28 @@
         "heading": "Poista hakemus koonnista",
         "text": "Oletko varma, että haluat poistaa hakemuksen koonnista? {{ applicationNumber }}"
       },
-      "batchFromLockedToDraft": {
+      "fromLockedToDraft": {
         "heading": "Koonti lukittu",
         "text": "Haluatko vapauttaa koonnin ja tehdä siihen muutoksia?"
       },
-      "batchFromDraftToAhjo": {
+      "fromDraftToInspection": {
         "heading": "Merkitse koonti Ahjoon viedyksi",
         "text": "Haluatko viedä koonnin Ahjoon?"
       },
-      "batchFromAhjoToDraft": {
+      "fromInspectionToDraft": {
         "heading": "Palauta odottamaan Ahjoon vientiä",
         "text": "Oletko varma, että haluat palauttaa koonnin odottamaan Ahjoon vientiä?"
       },
-      "batchFromAhjoToTalpa": {
-        "heading": "Koonti on valmis",
+      "fromInspectionToCompletion": {
+        "heading": "Hyväksy tarkastustiedot",
+        "text": "Haluatko merkitä koonnin tarkastetuksi?"
+      },
+      "fromCompletionToInspection": {
+        "heading": "Palauta koonti aiempaan vaiheeseen",
+        "text": "Haluatko palata aiempaan vaiheeseen ja tehdä muutoksia asiantarkastajien nimiin?"
+      },
+      "fromCompletionToArchive": {
+        "heading": "Arkistoi koonti",
         "text": "Haluatko merkitä koonnin valmiiksi ja arkistoida sen?"
       }
     },

@@ -31,7 +31,7 @@ export type BatchData = {
   section_of_the_law?: string;
   decision_date?: string;
   expert_inspector_name?: string;
-  expert_inspector_email?: string;
+  expert_inspector_title?: string;
   created_at: string;
 };
 
@@ -51,8 +51,12 @@ export type BatchProposal = {
   decision_date?: string;
   expert_inspector_name?: string;
   expert_inspector_email?: string;
+  expert_inspector_title?: string;
   created_at: string;
   handler?: Handler;
+  p2p_inspector_name?: string;
+  p2p_inspector_email?: string;
+  p2p_checker_name?: string;
 };
 
 export type ApplicationInBatch = {

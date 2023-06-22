@@ -17,21 +17,24 @@ const BatchActionsInspection: React.FC<BatchProps> = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
   {
     const { status } = batch;
-    const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
+    const [isInspectionFormSent, setInspectionFormSent] =
+      React.useState<boolean>(false);
 
     return (
       <>
         {[BATCH_STATUSES.AWAITING_FOR_DECISION].includes(status) ? (
           <BatchActionsInspectionForm
             batch={batch}
-            isSubmitted={isSubmitted}
-            setIsSubmitted={setIsSubmitted}
+            isInspectionFormSent={isInspectionFormSent}
+            setInspectionFormSent={setInspectionFormSent}
             setBatchCloseAnimation={setBatchCloseAnimation}
           />
         ) : null}
         {[BATCH_STATUSES.DECIDED_ACCEPTED].includes(status) ? (
           <BatchActionsCompletion
             batch={batch}
+            setInspectionFormSent={setInspectionFormSent}
+            isInspectionFormSent={isInspectionFormSent}
             setBatchCloseAnimation={setBatchCloseAnimation}
           />
         ) : null}

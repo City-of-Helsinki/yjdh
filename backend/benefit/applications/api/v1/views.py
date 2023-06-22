@@ -398,6 +398,15 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
 
     @action(methods=["GET"], detail=False)
     @transaction.atomic
+    def batch_p2p_file(self, request) -> HttpResponse:
+        batch_id = request.query_params.get("batch_id")
+        if batch_id:
+            apps = Application.objects.filter(batch_id=batch_id)
+            return self._csv_response(apps)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=["GET"], detail=False)
+    @transaction.atomic
     def export_new_accepted_applications_csv_pdf(self, request) -> HttpResponse:
         return self._csv_pdf_response(
             self._create_application_batch(ApplicationStatus.ACCEPTED), True, True
