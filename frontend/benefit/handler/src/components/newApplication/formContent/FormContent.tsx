@@ -13,7 +13,7 @@ import {
   BENEFIT_TYPES,
   ORGANIZATION_TYPES,
 } from 'benefit-shared/constants';
-import { DeMinimisAid, TextProp } from 'benefit-shared/types/application';
+import { ApplicationData, DeMinimisAid, TextProp } from 'benefit-shared/types/application';
 import { FormikProps } from 'formik';
 import { DateInput, Select, SelectionGroup, TextInput } from 'hds-react';
 import React from 'react';
@@ -48,7 +48,7 @@ type Props = {
   formik: FormikProps<Partial<Application>>;
   fields: ApplicationFields;
   handleSave: () => void;
-  handleQuietSave: () => void;
+  handleQuietSave: () => Promise<ApplicationData | void>;
   showDeminimisSection: boolean;
   minEndDate: Date;
   maxEndDate: Date | undefined;

@@ -55,7 +55,7 @@ type ExtendedComponentProps = {
   handleSaveDraft: () => void;
   handleDelete: () => void;
   handleSave: () => void;
-  handleQuietSave: () => void;
+  handleQuietSave: () => Promise<ApplicationData | void>;
   handleSubmit: () => void;
   showDeminimisSection: boolean;
   minEndDate: Date;
