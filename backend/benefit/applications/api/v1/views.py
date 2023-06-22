@@ -402,7 +402,7 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         batch_id = request.query_params.get("batch_id")
         if batch_id:
             apps = Application.objects.filter(batch_id=batch_id)
-            return self._csv_response(apps)
+            return self._csv_response(apps, True)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=["GET"], detail=False)
@@ -446,9 +446,11 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
             date=timezone.now().strftime("%Y%m%d_%H%M%S"),
         )
 
-    def _csv_response(self, queryset: QuerySet[Application]) -> StreamingHttpResponse:
+    def _csv_response(
+        self, queryset: QuerySet[Application], prune_data_for_talpa: bool = False
+    ) -> StreamingHttpResponse:
         csv_service = ApplicationsCsvService(
-            queryset.order_by(self.APPLICATION_ORDERING)
+            queryset.order_by(self.APPLICATION_ORDERING), prune_data_for_talpa
         )
         response = StreamingHttpResponse(
             csv_service.get_csv_string_lines_generator(), content_type="text/csv"
