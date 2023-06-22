@@ -86,6 +86,7 @@ class ApplicationsCsvService(CsvExportBase):
 
     @property
     def CSV_COLUMNS(self):
+        calculated_benefit_amount = "calculation.calculated_benefit_amount"
         """Return only columns that are needed for Talpa"""
         if self.prune_data_for_talpa:
             talpa_columns = [
@@ -98,8 +99,7 @@ class ApplicationsCsvService(CsvExportBase):
                 CsvColumn("Työnantajan postinumero", "effective_company_postcode"),
                 CsvColumn("Työnantajan postitoimipaikka", "effective_company_city"),
                 CsvDefaultColumn(
-                    "Helsinki-lisän määrä lopullinen",
-                    "calculation.calculated_benefit_amount",
+                    "Helsinki-lisän määrä lopullinen", calculated_benefit_amount
                 ),
                 CsvDefaultColumn("Päättäjän nimike", "batch.decision_maker_title"),
                 CsvDefaultColumn("Päättäjän nimi", "batch.decision_maker_name"),
@@ -212,8 +212,7 @@ class ApplicationsCsvService(CsvExportBase):
                 format_bool,
             ),
             CsvDefaultColumn(
-                "Helsinki-lisän määrä lopullinen",
-                "calculation.calculated_benefit_amount",
+                "Helsinki-lisän määrä lopullinen", calculated_benefit_amount
             ),
             CsvDefaultColumn("Kuukausipalkka laskelmassa", "calculation.monthly_pay"),
             CsvDefaultColumn("Lomaraha laskelmassa", "calculation.vacation_money"),
@@ -224,9 +223,7 @@ class ApplicationsCsvService(CsvExportBase):
             CsvDefaultColumn(
                 "Valtiotukimaksimi", "calculation.state_aid_max_percentage"
             ),
-            CsvDefaultColumn(
-                "Laskelman lopputulos", "calculation.calculated_benefit_amount"
-            ),
+            CsvDefaultColumn("Laskelman lopputulos", calculated_benefit_amount),
             CsvDefaultColumn(
                 "Manuaalinen syöttö", "calculation.override_monthly_benefit_amount"
             ),
@@ -255,6 +252,9 @@ class ApplicationsCsvService(CsvExportBase):
             CsvDefaultColumn("Päätöspäivä", "batch.decision_date"),
             CsvDefaultColumn("Asiantarkastajan nimi", "batch.expert_inspector_name"),
             CsvDefaultColumn("Asiantarkastajan email", "batch.expert_inspector_email"),
+            CsvDefaultColumn("Asiantarkastajan nimi", "batch.p2p_inspector_name"),
+            CsvDefaultColumn("Asiantarkastajan nimi", "batch.p2p_inspector_email"),
+            CsvDefaultColumn("Asiantarkastajan email", "batch.p2p_checker_name"),
             # In case there are multiple rows per application, always have the nth ahjo row
             # in the same column.
             # The row data here comes from calculation.ahjo_rows[application_row_idx - 1]
