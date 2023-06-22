@@ -389,7 +389,7 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
 
     @action(methods=["GET"], detail=False)
     @transaction.atomic
-    def export_applications_in_batch(self, request) -> HttpResponse:
+    def batch_pdf_files(self, request) -> HttpResponse:
         batch_id = request.query_params.get("batch_id")
         if batch_id:
             apps = Application.objects.filter(batch_id=batch_id)

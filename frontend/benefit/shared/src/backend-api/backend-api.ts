@@ -25,6 +25,8 @@ export const HandlerEndpoint = {
   BATCH_APP_DEASSIGN: (id: string): string =>
     `${singleBatchBase(id)}deassign_applications/`,
   BATCH_STATUS_CHANGE: (id: string): string => `${singleBatchBase(id)}status/`,
+  BATCH_DOWNLOAD_PDF_FILES: (id: string): string =>
+    `${BackendEndpoint.HANDLER_APPLICATIONS}batch_pdf_files?batch_id=${id}`,
 } as const;
 
 export const BackendEndPoints = Object.values(BackendEndpoint);
