@@ -21,7 +21,10 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Modal from 'shared/components/modal/Modal';
 import theme from 'shared/styles/theme';
-import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
+import {
+  convertToUIDateAndTimeFormat,
+  sortFinnishDate,
+} from 'shared/utils/date.utils';
 import styled from 'styled-components';
 
 import { $Empty } from '../applicationList/ApplicationList.sc';
@@ -110,6 +113,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
       headerName: t('common:applications.list.columns.handledAt'),
       key: 'handled_at',
       isSortable: true,
+      customSortCompareFunction: sortFinnishDate,
     },
     {
       transform: ({ id: appId }: { id: string }) =>

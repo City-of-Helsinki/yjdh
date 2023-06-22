@@ -43,8 +43,8 @@ const useAttachmentsList = (
   React.useEffect(() => {
     if (isRemovingError || isUploadingError) {
       showErrorToast(
-        t(`common:remove.errorTitle`),
-        t(`common:remove.errorMessage`)
+        t(`common:error.attachments.title`),
+        t(`common:error.attachments.generic`)
       );
     }
   }, [isRemovingError, isUploadingError, t]);

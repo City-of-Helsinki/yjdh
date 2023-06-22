@@ -103,7 +103,8 @@
     "attachments": {
       "title": "Tapahtui virhe",
       "tooBig": "Liite on liian suuri.",
-      "fileType": "Liite on väärässä muodossa."
+      "fileType": "Liite on väärässä muodossa.",
+      "generic": "Liitteen käsittely epäonnistui."
     },
     "notFound": {
       "title": "Pahoittelut, sivua ei löytynyt.",
@@ -190,6 +191,12 @@
       },
       "actions": {
         "addToBatch": "Lisää valitut koontiin"
+      },
+      "removeFromBatch": {
+        "success": {
+          "headingAppRemoved": "Hakemus on poistettu koonnista",
+          "headingBatchRemoved": "Koonti poistettu"
+        }
       }
     },
     "pageHeaders": {
@@ -770,7 +777,30 @@
   "attachments": {
     "heading1": "Liittet",
     "add": "Liitä tiedosto",
-    "remove": "Poista liite"
+    "remove": "Poista liite",
+    "types": {
+      "employmentContract": {
+        "title": "Työsopimus"
+      },
+      "paySubsidyDecision": {
+        "title": "Palkkatukipäätös"
+      },
+      "commissionContract": {
+        "title": "Toimeksiantosopimus"
+      },
+      "educationContract": {
+        "title": "Sopimus oppisopimuskoulutuksen järjestämisestä"
+      },
+      "helsinkiBenefitVoucher": {
+        "title": "Helsinki-lisä seteli"
+      },
+      "fullApplication": {
+        "title": "Paperihakemus"
+      },
+      "otherAttachment": {
+        "title": "Muu liite"
+      }
+    }
   },
   "utility": {
     "yes": "Kyllä",
@@ -892,6 +922,12 @@
         "success": {
           "heading": "Koontiin siirto onnistui!",
           "text": "Olet muodostanut {{ count }} hakemuksesta koonnin."
+        }
+      },
+      "removeFromBatch": {
+        "success": {
+          "headingAppRemoved": "Hakemus on poistettu koonnista",
+          "headingBatchRemoved": "Koonti poistettu"
         }
       },
       "statusChange": {

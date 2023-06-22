@@ -5,7 +5,7 @@ import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 
-const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
+const AttachmentsView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
   const { t } = useTranslation();
   return (
@@ -28,4 +28,4 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   );
 };
 
-export default EmploymentView;
+export default AttachmentsView;

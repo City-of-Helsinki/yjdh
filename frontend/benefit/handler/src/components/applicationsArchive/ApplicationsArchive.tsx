@@ -10,6 +10,7 @@ import {
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import { $Link } from 'shared/components/table/Table.sc';
+import { sortFinnishDate } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
 import { $EmptyHeading } from '../applicationList/ApplicationList.sc';
@@ -82,6 +83,7 @@ const ApplicationsArchive: React.FC = () => {
       headerName: getHeader('handledAt'),
       key: 'handledAt',
       isSortable: true,
+      customSortCompareFunction: sortFinnishDate,
     },
     {
       transform: ({ status }: TableTransforms) => (

@@ -70,6 +70,13 @@ export type SubmittedApplication = {
 
 export interface ApplicationReviewViewProps {
   data: Application;
+  isUploading?: boolean;
+  handleUpload?: (attachment: FormData) => void;
+}
+
+export interface UploadProps {
+  isUploading?: boolean;
+  handleUpload?: (attachment: FormData) => void;
 }
 
 export interface SalaryBenefitCalculatorViewProps {

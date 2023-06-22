@@ -1,6 +1,8 @@
 import { startOfYear } from 'date-fns';
 import formatDateStr from 'date-fns/format';
+import isBefore from 'date-fns/isBefore';
 import isFutureFn from 'date-fns/isFuture';
+import isSameDay from 'date-fns/isSameDay';
 import isValid from 'date-fns/isValid';
 import { enGB as en, fi, sv } from 'date-fns/locale';
 import parse from 'date-fns/parse';
@@ -211,4 +213,19 @@ export const isWithinInterval = (
   const start = parseDate(startDate) ?? 0;
   const end = parseDate(endDate) ?? 0;
   return (!start || start <= curr) && (curr <= end || !end);
+};
+
+export const sortFinnishDate = (a: string, b: string): number => {
+  const aDate = parse(a, 'dd.MM.yyyy', new Date());
+  const bDate = parse(b, 'dd.MM.yyyy', new Date());
+
+  if (isSameDay(aDate, bDate)) {
+    return 0;
+  }
+
+  if (isBefore(aDate, bDate)) {
+    return -1;
+  }
+
+  return 1;
 };
