@@ -3,12 +3,12 @@
     "cross-env": "^7.0.3",
     "husky": "^8.0.3"
   },
-  "engines" : { 
-    "node" : ">=18.16.0 <19.0.0"
+  "engines": {
+    "node": ">=18.16.0 <19.0.0"
   },
   "scripts": {
     "prepare": "husky install",
-    "// clean: stop and remove docker containers and database volume" : "",
+    "// clean: stop and remove docker containers and database volume": "",
     "clean": "docker compose -f compose.handler.yml down --remove-orphans; docker compose -f compose.employer.yml down --remove-orphans; docker compose -f compose.benefit.yml down --remove-orphans; docker rm -f $(docker ps -a -q); docker volume rm $(docker volume ls -q);",
     "// partial docker compose commands per service, dont use these straight. Use <service>:up, <service>:build or <service>:rebuild instead ": "",
     "benefit": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker compose -f compose.benefit.yml",

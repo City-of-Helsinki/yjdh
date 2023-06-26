@@ -10,8 +10,8 @@
     "tet/*",
     "shared"
   ],
-  "engines" : { 
-    "node" : ">=18.16.0 <19.0.0"
+  "engines": {
+    "node": ">=18.16.0 <19.0.0"
   },
   "scripts": {
     "audit": "npx lerna-audit --level=high --groups=dependencies",
@@ -39,7 +39,7 @@
     "test:staged": "npx lerna run test:staged",
     "test:coverage": "npx lerna run test:coverage --stream --concurrency 1",
     "bf-appl:test": "yarn --cwd benefit/applicant test",
-    "bf-hdlr:test": "yarn --cwd benefit/bf-handler test",
+    "bf-hdlr:test": "yarn --cwd benefit/handler test",
     "bf-appl:browser-test": "yarn --cwd benefit/applicant browser-test",
     "bf-appl:browser-test:ci": "yarn --cwd benefit/applicant browser-test:ci",
     "ks-empl:test": " yarn --cwd kesaseteli/employer test",
