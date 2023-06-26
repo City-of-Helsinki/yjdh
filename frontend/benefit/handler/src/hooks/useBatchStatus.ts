@@ -75,7 +75,7 @@ const useBatchStatus = (
     {
       onSuccess: ({ status: backendStatus, previousStatus }: Response) => {
         showSuccessToast(
-          t(`common:batches.notifications.registerToAhjo.${backendStatus}`),
+          t(`common:batches.notifications.statusChange.${backendStatus}`),
           ''
         );
         if (

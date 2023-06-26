@@ -281,6 +281,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             ApplicationBatchStatus.AWAITING_AHJO_DECISION,
             ApplicationBatchStatus.DECIDED_ACCEPTED,
             ApplicationBatchStatus.DECIDED_REJECTED,
+            ApplicationBatchStatus.SENT_TO_TALPA,
         ]:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 

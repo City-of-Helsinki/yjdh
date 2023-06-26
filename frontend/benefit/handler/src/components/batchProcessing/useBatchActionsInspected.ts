@@ -3,6 +3,7 @@ import {
   BATCH_STATUSES,
   PROPOSALS_FOR_DECISION,
 } from 'benefit-shared/constants';
+import { BatchProposal } from 'benefit-shared/types/application';
 import addMonths from 'date-fns/addMonths';
 import format from 'date-fns/format';
 import isValid from 'date-fns/isValid';
@@ -32,15 +33,27 @@ interface ApplicationListProps {
 }
 
 const useBatchActionsInspected = (
-  id: string,
-  proposalForDecision: PROPOSALS_FOR_DECISION,
+  batch: BatchProposal,
   setBatchCloseAnimation?: React.Dispatch<React.SetStateAction<boolean>>
 ): ApplicationListProps => {
+  const {
+    proposal_for_decision: proposalForDecision,
+    id,
+    decision_maker_name,
+    decision_maker_title,
+    expert_inspector_name,
+    expert_inspector_title,
+    section_of_the_law,
+    decision_date,
+    p2p_inspector_name,
+    p2p_inspector_email,
+    p2p_checker_name,
+  } = batch;
   const { t } = useTranslation();
   const {
     isSuccess,
     isError,
-    mutate: completeBatch,
+    mutate: setBatchDecided,
   } = useBatchInspected(setBatchCloseAnimation);
 
   const parseLocalizedDateString = (
@@ -119,7 +132,7 @@ const useBatchActionsInspected = (
     status: BATCH_STATUSES,
     form?: BatchCompletionFormValues
   ): void =>
-    completeBatch({
+    setBatchDecided({
       id,
       status,
       form,
@@ -127,15 +140,19 @@ const useBatchActionsInspected = (
 
   const formOptions = {
     initialValues: {
-      decision_maker_name: '',
-      decision_maker_title: '',
-      section_of_the_law: '§',
-      decision_date: format(new Date(), 'd.M.yyyy'),
-      expert_inspector_name: '',
-      expert_inspector_title: '',
-      p2p_inspector_name: '',
-      p2p_inspector_email: '',
-      p2p_checker_name: '',
+      decision_maker_name,
+      decision_maker_title,
+      expert_inspector_name,
+      expert_inspector_title,
+      section_of_the_law:
+        section_of_the_law.length > 0 ? section_of_the_law : '§',
+      decision_date:
+        decision_date && decision_date.length > 0
+          ? format(parse(decision_date, 'yyyy-MM-dd', new Date()), 'd.M.yyyy')
+          : format(new Date(), 'd.M.yyyy'),
+      p2p_inspector_name,
+      p2p_inspector_email,
+      p2p_checker_name,
     },
     validationSchema:
       proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED

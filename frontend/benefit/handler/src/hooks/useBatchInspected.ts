@@ -70,17 +70,20 @@ const useBatchInspected = (
       return handleResponse<Response>(request);
     },
     {
-      onSuccess: ({ status: backendStatus, decision }: Response) => {
+      onSuccess: ({ status: backendStatus }: Response) => {
         showSuccessToast(
-          t(`common:batches.notifications.registerToAhjo.${backendStatus}`),
+          t(`common:batches.notifications.statusChange.${backendStatus}`),
           ''
         );
-        if (decision === PROPOSALS_FOR_DECISION.REJECTED) {
+
+        if (backendStatus === BATCH_STATUSES.DECIDED_REJECTED) {
           setBatchCloseAnimation(true);
-        }
-        setTimeout(() => {
+          setTimeout(() => {
+            void queryClient.invalidateQueries('applicationsList');
+          }, 700);
+        } else {
           void queryClient.invalidateQueries('applicationsList');
-        }, 700);
+        }
       },
       onError: () => handleError(),
     }

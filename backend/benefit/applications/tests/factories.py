@@ -301,8 +301,7 @@ class ApplicationBatchFactory(BaseApplicationBatchFactory):
     )
     decision_maker_title = factory.Faker("job", locale="fi_FI")
     decision_maker_name = factory.Faker("name", locale="fi_FI")
-    section_of_the_law = factory.Faker("word", locale="fi_FI")
-
+    section_of_the_law = "§1234"
     expert_inspector_name = factory.Faker("name", locale="fi_FI")
     expert_inspector_email = factory.Faker("email", locale="fi_FI")
     expert_inspector_title = factory.Faker("job", locale="fi_FI")

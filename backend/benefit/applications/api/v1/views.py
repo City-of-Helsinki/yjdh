@@ -32,6 +32,7 @@ from applications.models import Application, ApplicationBatch
 from applications.services.ahjo_integration import (
     ExportFileInfo,
     generate_zip,
+    prepare_csv_file,
     prepare_pdf_files,
 )
 from applications.services.applications_csv_report import ApplicationsCsvService
@@ -388,11 +389,20 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
 
     @action(methods=["GET"], detail=False)
     @transaction.atomic
-    def export_applications_in_batch(self, request) -> HttpResponse:
+    def batch_pdf_files(self, request) -> HttpResponse:
         batch_id = request.query_params.get("batch_id")
         if batch_id:
             apps = Application.objects.filter(batch_id=batch_id)
             return self._csv_pdf_response(apps)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=["GET"], detail=False)
+    @transaction.atomic
+    def batch_p2p_file(self, request) -> HttpResponse:
+        batch_id = request.query_params.get("batch_id")
+        if batch_id:
+            apps = Application.objects.filter(batch_id=batch_id)
+            return self._csv_response(apps, True)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=["GET"], detail=False)
@@ -436,9 +446,11 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
             date=timezone.now().strftime("%Y%m%d_%H%M%S"),
         )
 
-    def _csv_response(self, queryset: QuerySet[Application]) -> StreamingHttpResponse:
+    def _csv_response(
+        self, queryset: QuerySet[Application], prune_data_for_talpa: bool = False
+    ) -> StreamingHttpResponse:
         csv_service = ApplicationsCsvService(
-            queryset.order_by(self.APPLICATION_ORDERING)
+            queryset.order_by(self.APPLICATION_ORDERING), prune_data_for_talpa
         )
         response = StreamingHttpResponse(
             csv_service.get_csv_string_lines_generator(), content_type="text/csv"
@@ -458,21 +470,18 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         prune_data_for_talpa: bool = False,
         remove_quotes: bool = False,
     ) -> HttpResponse:
-        export_filename_without_suffix = self._export_filename_without_suffix()
-        csv_filename = f"{export_filename_without_suffix}.csv"
-        zip_filename = f"{export_filename_without_suffix}.zip"
         ordered_queryset = queryset.order_by(self.APPLICATION_ORDERING)
-        csv_service = ApplicationsCsvService(ordered_queryset, prune_data_for_talpa)
-        csv_file_content: bytes = csv_service.get_csv_string(
-            prune_data_for_talpa
-        ).encode("utf-8")
-        csv_file_info: ExportFileInfo = ExportFileInfo(
-            filename=csv_filename,
-            file_content=csv_file_content,
-            html_content="",  # No HTML content
+        export_filename_without_suffix = self._export_filename_without_suffix()
+
+        csv_file = prepare_csv_file(
+            ordered_queryset, prune_data_for_talpa, export_filename_without_suffix
         )
+
         pdf_files: List[ExportFileInfo] = prepare_pdf_files(ordered_queryset)
-        zip_file: bytes = generate_zip([csv_file_info] + pdf_files)
+
+        zip_file: bytes = generate_zip([csv_file] + pdf_files)
+        zip_filename = f"{export_filename_without_suffix}.zip"
+
         response: HttpResponse = HttpResponse(
             zip_file, content_type="application/x-zip-compressed"
         )
