@@ -4,6 +4,7 @@ import useHandlerReviewActions from 'benefit/handler/hooks/useHandlerReviewActio
 import { HandledAplication } from 'benefit/handler/types/application';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
+import { isTruthy } from 'benefit-shared/utils/common';
 import { useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
@@ -39,7 +40,7 @@ const useHandlingApplicationActions = (
   const router = useRouter();
   const { openDrawer } = router.query;
   const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] = useToggle(
-    openDrawer === '1'
+    isTruthy(openDrawer.toString())
   );
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] =

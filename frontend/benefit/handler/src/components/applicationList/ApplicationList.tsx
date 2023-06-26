@@ -36,7 +36,12 @@ const buildApplicationUrl = (
   if (status === APPLICATION_STATUSES.DRAFT) {
     return `${ROUTES.APPLICATION_FORM}?id=${id}`;
   }
-  return `${ROUTES.APPLICATION}?id=${id}${openDrawer ? '&openDrawer=1' : ''}`;
+
+  const applicationUrl = `${ROUTES.APPLICATION}?id=${id}`;
+  if (openDrawer) {
+    return `${applicationUrl}&openDrawer=1`;
+  }
+  return applicationUrl;
 };
 
 const ApplicationList: React.FC<ApplicationListProps> = ({
