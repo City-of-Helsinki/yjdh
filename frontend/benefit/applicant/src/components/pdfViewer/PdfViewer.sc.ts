@@ -1,14 +1,12 @@
 import styled from 'styled-components';
 
-export const $ViewerWrapper = styled.div<{
-  documentMarginLeft: undefined | string;
-}>`
+export const $ViewerWrapper = styled.div`
+  box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.1);
   .Document {
-    margin-left: ${(props) =>
-      props.documentMarginLeft ? props.documentMarginLeft : '0'};
+    min-height: 100%;
+    height: 100%;
   }
-  overflow: scroll;
-  height: 700px;
+  height: 100%;
 
   /* width */
   ::-webkit-scrollbar {

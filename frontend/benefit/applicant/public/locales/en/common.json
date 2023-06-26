@@ -519,8 +519,8 @@
     "errorMessage": "Something went wrong. Please try again later."
   },
   "pdfViewer": {
-    "previous": "Previous",
-    "next": "Next",
+    "previous": "Previous page",
+    "next": "Next page",
     "page": "Page",
     "terms": "Terms.PDF"
   },

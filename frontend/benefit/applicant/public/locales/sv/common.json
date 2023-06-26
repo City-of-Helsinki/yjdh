@@ -519,9 +519,9 @@
     "errorMessage": "Något gick fel. Vänligen försök igen senare."
   },
   "pdfViewer": {
-    "previous": "Previous",
-    "next": "Next",
-    "page": "Page",
+    "previous": "Föregående sida",
+    "next": "Nästa sida",
+    "page": "Sida",
     "terms": "Terms.PDF"
   },
   "utility": {
