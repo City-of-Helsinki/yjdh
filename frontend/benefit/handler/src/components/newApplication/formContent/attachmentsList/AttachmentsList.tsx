@@ -1,4 +1,5 @@
 import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
+import { ApplicationData } from 'benefit-shared/types/application';
 import camelCase from 'lodash/camelCase';
 import * as React from 'react';
 import AttachmentsListBase from 'shared/components/attachments/AttachmentsList';
@@ -9,7 +10,7 @@ import { useAttachmentsList } from './useAttachmentsList';
 export type AttachmentsListProps = {
   attachmentType: ATTACHMENT_TYPES;
   attachments?: BenefitAttachment[];
-  handleQuietSave?: () => void;
+  handleQuietSave?: () => Promise<ApplicationData | void>;
   required?: boolean;
   as?: 'div' | 'li';
 };

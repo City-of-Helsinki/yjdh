@@ -17,7 +17,10 @@ import {
   ORGANIZATION_TYPES,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
-import { DeMinimisAid } from 'benefit-shared/types/application';
+import {
+  ApplicationData,
+  DeMinimisAid,
+} from 'benefit-shared/types/application';
 import { FormikProps, useFormik } from 'formik';
 import { NextRouter, useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
@@ -52,7 +55,7 @@ type ExtendedComponentProps = {
   handleSaveDraft: () => void;
   handleDelete: () => void;
   handleSave: () => void;
-  handleQuietSave: () => void;
+  handleQuietSave: () => Promise<ApplicationData | void>;
   handleSubmit: () => void;
   showDeminimisSection: boolean;
   minEndDate: Date;
@@ -160,9 +163,8 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     return checkedConsentArray.some((c) => !c);
   };
 
-  const handleQuietSave = async (): Promise<void> => {
-    await onQuietSave(values, id);
-  };
+  const handleQuietSave = async (): Promise<ApplicationData | void> =>
+    onQuietSave(values, id);
 
   const handleSaveDraft = async (): Promise<void> => {
     await onSave(values, id);

@@ -29,8 +29,9 @@ const useUploadAttachmentQuery = (): UseMutationResult<
           ),
     {
       onSuccess: () => {
-        void queryClient.invalidateQueries('applications');
-        void queryClient.invalidateQueries('application');
+        setTimeout(() => {
+          void queryClient.invalidateQueries('applications');
+        }, 50);
       },
     }
   );
