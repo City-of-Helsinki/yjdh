@@ -1,10 +1,10 @@
-import { ROUTES } from 'benefit/handler/constants';
-import { allApplicationStatuses } from 'benefit/handler/pages';
+import { ALL_APPLICATION_STATUSES, ROUTES } from 'benefit/handler/constants';
 import {
   ApplicationListTableColumns,
   ApplicationListTableTransforms,
 } from 'benefit/handler/types/applicationList';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import { ApplicationListItemData } from 'benefit-shared/types/application';
 import {
   IconSpeechbubbleText,
   LoadingSpinner,
@@ -26,6 +26,8 @@ import { useApplicationList } from './useApplicationList';
 export interface ApplicationListProps {
   heading: string;
   status: APPLICATION_STATUSES[];
+  list?: ApplicationListItemData[];
+  isLoading: boolean;
 }
 
 const buildApplicationUrl = (
@@ -41,19 +43,14 @@ const buildApplicationUrl = (
 const ApplicationList: React.FC<ApplicationListProps> = ({
   heading,
   status,
+  list = [],
+  isLoading = true,
 }) => {
-  const {
-    t,
-    list,
-    shouldShowSkeleton,
-    shouldHideList,
-    translationsBase,
-    getHeader,
-  } = useApplicationList(status);
+  const { t, translationsBase, getHeader } = useApplicationList();
 
   const theme = useTheme();
 
-  const isAllStatuses: boolean = status === allApplicationStatuses;
+  const isAllStatuses: boolean = status === ALL_APPLICATION_STATUSES;
 
   const columns = React.useMemo(() => {
     const cols: ApplicationListTableColumns[] = [
@@ -186,7 +183,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     return cols.filter(Boolean);
   }, [t, getHeader, status, theme, isAllStatuses]);
 
-  if (shouldShowSkeleton) {
+  if (isLoading) {
     return (
       <>
         {heading && <$Heading>{`${heading}`}</$Heading>}
@@ -198,7 +195,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   const statusAsString = isAllStatuses ? 'all' : status.join(',');
   return (
     <div data-testid={`application-list-${statusAsString}`}>
-      {!shouldHideList ? (
+      {list.length > 0 ? (
         <Table
           heading={`${heading} (${list.length})`}
           theme={theme.components.table}

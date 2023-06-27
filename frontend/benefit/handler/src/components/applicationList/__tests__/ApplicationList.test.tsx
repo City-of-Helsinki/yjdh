@@ -10,6 +10,7 @@ describe('ApplicationList', () => {
   const initialProps: ApplicationListProps = {
     heading: 'Application List',
     status: [APPLICATION_STATUSES.RECEIVED],
+    isLoading: true,
   };
 
   const getComponent = (
