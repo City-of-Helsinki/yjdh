@@ -73,7 +73,12 @@ const Login: NextPage = () => {
       >
         {notificationProps.content}
       </Notification>
-      <Button theme="coat" iconLeft={<IconSignin />} onClick={login}>
+      <Button
+        data-testid="main-login-button"
+        theme="coat"
+        iconLeft={<IconSignin />}
+        onClick={login}
+      >
         {t('common:login.login')}
       </Button>
     </Container>

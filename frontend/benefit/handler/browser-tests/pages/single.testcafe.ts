@@ -42,7 +42,7 @@ const url = getFrontendUrl(`/application?id=${applicationId}`);
 
 fixture('Single application')
   .page(getFrontendUrl('/fi/login'))
-  .requestHooks(mock, requestLogger)
+  .requestHooks(mock)
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     await t.useRole(handlerUser);

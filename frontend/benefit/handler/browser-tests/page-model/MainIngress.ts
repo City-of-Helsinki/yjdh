@@ -4,6 +4,7 @@ import HandlerPageComponent from './HandlerPageComponent';
 
 class MainIngress extends HandlerPageComponent {
   private selector;
+
   private text;
 
   public constructor(text: string, selector: string) {
