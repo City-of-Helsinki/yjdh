@@ -21,9 +21,7 @@ import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 interface FormActions {
   onNext: (
     values: Application,
-    applicationId: string | undefined,
-    dispatchStep: React.Dispatch<StepActionType>,
-    activeStep: number
+    applicationId: string | undefined
   ) => Promise<ApplicationData | void>;
   onSubmit: (
     values: Application,
@@ -44,7 +42,11 @@ interface FormActions {
   ) => Promise<ApplicationData | void>;
 }
 
-const useFormActions = (application: Partial<Application>): FormActions => {
+const useFormActions = (
+  application: Partial<Application>,
+  dispatchStep: React.Dispatch<StepActionType>,
+  activeStep: number
+): FormActions => {
   const router = useRouter();
 
   const { mutateAsync: createApplication, error: createApplicationError } =
@@ -96,6 +98,9 @@ const useFormActions = (application: Partial<Application>): FormActions => {
                     </a>
                   )
                 )[0];
+              }
+              if (key === 'approveTerms') {
+                return <p>{t('common:error.terms.text')}</p>;
               }
               return (
                 <a key={key} href={`#${key}`}>
@@ -226,9 +231,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
 
   const onNext = async (
     currentValues: Application,
-    applicationId: string | undefined,
-    dispatchStep: React.Dispatch<StepActionType>,
-    activeStep: number
+    applicationId: string | undefined
   ): Promise<ApplicationData | void> => {
     const data = getData(getModifiedValues(currentValues));
 

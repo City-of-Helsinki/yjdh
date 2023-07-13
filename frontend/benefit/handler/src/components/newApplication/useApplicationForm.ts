@@ -120,7 +120,7 @@ export const useApplicationForm = (): ExtendedComponentProps => {
   organizationType = application.company?.organizationType ?? 'company';
 
   const { onSave, onQuietSave, onSubmit, onNext, onDelete } =
-    useFormActions(application);
+    useFormActions(application, dispatchStep, activeStep);
 
   const formik = useFormik({
     initialValues: {
@@ -136,7 +136,7 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,
-    onSubmit: (values) => onNext(values, id, dispatchStep, activeStep),
+    onSubmit: (values) => onNext(values, id),
   });
 
   const { values, setFieldValue } = formik;

@@ -112,6 +112,10 @@
     },
     "backend": {
       "Request failed with status code 500": "Virhe taustajärjestelmässä. Kokeile myöhemmin uudestaan."
+    },
+    "terms": {
+      "label": "Ehdot hyväksymättä",
+      "text": "Sinun tulee hyväksyä ehdot jatkaaksesi. Palaa takaisin ja hyväksy ehdot."
     }
   },
   "applications": {
