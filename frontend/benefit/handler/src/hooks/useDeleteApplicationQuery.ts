@@ -16,7 +16,7 @@ const useDeleteApplicationQuery = (): UseMutationResult<
     'deleteApplication',
     (id: string) =>
       handleResponse<null>(
-        axios.delete(`${BackendEndpoint.APPLICATIONS}${id}/`)
+        axios.delete(`${BackendEndpoint.HANDLER_APPLICATIONS}${id}/`)
       ),
     {
       onSuccess: () => {
