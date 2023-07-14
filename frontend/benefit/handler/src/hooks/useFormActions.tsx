@@ -21,6 +21,8 @@ import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 interface FormActions {
   onNext: (
     values: Application,
+    dispatchStep: React.Dispatch<StepActionType>,
+    activeStep: number,
     applicationId: string | undefined
   ) => Promise<ApplicationData | void>;
   onSubmit: (
@@ -42,11 +44,7 @@ interface FormActions {
   ) => Promise<ApplicationData | void>;
 }
 
-const useFormActions = (
-  application: Partial<Application>,
-  dispatchStep: React.Dispatch<StepActionType>,
-  activeStep: number
-): FormActions => {
+const useFormActions = (application: Partial<Application>): FormActions => {
   const router = useRouter();
 
   const { mutateAsync: createApplication, error: createApplicationError } =
@@ -231,6 +229,8 @@ const useFormActions = (
 
   const onNext = async (
     currentValues: Application,
+    dispatchStep: React.Dispatch<StepActionType>,
+    activeStep: number,
     applicationId: string | undefined
   ): Promise<ApplicationData | void> => {
     const data = getData(getModifiedValues(currentValues));
