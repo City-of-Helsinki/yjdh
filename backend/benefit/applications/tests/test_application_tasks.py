@@ -16,7 +16,7 @@ def test_seed_applications_with_arguments(set_debug_to_true):
     amount = 5
     statuses = ApplicationStatus.values
     batch_count = 6
-    total_created = (len(ApplicationStatus.values) + batch_count) * amount
+    total_created = ((len(ApplicationStatus.values) * 2) + batch_count) * amount
     out = StringIO()
     call_command("seed", number=amount, stdout=out)
 

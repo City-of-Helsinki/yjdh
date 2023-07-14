@@ -39,7 +39,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         batch_count = 6
-        total_created = (len(ApplicationStatus.values) + batch_count) * options[
+        total_created = ((len(ApplicationStatus.values) * 2) + batch_count) * options[
             "number"
         ]
         if not settings.DEBUG:
