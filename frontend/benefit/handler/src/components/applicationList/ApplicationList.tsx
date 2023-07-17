@@ -32,12 +32,18 @@ export interface ApplicationListProps {
 
 const buildApplicationUrl = (
   id: string,
-  status: APPLICATION_STATUSES
+  status: APPLICATION_STATUSES,
+  openDrawer = false
 ): string => {
   if (status === APPLICATION_STATUSES.DRAFT) {
     return `${ROUTES.APPLICATION_FORM}?id=${id}`;
   }
-  return `${ROUTES.APPLICATION}?id=${id}`;
+
+  const applicationUrl = `${ROUTES.APPLICATION}?id=${id}`;
+  if (openDrawer) {
+    return `${applicationUrl}&openDrawer=1`;
+  }
+  return applicationUrl;
 };
 
 const ApplicationList: React.FC<ApplicationListProps> = ({
@@ -58,9 +64,16 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         transform: ({
           id,
           companyName,
+          unreadMessagesCount,
           status: applicationStatus,
         }: ApplicationListTableTransforms) => (
-          <$Link href={buildApplicationUrl(id, applicationStatus)}>
+          <$Link
+            href={buildApplicationUrl(
+              id,
+              applicationStatus,
+              unreadMessagesCount > 0
+            )}
+          >
             {String(companyName)}
           </$Link>
         ),
@@ -168,10 +181,16 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     }
 
     cols.push({
-      transform: ({ unreadMessagesCount }: ApplicationListTableTransforms) => (
+      transform: ({
+        unreadMessagesCount,
+        id,
+        status: applicationStatus,
+      }: ApplicationListTableTransforms) => (
         <$CellContent>
           {Number(unreadMessagesCount) > 0 ? (
-            <IconSpeechbubbleText color={theme.colors.coatOfArms} />
+            <$Link href={buildApplicationUrl(id, applicationStatus, true)}>
+              <IconSpeechbubbleText color={theme.colors.coatOfArms} />
+            </$Link>
           ) : null}
         </$CellContent>
       ),
