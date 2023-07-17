@@ -43,6 +43,9 @@ export const PRIVACY_POLICY_LINKS = {
 
 export const DE_MINIMIS_AID_GRANTED_AT_MAX_DATE = new Date();
 
+// Set the minimum date of the deMinimimis aid granted at datepicker to the beginning of the year 4 years ago
+export const DE_MINIMIS_AID_GRANTED_AT_MIN_DATE = new Date(new Date().getFullYear() - 4, 0, 1);
+
 export const APPLICATION_START_DATE = new Date(new Date().getFullYear(), 0, 1);
 
 export const APPLICATION_INITIAL_VALUES = {
