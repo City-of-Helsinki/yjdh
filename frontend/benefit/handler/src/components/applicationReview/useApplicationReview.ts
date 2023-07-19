@@ -1,5 +1,7 @@
 import AppContext from 'benefit/handler/context/AppContext';
 import useApplicationQuery from 'benefit/handler/hooks/useApplicationQuery';
+import useReviewStateQuery from 'benefit/handler/hooks/useReviewStateQuery';
+import useUpdateReviewStateQuery from 'benefit/handler/hooks/useUpdateReviewStateQuery';
 import useUploadAttachmentQuery from 'benefit/handler/hooks/useUploadAttachmentQuery';
 import {
   Application,
@@ -41,6 +43,18 @@ const useApplicationReview = (): ExtendedComponentProps => {
     isLoading: isUploading,
     isError: isUploadingError,
   } = useUploadAttachmentQuery();
+
+  const {
+    status: reviewStateDataStatus,
+    data: reviewStateData,
+    error: reviewStateDataError,
+  } = useReviewStateQuery(id);
+
+  const {
+    mutate: updateReviewState,
+    isLoading: isUpdating,
+    isError: isUpdatingError,
+  } = useUpdateReviewStateQuery();
 
   const handleUpload = (attachment: FormData): void => {
     uploadAttachment({

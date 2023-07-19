@@ -827,3 +827,26 @@ class Attachment(UUIDModel, TimeStampedModel):
 
     def __str__(self):
         return "{} {}".format(self.attachment_type, self.attachment_file.name)
+
+
+class ReviewState(models.Model):
+    application = models.OneToOneField(
+        Application,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        verbose_name=_("application"),
+    )
+    company = models.BooleanField(default=False, verbose_name=_("company"))
+    company_contact_person = models.BooleanField(
+        default=False, verbose_name=_("company contact person")
+    )
+    de_minimis_aids = models.BooleanField(
+        default=False, verbose_name=_("de minimis aids")
+    )
+    co_operation_negotiations = models.BooleanField(
+        default=False, verbose_name=_("co-operation negotiations")
+    )
+    employee = models.BooleanField(default=False, verbose_name=_("employee"))
+    pay_subsidy = models.BooleanField(default=False, verbose_name=_("pay subsidy"))
+    benefit = models.BooleanField(default=False, verbose_name=_("benefit"))
+    employment = models.BooleanField(default=False, verbose_name=_("employment"))
