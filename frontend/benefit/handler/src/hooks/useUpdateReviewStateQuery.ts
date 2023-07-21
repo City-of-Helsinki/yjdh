@@ -1,25 +1,25 @@
 import { AxiosError } from 'axios';
+import { ReviewStateData } from 'benefit/handler/types/application';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
-import { ApplicationData } from 'benefit-shared/types/application';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 import { ErrorData } from '../types/common';
 
 const useUpdateReviewStateQuery = (): UseMutationResult<
-  ApplicationData,
+  ReviewStateData,
   AxiosError<ErrorData>,
-  ApplicationData
+  ReviewStateData
 > => {
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
-  return useMutation<ApplicationData, AxiosError<ErrorData>, ApplicationData>(
-    'updateApplication',
-    (application: ApplicationData) =>
-      handleResponse<ApplicationData>(
+  return useMutation<ReviewStateData, AxiosError<ErrorData>, ReviewStateData>(
+    'updateReviewState',
+    (reviewState: ReviewStateData) =>
+      handleResponse<ReviewStateData>(
         axios.put(
-          `${BackendEndpoint.HANDLER_APPLICATIONS}${application?.id ?? ''}/`,
-          application
+          `${BackendEndpoint.HANDLER_APPLICATIONS}${reviewState.id}/review/`,
+          reviewState
         )
       ),
     {

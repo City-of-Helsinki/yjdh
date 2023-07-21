@@ -14,7 +14,7 @@ const useReviewStateQuery = (
       !id
         ? Promise.reject(new Error('Missing application id'))
         : handleResponse<ApplicationData>(
-            axios.get(`${BackendEndpoint.HANDLER_APPLICATIONS}${id}/`)
+            axios.get(`${BackendEndpoint.HANDLER_APPLICATIONS}${id}/review/`)
           ),
     {
       enabled: Boolean(id),

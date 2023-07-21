@@ -177,3 +177,27 @@ export type ApplicationFields = Record<
     APPLICATION_FIELD_KEYS.EMPLOYEE,
     Record<EMPLOYEE_KEYS, Field<APPLICATION_FIELD_KEYS>>
   >;
+
+export type ReviewState = {
+  id?: string;
+  company?: boolean;
+  companyContactPerson?: boolean;
+  deMinimisAids?: boolean;
+  coOperationNegotiations?: boolean;
+  employee?: boolean;
+  paySubsidy?: boolean;
+  benefit?: boolean;
+  employment?: boolean;
+};
+
+export type ReviewStateData = {
+  id?: string;
+  company?: boolean;
+  company_contact_person?: boolean;
+  de_minimis_aids?: boolean;
+  co_operation_negotiations?: boolean;
+  employee?: boolean;
+  pay_subsidy?: boolean;
+  benefit?: boolean;
+  employment?: boolean;
+};
