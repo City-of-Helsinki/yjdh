@@ -18,7 +18,7 @@ const useUpdateReviewStateQuery = (): UseMutationResult<
     (reviewState: ReviewStateData) =>
       handleResponse<ReviewStateData>(
         axios.put(
-          `${BackendEndpoint.HANDLER_APPLICATIONS}${reviewState.id}/review/`,
+          `${BackendEndpoint.HANDLER_APPLICATIONS}${reviewState.application}/review/`,
           reviewState
         )
       ),

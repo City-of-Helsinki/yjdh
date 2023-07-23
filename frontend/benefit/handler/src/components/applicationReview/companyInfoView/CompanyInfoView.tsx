@@ -21,6 +21,7 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
     <ReviewSection
       header={t(`${translationsBase}.headings.heading1`)}
       action={data.status !== APPLICATION_STATUSES.RECEIVED ? <span /> : null}
+      section='company'
     >
       <$GridCell $colSpan={3}>
         <$ViewField>{data.company?.name}</$ViewField>

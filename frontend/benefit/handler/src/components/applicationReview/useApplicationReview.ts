@@ -27,7 +27,6 @@ type ExtendedComponentProps = {
   isUploading: boolean;
   handleUpload: (attachment: FormData) => void;
   reviewState: ReviewState;
-  isUpdating: boolean;
   handleUpdateReviewState: (reviewState: ReviewState) => void;
 };
 
@@ -58,8 +57,7 @@ const useApplicationReview = (): ExtendedComponentProps => {
 
   const {
     mutate: updateReviewState,
-    isLoading: isUpdating,
-    isError: isUpdatingError,
+    isError: isUpdatingReviewStateError,
   } = useUpdateReviewStateQuery();
 
   const handleUpload = (attachment: FormData): void => {
@@ -84,7 +82,11 @@ const useApplicationReview = (): ExtendedComponentProps => {
   }, [isUploadingError, t]);
 
   useEffect(() => {
-    if (applicationDataError || reviewStateDataError || isUpdatingError) {
+    if (
+      applicationDataError ||
+      reviewStateDataError ||
+      isUpdatingReviewStateError
+    ) {
       hdsToast({
         autoDismissTime: 5000,
         type: 'error',
@@ -92,7 +94,7 @@ const useApplicationReview = (): ExtendedComponentProps => {
         text: t('common:error.generic.text'),
       });
     }
-  }, [t, applicationDataError, reviewStateDataError, isUpdatingError]);
+  }, [t, applicationDataError, reviewStateDataError, isUpdatingReviewStateError]);
 
   useEffect(() => {
     const loadingDataStatuses = new Set(['idle', 'loading']);
@@ -135,7 +137,6 @@ const useApplicationReview = (): ExtendedComponentProps => {
     isUploading,
     handleUpload,
     reviewState,
-    isUpdating,
     handleUpdateReviewState,
   };
 };

@@ -179,7 +179,7 @@ export type ApplicationFields = Record<
   >;
 
 export type ReviewState = {
-  id?: string;
+  application?: string;
   company?: boolean;
   companyContactPerson?: boolean;
   deMinimisAids?: boolean;
@@ -191,7 +191,7 @@ export type ReviewState = {
 };
 
 export type ReviewStateData = {
-  id?: string;
+  application?: string;
   company?: boolean;
   company_contact_person?: boolean;
   de_minimis_aids?: boolean;
