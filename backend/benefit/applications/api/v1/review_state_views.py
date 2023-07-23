@@ -7,7 +7,7 @@ from applications.models import Application, ReviewState
 from common.permissions import BFIsHandler
 
 
-class ReviewStateViewSet(APIView):
+class ReviewStateView(APIView):
     permission_classes = [BFIsHandler]
 
     def get(self, _, application_id):
