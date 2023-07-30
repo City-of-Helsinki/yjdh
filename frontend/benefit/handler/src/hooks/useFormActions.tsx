@@ -21,9 +21,9 @@ import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 interface FormActions {
   onNext: (
     values: Application,
-    applicationId: string | undefined,
     dispatchStep: React.Dispatch<StepActionType>,
-    activeStep: number
+    activeStep: number,
+    applicationId: string | undefined
   ) => Promise<ApplicationData | void>;
   onSubmit: (
     values: Application,
@@ -96,6 +96,9 @@ const useFormActions = (application: Partial<Application>): FormActions => {
                     </a>
                   )
                 )[0];
+              }
+              if (key === 'approveTerms') {
+                return <p>{t('common:error.terms.text')}</p>;
               }
               return (
                 <a key={key} href={`#${key}`}>
@@ -226,9 +229,9 @@ const useFormActions = (application: Partial<Application>): FormActions => {
 
   const onNext = async (
     currentValues: Application,
-    applicationId: string | undefined,
     dispatchStep: React.Dispatch<StepActionType>,
-    activeStep: number
+    activeStep: number,
+    applicationId: string | undefined
   ): Promise<ApplicationData | void> => {
     const data = getData(getModifiedValues(currentValues));
 

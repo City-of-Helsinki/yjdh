@@ -45,10 +45,11 @@ class ApplicationAdmin(admin.ModelAdmin):
         AttachmentInline,
         CalculationInline,
     )
-    list_filter = ("status", "company")
+    list_filter = ("status", "application_origin", "company")
     list_display = (
         "id",
         "status",
+        "application_origin",
         "application_number",
         "company_name",
         "company_contact_person_email",

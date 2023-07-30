@@ -136,7 +136,7 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,
-    onSubmit: (values) => onNext(values, id, dispatchStep, activeStep),
+    onSubmit: (values) => onNext(values, dispatchStep, activeStep, id),
   });
 
   const { values, setFieldValue } = formik;

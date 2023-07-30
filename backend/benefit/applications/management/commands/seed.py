@@ -6,7 +6,11 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from applications.enums import ApplicationBatchStatus, ApplicationStatus
+from applications.enums import (
+    ApplicationBatchStatus,
+    ApplicationOrigin,
+    ApplicationStatus,
+)
 from applications.models import Application, ApplicationBasis, ApplicationBatch
 from applications.tests.factories import (
     AdditionalInformationNeededApplicationFactory,
@@ -29,13 +33,13 @@ class Command(BaseCommand):
         parser.add_argument(
             "--number",
             type=int,
-            default=10,
+            default=5,
             help="Number of applications to create",
         )
 
     def handle(self, *args, **options):
         batch_count = 6
-        total_created = (len(ApplicationStatus.values) + batch_count) * options[
+        total_created = ((len(ApplicationStatus.values) * 2) + batch_count) * options[
             "number"
         ]
         if not settings.DEBUG:
@@ -104,12 +108,13 @@ def run_seed(number):
 
     for factory in factories:
         for _ in range(number):
-            random_datetime = f.past_datetime(tzinfo=pytz.UTC)
-            application = factory()
-            application.created_at = random_datetime
-            application.save()
+            for application_origin in ApplicationOrigin.values:
+                random_datetime = f.past_datetime(tzinfo=pytz.UTC)
+                application = factory(application_origin=application_origin)
+                application.created_at = random_datetime
+                application.save()
 
-            application.log_entries.all().update(created_at=random_datetime)
+                application.log_entries.all().update(created_at=random_datetime)
 
     _create_batch(ApplicationBatchStatus.DRAFT, ApplicationStatus.ACCEPTED)
     _create_batch(ApplicationBatchStatus.DRAFT, ApplicationStatus.REJECTED)
