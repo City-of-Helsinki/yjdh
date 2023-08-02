@@ -17,6 +17,7 @@ export enum VALIDATION_MESSAGE_KEYS {
   NUMBER_INVALID = 'common:form.validation.number.invalid',
   NUMBER_MIN = 'common:form.validation.number.min',
   NUMBER_MAX = 'common:form.validation.number.max',
+  NUMBER_TWO_DECIMALS = 'common:form.validation.number.twoDecimals',
   PHONE_INVALID = 'common:form.validation.phone.invalid',
   STRING_POSITIVENUMBER = 'common:form.validation.string.positiveNumber',
   STRING_MIN = 'common:form.validation.string.min',

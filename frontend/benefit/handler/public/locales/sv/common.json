@@ -828,7 +828,8 @@
       "number": {
         "invalid": "Virheellinen arvo, ilmoita vain numeroita",
         "max": "Arvon tulee olla enintään {{max}}",
-        "min": "Arvon tulee olla vähintään {{min}}"
+        "min": "Arvon tulee olla vähintään {{min}}",
+        "twoDecimals": "Arvon tulee sisältää enintään kaksi desimaalia"
       },
       "string": {
         "max": "Tämä kenttä voi olla korkeintaan {{max}} merkkiä pitkä",
