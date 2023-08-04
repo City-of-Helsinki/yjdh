@@ -925,7 +925,7 @@
       "addToBatch": {
         "success": {
           "heading": "Koontiin siirto onnistui!",
-          "text": "Olet muodostanut {{ count }} hakemuksesta koonnin."
+          "text": "Olet lisännyt {{ count }} hakemusta koontiin."
         }
       },
       "removeFromBatch": {
