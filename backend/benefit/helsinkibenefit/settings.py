@@ -409,8 +409,12 @@ OIDC_OP_USER_ENDPOINT = f"{OIDC_OP_BASE_URL}/userinfo"
 OIDC_OP_JWKS_ENDPOINT = f"{OIDC_OP_BASE_URL}/jwks"
 OIDC_OP_LOGOUT_ENDPOINT = f"{OIDC_OP_BASE_URL}/end-session"
 OIDC_OP_LOGOUT_CALLBACK_URL = env.str("OIDC_OP_LOGOUT_CALLBACK_URL")
+
 # Language selection is done with accept-language header in this project
-OIDC_DISABLE_LANGUAGE_COOKIE = True
+# UPDATE: 2023-08-07
+# Didn't seem to be working correctly with EAUTH forwards and landing back to callback url
+# Changing this to False as nextjs's language autodetect seems to be at set to false too
+OIDC_DISABLE_LANGUAGE_COOKIE = False
 
 LOGIN_REDIRECT_URL = env.str("LOGIN_REDIRECT_URL")
 LOGIN_REDIRECT_URL_FAILURE = env.str("LOGIN_REDIRECT_URL_FAILURE")
