@@ -217,7 +217,16 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
               initialSortingOrder="asc"
               cols={cols}
             />
-            <$TableFooter>
+            <$TableFooter
+              backgroundColor={
+                [
+                  BATCH_STATUSES.AWAITING_FOR_DECISION,
+                  BATCH_STATUSES.DECIDED_ACCEPTED,
+                ].includes(status)
+                  ? theme.colors.fogLight
+                  : null
+              }
+            >
               {[
                 BATCH_STATUSES.DRAFT,
                 BATCH_STATUSES.AHJO_REPORT_CREATED,

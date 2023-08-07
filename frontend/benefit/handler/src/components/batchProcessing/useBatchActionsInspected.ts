@@ -80,9 +80,24 @@ const useBatchActionsInspected = (
     max: addMonths(now, 3),
   };
   const requiredSchema = {
-    fullName: string()
-      .matches(/^(.*)\s(\w+)/, translations.invalidName)
-      .required(translations.required),
+    inspectionMode: string().required(),
+    decisionMakerFullName: string().when('inspection_mode', {
+      is: 'ahjo',
+      then: string()
+        .matches(/^(.*)\s(\w+)/, translations.invalidName)
+        .required(translations.required),
+    }),
+    decisionMakerAnyString: string().required(translations.required),
+    ahjoFullName: string().when('inspection_mode', {
+      is: 'ahjo',
+      then: string()
+        .matches(/^(.*)\s(\w+)/, translations.invalidName)
+        .required(translations.required),
+    }),
+    ahjoAnyString: string().when('inspection_mode', {
+      is: 'ahjo',
+      then: string().required(translations.required),
+    }),
     sectionOfTheLaw: string()
       .matches(/^§\d+$/, translations.sectionOfTheLaw)
       .required(translations.required),
@@ -101,31 +116,42 @@ const useBatchActionsInspected = (
       )
       .transform(parseLocalizedDateString)
       .required(t('common:form.validation.date.format')),
-    anyString: string().required(translations.required),
-    email: string()
-      .required(translations.required)
-      .email(t('common:form.validation.email.invalid')),
+    p2pAnyString: string().when('inspection_mode', {
+      is: 'p2p',
+      then: string().required(translations.required),
+    }),
+    p2pFullName: string().when('inspection_mode', {
+      is: 'p2p',
+      then: string()
+        .matches(/^(.*)\s(\w+)/, translations.invalidName)
+        .required(translations.required),
+    }),
+    email: string().when('inspection_mode', {
+      is: 'p2p',
+      then: string()
+        .email(t('common:form.validation.email.invalid'))
+        .required(translations.required),
+    }),
   };
 
   const schemaRejected = object({
-    decision_maker_name: requiredSchema.fullName,
-    decision_maker_title: requiredSchema.anyString,
+    decision_maker_name: requiredSchema.decisionMakerAnyString,
+    decision_maker_title: requiredSchema.decisionMakerFullName,
     section_of_the_law: requiredSchema.sectionOfTheLaw,
     decision_date: requiredSchema.finnishDate,
-    expert_inspector_name: requiredSchema.fullName,
-    expert_inspector_title: requiredSchema.anyString,
   });
 
   const schemaAccepted = object({
-    decision_maker_name: requiredSchema.fullName,
-    decision_maker_title: requiredSchema.anyString,
+    inspection_mode: requiredSchema.inspectionMode,
+    decision_maker_name: requiredSchema.decisionMakerFullName,
+    decision_maker_title: requiredSchema.decisionMakerAnyString,
     section_of_the_law: requiredSchema.sectionOfTheLaw,
     decision_date: requiredSchema.finnishDate,
-    expert_inspector_name: requiredSchema.fullName,
-    expert_inspector_title: requiredSchema.anyString,
-    p2p_inspector_name: requiredSchema.anyString,
+    expert_inspector_name: requiredSchema.ahjoFullName,
+    expert_inspector_title: requiredSchema.ahjoAnyString,
+    p2p_inspector_name: requiredSchema.p2pFullName,
     p2p_inspector_email: requiredSchema.email,
-    p2p_checker_name: requiredSchema.anyString,
+    p2p_checker_name: requiredSchema.p2pAnyString,
   });
 
   const markBatchAs = (
@@ -140,6 +166,7 @@ const useBatchActionsInspected = (
 
   const formOptions = {
     initialValues: {
+      inspection_mode: 'ahjo',
       decision_maker_name,
       decision_maker_title,
       expert_inspector_name,

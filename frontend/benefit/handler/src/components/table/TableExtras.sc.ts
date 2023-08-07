@@ -87,10 +87,15 @@ export const $FormSection = styled(FormSection)`
   }
 `;
 
-export const $TableFooter = styled.footer`
+type $TableFooterProps = {
+  backgroundColor?: string;
+  borderColor?: string;
+};
+export const $TableFooter = styled.footer<$TableFooterProps>`
   display: flex;
   flex-flow: row wrap;
-  background: #efefef;
+  background-color: ${(props) =>
+    props.backgroundColor ? props.backgroundColor : '#efefef'};
   width: 100%;
   padding: var(--spacing-s);
   align-items: center;
