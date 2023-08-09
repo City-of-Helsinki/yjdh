@@ -17,4 +17,8 @@ export const $InspectionTypeContainer = styled.div<Props>`
   ${$FormSection}:first-child {
     margin: ${theme.spacing.xs} 0 ${theme.spacing.xs} 0;
   }
+
+  hr {
+    border-top: 1px solid ${theme.colors.fog};
+  }
 `;

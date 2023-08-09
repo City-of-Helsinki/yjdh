@@ -22,6 +22,8 @@ import ConfirmModalContent from '../applicationReview/actions/ConfirmModalConten
 import { $InspectionTypeContainer } from '../table/BatchCompletion.sc';
 import { $FormSection } from '../table/TableExtras.sc';
 import { useBatchActionsInspected } from './useBatchActionsInspected';
+import theme from 'shared/styles/theme';
+import { CSSProperties } from 'styled-components';
 
 type BatchProps = {
   batch: BatchProposal;
@@ -230,7 +232,7 @@ BatchProps) => {
             <h3>{t('common:batches.form.headings.inspectionDetails')}</h3>
             <$InspectionTypeContainer>
               <$FormSection>
-                <$GridCell $colSpan={2}>
+                <$GridCell $colSpan={12}>
                   <RadioButton
                     key={`inspector-mode-${id}-ahjo`}
                     id={`inspector-mode-${id}-ahjo`}
@@ -239,8 +241,14 @@ BatchProps) => {
                     name="inspection_mode"
                     checked={inspectorMode === 'ahjo'}
                     onChange={handleRadioButton}
+                    style={theme.components.radio as CSSProperties}
                   />
                 </$GridCell>
+                {inspectorMode === 'ahjo' ? (
+                  <$GridCell $colSpan={12}>
+                    <hr />
+                  </$GridCell>
+                ) : null}
               </$FormSection>
 
               {inspectorMode === 'ahjo' ? (
@@ -292,7 +300,7 @@ BatchProps) => {
 
             <$InspectionTypeContainer>
               <$FormSection>
-                <$GridCell $colSpan={2}>
+                <$GridCell $colSpan={12}>
                   <RadioButton
                     key={`inspector-mode-${id}-p2p`}
                     id={`inspector-mode-${id}-p2p`}
@@ -301,8 +309,14 @@ BatchProps) => {
                     name="inspection_mode"
                     checked={inspectorMode === 'p2p'}
                     onChange={handleRadioButton}
+                    style={theme.components.radio as CSSProperties}
                   />
                 </$GridCell>
+                {inspectorMode === 'p2p' ? (
+                  <$GridCell $colSpan={12}>
+                    <hr />
+                  </$GridCell>
+                ) : null}
               </$FormSection>
               {inspectorMode === 'p2p' ? (
                 <$FormSection css="border-top: 1pox solid #000;">

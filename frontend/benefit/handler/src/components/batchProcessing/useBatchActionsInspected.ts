@@ -135,8 +135,8 @@ const useBatchActionsInspected = (
   };
 
   const schemaRejected = object({
-    decision_maker_name: requiredSchema.decisionMakerAnyString,
-    decision_maker_title: requiredSchema.decisionMakerFullName,
+    decision_maker_name: requiredSchema.decisionMakerFullName,
+    decision_maker_title: requiredSchema.decisionMakerAnyString,
     section_of_the_law: requiredSchema.sectionOfTheLaw,
     decision_date: requiredSchema.finnishDate,
   });

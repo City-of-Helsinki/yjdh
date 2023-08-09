@@ -160,7 +160,17 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
 
   return (
     <$TableGrid animateClose={batchCloseAnimation}>
-      <$TableWrapper>
+      <$TableWrapper
+        borderColor={
+          !isCollapsed &&
+          [
+            BATCH_STATUSES.AWAITING_FOR_DECISION,
+            BATCH_STATUSES.DECIDED_ACCEPTED,
+          ].includes(status)
+            ? theme.colors.fogDark
+            : null
+        }
+      >
         <Modal
           id={`batch-confirmation-modal-app-removal-${id}`}
           isOpen={isConfirmAppRemoval}
@@ -223,7 +233,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
                   BATCH_STATUSES.AWAITING_FOR_DECISION,
                   BATCH_STATUSES.DECIDED_ACCEPTED,
                 ].includes(status)
-                  ? theme.colors.fogLight
+                  ? theme.colors.coatOfArmsLight
                   : null
               }
             >

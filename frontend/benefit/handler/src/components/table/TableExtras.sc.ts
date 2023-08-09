@@ -1,4 +1,5 @@
 import FormSection from 'shared/components/forms/section/FormSection';
+import theme from 'shared/styles/theme';
 import styled from 'styled-components';
 
 type CollapsedProps = {
@@ -60,9 +61,16 @@ export const $TableGrid = styled.div<TableGridProps>`
   margin-bottom: ${(props) => (props.animateClose ? '0' : 'var(--spacing-l)')};
 `;
 
-export const $TableWrapper = styled.div`
+type TableWrapperProps = {
+  borderColor: string;
+};
+
+export const $TableWrapper = styled.div<TableWrapperProps>`
   overflow-y: hidden;
   background: #fff;
+  transition: 0.15s outline ease-in-out;
+  outline: 1px solid
+    ${(props) => (props.borderColor ? props.borderColor : 'transparent')};
 `;
 
 export const $TableBody = styled.div<CollapsedProps>`
@@ -97,7 +105,7 @@ export const $TableFooter = styled.footer<$TableFooterProps>`
   background-color: ${(props) =>
     props.backgroundColor ? props.backgroundColor : '#efefef'};
   width: 100%;
-  padding: var(--spacing-s);
+  padding: var(--spacing-m);
   align-items: center;
   box-sizing: border-box;
 
