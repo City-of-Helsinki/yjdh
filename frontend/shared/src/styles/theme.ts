@@ -8,6 +8,7 @@ const colors = {
       white: 'var(--color-white)',
       grey: 'var(--color-black-30)',
     },
+    radio: {},
   },
 };
 
@@ -164,6 +165,14 @@ const theme: DefaultTheme = {
       '--hds-stepper-color': colors.components.stepper.black,
       '--hds-stepper-disabled-color': colors.components.stepper.grey,
       '--hds-stepper-focus-border-color': colors.components.stepper.black,
+    },
+    radio: {
+      '--border-color-selected': 'var(--color-coat-of-arms)',
+      '--border-color-selected-hover': 'var(--color-black-80)',
+      '--border-color-selected-focus': 'var(--color-fog)',
+      '--icon-color-selected': 'var(--color-coat-of-arms)',
+      '--icon-color-hover': 'var(--color-coat-of-arms)',
+      '--focus-outline-color': 'var(--color-coat-of-arms)',
     },
   },
 };
