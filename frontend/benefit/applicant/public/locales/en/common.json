@@ -86,6 +86,10 @@
           "deMinimisAidMaxAmount": {
             "label": "Maximum amount exceeded",
             "content": "The maximum amount of de minimis aid has been exceeded. Under the EU Regulation, a company may receive a maximum EUR 200,000 of de minimis aid during the current year and the previous two tax years. All forms of de minimis aid granted by various authorities during this period will be taken into account in the maximum amount."
+          },
+          "deMinimisUnfinished": {
+            "label": "Missing de minimis aid information",
+            "content": "Please fill any missing de minimis aid information and press 'Add' button."
           }
         },
         "tooltips": {
