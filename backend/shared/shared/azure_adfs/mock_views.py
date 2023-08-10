@@ -1,11 +1,11 @@
 import logging
 from urllib.parse import urljoin
 
-import factory
 from django.conf import settings
 from django.contrib import auth
 from django.shortcuts import redirect
 from django.views.generic import View
+from factory.faker import faker
 
 from shared.common.tests.factories import UserFactory
 
@@ -21,7 +21,7 @@ class MockOAuth2CallbackView(View):
     def get(self, request):
         if not request.user.is_authenticated:
             user = UserFactory(
-                username=f"handler_{factory.Faker('user_name')}",
+                username=f"handler_{faker.Faker().user_name()}",
                 is_staff=True,
             )
             auth.login(

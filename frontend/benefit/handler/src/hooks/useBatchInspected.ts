@@ -18,6 +18,9 @@ type BatchCompletionDetails = {
   decision_date: string | Date;
   expert_inspector_name: string;
   expert_inspector_title: string;
+  p2p_inspector_name: string;
+  p2p_inspector_email: string;
+  p2p_checker_name: string;
 };
 
 type Payload = {
@@ -31,12 +34,15 @@ type Response = {
   decision: PROPOSALS_FOR_DECISION;
 };
 
-const useBatchComplete = (): UseMutationResult<Response, Error, Payload> => {
+const useBatchInspected = (
+  setBatchCloseAnimation: React.Dispatch<React.SetStateAction<boolean>>
+): UseMutationResult<Response, Error, Payload> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   const handleError = (): void => {
+    setBatchCloseAnimation(false);
     showErrorToast(
       t('common:applications.list.errors.fetch.label'),
       t('common:applications.list.errors.fetch.text', {
@@ -54,7 +60,6 @@ const useBatchComplete = (): UseMutationResult<Response, Error, Payload> => {
         ...form,
         decision_date: parsedAsDatenew,
       };
-
       const request = axios.patch<Response>(
         HandlerEndpoint.BATCH_STATUS_CHANGE(id),
         {
@@ -67,14 +72,22 @@ const useBatchComplete = (): UseMutationResult<Response, Error, Payload> => {
     {
       onSuccess: ({ status: backendStatus }: Response) => {
         showSuccessToast(
-          t(`common:batches.notifications.registerToAhjo.${backendStatus}`),
+          t(`common:batches.notifications.statusChange.${backendStatus}`),
           ''
         );
-        void queryClient.invalidateQueries('applicationsList');
+
+        if (backendStatus === BATCH_STATUSES.DECIDED_REJECTED) {
+          setBatchCloseAnimation(true);
+          setTimeout(() => {
+            void queryClient.invalidateQueries('applicationsList');
+          }, 700);
+        } else {
+          void queryClient.invalidateQueries('applicationsList');
+        }
       },
       onError: () => handleError(),
     }
   );
 };
 
-export default useBatchComplete;
+export default useBatchInspected;

@@ -1,3 +1,4 @@
+import { UploadProps } from 'benefit/handler/types/application';
 import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import { IconPlus } from 'hds-react';
 import noop from 'lodash/noop';
@@ -9,12 +10,18 @@ import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
-import { ATTACHMENT_MAX_SIZE } from 'shared/constants/attachment-constants';
+import {
+  ATTACHMENT_CONTENT_TYPES,
+  ATTACHMENT_MAX_SIZE,
+} from 'shared/constants/attachment-constants';
 import { useTheme } from 'styled-components';
 
 import { $ActionsWrapper } from '../../ApplicationReview.sc';
 
-const PaySubsidyActions: React.FC = () => {
+const PaySubsidyActions: React.FC<UploadProps> = ({
+  isUploading,
+  handleUpload,
+}) => {
   const translationsBase = 'common:review.actions';
   const { t } = useTranslation();
   const theme = useTheme();
@@ -35,10 +42,10 @@ const PaySubsidyActions: React.FC = () => {
           <UploadAttachment
             theme="black"
             variant="secondary"
-            onUpload={noop}
-            isUploading={false}
+            onUpload={handleUpload}
+            isUploading={isUploading}
             attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
-            allowedFileTypes={['application/pdf']}
+            allowedFileTypes={ATTACHMENT_CONTENT_TYPES}
             maxSize={ATTACHMENT_MAX_SIZE}
             uploadText={t(`${translationsBase}.addAttachment`)}
             loadingText={t(`common:upload.isUploading`)}

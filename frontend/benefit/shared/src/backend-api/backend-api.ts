@@ -14,6 +14,8 @@ export const BackendEndpoint = {
   APPROVE_TERMS_OF_SERVICE: '/v1/terms/approve_terms_of_service/',
   HANDLER_APPLICATIONS_SIMPLIFIED: '/v1/handlerapplications/simplified_list/',
   APPLICATION_BATCHES: '/v1/applicationbatches/',
+  SEARCH_ORGANISATION: '/v1/company/search/',
+  GET_ORGANISATION: '/v1/company/get/',
 } as const;
 
 const singleBatchBase = (id: string): string =>
@@ -23,6 +25,10 @@ export const HandlerEndpoint = {
   BATCH_APP_DEASSIGN: (id: string): string =>
     `${singleBatchBase(id)}deassign_applications/`,
   BATCH_STATUS_CHANGE: (id: string): string => `${singleBatchBase(id)}status/`,
+  BATCH_DOWNLOAD_PDF_FILES: (id: string): string =>
+    `${BackendEndpoint.HANDLER_APPLICATIONS}batch_pdf_files?batch_id=${id}`,
+  BATCH_DOWNLOAD_P2P_FILE: (id: string): string =>
+    `${BackendEndpoint.HANDLER_APPLICATIONS}batch_p2p_file?batch_id=${id}`,
 } as const;
 
 export const BackendEndPoints = Object.values(BackendEndpoint);

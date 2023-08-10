@@ -1,11 +1,15 @@
 import AppContext from 'benefit/handler/context/AppContext';
 import useApplicationQuery from 'benefit/handler/hooks/useApplicationQuery';
-import { HandledAplication } from 'benefit/handler/types/application';
-import { Application } from 'benefit-shared/types/application';
+import useUploadAttachmentQuery from 'benefit/handler/hooks/useUploadAttachmentQuery';
+import {
+  Application,
+  HandledAplication,
+} from 'benefit/handler/types/application';
 import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
+import showErrorToast from 'shared/components/toast/show-error-toast';
 import hdsToast from 'shared/components/toast/Toast';
 
 type ExtendedComponentProps = {
@@ -15,6 +19,8 @@ type ExtendedComponentProps = {
   id: string | string[] | undefined;
   isError: boolean;
   isLoading: boolean;
+  isUploading: boolean;
+  handleUpload: (attachment: FormData) => void;
 };
 
 const useApplicationReview = (): ExtendedComponentProps => {
@@ -30,8 +36,29 @@ const useApplicationReview = (): ExtendedComponentProps => {
     error: applicationDataError,
   } = useApplicationQuery(id);
 
+  const {
+    mutate: uploadAttachment,
+    isLoading: isUploading,
+    isError: isUploadingError,
+  } = useUploadAttachmentQuery();
+
+  const handleUpload = (attachment: FormData): void => {
+    uploadAttachment({
+      applicationId: id,
+      data: attachment,
+    });
+  };
+
   useEffect(() => {
-    // todo:custom error messages
+    if (isUploadingError) {
+      showErrorToast(
+        t(`common:error.attachments.title`),
+        t(`common:error.attachments.generic`)
+      );
+    }
+  }, [isUploadingError, t]);
+
+  useEffect(() => {
     if (applicationDataError) {
       hdsToast({
         autoDismissTime: 5000,
@@ -69,6 +96,8 @@ const useApplicationReview = (): ExtendedComponentProps => {
     handledApplication,
     isLoading,
     isError: Boolean(id && applicationDataError),
+    isUploading,
+    handleUpload,
   };
 };
 

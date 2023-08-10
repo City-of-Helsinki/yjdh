@@ -2,6 +2,7 @@ import os
 
 import environ
 import sentry_sdk
+from corsheaders.defaults import default_headers
 from django.utils.translation import gettext_lazy as _
 from sentry_sdk.integrations.django import DjangoIntegration
 
@@ -48,7 +49,7 @@ env = environ.Env(
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
     CSRF_TRUSTED_ORIGINS=(list, ["localhost:3000", "localhost:3100"]),
     CSRF_COOKIE_NAME=(str, "yjdhcsrftoken"),
-    YTJ_BASE_URL=(str, "http://avoindata.prh.fi/opendata/tr/v1"),
+    YTJ_BASE_URL=(str, "https://avoindata.prh.fi"),
     YTJ_TIMEOUT=(int, 30),
     # Source: YTJ-rajapinnan koodiston kuvaus, available at https://liityntakatalogi.suomi.fi/dataset/xroadytj-services
     # file: suomi_fi_palveluvayla_ytj_rajapinta_koodistot_v1_4.xlsx
@@ -137,27 +138,25 @@ env = environ.Env(
     ENABLE_DEBUG_ENV=(bool, False),
     TALPA_ROBOT_AUTH_CREDENTIAL=(str, "username:password"),
     DISABLE_TOS_APPROVAL_CHECK=(bool, False),
-    YRTTI_BASIC_INFO_PATH=(
+    YRTTI_BASE_URL=(
         str,
-        "https://yrtti-integration-test.agw.arodevtest.hel.fi/api/BasicInfo",
+        "https://yrtti-integration-test.agw.arodevtest.hel.fi/api",
     ),
     YRTTI_AUTH_USERNAME=(str, "sample_username"),
     YRTTI_AUTH_PASSWORD=(str, "sample_password"),
     YRTTI_TIMEOUT=(int, 30),
-    SERVICE_BUS_INFO_PATH=(
+    YRTTI_SEARCH_LIMIT=(int, 10),
+    YRTTI_DISABLE=(bool, False),
+    SERVICE_BUS_BASE_URL=(
         str,
-        "https://ytj-integration-test.agw.arodevtest.hel.fi/api/GetCompany",
+        "https://ytj-integration-test.agw.arodevtest.hel.fi/api",
     ),
     SERVICE_BUS_AUTH_USERNAME=(str, "sample_username"),
     SERVICE_BUS_AUTH_PASSWORD=(str, "sample_password"),
     SERVICE_BUS_TIMEOUT=(int, 30),
+    SERVICE_BUS_SEARCH_LIMIT=(int, 10),
     GDPR_API_QUERY_SCOPE=(str, "helsinkibenefit.gdprquery"),
     GDPR_API_DELETE_SCOPE=(str, "helsinkibenefit.gdprdelete"),
-    USE_S3=(bool, False),
-    S3_ENDPOINT_URL=(str, ""),
-    S3_ACCESS_KEY_ID=(str, ""),
-    S3_SECRET_ACCESS_KEY=(str, ""),
-    S3_STORAGE_BUCKET_NAME=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -405,8 +404,12 @@ OIDC_OP_USER_ENDPOINT = f"{OIDC_OP_BASE_URL}/userinfo"
 OIDC_OP_JWKS_ENDPOINT = f"{OIDC_OP_BASE_URL}/jwks"
 OIDC_OP_LOGOUT_ENDPOINT = f"{OIDC_OP_BASE_URL}/end-session"
 OIDC_OP_LOGOUT_CALLBACK_URL = env.str("OIDC_OP_LOGOUT_CALLBACK_URL")
+
 # Language selection is done with accept-language header in this project
-OIDC_DISABLE_LANGUAGE_COOKIE = True
+# UPDATE: 2023-08-07
+# Didn't seem to be working correctly with EAUTH forwards and landing back to callback url
+# Changing this to False as nextjs's language autodetect seems to be at set to false too
+OIDC_DISABLE_LANGUAGE_COOKIE = False
 
 LOGIN_REDIRECT_URL = env.str("LOGIN_REDIRECT_URL")
 LOGIN_REDIRECT_URL_FAILURE = env.str("LOGIN_REDIRECT_URL_FAILURE")
@@ -460,14 +463,17 @@ WKHTMLTOPDF_BIN = env("WKHTMLTOPDF_BIN")
 TALPA_ROBOT_AUTH_CREDENTIAL = env("TALPA_ROBOT_AUTH_CREDENTIAL")
 
 YRTTI_TIMEOUT = env("YRTTI_TIMEOUT")
-YRTTI_BASIC_INFO_PATH = env("YRTTI_BASIC_INFO_PATH")
+YRTTI_BASE_URL = env("YRTTI_BASE_URL")
 YRTTI_AUTH_USERNAME = env("YRTTI_AUTH_USERNAME")
 YRTTI_AUTH_PASSWORD = env("YRTTI_AUTH_PASSWORD")
+YRTTI_SEARCH_LIMIT = env("YRTTI_SEARCH_LIMIT")
+YRTTI_DISABLE = env("YRTTI_DISABLE")
 
 SERVICE_BUS_TIMEOUT = env("SERVICE_BUS_TIMEOUT")
-SERVICE_BUS_INFO_PATH = env("SERVICE_BUS_INFO_PATH")
+SERVICE_BUS_BASE_URL = env("SERVICE_BUS_BASE_URL")
 SERVICE_BUS_AUTH_USERNAME = env("SERVICE_BUS_AUTH_USERNAME")
 SERVICE_BUS_AUTH_PASSWORD = env("SERVICE_BUS_AUTH_PASSWORD")
+SERVICE_BUS_SEARCH_LIMIT = env("SERVICE_BUS_SEARCH_LIMIT")
 
 HANDLERS_GROUP_NAME = "Application handlers"
 
@@ -483,13 +489,8 @@ if os.path.exists(local_settings_path):
         code = compile(fp.read(), local_settings_path, "exec")
     exec(code, globals(), locals())
 
-# S3 settings
-
-USE_S3 = env("USE_S3")
-
-if USE_S3:
-    AWS_S3_ENDPOINT_URL = env("S3_ENDPOINT_URL")
-    DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-    AWS_ACCESS_KEY_ID = env("S3_ACCESS_KEY_ID")
-    AWS_SECRET_ACCESS_KEY = env("S3_SECRET_ACCESS_KEY")
-    AWS_STORAGE_BUCKET_NAME = env("S3_STORAGE_BUCKET_NAME")
+CORS_ALLOW_HEADERS = (
+    *default_headers,
+    "baggage",
+    "sentry-trace",
+)

@@ -13,6 +13,7 @@ from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers.application import ApplicationBatchSerializer
 from applications.enums import AhjoDecision, ApplicationBatchStatus, ApplicationStatus
+from applications.exceptions import BatchTooManyDraftsError
 from applications.models import Application, ApplicationBatch
 from applications.tests.conftest import *  # noqa
 from applications.tests.factories import (
@@ -32,6 +33,9 @@ def get_valid_batch_completion_data():
         "decision_date": date.today(),
         "expert_inspector_name": get_faker().name(),
         "expert_inspector_title": get_faker().job(),
+        "p2p_inspector_name": get_faker().name(),
+        "p2p_inspector_email": get_faker().email(),
+        "p2p_checker_name": get_faker().name(),
     }
 
 
@@ -223,20 +227,39 @@ def test_deassign_applications_from_batch(handler_api_client, application_batch)
     assert response.status_code == 404
 
 
+def test_deassign_applications_from_batch_all(handler_api_client, application_batch):
+    apps = Application.objects.filter(batch=application_batch)
+    url = get_batch_detail_url(application_batch, "deassign_applications/")
+    response = handler_api_client.patch(
+        url,
+        {
+            "application_ids": list(map(lambda app: app.id, apps)),
+            "batch_id": application_batch.id,
+        },
+    )
+    assert response.status_code == 200
+    with pytest.raises(ApplicationBatch.DoesNotExist):
+        application_batch.refresh_from_db()
+
+
 @pytest.mark.parametrize(
     "batch_status,status_code,changed_status",
     [
         (ApplicationBatchStatus.COMPLETED, 400, None),
-        (ApplicationBatchStatus.SENT_TO_TALPA, 400, None),
-        (ApplicationBatchStatus.AHJO_REPORT_CREATED, 400, None),
+        (ApplicationBatchStatus.SENT_TO_TALPA, 200, None),
         (ApplicationBatchStatus.RETURNED, 400, None),
-        (ApplicationBatchStatus.DECIDED_ACCEPTED, 400, None),
-        (ApplicationBatchStatus.DECIDED_REJECTED, 400, None),
+        (ApplicationBatchStatus.DECIDED_ACCEPTED, 200, None),
+        (ApplicationBatchStatus.DECIDED_REJECTED, 200, None),
         (ApplicationBatchStatus.DRAFT, 200, ApplicationBatchStatus.DRAFT),
         (
             ApplicationBatchStatus.AWAITING_AHJO_DECISION,
             200,
             ApplicationBatchStatus.AWAITING_AHJO_DECISION,
+        ),
+        (
+            ApplicationBatchStatus.AHJO_REPORT_CREATED,
+            200,
+            ApplicationBatchStatus.AHJO_REPORT_CREATED,
         ),
     ],
 )
@@ -248,6 +271,35 @@ def test_batch_status_change(
     assert response.status_code == status_code
     if changed_status:
         assert response.data["status"] == changed_status
+
+
+def test_batch_too_many_drafts(application_batch):
+    # Create a second batch to get to two batch limit
+    ApplicationBatchFactory(
+        status=ApplicationBatchStatus.DRAFT,
+        proposal_for_decision=ApplicationStatus.REJECTED,
+    ),
+
+    # Create a batch with different status and try putting it in draft
+    batch_with_status_change = ApplicationBatchFactory(
+        status=ApplicationBatchStatus.AWAITING_AHJO_DECISION,
+        proposal_for_decision=ApplicationStatus.REJECTED,
+    )
+    batch_with_status_change.status = ApplicationBatchStatus.DRAFT
+    with pytest.raises(BatchTooManyDraftsError):
+        batch_with_status_change.save()
+
+    # Create more drafts, accepted and rejected, should fail
+    with pytest.raises(BatchTooManyDraftsError):
+        ApplicationBatchFactory(
+            status=ApplicationBatchStatus.DRAFT,
+            proposal_for_decision=ApplicationStatus.ACCEPTED,
+        )
+    with pytest.raises(BatchTooManyDraftsError):
+        ApplicationBatchFactory(
+            status=ApplicationBatchStatus.DRAFT,
+            proposal_for_decision=ApplicationStatus.REJECTED,
+        )
 
 
 @pytest.mark.parametrize(

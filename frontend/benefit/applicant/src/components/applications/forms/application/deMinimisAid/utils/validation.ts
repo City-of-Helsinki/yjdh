@@ -1,10 +1,13 @@
-import { DE_MINIMIS_AID_GRANTED_AT_MAX_DATE } from 'benefit/applicant/constants';
+import {
+  DE_MINIMIS_AID_GRANTED_AT_MAX_DATE,
+  DE_MINIMIS_AID_GRANTED_AT_MIN_DATE,
+} from 'benefit/applicant/constants';
 import {
   DE_MINIMIS_AID_KEYS,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
 import { DeMinimisAid } from 'benefit-shared/types/application';
-import isFuture from 'date-fns/isFuture';
+import { isBefore, isFuture } from 'date-fns';
 import { TFunction } from 'next-i18next';
 import { convertToUIDateFormat, parseDate } from 'shared/utils/date.utils';
 import { getNumberValue } from 'shared/utils/string.utils';
@@ -38,6 +41,21 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<DeMinimisAid> =>
           const date = parseDate(value);
 
           if (date && isFuture(date)) {
+            return false;
+          }
+          return true;
+        },
+      })
+      .test({
+        message: t(VALIDATION_MESSAGE_KEYS.DATE_MIN, {
+          min: convertToUIDateFormat(DE_MINIMIS_AID_GRANTED_AT_MIN_DATE),
+        }),
+        test: (value) => {
+          if (!value) return false;
+
+          const date = parseDate(value);
+
+          if (date && isBefore(date, DE_MINIMIS_AID_GRANTED_AT_MIN_DATE)) {
             return false;
           }
           return true;

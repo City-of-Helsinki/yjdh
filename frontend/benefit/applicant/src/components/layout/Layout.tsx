@@ -1,11 +1,12 @@
 import Header from 'benefit/applicant/components/header/Header';
-import SupportingContent from 'benefit/applicant/components/supportingContent/SupportingContent';
 import TermsOfService from 'benefit/applicant/components/termsOfService/TermsOfService';
 import { IS_CLIENT, LOCAL_STORAGE_KEYS } from 'benefit/applicant/constants';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import useAuth from 'shared/hooks/useAuth';
 
+import { ROUTES } from '../../constants';
 import { $Main } from './Layout.sc';
 
 const Footer = dynamic(
@@ -19,6 +20,8 @@ const Layout: React.FC<Props> = ({ children, ...rest }) => {
   const { isAuthenticated } = useAuth();
   const [isTermsOfServiceApproved, setIsTermsOfSerivceApproved] =
     React.useState(false);
+  const router = useRouter();
+  const bgColor = router.pathname === ROUTES.LOGIN ? 'silverLight' : 'white';
 
   React.useEffect(() => {
     if (IS_CLIENT) {
@@ -32,17 +35,14 @@ const Layout: React.FC<Props> = ({ children, ...rest }) => {
   }, []);
 
   return (
-    <$Main {...rest}>
+    <$Main backgroundColor={bgColor} {...rest}>
       <Header />
       {isAuthenticated && !isTermsOfServiceApproved ? (
         <TermsOfService
           setIsTermsOfSerivceApproved={setIsTermsOfSerivceApproved}
         />
       ) : (
-        <>
-          {children}
-          <SupportingContent />
-        </>
+        children
       )}
       <Footer />
     </$Main>

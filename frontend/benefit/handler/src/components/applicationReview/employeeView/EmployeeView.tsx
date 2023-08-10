@@ -16,7 +16,11 @@ import { getFullName } from 'shared/utils/application.utils';
 import AttachmentsListView from '../../attachmentsListView/AttachmentsListView';
 import EmployeeActions from './EmployeeActions/EmployeeActions';
 
-const EmployeeView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
+const EmployeeView: React.FC<ApplicationReviewViewProps> = ({
+  data,
+  handleUpload,
+  isUploading,
+}) => {
   const translationsBase = 'common:review';
   const { t } = useTranslation();
   return (
@@ -24,7 +28,10 @@ const EmployeeView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
       header={t(`${translationsBase}.headings.heading5`)}
       action={
         data.status !== APPLICATION_STATUSES.RECEIVED ? (
-          <EmployeeActions />
+          <EmployeeActions
+            handleUpload={handleUpload}
+            isUploading={isUploading}
+          />
         ) : null
       }
     >

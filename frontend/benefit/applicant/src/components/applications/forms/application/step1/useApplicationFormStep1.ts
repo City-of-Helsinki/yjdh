@@ -114,8 +114,8 @@ const useApplicationFormStep1 = (
   const applicationId = values?.id;
   const handleDelete = applicationId
     ? () => {
-        void onDelete(applicationId);
-      }
+      void onDelete(applicationId);
+    }
     : undefined;
 
   const clearDeminimisAids = React.useCallback((): void => {
@@ -125,7 +125,7 @@ const useApplicationFormStep1 = (
 
   const showDeminimisSection =
     values.associationHasBusinessActivities === true ||
-    organizationType !== ORGANIZATION_TYPES.ASSOCIATION;
+    organizationType === ORGANIZATION_TYPES.COMPANY;
 
   const languageOptions = React.useMemo(
     (): OptionType<string>[] => getLanguageOptions(t, 'languages'),

@@ -49,9 +49,20 @@ export const $HorizontalList = styled.dl`
   }
 `;
 
+type TableGridProps = {
+  animateClose: boolean;
+};
+export const $TableGrid = styled.div<TableGridProps>`
+  display: grid;
+  transition: all 0.65s ease-out;
+  grid-template-rows: ${(props) => (props.animateClose ? '0fr' : '1fr')};
+  opacity: ${(props) => (props.animateClose ? '0' : '1')};
+  margin-bottom: ${(props) => (props.animateClose ? '0' : 'var(--spacing-l)')};
+`;
+
 export const $TableWrapper = styled.div`
+  overflow-y: hidden;
   background: #fff;
-  margin-bottom: var(--spacing-l);
 `;
 
 export const $TableBody = styled.div<CollapsedProps>`

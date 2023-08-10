@@ -1,4 +1,8 @@
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import 'react-pdf/dist/esm/Page/TextLayer.css';
+
 import { Button } from 'hds-react';
+import url from 'pdfjs-dist/build/pdf.worker';
 import React from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import {
@@ -10,23 +14,14 @@ import { useTheme } from 'styled-components';
 import { $ActionsWrapper, $ViewerWrapper } from './PdfViewer.sc';
 import { usePdfViewer } from './usePdfViewer';
 
-// TODO: Test if it works in production
-// Update as of 2023-01-03: Not sure if this is necessary AT ALL
-if (process.env.NODE_ENV === 'production') {
-  pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-}
+pdfjs.GlobalWorkerOptions.workerSrc = String(url);
 
 type PdfViewerProps = {
   file: string;
-  documentMarginLeft?: string; // FIXME: A way to crop pdf white margins will be better because not all pdf have same margins
   scale?: number;
 };
 
-const PdfViewer: React.FC<PdfViewerProps> = ({
-  file,
-  documentMarginLeft,
-  scale,
-}) => {
+const PdfViewer: React.FC<PdfViewerProps> = ({ file, scale }) => {
   const {
     t,
     handleDocumentLoadSuccess,
@@ -39,46 +34,51 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
   const theme = useTheme();
 
   return (
-    <$ViewerWrapper documentMarginLeft={documentMarginLeft}>
-      <Document
-        onLoadSuccess={handleDocumentLoadSuccess}
-        file={file}
-        className="Document"
-      >
-        <Page pageNumber={currentPage} scale={scale} />
-      </Document>
-      <$Grid
-        css={`
-          margin-bottom: ${theme.spacing.l};
-        `}
-      >
-        <$GridCell>
-          <Button
-            disabled={currentPage === 1}
-            theme="black"
-            variant="secondary"
-            onClick={handleBack}
-          >
-            {t('common:pdfViewer.previous')}
-          </Button>
-        </$GridCell>
-        <$GridCell>
-          <$ActionsWrapper>
-            {`${t('common:pdfViewer.page')} ${currentPage} / ${pagesCount}`}
-          </$ActionsWrapper>
-        </$GridCell>
-        <$GridCell>
-          <Button
-            disabled={currentPage === pagesCount}
-            theme="black"
-            variant="secondary"
-            onClick={handleNext}
-          >
-            {t('common:pdfViewer.next')}
-          </Button>
-        </$GridCell>
-      </$Grid>
-    </$ViewerWrapper>
+    <>
+      <$ViewerWrapper>
+        <Document
+          onLoadSuccess={handleDocumentLoadSuccess}
+          file={file}
+          className="Document"
+        >
+          <Page pageNumber={currentPage} scale={scale} />
+        </Document>
+      </$ViewerWrapper>
+      {pagesCount > 1 ? (
+        <$Grid
+          css={`
+            margin-top: ${theme.spacing.l};
+            margin-bottom: ${theme.spacing.xl};
+          `}
+        >
+          <$GridCell>
+            <Button
+              disabled={currentPage === 1}
+              theme="black"
+              variant="secondary"
+              onClick={handleBack}
+            >
+              {t('common:pdfViewer.previous')}
+            </Button>
+          </$GridCell>
+          <$GridCell>
+            <$ActionsWrapper>
+              {`${t('common:pdfViewer.page')} ${currentPage} / ${pagesCount}`}
+            </$ActionsWrapper>
+          </$GridCell>
+          <$GridCell>
+            <Button
+              disabled={currentPage === pagesCount}
+              theme="black"
+              variant="secondary"
+              onClick={handleNext}
+            >
+              {t('common:pdfViewer.next')}
+            </Button>
+          </$GridCell>
+        </$Grid>
+      ) : null}
+    </>
   );
 };
 

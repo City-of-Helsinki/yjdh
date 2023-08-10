@@ -126,6 +126,8 @@ export enum ATTACHMENT_TYPES {
   EDUCATION_CONTRACT = 'education_contract',
   HELSINKI_BENEFIT_VOUCHER = 'helsinki_benefit_voucher',
   EMPLOYEE_CONSENT = 'employee_consent',
+  FULL_APPLICATION = 'full_application',
+  OTHER_ATTACHMENT = 'other_attachment',
 }
 
 export enum APPLICATION_STATUSES {
@@ -139,9 +141,15 @@ export enum APPLICATION_STATUSES {
   HANDLING = 'handling',
 }
 
+export enum APPLICATION_ORIGINS {
+  APPLICANT = 'applicant',
+  HANDLER = 'handler',
+}
+
 export enum BATCH_STATUSES {
   DRAFT = 'draft',
   AWAITING_FOR_DECISION = 'awaiting_ahjo_decision',
+  AHJO_REPORT_CREATED = 'exported_ahjo_report',
   DECIDED_ACCEPTED = 'accepted',
   DECIDED_REJECTED = 'rejected',
   SENT_TO_TALPA = 'sent_to_talpa',

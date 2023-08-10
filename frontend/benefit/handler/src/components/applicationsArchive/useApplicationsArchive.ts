@@ -5,7 +5,7 @@ import {
   ApplicationListItemData,
 } from 'benefit-shared/types/application';
 import { TFunction, useTranslation } from 'next-i18next';
-import { getFullName } from 'shared/utils/application.utils';
+import { getFullNameListing } from 'shared/utils/application.utils';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 
 interface ApplicationListProps {
@@ -23,7 +23,7 @@ const useApplicationsArchive = (): ApplicationListProps => {
   const { t } = useTranslation();
   const query = useApplicationsQuery(
     ['accepted', 'rejected', 'cancelled'],
-    '-submitted_at',
+    '-handled_at',
     false,
     true
   );
@@ -50,7 +50,7 @@ const useApplicationsArchive = (): ApplicationListProps => {
         companyName: company ? company.name : '-',
         companyId: company ? company.business_id : '-',
         employeeName:
-          getFullName(employee?.first_name, employee?.last_name) || '-',
+          getFullNameListing(employee?.first_name, employee?.last_name) || '-',
         handledAt: convertToUIDateFormat(handled_at) || '-',
         dataReceived: getBatchDataReceived(status, batch?.created_at),
         applicationNum,

@@ -1,4 +1,5 @@
 import { $Notification as NotificationBase } from 'benefit/applicant/components/Notification/Notification.sc';
+import { respondAbove } from 'shared/styles/mediaQueries';
 import styled from 'styled-components';
 
 export const $Container = styled.div`
@@ -8,6 +9,10 @@ export const $Container = styled.div`
 export const $TextContainer = styled.div`
   display: flex;
   box-sizing: border-box;
+  flex-direction: column;
+  ${respondAbove('sm')`
+    flex-direction: row;
+  `}
 `;
 
 export const $Heading = styled.h1`
@@ -18,6 +23,7 @@ export const $Heading = styled.h1`
 export const $Description = styled.p`
   font-size: ${(props) => props.theme.fontSize.heading.s};
   line-height: ${(props) => props.theme.lineHeight.l};
+  margin-right: var(--spacing-s);
 `;
 
 export const $Link = styled.span`
@@ -27,10 +33,12 @@ export const $Link = styled.span`
 
 export const $ActionContainer = styled.div`
   display: flex;
-  justify-content: flex-end;
   align-items: center;
   flex: 1 0 30%;
   box-sizing: border-box;
+  ${respondAbove('sm')`
+    justify-content: flex-end;
+  `}
 `;
 
 export const $Notification = styled(NotificationBase)`

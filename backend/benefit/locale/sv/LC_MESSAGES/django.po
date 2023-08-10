@@ -518,6 +518,9 @@ msgstr "Lönekostnader"
 msgid "State aid maximum %"
 msgstr "Maximalt statsunderstöd %"
 
+msgid "State aid maximum percentage cannot be empty"
+msgstr "Maximalt statsunderstöd får inte vara tom"
+
 msgid "Pay subsidy/month"
 msgstr "Lönesubvention/månad"
 

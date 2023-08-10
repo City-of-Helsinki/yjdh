@@ -1,3 +1,4 @@
+import { respondAbove } from 'shared/styles/mediaQueries';
 import styled, { DefaultTheme } from 'styled-components';
 
 interface AvatarProps {
@@ -10,17 +11,29 @@ export const $ListItemWrapper = styled.div`
 `;
 
 export const $ListItem = styled.li`
-  display: flex;
+  display: block;
   background-color: ${(props) => props.theme.colors.white};
   padding: ${(props) => props.theme.spacing.xs};
   justify-content: space-between;
+
+  ${respondAbove('md')`
+    display: flex;
+  `};
 `;
 
 export const $ItemContent = styled.div`
   display: grid;
-  grid-template-columns: 60px 3fr repeat(4, minmax(100px, 2fr));
   grid-gap: ${(props) => props.theme.spacing.m};
   width: 100%;
+  margin-bottom: var(--spacing-s);
+
+  ${respondAbove('xs')`
+    grid-template-columns: 1fr 1fr;
+  `};
+
+  ${respondAbove('sm')`
+    grid-template-columns: 60px 3fr repeat(4, minmax(100px, 3fr));
+  `};
 `;
 
 export const $Avatar = styled.div<AvatarProps>`
@@ -38,6 +51,10 @@ export const $Avatar = styled.div<AvatarProps>`
   width: 60px;
   min-height: 60px;
   min-width: 60px;
+  grid-column: 1 / -1;
+  ${respondAbove('sm')`
+    grid-column: 1;
+  `};
 `;
 
 export const $DataColumn = styled.div`

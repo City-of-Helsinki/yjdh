@@ -1,3 +1,5 @@
+from typing import Union
+
 from dateutil.relativedelta import relativedelta
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -9,6 +11,7 @@ from calculator.models import (
     CalculationRow,
     PaySubsidy,
     PreviousBenefit,
+    STATE_AID_MAX_PERCENTAGE_CHOICES,
     TrainingCompensation,
 )
 from users.api.v1.serializers import UserSerializer
@@ -259,6 +262,11 @@ class PaySubsidySerializer(serializers.ModelSerializer):
             and not self._is_manual_mode()
         )
 
+    def _is_invalid_state_aid_max(self, state_aid_max_input: Union[None, int]) -> bool:
+        return state_aid_max_input is None or state_aid_max_input not in [
+            choice[0] for choice in STATE_AID_MAX_PERCENTAGE_CHOICES
+        ]
+
     def validate(self, data):
         request = self.context.get("request")
         if request is None:
@@ -271,6 +279,17 @@ class PaySubsidySerializer(serializers.ModelSerializer):
             if data.get("end_date") is None:
                 raise serializers.ValidationError(
                     {"end_date": _("End date cannot be empty")}
+                )
+            state_aid_max_input = request.data["calculation"][
+                "state_aid_max_percentage"
+            ]
+            if self._is_invalid_state_aid_max(state_aid_max_input):
+                raise serializers.ValidationError(
+                    {
+                        "state_aid_max_percentage": _(
+                            "State aid maximum percentage cannot be empty"
+                        )
+                    }
                 )
         return data
 

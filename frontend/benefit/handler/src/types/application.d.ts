@@ -1,15 +1,30 @@
+import { APPLICATION_FIELD_KEYS } from 'benefit/handler/constants';
 import {
+  APPLICATION_ORIGINS,
   APPLICATION_STATUSES,
+  BENEFIT_TYPES,
   CALCULATION_SALARY_KEYS,
+  EMPLOYEE_KEYS,
+  ORGANIZATION_TYPES,
 } from 'benefit-shared/constants';
 import {
-  Application,
+  ApplicantTerms,
+  ApplicantTermsApproval,
+  ApproveTerms,
+  Batch,
+  BenefitAttachment,
+  Calculation,
   CalculationCommon,
+  Company,
+  DeMinimisAid,
+  Employee,
   PaySubsidy,
+  PaySubsidyPercent,
   TrainingCompensation,
 } from 'benefit-shared/types/application';
 import { FormikProps } from 'formik';
 import { Field } from 'shared/components/forms/fields/types';
+import { Language } from 'shared/i18n/i18n';
 
 export type ApplicantConsentData = {
   id: string;
@@ -55,6 +70,13 @@ export type SubmittedApplication = {
 
 export interface ApplicationReviewViewProps {
   data: Application;
+  isUploading?: boolean;
+  handleUpload?: (attachment: FormData) => void;
+}
+
+export interface UploadProps {
+  isUploading?: boolean;
+  handleUpload?: (attachment: FormData) => void;
 }
 
 export interface SalaryBenefitCalculatorViewProps {
@@ -77,3 +99,81 @@ export type HandledAplication = {
   logEntryComment?: string;
   grantedAsDeMinimisAid?: boolean;
 };
+
+// Handler application
+
+export type Application = {
+  id?: string;
+  status?: APPLICATION_STATUSES;
+  additionalInformationNeededBy?: string;
+  applicationNumber?: number;
+  bases?: string[];
+  company?: Company;
+  archived?: boolean;
+  createdAt?: string | null;
+  modifiedAt?: string | null;
+  applicationStep?: string | null;
+  attachments?: BenefitAttachment[];
+  applicantTermsApproval?: ApplicantTermsApproval;
+  applicantTermsApprovalNeeded?: boolean;
+  applicantTermsInEffect?: ApplicantTerms;
+  approveTerms?: ApproveTerms;
+  calculation?: Calculation;
+  submittedAt?: string;
+  paySubsidies?: PaySubsidy[];
+  durationInMonthsRounded?: string;
+  logEntryComment?: string;
+  trainingCompensations?: TrainingCompensation[];
+  batch?: Batch;
+  handledAt?: string;
+  latestDecisionComment?: string;
+  unreadMessagesCount?: number;
+  createApplicationForCompany?: string;
+  applicationOrigin?: APPLICATION_ORIGINS;
+} & ApplicationForm;
+
+export interface ApplicationForm {
+  [APPLICATION_FIELD_KEYS.USE_ALTERNATIVE_ADDRESS]?: boolean;
+  [APPLICATION_FIELD_KEYS.ALTERNATIVE_COMPANY_STREET_ADDRESS]?: string;
+  [APPLICATION_FIELD_KEYS.ALTERNATIVE_COMPANY_CITY]?: string;
+  [APPLICATION_FIELD_KEYS.ALTERNATIVE_COMPANY_POSTCODE]?: string;
+  [APPLICATION_FIELD_KEYS.COMPANY_DEPARTMENT]?: string;
+  [APPLICATION_FIELD_KEYS.COMPANY_BANK_ACCOUNT_NUMBER]?: string;
+  [APPLICATION_FIELD_KEYS.ORGANIZATION_TYPE]?: ORGANIZATION_TYPES | null;
+  [APPLICATION_FIELD_KEYS.ASSOCIATION_HAS_BUSINESS_ACTIVITIES]?: boolean | null;
+  [APPLICATION_FIELD_KEYS.ASSOCIATION_IMMEDIATE_MANAGER_CHECK]?: boolean | null;
+  [APPLICATION_FIELD_KEYS.COMPANY_CONTACT_PERSON_FIRST_NAME]?: string;
+  [APPLICATION_FIELD_KEYS.COMPANY_CONTACT_PERSON_LAST_NAME]?: string;
+  [APPLICATION_FIELD_KEYS.COMPANY_CONTACT_PERSON_PHONE_NUMBER]?: string;
+  [APPLICATION_FIELD_KEYS.COMPANY_CONTACT_PERSON_EMAIL]?: string;
+  [APPLICATION_FIELD_KEYS.APPLICANT_LANGUAGE]?: Language | '';
+  [APPLICATION_FIELD_KEYS.CO_OPERATION_NEGOTIATIONS]?: boolean | null;
+  [APPLICATION_FIELD_KEYS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION]?: string;
+  [APPLICATION_FIELD_KEYS.DE_MINIMIS_AID]?: boolean | null;
+  [APPLICATION_FIELD_KEYS.DE_MINIMIS_AID_SET]?: DeMinimisAid[];
+  [APPLICATION_FIELD_KEYS.PAY_SUBSIDY_GRANTED]?: boolean | null;
+  [APPLICATION_FIELD_KEYS.PAY_SUBSIDY_PERCENT]?: PaySubsidyPercent | null;
+  [APPLICATION_FIELD_KEYS.ADDITIONAL_PAY_SUBSIDY_PERCENT]?: PaySubsidyPercent | null;
+  [APPLICATION_FIELD_KEYS.APPRENTICESHIP_PROGRAM]?: boolean | null;
+  [APPLICATION_FIELD_KEYS.BENEFIT_TYPE]?: BENEFIT_TYPES | '';
+  [APPLICATION_FIELD_KEYS.START_DATE]?: string | '';
+  [APPLICATION_FIELD_KEYS.END_DATE]?: string | '';
+  [APPLICATION_FIELD_KEYS.EMPLOYEE]?: Employee;
+  [APPLICATION_FIELD_KEYS.APPLICANT_AGREEMENT]?: boolean | null;
+  [APPLICATION_FIELD_KEYS.EMPLOYEE_SIGNED]?: boolean | null;
+  [APPLICATION_FIELD_KEYS.EMPLOYER_SIGNED]?: boolean | null;
+}
+
+type CompanySearchResult = {
+  name: string;
+  business_id: string;
+};
+
+export type ApplicationFields = Record<
+  APPLICATION_FIELD_KEYS,
+  Field<APPLICATION_FIELD_KEYS>
+> &
+  Record<
+    APPLICATION_FIELD_KEYS.EMPLOYEE,
+    Record<EMPLOYEE_KEYS, Field<APPLICATION_FIELD_KEYS>>
+  >;

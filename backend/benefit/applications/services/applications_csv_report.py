@@ -9,7 +9,7 @@ from applications.services.csv_export_base import (
 )
 
 
-def CsvDefaultColumn(*args, **kwargs):
+def csv_default_column(*args, **kwargs):
     # define a default value, as the application csv export needs to be able to handle
     # also applications with missing data
     # Not defined as a subclass of CsvColumn due to the way Python dataclasses work
@@ -86,6 +86,7 @@ class ApplicationsCsvService(CsvExportBase):
 
     @property
     def CSV_COLUMNS(self):
+        calculated_benefit_amount = "calculation.calculated_benefit_amount"
         """Return only columns that are needed for Talpa"""
         if self.prune_data_for_talpa:
             talpa_columns = [
@@ -97,20 +98,26 @@ class ApplicationsCsvService(CsvExportBase):
                 CsvColumn("Työnantajan katuosoite", "effective_company_street_address"),
                 CsvColumn("Työnantajan postinumero", "effective_company_postcode"),
                 CsvColumn("Työnantajan postitoimipaikka", "effective_company_city"),
-                CsvDefaultColumn(
-                    "Helsinki-lisän määrä lopullinen",
-                    "calculation.calculated_benefit_amount",
+                csv_default_column(
+                    "Helsinki-lisän määrä lopullinen", calculated_benefit_amount
                 ),
-                CsvDefaultColumn("Päättäjän nimike", "batch.decision_maker_title"),
-                CsvDefaultColumn("Päättäjän nimi", "batch.decision_maker_name"),
-                CsvDefaultColumn("Päätöspykälä", "batch.section_of_the_law"),
-                CsvDefaultColumn("Päätöspäivä", "batch.decision_date"),
-                CsvDefaultColumn(
-                    "Asiantarkastajan nimi", "batch.expert_inspector_name"
+                csv_default_column("Päättäjän nimike", "batch.decision_maker_title"),
+                csv_default_column("Päättäjän nimi", "batch.decision_maker_name"),
+                csv_default_column("Päätöspykälä", "batch.section_of_the_law"),
+                csv_default_column("Päätöspäivä", "batch.decision_date"),
+                csv_default_column(
+                    "Asiantarkastajan nimi Ahjo", "batch.expert_inspector_name"
                 ),
-                CsvDefaultColumn(
-                    "Asiantarkastajan email", "batch.expert_inspector_email"
+                csv_default_column(
+                    "Asiantarkastajan titteli Ahjo", "batch.expert_inspector_title"
                 ),
+                csv_default_column(
+                    "Asiantarkastajan nimi P2P", "batch.p2p_inspector_name"
+                ),
+                csv_default_column(
+                    "Asiantarkastajan email P2P", "batch.p2p_inspector_email"
+                ),
+                csv_default_column("Hyväksyjän nimi P2P", "batch.p2p_checker_name"),
             ]
             return talpa_columns
 
@@ -118,9 +125,9 @@ class ApplicationsCsvService(CsvExportBase):
             CsvColumn("Hakemusnumero", "application_number"),
             CsvColumn("Hakemusrivi", "application_row_idx"),
             CsvColumn("Hakemuksen tila", "status"),
-            CsvDefaultColumn("Haettava lisä", "benefit_type", get_benefit_type_label),
-            CsvDefaultColumn("Haettu alkupäivä", "start_date"),
-            CsvDefaultColumn("Haettu päättymispäivä", "end_date"),
+            csv_default_column("Haettava lisä", "benefit_type", get_benefit_type_label),
+            csv_default_column("Haettu alkupäivä", "start_date"),
+            csv_default_column("Haettu päättymispäivä", "end_date"),
             CsvColumn("Työnantajan tyyppi", get_organization_type),
             CsvColumn("Työnantajan tilinumero", "company_bank_account_number"),
             CsvColumn("Työnantajan nimi", "company_name"),
@@ -180,13 +187,13 @@ class ApplicationsCsvService(CsvExportBase):
             CsvColumn("YT-neuvottelut?", "co_operation_negotiations", format_bool),
             CsvColumn("YT-neuvottelut/tiedot", "co_operation_negotiations_description"),
             CsvColumn("Palkkatuki myönnetty?", "pay_subsidy_granted", format_bool),
-            CsvDefaultColumn("Palkkatukiprosentti", "pay_subsidy_percent"),
-            CsvDefaultColumn(
+            csv_default_column("Palkkatukiprosentti", "pay_subsidy_percent"),
+            csv_default_column(
                 "Toinen palkkatukiprosentti", "additional_pay_subsidy_percent"
             ),
             CsvColumn("Oppisopimus?", "apprenticeship_program", format_bool),
             CsvColumn("Arkistoitu?", "archived", format_bool),
-            CsvDefaultColumn("Hakemusvaihe(UI)", "application_step"),
+            csv_default_column("Hakemusvaihe(UI)", "application_step"),
             CsvColumn("Työntekijä-ID", "employee.id", str),
             CsvColumn("Työntekijän etunimi", "employee.first_name"),
             CsvColumn("Työntekijän sukunimi", "employee.last_name"),
@@ -194,67 +201,73 @@ class ApplicationsCsvService(CsvExportBase):
             CsvColumn("Työntekijän sähköposti", "employee.email"),
             CsvColumn("Työntekijän kieli", "employee.employee_language"),
             CsvColumn("Työntekijän ammattinimike", "employee.job_title"),
-            CsvDefaultColumn(
+            csv_default_column(
                 "Työntekijän kuukausipalkka (hakijalta)", "employee.monthly_pay"
             ),
-            CsvDefaultColumn(
+            csv_default_column(
                 "Työntekijän lomaraha (hakijalta)", "employee.vacation_money"
             ),
-            CsvDefaultColumn(
+            csv_default_column(
                 "Työntekijän muut kulut (hakijalta)", "employee.other_expenses"
             ),
-            CsvDefaultColumn("Työntekijän työtunnit", "employee.working_hours"),
+            csv_default_column("Työntekijän työtunnit", "employee.working_hours"),
             CsvColumn("Työntekijän TES", "employee.collective_bargaining_agreement"),
-            CsvDefaultColumn("Työntekijän syntymäpäivä", "employee.birthday"),
+            csv_default_column("Työntekijän syntymäpäivä", "employee.birthday"),
             CsvColumn(
                 "Työntekijä asuu Helsinkissä?",
                 "employee.is_living_in_helsinki",
                 format_bool,
             ),
-            CsvDefaultColumn(
-                "Helsinki-lisän määrä lopullinen",
-                "calculation.calculated_benefit_amount",
+            csv_default_column(
+                "Helsinki-lisän määrä lopullinen", calculated_benefit_amount
             ),
-            CsvDefaultColumn("Kuukausipalkka laskelmassa", "calculation.monthly_pay"),
-            CsvDefaultColumn("Lomaraha laskelmassa", "calculation.vacation_money"),
-            CsvDefaultColumn("Muut kulut laskelmassa", "calculation.other_expenses"),
-            CsvDefaultColumn("Laskelman alkupäivä", "calculation.start_date"),
-            CsvDefaultColumn("Laskelman päättymispäivä", "calculation.end_date"),
-            CsvDefaultColumn("Käsittelypäivä", "handled_at", format_datetime),
-            CsvDefaultColumn(
+            csv_default_column("Kuukausipalkka laskelmassa", "calculation.monthly_pay"),
+            csv_default_column("Lomaraha laskelmassa", "calculation.vacation_money"),
+            csv_default_column("Muut kulut laskelmassa", "calculation.other_expenses"),
+            csv_default_column("Laskelman alkupäivä", "calculation.start_date"),
+            csv_default_column("Laskelman päättymispäivä", "calculation.end_date"),
+            csv_default_column("Käsittelypäivä", "handled_at", format_datetime),
+            csv_default_column(
                 "Valtiotukimaksimi", "calculation.state_aid_max_percentage"
             ),
-            CsvDefaultColumn(
-                "Laskelman lopputulos", "calculation.calculated_benefit_amount"
-            ),
-            CsvDefaultColumn(
+            csv_default_column("Laskelman lopputulos", calculated_benefit_amount),
+            csv_default_column(
                 "Manuaalinen syöttö", "calculation.override_monthly_benefit_amount"
             ),
-            CsvDefaultColumn(
+            csv_default_column(
                 "Manuaalinen syöttö kommentti",
                 "calculation.override_monthly_benefit_amount_comment",
             ),
-            CsvDefaultColumn(
+            csv_default_column(
                 "Myönnetään de minimis -tukena?",
                 "calculation.granted_as_de_minimis_aid",
                 format_bool,
                 default_value=None,
             ),
-            CsvDefaultColumn(
+            csv_default_column(
                 "Kohderyhmätarkistus",
                 "calculation.target_group_check",
                 format_bool,
                 default_value=None,
             ),
-            CsvDefaultColumn(
+            csv_default_column(
                 "Hyväksymisen/hylkäyksen/peruutuksen syy", "latest_decision_comment"
             ),
-            CsvDefaultColumn("Päättäjän nimike", "batch.decision_maker_title"),
-            CsvDefaultColumn("Päättäjän nimi", "batch.decision_maker_name"),
-            CsvDefaultColumn("Päätöspykälä", "batch.section_of_the_law"),
-            CsvDefaultColumn("Päätöspäivä", "batch.decision_date"),
-            CsvDefaultColumn("Asiantarkastajan nimi", "batch.expert_inspector_name"),
-            CsvDefaultColumn("Asiantarkastajan email", "batch.expert_inspector_email"),
+            csv_default_column("Päättäjän nimike", "batch.decision_maker_title"),
+            csv_default_column("Päättäjän nimi", "batch.decision_maker_name"),
+            csv_default_column("Päätöspykälä", "batch.section_of_the_law"),
+            csv_default_column("Päätöspäivä", "batch.decision_date"),
+            csv_default_column(
+                "Asiantarkastajan nimi Ahjo", "batch.expert_inspector_name"
+            ),
+            csv_default_column(
+                "Asiantarkastajan titteli Ahjo", "batch.expert_inspector_title"
+            ),
+            csv_default_column("Asiantarkastajan nimi P2P", "batch.p2p_inspector_name"),
+            csv_default_column(
+                "Asiantarkastajan email P2P", "batch.p2p_inspector_email"
+            ),
+            csv_default_column("Hyväksyjän nimi P2P", "batch.p2p_checker_name"),
             # In case there are multiple rows per application, always have the nth ahjo row
             # in the same column.
             # The row data here comes from calculation.ahjo_rows[application_row_idx - 1]
@@ -266,19 +279,19 @@ class ApplicationsCsvService(CsvExportBase):
                 "Siirrettävä Ahjo-rivi / teksti",
                 current_ahjo_row_field_getter("description_fi"),
             ),
-            CsvDefaultColumn(
+            csv_default_column(
                 "Siirrettävä Ahjo-rivi / määrä eur yht",
                 current_ahjo_row_field_getter("amount"),
             ),
-            CsvDefaultColumn(
+            csv_default_column(
                 "Siirrettävä Ahjo-rivi / määrä eur kk",
                 current_ahjo_row_field_getter("monthly_amount"),
             ),
-            CsvDefaultColumn(
+            csv_default_column(
                 "Siirrettävä Ahjo-rivi / alkupäivä",
                 current_ahjo_row_field_getter("start_date"),
             ),
-            CsvDefaultColumn(
+            csv_default_column(
                 "Siirrettävä Ahjo-rivi / päättymispäivä",
                 current_ahjo_row_field_getter("end_date"),
             ),
@@ -295,19 +308,19 @@ class ApplicationsCsvService(CsvExportBase):
                         f"Ahjo-rivi {idx + 1} / teksti",
                         nested_queryset_attr("ahjo_rows", idx, "description_fi"),
                     ),
-                    CsvDefaultColumn(
+                    csv_default_column(
                         f"Ahjo-rivi {idx + 1} / määrä eur yht",
                         nested_queryset_attr("ahjo_rows", idx, "amount"),
                     ),
-                    CsvDefaultColumn(
+                    csv_default_column(
                         f"Ahjo-rivi {idx + 1} / määrä eur kk",
                         nested_queryset_attr("ahjo_rows", idx, "monthly_amount"),
                     ),
-                    CsvDefaultColumn(
+                    csv_default_column(
                         f"Ahjo-rivi {idx + 1} / alkupäivä",
                         nested_queryset_attr("ahjo_rows", idx, "start_date"),
                     ),
-                    CsvDefaultColumn(
+                    csv_default_column(
                         f"Ahjo-rivi {idx + 1} / päättymispäivä",
                         nested_queryset_attr("ahjo_rows", idx, "end_date"),
                     ),
@@ -316,21 +329,21 @@ class ApplicationsCsvService(CsvExportBase):
         for idx in range(self.MAX_PAY_SUBSIDIES):
             columns.extend(
                 [
-                    CsvDefaultColumn(
+                    csv_default_column(
                         f"Palkkatuki {idx + 1} / alkupäivä",
                         nested_queryset_attr("pay_subsidies", idx, "start_date"),
                     ),
-                    CsvDefaultColumn(
+                    csv_default_column(
                         f"Palkkatuki {idx + 1} / päättymispäivä",
                         nested_queryset_attr("pay_subsidies", idx, "end_date"),
                     ),
-                    CsvDefaultColumn(
+                    csv_default_column(
                         f"Palkkatuki {idx + 1} / palkkatukiprosentti",
                         nested_queryset_attr(
                             "pay_subsidies", idx, "pay_subsidy_percent"
                         ),
                     ),
-                    CsvDefaultColumn(
+                    csv_default_column(
                         f"Palkkatuki {idx + 1} / työaikaprosentti",
                         nested_queryset_attr("pay_subsidies", idx, "work_time_percent"),
                     ),
@@ -351,11 +364,11 @@ class ApplicationsCsvService(CsvExportBase):
                         f"De minimis {idx + 1} / myöntäjä",
                         nested_queryset_attr("de_minimis_aid_set", idx, "granter"),
                     ),
-                    CsvDefaultColumn(
+                    csv_default_column(
                         f"De minimis {idx + 1} / määrä",
                         nested_queryset_attr("de_minimis_aid_set", idx, "amount"),
                     ),
-                    CsvDefaultColumn(
+                    csv_default_column(
                         f"De minimis {idx + 1} / myönnetty",
                         nested_queryset_attr("de_minimis_aid_set", idx, "granted_at"),
                     ),

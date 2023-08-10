@@ -138,6 +138,18 @@ export const getValidationSchema = (
         then: Yup.boolean()
           .nullable()
           .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      })
+      .test({
+        message: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
+        test: (val) => {
+          if (
+            organizationType?.toLowerCase() ===
+            ORGANIZATION_TYPES.COMPANY.toLowerCase()
+          ) {
+            return typeof val === 'boolean';
+          }
+          return true;
+        },
       }),
     [APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID_SET]: Yup.array().of(
       getDeminimisValidationSchema(t).nullable()

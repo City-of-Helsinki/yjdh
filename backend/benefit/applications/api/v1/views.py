@@ -23,11 +23,16 @@ from applications.api.v1.serializers.application import (
     HandlerApplicationSerializer,
 )
 from applications.api.v1.serializers.attachment import AttachmentSerializer
-from applications.enums import ApplicationBatchStatus, ApplicationStatus
+from applications.enums import (
+    ApplicationBatchStatus,
+    ApplicationOrigin,
+    ApplicationStatus,
+)
 from applications.models import Application, ApplicationBatch
 from applications.services.ahjo_integration import (
     ExportFileInfo,
     generate_zip,
+    prepare_csv_file,
     prepare_pdf_files,
 )
 from applications.services.applications_csv_report import ApplicationsCsvService
@@ -144,29 +149,8 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         Convenience action for the frontends that by default excludes the fields that are not normally
         needed in application listing pages.
         """
-        qs = self.filter_queryset(self.get_queryset())
         context = self.get_serializer_context()
-        fields = set(context.get("fields", []))
-        exclude_fields = set(context.get("exclude_fields", []))
-        extra_exclude_fields = set(self.EXCLUDE_FIELDS_FROM_SIMPLE_LIST)
-        context["exclude_fields"] = list(
-            exclude_fields | (extra_exclude_fields - fields)
-        )
-
-        order_by = request.query_params.get("order_by")
-        if (
-            order_by
-            and re.sub(r"^-", "", order_by)
-            in ApplicantApplicationSerializer.Meta.fields
-        ):
-            qs = qs.order_by(order_by)
-
-        exclude_batched = request.query_params.get("exclude_batched") == "1"
-        if exclude_batched:
-            qs = qs.filter(batch__isnull=True)
-
-        qs = qs.filter(archived=request.query_params.get("filter_archived") == "1")
-
+        qs = self._get_simplified_queryset(request, context)
         serializer = self.serializer_class(qs, many=True, context=context)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -199,6 +183,31 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def _get_simplified_queryset(self, request, context) -> QuerySet:
+        qs = self.filter_queryset(self.get_queryset())
+        fields = set(context.get("fields", []))
+        exclude_fields = set(context.get("exclude_fields", []))
+        extra_exclude_fields = set(self.EXCLUDE_FIELDS_FROM_SIMPLE_LIST)
+        context["exclude_fields"] = list(
+            exclude_fields | (extra_exclude_fields - fields)
+        )
+
+        order_by = request.query_params.get("order_by")
+        if (
+            order_by
+            and re.sub(r"^-", "", order_by)
+            in ApplicantApplicationSerializer.Meta.fields
+        ):
+            qs = qs.order_by(order_by)
+
+        exclude_batched = request.query_params.get("exclude_batched") == "1"
+        if exclude_batched:
+            qs = qs.filter(batch__isnull=True)
+
+        qs = qs.filter(archived=request.query_params.get("filter_archived") == "1")
+
+        return qs
 
     def _get_attachment(self, attachment_pk):
         try:
@@ -345,7 +354,6 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         return self._annotate_unread_messages_count(
             super()
             .get_queryset()
-            .exclude(status=ApplicationStatus.DRAFT)
             .select_related("batch", "calculation")
             .prefetch_related(
                 "pay_subsidies", "training_compensations", "calculation__rows"
@@ -360,6 +368,17 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
             context.update({"exclude_fields": exclude_fields.split(",")})
         return context
 
+    @action(methods=["get"], detail=False, url_path="simplified_list")
+    def simplified_application_list(self, request):
+        context = self.get_serializer_context()
+        qs = self._get_simplified_queryset(request, context)
+        qs = qs.exclude(
+            status=ApplicationStatus.DRAFT,
+            application_origin=ApplicationOrigin.APPLICANT,
+        )
+        serializer = self.serializer_class(qs, many=True, context=context)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     @action(methods=["GET"], detail=False)
     def export_csv(self, request) -> StreamingHttpResponse:
         queryset = self.get_queryset()
@@ -370,11 +389,20 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
 
     @action(methods=["GET"], detail=False)
     @transaction.atomic
-    def export_applications_in_batch(self, request) -> HttpResponse:
+    def batch_pdf_files(self, request) -> HttpResponse:
         batch_id = request.query_params.get("batch_id")
         if batch_id:
             apps = Application.objects.filter(batch_id=batch_id)
             return self._csv_pdf_response(apps)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=["GET"], detail=False)
+    @transaction.atomic
+    def batch_p2p_file(self, request) -> HttpResponse:
+        batch_id = request.query_params.get("batch_id")
+        if batch_id:
+            apps = Application.objects.filter(batch_id=batch_id)
+            return self._csv_response(apps, True, True)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=["GET"], detail=False)
@@ -418,12 +446,18 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
             date=timezone.now().strftime("%Y%m%d_%H%M%S"),
         )
 
-    def _csv_response(self, queryset: QuerySet[Application]) -> StreamingHttpResponse:
+    def _csv_response(
+        self,
+        queryset: QuerySet[Application],
+        prune_data_for_talpa: bool = False,
+        remove_quotes: bool = False,
+    ) -> StreamingHttpResponse:
         csv_service = ApplicationsCsvService(
-            queryset.order_by(self.APPLICATION_ORDERING)
+            queryset.order_by(self.APPLICATION_ORDERING), prune_data_for_talpa
         )
         response = StreamingHttpResponse(
-            csv_service.get_csv_string_lines_generator(), content_type="text/csv"
+            csv_service.get_csv_string_lines_generator(remove_quotes),
+            content_type="text/csv",
         )
         response["Content-Disposition"] = "attachment; filename={filename}.csv".format(
             filename=self._export_filename_without_suffix()
@@ -440,21 +474,18 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         prune_data_for_talpa: bool = False,
         remove_quotes: bool = False,
     ) -> HttpResponse:
-        export_filename_without_suffix = self._export_filename_without_suffix()
-        csv_filename = f"{export_filename_without_suffix}.csv"
-        zip_filename = f"{export_filename_without_suffix}.zip"
         ordered_queryset = queryset.order_by(self.APPLICATION_ORDERING)
-        csv_service = ApplicationsCsvService(ordered_queryset, prune_data_for_talpa)
-        csv_file_content: bytes = csv_service.get_csv_string(
-            prune_data_for_talpa
-        ).encode("utf-8")
-        csv_file_info: ExportFileInfo = ExportFileInfo(
-            filename=csv_filename,
-            file_content=csv_file_content,
-            html_content="",  # No HTML content
+        export_filename_without_suffix = self._export_filename_without_suffix()
+
+        csv_file = prepare_csv_file(
+            ordered_queryset, prune_data_for_talpa, export_filename_without_suffix
         )
+
         pdf_files: List[ExportFileInfo] = prepare_pdf_files(ordered_queryset)
-        zip_file: bytes = generate_zip([csv_file_info] + pdf_files)
+
+        zip_file: bytes = generate_zip([csv_file] + pdf_files)
+        zip_filename = f"{export_filename_without_suffix}.zip"
+
         response: HttpResponse = HttpResponse(
             zip_file, content_type="application/x-zip-compressed"
         )

@@ -11,7 +11,11 @@ import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 
 import ConsentActions from './consentActions/ConsentActions';
 
-const ConsentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
+const ConsentView: React.FC<ApplicationReviewViewProps> = ({
+  data,
+  isUploading,
+  handleUpload,
+}) => {
   const translationsBase = 'common:review';
   const { t } = useTranslation();
   return (
@@ -19,7 +23,10 @@ const ConsentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
       header={t(`${translationsBase}.headings.heading9`)}
       action={
         data.status !== APPLICATION_STATUSES.RECEIVED ? (
-          <ConsentActions />
+          <ConsentActions
+            isUploading={isUploading}
+            handleUpload={handleUpload}
+          />
         ) : null
       }
     >

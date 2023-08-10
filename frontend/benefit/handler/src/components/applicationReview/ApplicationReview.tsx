@@ -1,6 +1,10 @@
 import ApplicationHeader from 'benefit/handler/components/applicationHeader/ApplicationHeader';
 import { HANDLED_STATUSES } from 'benefit/handler/constants';
-import { APPLICATION_STATUSES, BENEFIT_TYPES } from 'benefit-shared/constants';
+import {
+  APPLICATION_ORIGINS,
+  APPLICATION_STATUSES,
+  BENEFIT_TYPES,
+} from 'benefit-shared/constants';
 import { LoadingSpinner, StatusLabel } from 'hds-react';
 import * as React from 'react';
 import { ReactElement } from 'react';
@@ -13,6 +17,7 @@ import { useTheme } from 'styled-components';
 import HandlingApplicationActions from './actions/handlingApplicationActions/HandlingApplicationActions';
 import ReceivedApplicationActions from './actions/receivedApplicationActions/ReceivedApplicationActions';
 import ApplicationProcessingView from './applicationProcessingView/AplicationProcessingView';
+import AttachmentsView from './attachmentsView/AttachmentsView';
 import BenefitView from './benefitView/BenefitView';
 import CompanyInfoView from './companyInfoView/CompanyInfoView';
 import ConsentView from './consentView/ConsentView';
@@ -29,8 +34,14 @@ import SalaryBenefitCalculatorView from './salaryBenefitCalculatorView/SalaryBen
 import { useApplicationReview } from './useApplicationReview';
 
 const ApplicationReview: React.FC = () => {
-  const { application, handledApplication, isLoading, t } =
-    useApplicationReview();
+  const {
+    application,
+    handledApplication,
+    isLoading,
+    t,
+    isUploading,
+    handleUpload,
+  } = useApplicationReview();
   const theme = useTheme();
 
   const CalculatorView = (): ReactElement | null => {
@@ -85,11 +96,31 @@ const ApplicationReview: React.FC = () => {
         <ContactPersonView data={application} />
         <DeminimisView data={application} />
         <CoOperationNegotiationsView data={application} />
-        <EmployeeView data={application} />
-        <PaySubsidyView data={application} />
+        <EmployeeView
+          data={application}
+          handleUpload={handleUpload}
+          isUploading={isUploading}
+        />
+        <PaySubsidyView
+          data={application}
+          handleUpload={handleUpload}
+          isUploading={isUploading}
+        />
         <BenefitView data={application} />
-        <EmploymentView data={application} />
-        <ConsentView data={application} />
+        <EmploymentView
+          data={application}
+          handleUpload={handleUpload}
+          isUploading={isUploading}
+        />
+        {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER ? (
+          <AttachmentsView data={application} />
+        ) : (
+          <ConsentView
+            data={application}
+            handleUpload={handleUpload}
+            isUploading={isUploading}
+          />
+        )}
         {application.status === APPLICATION_STATUSES.HANDLING && (
           <>
             <CalculatorView />

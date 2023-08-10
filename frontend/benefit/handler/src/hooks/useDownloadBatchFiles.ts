@@ -1,4 +1,4 @@
-import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
+import { HandlerEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useTranslation } from 'next-i18next';
 import { useMutation, UseMutationResult } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
@@ -18,8 +18,8 @@ const useDownloadBatchFiles = (): UseMutationResult<
 
   const handleError = (): void => {
     showErrorToast(
-      t('common:applications.list.errors.fetch.label'),
-      t('common:applications.list.errors.fetch.text', { status: 'error' })
+      t('common:batches.notifications.errors.downloadError.title'),
+      t('common:batches.notifications.errors.downloadError.message')
     );
   };
 
@@ -27,7 +27,7 @@ const useDownloadBatchFiles = (): UseMutationResult<
     'downloadBatchFiles',
     (batchId: BatchID) => {
       const res = axios.get<ArrayBufferData>(
-        `${BackendEndpoint.HANDLER_APPLICATIONS}export_applications_in_batch/?batch_id=${batchId}`,
+        HandlerEndpoint.BATCH_DOWNLOAD_PDF_FILES(batchId),
         { responseType: 'arraybuffer' }
       );
       return handleResponse<ArrayBufferData>(res);

@@ -305,7 +305,7 @@ def test_application_single_read_as_applicant(
 @pytest.mark.parametrize(
     "status, expected_result",
     [
-        (ApplicationStatus.DRAFT, 404),
+        (ApplicationStatus.DRAFT, 200),
         (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, 200),
         (ApplicationStatus.RECEIVED, 200),
         (ApplicationStatus.HANDLING, 200),
@@ -1173,7 +1173,7 @@ def test_application_status_change_as_applicant(
 @pytest.mark.parametrize(
     "from_status,to_status,expected_code",
     [
-        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 404),
+        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 200),
         (ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING, 200),
         (
             ApplicationStatus.HANDLING,
@@ -1701,7 +1701,7 @@ def test_pdf_attachment_upload_and_download_as_applicant(
 @pytest.mark.parametrize(
     "status,upload_result",
     [
-        (ApplicationStatus.DRAFT, 404),
+        (ApplicationStatus.DRAFT, 201),
         (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, 201),
         (ApplicationStatus.HANDLING, 201),
         (ApplicationStatus.ACCEPTED, 403),
@@ -2179,6 +2179,30 @@ def test_handler_application_exlude_batched(handler_api_client):
         {"exclude_batched": "1"},
     )
     assert len(response.data) == 1
+
+
+def test_handler_application_filter_archived(handler_api_client):
+    apps = [
+        DecidedApplicationFactory(),
+        DecidedApplicationFactory(),
+        DecidedApplicationFactory(archived=True),
+    ]
+
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list")
+    )
+    assert len(response.data) == 2
+    for response_app in response.data:
+        assert response_app["id"] in [str(apps[0].id), str(apps[1].id)]
+        assert not response_app["archived"]
+
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list"),
+        {"filter_archived": "1"},
+    )
+    assert len(response.data) == 1
+    assert response.data[0]["id"] == str(apps[2].id)
+    assert response.data[0]["archived"]
 
 
 def _create_random_applications():

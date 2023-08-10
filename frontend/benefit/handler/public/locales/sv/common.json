@@ -12,46 +12,23 @@
     "drawer": {
       "title": "Hakemuksen viestit"
     },
-    "languageMenuButtonAriaLabel": "Ändra språk",
-    "logoutLabel": "Logga ut",
-    "loginLabel": "Logga in",
+    "languageMenuButtonAriaLabel": "Valitse kieli",
+    "logoutLabel": "Kirjaudu ulos",
+    "loginLabel": "Kirjaudu sisään",
     "userAriaLabelPrefix": "Käyttäjä:",
     "linkSkipToContent": "Hyppää pääsisältöön",
     "menuToggleAriaLabel": "Valikko"
   },
-  "notifications": {
-    "accepted": {
-      "title": "Hakemusta on puollettu",
-      "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti ja siirretty arkistoon."
-    },
-    "rejected": {
-      "title": "Hakemusta ei puollettu",
-      "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti ja siirretty arkistoon."
-    },
-    "cancelled": {
-      "title": "Hakemus on peruttu",
-      "message": "Hakemus {{applicationNum}} on peruttu onnistuneesti ja siirretty arkistoon."
-    },
-    "error": {
-      "title": "Tapahtui tuntematon virhe",
-      "message": " Yritä myöhemmin uudelleen"
-    }
-  },
   "messenger": {
-    "titles": {
-      "applicantMessage": "Hakija",
-      "handlerMessage": "Käsittelijä",
-      "note": ""
-    },
     "list": {
       "errors": {
         "create": {
-          "label": "The error occurred",
-          "text": "The error occurred when trying create the message. Please try again later."
+          "label": "Tapahtui virhe",
+          "text": " Virhe tapahtui viestiä luodessa. Yritä myöhemmin uudelleen."
         },
         "fetch": {
-          "label": "The error occurred",
-          "text": "The error occurred when trying fetch messages. Please try again later."
+          "label": "Tapahtui virhe",
+          "text": " Virhe tapahtui viestejä haettaessa. Yritä myöhemmin uudelleen."
         }
       }
     },
@@ -64,13 +41,43 @@
     "close": "Sulje",
     "noMessages": "Ei viestejä"
   },
+  "notifications": {
+    "accepted": {
+      "title": "Hakemusta on puollettu",
+      "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti."
+    },
+    "rejected": {
+      "title": "Hakemusta ei puollettu",
+      "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti."
+    },
+    "cancelled": {
+      "title": "Hakemus on peruttu",
+      "message": "Hakemus {{applicationNum}} on peruttu onnistuneesti."
+    },
+    "error": {
+      "title": "Tapahtui tuntematon virhe",
+      "message": " Yritä myöhemmin uudelleen"
+    },
+    "applicationSubmitted": {
+      "label": "Hakemus lähetty onnistuneesti",
+      "message": "Helsinki-lisä-hakemus {{applicationNumber}} {{applicantName}} on lähetetty."
+    },
+    "applicationSaved": {
+      "label": "Hakemus tallennettu",
+      "message": "Helsinki-lisä hakemus {{applicationNumber}} {{applicantName}} on tallennettu luonnoksena."
+    },
+    "applicationDeleted": {
+      "label": "Luonnos poistettu",
+      "message": "Hakemus on poistettu."
+    }
+  },
   "mainIngress": {
-    "heading": "Hakemukset",
+    "heading": "Syötä hakemus",
     "btnText": "Syötä hakemus"
   },
   "footer": {
-    "copyrightText": "Copyright text",
-    "allRightsReservedText": "All rights reserved text"
+    "copyrightText": "Copyright",
+    "allRightsReservedText": "Kaikki oikeudet pidätetään"
   },
   "languages": {
     "fi": "Suomi",
@@ -90,17 +97,25 @@
   },
   "error": {
     "generic": {
-      "label": "Error occurred",
-      "text": "Please try again later."
+      "label": "Odottamaton virhe",
+      "text": "Ole hyvä ja kokeile myöhemmin uudestaan."
     },
     "attachments": {
-      "title": "Error occurred",
-      "tooBig": "The attachemnt size is too big.",
-      "fileType": "The attachment file type is not allowed."
+      "title": "Tapahtui virhe",
+      "tooBig": "Liite on liian suuri.",
+      "fileType": "Liite on väärässä muodossa.",
+      "generic": "Liitteen käsittely epäonnistui."
     },
     "notFound": {
       "title": "Pahoittelut, sivua ei löytynyt.",
       "text": "Virhe 404: Hakemasi sivun osoite on voinut muuttua tai sivu on poistettu."
+    },
+    "backend": {
+      "Request failed with status code 500": "Virhe taustajärjestelmässä. Kokeile myöhemmin uudestaan."
+    },
+    "terms": {
+      "label": "Ehdot hyväksymättä",
+      "text": "Sinun tulee hyväksyä ehdot jatkaaksesi. Palaa takaisin ja hyväksy ehdot."
     }
   },
   "applications": {
@@ -125,7 +140,22 @@
         },
         "additionalInformationNeededBy": "",
         "additionalInformationNeededByVal": "Muokattava {{date}}",
-        "unreadMessagesCount": ""
+        "unreadMessagesCount": "",
+        "origin": "Tyyppi",
+        "applicationStatus": "Tila",
+        "applicationOrigins": {
+          "applicant": "Digitaalinen",
+          "handler": "Paperihakemus"
+        },
+        "applicationStatuses": {
+          "draft": "Luonnos",
+          "received": "Saapunut",
+          "handling": "Käsittelyssä",
+          "additional_information_needed": "Odottaa lisätietoja",
+          "cancelled": "Peruutettu",
+          "accepted": "Hyväksytty",
+          "rejected": "Hylätty"
+        }
       },
       "messages": {
         "empty": {
@@ -134,13 +164,16 @@
           "rejected": "Ei yhtään käsiteltyä kielteistä hakemusta.",
           "received": "Ei yhtään saapunutta hakemusta.",
           "archived": "Ei yhtään arkistoitua hakemusta.",
-          "additional_information_needed": "Ei yhtään lisätietoja odottavaa hakemusta."
+          "additional_information_needed": "Ei yhtään lisätietoja odottavaa hakemusta.",
+          "all": "Ei yhtään hakemusta.",
+          "draft": "Ei yhtään luonnosta."
         }
       },
       "headings": {
         "all": "Kaikki",
         "received": "Saapuneet",
         "handling": "Käsittelyssä",
+        "draft": "Luonnokset",
         "accepted": "Myönteiset",
         "rejected": "Kielteiset",
         "infoRequired": "Odottaa lisätietoja",
@@ -148,8 +181,8 @@
       },
       "errors": {
         "fetch": {
-          "label": "Error occurred",
-          "text": "Unable to fetch applications with status {{status}}"
+          "label": "Virhe noudettaessa hakemuksia",
+          "text": "Hakemusten haku epäonnistui virhekoodilla {{status}}."
         }
       },
       "total": {
@@ -162,10 +195,393 @@
       },
       "actions": {
         "addToBatch": "Lisää valitut koontiin"
+      },
+      "removeFromBatch": {
+        "success": {
+          "headingAppRemoved": "Hakemus on poistettu koonnista",
+          "headingBatchRemoved": "Koonti poistettu"
+        }
       }
     },
+    "pageHeaders": {
+      "created": "Luotu",
+      "saved": "Tallennettu",
+      "sent": "Hakemusnumero: {{applicationNumber}}  |  Lähetetty {{submittedAt}}",
+      "new": "Uusi hakemus",
+      "edit": "Hakemus",
+      "helperText": "Ole hyvä ja tarkista hakemus ennen lähetystä.",
+      "guideText": "Kaikki *-merkityt kohdat ovat pakollisia"
+    },
+    "statuses": {
+      "draft": "Luonnos",
+      "additionalInformationNeeded": "Lisätietoja tarvitaan",
+      "received": "Vastaanotettu",
+      "approved": "Hyväksytty",
+      "rejected": "Hylätty",
+      "handling": "Käsittelyssä",
+      "cancelled": "Peruttu"
+    },
+    "steps": {
+      "step1": "Hae työnantaja",
+      "step2": "Syötä hakemus",
+      "step3": "Yhteenveto"
+    },
     "actions": {
-      "close": "Sulje"
+      "saveAndContinueLater": "Tallenna luonnoksena ja sulje",
+      "deleteApplication": "Poista hakemus",
+      "deleteApplicationConfirm": "Haluatko varmasti poistaa luonnoksen?",
+      "deleteApplicationDescription": "Hakemus poistetaan lopullisesti eikä sitä voida enää palauttaa.",
+      "continue": "Jatka",
+      "send": "Tallenna ja siirrä saapuneisiin",
+      "back": "Takaisin",
+      "back2": "Palaa takaisin",
+      "edit": "Muokkaa",
+      "close": "Sulje",
+      "openTermsAsPDF": "Avaa ehdot PDF-tiedostona",
+      "continueToService": "Jatka palveluun",
+      "pauseAndExit": "Keskeytä ja poistu",
+      "addNote": "Lisää muistiinpano",
+      "backWithoutSaving": "Palaa takaisin tallentamatta",
+      "backWithoutSavingConfirm": "Haluatko varmasti palata takaisin tallentamatta?",
+      "backWithoutSavingDescription": "Tehdyt muutokset eivät tallennu.",
+      "handleAsRejected": "Käsittele kielteisenä"
+    },
+    "sections": {
+      "companySearch": {
+        "searchCompany": "Etsi yritys tai yhteisö",
+        "searchCompanyDetails": "Kirjoita yrityksen tai yhteisön nimi tai Y-tunnus",
+        "heading": "Etsi yritys tai yhteisö",
+        "search": "Hae",
+        "noResults": "Hakuehdoilla ei löytynyt yhtään yritystä tai yhteisöä",
+        "error": "Tapahtui virhe",
+        "select": "Valitse yritys tai yhteisö ja paina Valitse",
+        "selectButton": "Valitse",
+        "notifications": {
+          "error": {
+            "label": "Tapahtui virhe",
+            "text": "Ole hyvä ja kokeile uudelleen myöhemmin."
+          },
+          "noResults": {
+            "label": "Ei hakutuloksia",
+            "text": "Kokeile toista hakusanaa tai kokonaista Y-tunnusta."
+          }
+        }
+      },
+      "headings": {
+        "company1": "Työnantajan tiedot",
+        "company2": "Työnantajan yhteyshenkilö",
+        "company3": "Työnantajan saamat de minimis -tuet",
+        "company4": "YT-tilanne",
+        "company1Additional": "Postiosoite päätöstä varten",
+        "company5": "Työnantajan yhteystiedot",
+        "employment1": "Työllistettävä henkilö",
+        "employment1Short": "Palkattava henkilö",
+        "employment2": "Palkkatukipäätös",
+        "employment3": "Haettava tukimuoto",
+        "employment3Long": "Haettava tukimuoto ja ajankohta",
+        "employment4": "Tukea haetaan ajalle",
+        "employment5Employment": "Työsuhde",
+        "employment5Assignment": "Toimeksianto",
+        "employment5EmploymentSub1": "Palkkauskustannukset",
+        "attachments": "Liitteet",
+        "validity": "Hakemuksen pätevyys"
+      },
+      "deMinimisAidsHeading": "Listaa tähän kaikki organisaatiolle kuluvan vuoden ja kahden edellisen verovuoden aikana myönnetyt de minimis -tuet",
+      "deMinimisAidsAdd": "Lisää",
+      "deMinimisAidsRemove": "Poista",
+      "deMinimisAidsNo": "Onko hakijalle myönnetty deminimis-tukea?",
+      "companyName": "Työnantajan nimi",
+      "companyBusinessId": "Y-tunnus",
+      "companyStreetAddress": "Osoite",
+      "notifications": {
+        "companyInformation": {
+          "label": "Tiedot haetaan Yritys- ja yhteisötietojärjestelmästä",
+          "content": "Organisaatiosi perustiedot haetaan Yritys- ja yhteisötietojärjestelmästä. Halutessasi voit vaihtaa tilalle toisen postiosoitteen, johon Helsinki-lisä-päätös toimitetaan."
+        },
+        "deMinimisAidMaxAmount": {
+          "label": "Enimmäismäärä ylitetty",
+          "content": "De minimis-tuen enimmäismäärä on ylitetty. Tuki voi olla enintään 200 000 euroa, joka myönnetään yritykselle kuluvan vuoden ja kahden edellisen verovuoden kuluessa. Enimmäismäärässä huomioidaan kaikkien eri viranomaisten kyseisenä ajanjaksona de minimis -tukena myöntämä rahoitus."
+        },
+        "salaryBenefit": {
+          "label": "Palkkatuettu oppisopimus",
+          "content": "Palkkatuettuun oppisopimukseen voi hakea joko työllistämisen tai palkan Helsinki-lisää"
+        },
+        "employmentBenefitSelected": {
+          "label": "Ajanjakso",
+          "content": "Varmista, että haettava ajankohta vastaa työsopimuksen/palkkatuen voimassaoloa."
+        },
+        "salaryBenefitSelected": {
+          "label": "Ajanjakso",
+          "content": "Varmista, että haettava ajankohta vastaa työsopimuksen/palkkatuen voimassaoloa."
+        },
+        "commissionBenefitSelected": {
+          "label": "Ajanjakso",
+          "content": "Varmista, että haettava kesto on sama kuin toimeksiantosopimuksessa."
+        },
+        "noAvailableBenefitTypes": {
+          "label": "Ei haettavia tukimuotoja",
+          "content": "Yhteisö, joka ei harjoita taloudellista toimintaa voi hakea ainoastaan Palkan Helsinki-lisää. Palkan Helsinki-lisän edellytyksenä on työsuhteeseen myönnetty palkkatuki."
+        },
+        "requiredAttachments": {
+          "label": "Puuttuvat liitteet",
+          "content": "Yksi tai useampi pakollinen liite puuttuu."
+        },
+        "requiredConsents": {
+          "label": "Puuttuvat suostumukset",
+          "content": "Yksi tai useampi suostumus puuttuu."
+        }
+      },
+      "fields": {
+        "useAlternativeAddress": {
+          "label": "Käytä toista postiosoitetta, johon Helsinki-lisä päätös toimitetaan"
+        },
+        "alternativeCompanyStreetAddress": {
+          "label": "Osoite",
+          "placeholder": "Katuosoite"
+        },
+        "alternativeCompanyPostcode": {
+          "label": "Postinumero",
+          "placeholder": "Postinumero"
+        },
+        "alternativeCompanyCity": {
+          "label": "Postitoimipaikka",
+          "placeholder": "Postitoimipaikka"
+        },
+        "companyDepartment": {
+          "label": "Toimipiste tai osasto (valinnainen)",
+          "placeholder": "Toimipiste / osasto"
+        },
+        "companyBankAccountNumber": {
+          "label": "Tilinumero",
+          "placeholder": "IBAN muodossa"
+        },
+        "companyContactPersonFirstName": {
+          "label": "Etunimi",
+          "placeholder": "Etunimi"
+        },
+        "companyContactPersonLastName": {
+          "label": "Sukunimi",
+          "placeholder": "Sukunimi"
+        },
+        "companyContactPersonPhoneNumber": {
+          "label": "Puhelin",
+          "placeholder": "040 1234567"
+        },
+        "companyContactPersonEmail": {
+          "label": "Sähköposti asiointia varten",
+          "placeholder": "Sähköpostiosoite"
+        },
+        "applicantLanguage": {
+          "label": "Asiointikieli"
+        },
+        "associationHasBusinessActivities": {
+          "label": "Harjoittaako työnantaja taloudellista toimintaa?",
+          "yes": "Kyllä",
+          "no": "Ei"
+        },
+        "associationImmediateManagerCheck": {
+          "label": "Lähiesihenkilö palkattavalle henkilölle",
+          "placeholder": "Työnantajalla on asianmukaiset työtilat ja työnjohdollinen, ei-palkkatuettu esihenkilö palkattavalle henkilölle."
+        },
+        "deMinimisAid": {
+          "label": "Onko hakijalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis -tukea?",
+          "yes": "Kyllä",
+          "no": "Ei"
+        },
+        "deMinimisAidGranter": {
+          "label": "Tuen myöntäjä",
+          "placeholder": "Myöntävä taho"
+        },
+        "deMinimisAidAmount": {
+          "label": "Tuen määrä (euroina)",
+          "placeholder": "€"
+        },
+        "deMinimisAidGrantedAt": {
+          "label": "Myöntämispäivämäärä",
+          "labelShort": "Myöntämispäivämäärä",
+          "placeholder": "Valitse"
+        },
+        "coOperationNegotiations": {
+          "label": "Onko organisaatiolla käynnissä YT-neuvottelut?",
+          "yes": "Kyllä",
+          "no": "Ei"
+        },
+        "coOperationNegotiationsDescription": {
+          "label": "Anna tarkempi selvitys YT-tilanteesta:",
+          "placeholder": "Kuvaile tilannetta"
+        },
+        "firstName": {
+          "label": "Etunimi",
+          "placeholder": "Etunimi"
+        },
+        "lastName": {
+          "label": "Sukunimi",
+          "placeholder": "Sukunimi"
+        },
+        "socialSecurityNumber": {
+          "label": "Henkilötunnus",
+          "placeholder": "Henkilötunnus"
+        },
+        "phoneNumber": {
+          "label": "Puhelin",
+          "placeholder": "040 1234567"
+        },
+        "isLivingInHelsinki": {
+          "label": "Työllistetyn kotikunta on Helsinki",
+          "placeholder": "Kyllä, työllistettävä on kirjoilla Helsingissä viimeistään työsuhteen alkaessa",
+          "yes": "Kyllä",
+          "no": "Ei",
+          "error": "Jotta tukea voidaan myöntää, kotikunnan tulee olla Helsinki."
+        },
+        "paySubsidyGranted": {
+          "label": "Onko työsuhteeseen myönnetty palkkatuki?",
+          "yes": "Kyllä",
+          "no": "Ei"
+        },
+        "paySubsidyPercent": {
+          "label": "Päätöksessä oleva palkkatukiprosentti"
+        },
+        "additionalPaySubsidyPercent": {
+          "label": "Toisen myönnetyn palkkatuen palkkatukiprosentti"
+        },
+        "apprenticeshipProgram": {
+          "label": "Onko kyseessä oppisopimus?",
+          "yes": "Kyllä",
+          "no": "Ei"
+        },
+        "benefitType": {
+          "label": "Tukimuoto",
+          "employment": "Työllistämisen Helsinki-lisä",
+          "salary": "Palkan Helsinki-lisä",
+          "commission": "Toimeksiannon Helsinki-lisä"
+        },
+        "jobTitle": {
+          "label": "Tehtävänimike",
+          "placeholder": "Tehtävänimike"
+        },
+        "workingHours": {
+          "label": "Työaika tuntia viikossa",
+          "placeholder": "Tunteja",
+          "view": "Työaika: {{workingHours}} tuntia viikossa"
+        },
+        "collectiveBargainingAgreement": {
+          "label": "Sovellettava työehtosopimus",
+          "placeholder": "Työehtosopimus"
+        },
+        "monthlyPay": {
+          "label": "Bruttopalkka (€/kk)",
+          "placeholder": "Palkka",
+          "view": "Bruttopalkka {{monthlyPay}} euroa kuukaudessa"
+        },
+        "otherExpenses": {
+          "label": "Sivukulut (€/kk)",
+          "placeholder": "Sivukulut",
+          "view": "Sivukulut {{otherExpenses}} euroa kuukaudessa"
+        },
+        "vacationMoney": {
+          "label": "Lomaraha (€)",
+          "placeholder": "Lomaraha",
+          "view": "Lomaraha {{vacationMoney}} euroa"
+        },
+        "commissionDescription": {
+          "label": "Toimeksiannon kuvaus",
+          "placeholder": "Kuvaus"
+        },
+        "commissionAmount": {
+          "label": "Palkkio euroina",
+          "placeholder": "Palkkio"
+        },
+        "startDate": {
+          "label": "Alkaen",
+          "placeholder": "Alkaen"
+        },
+        "endDate": {
+          "label": "Päättyen",
+          "placeholder": "Päättyen"
+        },
+        "applicantAgreement": {
+          "label": "Hakija on täyttänyt suostumukset",
+          "yes": "Kyllä",
+          "no": "Ei"
+        },
+        "employerSigned": {
+          "label": "Työnantaja on allekirjoittanut hakemuksen",
+          "yes": "Kyllä",
+          "no": "Ei"
+        },
+        "employeeSigned": {
+          "label": "Työllistettävä on allekirjoittanut hakemuksen",
+          "yes": "Kyllä",
+          "no": "Ei"
+        }
+      },
+      "salaryExpensesExplanation": "Bruttopalkka ja sivukulut ilmoitetaan euroina kuukaudessa, lomaraha kertasummana",
+      "tooltips": {
+        "heading5Employment": "Sovellettava työehtosopimus: esim. Kaupan työehtosopimus. Jos alalla ei ole velvoittavaa työehtosopimusta, merkitse viiva.",
+        "heading5EmploymentSub1": "Bruttopalkalla tarkoitetaan tuella palkattavalle maksettavaa palkkaa ennen työntekijän lakisääteisten maksujen (työntekijän työttömyysvakuutus- ja eläkevakuutusmaksu) ja verojen pidätystä. Jos tuella palkattavalle maksetaan palkan lisiä (esim. ilta-, yö- tai vuorotyölisä), ota niiden arvioitu määrä huomioon bruttopalkassa. Työnantajan lakisääteisiin sivukuluihin luetaan sosiaaliturva-, työeläkevakuutus-, tapaturmavakuutus- ja työttömyysvakuutusmaksu sekä pakollinen ryhmähenkivakuutusmaksu. Sivukulut tarkoittavat palkasta maksettavien työnantajan lakisääteisten sivukulujen määrä kuukaudessa. Lomaraha on tuella katettava palkkauskustannus silloin, kun se maksetaan tukijakson aikana pidetystä vuosilomapalkasta. Arvioi tukijakson aikana maksettavan lomarahan määrä. Lomakorvaus ei ole Helsinki-lisällä katettava korvaus.",
+        "heading5Assignment": "Palkkauskustannukset tooltip text",
+        "heading2": "Palkkatuki on työttömän työnhakijan työllistymisen edistämiseksi tarkoitettu rahallinen tuki, jonka TE-palvelut voi myöntää työnantajalle palkkauskustannuksiin.",
+        "heading3": "Työllistämisen Helsinki-lisä on tarkoitettu ohjaus-, perehdytys-, työväline-, työvaate- ja työtilakustannuksiin silloin, kun niihin ei makseta muuta tukea. Palkan Helsinki-lisä on tarkoitettu työllistetyn henkilön palkkauskustannuksiin (=bruttopalkka, lakisääteiset sivukulut ja lomaraha). Toimeksiannon Helsinki-lisä on tarkoitettu yksittäisen työn tai projektin suorittamiseen."
+      },
+      "messages": {
+        "selectBenefitType": "Valitse ensin tukimuoto yllä",
+        "employmentBenefitSelected": "Helsinki-lisää haetaan työsuhteen keston mukaisesti 1–12 kuukaudeksi.",
+        "salaryBenefitSelected": "Oppisopimuksessa 12 kuukautta ylittävältä jaksolta on tehtävä uusi hakemus",
+        "commissionBenefitSelected": "Merkitse tähän toimeksiannon kesto",
+        "loading": "Ladataan..."
+      },
+      "attachments": {
+        "heading1": "Liitteet",
+        "types": {
+          "employmentContract": {
+            "title": "Työsopimus"
+          },
+          "paySubsidyDecision": {
+            "title": "Palkkatukipäätös"
+          },
+          "commissionContract": {
+            "title": "Toimeksiantosopimus"
+          },
+          "educationContract": {
+            "title": "Sopimus oppisopimuskoulutuksen järjestämisestä"
+          },
+          "helsinkiBenefitVoucher": {
+            "title": "Helsinki-lisä seteli"
+          },
+          "fullApplication": {
+            "title": "Paperihakemus"
+          },
+          "otherAttachment": {
+            "title": "Muu liite"
+          }
+        },
+        "attachmentsIngress": "Lisää hakemukselle seuraavat liitteet. Kaikki *-merkityt liitteet ovat pakollisia. Tiedostomuoto voi olla JPG, PNG tai PDF ja kooltaan maksimissaan 10 MB.",
+        "add": "Liitä tiedosto",
+        "remove": "Poista liite"
+      }
+    },
+    "summary": {
+      "heading1": "Vänligen kontrollera ansökan innan du skickar in den."
+    },
+    "credentials": {
+      "heading1": "Työllistettävän henkilötietojen käsittely",
+      "heading2": "Henkilötietojen käsittely",
+      "sections": {
+        "electronicPowerOfAttorney": {
+          "title": "Sähköinen valtakirja",
+          "description": "Pyydä palkattavaa henkilöä tekemään sähköinen valtakirja. Saat ilmoituksen kun valtakirja on tehty.",
+          "action1": "Pyydä sähköistä valtakirjaa"
+        },
+        "uploadPowerOfAttorney": {
+          "title": "Liitä tiedoksianto",
+          "description": "Tiedostomuoto voi olla JPG, PNG tai PDF.",
+          "action1": "Tulosta",
+          "action2": "Liitä tiedoksianto"
+        }
+      }
+    },
+    "send": {
+      "heading1": "Ehdot"
     }
   },
   "review": {
@@ -205,7 +621,8 @@
       "heading7": "Haettava tukimuoto ja ajankohta",
       "heading8": "Työsuhde",
       "heading9": "Suostumus",
-      "heading10": "Hakemuksen käsittely"
+      "heading10": "Hakemuksen käsittely",
+      "heading11": "Muut liitteet"
     },
     "fields": {
       "businessId": "Y-tunnus",
@@ -219,7 +636,7 @@
       "deMinimisAidTotal": "Yhteensä",
       "deMinimisAidsNo": "Hakija ei ole ilmoittanut aiemmista de minimis -tuista.",
       "coOperationNegotiations": "Onko hakijalla menossa YT-neuvottelut?",
-      "isLivingInHelsinki": "Työllistetyn kotikunta on Helsinki",
+      "isLivingInHelsinki": "Työllistetyn kotikunta on Helsinki ",
       "paySubsidyGranted": "Onko työsuhteeseen myönnetty palkkatuki?",
       "apprenticeshipProgram": "Onko kyseessä oppisopimus?",
       "benefitType": "Tukimuoto",
@@ -363,6 +780,8 @@
   },
   "attachments": {
     "heading1": "Liittet",
+    "add": "Liitä tiedosto",
+    "remove": "Poista liite",
     "types": {
       "employmentContract": {
         "title": "Työsopimus"
@@ -378,10 +797,14 @@
       },
       "helsinkiBenefitVoucher": {
         "title": "Helsinki-lisä seteli"
+      },
+      "fullApplication": {
+        "title": "Paperihakemus"
+      },
+      "otherAttachment": {
+        "title": "Muu liite"
       }
-    },
-    "add": "Liitä tiedosto",
-    "remove": "Poista liite"
+    }
   },
   "utility": {
     "yes": "Kyllä",
@@ -389,51 +812,56 @@
     "and": "ja",
     "home": "Palaa etusivulle",
     "check": "Tarkastele",
-    "loading": "Ladataan …"
+    "loading": "Ladataan …",
+    "cancel": "Peruuta",
+    "confirm": "Vahvista"
   },
   "upload": {
-    "isUploading": "Uploading...",
-    "errorTitle": "Uploading failed",
-    "errorMessage": "Something went wrong. Please try again later."
+    "isUploading": "Ladataan...",
+    "errorTitle": "Lataaminen epäonnistui",
+    "errorMessage": "Jotakin meni vikaan. Ole hyvä ja kokeile uudelleen myöhemmin."
   },
   "form": {
     "validation": {
-      "required": "Detta är ett obligatoriskt fält",
-      "invalid": "Ogiltig värde",
+      "required": "Tämä kenttä on pakollinen",
+      "invalid": "Virheellinen arvo",
       "number": {
-        "invalid": "Ogiltigt värde, ange endast siffror",
-        "max": "Maxvärdet är {{max}}",
-        "min": "Värdet måste vara minst {{min}}"
+        "invalid": "Virheellinen arvo, ilmoita vain numeroita",
+        "max": "Arvon tulee olla enintään {{max}}",
+        "min": "Arvon tulee olla vähintään {{min}}"
       },
       "string": {
-        "max": "Detta fält kan vara upp till {{max}} tecken långt",
-        "min": "Detta fält måste vara minst {{min}} tecken långt",
-        "url": "Detta fält måste vara en giltig URL",
-        "date": "Detta fält måste vara en giltig datum",
-        "time": "Tid måste ges i följande format hh:mm",
-        "positiveNumber": "Detta fält måste vara ett giltigt nummer"
+        "max": "Tämä kenttä voi olla korkeintaan {{max}} merkkiä pitkä",
+        "min": "Tämä kenttä tulee olla vähintään {{min}} merkkiä pitkä",
+        "url": "Tämän kentän on oltava kelvollinen URL-osoite",
+        "date": "Tämän kentän on oltava kelvollinen päivämäärä",
+        "time": "Ajan tulee olla muotoa hh:mm",
+        "positiveNumber": "Tämän kentän on oltava kelvollinen numero"
       },
       "date": {
-        "mustNotInThePast": "Detta datum kan inte vara i förr",
-        "min": "Detta datum måste vara tidigast {{min}}",
-        "max": "Detta datum måste vara senast {{max}}",
-        "format": "This date is incorrect"
+        "mustNotInThePast": "Päivämäärä ei voi olla menneisyydessä",
+        "min": "Päivämäärän on oltava aikaisintaan {{min}}",
+        "max": "Päivämäärän on oltava viimeistään {{max}}",
+        "format": "Päivämäärän on oltava muotoa pp.kk.vvvv"
       },
       "time": {
-        "min": "Den här tiden måste vara tidigast {{min}}",
-        "max": "Den här tiden måste vara senast {{max}}"
+        "min": "Arvon tulee olla aikaisintaan {{min}}",
+        "max": "Arvon tulee olla viimeistään {{max}}"
       },
       "phone": {
-        "invalid": "Felaktigt telefonnummer"
+        "invalid": "Virheellinen puhelinnumero"
       },
       "email": {
-        "invalid": "Felaktig e-postadress"
+        "invalid": "Virheellinen sähköpostiosoite"
       },
       "iban": {
-        "invalid": "Felaktigt IBAN-kontonummer"
+        "invalid": "Virheellinen IBAN-tilinumero"
       },
       "ssn": {
-        "invalid": "Felaktig personbeteckning"
+        "invalid": "Virheellinen henkilötunnus"
+      },
+      "phoneNumber": {
+        "max": "Kentän maksimipituus on {{max}}"
       },
       "name": {
         "invalid": "Etunimi ja sukunimi vaaditaan"
@@ -459,15 +887,15 @@
     }
   },
   "login": {
-    "login": "Logga in i tjänsten",
-    "logoutMessageLabel": "Du har loggat ut",
+    "login": "Kirjaudu palveluun",
+    "logoutMessageLabel": "Olet kirjautunut ulos",
     "userStateErrorLabel": "Kirjautumisessa on häiriö",
     "userStateErrorContent": "Kirjautumisessa on vikaa tai taustajärjestelmään ei saada yhteyttä. Yritä myöhemmin uudelleen.",
-    "errorLabel": "Ett okänt fel inträffade. Logga in på nytt.",
-    "sessionExpiredLabel": "Användarsessionen föråldrades. Logga in på nytt.",
-    "infoLabel": "Att använda tjänsten kräver stark autentisering",
-    "logoutInfoContent": "Du har nu loggats ut. Om du vill fortsätta använda tjänsten, logga in på nytt genom att klicka på knappen nedan.",
-    "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig."
+    "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään",
+    "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
+    "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
+    "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
+    "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Voit valita itse, mitä tunnistustapaa haluat käyttää. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi."
   },
   "select": "Valitse",
   "batches": {
@@ -490,33 +918,93 @@
       },
       "empty": "Tyhjä koonti"
     },
+    "tooltips": {
+      "lockedBatch": "{{ name }} vie parhaillaan hakemuksia Ahjoon. Koontin ei juuri nyt voi tehdä muutoksia. Odota hetki tai avaa lukko."
+    },
     "notifications": {
       "addToBatch": {
         "success": {
           "heading": "Koontiin siirto onnistui!",
-          "text": "Olet muodostanut {{ count }} hakemuksesta koonnin."
+          "text": "Olet lisännyt {{ count }} hakemusta koontiin."
         }
       },
-      "registerToAhjo": {
+      "removeFromBatch": {
+        "success": {
+          "headingAppRemoved": "Hakemus on poistettu koonnista",
+          "headingBatchRemoved": "Koonti poistettu"
+        }
+      },
+      "statusChange": {
         "awaiting_ahjo_decision": "Koonti merkitty Ahjoon viedyksi",
+        "exported_ahjo_report": "Ahjo-valmistelu aloitettu, koonti lukittu",
         "draft": "Koonti palautettu takaisin odottamaan päätösvalmistelua",
+        "sent_to_talpa": "Koonti käsitelty ja arkistoitu",
         "accepted": "Koonti lähetetty Talpaan ja arkistoitu",
         "rejected": "Koonti arkistoitu"
       },
       "errors": {
         "batchInvalidDraftAlreadyExists": {
-          "title": "Uuden Ahjo-koonnin valmistelu on jo käynnissä",
-          "message": "Voit palauttaa tämän koonnin takaisin käsittelyyn vasta, kun jo valmistelussa oleva keskeneräinen koonti on viety Ahjoon"
+          "draft": {
+            "title": "Uuden Ahjo-koonnin valmistelu on jo käynnissä",
+            "message": "Voit palauttaa tämän koonnin takaisin käsittelyyn vasta, kun jo valmistelussa oleva keskeneräinen koonti on viety Ahjoon"
+          },
+          "locked": {
+            "title": "Hakemuksia ei voitu siirtää koontiin",
+            "message": "Kollegasi on valmistelemassa koontia Ahjoon. Voit luoda uuden Ahjo-koonnin, kun hän on ensin valmistellut koonnin loppuun."
+          }
+        },
+        "downloadError": {
+          "title": "Liitetiedostojen lataus epäonnistui",
+          "message": "Tekninen virhe. Yhden tai useamman hakemuksen tiedot saattavat olla puuttellisia."
         }
       }
     },
     "actions": {
+      "markAsReadyForAhjo": "Aloita Ahjo-valmistelu",
       "markAsRegisteredToAhjo": "Merkitse Ahjoon viedyksi",
       "markedAsRegisteredToAhjo": "Viety Ahjoon",
-      "markToPaymentAndArchive": "Merkitse maksuun ja arkistoi",
+      "markToTalpa": "Merkitse maksuun ja arkistoi",
       "markToArchive": "Arkistoi",
       "markAsWaitingForAhjo": "Palauta odottamaan Ahjoon vientiä",
-      "downloadFiles": "Lataa liitteet"
+      "returnToInspection": "Muokkaa tarkastustietoja",
+      "downloadFiles": "Lataa liitteet",
+      "downloadP2PFile": "Lataa Talpa-tiedosto",
+      "deleteBatch": "Tyhjennä koonti",
+      "lockedBatch": "Lukittu"
+    },
+    "dialog": {
+      "batchRemoval": {
+        "heading": "Tyhjennä koonti",
+        "text": "Oletko varma, että haluat tuhota koonnin?"
+      },
+      "removeApplication": {
+        "heading": "Poista hakemus koonnista",
+        "text": "Oletko varma, että haluat poistaa hakemuksen koonnista? {{ applicationNumber }}"
+      },
+      "fromLockedToDraft": {
+        "heading": "Koonti lukittu",
+        "text": "Haluatko vapauttaa koonnin ja tehdä siihen muutoksia?"
+      },
+      "fromDraftToInspection": {
+        "heading": "Merkitse koonti Ahjoon viedyksi",
+        "text": "Haluatko viedä koonnin Ahjoon?"
+      },
+      "fromInspectionToDraft": {
+        "heading": "Palauta odottamaan Ahjoon vientiä",
+        "text": "Oletko varma, että haluat palauttaa koonnin odottamaan Ahjoon vientiä?"
+      },
+      "fromInspectionToCompletion": {
+        "heading": "Hyväksy tarkastustiedot",
+        "text": "Haluatko merkitä koonnin tarkastetuksi?"
+      },
+      "fromCompletionToInspection": {
+        "heading": "Palauta koonti aiempaan vaiheeseen",
+        "text": "Haluatko palata aiempaan vaiheeseen ja tehdä muutoksia asiantarkastajien nimiin?"
+      },
+      "fromCompletionToArchive": {
+        "heading": "Arkistoi koonti",
+        "text": "Haluatko merkitä koonnin valmiiksi ja arkistoida sen?"
+      }
     },
     "form": {
       "fields": {
@@ -525,7 +1013,10 @@
         "sectionOfTheLaw": "Pykälä",
         "decisionDate": "Päätöksen päivämäärä",
         "expertInspectorName": "Asiantarkistajan nimi",
-        "expertInspectorTitle": "Asiantarkistajan titteli"
+        "expertInspectorTitle": "Asiantarkistajan titteli",
+        "p2pInspectorName": "Tarkastajan nimi, P2P",
+        "p2pInspectorEmail": "Tarkastajan sähköposti, P2P",
+        "p2pCheckerName": "Hyväksyjän nimi, P2P"
       },
       "errors": {
         "decision_maker_name": "Pakollinen tieto",
@@ -533,7 +1024,10 @@
         "section_of_the_law": "Pykälän on oltava muodossa §1234",
         "decision_date": "Pakollinen tieto",
         "expert_inspector_name": "Pakollinen tieto",
-        "expert_inspector_title": "Pakollinen tieto"
+        "expert_inspector_title": "Pakollinen tieto",
+        "p2p_inspector_name": "Pakollinen tieto",
+        "p2p_inspector_email": "Pakollinen tieto",
+        "p2p_checker_name": "Pakollinen tieto"
       }
     }
   },

@@ -23,3 +23,6 @@ export const setAppLoaded = (): void => {
     }
   }
 };
+
+export const isTruthy = (value: string | boolean): boolean =>
+  ['1', true, 'true'].includes(value);

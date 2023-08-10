@@ -13,6 +13,7 @@ from simple_history.models import HistoricalRecords
 from applications.enums import (
     AhjoDecision,
     ApplicationBatchStatus,
+    ApplicationOrigin,
     ApplicationStatus,
     ApplicationStep,
     AttachmentType,
@@ -27,6 +28,7 @@ from common.localized_iban_field import LocalizedIBANField
 from common.utils import DurationMixin
 from companies.models import Company
 from shared.models.abstract_models import TimeStampedModel, UUIDModel
+from users.models import User
 
 # todo: move to some better location?
 APPLICATION_LANGUAGE_CHOICES = (
@@ -135,6 +137,13 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
         verbose_name=_("status"),
         choices=ApplicationStatus.choices,
         default=ApplicationStatus.DRAFT,
+    )
+
+    application_origin = models.CharField(
+        max_length=64,
+        verbose_name=_("application origin"),
+        choices=ApplicationOrigin.choices,
+        default=ApplicationOrigin.APPLICANT,
     )
 
     application_number = models.IntegerField(
@@ -476,6 +485,13 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
     * Transferring payment data to Talpa
     """
 
+    handler = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+
     status = models.CharField(
         max_length=64,
         verbose_name=_("status of batch"),
@@ -504,6 +520,16 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
         blank=True,
         validators=[validate_decision_date],
     )
+    p2p_inspector_name = models.CharField(
+        max_length=128, blank=True, verbose_name=_("P2P inspector's name")
+    )
+    p2p_inspector_email = models.EmailField(
+        blank=True, verbose_name=_("P2P inspector's email address")
+    )
+    p2p_checker_name = models.CharField(
+        max_length=64, blank=True, verbose_name=_("P2P acceptor's title")
+    )
+
     expert_inspector_name = models.CharField(
         max_length=128, blank=True, verbose_name=_("Expert inspector's name")
     )
@@ -524,7 +550,11 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
                 and self.status == ApplicationBatchStatus.DRAFT
             ):
                 drafts = ApplicationBatch.objects.filter(
-                    status=self.status, proposal_for_decision=self.proposal_for_decision
+                    status__in=[
+                        ApplicationBatchStatus.DRAFT,
+                        ApplicationBatchStatus.AHJO_REPORT_CREATED,
+                    ],
+                    proposal_for_decision=self.proposal_for_decision,
                 ).exclude(id=self.id)
                 if len(drafts) > 0:
                     raise BatchTooManyDraftsError(
@@ -534,25 +564,40 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
                     )
 
         def _clean_require_batch_data_on_completion(self):
+            def raise_error():
+                raise BatchCompletionRequiredFieldsError(
+                    "Required batch fields are missing!"
+                )
+
             if self.status not in [
                 ApplicationBatchStatus.DECIDED_ACCEPTED,
                 ApplicationBatchStatus.DECIDED_REJECTED,
             ]:
                 return
 
-            if not all(
-                [
-                    self.decision_maker_title,
-                    self.decision_maker_name,
-                    self.section_of_the_law,
-                    validate_decision_date(self.decision_date),
-                    self.expert_inspector_name,
-                    self.expert_inspector_title,
-                ]
+            required_fields_rejected = [
+                self.decision_maker_title,
+                self.decision_maker_name,
+                self.section_of_the_law,
+                validate_decision_date(self.decision_date),
+                self.expert_inspector_name,
+                self.expert_inspector_title,
+            ]
+
+            required_fields_accepted = required_fields_rejected + [
+                self.p2p_inspector_name,
+                self.p2p_inspector_email,
+                self.p2p_checker_name,
+            ]
+
+            if self.status == ApplicationBatchStatus.DECIDED_ACCEPTED and not all(
+                required_fields_accepted
             ):
-                raise BatchCompletionRequiredFieldsError(
-                    "Required batch fields are missing!"
-                )
+                raise_error()
+            if self.status == ApplicationBatchStatus.DECIDED_REJECTED and not all(
+                required_fields_rejected
+            ):
+                raise_error()
 
         _clean_require_batch_data_on_completion(self)
         _clean_one_draft_per_decision(self)

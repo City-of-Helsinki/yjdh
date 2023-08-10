@@ -23,6 +23,7 @@ from applications.api.v1.status_transition_validator import (
 )
 from applications.benefit_aggregation import get_former_benefit_info
 from applications.enums import (
+    ApplicationOrigin,
     ApplicationStatus,
     AttachmentRequirement,
     AttachmentType,
@@ -424,7 +425,14 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
 
     @extend_schema_field(TermsSerializer())
     def get_applicant_terms_in_effect(self, obj):
-        terms = Terms.objects.get_terms_in_effect(TermsType.APPLICANT_TERMS)
+        terms_map = {
+            ApplicationOrigin.APPLICANT: TermsType.APPLICANT_TERMS,
+            ApplicationOrigin.HANDLER: TermsType.HANDLER_TERMS,
+        }
+        terms_type = terms_map.get(
+            ApplicationOrigin(obj.application_origin), ApplicationOrigin.APPLICANT
+        )
+        terms = Terms.objects.get_terms_in_effect(terms_type)
         if terms:
             # If given the request in context, DRF will output the URL for FileFields
             context = {"request": self.context.get("request")}
@@ -532,6 +540,9 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             return None
         return obj.modified_at
 
+    def get_company_for_new_application(self, _):
+        raise NotImplementedError()
+
     def _get_pay_subsidy_attachment_requirements(self, application):
         req = []
         if application.pay_subsidy_percent:
@@ -540,27 +551,50 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             )
         return req
 
+    @staticmethod
+    def _get_handler_attachment_requirements(application):
+        if application.application_origin == ApplicationOrigin.HANDLER:
+            return [
+                (AttachmentType.FULL_APPLICATION, AttachmentRequirement.REQUIRED),
+                (AttachmentType.OTHER_ATTACHMENT, AttachmentRequirement.OPTIONAL),
+            ]
+        return []
+
     def get_attachment_requirements(self, obj):
         if obj.apprenticeship_program:
-            return [
-                (AttachmentType.EMPLOYMENT_CONTRACT, AttachmentRequirement.REQUIRED),
-                (AttachmentType.EDUCATION_CONTRACT, AttachmentRequirement.REQUIRED),
-                (
-                    AttachmentType.HELSINKI_BENEFIT_VOUCHER,
-                    AttachmentRequirement.OPTIONAL,
-                ),
-            ] + self._get_pay_subsidy_attachment_requirements(obj)
+            return (
+                [
+                    (
+                        AttachmentType.EMPLOYMENT_CONTRACT,
+                        AttachmentRequirement.REQUIRED,
+                    ),
+                    (AttachmentType.EDUCATION_CONTRACT, AttachmentRequirement.REQUIRED),
+                    (
+                        AttachmentType.HELSINKI_BENEFIT_VOUCHER,
+                        AttachmentRequirement.OPTIONAL,
+                    ),
+                ]
+                + self._get_pay_subsidy_attachment_requirements(obj)
+                + self._get_handler_attachment_requirements(obj)
+            )
         elif obj.benefit_type in [
             BenefitType.EMPLOYMENT_BENEFIT,
             BenefitType.SALARY_BENEFIT,
         ]:
-            return [
-                (AttachmentType.EMPLOYMENT_CONTRACT, AttachmentRequirement.REQUIRED),
-                (
-                    AttachmentType.HELSINKI_BENEFIT_VOUCHER,
-                    AttachmentRequirement.OPTIONAL,
-                ),
-            ] + self._get_pay_subsidy_attachment_requirements(obj)
+            return (
+                [
+                    (
+                        AttachmentType.EMPLOYMENT_CONTRACT,
+                        AttachmentRequirement.REQUIRED,
+                    ),
+                    (
+                        AttachmentType.HELSINKI_BENEFIT_VOUCHER,
+                        AttachmentRequirement.OPTIONAL,
+                    ),
+                ]
+                + self._get_pay_subsidy_attachment_requirements(obj)
+                + self._get_handler_attachment_requirements(obj)
+            )
         elif obj.benefit_type == BenefitType.COMMISSION_BENEFIT:
             return [
                 (AttachmentType.COMMISSION_CONTRACT, AttachmentRequirement.REQUIRED),
@@ -568,7 +602,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                     AttachmentType.HELSINKI_BENEFIT_VOUCHER,
                     AttachmentRequirement.OPTIONAL,
                 ),
-            ]
+            ] + self._get_handler_attachment_requirements(obj)
         elif not obj.benefit_type:
             # applicant has not selected the value yet
             return []
@@ -1026,14 +1060,17 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         consent_count = instance.attachments.filter(
             attachment_type=AttachmentType.EMPLOYEE_CONSENT
         ).count()
-        if consent_count == 0:
-            raise serializers.ValidationError(
-                _("Application does not have the employee consent attachment")
-            )
-        if consent_count > 1:
-            raise serializers.ValidationError(
-                _("Application cannot have more than one employee consent attachment")
-            )
+        if instance.application_origin == ApplicationOrigin.APPLICANT:
+            if consent_count == 0:
+                raise serializers.ValidationError(
+                    _("Application does not have the employee consent attachment")
+                )
+            if consent_count > 1:
+                raise serializers.ValidationError(
+                    _(
+                        "Application cannot have more than one employee consent attachment"
+                    )
+                )
 
     def _update_applicant_terms_approval(self, instance, approve_terms):
         if ApplicantTermsApproval.terms_approval_needed(instance):
@@ -1140,7 +1177,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         return application
 
     def _update_or_create_employee(self, application, employee_data):
-        employee, created = Employee.objects.update_or_create(
+        employee, _ = Employee.objects.update_or_create(
             application=application, defaults=employee_data
         )
         return employee
@@ -1225,7 +1262,7 @@ class ApplicantApplicationSerializer(BaseApplicationSerializer):
         ),
     )
 
-    def get_company_for_new_application(self, validated_data):
+    def get_company_for_new_application(self, _):
         """
         Company field is read_only. When creating a new application, assign company.
         """
@@ -1280,10 +1317,9 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         read_only=True, help_text="Application batch of this application, if any"
     )
 
-    create_application_for_company = serializers.PrimaryKeyRelatedField(
-        write_only=True,
+    create_application_for_company = serializers.UUIDField(
+        read_only=True,
         required=False,
-        queryset=Company.objects.all(),
         help_text=(
             "To be used when a logged-in application handler creates a new application"
             " based on a paper applicationreceived via mail. Ordinary applicants can"
@@ -1291,15 +1327,19 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         ),
     )
 
-    def get_company_for_new_application(self, validated_data):
+    def get_company_for_new_application(self, _):
         """
         Company field is read_only. When creating a new application, assign company.
         """
-        if not validated_data["create_application_for_company"]:
+        company_id = self.initial_data.get("create_application_for_company")
+        if not company_id:
             raise BenefitAPIException(
                 _("create_application_for_company missing from request")
             )
-        return Company.objects.get(validated_data["create_application_for_company"])
+        company = Company.objects.get(id=company_id)
+        if not company:
+            raise BenefitAPIException(_(f"company with id {company_id} not found"))
+        return company
 
     handled_at = serializers.SerializerMethodField(
         "get_handled_at",
@@ -1320,6 +1360,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             "create_application_for_company",
             "latest_decision_comment",
             "handled_at",
+            "application_origin",
         ]
         read_only_fields = BaseApplicationSerializer.Meta.read_only_fields + [
             "latest_decision_comment",

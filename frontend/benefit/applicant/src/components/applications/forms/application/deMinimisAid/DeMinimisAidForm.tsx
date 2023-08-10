@@ -1,5 +1,6 @@
 import {
   DE_MINIMIS_AID_GRANTED_AT_MAX_DATE,
+  DE_MINIMIS_AID_GRANTED_AT_MIN_DATE,
   MAX_DEMINIMIS_AID_TOTAL_AMOUNT,
 } from 'benefit/applicant/constants';
 import { DE_MINIMIS_AID_KEYS } from 'benefit-shared/constants';
@@ -108,6 +109,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
             invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.GRANTED_AT)}
             aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.GRANTED_AT)}
             errorText={getErrorMessage(DE_MINIMIS_AID_KEYS.GRANTED_AT)}
+            minDate={DE_MINIMIS_AID_GRANTED_AT_MIN_DATE}
             maxDate={DE_MINIMIS_AID_GRANTED_AT_MAX_DATE}
             required
           />

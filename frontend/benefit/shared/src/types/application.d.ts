@@ -1,3 +1,4 @@
+import { PROPOSALS_FOR_DECISION } from 'benefit-shared/constants';
 import { Language } from 'shared/i18n/i18n';
 import { BenefitAttachment } from 'shared/types/attachment';
 import { DefaultTheme } from 'styled-components';
@@ -5,6 +6,7 @@ import { DefaultTheme } from 'styled-components';
 import {
   APPLICATION_FIELDS_STEP1_KEYS,
   APPLICATION_FIELDS_STEP2_KEYS,
+  APPLICATION_ORIGINS,
   APPLICATION_STATUSES,
   ATTACHMENT_TYPES,
   BATCH_STATUSES,
@@ -15,7 +17,6 @@ import {
   MESSAGE_TYPES,
   ORGANIZATION_TYPES,
   PAY_SUBSIDY_OPTIONS,
-  PROPOSALS_FOR_DECISION,
 } from '../constants';
 
 // handler
@@ -30,8 +31,13 @@ export type BatchData = {
   section_of_the_law?: string;
   decision_date?: string;
   expert_inspector_name?: string;
-  expert_inspector_email?: string;
+  expert_inspector_title?: string;
   created_at: string;
+};
+
+export type Handler = {
+  first_name: string;
+  last_name: string;
 };
 
 export type BatchProposal = {
@@ -45,7 +51,12 @@ export type BatchProposal = {
   decision_date?: string;
   expert_inspector_name?: string;
   expert_inspector_email?: string;
+  expert_inspector_title?: string;
   created_at: string;
+  handler?: Handler;
+  p2p_inspector_name?: string;
+  p2p_inspector_email?: string;
+  p2p_checker_name?: string;
 };
 
 export type ApplicationInBatch = {
@@ -376,6 +387,7 @@ export type ApplicationData = {
   batch?: BatchData;
   latest_decision_comment?: string;
   unread_messages_count?: number;
+  application_origin?: APPLICATION_ORIGINS;
 };
 
 export type EmployeeData = {
@@ -438,7 +450,7 @@ export type Company = {
   streetAddress: string;
   postcode: string;
   city: string;
-  bankAccountNumber: string;
+  bankAccountNumber?: string;
   organizationType: ORGANIZATION_TYPES;
 };
 
@@ -466,6 +478,7 @@ export type ApplicationListItemData = {
   dataReceived?: string;
   unreadMessagesCount?: number;
   batch?: BatchData | string;
+  applicationOrigin?: APPLICATION_ORIGINS;
 };
 
 export type TextProp = 'textFi' | 'textEn' | 'textSv';

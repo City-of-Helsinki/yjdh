@@ -1,0 +1,312 @@
+import useBatchStatus from 'benefit/handler/hooks/useBatchStatus';
+import { getErrorText } from 'benefit/handler/utils/forms';
+import {
+  BATCH_STATUSES,
+  PROPOSALS_FOR_DECISION,
+} from 'benefit-shared/constants';
+import { BatchProposal } from 'benefit-shared/types/application';
+import { Button, DateInput, IconArrowUndo, TextInput } from 'hds-react';
+import noop from 'lodash/noop';
+import { useTranslation } from 'next-i18next';
+import React from 'react';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import Modal from 'shared/components/modal/Modal';
+
+import ConfirmModalContent from '../applicationReview/actions/ConfirmModalContent/confirm';
+import { $FormSection } from '../table/TableExtras.sc';
+import { useBatchActionsInspected } from './useBatchActionsInspected';
+
+type BatchProps = {
+  batch: BatchProposal;
+  isInspectionFormSent: boolean;
+  setInspectionFormSent: React.Dispatch<React.SetStateAction<boolean>>;
+  setBatchCloseAnimation: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+interface ModalTranslations {
+  heading: string;
+  text: string;
+}
+
+const BatchActionsInspectionForm: React.FC<BatchProps> = ({
+  batch,
+  isInspectionFormSent,
+  setInspectionFormSent,
+  setBatchCloseAnimation,
+}: BatchProps) => {
+  const { id, proposal_for_decision: proposalForDecision } = batch;
+  const { t } = useTranslation();
+  const { formik, yearFromNow, isSuccess, isError } = useBatchActionsInspected(
+    batch,
+    setBatchCloseAnimation
+  );
+
+  const { mutate: changeBatchStatus } = useBatchStatus();
+  const [isModalBatchToDraft, setModalBatchToDraft] = React.useState(false);
+  const [isModalBatchToCompletion, setModalBatchToCompletion] =
+    React.useState(false);
+
+  React.useEffect(() => {
+    if (isError) {
+      setInspectionFormSent(false);
+    }
+    if (isSuccess) {
+      setInspectionFormSent(true);
+    }
+  }, [isSuccess, isError, setInspectionFormSent]);
+  const getErrorMessage = (fieldName: string): string | undefined =>
+    getErrorText(formik.errors, formik.touched, fieldName, t, true);
+
+  const handleModalClose = (): void => {
+    setModalBatchToDraft(false);
+    setModalBatchToCompletion(false);
+    setInspectionFormSent(false);
+  };
+
+  const handleBatchStatusChange = (): void => {
+    changeBatchStatus({ id, status: BATCH_STATUSES.DRAFT });
+    setModalBatchToDraft(false);
+  };
+
+  const handleBatchToTalpa = async (): Promise<boolean> =>
+    formik
+      .submitForm()
+      .then(() => {
+        setModalBatchToCompletion(false);
+        setInspectionFormSent(true);
+        return true;
+      })
+      .catch(() => {
+        setModalBatchToCompletion(false);
+        setInspectionFormSent(false);
+        return false;
+      });
+
+  const handleSubmit = (e: React.FormEvent): void => {
+    e.preventDefault();
+    formik
+      .validateForm()
+      .then((errors) => {
+        if (Object.keys(errors).length > 0) {
+          return null;
+        }
+        setInspectionFormSent(true);
+        setModalBatchToCompletion(true);
+        return true;
+      })
+      .catch(() => {
+        setModalBatchToCompletion(false);
+        setInspectionFormSent(false);
+      });
+  };
+
+  const getModalTranslations = (): ModalTranslations | null => {
+    if (proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED) {
+      return {
+        heading: t('common:batches.dialog.fromInspectionToCompletion.heading'),
+        text: t('common:batches.dialog.fromInspectionToCompletion.text'),
+      };
+    }
+    if (proposalForDecision === PROPOSALS_FOR_DECISION.REJECTED) {
+      return {
+        heading: t('common:batches.dialog.fromCompletionToArchive.heading'),
+        text: t('common:batches.dialog.fromCompletionToArchive.text'),
+      };
+    }
+    return null;
+  };
+
+  return (
+    <>
+      <Modal
+        id={`batch-confirmation-modal-${id}`}
+        isOpen={isModalBatchToDraft || isModalBatchToCompletion}
+        submitButtonLabel=""
+        cancelButtonLabel=""
+        handleSubmit={noop}
+        handleToggle={noop}
+        variant="primary"
+        customContent={
+          <>
+            {isModalBatchToDraft ? (
+              <ConfirmModalContent
+                variant="primary"
+                heading={t(
+                  'common:batches.dialog.fromInspectionToDraft.heading'
+                )}
+                text={t('common:batches.dialog.fromInspectionToDraft.text')}
+                onClose={handleModalClose}
+                onSubmit={handleBatchStatusChange}
+              />
+            ) : null}
+            {isModalBatchToCompletion ? (
+              <ConfirmModalContent
+                variant="primary"
+                heading={getModalTranslations().heading}
+                text={getModalTranslations().text}
+                onClose={handleModalClose}
+                onSubmit={() => void handleBatchToTalpa()}
+              />
+            ) : null}
+          </>
+        }
+      />
+      <form onSubmit={handleSubmit} noValidate>
+        <$FormSection>
+          <$GridCell $colSpan={3}>
+            <TextInput
+              onChange={formik.handleChange}
+              label={t('common:batches.form.fields.decisionMakerName')}
+              id={`decision_maker_name_${id}`}
+              name="decision_maker_name"
+              errorText={getErrorMessage('decision_maker_name')}
+              invalid={!!formik.errors.decision_maker_name}
+              value={formik.values.decision_maker_name ?? ''}
+              required
+            />
+          </$GridCell>
+
+          <$GridCell $colSpan={3}>
+            <TextInput
+              onChange={formik.handleChange}
+              label={t('common:batches.form.fields.decisionMakerTitle')}
+              id={`decision_maker_title${id}`}
+              name="decision_maker_title"
+              errorText={getErrorMessage('decision_maker_title')}
+              invalid={!!formik.errors.decision_maker_title}
+              value={formik.values.decision_maker_title ?? ''}
+              required
+            />
+          </$GridCell>
+
+          <$GridCell $colSpan={2}>
+            <TextInput
+              onChange={formik.handleChange}
+              label={t('common:batches.form.fields.sectionOfTheLaw')}
+              id={`section_of_the_law${id}`}
+              name="section_of_the_law"
+              errorText={getErrorMessage('section_of_the_law')}
+              invalid={!!formik.errors.section_of_the_law}
+              value={formik.values.section_of_the_law ?? ''}
+              required
+            />
+          </$GridCell>
+
+          <$GridCell $colSpan={3}>
+            <DateInput
+              minDate={yearFromNow}
+              onChange={(value) => formik.setFieldValue('decision_date', value)}
+              label={t('common:batches.form.fields.decisionDate')}
+              id={`decision_date${id}`}
+              name="decision_date"
+              errorText={getErrorMessage('decision_date')}
+              disableConfirmation
+              invalid={!!formik.errors.decision_date}
+              value={String(formik.values.decision_date)}
+              language="fi"
+              required
+            />
+          </$GridCell>
+        </$FormSection>
+
+        <$FormSection>
+          <$GridCell $colSpan={3}>
+            <TextInput
+              onChange={formik.handleChange}
+              label={t('common:batches.form.fields.expertInspectorName')}
+              id={`expert_inspector_name${id}`}
+              name="expert_inspector_name"
+              errorText={getErrorMessage('expert_inspector_name')}
+              invalid={!!formik.errors.expert_inspector_name}
+              value={formik.values.expert_inspector_name ?? ''}
+              required
+            />
+          </$GridCell>
+
+          <$GridCell $colSpan={3}>
+            <TextInput
+              onChange={formik.handleChange}
+              label={t('common:batches.form.fields.expertInspectorTitle')}
+              id={`expert_inspector_title_${id}`}
+              name="expert_inspector_title"
+              errorText={getErrorMessage('expert_inspector_title')}
+              invalid={!!formik.errors.expert_inspector_title}
+              value={formik.values.expert_inspector_title ?? ''}
+              required
+            />
+          </$GridCell>
+        </$FormSection>
+
+        {proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED ? (
+          <$FormSection css="border-top: 1pox solid #000;">
+            <$GridCell $colSpan={3}>
+              <TextInput
+                onChange={formik.handleChange}
+                label={t('common:batches.form.fields.p2pInspectorName')}
+                id={`p2p_inspector_name${id}`}
+                name="p2p_inspector_name"
+                errorText={getErrorMessage('p2p_inspector_name')}
+                invalid={!!formik.errors.p2p_inspector_name}
+                value={formik.values.p2p_inspector_name ?? ''}
+                required
+              />
+            </$GridCell>
+
+            <$GridCell $colSpan={3}>
+              <TextInput
+                onChange={formik.handleChange}
+                label={t('common:batches.form.fields.p2pInspectorEmail')}
+                id={`p2p_inspector_email_${id}`}
+                name="p2p_inspector_email"
+                errorText={getErrorMessage('p2p_inspector_email')}
+                invalid={!!formik.errors.p2p_inspector_email}
+                value={formik.values.p2p_inspector_email ?? ''}
+                required
+              />
+            </$GridCell>
+            <$GridCell $colSpan={3}>
+              <TextInput
+                onChange={formik.handleChange}
+                label={t('common:batches.form.fields.p2pCheckerName')}
+                id={`p2p_checker_name_${id}`}
+                name="p2p_checker_name"
+                errorText={getErrorMessage('p2p_checker_name')}
+                invalid={!!formik.errors.p2p_checker_name}
+                value={formik.values.p2p_checker_name ?? ''}
+                required
+              />
+            </$GridCell>
+          </$FormSection>
+        ) : null}
+
+        <$FormSection>
+          <$GridCell $colSpan={3}>
+            <Button
+              disabled={isInspectionFormSent}
+              type="submit"
+              theme="coat"
+              variant="primary"
+              css="min-width: 284px;"
+            >
+              {proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED
+                ? t('common:batches.actions.markToTalpa')
+                : t('common:batches.actions.markToArchive')}
+            </Button>
+          </$GridCell>
+          <$GridCell $colSpan={4} alignSelf="end">
+            <Button
+              theme="black"
+              variant="supplementary"
+              iconLeft={<IconArrowUndo />}
+              onClick={() => setModalBatchToDraft(true)}
+            >
+              {t('common:batches.actions.markAsWaitingForAhjo')}
+            </Button>
+          </$GridCell>
+        </$FormSection>
+      </form>
+    </>
+  );
+};
+
+export default BatchActionsInspectionForm;

@@ -13,7 +13,11 @@ import { formatFloatToCurrency } from 'shared/utils/string.utils';
 import AttachmentsListView from '../../attachmentsListView/AttachmentsListView';
 import EmploymentActions from './employmentActions/EmploymentActions';
 
-const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
+const EmploymentView: React.FC<ApplicationReviewViewProps> = ({
+  data,
+  isUploading,
+  handleUpload,
+}) => {
   const translationsBase = 'common:review';
   const { t } = useTranslation();
   return (
@@ -21,7 +25,10 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
       header={t(`${translationsBase}.headings.heading8`)}
       action={
         data.status !== APPLICATION_STATUSES.RECEIVED ? (
-          <EmploymentActions />
+          <EmploymentActions
+            handleUpload={handleUpload}
+            isUploading={isUploading}
+          />
         ) : null
       }
     >
@@ -69,7 +76,9 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         <$ViewField>{data.employee?.collectiveBargainingAgreement}</$ViewField>
       </$GridCell>
       <AttachmentsListView
-        title={t('common:attachments.types.employmentContract.title')}
+        title={t(
+          'common:applications.sections.attachments.types.employmentContract.title'
+        )}
         type={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
         attachments={data.attachments || []}
       />

@@ -17,9 +17,15 @@ from companies.tests.data.company_data import (
 from shared.service_bus.enums import YtjOrganizationCode
 from terms.tests.factories import TermsOfServiceApprovalFactory
 
+SERVICE_BUS_INFO_PATH = f"{settings.SERVICE_BUS_BASE_URL}/GetCompany"
+YRTTI_BASIC_INFO_PATH = f"{settings.YRTTI_BASE_URL}/BasicInfo"
+
 
 def get_company_api_url(business_id=""):
-    return "/v1/company/{id}".format(id=business_id)
+    url = "/v1/company/"
+    if business_id:
+        url = f"{url}get/{business_id}/"
+    return url
 
 
 def set_up_ytj_mock_requests(
@@ -69,16 +75,20 @@ def test_get_mock_company_results_in_error(
 def test_get_company_from_service_bus_invalid_response(
     api_client, requests_mock, mock_get_organisation_roles_and_create_company
 ):
+    business_id = DUMMY_SERVICE_BUS_RESPONSE["GetCompanyResult"]["Company"][
+        "BusinessId"
+    ]
     response = deepcopy(DUMMY_SERVICE_BUS_RESPONSE)
     response["GetCompanyResult"]["Company"]["PostalAddress"] = {}
 
-    matcher = re.compile(re.escape(settings.SERVICE_BUS_INFO_PATH))
+    matcher = re.compile(re.escape(SERVICE_BUS_INFO_PATH))
     requests_mock.post(matcher, json=response)
-    response = api_client.get(get_company_api_url())
+    response = api_client.get(get_company_api_url(business_id))
 
     assert response.status_code == 500
     assert (
-        response.data == "Could not handle the response from Palveluväylä and YRTTI API"
+        response.data["detail"]
+        == "Could not handle the response from Palveluväylä and YRTTI API"
     )
 
 
@@ -89,16 +99,15 @@ def test_get_organisation_from_service_bus(
     requests_mock,
     mock_get_organisation_roles_and_create_company,
 ):
-    matcher = re.compile(re.escape(settings.SERVICE_BUS_INFO_PATH))
+    matcher = re.compile(re.escape(SERVICE_BUS_INFO_PATH))
     requests_mock.post(matcher, json=DUMMY_SERVICE_BUS_RESPONSE)
-    response = api_client.get(get_company_api_url())
+    business_id = DUMMY_SERVICE_BUS_RESPONSE["GetCompanyResult"]["Company"][
+        "BusinessId"
+    ]
+    response = api_client.get(get_company_api_url(business_id))
     assert response.status_code == 200
 
-    company = Company.objects.get(
-        business_id=DUMMY_SERVICE_BUS_RESPONSE["GetCompanyResult"]["Company"][
-            "BusinessId"
-        ]
-    )
+    company = Company.objects.get(business_id=business_id)
     company_data = CompanySerializer(company).data
     assert response.data == company_data
     assert (
@@ -117,7 +126,7 @@ def test_get_organisation_from_service_bus_missing_business_line(
 ):
     dummy_copy = deepcopy(DUMMY_SERVICE_BUS_RESPONSE)
     dummy_copy["GetCompanyResult"]["Company"]["BusinessLine"] = None
-    matcher = re.compile(re.escape(settings.SERVICE_BUS_INFO_PATH))
+    matcher = re.compile(re.escape(SERVICE_BUS_INFO_PATH))
     requests_mock.post(matcher, json=dummy_copy)
     response = api_client.get(get_company_api_url())
     assert response.status_code == 200
@@ -149,16 +158,16 @@ def test_get_company_from_yrtti(
         company=mock_get_organisation_roles_and_create_association,
         terms=terms_of_service,
     )
-    matcher = re.compile(re.escape(settings.SERVICE_BUS_INFO_PATH))
+    business_id = DUMMY_YRTTI_RESPONSE["BasicInfoResponse"]["BusinessId"]
+    matcher = re.compile(re.escape(SERVICE_BUS_INFO_PATH))
     requests_mock.post(matcher, text="Error", status_code=404)
-    matcher = re.compile(re.escape(settings.YRTTI_BASIC_INFO_PATH))
+    matcher = re.compile(re.escape(YRTTI_BASIC_INFO_PATH))
     requests_mock.post(matcher, json=DUMMY_YRTTI_RESPONSE)
-    response = api_client.get(get_company_api_url())
+    response = api_client.get(get_company_api_url(business_id))
+    print(response.data)
     assert response.status_code == 200
 
-    company = Company.objects.get(
-        business_id=DUMMY_YRTTI_RESPONSE["BasicInfoResponse"]["BusinessId"]
-    )
+    company = Company.objects.get(business_id=business_id)
     company_data = CompanySerializer(company).data
     assert response.data == company_data
     assert (
@@ -175,9 +184,9 @@ def test_get_company_from_yrtti(
 def test_get_company_from_service_bus_and_yrtti_results_in_error(
     api_client, requests_mock, mock_get_organisation_roles_and_create_company
 ):
-    matcher = re.compile(re.escape(settings.SERVICE_BUS_INFO_PATH))
+    matcher = re.compile(re.escape(SERVICE_BUS_INFO_PATH))
     requests_mock.post(matcher, text="Error", status_code=404)
-    matcher = re.compile(re.escape(settings.YRTTI_BASIC_INFO_PATH))
+    matcher = re.compile(re.escape(YRTTI_BASIC_INFO_PATH))
     requests_mock.post(matcher, text="Error", status_code=404)
     # Delete company so that API cannot return object from DB
     mock_get_organisation_roles_and_create_company.delete()
@@ -189,7 +198,7 @@ def test_get_company_from_service_bus_and_yrtti_results_in_error(
 def test_get_company_from_service_bus_and_yrtti_with_fallback_data(
     api_client, requests_mock, mock_get_organisation_roles_and_create_company
 ):
-    matcher = re.compile(re.escape(settings.SERVICE_BUS_INFO_PATH))
+    matcher = re.compile(re.escape(SERVICE_BUS_INFO_PATH))
     requests_mock.post(matcher, json=DUMMY_SERVICE_BUS_RESPONSE)
     response = api_client.get(get_company_api_url())
 
@@ -198,9 +207,9 @@ def test_get_company_from_service_bus_and_yrtti_with_fallback_data(
     assert Company.objects.count() == 1
 
     # Now assuming request to YTJ & YRTTI doesn't return any data
-    matcher = re.compile(re.escape(settings.SERVICE_BUS_INFO_PATH))
+    matcher = re.compile(re.escape(SERVICE_BUS_INFO_PATH))
     requests_mock.post(matcher, text="Error", status_code=404)
-    matcher = re.compile(re.escape(settings.YRTTI_BASIC_INFO_PATH))
+    matcher = re.compile(re.escape(YRTTI_BASIC_INFO_PATH))
     requests_mock.post(matcher, text="Error", status_code=404)
 
     response = api_client.get(get_company_api_url())

@@ -1,0 +1,65 @@
+#
+# Review pipeline. Run build and deploy for Platta test environments.
+# Pipeline runs different tests e.g. unittest and browser tests.
+#
+# Continuous integration (CI) triggers cause a pipeline to run whenever you push
+# an update to the specified branches or you push specified tags.
+# only PR trigger pipeline
+trigger: none
+
+# Pull request (PR) triggers cause a pipeline to run whenever a pull request is
+# opened with one of the specified target branches, or when updates are made to 
+# such a pull request.
+#
+# GitHub creates a new ref when a pull request is created. The ref points to a 
+# merge commit, which is the merged code between the source and target branches 
+# of the pull request.
+#
+# Opt out of pull request validation 
+pr:
+  # PR target branch
+  branches:
+    include:
+    - develop
+  paths:
+    include:
+      - azure-pipelines/helsinkilisa-review.yml
+      - backend/docker/benefit.Dockerfile
+      - backend/benefit/**
+      - backend/shared/**
+      - frontend/*
+      - frontend/benefit/**
+      - frontend/shared/**
+    exclude:
+      - README.md
+      - backend/kesaseteli/**
+      - backend/tet/**
+      - frontend/kesaseteli/**
+      - frontend/tet/**
+      - frontend/**/browser-tests
+      - frontend/**/__tests__
+
+# By default, use self-hosted agents
+pool: Default
+
+resources:
+  repositories:
+  # Azure DevOps repository
+  - repository: yjdh-helsinkilisa-pipelines
+    type: git
+    # Azure DevOps project/repository
+    name: yjdh-helsinkilisa/yjdh-helsinkilisa-pipelines
+
+extends:
+  # Filename in Azure DevOps Repository (note possible -ui or -api)
+  # Django example: azure-pipelines-PROJECTNAME-api-release.yml
+  # Drupal example: azure-pipelines-drupal-release.yml
+  template: azure-pipelines-helsinkilisa-review.yml@yjdh-helsinkilisa-pipelines
+    # Application build arguments and config map values as key value pairs.
+    # The values here will override the values defined in the yjdh-benefit-pipelines repository.
+    # for example
+#  parameters:
+#    buildArgs:
+#      NEXT_PUBLIC_DEBUG: 0
+#    configMap: # pod environment variables
+#      DEBUG: 0
