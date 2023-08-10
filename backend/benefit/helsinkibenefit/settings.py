@@ -157,11 +157,6 @@ env = environ.Env(
     SERVICE_BUS_SEARCH_LIMIT=(int, 10),
     GDPR_API_QUERY_SCOPE=(str, "helsinkibenefit.gdprquery"),
     GDPR_API_DELETE_SCOPE=(str, "helsinkibenefit.gdprdelete"),
-    USE_S3=(bool, False),
-    S3_ENDPOINT_URL=(str, ""),
-    S3_ACCESS_KEY_ID=(str, ""),
-    S3_SECRET_ACCESS_KEY=(str, ""),
-    S3_STORAGE_BUCKET_NAME=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -494,19 +489,8 @@ if os.path.exists(local_settings_path):
         code = compile(fp.read(), local_settings_path, "exec")
     exec(code, globals(), locals())
 
-# S3 settings
-
-USE_S3 = env("USE_S3")
-
 CORS_ALLOW_HEADERS = (
     *default_headers,
     "baggage",
     "sentry-trace",
 )
-
-if USE_S3:
-    AWS_S3_ENDPOINT_URL = env("S3_ENDPOINT_URL")
-    DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-    AWS_ACCESS_KEY_ID = env("S3_ACCESS_KEY_ID")
-    AWS_SECRET_ACCESS_KEY = env("S3_SECRET_ACCESS_KEY")
-    AWS_STORAGE_BUCKET_NAME = env("S3_STORAGE_BUCKET_NAME")
