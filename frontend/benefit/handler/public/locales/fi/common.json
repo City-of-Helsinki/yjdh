@@ -32,6 +32,11 @@
         }
       }
     },
+    "titles": {
+      "applicantMessage": "Hakija",
+      "handlerMessage": "Käsittelijä",
+      "note": ""
+    },
     "showEveryone": "Nämä viestit näkyvät hakijalle",
     "showToHanlderOnly": "Näkyy vain käsittelijöille",
     "compose": "Kirjoita viesti",
