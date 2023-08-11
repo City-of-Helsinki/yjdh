@@ -26,6 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
             "terms_of_service_approvals",
             "terms_of_service_approval_needed",
             "terms_of_service_in_effect",
+            "is_staff",
         ]
         read_only_fields = [
             "id",
@@ -34,6 +35,7 @@ class UserSerializer(serializers.ModelSerializer):
             "terms_of_service_approvals",
             "terms_of_service_approval_needed",
             "terms_of_service_in_effect",
+            "is_staff",
         ]
 
     terms_of_service_in_effect = serializers.SerializerMethodField(
