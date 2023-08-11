@@ -753,8 +753,8 @@ class Employee(UUIDModel, TimeStampedModel):
     )
     working_hours = models.DecimalField(
         verbose_name=_("working hour"),
-        decimal_places=1,
-        max_digits=4,
+        decimal_places=2,
+        max_digits=5,
         blank=True,
         null=True,
     )
