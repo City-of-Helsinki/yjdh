@@ -25,7 +25,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: "18"
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
@@ -52,7 +52,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: "18"
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
@@ -68,4 +68,4 @@ jobs:
       - name: Check that building dev application works
         env:
           NEXTJS_DISABLE_SENTRY: true
-        run: yarn build
+        run: NODE_OPTIONS=--openssl-legacy-provider yarn build

@@ -4,7 +4,12 @@ import { Controller, RegisterOptions, useFormContext } from 'react-hook-form';
 import Id from 'shared/types/id';
 import TetPosting from 'tet-shared/types/tetposting';
 
+// Known issue with react-hook-form library, errors out with:
+// Type of property 'prototype' circularly references itself in mapped type '{ [K in keyof Blob]-?: PathImpl<K & string, Blob[K]>; }'.
+// More at: https://github.com/orgs/react-hook-form/discussions/7764
 type Props = {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   id: Id<TetPosting>;
   label: string;
   placeholder: string;

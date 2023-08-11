@@ -9,7 +9,7 @@ Project is automatically deployed to testing environment when pushing to develop
 
 ## Requirements
 
-- Node 16.x
+- Node 18.x
 - Lerna  
 - Yarn
 - Git
@@ -18,8 +18,8 @@ Project is automatically deployed to testing environment when pushing to develop
 ### Install NodeJS
 
     # Use node manager (n or nvm, for example)
-    n 16
-    nvm install 16 --lts
+    n 18
+    nvm install 18 --lts
     # Alternative methods
     https://nodejs.org/dist/
     https://nodejs.org/en/download/package-manager
