@@ -16,7 +16,7 @@
     "@frontend/shared": "*",
     "camelcase-keys": "^7.0.1",
     "hds-react": "^2.10.0",
-    "next": "^11.1.4",
+    "next": "^12.3.4",
     "react": "^18.0.0",
     "styled-components": "^5.3.3"
   },
