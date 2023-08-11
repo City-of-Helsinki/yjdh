@@ -1,14 +1,20 @@
 import { DefaultTheme } from 'styled-components';
 
-const colors = {
+const tokens = {
   coatOfArms: 'var(--color-coat-of-arms)',
-  components: {
-    stepper: {
-      black: 'var(--color-black-90)',
-      white: 'var(--color-white)',
-      grey: 'var(--color-black-30)',
-    },
-    radio: {},
+  fog: 'var(--color-fog)',
+};
+
+const componentColors = {
+  stepper: {
+    black: 'var(--color-black-90)',
+    white: 'var(--color-white)',
+    grey: 'var(--color-black-30)',
+  },
+  radio: {
+    base: tokens.coatOfArms,
+    selectedHover: 'var(--color-black-80)',
+    selectedFocus: tokens.fog,
   },
 };
 
@@ -22,7 +28,7 @@ const theme: DefaultTheme = {
     busLight: 'var(--color-bus-light)',
     busMediumLight: 'var(--color-bus-medium-light)',
     busDark: 'var(--color-bus-dark)',
-    coatOfArms: colors.coatOfArms as 'var(--color-coat-of-arms)',
+    coatOfArms: 'var(--color-coat-of-arms)',
     coatOfArmsLight: 'var(--color-coat-of-arms-light)',
     coatOfArmsMediumLight: 'var(--color-coat-of-arms-medium-light)',
     coatOfArmsDark: 'var(--color-coat-of-arms-dark)',
@@ -151,28 +157,28 @@ const theme: DefaultTheme = {
   },
   components: {
     tabs: {
-      '--tab-color': colors.coatOfArms,
+      '--tab-color': tokens.coatOfArms,
       '--tab-active-border-color': 'var(--color-black)',
     },
     table: {
-      '--header-background-color': colors.coatOfArms,
+      '--header-background-color': tokens.coatOfArms,
     },
     stepper: {
-      '--hds-not-selected-step-label-color': colors.components.stepper.black,
-      '--hds-step-background-color': colors.components.stepper.white,
-      '--hds-step-content-color': colors.components.stepper.black,
-      '--hds-stepper-background-color': colors.components.stepper.white,
-      '--hds-stepper-color': colors.components.stepper.black,
-      '--hds-stepper-disabled-color': colors.components.stepper.grey,
-      '--hds-stepper-focus-border-color': colors.components.stepper.black,
+      '--hds-not-selected-step-label-color': componentColors.stepper.black,
+      '--hds-step-background-color': componentColors.stepper.white,
+      '--hds-step-content-color': componentColors.stepper.black,
+      '--hds-stepper-background-color': componentColors.stepper.white,
+      '--hds-stepper-color': componentColors.stepper.black,
+      '--hds-stepper-disabled-color': componentColors.stepper.grey,
+      '--hds-stepper-focus-border-color': componentColors.stepper.black,
     },
     radio: {
-      '--border-color-selected': 'var(--color-coat-of-arms)',
-      '--border-color-selected-hover': 'var(--color-black-80)',
-      '--border-color-selected-focus': 'var(--color-fog)',
-      '--icon-color-selected': 'var(--color-coat-of-arms)',
-      '--icon-color-hover': 'var(--color-coat-of-arms)',
-      '--focus-outline-color': 'var(--color-coat-of-arms)',
+      '--border-color-selected': componentColors.radio.base,
+      '--border-color-selected-hover': componentColors.radio.selectedHover,
+      '--border-color-selected-focus': componentColors.radio.selectedFocus,
+      '--icon-color-selected': componentColors.radio.base,
+      '--icon-color-hover': componentColors.radio.base,
+      '--focus-outline-color': componentColors.radio.base,
     },
   },
 };

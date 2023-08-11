@@ -1,9 +1,8 @@
 import FormSection from 'shared/components/forms/section/FormSection';
-import theme from 'shared/styles/theme';
 import styled from 'styled-components';
 
 type CollapsedProps = {
-  isCollapsed: boolean;
+  $isCollapsed: boolean;
 };
 
 export const $HorizontalList = styled.dl`
@@ -74,7 +73,7 @@ export const $TableWrapper = styled.div<TableWrapperProps>`
 `;
 
 export const $TableBody = styled.div<CollapsedProps>`
-  display: ${(props) => (props.isCollapsed ? 'none' : 'block')};
+  display: ${(props) => (props.$isCollapsed ? 'none' : 'block')};
 `;
 
 export const $HintText = styled.p`

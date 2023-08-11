@@ -17,13 +17,13 @@ import { useTranslation } from 'next-i18next';
 import React, { ChangeEvent } from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import Modal from 'shared/components/modal/Modal';
+import theme from 'shared/styles/theme';
+import { CSSProperties } from 'styled-components';
 
 import ConfirmModalContent from '../applicationReview/actions/ConfirmModalContent/confirm';
 import { $InspectionTypeContainer } from '../table/BatchCompletion.sc';
 import { $FormSection } from '../table/TableExtras.sc';
 import { useBatchActionsInspected } from './useBatchActionsInspected';
-import theme from 'shared/styles/theme';
-import { CSSProperties } from 'styled-components';
 
 type BatchProps = {
   batch: BatchProposal;

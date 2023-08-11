@@ -218,7 +218,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
           </div>
         </$HorizontalList>
         {applications?.length ? (
-          <$TableBody isCollapsed={isCollapsed} aria-hidden={isCollapsed}>
+          <$TableBody $isCollapsed={isCollapsed} aria-hidden={isCollapsed}>
             <Table
               indexKey="id"
               theme={theme.components.table}
