@@ -155,6 +155,14 @@ declare module 'styled-components' {
       table: {
         '--header-background-color': string;
       };
+      radio: {
+        '--border-color-selected': string;
+        '--border-color-selected-hover': string;
+        '--border-color-selected-focus': string;
+        '--icon-color-selected': string;
+        '--icon-color-hover': string;
+        '--focus-outline-color': string;
+      };
     };
   }
 }

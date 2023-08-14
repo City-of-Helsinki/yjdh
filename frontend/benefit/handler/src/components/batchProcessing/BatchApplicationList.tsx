@@ -160,7 +160,17 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
 
   return (
     <$TableGrid animateClose={batchCloseAnimation}>
-      <$TableWrapper>
+      <$TableWrapper
+        borderColor={
+          !isCollapsed &&
+          [
+            BATCH_STATUSES.AWAITING_FOR_DECISION,
+            BATCH_STATUSES.DECIDED_ACCEPTED,
+          ].includes(status)
+            ? theme.colors.fogDark
+            : null
+        }
+      >
         <Modal
           id={`batch-confirmation-modal-app-removal-${id}`}
           isOpen={isConfirmAppRemoval}
@@ -208,7 +218,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
           </div>
         </$HorizontalList>
         {applications?.length ? (
-          <$TableBody isCollapsed={isCollapsed} aria-hidden={isCollapsed}>
+          <$TableBody $isCollapsed={isCollapsed} aria-hidden={isCollapsed}>
             <Table
               indexKey="id"
               theme={theme.components.table}
@@ -217,7 +227,16 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
               initialSortingOrder="asc"
               cols={cols}
             />
-            <$TableFooter>
+            <$TableFooter
+              backgroundColor={
+                [
+                  BATCH_STATUSES.AWAITING_FOR_DECISION,
+                  BATCH_STATUSES.DECIDED_ACCEPTED,
+                ].includes(status)
+                  ? theme.colors.coatOfArmsLight
+                  : null
+              }
+            >
               {[
                 BATCH_STATUSES.DRAFT,
                 BATCH_STATUSES.AHJO_REPORT_CREATED,

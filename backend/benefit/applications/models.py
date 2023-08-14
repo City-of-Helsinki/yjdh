@@ -580,18 +580,24 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
                 self.decision_maker_name,
                 self.section_of_the_law,
                 validate_decision_date(self.decision_date),
-                self.expert_inspector_name,
-                self.expert_inspector_title,
             ]
 
-            required_fields_accepted = required_fields_rejected + [
+            required_fields_accepted_ahjo = required_fields_rejected + [
+                self.expert_inspector_name,
+                self.expert_inspector_title,
+                self.p2p_checker_name,
+            ]
+
+            required_fields_accepted_p2p = required_fields_rejected + [
                 self.p2p_inspector_name,
                 self.p2p_inspector_email,
                 self.p2p_checker_name,
             ]
 
-            if self.status == ApplicationBatchStatus.DECIDED_ACCEPTED and not all(
-                required_fields_accepted
+            if (
+                self.status == ApplicationBatchStatus.DECIDED_ACCEPTED
+                and not all(required_fields_accepted_ahjo)
+                and not all(required_fields_accepted_p2p)
             ):
                 raise_error()
             if self.status == ApplicationBatchStatus.DECIDED_REJECTED and not all(

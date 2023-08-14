@@ -1018,6 +1018,10 @@
         "p2pInspectorEmail": "Tarkastajan sähköposti, P2P",
         "p2pCheckerName": "Hyväksyjän nimi, P2P"
       },
+      "headings": {
+        "decisionDetails": "Päätöksen tiedot",
+        "inspectionDetails": "Tarkastuksen tiedot"
+      },
       "errors": {
         "decision_maker_name": "Pakollinen tieto",
         "decision_maker_title": "Pakollinen tieto",
