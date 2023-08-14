@@ -27,6 +27,7 @@ const PaySubsidyView: React.FC<ApplicationReviewViewProps> = ({
   return (
     <ReviewSection
       header={t(`${translationsBase}.headings.heading6`)}
+      section='paySubsidy'
       action={
         data.status !== APPLICATION_STATUSES.RECEIVED ? (
           <PaySubsidyActions

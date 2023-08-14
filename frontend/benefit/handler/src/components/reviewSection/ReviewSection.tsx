@@ -1,3 +1,5 @@
+import ReviewStateContext from 'benefit/handler/context/ReviewStateContext';
+import { ReviewState } from 'benefit/handler/types/application';
 import * as React from 'react';
 import Heading from 'shared/components/forms/heading/Heading';
 import { HeadingProps } from 'shared/components/forms/heading/Heading.sc';
@@ -9,7 +11,7 @@ import {
   GridProps,
 } from 'shared/components/forms/section/FormSection.sc';
 
-import { $ActionLeft, $CheckIcon } from './ReviewSection.sc';
+import { $ActionLeft, $CheckIcon, $CheckIconFill } from './ReviewSection.sc';
 import { useReviewSection } from './useReviewSection';
 
 export type ReviewSectionProps = {
@@ -18,6 +20,7 @@ export type ReviewSectionProps = {
   withMargin?: boolean;
   withoutDivider?: boolean;
   header?: string;
+  section?: keyof ReviewState;
 } & HeadingProps &
   GridProps;
 
@@ -29,9 +32,36 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
   withoutDivider,
   role,
   loading,
+  section,
   ...rest
 }) => {
   const { theme, bgColor, withAction } = useReviewSection(action, withMargin);
+  const { reviewState, handleUpdateReviewState } =
+    React.useContext(ReviewStateContext);
+  const sectionState = reviewState[section];
+
+  const handleReviewClick = (): void => {
+    handleUpdateReviewState({ ...reviewState, [section]: !sectionState });
+  };
+
+  const CheckIcon: React.FC = () => {
+    if (sectionState) {
+      return (
+        <$CheckIconFill
+          aria-label="application-action"
+          size="m"
+          onClick={handleReviewClick}
+        />
+      );
+    }
+    return (
+      <$CheckIcon
+        aria-label="application-action"
+        size="m"
+        onClick={handleReviewClick}
+      />
+    );
+  };
 
   return (
     <$Grid
@@ -43,9 +73,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
     >
       {withAction && (
         <$GridCell $colSpan={1}>
-          <$ActionLeft>
-            {action && <$CheckIcon aria-label="application-action" size="m" />}
-          </$ActionLeft>
+          <$ActionLeft>{action && <CheckIcon />}</$ActionLeft>
         </$GridCell>
       )}
       <$GridCell $colStart={2} $colSpan={12}>
