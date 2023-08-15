@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('applications', '0035_alter_applicationbatch_handler'),
+        ('applications', '0036_alter_employee_working_hours'),
     ]
 
     operations = [
