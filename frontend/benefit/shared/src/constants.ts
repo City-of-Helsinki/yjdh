@@ -107,6 +107,8 @@ export enum DE_MINIMIS_AID_KEYS {
 export enum CALCULATION_EMPLOYMENT_KEYS {
   START_DATE = 'startDate',
   END_DATE = 'endDate',
+  TRAINING_COMPENSATION_START_DATE = 'trainingCompensationStartDate',
+  TRAINING_COMPENSATION_END_DATE = 'trainingCompensationEndDate',
 }
 
 export enum ORGANIZATION_TYPES {

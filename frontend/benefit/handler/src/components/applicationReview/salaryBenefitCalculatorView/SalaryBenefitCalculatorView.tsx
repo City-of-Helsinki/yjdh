@@ -506,8 +506,8 @@ const SalaryBenefitCalculatorView: React.FC<
 
           <$GridCell $colStart={3} $colSpan={3}>
             <DateInputWithSeparator
-              id={fields.startDate.name}
-              name={fields.startDate.name}
+              id={fields.trainingCompensationStartDate.name}
+              name={fields.trainingCompensationStartDate.name}
               placeholder={fields.startDate.placeholder}
               language={language}
               onChange={(value) =>
@@ -517,16 +517,16 @@ const SalaryBenefitCalculatorView: React.FC<
                 }))
               }
               value={convertToUIDateFormat(newTrainingCompensation.startDate)}
-              invalid={!!getErrorMessage(fields.startDate.name)}
-              aria-invalid={!!getErrorMessage(fields.startDate.name)}
-              errorText={getErrorMessage(fields.startDate.name)}
+              invalid={!!getErrorMessage(fields.trainingCompensationStartDate.name)}
+              aria-invalid={!!getErrorMessage(fields.trainingCompensationStartDate.name)}
+              errorText={getErrorMessage(fields.trainingCompensationStartDate.name)}
             />
           </$GridCell>
 
           <$GridCell $colStart={6} $colSpan={3}>
             <DateInput
-              id={fields.endDate.name}
-              name={fields.endDate.name}
+              id={fields.trainingCompensationEndDate.name}
+              name={fields.trainingCompensationEndDate.name}
               placeholder={fields.endDate.placeholder}
               language={language}
               onChange={(value) =>
@@ -538,9 +538,9 @@ const SalaryBenefitCalculatorView: React.FC<
                 }))
               }
               value={convertToUIDateFormat(newTrainingCompensation.endDate)}
-              invalid={!!getErrorMessage(fields.endDate.name)}
-              aria-invalid={!!getErrorMessage(fields.endDate.name)}
-              errorText={getErrorMessage(fields.endDate.name)}
+              invalid={!!getErrorMessage(fields.trainingCompensationEndDate.name)}
+              aria-invalid={!!getErrorMessage(fields.trainingCompensationEndDate.name)}
+              errorText={getErrorMessage(fields.trainingCompensationEndDate.name)}
               style={{ paddingRight: `${theme.spacing.s}` }}
             />
           </$GridCell>
