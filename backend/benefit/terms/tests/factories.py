@@ -24,10 +24,19 @@ class ApplicantConsentFactory(factory.django.DjangoModelFactory):
         model = ApplicantConsent
 
 
+markdown_content = """# Heading 1
+
+Lorem ipsum dolor sit amet"""
+
+
 class TermsFactory(factory.django.DjangoModelFactory):
     terms_pdf_fi = "terms_fi.pdf"
     terms_pdf_en = "terms_en.pdf"
     terms_pdf_sv = "terms_sv.pdf"
+
+    terms_md_fi = markdown_content
+    terms_md_en = markdown_content
+    terms_md_sv = markdown_content
 
     applicant_consent_1 = factory.RelatedFactory(
         ApplicantConsentFactory,

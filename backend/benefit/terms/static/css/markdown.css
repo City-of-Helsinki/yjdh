@@ -39,3 +39,7 @@
     list-style: disc;
     font-size: 1em;
 }
+
+label[for*="id_terms_md_"] {
+    float: none;
+}

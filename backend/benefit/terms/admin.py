@@ -29,7 +29,7 @@ class TermsAdmin(admin.ModelAdmin):
     list_display = ("id", "terms_type", "effective_from")
 
     class Media:
-        css = {"all": ("css/markdownx.css",)}
+        css = {"all": ("css/markdown.css",)}
 
 
 class ApprovedApplicantConsentInline(admin.ModelAdmin):

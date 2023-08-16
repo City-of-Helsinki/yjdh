@@ -35,9 +35,15 @@ class Terms(UUIDModel, TimeStampedModel):
         default=TermsType.APPLICANT_TERMS,
     )
 
-    terms_md_fi = models.TextField(verbose_name=_("Finnish terms (md)"), blank=True)
-    terms_md_en = models.TextField(verbose_name=_("English terms (md)"), blank=True)
-    terms_md_sv = models.TextField(verbose_name=_("Swedish terms (md)"), blank=True)
+    terms_md_fi = models.TextField(
+        verbose_name=_("Finnish terms (md)"), blank=True, default=""
+    )
+    terms_md_en = models.TextField(
+        verbose_name=_("English terms (md)"), blank=True, default=""
+    )
+    terms_md_sv = models.TextField(
+        verbose_name=_("Swedish terms (md)"), blank=True, default=""
+    )
 
     """
     If effective_from is set to null, that means the terms are not to be displayed to the applicant.
