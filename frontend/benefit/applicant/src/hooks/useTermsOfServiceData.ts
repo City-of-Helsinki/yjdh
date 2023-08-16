@@ -14,7 +14,8 @@ type ExtendedComponentProps = {
   locale: Language;
   theme: DefaultTheme;
   t: TFunction;
-  termsInEffectUrl: string;
+  termsInEffectUrl?: string;
+  termsInEffectMarkdown?: string;
   user: User | undefined;
   approveTermsOfService: () => void;
 };
@@ -46,11 +47,33 @@ const useTermsOfServiceData = (
     );
   };
 
+  const getTermsMarkdownByLanguage = (): string => {
+    if (!user.termsOfServiceInEffect) {
+      return '';
+    }
+    switch (locale) {
+      case 'fi':
+        return String(user.termsOfServiceInEffect?.termsMdFi);
+
+      case 'sv':
+        return String(user.termsOfServiceInEffect?.termsMdSv);
+
+      case 'en':
+        return String(user.termsOfServiceInEffect?.termsMdSv);
+
+      default:
+        return '';
+    }
+  };
+
+  const termsInEffectMarkdown = getTermsMarkdownByLanguage();
+
   return {
     locale,
     theme,
     t,
     termsInEffectUrl,
+    termsInEffectMarkdown,
     user,
     approveTermsOfService,
   };

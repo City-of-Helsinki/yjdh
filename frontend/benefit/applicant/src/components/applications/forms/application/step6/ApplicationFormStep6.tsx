@@ -1,4 +1,5 @@
 import PdfViewer from 'benefit/applicant/components/pdfViewer/PdfViewer';
+import { $Markdown } from 'benefit/applicant/components/termsOfService/TermsOfService';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { TextProp } from 'benefit-shared/types/application';
 import { Button } from 'hds-react';
@@ -30,32 +31,44 @@ const ApplicationFormStep6: React.FC<
     textLocale,
     checkedArray,
     applicantTermsInEffectUrl,
+    applicantTermsInEffectMd,
   } = useApplicationFormStep6(data, onSubmit);
 
-  // todo: implement resizing for pdf reader (f. ex. react-sizeme), styling as in design
   return (
     <form onSubmit={handleSubmit} noValidate>
       <FormSection>
         <>
           {data && (
             <>
-              <$GridCell $colSpan={12}>
-                <PdfViewer file={applicantTermsInEffectUrl} scale={1.8} />
-              </$GridCell>
-              <$GridCell
-                $colSpan={5}
-                css={`
-                  margin-bottom: var(--spacing-l);
-                `}
-              >
-                <Button
-                  theme="black"
-                  variant="secondary"
-                  onClick={() => openFileInNewTab(applicantTermsInEffectUrl)}
-                >
-                  {t('common:applications.actions.openTermsAsPDF')}
-                </Button>
-              </$GridCell>
+              {applicantTermsInEffectMd ? (
+                <$GridCell $colSpan={12}>
+                  <$Markdown>{applicantTermsInEffectMd}</$Markdown>
+                </$GridCell>
+              ) : null}
+              {applicantTermsInEffectUrl.length > 0 ? (
+                <>
+                  <$GridCell $colSpan={12}>
+                    <PdfViewer file={applicantTermsInEffectUrl} scale={1.8} />
+                  </$GridCell>
+
+                  <$GridCell
+                    $colSpan={5}
+                    css={`
+                      margin-bottom: var(--spacing-l);
+                    `}
+                  >
+                    <Button
+                      theme="black"
+                      variant="secondary"
+                      onClick={() =>
+                        openFileInNewTab(applicantTermsInEffectUrl)
+                      }
+                    >
+                      {t('common:applications.actions.openTermsAsPDF')}
+                    </Button>
+                  </$GridCell>
+                </>
+              ) : null}
             </>
           )}
           {data?.applicantTermsInEffect?.applicantConsents.map((consent, i) => (
