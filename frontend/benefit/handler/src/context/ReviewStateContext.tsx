@@ -17,6 +17,7 @@ const defaultValues = {
     paySubsidy: false,
     benefit: false,
     employment: false,
+    approval: false,
   },
   handleUpdateReviewState: () => null,
 };
