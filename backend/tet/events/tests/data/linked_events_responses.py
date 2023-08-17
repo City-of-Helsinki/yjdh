@@ -10,7 +10,7 @@ ADD_EVENT_PAYLOAD = json.loads(
         "fi": "Testaaja"
     },
     "location": {
-        "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/place/tprek:15417/"
+        "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/place/tprek:15417/"
     },
     "description": {
         "fi": "test description"
@@ -20,16 +20,16 @@ ADD_EVENT_PAYLOAD = json.loads(
     "date_published": null,
     "keywords": [
         {
-            "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:1/"
+            "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:1/"
         },
         {
-            "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:11/"
+            "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:11/"
         },
         {
-            "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:12/"
+            "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:12/"
         },
         {
-            "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/yso:p3971/"
+            "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/yso:p3971/"
         }
     ],
     "custom_data": {
@@ -59,20 +59,20 @@ ADD_EVENT_RESPONSE = json.loads(
 {
     "id": "tet:af7w5v5m6e",
     "location": {
-        "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/place/tprek:15417/"
+        "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/place/tprek:15417/"
     },
     "keywords": [
         {
-            "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:1/"
+            "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:1/"
         },
         {
-            "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:11/"
+            "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:11/"
         },
         {
-            "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:12/"
+            "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:12/"
         },
         {
-            "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/yso:p3971/"
+            "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/yso:p3971/"
         }
     ],
     "registration": null,
@@ -155,7 +155,7 @@ ADD_EVENT_RESPONSE = json.loads(
     "short_description": {
         "fi": "TET-paikan kuvaus"
     },
-    "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/event/tet:af7w5v5m6e/",
+    "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/event/tet:af7w5v5m6e/",
     "@context": "http://schema.org",
     "@type": "Event/LinkedEvent"
 }
@@ -167,11 +167,11 @@ EVENT_RESPONSE_TESTUSER_EMAIL = json.loads(
         {
             "id": "tet:test-user-email-set",
             "location": {
-                "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/place/tprek:20780/"
+                "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/place/tprek:20780/"
             },
             "keywords": [
                 {
-                    "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:2/"
+                    "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:2/"
                 }
             ],
             "registration": null,
@@ -203,7 +203,7 @@ EVENT_RESPONSE_TESTUSER_EMAIL = json.loads(
             "videos": [],
             "in_language": [
                 {
-                    "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/language/fi/"
+                    "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/language/fi/"
                 }
             ],
             "audience": [],
@@ -252,7 +252,7 @@ EVENT_RESPONSE_TESTUSER_EMAIL = json.loads(
             "short_description": {
                 "fi": "xx"
             },
-            "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/event/tet:af7w4jmjla/",
+            "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/event/tet:af7w4jmjla/",
             "@context": "http://schema.org",
             "@type": "Event/LinkedEvent"
         }
@@ -265,35 +265,35 @@ EVENT_RESPONSE_TESTUSER_OID_EXPIRED = json.loads(
         {
             "id": "tet:test-user-oid-set",
             "location": {
-                "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/place/tprek:56379/"
+                "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/place/tprek:56379/"
             },
             "keywords": [
                 {
-                    "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:12/"
+                    "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:12/"
                 },
                 {
-                    "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:1/"
+                    "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:1/"
                 },
                 {
-                    "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/yso:p16557/"
+                    "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/yso:p16557/"
                 },
                 {
-                    "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/yso:p9903/"
+                    "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/yso:p9903/"
                 },
                 {
-                    "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/yso:p13310/"
+                    "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/yso:p13310/"
                 },
                 {
-                    "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:6/"
+                    "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:6/"
                 },
                 {
-                    "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:4/"
+                    "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:4/"
                 },
                 {
-                    "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:10/"
+                    "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:10/"
                 },
                 {
-                    "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:9/"
+                    "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:9/"
                 }
             ],
             "registration": null,
@@ -325,7 +325,7 @@ EVENT_RESPONSE_TESTUSER_OID_EXPIRED = json.loads(
             "videos": [],
             "in_language": [
                 {
-                    "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/language/fi/"
+                    "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/language/fi/"
                 }
             ],
             "audience": [],
@@ -374,7 +374,7 @@ EVENT_RESPONSE_TESTUSER_OID_EXPIRED = json.loads(
             "short_description": {
                 "fi": "täällä pääset maalaamaan"
             },
-            "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/event/tet:af7wtenvii/",
+            "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/event/tet:af7wtenvii/",
             "@context": "http://schema.org",
             "@type": "Event/LinkedEvent"
         }
@@ -391,11 +391,11 @@ EVENT_RESPONSE_OTHERUSER = json.loads(
         {
             "id": "tet:other-user",
             "location": {
-                "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/place/tprek:8740/"
+                "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/place/tprek:8740/"
             },
             "keywords": [
                 {
-                    "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:1/"
+                    "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:1/"
                 }
             ],
             "registration": null,
@@ -427,7 +427,7 @@ EVENT_RESPONSE_OTHERUSER = json.loads(
             "videos": [],
             "in_language": [
                 {
-                    "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/language/fi/"
+                    "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/language/fi/"
                 }
             ],
             "audience": [],
@@ -476,7 +476,7 @@ EVENT_RESPONSE_OTHERUSER = json.loads(
             "short_description": {
                 "fi": "kuvaus"
             },
-            "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/event/tet:af7wto6nze/",
+            "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/event/tet:af7wto6nze/",
             "@context": "http://schema.org",
             "@type": "Event/LinkedEvent"
         }
@@ -489,11 +489,11 @@ EVENT_RESPONSE_TEST_COMPANY = json.loads(
         {
             "id": "tet:companyuser",
             "location": {
-                "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/place/tprek:352/"
+                "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/place/tprek:352/"
             },
             "keywords": [
                 {
-                    "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:1/"
+                    "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:1/"
                 }
             ],
             "registration": null,
@@ -525,7 +525,7 @@ EVENT_RESPONSE_TEST_COMPANY = json.loads(
             "videos": [],
             "in_language": [
                 {
-                    "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/language/fi/"
+                    "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/language/fi/"
                 }
             ],
             "audience": [],
@@ -571,7 +571,7 @@ EVENT_RESPONSE_TEST_COMPANY = json.loads(
             "short_description": {
                 "fi": "x"
             },
-            "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/event/tet:af7scpy2de/",
+            "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/event/tet:af7scpy2de/",
             "@context": "http://schema.org",
             "@type": "Event/LinkedEvent"
         }
@@ -589,11 +589,11 @@ EVENT_RESPONSE_NO_CUSTOM_DATA = json.loads(
         {
             "id": "tet:no-custom-data",
             "location": {
-                "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/place/tprek:37497/"
+                "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/place/tprek:37497/"
             },
             "keywords": [
                 {
-                    "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:1/"
+                    "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:1/"
                 }
             ],
             "registration": null,
@@ -625,7 +625,7 @@ EVENT_RESPONSE_NO_CUSTOM_DATA = json.loads(
             "videos": [],
             "in_language": [
                 {
-                    "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/language/fi/"
+                    "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/language/fi/"
                 }
             ],
             "audience": [],
@@ -665,7 +665,7 @@ EVENT_RESPONSE_NO_CUSTOM_DATA = json.loads(
             "short_description": {
                 "fi": "kuvaus"
             },
-            "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/event/tet:af7wjlxpyy/",
+            "@id": "https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/event/tet:af7wjlxpyy/",
             "@context": "http://schema.org",
             "@type": "Event/LinkedEvent"
         }

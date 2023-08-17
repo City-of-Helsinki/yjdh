@@ -87,7 +87,7 @@ export const expectWorkingMethodsFromLinkedEvents = (): nock.Scope =>
       {
         keywords: [
           {
-            '@id': 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:4/',
+            '@id': 'https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:4/',
             name: {
               fi: 'Tee oikeita töitä',
             },
@@ -107,7 +107,7 @@ export const expectAttributesFromLinkedEvents = (): nock.Scope =>
       {
         keywords: [
           {
-            '@id': 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:1/',
+            '@id': 'https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:1/',
             name: {
               fi: 'Soveltuu näkövammaisille',
             },
