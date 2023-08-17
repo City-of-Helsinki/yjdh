@@ -374,7 +374,8 @@
     "drawer": {
       "title": "Application’s messages"
     },
-    "languageMenuButtonAriaLabel": "Select language"
+    "languageMenuButtonAriaLabel": "Select language",
+    "menuToggleAriaLabel": "Menu"
   },
   "footer": {
     "copyrightText": "Copyright",
@@ -421,7 +422,6 @@
   "credentialsIngress": {
     "text": "A person to be employed with the Helsinki benefit must be informed of the processing of their personal data. Print the notification and request a signature from the person to be employed."
   },
-  "menuToggleAriaLabel": "Menu",
   "form": {
     "validation": {
       "required": "This field is required",
