@@ -75,7 +75,7 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
             />
           </$GridCell>
         )}
-        <$GridCell $colSpan={6}>
+        <$GridCell $colSpan={12}>
           <CredentialsSection
             title={t(`${translationsBase}.uploadPowerOfAttorney.title`)}
             description={t(
@@ -123,7 +123,7 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
                         {t(`${translationsBase}.uploadPowerOfAttorney.action1`)}
                       </Button>
                     </$GridCell>
-                    <$GridCell $colSpan={6}>
+                    <$GridCell $colSpan={8}>
                       <UploadAttachment
                         theme="black"
                         variant="secondary"

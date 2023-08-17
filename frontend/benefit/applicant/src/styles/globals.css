@@ -17,3 +17,8 @@ li {
 .app-load-wrapper > div {
   display: none;
 }
+
+/* Allow HDS tooltip's content to break new line on every \r\n */
+[class*='Tooltip-module'] section[class*='Tooltip-module_tooltip'] {
+  white-space: pre-line;
+}
