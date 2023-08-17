@@ -138,6 +138,9 @@ declare module 'styled-components' {
       l: '992px';
       xl: '1248px';
     };
+    contentWidth: {
+      max: '1240px';
+    };
     components: {
       stepper: {
         '--hds-not-selected-step-label-color': string;
