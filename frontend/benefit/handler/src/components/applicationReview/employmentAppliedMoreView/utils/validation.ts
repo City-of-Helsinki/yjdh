@@ -9,8 +9,8 @@ export const getValidationSchema = (): Yup.SchemaOf<CalculationCommon> =>
   Yup.object().shape({
     [CALCULATION_EMPLOYMENT_KEYS.START_DATE]: Yup.string().typeError(
       VALIDATION_MESSAGE_KEYS.DATE_FORMAT
-    ),
+    ).required(VALIDATION_MESSAGE_KEYS.REQUIRED),
     [CALCULATION_EMPLOYMENT_KEYS.END_DATE]: Yup.string().typeError(
       VALIDATION_MESSAGE_KEYS.DATE_FORMAT
-    ),
+    ).required(VALIDATION_MESSAGE_KEYS.REQUIRED),
   });
