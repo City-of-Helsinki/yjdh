@@ -374,7 +374,8 @@
     "drawer": {
       "title": "Meddelanden om ansökan"
     },
-    "languageMenuButtonAriaLabel": "Ändra språk"
+    "languageMenuButtonAriaLabel": "Ändra språk",
+    "menuToggleAriaLabel": "Menu"
   },
   "footer": {
     "copyrightText": "Copyright",
@@ -421,7 +422,6 @@
   "credentialsIngress": {
     "text": "Den person som anställs med Helsingforstillägg ska informeras om behandlingen av hens personuppgifter. Skriv ut informationen och be den anställda om underskrift."
   },
-  "menuToggleAriaLabel": "Menu",
   "form": {
     "validation": {
       "required": "Detta är ett obligatoriskt fält",
