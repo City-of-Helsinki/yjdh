@@ -856,3 +856,4 @@ class ReviewState(models.Model):
     pay_subsidy = models.BooleanField(default=False, verbose_name=_("pay subsidy"))
     benefit = models.BooleanField(default=False, verbose_name=_("benefit"))
     employment = models.BooleanField(default=False, verbose_name=_("employment"))
+    approval = models.BooleanField(default=False, verbose_name=_("approval"))
