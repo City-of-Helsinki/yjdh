@@ -51,6 +51,11 @@ const useUserQuery = (
       select: (data) => camelcaseKeys(data, { deep: true }),
       onError: (error) => handleError(error),
       onSuccess: (data) => {
+        console.log(data)
+          localStorage.setItem(
+            'csrfToken',
+            data.csrfToken ?? '',
+          );
         if (data.id && data.termsOfServiceApprovalNeeded)
           // eslint-disable-next-line scanjs-rules/identifier_localStorage
           localStorage.setItem(

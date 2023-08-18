@@ -20,7 +20,7 @@ const BackendAPIProvider: React.FC<BackendAPIProviderProps> = ({
       baseURL,
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRFToken': getLastCookieValue('yjdhcsrftoken'),
+        'X-CSRFToken': typeof window !== 'undefined' ? localStorage.getItem('csrfToken') : '',
         ...headers,
       },
       withCredentials: true,

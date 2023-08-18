@@ -113,4 +113,5 @@ export const SUBMITTED_STATUSES = [
 
 export enum LOCAL_STORAGE_KEYS {
   IS_TERMS_OF_SERVICE_APPROVED = 'isTermsOfServiceApproved',
+  CSRF_TOKEN = 'csrfToken',
 }

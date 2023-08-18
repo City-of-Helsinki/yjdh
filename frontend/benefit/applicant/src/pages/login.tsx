@@ -60,9 +60,12 @@ const Login: NextPage = () => {
   }, [logout, queryClient]);
 
   useEffect(() => {
-    if (IS_CLIENT)
-      // eslint-disable-next-line scanjs-rules/identifier_localStorage
+    if (IS_CLIENT) {
+      /* eslint-disable scanjs-rules/identifier_localStorage */
       localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_TERMS_OF_SERVICE_APPROVED);
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.CSRF_TOKEN);
+      /* eslint-enable scanjs-rules/identifier_localStorage */
+    }
   }, []);
 
   return (
