@@ -13,7 +13,6 @@ import {
 } from 'hds-react';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
-import DateInputWithSeparator from 'shared/components/forms/fields/dateInputWithSeparator/DateInputWithSeparator';
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import { Option } from 'shared/components/forms/fields/types';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
@@ -283,7 +282,7 @@ const SalaryBenefitCalculatorView: React.FC<
                   $colStart={item.paySubsidyPercent === 100 ? 6 : 3}
                   $colSpan={3}
                 >
-                  <DateInputWithSeparator
+                  <DateInput
                     id={fields.startDate.name}
                     name={fields.startDate.name}
                     placeholder={fields.startDate.placeholder}
@@ -353,7 +352,7 @@ const SalaryBenefitCalculatorView: React.FC<
       </$GridCell>
 
       <$GridCell $colStart={1} $colSpan={2}>
-        <DateInputWithSeparator
+        <DateInput
           id={fields.startDate.name}
           name={fields.startDate.name}
           placeholder={fields.startDate.placeholder}
@@ -505,7 +504,7 @@ const SalaryBenefitCalculatorView: React.FC<
           </$GridCell>
 
           <$GridCell $colStart={3} $colSpan={3}>
-            <DateInputWithSeparator
+            <DateInput
               id={fields.trainingCompensationStartDate.name}
               name={fields.trainingCompensationStartDate.name}
               placeholder={fields.startDate.placeholder}
