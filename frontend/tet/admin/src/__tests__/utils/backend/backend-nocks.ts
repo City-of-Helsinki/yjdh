@@ -89,7 +89,7 @@ export const expectWorkingMethodsFromLinkedEvents = (): nock.Scope =>
       {
         keywords: [
           {
-            '@id': linkedEventsApiBaseUrl.concat('/keyword/tet:4/'),
+            '@id': `${linkedEventsApiBaseUrl}/keyword/tet:4/`,
             name: {
               fi: 'Tee oikeita töitä',
             },
@@ -109,7 +109,7 @@ export const expectAttributesFromLinkedEvents = (): nock.Scope =>
       {
         keywords: [
           {
-            '@id': linkedEventsApiBaseUrl.concat('/keyword/tet:1/'),
+            '@id': `${linkedEventsApiBaseUrl}/keyword/tet:1/`,
             name: {
               fi: 'Soveltuu näkövammaisille',
             },
