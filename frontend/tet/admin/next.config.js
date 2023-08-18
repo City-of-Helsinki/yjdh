@@ -3,4 +3,8 @@ const { i18n } = require('./next-i18next.config');
 const { parsed: env } = require('dotenv').config({
   path: '../../../.env.tet',
 });
-module.exports = nextConfig({ i18n, env, images: { domains: ['linkedevents-api.dev.hel.ninja'] } });
+module.exports = nextConfig({
+  i18n,
+  env,
+  images: { domains: ['https://linkedevents-api-dev.agw.arodevtest.hel.fi/'] },
+});

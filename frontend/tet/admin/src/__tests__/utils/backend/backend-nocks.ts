@@ -6,6 +6,8 @@ import { TetEvent, TetEvents } from 'tet-shared/types/linkedevents';
 
 const fakeObjectFactory = new FakeObjectFactory();
 
+const linkedEventsApiBaseUrl = 'https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1';
+
 // disable unnecessary axios' expected error messages
 // https://stackoverflow.com/questions/44467657/jest-better-way-to-disable-console-inside-unit-tests
 let consoleSpy: jest.SpyInstance;
@@ -52,7 +54,7 @@ export const expectToGetEventssErrorFromBackend = (errorCode: 400 | 404 | 500): 
 };
 
 export const expectPlacesFromLinkedEvents = (): nock.Scope =>
-  nock('https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1')
+  nock(linkedEventsApiBaseUrl)
     .get('/place/?show_all_places=true&nocache=true&text=')
     .reply(
       200,
@@ -64,7 +66,7 @@ export const expectPlacesFromLinkedEvents = (): nock.Scope =>
     );
 
 export const expectKeyWordsFromLinkedEvents = (): nock.Scope =>
-  nock('https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1')
+  nock(linkedEventsApiBaseUrl)
     .get('/keyword')
     .reply(
       200,
@@ -80,14 +82,14 @@ export const expectKeyWordsFromLinkedEvents = (): nock.Scope =>
 // TODO don't hardcode url
 // this is needed when testing the Editor form and can be refactored then
 export const expectWorkingMethodsFromLinkedEvents = (): nock.Scope =>
-  nock('https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1')
+  nock(linkedEventsApiBaseUrl)
     .get('/keyword_set/tet:wm/?include=keywords')
     .reply(
       200,
       {
         keywords: [
           {
-            '@id': 'https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:4/',
+            '@id': linkedEventsApiBaseUrl + '/keyword/tet:4/',
             name: {
               fi: 'Tee oikeita töitä',
             },
@@ -100,14 +102,14 @@ export const expectWorkingMethodsFromLinkedEvents = (): nock.Scope =>
 // TODO don't hardcode url
 // this is needed when testing the Editor form and can be refactored then
 export const expectAttributesFromLinkedEvents = (): nock.Scope =>
-  nock('https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1')
+  nock(linkedEventsApiBaseUrl)
     .get('/keyword_set/tet:attr/?include=keywords')
     .reply(
       200,
       {
         keywords: [
           {
-            '@id': 'https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:1/',
+            '@id': linkedEventsApiBaseUrl + '/keyword/tet:1/',
             name: {
               fi: 'Soveltuu näkövammaisille',
             },
