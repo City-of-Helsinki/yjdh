@@ -529,6 +529,7 @@ export type User = {
   lastName: string;
   termsOfServiceApprovalNeeded: boolean;
   termsOfServiceInEffect: TermsOfServiceInEffect;
+  csrfToken: string;
 };
 
 export type ApproveTermsOfServiceResponseData = {
