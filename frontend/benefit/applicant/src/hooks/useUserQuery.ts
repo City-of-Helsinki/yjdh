@@ -51,17 +51,14 @@ const useUserQuery = (
       select: (data) => camelcaseKeys(data, { deep: true }),
       onError: (error) => handleError(error),
       onSuccess: (data) => {
-        console.log(data)
-          localStorage.setItem(
-            'csrfToken',
-            data.csrfToken ?? '',
-          );
+        /* eslint-disable scanjs-rules/identifier_localStorage */
+        localStorage.setItem(LOCAL_STORAGE_KEYS.CSRF_TOKEN, data.csrfToken as string);
         if (data.id && data.termsOfServiceApprovalNeeded)
-          // eslint-disable-next-line scanjs-rules/identifier_localStorage
           localStorage.setItem(
             LOCAL_STORAGE_KEYS.IS_TERMS_OF_SERVICE_APPROVED,
             'false'
           );
+        /* eslint-enable scanjs-rules/identifier_localStorage */
       },
     }
   );

@@ -505,6 +505,7 @@ export type UserData = {
   last_name: string;
   terms_of_service_approval_needed: boolean;
   terms_of_service_in_effect: TermsOfServiceInEffectData;
+  csrf_token: string;
 };
 
 export type ApplicantConsents = {

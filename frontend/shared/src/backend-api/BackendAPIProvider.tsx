@@ -8,11 +8,22 @@ import BackendAPIContext from './BackendAPIContext';
 export interface BackendAPIProviderProps {
   baseURL: string;
   headers?: Headers;
+  useLocalStorageCsrf?: boolean;
 }
+
+const getCsrfToken = (useLocalStorageCsrf: boolean): string => {
+  if (useLocalStorageCsrf)
+    return typeof window !== 'undefined'
+      ? // eslint-disable-next-line scanjs-rules/identifier_localStorage
+        localStorage.getItem('csrfToken') || ''
+      : '';
+  return getLastCookieValue('yjdhcsrftoken');
+};
 
 const BackendAPIProvider: React.FC<BackendAPIProviderProps> = ({
   baseURL,
   headers,
+  useLocalStorageCsrf = false,
   children,
 }): JSX.Element => (
   <BackendAPIContext.Provider
@@ -20,7 +31,7 @@ const BackendAPIProvider: React.FC<BackendAPIProviderProps> = ({
       baseURL,
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRFToken': typeof window !== 'undefined' ? localStorage.getItem('csrfToken') : '',
+        'X-CSRFToken': getCsrfToken(useLocalStorageCsrf),
         ...headers,
       },
       withCredentials: true,

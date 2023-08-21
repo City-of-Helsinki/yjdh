@@ -14,6 +14,8 @@ import Container from 'shared/components/container/Container';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { useTheme } from 'styled-components';
 
+import { LOCAL_STORAGE_KEYS } from '../constants';
+
 type NotificationProps = Pick<HDSNotificationProps, 'type' | 'label'> & {
   content?: string;
 };
@@ -60,6 +62,12 @@ const Login: NextPage = () => {
       queryClient.clear();
     }
   }, [router.query.logout, router.query.userStateError, queryClient]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined')
+      // eslint-disable-next-line scanjs-rules/identifier_localStorage
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.CSRF_TOKEN);
+  }, []);
 
   return (
     <Container>
