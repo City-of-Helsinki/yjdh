@@ -1074,6 +1074,30 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
 
     def _update_applicant_terms_approval(self, instance, approve_terms):
         if ApplicantTermsApproval.terms_approval_needed(instance):
+            # Ignore applicant's terms if app origin is from handler
+            if instance.application_origin == ApplicationOrigin.HANDLER:
+                return
+
+            # Ignore updated applicant's terms if all term consents have been previously accepted
+            # This is "good enough" (confirmed this from City's benefit team)
+            if instance.applicant_terms_approval.selected_applicant_consents:
+                all_consents = sorted(
+                    list(
+                        instance.applicant_terms_approval.selected_applicant_consents.values_list(
+                            "id"
+                        )
+                    )
+                )
+                accepted_consents = sorted(
+                    list(
+                        instance.applicant_terms_approval.terms.applicant_consents.values_list(
+                            "id"
+                        )
+                    )
+                )
+                if accepted_consents == all_consents:
+                    return
+
             if not approve_terms:
                 raise serializers.ValidationError(
                     {"approve_terms": _("Terms must be approved")}
