@@ -2,7 +2,7 @@ import {
   APPLICATION_FIELD_KEYS,
   APPLICATION_FIELDS,
 } from 'benefit/handler/constants';
-import useApplicationQuery from 'benefit/handler/hooks/useApplicationQuery';
+import useApplicationQueryWithState from 'benefit/handler/hooks/useApplicationQueryWithState';
 import useFormActions from 'benefit/handler/hooks/useFormActions';
 import {
   StepActionType,
@@ -93,11 +93,14 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     }
   }, [id, dispatchStep]);
 
+  const [application, setApplication] = React.useState<Application>(
+    getApplication({} as ApplicationData)
+  );
   const {
     status: applicationDataStatus,
     data: applicationData,
     error: applicationDataError,
-  } = useApplicationQuery(id);
+  } = useApplicationQueryWithState(id, setApplication);
 
   React.useEffect(() => {
     if (applicationDataError) {
@@ -116,7 +119,6 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     }
   }, [t, applicationDataError, applicationDataStatus, id, applicationData]);
 
-  const application = getApplication(applicationData);
   organizationType = application.company?.organizationType ?? 'company';
 
   const { onSave, onQuietSave, onSubmit, onNext, onDelete } =

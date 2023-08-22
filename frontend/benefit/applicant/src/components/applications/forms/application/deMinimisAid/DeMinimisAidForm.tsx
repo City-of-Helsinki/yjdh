@@ -23,9 +23,13 @@ import { useDeminimisAid } from './useDeminimisAid';
 
 interface DeMinimisAidFormProps {
   data: DeMinimisAid[];
+  setUnfinishedDeMinimisAid: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
+const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({
+  data,
+  setUnfinishedDeMinimisAid,
+}) => {
   const {
     t,
     language,
@@ -37,6 +41,26 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
     grants,
   } = useDeminimisAid(data);
   const theme = useTheme();
+
+  const onSubmit = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ): void => {
+    setUnfinishedDeMinimisAid(false);
+    return handleSubmit(event);
+  };
+
+  const handleBlur = (
+    event: React.FocusEvent<HTMLInputElement, Element>
+  ): void => {
+    setUnfinishedDeMinimisAid(false);
+    const grantValuesAsString = Object.values(formik.values).reduce(
+      (acc, val) => acc + val
+    );
+    if (grantValuesAsString !== '') {
+      setUnfinishedDeMinimisAid(true);
+    }
+    formik.handleBlur(event);
+  };
 
   return (
     <$GridCell
@@ -65,7 +89,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
             name={fields.granter.name}
             label={fields.granter.label}
             placeholder={fields.granter.placeholder}
-            onBlur={formik.handleBlur}
+            onBlur={(event) => handleBlur(event)}
             onChange={formik.handleChange}
             value={formik.values.granter}
             invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.GRANTER)}
@@ -80,7 +104,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
             name={fields.amount.name}
             label={fields.amount.label || ''}
             placeholder={fields.amount.placeholder}
-            onBlur={formik.handleBlur}
+            onBlur={(event) => handleBlur(event)}
             onChange={(e) =>
               formik.setFieldValue(
                 fields.amount.name,
@@ -101,7 +125,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
             label={fields.grantedAt.label}
             placeholder={fields.grantedAt.placeholder}
             language={language}
-            onBlur={formik.handleBlur}
+            onBlur={(event) => handleBlur(event)}
             onChange={(value) =>
               formik.setFieldValue(fields.grantedAt.name, value)
             }
@@ -133,7 +157,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
             !formik.isValid ||
             sumBy(grants, 'amount') > MAX_DEMINIMIS_AID_TOTAL_AMOUNT
           }
-          onClick={(e) => handleSubmit(e)}
+          onClick={(e) => onSubmit(e)}
           iconLeft={<IconPlusCircle />}
           fullWidth
         >

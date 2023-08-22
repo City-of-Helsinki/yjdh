@@ -188,6 +188,7 @@ export type ReviewState = {
   paySubsidy?: boolean;
   benefit?: boolean;
   employment?: boolean;
+  approval?: boolean;
 };
 
 export type ReviewStateData = {
@@ -200,4 +201,5 @@ export type ReviewStateData = {
   pay_subsidy?: boolean;
   benefit?: boolean;
   employment?: boolean;
+  approval?: boolean;
 };

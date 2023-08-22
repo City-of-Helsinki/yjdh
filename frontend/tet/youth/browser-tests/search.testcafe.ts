@@ -25,8 +25,13 @@ fixture('Frontpage')
 
 const formatDate = (date: Date): string => `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
 
-// This works locally but not on the review environment
-test.skip('simple test', async () => {
+const IS_LOCAL_TEST_RUN = process.env?.LOCAL_TEST_RUN === '1';
+
+test('simple test', async () => {
+  // This works locally but not on the review environment
+  if (!IS_LOCAL_TEST_RUN) {
+    return;
+  }
   const searchTerm = faker.lorem.word();
 
   await frontpage.fillSearch(searchTerm);
@@ -36,7 +41,11 @@ test.skip('simple test', async () => {
 // The test is skipped due to instability in the review environment
 // causing the test to fail. This worked well locally. If you get it to work in review
 // you can delete the simple test above.
-test.skip('user can search and navigate', async (t) => {
+test('user can search and navigate', async (t) => {
+  if (!IS_LOCAL_TEST_RUN) {
+    return;
+  }
+
   // Generate some data to test with
   // The goal here is not to do a comprehensive test but more of a PoC
   // that the solution works end to end with some sample values.
@@ -45,8 +54,8 @@ test.skip('user can search and navigate', async (t) => {
   const startDate = formatDate(start);
   const endDate = formatDate(end);
   // Should find working method https://linkedevents-api-dev.agw.arodevtest.hel.fi/v1/keyword/tet:2/
-  const workMethodText = 'varjosta';
-  const languageText = 'suomeksi'; // Should find Finnish language
+  const workMethodText = 'Varjostus';
+  const languageText = 'Suomi';
   const searchTerm = faker.lorem.word();
 
   await frontpage.fillSearch(searchTerm);

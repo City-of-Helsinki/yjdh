@@ -1,11 +1,12 @@
 const sharedConfig = require('../../jest.config.js');
-module.exports = {
+const nextJest = require('next/jest');
+
+const createJestConfig = nextJest({
+  dir: './',
+});
+
+const config = {
   ...sharedConfig,
-  globals: {
-    'ts-jest': {
-      tsconfig: '<rootDir>/tsconfig.jest.json',
-    },
-  },
   moduleNameMapper: {
     [`^shared\/(.*)$`]: '<rootDir>/../../shared/src/$1',
     [`^benefit-shared\/(.*)$`]: '<rootDir>../shared/src/$1',
@@ -20,4 +21,8 @@ module.exports = {
     '<rootDir>/../../shared/src/server/next-server.js',
     '<rootDir>/../../shared/src/test/',
   ],
+  moduleDirectories: ['node_modules', '<rootDir>/'],
+  testEnvironment: 'jest-environment-jsdom',
 };
+
+module.exports = createJestConfig(config);

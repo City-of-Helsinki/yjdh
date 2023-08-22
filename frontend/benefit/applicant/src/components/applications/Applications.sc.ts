@@ -1,14 +1,21 @@
+import { respondAbove } from 'shared/styles/mediaQueries';
 import styled from 'styled-components';
 
 export const $PageHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: start;
+  display: block;
   margin-bottom: ${(props) => props.theme.spacing.s};
   margin-top: ${(props) => props.theme.spacing.m};
-  & > div {
-    flex: 1 0 50%;
+
+  & > * {
+    margin-bottom: ${(props) => props.theme.spacing.m};
   }
+
+  ${respondAbove('md')`
+    flex: 1 0 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+  `};
 `;
 
 export const $HeaderItem = styled.div``;
