@@ -24,6 +24,7 @@ from shared.models.abstract_models import TimeStampedModel, UUIDModel
 
 STATE_AID_MAX_PERCENTAGE_CHOICES = (
     (50, "50%"),
+    (70, "70%"),
     (100, "100%"),
 )
 
@@ -527,10 +528,13 @@ class SalaryCostsRow(CalculationRow):
     proxy_row_type = RowType.SALARY_COSTS_EUR
     description_fi_template = "Palkkakustannukset / kk"
 
+    """Calculate the amount of salary costs for the application.
+    Notice that the vacation money is reported per month by the applicant."""
+
     def calculate_amount(self):
         return (
             self.calculation.monthly_pay
-            + self.calculation.vacation_money / self.calculation.duration_in_months
+            + self.calculation.vacation_money
             + self.calculation.other_expenses
         )
 
@@ -555,7 +559,7 @@ class StateAidMaxMonthlyRow(CalculationRow):
 
 class PaySubsidyMonthlyRow(CalculationRow):
     proxy_row_type = RowType.PAY_SUBSIDY_MONTHLY_EUR
-    description_fi_template = "Palkkatuki (enintään {row.max_subsidy} €)"
+    description_fi_template = "Palkkatuki"
 
     """
     Special rule regarding a 100% pay subsidy. The 100% subsidy is limited so, that it's only possible
@@ -566,9 +570,10 @@ class PaySubsidyMonthlyRow(CalculationRow):
     * vacation money = 498,85
     * 100% pay subsidy has been granted for 6 months
     * Pay subsidy is calcuated using formula:
-      min(1800, (monthly_pay+additional_expenses)/0.8*0.65) + vacation_money/6/0.8*0.65
+      min(2020, (monthly_pay / work_time_fraction * 0.65) * 1.23
     """
     MAX_WORK_TIME_FRACTION_FOR_FULL_PAY_SUBSIDY = decimal.Decimal("0.65")
+    GROSS_WAGE_COEFFICIENT_FOR_FULL_PAY_SUBSIDY = decimal.Decimal("1.23")
 
     def __init__(self, *args, **kwargs):
         self.pay_subsidy = kwargs.pop("pay_subsidy", None)
@@ -577,10 +582,7 @@ class PaySubsidyMonthlyRow(CalculationRow):
 
     def calculate_amount(self):
         """
-        Rule regarding the vacation money:
-        "Palkkatuen enimmäismäärä yritykselle vuonna 2021 on 1400 €/kk, jonka lisäksi maksetaan enintään
-        palkkatukipäätöksen mukainen prosenttiosuus lomarahasta."
-        Therefore, the pay subsidy limit does not apply to the vacation_money
+        1.7.2023 voimaantulevan lain mukaan lomarahaa ja sivukuluja ei oteta enää huomioon palkkatuen määrää laskiessa
         """
         assert self.max_subsidy is not None
         assert self.pay_subsidy is not None
@@ -592,39 +594,23 @@ class PaySubsidyMonthlyRow(CalculationRow):
         pay_subsidy_fraction = self.pay_subsidy.pay_subsidy_percent * decimal.Decimal(
             "0.01"
         )
+        # Pay subsidy max is 100%:
+        if pay_subsidy_fraction == 1:
+            full_time_salary_cost = (self.calculation.monthly_pay) / work_time_fraction
 
-        if (
-            pay_subsidy_fraction == 1
-            and work_time_fraction > self.MAX_WORK_TIME_FRACTION_FOR_FULL_PAY_SUBSIDY
-        ):
-            full_time_salary_cost_excluding_vacation_money = (
-                self.calculation.monthly_pay + self.calculation.other_expenses
-            ) / work_time_fraction
-            full_time_vacation_money = (
-                self.calculation.vacation_money / work_time_fraction
-            ) / self.calculation.duration_in_months
-            subsidy_amount = (
-                min(
-                    self.max_subsidy,
-                    full_time_salary_cost_excluding_vacation_money
-                    * self.MAX_WORK_TIME_FRACTION_FOR_FULL_PAY_SUBSIDY,
+            subsidy_amount = min(
+                self.max_subsidy,
+                (
+                    full_time_salary_cost
+                    * self.MAX_WORK_TIME_FRACTION_FOR_FULL_PAY_SUBSIDY
                 )
-                + full_time_vacation_money
-                * self.MAX_WORK_TIME_FRACTION_FOR_FULL_PAY_SUBSIDY
+                * self.GROSS_WAGE_COEFFICIENT_FOR_FULL_PAY_SUBSIDY,
             )
+        # Pay subsidy max is less than 100% (50% or 70%):
         else:
-            salary_cost_excluding_vacation_money = (
-                self.calculation.monthly_pay + self.calculation.other_expenses
-            )
-            monthly_vacation_money = (
-                self.calculation.vacation_money / self.calculation.duration_in_months
-            )
-            subsidy_amount = (
-                min(
-                    self.max_subsidy,
-                    pay_subsidy_fraction * salary_cost_excluding_vacation_money,
-                )
-                + monthly_vacation_money * pay_subsidy_fraction
+            subsidy_amount = min(
+                self.max_subsidy,
+                pay_subsidy_fraction * self.calculation.monthly_pay,
             )
         return subsidy_amount
 
@@ -674,7 +660,7 @@ class TotalDeductionsMonthlyRow(CalculationRow):
 
 class SalaryBenefitMonthlyRow(CalculationRow):
     proxy_row_type = RowType.HELSINKI_BENEFIT_MONTHLY_EUR
-    description_fi_template = "Helsinki-lisä / kk (enintään {row.max_benefit} €)"
+    description_fi_template = "Helsinki-lisä / kk"
 
     def __init__(self, *args, **kwargs):
         self.max_benefit = kwargs.pop("max_benefit", None)
@@ -733,7 +719,7 @@ class SalaryBenefitTotalRow(CalculationRow, TotalRowMixin):
 
     def calculate_amount(self):
         return to_decimal(
-            self.calculation.duration_in_months
+            self.calculation.duration_in_months_rounded
             * self.calculation.calculator.get_amount(
                 RowType.HELSINKI_BENEFIT_MONTHLY_EUR
             ),
@@ -753,7 +739,7 @@ class SalaryBenefitSubTotalRow(CalculationRow, TotalRowMixin):
 
     def calculate_amount(self):
         return to_decimal(
-            duration_in_months(self.start_date, self.end_date)
+            duration_in_months(self.start_date, self.end_date, 2)
             * self.calculation.calculator.get_amount(
                 RowType.HELSINKI_BENEFIT_MONTHLY_EUR
             ),
