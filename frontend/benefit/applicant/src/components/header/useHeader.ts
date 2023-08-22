@@ -1,10 +1,12 @@
 import useApplicationQuery from 'benefit/applicant/hooks/useApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { getLanguageOptions } from 'benefit/applicant/utils/common';
+import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
+import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useToggle from 'shared/hooks/useToggle';
 import { NavigationItem, OptionType } from 'shared/types/common';
 
@@ -27,6 +29,8 @@ const useHeader = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const router = useRouter();
   const id = router?.query?.id?.toString() ?? '';
+  const { axios } = useBackendAPI();
+
   const [hasMessenger, setHasMessenger] = useState<boolean>(false);
   const [unreadMessagesCount, setUnredMessagesCount] = useState<
     number | undefined | null
@@ -74,6 +78,10 @@ const useHeader = (): ExtendedComponentProps => {
     newLanguage: OptionType<string>
   ): void => {
     e.preventDefault();
+
+    void axios.get(BackendEndpoint.USER_OPTIONS, {
+      params: { lang: newLanguage.value },
+    });
 
     void router.push({ pathname, query }, asPath, {
       locale: newLanguage.value,
