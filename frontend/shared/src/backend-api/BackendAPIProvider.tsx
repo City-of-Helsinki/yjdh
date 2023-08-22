@@ -2,28 +2,20 @@ import Axios from 'axios';
 import React from 'react';
 import { getLastCookieValue } from 'shared/cookies/get-last-cookie-value';
 import { Headers } from 'shared/types/common';
+import { getLocalStorageItem } from 'shared/utils/localstorage.utils';
 
 import BackendAPIContext from './BackendAPIContext';
 
 export interface BackendAPIProviderProps {
   baseURL: string;
   headers?: Headers;
-  useLocalStorageCsrf?: boolean;
+  isLocalStorageCsrf?: boolean;
 }
-
-const getCsrfToken = (useLocalStorageCsrf: boolean): string => {
-  if (useLocalStorageCsrf)
-    return typeof window !== 'undefined'
-      ? // eslint-disable-next-line scanjs-rules/identifier_localStorage
-        localStorage.getItem('csrfToken') || ''
-      : '';
-  return getLastCookieValue('yjdhcsrftoken');
-};
 
 const BackendAPIProvider: React.FC<BackendAPIProviderProps> = ({
   baseURL,
   headers,
-  useLocalStorageCsrf = false,
+  isLocalStorageCsrf = false,
   children,
 }): JSX.Element => (
   <BackendAPIContext.Provider
@@ -31,7 +23,9 @@ const BackendAPIProvider: React.FC<BackendAPIProviderProps> = ({
       baseURL,
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRFToken': getCsrfToken(useLocalStorageCsrf),
+        'X-CSRFToken': isLocalStorageCsrf
+          ? getLocalStorageItem('csrfToken')
+          : getLastCookieValue('yjdhcsrftoken'),
         ...headers,
       },
       withCredentials: true,

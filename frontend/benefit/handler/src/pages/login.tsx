@@ -12,6 +12,7 @@ import React, { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
 import Container from 'shared/components/container/Container';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
+import { removeLocalStorageItem } from 'shared/utils/localstorage.utils';
 import { useTheme } from 'styled-components';
 
 import { LOCAL_STORAGE_KEYS } from '../constants';
@@ -64,9 +65,7 @@ const Login: NextPage = () => {
   }, [router.query.logout, router.query.userStateError, queryClient]);
 
   useEffect(() => {
-    if (typeof window !== 'undefined')
-      // eslint-disable-next-line scanjs-rules/identifier_localStorage
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.CSRF_TOKEN);
+    removeLocalStorageItem(LOCAL_STORAGE_KEYS.CSRF_TOKEN);
   }, []);
 
   return (

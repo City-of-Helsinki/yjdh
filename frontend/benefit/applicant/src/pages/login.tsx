@@ -23,8 +23,9 @@ import {
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
+import { removeLocalStorageItem } from 'shared/utils/localstorage.utils';
 
-import { IS_CLIENT, LOCAL_STORAGE_KEYS } from '../constants';
+import { LOCAL_STORAGE_KEYS } from '../constants';
 
 type NotificationProps =
   | (Pick<HDSNotificationProps, 'type' | 'label'> & {
@@ -60,12 +61,8 @@ const Login: NextPage = () => {
   }, [logout, queryClient]);
 
   useEffect(() => {
-    if (IS_CLIENT) {
-      /* eslint-disable scanjs-rules/identifier_localStorage */
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_TERMS_OF_SERVICE_APPROVED);
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.CSRF_TOKEN);
-      /* eslint-enable scanjs-rules/identifier_localStorage */
-    }
+    removeLocalStorageItem(LOCAL_STORAGE_KEYS.IS_TERMS_OF_SERVICE_APPROVED);
+    removeLocalStorageItem(LOCAL_STORAGE_KEYS.CSRF_TOKEN);
   }, []);
 
   return (

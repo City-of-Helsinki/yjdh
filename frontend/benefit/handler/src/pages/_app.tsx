@@ -33,7 +33,7 @@ const App: React.FC<AppProps> = (appProps) => {
     <BackendAPIProvider
       baseURL={getBackendDomain()}
       headers={getHeaders(locale)}
-      useLocalStorageCsrf
+      isLocalStorageCsrf
     >
       <AppContextProvider>
         <QueryClientProvider client={queryClient}>

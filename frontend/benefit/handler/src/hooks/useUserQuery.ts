@@ -5,6 +5,7 @@ import { useQuery, UseQueryResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useLocale from 'shared/hooks/useLocale';
 import User from 'shared/types/user';
+import { setLocalStorageItem } from 'shared/utils/localstorage.utils';
 
 import { LOCAL_STORAGE_KEYS, ROUTES } from '../constants';
 import useLogout from './useLogout';
@@ -48,8 +49,7 @@ const useUserQuery = <T extends User>(
 
   const onSuccessHandler = (user: User): void => {
     checkForStaffStatus(user);
-    // eslint-disable-next-line scanjs-rules/identifier_localStorage
-    localStorage.setItem(LOCAL_STORAGE_KEYS.CSRF_TOKEN, user.csrf_token);
+    setLocalStorageItem(LOCAL_STORAGE_KEYS.CSRF_TOKEN, user.csrf_token);
   };
 
   return useQuery(
