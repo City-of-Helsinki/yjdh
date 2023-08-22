@@ -106,7 +106,8 @@ abstract class PageComponent {
   ): TestControllerPromise {
     return t
       .click(selector)
-      .pressKey('ctrl+a delete')
+      .selectText(selector)
+      .pressKey('delete')
       .typeText(selector, value ?? '');
   }
 
