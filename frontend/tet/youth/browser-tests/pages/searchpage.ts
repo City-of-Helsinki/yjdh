@@ -13,11 +13,13 @@ class Searchpage {
 
   searchTags = Selector('#searchTags');
 
-  searchTagButton = Selector('#hds-tag > button');
+  searchTagButton = Selector('#hds-tag-label > button');
+
+  searchTagDeleteButton = Selector('#hds-tag-delete-button');
 
   removeAllSearchesButton = Selector('#removeAllSearches');
 
-  submitButton = Selector('button').withText('Etsi');
+  submitButton = Selector('button').withText('Hae');
 
   readMoreButton = Selector('button').withText('Lue lisää');
 
@@ -50,7 +52,7 @@ class Searchpage {
   fillDates = (startDate: string, endDate: string) =>
     t.typeText(this.startDate, startDate).typeText(this.endDate, endDate);
 
-  removeTag = () => t.click(this.searchTagButton);
+  removeTag = () => t.click(this.searchTagDeleteButton());
 
   goToPosting = () => t.click(this.readMoreButton);
 }

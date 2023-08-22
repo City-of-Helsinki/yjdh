@@ -1455,7 +1455,7 @@ def test_application_modified_at_non_draft(api_client, application, status):
     [
         (None, None, None, 200),  # empty application
         (True, 50, None, 200),  # one pay subsidy
-        (True, 100, 30, 200),  # two pay subsidies
+        (True, 100, 30, 400),  # two pay subsidies
         (None, 100, None, 400),  # invalid
         (True, None, 50, 400),  # invalid percent
         (True, 99, None, 400),  # invalid choice

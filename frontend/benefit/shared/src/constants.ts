@@ -36,7 +36,7 @@ export enum VALIDATION_MESSAGE_KEYS {
   PHONE_NUMBER_LENGTH_MAX = 'common:form.validation.phoneNumber.max',
 }
 
-export const PAY_SUBSIDY_OPTIONS = [30, 40, 50, 100] as const;
+export const PAY_SUBSIDY_OPTIONS = [50, 70, 100] as const;
 
 export enum EMPLOYEE_KEYS {
   FIRST_NAME = 'firstName',

@@ -6,5 +6,4 @@ const { parsed: env } = require('dotenv').config({
 module.exports = nextConfig({
   i18n,
   env,
-  poweredByHeader: false,
 });
