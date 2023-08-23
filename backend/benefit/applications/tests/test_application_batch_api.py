@@ -39,6 +39,30 @@ def get_valid_batch_completion_data():
     }
 
 
+def get_valid_p2p_batch_completion_data():
+    return {
+        "decision_maker_title": get_faker().job(),
+        "decision_maker_name": get_faker().name(),
+        "section_of_the_law": "$1234",
+        "decision_date": date.today(),
+        "p2p_inspector_name": get_faker().name(),
+        "p2p_inspector_email": get_faker().email(),
+        "p2p_checker_name": get_faker().name(),
+    }
+
+
+def get_valid_ahjo_batch_completion_data():
+    return {
+        "decision_maker_title": get_faker().job(),
+        "decision_maker_name": get_faker().name(),
+        "section_of_the_law": "$1234",
+        "decision_date": date.today(),
+        "expert_inspector_name": get_faker().name(),
+        "expert_inspector_title": get_faker().job(),
+        "p2p_checker_name": get_faker().name(),
+    }
+
+
 def fill_as_valid_batch_completion_and_save(
     batch: ApplicationBatch, status: ApplicationBatchStatus = None
 ):
@@ -314,6 +338,14 @@ def test_batch_too_many_drafts(application_batch):
 def test_batch_status_decided(
     handler_api_client, application_batch, batch_status, delta_months, delta_days
 ):
+    def remove_inspection_data_from_batch(batch):
+        batch.p2p_inspector_name = ""
+        batch.p2p_inspector_email = ""
+        batch.p2p_checker_name = ""
+        batch.expert_inspector_name = ""
+        batch.expert_inspector_title = ""
+        batch.save()
+
     url = get_batch_detail_url(application_batch, "status/")
     payload = get_valid_batch_completion_data()
     payload["status"] = batch_status
@@ -326,6 +358,22 @@ def test_batch_status_decided(
     assert response.status_code == 400
 
     # With exact months
+    payload["decision_date"] = date.today() + relativedelta(months=(delta_months))
+    response = handler_api_client.patch(url, payload)
+    assert response.status_code == 200
+
+    # Use Ahjo inspector
+    remove_inspection_data_from_batch(application_batch)
+    payload = get_valid_ahjo_batch_completion_data()
+    payload["decision_date"] = date.today() + relativedelta(months=(delta_months))
+    payload["status"] = batch_status
+    response = handler_api_client.patch(url, payload)
+    assert response.status_code == 200
+
+    # Use Talpa/P2P inspector
+    remove_inspection_data_from_batch(application_batch)
+    payload = get_valid_p2p_batch_completion_data()
+    payload["status"] = batch_status
     payload["decision_date"] = date.today() + relativedelta(months=(delta_months))
     response = handler_api_client.patch(url, payload)
     assert response.status_code == 200

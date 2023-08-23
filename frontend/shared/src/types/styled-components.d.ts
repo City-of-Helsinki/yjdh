@@ -138,6 +138,9 @@ declare module 'styled-components' {
       l: '992px';
       xl: '1248px';
     };
+    contentWidth: {
+      max: '1240px';
+    };
     components: {
       stepper: {
         '--hds-not-selected-step-label-color': string;
@@ -154,6 +157,14 @@ declare module 'styled-components' {
       };
       table: {
         '--header-background-color': string;
+      };
+      radio: {
+        '--border-color-selected': string;
+        '--border-color-selected-hover': string;
+        '--border-color-selected-focus': string;
+        '--icon-color-selected': string;
+        '--icon-color-hover': string;
+        '--focus-outline-color': string;
       };
     };
   }

@@ -14,6 +14,7 @@ import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
 import React, { useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
+import showErrorToast from 'shared/components/toast/show-error-toast';
 import { OptionType } from 'shared/types/common';
 import { focusAndScroll } from 'shared/utils/dom.utils';
 
@@ -39,10 +40,12 @@ type ExtendedComponentProps = {
 };
 
 const useApplicationFormStep1 = (
-  application: Partial<Application>
+  application: Partial<Application>,
+  isUnfinishedDeminimisAid: boolean
 ): ExtendedComponentProps => {
   const { t } = useTranslation();
-  const { setDeMinimisAids } = React.useContext(DeMinimisContext);
+  const { deMinimisAids, setDeMinimisAids } =
+    React.useContext(DeMinimisContext);
   const { onNext, onSave, onDelete } = useFormActions(application);
 
   const translationsBase = 'common:applications.sections.company';
@@ -103,6 +106,20 @@ const useApplicationFormStep1 = (
         return focusAndScroll(errorFieldKey);
       }
 
+      if (isUnfinishedDeminimisAid) {
+        showErrorToast(
+          t(`${translationsBase}.deMinimisUnfinished.label`),
+          t(`${translationsBase}.deMinimisUnfinished.content`)
+        );
+        return false;
+      }
+
+      // de minimis fields are empty, set radio to false
+      if (deMinimisAids.length === 0) {
+        void formik.setFieldValue(fields.deMinimisAidSet.name, []);
+        void formik.setFieldValue(fields.deMinimisAid.name, false);
+      }
+
       return formik.submitForm();
     });
   };
@@ -125,7 +142,7 @@ const useApplicationFormStep1 = (
 
   const showDeminimisSection =
     values.associationHasBusinessActivities === true ||
-    organizationType !== ORGANIZATION_TYPES.ASSOCIATION;
+    organizationType === ORGANIZATION_TYPES.COMPANY;
 
   const languageOptions = React.useMemo(
     (): OptionType<string>[] => getLanguageOptions(t, 'languages'),

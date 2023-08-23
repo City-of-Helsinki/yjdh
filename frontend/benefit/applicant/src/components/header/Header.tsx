@@ -39,6 +39,7 @@ const Header: React.FC = () => {
     <>
       <BaseHeader
         title={t('common:appName')}
+        titleUrl={ROUTES.HOME}
         skipToContentLabel={t('common:header.linkSkipToContent')}
         menuToggleAriaLabel={t('common:header.menuToggleAriaLabel')}
         languages={languageOptions}

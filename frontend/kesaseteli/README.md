@@ -19,7 +19,7 @@ Project is automatically deployed to testing environment when pushing to develop
 
 ## Requirements
 
-- Node 16.x
+- Node 18.x
 - Lerna
 - Yarn
 - Git
@@ -27,7 +27,7 @@ Project is automatically deployed to testing environment when pushing to develop
 
 ### install node with nvm
 
-    nvm install 16 --lts
+    nvm install 18 --lts
 
 
 ## Available Scripts

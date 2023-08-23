@@ -20,6 +20,9 @@ import { useApplicationFormStep1 } from './useApplicationFormStep1';
 const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
   data,
 }) => {
+  const [isUnfinishedDeMinimisAid, setUnfinishedDeMinimisAid] =
+    React.useState(false);
+
   const {
     t,
     handleSubmit,
@@ -34,7 +37,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
     translationsBase,
     formik,
     deMinimisAidSet,
-  } = useApplicationFormStep1(data);
+  } = useApplicationFormStep1(data, Boolean(isUnfinishedDeMinimisAid));
 
   useAlertBeforeLeaving(formik.dirty);
 
@@ -205,7 +208,10 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
 
           {formik.values.deMinimisAid && (
             <>
-              <DeMinimisAidForm data={deMinimisAidSet} />
+              <DeMinimisAidForm
+                data={deMinimisAidSet}
+                setUnfinishedDeMinimisAid={setUnfinishedDeMinimisAid}
+              />
               <DeMinimisAidsList />
             </>
           )}

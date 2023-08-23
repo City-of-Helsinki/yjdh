@@ -12,7 +12,10 @@ import React, { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
 import Container from 'shared/components/container/Container';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
+import { removeLocalStorageItem } from 'shared/utils/localstorage.utils';
 import { useTheme } from 'styled-components';
+
+import { LOCAL_STORAGE_KEYS } from '../constants';
 
 type NotificationProps = Pick<HDSNotificationProps, 'type' | 'label'> & {
   content?: string;
@@ -60,6 +63,10 @@ const Login: NextPage = () => {
       queryClient.clear();
     }
   }, [router.query.logout, router.query.userStateError, queryClient]);
+
+  useEffect(() => {
+    removeLocalStorageItem(LOCAL_STORAGE_KEYS.CSRF_TOKEN);
+  }, []);
 
   return (
     <Container>

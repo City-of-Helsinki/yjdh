@@ -16,12 +16,6 @@ azure-storage-blob==12.15.0
     # via django-storages
 babel==2.11.0
     # via -r requirements.in
-boto3==1.26.78
-    # via -r requirements.in
-botocore==1.29.78
-    # via
-    #   boto3
-    #   s3transfer
 cachetools==5.3.0
     # via django-helusers
 certifi==2022.12.7
@@ -135,10 +129,6 @@ isodate==0.6.1
     # via azure-storage-blob
 jinja2==3.1.2
     # via -r requirements.in
-jmespath==1.0.1
-    # via
-    #   boto3
-    #   botocore
 josepy==1.13.0
     # via mozilla-django-oidc
 jsonschema==4.17.3
@@ -184,7 +174,6 @@ pysaml2==7.4.1
 python-dateutil==2.8.2
     # via
     #   -r requirements.in
-    #   botocore
     #   faker
     #   pysaml2
 python-jose==3.3.0
@@ -214,8 +203,6 @@ requests==2.28.2
     #   pysaml2
 rsa==4.9
     # via python-jose
-s3transfer==0.6.0
-    # via boto3
 sentry-sdk==1.15.0
     # via -r requirements.in
 six==1.16.0
@@ -239,7 +226,6 @@ uritemplate==4.1.1
     #   drf-spectacular
 urllib3==1.26.14
     # via
-    #   botocore
     #   django-auth-adfs
     #   elasticsearch
     #   requests

@@ -86,6 +86,10 @@
           "deMinimisAidMaxAmount": {
             "label": "Maximum amount exceeded",
             "content": "The maximum amount of de minimis aid has been exceeded. Under the EU Regulation, a company may receive a maximum EUR 200,000 of de minimis aid during the current year and the previous two tax years. All forms of de minimis aid granted by various authorities during this period will be taken into account in the maximum amount."
+          },
+          "deMinimisUnfinished": {
+            "label": "Missing de minimis aid information",
+            "content": "Please fill any missing de minimis aid information and press 'Add' button."
           }
         },
         "tooltips": {
@@ -186,7 +190,7 @@
         "salaryExpensesExplanation": "The gross salary and indirect labour costs are indicated in EUR per month, holiday bonus as a lump sum",
         "tooltips": {
           "heading5Employment": "Collective agreement applied: e.g. Collective Agreement for the Commercial Sector. If there is no binding collective agreement in the sector, put in a dash.",
-          "heading5EmploymentSub1": "The gross salary is the salary paid to the subsidised employee before the deduction of the employee’s statutory contributions (the employee’s unemployment insurance and pension insurance contributions) and taxes. If the subsidised employee is paid remuneration bonuses (e.g. evening, night or shift work bonus), take the estimated amount into account in the gross salary. The employers’ statutory indirect labour costs include social security expenses, pension insurance, accident insurance and unemployment insurance premiums as well as the mandatory group life insurance premium. Indirect labour costs refer to the amount of the employer’s statutory indirect labour costs paid for the salary per month. The holiday bonus is a salary cost to be covered by the subsidy when it is paid for holiday pay during the subsidy period. Estimate the amount of holiday bonus to be paid during the subsidy period. Holiday compensation is not covered by the Helsinki benefit.",
+          "heading5EmploymentSub1": "The gross salary is the salary paid to the subsidised employee before the deduction of the employee’s statutory contributions (the employee’s unemployment insurance and pension insurance contributions) and taxes. If the subsidised employee is paid remuneration bonuses (e.g. evening, night or shift work bonus), take the estimated amount into account in the gross salary. The employers’ statutory indirect labour costs include social security expenses, pension insurance, accident insurance and unemployment insurance premiums as well as the mandatory group life insurance premium.\r\n\r\nIndirect labour costs refer to the amount of the employer’s statutory indirect labour costs paid for the salary per month.\r\n\r\nThe holiday bonus is a salary cost to be covered by the subsidy when it is paid for holiday pay during the subsidy period. Estimate the amount of holiday bonus to be paid during the subsidy period. Holiday compensation is not covered by the Helsinki benefit.",
           "heading5Assignment": "The gross salary is the salary paid to the subsidised employee before the deduction of the employee's statutory contributions (the employee's unemployment insurance and pension insurance contributions) and taxes. If the subsidised employee is paid remuneration bonuses (e.g. evening, night or shift work bonus), take the estimated amount into account in the gross salary. The employers' statutory indirect labour costs include social security expenses, pension insurance, accident insurance and unemployment insurance premiums as well as the mandatory group life insurance premium. Indirect labour costs refer to the amount of the employer's statutory indirect labour costs paid for the salary per month. The holiday bonus is a salary cost to be covered by the subsidy when it is paid for holiday pay during the subsidy period. Estimate the amount of holiday bonus to be paid during the subsidy period. Holiday compensation is not covered by the Helsinki benefit.",
           "heading2": "Pay subsidy is a financial subsidy intended to promote the employment of an unemployed jobseeker, which TE Services can grant to the employer for salary costs.",
           "heading3": "The Helsinki benefit for employment is intended for guidance, orientation, tools, work clothing and workspace costs when no other support is paid for these. The Helsinki benefit for salary is intended for the cost of employing a subsidised employee (= gross salary, statutory indirect labour costs and holiday bonus). The Helsinki benefit for a commission is intended for the performance of an individual job or project."
@@ -374,7 +378,8 @@
     "drawer": {
       "title": "Application’s messages"
     },
-    "languageMenuButtonAriaLabel": "Select language"
+    "languageMenuButtonAriaLabel": "Select language",
+    "menuToggleAriaLabel": "Menu"
   },
   "footer": {
     "copyrightText": "Copyright",
@@ -421,7 +426,6 @@
   "credentialsIngress": {
     "text": "A person to be employed with the Helsinki benefit must be informed of the processing of their personal data. Print the notification and request a signature from the person to be employed."
   },
-  "menuToggleAriaLabel": "Menu",
   "form": {
     "validation": {
       "required": "This field is required",
@@ -657,5 +661,8 @@
         "heading1": "Palaute ja yhteystiedot"
       }
     }
+  },
+  "toast": {
+    "closeToast": "Close notification"
   }
 }

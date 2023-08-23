@@ -248,7 +248,7 @@ def test_multiple_benefit_per_application(mock_pdf_convert):
         override_monthly_benefit_amount=None,
     )
     pay_subsidy = PaySubsidyFactory(
-        pay_subsidy_percent=40, start_date=date(2021, 7, 10), end_date=date(2021, 9, 10)
+        pay_subsidy_percent=50, start_date=date(2021, 7, 10), end_date=date(2021, 9, 10)
     )
     application.pay_subsidies.add(pay_subsidy)
     application.save()
@@ -262,15 +262,17 @@ def test_multiple_benefit_per_application(mock_pdf_convert):
     assert (
         html.count(application.ahjo_application_number) == 2
     )  # Make sure there are two rows in the report
+    print(html)
     _assert_html_content(
         html,
         (
             application.ahjo_application_number,
             application.employee.first_name,
             application.employee.last_name,
-            "691",
-            "340",
+            "440",
+            "893",
             "1600",
             "800",
+            "2493",
         ),
     )

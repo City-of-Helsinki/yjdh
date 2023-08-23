@@ -86,6 +86,10 @@
           "deMinimisAidMaxAmount": {
             "label": "Enimmäismäärä ylitetty",
             "content": "De minimis-tuen enimmäismäärä on ylitetty. Tuki voi olla enintään 200 000 euroa, joka myönnetään yritykselle kuluvan vuoden ja kahden edellisen verovuoden kuluessa. Enimmäismäärässä huomioidaan kaikkien eri viranomaisten kyseisenä ajanjaksona de minimis -tukena myöntämä rahoitus."
+          },
+          "deMinimisUnfinished": {
+            "label": "Puuttuvia de minimis-tuen tietoja",
+            "content": "Täytä puuttuvat de minimis -kentät ja paina 'Lisää' painiketta."
           }
         },
         "tooltips": {
@@ -186,7 +190,7 @@
         "salaryExpensesExplanation": "Bruttopalkka ja sivukulut ilmoitetaan euroina kuukaudessa, lomaraha kertasummana",
         "tooltips": {
           "heading5Employment": "Sovellettava työehtosopimus: esim. Kaupan työehtosopimus. Jos alalla ei ole velvoittavaa työehtosopimusta, merkitse viiva.",
-          "heading5EmploymentSub1": "Bruttopalkalla tarkoitetaan tuella palkattavalle maksettavaa palkkaa ennen työntekijän lakisääteisten maksujen (työntekijän työttömyysvakuutus- ja eläkevakuutusmaksu) ja verojen pidätystä. Jos tuella palkattavalle maksetaan palkan lisiä (esim. ilta-, yö- tai vuorotyölisä), ota niiden arvioitu määrä huomioon bruttopalkassa. Työnantajan lakisääteisiin sivukuluihin luetaan sosiaaliturva-, työeläkevakuutus-, tapaturmavakuutus- ja työttömyysvakuutusmaksu sekä pakollinen ryhmähenkivakuutusmaksu. Sivukulut tarkoittavat palkasta maksettavien työnantajan lakisääteisten sivukulujen määrä kuukaudessa. Lomaraha on tuella katettava palkkauskustannus silloin, kun se maksetaan tukijakson aikana pidetystä vuosilomapalkasta. Arvioi tukijakson aikana maksettavan lomarahan määrä. Lomakorvaus ei ole Helsinki-lisällä katettava korvaus.",
+          "heading5EmploymentSub1": "Bruttopalkalla tarkoitetaan tuella palkattavalle maksettavaa palkkaa ennen työntekijän lakisääteisten maksujen (työntekijän työttömyysvakuutus- ja eläkevakuutusmaksu) ja verojen pidätystä. Jos tuella palkattavalle maksetaan palkan lisiä (esim. ilta-, yö- tai vuorotyölisä), ota niiden arvioitu määrä huomioon bruttopalkassa. Työnantajan lakisääteisiin sivukuluihin luetaan sosiaaliturva-, työeläkevakuutus-, tapaturmavakuutus- ja työttömyysvakuutusmaksu sekä pakollinen ryhmähenkivakuutusmaksu.\r\n\r\nSivukulut tarkoittavat palkasta maksettavien työnantajan lakisääteisten sivukulujen määrä kuukaudessa.\r\n\r\nLomaraha on tuella katettava palkkauskustannus silloin, kun se maksetaan tukijakson aikana pidetystä vuosilomapalkasta. Arvioi tukijakson aikana maksettavan lomarahan määrä. Lomakorvaus ei ole Helsinki-lisällä katettava korvaus.",
           "heading5Assignment": "Palkkauskustannukset tooltip text",
           "heading2": "Palkkatuki on työttömän työnhakijan työllistymisen edistämiseksi tarkoitettu rahallinen tuki, jonka TE-palvelut voi myöntää työnantajalle palkkauskustannuksiin.",
           "heading3": "Työllistämisen Helsinki-lisä on tarkoitettu ohjaus-, perehdytys-, työväline-, työvaate- ja työtilakustannuksiin silloin, kun niihin ei makseta muuta tukea. Palkan Helsinki-lisä on tarkoitettu työllistetyn henkilön palkkauskustannuksiin (=bruttopalkka, lakisääteiset sivukulut ja lomaraha). Toimeksiannon Helsinki-lisä on tarkoitettu yksittäisen työn tai projektin suorittamiseen."
@@ -374,7 +378,8 @@
     "drawer": {
       "title": "Hakemuksen viestit"
     },
-    "languageMenuButtonAriaLabel": "Valitse kieli"
+    "languageMenuButtonAriaLabel": "Valitse kieli",
+    "menuToggleAriaLabel": "Valikko"
   },
   "footer": {
     "copyrightText": "Copyright",
@@ -421,7 +426,6 @@
   "credentialsIngress": {
     "text": "Helsinki-lisällä työllistettävää henkilöä on tiedotettava hänen henkilötietojensa käsittelystä. Tulosta tiedoksianto ja pyydä siihen allekirjoitus työllistettävältä."
   },
-  "menuToggleAriaLabel": "Valikko",
   "form": {
     "validation": {
       "required": "Tämä kenttä on pakollinen",
@@ -657,5 +661,8 @@
         "heading1": "Palaute ja yhteystiedot"
       }
     }
+  },
+  "toast": {
+    "closeToast": "Sulje ilmoitus"
   }
 }

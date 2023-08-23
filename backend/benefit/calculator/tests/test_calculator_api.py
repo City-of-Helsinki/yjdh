@@ -35,7 +35,7 @@ def _set_two_pay_subsidies_with_empty_dates(data: dict) -> dict:
         {
             "start_date": None,
             "end_date": None,
-            "pay_subsidy_percent": 40,
+            "pay_subsidy_percent": 70,
             "work_time_percent": 40,
         },
     ]
@@ -249,7 +249,7 @@ def test_modify_calculation_invalid_status(
         {
             "start_date": str(handling_application.start_date),
             "end_date": str(handling_application.end_date),
-            "pay_subsidy_percent": 40,
+            "pay_subsidy_percent": 50,
             "work_time_percent": "50.00",
         }
     ]
@@ -315,7 +315,7 @@ def test_application_edit_pay_subsidy(handler_api_client, handling_application):
 
     # edit fields
     data["pay_subsidies"][0]["start_date"] = "2021-06-01"
-    data["pay_subsidies"][0]["pay_subsidy_percent"] = 40
+    data["pay_subsidies"][0]["pay_subsidy_percent"] = 70
     # swap order
     data["pay_subsidies"][0], data["pay_subsidies"][1] = (
         data["pay_subsidies"][1],
@@ -328,7 +328,7 @@ def test_application_edit_pay_subsidy(handler_api_client, handling_application):
     assert response.status_code == 200
     assert len(response.data["pay_subsidies"]) == 2
     assert response.data["pay_subsidies"][1]["start_date"] == "2021-06-01"
-    assert response.data["pay_subsidies"][1]["pay_subsidy_percent"] == 40
+    assert response.data["pay_subsidies"][1]["pay_subsidy_percent"] == 70
 
 
 def test_application_delete_pay_subsidy(handler_api_client, handling_application):
@@ -472,7 +472,7 @@ def test_pay_subsidies_validation_in_handling(
             company=mock_get_organisation_roles_and_create_company,
             pay_subsidy_granted=True,
             pay_subsidy_percent=100,
-            additional_pay_subsidy_percent=40,
+            additional_pay_subsidy_percent=70,
         )
     data = HandlerApplicationSerializer(handling_application).data
     _set_two_pay_subsidies_with_empty_dates(data)

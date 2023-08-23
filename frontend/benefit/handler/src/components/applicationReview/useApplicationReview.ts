@@ -1,9 +1,13 @@
 import AppContext from 'benefit/handler/context/AppContext';
 import useApplicationQuery from 'benefit/handler/hooks/useApplicationQuery';
+import useReviewStateQuery from 'benefit/handler/hooks/useReviewStateQuery';
+import useUpdateReviewStateQuery from 'benefit/handler/hooks/useUpdateReviewStateQuery';
 import useUploadAttachmentQuery from 'benefit/handler/hooks/useUploadAttachmentQuery';
 import {
   Application,
   HandledAplication,
+  ReviewState,
+  ReviewStateData,
 } from 'benefit/handler/types/application';
 import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
@@ -11,6 +15,7 @@ import { TFunction, useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import hdsToast from 'shared/components/toast/Toast';
+import snakecaseKeys from 'snakecase-keys';
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -21,6 +26,8 @@ type ExtendedComponentProps = {
   isLoading: boolean;
   isUploading: boolean;
   handleUpload: (attachment: FormData) => void;
+  reviewState: ReviewState;
+  handleUpdateReviewState: (reviewState: ReviewState) => void;
 };
 
 const useApplicationReview = (): ExtendedComponentProps => {
@@ -42,11 +49,27 @@ const useApplicationReview = (): ExtendedComponentProps => {
     isError: isUploadingError,
   } = useUploadAttachmentQuery();
 
+  const {
+    status: reviewStateDataStatus,
+    data: reviewStateData,
+    error: reviewStateDataError,
+  } = useReviewStateQuery(id);
+
+  const {
+    mutate: updateReviewState,
+    isError: isUpdatingReviewStateError,
+  } = useUpdateReviewStateQuery();
+
   const handleUpload = (attachment: FormData): void => {
     uploadAttachment({
       applicationId: id,
       data: attachment,
     });
+  };
+
+  const handleUpdateReviewState = (reviewState: ReviewState): void => {
+    const data: ReviewStateData = snakecaseKeys(reviewState);
+    updateReviewState(data);
   };
 
   useEffect(() => {
@@ -59,7 +82,11 @@ const useApplicationReview = (): ExtendedComponentProps => {
   }, [isUploadingError, t]);
 
   useEffect(() => {
-    if (applicationDataError) {
+    if (
+      applicationDataError ||
+      reviewStateDataError ||
+      isUpdatingReviewStateError
+    ) {
       hdsToast({
         autoDismissTime: 5000,
         type: 'error',
@@ -67,17 +94,24 @@ const useApplicationReview = (): ExtendedComponentProps => {
         text: t('common:error.generic.text'),
       });
     }
-  }, [t, applicationDataError]);
+  }, [t, applicationDataError, reviewStateDataError, isUpdatingReviewStateError]);
 
   useEffect(() => {
+    const loadingDataStatuses = new Set(['idle', 'loading']);
     if (
       id &&
-      applicationDataStatus !== 'idle' &&
-      applicationDataStatus !== 'loading'
+      !loadingDataStatuses.has(applicationDataStatus) &&
+      !loadingDataStatuses.has(reviewStateDataStatus)
     ) {
       setIsLoading(false);
     }
-  }, [applicationDataStatus, id, applicationData]);
+  }, [
+    id,
+    applicationDataStatus,
+    applicationData,
+    reviewStateDataStatus,
+    reviewStateData,
+  ]);
 
   useEffect(() => {
     if (router.isReady && !router.query.id) {
@@ -86,6 +120,10 @@ const useApplicationReview = (): ExtendedComponentProps => {
   }, [router]);
 
   const application: Application = camelcaseKeys(applicationData || {}, {
+    deep: true,
+  });
+
+  const reviewState: ReviewState = camelcaseKeys(reviewStateData || {}, {
     deep: true,
   });
 
@@ -98,6 +136,8 @@ const useApplicationReview = (): ExtendedComponentProps => {
     isError: Boolean(id && applicationDataError),
     isUploading,
     handleUpload,
+    reviewState,
+    handleUpdateReviewState,
   };
 };
 

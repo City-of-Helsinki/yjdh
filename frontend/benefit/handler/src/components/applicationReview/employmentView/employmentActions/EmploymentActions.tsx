@@ -8,7 +8,10 @@ import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
-import { ATTACHMENT_MAX_SIZE } from 'shared/constants/attachment-constants';
+import {
+  ATTACHMENT_CONTENT_TYPES,
+  ATTACHMENT_MAX_SIZE,
+} from 'shared/constants/attachment-constants';
 import { useTheme } from 'styled-components';
 
 import { $ActionsWrapper } from '../../ApplicationReview.sc';
@@ -38,8 +41,8 @@ const EmploymentActions: React.FC<UploadProps> = ({
             variant="secondary"
             onUpload={handleUpload}
             isUploading={isUploading}
-            attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
-            allowedFileTypes={['application/pdf']}
+            attachmentType={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
+            allowedFileTypes={ATTACHMENT_CONTENT_TYPES}
             maxSize={ATTACHMENT_MAX_SIZE}
             uploadText={t(`${translationsBase}.addAttachment`)}
             loadingText={t(`common:upload.isUploading`)}

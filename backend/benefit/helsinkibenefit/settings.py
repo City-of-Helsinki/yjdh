@@ -157,11 +157,6 @@ env = environ.Env(
     SERVICE_BUS_SEARCH_LIMIT=(int, 10),
     GDPR_API_QUERY_SCOPE=(str, "helsinkibenefit.gdprquery"),
     GDPR_API_DELETE_SCOPE=(str, "helsinkibenefit.gdprdelete"),
-    USE_S3=(bool, False),
-    S3_ENDPOINT_URL=(str, ""),
-    S3_ACCESS_KEY_ID=(str, ""),
-    S3_SECRET_ACCESS_KEY=(str, ""),
-    S3_STORAGE_BUCKET_NAME=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -297,6 +292,7 @@ CSRF_COOKIE_DOMAIN = env.str("CSRF_COOKIE_DOMAIN")
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
 CSRF_COOKIE_NAME = env.str("CSRF_COOKIE_NAME")
 CSRF_COOKIE_SECURE = True
+CSRF_USE_SESSIONS = True
 
 # Audit logging
 AUDIT_LOG_ORIGIN = env.str("AUDIT_LOG_ORIGIN")
@@ -409,8 +405,12 @@ OIDC_OP_USER_ENDPOINT = f"{OIDC_OP_BASE_URL}/userinfo"
 OIDC_OP_JWKS_ENDPOINT = f"{OIDC_OP_BASE_URL}/jwks"
 OIDC_OP_LOGOUT_ENDPOINT = f"{OIDC_OP_BASE_URL}/end-session"
 OIDC_OP_LOGOUT_CALLBACK_URL = env.str("OIDC_OP_LOGOUT_CALLBACK_URL")
+
 # Language selection is done with accept-language header in this project
-OIDC_DISABLE_LANGUAGE_COOKIE = True
+# UPDATE: 2023-08-07
+# Didn't seem to be working correctly with EAUTH forwards and landing back to callback url
+# Changing this to False as nextjs's language autodetect seems to be at set to false too
+OIDC_DISABLE_LANGUAGE_COOKIE = False
 
 LOGIN_REDIRECT_URL = env.str("LOGIN_REDIRECT_URL")
 LOGIN_REDIRECT_URL_FAILURE = env.str("LOGIN_REDIRECT_URL_FAILURE")
@@ -490,19 +490,8 @@ if os.path.exists(local_settings_path):
         code = compile(fp.read(), local_settings_path, "exec")
     exec(code, globals(), locals())
 
-# S3 settings
-
-USE_S3 = env("USE_S3")
-
 CORS_ALLOW_HEADERS = (
     *default_headers,
     "baggage",
     "sentry-trace",
 )
-
-if USE_S3:
-    AWS_S3_ENDPOINT_URL = env("S3_ENDPOINT_URL")
-    DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-    AWS_ACCESS_KEY_ID = env("S3_ACCESS_KEY_ID")
-    AWS_SECRET_ACCESS_KEY = env("S3_SECRET_ACCESS_KEY")
-    AWS_STORAGE_BUCKET_NAME = env("S3_STORAGE_BUCKET_NAME")

@@ -17,6 +17,7 @@ const ContactPersonView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
     <ReviewSection
       header={t(`${translationsBase}.headings.heading2`)}
       action={data.status !== APPLICATION_STATUSES.RECEIVED ? <span /> : null}
+      section='companyContactPerson'
     >
       <$GridCell $colSpan={6}>
         <$ViewField>

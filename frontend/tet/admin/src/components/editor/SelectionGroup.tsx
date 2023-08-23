@@ -34,6 +34,12 @@ const SelectionGroup: React.FC<Props> = ({ fieldId, label, options, required, ru
   };
 
   return (
+    // Known issue with react-hook-form library, errors out with:
+    // Type of property 'prototype' circularly references itself in mapped type '{ [K in keyof Blob]-?: PathImpl<K & string, Blob[K]>; }'.
+    // More at: https://github.com/orgs/react-hook-form/discussions/7764
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     <Controller
       name={fieldId}
       control={control}

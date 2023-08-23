@@ -133,7 +133,14 @@ const PageContent: React.FC = () => {
   }
 
   return (
-    <Container data-testid={`step-${currentStep}`}>
+    <Container
+      data-testid={`step-${currentStep}`}
+      css={{
+        'max-width': theme.contentWidth.max,
+        margin: '0 auto',
+        'grid-template-columns': 'repeat(auto-fit, minmax(180px, 1fr))',
+      }}
+    >
       <$PageHeader>
         <$HeaderItem>
           <$PageHeading>

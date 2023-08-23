@@ -4,6 +4,7 @@ import useHandlerReviewActions from 'benefit/handler/hooks/useHandlerReviewActio
 import { HandledAplication } from 'benefit/handler/types/application';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
+import { useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import useToggle from 'shared/hooks/useToggle';
@@ -35,8 +36,11 @@ const useHandlingApplicationActions = (
   const { updateStatus } = useApplicationActions(application);
   const { handledApplication, setHandledApplication } =
     React.useContext(AppContext);
-  const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] =
-    useToggle(false);
+  const router = useRouter();
+  const { openDrawer } = router.query;
+  const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] = useToggle(
+    Boolean(openDrawer)
+  );
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
     useState<boolean>(false);

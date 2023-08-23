@@ -1,10 +1,10 @@
-import { ROUTES } from 'benefit/handler/constants';
-import { allApplicationStatuses } from 'benefit/handler/pages';
+import { ALL_APPLICATION_STATUSES, ROUTES } from 'benefit/handler/constants';
 import {
   ApplicationListTableColumns,
   ApplicationListTableTransforms,
 } from 'benefit/handler/types/applicationList';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import { ApplicationListItemData } from 'benefit-shared/types/application';
 import {
   IconSpeechbubbleText,
   LoadingSpinner,
@@ -26,34 +26,37 @@ import { useApplicationList } from './useApplicationList';
 export interface ApplicationListProps {
   heading: string;
   status: APPLICATION_STATUSES[];
+  list?: ApplicationListItemData[];
+  isLoading: boolean;
 }
 
 const buildApplicationUrl = (
   id: string,
-  status: APPLICATION_STATUSES
+  status: APPLICATION_STATUSES,
+  openDrawer = false
 ): string => {
   if (status === APPLICATION_STATUSES.DRAFT) {
     return `${ROUTES.APPLICATION_FORM}?id=${id}`;
   }
-  return `${ROUTES.APPLICATION}?id=${id}`;
+
+  const applicationUrl = `${ROUTES.APPLICATION}?id=${id}`;
+  if (openDrawer) {
+    return `${applicationUrl}&openDrawer=1`;
+  }
+  return applicationUrl;
 };
 
 const ApplicationList: React.FC<ApplicationListProps> = ({
   heading,
   status,
+  list = [],
+  isLoading = true,
 }) => {
-  const {
-    t,
-    list,
-    shouldShowSkeleton,
-    shouldHideList,
-    translationsBase,
-    getHeader,
-  } = useApplicationList(status);
+  const { t, translationsBase, getHeader } = useApplicationList();
 
   const theme = useTheme();
 
-  const isAllStatuses: boolean = status === allApplicationStatuses;
+  const isAllStatuses: boolean = status === ALL_APPLICATION_STATUSES;
 
   const columns = React.useMemo(() => {
     const cols: ApplicationListTableColumns[] = [
@@ -61,9 +64,16 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         transform: ({
           id,
           companyName,
+          unreadMessagesCount,
           status: applicationStatus,
         }: ApplicationListTableTransforms) => (
-          <$Link href={buildApplicationUrl(id, applicationStatus)}>
+          <$Link
+            href={buildApplicationUrl(
+              id,
+              applicationStatus,
+              unreadMessagesCount > 0
+            )}
+          >
             {String(companyName)}
           </$Link>
         ),
@@ -171,10 +181,16 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     }
 
     cols.push({
-      transform: ({ unreadMessagesCount }: ApplicationListTableTransforms) => (
+      transform: ({
+        unreadMessagesCount,
+        id,
+        status: applicationStatus,
+      }: ApplicationListTableTransforms) => (
         <$CellContent>
           {Number(unreadMessagesCount) > 0 ? (
-            <IconSpeechbubbleText color={theme.colors.coatOfArms} />
+            <$Link href={buildApplicationUrl(id, applicationStatus, true)}>
+              <IconSpeechbubbleText color={theme.colors.coatOfArms} />
+            </$Link>
           ) : null}
         </$CellContent>
       ),
@@ -186,7 +202,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     return cols.filter(Boolean);
   }, [t, getHeader, status, theme, isAllStatuses]);
 
-  if (shouldShowSkeleton) {
+  if (isLoading) {
     return (
       <>
         {heading && <$Heading>{`${heading}`}</$Heading>}
@@ -198,7 +214,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   const statusAsString = isAllStatuses ? 'all' : status.join(',');
   return (
     <div data-testid={`application-list-${statusAsString}`}>
-      {!shouldHideList ? (
+      {list.length > 0 ? (
         <Table
           heading={`${heading} (${list.length})`}
           theme={theme.components.table}

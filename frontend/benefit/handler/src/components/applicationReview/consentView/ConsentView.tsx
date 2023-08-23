@@ -21,6 +21,7 @@ const ConsentView: React.FC<ApplicationReviewViewProps> = ({
   return (
     <ReviewSection
       header={t(`${translationsBase}.headings.heading9`)}
+      section='approval'
       action={
         data.status !== APPLICATION_STATUSES.RECEIVED ? (
           <ConsentActions

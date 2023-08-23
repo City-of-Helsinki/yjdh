@@ -15,6 +15,8 @@ export interface MessageProps {
   date: string;
   text: string;
   isPrimary?: boolean;
+  alignRight?: boolean;
+  wrapAsColumn?: boolean;
   variant: MessageVariant;
 }
 
@@ -24,13 +26,15 @@ const Message: React.FC<MessageProps> = ({
   text,
   isPrimary,
   variant,
+  alignRight,
+  wrapAsColumn,
 }) => (
   <$MessageContainer>
-    <$Meta>
+    <$Meta alignRight={alignRight} wrapAsColumn={wrapAsColumn}>
       <$Sender>{sender}</$Sender>
       <$Date>{date}</$Date>
     </$Meta>
-    <$Message isPrimary={isPrimary} variant={variant}>
+    <$Message isPrimary={isPrimary} variant={variant} alignRight={alignRight}>
       {text}
     </$Message>
     {variant === 'note' && <$Hr />}

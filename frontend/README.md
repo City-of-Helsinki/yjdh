@@ -9,14 +9,14 @@ Project is automatically deployed to testing environment when pushing to develop
 
 ## Requirements
 
-- Node 16.x (match with dockerfile: helsinkitest/node:16-slim)
+- Node 18.x (match with dockerfile: helsinkitest/node:18-slim)
 - Yarn
 - Git
 - Docker
 
 ### install node with nvm
 
-    nvm install 16 --lts
+    nvm install 18 --lts
 
 
 ## Available Scripts
