@@ -9,7 +9,7 @@ import {
   ORGANIZATION_TYPES,
 } from 'benefit-shared/constants';
 import { Application, DeMinimisAid } from 'benefit-shared/types/application';
-import { FormikProps, useFormik } from 'formik';
+import { FormikErrors, FormikProps, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
 import React, { useState } from 'react';
@@ -39,6 +39,10 @@ type ExtendedComponentProps = {
   getDefaultSelectValue: (fieldName: keyof Application) => OptionType;
 };
 
+type DeMinimisFormikPromises = Promise<
+  [void | FormikErrors<Application>, void | FormikErrors<Application>]
+>;
+
 const useApplicationFormStep1 = (
   application: Partial<Application>,
   isUnfinishedDeminimisAid: boolean
@@ -65,6 +69,31 @@ const useApplicationFormStep1 = (
   });
 
   const { values, touched, errors, setFieldValue } = formik;
+
+  const isDeMinimisAidRowUnfinished = (): boolean => {
+    if (isUnfinishedDeminimisAid) {
+      showErrorToast(
+        t(`${translationsBase}.notifications.deMinimisUnfinished.label`),
+        t(`${translationsBase}.notifications.deMinimisUnfinished.content`)
+      );
+      return true;
+    }
+
+    return false;
+  };
+
+  const handleDeMinimisRadioButtonChange = (
+    formikFields: ExtendedComponentProps['fields']
+  ): Promise<void> | DeMinimisFormikPromises => {
+    if (deMinimisAids.length === 0) {
+      setDeMinimisAids([]);
+      return Promise.all([
+        formik.setFieldValue(formikFields.deMinimisAidSet.name, []),
+        formik.setFieldValue(formikFields.deMinimisAid.name, false),
+      ]);
+    }
+    return Promise.resolve();
+  };
 
   const fields: ExtendedComponentProps['fields'] = React.useMemo(() => {
     const fieldMasks: Partial<Record<Field['name'], Field['mask']>> = {
@@ -99,33 +128,34 @@ const useApplicationFormStep1 = (
 
   const handleSubmit = (): void => {
     setIsSubmitted(true);
-    void formik.validateForm().then((errs) => {
-      const errorFieldKey = Object.keys(errs)[0];
+    void formik
+      .validateForm()
+      .then((errs) => {
+        const errorFieldKey = Object.keys(errs)[0];
 
-      if (errorFieldKey) {
-        return focusAndScroll(errorFieldKey);
-      }
+        if (errorFieldKey) {
+          return focusAndScroll(errorFieldKey);
+        }
 
-      if (isUnfinishedDeminimisAid) {
-        showErrorToast(
-          t(`${translationsBase}.deMinimisUnfinished.label`),
-          t(`${translationsBase}.deMinimisUnfinished.content`)
-        );
-        return false;
-      }
-
-      // de minimis fields are empty, set radio to false
-      if (deMinimisAids.length === 0) {
-        void formik.setFieldValue(fields.deMinimisAidSet.name, []);
-        void formik.setFieldValue(fields.deMinimisAid.name, false);
-      }
-
-      return formik.submitForm();
-    });
+        if (isDeMinimisAidRowUnfinished()) {
+          void formik.validateForm();
+          return focusAndScroll('deMinimisAid');
+        }
+        return true;
+      })
+      .then(() => {
+        void handleDeMinimisRadioButtonChange(fields);
+        return void formik.submitForm();
+      });
   };
 
-  const handleSave = (): void => {
-    void onSave(values);
+  const handleSave = (): void | boolean => {
+    if (isDeMinimisAidRowUnfinished()) {
+      return false;
+    }
+    return void handleDeMinimisRadioButtonChange(fields)
+      .then(() => onSave(values))
+      .catch(() => false);
   };
 
   const applicationId = values?.id;
