@@ -661,5 +661,8 @@
         "heading1": "Palaute ja yhteystiedot"
       }
     }
+  },
+  "toast": {
+    "closeToast": "Close notification"
   }
 }
