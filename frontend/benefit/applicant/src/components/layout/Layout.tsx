@@ -23,6 +23,9 @@ const Layout: React.FC<Props> = ({ children, ...rest }) => {
   const router = useRouter();
   const bgColor = router.pathname === ROUTES.LOGIN ? 'silverLight' : 'white';
 
+  const isAccessibilityStatement =
+    router.pathname === ROUTES.ACCESSIBILITY_STATEMENT;
+
   React.useEffect(() => {
     if (IS_CLIENT) {
       setIsTermsOfSerivceApproved(
@@ -37,7 +40,9 @@ const Layout: React.FC<Props> = ({ children, ...rest }) => {
   return (
     <$Main backgroundColor={bgColor} {...rest}>
       <Header />
-      {isAuthenticated && !isTermsOfServiceApproved ? (
+      {isAuthenticated &&
+      !isAccessibilityStatement &&
+      !isTermsOfServiceApproved ? (
         <TermsOfService
           setIsTermsOfSerivceApproved={setIsTermsOfSerivceApproved}
         />
