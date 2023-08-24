@@ -22,24 +22,7 @@ urlpatterns = [
     path("oidc/", include("shared.oidc.urls")),
 ]
 
-if not settings.NEXT_PUBLIC_MOCK_FLAG:
-    urlpatterns += [path("oauth2/", include("shared.azure_adfs.urls"))]
-else:
-    from tet.mock_views import MockLoginView, MockLogoutView
-
-    urlpatterns += [
-        path(
-            "oauth2/login",
-            MockLoginView.as_view(),
-            name="adfs_login",
-        ),
-        path(
-            "oauth2/logout",
-            MockLogoutView.as_view(),
-            name="adfs_logout",
-        ),
-    ]
-
+urlpatterns += [path("oauth2/", include("shared.azure_adfs.urls"))]
 
 if settings.ENABLE_ADMIN:
     urlpatterns.append(path("admin/", admin.site.urls))
