@@ -79,7 +79,7 @@ def test_get_company_from_service_bus_invalid_response(
         "BusinessId"
     ]
     response = deepcopy(DUMMY_SERVICE_BUS_RESPONSE)
-    response["GetCompanyResult"]["Company"]["PostalAddress"] = {}
+    response["GetCompanyResult"]["Company"] = {}
 
     matcher = re.compile(re.escape(SERVICE_BUS_INFO_PATH))
     requests_mock.post(matcher, json=response)

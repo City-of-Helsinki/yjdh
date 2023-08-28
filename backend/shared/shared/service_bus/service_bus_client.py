@@ -70,7 +70,12 @@ class ServiceBusClient:
         that hasn't been covered in the code
         """
 
-        address = cls._get_address(service_bus_data["PostalAddress"]["DomesticAddress"])
+        try:
+            address = cls._get_address(
+                service_bus_data["PostalAddress"]["DomesticAddress"]
+            )
+        except (KeyError, TypeError):
+            address = {"StreetAddress": "", "PostalCode": "", "City": ""}
         company_data = {
             "name": service_bus_data["TradeName"]["Name"],
             "business_id": service_bus_data["BusinessId"],
@@ -152,10 +157,10 @@ class ServiceBusClient:
             raise ValueError("Cannot determine company form - invalid PrimaryCode")
         try:
             return int(legal_form_json["Type"]["SecondaryCode"])
-        except (TypeError, ValueError) as e:
+        except (TypeError, ValueError) as exc:
             raise ValueError(
                 "Cannot determine company form - invalid SecondaryCode"
-            ) from e
+            ) from exc
 
     @staticmethod
     def _get_finnish_description(descriptions: dict) -> Optional[dict]:
