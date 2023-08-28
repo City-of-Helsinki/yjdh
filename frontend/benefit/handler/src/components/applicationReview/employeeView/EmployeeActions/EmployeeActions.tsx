@@ -2,12 +2,10 @@ import { ROUTES } from 'benefit/handler/constants';
 import { UploadProps } from 'benefit/handler/types/application';
 import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import { Button, IconGlyphEuro, IconPlus } from 'hds-react';
-import noop from 'lodash/noop';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import UploadAttachment from 'shared/components/attachments/UploadAttachment';
-import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import {
   $Grid,
   $GridCell,
@@ -74,27 +72,6 @@ const EmployeeActions: React.FC<UploadProps> = ({
           >
             {t(`${translationsBase}.addPreviouslyGrantedBenefit`)}
           </Button>
-        </$GridCell>
-      </$Grid>
-      <$Grid>
-        <$GridCell
-          $colSpan={2}
-          css={`
-            margin-bottom: ${theme.spacing.s};
-          `}
-        >
-          <$Checkbox
-            css={`
-              input {
-                background-color: ${theme.colors.white};
-              }
-            `}
-            id="cb_targetGroupCheck"
-            name="cb_targetGroupCheck"
-            label={t(`${translationsBase}.targetGroupCheck`)}
-            checked={false}
-            onChange={noop}
-          />
         </$GridCell>
       </$Grid>
     </$ActionsWrapper>
