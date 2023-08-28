@@ -20,6 +20,7 @@ const useValidationRules = (): RegisterOptions & Record<string, RegisterOptions>
         message: phoneMessage,
       },
     },
+    // @ts-expect-error Should be "max"?
     maxlength: t('common:editor.posting.validation.max'),
     name: {
       required: {

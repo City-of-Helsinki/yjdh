@@ -18,6 +18,7 @@ const BenefitView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
       withoutDivider
       header={t(`${translationsBase}.headings.heading7`)}
       action={data.status !== APPLICATION_STATUSES.RECEIVED ? <span /> : null}
+      section='benefit'
     >
       <$GridCell $colSpan={6}>
         <$ViewField>

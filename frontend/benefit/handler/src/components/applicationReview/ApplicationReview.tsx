@@ -1,5 +1,6 @@
 import ApplicationHeader from 'benefit/handler/components/applicationHeader/ApplicationHeader';
 import { HANDLED_STATUSES } from 'benefit/handler/constants';
+import ReviewStateContext from 'benefit/handler/context/ReviewStateContext';
 import {
   APPLICATION_ORIGINS,
   APPLICATION_STATUSES,
@@ -33,6 +34,7 @@ import PaySubsidyView from './paySubsidyView/PaySubsidyView';
 import SalaryBenefitCalculatorView from './salaryBenefitCalculatorView/SalaryBenefitCalculatorView';
 import { useApplicationReview } from './useApplicationReview';
 
+
 const ApplicationReview: React.FC = () => {
   const {
     application,
@@ -41,6 +43,8 @@ const ApplicationReview: React.FC = () => {
     t,
     isUploading,
     handleUpload,
+    reviewState,
+    handleUpdateReviewState,
   } = useApplicationReview();
   const theme = useTheme();
 
@@ -92,45 +96,52 @@ const ApplicationReview: React.FC = () => {
             })}
           </StatusLabel>
         )}
-        <CompanyInfoView data={application} />
-        <ContactPersonView data={application} />
-        <DeminimisView data={application} />
-        <CoOperationNegotiationsView data={application} />
-        <EmployeeView
-          data={application}
-          handleUpload={handleUpload}
-          isUploading={isUploading}
-        />
-        <PaySubsidyView
-          data={application}
-          handleUpload={handleUpload}
-          isUploading={isUploading}
-        />
-        <BenefitView data={application} />
-        <EmploymentView
-          data={application}
-          handleUpload={handleUpload}
-          isUploading={isUploading}
-        />
-        {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER ? (
-          <AttachmentsView data={application} />
-        ) : (
-          <ConsentView
+        <ReviewStateContext.Provider
+          value={{
+            reviewState,
+            handleUpdateReviewState,
+          }}
+        >
+          <CompanyInfoView data={application} />
+          <ContactPersonView data={application} />
+          <DeminimisView data={application} />
+          <CoOperationNegotiationsView data={application} />
+          <EmployeeView
             data={application}
             handleUpload={handleUpload}
             isUploading={isUploading}
           />
-        )}
-        {application.status === APPLICATION_STATUSES.HANDLING && (
-          <>
-            <CalculatorView />
-            <ApplicationProcessingView />
-          </>
-        )}
-        {application.status &&
-          HANDLED_STATUSES.includes(application.status) && (
-            <HandledView data={application} />
+          <PaySubsidyView
+            data={application}
+            handleUpload={handleUpload}
+            isUploading={isUploading}
+          />
+          <BenefitView data={application} />
+          <EmploymentView
+            data={application}
+            handleUpload={handleUpload}
+            isUploading={isUploading}
+          />
+          {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER ? (
+            <AttachmentsView data={application} />
+          ) : (
+            <ConsentView
+              data={application}
+              handleUpload={handleUpload}
+              isUploading={isUploading}
+            />
           )}
+          {application.status === APPLICATION_STATUSES.HANDLING && (
+            <>
+              <CalculatorView />
+              <ApplicationProcessingView />
+            </>
+          )}
+          {application.status &&
+            HANDLED_STATUSES.includes(application.status) && (
+              <HandledView data={application} />
+            )}
+        </ReviewStateContext.Provider>
       </Container>
       <StickyActionBar>
         {application.status === APPLICATION_STATUSES.RECEIVED && (

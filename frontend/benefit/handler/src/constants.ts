@@ -58,6 +58,8 @@ export enum CALCULATION_SALARY_KEYS {
   PAY_SUBSIDIES = 'paySubsidies',
   TRAINING_COMPENSATIONS = 'trainingCompensations',
   MONTHLY_AMOUNT = 'monthlyAmount',
+  TRAINING_COMPENSATION_START_DATE = 'trainingCompensationStartDate',
+  TRAINING_COMPENSATION_END_DATE = 'trainingCompensationEndDate',
 }
 
 export const STATE_AID_MAX_PERCENTAGE_OPTIONS = [50, 100];
@@ -191,3 +193,7 @@ export const ALL_APPLICATION_STATUSES: APPLICATION_STATUSES[] = [
   APPLICATION_STATUSES.DRAFT,
   APPLICATION_STATUSES.REJECTED,
 ];
+
+export enum LOCAL_STORAGE_KEYS {
+  CSRF_TOKEN = 'csrfToken',
+}

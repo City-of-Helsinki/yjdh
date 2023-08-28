@@ -26,6 +26,7 @@ const EmployeeView: React.FC<ApplicationReviewViewProps> = ({
   return (
     <ReviewSection
       header={t(`${translationsBase}.headings.heading5`)}
+      section='employee'
       action={
         data.status !== APPLICATION_STATUSES.RECEIVED ? (
           <EmployeeActions

@@ -12,6 +12,7 @@ from drf_spectacular.views import (
 from rest_framework_nested import routers
 
 from applications.api.v1 import application_batch_views, views as application_views
+from applications.api.v1.review_state_views import ReviewStateView
 from calculator.api.v1 import views as calculator_views
 from common.debug_util import debug_env
 from companies.api.v1.views import (
@@ -25,7 +26,7 @@ from messages.views import (
     HandlerNoteViewSet,
 )
 from terms.api.v1.views import ApproveTermsOfServiceView
-from users.api.v1.views import CurrentUserView, UserUuidGDPRAPIView
+from users.api.v1.views import CurrentUserView, UserOptionsView, UserUuidGDPRAPIView
 
 router = routers.DefaultRouter()
 router.register(
@@ -68,7 +69,11 @@ urlpatterns = [
     path("v1/company/", GetUsersOrganizationView.as_view()),
     path("v1/company/search/<str:name>/", SearchOrganisationsView.as_view()),
     path("v1/company/get/<str:business_id>/", GetOrganisationByIdView.as_view()),
-    path("v1/users/me/", CurrentUserView.as_view()),
+    path("v1/users/me/", CurrentUserView.as_view(), name="users-me"),
+    path("v1/users/options/", UserOptionsView.as_view()),
+    path(
+        "v1/handlerapplications/<str:application_id>/review/", ReviewStateView.as_view()
+    ),
     path("oidc/", include("shared.oidc.urls")),
     path("oauth2/", include("shared.azure_adfs.urls")),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),

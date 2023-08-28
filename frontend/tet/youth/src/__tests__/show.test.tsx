@@ -3,8 +3,6 @@ import React from 'react';
 import renderComponent from 'tet/youth/__tests__/utils/components/render-component';
 import ShowPostingPage from 'tet/youth/pages';
 
-jest.mock('next/router');
-
 describe('frontend/tet/youth/src/pages/postings/show.tsx', () => {
   beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {

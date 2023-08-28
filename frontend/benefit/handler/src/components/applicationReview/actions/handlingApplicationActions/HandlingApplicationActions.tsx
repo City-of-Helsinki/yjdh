@@ -63,18 +63,21 @@ const HandlingApplicationActions: React.FC<Props> = ({
             }`
           )}
         </Button>
-        {(application.status === APPLICATION_STATUSES.ACCEPTED ||
-          application.status === APPLICATION_STATUSES.REJECTED) && (
-          <Button
-            onClick={onBackToHandling}
-            theme="black"
-            variant="secondary"
-            disabled={!!application.batch}
-            iconLeft={<IconArrowUndo />}
-          >
-            {t(`${translationsBase}.backToHandling`)}
-          </Button>
-        )}
+        {[
+          APPLICATION_STATUSES.ACCEPTED,
+          APPLICATION_STATUSES.REJECTED,
+        ].includes(application.status) &&
+          !application.batch &&
+          !application.archived && (
+            <Button
+              onClick={onBackToHandling}
+              theme="black"
+              variant="secondary"
+              iconLeft={<IconArrowUndo />}
+            >
+              {t(`${translationsBase}.backToHandling`)}
+            </Button>
+          )}
         <Button
           onClick={toggleMessagesDrawerVisiblity}
           theme="black"
@@ -84,18 +87,20 @@ const HandlingApplicationActions: React.FC<Props> = ({
           {t(`${translationsBase}.handlingPanel`)}
         </Button>
       </$Column>
-      {application.status !== APPLICATION_STATUSES.CANCELLED && (
-        <$Column>
-          <Button
-            onClick={openDialog}
-            theme="black"
-            variant="supplementary"
-            iconLeft={<IconTrash />}
-          >
-            {t(`${translationsBase}.cancel`)}
-          </Button>
-        </$Column>
-      )}
+      {application.status !== APPLICATION_STATUSES.CANCELLED &&
+        !application.batch &&
+        !application.archived && (
+          <$Column>
+            <Button
+              onClick={openDialog}
+              theme="black"
+              variant="supplementary"
+              iconLeft={<IconTrash />}
+            >
+              {t(`${translationsBase}.cancel`)}
+            </Button>
+          </$Column>
+        )}
 
       {isConfirmationModalOpen && (
         <Modal

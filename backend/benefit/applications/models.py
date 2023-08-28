@@ -38,9 +38,8 @@ APPLICATION_LANGUAGE_CHOICES = (
 )
 
 PAY_SUBSIDY_PERCENT_CHOICES = (
-    (30, "30%"),
-    (40, "40%"),
     (50, "50%"),
+    (70, "70%"),
     (100, "100%"),
 )
 
@@ -580,18 +579,24 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
                 self.decision_maker_name,
                 self.section_of_the_law,
                 validate_decision_date(self.decision_date),
-                self.expert_inspector_name,
-                self.expert_inspector_title,
             ]
 
-            required_fields_accepted = required_fields_rejected + [
+            required_fields_accepted_ahjo = required_fields_rejected + [
+                self.expert_inspector_name,
+                self.expert_inspector_title,
+                self.p2p_checker_name,
+            ]
+
+            required_fields_accepted_p2p = required_fields_rejected + [
                 self.p2p_inspector_name,
                 self.p2p_inspector_email,
                 self.p2p_checker_name,
             ]
 
-            if self.status == ApplicationBatchStatus.DECIDED_ACCEPTED and not all(
-                required_fields_accepted
+            if (
+                self.status == ApplicationBatchStatus.DECIDED_ACCEPTED
+                and not all(required_fields_accepted_ahjo)
+                and not all(required_fields_accepted_p2p)
             ):
                 raise_error()
             if self.status == ApplicationBatchStatus.DECIDED_REJECTED and not all(
@@ -753,8 +758,8 @@ class Employee(UUIDModel, TimeStampedModel):
     )
     working_hours = models.DecimalField(
         verbose_name=_("working hour"),
-        decimal_places=1,
-        max_digits=4,
+        decimal_places=2,
+        max_digits=5,
         blank=True,
         null=True,
     )
@@ -827,3 +832,27 @@ class Attachment(UUIDModel, TimeStampedModel):
 
     def __str__(self):
         return "{} {}".format(self.attachment_type, self.attachment_file.name)
+
+
+class ReviewState(models.Model):
+    application = models.OneToOneField(
+        Application,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        verbose_name=_("application"),
+    )
+    company = models.BooleanField(default=False, verbose_name=_("company"))
+    company_contact_person = models.BooleanField(
+        default=False, verbose_name=_("company contact person")
+    )
+    de_minimis_aids = models.BooleanField(
+        default=False, verbose_name=_("de minimis aids")
+    )
+    co_operation_negotiations = models.BooleanField(
+        default=False, verbose_name=_("co-operation negotiations")
+    )
+    employee = models.BooleanField(default=False, verbose_name=_("employee"))
+    pay_subsidy = models.BooleanField(default=False, verbose_name=_("pay subsidy"))
+    benefit = models.BooleanField(default=False, verbose_name=_("benefit"))
+    employment = models.BooleanField(default=False, verbose_name=_("employment"))
+    approval = models.BooleanField(default=False, verbose_name=_("approval"))

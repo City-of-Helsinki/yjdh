@@ -7,6 +7,7 @@ import { useQuery, UseQueryResult } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useLocale from 'shared/hooks/useLocale';
+import { setLocalStorageItem } from 'shared/utils/localstorage.utils';
 
 import { LOCAL_STORAGE_KEYS } from '../constants';
 
@@ -51,9 +52,9 @@ const useUserQuery = (
       select: (data) => camelcaseKeys(data, { deep: true }),
       onError: (error) => handleError(error),
       onSuccess: (data) => {
+        setLocalStorageItem(LOCAL_STORAGE_KEYS.CSRF_TOKEN, data.csrfToken);
         if (data.id && data.termsOfServiceApprovalNeeded)
-          // eslint-disable-next-line scanjs-rules/identifier_localStorage
-          localStorage.setItem(
+          setLocalStorageItem(
             LOCAL_STORAGE_KEYS.IS_TERMS_OF_SERVICE_APPROVED,
             'false'
           );

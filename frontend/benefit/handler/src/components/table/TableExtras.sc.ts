@@ -2,7 +2,7 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import styled from 'styled-components';
 
 type CollapsedProps = {
-  isCollapsed: boolean;
+  $isCollapsed: boolean;
 };
 
 export const $HorizontalList = styled.dl`
@@ -60,13 +60,20 @@ export const $TableGrid = styled.div<TableGridProps>`
   margin-bottom: ${(props) => (props.animateClose ? '0' : 'var(--spacing-l)')};
 `;
 
-export const $TableWrapper = styled.div`
+type TableWrapperProps = {
+  borderColor: string;
+};
+
+export const $TableWrapper = styled.div<TableWrapperProps>`
   overflow-y: hidden;
   background: #fff;
+  transition: 0.15s outline ease-in-out;
+  outline: 1px solid
+    ${(props) => (props.borderColor ? props.borderColor : 'transparent')};
 `;
 
 export const $TableBody = styled.div<CollapsedProps>`
-  display: ${(props) => (props.isCollapsed ? 'none' : 'block')};
+  display: ${(props) => (props.$isCollapsed ? 'none' : 'block')};
 `;
 
 export const $HintText = styled.p`
@@ -87,12 +94,17 @@ export const $FormSection = styled(FormSection)`
   }
 `;
 
-export const $TableFooter = styled.footer`
+type $TableFooterProps = {
+  backgroundColor?: string;
+  borderColor?: string;
+};
+export const $TableFooter = styled.footer<$TableFooterProps>`
   display: flex;
   flex-flow: row wrap;
-  background: #efefef;
+  background-color: ${(props) =>
+    props.backgroundColor ? props.backgroundColor : '#efefef'};
   width: 100%;
-  padding: var(--spacing-s);
+  padding: var(--spacing-m);
   align-items: center;
   box-sizing: border-box;
 

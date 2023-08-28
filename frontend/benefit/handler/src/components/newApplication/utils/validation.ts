@@ -297,6 +297,12 @@ export const getValidationSchema = (
             .nullable()
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
           [EMPLOYEE_KEYS.WORKING_HOURS]: Yup.number()
+            .test(
+              'is-decimal',
+              t(VALIDATION_MESSAGE_KEYS.NUMBER_TWO_DECIMALS),
+              (value: number): boolean =>
+                value ? /^\d+.?\d{1,2}$/.test(String(value)) : false
+            )
             .transform((_value, originalValue) =>
               Number(getNumberValue(originalValue))
             )

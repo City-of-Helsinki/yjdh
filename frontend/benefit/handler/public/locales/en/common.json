@@ -32,6 +32,11 @@
         }
       }
     },
+    "titles": {
+      "applicantMessage": "Hakija",
+      "handlerMessage": "Käsittelijä",
+      "note": ""
+    },
     "showEveryone": "Nämä viestit näkyvät hakijalle",
     "showToHanlderOnly": "Näkyy vain käsittelijöille",
     "compose": "Kirjoita viesti",
@@ -640,7 +645,7 @@
       "workingHours": "Työaika: {{workingHours}} tuntia viikossa",
       "monthlyPay": "Bruttopalkka: {{monthlyPay}} € / kk",
       "otherExpenses": "Sivukulut: {{otherExpenses}} € / kk",
-      "vacationMoney": "Lomaraha: {{vacationMoney}} €",
+      "vacationMoney": "Lomaraha: {{vacationMoney}} € / kk",
       "noSupport": "Ei puolleta",
       "support": "Puolletaan",
       "reason": "Perustelu",
@@ -680,7 +685,10 @@
         "label": "Alkaen",
         "placeholder": "Alkaen"
       },
-      "endDate": { "label": "Päättyen", "placeholder": "Päättyen" },
+      "endDate": {
+        "label": "Päättyen",
+        "placeholder": "Päättyen"
+      },
       "monthlyPay": {
         "label": "Bruttopalkka € / kk",
         "placeholder": "Bruttopalkka"
@@ -690,7 +698,7 @@
         "placeholder": "Sivukulut"
       },
       "vacationMoney": {
-        "label": "Lomaraha €",
+        "label": "Lomaraha € / kk",
         "placeholder": "Lomaraha"
       },
       "stateAidMaxPercentage": {
@@ -741,7 +749,7 @@
       "header": "Palkan Helsinki-lisää haettu ajalle",
       "monthlyPay": "Bruttopalkka € / kk",
       "otherExpenses": "Sivukulut € / kk",
-      "vacationMoney": "Lomaraha €",
+      "vacationMoney": "Lomaraha € / kk",
       "startEndDates": "{{startDate}} - {{endDate}} ({{period}} kk)",
       "maximumAid": "Valtiotukimaksimi",
       "salarySubsidyPercentage": "Palkkatukiprosentti",
@@ -822,7 +830,8 @@
       "number": {
         "invalid": "Virheellinen arvo, ilmoita vain numeroita",
         "max": "Arvon tulee olla enintään {{max}}",
-        "min": "Arvon tulee olla vähintään {{min}}"
+        "min": "Arvon tulee olla vähintään {{min}}",
+        "twoDecimals": "Arvon tulee sisältää enintään kaksi desimaalia"
       },
       "string": {
         "max": "Tämä kenttä voi olla korkeintaan {{max}} merkkiä pitkä",
@@ -1011,6 +1020,10 @@
         "p2pInspectorName": "Tarkastajan nimi, P2P",
         "p2pInspectorEmail": "Tarkastajan sähköposti, P2P",
         "p2pCheckerName": "Hyväksyjän nimi, P2P"
+      },
+      "headings": {
+        "decisionDetails": "Päätöksen tiedot",
+        "inspectionDetails": "Tarkastuksen tiedot"
       },
       "errors": {
         "decision_maker_name": "Pakollinen tieto",

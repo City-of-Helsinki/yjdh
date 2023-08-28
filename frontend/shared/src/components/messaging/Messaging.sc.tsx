@@ -3,7 +3,13 @@ import styled from 'styled-components';
 
 interface MessageProps {
   isPrimary?: boolean;
+  alignRight?: boolean;
   variant: MessageVariant;
+}
+
+interface MetaProps {
+  wrapAsColumn?: boolean;
+  alignRight?: boolean;
 }
 
 interface MessageListProps {
@@ -23,11 +29,13 @@ export const $MessagesList = styled.div<MessageListProps>`
   padding: ${({ theme }) => theme.spacing.xs};
 `;
 
-export const $Meta = styled.div`
+export const $Meta = styled.div<MetaProps>`
   width: 100%;
   display: flex;
   justify-content: space-between;
   margin-top: ${({ theme }) => theme.spacing.s};
+  flex-flow: ${(props) => (props.wrapAsColumn ? 'column' : 'row')};
+  text-align: ${(props) => (props.alignRight ? 'right' : 'left')};
 `;
 
 export const $Sender = styled.span`
@@ -56,6 +64,7 @@ export const $Message = styled.div<MessageProps>`
   margin-top: ${(props) => props.variant !== 'note' && props.theme.spacing.s};
   color: ${(props) => props.theme.colors.black90};
   white-space: pre-line;
+  margin-left: ${(props) => (props.alignRight ? 'auto' : '0')};
 `;
 
 export const $Actions = styled.div`

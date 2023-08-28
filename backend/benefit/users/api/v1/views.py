@@ -1,7 +1,9 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.core.exceptions import PermissionDenied
 from django.db import DatabaseError, transaction
+from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 from helsinki_gdpr.views import DeletionNotAllowed, DryRunException, GDPRAPIView
@@ -29,12 +31,33 @@ class CurrentUserView(APIView):
         serializer = UserSerializer(
             self._get_current_user(request), context={"request": request}
         )
-        return Response(serializer.data)
+        response = serializer.data
+        response["csrf_token"] = get_token(request)
+        return Response(response)
 
     def _get_current_user(self, request):
         if not request.user.is_authenticated:
             raise PermissionDenied
         return request.user
+
+
+@extend_schema(description="API for setting currently logged in user's language.")
+class UserOptionsView(APIView):
+    permission_classes = [BFIsAuthenticated]
+
+    def get(self, request):
+        lang = request.GET.get("lang")
+
+        if lang in ["fi", "en", "sv"]:
+            token = request.COOKIES.get("yjdhcsrftoken")
+
+            response = Response(
+                {"lang": lang, "token": token}, status=status.HTTP_200_OK
+            )
+            response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang, httponly=True)
+            return response
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserUuidGDPRAPIView(GDPRAPIView):

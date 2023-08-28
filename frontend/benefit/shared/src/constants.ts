@@ -17,6 +17,7 @@ export enum VALIDATION_MESSAGE_KEYS {
   NUMBER_INVALID = 'common:form.validation.number.invalid',
   NUMBER_MIN = 'common:form.validation.number.min',
   NUMBER_MAX = 'common:form.validation.number.max',
+  NUMBER_TWO_DECIMALS = 'common:form.validation.number.twoDecimals',
   PHONE_INVALID = 'common:form.validation.phone.invalid',
   STRING_POSITIVENUMBER = 'common:form.validation.string.positiveNumber',
   STRING_MIN = 'common:form.validation.string.min',
@@ -35,7 +36,7 @@ export enum VALIDATION_MESSAGE_KEYS {
   PHONE_NUMBER_LENGTH_MAX = 'common:form.validation.phoneNumber.max',
 }
 
-export const PAY_SUBSIDY_OPTIONS = [30, 40, 50, 100] as const;
+export const PAY_SUBSIDY_OPTIONS = [50, 70, 100] as const;
 
 export enum EMPLOYEE_KEYS {
   FIRST_NAME = 'firstName',
@@ -106,6 +107,8 @@ export enum DE_MINIMIS_AID_KEYS {
 export enum CALCULATION_EMPLOYMENT_KEYS {
   START_DATE = 'startDate',
   END_DATE = 'endDate',
+  TRAINING_COMPENSATION_START_DATE = 'trainingCompensationStartDate',
+  TRAINING_COMPENSATION_END_DATE = 'trainingCompensationEndDate',
 }
 
 export enum ORGANIZATION_TYPES {

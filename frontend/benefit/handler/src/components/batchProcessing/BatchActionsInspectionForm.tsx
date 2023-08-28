@@ -5,14 +5,23 @@ import {
   PROPOSALS_FOR_DECISION,
 } from 'benefit-shared/constants';
 import { BatchProposal } from 'benefit-shared/types/application';
-import { Button, DateInput, IconArrowUndo, TextInput } from 'hds-react';
+import {
+  Button,
+  DateInput,
+  IconArrowUndo,
+  RadioButton,
+  TextInput,
+} from 'hds-react';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import Modal from 'shared/components/modal/Modal';
+import theme from 'shared/styles/theme';
+import { CSSProperties } from 'styled-components';
 
 import ConfirmModalContent from '../applicationReview/actions/ConfirmModalContent/confirm';
+import { $InspectionTypeContainer } from '../table/BatchCompletion.sc';
 import { $FormSection } from '../table/TableExtras.sc';
 import { useBatchActionsInspected } from './useBatchActionsInspected';
 
@@ -33,7 +42,8 @@ const BatchActionsInspectionForm: React.FC<BatchProps> = ({
   isInspectionFormSent,
   setInspectionFormSent,
   setBatchCloseAnimation,
-}: BatchProps) => {
+}: // eslint-disable-next-line sonarjs/cognitive-complexity
+BatchProps) => {
   const { id, proposal_for_decision: proposalForDecision } = batch;
   const { t } = useTranslation();
   const { formik, yearFromNow, isSuccess, isError } = useBatchActionsInspected(
@@ -45,6 +55,8 @@ const BatchActionsInspectionForm: React.FC<BatchProps> = ({
   const [isModalBatchToDraft, setModalBatchToDraft] = React.useState(false);
   const [isModalBatchToCompletion, setModalBatchToCompletion] =
     React.useState(false);
+
+  const [inspectorMode, setInspectorMode] = React.useState('ahjo');
 
   React.useEffect(() => {
     if (isError) {
@@ -81,6 +93,11 @@ const BatchActionsInspectionForm: React.FC<BatchProps> = ({
         setInspectionFormSent(false);
         return false;
       });
+
+  const handleRadioButton = (event: ChangeEvent<HTMLInputElement>): void => {
+    setInspectorMode(event.target.value);
+    formik.handleChange(event);
+  };
 
   const handleSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
@@ -152,6 +169,7 @@ const BatchActionsInspectionForm: React.FC<BatchProps> = ({
         }
       />
       <form onSubmit={handleSubmit} noValidate>
+        <h3>{t('common:batches.form.headings.decisionDetails')}</h3>
         <$FormSection>
           <$GridCell $colSpan={3}>
             <TextInput
@@ -209,76 +227,141 @@ const BatchActionsInspectionForm: React.FC<BatchProps> = ({
           </$GridCell>
         </$FormSection>
 
-        <$FormSection>
-          <$GridCell $colSpan={3}>
-            <TextInput
-              onChange={formik.handleChange}
-              label={t('common:batches.form.fields.expertInspectorName')}
-              id={`expert_inspector_name${id}`}
-              name="expert_inspector_name"
-              errorText={getErrorMessage('expert_inspector_name')}
-              invalid={!!formik.errors.expert_inspector_name}
-              value={formik.values.expert_inspector_name ?? ''}
-              required
-            />
-          </$GridCell>
-
-          <$GridCell $colSpan={3}>
-            <TextInput
-              onChange={formik.handleChange}
-              label={t('common:batches.form.fields.expertInspectorTitle')}
-              id={`expert_inspector_title_${id}`}
-              name="expert_inspector_title"
-              errorText={getErrorMessage('expert_inspector_title')}
-              invalid={!!formik.errors.expert_inspector_title}
-              value={formik.values.expert_inspector_title ?? ''}
-              required
-            />
-          </$GridCell>
-        </$FormSection>
-
         {proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED ? (
-          <$FormSection css="border-top: 1pox solid #000;">
-            <$GridCell $colSpan={3}>
-              <TextInput
-                onChange={formik.handleChange}
-                label={t('common:batches.form.fields.p2pInspectorName')}
-                id={`p2p_inspector_name${id}`}
-                name="p2p_inspector_name"
-                errorText={getErrorMessage('p2p_inspector_name')}
-                invalid={!!formik.errors.p2p_inspector_name}
-                value={formik.values.p2p_inspector_name ?? ''}
-                required
-              />
-            </$GridCell>
+          <>
+            <h3>{t('common:batches.form.headings.inspectionDetails')}</h3>
+            <$InspectionTypeContainer>
+              <$FormSection>
+                <$GridCell $colSpan={12}>
+                  <RadioButton
+                    key={`inspector-mode-${id}-ahjo`}
+                    id={`inspector-mode-${id}-ahjo`}
+                    value="ahjo"
+                    label="Ahjo-tarkastus"
+                    name="inspection_mode"
+                    checked={inspectorMode === 'ahjo'}
+                    onChange={handleRadioButton}
+                    style={theme.components.radio as CSSProperties}
+                  />
+                </$GridCell>
+                {inspectorMode === 'ahjo' ? (
+                  <$GridCell $colSpan={12}>
+                    <hr />
+                  </$GridCell>
+                ) : null}
+              </$FormSection>
 
-            <$GridCell $colSpan={3}>
-              <TextInput
-                onChange={formik.handleChange}
-                label={t('common:batches.form.fields.p2pInspectorEmail')}
-                id={`p2p_inspector_email_${id}`}
-                name="p2p_inspector_email"
-                errorText={getErrorMessage('p2p_inspector_email')}
-                invalid={!!formik.errors.p2p_inspector_email}
-                value={formik.values.p2p_inspector_email ?? ''}
-                required
-              />
-            </$GridCell>
-            <$GridCell $colSpan={3}>
-              <TextInput
-                onChange={formik.handleChange}
-                label={t('common:batches.form.fields.p2pCheckerName')}
-                id={`p2p_checker_name_${id}`}
-                name="p2p_checker_name"
-                errorText={getErrorMessage('p2p_checker_name')}
-                invalid={!!formik.errors.p2p_checker_name}
-                value={formik.values.p2p_checker_name ?? ''}
-                required
-              />
-            </$GridCell>
-          </$FormSection>
+              {inspectorMode === 'ahjo' ? (
+                <$FormSection>
+                  <$GridCell $colSpan={3}>
+                    <TextInput
+                      onChange={formik.handleChange}
+                      label={t(
+                        'common:batches.form.fields.expertInspectorName'
+                      )}
+                      id={`expert_inspector_name${id}`}
+                      name="expert_inspector_name"
+                      errorText={getErrorMessage('expert_inspector_name')}
+                      invalid={!!formik.errors.expert_inspector_name}
+                      value={formik.values.expert_inspector_name ?? ''}
+                      required={inspectorMode === 'ahjo'}
+                    />
+                  </$GridCell>
+
+                  <$GridCell $colSpan={3}>
+                    <TextInput
+                      onChange={formik.handleChange}
+                      label={t(
+                        'common:batches.form.fields.expertInspectorTitle'
+                      )}
+                      id={`expert_inspector_title_${id}`}
+                      name="expert_inspector_title"
+                      errorText={getErrorMessage('expert_inspector_title')}
+                      invalid={!!formik.errors.expert_inspector_title}
+                      value={formik.values.expert_inspector_title ?? ''}
+                      required={inspectorMode === 'ahjo'}
+                    />
+                  </$GridCell>
+                  <$GridCell $colSpan={3}>
+                    <TextInput
+                      onChange={formik.handleChange}
+                      label={t('common:batches.form.fields.p2pCheckerName')}
+                      id={`p2p_checker_name_${id}`}
+                      name="p2p_checker_name"
+                      errorText={getErrorMessage('p2p_checker_name')}
+                      invalid={!!formik.errors.p2p_checker_name}
+                      value={formik.values.p2p_checker_name ?? ''}
+                      required={inspectorMode === 'ahjo'}
+                    />
+                  </$GridCell>
+                </$FormSection>
+              ) : null}
+            </$InspectionTypeContainer>
+
+            <$InspectionTypeContainer>
+              <$FormSection>
+                <$GridCell $colSpan={12}>
+                  <RadioButton
+                    key={`inspector-mode-${id}-p2p`}
+                    id={`inspector-mode-${id}-p2p`}
+                    value="p2p"
+                    label="P2P-tarkastus"
+                    name="inspection_mode"
+                    checked={inspectorMode === 'p2p'}
+                    onChange={handleRadioButton}
+                    style={theme.components.radio as CSSProperties}
+                  />
+                </$GridCell>
+                {inspectorMode === 'p2p' ? (
+                  <$GridCell $colSpan={12}>
+                    <hr />
+                  </$GridCell>
+                ) : null}
+              </$FormSection>
+              {inspectorMode === 'p2p' ? (
+                <$FormSection css="border-top: 1pox solid #000;">
+                  <$GridCell $colSpan={3}>
+                    <TextInput
+                      onChange={formik.handleChange}
+                      label={t('common:batches.form.fields.p2pInspectorName')}
+                      id={`p2p_inspector_name${id}`}
+                      name="p2p_inspector_name"
+                      errorText={getErrorMessage('p2p_inspector_name')}
+                      invalid={!!formik.errors.p2p_inspector_name}
+                      value={formik.values.p2p_inspector_name ?? ''}
+                      required={inspectorMode === 'p2p'}
+                    />
+                  </$GridCell>
+
+                  <$GridCell $colSpan={3}>
+                    <TextInput
+                      onChange={formik.handleChange}
+                      label={t('common:batches.form.fields.p2pInspectorEmail')}
+                      id={`p2p_inspector_email_${id}`}
+                      name="p2p_inspector_email"
+                      errorText={getErrorMessage('p2p_inspector_email')}
+                      invalid={!!formik.errors.p2p_inspector_email}
+                      value={formik.values.p2p_inspector_email ?? ''}
+                      required={inspectorMode === 'p2p'}
+                    />
+                  </$GridCell>
+                  <$GridCell $colSpan={3}>
+                    <TextInput
+                      onChange={formik.handleChange}
+                      label={t('common:batches.form.fields.p2pCheckerName')}
+                      id={`p2p_checker_name_${id}`}
+                      name="p2p_checker_name"
+                      errorText={getErrorMessage('p2p_checker_name')}
+                      invalid={!!formik.errors.p2p_checker_name}
+                      value={formik.values.p2p_checker_name ?? ''}
+                      required={inspectorMode === 'p2p'}
+                    />
+                  </$GridCell>
+                </$FormSection>
+              ) : null}
+            </$InspectionTypeContainer>
+          </>
         ) : null}
-
         <$FormSection>
           <$GridCell $colSpan={3}>
             <Button
