@@ -136,10 +136,51 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
         model = Application
 
 
+attachment_factory_string = "applications.tests.factories.AttachmentFactory"
+
+
 class ApplicationWithAttachmentFactory(ApplicationFactory):
     attachment = factory.RelatedFactory(
-        "applications.tests.factories.AttachmentFactory",
+        attachment_factory_string,
         factory_related_name="application",
+        attachment_type="employment_contract",
+    )
+    attachment_2 = factory.RelatedFactory(
+        attachment_factory_string,
+        factory_related_name="application",
+        attachment_type="pay_subsidy_decision",
+    )
+
+    attachment_3 = factory.RelatedFactory(
+        attachment_factory_string,
+        factory_related_name="application",
+        attachment_type="commission_contract",
+    )
+
+    attachment_4 = factory.RelatedFactory(
+        attachment_factory_string,
+        factory_related_name="application",
+        attachment_type="education_contract",
+    )
+    attachment_5 = factory.RelatedFactory(
+        attachment_factory_string,
+        factory_related_name="application",
+        attachment_type="helsinki_benefit_voucher",
+    )
+    attachment_6 = factory.RelatedFactory(
+        attachment_factory_string,
+        factory_related_name="application",
+        attachment_type="employee_consent",
+    )
+    attachment_7 = factory.RelatedFactory(
+        attachment_factory_string,
+        factory_related_name="application",
+        attachment_type="full_application",
+    )
+    attachment_8 = factory.RelatedFactory(
+        attachment_factory_string,
+        factory_related_name="application",
+        attachment_type="other_attachment",
     )
 
 
