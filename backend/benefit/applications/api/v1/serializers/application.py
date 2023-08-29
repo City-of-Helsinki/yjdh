@@ -1074,6 +1074,10 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
 
     def _update_applicant_terms_approval(self, instance, approve_terms):
         if ApplicantTermsApproval.terms_approval_needed(instance):
+            # Ignore applicant's terms if app origin is from handler
+            if instance.application_origin == ApplicationOrigin.HANDLER:
+                return
+
             if not approve_terms:
                 raise serializers.ValidationError(
                     {"approve_terms": _("Terms must be approved")}

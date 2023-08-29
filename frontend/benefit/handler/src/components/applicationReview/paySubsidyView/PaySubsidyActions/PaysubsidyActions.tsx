@@ -1,11 +1,9 @@
 import { UploadProps } from 'benefit/handler/types/application';
 import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import { IconPlus } from 'hds-react';
-import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import UploadAttachment from 'shared/components/attachments/UploadAttachment';
-import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import {
   $Grid,
   $GridCell,
@@ -53,27 +51,6 @@ const PaySubsidyActions: React.FC<UploadProps> = ({
             errorFileSizeText={t('common:error.attachments.tooBig')}
             errorFileTypeText={t('common:error.attachments.fileType')}
             icon={<IconPlus />}
-          />
-        </$GridCell>
-      </$Grid>
-      <$Grid>
-        <$GridCell
-          $colSpan={12}
-          css={`
-            margin-bottom: ${theme.spacing.s};
-          `}
-        >
-          <$Checkbox
-            css={`
-              input {
-                background-color: ${theme.colors.white};
-              }
-            `}
-            id="cb_grantedDueInjury"
-            name="cb_grantedDueInjury"
-            label={t(`${translationsBase}.grantedDueInjury`)}
-            checked={false}
-            onChange={noop}
           />
         </$GridCell>
       </$Grid>

@@ -79,7 +79,7 @@ jobs:
       - name: Check that building dev application works
         env:
           NEXTJS_DISABLE_SENTRY: true
-        run: NODE_OPTIONS=--openssl-legacy-provider yarn build
+        run: yarn build
       - name: Frontend build failure slack notification
         uses: rtCamp/action-slack-notify@v2
         env:
