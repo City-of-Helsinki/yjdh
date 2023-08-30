@@ -9,7 +9,7 @@ import {
   ORGANIZATION_TYPES,
 } from 'benefit-shared/constants';
 import { Application, DeMinimisAid } from 'benefit-shared/types/application';
-import { FormikProps, useFormik } from 'formik';
+import { FormikErrors, FormikProps, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
 import React, { useState } from 'react';
@@ -39,6 +39,17 @@ type ExtendedComponentProps = {
   getDefaultSelectValue: (fieldName: keyof Application) => OptionType;
 };
 
+type DeMinimisFormikPromises = Promise<
+  [void | FormikErrors<Application>, void | FormikErrors<Application>]
+>;
+
+const hasBusinessActivitiesOrIsCompany = (
+  hasBusinessActivities: boolean,
+  organizationType: ORGANIZATION_TYPES
+): boolean =>
+  hasBusinessActivities === true ||
+  organizationType === ORGANIZATION_TYPES.COMPANY;
+
 const useApplicationFormStep1 = (
   application: Partial<Application>,
   isUnfinishedDeminimisAid: boolean
@@ -65,6 +76,31 @@ const useApplicationFormStep1 = (
   });
 
   const { values, touched, errors, setFieldValue } = formik;
+
+  const isDeMinimisAidRowUnfinished = (): boolean => {
+    if (isUnfinishedDeminimisAid) {
+      showErrorToast(
+        t(`${translationsBase}.notifications.deMinimisUnfinished.label`),
+        t(`${translationsBase}.notifications.deMinimisUnfinished.content`)
+      );
+      return true;
+    }
+
+    return false;
+  };
+
+  const handleDeMinimisRadioButtonChange = (
+    formikFields: ExtendedComponentProps['fields']
+  ): Promise<void> | DeMinimisFormikPromises => {
+    if (deMinimisAids.length === 0) {
+      setDeMinimisAids([]);
+      return Promise.all([
+        formik.setFieldValue(formikFields.deMinimisAidSet.name, []),
+        formik.setFieldValue(formikFields.deMinimisAid.name, false),
+      ]);
+    }
+    return Promise.resolve();
+  };
 
   const fields: ExtendedComponentProps['fields'] = React.useMemo(() => {
     const fieldMasks: Partial<Record<Field['name'], Field['mask']>> = {
@@ -97,35 +133,47 @@ const useApplicationFormStep1 = (
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(errors, touched, fieldName, t, isSubmitted);
 
-  const handleSubmit = (): void => {
-    setIsSubmitted(true);
-    void formik.validateForm().then((errs) => {
-      const errorFieldKey = Object.keys(errs)[0];
+  const checkForFieldValidity = (errs: FormikErrors<Application>): boolean => {
+    const errorFieldKey = Object.keys(errs)[0];
 
-      if (errorFieldKey) {
-        return focusAndScroll(errorFieldKey);
-      }
+    if (errorFieldKey) {
+      focusAndScroll(errorFieldKey);
+      return false;
+    }
 
-      if (isUnfinishedDeminimisAid) {
-        showErrorToast(
-          t(`${translationsBase}.deMinimisUnfinished.label`),
-          t(`${translationsBase}.deMinimisUnfinished.content`)
-        );
-        return false;
-      }
+    if (isDeMinimisAidRowUnfinished()) {
+      focusAndScroll('deMinimisAid');
+      return false;
+    }
 
-      // de minimis fields are empty, set radio to false
-      if (deMinimisAids.length === 0) {
-        void formik.setFieldValue(fields.deMinimisAidSet.name, []);
-        void formik.setFieldValue(fields.deMinimisAid.name, false);
-      }
-
-      return formik.submitForm();
-    });
+    void formik.validateForm();
+    return true;
   };
 
-  const handleSave = (): void => {
-    void onSave(values);
+  const submitIfFormValid = (isFormValid: boolean): boolean => {
+    void handleDeMinimisRadioButtonChange(fields);
+    if (isFormValid) {
+      void formik.submitForm();
+      return true;
+    }
+    return false;
+  };
+
+  const handleSubmit = (): void => {
+    setIsSubmitted(true);
+    void formik
+      .validateForm()
+      .then((errs) => checkForFieldValidity(errs))
+      .then((isFormValid: boolean) => submitIfFormValid(isFormValid));
+  };
+
+  const handleSave = (): void | boolean => {
+    if (isDeMinimisAidRowUnfinished()) {
+      return false;
+    }
+    return void handleDeMinimisRadioButtonChange(fields)
+      .then(() => onSave(values))
+      .catch(() => false);
   };
 
   const applicationId = values?.id;
@@ -140,9 +188,10 @@ const useApplicationFormStep1 = (
     void setFieldValue(fields.deMinimisAid.name, null);
   }, [fields.deMinimisAid.name, setDeMinimisAids, setFieldValue]);
 
-  const showDeminimisSection =
-    values.associationHasBusinessActivities === true ||
-    organizationType === ORGANIZATION_TYPES.COMPANY;
+  const showDeminimisSection = hasBusinessActivitiesOrIsCompany(
+    values.associationHasBusinessActivities,
+    organizationType
+  );
 
   const languageOptions = React.useMemo(
     (): OptionType<string>[] => getLanguageOptions(t, 'languages'),

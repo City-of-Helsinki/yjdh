@@ -122,6 +122,7 @@ def _create_applications_for_export():
     reason="This test fails in deploy pipeline -- DETAIL:  Key (username)=(masonzachary_a45eb8) already exists."
 )
 def test_applications_csv_export_new_applications(handler_api_client):
+    pytest
     (
         application1,
         application2,
