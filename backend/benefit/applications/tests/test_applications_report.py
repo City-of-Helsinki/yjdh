@@ -119,15 +119,13 @@ def _create_applications_for_export():
 
 
 @pytest.mark.skip(
-    reason="This test fails in deploy pipeline -- DETAIL:  Key (username)=(masonzachary_a45eb8) already exists."
+    reason="This test fails in deploy pipeline - DETAIL:  Key (username)=(masonzachary_a45eb8) already exists."
 )
 def test_applications_csv_export_new_applications(handler_api_client):
-    pytest
     (
         application1,
         application2,
         application3,
-        application4,
     ) = _create_applications_for_export()
     ApplicationBatch.objects.all().delete()
 
