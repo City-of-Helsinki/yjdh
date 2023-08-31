@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 . "$(dirname "$0")/_/husky.sh"
 
 set +e
@@ -6,6 +6,6 @@ git diff --name-only --cached | grep -e "frontend/" &> /dev/null
 RUN_FRONTEND_PRECOMMIT=$?
 set -e
 
-if [ $RUN_FRONTEND_PRECOMMIT == "0" ]; then
+if [ "$RUN_FRONTEND_PRECOMMIT" = "0" ]; then
     cd frontend && yarn husky:pre-commit
 fi

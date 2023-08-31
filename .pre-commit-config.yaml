@@ -4,6 +4,7 @@ default_language_version:
   python: python3
 
 exclude: ^.*\b(migrations)\b.*$
+default_stages: [commit, manual]
 
 repos:
   - repo: https://github.com/psf/black
@@ -67,3 +68,19 @@ repos:
         exclude: migrations|snapshots
         files: ^backend/shared
         args: [--config, backend/shared/setup.cfg]
+  - repo: local
+    hooks:
+    - id: lint-staged
+      name: (Frontend) Run lint-staged with lerna
+      entry: "./.husky/pre-commit"
+      language: system
+      types: [file]
+      require_serial: true
+  - repo: local
+    hooks:
+    - id: commit-msg
+      name: Validate commit message (conventional commits)
+      entry: "./.husky/commit-msg"
+      language: system
+      stages:
+        - commit-msg
