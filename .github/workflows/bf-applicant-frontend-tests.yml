@@ -3,15 +3,9 @@ name: (BF-Applicant) Lint, Unit and Component tests
 on:
   pull_request:
     paths:
-      - "frontend/shared/**"
-      - "frontend/benefit/shared/**"
-      - "frontend/benefit/applicant/**"
-      - "frontend/*"
       - ".github/workflows/bf-applicant-frontend-tests.yml"
-      - "!**/browser-tests/**"
-      - "!**/README.md"
   push:
-    branches: [develop, main]
+    branches: [main]
   workflow_dispatch:
 defaults:
   run:

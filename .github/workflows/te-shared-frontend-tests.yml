@@ -2,15 +2,10 @@ name: (TET) Shared Frontend Lint, Unit and Component tests
 
 on:
   push:
-    branches: [ develop, main ]
+    branches: [ main ]
   pull_request:
     paths:
-      - 'frontend/shared/**'
-      - 'frontend/tet/shared/**'
-      - 'frontend/*'
       - '.github/workflows/te-shared-frontend-tests.yml'
-      - "!**/browser-tests/**"
-      - "!**/README.md"
   workflow_dispatch:
 defaults:
   run:

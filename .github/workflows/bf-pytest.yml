@@ -2,11 +2,11 @@ name: (BF) Python tests
 
 on:
   push:
-    branches: [develop, main]
+    branches: [main]
   pull_request:
     paths:
-    - 'backend/benefit/**'
     - '.github/workflows/bf-pytest.yml'
+  workflow_dispatch:
 
 env:
   DEBUG: 1
