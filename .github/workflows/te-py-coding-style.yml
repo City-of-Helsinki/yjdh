@@ -2,14 +2,11 @@ name: (TET) Python coding style
 
 on:
   push:
-    branches: [develop, main]
+    branches: [main]
   pull_request:
     paths:
-      - 'backend/tet/**'
-      - '.github/workflows/te-pytest.yml'
       - '.github/workflows/te-py-coding-style.yml'
-      - 'backend/shared/**'
-
+  workflow_dispatch:
 
 env:
   DEBUG: 1

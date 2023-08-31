@@ -2,16 +2,10 @@ name: (KS Handler) Frontend Lint, Unit and Component tests
 
 on:
   push:
-    branches: [develop, main]
+    branches: [main]
   pull_request:
     paths:
-      - "frontend/shared/**"
-      - "frontend/kesaseteli/shared/**"
-      - "frontend/kesaseteli/handler/**"
-      - "frontend/*"
       - ".github/workflows/ks-handler-frontend-tests.yml"
-      - "!**/browser-tests/**"
-      - "!**/README.md"
   workflow_dispatch:
 defaults:
   run:

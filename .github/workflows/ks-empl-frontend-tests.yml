@@ -2,16 +2,10 @@ name: (KS Employer) Frontend Lint, Unit and Component tests
 
 on:
   push:
-    branches: [develop, main]
+    branches: [main]
   pull_request:
     paths:
-      - "frontend/shared/**"
-      - "frontend/kesaseteli/shared/**"
-      - "frontend/kesaseteli/employer/**"
-      - "frontend/*"
       - ".github/workflows/ks-empl-frontend-tests.yml"
-      - "!**/browser-tests/**"
-      - "!**/README.md"
   workflow_dispatch:
 defaults:
   run:

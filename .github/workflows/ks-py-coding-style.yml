@@ -2,13 +2,11 @@ name: (KS) Python coding style
 
 on:
   push:
-    branches: [develop, main]
+    branches: [main]
   pull_request:
     paths:
-      - 'backend/kesaseteli/**'
       - '.github/workflows/ks-py-coding-style.yml'
-      - '.github/workflows/ks-pytest.yml'
-      - 'backend/shared/**'
+  workflow_dispatch:
 
 env:
   DEBUG: 1
