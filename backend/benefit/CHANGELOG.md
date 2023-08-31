@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.1.0...benefit-backend-v1.1.1) (2023-08-31)
+
+
+### Bug Fixes
+
+* Allow companies without address ([#2234](https://github.com/City-of-Helsinki/yjdh/issues/2234)) ([dc78d34](https://github.com/City-of-Helsinki/yjdh/commit/dc78d34f6defcd9f960284e3279bbb0a47293be6))
+
 ## [1.1.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.0.0...benefit-backend-v1.1.0) (2023-08-28)
 
 
