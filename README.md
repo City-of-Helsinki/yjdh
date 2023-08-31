@@ -15,8 +15,6 @@ This monorepo contains code for four different employment services:
 * NodeJS@^18.16.0
 * Yarn@^1.22
 
----
-
 ## Get started
 
 Follow these instructions to spin up a service:
@@ -33,7 +31,39 @@ Follow these instructions to spin up a service:
 
 There is additional README's about [authentication and backend development](https://github.com/City-of-Helsinki/yjdh/tree/develop/backend) and [frontend development](https://github.com/City-of-Helsinki/yjdh/tree/develop/frontend).
 
----
+## Publishing with Release Please & Git workflow
+
+[Release Please](https://github.com/googleapis/release-please) is used to automate release and release tag creation. Release Please creates release pull requests when the `main` branch has new commits after the last release, with commit messages prefixed with specific [Conventional Commits](https://www.conventionalcommits.org/) types (`feat:`, `fix:` or  `deps:`). More info about types [here](https://github.com/googleapis/release-please#releasable-units). Release PR might also already exist (if not merged before). Merging release PR creates appropriate release tag which triggers staging + production deploy. Refer to the [Release Please docs](https://github.com/googleapis/release-please).
+
+More information in [Confluence](https://helsinkisolutionoffice.atlassian.net/wiki/spaces/DD/pages/8278966368/Releases+with+release-please).
+
+### Basics
+
+* Merge to `main` branch triggers dev + test deploys. Merging release pull requests created by Release Please triggers staging + production deploys.
+* Use [Conventional Commits](https://www.conventionalcommits.org/)
+* Merge with merge commit is disabled on pull requests as it doesn't play well with Release Please. Release Please documentation recommends using squash merge, so keep PR's small enough so that squashing makes sense. Rebase and merge also works if PR is large. More info about merge methods in [GitHub docs](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/about-merge-methods-on-github).
+* Pull request title should include Jira handle (for Jira integration to work)
+* Release Please figures out how much to increase the version number based on commit messages. Look [SemVer](https://semver.org/) and [Release Please docs](https://github.com/googleapis/release-please#how-should-i-write-my-commits).
+
+### Example workflow
+
+1. Branch off from `main` to feature branch named after Jira handle, e.g. `git checkout -b hl-123-new-feature`
+2. Do your changes & commit using Conventional Commits, e.g. `git commit -m "feat: new feature backend"`
+3. Make additional changes & commit, e.g. `git commit -m "feat: new feature frontend"`
+4. Open a pull request, for example with title `HL-123: New feature`
+5. After PR checks are passed and PR is approved, merge with squash merge (set commit message to e.g. `feat: new feature`) or rebase and merge
+6. Release Please opens release PR with a title similar to this: `chore(main): release benefit-backend 1.1.1`  
+7. Merge release pull request to `main`. This creates a versioned release tag (e.g. `benefit-backend: v1.1.1`) that triggers staging and production deploy (Deploys still must be approved from Azure DevOps).
+
+## Setting up git hooks
+
+Git hooks are run with [pre-commit](https://pre-commit.com/). Pre-commit also runs the frontend hooks that were run with husky and lerna.
+
+1. Install [Pre-commit](https://pre-commit.com/)
+2. Install packages from `package.json`
+3. Run `pre-commit install`
+
+Git hooks can be disabled temporarily with `--no-verify` when committing.
 
 ## Kesäseteli employer
 
@@ -81,8 +111,6 @@ YJDH-Kesäseteli service for young people to send kesäseteli applications
 
 4. If services fail to get up, `yarn clean` might help.
 
----
-
 ## Benefit
 
 YJDH-Benefit provides two services for applying and for handling the application of discretionary support:
@@ -100,8 +128,6 @@ YJDH-Benefit provides two services for applying and for handling the application
   - The Applicant Frontend is now running at [localhost:3000](https://localhost:3000)
   - The Handler Frontend is now running at [localhost:3100](https://localhost:3100)
   - The backend is now running at [localhost:8000](https://localhost:8000)
-
----
 
 ## TET Admin
 
@@ -121,8 +147,6 @@ YJDH-TET-Admin is a UI for Helsinki city employees or private employers to add T
 
 Running `yarn tet-admin down` brings down all services.
 
----
-
 ## TET Youth
 
 YJDH-TET-Youth is a UI for pupils to search for TET job advertisements.
@@ -139,51 +163,11 @@ YJDH-TET-Youth is a UI for pupils to search for TET job advertisements.
 
 Running `yarn tet-youth down` brings down all services.
 
----
-
-## Setting up pre-commit hooks
-
-### Husky (frontend)
-
-1. Run `yarn install` and `yarn prepare` on project root
-2. Try `git commit -m foo`. It does not commit anything for real but pre-commit hook should be triggered.
-
-If the pre-commit hook hangs, or you want to push changes with failing tests, you can disable the hook with
-`npx husky uninstall`. Running `yarn prepare` reactivates the hook.
-
-### Pre-commit (backend)
-
-1. [Pre-commit](https://pre-commit.com/) should be installed to your virtual environment from `requirements-dev.txt`. If not, install it with `pip install pre-commit`.
-2. Run `pre-commit install`.
-
-Hooks now run when committing. You can run hooks manually by `pre-commit run`
-
----
-
-## Release tags
-
-Release pipelines are triggered by git tag. Release tag syntax is '\<service>-\<application>-\<vx.y.z>' for example 'kesaseteli-backend-v1.0.0'.
-
-Git tags '\<service >-\<application>' -prefixes are
-
- - benefit-backend
- - benefit-applicant
- - benefit-handler
- - kesaseteli-backend
- - kesaseteli-employer
- - kesaseteli-handler
- - kesaseteli-youth
- - tet-backend
- - tet-admin
- - tet-youth
-
----
-
 ## Known errors
 
-1.  If github action deploy fail with error like this in your pull-request:
-    
-```
+1. If github action deploy fail with error like this in your pull-request:
+
+```text
   Error: rendered manifests contain a resource that already exists. 
   Unable to continue with install: Service "yjdh-135-send-localization-param-to-suomifi-yjdh-ks-service" 
   in namespace "yjdh-yjdh-135-send-localization-param-to-suomifi-227" exists and cannot be 
