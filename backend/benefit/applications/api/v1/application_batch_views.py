@@ -149,7 +149,8 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
                 enum=["0", "1"],
             ),
         ],
-        description="Get application batches for the TALPA robot. Set skip_update=1 to skip updating the batch status to SENT_TO_TALPA",
+        description="""Get application batches for the TALPA robot.
+        Set skip_update=1 to skip updating the batch status to SENT_TO_TALPA""",
         methods=["GET"],
     )
     @action(

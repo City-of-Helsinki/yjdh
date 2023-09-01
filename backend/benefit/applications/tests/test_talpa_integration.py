@@ -1,8 +1,6 @@
 import datetime
 import decimal
 
-import pytest
-
 from applications.tests.common import (
     check_csv_cell_list_lines_generator,
     check_csv_string_lines_generator,

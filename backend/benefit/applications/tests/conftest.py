@@ -108,7 +108,7 @@ def pruned_applications_csv_service():
         Application.objects.filter(pk__in=[application1.pk, application2.pk]).order_by(
             "application_number"
         ),
-        True
+        True,
     )
 
 
