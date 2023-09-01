@@ -7,7 +7,7 @@ from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from django_filters import rest_framework as filters
 from django_filters.widgets import CSVWidget
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import filters as drf_filters, status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
@@ -25,7 +25,7 @@ from applications.exceptions import (
 )
 from applications.models import Application, ApplicationBatch
 from applications.services.ahjo_integration import export_application_batch
-from applications.services.talpa_integration import TalpaService
+from applications.services.applications_csv_report import ApplicationsCsvService
 from common.authentications import RobotBasicAuthentication
 from common.permissions import BFIsHandler
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
@@ -139,6 +139,19 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         )
         return response
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="skip_update",
+                description="Skip updating the batch status",
+                required=False,
+                type=str,
+                enum=["0", "1"],
+            ),
+        ],
+        description="Get application batches for the TALPA robot. Set skip_update=1 to skip updating the batch status to SENT_TO_TALPA",
+        methods=["GET"],
+    )
     @action(
         methods=("GET",),
         detail=False,
@@ -151,6 +164,8 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         """
         Export ApplicationBatch to CSV format for Talpa Robot
         """
+        skip_update = request.query_params.get("skip_update") == "1"
+
         approved_batches = ApplicationBatch.objects.filter(
             status=ApplicationBatchStatus.DECIDED_ACCEPTED
         )
@@ -164,18 +179,26 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        talpa_service = TalpaService(approved_batches)
+        applications = Application.objects.filter(batch__in=approved_batches).order_by(
+            "company__name", "application_number"
+        )
+        csv_service = ApplicationsCsvService(applications, True)
         file_name = format_lazy(
             _("TALPA export {date}"),
             date=timezone.now().strftime("%Y%m%d_%H%M%S"),
         )
+
         response = StreamingHttpResponse(
-            talpa_service.get_csv_string_lines_generator(), content_type="text/csv"
+            csv_service.get_csv_string_lines_generator(True),
+            content_type="text/csv",
         )
-        response["Content-Disposition"] = "attachment; filename={file_name}.csv".format(
-            file_name=file_name
+        response["Content-Disposition"] = "attachment; filename={filename}.csv".format(
+            filename=file_name
         )
-        approved_batches.all().update(status=ApplicationBatchStatus.SENT_TO_TALPA)
+        # for easier testing in the test environment do not update the batches as sent_to_talpa
+        # remove this when TALPA integration is ready for production
+        if not skip_update:
+            approved_batches.all().update(status=ApplicationBatchStatus.SENT_TO_TALPA)
         return response
 
     @action(methods=["PATCH"], detail=False)
