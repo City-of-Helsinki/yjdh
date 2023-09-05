@@ -1,11 +1,9 @@
 import { $PageHeading } from 'benefit/applicant/components/applications/Applications.sc';
 import { Button } from 'hds-react';
-import { GetStaticProps } from 'next';
 import React from 'react';
 import Container from 'shared/components/container/Container';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell, $Hr } from 'shared/components/forms/section/FormSection.sc';
-import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { openFileInNewTab } from 'shared/utils/file.utils';
 
 import useApproveTermsOfServiceMutation from '../../hooks/useApproveTermsOfServiceMutation';
@@ -92,8 +90,5 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({
     </Container>
   );
 };
-
-export const getStaticProps: GetStaticProps =
-  getServerSideTranslations('common');
 
 export default TermsOfService;
