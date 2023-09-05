@@ -8,17 +8,14 @@ import { DeMinimisAid } from 'benefit-shared/types/application';
 import { Button, DateInput, IconPlusCircle, TextInput } from 'hds-react';
 import sumBy from 'lodash/sumBy';
 import React from 'react';
-import {
-  $Grid,
-  $GridCell,
-  $SubHeader,
-} from 'shared/components/forms/section/FormSection.sc';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import {
   formatStringFloatValue,
   stringFloatToFixed,
 } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
+import { $DeMinimisGridPadded, $DeMinimisSubHeader } from './deMinimisAid.sc';
 import { useDeminimisAid } from './useDeminimisAid';
 
 interface DeMinimisAidFormProps {
@@ -63,26 +60,13 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({
   };
 
   return (
-    <$GridCell
-      $colStart={3}
-      $colSpan={10}
-      as={$Grid}
-      columns={10}
-      css={`
-        margin-bottom: ${theme.spacing.s};
-      `}
-    >
+    <>
       <$GridCell $colSpan={10}>
-        <$SubHeader>{t(`${translationsBase}.deMinimisAidsHeading`)}</$SubHeader>
+        <$DeMinimisSubHeader>
+          {t(`${translationsBase}.deMinimisAidsHeading`)}
+        </$DeMinimisSubHeader>
       </$GridCell>
-      <$GridCell
-        $colSpan={8}
-        as={$Grid}
-        columns={8}
-        bgColor
-        bgHorizontalPadding
-        bgVerticalPadding
-      >
+      <$DeMinimisGridPadded>
         <$GridCell $colSpan={4}>
           <TextInput
             id={fields.granter.name}
@@ -115,10 +99,13 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({
             invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.AMOUNT)}
             aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.AMOUNT)}
             errorText={getErrorMessage(DE_MINIMIS_AID_KEYS.AMOUNT)}
+            helperText={t(
+              `${translationsBase}.fields.deMinimisAidAmount.helperText`
+            )}
             required
           />
         </$GridCell>
-        <$GridCell $colSpan={2}>
+        <$GridCell $colSpan={3}>
           <DateInput
             id={fields.grantedAt.name}
             name={fields.grantedAt.name}
@@ -138,33 +125,35 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({
             required
           />
         </$GridCell>
-      </$GridCell>
-      <$GridCell
-        $colSpan={2}
-        css={`
-          padding-top: 25px;
-          padding-left: ${theme.spacing.s};
-        `}
-      >
-        <Button
-          theme="coat"
-          disabled={
-            !(
-              formik.values.granter &&
-              formik.values.amount &&
-              formik.values.grantedAt
-            ) ||
-            !formik.isValid ||
-            sumBy(grants, 'amount') > MAX_DEMINIMIS_AID_TOTAL_AMOUNT
-          }
-          onClick={(e) => onSubmit(e)}
-          iconLeft={<IconPlusCircle />}
-          fullWidth
+
+        <$GridCell
+          $colSpan={3}
+          css={`
+            margin-left: auto;
+            padding-top: 25px;
+            padding-left: ${theme.spacing.s};
+          `}
         >
-          {t(`${translationsBase}.deMinimisAidsAdd`)}
-        </Button>
-      </$GridCell>
-    </$GridCell>
+          <Button
+            theme="coat"
+            disabled={
+              !(
+                formik.values.granter &&
+                formik.values.amount &&
+                formik.values.grantedAt
+              ) ||
+              !formik.isValid ||
+              sumBy(grants, 'amount') > MAX_DEMINIMIS_AID_TOTAL_AMOUNT
+            }
+            onClick={(e) => onSubmit(e)}
+            iconLeft={<IconPlusCircle />}
+            fullWidth
+          >
+            {t(`${translationsBase}.deMinimisAidsAdd`)}
+          </Button>
+        </$GridCell>
+      </$DeMinimisGridPadded>
+    </>
   );
 };
 

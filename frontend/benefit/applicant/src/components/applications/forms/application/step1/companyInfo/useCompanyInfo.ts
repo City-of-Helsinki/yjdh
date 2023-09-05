@@ -17,7 +17,6 @@ export type CompanyInfoFields = Pick<
   | APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_CITY
   | APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BANK_ACCOUNT_NUMBER
   | APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_HAS_BUSINESS_ACTIVITIES
-  | APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_IMMEDIATE_MANAGER_CHECK
 >;
 
 interface CompanyInfoProps {
@@ -57,9 +56,6 @@ const useCompanyInfo = (
 
   let formattedData = {
     ...companyData,
-    businessId: t('common:applications.sections.company.businessId', {
-      businessId: companyData.businessId,
-    }),
   };
 
   if (error)

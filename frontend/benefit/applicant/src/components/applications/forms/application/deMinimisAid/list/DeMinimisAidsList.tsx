@@ -12,6 +12,7 @@ import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { formatStringFloatValue } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
+import { $DeMinimisGrid } from '../deMinimisAid.sc';
 import { useDeminimisAidsList } from './useDeminimisAidsList';
 
 const DeMinimisAidsList: React.FC = () => {
@@ -21,21 +22,17 @@ const DeMinimisAidsList: React.FC = () => {
   return (
     <>
       {grants?.map((grant, i) => (
-        <$GridCell
-          $colStart={3}
-          $colSpan={10}
-          as={$Grid}
-          columns={10}
+        <$DeMinimisGrid
           key={`${grant[DE_MINIMIS_AID_KEYS.GRANTER] ?? ''}${
             grant[DE_MINIMIS_AID_KEYS.AMOUNT] ?? ''
           }${grant[DE_MINIMIS_AID_KEYS.GRANTED_AT] ?? ''}`}
         >
           <$GridCell
-            $colSpan={8}
+            css="margin-left: 15px"
+            $colSpan={12}
             as={$Grid}
-            columns={8}
+            columns={12}
             alignItems="center"
-            bgColor
             bgHorizontalPadding
           >
             <$GridCell $colSpan={4}>
@@ -47,24 +44,26 @@ const DeMinimisAidsList: React.FC = () => {
             <$GridCell $colSpan={2}>
               {convertToUIDateFormat(grant[DE_MINIMIS_AID_KEYS.GRANTED_AT])}
             </$GridCell>
-          </$GridCell>
-          <$GridCell
-            $colSpan={2}
-            css={`
-              padding-left: ${theme.spacing.s};
-            `}
-          >
-            <Button
-              onClick={() => handleRemove(i)}
-              variant="secondary"
-              theme="black"
-              iconLeft={<IconMinusCircle />}
-              fullWidth
+            <$GridCell
+              $colSpan={4}
+              css={`
+                margin-left: auto;
+                margin-bottom: ${theme.spacing.s};
+                padding-left: ${theme.spacing.s};
+              `}
             >
-              {t(`${translationsBase}.deMinimisAidsRemove`)}
-            </Button>
+              <Button
+                onClick={() => handleRemove(i)}
+                variant="secondary"
+                theme="black"
+                iconLeft={<IconMinusCircle />}
+                fullWidth
+              >
+                {t(`${translationsBase}.deMinimisAidsRemove`)}
+              </Button>
+            </$GridCell>
           </$GridCell>
-        </$GridCell>
+        </$DeMinimisGrid>
       ))}
       {sumBy(grants, (grant) => Number(grant.amount)) >
         MAX_DEMINIMIS_AID_TOTAL_AMOUNT && (

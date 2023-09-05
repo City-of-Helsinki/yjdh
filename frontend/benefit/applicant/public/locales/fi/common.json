@@ -29,9 +29,12 @@
       "saved": "Tallennettu",
       "sent": "Hakemusnumero: {{applicationNumber}}  |  Lähetetty {{submittedAt}}",
       "new": "Uusi hakemus",
-      "edit": "Hakemus",
+      "edit": "Helsinki-lisä -hakemus",
       "helperText": "Ole hyvä ja tarkista hakemus ennen lähetystä.",
       "guideText": "Kaikki *-merkityt kohdat ovat pakollisia"
+    },
+    "helpers": {
+      "requiredFields": "Tähdellä merkityt kentät ovat pakollisia"
     },
     "statuses": {
       "draft": "Luonnos",
@@ -68,20 +71,23 @@
       "company": {
         "heading1": "Työnantajan tiedot",
         "heading1Additional": "Postiosoite päätöstä varten",
-        "heading2": "Yhteyshenkilö",
+        "heading2": "Työnantajan yhteyshenkilö",
         "heading2Short": "Yhteyshenkilö",
-        "heading3": "Hakijan de minimis -tuet",
-        "heading4": "YT-tilanne",
+        "heading3": "Työnantajan de minimis -tuet",
+        "heading4": "Muutosneuvottelut tai YT-tilanne",
         "heading5": "YT-neuvottelut",
         "businessId": "Y-tunnus: {{ businessId }}",
-        "deMinimisAidsHeading": "Listaa tähän kaikki organisaatiolle kuluvan vuoden ja kahden edellisen verovuoden aikana myönnetyt de minimis -tuet",
-        "deMinimisAidsAdd": "Lisää",
+        "companyContactPerson": {
+          "content": "Yhteyshenkilö kommunikoi tähän Helsinki-lisä -hakemukseen liittyvissä asioissa ja saa tiedon hakemuksen päätöksestä."
+        },
+        "deMinimisAidsHeading": "Täytä alle kaikki organisaatiolle myönnetyt de minimis -tuet kuluvan vuoden ja kahden edellisen verovuoden ajalta.",
+        "deMinimisAidsAdd": "Tallenna",
         "deMinimisAidsRemove": "Poista",
         "deMinimisAidsNo": "Hakija ei ole ilmoittanut aiemmista de minimis -tuista.",
         "notifications": {
           "companyInformation": {
             "label": "Tiedot haetaan Yritys- ja yhteisötietojärjestelmästä",
-            "content": "Organisaatiosi perustiedot haetaan Yritys- ja yhteisötietojärjestelmästä. Halutessasi voit vaihtaa tilalle toisen postiosoitteen, johon Helsinki-lisä-päätös toimitetaan."
+            "content": "Merkityt tiedot on haettu Yritys- ja yhteisötietojärjestelmästä.  Jos haluat Helsinki-lisä-päätöksen toiseen toimipisteeseen, vaihda tilalle toinen postiosoite."
           },
           "deMinimisAidMaxAmount": {
             "label": "Enimmäismäärä ylitetty",
@@ -113,12 +119,12 @@
             "placeholder": "Postitoimipaikka"
           },
           "companyDepartment": {
-            "label": "Toimipiste tai osasto (valinnainen)",
+            "label": "Toimipiste",
             "placeholder": "Toimipiste / osasto"
           },
           "companyBankAccountNumber": {
             "label": "Tilinumero",
-            "placeholder": "IBAN muodossa"
+            "placeholder": "IBAN-muodossa"
           },
           "companyContactPersonFirstName": {
             "label": "Etunimi",
@@ -149,7 +155,7 @@
             "placeholder": "Työnantajalla on asianmukaiset työtilat ja työnjohdollinen, ei-palkkatuettu esihenkilö palkattavalle henkilölle."
           },
           "deMinimisAid": {
-            "label": "Onko hakijalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis -tukea?",
+            "label": "Onko työnantajalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis -tukea?",
             "yes": "Kyllä",
             "no": "Ei"
           },
@@ -158,8 +164,9 @@
             "placeholder": "Myöntävä taho"
           },
           "deMinimisAidAmount": {
-            "label": "Tuen määrä (euroina)",
-            "placeholder": "€"
+            "label": "Tuen määrä",
+            "placeholder": "€",
+            "helperText": "euroa"
           },
           "deMinimisAidGrantedAt": {
             "label": "Myöntämispäivämäärä",
@@ -167,12 +174,12 @@
             "placeholder": "Valitse"
           },
           "coOperationNegotiations": {
-            "label": "Onko organisaatiolla käynnissä YT-neuvottelut?",
+            "label": "Onko organisaatiolla käynnissä tai edeltävän 12 kuukauden aikana päättynyt muutosneuvottelut tai YT-neuvottelut?",
             "yes": "Kyllä",
             "no": "Ei"
           },
           "coOperationNegotiationsDescription": {
-            "label": "Anna tarkempi selvitys YT-tilanteesta:",
+            "label": "Anna tarkempi selvitys muutosneuvotteluista tai YT-tilanteesta",
             "placeholder": "Kuvaile tilannetta"
           }
         }

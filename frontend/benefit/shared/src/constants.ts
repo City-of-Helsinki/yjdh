@@ -61,7 +61,6 @@ export enum APPLICATION_FIELDS_STEP1_KEYS {
   COMPANY_DEPARTMENT = 'companyDepartment',
   COMPANY_BANK_ACCOUNT_NUMBER = 'companyBankAccountNumber',
   ASSOCIATION_HAS_BUSINESS_ACTIVITIES = 'associationHasBusinessActivities',
-  ASSOCIATION_IMMEDIATE_MANAGER_CHECK = 'associationImmediateManagerCheck',
   COMPANY_CONTACT_PERSON_FIRST_NAME = 'companyContactPersonFirstName',
   COMPANY_CONTACT_PERSON_LAST_NAME = 'companyContactPersonLastName',
   COMPANY_CONTACT_PERSON_PHONE_NUMBER = 'companyContactPersonPhoneNumber',
@@ -75,6 +74,7 @@ export enum APPLICATION_FIELDS_STEP1_KEYS {
 }
 
 export enum APPLICATION_FIELDS_STEP2_KEYS {
+  ASSOCIATION_IMMEDIATE_MANAGER_CHECK = 'associationImmediateManagerCheck',
   PAY_SUBSIDY_GRANTED = 'paySubsidyGranted',
   PAY_SUBSIDY_PERCENT = 'paySubsidyPercent',
   ADDITIONAL_PAY_SUBSIDY_PERCENT = 'additionalPaySubsidyPercent',

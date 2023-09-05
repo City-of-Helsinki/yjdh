@@ -3,11 +3,10 @@ import { translateBackendErrorMessage } from 'benefit/applicant/utils/common';
 import { ORGANIZATION_TYPES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import { FormikProps } from 'formik';
-import { SelectionGroup, TextInput } from 'hds-react';
+import { IconCheckCircleFill, SelectionGroup, TextInput } from 'hds-react';
 import React from 'react';
 import InputMask from 'react-input-mask';
 import LoadingSkeleton from 'react-loading-skeleton';
-import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
 import {
   $Checkbox,
   $RadioButton,
@@ -19,7 +18,12 @@ import {
 } from 'shared/components/forms/section/FormSection.sc';
 import { useTheme } from 'styled-components';
 
-import { $CompanyInfoRow, $Notification } from './CompanyInfo.sc';
+import {
+  $CompanyInfoLabel,
+  $CompanyInfoRow,
+  $CompanyInfoValue,
+  $HintText,
+} from './CompanyInfo.sc';
 import useCompanyInfo, { CompanyInfoFields } from './useCompanyInfo';
 
 export interface CompanyInfoProps {
@@ -57,7 +61,11 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
   const theme = useTheme();
 
   return (
-    <FormSection header={t(`${translationsBase}.heading1`)} loading={isLoading}>
+    <FormSection
+      headerLevel="h2"
+      header={t(`${translationsBase}.heading1`)}
+      loading={isLoading}
+    >
       <$GridCell
         as={$Grid}
         $colSpan={12}
@@ -66,45 +74,60 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
         `}
       >
         <$GridCell as={$Grid} $colSpan={12}>
-          <$GridCell $colSpan={3}>
+          <$GridCell $colSpan={6}>
             {shouldShowSkeleton ? (
               <LoadingSkeleton width="90%" count={2} />
             ) : (
-              <>
-                <$CompanyInfoRow>{data.name}</$CompanyInfoRow>
-                <$CompanyInfoRow>{data.businessId}</$CompanyInfoRow>
-              </>
-            )}
-          </$GridCell>
-          <$GridCell $colSpan={3}>
-            {shouldShowSkeleton ? (
-              <LoadingSkeleton width="90%" count={2} />
-            ) : (
-              <>
-                <$CompanyInfoRow>{data.streetAddress}</$CompanyInfoRow>
+              <dl>
                 <$CompanyInfoRow>
-                  {data.postcode} {data.city}
+                  <$CompanyInfoLabel>Työnantajan nimi</$CompanyInfoLabel>
+                  <$CompanyInfoValue>
+                    {data.name}
+                    <IconCheckCircleFill color="var(--color-tram)" />
+                  </$CompanyInfoValue>
                 </$CompanyInfoRow>
-              </>
+                <$CompanyInfoRow>
+                  <$CompanyInfoLabel>Y-tunnus</$CompanyInfoLabel>
+                  <$CompanyInfoValue>
+                    {data.businessId}
+                    <IconCheckCircleFill color="var(--color-tram)" />
+                  </$CompanyInfoValue>
+                </$CompanyInfoRow>
+                <$CompanyInfoRow>
+                  <$CompanyInfoLabel>Osoite</$CompanyInfoLabel>
+                  <$CompanyInfoValue>
+                    {data.streetAddress}
+                    <IconCheckCircleFill color="var(--color-tram)" />
+                  </$CompanyInfoValue>
+                </$CompanyInfoRow>
+                <$CompanyInfoRow>
+                  <$CompanyInfoLabel>Postinumero</$CompanyInfoLabel>
+                  <$CompanyInfoValue>
+                    {data.postcode}
+                    <IconCheckCircleFill color="var(--color-tram)" />
+                  </$CompanyInfoValue>
+                </$CompanyInfoRow>
+                <$CompanyInfoRow>
+                  <$CompanyInfoLabel>Postitoimipaikka</$CompanyInfoLabel>
+                  <$CompanyInfoValue>
+                    {data.city}
+                    <IconCheckCircleFill color="var(--color-tram)" />
+                  </$CompanyInfoValue>
+                </$CompanyInfoRow>
+              </dl>
             )}
           </$GridCell>
-          <$GridCell $colSpan={6} $rowSpan={2}>
-            <$Notification
-              label={
-                error?.message
-                  ? t('error.generic.label')
-                  : t(
-                      `${translationsBase}.notifications.companyInformation.label`
-                    )
-              }
-              type={error ? 'error' : 'info'}
-            >
-              {error?.message && translateBackendErrorMessage(t, error)
-                ? translateBackendErrorMessage(t, error)
-                : t(
-                    `${translationsBase}.notifications.companyInformation.content`
-                  )}
-            </$Notification>
+          <$GridCell $colSpan={8}>
+            {error?.message && translateBackendErrorMessage(t, error) ? (
+              translateBackendErrorMessage(t, error)
+            ) : (
+              <$HintText>
+                <IconCheckCircleFill color="var(--color-tram)" />
+                {t(
+                  `${translationsBase}.notifications.companyInformation.content`
+                )}
+              </$HintText>
+            )}
           </$GridCell>
           <$GridCell $colSpan={6}>
             <$Checkbox
@@ -218,7 +241,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
           )}
         </$GridCell>
 
-        <$GridCell $colSpan={3}>
+        <$GridCell $colSpan={4}>
           <InputMask
             mask={fields.companyBankAccountNumber.mask?.format ?? ''}
             maskChar={null}
@@ -240,7 +263,6 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
                 id={fields.companyBankAccountNumber.name}
                 name={fields.companyBankAccountNumber.name}
                 label={fields.companyBankAccountNumber.label}
-                placeholder={fields.companyBankAccountNumber.placeholder}
                 invalid={
                   !!getErrorMessage(fields.companyBankAccountNumber.name)
                 }
@@ -251,89 +273,64 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
                   fields.companyBankAccountNumber.name
                 )}
                 required
+                helperText={t(
+                  `${translationsBase}.fields.companyBankAccountNumber.placeholder`
+                )}
               />
             )}
           </InputMask>
         </$GridCell>
         {data.organizationType.toLowerCase() ===
           ORGANIZATION_TYPES.ASSOCIATION.toLowerCase() && (
-          <>
-            <$GridCell $colSpan={8} $colStart={1}>
-              <SelectionGroup
-                label={fields.associationHasBusinessActivities.label}
-                tooltipText={t(
-                  `${translationsBase}.tooltips.${fields.associationHasBusinessActivities.name}`
+          <$GridCell $colSpan={8} $colStart={1}>
+            <SelectionGroup
+              label={fields.associationHasBusinessActivities.label}
+              tooltipText={t(
+                `${translationsBase}.tooltips.${fields.associationHasBusinessActivities.name}`
+              )}
+              direction="vertical"
+              required
+              errorText={getErrorMessage(
+                fields.associationHasBusinessActivities.name
+              )}
+            >
+              <$RadioButton
+                id={`${fields.associationHasBusinessActivities.name}False`}
+                name={fields.associationHasBusinessActivities.name}
+                value="false"
+                label={t(
+                  `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.no`
                 )}
-                direction="vertical"
-                required
-                errorText={getErrorMessage(
-                  fields.associationHasBusinessActivities.name
-                )}
-              >
-                <$RadioButton
-                  id={`${fields.associationHasBusinessActivities.name}False`}
-                  name={fields.associationHasBusinessActivities.name}
-                  value="false"
-                  label={t(
-                    `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.no`
-                  )}
-                  onChange={() => {
-                    void formik.setFieldValue(
-                      fields.associationHasBusinessActivities.name,
-                      false
-                    );
-                  }}
-                  // 3 states: null (none is selected), true, false
-                  checked={
-                    formik.values.associationHasBusinessActivities === false
-                  }
-                />
-                <$RadioButton
-                  id={`${fields.associationHasBusinessActivities.name}True`}
-                  name={fields.associationHasBusinessActivities.name}
-                  value="true"
-                  label={t(
-                    `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.yes`
-                  )}
-                  onChange={() =>
-                    formik.setFieldValue(
-                      fields.associationHasBusinessActivities.name,
-                      true
-                    )
-                  }
-                  checked={
-                    formik.values.associationHasBusinessActivities === true
-                  }
-                />
-              </SelectionGroup>
-            </$GridCell>
-            <$GridCell $colSpan={8}>
-              <FieldLabel
-                value={fields.associationImmediateManagerCheck.label}
-                required
-              />
-              <$Checkbox
-                id={fields.associationImmediateManagerCheck.name}
-                disabled={isLoading || !!error}
-                name={fields.associationImmediateManagerCheck.name}
-                label={fields.associationImmediateManagerCheck.placeholder}
-                required
+                onChange={() => {
+                  void formik.setFieldValue(
+                    fields.associationHasBusinessActivities.name,
+                    false
+                  );
+                }}
+                // 3 states: null (none is selected), true, false
                 checked={
-                  formik.values.associationImmediateManagerCheck === true
+                  formik.values.associationHasBusinessActivities === false
                 }
-                errorText={getErrorMessage(
-                  fields.associationImmediateManagerCheck.name
+              />
+              <$RadioButton
+                id={`${fields.associationHasBusinessActivities.name}True`}
+                name={fields.associationHasBusinessActivities.name}
+                value="true"
+                label={t(
+                  `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.yes`
                 )}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                aria-invalid={
-                  !!getErrorMessage(
-                    fields.associationImmediateManagerCheck.name
+                onChange={() =>
+                  formik.setFieldValue(
+                    fields.associationHasBusinessActivities.name,
+                    true
                   )
                 }
+                checked={
+                  formik.values.associationHasBusinessActivities === true
+                }
               />
-            </$GridCell>
-          </>
+            </SelectionGroup>
+          </$GridCell>
         )}
       </$GridCell>
     </FormSection>

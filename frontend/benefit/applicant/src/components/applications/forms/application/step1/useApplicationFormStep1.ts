@@ -15,6 +15,7 @@ import { TFunction } from 'next-i18next';
 import React, { useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
 import showErrorToast from 'shared/components/toast/show-error-toast';
+import useLocale from 'shared/hooks/useLocale';
 import { OptionType } from 'shared/types/common';
 import { focusAndScroll } from 'shared/utils/dom.utils';
 
@@ -36,7 +37,7 @@ type ExtendedComponentProps = {
   formik: FormikProps<Partial<Application>>;
   deMinimisAidSet: DeMinimisAid[];
   languageOptions: OptionType[];
-  getDefaultSelectValue: (fieldName: keyof Application) => OptionType;
+  getDefaultLanguage: () => OptionType;
 };
 
 type DeMinimisFormikPromises = Promise<
@@ -59,6 +60,7 @@ const useApplicationFormStep1 = (
     React.useContext(DeMinimisContext);
   const { onNext, onSave, onDelete } = useFormActions(application);
 
+  const locale = useLocale();
   const translationsBase = 'common:applications.sections.company';
   // todo: check the isSubmitted logic, when its set to false and how affects the validation message
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
@@ -198,12 +200,14 @@ const useApplicationFormStep1 = (
     [t]
   );
 
-  const getDefaultSelectValue = (fieldName: keyof Application): OptionType =>
+  const getDefaultLanguage = (): OptionType =>
     languageOptions.find(
-      (o) => o.value === String(application?.[fieldName])
+      (o) =>
+        o.value ===
+        String(application?.[APPLICATION_FIELDS_STEP1_KEYS.APPLICANT_LANGUAGE])
     ) || {
-      label: '',
-      value: '',
+      label: t(`common:languages.${locale}`),
+      value: locale,
     };
 
   return {
@@ -219,7 +223,7 @@ const useApplicationFormStep1 = (
     clearDeminimisAids,
     deMinimisAidSet: application.deMinimisAidSet || [],
     languageOptions,
-    getDefaultSelectValue,
+    getDefaultLanguage,
   };
 };
 
