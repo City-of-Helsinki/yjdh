@@ -8,9 +8,13 @@ import React from 'react';
 import { $RadioButton } from 'shared/components/forms/fields/Fields.sc';
 import { Option } from 'shared/components/forms/fields/types';
 import FormSection from 'shared/components/forms/section/FormSection';
-import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import {
+  $GridCell,
+  $SubHeader,
+} from 'shared/components/forms/section/FormSection.sc';
 import { phoneToLocal } from 'shared/utils/string.utils';
 
+import { $SubFieldContainer } from '../Application.sc';
 import DeMinimisAidForm from '../deMinimisAid/DeMinimisAidForm';
 import DeMinimisAidsList from '../deMinimisAid/list/DeMinimisAidsList';
 import StepperActions from '../stepperActions/StepperActions';
@@ -30,7 +34,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
     handleDelete,
     getErrorMessage,
     clearDeminimisAids,
-    getDefaultSelectValue,
+    getDefaultLanguage,
     showDeminimisSection,
     languageOptions,
     fields,
@@ -62,7 +66,12 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
         translationsBase={translationsBase}
         fields={fields}
       />
-      <FormSection header={t(`${translationsBase}.heading2`)}>
+      <FormSection headerLevel="h2" header={t(`${translationsBase}.heading2`)}>
+        <$GridCell $colSpan={12}>
+          <$SubHeader weight="400">
+            {t(`${translationsBase}.companyContactPerson.content`)}
+          </$SubHeader>
+        </$GridCell>
         <$GridCell $colSpan={3}>
           <TextInput
             id={fields.companyContactPersonFirstName.name}
@@ -145,7 +154,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
         </$GridCell>
         <$GridCell $colSpan={3}>
           <Select
-            defaultValue={getDefaultSelectValue(fields.applicantLanguage.name)}
+            defaultValue={getDefaultLanguage()}
             helper={getErrorMessage(fields.applicantLanguage.name)}
             optionLabelField="label"
             label={fields.applicantLanguage.label}
@@ -166,6 +175,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
       </FormSection>
       {showDeminimisSection && (
         <FormSection
+          headerLevel="h2"
           header={t(`${translationsBase}.heading3`)}
           tooltip={t(`${translationsBase}.tooltips.heading3`)}
         >
@@ -207,18 +217,22 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           </$GridCell>
 
           {formik.values.deMinimisAid && (
-            <>
+            <$SubFieldContainer $colSpan={12}>
               <DeMinimisAidForm
                 data={deMinimisAidSet}
                 setUnfinishedDeMinimisAid={setUnfinishedDeMinimisAid}
               />
               <DeMinimisAidsList />
-            </>
+            </$SubFieldContainer>
           )}
         </FormSection>
       )}
-      <FormSection paddingBottom header={t(`${translationsBase}.heading4`)}>
-        <$GridCell $colSpan={8}>
+      <FormSection
+        paddingBottom
+        headerLevel="h2"
+        header={t(`${translationsBase}.heading4`)}
+      >
+        <$GridCell $colSpan={12}>
           <SelectionGroup
             id={fields.coOperationNegotiations.name}
             label={fields.coOperationNegotiations.label}
@@ -260,32 +274,35 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           </SelectionGroup>
         </$GridCell>
         {formik.values.coOperationNegotiations && (
-          <$GridCell $colSpan={8} $colStart={3}>
-            <TextArea
-              id={fields.coOperationNegotiationsDescription.name}
-              name={fields.coOperationNegotiationsDescription.name}
-              label={fields.coOperationNegotiationsDescription.label}
-              placeholder={
-                fields.coOperationNegotiationsDescription.placeholder
-              }
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.coOperationNegotiationsDescription}
-              invalid={
-                !!getErrorMessage(
+          <$SubFieldContainer $colSpan={7}>
+            <$GridCell $colSpan={8} $rowSpan={8}>
+              <TextArea
+                id={fields.coOperationNegotiationsDescription.name}
+                name={fields.coOperationNegotiationsDescription.name}
+                label={fields.coOperationNegotiationsDescription.label}
+                placeholder={
+                  fields.coOperationNegotiationsDescription.placeholder
+                }
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.coOperationNegotiationsDescription}
+                invalid={
+                  !!getErrorMessage(
+                    fields.coOperationNegotiationsDescription.name
+                  )
+                }
+                aria-invalid={
+                  !!getErrorMessage(
+                    fields.coOperationNegotiationsDescription.name
+                  )
+                }
+                errorText={getErrorMessage(
                   fields.coOperationNegotiationsDescription.name
-                )
-              }
-              aria-invalid={
-                !!getErrorMessage(
-                  fields.coOperationNegotiationsDescription.name
-                )
-              }
-              errorText={getErrorMessage(
-                fields.coOperationNegotiationsDescription.name
-              )}
-            />
-          </$GridCell>
+                )}
+                required
+              />
+            </$GridCell>
+          </$SubFieldContainer>
         )}
       </FormSection>
       <StepperActions

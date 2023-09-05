@@ -29,9 +29,12 @@
       "saved": "Sparad",
       "sent": "Ansökningsnummer: {{applicationNumber}}  |  Skickad {{submittedAt}}",
       "new": "Ny ansökan",
-      "edit": "Ansökan",
+      "edit": "Helsingforstillagg ansokan",
       "helperText": "Vänligen kontrollera ansökan innan du skickar in den.",
       "guideText": "Fälten märkta med * är obligatoriska"
+    },
+    "helpers": {
+      "requiredFields": "Tähdellä merkityt kentät ovat pakollisia"
     },
     "statuses": {
       "draft": "Utkast",
@@ -70,18 +73,21 @@
         "heading1Additional": "Postadress för beslutet",
         "heading2": "Kontaktperson",
         "heading2Short": "Kontaktperson",
-        "heading3": "Sökandens de minimis-stöd",
+        "heading3": "Arbetsgivarens de minimis-stöd",
         "heading4": "Situation med samarbetsförhandlingar",
         "heading5": "Samarbetsförhandlingar",
         "businessId": "FO-nummer: {{ businessId }}",
+        "companyContactPerson": {
+          "content": "TODO"
+        },
         "deMinimisAidsHeading": "Lista här samtliga de minimis-stöd som beviljats organisationen under det innevarande året eller under de två föregående skatteåren",
-        "deMinimisAidsAdd": "Lägg till",
+        "deMinimisAidsAdd": "Spara",
         "deMinimisAidsRemove": "Ta bort",
         "deMinimisAidsNo": "Sökanden har inte angett några tidigare de minimis -stöd.",
         "notifications": {
           "companyInformation": {
             "label": "Uppgifterna har hämtats från Företags- och organisationsdatasystemet",
-            "content": "De grundläggande uppgifterna om organisationen har hämtats från Företags- och organisationsdatasystemet. Om du vill kan du ange en särskild postadress dit beslutet om Helsingforstillägg skickas."
+            "content": "TODO"
           },
           "deMinimisAidMaxAmount": {
             "label": "Maximibeloppet har överskridits",
@@ -149,7 +155,7 @@
             "placeholder": "Arbetsgivaren har ändamålsenliga arbetslokaler och en till arbetsledningen hörande, ej lönesubventionerad chef för personen som anställs."
           },
           "deMinimisAid": {
-            "label": "Har sökanden beviljats de minimis-stöd under det innevarande året eller under de två föregående skatteåren?",
+            "label": "Har arbetsgivaren beviljats de minimis-stöd under det innevarande året eller under de två föregående skatteåren?",
             "yes": "Ja",
             "no": "Nej"
           },
@@ -158,8 +164,9 @@
             "placeholder": "Beviljande instans"
           },
           "deMinimisAidAmount": {
-            "label": "Stödbelopp (euro)",
-            "placeholder": "€"
+            "label": "Stödbelopp",
+            "placeholder": "€",
+            "helperText": "euro"
           },
           "deMinimisAidGrantedAt": {
             "label": "Datum för beviljande",
@@ -405,7 +412,7 @@
   },
   "languages": {
     "fi": "Suomi",
-    "sv": "Ruotsi",
+    "sv": "Svenska",
     "en": "English"
   },
   "supportedLanguages": {

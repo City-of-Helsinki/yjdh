@@ -29,9 +29,12 @@
       "saved": "Saved",
       "sent": "Application number: {{applicationNumber}}  |  Submitted {{submittedAt}}",
       "new": "New application",
-      "edit": "Application",
+      "edit": "Helsinki benefit application",
       "helperText": "Please review the application before submitting.",
       "guideText": "All items marked with * are required"
+    },
+    "helpers": {
+      "requiredFields": "Tähdellä merkityt kentät ovat pakollisia"
     },
     "statuses": {
       "draft": "Draft",
@@ -70,18 +73,21 @@
         "heading1Additional": "Postal address for delivering the decision",
         "heading2": "Contact person",
         "heading2Short": "Contact person",
-        "heading3": "De minimis aid of the applicant",
+        "heading3": "Employer's de minimis aids",
         "heading4": "Co-determination negotiation situation",
         "heading5": "Co-determination negotiation",
         "businessId": "Business ID: {{ businessId }}",
+        "companyContactPerson": {
+          "content": "TODO"
+        },
         "deMinimisAidsHeading": "List here all forms of de minimis aid received by the organisation during the current year and the previous two tax years",
-        "deMinimisAidsAdd": "Add",
+        "deMinimisAidsAdd": "Save",
         "deMinimisAidsRemove": "Delete",
         "deMinimisAidsNo": "The applicant has not listed any previous de minimis aids.",
         "notifications": {
           "companyInformation": {
             "label": "Data retrieved from the Business Information System",
-            "content": "Your organisation’s basic information has been retrieved from the Business Information System. If you wish, you can change the postal address to which the Helsinki benefit decision will be sent."
+            "content": "TODO"
           },
           "deMinimisAidMaxAmount": {
             "label": "Maximum amount exceeded",
@@ -149,7 +155,7 @@
             "placeholder": "The employer has a proper workspace and a manager (who has supervisory responsibility and is not pay-subsidised) for the person to be hired."
           },
           "deMinimisAid": {
-            "label": "Has the applicant received de minimis aid during the current year or the previous two tax years?",
+            "label": "Has the employer received de minimis aid during the current year or the previous two tax years?",
             "yes": "Yes",
             "no": "No"
           },
@@ -158,8 +164,9 @@
             "placeholder": "Issuing party"
           },
           "deMinimisAidAmount": {
-            "label": "Amount of aid (EUR)",
-            "placeholder": "€"
+            "label": "Amount of aid",
+            "placeholder": "€",
+            "helperText": "euros"
           },
           "deMinimisAidGrantedAt": {
             "label": "Date of issue",
@@ -405,7 +412,7 @@
   },
   "languages": {
     "fi": "Suomi",
-    "sv": "Ruotsi",
+    "sv": "Svenska",
     "en": "English"
   },
   "supportedLanguages": {
