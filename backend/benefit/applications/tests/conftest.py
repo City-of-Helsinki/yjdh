@@ -10,7 +10,6 @@ from django.utils import timezone
 from applications.enums import ApplicationStatus, BenefitType
 from applications.models import Application
 from applications.services.applications_csv_report import ApplicationsCsvService
-from applications.services.talpa_integration import TalpaService
 from applications.tests.factories import (
     ApplicationBatchFactory,
     ApplicationFactory,
@@ -72,7 +71,7 @@ def application_batch():
 
 @pytest.fixture
 def talpa_service(application_batch):
-    return TalpaService([application_batch])
+    return ApplicationsCsvService([application_batch])
 
 
 @pytest.fixture
@@ -98,6 +97,19 @@ def applications_csv_service():
 def applications_csv_service_with_one_application(applications_csv_service):
     application1 = DecidedApplicationFactory(application_number=100001)
     return ApplicationsCsvService(Application.objects.filter(pk=application1.pk))
+
+
+@pytest.fixture
+def pruned_applications_csv_service():
+    # retrieve the objects through the default manager so that annotations are added
+    application1 = DecidedApplicationFactory(application_number=100001)
+    application2 = DecidedApplicationFactory(application_number=100002)
+    return ApplicationsCsvService(
+        Application.objects.filter(pk__in=[application1.pk, application2.pk]).order_by(
+            "application_number"
+        ),
+        True,
+    )
 
 
 @pytest.fixture
