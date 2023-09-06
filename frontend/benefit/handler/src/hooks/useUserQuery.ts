@@ -47,11 +47,6 @@ const useUserQuery = <T extends User>(
     }
   };
 
-  const onSuccessHandler = (user: User): void => {
-    checkForStaffStatus(user);
-    setLocalStorageItem(LOCAL_STORAGE_KEYS.CSRF_TOKEN, user.csrf_token);
-  };
-
   return useQuery(
     `${BackendEndpoint.USER_ME}`,
     () => handleResponse<User>(axios.get(BackendEndpoint.USER_ME)),
@@ -60,7 +55,11 @@ const useUserQuery = <T extends User>(
       enabled: !logout,
       retry: false,
       select,
-      onSuccess: onSuccessHandler,
+      onSuccess: (user: User): void => {
+        checkForStaffStatus(user);
+        setLocalStorageItem(LOCAL_STORAGE_KEYS.CSRF_TOKEN, user.csrf_token);
+        axios.defaults.headers['X-CSRFToken'] = user.csrf_token;
+      },
       onError: (error) => handleError(error),
     }
   );
