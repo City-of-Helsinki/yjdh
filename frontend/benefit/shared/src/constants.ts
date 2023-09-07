@@ -41,7 +41,6 @@ export const PAY_SUBSIDY_OPTIONS = [50, 70, 100] as const;
 export enum EMPLOYEE_KEYS {
   FIRST_NAME = 'firstName',
   LAST_NAME = 'lastName',
-  PHONE_NUMBER = 'phoneNumber',
   SOCIAL_SECURITY_NUMBER = 'socialSecurityNumber',
   IS_LIVING_IN_HELSINKI = 'isLivingInHelsinki',
   JOB_TITLE = 'jobTitle',

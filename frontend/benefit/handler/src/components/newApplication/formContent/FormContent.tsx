@@ -13,16 +13,19 @@ import {
   BENEFIT_TYPES,
   ORGANIZATION_TYPES,
 } from 'benefit-shared/constants';
-import { ApplicationData, DeMinimisAid, TextProp } from 'benefit-shared/types/application';
+import {
+  ApplicationData,
+  DeMinimisAid,
+  TextProp,
+} from 'benefit-shared/types/application';
 import { FormikProps } from 'formik';
-import { DateInput, Select, SelectionGroup, TextInput } from 'hds-react';
+import { DateInput, SelectionGroup, TextInput } from 'hds-react';
 import React from 'react';
 import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
 import {
   $Checkbox,
   $RadioButton,
 } from 'shared/components/forms/fields/Fields.sc';
-import { Option } from 'shared/components/forms/fields/types';
 import Heading from 'shared/components/forms/heading/Heading';
 import FormSection from 'shared/components/forms/section/FormSection';
 import {
@@ -33,7 +36,6 @@ import { BenefitAttachment } from 'shared/types/attachment';
 import { OptionType } from 'shared/types/common';
 import {
   formatStringFloatValue,
-  phoneToLocal,
   stringFloatToFixed,
 } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
@@ -72,8 +74,6 @@ const FormContent: React.FC<Props> = ({
   minEndDate,
   maxEndDate,
   setEndDate,
-  getSelectValue,
-  subsidyOptions,
   deMinimisAidSet,
   attachments,
   checkedConsentArray,
@@ -106,7 +106,7 @@ const FormContent: React.FC<Props> = ({
         formik.values.associationHasBusinessActivities,
       apprenticeshipProgram: formik.values.apprenticeshipProgram,
       benefitType: formik.values.benefitType,
-      paySubsidyGranted: formik.values.paySubsidyGranted,
+      subsidyGranted: formik.values.subsidyGranted,
       startDate: formik.values.startDate,
       useAlternativeAddress: formik.values.useAlternativeAddress,
     },
@@ -123,14 +123,12 @@ const FormContent: React.FC<Props> = ({
     }
   );
 
-  const selectLabel = t('common:select');
-
   const isAbleToSelectEmploymentBenefit =
     application?.company?.organizationType !== ORGANIZATION_TYPES.ASSOCIATION ||
     (application?.company?.organizationType ===
       ORGANIZATION_TYPES.ASSOCIATION &&
       application?.associationHasBusinessActivities);
-  const isAbleToSelectSalaryBenefit = formik.values.paySubsidyGranted === true;
+  const isAbleToSelectSalaryBenefit = formik.values.subsidyGranted === true;
 
   return (
     <form onSubmit={handleSave} noValidate>
@@ -150,7 +148,7 @@ const FormContent: React.FC<Props> = ({
         withoutDivider
         header={t(`${translationsBase}.headings.employment1`)}
       >
-        <$GridCell $colSpan={4}>
+        <$GridCell $colSpan={3}>
           <TextInput
             id={fields.employee.firstName.name}
             name={fields.employee.firstName.name}
@@ -165,7 +163,7 @@ const FormContent: React.FC<Props> = ({
             required
           />
         </$GridCell>
-        <$GridCell $colSpan={4}>
+        <$GridCell $colSpan={3}>
           <TextInput
             id={fields.employee.lastName.name}
             name={fields.employee.lastName.name}
@@ -180,7 +178,7 @@ const FormContent: React.FC<Props> = ({
             required
           />
         </$GridCell>
-        <$GridCell $colStart={1} $colSpan={4}>
+        <$GridCell $colSpan={2}>
           <TextInput
             id={fields.employee.socialSecurityNumber.name}
             name={fields.employee.socialSecurityNumber.name}
@@ -198,21 +196,6 @@ const FormContent: React.FC<Props> = ({
             errorText={getErrorMessage(
               fields.employee.socialSecurityNumber.name
             )}
-            required
-          />
-        </$GridCell>
-        <$GridCell $colSpan={4}>
-          <TextInput
-            id={fields.employee.phoneNumber.name}
-            name={fields.employee.phoneNumber.name}
-            label={fields.employee.phoneNumber.label}
-            placeholder={fields.employee.phoneNumber.placeholder}
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-            value={phoneToLocal(formik.values.employee?.phoneNumber)}
-            invalid={!!getErrorMessage(fields.employee.phoneNumber.name)}
-            aria-invalid={!!getErrorMessage(fields.employee.phoneNumber.name)}
-            errorText={getErrorMessage(fields.employee.phoneNumber.name)}
             required
           />
         </$GridCell>
@@ -283,11 +266,11 @@ const FormContent: React.FC<Props> = ({
               onChange={() => {
                 formik.setFieldValue(fields.paySubsidyGranted.name, true);
               }}
-              checked={formik.values.paySubsidyGranted === true}
+              checked={formik.values.subsidyGranted === true}
             />
           </SelectionGroup>
         </$GridCell>
-        {formik.values.paySubsidyGranted && (
+        {formik.values.subsidyGranted && (
           <$GridCell
             as={$Grid}
             $colSpan={12}
@@ -295,81 +278,6 @@ const FormContent: React.FC<Props> = ({
               row-gap: ${theme.spacing.xl};
             `}
           >
-            <$GridCell
-              $colSpan={4}
-              $colStart={1}
-              id={fields.paySubsidyPercent.name}
-            >
-              <Select
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore TODO: remove ts-ignore when HDS is fixed
-                value={getSelectValue(fields.paySubsidyPercent.name)}
-                optionLabelField="label"
-                label={fields.paySubsidyPercent.label}
-                onChange={(paySubsidyPercent: Option) =>
-                  formik.setFieldValue(
-                    fields.paySubsidyPercent.name,
-                    paySubsidyPercent.value
-                  )
-                }
-                options={subsidyOptions}
-                placeholder={selectLabel}
-                invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
-                aria-invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
-                error={getErrorMessage(fields.paySubsidyPercent.name)}
-                required
-                css={`
-                  label {
-                    white-space: pre;
-                  }
-                `}
-                data-testid={fields.paySubsidyPercent.name}
-              />
-            </$GridCell>
-            <$GridCell
-              $colSpan={4}
-              $colStart={5}
-              id={fields.additionalPaySubsidyPercent.name}
-            >
-              <Select
-                value={getSelectValue(
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-ignore TODO: remove ts-ignore when HDS is fixed
-                  fields.additionalPaySubsidyPercent.name
-                )}
-                optionLabelField="label"
-                label={fields.additionalPaySubsidyPercent.label}
-                onChange={(additionalPaySubsidyPercent: Option) =>
-                  formik.setFieldValue(
-                    fields.additionalPaySubsidyPercent.name,
-                    additionalPaySubsidyPercent.value
-                  )
-                }
-                options={[
-                  {
-                    label: selectLabel,
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore TODO: remove ts-ignore when HDS is fixed
-                    value: null,
-                  },
-                  ...subsidyOptions,
-                ]}
-                id={fields.additionalPaySubsidyPercent.name}
-                placeholder={selectLabel}
-                invalid={
-                  !!getErrorMessage(fields.additionalPaySubsidyPercent.name)
-                }
-                aria-invalid={
-                  !!getErrorMessage(fields.additionalPaySubsidyPercent.name)
-                }
-                error={getErrorMessage(fields.additionalPaySubsidyPercent.name)}
-                css={`
-                  label {
-                    white-space: pre;
-                  }
-                `}
-              />
-            </$GridCell>
             <$GridCell $colSpan={3} $colStart={1}>
               <SelectionGroup
                 label={fields.apprenticeshipProgram.label}

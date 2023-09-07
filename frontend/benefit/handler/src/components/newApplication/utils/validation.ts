@@ -12,7 +12,6 @@ import {
   BENEFIT_TYPES,
   EMPLOYEE_KEYS,
   ORGANIZATION_TYPES,
-  PAY_SUBSIDY_OPTIONS,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
 import startOfYear from 'date-fns/startOfYear';
@@ -176,29 +175,12 @@ export const getValidationSchema = (
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELD_KEYS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION]:
       Yup.string(),
-    [APPLICATION_FIELD_KEYS.PAY_SUBSIDY_GRANTED]: Yup.boolean()
+    [APPLICATION_FIELD_KEYS.SUBSIDY_GRANTED]: Yup.boolean()
       .nullable()
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-    [APPLICATION_FIELD_KEYS.PAY_SUBSIDY_PERCENT]: Yup.mixed()
-      .nullable()
-      .when(APPLICATION_FIELD_KEYS.PAY_SUBSIDY_GRANTED, {
-        is: true,
-        then: Yup.mixed()
-          .oneOf([...PAY_SUBSIDY_OPTIONS], t(VALIDATION_MESSAGE_KEYS.INVALID))
-          .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-      }),
-    [APPLICATION_FIELD_KEYS.ADDITIONAL_PAY_SUBSIDY_PERCENT]: Yup.mixed()
-      .nullable()
-      .when(APPLICATION_FIELD_KEYS.PAY_SUBSIDY_GRANTED, {
-        is: true,
-        then: Yup.mixed().oneOf(
-          [null, ...PAY_SUBSIDY_OPTIONS],
-          t(VALIDATION_MESSAGE_KEYS.INVALID)
-        ),
-      }),
     [APPLICATION_FIELD_KEYS.APPRENTICESHIP_PROGRAM]: Yup.boolean()
       .nullable()
-      .when(APPLICATION_FIELD_KEYS.PAY_SUBSIDY_GRANTED, {
+      .when(APPLICATION_FIELD_KEYS.SUBSIDY_GRANTED, {
         is: true,
         then: Yup.boolean()
           .nullable()
@@ -257,21 +239,6 @@ export const getValidationSchema = (
             message: t(VALIDATION_MESSAGE_KEYS.SSN_INVALID),
             test: (val) => (val ? FinnishSSN.validate(val) : true),
           })
-          .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-        [EMPLOYEE_KEYS.PHONE_NUMBER]: Yup.string()
-          .matches(PHONE_NUMBER_REGEX, t(VALIDATION_MESSAGE_KEYS.PHONE_INVALID))
-          .min(
-            MIN_PHONE_NUMBER_LENGTH,
-            t(VALIDATION_MESSAGE_KEYS.NUMBER_MIN, {
-              min: MIN_PHONE_NUMBER_LENGTH,
-            })
-          )
-          .max(
-            MAX_PHONE_NUMBER_LENGTH,
-            t(VALIDATION_MESSAGE_KEYS.PHONE_NUMBER_LENGTH_MAX, {
-              max: MAX_PHONE_NUMBER_LENGTH,
-            })
-          )
           .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
         [EMPLOYEE_KEYS.IS_LIVING_IN_HELSINKI]: Yup.boolean().oneOf(
           [true],

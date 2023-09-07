@@ -275,8 +275,8 @@
         "company5": "Työnantajan yhteystiedot",
         "employment1": "Työllistettävä henkilö",
         "employment1Short": "Palkattava henkilö",
-        "employment2": "Palkkatukipäätös",
-        "employment3": "Haettava tukimuoto",
+        "employment2": "Työsuhteeseen myönnetyt valtion tuet",
+        "employment3": "Haettu ajanjakso",
         "employment3Long": "Haettava tukimuoto ja ajankohta",
         "employment4": "Tukea haetaan ajalle",
         "employment5Employment": "Työsuhde",
@@ -432,10 +432,11 @@
           "no": "Ei",
           "error": "Jotta tukea voidaan myöntää, kotikunnan tulee olla Helsinki."
         },
-        "paySubsidyGranted": {
-          "label": "Onko työsuhteeseen myönnetty palkkatuki?",
-          "yes": "Kyllä",
-          "no": "Ei"
+        "subsidyGranted": {
+          "label": "Onko työsuhteeseen myönnetty jokin seuraavista tuista?",
+          "salarySupport": "Palkkatuki",
+          "oldAgeSupport": "55-vuotta täyttäneiden työllistämistuki",
+          "no": "Työsuhteeseen ei ole myönnetty mitään edeltävää tukea"
         },
         "paySubsidyPercent": {
           "label": "Päätöksessä oleva palkkatukiprosentti"
