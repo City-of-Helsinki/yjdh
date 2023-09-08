@@ -25,7 +25,6 @@ type ExtendedComponentProps = {
   clearCommissionValues: () => void;
   clearContractValues: () => void;
   clearDatesValues: () => void;
-  clearPaySubsidyValues: () => void;
   clearAlternativeAddressValues: () => void;
   getErrorMessage: (fieldName: string) => string | undefined;
 };
@@ -101,17 +100,6 @@ const useFormContent = (
     setFieldValue(fields.benefitType.name, null);
   }, [fields.benefitType.name, setFieldValue]);
 
-  const clearPaySubsidyValues = React.useCallback((): void => {
-    setFieldValue(fields.paySubsidyPercent.name, null);
-    setFieldValue(fields.additionalPaySubsidyPercent.name, null);
-    setFieldValue(fields.apprenticeshipProgram.name, null);
-  }, [
-    fields.paySubsidyPercent.name,
-    fields.additionalPaySubsidyPercent.name,
-    fields.apprenticeshipProgram.name,
-    setFieldValue,
-  ]);
-
   const language = SUPPORTED_LANGUAGES.FI;
   const locale = useLocale();
   const textLocale = capitalize(locale);
@@ -128,7 +116,6 @@ const useFormContent = (
     clearCommissionValues,
     clearContractValues,
     clearDatesValues,
-    clearPaySubsidyValues,
     clearAlternativeAddressValues,
     getErrorMessage,
   };

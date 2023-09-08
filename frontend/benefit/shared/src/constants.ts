@@ -161,3 +161,8 @@ export enum PROPOSALS_FOR_DECISION {
   ACCEPTED = 'accepted',
   REJECTED = 'rejected',
 }
+
+export enum SUBSIDY_OPTIONS {
+  SALARY_SUPPORT = 'salary_support',
+  OLD_AGE_SUPPORT = 'old_age_support',
+}
