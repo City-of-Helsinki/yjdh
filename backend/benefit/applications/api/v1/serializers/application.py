@@ -657,7 +657,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         if (
             OrganizationType.resolve_organization_type(company.company_form_code)
             == OrganizationType.ASSOCIATION
-            and de_minimis_aid is not None
+            and de_minimis_aid not in [None, False]
             and not association_has_business_activities
         ):
             raise serializers.ValidationError(
