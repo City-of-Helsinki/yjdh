@@ -12,6 +12,7 @@ import {
   BENEFIT_TYPES,
   EMPLOYEE_KEYS,
   ORGANIZATION_TYPES,
+  SUBSIDY_OPTIONS,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
 import startOfYear from 'date-fns/startOfYear';
@@ -175,34 +176,18 @@ export const getValidationSchema = (
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELD_KEYS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION]:
       Yup.string(),
-    [APPLICATION_FIELD_KEYS.SUBSIDY_GRANTED]: Yup.boolean()
-      .nullable()
-      .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+    [APPLICATION_FIELD_KEYS.SUBSIDY_GRANTED]: Yup.mixed().oneOf(
+      [null, ...Object.values(SUBSIDY_OPTIONS)],
+      t(VALIDATION_MESSAGE_KEYS.INVALID)
+    ),
     [APPLICATION_FIELD_KEYS.APPRENTICESHIP_PROGRAM]: Yup.boolean()
       .nullable()
       .when(APPLICATION_FIELD_KEYS.SUBSIDY_GRANTED, {
-        is: true,
+        is: SUBSIDY_OPTIONS.SALARY_SUPPORT,
         then: Yup.boolean()
           .nullable()
           .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
       }),
-    [APPLICATION_FIELD_KEYS.BENEFIT_TYPE]: Yup.mixed()
-      .oneOf(
-        [null, ...Object.values(BENEFIT_TYPES)],
-        t(VALIDATION_MESSAGE_KEYS.INVALID)
-      )
-      .when(APPLICATION_FIELD_KEYS.APPRENTICESHIP_PROGRAM, {
-        is: true,
-        then: Yup.mixed().notOneOf([BENEFIT_TYPES.COMMISSION]),
-      })
-      .when(APPLICATION_FIELD_KEYS.ASSOCIATION_HAS_BUSINESS_ACTIVITIES, {
-        is: false,
-        then: Yup.mixed().notOneOf([
-          BENEFIT_TYPES.COMMISSION,
-          BENEFIT_TYPES.EMPLOYMENT,
-        ]),
-      })
-      .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELD_KEYS.START_DATE]: Yup.string()
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED))
       .test({
@@ -212,6 +197,9 @@ export const getValidationSchema = (
         test: (value = '') => validateDateIsFromCurrentYearOnwards(value),
       }),
     [APPLICATION_FIELD_KEYS.END_DATE]: Yup.string().required(
+      t(VALIDATION_MESSAGE_KEYS.REQUIRED)
+    ),
+    [APPLICATION_FIELD_KEYS.PAPER_APPLICATION_DATE]: Yup.string().required(
       t(VALIDATION_MESSAGE_KEYS.REQUIRED)
     ),
     [APPLICATION_FIELD_KEYS.EMPLOYEE]: Yup.object()

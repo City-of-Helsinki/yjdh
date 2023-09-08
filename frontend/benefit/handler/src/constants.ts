@@ -127,10 +127,8 @@ export enum APPLICATION_FIELD_KEYS {
   BENEFIT_TYPE = 'benefitType',
   START_DATE = 'startDate',
   END_DATE = 'endDate',
+  PAPER_APPLICATION_DATE = 'paperApplicationDate',
   EMPLOYEE = 'employee',
-  APPLICANT_AGREEMENT = 'applicantAgreement',
-  EMPLOYER_SIGNED = 'employerSigned',
-  EMPLOYEE_SIGNED = 'employeeSigned',
   APPLICATION_ORIGIN = 'applicationOrigin',
 }
 

@@ -13,3 +13,8 @@ export const $CompanyInfoField = styled.div`
 export const $CompanyInfoHeader = styled.div`
   font-weight: bold;
 `;
+
+export const $DateHeader = styled.p`
+  font-size: ${(props) => props.theme.fontSize.heading.s};
+  font-weight: 500;
+`;

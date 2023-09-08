@@ -43,8 +43,9 @@ import { useTheme } from 'styled-components';
 
 import AttachmentsList from './attachmentsList/AttachmentsList';
 import CompanySection from './companySection/CompanySection';
-import { $Description } from './FormContent.sc';
+import { $DateHeader, $Description } from './FormContent.sc';
 import { useFormContent } from './useFormContent';
+import DateInputWithSeparator from 'shared/components/forms/fields/dateInputWithSeparator/DateInputWithSeparator';
 
 type Props = {
   application: Application;
@@ -248,7 +249,10 @@ const FormContent: React.FC<Props> = ({
               )}
               onBlur={formik.handleBlur}
               onChange={() => {
-                formik.setFieldValue(fields.subsidyGranted.name, false);
+                formik.setFieldValue(
+                  fields.subsidyGranted.name,
+                  SUBSIDY_OPTIONS.SALARY_SUPPORT
+                );
                 formik.setFieldValue(
                   APPLICATION_FIELD_KEYS.APPRENTICESHIP_PROGRAM,
                   null
@@ -267,7 +271,10 @@ const FormContent: React.FC<Props> = ({
               )}
               onBlur={formik.handleBlur}
               onChange={() => {
-                formik.setFieldValue(fields.subsidyGranted.name, true);
+                formik.setFieldValue(
+                  fields.subsidyGranted.name,
+                  SUBSIDY_OPTIONS.OLD_AGE_SUPPORT
+                );
               }}
               checked={
                 formik.values.subsidyGranted === SUBSIDY_OPTIONS.OLD_AGE_SUPPORT
@@ -282,18 +289,21 @@ const FormContent: React.FC<Props> = ({
               )}
               onBlur={formik.handleBlur}
               onChange={() => {
-                formik.setFieldValue(fields.subsidyGranted.name, true);
+                formik.setFieldValue(fields.subsidyGranted.name, null);
               }}
               checked={formik.values.subsidyGranted === null}
             />
           </SelectionGroup>
         </$GridCell>
-        {formik.values.subsidyGranted && (
+        {formik.values.subsidyGranted === SUBSIDY_OPTIONS.SALARY_SUPPORT && (
           <$GridCell
             as={$Grid}
             $colSpan={12}
             css={`
               row-gap: ${theme.spacing.xl};
+              padding-left: ${theme.spacing.s};
+              margin-top: ${theme.spacing.s};
+              border-left: 10px solid ${theme.colors.silver};
             `}
           >
             <$GridCell $colSpan={3} $colStart={1}>
@@ -339,54 +349,21 @@ const FormContent: React.FC<Props> = ({
           </$GridCell>
         )}
       </FormSection>
-      <FormSection
-        paddingBottom
-        withoutDivider
-        header={t(`${translationsBase}.headings.employment3`)}
-      >
-        <$GridCell $colSpan={6}>
-          <SelectionGroup
-            label={fields.benefitType.label}
-            id={fields.benefitType.name}
-            direction="vertical"
-            required
-            errorText={getErrorMessage(fields.benefitType.name)}
-          >
-            <$RadioButton
-              id={`${fields.benefitType.name}Employment`}
-              name={fields.benefitType.name}
-              value={BENEFIT_TYPES.EMPLOYMENT}
-              label={t(
-                `${translationsBase}.fields.${fields.benefitType.name}.employment`
-              )}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              checked={formik.values.benefitType === BENEFIT_TYPES.EMPLOYMENT}
-              disabled={!isAbleToSelectEmploymentBenefit}
-            />
-            <$RadioButton
-              id={`${fields.benefitType.name}Salary`}
-              name={fields.benefitType.name}
-              value={BENEFIT_TYPES.SALARY}
-              label={t(
-                `${translationsBase}.fields.${fields.benefitType.name}.salary`
-              )}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              checked={formik.values.benefitType === BENEFIT_TYPES.SALARY}
-              disabled={!isAbleToSelectSalaryBenefit}
-            />
-          </SelectionGroup>
-        </$GridCell>
-      </FormSection>
 
       <FormSection
         paddingBottom
-        withoutDivider
         header={t(`${translationsBase}.headings.employment4`)}
       >
         <$GridCell $colStart={1} $colSpan={4}>
-          <DateInput
+          <$DateHeader>{t(`${translationsBase}.dateExplanation`)}</$DateHeader>
+        </$GridCell>
+        <$GridCell $colStart={8} $colSpan={4}>
+          <$DateHeader>
+            {t(`${translationsBase}.paperDateExplanation`)}
+          </$DateHeader>
+        </$GridCell>
+        <$GridCell $colStart={1} $colSpan={2}>
+          <DateInputWithSeparator
             id={fields.startDate.name}
             name={fields.startDate.name}
             label={fields.startDate.label}
@@ -405,7 +382,7 @@ const FormContent: React.FC<Props> = ({
             required
           />
         </$GridCell>
-        <$GridCell $colSpan={4}>
+        <$GridCell $colSpan={2}>
           <DateInput
             id={fields.endDate.name}
             name={fields.endDate.name}
@@ -422,6 +399,29 @@ const FormContent: React.FC<Props> = ({
             aria-invalid={!!getErrorMessage(fields.endDate.name)}
             errorText={getErrorMessage(fields.endDate.name)}
             initialMonth={!formik.values.endDate ? minEndDate : undefined}
+            minDate={minEndDate}
+            maxDate={maxEndDate}
+            required
+          />
+        </$GridCell>
+        <$GridCell $colStart={8} $colSpan={2}>
+          <DateInput
+            id={fields.paperApplicationDate.name}
+            name={fields.paperApplicationDate.name}
+            label={fields.paperApplicationDate.label}
+            placeholder={fields.paperApplicationDate.placeholder}
+            language={language}
+            onBlur={formik.handleBlur}
+            onChange={(value) =>
+              formik.setFieldValue(fields.paperApplicationDate.name, value)
+            }
+            value={formik.values.paperApplicationDate ?? ''}
+            invalid={!!getErrorMessage(fields.paperApplicationDate.name)}
+            aria-invalid={!!getErrorMessage(fields.paperApplicationDate.name)}
+            errorText={getErrorMessage(fields.paperApplicationDate.name)}
+            initialMonth={
+              !formik.values.paperApplicationDate ? minEndDate : undefined
+            }
             minDate={minEndDate}
             maxDate={maxEndDate}
             required
