@@ -286,6 +286,7 @@ const SalaryBenefitCalculatorView: React.FC<
                     id={fields.startDate.name}
                     name={fields.startDate.name}
                     placeholder={fields.startDate.placeholder}
+                    language={language}
                     value={convertToUIDateFormat(item.startDate)}
                     onChange={(value) => {
                       formik.setFieldValue(
@@ -314,6 +315,7 @@ const SalaryBenefitCalculatorView: React.FC<
                     id={fields.endDate.name}
                     name={fields.endDate.name}
                     placeholder={fields.endDate.placeholder}
+                    language={language}
                     onChange={(value) => {
                       formik.setFieldValue(
                         fields.paySubsidies.name,
