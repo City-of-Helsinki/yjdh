@@ -27,7 +27,7 @@
     "finnish-ssn": "^2.0.4",
     "formik": "^2.2.9",
     "fuse.js": "^6.6.2",
-    "hds-react": "^2.10.0",
+    "hds-react": "^2.16.0",
     "lodash": "^4.17.21",
     "next": "^12.3.4",
     "next-compose-plugins": "^2.2.1",
