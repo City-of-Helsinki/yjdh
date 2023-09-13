@@ -45,7 +45,6 @@ import AttachmentsList from './attachmentsList/AttachmentsList';
 import CompanySection from './companySection/CompanySection';
 import { $DateHeader, $Description } from './FormContent.sc';
 import { useFormContent } from './useFormContent';
-import DateInputWithSeparator from 'shared/components/forms/fields/dateInputWithSeparator/DateInputWithSeparator';
 
 type Props = {
   application: Application;
@@ -353,17 +352,18 @@ const FormContent: React.FC<Props> = ({
       <FormSection
         paddingBottom
         header={t(`${translationsBase}.headings.employment4`)}
+        columns={32}
       >
-        <$GridCell $colStart={1} $colSpan={4}>
+        <$GridCell $colStart={1} $colSpan={25}>
           <$DateHeader>{t(`${translationsBase}.dateExplanation`)}</$DateHeader>
         </$GridCell>
-        <$GridCell $colStart={8} $colSpan={4}>
+        <$GridCell $colStart={26} $colSpan={6}>
           <$DateHeader>
             {t(`${translationsBase}.paperDateExplanation`)}
           </$DateHeader>
         </$GridCell>
-        <$GridCell $colStart={1} $colSpan={2}>
-          <DateInputWithSeparator
+        <$GridCell $colStart={1} $colSpan={6}>
+          <DateInput
             id={fields.startDate.name}
             name={fields.startDate.name}
             label={fields.startDate.label}
@@ -382,7 +382,13 @@ const FormContent: React.FC<Props> = ({
             required
           />
         </$GridCell>
-        <$GridCell $colSpan={2}>
+        <$GridCell
+          $colSpan={1}
+          style={{ margin: 'auto auto var(--spacing-s) auto' }}
+        >
+          –
+        </$GridCell>
+        <$GridCell $colSpan={6}>
           <DateInput
             id={fields.endDate.name}
             name={fields.endDate.name}
@@ -404,7 +410,7 @@ const FormContent: React.FC<Props> = ({
             required
           />
         </$GridCell>
-        <$GridCell $colStart={8} $colSpan={2}>
+        <$GridCell $colStart={26} $colSpan={6}>
           <DateInput
             id={fields.paperApplicationDate.name}
             name={fields.paperApplicationDate.name}
