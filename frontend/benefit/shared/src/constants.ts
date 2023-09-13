@@ -120,6 +120,7 @@ export enum BENEFIT_TYPES {
   EMPLOYMENT = 'employment_benefit',
   SALARY = 'salary_benefit',
   COMMISSION = 'commission_benefit',
+  UNCLARIFIED = 'unclarified_benefit',
 }
 
 export enum ATTACHMENT_TYPES {
@@ -161,4 +162,10 @@ export enum BATCH_STATUSES {
 export enum PROPOSALS_FOR_DECISION {
   ACCEPTED = 'accepted',
   REJECTED = 'rejected',
+}
+
+export enum PAY_SUBSIDY_TYPES {
+  DEFAULT = 'default',
+  AGED = 'aged',
+  NONE = 'none',
 }

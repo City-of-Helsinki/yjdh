@@ -185,16 +185,16 @@
         }
       },
       "employee": {
-        "heading1": "Person to be employed with the Helsinki benefit",
-        "heading1Short": "Person to be hired",
-        "heading2": "Pay subsidy decision",
+        "heading1": "Person to be employed",
+        "heading1Short": "Person to be employed",
+        "heading2": "TODO",
         "heading3": "Type of benefit applied for",
         "heading3Long": "Form and date of the applied benefit",
         "heading4": "Applied for the period",
         "heading5Employment": "Employment relationship",
         "heading5Assignment": "Commission",
         "heading5EmploymentSub1": "Salary costs",
-        "salaryExpensesExplanation": "The gross salary and indirect labour costs are indicated in EUR per month, holiday bonus as a lump sum",
+        "salaryExpensesExplanation": "TODO",
         "tooltips": {
           "heading5Employment": "Collective agreement applied: e.g. Collective Agreement for the Commercial Sector. If there is no binding collective agreement in the sector, put in a dash.",
           "heading5EmploymentSub1": "The gross salary is the salary paid to the subsidised employee before the deduction of the employee’s statutory contributions (the employee’s unemployment insurance and pension insurance contributions) and taxes. If the subsidised employee is paid remuneration bonuses (e.g. evening, night or shift work bonus), take the estimated amount into account in the gross salary. The employers’ statutory indirect labour costs include social security expenses, pension insurance, accident insurance and unemployment insurance premiums as well as the mandatory group life insurance premium.\r\n\r\nIndirect labour costs refer to the amount of the employer’s statutory indirect labour costs paid for the salary per month.\r\n\r\nThe holiday bonus is a salary cost to be covered by the subsidy when it is paid for holiday pay during the subsidy period. Estimate the amount of holiday bonus to be paid during the subsidy period. Holiday compensation is not covered by the Helsinki benefit.",
@@ -222,6 +222,10 @@
           "noAvailableBenefitTypes": {
             "label": "No types of benefit available",
             "content": "A company or an association that is not engaged in economic activity can only apply for the Helsinki benefit for salary. Pay subsidy granted for the employment relationship is a prerequisite for the Helsinki benefit for salary."
+          },
+          "apprenticeshipDidYouKnow": {
+            "label": "Oppisopimukseen Helsinki-lisää voidaan myöntää koko oppisopimuksen ajaksi.",
+            "content": "Voit hakea Helsinki-lisää enintään 12 kuukauden jaksoissa. Tee uusi hakemus 12 kuukauden Helsinki-lisän tukijakson jälkeen."
           }
         },
         "messages": {
@@ -255,7 +259,7 @@
             "error": "To be eligible for the subsidy, the municipality of residence must be Helsinki."
           },
           "paySubsidyGranted": {
-            "label": "Has pay subsidy been granted for the employment relationship?",
+            "label": "TODO",
             "yes": "Yes",
             "no": "No"
           },
@@ -281,13 +285,15 @@
             "placeholder": "Job title"
           },
           "workingHours": {
-            "label": "Working hours per week",
+            "label": "Working hours",
             "placeholder": "Hours",
-            "view": "Working hours: {{workingHours}} hours per week"
+            "view": "Working hours: {{workingHours}} hours per week",
+            "helperText": "hours per week"
           },
           "collectiveBargainingAgreement": {
             "label": "Collective agreement applied",
-            "placeholder": "Collective agreement applied"
+            "placeholder": "Collective agreement applied",
+            "tooltip": "Sovellettava työehtosopimus: esim. Kaupan työehtosopimus. Jos alalla ei ole velvoittavaa työehtosopimusta, merkitse viiva."
           },
           "monthlyPay": {
             "label": "Gross salary",
@@ -535,8 +541,12 @@
     "page": "Page",
     "terms": "Terms.PDF"
   },
+  "tooltip": {
+    "ariaLabel": "Show help text",
+    "ariaButtonLabel": "Show help text"
+  },
   "utility": {
-    "and": "ja",
+    "and": "and",
     "yes": "Yes",
     "no": "No",
     "close": "Close",

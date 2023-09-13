@@ -1,11 +1,11 @@
-import { BENEFIT_TYPES } from 'benefit-shared/constants';
+import { BENEFIT_TYPES, PAY_SUBSIDY_TYPES } from 'benefit-shared/constants';
 import React from 'react';
 
 interface FieldValues {
   useAlternativeAddress?: boolean | null;
   apprenticeshipProgram?: boolean | null;
   benefitType?: BENEFIT_TYPES | '';
-  paySubsidyGranted?: boolean | null;
+  paySubsidyGranted?: PAY_SUBSIDY_TYPES | null;
   associationHasBusinessActivities?: boolean | null;
   startDate?: string;
 }
@@ -14,8 +14,6 @@ interface Options {
   isFormDirty: boolean;
   clearAlternativeAddressValues?: () => void;
   clearCommissionValues?: () => void;
-  clearContractValues?: () => void;
-  clearDatesValues?: () => void;
   clearBenefitValues?: () => void;
   clearPaySubsidyValues?: () => void;
   clearDeminimisAids?: () => void;
@@ -37,8 +35,6 @@ const createUpdateAction = (payload: EFFECTS[]): UpdateAction => ({
 enum EFFECTS {
   CLEAR_ALTERNATIVE_ADDRESS_VALUES = 'clearAlternativeAddressValues',
   CLEAR_COMMISSION_VALUES = 'clearCommissionValues',
-  CLEAR_CONTRACT_VALUES = 'clearContractValues',
-  CLEAR_DATES_VALUES = 'clearDatesValues',
   CLEAR_BENEFIT_VALUES = 'clearBenefitValues',
   CLEAR_PAY_SUBSIDY_VALUES = 'clearPaySubsidyValues',
   CLEAR_DE_MINIMIS_AIDS = 'clearDeMinimisAids',
@@ -60,8 +56,6 @@ export const useDependentFieldsEffect = (
     isFormDirty,
     clearAlternativeAddressValues,
     clearCommissionValues,
-    clearContractValues,
-    clearDatesValues,
     clearBenefitValues,
     clearPaySubsidyValues,
     clearDeminimisAids,
@@ -88,16 +82,8 @@ export const useDependentFieldsEffect = (
   }, [state, clearCommissionValues]);
 
   React.useEffect(() => {
-    if (state.includes(EFFECTS.CLEAR_CONTRACT_VALUES)) clearContractValues?.();
-  }, [state, clearContractValues]);
-
-  React.useEffect(() => {
     if (state.includes(EFFECTS.CLEAR_BENEFIT_VALUES)) clearBenefitValues?.();
   }, [state, clearBenefitValues]);
-
-  React.useEffect(() => {
-    if (state.includes(EFFECTS.CLEAR_DATES_VALUES)) clearDatesValues?.();
-  }, [state, clearDatesValues]);
 
   React.useEffect(() => {
     if (state.includes(EFFECTS.CLEAR_PAY_SUBSIDY_VALUES))

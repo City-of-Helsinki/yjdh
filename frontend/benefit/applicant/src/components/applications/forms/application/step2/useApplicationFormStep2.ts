@@ -1,4 +1,5 @@
 import { SUPPORTED_LANGUAGES } from 'benefit/applicant/constants';
+import useCompanyQuery from 'benefit/applicant/hooks/useCompanyQuery';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { getErrorText } from 'benefit/applicant/utils/forms';
@@ -6,7 +7,7 @@ import {
   APPLICATION_FIELDS_STEP2,
   APPLICATION_FIELDS_STEP2_KEYS,
   EMPLOYEE_KEYS,
-  PAY_SUBSIDY_OPTIONS,
+  ORGANIZATION_TYPES,
 } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import isAfter from 'date-fns/isAfter';
@@ -16,7 +17,6 @@ import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
 import React, { useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
-import { OptionType } from 'shared/types/common';
 import {
   convertToUIDateFormat,
   formatDate,
@@ -51,13 +51,10 @@ type UseApplicationFormStep2Props = {
   handleSubmit: () => void;
   clearBenefitValues: () => void;
   clearCommissionValues: () => void;
-  clearContractValues: () => void;
-  clearDatesValues: () => void;
   clearPaySubsidyValues: () => void;
   setEndDate: () => void;
+  organizationType: ORGANIZATION_TYPES;
   formik: FormikProps<Partial<Application>>;
-  subsidyOptions: OptionType[];
-  getSelectValue: (fieldName: keyof Application) => OptionType | null;
 };
 
 const useApplicationFormStep2 = (
@@ -70,6 +67,9 @@ const useApplicationFormStep2 = (
 
   const { onNext, onSave, onBack, onDelete } = useFormActions(application);
 
+  const { data } = useCompanyQuery();
+  const organizationType = data?.organization_type;
+
   const formik = useFormik<Application>({
     initialValues: {
       ...application,
@@ -80,7 +80,7 @@ const useApplicationFormStep2 = (
         ? formatDate(parseDate(application.endDate))
         : undefined,
     },
-    validationSchema: getValidationSchema(t),
+    validationSchema: getValidationSchema(organizationType, t),
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,
@@ -88,14 +88,6 @@ const useApplicationFormStep2 = (
   });
 
   const { values, errors, touched, setFieldValue } = formik;
-  const subsidyOptions = React.useMemo(
-    (): OptionType[] =>
-      PAY_SUBSIDY_OPTIONS.map((option) => ({
-        label: `${option}%`,
-        value: option,
-      })),
-    []
-  );
 
   const fields = React.useMemo(() => {
     type EmployeeFieldName =
@@ -187,28 +179,6 @@ const useApplicationFormStep2 = (
     setFieldValue,
   ]);
 
-  const clearContractValues = React.useCallback((): void => {
-    void setFieldValue(fields.employee.jobTitle.name, '');
-    void setFieldValue(fields.employee.workingHours.name, '');
-    void setFieldValue(fields.employee.collectiveBargainingAgreement.name, '');
-    void setFieldValue(fields.employee.monthlyPay.name, '');
-    void setFieldValue(fields.employee.otherExpenses.name, '');
-    void setFieldValue(fields.employee.vacationMoney.name, '');
-  }, [
-    fields.employee.jobTitle.name,
-    fields.employee.workingHours.name,
-    fields.employee.collectiveBargainingAgreement.name,
-    fields.employee.monthlyPay.name,
-    fields.employee.otherExpenses.name,
-    fields.employee.vacationMoney.name,
-    setFieldValue,
-  ]);
-
-  const clearDatesValues = React.useCallback((): void => {
-    void setFieldValue(fields.startDate.name, '');
-    void setFieldValue(fields.endDate.name, '');
-  }, [fields.startDate.name, fields.endDate.name, setFieldValue]);
-
   const clearBenefitValues = React.useCallback((): void => {
     void setFieldValue(fields.benefitType.name, null);
   }, [fields.benefitType.name, setFieldValue]);
@@ -249,11 +219,6 @@ const useApplicationFormStep2 = (
     setFieldValue,
   ]);
 
-  const getSelectValue = (fieldName: keyof Application): OptionType | null =>
-    subsidyOptions.find(
-      (o) => o.value?.toString() === String(values?.[fieldName])
-    ) ?? null;
-
   let language = SUPPORTED_LANGUAGES.FI;
   switch (i18n.language) {
     case SUPPORTED_LANGUAGES.EN:
@@ -275,17 +240,14 @@ const useApplicationFormStep2 = (
     fields,
     translationsBase,
     formik,
-    subsidyOptions,
     minEndDate,
     maxEndDate,
     clearBenefitValues,
     clearCommissionValues,
-    clearContractValues,
-    clearDatesValues,
     clearPaySubsidyValues,
-    getSelectValue,
     getErrorMessage,
     setEndDate,
+    organizationType,
     handleSubmit,
     handleSave,
     handleBack: onBack,

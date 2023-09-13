@@ -470,17 +470,20 @@
         "monthlyPay": {
           "label": "Bruttopalkka (€/kk)",
           "placeholder": "Palkka",
-          "view": "Bruttopalkka {{monthlyPay}} euroa kuukaudessa"
+          "view": "Bruttopalkka {{monthlyPay}} euroa kuukaudessa",
+          "helperText": "euroa kuukaudessa"
         },
         "otherExpenses": {
           "label": "Sivukulut (€/kk)",
           "placeholder": "Sivukulut",
-          "view": "Sivukulut {{otherExpenses}} euroa kuukaudessa"
+          "view": "Sivukulut {{otherExpenses}} euroa kuukaudessa",
+          "helperText": "euroa kuukaudessa"
         },
         "vacationMoney": {
           "label": "Lomaraha (€)",
           "placeholder": "Lomaraha",
-          "view": "Lomaraha {{vacationMoney}} euroa"
+          "view": "Lomaraha {{vacationMoney}} euroa",
+          "helperText": "euroa kuukaudessa"
         },
         "commissionDescription": {
           "label": "Toimeksiannon kuvaus",

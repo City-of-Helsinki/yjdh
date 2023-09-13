@@ -32,7 +32,8 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
       <AttachmentsIngress />
       <ul>
         {(benefitType === BENEFIT_TYPES.SALARY ||
-          benefitType === BENEFIT_TYPES.EMPLOYMENT) && (
+          benefitType === BENEFIT_TYPES.EMPLOYMENT ||
+          benefitType === BENEFIT_TYPES.UNCLARIFIED) && (
           <>
             <AttachmentsList
               as="li"
