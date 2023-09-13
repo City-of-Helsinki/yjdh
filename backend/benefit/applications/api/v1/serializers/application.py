@@ -29,6 +29,7 @@ from applications.enums import (
     AttachmentType,
     BenefitType,
     OrganizationType,
+    PaySubsidyGranted,
 )
 from applications.models import (
     Application,
@@ -752,11 +753,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
     def _validate_pay_subsidy(
         self, pay_subsidy_granted, pay_subsidy_percent, additional_pay_subsidy_percent
     ):
-        if pay_subsidy_granted and pay_subsidy_percent is None:
-            raise serializers.ValidationError(
-                {"pay_subsidy_percent": _("Pay subsidy percent required")}
-            )
-        if not pay_subsidy_granted:
+        if pay_subsidy_granted == PaySubsidyGranted.NOT_GRANTED:
             for key in ["pay_subsidy_percent", "additional_pay_subsidy_percent"]:
                 if locals()[key] is not None:
                     raise serializers.ValidationError(
@@ -813,7 +810,10 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
 
         # if pay_subsidy_granted is selected, then the applicant needs to also select if
         # it's an apprenticeship_program or not
-        if data["pay_subsidy_granted"]:
+        if data["pay_subsidy_granted"] in [
+            PaySubsidyGranted.GRANTED_AGED,
+            PaySubsidyGranted.GRANTED,
+        ]:
             required_fields.append("apprenticeship_program")
 
         for field_name in required_fields:
@@ -862,7 +862,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         apprenticeship_program,
         pay_subsidy_granted,
     ):
-        if benefit_type == "":
+        if benefit_type == BenefitType.SALARY_BENEFIT or benefit_type == "":
             return
         if (
             benefit_type
@@ -877,6 +877,36 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                 {"benefit_type": _("This benefit type can not be selected")}
             )
 
+    def _validate_apprenticeship_program(
+        self, apprenticeship_program, pay_subsidy_granted, status
+    ):
+        if status == ApplicationStatus.DRAFT:
+            return
+        if (
+            pay_subsidy_granted == PaySubsidyGranted.NOT_GRANTED
+            and apprenticeship_program is not None
+        ):
+            raise serializers.ValidationError(
+                {
+                    "apprenticeship_program": _(
+                        "Apprenticeship program can not be selected if there is no granted pay subsidy"
+                    )
+                }
+            )
+
+        if (
+            pay_subsidy_granted
+            in [PaySubsidyGranted.GRANTED_AGED, PaySubsidyGranted.GRANTED]
+            and apprenticeship_program is None
+        ):
+            raise serializers.ValidationError(
+                {
+                    "apprenticeship_program": _(
+                        "Apprenticeship program has to be yes or no if there is a granted pay subsidy"
+                    )
+                }
+            )
+
     @staticmethod
     def _get_available_benefit_types(
         company,
@@ -888,25 +918,26 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         Make the logic of determining available benefit types available both for generating the list of
         benefit types and validating the incoming data
         """
-
         if (
             OrganizationType.resolve_organization_type(company.company_form_code)
             == OrganizationType.ASSOCIATION
             and not association_has_business_activities
         ):
-            benefit_types = [BenefitType.SALARY_BENEFIT] if pay_subsidy_granted else []
+            benefit_types = [
+                BenefitType.SALARY_BENEFIT,
+            ]
         else:
             if apprenticeship_program:
-                benefit_types = [BenefitType.EMPLOYMENT_BENEFIT]
-                if pay_subsidy_granted:
-                    benefit_types.append(BenefitType.SALARY_BENEFIT)
+                benefit_types = [
+                    BenefitType.EMPLOYMENT_BENEFIT,
+                    BenefitType.SALARY_BENEFIT,
+                ]
             else:
                 benefit_types = [
                     BenefitType.COMMISSION_BENEFIT,
                     BenefitType.EMPLOYMENT_BENEFIT,
+                    BenefitType.SALARY_BENEFIT,
                 ]
-                if pay_subsidy_granted:
-                    benefit_types.append(BenefitType.SALARY_BENEFIT)
         return benefit_types
 
     def _handle_breaking_changes(self, company, data):
@@ -1002,6 +1033,11 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             data.get("association_has_business_activities"),
             data.get("apprenticeship_program"),
             data.get("pay_subsidy_granted"),
+        )
+        self._validate_apprenticeship_program(
+            data.get("apprenticeship_program"),
+            data.get("pay_subsidy_granted"),
+            data.get("status"),
         )
         self._validate_non_draft_required_fields(data)
         return data
