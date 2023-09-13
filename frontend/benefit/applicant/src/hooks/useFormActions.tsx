@@ -3,6 +3,7 @@ import {
   getApplicationStepFromString,
   getApplicationStepString,
 } from 'benefit/applicant/utils/common';
+import { BENEFIT_TYPES } from 'benefit-shared/constants';
 import {
   Application,
   ApplicationData,
@@ -129,6 +130,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
       ...application,
       ...normalizedValues,
       deMinimisAidSet,
+      benefitType: BENEFIT_TYPES.SALARY,
       deMinimisAid: deMinimisAidSet.length > 0,
     };
   };

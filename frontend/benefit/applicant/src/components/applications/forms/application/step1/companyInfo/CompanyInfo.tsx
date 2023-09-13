@@ -80,38 +80,68 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
             ) : (
               <dl>
                 <$CompanyInfoRow>
-                  <$CompanyInfoLabel>Työnantajan nimi</$CompanyInfoLabel>
+                  <$CompanyInfoLabel>
+                    {t(`${translationsBase}.fields.companyName`)}
+                  </$CompanyInfoLabel>
                   <$CompanyInfoValue>
                     {data.name}
-                    <IconCheckCircleFill color="var(--color-tram)" />
+                    <IconCheckCircleFill
+                      color="var(--color-tram)"
+                      aria-hidden="true"
+                      aria-label="check"
+                    />
                   </$CompanyInfoValue>
                 </$CompanyInfoRow>
                 <$CompanyInfoRow>
-                  <$CompanyInfoLabel>Y-tunnus</$CompanyInfoLabel>
+                  <$CompanyInfoLabel>
+                    {t(`${translationsBase}.fields.companyBusinessId`)}
+                  </$CompanyInfoLabel>
                   <$CompanyInfoValue>
                     {data.businessId}
-                    <IconCheckCircleFill color="var(--color-tram)" />
+                    <IconCheckCircleFill
+                      color="var(--color-tram)"
+                      aria-hidden="true"
+                      aria-label="check"
+                    />
                   </$CompanyInfoValue>
                 </$CompanyInfoRow>
                 <$CompanyInfoRow>
-                  <$CompanyInfoLabel>Osoite</$CompanyInfoLabel>
+                  <$CompanyInfoLabel>
+                    {t(`${translationsBase}.fields.companyName`)}
+                  </$CompanyInfoLabel>
                   <$CompanyInfoValue>
                     {data.streetAddress}
-                    <IconCheckCircleFill color="var(--color-tram)" />
+                    <IconCheckCircleFill
+                      color="var(--color-tram)"
+                      aria-hidden="true"
+                      aria-label="check"
+                    />
                   </$CompanyInfoValue>
                 </$CompanyInfoRow>
                 <$CompanyInfoRow>
-                  <$CompanyInfoLabel>Postinumero</$CompanyInfoLabel>
+                  <$CompanyInfoLabel>
+                    {t(`${translationsBase}.fields.companyPostcode`)}
+                  </$CompanyInfoLabel>
                   <$CompanyInfoValue>
                     {data.postcode}
-                    <IconCheckCircleFill color="var(--color-tram)" />
+                    <IconCheckCircleFill
+                      color="var(--color-tram)"
+                      aria-hidden="true"
+                      aria-label="check"
+                    />
                   </$CompanyInfoValue>
                 </$CompanyInfoRow>
                 <$CompanyInfoRow>
-                  <$CompanyInfoLabel>Postitoimipaikka</$CompanyInfoLabel>
+                  <$CompanyInfoLabel>
+                    {t(`${translationsBase}.fields.companyCity`)}
+                  </$CompanyInfoLabel>
                   <$CompanyInfoValue>
                     {data.city}
-                    <IconCheckCircleFill color="var(--color-tram)" />
+                    <IconCheckCircleFill
+                      color="var(--color-tram)"
+                      aria-hidden="true"
+                      aria-label="check"
+                    />
                   </$CompanyInfoValue>
                 </$CompanyInfoRow>
               </dl>
@@ -122,7 +152,11 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               translateBackendErrorMessage(t, error)
             ) : (
               <$HintText>
-                <IconCheckCircleFill color="var(--color-tram)" />
+                <IconCheckCircleFill
+                  color="var(--color-tram)"
+                  aria-hidden="true"
+                  aria-label="check"
+                />
                 {t(
                   `${translationsBase}.notifications.companyInformation.content`
                 )}

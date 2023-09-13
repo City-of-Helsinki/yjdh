@@ -162,3 +162,9 @@ export enum PROPOSALS_FOR_DECISION {
   ACCEPTED = 'accepted',
   REJECTED = 'rejected',
 }
+
+export enum PAY_SUBSIDY_GRANTED {
+  GRANTED = 'granted',
+  GRANTED_AGED = 'granted_aged',
+  NOT_GRANTED = 'not_granted',
+}

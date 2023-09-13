@@ -150,10 +150,6 @@
             "yes": "Ja",
             "no": "Nej"
           },
-          "associationImmediateManagerCheck": {
-            "label": "Närmaste chef till personen som anställs",
-            "placeholder": "Arbetsgivaren har ändamålsenliga arbetslokaler och en till arbetsledningen hörande, ej lönesubventionerad chef för personen som anställs."
-          },
           "deMinimisAid": {
             "label": "Har arbetsgivaren beviljats de minimis-stöd under det innevarande året eller under de två föregående skatteåren?",
             "yes": "Ja",
@@ -185,16 +181,17 @@
         }
       },
       "employee": {
-        "heading1": "Person för vars anställning man ansöker om Helsingforstillägg",
-        "heading1Short": "Person som ska anställas",
-        "heading2": "Beslut om lönesubvention",
+        "heading1": "TODO",
+        "heading1Short": "TODO",
+        "heading2": "TODO",
         "heading3": "Den stödform som söks",
         "heading3Long": "Form och datum för stöd som ska sökas",
-        "heading4": "Ansöks för perioden",
+        "heading4": "TODO",
+        "heading4Sub1": "TODO",
         "heading5Employment": "Anställningsförhållande",
         "heading5Assignment": "Uppdrag",
         "heading5EmploymentSub1": "Lönekostnader",
-        "salaryExpensesExplanation": "Bruttolön och bikostnader anges i euro per månad, semesterpenning som ett engångsbelopp",
+        "salaryExpensesExplanation": "TODO",
         "tooltips": {
           "heading5Employment": "Kollektivavtal som tillämpas: t.ex. kollektivavtal för handeln. Sätt streck om branschen inte har ett bindande kollektivavtal.",
           "heading5EmploymentSub1": "Med bruttolön avses lönen till den person som anställs med subventionen före innehållande av arbetsgivarens lagstadgade kostnader (arbetslöshets- och pensionsförsäkringspremier för arbetstagaren) och skatter. Om den person som anställs med subventionen får lönetillägg (t.ex. kvälls-, natt- eller skiftarbetstillägg), ska det uppskattade beloppet från dessa beaktas i bruttolönen. Till arbetsgivarens lagstadgade bikostnader räknas socialskyddsavgifterna och premierna för arbetspensionsförsäkringen, olycksfallsförsäkringen och arbetslöshetsförsäkringen samt den obligatoriska grupplivförsäkringen.\r\n\r\nMed bikostnader avses arbetsgivarens lagstadgade bikostnader per månad.\r\n\r\nSemesterpenning är en lönekostnad som kan täckas med subventionen till den del som semesterpenning betalas för semesterlön som används under subventionsperioden. Uppskatta semesterpenningen som betalas under subventionsperioden. Semesterpenning kan inte täckas med Helsingforstillägg.",
@@ -222,6 +219,10 @@
           "noAvailableBenefitTypes": {
             "label": "Inga ansökningsbara stödformer",
             "content": "En sammanslutning som inte bedriver ekonomisk verksamhet kan endast ansöka om Helsingforstillägg för lön. Förutsättningen för att få Helsingforstillägg för lön är att lönesubvention har beviljats för anställningen."
+          },
+          "apprenticeshipDidYouKnow": {
+            "label": "TODO",
+            "content": "TODO"
           }
         },
         "messages": {
@@ -254,10 +255,15 @@
             "no": "Nej",
             "error": "Stöd kan beviljas endast om hemkommunen är Helsingfors."
           },
+          "associationImmediateManagerCheck": {
+            "label": "Närmaste chef till personen som anställs",
+            "placeholder": "Arbetsgivaren har ändamålsenliga arbetslokaler och en till arbetsledningen hörande, ej lönesubventionerad chef för personen som anställs."
+          },
           "paySubsidyGranted": {
-            "label": "Har lönesubvention beviljats för anställningsförhållandet?",
-            "yes": "Ja",
-            "no": "Nej"
+            "label": "TODO",
+            "paySubsidyDefault": "TODO",
+            "paySubsidyAged": "TODO",
+            "paySubsidyNone": "TODO"
           },
           "paySubsidyPercent": {
             "label": "Lönesubventionsprocent enligt beslutet"
@@ -281,28 +287,36 @@
             "placeholder": "Titel"
           },
           "workingHours": {
-            "label": "Arbetstid timmar på vecka",
+            "label": "Arbetstid",
             "placeholder": "Timmar",
-            "view": "Arbetstid timmar: {{workingHours}} timmar på vecka"
+            "view": "Arbetstid timmar: {{workingHours}} timmar på vecka",
+            "helperText": "timmar på vecka"
           },
           "collectiveBargainingAgreement": {
             "label": "Kollektivavtal som tillämpas",
-            "placeholder": "Kollektivavtal som tillämpas"
+            "placeholder": "Kollektivavtal som tillämpas",
+            "tooltip": "TODO"
           },
           "monthlyPay": {
             "label": "Bruttolön",
             "placeholder": "Bruttolön",
-            "view": "Bruttolön {{monthlyPay}} euro per månad"
+            "view": "Bruttolön {{monthlyPay}} euro per månad",
+            "helperText": "TODO",
+            "tooltip": "TODO"
           },
           "otherExpenses": {
             "label": "Bikostnader",
             "placeholder": "Bikostnader",
-            "view": "Bikostnader {{otherExpenses}} euro per månad"
+            "view": "Bikostnader {{otherExpenses}} euro per månad",
+            "helperText": "TODO",
+            "tooltip": "TODO"
           },
           "vacationMoney": {
             "label": "Semesterpenning",
             "placeholder": "Semesterpenning",
-            "view": "Semesterpenning {{vacationMoney}} euro"
+            "view": "Semesterpenning {{vacationMoney}} euro",
+            "helperText": "TODO",
+            "tooltip": "TODO"
           },
           "commissionDescription": {
             "label": "Beskrivning av uppdraget",
@@ -350,7 +364,7 @@
         "remove": "Ta bort bilaga"
       },
       "summary": {
-        "heading1": "Ole hyvä ja tarkista hakemus"
+        "heading1": "missing translation"
       },
       "credentials": {
         "heading1": "Behandling av den anställdas personuppgifter",
@@ -535,8 +549,12 @@
     "page": "Sida",
     "terms": "Terms.PDF"
   },
+  "tooltip": {
+    "ariaLabel": "Visa hjälptext",
+    "ariaButtonLabel": "Visa hjälptext"
+  },
   "utility": {
-    "and": "ja",
+    "and": "och",
     "yes": "Ja",
     "no": "Nej",
     "close": "Stäng",

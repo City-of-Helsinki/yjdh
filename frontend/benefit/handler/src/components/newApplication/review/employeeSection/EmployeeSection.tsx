@@ -51,13 +51,6 @@ const EmploymentSection: React.FC<ReviewChildProps> = ({
                     data.paySubsidyGranted ? 'yes' : 'no'
                   }`
                 )}
-                <$ViewField isInline>{`, ${data.paySubsidyPercent || ''} % ${
-                  data.additionalPaySubsidyPercent
-                    ? `${t('common:utility.and')} ${
-                        data.additionalPaySubsidyPercent
-                      } %`
-                    : ''
-                }`}</$ViewField>
               </$ViewFieldBold>
               <$ViewField>
                 {t(`${translationsBase}.fields.apprenticeshipProgram.label`)}{' '}

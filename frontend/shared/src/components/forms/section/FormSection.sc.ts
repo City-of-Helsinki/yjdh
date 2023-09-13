@@ -48,6 +48,8 @@ type $SubHeaderProps = {
 };
 
 export const $SubHeader = styled.h3<$SubHeaderProps>`
+  margin-top: 0;
+  margin-bottom: 1em;
   font-size: ${(props) => props.theme.fontSize.heading.xxs};
   font-weight: ${(props) => (props.weight ? props.weight : '600')};
 `;

@@ -1,6 +1,10 @@
 import AttachmentsIngress from 'benefit/applicant/components/attachmentsIngress/AttachmentsIngress';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
-import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit-shared/constants';
+import {
+  ATTACHMENT_TYPES,
+  BENEFIT_TYPES,
+  PAY_SUBSIDY_GRANTED,
+} from 'benefit-shared/constants';
 import React from 'react';
 import { $Hr } from 'shared/components/forms/section/FormSection.sc';
 import { useTheme } from 'styled-components';
@@ -48,7 +52,10 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
                 required
               />
             )}
-            {paySubsidyGranted && (
+            {[
+              PAY_SUBSIDY_GRANTED.GRANTED,
+              PAY_SUBSIDY_GRANTED.GRANTED_AGED,
+            ].includes(paySubsidyGranted) && (
               <AttachmentsList
                 as="li"
                 attachments={attachments}
