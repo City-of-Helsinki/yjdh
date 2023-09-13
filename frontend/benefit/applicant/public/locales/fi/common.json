@@ -356,8 +356,8 @@
             "message": ""
           },
           "helsinkiBenefitVoucher": {
-            "title": "Helsinki-lisä seteli",
-            "message": "Lisää Helsinki-lisä -seteli, jos sellainen on myönnetty"
+            "title": "Helsinki-lisä -kortti",
+            "message": "Lisää Helsinki-lisä -kortti, jos työllistettävälle on myönnetty sellainen."
           }
         },
         "add": "Liitä tiedosto",

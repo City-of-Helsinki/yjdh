@@ -348,8 +348,8 @@
             "message": ""
           },
           "helsinkiBenefitVoucher": {
-            "title": "Sedel för Helsingforstillägg",
-            "message": "Lägg till sedel för Helsingforstillägg om en har utfärdats"
+            "title": "Kort för Helsingforstillägg",
+            "message": "Lägg till kort för Helsingforstillägg om en har utfärdats"
           }
         },
         "add": "Bifoga fil",

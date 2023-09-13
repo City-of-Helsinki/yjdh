@@ -348,8 +348,8 @@
             "message": ""
           },
           "helsinkiBenefitVoucher": {
-            "title": "Helsinki benefit voucher",
-            "message": "Add Helsinki benefit voucher if one has been issued"
+            "title": "Helsinki benefit card",
+            "message": "Add Helsinki benefit card if one has been issued"
           }
         },
         "add": "Attach the file",
