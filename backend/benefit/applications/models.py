@@ -306,12 +306,16 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
             self.is_association_application()
             and not self.association_has_business_activities
         ):
-            return [BenefitType.SALARY_BENEFIT]
+            return [
+                BenefitType.SALARY_BENEFIT,
+                BenefitType.UNCLARIFIED_BENEFIT,
+            ]
         else:
             return [
                 BenefitType.SALARY_BENEFIT,
                 BenefitType.COMMISSION_BENEFIT,
                 BenefitType.EMPLOYMENT_BENEFIT,
+                BenefitType.UNCLARIFIED_BENEFIT,
             ]
 
     """

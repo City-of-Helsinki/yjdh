@@ -580,6 +580,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         elif obj.benefit_type in [
             BenefitType.EMPLOYMENT_BENEFIT,
             BenefitType.SALARY_BENEFIT,
+            BenefitType.UNCLARIFIED_BENEFIT,
         ]:
             return (
                 [
@@ -862,7 +863,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         apprenticeship_program,
         pay_subsidy_granted,
     ):
-        if benefit_type == "":
+        if benefit_type == BenefitType.UNCLARIFIED_BENEFIT:
             return
         if (
             benefit_type
@@ -894,16 +895,24 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             == OrganizationType.ASSOCIATION
             and not association_has_business_activities
         ):
-            benefit_types = [BenefitType.SALARY_BENEFIT] if pay_subsidy_granted else []
+            benefit_types = (
+                [BenefitType.SALARY_BENEFIT, BenefitType.UNCLARIFIED_BENEFIT]
+                if pay_subsidy_granted
+                else [BenefitType.UNCLARIFIED_BENEFIT]
+            )
         else:
             if apprenticeship_program:
-                benefit_types = [BenefitType.EMPLOYMENT_BENEFIT]
+                benefit_types = [
+                    BenefitType.EMPLOYMENT_BENEFIT,
+                    BenefitType.UNCLARIFIED_BENEFIT,
+                ]
                 if pay_subsidy_granted:
                     benefit_types.append(BenefitType.SALARY_BENEFIT)
             else:
                 benefit_types = [
                     BenefitType.COMMISSION_BENEFIT,
                     BenefitType.EMPLOYMENT_BENEFIT,
+                    BenefitType.UNCLARIFIED_BENEFIT,
                 ]
                 if pay_subsidy_granted:
                     benefit_types.append(BenefitType.SALARY_BENEFIT)

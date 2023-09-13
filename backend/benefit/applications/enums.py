@@ -61,6 +61,7 @@ class BenefitType(models.TextChoices):
     EMPLOYMENT_BENEFIT = "employment_benefit", _("Employment Benefit")
     SALARY_BENEFIT = "salary_benefit", _("Salary Benefit")
     COMMISSION_BENEFIT = "commission_benefit", _("Commission Benefit")
+    UNCLARIFIED_BENEFIT = "unclarified_benefit", _("Unclarified Benefit")
 
 
 class ApplicationStep(models.TextChoices):
