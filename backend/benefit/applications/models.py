@@ -37,6 +37,8 @@ APPLICATION_LANGUAGE_CHOICES = (
     ("en", "english"),
 )
 
+PAY_SUBSIDY_TYPES = (("aged", "aged"), ("default", "default"), ("none", "none"))
+
 PAY_SUBSIDY_PERCENT_CHOICES = (
     (50, "50%"),
     (70, "70%"),
@@ -255,7 +257,9 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
         blank=True,
     )
 
-    pay_subsidy_granted = models.BooleanField(null=True)
+    pay_subsidy_granted = models.CharField(
+        null=True, choices=PAY_SUBSIDY_TYPES, max_length=128, blank=True
+    )
 
     # The PaySubsidy model stores the values entered by handlers for the calculation.
     # This field is filled by the applicant.
