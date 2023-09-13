@@ -150,10 +150,6 @@
             "yes": "Kyllä",
             "no": "Ei"
           },
-          "associationImmediateManagerCheck": {
-            "label": "Lähiesihenkilö palkattavalle henkilölle",
-            "placeholder": "Työnantajalla on asianmukaiset työtilat ja työnjohdollinen, ei-palkkatuettu esihenkilö palkattavalle henkilölle."
-          },
           "deMinimisAid": {
             "label": "Onko työnantajalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis -tukea?",
             "yes": "Kyllä",
@@ -185,21 +181,22 @@
         }
       },
       "employee": {
-        "heading1": "Henkilö, jonka työllistämiseen Helsinki-lisää haetaan",
-        "heading1Short": "Palkattava henkilö",
-        "heading2": "Palkkatukipäätös",
+        "heading1": "Työllistettävä henkilö",
+        "heading1Short": "Työllistettävä henkilö",
+        "heading2": "Työsuhteeseen myönnetyt valtion tuet",
         "heading3": "Haettava tukimuoto",
         "heading3Long": "Haettava tukimuoto ja ajankohta",
-        "heading4": "Haetaan ajalle",
+        "heading4": "Mille ajalle haet Helsinki-lisää?",
+        "heading4Sub1": "Voit hakea Helsinki-lisää työsuhteen keston ajaksi, mutta enintään 12 kuukaudeksi.",
         "heading5Employment": "Työsuhde",
         "heading5Assignment": "Toimeksianto",
         "heading5EmploymentSub1": "Palkkauskustannukset",
-        "salaryExpensesExplanation": "Bruttopalkka ja sivukulut ilmoitetaan euroina kuukaudessa, lomaraha kertasummana",
+        "salaryExpensesExplanation": "Ilmoita bruttopalkka, sivukulut ja lomaraha euroina kuukaudessa.",
         "tooltips": {
           "heading5Employment": "Sovellettava työehtosopimus: esim. Kaupan työehtosopimus. Jos alalla ei ole velvoittavaa työehtosopimusta, merkitse viiva.",
           "heading5EmploymentSub1": "Bruttopalkalla tarkoitetaan tuella palkattavalle maksettavaa palkkaa ennen työntekijän lakisääteisten maksujen (työntekijän työttömyysvakuutus- ja eläkevakuutusmaksu) ja verojen pidätystä. Jos tuella palkattavalle maksetaan palkan lisiä (esim. ilta-, yö- tai vuorotyölisä), ota niiden arvioitu määrä huomioon bruttopalkassa. Työnantajan lakisääteisiin sivukuluihin luetaan sosiaaliturva-, työeläkevakuutus-, tapaturmavakuutus- ja työttömyysvakuutusmaksu sekä pakollinen ryhmähenkivakuutusmaksu.\r\n\r\nSivukulut tarkoittavat palkasta maksettavien työnantajan lakisääteisten sivukulujen määrä kuukaudessa.\r\n\r\nLomaraha on tuella katettava palkkauskustannus silloin, kun se maksetaan tukijakson aikana pidetystä vuosilomapalkasta. Arvioi tukijakson aikana maksettavan lomarahan määrä. Lomakorvaus ei ole Helsinki-lisällä katettava korvaus.",
           "heading5Assignment": "Palkkauskustannukset tooltip text",
-          "heading2": "Palkkatuki on työttömän työnhakijan työllistymisen edistämiseksi tarkoitettu rahallinen tuki, jonka TE-palvelut voi myöntää työnantajalle palkkauskustannuksiin.",
+          "heading2": "Palkkatuki ja ja 55-vuotta täyttäneiden työllistämistuki ovat työttömän työnhakijan työllistymisen edistämiseksi tarkoitettuja rahallisia tukia.",
           "heading3": "Työllistämisen Helsinki-lisä on tarkoitettu ohjaus-, perehdytys-, työväline-, työvaate- ja työtilakustannuksiin silloin, kun niihin ei makseta muuta tukea. Palkan Helsinki-lisä on tarkoitettu työllistetyn henkilön palkkauskustannuksiin (=bruttopalkka, lakisääteiset sivukulut ja lomaraha). Toimeksiannon Helsinki-lisä on tarkoitettu yksittäisen työn tai projektin suorittamiseen."
         },
         "notifications": {
@@ -222,6 +219,10 @@
           "noAvailableBenefitTypes": {
             "label": "Ei haettavia tukimuotoja",
             "content": "Yhteisö, joka ei harjoita taloudellista toimintaa voi hakea ainoastaan Palkan Helsinki-lisää. Palkan Helsinki-lisän edellytyksenä on työsuhteeseen myönnetty palkkatuki."
+          },
+          "apprenticeshipDidYouKnow": {
+            "label": "Oppisopimukseen Helsinki-lisää voidaan myöntää koko oppisopimuksen ajaksi.",
+            "content": "Voit hakea Helsinki-lisää enintään 12 kuukauden jaksoissa. Tee uusi hakemus 12 kuukauden Helsinki-lisän tukijakson jälkeen."
           }
         },
         "messages": {
@@ -248,16 +249,21 @@
             "placeholder": "040 1234567"
           },
           "isLivingInHelsinki": {
-            "label": "Työllistetyn kotikunta on Helsinki",
+            "label": "Onko työllistettävän kotikunta Helsinki työsuhteen alkaessa?",
             "placeholder": "Kyllä, työllistettävä on kirjoilla Helsingissä viimeistään työsuhteen alkaessa",
             "yes": "Kyllä",
             "no": "Ei",
             "error": "Jotta tukea voidaan myöntää, kotikunnan tulee olla Helsinki."
           },
+          "associationImmediateManagerCheck": {
+            "label": "Onko työllistettävälle osoitettu työnjohdollinen esihenkilö?",
+            "placeholder": "Kyllä, työllistettävällä on työnjohdollinen esihenkilö."
+          },
           "paySubsidyGranted": {
-            "label": "Onko työsuhteeseen myönnetty palkkatuki?",
-            "yes": "Kyllä",
-            "no": "Ei"
+            "label": "Onko työsuhteeseen myönnetty jokin seuraavista tuista?",
+            "paySubsidyDefault": "Palkkatuki",
+            "paySubsidyAged": "55 vuotta täyttäneiden työllistämistuki",
+            "paySubsidyNone": "Työsuhteeseen ei ole myönnetty mitään edeltävistä tuista"
           },
           "paySubsidyPercent": {
             "label": "Päätöksessä oleva palkkatukiprosentti"
@@ -281,28 +287,36 @@
             "placeholder": "Tehtävänimike"
           },
           "workingHours": {
-            "label": "Työaika tuntia viikossa",
+            "label": "Työaika",
             "placeholder": "Tunteja",
-            "view": "Työaika: {{workingHours}} tuntia viikossa"
+            "view": "Työaika: {{workingHours}} tuntia viikossa",
+            "helperText": "tuntia viikossa"
           },
           "collectiveBargainingAgreement": {
             "label": "Sovellettava työehtosopimus",
-            "placeholder": "Työehtosopimus"
+            "placeholder": "Työehtosopimus",
+            "tooltip": "Sovellettava työehtosopimus: esim. Kaupan työehtosopimus. Jos alalla ei ole velvoittavaa työehtosopimusta, merkitse viiva."
           },
           "monthlyPay": {
             "label": "Bruttopalkka",
             "placeholder": "Palkka",
-            "view": "Bruttopalkka {{monthlyPay}} euroa kuukaudessa"
+            "view": "Bruttopalkka {{monthlyPay}} euroa kuukaudessa",
+            "helperText": "euroa kuukaudessa",
+            "tooltip": "Bruttopalkka tarkoittaa palkkasummaa ennen verojen ja lakisääteisten maksujen vähentämistä. Bruttopalkka on merkitty työsopimukseen. Mikäli osana palkkaa maksetaan lisiä, kuten ilta-, yö- tai vuorolisiä, laske arvio lisien määristä mukaan bruttopalkkaan."
           },
           "otherExpenses": {
             "label": "Sivukulut",
             "placeholder": "Sivukulut",
-            "view": "Sivukulut {{otherExpenses}} euroa kuukaudessa"
+            "view": "Sivukulut {{otherExpenses}} euroa kuukaudessa",
+            "helperText": "euroa kuukaudessa",
+            "tooltip": "Sivukulut tarkoittavat palkasta maksettavien työnantajan lakisääteisten sivukulujen määrää kuukaudessa. Sivukuluihin kuuluu sosiaaliturva-, työeläkevakuutus-, tapaturmavakuutus- ja työttömyysvakuutusmaksu sekä pakollinen ryhmähenkivakuutusmaksu. Ilmoita sivukulujen määrä euroina kuukaudessa."
           },
           "vacationMoney": {
             "label": "Lomaraha",
             "placeholder": "Lomaraha",
-            "view": "Lomaraha {{vacationMoney}} euroa"
+            "view": "Lomaraha {{vacationMoney}} euroa",
+            "helperText": "euroa kuukaudessa",
+            "tooltip": "Lomaraha on tuella katettava palkkauskustannus silloin, kun se maksetaan tukijakson aikana pidetystä vuosilomapalkasta. Lomakorvaus ei ole Helsinki-lisällä katettava korvaus. Ilmoita lomarahan määrä euroina kuukaudessa."
           },
           "commissionDescription": {
             "label": "Toimeksiannon kuvaus",
@@ -534,6 +548,10 @@
     "next": "Seuraava sivu",
     "page": "Sivu",
     "terms": "Ehdot.PDF"
+  },
+  "tooltip": {
+    "ariaLabel": "Näytä ohjeteksti",
+    "ariaButtonLabel": "Näytä ohjeteksti"
   },
   "utility": {
     "and": "ja",

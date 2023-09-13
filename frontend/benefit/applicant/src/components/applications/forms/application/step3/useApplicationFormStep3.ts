@@ -1,5 +1,9 @@
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
-import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit-shared/constants';
+import {
+  ATTACHMENT_TYPES,
+  BENEFIT_TYPES,
+  PAY_SUBSIDY_GRANTED,
+} from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import isEmpty from 'lodash/isEmpty';
 import { BenefitAttachment } from 'shared/types/attachment';
@@ -14,7 +18,7 @@ type ExtendedComponentProps = {
   handleDelete: () => void;
   attachments: BenefitAttachment[];
   hasRequiredAttachments: boolean;
-  paySubsidyGranted: boolean;
+  paySubsidyGranted?: PAY_SUBSIDY_GRANTED;
 };
 
 const useApplicationFormStep3 = (
@@ -43,7 +47,12 @@ const useApplicationFormStep3 = (
         )
       );
       let hasPaySubsidyDecision = true;
-      if (application.paySubsidyGranted) {
+      if (
+        [
+          PAY_SUBSIDY_GRANTED.GRANTED,
+          PAY_SUBSIDY_GRANTED.GRANTED_AGED,
+        ].includes(application.paySubsidyGranted)
+      ) {
         hasPaySubsidyDecision = !isEmpty(
           application?.attachments?.find(
             (att) =>
@@ -81,12 +90,10 @@ const useApplicationFormStep3 = (
     handleDelete,
     benefitType: application?.benefitType,
     apprenticeshipProgram: Boolean(application?.apprenticeshipProgram),
-    showSubsidyMessage: Boolean(
-      application?.paySubsidyPercent && application?.additionalPaySubsidyPercent
-    ),
+    showSubsidyMessage: false,
     attachments: application.attachments || [],
     hasRequiredAttachments: isRequiredAttachmentsUploaded(),
-    paySubsidyGranted: Boolean(application.paySubsidyGranted),
+    paySubsidyGranted: application.paySubsidyGranted,
   };
 };
 

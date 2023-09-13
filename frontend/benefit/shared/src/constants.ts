@@ -166,3 +166,9 @@ export enum SUBSIDY_OPTIONS {
   SALARY_SUPPORT = 'salary_support',
   OLD_AGE_SUPPORT = 'old_age_support',
 }
+
+export enum PAY_SUBSIDY_GRANTED {
+  GRANTED = 'granted',
+  GRANTED_AGED = 'granted_aged',
+  NOT_GRANTED = 'not_granted',
+}
