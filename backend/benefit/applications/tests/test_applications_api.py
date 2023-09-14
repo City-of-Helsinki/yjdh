@@ -1409,7 +1409,7 @@ def test_application_status_change_as_handler_auto_assign_handler(
         assert response.data["calculation"]["handler_details"] is None
 
 
-def add_attachments_to_application(request, application):
+def add_attachments_to_application(request, application, is_handler_application=False):
     # Add enough attachments so that the state transition is valid. See separete test
     # for attachment validation.
     _add_pdf_attachment(request, application, AttachmentType.PAY_SUBSIDY_DECISION)
@@ -1418,6 +1418,8 @@ def add_attachments_to_application(request, application):
     _add_pdf_attachment(request, application, AttachmentType.COMMISSION_CONTRACT)
     _add_pdf_attachment(request, application, AttachmentType.HELSINKI_BENEFIT_VOUCHER)
     _add_pdf_attachment(request, application, AttachmentType.EMPLOYEE_CONSENT)
+    if is_handler_application:
+        _add_pdf_attachment(request, application, AttachmentType.FULL_APPLICATION)
 
 
 def test_application_modified_at_draft(api_client, application):
