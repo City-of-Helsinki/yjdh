@@ -18,6 +18,7 @@ class Step1 extends WizardStep {
         .companyContactPersonFirstName.label
     ),
   });
+
   private lastName = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.company.fields
@@ -31,6 +32,7 @@ class Step1 extends WizardStep {
         .companyContactPersonPhoneNumber.label
     ),
   });
+
   private email = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.company.fields
@@ -64,7 +66,7 @@ class Step1 extends WizardStep {
 
   hasImmediateManagerCheckbox = this.component.findByRole('checkbox', {
     name: this.regexp(
-      this.translations.applications.sections.company.fields
+      this.translations.applications.sections.employee.fields
         .associationImmediateManagerCheck.placeholder
     ),
   });

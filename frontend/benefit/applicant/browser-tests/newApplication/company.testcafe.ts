@@ -1,9 +1,10 @@
-import { t } from 'testcafe';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/http-utils/http-request-hook';
 import requestLogger, {
   filterLoggedRequests,
 } from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import { t } from 'testcafe';
+
 import Login from '../page-model/login';
 import MainIngress from '../page-model/MainIngress';
 import Step1 from '../page-model/step1';
@@ -20,8 +21,8 @@ const url = getFrontendUrl('/');
 fixture('Frontpage')
   .page(url)
   .requestHooks(requestLogger, new HttpRequestHook(url, getBackendDomain()))
-  .beforeEach(async (t) => {
-    clearDataToPrintOnFailure(t);
+  .beforeEach(async (testController) => {
+    clearDataToPrintOnFailure(testController);
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console
@@ -56,14 +57,7 @@ test('Company', async () => {
   const step2 = new Step2();
   await step2.isLoaded();
 
-  await step2.fillEmployeeInfo('Larry', 'Blick', '010101-150J', '040444321');
-  await step2.fillPaidSubsidyGrant();
-  await step2.selectBenefitType('salary');
-  const currentYear: number = new Date().getFullYear();
-  await step2.fillBenefitPeriod(
-    `1.3.${currentYear}`,
-    `28.2.${currentYear + 1}`
-  );
+  await step2.fillEmployeeInfo('Larry', 'Blick', '010101-150J');
   await step2.fillEmploymentInfo(
     'Kuljettaja',
     '30',
@@ -72,6 +66,11 @@ test('Company', async () => {
     '300',
     '500'
   );
+  await step2.fillPaidSubsidyGrant();
+
+  const currentYear: number = new Date().getFullYear();
+  await step2.fillBenefitPeriod(`1.3.${currentYear}`, `1.4.${currentYear}`);
+
   await step2.clickSubmit();
 
   const step3 = new Step3();
