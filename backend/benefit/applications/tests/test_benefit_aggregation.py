@@ -6,7 +6,7 @@ import pytest
 from django.utils import translation
 
 from applications.api.v1.serializers.application import ApplicantApplicationSerializer
-from applications.enums import BenefitType
+from applications.enums import BenefitType, PaySubsidyGranted
 from applications.models import Application
 from applications.tests.conftest import *  # noqa
 from applications.tests.factories import DecidedApplicationFactory
@@ -329,7 +329,9 @@ def test_application_with_previously_accepted_applications_and_previous_benefits
     for class_name, previous_start_date, previous_end_date in previous_benefits:
         # previous, already granted benefits for the same employee+company
         if class_name == Application:
-            decided_application = DecidedApplicationFactory()
+            decided_application = DecidedApplicationFactory(
+                pay_subsidy_granted=PaySubsidyGranted.GRANTED
+            )
             decided_application.benefit_type = next(past_benefit_type_iterator)
             decided_application.apprenticeship_program = next(
                 past_apprenticeship_iterator
@@ -354,6 +356,8 @@ def test_application_with_previously_accepted_applications_and_previous_benefits
             assert False, "unexpected"
 
     handling_application.apprenticeship_program = apprenticeship_program
+    handling_application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
+
     handling_application.start_date = date(2021, 1, 1)
     handling_application.calculation.start_date = date(2021, 1, 1)
     handling_application.start_date = date(2021, 6, 30)
@@ -393,7 +397,7 @@ def test_application_with_previously_accepted_applications_and_previous_benefits
     data["benefit_type"] = benefit_type
     data["start_date"] = date(2021, 7, 1)
     data["end_date"] = date(2021, 12, 31)
-    data["pay_subsidy_granted"] = True
+    data["pay_subsidy_granted"] = PaySubsidyGranted.GRANTED
     data["pay_subsidy_percent"] = 50
 
     with translation.override("en"):
