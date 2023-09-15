@@ -13,7 +13,7 @@
       "common": {
         "created": "Skapats",
         "employee": "Anställd",
-        "saved": "Tallennettu",
+        "saved": "Sparat",
         "edit": "Redigera",
         "sent": "Skickad",
         "applicationNumber": "Ansökningsnummer",
@@ -34,7 +34,7 @@
       "guideText": "Fälten märkta med * är obligatoriska"
     },
     "helpers": {
-      "requiredFields": "Tähdellä merkityt kentät ovat pakollisia"
+      "requiredFields": "Fält markerade med takt är obligatoriska"
     },
     "statuses": {
       "draft": "Utkast",
@@ -71,23 +71,23 @@
       "company": {
         "heading1": "Arbetsgivarinformation",
         "heading1Additional": "Postadress för beslutet",
-        "heading2": "Kontaktperson",
+        "heading2": "Arbetsgivarens kontaktperson",
         "heading2Short": "Kontaktperson",
-        "heading3": "Arbetsgivarens de minimis-stöd",
-        "heading4": "Situation med samarbetsförhandlingar",
+        "heading3": "De minimis-stöden som arbetsgivaren fått",
+        "heading4": "Samarbetsförhandlingar eller samarbetsförfarande",
         "heading5": "Samarbetsförhandlingar",
         "businessId": "FO-nummer: {{ businessId }}",
         "companyContactPerson": {
-          "content": "TODO"
+          "content": "Kontaktpersonen sköter kontakterna i ärenden med anknytning till denna ansökning om Helsingforstillägget och får uppgiften om beslutet om ansökningen."
         },
-        "deMinimisAidsHeading": "Lista här samtliga de minimis-stöd som beviljats organisationen under det innevarande året eller under de två föregående skatteåren",
+        "deMinimisAidsHeading": "Fyll i alla de de minimis-stöd som har beviljats organisationen under innevarande år och under två föregående skatteår",
         "deMinimisAidsAdd": "Spara",
         "deMinimisAidsRemove": "Ta bort",
         "deMinimisAidsNo": "Sökanden har inte angett några tidigare de minimis -stöd.",
         "notifications": {
           "companyInformation": {
             "label": "Uppgifterna har hämtats från Företags- och organisationsdatasystemet",
-            "content": "TODO"
+            "content": "De markerade uppgifterna har hämtats från Företags- och organisationsdatasystemet.  Om du vill få ett beslut om Helsingforstillägget för ett annat verksamhetsställe, byt postadressen."
           },
           "deMinimisAidMaxAmount": {
             "label": "Maximibeloppet har överskridits",
@@ -95,7 +95,7 @@
           },
           "deMinimisUnfinished": {
             "label": "Information saknar om de minimis stöd",
-            "content": "Vänligen fyll i eventuell saknad de minimis-stöd information och tryck på knappen 'Lägg till'."
+            "content": "Vänligen fyll i eventuell saknad de minimis-stöd information och tryck på knappen 'Spara'."
           }
         },
         "tooltips": {
@@ -104,22 +104,22 @@
         },
         "fields": {
           "useAlternativeAddress": {
-            "label": "Använd en annan postadress"
+            "label": "Använd en annan adress"
           },
           "alternativeCompanyStreetAddress": {
-            "label": "Gatuadress",
-            "placeholder": "Gatuadress"
+            "label": "Adress",
+            "placeholder": "Adress"
           },
           "alternativeCompanyPostcode": {
             "label": "Postnummer",
             "placeholder": "Postnummer"
           },
           "alternativeCompanyCity": {
-            "label": "Postanstalt",
-            "placeholder": "Postanstalt"
+            "label": "Postort",
+            "placeholder": "Postort"
           },
           "companyDepartment": {
-            "label": "Verksamhetsställe eller avdelning (valfri)",
+            "label": "Verksamhetsställe eller avdelning",
             "placeholder": "Verksamhetsställe / avdelning"
           },
           "companyBankAccountNumber": {
@@ -139,28 +139,28 @@
             "placeholder": "040 1234567"
           },
           "companyContactPersonEmail": {
-            "label": "E-post för ärendehantering",
+            "label": "E-post för uträttande av ärenden",
             "placeholder": "E-postadress"
           },
           "applicantLanguage": {
-            "label": "Kommunikationsspråk"
+            "label": "Affärsspråk"
           },
           "associationHasBusinessActivities": {
-            "label": "Bedriver arbetsgivaren ekonomisk verksamhet?",
+            "label": "Har arbetsgivaren ekonomisk verksamhet?",
             "yes": "Ja",
             "no": "Nej"
           },
           "deMinimisAid": {
-            "label": "Har arbetsgivaren beviljats de minimis-stöd under det innevarande året eller under de två föregående skatteåren?",
+            "label": "Har organisationen beviljats de minimis-stöd under innevarande år och under de två föregående skatteåren?",
             "yes": "Ja",
             "no": "Nej"
           },
           "deMinimisAidGranter": {
-            "label": "Stödbeviljare",
+            "label": "Beviljare av stödet",
             "placeholder": "Beviljande instans"
           },
           "deMinimisAidAmount": {
-            "label": "Stödbelopp",
+            "label": "Stödbeloppet",
             "placeholder": "€",
             "helperText": "euro"
           },
@@ -170,7 +170,7 @@
             "placeholder": "Välj"
           },
           "coOperationNegotiations": {
-            "label": "Pågår samarbetsförhandlingar i organisationen?",
+            "label": "Pågår samarbetsförhandlingar i organisationen eller har de avslutats under föregående 12 månader?",
             "yes": "Ja",
             "no": "Nej"
           },
@@ -181,22 +181,22 @@
         }
       },
       "employee": {
-        "heading1": "TODO",
-        "heading1Short": "TODO",
-        "heading2": "TODO",
+        "heading1": "Personen som ska sysselsättas med Helsingforstillägget",
+        "heading1Short": "Personen som ska sysselsättas",
+        "heading2": "Statliga stöd som beviljats för anställningsförhållandet",
         "heading3": "Den stödform som söks",
         "heading3Long": "Form och datum för stöd som ska sökas",
-        "heading4": "TODO",
-        "heading4Sub1": "TODO",
+        "heading4": "För vilken tidperiod ansöker du om Helsingforstillägget?",
+        "heading4Sub1": "Du kan ansöka om Helsingforstillägget för anställningsförhållandets tid men för högst 12 månader.",
         "heading5Employment": "Anställningsförhållande",
         "heading5Assignment": "Uppdrag",
-        "heading5EmploymentSub1": "Lönekostnader",
-        "salaryExpensesExplanation": "TODO",
+        "heading5EmploymentSub1": "Anställningskostnaderna",
+        "salaryExpensesExplanation": "Ange bruttolönen, bikostnaderna och semesterpenning i euro per månad.",
         "tooltips": {
           "heading5Employment": "Kollektivavtal som tillämpas: t.ex. kollektivavtal för handeln. Sätt streck om branschen inte har ett bindande kollektivavtal.",
-          "heading5EmploymentSub1": "Med bruttolön avses lönen till den person som anställs med subventionen före innehållande av arbetsgivarens lagstadgade kostnader (arbetslöshets- och pensionsförsäkringspremier för arbetstagaren) och skatter. Om den person som anställs med subventionen får lönetillägg (t.ex. kvälls-, natt- eller skiftarbetstillägg), ska det uppskattade beloppet från dessa beaktas i bruttolönen. Till arbetsgivarens lagstadgade bikostnader räknas socialskyddsavgifterna och premierna för arbetspensionsförsäkringen, olycksfallsförsäkringen och arbetslöshetsförsäkringen samt den obligatoriska grupplivförsäkringen.\r\n\r\nMed bikostnader avses arbetsgivarens lagstadgade bikostnader per månad.\r\n\r\nSemesterpenning är en lönekostnad som kan täckas med subventionen till den del som semesterpenning betalas för semesterlön som används under subventionsperioden. Uppskatta semesterpenningen som betalas under subventionsperioden. Semesterpenning kan inte täckas med Helsingforstillägg.",
+          "heading5EmploymentSub1": "Bruttolön innebär lönebeloppet innan avdraget av skatter och lagstadgade avgifter. Bruttolön anges i arbetsavtalet. Om tillägg såsom kväll-, natt- eller skiftsarbetstillägg betalas som en del av lönen, beräkna en uppskattning om beloppet på tilläggen in i bruttolönen.",
           "heading5Assignment": "Med bruttolön avses lönen till den person som anställs med subventionen före innehållande av arbetsgivarens lagstadgade kostnader (arbetslöshets- och pensionsförsäkringspremier för arbetstagaren) och skatter. Om den person som anställs med subventionen får lönetillägg (t.ex. kvälls-, natt- eller skiftarbetstillägg), ska det uppskattade beloppet från dessa beaktas i bruttolönen. Till arbetsgivarens lagstadgade bikostnader räknas socialskyddsavgifterna och premierna för arbetspensionsförsäkringen, olycksfallsförsäkringen och arbetslöshetsförsäkringen samt den obligatoriska grupplivförsäkringen. Med bikostnader avses arbetsgivarens lagstadgade bikostnader per månad. Semesterpenning är en lönekostnad som kan täckas med subventionen till den del som semesterpenning betalas för semesterlön som används under subventionsperioden. Uppskatta semesterpenningen som betalas under subventionsperioden. Semesterpenning kan inte täckas med Helsingforstillägg.",
-          "heading2": "Lönesubvention är ett ekonomiskt stöd för främjande av sysselsättningen av en arbetslös arbetssökande som arbets- och näringslivstjänsterna kan bevilja till arbetsgivaren för lönekostnader.",
+          "heading2": "Lönesubvention och sysselsättningsstöd för personer som fyllt 55 år är finansiella stöd som är avsedda för främjande av sysselsättning av en arbetslös arbetssökande.",
           "heading3": "Helsingforstillägg för sysselsättning är avsett för kostnaderna för handledning, inskolning, arbetsredskap, arbetskläder och arbetslokaler då inga andra understöd utbetalas för dessa. Helsingforstillägg för lön är avsett för lönekostnaderna för den anställda (=bruttolön, lagstadgade bikostnader och semesterpenning). Helsingforstillägg för uppdrag är avsett för utförande av ett enskilt jobb eller projekt."
         },
         "notifications": {
@@ -221,8 +221,8 @@
             "content": "En sammanslutning som inte bedriver ekonomisk verksamhet kan endast ansöka om Helsingforstillägg för lön. Förutsättningen för att få Helsingforstillägg för lön är att lönesubvention har beviljats för anställningen."
           },
           "apprenticeshipDidYouKnow": {
-            "label": "TODO",
-            "content": "TODO"
+            "label": "För ett läroavtal kan Helsingforstillägget beviljas för hela läroavtalstiden.",
+            "content": "Du kan ansöka om Helsingforstillägget i perioder på högst 12 månader. Gör en ny ansökan efter en 12 månaders stödperiod av Helsingforstillägg."
           }
         },
         "messages": {
@@ -232,6 +232,11 @@
           "commissionBenefitSelected": "Ange uppdragets längd här"
         },
         "fields": {
+          "companyBusinessId": "FO-nummer",
+          "companyName": "Arbetsgivarens namn",
+          "companyAddress": "Adress",
+          "companyPostcode": "Postnummer",
+          "companyCity": "Postort",
           "firstName": {
             "label": "Förnamn",
             "placeholder": "Förnamn"
@@ -250,29 +255,29 @@
           },
           "isLivingInHelsinki": {
             "label": "Personen som anställs bor i Helsingfors",
-            "placeholder": "Ja, personen som anställs är skriven i Helsingfors senast när anställningsförhållandet inleds",
+            "placeholder": "Ja, personen som sysselsätts har Helsingfors som hemkommun senast när anställningsförhållandet inleds.",
             "yes": "Ja",
             "no": "Nej",
             "error": "Stöd kan beviljas endast om hemkommunen är Helsingfors."
           },
           "associationImmediateManagerCheck": {
-            "label": "Närmaste chef till personen som anställs",
-            "placeholder": "Arbetsgivaren har ändamålsenliga arbetslokaler och en till arbetsledningen hörande, ej lönesubventionerad chef för personen som anställs."
+            "label": "Har personen som ska sysselsättas utsetts en arbetsledande chef?",
+            "placeholder": "Ja, personen som ska sysselsättas har en arbetsledande chef."
           },
           "paySubsidyGranted": {
-            "label": "TODO",
-            "paySubsidyDefault": "TODO",
-            "paySubsidyAged": "TODO",
-            "paySubsidyNone": "TODO"
+            "label": "Har något av de följande stöden beviljats för anställningsförhållandet?",
+            "paySubsidyDefault": "Lönesubvention",
+            "paySubsidyAged": "Sysselsättningsstöd för personer som fyllt 55 år",
+            "paySubsidyNone": "Inga av stöden ovan har beviljats för anställningsförhållandet"
           },
           "paySubsidyPercent": {
             "label": "Lönesubventionsprocent enligt beslutet"
           },
           "additionalPaySubsidyPercent": {
-            "label": "Om någon annan lönesubvention har beviljats för anställningen, ange lönesubventionsprocent för den."
+            "label": "Om någon annan lönesubvention har beviljats för anställningen, \nange lönesubventionsprocent för den."
           },
           "apprenticeshipProgram": {
-            "label": "Är det fråga om ett läroavtal?",
+            "label": "Handlar det om ett läroavtal?",
             "yes": "Ja",
             "no": "Nej"
           },
@@ -295,28 +300,28 @@
           "collectiveBargainingAgreement": {
             "label": "Kollektivavtal som tillämpas",
             "placeholder": "Kollektivavtal som tillämpas",
-            "tooltip": "TODO"
+            "tooltip": "Kollektivavtal som ska tillämpas: till exempel handelns kollektivavtal Om branschen inte har ett bindande kollektivavtal, rita ett streck."
           },
           "monthlyPay": {
             "label": "Bruttolön",
             "placeholder": "Bruttolön",
             "view": "Bruttolön {{monthlyPay}} euro per månad",
-            "helperText": "TODO",
-            "tooltip": "TODO"
+            "helperText": "euro per månad",
+            "tooltip": "Med bruttolön avses den lön som betalas till personen som ska sysselsättas med stödet innan avdrag av arbetstagarens lagstadgade avgifter (arbetstagarens arbetslöshetsförsäkrings- och pensionsförsäkringsavgift) och skatter. Om tillägg såsom kväll-, natt- eller skiftsarbetstillägg betalas som en del av lönen, beräkna en uppskattning om beloppet på tilläggen in i bruttolönen."
           },
           "otherExpenses": {
             "label": "Bikostnader",
             "placeholder": "Bikostnader",
             "view": "Bikostnader {{otherExpenses}} euro per månad",
-            "helperText": "TODO",
-            "tooltip": "TODO"
+            "helperText": "euro per månad",
+            "tooltip": "Bikostnaderna innebär beloppet på arbetsgivarens lagstadgade bikostnader som betalas ur lönen per månad. Till bikostnaderna hör socialskydds-, arbetspensionsförsäkrings-, olycksfallsförsäkrings- och arbetslöshetsförsäkringsavgift samt den obligatoriska grupplivförsäkringsavgiften. Ange beloppet på bikostnaderna i euro per månad."
           },
           "vacationMoney": {
             "label": "Semesterpenning",
             "placeholder": "Semesterpenning",
             "view": "Semesterpenning {{vacationMoney}} euro",
-            "helperText": "TODO",
-            "tooltip": "TODO"
+            "helperText": "euro per månad ",
+            "tooltip": "Bikostnaderna innebär beloppet på arbetsgivarens lagstadgade bikostnader som betalas ur lönen per månad. Till bikostnaderna hör socialskydds-, arbetspensionsförsäkrings-, olycksfallsförsäkrings- och arbetslöshetsförsäkringsavgift samt den obligatoriska grupplivförsäkringsavgiften. Ange beloppet på bikostnaderna i euro per månad."
           },
           "commissionDescription": {
             "label": "Beskrivning av uppdraget",
@@ -356,18 +361,18 @@
             "message": ""
           },
           "helsinkiBenefitVoucher": {
-            "title": "Sedel för Helsingforstillägg",
-            "message": "Lägg till sedel för Helsingforstillägg om en har utfärdats"
+            "title": "Helsingforstilläggskortet",
+            "message": "Lägg till Helsingforstilläggskortet om en har utfärdats"
           }
         },
         "add": "Bifoga fil",
         "remove": "Ta bort bilaga"
       },
       "summary": {
-        "heading1": "missing translation"
+        "heading1": "Vänligen kontrollera ansökan innan du skickar in den."
       },
       "credentials": {
-        "heading1": "Behandling av den anställdas personuppgifter",
+        "heading1": "Behandlingen av personuppgifterna av personen som ska sysselsättas",
         "heading2": "Behandling av personuppgifter",
         "sections": {
           "electronicPowerOfAttorney": {
@@ -445,7 +450,7 @@
     "text": "Bifoga följande bilagor till ansökan. Alla bilagor märkta med * är obligatoriska. Filformatet kan vara JPG, PNG eller PDF och den maximala filstorleken får vara 10 MB."
   },
   "credentialsIngress": {
-    "text": "Den person som anställs med Helsingforstillägg ska informeras om behandlingen av hens personuppgifter. Skriv ut informationen och be den anställda om underskrift."
+    "text": "Personen som ska sysselsättas med Helsingforstillägget ska informeras om hur hens personuppgifter behandlas. Skriv ut meddelandet och be om underteckning av personen som ska sysselsättas."
   },
   "form": {
     "validation": {
@@ -497,18 +502,18 @@
     "logoutMessageLabel": "Du har loggat ut",
     "errorLabel": "Ett okänt fel inträffade. Logga in på nytt.",
     "sessionExpiredLabel": "Användarsessionen föråldrades. Logga in på nytt.",
-    "infoLabel": "Problem med att logga in?",
+    "infoLabel": "Frågor om Helsingforstillägget?",
     "logoutInfoContent": "Du har nu loggats ut. Om du vill fortsätta använda tjänsten, logga in på nytt genom att klicka på knappen nedan.",
     "infoContent": "Skicka ett mejl till helsinkilisa@hel.fi.",
     "termsOfServiceHeader": "Information om behandlingen av arbetsgivarens representanters uppgifter",
     "heading": "Logga in i Helsingforstillägg tjänsten",
-    "infoText1": "Sök ekonomiskt stöd, Helsingforstillägg, för att sysselsätta arbetslösa helsingforsbor. Du behöver Suomi.fi-fullmakter för att utföra ärenden för din organisation.",
+    "infoText1": "Ansök om ett finansiellt stöd, Helsingforstillägget, för din organisation för att sysselsätta en arbetslös person i Helsingfors. Du behöver en Suomi.fi-befogenhet för att uträtta ärenden på din organisations vägnar.",
     "subheading1": "Logga in med bankkoder eller mobilt certifikat",
     "infoText2": "När du loggar in för första gången skapas automatiskt en egen Helsingforsprofil för dig.",
-    "subheading2": "Skaffa Suomi.fi-fullmakter",
-    "infoText3": "Om du ännu inte har rättighet att handla på din organisations vägnar kan du skaffa Suomi.fi-fullmakter för dig själv.",
-    "authorization": "Se instruktioner för att skaffa autorisering",
-    "suomifiUrl": "https://www.suomi.fi/fullmakter"
+    "subheading2": "Suomi.fi-befogenhet",
+    "infoText3": "Du kan logga in på e-tjänsten för sysselsättning Helsingforstillägg om du har namnteckningsrätt eller om du har beviljats antingen “ansökan om lönesubvention“ eller “ansöka om understöd“ som fullmakt i Suomi.fi.",
+    "authorization": "Se anvisningarna om hur man uträttar ärenden på en organisations vägnar",
+    "suomifiUrl": "https://www.suomi.fi/anvisningar-och-stod/fullmakter/utrattande-av-arenden-for-en-organisation"
   },
   "errorPage": {
     "title": "Tyvärr har det inträffat ett fel i tjänsten",
