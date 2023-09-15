@@ -30,6 +30,7 @@ from applications.enums import (
     AttachmentType,
     BenefitType,
     OrganizationType,
+    PaySubsidyGranted,
 )
 from applications.models import Application, ApplicationLogEntry, Attachment, Employee
 from applications.tests.conftest import *  # noqa
@@ -428,6 +429,9 @@ def test_application_post_unfinished(api_client, application):
 
     data = ApplicantApplicationSerializer(application).data
     application.delete()
+    data["benefit_type"] = BenefitType.SALARY_BENEFIT
+    data["pay_subsidy_granted"] = PaySubsidyGranted.NOT_GRANTED
+    data["pay_subsidy_percent"] = None
     assert len(Application.objects.all()) == 0
     assert len(Employee.objects.all()) == 0
 
@@ -767,7 +771,7 @@ def test_application_edit_benefit_type_business(api_client, application):
     data = ApplicantApplicationSerializer(application).data
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
     data["apprenticeship_program"] = False
-    data["pay_subsidy_granted"] = True
+    data["pay_subsidy_granted"] = PaySubsidyGranted.GRANTED
     data["pay_subsidy_percent"] = 50
     response = api_client.put(
         get_detail_url(application),
@@ -785,7 +789,7 @@ def test_application_edit_benefit_type_business_no_pay_subsidy(api_client, appli
     data = ApplicantApplicationSerializer(application).data
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
     data["apprenticeship_program"] = False
-    data["pay_subsidy_granted"] = False
+    data["pay_subsidy_granted"] = PaySubsidyGranted.NOT_GRANTED
     data["pay_subsidy_percent"] = None
     response = api_client.put(
         get_detail_url(application),
@@ -795,6 +799,7 @@ def test_application_edit_benefit_type_business_no_pay_subsidy(api_client, appli
     assert set(response.data["available_benefit_types"]) == {
         BenefitType.COMMISSION_BENEFIT,
         BenefitType.EMPLOYMENT_BENEFIT,
+        BenefitType.SALARY_BENEFIT,
     }
 
 
@@ -811,7 +816,7 @@ def test_application_edit_benefit_type_business_association(
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
     data["association_has_business_activities"] = True
     data["apprenticeship_program"] = False
-    data["pay_subsidy_granted"] = True
+    data["pay_subsidy_granted"] = PaySubsidyGranted.GRANTED
     data["pay_subsidy_percent"] = 50
 
     response = api_client.put(
@@ -833,7 +838,7 @@ def test_application_edit_benefit_type_business_association_with_apprenticeship(
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
     data["association_has_business_activities"] = True
     data["apprenticeship_program"] = True
-    data["pay_subsidy_granted"] = True
+    data["pay_subsidy_granted"] = PaySubsidyGranted.GRANTED
     data["pay_subsidy_percent"] = 50
 
     response = api_client.put(
@@ -850,7 +855,7 @@ def test_application_edit_benefit_type_business_association_with_apprenticeship(
 def test_application_edit_benefit_type_non_business(
     api_client, association_application
 ):
-    association_application.pay_subsidy_granted = True
+    association_application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
     association_application.pay_subsidy_percent = 50
     association_application.save()
     data = ApplicantApplicationSerializer(association_application).data
@@ -867,7 +872,7 @@ def test_application_edit_benefit_type_non_business(
 def test_application_edit_benefit_type_non_business_invalid(
     api_client, association_application
 ):
-    association_application.pay_subsidy_granted = True
+    association_application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
     association_application.pay_subsidy_percent = 50
     association_application.save()
     data = ApplicantApplicationSerializer(association_application).data
@@ -951,7 +956,7 @@ def test_application_date_range(
     data["benefit_type"] = benefit_type
     data["start_date"] = start_date
     data["end_date"] = end_date
-    data["pay_subsidy_granted"] = True
+    data["pay_subsidy_granted"] = PaySubsidyGranted.GRANTED
     data["pay_subsidy_percent"] = 50
 
     response = api_client.put(
@@ -993,8 +998,6 @@ def test_application_date_range_on_submit(
 
     data["start_date"] = start_date
     data["end_date"] = end_date
-    data["pay_subsidy_granted"] = True
-    data["pay_subsidy_percent"] = 50
 
     response = api_client.put(
         get_detail_url(application),
@@ -1041,7 +1044,8 @@ def test_submit_application_without_de_minimis_aid(
     data["de_minimis_aid"] = de_minimis_aid
     data["de_minimis_aid_set"] = de_minimis_aid_set
     data["pay_subsidy_percent"] = "50"
-    data["pay_subsidy_granted"] = True
+    data["pay_subsidy_granted"] = PaySubsidyGranted.GRANTED
+    data["apprenticeship_program"] = False
     data["association_has_business_activities"] = association_has_business_activities
     if company_form_code == YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT:
         data["association_immediate_manager_check"] = True
@@ -1059,12 +1063,17 @@ def test_submit_application_without_de_minimis_aid(
 
 
 @pytest.mark.parametrize(
-    "pay_subsidy_granted,apprenticeship_program,expected_result",
+    "pay_subsidy_granted,apprenticeship_program,draft_result,submit_result,",
     [
-        (True, True, 200),
-        (True, False, 200),
-        (True, None, 400),
-        (False, None, 200),
+        (PaySubsidyGranted.GRANTED, True, 200, 200),
+        (PaySubsidyGranted.GRANTED, False, 200, 200),
+        (PaySubsidyGranted.GRANTED, None, 200, 400),
+        (PaySubsidyGranted.GRANTED_AGED, True, 200, 200),
+        (PaySubsidyGranted.GRANTED_AGED, False, 200, 200),
+        (PaySubsidyGranted.GRANTED_AGED, None, 200, 400),
+        (PaySubsidyGranted.NOT_GRANTED, None, 200, 200),
+        (PaySubsidyGranted.NOT_GRANTED, False, 200, 400),
+        (PaySubsidyGranted.NOT_GRANTED, True, 200, 400),
     ],
 )
 def test_apprenticeship_program_validation_on_submit(
@@ -1073,14 +1082,15 @@ def test_apprenticeship_program_validation_on_submit(
     application,
     pay_subsidy_granted,
     apprenticeship_program,
-    expected_result,
+    draft_result,
+    submit_result,
 ):
     add_attachments_to_application(request, application)
 
     data = ApplicantApplicationSerializer(application).data
 
     data["pay_subsidy_granted"] = pay_subsidy_granted
-    data["pay_subsidy_percent"] = "50" if pay_subsidy_granted else None
+    data["pay_subsidy_percent"] = None
     data["additional_pay_subsidy_percent"] = None
     data["apprenticeship_program"] = apprenticeship_program
 
@@ -1088,12 +1098,10 @@ def test_apprenticeship_program_validation_on_submit(
         get_detail_url(application),
         data,
     )
-    assert (
-        response.status_code == 200
-    )  # the values are valid while application is a draft
+    assert response.status_code == draft_result
     application.refresh_from_db()
     submit_response = _submit_application(api_client, application)
-    assert submit_response.status_code == expected_result
+    assert submit_response.status_code == submit_result
 
 
 @pytest.mark.parametrize(
@@ -1453,13 +1461,13 @@ def test_application_modified_at_non_draft(api_client, application, status):
 @pytest.mark.parametrize(
     "pay_subsidy_granted,pay_subsidy_percent,additional_pay_subsidy_percent,expected_code",
     [
-        (None, None, None, 200),  # empty application
-        (True, 50, None, 200),  # one pay subsidy
-        (True, 100, 30, 400),  # two pay subsidies
-        (None, 100, None, 400),  # invalid
-        (True, None, 50, 400),  # invalid percent
-        (True, 99, None, 400),  # invalid choice
-        (True, 50, 1, 400),  # invalid percent
+        (PaySubsidyGranted.NOT_GRANTED, None, None, 200),  # empty application
+        (PaySubsidyGranted.GRANTED, 50, None, 200),  # one pay subsidy
+        (PaySubsidyGranted.GRANTED, 100, 30, 400),  # two pay subsidies
+        (PaySubsidyGranted.NOT_GRANTED, 100, None, 400),  # invalid
+        (PaySubsidyGranted.GRANTED, None, 50, 400),  # invalid percent
+        (PaySubsidyGranted.GRANTED, 99, None, 400),  # invalid choice
+        (PaySubsidyGranted.GRANTED, 50, 1, 400),  # invalid percent
     ],
 )
 def test_application_pay_subsidy(
@@ -1481,15 +1489,7 @@ def test_application_pay_subsidy(
     )
     assert response.status_code == expected_code
     if response.status_code == 200:
-        if pay_subsidy_granted:
-            assert (
-                BenefitType.SALARY_BENEFIT in response.data["available_benefit_types"]
-            )
-        else:
-            assert (
-                BenefitType.SALARY_BENEFIT
-                not in response.data["available_benefit_types"]
-            )
+        assert BenefitType.SALARY_BENEFIT in response.data["available_benefit_types"]
 
 
 def test_attachment_upload_too_big(api_client, application):
@@ -1817,7 +1817,7 @@ def test_attachment_requirements(
     api_client, application, mock_get_organisation_roles_and_create_company
 ):
     application.benefit_type = BenefitType.EMPLOYMENT_BENEFIT
-    application.pay_subsidy_granted = True
+    application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
     application.pay_subsidy_percent = 50
     application.apprenticeship_program = False
     application.company = mock_get_organisation_roles_and_create_company
@@ -1845,7 +1845,7 @@ def _submit_application(api_client, application):
 
 def test_attachment_validation(request, api_client, application):
     application.benefit_type = BenefitType.EMPLOYMENT_BENEFIT
-    application.pay_subsidy_granted = True
+    application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
     application.pay_subsidy_percent = 50
     application.apprenticeship_program = False
     application.save()
@@ -1886,7 +1886,7 @@ def test_attachment_validation(request, api_client, application):
 
 def test_purge_extra_attachments(request, api_client, application):
     application.benefit_type = BenefitType.SALARY_BENEFIT
-    application.pay_subsidy_granted = True
+    application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
     application.pay_subsidy_percent = 50
     application.apprenticeship_program = False
     application.save()
@@ -1916,7 +1916,7 @@ def test_purge_extra_attachments(request, api_client, application):
 
 def test_employee_consent_upload(request, api_client, application):
     application.benefit_type = BenefitType.EMPLOYMENT_BENEFIT
-    application.pay_subsidy_granted = True
+    application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
     application.pay_subsidy_percent = 50
     application.apprenticeship_program = False
     application.save()
