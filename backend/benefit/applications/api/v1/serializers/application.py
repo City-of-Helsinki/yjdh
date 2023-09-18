@@ -1381,7 +1381,21 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
                 _("Application can not be changed in this status")
             )
         calculation_data = validated_data.pop("calculation", None)
-        pay_subsidy_data = validated_data.pop("pay_subsidies", None)
+        # FIX for HL-639 where application submitted manually by handler is missing pay subsidies in the DB
+        # because in the JSON payload pay_subsidies is an empty list and thus not None
+        # here we check that this is the final submit request from the handler and if so, we set pay_subsidies to None
+        if (
+            instance.application_origin == ApplicationOrigin.HANDLER
+            and validated_data["status"] == ApplicationStatus.RECEIVED
+        ):
+            del validated_data["pay_subsidies"]
+            pay_subsidy_data = None
+        else:
+            if "pay_subsidies" in validated_data:
+                pay_subsidy_data = validated_data["pay_subsidies"]
+                del validated_data["pay_subsidies"]
+            else:
+                pay_subsidy_data = None
         training_compensation_data = validated_data.pop("training_compensations", None)
         previous_status = instance.status
         application = self._base_update(instance, validated_data)
