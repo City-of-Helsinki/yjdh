@@ -6,7 +6,7 @@ interface MainProps {
 
 export const $Main = styled.main<MainProps>`
   ${(props) => `
-    background-color: ${props.theme.colors[props.backgroundColor]};
+    background-color: ${props.backgroundColor};
   `}
   display: flex;
   flex-direction: column;
