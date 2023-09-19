@@ -12,7 +12,7 @@ import {
   ATTACHMENT_TYPES,
   BENEFIT_TYPES,
   ORGANIZATION_TYPES,
-  SUBSIDY_OPTIONS,
+  PAY_SUBSIDY_GRANTED,
 } from 'benefit-shared/constants';
 import {
   ApplicationData,
@@ -240,9 +240,9 @@ const FormContent: React.FC<Props> = ({
             errorText={getErrorMessage(fields.subsidyGranted.name)}
           >
             <$RadioButton
-              id={`${fields.subsidyGranted.name}.${SUBSIDY_OPTIONS.SALARY_SUPPORT}}`}
+              id={`${fields.subsidyGranted.name}.${PAY_SUBSIDY_GRANTED.GRANTED}}`}
               name={fields.subsidyGranted.name}
-              value={SUBSIDY_OPTIONS.SALARY_SUPPORT}
+              value={PAY_SUBSIDY_GRANTED.GRANTED}
               label={t(
                 `${translationsBase}.fields.${fields.subsidyGranted.name}.salarySupport`
               )}
@@ -250,7 +250,7 @@ const FormContent: React.FC<Props> = ({
               onChange={() => {
                 formik.setFieldValue(
                   fields.subsidyGranted.name,
-                  SUBSIDY_OPTIONS.SALARY_SUPPORT
+                  PAY_SUBSIDY_GRANTED.GRANTED
                 );
                 formik.setFieldValue(
                   APPLICATION_FIELD_KEYS.APPRENTICESHIP_PROGRAM,
@@ -258,13 +258,13 @@ const FormContent: React.FC<Props> = ({
                 );
               }}
               checked={
-                formik.values.subsidyGranted === SUBSIDY_OPTIONS.SALARY_SUPPORT
+                formik.values.subsidyGranted === PAY_SUBSIDY_GRANTED.GRANTED
               }
             />
             <$RadioButton
-              id={`${fields.subsidyGranted.name}.${SUBSIDY_OPTIONS.OLD_AGE_SUPPORT}`}
+              id={`${fields.subsidyGranted.name}.${PAY_SUBSIDY_GRANTED.GRANTED_AGED}`}
               name={fields.subsidyGranted.name}
-              value={SUBSIDY_OPTIONS.OLD_AGE_SUPPORT}
+              value={PAY_SUBSIDY_GRANTED.GRANTED_AGED}
               label={t(
                 `${translationsBase}.fields.${fields.subsidyGranted.name}.oldAgeSupport`
               )}
@@ -272,11 +272,12 @@ const FormContent: React.FC<Props> = ({
               onChange={() => {
                 formik.setFieldValue(
                   fields.subsidyGranted.name,
-                  SUBSIDY_OPTIONS.OLD_AGE_SUPPORT
+                  PAY_SUBSIDY_GRANTED.GRANTED_AGED
                 );
               }}
               checked={
-                formik.values.subsidyGranted === SUBSIDY_OPTIONS.OLD_AGE_SUPPORT
+                formik.values.subsidyGranted ===
+                PAY_SUBSIDY_GRANTED.GRANTED_AGED
               }
             />
             <$RadioButton
@@ -294,7 +295,7 @@ const FormContent: React.FC<Props> = ({
             />
           </SelectionGroup>
         </$GridCell>
-        {formik.values.subsidyGranted === SUBSIDY_OPTIONS.SALARY_SUPPORT && (
+        {formik.values.subsidyGranted === PAY_SUBSIDY_GRANTED.GRANTED && (
           <$GridCell
             as={$Grid}
             $colSpan={12}
@@ -368,7 +369,6 @@ const FormContent: React.FC<Props> = ({
             name={fields.startDate.name}
             label={fields.startDate.label}
             placeholder={fields.startDate.placeholder}
-            disabled={!formik.values.benefitType}
             language={language}
             onBlur={formik.handleBlur}
             onChange={(value) =>
@@ -394,7 +394,7 @@ const FormContent: React.FC<Props> = ({
             name={fields.endDate.name}
             label={fields.endDate.label}
             placeholder={fields.endDate.placeholder}
-            disabled={!formik.values.benefitType || !formik.values.startDate}
+            disabled={!formik.values.startDate}
             language={language}
             onBlur={formik.handleBlur}
             onChange={(value) =>

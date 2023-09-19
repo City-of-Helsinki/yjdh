@@ -289,9 +289,12 @@
       "deMinimisAidsAdd": "Lisää",
       "deMinimisAidsRemove": "Poista",
       "deMinimisAidsNo": "Onko hakijalle myönnetty deminimis-tukea?",
-      "companyName": "Työnantajan nimi",
-      "companyBusinessId": "Y-tunnus",
-      "companyStreetAddress": "Osoite",
+      "companyName": "Työnantajan nimi *",
+      "companyBusinessId": "Y-tunnus *",
+      "companyStreetAddress": "Katuosoite *",
+      "companyPostcode": "Postinumero *",
+      "companyCity": "Postitoimipaikka *",
+      "companyInformationShort": "Merkityt tiedot on haettu Yritys- ja yhteisötietojärjestelmästä.",
       "notifications": {
         "companyInformation": {
           "label": "Tiedot haetaan Yritys- ja yhteisötietojärjestelmästä",
@@ -332,7 +335,9 @@
       },
       "fields": {
         "useAlternativeAddress": {
-          "label": "Käytä toista postiosoitetta, johon Helsinki-lisä päätös toimitetaan"
+          "label": "Toimitusosoite, johon päätös toimitetaan",
+          "false": "Sama kuin yllä",
+          "true": "Käytä toista osoitetta"
         },
         "alternativeCompanyStreetAddress": {
           "label": "Osoite",

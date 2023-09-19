@@ -1,17 +1,19 @@
-import {
-  APPLICATION_FIELD_KEYS,
-} from 'benefit/handler/constants';
+import { APPLICATION_FIELD_KEYS } from 'benefit/handler/constants';
 import DeMinimisContext from 'benefit/handler/context/DeMinimisContext';
 import {
   Application,
   ApplicationFields,
 } from 'benefit/handler/types/application';
-import {
-  ORGANIZATION_TYPES
-} from 'benefit-shared/constants';
+import { ORGANIZATION_TYPES } from 'benefit-shared/constants';
 import { DeMinimisAid } from 'benefit-shared/types/application';
 import { FormikProps } from 'formik';
-import { Select, SelectionGroup, TextArea, TextInput } from 'hds-react';
+import {
+  IconCheckCircleFill,
+  Select,
+  SelectionGroup,
+  TextArea,
+  TextInput,
+} from 'hds-react';
 import { TFunction } from 'next-i18next';
 import React from 'react';
 import InputMask from 'react-input-mask';
@@ -30,7 +32,12 @@ import { OptionType } from 'shared/types/common';
 import { phoneToLocal } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
-import { $CompanyInfoField, $CompanyInfoHeader } from '../FormContent.sc';
+import {
+  $CompanyInfoLabel,
+  $CompanyInfoValue,
+  $CompanyInfoWrapper,
+  $IconWrapper,
+} from './CompanySection.sc';
 import DeMinimisAidForm from './deMinimisAid/DeMinimisAidForm';
 import DeMinimisAidsList from './deMinimisAid/list/DeMinimisAidsList';
 
@@ -59,50 +66,114 @@ const CompanySection: React.FC<Props> = ({
   const theme = useTheme();
   const { setDeMinimisAids } = React.useContext(DeMinimisContext);
 
+  type WithCheckboxProps = {
+    text: string;
+    isBeginning?: boolean;
+  };
+
+  const WithCheckbox: React.FC<WithCheckboxProps> = ({
+    text,
+    isBeginning = false,
+  }) => (
+    <$IconWrapper $isBeginning={isBeginning}>
+      {!isBeginning && text}
+      <IconCheckCircleFill
+        color="var(--color-tram)"
+        aria-hidden="true"
+        aria-label="check"
+      />
+      {isBeginning && text}
+    </$IconWrapper>
+  );
+
   return (
     <>
       <FormSection
         paddingBottom
+        headerLevel="h2"
         withoutDivider
         header={t(`${translationsBase}.headings.company1`)}
       >
         <$GridCell as={$Grid} $colSpan={12}>
-          <$GridCell $colSpan={3}>
-            <$CompanyInfoHeader>
-              {t(`${translationsBase}.companyName`)} *
-            </$CompanyInfoHeader>
-            <$CompanyInfoField>{application?.company?.name}</$CompanyInfoField>
-          </$GridCell>
-          <$GridCell $colSpan={3}>
-            <$CompanyInfoHeader>
-              {t(`${translationsBase}.companyBusinessId`)} *
-            </$CompanyInfoHeader>
-            <$CompanyInfoField>
-              {application?.company?.businessId}
-            </$CompanyInfoField>
-          </$GridCell>
-        </$GridCell>
-        <$GridCell as={$Grid} $colSpan={12}>
-          <$GridCell $colSpan={3}>
-            <$CompanyInfoHeader>
-              {t(`${translationsBase}.companyStreetAddress`)} *
-            </$CompanyInfoHeader>
-            <$CompanyInfoField>
-              {`${application?.company?.streetAddress}, ${application?.company?.postcode}, ${application?.company?.city}`}
-            </$CompanyInfoField>
+          <$GridCell as={$Grid} $colSpan={12}>
+            <$CompanyInfoWrapper>
+              <$CompanyInfoLabel>
+                {t(`${translationsBase}.companyName`)}
+              </$CompanyInfoLabel>
+              <$CompanyInfoValue>
+                <WithCheckbox text={application?.company?.name} />
+              </$CompanyInfoValue>
+              <$CompanyInfoLabel>
+                {t(`${translationsBase}.companyBusinessId`)}
+              </$CompanyInfoLabel>
+              <$CompanyInfoValue>
+                <WithCheckbox text={application?.company?.businessId} />
+              </$CompanyInfoValue>
+              <$CompanyInfoLabel>
+                {t(`${translationsBase}.companyStreetAddress`)}
+              </$CompanyInfoLabel>
+              <$CompanyInfoValue>
+                <WithCheckbox text={application?.company?.streetAddress} />
+              </$CompanyInfoValue>
+              <$CompanyInfoLabel>
+                {t(`${translationsBase}.companyPostcode`)}
+              </$CompanyInfoLabel>
+              <$CompanyInfoValue>
+                <WithCheckbox text={application?.company?.postcode} />
+              </$CompanyInfoValue>
+              <$CompanyInfoLabel>
+                {t(`${translationsBase}.companyCity`)}
+              </$CompanyInfoLabel>
+              <$CompanyInfoValue>
+                <WithCheckbox text={application?.company?.city} />
+              </$CompanyInfoValue>
+            </$CompanyInfoWrapper>
+            <$GridCell
+              $colStart={1}
+              $colSpan={12}
+              css={`
+                font-size: 1.1rem;
+                margin-bottom: ${theme.spacing.xl};
+              `}
+            >
+              <WithCheckbox
+                text={t(`${translationsBase}.companyInformationShort`)}
+                isBeginning
+              />
+            </$GridCell>
           </$GridCell>
         </$GridCell>
         <$GridCell $colSpan={6}>
-          <$Checkbox
+          <SelectionGroup
             id={fields.useAlternativeAddress.name}
-            name={fields.useAlternativeAddress.name}
             label={fields.useAlternativeAddress.label}
-            checked={formik.values.useAlternativeAddress === true}
+            direction="vertical"
+            required
             errorText={getErrorMessage(fields.useAlternativeAddress.name)}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            aria-invalid={!!getErrorMessage(fields.useAlternativeAddress.name)}
-          />
+          >
+            <$RadioButton
+              id={`${fields.subsidyGranted.name}.false`}
+              name={fields.subsidyGranted.name}
+              label={t(
+                `${translationsBase}.fields.useAlternativeAddress.false`
+              )}
+              onBlur={formik.handleBlur}
+              onChange={() => {
+                formik.setFieldValue(fields.useAlternativeAddress.name, false);
+              }}
+              checked={formik.values.useAlternativeAddress === false}
+            />
+            <$RadioButton
+              id={`${fields.subsidyGranted.name}.true`}
+              name={fields.subsidyGranted.name}
+              label={t(`${translationsBase}.fields.useAlternativeAddress.true`)}
+              onBlur={formik.handleBlur}
+              onChange={() => {
+                formik.setFieldValue(fields.useAlternativeAddress.name, true);
+              }}
+              checked={formik.values.useAlternativeAddress === true}
+            />
+          </SelectionGroup>
         </$GridCell>
         {formik.values.useAlternativeAddress && (
           <$GridCell

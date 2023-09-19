@@ -12,7 +12,7 @@ import {
   BENEFIT_TYPES,
   EMPLOYEE_KEYS,
   ORGANIZATION_TYPES,
-  SUBSIDY_OPTIONS,
+  PAY_SUBSIDY_GRANTED,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
 import startOfYear from 'date-fns/startOfYear';
@@ -177,13 +177,13 @@ export const getValidationSchema = (
     [APPLICATION_FIELD_KEYS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION]:
       Yup.string(),
     [APPLICATION_FIELD_KEYS.SUBSIDY_GRANTED]: Yup.mixed().oneOf(
-      [null, ...Object.values(SUBSIDY_OPTIONS)],
+      [null, ...Object.values(PAY_SUBSIDY_GRANTED)],
       t(VALIDATION_MESSAGE_KEYS.INVALID)
     ),
     [APPLICATION_FIELD_KEYS.APPRENTICESHIP_PROGRAM]: Yup.boolean()
       .nullable()
       .when(APPLICATION_FIELD_KEYS.SUBSIDY_GRANTED, {
-        is: SUBSIDY_OPTIONS.SALARY_SUPPORT,
+        is: PAY_SUBSIDY_GRANTED.GRANTED,
         then: Yup.boolean()
           .nullable()
           .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
@@ -289,16 +289,4 @@ export const getValidationSchema = (
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
         }),
       }),
-    [APPLICATION_FIELD_KEYS.APPLICANT_AGREEMENT]: Yup.boolean().oneOf(
-      [true],
-      t(VALIDATION_MESSAGE_KEYS.REQUIRED)
-    ),
-    [APPLICATION_FIELD_KEYS.EMPLOYEE_SIGNED]: Yup.boolean().oneOf(
-      [true],
-      t(VALIDATION_MESSAGE_KEYS.REQUIRED)
-    ),
-    [APPLICATION_FIELD_KEYS.EMPLOYER_SIGNED]: Yup.boolean().oneOf(
-      [true],
-      t(VALIDATION_MESSAGE_KEYS.REQUIRED)
-    ),
   });
