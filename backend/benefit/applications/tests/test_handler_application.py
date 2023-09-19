@@ -9,7 +9,7 @@ from applications.tests.test_applications_api import (
 from calculator.models import Calculation, PaySubsidy
 
 
-def test_application_submit_creates_calculation_and_one_pay_subsidy(
+def test_application_submit_creates_calculation_and_two_paysubsidies(
     request, handler_api_client, application
 ):
     """
@@ -30,6 +30,7 @@ def test_application_submit_creates_calculation_and_one_pay_subsidy(
 
     data["benefit_type"] = BenefitType.SALARY_BENEFIT
     data["pay_subsidy_percent"] = "50"
+    data["additional_pay_subsidy_percent"] = "70"
     data["pay_subsidy_granted"] = True
 
     response = handler_api_client.put(
