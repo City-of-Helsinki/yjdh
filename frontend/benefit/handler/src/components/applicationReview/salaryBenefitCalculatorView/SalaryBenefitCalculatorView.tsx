@@ -534,12 +534,12 @@ const SalaryBenefitCalculatorView: React.FC<
                 setNewTrainingCompensation((prevValue) => ({
                   ...prevValue,
                   endDate:
-                    getCorrectEndDate(prevValue.startDate, value).toString() ??
+                    getCorrectEndDate(prevValue.startDate, value)?.toString() ??
                     '',
                 }))
               }
               value={convertToUIDateFormat(newTrainingCompensation.endDate)}
-              invalid={!!getErrorMessage(fields.trainingCompensationEndDate.name)}
+              invalid={fields.trainingCompensationEndDate && !!getErrorMessage(fields.trainingCompensationEndDate.name)}
               aria-invalid={!!getErrorMessage(fields.trainingCompensationEndDate.name)}
               errorText={getErrorMessage(fields.trainingCompensationEndDate.name)}
               style={{ paddingRight: `${theme.spacing.s}` }}
