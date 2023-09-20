@@ -167,3 +167,5 @@ export enum PAY_SUBSIDY_GRANTED {
   GRANTED_AGED = 'granted_aged',
   NOT_GRANTED = 'not_granted',
 }
+
+export const APPLICATION_START_DATE = new Date(new Date().getFullYear(), 0, 1);

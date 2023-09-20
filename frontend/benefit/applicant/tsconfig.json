@@ -12,6 +12,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "../../shared/src/types/*.d.ts"
+    "../../shared/src/types/*.d.ts",
+    "../shared/src/utils/dates.ts"
   ]
 }
