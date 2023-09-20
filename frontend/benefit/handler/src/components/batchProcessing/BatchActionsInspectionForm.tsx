@@ -51,7 +51,7 @@ BatchProps) => {
     setBatchCloseAnimation
   );
 
-  const { mutate: changeBatchStatus } = useBatchStatus();
+  const { mutate: changeBatchStatus } = useBatchStatus(setBatchCloseAnimation);
   const [isModalBatchToDraft, setModalBatchToDraft] = React.useState(false);
   const [isModalBatchToCompletion, setModalBatchToCompletion] =
     React.useState(false);
@@ -76,7 +76,10 @@ BatchProps) => {
   };
 
   const handleBatchStatusChange = (): void => {
-    changeBatchStatus({ id, status: BATCH_STATUSES.DRAFT });
+    changeBatchStatus({
+      id,
+      status: BATCH_STATUSES.DRAFT,
+    });
     setModalBatchToDraft(false);
   };
 
