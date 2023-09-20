@@ -40,7 +40,7 @@ const ApplicationForm: React.FC = () => {
     maxEndDate,
     setEndDate,
     getSelectValue,
-    subsidyOptions,
+    paySubsidyOptions,
     deMinimisAidSet,
     attachments,
     dispatchStep,
@@ -119,7 +119,7 @@ const ApplicationForm: React.FC = () => {
             maxEndDate={maxEndDate}
             setEndDate={setEndDate}
             getSelectValue={getSelectValue}
-            subsidyOptions={subsidyOptions}
+            paySubsidyOptions={paySubsidyOptions}
             deMinimisAidSet={deMinimisAidSet}
             attachments={attachments}
             checkedConsentArray={checkedConsentArray}

@@ -270,20 +270,20 @@
         "company1": "Työnantajan tiedot",
         "company2": "Työnantajan yhteyshenkilö",
         "company3": "Työnantajan saamat de minimis -tuet",
-        "company4": "YT-tilanne",
+        "company4": "Muutosneuvottelut",
         "company1Additional": "Postiosoite päätöstä varten",
         "company5": "Työnantajan yhteystiedot",
-        "employment1": "Työllistettävä henkilö",
+        "employment1": "Työllistettävän tiedot",
         "employment1Short": "Palkattava henkilö",
         "employment2": "Työsuhteeseen myönnetyt valtion tuet",
         "employment3": "Haettu ajanjakso",
         "employment3Long": "Haettava tukimuoto ja ajankohta",
-        "employment4": "Tukea haetaan ajalle",
+        "employment4": "Haettu ajanjakso",
         "employment5Employment": "Työsuhde",
         "employment5Assignment": "Toimeksianto",
         "employment5EmploymentSub1": "Palkkauskustannukset",
         "attachments": "Liitteet",
-        "validity": "Hakemuksen pätevyys"
+        "validity": "Ehtojen hyväksyminen ja allekirjoitukset"
       },
       "deMinimisAidsHeading": "Listaa tähän kaikki organisaatiolle kuluvan vuoden ja kahden edellisen verovuoden aikana myönnetyt de minimis -tuet",
       "deMinimisAidsAdd": "Lisää",
@@ -335,9 +335,7 @@
       },
       "fields": {
         "useAlternativeAddress": {
-          "label": "Toimitusosoite, johon päätös toimitetaan",
-          "false": "Sama kuin yllä",
-          "true": "Käytä toista osoitetta"
+          "label": "Käytä toista postiosoitetta"
         },
         "alternativeCompanyStreetAddress": {
           "label": "Osoite",
@@ -357,7 +355,7 @@
         },
         "companyBankAccountNumber": {
           "label": "Tilinumero",
-          "placeholder": "IBAN muodossa"
+          "placeholder": "IBAN-muodossa"
         },
         "companyContactPersonFirstName": {
           "label": "Etunimi",
@@ -384,8 +382,10 @@
           "no": "Ei"
         },
         "associationImmediateManagerCheck": {
-          "label": "Lähiesihenkilö palkattavalle henkilölle",
-          "placeholder": "Työnantajalla on asianmukaiset työtilat ja työnjohdollinen, ei-palkkatuettu esihenkilö palkattavalle henkilölle."
+          "label": "Onko työllistettävälle osoitettu työnjohdollinen esihenkilö?",
+          "placeholder": "Työnantajalla on asianmukaiset työtilat ja työnjohdollinen, ei-palkkatuettu esihenkilö palkattavalle henkilölle.",
+          "yes": "Kyllä",
+          "no": "Ei"
         },
         "deMinimisAid": {
           "label": "Onko hakijalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis -tukea?",
@@ -406,12 +406,12 @@
           "placeholder": "Valitse"
         },
         "coOperationNegotiations": {
-          "label": "Onko organisaatiolla käynnissä YT-neuvottelut?",
+          "label": "Onko organisaatiolla käynnissä tai edellisen 12 aikana päättynyt muutosneuvottelut?",
           "yes": "Kyllä",
           "no": "Ei"
         },
         "coOperationNegotiationsDescription": {
-          "label": "Anna tarkempi selvitys YT-tilanteesta:",
+          "label": "Anna tarkempi selvitys muutosneuvotteluiden tilanteesta:",
           "placeholder": "Kuvaile tilannetta"
         },
         "firstName": {
@@ -437,7 +437,7 @@
           "no": "Ei",
           "error": "Jotta tukea voidaan myöntää, kotikunnan tulee olla Helsinki."
         },
-        "subsidyGranted": {
+        "paySubsidyGranted": {
           "label": "Onko työsuhteeseen myönnetty jokin seuraavista tuista?",
           "salarySupport": "Palkkatuki",
           "oldAgeSupport": "55-vuotta täyttäneiden työllistämistuki",
@@ -467,24 +467,25 @@
         "workingHours": {
           "label": "Työaika tuntia viikossa",
           "placeholder": "Tunteja",
-          "view": "Työaika: {{workingHours}} tuntia viikossa"
+          "view": "Työaika: {{workingHours}} tuntia viikossa",
+          "helpText": "Tuntia viikossa"
         },
         "collectiveBargainingAgreement": {
           "label": "Sovellettava työehtosopimus",
           "placeholder": "Työehtosopimus"
         },
         "monthlyPay": {
-          "label": "Bruttopalkka (€/kk)",
+          "label": "Bruttopalkka",
           "placeholder": "Palkka",
           "view": "Bruttopalkka {{monthlyPay}} euroa kuukaudessa"
         },
         "otherExpenses": {
-          "label": "Sivukulut (€/kk)",
+          "label": "Sivukulut",
           "placeholder": "Sivukulut",
           "view": "Sivukulut {{otherExpenses}} euroa kuukaudessa"
         },
         "vacationMoney": {
-          "label": "Lomaraha (€)",
+          "label": "Lomaraha",
           "placeholder": "Lomaraha",
           "view": "Lomaraha {{vacationMoney}} euroa"
         },
@@ -504,10 +505,6 @@
           "label": "Päättyen",
           "placeholder": "Päättyen"
         },
-        "paperApplicationDate": {
-          "label": "Saapumispäivä",
-          "placeholder": "Valitse"
-        },
         "applicantAgreement": {
           "label": "Hakija on täyttänyt suostumukset",
           "yes": "Kyllä",
@@ -524,7 +521,8 @@
           "no": "Ei"
         }
       },
-      "salaryExpensesExplanation": "Bruttopalkka ja sivukulut ilmoitetaan euroina kuukaudessa, lomaraha kertasummana",
+      "salaryExpensesExplanation": "Ilmoita bruttopalkka, sivukulut ja lomaraha euroina kuukaudessa.",
+      "eurosPerMonth": "euroa kuukaudessa",
       "dateExplanation": "Mille ajalle työnantaja hakee Helsinki lisää?",
       "paperDateExplanation": "Milloin paperinen hakemus saapui?",
       "tooltips": {
@@ -557,10 +555,10 @@
             "title": "Sopimus oppisopimuskoulutuksen järjestämisestä"
           },
           "helsinkiBenefitVoucher": {
-            "title": "Helsinki-lisä seteli"
+            "title": "Helsinki-lisä-kortti"
           },
           "fullApplication": {
-            "title": "Paperihakemus"
+            "title": "Alkuperäinen hakemus"
           },
           "otherAttachment": {
             "title": "Muu liite"
@@ -626,7 +624,7 @@
       "heading1Additional": "Postiosoite päätöstä varten",
       "heading2": "Yhteyshenkilö",
       "heading3": "Hakijan de minimis-tuet",
-      "heading4": "YT-neuvottelut",
+      "heading4": "Muutosneuvottelut",
       "heading5": "Työllistettävä henkilö",
       "heading6": "Palkkatukipäätös",
       "heading7": "Haettava tukimuoto ja ajankohta",
@@ -639,14 +637,14 @@
       "businessId": "Y-tunnus",
       "bankAccountNumber": "Tilinumero",
       "associationHasBusinessActivities": "Harjoittaako työnantaja taloudellista toimintaa?",
-      "associationImmediateManagerCheck": "Lähiesihenkilö työllistetylle henkilölle?",
+      "associationImmediateManagerCheck": "Onko työllistettävälle osoitettu työnjohdollinen esihenkilö?",
       "applicantLanguage": "Asiointikieli",
       "deMinimisAidGranter": "Tuen myöntäjä",
       "deMinimisAidAmount": "Tuen määrä",
       "deMinimisAidGrantedAt": "Myönnetty",
       "deMinimisAidTotal": "Yhteensä",
       "deMinimisAidsNo": "Hakija ei ole ilmoittanut aiemmista de minimis -tuista.",
-      "coOperationNegotiations": "Onko hakijalla menossa YT-neuvottelut?",
+      "coOperationNegotiations": "Onko organisaatiolla käynnissä tai edellisen 12 aikana päättynyt muutosneuvottelut?",
       "isLivingInHelsinki": "Työllistetyn kotikunta on Helsinki ",
       "paySubsidyGranted": "Onko työsuhteeseen myönnetty palkkatuki?",
       "apprenticeshipProgram": "Onko kyseessä oppisopimus?",

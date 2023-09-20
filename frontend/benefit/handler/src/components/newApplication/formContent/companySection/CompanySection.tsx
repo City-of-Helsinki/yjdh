@@ -17,7 +17,6 @@ import {
 import { TFunction } from 'next-i18next';
 import React from 'react';
 import InputMask from 'react-input-mask';
-import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
 import {
   $Checkbox,
   $RadioButton,
@@ -32,6 +31,7 @@ import { OptionType } from 'shared/types/common';
 import { phoneToLocal } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
+import { $HelpText } from '../FormContent.sc';
 import {
   $CompanyInfoLabel,
   $CompanyInfoValue,
@@ -91,7 +91,6 @@ const CompanySection: React.FC<Props> = ({
       <FormSection
         paddingBottom
         headerLevel="h2"
-        withoutDivider
         header={t(`${translationsBase}.headings.company1`)}
       >
         <$GridCell as={$Grid} $colSpan={12}>
@@ -133,7 +132,7 @@ const CompanySection: React.FC<Props> = ({
               $colSpan={12}
               css={`
                 font-size: 1.1rem;
-                margin-bottom: ${theme.spacing.xl};
+                margin-bottom: ${theme.spacing.m};
               `}
             >
               <WithCheckbox
@@ -143,46 +142,26 @@ const CompanySection: React.FC<Props> = ({
             </$GridCell>
           </$GridCell>
         </$GridCell>
-        <$GridCell $colSpan={6}>
-          <SelectionGroup
+        <$GridCell
+          $colSpan={6}
+          css={`
+            font-size: 1.1rem;
+            margin-bottom: ${theme.spacing.m};
+          `}
+        >
+          <$Checkbox
             id={fields.useAlternativeAddress.name}
+            name={fields.useAlternativeAddress.name}
             label={fields.useAlternativeAddress.label}
-            direction="vertical"
-            required
+            checked={formik.values.useAlternativeAddress === true}
             errorText={getErrorMessage(fields.useAlternativeAddress.name)}
-          >
-            <$RadioButton
-              id={`${fields.subsidyGranted.name}.false`}
-              name={fields.subsidyGranted.name}
-              label={t(
-                `${translationsBase}.fields.useAlternativeAddress.false`
-              )}
-              onBlur={formik.handleBlur}
-              onChange={() => {
-                formik.setFieldValue(fields.useAlternativeAddress.name, false);
-              }}
-              checked={formik.values.useAlternativeAddress === false}
-            />
-            <$RadioButton
-              id={`${fields.subsidyGranted.name}.true`}
-              name={fields.subsidyGranted.name}
-              label={t(`${translationsBase}.fields.useAlternativeAddress.true`)}
-              onBlur={formik.handleBlur}
-              onChange={() => {
-                formik.setFieldValue(fields.useAlternativeAddress.name, true);
-              }}
-              checked={formik.values.useAlternativeAddress === true}
-            />
-          </SelectionGroup>
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            aria-invalid={!!getErrorMessage(fields.useAlternativeAddress.name)}
+          />
         </$GridCell>
         {formik.values.useAlternativeAddress && (
-          <$GridCell
-            as={$Grid}
-            $colSpan={12}
-            css={`
-              margin-top: ${theme.spacing.l};
-            `}
-          >
+          <$GridCell as={$Grid} $colSpan={12}>
             <$GridCell $colSpan={4}>
               <TextInput
                 id={fields.companyDepartment.name}
@@ -280,7 +259,6 @@ const CompanySection: React.FC<Props> = ({
                 id={fields.companyBankAccountNumber.name}
                 name={fields.companyBankAccountNumber.name}
                 label={fields.companyBankAccountNumber.label}
-                placeholder={fields.companyBankAccountNumber.placeholder}
                 invalid={
                   !!getErrorMessage(fields.companyBankAccountNumber.name)
                 }
@@ -294,89 +272,59 @@ const CompanySection: React.FC<Props> = ({
               />
             )}
           </InputMask>
+          <$HelpText>{fields.companyBankAccountNumber.placeholder}</$HelpText>
         </$GridCell>
         {application?.company?.organizationType.toLowerCase() ===
           ORGANIZATION_TYPES.ASSOCIATION.toLowerCase() && (
-          <>
-            <$GridCell $colSpan={8} $colStart={1}>
-              <SelectionGroup
-                label={fields.associationHasBusinessActivities.label}
-                direction="vertical"
-                required
-                errorText={getErrorMessage(
-                  fields.associationHasBusinessActivities.name
+          <$GridCell $colSpan={8} $colStart={1}>
+            <SelectionGroup
+              label={fields.associationHasBusinessActivities.label}
+              direction="vertical"
+              required
+              errorText={getErrorMessage(
+                fields.associationHasBusinessActivities.name
+              )}
+            >
+              <$RadioButton
+                id={`${fields.associationHasBusinessActivities.name}False`}
+                name={fields.associationHasBusinessActivities.name}
+                value="false"
+                label={t(
+                  `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.no`
                 )}
-              >
-                <$RadioButton
-                  id={`${fields.associationHasBusinessActivities.name}False`}
-                  name={fields.associationHasBusinessActivities.name}
-                  value="false"
-                  label={t(
-                    `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.no`
-                  )}
-                  onChange={() => {
-                    formik.setFieldValue(
-                      fields.associationHasBusinessActivities.name,
-                      false
-                    );
-                  }}
-                  // 3 states: null (none is selected), true, false
-                  checked={
-                    formik.values.associationHasBusinessActivities === false
-                  }
-                />
-                <$RadioButton
-                  id={`${fields.associationHasBusinessActivities.name}True`}
-                  name={fields.associationHasBusinessActivities.name}
-                  value="true"
-                  label={t(
-                    `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.yes`
-                  )}
-                  onChange={() =>
-                    formik.setFieldValue(
-                      fields.associationHasBusinessActivities.name,
-                      true
-                    )
-                  }
-                  checked={
-                    formik.values.associationHasBusinessActivities === true
-                  }
-                />
-              </SelectionGroup>
-            </$GridCell>
-            <$GridCell $colSpan={8}>
-              <FieldLabel
-                value={fields.associationImmediateManagerCheck.label}
-                required
-              />
-              <$Checkbox
-                id={fields.associationImmediateManagerCheck.name}
-                name={fields.associationImmediateManagerCheck.name}
-                label={fields.associationImmediateManagerCheck.placeholder}
-                required
+                onChange={() => {
+                  formik.setFieldValue(
+                    fields.associationHasBusinessActivities.name,
+                    false
+                  );
+                }}
+                // 3 states: null (none is selected), true, false
                 checked={
-                  formik.values.associationImmediateManagerCheck === true
+                  formik.values.associationHasBusinessActivities === false
                 }
-                errorText={getErrorMessage(
-                  fields.associationImmediateManagerCheck.name
+              />
+              <$RadioButton
+                id={`${fields.associationHasBusinessActivities.name}True`}
+                name={fields.associationHasBusinessActivities.name}
+                value="true"
+                label={t(
+                  `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.yes`
                 )}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                aria-invalid={
-                  !!getErrorMessage(
-                    fields.associationImmediateManagerCheck.name
+                onChange={() =>
+                  formik.setFieldValue(
+                    fields.associationHasBusinessActivities.name,
+                    true
                   )
                 }
+                checked={
+                  formik.values.associationHasBusinessActivities === true
+                }
               />
-            </$GridCell>
-          </>
+            </SelectionGroup>
+          </$GridCell>
         )}
       </FormSection>
-      <FormSection
-        paddingBottom
-        withoutDivider
-        header={t(`${translationsBase}.headings.company2`)}
-      >
+      <FormSection header={t(`${translationsBase}.headings.company2`)}>
         <$GridCell $colSpan={4}>
           <TextInput
             id={fields.companyContactPersonFirstName.name}
@@ -457,7 +405,7 @@ const CompanySection: React.FC<Props> = ({
             required
           />
         </$GridCell>
-        <$GridCell $colStart={1} $colSpan={4}>
+        <$GridCell $colSpan={3}>
           <Select
             defaultValue={{ label: 'Suomi', value: 'fi' }}
             helper={getErrorMessage(fields.applicantLanguage.name)}
@@ -476,11 +424,7 @@ const CompanySection: React.FC<Props> = ({
         </$GridCell>
       </FormSection>
       {showDeminimisSection && (
-        <FormSection
-          paddingBottom
-          withoutDivider
-          header={t(`${translationsBase}.headings.company3`)}
-        >
+        <FormSection header={t(`${translationsBase}.headings.company3`)}>
           <$GridCell $colSpan={8}>
             <SelectionGroup
               id={`${fields.deMinimisAid.name}Set`}
@@ -526,11 +470,7 @@ const CompanySection: React.FC<Props> = ({
           )}
         </FormSection>
       )}
-      <FormSection
-        paddingBottom
-        withoutDivider
-        header={t(`${translationsBase}.headings.company4`)}
-      >
+      <FormSection header={t(`${translationsBase}.headings.company4`)}>
         <$GridCell $colSpan={8}>
           <SelectionGroup
             id={fields.coOperationNegotiations.name}

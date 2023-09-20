@@ -176,13 +176,13 @@ export const getValidationSchema = (
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELD_KEYS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION]:
       Yup.string(),
-    [APPLICATION_FIELD_KEYS.SUBSIDY_GRANTED]: Yup.mixed().oneOf(
+    [APPLICATION_FIELD_KEYS.PAY_SUBSIDY_GRANTED]: Yup.mixed().oneOf(
       [null, ...Object.values(PAY_SUBSIDY_GRANTED)],
       t(VALIDATION_MESSAGE_KEYS.INVALID)
     ),
     [APPLICATION_FIELD_KEYS.APPRENTICESHIP_PROGRAM]: Yup.boolean()
       .nullable()
-      .when(APPLICATION_FIELD_KEYS.SUBSIDY_GRANTED, {
+      .when(APPLICATION_FIELD_KEYS.PAY_SUBSIDY_GRANTED, {
         is: PAY_SUBSIDY_GRANTED.GRANTED,
         then: Yup.boolean()
           .nullable()
@@ -197,9 +197,6 @@ export const getValidationSchema = (
         test: (value = '') => validateDateIsFromCurrentYearOnwards(value),
       }),
     [APPLICATION_FIELD_KEYS.END_DATE]: Yup.string().required(
-      t(VALIDATION_MESSAGE_KEYS.REQUIRED)
-    ),
-    [APPLICATION_FIELD_KEYS.PAPER_APPLICATION_DATE]: Yup.string().required(
       t(VALIDATION_MESSAGE_KEYS.REQUIRED)
     ),
     [APPLICATION_FIELD_KEYS.EMPLOYEE]: Yup.object()
