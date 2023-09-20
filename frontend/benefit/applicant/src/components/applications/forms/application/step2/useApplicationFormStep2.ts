@@ -1,3 +1,7 @@
+import {
+  getMaxEndDate,
+  getMinEndDate,
+} from '@frontend/benefit-shared/src/utils/dates';
 import { SUPPORTED_LANGUAGES } from 'benefit/applicant/constants';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import { useTranslation } from 'benefit/applicant/i18n';
@@ -25,7 +29,6 @@ import {
 import { focusAndScroll } from 'shared/utils/dom.utils';
 import { isString } from 'shared/utils/type-guards';
 
-import { getMaxEndDate, getMinEndDate } from './utils/dates';
 import { getValidationSchema } from './utils/validation';
 
 type Step2Fields = Record<

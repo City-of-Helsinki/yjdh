@@ -162,3 +162,5 @@ export enum PROPOSALS_FOR_DECISION {
   ACCEPTED = 'accepted',
   REJECTED = 'rejected',
 }
+
+export const APPLICATION_START_DATE = new Date(new Date().getFullYear(), 0, 1);
