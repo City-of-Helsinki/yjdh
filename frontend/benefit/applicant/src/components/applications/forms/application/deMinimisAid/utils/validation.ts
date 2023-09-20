@@ -1,3 +1,4 @@
+import { validateIsFutureDate } from '@frontend/benefit-shared/src/utils/dates';
 import {
   DE_MINIMIS_AID_GRANTED_AT_MAX_DATE,
   DE_MINIMIS_AID_GRANTED_AT_MIN_DATE,
@@ -7,7 +8,7 @@ import {
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
 import { DeMinimisAid } from 'benefit-shared/types/application';
-import { isBefore, isFuture } from 'date-fns';
+import { isBefore } from 'date-fns';
 import { TFunction } from 'next-i18next';
 import { convertToUIDateFormat, parseDate } from 'shared/utils/date.utils';
 import { getNumberValue } from 'shared/utils/string.utils';
@@ -35,16 +36,7 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<DeMinimisAid> =>
         message: t(VALIDATION_MESSAGE_KEYS.DATE_MAX, {
           max: convertToUIDateFormat(DE_MINIMIS_AID_GRANTED_AT_MAX_DATE),
         }),
-        test: (value) => {
-          if (!value) return false;
-
-          const date = parseDate(value);
-
-          if (date && isFuture(date)) {
-            return false;
-          }
-          return true;
-        },
+        test: (value) => validateIsFutureDate(value),
       })
       .test({
         message: t(VALIDATION_MESSAGE_KEYS.DATE_MIN, {
