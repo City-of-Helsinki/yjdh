@@ -33,7 +33,6 @@ import {
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
 import { BenefitAttachment } from 'shared/types/attachment';
-import { OptionType } from 'shared/types/common';
 import {
   formatStringFloatValue,
   stringFloatToFixed,
@@ -55,8 +54,6 @@ type Props = {
   minEndDate: Date;
   maxEndDate: Date | undefined;
   setEndDate: () => void;
-  getSelectValue: (fieldName: keyof Application) => OptionType | null;
-  paySubsidyOptions: OptionType[];
   deMinimisAidSet: DeMinimisAid[];
   attachments: BenefitAttachment[];
   checkedConsentArray: boolean[];
@@ -92,7 +89,6 @@ const FormContent: React.FC<Props> = ({
     clearDatesValues,
     clearCommissionValues,
     clearContractValues,
-    clearPaySubsidyValues,
     clearAlternativeAddressValues,
     getErrorMessage,
   } = useFormContent(formik, fields);
@@ -106,7 +102,6 @@ const FormContent: React.FC<Props> = ({
         formik.values.associationHasBusinessActivities,
       apprenticeshipProgram: formik.values.apprenticeshipProgram,
       benefitType: formik.values.benefitType,
-      paySubsidyGranted: formik.values.paySubsidyGranted,
       startDate: formik.values.startDate,
       useAlternativeAddress: formik.values.useAlternativeAddress,
     },
@@ -117,18 +112,10 @@ const FormContent: React.FC<Props> = ({
       clearDatesValues,
       clearCommissionValues,
       clearContractValues,
-      clearPaySubsidyValues,
       clearAlternativeAddressValues,
       setEndDate,
     }
   );
-
-  const isAbleToSelectEmploymentBenefit =
-    application?.company?.organizationType !== ORGANIZATION_TYPES.ASSOCIATION ||
-    (application?.company?.organizationType ===
-      ORGANIZATION_TYPES.ASSOCIATION &&
-      application?.associationHasBusinessActivities);
-  const isAbleToSelectSalaryBenefit = formik.values.paySubsidyGranted === true;
 
   return (
     <form onSubmit={handleSave} noValidate>
