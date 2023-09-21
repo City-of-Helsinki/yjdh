@@ -12190,9 +12190,9 @@ snake-case@^3.0.4:
     tslib "^2.0.3"
 
 snakecase-keys@^5.4.2:
-  version "5.4.2"
-  resolved "https://registry.yarnpkg.com/snakecase-keys/-/snakecase-keys-5.4.2.tgz#b886f77c9a5fc347b04bd0ad1a05213190e60b9e"
-  integrity sha512-6mzBNP9t1ghArxcaCxZNGIJewE9qyH+eUQIGba9I7MJcZoV4WX4fM2Y+/K9+BGHCFB94ZASfoC3F44UxLXce+A==
+  version "5.4.7"
+  resolved "https://registry.yarnpkg.com/snakecase-keys/-/snakecase-keys-5.4.7.tgz#8b66d3360eb325669b97286992ec76e20cf39fb2"
+  integrity sha512-li/JvhIBDTbualWBSlUJoHws/kVqMYN9GSw//NyatvoAWBppiGRJVOOniMcRa/PNN5FCwOTYMoZT/SJ2IuBUBw==
   dependencies:
     map-obj "^4.1.0"
     snake-case "^3.0.4"
