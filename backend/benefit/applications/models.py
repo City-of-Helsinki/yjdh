@@ -257,7 +257,10 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     )
 
     pay_subsidy_granted = models.CharField(
-        null=True, choices=PaySubsidyGranted.choices, max_length=128, blank=True
+        choices=PaySubsidyGranted.choices,
+        max_length=128,
+        null=True,
+        blank=True,
     )
 
     # The PaySubsidy model stores the values entered by handlers for the calculation.
