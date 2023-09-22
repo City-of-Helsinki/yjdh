@@ -237,10 +237,6 @@
           "commissionBenefitSelected": "Merkitse tähän toimeksiannon kesto"
         },
         "fields": {
-          "prefilled": {
-            "companyName": "Työnantajan nimi",
-            "": "Työnantajan nimi"
-          },
           "firstName": {
             "label": "Etunimi",
             "placeholder": "Etunimi"

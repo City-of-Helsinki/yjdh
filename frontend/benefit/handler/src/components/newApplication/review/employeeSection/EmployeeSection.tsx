@@ -23,7 +23,6 @@ const EmploymentSection: React.FC<ReviewChildProps> = ({
             data.employee?.lastName || ''
           }`}</$ViewField>
           <$ViewField>{data.employee?.socialSecurityNumber}</$ViewField>
-          <$ViewField>{data.employee?.phoneNumber}</$ViewField>
           <$ViewField>
             {t(`${translationsBase}.fields.isLivingInHelsinki.label`)}
             {': '}

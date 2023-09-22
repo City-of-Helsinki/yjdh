@@ -103,6 +103,11 @@
           "associationHasBusinessActivities": "På Helsingforstillägget tillämpas reglerna om statligt stöd när stödtagaren är ett företag eller en organisation som bedriver ekonomisk verksamhet, oavsett juridisk form eller finansieringsform. Med ekonomisk verksamhet avses försäljning av tjänster och produkter, som sker fortlöpande, i förvärvssyfte och i konkurrensomständigheter (alla tre villkoren ska uppfyllas samtidigt). Reglerna om statligt stöd kan också tillämpas på icke-vinstdrivande arbetsgivare. Ekonomisk verksamhet som skattemyndigheterna inte har ansett vara beskattningsbar anses i regel inte vara ekonomisk verksamhet."
         },
         "fields": {
+          "companyBusinessId": "FO-nummer",
+          "companyName": "Arbetsgivarens namn",
+          "companyAddress": "Adress",
+          "companyPostcode": "Postnummer",
+          "companyCity": "Postort",
           "useAlternativeAddress": {
             "label": "Använd en annan adress"
           },
@@ -232,11 +237,6 @@
           "commissionBenefitSelected": "Ange uppdragets längd här"
         },
         "fields": {
-          "companyBusinessId": "FO-nummer",
-          "companyName": "Arbetsgivarens namn",
-          "companyAddress": "Adress",
-          "companyPostcode": "Postnummer",
-          "companyCity": "Postort",
           "firstName": {
             "label": "Förnamn",
             "placeholder": "Förnamn"
