@@ -391,6 +391,11 @@ class ApplicationsCsvService(CsvExportBase):
             for application in self.get_applications():
                 # for applications with multiple ahjo rows, output the same number of rows.
                 # If no Ahjo rows (calculation incomplete), always output just one row.
+                if self.prune_data_for_talpa:
+                    # For Talpa, only one row per application is needed
+                    application.application_row_idx = 1
+                    yield application
+                    continue
                 for application_row_idx, unused in enumerate(
                     application.ahjo_rows or [None]
                 ):
