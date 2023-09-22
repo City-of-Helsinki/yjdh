@@ -1,5 +1,6 @@
 import { Message, MessageData } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
+import { friendlyFormatIBAN } from 'ibantools';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 
 export const mapMessages = (data: MessageData[] | undefined): Message[] =>
@@ -26,3 +27,6 @@ export const setAppLoaded = (): void => {
 
 export const isTruthy = (value: string | boolean): boolean =>
   ['1', true, 'true'].includes(value);
+
+export const formatIBAN = (ibanNumber: string): string =>
+  friendlyFormatIBAN(ibanNumber);
