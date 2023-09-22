@@ -21,11 +21,14 @@ const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
     <ReviewSection
       header={t(`${translationsBase}.headings.heading3`)}
       action={data.status !== APPLICATION_STATUSES.RECEIVED ? <span /> : null}
-      section='deMinimisAids'
+      section="deMinimisAids"
     >
       {data.deMinimisAidSet && data.deMinimisAidSet?.length > 0 ? (
         <>
           <$GridCell $colSpan={3}>
+            <$ViewField>
+              {t(`${translationsBase}.fields.deMinimisAidsYes`)}
+            </$ViewField>
             <$SummaryTableHeader>
               {t(`${translationsBase}.fields.deMinimisAidGranter`)}
             </$SummaryTableHeader>

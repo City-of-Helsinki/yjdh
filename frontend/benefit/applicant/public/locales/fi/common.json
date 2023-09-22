@@ -83,7 +83,8 @@
         "deMinimisAidsHeading": "Täytä alle kaikki organisaatiolle myönnetyt de minimis -tuet kuluvan vuoden ja kahden edellisen verovuoden ajalta.",
         "deMinimisAidsAdd": "Tallenna",
         "deMinimisAidsRemove": "Poista",
-        "deMinimisAidsNo": "Hakija ei ole ilmoittanut aiemmista de minimis -tuista.",
+        "deMinimisAidsYes": "Työnantajalle on myönnetty de minimis -tukia kuluvan vuoden ja kahden edellisen verovuoden aikana seuraavasti.",
+        "deMinimisAidsNo": "Työnantaja ei ole saanut de minimis -tukia kuluvan vuoden ja kahden edellisen verovuoden aikana.",
         "notifications": {
           "companyInformation": {
             "label": "Tiedot haetaan Yritys- ja yhteisötietojärjestelmästä",
@@ -91,10 +92,10 @@
           },
           "deMinimisAidMaxAmount": {
             "label": "Enimmäismäärä ylitetty",
-            "content": "De minimis-tuen enimmäismäärä on ylitetty. Tuki voi olla enintään 200 000 euroa, joka myönnetään yritykselle kuluvan vuoden ja kahden edellisen verovuoden kuluessa. Enimmäismäärässä huomioidaan kaikkien eri viranomaisten kyseisenä ajanjaksona de minimis -tukena myöntämä rahoitus."
+            "content": "De minimis -tuen enimmäismäärä on ylitetty. Tuki voi olla enintään 200 000 euroa, joka myönnetään yritykselle kuluvan vuoden ja kahden edellisen verovuoden kuluessa. Enimmäismäärässä huomioidaan kaikkien eri viranomaisten kyseisenä ajanjaksona de minimis -tukena myöntämä rahoitus."
           },
           "deMinimisUnfinished": {
-            "label": "Puuttuvia de minimis-tuen tietoja",
+            "label": "Puuttuvia de minimis -tuen tietoja",
             "content": "Täytä puuttuvat minimis -kentät ja paina 'Tallenna' painiketta."
           }
         },
@@ -105,7 +106,7 @@
         "fields": {
           "companyBusinessId": "Y-tunnus",
           "companyName": "Työnantajan nimi",
-          "companyAddress": "Katuosoite",
+          "companyAddress": "Osoite",
           "companyPostcode": "Postinumero",
           "companyCity": "Postitoimipaikka",
           "useAlternativeAddress": {
@@ -113,7 +114,8 @@
           },
           "alternativeCompanyStreetAddress": {
             "label": "Osoite",
-            "placeholder": "Osoite"
+            "placeholder": "Osoite",
+            "view": "Toimitusosoite"
           },
           "alternativeCompanyPostcode": {
             "label": "Postinumero",
@@ -176,12 +178,17 @@
           },
           "coOperationNegotiations": {
             "label": "Onko organisaatiolla käynnissä tai edeltävän 12 kuukauden aikana päättynyt muutosneuvottelut?",
+            "view": {
+              "yes": "Organisaatiossa on ollut muutosneuvottelut viimeisen 12 kuukauden aikana.",
+              "no": "Organisaatiossa ei ole ollut muutosneuvottelut viimeisen 12 kuukauden aikana."
+            },
             "yes": "Kyllä",
             "no": "Ei"
           },
           "coOperationNegotiationsDescription": {
             "label": "Anna tarkempi selvitys neuvotteluiden tilanteesta.",
-            "placeholder": "Kuvaile tilannetta"
+            "placeholder": "Kuvaile tilannetta",
+            "labelShort": "Selvitys"
           }
         }
       },
@@ -270,6 +277,8 @@
           },
           "paySubsidyGranted": {
             "label": "Onko työsuhteeseen myönnetty jokin seuraavista tuista?",
+            "labelShort": "Myönnetyt tuet",
+            "granted": "Myönnetty",
             "paySubsidyDefault": "Palkkatuki",
             "paySubsidyAged": "55 vuotta täyttäneiden työllistämistuki",
             "paySubsidyNone": "Työsuhteeseen ei ole myönnetty mitään edeltävistä tuista"
@@ -292,8 +301,8 @@
             "commission": "Toimeksiannon Helsinki-lisä"
           },
           "jobTitle": {
-            "label": "Tehtävänimike",
-            "placeholder": "Tehtävänimike"
+            "label": "Työnimike",
+            "placeholder": "Työnimike"
           },
           "workingHours": {
             "label": "Työaika",
@@ -346,7 +355,7 @@
         }
       },
       "attachments": {
-        "heading1": " ",
+        "heading1": "Liitteet",
         "types": {
           "employmentContract": {
             "title": "Työsopimus",

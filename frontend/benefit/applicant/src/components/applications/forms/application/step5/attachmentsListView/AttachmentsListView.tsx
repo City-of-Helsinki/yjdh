@@ -1,5 +1,5 @@
 import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
-import { IconPaperclip } from 'hds-react';
+import { IconPaperclip, Link } from 'hds-react';
 import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import theme from 'shared/styles/theme';
@@ -38,7 +38,9 @@ const AttachmentsListView: React.FC<AttachmentsListViewProps> = ({
           key={attachment.attachmentFileName}
         >
           <IconPaperclip aria-label={attachment.attachmentFileName} />
-          {attachment.attachmentFileName}
+          <Link href={attachment.attachmentFile} openInNewTab>
+            {attachment.attachmentFileName}
+          </Link>
         </$ViewField>
       ))}
     </$GridCell>

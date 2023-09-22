@@ -6,7 +6,6 @@ import { Button, IconPen } from 'hds-react';
 import isEmpty from 'lodash/isEmpty';
 import React from 'react';
 import { getFullName } from 'shared/utils/application.utils';
-import { useTheme } from 'styled-components';
 
 import ConsentViewer from '../consentViewer/ConsentViewer';
 import StepperActions from '../stepperActions/StepperActions';
@@ -36,8 +35,6 @@ const ApplicationFormStep5: React.FC<
     isSubmit,
   } = useApplicationFormStep5(data, onSubmit);
 
-  const theme = useTheme();
-
   if (isSubmittedApplication) {
     return (
       <NotificationView
@@ -60,22 +57,17 @@ const ApplicationFormStep5: React.FC<
         data={data}
         handleStepChange={handleStepChange}
       />
-
       <EmployeeView
         isReadOnly={isReadOnly}
         data={data}
         handleStepChange={handleStepChange}
       />
-
       <SummarySection
         header={t(`${translationsBase}.attachments.heading1`)}
         action={
           !isReadOnly && (
             <Button
               theme="black"
-              css={`
-                margin-top: ${theme.spacing.s};
-              `}
               onClick={() => handleStepChange(3)}
               variant="supplementary"
               iconLeft={<IconPen />}
@@ -135,9 +127,6 @@ const ApplicationFormStep5: React.FC<
           !isReadOnly && (
             <Button
               theme="black"
-              css={`
-                margin-top: ${theme.spacing.s};
-              `}
               onClick={() => handleStepChange(4)}
               variant="supplementary"
               iconLeft={<IconPen />}

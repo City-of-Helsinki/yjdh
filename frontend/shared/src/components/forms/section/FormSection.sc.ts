@@ -100,6 +100,7 @@ export const $GridCell = styled.div<GridCellProps>`
 `;
 
 export const $Action = styled.div`
+  z-index: 2;
   position: absolute;
   right: 0;
 `;

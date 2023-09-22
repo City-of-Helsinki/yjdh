@@ -22,6 +22,7 @@ import {
   $CompanyInfoLabel,
   $CompanyInfoRow,
   $CompanyInfoValue,
+  $CompanyInfoWrapper,
   $HintText,
 } from './CompanyInfo.sc';
 import useCompanyInfo, { CompanyInfoFields } from './useCompanyInfo';
@@ -78,7 +79,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
             {shouldShowSkeleton ? (
               <LoadingSkeleton width="90%" count={2} />
             ) : (
-              <dl>
+              <$CompanyInfoWrapper>
                 <$CompanyInfoRow>
                   <$CompanyInfoLabel>
                     {t(`${translationsBase}.fields.companyName`)}
@@ -144,7 +145,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
                     />
                   </$CompanyInfoValue>
                 </$CompanyInfoRow>
-              </dl>
+              </$CompanyInfoWrapper>
             )}
           </$GridCell>
           <$GridCell $colSpan={8}>
