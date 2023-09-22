@@ -5,6 +5,7 @@ services:
     build:
       dockerfile: ./docker/finnish_postgres.Dockerfile
       context: ./backend
+    platform: linux/amd64
     restart: on-failure
     environment:
       POSTGRES_USER: tet
@@ -21,6 +22,7 @@ services:
       context: ./backend
       dockerfile: ./docker/tet.Dockerfile
       target: development
+    platform: linux/amd64
     env_file:
       - .env.tet
     environment:
@@ -35,22 +37,23 @@ services:
     container_name: te-backend
 
   admin:
-     build:
-       context: ./frontend
-       target: development
-       args:
-         PORT: 3000
-         PROJECT: tet
-         FOLDER: admin
-     volumes:
-       - ./frontend:/app
-       - /app/node_modules
-       - /app/.next
-     env_file:
-       - .env.tet
-     environment:
-       NEXT_PUBLIC_MOCK_FLAG: 1
-     container_name: te-admin
+    build:
+      context: ./frontend
+      target: development
+      args:
+        PORT: 3000
+        PROJECT: tet
+        FOLDER: admin
+    platform: linux/amd64
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env.tet
+    environment:
+      NEXT_PUBLIC_MOCK_FLAG: 1
+    container_name: te-admin
 
   local-proxy:
     depends_on:
@@ -59,6 +62,7 @@ services:
       - admin
     build:
       context: ./localdevelopment/tet-admin/nginx
+    platform: linux/amd64
     container_name: te-local-proxy
     volumes:
       - ./localdevelopment/tet-admin/nginx/:/etc/nginx/
