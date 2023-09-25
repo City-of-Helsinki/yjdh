@@ -77,20 +77,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
 
   useAlertBeforeLeaving(formik.dirty);
 
-  const isAbleToSelectEmploymentBenefit =
-    data?.company?.organizationType !== ORGANIZATION_TYPES.ASSOCIATION ||
-    (data?.company?.organizationType === ORGANIZATION_TYPES.ASSOCIATION &&
-      data?.associationHasBusinessActivities);
-
-  // TODO: Preselect this from backend
-  const isAbleToSelectSalaryBenefit =
-    formik.values.paySubsidyGranted === PAY_SUBSIDY_GRANTED.GRANTED;
-
-  const isNoAvailableBenefitTypes =
-    formik.values.paySubsidyGranted !== null &&
-    !isAbleToSelectEmploymentBenefit &&
-    !isAbleToSelectSalaryBenefit;
-
   return (
     <form onSubmit={handleSubmit} noValidate>
       <FormSection headerLevel="h2" header={t(`${translationsBase}.heading1`)}>
@@ -558,7 +544,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         handleSave={handleSave}
         handleBack={handleBack}
         handleDelete={handleDelete}
-        disabledNext={isNoAvailableBenefitTypes}
       />
     </form>
   );
