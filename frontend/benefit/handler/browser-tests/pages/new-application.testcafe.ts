@@ -1,7 +1,7 @@
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import { DATE_FORMATS } from '@frontend/shared/src/utils/date.utils';
 import { format } from 'date-fns';
-import { ClientFunction, Selector } from 'testcafe';
+import { Selector } from 'testcafe';
 
 import fi from '../../public/locales/fi/common.json';
 import MainIngress from '../page-model/MainIngress';
@@ -71,21 +71,14 @@ test('Fill in new application', async (t: TestController) => {
   // Have to wait for a small time because otherwise frontend won't register the upload files and form is submitted without them
   await t.wait(250);
 
-  const nextButton = Selector('main button span').withText('Jatka').parent();
+  const nextButton = Selector('main button span')
+    .withText('Tallenna luonnoksena ja sulje')
+    .parent();
   await t.click(nextButton);
 
-  // Get app id from url
-  const applicationId = await ClientFunction(() =>
-    window.location.search.split('id=').pop()
-  )();
-
-  await t.click('[data-testid="nextButton"]');
-
-  /* TODO: 2023-06-30 submission is broken with strange loop (see HL-864) when using build version,
-   ** fix it first before getting into these:
-   ** 1. Assert that we are in fact at the front page before clicking the table link
-   ** 2. See to deletion, saving as draft, etc.
-   */
-  console.log(applicationId);
-  // await t.click(`table tr a[href="/new-application?id=${applicationId}"]`);
+  const newApplicationButton = Selector('button').withAttribute(
+    'data-testid',
+    'new-application-button'
+  );
+  await t.expect(newApplicationButton.exists).ok();
 });
