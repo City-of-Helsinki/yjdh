@@ -56,7 +56,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
   } = useApplicationFormStep2(data);
 
   const theme = useTheme();
-
   useDependentFieldsEffect(
     {
       apprenticeshipProgram: formik.values.apprenticeshipProgram,
@@ -85,11 +84,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
   // TODO: Preselect this from backend
   const isAbleToSelectSalaryBenefit =
     formik.values.paySubsidyGranted === PAY_SUBSIDY_GRANTED.GRANTED;
-
-  const isNoAvailableBenefitTypes =
-    formik.values.paySubsidyGranted !== null &&
-    !isAbleToSelectEmploymentBenefit &&
-    !isAbleToSelectSalaryBenefit;
 
   return (
     <form onSubmit={handleSubmit} noValidate>
@@ -170,7 +164,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             checked={formik.values.employee?.isLivingInHelsinki === true}
           />
         </$GridCell>
-
         {organizationType === ORGANIZATION_TYPES.ASSOCIATION && (
           <$GridCell $colSpan={8}>
             <FieldLabel
@@ -558,7 +551,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         handleSave={handleSave}
         handleBack={handleBack}
         handleDelete={handleDelete}
-        disabledNext={isNoAvailableBenefitTypes}
       />
     </form>
   );
