@@ -41,7 +41,6 @@ export const PAY_SUBSIDY_OPTIONS = [50, 70, 100] as const;
 export enum EMPLOYEE_KEYS {
   FIRST_NAME = 'firstName',
   LAST_NAME = 'lastName',
-  PHONE_NUMBER = 'phoneNumber',
   SOCIAL_SECURITY_NUMBER = 'socialSecurityNumber',
   IS_LIVING_IN_HELSINKI = 'isLivingInHelsinki',
   JOB_TITLE = 'jobTitle',
@@ -62,7 +61,6 @@ export enum APPLICATION_FIELDS_STEP1_KEYS {
   COMPANY_DEPARTMENT = 'companyDepartment',
   COMPANY_BANK_ACCOUNT_NUMBER = 'companyBankAccountNumber',
   ASSOCIATION_HAS_BUSINESS_ACTIVITIES = 'associationHasBusinessActivities',
-  ASSOCIATION_IMMEDIATE_MANAGER_CHECK = 'associationImmediateManagerCheck',
   COMPANY_CONTACT_PERSON_FIRST_NAME = 'companyContactPersonFirstName',
   COMPANY_CONTACT_PERSON_LAST_NAME = 'companyContactPersonLastName',
   COMPANY_CONTACT_PERSON_PHONE_NUMBER = 'companyContactPersonPhoneNumber',
@@ -76,6 +74,7 @@ export enum APPLICATION_FIELDS_STEP1_KEYS {
 }
 
 export enum APPLICATION_FIELDS_STEP2_KEYS {
+  ASSOCIATION_IMMEDIATE_MANAGER_CHECK = 'associationImmediateManagerCheck',
   PAY_SUBSIDY_GRANTED = 'paySubsidyGranted',
   PAY_SUBSIDY_PERCENT = 'paySubsidyPercent',
   ADDITIONAL_PAY_SUBSIDY_PERCENT = 'additionalPaySubsidyPercent',
@@ -161,4 +160,10 @@ export enum BATCH_STATUSES {
 export enum PROPOSALS_FOR_DECISION {
   ACCEPTED = 'accepted',
   REJECTED = 'rejected',
+}
+
+export enum PAY_SUBSIDY_GRANTED {
+  GRANTED = 'granted',
+  GRANTED_AGED = 'granted_aged',
+  NOT_GRANTED = 'not_granted',
 }

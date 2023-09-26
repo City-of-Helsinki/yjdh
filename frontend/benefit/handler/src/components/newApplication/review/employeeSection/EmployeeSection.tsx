@@ -23,7 +23,6 @@ const EmploymentSection: React.FC<ReviewChildProps> = ({
             data.employee?.lastName || ''
           }`}</$ViewField>
           <$ViewField>{data.employee?.socialSecurityNumber}</$ViewField>
-          <$ViewField>{data.employee?.phoneNumber}</$ViewField>
           <$ViewField>
             {t(`${translationsBase}.fields.isLivingInHelsinki.label`)}
             {': '}
@@ -51,13 +50,6 @@ const EmploymentSection: React.FC<ReviewChildProps> = ({
                     data.paySubsidyGranted ? 'yes' : 'no'
                   }`
                 )}
-                <$ViewField isInline>{`, ${data.paySubsidyPercent || ''} % ${
-                  data.additionalPaySubsidyPercent
-                    ? `${t('common:utility.and')} ${
-                        data.additionalPaySubsidyPercent
-                      } %`
-                    : ''
-                }`}</$ViewField>
               </$ViewFieldBold>
               <$ViewField>
                 {t(`${translationsBase}.fields.apprenticeshipProgram.label`)}{' '}

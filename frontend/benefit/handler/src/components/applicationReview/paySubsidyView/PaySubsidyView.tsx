@@ -27,7 +27,7 @@ const PaySubsidyView: React.FC<ApplicationReviewViewProps> = ({
   return (
     <ReviewSection
       header={t(`${translationsBase}.headings.heading6`)}
-      section='paySubsidy'
+      section="paySubsidy"
       action={
         data.status !== APPLICATION_STATUSES.RECEIVED ? (
           <PaySubsidyActions
@@ -39,26 +39,12 @@ const PaySubsidyView: React.FC<ApplicationReviewViewProps> = ({
     >
       <$GridCell $colSpan={12}>
         {data.paySubsidyGranted ? (
-          <>
+          <$ViewField>
+            {t(`${translationsBase}.fields.apprenticeshipProgram`)}{' '}
             <$ViewFieldBold>
-              {t(`common:utility.${data.paySubsidyGranted ? 'yes' : 'no'}`)}
-              <$ViewField isInline>{`, ${data.paySubsidyPercent || ''} % ${
-                data.additionalPaySubsidyPercent
-                  ? `${t('common:utility.and')} ${
-                      data.additionalPaySubsidyPercent
-                    } %`
-                  : ''
-              }`}</$ViewField>
+              {t(`common:utility.${data.apprenticeshipProgram ? 'yes' : 'no'}`)}
             </$ViewFieldBold>
-            <$ViewField>
-              {t(`${translationsBase}.fields.apprenticeshipProgram`)}{' '}
-              <$ViewFieldBold>
-                {t(
-                  `common:utility.${data.apprenticeshipProgram ? 'yes' : 'no'}`
-                )}
-              </$ViewFieldBold>
-            </$ViewField>
-          </>
+          </$ViewField>
         ) : (
           <$ViewField>
             {t(`${translationsBase}.fields.paySubsidyGranted`)}{' '}

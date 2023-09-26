@@ -41,10 +41,6 @@ describe('CompanyInfo', () => {
             name: 'associationHasBusinessActivities',
             label: 'associationHasBusinessActivities',
           },
-          associationImmediateManagerCheck: {
-            name: 'associationHasBusinessActivities',
-            label: 'associationHasBusinessActivities',
-          },
         }}
         formik={formik}
         translationsBase=""

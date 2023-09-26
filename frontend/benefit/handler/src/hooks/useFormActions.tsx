@@ -2,7 +2,7 @@ import { APPLICATION_FIELD_KEYS } from 'benefit/handler/constants';
 import DeMinimisContext from 'benefit/handler/context/DeMinimisContext';
 import { StepActionType } from 'benefit/handler/hooks/useSteps';
 import { Application } from 'benefit/handler/types/application';
-import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import { APPLICATION_STATUSES, BENEFIT_TYPES } from 'benefit-shared/constants';
 import { ApplicationData, Employee } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
@@ -166,6 +166,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
     snakecaseKeys(
       {
         ...values,
+        benefit_type: BENEFIT_TYPES.SALARY,
         calculation: values.calculation
           ? {
               ...values.calculation,

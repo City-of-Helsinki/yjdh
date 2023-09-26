@@ -186,7 +186,7 @@ class ApplicationsCsvService(CsvExportBase):
             ),
             CsvColumn("YT-neuvottelut?", "co_operation_negotiations", format_bool),
             CsvColumn("YT-neuvottelut/tiedot", "co_operation_negotiations_description"),
-            CsvColumn("Palkkatuki myönnetty?", "pay_subsidy_granted", format_bool),
+            CsvColumn("Palkkatuki myönnetty?", "pay_subsidy_granted", str),
             csv_default_column("Palkkatukiprosentti", "pay_subsidy_percent"),
             csv_default_column(
                 "Toinen palkkatukiprosentti", "additional_pay_subsidy_percent"

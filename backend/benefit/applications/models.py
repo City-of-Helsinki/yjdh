@@ -18,6 +18,7 @@ from applications.enums import (
     ApplicationStep,
     AttachmentType,
     BenefitType,
+    PaySubsidyGranted,
 )
 from applications.exceptions import (
     BatchCompletionDecisionDateError,
@@ -255,7 +256,12 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
         blank=True,
     )
 
-    pay_subsidy_granted = models.BooleanField(null=True)
+    pay_subsidy_granted = models.CharField(
+        choices=PaySubsidyGranted.choices,
+        max_length=128,
+        null=True,
+        blank=True,
+    )
 
     # The PaySubsidy model stores the values entered by handlers for the calculation.
     # This field is filled by the applicant.
@@ -306,7 +312,9 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
             self.is_association_application()
             and not self.association_has_business_activities
         ):
-            return [BenefitType.SALARY_BENEFIT]
+            return [
+                BenefitType.SALARY_BENEFIT,
+            ]
         else:
             return [
                 BenefitType.SALARY_BENEFIT,

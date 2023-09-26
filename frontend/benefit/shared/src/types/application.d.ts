@@ -1,4 +1,7 @@
-import { PROPOSALS_FOR_DECISION } from 'benefit-shared/constants';
+import {
+  PAY_SUBSIDY_GRANTED,
+  PROPOSALS_FOR_DECISION,
+} from 'benefit-shared/constants';
 import { Language } from 'shared/i18n/i18n';
 import { BenefitAttachment } from 'shared/types/attachment';
 import { DefaultTheme } from 'styled-components';
@@ -241,6 +244,8 @@ export type Application = {
   handledAt?: string;
   latestDecisionComment?: string;
   unreadMessagesCount?: number;
+  organizationType?: ORGANIZATION_TYPES;
+  associationImmediateManagerCheck?: boolean;
 } & Step1 &
   Step2;
 
@@ -270,9 +275,7 @@ export interface Step1 {
 }
 
 export interface Step2 {
-  [APPLICATION_FIELDS_STEP2_KEYS.PAY_SUBSIDY_GRANTED]?: boolean | null;
-  [APPLICATION_FIELDS_STEP2_KEYS.PAY_SUBSIDY_PERCENT]?: PaySubsidyPercent | null;
-  [APPLICATION_FIELDS_STEP2_KEYS.ADDITIONAL_PAY_SUBSIDY_PERCENT]?: PaySubsidyPercent | null;
+  [APPLICATION_FIELDS_STEP2_KEYS.PAY_SUBSIDY_GRANTED]?: PAY_SUBSIDY_GRANTED;
   [APPLICATION_FIELDS_STEP2_KEYS.APPRENTICESHIP_PROGRAM]?: boolean | null;
   [APPLICATION_FIELDS_STEP2_KEYS.BENEFIT_TYPE]?: BENEFIT_TYPES | '';
   [APPLICATION_FIELDS_STEP2_KEYS.START_DATE]?: string | '';
@@ -360,7 +363,7 @@ export type ApplicationData = {
   applicant_language?: SUPPORTED_LANGUAGES;
   co_operation_negotiations?: boolean;
   co_operation_negotiations_description?: string;
-  pay_subsidy_granted?: boolean;
+  pay_subsidy_granted?: PAY_SUBSIDY_GRANTED;
   pay_subsidy_percent?: PaySubsidyPercent;
   additional_pay_subsidy_percent?: PaySubsidyPercent;
   apprenticeship_program?: boolean;

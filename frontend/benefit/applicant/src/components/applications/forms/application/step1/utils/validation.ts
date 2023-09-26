@@ -80,21 +80,6 @@ export const getValidationSchema = (
             return true;
           },
         }),
-    [APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_IMMEDIATE_MANAGER_CHECK]:
-      Yup.boolean()
-        .nullable()
-        .test({
-          message: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
-          test: (val) => {
-            if (
-              organizationType?.toLowerCase() ===
-              ORGANIZATION_TYPES.ASSOCIATION.toLowerCase()
-            )
-              return val === true;
-
-            return true;
-          },
-        }),
     [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_FIRST_NAME]:
       Yup.string()
         .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))

@@ -4,7 +4,6 @@ from rest_framework import serializers
 from stdnum.fi import hetu
 
 from applications.models import Employee
-from common.utils import PhoneNumberField
 from helsinkibenefit.settings import MINIMUM_WORKING_HOURS_PER_WEEK
 
 
@@ -13,13 +12,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
     Employee objects are meant to be edited together with their Application object.
     """
 
-    phone_number = PhoneNumberField(
-        allow_blank=True,
-        help_text=(
-            "Employee phone number normalized (start with zero, without country code)"
-        ),
-    )
-
     class Meta:
         model = Employee
         fields = [
@@ -27,7 +19,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "social_security_number",
-            "phone_number",
             "email",
             "employee_language",
             "job_title",

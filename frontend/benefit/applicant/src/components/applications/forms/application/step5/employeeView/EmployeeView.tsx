@@ -52,7 +52,6 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
             data.employee?.lastName || ''
           }`}</$ViewField>
           <$ViewField>{data.employee?.socialSecurityNumber}</$ViewField>
-          <$ViewField>{data.employee?.phoneNumber}</$ViewField>
           <$ViewField>
             {t(`${translationsBase}.employee.fields.isLivingInHelsinki.label`)}
             {': '}
@@ -80,13 +79,6 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                     data.paySubsidyGranted ? 'yes' : 'no'
                   }`
                 )}
-                <$ViewField isInline>{`, ${data.paySubsidyPercent || ''} % ${
-                  data.additionalPaySubsidyPercent
-                    ? `${t('common:utility.and')} ${
-                        data.additionalPaySubsidyPercent
-                      } %`
-                    : ''
-                }`}</$ViewField>
               </$ViewFieldBold>
               <$ViewField>
                 {t(

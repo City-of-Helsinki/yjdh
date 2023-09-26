@@ -1,7 +1,12 @@
 from unittest import mock
 
 from applications.api.v1.serializers.application import HandlerApplicationSerializer
-from applications.enums import ApplicationOrigin, ApplicationStatus, BenefitType
+from applications.enums import (
+    ApplicationOrigin,
+    ApplicationStatus,
+    BenefitType,
+    PaySubsidyGranted,
+)
 from applications.tests.test_applications_api import (
     add_attachments_to_application,
     get_handler_detail_url,
@@ -29,9 +34,10 @@ def test_application_submit_creates_calculation_and_two_paysubsidies(
     assert len(response.data["training_compensations"]) == 0
 
     data["benefit_type"] = BenefitType.SALARY_BENEFIT
-    data["pay_subsidy_percent"] = "50"
-    data["additional_pay_subsidy_percent"] = "70"
-    data["pay_subsidy_granted"] = True
+    data["pay_subsidy_percent"] = 50
+    data["additional_pay_subsidy_percent"] = 70
+    data["pay_subsidy_granted"] = PaySubsidyGranted.GRANTED
+    data["apprenticeship_program"] = False
 
     response = handler_api_client.put(
         get_handler_detail_url(application),

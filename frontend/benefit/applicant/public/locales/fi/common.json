@@ -29,9 +29,12 @@
       "saved": "Tallennettu",
       "sent": "Hakemusnumero: {{applicationNumber}}  |  Lähetetty {{submittedAt}}",
       "new": "Uusi hakemus",
-      "edit": "Hakemus",
+      "edit": "Helsinki-lisä -hakemus",
       "helperText": "Ole hyvä ja tarkista hakemus ennen lähetystä.",
       "guideText": "Kaikki *-merkityt kohdat ovat pakollisia"
+    },
+    "helpers": {
+      "requiredFields": "Tähdellä merkityt kentät ovat pakollisia"
     },
     "statuses": {
       "draft": "Luonnos",
@@ -68,20 +71,23 @@
       "company": {
         "heading1": "Työnantajan tiedot",
         "heading1Additional": "Postiosoite päätöstä varten",
-        "heading2": "Yhteyshenkilö",
+        "heading2": "Työnantajan yhteyshenkilö",
         "heading2Short": "Yhteyshenkilö",
-        "heading3": "Hakijan de minimis -tuet",
-        "heading4": "YT-tilanne",
-        "heading5": "YT-neuvottelut",
+        "heading3": "Työnantajan saamat de minimis -tuet",
+        "heading4": "Muutosneuvottelut tai YT-tilanne",
+        "heading5": "Muutosneuvottelut",
         "businessId": "Y-tunnus: {{ businessId }}",
-        "deMinimisAidsHeading": "Listaa tähän kaikki organisaatiolle kuluvan vuoden ja kahden edellisen verovuoden aikana myönnetyt de minimis -tuet",
-        "deMinimisAidsAdd": "Lisää",
+        "companyContactPerson": {
+          "content": "Yhteyshenkilö kommunikoi tähän Helsinki-lisä -hakemukseen liittyvissä asioissa ja saa tiedon hakemuksen päätöksestä."
+        },
+        "deMinimisAidsHeading": "Täytä alle kaikki organisaatiolle myönnetyt de minimis -tuet kuluvan vuoden ja kahden edellisen verovuoden ajalta.",
+        "deMinimisAidsAdd": "Tallenna",
         "deMinimisAidsRemove": "Poista",
         "deMinimisAidsNo": "Hakija ei ole ilmoittanut aiemmista de minimis -tuista.",
         "notifications": {
           "companyInformation": {
             "label": "Tiedot haetaan Yritys- ja yhteisötietojärjestelmästä",
-            "content": "Organisaatiosi perustiedot haetaan Yritys- ja yhteisötietojärjestelmästä. Halutessasi voit vaihtaa tilalle toisen postiosoitteen, johon Helsinki-lisä-päätös toimitetaan."
+            "content": "Merkityt tiedot on haettu Yritys- ja yhteisötietojärjestelmästä.  Jos haluat Helsinki-lisä-päätöksen toiseen toimipisteeseen, vaihda tilalle toinen postiosoite."
           },
           "deMinimisAidMaxAmount": {
             "label": "Enimmäismäärä ylitetty",
@@ -89,7 +95,7 @@
           },
           "deMinimisUnfinished": {
             "label": "Puuttuvia de minimis-tuen tietoja",
-            "content": "Täytä puuttuvat de minimis -kentät ja paina 'Lisää' painiketta."
+            "content": "Täytä puuttuvat minimis -kentät ja paina 'Tallenna' painiketta."
           }
         },
         "tooltips": {
@@ -97,12 +103,17 @@
           "associationHasBusinessActivities": "Helsinki-lisään sovelletaan valtiontukisääntöjä silloin, kun tuensaaja on yritys tai taloudellista toimintaa harjoittavaa yhteisö riippumatta sen oikeudellisesta muodosta tai rahoitustavasta. Taloudellisella toiminnalla tarkoitetaan palveluiden ja tuotteiden myyntiä, joka on jatkuvaa, ansiotarkoituksessa ja kilpailuolosuhteissa tapahtuvaa (kaikkien kolmen edellytyksen tulee täyttyä samanaikaisesti). Valtiontukisääntöjä voidaan soveltaa myös voittoa tavoittelemattomiin työnantajiin. Taloudellisena toimintana ei pääsääntöisesti pidetä toimintaa, jota verottaja ei ole katsonut verotettavaksi elinkeinotoiminnaksi."
         },
         "fields": {
+          "companyBusinessId": "Y-tunnus",
+          "companyName": "Työnantajan nimi",
+          "companyAddress": "Katuosoite",
+          "companyPostcode": "Postinumero",
+          "companyCity": "Postitoimipaikka",
           "useAlternativeAddress": {
-            "label": "Käytä toista postiosoitetta"
+            "label": "Käytä toista osoitetta"
           },
           "alternativeCompanyStreetAddress": {
             "label": "Osoite",
-            "placeholder": "Katuosoite"
+            "placeholder": "Osoite"
           },
           "alternativeCompanyPostcode": {
             "label": "Postinumero",
@@ -113,12 +124,12 @@
             "placeholder": "Postitoimipaikka"
           },
           "companyDepartment": {
-            "label": "Toimipiste tai osasto (valinnainen)",
+            "label": "Toimipiste",
             "placeholder": "Toimipiste / osasto"
           },
           "companyBankAccountNumber": {
             "label": "Tilinumero",
-            "placeholder": "IBAN muodossa"
+            "placeholder": "IBAN-muodossa"
           },
           "companyContactPersonFirstName": {
             "label": "Etunimi",
@@ -144,12 +155,8 @@
             "yes": "Kyllä",
             "no": "Ei"
           },
-          "associationImmediateManagerCheck": {
-            "label": "Lähiesihenkilö palkattavalle henkilölle",
-            "placeholder": "Työnantajalla on asianmukaiset työtilat ja työnjohdollinen, ei-palkkatuettu esihenkilö palkattavalle henkilölle."
-          },
           "deMinimisAid": {
-            "label": "Onko hakijalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis -tukea?",
+            "label": "Onko organisaatiolle myönnetty de minimis -tukea kuluvan vuoden ja kahden edellisen verovuoden aikana?",
             "yes": "Kyllä",
             "no": "Ei"
           },
@@ -158,8 +165,9 @@
             "placeholder": "Myöntävä taho"
           },
           "deMinimisAidAmount": {
-            "label": "Tuen määrä (euroina)",
-            "placeholder": "€"
+            "label": "Tuen määrä",
+            "placeholder": "€",
+            "helperText": "euroa"
           },
           "deMinimisAidGrantedAt": {
             "label": "Myöntämispäivämäärä",
@@ -167,32 +175,33 @@
             "placeholder": "Valitse"
           },
           "coOperationNegotiations": {
-            "label": "Onko organisaatiolla käynnissä YT-neuvottelut?",
+            "label": "Onko organisaatiolla käynnissä tai edeltävän 12 kuukauden aikana päättynyt muutosneuvottelut?",
             "yes": "Kyllä",
             "no": "Ei"
           },
           "coOperationNegotiationsDescription": {
-            "label": "Anna tarkempi selvitys YT-tilanteesta:",
+            "label": "Anna tarkempi selvitys neuvotteluiden tilanteesta.",
             "placeholder": "Kuvaile tilannetta"
           }
         }
       },
       "employee": {
         "heading1": "Henkilö, jonka työllistämiseen Helsinki-lisää haetaan",
-        "heading1Short": "Palkattava henkilö",
-        "heading2": "Palkkatukipäätös",
+        "heading1Short": "Työllistettävä henkilö",
+        "heading2": "Työsuhteeseen myönnetyt valtion tuet",
         "heading3": "Haettava tukimuoto",
         "heading3Long": "Haettava tukimuoto ja ajankohta",
-        "heading4": "Haetaan ajalle",
+        "heading4": "Mille ajalle haet Helsinki-lisää?",
+        "heading4Sub1": "Voit hakea Helsinki-lisää työsuhteen keston ajaksi, mutta enintään 12 kuukaudeksi.",
         "heading5Employment": "Työsuhde",
         "heading5Assignment": "Toimeksianto",
         "heading5EmploymentSub1": "Palkkauskustannukset",
-        "salaryExpensesExplanation": "Bruttopalkka ja sivukulut ilmoitetaan euroina kuukaudessa, lomaraha kertasummana",
+        "salaryExpensesExplanation": "Ilmoita bruttopalkka, sivukulut ja lomaraha euroina kuukaudessa.",
         "tooltips": {
           "heading5Employment": "Sovellettava työehtosopimus: esim. Kaupan työehtosopimus. Jos alalla ei ole velvoittavaa työehtosopimusta, merkitse viiva.",
-          "heading5EmploymentSub1": "Bruttopalkalla tarkoitetaan tuella palkattavalle maksettavaa palkkaa ennen työntekijän lakisääteisten maksujen (työntekijän työttömyysvakuutus- ja eläkevakuutusmaksu) ja verojen pidätystä. Jos tuella palkattavalle maksetaan palkan lisiä (esim. ilta-, yö- tai vuorotyölisä), ota niiden arvioitu määrä huomioon bruttopalkassa. Työnantajan lakisääteisiin sivukuluihin luetaan sosiaaliturva-, työeläkevakuutus-, tapaturmavakuutus- ja työttömyysvakuutusmaksu sekä pakollinen ryhmähenkivakuutusmaksu.\r\n\r\nSivukulut tarkoittavat palkasta maksettavien työnantajan lakisääteisten sivukulujen määrä kuukaudessa.\r\n\r\nLomaraha on tuella katettava palkkauskustannus silloin, kun se maksetaan tukijakson aikana pidetystä vuosilomapalkasta. Arvioi tukijakson aikana maksettavan lomarahan määrä. Lomakorvaus ei ole Helsinki-lisällä katettava korvaus.",
+          "heading5EmploymentSub1": "Bruttopalkka tarkoittaa palkkasummaa ennen verojen ja lakisääteisten maksujen vähentämistä. Bruttopalkka on merkitty työsopimukseen. Mikäli osana palkkaa maksetaan lisiä, kuten ilta-, yö- tai vuorolisiä, laske arvio lisien määristä mukaan bruttopalkkaan.",
           "heading5Assignment": "Palkkauskustannukset tooltip text",
-          "heading2": "Palkkatuki on työttömän työnhakijan työllistymisen edistämiseksi tarkoitettu rahallinen tuki, jonka TE-palvelut voi myöntää työnantajalle palkkauskustannuksiin.",
+          "heading2": "Palkkatuki ja ja 55-vuotta täyttäneiden työllistämistuki ovat työttömän työnhakijan työllistymisen edistämiseksi tarkoitettuja rahallisia tukia.",
           "heading3": "Työllistämisen Helsinki-lisä on tarkoitettu ohjaus-, perehdytys-, työväline-, työvaate- ja työtilakustannuksiin silloin, kun niihin ei makseta muuta tukea. Palkan Helsinki-lisä on tarkoitettu työllistetyn henkilön palkkauskustannuksiin (=bruttopalkka, lakisääteiset sivukulut ja lomaraha). Toimeksiannon Helsinki-lisä on tarkoitettu yksittäisen työn tai projektin suorittamiseen."
         },
         "notifications": {
@@ -215,6 +224,10 @@
           "noAvailableBenefitTypes": {
             "label": "Ei haettavia tukimuotoja",
             "content": "Yhteisö, joka ei harjoita taloudellista toimintaa voi hakea ainoastaan Palkan Helsinki-lisää. Palkan Helsinki-lisän edellytyksenä on työsuhteeseen myönnetty palkkatuki."
+          },
+          "apprenticeshipDidYouKnow": {
+            "label": "Oppisopimukseen Helsinki-lisää voidaan myöntää koko oppisopimuksen ajaksi.",
+            "content": "Voit hakea Helsinki-lisää enintään 12 kuukauden jaksoissa. Tee uusi hakemus 12 kuukauden Helsinki-lisän tukijakson jälkeen."
           }
         },
         "messages": {
@@ -241,16 +254,21 @@
             "placeholder": "040 1234567"
           },
           "isLivingInHelsinki": {
-            "label": "Työllistetyn kotikunta on Helsinki",
-            "placeholder": "Kyllä, työllistettävä on kirjoilla Helsingissä viimeistään työsuhteen alkaessa",
+            "label": "Onko työllistettävän kotikunta Helsinki työsuhteen alkaessa?",
+            "placeholder": "Kyllä, työllistettävä on kirjoilla Helsingissä viimeistään työsuhteen alkaessa.",
             "yes": "Kyllä",
             "no": "Ei",
             "error": "Jotta tukea voidaan myöntää, kotikunnan tulee olla Helsinki."
           },
+          "associationImmediateManagerCheck": {
+            "label": "Onko työllistettävälle osoitettu työnjohdollinen esihenkilö?",
+            "placeholder": "Kyllä, työllistettävällä on työnjohdollinen esihenkilö."
+          },
           "paySubsidyGranted": {
-            "label": "Onko työsuhteeseen myönnetty palkkatuki?",
-            "yes": "Kyllä",
-            "no": "Ei"
+            "label": "Onko työsuhteeseen myönnetty jokin seuraavista tuista?",
+            "paySubsidyDefault": "Palkkatuki",
+            "paySubsidyAged": "55 vuotta täyttäneiden työllistämistuki",
+            "paySubsidyNone": "Työsuhteeseen ei ole myönnetty mitään edeltävistä tuista"
           },
           "paySubsidyPercent": {
             "label": "Päätöksessä oleva palkkatukiprosentti"
@@ -274,28 +292,36 @@
             "placeholder": "Tehtävänimike"
           },
           "workingHours": {
-            "label": "Työaika tuntia viikossa",
+            "label": "Työaika",
             "placeholder": "Tunteja",
-            "view": "Työaika: {{workingHours}} tuntia viikossa"
+            "view": "Työaika: {{workingHours}} tuntia viikossa",
+            "helperText": "tuntia viikossa"
           },
           "collectiveBargainingAgreement": {
             "label": "Sovellettava työehtosopimus",
-            "placeholder": "Työehtosopimus"
+            "placeholder": "Työehtosopimus",
+            "tooltip": "Sovellettava työehtosopimus: esim. Kaupan työehtosopimus. Jos alalla ei ole velvoittavaa työehtosopimusta, merkitse viiva."
           },
           "monthlyPay": {
             "label": "Bruttopalkka",
             "placeholder": "Palkka",
-            "view": "Bruttopalkka {{monthlyPay}} euroa kuukaudessa"
+            "view": "Bruttopalkka {{monthlyPay}} euroa kuukaudessa",
+            "helperText": "euroa kuukaudessa",
+            "tooltip": "Bruttopalkalla tarkoitetaan tuella palkattavalle maksettavaa palkkaa ennen työntekijän lakisääteisten maksujen (työntekijän työttömyysvakuutus- ja eläkevakuutusmaksu) ja verojen pidätystä. Mikäli osana palkkaa maksetaan lisiä, kuten ilta-, yö- tai vuorotyölisiä, laske arvio lisien määristä mukaan bruttopalkkaan."
           },
           "otherExpenses": {
             "label": "Sivukulut",
             "placeholder": "Sivukulut",
-            "view": "Sivukulut {{otherExpenses}} euroa kuukaudessa"
+            "view": "Sivukulut {{otherExpenses}} euroa kuukaudessa",
+            "helperText": "euroa kuukaudessa",
+            "tooltip": "Sivukulut tarkoittavat palkasta maksettavien työnantajan lakisääteisten sivukulujen määrää kuukaudessa. Sivukuluihin kuuluu sosiaaliturva-, työeläkevakuutus-, tapaturmavakuutus- ja työttömyysvakuutusmaksu sekä pakollinen ryhmähenkivakuutusmaksu. Ilmoita sivukulujen määrä euroina kuukaudessa."
           },
           "vacationMoney": {
             "label": "Lomaraha",
             "placeholder": "Lomaraha",
-            "view": "Lomaraha {{vacationMoney}} euroa"
+            "view": "Lomaraha {{vacationMoney}} euroa kuukaudessa",
+            "helperText": "euroa kuukaudessa",
+            "tooltip": "Lomaraha on tuella katettava palkkauskustannus silloin, kun se maksetaan tukijakson aikana pidetystä vuosilomapalkasta. Lomakorvaus ei ole Helsinki-lisällä katettava korvaus. Ilmoita lomarahan määrä euroina kuukaudessa."
           },
           "commissionDescription": {
             "label": "Toimeksiannon kuvaus",
@@ -316,7 +342,7 @@
         }
       },
       "attachments": {
-        "heading1": "Liitteet",
+        "heading1": " ",
         "types": {
           "employmentContract": {
             "title": "Työsopimus",
@@ -335,15 +361,15 @@
             "message": ""
           },
           "helsinkiBenefitVoucher": {
-            "title": "Helsinki-lisä seteli",
-            "message": "Lisää Helsinki-lisä -seteli, jos sellainen on myönnetty"
+            "title": "Helsinki-lisä -kortti",
+            "message": "Lisää Helsinki-lisä -kortti, jos sellainen on myönnetty"
           }
         },
         "add": "Liitä tiedosto",
         "remove": "Poista liite"
       },
       "summary": {
-        "heading1": "Vänligen kontrollera ansökan innan du skickar in den."
+        "heading1": "Ole hyvä ja tarkista tiedot ennen kuin lähetät sen."
       },
       "credentials": {
         "heading1": "Työllistettävän henkilötietojen käsittely",
@@ -476,7 +502,7 @@
     "logoutMessageLabel": "Olet kirjautunut ulos",
     "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään",
     "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
-    "infoLabel": "Ongelmia kirjautumisessa?",
+    "infoLabel": "Kysyttävää Helsinki-lisästä?  ",
     "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
     "infoContent": "Lähetä meille sähköposti osoitteeseen helsinkilisa@hel.fi.",
     "termsOfServiceHeader": "Tietoa työnantajan edustajien henkilötietojen käsittelystä",
@@ -484,10 +510,10 @@
     "infoText1": "Hae organisaatiollesi taloudellista tukea, Helsinki-lisää, työttömän helsinkiläisen työllistämiseen. Tarvitset Suomi.fi-valtuutuksen asioimiseen organisaatiosi puolesta.",
     "subheading1": "Kirjaudu pankkitunnuksilla tai mobiilivarmenteella",
     "infoText2": "Kun kirjaudut ensimmäisen kerran, sinulle luodaan automaattisesti oma Helsinki-profiili tunnus.",
-    "subheading2": "Hanki Suomi.fi -valtuutus",
-    "infoText3": "Jos sinulla ei ole vielä oikeutta asioida organisaatiosi puolesta, voit hankkia itsellesi Suomi.fi -valtuuden.",
-    "authorization": "Katso ohjeet valtuutuksen hankkimiseen",
-    "suomifiUrl": "https://www.suomi.fi/valtuudet"
+    "subheading2": "Vaadittava suomi.fi -valtuus",
+    "infoText3": "Voit kirjautua Helsinki-lisän asiointipalveluun, jos sinulla on nimenkirjoitusoikeus tai sinulle on myönnetty Suomi.fi-palvelussa valtuusasiaksi joko “palkkatuen hakeminen“ tai “avustushakemuksen tekeminen“.",
+    "authorization": "Katso ohjeet organisaation puolesta asiointiin",
+    "suomifiUrl": "https://www.suomi.fi/ohjeet-ja-tuki/valtuudet/organisaation-puolesta-asiointi"
   },
   "errorPage": {
     "title": "Palvelussa on valitettavasti tapahtunut virhe",
@@ -527,6 +553,10 @@
     "next": "Seuraava sivu",
     "page": "Sivu",
     "terms": "Ehdot.PDF"
+  },
+  "tooltip": {
+    "ariaLabel": "Näytä ohjeteksti",
+    "ariaButtonLabel": "Näytä ohjeteksti"
   },
   "utility": {
     "and": "ja",

@@ -26,7 +26,7 @@ const EmployeeView: React.FC<ApplicationReviewViewProps> = ({
   return (
     <ReviewSection
       header={t(`${translationsBase}.headings.heading5`)}
-      section='employee'
+      section="employee"
       action={
         data.status !== APPLICATION_STATUSES.RECEIVED ? (
           <EmployeeActions
@@ -43,9 +43,6 @@ const EmployeeView: React.FC<ApplicationReviewViewProps> = ({
         <$ViewField>
           {t(`${translationsBase}.fields.ssn`)}:{' '}
           {data.employee?.socialSecurityNumber}
-        </$ViewField>
-        <$ViewField>
-          {t(`${translationsBase}.fields.phone`)}: {data.employee?.phoneNumber}
         </$ViewField>
         <$ViewField>
           {t(`${translationsBase}.fields.isLivingInHelsinki`)}

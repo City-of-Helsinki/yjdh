@@ -133,3 +133,9 @@ class AhjoDecision(models.TextChoices):
 class ApplicationOrigin(models.TextChoices):
     HANDLER = "handler", _("Handler")
     APPLICANT = "applicant", _("Applicant")
+
+
+class PaySubsidyGranted(models.TextChoices):
+    GRANTED = "granted", _("Pay subsidy granted (default)")
+    GRANTED_AGED = "granted_aged", _("Pay subsidy granted (aged)")
+    NOT_GRANTED = "not_granted", _("No granted pay subsidy")

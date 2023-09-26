@@ -1,4 +1,5 @@
-import styled from 'styled-components';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import styled, { css } from 'styled-components';
 
 type ViewFieldProps = {
   isInline?: boolean;
@@ -28,4 +29,23 @@ export const $SummaryTableHeader = styled.div`
 
 export const $SummaryTableValue = styled.span`
   font-size: ${(props) => props.theme.fontSize.body.l};
+`;
+
+export const $KeyValueList = styled.dl``;
+
+const CSSFormIndentation = css`
+&:before {
+  margin-left: -40px;
+  position:absolute;
+  content: '';
+  display:block;
+  background: ${(props) => props.theme.colors.black10};
+  width: 8px;
+  height 100%;
+}`;
+
+export const $SubFieldContainer = styled($GridCell)`
+  margin-left: 0;
+  margin-left: 50px;
+  ${CSSFormIndentation}
 `;
