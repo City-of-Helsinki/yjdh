@@ -460,6 +460,10 @@ const FormContent: React.FC<Props> = ({
                   fields.paySubsidyGranted.name,
                   PAY_SUBSIDY_GRANTED.GRANTED_AGED
                 );
+                formik.setFieldValue(
+                  APPLICATION_FIELD_KEYS.APPRENTICESHIP_PROGRAM,
+                  null
+                );
               }}
               checked={
                 formik.values.paySubsidyGranted ===
@@ -481,7 +485,10 @@ const FormContent: React.FC<Props> = ({
             />
           </SelectionGroup>
         </$GridCell>
-        {formik.values.paySubsidyGranted === PAY_SUBSIDY_GRANTED.GRANTED && (
+        {[
+          PAY_SUBSIDY_GRANTED.GRANTED,
+          PAY_SUBSIDY_GRANTED.GRANTED_AGED,
+        ].includes(formik.values.paySubsidyGranted as PAY_SUBSIDY_GRANTED) && (
           <$GridCell
             as={$Grid}
             $colSpan={12}
