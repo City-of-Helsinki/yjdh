@@ -53,6 +53,21 @@ export const getValidationSchema = (
     [APPLICATION_FIELDS_STEP2_KEYS.END_DATE]: Yup.string().required(
       t(VALIDATION_MESSAGE_KEYS.REQUIRED)
     ),
+    [APPLICATION_FIELDS_STEP2_KEYS.ASSOCIATION_IMMEDIATE_MANAGER_CHECK]:
+      Yup.boolean()
+        .nullable()
+        .test({
+          message: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
+          test: (val) => {
+            if (
+              organizationType?.toLowerCase() ===
+              ORGANIZATION_TYPES.ASSOCIATION.toLowerCase()
+            )
+              return val === true;
+
+            return true;
+          },
+        }),
     [APPLICATION_FIELDS_STEP2_KEYS.EMPLOYEE]: Yup.object().shape({
       [EMPLOYEE_KEYS.FIRST_NAME]: Yup.string()
         .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
@@ -72,21 +87,7 @@ export const getValidationSchema = (
         [true],
         t(VALIDATION_MESSAGE_KEYS.REQUIRED_IS_LIVING_IN_HELSINKI)
       ),
-      [APPLICATION_FIELDS_STEP2_KEYS.ASSOCIATION_IMMEDIATE_MANAGER_CHECK]:
-        Yup.boolean()
-          .nullable()
-          .test({
-            message: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
-            test: (val) => {
-              if (
-                organizationType?.toLowerCase() ===
-                ORGANIZATION_TYPES.ASSOCIATION.toLowerCase()
-              )
-                return val === true;
 
-              return true;
-            },
-          }),
       [EMPLOYEE_KEYS.JOB_TITLE]: Yup.string()
         .nullable()
         .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
