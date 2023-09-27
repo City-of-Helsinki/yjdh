@@ -58,6 +58,7 @@ const DeMinimisAidsList: React.FC = () => {
                 theme="black"
                 iconLeft={<IconMinusCircle />}
                 fullWidth
+                data-testid={`deminimis-remove-${i}`}
               >
                 {t(`${translationsBase}.deMinimisAidsRemove`)}
               </Button>
@@ -67,7 +68,11 @@ const DeMinimisAidsList: React.FC = () => {
       ))}
       {sumBy(grants, (grant) => Number(grant.amount)) >
         MAX_DEMINIMIS_AID_TOTAL_AMOUNT && (
-        <$GridCell $colSpan={8} $colStart={3}>
+        <$GridCell
+          $colSpan={8}
+          $colStart={3}
+          data-testid="deminimis-maxed-notification"
+        >
           <$Notification
             label={t(
               `${translationsBase}.notifications.deMinimisAidMaxAmount.label`
