@@ -29,9 +29,12 @@
       "saved": "Saved",
       "sent": "Application number: {{applicationNumber}}  |  Submitted {{submittedAt}}",
       "new": "New application",
-      "edit": "Application",
+      "edit": "Helsinki benefit application",
       "helperText": "Please review the application before submitting.",
       "guideText": "All items marked with * are required"
+    },
+    "helpers": {
+      "requiredFields": "Fields marked with star are mandatory"
     },
     "statuses": {
       "draft": "Draft",
@@ -68,20 +71,23 @@
       "company": {
         "heading1": "Employer information",
         "heading1Additional": "Postal address for delivering the decision",
-        "heading2": "Contact person",
+        "heading2": "Contact person for the employer",
         "heading2Short": "Contact person",
-        "heading3": "De minimis aid of the applicant",
-        "heading4": "Co-determination negotiation situation",
-        "heading5": "Co-determination negotiation",
+        "heading3": "De minimis aid received by the employer",
+        "heading4": "Change negotiations or co-determination negotiations",
+        "heading5": "Change negotiations",
         "businessId": "Business ID: {{ businessId }}",
-        "deMinimisAidsHeading": "List here all forms of de minimis aid received by the organisation during the current year and the previous two tax years",
-        "deMinimisAidsAdd": "Add",
+        "companyContactPerson": {
+          "content": "The contact person will communicate on matters related to this Helsinki benefit application and will be informed of the decision on the application."
+        },
+        "deMinimisAidsHeading": "Below, please fill in all the de minimis aid granted to the organisation for the current and two previous tax years.",
+        "deMinimisAidsAdd": "Save",
         "deMinimisAidsRemove": "Delete",
         "deMinimisAidsNo": "The applicant has not listed any previous de minimis aids.",
         "notifications": {
           "companyInformation": {
             "label": "Data retrieved from the Business Information System",
-            "content": "Your organisation’s basic information has been retrieved from the Business Information System. If you wish, you can change the postal address to which the Helsinki benefit decision will be sent."
+            "content": "The marked data have been retrieved from the Business Information System.  If you would like to have your Helsinki benefit decision sent to another location, please change the postal address."
           },
           "deMinimisAidMaxAmount": {
             "label": "Maximum amount exceeded",
@@ -89,7 +95,7 @@
           },
           "deMinimisUnfinished": {
             "label": "Missing de minimis aid information",
-            "content": "Please fill any missing de minimis aid information and press 'Add' button."
+            "content": "Please fill any missing de minimis aid information and press 'Save' button."
           }
         },
         "tooltips": {
@@ -97,23 +103,28 @@
           "associationHasBusinessActivities": "The Helsinki benefit is subject to the rules for government grants when the beneficiary is a company or an association engaged in an economic activity, irrespective of its legal form or financing method. Economic activity refers to the sale of services and products that is continuous, for gainful purposes and under competitive conditions (all three conditions must be fulfilled at the same time). The rules for government grants can also be applied to non-profit employers. As a rule, any activities that the Tax Authority has not regarded as taxable economic activities are not considered to be economic activities."
         },
         "fields": {
+          "companyBusinessId": "Business ID",
+          "companyName": "Name of the employer",
+          "companyAddress": "Street address",
+          "companyPostcode": "Postal code",
+          "companyCity": "City / town",
           "useAlternativeAddress": {
-            "label": "Use a different postal address"
+            "label": "Use a different address"
           },
           "alternativeCompanyStreetAddress": {
-            "label": "Street address",
-            "placeholder": "Street address"
+            "label": "Address",
+            "placeholder": "Address"
           },
           "alternativeCompanyPostcode": {
             "label": "Postal code",
             "placeholder": "Postal code"
           },
           "alternativeCompanyCity": {
-            "label": "City",
-            "placeholder": "City"
+            "label": "City / town",
+            "placeholder": "City / town"
           },
           "companyDepartment": {
-            "label": "Office or department (optional)",
+            "label": "Office or department",
             "placeholder": "Office / department"
           },
           "companyBankAccountNumber": {
@@ -133,41 +144,38 @@
             "placeholder": "040 1234567"
           },
           "companyContactPersonEmail": {
-            "label": "Email address for communications",
+            "label": "E-mail for correspondence",
             "placeholder": "Email address"
           },
           "applicantLanguage": {
-            "label": "Language of communication"
+            "label": "Preferred language of communication"
           },
           "associationHasBusinessActivities": {
-            "label": "Is the employer engaged in economic activity?",
+            "label": "Does the employer engage in economic activity?",
             "yes": "Yes",
             "no": "No"
           },
-          "associationImmediateManagerCheck": {
-            "label": "Immediate manager for the person to be hired",
-            "placeholder": "The employer has a proper workspace and a manager (who has supervisory responsibility and is not pay-subsidised) for the person to be hired."
-          },
           "deMinimisAid": {
-            "label": "Has the applicant received de minimis aid during the current year or the previous two tax years?",
+            "label": "Has the organisation been awarded de minimis aid during the current and two previous tax years?",
             "yes": "Yes",
             "no": "No"
           },
           "deMinimisAidGranter": {
-            "label": "Aid granted by",
+            "label": "Granting authority",
             "placeholder": "Issuing party"
           },
           "deMinimisAidAmount": {
-            "label": "Amount of aid (EUR)",
-            "placeholder": "€"
+            "label": "Amount of aid",
+            "placeholder": "€",
+            "helperText": "euros"
           },
           "deMinimisAidGrantedAt": {
             "label": "Date of issue",
-            "labelShort": "Date of issue",
+            "labelShort": "Date of grant",
             "placeholder": "Select"
           },
           "coOperationNegotiations": {
-            "label": "Is the organisation undergoing co-determination negotiations?",
+            "label": "Does the organisation have ongoing or concluded change negotiations within the last 12 months?",
             "yes": "Yes",
             "no": "No"
           },
@@ -178,21 +186,22 @@
         }
       },
       "employee": {
-        "heading1": "Person to be employed with the Helsinki benefit",
+        "heading1": "The person for whose employment you are applying the Helsinki benefit",
         "heading1Short": "Person to be hired",
-        "heading2": "Pay subsidy decision",
+        "heading2": "State aid granted for employment",
         "heading3": "Type of benefit applied for",
         "heading3Long": "Form and date of the applied benefit",
-        "heading4": "Applied for the period",
+        "heading4": "Helsinki benefit is applied for the period?",
+        "heading4Sub1": "You can apply for the Helsinki benefit for the duration of the employment relationship, but only up to 12 months.",
         "heading5Employment": "Employment relationship",
         "heading5Assignment": "Commission",
         "heading5EmploymentSub1": "Salary costs",
-        "salaryExpensesExplanation": "The gross salary and indirect labour costs are indicated in EUR per month, holiday bonus as a lump sum",
+        "salaryExpensesExplanation": "Please report gross salary, Indirect labour costs and holiday pay in euros per month",
         "tooltips": {
           "heading5Employment": "Collective agreement applied: e.g. Collective Agreement for the Commercial Sector. If there is no binding collective agreement in the sector, put in a dash.",
-          "heading5EmploymentSub1": "The gross salary is the salary paid to the subsidised employee before the deduction of the employee’s statutory contributions (the employee’s unemployment insurance and pension insurance contributions) and taxes. If the subsidised employee is paid remuneration bonuses (e.g. evening, night or shift work bonus), take the estimated amount into account in the gross salary. The employers’ statutory indirect labour costs include social security expenses, pension insurance, accident insurance and unemployment insurance premiums as well as the mandatory group life insurance premium.\r\n\r\nIndirect labour costs refer to the amount of the employer’s statutory indirect labour costs paid for the salary per month.\r\n\r\nThe holiday bonus is a salary cost to be covered by the subsidy when it is paid for holiday pay during the subsidy period. Estimate the amount of holiday bonus to be paid during the subsidy period. Holiday compensation is not covered by the Helsinki benefit.",
+          "heading5EmploymentSub1": "Gross salary refers to total salary before deducting taxes and statutory contributions. Gross salary is stated in employment contracts. If bonuses are paid as part of salary – such as evening, night or shift work – include an estimate of the amount of bonuses in the gross salary.",
           "heading5Assignment": "The gross salary is the salary paid to the subsidised employee before the deduction of the employee's statutory contributions (the employee's unemployment insurance and pension insurance contributions) and taxes. If the subsidised employee is paid remuneration bonuses (e.g. evening, night or shift work bonus), take the estimated amount into account in the gross salary. The employers' statutory indirect labour costs include social security expenses, pension insurance, accident insurance and unemployment insurance premiums as well as the mandatory group life insurance premium. Indirect labour costs refer to the amount of the employer's statutory indirect labour costs paid for the salary per month. The holiday bonus is a salary cost to be covered by the subsidy when it is paid for holiday pay during the subsidy period. Estimate the amount of holiday bonus to be paid during the subsidy period. Holiday compensation is not covered by the Helsinki benefit.",
-          "heading2": "Pay subsidy is a financial subsidy intended to promote the employment of an unemployed jobseeker, which TE Services can grant to the employer for salary costs.",
+          "heading2": "The salary subsidy and the employment subsidy for people aged 55 and above are monetary subsidies intended to promote the employment of unemployed jobseekers.",
           "heading3": "The Helsinki benefit for employment is intended for guidance, orientation, tools, work clothing and workspace costs when no other support is paid for these. The Helsinki benefit for salary is intended for the cost of employing a subsidised employee (= gross salary, statutory indirect labour costs and holiday bonus). The Helsinki benefit for a commission is intended for the performance of an individual job or project."
         },
         "notifications": {
@@ -215,6 +224,10 @@
           "noAvailableBenefitTypes": {
             "label": "No types of benefit available",
             "content": "A company or an association that is not engaged in economic activity can only apply for the Helsinki benefit for salary. Pay subsidy granted for the employment relationship is a prerequisite for the Helsinki benefit for salary."
+          },
+          "apprenticeshipDidYouKnow": {
+            "label": "The Helsinki benefit may be granted for the entire duration of an apprenticeship contract.",
+            "content": "You can apply for the Helsinki benefit in periods of up to 12 months. Submit a new application after the 12-month Helsinki benefit grant period."
           }
         },
         "messages": {
@@ -242,21 +255,26 @@
           },
           "isLivingInHelsinki": {
             "label": "The subsidised employee’s municipality of residence is Helsinki",
-            "placeholder": "Yes, the person to be employed is registered in Helsinki at the latest at the beginning of the employment relationship",
+            "placeholder": "Yes, the employee will be registered in Helsinki no later than the start of the employment relationship.",
             "yes": "Yes",
             "no": "No",
             "error": "To be eligible for the subsidy, the municipality of residence must be Helsinki."
           },
+          "associationImmediateManagerCheck": {
+            "label": "Has the person who is being employed been assigned a job supervisor?",
+            "placeholder": "Yes, the person to be employed has a supervisor."
+          },
           "paySubsidyGranted": {
-            "label": "Has pay subsidy been granted for the employment relationship?",
-            "yes": "Yes",
-            "no": "No"
+            "label": "Has this employment relationship received any of the following aid?",
+            "paySubsidyDefault": "Salary subsidy",
+            "paySubsidyAged": "Employment aid for people aged 55 and above",
+            "paySubsidyNone": "None of the previous subsidies have been granted for this employment relationship"
           },
           "paySubsidyPercent": {
             "label": "Pay subsidy percent in the decision"
           },
           "additionalPaySubsidyPercent": {
-            "label": "If another pay subsidy has been granted for the employment relationship, please provide the pay subsidy percent"
+            "label": "If another pay subsidy has been granted for the employment relationship, \nplease provide the pay subsidy percent"
           },
           "apprenticeshipProgram": {
             "label": "Is this an apprenticeship?",
@@ -276,26 +294,34 @@
           "workingHours": {
             "label": "Working hours per week",
             "placeholder": "Hours",
-            "view": "Working hours: {{workingHours}} hours per week"
+            "view": "Working hours: {{workingHours}} hours per week",
+            "helperText": "hours per week"
           },
           "collectiveBargainingAgreement": {
-            "label": "Collective agreement applied",
-            "placeholder": "Collective agreement applied"
+            "label": "Applicable collective agreement",
+            "placeholder": "Applicable collective agreement",
+            "tooltip": "Applicable collective agreement: e.g. the collective agreement for commerce. If there is no binding collective agreement in the sector, indicate this with a dash."
           },
           "monthlyPay": {
             "label": "Gross salary",
             "placeholder": "Gross salary",
-            "view": "Gross salary {{monthlyPay}} EUR per month"
+            "view": "Gross salary {{monthlyPay}} EUR per month",
+            "helperText": "EUR per month",
+            "tooltip": "Gross salary refers to the salary paid to the person being hired with the subsidy before withholding the employee’s statutory contributions (the employee’s unemployment insurance and pension insurance contributions) and taxes. If bonuses are paid as part of their salary – such as evening, night or shift work – include an estimate of the amount of bonuses in the gross salary."
           },
           "otherExpenses": {
             "label": "Indirect labour costs",
             "placeholder": "Indirect labour costs",
-            "view": "Indirect labour costs {{otherExpenses}} EUR per month"
+            "view": "Indirect labour costs {{otherExpenses}} EUR per month",
+            "helperText": "EUR per month",
+            "tooltip": "Indirect labour costs are the amount of the employer’s statutory Indirect labour costs payable from salaries each month. Indirect labour costs include social security, pension insurance, accident insurance, unemployment insurance and a compulsory group life insurance contribution. Please report the amount of Indirect labour costs in euros per month."
           },
           "vacationMoney": {
             "label": "Holiday bonus",
             "placeholder": "Holiday bonus",
-            "view": "Holiday bonus {{vacationMoney}} EUR"
+            "view": "Holiday bonus {{vacationMoney}} EUR",
+            "helperText": "EUR per month",
+            "tooltip": "Holiday pay is a subsidised salary cost when it is paid out of annual holiday pay during the subsidised period. Holiday compensation is not covered by the Helsinki benefit. Please report the amount of holiday pay to be paid during the subsidy period in euros per month. "
           },
           "commissionDescription": {
             "label": "Description of the commission",
@@ -331,12 +357,12 @@
             "message": ""
           },
           "educationContract": {
-            "title": "Agreement on the organisation of an apprenticeship",
+            "title": "Agreement on providing apprenticeship training",
             "message": ""
           },
           "helsinkiBenefitVoucher": {
-            "title": "Helsinki benefit voucher",
-            "message": "Add Helsinki benefit voucher if one has been issued"
+            "title": "The Helsinki benefit card",
+            "message": "Add Helsinki benefit card if one has been issued"
           }
         },
         "add": "Attach the file",
@@ -405,7 +431,7 @@
   },
   "languages": {
     "fi": "Suomi",
-    "sv": "Ruotsi",
+    "sv": "Svenska",
     "en": "English"
   },
   "supportedLanguages": {
@@ -424,7 +450,7 @@
     "text": "Add the following attachments to the application. All attachments marked with * are required. The accepted file formats are JPG, PNG and PDF and the maximum file size is 10 MB."
   },
   "credentialsIngress": {
-    "text": "A person to be employed with the Helsinki benefit must be informed of the processing of their personal data. Print the notification and request a signature from the person to be employed."
+    "text": "The person who is to be employed with the Helsinki benefit must be informed about the processing of their personal data. Please print out the notice and ask the prospective employee to sign it."
   },
   "form": {
     "validation": {
@@ -476,18 +502,18 @@
     "logoutMessageLabel": "You have logged out",
     "errorLabel": "An unexpected error occurred. Please, sign in again.",
     "sessionExpiredLabel": "User session expired. Sign in again",
-    "infoLabel": "Problems logging in?",
+    "infoLabel": "Do you have questions about the Helsinki benefit?",
     "logoutInfoContent": "You have been logged out. If you want to continue to use the service, you have to log in again click the button here below.",
     "infoContent": "Send us an email to helsinkilisa@hel.fi.",
     "termsOfServiceHeader": "Information about the processing of the employer representatives’ personal data",
     "heading": "Log in to the Helsinki benefit service",
-    "infoText1": "Apply for Helsinki benefit, a discretionary support for a private or third-sector employer that hires an unemployed Helsinki resident. You need a Suomi.fi e-Authorization to do business on behalf of your organization.",
+    "infoText1": "Apply for the Helsinki benefit: financial support for your organisation to employ an unemployed Helsinki resident. You need a Suomi.fi authorisation to act on behalf of your organisation.",
     "subheading1": "Log in with you bank access codes or mobile certificate",
     "infoText2": "When you log in for the first time, your own Helsinki profile is automatically created for you.",
-    "subheading2": "Acquire Suomi.fi e-Authorization",
-    "infoText3": "If you do not yet have the right to do business on behalf of your organization, you can get yourself a Suomi.fi e-Authorization.",
-    "authorization": "See the instructions for obtaining authorization",
-    "suomifiUrl": "https://www.suomi.fi/e-authorizations"
+    "subheading2": "The required suomi.fi authorisation",
+    "infoText3": "You can log in to the Helsinki benefit service if you have the authority to sign on behalf of the employer or if you have been granted the authority to “Apply for pay subsidy” or “Applying for grants“ in the Suomi.fi service.",
+    "authorization": "View the instructions for acting on behalf of an organisation",
+    "suomifiUrl": "https://www.suomi.fi/instructions-and-support/e-authorizations/acting-on-behalf-of-an-organisation"
   },
   "errorPage": {
     "title": "An error has unfortunately occurred",
@@ -528,8 +554,12 @@
     "page": "Page",
     "terms": "Terms.PDF"
   },
+  "tooltip": {
+    "ariaLabel": "Show help text",
+    "ariaButtonLabel": "Show help text"
+  },
   "utility": {
-    "and": "ja",
+    "and": "and",
     "yes": "Yes",
     "no": "No",
     "close": "Close",

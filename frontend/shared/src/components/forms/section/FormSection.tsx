@@ -13,6 +13,7 @@ import {
 const FormSection: React.FC<FormSectionProps> = ({
   children,
   header,
+  headerLevel = 'h1',
   action,
   gridActions,
   withoutDivider = false,
@@ -30,7 +31,9 @@ const FormSection: React.FC<FormSectionProps> = ({
     data-testid={dataTestId}
   >
     {action && <$Action>{action}</$Action>}
-    {header && <Heading header={header} loading={loading} {...rest} />}
+    {header && (
+      <Heading as={headerLevel} header={header} loading={loading} {...rest} />
+    )}
     {children && (
       <$Grid role={role} columns={columns} {...rest}>
         <>

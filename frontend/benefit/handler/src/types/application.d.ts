@@ -6,6 +6,7 @@ import {
   CALCULATION_SALARY_KEYS,
   EMPLOYEE_KEYS,
   ORGANIZATION_TYPES,
+  PAY_SUBSIDY_TYPES,
 } from 'benefit-shared/constants';
 import {
   ApplicantTerms,
@@ -19,7 +20,6 @@ import {
   DeMinimisAid,
   Employee,
   PaySubsidy,
-  PaySubsidyPercent,
   TrainingCompensation,
 } from 'benefit-shared/types/application';
 import { FormikProps } from 'formik';
@@ -151,13 +151,12 @@ export interface ApplicationForm {
   [APPLICATION_FIELD_KEYS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION]?: string;
   [APPLICATION_FIELD_KEYS.DE_MINIMIS_AID]?: boolean | null;
   [APPLICATION_FIELD_KEYS.DE_MINIMIS_AID_SET]?: DeMinimisAid[];
-  [APPLICATION_FIELD_KEYS.PAY_SUBSIDY_GRANTED]?: boolean | null;
-  [APPLICATION_FIELD_KEYS.PAY_SUBSIDY_PERCENT]?: PaySubsidyPercent | null;
-  [APPLICATION_FIELD_KEYS.ADDITIONAL_PAY_SUBSIDY_PERCENT]?: PaySubsidyPercent | null;
+  [APPLICATION_FIELD_KEYS.PAY_SUBSIDY_GRANTED]?: PAY_SUBSIDY_TYPES | null;
   [APPLICATION_FIELD_KEYS.APPRENTICESHIP_PROGRAM]?: boolean | null;
   [APPLICATION_FIELD_KEYS.BENEFIT_TYPE]?: BENEFIT_TYPES | '';
   [APPLICATION_FIELD_KEYS.START_DATE]?: string | '';
   [APPLICATION_FIELD_KEYS.END_DATE]?: string | '';
+  [APPLICATION_FIELD_KEYS.PAPER_APPLICATION_DATE]?: string | '';
   [APPLICATION_FIELD_KEYS.EMPLOYEE]?: Employee;
   [APPLICATION_FIELD_KEYS.APPLICANT_AGREEMENT]?: boolean | null;
   [APPLICATION_FIELD_KEYS.EMPLOYEE_SIGNED]?: boolean | null;

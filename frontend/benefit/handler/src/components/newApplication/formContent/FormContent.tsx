@@ -10,19 +10,22 @@ import {
 } from 'benefit/handler/types/application';
 import {
   ATTACHMENT_TYPES,
-  BENEFIT_TYPES,
   ORGANIZATION_TYPES,
+  PAY_SUBSIDY_GRANTED,
 } from 'benefit-shared/constants';
-import { ApplicationData, DeMinimisAid, TextProp } from 'benefit-shared/types/application';
+import {
+  ApplicationData,
+  DeMinimisAid,
+  TextProp,
+} from 'benefit-shared/types/application';
 import { FormikProps } from 'formik';
-import { DateInput, Select, SelectionGroup, TextInput } from 'hds-react';
+import { DateInput, SelectionGroup, TextInput } from 'hds-react';
 import React from 'react';
 import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
 import {
   $Checkbox,
   $RadioButton,
 } from 'shared/components/forms/fields/Fields.sc';
-import { Option } from 'shared/components/forms/fields/types';
 import Heading from 'shared/components/forms/heading/Heading';
 import FormSection from 'shared/components/forms/section/FormSection';
 import {
@@ -30,17 +33,15 @@ import {
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
 import { BenefitAttachment } from 'shared/types/attachment';
-import { OptionType } from 'shared/types/common';
 import {
   formatStringFloatValue,
-  phoneToLocal,
   stringFloatToFixed,
 } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
 import AttachmentsList from './attachmentsList/AttachmentsList';
 import CompanySection from './companySection/CompanySection';
-import { $Description } from './FormContent.sc';
+import { $DateHeader, $Description, $HelpText } from './FormContent.sc';
 import { useFormContent } from './useFormContent';
 
 type Props = {
@@ -53,8 +54,6 @@ type Props = {
   minEndDate: Date;
   maxEndDate: Date | undefined;
   setEndDate: () => void;
-  getSelectValue: (fieldName: keyof Application) => OptionType | null;
-  subsidyOptions: OptionType[];
   deMinimisAidSet: DeMinimisAid[];
   attachments: BenefitAttachment[];
   checkedConsentArray: boolean[];
@@ -72,8 +71,6 @@ const FormContent: React.FC<Props> = ({
   minEndDate,
   maxEndDate,
   setEndDate,
-  getSelectValue,
-  subsidyOptions,
   deMinimisAidSet,
   attachments,
   checkedConsentArray,
@@ -92,7 +89,6 @@ const FormContent: React.FC<Props> = ({
     clearDatesValues,
     clearCommissionValues,
     clearContractValues,
-    clearPaySubsidyValues,
     clearAlternativeAddressValues,
     getErrorMessage,
   } = useFormContent(formik, fields);
@@ -106,7 +102,6 @@ const FormContent: React.FC<Props> = ({
         formik.values.associationHasBusinessActivities,
       apprenticeshipProgram: formik.values.apprenticeshipProgram,
       benefitType: formik.values.benefitType,
-      paySubsidyGranted: formik.values.paySubsidyGranted,
       startDate: formik.values.startDate,
       useAlternativeAddress: formik.values.useAlternativeAddress,
     },
@@ -117,20 +112,10 @@ const FormContent: React.FC<Props> = ({
       clearDatesValues,
       clearCommissionValues,
       clearContractValues,
-      clearPaySubsidyValues,
       clearAlternativeAddressValues,
       setEndDate,
     }
   );
-
-  const selectLabel = t('common:select');
-
-  const isAbleToSelectEmploymentBenefit =
-    application?.company?.organizationType !== ORGANIZATION_TYPES.ASSOCIATION ||
-    (application?.company?.organizationType ===
-      ORGANIZATION_TYPES.ASSOCIATION &&
-      application?.associationHasBusinessActivities);
-  const isAbleToSelectSalaryBenefit = formik.values.paySubsidyGranted === true;
 
   return (
     <form onSubmit={handleSave} noValidate>
@@ -145,17 +130,12 @@ const FormContent: React.FC<Props> = ({
         showDeminimisSection={showDeminimisSection}
         deMinimisAidSet={deMinimisAidSet}
       />
-      <FormSection
-        paddingBottom
-        withoutDivider
-        header={t(`${translationsBase}.headings.employment1`)}
-      >
-        <$GridCell $colSpan={4}>
+      <FormSection header={t(`${translationsBase}.headings.employment1`)}>
+        <$GridCell $colSpan={3}>
           <TextInput
             id={fields.employee.firstName.name}
             name={fields.employee.firstName.name}
             label={fields.employee.firstName.label}
-            placeholder={fields.employee.firstName.placeholder}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             value={formik.values.employee?.firstName ?? ''}
@@ -165,12 +145,11 @@ const FormContent: React.FC<Props> = ({
             required
           />
         </$GridCell>
-        <$GridCell $colSpan={4}>
+        <$GridCell $colSpan={3}>
           <TextInput
             id={fields.employee.lastName.name}
             name={fields.employee.lastName.name}
             label={fields.employee.lastName.label}
-            placeholder={fields.employee.lastName.placeholder}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             value={formik.values.employee?.lastName ?? ''}
@@ -180,12 +159,11 @@ const FormContent: React.FC<Props> = ({
             required
           />
         </$GridCell>
-        <$GridCell $colStart={1} $colSpan={4}>
+        <$GridCell $colSpan={2}>
           <TextInput
             id={fields.employee.socialSecurityNumber.name}
             name={fields.employee.socialSecurityNumber.name}
             label={fields.employee.socialSecurityNumber.label}
-            placeholder={fields.employee.socialSecurityNumber.placeholder}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             value={formik.values.employee?.socialSecurityNumber ?? ''}
@@ -201,24 +179,9 @@ const FormContent: React.FC<Props> = ({
             required
           />
         </$GridCell>
-        <$GridCell $colSpan={4}>
-          <TextInput
-            id={fields.employee.phoneNumber.name}
-            name={fields.employee.phoneNumber.name}
-            label={fields.employee.phoneNumber.label}
-            placeholder={fields.employee.phoneNumber.placeholder}
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-            value={phoneToLocal(formik.values.employee?.phoneNumber)}
-            invalid={!!getErrorMessage(fields.employee.phoneNumber.name)}
-            aria-invalid={!!getErrorMessage(fields.employee.phoneNumber.name)}
-            errorText={getErrorMessage(fields.employee.phoneNumber.name)}
-            required
-          />
-        </$GridCell>
         <$GridCell
           $colStart={1}
-          $colSpan={6}
+          $colSpan={8}
           css={`
             margin-top: ${theme.spacing.l};
           `}
@@ -241,12 +204,219 @@ const FormContent: React.FC<Props> = ({
             checked={formik.values.employee?.isLivingInHelsinki === true}
           />
         </$GridCell>
+        {application?.company?.organizationType.toLowerCase() ===
+          ORGANIZATION_TYPES.ASSOCIATION.toLowerCase() && (
+          <$GridCell
+            $colSpan={8}
+            css={`
+              margin-top: ${theme.spacing.l};
+            `}
+          >
+            <SelectionGroup
+              label={fields.associationImmediateManagerCheck.label}
+              direction="vertical"
+              required
+              errorText={getErrorMessage(
+                fields.associationImmediateManagerCheck.name
+              )}
+            >
+              <$RadioButton
+                id={`${fields.associationImmediateManagerCheck.name}False`}
+                name={fields.associationImmediateManagerCheck.name}
+                value="false"
+                label={t(
+                  `${translationsBase}.fields.${fields.associationImmediateManagerCheck.name}.no`
+                )}
+                onChange={() => {
+                  formik.setFieldValue(
+                    fields.associationImmediateManagerCheck.name,
+                    false
+                  );
+                }}
+                // 3 states: null (none is selected), true, false
+                checked={
+                  formik.values.associationImmediateManagerCheck === false
+                }
+              />
+              <$RadioButton
+                id={`${fields.associationImmediateManagerCheck.name}True`}
+                name={fields.associationImmediateManagerCheck.name}
+                value="true"
+                label={t(
+                  `${translationsBase}.fields.${fields.associationImmediateManagerCheck.name}.yes`
+                )}
+                onChange={() =>
+                  formik.setFieldValue(
+                    fields.associationImmediateManagerCheck.name,
+                    true
+                  )
+                }
+                checked={
+                  formik.values.associationImmediateManagerCheck === true
+                }
+              />
+            </SelectionGroup>
+          </$GridCell>
+        )}
       </FormSection>
+
       <FormSection
-        paddingBottom
-        withoutDivider
-        header={t(`${translationsBase}.headings.employment2`)}
+        header={t(`${translationsBase}.headings.employment5Employment`)}
       >
+        <>
+          <$GridCell $colSpan={4}>
+            <TextInput
+              id={fields.employee.jobTitle.name}
+              name={fields.employee.jobTitle.name}
+              label={fields.employee.jobTitle.label}
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.employee?.jobTitle ?? ''}
+              invalid={!!getErrorMessage(fields.employee.jobTitle.name)}
+              aria-invalid={!!getErrorMessage(fields.employee.jobTitle.name)}
+              errorText={getErrorMessage(fields.employee.jobTitle.name)}
+              required
+            />
+          </$GridCell>
+          <$GridCell $colSpan={3}>
+            <TextInput
+              id={fields.employee.workingHours.name}
+              name={fields.employee.workingHours.name}
+              label={fields.employee.workingHours.label}
+              onBlur={formik.handleBlur}
+              onChange={(e) =>
+                formik.setFieldValue(
+                  fields.employee.workingHours.name,
+                  stringFloatToFixed(e.target.value)
+                )
+              }
+              value={formatStringFloatValue(
+                formik.values.employee?.workingHours
+              )}
+              invalid={!!getErrorMessage(fields.employee.workingHours.name)}
+              aria-invalid={
+                !!getErrorMessage(fields.employee.workingHours.name)
+              }
+              errorText={getErrorMessage(fields.employee.workingHours.name)}
+              required
+            />
+            <$HelpText>
+              {t(`${translationsBase}.fields.workingHours.helpText`)}
+            </$HelpText>
+          </$GridCell>
+          <$GridCell $colSpan={3}>
+            <TextInput
+              id={fields.employee.collectiveBargainingAgreement.name}
+              name={fields.employee.collectiveBargainingAgreement.name}
+              label={fields.employee.collectiveBargainingAgreement.label}
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={
+                formik.values.employee?.collectiveBargainingAgreement ?? ''
+              }
+              invalid={
+                !!getErrorMessage(
+                  fields.employee.collectiveBargainingAgreement.name
+                )
+              }
+              aria-invalid={
+                !!getErrorMessage(
+                  fields.employee.collectiveBargainingAgreement.name
+                )
+              }
+              errorText={getErrorMessage(
+                fields.employee.collectiveBargainingAgreement.name
+              )}
+              required
+            />
+          </$GridCell>
+
+          <$GridCell $colSpan={12}>
+            <Heading
+              as="h3"
+              size="xs"
+              header={t(
+                `${translationsBase}.headings.employment5EmploymentSub1`
+              )}
+            />
+          </$GridCell>
+
+          <$GridCell $colSpan={12}>
+            {t(`${translationsBase}.salaryExpensesExplanation`)}
+          </$GridCell>
+
+          <$GridCell $colSpan={2}>
+            <TextInput
+              id={fields.employee.monthlyPay.name}
+              name={fields.employee.monthlyPay.name}
+              label={fields.employee.monthlyPay.label}
+              onBlur={formik.handleBlur}
+              onChange={(e) =>
+                formik.setFieldValue(
+                  fields.employee.monthlyPay.name,
+                  stringFloatToFixed(e.target.value)
+                )
+              }
+              value={formatStringFloatValue(formik.values.employee?.monthlyPay)}
+              invalid={!!getErrorMessage(fields.employee.monthlyPay.name)}
+              aria-invalid={!!getErrorMessage(fields.employee.monthlyPay.name)}
+              errorText={getErrorMessage(fields.employee.monthlyPay.name)}
+              required
+            />
+            <$HelpText>{t(`${translationsBase}.eurosPerMonth`)}</$HelpText>
+          </$GridCell>
+          <$GridCell $colSpan={2}>
+            <TextInput
+              id={fields.employee.vacationMoney.name}
+              name={fields.employee.vacationMoney.name}
+              label={fields.employee.vacationMoney.label}
+              onBlur={formik.handleBlur}
+              onChange={(e) =>
+                formik.setFieldValue(
+                  fields.employee.vacationMoney.name,
+                  stringFloatToFixed(e.target.value)
+                )
+              }
+              value={formatStringFloatValue(
+                formik.values.employee?.vacationMoney
+              )}
+              invalid={!!getErrorMessage(fields.employee.vacationMoney.name)}
+              aria-invalid={
+                !!getErrorMessage(fields.employee.vacationMoney.name)
+              }
+              errorText={getErrorMessage(fields.employee.vacationMoney.name)}
+              required
+            />
+            <$HelpText>{t(`${translationsBase}.eurosPerMonth`)}</$HelpText>
+          </$GridCell>
+          <$GridCell $colSpan={2}>
+            <TextInput
+              id={fields.employee.otherExpenses.name}
+              name={fields.employee.otherExpenses.name}
+              label={fields.employee.otherExpenses.label}
+              onBlur={formik.handleBlur}
+              onChange={(e) =>
+                formik.setFieldValue(
+                  fields.employee.otherExpenses.name,
+                  stringFloatToFixed(e.target.value)
+                )
+              }
+              value={formatStringFloatValue(
+                formik.values.employee?.otherExpenses
+              )}
+              invalid={!!getErrorMessage(fields.employee.otherExpenses.name)}
+              aria-invalid={
+                !!getErrorMessage(fields.employee.otherExpenses.name)
+              }
+              errorText={getErrorMessage(fields.employee.otherExpenses.name)}
+              required
+            />
+            <$HelpText>{t(`${translationsBase}.eurosPerMonth`)}</$HelpText>
+          </$GridCell>
+        </>
+      </FormSection>
+
+      <FormSection header={t(`${translationsBase}.headings.employment2`)}>
         <$GridCell $colSpan={8}>
           <SelectionGroup
             id={fields.paySubsidyGranted.name}
@@ -256,120 +426,72 @@ const FormContent: React.FC<Props> = ({
             errorText={getErrorMessage(fields.paySubsidyGranted.name)}
           >
             <$RadioButton
-              id={`${fields.paySubsidyGranted.name}False`}
+              id={`${fields.paySubsidyGranted.name}.${PAY_SUBSIDY_GRANTED.GRANTED}}`}
               name={fields.paySubsidyGranted.name}
-              value="false"
+              value={PAY_SUBSIDY_GRANTED.GRANTED}
               label={t(
-                `${translationsBase}.fields.${fields.paySubsidyGranted.name}.no`
+                `${translationsBase}.fields.${fields.paySubsidyGranted.name}.salarySupport`
               )}
               onBlur={formik.handleBlur}
               onChange={() => {
-                formik.setFieldValue(fields.paySubsidyGranted.name, false);
+                formik.setFieldValue(
+                  fields.paySubsidyGranted.name,
+                  PAY_SUBSIDY_GRANTED.GRANTED
+                );
                 formik.setFieldValue(
                   APPLICATION_FIELD_KEYS.APPRENTICESHIP_PROGRAM,
                   null
                 );
               }}
-              checked={formik.values.paySubsidyGranted === false}
+              checked={
+                formik.values.paySubsidyGranted === PAY_SUBSIDY_GRANTED.GRANTED
+              }
             />
             <$RadioButton
-              id={`${fields.paySubsidyGranted.name}True`}
+              id={`${fields.paySubsidyGranted.name}.${PAY_SUBSIDY_GRANTED.GRANTED_AGED}`}
               name={fields.paySubsidyGranted.name}
-              value="true"
+              value={PAY_SUBSIDY_GRANTED.GRANTED_AGED}
               label={t(
-                `${translationsBase}.fields.${fields.paySubsidyGranted.name}.yes`
+                `${translationsBase}.fields.${fields.paySubsidyGranted.name}.oldAgeSupport`
               )}
               onBlur={formik.handleBlur}
               onChange={() => {
-                formik.setFieldValue(fields.paySubsidyGranted.name, true);
+                formik.setFieldValue(
+                  fields.paySubsidyGranted.name,
+                  PAY_SUBSIDY_GRANTED.GRANTED_AGED
+                );
               }}
-              checked={formik.values.paySubsidyGranted === true}
+              checked={
+                formik.values.paySubsidyGranted ===
+                PAY_SUBSIDY_GRANTED.GRANTED_AGED
+              }
+            />
+            <$RadioButton
+              id={`${fields.paySubsidyGranted.name}.null`}
+              name={fields.paySubsidyGranted.name}
+              value={null}
+              label={t(
+                `${translationsBase}.fields.${fields.paySubsidyGranted.name}.no`
+              )}
+              onBlur={formik.handleBlur}
+              onChange={() => {
+                formik.setFieldValue(fields.paySubsidyGranted.name, null);
+              }}
+              checked={formik.values.paySubsidyGranted === null}
             />
           </SelectionGroup>
         </$GridCell>
-        {formik.values.paySubsidyGranted && (
+        {formik.values.paySubsidyGranted === PAY_SUBSIDY_GRANTED.GRANTED && (
           <$GridCell
             as={$Grid}
             $colSpan={12}
             css={`
               row-gap: ${theme.spacing.xl};
+              padding-left: ${theme.spacing.s};
+              margin-top: ${theme.spacing.s};
+              border-left: 10px solid ${theme.colors.silver};
             `}
           >
-            <$GridCell
-              $colSpan={4}
-              $colStart={1}
-              id={fields.paySubsidyPercent.name}
-            >
-              <Select
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore TODO: remove ts-ignore when HDS is fixed
-                value={getSelectValue(fields.paySubsidyPercent.name)}
-                optionLabelField="label"
-                label={fields.paySubsidyPercent.label}
-                onChange={(paySubsidyPercent: Option) =>
-                  formik.setFieldValue(
-                    fields.paySubsidyPercent.name,
-                    paySubsidyPercent.value
-                  )
-                }
-                options={subsidyOptions}
-                placeholder={selectLabel}
-                invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
-                aria-invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
-                error={getErrorMessage(fields.paySubsidyPercent.name)}
-                required
-                css={`
-                  label {
-                    white-space: pre;
-                  }
-                `}
-                data-testid={fields.paySubsidyPercent.name}
-              />
-            </$GridCell>
-            <$GridCell
-              $colSpan={4}
-              $colStart={5}
-              id={fields.additionalPaySubsidyPercent.name}
-            >
-              <Select
-                value={getSelectValue(
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-ignore TODO: remove ts-ignore when HDS is fixed
-                  fields.additionalPaySubsidyPercent.name
-                )}
-                optionLabelField="label"
-                label={fields.additionalPaySubsidyPercent.label}
-                onChange={(additionalPaySubsidyPercent: Option) =>
-                  formik.setFieldValue(
-                    fields.additionalPaySubsidyPercent.name,
-                    additionalPaySubsidyPercent.value
-                  )
-                }
-                options={[
-                  {
-                    label: selectLabel,
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore TODO: remove ts-ignore when HDS is fixed
-                    value: null,
-                  },
-                  ...subsidyOptions,
-                ]}
-                id={fields.additionalPaySubsidyPercent.name}
-                placeholder={selectLabel}
-                invalid={
-                  !!getErrorMessage(fields.additionalPaySubsidyPercent.name)
-                }
-                aria-invalid={
-                  !!getErrorMessage(fields.additionalPaySubsidyPercent.name)
-                }
-                error={getErrorMessage(fields.additionalPaySubsidyPercent.name)}
-                css={`
-                  label {
-                    white-space: pre;
-                  }
-                `}
-              />
-            </$GridCell>
             <$GridCell $colSpan={3} $colStart={1}>
               <SelectionGroup
                 label={fields.apprenticeshipProgram.label}
@@ -413,59 +535,20 @@ const FormContent: React.FC<Props> = ({
           </$GridCell>
         )}
       </FormSection>
-      <FormSection
-        paddingBottom
-        withoutDivider
-        header={t(`${translationsBase}.headings.employment3`)}
-      >
-        <$GridCell $colSpan={6}>
-          <SelectionGroup
-            label={fields.benefitType.label}
-            id={fields.benefitType.name}
-            direction="vertical"
-            required
-            errorText={getErrorMessage(fields.benefitType.name)}
-          >
-            <$RadioButton
-              id={`${fields.benefitType.name}Employment`}
-              name={fields.benefitType.name}
-              value={BENEFIT_TYPES.EMPLOYMENT}
-              label={t(
-                `${translationsBase}.fields.${fields.benefitType.name}.employment`
-              )}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              checked={formik.values.benefitType === BENEFIT_TYPES.EMPLOYMENT}
-              disabled={!isAbleToSelectEmploymentBenefit}
-            />
-            <$RadioButton
-              id={`${fields.benefitType.name}Salary`}
-              name={fields.benefitType.name}
-              value={BENEFIT_TYPES.SALARY}
-              label={t(
-                `${translationsBase}.fields.${fields.benefitType.name}.salary`
-              )}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              checked={formik.values.benefitType === BENEFIT_TYPES.SALARY}
-              disabled={!isAbleToSelectSalaryBenefit}
-            />
-          </SelectionGroup>
-        </$GridCell>
-      </FormSection>
 
       <FormSection
-        paddingBottom
-        withoutDivider
         header={t(`${translationsBase}.headings.employment4`)}
+        columns={32}
       >
-        <$GridCell $colStart={1} $colSpan={4}>
+        <$GridCell $colStart={1} $colSpan={25}>
+          <$DateHeader>{t(`${translationsBase}.dateExplanation`)}</$DateHeader>
+        </$GridCell>
+        <$GridCell $colStart={1} $colSpan={6}>
           <DateInput
             id={fields.startDate.name}
             name={fields.startDate.name}
             label={fields.startDate.label}
             placeholder={fields.startDate.placeholder}
-            disabled={!formik.values.benefitType}
             language={language}
             onBlur={formik.handleBlur}
             onChange={(value) =>
@@ -479,13 +562,16 @@ const FormContent: React.FC<Props> = ({
             required
           />
         </$GridCell>
-        <$GridCell $colSpan={4}>
+        <$GridCell $colSpan={1} style={{ top: '50px', fontWeight: 'bold' }}>
+          —
+        </$GridCell>
+        <$GridCell $colSpan={6}>
           <DateInput
             id={fields.endDate.name}
             name={fields.endDate.name}
             label={fields.endDate.label}
             placeholder={fields.endDate.placeholder}
-            disabled={!formik.values.benefitType || !formik.values.startDate}
+            disabled={!formik.values.startDate}
             language={language}
             onBlur={formik.handleBlur}
             onChange={(value) =>
@@ -502,170 +588,7 @@ const FormContent: React.FC<Props> = ({
           />
         </$GridCell>
       </FormSection>
-      <FormSection
-        paddingBottom
-        header={t(`${translationsBase}.headings.employment5Employment`)}
-      >
-        {!formik.values.benefitType ? (
-          <$GridCell $colSpan={8}>
-            {t(`${translationsBase}.messages.selectBenefitType`)}
-          </$GridCell>
-        ) : (
-          <>
-            <$GridCell $colSpan={4}>
-              <TextInput
-                id={fields.employee.jobTitle.name}
-                name={fields.employee.jobTitle.name}
-                label={fields.employee.jobTitle.label}
-                placeholder={fields.employee.jobTitle.placeholder}
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={formik.values.employee?.jobTitle ?? ''}
-                invalid={!!getErrorMessage(fields.employee.jobTitle.name)}
-                aria-invalid={!!getErrorMessage(fields.employee.jobTitle.name)}
-                errorText={getErrorMessage(fields.employee.jobTitle.name)}
-                required
-              />
-            </$GridCell>
-            <$GridCell $colSpan={3}>
-              <TextInput
-                id={fields.employee.workingHours.name}
-                name={fields.employee.workingHours.name}
-                label={fields.employee.workingHours.label}
-                onBlur={formik.handleBlur}
-                onChange={(e) =>
-                  formik.setFieldValue(
-                    fields.employee.workingHours.name,
-                    stringFloatToFixed(e.target.value)
-                  )
-                }
-                value={formatStringFloatValue(
-                  formik.values.employee?.workingHours
-                )}
-                invalid={!!getErrorMessage(fields.employee.workingHours.name)}
-                aria-invalid={
-                  !!getErrorMessage(fields.employee.workingHours.name)
-                }
-                errorText={getErrorMessage(fields.employee.workingHours.name)}
-                required
-              />
-            </$GridCell>
-            <$GridCell $colSpan={3}>
-              <TextInput
-                id={fields.employee.collectiveBargainingAgreement.name}
-                name={fields.employee.collectiveBargainingAgreement.name}
-                label={fields.employee.collectiveBargainingAgreement.label}
-                placeholder={
-                  fields.employee.collectiveBargainingAgreement.placeholder
-                }
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={
-                  formik.values.employee?.collectiveBargainingAgreement ?? ''
-                }
-                invalid={
-                  !!getErrorMessage(
-                    fields.employee.collectiveBargainingAgreement.name
-                  )
-                }
-                aria-invalid={
-                  !!getErrorMessage(
-                    fields.employee.collectiveBargainingAgreement.name
-                  )
-                }
-                errorText={getErrorMessage(
-                  fields.employee.collectiveBargainingAgreement.name
-                )}
-                required
-              />
-            </$GridCell>
 
-            <$GridCell $colSpan={12}>
-              <Heading
-                as="h3"
-                size="xs"
-                header={t(
-                  `${translationsBase}.headings.employment5EmploymentSub1`
-                )}
-              />
-            </$GridCell>
-
-            <$GridCell $colSpan={12}>
-              {t(`${translationsBase}.salaryExpensesExplanation`)}
-            </$GridCell>
-
-            <$GridCell $colSpan={2}>
-              <TextInput
-                id={fields.employee.monthlyPay.name}
-                name={fields.employee.monthlyPay.name}
-                label={fields.employee.monthlyPay.label}
-                onBlur={formik.handleBlur}
-                onChange={(e) =>
-                  formik.setFieldValue(
-                    fields.employee.monthlyPay.name,
-                    stringFloatToFixed(e.target.value)
-                  )
-                }
-                value={formatStringFloatValue(
-                  formik.values.employee?.monthlyPay
-                )}
-                invalid={!!getErrorMessage(fields.employee.monthlyPay.name)}
-                aria-invalid={
-                  !!getErrorMessage(fields.employee.monthlyPay.name)
-                }
-                errorText={getErrorMessage(fields.employee.monthlyPay.name)}
-                required
-              />
-            </$GridCell>
-            <$GridCell $colSpan={2}>
-              <TextInput
-                id={fields.employee.otherExpenses.name}
-                name={fields.employee.otherExpenses.name}
-                label={fields.employee.otherExpenses.label}
-                onBlur={formik.handleBlur}
-                onChange={(e) =>
-                  formik.setFieldValue(
-                    fields.employee.otherExpenses.name,
-                    stringFloatToFixed(e.target.value)
-                  )
-                }
-                value={formatStringFloatValue(
-                  formik.values.employee?.otherExpenses
-                )}
-                invalid={!!getErrorMessage(fields.employee.otherExpenses.name)}
-                aria-invalid={
-                  !!getErrorMessage(fields.employee.otherExpenses.name)
-                }
-                errorText={getErrorMessage(fields.employee.otherExpenses.name)}
-                required
-              />
-            </$GridCell>
-            <$GridCell $colSpan={2}>
-              <TextInput
-                id={fields.employee.vacationMoney.name}
-                name={fields.employee.vacationMoney.name}
-                label={fields.employee.vacationMoney.label}
-                onBlur={formik.handleBlur}
-                onChange={(e) =>
-                  formik.setFieldValue(
-                    fields.employee.vacationMoney.name,
-                    stringFloatToFixed(e.target.value)
-                  )
-                }
-                value={formatStringFloatValue(
-                  formik.values.employee?.vacationMoney
-                )}
-                invalid={!!getErrorMessage(fields.employee.vacationMoney.name)}
-                aria-invalid={
-                  !!getErrorMessage(fields.employee.vacationMoney.name)
-                }
-                errorText={getErrorMessage(fields.employee.vacationMoney.name)}
-                required
-              />
-            </$GridCell>
-          </>
-        )}
-      </FormSection>
       <FormSection
         paddingBottom
         withoutDivider

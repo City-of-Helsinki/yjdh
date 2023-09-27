@@ -5,7 +5,12 @@ from datetime import date, timedelta
 
 import factory
 
-from applications.enums import ApplicationStatus, ApplicationStep, BenefitType
+from applications.enums import (
+    ApplicationStatus,
+    ApplicationStep,
+    BenefitType,
+    PaySubsidyGranted,
+)
 from applications.models import (
     AhjoDecision,
     Application,
@@ -97,12 +102,12 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     co_operation_negotiations_description = factory.Maybe(
         "co_operation_negotiations", factory.Faker("paragraph"), ""
     )
-    pay_subsidy_granted = False
+    pay_subsidy_granted = PaySubsidyGranted.NOT_GRANTED
     pay_subsidy_percent = None
 
     additional_pay_subsidy_percent = None
 
-    apprenticeship_program = factory.Faker("boolean")
+    apprenticeship_program = None
     archived = False
     application_step = ApplicationStep.STEP_1
     benefit_type = BenefitType.EMPLOYMENT_BENEFIT

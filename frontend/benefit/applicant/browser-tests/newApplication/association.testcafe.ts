@@ -53,9 +53,8 @@ test('Oppisopimus', async () => {
   const step2 = new Step2();
   await step2.isLoaded();
 
-  await step2.fillEmployeeInfo('Truu', 'Koos', '121148-8060', '0501234555');
+  await step2.fillEmployeeInfo('Truu', 'Koos', '121148-8060');
   await step2.fillPaidSubsidyGrant();
-  await step2.selectBenefitType('salary');
   const currentYear: number = new Date().getFullYear();
   await step2.fillBenefitPeriod(
     `1.3.${currentYear}`,

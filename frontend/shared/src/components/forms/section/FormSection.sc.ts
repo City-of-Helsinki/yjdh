@@ -10,6 +10,7 @@ export type FormSectionProps = {
   gridActions?: React.ReactNode;
   withoutDivider?: boolean;
   header?: string;
+  headerLevel?: 'div' | 'h1' | 'h2' | 'h3' | 'h4';
   paddingBottom?: boolean;
   'aria-label'?: string;
 } & HeadingProps &
@@ -42,9 +43,15 @@ export const $Section = styled.section<FormSectionProps>`
   position: relative;
 `;
 
-export const $SubHeader = styled.h3`
+type $SubHeaderProps = {
+  weight?: string;
+};
+
+export const $SubHeader = styled.h3<$SubHeaderProps>`
+  margin-top: 0;
+  margin-bottom: 1em;
   font-size: ${(props) => props.theme.fontSize.heading.xxs};
-  font-weight: 600;
+  font-weight: ${(props) => (props.weight ? props.weight : '600')};
 `;
 
 export const $Grid = styled.div.attrs<

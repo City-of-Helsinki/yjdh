@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.1.1...benefit-backend-v1.1.2) (2023-09-26)
+
+
+### Bug Fixes
+
+* Only one row per application in Talpa CSV export ([#2289](https://github.com/City-of-Helsinki/yjdh/issues/2289)) ([557e823](https://github.com/City-of-Helsinki/yjdh/commit/557e82345852c21bfde49af51d49ee41a558b352))
+
 ## [1.1.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.1.0...benefit-backend-v1.1.1) (2023-08-31)
 
 

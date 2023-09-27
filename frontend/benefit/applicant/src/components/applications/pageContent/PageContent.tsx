@@ -13,7 +13,7 @@ import ApplicationFormStep4 from 'benefit/applicant/components/applications/form
 import ApplicationFormStep5 from 'benefit/applicant/components/applications/forms/application/step5/ApplicationFormStep5';
 import ApplicationFormStep6 from 'benefit/applicant/components/applications/forms/application/step6/ApplicationFormStep6';
 import { SUBMITTED_STATUSES } from 'benefit/applicant/constants';
-import { LoadingSpinner, Stepper } from 'hds-react';
+import { IconInfoCircleFill, LoadingSpinner, Stepper } from 'hds-react';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import Container from 'shared/components/container/Container';
@@ -21,6 +21,7 @@ import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
 import ErrorPage from '../../errorPage/ErrorPage';
+import { $Notification } from '../../Notification/Notification.sc';
 import { usePageContent } from './usePageContent';
 
 const stepperCss = {
@@ -166,7 +167,14 @@ const PageContent: React.FC = () => {
           </$PageSubHeading>
           {(currentStep === 1 || currentStep === 2) && (
             <$PageHeadingHelperText>
-              {t('common:applications.pageHeaders.guideText')}
+              <div style={{ maxWidth: '360px' }}>
+                <$Notification>
+                  <span>
+                    <IconInfoCircleFill color="var(--color-coat-of-arms)" />
+                  </span>
+                  {t('common:applications.pageHeaders.guideText')}
+                </$Notification>
+              </div>
             </$PageHeadingHelperText>
           )}
           {currentStep === 5 && (

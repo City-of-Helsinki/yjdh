@@ -10,7 +10,12 @@ from applications.api.v1.serializers.application import (
     ApplicantApplicationSerializer,
     HandlerApplicationSerializer,
 )
-from applications.enums import ApplicationStatus, BenefitType, OrganizationType
+from applications.enums import (
+    ApplicationStatus,
+    BenefitType,
+    OrganizationType,
+    PaySubsidyGranted,
+)
 from applications.tests.conftest import *  # noqa
 from applications.tests.factories import ReceivedApplicationFactory
 from applications.tests.test_applications_api import (
@@ -100,7 +105,8 @@ def test_application_create_calculation_on_submit(
     # as all fields are not filled yet.
     application.status = ApplicationStatus.DRAFT
     application.pay_subsidy_percent = 50
-    application.pay_subsidy_granted = True
+    application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
+    application.apprenticeship_program = False
     application.benefit_type = BenefitType.SALARY_BENEFIT
     application.save()
     assert not hasattr(application, "calculation")
@@ -381,6 +387,7 @@ def test_application_edit_pay_subsidy_empty_date_values(
     handler_api_client, handling_application
 ):
     handling_application.benefit_type = BenefitType.SALARY_BENEFIT
+    handling_application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
     handling_application.save()
     data = HandlerApplicationSerializer(handling_application).data
 
@@ -426,7 +433,7 @@ def test_subsidies_validation_when_state_aid_max_percentage_is_not_set(
             apprenticeship_program=False,
             benefit_type=BenefitType.SALARY_BENEFIT,
             company=mock_get_organisation_roles_and_create_company,
-            pay_subsidy_granted=True,
+            pay_subsidy_granted=PaySubsidyGranted.GRANTED,
             pay_subsidy_percent=100,
             additional_pay_subsidy_percent=40,
         )
@@ -470,7 +477,7 @@ def test_pay_subsidies_validation_in_handling(
             calculation__override_monthly_benefit_amount=override_monthly_benefit_amount,
             calculation__override_monthly_benefit_amount_comment=override_monthly_benefit_amount_comment,
             company=mock_get_organisation_roles_and_create_company,
-            pay_subsidy_granted=True,
+            pay_subsidy_granted=PaySubsidyGranted.GRANTED,
             pay_subsidy_percent=100,
             additional_pay_subsidy_percent=70,
         )
@@ -519,6 +526,8 @@ def test_validate_pay_subsidy_dates_when_application_is_handled(
     """
     application.status = status
     application.benefit_type = BenefitType.SALARY_BENEFIT
+    application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
+    application.apprenticeship_program = False
     application.save()
     data = HandlerApplicationSerializer(application).data
 

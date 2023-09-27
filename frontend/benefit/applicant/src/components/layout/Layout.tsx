@@ -5,23 +5,39 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import useAuth from 'shared/hooks/useAuth';
+import theme from 'shared/styles/theme';
+import { DefaultTheme } from 'styled-components';
 
 import { ROUTES } from '../../constants';
 import { $Main } from './Layout.sc';
 
 const Footer = dynamic(
   () => import('benefit/applicant/components/footer/Footer'),
-  { ssr: true }
+  { ssr: false }
 );
 
 type Props = { children: React.ReactNode };
+
+const selectBgColor = (pathname: string): keyof DefaultTheme['colors'] => {
+  switch (pathname) {
+    case ROUTES.LOGIN:
+      return theme.colors.silverLight as keyof DefaultTheme['colors'];
+
+    case ROUTES.HOME:
+      return theme.colors.silverLight as keyof DefaultTheme['colors'];
+
+    default:
+      return theme.colors.white as keyof DefaultTheme['colors'];
+  }
+};
 
 const Layout: React.FC<Props> = ({ children, ...rest }) => {
   const { isAuthenticated } = useAuth();
   const [isTermsOfServiceApproved, setIsTermsOfSerivceApproved] =
     React.useState(false);
   const router = useRouter();
-  const bgColor = router.pathname === ROUTES.LOGIN ? 'silverLight' : 'white';
+
+  const bgColor = selectBgColor(router.pathname);
 
   const isAccessibilityStatement =
     router.pathname === ROUTES.ACCESSIBILITY_STATEMENT;

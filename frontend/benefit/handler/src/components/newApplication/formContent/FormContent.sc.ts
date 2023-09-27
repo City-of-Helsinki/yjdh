@@ -5,11 +5,11 @@ export const $Description = styled.p`
   line-height: ${(props) => props.theme.lineHeight.l};
 `;
 
-export const $CompanyInfoField = styled.div`
-  line-height: ${(props) => props.theme.lineHeight.l};
-  margin-bottom: ${(props) => props.theme.spacing.xs2};
+export const $DateHeader = styled.p`
+  font-size: ${(props) => props.theme.fontSize.heading.s};
+  font-weight: 500;
 `;
 
-export const $CompanyInfoHeader = styled.div`
-  font-weight: bold;
+export const $HelpText = styled.p`
+  color: ${(props) => props.theme.colors.black70};
 `;
