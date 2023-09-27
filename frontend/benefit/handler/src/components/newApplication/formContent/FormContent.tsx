@@ -426,7 +426,7 @@ const FormContent: React.FC<Props> = ({
             errorText={getErrorMessage(fields.paySubsidyGranted.name)}
           >
             <$RadioButton
-              id={`${fields.paySubsidyGranted.name}.${PAY_SUBSIDY_GRANTED.GRANTED}}`}
+              id={`${fields.paySubsidyGranted.name}.${PAY_SUBSIDY_GRANTED.GRANTED}`}
               name={fields.paySubsidyGranted.name}
               value={PAY_SUBSIDY_GRANTED.GRANTED}
               label={t(

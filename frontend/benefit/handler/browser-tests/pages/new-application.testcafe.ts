@@ -34,22 +34,20 @@ test('Fill in new application', async (t: TestController) => {
   await t.typeText('#companyContactPersonPhoneNumber', '050 000 0000');
   await t.typeText('#companyContactPersonEmail', 'hki-benefit@example.com');
 
-  await t.click('[for="deMinimisAidFalse"]');
-  await t.click('[for="coOperationNegotiationsFalse"]');
+  await t.click('[for="deMinimisAidTrue"]');
+  await t.typeText('#granter', 'Valtio');
+  await t.typeText('#amount', '2000');
+  await t.typeText('#grantedAt', '27.9.2023');
+  const addButton = Selector('main button span').withText('Lisää').parent();
+  await t.click(addButton);
+
+  await t.click('[for="coOperationNegotiationsTrue"]');
+  await t.typeText('#coOperationNegotiationsDescription', 'Tilanne');
 
   await t.typeText('[name="employee.firstName"]', 'Ruu');
   await t.typeText('[name="employee.lastName"]', 'Rättisitikka');
   await t.typeText('[name="employee.socialSecurityNumber"]', '050632-8912');
-  await t.typeText('[name="employee.phoneNumber"]', '040 123 4567');
-
   await t.click('[for="employee.isLivingInHelsinki"]');
-  await t.click('[for="paySubsidyGrantedFalse"]');
-  await t.click('[for="benefitTypeEmployment"]');
-
-  await t.typeText(
-    '[name="startDate"]',
-    format(new Date(), DATE_FORMATS.UI_DATE)
-  );
 
   await t.typeText('[name="employee.jobTitle"]', 'Verkkosamooja');
   await t.typeText('[name="employee.workingHours"]', '30');
@@ -59,8 +57,16 @@ test('Fill in new application', async (t: TestController) => {
   );
 
   await t.typeText('[name="employee.monthlyPay"]', '1800');
-  await t.typeText('[name="employee.otherExpenses"]', '300');
   await t.typeText('[name="employee.vacationMoney"]', '100');
+  await t.typeText('[name="employee.otherExpenses"]', '300');
+
+  await t.click('[for="paySubsidyGranted.granted"]');
+  await t.click('[for="apprenticeshipProgramFalse"]');
+
+  await t.typeText(
+    '[name="startDate"]',
+    format(new Date(), DATE_FORMATS.UI_DATE)
+  );
 
   await t.setFilesToUpload('#upload_attachment_full_application', 'sample.pdf');
   await t.setFilesToUpload(
