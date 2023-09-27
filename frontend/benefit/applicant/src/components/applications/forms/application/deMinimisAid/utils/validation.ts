@@ -3,6 +3,7 @@ import {
   DE_MINIMIS_AID_GRANTED_AT_MIN_DATE,
 } from 'benefit/applicant/constants';
 import {
+  DE_MINIMIS_AID,
   DE_MINIMIS_AID_KEYS,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
@@ -28,6 +29,10 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<DeMinimisAid> =>
       .min(0, (param) => ({
         min: param.min,
         key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,
+      }))
+      .max(DE_MINIMIS_AID.MAX_AMOUNT, (param) => ({
+        max: param.max,
+        key: VALIDATION_MESSAGE_KEYS.NUMBER_MAX,
       })),
     [DE_MINIMIS_AID_KEYS.GRANTED_AT]: Yup.string()
       .typeError(VALIDATION_MESSAGE_KEYS.DATE_FORMAT)

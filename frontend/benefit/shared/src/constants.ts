@@ -104,6 +104,11 @@ export enum DE_MINIMIS_AID_KEYS {
   GRANTED_AT = 'grantedAt',
 }
 
+export enum DE_MINIMIS_AID {
+  // eslint-disable-next-line unicorn/numeric-separators-style
+  MAX_AMOUNT = 200000,
+}
+
 export enum CALCULATION_EMPLOYMENT_KEYS {
   START_DATE = 'startDate',
   END_DATE = 'endDate',
