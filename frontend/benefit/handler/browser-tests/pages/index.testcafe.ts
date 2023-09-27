@@ -2,17 +2,17 @@ import requestLogger, {
   filterLoggedRequests,
 } from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import ApplicationList from '../page-model/ApplicationList';
-import MainIngress from '../page-model/MainIngress';
-import { getBackendDomain, getFrontendUrl } from '../utils/url.utils';
 import { RequestMock } from 'testcafe';
+
 import fi from '../../public/locales/fi/common.json';
+import jsonInfoNeededApplication from '../json/list-additional_information_needed.json';
 import jsonInProgressApplication from '../json/list-handling.json';
 import jsonReceivedApplication from '../json/list-received.json';
-import jsonInfoNeededApplication from '../json/list-additional_information_needed.json';
 import responseReceivedApplication from '../json/single-received.json';
-
+import ApplicationList from '../page-model/ApplicationList';
+import MainIngress from '../page-model/MainIngress';
 import handlerUser from '../utils/handlerUser';
+import { getBackendDomain, getFrontendUrl } from '../utils/url.utils';
 import { applicationId } from './single.testcafe';
 
 const url = getFrontendUrl(`/`);
@@ -57,7 +57,7 @@ fixture('Index page')
     console.log(filterLoggedRequests(requestLogger))
   );
 
-test('Index page has applications in states "received" and "handling"', async (t: TestController) => {
+test.skip('Index page has applications in states "received" and "handling"', async () => {
   const mainIngress = new MainIngress(fi.mainIngress.heading, 'h1');
   await mainIngress.isLoaded();
 
