@@ -83,6 +83,7 @@
         "deMinimisAidsHeading": "Fyll i alla de de minimis-stöd som har beviljats organisationen under innevarande år och under två föregående skatteår",
         "deMinimisAidsAdd": "Spara",
         "deMinimisAidsRemove": "Ta bort",
+        "deMinimisAidsYes": "TODO",
         "deMinimisAidsNo": "Sökanden har inte angett några tidigare de minimis -stöd.",
         "notifications": {
           "companyInformation": {
@@ -103,12 +104,18 @@
           "associationHasBusinessActivities": "På Helsingforstillägget tillämpas reglerna om statligt stöd när stödtagaren är ett företag eller en organisation som bedriver ekonomisk verksamhet, oavsett juridisk form eller finansieringsform. Med ekonomisk verksamhet avses försäljning av tjänster och produkter, som sker fortlöpande, i förvärvssyfte och i konkurrensomständigheter (alla tre villkoren ska uppfyllas samtidigt). Reglerna om statligt stöd kan också tillämpas på icke-vinstdrivande arbetsgivare. Ekonomisk verksamhet som skattemyndigheterna inte har ansett vara beskattningsbar anses i regel inte vara ekonomisk verksamhet."
         },
         "fields": {
+          "companyBusinessId": "Y-tunnus",
+          "companyName": "Työnantajan nimi",
+          "companyAddress": "Osoite",
+          "companyPostcode": "Postinumero",
+          "companyCity": "Postitoimipaikka",
           "useAlternativeAddress": {
             "label": "Använd en annan adress"
           },
           "alternativeCompanyStreetAddress": {
             "label": "Adress",
-            "placeholder": "Adress"
+            "placeholder": "Adress",
+            "view": "TODO"
           },
           "alternativeCompanyPostcode": {
             "label": "Postnummer",
@@ -171,12 +178,17 @@
           },
           "coOperationNegotiations": {
             "label": "Pågår samarbetsförhandlingar i organisationen eller har de avslutats under föregående 12 månader?",
+            "view": {
+              "yes": "Organisaatiossa on ollut muutosneuvottelut viimeisen 12 kuukauden aikana.",
+              "no": "Organisaatiossa ei ole ollut muutosneuvottelut viimeisen 12 kuukauden aikana."
+            },
             "yes": "Ja",
             "no": "Nej"
           },
           "coOperationNegotiationsDescription": {
             "label": "Ge en mer detaljerad beskrivning av situationen med samarbetsförhandlingar:",
-            "placeholder": "Beskriv situationen"
+            "placeholder": "Beskriv situationen",
+            "labelShort": "TODO"
           }
         }
       },
@@ -232,11 +244,10 @@
           "commissionBenefitSelected": "Ange uppdragets längd här"
         },
         "fields": {
-          "companyBusinessId": "FO-nummer",
-          "companyName": "Arbetsgivarens namn",
-          "companyAddress": "Adress",
-          "companyPostcode": "Postnummer",
-          "companyCity": "Postort",
+          "prefilled": {
+            "companyName": "Työnantajan nimi",
+            "": "Työnantajan nimi"
+          },
           "firstName": {
             "label": "Förnamn",
             "placeholder": "Förnamn"
@@ -266,6 +277,8 @@
           },
           "paySubsidyGranted": {
             "label": "Har något av de följande stöden beviljats för anställningsförhållandet?",
+            "labelShort": "Myönnetyt tuet",
+            "granted": "Myönnetty",
             "paySubsidyDefault": "Lönesubvention",
             "paySubsidyAged": "Sysselsättningsstöd för personer som fyllt 55 år",
             "paySubsidyNone": "Inga av stöden ovan har beviljats för anställningsförhållandet"

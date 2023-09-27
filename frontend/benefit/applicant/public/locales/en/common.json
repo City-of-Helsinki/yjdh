@@ -83,6 +83,7 @@
         "deMinimisAidsHeading": "Below, please fill in all the de minimis aid granted to the organisation for the current and two previous tax years.",
         "deMinimisAidsAdd": "Save",
         "deMinimisAidsRemove": "Delete",
+        "deMinimisAidsYes": "TODO",
         "deMinimisAidsNo": "The applicant has not listed any previous de minimis aids.",
         "notifications": {
           "companyInformation": {
@@ -113,7 +114,8 @@
           },
           "alternativeCompanyStreetAddress": {
             "label": "Address",
-            "placeholder": "Address"
+            "placeholder": "Address",
+            "view": "TODO"
           },
           "alternativeCompanyPostcode": {
             "label": "Postal code",
@@ -176,12 +178,17 @@
           },
           "coOperationNegotiations": {
             "label": "Does the organisation have ongoing or concluded change negotiations within the last 12 months?",
+            "view": {
+              "yes": "Organisaatiossa on ollut muutosneuvottelut viimeisen 12 kuukauden aikana.",
+              "no": "Organisaatiossa ei ole ollut muutosneuvottelut viimeisen 12 kuukauden aikana."
+            },
             "yes": "Yes",
             "no": "No"
           },
           "coOperationNegotiationsDescription": {
             "label": "Provide a more detailed account of the co-determination negotiation situation:",
-            "placeholder": "Describe the situation"
+            "placeholder": "Describe the situation",
+            "labelShort": "TODO"
           }
         }
       },
@@ -237,6 +244,10 @@
           "commissionBenefitSelected": "Please provide the duration of the commission here"
         },
         "fields": {
+          "prefilled": {
+            "companyName": "Työnantajan nimi",
+            "": "Työnantajan nimi"
+          },
           "firstName": {
             "label": "First name",
             "placeholder": "First name"
@@ -266,6 +277,8 @@
           },
           "paySubsidyGranted": {
             "label": "Has this employment relationship received any of the following aid?",
+            "labelShort": "Myönnetyt tuet",
+            "granted": "Myönnetty",
             "paySubsidyDefault": "Salary subsidy",
             "paySubsidyAged": "Employment aid for people aged 55 and above",
             "paySubsidyNone": "None of the previous subsidies have been granted for this employment relationship"
