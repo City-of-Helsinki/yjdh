@@ -120,5 +120,8 @@ export const getValidationSchema = (
         .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
         .nullable()
         .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      [EMPLOYEE_KEYS.COLLECTIVE_BARGAINING_AGREEMENT]: Yup.string().required(
+        t(VALIDATION_MESSAGE_KEYS.REQUIRED)
+      ),
     }),
   });
