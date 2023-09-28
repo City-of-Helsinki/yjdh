@@ -1,6 +1,7 @@
 import {
   EMPLOYEE_MAX_WORKING_HOURS,
   EMPLOYEE_MIN_WORKING_HOURS,
+  MAX_MONTHLY_PAY,
   MAX_SHORT_STRING_LENGTH,
 } from 'benefit/applicant/constants';
 import {
@@ -106,19 +107,40 @@ export const getValidationSchema = (
         }))
         .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
       [EMPLOYEE_KEYS.VACATION_MONEY]: Yup.number()
+        .min(0, (param) => ({
+          min: param.min,
+          key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,
+        }))
+        .max(MAX_MONTHLY_PAY, (param) => ({
+          max: param.max,
+          key: VALIDATION_MESSAGE_KEYS.NUMBER_MAX,
+        }))
         .transform((_value, originalValue) => getNumberValue(originalValue))
         .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
-        .nullable()
         .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
       [EMPLOYEE_KEYS.MONTHLY_PAY]: Yup.number()
+        .min(0, (param) => ({
+          min: param.min,
+          key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,
+        }))
+        .max(MAX_MONTHLY_PAY, (param) => ({
+          max: param.max,
+          key: VALIDATION_MESSAGE_KEYS.NUMBER_MAX,
+        }))
         .transform((_value, originalValue) => getNumberValue(originalValue))
         .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
-        .nullable()
         .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
       [EMPLOYEE_KEYS.OTHER_EXPENSES]: Yup.number()
+        .min(0, (param) => ({
+          min: param.min,
+          key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,
+        }))
+        .max(MAX_MONTHLY_PAY, (param) => ({
+          max: param.max,
+          key: VALIDATION_MESSAGE_KEYS.NUMBER_MAX,
+        }))
         .transform((_value, originalValue) => getNumberValue(originalValue))
         .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
-        .nullable()
         .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     }),
   });
