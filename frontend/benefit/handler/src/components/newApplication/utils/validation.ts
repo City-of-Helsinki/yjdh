@@ -183,7 +183,11 @@ export const getValidationSchema = (
     [APPLICATION_FIELD_KEYS.APPRENTICESHIP_PROGRAM]: Yup.boolean()
       .nullable()
       .when(APPLICATION_FIELD_KEYS.PAY_SUBSIDY_GRANTED, {
-        is: PAY_SUBSIDY_GRANTED.GRANTED,
+        is: (value: PAY_SUBSIDY_GRANTED) =>
+          [
+            PAY_SUBSIDY_GRANTED.GRANTED,
+            PAY_SUBSIDY_GRANTED.GRANTED_AGED,
+          ].includes(value),
         then: Yup.boolean()
           .nullable()
           .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
