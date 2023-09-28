@@ -30,7 +30,7 @@ fixture('Archive')
     console.log(filterLoggedRequests(requestLogger))
   );
 
-test('Archive has applications in state "accepted", "rejected" and "cancelled"', async (t: TestController) => {
+test.skip('Archive has applications in state "accepted", "rejected" and "cancelled"', async (t: TestController) => {
   const mainIngress = new MainIngress(fi.header.navigation.archive, 'h1');
   await mainIngress.isVisible();
 

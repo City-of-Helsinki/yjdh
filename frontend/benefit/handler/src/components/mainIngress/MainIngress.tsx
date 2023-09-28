@@ -29,6 +29,7 @@ const MainIngress: React.FC = () => {
             variant="secondary"
             iconLeft={<IconPlus />}
             theme="black"
+            data-testid="new-application-button"
           >
             {t('common:mainIngress.btnText')}
           </Button>
