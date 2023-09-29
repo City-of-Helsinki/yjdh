@@ -102,7 +102,6 @@ const useFormContent = (
 
   const language = SUPPORTED_LANGUAGES.FI;
   const locale = useLocale();
-  console.log('LOOOC', locale);
   const textLocale = capitalize(locale);
 
   return {

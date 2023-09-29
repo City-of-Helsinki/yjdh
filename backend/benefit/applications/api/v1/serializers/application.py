@@ -1326,6 +1326,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
     * batch
     * latest_decision_comment
     * handled_at
+    * paper_application_date
     """
 
     # more status transitions
@@ -1367,6 +1368,10 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         ),
     )
 
+    paper_application_date = serializers.CharField(
+        required=False, help_text="Paper application arrival date"
+    )
+
     def get_company_for_new_application(self, _):
         """
         Company field is read_only. When creating a new application, assign company.
@@ -1401,6 +1406,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             "latest_decision_comment",
             "handled_at",
             "application_origin",
+            "paper_application_date",
         ]
         read_only_fields = BaseApplicationSerializer.Meta.read_only_fields + [
             "latest_decision_comment",
