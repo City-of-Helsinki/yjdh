@@ -305,6 +305,10 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
         verbose_name=_("benefit end date"), null=True, blank=True
     )
 
+    paper_application_date = models.DateField(
+        verbose_name=_("paper application date"), null=True, blank=True
+    )
+
     APPLICATION_NUMBER_SEQUENCE_ID = "seq_application_number"
 
     def get_available_benefit_types(self):

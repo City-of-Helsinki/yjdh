@@ -117,6 +117,32 @@ const FormContent: React.FC<Props> = ({
 
   return (
     <form onSubmit={handleSave} noValidate>
+      <FormSection
+        header={t(`${translationsBase}.headings.paper`)}
+        columns={12}
+      >
+        <$GridCell $colStart={1} $colSpan={6}>
+          <$DateHeader>
+            {t(`${translationsBase}.paperDateExplanation`)}
+          </$DateHeader>
+        </$GridCell>
+        <$GridCell $colStart={1} $colSpan={4}>
+          <DateInput
+            id={fields.paperApplicationDate.name}
+            name={fields.paperApplicationDate.name}
+            label={fields.paperApplicationDate.label}
+            language={language}
+            onBlur={formik.handleBlur}
+            onChange={(value) =>
+              formik.setFieldValue(fields.paperApplicationDate.name, value)
+            }
+            value={formik.values.paperApplicationDate ?? ''}
+            invalid={!!getErrorMessage(fields.paperApplicationDate.name)}
+            aria-invalid={!!getErrorMessage(fields.paperApplicationDate.name)}
+            errorText={getErrorMessage(fields.paperApplicationDate.name)}
+          />
+        </$GridCell>
+      </FormSection>
       <CompanySection
         t={t}
         translationsBase={translationsBase}

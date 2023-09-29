@@ -130,8 +130,13 @@ const useFormActions = (application: Partial<Application>): FormActions => {
   const getModifiedValues = (currentValues: Application): Application => {
     const employee: Employee | undefined = currentValues?.employee ?? undefined;
 
-    const { paySubsidyGranted, startDate, endDate, apprenticeshipProgram } =
-      currentValues;
+    const {
+      paySubsidyGranted,
+      startDate,
+      endDate,
+      apprenticeshipProgram,
+      paperApplicationDate,
+    } = currentValues;
 
     const paySubsidyPercent =
       paySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
@@ -165,6 +170,9 @@ const useFormActions = (application: Partial<Application>): FormActions => {
         : undefined,
       endDate: endDate
         ? convertToBackendDateFormat(parseDate(endDate))
+        : undefined,
+      paperApplicationDate: paperApplicationDate
+        ? convertToBackendDateFormat(parseDate(paperApplicationDate))
         : undefined,
       apprenticeshipProgram,
     };
