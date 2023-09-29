@@ -147,6 +147,11 @@ const useFormActions = (application: Partial<Application>): FormActions => {
       endDate: currentValues.endDate
         ? convertToBackendDateFormat(parseDate(currentValues.endDate))
         : undefined,
+      paperApplicationDate: currentValues.paperApplicationDate
+        ? convertToBackendDateFormat(
+            parseDate(currentValues.paperApplicationDate)
+          )
+        : undefined,
       apprenticeshipProgram: currentValues.apprenticeshipProgram,
     };
 

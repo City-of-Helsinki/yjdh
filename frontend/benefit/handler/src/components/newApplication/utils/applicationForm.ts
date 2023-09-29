@@ -137,7 +137,8 @@ const handleErrorFieldKeys = (
   let newErrorFieldKey = errorFieldKey;
   if (errorFieldKey === APPLICATION_FIELD_KEYS.EMPLOYEE) {
     const employeeFieldKey = Object.keys(
-      (errs[errorFieldKey] as APPLICATION_FIELD_KEYS.EMPLOYEE) ?? {})[0];
+      (errs[errorFieldKey] as APPLICATION_FIELD_KEYS.EMPLOYEE) ?? {}
+    )[0];
     newErrorFieldKey = [APPLICATION_FIELD_KEYS.EMPLOYEE, employeeFieldKey].join(
       '.'
     ) as APPLICATION_FIELD_KEYS.EMPLOYEE;

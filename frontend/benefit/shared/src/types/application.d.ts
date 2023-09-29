@@ -391,6 +391,7 @@ export type ApplicationData = {
   latest_decision_comment?: string;
   unread_messages_count?: number;
   application_origin?: APPLICATION_ORIGINS;
+  paper_application_date?: string;
 };
 
 export type EmployeeData = {
