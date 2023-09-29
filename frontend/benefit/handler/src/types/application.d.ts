@@ -130,6 +130,7 @@ export type Application = {
   unreadMessagesCount?: number;
   createApplicationForCompany?: string;
   applicationOrigin?: APPLICATION_ORIGINS;
+  paperApplicationDate?: string;
 } & ApplicationForm;
 
 export interface ApplicationForm {
@@ -158,9 +159,6 @@ export interface ApplicationForm {
   [APPLICATION_FIELD_KEYS.END_DATE]?: string | '';
   [APPLICATION_FIELD_KEYS.PAPER_APPLICATION_DATE]?: string | '';
   [APPLICATION_FIELD_KEYS.EMPLOYEE]?: Employee;
-  [APPLICATION_FIELD_KEYS.APPLICANT_AGREEMENT]?: boolean | null;
-  [APPLICATION_FIELD_KEYS.EMPLOYEE_SIGNED]?: boolean | null;
-  [APPLICATION_FIELD_KEYS.EMPLOYER_SIGNED]?: boolean | null;
 }
 
 type CompanySearchResult = {
