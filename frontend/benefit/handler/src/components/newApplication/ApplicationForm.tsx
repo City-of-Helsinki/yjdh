@@ -1,6 +1,7 @@
 import {
   Button,
   Dialog,
+  IconAlertCircle,
   IconAngleLeft,
   LoadingSpinner,
   Stepper,
@@ -149,27 +150,29 @@ const ApplicationForm: React.FC = () => {
           isOpen={isConfirmationModalOpen}
           close={() => setIsConfirmationModalOpen(false)}
           closeButtonLabelText={t(`${translationsBase}.close`)}
-          variant="danger"
+          variant="primary"
+          theme={{ '--accent-line-color': 'var(--color-coat-of-arms)' }}
         >
           <Dialog.Header
             title={t(`${translationsBase}.backWithoutSavingConfirm`)}
             id="back-dialog-header"
+            iconLeft={<IconAlertCircle aria-hidden="true" />}
           />
           <Dialog.Content>
             {t(`${translationsBase}.backWithoutSavingDescription`)}
           </Dialog.Content>
           <Dialog.ActionButtons>
             <Button
-              theme="black"
+              theme="coat"
               variant="secondary"
               onClick={() => setIsConfirmationModalOpen(false)}
               data-testid="modalCancel"
             >
-              {t(`${translationsBase}.close`)}
+              {t(`${translationsBase}.backWithoutBack`)}
             </Button>
             <Button
               theme="coat"
-              variant="danger"
+              variant="primary"
               onClick={() => router.push('/')}
               data-testid="modalBack"
             >

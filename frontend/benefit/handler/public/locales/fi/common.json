@@ -240,9 +240,10 @@
       "continueToService": "Jatka palveluun",
       "pauseAndExit": "Keskeytä ja poistu",
       "addNote": "Lisää muistiinpano",
-      "backWithoutSaving": "Palaa takaisin tallentamatta",
-      "backWithoutSavingConfirm": "Haluatko varmasti palata takaisin tallentamatta?",
-      "backWithoutSavingDescription": "Tehdyt muutokset eivät tallennu.",
+      "backWithoutSaving": "Poistu tallentamatta",
+      "backWithoutBack": "Peruuta",
+      "backWithoutSavingConfirm": "Tallentamattomia muutoksia",
+      "backWithoutSavingDescription": "Olet muokannut sivua. Jos poistut sivulta, menetät tehdyt muutokset. Oletko varma, että haluat poistua tallentamatta?",
       "handleAsRejected": "Käsittele kielteisenä"
     },
     "sections": {
