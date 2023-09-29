@@ -5,6 +5,7 @@ import {
   ApplicationFields,
 } from 'benefit/handler/types/application';
 import { getErrorText } from 'benefit/handler/utils/forms';
+import { PAY_SUBSIDY_GRANTED } from 'benefit-shared/constants';
 import { FormikProps } from 'formik';
 import { TFunction, useTranslation } from 'next-i18next';
 import React from 'react';
@@ -27,6 +28,7 @@ type ExtendedComponentProps = {
   clearDatesValues: () => void;
   clearAlternativeAddressValues: () => void;
   getErrorMessage: (fieldName: string) => string | undefined;
+  truthySubsidies: PAY_SUBSIDY_GRANTED[];
 };
 
 const useFormContent = (
@@ -38,6 +40,10 @@ const useFormContent = (
   const cbPrefix = 'application_consent';
   const { setDeMinimisAids } = React.useContext(DeMinimisContext);
   const { touched, errors, setFieldValue } = formik;
+  const truthySubsidies = [
+    PAY_SUBSIDY_GRANTED.GRANTED,
+    PAY_SUBSIDY_GRANTED.GRANTED_AGED,
+  ];
 
   const languageOptions = React.useMemo(
     (): OptionType<string>[] => getLanguageOptions(t, 'languages'),
@@ -118,6 +124,7 @@ const useFormContent = (
     clearDatesValues,
     clearAlternativeAddressValues,
     getErrorMessage,
+    truthySubsidies,
   };
 };
 

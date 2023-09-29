@@ -91,6 +91,7 @@ const FormContent: React.FC<Props> = ({
     clearContractValues,
     clearAlternativeAddressValues,
     getErrorMessage,
+    truthySubsidies,
   } = useFormContent(formik, fields);
 
   const theme = useTheme();
@@ -505,16 +506,21 @@ const FormContent: React.FC<Props> = ({
               )}
               onBlur={formik.handleBlur}
               onChange={() => {
-                formik.setFieldValue(fields.paySubsidyGranted.name, null);
+                formik.setFieldValue(
+                  fields.paySubsidyGranted.name,
+                  PAY_SUBSIDY_GRANTED.NOT_GRANTED
+                );
               }}
-              checked={formik.values.paySubsidyGranted === null}
+              checked={
+                formik.values.paySubsidyGranted ===
+                PAY_SUBSIDY_GRANTED.NOT_GRANTED
+              }
             />
           </SelectionGroup>
         </$GridCell>
-        {[
-          PAY_SUBSIDY_GRANTED.GRANTED,
-          PAY_SUBSIDY_GRANTED.GRANTED_AGED,
-        ].includes(formik.values.paySubsidyGranted as PAY_SUBSIDY_GRANTED) && (
+        {truthySubsidies.includes(
+          formik.values.paySubsidyGranted as PAY_SUBSIDY_GRANTED
+        ) && (
           <$GridCell
             as={$Grid}
             $colSpan={12}
@@ -658,7 +664,9 @@ const FormContent: React.FC<Props> = ({
             />
           </$GridCell>
         )}
-        {formik.values.paySubsidyGranted && (
+        {truthySubsidies.includes(
+          formik.values.paySubsidyGranted as PAY_SUBSIDY_GRANTED
+        ) && (
           <$GridCell $colSpan={12}>
             <AttachmentsList
               attachments={attachments}
