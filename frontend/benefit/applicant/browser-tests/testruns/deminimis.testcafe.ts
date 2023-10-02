@@ -6,10 +6,7 @@ import DeMinimisAid, { SAVE_ACTIONS } from '../page-model/deminimis';
 import Step1 from '../page-model/step1';
 import Step2 from '../page-model/step2';
 import applicantRole from '../roles/company';
-import { getFrontendUrl } from '../utils/url.utils';
-
-const getBackendDomain = (): string =>
-  process.env.NEXT_PUBLIC_BACKEND_URL || 'https://localhost:8000';
+import { getBackendDomain, getFrontendUrl } from '../utils/url.utils';
 
 const url = getFrontendUrl('/');
 

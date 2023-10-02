@@ -9,3 +9,6 @@ const goBack = ClientFunction(() => window.history.back());
 export const clickBrowserBackButton = async (): Promise<void> => {
   await goBack();
 };
+
+export const getBackendDomain = (): string =>
+  process.env.NEXT_PUBLIC_BACKEND_URL || 'https://localhost:8000';

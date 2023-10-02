@@ -11,10 +11,7 @@ import Step1 from '../page-model/step1';
 import Step2 from '../page-model/step2';
 import Step3 from '../page-model/step3';
 import TermsOfService from '../page-model/TermsOfService';
-import { getFrontendUrl } from '../utils/url.utils';
-
-const getBackendDomain = (): string =>
-  process.env.NEXT_PUBLIC_BACKEND_URL || 'https://localhost:8000';
+import { getBackendDomain, getFrontendUrl } from '../utils/url.utils';
 
 const url = getFrontendUrl('/');
 
