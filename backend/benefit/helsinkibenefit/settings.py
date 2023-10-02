@@ -157,6 +157,12 @@ env = environ.Env(
     SERVICE_BUS_SEARCH_LIMIT=(int, 10),
     GDPR_API_QUERY_SCOPE=(str, "helsinkibenefit.gdprquery"),
     GDPR_API_DELETE_SCOPE=(str, "helsinkibenefit.gdprdelete"),
+    # For AHJO Rest API authentication
+    AHJO_CLIENT_ID=(str, ""),
+    AHJO_CLIENT_SECRET=(str, ""),
+    AHJO_TOKEN_URL=(str, ""),
+    AHJO_REST_API_URL=(str, "https://ahjohyte.hel.fi:9802/ahjorest/v1"),
+    AHJO_REDIRECT_URL=(str, "https://helsinkilisa/dummyredirect.html"),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -495,3 +501,9 @@ CORS_ALLOW_HEADERS = (
     "baggage",
     "sentry-trace",
 )
+
+AHJO_CLIENT_ID = env("AHJO_CLIENT_ID")
+AHJO_CLIENT_SECRET = env("AHJO_CLIENT_SECRET")
+AHJO_TOKEN_URL = env("AHJO_TOKEN_URL")
+AHJO_REST_API_URL = env("AHJO_REST_API_URL")
+AHJO_REDIRECT_URL = env("AHJO_REDIRECT_URL")
