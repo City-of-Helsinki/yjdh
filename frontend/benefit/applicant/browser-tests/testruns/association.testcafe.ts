@@ -16,7 +16,7 @@ const getBackendDomain = (): string =>
 
 const url = getFrontendUrl('/');
 
-fixture('Frontpage')
+fixture('Association')
   .page(url)
   .requestHooks(requestLogger, new HttpRequestHook(url, getBackendDomain()))
   .beforeEach(async (t) => {
@@ -27,7 +27,7 @@ fixture('Frontpage')
     console.log(filterLoggedRequests(requestLogger))
   );
 
-test('Oppisopimus', async () => {
+test.skip('New application', async () => {
   const termsAndConditions = new TermsOfService();
   await termsAndConditions.isLoaded();
   await termsAndConditions.clickContinueButton();

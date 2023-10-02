@@ -9,7 +9,7 @@ import {
   ORGANIZATION_TYPES,
 } from 'benefit-shared/constants';
 import { Application, DeMinimisAid } from 'benefit-shared/types/application';
-import { FormikErrors, FormikProps, useFormik } from 'formik';
+import { FormikErrors, FormikProps, FormikValues, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
 import React, { useState } from 'react';
@@ -40,10 +40,6 @@ type ExtendedComponentProps = {
   getDefaultLanguage: () => OptionType;
 };
 
-type DeMinimisFormikPromises = Promise<
-  [void | FormikErrors<Application>, void | FormikErrors<Application>]
->;
-
 const hasBusinessActivitiesOrIsCompany = (
   hasBusinessActivities: boolean,
   organizationType: ORGANIZATION_TYPES
@@ -56,8 +52,7 @@ const useApplicationFormStep1 = (
   isUnfinishedDeminimisAid: boolean
 ): ExtendedComponentProps => {
   const { t } = useTranslation();
-  const { deMinimisAids, setDeMinimisAids } =
-    React.useContext(DeMinimisContext);
+  const { setDeMinimisAids } = React.useContext(DeMinimisContext);
   const { onNext, onSave, onDelete } = useFormActions(application);
 
   const locale = useLocale();
@@ -68,40 +63,37 @@ const useApplicationFormStep1 = (
   const { data } = useCompanyQuery();
   const organizationType = data?.organization_type;
 
+  const showDeminimisToastError = () =>
+    void showErrorToast(
+      t(`${translationsBase}.notifications.deMinimisUnfinished.label`),
+      t(`${translationsBase}.notifications.deMinimisUnfinished.content`)
+    );
+
+  const onNextCallback = (values: FormikValues): Promise<void> =>
+    onNext(values).then((submitOk): Promise<void> => {
+      // Make sure context is cleared
+      if (submitOk) setDeMinimisAids([]);
+      return null;
+    });
+
   const formik = useFormik({
     initialValues: application,
     validationSchema: getValidationSchema(organizationType, t),
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,
-    onSubmit: onNext,
+    onSubmit: onNextCallback,
   });
 
   const { values, touched, errors, setFieldValue } = formik;
 
   const isDeMinimisAidRowUnfinished = (): boolean => {
     if (isUnfinishedDeminimisAid) {
-      showErrorToast(
-        t(`${translationsBase}.notifications.deMinimisUnfinished.label`),
-        t(`${translationsBase}.notifications.deMinimisUnfinished.content`)
-      );
+      showDeminimisToastError();
       return true;
     }
 
     return false;
-  };
-
-  const handleDeMinimisRadioButtonChange = (
-    formikFields: ExtendedComponentProps['fields']
-  ): Promise<void> | DeMinimisFormikPromises => {
-    if (deMinimisAids.length === 0) {
-      setDeMinimisAids([]);
-      return Promise.all([
-        formik.setFieldValue(formikFields.deMinimisAidSet.name, []),
-        formik.setFieldValue(formikFields.deMinimisAid.name, false),
-      ]);
-    }
-    return Promise.resolve();
   };
 
   const fields: ExtendedComponentProps['fields'] = React.useMemo(() => {
@@ -172,12 +164,10 @@ const useApplicationFormStep1 = (
     if (isDeMinimisAidRowUnfinished()) {
       return false;
     }
-    return void handleDeMinimisRadioButtonChange(fields)
-      .then(() => onSave(values))
-      .catch(() => false);
+    return void onSave(values);
   };
 
-  const applicationId = values?.id;
+  const applicationId = String(values?.id);
   const handleDelete = applicationId
     ? () => {
         void onDelete(applicationId);
@@ -190,7 +180,7 @@ const useApplicationFormStep1 = (
   }, [fields.deMinimisAid.name, setDeMinimisAids, setFieldValue]);
 
   const showDeminimisSection = hasBusinessActivitiesOrIsCompany(
-    values.associationHasBusinessActivities,
+    Boolean(values.associationHasBusinessActivities),
     organizationType
   );
 

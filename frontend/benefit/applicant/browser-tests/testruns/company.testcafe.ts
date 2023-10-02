@@ -18,7 +18,7 @@ const getBackendDomain = (): string =>
 
 const url = getFrontendUrl('/');
 
-fixture('Frontpage')
+fixture('Company')
   .page(url)
   .requestHooks(requestLogger, new HttpRequestHook(url, getBackendDomain()))
   .beforeEach(async (testController) => {
@@ -29,7 +29,7 @@ fixture('Frontpage')
     console.log(filterLoggedRequests(requestLogger))
   );
 
-test('Company', async () => {
+test('New application', async () => {
   await t.click(Login.loginButton);
 
   const termsAndConditions = new TermsOfService();

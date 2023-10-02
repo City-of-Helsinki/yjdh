@@ -1,3 +1,4 @@
+import { MAX_DEMINIMIS_AID_TOTAL_AMOUNT } from 'benefit/applicant/constants';
 import DeMinimisContext from 'benefit/applicant/context/DeMinimisContext';
 import { useAlertBeforeLeaving } from 'benefit/applicant/hooks/useAlertBeforeLeaving';
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
@@ -17,6 +18,7 @@ import { phoneToLocal } from 'shared/utils/string.utils';
 import { $SubFieldContainer } from '../Application.sc';
 import DeMinimisAidForm from '../deMinimisAid/DeMinimisAidForm';
 import DeMinimisAidsList from '../deMinimisAid/list/DeMinimisAidsList';
+import { useDeminimisAidsList } from '../deMinimisAid/list/useDeminimisAidsList';
 import StepperActions from '../stepperActions/StepperActions';
 import CompanyInfo from './companyInfo/CompanyInfo';
 import { useApplicationFormStep1 } from './useApplicationFormStep1';
@@ -56,11 +58,8 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
     }
   );
 
-  const { deMinimisAids, setDeMinimisAids } =
-    React.useContext(DeMinimisContext);
-
-  console.log('errors ', formik.errors);
-  console.log('list ', deMinimisAids);
+  const { setDeMinimisAids } = React.useContext(DeMinimisContext);
+  const { grantsSum } = useDeminimisAidsList();
 
   return (
     <form onSubmit={handleSubmit} noValidate>
@@ -312,9 +311,10 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
         )}
       </FormSection>
       <StepperActions
+        disabledNext={grantsSum() > MAX_DEMINIMIS_AID_TOTAL_AMOUNT}
         handleSubmit={handleSubmit}
         handleSave={handleSave}
-        handleDelete={handleDelete}
+        handleDelete={data?.id ? handleDelete : null}
       />
     </form>
   );
