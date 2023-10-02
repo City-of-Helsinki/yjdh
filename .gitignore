@@ -154,3 +154,6 @@ nohup.out
 
 # media files
 **/media/**
+
+# do not include testcafe videos
+1.mp4
