@@ -37,15 +37,23 @@ const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
   const { deMinimisAids, setDeMinimisAids } =
     React.useContext(DeMinimisContext);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [defaultValue, setDefaultValue] = useState<boolean | null>(null);
 
-  // initial data
+  // Combine backend data with de minimis context
+  // eslint-disable-next-line consistent-return
   useEffect(() => {
-    if (!defaultValue) {
-      setDeMinimisAids(data);
-      setDefaultValue(null);
+    if (data.length > 0) {
+      // Filter unique rows
+      const combinedAids = [...data, ...deMinimisAids].filter(
+        (aid, index, aids) =>
+          index === aids.findIndex((other: DeMinimisAid) => aid.id === other.id)
+      );
+      setDeMinimisAids(combinedAids);
+      return function cleanup() {
+        setDeMinimisAids([]);
+      };
     }
-  }, [data, defaultValue, setDefaultValue, setDeMinimisAids]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const formik = useFormik({
     initialValues: {

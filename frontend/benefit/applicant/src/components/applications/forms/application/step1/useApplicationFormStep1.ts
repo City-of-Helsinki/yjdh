@@ -153,7 +153,6 @@ const useApplicationFormStep1 = (
   };
 
   const submitIfFormValid = (isFormValid: boolean): boolean => {
-    void handleDeMinimisRadioButtonChange(fields);
     if (isFormValid) {
       void formik.submitForm();
       return true;

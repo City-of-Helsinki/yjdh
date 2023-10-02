@@ -56,7 +56,11 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
     }
   );
 
-  const { setDeMinimisAids } = React.useContext(DeMinimisContext);
+  const { deMinimisAids, setDeMinimisAids } =
+    React.useContext(DeMinimisContext);
+
+  console.log('errors ', formik.errors);
+  console.log('list ', deMinimisAids);
 
   return (
     <form onSubmit={handleSubmit} noValidate>
@@ -196,6 +200,8 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                 )}
                 onChange={() => {
                   formik.setFieldValue(fields.deMinimisAid.name, false);
+                  formik.setFieldValue(fields.deMinimisAidSet.name, []);
+                  setUnfinishedDeMinimisAid(false);
                   setDeMinimisAids([]);
                 }}
                 // 3 states: null (none is selected), true, false

@@ -188,6 +188,7 @@ export type DeMinimisAid = {
   [DE_MINIMIS_AID_KEYS.GRANTER]?: string;
   [DE_MINIMIS_AID_KEYS.AMOUNT]?: number | '';
   [DE_MINIMIS_AID_KEYS.GRANTED_AT]?: string;
+  [DE_MINIMIS_AID_KEYS.ID]?: string | null;
 };
 
 export type PaySubsidy = {

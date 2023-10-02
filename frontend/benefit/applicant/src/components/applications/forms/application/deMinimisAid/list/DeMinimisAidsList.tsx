@@ -23,9 +23,10 @@ const DeMinimisAidsList: React.FC = () => {
     <>
       {grants?.map((grant, i) => (
         <$DeMinimisGrid
+          // eslint-disable-next-line react/no-array-index-key
           key={`${grant[DE_MINIMIS_AID_KEYS.GRANTER] ?? ''}${
             grant[DE_MINIMIS_AID_KEYS.AMOUNT] ?? ''
-          }${grant[DE_MINIMIS_AID_KEYS.GRANTED_AT] ?? ''}`}
+          }${grant[DE_MINIMIS_AID_KEYS.GRANTED_AT] ?? ''}-${i}`}
         >
           <$GridCell
             css="margin-left: 15px"
