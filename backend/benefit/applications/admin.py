@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from applications.models import (
+    AhjoSetting,
     Application,
     ApplicationBasis,
     ApplicationBatch,
@@ -101,6 +102,11 @@ class ApplicationBasisAdmin(admin.ModelAdmin):
     inlines = (ApplicationBasisInline,)
 
 
+class AhjoSettingAdmin(admin.ModelAdmin):
+    list_display = ["name", "data"]
+    search_fields = ["name"]
+
+
 admin.site.register(Application, ApplicationAdmin)
 admin.site.register(ApplicationBatch, ApplicationBatchAdmin)
 admin.site.register(DeMinimisAid)
@@ -108,3 +114,4 @@ admin.site.register(Employee)
 admin.site.register(Attachment)
 admin.site.register(ApplicationBasis, ApplicationBasisAdmin)
 admin.site.register(ApplicationLogEntry)
+admin.site.register(AhjoSetting, AhjoSettingAdmin)
