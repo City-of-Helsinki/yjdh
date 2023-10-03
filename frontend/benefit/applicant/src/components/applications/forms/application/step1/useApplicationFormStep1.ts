@@ -9,7 +9,7 @@ import {
   ORGANIZATION_TYPES,
 } from 'benefit-shared/constants';
 import { Application, DeMinimisAid } from 'benefit-shared/types/application';
-import { FormikErrors, FormikProps, useFormik } from 'formik';
+import { FormikErrors, FormikProps, FormikValues, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
 import React, { useState } from 'react';
@@ -40,9 +40,44 @@ type ExtendedComponentProps = {
   getDefaultLanguage: () => OptionType;
 };
 
-type DeMinimisFormikPromises = Promise<
-  [void | FormikErrors<Application>, void | FormikErrors<Application>]
->;
+const mapFieldValues = (
+  fieldName: APPLICATION_FIELDS_STEP1_KEYS,
+  t: TFunction,
+  translationsBase: string,
+  fieldMasks: Partial<
+    Record<string, { format: string; stripVal(val: string): string }>
+  >
+): [
+  APPLICATION_FIELDS_STEP1_KEYS,
+  {
+    name: APPLICATION_FIELDS_STEP1_KEYS;
+    label: string;
+    placeholder: string;
+    mask: { format: string; stripVal(val: string): string };
+  }
+] => [
+  fieldName,
+  {
+    name: fieldName,
+    label: t(`${translationsBase}.fields.${fieldName}.label`),
+    placeholder: t(`${translationsBase}.fields.${fieldName}.placeholder`),
+    mask: fieldMasks[fieldName],
+  },
+];
+
+const shouldDisplayDeMinimisError = (
+  isUnfinishedDeminimisAid: boolean,
+  translationsBase: string,
+  t: TFunction
+): boolean => {
+  if (isUnfinishedDeminimisAid) {
+    void showErrorToast(
+      t(`${translationsBase}.notifications.deMinimisUnfinished.label`),
+      t(`${translationsBase}.notifications.deMinimisUnfinished.content`)
+    );
+  }
+  return isUnfinishedDeminimisAid;
+};
 
 const hasBusinessActivitiesOrIsCompany = (
   hasBusinessActivities: boolean,
@@ -56,8 +91,7 @@ const useApplicationFormStep1 = (
   isUnfinishedDeminimisAid: boolean
 ): ExtendedComponentProps => {
   const { t } = useTranslation();
-  const { deMinimisAids, setDeMinimisAids } =
-    React.useContext(DeMinimisContext);
+  const { setDeMinimisAids } = React.useContext(DeMinimisContext);
   const { onNext, onSave, onDelete } = useFormActions(application);
 
   const locale = useLocale();
@@ -68,41 +102,23 @@ const useApplicationFormStep1 = (
   const { data } = useCompanyQuery();
   const organizationType = data?.organization_type;
 
+  const onNextCallback = (values: FormikValues): Promise<void> =>
+    onNext(values).then((submitOk): Promise<void> => {
+      // Make sure context is cleared
+      if (submitOk) setDeMinimisAids([]);
+      return null;
+    });
+
   const formik = useFormik({
     initialValues: application,
     validationSchema: getValidationSchema(organizationType, t),
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,
-    onSubmit: onNext,
+    onSubmit: onNextCallback,
   });
 
   const { values, touched, errors, setFieldValue } = formik;
-
-  const isDeMinimisAidRowUnfinished = (): boolean => {
-    if (isUnfinishedDeminimisAid) {
-      showErrorToast(
-        t(`${translationsBase}.notifications.deMinimisUnfinished.label`),
-        t(`${translationsBase}.notifications.deMinimisUnfinished.content`)
-      );
-      return true;
-    }
-
-    return false;
-  };
-
-  const handleDeMinimisRadioButtonChange = (
-    formikFields: ExtendedComponentProps['fields']
-  ): Promise<void> | DeMinimisFormikPromises => {
-    if (deMinimisAids.length === 0) {
-      setDeMinimisAids([]);
-      return Promise.all([
-        formik.setFieldValue(formikFields.deMinimisAidSet.name, []),
-        formik.setFieldValue(formikFields.deMinimisAid.name, false),
-      ]);
-    }
-    return Promise.resolve();
-  };
 
   const fields: ExtendedComponentProps['fields'] = React.useMemo(() => {
     const fieldMasks: Partial<Record<Field['name'], Field['mask']>> = {
@@ -116,15 +132,9 @@ const useApplicationFormStep1 = (
     const fieldsPairs: [
       APPLICATION_FIELDS_STEP1_KEYS,
       Field<APPLICATION_FIELDS_STEP1_KEYS>
-    ][] = fieldsValues.map((fieldName) => [
-      fieldName,
-      {
-        name: fieldName,
-        label: t(`${translationsBase}.fields.${fieldName}.label`),
-        placeholder: t(`${translationsBase}.fields.${fieldName}.placeholder`),
-        mask: fieldMasks[fieldName],
-      },
-    ]);
+    ][] = fieldsValues.map((fieldName) =>
+      mapFieldValues(fieldName, t, translationsBase, fieldMasks)
+    );
 
     return fromPairs(fieldsPairs) as Record<
       APPLICATION_FIELDS_STEP1_KEYS,
@@ -138,13 +148,11 @@ const useApplicationFormStep1 = (
   const checkForFieldValidity = (errs: FormikErrors<Application>): boolean => {
     const errorFieldKey = Object.keys(errs)[0];
 
-    if (errorFieldKey) {
-      focusAndScroll(errorFieldKey);
-      return false;
-    }
-
-    if (isDeMinimisAidRowUnfinished()) {
-      focusAndScroll('deMinimisAid');
+    if (
+      errorFieldKey ||
+      shouldDisplayDeMinimisError(isUnfinishedDeminimisAid, translationsBase, t)
+    ) {
+      focusAndScroll(errorFieldKey || 'deMinimisAid');
       return false;
     }
 
@@ -153,7 +161,6 @@ const useApplicationFormStep1 = (
   };
 
   const submitIfFormValid = (isFormValid: boolean): boolean => {
-    void handleDeMinimisRadioButtonChange(fields);
     if (isFormValid) {
       void formik.submitForm();
       return true;
@@ -169,16 +176,12 @@ const useApplicationFormStep1 = (
       .then((isFormValid: boolean) => submitIfFormValid(isFormValid));
   };
 
-  const handleSave = (): void | boolean => {
-    if (isDeMinimisAidRowUnfinished()) {
-      return false;
-    }
-    return void handleDeMinimisRadioButtonChange(fields)
-      .then(() => onSave(values))
-      .catch(() => false);
-  };
+  const handleSave = (): void | boolean =>
+    shouldDisplayDeMinimisError(isUnfinishedDeminimisAid, translationsBase, t)
+      ? false
+      : void onSave(values);
 
-  const applicationId = values?.id;
+  const applicationId = String(values?.id);
   const handleDelete = applicationId
     ? () => {
         void onDelete(applicationId);
@@ -191,7 +194,7 @@ const useApplicationFormStep1 = (
   }, [fields.deMinimisAid.name, setDeMinimisAids, setFieldValue]);
 
   const showDeminimisSection = hasBusinessActivitiesOrIsCompany(
-    values.associationHasBusinessActivities,
+    Boolean(values.associationHasBusinessActivities),
     organizationType
   );
 
@@ -200,15 +203,17 @@ const useApplicationFormStep1 = (
     [t]
   );
 
+  const localeObject = {
+    label: t(`common:languages.${locale}`),
+    value: locale,
+  };
+
   const getDefaultLanguage = (): OptionType =>
     languageOptions.find(
       (o) =>
         o.value ===
         String(application?.[APPLICATION_FIELDS_STEP1_KEYS.APPLICANT_LANGUAGE])
-    ) || {
-      label: t(`common:languages.${locale}`),
-      value: locale,
-    };
+    ) || localeObject;
 
   return {
     t,

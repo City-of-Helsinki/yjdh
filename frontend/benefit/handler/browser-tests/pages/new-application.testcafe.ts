@@ -24,9 +24,10 @@ test('Fill in new application', async (t: TestController) => {
 
   await t.navigateTo('/new-application');
 
-  await t
-    .typeText('[class*="CompanySearch___"]', '0201256-6')
-    .pressKey('enter');
+  const searchCompanyInput = Selector(
+    '[data-testid="company-search-input"]'
+  ).find('input');
+  await t.typeText(searchCompanyInput, '0201256-6').pressKey('enter');
 
   await t.typeText('#companyBankAccountNumber', 'FI81 4975 4587 0004 02');
   await t.typeText('#companyContactPersonFirstName', 'Kuura');

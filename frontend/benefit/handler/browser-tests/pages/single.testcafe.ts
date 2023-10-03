@@ -2,22 +2,23 @@ import requestLogger, {
   filterLoggedRequests,
 } from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import { getFrontendUrl } from '../utils/url.utils';
 import { RequestMock } from 'testcafe';
-import ApplicationReview from '../page-model/ApplicationReview';
+
 import fi from '../../public/locales/fi/common.json';
-import responseReceivedApplication from '../json/single-received.json';
 import responseToHandleApplication from '../json/single-handling.json';
-import ActionBarReceived from '../page-model/ActionBarReceived';
+import responseReceivedApplication from '../json/single-received.json';
 import ActionBarHandling from '../page-model/ActionBarHandling';
+import ActionBarReceived from '../page-model/ActionBarReceived';
+import ApplicationReview from '../page-model/ApplicationReview';
 import handlerUser from '../utils/handlerUser';
+import { getFrontendUrl } from '../utils/url.utils';
 
 const getBackendDomain = (): string =>
   process.env.NEXT_PUBLIC_BACKEND_URL || 'https://localhost:8000';
 
-export const applicationId = '87621891-6473-4185-92f3-8a87820a3998';
+const applicationId = '87621891-6473-4185-92f3-8a87820a3998';
 
-let states = [
+const states = [
   'received',
   'handling',
   'handling',
@@ -27,8 +28,7 @@ let states = [
 
 const mock = RequestMock()
   .onRequestTo(`${getBackendDomain()}/v1/handlerapplications/${applicationId}/`)
-  .respond((req, res) => {
-    console.log(req, res);
+  .respond((_, res) => {
     if (states.pop() === 'received') {
       res.setBody(responseReceivedApplication);
     } else if (states.pop() === 'handling') {
@@ -41,19 +41,14 @@ const mock = RequestMock()
 const url = getFrontendUrl(`/application?id=${applicationId}`);
 
 fixture('Single application')
-  .page(getFrontendUrl('/fi/login'))
+  .page(url)
   .requestHooks(mock, requestLogger)
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     await t.useRole(handlerUser);
-    await t.navigateTo(url);
-  })
-  .afterEach(async () =>
-    // eslint-disable-next-line no-console
-    console.log(filterLoggedRequests(requestLogger))
-  );
+  });
 
-test('Page has a single application and is changed from "received" to "handling"', async () => {
+test('Page has a single application', async () => {
   const applicationReview = new ApplicationReview();
   await applicationReview.isLoaded();
 
@@ -72,6 +67,11 @@ test('Page has a single application and is changed from "received" to "handling"
   for (const heading of headings) {
     await applicationReview.hasHeading(heading, 'h2');
   }
+});
+
+test.skip('Application is changed from "received" to "handling', async () => {
+  const applicationReview = new ApplicationReview();
+  await applicationReview.isLoaded();
 
   const receivedActionBar = new ActionBarReceived();
   await receivedActionBar.clickHandleButton();

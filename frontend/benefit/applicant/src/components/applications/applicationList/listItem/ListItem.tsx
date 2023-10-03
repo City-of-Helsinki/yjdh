@@ -118,6 +118,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
         </$ItemContent>
         <$ItemActions>
           <Button
+            data-testid="application-edit-button"
             variant={
               status === APPLICATION_STATUSES.INFO_REQUIRED
                 ? 'primary'

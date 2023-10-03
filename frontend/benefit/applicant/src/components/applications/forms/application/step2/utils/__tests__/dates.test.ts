@@ -1,6 +1,8 @@
+import {
+  getMaxEndDate,
+  getMinEndDate,
+} from '@frontend/benefit-shared/src/utils/dates';
 import { BENEFIT_TYPES } from 'benefit-shared/constants';
-
-import { getMaxEndDate, getMinEndDate } from '../dates';
 
 describe('dates', () => {
   const undefinedBenefit = undefined;

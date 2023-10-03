@@ -1,4 +1,5 @@
 import { t } from 'testcafe';
+
 import HandlerPageComponent from './HandlerPageComponent';
 
 class ApplicationList extends HandlerPageComponent {

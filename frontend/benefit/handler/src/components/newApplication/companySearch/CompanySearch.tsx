@@ -36,7 +36,7 @@ const CompanySearch: React.FC = () => {
       <div>
         <h2>{t('common:applications.sections.companySearch.heading')}</h2>
         <$GridCell as={$Grid} $colSpan={12}>
-          <$GridCell $colSpan={6}>
+          <$GridCell $colSpan={6} data-testid="company-search-input">
             <SearchInput
               label={t(
                 `${translationsBase}.companySearch.searchCompanyDetails`
@@ -57,7 +57,7 @@ const CompanySearch: React.FC = () => {
                 <SelectionGroup
                   label={t(`${translationsBase}.companySearch.select`)}
                 >
-                  {companies.map(({name, business_id: businessId}) => (
+                  {companies.map(({ name, business_id: businessId }) => (
                     <RadioButton
                       key={businessId}
                       id={`v-radio-${businessId}`}

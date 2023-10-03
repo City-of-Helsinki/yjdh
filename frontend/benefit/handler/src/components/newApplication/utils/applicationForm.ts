@@ -1,4 +1,8 @@
 import {
+  getMaxEndDate,
+  getMinEndDate,
+} from '@frontend/benefit-shared/src/utils/dates';
+import {
   APPLICATION_FIELD_KEYS,
   APPLICATION_FIELDS,
   APPLICATION_INITIAL_VALUES,
@@ -28,8 +32,6 @@ import { OptionType } from 'shared/types/common';
 import { convertToUIDateFormat, parseDate } from 'shared/utils/date.utils';
 import { stringToFloatValue } from 'shared/utils/string.utils';
 import { isString } from 'shared/utils/type-guards';
-
-import { getMaxEndDate, getMinEndDate } from './dates';
 
 type DatesType = {
   minEndDate: Date | undefined;

@@ -12,6 +12,7 @@ import * as Yup from 'yup';
 
 export const getValidationSchema = (t: TFunction): Yup.SchemaOf<DeMinimisAid> =>
   Yup.object().shape({
+    [DE_MINIMIS_AID_KEYS.ID]: Yup.string(),
     [DE_MINIMIS_AID_KEYS.GRANTER]: Yup.string()
       .required(VALIDATION_MESSAGE_KEYS.REQUIRED)
       .max(64, (param) => ({

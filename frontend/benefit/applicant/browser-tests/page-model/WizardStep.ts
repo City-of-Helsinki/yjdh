@@ -14,6 +14,11 @@ class WizardStep extends ApplicantPageComponent {
   protected nextButton = this.component.findByRole('button', {
     name: this.translations.applications.actions.continue,
   });
+
+  protected previousButton = this.component.findByRole('button', {
+    name: this.translations.applications.actions.back,
+  });
+
   protected saveAndCloseButton = this.component.findByRole('button', {
     name: this.translations.applications.actions.saveAndContinueLater,
   });
@@ -28,16 +33,31 @@ class WizardStep extends ApplicantPageComponent {
     name: this.translations.applications.actions.deleteApplication,
   });
 
-  public clickSubmit() {
+  public clickSubmit(): Promise<void> {
     return t.click(this.nextButton);
   }
-  public clickSaveAndClose() {
+
+  public expectSaveAndClose(): Promise<void> {
+    return t.expect(this.nextButton).notOk();
+  }
+
+  public expectSubmitDisabled(): Promise<void> {
+    return t.expect(this.nextButton.hasAttribute('disabled')).ok();
+  }
+
+  public clickPrevious(): Promise<void> {
+    return t.click(this.previousButton);
+  }
+
+  public clickSaveAndClose(): Promise<void> {
     return t.click(this.saveAndCloseButton);
   }
-  public async clickDeleteApplication() {
+
+  public async clickDeleteApplication(): Promise<void> {
     return t.click(this.deleteButton);
   }
-  public confirmDeleteApplication() {
+
+  public confirmDeleteApplication(): Promise<void> {
     return t.click(this.dialogConfirmDeleteButton);
   }
 }

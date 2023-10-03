@@ -1,18 +1,22 @@
 import { Role } from 'testcafe';
 
-import login from '../page-model/login';
+import Login from '../page-model/login';
+import TermsOfService from '../page-model/TermsOfService';
 import { getFrontendUrl } from '../utils/url.utils';
 
 const url = getFrontendUrl('/');
 
-const company = Role(url, async (t) => {
-  await t.click(login.loginButton);
-  // .click(login.loginOptionButton)
-  // .click(login.defaultSSN)
-  // .click(login.authenticateButton)
-  // .click(login.continueButton)
-  // .click(login.companyRadioButton)
-  // .click(login.submitButton);
-});
+const applicantRole = Role(
+  url,
+  async (t: TestController) => {
+    await t.click(Login.loginButton);
+    const termsAndConditions = new TermsOfService();
+    await termsAndConditions.isLoaded();
+    await termsAndConditions.clickContinueButton();
+  },
+  {
+    preserveUrl: true,
+  }
+);
 
-export default company;
+export default applicantRole;

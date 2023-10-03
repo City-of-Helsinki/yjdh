@@ -17,3 +17,10 @@ class CompanyFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Company
+
+
+def generate_search_results(search_term: str) -> list[dict]:
+    return [
+        {"name": f"{search_term}_{index}", "business_id": business_id}
+        for index, business_id in enumerate(["6242868-6", "4675403-5", "0071782-9"])
+    ]

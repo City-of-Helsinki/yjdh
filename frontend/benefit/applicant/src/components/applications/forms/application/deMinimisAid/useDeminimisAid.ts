@@ -1,4 +1,3 @@
-import { SUPPORTED_LANGUAGES } from 'benefit/applicant/constants';
 import DeMinimisContext from 'benefit/applicant/context/DeMinimisContext';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { getErrorText } from 'benefit/applicant/utils/forms';
@@ -16,7 +15,6 @@ import { getValidationSchema } from './utils/validation';
 
 type UseDeminimisAidProps = {
   t: TFunction;
-  language: SUPPORTED_LANGUAGES;
   fields: { [key in DE_MINIMIS_AID_KEYS]: Field<DE_MINIMIS_AID_KEYS> };
   translationsBase: string;
   getErrorMessage: (fieldName: string) => string;
@@ -32,20 +30,28 @@ type FormFields = {
 };
 
 const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.company';
   const { deMinimisAids, setDeMinimisAids } =
     React.useContext(DeMinimisContext);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [defaultValue, setDefaultValue] = useState<boolean | null>(null);
 
-  // initial data
+  // Combine backend data with de minimis context
+  // eslint-disable-next-line consistent-return
   useEffect(() => {
-    if (!defaultValue) {
-      setDeMinimisAids(data);
-      setDefaultValue(null);
+    if (data.length > 0) {
+      // Filter unique rows
+      const combinedAids = [...data, ...deMinimisAids].filter(
+        (aid, index, aids) =>
+          index === aids.findIndex((other: DeMinimisAid) => aid.id === other.id)
+      );
+      setDeMinimisAids(combinedAids);
+      return function cleanup() {
+        setDeMinimisAids([]);
+      };
     }
-  }, [data, defaultValue, setDefaultValue, setDeMinimisAids]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -116,24 +122,8 @@ const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
     });
   };
 
-  let language = SUPPORTED_LANGUAGES.FI;
-  switch (i18n.language) {
-    case SUPPORTED_LANGUAGES.EN:
-      language = SUPPORTED_LANGUAGES.EN;
-      break;
-
-    case SUPPORTED_LANGUAGES.SV:
-      language = SUPPORTED_LANGUAGES.SV;
-      break;
-
-    default:
-      language = SUPPORTED_LANGUAGES.FI;
-      break;
-  }
-
   return {
     t,
-    language,
     fields,
     translationsBase,
     formik,

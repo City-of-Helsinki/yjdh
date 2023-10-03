@@ -5,6 +5,7 @@ from rest_framework.exceptions import APIException
 
 from common.utils import update_object
 from companies.models import Company
+from companies.tests.factories import CompanyFactory, generate_search_results
 from shared.service_bus.service_bus_client import ServiceBusClient
 from shared.yrtti.yrtti_client import YRTTIClient
 
@@ -45,8 +46,11 @@ def get_or_create_organisation_with_business_id_via_service_bus(
 ) -> Company:
     """Create a company instance using the Palveluväylä integration."""
 
-    sb_client = ServiceBusClient()
-    company_data = sb_client.get_organisation_info_with_business_id(business_id)
+    if settings.NEXT_PUBLIC_MOCK_FLAG:
+        company_data = CompanyFactory().__dict__
+    else:
+        sb_client = ServiceBusClient()
+        company_data = sb_client.get_organisation_info_with_business_id(business_id)
     return get_or_create_company_using_company_data(company_data)
 
 
@@ -61,13 +65,16 @@ def get_or_create_association_with_business_id(business_id: str) -> Company:
 def search_organisations(search_term: str) -> list[dict]:
     """Search for organisations Service Bus (YTJ) and YRTTI and merge results."""
 
-    sb_client = ServiceBusClient()
-    company_data = sb_client.search_companies(search_term)
-    association_data = []
-    # Option to disable YRTTI as their test api has some difficulties
-    if not settings.YRTTI_DISABLE:
-        yrtti_client = YRTTIClient()
-        association_data = yrtti_client.search_associations(search_term)
+    if settings.NEXT_PUBLIC_MOCK_FLAG:
+        company_data = association_data = generate_search_results(search_term)
+    else:
+        sb_client = ServiceBusClient()
+        company_data = sb_client.search_companies(search_term)
+        association_data = []
+        # Option to disable YRTTI as their test api has some difficulties
+        if not settings.YRTTI_DISABLE:
+            yrtti_client = YRTTIClient()
+            association_data = yrtti_client.search_associations(search_term)
     merged_results = company_data + association_data
     results_without_duplicates = [
         dict(unique) for unique in {tuple(result.items()) for result in merged_results}
