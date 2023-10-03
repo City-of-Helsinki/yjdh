@@ -10,6 +10,7 @@ import {
   ATTACHMENT_TYPES,
   ORGANIZATION_TYPES,
   PAY_SUBSIDY_GRANTED,
+  TRUTHY_SUBSIDIES,
 } from 'benefit-shared/constants';
 import {
   ApplicationData,
@@ -89,7 +90,6 @@ const FormContent: React.FC<Props> = ({
     clearContractValues,
     clearAlternativeAddressValues,
     getErrorMessage,
-    truthySubsidies,
   } = useFormContent(formik, fields);
 
   const theme = useTheme();
@@ -516,9 +516,7 @@ const FormContent: React.FC<Props> = ({
             />
           </SelectionGroup>
         </$GridCell>
-        {truthySubsidies.includes(
-          formik.values.paySubsidyGranted as PAY_SUBSIDY_GRANTED
-        ) && (
+        {TRUTHY_SUBSIDIES.includes(formik.values.paySubsidyGranted) && (
           <$GridCell
             as={$Grid}
             $colSpan={12}
@@ -662,9 +660,7 @@ const FormContent: React.FC<Props> = ({
             />
           </$GridCell>
         )}
-        {truthySubsidies.includes(
-          formik.values.paySubsidyGranted as PAY_SUBSIDY_GRANTED
-        ) && (
+        {TRUTHY_SUBSIDIES.includes(formik.values.paySubsidyGranted) && (
           <$GridCell $colSpan={12}>
             <AttachmentsList
               attachments={attachments}

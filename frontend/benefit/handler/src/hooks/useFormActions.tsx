@@ -6,6 +6,7 @@ import {
   APPLICATION_STATUSES,
   BENEFIT_TYPES,
   PAY_SUBSIDY_OPTIONS,
+  TRUTHY_SUBSIDIES,
 } from 'benefit-shared/constants';
 import { ApplicationData, Employee } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
@@ -144,7 +145,11 @@ const useFormActions = (application: Partial<Application>): FormActions => {
 
     const normalizedValues = {
       ...currentValues,
-      paySubsidyPercent: PAY_SUBSIDY_OPTIONS[0],
+      paySubsidyPercent: TRUTHY_SUBSIDIES.includes(
+        currentValues.paySubsidyGranted
+      )
+        ? PAY_SUBSIDY_OPTIONS[0]
+        : null,
       employee: employee || {},
       startDate: currentValues.startDate
         ? convertToBackendDateFormat(parseDate(currentValues.startDate))

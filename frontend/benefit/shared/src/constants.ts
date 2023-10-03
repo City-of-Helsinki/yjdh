@@ -175,3 +175,8 @@ export enum PAY_SUBSIDY_GRANTED {
 }
 
 export const APPLICATION_START_DATE = new Date(new Date().getFullYear(), 0, 1);
+
+export const TRUTHY_SUBSIDIES = [
+  PAY_SUBSIDY_GRANTED.GRANTED,
+  PAY_SUBSIDY_GRANTED.GRANTED_AGED,
+];
