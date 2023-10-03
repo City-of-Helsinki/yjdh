@@ -3,7 +3,7 @@ import {
   getApplicationStepFromString,
   getApplicationStepString,
 } from 'benefit/applicant/utils/common';
-import { BENEFIT_TYPES } from 'benefit-shared/constants';
+import { BENEFIT_TYPES, PAY_SUBSIDY_OPTIONS } from 'benefit-shared/constants';
 import {
   Application,
   ApplicationData,
@@ -115,6 +115,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
     const normalizedValues = {
       ...currentValues,
       employee,
+      paySubsidyPercent: PAY_SUBSIDY_OPTIONS[0],
       startDate: currentValues.startDate
         ? convertToBackendDateFormat(parseDate(currentValues.startDate))
         : undefined,
