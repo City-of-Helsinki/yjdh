@@ -9,6 +9,7 @@ import { Button, DateInput, IconPlusCircle, TextInput } from 'hds-react';
 import sumBy from 'lodash/sumBy';
 import React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import useLocale from 'shared/hooks/useLocale';
 import {
   formatStringFloatValue,
   stringFloatToFixed,
@@ -29,7 +30,6 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({
 }) => {
   const {
     t,
-    language,
     handleSubmit,
     getErrorMessage,
     fields,
@@ -38,6 +38,8 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({
     grants,
   } = useDeminimisAid(data);
   const theme = useTheme();
+
+  const language = useLocale();
 
   const onSubmit = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>

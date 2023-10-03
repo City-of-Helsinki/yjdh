@@ -1,13 +1,15 @@
+import { validateIsTodayOrPastDate } from '@frontend/benefit-shared/src/utils/dates';
 import {
   DE_MINIMIS_AID_GRANTED_AT_MAX_DATE,
   DE_MINIMIS_AID_GRANTED_AT_MIN_DATE,
+  MAX_DEMINIMIS_AID_TOTAL_AMOUNT,
 } from 'benefit/applicant/constants';
 import {
   DE_MINIMIS_AID_KEYS,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
 import { DeMinimisAid } from 'benefit-shared/types/application';
-import { isBefore, isFuture } from 'date-fns';
+import { isBefore } from 'date-fns';
 import { TFunction } from 'next-i18next';
 import { convertToUIDateFormat, parseDate } from 'shared/utils/date.utils';
 import { getNumberValue } from 'shared/utils/string.utils';
@@ -28,6 +30,10 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<DeMinimisAid> =>
       .min(0, (param) => ({
         min: param.min,
         key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,
+      }))
+      .max(MAX_DEMINIMIS_AID_TOTAL_AMOUNT, (param) => ({
+        max: param.max,
+        key: VALIDATION_MESSAGE_KEYS.NUMBER_MAX,
       })),
     [DE_MINIMIS_AID_KEYS.GRANTED_AT]: Yup.string()
       .typeError(VALIDATION_MESSAGE_KEYS.DATE_FORMAT)
@@ -35,16 +41,7 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<DeMinimisAid> =>
         message: t(VALIDATION_MESSAGE_KEYS.DATE_MAX, {
           max: convertToUIDateFormat(DE_MINIMIS_AID_GRANTED_AT_MAX_DATE),
         }),
-        test: (value) => {
-          if (!value) return false;
-
-          const date = parseDate(value);
-
-          if (date && isFuture(date)) {
-            return false;
-          }
-          return true;
-        },
+        test: (value) => validateIsTodayOrPastDate(value),
       })
       .test({
         message: t(VALIDATION_MESSAGE_KEYS.DATE_MIN, {
@@ -61,4 +58,5 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<DeMinimisAid> =>
           return true;
         },
       }),
+    [DE_MINIMIS_AID_KEYS.ID]: Yup.string(),
   });

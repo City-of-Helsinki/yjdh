@@ -101,6 +101,12 @@ export enum DE_MINIMIS_AID_KEYS {
   GRANTER = 'granter',
   AMOUNT = 'amount',
   GRANTED_AT = 'grantedAt',
+  ID = 'id',
+}
+
+export enum DE_MINIMIS_AID {
+  // eslint-disable-next-line unicorn/numeric-separators-style
+  MAX_AMOUNT = 200000,
 }
 
 export enum CALCULATION_EMPLOYMENT_KEYS {
@@ -167,3 +173,5 @@ export enum PAY_SUBSIDY_GRANTED {
   GRANTED_AGED = 'granted_aged',
   NOT_GRANTED = 'not_granted',
 }
+
+export const APPLICATION_START_DATE = new Date(new Date().getFullYear(), 0, 1);

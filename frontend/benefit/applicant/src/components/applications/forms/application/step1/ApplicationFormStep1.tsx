@@ -1,3 +1,4 @@
+import { MAX_DEMINIMIS_AID_TOTAL_AMOUNT } from 'benefit/applicant/constants';
 import DeMinimisContext from 'benefit/applicant/context/DeMinimisContext';
 import { useAlertBeforeLeaving } from 'benefit/applicant/hooks/useAlertBeforeLeaving';
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
@@ -17,6 +18,7 @@ import { phoneToLocal } from 'shared/utils/string.utils';
 import { $SubFieldContainer } from '../Application.sc';
 import DeMinimisAidForm from '../deMinimisAid/DeMinimisAidForm';
 import DeMinimisAidsList from '../deMinimisAid/list/DeMinimisAidsList';
+import { useDeminimisAidsList } from '../deMinimisAid/list/useDeminimisAidsList';
 import StepperActions from '../stepperActions/StepperActions';
 import CompanyInfo from './companyInfo/CompanyInfo';
 import { useApplicationFormStep1 } from './useApplicationFormStep1';
@@ -57,6 +59,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
   );
 
   const { setDeMinimisAids } = React.useContext(DeMinimisContext);
+  const { deMinimisTotal } = useDeminimisAidsList();
 
   return (
     <form onSubmit={handleSubmit} noValidate>
@@ -196,6 +199,8 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                 )}
                 onChange={() => {
                   formik.setFieldValue(fields.deMinimisAid.name, false);
+                  formik.setFieldValue(fields.deMinimisAidSet.name, []);
+                  setUnfinishedDeMinimisAid(false);
                   setDeMinimisAids([]);
                 }}
                 // 3 states: null (none is selected), true, false
@@ -306,9 +311,10 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
         )}
       </FormSection>
       <StepperActions
+        disabledNext={deMinimisTotal() > MAX_DEMINIMIS_AID_TOTAL_AMOUNT}
         handleSubmit={handleSubmit}
         handleSave={handleSave}
-        handleDelete={handleDelete}
+        handleDelete={data?.id ? handleDelete : null}
       />
     </form>
   );

@@ -1,7 +1,4 @@
-import {
-  APPLICATION_FIELD_KEYS,
-  APPLICATION_START_DATE,
-} from 'benefit/handler/constants';
+import { APPLICATION_FIELD_KEYS } from 'benefit/handler/constants';
 import { useAlertBeforeLeaving } from 'benefit/handler/hooks/useAlertBeforeLeaving';
 import { useDependentFieldsEffect } from 'benefit/handler/hooks/useDependentFieldsEffect';
 import {
@@ -9,6 +6,7 @@ import {
   ApplicationFields,
 } from 'benefit/handler/types/application';
 import {
+  APPLICATION_START_DATE,
   ATTACHMENT_TYPES,
   ORGANIZATION_TYPES,
   PAY_SUBSIDY_GRANTED,
