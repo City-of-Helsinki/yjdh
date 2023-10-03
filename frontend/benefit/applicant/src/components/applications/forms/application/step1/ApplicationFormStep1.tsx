@@ -59,7 +59,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
   );
 
   const { setDeMinimisAids } = React.useContext(DeMinimisContext);
-  const { grantsSum } = useDeminimisAidsList();
+  const { deMinimisTotal } = useDeminimisAidsList();
 
   return (
     <form onSubmit={handleSubmit} noValidate>
@@ -311,7 +311,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
         )}
       </FormSection>
       <StepperActions
-        disabledNext={grantsSum() > MAX_DEMINIMIS_AID_TOTAL_AMOUNT}
+        disabledNext={deMinimisTotal() > MAX_DEMINIMIS_AID_TOTAL_AMOUNT}
         handleSubmit={handleSubmit}
         handleSave={handleSave}
         handleDelete={data?.id ? handleDelete : null}

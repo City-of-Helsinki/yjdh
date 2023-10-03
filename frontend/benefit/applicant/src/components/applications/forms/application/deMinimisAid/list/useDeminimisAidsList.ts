@@ -10,7 +10,7 @@ type ExtendedComponentProps = {
   t: TFunction;
   translationsBase: string;
   grants: DeMinimisAid[];
-  grantsSum: () => number;
+  deMinimisTotal: () => number;
   handleRemove: (index: number) => void;
 };
 
@@ -26,14 +26,14 @@ const useDeminimisAidsList = (): ExtendedComponentProps => {
     currentGrants.splice(index, 1);
     setDeMinimisAids(currentGrants);
   };
-  const grantsSum = (): number =>
+  const deMinimisTotal = (): number =>
     sumBy(deMinimisAids, (grant) => Number(grant.amount));
 
   return {
     t,
     translationsBase,
     handleRemove,
-    grantsSum,
+    deMinimisTotal,
     grants: deMinimisAids,
   };
 };

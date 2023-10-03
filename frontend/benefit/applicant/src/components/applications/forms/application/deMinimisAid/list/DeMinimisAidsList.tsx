@@ -14,8 +14,10 @@ import { useTheme } from 'styled-components';
 import { $DeMinimisGrid } from '../deMinimisAid.sc';
 import { useDeminimisAidsList } from './useDeminimisAidsList';
 
+const unsavedAidRowKey = (): number => Math.floor(Math.random() * 1000);
+
 const DeMinimisAidsList: React.FC = () => {
-  const { grants, t, translationsBase, handleRemove, grantsSum } =
+  const { grants, t, translationsBase, handleRemove, deMinimisTotal } =
     useDeminimisAidsList();
   const theme = useTheme();
 
@@ -23,10 +25,11 @@ const DeMinimisAidsList: React.FC = () => {
     <>
       {grants?.map((grant, i) => (
         <$DeMinimisGrid
-          // eslint-disable-next-line react/no-array-index-key
           key={`${grant[DE_MINIMIS_AID_KEYS.GRANTER] ?? ''}${
             grant[DE_MINIMIS_AID_KEYS.AMOUNT] ?? ''
-          }${grant[DE_MINIMIS_AID_KEYS.GRANTED_AT] ?? ''}-${i}`}
+          }${grant[DE_MINIMIS_AID_KEYS.GRANTED_AT] ?? ''}-${
+            grant.id ? grant.id : unsavedAidRowKey()
+          }`}
         >
           <$GridCell
             css="margin-left: 15px"
@@ -68,7 +71,7 @@ const DeMinimisAidsList: React.FC = () => {
           </$GridCell>
         </$DeMinimisGrid>
       ))}
-      {grantsSum() > MAX_DEMINIMIS_AID_TOTAL_AMOUNT && (
+      {deMinimisTotal() > MAX_DEMINIMIS_AID_TOTAL_AMOUNT && (
         <$GridCell
           $colSpan={8}
           $colStart={3}
