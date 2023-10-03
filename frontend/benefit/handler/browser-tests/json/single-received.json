@@ -1,218 +1,207 @@
 {
+  "id": "87621891-6473-4185-92f3-8a87820a3998",
+  "status": "received",
+  "employee": {
+    "id": "31fcba24-ba9b-431a-9ebf-8aa0e729ab08",
+    "first_name": "Stephen",
+    "last_name": "Hall",
+    "social_security_number": "290134-501E",
+    "phone_number": "0501000059",
+    "email": "brockjacob@example.net",
+    "employee_language": "fi",
+    "job_title": "Scientist, product/process development",
+    "monthly_pay": "947.00",
+    "vacation_money": "3029.00",
+    "other_expenses": "1794.00",
+    "working_hours": "36.0",
+    "collective_bargaining_agreement": "themselves",
+    "is_living_in_helsinki": true,
+    "commission_amount": null,
+    "commission_description": "",
+    "created_at": "2023-01-30T09:57:34.195377+02:00",
+    "birthday": "2034-01-29"
+  },
+  "application_number": 125633,
+  "applicant_terms_approval": {
+    "id": "579f33ae-33f3-4d0f-be23-96f918c9b61f",
+    "approved_at": "2017-02-06T21:50:21+02:00",
+    "approved_by": "368b02b6-866f-4858-80ea-48d6a4a03852",
+    "terms": {
+      "id": "134b827e-9e48-4c2f-98c8-6dcd087c4171",
+      "terms_type": "applicant_terms",
+      "effective_from": null,
+      "terms_pdf_fi": "http://localhost:8000/media/terms_fi_428f5v5.pdf",
+      "terms_pdf_en": "http://localhost:8000/media/terms_en_eVE3Qmi.pdf",
+      "terms_pdf_sv": "http://localhost:8000/media/terms_sv_pvUhOhs.pdf",
+      "applicant_consents": [
+        {
+          "id": "d78490ae-e64d-4ed6-bb46-3655c87d4271",
+          "text_fi": "Himself catch decision.",
+          "text_en": "Loss team professional.",
+          "text_sv": "Certain bar."
+        },
+        {
+          "id": "33fd8042-6ad3-4ae1-abbd-89a034578210",
+          "text_fi": "Bill garden quality professional.",
+          "text_en": "Federal people bed.",
+          "text_sv": "Per gas."
+        }
+      ]
+    },
+    "selected_applicant_consents": [],
+    "application": "87621891-6473-4185-92f3-8a87820a3998"
+  },
+  "company": {
     "id": "87621891-6473-4185-92f3-8a87820a3998",
-    "status": "received",
-    "employee": {
-        "id": "31fcba24-ba9b-431a-9ebf-8aa0e729ab08",
-        "first_name": "Stephen",
-        "last_name": "Hall",
-        "social_security_number": "290134-501E",
-        "phone_number": "0501000059",
-        "email": "brockjacob@example.net",
-        "employee_language": "fi",
-        "job_title": "Scientist, product/process development",
-        "monthly_pay": "947.00",
-        "vacation_money": "3029.00",
-        "other_expenses": "1794.00",
-        "working_hours": "36.0",
-        "collective_bargaining_agreement": "themselves",
-        "is_living_in_helsinki": true,
-        "commission_amount": null,
-        "commission_description": "",
-        "created_at": "2023-01-30T09:57:34.195377+02:00",
-        "birthday": "2034-01-29"
-    },
-    "application_number": 125633,
-    "applicant_terms_approval": {
-        "id": "579f33ae-33f3-4d0f-be23-96f918c9b61f",
-        "approved_at": "2017-02-06T21:50:21+02:00",
-        "approved_by": "368b02b6-866f-4858-80ea-48d6a4a03852",
-        "terms": {
-            "id": "134b827e-9e48-4c2f-98c8-6dcd087c4171",
-            "terms_type": "applicant_terms",
-            "effective_from": null,
-            "terms_pdf_fi": "http://localhost:8000/media/terms_fi_428f5v5.pdf",
-            "terms_pdf_en": "http://localhost:8000/media/terms_en_eVE3Qmi.pdf",
-            "terms_pdf_sv": "http://localhost:8000/media/terms_sv_pvUhOhs.pdf",
-            "applicant_consents": [
-                {
-                    "id": "d78490ae-e64d-4ed6-bb46-3655c87d4271",
-                    "text_fi": "Himself catch decision.",
-                    "text_en": "Loss team professional.",
-                    "text_sv": "Certain bar."
-                },
-                {
-                    "id": "33fd8042-6ad3-4ae1-abbd-89a034578210",
-                    "text_fi": "Bill garden quality professional.",
-                    "text_en": "Federal people bed.",
-                    "text_sv": "Per gas."
-                }
-            ]
-        },
-        "selected_applicant_consents": [],
-        "application": "87621891-6473-4185-92f3-8a87820a3998"
-    },
-    "company": {
-        "id": "9075dc49-7b37-4eba-8ea8-5e35b8874ab1",
-        "name": "Salinas Inc",
-        "business_id": "6916607-9",
-        "company_form": "oy",
-        "company_form_code": 16,
-        "street_address": "775 Allen Forge",
-        "postcode": "67116",
-        "city": "Port Mike",
-        "bank_account_number": "FI1712162310325212",
-        "organization_type": "company"
-    },
-    "company_name": "Nothing.",
-    "company_form": "Provide.",
+    "name": "Salinas Inc",
+    "business_id": "6916607-9",
+    "company_form": "oy",
     "company_form_code": 16,
-    "submitted_at": "2023-01-22T11:18:37Z",
-    "bases": [
-        "basis_identifier_191",
-        "basis_identifier_192",
-        "basis_identifier_193",
-        "basis_identifier_194"
-    ],
-    "attachment_requirements": [
-        [
-            "employment_contract",
-            "required"
-        ],
-        [
-            "education_contract",
-            "required"
-        ],
-        [
-            "helsinki_benefit_voucher",
-            "optional"
-        ]
-    ],
-    "applicant_terms_approval_needed": true,
-    "applicant_terms_in_effect": {
+    "street_address": "775 Allen Forge",
+    "postcode": "67116",
+    "city": "Port Mike",
+    "bank_account_number": "FI1712162310325212",
+    "organization_type": "company"
+  },
+  "company_name": "Nothing.",
+  "company_form": "Provide.",
+  "company_form_code": 16,
+  "submitted_at": "2023-01-22T11:18:37Z",
+  "bases": [
+    "basis_identifier_191",
+    "basis_identifier_192",
+    "basis_identifier_193",
+    "basis_identifier_194"
+  ],
+  "attachment_requirements": [
+    ["employment_contract", "required"],
+    ["education_contract", "required"],
+    ["helsinki_benefit_voucher", "optional"]
+  ],
+  "applicant_terms_approval_needed": true,
+  "applicant_terms_in_effect": {
+    "id": "1282f1dc-9019-4311-83d0-8f5956634392",
+    "terms_type": "applicant_terms",
+    "effective_from": "2021-01-01",
+    "terms_pdf_fi": "http://localhost:8000/media/var/media/please_upload_actual_pdf_manually.pdf",
+    "terms_pdf_en": "http://localhost:8000/media/var/media/please_upload_actual_pdf_manually.pdf",
+    "terms_pdf_sv": "http://localhost:8000/media/var/media/please_upload_actual_pdf_manually.pdf",
+    "applicant_consents": [
+      {
         "id": "1282f1dc-9019-4311-83d0-8f5956634392",
-        "terms_type": "applicant_terms",
-        "effective_from": "2021-01-01",
-        "terms_pdf_fi": "http://localhost:8000/media/var/media/please_upload_actual_pdf_manually.pdf",
-        "terms_pdf_en": "http://localhost:8000/media/var/media/please_upload_actual_pdf_manually.pdf",
-        "terms_pdf_sv": "http://localhost:8000/media/var/media/please_upload_actual_pdf_manually.pdf",
-        "applicant_consents": [
-            {
-                "id": "1282f1dc-9019-4311-83d0-8f5956634392",
-                "text_fi": "Hyväksyn edellä mainitut ehdot",
-                "text_en": "translation TBD",
-                "text_sv": "translation TBD"
-            },
-            {
-                "id": "061ed4a3-2195-46e0-a7d6-0859671bb277",
-                "text_fi": "Vakuutan, että ilmoittamani pankkitili on yrityksen virallinen tili ja että minulla on oikeus hakea Helsinki-lisää organisaation puolesta",
-                "text_en": "translation TBD",
-                "text_sv": "translation TBD"
-            },
-            {
-                "id": "d9a849c1-3700-4b04-9224-37d29c7abddf",
-                "text_fi": "Vakuutan, että yrityksellä ei ole verovelkoja",
-                "text_en": "translation TBD",
-                "text_sv": "translation TBD"
-            },
-            {
-                "id": "f0478de2-bc68-469d-89ba-543ea040a0f6",
-                "text_fi": "Suostun sähköiseen tiedoksiantoon",
-                "text_en": "translation TBD",
-                "text_sv": "translation TBD"
-            }
-        ]
+        "text_fi": "Hyväksyn edellä mainitut ehdot",
+        "text_en": "translation TBD",
+        "text_sv": "translation TBD"
+      },
+      {
+        "id": "061ed4a3-2195-46e0-a7d6-0859671bb277",
+        "text_fi": "Vakuutan, että ilmoittamani pankkitili on yrityksen virallinen tili ja että minulla on oikeus hakea Helsinki-lisää organisaation puolesta",
+        "text_en": "translation TBD",
+        "text_sv": "translation TBD"
+      },
+      {
+        "id": "d9a849c1-3700-4b04-9224-37d29c7abddf",
+        "text_fi": "Vakuutan, että yrityksellä ei ole verovelkoja",
+        "text_en": "translation TBD",
+        "text_sv": "translation TBD"
+      },
+      {
+        "id": "f0478de2-bc68-469d-89ba-543ea040a0f6",
+        "text_fi": "Suostun sähköiseen tiedoksiantoon",
+        "text_en": "translation TBD",
+        "text_sv": "translation TBD"
+      }
+    ]
+  },
+  "former_benefit_info": {
+    "months_used": 0,
+    "months_remaining": null,
+    "last_possible_end_date": null
+  },
+  "available_benefit_types": ["employment_benefit"],
+  "official_company_street_address": "15019 Brooke Highway",
+  "official_company_city": "Caitlinshire",
+  "official_company_postcode": "31755",
+  "use_alternative_address": true,
+  "alternative_company_street_address": "3421 Thompson Shore Apt. 377",
+  "alternative_company_city": "Woodstad",
+  "alternative_company_postcode": "16529",
+  "company_department": "908 Mayer Shore Suite 873",
+  "company_bank_account_number": "FI7573769314636962",
+  "company_contact_person_first_name": "Laura",
+  "company_contact_person_last_name": "Perry",
+  "company_contact_person_phone_number": "0501000059",
+  "company_contact_person_email": "mary15@example.org",
+  "association_has_business_activities": null,
+  "association_immediate_manager_check": null,
+  "applicant_language": "en",
+  "co_operation_negotiations": true,
+  "co_operation_negotiations_description": "Audience face professional board despite organization away.",
+  "pay_subsidy_granted": false,
+  "pay_subsidy_percent": null,
+  "additional_pay_subsidy_percent": null,
+  "apprenticeship_program": true,
+  "archived": true,
+  "application_step": "step_1",
+  "benefit_type": "employment_benefit",
+  "start_date": "2023-04-12",
+  "end_date": "2023-06-16",
+  "de_minimis_aid": true,
+  "de_minimis_aid_set": [
+    {
+      "id": "c33d546e-ef3f-47bf-9d30-2a1a9a762882",
+      "granter": "Personal.",
+      "granted_at": "2021-08-22",
+      "amount": "57823.00",
+      "ordering": 118
     },
-    "former_benefit_info": {
-        "months_used": 0,
-        "months_remaining": null,
-        "last_possible_end_date": null
-    },
-    "available_benefit_types": [
-        "employment_benefit"
-    ],
-    "official_company_street_address": "15019 Brooke Highway",
-    "official_company_city": "Caitlinshire",
-    "official_company_postcode": "31755",
-    "use_alternative_address": true,
-    "alternative_company_street_address": "3421 Thompson Shore Apt. 377",
-    "alternative_company_city": "Woodstad",
-    "alternative_company_postcode": "16529",
-    "company_department": "908 Mayer Shore Suite 873",
-    "company_bank_account_number": "FI7573769314636962",
-    "company_contact_person_first_name": "Laura",
-    "company_contact_person_last_name": "Perry",
-    "company_contact_person_phone_number": "0501000059",
-    "company_contact_person_email": "mary15@example.org",
-    "association_has_business_activities": null,
-    "association_immediate_manager_check": null,
-    "applicant_language": "en",
-    "co_operation_negotiations": true,
-    "co_operation_negotiations_description": "Audience face professional board despite organization away.",
-    "pay_subsidy_granted": false,
-    "pay_subsidy_percent": null,
-    "additional_pay_subsidy_percent": null,
-    "apprenticeship_program": true,
-    "archived": true,
-    "application_step": "step_1",
-    "benefit_type": "employment_benefit",
-    "start_date": "2023-04-12",
-    "end_date": "2023-06-16",
-    "de_minimis_aid": true,
-    "de_minimis_aid_set": [
-        {
-            "id": "c33d546e-ef3f-47bf-9d30-2a1a9a762882",
-            "granter": "Personal.",
-            "granted_at": "2021-08-22",
-            "amount": "57823.00",
-            "ordering": 118
-        },
-        {
-            "id": "f7a8efa7-e287-4f08-b57f-65251aa69545",
-            "granter": "Money.",
-            "granted_at": "2022-01-26",
-            "amount": "81203.00",
-            "ordering": 119
-        }
-    ],
-    "last_modified_at": "2023-01-30T07:57:34.263307Z",
-    "created_at": "2023-01-22T13:18:37+02:00",
-    "additional_information_needed_by": null,
-    "status_last_changed_at": "2023-01-22T11:18:37Z",
-    "attachments": [
-        {
-            "id": "020fb66e-5b0f-4b6b-a04a-c7467d78b398",
-            "application": "87621891-6473-4185-92f3-8a87820a3998",
-            "attachment_type": "pay_subsidy_decision",
-            "attachment_file": "http://localhost:8000/v1/handlerapplications/87621891-6473-4185-92f3-8a87820a3998/attachments/020fb66e-5b0f-4b6b-a04a-c7467d78b398/download/",
-            "attachment_file_name": "attachment_pdf_file_o43vLxy.pdf",
-            "content_type": "application/pdf",
-            "created_at": "2023-01-30T09:57:34.225508+02:00"
-        }
-    ],
-    "ahjo_decision": null,
-    "unread_messages_count": 0,
-    "warnings": {},
-    "duration_in_months_rounded": 2.17,
-    "calculation": {
-        "id": "cc299e4f-36f2-4183-96db-0681ce1ad775",
-        "monthly_pay": "947.00",
-        "vacation_money": "3029.00",
-        "other_expenses": "1794.00",
-        "start_date": null,
-        "end_date": null,
-        "state_aid_max_percentage": null,
-        "granted_as_de_minimis_aid": false,
-        "target_group_check": false,
-        "calculated_benefit_amount": null,
-        "override_monthly_benefit_amount": null,
-        "override_monthly_benefit_amount_comment": "",
-        "rows": [],
-        "handler_details": null,
-        "duration_in_months_rounded": null
-    },
-    "pay_subsidies": [],
-    "training_compensations": [],
-    "batch": null,
-    "latest_decision_comment": null,
-    "handled_at": null
+    {
+      "id": "f7a8efa7-e287-4f08-b57f-65251aa69545",
+      "granter": "Money.",
+      "granted_at": "2022-01-26",
+      "amount": "81203.00",
+      "ordering": 119
+    }
+  ],
+  "last_modified_at": "2023-01-30T07:57:34.263307Z",
+  "created_at": "2023-01-22T13:18:37+02:00",
+  "additional_information_needed_by": null,
+  "status_last_changed_at": "2023-01-22T11:18:37Z",
+  "attachments": [
+    {
+      "id": "020fb66e-5b0f-4b6b-a04a-c7467d78b398",
+      "application": "87621891-6473-4185-92f3-8a87820a3998",
+      "attachment_type": "pay_subsidy_decision",
+      "attachment_file": "http://localhost:8000/v1/handlerapplications/87621891-6473-4185-92f3-8a87820a3998/attachments/020fb66e-5b0f-4b6b-a04a-c7467d78b398/download/",
+      "attachment_file_name": "attachment_pdf_file_o43vLxy.pdf",
+      "content_type": "application/pdf",
+      "created_at": "2023-01-30T09:57:34.225508+02:00"
+    }
+  ],
+  "ahjo_decision": null,
+  "unread_messages_count": 0,
+  "warnings": {},
+  "duration_in_months_rounded": 2.17,
+  "calculation": {
+    "id": "cc299e4f-36f2-4183-96db-0681ce1ad775",
+    "monthly_pay": "947.00",
+    "vacation_money": "3029.00",
+    "other_expenses": "1794.00",
+    "start_date": null,
+    "end_date": null,
+    "state_aid_max_percentage": null,
+    "granted_as_de_minimis_aid": false,
+    "target_group_check": false,
+    "calculated_benefit_amount": null,
+    "override_monthly_benefit_amount": null,
+    "override_monthly_benefit_amount_comment": "",
+    "rows": [],
+    "handler_details": null,
+    "duration_in_months_rounded": null
+  },
+  "pay_subsidies": [],
+  "training_compensations": [],
+  "batch": null,
+  "latest_decision_comment": null,
+  "handled_at": null
 }

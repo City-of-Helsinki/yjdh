@@ -27,7 +27,6 @@ const Login: NextPage = () => {
   const router = useRouter();
   const login = useLogin();
   const theme = useTheme();
-
   const notificationProps = React.useMemo((): NotificationProps => {
     if (router.query.error) {
       return { type: 'error', label: t('common:login.errorLabel') };
