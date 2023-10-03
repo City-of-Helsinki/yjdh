@@ -11,7 +11,7 @@
     "test": "jest --passWithNoTests",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",
     "test:coverage": "yarn test --verbose --coverage",
-    "browser-test": "testcafe 'chrome --allow-insecure-localhost --disable-web-security --ignore-certificate-errors --ignore-urlfetcher-cert-requests --window-size=\"1249,720\"' browser-tests/pages/ --experimental-proxyless",
+    "browser-test": "testcafe 'chrome --allow-insecure-localhost --disable-web-security --ignore-certificate-errors --ignore-urlfetcher-cert-requests --window-size=\"1249,720\"' browser-tests/pages/",
     "browser-test:ci": "testcafe 'chrome:headless --allow-insecure-localhost --disable-web-security --ignore-certificate-errors --ignore-urlfetcher-cert-requests --window-size=\"1249,720\"' --screenshots path=report --video report --reporter spec,custom,html:report/index.html browser-tests/pages/ --experimental-proxyless"
   },
   "dependencies": {

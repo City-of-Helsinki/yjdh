@@ -13,19 +13,27 @@ import ApplicationList from '../page-model/ApplicationList';
 import MainIngress from '../page-model/MainIngress';
 import handlerUser from '../utils/handlerUser';
 import { getBackendDomain, getFrontendUrl } from '../utils/url.utils';
-import { applicationId } from './single.testcafe';
+
+const applicationId = '87621891-6473-4185-92f3-8a87820a3998';
 
 const url = getFrontendUrl(`/`);
 const status = {
-  handling: ['handling'],
+  all: [
+    'received',
+    'handling',
+    'additional_information_needed',
+    'accepted',
+    'draft',
+    'rejected',
+  ],
   received: ['received'],
   infoNeeded: ['additional_information_needed'],
 };
 const mockHook = RequestMock()
   .onRequestTo(
-    `${getBackendDomain()}/v1/handlerapplications/simplified_list/?status=${status.handling.join(
+    `${getBackendDomain()}/v1/handlerapplications/simplified_list/?status=${status.all.join(
       ','
-    )}&order_by=-submitted_at`
+    )}&order_by=-submitted_at&exclude_batched=1`
   )
   .respond(jsonInProgressApplication)
   .onRequestTo(
@@ -51,23 +59,20 @@ fixture('Index page')
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     await t.useRole(handlerUser);
-  })
-  .afterEach(async () =>
-    // eslint-disable-next-line no-console
-    console.log(filterLoggedRequests(requestLogger))
-  );
+  });
 
-test.skip('Index page has applications in states "received" and "handling"', async () => {
+test('Index page has applications', async () => {
   const mainIngress = new MainIngress(fi.mainIngress.heading, 'h1');
   await mainIngress.isLoaded();
 
-  const inProgressApplications = new ApplicationList(status.handling);
+  const inProgressApplications = new ApplicationList(['all']);
   await inProgressApplications.hasItemsListed(20);
 
-  const infoNeededApplications = new ApplicationList(status.infoNeeded);
-  await infoNeededApplications.hasItemsListed(3);
+  // TODO: refactor to check tabs
+  // const infoNeededApplications = new ApplicationList(status.infoNeeded);
+  // await infoNeededApplications.hasItemsListed(3);
 
-  const receivedApplications = new ApplicationList(status.received);
-  await receivedApplications.hasItemsListed(8);
-  await receivedApplications.clickListedItemLink('Salinas Inc');
+  // const receivedApplications = new ApplicationList(status.received);
+  // await receivedApplications.hasItemsListed(8);
+  await inProgressApplications.clickListedItemLink('Salinas Inc');
 });
