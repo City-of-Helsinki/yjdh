@@ -3,7 +3,11 @@ import {
   getApplicationStepFromString,
   getApplicationStepString,
 } from 'benefit/applicant/utils/common';
-import { BENEFIT_TYPES, PAY_SUBSIDY_OPTIONS } from 'benefit-shared/constants';
+import {
+  BENEFIT_TYPES,
+  PAY_SUBSIDY_GRANTED,
+  PAY_SUBSIDY_OPTIONS,
+} from 'benefit-shared/constants';
 import {
   Application,
   ApplicationData,
@@ -94,6 +98,13 @@ const useFormActions = (application: Partial<Application>): FormActions => {
   // eslint-disable-next-line sonarjs/cognitive-complexity
   const getModifiedValues = (currentValues: Application): Application => {
     const employee: Employee | undefined = currentValues?.employee ?? undefined;
+    const { paySubsidyGranted, startDate, endDate, apprenticeshipProgram } =
+      currentValues;
+    const paySubsidyPercent =
+      paySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
+        ? null
+        : PAY_SUBSIDY_OPTIONS[0];
+
     if (employee) {
       employee.commissionAmount = employee.commissionAmount
         ? String(getNumberValue(employee.commissionAmount.toString()))
@@ -115,14 +126,14 @@ const useFormActions = (application: Partial<Application>): FormActions => {
     const normalizedValues = {
       ...currentValues,
       employee,
-      paySubsidyPercent: PAY_SUBSIDY_OPTIONS[0],
-      startDate: currentValues.startDate
-        ? convertToBackendDateFormat(parseDate(currentValues.startDate))
+      paySubsidyPercent,
+      startDate: startDate
+        ? convertToBackendDateFormat(parseDate(startDate))
         : undefined,
-      endDate: currentValues.endDate
-        ? convertToBackendDateFormat(parseDate(currentValues.endDate))
+      endDate: endDate
+        ? convertToBackendDateFormat(parseDate(endDate))
         : undefined,
-      apprenticeshipProgram: currentValues.apprenticeshipProgram,
+      apprenticeshipProgram,
     };
 
     const deMinimisAidSet = deMinimisAids;
@@ -144,6 +155,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
       {
         ...values,
         applicationStep: getApplicationStepString(step),
+        benefit_type: BENEFIT_TYPES.SALARY,
         calculation: values.calculation
           ? {
               ...values.calculation,

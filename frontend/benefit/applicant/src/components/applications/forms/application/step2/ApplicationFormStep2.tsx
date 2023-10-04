@@ -416,9 +416,10 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             />
           </SelectionGroup>
         </$GridCell>
-        {(formik.values.paySubsidyGranted === PAY_SUBSIDY_GRANTED.GRANTED ||
-          formik.values.paySubsidyGranted ===
-            PAY_SUBSIDY_GRANTED.GRANTED_AGED) && (
+        {[
+          PAY_SUBSIDY_GRANTED.GRANTED,
+          PAY_SUBSIDY_GRANTED.GRANTED_AGED,
+        ].includes(formik.values.paySubsidyGranted) && (
           <$GridCell $colSpan={12}>
             <$SubFieldContainer>
               <SelectionGroup
