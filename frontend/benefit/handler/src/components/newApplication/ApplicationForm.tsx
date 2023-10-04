@@ -133,7 +133,11 @@ const ApplicationForm: React.FC = () => {
       )}
       {stepState.activeStepIndex === 2 && (
         <>
-          <Review data={application} />
+          <Review
+            data={application}
+            fields={fields}
+            dispatchStep={dispatchStep}
+          />
           <ActionBar
             id={id}
             handleSubmit={handleSubmit}

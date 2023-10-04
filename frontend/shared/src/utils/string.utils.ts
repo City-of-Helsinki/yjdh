@@ -47,7 +47,8 @@ export const formatStringFloatValue = (
 export const formatFloatToCurrency = (
   value: string | number,
   currency: 'EUR' | null,
-  locale = 'fi-FI'
+  locale = 'fi-FI',
+  minimumFractionDigits = 2
 ): string => {
   const parsedValue = typeof value === 'string' ? parseFloat(value) : value;
   const currencyOptions = currency
@@ -58,7 +59,7 @@ export const formatFloatToCurrency = (
     : {};
 
   return parsedValue.toLocaleString(locale, {
-    minimumFractionDigits: 2,
+    minimumFractionDigits,
     ...currencyOptions,
   });
 };

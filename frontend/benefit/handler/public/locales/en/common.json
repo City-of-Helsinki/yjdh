@@ -231,8 +231,8 @@
       "deleteApplicationConfirm": "Haluatko varmasti poistaa luonnoksen?",
       "deleteApplicationDescription": "Hakemus poistetaan lopullisesti eikä sitä voida enää palauttaa.",
       "continue": "Jatka",
-      "send": "Tallenna ja siirrä saapuneisiin",
-      "back": "Takaisin",
+      "send": "Lähetä saapuneisiin",
+      "back": "Edellinen",
       "back2": "Palaa takaisin",
       "edit": "Muokkaa",
       "close": "Sulje",
@@ -269,15 +269,17 @@
       },
       "headings": {
         "paper": "Paperihakemus",
+        "paper2": "Paperihakemuksen tiedot",
         "company1": "Työnantajan tiedot",
         "company2": "Työnantajan yhteyshenkilö",
         "company3": "Työnantajan saamat de minimis -tuet",
         "company4": "Muutosneuvottelut",
         "company1Additional": "Postiosoite päätöstä varten",
         "company5": "Työnantajan yhteystiedot",
+        "company6": "De-minimis -tuet",
         "employment1": "Työllistettävän tiedot",
         "employment1Short": "Palkattava henkilö",
-        "employment2": "Työsuhteeseen myönnetyt valtion tuet",
+        "employment2": "Työsuhde",
         "employment3": "Haettu ajanjakso",
         "employment3Long": "Haettava tukimuoto ja ajankohta",
         "employment4": "Haettu ajanjakso",
@@ -336,8 +338,17 @@
         }
       },
       "fields": {
+        "address": {
+          "label": "Osoite",
+          "bigLabel": "Osoite"
+        },
+        "alternativeAddress": {
+          "label": "Toimitusosoite, johon päätös toimitetaan",
+          "bigLabel": "Osoite"
+        },
         "paperApplicationDate": {
-          "label": "Hakemuksen saapumispäivä"
+          "label": "Hakemuksen saapumispäivä",
+          "bigLabel": "Paperihakemuksen saapumispäivä"
         },
         "useAlternativeAddress": {
           "label": "Käytä toista postiosoitetta"
@@ -358,6 +369,10 @@
           "label": "Toimipiste tai osasto (valinnainen)",
           "placeholder": "Toimipiste / osasto"
         },
+        "companyBusinessId": {
+          "label": "Y-tunnus",
+          "placeholder": "Y-tunnus"
+        },
         "companyBankAccountNumber": {
           "label": "Tilinumero",
           "placeholder": "IBAN-muodossa"
@@ -376,7 +391,8 @@
         },
         "companyContactPersonEmail": {
           "label": "Sähköposti asiointia varten",
-          "placeholder": "Sähköpostiosoite"
+          "placeholder": "Sähköpostiosoite",
+          "review": "Sähköposti"
         },
         "applicantLanguage": {
           "label": "Asiointikieli"
@@ -403,12 +419,15 @@
         },
         "deMinimisAidAmount": {
           "label": "Tuen määrä (euroina)",
-          "placeholder": "€"
+          "placeholder": "€",
+          "review": "Tuen määrä",
+          "reviewTotal": "Yhteensä"
         },
         "deMinimisAidGrantedAt": {
           "label": "Myöntämispäivämäärä",
           "labelShort": "Myöntämispäivämäärä",
-          "placeholder": "Valitse"
+          "placeholder": "Valitse",
+          "review": "Myöntämispäivä"
         },
         "coOperationNegotiations": {
           "label": "Onko organisaatiolla käynnissä tai edellisen 12 aikana päättynyt muutosneuvottelut?",
@@ -440,13 +459,15 @@
           "placeholder": "Kyllä, työllistettävä on kirjoilla Helsingissä viimeistään työsuhteen alkaessa",
           "yes": "Kyllä",
           "no": "Ei",
-          "error": "Jotta tukea voidaan myöntää, kotikunnan tulee olla Helsinki."
+          "error": "Jotta tukea voidaan myöntää, kotikunnan tulee olla Helsinki.",
+          "review": "Onko työllistettävän kotikunta Helsinki työsuhteen alkaessa?"
         },
         "paySubsidyGranted": {
           "label": "Onko työsuhteeseen myönnetty jokin seuraavista tuista?",
-          "salarySupport": "Palkkatuki",
-          "oldAgeSupport": "55-vuotta täyttäneiden työllistämistuki",
-          "no": "Työsuhteeseen ei ole myönnetty mitään edeltävää tukea"
+          "granted": "Palkkatuki",
+          "grantedAged": "55-vuotta täyttäneiden työllistämistuki",
+          "notGranted": "Työsuhteeseen ei ole myönnetty mitään edeltävää tukea",
+          "review": "Myönnetyt tuet"
         },
         "paySubsidyPercent": {
           "label": "Päätöksessä oleva palkkatukiprosentti"
@@ -467,32 +488,39 @@
         },
         "jobTitle": {
           "label": "Tehtävänimike",
-          "placeholder": "Tehtävänimike"
+          "placeholder": "Tehtävänimike",
+          "review": "Työnimike"
         },
         "workingHours": {
           "label": "Työaika tuntia viikossa",
           "placeholder": "Tunteja",
           "view": "Työaika: {{workingHours}} tuntia viikossa",
-          "helpText": "Tuntia viikossa"
+          "helpText": "Tuntia viikossa",
+          "review": "Työaika",
+          "reviewText": "tuntia viikossa"
         },
         "collectiveBargainingAgreement": {
           "label": "Sovellettava työehtosopimus",
-          "placeholder": "Työehtosopimus"
+          "placeholder": "Työehtosopimus",
+          "review": "Työehtosopimus"
         },
         "monthlyPay": {
           "label": "Bruttopalkka",
           "placeholder": "Palkka",
-          "view": "Bruttopalkka {{monthlyPay}} euroa kuukaudessa"
+          "view": "Bruttopalkka {{monthlyPay}} euroa kuukaudessa",
+          "review": "{{monthlyPay}}/kk"
         },
         "otherExpenses": {
           "label": "Sivukulut",
           "placeholder": "Sivukulut",
-          "view": "Sivukulut {{otherExpenses}} euroa kuukaudessa"
+          "view": "Sivukulut {{otherExpenses}} euroa kuukaudessa",
+          "review": "{{otherExpenses}}/kk"
         },
         "vacationMoney": {
           "label": "Lomaraha",
           "placeholder": "Lomaraha",
-          "view": "Lomaraha {{vacationMoney}} euroa"
+          "view": "Lomaraha {{vacationMoney}} euroa",
+          "review": "{{vacationMoney}}/kk"
         },
         "commissionDescription": {
           "label": "Toimeksiannon kuvaus",
@@ -504,11 +532,13 @@
         },
         "startDate": {
           "label": "Alkaen",
-          "placeholder": "Alkaen"
+          "placeholder": "Alkaen",
+          "review": "Aloituspäivä"
         },
         "endDate": {
           "label": "Päättyen",
-          "placeholder": "Päättyen"
+          "placeholder": "Päättyen",
+          "review": "Päättymispäivä"
         },
         "applicantAgreement": {
           "label": "Hakija on täyttänyt suostumukset",

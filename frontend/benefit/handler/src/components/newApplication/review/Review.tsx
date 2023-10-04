@@ -5,16 +5,54 @@ import AttachmentsSection from './attachmentsSection/AttachmentsSection';
 import CompanySection from './companySection/CompanySection';
 import EmployeeSection from './employeeSection/EmployeeSection';
 import EmploymentSection from './employmentSection/EmploymentSection';
+import PaperSection from './paperSection/PaperSection';
+import TermsSection from './termsSection/TermsSection';
 
-const Review: React.FC<DynamicFormStepComponentProps> = ({ data }) => {
+const Review: React.FC<DynamicFormStepComponentProps> = ({
+  data,
+  dispatchStep,
+  fields,
+}) => {
   const translationsBase = 'common:applications.sections';
 
   return (
     <>
-      <CompanySection data={data} translationsBase={translationsBase} />
-      <EmployeeSection data={data} translationsBase={translationsBase} />
-      <EmploymentSection data={data} translationsBase={translationsBase} />
-      <AttachmentsSection data={data} translationsBase={translationsBase} />
+      <PaperSection
+        data={data}
+        fields={fields}
+        translationsBase={translationsBase}
+        dispatchStep={dispatchStep}
+      />
+      <CompanySection
+        data={data}
+        fields={fields}
+        translationsBase={translationsBase}
+        dispatchStep={dispatchStep}
+      />
+      <EmployeeSection
+        data={data}
+        fields={fields}
+        translationsBase={translationsBase}
+        dispatchStep={dispatchStep}
+      />
+      <EmploymentSection
+        data={data}
+        fields={fields}
+        translationsBase={translationsBase}
+        dispatchStep={dispatchStep}
+      />
+      <AttachmentsSection
+        data={data}
+        fields={fields}
+        translationsBase={translationsBase}
+        dispatchStep={dispatchStep}
+      />
+      <TermsSection
+        data={data}
+        fields={fields}
+        translationsBase={translationsBase}
+        dispatchStep={dispatchStep}
+      />
     </>
   );
 };

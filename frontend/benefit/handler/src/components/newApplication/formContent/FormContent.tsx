@@ -452,7 +452,7 @@ const FormContent: React.FC<Props> = ({
               name={fields.paySubsidyGranted.name}
               value={PAY_SUBSIDY_GRANTED.GRANTED}
               label={t(
-                `${translationsBase}.fields.${fields.paySubsidyGranted.name}.salarySupport`
+                `${translationsBase}.fields.${fields.paySubsidyGranted.name}.granted`
               )}
               onBlur={formik.handleBlur}
               onChange={() => {
@@ -474,7 +474,7 @@ const FormContent: React.FC<Props> = ({
               name={fields.paySubsidyGranted.name}
               value={PAY_SUBSIDY_GRANTED.GRANTED_AGED}
               label={t(
-                `${translationsBase}.fields.${fields.paySubsidyGranted.name}.oldAgeSupport`
+                `${translationsBase}.fields.${fields.paySubsidyGranted.name}.grantedAged`
               )}
               onBlur={formik.handleBlur}
               onChange={() => {
@@ -497,7 +497,7 @@ const FormContent: React.FC<Props> = ({
               name={fields.paySubsidyGranted.name}
               value={PAY_SUBSIDY_GRANTED.NOT_GRANTED}
               label={t(
-                `${translationsBase}.fields.${fields.paySubsidyGranted.name}.no`
+                `${translationsBase}.fields.${fields.paySubsidyGranted.name}.notGranted`
               )}
               onBlur={formik.handleBlur}
               onChange={() => {
@@ -627,7 +627,7 @@ const FormContent: React.FC<Props> = ({
         withoutDivider
         header={t(`${translationsBase}.headings.attachments`)}
       >
-        <$GridCell $colSpan={12}>
+        <$GridCell $colSpan={12} id="attachmentsSection">
           <$Description>
             {t(`${translationsBase}.attachments.attachmentsIngress`)}
           </$Description>
@@ -692,6 +692,7 @@ const FormContent: React.FC<Props> = ({
           (consent, i) => (
             <$GridCell
               $colSpan={12}
+              id="termsSection"
               key={consent.id}
               css={`
                 label {
