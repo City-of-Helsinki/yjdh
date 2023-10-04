@@ -150,7 +150,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
       ...normalizedValues,
       deMinimisAidSet: deMinimisAidData,
       benefitType: BENEFIT_TYPES.SALARY,
-      deMinimisAid: deMinimisAidSet.length > 0,
+      deMinimisAid: deMinimisAidData.length > 0,
     };
   };
 
