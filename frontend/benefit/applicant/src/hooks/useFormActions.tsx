@@ -98,8 +98,13 @@ const useFormActions = (application: Partial<Application>): FormActions => {
   // eslint-disable-next-line sonarjs/cognitive-complexity
   const getModifiedValues = (currentValues: Application): Application => {
     const employee: Employee | undefined = currentValues?.employee ?? undefined;
-    const { paySubsidyGranted, startDate, endDate, apprenticeshipProgram } =
-      currentValues;
+    const {
+      paySubsidyGranted,
+      startDate,
+      endDate,
+      apprenticeshipProgram,
+      deMinimisAidSet,
+    } = currentValues;
     const paySubsidyPercent =
       paySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
         ? null
@@ -136,12 +141,14 @@ const useFormActions = (application: Partial<Application>): FormActions => {
       apprenticeshipProgram,
     };
 
-    const deMinimisAidSet = deMinimisAids;
+    // Use context on first step, otherwise pass data from backend
+    const deMinimisAidData =
+      currentStep === 1 ? deMinimisAids : deMinimisAidSet;
 
     return {
       ...application,
       ...normalizedValues,
-      deMinimisAidSet,
+      deMinimisAidSet: deMinimisAidData,
       benefitType: BENEFIT_TYPES.SALARY,
       deMinimisAid: deMinimisAidSet.length > 0,
     };
