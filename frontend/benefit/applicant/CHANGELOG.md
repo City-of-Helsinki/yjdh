@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.0.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v2.0.0...benefit-applicant-v3.0.0) (2023-10-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* renew application forms to conform to new terms
+
+### Features
+
+* Renew application forms to conform to new terms ([de31e8a](https://github.com/City-of-Helsinki/yjdh/commit/de31e8a5b3d4ff0b4d24466e37f30b8067617831))
+
+
+### Bug Fixes
+
+* Conditional pay subsidy percentage for not_granted ([536dbe4](https://github.com/City-of-Helsinki/yjdh/commit/536dbe42235f96b359691fdb6fc2982c5644b84a))
+* Disappearing de minimis aid rows and grantedAt datepicker ([7cb55e2](https://github.com/City-of-Helsinki/yjdh/commit/7cb55e2e6f83af3b3e5f7abaea32a4a1ba11df5b))
+* Require collective agreement field on application form ([8cd3355](https://github.com/City-of-Helsinki/yjdh/commit/8cd335542a31d5ffd1f9b9e1ff7baaa2ae9100e8))
+* Require salary and expenses to be 0 - 99999 ([f76916f](https://github.com/City-of-Helsinki/yjdh/commit/f76916f78c91e5193318bd75af7cfbb461990fec))
+* Send default paySubsidyPercent value (HL-995) ([#2311](https://github.com/City-of-Helsinki/yjdh/issues/2311)) ([c6c1abc](https://github.com/City-of-Helsinki/yjdh/commit/c6c1abcdbb8fe1332da19decf53d84a56b615a30))
+* Set CSRF header instantly when getting token ([#2261](https://github.com/City-of-Helsinki/yjdh/issues/2261)) ([9d8009d](https://github.com/City-of-Helsinki/yjdh/commit/9d8009df4bf549ec2c93d5cbb9b4e7cff54fcb3a))
+
 ## [2.0.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v1.0.0...benefit-applicant-v2.0.0) (2023-08-30)
 
 
