@@ -40,7 +40,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
           <Heading
             header={header}
             as="h2"
-            size="s"
+            size="m"
             loading={loading}
             {...rest}
           />
@@ -50,6 +50,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
             role={role}
             css={`
               font-size: ${theme.fontSize.body.l};
+              font-weight: 100;
               line-height: ${theme.lineHeight.l};
               margin-bottom: ${withoutDivider ? theme.spacing.m : 0};
             `}
@@ -61,7 +62,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
         {!withoutDivider && (
           <$Hr
             css={`
-              margin-top: ${theme.spacing.m};
+              margin-top: ${theme.spacing.l};
             `}
           />
         )}

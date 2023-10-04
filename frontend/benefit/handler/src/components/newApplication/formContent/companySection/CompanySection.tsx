@@ -93,7 +93,7 @@ const CompanySection: React.FC<Props> = ({
         headerLevel="h2"
         header={t(`${translationsBase}.headings.company1`)}
       >
-        <$GridCell as={$Grid} $colSpan={12}>
+        <$GridCell as={$Grid} $colSpan={12} id="companySection">
           <$GridCell as={$Grid} $colSpan={12}>
             <$CompanyInfoWrapper>
               <$CompanyInfoLabel>

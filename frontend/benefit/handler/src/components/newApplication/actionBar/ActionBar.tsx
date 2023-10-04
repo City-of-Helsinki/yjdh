@@ -1,4 +1,4 @@
-import { Button, IconArrowRight, IconTrash } from 'hds-react';
+import { Button, IconArrowLeft, IconArrowRight, IconTrash } from 'hds-react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
@@ -35,19 +35,49 @@ const ActionBar: React.FC<ActionBarProps> = ({
   return (
     <>
       <$Grid>
-        <$GridCell $colSpan={10}>
-          {handleBack && (
-            <$ButtonContainer>
-              <Button theme="black" variant="secondary" onClick={handleBack}>
+        <$GridCell $colSpan={6}>
+          <$ButtonContainer>
+            {handleBack && (
+              <Button
+                theme="black"
+                variant="secondary"
+                onClick={handleBack}
+                iconLeft={<IconArrowLeft />}
+                css={{ marginRight: 'var(--spacing-2-xs)' }}
+              >
                 {t(`${translationsBase}.back`)}
               </Button>
-            </$ButtonContainer>
-          )}
+            )}
+            {handleSave && (
+              <Button
+                theme="coat"
+                onClick={handleSave}
+                iconRight={<IconArrowRight />}
+                data-testid="nextButton"
+              >
+                {t(`${translationsBase}.continue`)}
+              </Button>
+            )}
+            {handleSubmit && (
+              <Button
+                theme="coat"
+                onClick={handleSubmit}
+                iconRight={<IconArrowRight />}
+                data-testid="nextButton"
+              >
+                {t(`${translationsBase}.send`)}
+              </Button>
+            )}
+          </$ButtonContainer>
+        </$GridCell>
+        <$GridCell $colSpan={3} $colStart={7}>
           <$ButtonContainer>
             <Button theme="black" variant="secondary" onClick={handleSaveDraft}>
               {t(`${translationsBase}.saveAndContinueLater`)}
             </Button>
           </$ButtonContainer>
+        </$GridCell>
+        <$GridCell $colSpan={3} $colStart={10} justifySelf="end">
           <$ButtonContainer>
             <Button
               theme="black"
@@ -61,27 +91,6 @@ const ActionBar: React.FC<ActionBarProps> = ({
               {t(`${translationsBase}.deleteApplication`)}
             </Button>
           </$ButtonContainer>
-        </$GridCell>
-        <$GridCell $colSpan={2} $colStart={11} justifySelf="end">
-          {handleSave && (
-            <Button
-              theme="coat"
-              onClick={handleSave}
-              iconRight={<IconArrowRight />}
-              data-testid="nextButton"
-            >
-              {t(`${translationsBase}.continue`)}
-            </Button>
-          )}
-          {handleSubmit && (
-            <Button
-              theme="coat"
-              onClick={handleSubmit}
-              data-testid="nextButton"
-            >
-              {t(`${translationsBase}.send`)}
-            </Button>
-          )}
         </$GridCell>
       </$Grid>
       {isConfirmationModalOpen && handleDelete && (

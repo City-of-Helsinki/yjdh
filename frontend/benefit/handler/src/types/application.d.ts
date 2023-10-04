@@ -131,6 +131,7 @@ export type Application = {
   createApplicationForCompany?: string;
   applicationOrigin?: APPLICATION_ORIGINS;
   paperApplicationDate?: string;
+  totalDeminimisAmount?: string;
 } & ApplicationForm;
 
 export interface ApplicationForm {

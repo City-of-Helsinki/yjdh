@@ -89,7 +89,7 @@ export const useApplicationForm = (): ExtendedComponentProps => {
 
   React.useEffect(() => {
     if (id) {
-      dispatchStep({ type: 'setActive', payload: 1 });
+      dispatchStep({ type: 'setActive', payload: 2 });
     }
   }, [id, dispatchStep]);
 

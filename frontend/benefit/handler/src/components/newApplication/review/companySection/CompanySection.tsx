@@ -1,23 +1,29 @@
 import { ReviewChildProps } from 'benefit/handler/types/common';
+import { ORGANIZATION_TYPES } from 'benefit-shared/constants';
+import { friendlyFormatIBAN } from 'ibantools';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { getFullName } from 'shared/utils/application.utils';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import { formatStringFloatValue } from 'shared/utils/string.utils';
+import { formatFloatToCurrency } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
 import {
   $SummaryTableHeader,
+  $SummaryTableLastLine,
   $SummaryTableValue,
   $ViewField,
   $ViewFieldBold,
 } from '../../ApplicationForm.sc';
+import EditButton from '../summarySection/EditButton';
 import SummarySection from '../summarySection/SummarySection';
 
 const CompanySection: React.FC<ReviewChildProps> = ({
   data,
   translationsBase,
+  dispatchStep,
+  fields,
 }) => {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -26,128 +32,187 @@ const CompanySection: React.FC<ReviewChildProps> = ({
     <>
       <SummarySection
         header={t(`${translationsBase}.headings.company1`)}
-        withoutDivider
+        action={
+          <EditButton section="companySection" dispatchStep={dispatchStep} />
+        }
       >
-        <$GridCell $colSpan={3}>
-          <$ViewField>{data.company?.name}</$ViewField>
+        <$GridCell $colSpan={6}>
+          <$ViewFieldBold large>{data.company?.name}</$ViewFieldBold>
+        </$GridCell>
+        <$GridCell $colSpan={6} $colStart={1}>
+          <$ViewFieldBold>
+            {t(`${translationsBase}.fields.companyBusinessId.label`)}
+          </$ViewFieldBold>
+          <$ViewField>{data.company?.businessId}</$ViewField>
+        </$GridCell>
+        <$GridCell $colSpan={6} $colStart={1}>
+          <$ViewFieldBold>
+            {t(`${translationsBase}.fields.address.label`)}
+          </$ViewFieldBold>
+          <$ViewField>{`${data.company?.streetAddress}, ${
+            data.company?.postcode || ''
+          } ${data.company?.city || ''}`}</$ViewField>
+          <$ViewFieldBold>
+            {t(`${translationsBase}.fields.companyBankAccountNumber.label`)}
+          </$ViewFieldBold>
           <$ViewField>
-            {t(`${translationsBase}.companyBusinessId`)}:{' '}
-            {data?.company?.businessId}
-          </$ViewField>
-          <$ViewField>
-            {t(`${translationsBase}.fields.companyBankAccountNumber.label`)}:{' '}
-            {data?.companyBankAccountNumber}
+            {friendlyFormatIBAN(data?.companyBankAccountNumber)}
           </$ViewField>
         </$GridCell>
 
-        <$GridCell $colSpan={3}>
-          <$ViewField>{data.company?.streetAddress}</$ViewField>
-          <$ViewField>{`${data.company?.postcode || ''} ${
-            data.company?.city || ''
-          }`}</$ViewField>
-        </$GridCell>
-      </SummarySection>
-      {data.alternativeCompanyStreetAddress && (
-        <SummarySection>
-          <$GridCell
-            $colSpan={12}
-            css={`
-              font-size: ${theme.fontSize.body.m};
-              margin: ${theme.spacing.xs4} 0;
-            `}
-          >
+        {data.alternativeCompanyStreetAddress && (
+          <$GridCell $colSpan={6}>
             <$ViewFieldBold>
-              {t(`${translationsBase}.headings.company5`)}
+              {t(`${translationsBase}.fields.alternativeAddress.label`)}
             </$ViewFieldBold>
-          </$GridCell>
-          <$GridCell $colSpan={3}>
-            {data.companyDepartment && (
-              <$ViewField>{data.companyDepartment}</$ViewField>
-            )}
-            <$ViewField>{data.alternativeCompanyStreetAddress}</$ViewField>
             <$ViewField>
-              {[data.alternativeCompanyPostcode, data.alternativeCompanyCity]
-                .join(' ')
+              {data.companyDepartment && <div>{data.companyDepartment}</div>}
+              {[
+                data.alternativeCompanyStreetAddress,
+                data.alternativeCompanyPostcode,
+                data.alternativeCompanyCity,
+              ]
+                .join(', ')
                 .trim()}
             </$ViewField>
           </$GridCell>
-        </SummarySection>
-      )}
-      <SummarySection
-        header={t(`${translationsBase}.headings.company2`)}
-        withoutDivider
-      >
-        <$GridCell $colSpan={3}>
-          <$ViewField>
-            {getFullName(
-              data.companyContactPersonFirstName,
-              data.companyContactPersonLastName
-            )}
-          </$ViewField>
-          <$ViewField>{data.companyContactPersonPhoneNumber}</$ViewField>
-          <$ViewField>{data.companyContactPersonEmail}</$ViewField>
-          <$ViewField>
-            {t(`${translationsBase}.fields.applicantLanguage.label`)}
-            {': '}
+        )}
+        {data?.company?.organizationType === ORGANIZATION_TYPES.ASSOCIATION && (
+          <$GridCell $colSpan={6} $colStart={1}>
             <$ViewFieldBold>
-              {t(`common:languages.${data.applicantLanguage || ''}`)}
+              {t(
+                `${translationsBase}.fields.associationHasBusinessActivities.label`
+              )}
             </$ViewFieldBold>
-          </$ViewField>
-        </$GridCell>
-      </SummarySection>
-      <SummarySection
-        gap={theme.spacing.xs3}
-        header={t(`${translationsBase}.headings.company3`)}
-        withoutDivider
-      >
-        {data.deMinimisAidSet && data.deMinimisAidSet?.length > 0 ? (
-          <>
-            <$GridCell $colSpan={3}>
-              <$SummaryTableHeader>
-                {t(`${translationsBase}.fields.deMinimisAidGranter.label`)}
-              </$SummaryTableHeader>
-            </$GridCell>
-            <$GridCell $colSpan={2}>
-              <$SummaryTableHeader>
-                {t(`${translationsBase}.fields.deMinimisAidAmount.label`)}
-              </$SummaryTableHeader>
-            </$GridCell>
-            <$GridCell>
-              <$SummaryTableHeader>
-                {t(
-                  `${translationsBase}.fields.deMinimisAidGrantedAt.labelShort`
-                )}
-              </$SummaryTableHeader>
-            </$GridCell>
-            {data.deMinimisAidSet?.map(({ granter, grantedAt, amount }) => (
-              <React.Fragment
-                key={`${granter ?? ''}${convertToUIDateFormat(grantedAt)}`}
-              >
-                <$GridCell $colStart={1} $colSpan={3}>
-                  <$SummaryTableValue>{granter}</$SummaryTableValue>
-                </$GridCell>
-                <$GridCell $colSpan={2}>
-                  <$SummaryTableValue>
-                    {formatStringFloatValue(amount)}
-                  </$SummaryTableValue>
-                </$GridCell>
-                <$GridCell>
-                  <$SummaryTableValue>
-                    {grantedAt ? convertToUIDateFormat(grantedAt) : ''}
-                  </$SummaryTableValue>
-                </$GridCell>
-              </React.Fragment>
-            ))}
-          </>
-        ) : (
-          <$GridCell $colSpan={12}>
             <$ViewField>
-              {t(`${translationsBase}.fields.deMinimisAid.no`)}
+              {data?.associationHasBusinessActivities
+                ? t(
+                    `${translationsBase}.fields.associationHasBusinessActivities.yes`
+                  )
+                : t(
+                    `${translationsBase}.fields.associationHasBusinessActivities.no`
+                  )}
             </$ViewField>
           </$GridCell>
         )}
       </SummarySection>
-      <SummarySection header={t(`${translationsBase}.headings.company4`)}>
+      <SummarySection
+        header={t(`${translationsBase}.headings.company2`)}
+        action={
+          <EditButton
+            section={fields.companyContactPersonFirstName.name}
+            dispatchStep={dispatchStep}
+          />
+        }
+      >
+        <$GridCell $colSpan={6}>
+          <$ViewFieldBold large>
+            {getFullName(
+              data.companyContactPersonFirstName,
+              data.companyContactPersonLastName
+            )}
+          </$ViewFieldBold>
+        </$GridCell>
+        <$GridCell $colSpan={6} $colStart={1}>
+          <$ViewFieldBold>
+            {t(
+              `${translationsBase}.fields.companyContactPersonPhoneNumber.label`
+            )}
+          </$ViewFieldBold>
+          <$ViewField>{data.companyContactPersonPhoneNumber}</$ViewField>
+        </$GridCell>
+        <$GridCell $colSpan={6}>
+          <$ViewFieldBold>
+            {t(`${translationsBase}.fields.companyContactPersonEmail.review`)}
+          </$ViewFieldBold>
+          <$ViewField>{data.companyContactPersonEmail}</$ViewField>
+        </$GridCell>
+        <$GridCell $colSpan={6} $colStart={1}>
+          <$ViewFieldBold>
+            {t(`${translationsBase}.fields.applicantLanguage.label`)}
+          </$ViewFieldBold>
+          <$ViewField>
+            {t(`common:languages.${data.applicantLanguage || ''}`)}
+          </$ViewField>
+        </$GridCell>
+      </SummarySection>
+      {data.deMinimisAidSet && data.deMinimisAidSet?.length > 0 && (
+        <SummarySection
+          gap={theme.spacing.xs3}
+          header={t(`${translationsBase}.headings.company6`)}
+          action={
+            <EditButton
+              section={fields.deMinimisAidSet.name}
+              dispatchStep={dispatchStep}
+            />
+          }
+        >
+          <$GridCell $colSpan={3}>
+            <$SummaryTableHeader>
+              <$ViewFieldBold>
+                {t(`${translationsBase}.fields.deMinimisAidGranter.label`)}
+              </$ViewFieldBold>
+            </$SummaryTableHeader>
+          </$GridCell>
+          <$GridCell $colSpan={2}>
+            <$SummaryTableHeader>
+              <$ViewFieldBold>
+                {t(`${translationsBase}.fields.deMinimisAidAmount.review`)}
+              </$ViewFieldBold>
+            </$SummaryTableHeader>
+          </$GridCell>
+          <$GridCell>
+            <$SummaryTableHeader>
+              <$ViewFieldBold>
+                {t(`${translationsBase}.fields.deMinimisAidGrantedAt.review`)}
+              </$ViewFieldBold>
+            </$SummaryTableHeader>
+          </$GridCell>
+          {data.deMinimisAidSet?.map(({ granter, grantedAt, amount }) => (
+            <React.Fragment
+              key={`${granter ?? ''}${convertToUIDateFormat(grantedAt)}`}
+            >
+              <$GridCell $colStart={1} $colSpan={3}>
+                <$SummaryTableValue>{granter}</$SummaryTableValue>
+              </$GridCell>
+              <$GridCell $colSpan={2}>
+                <$SummaryTableValue>
+                  {formatFloatToCurrency(amount, 'EUR', 'FI-fi', 0)}
+                </$SummaryTableValue>
+              </$GridCell>
+              <$GridCell>
+                <$SummaryTableValue>
+                  {grantedAt ? convertToUIDateFormat(grantedAt) : ''}
+                </$SummaryTableValue>
+              </$GridCell>
+            </React.Fragment>
+          ))}
+          <$GridCell $colSpan={3} $colStart={1}>
+            <$SummaryTableLastLine>
+              {t(`${translationsBase}.fields.deMinimisAidAmount.reviewTotal`)}
+            </$SummaryTableLastLine>
+          </$GridCell>
+          <$GridCell $colSpan={2}>
+            <$SummaryTableLastLine>
+              {formatFloatToCurrency(
+                data.totalDeminimisAmount,
+                'EUR',
+                'FI-fi',
+                0
+              )}
+            </$SummaryTableLastLine>
+          </$GridCell>
+        </SummarySection>
+      )}
+      <SummarySection
+        header={t(`${translationsBase}.headings.company4`)}
+        action={
+          <EditButton
+            section={fields.coOperationNegotiations.name}
+            dispatchStep={dispatchStep}
+          />
+        }
+      >
         <$GridCell $colStart={1} $colSpan={12}>
           {t(`${translationsBase}.fields.coOperationNegotiations.label`)}{' '}
           <$ViewFieldBold>

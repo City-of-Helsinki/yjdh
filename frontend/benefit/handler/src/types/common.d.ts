@@ -1,4 +1,8 @@
-import { Application } from 'benefit-shared/types/application';
+import { StepActionType } from 'benefit/handler/hooks/useSteps';
+import {
+  Application,
+  ApplicationFields,
+} from 'benefit/handler/types/application';
 
 export interface ErrorData {
   data?: Record<string, string[]>;
@@ -6,6 +10,8 @@ export interface ErrorData {
 
 export type DynamicFormStepComponentProps = {
   data: Application;
+  dispatchStep: React.Dispatch<StepActionType>;
+  fields?: ApplicationFields;
 };
 
 export type ReviewChildProps = DynamicFormStepComponentProps & {

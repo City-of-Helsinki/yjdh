@@ -176,6 +176,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "log_entry_comment",
             "warnings",
             "duration_in_months_rounded",
+            "total_deminimis_amount",
         ]
         read_only_fields = [
             "submitted_at",
@@ -198,6 +199,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "unread_messages_count",
             "warnings",
             "duration_in_months_rounded",
+            "total_deminimis_amount",
         ]
         extra_kwargs = {
             "company_name": {
@@ -1366,10 +1368,6 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             " based on a paper applicationreceived via mail. Ordinary applicants can"
             " only create applications for their own company."
         ),
-    )
-
-    paper_application_date = serializers.CharField(
-        required=False, help_text="Paper application arrival date"
     )
 
     def get_company_for_new_application(self, _):
