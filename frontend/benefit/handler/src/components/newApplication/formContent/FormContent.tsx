@@ -257,7 +257,6 @@ const FormContent: React.FC<Props> = ({
           </$GridCell>
         )}
       </FormSection>
-
       <FormSection
         header={t(`${translationsBase}.headings.employment5Employment`)}
       >
@@ -413,7 +412,6 @@ const FormContent: React.FC<Props> = ({
           </$GridCell>
         </>
       </FormSection>
-
       <FormSection header={t(`${translationsBase}.headings.employment2`)}>
         <$GridCell $colSpan={8}>
           <SelectionGroup
@@ -471,22 +469,28 @@ const FormContent: React.FC<Props> = ({
             <$RadioButton
               id={`${fields.paySubsidyGranted.name}.null`}
               name={fields.paySubsidyGranted.name}
-              value={null}
+              value={PAY_SUBSIDY_GRANTED.NOT_GRANTED}
               label={t(
                 `${translationsBase}.fields.${fields.paySubsidyGranted.name}.no`
               )}
               onBlur={formik.handleBlur}
               onChange={() => {
-                formik.setFieldValue(fields.paySubsidyGranted.name, null);
+                formik.setFieldValue(
+                  fields.paySubsidyGranted.name,
+                  PAY_SUBSIDY_GRANTED.NOT_GRANTED
+                );
               }}
-              checked={formik.values.paySubsidyGranted === null}
+              checked={
+                formik.values.paySubsidyGranted ===
+                PAY_SUBSIDY_GRANTED.NOT_GRANTED
+              }
             />
           </SelectionGroup>
         </$GridCell>
         {[
           PAY_SUBSIDY_GRANTED.GRANTED,
           PAY_SUBSIDY_GRANTED.GRANTED_AGED,
-        ].includes(formik.values.paySubsidyGranted as PAY_SUBSIDY_GRANTED) && (
+        ].includes(formik.values.paySubsidyGranted) && (
           <$GridCell
             as={$Grid}
             $colSpan={12}
@@ -540,7 +544,6 @@ const FormContent: React.FC<Props> = ({
           </$GridCell>
         )}
       </FormSection>
-
       <FormSection
         header={t(`${translationsBase}.headings.employment4`)}
         columns={32}
@@ -593,7 +596,6 @@ const FormContent: React.FC<Props> = ({
           />
         </$GridCell>
       </FormSection>
-
       <FormSection
         paddingBottom
         withoutDivider
