@@ -5,6 +5,7 @@ import { Application } from 'benefit/handler/types/application';
 import {
   APPLICATION_STATUSES,
   BENEFIT_TYPES,
+  PAY_SUBSIDY_GRANTED,
   PAY_SUBSIDY_OPTIONS,
 } from 'benefit-shared/constants';
 import { ApplicationData, Employee } from 'benefit-shared/types/application';
@@ -102,7 +103,11 @@ const useFormActions = (application: Partial<Application>): FormActions => {
                 )[0];
               }
               if (key === 'approveTerms') {
-                return <p>{t('common:error.terms.text')}</p>;
+                return (
+                  <p key={`${key}-${String(value)}`}>
+                    {t('common:error.terms.text')}
+                  </p>
+                );
               }
               return (
                 <a key={key} href={`#${key}`}>
@@ -124,6 +129,15 @@ const useFormActions = (application: Partial<Application>): FormActions => {
   // eslint-disable-next-line sonarjs/cognitive-complexity
   const getModifiedValues = (currentValues: Application): Application => {
     const employee: Employee | undefined = currentValues?.employee ?? undefined;
+
+    const { paySubsidyGranted, startDate, endDate, apprenticeshipProgram } =
+      currentValues;
+
+    const paySubsidyPercent =
+      paySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
+        ? null
+        : PAY_SUBSIDY_OPTIONS[0];
+
     if (employee) {
       employee.commissionAmount = employee.commissionAmount
         ? String(getNumberValue(employee.commissionAmount.toString()))
@@ -144,15 +158,15 @@ const useFormActions = (application: Partial<Application>): FormActions => {
 
     const normalizedValues = {
       ...currentValues,
-      paySubsidyPercent: PAY_SUBSIDY_OPTIONS[0],
+      paySubsidyPercent,
       employee: employee || {},
-      startDate: currentValues.startDate
-        ? convertToBackendDateFormat(parseDate(currentValues.startDate))
+      startDate: startDate
+        ? convertToBackendDateFormat(parseDate(startDate))
         : undefined,
-      endDate: currentValues.endDate
-        ? convertToBackendDateFormat(parseDate(currentValues.endDate))
+      endDate: endDate
+        ? convertToBackendDateFormat(parseDate(endDate))
         : undefined,
-      apprenticeshipProgram: currentValues.apprenticeshipProgram,
+      apprenticeshipProgram,
     };
 
     const deMinimisAidSet =
