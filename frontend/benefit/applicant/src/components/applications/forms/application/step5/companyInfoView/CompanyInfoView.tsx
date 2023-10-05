@@ -1,20 +1,25 @@
 import SummarySection from 'benefit/applicant/components/summarySection/SummarySection';
 import { Application, DeMinimisAid } from 'benefit-shared/types/application';
+import { formatIBAN } from 'benefit-shared/utils/common';
 import { Button, IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { getFullName } from 'shared/utils/application.utils';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import { formatStringFloatValue } from 'shared/utils/string.utils';
+import { formatFloatToCurrency } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
 import {
   $SummaryTableHeader,
   $SummaryTableValue,
   $ViewField,
-  $ViewFieldBold,
 } from '../../Application.sc';
+import {
+  $CompanyInfoLabel,
+  $CompanyInfoRow,
+  $CompanyInfoValue,
+  $CompanyInfoWrapper,
+} from '../../step1/companyInfo/CompanyInfo.sc';
 
 export interface CompanyInfoViewProps {
   data: Application;
@@ -33,14 +38,10 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
   return (
     <>
       <SummarySection
-        header={t(`${translationsBase}.company.heading1`)}
         action={
           !isReadOnly && (
             <Button
               theme="black"
-              css={`
-                margin-top: ${theme.spacing.s};
-              `}
               onClick={() => handleStepChange(1)}
               variant="supplementary"
               iconLeft={<IconPen />}
@@ -49,74 +50,126 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
             </Button>
           )
         }
+        header={t(`${translationsBase}.company.heading1`)}
         withoutDivider
       >
-        <$GridCell $colSpan={3}>
-          <$ViewField>{data.company?.name}</$ViewField>
-          <$ViewField>{`${t(`${translationsBase}.company.businessId`, {
-            businessId: data.company?.businessId,
-          })}`}</$ViewField>
-          <$ViewField>
-            {t(
-              `${translationsBase}.company.fields.companyBankAccountNumber.label`
-            )}
-            : {data?.companyBankAccountNumber}
-          </$ViewField>
-        </$GridCell>
+        <$GridCell $colSpan={5}>
+          <$CompanyInfoWrapper $fontSize={theme.fontSize.body.m}>
+            <$CompanyInfoRow>
+              <$CompanyInfoLabel>
+                {t(`${translationsBase}.company.fields.companyName`)}
+              </$CompanyInfoLabel>
+              <$CompanyInfoValue>{data.company?.name}</$CompanyInfoValue>
+            </$CompanyInfoRow>
 
-        <$GridCell $colSpan={3}>
-          <$ViewField>{data.company?.streetAddress}</$ViewField>
-          <$ViewField>{`${data.company?.postcode || ''} ${
-            data.company?.city || ''
-          }`}</$ViewField>
+            <$CompanyInfoRow>
+              <$CompanyInfoLabel>
+                {t(`${translationsBase}.company.fields.companyBusinessId`)}
+              </$CompanyInfoLabel>
+              <$CompanyInfoValue>{data.company?.businessId}</$CompanyInfoValue>
+            </$CompanyInfoRow>
+
+            <$CompanyInfoRow>
+              <$CompanyInfoLabel>
+                {t(`${translationsBase}.company.fields.companyAddress`)}
+              </$CompanyInfoLabel>
+              <$CompanyInfoValue $column>
+                <div>{data.company?.streetAddress}</div>
+                <div>
+                  {data.company?.postcode || ''} {data.company?.city || ''}
+                </div>
+              </$CompanyInfoValue>
+            </$CompanyInfoRow>
+            {data.alternativeCompanyStreetAddress && (
+              <$CompanyInfoRow>
+                <$CompanyInfoLabel>
+                  {t(
+                    `${translationsBase}.company.fields.alternativeCompanyStreetAddress.view`
+                  )}
+                </$CompanyInfoLabel>
+                <$CompanyInfoValue $column>
+                  <div>
+                    {data.companyDepartment ? data.companyDepartment : ''}
+                  </div>
+                  <div>{data.alternativeCompanyStreetAddress}</div>
+                  <div>
+                    {data.alternativeCompanyPostcode}{' '}
+                    {data.alternativeCompanyCity}
+                  </div>
+                </$CompanyInfoValue>
+              </$CompanyInfoRow>
+            )}
+            <$CompanyInfoRow>
+              <$CompanyInfoLabel>
+                {t(
+                  `${translationsBase}.company.fields.companyBankAccountNumber.label`
+                )}
+              </$CompanyInfoLabel>
+              <$CompanyInfoValue>
+                {formatIBAN(data?.companyBankAccountNumber)}
+              </$CompanyInfoValue>
+            </$CompanyInfoRow>
+          </$CompanyInfoWrapper>
         </$GridCell>
       </SummarySection>
-      {data.alternativeCompanyStreetAddress && (
-        <SummarySection>
-          <$GridCell
-            $colSpan={12}
-            css={`
-              font-size: ${theme.fontSize.body.m};
-              margin: ${theme.spacing.xs4} 0;
-            `}
-          >
-            <$ViewFieldBold>
-              {t(`${translationsBase}.company.heading1Additional`)}
-            </$ViewFieldBold>
-          </$GridCell>
-          <$GridCell $colSpan={3}>
-            {data.companyDepartment && (
-              <$ViewField>{data.companyDepartment}</$ViewField>
-            )}
-            <$ViewField>{data.alternativeCompanyStreetAddress}</$ViewField>
-            <$ViewField>
-              {[data.alternativeCompanyPostcode, data.alternativeCompanyCity]
-                .join(' ')
-                .trim()}
-            </$ViewField>
-          </$GridCell>
-        </SummarySection>
-      )}
+
       <SummarySection
-        header={t(`${translationsBase}.company.heading2Short`)}
+        header={t(`${translationsBase}.company.heading2`)}
         withoutDivider
       >
         <$GridCell $colSpan={3}>
-          <$ViewField>
-            {getFullName(
-              data.companyContactPersonFirstName,
-              data.companyContactPersonLastName
-            )}
-          </$ViewField>
-          <$ViewField>{data.companyContactPersonPhoneNumber}</$ViewField>
-          <$ViewField>{data.companyContactPersonEmail}</$ViewField>
-          <$ViewField>
-            {t(`${translationsBase}.company.fields.applicantLanguage.label`)}
-            {': '}
-            <$ViewFieldBold>
-              {t(`common:languages.${data.applicantLanguage || ''}`)}
-            </$ViewFieldBold>
-          </$ViewField>
+          <$CompanyInfoWrapper $fontSize={theme.fontSize.body.m}>
+            <$CompanyInfoRow>
+              <$CompanyInfoLabel>
+                {t(
+                  `${translationsBase}.company.fields.companyContactPersonFirstName.label`
+                )}
+              </$CompanyInfoLabel>
+              <$CompanyInfoValue>
+                {data.companyContactPersonFirstName}
+              </$CompanyInfoValue>
+            </$CompanyInfoRow>
+            <$CompanyInfoRow>
+              <$CompanyInfoLabel>
+                {t(
+                  `${translationsBase}.company.fields.companyContactPersonLastName.label`
+                )}
+              </$CompanyInfoLabel>
+              <$CompanyInfoValue>
+                {data.companyContactPersonLastName}
+              </$CompanyInfoValue>
+            </$CompanyInfoRow>
+            <$CompanyInfoRow>
+              <$CompanyInfoLabel>
+                {t(
+                  `${translationsBase}.company.fields.companyContactPersonPhoneNumber.label`
+                )}
+              </$CompanyInfoLabel>
+              <$CompanyInfoValue>
+                {data.companyContactPersonPhoneNumber}
+              </$CompanyInfoValue>
+            </$CompanyInfoRow>
+            <$CompanyInfoRow>
+              <$CompanyInfoLabel>
+                {t(
+                  `${translationsBase}.company.fields.companyContactPersonEmail.placeholder`
+                )}
+              </$CompanyInfoLabel>
+              <$CompanyInfoValue>
+                {data.companyContactPersonEmail}
+              </$CompanyInfoValue>
+            </$CompanyInfoRow>
+            <$CompanyInfoRow>
+              <$CompanyInfoLabel>
+                {t(
+                  `${translationsBase}.company.fields.applicantLanguage.label`
+                )}
+              </$CompanyInfoLabel>
+              <$CompanyInfoValue>
+                {t(`common:languages.${data.applicantLanguage || ''}`)}
+              </$CompanyInfoValue>
+            </$CompanyInfoRow>
+          </$CompanyInfoWrapper>
         </$GridCell>
       </SummarySection>
       <SummarySection
@@ -158,7 +211,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
                 </$GridCell>
                 <$GridCell $colSpan={2}>
                   <$SummaryTableValue>
-                    {formatStringFloatValue(aid.amount)}
+                    {formatFloatToCurrency(aid.amount, 'EUR')}
                   </$SummaryTableValue>
                 </$GridCell>
                 <$GridCell>
@@ -177,20 +230,30 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
           </$GridCell>
         )}
       </SummarySection>
-      <SummarySection header={t(`${translationsBase}.company.heading5`)}>
+      <SummarySection header={t(`${translationsBase}.company.heading4`)}>
         <$GridCell $colStart={1} $colSpan={12}>
           {t(
-            `${translationsBase}.company.fields.coOperationNegotiations.label`
-          )}{' '}
-          <$ViewFieldBold>
-            {t(
-              `${translationsBase}.company.fields.coOperationNegotiations.${
-                data.coOperationNegotiations ? 'yes' : 'no'
-              }`
-            )}
-          </$ViewFieldBold>
-          <$ViewField>{data.coOperationNegotiationsDescription}</$ViewField>
+            `${translationsBase}.company.fields.coOperationNegotiations.view.${
+              data.coOperationNegotiations ? 'yes' : 'no'
+            }`
+          )}
         </$GridCell>
+        {data.coOperationNegotiations && (
+          <$GridCell $colSpan={12}>
+            <$CompanyInfoWrapper>
+              <$CompanyInfoRow>
+                <$CompanyInfoLabel>
+                  {t(
+                    `${translationsBase}.company.fields.coOperationNegotiationsDescription.labelShort`
+                  )}
+                </$CompanyInfoLabel>
+                <$CompanyInfoValue>
+                  {data.coOperationNegotiationsDescription}
+                </$CompanyInfoValue>
+              </$CompanyInfoRow>
+            </$CompanyInfoWrapper>
+          </$GridCell>
+        )}
       </SummarySection>
     </>
   );

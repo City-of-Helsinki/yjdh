@@ -1,15 +1,39 @@
 import SummarySection from 'benefit/applicant/components/summarySection/SummarySection';
-import { BENEFIT_TYPES } from 'benefit-shared/constants';
+import { BENEFIT_TYPES, PAY_SUBSIDY_GRANTED } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import { Button, IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import { formatStringFloatValue } from 'shared/utils/string.utils';
+import {
+  formatFloatToCurrency,
+  formatStringFloatValue,
+} from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
-import { $ViewField, $ViewFieldBold } from '../../Application.sc';
+import {
+  $CompanyInfoLabel,
+  $CompanyInfoRow,
+  $CompanyInfoValue,
+  $CompanyInfoWrapper,
+} from '../../step1/companyInfo/CompanyInfo.sc';
+
+const paySubsidyTranslation = (value: PAY_SUBSIDY_GRANTED): string => {
+  switch (value) {
+    case PAY_SUBSIDY_GRANTED.GRANTED:
+      return 'granted';
+
+    case PAY_SUBSIDY_GRANTED.GRANTED_AGED:
+      return 'paySubsidyAged';
+
+    case PAY_SUBSIDY_GRANTED.NOT_GRANTED:
+      return 'paySubsidyNone';
+
+    default:
+      return 'paySubsidyNone';
+  }
+};
 
 export interface EmployeeViewProps {
   data: Application;
@@ -34,9 +58,6 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
           !isReadOnly && (
             <Button
               theme="black"
-              css={`
-                margin-top: ${theme.spacing.s};
-              `}
               onClick={() => handleStepChange(2)}
               variant="supplementary"
               iconLeft={<IconPen />}
@@ -48,144 +69,187 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
         withoutDivider
       >
         <$GridCell $colSpan={3}>
-          <$ViewField>{`${data.employee?.firstName || ''} ${
-            data.employee?.lastName || ''
-          }`}</$ViewField>
-          <$ViewField>{data.employee?.socialSecurityNumber}</$ViewField>
-          <$ViewField>
-            {t(`${translationsBase}.employee.fields.isLivingInHelsinki.label`)}
-            {': '}
-            <$ViewFieldBold>
-              {t(
-                `${translationsBase}.employee.fields.isLivingInHelsinki.${
-                  data.employee?.isLivingInHelsinki ? 'yes' : 'no'
-                }`
-              )}
-            </$ViewFieldBold>
-          </$ViewField>
-        </$GridCell>
-      </SummarySection>
-
-      <SummarySection
-        header={t(`${translationsBase}.employee.heading2`)}
-        withoutDivider
-      >
-        <$GridCell $colSpan={12}>
-          {data.paySubsidyGranted ? (
-            <>
-              <$ViewFieldBold>
+          <$CompanyInfoWrapper $fontSize={theme.fontSize.body.m}>
+            <$CompanyInfoRow>
+              <$CompanyInfoLabel>
+                {t(`${translationsBase}.employee.fields.firstName.label`)}
+              </$CompanyInfoLabel>
+              <$CompanyInfoValue>
+                {data.employee?.firstName || ''}
+              </$CompanyInfoValue>
+            </$CompanyInfoRow>
+            <$CompanyInfoRow>
+              <$CompanyInfoLabel>
+                {t(`${translationsBase}.employee.fields.lastName.label`)}
+              </$CompanyInfoLabel>
+              <$CompanyInfoValue>
+                {data.employee?.lastName || ''}
+              </$CompanyInfoValue>
+            </$CompanyInfoRow>
+            <$CompanyInfoRow>
+              <$CompanyInfoLabel>
                 {t(
-                  `${translationsBase}.employee.fields.paySubsidyGranted.${
-                    data.paySubsidyGranted ? 'yes' : 'no'
+                  `${translationsBase}.employee.fields.socialSecurityNumber.label`
+                )}
+              </$CompanyInfoLabel>
+              <$CompanyInfoValue>
+                {data.employee?.socialSecurityNumber}
+              </$CompanyInfoValue>
+            </$CompanyInfoRow>
+            <$CompanyInfoRow $alignItems="flex-start">
+              <$CompanyInfoLabel>
+                {t(
+                  `${translationsBase}.employee.fields.isLivingInHelsinki.label`
+                )}
+              </$CompanyInfoLabel>
+              <$CompanyInfoValue>
+                {t(
+                  `${translationsBase}.employee.fields.isLivingInHelsinki.${
+                    data.employee?.isLivingInHelsinki ? 'yes' : 'no'
                   }`
                 )}
-              </$ViewFieldBold>
-              <$ViewField>
-                {t(
-                  `${translationsBase}.employee.fields.apprenticeshipProgram.label`
-                )}{' '}
-                <$ViewFieldBold>
-                  {t(
-                    `${translationsBase}.employee.fields.apprenticeshipProgram.${
-                      data.apprenticeshipProgram ? 'yes' : 'no'
-                    }`
-                  )}
-                </$ViewFieldBold>
-              </$ViewField>
-            </>
-          ) : (
-            <$ViewField>
-              {t(`${translationsBase}.employee.fields.paySubsidyGranted.label`)}{' '}
-              <$ViewFieldBold>
-                {t(`${translationsBase}.employee.fields.paySubsidyGranted.no`)}
-              </$ViewFieldBold>
-            </$ViewField>
-          )}
+              </$CompanyInfoValue>
+            </$CompanyInfoRow>
+          </$CompanyInfoWrapper>
         </$GridCell>
       </SummarySection>
 
-      <SummarySection
-        header={t(`${translationsBase}.employee.heading3Long`)}
-        withoutDivider
-      >
-        <$GridCell $colSpan={5}>
-          <$ViewField>
-            {`${t(`${translationsBase}.employee.fields.benefitType.label`)}: `}
-            <$ViewFieldBold>
-              {t(
-                `${translationsBase}.employee.fields.benefitType.${
-                  data.benefitType?.split('_')[0] || ''
-                }`
-              )}
-            </$ViewFieldBold>
-          </$ViewField>
-        </$GridCell>
-      </SummarySection>
-      <SummarySection>
-        <$GridCell $colStart={1} $colSpan={2}>
-          <$ViewField>
-            {t(`${translationsBase}.employee.fields.startDate.label`)}
-          </$ViewField>
-          <$ViewField>
-            {convertToUIDateFormat(data.startDate) || '-'}
-          </$ViewField>
-        </$GridCell>
-        <$GridCell $colSpan={2}>
-          <$ViewField>
-            {t(`${translationsBase}.employee.fields.endDate.label`)}
-          </$ViewField>
-          <$ViewField>{convertToUIDateFormat(data.endDate) || '-'}</$ViewField>
-        </$GridCell>
-      </SummarySection>
       {(data.benefitType === BENEFIT_TYPES.SALARY ||
         data.benefitType === BENEFIT_TYPES.EMPLOYMENT) && (
         <SummarySection
+          withoutDivider
           header={t(`${translationsBase}.employee.heading5Employment`)}
         >
           <$GridCell $colSpan={5}>
-            <$ViewField>
-              {`${t(`${translationsBase}.employee.fields.jobTitle.label`)}: ${
-                data.employee?.jobTitle || '-'
-              }`}
-            </$ViewField>
-            <$ViewField>
-              {t(`${translationsBase}.employee.fields.workingHours.view`, {
-                workingHours: formatStringFloatValue(
-                  data.employee?.workingHours
-                ),
-              })}
-            </$ViewField>
-            <$ViewField>
-              {t(`${translationsBase}.employee.fields.monthlyPay.view`, {
-                monthlyPay: formatStringFloatValue(data.employee?.monthlyPay),
-              })}
-            </$ViewField>
-            <$ViewField>
-              {t(`${translationsBase}.employee.fields.otherExpenses.view`, {
-                otherExpenses: formatStringFloatValue(
-                  data.employee?.otherExpenses
-                ),
-              })}
-            </$ViewField>
-            <$ViewField
-              css={`
-                &&& {
-                  padding-bottom: 0;
-                }
-              `}
-            >
-              {t(`${translationsBase}.employee.fields.vacationMoney.view`, {
-                vacationMoney: formatStringFloatValue(
-                  data.employee?.vacationMoney
-                ),
-              })}
-            </$ViewField>
-            <$ViewField>
-              {data.employee?.collectiveBargainingAgreement}
-            </$ViewField>
+            <$CompanyInfoWrapper $fontSize={theme.fontSize.body.m}>
+              <$CompanyInfoRow>
+                <$CompanyInfoLabel>
+                  {t(`${translationsBase}.employee.fields.jobTitle.label`)}
+                </$CompanyInfoLabel>
+                <$CompanyInfoValue>
+                  {data.employee?.jobTitle || '-'}
+                </$CompanyInfoValue>
+              </$CompanyInfoRow>
+
+              <$CompanyInfoRow>
+                <$CompanyInfoLabel>
+                  {t(
+                    `${translationsBase}.employee.fields.collectiveBargainingAgreement.placeholder`
+                  )}
+                </$CompanyInfoLabel>
+                <$CompanyInfoValue>
+                  {data.employee?.collectiveBargainingAgreement}
+                </$CompanyInfoValue>
+              </$CompanyInfoRow>
+              <$CompanyInfoRow>
+                <$CompanyInfoLabel>
+                  {t(`${translationsBase}.employee.fields.workingHours.label`)}
+                </$CompanyInfoLabel>
+                <$CompanyInfoValue>
+                  {formatStringFloatValue(data.employee?.workingHours)}{' '}
+                  {t(
+                    `${translationsBase}.employee.fields.workingHours.helperText`
+                  )}
+                </$CompanyInfoValue>
+              </$CompanyInfoRow>
+
+              <$CompanyInfoRow>
+                <$CompanyInfoLabel>
+                  {t(`${translationsBase}.employee.fields.monthlyPay.label`)}
+                </$CompanyInfoLabel>
+                <$CompanyInfoValue>
+                  {formatFloatToCurrency(data.employee?.monthlyPay, 'EUR')}
+                </$CompanyInfoValue>
+              </$CompanyInfoRow>
+
+              <$CompanyInfoRow>
+                <$CompanyInfoLabel>
+                  {t(`${translationsBase}.employee.fields.vacationMoney.label`)}
+                </$CompanyInfoLabel>
+                <$CompanyInfoValue>
+                  {formatFloatToCurrency(data.employee?.vacationMoney, 'EUR')}
+                </$CompanyInfoValue>
+              </$CompanyInfoRow>
+              <$CompanyInfoRow>
+                <$CompanyInfoLabel>
+                  {t(`${translationsBase}.employee.fields.otherExpenses.label`)}
+                </$CompanyInfoLabel>
+
+                <$CompanyInfoValue>
+                  {formatFloatToCurrency(data.employee?.otherExpenses, 'EUR')}
+                </$CompanyInfoValue>
+              </$CompanyInfoRow>
+              {data.paySubsidyGranted ? (
+                <$CompanyInfoWrapper $fontSize={theme.fontSize.body.m}>
+                  <$CompanyInfoRow>
+                    <$CompanyInfoLabel>
+                      {t(
+                        `${translationsBase}.employee.fields.paySubsidyGranted.labelShort`
+                      )}
+                    </$CompanyInfoLabel>
+                    <$CompanyInfoValue>
+                      {t(
+                        `${translationsBase}.employee.fields.paySubsidyGranted.${paySubsidyTranslation(
+                          data.paySubsidyGranted
+                        )}`
+                      )}
+                    </$CompanyInfoValue>
+                  </$CompanyInfoRow>
+                  <$CompanyInfoRow>
+                    <$CompanyInfoLabel>
+                      {t(
+                        `${translationsBase}.employee.fields.apprenticeshipProgram.label`
+                      )}
+                    </$CompanyInfoLabel>
+                    <$CompanyInfoValue>
+                      {t(
+                        `${translationsBase}.employee.fields.apprenticeshipProgram.${
+                          data.apprenticeshipProgram ? 'yes' : 'no'
+                        }`
+                      )}
+                    </$CompanyInfoValue>
+                  </$CompanyInfoRow>
+                </$CompanyInfoWrapper>
+              ) : (
+                <$CompanyInfoWrapper $fontSize={theme.fontSize.body.m}>
+                  <$CompanyInfoRow>
+                    <$CompanyInfoLabel>
+                      {t(
+                        `${translationsBase}.employee.fields.paySubsidyGranted.label`
+                      )}{' '}
+                    </$CompanyInfoLabel>
+                    <$CompanyInfoValue>
+                      {t(
+                        `${translationsBase}.employee.fields.paySubsidyGranted.no`
+                      )}
+                    </$CompanyInfoValue>
+                  </$CompanyInfoRow>
+                </$CompanyInfoWrapper>
+              )}
+            </$CompanyInfoWrapper>
           </$GridCell>
         </SummarySection>
       )}
+      <SummarySection header={t(`${translationsBase}.employee.heading4`)}>
+        <$CompanyInfoWrapper>
+          <$CompanyInfoRow>
+            <$CompanyInfoLabel>
+              {t(`${translationsBase}.employee.fields.startDate.label`)}
+            </$CompanyInfoLabel>
+            <$CompanyInfoValue>
+              {convertToUIDateFormat(data.startDate) || '-'}
+            </$CompanyInfoValue>
+          </$CompanyInfoRow>
+          <$CompanyInfoRow>
+            <$CompanyInfoLabel>
+              {t(`${translationsBase}.employee.fields.endDate.label`)}
+            </$CompanyInfoLabel>
+            <$CompanyInfoValue>
+              {convertToUIDateFormat(data.endDate) || '-'}
+            </$CompanyInfoValue>
+          </$CompanyInfoRow>
+        </$CompanyInfoWrapper>
+      </SummarySection>
     </>
   );
 };

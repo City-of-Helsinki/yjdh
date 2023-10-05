@@ -83,7 +83,8 @@
         "deMinimisAidsHeading": "Täytä alle kaikki organisaatiolle myönnetyt de minimis -tuet kuluvan vuoden ja kahden edellisen verovuoden ajalta.",
         "deMinimisAidsAdd": "Tallenna",
         "deMinimisAidsRemove": "Poista",
-        "deMinimisAidsNo": "Hakija ei ole ilmoittanut aiemmista de minimis -tuista.",
+        "deMinimisAidsYes": "Kyllä, työnantajalle on myönnetty de minimis -tukia kuluvan vuoden ja kahden edellisen verovuoden aikana oheisen taulukon mukaisesti.",
+        "deMinimisAidsNo": "Ei, työnantajalle ei ole myönnetty de minimis -tukia kuluvan vuoden ja kahden edellisen verovuoden aikana.",
         "notifications": {
           "companyInformation": {
             "label": "Tiedot haetaan Yritys- ja yhteisötietojärjestelmästä",
@@ -91,10 +92,10 @@
           },
           "deMinimisAidMaxAmount": {
             "label": "Enimmäismäärä ylitetty",
-            "content": "De minimis-tuen enimmäismäärä on ylitetty. Tuki voi olla enintään 200 000 euroa, joka myönnetään yritykselle kuluvan vuoden ja kahden edellisen verovuoden kuluessa. Enimmäismäärässä huomioidaan kaikkien eri viranomaisten kyseisenä ajanjaksona de minimis -tukena myöntämä rahoitus."
+            "content": "De minimis -tuen enimmäismäärä on ylitetty. Tuki voi olla enintään 200 000 euroa, joka myönnetään yritykselle kuluvan vuoden ja kahden edellisen verovuoden kuluessa. Enimmäismäärässä huomioidaan kaikkien eri viranomaisten kyseisenä ajanjaksona de minimis -tukena myöntämä rahoitus."
           },
           "deMinimisUnfinished": {
-            "label": "Puuttuvia de minimis-tuen tietoja",
+            "label": "Puuttuvia de minimis -tuen tietoja",
             "content": "Täytä puuttuvat minimis -kentät ja paina 'Tallenna' painiketta."
           }
         },
@@ -105,7 +106,7 @@
         "fields": {
           "companyBusinessId": "Y-tunnus",
           "companyName": "Työnantajan nimi",
-          "companyAddress": "Katuosoite",
+          "companyAddress": "Osoite",
           "companyPostcode": "Postinumero",
           "companyCity": "Postitoimipaikka",
           "useAlternativeAddress": {
@@ -113,7 +114,8 @@
           },
           "alternativeCompanyStreetAddress": {
             "label": "Osoite",
-            "placeholder": "Osoite"
+            "placeholder": "Osoite",
+            "view": "Toimitusosoite"
           },
           "alternativeCompanyPostcode": {
             "label": "Postinumero",
@@ -177,12 +179,17 @@
           "coOperationNegotiations": {
             "label": "Onko organisaatiolla käynnissä tai edeltävän 12 kuukauden aikana päättynyt muutosneuvottelut?",
             "tooltipText": "Jos muutosneuvottelut ovat käynnissä tai päättyneet edeltävän 12 kuukauden aikana, niin anna tarkempi selvitys tilanteesta, kuten esimerkiksi ketä neuvottelut koskevat tai mihin lopputulokseen neuvottelut johtivat.",
+            "view": {
+              "yes": "Kyllä, organisaatiolla on käynnissä olevat, tai päättyneet muutosneuvottelut edeltävän 12 kuukauden aikana.",
+              "no": "Ei, organisaatiolla ei ole käynnissä tai edeltävän 12 kuukauden aikana päättyneitä muutosneuvotteluja."
+            },
             "yes": "Kyllä",
             "no": "Ei"
           },
           "coOperationNegotiationsDescription": {
             "label": "Anna tarkempi selvitys neuvotteluiden tilanteesta.",
-            "placeholder": "Kuvaile tilannetta"
+            "placeholder": "Kuvaile tilannetta",
+            "labelShort": "Selvitys"
           }
         }
       },
@@ -195,13 +202,11 @@
         "heading4": "Mille ajalle haet Helsinki-lisää?",
         "heading4Sub1": "Voit hakea Helsinki-lisää työsuhteen keston ajaksi, mutta enintään 12 kuukaudeksi.",
         "heading5Employment": "Työsuhde",
-        "heading5Assignment": "Toimeksianto",
         "heading5EmploymentSub1": "Palkkauskustannukset",
         "salaryExpensesExplanation": "Ilmoita bruttopalkka, sivukulut ja lomaraha euroina kuukaudessa.",
         "tooltips": {
           "heading5Employment": "Sovellettava työehtosopimus: esim. Kaupan työehtosopimus. Jos alalla ei ole velvoittavaa työehtosopimusta, merkitse viiva.",
           "heading5EmploymentSub1": "Bruttopalkka tarkoittaa palkkasummaa ennen verojen ja lakisääteisten maksujen vähentämistä. Bruttopalkka on merkitty työsopimukseen. Mikäli osana palkkaa maksetaan lisiä, kuten ilta-, yö- tai vuorolisiä, laske arvio lisien määristä mukaan bruttopalkkaan.",
-          "heading5Assignment": "Palkkauskustannukset tooltip text",
           "heading2": "Palkkatuki ja ja 55-vuotta täyttäneiden työllistämistuki ovat työttömän työnhakijan työllistymisen edistämiseksi tarkoitettuja rahallisia tukia.",
           "heading3": "Työllistämisen Helsinki-lisä on tarkoitettu ohjaus-, perehdytys-, työväline-, työvaate- ja työtilakustannuksiin silloin, kun niihin ei makseta muuta tukea. Palkan Helsinki-lisä on tarkoitettu työllistetyn henkilön palkkauskustannuksiin (=bruttopalkka, lakisääteiset sivukulut ja lomaraha). Toimeksiannon Helsinki-lisä on tarkoitettu yksittäisen työn tai projektin suorittamiseen."
         },
@@ -238,6 +243,9 @@
           "commissionBenefitSelected": "Merkitse tähän toimeksiannon kesto"
         },
         "fields": {
+          "prefilled": {
+            "companyName": "Työnantajan nimi"
+          },
           "firstName": {
             "label": "Etunimi",
             "placeholder": "Etunimi"
@@ -267,6 +275,8 @@
           },
           "paySubsidyGranted": {
             "label": "Onko työsuhteeseen myönnetty jokin seuraavista tuista?",
+            "labelShort": "Myönnetyt tuet",
+            "granted": "Myönnetty",
             "paySubsidyDefault": "Palkkatuki",
             "paySubsidyAged": "55 vuotta täyttäneiden työllistämistuki",
             "paySubsidyNone": "Työsuhteeseen ei ole myönnetty mitään edeltävistä tuista"
@@ -289,8 +299,8 @@
             "commission": "Toimeksiannon Helsinki-lisä"
           },
           "jobTitle": {
-            "label": "Tehtävänimike",
-            "placeholder": "Tehtävänimike"
+            "label": "Työnimike",
+            "placeholder": "Työnimike"
           },
           "workingHours": {
             "label": "Työaika",
@@ -333,17 +343,17 @@
             "placeholder": "Palkkio"
           },
           "startDate": {
-            "label": "Alkaen",
-            "placeholder": "Alkaen"
+            "label": "Aloituspäivä",
+            "placeholder": "Aloituspäivä"
           },
           "endDate": {
-            "label": "Päättyen",
-            "placeholder": "Päättyen"
+            "label": "Päättymispäivä",
+            "placeholder": "Päättymispäivä"
           }
         }
       },
       "attachments": {
-        "heading1": " ",
+        "heading1": "Liitteet",
         "types": {
           "employmentContract": {
             "title": "Työsopimus",
