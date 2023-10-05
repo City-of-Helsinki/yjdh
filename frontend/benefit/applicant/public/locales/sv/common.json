@@ -83,6 +83,7 @@
         "deMinimisAidsHeading": "Fyll i alla de de minimis-stöd som har beviljats organisationen under innevarande år och under två föregående skatteår",
         "deMinimisAidsAdd": "Spara",
         "deMinimisAidsRemove": "Ta bort",
+        "deMinimisAidsYes": "TODO",
         "deMinimisAidsNo": "Sökanden har inte angett några tidigare de minimis -stöd.",
         "notifications": {
           "companyInformation": {
@@ -113,7 +114,8 @@
           },
           "alternativeCompanyStreetAddress": {
             "label": "Adress",
-            "placeholder": "Adress"
+            "placeholder": "Adress",
+            "view": "Leveransadress"
           },
           "alternativeCompanyPostcode": {
             "label": "Postnummer",
@@ -177,12 +179,17 @@
           "coOperationNegotiations": {
             "label": "Pågår samarbetsförhandlingar i organisationen eller har de avslutats under föregående 12 månader?",
             "tooltipText": "Om samarbetsförhandlingar pågår eller avslutats under de senaste 12 månaderna, vänligen ge en mer detaljerad förklaring av situationen, som till exempel vem samarbetsförhandlingarna gäller eller vilket resultat samarbetsförhandlingarna ledde till.",
+            "view": {
+              "yes": "TODO",
+              "no": "TODO"
+            },
             "yes": "Ja",
             "no": "Nej"
           },
           "coOperationNegotiationsDescription": {
             "label": "Ge en mer detaljerad beskrivning av situationen med samarbetsförhandlingar:",
-            "placeholder": "Beskriv situationen"
+            "placeholder": "Beskriv situationen",
+            "labelShort": "Beskrivning av situationen"
           }
         }
       },
@@ -195,13 +202,11 @@
         "heading4": "För vilken tidperiod ansöker du om Helsingforstillägget?",
         "heading4Sub1": "Du kan ansöka om Helsingforstillägget för anställningsförhållandets tid men för högst 12 månader.",
         "heading5Employment": "Anställningsförhållande",
-        "heading5Assignment": "Uppdrag",
         "heading5EmploymentSub1": "Anställningskostnaderna",
         "salaryExpensesExplanation": "Ange bruttolönen, bikostnaderna och semesterpenning i euro per månad.",
         "tooltips": {
           "heading5Employment": "Kollektivavtal som tillämpas: t.ex. kollektivavtal för handeln. Sätt streck om branschen inte har ett bindande kollektivavtal.",
           "heading5EmploymentSub1": "Bruttolön innebär lönebeloppet innan avdraget av skatter och lagstadgade avgifter. Bruttolön anges i arbetsavtalet. Om tillägg såsom kväll-, natt- eller skiftsarbetstillägg betalas som en del av lönen, beräkna en uppskattning om beloppet på tilläggen in i bruttolönen.",
-          "heading5Assignment": "Med bruttolön avses lönen till den person som anställs med subventionen före innehållande av arbetsgivarens lagstadgade kostnader (arbetslöshets- och pensionsförsäkringspremier för arbetstagaren) och skatter. Om den person som anställs med subventionen får lönetillägg (t.ex. kvälls-, natt- eller skiftarbetstillägg), ska det uppskattade beloppet från dessa beaktas i bruttolönen. Till arbetsgivarens lagstadgade bikostnader räknas socialskyddsavgifterna och premierna för arbetspensionsförsäkringen, olycksfallsförsäkringen och arbetslöshetsförsäkringen samt den obligatoriska grupplivförsäkringen. Med bikostnader avses arbetsgivarens lagstadgade bikostnader per månad. Semesterpenning är en lönekostnad som kan täckas med subventionen till den del som semesterpenning betalas för semesterlön som används under subventionsperioden. Uppskatta semesterpenningen som betalas under subventionsperioden. Semesterpenning kan inte täckas med Helsingforstillägg.",
           "heading2": "Lönesubvention och sysselsättningsstöd för personer som fyllt 55 år är finansiella stöd som är avsedda för främjande av sysselsättning av en arbetslös arbetssökande.",
           "heading3": "Helsingforstillägg för sysselsättning är avsett för kostnaderna för handledning, inskolning, arbetsredskap, arbetskläder och arbetslokaler då inga andra understöd utbetalas för dessa. Helsingforstillägg för lön är avsett för lönekostnaderna för den anställda (=bruttolön, lagstadgade bikostnader och semesterpenning). Helsingforstillägg för uppdrag är avsett för utförande av ett enskilt jobb eller projekt."
         },
@@ -238,6 +243,9 @@
           "commissionBenefitSelected": "Ange uppdragets längd här"
         },
         "fields": {
+          "prefilled": {
+            "companyName": "Arbetsgivarens namn"
+          },
           "firstName": {
             "label": "Förnamn",
             "placeholder": "Förnamn"
@@ -267,6 +275,7 @@
           },
           "paySubsidyGranted": {
             "label": "Har något av de följande stöden beviljats för anställningsförhållandet?",
+            "labelShort": "Beviljat stöd",
             "paySubsidyDefault": "Lönesubvention",
             "paySubsidyAged": "Sysselsättningsstöd för personer som fyllt 55 år",
             "paySubsidyNone": "Inga av stöden ovan har beviljats för anställningsförhållandet"

@@ -83,6 +83,7 @@
         "deMinimisAidsHeading": "Below, please fill in all the de minimis aid granted to the organisation for the current and two previous tax years.",
         "deMinimisAidsAdd": "Save",
         "deMinimisAidsRemove": "Delete",
+        "deMinimisAidsYes": "TODO",
         "deMinimisAidsNo": "The applicant has not listed any previous de minimis aids.",
         "notifications": {
           "companyInformation": {
@@ -113,7 +114,8 @@
           },
           "alternativeCompanyStreetAddress": {
             "label": "Address",
-            "placeholder": "Address"
+            "placeholder": "Address",
+            "view": "Delivery address"
           },
           "alternativeCompanyPostcode": {
             "label": "Postal code",
@@ -177,12 +179,17 @@
           "coOperationNegotiations": {
             "label": "Does the organisation have ongoing or concluded change negotiations within the last 12 months?",
             "tooltipText": "If change negotiations are ongoing or ended during the previous 12 months, please provide a more detailed explanation of the situation, such as for example who the negotiations concern or what outcome the negotiations led to.",
+            "view": {
+              "yes": "TODO",
+              "no": "TODO"
+            },
             "yes": "Yes",
             "no": "No"
           },
           "coOperationNegotiationsDescription": {
             "label": "Provide a more detailed account of the co-determination negotiation situation:",
-            "placeholder": "Describe the situation"
+            "placeholder": "Describe the situation",
+            "labelShort": "Description"
           }
         }
       },
@@ -195,13 +202,11 @@
         "heading4": "Helsinki benefit is applied for the period?",
         "heading4Sub1": "You can apply for the Helsinki benefit for the duration of the employment relationship, but only up to 12 months.",
         "heading5Employment": "Employment relationship",
-        "heading5Assignment": "Commission",
         "heading5EmploymentSub1": "Salary costs",
         "salaryExpensesExplanation": "Please report gross salary, Indirect labour costs and holiday pay in euros per month",
         "tooltips": {
           "heading5Employment": "Collective agreement applied: e.g. Collective Agreement for the Commercial Sector. If there is no binding collective agreement in the sector, put in a dash.",
           "heading5EmploymentSub1": "Gross salary refers to total salary before deducting taxes and statutory contributions. Gross salary is stated in employment contracts. If bonuses are paid as part of salary – such as evening, night or shift work – include an estimate of the amount of bonuses in the gross salary.",
-          "heading5Assignment": "The gross salary is the salary paid to the subsidised employee before the deduction of the employee's statutory contributions (the employee's unemployment insurance and pension insurance contributions) and taxes. If the subsidised employee is paid remuneration bonuses (e.g. evening, night or shift work bonus), take the estimated amount into account in the gross salary. The employers' statutory indirect labour costs include social security expenses, pension insurance, accident insurance and unemployment insurance premiums as well as the mandatory group life insurance premium. Indirect labour costs refer to the amount of the employer's statutory indirect labour costs paid for the salary per month. The holiday bonus is a salary cost to be covered by the subsidy when it is paid for holiday pay during the subsidy period. Estimate the amount of holiday bonus to be paid during the subsidy period. Holiday compensation is not covered by the Helsinki benefit.",
           "heading2": "The salary subsidy and the employment subsidy for people aged 55 and above are monetary subsidies intended to promote the employment of unemployed jobseekers.",
           "heading3": "The Helsinki benefit for employment is intended for guidance, orientation, tools, work clothing and workspace costs when no other support is paid for these. The Helsinki benefit for salary is intended for the cost of employing a subsidised employee (= gross salary, statutory indirect labour costs and holiday bonus). The Helsinki benefit for a commission is intended for the performance of an individual job or project."
         },
@@ -238,6 +243,9 @@
           "commissionBenefitSelected": "Please provide the duration of the commission here"
         },
         "fields": {
+          "prefilled": {
+            "companyName": "Name of the employer"
+          },
           "firstName": {
             "label": "First name",
             "placeholder": "First name"
@@ -267,6 +275,7 @@
           },
           "paySubsidyGranted": {
             "label": "Has this employment relationship received any of the following aid?",
+            "labelShort": "Received aid",
             "paySubsidyDefault": "Salary subsidy",
             "paySubsidyAged": "Employment aid for people aged 55 and above",
             "paySubsidyNone": "None of the previous subsidies have been granted for this employment relationship"

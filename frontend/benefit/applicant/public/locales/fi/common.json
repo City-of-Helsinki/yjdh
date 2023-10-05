@@ -189,7 +189,7 @@
           "coOperationNegotiationsDescription": {
             "label": "Anna tarkempi selvitys neuvotteluiden tilanteesta.",
             "placeholder": "Kuvaile tilannetta",
-            "labelShort": "Selvitys"
+            "labelShort": "Kuvaus tilanteesta"
           }
         }
       },
@@ -276,7 +276,6 @@
           "paySubsidyGranted": {
             "label": "Onko työsuhteeseen myönnetty jokin seuraavista tuista?",
             "labelShort": "Myönnetyt tuet",
-            "granted": "Myönnetty",
             "paySubsidyDefault": "Palkkatuki",
             "paySubsidyAged": "55 vuotta täyttäneiden työllistämistuki",
             "paySubsidyNone": "Työsuhteeseen ei ole myönnetty mitään edeltävistä tuista"
