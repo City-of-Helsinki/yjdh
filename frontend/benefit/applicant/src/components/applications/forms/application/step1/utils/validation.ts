@@ -143,5 +143,13 @@ export const getValidationSchema = (
       .nullable()
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION]:
-      Yup.string(),
+      Yup.string().when(
+        APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS,
+        {
+          is: (checked: boolean): boolean => checked,
+          then: Yup.string()
+            .nullable()
+            .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+        }
+      ),
   });
