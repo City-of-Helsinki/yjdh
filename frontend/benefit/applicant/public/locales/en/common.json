@@ -176,7 +176,6 @@
           },
           "coOperationNegotiations": {
             "label": "Does the organisation have ongoing or concluded change negotiations within the last 12 months?",
-            "tooltipText": "If change negotiations are ongoing or ended during the previous 12 months, please provide a more detailed explanation of the situation, such as for example who the negotiations concern or what outcome the negotiations led to.",
             "yes": "Yes",
             "no": "No"
           },

@@ -176,7 +176,6 @@
           },
           "coOperationNegotiations": {
             "label": "Onko organisaatiolla käynnissä tai edeltävän 12 kuukauden aikana päättynyt muutosneuvottelut?",
-            "tooltipText": "Jos muutosneuvottelut ovat käynnissä tai päättyneet edeltävän 12 kuukauden aikana, niin anna tarkempi selvitys tilanteesta, kuten esimerkiksi ketä neuvottelut koskevat tai mihin lopputulokseen neuvottelut johtivat.",
             "yes": "Kyllä",
             "no": "Ei"
           },

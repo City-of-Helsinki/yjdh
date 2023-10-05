@@ -176,7 +176,6 @@
           },
           "coOperationNegotiations": {
             "label": "Pågår samarbetsförhandlingar i organisationen eller har de avslutats under föregående 12 månader?",
-            "tooltipText": "Om samarbetsförhandlingar pågår eller avslutats under de senaste 12 månaderna, vänligen ge en mer detaljerad förklaring av situationen, som till exempel vem samarbetsförhandlingarna gäller eller vilket resultat samarbetsförhandlingarna ledde till.",
             "yes": "Ja",
             "no": "Nej"
           },
