@@ -1,4 +1,5 @@
 import SummarySection from 'benefit/applicant/components/summarySection/SummarySection';
+import { ORGANIZATION_TYPES } from 'benefit-shared/constants';
 import { Application, DeMinimisAid } from 'benefit-shared/types/application';
 import { formatIBAN } from 'benefit-shared/utils/common';
 import { Button, IconPen } from 'hds-react';
@@ -15,11 +16,11 @@ import {
   $ViewField,
 } from '../../Application.sc';
 import {
-  $CompanyInfoLabel,
-  $CompanyInfoRow,
-  $CompanyInfoValue,
-  $CompanyInfoWrapper,
-} from '../../step1/companyInfo/CompanyInfo.sc';
+  $ApplicationDetailLabel,
+  $ApplicationDetailRow,
+  $ApplicationDetailValue,
+  $ApplicationDetailWrapper,
+} from '../../ApplicationInfo';
 
 export interface CompanyInfoViewProps {
   data: Application;
@@ -54,40 +55,44 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
         withoutDivider
       >
         <$GridCell $colSpan={5}>
-          <$CompanyInfoWrapper $fontSize={theme.fontSize.body.m}>
-            <$CompanyInfoRow>
-              <$CompanyInfoLabel>
+          <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
+            <$ApplicationDetailRow>
+              <$ApplicationDetailLabel>
                 {t(`${translationsBase}.company.fields.companyName`)}
-              </$CompanyInfoLabel>
-              <$CompanyInfoValue>{data.company?.name}</$CompanyInfoValue>
-            </$CompanyInfoRow>
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
+                {data.company?.name}
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
 
-            <$CompanyInfoRow>
-              <$CompanyInfoLabel>
+            <$ApplicationDetailRow>
+              <$ApplicationDetailLabel>
                 {t(`${translationsBase}.company.fields.companyBusinessId`)}
-              </$CompanyInfoLabel>
-              <$CompanyInfoValue>{data.company?.businessId}</$CompanyInfoValue>
-            </$CompanyInfoRow>
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
+                {data.company?.businessId}
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
 
-            <$CompanyInfoRow>
-              <$CompanyInfoLabel>
+            <$ApplicationDetailRow>
+              <$ApplicationDetailLabel>
                 {t(`${translationsBase}.company.fields.companyAddress`)}
-              </$CompanyInfoLabel>
-              <$CompanyInfoValue $column>
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue $column>
                 <div>{data.company?.streetAddress}</div>
                 <div>
                   {data.company?.postcode || ''} {data.company?.city || ''}
                 </div>
-              </$CompanyInfoValue>
-            </$CompanyInfoRow>
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
             {data.alternativeCompanyStreetAddress && (
-              <$CompanyInfoRow>
-                <$CompanyInfoLabel>
+              <$ApplicationDetailRow>
+                <$ApplicationDetailLabel>
                   {t(
                     `${translationsBase}.company.fields.alternativeCompanyStreetAddress.view`
                   )}
-                </$CompanyInfoLabel>
-                <$CompanyInfoValue $column>
+                </$ApplicationDetailLabel>
+                <$ApplicationDetailValue $column>
                   <div>
                     {data.companyDepartment ? data.companyDepartment : ''}
                   </div>
@@ -96,20 +101,35 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
                     {data.alternativeCompanyPostcode}{' '}
                     {data.alternativeCompanyCity}
                   </div>
-                </$CompanyInfoValue>
-              </$CompanyInfoRow>
+                </$ApplicationDetailValue>
+              </$ApplicationDetailRow>
             )}
-            <$CompanyInfoRow>
-              <$CompanyInfoLabel>
+            <$ApplicationDetailRow>
+              <$ApplicationDetailLabel>
                 {t(
                   `${translationsBase}.company.fields.companyBankAccountNumber.label`
                 )}
-              </$CompanyInfoLabel>
-              <$CompanyInfoValue>
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
                 {formatIBAN(data?.companyBankAccountNumber)}
-              </$CompanyInfoValue>
-            </$CompanyInfoRow>
-          </$CompanyInfoWrapper>
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
+
+            {data?.organizationType === ORGANIZATION_TYPES.ASSOCIATION && (
+              <$ApplicationDetailRow $forceColumn>
+                <$ApplicationDetailLabel>
+                  {t(
+                    `${translationsBase}.company.fields.associationHasBusinessActivities.label`
+                  )}
+                </$ApplicationDetailLabel>
+                <$ApplicationDetailValue>
+                  {data?.associationHasBusinessActivities
+                    ? t('common:utility.yes')
+                    : t('common:utility.no ')}
+                </$ApplicationDetailValue>
+              </$ApplicationDetailRow>
+            )}
+          </$ApplicationDetailWrapper>
         </$GridCell>
       </SummarySection>
 
@@ -118,58 +138,58 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
         withoutDivider
       >
         <$GridCell $colSpan={3}>
-          <$CompanyInfoWrapper $fontSize={theme.fontSize.body.m}>
-            <$CompanyInfoRow>
-              <$CompanyInfoLabel>
+          <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
+            <$ApplicationDetailRow>
+              <$ApplicationDetailLabel>
                 {t(
                   `${translationsBase}.company.fields.companyContactPersonFirstName.label`
                 )}
-              </$CompanyInfoLabel>
-              <$CompanyInfoValue>
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
                 {data.companyContactPersonFirstName}
-              </$CompanyInfoValue>
-            </$CompanyInfoRow>
-            <$CompanyInfoRow>
-              <$CompanyInfoLabel>
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
+            <$ApplicationDetailRow>
+              <$ApplicationDetailLabel>
                 {t(
                   `${translationsBase}.company.fields.companyContactPersonLastName.label`
                 )}
-              </$CompanyInfoLabel>
-              <$CompanyInfoValue>
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
                 {data.companyContactPersonLastName}
-              </$CompanyInfoValue>
-            </$CompanyInfoRow>
-            <$CompanyInfoRow>
-              <$CompanyInfoLabel>
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
+            <$ApplicationDetailRow>
+              <$ApplicationDetailLabel>
                 {t(
                   `${translationsBase}.company.fields.companyContactPersonPhoneNumber.label`
                 )}
-              </$CompanyInfoLabel>
-              <$CompanyInfoValue>
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
                 {data.companyContactPersonPhoneNumber}
-              </$CompanyInfoValue>
-            </$CompanyInfoRow>
-            <$CompanyInfoRow>
-              <$CompanyInfoLabel>
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
+            <$ApplicationDetailRow>
+              <$ApplicationDetailLabel>
                 {t(
                   `${translationsBase}.company.fields.companyContactPersonEmail.placeholder`
                 )}
-              </$CompanyInfoLabel>
-              <$CompanyInfoValue>
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
                 {data.companyContactPersonEmail}
-              </$CompanyInfoValue>
-            </$CompanyInfoRow>
-            <$CompanyInfoRow>
-              <$CompanyInfoLabel>
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
+            <$ApplicationDetailRow>
+              <$ApplicationDetailLabel>
                 {t(
                   `${translationsBase}.company.fields.applicantLanguage.label`
                 )}
-              </$CompanyInfoLabel>
-              <$CompanyInfoValue>
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
                 {t(`common:languages.${data.applicantLanguage || ''}`)}
-              </$CompanyInfoValue>
-            </$CompanyInfoRow>
-          </$CompanyInfoWrapper>
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
+          </$ApplicationDetailWrapper>
         </$GridCell>
       </SummarySection>
       <SummarySection
@@ -240,18 +260,18 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
         </$GridCell>
         {data.coOperationNegotiations && (
           <$GridCell $colSpan={12}>
-            <$CompanyInfoWrapper>
-              <$CompanyInfoRow>
-                <$CompanyInfoLabel>
+            <$ApplicationDetailWrapper>
+              <$ApplicationDetailRow $forceColumn>
+                <$ApplicationDetailLabel>
                   {t(
                     `${translationsBase}.company.fields.coOperationNegotiationsDescription.labelShort`
                   )}
-                </$CompanyInfoLabel>
-                <$CompanyInfoValue>
+                </$ApplicationDetailLabel>
+                <$ApplicationDetailValue>
                   {data.coOperationNegotiationsDescription}
-                </$CompanyInfoValue>
-              </$CompanyInfoRow>
-            </$CompanyInfoWrapper>
+                </$ApplicationDetailValue>
+              </$ApplicationDetailRow>
+            </$ApplicationDetailWrapper>
           </$GridCell>
         )}
       </SummarySection>

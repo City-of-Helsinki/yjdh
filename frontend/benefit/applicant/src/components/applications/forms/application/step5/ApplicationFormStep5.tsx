@@ -130,7 +130,7 @@ const ApplicationFormStep5: React.FC<
       </SummarySection>
       <SummarySection
         paddingBottom={isEmpty(data.applicantTermsApproval)}
-        header={t(`${translationsBase}.credentials.heading2`)}
+        header={t(`${translationsBase}.credentials.heading1`)}
         action={
           !isReadOnly && (
             <Button

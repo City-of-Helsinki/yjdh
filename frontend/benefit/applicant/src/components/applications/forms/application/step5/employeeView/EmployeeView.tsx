@@ -13,16 +13,16 @@ import {
 import { useTheme } from 'styled-components';
 
 import {
-  $CompanyInfoLabel,
-  $CompanyInfoRow,
-  $CompanyInfoValue,
-  $CompanyInfoWrapper,
-} from '../../step1/companyInfo/CompanyInfo.sc';
+  $ApplicationDetailLabel,
+  $ApplicationDetailRow,
+  $ApplicationDetailValue,
+  $ApplicationDetailWrapper,
+} from '../../ApplicationInfo';
 
 const paySubsidyTranslation = (value: PAY_SUBSIDY_GRANTED): string => {
   switch (value) {
     case PAY_SUBSIDY_GRANTED.GRANTED:
-      return 'granted';
+      return 'paySubsidyDefault';
 
     case PAY_SUBSIDY_GRANTED.GRANTED_AGED:
       return 'paySubsidyAged';
@@ -68,49 +68,59 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
         }
         withoutDivider
       >
-        <$GridCell $colSpan={3}>
-          <$CompanyInfoWrapper $fontSize={theme.fontSize.body.m}>
-            <$CompanyInfoRow>
-              <$CompanyInfoLabel>
+        <$GridCell $colSpan={12}>
+          <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
+            <$ApplicationDetailRow>
+              <$ApplicationDetailLabel>
                 {t(`${translationsBase}.employee.fields.firstName.label`)}
-              </$CompanyInfoLabel>
-              <$CompanyInfoValue>
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
                 {data.employee?.firstName || ''}
-              </$CompanyInfoValue>
-            </$CompanyInfoRow>
-            <$CompanyInfoRow>
-              <$CompanyInfoLabel>
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
+            <$ApplicationDetailRow>
+              <$ApplicationDetailLabel>
                 {t(`${translationsBase}.employee.fields.lastName.label`)}
-              </$CompanyInfoLabel>
-              <$CompanyInfoValue>
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
                 {data.employee?.lastName || ''}
-              </$CompanyInfoValue>
-            </$CompanyInfoRow>
-            <$CompanyInfoRow>
-              <$CompanyInfoLabel>
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
+            <$ApplicationDetailRow>
+              <$ApplicationDetailLabel>
                 {t(
                   `${translationsBase}.employee.fields.socialSecurityNumber.label`
                 )}
-              </$CompanyInfoLabel>
-              <$CompanyInfoValue>
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
                 {data.employee?.socialSecurityNumber}
-              </$CompanyInfoValue>
-            </$CompanyInfoRow>
-            <$CompanyInfoRow $alignItems="flex-start">
-              <$CompanyInfoLabel>
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
+            <$ApplicationDetailRow $alignItems="flex-start" $forceColumn>
+              <$ApplicationDetailLabel>
                 {t(
                   `${translationsBase}.employee.fields.isLivingInHelsinki.label`
                 )}
-              </$CompanyInfoLabel>
-              <$CompanyInfoValue>
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
                 {t(
                   `${translationsBase}.employee.fields.isLivingInHelsinki.${
                     data.employee?.isLivingInHelsinki ? 'yes' : 'no'
                   }`
                 )}
-              </$CompanyInfoValue>
-            </$CompanyInfoRow>
-          </$CompanyInfoWrapper>
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
+            <$ApplicationDetailRow $alignItems="flex-start" $forceColumn>
+              <$ApplicationDetailLabel>
+                {t(
+                  `${translationsBase}.employee.fields.associationImmediateManagerCheck.label`
+                )}
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
+                {t('common:utility.yes')}
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
+          </$ApplicationDetailWrapper>
         </$GridCell>
       </SummarySection>
 
@@ -121,134 +131,134 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
           header={t(`${translationsBase}.employee.heading5Employment`)}
         >
           <$GridCell $colSpan={5}>
-            <$CompanyInfoWrapper $fontSize={theme.fontSize.body.m}>
-              <$CompanyInfoRow>
-                <$CompanyInfoLabel>
+            <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
+              <$ApplicationDetailRow>
+                <$ApplicationDetailLabel>
                   {t(`${translationsBase}.employee.fields.jobTitle.label`)}
-                </$CompanyInfoLabel>
-                <$CompanyInfoValue>
+                </$ApplicationDetailLabel>
+                <$ApplicationDetailValue>
                   {data.employee?.jobTitle || '-'}
-                </$CompanyInfoValue>
-              </$CompanyInfoRow>
+                </$ApplicationDetailValue>
+              </$ApplicationDetailRow>
 
-              <$CompanyInfoRow>
-                <$CompanyInfoLabel>
+              <$ApplicationDetailRow>
+                <$ApplicationDetailLabel>
                   {t(
                     `${translationsBase}.employee.fields.collectiveBargainingAgreement.placeholder`
                   )}
-                </$CompanyInfoLabel>
-                <$CompanyInfoValue>
+                </$ApplicationDetailLabel>
+                <$ApplicationDetailValue>
                   {data.employee?.collectiveBargainingAgreement}
-                </$CompanyInfoValue>
-              </$CompanyInfoRow>
-              <$CompanyInfoRow>
-                <$CompanyInfoLabel>
+                </$ApplicationDetailValue>
+              </$ApplicationDetailRow>
+              <$ApplicationDetailRow>
+                <$ApplicationDetailLabel>
                   {t(`${translationsBase}.employee.fields.workingHours.label`)}
-                </$CompanyInfoLabel>
-                <$CompanyInfoValue>
+                </$ApplicationDetailLabel>
+                <$ApplicationDetailValue>
                   {formatStringFloatValue(data.employee?.workingHours)}{' '}
                   {t(
                     `${translationsBase}.employee.fields.workingHours.helperText`
                   )}
-                </$CompanyInfoValue>
-              </$CompanyInfoRow>
+                </$ApplicationDetailValue>
+              </$ApplicationDetailRow>
 
-              <$CompanyInfoRow>
-                <$CompanyInfoLabel>
+              <$ApplicationDetailRow>
+                <$ApplicationDetailLabel>
                   {t(`${translationsBase}.employee.fields.monthlyPay.label`)}
-                </$CompanyInfoLabel>
-                <$CompanyInfoValue>
+                </$ApplicationDetailLabel>
+                <$ApplicationDetailValue>
                   {formatFloatToCurrency(data.employee?.monthlyPay, 'EUR')}
-                </$CompanyInfoValue>
-              </$CompanyInfoRow>
+                </$ApplicationDetailValue>
+              </$ApplicationDetailRow>
 
-              <$CompanyInfoRow>
-                <$CompanyInfoLabel>
+              <$ApplicationDetailRow>
+                <$ApplicationDetailLabel>
                   {t(`${translationsBase}.employee.fields.vacationMoney.label`)}
-                </$CompanyInfoLabel>
-                <$CompanyInfoValue>
+                </$ApplicationDetailLabel>
+                <$ApplicationDetailValue>
                   {formatFloatToCurrency(data.employee?.vacationMoney, 'EUR')}
-                </$CompanyInfoValue>
-              </$CompanyInfoRow>
-              <$CompanyInfoRow>
-                <$CompanyInfoLabel>
+                </$ApplicationDetailValue>
+              </$ApplicationDetailRow>
+              <$ApplicationDetailRow>
+                <$ApplicationDetailLabel>
                   {t(`${translationsBase}.employee.fields.otherExpenses.label`)}
-                </$CompanyInfoLabel>
+                </$ApplicationDetailLabel>
 
-                <$CompanyInfoValue>
+                <$ApplicationDetailValue>
                   {formatFloatToCurrency(data.employee?.otherExpenses, 'EUR')}
-                </$CompanyInfoValue>
-              </$CompanyInfoRow>
+                </$ApplicationDetailValue>
+              </$ApplicationDetailRow>
               {data.paySubsidyGranted ? (
-                <$CompanyInfoWrapper $fontSize={theme.fontSize.body.m}>
-                  <$CompanyInfoRow>
-                    <$CompanyInfoLabel>
+                <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
+                  <$ApplicationDetailRow>
+                    <$ApplicationDetailLabel>
                       {t(
                         `${translationsBase}.employee.fields.paySubsidyGranted.labelShort`
                       )}
-                    </$CompanyInfoLabel>
-                    <$CompanyInfoValue>
+                    </$ApplicationDetailLabel>
+                    <$ApplicationDetailValue>
                       {t(
                         `${translationsBase}.employee.fields.paySubsidyGranted.${paySubsidyTranslation(
                           data.paySubsidyGranted
                         )}`
                       )}
-                    </$CompanyInfoValue>
-                  </$CompanyInfoRow>
-                  <$CompanyInfoRow>
-                    <$CompanyInfoLabel>
+                    </$ApplicationDetailValue>
+                  </$ApplicationDetailRow>
+                  <$ApplicationDetailRow>
+                    <$ApplicationDetailLabel>
                       {t(
                         `${translationsBase}.employee.fields.apprenticeshipProgram.label`
                       )}
-                    </$CompanyInfoLabel>
-                    <$CompanyInfoValue>
+                    </$ApplicationDetailLabel>
+                    <$ApplicationDetailValue>
                       {t(
                         `${translationsBase}.employee.fields.apprenticeshipProgram.${
                           data.apprenticeshipProgram ? 'yes' : 'no'
                         }`
                       )}
-                    </$CompanyInfoValue>
-                  </$CompanyInfoRow>
-                </$CompanyInfoWrapper>
+                    </$ApplicationDetailValue>
+                  </$ApplicationDetailRow>
+                </$ApplicationDetailWrapper>
               ) : (
-                <$CompanyInfoWrapper $fontSize={theme.fontSize.body.m}>
-                  <$CompanyInfoRow>
-                    <$CompanyInfoLabel>
+                <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
+                  <$ApplicationDetailRow>
+                    <$ApplicationDetailLabel>
                       {t(
                         `${translationsBase}.employee.fields.paySubsidyGranted.label`
                       )}{' '}
-                    </$CompanyInfoLabel>
-                    <$CompanyInfoValue>
+                    </$ApplicationDetailLabel>
+                    <$ApplicationDetailValue>
                       {t(
                         `${translationsBase}.employee.fields.paySubsidyGranted.no`
                       )}
-                    </$CompanyInfoValue>
-                  </$CompanyInfoRow>
-                </$CompanyInfoWrapper>
+                    </$ApplicationDetailValue>
+                  </$ApplicationDetailRow>
+                </$ApplicationDetailWrapper>
               )}
-            </$CompanyInfoWrapper>
+            </$ApplicationDetailWrapper>
           </$GridCell>
         </SummarySection>
       )}
       <SummarySection header={t(`${translationsBase}.employee.heading4`)}>
-        <$CompanyInfoWrapper>
-          <$CompanyInfoRow>
-            <$CompanyInfoLabel>
+        <$ApplicationDetailWrapper>
+          <$ApplicationDetailRow>
+            <$ApplicationDetailLabel>
               {t(`${translationsBase}.employee.fields.startDate.label`)}
-            </$CompanyInfoLabel>
-            <$CompanyInfoValue>
+            </$ApplicationDetailLabel>
+            <$ApplicationDetailValue>
               {convertToUIDateFormat(data.startDate) || '-'}
-            </$CompanyInfoValue>
-          </$CompanyInfoRow>
-          <$CompanyInfoRow>
-            <$CompanyInfoLabel>
+            </$ApplicationDetailValue>
+          </$ApplicationDetailRow>
+          <$ApplicationDetailRow>
+            <$ApplicationDetailLabel>
               {t(`${translationsBase}.employee.fields.endDate.label`)}
-            </$CompanyInfoLabel>
-            <$CompanyInfoValue>
+            </$ApplicationDetailLabel>
+            <$ApplicationDetailValue>
               {convertToUIDateFormat(data.endDate) || '-'}
-            </$CompanyInfoValue>
-          </$CompanyInfoRow>
-        </$CompanyInfoWrapper>
+            </$ApplicationDetailValue>
+          </$ApplicationDetailRow>
+        </$ApplicationDetailWrapper>
       </SummarySection>
     </>
   );
