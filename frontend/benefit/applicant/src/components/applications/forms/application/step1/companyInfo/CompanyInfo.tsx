@@ -107,7 +107,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
                 </$CompanyInfoRow>
                 <$CompanyInfoRow>
                   <$CompanyInfoLabel>
-                    {t(`${translationsBase}.fields.companyAddress`)}
+                    {t(`${translationsBase}.fields.companyName`)}
                   </$CompanyInfoLabel>
                   <$CompanyInfoValue>
                     {data.streetAddress}

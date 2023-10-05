@@ -244,7 +244,6 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             direction="vertical"
             required
             errorText={getErrorMessage(fields.coOperationNegotiations.name)}
-            tooltipText={`${translationsBase}.fields.${APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS}.tooltipText`}
           >
             <$RadioButton
               id={`${fields.coOperationNegotiations.name}False`}
