@@ -16,7 +16,7 @@ import {
 } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
-import { $DeMinimisGridPadded, $DeMinimisSubHeader } from './deMinimisAid.sc';
+import { $DeMinimisGridForm, $DeMinimisSubHeader } from './deMinimisAid.sc';
 import { useDeminimisAid } from './useDeminimisAid';
 
 interface DeMinimisAidFormProps {
@@ -68,7 +68,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({
           {t(`${translationsBase}.deMinimisAidsHeading`)}
         </$DeMinimisSubHeader>
       </$GridCell>
-      <$DeMinimisGridPadded>
+      <$DeMinimisGridForm>
         <$GridCell $colSpan={4}>
           <TextInput
             id={fields.granter.name}
@@ -154,7 +154,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({
             {t(`${translationsBase}.deMinimisAidsAdd`)}
           </Button>
         </$GridCell>
-      </$DeMinimisGridPadded>
+      </$DeMinimisGridForm>
     </>
   );
 };
