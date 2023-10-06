@@ -10,28 +10,40 @@ class Step3 extends WizardStep {
   private employmentContract = this.component.findByTestId(
     'employment_contract'
   );
+
   private paySubsidyDecision = this.component.findByTestId(
     'pay_subsidy_decision'
   );
+
   private helsinkiBenefitVoucher = this.component.findByTestId(
     'helsinki_benefit_voucher'
   );
+
   private educationContract = this.component.findByTestId('education_contract');
 
-  async employmentContractNeeded() {
+  async employmentContractNeeded(): Promise<void> {
     await t.expect(this.employmentContract.exists).ok();
   }
 
-  async paySubsidyDecisionNeeded() {
+  async paySubsidyDecisionNeeded(): Promise<void> {
     await t.expect(this.paySubsidyDecision.exists).ok();
   }
 
-  async helsinkiBenefitVoucherNeeded() {
+  async helsinkiBenefitVoucherNeeded(): Promise<void> {
     await t.expect(this.helsinkiBenefitVoucher.exists).ok();
   }
 
-  async educationContractNeeded() {
+  async educationContractNeeded(): Promise<void> {
     await t.expect(this.educationContract.exists).ok();
+  }
+
+  async stageUploadFiles(uploadIds: string[]): Promise<void> {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const id of uploadIds) {
+      // eslint-disable-next-line no-await-in-loop
+      await t.setFilesToUpload(id, 'sample.pdf');
+    }
+    await t.wait(500);
   }
 }
 

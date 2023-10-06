@@ -56,7 +56,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
       >
         <$GridCell $colSpan={5}>
           <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
-            <$ApplicationDetailRow>
+            <$ApplicationDetailRow data-testid="application-field-companyName">
               <$ApplicationDetailLabel>
                 {t(`${translationsBase}.company.fields.companyName`)}
               </$ApplicationDetailLabel>
@@ -65,7 +65,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
               </$ApplicationDetailValue>
             </$ApplicationDetailRow>
 
-            <$ApplicationDetailRow>
+            <$ApplicationDetailRow data-testid="application-field-companyBusinessId">
               <$ApplicationDetailLabel>
                 {t(`${translationsBase}.company.fields.companyBusinessId`)}
               </$ApplicationDetailLabel>
@@ -74,7 +74,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
               </$ApplicationDetailValue>
             </$ApplicationDetailRow>
 
-            <$ApplicationDetailRow>
+            <$ApplicationDetailRow data-testid="application-field-companyAddress">
               <$ApplicationDetailLabel>
                 {t(`${translationsBase}.company.fields.companyAddress`)}
               </$ApplicationDetailLabel>
@@ -86,7 +86,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
               </$ApplicationDetailValue>
             </$ApplicationDetailRow>
             {data.alternativeCompanyStreetAddress && (
-              <$ApplicationDetailRow>
+              <$ApplicationDetailRow data-testid="application-field-alternativeCompanyStreetAddress">
                 <$ApplicationDetailLabel>
                   {t(
                     `${translationsBase}.company.fields.alternativeCompanyStreetAddress.view`
@@ -104,7 +104,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
                 </$ApplicationDetailValue>
               </$ApplicationDetailRow>
             )}
-            <$ApplicationDetailRow>
+            <$ApplicationDetailRow data-testid="application-field-companyBankAccountNumber">
               <$ApplicationDetailLabel>
                 {t(
                   `${translationsBase}.company.fields.companyBankAccountNumber.label`
@@ -116,7 +116,10 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
             </$ApplicationDetailRow>
 
             {data?.organizationType === ORGANIZATION_TYPES.ASSOCIATION && (
-              <$ApplicationDetailRow $forceColumn>
+              <$ApplicationDetailRow
+                $forceColumn
+                data-testid="application-field-associationHasBusinessActivities"
+              >
                 <$ApplicationDetailLabel>
                   {t(
                     `${translationsBase}.company.fields.associationHasBusinessActivities.label`
@@ -139,7 +142,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
       >
         <$GridCell $colSpan={3}>
           <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
-            <$ApplicationDetailRow>
+            <$ApplicationDetailRow data-testid="application-field-companyContactPersonFirstName">
               <$ApplicationDetailLabel>
                 {t(
                   `${translationsBase}.company.fields.companyContactPersonFirstName.label`
@@ -149,7 +152,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
                 {data.companyContactPersonFirstName}
               </$ApplicationDetailValue>
             </$ApplicationDetailRow>
-            <$ApplicationDetailRow>
+            <$ApplicationDetailRow data-testid="application-field-companyContactPersonLastName">
               <$ApplicationDetailLabel>
                 {t(
                   `${translationsBase}.company.fields.companyContactPersonLastName.label`
@@ -159,7 +162,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
                 {data.companyContactPersonLastName}
               </$ApplicationDetailValue>
             </$ApplicationDetailRow>
-            <$ApplicationDetailRow>
+            <$ApplicationDetailRow data-testid="application-field-companyContactPersonPhoneNumber">
               <$ApplicationDetailLabel>
                 {t(
                   `${translationsBase}.company.fields.companyContactPersonPhoneNumber.label`
@@ -169,7 +172,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
                 {data.companyContactPersonPhoneNumber}
               </$ApplicationDetailValue>
             </$ApplicationDetailRow>
-            <$ApplicationDetailRow>
+            <$ApplicationDetailRow data-testid="application-field-companyContactPersonEmail">
               <$ApplicationDetailLabel>
                 {t(
                   `${translationsBase}.company.fields.companyContactPersonEmail.placeholder`
@@ -179,7 +182,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
                 {data.companyContactPersonEmail}
               </$ApplicationDetailValue>
             </$ApplicationDetailRow>
-            <$ApplicationDetailRow>
+            <$ApplicationDetailRow data-testid="application-field-applicantLanguage">
               <$ApplicationDetailLabel>
                 {t(
                   `${translationsBase}.company.fields.applicantLanguage.label`
@@ -230,7 +233,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
                   <$SummaryTableValue>{aid.granter}</$SummaryTableValue>
                 </$GridCell>
                 <$GridCell $colSpan={2}>
-                  <$SummaryTableValue>
+                  <$SummaryTableValue data-testid="application-field-deMinimisAidsAmount">
                     {formatFloatToCurrency(aid.amount, 'EUR')}
                   </$SummaryTableValue>
                 </$GridCell>
@@ -243,7 +246,10 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
             ))}
           </>
         ) : (
-          <$GridCell $colSpan={12}>
+          <$GridCell
+            $colSpan={12}
+            data-testid="application-field-deMinimisAidsNo"
+          >
             <$ViewField>
               {t(`${translationsBase}.company.deMinimisAidsNo`)}
             </$ViewField>
@@ -251,7 +257,11 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
         )}
       </SummarySection>
       <SummarySection header={t(`${translationsBase}.company.heading4`)}>
-        <$GridCell $colStart={1} $colSpan={12}>
+        <$GridCell
+          $colStart={1}
+          $colSpan={12}
+          data-testid="application-field-coOperationNegotiations"
+        >
           {t(
             `${translationsBase}.company.fields.coOperationNegotiations.view.${
               data.coOperationNegotiations ? 'yes' : 'no'
@@ -261,7 +271,10 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
         {data.coOperationNegotiations && (
           <$GridCell $colSpan={12}>
             <$ApplicationDetailWrapper>
-              <$ApplicationDetailRow $forceColumn>
+              <$ApplicationDetailRow
+                $forceColumn
+                data-testid="application-field-coOperationNegotiationsDescription"
+              >
                 <$ApplicationDetailLabel>
                   {t(
                     `${translationsBase}.company.fields.coOperationNegotiationsDescription.labelShort`

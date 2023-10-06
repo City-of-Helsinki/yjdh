@@ -70,7 +70,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
       >
         <$GridCell $colSpan={12}>
           <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
-            <$ApplicationDetailRow>
+            <$ApplicationDetailRow data-testid="application-field-firstName">
               <$ApplicationDetailLabel>
                 {t(`${translationsBase}.employee.fields.firstName.label`)}
               </$ApplicationDetailLabel>
@@ -78,7 +78,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                 {data.employee?.firstName || ''}
               </$ApplicationDetailValue>
             </$ApplicationDetailRow>
-            <$ApplicationDetailRow>
+            <$ApplicationDetailRow data-testid="application-field-lastName">
               <$ApplicationDetailLabel>
                 {t(`${translationsBase}.employee.fields.lastName.label`)}
               </$ApplicationDetailLabel>
@@ -86,7 +86,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                 {data.employee?.lastName || ''}
               </$ApplicationDetailValue>
             </$ApplicationDetailRow>
-            <$ApplicationDetailRow>
+            <$ApplicationDetailRow data-testid="application-field-socialSecurityNumber">
               <$ApplicationDetailLabel>
                 {t(
                   `${translationsBase}.employee.fields.socialSecurityNumber.label`
@@ -96,7 +96,11 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                 {data.employee?.socialSecurityNumber}
               </$ApplicationDetailValue>
             </$ApplicationDetailRow>
-            <$ApplicationDetailRow $alignItems="flex-start" $forceColumn>
+            <$ApplicationDetailRow
+              $alignItems="flex-start"
+              $forceColumn
+              data-testid="application-field-isLivingInHelsinki"
+            >
               <$ApplicationDetailLabel>
                 {t(
                   `${translationsBase}.employee.fields.isLivingInHelsinki.label`
@@ -110,16 +114,22 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                 )}
               </$ApplicationDetailValue>
             </$ApplicationDetailRow>
-            <$ApplicationDetailRow $alignItems="flex-start" $forceColumn>
-              <$ApplicationDetailLabel>
-                {t(
-                  `${translationsBase}.employee.fields.associationImmediateManagerCheck.label`
-                )}
-              </$ApplicationDetailLabel>
-              <$ApplicationDetailValue>
-                {t('common:utility.yes')}
-              </$ApplicationDetailValue>
-            </$ApplicationDetailRow>
+            {data.associationImmediateManagerCheck && (
+              <$ApplicationDetailRow
+                $alignItems="flex-start"
+                $forceColumn
+                data-testid="application-field-associationImmediateManagerCheck"
+              >
+                <$ApplicationDetailLabel>
+                  {t(
+                    `${translationsBase}.employee.fields.associationImmediateManagerCheck.label`
+                  )}
+                </$ApplicationDetailLabel>
+                <$ApplicationDetailValue>
+                  {t('common:utility.yes')}
+                </$ApplicationDetailValue>
+              </$ApplicationDetailRow>
+            )}
           </$ApplicationDetailWrapper>
         </$GridCell>
       </SummarySection>
@@ -132,7 +142,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
         >
           <$GridCell $colSpan={5}>
             <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
-              <$ApplicationDetailRow>
+              <$ApplicationDetailRow data-testid="application-field-jobTitle">
                 <$ApplicationDetailLabel>
                   {t(`${translationsBase}.employee.fields.jobTitle.label`)}
                 </$ApplicationDetailLabel>
@@ -141,7 +151,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                 </$ApplicationDetailValue>
               </$ApplicationDetailRow>
 
-              <$ApplicationDetailRow>
+              <$ApplicationDetailRow data-testid="application-field-collectiveBargainingAgreement">
                 <$ApplicationDetailLabel>
                   {t(
                     `${translationsBase}.employee.fields.collectiveBargainingAgreement.placeholder`
@@ -151,7 +161,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                   {data.employee?.collectiveBargainingAgreement}
                 </$ApplicationDetailValue>
               </$ApplicationDetailRow>
-              <$ApplicationDetailRow>
+              <$ApplicationDetailRow data-testid="application-field-workingHours">
                 <$ApplicationDetailLabel>
                   {t(`${translationsBase}.employee.fields.workingHours.label`)}
                 </$ApplicationDetailLabel>
@@ -163,7 +173,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                 </$ApplicationDetailValue>
               </$ApplicationDetailRow>
 
-              <$ApplicationDetailRow>
+              <$ApplicationDetailRow data-testid="application-field-monthlyPay">
                 <$ApplicationDetailLabel>
                   {t(`${translationsBase}.employee.fields.monthlyPay.label`)}
                 </$ApplicationDetailLabel>
@@ -172,7 +182,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                 </$ApplicationDetailValue>
               </$ApplicationDetailRow>
 
-              <$ApplicationDetailRow>
+              <$ApplicationDetailRow data-testid="application-field-vacationMoney">
                 <$ApplicationDetailLabel>
                   {t(`${translationsBase}.employee.fields.vacationMoney.label`)}
                 </$ApplicationDetailLabel>
@@ -180,7 +190,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                   {formatFloatToCurrency(data.employee?.vacationMoney, 'EUR')}
                 </$ApplicationDetailValue>
               </$ApplicationDetailRow>
-              <$ApplicationDetailRow>
+              <$ApplicationDetailRow data-testid="application-field-otherExpenses">
                 <$ApplicationDetailLabel>
                   {t(`${translationsBase}.employee.fields.otherExpenses.label`)}
                 </$ApplicationDetailLabel>
@@ -189,9 +199,9 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                   {formatFloatToCurrency(data.employee?.otherExpenses, 'EUR')}
                 </$ApplicationDetailValue>
               </$ApplicationDetailRow>
-              {data.paySubsidyGranted ? (
+              {data.paySubsidyGranted && (
                 <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
-                  <$ApplicationDetailRow>
+                  <$ApplicationDetailRow data-testid="application-field-paySubsidyGranted">
                     <$ApplicationDetailLabel>
                       {t(
                         `${translationsBase}.employee.fields.paySubsidyGranted.labelShort`
@@ -205,7 +215,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                       )}
                     </$ApplicationDetailValue>
                   </$ApplicationDetailRow>
-                  <$ApplicationDetailRow>
+                  <$ApplicationDetailRow data-testid="application-field-apprenticeshipProgram">
                     <$ApplicationDetailLabel>
                       {t(
                         `${translationsBase}.employee.fields.apprenticeshipProgram.label`
@@ -220,21 +230,6 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                     </$ApplicationDetailValue>
                   </$ApplicationDetailRow>
                 </$ApplicationDetailWrapper>
-              ) : (
-                <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
-                  <$ApplicationDetailRow>
-                    <$ApplicationDetailLabel>
-                      {t(
-                        `${translationsBase}.employee.fields.paySubsidyGranted.label`
-                      )}{' '}
-                    </$ApplicationDetailLabel>
-                    <$ApplicationDetailValue>
-                      {t(
-                        `${translationsBase}.employee.fields.paySubsidyGranted.no`
-                      )}
-                    </$ApplicationDetailValue>
-                  </$ApplicationDetailRow>
-                </$ApplicationDetailWrapper>
               )}
             </$ApplicationDetailWrapper>
           </$GridCell>
@@ -242,7 +237,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
       )}
       <SummarySection header={t(`${translationsBase}.employee.heading4`)}>
         <$ApplicationDetailWrapper>
-          <$ApplicationDetailRow>
+          <$ApplicationDetailRow data-testid="application-field-startDate">
             <$ApplicationDetailLabel>
               {t(`${translationsBase}.employee.fields.startDate.label`)}
             </$ApplicationDetailLabel>
@@ -250,7 +245,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
               {convertToUIDateFormat(data.startDate) || '-'}
             </$ApplicationDetailValue>
           </$ApplicationDetailRow>
-          <$ApplicationDetailRow>
+          <$ApplicationDetailRow data-testid="application-field-endDate">
             <$ApplicationDetailLabel>
               {t(`${translationsBase}.employee.fields.endDate.label`)}
             </$ApplicationDetailLabel>

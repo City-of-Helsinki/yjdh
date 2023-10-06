@@ -55,6 +55,18 @@ class Step2 extends WizardStep {
       .apprenticeshipProgram.no,
   });
 
+  private apprenticeshipProgramTrue = this.within(
+    this.component.getByRole('group', {
+      name: this.regexp(
+        this.translations.applications.sections.employee.fields
+          .apprenticeshipProgram.label
+      ),
+    })
+  ).findByRole('radio', {
+    name: this.translations.applications.sections.employee.fields
+      .apprenticeshipProgram.yes,
+  });
+
   private benefitTypeEmployment = this.component.findByRole('radio', {
     name: this.translations.applications.sections.employee.fields.benefitType
       .employment,
@@ -122,8 +134,14 @@ class Step2 extends WizardStep {
     await this.clickSelectRadioButton(this.isLivingInHelsinkiCheckbox);
   }
 
-  public async fillPaidSubsidyGrant(): Promise<void> {
+  public async fillPaidSubsidyGrant(
+    apprenticeshipProgram: boolean
+  ): Promise<void> {
     await this.clickSelectRadioButton(this.paidSubsidyDefault);
+    if (apprenticeshipProgram) {
+      await this.clickSelectRadioButton(this.apprenticeshipProgramTrue);
+      return;
+    }
     await this.clickSelectRadioButton(this.apprenticeshipProgramFalse);
   }
 

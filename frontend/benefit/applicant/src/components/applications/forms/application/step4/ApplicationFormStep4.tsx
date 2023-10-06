@@ -123,7 +123,7 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
                         {t(`${translationsBase}.uploadPowerOfAttorney.action1`)}
                       </Button>
                     </$GridCell>
-                    <$GridCell $colSpan={8}>
+                    <$GridCell $colSpan={8} data-testid="employee_consent">
                       <UploadAttachment
                         theme="black"
                         variant="secondary"

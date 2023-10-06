@@ -21,7 +21,7 @@ fixture('De minimis')
 
     await t.useRole(applicantRole);
     await deMinimis.fillMandatoryFields();
-    await deMinimis.step1.selectYesDeMinimis();
+    await deMinimis.step1.selectDeMinimis(true);
   });
 
 test('Aid form (errors)', async (t: TestController) => {
