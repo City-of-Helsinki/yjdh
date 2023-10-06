@@ -11,6 +11,7 @@ import jinja2
 import pdfkit
 from django.db.models import QuerySet
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 
 
 from applications.enums import ApplicationStatus
@@ -363,10 +364,10 @@ def dummy_ahjo_request():
     try:
         ahjo_auth_code = AhjoSetting.objects.get(name="ahjo_code").data
         LOGGER.info(f"Retrieved auth code: {ahjo_auth_code}")
-    except Exception as e:
-        LOGGER.error(f"Error retrieving auth code: {e}")
+    except ObjectDoesNotExist:
+        LOGGER.error("Error: Ahjo auth code not found in database. Please set the 'ahjo_code' setting.")
         return
-    
+
     connector = AhjoConnector(requests)
 
     if not connector.is_configured():
