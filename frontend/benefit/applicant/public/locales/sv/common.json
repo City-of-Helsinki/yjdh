@@ -562,7 +562,7 @@
     "previous": "Föregående sida",
     "next": "Nästa sida",
     "page": "Sida",
-    "terms": "Terms.PDF"
+    "terms": "Villkor.PDF"
   },
   "tooltip": {
     "ariaLabel": "Visa hjälptext",
@@ -612,93 +612,93 @@
     "accessibilityStatement": "Helsingforstillägg - Tillgänglighetsförklaring"
   },
   "accessibilityStatement": {
-    "h1": "Saavutettavuusseloste",
+    "h1": "Tillgänglighetsutlåtande",
     "sections": {
       "section1": {
-        "heading1": "Digitaalinen työllisyyden Helsinki-lisä -asiointipalvelu",
-        "content1": "Tämä saavutettavuusseloste koskee digitaalista työllisyyden Helsinki-lisä -asiointipalvelua. Palvelun osoite on https://helsinki-lisa.hel.fi"
+        "heading1": "Digital e-tjänst för sysselsättning Helsingforstillägg",
+        "content1": "Detta tillgänglighetsutlåtande gäller digital e-tjänst för sysselsättning Helsingforstillägg. Adressen till tjänsten är https://helsinki-lisa.hel.fi"
       },
       "section2": {
-        "heading1": "Helsingin kaupungin tavoite",
-        "content1": "Digitaalisten palveluiden saavutettavuudessa Helsingin tavoitteena on pyrkiä vähintään WCAG ohjeiston mukaiseen AA- tai sitä parempaan tasoon, mikäli se on kohtuudella mahdollista.",
-        "content2": "Helsingin tavoitteena on pyrkiä digitaalisten palveluiden saavutettavuudessa vähintään WCAG-ohjeistuksen mukaiseen AA- tai sitä parempaan tasoon."
+        "heading1": "Helsingfors stads mål",
+        "content1": "När det gäller digitala tjänsters tillgänglighet är Helsingfors mål att uppnå minst nivån AA- eller bättre enligt WCAG-anvisningen, om det rimligen är möjligt.",
+        "content2": "Helsingfors mål är att sträva efter minst nivån AA- eller bättre enligt WCAG-anvisningen i fråga om sina digitala tjänsters tillgänglighet."
       },
       "section3": {
-        "heading1": "Helsinki-lisä -asiointipalvelun saavutettavuuden tila",
-        "content1": "Helsinki-lisä -asiointipalvelu täyttää lain asettamat kriittiset saavutettavuusvaatimukset WCAG v2.1 -tason AA mukaisesti seuraavin havaituin puuttein.",
-        "heading2": "Ei-saavutettava sisältö, havaitut puutteet ja puutteiden korjaus",
-        "content2": "Jäljempänä on esitetty havaittuja vielä korjaamattomia puutteita.",
+        "heading1": "Tillgänglighetens läge i e-tjänst för sysselsättning Helsingforstillägg",
+        "content1": "E-tjänst för sysselsättning Helsingforstillägg uppfyller de kritiska tillgänglighetskraven som lagen ställer i enlighet med WCAG v2.1-kriterierna på nivå AA med följande uppmärksammade brister.",
+        "heading2": "Icke-tillgängligt innehåll, uppmärksammade brister och korrigering av brister",
+        "content2": "Nedan har presenterats uppmärksammad brister som inte ännu har korrigerats.",
         "list": {
           "item1": {
-            "heading": "Ruudunlukuohjelman virheellinen kohdistusjärjestys",
-            "text": "Kun käyttäjä avaa uuden hakemuksen, ei ruudunlukuohjelman kohdistusta viedä lomakkeen alkuun, vaan kohdistus sijaitsee virheellisesti keskellä Työnantajan tiedot-osiota."
+            "heading": "Felaktig linjeringsordning i skärmläsare",
+            "text": "När användaren öppnar en ny ansökan, tar skärmläsaren linjeringen inte till början av formuläret utan felaktigt till mitten av avsnittet Arbetsgivarens uppgifter."
           },
           "item2": {
-            "heading": "Nykyistä työvaihetta ei välitetä avustavalle teknologialle",
-            "text": "Lomakkeen työvaihelistauksesta ei välity teknistä informaatiota avustavalle teknologialle siitä, missä työvaiheessa käyttäjä parhaillaan on."
+            "heading": "Nuvarande arbetsskede förmedlas inte till assisterande teknologi",
+            "text": "Från formulärets arbetsskedelistning förmedlas inte teknisk information till assisterande teknologi om i vilket skede användaren befinner sig som bäst."
           },
           "item3": {
-            "heading": "Useamman virheellisen lomakentän ilmoittaminen",
-            "text": "Palvelun virheilmoitukset esitetään useimmiten siten, että lomakkeen seuraavaan osioon siirtymisyrityksen yhteydessä käyttäjän selainkohdistus viedään lomakkeen ensimmäiseen virheelliseen lomakekenttään. Jos useammassa kentässä on virhe, muiden virheellisten kohtien löytäminen on hankalaa."
+            "heading": "Att meddela om flera felaktiga fält",
+            "text": "Felmeddelandena i tjänsten presenteras oftast så att när användaren övergår till följande avsnitt webbläsarens linjering överförs till det första felaktiga fältet i formuläret. Om flera fält har fel, är det svårt att hitta andra felaktiga ställen."
           },
           "item4": {
-            "heading": "Virheilmoitusten tekstit liian yleisluontoisia",
-            "text": "Monissa kentissä käytettiin samaa virheilmoitusta eli ”Virheellinen arvo”. Tämä virheilmoitus on esim. Etunimi, Sukunimi, Lomaraha ja Työaika tuntia viikossa -kentissä."
+            "heading": "Texterna i felmeddelandena är för allmänna.",
+            "text": "Många fält använder samma felmeddelande \"Felaktigt värde\". Detta felmeddelande används till exempel i fälten Förnamn, Efternamn, Semesterpenning och Arbetstid timmar per vecka."
           },
           "item5": {
-            "heading": "Päivämäärien asettaminen ei onnistu tekstinsyöttökenttien avulla",
-            "text": "Ongelman vakavuutta pienentää se, että kalenteritoiminto on saavutettava ruudunlukuohjelmaa ja näppäimistöä käytettäessä."
+            "heading": "Det går inte att ställa datum med hjälp av textinmatningsfält",
+            "text": "Problemet görs mindre allvarlig av att kalenderfunktionen är tillgänglig när man använder skärmläsare och tangentbord."
           }
         },
-        "heading3": "Puutteiden korjaus",
-        "content3": "Havaittuja saavutettavuuspuutteita pyritään korjaamaan jatkuvasti. Tässä selosteessa havaittujen saavutettavuuspuutteiden listausta päivitetään sen mukaan, kun puutteita saadaan korjattua."
+        "heading3": "Korrigering av brister",
+        "content3": "Man strävar efter att hela tiden korrigera de uppmärksammade tillgänglighetsbristerna. Förteckningen över tillgänglighetsbrister i detta utlåtande uppdateras alltefter man hunnit korrigera brister."
       },
       "section4": {
-        "heading1": "Saavutettavuusselosteen laatiminen",
-        "content1": "Tämä seloste on päivitetty 05.06.2023."
+        "heading1": "Upprättande av tillgänglighetsutlåtande",
+        "content1": "Detta utlåtande är uppdaterad 5.6.2023."
       },
       "section5": {
-        "heading1": "Saavutettavuuden arviointi",
-        "content1": "Saavutettavuuden arvioinnissa on noudatettu Helsingin kaupungin työohjetta ja menetelmiä, jotka pyrkivät varmistamaan sivuston saavutettavuuden kaikissa työvaiheissa.",
-        "content2": "Saavutettavuus on tarkistettu ulkopuolisen asiantuntijan suorittamana auditointina. Ulkopuolisen asiantuntija-auditoinnin on suorittanut Siteimprov 23.3.2022.",
-        "content3": "Saavutettavuus on tarkistettu käyttäen ohjelmallista saavutettavuustarkistusta sekä sivuston ja sisällön manuaalista tarkistusta. Ohjelmallinen tarkistus on suoritettu käyttäen Siteimproven saavutettavuuden automaattista testaustyökalua ja selainlaajennusta.",
-        "content4": "Manuaalisessa testauksessa on käytetty Chrome- ja Firefox-selaimia, niiden 200% tiloja sekä tietoteknisiä apuvälineitä, kuten ruudunlukuohjelmia, ohjaimia ja erikoisnäppäimistöjä. Mobiilitestaus toteutettiin iOS- ja Android-käyttöjärjestelmillä ja niille tarkoitetuilla ruudunlukuohjelmilla."
+        "heading1": "Utvärdering av tillgänglighet",
+        "content1": "Vid bedömningen av tillgängligheten har vi följt Helsingfors stads arbetsanvisning och metoder som strävar efter att säkerställa webbplatsens tillgänglighet i alla arbetsskeden.",
+        "content2": "Tillgängligheten har kontrollerats genom en auditering av en utomstående expert. Den utomstående expertauditeringen har utförts av Siteimprov 23.3.2022.",
+        "content3": "Tillgängligheten har kontrollerats med hjälp av programmatisk tillgänglighetskontroll samt manuell kontroll av webbplatsen och innehållet. Den programmatiska kontrollen har utförts med hjälp av Siteimproves automatiska testverktyg för tillgänglighet och webbläsartilläggsprogram",
+        "content4": "I manuell testning har man använt Chrome- och Firefox-webbläsare, deras 200 %-lägen och datatekniska hjälpverktyg såsom skärmläsare, kontrollrar och specialtangentbord. Mobiltestning utfördes med hjälp av iOS- och Android-operationssystem och skärmläsare för dem."
       },
       "section6": {
-        "heading1": "Saavutettavuusselosteen päivittäminen",
-        "content1": "Sivuston saavutettavuudesta huolehditaan jatkuvalla valvonnalla tekniikan tai sisällön muuttuessa, sekä määräajoin suoritettavalla tarkistuksella. Tätä selostetta päivitetään sivuston muutosten ja saavutettavuuden tarkistusten yhteydessä."
+        "heading1": "Uppdatering av tillgänglighetsutlåtandet",
+        "content1": "Man tar hela tiden hand om tillgängligheten av webbplatsen genom att övervaka när tekniken eller innehållet ändras samt genom periodiska kontroller. Detta utlåtande uppdateras i samband med ändringar på webbplatsen och kontroller av tillgängligheten."
       },
       "section7": {
-        "heading1": "Huomasitko puutteita saavutettavuudessa?",
-        "content1": "Pyrimme jatkuvasti parantamaan verkkopalvelun saavutettavuutta. Jos löydät ongelmia, joita ei ole kuvattu tällä sivulla, ilmoita niistä meille ja teemme parhaamme puutteiden korjaamiseksi.",
-        "content2": "Anna palautetta tällä verkkolomakkeella ",
-        "content3": "Palautekanavan kautta voit myös pyytää saavutettavaan muotoon muokattuja tietoja Hel.fi-sivuston sisällöstä."
+        "heading1": "Märkte du tillgänglighetsbrister?",
+        "content1": "Vi strävar efter att hela tiden förbättra webbtjänstens tillgänglighet. Om du hittar problem som inte har beskrivits på denna sida, meddela oss om dem så ska vi göra vårt bästa för att korrigera bristerna.",
+        "content2": "Ge respons genom detta webbformulär ",
+        "content3": "Genom responskanalen kan du även be om information om innehåll på webbplatsen hel.fi som har bearbetats så att de är i en tillgänglig form."
       },
       "section8": {
-        "heading1": "Tietojen pyytäminen saavutettavassa muodossa",
-        "content1": "Mikäli et koe saavasi sivuston sisältöä saavutettavassa muodossa, voit pyytää tietoja palautelomakkeella ",
-        "content1end": ". Tiedusteluun pyritään vastaamaan kohtuullisessa ajassa."
+        "heading1": "Begäran om uppgifter i tillgänglig form",
+        "content1": "Om du upptäcker att du inte får innehållet på webbplatsen i en tillgänglig form, kan du be om uppgifterna med responsformuläret ",
+        "content1end": ". Vi strävar efter att besvara förfrågningar inom rimlig tid."
       },
       "section9": {
-        "heading1": "Saavutettavuuden valvonta",
-        "content1": "Etelä-Suomen aluehallintovirasto valvoo saavutettavuusvaatimusten toteutumista. Jos et ole tyytyväinen saamaasi vastaukseen tai et saa vastausta lainkaan kahden viikon aikana, voit antaa palautteen Etelä-Suomen aluehallintovirastoon.",
-        "contact1": "Etelä-Suomen aluehallintovirasto,",
-        "contact2": "Saavutettavuuden valvonnan yksikkö",
+        "heading1": "Tillsyn av tillgänglighet",
+        "content1": "Regionförvaltningsverket i Södra Finland övervakar att tillgänglighetskraven uppfylls. Om du inte är nöjd med det svar du fick eller om du inte får något svar inom två veckor, kan du ge respons till regionförvaltningsverket i Södra Finland.",
+        "contact1": "Regionförvaltningsverket i Södra Finland,",
+        "contact2": "Enheten för tillgänglighetstillsyn",
         "contact3": "www.saavutettavuusvaatimukset.fi",
         "contact4": "saavutettavuus@avi.fi",
-        "content2": "Helsinki-lisä -asiointi palvelun saavutettavuusselosteesta vastaa Helsingin kaupungin työllisyyspalvelut -yksikkö."
+        "content2": "För tillgänglighetsutlåtandet för tjänsten Helsingforstillägget ansvarar enheten Helsingfors stads sysselsättningstjänster."
       },
       "section10": {
-        "heading1": "Helsingin kaupunki ja saavutettavuus",
-        "content1": "Kaupunki edistää digitaalisten palveluiden saavutettavuutta yhdenmukaistamalla julkaisutyötä ja järjestämällä saavutettavuuteen keskittyvää koulutusta henkilökunnalleen.",
-        "content2": "Sivustojen saavutettavuuden tasoa seurataan jatkuvasti sivustoja ylläpidettäessä. Havaittuihin puutteisiin reagoidaan välittömästi. Tarvittavat muutokset pyritään suorittamaan mahdollisimman nopeasti."
+        "heading1": "Helsingfors stad och tillgänglighet",
+        "content1": "Staden främjar tillgängligheten i digitala tjänster genom att göra publiceringsarbetet enhetligt och ordna utbildning i tillgänglighet för sin personal.",
+        "content2": "Tillgänglighetsnivån på webbplatserna kontrolleras kontinuerligt när webbplatserna underhålls. Staden reagerar omedelbart på brister som framkommer. Vi strävar efter att genomföra nödvändiga ändringar så snabbt som möjligt."
       },
       "section11": {
-        "heading1": "Vammaiset ja avustavien teknologioiden käyttäjät",
-        "content1": "Kaupunki tarjoaa neuvontaa ja tukea vammaisille ja avustavien teknologioiden käyttäjille. Tukea on saatavilla kaupungin sivuilla ilmoitetuilta neuvontasivuilta sekä puhelinneuvonnasta."
+        "heading1": "Personer med funktionsnedsättning och användare av tekniska hjälpmedel",
+        "content1": "Staden erbjuder rådgivning och stöd för personer med funktionsnedsättning och användare av tekniska hjälpmedel. Stöd kan fås på de rådgivningssidor som anges på stadens webbplatser och hos telefonrådgivningen."
       },
       "section12": {
-        "heading1": "Palaute ja yhteystiedot"
+        "heading1": "Respons och kontaktuppgifter"
       }
     }
   },
