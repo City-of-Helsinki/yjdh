@@ -1,4 +1,3 @@
-import NotificationView from 'benefit/applicant/components/notificationView/NotificationView';
 import PdfViewer from 'benefit/applicant/components/pdfViewer/PdfViewer';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { TextProp } from 'benefit-shared/types/application';
@@ -7,20 +6,18 @@ import * as React from 'react';
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { getFullName } from 'shared/utils/application.utils';
 import { openFileInNewTab } from 'shared/utils/file.utils';
 
 import StepperActions from '../stepperActions/StepperActions';
 import { useApplicationFormStep6 } from './useApplicationFormStep6';
 
 type ExtendedProps = {
-  isSubmittedApplication?: boolean;
   onSubmit?: () => void;
 };
 
 const ApplicationFormStep6: React.FC<
   DynamicFormStepComponentProps & ExtendedProps
-> = ({ data, isSubmittedApplication, onSubmit }) => {
+> = ({ data, onSubmit }) => {
   const {
     t,
     handleSubmit,
@@ -34,21 +31,6 @@ const ApplicationFormStep6: React.FC<
     checkedArray,
     applicantTermsInEffectUrl,
   } = useApplicationFormStep6(data, onSubmit);
-
-  if (isSubmittedApplication) {
-    return (
-      <NotificationView
-        title={t('common:notifications.applicationSubmitted.label')}
-        message={t('common:notifications.applicationSubmitted.message', {
-          applicationNumber: data?.applicationNumber,
-          applicantName: getFullName(
-            data?.employee?.firstName,
-            data?.employee?.lastName
-          ),
-        })}
-      />
-    );
-  }
 
   // todo: implement resizing for pdf reader (f. ex. react-sizeme), styling as in design
   return (

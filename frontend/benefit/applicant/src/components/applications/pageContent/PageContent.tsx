@@ -17,11 +17,13 @@ import { IconInfoCircleFill, LoadingSpinner, Stepper } from 'hds-react';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import Container from 'shared/components/container/Container';
+import { getFullName } from 'shared/utils/application.utils';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
 import ErrorPage from '../../errorPage/ErrorPage';
 import { $Notification } from '../../Notification/Notification.sc';
+import NotificationView from '../../notificationView/NotificationView';
 import { usePageContent } from './usePageContent';
 
 const stepperCss = {
@@ -51,12 +53,11 @@ const PageContent: React.FC = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (router.query.isReadOnly)
-      document.title = t('common:pageTitles.viewApplication');
+    if (isReadOnly) document.title = t('common:pageTitles.viewApplication');
     else if (router.query.id)
       document.title = t('common:pageTitles.editApplication');
     else document.title = t('common:pageTitles.createApplication');
-  }, [router.query.id, router.query.isReadOnly, t]);
+  }, [router.query.id, isReadOnly, t]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -80,11 +81,26 @@ const PageContent: React.FC = () => {
     );
   }
 
+  if (isSubmittedApplication) {
+    return (
+      <NotificationView
+        title={t('common:notifications.applicationSubmitted.label')}
+        message={t('common:notifications.applicationSubmitted.message', {
+          applicationNumber: application?.applicationNumber,
+          applicantName: getFullName(
+            application?.employee?.firstName,
+            application?.employee?.lastName
+          ),
+        })}
+      />
+    );
+  }
+
   // if view mode, show customized summary
   if (
     application.status &&
     SUBMITTED_STATUSES.includes(application.status) &&
-    Boolean(isReadOnly)
+    isReadOnly
   ) {
     return (
       <Container>
@@ -189,18 +205,10 @@ const PageContent: React.FC = () => {
       {currentStep === 3 && <ApplicationFormStep3 data={application} />}
       {currentStep === 4 && <ApplicationFormStep4 data={application} />}
       {currentStep === 5 && (
-        <ApplicationFormStep5
-          isSubmittedApplication={isSubmittedApplication}
-          onSubmit={handleSubmit}
-          data={application}
-        />
+        <ApplicationFormStep5 onSubmit={handleSubmit} data={application} />
       )}
       {currentStep === 6 && (
-        <ApplicationFormStep6
-          isSubmittedApplication={isSubmittedApplication}
-          onSubmit={handleSubmit}
-          data={application}
-        />
+        <ApplicationFormStep6 onSubmit={handleSubmit} data={application} />
       )}
     </Container>
   );

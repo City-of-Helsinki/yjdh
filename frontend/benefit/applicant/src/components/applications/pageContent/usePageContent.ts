@@ -4,6 +4,7 @@ import {
 } from 'benefit/applicant/constants';
 import useApplicationQuery from 'benefit/applicant/hooks/useApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
+import { isApplicationReadOnly } from 'benefit/applicant/utils/applications';
 import { getApplicationStepFromString } from 'benefit/applicant/utils/common';
 import { Application } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
@@ -18,7 +19,7 @@ type ExtendedComponentProps = {
   steps: StepperProps['steps'];
   currentStep: number;
   application: Application;
-  isReadOnly: string | string[] | undefined;
+  isReadOnly: boolean;
   id: string | string[] | undefined;
   isError: boolean;
   isLoading: boolean;
@@ -32,7 +33,6 @@ const isApplicationLoaded = (id: number | string, status: string): boolean =>
 const usePageContent = (): ExtendedComponentProps => {
   const router = useRouter();
   const id = router?.query?.id?.toString() ?? '';
-  const isReadOnly = router?.query?.isReadOnly?.toString() ?? '';
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -45,6 +45,8 @@ const usePageContent = (): ExtendedComponentProps => {
     data: existingApplication,
     error: existingApplicationError,
   } = useApplicationQuery(id);
+
+  const isReadOnly = !isApplicationReadOnly(existingApplication?.status);
 
   useEffect(() => {
     if (isApplicationLoaded(id, existingApplicationStatus)) {
