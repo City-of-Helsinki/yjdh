@@ -1,5 +1,6 @@
 import { Selector } from 'testcafe';
 
+import fi from '../../public/locales/fi/common.json';
 import MainIngress from './MainIngress';
 import Step1 from './step1';
 import Step2 from './step2';
@@ -21,7 +22,15 @@ class DeMinimisAid {
 
   public t: TestController;
 
-  private deminimisRowSelector = '[data-testid="deminimis-row"]';
+  private selectors = {
+    deMinimisRow: '[data-testid="deminimis-row"]',
+    applicationEditButton: '[data-testid="application-edit-button"]',
+    toastError: '.Toastify__toast-body[role="alert"]',
+  };
+
+  // eslint-disable-next-line class-methods-use-this
+  private getSelectorContinueButton = (): Selector =>
+    Selector('button').withText(fi.applications.actions.continue);
 
   fillMandatoryFields = async (): Promise<void> => {
     const mainIngress = new MainIngress();
@@ -41,7 +50,7 @@ class DeMinimisAid {
   };
 
   public getRowCount = async (): Promise<number> =>
-    Selector(this.deminimisRowSelector).count;
+    Selector(this.selectors.deMinimisRow).count;
 
   private step1ToStep2 = async (): Promise<void> => {
     await this.step1.clickSubmit();
@@ -57,9 +66,9 @@ class DeMinimisAid {
     await this.step1.clickSaveAndClose();
     const mainIngress = new MainIngress();
     await mainIngress.isLoaded();
-    await t.click(Selector('[data-testid="application-edit-button"]'));
+    await t.click(Selector(this.selectors.applicationEditButton));
     await this.step1.isLoaded();
-    await t.scrollIntoView(Selector('button').withText('Jatka'));
+    await t.scrollIntoView(this.getSelectorContinueButton());
   };
 
   public actions = {
@@ -83,7 +92,7 @@ class DeMinimisAid {
       }
       if (action === SAVE_ACTIONS.CONTINUE) {
         await this.actions.saveStep1AndReturn();
-        await t.scrollIntoView(Selector('button').withText('Jatka'));
+        await t.scrollIntoView(this.getSelectorContinueButton());
         await t.expect(await this.getRowCount()).eql(rows.length);
       }
       if (action === SAVE_ACTIONS.SAVE_AND_EXIT) {
@@ -124,11 +133,11 @@ class DeMinimisAid {
     fillAndLeaveUnfinished: async (t: TestController): Promise<void> => {
       await this.step1.fillDeminimisAid('One', '1', '');
       await this.step1.clickSubmit();
-      const toastError = Selector(
-        '.Toastify__toast-body[role="alert"]'
-      ).withText('Puuttuvia de minimis-tuen tietoja');
+      const toastError = Selector(this.selectors.toastError).withText(
+        fi.applications.sections.company.notifications.deMinimisUnfinished.label
+      );
       await t.expect(await toastError.exists).ok();
-      await t.click(toastError.find('[title="Sulje ilmoitus"]'));
+      await t.click(toastError.find(`[title="${fi.toast.closeToast}"]`));
     },
 
     clearRowsWithSelectNo: async (
@@ -145,7 +154,7 @@ class DeMinimisAid {
       }
 
       await this.step1.selectYesDeMinimis();
-      await t.scrollIntoView(Selector('button').withText('Jatka'));
+      await t.scrollIntoView(this.getSelectorContinueButton());
       await t.expect(await this.getRowCount()).eql(0);
     },
   };
