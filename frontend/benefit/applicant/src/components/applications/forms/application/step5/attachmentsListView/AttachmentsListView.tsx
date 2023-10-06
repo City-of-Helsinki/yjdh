@@ -25,7 +25,7 @@ const AttachmentsListView: React.FC<AttachmentsListViewProps> = ({
   );
 
   return attachmentItems.length > 0 ? (
-    <$GridCell $colStart={1} $colSpan={6}>
+    <$GridCell $colStart={1} $colSpan={6} data-testid={`attachment-${type}`}>
       {title && <$ViewFieldBold>{title}</$ViewFieldBold>}
       {attachmentItems.map((attachment) => (
         <$ViewField

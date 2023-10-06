@@ -61,6 +61,7 @@ const ApplicationFormStep6: React.FC<
           {data?.applicantTermsInEffect?.applicantConsents.map((consent, i) => (
             <$GridCell $colSpan={12} key={consent.id}>
               <$Checkbox
+                data-testid="application-terms-consent"
                 id={`${cbPrefix}_${consent.id}`}
                 name={`${cbPrefix}_${i}`}
                 label={consent[`text${textLocale}` as TextProp] || ''}
