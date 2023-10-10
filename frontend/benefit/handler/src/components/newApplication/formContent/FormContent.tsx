@@ -91,6 +91,11 @@ const FormContent: React.FC<Props> = ({
     getErrorMessage,
   } = useFormContent(formik, fields);
 
+  const truthySubsidies = new Set([
+    PAY_SUBSIDY_GRANTED.GRANTED,
+    PAY_SUBSIDY_GRANTED.GRANTED_AGED,
+  ]);
+
   const theme = useTheme();
   useAlertBeforeLeaving(formik.dirty);
 
@@ -513,10 +518,7 @@ const FormContent: React.FC<Props> = ({
             />
           </SelectionGroup>
         </$GridCell>
-        {[
-          PAY_SUBSIDY_GRANTED.GRANTED,
-          PAY_SUBSIDY_GRANTED.GRANTED_AGED,
-        ].includes(formik.values.paySubsidyGranted) && (
+        {truthySubsidies.has(formik.values.paySubsidyGranted) && (
           <$GridCell
             as={$Grid}
             $colSpan={12}
@@ -658,7 +660,7 @@ const FormContent: React.FC<Props> = ({
             />
           </$GridCell>
         )}
-        {formik.values.paySubsidyGranted && (
+        {truthySubsidies.has(formik.values.paySubsidyGranted) && (
           <$GridCell $colSpan={12}>
             <AttachmentsList
               attachments={attachments}
