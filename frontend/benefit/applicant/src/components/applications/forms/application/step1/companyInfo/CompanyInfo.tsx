@@ -19,11 +19,11 @@ import {
 import { useTheme } from 'styled-components';
 
 import {
-  $CompanyInfoLabel,
-  $CompanyInfoRow,
-  $CompanyInfoValue,
+  $ApplicationDetailLabel,
+  $ApplicationDetailRow,
+  $ApplicationDetailValue,
   $HintText,
-} from './CompanyInfo.sc';
+} from '../../ApplicationInfo';
 import useCompanyInfo, { CompanyInfoFields } from './useCompanyInfo';
 
 export interface CompanyInfoProps {
@@ -79,71 +79,71 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               <LoadingSkeleton width="90%" count={2} />
             ) : (
               <dl>
-                <$CompanyInfoRow>
-                  <$CompanyInfoLabel>
+                <$ApplicationDetailRow>
+                  <$ApplicationDetailLabel>
                     {t(`${translationsBase}.fields.companyName`)}
-                  </$CompanyInfoLabel>
-                  <$CompanyInfoValue>
+                  </$ApplicationDetailLabel>
+                  <$ApplicationDetailValue>
                     {data.name}
                     <IconCheckCircleFill
                       color="var(--color-tram)"
                       aria-hidden="true"
                       aria-label="check"
                     />
-                  </$CompanyInfoValue>
-                </$CompanyInfoRow>
-                <$CompanyInfoRow>
-                  <$CompanyInfoLabel>
+                  </$ApplicationDetailValue>
+                </$ApplicationDetailRow>
+                <$ApplicationDetailRow>
+                  <$ApplicationDetailLabel>
                     {t(`${translationsBase}.fields.companyBusinessId`)}
-                  </$CompanyInfoLabel>
-                  <$CompanyInfoValue>
+                  </$ApplicationDetailLabel>
+                  <$ApplicationDetailValue>
                     {data.businessId}
                     <IconCheckCircleFill
                       color="var(--color-tram)"
                       aria-hidden="true"
                       aria-label="check"
                     />
-                  </$CompanyInfoValue>
-                </$CompanyInfoRow>
-                <$CompanyInfoRow>
-                  <$CompanyInfoLabel>
+                  </$ApplicationDetailValue>
+                </$ApplicationDetailRow>
+                <$ApplicationDetailRow>
+                  <$ApplicationDetailLabel>
                     {t(`${translationsBase}.fields.companyAddress`)}
-                  </$CompanyInfoLabel>
-                  <$CompanyInfoValue>
+                  </$ApplicationDetailLabel>
+                  <$ApplicationDetailValue>
                     {data.streetAddress}
                     <IconCheckCircleFill
                       color="var(--color-tram)"
                       aria-hidden="true"
                       aria-label="check"
                     />
-                  </$CompanyInfoValue>
-                </$CompanyInfoRow>
-                <$CompanyInfoRow>
-                  <$CompanyInfoLabel>
+                  </$ApplicationDetailValue>
+                </$ApplicationDetailRow>
+                <$ApplicationDetailRow>
+                  <$ApplicationDetailLabel>
                     {t(`${translationsBase}.fields.companyPostcode`)}
-                  </$CompanyInfoLabel>
-                  <$CompanyInfoValue>
+                  </$ApplicationDetailLabel>
+                  <$ApplicationDetailValue>
                     {data.postcode}
                     <IconCheckCircleFill
                       color="var(--color-tram)"
                       aria-hidden="true"
                       aria-label="check"
                     />
-                  </$CompanyInfoValue>
-                </$CompanyInfoRow>
-                <$CompanyInfoRow>
-                  <$CompanyInfoLabel>
+                  </$ApplicationDetailValue>
+                </$ApplicationDetailRow>
+                <$ApplicationDetailRow>
+                  <$ApplicationDetailLabel>
                     {t(`${translationsBase}.fields.companyCity`)}
-                  </$CompanyInfoLabel>
-                  <$CompanyInfoValue>
+                  </$ApplicationDetailLabel>
+                  <$ApplicationDetailValue>
                     {data.city}
                     <IconCheckCircleFill
                       color="var(--color-tram)"
                       aria-hidden="true"
                       aria-label="check"
                     />
-                  </$CompanyInfoValue>
-                </$CompanyInfoRow>
+                  </$ApplicationDetailValue>
+                </$ApplicationDetailRow>
               </dl>
             )}
           </$GridCell>

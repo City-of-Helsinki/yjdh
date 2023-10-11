@@ -10,6 +10,7 @@ import { getErrorText } from 'benefit/applicant/utils/forms';
 import {
   APPLICATION_FIELDS_STEP2,
   APPLICATION_FIELDS_STEP2_KEYS,
+  BENEFIT_TYPES,
   EMPLOYEE_KEYS,
   ORGANIZATION_TYPES,
 } from 'benefit-shared/constants';
@@ -197,9 +198,9 @@ const useApplicationFormStep2 = (
     setFieldValue,
   ]);
 
-  const minEndDate = getMinEndDate(values.startDate, values.benefitType);
+  const minEndDate = getMinEndDate(values.startDate, BENEFIT_TYPES.SALARY);
   const minEndDateFormatted = convertToUIDateFormat(minEndDate);
-  const maxEndDate = getMaxEndDate(values.startDate, values.benefitType);
+  const maxEndDate = getMaxEndDate(values.startDate, BENEFIT_TYPES.SALARY);
   const endDate = parseDate(values.endDate);
   const isEndDateEligible =
     endDate &&

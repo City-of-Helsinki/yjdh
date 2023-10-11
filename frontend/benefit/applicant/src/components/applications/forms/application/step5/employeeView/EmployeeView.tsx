@@ -1,15 +1,39 @@
 import SummarySection from 'benefit/applicant/components/summarySection/SummarySection';
-import { BENEFIT_TYPES } from 'benefit-shared/constants';
+import { BENEFIT_TYPES, PAY_SUBSIDY_GRANTED } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import { Button, IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import { formatStringFloatValue } from 'shared/utils/string.utils';
+import {
+  formatFloatToCurrency,
+  formatStringFloatValue,
+} from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
-import { $ViewField, $ViewFieldBold } from '../../Application.sc';
+import {
+  $ApplicationDetailLabel,
+  $ApplicationDetailRow,
+  $ApplicationDetailValue,
+  $ApplicationDetailWrapper,
+} from '../../ApplicationInfo';
+
+const paySubsidyTranslation = (value: PAY_SUBSIDY_GRANTED): string => {
+  switch (value) {
+    case PAY_SUBSIDY_GRANTED.GRANTED:
+      return 'paySubsidyDefault';
+
+    case PAY_SUBSIDY_GRANTED.GRANTED_AGED:
+      return 'paySubsidyAged';
+
+    case PAY_SUBSIDY_GRANTED.NOT_GRANTED:
+      return 'paySubsidyNone';
+
+    default:
+      return 'paySubsidyNone';
+  }
+};
 
 export interface EmployeeViewProps {
   data: Application;
@@ -34,9 +58,6 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
           !isReadOnly && (
             <Button
               theme="black"
-              css={`
-                margin-top: ${theme.spacing.s};
-              `}
               onClick={() => handleStepChange(2)}
               variant="supplementary"
               iconLeft={<IconPen />}
@@ -47,145 +68,198 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
         }
         withoutDivider
       >
-        <$GridCell $colSpan={3}>
-          <$ViewField>{`${data.employee?.firstName || ''} ${
-            data.employee?.lastName || ''
-          }`}</$ViewField>
-          <$ViewField>{data.employee?.socialSecurityNumber}</$ViewField>
-          <$ViewField>
-            {t(`${translationsBase}.employee.fields.isLivingInHelsinki.label`)}
-            {': '}
-            <$ViewFieldBold>
-              {t(
-                `${translationsBase}.employee.fields.isLivingInHelsinki.${
-                  data.employee?.isLivingInHelsinki ? 'yes' : 'no'
-                }`
-              )}
-            </$ViewFieldBold>
-          </$ViewField>
-        </$GridCell>
-      </SummarySection>
-
-      <SummarySection
-        header={t(`${translationsBase}.employee.heading2`)}
-        withoutDivider
-      >
         <$GridCell $colSpan={12}>
-          {data.paySubsidyGranted ? (
-            <>
-              <$ViewFieldBold>
+          <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
+            <$ApplicationDetailRow>
+              <$ApplicationDetailLabel>
+                {t(`${translationsBase}.employee.fields.firstName.label`)}
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
+                {data.employee?.firstName || ''}
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
+            <$ApplicationDetailRow>
+              <$ApplicationDetailLabel>
+                {t(`${translationsBase}.employee.fields.lastName.label`)}
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
+                {data.employee?.lastName || ''}
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
+            <$ApplicationDetailRow>
+              <$ApplicationDetailLabel>
                 {t(
-                  `${translationsBase}.employee.fields.paySubsidyGranted.${
-                    data.paySubsidyGranted ? 'yes' : 'no'
+                  `${translationsBase}.employee.fields.socialSecurityNumber.label`
+                )}
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
+                {data.employee?.socialSecurityNumber}
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
+            <$ApplicationDetailRow $alignItems="flex-start" $forceColumn>
+              <$ApplicationDetailLabel>
+                {t(
+                  `${translationsBase}.employee.fields.isLivingInHelsinki.label`
+                )}
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
+                {t(
+                  `${translationsBase}.employee.fields.isLivingInHelsinki.${
+                    data.employee?.isLivingInHelsinki ? 'yes' : 'no'
                   }`
                 )}
-              </$ViewFieldBold>
-              <$ViewField>
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
+            <$ApplicationDetailRow $alignItems="flex-start" $forceColumn>
+              <$ApplicationDetailLabel>
                 {t(
-                  `${translationsBase}.employee.fields.apprenticeshipProgram.label`
-                )}{' '}
-                <$ViewFieldBold>
-                  {t(
-                    `${translationsBase}.employee.fields.apprenticeshipProgram.${
-                      data.apprenticeshipProgram ? 'yes' : 'no'
-                    }`
-                  )}
-                </$ViewFieldBold>
-              </$ViewField>
-            </>
-          ) : (
-            <$ViewField>
-              {t(`${translationsBase}.employee.fields.paySubsidyGranted.label`)}{' '}
-              <$ViewFieldBold>
-                {t(`${translationsBase}.employee.fields.paySubsidyGranted.no`)}
-              </$ViewFieldBold>
-            </$ViewField>
-          )}
+                  `${translationsBase}.employee.fields.associationImmediateManagerCheck.label`
+                )}
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
+                {t('common:utility.yes')}
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
+          </$ApplicationDetailWrapper>
         </$GridCell>
       </SummarySection>
 
-      <SummarySection
-        header={t(`${translationsBase}.employee.heading3Long`)}
-        withoutDivider
-      >
-        <$GridCell $colSpan={5}>
-          <$ViewField>
-            {`${t(`${translationsBase}.employee.fields.benefitType.label`)}: `}
-            <$ViewFieldBold>
-              {t(
-                `${translationsBase}.employee.fields.benefitType.${
-                  data.benefitType?.split('_')[0] || ''
-                }`
-              )}
-            </$ViewFieldBold>
-          </$ViewField>
-        </$GridCell>
-      </SummarySection>
-      <SummarySection>
-        <$GridCell $colStart={1} $colSpan={2}>
-          <$ViewField>
-            {t(`${translationsBase}.employee.fields.startDate.label`)}
-          </$ViewField>
-          <$ViewField>
-            {convertToUIDateFormat(data.startDate) || '-'}
-          </$ViewField>
-        </$GridCell>
-        <$GridCell $colSpan={2}>
-          <$ViewField>
-            {t(`${translationsBase}.employee.fields.endDate.label`)}
-          </$ViewField>
-          <$ViewField>{convertToUIDateFormat(data.endDate) || '-'}</$ViewField>
-        </$GridCell>
-      </SummarySection>
       {(data.benefitType === BENEFIT_TYPES.SALARY ||
         data.benefitType === BENEFIT_TYPES.EMPLOYMENT) && (
         <SummarySection
+          withoutDivider
           header={t(`${translationsBase}.employee.heading5Employment`)}
         >
           <$GridCell $colSpan={5}>
-            <$ViewField>
-              {`${t(`${translationsBase}.employee.fields.jobTitle.label`)}: ${
-                data.employee?.jobTitle || '-'
-              }`}
-            </$ViewField>
-            <$ViewField>
-              {t(`${translationsBase}.employee.fields.workingHours.view`, {
-                workingHours: formatStringFloatValue(
-                  data.employee?.workingHours
-                ),
-              })}
-            </$ViewField>
-            <$ViewField>
-              {t(`${translationsBase}.employee.fields.monthlyPay.view`, {
-                monthlyPay: formatStringFloatValue(data.employee?.monthlyPay),
-              })}
-            </$ViewField>
-            <$ViewField>
-              {t(`${translationsBase}.employee.fields.otherExpenses.view`, {
-                otherExpenses: formatStringFloatValue(
-                  data.employee?.otherExpenses
-                ),
-              })}
-            </$ViewField>
-            <$ViewField
-              css={`
-                &&& {
-                  padding-bottom: 0;
-                }
-              `}
-            >
-              {t(`${translationsBase}.employee.fields.vacationMoney.view`, {
-                vacationMoney: formatStringFloatValue(
-                  data.employee?.vacationMoney
-                ),
-              })}
-            </$ViewField>
-            <$ViewField>
-              {data.employee?.collectiveBargainingAgreement}
-            </$ViewField>
+            <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
+              <$ApplicationDetailRow>
+                <$ApplicationDetailLabel>
+                  {t(`${translationsBase}.employee.fields.jobTitle.label`)}
+                </$ApplicationDetailLabel>
+                <$ApplicationDetailValue>
+                  {data.employee?.jobTitle || '-'}
+                </$ApplicationDetailValue>
+              </$ApplicationDetailRow>
+
+              <$ApplicationDetailRow>
+                <$ApplicationDetailLabel>
+                  {t(
+                    `${translationsBase}.employee.fields.collectiveBargainingAgreement.placeholder`
+                  )}
+                </$ApplicationDetailLabel>
+                <$ApplicationDetailValue>
+                  {data.employee?.collectiveBargainingAgreement}
+                </$ApplicationDetailValue>
+              </$ApplicationDetailRow>
+              <$ApplicationDetailRow>
+                <$ApplicationDetailLabel>
+                  {t(`${translationsBase}.employee.fields.workingHours.label`)}
+                </$ApplicationDetailLabel>
+                <$ApplicationDetailValue>
+                  {formatStringFloatValue(data.employee?.workingHours)}{' '}
+                  {t(
+                    `${translationsBase}.employee.fields.workingHours.helperText`
+                  )}
+                </$ApplicationDetailValue>
+              </$ApplicationDetailRow>
+
+              <$ApplicationDetailRow>
+                <$ApplicationDetailLabel>
+                  {t(`${translationsBase}.employee.fields.monthlyPay.label`)}
+                </$ApplicationDetailLabel>
+                <$ApplicationDetailValue>
+                  {formatFloatToCurrency(data.employee?.monthlyPay, 'EUR')}
+                </$ApplicationDetailValue>
+              </$ApplicationDetailRow>
+
+              <$ApplicationDetailRow>
+                <$ApplicationDetailLabel>
+                  {t(`${translationsBase}.employee.fields.vacationMoney.label`)}
+                </$ApplicationDetailLabel>
+                <$ApplicationDetailValue>
+                  {formatFloatToCurrency(data.employee?.vacationMoney, 'EUR')}
+                </$ApplicationDetailValue>
+              </$ApplicationDetailRow>
+              <$ApplicationDetailRow>
+                <$ApplicationDetailLabel>
+                  {t(`${translationsBase}.employee.fields.otherExpenses.label`)}
+                </$ApplicationDetailLabel>
+
+                <$ApplicationDetailValue>
+                  {formatFloatToCurrency(data.employee?.otherExpenses, 'EUR')}
+                </$ApplicationDetailValue>
+              </$ApplicationDetailRow>
+              {data.paySubsidyGranted ? (
+                <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
+                  <$ApplicationDetailRow>
+                    <$ApplicationDetailLabel>
+                      {t(
+                        `${translationsBase}.employee.fields.paySubsidyGranted.labelShort`
+                      )}
+                    </$ApplicationDetailLabel>
+                    <$ApplicationDetailValue>
+                      {t(
+                        `${translationsBase}.employee.fields.paySubsidyGranted.${paySubsidyTranslation(
+                          data.paySubsidyGranted
+                        )}`
+                      )}
+                    </$ApplicationDetailValue>
+                  </$ApplicationDetailRow>
+                  <$ApplicationDetailRow>
+                    <$ApplicationDetailLabel>
+                      {t(
+                        `${translationsBase}.employee.fields.apprenticeshipProgram.label`
+                      )}
+                    </$ApplicationDetailLabel>
+                    <$ApplicationDetailValue>
+                      {t(
+                        `${translationsBase}.employee.fields.apprenticeshipProgram.${
+                          data.apprenticeshipProgram ? 'yes' : 'no'
+                        }`
+                      )}
+                    </$ApplicationDetailValue>
+                  </$ApplicationDetailRow>
+                </$ApplicationDetailWrapper>
+              ) : (
+                <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
+                  <$ApplicationDetailRow>
+                    <$ApplicationDetailLabel>
+                      {t(
+                        `${translationsBase}.employee.fields.paySubsidyGranted.label`
+                      )}{' '}
+                    </$ApplicationDetailLabel>
+                    <$ApplicationDetailValue>
+                      {t(
+                        `${translationsBase}.employee.fields.paySubsidyGranted.no`
+                      )}
+                    </$ApplicationDetailValue>
+                  </$ApplicationDetailRow>
+                </$ApplicationDetailWrapper>
+              )}
+            </$ApplicationDetailWrapper>
           </$GridCell>
         </SummarySection>
       )}
+      <SummarySection header={t(`${translationsBase}.employee.heading4`)}>
+        <$ApplicationDetailWrapper>
+          <$ApplicationDetailRow>
+            <$ApplicationDetailLabel>
+              {t(`${translationsBase}.employee.fields.startDate.label`)}
+            </$ApplicationDetailLabel>
+            <$ApplicationDetailValue>
+              {convertToUIDateFormat(data.startDate) || '-'}
+            </$ApplicationDetailValue>
+          </$ApplicationDetailRow>
+          <$ApplicationDetailRow>
+            <$ApplicationDetailLabel>
+              {t(`${translationsBase}.employee.fields.endDate.label`)}
+            </$ApplicationDetailLabel>
+            <$ApplicationDetailValue>
+              {convertToUIDateFormat(data.endDate) || '-'}
+            </$ApplicationDetailValue>
+          </$ApplicationDetailRow>
+        </$ApplicationDetailWrapper>
+      </SummarySection>
     </>
   );
 };
