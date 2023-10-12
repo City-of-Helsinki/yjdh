@@ -53,7 +53,7 @@ test('user can search and navigate', async (t) => {
   const end = faker.date.soon(100, start);
   const startDate = formatDate(start);
   const endDate = formatDate(end);
-  // Should find working method https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:2/
+  // Should find working method https://linkedevents.api.test.hel.ninja/v1/keyword/tet:2/
   const workMethodText = 'Varjostus';
   const languageText = 'Suomi';
   const searchTerm = faker.lorem.word();

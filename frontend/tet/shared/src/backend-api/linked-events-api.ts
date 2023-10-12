@@ -18,7 +18,7 @@ type Keyword = IdObject & {
 const linkedEvents = Axios.create({
   baseURL:
     process.env.NEXT_PUBLIC_LINKEDEVENTS_URL ||
-    'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1',
+    'https://linkedevents.api.test.hel.ninja/v1',
   timeout: 4000,
   headers: {
     'Content-Type': 'application/json',
