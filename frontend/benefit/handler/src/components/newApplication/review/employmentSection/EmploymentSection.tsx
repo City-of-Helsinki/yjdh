@@ -1,4 +1,5 @@
 import { ReviewChildProps } from 'benefit/handler/types/common';
+import { TRUTHY_SUBSIDIES } from 'benefit-shared/constants';
 import camelCase from 'lodash/camelCase';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -107,11 +108,13 @@ const EmploymentSection: React.FC<ReviewChildProps> = ({
             {t(`${translationsBase}.fields.paySubsidyGranted.review`)}
           </$ViewFieldBold>
           <$ViewField>
-            {t(
-              `${translationsBase}.fields.paySubsidyGranted.${camelCase(
-                data.paySubsidyGranted
-              )}`
-            )}
+            {TRUTHY_SUBSIDIES.has(data.paySubsidyGranted)
+              ? t(
+                  `${translationsBase}.fields.paySubsidyGranted.${camelCase(
+                    data.paySubsidyGranted
+                  )}`
+                )
+              : '-'}
           </$ViewField>
         </$GridCell>
         <$GridCell $colSpan={6}>
