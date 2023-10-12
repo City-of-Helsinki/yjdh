@@ -670,8 +670,10 @@
     },
     "fields": {
       "businessId": "Y-tunnus",
+      "organizationType": "Yritysmuoto",
+      "address": "Osoite",
+      "alternativeAddress": "Toimitusosoite",
       "bankAccountNumber": "Tilinumero",
-      "associationHasBusinessActivities": "Harjoittaako työnantaja taloudellista toimintaa?",
       "associationImmediateManagerCheck": "Onko työllistettävälle osoitettu työnjohdollinen esihenkilö?",
       "applicantLanguage": "Asiointikieli",
       "deMinimisAidGranter": "Tuen myöntäjä",
@@ -697,7 +699,12 @@
       "editEndDate": "Hakemusta muokattava viimeistään {{date}}",
       "ssn": "Henkilötunnus",
       "email": "Sähköposti",
-      "phone": "Puhelinnumero"
+      "phone": "Puhelinnumero",
+      "associationHasBusinessActivities": {
+        "label": "Harjoittaako työnantaja taloudellista toimintaa?",
+        "yes": "Kyllä",
+        "no": "Ei"
+      }
     },
     "summary": {
       "accepted": {

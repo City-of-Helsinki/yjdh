@@ -83,7 +83,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
               header={header}
               loading={loading}
               as="h2"
-              size="s"
+              size="m"
               {...rest}
             />
           )}

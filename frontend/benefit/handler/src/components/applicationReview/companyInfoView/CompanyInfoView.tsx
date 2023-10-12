@@ -1,92 +1,89 @@
+import {
+  $ViewField,
+  $ViewFieldBold,
+} from 'benefit/handler/components/newApplication/ApplicationForm.sc';
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import {
   APPLICATION_STATUSES,
   ORGANIZATION_TYPES,
 } from 'benefit-shared/constants';
+import { friendlyFormatIBAN } from 'ibantools';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import {
-  $ViewField,
-  $ViewFieldBold,
-} from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { useTheme } from 'styled-components';
 
 const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
   const { t } = useTranslation();
-  const theme = useTheme();
   return (
     <ReviewSection
       header={t(`${translationsBase}.headings.heading1`)}
       action={data.status !== APPLICATION_STATUSES.RECEIVED ? <span /> : null}
-      section='company'
+      section="company"
     >
-      <$GridCell $colSpan={3}>
-        <$ViewField>{data.company?.name}</$ViewField>
-        <$ViewField>{`${t(`${translationsBase}.fields.businessId`)}: ${
-          data.company?.businessId || ''
-        }`}</$ViewField>
+      <$GridCell $colSpan={6}>
+        <$ViewFieldBold large>{data.company?.name}</$ViewFieldBold>
+      </$GridCell>
+      <$GridCell $colSpan={6} $colStart={1}>
+        <$ViewFieldBold>
+          {t(`${translationsBase}.fields.businessId`)}
+        </$ViewFieldBold>
+        <$ViewField>{data.company?.businessId}</$ViewField>
+      </$GridCell>
+      <$GridCell $colSpan={6}>
+        <$ViewFieldBold>
+          {t(`${translationsBase}.fields.organizationType`)}
+        </$ViewFieldBold>
         <$ViewField>
-          {`${t(`${translationsBase}.fields.bankAccountNumber`)}: ${
-            data.companyBankAccountNumber || ''
-          }`}
+          {t(`common:organizationTypes.${data.company?.organizationType}`)}
         </$ViewField>
       </$GridCell>
-      <$GridCell $colSpan={3}>
-        <$ViewField>{data.company?.streetAddress}</$ViewField>
-        <$ViewField>{`${data.company?.postcode || ''} ${
-          data.company?.city || ''
-        }`}</$ViewField>
+      <$GridCell $colSpan={6} $colStart={1}>
+        <$ViewFieldBold>
+          {t(`${translationsBase}.fields.address`)}
+        </$ViewFieldBold>
+        <$ViewField>{`${data.company?.streetAddress}, ${
+          data.company?.postcode || ''
+        } ${data.company?.city || ''}`}</$ViewField>
+        <$ViewFieldBold>
+          {t(`${translationsBase}.fields.bankAccountNumber`)}
+        </$ViewFieldBold>
+        <$ViewField>
+          {friendlyFormatIBAN(data?.companyBankAccountNumber)}
+        </$ViewField>
       </$GridCell>
+
       {data.alternativeCompanyStreetAddress && (
-        <>
-          <$GridCell
-            $colSpan={12}
-            css={`
-              font-size: ${theme.fontSize.body.m};
-              margin: ${theme.spacing.xs4} 0;
-            `}
-          >
-            <$ViewFieldBold>
-              {t(`${translationsBase}.headings.heading1Additional`)}
-            </$ViewFieldBold>
-          </$GridCell>
-          <$GridCell $colSpan={3}>
-            {data.companyDepartment && (
-              <$ViewField>{data.companyDepartment}</$ViewField>
-            )}
-            <$ViewField>{data.alternativeCompanyStreetAddress}</$ViewField>
-            <$ViewField>
-              {[data.alternativeCompanyPostcode, data.alternativeCompanyCity]
-                .join(' ')
-                .trim()}
-            </$ViewField>
-          </$GridCell>
-        </>
-      )}
-      {data.company?.organizationType === ORGANIZATION_TYPES.ASSOCIATION && (
-        <$GridCell $colSpan={12}>
+        <$GridCell $colSpan={6}>
+          <$ViewFieldBold>
+            {t(`${translationsBase}.fields.alternativeAddress`)}
+          </$ViewFieldBold>
           <$ViewField>
-            {t(`${translationsBase}.fields.associationHasBusinessActivities`)}{' '}
-            <$ViewFieldBold>
-              {t(
-                `common:utility.${
-                  data.associationHasBusinessActivities ? 'yes' : 'no'
-                }`
-              )}
-            </$ViewFieldBold>
+            {data.companyDepartment && <div>{data.companyDepartment}</div>}
+            {[
+              data.alternativeCompanyStreetAddress,
+              data.alternativeCompanyPostcode,
+              data.alternativeCompanyCity,
+            ]
+              .join(', ')
+              .trim()}
           </$ViewField>
+        </$GridCell>
+      )}
+      {data?.company?.organizationType === ORGANIZATION_TYPES.ASSOCIATION && (
+        <$GridCell $colSpan={6} $colStart={1}>
+          <$ViewFieldBold>
+            {t(`${translationsBase}.fields.associationHasBusinessActivities.label`)}
+          </$ViewFieldBold>
           <$ViewField>
-            {t(`${translationsBase}.fields.associationImmediateManagerCheck`)}{' '}
-            <$ViewFieldBold>
-              {t(
-                `common:utility.${
-                  data.associationImmediateManagerCheck ? 'yes' : 'no'
-                }`
-              )}
-            </$ViewFieldBold>
+            {data?.associationHasBusinessActivities
+              ? t(
+                  `${translationsBase}.fields.associationHasBusinessActivities.yes`
+                )
+              : t(
+                  `${translationsBase}.fields.associationHasBusinessActivities.no`
+                )}
           </$ViewField>
         </$GridCell>
       )}
