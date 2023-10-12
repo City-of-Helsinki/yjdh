@@ -126,11 +126,11 @@
   "applications": {
     "list": {
       "columns": {
-        "companyName": "Hakija",
+        "companyName": "Työnantaja",
         "companyId": "Y-tunnus",
         "submittedAt": "Saapunut",
-        "applicationNum": "Numero",
-        "employeeName": "Työllistettävä",
+        "applicationNum": "Hakemusnumero",
+        "employeeName": "Työllistetty",
         "employeeNameArchive": "Työllistetty",
         "handlerName": "Käsittelijä",
         "companyForm": "Yritysmuoto",
