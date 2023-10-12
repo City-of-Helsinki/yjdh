@@ -1,18 +1,18 @@
 import { breakpoints } from 'shared/styles/mediaQueries';
 import styled from 'styled-components';
 
-type $CompanyInfoWrapperProps = {
+type $ApplicationDetailWrapperProps = {
   $fontSize?: string;
 };
-type $CompanyInfoRowProps = {
+type $ApplicationDetailRowProps = {
   $forceColumn?: boolean;
   $alignItems?: string;
 };
-type $CompanyInfoValueProps = {
+type $ApplicationDetailValueProps = {
   $column?: boolean;
 };
 
-export const $ApplicationDetailWrapper = styled.dl<$CompanyInfoWrapperProps>`
+export const $ApplicationDetailWrapper = styled.dl<$ApplicationDetailWrapperProps>`
   font-size: ${(props) =>
     props.$fontSize ? String(props.$fontSize) : props.theme.fontSize.body.m};
 `;
@@ -23,7 +23,7 @@ export const $ApplicationDetailLabel = styled.dt`
   margin-right: ${(props) => props.theme.spacing.m};
 `;
 
-export const $ApplicationDetailValue = styled.dd<$CompanyInfoValueProps>`
+export const $ApplicationDetailValue = styled.dd<$ApplicationDetailValueProps>`
   margin-right: ${(props) => props.theme.spacing.xs};
   margin-inline-start: 0;
   display: ${(props) => (props.$column ? 'flex-start' : 'inline-flex')};
@@ -32,7 +32,7 @@ export const $ApplicationDetailValue = styled.dd<$CompanyInfoValueProps>`
   }
 `;
 
-export const $ApplicationDetailRow = styled.div<$CompanyInfoRowProps>`
+export const $ApplicationDetailRow = styled.div<$ApplicationDetailRowProps>`
   display: flex;
   font-size: 1.1em;
   line-height: ${(props) => props.theme.lineHeight.l};
