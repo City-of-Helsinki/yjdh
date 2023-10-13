@@ -65,7 +65,8 @@
       "close": "Sulje",
       "openTermsAsPDF": "Avaa ehdot PDF-tiedostona",
       "continueToService": "Jatka palveluun",
-      "pauseAndExit": "Keskeytä ja poistu"
+      "pauseAndExit": "Keskeytä ja poistu",
+      "viewSavedApplication": "Tarkastele lähettämääsi hakemusta"
     },
     "sections": {
       "company": {
@@ -427,8 +428,8 @@
   },
   "notifications": {
     "applicationSubmitted": {
-      "label": "Hakemus lähetty onnistuneesti",
-      "message": "Helsinki-lisä-hakemus {{applicationNumber}} ({{applicantName}}) on lähetetty. Saat ilmoituksen, kun hakemus on käsitelty."
+      "label": "Helsinki-lisä -hakemus on lähetetty",
+      "message": "Olemme vastaanottaneet Helsinki-lisä -hakemuksesi, jonka hakemusnumero on  {{applicationNumber}}.\n\nSeuraavaksi hakemus sirtyy käsiteltäväksi. Saat ilmoituksen sähköpostiisi, kun hakemus on käsitelty. Voit seurata käsittelyn etenemistä Helsinki-lisän asiointipalvelussa.\n\nHakemukseen liittyvissä kysymyksissä voit lähettää viestejä Helsinki-lisän asiointipalvelussa tai lähettää sähköpostia osoitteeseen helsinkilisa@hel.fi."
     },
     "applicationSaved": {
       "label": "Hakemus tallennettu",

@@ -65,7 +65,8 @@
       "close": "Close",
       "openTermsAsPDF": "Open the terms as a PDF file",
       "continueToService": "Continue to the service",
-      "pauseAndExit": "Cancel and exit"
+      "pauseAndExit": "Cancel and exit",
+      "viewSavedApplication": "Review your submitted application"
     },
     "sections": {
       "company": {
@@ -427,8 +428,8 @@
   },
   "notifications": {
     "applicationSubmitted": {
-      "label": "Application submitted successfully",
-      "message": "Helsinki benefit application {{applicationNumber}} ({{applicantName}}) has been submitted. You will be notified once the application has been processed."
+      "label": "The Helsinki benefit application has been submitted",
+      "message": "We have received your Helsinki benefit application with application number {{applicationNumber}}.\n\nNext, the application will be sent for processing. The designated contact person for the application will receive an email notification when it has been processed. You can follow the progress of your application in the Helsinki benefit service.\n\nIf you have questions about your application, you can use the Helsinki benefit e-service to send messages or send an email to helsinkilisa@hel.fi."
     },
     "applicationSaved": {
       "label": "Application saved",
