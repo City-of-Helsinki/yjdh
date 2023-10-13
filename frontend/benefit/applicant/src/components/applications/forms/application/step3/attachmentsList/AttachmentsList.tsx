@@ -1,5 +1,6 @@
 import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import camelCase from 'lodash/camelCase';
+import { TFunction } from 'next-i18next';
 import * as React from 'react';
 import AttachmentsListBase from 'shared/components/attachments/AttachmentsList';
 import { BenefitAttachment } from 'shared/types/attachment';
@@ -8,14 +9,28 @@ import { useAttachmentsList } from './useAttachmentsList';
 
 export type AttachmentsListProps = {
   attachmentType: ATTACHMENT_TYPES;
+  attachmentTypeTranslationKey?: string;
   showMessage?: boolean;
   attachments?: BenefitAttachment[];
   required?: boolean;
   as?: 'div' | 'li';
 };
 
+const getTitleTranslation = (
+  t: TFunction,
+  translationsBase: string,
+  attachmentType: ATTACHMENT_TYPES,
+  attachmentTypeTranslationKey: string
+): string => {
+  const key = attachmentTypeTranslationKey
+    ? String(attachmentTypeTranslationKey)
+    : attachmentType;
+  return t(`${translationsBase}.types.${camelCase(key)}.title`);
+};
+
 const AttachmentsList: React.FC<AttachmentsListProps> = ({
   attachmentType,
+  attachmentTypeTranslationKey,
   showMessage = true,
   attachments,
   required,
@@ -38,7 +53,12 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
   return (
     <AttachmentsListBase
       as={as}
-      title={t(`${translationsBase}.types.${camelCase(attachmentType)}.title`)}
+      title={getTitleTranslation(
+        t,
+        translationsBase,
+        attachmentType,
+        attachmentTypeTranslationKey
+      )}
       attachmentType={attachmentType}
       name={attachmentType}
       message={showMessage && message}
