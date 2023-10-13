@@ -1,15 +1,15 @@
+import {
+  $SummaryTableHeader,
+  $SummaryTableLastLine,
+  $SummaryTableValue,
+  $ViewField,
+  $ViewFieldBold,
+} from 'benefit/handler/components/newApplication/ApplicationForm.sc';
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
-import { DeMinimisAid } from 'benefit-shared/types/application';
-import sumBy from 'lodash/sumBy';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import {
-  $SummaryTableHeader,
-  $SummaryTableValue,
-  $ViewField,
-} from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { formatFloatToCurrency } from 'shared/utils/string.utils';
@@ -21,59 +21,64 @@ const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
     <ReviewSection
       header={t(`${translationsBase}.headings.heading3`)}
       action={data.status !== APPLICATION_STATUSES.RECEIVED ? <span /> : null}
-      section='deMinimisAids'
+      section="deMinimisAids"
     >
       {data.deMinimisAidSet && data.deMinimisAidSet?.length > 0 ? (
         <>
-          <$GridCell $colSpan={3}>
+          <$GridCell $colSpan={4}>
             <$SummaryTableHeader>
-              {t(`${translationsBase}.fields.deMinimisAidGranter`)}
+              <$ViewFieldBold>
+                {t(`${translationsBase}.fields.deMinimisAidGranter`)}
+              </$ViewFieldBold>
             </$SummaryTableHeader>
           </$GridCell>
-          <$GridCell $colSpan={2}>
+          <$GridCell $colSpan={3}>
             <$SummaryTableHeader>
-              {t(`${translationsBase}.fields.deMinimisAidAmount`)}
+              <$ViewFieldBold>
+                {t(`${translationsBase}.fields.deMinimisAidAmount`)}
+              </$ViewFieldBold>
             </$SummaryTableHeader>
           </$GridCell>
           <$GridCell>
             <$SummaryTableHeader>
-              {t(`${translationsBase}.fields.deMinimisAidGrantedAt`)}
+              <$ViewFieldBold>
+                {t(`${translationsBase}.fields.deMinimisAidGrantedAt`)}
+              </$ViewFieldBold>
             </$SummaryTableHeader>
           </$GridCell>
-          {data.deMinimisAidSet?.map((aid: DeMinimisAid) => (
+          {data.deMinimisAidSet?.map(({ granter, grantedAt, amount }) => (
             <React.Fragment
-              key={`${aid.granter ?? ''}${convertToUIDateFormat(
-                aid.grantedAt
-              )}`}
+              key={`${granter ?? ''}${convertToUIDateFormat(grantedAt)}`}
             >
-              <$GridCell $colStart={1} $colSpan={3}>
-                <$SummaryTableValue>{aid.granter}</$SummaryTableValue>
+              <$GridCell $colStart={1} $colSpan={4}>
+                <$SummaryTableValue>{granter}</$SummaryTableValue>
               </$GridCell>
-              <$GridCell $colSpan={2}>
-                <$SummaryTableValue>{`${formatFloatToCurrency(
-                  aid.amount || '',
-                  null
-                )} €`}</$SummaryTableValue>
+              <$GridCell $colSpan={3}>
+                <$SummaryTableValue>
+                  {formatFloatToCurrency(amount, 'EUR', 'FI-fi', 0)}
+                </$SummaryTableValue>
               </$GridCell>
               <$GridCell>
                 <$SummaryTableValue>
-                  {aid.grantedAt ? convertToUIDateFormat(aid.grantedAt) : ''}
+                  {grantedAt ? convertToUIDateFormat(grantedAt) : ''}
                 </$SummaryTableValue>
               </$GridCell>
             </React.Fragment>
           ))}
-          <$GridCell $colStart={1} $colSpan={3}>
-            <$SummaryTableValue isBold>
+          <$GridCell $colSpan={4} $colStart={1}>
+            <$SummaryTableLastLine>
               {t(`${translationsBase}.fields.deMinimisAidTotal`)}
-            </$SummaryTableValue>
+            </$SummaryTableLastLine>
           </$GridCell>
-          <$GridCell $colSpan={2}>
-            <$SummaryTableValue isBold>
+          <$GridCell $colSpan={3}>
+            <$SummaryTableLastLine>
               {formatFloatToCurrency(
-                sumBy(data.deMinimisAidSet, (grant) => Number(grant.amount)),
-                'EUR'
+                data.totalDeminimisAmount,
+                'EUR',
+                'FI-fi',
+                0
               )}
-            </$SummaryTableValue>
+            </$SummaryTableLastLine>
           </$GridCell>
         </>
       ) : (
