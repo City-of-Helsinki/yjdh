@@ -362,6 +362,9 @@
             "title": "Palkkatukipäätös",
             "message": "Liitä molemmat myönnetyt palkkatukipäätökset"
           },
+          "paySubsidyDecisionAged": {
+            "title": "55 vuotta täyttäneiden työllistämistukipäätös"
+          },
           "commissionContract": {
             "title": "Toimeksiantosopimus",
             "message": ""
