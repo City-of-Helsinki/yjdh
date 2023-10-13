@@ -30,7 +30,6 @@ import EmploymenAppliedMoreView from './employmentAppliedMoreView/EmploymentAppl
 import EmploymentView from './employmentView/EmpoymentView';
 import HandledView from './handledView/HandledView';
 import NotificationView from './notificationView/NotificationView';
-import PaySubsidyView from './paySubsidyView/PaySubsidyView';
 import SalaryBenefitCalculatorView from './salaryBenefitCalculatorView/SalaryBenefitCalculatorView';
 import { useApplicationReview } from './useApplicationReview';
 
@@ -111,17 +110,12 @@ const ApplicationReview: React.FC = () => {
             handleUpload={handleUpload}
             isUploading={isUploading}
           />
-          <PaySubsidyView
-            data={application}
-            handleUpload={handleUpload}
-            isUploading={isUploading}
-          />
-          <BenefitView data={application} />
           <EmploymentView
             data={application}
             handleUpload={handleUpload}
             isUploading={isUploading}
           />
+          <BenefitView data={application} />
           {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER ? (
             <AttachmentsView data={application} />
           ) : (

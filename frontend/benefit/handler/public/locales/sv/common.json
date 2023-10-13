@@ -683,16 +683,20 @@
       "deMinimisAidsNo": "Hakija ei ole ilmoittanut aiemmista de minimis -tuista.",
       "coOperationNegotiations": "Onko organisaatiolla käynnissä tai edellisen 12 aikana päättynyt muutosneuvottelut?",
       "isLivingInHelsinki": "Onko työllistettävän kotikunta Helsinki työsuhteen alkaessa?",
-      "paySubsidyGranted": "Onko työsuhteeseen myönnetty palkkatuki?",
       "apprenticeshipProgram": "Onko kyseessä oppisopimus?",
       "benefitType": "Tukimuoto",
       "startDate": "Alkaen",
       "endDate": "Päättyen",
       "jobTitle": "Tehtävänimike",
-      "workingHours": "Työaika: {{workingHours}} tuntia viikossa",
-      "monthlyPay": "Bruttopalkka: {{monthlyPay}} € / kk",
-      "otherExpenses": "Sivukulut: {{otherExpenses}} € / kk",
-      "vacationMoney": "Lomaraha: {{vacationMoney}} € / kk",
+      "workingHours": "Työaika",
+      "workingHoursText": "tuntia viikossa",
+      "monthlyPay": "Bruttopalkka",
+      "monthlyPayText": "{{monthlyPay}}/kk",
+      "otherExpenses": "Sivukulut",
+      "otherExpensesText": "{{otherExpenses}}/kk",
+      "vacationMoney": "Lomaraha",
+      "vacationMoneyText": "{{vacationMoney}}/kk",
+      "collectiveBargainingAgreement": "Työehtosopimus",
       "noSupport": "Ei puolleta",
       "support": "Puolletaan",
       "reason": "Perustelu",
@@ -704,6 +708,12 @@
         "label": "Harjoittaako työnantaja taloudellista toimintaa?",
         "yes": "Kyllä",
         "no": "Ei"
+      },
+      "paySubsidyGranted": {
+        "label": "Myönnetyt tuet",
+        "granted": "Palkkatuki",
+        "grantedAged": "55-vuotta täyttäneiden työllistämistuki",
+        "notGranted": "Työsuhteeseen ei ole myönnetty mitään edeltävää tukea"
       }
     },
     "summary": {

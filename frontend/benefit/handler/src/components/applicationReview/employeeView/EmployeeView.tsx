@@ -75,7 +75,7 @@ const EmployeeView: React.FC<ApplicationReviewViewProps> = ({
       <$GridCell $colSpan={12} $colStart={1}>
         <AttachmentsListView
           title={t('common:attachments.types.helsinkiBenefitVoucher.title')}
-          type={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
+          type={ATTACHMENT_TYPES.HELSINKI_BENEFIT_VOUCHER}
           attachments={data.attachments || []}
         />
       </$GridCell>
