@@ -46,6 +46,25 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         <$ViewField>{`${data.company?.streetAddress}, ${
           data.company?.postcode || ''
         } ${data.company?.city || ''}`}</$ViewField>
+      </$GridCell>
+        {data.alternativeCompanyStreetAddress && (
+          <$GridCell $colSpan={6}>
+            <$ViewFieldBold>
+              {t(`${translationsBase}.fields.alternativeAddress`)}
+            </$ViewFieldBold>
+            <$ViewField>
+              {data.companyDepartment && <div>{data.companyDepartment}</div>}
+              {[
+                data.alternativeCompanyStreetAddress,
+                data.alternativeCompanyPostcode,
+                data.alternativeCompanyCity,
+              ]
+                .join(', ')
+                .trim()}
+            </$ViewField>
+          </$GridCell>
+        )}
+      <$GridCell $colSpan={6} $colStart={1}>
         <$ViewFieldBold>
           {t(`${translationsBase}.fields.bankAccountNumber`)}
         </$ViewFieldBold>
@@ -53,28 +72,12 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           {friendlyFormatIBAN(data?.companyBankAccountNumber)}
         </$ViewField>
       </$GridCell>
-
-      {data.alternativeCompanyStreetAddress && (
+      {data?.company?.organizationType === ORGANIZATION_TYPES.ASSOCIATION && (
         <$GridCell $colSpan={6}>
           <$ViewFieldBold>
-            {t(`${translationsBase}.fields.alternativeAddress`)}
-          </$ViewFieldBold>
-          <$ViewField>
-            {data.companyDepartment && <div>{data.companyDepartment}</div>}
-            {[
-              data.alternativeCompanyStreetAddress,
-              data.alternativeCompanyPostcode,
-              data.alternativeCompanyCity,
-            ]
-              .join(', ')
-              .trim()}
-          </$ViewField>
-        </$GridCell>
-      )}
-      {data?.company?.organizationType === ORGANIZATION_TYPES.ASSOCIATION && (
-        <$GridCell $colSpan={6} $colStart={1}>
-          <$ViewFieldBold>
-            {t(`${translationsBase}.fields.associationHasBusinessActivities.label`)}
+            {t(
+              `${translationsBase}.fields.associationHasBusinessActivities.label`
+            )}
           </$ViewFieldBold>
           <$ViewField>
             {data?.associationHasBusinessActivities
