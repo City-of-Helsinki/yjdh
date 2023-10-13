@@ -139,3 +139,25 @@ class PaySubsidyGranted(models.TextChoices):
     GRANTED = "granted", _("Pay subsidy granted (default)")
     GRANTED_AGED = "granted_aged", _("Pay subsidy granted (aged)")
     NOT_GRANTED = "not_granted", _("No granted pay subsidy")
+
+
+class AhjoStatus(models.TextChoices):
+    # The possible statuses for Ahjo processing
+    SUBMITTED_BUT_NOT_SENT_TO_AHJO = "submitted_but_not_sent_to_ahjo", _(
+        "Submitted but not sent to AHJO"
+    )
+    REQUEST_TO_OPEN_CASE_SENT = "request_to_open_case_sent", _(
+        "Request to open the case sent to AHJO"
+    )
+    CASE_OPENED = "case_opened", _("Case opened in AHJO")
+    UPDATE_REQUEST_SENT = "update_request_sent", _("Update request sent")
+    UPDATE_REQUEST_RECEIVED = "update_request_received", _("Update request received")
+    DECISION_PROPOSAL_SENT = "decision_proposal_sent", _("Decision proposal sent")
+    DECISION_PROPOSAL_ACCEPTED = "decision_proposal_accepted", _(
+        "Decision proposal accepted"
+    )
+    DECISION_PROPOSAL_REJECTED = "decision_proposal_rejected", _(
+        "Decision proposal rejected"
+    )
+    DELETE_REQUEST_SENT = "delete_request_sent", _("Delete request sent")
+    DELETE_REQUEST_RECEIVED = "delete_request_received", _("Delete request received")
