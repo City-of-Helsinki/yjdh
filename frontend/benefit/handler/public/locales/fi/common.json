@@ -657,7 +657,7 @@
     "headings": {
       "heading1": "Työnantajan tiedot",
       "heading1Additional": "Postiosoite päätöstä varten",
-      "heading2": "Yhteyshenkilö",
+      "heading2": "Työnantajan yhteyshenkilö",
       "heading3": "Hakijan de minimis-tuet",
       "heading4": "Muutosneuvottelut",
       "heading5": "Työllistettävä henkilö",
@@ -699,7 +699,7 @@
       "editEndDate": "Hakemusta muokattava viimeistään {{date}}",
       "ssn": "Henkilötunnus",
       "email": "Sähköposti",
-      "phone": "Puhelinnumero",
+      "phone": "Puhelin",
       "associationHasBusinessActivities": {
         "label": "Harjoittaako työnantaja taloudellista toimintaa?",
         "yes": "Kyllä",
