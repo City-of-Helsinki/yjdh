@@ -660,7 +660,7 @@
       "heading2": "Työnantajan yhteyshenkilö",
       "heading3": "De-minimis-tuet",
       "heading4": "Muutosneuvottelut",
-      "heading5": "Työllistettävä henkilö",
+      "heading5": "Työllistettävän tiedot",
       "heading6": "Palkkatukipäätös",
       "heading7": "Haettava tukimuoto ja ajankohta",
       "heading8": "Työsuhde",
@@ -682,7 +682,7 @@
       "deMinimisAidTotal": "Yhteensä",
       "deMinimisAidsNo": "Hakija ei ole ilmoittanut aiemmista de minimis -tuista.",
       "coOperationNegotiations": "Onko organisaatiolla käynnissä tai edellisen 12 aikana päättynyt muutosneuvottelut?",
-      "isLivingInHelsinki": "Työllistetyn kotikunta on Helsinki ",
+      "isLivingInHelsinki": "Onko työllistettävän kotikunta Helsinki työsuhteen alkaessa?",
       "paySubsidyGranted": "Onko työsuhteeseen myönnetty palkkatuki?",
       "apprenticeshipProgram": "Onko kyseessä oppisopimus?",
       "benefitType": "Tukimuoto",
@@ -850,7 +850,7 @@
         "title": "Sopimus oppisopimuskoulutuksen järjestämisestä"
       },
       "helsinkiBenefitVoucher": {
-        "title": "Helsinki-lisä seteli"
+        "title": "Helsinki-lisä -kortti"
       },
       "fullApplication": {
         "title": "Paperihakemus"
