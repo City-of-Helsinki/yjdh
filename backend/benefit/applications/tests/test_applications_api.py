@@ -25,6 +25,7 @@ from applications.api.v1.status_transition_validator import (
 )
 from applications.api.v1.views import BaseApplicationViewSet
 from applications.enums import (
+    AhjoStatus,
     ApplicationStatus,
     ApplicationStep,
     AttachmentType,
@@ -1004,6 +1005,24 @@ def test_application_date_range_on_submit(
     application.refresh_from_db()
     submit_response = _submit_application(api_client, application)
     assert submit_response.status_code == status_code
+
+
+def test_application_has_default_ahjo_status_after_submit(
+    request, api_client, application
+):
+    add_attachments_to_application(request, application)
+
+    data = ApplicantApplicationSerializer(application).data
+
+    api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    application.refresh_from_db()
+    submit_response = _submit_application(api_client, application)
+    assert (
+        submit_response.data["ahjo_status"] == AhjoStatus.SUBMITTED_BUT_NOT_SENT_TO_AHJO
+    )
 
 
 @pytest.mark.parametrize(

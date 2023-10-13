@@ -1,5 +1,5 @@
 from datetime import date, timedelta
-from typing import Dict, List
+from typing import Dict, List, Union
 
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
@@ -33,6 +33,7 @@ from applications.enums import (
 )
 from applications.models import (
     Application,
+    ApplicationAhjoStatus,
     ApplicationBasis,
     ApplicationLogEntry,
     Employee,
@@ -177,6 +178,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "warnings",
             "duration_in_months_rounded",
             "total_deminimis_amount",
+            "ahjo_status",
         ]
         read_only_fields = [
             "submitted_at",
@@ -347,6 +349,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         }
 
     ahjo_decision = serializers.ReadOnlyField()
+
+    ahjo_status = serializers.SerializerMethodField("get_latest_ahjo_status")
 
     submitted_at = serializers.SerializerMethodField("get_submitted_at")
 
@@ -909,6 +913,14 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                 }
             )
 
+    def get_latest_ahjo_status(self, obj) -> Union[str, None]:
+        """Get the latest Ahjo status text for the application"""
+        try:
+            status = obj.ahjo_status.latest()
+        except ApplicationAhjoStatus.DoesNotExist:
+            return None
+        return status.status
+
     @staticmethod
     def _get_available_benefit_types(
         company,
@@ -1070,6 +1082,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                 self._validate_date_range_on_submit(
                     instance.start_date, instance.end_date
                 )
+                # we are submitting the application here so we can create the initial Ahjo status
+                ApplicationAhjoStatus.objects.create(application=instance)
 
             call_now_or_later(
                 instance.calculation.calculate,
