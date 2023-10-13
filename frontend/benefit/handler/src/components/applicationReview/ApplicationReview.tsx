@@ -30,9 +30,9 @@ import EmploymenAppliedMoreView from './employmentAppliedMoreView/EmploymentAppl
 import EmploymentView from './employmentView/EmpoymentView';
 import HandledView from './handledView/HandledView';
 import NotificationView from './notificationView/NotificationView';
+import PaperView from './paperView/PaperView';
 import SalaryBenefitCalculatorView from './salaryBenefitCalculatorView/SalaryBenefitCalculatorView';
 import { useApplicationReview } from './useApplicationReview';
-
 
 const ApplicationReview: React.FC = () => {
   const {
@@ -101,6 +101,9 @@ const ApplicationReview: React.FC = () => {
             handleUpdateReviewState,
           }}
         >
+          {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER && (
+            <PaperView data={application} />
+          )}
           <CompanyInfoView data={application} />
           <ContactPersonView data={application} />
           <DeminimisView data={application} />

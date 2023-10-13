@@ -666,9 +666,11 @@
       "heading8": "Työsuhde",
       "heading9": "Suostumus",
       "heading10": "Hakemuksen käsittely",
-      "heading11": "Muut liitteet"
+      "heading11": "Muut liitteet",
+      "heading12": "Paperihakemuksen tiedot"
     },
     "fields": {
+      "paperApplicationDate": "Paperihakemuksen saapumispäivä",
       "businessId": "Y-tunnus",
       "organizationType": "Yritysmuoto",
       "address": "Osoite",
