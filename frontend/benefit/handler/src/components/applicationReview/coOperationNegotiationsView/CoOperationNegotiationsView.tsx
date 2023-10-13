@@ -18,14 +18,16 @@ const CoOperationNegotiationsView: React.FC<ApplicationReviewViewProps> = ({
     <ReviewSection
       header={t(`${translationsBase}.headings.heading4`)}
       action={data.status !== APPLICATION_STATUSES.RECEIVED ? <span /> : null}
-      section='coOperationNegotiations'
+      section="coOperationNegotiations"
     >
       <$GridCell $colSpan={12}>
-        <$ViewField>
+        <$ViewFieldBold>
           {t(`${translationsBase}.fields.coOperationNegotiations`)}
-          <$ViewFieldBold>{` ${t(
+        </$ViewFieldBold>
+        <$ViewField>
+          {` ${t(
             `common:utility.${data.coOperationNegotiations ? 'yes' : 'no'}`
-          )}`}</$ViewFieldBold>
+          )}`}
         </$ViewField>
         {data.coOperationNegotiations && (
           <$ViewField>{data.coOperationNegotiationsDescription}</$ViewField>
