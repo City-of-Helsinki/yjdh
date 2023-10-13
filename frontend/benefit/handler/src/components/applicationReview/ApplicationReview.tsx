@@ -18,7 +18,6 @@ import { useTheme } from 'styled-components';
 import HandlingApplicationActions from './actions/handlingApplicationActions/HandlingApplicationActions';
 import ReceivedApplicationActions from './actions/receivedApplicationActions/ReceivedApplicationActions';
 import ApplicationProcessingView from './applicationProcessingView/AplicationProcessingView';
-import AttachmentsView from './attachmentsView/AttachmentsView';
 import BenefitView from './benefitView/BenefitView';
 import CompanyInfoView from './companyInfoView/CompanyInfoView';
 import ConsentView from './consentView/ConsentView';
@@ -119,15 +118,11 @@ const ApplicationReview: React.FC = () => {
             isUploading={isUploading}
           />
           <BenefitView data={application} />
-          {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER ? (
-            <AttachmentsView data={application} />
-          ) : (
-            <ConsentView
-              data={application}
-              handleUpload={handleUpload}
-              isUploading={isUploading}
-            />
-          )}
+          <ConsentView
+            data={application}
+            handleUpload={handleUpload}
+            isUploading={isUploading}
+          />
           {application.status === APPLICATION_STATUSES.HANDLING && (
             <>
               <CalculatorView />

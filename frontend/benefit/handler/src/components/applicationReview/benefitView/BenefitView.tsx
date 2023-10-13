@@ -15,7 +15,6 @@ const BenefitView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const { t } = useTranslation();
   return (
     <ReviewSection
-      withoutDivider
       header={t(`${translationsBase}.headings.heading7`)}
       action={data.status !== APPLICATION_STATUSES.RECEIVED ? <span /> : null}
       section="benefit"

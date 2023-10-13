@@ -153,6 +153,15 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({
           attachments={data.attachments || []}
         />
       </$GridCell>
+      <$GridCell $colSpan={6}>
+        <AttachmentsListView
+          title={t(
+            'common:applications.sections.attachments.types.otherAttachment.title'
+          )}
+          type={ATTACHMENT_TYPES.OTHER_ATTACHMENT}
+          attachments={data.attachments || []}
+        />
+      </$GridCell>
     </ReviewSection>
   );
 };
