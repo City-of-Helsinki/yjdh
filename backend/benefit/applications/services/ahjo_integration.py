@@ -1,4 +1,3 @@
-import requests
 import logging
 import os
 import zipfile
@@ -9,17 +8,16 @@ from typing import List, Optional
 
 import jinja2
 import pdfkit
-from django.db.models import QuerySet
+import requests
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.db.models import QuerySet
 
 from applications.enums import ApplicationStatus
-from applications.models import Application, AhjoSetting
+from applications.models import AhjoSetting, Application
+from applications.services.ahjo_authentication import AhjoConnector
 from applications.services.applications_csv_report import ApplicationsCsvService
 from companies.models import Company
-
-from applications.services.ahjo_authentication import AhjoConnector
 
 
 @dataclass
@@ -365,7 +363,9 @@ def dummy_ahjo_request():
         ahjo_auth_code = AhjoSetting.objects.get(name="ahjo_code").data
         LOGGER.info(f"Retrieved auth code: {ahjo_auth_code}")
     except ObjectDoesNotExist:
-        LOGGER.error("Error: Ahjo auth code not found in database. Please set the 'ahjo_code' setting.")
+        LOGGER.error(
+            "Error: Ahjo auth code not found in database. Please set the 'ahjo_code' setting."
+        )
         return
 
     connector = AhjoConnector(requests)
@@ -379,11 +379,13 @@ def dummy_ahjo_request():
         LOGGER.warning(f"Error retrieving access token: {e}")
         return
     headers = {
-        'Authorization': f'Bearer {ahjo_token.access_token}',
+        "Authorization": f"Bearer {ahjo_token.access_token}",
     }
     print(headers)
     try:
-        response = requests.get(f"{ahjo_api_url}/cases", headers=headers, timeout=connector.timout)
+        response = requests.get(
+            f"{ahjo_api_url}/cases", headers=headers, timeout=connector.timout
+        )
         response.raise_for_status()
         print(response.json())
     except requests.exceptions.HTTPError as e:
