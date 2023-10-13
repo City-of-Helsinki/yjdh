@@ -877,6 +877,6 @@ class ReviewState(models.Model):
     approval = models.BooleanField(default=False, verbose_name=_("approval"))
 
 
-class AhjoSetting(models.Model):
+class AhjoSetting(TimeStampedModel):
     name = models.CharField(max_length=255, unique=True)
     data = JSONField()
