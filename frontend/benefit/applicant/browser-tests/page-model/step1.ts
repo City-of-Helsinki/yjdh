@@ -75,6 +75,18 @@ class Step1 extends WizardStep {
       .associationHasBusinessActivities.no,
   });
 
+  private businessActivitiesTrue = this.within(
+    this.component.getByRole('group', {
+      name: this.regexp(
+        this.translations.applications.sections.company.fields
+          .associationHasBusinessActivities.label
+      ),
+    })
+  ).findByRole('radio', {
+    name: this.translations.applications.sections.company.fields
+      .associationHasBusinessActivities.yes,
+  });
+
   private deMinimisAidFalse = this.within(
     this.component.getByRole('group', {
       name: this.regexp(
@@ -118,6 +130,28 @@ class Step1 extends WizardStep {
       .coOperationNegotiations.no,
   });
 
+  private coOperationNegotiationsTrue = this.within(
+    this.component.getByRole('group', {
+      name: this.regexp(
+        this.translations.applications.sections.company.fields
+          .coOperationNegotiations.label
+      ),
+    })
+  ).findByRole('radio', {
+    name: this.translations.applications.sections.company.fields
+      .coOperationNegotiations.yes,
+  });
+
+  private coOperationNegotiationsDescription = this.component.findByRole(
+    'textbox',
+    {
+      name: this.regexp(
+        this.translations.applications.sections.company.fields
+          .coOperationNegotiationsDescription.label
+      ),
+    }
+  );
+
   public async fillEmployerInfo(
     iban: string,
     isAssociation: boolean
@@ -152,6 +186,15 @@ class Step1 extends WizardStep {
     return this.clickDeminimisSave();
   }
 
+  public async fillCoOperationNegotiationsDescription(
+    clarification: string
+  ): Promise<void> {
+    await this.fillInput(
+      this.coOperationNegotiationsDescription,
+      clarification
+    );
+  }
+
   private deminimisSave = this.component.findByRole('button', {
     name: this.translations.applications.sections.company.deMinimisAidsAdd,
   });
@@ -167,19 +210,19 @@ class Step1 extends WizardStep {
     return t.click(this.deminimisRemove(index));
   }
 
-  public selectNoBusinessActivities(): Promise<void> {
-    return this.clickSelectRadioButton(this.businessActivitiesFalse);
+  public selectBusinessActivities(yes: boolean): Promise<void> {
+    if (yes) return this.clickSelectRadioButton(this.businessActivitiesFalse);
+    return this.clickSelectRadioButton(this.businessActivitiesTrue);
   }
 
-  public selectNoDeMinimis(): Promise<void> {
+  public selectDeMinimis(yes: boolean): Promise<void> {
+    if (yes) return this.clickSelectRadioButton(this.deMinimisAidTrue);
     return this.clickSelectRadioButton(this.deMinimisAidFalse);
   }
 
-  public selectYesDeMinimis(): Promise<void> {
-    return this.clickSelectRadioButton(this.deMinimisAidTrue);
-  }
-
-  public selectNocoOperationNegotiations(): Promise<void> {
+  public selectCoOperationNegotiations(yes: boolean): Promise<void> {
+    if (yes)
+      return this.clickSelectRadioButton(this.coOperationNegotiationsTrue);
     return this.clickSelectRadioButton(this.coOperationNegotiationsFalse);
   }
 }

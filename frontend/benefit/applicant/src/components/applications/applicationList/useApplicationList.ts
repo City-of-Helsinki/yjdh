@@ -96,9 +96,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
         return {
           label: t(`${translationListBase}.common.check`),
           handleAction: (): void => {
-            void router.push(
-              `${ROUTES.APPLICATION_FORM}?id=${id}&isReadOnly=true`
-            );
+            void router.push(`${ROUTES.APPLICATION_FORM}?id=${id}`);
           },
         };
     }

@@ -25,11 +25,13 @@ module.exports = (envPath) => {
     hooks: {
       test: {
         after: async (t) => {
-          const { error, warn, log, info } = await t.getBrowserConsoleMessages();
-          console.log('Console logs:', JSON.stringify(log, null, 2));
-          console.info('Console infos:', JSON.stringify(info, null, 2));
-          console.warn('Console warnings:', JSON.stringify(warn, null, 2));
-          console.error('Console errors:', JSON.stringify(error, null, 2));
+          if (!process.env.TESTCAFE_SKIP_CONSOLE_LOG) {
+            const { error, warn, log, info } = await t.getBrowserConsoleMessages();
+            console.log('Console logs:', JSON.stringify(log, null, 2));
+            console.info('Console infos:', JSON.stringify(info, null, 2));
+            console.warn('Console warnings:', JSON.stringify(warn, null, 2));
+            console.error('Console errors:', JSON.stringify(error, null, 2));
+          }
         },
       },
     },

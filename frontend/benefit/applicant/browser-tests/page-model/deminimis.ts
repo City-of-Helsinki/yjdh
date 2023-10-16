@@ -46,7 +46,7 @@ class DeMinimisAid {
       '050001234',
       'tester@example.com'
     );
-    await this.step1.selectNocoOperationNegotiations();
+    await this.step1.selectCoOperationNegotiations(false);
   };
 
   public getRowCount = async (): Promise<number> =>
@@ -144,7 +144,7 @@ class DeMinimisAid {
       t: TestController,
       action: SAVE_ACTIONS
     ): Promise<void> => {
-      await this.step1.selectNoDeMinimis();
+      await this.step1.selectDeMinimis(false);
 
       if (action === SAVE_ACTIONS.CONTINUE) {
         await this.actions.saveStep1AndReturn();
@@ -153,7 +153,7 @@ class DeMinimisAid {
         await this.saveExitAndEdit(t);
       }
 
-      await this.step1.selectYesDeMinimis();
+      await this.step1.selectDeMinimis(true);
       await t.scrollIntoView(this.getSelectorContinueButton());
       await t.expect(await this.getRowCount()).eql(0);
     },
