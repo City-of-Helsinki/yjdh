@@ -29,9 +29,6 @@ const formatFloatToCurrency = (
 export const mapRequiredForm = (
   form: ApplicationFormData
 ): ApplicationField[] => [
-  { testId: 'application-field-companyName', value: 'Demo I. Haanpää Oy' },
-  { testId: 'application-field-companyBusinessId', value: '0877830-0' },
-  { testId: 'application-field-companyAddress', value: 'Vasaratie 4 A 3' },
   {
     testId: 'application-field-companyBankAccountNumber',
     value: friendlyFormatIBAN(`FI${form.organization.iban}`),
