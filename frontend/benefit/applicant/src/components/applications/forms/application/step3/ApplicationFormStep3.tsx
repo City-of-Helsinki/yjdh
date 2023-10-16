@@ -13,6 +13,18 @@ import StepperActions from '../stepperActions/StepperActions';
 import AttachmentsList from './attachmentsList/AttachmentsList';
 import { useApplicationFormStep3 } from './useApplicationFormStep3';
 
+const translationKeyForPaySubsidyAttachement = (
+  paySubsidyGranted: PAY_SUBSIDY_GRANTED
+): 'paySubsidyDecision' | 'paySubsidyDecisionAged' => {
+  if (paySubsidyGranted === PAY_SUBSIDY_GRANTED.GRANTED) {
+    return 'paySubsidyDecision';
+  }
+  if (paySubsidyGranted === PAY_SUBSIDY_GRANTED.GRANTED_AGED) {
+    return 'paySubsidyDecisionAged';
+  }
+  return 'paySubsidyDecision';
+};
+
 const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
   data,
 }) => {
@@ -60,6 +72,9 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
                 as="li"
                 attachments={attachments}
                 attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
+                attachmentTypeTranslationKey={translationKeyForPaySubsidyAttachement(
+                  paySubsidyGranted
+                )}
                 showMessage={showSubsidyMessage}
                 required
               />

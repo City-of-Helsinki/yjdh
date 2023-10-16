@@ -363,6 +363,9 @@
             "title": "Beslut om lönesubvention",
             "message": "Bifoga båda besluten om beviljad lönesubvention"
           },
+          "paySubsidyDecisionAged": {
+            "title": "Beslut om finansiella stöd för personer som är 55 år och äldre"
+          },
           "commissionContract": {
             "title": "Toimeksiantosopimus",
             "message": ""
