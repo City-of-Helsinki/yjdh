@@ -1,5 +1,4 @@
 import {
-  $Heading,
   $Hr,
   $Paragraph,
   $Subheading,
@@ -18,6 +17,7 @@ import { useTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
 import Container from 'shared/components/container/Container';
+import Heading from 'shared/components/forms/heading/Heading';
 import {
   $Grid,
   $GridCell,
@@ -25,6 +25,7 @@ import {
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { removeLocalStorageItem } from 'shared/utils/localstorage.utils';
 
+import { $LoginGrid } from '../components/pages/Login.sc';
 import { LOCAL_STORAGE_KEYS } from '../constants';
 
 type NotificationProps =
@@ -67,8 +68,8 @@ const Login: NextPage = () => {
 
   return (
     <Container>
-      <$Grid>
-        <$GridCell $colSpan={6}>
+      <$LoginGrid>
+        <$GridCell $colSpan={12}>
           {notificationProps && (
             <Notification
               type={notificationProps.type}
@@ -78,13 +79,13 @@ const Login: NextPage = () => {
               {notificationProps.content}
             </Notification>
           )}
-          <$Heading>{t('common:login.heading')}</$Heading>
+          <Heading as="h1" size="xl" header={t('common:login.heading')} />
           <$Paragraph>{t('common:login.infoText1')}</$Paragraph>
           <$Hr />
           <$Subheading>{t('common:login.subheading1')}</$Subheading>
           <$Paragraph>{t('common:login.infoText2')}</$Paragraph>
-          <$Grid>
-            <$GridCell $colSpan={8}>
+          <$Grid columns={16}>
+            <$GridCell $colSpan={14}>
               <Button
                 theme="coat"
                 fullWidth
@@ -99,8 +100,8 @@ const Login: NextPage = () => {
           <$Hr />
           <$Subheading>{t('common:login.subheading2')}</$Subheading>
           <$Paragraph>{t('common:login.infoText3')}</$Paragraph>
-          <$Grid>
-            <$GridCell $colSpan={8}>
+          <$Grid columns={16}>
+            <$GridCell $colSpan={14}>
               <Button
                 theme="coat"
                 variant="secondary"
@@ -124,7 +125,7 @@ const Login: NextPage = () => {
             {t('common:login.infoContent')}
           </Notification>
         </$GridCell>
-      </$Grid>
+      </$LoginGrid>
     </Container>
   );
 };
