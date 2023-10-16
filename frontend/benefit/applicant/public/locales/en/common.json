@@ -362,6 +362,9 @@
             "title": "Pay subsidy decision",
             "message": "Attach both issued pay subsidy decisions"
           },
+          "paySubsidyDecisionAged": {
+            "title": "Decision for employment aid for people aged 55 and above"
+          },
           "commissionContract": {
             "title": "Toimeksiantosopimus",
             "message": ""
