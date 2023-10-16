@@ -174,4 +174,9 @@ export enum PAY_SUBSIDY_GRANTED {
   NOT_GRANTED = 'not_granted',
 }
 
+export const TRUTHY_SUBSIDIES = new Set([
+  PAY_SUBSIDY_GRANTED.GRANTED,
+  PAY_SUBSIDY_GRANTED.GRANTED_AGED,
+]);
+
 export const APPLICATION_START_DATE = new Date(new Date().getFullYear(), 0, 1);

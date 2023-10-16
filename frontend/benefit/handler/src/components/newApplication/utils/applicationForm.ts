@@ -13,9 +13,9 @@ import {
 } from 'benefit/handler/types/application';
 import {
   ATTACHMENT_TYPES,
-  BENEFIT_TYPES,
   EMPLOYEE_KEYS,
   PAY_SUBSIDY_OPTIONS,
+  TRUTHY_SUBSIDIES,
 } from 'benefit-shared/constants';
 import { ApplicationData } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
@@ -173,48 +173,42 @@ const getSubsidyOptions = (): OptionType[] =>
   }));
 
 const requiredAttachments = (values: Application): boolean => {
-  if (
-    values.benefitType === BENEFIT_TYPES.EMPLOYMENT ||
-    values.benefitType === BENEFIT_TYPES.SALARY
-  ) {
-    const hasWorkContract = !isEmpty(
-      values.attachments?.find(
+  const hasWorkContract = !isEmpty(
+    values.attachments?.find(
+      (att: BenefitAttachment) =>
+        att.attachmentType === ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT
+    )
+  );
+  const hasFullApplication = !isEmpty(
+    values.attachments?.find(
+      (att: BenefitAttachment) =>
+        att.attachmentType === ATTACHMENT_TYPES.FULL_APPLICATION
+    )
+  );
+  let hasPaySubsidyDecision = true;
+  if (TRUTHY_SUBSIDIES.has(values.paySubsidyGranted)) {
+    hasPaySubsidyDecision = !isEmpty(
+      values?.attachments?.find(
         (att: BenefitAttachment) =>
-          att.attachmentType === ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT
+          att.attachmentType === ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT
       )
-    );
-    const hasFullApplication = !isEmpty(
-      values.attachments?.find(
-        (att: BenefitAttachment) =>
-          att.attachmentType === ATTACHMENT_TYPES.FULL_APPLICATION
-      )
-    );
-    let hasPaySubsidyDecision = true;
-    if (values.paySubsidyGranted) {
-      hasPaySubsidyDecision = !isEmpty(
-        values?.attachments?.find(
-          (att: BenefitAttachment) =>
-            att.attachmentType === ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT
-        )
-      );
-    }
-    let hasApprenticeshipProgram = true;
-    if (values.apprenticeshipProgram) {
-      hasApprenticeshipProgram = !isEmpty(
-        values?.attachments?.find(
-          (att: BenefitAttachment) =>
-            att.attachmentType === ATTACHMENT_TYPES.EDUCATION_CONTRACT
-        )
-      );
-    }
-    return (
-      hasWorkContract &&
-      hasFullApplication &&
-      hasPaySubsidyDecision &&
-      hasApprenticeshipProgram
     );
   }
-  return false;
+  let hasApprenticeshipProgram = true;
+  if (values.apprenticeshipProgram) {
+    hasApprenticeshipProgram = !isEmpty(
+      values?.attachments?.find(
+        (att: BenefitAttachment) =>
+          att.attachmentType === ATTACHMENT_TYPES.EDUCATION_CONTRACT
+      )
+    );
+  }
+  return (
+    hasWorkContract &&
+    hasFullApplication &&
+    hasPaySubsidyDecision &&
+    hasApprenticeshipProgram
+  );
 };
 
 export {
