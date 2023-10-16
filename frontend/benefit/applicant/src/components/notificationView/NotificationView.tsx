@@ -10,6 +10,7 @@ import {
   $IconCheck,
   $Notification,
   $NotificationMessage,
+  $NotificationRow,
   $NotificationTitle,
 } from './NotificatinsView.sc';
 
@@ -26,17 +27,28 @@ const NotificationView: React.FC<Props> = ({ title, message }) => {
     void router.push(ROUTES.HOME);
   };
 
+  const handleReload = (): void => {
+    void router.reload();
+  };
+
   return (
     <Container>
       <$Notification>
-        <$IconCheck size="xl" />
-        <$NotificationTitle>{title}</$NotificationTitle>
-        <$NotificationMessage>{message}</$NotificationMessage>
-        <$ActionsContainer>
-          <Button theme="coat" onClick={handleGoHome}>
-            {t('common:utility.home')}
-          </Button>
-        </$ActionsContainer>
+        <$NotificationRow>
+          <$IconCheck size="xl" />
+        </$NotificationRow>
+        <$NotificationRow>
+          <$NotificationTitle>{title}</$NotificationTitle>
+          <$NotificationMessage>{message}</$NotificationMessage>
+          <$ActionsContainer>
+            <Button theme="coat" onClick={handleGoHome}>
+              {t('common:utility.home')}
+            </Button>
+            <Button theme="coat" variant="secondary" onClick={handleReload}>
+              {t('common:applications.actions.viewSavedApplication')}
+            </Button>
+          </$ActionsContainer>
+        </$NotificationRow>
       </$Notification>
     </Container>
   );

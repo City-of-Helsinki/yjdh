@@ -65,7 +65,8 @@
       "close": "Stäng",
       "openTermsAsPDF": "Öppna villkoren som PDF-fil",
       "continueToService": "Fortsätt till tjänsten",
-      "pauseAndExit": "Avbryt och lämna sidan"
+      "pauseAndExit": "Avbryt och lämna sidan",
+      "viewSavedApplication": "Se ansökan du skickade"
     },
     "sections": {
       "company": {
@@ -430,8 +431,8 @@
   },
   "notifications": {
     "applicationSubmitted": {
-      "label": "Ansökan har skickats in",
-      "message": "Ansökan om Helsingforstillägg {{applicationNumber}} ({{applicantName}}) har skickats. Du får ett meddelande när ansökan har behandlats."
+      "label": "Ansökan om Helsingforstillägget har skickats",
+      "message": "Vi har mottagit din ansökan om Helsingforstillägg med ansökningsnummer {{applicationNumber}}\n\nAnsökningen överförs till handläggning. Den kontaktperson som utsetts för ansökningen får ett meddelande per e-post när ansökningen har behandlats. Du kan följa upp med hur handläggningen framskrider i e-tjänsten för sysselsättning Helsingforstillägg.\n\nOm du har frågor om ansökningen, kan du skicka meddelanden i e-tjänsten för sysselsättning Helsingforstillägg eller skicka e-post till adressen helsinkilisa@hel.fi."
     },
     "applicationSaved": {
       "label": "Applikationen sparas",
