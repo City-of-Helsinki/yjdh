@@ -126,11 +126,11 @@
   "applications": {
     "list": {
       "columns": {
-        "companyName": "Hakija",
+        "companyName": "Työnantaja",
         "companyId": "Y-tunnus",
         "submittedAt": "Saapunut",
-        "applicationNum": "Numero",
-        "employeeName": "Työllistettävä",
+        "applicationNum": "Hakemusnumero",
+        "employeeName": "Työllistetty",
         "employeeNameArchive": "Työllistetty",
         "handlerName": "Käsittelijä",
         "companyForm": "Yritysmuoto",
@@ -657,47 +657,66 @@
     "headings": {
       "heading1": "Työnantajan tiedot",
       "heading1Additional": "Postiosoite päätöstä varten",
-      "heading2": "Yhteyshenkilö",
-      "heading3": "Hakijan de minimis-tuet",
+      "heading2": "Työnantajan yhteyshenkilö",
+      "heading3": "De-minimis-tuet",
       "heading4": "Muutosneuvottelut",
-      "heading5": "Työllistettävä henkilö",
+      "heading5": "Työllistettävän tiedot",
       "heading6": "Palkkatukipäätös",
-      "heading7": "Haettava tukimuoto ja ajankohta",
+      "heading7": "Haettu ajanjakso",
       "heading8": "Työsuhde",
       "heading9": "Suostumus",
       "heading10": "Hakemuksen käsittely",
-      "heading11": "Muut liitteet"
+      "heading11": "Muut liitteet",
+      "heading12": "Paperihakemuksen tiedot"
     },
     "fields": {
+      "paperApplicationDate": "Paperihakemuksen saapumispäivä",
       "businessId": "Y-tunnus",
+      "organizationType": "Yritysmuoto",
+      "address": "Osoite",
+      "alternativeAddress": "Toimitusosoite",
       "bankAccountNumber": "Tilinumero",
-      "associationHasBusinessActivities": "Harjoittaako työnantaja taloudellista toimintaa?",
       "associationImmediateManagerCheck": "Onko työllistettävälle osoitettu työnjohdollinen esihenkilö?",
       "applicantLanguage": "Asiointikieli",
       "deMinimisAidGranter": "Tuen myöntäjä",
       "deMinimisAidAmount": "Tuen määrä",
-      "deMinimisAidGrantedAt": "Myönnetty",
+      "deMinimisAidGrantedAt": "Myöntämispäivä",
       "deMinimisAidTotal": "Yhteensä",
       "deMinimisAidsNo": "Hakija ei ole ilmoittanut aiemmista de minimis -tuista.",
       "coOperationNegotiations": "Onko organisaatiolla käynnissä tai edellisen 12 aikana päättynyt muutosneuvottelut?",
-      "isLivingInHelsinki": "Työllistetyn kotikunta on Helsinki ",
-      "paySubsidyGranted": "Onko työsuhteeseen myönnetty palkkatuki?",
+      "isLivingInHelsinki": "Onko työllistettävän kotikunta Helsinki työsuhteen alkaessa?",
       "apprenticeshipProgram": "Onko kyseessä oppisopimus?",
       "benefitType": "Tukimuoto",
-      "startDate": "Alkaen",
-      "endDate": "Päättyen",
+      "startDate": "Aloituspäivä",
+      "endDate": "Päättymispäivä",
       "jobTitle": "Tehtävänimike",
-      "workingHours": "Työaika: {{workingHours}} tuntia viikossa",
-      "monthlyPay": "Bruttopalkka: {{monthlyPay}} € / kk",
-      "otherExpenses": "Sivukulut: {{otherExpenses}} € / kk",
-      "vacationMoney": "Lomaraha: {{vacationMoney}} € / kk",
+      "workingHours": "Työaika",
+      "workingHoursText": "tuntia viikossa",
+      "monthlyPay": "Bruttopalkka",
+      "monthlyPayText": "{{monthlyPay}}/kk",
+      "otherExpenses": "Sivukulut",
+      "otherExpensesText": "{{otherExpenses}}/kk",
+      "vacationMoney": "Lomaraha",
+      "vacationMoneyText": "{{vacationMoney}}/kk",
+      "collectiveBargainingAgreement": "Työehtosopimus",
       "noSupport": "Ei puolleta",
       "support": "Puolletaan",
       "reason": "Perustelu",
       "editEndDate": "Hakemusta muokattava viimeistään {{date}}",
       "ssn": "Henkilötunnus",
       "email": "Sähköposti",
-      "phone": "Puhelinnumero"
+      "phone": "Puhelin",
+      "associationHasBusinessActivities": {
+        "label": "Harjoittaako työnantaja taloudellista toimintaa?",
+        "yes": "Kyllä",
+        "no": "Ei"
+      },
+      "paySubsidyGranted": {
+        "label": "Myönnetyt tuet",
+        "granted": "Palkkatuki",
+        "grantedAged": "55-vuotta täyttäneiden työllistämistuki",
+        "notGranted": "Työsuhteeseen ei ole myönnetty mitään edeltävää tukea"
+      }
     },
     "summary": {
       "accepted": {
@@ -817,7 +836,7 @@
     }
   },
   "organizationTypes": {
-    "company": "Yritys",
+    "company": "Yhtiö",
     "association": "Yhteisö"
   },
   "benefitTypes": {
@@ -843,7 +862,7 @@
         "title": "Sopimus oppisopimuskoulutuksen järjestämisestä"
       },
       "helsinkiBenefitVoucher": {
-        "title": "Helsinki-lisä seteli"
+        "title": "Helsinki-lisä -kortti"
       },
       "fullApplication": {
         "title": "Paperihakemus"

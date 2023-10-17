@@ -48,22 +48,6 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
               <$ItemValue>{data.company?.businessId}</$ItemValue>
             </$ItemWrapper>
             <$ItemWrapper>
-              <$ItemHeader>{t(`${translationBase}.companyForm`)}</$ItemHeader>
-              <$ItemValue>
-                {t(
-                  `common:organizationTypes.${
-                    data.company?.organizationType || ''
-                  }`
-                )}
-              </$ItemValue>
-            </$ItemWrapper>
-            <$ItemWrapper>
-              <$ItemHeader>{t(`${translationBase}.submittedAt`)}</$ItemHeader>
-              <$ItemValue>
-                {data.submittedAt && formatDate(new Date(data.submittedAt))}
-              </$ItemValue>
-            </$ItemWrapper>
-            <$ItemWrapper>
               <$ItemHeader>
                 {t(`${translationBase}.applicationNum`)}
               </$ItemHeader>
@@ -79,6 +63,12 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
                 <$ItemValue>{handlerName}</$ItemValue>
               </$ItemWrapper>
             )}
+            <$ItemWrapper>
+              <$ItemHeader>{t(`${translationBase}.submittedAt`)}</$ItemHeader>
+              <$ItemValue>
+                {data.submittedAt && formatDate(new Date(data.submittedAt))}
+              </$ItemValue>
+            </$ItemWrapper>
           </$Col>
         </$InnerWrapper>
       </Container>

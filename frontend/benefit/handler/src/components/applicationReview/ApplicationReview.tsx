@@ -18,7 +18,6 @@ import { useTheme } from 'styled-components';
 import HandlingApplicationActions from './actions/handlingApplicationActions/HandlingApplicationActions';
 import ReceivedApplicationActions from './actions/receivedApplicationActions/ReceivedApplicationActions';
 import ApplicationProcessingView from './applicationProcessingView/AplicationProcessingView';
-import AttachmentsView from './attachmentsView/AttachmentsView';
 import BenefitView from './benefitView/BenefitView';
 import CompanyInfoView from './companyInfoView/CompanyInfoView';
 import ConsentView from './consentView/ConsentView';
@@ -30,10 +29,9 @@ import EmploymenAppliedMoreView from './employmentAppliedMoreView/EmploymentAppl
 import EmploymentView from './employmentView/EmpoymentView';
 import HandledView from './handledView/HandledView';
 import NotificationView from './notificationView/NotificationView';
-import PaySubsidyView from './paySubsidyView/PaySubsidyView';
+import PaperView from './paperView/PaperView';
 import SalaryBenefitCalculatorView from './salaryBenefitCalculatorView/SalaryBenefitCalculatorView';
 import { useApplicationReview } from './useApplicationReview';
-
 
 const ApplicationReview: React.FC = () => {
   const {
@@ -102,6 +100,9 @@ const ApplicationReview: React.FC = () => {
             handleUpdateReviewState,
           }}
         >
+          {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER && (
+            <PaperView data={application} />
+          )}
           <CompanyInfoView data={application} />
           <ContactPersonView data={application} />
           <DeminimisView data={application} />
@@ -111,26 +112,17 @@ const ApplicationReview: React.FC = () => {
             handleUpload={handleUpload}
             isUploading={isUploading}
           />
-          <PaySubsidyView
-            data={application}
-            handleUpload={handleUpload}
-            isUploading={isUploading}
-          />
-          <BenefitView data={application} />
           <EmploymentView
             data={application}
             handleUpload={handleUpload}
             isUploading={isUploading}
           />
-          {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER ? (
-            <AttachmentsView data={application} />
-          ) : (
-            <ConsentView
-              data={application}
-              handleUpload={handleUpload}
-              isUploading={isUploading}
-            />
-          )}
+          <BenefitView data={application} />
+          <ConsentView
+            data={application}
+            handleUpload={handleUpload}
+            isUploading={isUploading}
+          />
           {application.status === APPLICATION_STATUSES.HANDLING && (
             <>
               <CalculatorView />

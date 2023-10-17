@@ -1,12 +1,16 @@
+import {
+  $ViewField,
+  $ViewFieldBold,
+} from 'benefit/handler/components/newApplication/ApplicationForm.sc';
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import {
   APPLICATION_STATUSES,
   ATTACHMENT_TYPES,
 } from 'benefit-shared/constants';
+import camelCase from 'lodash/camelCase';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { formatFloatToCurrency } from 'shared/utils/string.utils';
 
@@ -33,56 +37,131 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({
         ) : null
       }
     >
-      <$GridCell $colSpan={12}>
+      <$GridCell $colSpan={6} $colStart={1}>
+        <$ViewFieldBold>
+          {t(`${translationsBase}.fields.jobTitle`)}
+        </$ViewFieldBold>
+        <$ViewField>{data.employee?.jobTitle || '-'}</$ViewField>
+      </$GridCell>
+      <$GridCell $colSpan={6}>
+        <$ViewFieldBold>
+          {t(`${translationsBase}.fields.workingHours`)}
+        </$ViewFieldBold>
         <$ViewField>
-          {`${t(`${translationsBase}.fields.jobTitle`)}: ${
-            data.employee?.jobTitle || '-'
-          }`}
+          {parseFloat(data.employee?.workingHours).toLocaleString('fi-FI')}{' '}
+          {t(`${translationsBase}.fields.workingHours`)}
         </$ViewField>
+      </$GridCell>
+      <$GridCell $colSpan={6} $colStart={1}>
+        <$ViewFieldBold>
+          {t(`${translationsBase}.fields.monthlyPay`)}
+        </$ViewFieldBold>
         <$ViewField>
-          {t(`${translationsBase}.fields.workingHours`, {
-            workingHours: formatFloatToCurrency(
-              data.employee?.workingHours,
-              null
-            ),
-          })}
+          {data.employee?.monthlyPay &&
+            t(`${translationsBase}.fields.monthlyPayText`, {
+              monthlyPay: formatFloatToCurrency(
+                data.employee.monthlyPay,
+                'EUR',
+                'FI-fi',
+                0
+              ),
+            })}
         </$ViewField>
+      </$GridCell>
+      <$GridCell $colSpan={6}>
+        <$ViewFieldBold>
+          {t(`${translationsBase}.fields.vacationMoney`)}
+        </$ViewFieldBold>
         <$ViewField>
-          {t(`${translationsBase}.fields.monthlyPay`, {
-            monthlyPay: formatFloatToCurrency(data.employee?.monthlyPay, null),
-          })}
+          {data.employee?.vacationMoney &&
+            t(`${translationsBase}.fields.vacationMoneyText`, {
+              vacationMoney: formatFloatToCurrency(
+                data.employee.vacationMoney,
+                'EUR',
+                'FI-fi',
+                0
+              ),
+            })}
         </$ViewField>
+      </$GridCell>
+      <$GridCell $colSpan={6} $colStart={1}>
+        <$ViewFieldBold>
+          {t(`${translationsBase}.fields.otherExpenses`)}
+        </$ViewFieldBold>
         <$ViewField>
-          {t(`${translationsBase}.fields.otherExpenses`, {
-            otherExpenses: formatFloatToCurrency(
-              data.employee?.otherExpenses,
-              null
-            ),
-          })}
+          {data.employee?.otherExpenses &&
+            t(`${translationsBase}.fields.otherExpensesText`, {
+              otherExpenses: formatFloatToCurrency(
+                data.employee.otherExpenses,
+                'EUR',
+                'FI-fi',
+                0
+              ),
+            })}
         </$ViewField>
-        <$ViewField
-          css={`
-            &&& {
-              padding-bottom: 0;
-            }
-          `}
-        >
-          {t(`${translationsBase}.fields.vacationMoney`, {
-            vacationMoney: formatFloatToCurrency(
-              data.employee?.vacationMoney,
-              null
-            ),
-          })}
-        </$ViewField>
+      </$GridCell>
+      <$GridCell $colSpan={6}>
+        <$ViewFieldBold>
+          {t(`${translationsBase}.fields.collectiveBargainingAgreement`)}
+        </$ViewFieldBold>
         <$ViewField>{data.employee?.collectiveBargainingAgreement}</$ViewField>
       </$GridCell>
-      <AttachmentsListView
-        title={t(
-          'common:applications.sections.attachments.types.employmentContract.title'
-        )}
-        type={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
-        attachments={data.attachments || []}
-      />
+      <$GridCell $colSpan={6} $colStart={1}>
+        <$ViewFieldBold>
+          {t(`${translationsBase}.fields.paySubsidyGranted.label`)}
+        </$ViewFieldBold>
+        <$ViewField>
+          {t(
+            `${translationsBase}.fields.paySubsidyGranted.${camelCase(
+              data.paySubsidyGranted
+            )}`
+          )}
+        </$ViewField>
+      </$GridCell>
+      <$GridCell $colSpan={6}>
+        <$ViewFieldBold>
+          {t(`${translationsBase}.fields.apprenticeshipProgram`)}{' '}
+        </$ViewFieldBold>
+        <$ViewField>
+          {t(`common:utility.${data.apprenticeshipProgram ? 'yes' : 'no'}`)}
+        </$ViewField>
+      </$GridCell>
+      <$GridCell $colSpan={6} $colStart={1}>
+        <AttachmentsListView
+          title={t(
+            'common:applications.sections.attachments.types.employmentContract.title'
+          )}
+          type={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
+          attachments={data.attachments || []}
+        />
+      </$GridCell>
+      <$GridCell $colSpan={6}>
+        <AttachmentsListView
+          title={t(
+            'common:applications.sections.attachments.types.paySubsidyDecision.title'
+          )}
+          type={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
+          attachments={data.attachments || []}
+        />
+      </$GridCell>
+      <$GridCell $colSpan={6} $colStart={1}>
+        <AttachmentsListView
+          title={t(
+            'common:applications.sections.attachments.types.educationContract.title'
+          )}
+          type={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
+          attachments={data.attachments || []}
+        />
+      </$GridCell>
+      <$GridCell $colSpan={6}>
+        <AttachmentsListView
+          title={t(
+            'common:applications.sections.attachments.types.otherAttachment.title'
+          )}
+          type={ATTACHMENT_TYPES.OTHER_ATTACHMENT}
+          attachments={data.attachments || []}
+        />
+      </$GridCell>
     </ReviewSection>
   );
 };

@@ -214,14 +214,16 @@ const CompanySection: React.FC<ReviewChildProps> = ({
         }
       >
         <$GridCell $colStart={1} $colSpan={12}>
-          {t(`${translationsBase}.fields.coOperationNegotiations.label`)}{' '}
           <$ViewFieldBold>
+            {t(`${translationsBase}.fields.coOperationNegotiations.label`)}
+          </$ViewFieldBold>
+          <$ViewField>
             {t(
               `${translationsBase}.fields.coOperationNegotiations.${
                 data.coOperationNegotiations ? 'yes' : 'no'
               }`
             )}
-          </$ViewFieldBold>
+          </$ViewField>
           <$ViewField>{data.coOperationNegotiationsDescription}</$ViewField>
         </$GridCell>
       </SummarySection>

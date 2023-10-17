@@ -860,6 +860,7 @@ class ReviewState(models.Model):
         primary_key=True,
         verbose_name=_("application"),
     )
+    paper = models.BooleanField(default=False, verbose_name=_("paper"))
     company = models.BooleanField(default=False, verbose_name=_("company"))
     company_contact_person = models.BooleanField(
         default=False, verbose_name=_("company contact person")

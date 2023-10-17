@@ -1,15 +1,16 @@
+import {
+  $ViewField,
+  $ViewFieldBold,
+} from 'benefit/handler/components/newApplication/ApplicationForm.sc';
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import {
   APPLICATION_STATUSES,
   ATTACHMENT_TYPES,
+  ORGANIZATION_TYPES,
 } from 'benefit-shared/constants';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import {
-  $ViewField,
-  $ViewFieldBold,
-} from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { getFullName } from 'shared/utils/application.utils';
 
@@ -36,31 +37,48 @@ const EmployeeView: React.FC<ApplicationReviewViewProps> = ({
         ) : null
       }
     >
-      <$GridCell $colSpan={12}>
-        <$ViewField>
+      <$GridCell $colSpan={6}>
+        <$ViewFieldBold large>
           {getFullName(data.employee?.firstName, data.employee?.lastName)}
-        </$ViewField>
-        <$ViewField>
-          {t(`${translationsBase}.fields.ssn`)}:{' '}
-          {data.employee?.socialSecurityNumber}
-        </$ViewField>
-        <$ViewField>
+        </$ViewFieldBold>
+      </$GridCell>
+      <$GridCell $colSpan={6} $colStart={1}>
+        <$ViewFieldBold>{t(`${translationsBase}.fields.ssn`)}</$ViewFieldBold>
+        <$ViewField>{data.employee?.socialSecurityNumber}</$ViewField>
+      </$GridCell>
+      <$GridCell $colSpan={6} $colStart={1}>
+        <$ViewFieldBold>
           {t(`${translationsBase}.fields.isLivingInHelsinki`)}
-          {': '}
-          <$ViewFieldBold>
-            {t(
-              `common:utility.${
-                data.employee?.isLivingInHelsinki ? 'yes' : 'no'
-              }`
-            )}
-          </$ViewFieldBold>
+        </$ViewFieldBold>
+        <$ViewField>
+          {t(
+            `common:utility.${
+              data.associationImmediateManagerCheck ? 'yes' : 'no'
+            }`
+          )}
         </$ViewField>
       </$GridCell>
-      <AttachmentsListView
-        title={t('common:attachments.types.helsinkiBenefitVoucher.title')}
-        type={ATTACHMENT_TYPES.HELSINKI_BENEFIT_VOUCHER}
-        attachments={data.attachments || []}
-      />
+      {data?.company?.organizationType === ORGANIZATION_TYPES.ASSOCIATION && (
+        <$GridCell $colSpan={6}>
+          <$ViewFieldBold>
+            {t(`${translationsBase}.fields.associationImmediateManagerCheck`)}
+          </$ViewFieldBold>
+          <$ViewField>
+            {t(
+              `common:utility.${
+                data.associationImmediateManagerCheck ? 'yes' : 'no'
+              }`
+            )}
+          </$ViewField>
+        </$GridCell>
+      )}
+      <$GridCell $colSpan={12} $colStart={1}>
+        <AttachmentsListView
+          title={t('common:attachments.types.helsinkiBenefitVoucher.title')}
+          type={ATTACHMENT_TYPES.HELSINKI_BENEFIT_VOUCHER}
+          attachments={data.attachments || []}
+        />
+      </$GridCell>
     </ReviewSection>
   );
 };
