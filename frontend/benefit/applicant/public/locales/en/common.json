@@ -84,8 +84,8 @@
         "deMinimisAidsHeading": "Below, please fill in all the de minimis aid granted to the organisation for the current and two previous tax years.",
         "deMinimisAidsAdd": "Save",
         "deMinimisAidsRemove": "Delete",
-        "deMinimisAidsYes": "TODO",
-        "deMinimisAidsNo": "The applicant has not listed any previous de minimis aids.",
+        "deMinimisAidsYes": "Yes, de minimis subsidies have been granted to the employer during the current year and the two previous tax years according to the attached table.",
+        "deMinimisAidsNo": "No, the applicant has not listed any previous de minimis aids.",
         "notifications": {
           "companyInformation": {
             "label": "Data retrieved from the Business Information System",
@@ -181,8 +181,8 @@
             "label": "Does the organisation have ongoing or concluded change negotiations within the last 12 months?",
             "tooltipText": "If change negotiations are ongoing or ended during the previous 12 months, please provide a more detailed explanation of the situation, such as for example who the negotiations concern or what outcome the negotiations led to.",
             "view": {
-              "yes": "TODO",
-              "no": "TODO"
+              "yes": "Yes, the organization has ongoing or completed change negotiations within the previous 12 months.",
+              "no": "No, the organization does not have change negotiations in progress or that have ended in the previous 12 months."
             },
             "yes": "Yes",
             "no": "No"

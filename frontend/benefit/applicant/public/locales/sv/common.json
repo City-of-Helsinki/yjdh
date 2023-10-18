@@ -84,8 +84,8 @@
         "deMinimisAidsHeading": "Fyll i alla de de minimis-stöd som har beviljats organisationen under innevarande år och under två föregående skatteår",
         "deMinimisAidsAdd": "Spara",
         "deMinimisAidsRemove": "Ta bort",
-        "deMinimisAidsYes": "TODO",
-        "deMinimisAidsNo": "Sökanden har inte angett några tidigare de minimis -stöd.",
+        "deMinimisAidsYes": "Ja, de minimis-stöd har beviljats arbetsgivaren under innevarande år och de två föregående beskattningsåren enligt bifogad tabell.",
+        "deMinimisAidsNo": "Nej, arbetsgivaren har inte angett några tidigare de minimis-stöd.",
         "notifications": {
           "companyInformation": {
             "label": "Uppgifterna har hämtats från Företags- och organisationsdatasystemet",
@@ -181,8 +181,8 @@
             "label": "Pågår samarbetsförhandlingar i organisationen eller har de avslutats under föregående 12 månader?",
             "tooltipText": "Om samarbetsförhandlingar pågår eller avslutats under de senaste 12 månaderna, vänligen ge en mer detaljerad förklaring av situationen, som till exempel vem samarbetsförhandlingarna gäller eller vilket resultat samarbetsförhandlingarna ledde till.",
             "view": {
-              "yes": "TODO",
-              "no": "TODO"
+              "yes": "Ja, organisationen har pågående eller avslutade samarbetsförhandlingar under de föregående 12 månaderna.",
+              "no": "Nej, organisationen har inga samarbetsförhandlingar på gång eller som har avslutats under de senaste 12 månaderna."
             },
             "yes": "Ja",
             "no": "Nej"
