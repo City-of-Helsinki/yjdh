@@ -3361,18 +3361,19 @@
     "@types/react" "*"
 
 "@types/react-leaflet-markercluster@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@types/react-leaflet-markercluster/-/react-leaflet-markercluster-3.0.0.tgz#2a11d52481836d025f3b22b187c260a28393a51b"
-  integrity sha512-yJpaoo7sOexrnniD6McdOOJF8FXEzA5G6s+bBk8Ed7XzhqcLVb84MXCbY/3ed81xY2DYQG4PHTOaXhIEHOxXqg==
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/@types/react-leaflet-markercluster/-/react-leaflet-markercluster-3.0.3.tgz#f60971cf35b8d7382ec588cd79c1e38d18082160"
+  integrity sha512-pKw20bBZ5OcOYOgZwxJvEDQ4lFFyTqNzS98yFmTMRiR1hsaWHvPZaKQXs/zmokDItTWXGPXCeqEkCmHkE8m3yg==
   dependencies:
     "@types/leaflet" "*"
     "@types/leaflet.markercluster" "*"
     "@types/react" "*"
+    "@types/react-leaflet" "^2.8.3"
 
-"@types/react-leaflet@^2.8.2":
-  version "2.8.2"
-  resolved "https://registry.yarnpkg.com/@types/react-leaflet/-/react-leaflet-2.8.2.tgz#85b8d82d5204eee792dedd45ccb555c35b8ae2ac"
-  integrity sha512-Iel8Vd1bSCD38Yhiqcmm/+9hjPEdd39LFE3tBMbOytq3QAQsC3LDrbo6ifoh8JbpqPbCsQPo9Wx5OELHixEShg==
+"@types/react-leaflet@^2.8.2", "@types/react-leaflet@^2.8.3":
+  version "2.8.3"
+  resolved "https://registry.yarnpkg.com/@types/react-leaflet/-/react-leaflet-2.8.3.tgz#2a806ab61f04bd4118d3f1303101d23f98a540f8"
+  integrity sha512-MeBQnVQe6ikw8dkuZE4F96PvMdQeilZG6/ekk5XxhkSzU3lofedULn3UR/6G0uIHjbRazi4DA8LnLACX0bPhBg==
   dependencies:
     "@types/leaflet" "*"
     "@types/react" "*"
