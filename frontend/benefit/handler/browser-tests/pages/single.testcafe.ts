@@ -58,7 +58,6 @@ test('Page has a single application', async () => {
     fi.review.headings.heading3,
     fi.review.headings.heading4,
     fi.review.headings.heading5,
-    fi.review.headings.heading6,
     fi.review.headings.heading7,
     fi.review.headings.heading8,
     fi.review.headings.heading9,

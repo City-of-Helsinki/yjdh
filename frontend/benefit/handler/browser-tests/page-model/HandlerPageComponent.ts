@@ -11,7 +11,7 @@ import sv from '../../public/locales/sv/common.json';
 import HandlerTranslations from '../../test/i18n/handler-translations';
 
 abstract class HandlerPageComponent extends TranslatedComponent<HandlerTranslations> {
-  public datatestId;
+  public datatestId: string;
 
   protected constructor(options?: Options) {
     super(

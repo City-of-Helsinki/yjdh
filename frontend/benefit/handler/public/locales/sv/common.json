@@ -595,6 +595,9 @@
           "fullApplication": {
             "title": "Alkuperäinen hakemus"
           },
+          "employeeConsent": {
+            "title": "Suostumus"
+          },
           "otherAttachment": {
             "title": "Muu liite"
           }
@@ -664,7 +667,7 @@
       "heading6": "Palkkatukipäätös",
       "heading7": "Haettu ajanjakso",
       "heading8": "Työsuhde",
-      "heading9": "Suostumus",
+      "heading9": "Työllistettävän henkilötietojen käsittely",
       "heading10": "Hakemuksen käsittely",
       "heading11": "Muut liitteet",
       "heading12": "Paperihakemuksen tiedot"
@@ -866,6 +869,9 @@
       },
       "fullApplication": {
         "title": "Paperihakemus"
+      },
+      "employeeConsent": {
+        "title": "Suostumus"
       },
       "otherAttachment": {
         "title": "Muu liite"
