@@ -1,5 +1,38 @@
 # Changelog
 
+## [2.0.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v1.1.0...benefit-handler-v2.0.0) (2023-10-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* renew application forms to conform to new terms
+
+### Features
+
+* New "received" view (HL-905) ([#2351](https://github.com/City-of-Helsinki/yjdh/issues/2351)) ([ea3738d](https://github.com/City-of-Helsinki/yjdh/commit/ea3738d830ebd467daeb4f0f49915004390794bd))
+* New review view ([6481ea2](https://github.com/City-of-Helsinki/yjdh/commit/6481ea2115c73452905bb0c8db076ba315058e47))
+* New style for back dialog ([c054187](https://github.com/City-of-Helsinki/yjdh/commit/c05418764e3b350f876537a6bcf72f36e8bde151))
+* Renew application forms to conform to new terms ([de31e8a](https://github.com/City-of-Helsinki/yjdh/commit/de31e8a5b3d4ff0b4d24466e37f30b8067617831))
+* Renew application overview step (HL-945) ([#2334](https://github.com/City-of-Helsinki/yjdh/issues/2334)) ([196af97](https://github.com/City-of-Helsinki/yjdh/commit/196af9722c47a18e20bee696f02d1ac06f847da3))
+* Support for paper application date ([6774c2c](https://github.com/City-of-Helsinki/yjdh/commit/6774c2cdee1c8f99e01e9031d2c7c0ac64844164))
+
+
+### Bug Fixes
+
+* Ask apprentishipProgram also for GRANTED_AGED ([#2306](https://github.com/City-of-Helsinki/yjdh/issues/2306)) ([47da9f1](https://github.com/City-of-Helsinki/yjdh/commit/47da9f1a61576879b25ca260baedfb4bf559975c))
+* Batch animation bug which also broke error toast ([#2283](https://github.com/City-of-Helsinki/yjdh/issues/2283)) ([0f248c2](https://github.com/City-of-Helsinki/yjdh/commit/0f248c26b2a178bfb485ed505448634827d80f32))
+* Broken tests and audit ([#2374](https://github.com/City-of-Helsinki/yjdh/issues/2374)) ([62bbebc](https://github.com/City-of-Helsinki/yjdh/commit/62bbebc930dd95cc69dd5834d07a38871d238a6b))
+* Conditional pay subsidy percentage for not_granted ([536dbe4](https://github.com/City-of-Helsinki/yjdh/commit/536dbe42235f96b359691fdb6fc2982c5644b84a))
+* Disappearing de minimis aid rows and grantedAt datepicker ([7cb55e2](https://github.com/City-of-Helsinki/yjdh/commit/7cb55e2e6f83af3b3e5f7abaea32a4a1ba11df5b))
+* No need for paysubsidy attachment when no subsidies (HL-1011) ([#2336](https://github.com/City-of-Helsinki/yjdh/issues/2336)) ([d28703c](https://github.com/City-of-Helsinki/yjdh/commit/d28703c9c5c75e37272d02e5ebf91f652c8c2c56))
+* Non-date string crash in trainingCompensationEndDate ([#2262](https://github.com/City-of-Helsinki/yjdh/issues/2262)) ([592c533](https://github.com/City-of-Helsinki/yjdh/commit/592c533d1f2b8b762d70f0f84ddedb9f9f8cf80a))
+* Paysubsidy attachment (HL-1009) ([e0536a8](https://github.com/City-of-Helsinki/yjdh/commit/e0536a8f8c4cef4418a78e432fe7075ace9e6b24))
+* Salarybenefit datepicker lang ([#2264](https://github.com/City-of-Helsinki/yjdh/issues/2264)) ([43caf3e](https://github.com/City-of-Helsinki/yjdh/commit/43caf3e13bc6b34df668f399d2f3c767d36040ae))
+* Selector in handler browser tests (HL-997) ([#2317](https://github.com/City-of-Helsinki/yjdh/issues/2317)) ([4d0321a](https://github.com/City-of-Helsinki/yjdh/commit/4d0321ae28218bc4e440bc6e14617417c93ea4fe))
+* Send default paySubsidyPercent value (HL-995) ([#2311](https://github.com/City-of-Helsinki/yjdh/issues/2311)) ([c6c1abc](https://github.com/City-of-Helsinki/yjdh/commit/c6c1abcdbb8fe1332da19decf53d84a56b615a30))
+* Set CSRF header instantly when getting token ([#2261](https://github.com/City-of-Helsinki/yjdh/issues/2261)) ([9d8009d](https://github.com/City-of-Helsinki/yjdh/commit/9d8009df4bf549ec2c93d5cbb9b4e7cff54fcb3a))
+* Tests for new handler application (HL-812) ([#2307](https://github.com/City-of-Helsinki/yjdh/issues/2307)) ([921a08b](https://github.com/City-of-Helsinki/yjdh/commit/921a08b6ec666a9a681f582db24c1eb4c75f84b0))
+
 ## [1.1.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v1.0.0...benefit-handler-v1.1.0) (2023-08-28)
 
 
