@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.1.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.0.0...benefit-applicant-v3.1.0) (2023-10-23)
+
+
+### Features
+
+* Renew application overview step (HL-945) ([#2334](https://github.com/City-of-Helsinki/yjdh/issues/2334)) ([196af97](https://github.com/City-of-Helsinki/yjdh/commit/196af9722c47a18e20bee696f02d1ac06f847da3))
+* Restyle "application sent" notification (HL-948, HL-947) ([#2350](https://github.com/City-of-Helsinki/yjdh/issues/2350)) ([1e0f251](https://github.com/City-of-Helsinki/yjdh/commit/1e0f251a9c68fdfea90b1215aff15156e7f86f6b))
+* Small tweaks to login styles (HL-940) ([#2340](https://github.com/City-of-Helsinki/yjdh/issues/2340)) ([4fd815e](https://github.com/City-of-Helsinki/yjdh/commit/4fd815ecfa828b33a863627010f9c9b9820ee25a))
+* Use custom translation for attachement of pay subsidy for people 55+ (HL-944) ([#2349](https://github.com/City-of-Helsinki/yjdh/issues/2349)) ([4fdf1f5](https://github.com/City-of-Helsinki/yjdh/commit/4fdf1f51437533173b856f89d82864a683003e48))
+
+
+### Bug Fixes
+
+* Accessibility statement corrections for en/sv ([#2324](https://github.com/City-of-Helsinki/yjdh/issues/2324)) ([b73b243](https://github.com/City-of-Helsinki/yjdh/commit/b73b2434e1318ab46396bc46dd511427d7483d67))
+* Application is no longer 404'd on creation and navigation ([#2338](https://github.com/City-of-Helsinki/yjdh/issues/2338)) ([ccbed72](https://github.com/City-of-Helsinki/yjdh/commit/ccbed721c2841edaab9075b1e9dcd1708442d20d))
+* Resolve various browser test issues ([ccdce19](https://github.com/City-of-Helsinki/yjdh/commit/ccdce1905261f28c313ef272f88eb00485510d25))
+* Various bug fixes (HL-1001, HL-1004) ([#2326](https://github.com/City-of-Helsinki/yjdh/issues/2326)) ([ea54019](https://github.com/City-of-Helsinki/yjdh/commit/ea5401943b1cedb66b4ebb0236b10d0fb1abb144))
+
 ## [3.0.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v2.0.0...benefit-applicant-v3.0.0) (2023-10-04)
 
 
