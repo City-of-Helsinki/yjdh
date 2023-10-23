@@ -12,6 +12,7 @@ describe('DeminimisView', () => {
       deMinimisAidSet: [
         { grantedAt: '01-02-2021', granter: 'test granter', amount: 1000 },
       ],
+      totalDeminimisAmount: '1000',
     },
   };
 
