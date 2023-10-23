@@ -55,7 +55,9 @@ const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
               </$GridCell>
               <$GridCell $colSpan={3}>
                 <$SummaryTableValue>
-                  {formatFloatToCurrency(amount, 'EUR', 'FI-fi', 0)}
+                  {amount
+                    ? formatFloatToCurrency(amount, 'EUR', 'FI-fi', 0)
+                    : ''}
                 </$SummaryTableValue>
               </$GridCell>
               <$GridCell>
@@ -72,12 +74,14 @@ const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           </$GridCell>
           <$GridCell $colSpan={3}>
             <$SummaryTableLastLine>
-              {formatFloatToCurrency(
-                data.totalDeminimisAmount,
-                'EUR',
-                'FI-fi',
-                0
-              )}
+              {data?.totalDeminimisAmount
+                ? formatFloatToCurrency(
+                    data.totalDeminimisAmount,
+                    'EUR',
+                    'FI-fi',
+                    0
+                  )
+                : ''}
             </$SummaryTableLastLine>
           </$GridCell>
         </>
