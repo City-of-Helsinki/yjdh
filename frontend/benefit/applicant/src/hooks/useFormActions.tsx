@@ -34,6 +34,12 @@ interface FormActions {
   onDelete: (id: string) => void;
 }
 
+const prettyPrintObject = (object: Record<string, string[]>): string =>
+  JSON.stringify(object)
+    .replace(/["[\]{}]/g, '')
+    .replace(/:/g, ': ')
+    .replace(/,/g, '\n');
+
 const useFormActions = (application: Partial<Application>): FormActions => {
   const router = useRouter();
   const currentStep = getApplicationStepFromString(
@@ -79,11 +85,15 @@ const useFormActions = (application: Partial<Application>): FormActions => {
         labelText: t('common:error.generic.label'),
         text: isContentTypeHTML
           ? t('common:error.generic.text')
-          : Object.entries(errorData).map(([key, value]) => (
-              <a key={key} href={`#${key}`}>
-                {value}
-              </a>
-            )),
+          : Object.entries(errorData).map(([key, value]) =>
+              typeof value === 'string' ? (
+                <a key={key} href={`#${key}`}>
+                  {value}
+                </a>
+              ) : (
+                prettyPrintObject(value)
+              )
+            ),
       });
     }
   }, [
@@ -150,6 +160,9 @@ const useFormActions = (application: Partial<Application>): FormActions => {
       ...normalizedValues,
       deMinimisAidSet: deMinimisAidData,
       benefitType: BENEFIT_TYPES.SALARY,
+      coOperationNegotiationsDescription: application.coOperationNegotiations
+        ? application.coOperationNegotiationsDescription
+        : '',
       deMinimisAid: deMinimisAidData.length > 0,
     };
   };
