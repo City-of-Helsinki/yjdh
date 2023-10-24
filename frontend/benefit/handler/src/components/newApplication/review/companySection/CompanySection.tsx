@@ -224,7 +224,16 @@ const CompanySection: React.FC<ReviewChildProps> = ({
               }`
             )}
           </$ViewField>
-          <$ViewField>{data.coOperationNegotiationsDescription}</$ViewField>
+          {data.coOperationNegotiationsDescription && (
+            <>
+              <$ViewFieldBold>
+                {t(
+                  `${translationsBase}.fields.coOperationNegotiations.description`
+                )}
+              </$ViewFieldBold>
+              <$ViewField>{data.coOperationNegotiationsDescription}</$ViewField>
+            </>
+          )}
         </$GridCell>
       </SummarySection>
     </>

@@ -29,8 +29,15 @@ const CoOperationNegotiationsView: React.FC<ApplicationReviewViewProps> = ({
             `common:utility.${data.coOperationNegotiations ? 'yes' : 'no'}`
           )}`}
         </$ViewField>
-        {data.coOperationNegotiations && (
-          <$ViewField>{data.coOperationNegotiationsDescription}</$ViewField>
+        {data.coOperationNegotiationsDescription && (
+          <>
+            <$ViewFieldBold>
+              {t(
+                `${translationsBase}.fields.coOperationNegotiationsDescription`
+              )}
+            </$ViewFieldBold>
+            <$ViewField>{data.coOperationNegotiationsDescription}</$ViewField>
+          </>
         )}
       </$GridCell>
     </ReviewSection>

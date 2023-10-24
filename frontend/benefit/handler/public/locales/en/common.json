@@ -432,7 +432,8 @@
         "coOperationNegotiations": {
           "label": "Onko organisaatiolla käynnissä tai edellisen 12 aikana päättynyt muutosneuvottelut?",
           "yes": "Kyllä",
-          "no": "Ei"
+          "no": "Ei",
+          "description": "Selvitys"
         },
         "coOperationNegotiationsDescription": {
           "label": "Anna tarkempi selvitys muutosneuvotteluiden tilanteesta:",
@@ -687,6 +688,7 @@
       "deMinimisAidTotal": "Yhteensä",
       "deMinimisAidsNo": "Hakija ei ole ilmoittanut aiemmista de minimis -tuista.",
       "coOperationNegotiations": "Onko organisaatiolla käynnissä tai edellisen 12 aikana päättynyt muutosneuvottelut?",
+      "coOperationNegotiationsDescription": "Selvitys",
       "isLivingInHelsinki": "Onko työllistettävän kotikunta Helsinki työsuhteen alkaessa?",
       "apprenticeshipProgram": "Onko kyseessä oppisopimus?",
       "benefitType": "Tukimuoto",
