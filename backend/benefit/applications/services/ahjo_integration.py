@@ -8,10 +8,14 @@ from typing import List, Optional
 
 import jinja2
 import pdfkit
+import requests
+from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import QuerySet
 
 from applications.enums import ApplicationStatus
-from applications.models import Application
+from applications.models import AhjoSetting, Application
+from applications.services.ahjo_authentication import AhjoConnector
 from applications.services.applications_csv_report import ApplicationsCsvService
 from companies.models import Company
 
@@ -350,3 +354,46 @@ def export_application_batch(batch) -> bytes:
 
     pdf_files: List[ExportFileInfo] = prepare_pdf_files(apps)
     return generate_zip(pdf_files)
+
+
+def dummy_ahjo_request():
+    """Dummy function for preliminary testing of Ahjo integration"""
+    ahjo_api_url = settings.AHJO_REST_API_URL
+    try:
+        ahjo_auth_code = AhjoSetting.objects.get(name="ahjo_code").data
+        LOGGER.info(f"Retrieved auth code: {ahjo_auth_code}")
+    except ObjectDoesNotExist:
+        LOGGER.error(
+            "Error: Ahjo auth code not found in database. Please set the 'ahjo_code' setting."
+        )
+        return
+
+    connector = AhjoConnector(requests)
+
+    if not connector.is_configured():
+        LOGGER.warning("AHJO connector is not configured")
+        return
+    try:
+        ahjo_token = connector.get_access_token(ahjo_auth_code["code"])
+    except Exception as e:
+        LOGGER.warning(f"Error retrieving access token: {e}")
+        return
+    headers = {
+        "Authorization": f"Bearer {ahjo_token.access_token}",
+    }
+    print(headers)
+    try:
+        response = requests.get(
+            f"{ahjo_api_url}/cases", headers=headers, timeout=connector.timout
+        )
+        response.raise_for_status()
+        print(response.json())
+    except requests.exceptions.HTTPError as e:
+        # Handle the HTTP error
+        LOGGER.error(f"HTTP error occurred: {e}")
+    except requests.exceptions.RequestException as e:
+        # Handle the network error
+        LOGGER.errror(f"Network error occurred: {e}")
+    except Exception as e:
+        # Handle any other error
+        LOGGER.error(f"Error occurred: {e}")

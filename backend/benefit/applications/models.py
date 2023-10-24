@@ -4,7 +4,7 @@ from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core.validators import MaxLengthValidator, MinLengthValidator
 from django.db import connection, models
-from django.db.models import OuterRef, Subquery
+from django.db.models import JSONField, OuterRef, Subquery
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
 from phonenumber_field.modelfields import PhoneNumberField
@@ -876,3 +876,8 @@ class ReviewState(models.Model):
     benefit = models.BooleanField(default=False, verbose_name=_("benefit"))
     employment = models.BooleanField(default=False, verbose_name=_("employment"))
     approval = models.BooleanField(default=False, verbose_name=_("approval"))
+
+
+class AhjoSetting(TimeStampedModel):
+    name = models.CharField(max_length=255, unique=True)
+    data = JSONField()
