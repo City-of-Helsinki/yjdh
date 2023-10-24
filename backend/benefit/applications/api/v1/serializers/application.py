@@ -1083,7 +1083,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                     instance.start_date, instance.end_date
                 )
 
-                # We are submitting the application here as a handler or a user  so we can create the initial Ahjo status
+                # We are submitting the application here as a handler or a user
+                # so we can create the initial Ahjo status
                 AhjoStatus.objects.create(application=instance)
 
             call_now_or_later(
