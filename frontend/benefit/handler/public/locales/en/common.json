@@ -584,6 +584,9 @@
           "paySubsidyDecision": {
             "title": "Palkkatukipäätös"
           },
+          "agedSubsidyDecision": {
+            "title": "55-vuotta täyttäneiden työllistämistukipäätös"
+          },
           "commissionContract": {
             "title": "Toimeksiantosopimus"
           },
@@ -859,6 +862,9 @@
       },
       "paySubsidyDecision": {
         "title": "Palkkatukipäätös"
+      },
+      "agedSubsidyDecision": {
+        "title": "55-vuotta täyttäneiden työllistämistukipäätös"
       },
       "commissionContract": {
         "title": "Toimeksiantosopimus"

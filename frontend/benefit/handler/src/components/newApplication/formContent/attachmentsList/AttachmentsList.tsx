@@ -13,6 +13,7 @@ export type AttachmentsListProps = {
   handleQuietSave?: () => Promise<ApplicationData | void>;
   required?: boolean;
   as?: 'div' | 'li';
+  title?: string;
 };
 
 const AttachmentsList: React.FC<AttachmentsListProps> = ({
@@ -21,6 +22,7 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
   handleQuietSave,
   required,
   as,
+  title,
 }) => {
   const {
     t,
@@ -35,7 +37,11 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
   return (
     <AttachmentsListBase
       as={as}
-      title={t(`${translationsBase}.types.${camelCase(attachmentType)}.title`)}
+      title={
+        title !== undefined
+          ? title
+          : t(`${translationsBase}.types.${camelCase(attachmentType)}.title`)
+      }
       attachmentType={attachmentType}
       name={attachmentType}
       attachments={attachments}

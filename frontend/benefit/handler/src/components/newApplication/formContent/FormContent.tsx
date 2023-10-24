@@ -17,6 +17,7 @@ import {
   DeMinimisAid,
   TextProp,
 } from 'benefit-shared/types/application';
+import { paySubsidyTitle } from 'benefit-shared/utils/common';
 import { FormikProps } from 'formik';
 import { DateInput, SelectionGroup, TextInput } from 'hds-react';
 import React from 'react';
@@ -662,6 +663,7 @@ const FormContent: React.FC<Props> = ({
               attachments={attachments}
               attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
               handleQuietSave={handleQuietSave}
+              title={t(paySubsidyTitle(formik.values.paySubsidyGranted))}
               required
             />
           </$GridCell>
