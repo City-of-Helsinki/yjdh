@@ -5,6 +5,8 @@ from django.conf import settings
 from django.core.validators import MaxLengthValidator, MinLengthValidator
 from django.db import connection, models
 from django.db.models import JSONField, OuterRef, Subquery
+from django.db.models.constraints import UniqueConstraint
+
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
 from phonenumber_field.modelfields import PhoneNumberField
@@ -12,6 +14,7 @@ from simple_history.models import HistoricalRecords
 
 from applications.enums import (
     AhjoDecision,
+    AhjoStatus,
     ApplicationBatchStatus,
     ApplicationOrigin,
     ApplicationStatus,
@@ -881,3 +884,33 @@ class ReviewState(models.Model):
 class AhjoSetting(TimeStampedModel):
     name = models.CharField(max_length=255, unique=True)
     data = JSONField()
+
+
+class AhjoStatus(TimeStampedModel):
+    """
+    Ahjo status of the application
+    """
+
+    status = models.CharField(
+        max_length=64,
+        verbose_name=_("status"),
+        choices=AhjoStatus.choices,
+        default=AhjoStatus.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
+    )
+    application = models.ForeignKey(
+        Application,
+        verbose_name=_("application"),
+        related_name="ahjo_status",
+        on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        return self.status
+
+    class Meta:
+        db_table = "bf_applications_ahjo_status"
+        verbose_name = _("ahjo status")
+        verbose_name_plural = _("ahjo statuses")
+        ordering = ["application__created_at", "created_at"]
+        get_latest_by = "created_at"
+        UniqueConstraint(fields=['application_id', 'status'], name='unique_status')
