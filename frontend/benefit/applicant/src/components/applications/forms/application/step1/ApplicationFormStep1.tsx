@@ -314,7 +314,9 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
       <StepperActions
         disabledNext={deMinimisTotal() > MAX_DEMINIMIS_AID_TOTAL_AMOUNT}
         handleSubmit={handleSubmit}
-        handleSave={handleSave}
+        handleSave={
+          formik.isValid && !isUnfinishedDeMinimisAid ? handleSave : undefined
+        }
         handleDelete={data?.id ? handleDelete : null}
       />
     </form>

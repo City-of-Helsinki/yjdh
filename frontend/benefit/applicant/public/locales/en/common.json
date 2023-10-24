@@ -405,6 +405,9 @@
       "send": {
         "heading1": "Terms"
       }
+    },
+    "errors": {
+      "dirtyOrInvalidForm": "Please fill any missing or invalid form fields"
     }
   },
   "serviceName": "Helsinki benefit service",

@@ -50,14 +50,21 @@ export const formatFloatToCurrency = (
   locale = 'fi-FI',
   minimumFractionDigits = 2
 ): string => {
-  const parsedValue = typeof value === 'string' ? parseFloat(value) : value;
+  let parsedValue: number;
+  if (!value) {
+    parsedValue = 0;
+  }
+  parsedValue =
+    typeof value === 'string'
+      ? parseFloat(value.toString().replace(',', '.'))
+      : value;
+
   const currencyOptions = currency
     ? {
         style: 'currency',
         currency,
       }
     : {};
-
   return parsedValue.toLocaleString(locale, {
     minimumFractionDigits,
     ...currencyOptions,

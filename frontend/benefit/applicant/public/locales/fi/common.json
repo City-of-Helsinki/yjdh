@@ -405,6 +405,9 @@
       "send": {
         "heading1": "Ehdot"
       }
+    },
+    "errors": {
+      "dirtyOrInvalidForm": "Täytä lomakkeen puuttuvat tai virheelliset kentät"
     }
   },
   "serviceName": "Helsinki-lisän asiointipalvelu",
