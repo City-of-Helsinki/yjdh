@@ -4,11 +4,9 @@ import ReviewStateContext from 'benefit/handler/context/ReviewStateContext';
 import {
   APPLICATION_ORIGINS,
   APPLICATION_STATUSES,
-  BENEFIT_TYPES,
 } from 'benefit-shared/constants';
 import { LoadingSpinner, StatusLabel } from 'hds-react';
 import * as React from 'react';
-import { ReactElement } from 'react';
 import Container from 'shared/components/container/Container';
 import StickyActionBar from 'shared/components/stickyActionBar/StickyActionBar';
 import { $StickyBarSpacing } from 'shared/components/stickyActionBar/StickyActionBar.sc';
@@ -25,7 +23,6 @@ import ContactPersonView from './contactPersonView/ContactPersonView';
 import CoOperationNegotiationsView from './coOperationNegotiationsView/CoOperationNegotiationsView';
 import DeminimisView from './deminimisView/DeminimisView';
 import EmployeeView from './employeeView/EmployeeView';
-import EmploymenAppliedMoreView from './employmentAppliedMoreView/EmploymentAppliedMoreView';
 import EmploymentView from './employmentView/EmpoymentView';
 import HandledView from './handledView/HandledView';
 import NotificationView from './notificationView/NotificationView';
@@ -45,19 +42,6 @@ const ApplicationReview: React.FC = () => {
     handleUpdateReviewState,
   } = useApplicationReview();
   const theme = useTheme();
-
-  const CalculatorView = (): ReactElement | null => {
-    switch (application.benefitType) {
-      case BENEFIT_TYPES.EMPLOYMENT:
-        return <EmploymenAppliedMoreView data={application} />;
-
-      case BENEFIT_TYPES.SALARY:
-        return <SalaryBenefitCalculatorView data={application} />;
-
-      default:
-        return null;
-    }
-  };
 
   if (isLoading) {
     return (
@@ -125,7 +109,7 @@ const ApplicationReview: React.FC = () => {
           />
           {application.status === APPLICATION_STATUSES.HANDLING && (
             <>
-              <CalculatorView />
+              <SalaryBenefitCalculatorView data={application} />
               <ApplicationProcessingView />
             </>
           )}
