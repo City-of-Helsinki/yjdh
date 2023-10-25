@@ -21,6 +21,8 @@ pr:
   branches:
     include:
     - main
+    exclude:
+    - release-please-*
   paths:
     include:
       - azure-pipelines/tet-review.yml
