@@ -51,16 +51,17 @@ resources:
       name: yjdh-helsinkilisa/yjdh-helsinkilisa-pipelines
 
 extends:
-  # Do not run from release-please branch
-  ${{ if not(startsWith(variables['System.PullRequest.SourceBranch'], 'release-please')) }}:
-    template:
-      azure-pipelines-helsinkilisa-review.yml@yjdh-helsinkilisa-pipelines
-      # Application build arguments and config map values as key value pairs.
-      # The values here will override the values defined in the yjdh-benefit-pipelines repository.
-      # for example
-    parameters:
-      configMap: # pod environment variables
-        LOAD_DEFAULT_TERMS: 1
-        LOAD_FIXTURES: 1
-      # buildArgs:
-      #   NEXT_PUBLIC_DEBUG: 0
+  # Filename in Azure DevOps Repository (note possible -ui or -api)
+  # Django example: azure-pipelines-PROJECTNAME-api-release.yml
+  # Drupal example: azure-pipelines-drupal-release.yml
+  template:
+    azure-pipelines-helsinkilisa-review.yml@yjdh-helsinkilisa-pipelines
+    # Application build arguments and config map values as key value pairs.
+    # The values here will override the values defined in the yjdh-benefit-pipelines repository.
+    # for example
+  parameters:
+    configMap: # pod environment variables
+      LOAD_DEFAULT_TERMS: 1
+      LOAD_FIXTURES: 1
+    # buildArgs:
+    #   NEXT_PUBLIC_DEBUG: 0
