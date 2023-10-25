@@ -62,9 +62,8 @@ extends:
     # The values here will override the values defined in the yjdh-tet-pipelines repository.
     # for example
   parameters:
-    cond: not(startsWith(variables['System.PullRequest.SourceBranch'], 'release-please')) 
+    cond: not(startsWith(variables['System.PullRequest.SourceBranch'], 'release-please'))
 #    buildArgs:
 #      NEXT_PUBLIC_DEBUG: 0
 #    configMap: # pod environment variables
 #      DEBUG: 0
-
