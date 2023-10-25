@@ -5,6 +5,7 @@ import { stringToFloatValue } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
 
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
+import { APPLICATION_ACTIONS } from '../constants';
 
 type ExtendedComponentProps = {
   updateStatus: (
@@ -52,7 +53,8 @@ const useApplicationActions = (
       },
       { deep: true }
     ) as ApplicationData;
-    updateApplicationQuery.mutate(currentApplicationData);
+    const action = { action: APPLICATION_ACTIONS.STATUS_CHANGE };
+    updateApplicationQuery.mutate({ ...currentApplicationData, ...action });
     window.scrollTo(0, 0);
   };
 

@@ -139,3 +139,7 @@ class PaySubsidyGranted(models.TextChoices):
     GRANTED = "granted", _("Pay subsidy granted (default)")
     GRANTED_AGED = "granted_aged", _("Pay subsidy granted (aged)")
     NOT_GRANTED = "not_granted", _("No granted pay subsidy")
+
+
+class ApplicationActions(models.TextChoices):
+    STATUS_CHANGE = "STATUS_CHANGE", _("Status change")
