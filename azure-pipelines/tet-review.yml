@@ -51,15 +51,14 @@ resources:
     name: yjdh-tet/yjdh-tet-pipelines
 
 extends:
-  # Filename in Azure DevOps Repository (note possible -ui or -api)
-  # Django example: azure-pipelines-PROJECTNAME-api-release.yml
-  # Drupal example: azure-pipelines-drupal-release.yml
-  template: azure-pipelines-tet-review.yml@yjdh-tet-pipelines
-    # Application build arguments and config map values as key value pairs.
-    # The values here will override the values defined in the yjdh-tet-pipelines repository.
-    # for example
-#  parameters:
-#    buildArgs:
-#      NEXT_PUBLIC_DEBUG: 0
-#    configMap: # pod environment variables
-#      DEBUG: 0
+  # Do not run from release-please branch
+  ${{ if not(startsWith(variables['System.PullRequest.SourceBranch'], 'release-please')) }}:
+    template: azure-pipelines-tet-review.yml@yjdh-tet-pipelines
+      # Application build arguments and config map values as key value pairs.
+      # The values here will override the values defined in the yjdh-tet-pipelines repository.
+      # for example
+  #  parameters:
+  #    buildArgs:
+  #      NEXT_PUBLIC_DEBUG: 0
+  #    configMap: # pod environment variables
+  #      DEBUG: 0
