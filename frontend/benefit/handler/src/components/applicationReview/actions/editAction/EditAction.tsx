@@ -1,3 +1,4 @@
+import { APPLICATION_ACTIONS } from 'benefit/handler/constants';
 import { useApplicationActions } from 'benefit/handler/hooks/useApplicationActions';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
@@ -12,7 +13,10 @@ export type Props = {
 const EditAction: React.FC<Props> = ({ application }) => {
   const translationsBase = 'common:review.actions';
   const { t } = useTranslation();
-  const { updateStatus } = useApplicationActions(application);
+  const { updateStatus } = useApplicationActions(
+    application,
+    APPLICATION_ACTIONS.APPLICANT_TOGGLE_EDIT
+  );
 
   const [isUpdatingApplication, setIsUpdatingApplication] =
     React.useState(false);
