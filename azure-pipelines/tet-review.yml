@@ -67,3 +67,4 @@ extends:
 #      NEXT_PUBLIC_DEBUG: 0
 #    configMap: # pod environment variables
 #      DEBUG: 0
+
