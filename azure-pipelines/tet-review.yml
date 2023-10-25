@@ -47,7 +47,6 @@ resources:
   # Azure DevOps repository
   - repository: yjdh-tet-pipelines
     type: git
-    ref: refs/heads/review_release_please
     # Azure DevOps project/repository
     name: yjdh-tet/yjdh-tet-pipelines
 
