@@ -6,7 +6,6 @@ from django.core.validators import MaxLengthValidator, MinLengthValidator
 from django.db import connection, models
 from django.db.models import JSONField, OuterRef, Subquery
 from django.db.models.constraints import UniqueConstraint
-
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
 from phonenumber_field.modelfields import PhoneNumberField
@@ -913,4 +912,4 @@ class AhjoStatus(TimeStampedModel):
         verbose_name_plural = _("ahjo statuses")
         ordering = ["application__created_at", "created_at"]
         get_latest_by = "created_at"
-        UniqueConstraint(fields=['application_id', 'status'], name='unique_status')
+        UniqueConstraint(fields=["application_id", "status"], name="unique_status")
