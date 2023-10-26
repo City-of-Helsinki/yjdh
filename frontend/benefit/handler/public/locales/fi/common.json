@@ -639,7 +639,7 @@
     "actions": {
       "handle": "Ota käsittelyyn",
       "close": "Sulje",
-      "done": "Valmis",
+      "done": "Tee päätösehdotus",
       "saveAndContinue": "Tallenna ja sulje",
       "backToHandling": "Palauta käsittelyyn",
       "handlingPanel": "Käsittelypaneeli",

@@ -96,3 +96,9 @@ export const $HelpText = styled.p`
   margin: 0;
   color: ${(props) => props.theme.colors.black70};
 `;
+
+export const $RadioButtonContainer = styled.div`
+  border: 2px solid ${(props) => props.theme.colors.coatOfArmsMediumLight};
+  padding: ${(props) => props.theme.spacing.s};
+  background-color: ${(props) => props.theme.colors.white};
+`;

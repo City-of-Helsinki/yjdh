@@ -18,6 +18,7 @@ export type ReviewSectionProps = {
   children?: React.ReactNode;
   action?: React.ReactNode;
   withMargin?: boolean;
+  withBorder?: boolean;
   withoutDivider?: boolean;
   header?: string;
   section?: keyof ReviewState;
@@ -29,6 +30,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
   header,
   action,
   withMargin,
+  withBorder,
   withoutDivider,
   role,
   loading,
@@ -69,6 +71,9 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
         background-color: ${bgColor};
         margin-bottom: ${theme.spacing.s};
         gap: 0;
+        border: ${withBorder
+          ? `2px solid ${theme.colors.coatOfArmsMediumLight}`
+          : 'none'};
       `}
     >
       {withAction && (

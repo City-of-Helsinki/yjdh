@@ -71,7 +71,7 @@ const SalaryBenefitCalculatorView: React.FC<
 
   const eurosPerMonth = 'common:utility.eurosPerMonth';
   return (
-    <ReviewSection withMargin>
+    <ReviewSection withMargin withBorder>
       <$GridCell $colSpan={11}>
         <$MainHeader>{t(`${translationsBase}.header`)}</$MainHeader>
       </$GridCell>
