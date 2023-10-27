@@ -41,9 +41,9 @@ class Terms(UUIDModel, TimeStampedModel):
         verbose_name=_("first day these terms are in effect"), null=True, blank=True
     )
 
-    terms_pdf_fi = models.FileField(verbose_name=_("finnish terms (pdf file)"))
-    terms_pdf_en = models.FileField(verbose_name=_("english terms (pdf file)"))
-    terms_pdf_sv = models.FileField(verbose_name=_("swedish terms (pdf file)"))
+    terms_pdf_fi = models.FileField(upload_to="terms/", verbose_name=_("finnish terms (pdf file)"))
+    terms_pdf_en = models.FileField(upload_to="terms/", verbose_name=_("english terms (pdf file)"))
+    terms_pdf_sv = models.FileField(upload_to="terms/", verbose_name=_("swedish terms (pdf file)"))
 
     @property
     def is_editable(self):
