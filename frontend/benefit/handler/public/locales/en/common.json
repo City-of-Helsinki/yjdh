@@ -432,7 +432,8 @@
         "coOperationNegotiations": {
           "label": "Onko organisaatiolla käynnissä tai edellisen 12 aikana päättynyt muutosneuvottelut?",
           "yes": "Kyllä",
-          "no": "Ei"
+          "no": "Ei",
+          "description": "Selvitys"
         },
         "coOperationNegotiationsDescription": {
           "label": "Anna tarkempi selvitys muutosneuvotteluiden tilanteesta:",
@@ -583,6 +584,9 @@
           "paySubsidyDecision": {
             "title": "Palkkatukipäätös"
           },
+          "agedSubsidyDecision": {
+            "title": "55-vuotta täyttäneiden työllistämistukipäätös"
+          },
           "commissionContract": {
             "title": "Toimeksiantosopimus"
           },
@@ -635,7 +639,7 @@
     "actions": {
       "handle": "Ota käsittelyyn",
       "close": "Sulje",
-      "done": "Valmis",
+      "done": "Tee päätösehdotus",
       "saveAndContinue": "Tallenna ja sulje",
       "backToHandling": "Palauta käsittelyyn",
       "handlingPanel": "Käsittelypaneeli",
@@ -687,6 +691,7 @@
       "deMinimisAidTotal": "Yhteensä",
       "deMinimisAidsNo": "Hakija ei ole ilmoittanut aiemmista de minimis -tuista.",
       "coOperationNegotiations": "Onko organisaatiolla käynnissä tai edellisen 12 aikana päättynyt muutosneuvottelut?",
+      "coOperationNegotiationsDescription": "Selvitys",
       "isLivingInHelsinki": "Onko työllistettävän kotikunta Helsinki työsuhteen alkaessa?",
       "apprenticeshipProgram": "Onko kyseessä oppisopimus?",
       "benefitType": "Tukimuoto",
@@ -757,15 +762,15 @@
         "placeholder": "Päättyen"
       },
       "monthlyPay": {
-        "label": "Bruttopalkka € / kk",
+        "label": "Bruttopalkka *",
         "placeholder": "Bruttopalkka"
       },
       "otherExpenses": {
-        "label": "Sivukulut € / kk",
+        "label": "Sivukulut *",
         "placeholder": "Sivukulut"
       },
       "vacationMoney": {
-        "label": "Lomaraha € / kk",
+        "label": "Lomaraha *",
         "placeholder": "Lomaraha"
       },
       "stateAidMaxPercentage": {
@@ -789,7 +794,7 @@
         "placeholder": "Työaika %"
       },
       "monthlyAmount": {
-        "label": "Koulutuskorvaus € / kk",
+        "label": "Koulutuskorvaus",
         "placeholder": "Koulutuskorvaus € / kk"
       }
     },
@@ -813,14 +818,19 @@
       "calculate": "Laske"
     },
     "salary": {
-      "header": "Palkan Helsinki-lisää haettu ajalle",
+      "header": "Laske, paljonko Helsinki-lisää voi myöntää",
+      "header2": "Palkkauskustannukset",
       "monthlyPay": "Bruttopalkka € / kk",
       "otherExpenses": "Sivukulut € / kk",
       "vacationMoney": "Lomaraha € / kk",
+      "appliedPeriod": "Haettu ajanjakso: ",
+      "periodHeader": "Mille aikavälille Helsinki-lisää myönnetään?",
       "startEndDates": "{{startDate}} - {{endDate}} ({{period}} kk)",
-      "maximumAid": "Valtiotukimaksimi",
-      "salarySubsidyPercentage": "Palkkatukiprosentti",
-      "salarySupportPeriod": "Palkkatukea myönnetty ajalle ({{period}} kk)",
+      "maximumAid": "Valtiontukimaksimi",
+      "subsidies": "Huomioitavat valtiontuet",
+      "paySubsidy": "Palkkatuki",
+      "salarySubsidyPercentage": "Tukiprosentti",
+      "salarySupportPeriod": "Tukea myönnetty ajalle ({{period}} kk)",
       "grantedPeriod": "Helsinki-lisää myönnetään ajalle ({{period}} kk)",
       "calculate": "Laske",
       "reset": "Palauta arvot",
@@ -831,11 +841,14 @@
       "tableRowValue": "{{amount}} €",
       "tableTotalHeader": "Helsinki-lisä yhteensä",
       "manualInput": "Manuaalinen laskelma",
-      "apprenticeshipCompensation": "Oppisopimuksesta maksettava korvaus",
+      "apprenticeshipCompensation": "Oppisopimuksen koulutuskorvaus",
       "apprenticeshipPeriod": "Koulutuskorvaus myönnetty ajalle",
       "apprenticeshipPeriodWithDiff": "Koulutuskorvaus myönnetty ajalle ({{period}} kk)",
       "add": "Lisää",
-      "remove": "Poista"
+      "remove": "Poista",
+      "calculator": "Laskuri",
+      "calculateManually": "Laske käsin",
+      "clear": "Tyhjennä"
     }
   },
   "organizationTypes": {
@@ -857,6 +870,9 @@
       },
       "paySubsidyDecision": {
         "title": "Palkkatukipäätös"
+      },
+      "agedSubsidyDecision": {
+        "title": "55-vuotta täyttäneiden työllistämistukipäätös"
       },
       "commissionContract": {
         "title": "Toimeksiantosopimus"
@@ -886,7 +902,11 @@
     "check": "Tarkastele",
     "loading": "Ladataan …",
     "cancel": "Peruuta",
-    "confirm": "Vahvista"
+    "confirm": "Vahvista",
+    "eurosPerMonth": "€ / kk",
+    "select": "Valitse",
+    "start": "Alkamispäivä",
+    "end": "Päättymispäivä"
   },
   "upload": {
     "isUploading": "Ladataan...",

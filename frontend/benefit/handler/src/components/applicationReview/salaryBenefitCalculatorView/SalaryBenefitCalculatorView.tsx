@@ -13,7 +13,6 @@ import {
 } from 'hds-react';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
-import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import { Option } from 'shared/components/forms/fields/types';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import $Notification from 'shared/components/notification/Notification.sc';
@@ -26,9 +25,13 @@ import {
 import { formatStringFloatValue } from 'shared/utils/string.utils';
 
 import {
+  $CalculatorHeader,
   $CalculatorHr,
   $CalculatorTableRow,
   $CalculatorText,
+  $HelpText,
+  $MainHeader,
+  $TabButton,
 } from '../ApplicationReview.sc';
 import CalculatorErrors from '../calculatorErrors/CalculatorErrors';
 import SalaryBenefitManualCalculatorView from './SalaryBenefitManualCalculatorView';
@@ -62,34 +65,39 @@ const SalaryBenefitCalculatorView: React.FC<
     language,
     getErrorMessage,
     handleSubmit,
+    handleClear,
     isRecalculationRequired,
   } = useCalculatorData(CALCULATION_TYPES.SALARY, formik);
 
+  const eurosPerMonth = 'common:utility.eurosPerMonth';
   return (
-    <ReviewSection withMargin>
-      <$GridCell $colSpan={5}>
-        <$CalculatorText
-          css={`
-            margin: 0 0 ${theme.spacing.xs2} 0;
-          `}
-        >
-          {t(`${translationsBase}.header`)}
-        </$CalculatorText>
+    <ReviewSection withMargin withBorder>
+      <$GridCell $colSpan={11}>
+        <$MainHeader>{t(`${translationsBase}.header`)}</$MainHeader>
       </$GridCell>
 
-      {data.startDate && data.endDate && (
-        <$GridCell $colStart={1} $colSpan={3} style={{ alignSelf: 'center' }}>
-          <$ViewField>
-            {t(`${translationsBase}.startEndDates`, {
-              startDate: convertToUIDateFormat(data.startDate),
-              endDate: convertToUIDateFormat(data.endDate),
-              period: formatStringFloatValue(data.durationInMonthsRounded),
-            })}
-          </$ViewField>
-        </$GridCell>
-      )}
+      <$GridCell $colStart={1} $colSpan={11}>
+        <$TabButton
+          active={!isManualCalculator}
+          onClick={() => isManualCalculator && changeCalculatorMode()}
+        >
+          {t(`${translationsBase}.calculator`)}
+        </$TabButton>
+        <$TabButton
+          active={isManualCalculator}
+          onClick={() => !isManualCalculator && changeCalculatorMode()}
+        >
+          {t(`${translationsBase}.calculateManually`)}
+        </$TabButton>
+      </$GridCell>
 
-      <$GridCell $colStart={4} $colSpan={2}>
+      <$GridCell $colSpan={11}>
+        <$CalculatorHeader>
+          {t(`${translationsBase}.header2`)}
+        </$CalculatorHeader>
+      </$GridCell>
+
+      <$GridCell $colSpan={3}>
         <TextInput
           id={fields.monthlyPay.name}
           name={fields.monthlyPay.name}
@@ -102,9 +110,10 @@ const SalaryBenefitCalculatorView: React.FC<
           aria-invalid={!!getErrorMessage(fields.monthlyPay.name)}
           errorText={getErrorMessage(fields.monthlyPay.name)}
         />
+        <$HelpText>{t(eurosPerMonth)}</$HelpText>
       </$GridCell>
 
-      <$GridCell $colStart={6} $colSpan={2}>
+      <$GridCell $colSpan={3}>
         <TextInput
           id={fields.otherExpenses.name}
           name={fields.otherExpenses.name}
@@ -117,9 +126,10 @@ const SalaryBenefitCalculatorView: React.FC<
           aria-invalid={!!getErrorMessage(fields.otherExpenses.name)}
           errorText={getErrorMessage(fields.otherExpenses.name)}
         />
+        <$HelpText>{t(eurosPerMonth)}</$HelpText>
       </$GridCell>
 
-      <$GridCell $colStart={8} $colSpan={2}>
+      <$GridCell $colSpan={3}>
         <TextInput
           id={fields.vacationMoney.name}
           name={fields.vacationMoney.name}
@@ -132,32 +142,17 @@ const SalaryBenefitCalculatorView: React.FC<
           aria-invalid={!!getErrorMessage(fields.vacationMoney.name)}
           errorText={getErrorMessage(fields.vacationMoney.name)}
         />
-      </$GridCell>
-
-      <$GridCell $colSpan={11}>
-        <$CalculatorHr />
-        <$Checkbox
-          css={`
-            input {
-              background-color: ${theme.colors.white};
-            }
-          `}
-          id="manualInputCheckbox"
-          name="manualInputCheckbox"
-          label={t(`${translationsBase}.manualInput`)}
-          checked={isManualCalculator}
-          onChange={changeCalculatorMode}
-        />
-        <$CalculatorHr
-          css={`
-            margin-top: ${theme.spacing.m};
-          `}
-        />
+        <$HelpText>{t(eurosPerMonth)}</$HelpText>
       </$GridCell>
 
       {!isManualCalculator && (
         <>
-          <$GridCell $colStart={1}>
+          <$GridCell $colSpan={11}>
+            <$CalculatorHeader>
+              {t(`${translationsBase}.maximumAid`)}
+            </$CalculatorHeader>
+          </$GridCell>
+          <$GridCell $colStart={1} $colSpan={3}>
             <Select
               value={getStateAidMaxPercentageSelectValue()}
               helper=""
@@ -180,13 +175,25 @@ const SalaryBenefitCalculatorView: React.FC<
             />
           </$GridCell>
 
+          <$GridCell $colStart={1} $colSpan={11}>
+            <$CalculatorHeader>
+              {t(`${translationsBase}.subsidies`)}
+            </$CalculatorHeader>
+          </$GridCell>
+          {formik.values.paySubsidies && (
+            <$GridCell $colStart={1} $colSpan={11}>
+              <h3 style={{ fontSize: theme.fontSize.heading.xs, margin: 0 }}>
+                {t(`${translationsBase}.paySubsidy`)}
+              </h3>
+            </$GridCell>
+          )}
           {formik.values.paySubsidies?.map(
             // eslint-disable-next-line sonarjs/cognitive-complexity
             (item: PaySubsidy, index: number) => (
               <>
                 <$GridCell $colStart={1}>
                   <$CalculatorText>
-                    {fields.paySubsidyPercent.label}
+                    {t(`${translationsBase}.salarySubsidyPercentage`)}
                   </$CalculatorText>
                 </$GridCell>
                 {item.paySubsidyPercent === 100 && (
@@ -345,58 +352,16 @@ const SalaryBenefitCalculatorView: React.FC<
         </>
       )}
 
-      <$GridCell $colStart={1} $colSpan={5}>
-        <$CalculatorText>
-          {t(`${translationsBase}.grantedPeriod`, {
-            period: formatStringFloatValue(grantedPeriod),
-          })}
-        </$CalculatorText>
-      </$GridCell>
-
-      <$GridCell $colStart={1} $colSpan={2}>
-        <DateInput
-          id={fields.startDate.name}
-          name={fields.startDate.name}
-          placeholder={fields.startDate.placeholder}
-          language={language}
-          onChange={(value) => {
-            formik.setFieldValue(fields.startDate.name, value);
-          }}
-          value={formik.values.startDate ?? ''}
-          invalid={!!getErrorMessage(fields.startDate.name)}
-          aria-invalid={!!getErrorMessage(fields.startDate.name)}
-          errorText={getErrorMessage(fields.startDate.name)}
-        />
-      </$GridCell>
-
-      <$GridCell $colStart={3} $colSpan={3}>
-        <DateInput
-          id={fields.endDate.name}
-          name={fields.endDate.name}
-          placeholder={fields.endDate.placeholder}
-          language={language}
-          onChange={(value) => {
-            formik.setFieldValue(fields.endDate.name, value);
-          }}
-          value={formik.values.endDate ?? ''}
-          invalid={!!getErrorMessage(fields.endDate.name)}
-          aria-invalid={!!getErrorMessage(fields.endDate.name)}
-          errorText={getErrorMessage(fields.endDate.name)}
-          style={{ paddingRight: `${theme.spacing.s}` }}
-        />
-      </$GridCell>
-
       {!isManualCalculator && data.apprenticeshipProgram && (
         <>
           <$GridCell $colStart={1} $colSpan={11}>
-            <$CalculatorText
-              isBold
+            <$CalculatorHeader
               css={`
                 margin-top: ${theme.spacing.m};
               `}
             >
               {t(`${translationsBase}.apprenticeshipCompensation`)}
-            </$CalculatorText>
+            </$CalculatorHeader>
           </$GridCell>
 
           {formik.values.trainingCompensations &&
@@ -472,24 +437,11 @@ const SalaryBenefitCalculatorView: React.FC<
             </React.Fragment>
           ))}
 
-          <$GridCell $colStart={1} $colSpan={2}>
-            <$CalculatorText>{fields.monthlyAmount.label}</$CalculatorText>
-          </$GridCell>
-
-          <$GridCell $colStart={3} $colSpan={5}>
-            <$CalculatorText>
-              {t(`${translationsBase}.apprenticeshipPeriodWithDiff`, {
-                period: diffMonths(
-                  parseDate(newTrainingCompensation.endDate),
-                  parseDate(newTrainingCompensation.startDate)
-                ),
-              })}
-            </$CalculatorText>
-          </$GridCell>
           <$GridCell $colStart={1} $colSpan={1}>
             <TextInput
               id={fields.monthlyAmount.name}
               name={fields.monthlyAmount.name}
+              label={fields.monthlyAmount.label}
               onChange={(e) =>
                 setNewTrainingCompensation((prevValue) => ({
                   ...prevValue,
@@ -503,13 +455,15 @@ const SalaryBenefitCalculatorView: React.FC<
               aria-invalid={!!getErrorMessage(fields.monthlyAmount.name)}
               errorText={getErrorMessage(fields.monthlyAmount.name)}
             />
+            <$HelpText>{t(eurosPerMonth)}</$HelpText>
           </$GridCell>
 
           <$GridCell $colStart={3} $colSpan={3}>
             <DateInput
               id={fields.trainingCompensationStartDate.name}
               name={fields.trainingCompensationStartDate.name}
-              placeholder={fields.startDate.placeholder}
+              placeholder={t('common:utility.select')}
+              label={t('common:utility.start')}
               language={language}
               onChange={(value) =>
                 setNewTrainingCompensation((prevValue) => ({
@@ -518,9 +472,15 @@ const SalaryBenefitCalculatorView: React.FC<
                 }))
               }
               value={convertToUIDateFormat(newTrainingCompensation.startDate)}
-              invalid={!!getErrorMessage(fields.trainingCompensationStartDate.name)}
-              aria-invalid={!!getErrorMessage(fields.trainingCompensationStartDate.name)}
-              errorText={getErrorMessage(fields.trainingCompensationStartDate.name)}
+              invalid={
+                !!getErrorMessage(fields.trainingCompensationStartDate.name)
+              }
+              aria-invalid={
+                !!getErrorMessage(fields.trainingCompensationStartDate.name)
+              }
+              errorText={getErrorMessage(
+                fields.trainingCompensationStartDate.name
+              )}
             />
           </$GridCell>
 
@@ -528,7 +488,8 @@ const SalaryBenefitCalculatorView: React.FC<
             <DateInput
               id={fields.trainingCompensationEndDate.name}
               name={fields.trainingCompensationEndDate.name}
-              placeholder={fields.endDate.placeholder}
+              placeholder={t('common:utility.select')}
+              label={t('common:utility.end')}
               language={language}
               onChange={(value) =>
                 setNewTrainingCompensation((prevValue) => ({
@@ -539,9 +500,16 @@ const SalaryBenefitCalculatorView: React.FC<
                 }))
               }
               value={convertToUIDateFormat(newTrainingCompensation.endDate)}
-              invalid={fields.trainingCompensationEndDate && !!getErrorMessage(fields.trainingCompensationEndDate.name)}
-              aria-invalid={!!getErrorMessage(fields.trainingCompensationEndDate.name)}
-              errorText={getErrorMessage(fields.trainingCompensationEndDate.name)}
+              invalid={
+                fields.trainingCompensationEndDate &&
+                !!getErrorMessage(fields.trainingCompensationEndDate.name)
+              }
+              aria-invalid={
+                !!getErrorMessage(fields.trainingCompensationEndDate.name)
+              }
+              errorText={getErrorMessage(
+                fields.trainingCompensationEndDate.name
+              )}
               style={{ paddingRight: `${theme.spacing.s}` }}
             />
           </$GridCell>
@@ -552,12 +520,75 @@ const SalaryBenefitCalculatorView: React.FC<
               theme="coat"
               disabled={isDisabledAddTrainingCompensationButton}
               iconLeft={<IconPlusCircle />}
+              style={{ marginTop: 'var(--spacing-m)' }}
             >
               {t(`${translationsBase}.add`)}
             </Button>
           </$GridCell>
         </>
       )}
+
+      <$GridCell $colSpan={11}>
+        <$CalculatorHeader>
+          {t(`${translationsBase}.periodHeader`)}
+        </$CalculatorHeader>
+      </$GridCell>
+
+      {data.startDate && data.endDate && (
+        <$GridCell $colStart={1} $colSpan={11} style={{ alignSelf: 'center' }}>
+          <$ViewField style={{ marginBottom: theme.spacing.xs }}>
+            {t(`${translationsBase}.appliedPeriod`)}
+            <b>
+              {t(`${translationsBase}.startEndDates`, {
+                startDate: convertToUIDateFormat(data.startDate),
+                endDate: convertToUIDateFormat(data.endDate),
+                period: formatStringFloatValue(data.durationInMonthsRounded),
+              })}
+            </b>
+          </$ViewField>
+        </$GridCell>
+      )}
+
+      <$GridCell $colStart={1} $colSpan={5}>
+        <$CalculatorText>
+          {t(`${translationsBase}.grantedPeriod`, {
+            period: formatStringFloatValue(grantedPeriod),
+          })}
+        </$CalculatorText>
+      </$GridCell>
+
+      <$GridCell $colStart={1} $colSpan={2}>
+        <DateInput
+          id={fields.startDate.name}
+          name={fields.startDate.name}
+          placeholder={fields.startDate.placeholder}
+          language={language}
+          onChange={(value) => {
+            formik.setFieldValue(fields.startDate.name, value);
+          }}
+          value={formik.values.startDate ?? ''}
+          invalid={!!getErrorMessage(fields.startDate.name)}
+          aria-invalid={!!getErrorMessage(fields.startDate.name)}
+          errorText={getErrorMessage(fields.startDate.name)}
+        />
+      </$GridCell>
+
+      <$GridCell $colStart={3} $colSpan={3}>
+        <DateInput
+          id={fields.endDate.name}
+          name={fields.endDate.name}
+          placeholder={fields.endDate.placeholder}
+          language={language}
+          onChange={(value) => {
+            formik.setFieldValue(fields.endDate.name, value);
+          }}
+          value={formik.values.endDate ?? ''}
+          invalid={!!getErrorMessage(fields.endDate.name)}
+          aria-invalid={!!getErrorMessage(fields.endDate.name)}
+          errorText={getErrorMessage(fields.endDate.name)}
+          style={{ paddingRight: `${theme.spacing.s}` }}
+        />
+      </$GridCell>
 
       {isManualCalculator && (
         <SalaryBenefitManualCalculatorView
@@ -567,13 +598,20 @@ const SalaryBenefitCalculatorView: React.FC<
         />
       )}
 
-      <$GridCell $colStart={1}>
+      <$GridCell
+        $colStart={1}
+        $colSpan={11}
+        style={{ marginTop: 'var(--spacing-xs)' }}
+      >
         <Button
           onClick={handleSubmit}
           theme="coat"
-          style={{ marginTop: 'var(--spacing-xs)' }}
+          style={{ marginRight: 'var(--spacing-xs)' }}
         >
           {t(`${translationsBase}.calculate`)}
+        </Button>
+        <Button onClick={handleClear} theme="coat" variant="secondary">
+          {t(`${translationsBase}.clear`)}
         </Button>
       </$GridCell>
 

@@ -10,6 +10,10 @@ type CalculatorTextProps = {
   isBold?: boolean;
 };
 
+type TabButtonProps = {
+  active?: boolean;
+};
+
 export const $MainHeader = styled.h1`
   font-size: ${(props) => props.theme.fontSize.heading.m};
 `;
@@ -23,6 +27,12 @@ export const $CalculatorText = styled.p<CalculatorTextProps>`
   margin: 0;
   font-size: ${(props) => props.theme.fontSize.body.m};
   font-weight: ${(props) => (props.isBold ? 'bold' : '500')};
+`;
+
+export const $CalculatorHeader = styled.p`
+  margin-bottom: ${(props) => props.theme.spacing.xs};
+  font-size: ${(props) => props.theme.fontSize.body.xl};
+  font-weight: 500;
 `;
 
 export const $FieldHeaderText = styled.p`
@@ -67,4 +77,28 @@ export const $CalculatorTableRow = styled.div<CalculatorTableRowProps>`
   background-color: ${(props) =>
     props.isTotal ? props.theme.colors.white : ''};
   margin-bottom: ${(props) => (props.isTotal ? props.theme.spacing.m : '0')};
+`;
+
+export const $TabButton = styled.span<TabButtonProps>`
+  display: inline-block;
+  cursor: pointer;
+  align-items: center;
+  padding-bottom: ${(props) => props.theme.spacing.xs2};
+  width: 50%;
+  font-weight: 500;
+  text-align: center;
+  user-select: none;
+  border-bottom: ${(props) =>
+    props.active ? '4px solid black' : '1px solid gray'};
+`;
+
+export const $HelpText = styled.p`
+  margin: 0;
+  color: ${(props) => props.theme.colors.black70};
+`;
+
+export const $RadioButtonContainer = styled.div`
+  border: 2px solid ${(props) => props.theme.colors.coatOfArmsMediumLight};
+  padding: ${(props) => props.theme.spacing.s};
+  background-color: ${(props) => props.theme.colors.white};
 `;

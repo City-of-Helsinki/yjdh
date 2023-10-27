@@ -18,6 +18,7 @@ import {
   $CalculatorHr,
   $FieldHeaderText,
   $MainHeader,
+  $RadioButtonContainer,
 } from '../ApplicationReview.sc';
 
 const ApplicationProcessingView: React.FC = () => {
@@ -42,12 +43,12 @@ const ApplicationProcessingView: React.FC = () => {
     });
 
   return (
-    <>
-      <$MainHeader>{t(`${translationsBase}.headings.heading10`)}</$MainHeader>
-      <ReviewSection withMargin>
-        <$GridCell $colSpan={11}>
-          <$Grid>
-            <$GridCell $colSpan={6}>
+    <ReviewSection withMargin withBorder>
+      <$GridCell $colSpan={11}>
+        <$MainHeader>{t(`${translationsBase}.headings.heading10`)}</$MainHeader>
+        <$Grid>
+          <$GridCell $colSpan={11}>
+            <$RadioButtonContainer>
               <$RadioButton
                 id="proccessRejectedRadio"
                 name="proccessRejectedRadio"
@@ -65,43 +66,43 @@ const ApplicationProcessingView: React.FC = () => {
                 }}
                 label={t(`${translationsBase}.fields.noSupport`)}
               />
-            </$GridCell>
-          </$Grid>
-          {handledApplication?.status === APPLICATION_STATUSES.REJECTED && (
-            <>
-              <$Grid>
-                <$GridCell
-                  $colSpan={12}
-                  css={`
-                    margin-top: ${theme.spacing.s};
-                  `}
-                >
-                  <$CalculatorHr />
-                </$GridCell>
-              </$Grid>
-              <$Grid>
-                <$GridCell $colSpan={6}>
-                  <TextArea
-                    id="proccessRejectedComments"
-                    name="proccessRejectedComments"
-                    label={t(`${translationsBase}.fields.reason`)}
-                    placeholder={t(
-                      `${translationsBase}.actions.reasonRejectPlaceholder`
-                    )}
-                    onChange={onCommentsChange}
-                    value={handledApplication?.logEntryComment}
-                    required
-                  />
-                </$GridCell>
-              </$Grid>
-            </>
-          )}
-        </$GridCell>
-      </ReviewSection>
-      <ReviewSection withMargin>
-        <$GridCell $colSpan={11}>
-          <$Grid>
-            <$GridCell $colSpan={6}>
+            </$RadioButtonContainer>
+          </$GridCell>
+        </$Grid>
+        {handledApplication?.status === APPLICATION_STATUSES.REJECTED && (
+          <>
+            <$Grid>
+              <$GridCell
+                $colSpan={12}
+                css={`
+                  margin-top: ${theme.spacing.s};
+                `}
+              >
+                <$CalculatorHr />
+              </$GridCell>
+            </$Grid>
+            <$Grid>
+              <$GridCell $colSpan={6}>
+                <TextArea
+                  id="proccessRejectedComments"
+                  name="proccessRejectedComments"
+                  label={t(`${translationsBase}.fields.reason`)}
+                  placeholder={t(
+                    `${translationsBase}.actions.reasonRejectPlaceholder`
+                  )}
+                  onChange={onCommentsChange}
+                  value={handledApplication?.logEntryComment}
+                  required
+                />
+              </$GridCell>
+            </$Grid>
+          </>
+        )}
+      </$GridCell>
+      <$GridCell $colSpan={11}>
+        <$Grid>
+          <$GridCell $colSpan={11}>
+            <$RadioButtonContainer>
               <$RadioButton
                 id="proccessAccepted"
                 name="proccessAccepted"
@@ -118,58 +119,56 @@ const ApplicationProcessingView: React.FC = () => {
                 }}
                 label={t(`${translationsBase}.fields.support`)}
               />
-            </$GridCell>
-          </$Grid>
-          {handledApplication?.status === APPLICATION_STATUSES.ACCEPTED && (
-            <>
-              <$Grid>
-                <$GridCell
-                  $colSpan={12}
-                  css={`
-                    margin-top: ${theme.spacing.s};
-                  `}
-                >
-                  <$CalculatorHr />
-                </$GridCell>
-              </$Grid>
-              <$Grid>
-                <$GridCell $colSpan={6}>
-                  <TextArea
-                    id="proccessAcceptedComments"
-                    name="proccessAcceptedComments"
-                    label={t(`${translationsBase}.fields.reason`)}
-                    placeholder={t(
-                      `${translationsBase}.actions.reasonAcceptPlaceholder`
-                    )}
-                    value={handledApplication?.logEntryComment}
-                    onChange={onCommentsChange}
-                  />
-                </$GridCell>
-              </$Grid>
-              <$Grid>
-                <$GridCell $colSpan={12}>
-                  <$FieldHeaderText>
-                    {t(`${translationsBase}.actions.grantedAsDeminimisText`)}
-                  </$FieldHeaderText>
-                </$GridCell>
-                <$GridCell $colSpan={12}>
-                  <$Checkbox
-                    id="deminimisCheckbox"
-                    name="deminimisCheckbox"
-                    label={t(
-                      `${translationsBase}.actions.grantedAsDeminimisAid`
-                    )}
-                    required
-                    checked={handledApplication.grantedAsDeMinimisAid === true}
-                    onChange={toggleGrantedAsDeMinimisAid}
-                  />
-                </$GridCell>
-              </$Grid>
-            </>
-          )}
-        </$GridCell>
-      </ReviewSection>
-    </>
+            </$RadioButtonContainer>
+          </$GridCell>
+        </$Grid>
+        {handledApplication?.status === APPLICATION_STATUSES.ACCEPTED && (
+          <>
+            <$Grid>
+              <$GridCell
+                $colSpan={12}
+                css={`
+                  margin-top: ${theme.spacing.s};
+                `}
+              >
+                <$CalculatorHr />
+              </$GridCell>
+            </$Grid>
+            <$Grid>
+              <$GridCell $colSpan={6}>
+                <TextArea
+                  id="proccessAcceptedComments"
+                  name="proccessAcceptedComments"
+                  label={t(`${translationsBase}.fields.reason`)}
+                  placeholder={t(
+                    `${translationsBase}.actions.reasonAcceptPlaceholder`
+                  )}
+                  value={handledApplication?.logEntryComment}
+                  onChange={onCommentsChange}
+                />
+              </$GridCell>
+            </$Grid>
+            <$Grid>
+              <$GridCell $colSpan={12}>
+                <$FieldHeaderText>
+                  {t(`${translationsBase}.actions.grantedAsDeminimisText`)}
+                </$FieldHeaderText>
+              </$GridCell>
+              <$GridCell $colSpan={12}>
+                <$Checkbox
+                  id="deminimisCheckbox"
+                  name="deminimisCheckbox"
+                  label={t(`${translationsBase}.actions.grantedAsDeminimisAid`)}
+                  required
+                  checked={handledApplication.grantedAsDeMinimisAid === true}
+                  onChange={toggleGrantedAsDeMinimisAid}
+                />
+              </$GridCell>
+            </$Grid>
+          </>
+        )}
+      </$GridCell>
+    </ReviewSection>
   );
 };
 

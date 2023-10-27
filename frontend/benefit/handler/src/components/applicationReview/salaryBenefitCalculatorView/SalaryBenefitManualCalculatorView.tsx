@@ -21,7 +21,7 @@ const SalaryBenefitManualCalculatorView: React.FC<
       <$GridCell $colStart={1} $colSpan={2}>
         <$CalculatorText>{overrideMonthlyBenefitAmount?.label}</$CalculatorText>
       </$GridCell>
-      <$GridCell $colStart={1} $colSpan={1}>
+      <$GridCell $colStart={1} $colSpan={2}>
         <TextInput
           id={overrideMonthlyBenefitAmount?.name}
           name={overrideMonthlyBenefitAmount?.name}

@@ -8,6 +8,7 @@ import {
   APPLICATION_STATUSES,
   ATTACHMENT_TYPES,
 } from 'benefit-shared/constants';
+import { paySubsidyTitle } from 'benefit-shared/utils/common';
 import camelCase from 'lodash/camelCase';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -137,9 +138,7 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({
       </$GridCell>
       <$GridCell $colSpan={6}>
         <AttachmentsListView
-          title={t(
-            'common:applications.sections.attachments.types.paySubsidyDecision.title'
-          )}
+          title={t(paySubsidyTitle(data.paySubsidyGranted))}
           type={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
           attachments={data.attachments || []}
         />

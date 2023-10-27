@@ -15,6 +15,7 @@ type ExtendedComponentProps = {
   theme: DefaultTheme;
   language: Language;
   handleSubmit: () => void;
+  handleClear: () => void;
   getErrorMessage: (fieldName: string) => string | undefined;
   isRecalculationRequired: boolean;
 };
@@ -50,6 +51,10 @@ const useCalculatorData = (
     });
   };
 
+  const handleClear = (): void => {
+    formik.resetForm();
+  };
+
   useEffect(() => {
     if (didMount.current && !isRecalculationRequired)
       setIsRecalculationRequired(true);
@@ -63,6 +68,7 @@ const useCalculatorData = (
     language,
     getErrorMessage,
     handleSubmit,
+    handleClear,
     isRecalculationRequired,
   };
 };

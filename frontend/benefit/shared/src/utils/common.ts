@@ -1,3 +1,4 @@
+import { PAY_SUBSIDY_GRANTED } from 'benefit-shared/constants';
 import { Message, MessageData } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
 import { friendlyFormatIBAN } from 'ibantools';
@@ -30,3 +31,8 @@ export const isTruthy = (value: string | boolean): boolean =>
 
 export const formatIBAN = (ibanNumber: string): string =>
   friendlyFormatIBAN(ibanNumber);
+
+export const paySubsidyTitle = (paySubsidy: PAY_SUBSIDY_GRANTED): string =>
+  paySubsidy === PAY_SUBSIDY_GRANTED.GRANTED_AGED
+    ? 'common:applications.sections.attachments.types.agedSubsidyDecision.title'
+    : 'common:applications.sections.attachments.types.paySubsidyDecision.title';

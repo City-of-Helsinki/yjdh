@@ -24,7 +24,7 @@ import {
 } from 'shared/utils/date.utils';
 import { v4 as uuidv4 } from 'uuid';
 
-import { getValidationSchema } from '../employmentAppliedMoreView/utils/validation';
+import { getValidationSchema } from './utils/validation';
 
 type ExtendedComponentProps = {
   formik: FormikProps<CalculationFormProps>;

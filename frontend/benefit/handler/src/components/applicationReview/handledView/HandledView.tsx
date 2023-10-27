@@ -1,6 +1,6 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
-import { APPLICATION_STATUSES, BENEFIT_TYPES } from 'benefit-shared/constants';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import {
@@ -16,7 +16,6 @@ import {
 } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
-import EmploymentCalculatorResults from '../employmentAppliedMoreView/EmploymentCalculatorResults/EmploymentCalculatorResults';
 import SalaryCalculatorResults from '../salaryBenefitCalculatorView/SalaryCalculatorResults/SalaryCalculatorResults';
 
 const HandledView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
@@ -56,12 +55,7 @@ const HandledView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
               margin: ${theme.spacing.s} 0;
             `}
           >
-            {data.benefitType === BENEFIT_TYPES.EMPLOYMENT && (
-              <EmploymentCalculatorResults data={data} />
-            )}
-            {data.benefitType === BENEFIT_TYPES.SALARY && (
-              <SalaryCalculatorResults data={data} />
-            )}
+            <SalaryCalculatorResults data={data} />
           </$GridCell>
           <$GridCell $colSpan={12}>
             <$ViewField>

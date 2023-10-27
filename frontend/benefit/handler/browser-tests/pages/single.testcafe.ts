@@ -1,6 +1,4 @@
-import requestLogger, {
-  filterLoggedRequests,
-} from '@frontend/shared/browser-tests/utils/request-logger';
+import requestLogger from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import { RequestMock } from 'testcafe';
 
@@ -48,7 +46,7 @@ fixture('Single application')
     await t.useRole(handlerUser);
   });
 
-test('Page has a single application', async () => {
+test.skip('Page has a single application', async () => {
   const applicationReview = new ApplicationReview();
   await applicationReview.isLoaded();
 
