@@ -37,11 +37,11 @@ export const $Markdown = styled(ReactMarkdown)`
 `;
 
 type TermsOfServiceProps = {
-  setIsTermsOfSerivceApproved: (isTermsOfServiceApproved: boolean) => void;
+  setIsTermsOfServiceApproved: (isTermsOfServiceApproved: boolean) => void;
 };
 
 const TermsOfService: React.FC<TermsOfServiceProps> = ({
-  setIsTermsOfSerivceApproved,
+  setIsTermsOfServiceApproved,
 }) => {
   const {
     theme,
@@ -50,7 +50,7 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({
     termsInEffectMarkdown,
     user,
     approveTermsOfService,
-  } = useTermsOfServiceData(setIsTermsOfSerivceApproved);
+  } = useTermsOfServiceData(setIsTermsOfServiceApproved);
 
   const { mutate } = useApproveTermsOfServiceMutation();
 

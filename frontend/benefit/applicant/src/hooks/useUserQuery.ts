@@ -7,7 +7,10 @@ import { useQuery, UseQueryResult } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useLocale from 'shared/hooks/useLocale';
-import { setLocalStorageItem } from 'shared/utils/localstorage.utils';
+import {
+  getLocalStorageItem,
+  setLocalStorageItem,
+} from 'shared/utils/localstorage.utils';
 
 import { LOCAL_STORAGE_KEYS } from '../constants';
 
@@ -42,9 +45,16 @@ const useUserQuery = (
     }
   };
 
+  const params =
+    getLocalStorageItem(LOCAL_STORAGE_KEYS.IS_TERMS_OF_SERVICE_APPROVED) ===
+    'true'
+      ? {}
+      : { terms: 1 };
+
   return useQuery(
     queryKeys ?? `${BackendEndpoint.USER}`,
-    () => handleResponse<UserData>(axios.get(BackendEndpoint.USER_ME)),
+    () =>
+      handleResponse<UserData>(axios.get(BackendEndpoint.USER_ME, { params })),
     {
       refetchInterval: FIVE_MINUTES,
       enabled: !logout,

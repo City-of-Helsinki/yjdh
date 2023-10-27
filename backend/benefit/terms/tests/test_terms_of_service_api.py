@@ -41,7 +41,7 @@ def test_terms_of_service_in_effect_pdf(
     )
     # ... wrong type of terms
     TermsFactory(effective_from=date.today(), terms_type=TermsType.APPLICANT_TERMS)
-    response = api_client.get(get_current_user_url())
+    response = api_client.get(get_current_user_url() + "?terms=1")
 
     assert (
         get_company_from_request(response.wsgi_request)
@@ -87,7 +87,7 @@ Lorem ipsum dolor sit amet"""
     )
     # ... wrong type of terms
     TermsFactory(effective_from=date.today(), terms_type=TermsType.APPLICANT_TERMS)
-    response = api_client.get(get_current_user_url())
+    response = api_client.get(get_current_user_url() + "?terms=1")
 
     assert (
         get_company_from_request(response.wsgi_request)
