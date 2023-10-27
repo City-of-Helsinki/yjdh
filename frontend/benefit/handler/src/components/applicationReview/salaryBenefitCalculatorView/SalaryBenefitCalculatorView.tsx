@@ -97,7 +97,7 @@ const SalaryBenefitCalculatorView: React.FC<
         </$CalculatorHeader>
       </$GridCell>
 
-      <$GridCell $colSpan={2}>
+      <$GridCell $colSpan={3}>
         <TextInput
           id={fields.monthlyPay.name}
           name={fields.monthlyPay.name}
@@ -152,7 +152,7 @@ const SalaryBenefitCalculatorView: React.FC<
               {t(`${translationsBase}.maximumAid`)}
             </$CalculatorHeader>
           </$GridCell>
-          <$GridCell $colStart={1}>
+          <$GridCell $colStart={1} $colSpan={3}>
             <Select
               value={getStateAidMaxPercentageSelectValue()}
               helper=""
