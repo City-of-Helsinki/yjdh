@@ -79,6 +79,11 @@ export const $CalculatorTableRow = styled.div<CalculatorTableRowProps>`
   margin-bottom: ${(props) => (props.isTotal ? props.theme.spacing.m : '0')};
 `;
 
+export const $CalculatorTableHeader = styled.div`
+  font-size: ${(props) => props.theme.fontSize.heading.l};
+  padding: ${({ theme: { spacing } }) => `${spacing.xs3} ${spacing.xs}`};
+`;
+
 export const $TabButton = styled.span<TabButtonProps>`
   display: inline-block;
   cursor: pointer;

@@ -26,7 +26,6 @@ import { formatStringFloatValue } from 'shared/utils/string.utils';
 
 import {
   $CalculatorHeader,
-  $CalculatorHr,
   $CalculatorTableRow,
   $CalculatorText,
   $HelpText,
@@ -616,7 +615,6 @@ const SalaryBenefitCalculatorView: React.FC<
       </$GridCell>
 
       <$GridCell $colStart={1} $colSpan={11}>
-        <$CalculatorHr />
         <CalculatorErrors data={calculationsErrors} />
       </$GridCell>
 
