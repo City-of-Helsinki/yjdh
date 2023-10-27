@@ -35,6 +35,9 @@ class TermsSerializer(serializers.ModelSerializer):
             "terms_pdf_fi",
             "terms_pdf_en",
             "terms_pdf_sv",
+            "terms_md_fi",
+            "terms_md_en",
+            "terms_md_sv",
             "applicant_consents",
         ]
 

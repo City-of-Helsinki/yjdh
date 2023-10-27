@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import useAuth from 'shared/hooks/useAuth';
 import theme from 'shared/styles/theme';
+import { getLocalStorageItem } from 'shared/utils/localstorage.utils';
 import { DefaultTheme } from 'styled-components';
 
 import { ROUTES } from '../../constants';
@@ -33,7 +34,7 @@ const selectBgColor = (pathname: string): keyof DefaultTheme['colors'] => {
 
 const Layout: React.FC<Props> = ({ children, ...rest }) => {
   const { isAuthenticated } = useAuth();
-  const [isTermsOfServiceApproved, setIsTermsOfSerivceApproved] =
+  const [isTermsOfServiceApproved, setIsTermsOfServiceApproved] =
     React.useState(false);
   const router = useRouter();
 
@@ -44,11 +45,10 @@ const Layout: React.FC<Props> = ({ children, ...rest }) => {
 
   React.useEffect(() => {
     if (IS_CLIENT) {
-      setIsTermsOfSerivceApproved(
+      setIsTermsOfServiceApproved(
         // eslint-disable-next-line scanjs-rules/identifier_localStorage
-        localStorage.getItem(
-          LOCAL_STORAGE_KEYS.IS_TERMS_OF_SERVICE_APPROVED
-        ) === 'true'
+        getLocalStorageItem(LOCAL_STORAGE_KEYS.IS_TERMS_OF_SERVICE_APPROVED) ===
+          'true'
       );
     }
   }, []);
@@ -60,7 +60,7 @@ const Layout: React.FC<Props> = ({ children, ...rest }) => {
       !isAccessibilityStatement &&
       !isTermsOfServiceApproved ? (
         <TermsOfService
-          setIsTermsOfSerivceApproved={setIsTermsOfSerivceApproved}
+          setIsTermsOfServiceApproved={setIsTermsOfServiceApproved}
         />
       ) : (
         children

@@ -117,9 +117,12 @@ export type ApplicantTerms = {
   applicantConsents: ApplicantConsent[];
   effectiveFrom: string;
   id: string;
-  termsPdfEn: string;
-  termsPdfFi: string;
-  termsPdfSv: string;
+  termsPdfEn?: string;
+  termsPdfFi?: string;
+  termsPdfSv?: string;
+  termsMdEn?: string;
+  termsMdFi?: string;
+  termsMdSv?: string;
   termsType: ATTACHMENT_TYPES;
 };
 
@@ -522,9 +525,12 @@ export type ApplicantConsents = {
 
 export type TermsOfServiceInEffect = {
   id: string;
-  termsPdfFi: string;
-  termsPdfEn: string;
-  termsPdfSv: string;
+  termsPdfFi?: string;
+  termsPdfEn?: string;
+  termsPdfSv?: string;
+  termsMdFi?: string;
+  termsMdEn?: string;
+  termsMdSv?: string;
   applicantConsents: ApplicantConsents[];
 };
 

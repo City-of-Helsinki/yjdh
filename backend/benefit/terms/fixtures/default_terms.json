@@ -8,6 +8,9 @@
       "terms_pdf_fi": "/var/media/please_upload_actual_pdf_manually.pdf",
       "terms_pdf_sv": "/var/media/please_upload_actual_pdf_manually.pdf",
       "terms_pdf_en": "/var/media/please_upload_actual_pdf_manually.pdf",
+      "terms_md_en": "# Käyttöehdot",
+      "terms_md_fi": "# Terms of service",
+      "terms_md_sv": "# Vilkor för användning",
       "created_at": "2021-01-01T00:00:00+02:00",
       "modified_at": "2021-01-01T00:00:00+02:00"
     }
@@ -33,6 +36,9 @@
       "terms_pdf_fi": "/var/media/please_upload_actual_pdf_manually.pdf",
       "terms_pdf_sv": "/var/media/please_upload_actual_pdf_manually.pdf",
       "terms_pdf_en": "/var/media/please_upload_actual_pdf_manually.pdf",
+      "terms_md_en": "# Hakuehdot",
+      "terms_md_fi": "# Applicant terms",
+      "terms_md_sv": "# Sökandevillkor",
       "created_at": "2021-01-01T00:00:00+02:00",
       "modified_at": "2021-01-01T00:00:00+02:00"
     }
@@ -98,6 +104,9 @@
       "terms_pdf_fi": "/var/media/please_upload_actual_pdf_manually.pdf",
       "terms_pdf_sv": "/var/media/please_upload_actual_pdf_manually.pdf",
       "terms_pdf_en": "/var/media/please_upload_actual_pdf_manually.pdf",
+      "terms_md_en": "# Käsittelijän ehdot",
+      "terms_md_fi": "# Handler terms",
+      "terms_md_sv": "# Vilkor för hanterare",
       "created_at": "2021-01-01T00:00:00+02:00",
       "modified_at": "2021-01-01T00:00:00+02:00"
     }

@@ -3,6 +3,7 @@ import { TermsProp, User } from 'benefit-shared/types/application';
 import { TFunction } from 'next-i18next';
 import React from 'react';
 import { Language } from 'shared/i18n/i18n';
+import { setLocalStorageItem } from 'shared/utils/localstorage.utils';
 import { capitalize } from 'shared/utils/string.utils';
 import { DefaultTheme, useTheme } from 'styled-components';
 
@@ -14,13 +15,14 @@ type ExtendedComponentProps = {
   locale: Language;
   theme: DefaultTheme;
   t: TFunction;
-  termsInEffectUrl: string;
+  termsInEffectUrl?: string;
+  termsInEffectMarkdown?: string;
   user: User | undefined;
   approveTermsOfService: () => void;
 };
 
 const useTermsOfServiceData = (
-  setIsTermsOfSerivceApproved: (isTermsOfServiceApproved: boolean) => void
+  setIsTermsOfServiceApproved: (isTermsOfServiceApproved: boolean) => void
 ): ExtendedComponentProps => {
   const locale = useLocale();
   const textLocale = capitalize(locale);
@@ -38,19 +40,41 @@ const useTermsOfServiceData = (
   );
 
   const approveTermsOfService = (): void => {
-    setIsTermsOfSerivceApproved(true);
+    setIsTermsOfServiceApproved(true);
     // eslint-disable-next-line scanjs-rules/identifier_localStorage
-    localStorage.setItem(
+    setLocalStorageItem(
       LOCAL_STORAGE_KEYS.IS_TERMS_OF_SERVICE_APPROVED,
       'true'
     );
   };
+
+  const getTermsMarkdownByLanguage = (): string => {
+    if (!user?.termsOfServiceInEffect) {
+      return '';
+    }
+    switch (locale) {
+      case 'fi':
+        return String(user.termsOfServiceInEffect?.termsMdFi);
+
+      case 'sv':
+        return String(user.termsOfServiceInEffect?.termsMdSv);
+
+      case 'en':
+        return String(user.termsOfServiceInEffect?.termsMdSv);
+
+      default:
+        return '';
+    }
+  };
+
+  const termsInEffectMarkdown = getTermsMarkdownByLanguage();
 
   return {
     locale,
     theme,
     t,
     termsInEffectUrl,
+    termsInEffectMarkdown,
     user,
     approveTermsOfService,
   };

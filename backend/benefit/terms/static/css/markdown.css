@@ -1,0 +1,45 @@
+.module .EasyMDEContainer h1,
+.module .EasyMDEContainer h2,
+.module .EasyMDEContainer h3,
+.module .EasyMDEContainer h4,
+.module .EasyMDEContainer h5,
+.module .EasyMDEContainer h6 {
+    color: #000;
+    background: none;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 1.2rem;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    line-height: 1.25;
+}
+
+.module .EasyMDEContainer h1 {
+    font-size: 2em;
+}
+.module .EasyMDEContainer h2 {
+    font-size: 1.75em;
+}
+
+.module .EasyMDEContainer h3 {
+    font-size: 1.5em;
+}
+
+.module .EasyMDEContainer h4,
+.module .EasyMDEContainer h5,
+.module .EasyMDEContainer h6 {
+    font-size: 1.25em;
+}
+
+.module .EasyMDEContainer ul {
+    margin-left: 1em;
+}
+.module .EasyMDEContainer ul li {
+    list-style: disc;
+    font-size: 1em;
+}
+
+label[for*="id_terms_md_"] {
+    float: none;
+}

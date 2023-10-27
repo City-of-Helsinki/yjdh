@@ -48,8 +48,14 @@ class UserSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(TermsSerializer())
     def get_terms_of_service_in_effect(self, obj):
+        request = self.context.get("request")
+        include_terms = (
+            request.query_params.get("terms")
+            if request and request.query_params
+            else None
+        )
         terms = Terms.objects.get_terms_in_effect(TermsType.TERMS_OF_SERVICE)
-        if terms:
+        if terms and include_terms:
             # If given the request in context, DRF will output the URL for FileFields
             context = {"request": self.context.get("request")}
             return TermsSerializer(terms, context=context).data

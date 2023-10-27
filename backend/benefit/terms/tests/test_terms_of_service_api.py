@@ -18,7 +18,7 @@ def get_current_user_url():
     return "/v1/users/me/"
 
 
-def test_terms_of_service_in_effect(
+def test_terms_of_service_in_effect_pdf(
     api_client, mock_get_organisation_roles_and_create_company
 ):
     """
@@ -41,7 +41,7 @@ def test_terms_of_service_in_effect(
     )
     # ... wrong type of terms
     TermsFactory(effective_from=date.today(), terms_type=TermsType.APPLICANT_TERMS)
-    response = api_client.get(get_current_user_url())
+    response = api_client.get(get_current_user_url() + "?terms=1")
 
     assert (
         get_company_from_request(response.wsgi_request)
@@ -50,6 +50,58 @@ def test_terms_of_service_in_effect(
     assert response.data["terms_of_service_in_effect"]["id"] == str(current_terms.pk)
     assert response.data["terms_of_service_in_effect"]["terms_pdf_fi"].startswith(
         "http"
+    )
+
+    assert {
+        obj["id"]
+        for obj in response.data["terms_of_service_in_effect"]["applicant_consents"]
+    } == {str(obj.pk) for obj in current_terms.applicant_consents.all()}
+
+    assert response.status_code == 200
+
+
+def test_terms_of_service_in_effect_md(
+    api_client, mock_get_organisation_roles_and_create_company
+):
+    """
+    Test that the API returns the correct Terms and ApplicantConsents in the terms_of_service_in_effect field.
+    """
+    current_terms = TermsFactory(
+        effective_from=date.today(), terms_type=TermsType.TERMS_OF_SERVICE
+    )
+
+    markdown_content = """# Heading 1
+
+Lorem ipsum dolor sit amet"""
+
+    # Create some extra terms that should not be returned
+    # ... old terms
+    TermsFactory(
+        effective_from=date.today() - timedelta(days=1),
+        terms_type=TermsType.TERMS_OF_SERVICE,
+    )
+    # ... future terms
+    TermsFactory(
+        effective_from=date.today() + timedelta(days=1),
+        terms_type=TermsType.TERMS_OF_SERVICE,
+    )
+    # ... wrong type of terms
+    TermsFactory(effective_from=date.today(), terms_type=TermsType.APPLICANT_TERMS)
+    response = api_client.get(get_current_user_url() + "?terms=1")
+
+    assert (
+        get_company_from_request(response.wsgi_request)
+        == mock_get_organisation_roles_and_create_company
+    )
+    assert response.data["terms_of_service_in_effect"]["id"] == str(current_terms.pk)
+    assert (
+        response.data["terms_of_service_in_effect"]["terms_md_fi"] == markdown_content
+    )
+    assert (
+        response.data["terms_of_service_in_effect"]["terms_md_en"] == markdown_content
+    )
+    assert (
+        response.data["terms_of_service_in_effect"]["terms_md_sv"] == markdown_content
     )
 
     assert {

@@ -1,0 +1,40 @@
+{% extends 'admin/base.html' %} {% block footer%}
+
+<link rel="stylesheet" href="/static/css/vendor/easymde.min.css" />
+<script src="/static/js/vendor/easymde.min.js"></script>
+
+<script>
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+            try {
+                ["id_terms_md_fi", "id_terms_md_en", "id_terms_md_sv"].map(
+                    function (id) {
+                        const easyMDE = new EasyMDE({
+                            spellChecker: false,
+                            toolbar: [
+                                "heading",
+                                "bold",
+                                "italic",
+                                "link",
+                                "|",
+                                "quote",
+                                "unordered-list",
+                                "ordered-list",
+                                "|",
+                                "preview",
+                                "side-by-side",
+                            ],
+                            sideBySideFullscreen: false,
+                            element: document.getElementById(id),
+                        });
+                    }
+                );
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        false
+    );
+</script>
+{% endblock %}

@@ -28,6 +28,9 @@ class TermsAdmin(admin.ModelAdmin):
     inlines = (ApplicantConsentInline,)
     list_display = ("id", "terms_type", "effective_from")
 
+    class Media:
+        css = {"all": ("css/markdown.css",)}
+
 
 class ApprovedApplicantConsentInline(admin.ModelAdmin):
     model = ApplicantConsent

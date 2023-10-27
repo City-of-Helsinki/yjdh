@@ -3,6 +3,7 @@ from datetime import date
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.forms import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from applications.models import Application
@@ -34,6 +35,16 @@ class Terms(UUIDModel, TimeStampedModel):
         default=TermsType.APPLICANT_TERMS,
     )
 
+    terms_md_fi = models.TextField(
+        verbose_name=_("Finnish terms (md)"), blank=True, default=""
+    )
+    terms_md_en = models.TextField(
+        verbose_name=_("English terms (md)"), blank=True, default=""
+    )
+    terms_md_sv = models.TextField(
+        verbose_name=_("Swedish terms (md)"), blank=True, default=""
+    )
+
     """
     If effective_from is set to null, that means the terms are not to be displayed to the applicant.
     """
@@ -41,9 +52,39 @@ class Terms(UUIDModel, TimeStampedModel):
         verbose_name=_("first day these terms are in effect"), null=True, blank=True
     )
 
-    terms_pdf_fi = models.FileField(verbose_name=_("finnish terms (pdf file)"))
-    terms_pdf_en = models.FileField(verbose_name=_("english terms (pdf file)"))
-    terms_pdf_sv = models.FileField(verbose_name=_("swedish terms (pdf file)"))
+    terms_pdf_fi = models.FileField(
+        verbose_name=_("finnish terms (pdf file)"), blank=True
+    )
+    terms_pdf_en = models.FileField(
+        verbose_name=_("english terms (pdf file)"), blank=True
+    )
+    terms_pdf_sv = models.FileField(
+        verbose_name=_("swedish terms (pdf file)"), blank=True
+    )
+
+    def clean(self):
+        required_fields_pdf = [
+            self.terms_pdf_en,
+            self.terms_pdf_fi,
+            self.terms_pdf_sv,
+        ]
+        required_fields_md = [
+            self.terms_md_en,
+            self.terms_md_fi,
+            self.terms_md_sv,
+        ]
+        if not all(required_fields_md) and not all(required_fields_pdf):
+            raise ValidationError(
+                _("PDF or MD fields are missing for FI/EN/SV! Fill in either or")
+            )
+        if all(required_fields_pdf) and any(required_fields_md):
+            raise ValidationError(
+                _("PDF or MD fields are missing for FI/EN/SV! Fill in either or")
+            )
+        if all(required_fields_md) and any(required_fields_pdf):
+            raise ValidationError(
+                _("PDF or MD fields are missing for FI/EN/SV! Fill in either or")
+            )
 
     @property
     def is_editable(self):

@@ -30,6 +30,7 @@ type ExtendedComponentProps = {
   textLocale: string;
   checkedArray: boolean[];
   applicantTermsInEffectUrl: string;
+  applicantTermsInEffectMd: string;
 };
 
 const useApplicationFormStep6 = (
@@ -127,6 +128,25 @@ const useApplicationFormStep6 = (
     void onDelete(application.id ?? '');
   };
 
+  const getTermsMarkdownByLanguage = (): string => {
+    if (!application.applicantTermsInEffect) return '';
+    switch (locale) {
+      case 'fi':
+        return application.applicantTermsInEffect?.termsMdFi;
+
+      case 'sv':
+        return application.applicantTermsInEffect?.termsMdSv;
+
+      case 'en':
+        return application.applicantTermsInEffect?.termsMdEn;
+
+      default:
+        return '';
+    }
+  };
+
+  const applicantTermsInEffectMd = getTermsMarkdownByLanguage();
+
   const applicantTermsInEffectUrl = React.useMemo(() => {
     if (
       application.applicantTermsInEffect &&
@@ -151,6 +171,7 @@ const useApplicationFormStep6 = (
     textLocale,
     checkedArray,
     applicantTermsInEffectUrl,
+    applicantTermsInEffectMd,
   };
 };
 
