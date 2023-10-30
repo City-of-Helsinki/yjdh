@@ -74,5 +74,6 @@ def healthz(*args, **kwargs):
 def readiness(*args, **kwargs):
     return HttpResponse(status=200)
 
+# Testing review environment
 
 urlpatterns += [path("healthz", healthz), path("readiness", readiness)]
