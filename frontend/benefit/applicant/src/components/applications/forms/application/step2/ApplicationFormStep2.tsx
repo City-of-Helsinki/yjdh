@@ -542,7 +542,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
       </FormSection>
       <StepperActions
         handleSubmit={handleSubmit}
-        handleSave={formik.isValid ? handleSave : undefined}
+        handleSave={handleSave}
         handleBack={handleBack}
         handleDelete={handleDelete}
       />

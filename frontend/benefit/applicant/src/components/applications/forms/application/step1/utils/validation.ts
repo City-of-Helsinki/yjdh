@@ -141,16 +141,15 @@ export const getValidationSchema = (
     ),
     [APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS]: Yup.boolean()
       .nullable()
-      .oneOf([true, false])
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION]:
       Yup.string().when(
         APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS,
         {
-          is: true,
-          then: (schema) =>
-            schema.required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-          otherwise: (schema) => schema,
+          is: (checked: boolean): boolean => checked,
+          then: Yup.string()
+            .nullable()
+            .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
         }
       ),
   });

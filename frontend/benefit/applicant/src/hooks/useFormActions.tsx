@@ -34,12 +34,6 @@ interface FormActions {
   onDelete: (id: string) => void;
 }
 
-const prettyPrintObject = (object: Record<string, string[]>): string =>
-  JSON.stringify(object)
-    .replace(/["[\]{}]/g, '')
-    .replace(/:/g, ': ')
-    .replace(/,/g, '\n');
-
 const useFormActions = (application: Partial<Application>): FormActions => {
   const router = useRouter();
   const currentStep = getApplicationStepFromString(
@@ -85,15 +79,11 @@ const useFormActions = (application: Partial<Application>): FormActions => {
         labelText: t('common:error.generic.label'),
         text: isContentTypeHTML
           ? t('common:error.generic.text')
-          : Object.entries(errorData).map(([key, value]) =>
-              typeof value === 'string' ? (
-                <a key={key} href={`#${key}`}>
-                  {value}
-                </a>
-              ) : (
-                prettyPrintObject(value)
-              )
-            ),
+          : Object.entries(errorData).map(([key, value]) => (
+              <a key={key} href={`#${key}`}>
+                {value}
+              </a>
+            )),
       });
     }
   }, [
@@ -109,8 +99,6 @@ const useFormActions = (application: Partial<Application>): FormActions => {
   const getModifiedValues = (currentValues: Application): Application => {
     const employee: Employee | undefined = currentValues?.employee ?? undefined;
     const {
-      coOperationNegotiations,
-      coOperationNegotiationsDescription,
       paySubsidyGranted,
       startDate,
       endDate,
@@ -162,9 +150,6 @@ const useFormActions = (application: Partial<Application>): FormActions => {
       ...normalizedValues,
       deMinimisAidSet: deMinimisAidData,
       benefitType: BENEFIT_TYPES.SALARY,
-      coOperationNegotiationsDescription: coOperationNegotiations
-        ? coOperationNegotiationsDescription
-        : '',
       deMinimisAid: deMinimisAidData.length > 0,
     };
   };

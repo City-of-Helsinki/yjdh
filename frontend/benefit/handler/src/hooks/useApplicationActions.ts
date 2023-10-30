@@ -4,7 +4,6 @@ import { Application, ApplicationData } from 'benefit-shared/types/application';
 import { stringToFloatValue } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
 
-import { APPLICATION_ACTIONS } from '../constants';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 
 type ExtendedComponentProps = {
@@ -17,8 +16,7 @@ type ExtendedComponentProps = {
 };
 
 const useApplicationActions = (
-  application: Application,
-  action?: APPLICATION_ACTIONS
+  application: Application
 ): ExtendedComponentProps => {
   const updateApplicationQuery = useUpdateApplicationQuery();
 
@@ -54,12 +52,7 @@ const useApplicationActions = (
       },
       { deep: true }
     ) as ApplicationData;
-
-    const data = {
-      ...currentApplicationData,
-      action,
-    };
-    updateApplicationQuery.mutate(data);
+    updateApplicationQuery.mutate(currentApplicationData);
     window.scrollTo(0, 0);
   };
 

@@ -405,9 +405,6 @@
       "send": {
         "heading1": "Villkoren"
       }
-    },
-    "errors": {
-      "dirtyOrInvalidForm": "Fyll i eventuella saknade eller ogiltiga formulärfält"
     }
   },
   "serviceName": "E-tjänsten för Helsingforstillägg",

@@ -4,7 +4,7 @@ from dateutil.relativedelta import relativedelta
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from applications.enums import ApplicationActions, ApplicationStatus, BenefitType
+from applications.enums import ApplicationStatus, BenefitType
 from applications.models import Application
 from calculator.models import (
     Calculation,
@@ -271,13 +271,7 @@ class PaySubsidySerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         if request is None:
             return data
-
-        action = None
-        if "action" in request.data:
-            action = request.data["action"]
-        if self._are_dates_required() and action not in [
-            ApplicationActions.APPLICANT_TOGGLE_EDIT
-        ]:
+        if self._are_dates_required():
             if data.get("start_date") is None:
                 raise serializers.ValidationError(
                     {"start_date": _("Start date cannot be empty")}
