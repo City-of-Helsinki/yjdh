@@ -161,3 +161,9 @@ class AhjoStatus(models.TextChoices):
     )
     DELETE_REQUEST_SENT = "delete_request_sent", _("Delete request sent")
     DELETE_REQUEST_RECEIVED = "delete_request_received", _("Delete request received")
+
+
+class ApplicationActions(models.TextChoices):
+    APPLICANT_TOGGLE_EDIT = "APPLICANT_TOGGLE_EDIT", _(
+        "Allow/disallow applicant's modifications"
+    )

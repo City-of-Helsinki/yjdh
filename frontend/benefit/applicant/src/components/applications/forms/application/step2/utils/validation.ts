@@ -11,14 +11,12 @@ import {
   PAY_SUBSIDY_GRANTED,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
+import { validateDateIsFromCurrentYearOnwards } from 'benefit-shared/utils/dates';
 import startOfYear from 'date-fns/startOfYear';
 import { FinnishSSN } from 'finnish-ssn';
 import { TFunction } from 'next-i18next';
 import { NAMES_REGEX } from 'shared/constants';
-import {
-  convertToUIDateFormat,
-  validateDateIsFromCurrentYearOnwards,
-} from 'shared/utils/date.utils';
+import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { getNumberValue } from 'shared/utils/string.utils';
 import * as Yup from 'yup';
 

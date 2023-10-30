@@ -258,10 +258,6 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                   fields.coOperationNegotiations.name,
                   false
                 );
-                formik.setFieldValue(
-                  APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION,
-                  ''
-                );
               }}
               checked={formik.values.coOperationNegotiations === false}
             />
@@ -314,7 +310,9 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
       <StepperActions
         disabledNext={deMinimisTotal() > MAX_DEMINIMIS_AID_TOTAL_AMOUNT}
         handleSubmit={handleSubmit}
-        handleSave={handleSave}
+        handleSave={
+          formik.isValid && !isUnfinishedDeMinimisAid ? handleSave : undefined
+        }
         handleDelete={data?.id ? handleDelete : null}
       />
     </form>
