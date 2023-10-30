@@ -23,6 +23,7 @@ from applications.api.v1.status_transition_validator import (
 )
 from applications.benefit_aggregation import get_former_benefit_info
 from applications.enums import (
+    ApplicationActions,
     ApplicationOrigin,
     ApplicationStatus,
     AttachmentRequirement,
@@ -1128,8 +1129,14 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
 
     def _update_applicant_terms_approval(self, instance, approve_terms):
         if ApplicantTermsApproval.terms_approval_needed(instance):
+            data = self.context["request"].data
+            action = data["action"] if "action" in data else None
+
             # Ignore applicant's terms if app origin is from handler
-            if instance.application_origin == ApplicationOrigin.HANDLER:
+            if (
+                instance.application_origin == ApplicationOrigin.HANDLER
+                or action == ApplicationActions.APPLICANT_TOGGLE_EDIT
+            ):
                 return
 
             if not approve_terms:
