@@ -109,6 +109,8 @@ const useFormActions = (application: Partial<Application>): FormActions => {
   const getModifiedValues = (currentValues: Application): Application => {
     const employee: Employee | undefined = currentValues?.employee ?? undefined;
     const {
+      coOperationNegotiations,
+      coOperationNegotiationsDescription,
       paySubsidyGranted,
       startDate,
       endDate,
@@ -160,8 +162,8 @@ const useFormActions = (application: Partial<Application>): FormActions => {
       ...normalizedValues,
       deMinimisAidSet: deMinimisAidData,
       benefitType: BENEFIT_TYPES.SALARY,
-      coOperationNegotiationsDescription: application.coOperationNegotiations
-        ? application.coOperationNegotiationsDescription
+      coOperationNegotiationsDescription: coOperationNegotiations
+        ? coOperationNegotiationsDescription
         : '',
       deMinimisAid: deMinimisAidData.length > 0,
     };

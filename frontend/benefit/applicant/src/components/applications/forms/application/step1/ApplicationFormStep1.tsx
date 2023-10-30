@@ -258,10 +258,6 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                   fields.coOperationNegotiations.name,
                   false
                 );
-                formik.setFieldValue(
-                  APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION,
-                  ''
-                );
               }}
               checked={formik.values.coOperationNegotiations === false}
             />
