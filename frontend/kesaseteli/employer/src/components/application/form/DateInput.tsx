@@ -30,8 +30,15 @@ const DateInput = ({
 }: Props): ReturnType<typeof HdsDateInput> => {
   const { t } = useTranslation();
 
-  const { defaultLabel, getValue, getError, getErrorText, setError } =
-    useApplicationFormField<string>(id);
+  const {
+    defaultLabel,
+    getValue,
+    setValue,
+    getError,
+    getErrorText,
+    setError,
+    clearErrors,
+  } = useApplicationFormField<string>(id);
 
   const date = convertToUIDateFormat(getValue());
 
@@ -61,6 +68,14 @@ const DateInput = ({
       initialValue={date}
       errorText={getErrorText()}
       label={defaultLabel}
+      onChange={(value) => {
+        // FIXME: Since the react-hook-forms onBlur is not called when a datepicker is used,
+        // the clear errors function needs to be called with a value setter.
+        // Otherwise the error message won't be cleared and
+        // the value remains invalid after the date has been picked.
+        clearErrors();
+        setValue(value);
+      }}
       {...$gridCellProps}
     />
   );
