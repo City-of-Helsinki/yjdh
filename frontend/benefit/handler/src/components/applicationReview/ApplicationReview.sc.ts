@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 type CalculatorTableRowProps = {
   isTotal?: boolean;
+  isNewSection?: boolean;
 };
 
 type CalculatorTextProps = {
@@ -77,6 +78,7 @@ export const $CalculatorTableRow = styled.div<CalculatorTableRowProps>`
   background-color: ${(props) =>
     props.isTotal ? props.theme.colors.white : ''};
   margin-bottom: ${(props) => (props.isTotal ? props.theme.spacing.m : '0')};
+  margin-top: ${(props) => (props.isNewSection ? props.theme.spacing.m : '0')};
 `;
 
 export const $CalculatorTableHeader = styled.div`
@@ -106,4 +108,10 @@ export const $RadioButtonContainer = styled.div`
   border: 2px solid ${(props) => props.theme.colors.coatOfArmsMediumLight};
   padding: ${(props) => props.theme.spacing.s};
   background-color: ${(props) => props.theme.colors.white};
+`;
+
+export const $Highlight = styled.div`
+  border-left: 8px solid ${(props) => props.theme.colors.coatOfArms};
+  padding-left: ${(props) => props.theme.spacing.l};
+  margin: ${(props) => props.theme.spacing.xs};
 `;

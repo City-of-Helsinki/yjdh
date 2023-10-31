@@ -22,3 +22,9 @@ class RowType(models.TextChoices):
     DEDUCTIONS_TOTAL_EUR = "deductions_total_eur", _(
         "Total amount of deductions monthly"
     )
+
+
+class DescriptionType(models.TextChoices):
+    DATE = "date", _("Basic date range description")
+    DATE_TOTAL = "date_total", _("Date range description for total row")
+    DEDUCTION = "deduction", _("Deduction description")

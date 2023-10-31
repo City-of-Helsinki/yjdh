@@ -46,7 +46,7 @@ export const formatStringFloatValue = (
 
 export const formatFloatToCurrency = (
   value: string | number,
-  currency: 'EUR' | null,
+  currency: 'EUR' | null = 'EUR',
   locale = 'fi-FI',
   minimumFractionDigits = 2
 ): string => {

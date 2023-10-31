@@ -1,4 +1,6 @@
 import {
+  CALCULATION_ROW_DESCRIPTION_TYPES,
+  CALCULATION_ROW_TYPES,
   PAY_SUBSIDY_GRANTED,
   PROPOSALS_FOR_DECISION,
 } from 'benefit-shared/constants';
@@ -206,10 +208,11 @@ export type PaySubsidy = {
 
 export type Row = {
   id: string;
-  rowType: string;
+  rowType: CALCULATION_ROW_TYPES;
   ordering: number;
   descriptionFi: string;
   amount: string;
+  descriptionType: CALCULATION_ROW_DESCRIPTION_TYPES | null;
 };
 
 export type TrainingCompensation = {
@@ -403,7 +406,6 @@ export type EmployeeData = {
   first_name: string;
   last_name: string;
   social_security_number: string;
-  phone_number: string;
   // email: string; does not exist in UI
   employee_language: SUPPORTED_LANGUAGES;
   job_title: string;

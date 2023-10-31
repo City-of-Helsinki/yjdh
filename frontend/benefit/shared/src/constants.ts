@@ -180,3 +180,21 @@ export const TRUTHY_SUBSIDIES = new Set([
 ]);
 
 export const APPLICATION_START_DATE = new Date(new Date().getFullYear(), 0, 1);
+
+export enum CALCULATION_ROW_TYPES {
+  DESCRIPTION = 'description',
+  SALARY_COSTS_EUR = 'salary_costs',
+  STATE_AID_MAX_MONTHLY_EUR = 'state_aid_max_monthly_eur',
+  PAY_SUBSIDY_MONTHLY_EUR = 'pay_subsidy_monthly_eur',
+  HELSINKI_BENEFIT_MONTHLY_EUR = 'helsinki_benefit_monthly_eur',
+  HELSINKI_BENEFIT_SUB_TOTAL_EUR = 'helsinki_benefit_sub_total_eur',
+  HELSINKI_BENEFIT_TOTAL_EUR = 'helsinki_benefit_total_eur',
+  TRAINING_COMPENSATION_MONTHLY_EUR = 'training_compensation_monthly_eur',
+  DEDUCTIONS_TOTAL_EUR = 'deductions_total_eur',
+}
+
+export enum CALCULATION_ROW_DESCRIPTION_TYPES {
+  DATE = 'date',
+  DATE_TOTAL = 'date_total',
+  DEDUCTION = 'deduction',
+}

@@ -1,75 +1,108 @@
-import {
-  CALCULATION_DESCRIPTION_ROW_TYPES,
-  CALCULATION_SUMMARY_ROW_TYPES,
-  CALCULATION_TOTAL_ROW_TYPE,
-} from 'benefit/handler/constants';
+import { CALCULATION_PER_MONTH_ROW_TYPES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
+import {
+  CALCULATION_ROW_DESCRIPTION_TYPES,
+  CALCULATION_ROW_TYPES,
+} from 'benefit-shared/constants';
+import { Row } from 'benefit-shared/types/application';
+import { Koros } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { formatStringFloatValue } from 'shared/utils/string.utils';
+import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { useTheme } from 'styled-components';
 
 import {
   $CalculatorTableHeader,
   $CalculatorTableRow,
+  $Highlight,
 } from '../../ApplicationReview.sc';
 
 const SalaryCalculatorResults: React.FC<ApplicationReviewViewProps> = ({
   data,
 }) => {
-  const translationsBase = 'common:calculators.employment';
+  const theme = useTheme();
+  const translationsBase = 'common:calculators.result';
   const { t } = useTranslation();
-  const totalRowIndex = data?.calculation?.rows.findIndex(
-    (row) => CALCULATION_TOTAL_ROW_TYPE === row.rowType
-  );
-  const totalRow = data?.calculation?.rows[totalRowIndex];
-  const totalRowDescriptionIndex = data?.calculation?.rows.findIndex(
-    (row) => row.ordering === totalRow.ordering - 1
-  );
-  const totalRowDescription = data?.calculation?.rows[totalRowDescriptionIndex];
-  return (
-    <$GridCell
-      $colSpan={11}
-      style={{ backgroundColor: 'white', padding: '20px' }}
-    >
-      {data?.calculation?.rows && (
-        <>
-          <$CalculatorTableHeader>Kala</$CalculatorTableHeader>
-          {totalRow.amount}
-          {totalRowDescription.descriptionFi}
-        </>
-      )}
-      {data?.calculation?.rows.map((row) => {
-        const isSummaryRowType = CALCULATION_SUMMARY_ROW_TYPES.includes(
-          row.rowType
-        );
-        const isTotalRowType = CALCULATION_TOTAL_ROW_TYPE === row.rowType;
-        const isDescriptionRowType = CALCULATION_DESCRIPTION_ROW_TYPES.includes(
-          row.rowType
-        );
-        if (row !== totalRow && row !== totalRowDescription) {
+  const rows: Row[] = JSON.parse(
+    JSON.stringify(data?.calculation?.rows)
+  ) as Row[];
+  const totalRow = rows.pop();
+  const totalRowDescription = rows.pop();
+  if (rows.length > 0) {
+    return (
+      <$GridCell
+        $colSpan={11}
+        style={{ backgroundColor: 'white', padding: '20px' }}
+      >
+        {totalRow && totalRowDescription && (
+          <>
+            <$CalculatorTableHeader>
+              {t(`${translationsBase}.header`)}
+            </$CalculatorTableHeader>
+            <$Highlight>
+              <div style={{ fontSize: theme.fontSize.body.xl }}>
+                {totalRowDescription.descriptionFi}
+              </div>
+              <div style={{ fontSize: theme.fontSize.heading.xl }}>
+                {formatFloatToCurrency(totalRow.amount, 'EUR', 'fi-FI', 0)}
+              </div>
+            </$Highlight>
+            <hr style={{ margin: theme.spacing.s }} />
+          </>
+        )}
+        <$CalculatorTableHeader style={{ paddingBottom: theme.spacing.m }}>
+          {t(`${translationsBase}.header2`)}
+        </$CalculatorTableHeader>
+        {rows.map((row) => {
+          const isDateRange =
+            CALCULATION_ROW_DESCRIPTION_TYPES.DATE === row.descriptionType;
+          const isDescriptionRowType =
+            CALCULATION_ROW_TYPES.DESCRIPTION === row.rowType;
+          const isPerMonth = CALCULATION_PER_MONTH_ROW_TYPES.includes(
+            row.rowType
+          );
           return (
             <div key={row.id}>
-              <$CalculatorTableRow isTotal={isSummaryRowType}>
-                <$ViewField isBold={isTotalRowType || isDescriptionRowType}>
+              {CALCULATION_ROW_TYPES.HELSINKI_BENEFIT_MONTHLY_EUR ===
+                row.rowType && (
+                <$CalculatorTableRow>
+                  <$ViewField isBold>
+                    {t(`${translationsBase}.acceptedBenefit`)}
+                  </$ViewField>
+                </$CalculatorTableRow>
+              )}
+              <$CalculatorTableRow isNewSection={isDateRange}>
+                <$ViewField
+                  isBold={isDateRange || isDescriptionRowType}
+                  isBig={isDateRange}
+                >
                   {row.descriptionFi}
                 </$ViewField>
                 {!isDescriptionRowType && (
-                  <$ViewField isBold={isTotalRowType}>
-                    {t(`${translationsBase}.tableRowValue`, {
-                      amount: formatStringFloatValue(row.amount),
-                    })}
+                  <$ViewField isBold>
+                    {formatFloatToCurrency(row.amount)}
+                    {isPerMonth && t('common:utility.perMonth')}
                   </$ViewField>
                 )}
               </$CalculatorTableRow>
             </div>
           );
-        }
-        return null;
-      })}
-    </$GridCell>
-  );
+        })}
+        <Koros
+          dense
+          type="pulse"
+          style={{
+            fill: theme.colors.coatOfArmsLight,
+            margin: '20px -20px -40px -20px',
+            width: 'calc(100% + 40px)',
+          }}
+        />
+      </$GridCell>
+    );
+  }
+  return null;
 };
 
 export default SalaryCalculatorResults;
