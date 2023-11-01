@@ -650,7 +650,7 @@
       "grantedDueInjury": "Palkkatuki myönnetty vamman tai sairauden takia",
       "handlingToInfoRequired": "Avaa muokattavaksi",
       "infoRequiredToHandling": "Lukitse hakemus",
-      "reasonAcceptPlaceholder": "Valinnainen perustelu jos hakija katsotaan kuuluvan kohderyhmään",
+      "reasonAcceptPlaceholder": "Valinnainen perustelu jos hakija kuuluu kohderyhmään",
       "reasonCancelPlaceholder": "Kirjoita syy",
       "reasonCancelTitle": "Kirjoita syy",
       "reasonCancelDialogTitle": "Haluatko varmasti peruuttaa?",

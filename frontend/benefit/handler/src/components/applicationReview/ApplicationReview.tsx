@@ -110,7 +110,7 @@ const ApplicationReview: React.FC = () => {
           {application.status === APPLICATION_STATUSES.HANDLING && (
             <>
               <SalaryBenefitCalculatorView data={application} />
-              <ApplicationProcessingView />
+              <ApplicationProcessingView data={application} />
             </>
           )}
           {application.status &&
