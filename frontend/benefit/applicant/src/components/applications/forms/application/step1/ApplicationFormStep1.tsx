@@ -22,6 +22,7 @@ import { useDeminimisAidsList } from '../deMinimisAid/list/useDeminimisAidsList'
 import StepperActions from '../stepperActions/StepperActions';
 import CompanyInfo from './companyInfo/CompanyInfo';
 import { useApplicationFormStep1 } from './useApplicationFormStep1';
+import { getTouchedAndInvalidFields } from '../utils';
 
 const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
   data,
@@ -311,7 +312,10 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
         disabledNext={deMinimisTotal() > MAX_DEMINIMIS_AID_TOTAL_AMOUNT}
         handleSubmit={handleSubmit}
         handleSave={
-          formik.isValid && !isUnfinishedDeMinimisAid ? handleSave : undefined
+          getTouchedAndInvalidFields(formik.touched, formik.errors).length ===
+            0 && !isUnfinishedDeMinimisAid
+            ? handleSave
+            : undefined
         }
         handleDelete={data?.id ? handleDelete : null}
       />
