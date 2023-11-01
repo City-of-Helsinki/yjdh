@@ -20,7 +20,7 @@ import {
   $ApplicationDetailRow,
   $ApplicationDetailValue,
   $ApplicationDetailWrapper,
-} from '../../ApplicationInfo';
+} from '../../ApplicationInfo.sc';
 
 export interface CompanyInfoViewProps {
   data: Application;

@@ -17,7 +17,7 @@ import {
   $ApplicationDetailRow,
   $ApplicationDetailValue,
   $ApplicationDetailWrapper,
-} from '../../ApplicationInfo';
+} from '../../ApplicationInfo.sc';
 
 const paySubsidyTranslation = (value: PAY_SUBSIDY_GRANTED): string => {
   switch (value) {

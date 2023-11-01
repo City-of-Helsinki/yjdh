@@ -23,7 +23,7 @@ import {
   $ApplicationDetailRow,
   $ApplicationDetailValue,
   $HintText,
-} from '../../ApplicationInfo';
+} from '../../ApplicationInfo.sc';
 import useCompanyInfo, { CompanyInfoFields } from './useCompanyInfo';
 
 export interface CompanyInfoProps {

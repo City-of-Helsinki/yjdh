@@ -30,6 +30,7 @@ import { useTheme } from 'styled-components';
 import { $SubFieldContainer } from '../Application.sc';
 import StepperActions from '../stepperActions/StepperActions';
 import { useApplicationFormStep2 } from './useApplicationFormStep2';
+import { getTouchedAndInvalidFields } from '../utils';
 
 const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
   data,
@@ -542,7 +543,11 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
       </FormSection>
       <StepperActions
         handleSubmit={handleSubmit}
-        handleSave={formik.isValid ? handleSave : undefined}
+        handleSave={
+          getTouchedAndInvalidFields(formik.touched, formik.errors).length === 0
+            ? handleSave
+            : undefined
+        }
         handleBack={handleBack}
         handleDelete={handleDelete}
       />
