@@ -63,27 +63,27 @@ const ApplicationReview: React.FC = () => {
   return (
     <>
       <ApplicationHeader data={application} data-testid="application-header" />
-      <Container data-testid="application-body">
-        {application.status === APPLICATION_STATUSES.INFO_REQUIRED && (
-          <StatusLabel
-            css={`
-              margin-bottom: ${theme.spacing.s};
-            `}
-            type="alert"
-          >
-            {t(`common:review.fields.editEndDate`, {
-              date: convertToUIDateFormat(
-                application.additionalInformationNeededBy
-              ),
-            })}
-          </StatusLabel>
-        )}
-        <ReviewStateContext.Provider
-          value={{
-            reviewState,
-            handleUpdateReviewState,
-          }}
-        >
+      <ReviewStateContext.Provider
+        value={{
+          reviewState,
+          handleUpdateReviewState,
+        }}
+      >
+        <Container data-testid="application-body">
+          {application.status === APPLICATION_STATUSES.INFO_REQUIRED && (
+            <StatusLabel
+              css={`
+                margin-bottom: ${theme.spacing.s};
+              `}
+              type="alert"
+            >
+              {t(`common:review.fields.editEndDate`, {
+                date: convertToUIDateFormat(
+                  application.additionalInformationNeededBy
+                ),
+              })}
+            </StatusLabel>
+          )}
           {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER && (
             <PaperView data={application} />
           )}
@@ -117,26 +117,26 @@ const ApplicationReview: React.FC = () => {
             HANDLED_STATUSES.includes(application.status) && (
               <HandledView data={application} />
             )}
-        </ReviewStateContext.Provider>
-      </Container>
-      <StickyActionBar>
-        {application.status === APPLICATION_STATUSES.RECEIVED && (
-          <ReceivedApplicationActions
-            application={application}
-            data-testid="received-application-actions"
-          />
-        )}
-        {(application.status === APPLICATION_STATUSES.HANDLING ||
-          application.status === APPLICATION_STATUSES.INFO_REQUIRED ||
-          (application.status &&
-            HANDLED_STATUSES.includes(application.status))) && (
-          <HandlingApplicationActions
-            application={application}
-            data-testid="handling-application-actions"
-          />
-        )}
-      </StickyActionBar>
-      <$StickyBarSpacing />
+        </Container>
+        <StickyActionBar>
+          {application.status === APPLICATION_STATUSES.RECEIVED && (
+            <ReceivedApplicationActions
+              application={application}
+              data-testid="received-application-actions"
+            />
+          )}
+          {(application.status === APPLICATION_STATUSES.HANDLING ||
+            application.status === APPLICATION_STATUSES.INFO_REQUIRED ||
+            (application.status &&
+              HANDLED_STATUSES.includes(application.status))) && (
+            <HandlingApplicationActions
+              application={application}
+              data-testid="handling-application-actions"
+            />
+          )}
+        </StickyActionBar>
+        <$StickyBarSpacing />
+      </ReviewStateContext.Provider>
     </>
   );
 };

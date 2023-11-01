@@ -1,12 +1,8 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
 import AppContext from 'benefit/handler/context/AppContext';
 import { Application } from 'benefit/handler/types/application';
-import {
-  APPLICATION_STATUSES,
-  CALCULATION_ROW_DESCRIPTION_TYPES,
-  CALCULATION_ROW_TYPES,
-} from 'benefit-shared/constants';
-import { Row } from 'benefit-shared/types/application';
+import { extractCalculatorRows } from 'benefit/handler/utils/calculator';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { TextArea } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -54,17 +50,13 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
       logEntryComment: event.target.value,
     });
 
-  const rows: Row[] = JSON.parse(
-    JSON.stringify(data?.calculation?.rows)
-  ) as Row[];
-  const totalRow = rows.pop();
-  const totalRowDescription = rows.pop();
-  const dateRangeRows = rows.filter(
-    (row) => row.descriptionType === CALCULATION_ROW_DESCRIPTION_TYPES.DATE
-  );
-  const helsinkiBenefitMonthlyRows = rows.filter(
-    (row) => row.rowType === CALCULATION_ROW_TYPES.HELSINKI_BENEFIT_MONTHLY_EUR
-  );
+  const {
+    rowsWithoutTotal,
+    totalRow,
+    totalRowDescription,
+    dateRangeRows,
+    helsinkiBenefitMonthlyRows,
+  } = extractCalculatorRows(data?.calculation?.rows);
 
   return (
     <ReviewSection withMargin withBorder>
@@ -111,13 +103,13 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                   id="proccessRejectedComments"
                   name="proccessRejectedComments"
                   label={t(`${translationsBase}.fields.reason`)}
-                  placeholder={t(
-                    `${translationsBase}.actions.reasonRejectPlaceholder`
-                  )}
                   onChange={onCommentsChange}
                   value={handledApplication?.logEntryComment}
                   required
                 />
+                <$HelpText>
+                  {t(`${translationsBase}.actions.reasonRejectPlaceholder`)}
+                </$HelpText>
               </$GridCell>
             </$Grid>
           </>
@@ -181,7 +173,9 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                       <$CalculatorTableRow style={{ paddingLeft: '0' }}>
                         <$ViewField>{row.descriptionFi}</$ViewField>
                         <$ViewField isBold>
-                          {formatFloatToCurrency(rows[index].amount)}
+                          {formatFloatToCurrency(
+                            rowsWithoutTotal[index].amount
+                          )}
                           {t('common:utility.perMonth')}
                         </$ViewField>
                       </$CalculatorTableRow>

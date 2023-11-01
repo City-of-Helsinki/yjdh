@@ -659,7 +659,17 @@
       "reasonRejectPlaceholder": "Helsinki-lisää ei voida myöntää koska syitä",
       "reasonCancelConfirm": "Peruuta hakemus",
       "grantedAsDeminimisText": "De minimis",
-      "grantedAsDeminimisAid": "Helsinki-lisä myönnetään de minimis-tukena"
+      "confirm": "Vahvista toimenpide",
+      "grantedAsDeminimisAid": "Helsinki-lisä myönnetään de minimis-tukena",
+      "accepting": "Olet siirtämässä hakemuksen päätösjonoon, jossa sille tehdään myönteinen päätös",
+      "rejecting": "Olet siirtämässä hakemuksen päätösjonoon, jossa sille tehdään kielteinen päätös",
+      "accept": "Tee myönteinen päätösehdotus",
+      "reject": "Tee kielteinen päätösehdotus",
+      "cancelDecision": "Peruuta",
+      "description": "Perustelu",
+      "acceptedSubsidy": "Myönnettävä tuki",
+      "eurosTotal": "{{total}} euroa yhteensä",
+      "eurosPerMonth": "{{euros}} euroa kuukaudessa {{dateRange}}"
     },
     "headings": {
       "heading1": "Työnantajan tiedot",

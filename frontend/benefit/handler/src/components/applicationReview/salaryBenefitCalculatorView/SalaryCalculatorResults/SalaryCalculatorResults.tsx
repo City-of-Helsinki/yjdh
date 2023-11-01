@@ -1,10 +1,10 @@
 import { CALCULATION_PER_MONTH_ROW_TYPES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
+import { extractCalculatorRows } from 'benefit/handler/utils/calculator';
 import {
   CALCULATION_ROW_DESCRIPTION_TYPES,
   CALCULATION_ROW_TYPES,
 } from 'benefit-shared/constants';
-import { Row } from 'benefit-shared/types/application';
 import { Koros } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -25,12 +25,9 @@ const SalaryCalculatorResults: React.FC<ApplicationReviewViewProps> = ({
   const theme = useTheme();
   const translationsBase = 'common:calculators.result';
   const { t } = useTranslation();
-  const rows: Row[] = JSON.parse(
-    JSON.stringify(data?.calculation?.rows)
-  ) as Row[];
-  const totalRow = rows.pop();
-  const totalRowDescription = rows.pop();
-  if (rows.length > 0) {
+  const { rowsWithoutTotal, totalRow, totalRowDescription } =
+    extractCalculatorRows(data?.calculation?.rows);
+  if (rowsWithoutTotal.length > 0) {
     return (
       <$GridCell
         $colSpan={11}
@@ -55,7 +52,7 @@ const SalaryCalculatorResults: React.FC<ApplicationReviewViewProps> = ({
         <$CalculatorTableHeader style={{ paddingBottom: theme.spacing.m }}>
           {t(`${translationsBase}.header2`)}
         </$CalculatorTableHeader>
-        {rows.map((row) => {
+        {rowsWithoutTotal.map((row) => {
           const isDateRange =
             CALCULATION_ROW_DESCRIPTION_TYPES.DATE === row.descriptionType;
           const isDescriptionRowType =
