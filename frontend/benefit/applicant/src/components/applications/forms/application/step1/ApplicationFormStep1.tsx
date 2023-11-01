@@ -20,9 +20,9 @@ import DeMinimisAidForm from '../deMinimisAid/DeMinimisAidForm';
 import DeMinimisAidsList from '../deMinimisAid/list/DeMinimisAidsList';
 import { useDeminimisAidsList } from '../deMinimisAid/list/useDeminimisAidsList';
 import StepperActions from '../stepperActions/StepperActions';
+import { getTouchedAndInvalidFields } from '../utils';
 import CompanyInfo from './companyInfo/CompanyInfo';
 import { useApplicationFormStep1 } from './useApplicationFormStep1';
-import { getTouchedAndInvalidFields } from '../utils';
 
 const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
   data,
