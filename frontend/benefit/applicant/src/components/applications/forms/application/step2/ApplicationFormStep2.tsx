@@ -29,8 +29,8 @@ import { useTheme } from 'styled-components';
 
 import { $SubFieldContainer } from '../Application.sc';
 import StepperActions from '../stepperActions/StepperActions';
-import { useApplicationFormStep2 } from './useApplicationFormStep2';
 import { getTouchedAndInvalidFields } from '../utils';
+import { useApplicationFormStep2 } from './useApplicationFormStep2';
 
 const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
   data,
