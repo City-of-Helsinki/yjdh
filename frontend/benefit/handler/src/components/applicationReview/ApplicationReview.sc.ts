@@ -115,3 +115,15 @@ export const $Highlight = styled.div`
   padding-left: ${(props) => props.theme.spacing.l};
   margin: ${(props) => props.theme.spacing.xs};
 `;
+
+export const $InfoNeededBar = styled.div`
+  margin-bottom: ${(props) => props.theme.spacing.m};
+  padding: ${(props) => props.theme.spacing.s};
+  max-width: 100%;
+  background-color: ${(props) => props.theme.colors.summerMediumLight};
+  text-align: center;
+  font-size: ${(props) => props.theme.fontSize.body.l};
+  svg {
+    padding-left: ${(props) => props.theme.spacing.xs};
+  }
+`;

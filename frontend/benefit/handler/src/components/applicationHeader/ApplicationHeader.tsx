@@ -12,6 +12,7 @@ import {
   $ItemHeader,
   $ItemValue,
   $ItemWrapper,
+  $StatusLabel,
   $Wrapper,
 } from './ApplicationHeader.sc';
 
@@ -69,6 +70,11 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
                 {data.submittedAt && formatDate(new Date(data.submittedAt))}
               </$ItemValue>
             </$ItemWrapper>
+          </$Col>
+          <$Col>
+            <$StatusLabel status={data.status}>
+              {t(`common:status.${data.status}`)}
+            </$StatusLabel>
           </$Col>
         </$InnerWrapper>
       </Container>

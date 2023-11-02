@@ -728,7 +728,7 @@
       "noSupport": "Ei puolleta",
       "support": "Puolletaan",
       "reason": "Perustelu",
-      "editEndDate": "Hakemusta muokattava viimeistään {{date}}",
+      "editEndDate": "Hakemus avattu muokattavaksi ja lukittuu {{date}}",
       "ssn": "Henkilötunnus",
       "email": "Sähköposti",
       "phone": "Puhelin",
@@ -931,6 +931,16 @@
     "start": "Alkamispäivä",
     "end": "Päättymispäivä",
     "perMonth": "/kk"
+  },
+  "status": {
+    "draft": "Luonnos",
+    "additional_information_needed": "Odottaa lisätietoja",
+    "received": "Saapunut",
+    "accepted": "Hyväksytty",
+    "approved": "Hyväksytty",
+    "rejected": "Kielteinen",
+    "cancelled": "Peruutettu",
+    "handling": "Käsittelyssä"
   },
   "upload": {
     "isUploading": "Ladataan...",
