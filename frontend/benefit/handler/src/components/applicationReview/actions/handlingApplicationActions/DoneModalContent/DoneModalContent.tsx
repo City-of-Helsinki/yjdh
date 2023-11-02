@@ -51,7 +51,7 @@ const DoneModalContent: React.FC<ComponentProps> = ({
                 : t(`${translationsBase}.rejecting`)}
             </$Text>
           </$GridCell>
-          {isApproved && (
+          {isApproved && totalRow && (
             <$GridCell $colSpan={12} $rowSpan={3}>
               <$Header>{t(`${translationsBase}.acceptedSubsidy`)}</$Header>
               <$GridCell $colSpan={12}>
@@ -68,7 +68,7 @@ const DoneModalContent: React.FC<ComponentProps> = ({
               </$GridCell>
               {dateRangeRows.length === helsinkiBenefitMonthlyRows.length &&
                 dateRangeRows.map((row, index) => (
-                  <$Text>
+                  <$Text key={row.id}>
                     {t(`${translationsBase}.eurosPerMonth`, {
                       euros: formatFloatToCurrency(
                         rowsWithoutTotal[index].amount,

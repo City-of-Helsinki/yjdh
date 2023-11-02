@@ -170,7 +170,10 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                   </$CalculatorTableRow>
                   {dateRangeRows.length === helsinkiBenefitMonthlyRows.length &&
                     dateRangeRows.map((row, index) => (
-                      <$CalculatorTableRow style={{ paddingLeft: '0' }}>
+                      <$CalculatorTableRow
+                        key={row.id}
+                        style={{ paddingLeft: '0' }}
+                      >
                         <$ViewField>{row.descriptionFi}</$ViewField>
                         <$ViewField isBold>
                           {formatFloatToCurrency(

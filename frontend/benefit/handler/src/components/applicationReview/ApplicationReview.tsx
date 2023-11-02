@@ -52,12 +52,7 @@ const ApplicationReview: React.FC = () => {
   }
 
   if (handledApplication?.status === application.status) {
-    return (
-      <>
-        <ApplicationHeader data={application} />
-        <NotificationView data={application} />
-      </>
-    );
+    return <NotificationView data={application} />;
   }
 
   return (

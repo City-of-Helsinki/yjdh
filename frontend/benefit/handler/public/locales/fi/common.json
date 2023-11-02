@@ -49,15 +49,15 @@
   "notifications": {
     "accepted": {
       "title": "Hakemusta on puollettu",
-      "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti."
+      "message": "Hakemus {{applicationNum}} on siirretty myönteisten hakemusten jonoon."
     },
     "rejected": {
       "title": "Hakemusta ei puollettu",
-      "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti."
+      "message": "Hakemus {{applicationNum}} on siirretty kielteisten hakemusten jonoon."
     },
     "cancelled": {
       "title": "Hakemus on peruttu",
-      "message": "Hakemus {{applicationNum}} on peruttu onnistuneesti."
+      "message": "Hakemus {{applicationNum}} on peruutettu onnistuneesti."
     },
     "error": {
       "title": "Tapahtui tuntematon virhe",
@@ -74,6 +74,14 @@
     "applicationDeleted": {
       "label": "Luonnos poistettu",
       "message": "Hakemus on poistettu."
+    },
+    "ahjoMessage": {
+      "label": "",
+      "message": "Voit seuraavaksi viedä hakemuksen Ahjoon virallista päätöskäsittelyä varten."
+    },
+    "ahjoButton": {
+      "label": "Aloita hakemuksen vieminen ahjoon",
+      "message": ""
     }
   },
   "mainIngress": {
