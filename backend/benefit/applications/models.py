@@ -350,6 +350,9 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     history = HistoricalRecords(
         table_name="bf_applications_application_history", cascade_delete_history=True
     )
+    # This is the diary number in Ahjo
+    ahjo_case_id = models.CharField(max_length=64, null=True, blank=True)
+    ahjo_case_guid = models.UUIDField(null=True, blank=True)
 
     @property
     def calculated_benefit_amount(self):
