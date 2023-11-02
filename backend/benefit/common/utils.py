@@ -1,10 +1,12 @@
 import decimal
 import functools
+import hashlib
 import itertools
 from datetime import date, timedelta
 from typing import Iterator, Tuple, Union
 
 from dateutil.relativedelta import relativedelta
+from django.core.files import File
 from phonenumber_field.serializerfields import (
     PhoneNumberField as DefaultPhoneNumberField,
 )
@@ -425,3 +427,17 @@ def get_date_range_end_with_days360(start_date: date, n_months: int):
         return None
 
     return end_date
+
+
+def hash_file(file: File) -> str:
+    """Hash attachment file"""
+    # Create a new SHA256 hash object
+    sha256 = hashlib.sha256()
+
+    with file.open() as f:
+        # Read and update hash in chunks for efficiency
+        for chunk in iter(lambda: f.read(4096), b""):
+            sha256.update(chunk)
+
+        # Return the hexadecimal representation of the hash
+    return sha256.hexdigest()
