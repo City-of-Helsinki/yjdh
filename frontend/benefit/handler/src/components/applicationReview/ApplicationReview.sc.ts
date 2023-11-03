@@ -32,8 +32,7 @@ export const $CalculatorText = styled.p<CalculatorTextProps>`
 
 export const $CalculatorHeader = styled.p`
   margin-bottom: ${(props) => props.theme.spacing.xs};
-  font-size: ${(props) => props.theme.fontSize.body.xl};
-  font-weight: 500;
+  font-size: ${(props) => props.theme.fontSize.heading.s};
 `;
 
 export const $FieldHeaderText = styled.p`

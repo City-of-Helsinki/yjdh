@@ -38,7 +38,6 @@ export type HeaderProps = {
   theme?: ThemeOption;
   hideLogin?: boolean;
   onTitleClick?: () => void;
-  showUserName?: boolean;
 };
 
 const Header: React.FC<HeaderProps> = ({
@@ -56,7 +55,6 @@ const Header: React.FC<HeaderProps> = ({
   hideLogin,
   theme,
   onTitleClick,
-  showUserName,
 }) => {
   const {
     locale,
@@ -119,28 +117,25 @@ const Header: React.FC<HeaderProps> = ({
             </Navigation.Item>
           ))}
           {login && !hideLogin && (
-            <>
-              {showUserName && <div>{login.userName}</div>}
-              <Navigation.User
-                authenticated={login.isAuthenticated}
-                buttonAriaLabel={
-                  login.userName
-                    ? `${login.userAriaLabelPrefix} ${login.userName}`
-                    : ''
-                }
-                label={login.loginLabel}
-                onSignIn={handleLogin}
-                userName={login.userName}
-              >
-                <Navigation.Item
-                  href="#"
-                  onClick={handleLogout}
-                  variant="supplementary"
-                  label={login.logoutLabel}
-                  icon={<IconSignout aria-hidden />}
-                />
-              </Navigation.User>
-            </>
+            <Navigation.User
+              authenticated={login.isAuthenticated}
+              buttonAriaLabel={
+                login.userName
+                  ? `${login.userAriaLabelPrefix} ${login.userName}`
+                  : ''
+              }
+              label={login.loginLabel}
+              onSignIn={handleLogin}
+              userName={login.userName}
+            >
+              <Navigation.Item
+                href="#"
+                onClick={handleLogout}
+                variant="supplementary"
+                label={login.logoutLabel}
+                icon={<IconSignout aria-hidden />}
+              />
+            </Navigation.User>
           )}
           {languages && onLanguageChange && (
             <Navigation.LanguageSelector

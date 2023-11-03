@@ -11,7 +11,11 @@ import { $Link } from 'shared/components/table/Table.sc';
 import theme from 'shared/styles/theme';
 import { sortFinnishDate } from 'shared/utils/date.utils';
 
-import { $HintText, $TableFooter } from '../table/TableExtras.sc';
+import {
+  $HintText,
+  $TableContainer,
+  $TableFooter,
+} from '../table/TableExtras.sc';
 import { useApplicationsHandled } from './useApplicationsHandled';
 
 type Props = {
@@ -95,7 +99,7 @@ const ApplicationsHandled: React.FC<Props> = ({
   }
 
   return (
-    <div data-testid="application-list-archived">
+    <$TableContainer data-testid="application-list-archived">
       {!shouldHideList ? (
         <>
           <Table
@@ -141,7 +145,7 @@ const ApplicationsHandled: React.FC<Props> = ({
           {t(`${translationsBase}.messages.empty.${status}`)}
         </$EmptyHeading>
       )}
-    </div>
+    </$TableContainer>
   );
 };
 

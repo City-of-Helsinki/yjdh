@@ -34,7 +34,6 @@ const Header: React.FC = () => {
       navigationItems={navigationItems}
       onLanguageChange={handleLanguageChange}
       theme="dark"
-      showUserName
       login={{
         isAuthenticated: !isLoginPage && isSuccess,
         loginLabel: t('common:header.loginLabel'),

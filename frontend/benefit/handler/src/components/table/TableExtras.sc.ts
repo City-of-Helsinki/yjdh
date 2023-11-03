@@ -113,3 +113,17 @@ export const $TableFooter = styled.footer<$TableFooterProps>`
     width: 100%;
   }
 `;
+
+export const $TableContainer = styled.div`
+  button[data-testid$='-all-button-hds-table-data-testid'] {
+    color: var(--color-coat-of-arms);
+    border-color: var(--color-coat-of-arms);
+    &:hover {
+      border-color: var(--color-coat-of-arms);
+    }
+    &:disabled {
+      color: var(--color-black-50);
+      border-color: var(--color-black-50);
+    }
+  }
+`;
