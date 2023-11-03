@@ -746,17 +746,19 @@
     },
     "summary": {
       "accepted": {
-        "title": "Käsittely valmis",
-        "description": "Hakemus on hyväksytty ja Työllistämisen Helsinki-lisää on myönnetty ({{months}} kuukaudelle) aikavälille {{startDate}} – {{endDate}}",
+        "title": "Hakemuksen käsittely",
+        "description": "Myönnettävä Helsinki-lisä ajalta {{startDate}} – {{endDate}} ({{months}} kk)",
         "row1": "Myönnetty Helsinki-lisä per kuukausi",
         "row2": "Myönnetty Helsinki-lisä yhteensä",
         "deMinimis": "Myönnetään de minimis-tukena",
-        "commentsTitle": "Tiedot"
+        "commentsTitle": "Perustelu",
+        "message": "Hakemus käsiteltiin myönteiseksi"
       },
       "rejected": {
         "description": "Hakemusta ei hyväksytä.",
-        "title": "Käsittely valmis",
-        "commentsTitle": "Perustelu"
+        "title": "Hakemuksen käsittely",
+        "commentsTitle": "Perustelu",
+        "message": "Hakemus käsiteltiin kielteiseksi"
       },
       "cancelled": {
         "title": "Peruutustiedot",
@@ -765,7 +767,10 @@
       },
       "common": {
         "handler": "Käsittelijä",
-        "handledAt": "Käsittelypäivämäärä"
+        "handledAt": "Käsittelypäivämäärä",
+        "ready": "Käsittely valmis",
+        "dateRange": "Helsinki-lisä kuukaudessa {{dateRange}}",
+        "total": "Helsinki-lisä yhteensä koko ajalta ({{months}} kk)"
       }
     }
   },
