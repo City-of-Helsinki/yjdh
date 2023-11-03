@@ -3,11 +3,9 @@ import {
   $ViewFieldBold,
 } from 'benefit/handler/components/newApplication/ApplicationForm.sc';
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
+import { ACTIONLESS_STATUSES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
-import {
-  APPLICATION_STATUSES,
-  ATTACHMENT_TYPES,
-} from 'benefit-shared/constants';
+import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import { paySubsidyTitle } from 'benefit-shared/utils/common';
 import camelCase from 'lodash/camelCase';
 import { useTranslation } from 'next-i18next';
@@ -30,7 +28,7 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({
       header={t(`${translationsBase}.headings.heading8`)}
       section="employment"
       action={
-        data.status !== APPLICATION_STATUSES.RECEIVED ? (
+        !ACTIONLESS_STATUSES.includes(data.status) ? (
           <EmploymentActions
             handleUpload={handleUpload}
             isUploading={isUploading}

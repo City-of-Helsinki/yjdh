@@ -3,11 +3,9 @@ import {
   $ViewFieldBold,
 } from 'benefit/handler/components/newApplication/ApplicationForm.sc';
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
+import { ACTIONLESS_STATUSES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
-import {
-  APPLICATION_STATUSES,
-  ATTACHMENT_TYPES,
-} from 'benefit-shared/constants';
+import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
@@ -21,7 +19,7 @@ const PaperView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   return (
     <ReviewSection
       header={t(`${translationsBase}.headings.heading12`)}
-      action={data.status !== APPLICATION_STATUSES.RECEIVED ? <span /> : null}
+      action={!ACTIONLESS_STATUSES.includes(data.status) ? <span /> : null}
       section="paper"
     >
       <$GridCell $colSpan={6}>

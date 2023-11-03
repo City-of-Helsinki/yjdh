@@ -64,15 +64,15 @@ const HandlingApplicationActions: React.FC<Props> = ({
             {t(`${translationsBase}.done`)}
           </Button>
         )}
-        <Button onClick={onSaveAndClose} theme="black" variant="secondary">
-          {t(
-            `${translationsBase}.${
-              application.status === APPLICATION_STATUSES.HANDLING
-                ? 'saveAndContinue'
-                : 'close'
-            }`
-          )}
-        </Button>
+        {application.status === APPLICATION_STATUSES.HANDLING ? (
+          <Button onClick={onSaveAndClose} theme="black" variant="secondary">
+            {t(`${translationsBase}.saveAndContinue`)}
+          </Button>
+        ) : (
+          <Button onClick={onSaveAndClose} theme="coat" variant="primary">
+            {t(`${translationsBase}.close`)}
+          </Button>
+        )}
         {[
           APPLICATION_STATUSES.ACCEPTED,
           APPLICATION_STATUSES.REJECTED,
