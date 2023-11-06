@@ -91,10 +91,11 @@ export type HandlerDetailsData = {
 
 export type RowData = {
   id?: string;
-  row_type: string;
+  row_type: CALCULATION_ROW_TYPES;
   ordering: number;
   description_fi: string;
   amount: string;
+  description_type?: CALCULATION_ROW_DESCRIPTION_TYPES | null;
 };
 
 export type MessageData = {

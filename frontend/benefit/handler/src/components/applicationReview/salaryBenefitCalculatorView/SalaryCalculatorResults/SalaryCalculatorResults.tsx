@@ -31,7 +31,11 @@ const SalaryCalculatorResults: React.FC<ApplicationReviewViewProps> = ({
     return (
       <$GridCell
         $colSpan={11}
-        style={{ backgroundColor: 'white', padding: '20px' }}
+        style={{
+          backgroundColor: 'white',
+          margin: `0 ${theme.spacing.xl4}`,
+          padding: `${theme.spacing.l} ${theme.spacing.xl4}`,
+        }}
       >
         {totalRow && totalRowDescription && (
           <>
@@ -86,7 +90,7 @@ const SalaryCalculatorResults: React.FC<ApplicationReviewViewProps> = ({
                   {row.descriptionFi}
                 </$ViewField>
                 {!isDescriptionRowType && (
-                  <$ViewField isBold>
+                  <$ViewField isBold style={{ marginRight: theme.spacing.xl4 }}>
                     {formatFloatToCurrency(row.amount)}
                     {isPerMonth && t('common:utility.perMonth')}
                   </$ViewField>
@@ -100,8 +104,8 @@ const SalaryCalculatorResults: React.FC<ApplicationReviewViewProps> = ({
           type="pulse"
           style={{
             fill: theme.colors.coatOfArmsLight,
-            margin: '20px -20px -40px -20px',
-            width: 'calc(100% + 40px)',
+            margin: `${theme.spacing.l} 0 -65px -65px`,
+            width: 'calc(100% + 130px)',
           }}
         />
       </$GridCell>
