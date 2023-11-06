@@ -178,7 +178,7 @@ python-dateutil==2.8.2
     #   pysaml2
 python-jose==3.3.0
     # via django-helusers
-python-stdnum==1.18
+python-stdnum==1.19
     # via
     #   -r requirements.in
     #   django-localflavor
