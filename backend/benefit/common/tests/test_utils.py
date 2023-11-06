@@ -1,15 +1,18 @@
 import decimal
+import hashlib
 import os
 from datetime import date
 
 import pytest
 from dateutil.relativedelta import relativedelta
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from common.utils import (
     date_range_overlap,
     days360,
     duration_in_months,
     get_date_range_end_with_days360,
+    hash_file,
 )
 
 
@@ -128,3 +131,17 @@ def test_get_date_range_end_with_days360_combinations():
                 )
                 assert result_difference <= previous_day_difference
                 assert result_difference <= next_day_difference
+
+
+@pytest.mark.django_db
+def test_hash_file():
+    # Create a dummy file with known content
+    dummy_file_content = b"Ea ullamco aliqua amet ut deserunt. Excepteur aliqua non excepteur pariatur exercitation."
+    dummy_file = SimpleUploadedFile("dummy.txt", dummy_file_content)
+    expected_hash = hashlib.sha256(dummy_file_content).hexdigest()
+
+    # Calculate the actual hash of the file using the hash_file function
+    actual_hash = hash_file(dummy_file)
+
+    # Assert that the actual hash matches the expected hash
+    assert actual_hash == expected_hash
