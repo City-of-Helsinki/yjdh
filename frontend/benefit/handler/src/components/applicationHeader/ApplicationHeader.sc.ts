@@ -1,5 +1,3 @@
-import { APPLICATION_STATUSES } from 'benefit-shared/constants';
-import { Tag } from 'hds-react';
 import styled from 'styled-components';
 
 export const $Wrapper = styled.div`
@@ -43,29 +41,4 @@ export const $HandlerWrapper = styled.div`
   font-weight: 500;
   letter-spacing: 2px;
   line-height: ${(props) => props.theme.lineHeight.l};
-`;
-
-type StatusLabelProps = {
-  status?: APPLICATION_STATUSES;
-};
-
-export const $StatusLabel = styled(Tag)<StatusLabelProps>`
-  background-color: ${(props) => {
-    switch (props.status) {
-      case APPLICATION_STATUSES.HANDLING:
-        return props.theme.colors.coatOfArmsMediumLight;
-
-      case APPLICATION_STATUSES.INFO_REQUIRED:
-        return props.theme.colors.summerMediumLight;
-
-      case APPLICATION_STATUSES.ACCEPTED:
-        return props.theme.colors.tramMediumLight;
-
-      case APPLICATION_STATUSES.REJECTED:
-        return props.theme.colors.brickMediumLight;
-
-      default:
-        return props.theme.colors.coatOfArmsMediumLight;
-    }
-  }};
 `;
