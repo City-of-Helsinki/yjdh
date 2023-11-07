@@ -159,7 +159,12 @@ export type Batch = {
   decisionDate?: string;
   expertInspectorName?: string;
   expertInspectorEmail?: string;
+  expertInspectorTitle?: string;
+  p2PCheckerName?: string;
+  p2PInspectorName?: string;
+  p2PInspectorEmail?: string;
   createdAt: string;
+  handler?: HandlerDetails;
 };
 
 export type HandlerDetails = {

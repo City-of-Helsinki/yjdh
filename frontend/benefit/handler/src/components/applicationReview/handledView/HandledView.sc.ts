@@ -30,3 +30,8 @@ export const $HandledRow = styled($Grid)<HandledRowProps>`
       props.largeMargin ? props.theme.spacing.l : props.theme.spacing.s}
     0;
 `;
+
+export const $HandledHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;

@@ -3,6 +3,7 @@ import {
   $ViewFieldBold,
 } from 'benefit/handler/components/newApplication/ApplicationForm.sc';
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
+import StatusLabel from 'benefit/handler/components/statusLabel/StatusLabel';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import { extractCalculatorRows } from 'benefit/handler/utils/calculator';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
@@ -14,7 +15,12 @@ import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { formatFloatToCurrency } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
-import { $HandledHr, $HandledRow, $HandledSection } from './HandledView.sc';
+import {
+  $HandledHeader,
+  $HandledHr,
+  $HandledRow,
+  $HandledSection,
+} from './HandledView.sc';
 
 const HandledView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review.summary';
@@ -24,18 +30,17 @@ const HandledView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
     extractCalculatorRows(data.calculation?.rows);
 
   return (
-    <ReviewSection header={t(`${translationsBase}.${data.status || ''}.title`)}>
+    <ReviewSection
+      withoutDivider
+      header={t(`${translationsBase}.${data.status || ''}.title`)}
+    >
       <$HandledSection>
-        <$GridCell $colSpan={8}>
+        <$HandledHeader>
           <$ViewFieldBold style={{ color: theme.colors.coatOfArms }}>
             {t(`${translationsBase}.common.ready`)}
           </$ViewFieldBold>
-        </$GridCell>
-        <$GridCell $colSpan={8}>
-          <$ViewFieldBold large>
-            {t(`${translationsBase}.${data.status || ''}.message`)}
-          </$ViewFieldBold>
-        </$GridCell>
+          <StatusLabel status={data.status} />
+        </$HandledHeader>
         <$HandledHr dashed />
         {data.status === APPLICATION_STATUSES.ACCEPTED && (
           <$GridCell $colSpan={8}>
@@ -52,7 +57,7 @@ const HandledView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           dateRangeRows.length === helsinkiBenefitMonthlyRows.length &&
           dateRangeRows.map((row, index) => (
             <$HandledRow key={row.id}>
-              <$GridCell $colSpan={8} $colStart={1}>
+              <$GridCell $colSpan={9} $colStart={1}>
                 <$ViewField large>
                   {t(`${translationsBase}.common.dateRange`, {
                     dateRange: row.descriptionFi.toLocaleLowerCase(),
@@ -76,7 +81,7 @@ const HandledView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           <$HandledRow>
             <$GridCell
               style={{ backgroundColor: theme.colors.white }}
-              $colSpan={8}
+              $colSpan={9}
               $colStart={1}
             >
               <$ViewField large>

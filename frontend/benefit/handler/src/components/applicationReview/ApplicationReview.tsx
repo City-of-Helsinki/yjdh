@@ -24,6 +24,7 @@ import CoOperationNegotiationsView from './coOperationNegotiationsView/CoOperati
 import DeminimisView from './deminimisView/DeminimisView';
 import EmployeeView from './employeeView/EmployeeView';
 import EmploymentView from './employmentView/EmpoymentView';
+import ArchivedView from './handledView/archivedView/ArchivedView';
 import HandledView from './handledView/HandledView';
 import NotificationView from './notificationView/NotificationView';
 import PaperView from './paperView/PaperView';
@@ -107,6 +108,7 @@ const ApplicationReview: React.FC = () => {
             HANDLED_STATUSES.includes(application.status) && (
               <HandledView data={application} />
             )}
+          {application.archived && <ArchivedView data={application} />}
         </Container>
         <StickyActionBar>
           {application.status === APPLICATION_STATUSES.RECEIVED && (
