@@ -5,10 +5,12 @@ from rest_framework.views import APIView
 
 from applications.models import Attachment
 from common.authentications import AhjoApiBasicAuthentication
+from common.permissions import SafeListPermission
 
 
 class AhjoAttachmentView(APIView):
     authentication_classes = [AhjoApiBasicAuthentication]
+    permission_classes = [SafeListPermission]
 
     def get(self, request, *args, **kwargs):
         attachment_id = self.kwargs["uuid"]
