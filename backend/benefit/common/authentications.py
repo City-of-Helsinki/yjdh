@@ -6,13 +6,12 @@ from rest_framework import authentication
 from rest_framework.exceptions import AuthenticationFailed
 
 
-class RobotBasicAuthentication(authentication.BaseAuthentication):
+class BasicAuthentication(authentication.BaseAuthentication):
     """
     HTTP Basic authentication against preset credentials.
     """
 
     www_authenticate_realm = "api"
-    credentials = settings.TALPA_ROBOT_AUTH_CREDENTIAL
 
     def authenticate(self, request):
         try:
@@ -37,3 +36,19 @@ class RobotBasicAuthentication(authentication.BaseAuthentication):
 
     def authenticate_header(self, request):
         return 'Basic realm="{}"'.format(self.www_authenticate_realm)
+
+
+class RobotBasicAuthentication(BasicAuthentication):
+    """
+    HTTP Basic authentication against preset credentials.
+    """
+
+    credentials = settings.TALPA_ROBOT_AUTH_CREDENTIAL
+
+
+class AhjoApiBasicAuthentication(BasicAuthentication):
+    """
+    HTTP Basic authentication against preset credentials.
+    """
+
+    credentials = settings.AHJO_API_AUTH_CREDENTIAL
