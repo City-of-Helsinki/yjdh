@@ -60,7 +60,7 @@ const useTermsOfServiceData = (
         return String(user.termsOfServiceInEffect?.termsMdSv);
 
       case 'en':
-        return String(user.termsOfServiceInEffect?.termsMdSv);
+        return String(user.termsOfServiceInEffect?.termsMdEn);
 
       default:
         return '';
