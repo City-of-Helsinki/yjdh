@@ -1,11 +1,16 @@
+import base64
 import io
+import uuid
 import zipfile
 from datetime import date
 from typing import List
 from unittest.mock import patch
 
 import pytest
+from django.http import FileResponse
+from django.urls import reverse
 
+from applications.api.v1.ahjo_integration_views import AhjoAttachmentView
 from applications.enums import ApplicationStatus, BenefitType
 from applications.models import Application
 from applications.services.ahjo_integration import (
@@ -277,3 +282,70 @@ def test_multiple_benefit_per_application(mock_pdf_convert):
             "2493",
         ),
     )
+
+
+def test_prepare_ahjo_file_response(decided_application):
+    attachment = decided_application.attachments.first()
+    response = AhjoAttachmentView._prepare_file_response(attachment)
+
+    assert isinstance(response, FileResponse)
+
+    assert response["Content-Length"] == f"{attachment.attachment_file.size}"
+    assert (
+        response["Content-Disposition"]
+        == f"attachment; filename={attachment.attachment_file.name}"
+    )
+    assert response["Content-Type"] == f"{attachment.content_type}"
+
+
+@pytest.fixture
+def attachment(decided_application):
+    return decided_application.attachments.first()
+
+
+@pytest.fixture
+def valid_credentials(settings):
+    settings.AHJO_API_AUTH_CREDENTIAL = "username:password"
+    return base64.b64encode(b"{}").decode("utf-8")
+
+
+def test_get_attachment_success(anonymous_client, attachment, valid_credentials):
+    url = reverse("ahjo_attachment_url", kwargs={"uuid": attachment.id})
+    response = anonymous_client.get(
+        url, headers={"Authorization": "Basic " + valid_credentials}
+    )
+
+    assert response.status_code == 200
+    assert response["Content-Type"] == f"{attachment.content_type}"
+    assert response["Content-Length"] == f"{attachment.attachment_file.size}"
+    assert (
+        response["Content-Disposition"]
+        == f"attachment; filename={attachment.attachment_file.name}"
+    )
+
+
+def test_get_attachment_not_found(anonymous_client, valid_credentials):
+    id = uuid.uuid4()
+    url = reverse("ahjo_attachment_url", kwargs={"uuid": id})
+    response = anonymous_client.get(
+        url, headers={"Authorization": "Basic " + valid_credentials}
+    )
+
+    assert response.status_code == 404
+    assert response.data == {"message": f"Attachment not found"}
+
+
+def test_get_attachment_unauthorized(anonymous_client, attachment):
+    url = reverse("ahjo_attachment_url", kwargs={"uuid": attachment.id})
+    response = anonymous_client.get(url)
+
+    assert response.status_code == 401
+
+    response = anonymous_client.get(
+        url,
+        headers={
+            "Authorization": "Basic "
+            + base64.b64encode(b"wrong:password").decode("utf-8")
+        },
+    )
+    assert response.status_code == 401

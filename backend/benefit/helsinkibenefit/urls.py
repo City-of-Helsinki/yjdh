@@ -12,6 +12,7 @@ from drf_spectacular.views import (
 from rest_framework_nested import routers
 
 from applications.api.v1 import application_batch_views, views as application_views
+from applications.api.v1.ahjo_integration_views import AhjoAttachmentView
 from applications.api.v1.review_state_views import ReviewStateView
 from calculator.api.v1 import views as calculator_views
 from common.debug_util import debug_env
@@ -61,6 +62,11 @@ router.register(r"previousbenefits", calculator_views.PreviousBenefitViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path(
+        "v1/ahjo-integration/attachment/<uuid:uuid>",
+        AhjoAttachmentView.as_view(),
+        name="ahjo_attachment_url",
+    ),
     path("gdpr-api/v1/user/<uuid:uuid>", UserUuidGDPRAPIView.as_view(), name="gdpr_v1"),
     path("v1/", include((router.urls, "v1"), namespace="v1")),
     path("v1/", include(applicant_app_router.urls)),
