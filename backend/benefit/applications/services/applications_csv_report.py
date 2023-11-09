@@ -111,11 +111,9 @@ class ApplicationsCsvService(CsvExportBase):
                 csv_default_column(
                     "Asiantarkastajan titteli Ahjo", "batch.expert_inspector_title"
                 ),
+                csv_default_column("Tarkastajan nimi, P2P", "batch.p2p_inspector_name"),
                 csv_default_column(
-                    "Asiantarkastajan nimi P2P", "batch.p2p_inspector_name"
-                ),
-                csv_default_column(
-                    "Asiantarkastajan email P2P", "batch.p2p_inspector_email"
+                    "Tarkastajan sähköposti, P2P", "batch.p2p_inspector_email"
                 ),
                 csv_default_column("Hyväksyjän nimi P2P", "batch.p2p_checker_name"),
             ]
@@ -263,9 +261,9 @@ class ApplicationsCsvService(CsvExportBase):
             csv_default_column(
                 "Asiantarkastajan titteli Ahjo", "batch.expert_inspector_title"
             ),
-            csv_default_column("Asiantarkastajan nimi P2P", "batch.p2p_inspector_name"),
+            csv_default_column("Tarkastajan nimi, P2P", "batch.p2p_inspector_name"),
             csv_default_column(
-                "Asiantarkastajan email P2P", "batch.p2p_inspector_email"
+                "Tarkastajan sähköposti, P2P", "batch.p2p_inspector_email"
             ),
             csv_default_column("Hyväksyjän nimi P2P", "batch.p2p_checker_name"),
             # In case there are multiple rows per application, always have the nth ahjo row

@@ -325,8 +325,8 @@ def test_pruned_applications_csv_output(
     assert csv_lines[0][12] == '"Päätöspäivä"'
     assert csv_lines[0][13] == '"Asiantarkastajan nimi Ahjo"'
     assert csv_lines[0][14] == '"Asiantarkastajan titteli Ahjo"'
-    assert csv_lines[0][15] == '"Asiantarkastajan nimi P2P"'
-    assert csv_lines[0][16] == '"Asiantarkastajan email P2P"'
+    assert csv_lines[0][15] == '"Tarkastajan nimi, P2P"'
+    assert csv_lines[0][16] == '"Tarkastajan sähköposti, P2P"'
     assert csv_lines[0][17] == '"Hyväksyjän nimi P2P"'
 
     # Assert that there are 15 columns in the pruned CSV
