@@ -3,11 +3,9 @@ import {
   $ViewFieldBold,
 } from 'benefit/handler/components/newApplication/ApplicationForm.sc';
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
+import { ACTIONLESS_STATUSES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
-import {
-  APPLICATION_STATUSES,
-  ATTACHMENT_TYPES,
-} from 'benefit-shared/constants';
+import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import { paySubsidyTitle } from 'benefit-shared/utils/common';
 import camelCase from 'lodash/camelCase';
 import { useTranslation } from 'next-i18next';
@@ -30,7 +28,7 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({
       header={t(`${translationsBase}.headings.heading8`)}
       section="employment"
       action={
-        data.status !== APPLICATION_STATUSES.RECEIVED ? (
+        !ACTIONLESS_STATUSES.includes(data.status) ? (
           <EmploymentActions
             handleUpload={handleUpload}
             isUploading={isUploading}
@@ -127,40 +125,32 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({
           {t(`common:utility.${data.apprenticeshipProgram ? 'yes' : 'no'}`)}
         </$ViewField>
       </$GridCell>
-      <$GridCell $colSpan={6} $colStart={1}>
-        <AttachmentsListView
-          title={t(
-            'common:applications.sections.attachments.types.employmentContract.title'
-          )}
-          type={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
-          attachments={data.attachments || []}
-        />
-      </$GridCell>
-      <$GridCell $colSpan={6}>
-        <AttachmentsListView
-          title={t(paySubsidyTitle(data.paySubsidyGranted))}
-          type={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
-          attachments={data.attachments || []}
-        />
-      </$GridCell>
-      <$GridCell $colSpan={6} $colStart={1}>
-        <AttachmentsListView
-          title={t(
-            'common:applications.sections.attachments.types.educationContract.title'
-          )}
-          type={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
-          attachments={data.attachments || []}
-        />
-      </$GridCell>
-      <$GridCell $colSpan={6}>
-        <AttachmentsListView
-          title={t(
-            'common:applications.sections.attachments.types.otherAttachment.title'
-          )}
-          type={ATTACHMENT_TYPES.OTHER_ATTACHMENT}
-          attachments={data.attachments || []}
-        />
-      </$GridCell>
+      <AttachmentsListView
+        title={t(
+          'common:applications.sections.attachments.types.employmentContract.title'
+        )}
+        type={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
+        attachments={data.attachments || []}
+      />
+      <AttachmentsListView
+        title={t(paySubsidyTitle(data.paySubsidyGranted))}
+        type={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
+        attachments={data.attachments || []}
+      />
+      <AttachmentsListView
+        title={t(
+          'common:applications.sections.attachments.types.educationContract.title'
+        )}
+        type={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
+        attachments={data.attachments || []}
+      />
+      <AttachmentsListView
+        title={t(
+          'common:applications.sections.attachments.types.otherAttachment.title'
+        )}
+        type={ATTACHMENT_TYPES.OTHER_ATTACHMENT}
+        attachments={data.attachments || []}
+      />
     </ReviewSection>
   );
 };

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 type CalculatorTableRowProps = {
   isTotal?: boolean;
+  isNewSection?: boolean;
 };
 
 type CalculatorTextProps = {
@@ -31,8 +32,7 @@ export const $CalculatorText = styled.p<CalculatorTextProps>`
 
 export const $CalculatorHeader = styled.p`
   margin-bottom: ${(props) => props.theme.spacing.xs};
-  font-size: ${(props) => props.theme.fontSize.body.xl};
-  font-weight: 500;
+  font-size: ${(props) => props.theme.fontSize.heading.s};
 `;
 
 export const $FieldHeaderText = styled.p`
@@ -77,6 +77,12 @@ export const $CalculatorTableRow = styled.div<CalculatorTableRowProps>`
   background-color: ${(props) =>
     props.isTotal ? props.theme.colors.white : ''};
   margin-bottom: ${(props) => (props.isTotal ? props.theme.spacing.m : '0')};
+  margin-top: ${(props) => (props.isNewSection ? props.theme.spacing.m : '0')};
+`;
+
+export const $CalculatorTableHeader = styled.div`
+  font-size: ${(props) => props.theme.fontSize.heading.l};
+  padding: ${({ theme: { spacing } }) => `${spacing.xs3} ${spacing.xs}`};
 `;
 
 export const $TabButton = styled.span<TabButtonProps>`
@@ -101,4 +107,22 @@ export const $RadioButtonContainer = styled.div`
   border: 2px solid ${(props) => props.theme.colors.coatOfArmsMediumLight};
   padding: ${(props) => props.theme.spacing.s};
   background-color: ${(props) => props.theme.colors.white};
+`;
+
+export const $Highlight = styled.div`
+  border-left: 8px solid ${(props) => props.theme.colors.coatOfArms};
+  padding-left: ${(props) => props.theme.spacing.l};
+  margin: ${(props) => props.theme.spacing.xs};
+`;
+
+export const $InfoNeededBar = styled.div`
+  margin-bottom: ${(props) => props.theme.spacing.m};
+  padding: ${(props) => props.theme.spacing.s};
+  max-width: 100%;
+  background-color: ${(props) => props.theme.colors.summerMediumLight};
+  text-align: center;
+  font-size: ${(props) => props.theme.fontSize.body.l};
+  svg {
+    padding-left: ${(props) => props.theme.spacing.xs};
+  }
 `;

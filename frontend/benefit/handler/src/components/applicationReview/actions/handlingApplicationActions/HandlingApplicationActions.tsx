@@ -16,6 +16,7 @@ import Modal from 'shared/components/modal/Modal';
 
 import EditAction from '../editAction/EditAction';
 import CancelModalContent from './CancelModalContent/CancelModalContent';
+import DoneModalContent from './DoneModalContent/DoneModalContent';
 import {
   $Column,
   $CustomNotesActions,
@@ -35,34 +36,43 @@ const HandlingApplicationActions: React.FC<Props> = ({
   const {
     t,
     onDone,
+    onDoneConfirmation,
     onBackToHandling,
     onSaveAndClose,
     toggleMessagesDrawerVisiblity,
     openDialog,
     closeDialog,
+    closeDoneDialog,
     handleCancel,
     isMessagesDrawerVisible,
     translationsBase,
     isDisabledDoneButton,
     isConfirmationModalOpen,
+    isDoneConfirmationModalOpen,
+    handledApplication,
   } = useHandlingApplicationActions(application);
+
   return (
     <$Wrapper data-testid={dataTestId}>
       <$Column>
         {application.status === APPLICATION_STATUSES.HANDLING && (
-          <Button onClick={onDone} theme="coat" disabled={isDisabledDoneButton}>
+          <Button
+            onClick={onDoneConfirmation}
+            theme="coat"
+            disabled={isDisabledDoneButton}
+          >
             {t(`${translationsBase}.done`)}
           </Button>
         )}
-        <Button onClick={onSaveAndClose} theme="black" variant="secondary">
-          {t(
-            `${translationsBase}.${
-              application.status === APPLICATION_STATUSES.HANDLING
-                ? 'saveAndContinue'
-                : 'close'
-            }`
-          )}
-        </Button>
+        {application.status === APPLICATION_STATUSES.HANDLING ? (
+          <Button onClick={onSaveAndClose} theme="black" variant="secondary">
+            {t(`${translationsBase}.saveAndContinue`)}
+          </Button>
+        ) : (
+          <Button onClick={onSaveAndClose} theme="coat" variant="primary">
+            {t(`${translationsBase}.close`)}
+          </Button>
+        )}
         {[
           APPLICATION_STATUSES.ACCEPTED,
           APPLICATION_STATUSES.REJECTED,
@@ -116,6 +126,29 @@ const HandlingApplicationActions: React.FC<Props> = ({
           variant="danger"
           customContent={
             <CancelModalContent onClose={closeDialog} onSubmit={handleCancel} />
+          }
+        />
+      )}
+      {isDoneConfirmationModalOpen && (
+        <Modal
+          id="Handler-confirmDecisionApplicationModal"
+          isOpen={isDoneConfirmationModalOpen}
+          title={t(`${translationsBase}.confirm`)}
+          submitButtonLabel=""
+          cancelButtonLabel={t('common:applications.actions.close')}
+          handleToggle={closeDoneDialog}
+          handleSubmit={noop}
+          headerIcon={<IconInfoCircle />}
+          className=""
+          variant="primary"
+          theme={{ '--accent-line-color': 'var(--color-coat-of-arms)' }}
+          customContent={
+            <DoneModalContent
+              handledApplication={handledApplication}
+              onClose={closeDoneDialog}
+              onSubmit={onDone}
+              calculationRows={application.calculation?.rows}
+            />
           }
         />
       )}

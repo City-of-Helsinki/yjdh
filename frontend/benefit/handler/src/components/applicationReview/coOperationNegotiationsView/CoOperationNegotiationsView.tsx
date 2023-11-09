@@ -3,8 +3,8 @@ import {
   $ViewFieldBold,
 } from 'benefit/handler/components/newApplication/ApplicationForm.sc';
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
+import { ACTIONLESS_STATUSES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
-import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
@@ -17,7 +17,7 @@ const CoOperationNegotiationsView: React.FC<ApplicationReviewViewProps> = ({
   return (
     <ReviewSection
       header={t(`${translationsBase}.headings.heading4`)}
-      action={data.status !== APPLICATION_STATUSES.RECEIVED ? <span /> : null}
+      action={!ACTIONLESS_STATUSES.includes(data.status) ? <span /> : null}
       section="coOperationNegotiations"
     >
       <$GridCell $colSpan={12}>

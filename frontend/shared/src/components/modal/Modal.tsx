@@ -18,6 +18,7 @@ export type ModalProps = {
   handleSubmit: (e: React.SyntheticEvent) => void;
   children?: React.ReactNode;
   customContent?: React.ReactNode;
+  theme?: Record<string, string>;
 };
 
 const Modal: React.FC<ModalProps> = ({
@@ -36,6 +37,7 @@ const Modal: React.FC<ModalProps> = ({
   handleSubmit,
   children,
   customContent,
+  theme,
 }) => {
   const { t } = useTranslation();
   const onAccept = (e: React.SyntheticEvent): void => {
@@ -55,6 +57,7 @@ const Modal: React.FC<ModalProps> = ({
       closeButtonLabelText={closeButtonLabelText}
       scrollable={scrollable}
       variant={variant}
+      theme={theme}
     >
       {title && <Dialog.Header title={title} id={id} iconLeft={headerIcon} />}
       {customContent || (

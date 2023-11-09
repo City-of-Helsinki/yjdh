@@ -3,11 +3,9 @@ import {
   $ViewFieldBold,
 } from 'benefit/handler/components/newApplication/ApplicationForm.sc';
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
+import { ACTIONLESS_STATUSES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
-import {
-  APPLICATION_STATUSES,
-  ORGANIZATION_TYPES,
-} from 'benefit-shared/constants';
+import { ORGANIZATION_TYPES } from 'benefit-shared/constants';
 import { friendlyFormatIBAN } from 'ibantools';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -19,7 +17,7 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   return (
     <ReviewSection
       header={t(`${translationsBase}.headings.heading1`)}
-      action={data.status !== APPLICATION_STATUSES.RECEIVED ? <span /> : null}
+      action={!ACTIONLESS_STATUSES.includes(data.status) ? <span /> : null}
       section="company"
     >
       <$GridCell $colSpan={6}>
@@ -47,23 +45,23 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           data.company?.postcode || ''
         } ${data.company?.city || ''}`}</$ViewField>
       </$GridCell>
-        {data.alternativeCompanyStreetAddress && (
-          <$GridCell $colSpan={6}>
-            <$ViewFieldBold>
-              {t(`${translationsBase}.fields.alternativeAddress`)}
-            </$ViewFieldBold>
-            <$ViewField>
-              {data.companyDepartment && <div>{data.companyDepartment}</div>}
-              {[
-                data.alternativeCompanyStreetAddress,
-                data.alternativeCompanyPostcode,
-                data.alternativeCompanyCity,
-              ]
-                .join(', ')
-                .trim()}
-            </$ViewField>
-          </$GridCell>
-        )}
+      {data.alternativeCompanyStreetAddress && (
+        <$GridCell $colSpan={6}>
+          <$ViewFieldBold>
+            {t(`${translationsBase}.fields.alternativeAddress`)}
+          </$ViewFieldBold>
+          <$ViewField>
+            {data.companyDepartment && <div>{data.companyDepartment}</div>}
+            {[
+              data.alternativeCompanyStreetAddress,
+              data.alternativeCompanyPostcode,
+              data.alternativeCompanyCity,
+            ]
+              .join(', ')
+              .trim()}
+          </$ViewField>
+        </$GridCell>
+      )}
       <$GridCell $colSpan={6} $colStart={1}>
         <$ViewFieldBold>
           {t(`${translationsBase}.fields.bankAccountNumber`)}

@@ -1,9 +1,12 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
 import AppContext from 'benefit/handler/context/AppContext';
+import { Application } from 'benefit/handler/types/application';
+import { extractCalculatorRows } from 'benefit/handler/utils/calculator';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { TextArea } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
+import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import {
   $Checkbox,
   $RadioButton,
@@ -13,15 +16,20 @@ import {
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
 import theme from 'shared/styles/theme';
+import { formatFloatToCurrency } from 'shared/utils/string.utils';
 
 import {
   $CalculatorHr,
+  $CalculatorTableRow,
   $FieldHeaderText,
+  $HelpText,
   $MainHeader,
   $RadioButtonContainer,
 } from '../ApplicationReview.sc';
 
-const ApplicationProcessingView: React.FC = () => {
+const ApplicationProcessingView: React.FC<{ data: Application }> = ({
+  data,
+}) => {
   const translationsBase = 'common:review';
   const { t } = useTranslation();
   const { handledApplication, setHandledApplication } =
@@ -41,6 +49,14 @@ const ApplicationProcessingView: React.FC = () => {
       ...handledApplication,
       logEntryComment: event.target.value,
     });
+
+  const {
+    rowsWithoutTotal,
+    totalRow,
+    totalRowDescription,
+    dateRangeRows,
+    helsinkiBenefitMonthlyRows,
+  } = extractCalculatorRows(data?.calculation?.rows);
 
   return (
     <ReviewSection withMargin withBorder>
@@ -87,13 +103,13 @@ const ApplicationProcessingView: React.FC = () => {
                   id="proccessRejectedComments"
                   name="proccessRejectedComments"
                   label={t(`${translationsBase}.fields.reason`)}
-                  placeholder={t(
-                    `${translationsBase}.actions.reasonRejectPlaceholder`
-                  )}
                   onChange={onCommentsChange}
                   value={handledApplication?.logEntryComment}
                   required
                 />
+                <$HelpText>
+                  {t(`${translationsBase}.actions.reasonRejectPlaceholder`)}
+                </$HelpText>
               </$GridCell>
             </$Grid>
           </>
@@ -135,17 +151,56 @@ const ApplicationProcessingView: React.FC = () => {
               </$GridCell>
             </$Grid>
             <$Grid>
-              <$GridCell $colSpan={6}>
+              {totalRow && totalRowDescription && (
+                <$GridCell $colSpan={10}>
+                  <$ViewField
+                    isBold
+                    style={{
+                      fontSize: theme.fontSize.heading.s,
+                      paddingBottom: theme.spacing.s,
+                    }}
+                  >
+                    {totalRowDescription.descriptionFi}
+                  </$ViewField>
+                  <$CalculatorTableRow style={{ backgroundColor: 'white' }}>
+                    <$ViewField>{totalRow.descriptionFi}</$ViewField>
+                    <$ViewField isBold>
+                      {formatFloatToCurrency(totalRow.amount)}
+                    </$ViewField>
+                  </$CalculatorTableRow>
+                  {dateRangeRows.length === helsinkiBenefitMonthlyRows.length &&
+                    dateRangeRows.map((row, index) => (
+                      <$CalculatorTableRow
+                        key={row.id}
+                        style={{ paddingLeft: '0' }}
+                      >
+                        <$ViewField>{row.descriptionFi}</$ViewField>
+                        <$ViewField isBold>
+                          {formatFloatToCurrency(
+                            rowsWithoutTotal[index].amount
+                          )}
+                          {t('common:utility.perMonth')}
+                        </$ViewField>
+                      </$CalculatorTableRow>
+                    ))}
+                </$GridCell>
+              )}
+              <$GridCell
+                $colSpan={8}
+                $colStart={1}
+                style={{ paddingTop: theme.spacing.l }}
+              >
                 <TextArea
                   id="proccessAcceptedComments"
                   name="proccessAcceptedComments"
                   label={t(`${translationsBase}.fields.reason`)}
-                  placeholder={t(
-                    `${translationsBase}.actions.reasonAcceptPlaceholder`
-                  )}
                   value={handledApplication?.logEntryComment}
                   onChange={onCommentsChange}
                 />
+
+                <$HelpText>
+                  {t(`${translationsBase}.actions.reasonAcceptPlaceholder`)}
+                </$HelpText>
               </$GridCell>
             </$Grid>
             <$Grid>

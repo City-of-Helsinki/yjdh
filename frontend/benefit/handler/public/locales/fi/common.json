@@ -49,15 +49,15 @@
   "notifications": {
     "accepted": {
       "title": "Hakemusta on puollettu",
-      "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti."
+      "message": "Hakemus {{applicationNum}} on siirretty myönteisten hakemusten jonoon."
     },
     "rejected": {
       "title": "Hakemusta ei puollettu",
-      "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti."
+      "message": "Hakemus {{applicationNum}} on siirretty kielteisten hakemusten jonoon."
     },
     "cancelled": {
       "title": "Hakemus on peruttu",
-      "message": "Hakemus {{applicationNum}} on peruttu onnistuneesti."
+      "message": "Hakemus {{applicationNum}} on peruutettu onnistuneesti."
     },
     "error": {
       "title": "Tapahtui tuntematon virhe",
@@ -74,6 +74,14 @@
     "applicationDeleted": {
       "label": "Luonnos poistettu",
       "message": "Hakemus on poistettu."
+    },
+    "ahjoMessage": {
+      "label": "",
+      "message": "Voit seuraavaksi viedä hakemuksen Ahjoon virallista päätöskäsittelyä varten."
+    },
+    "ahjoButton": {
+      "label": "Aloita hakemuksen vieminen ahjoon",
+      "message": ""
     }
   },
   "mainIngress": {
@@ -650,7 +658,7 @@
       "grantedDueInjury": "Palkkatuki myönnetty vamman tai sairauden takia",
       "handlingToInfoRequired": "Avaa muokattavaksi",
       "infoRequiredToHandling": "Lukitse hakemus",
-      "reasonAcceptPlaceholder": "Valinnainen perustelu jos hakija katsotaan kuuluvan kohderyhmään",
+      "reasonAcceptPlaceholder": "Valinnainen perustelu jos hakija kuuluu kohderyhmään",
       "reasonCancelPlaceholder": "Kirjoita syy",
       "reasonCancelTitle": "Kirjoita syy",
       "reasonCancelDialogTitle": "Haluatko varmasti peruuttaa?",
@@ -659,7 +667,17 @@
       "reasonRejectPlaceholder": "Helsinki-lisää ei voida myöntää koska syitä",
       "reasonCancelConfirm": "Peruuta hakemus",
       "grantedAsDeminimisText": "De minimis",
-      "grantedAsDeminimisAid": "Helsinki-lisä myönnetään de minimis-tukena"
+      "confirm": "Vahvista toimenpide",
+      "grantedAsDeminimisAid": "Helsinki-lisä myönnetään de minimis-tukena",
+      "accepting": "Olet siirtämässä hakemuksen päätösjonoon, jossa sille tehdään myönteinen päätös",
+      "rejecting": "Olet siirtämässä hakemuksen päätösjonoon, jossa sille tehdään kielteinen päätös",
+      "accept": "Tee myönteinen päätösehdotus",
+      "reject": "Tee kielteinen päätösehdotus",
+      "cancelDecision": "Peruuta",
+      "description": "Perustelu",
+      "acceptedSubsidy": "Myönnettävä tuki",
+      "eurosTotal": "{{total}} euroa yhteensä",
+      "eurosPerMonth": "{{euros}} euroa kuukaudessa {{dateRange}}"
     },
     "headings": {
       "heading1": "Työnantajan tiedot",
@@ -710,7 +728,7 @@
       "noSupport": "Ei puolleta",
       "support": "Puolletaan",
       "reason": "Perustelu",
-      "editEndDate": "Hakemusta muokattava viimeistään {{date}}",
+      "editEndDate": "Hakemus avattu muokattavaksi ja lukittuu {{date}}",
       "ssn": "Henkilötunnus",
       "email": "Sähköposti",
       "phone": "Puhelin",
@@ -728,17 +746,19 @@
     },
     "summary": {
       "accepted": {
-        "title": "Käsittely valmis",
-        "description": "Hakemus on hyväksytty ja Työllistämisen Helsinki-lisää on myönnetty ({{months}} kuukaudelle) aikavälille {{startDate}} – {{endDate}}",
+        "title": "Hakemuksen käsittely",
+        "description": "Myönnettävä Helsinki-lisä ajalta {{startDate}} – {{endDate}} ({{months}} kk)",
         "row1": "Myönnetty Helsinki-lisä per kuukausi",
         "row2": "Myönnetty Helsinki-lisä yhteensä",
         "deMinimis": "Myönnetään de minimis-tukena",
-        "commentsTitle": "Tiedot"
+        "commentsTitle": "Perustelu",
+        "message": "Hakemus käsiteltiin myönteiseksi"
       },
       "rejected": {
         "description": "Hakemusta ei hyväksytä.",
-        "title": "Käsittely valmis",
-        "commentsTitle": "Perustelu"
+        "title": "Hakemuksen käsittely",
+        "commentsTitle": "Perustelu",
+        "message": "Hakemus käsiteltiin kielteiseksi"
       },
       "cancelled": {
         "title": "Peruutustiedot",
@@ -747,7 +767,10 @@
       },
       "common": {
         "handler": "Käsittelijä",
-        "handledAt": "Käsittelypäivämäärä"
+        "handledAt": "Käsittelypäivämäärä",
+        "ready": "Käsittely valmis",
+        "dateRange": "Helsinki-lisä kuukaudessa {{dateRange}}",
+        "total": "Helsinki-lisä yhteensä koko ajalta ({{months}} kk)"
       }
     }
   },
@@ -849,6 +872,11 @@
       "calculator": "Laskuri",
       "calculateManually": "Laske käsin",
       "clear": "Tyhjennä"
+    },
+    "result": {
+      "header": "Myönnettävä Helsinki-lisä",
+      "header2": "Arvio koostuu seuraavista tiedoista:",
+      "acceptedBenefit": "Myönnettävä Helsinki-lisä"
     }
   },
   "organizationTypes": {
@@ -906,7 +934,18 @@
     "eurosPerMonth": "€ / kk",
     "select": "Valitse",
     "start": "Alkamispäivä",
-    "end": "Päättymispäivä"
+    "end": "Päättymispäivä",
+    "perMonth": "/kk"
+  },
+  "status": {
+    "draft": "Luonnos",
+    "additional_information_needed": "Odottaa lisätietoja",
+    "received": "Saapunut",
+    "accepted": "Myönteinen",
+    "approved": "Hyväksytty",
+    "rejected": "Kielteinen",
+    "cancelled": "Peruutettu",
+    "handling": "Käsittelyssä"
   },
   "upload": {
     "isUploading": "Ladataan...",

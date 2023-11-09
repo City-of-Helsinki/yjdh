@@ -5,8 +5,9 @@ import AppContext from 'benefit/handler/context/AppContext';
 import FrontPageProvider from 'benefit/handler/context/FrontPageProvider';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
-import { Tabs } from 'hds-react';
+import { LoadingSpinner, Tabs } from 'hds-react';
 import { GetStaticProps, NextPage } from 'next';
+import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import * as React from 'react';
 import { useEffect } from 'react';
@@ -61,12 +62,29 @@ const ApplicantIndex: NextPage = () => {
       ? `${getHeadingTranslation(headingStatus)} (${getTabCount(statuses)})`
       : getHeadingTranslation(headingStatus);
 
+  const router = useRouter();
+  const { tab } = router.query;
+  const [activeTab, setActiveTab] = React.useState<number | null>(null);
+
+  React.useEffect(() => {
+    if (!router.isReady) return;
+    setActiveTab(parseInt(tab as string, 10) || 0);
+  }, [router.isReady, tab]);
+
+  if (activeTab === null) {
+    return (
+      <div style={{ margin: theme.spacing.xl }}>
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
   return (
     <FrontPageProvider>
       <$BackgroundWrapper backgroundColor={layoutBackgroundColor}>
         <MainIngress />
         <Container>
-          <Tabs theme={theme.components.tabs}>
+          <Tabs theme={theme.components.tabs} initiallyActiveTab={activeTab}>
             <Tabs.TabList style={{ marginBottom: 'var(--spacing-m)' }}>
               <Tabs.Tab>
                 {getListHeadingByStatus('all', ALL_APPLICATION_STATUSES)}

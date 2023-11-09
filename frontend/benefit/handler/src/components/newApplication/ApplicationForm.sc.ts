@@ -6,12 +6,14 @@ type ViewFieldBoldProps = {
 
 type ViewFieldProps = ViewFieldBoldProps & {
   isInline?: boolean;
+  topMargin?: boolean;
 };
 
 export const $ViewField = styled.div<ViewFieldProps>`
   &:not(:last-child) {
     padding-bottom: ${(props) => (props.children ? props.theme.spacing.s : 0)};
   }
+  margin-top: ${(props) => (props.topMargin ? props.theme.spacing.xs : 0)};
   display: ${(props) => (props.isInline ? 'inline' : 'block')};
   font-weight: 400;
   font-size: ${(props) =>

@@ -12,6 +12,7 @@ import useToggle from 'shared/hooks/useToggle';
 type ExtendedComponentProps = {
   t: TFunction;
   onDone: () => void;
+  onDoneConfirmation: () => void;
   onSaveAndClose: () => void;
   onBackToHandling: () => void;
   onCommentsChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -19,11 +20,14 @@ type ExtendedComponentProps = {
   handleCancel: (application: HandledAplication) => void;
   openDialog: () => void;
   closeDialog: () => void;
+  closeDoneDialog: () => void;
   translationsBase: string;
   isDisabledDoneButton: boolean;
   isMessagesDrawerVisible: boolean;
   isConfirmationModalOpen: boolean;
+  isDoneConfirmationModalOpen: boolean;
   cancelComments: string;
+  handledApplication: HandledAplication;
 };
 
 const useHandlingApplicationActions = (
@@ -45,6 +49,9 @@ const useHandlingApplicationActions = (
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
     useState<boolean>(false);
 
+  const [isDoneConfirmationModalOpen, setIsDoneConfirmationModalOpen] =
+    useState<boolean>(false);
+
   const [cancelComments, setCancelComments] = useState<string>('');
 
   const isDisabledDoneButton = React.useMemo(
@@ -60,9 +67,15 @@ const useHandlingApplicationActions = (
 
   const openDialog = (): void => setIsConfirmationModalOpen(true);
 
+  const onDoneConfirmation = (): void => setIsDoneConfirmationModalOpen(true);
+
   const closeDialog = (): void => {
     setIsConfirmationModalOpen(false);
     setHandledApplication(null);
+  };
+
+  const closeDoneDialog = (): void => {
+    setIsDoneConfirmationModalOpen(false);
   };
 
   useEffect(() => {
@@ -87,6 +100,7 @@ const useHandlingApplicationActions = (
   return {
     t,
     onDone,
+    onDoneConfirmation,
     onSaveAndClose,
     onCommentsChange,
     onBackToHandling,
@@ -94,11 +108,14 @@ const useHandlingApplicationActions = (
     handleCancel,
     openDialog,
     closeDialog,
+    closeDoneDialog,
     isMessagesDrawerVisible,
     translationsBase,
     isDisabledDoneButton,
     isConfirmationModalOpen,
+    isDoneConfirmationModalOpen,
     cancelComments,
+    handledApplication,
   };
 };
 

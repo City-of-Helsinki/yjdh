@@ -5,17 +5,17 @@ import {
   APPLICATION_ORIGINS,
   APPLICATION_STATUSES,
 } from 'benefit-shared/constants';
-import { LoadingSpinner, StatusLabel } from 'hds-react';
+import { IconLockOpen, LoadingSpinner } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import StickyActionBar from 'shared/components/stickyActionBar/StickyActionBar';
 import { $StickyBarSpacing } from 'shared/components/stickyActionBar/StickyActionBar.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import { useTheme } from 'styled-components';
 
 import HandlingApplicationActions from './actions/handlingApplicationActions/HandlingApplicationActions';
 import ReceivedApplicationActions from './actions/receivedApplicationActions/ReceivedApplicationActions';
 import ApplicationProcessingView from './applicationProcessingView/AplicationProcessingView';
+import { $InfoNeededBar } from './ApplicationReview.sc';
 import BenefitView from './benefitView/BenefitView';
 import CompanyInfoView from './companyInfoView/CompanyInfoView';
 import ConsentView from './consentView/ConsentView';
@@ -41,7 +41,6 @@ const ApplicationReview: React.FC = () => {
     reviewState,
     handleUpdateReviewState,
   } = useApplicationReview();
-  const theme = useTheme();
 
   if (isLoading) {
     return (
@@ -52,38 +51,29 @@ const ApplicationReview: React.FC = () => {
   }
 
   if (handledApplication?.status === application.status) {
-    return (
-      <>
-        <ApplicationHeader data={application} />
-        <NotificationView data={application} />
-      </>
-    );
+    return <NotificationView data={application} />;
   }
 
   return (
     <>
       <ApplicationHeader data={application} data-testid="application-header" />
-      <Container data-testid="application-body">
+      <ReviewStateContext.Provider
+        value={{
+          reviewState,
+          handleUpdateReviewState,
+        }}
+      >
         {application.status === APPLICATION_STATUSES.INFO_REQUIRED && (
-          <StatusLabel
-            css={`
-              margin-bottom: ${theme.spacing.s};
-            `}
-            type="alert"
-          >
+          <$InfoNeededBar>
             {t(`common:review.fields.editEndDate`, {
               date: convertToUIDateFormat(
                 application.additionalInformationNeededBy
               ),
             })}
-          </StatusLabel>
+            <IconLockOpen />
+          </$InfoNeededBar>
         )}
-        <ReviewStateContext.Provider
-          value={{
-            reviewState,
-            handleUpdateReviewState,
-          }}
-        >
+        <Container data-testid="application-body">
           {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER && (
             <PaperView data={application} />
           )}
@@ -110,33 +100,33 @@ const ApplicationReview: React.FC = () => {
           {application.status === APPLICATION_STATUSES.HANDLING && (
             <>
               <SalaryBenefitCalculatorView data={application} />
-              <ApplicationProcessingView />
+              <ApplicationProcessingView data={application} />
             </>
           )}
           {application.status &&
             HANDLED_STATUSES.includes(application.status) && (
               <HandledView data={application} />
             )}
-        </ReviewStateContext.Provider>
-      </Container>
-      <StickyActionBar>
-        {application.status === APPLICATION_STATUSES.RECEIVED && (
-          <ReceivedApplicationActions
-            application={application}
-            data-testid="received-application-actions"
-          />
-        )}
-        {(application.status === APPLICATION_STATUSES.HANDLING ||
-          application.status === APPLICATION_STATUSES.INFO_REQUIRED ||
-          (application.status &&
-            HANDLED_STATUSES.includes(application.status))) && (
-          <HandlingApplicationActions
-            application={application}
-            data-testid="handling-application-actions"
-          />
-        )}
-      </StickyActionBar>
-      <$StickyBarSpacing />
+        </Container>
+        <StickyActionBar>
+          {application.status === APPLICATION_STATUSES.RECEIVED && (
+            <ReceivedApplicationActions
+              application={application}
+              data-testid="received-application-actions"
+            />
+          )}
+          {(application.status === APPLICATION_STATUSES.HANDLING ||
+            application.status === APPLICATION_STATUSES.INFO_REQUIRED ||
+            (application.status &&
+              HANDLED_STATUSES.includes(application.status))) && (
+            <HandlingApplicationActions
+              application={application}
+              data-testid="handling-application-actions"
+            />
+          )}
+        </StickyActionBar>
+        <$StickyBarSpacing />
+      </ReviewStateContext.Provider>
     </>
   );
 };

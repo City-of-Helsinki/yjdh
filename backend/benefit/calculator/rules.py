@@ -7,7 +7,7 @@ from typing import Union
 from django.db import transaction
 
 from applications.enums import ApplicationStatus, BenefitType
-from calculator.enums import RowType
+from calculator.enums import DescriptionType, RowType
 from calculator.models import (
     Calculation,
     CalculationRow,
@@ -230,6 +230,7 @@ class SalaryBenefitCalculator2023(HelsinkiBenefitCalculator):
             self._create_row(
                 DescriptionRow,
                 description_fi_template="Vähennettävät korvaukset / kk",
+                description_type=DescriptionType.DEDUCTION,
             )
         if benefit_sub_range.pay_subsidy:
             pay_subsidy_monthly_eur = self._create_row(
@@ -281,6 +282,7 @@ class SalaryBenefitCalculator2023(HelsinkiBenefitCalculator):
                     start_date=sub_range.start_date,
                     end_date=sub_range.end_date,
                     prefix_text="Ajalta",
+                    description_type=DescriptionType.DATE,
                 )
             monthly_deductions = self.create_deduction_rows(sub_range)
 
@@ -300,6 +302,7 @@ class SalaryBenefitCalculator2023(HelsinkiBenefitCalculator):
                 DateRangeDescriptionRow,
                 start_date=self.calculation.start_date,
                 end_date=self.calculation.end_date,
+                description_type=DescriptionType.DATE_TOTAL,
                 prefix_text="Koko ajalta",
             )
             self._create_row(

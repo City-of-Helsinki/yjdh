@@ -10,7 +10,7 @@ from encrypted_fields.fields import EncryptedCharField, SearchField
 from simple_history.models import HistoricalRecords
 
 from applications.models import Application, PAY_SUBSIDY_PERCENT_CHOICES
-from calculator.enums import RowType
+from calculator.enums import DescriptionType, RowType
 from common.exceptions import BenefitAPIException
 from common.utils import (
     date_range_overlap,
@@ -458,6 +458,10 @@ class CalculationRow(UUIDModel, TimeStampedModel, DurationMixin):
     start_date = models.DateField(blank=True, null=True, verbose_name=_("Start date"))
     end_date = models.DateField(blank=True, null=True, verbose_name=_("End date"))
 
+    description_type = models.CharField(
+        choices=DescriptionType.choices, max_length=64, blank=True, null=True
+    )
+
     history = HistoricalRecords(table_name="bf_calculator_calculationrow_history")
 
     def __str__(self):
@@ -526,7 +530,7 @@ class DateRangeDescriptionRow(CalculationRow):
 
 class SalaryCostsRow(CalculationRow):
     proxy_row_type = RowType.SALARY_COSTS_EUR
-    description_fi_template = "Palkkakustannukset / kk"
+    description_fi_template = "Palkkauskustannukset"
 
     """Calculate the amount of salary costs for the application.
     Notice that the vacation money is reported per month by the applicant."""
@@ -559,7 +563,7 @@ class StateAidMaxMonthlyRow(CalculationRow):
 
 class PaySubsidyMonthlyRow(CalculationRow):
     proxy_row_type = RowType.PAY_SUBSIDY_MONTHLY_EUR
-    description_fi_template = "Palkkatuki"
+    description_fi_template = "Palkkatuki tai yli 55-vuotiaan tuki"
 
     """
     Special rule regarding a 100% pay subsidy. The 100% subsidy is limited so, that it's only possible
@@ -660,7 +664,7 @@ class TotalDeductionsMonthlyRow(CalculationRow):
 
 class SalaryBenefitMonthlyRow(CalculationRow):
     proxy_row_type = RowType.HELSINKI_BENEFIT_MONTHLY_EUR
-    description_fi_template = "Helsinki-lisä / kk"
+    description_fi_template = "Helsinki-lisä"
 
     def __init__(self, *args, **kwargs):
         self.max_benefit = kwargs.pop("max_benefit", None)

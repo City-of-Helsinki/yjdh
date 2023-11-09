@@ -26,7 +26,6 @@ import { formatStringFloatValue } from 'shared/utils/string.utils';
 
 import {
   $CalculatorHeader,
-  $CalculatorHr,
   $CalculatorTableRow,
   $CalculatorText,
   $HelpText,
@@ -190,7 +189,7 @@ const SalaryBenefitCalculatorView: React.FC<
           {formik.values.paySubsidies?.map(
             // eslint-disable-next-line sonarjs/cognitive-complexity
             (item: PaySubsidy, index: number) => (
-              <>
+              <React.Fragment key={item.id}>
                 <$GridCell $colStart={1}>
                   <$CalculatorText>
                     {t(`${translationsBase}.salarySubsidyPercentage`)}
@@ -346,7 +345,7 @@ const SalaryBenefitCalculatorView: React.FC<
                     style={{ paddingRight: `${theme.spacing.s}` }}
                   />
                 </$GridCell>
-              </>
+              </React.Fragment>
             )
           )}
         </>
@@ -616,7 +615,6 @@ const SalaryBenefitCalculatorView: React.FC<
       </$GridCell>
 
       <$GridCell $colStart={1} $colSpan={11}>
-        <$CalculatorHr />
         <CalculatorErrors data={calculationsErrors} />
       </$GridCell>
 
