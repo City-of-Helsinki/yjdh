@@ -82,3 +82,8 @@ def ahjo_user_token(ahjo_user):
 def ahjo_client():
     client = _api_client()
     return client
+
+
+def reseed(number):
+    factory.random.reseed_random(str(number))
+    random.seed(number)
