@@ -26,7 +26,7 @@
     "camelcase-keys": "^7.0.2",
     "date-fns": "^2.24.0",
     "dotenv": "^16.0.0",
-    "finnish-ssn": "^2.0.4",
+    "finnish-ssn": "^2.1.1",
     "formik": "^2.2.9",
     "hds-react": "^2.10.0",
     "lodash": "^4.17.21",
