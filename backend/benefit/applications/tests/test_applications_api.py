@@ -45,7 +45,7 @@ from applications.tests.factories import (
 from calculator.models import Calculation
 from calculator.tests.conftest import fill_empty_calculation_fields
 from common.tests.conftest import *  # noqa
-from common.tests.conftest import get_client_user
+from common.tests.conftest import get_client_user, reseed
 from common.utils import duration_in_months
 from companies.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
@@ -2217,6 +2217,40 @@ def test_handler_application_filter_archived(handler_api_client):
     assert len(response.data) == 1
     assert response.data[0]["id"] == str(apps[2].id)
     assert response.data[0]["archived"]
+
+
+def test_application_pdf_print(api_client, application):
+    settings.NEXT_PUBLIC_MOCK_FLAG = False  # noqa
+    reseed(12345)
+
+    # Can access own applications
+    response = api_client.get(
+        f"/v1/print/{application.id}/",
+        {"as_html": "1"},
+    )
+    assert response.status_code == 200
+
+
+def test_application_pdf_print_denied(api_client, anonymous_client):
+    settings.NEXT_PUBLIC_MOCK_FLAG = False  # noqa
+    reseed(12345)
+
+    application = DecidedApplicationFactory()
+
+    # Cannot access anonymously
+    response = anonymous_client.get(
+        f"/v1/print/{application.id}/",
+        {"as_html": "1"},
+    )
+    assert response.status_code == 403
+
+    # Cannot access other applications
+    response = api_client.get(
+        f"/v1/print/{application.id}/",
+        {"as_html": "1"},
+    )
+
+    assert response.status_code == 403
 
 
 def _create_random_applications():

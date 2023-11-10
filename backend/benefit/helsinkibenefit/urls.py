@@ -88,6 +88,7 @@ urlpatterns = [
     path(
         "v1/handlerapplications/<str:application_id>/review/", ReviewStateView.as_view()
     ),
+    path("v1/print/<str:pk>/", application_views.PrintDetail.as_view()),
     path("oidc/", include("shared.oidc.urls")),
     path("oauth2/", include("shared.azure_adfs.urls")),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),

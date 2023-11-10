@@ -780,3 +780,42 @@ msgstr ""
 
 msgid "terms of service approvals"
 msgstr ""
+
+msgid "fi"
+msgstr "Finnish"
+
+msgid "sv"
+msgstr "Swedish"
+
+msgid "en"
+msgstr "English"
+
+msgid "granted"
+msgstr "Pay subsidy"
+
+msgid "granted_aged"
+msgstr "Employment aid for people aged 55 and above"
+
+msgid "not_granted"
+msgstr "None"
+
+msgid "Processing of the personal data of the person to be employed"
+msgstr "Behandlingen av personuppgifterna av personen som ska sysselsättas"
+
+msgid "Agreement for employee's personal data processing"
+msgstr "Avtal för anställds personuppgiftsbehandling"
+
+msgid "employment_contract"
+msgstr "Employment contract"
+
+msgid "pay_subsidy_decision"
+msgstr "Pay subsidy decision"
+
+msgid "education_contract"
+msgstr "Agreement on providing apprenticeship training"
+
+msgid "helsinki_benefit_voucher"
+msgstr "The Helsinki Benefit card"
+
+msgid "employee_consent"
+msgstr "Employee's consent for processing personal data"
