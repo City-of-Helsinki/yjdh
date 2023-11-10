@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 
 from applications.models import Attachment
 from common.permissions import SafeListPermission
+from shared.audit_log import audit_logging
+from shared.audit_log.enums import Operation
 
 
 class AhjoAttachmentView(APIView):
@@ -17,13 +19,16 @@ class AhjoAttachmentView(APIView):
 
     def get(self, request, *args, **kwargs):
         attachment_id = self.kwargs["uuid"]
-        content = {
-            "user": str(request.user),  # `django.contrib.auth.User` instance.
-            "auth": str(request.auth),  # None
-        }
-        print(content)
+
         try:
             attachment = Attachment.objects.get(id=attachment_id)
+            audit_logging.log(
+                request.user,
+                "",  # Optional user backend
+                Operation.READ,
+                attachment,
+                additional_information="attachment was sent to AHJO!",
+            )
             return self._prepare_file_response(attachment)
         except Attachment.DoesNotExist:
             return Response(
