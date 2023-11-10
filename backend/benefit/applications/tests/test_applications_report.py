@@ -6,7 +6,6 @@ from decimal import Decimal
 from typing import Dict, List
 from zipfile import ZipFile
 
-import pytest
 from dateutil.relativedelta import relativedelta
 from django.http import HttpResponse, StreamingHttpResponse
 from rest_framework.reverse import reverse
@@ -28,6 +27,7 @@ from applications.tests.conftest import split_lines_at_semicolon
 from applications.tests.factories import DecidedApplicationFactory, DeMinimisAidFactory
 from calculator.tests.factories import PaySubsidyFactory
 from common.tests.conftest import *  # noqa
+from common.tests.conftest import reseed
 from companies.tests.conftest import *  # noqa
 from helsinkibenefit.tests.conftest import *  # noqa
 from terms.tests.conftest import *  # noqa
@@ -123,14 +123,15 @@ def _create_applications_for_export():
     return (application1, application2, application3, application4)
 
 
-@pytest.mark.skip(
-    reason="This test fails in deploy pipeline - DETAIL:  Key (username)=(masonzachary_a45eb8) already exists."
-)
+# @pytest.mark.skip(
+#     reason="This test fails in deploy pipeline - DETAIL:  Key (username)=(masonzachary_a45eb8) already exists."
+# )
 def test_applications_csv_export_new_applications(handler_api_client):
     (
         application1,
         application2,
         application3,
+        _,
     ) = _create_applications_for_export()
     ApplicationBatch.objects.all().delete()
 
@@ -189,6 +190,7 @@ def test_applications_csv_export_new_applications(handler_api_client):
         expected_without_quotes=True,
     )
     assert ApplicationBatch.objects.all().count() == 2
+    reseed(777)
 
 
 def test_applications_csv_export_without_calculation(
