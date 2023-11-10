@@ -1,4 +1,6 @@
 from django.http import FileResponse
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -17,6 +19,18 @@ class AhjoAttachmentView(APIView):
     ]
     permission_classes = [IsAuthenticated, SafeListPermission]
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="uuid",
+                description="UUID of the attachment",
+                required=True,
+                type=OpenApiTypes.UUID,
+                location=OpenApiParameter.PATH,
+            )
+        ],
+        description="Returns the specified attachment file if it exists.",
+    )
     def get(self, request, *args, **kwargs):
         attachment_id = self.kwargs["uuid"]
 
