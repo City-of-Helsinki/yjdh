@@ -765,9 +765,30 @@
         "description": "",
         "commentsTitle": "Syy peruutukseen"
       },
+      "archived": {
+        "ready": "Päätös tehty",
+        "accepted": "Hakemus hyväksyttiin",
+        "rejected": "Hakemusta ei hyväksytty ",
+        "cancelled": "Hakemus peruttiin",
+        "decisionMakerName": "Päättäjä",
+        "decisionMakerTitle": "Päättäjän titteli",
+        "decisionDate": "Päätöspäivämäärä",
+        "sectionOfTheLaw": "Pykälä",
+        "p2pTitle": "P2P-tarkastuksen tiedot",
+        "p2pInspector": "Tarkastaja, P2P",
+        "p2pInspectorEmail": "Tarkastajan sähköposti",
+        "ahjoTitle": "Ahjo-tarkastuksen tiedot",
+        "ahjoInspector": "Tarkastaja, Ahjo",
+        "ahjoInspectorTitle": "Tarkastajan titteli",
+        "p2pDecisionMaker": "Hyväksyjän nimi, P2P",
+        "archivedTitle": "Arkistointi",
+        "archivedDate": "Arkistointipäivä",
+        "handler": "Käsittelijä"
+      },
       "common": {
         "handler": "Käsittelijä",
         "handledAt": "Käsittelypäivämäärä",
+        "inAhjo": "Viety Ahjoon",
         "ready": "Käsittely valmis",
         "dateRange": "Helsinki-lisä kuukaudessa {{dateRange}}",
         "total": "Helsinki-lisä yhteensä koko ajalta ({{months}} kk)"

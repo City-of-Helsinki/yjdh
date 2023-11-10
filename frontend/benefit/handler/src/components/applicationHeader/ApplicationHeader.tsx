@@ -1,3 +1,4 @@
+import StatusLabel from 'benefit/handler/components/statusLabel/StatusLabel';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import { useTranslation } from 'next-i18next';
@@ -12,7 +13,6 @@ import {
   $ItemHeader,
   $ItemValue,
   $ItemWrapper,
-  $StatusLabel,
   $Wrapper,
 } from './ApplicationHeader.sc';
 
@@ -72,9 +72,7 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
             </$ItemWrapper>
           </$Col>
           <$Col>
-            <$StatusLabel status={data.status}>
-              {t(`common:status.${data.status}`)}
-            </$StatusLabel>
+            <StatusLabel status={data.status} />
           </$Col>
         </$InnerWrapper>
       </Container>
