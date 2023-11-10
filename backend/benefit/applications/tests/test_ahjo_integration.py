@@ -1,4 +1,3 @@
-import base64
 import io
 import uuid
 import zipfile
@@ -29,7 +28,6 @@ from companies.tests.factories import CompanyFactory
 from helsinkibenefit.tests.conftest import *  # noqa
 from shared.common.tests.utils import normalize_whitespace
 from shared.service_bus.enums import YtjOrganizationCode
-from users.models import User
 
 DE_MINIMIS_AID_PARTIAL_TEXT = (
     # In English ~= "support is granted as insignificant i.e. de minimis support"
@@ -330,7 +328,7 @@ def test_get_attachment_not_found(ahjo_client, ahjo_user_token, settings):
     response = ahjo_client.get(url, **auth_headers)
 
     assert response.status_code == 404
-    assert response.data == {"message": f"Attachment not found"}
+    assert response.data == {"message": "Attachment not found"}
 
 
 def test_get_attachment_unauthorized_wrong_or_missing_credentials(

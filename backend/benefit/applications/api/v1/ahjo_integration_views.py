@@ -46,7 +46,7 @@ class AhjoAttachmentView(APIView):
             return self._prepare_file_response(attachment)
         except Attachment.DoesNotExist:
             return Response(
-                {"message": f"Attachment not found"},
+                {"message": "Attachment not found"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
