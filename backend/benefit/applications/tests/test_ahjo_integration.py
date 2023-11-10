@@ -29,6 +29,7 @@ from companies.tests.factories import CompanyFactory
 from helsinkibenefit.tests.conftest import *  # noqa
 from shared.common.tests.utils import normalize_whitespace
 from shared.service_bus.enums import YtjOrganizationCode
+from users.models import User
 
 DE_MINIMIS_AID_PARTIAL_TEXT = (
     # In English ~= "support is granted as insignificant i.e. de minimis support"
@@ -303,17 +304,13 @@ def attachment(decided_application):
     return decided_application.attachments.first()
 
 
-@pytest.fixture
-def valid_credentials(settings):
-    settings.AHJO_API_AUTH_CREDENTIAL = "username:password"
-    return base64.b64encode(b"{}").decode("utf-8")
-
-
-def test_get_attachment_success(anonymous_client, attachment, valid_credentials):
+def test_get_attachment_success(ahjo_client, attachment, ahjo_user_token, settings):
+    settings.NEXT_PUBLIC_MOCK_FLAG = True
     url = reverse("ahjo_attachment_url", kwargs={"uuid": attachment.id})
-    response = anonymous_client.get(
-        url, headers={"Authorization": "Basic " + valid_credentials}
-    )
+
+    auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
+
+    response = ahjo_client.get(url, **auth_headers)
 
     assert response.status_code == 200
     assert response["Content-Type"] == f"{attachment.content_type}"
@@ -324,28 +321,41 @@ def test_get_attachment_success(anonymous_client, attachment, valid_credentials)
     )
 
 
-def test_get_attachment_not_found(anonymous_client, valid_credentials):
+def test_get_attachment_not_found(ahjo_client, ahjo_user_token, settings):
+    settings.NEXT_PUBLIC_MOCK_FLAG = True
     id = uuid.uuid4()
     url = reverse("ahjo_attachment_url", kwargs={"uuid": id})
-    response = anonymous_client.get(
-        url, headers={"Authorization": "Basic " + valid_credentials}
-    )
+    auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
+
+    response = ahjo_client.get(url, **auth_headers)
 
     assert response.status_code == 404
     assert response.data == {"message": f"Attachment not found"}
 
 
-def test_get_attachment_unauthorized(anonymous_client, attachment):
+def test_get_attachment_unauthorized_wrong_or_missing_credentials(
+    anonymous_client, attachment, settings
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = True
+    # without any auth headers
     url = reverse("ahjo_attachment_url", kwargs={"uuid": attachment.id})
     response = anonymous_client.get(url)
 
     assert response.status_code == 401
-
+    # with incorrect auth token
     response = anonymous_client.get(
         url,
-        headers={
-            "Authorization": "Basic "
-            + base64.b64encode(b"wrong:password").decode("utf-8")
-        },
+        headers={"Authorization": "Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b"},
     )
     assert response.status_code == 401
+
+
+def test_get_attachment_unauthorized_ip_not_allowed(
+    ahjo_client, ahjo_user_token, attachment, settings
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = False
+    url = reverse("ahjo_attachment_url", kwargs={"uuid": attachment.id})
+    auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
+
+    response = ahjo_client.get(url, **auth_headers)
+    assert response.status_code == 403

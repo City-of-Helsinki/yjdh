@@ -164,6 +164,7 @@ env = environ.Env(
     AHJO_TOKEN_URL=(str, ""),
     AHJO_REST_API_URL=(str, "https://ahjohyte.hel.fi:9802/ahjorest/v1"),
     AHJO_REDIRECT_URL=(str, "https://helsinkilisa/dummyredirect.html"),
+    AHJO_ALLOWED_IP=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -243,6 +244,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
+    "rest_framework.authtoken",
     "django_filters",
     "drf_spectacular",
     "phonenumber_field",
@@ -510,7 +512,4 @@ AHJO_TOKEN_URL = env("AHJO_TOKEN_URL")
 AHJO_REST_API_URL = env("AHJO_REST_API_URL")
 AHJO_REDIRECT_URL = env("AHJO_REDIRECT_URL")
 
-REST_SAFE_LIST_IPS = [
-    '127.0.0.1',
-    '172.20.0.7'
-]
+REST_SAFE_LIST_IPS = (env("AHJO_ALLOWED_IP"),)

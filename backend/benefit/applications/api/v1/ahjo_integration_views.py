@@ -1,19 +1,27 @@
 from django.http import FileResponse
 from rest_framework import status
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from applications.models import Attachment
-from common.authentications import AhjoApiBasicAuthentication
 from common.permissions import SafeListPermission
 
 
 class AhjoAttachmentView(APIView):
-    authentication_classes = [AhjoApiBasicAuthentication]
-    permission_classes = [SafeListPermission]
+    authentication_classes = [
+        TokenAuthentication,
+    ]
+    permission_classes = [IsAuthenticated, SafeListPermission]
 
     def get(self, request, *args, **kwargs):
         attachment_id = self.kwargs["uuid"]
+        content = {
+            "user": str(request.user),  # `django.contrib.auth.User` instance.
+            "auth": str(request.auth),  # None
+        }
+        print(content)
         try:
             attachment = Attachment.objects.get(id=attachment_id)
             return self._prepare_file_response(attachment)
