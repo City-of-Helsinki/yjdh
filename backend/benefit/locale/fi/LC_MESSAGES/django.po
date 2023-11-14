@@ -84,20 +84,21 @@ msgid "This should be unreachable"
 msgstr "Tämän pitäisi olla tavoittamattomissa"
 
 msgid "Invalid value for association_immediate_manager_check"
-msgstr "Epäkelpo arvo kohteessa association_immediate_manager_check"
+msgstr "Työnjohdollinen esihenkilö on pakollinen valinta"
 
 msgid "for companies, association_immediate_manager_check must always be null"
 msgstr ""
-"yrityksen ollessa kyseessä kohteen association_immediate_manager_check on "
+"yrityksen ollessa kyseessä kohteen Työnjohdollinen esihenkilö (association_immediate_manager_check) on "
 "aina oltava tyhjä"
 
 msgid ""
 "This application has non-null de_minimis_aid but is applied by an association"
 msgstr ""
-"Tässä hakemuksessa on ei-nolla de_minimis_aid, mutta hakija on yhteisö"
+"Tässä hakemuksessa on ilmoitett de minimis tuki, vaikka hakija on yhteisö, "
+"joka ei harjoita liiketoimintaa"
 
 msgid "This application has de_minimis_aid set but does not define any"
-msgstr "Tässä hakemuksessa on valittu de_minimis_aid, mutta sitä ei määritetä"
+msgstr "Tässä hakemuksessa on valittu de minimis tuki, mutta sitä ei ole annettu"
 
 msgid "This application can not have de minimis aid"
 msgstr "Tässä hakemuksessa ei voi olla de minimis -tukea"
@@ -106,13 +107,13 @@ msgid "Total amount of de minimis aid too large"
 msgstr "De minimis -tuen kokonaismäärä liian suuri"
 
 msgid "start_date must not be in a past year"
-msgstr "start_date ei saa olla menneessä vuodessa"
+msgstr "Aloituspäivä ei saa olla menneessä vuodessa"
 
 msgid "end_date must not be in a past year"
-msgstr "end_date ei saa olla menneessä vuodessa"
+msgstr "Päättymispäivä ei saa olla menneessä vuodessa"
 
 msgid "application end_date can not be less than start_date"
-msgstr "hakemuksen end_date ei voi olla aiemmin kuin start_date"
+msgstr "hakemuksen päättymispäivä ei voi olla aiemmin kuin aloituspäivä"
 
 msgid "minimum duration of the benefit is one month"
 msgstr "avustuksen vähimmäiskesto on yksi kuukausi"
@@ -132,7 +133,8 @@ msgid "This application can not have {key}"
 msgstr "Tässä hakemuksessa ei voi olla kohdetta {key}"
 
 msgid "This application can not have additional_pay_subsidy_percent"
-msgstr "Tässä hakemuksessa ei voi olla kohdetta additional_pay_subsidy_percent"
+msgstr "Tässä hakemuksessa ei voi olla kohdetta toinen tuki prosentti "
+"additional_pay_subsidy_percent"
 
 msgid "This field is required before submitting the application"
 msgstr "Tämä kenttä on pakollinen ennen hakemuksen lähettämistä"
@@ -493,12 +495,12 @@ msgstr "Päivämääräalue liian suuri"
 
 msgid "This calculation can not have a override_monthly_benefit_amount_comment"
 msgstr ""
-"Tässä laskelmassa ei voi olla kohdetta "
+"Tässä laskelmassa ei voi olla kohdetta manuaalisen laskelman perustelu "
 "override_monthly_benefit_amount_comment"
 
 msgid "This calculation needs override_monthly_benefit_amount_comment"
 msgstr ""
-"Tässä laskelmassa on oltava kohde override_monthly_benefit_amount_comment"
+"Tässä laskelmassa on oltava manuaalisen laskelman perustelu"
 
 msgid "Handler can not be unassigned in this status"
 msgstr "Käsittelijää ei voida muuttaa tässä tilassa"
