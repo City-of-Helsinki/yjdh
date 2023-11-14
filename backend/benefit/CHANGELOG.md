@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.3.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.2.0...benefit-backend-v1.3.0) (2023-11-14)
+
+
+### Features
+
+* Add utility for hashing Ahjo attachments ([#2420](https://github.com/City-of-Helsinki/yjdh/issues/2420)) ([ca789f8](https://github.com/City-of-Helsinki/yjdh/commit/ca789f8a1a4a0600a813cebc6c398f517bb76d05))
+* Change  some Talpa csv export column titles ([#2426](https://github.com/City-of-Helsinki/yjdh/issues/2426)) ([8d466c6](https://github.com/City-of-Helsinki/yjdh/commit/8d466c632b4180d5e9e54983a0be14506b112319))
+* New calculator, handling and handled views (HL-907) ([#2422](https://github.com/City-of-Helsinki/yjdh/issues/2422)) ([af71c3f](https://github.com/City-of-Helsinki/yjdh/commit/af71c3fb03cc1812c1278dcf221507aec461dc28))
+* Update python-stdnum (HL-662) ([#2424](https://github.com/City-of-Helsinki/yjdh/issues/2424)) ([018a035](https://github.com/City-of-Helsinki/yjdh/commit/018a0354f52ad32fcfdcd83e2c7a3d14a9b0a7ae))
+
+
+### Bug Fixes
+
+* HL-1005, HL-916,  ([#2379](https://github.com/City-of-Helsinki/yjdh/issues/2379)) ([779bed2](https://github.com/City-of-Helsinki/yjdh/commit/779bed2787ef7cc0c11f9e49d3b85a9bd891174c))
+* Some backend error messages translated ([#2453](https://github.com/City-of-Helsinki/yjdh/issues/2453)) ([04b42e2](https://github.com/City-of-Helsinki/yjdh/commit/04b42e2e12038f196fe2e8d355cfa48b6a759b44))
+
 ## [1.2.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.1.2...benefit-backend-v1.2.0) (2023-10-23)
 
 
