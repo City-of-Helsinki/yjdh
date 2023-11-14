@@ -10,7 +10,7 @@ from django.http import FileResponse
 from django.urls import reverse
 
 from applications.api.v1.ahjo_integration_views import AhjoAttachmentView
-from applications.enums import ApplicationStatus, BenefitType
+from applications.enums import AhjoStatus, ApplicationStatus, BenefitType
 from applications.models import Application
 from applications.services.ahjo_integration import (
     ACCEPTED_TITLE,
@@ -356,4 +356,53 @@ def test_get_attachment_unauthorized_ip_not_allowed(
     auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
 
     response = ahjo_client.get(url, **auth_headers)
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_ahjo_callback_success(
+    ahjo_client, ahjo_user_token, decided_application, settings
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = True
+    auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
+    callback_payload = {
+        "message": "Success",
+        "requestId": f"{uuid.uuid4()}",
+        "caseId": "HEL 2023-999999",
+        "caseGuid": f"{uuid.uuid4()}",
+    }
+    url = reverse("ahjo_callback_url", kwargs={"uuid": decided_application.id})
+    response = ahjo_client.post(url, **auth_headers, data=callback_payload)
+
+    decided_application.refresh_from_db()
+    assert response.status_code == 200
+    assert response.data == {"message": "Callback received"}
+    assert decided_application.ahjo_case_id == callback_payload["caseId"]
+    assert str(decided_application.ahjo_case_guid) == callback_payload["caseGuid"]
+    assert decided_application.ahjo_status.latest().status == AhjoStatus.CASE_OPENED
+
+
+def test_ahjo_callback_unauthorized_wrong_or_missing_credentials(
+    anonymous_client, decided_application, settings
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = True
+    url = reverse("ahjo_callback_url", kwargs={"uuid": decided_application.id})
+    response = anonymous_client.post(url)
+
+    assert response.status_code == 401
+    response = anonymous_client.post(
+        url,
+        headers={"Authorization": "Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b"},
+    )
+    assert response.status_code == 401
+
+
+def test_ahjo_callback_unauthorized_ip_not_allowed(
+    ahjo_client, ahjo_user_token, decided_application, settings
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = False
+    url = reverse("ahjo_callback_url", kwargs={"uuid": decided_application.id})
+    auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
+
+    response = ahjo_client.post(url, **auth_headers)
     assert response.status_code == 403

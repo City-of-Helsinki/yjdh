@@ -12,7 +12,10 @@ from drf_spectacular.views import (
 from rest_framework_nested import routers
 
 from applications.api.v1 import application_batch_views, views as application_views
-from applications.api.v1.ahjo_integration_views import AhjoAttachmentView
+from applications.api.v1.ahjo_integration_views import (
+    AhjoAttachmentView,
+    AhjoCallbackView,
+)
 from applications.api.v1.review_state_views import ReviewStateView
 from calculator.api.v1 import views as calculator_views
 from common.debug_util import debug_env
@@ -62,6 +65,11 @@ router.register(r"previousbenefits", calculator_views.PreviousBenefitViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path(
+        "v1/ahjo-integration/callback/<uuid:uuid>",
+        AhjoCallbackView.as_view(),
+        name="ahjo_callback_url",
+    ),
     path(
         "v1/ahjo-integration/attachment/<uuid:uuid>",
         AhjoAttachmentView.as_view(),
