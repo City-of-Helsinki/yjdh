@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.2.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.1.0...benefit-applicant-v3.2.0) (2023-11-14)
+
+
+### Features
+
+* Update finnish-ssn to 2.1.1 (HL-662) ([#2439](https://github.com/City-of-Helsinki/yjdh/issues/2439)) ([caad473](https://github.com/City-of-Helsinki/yjdh/commit/caad47333be57fd04c5fe57272f1b0832fad46e5))
+
+
+### Bug Fixes
+
+* Check for field is touched AND has an error; HL-1005 ([#2379](https://github.com/City-of-Helsinki/yjdh/issues/2379), [#2403](https://github.com/City-of-Helsinki/yjdh/issues/2403)) ([c1776b9](https://github.com/City-of-Helsinki/yjdh/commit/c1776b985235665d78922624063b26e66c2f4435))
+* HL-1005, HL-916,  ([#2379](https://github.com/City-of-Helsinki/yjdh/issues/2379)) ([779bed2](https://github.com/City-of-Helsinki/yjdh/commit/779bed2787ef7cc0c11f9e49d3b85a9bd891174c))
+* Lint files ([#2405](https://github.com/City-of-Helsinki/yjdh/issues/2405)) ([ca48b3d](https://github.com/City-of-Helsinki/yjdh/commit/ca48b3d8a475f309cec1e17e8cb38e230d35c96f))
+* Wrong object accessed for English terms HL-1031 ([#2438](https://github.com/City-of-Helsinki/yjdh/issues/2438)) ([c5e53b7](https://github.com/City-of-Helsinki/yjdh/commit/c5e53b79f594b878bf72c70f1735366f1367a310))
+
 ## [3.1.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.0.0...benefit-applicant-v3.1.0) (2023-10-23)
 
 
