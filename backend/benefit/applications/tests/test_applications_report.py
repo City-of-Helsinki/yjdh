@@ -102,30 +102,32 @@ def _get_csv_pdf_zip(handler_api_client: APIClient, url: str) -> ZipFile:
 
 
 def _create_applications_for_export():
+    reseed(1)
     application1 = DecidedApplicationFactory(status=ApplicationStatus.ACCEPTED)
     application1.log_entries.filter(to_status=ApplicationStatus.ACCEPTED).update(
         created_at=datetime(2022, 1, 1, tzinfo=timezone.utc)
     )
+    reseed(2)
     application2 = DecidedApplicationFactory(status=ApplicationStatus.ACCEPTED)
     application2.log_entries.filter(to_status=ApplicationStatus.ACCEPTED).update(
         created_at=datetime(2022, 2, 1, tzinfo=timezone.utc)
     )
+    reseed(3)
     application3 = DecidedApplicationFactory(status=ApplicationStatus.REJECTED)
     application3.log_entries.filter(to_status=ApplicationStatus.REJECTED).update(
         created_at=datetime(2022, 3, 1, tzinfo=timezone.utc)
     )
+    reseed(4)
     application4 = DecidedApplicationFactory(
         status=ApplicationStatus.HANDLING
     )  # should be excluded
     application4.log_entries.filter(to_status=ApplicationStatus.HANDLING).update(
         created_at=datetime(2022, 2, 1, tzinfo=timezone.utc)
     )
+    reseed(777)
     return (application1, application2, application3, application4)
 
 
-# @pytest.mark.skip(
-#     reason="This test fails in deploy pipeline - DETAIL:  Key (username)=(masonzachary_a45eb8) already exists."
-# )
 def test_applications_csv_export_new_applications(handler_api_client):
     (
         application1,
