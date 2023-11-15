@@ -33,12 +33,8 @@ const DoneModalContent: React.FC<ComponentProps> = ({
     handledApplication.status === APPLICATION_STATUSES.ACCEPTED;
   const description = handledApplication?.logEntryComment;
 
-  const {
-    rowsWithoutTotal,
-    totalRow,
-    dateRangeRows,
-    helsinkiBenefitMonthlyRows,
-  } = extractCalculatorRows(calculationRows);
+  const { totalRow, dateRangeRows, helsinkiBenefitMonthlyRows } =
+    extractCalculatorRows(calculationRows);
 
   return (
     <>
@@ -71,7 +67,7 @@ const DoneModalContent: React.FC<ComponentProps> = ({
                   <$Text key={row.id}>
                     {t(`${translationsBase}.eurosPerMonth`, {
                       euros: formatFloatToCurrency(
-                        rowsWithoutTotal[index].amount,
+                        helsinkiBenefitMonthlyRows[index].amount,
                         null,
                         'fi-FI',
                         0

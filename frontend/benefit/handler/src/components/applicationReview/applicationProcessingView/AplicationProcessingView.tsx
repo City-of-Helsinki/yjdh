@@ -51,7 +51,6 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
     });
 
   const {
-    rowsWithoutTotal,
     totalRow,
     totalRowDescription,
     dateRangeRows,
@@ -177,7 +176,7 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                         <$ViewField>{row.descriptionFi}</$ViewField>
                         <$ViewField isBold>
                           {formatFloatToCurrency(
-                            rowsWithoutTotal[index].amount
+                            helsinkiBenefitMonthlyRows[index].amount
                           )}
                           {t('common:utility.perMonth')}
                         </$ViewField>
