@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.1.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v2.0.0...benefit-handler-v2.1.0) (2023-11-15)
+
+
+### Features
+
+* New archived view (HL-908) ([#2427](https://github.com/City-of-Helsinki/yjdh/issues/2427)) ([beab384](https://github.com/City-of-Helsinki/yjdh/commit/beab384c85aa57a5c110b395a3a569de700e08a9))
+* New calculator, handling and handled views (HL-907) ([#2422](https://github.com/City-of-Helsinki/yjdh/issues/2422)) ([af71c3f](https://github.com/City-of-Helsinki/yjdh/commit/af71c3fb03cc1812c1278dcf221507aec461dc28))
+* New handling view (HL-906) ([#2385](https://github.com/City-of-Helsinki/yjdh/issues/2385)) ([055797a](https://github.com/City-of-Helsinki/yjdh/commit/055797a293c78a302fca689a57629040c9840887))
+* Update finnish-ssn to 2.1.1 (HL-662) ([#2439](https://github.com/City-of-Helsinki/yjdh/issues/2439)) ([caad473](https://github.com/City-of-Helsinki/yjdh/commit/caad47333be57fd04c5fe57272f1b0832fad46e5))
+
+
+### Bug Fixes
+
+* HL-1005, HL-916,  ([#2379](https://github.com/City-of-Helsinki/yjdh/issues/2379)) ([779bed2](https://github.com/City-of-Helsinki/yjdh/commit/779bed2787ef7cc0c11f9e49d3b85a9bd891174c))
+
 ## [2.0.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v1.1.0...benefit-handler-v2.0.0) (2023-10-23)
 
 
