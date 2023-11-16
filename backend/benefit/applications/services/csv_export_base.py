@@ -117,19 +117,25 @@ class CsvExportBase:
             yield line
 
     def get_csv_string_lines_generator(
-        self, remove_quotes: bool = False
+        self, remove_quotes: bool = False, add_bom: bool = False
     ) -> Generator[str, None, None]:
         """
         Generate CSV's string lines using self.get_csv_cell_list_lines_generator().
 
         :return: Generator which generates list of strings that each end with '\r\n'.
         Passing remove_quotes=True will disable quoting of values as it is required by the Talpa integration.
+        Passing add_bom=True will add a BOM (Byte Order Mark) at the beginning of the file.
         """
         quoting = csv.QUOTE_NONE if remove_quotes else csv.QUOTE_NONNUMERIC
 
         io = StringIO()
         csv_writer = csv.writer(io, delimiter=self.CSV_DELIMITER, quoting=quoting)
         line_length_set = set()
+
+        # Add BOM as the first item in the generator
+        if add_bom:
+            yield "\ufeff"
+
         for line in self.get_csv_cell_list_lines_generator():
             line_length_set.add(len(line))
             assert len(line_length_set) == 1, "Each CSV line must have same colum count"

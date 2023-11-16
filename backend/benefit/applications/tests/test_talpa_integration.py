@@ -40,10 +40,12 @@ def test_talpa_csv_output(pruned_applications_csv_service_with_one_application):
     csv_lines = split_lines_at_semicolon(
         pruned_applications_csv_service_with_one_application.get_csv_string()
     )
+    # BOM at the beginning of the file
     assert csv_lines[0][0] == '"Hakemusnumero"'
-    for idx, col in enumerate(
-        pruned_applications_csv_service_with_one_application.CSV_COLUMNS
-    ):
+    csv_columns = iter(pruned_applications_csv_service_with_one_application.CSV_COLUMNS)
+    next(csv_columns, None)  # Skip the first element
+
+    for idx, col in enumerate(csv_columns, start=1):
         assert csv_lines[0][idx] == f'"{col.heading}"'
 
     assert (
@@ -112,7 +114,7 @@ def test_write_talpa_csv_file(
     application.save()
     output_file = tmp_path / "output.csv"
     pruned_applications_csv_service_with_one_application.write_csv_file(output_file)
-    with open(output_file, encoding="utf-8") as f:
+    with open(output_file, encoding="utf-8-sig") as f:
         contents = f.read()
         assert contents.startswith('"Hakemusnumero";"Työnantajan tyyppi"')
         assert "äöÄÖtest" in contents

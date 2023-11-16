@@ -190,7 +190,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         )
 
         response = StreamingHttpResponse(
-            csv_service.get_csv_string_lines_generator(True),
+            csv_service.get_csv_string_lines_generator(True, True),
             content_type="text/csv",
         )
         response["Content-Disposition"] = "attachment; filename={filename}.csv".format(
