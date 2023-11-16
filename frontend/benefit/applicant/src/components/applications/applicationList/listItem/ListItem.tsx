@@ -128,7 +128,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
             theme={
               status === APPLICATION_STATUSES.INFO_REQUIRED ? 'coat' : 'black'
             }
-            onClick={allowedAction.handleAction}
+            onClick={() => allowedAction.handleAction(false)}
             fullWidth
           >
             {allowedAction.label}
@@ -138,7 +138,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
       {Number(unreadMessagesCount) > 0 && (
         <$ListInfo>
           <$GridCell $colStart={2}>
-            <$ListInfoInner>
+            <$ListInfoInner onClick={() => allowedAction.handleAction(true)}>
               <IconSpeechbubbleText />
               <$ListInfoText>
                 {t('common:applications.list.common.newMessages', {

@@ -81,23 +81,27 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
     id: string,
     applicationStatus: APPLICATION_STATUSES
   ): ApplicationAllowedAction => {
+    const handleAction = (openDrawer: boolean): void => {
+      void router.push(
+        `${ROUTES.APPLICATION_FORM}?id=${id}${
+          openDrawer ? '&openDrawer=1' : ''
+        }`
+      );
+    };
+
     switch (applicationStatus) {
       case APPLICATION_STATUSES.DRAFT:
       case APPLICATION_STATUSES.INFO_REQUIRED:
         return {
           label: t(`${translationListBase}.common.edit`),
-          handleAction: (): void => {
-            void router.push(`${ROUTES.APPLICATION_FORM}?id=${id}`);
-          },
+          handleAction,
           Icon: IconPen,
         };
 
       default:
         return {
           label: t(`${translationListBase}.common.check`),
-          handleAction: (): void => {
-            void router.push(`${ROUTES.APPLICATION_FORM}?id=${id}`);
-          },
+          handleAction,
         };
     }
   };

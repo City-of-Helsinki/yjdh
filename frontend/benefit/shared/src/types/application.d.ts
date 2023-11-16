@@ -78,7 +78,7 @@ export type ApplicationInBatch = {
 
 interface ApplicationAllowedAction {
   label: string;
-  handleAction: () => void;
+  handleAction: (openDrawer: boolean) => void;
   Icon?: React.FC;
 }
 
