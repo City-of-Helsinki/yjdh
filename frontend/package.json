@@ -69,7 +69,7 @@
     "@babel/core": "^7.16.7",
     "@babel/preset-typescript": "^7.16.0",
     "@commitlint/cli": "^16.2.3",
-    "@commitlint/config-conventional": "^16.0.0",
+    "@commitlint/config-conventional": "^18.4.2",
     "@faker-js/faker": "^6.0.0-alpha.6",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@next/eslint-plugin-next": "^12.2.6",
