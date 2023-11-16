@@ -167,3 +167,8 @@ class ApplicationActions(models.TextChoices):
     APPLICANT_TOGGLE_EDIT = "APPLICANT_TOGGLE_EDIT", _(
         "Allow/disallow applicant's modifications"
     )
+
+
+class AhjoCallBackStatus(models.TextChoices):
+    SUCCESS = "Success", _("Success")
+    FAILURE = "Failure", _("Failure")

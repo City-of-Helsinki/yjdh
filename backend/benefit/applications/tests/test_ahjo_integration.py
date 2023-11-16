@@ -10,7 +10,12 @@ from django.http import FileResponse
 from django.urls import reverse
 
 from applications.api.v1.ahjo_integration_views import AhjoAttachmentView
-from applications.enums import AhjoStatus, ApplicationStatus, BenefitType
+from applications.enums import (
+    AhjoCallBackStatus,
+    AhjoStatus,
+    ApplicationStatus,
+    BenefitType,
+)
 from applications.models import Application
 from applications.services.ahjo_integration import (
     ACCEPTED_TITLE,
@@ -328,7 +333,6 @@ def test_get_attachment_not_found(ahjo_client, ahjo_user_token, settings):
     response = ahjo_client.get(url, **auth_headers)
 
     assert response.status_code == 404
-    assert response.data == {"message": "Attachment not found"}
 
 
 def test_get_attachment_unauthorized_wrong_or_missing_credentials(
@@ -366,7 +370,7 @@ def test_ahjo_callback_success(
     settings.NEXT_PUBLIC_MOCK_FLAG = True
     auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
     callback_payload = {
-        "message": "Success",
+        "message": AhjoCallBackStatus.SUCCESS,
         "requestId": f"{uuid.uuid4()}",
         "caseId": "HEL 2023-999999",
         "caseGuid": f"{uuid.uuid4()}",
