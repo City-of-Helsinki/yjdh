@@ -21,7 +21,7 @@
     "@react-pdf/renderer": "^3.1.12",
     "@sentry/browser": "^7.16.0",
     "@sentry/nextjs": "^7.16.0",
-    "axios": "^0.27.2",
+    "axios": "^1.6.2",
     "babel-plugin-import": "^1.13.6",
     "camelcase-keys": "^7.0.2",
     "date-fns": "^2.24.0",

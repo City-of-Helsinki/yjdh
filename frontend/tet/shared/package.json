@@ -15,7 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "@frontend/shared": "*",
-    "axios": "^0.27.2",
+    "axios": "^1.6.2",
     "hds-react": "^2.10.0",
     "next": "^12.3.4",
     "next-i18next": "^13.0.3",
