@@ -15,7 +15,7 @@
   "dependencies": {
     "@frontend/shared": "*",
     "axios": "^0.27.2",
-    "finnish-ssn": "2.0.4",
+    "finnish-ssn": "2.1.1",
     "react-query": "^3.34.0"
   },
   "devDependencies": {
