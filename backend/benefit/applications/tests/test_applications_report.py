@@ -307,10 +307,10 @@ def test_pruned_applications_csv_output(
     application = (
         pruned_applications_csv_service_with_one_application.get_applications()[0]
     )
-    # Assert that there are 15 column headers in the pruned CSV
+    # Assert that there are 18 column headers in the pruned CSV
     assert len(csv_lines[0]) == 18
 
-    assert csv_lines[0][0] == '"Hakemusnumero"'
+    assert csv_lines[0][0] == '\ufeff"Hakemusnumero"'
     assert csv_lines[0][1] == '"Työnantajan tyyppi"'
     assert csv_lines[0][2] == '"Työnantajan tilinumero"'
     assert csv_lines[0][3] == '"Työnantajan nimi"'
@@ -357,7 +357,7 @@ def test_pruned_applications_csv_output(
 
 def test_applications_csv_output(applications_csv_service):  # noqa: C901
     csv_lines = split_lines_at_semicolon(applications_csv_service.get_csv_string())
-    assert csv_lines[0][0] == '"Hakemusnumero"'
+    assert csv_lines[0][0] == '\ufeff"Hakemusnumero"'
     assert (
         int(csv_lines[1][0])
         == applications_csv_service.get_applications()[0].application_number
@@ -370,7 +370,10 @@ def test_applications_csv_output(applications_csv_service):  # noqa: C901
         assert application.ahjo_rows[0].start_date == application.calculation.start_date
         assert application.ahjo_rows[0].end_date == application.calculation.end_date
 
-    for idx, col in enumerate(applications_csv_service.CSV_COLUMNS):
+    csv_columns = iter(applications_csv_service.CSV_COLUMNS)
+    next(csv_columns, None)  # Skip the first element
+
+    for idx, col in enumerate(csv_columns, start=1):
         assert csv_lines[0][idx] == f'"{col.heading}"'
 
         if "Työnantajan tyyppi" in col.heading:
@@ -495,7 +498,7 @@ def test_applications_csv_two_ahjo_rows(applications_csv_service_with_one_applic
         applications_csv_service_with_one_application.get_csv_string()
     )
     assert len(application.ahjo_rows) == 2
-    assert csv_lines[0][0] == '"Hakemusnumero"'
+    assert csv_lines[0][0] == '\ufeff"Hakemusnumero"'
     assert int(csv_lines[1][0]) == application.application_number
     assert int(csv_lines[1][1]) == 1
     assert int(csv_lines[2][0]) == application.application_number

@@ -11,7 +11,7 @@ export const downloadFile = (data: string, type: ExportFileType): void => {
 
   if (type === 'csv') {
     // eslint-disable-next-line security/detect-non-literal-fs-filename
-    fileDownload(data, `hl ${dateString}.csv`, 'text/csv;charset=utf-8');
+    fileDownload(data, `hl ${dateString}.csv`, 'text/csv;charset=utf-8-sig', '\uFEFF');
   } else {
     fileDownload(data, `hl ${dateString}.zip`);
   }
