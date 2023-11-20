@@ -12,6 +12,7 @@ class RobotBasicAuthentication(authentication.BaseAuthentication):
     """
 
     www_authenticate_realm = "api"
+
     credentials = settings.TALPA_ROBOT_AUTH_CREDENTIAL
 
     def authenticate(self, request):

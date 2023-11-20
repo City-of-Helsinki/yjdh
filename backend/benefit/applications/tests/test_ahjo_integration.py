@@ -1,12 +1,21 @@
 import io
+import uuid
 import zipfile
 from datetime import date
 from typing import List
 from unittest.mock import patch
 
 import pytest
+from django.http import FileResponse
+from django.urls import reverse
 
-from applications.enums import ApplicationStatus, BenefitType
+from applications.api.v1.ahjo_integration_views import AhjoAttachmentView
+from applications.enums import (
+    AhjoCallBackStatus,
+    AhjoStatus,
+    ApplicationStatus,
+    BenefitType,
+)
 from applications.models import Application
 from applications.services.ahjo_integration import (
     ACCEPTED_TITLE,
@@ -277,3 +286,127 @@ def test_multiple_benefit_per_application(mock_pdf_convert):
             "2493",
         ),
     )
+
+
+def test_prepare_ahjo_file_response(decided_application):
+    attachment = decided_application.attachments.first()
+    response = AhjoAttachmentView._prepare_file_response(attachment)
+
+    assert isinstance(response, FileResponse)
+
+    assert response["Content-Length"] == f"{attachment.attachment_file.size}"
+    assert (
+        response["Content-Disposition"]
+        == f"attachment; filename={attachment.attachment_file.name}"
+    )
+    assert response["Content-Type"] == f"{attachment.content_type}"
+
+
+@pytest.fixture
+def attachment(decided_application):
+    return decided_application.attachments.first()
+
+
+def test_get_attachment_success(ahjo_client, attachment, ahjo_user_token, settings):
+    settings.NEXT_PUBLIC_MOCK_FLAG = True
+    url = reverse("ahjo_attachment_url", kwargs={"uuid": attachment.id})
+
+    auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
+
+    response = ahjo_client.get(url, **auth_headers)
+
+    assert response.status_code == 200
+    assert response["Content-Type"] == f"{attachment.content_type}"
+    assert response["Content-Length"] == f"{attachment.attachment_file.size}"
+    assert (
+        response["Content-Disposition"]
+        == f"attachment; filename={attachment.attachment_file.name}"
+    )
+
+
+def test_get_attachment_not_found(ahjo_client, ahjo_user_token, settings):
+    settings.NEXT_PUBLIC_MOCK_FLAG = True
+    id = uuid.uuid4()
+    url = reverse("ahjo_attachment_url", kwargs={"uuid": id})
+    auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
+
+    response = ahjo_client.get(url, **auth_headers)
+
+    assert response.status_code == 404
+
+
+def test_get_attachment_unauthorized_wrong_or_missing_credentials(
+    anonymous_client, attachment, settings
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = True
+    # without any auth headers
+    url = reverse("ahjo_attachment_url", kwargs={"uuid": attachment.id})
+    response = anonymous_client.get(url)
+
+    assert response.status_code == 401
+    # with incorrect auth token
+    response = anonymous_client.get(
+        url,
+        headers={"Authorization": "Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b"},
+    )
+    assert response.status_code == 401
+
+
+def test_get_attachment_unauthorized_ip_not_allowed(
+    ahjo_client, ahjo_user_token, attachment, settings
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = False
+    url = reverse("ahjo_attachment_url", kwargs={"uuid": attachment.id})
+    auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
+
+    response = ahjo_client.get(url, **auth_headers)
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_ahjo_callback_success(
+    ahjo_client, ahjo_user_token, decided_application, settings
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = True
+    auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
+    callback_payload = {
+        "message": AhjoCallBackStatus.SUCCESS,
+        "requestId": f"{uuid.uuid4()}",
+        "caseId": "HEL 2023-999999",
+        "caseGuid": f"{uuid.uuid4()}",
+    }
+    url = reverse("ahjo_callback_url", kwargs={"uuid": decided_application.id})
+    response = ahjo_client.post(url, **auth_headers, data=callback_payload)
+
+    decided_application.refresh_from_db()
+    assert response.status_code == 200
+    assert response.data == {"message": "Callback received"}
+    assert decided_application.ahjo_case_id == callback_payload["caseId"]
+    assert str(decided_application.ahjo_case_guid) == callback_payload["caseGuid"]
+    assert decided_application.ahjo_status.latest().status == AhjoStatus.CASE_OPENED
+
+
+def test_ahjo_callback_unauthorized_wrong_or_missing_credentials(
+    anonymous_client, decided_application, settings
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = True
+    url = reverse("ahjo_callback_url", kwargs={"uuid": decided_application.id})
+    response = anonymous_client.post(url)
+
+    assert response.status_code == 401
+    response = anonymous_client.post(
+        url,
+        headers={"Authorization": "Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b"},
+    )
+    assert response.status_code == 401
+
+
+def test_ahjo_callback_unauthorized_ip_not_allowed(
+    ahjo_client, ahjo_user_token, decided_application, settings
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = False
+    url = reverse("ahjo_callback_url", kwargs={"uuid": decided_application.id})
+    auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
+
+    response = ahjo_client.post(url, **auth_headers)
+    assert response.status_code == 403

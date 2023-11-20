@@ -6,6 +6,7 @@ from django.contrib.auth.models import Permission
 from django.utils.translation import activate
 from freezegun import freeze_time
 from langdetect import DetectorFactory
+from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
 
 from shared.common.tests.conftest import *  # noqa
@@ -63,3 +64,21 @@ def anonymous_client():
 
 def get_client_user(api_client):
     return api_client.handler._force_user
+
+
+@pytest.fixture
+def ahjo_user(user):
+    user.username = "ahjo_user"
+    return user
+
+
+@pytest.fixture
+def ahjo_user_token(ahjo_user):
+    token = Token.objects.create(user=ahjo_user)
+    return token
+
+
+@pytest.fixture
+def ahjo_client():
+    client = _api_client()
+    return client

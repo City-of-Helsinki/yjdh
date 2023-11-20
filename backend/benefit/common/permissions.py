@@ -53,3 +53,22 @@ class TermsOfServiceAccepted(permissions.BasePermission):
                 # proceed without a company.
                 raise PermissionDenied(_("Company information is not available"))
             return not TermsOfServiceApproval.terms_approval_needed(user, company)
+
+
+class SafeListPermission(permissions.BasePermission):
+    """
+    Ensure the request's IP address is on the safe list configured in Django settings.
+    """
+
+    message = _("Your IP address is not on the safe list.")
+
+    def has_permission(self, request, view):
+        remote_addr = request.META["REMOTE_ADDR"]
+        if settings.NEXT_PUBLIC_MOCK_FLAG:
+            # disable safe list check in mock mode
+            return True
+
+        for valid_ip in settings.REST_SAFE_LIST_IPS:
+            if remote_addr == valid_ip:
+                return True
+        return False
