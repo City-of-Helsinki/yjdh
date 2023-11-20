@@ -11,6 +11,7 @@
     "http-cache-semantics", // testcafe
     "requestretry",         // slack-node
     "decode-uri-component", // testcafe, lerna
-    "@babel/traverse"       // jest
+    "@babel/traverse",       // jest
+    "sharp"       // next / TET project
   ]
 }
