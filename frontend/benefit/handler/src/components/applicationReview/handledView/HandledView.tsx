@@ -96,7 +96,6 @@ const HandledView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
             >
               <$ViewFieldBold large>
                 {formatFloatToCurrency(totalRow.amount, 'EUR', 'fi-FI', 0)}
-                {t('common:utility.perMonth')}
               </$ViewFieldBold>
             </$GridCell>
           </$HandledRow>
