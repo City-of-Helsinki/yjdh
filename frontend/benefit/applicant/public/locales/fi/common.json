@@ -10,6 +10,9 @@
       "moreInfo": {
         "heading": "Lisätietoa tarvitaan"
       },
+      "archived": {
+        "heading": "Käsitellyt hakemukset"
+      },
       "common": {
         "created": "Luotu",
         "employee": "Työllistetty",

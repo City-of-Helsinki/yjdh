@@ -32,6 +32,11 @@ const ApplicantIndex: NextPage = () => {
           heading={t('common:applications.list.submitted.heading')}
           status={SUBMITTED_STATUSES}
         />
+        <ApplicationsList
+          heading={t('common:applications.list.archived.heading')}
+          status={SUBMITTED_STATUSES}
+          archived
+        />
       </FrontPageProvider>
     </>
   );

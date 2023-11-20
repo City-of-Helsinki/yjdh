@@ -5,12 +5,12 @@ import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 const useApplicationsQuery = (
   status: string[],
-  orderBy = 'id'
+  orderBy = 'id',
+  archived = false
 ): UseQueryResult<ApplicationData[], Error> => {
   const { axios, handleResponse } = useBackendAPI();
-
   return useQuery<ApplicationData[], Error>(
-    ['applicationsList', ...status],
+    ['applicationsList', ...status, archived],
     async () => {
       const res = axios.get<ApplicationData[]>(
         `${BackendEndpoint.APPLICATIONS_SIMPLIFIED}`,
@@ -18,6 +18,7 @@ const useApplicationsQuery = (
           params: {
             status: status.join(','),
             order_by: orderBy,
+            filter_archived: archived ? '1' : '0',
           },
         }
       );

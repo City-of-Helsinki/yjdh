@@ -10,6 +10,9 @@
       "moreInfo": {
         "heading": "Ytterligare uppgifter behövs"
       },
+      "archived": {
+        "heading": "Behandlade ansökningar"
+      },
       "common": {
         "created": "Skapats",
         "employee": "Anställd",

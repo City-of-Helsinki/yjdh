@@ -60,11 +60,18 @@ const getEmployeeFullName = (firstName: string, lastName: string): string => {
 const getOrderBy = (status: string[]): string =>
   status.includes('draft') ? '-modified_at' : '-submitted_at';
 
-const useApplicationList = (status: string[]): ApplicationListProps => {
+const useApplicationList = (
+  status: string[],
+  archived = false
+): ApplicationListProps => {
   const { t } = useTranslation();
   const router = useRouter();
   const orderBy = getOrderBy(status);
-  const { data, error, isLoading } = useApplicationsQuery(status, orderBy);
+  const { data, error, isLoading } = useApplicationsQuery(
+    status,
+    orderBy,
+    archived
+  );
   const { errors, setError } = React.useContext(FrontPageContext);
 
   useEffect(() => {

@@ -10,6 +10,9 @@
       "moreInfo": {
         "heading": "Additional information is needed"
       },
+      "archived": {
+        "heading": "Handled applications"
+      },
       "common": {
         "created": "Created",
         "employee": "Employee",

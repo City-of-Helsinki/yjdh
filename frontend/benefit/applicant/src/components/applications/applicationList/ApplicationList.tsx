@@ -10,14 +10,18 @@ import useApplicationList from './useApplicationList';
 export interface ApplicationListProps {
   heading: string;
   status: string[];
+  archived?: boolean;
 }
 
 const ApplicationsList: React.FC<ApplicationListProps> = ({
   heading,
   status,
+  archived = false,
 }) => {
-  const { list, shouldShowSkeleton, shouldHideList } =
-    useApplicationList(status);
+  const { list, shouldShowSkeleton, shouldHideList } = useApplicationList(
+    status,
+    archived
+  );
 
   const items = shouldShowSkeleton ? (
     <ListItem isLoading />
