@@ -13,6 +13,7 @@ def format_date(date: datetime) -> Optional[str]:
 
 class User(AbstractUser, SerializableMixin):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    ad_username = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         db_table = "bf_users_user"
