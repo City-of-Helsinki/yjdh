@@ -54,24 +54,19 @@ const HandledView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           </$GridCell>
         )}
         {data.status === APPLICATION_STATUSES.ACCEPTED &&
-          dateRangeRows.length === helsinkiBenefitMonthlyRows.length &&
-          dateRangeRows.map((row, index) => (
+          helsinkiBenefitMonthlyRows.map((row, index) => (
             <$HandledRow key={row.id}>
               <$GridCell $colSpan={9} $colStart={1}>
                 <$ViewField large>
                   {t(`${translationsBase}.common.dateRange`, {
-                    dateRange: row.descriptionFi.toLocaleLowerCase(),
+                    dateRange:
+                      dateRangeRows[index]?.descriptionFi.toLocaleLowerCase(),
                   })}
                 </$ViewField>
               </$GridCell>
               <$GridCell $colSpan={2}>
                 <$ViewFieldBold large>
-                  {formatFloatToCurrency(
-                    helsinkiBenefitMonthlyRows[index].amount,
-                    'EUR',
-                    'fi-FI',
-                    0
-                  )}
+                  {formatFloatToCurrency(row.amount, 'EUR', 'fi-FI', 0)}
                   {t('common:utility.perMonth')}
                 </$ViewFieldBold>
               </$GridCell>
