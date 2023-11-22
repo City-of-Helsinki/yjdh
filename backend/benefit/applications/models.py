@@ -399,6 +399,14 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
             total += deminimis_aid.amount
         return total
 
+    @property
+    def contact_person(self):
+        return (
+            self.company_contact_person_first_name
+            + " "
+            + self.company_contact_person_last_name
+        )
+
     def get_log_entry_field(self, to_statuses, field_name):
         if (
             log_entry := self.log_entries.filter(to_status__in=to_statuses)

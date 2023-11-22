@@ -20,6 +20,7 @@ else:
     default_var_root = environ.Path(checkout_dir("var"))
 
 env = environ.Env(
+    API_BASE_URL=(str, "https://localhost:8000"),
     DEBUG=(bool, False),
     SECRET_KEY=(str, ""),
     MEDIA_ROOT=(environ.Path(), default_var_root("media")),
@@ -169,6 +170,8 @@ if os.path.exists(env_file):
     env.read_env(env_file)
 
 os.environ["HTTPS"] = "on"
+
+API_BASE_URL = env.str("API_BASE_URL")
 
 BASE_DIR = str(checkout_dir)
 

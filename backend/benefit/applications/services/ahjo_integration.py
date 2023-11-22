@@ -1,5 +1,8 @@
+import json
 import logging
 import os
+import urllib.request
+import uuid
 import zipfile
 from collections import defaultdict
 from dataclasses import dataclass
@@ -12,11 +15,14 @@ import requests
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import QuerySet
+from django.urls import reverse
 
-from applications.enums import ApplicationStatus
-from applications.models import AhjoSetting, Application
+from applications.enums import AhjoStatus as AhjoStatusEnum, ApplicationStatus
+from applications.models import AhjoSetting, AhjoStatus, Application
 from applications.services.ahjo_authentication import AhjoConnector
+from applications.services.ahjo_payload import prepare_open_case_payload
 from applications.services.applications_csv_report import ApplicationsCsvService
+from common.utils import encode_multipart_formdata
 from companies.models import Company
 
 
@@ -358,44 +364,132 @@ def export_application_batch(batch) -> bytes:
     return generate_zip(pdf_files)
 
 
-def dummy_ahjo_request():
-    """Dummy function for preliminary testing of Ahjo integration"""
-    ahjo_api_url = settings.AHJO_REST_API_URL
+def get_token() -> str:
+    """Get the access token from Ahjo Service."""
     try:
         ahjo_auth_code = AhjoSetting.objects.get(name="ahjo_code").data
         LOGGER.info(f"Retrieved auth code: {ahjo_auth_code}")
+        connector = AhjoConnector(requests)
+
+        if not connector.is_configured():
+            LOGGER.warning("AHJO connector is not configured")
+            return
+        return connector.get_access_token(ahjo_auth_code["code"])
     except ObjectDoesNotExist:
         LOGGER.error(
             "Error: Ahjo auth code not found in database. Please set the 'ahjo_code' setting."
         )
         return
-
-    connector = AhjoConnector(requests)
-
-    if not connector.is_configured():
-        LOGGER.warning("AHJO connector is not configured")
-        return
-    try:
-        ahjo_token = connector.get_access_token(ahjo_auth_code["code"])
     except Exception as e:
         LOGGER.warning(f"Error retrieving access token: {e}")
         return
-    headers = {
-        "Authorization": f"Bearer {ahjo_token.access_token}",
+
+
+def prepare_headers(access_token: str, application_uuid: uuid) -> dict:
+    """Prepare the headers for the Ahjo request."""
+    url = reverse("ahjo_callback_url", kwargs={"uuid": str(application_uuid)})
+
+    return {
+        "Authorization": f"Bearer {access_token}",
+        "Accept": "application/hal+json",
+        "X-CallbackURL": f"{settings.API_BASE_URL}{url}",
     }
-    print(headers)
+
+
+def get_application(id: uuid) -> Optional[Application]:
+    """Get the first accepted application."""
+    application = (
+        Application.objects.filter(pk=id, status=ApplicationStatus.ACCEPTED)
+        .prefetch_related("attachments", "calculation", "company")
+        .first()
+    )
+    if not application:
+        LOGGER.info("No applications found for Ahjo request.")
+    # Check that the handler has an ad_username set, if not, log an error and return None
+    if not application.calculation.handler.ad_username:
+        LOGGER.error("No ad_username set for the handler for Ahjo request.")
+        return None
+    return application
+
+
+def create_status_for_application(application: Application):
+    """Create a new AhjoStatus for the application."""
+    AhjoStatus.objects.create(
+        application=application, status=AhjoStatusEnum.REQUEST_TO_OPEN_CASE_SENT
+    )
+
+
+def do_ahjo_request_with_form_data(
+    url: str,
+    headers: dict,
+    data: dict,
+    application: Application,
+):
+    json_data = json.dumps(data)
+    form_data, content_type = encode_multipart_formdata({"case": json_data})
+
+    headers["Content-Type"] = content_type
+
     try:
-        response = requests.get(
-            f"{ahjo_api_url}/cases", headers=headers, timeout=connector.timout
+        request = urllib.request.Request(
+            f"{url}/cases",
+            method="POST",
+            headers=headers,
+            data=form_data.encode("utf-8"),
         )
-        response.raise_for_status()
-        print(response.json())
-    except requests.exceptions.HTTPError as e:
-        # Handle the HTTP error
-        LOGGER.error(f"HTTP error occurred: {e}")
-    except requests.exceptions.RequestException as e:
-        # Handle the network error
-        LOGGER.errror(f"Network error occurred: {e}")
+
+        with urllib.request.urlopen(request) as response:
+            response_data = response.read()
+            print(response.status)
+            print(response_data.decode("utf-8"))
+
+        create_status_for_application(application)
     except Exception as e:
         # Handle any other error
         LOGGER.error(f"Error occurred: {e}")
+
+
+def do_ahjo_request_with_json_payload(
+    url: str, headers: dict, data: dict, application: Application, timeout: int = 10
+):
+    headers["Content-Type"] = "application/json"
+
+    json_data = json.dumps(data)
+
+    try:
+        response = requests.post(
+            f"{url}/cases", headers=headers, timeout=timeout, data=json_data
+        )
+        response.raise_for_status()
+
+        if response.ok:
+            create_status_for_application(application)
+            LOGGER.info(
+                f"Open case for application {application.id} Request to Ahjo was successful."
+            )
+
+    except requests.exceptions.HTTPError as e:
+        # Handle the HTTP error
+        LOGGER.error(f"HTTP error occurred while sending request to Ahjo: {e}")
+    except requests.exceptions.RequestException as e:
+        # Handle the network error
+        LOGGER.error(f"Network error occurred while sending request to Ahjo: {e}")
+    except Exception as e:
+        # Handle any other error
+        LOGGER.error(f"Error occurred while sending request to Ahjo: {e}")
+
+
+def open_case_in_ahjo(application_id: uuid):
+    """Open a case in Ahjo."""
+    application = get_application(application_id)
+    # if no suitable application is found, or the handler has no ad_id, bail out
+    if not application:
+        return
+
+    ahjo_api_url = settings.AHJO_REST_API_URL
+    ahjo_token = get_token()
+    headers = prepare_headers(ahjo_token.access_token, application.id)
+    data = prepare_open_case_payload(application)
+
+    # do_ahjo_request_with_form_data(ahjo_api_url, headers, data, application)
+    do_ahjo_request_with_json_payload(ahjo_api_url, headers, data, application)
