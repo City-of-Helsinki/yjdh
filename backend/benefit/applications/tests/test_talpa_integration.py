@@ -41,7 +41,7 @@ def test_talpa_csv_output(pruned_applications_csv_service_with_one_application):
         pruned_applications_csv_service_with_one_application.get_csv_string()
     )
     # BOM at the beginning of the file
-    assert csv_lines[0][0] == '"Hakemusnumero"'
+    assert csv_lines[0][0] == '\ufeff"Hakemusnumero"'
     csv_columns = iter(pruned_applications_csv_service_with_one_application.CSV_COLUMNS)
     next(csv_columns, None)  # Skip the first element
 

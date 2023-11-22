@@ -75,7 +75,9 @@ class CsvExportBase:
 
     def get_csv_string(self, remove_quotes: bool = False) -> str:
         return "".join(  # Lines end with '\r\n' already so no need to add newlines here
-            self.get_csv_string_lines_generator(remove_quotes=remove_quotes)
+            self.get_csv_string_lines_generator(
+                remove_quotes=remove_quotes, add_bom=True
+            )
         )
 
     def get_csv_cell_list_lines_generator(
@@ -138,7 +140,9 @@ class CsvExportBase:
 
         for line in self.get_csv_cell_list_lines_generator():
             line_length_set.add(len(line))
-            assert len(line_length_set) == 1, "Each CSV line must have same colum count"
+            assert (
+                len(line_length_set) == 1
+            ), "Each CSV line must have same column count"
             csv_writer.writerow(line)
             yield io.getvalue()
             # Reset StringIO object
