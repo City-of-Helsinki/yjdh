@@ -21,7 +21,7 @@ const Header: React.FC = () => {
     unreadMessagesCount,
     isMessagesDrawerVisible,
     handleLanguageChange,
-    toggleMessagesDrawerVisiblity,
+    setMessagesDrawerVisiblity,
   } = useHeader();
   const router = useRouter();
   const { asPath } = router;
@@ -66,7 +66,7 @@ const Header: React.FC = () => {
                   size="small"
                   iconLeft={<IconSpeechbubbleText />}
                   theme="coat"
-                  onClick={toggleMessagesDrawerVisiblity}
+                  onClick={() => setMessagesDrawerVisiblity(true)}
                 >
                   {t('common:header.messages')}
                   {unreadMessagesCount
@@ -82,7 +82,7 @@ const Header: React.FC = () => {
       {isAuthenticated && hasMessenger && (
         <Messenger
           isOpen={isMessagesDrawerVisible}
-          onClose={toggleMessagesDrawerVisiblity}
+          onClose={() => setMessagesDrawerVisiblity(false)}
           customItemsMessages={
             <$CustomMessagesActions>
               <IconLock />

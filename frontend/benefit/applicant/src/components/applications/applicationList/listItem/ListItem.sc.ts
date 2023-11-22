@@ -95,6 +95,7 @@ export const $ListInfo = styled.div`
 export const $ListInfoInner = styled.div`
   display: flex;
   align-items: center;
+  cursor: pointer;
 `;
 
 export const $ListInfoText = styled.div`

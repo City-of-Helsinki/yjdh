@@ -7,7 +7,6 @@ import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
-import useToggle from 'shared/hooks/useToggle';
 import { NavigationItem, OptionType } from 'shared/types/common';
 
 type ExtendedComponentProps = {
@@ -21,7 +20,7 @@ type ExtendedComponentProps = {
   ) => void;
   handleNavigationItemClick: (url: string) => void;
   unreadMessagesCount: number | undefined | null;
-  toggleMessagesDrawerVisiblity: () => void;
+  setMessagesDrawerVisiblity: (state: boolean) => void;
   isMessagesDrawerVisible: boolean;
 };
 
@@ -29,14 +28,15 @@ const useHeader = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const router = useRouter();
   const id = router?.query?.id?.toString() ?? '';
+  const openDrawer = Boolean(router?.query?.openDrawer);
   const { axios } = useBackendAPI();
 
   const [hasMessenger, setHasMessenger] = useState<boolean>(false);
   const [unreadMessagesCount, setUnredMessagesCount] = useState<
     number | undefined | null
   >(null);
-  const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] =
-    useToggle(false);
+  const [isMessagesDrawerVisible, setMessagesDrawerVisiblity] =
+    useState(openDrawer);
   const { pathname, asPath, query } = router;
 
   const languageOptions = React.useMemo(
@@ -58,14 +58,16 @@ const useHeader = (): ExtendedComponentProps => {
     if (isMessagesDrawerVisible && Number(unreadMessagesCount) > 0) {
       setUnredMessagesCount(null);
     }
-  }, [isMessagesDrawerVisible, unreadMessagesCount]);
+    if (openDrawer) {
+      setMessagesDrawerVisiblity(true);
+    }
+  }, [isMessagesDrawerVisible, unreadMessagesCount, openDrawer]);
 
   const status = React.useMemo(
     (): APPLICATION_STATUSES =>
       application?.status || APPLICATION_STATUSES.DRAFT,
     [application]
   );
-
   useEffect(() => {
     setHasMessenger(
       status === APPLICATION_STATUSES.INFO_REQUIRED ||
@@ -96,7 +98,7 @@ const useHeader = (): ExtendedComponentProps => {
     t,
     handleLanguageChange,
     handleNavigationItemClick,
-    toggleMessagesDrawerVisiblity,
+    setMessagesDrawerVisiblity,
     languageOptions,
     hasMessenger,
     unreadMessagesCount,
