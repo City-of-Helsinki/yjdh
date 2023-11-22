@@ -11,6 +11,7 @@ from common.utils import (
     date_range_overlap,
     days360,
     duration_in_months,
+    encode_multipart_formdata,
     get_date_range_end_with_days360,
     hash_file,
 )
@@ -145,3 +146,16 @@ def test_hash_file():
 
     # Assert that the actual hash matches the expected hash
     assert actual_hash == expected_hash
+
+
+def test_encode_multipart_formdata():
+    fields = {'field1': 'value1', 'field2': 'value2'}
+    body_str, content_type = encode_multipart_formdata(fields)
+
+    assert body_str.startswith('--')
+    assert body_str.endswith('--\r\n')
+    assert 'field1' in body_str
+    assert 'value1' in body_str
+    assert 'field2' in body_str
+    assert 'value2' in body_str
+    assert content_type.startswith('multipart/form-data; boundary=')
