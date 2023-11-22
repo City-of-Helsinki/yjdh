@@ -30,6 +30,8 @@ class MessageSerializer(serializers.ModelSerializer):
         ApplicationStatus.RECEIVED,
         ApplicationStatus.HANDLING,
         ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+        ApplicationStatus.ACCEPTED,
+        ApplicationStatus.REJECTED,
     ]
 
     def validate(self, data):  # noqa: C901
@@ -45,12 +47,16 @@ class MessageSerializer(serializers.ModelSerializer):
         if settings.NEXT_PUBLIC_MOCK_FLAG:
             if not (user and user.is_authenticated):
                 user = get_user_model().objects.all().order_by("username").first()
-        elif not user.is_handler():
+
+        if not user.is_handler():
             company = get_company_from_request(request)
             if company != application.company:
                 raise PermissionDenied(_("You are not allowed to do this action"))
 
-            if application.status not in self.APPLICANT_MESSAGE_ALLOWED_STATUSES:
+            if (
+                application.status not in self.APPLICANT_MESSAGE_ALLOWED_STATUSES
+                or application.archived
+            ):
                 raise serializers.ValidationError(
                     _(
                         "Cannot do this action because "
