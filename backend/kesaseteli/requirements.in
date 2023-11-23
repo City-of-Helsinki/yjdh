@@ -9,7 +9,7 @@ django-sequences
 django-simple-history
 django-storages[azure]
 djangorestframework
-django~=3.2
+django~=3.2.23
 elasticsearch
 factory-boy
 filetype

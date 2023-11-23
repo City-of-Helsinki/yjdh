@@ -8,7 +8,7 @@ django-searchable-encrypted-fields
 django-simple-history
 django-storages[azure]
 djangorestframework
-django~=3.2
+django~=3.2.23
 drf-oidc-auth
 elasticsearch
 factory-boy
