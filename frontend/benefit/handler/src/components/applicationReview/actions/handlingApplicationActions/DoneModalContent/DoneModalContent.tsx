@@ -62,20 +62,15 @@ const DoneModalContent: React.FC<ComponentProps> = ({
                   })}
                 </$Text>
               </$GridCell>
-              {dateRangeRows.length === helsinkiBenefitMonthlyRows.length &&
-                dateRangeRows.map((row, index) => (
-                  <$Text key={row.id}>
-                    {t(`${translationsBase}.eurosPerMonth`, {
-                      euros: formatFloatToCurrency(
-                        helsinkiBenefitMonthlyRows[index].amount,
-                        null,
-                        'fi-FI',
-                        0
-                      ),
-                      dateRange: row.descriptionFi.toLocaleLowerCase(),
-                    })}
-                  </$Text>
-                ))}
+              {helsinkiBenefitMonthlyRows.map((row, index) => (
+                <$Text key={row.id}>
+                  {t(`${translationsBase}.eurosPerMonth`, {
+                    euros: formatFloatToCurrency(row.amount, null, 'fi-FI', 0),
+                    dateRange:
+                      dateRangeRows[index]?.descriptionFi.toLocaleLowerCase(),
+                  })}
+                </$Text>
+              ))}
             </$GridCell>
           )}
           {description && (
