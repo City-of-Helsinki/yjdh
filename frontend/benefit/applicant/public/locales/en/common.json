@@ -46,7 +46,8 @@
       "approved": "Accepted",
       "rejected": "Rejected",
       "handling": "Handling",
-      "cancelled": "Cancelled"
+      "cancelled": "Cancelled",
+      "archived": "Processed"
     },
     "steps": {
       "employer": "Employer",

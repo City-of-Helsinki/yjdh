@@ -47,6 +47,9 @@ const getAvatarBGColor = (
     case APPLICATION_STATUSES.REJECTED:
       return 'error';
 
+    case APPLICATION_STATUSES.CANCELLED:
+      return 'error';
+
     default:
       return 'black40';
   }
@@ -81,8 +84,14 @@ const useApplicationList = (
   }, [errors, error, setError]);
 
   const getStatusTranslation = (
-    applicationStatus: APPLICATION_STATUSES
-  ): string => t(`${translationStatusBase}.${camelCase(applicationStatus)}`);
+    applicationStatus: APPLICATION_STATUSES,
+    isArchived: boolean
+  ): string => {
+    if (isArchived && applicationStatus !== APPLICATION_STATUSES.REJECTED) {
+      return t(`${translationStatusBase}.archived`);
+    }
+    return t(`${translationStatusBase}.${camelCase(applicationStatus)}`);
+  };
 
   const getAllowedActions = (
     id: string,
@@ -126,13 +135,16 @@ const useApplicationList = (
       batch,
     } = application;
 
-    const statusText = getStatusTranslation(appStatus);
+    const statusText = getStatusTranslation(appStatus, archived);
     const name = getEmployeeFullName(employee?.first_name, employee?.last_name);
 
     const avatar = {
       color: getAvatarBGColor(appStatus),
-      initials: getInitials(name),
+      initials: `${employee.first_name.charAt(0)}${employee.last_name.charAt(
+        0
+      )}`,
     };
+    console.log(avatar);
     const allowedAction = getAllowedActions(id, appStatus);
     const submittedAt = submitted_at
       ? convertToUIDateFormat(submitted_at)

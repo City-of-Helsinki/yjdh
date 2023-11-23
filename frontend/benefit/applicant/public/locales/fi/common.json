@@ -46,7 +46,8 @@
       "approved": "Hyväksytty",
       "rejected": "Hylätty",
       "handling": "Käsittelyssä",
-      "cancelled": "Peruttu"
+      "cancelled": "Peruttu",
+      "archived": "Käsitelty"
     },
     "steps": {
       "employer": "Työnantaja",

@@ -46,7 +46,8 @@
       "approved": "Godkänd",
       "rejected": "Avvisad",
       "handling": "Behandling",
-      "cancelled": "Peruttu"
+      "cancelled": "Peruttu",
+      "archived": "Behandlat"
     },
     "steps": {
       "employer": "Arbetsgivare",

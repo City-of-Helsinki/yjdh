@@ -1309,9 +1309,7 @@ class ApplicantApplicationStatusChoiceField(serializers.ChoiceField):
     """
 
     STATUS_OVERRIDES = {
-        ApplicationStatus.RECEIVED: ApplicationStatus.HANDLING,
         ApplicationStatus.ACCEPTED: ApplicationStatus.HANDLING,
-        ApplicationStatus.REJECTED: ApplicationStatus.HANDLING,
     }
 
     def to_representation(self, value):
