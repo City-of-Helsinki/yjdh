@@ -858,6 +858,36 @@ class Attachment(UUIDModel, TimeStampedModel):
         return "{} {}".format(self.attachment_type, self.attachment_file.name)
 
 
+class ApplicationGeneratedFile(UUIDModel, TimeStampedModel):
+    """
+    created_at field from TimeStampedModel provides the upload timestamp
+    """
+
+    application = models.ForeignKey(
+        Application,
+        verbose_name=_("application"),
+        related_name="generated_files",
+        on_delete=models.CASCADE,
+    )
+    content_type = models.CharField(
+        max_length=100,
+        choices=ATTACHMENT_CONTENT_TYPE_CHOICES,
+        verbose_name=_("technical content type of the attachment"),
+    )
+    generated_file = models.FileField(
+        verbose_name=_("application generated file content")
+    )
+
+    class Meta:
+        db_table = "bf_applications_generated_file"
+        verbose_name = _("generated_file")
+        verbose_name_plural = _("generated_files")
+        ordering = ["application__created_at", "created_at"]
+
+    def __str__(self):
+        return "{} {}".format(self.generated_file.name, self.content_type)
+
+
 class ReviewState(models.Model):
     application = models.OneToOneField(
         Application,
