@@ -2,12 +2,21 @@
 
 Yhteisöjen ja järjestöjen digitaalinen Helsinki (= YJDH).
 
-This monorepo contains code for four different employment services:
+This monorepo contains code for three different employment services:
 
-1. Kesäseteli
-2. Benefit
-3. TET Youth
-4. TET Admin
+* **Kesäseteli**
+  * Backend
+  * Admin
+  * Youth
+  * Employer
+* **Benefit / Helsinki-lisä**
+  * Backend
+  * Applicant
+  * Handler
+* **TET Job Search**
+  * Backend 
+  * Youth
+  * Admin
 
 ## Requirements
 
