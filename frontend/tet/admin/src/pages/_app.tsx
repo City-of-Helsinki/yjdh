@@ -1,4 +1,5 @@
 import 'react-toastify/dist/ReactToastify.css';
+import 'hds-design-tokens';
 
 import { AppProps } from 'next/app';
 import { appWithTranslation } from 'next-i18next';

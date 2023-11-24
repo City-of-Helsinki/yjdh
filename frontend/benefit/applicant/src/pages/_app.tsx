@@ -1,6 +1,7 @@
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/globals.css';
 import 'benefit-shared/styles/app.css';
+import 'hds-design-tokens';
 
 import AuthProvider from 'benefit/applicant/auth/AuthProvider';
 import Layout from 'benefit/applicant/components/layout/Layout';
