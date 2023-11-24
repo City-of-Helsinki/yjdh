@@ -4,10 +4,7 @@
     "json5",                // jest, eslint, testcafe, next, babel
     "parse-url",            // lerna
     "parse-path",           // lerna
-    "shell-quote",          // next
-    "loader-utils",         // next
     "moment",               // testcafe
-    "jsonwebtoken",         // testcafe
     "http-cache-semantics", // testcafe
     "requestretry",         // slack-node
     "decode-uri-component", // testcafe, lerna
