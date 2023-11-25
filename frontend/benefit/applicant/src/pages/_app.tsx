@@ -4,6 +4,7 @@ import 'benefit-shared/styles/app.css';
 import 'hds-design-tokens';
 
 import AuthProvider from 'benefit/applicant/auth/AuthProvider';
+import CookieConsent from 'benefit/applicant/components/cookieConsent/CookieConsent';
 import Layout from 'benefit/applicant/components/layout/Layout';
 import useLocale from 'benefit/applicant/hooks/useLocale';
 import { appWithTranslation } from 'benefit/applicant/i18n';
@@ -61,6 +62,7 @@ const App: React.FC<AppProps> = (appProps) => {
     >
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
+          <CookieConsent />
           <BaseApp
             layout={Layout}
             title={!isServerSide() && document.title}
