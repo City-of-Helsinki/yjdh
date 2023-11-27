@@ -5,14 +5,13 @@ import styled from 'styled-components';
 export const $Notification = styled.div`
   display: flex;
   flex-direction: column;
-  margin: ${(props) => props.theme.spacing.xl} 0
-    ${(props) => props.theme.spacing.xl} 0;
+  margin-top: ${(props) => props.theme.spacing.xl};
   padding: ${(props) => props.theme.spacing.l};
   background: ${(props) => props.theme.colors.fogLight};
 
   ${respondAbove('sm')`
     flex-direction: row;
-  
+
   `}
 `;
 

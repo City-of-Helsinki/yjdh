@@ -49,3 +49,23 @@ export const $SpinnerContainer = styled.div`
 `;
 
 export const $Empty = styled.div``;
+
+export const $AskemContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 129px;
+  margin: 0;
+  padding-left: ${(props) => props.theme.spacing.l};
+  padding-right: ${(props) => props.theme.spacing.l};
+  ${respondAbove('sm')`
+    flex-direction: row;
+  `}
+`;
+
+export const $AskemItem = styled.div`
+  display: flex;
+  flex-flow: column;
+  ${respondAbove('sm')`
+    min-width: 13%;
+  `}
+`;

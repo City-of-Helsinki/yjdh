@@ -12,7 +12,9 @@ import ApplicationFormStep3 from 'benefit/applicant/components/applications/form
 import ApplicationFormStep4 from 'benefit/applicant/components/applications/forms/application/step4/ApplicationFormStep4';
 import ApplicationFormStep5 from 'benefit/applicant/components/applications/forms/application/step5/ApplicationFormStep5';
 import ApplicationFormStep6 from 'benefit/applicant/components/applications/forms/application/step6/ApplicationFormStep6';
+import { $Hr } from 'benefit/applicant/components/pages/Pages.sc';
 import { SUBMITTED_STATUSES } from 'benefit/applicant/constants';
+import { useAskem } from 'benefit/applicant/hooks/useAnalytics';
 import { IconInfoCircleFill, LoadingSpinner, Stepper } from 'hds-react';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
@@ -24,6 +26,7 @@ import { useTheme } from 'styled-components';
 import ErrorPage from '../../errorPage/ErrorPage';
 import { $Notification } from '../../Notification/Notification.sc';
 import NotificationView from '../../notificationView/NotificationView';
+import { $AskemContainer, $AskemItem } from '../Applications.sc';
 import { usePageContent } from './usePageContent';
 
 const stepperCss = {
@@ -49,8 +52,12 @@ const PageContent: React.FC = () => {
   } = usePageContent();
 
   const theme = useTheme();
-
   const router = useRouter();
+  const canShowAskem = useAskem(
+    router.locale,
+    isSubmittedApplication,
+    isLoading
+  );
 
   useEffect(() => {
     if (isReadOnly) document.title = t('common:pageTitles.viewApplication');
@@ -83,16 +90,30 @@ const PageContent: React.FC = () => {
 
   if (isSubmittedApplication) {
     return (
-      <NotificationView
-        title={t('common:notifications.applicationSubmitted.label')}
-        message={t('common:notifications.applicationSubmitted.message', {
-          applicationNumber: application?.applicationNumber,
-          applicantName: getFullName(
-            application?.employee?.firstName,
-            application?.employee?.lastName
-          ),
-        })}
-      />
+      <>
+        <NotificationView
+          title={t('common:notifications.applicationSubmitted.label')}
+          message={t('common:notifications.applicationSubmitted.message', {
+            applicationNumber: application?.applicationNumber,
+            applicantName: getFullName(
+              application?.employee?.firstName,
+              application?.employee?.lastName
+            ),
+          })}
+        />
+        {canShowAskem && (
+          <Container>
+            <$Hr />
+            <$AskemContainer>
+              <$AskemItem />
+              <$AskemItem>
+                <div className="rns" />
+              </$AskemItem>
+            </$AskemContainer>
+            <$Hr />
+          </Container>
+        )}
+      </>
     );
   }
 

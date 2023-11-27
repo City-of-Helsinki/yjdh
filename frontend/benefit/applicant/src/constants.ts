@@ -119,3 +119,6 @@ export enum LOCAL_STORAGE_KEYS {
   IS_TERMS_OF_SERVICE_APPROVED = 'isTermsOfServiceApproved',
   CSRF_TOKEN = 'csrfToken',
 }
+
+export const ASKEM_SCRIPT_URL = 'https://cdn.reactandshare.com/plugin/rns.js';
+export const ASKEM_HOSTNAME = 'reactandshare.com';
