@@ -33,6 +33,8 @@ const App: React.FC<AppProps> = (appProps) => {
 
   const { t } = useTranslation();
 
+  const showCookieBanner = process.env.NEXT_PUBLIC_SHOW_COOKIE_BANNER === '1';
+
   useEffect(() => {
     setAppLoaded();
     switch (router.route) {
@@ -62,7 +64,7 @@ const App: React.FC<AppProps> = (appProps) => {
     >
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <CookieConsent />
+          {showCookieBanner && <CookieConsent />}
           <BaseApp
             layout={Layout}
             title={!isServerSide() && document.title}
