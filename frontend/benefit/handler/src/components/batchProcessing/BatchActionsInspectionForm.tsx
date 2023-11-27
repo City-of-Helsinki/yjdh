@@ -18,7 +18,6 @@ import React, { ChangeEvent } from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import Modal from 'shared/components/modal/Modal';
 import theme from 'shared/styles/theme';
-import { CSSProperties } from 'styled-components';
 
 import ConfirmModalContent from '../applicationReview/actions/ConfirmModalContent/confirm';
 import { $InspectionTypeContainer } from '../table/BatchCompletion.sc';
@@ -244,7 +243,7 @@ BatchProps) => {
                     name="inspection_mode"
                     checked={inspectorMode === 'ahjo'}
                     onChange={handleRadioButton}
-                    style={theme.components.radio as CSSProperties}
+                    style={theme.components.radio as React.CSSProperties}
                   />
                 </$GridCell>
                 {inspectorMode === 'ahjo' ? (
@@ -312,7 +311,7 @@ BatchProps) => {
                     name="inspection_mode"
                     checked={inspectorMode === 'p2p'}
                     onChange={handleRadioButton}
-                    style={theme.components.radio as CSSProperties}
+                    style={theme.components.radio as React.CSSProperties}
                   />
                 </$GridCell>
                 {inspectorMode === 'p2p' ? (

@@ -1,4 +1,5 @@
 import 'react-toastify/dist/ReactToastify.css';
+import 'hds-design-tokens';
 
 import Footer from 'kesaseteli/youth/components/footer/Footer';
 import Header from 'kesaseteli/youth/components/header/Header';

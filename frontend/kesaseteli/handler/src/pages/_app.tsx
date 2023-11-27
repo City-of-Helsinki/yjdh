@@ -1,4 +1,5 @@
 import 'react-toastify/dist/ReactToastify.css';
+import 'hds-design-tokens';
 
 import Header from 'kesaseteli/handler/components/header/Header';
 import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';

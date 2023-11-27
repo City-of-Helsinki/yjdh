@@ -78,7 +78,7 @@ export const $ButtonContainer = styled.div`
   flex-grow: 1;
 `;
 
-export const $FiltersLink = styled.a`
+export const $FiltersLink = styled.span`
   margin-top: ${(props) => props.theme.spacing.m};
   justify-content: flex-end;
   display: flex;

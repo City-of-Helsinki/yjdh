@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import { Button, FileInput, IconTrash, LoadingSpinner } from 'hds-react';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -108,7 +108,7 @@ const ImageUpload: React.FC<Props> = ({ isNewPosting }) => {
           />
         ) : (
           <>
-            <$ImageContainer>{image_url && <Image src={image_url} width="100%" height="100%" />}</$ImageContainer>
+            <$ImageContainer>{image_url && <Image src={image_url} width="100" height="100" />}</$ImageContainer>
             {image_url && (
               <$ButtonContainer>
                 <Button variant="danger" iconLeft={<IconTrash />} onClick={removeImage}>

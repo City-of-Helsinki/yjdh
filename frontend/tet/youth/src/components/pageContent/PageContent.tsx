@@ -31,8 +31,8 @@ const PageContent: React.FC = () => {
       <$PageContent>
         <$ImageWrapper>
           <Image
-            width="100%"
-            height="100%"
+            width="100"
+            height="100"
             layout="responsive"
             objectFit="contain"
             src="/etela-haaga_kirjasto_230421_kuva_jussi_hellsten_0693.jpg"

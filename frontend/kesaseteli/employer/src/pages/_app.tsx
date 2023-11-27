@@ -1,4 +1,5 @@
 import 'react-toastify/dist/ReactToastify.css';
+import 'hds-design-tokens';
 
 import AuthProvider from 'kesaseteli/employer/auth/AuthProvider';
 import Footer from 'kesaseteli/employer/components/footer/Footer';
