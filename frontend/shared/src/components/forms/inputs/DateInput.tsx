@@ -8,6 +8,7 @@ import useLocale from 'shared/hooks/useLocale';
 import InputProps from 'shared/types/input-props';
 import { isValidDate, parseDate } from 'shared/utils/date.utils';
 import { isString } from 'shared/utils/type-guards';
+
 import { $DateInput } from './DateInput.sc';
 
 type Props<T> = Omit<InputProps<T>, 'onChange'> &
