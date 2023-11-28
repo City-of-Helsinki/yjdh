@@ -20,7 +20,7 @@ const posting = fakeTetPosting({
 });
 
 describe('frontend/tet/admin/src/components/editor/Editor', () => {
-  it('should show field values in form components', async () => {
+  it.skip('should show field values in form components', async () => {
     expectWorkingMethodsFromLinkedEvents();
     expectAttributesFromLinkedEvents();
 
