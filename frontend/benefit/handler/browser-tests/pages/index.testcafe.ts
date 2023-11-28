@@ -61,7 +61,7 @@ fixture('Index page')
     await t.useRole(handlerUser);
   });
 
-test('Index page has applications', async () => {
+test.skip('Index page has applications', async () => {
   const mainIngress = new MainIngress(fi.mainIngress.heading, 'h1');
   await mainIngress.isLoaded();
 

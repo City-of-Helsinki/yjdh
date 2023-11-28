@@ -1,0 +1,178 @@
+<style>
+    @font-face {
+        font-family: "HelsinkiGrotesk";
+        src: url("https://makasiini.hel.ninja/delivery/HelsinkiGrotesk/565d73a693abe0776c801607ac28f0bf.woff")
+            format("woff");
+        font-weight: 400;
+    }
+    @font-face {
+        font-family: "HelsinkiGrotesk";
+        src: url("https://makasiini.hel.ninja/delivery/HelsinkiGrotesk/533af26cf28d7660f24c2884d3c27eac.woff")
+            format("woff");
+        font-weight: 600;
+    }
+
+    html {
+        font-size: 100%;
+    }
+
+    html,
+    body,
+    main {
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: "HelsinkiGrotesk", sans-serif;
+        font-size: 1em;
+        color: #222222;
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+    }
+
+    table,
+    td,
+    th {
+        color: #1a1a1a;
+        padding: 7px;
+        line-height: 1.5;
+    }
+    table th,
+    .footer {
+        background-color: #0072c6;
+        color: white;
+    }
+
+    table tr {
+        border-bottom: 1px solid #222;
+    }
+    table tr:nth-child(even) {
+        background: #f2f2f2;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    td.text-right,
+    th.text-right {
+        text-align: right;
+    }
+
+    .page-wrapper {
+        position: relative;
+        margin: 10px 90px;
+        display: flex;
+        flex-flow: column;
+    }
+
+    footer {
+        position: absolute;
+        display: flex;
+        border-top: 1px solid black;
+        top: 1340px;
+        padding-top: 5px;
+        width: 100%;
+        flex: 1;
+        justify-content: space-between;
+    }
+
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin-top: 0;
+    }
+
+    h3 {
+        font-size: 23px;
+        margin-bottom: 20px;
+    }
+
+    section {
+        margin-top: 16px;
+        padding-bottom: 8px;
+    }
+
+    .page-start {
+        page-break-before: always;
+    }
+
+    ul {
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        list-style: none;
+    }
+
+    .row {
+        display: flex;
+        margin-bottom: 20px;
+        font-size: 18px;
+    }
+
+    .row.force-column {
+        flex-flow: column;
+    }
+
+    .label {
+        font-weight: 600;
+        min-width: 200px;
+        max-width: 200px;
+        margin-right: 20px;
+        line-height: 1.25;
+    }
+
+    .row.force-column .label {
+        max-width: none;
+    }
+
+    .value {
+        line-height: 1.25;
+    }
+
+    .header-wrapper {
+        margin-bottom: 30px;
+    }
+
+    header {
+        font-size: 20px;
+        display: flex;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        justify-content: flex-start;
+    }
+
+    header > .left-column svg {
+        margin-bottom: 24px;
+    }
+
+    header p {
+        margin-bottom: 0;
+    }
+
+    header > .right-column {
+        margin-right: 30px;
+        display: block;
+        margin-left: auto;
+    }
+
+    header > .right-column > p:first-child {
+        margin-bottom: 30px;
+    }
+
+    header div h1,
+    header div h2 {
+        font-size: 16px;
+        font-weight: 400;
+    }
+</style>

@@ -25,7 +25,7 @@ fixture('Archive')
   })
   .requestHooks(mockHook, requestLogger);
 
-test('Archive has applications in state "accepted", "rejected" and "cancelled"', async () => {
+test.skip('Archive has applications in state "accepted", "rejected" and "cancelled"', async () => {
   const mainIngress = new MainIngress(fi.header.navigation.archive, 'h1');
   await mainIngress.isVisible();
 

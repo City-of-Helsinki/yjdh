@@ -625,8 +625,7 @@ msgid "Invalid IBAN"
 msgstr "Felaktigt IBAN-kontonummer"
 
 msgid "You have to accept Terms of Service before doing any action"
-msgstr ""
-"Du måste godkänna användarvillkoren för tjänsten innan du kan göra något"
+msgstr "Du måste godkänna användarvillkoren för tjänsten innan du kan göra något"
 
 msgid "Company information is not available"
 msgstr "Företagets uppgifter är inte tillgängliga"
@@ -794,3 +793,193 @@ msgstr "godkännande av villkoren för tjänsten"
 
 msgid "terms of service approvals"
 msgstr "godkännanden av villkoren för tjänsten"
+
+# Application printout
+
+msgid "City of Helsinki"
+msgstr "Helsingfors stad"
+
+msgid "Helsinki-benefit online service"
+msgstr "Helsingforstillägg e-tjänst"
+
+msgid "Helsinki-benefit application"
+msgstr "Helsingforstillägg ansökning"
+
+msgid "Employee"
+msgstr "Anställd"
+
+msgid "Application received"
+msgstr "Ansökning mottagen"
+
+msgid "Employer information"
+msgstr "Arbetsgivarinformation"
+ 
+msgid "Name of the employer"
+msgstr "Arbetsgivarens namn"
+ 
+msgid "Business ID"
+msgstr "FO-nummer"
+ 
+msgid "Street address"
+msgstr "Adress"
+ 
+msgid "Bank account number"
+msgstr "Kontonummer"
+ 
+msgid "Does the employer engage in economic activity?"
+msgstr "Har arbetsgivaren ekonomisk verksamhet?"
+ 
+msgid "Delivery address"
+msgstr "Leveransadress"
+ 
+msgid "Contact person for the employer"
+msgstr "Arbetsgivarens kontaktperson"
+ 
+msgid "Name"
+msgstr "Namn"
+ 
+msgid "Telephone"
+msgstr "Telefon"
+ 
+msgid "Email address"
+msgstr "E-postadress"
+ 
+msgid "Preferred language of communication"
+msgstr "Affärsspråk"
+ 
+msgid "De minimis aid received by the employer"
+msgstr "De minimis-stöden som arbetsgivaren fått"
+ 
+msgid "Granter"
+msgstr "Beviljare av stödet"
+ 
+msgid "Amount"
+msgstr "Stödbeloppet"
+ 
+msgid "Date"
+msgstr "Datum"
+ 
+msgid "Total"
+msgstr "Sammanlagt"
+ 
+msgid "No, the applicant has not listed any previous de minimis aids."
+msgstr "Nej, arbetsgivaren har inte angett några tidigare de minimis-stöd."
+ 
+msgid "Change negotiations or co-determination negotiations"
+msgstr "Samarbetsförhandlingar eller samarbetsförfarande"
+ 
+msgid "Yes, the organization has ongoing or completed change negotiations within the previous 12 months."
+msgstr "Ja, organisationen har pågående eller avslutade samarbetsförhandlingar under de föregående 12 månaderna."
+ 
+msgid "No, the organization does not have change negotiations in progress or that have ended in the previous 12 months."
+msgstr "Nej, organisationen har inga samarbetsförhandlingar på gång eller som har avslutats under de senaste 12 månaderna."
+ 
+msgid "Describe the situation"
+msgstr "Beskrivning av situationen"
+ 
+msgid "Person to be hired"
+msgstr "Personen som ska sysselsättas"
+ 
+msgid "First name"
+msgstr "Förnamn"
+ 
+msgid "Last name"
+msgstr "Efternamn"
+ 
+msgid "Personal identity code"
+msgstr "Personbeteckning"
+ 
+msgid "The subsidised employee’s municipality of residence is Helsinki"
+msgstr "Personen som anställs bor i Helsingfors"
+ 
+msgid "Has the person who is being employed been assigned a job supervisor?"
+msgstr "Har personen som ska sysselsättas utsetts en arbetsledande chef?"
+
+msgid "Employment relationship"
+msgstr "Anställningsförhållande"
+ 
+msgid "Job title"
+msgstr "Titel"
+ 
+msgid "Working hours per week"
+msgstr "Arbetstid per vecka"
+ 
+msgid "Gross salary / month"
+msgstr "Bruttolön per månad"
+ 
+msgid "Indirect labour costs"
+msgstr "Bikostnader per månad"
+ 
+msgid "Holiday pay"
+msgstr "Semesterpenning per månad"
+ 
+msgid "Applicable collective agreement"
+msgstr "Kollektivavtal som tillämpas"
+ 
+msgid "Is this an apprenticeship?"
+msgstr "Handlar det om ett läroavtal?"
+ 
+msgid "Received aid"
+msgstr "Beviljat stöd"
+ 
+msgid "Benefit is applied for the period"
+msgstr "Stillägg tillämpas för perioden"
+ 
+msgid "Helsinki benefit is granted"
+msgstr "Helsingforstillägg beviljas"
+ 
+msgid "Helsinki benefit is not granted"
+msgstr "Helsingforstillägg beviljas inte"
+ 
+msgid "Applying for dates"
+msgstr "Ansöker om datum"
+ 
+msgid "Decision date"
+msgstr "Beslutsdatum"
+ 
+msgid "Handler"
+msgstr "Handläggare"
+ 
+msgid "Granted as de minimis aid"
+msgstr "Beviljas som stöd av de minimis stöd"
+ 
+msgid "Attachments"
+msgstr "Bilagor"
+ 
+msgid "employee_consent"
+msgstr "Behandlingen av personuppgifterna av personen som ska sysselsättas"
+
+msgid "employment_contract"
+msgstr "Arbetsavtal"
+
+msgid "pay_subsidy_decision"
+msgstr "Beslut om lönesubvention"
+
+msgid "education_contract"
+msgstr "Avtal om ordnandet av läroavtalsutbildning"
+
+msgid "helsinki_benefit_voucher"
+msgstr "Helsingforstilläggskortet"
+
+msgid "fi"
+msgstr "Finska"
+
+msgid "sv"
+msgstr "Svenska"
+
+msgid "en"
+msgstr "Engelska"
+
+msgid "granted"
+msgstr "Lönesubvention"
+
+msgid "granted_aged"
+msgstr "Sysselsättningsstöd för personer som fyllt 55 år"
+
+msgid "not_granted"
+msgstr "Inget stöd"
+
+msgid "Printed at"
+msgstr "Tryckt"
+
+

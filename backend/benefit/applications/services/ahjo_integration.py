@@ -87,6 +87,7 @@ JINJA_TEMPLATES_COMPOSED = {
             "show_de_minimis_aid_footer": False,
             "show_employee_names": True,
             "show_sums": True,
+            "is_private": True,
         },
     },
     TEMPLATE_ID_COMPOSED_DECLINED_PRIVATE: {
@@ -99,6 +100,7 @@ JINJA_TEMPLATES_COMPOSED = {
             "show_de_minimis_aid_footer": False,
             "show_employee_names": True,
             "show_sums": False,
+            "is_private": True,
         },
     },
 }

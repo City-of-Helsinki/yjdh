@@ -63,6 +63,7 @@
       "back": "Back",
       "edit": "Edit",
       "close": "Close",
+      "print": "Print the application",
       "openTermsAsPDF": "Open the terms as a PDF file",
       "continueToService": "Continue to the service",
       "pauseAndExit": "Cancel and exit",

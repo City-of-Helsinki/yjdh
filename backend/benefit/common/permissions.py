@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import permissions
 from rest_framework.exceptions import PermissionDenied
 
+from shared.oidc.utils import get_organization_roles
 from users.utils import get_company_from_request
 
 
@@ -22,6 +23,16 @@ class BFIsApplicant(BFIsAuthenticated):
             # handler's access to draft applications.
             return False
         return super().has_permission(request, view)
+
+    def has_object_permission(self, request, view, obj):
+        if settings.NEXT_PUBLIC_MOCK_FLAG:
+            return True
+
+        if request.resolver_match.view_name == "applications.api.v1.views.PrintDetail":
+            user_org_roles = get_organization_roles(request)
+            trustee_for_business_id = user_org_roles.get("identifier")
+            return trustee_for_business_id == obj.company.business_id
+        return super().has_object_permission(request, view, obj)
 
 
 class BFIsHandler(permissions.IsAdminUser):

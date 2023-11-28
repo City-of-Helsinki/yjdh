@@ -6,6 +6,7 @@ from django.core import exceptions
 from django.db import transaction
 from django.db.models import Q, QuerySet
 from django.http import FileResponse, HttpResponse, StreamingHttpResponse
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
@@ -15,7 +16,9 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import filters as drf_filters, status
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
+from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from sql_util.aggregates import SubqueryCount
 
 from applications.api.v1.serializers.application import (
@@ -34,6 +37,10 @@ from applications.services.ahjo_integration import (
     generate_zip,
     prepare_csv_file,
     prepare_pdf_files,
+)
+from applications.services.app_generated_files import (
+    generate_application_summary_file,
+    get_context_for_summary_context,
 )
 from applications.services.applications_csv_report import ApplicationsCsvService
 from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
@@ -491,3 +498,21 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         )
         response["Content-Disposition"] = f"attachment; filename={zip_filename}"
         return response
+
+
+class PrintDetail(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    permission_classes = [BFIsApplicant]
+
+    def get(self, request, *args, **kwargs):
+        pk = kwargs["pk"]
+        application = get_object_or_404(Application, pk=pk)
+        self.check_object_permissions(request, application)
+
+        if settings.DEBUG and request.query_params.get("as_html") == "1":
+            context = get_context_for_summary_context(application)
+            return Response(context, template_name="application.html")
+
+        return HttpResponse(
+            generate_application_summary_file(application), "application/pdf"
+        )

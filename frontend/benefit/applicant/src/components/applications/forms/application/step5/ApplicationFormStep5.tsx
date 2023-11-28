@@ -1,9 +1,17 @@
 import SummarySection from 'benefit/applicant/components/summarySection/SummarySection';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
+import {
+  BackendEndpoint,
+  getBackendUrl,
+} from 'benefit-shared/backend-api/backend-api';
 import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit-shared/constants';
-import { Button, IconPen } from 'hds-react';
+import { Button, IconPen, IconPrinter } from 'hds-react';
 import isEmpty from 'lodash/isEmpty';
 import React from 'react';
+import {
+  $Grid,
+  $GridCell,
+} from 'shared/components/forms/section/FormSection.sc';
 import { useTheme } from 'styled-components';
 
 import ConsentViewer from '../consentViewer/ConsentViewer';
@@ -143,9 +151,30 @@ const ApplicationFormStep5: React.FC<
         </SummarySection>
       )}
       {isReadOnly ? (
-        <Button theme="black" variant="secondary" onClick={handleClose}>
-          {t('common:utility.close')}
-        </Button>
+        <$Grid>
+          <$GridCell $colSpan={1}>
+            <Button theme="black" variant="secondary" onClick={handleClose}>
+              {t('common:utility.close')}
+            </Button>
+          </$GridCell>
+          <$GridCell $colSpan={11}>
+            <Button
+              iconLeft={<IconPrinter />}
+              theme="coat"
+              role="link"
+              variant="secondary"
+              onClick={() =>
+                // eslint-disable-next-line security/detect-non-literal-fs-filename
+                window.open(
+                  `${getBackendUrl(BackendEndpoint.APPLICANT_PRINT)}${data.id}`,
+                  '_blank'
+                )
+              }
+            >
+              Tulosta hakemus
+            </Button>
+          </$GridCell>
+        </$Grid>
       ) : (
         <StepperActions
           lastStep={isSubmit}
