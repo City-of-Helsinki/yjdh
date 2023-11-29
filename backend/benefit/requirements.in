@@ -5,6 +5,7 @@ django-environ
 django-extensions
 django-filter
 django-localflavor
+django-mjml
 django-phonenumber-field[phonenumbers]
 django-searchable-encrypted-fields
 django-simple-history

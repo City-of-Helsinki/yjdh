@@ -252,6 +252,7 @@ INSTALLED_APPS = [
     "mozilla_django_oidc",
     "django_auth_adfs",
     "helusers.apps.HelusersConfig",
+    "mjml",
 ]
 
 AUTH_USER_MODEL = "users.User"
