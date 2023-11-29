@@ -2225,8 +2225,7 @@ def test_application_pdf_print(api_client, application):
 
     # Can access own applications
     response = api_client.get(
-        f"/v1/print/{application.id}/",
-        {"as_html": "1"},
+        reverse("print_summary_pdf", kwargs={"pk": application.id}) + "?as_html=1",
     )
     assert response.status_code == 200
 
@@ -2239,15 +2238,13 @@ def test_application_pdf_print_denied(api_client, anonymous_client):
 
     # Cannot access anonymously
     response = anonymous_client.get(
-        f"/v1/print/{application.id}/",
-        {"as_html": "1"},
+        reverse("print_summary_pdf", kwargs={"pk": application.id}) + "?as_html=1",
     )
     assert response.status_code == 403
 
     # Cannot access other applications
     response = api_client.get(
-        f"/v1/print/{application.id}/",
-        {"as_html": "1"},
+        reverse("print_summary_pdf", kwargs={"pk": application.id}) + "?as_html=1",
     )
 
     assert response.status_code == 403

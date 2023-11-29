@@ -166,7 +166,9 @@ const ApplicationFormStep5: React.FC<
               onClick={() =>
                 // eslint-disable-next-line security/detect-non-literal-fs-filename
                 window.open(
-                  `${getBackendUrl(BackendEndpoint.APPLICANT_PRINT)}${data.id}`,
+                  `${getBackendUrl(BackendEndpoint.APPLICANT_PRINT)}${
+                    data.id
+                  }/`,
                   '_blank'
                 )
               }

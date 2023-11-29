@@ -1,3 +1,5 @@
+from typing import Union
+
 import pdfkit
 from django.template import loader
 
@@ -31,11 +33,18 @@ def get_context_for_summary_context(application):
     }
 
 
-def generate_application_summary_file(application, request=None) -> bytes:
+def generate_application_summary_file(application, request=None) -> Union[bytes, None]:
     def generate_summary_pdf(context) -> bytes:
         template = loader.get_template("application.html")
         rendered_template = template.render(context, request)
         return pdfkit.from_string(rendered_template, False, None)
 
-    context = get_context_for_summary_context(application)
-    return generate_summary_pdf(context)
+    try:
+        context = get_context_for_summary_context(application)
+        return generate_summary_pdf(context)
+    except Exception as e:
+        print(
+            f"Cannot generate application summary PDF for application {application.id}",
+            e,
+        )
+        return None

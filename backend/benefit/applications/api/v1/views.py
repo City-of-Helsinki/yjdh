@@ -513,6 +513,7 @@ class PrintDetail(APIView):
             context = get_context_for_summary_context(application)
             return Response(context, template_name="application.html")
 
-        return HttpResponse(
-            generate_application_summary_file(application), "application/pdf"
-        )
+        pdf = generate_application_summary_file(application) or None
+        if pdf:
+            return HttpResponse(pdf, "application/pdf")
+        raise Exception("PDF error")
