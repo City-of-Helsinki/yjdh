@@ -63,7 +63,9 @@
     "te-youth:browser-test": "yarn --cwd tet/youth browser-test",
     "te-youth:browser-test:ci": "yarn --cwd tet/youth browser-test:ci"
   },
-  "dependencies": {},
+  "dependencies": {
+    "lerna-update-wizard": "^1.1.2"
+  },
   "devDependencies": {
     "@axe-core/react": "^4.3.2",
     "@babel/core": "^7.16.7",
