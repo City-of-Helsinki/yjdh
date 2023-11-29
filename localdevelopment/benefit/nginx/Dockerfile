@@ -1,4 +1,4 @@
-FROM nginx:1.23.3-alpine-slim
+FROM nginx:1.24-alpine-slim
 
 RUN apk update && apk add bash openssl
 
