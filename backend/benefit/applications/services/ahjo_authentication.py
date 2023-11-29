@@ -29,7 +29,7 @@ class AhjoConnector:
         self.headers: Dict[str, str] = {
             "Content-Type": "application/x-www-form-urlencoded",
         }
-        self.timout: int = 10
+        self.timeout: int = 10
 
     def is_configured(self) -> bool:
         """Check if all required config options are set"""
@@ -86,7 +86,7 @@ class AhjoConnector:
     def do_token_request(self, payload: Dict[str, str]) -> AhjoToken:
         # Make the POST request
         response = self.requests_module.post(
-            self.token_url, headers=self.headers, data=payload, timeout=self.timout
+            self.token_url, headers=self.headers, data=payload, timeout=self.timeout
         )
 
         # Check if the request was successful
