@@ -4,7 +4,6 @@ from typing import List, Union
 
 from django.conf import settings
 from django.urls import reverse
-from django.utils.translation import gettext as _
 
 from applications.models import Application, Attachment
 from common.utils import hash_file

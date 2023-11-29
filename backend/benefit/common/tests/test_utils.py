@@ -149,13 +149,13 @@ def test_hash_file():
 
 
 def test_encode_multipart_formdata():
-    fields = {'field1': 'value1', 'field2': 'value2'}
+    fields = {"field1": "value1", "field2": "value2"}
     body_str, content_type = encode_multipart_formdata(fields)
 
-    assert body_str.startswith('--')
-    assert body_str.endswith('--\r\n')
-    assert 'field1' in body_str
-    assert 'value1' in body_str
-    assert 'field2' in body_str
-    assert 'value2' in body_str
-    assert content_type.startswith('multipart/form-data; boundary=')
+    assert body_str.startswith("--")
+    assert body_str.endswith("--\r\n")
+    assert "field1" in body_str
+    assert "value1" in body_str
+    assert "field2" in body_str
+    assert "value2" in body_str
+    assert content_type.startswith("multipart/form-data; boundary=")
