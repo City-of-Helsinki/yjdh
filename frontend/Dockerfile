@@ -1,13 +1,13 @@
 # =======================================
-FROM helsinkitest/node:18-slim as appbase
+FROM helsinkitest/node:18-slim AS distbase
 # =======================================
 
 # Install ca-certificates so that Sentry can upload source maps
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends ca-certificates
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && apt-get clean
 
-# Use non-root user
-USER appuser
+# =============================
+FROM distbase AS appbase
+# =============================
 
 # Build ARGS
 ARG PROJECT
@@ -16,7 +16,7 @@ ARG FOLDER
 # Yarn
 ENV YARN_VERSION 1.22.10
 
-RUN yarn policies set-version $YARN_VERSION
+RUN yarn policies set-version "$YARN_VERSION"
 RUN yarn config set ignore-engines true
 
 WORKDIR /app
@@ -26,15 +26,17 @@ COPY --chown=appuser:appuser package.json yarn.lock ./
 COPY --chown=appuser:appuser $PROJECT/$FOLDER/package.json $PROJECT/$FOLDER/package.json
 COPY --chown=appuser:appuser $PROJECT/shared/package.json* $PROJECT/shared/package.json
 COPY --chown=appuser:appuser shared/package.json shared/package.json
+RUN --mount=type=cache,target="$PWD/.yarn_cache",sharing=locked YARN_CACHE_FOLDER="$PWD"/.yarn_cache yarn --frozen-lockfile --check-files --network-timeout 600000
 
-RUN yarn --frozen-lockfile --check-files --network-timeout 600000 && yarn cache clean --force
+# =============================
+FROM appbase AS development
+# =============================
 
 # Copy all files
 COPY --chown=appuser:appuser . .
 
-# =============================
-FROM appbase as development
-# =============================
+# Use non-root user
+USER appuser
 
 # Set V8 max heap size to 2GB (default is 512MB)
 # This prevents Docker Compose from crashing due to out of memory errors
@@ -55,7 +57,7 @@ ENV DEV_START "yarn --cwd $PROJECT/$FOLDER dev"
 CMD ["sh", "-c", "${DEV_START}"]
 
 # ===================================
-FROM appbase as staticbuilder
+FROM appbase AS staticbuilder
 # ===================================
 
 # Set environmental variables for frontend (used in CI)
@@ -95,7 +97,10 @@ WORKDIR /app/$PROJECT/$FOLDER/
 RUN yarn build
 
 # Clean all dependencies (this should avoid caching + missing /pages directory problem)
+USER root
 RUN rm -rf node_modules
+
+USER appuser
 RUN yarn cache clean
 
 # ==========================================
