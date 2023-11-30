@@ -1,0 +1,13 @@
+{
+  "newMessageReceived": "Olet saanut uuden viestin",
+  "helsinkiBenefit": "Helsinki-lisä",
+  "newMessageHeading": "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen",
+  "newMessageBody": "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen. Voit lukea viestin Helsinki-lisän asiointipalvelussa.",
+  "bestRegards1": "Ystävällisin terveisin",
+  "bestRegards2": "Helsinki-lisän tiimi",
+  "applicationDetails": "Hakemuksen tiedot",
+  "applicationNumber": "Hakemusnumero",
+  "applicationSent": "Hakemuksen lähetyspäivä",
+  "ctaLoginAndReadMessage": "Kirjaudu palveluun ja lue viesti",
+  "automaticReplyDisclaimer": "Tämä on automaattinen ilmoitus sinulle lähetetystä verkkoviestistä. Ethän vastaa tähän viestiin, sillä vastauksia ei käsitellä. Ota tarvittaessa yhteyttä neuvontaan sähköpostitse helsinkilisa@hel.fi."
+}

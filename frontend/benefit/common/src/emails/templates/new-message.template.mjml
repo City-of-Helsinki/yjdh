@@ -1,0 +1,55 @@
+<mjml>
+  <mj-head>
+    <mj-title>${newMessage}</mj-title>
+  </mj-head>
+  <mj-body>
+    <mj-section background-color="#F7F2E4">
+      <mj-column>
+        <mj-text>${newMessageReceived}</mj-text>
+        <mj-text>${helsinkiBenefit}</mj-text>
+        <mj-text>${newMessageHeading}</mj-text>
+        <mj-text>${newMessageBody}</mj-text>
+        <mj-text>${bestRegards1}</mj-text>
+        <mj-text>${bestRegards2}</mj-text>
+
+        <mj-text>${applicationDetails}</mj-text>
+        <mj-text>${applicationNumber}</mj-text>
+        <mj-text>${applicationSent}</mj-text>
+        <mj-table>
+            <tr style="border-bottom:1px solid #ecedee;text-align:left;padding:15px 0;">
+              <th style="padding: 0 15px 0 0;">Year</th>
+              <th style="padding: 0 15px;">Language</th>
+              <th style="padding: 0 0 0 15px;">Inspired from</th>
+            </tr>
+            <tr>
+              <td style="padding: 0 15px 0 0;">1995</td>
+              <td style="padding: 0 15px;">PHP</td>
+              <td style="padding: 0 0 0 15px;">C, Shell Unix</td>
+            </tr>
+            <tr>
+              <td style="padding: 0 15px 0 0;">1995</td>
+              <td style="padding: 0 15px;">JavaScript</td>
+              <td style="padding: 0 0 0 15px;">Scheme, Self</td>
+            </tr>
+          </mj-table>
+
+
+        <mj-button background-color="#F45E43"
+        href="#">
+        <mj-button>${ctaLoginAndReadMessage}</mj-button>
+        
+        <mj-text>${automaticReplyDisclaimer}</mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section>
+      <mj-column>
+        <mj-text font-size="16px"
+          >${staffCheckDetailsPending}
+          <a href="${handleReservationsUrl}{{reservation_number}}">${handleReservationsUrl}{{reservation_number}}</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-include path="partials/staffClosing.mjml" />
+    <mj-include path="partials/footer.mjml" />
+  </mj-body>
+</mjml>
