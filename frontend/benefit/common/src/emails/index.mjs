@@ -53,6 +53,7 @@ const main = () => {
         const json = JSON.parse(fs.readFileSync(path.join(__dirname, 'i18n', jsonFile)));
         // flatten the object structure: { "a": { "b": "c" } } becomes { "a.b": "c" } etc.
         translations[lang] = flattenJSON(json);
+        console.log(translations['fi']);
       } catch (e) {
         console.log(`FAILED to parse i18n file: ${jsonFile}`, e);
       }
@@ -63,6 +64,7 @@ const main = () => {
     .filter((entity) => entity.isFile())
     .map((file) => file.name)
     .forEach((templateFile) => {
+      if (templateFile.charAt(0) === '.') return; // skip hidden system files
       // convert mjml to html
       let fileContent = fs.readFileSync(path.join(__dirname, 'templates', templateFile));
       let htmlContent = mjml(fileContent.toString(), {

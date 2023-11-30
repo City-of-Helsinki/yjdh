@@ -1,6 +1,23 @@
 {
-  "newMessageReceived": "Olet saanut uuden viestin",
-  "helsinkiBenefit": "Helsinki-lisä",
+  "header": {
+    "newMessageReceived": "Olet saanut uuden viestin"
+  },
+  "footer": {
+    "links": {
+      "aboutHelsinkiBenefit": {
+        "title": "",
+        "url": ""
+      },
+      "customerService": {
+        "title": "",
+        "url": ""
+      }
+    }
+  },
+  "general": {
+    "cityOfHelsinki": "Helsingin kaupunki",
+    "serviceName": "Helsinki-lisä"
+  },
   "newMessageHeading": "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen",
   "newMessageBody": "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen. Voit lukea viestin Helsinki-lisän asiointipalvelussa.",
   "bestRegards1": "Ystävällisin terveisin",

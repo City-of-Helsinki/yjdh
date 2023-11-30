@@ -1,0 +1,5 @@
+<mj-attributes>
+  <mj-button background-color="#0072c6" font-size="16px" color="#FFFFFF" border-radius="0" inner-padding="16px 32px" align="left" />
+  <mj-body background-color="#ffffff" width="960px" />
+  <mj-all font-family="HelsinkiGrotesk" color="#222" font-size="16px">
+</mj-attributes>
