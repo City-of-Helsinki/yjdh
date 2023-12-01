@@ -12,7 +12,7 @@ import jinja2
 import pdfkit
 import requests
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.db.models import QuerySet
 from django.urls import reverse
 
@@ -394,7 +394,7 @@ def prepare_headers(access_token: str, application_uuid: uuid) -> dict:
     }
 
 
-def get_application(id: uuid) -> Optional[Application]:
+def get_application_for_ahjo(id: uuid) -> Optional[Application]:
     """Get the first accepted application."""
     application = (
         Application.objects.filter(pk=id, status=ApplicationStatus.ACCEPTED)
@@ -402,11 +402,12 @@ def get_application(id: uuid) -> Optional[Application]:
         .first()
     )
     if not application:
-        LOGGER.info("No applications found for Ahjo request.")
-    # Check that the handler has an ad_username set, if not, log an error and return None
+        raise ObjectDoesNotExist("No applications found for Ahjo request.")
+    # Check that the handler has an ad_username set, if not, ImproperlyConfigured
     if not application.calculation.handler.ad_username:
-        LOGGER.error("No ad_username set for the handler for Ahjo request.")
-        return None
+        raise ImproperlyConfigured(
+            "No ad_username set for the handler for Ahjo request."
+        )
     return application
 
 
@@ -449,14 +450,14 @@ def do_ahjo_request_with_json_payload(
 
 def open_case_in_ahjo(application_id: uuid):
     """Open a case in Ahjo."""
-    application = get_application(application_id)
-    # if no suitable application is found, or the handler has no ad_id, bail out
-    if not application:
-        return
-
-    ahjo_api_url = settings.AHJO_REST_API_URL
-    ahjo_token = get_token()
-    headers = prepare_headers(ahjo_token.access_token, application.id)
-    data = prepare_open_case_payload(application)
-
-    do_ahjo_request_with_json_payload(ahjo_api_url, headers, data, application)
+    try:
+        application = get_application_for_ahjo(application_id)
+        ahjo_api_url = settings.AHJO_REST_API_URL
+        ahjo_token = get_token()
+        headers = prepare_headers(ahjo_token.access_token, application.id)
+        data = prepare_open_case_payload(application)
+        do_ahjo_request_with_json_payload(ahjo_api_url, headers, data, application)
+    except ObjectDoesNotExist as e:
+        LOGGER.error(f"Object not found: {e}")
+    except ImproperlyConfigured as e:
+        LOGGER.error(f"Improperly configured: {e}")

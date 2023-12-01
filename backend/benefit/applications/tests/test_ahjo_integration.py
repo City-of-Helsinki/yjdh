@@ -6,6 +6,7 @@ from typing import List
 from unittest.mock import patch
 
 import pytest
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.http import FileResponse
 from django.urls import reverse
 
@@ -24,6 +25,7 @@ from applications.services.ahjo_integration import (
     generate_composed_files,
     generate_single_approved_file,
     generate_single_declined_file,
+    get_application_for_ahjo,
     REJECTED_TITLE,
 )
 from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
@@ -33,6 +35,7 @@ from companies.tests.factories import CompanyFactory
 from helsinkibenefit.tests.conftest import *  # noqa
 from shared.common.tests.utils import normalize_whitespace
 from shared.service_bus.enums import YtjOrganizationCode
+from users.models import User
 
 DE_MINIMIS_AID_PARTIAL_TEXT = (
     # In English ~= "support is granted as insignificant i.e. de minimis support"
@@ -409,3 +412,24 @@ def test_ahjo_callback_unauthorized_ip_not_allowed(
 
     response = ahjo_client.post(url, **auth_headers)
     assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_get_application_for_ahjo_success(decided_application):
+    user = decided_application.calculation.handler
+    User.objects.filter(pk=user.id).update(ad_username="foobar")
+    assert get_application_for_ahjo(decided_application.id) == decided_application
+
+
+@pytest.mark.django_db
+def test_get_application_for_ahjo_no_application():
+    # Try to get an application with a non-existing id
+    with pytest.raises(ObjectDoesNotExist):
+        get_application_for_ahjo(uuid.uuid4())
+
+
+@pytest.mark.django_db
+def test_get_application_for_ahjo_no_ad_username(decided_application):
+    # Try to get an application with a handler that has no ad_username
+    with pytest.raises(ImproperlyConfigured):
+        get_application_for_ahjo(decided_application.id)
