@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "compile": "node src/emails/generate-emails.mjs",
-    "export": "yarn compile && cp -R src/emails/build/ ../../../backend/benefit/applications/templates/emails/generated/"
+    "clean": "rm -Rf src/emails/build/**",
+    "export": "yarn clean && yarn compile && cp -R src/emails/build/ ../../../backend/benefit/helsinkibenefit/templates/emails/mjml-generated/"
   },
   "dependencies": {
     "mjml": "^4.14.1"

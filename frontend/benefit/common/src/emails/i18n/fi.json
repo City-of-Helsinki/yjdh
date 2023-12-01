@@ -25,9 +25,23 @@
     "bodyText": "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen. Voit lukea viestin Helsinki-lisän asiointipalvelussa.",
     "ctaButton": "Kirjaudu palveluun ja lue viesti"
   },
+  "draftExpiry": {
+    "headerText": "Helsinki-lisä-hakemuksesi luonnos vanhenee",
+    "heading": "Helsinki-lisä-hakemuksesi luonnos vanhenee {{ expiry_date }}",
+    "bodyText": "Helsinki-lisä-hakemuksesi {{application.application_number}} luonnos vanhentuu kahden viikon kuluttua {{ expiry_date }}. Voit päivittää Helsinki-lisä-hakemuksesi tietoja tai poistaa hakemuksen kirjautumalla Helsinki-lisä palveluun ja avaamalla hakemuksesi.",
+    "ctaButton": "Jatka Helsinki-lisä -hakemuksen täyttöä",
+    "helper": {
+      "text": "Ohjeet ja lisätietoa hakulomakkeen täyttämiseen löydät Helsingin kaupungin sivuilta.",
+      "link": {
+        "title": "Lue lisãä Helsinki-lisän hakemisesta",
+        "url": "#"
+      }
+    }
+  },
   "application": {
     "applicationDetails": "Hakemuksen tiedot",
     "applicationNumber": "Hakemusnumero",
-    "createdAt": "Hakemuksen lähetyspäivä"
+    "createdAt": "Hakemuksen lähetyspäivä",
+    "title": "Hakemuksen tila"
   }
 }
