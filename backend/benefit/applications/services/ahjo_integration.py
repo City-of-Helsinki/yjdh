@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-import urllib.request
 import uuid
 import zipfile
 from collections import defaultdict
@@ -22,7 +21,6 @@ from applications.models import AhjoSetting, AhjoStatus, Application
 from applications.services.ahjo_authentication import AhjoConnector
 from applications.services.ahjo_payload import prepare_open_case_payload
 from applications.services.applications_csv_report import ApplicationsCsvService
-from common.utils import encode_multipart_formdata
 from companies.models import Company
 
 
@@ -419,36 +417,6 @@ def create_status_for_application(application: Application):
     )
 
 
-def do_ahjo_request_with_form_data(
-    url: str,
-    headers: dict,
-    data: dict,
-    application: Application,
-):
-    json_data = json.dumps(data)
-    form_data, content_type = encode_multipart_formdata({"case": json_data})
-
-    headers["Content-Type"] = content_type
-
-    try:
-        request = urllib.request.Request(
-            f"{url}/cases",
-            method="POST",
-            headers=headers,
-            data=form_data.encode("utf-8"),
-        )
-
-        with urllib.request.urlopen(request) as response:
-            response_data = response.read()
-            print(response.status)
-            print(response_data.decode("utf-8"))
-
-        create_status_for_application(application)
-    except Exception as e:
-        # Handle any other error
-        LOGGER.error(f"Error occurred: {e}")
-
-
 def do_ahjo_request_with_json_payload(
     url: str, headers: dict, data: dict, application: Application, timeout: int = 10
 ):
@@ -491,5 +459,4 @@ def open_case_in_ahjo(application_id: uuid):
     headers = prepare_headers(ahjo_token.access_token, application.id)
     data = prepare_open_case_payload(application)
 
-    # do_ahjo_request_with_form_data(ahjo_api_url, headers, data, application)
     do_ahjo_request_with_json_payload(ahjo_api_url, headers, data, application)

@@ -2,7 +2,6 @@ import decimal
 import functools
 import hashlib
 import itertools
-import uuid
 from datetime import date, timedelta
 from typing import Iterator, Tuple, Union
 
@@ -442,20 +441,3 @@ def hash_file(file: File) -> str:
 
         # Return the hexadecimal representation of the hash
     return sha256.hexdigest()
-
-
-def encode_multipart_formdata(fields: dict) -> Tuple[str, str]:
-    boundary = uuid.uuid4().hex
-    body = []
-
-    for field, value in fields.items():
-        body.append(f"--{boundary}")
-        body.append(f'Content-Disposition: form-data; name="{field}"')
-        body.append("")
-        body.append(value)
-
-    body.append(f"--{boundary}--")
-    body.append("")
-    body_str = "\r\n".join(body)
-    content_type = f"multipart/form-data; boundary={boundary}"
-    return body_str, content_type
