@@ -401,11 +401,7 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
 
     @property
     def contact_person(self):
-        return (
-            self.company_contact_person_first_name
-            + " "
-            + self.company_contact_person_last_name
-        )
+        return f"{self.company_contact_person_first_name} {self.company_contact_person_last_name}"
 
     def get_log_entry_field(self, to_statuses, field_name):
         if (
