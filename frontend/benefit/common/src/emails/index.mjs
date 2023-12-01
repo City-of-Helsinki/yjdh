@@ -53,7 +53,6 @@ const main = () => {
         const json = JSON.parse(fs.readFileSync(path.join(__dirname, 'i18n', jsonFile)));
         // flatten the object structure: { "a": { "b": "c" } } becomes { "a.b": "c" } etc.
         translations[lang] = flattenJSON(json);
-        console.log(translations['fi']);
       } catch (e) {
         console.log(`FAILED to parse i18n file: ${jsonFile}`, e);
       }
@@ -64,7 +63,7 @@ const main = () => {
     .filter((entity) => entity.isFile())
     .map((file) => file.name)
     .forEach((templateFile) => {
-      if (templateFile.charAt(0) === '.') return; // skip hidden system files
+      if (templateFile.startsWith('.')) return; // skip hidden system files
       // convert mjml to html
       let fileContent = fs.readFileSync(path.join(__dirname, 'templates', templateFile));
       let htmlContent = mjml(fileContent.toString(), {
@@ -79,6 +78,8 @@ const main = () => {
       Object.keys(translations).forEach((lang) => {
         if (lang) {
           let translatedContent = translateContent(htmlContent, translations[lang]);
+          if (new RegExp(/\${(.*)}/).test(translatedContent))
+            console.log(`WARNING: ${templateFile} contains untranslated text: ${lang}`);
           writeEmailFile(templateFile, translatedContent, 'html', lang);
 
           if (textContent) {
@@ -87,7 +88,7 @@ const main = () => {
           }
         } else {
           // the untranslated raw html version (text not relevant, would be identical to the template)
-          writeEmailFile(templateFile, htmlContent, 'html');
+          // writeEmailFile(templateFile, htmlContent, 'html');
         }
       });
     });

@@ -1,30 +1,33 @@
 {
-  "header": {
-    "newMessageReceived": "Olet saanut uuden viestin"
-  },
   "footer": {
     "links": {
       "aboutHelsinkiBenefit": {
-        "title": "",
-        "url": ""
+        "title": "Tietoa Helsinki-lisästä",
+        "url": "#"
       },
       "customerService": {
-        "title": "",
-        "url": ""
+        "title": "Asiakaspalvelu ja yhteystiedot",
+        "url": "#"
       }
     }
   },
   "general": {
+    "greeting": "Hei!",
     "cityOfHelsinki": "Helsingin kaupunki",
-    "serviceName": "Helsinki-lisä"
+    "serviceName": "Helsinki-lisä",
+    "bestRegards1": "Ystävällisin terveisin,",
+    "bestRegards2": "Helsinki-lisän tiimi",
+    "automaticReplyDisclaimer": "Tämä on automaattinen ilmoitus sinulle lähetetystä verkkoviestistä. Ethän vastaa tähän sähköpostiin, sillä vastauksia ei käsitellä. Ota tarvittaessa yhteyttä neuvontaan sähköpostitse helsinkilisa@hel.fi."
   },
-  "newMessageHeading": "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen",
-  "newMessageBody": "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen. Voit lukea viestin Helsinki-lisän asiointipalvelussa.",
-  "bestRegards1": "Ystävällisin terveisin",
-  "bestRegards2": "Helsinki-lisän tiimi",
-  "applicationDetails": "Hakemuksen tiedot",
-  "applicationNumber": "Hakemusnumero",
-  "applicationSent": "Hakemuksen lähetyspäivä",
-  "ctaLoginAndReadMessage": "Kirjaudu palveluun ja lue viesti",
-  "automaticReplyDisclaimer": "Tämä on automaattinen ilmoitus sinulle lähetetystä verkkoviestistä. Ethän vastaa tähän viestiin, sillä vastauksia ei käsitellä. Ota tarvittaessa yhteyttä neuvontaan sähköpostitse helsinkilisa@hel.fi."
+  "receivedMessage": {
+    "headerText": "Olet saanut uuden viestin",
+    "heading": "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen",
+    "bodyText": "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen. Voit lukea viestin Helsinki-lisän asiointipalvelussa.",
+    "ctaButton": "Kirjaudu palveluun ja lue viesti"
+  },
+  "application": {
+    "applicationDetails": "Hakemuksen tiedot",
+    "applicationNumber": "Hakemusnumero",
+    "createdAt": "Hakemuksen lähetyspäivä"
+  }
 }

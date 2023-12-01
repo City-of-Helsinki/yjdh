@@ -1,4 +1,4 @@
-<mj-section background-color="#fff">
+<mj-section background-color="#fff" padding-top="30px">
   <mj-column>
     <mj-table>
       <tr>
