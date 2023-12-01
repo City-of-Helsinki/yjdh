@@ -269,10 +269,15 @@ MIDDLEWARE = [
     "simple_history.middleware.HistoryRequestMiddleware",
 ]
 
+MJML_COMPILED_EMAIL_TEMPLATE_PATHS = [
+    os.path.join(BASE_DIR, "helsinkibenefit/templates/emails/mjml-generated/html"),
+    os.path.join(BASE_DIR, "helsinkibenefit/templates/emails/mjml-generated/txt"),
+]
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "templates/emails/generated/html")],
+        "DIRS": [] + MJML_COMPILED_EMAIL_TEMPLATE_PATHS,
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

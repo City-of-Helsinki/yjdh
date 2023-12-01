@@ -3,6 +3,7 @@ from smtplib import SMTPException
 
 from django.conf import settings
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
 from django.utils import translation
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
@@ -63,12 +64,20 @@ def send_email_to_applicant(
 
     with translation.override(application.applicant_language):
         try:
-            from django.template.loader import render_to_string
-
             html_message = render_to_string(
                 "received-message_fi.html",
                 {
                     "current_year": "2023",
+                    "application": {
+                        "created_at": application.created_at,
+                        "application_number": application.application_number,
+                    },
+                },
+            )
+
+            message = render_to_string(
+                "received-message_fi.txt",
+                {
                     "application": {
                         "created_at": application.created_at,
                         "application_number": application.application_number,
