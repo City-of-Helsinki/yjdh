@@ -369,7 +369,7 @@ def get_token() -> str:
     try:
         ahjo_auth_code = AhjoSetting.objects.get(name="ahjo_code").data
         LOGGER.info(f"Retrieved auth code: {ahjo_auth_code}")
-        connector = AhjoConnector(requests)
+        connector = AhjoConnector()
 
         if not connector.is_configured():
             LOGGER.warning("AHJO connector is not configured")

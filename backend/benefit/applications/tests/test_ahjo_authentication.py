@@ -1,29 +1,32 @@
 from datetime import datetime, timedelta
-from unittest.mock import Mock
 
 import pytest
-import requests
+import requests_mock
+from django.core.exceptions import ImproperlyConfigured
 
 from applications.models import AhjoSetting
 from applications.services.ahjo_authentication import AhjoConnector, AhjoToken
 
 
 @pytest.fixture
-def requests_mock():
-    return Mock(spec=requests.Session)
+def ahjo_connector():
+    return AhjoConnector()
 
 
 @pytest.fixture
-def ahjo_connector(requests_mock: Mock):
-    return AhjoConnector(requests_mock)
+def token_response():
+    return {
+        "access_token": "access_token",
+        "refresh_token": "refresh_token",
+        "expires_in": "3600",
+    }
 
 
-def test_is_configured(ahjo_connector: AhjoConnector):
-    # Test with all config options set
-    ahjo_connector.token_url = "https://example.com/token"
-    ahjo_connector.client_id = "client_id"
-    ahjo_connector.client_secret = "client_secret"
-    ahjo_connector.redirect_uri = "https://example.com/callback"
+def test_is_configured(ahjo_connector, settings):
+    settings.AHJO_TOKEN_URL = "http://example.com/token"
+    settings.AHJO_CLIENT_ID = "client_id"
+    settings.AHJO_CLIENT_SECRET = "client_secret"
+    settings.AHJO_REDIRECT_URL = "http://example.com/redirect"
     assert ahjo_connector.is_configured() is True
 
     # Test with missing config options
@@ -31,45 +34,44 @@ def test_is_configured(ahjo_connector: AhjoConnector):
     assert ahjo_connector.is_configured() is False
 
 
-def test_get_new_token(requests_mock, ahjo_connector: AhjoConnector):
+def test_get_new_token(ahjo_connector, token_response):
     # Test with valid auth code
-    requests_mock.post.return_value.status_code = 200
-    requests_mock.post.return_value.json.return_value = {
-        "access_token": "access_token",
-        "refresh_token": "refresh_token",
-        "expires_in": "3600",
-    }
-    token = ahjo_connector.get_new_token("auth_code")
-    assert token.access_token == "access_token"
-    assert token.refresh_token == "refresh_token"
-    assert isinstance(token.expires_in, datetime)
+    with requests_mock.Mocker() as m:
+        m.post(
+            "https://johdontyopoytahyte.hel.fi/ids4/connect/token",
+            json=token_response,
+        )
+
+        token = ahjo_connector.get_new_token("authcode123")
+        assert isinstance(token.expires_in, datetime)
+        assert token.access_token == "access_token"
+        assert token.refresh_token == "refresh_token"
 
     # Test with missing auth code
-    with pytest.raises(Exception):
+    with pytest.raises(ImproperlyConfigured):
         ahjo_connector.get_new_token("")
 
 
-def test_refresh_token(requests_mock, ahjo_connector: AhjoConnector):
+def test_refresh_token(ahjo_connector, token_response):
     # Test with valid refresh token
     AhjoSetting.objects.create(
         name="ahjo_access_token",
         data={
-            "access_token": "dummy token",
+            "access_token": "access_token",
             "refresh_token": "refresh_token",
             "expires_in": datetime.now().isoformat(),
         },
     )
+    with requests_mock.Mocker() as m:
+        m.post(
+            "https://johdontyopoytahyte.hel.fi/ids4/connect/token",
+            json=token_response,
+        )
 
-    requests_mock.post.return_value.status_code = 200
-    requests_mock.post.return_value.json.return_value = {
-        "access_token": "new_access_token",
-        "refresh_token": "new_refresh_token",
-        "expires_in": "3600",
-    }
-    token = ahjo_connector.refresh_token()
-    assert token.access_token == "new_access_token"
-    assert token.refresh_token == "new_refresh_token"
-    assert isinstance(token.expires_in, datetime)
+        token = ahjo_connector.refresh_token()
+        assert token.access_token == "access_token"
+        assert token.refresh_token == "refresh_token"
+        assert isinstance(token.expires_in, datetime)
 
     # Test with missing refresh token
     AhjoSetting.objects.all().delete()
@@ -77,24 +79,23 @@ def test_refresh_token(requests_mock, ahjo_connector: AhjoConnector):
         ahjo_connector.refresh_token()
 
 
-def test_do_token_request(requests_mock, ahjo_connector: AhjoConnector):
+def test_do_token_request(ahjo_connector: AhjoConnector, token_response):
     # Test with successful request
-    requests_mock.post.return_value.status_code = 200
-    requests_mock.post.return_value.json.return_value = {
-        "access_token": "access_token",
-        "refresh_token": "refresh_token",
-        "expires_in": "3600",
-    }
-    payload = {"grant_type": "authorization_code", "code": "auth_code"}
-    token = ahjo_connector.do_token_request(payload)
-    assert token.access_token == "access_token"
-    assert token.refresh_token == "refresh_token"
-    assert isinstance(token.expires_in, datetime)
 
-    # Test with failed request
-    requests_mock.post.return_value.status_code = 400
-    with pytest.raises(Exception):
-        ahjo_connector.do_token_request(payload)
+    with requests_mock.Mocker() as m:
+        m.post(
+            "https://johdontyopoytahyte.hel.fi/ids4/connect/token", json=token_response
+        )
+
+        token = ahjo_connector.do_token_request({})
+        assert token.access_token == "access_token"
+        assert token.refresh_token == "refresh_token"
+        assert isinstance(token.expires_in, datetime)
+
+        # Test with failed request
+        m.post("https://johdontyopoytahyte.hel.fi/ids4/connect/token", status_code=400)
+        with pytest.raises(Exception):
+            ahjo_connector.do_token_request({})
 
 
 def test_get_token_from_db(ahjo_connector: AhjoConnector):
