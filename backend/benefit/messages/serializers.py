@@ -55,6 +55,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
             if (
                 application.status not in self.APPLICANT_MESSAGE_ALLOWED_STATUSES
+                or application.batch
                 or application.archived
             ):
                 raise serializers.ValidationError(
