@@ -63,11 +63,25 @@ def send_email_to_applicant(
 
     with translation.override(application.applicant_language):
         try:
+            from django.template.loader import render_to_string
+
+            html_message = render_to_string(
+                "received-message_fi.html",
+                {
+                    "current_year": "2023",
+                    "application": {
+                        "created_at": application.created_at,
+                        "application_number": application.application_number,
+                    },
+                },
+            )
+
             return send_mail(
                 subject=subject if subject else _message_notification_email_subject(),
                 message=message
                 if message
                 else _message_notification_email_body(application),
+                html_message=html_message,
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[application.company_contact_person_email],
                 fail_silently=False,

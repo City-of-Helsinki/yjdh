@@ -252,7 +252,6 @@ INSTALLED_APPS = [
     "mozilla_django_oidc",
     "django_auth_adfs",
     "helusers.apps.HelusersConfig",
-    "mjml",
 ]
 
 AUTH_USER_MODEL = "users.User"
@@ -273,7 +272,7 @@ MIDDLEWARE = [
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "templates/emails/generated/html")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
