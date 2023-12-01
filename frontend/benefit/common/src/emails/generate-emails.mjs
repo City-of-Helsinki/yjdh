@@ -9,6 +9,10 @@ const templateFolder = path.join(__dirname, 'templates');
 const i18nFolder = path.join(__dirname, 'i18n');
 const translations = { '': {} }; // the empty string key is for untranslated texts
 
+const doNotModifyNag = `<head>
+<!-- ### NEVER MAKE MODIFICATIONS TO THIS GENERATED HTML DIRECTLY ### -->
+<!-- ### ALL MODIFICATIONS SHOULD BE DONE TO MJML TEMPLATE FILES! ### -->`;
+
 const flattenJSON = (obj = {}, res = {}, extraKey = '') => {
   for (let key in obj) {
     if (typeof obj[key] !== 'object') {
@@ -78,6 +82,7 @@ const main = () => {
       Object.keys(translations).forEach((lang) => {
         if (lang) {
           let translatedContent = translateContent(htmlContent, translations[lang]);
+          translatedContent = translatedContent.replace('<head>', doNotModifyNag);
           if (new RegExp(/\${(.*)}/).test(translatedContent))
             console.log(`WARNING: ${templateFile} contains untranslated text: ${lang}`);
           writeEmailFile(templateFile, translatedContent, 'html', lang);

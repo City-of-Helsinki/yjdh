@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "node src/emails/index.mjs"
+    "compile": "node src/emails/generate-emails.mjs",
+    "export": "yarn compile && cp -R src/emails/build/ ../../../backend/benefit/applications/templates/emails/generated/"
   },
   "dependencies": {
     "mjml": "^4.14.1"
