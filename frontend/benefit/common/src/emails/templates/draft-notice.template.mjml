@@ -2,12 +2,12 @@
   <mj-head>
     <mj-include path="partials/base.css" type="css" />
     <mj-include path="partials/attributes.mjml" />
-    <mj-title>${receivedMessage.headerText}</mj-title>
+    <mj-title>${draftExpiring.headerText}</mj-title>
   </mj-head>
   <mj-body font="HelsinkiGrotesk">
     <mj-section background-color="#D8D8D8" padding-bottom="10px" padding-top="10px">
       <mj-column>
-        <mj-text font-size="15px">${general.serviceName}: ${receivedMessage.headerText}</mj-text>
+        <mj-text font-size="15px">${general.serviceName}: ${draftExpiring.headerText}</mj-text>
       </mj-column>
     </mj-section>
 
@@ -15,18 +15,38 @@
 
     <mj-section background-color="#fff" padding-bottom="0px">
       <mj-column>
-        <mj-text font-weight="600" font-size="34px">${receivedMessage.heading}</mj-text>
+        <mj-text font-weight="600" font-size="34px">${draftExpiring.heading}</mj-text>
         <mj-divider border-color="#0072c6" />
         <mj-text padding-bottom="20px" padding-top="10px">${general.greeting}</mj-text>
-        <mj-text>${receivedMessage.bodyText}</mj-text>
+        <mj-text>${draftExpiring.bodyText}</mj-text>
       </mj-column>
     </mj-section>
+
+    <mj-section padding-top="0px" padding-bottom="0px">
+      <mj-column>
+        <mj-button align="left" background-color="#0072c6" href="https://helsinkilisa.hel.fi"
+          >${draftExpiring.ctaButton}</mj-button
+        >
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding-top="10px">
+      <mj-column>
+        <mj-text>${draftExpiring.helper.text}</mj-text>
+        <mj-spacer />
+        <mj-text>
+          <a href="${draftExpiring.helper.link.url}">${draftExpiring.helper.link.title}</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
     <mj-section padding-bottom="0px">
       <mj-column>
         <mj-text line-height="100%">${general.bestRegards1}</mj-text>
         <mj-text line-height="100%">${general.bestRegards2}</mj-text>
       </mj-column>
     </mj-section>
+
     <mj-section padding-bottom="0px">
       <mj-column>
         <mj-text font-weight="600" font-size="18px">${application.applicationDetails}</mj-text>
@@ -36,18 +56,12 @@
             <td style="padding: 15px 0; text-align: right">{{ application.application_number }}</td>
           </tr>
           <tr style="border-bottom: 1px solid #ecedee">
-            <td style="padding: 15px 0">${application.createdAt}</td>
-            <td style="padding: 15px 0; text-align: right">{{ application.created_at }}</td>
+            <td style="padding: 15px 0">${application.status.title}</td>
+            <td style="padding: 15px 0; text-align: right">
+              <span style="background: #fef4d4; padding: 7px 14px">${application.status.unfinished}</span>
+            </td>
           </tr>
         </mj-table>
-      </mj-column>
-    </mj-section>
-
-    <mj-section padding-bottom="0px">
-      <mj-column>
-        <mj-button align="left" background-color="#0072c6" href="https://helsinkilisa.hel.fi"
-          >${receivedMessage.ctaButton}</mj-button
-        >
       </mj-column>
     </mj-section>
 

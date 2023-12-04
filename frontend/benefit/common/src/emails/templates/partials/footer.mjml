@@ -16,12 +16,14 @@
   <mj-column>
     <mj-text font-weight="600" font-size="20px">${general.serviceName}</mj-text>
     <mj-divider border-width="1px" />
+    <mj-spacer height="8px" />
     <mj-text>
       <a href="${footer.links.aboutHelsinkiBenefit.url}">${footer.links.aboutHelsinkiBenefit.title}</a>
     </mj-text>
     <mj-text>
       <a href="${footer.links.customerService.url}">${footer.links.customerService.title}</a>
     </mj-text>
+    <mj-spacer height="8px" />
     <mj-divider border-width="1px" />
     <mj-text>© ${general.cityOfHelsinki} {{current_year}} </mj-text>
   </mj-column>
