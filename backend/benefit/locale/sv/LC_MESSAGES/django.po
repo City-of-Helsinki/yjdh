@@ -904,13 +904,13 @@ msgstr "Titel"
 msgid "Working hours per week"
 msgstr "Arbetstid per vecka"
  
-msgid "Gross salary / month"
+msgid "Gross salary per month"
 msgstr "Bruttolön per månad"
  
-msgid "Indirect labour costs"
+msgid "Indirect labour costs per month"
 msgstr "Bikostnader per månad"
  
-msgid "Holiday pay"
+msgid "Holiday pay per month"
 msgstr "Semesterpenning per månad"
  
 msgid "Applicable collective agreement"
@@ -981,5 +981,3 @@ msgstr "Inget stöd"
 
 msgid "Printed at"
 msgstr "Tryckt"
-
-

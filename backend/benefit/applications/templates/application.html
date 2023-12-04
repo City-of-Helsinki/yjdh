@@ -184,16 +184,16 @@
                     <div class="value">{{application.employee.working_hours | dot_to_comma}}</div>
                 </div>
                 <div class="row">
-                    <div class="label">{{ _("Gross salary / month") }}</div>
+                    <div class="label">{{ _("Gross salary per month") }}</div>
                     <div class="value">{{application.employee.monthly_pay | to_euro}}</div>
                 </div>
                 <div class="row">
-                    <div class="label">{{ _("Indirect labour costs") }}</div>
-                    <div class="value">{{ application.employee.other_expenses | to_euro}}</div>
+                    <div class="label">{{ _("Holiday pay per month") }}</div>
+                    <div class="value">{{ application.employee.vacation_money | to_euro}}</div>
                 </div>
                 <div class="row">
-                    <div class="label">{{ _("Holiday pay") }}</div>
-                    <div class="value">{{ application.employee.vacation_money | to_euro}}</div>
+                    <div class="label">{{ _("Indirect labour costs per month") }}</div>
+                    <div class="value">{{ application.employee.other_expenses | to_euro}}</div>
                 </div>
                 <div class="row">
                     <div class="label">{{ _("Applicable collective agreement") }}</div>
@@ -279,11 +279,14 @@
                 <h3>{{ _("Attachments") }}</h3>
                 {% for attachment in attachments %}
                 <div class="row">
+                    {% if application.pay_subsidy_granted == "granted_aged" and attachment.attachment_type == "pay_subsidy_decision" %}
+                    <div class="label">{{ _("granted_aged") }}</div>
+                    {% else %}
                     <div class="label">{% translate attachment.attachment_type %}</div>
-                    <div class="value"><a href="{{ request.get_host }}{{attachment.attachment_file}}">{{ attachment.attachment_file }}</a></div>
+                    {% endif %}
+                    <div class="value">{{ attachment.attachment_file }}</div>
                 </div>
                 {% endfor %}
-
             </section>
         </article>
         {% include "footer.html" with page="3" %}

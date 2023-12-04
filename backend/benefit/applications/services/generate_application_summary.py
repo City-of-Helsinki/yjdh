@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Union
 
 import pdfkit
@@ -24,6 +25,7 @@ def get_context_for_summary_context(application):
 
     return {
         "application": application,
+        "today": date.today(),
         "attachments": application.attachments.all(),
         "de_minimis_amount": total_de_minimis_amount(application),
         "de_minimis_aid_set": application.de_minimis_aid_set.all(),

@@ -38,11 +38,11 @@ from applications.services.ahjo_integration import (
     prepare_csv_file,
     prepare_pdf_files,
 )
-from applications.services.app_generated_files import (
+from applications.services.applications_csv_report import ApplicationsCsvService
+from applications.services.generate_application_summary import (
     generate_application_summary_file,
     get_context_for_summary_context,
 )
-from applications.services.applications_csv_report import ApplicationsCsvService
 from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
 from messages.models import MessageType
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
