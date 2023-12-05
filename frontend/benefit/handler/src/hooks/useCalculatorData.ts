@@ -3,7 +3,7 @@ import { CalculationFormProps } from 'benefit/handler/types/application';
 import { getErrorText } from 'benefit/handler/utils/forms';
 import { FormikProps } from 'formik';
 import { TFunction, useTranslation } from 'next-i18next';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useLocale from 'shared/hooks/useLocale';
 import { Language } from 'shared/i18n/i18n';
 import { focusAndScroll } from 'shared/utils/dom.utils';
@@ -29,9 +29,7 @@ const useCalculatorData = (
   const translationsBase = `common:calculators.${calculatorType}`;
   const { t } = useTranslation();
 
-  const { errors, touched, values } = formik;
-
-  const didMount = useRef(false);
+  const { errors, touched, values, dirty } = formik;
 
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
@@ -45,6 +43,7 @@ const useCalculatorData = (
     void formik.validateForm().then((errs) => {
       const fieldName = Object.keys(errs)[0];
       if (!fieldName) {
+        setIsRecalculationRequired(false);
         return formik.submitForm();
       }
       return focusAndScroll(fieldName);
@@ -56,10 +55,8 @@ const useCalculatorData = (
   };
 
   useEffect(() => {
-    if (didMount.current && !isRecalculationRequired)
-      setIsRecalculationRequired(true);
-    else didMount.current = true;
-  }, [isRecalculationRequired, values]);
+    if (dirty) setIsRecalculationRequired(true);
+  }, [dirty, values]);
 
   return {
     t,
