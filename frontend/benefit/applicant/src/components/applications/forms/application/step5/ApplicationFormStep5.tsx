@@ -173,7 +173,7 @@ const ApplicationFormStep5: React.FC<
                 )
               }
             >
-              Tulosta hakemus
+              {t(`common:applications.actions.print`)}
             </Button>
           </$GridCell>
         </$Grid>

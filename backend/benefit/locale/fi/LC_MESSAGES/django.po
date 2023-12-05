@@ -907,16 +907,16 @@ msgid "Job title"
 msgstr "Tehtävänimike"
  
 msgid "Working hours per week"
-msgstr "Työtunnit / vk"
+msgstr "Työtunnit / viikko"
  
-msgid "Gross salary / month"
-msgstr "Bruttopalkka / kk"
+msgid "Gross salary per month"
+msgstr "Bruttopalkka / kuukausi"
  
-msgid "Indirect labour costs"
-msgstr "Sivukulut / kk"
+msgid "Indirect labour costs per month"
+msgstr "Sivukulut / kuukausi"
  
-msgid "Holiday pay"
-msgstr "Lomaraha"
+msgid "Holiday pay per month"
+msgstr "Lomaraha / kuukausi"
  
 msgid "Applicable collective agreement"
 msgstr "Työehtosopimus"
