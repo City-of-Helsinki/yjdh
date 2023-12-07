@@ -4,7 +4,7 @@
     <mj-include path="partials/attributes.mjml" />
     <mj-title>${additionalInformationRequired.headerText}</mj-title>
   </mj-head>
-  <mj-body font="HelsinkiGrotesk">
+  <mj-body>
     <mj-section background-color="#D8D8D8" padding-bottom="10px" padding-top="10px">
       <mj-column>
         <mj-text font-size="15px">${general.serviceName}: ${additionalInformationRequired.headerText}</mj-text>

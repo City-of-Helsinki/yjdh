@@ -27,8 +27,8 @@
   },
   "draftExpiring": {
     "headerText": "Helsinki-lisä-hakemuksesi luonnos vanhenee",
-    "heading": "Helsinki-lisä-hakemuksesi luonnos vanhenee {{ expiry_date }}",
-    "bodyText": "Helsinki-lisä-hakemuksesi {{application.application_number}} luonnos vanhentuu kahden viikon kuluttua {{ expiry_date }}. Voit päivittää Helsinki-lisä-hakemuksesi tietoja tai poistaa hakemuksen kirjautumalla Helsinki-lisä palveluun ja avaamalla hakemuksesi.",
+    "heading": "Helsinki-lisä-hakemuksesi luonnos vanhenee {{ application_deletion_date }}",
+    "bodyText": "Helsinki-lisä-hakemuksesi {{application.application_number}} luonnos vanhentuu kahden viikon kuluttua {{ application_deletion_date }}. Voit päivittää Helsinki-lisä-hakemuksesi tietoja tai poistaa hakemuksen kirjautumalla Helsinki-lisä palveluun ja avaamalla hakemuksesi.",
     "ctaButton": "Jatka Helsinki-lisä -hakemuksen täyttöä",
     "helper": {
       "text": "Ohjeet ja lisätietoa hakulomakkeen täyttämiseen löydät Helsingin kaupungin sivuilta.",
@@ -41,7 +41,7 @@
   "additionalInformationRequired": {
     "headerText": "Hakemuksesi tarvitsee lisätietoja",
     "heading": "Helsinki-lisä -hakemus tarvitsee lisätietoja",
-    "bodyText": "Lähettämästäsi Helsinki-lisä-hakemuksesta puttu tarvittavia tietoia. Kiriaudu Helsinki-lisän asiointipalveluun ja täytä puttuvat tiedot {{ additional_information_deadline.date }} klo {{ additional_information_deadline.time }} mennessä.",
+    "bodyText": "Lähettämästäsi Helsinki-lisä-hakemuksesta puuttuu tarvittavia tietoja. Kirjaudu Helsinki-lisän asiointipalveluun ja täytä puttuvat tiedot {{ additional_information_deadline_date }} klo {{ additional_information_deadline_time }} mennessä.",
     "ctaButton": "Kirjaudu palveluun ja täydennä hakemusta",
     "helper": {
       "text": "Mikäli sinulla herää kysyttävää, lähetä meille viesti Helsinki-lisän asiointipalvelun kautta."

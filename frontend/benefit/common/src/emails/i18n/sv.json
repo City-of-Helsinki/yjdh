@@ -2,32 +2,59 @@
   "footer": {
     "links": {
       "aboutHelsinkiBenefit": {
-        "title": "Tietoa Helsinki-lisästä",
+        "title": "Information om Helsingforstillägget",
         "url": "#"
       },
       "customerService": {
-        "title": "Asiakaspalvelu ja yhteystiedot",
+        "title": "Kundtjänst och kontaktuppgifter",
         "url": "#"
       }
     }
   },
   "general": {
     "greeting": "Hei!",
-    "cityOfHelsinki": "Helsingin kaupunki",
-    "serviceName": "Helsinki-lisä",
-    "bestRegards1": "Ystävällisin terveisin,",
-    "bestRegards2": "Helsinki-lisän tiimi",
-    "automaticReplyDisclaimer": "Tämä on automaattinen ilmoitus sinulle lähetetystä verkkoviestistä. Ethän vastaa tähän sähköpostiin, sillä vastauksia ei käsitellä. Ota tarvittaessa yhteyttä neuvontaan sähköpostitse helsinkilisa@hel.fi."
+    "cityOfHelsinki": "Helsingfors stad",
+    "serviceName": "Helsingforstillägg",
+    "bestRegards1": "Med vänliga hälsningar",
+    "bestRegards2": "teamet för Helsingforstillägget",
+    "automaticReplyDisclaimer": "Detta är ett automatiskt meddelande om ett nätmeddelande som skickades till dig. Svara inte på detta meddelande. Svaren behandlas inte. Vid behov ta kontakt till rådgivningen per e-post helsinkilisa@hel.fi."
   },
   "receivedMessage": {
-    "headerText": "Olet saanut uuden viestin",
-    "heading": "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen",
-    "bodyText": "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen. Voit lukea viestin Helsinki-lisän asiointipalvelussa.",
-    "ctaButton": "Kirjaudu palveluun ja lue viesti"
+    "headerText": "Du har fått ett nytt meddelande",
+    "heading": "Du har fått ett nytt meddelande om ansökningen om Helsingforstillägget",
+    "bodyText": "Du har fått ett nytt meddelande om ansökningen om Helsingforstillägget. Du kan läsa meddelandet i e-tjänst för sysselsättning Helsingforstillägg.",
+    "ctaButton": "Logg in i tjänsten och läs meddelandet"
+  },
+  "draftExpiring": {
+    "headerText": "Ditt utkast för ansökan går ut",
+    "heading": "Ditt utkast för ansökan on Helsingforstillägget går ut {{application_deletion_date}}",
+    "bodyText": "Ditt utkast för ansökan om Helsingforstillägget {{application.application_number}} går ut om två veckor {{ application_deletion_date }}. Du kan uppdatera uppgifterna för din ansökan om Helsingforstillägget eller avlägsna ansökan genom att logga in på tjänsten för Helsingforstillägget och öppna din ansökan.",
+    "ctaButton": "Fortsätt fylla in ansökan om Helsingforstillägget",
+    "helper": {
+      "text": "Anvisningar och ytterligare information om hur du ska fylla in ansökan hittar du på Helsingfors stads webbplats.",
+      "link": {
+        "title": "Läs mer om att ansöka om Helsingforstillägget",
+        "url": "#"
+      }
+    }
+  },
+  "additionalInformationRequired": {
+    "headerText": "Din ansökan behöver ytterligare information",
+    "heading": "Ansökan om Helsingforstillägget behöver ytterligare information",
+    "bodyText": "Den ansökan om Helsingforstillägget du skickade saknar nödvändiga uppgifter. Logg in på e-tjänst för sysselsättning Helsingforstillägg och fyll in de saknande uppgifterna senast {{ additional_information_deadline_date }} kl. {{ additional_information_deadline_time }}.",
+    "ctaButton": "Logg in på tjänsten och komplettera ansökningen",
+    "helper": {
+      "text": "Om du har frågor, skicka oss ett meddelande genom e-tjänst för sysselsättning Helsingforstillägg."
+    }
   },
   "application": {
-    "applicationDetails": "Hakemuksen tiedot",
-    "applicationNumber": "Hakemusnumero",
-    "createdAt": "Hakemuksen lähetyspäivä"
+    "applicationDetails": "Uppgifter om ansökningen",
+    "applicationNumber": "Ansökningsnummer",
+    "createdAt": "Datum då ansökningen skickades",
+    "status": {
+      "title": "Ansökningsstatus",
+      "unfinished": "Oavslutat",
+      "additionalInformationRequired": "Väntar på mer information"
+    }
   }
 }

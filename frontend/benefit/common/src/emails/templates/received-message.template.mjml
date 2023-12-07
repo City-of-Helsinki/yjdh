@@ -4,7 +4,7 @@
     <mj-include path="partials/attributes.mjml" />
     <mj-title>${receivedMessage.headerText}</mj-title>
   </mj-head>
-  <mj-body font="HelsinkiGrotesk">
+  <mj-body>
     <mj-section background-color="#D8D8D8" padding-bottom="10px" padding-top="10px">
       <mj-column>
         <mj-text font-size="15px">${general.serviceName}: ${receivedMessage.headerText}</mj-text>
@@ -31,11 +31,25 @@
       <mj-column>
         <mj-text font-weight="600" font-size="18px">${application.applicationDetails}</mj-text>
         <mj-table font-size="15px">
-          <tr style="border-top: 1px solid #ecedee; border-bottom: 1px solid #ecedee; text-align: left">
+          <tr
+            style="
+              border-top: 1px solid #ecedee;
+              border-bottom: 1px solid #ecedee;
+              text-align: left;
+              mso-border-top-alt: solid #ecedee 1pt;
+              mso-border-bottom-alt: solid #ecedee 1pt;
+            "
+          >
             <td style="padding: 15px 0">${application.applicationNumber}</td>
             <td style="padding: 15px 0; text-align: right">{{ application.application_number }}</td>
           </tr>
-          <tr style="border-bottom: 1px solid #ecedee">
+          <tr
+            style="
+              border-bottom: 1px solid #ecedee;
+              mso-border-top-alt: solid #ecedee 1pt;
+              mso-border-bottom-alt: solid #ecedee 1pt;
+            "
+          >
             <td style="padding: 15px 0">${application.createdAt}</td>
             <td style="padding: 15px 0; text-align: right">{{ application.created_at }}</td>
           </tr>

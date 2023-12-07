@@ -1,0 +1,12 @@
+Hei!
+
+Lähettämästäsi Helsinki-lisä-hakemuksesta puttu tarvittavia tietoia. Kiriaudu Helsinki-lisän asiointipalveluun ja täytä puttuvat tiedot {{ additional_information_deadline.date }} klo {{ additional_information_deadline.time }} mennessä.
+Mikäli sinulla herää kysyttävää, lähetä meille viesti Helsinki-lisän asiointipalvelun kautta.
+
+Hakemuksen tiedot
+Hakemusnumero: {{application.application_number}}
+Hakemuksen tila: Odottaa lisätietoja
+Hakemuksen lähetyspäivä: {{ application.created_at }}
+
+Ystävällisin terveisin,
+Helsinki-lisän tiimi

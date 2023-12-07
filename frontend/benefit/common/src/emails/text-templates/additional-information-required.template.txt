@@ -10,4 +10,3 @@ ${application.createdAt}: {{ application.created_at }}
 
 ${general.bestRegards1}
 ${general.bestRegards2}
-

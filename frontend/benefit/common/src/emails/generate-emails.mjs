@@ -37,7 +37,7 @@ const writeEmailFile = (templateName, fileContent, emailType, emailLang) => {
   const emailFile = path.join(__dirname, `/build/${emailType}/` + fileName);
 
   fs.writeFileSync(emailFile, fileContent);
-  console.log(`WRITE: ${fileName}`);
+  console.log(`Write: ${fileName}`);
 };
 
 const main = () => {
@@ -58,7 +58,7 @@ const main = () => {
         // flatten the object structure: { "a": { "b": "c" } } becomes { "a.b": "c" } etc.
         translations[lang] = flattenJSON(json);
       } catch (e) {
-        console.log(`FAILED to parse i18n file: ${jsonFile}`, e);
+        console.log(`!! FAILED !! - Parse error in i18n file: ${jsonFile}`, e);
       }
     });
 
@@ -84,7 +84,7 @@ const main = () => {
           let translatedContent = translateContent(htmlContent, translations[lang]);
           translatedContent = translatedContent.replace('<head>', doNotModifyNag);
           if (new RegExp(/\${(.*)}/).test(translatedContent))
-            console.log(`WARNING: ${templateFile} contains untranslated text: ${lang}`);
+            console.log(`!! WARNING !! - ${templateFile} contains untranslated text: ${lang}`);
           writeEmailFile(templateFile, translatedContent, 'html', lang);
 
           if (textContent) {

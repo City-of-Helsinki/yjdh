@@ -2,32 +2,59 @@
   "footer": {
     "links": {
       "aboutHelsinkiBenefit": {
-        "title": "Tietoa Helsinki-lisästä",
+        "title": "Information about the Helsinki benefit",
         "url": "#"
       },
       "customerService": {
-        "title": "Asiakaspalvelu ja yhteystiedot",
+        "title": "Customer service and contact details",
         "url": "#"
       }
     }
   },
   "general": {
-    "greeting": "Hei!",
-    "cityOfHelsinki": "Helsingin kaupunki",
-    "serviceName": "Helsinki-lisä",
-    "bestRegards1": "Ystävällisin terveisin,",
-    "bestRegards2": "Helsinki-lisän tiimi",
-    "automaticReplyDisclaimer": "Tämä on automaattinen ilmoitus sinulle lähetetystä verkkoviestistä. Ethän vastaa tähän sähköpostiin, sillä vastauksia ei käsitellä. Ota tarvittaessa yhteyttä neuvontaan sähköpostitse helsinkilisa@hel.fi."
+    "greeting": "Hello!",
+    "cityOfHelsinki": "City of Helsinki",
+    "serviceName": "Helsinki benefit",
+    "bestRegards1": "Best regards,",
+    "bestRegards2": "The Helsinki benefit team",
+    "automaticReplyDisclaimer": "This is an automatic notification of an online message sent to you. Please do not reply to this message, as responses will not be processed. Please do not hesitate to contact the advisory service by e-mail at helsinkilisa@hel.fi."
   },
   "receivedMessage": {
-    "headerText": "Olet saanut uuden viestin",
-    "heading": "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen",
-    "bodyText": "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen. Voit lukea viestin Helsinki-lisän asiointipalvelussa.",
-    "ctaButton": "Kirjaudu palveluun ja lue viesti"
+    "headerText": "You have received a new message",
+    "heading": "You have received a new message regarding your Helsinki benefit application",
+    "bodyText": "You have received a new message regarding your Helsinki benefit application. You can read the message in the Helsinki benefit service.",
+    "ctaButton": "Log in to the service and read the message"
+  },
+  "draftExpiring": {
+    "headerText": "Your draft application will expire",
+    "heading": "Helsinki-lisä-hakemuksesi luonnos vanhenee {{ application_deletion_date }}",
+    "bodyText": "Your Helsinki benefit draft application {{application.application_number}} will expire in two weeks on {{ application_deletion_date }}. You can update the information in your Helsinki benefit application or delete your application by logging in to the Helsinki benefit e-service and opening your application.",
+    "ctaButton": "Continue filling in the Helsinki benefit application",
+    "helper": {
+      "text": "Visit the City of Helsinki’s website for instructions and more information on completing the application form.",
+      "link": {
+        "title": "Read more about applying for the Helsinki benefit",
+        "url": "#"
+      }
+    }
+  },
+  "additionalInformationRequired": {
+    "headerText": "Your application requires additional information",
+    "heading": "Your Helsinki benefit application requires additional information",
+    "bodyText": "The Helsinki benefit application you submitted is missing required information. Log in to the Helsinki benefit service and fill in the missing information by {{ additional_information_deadline_time }} on {{ additional_information_deadline_date }}.",
+    "ctaButton": "Log in and complete your application",
+    "helper": {
+      "text": "If you have any questions, please send us a message via the Helsinki benefit e-service."
+    }
   },
   "application": {
-    "applicationDetails": "Hakemuksen tiedot",
-    "applicationNumber": "Hakemusnumero",
-    "createdAt": "Hakemuksen lähetyspäivä"
+    "applicationDetails": "Application details",
+    "applicationNumber": "Application number",
+    "createdAt": "Application submission date",
+    "status": {
+      "title": "Application status",
+      "unfinished": "Unfinished",
+      "additionalInformationRequired": "Additional information required"
+    }
   }
 }
