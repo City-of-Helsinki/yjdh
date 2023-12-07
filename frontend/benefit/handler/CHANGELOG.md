@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.2.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v2.1.0...benefit-handler-v2.2.0) (2023-12-07)
+
+
+### Features
+
+* Full pdf summary of applications (HL-708, HL-903) ([#2524](https://github.com/City-of-Helsinki/yjdh/issues/2524)) ([644aaf1](https://github.com/City-of-Helsinki/yjdh/commit/644aaf1d13532acbcbc2f1252335a1ff7f88405d))
+
+
+### Bug Fixes
+
+* Calculation changed notification (HL-1057) ([#2552](https://github.com/City-of-Helsinki/yjdh/issues/2552)) ([ea65e7c](https://github.com/City-of-Helsinki/yjdh/commit/ea65e7c3b3cf2c68c30e026900f8bf1bab065a18))
+* Don't show 'per month' after total (HL-1046) ([40bb4ef](https://github.com/City-of-Helsinki/yjdh/commit/40bb4efcd85af2c448d11cb0f8e252f2c8831b1e))
+* Per month amounts in handled view (HL-1046) ([#2518](https://github.com/City-of-Helsinki/yjdh/issues/2518)) ([7a7f4ef](https://github.com/City-of-Helsinki/yjdh/commit/7a7f4efdab3447e2cfca7553183db0102bace61d))
+* Wrong calculator amounts in handling views (HL-1038) ([#2463](https://github.com/City-of-Helsinki/yjdh/issues/2463)) ([92ac83e](https://github.com/City-of-Helsinki/yjdh/commit/92ac83eef6add14c7d98a55612f444fc054e2e3f))
+
 ## [2.1.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v2.0.0...benefit-handler-v2.1.0) (2023-11-15)
 
 
