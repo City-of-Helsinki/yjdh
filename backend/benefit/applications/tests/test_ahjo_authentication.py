@@ -22,11 +22,11 @@ def token_response():
     }
 
 
-def test_is_configured(ahjo_connector, settings):
-    settings.AHJO_TOKEN_URL = "http://example.com/token"
-    settings.AHJO_CLIENT_ID = "client_id"
-    settings.AHJO_CLIENT_SECRET = "client_secret"
-    settings.AHJO_REDIRECT_URL = "http://example.com/redirect"
+def test_is_configured(ahjo_connector):
+    ahjo_connector.AHJO_TOKEN_URL = "http://example.com/token"
+    ahjo_connector.AHJO_CLIENT_ID = "client_id"
+    ahjo_connector.AHJO_CLIENT_SECRET = "client_secret"
+    ahjo_connector.AHJO_REDIRECT_URL = "http://example.com/redirect"
     assert ahjo_connector.is_configured() is True
 
     # Test with missing config options
