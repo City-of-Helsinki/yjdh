@@ -1,12 +1,12 @@
-Hei!
+Hello!
 
-Lähettämästäsi Helsinki-lisä-hakemuksesta puttu tarvittavia tietoia. Kiriaudu Helsinki-lisän asiointipalveluun ja täytä puttuvat tiedot {{ additional_information_deadline.date }} klo {{ additional_information_deadline.time }} mennessä.
-Mikäli sinulla herää kysyttävää, lähetä meille viesti Helsinki-lisän asiointipalvelun kautta.
+The Helsinki benefit application you submitted is missing required information. Log in to the Helsinki benefit service and fill in the missing information by {{ additional_information_deadline_time }} on {{ additional_information_deadline_date }}.
+If you have any questions, please send us a message via the Helsinki benefit e-service.
 
-Hakemuksen tiedot
-Hakemusnumero: {{application.application_number}}
-Hakemuksen tila: Odottaa lisätietoja
-Hakemuksen lähetyspäivä: {{ application.created_at }}
+Application details
+Application number: {{application.application_number}}
+Application status: Additional information required
+Application submission date: {{ application.created_at }}
 
-Ystävällisin terveisin,
-Helsinki-lisän tiimi
+Best regards,
+The Helsinki benefit team

@@ -1,3 +1,4 @@
+import datetime
 import logging
 from smtplib import SMTPException
 
@@ -20,7 +21,7 @@ APPLICATION_REOPENED_MESSAGE = _(
 )
 
 
-def _message_notification_email_subject():
+def default_email_notification_subject():
     # force evaluation of lazy string so that the messages in local memory queue remain translated
     # correctly during unit tests
     return str(_("You have received a new message from Helsinki benefit"))
@@ -47,8 +48,31 @@ def _message_notification_email_body(application):
     )
 
 
+def get_email_template_context(application: Application):
+    year = datetime.date.today().year
+
+    return {
+        "current_year": year,
+        "application": {
+            "created_at": application.created_at,
+            "application_number": application.application_number,
+        },
+        "language": application.applicant_language,
+    }
+
+
+def render_email_template(
+    email_context: dict, template_name: str, template_type: str = "txt"
+):
+    lang = email_context["language"] or "fi"
+    return render_to_string(f"{template_name}_{lang}.{template_type}", email_context)
+
+
 def send_email_to_applicant(
-    application: Application, subject: str = None, message: str = None
+    application: Application,
+    subject: str = None,
+    text_message: str = None,
+    html_message: str = None,
 ) -> int:
     """
     :param application: The application being reopened
@@ -64,33 +88,12 @@ def send_email_to_applicant(
 
     with translation.override(application.applicant_language):
         try:
-            html_message = render_to_string(
-                "received-message_fi.html",
-                {
-                    "current_year": "2023",
-                    "application": {
-                        "created_at": application.created_at,
-                        "application_number": application.application_number,
-                    },
-                },
-            )
-
-            message = render_to_string(
-                "received-message_fi.txt",
-                {
-                    "application": {
-                        "created_at": application.created_at,
-                        "application_number": application.application_number,
-                    },
-                },
-            )
-
             return send_mail(
-                subject=subject if subject else _message_notification_email_subject(),
-                message=message
-                if message
+                subject=subject if subject else default_email_notification_subject(),
+                message=text_message
+                if text_message
                 else _message_notification_email_body(application),
-                html_message=html_message,
+                html_message=html_message or None,
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[application.company_contact_person_email],
                 fail_silently=False,
@@ -117,6 +120,9 @@ def send_application_reopened_message(
     :param application: The application being reopened
     :param additional_information_needed_by: The date by which the applicant must provide the additional information
     """
+
+    formatted_info_needed_by = additional_information_needed_by.strftime("%d.%m.%Y")
+
     with translation.override(application.applicant_language):
         Message.objects.create(
             sender=user,
@@ -124,9 +130,20 @@ def send_application_reopened_message(
             message_type=MessageType.HANDLER_MESSAGE,
             content=format_lazy(
                 APPLICATION_REOPENED_MESSAGE,
-                additional_information_needed_by=additional_information_needed_by.strftime(
-                    "%d.%m.%Y"
-                ),
+                additional_information_needed_by=formatted_info_needed_by,
             ),
         )
-    send_email_to_applicant(application)
+
+        context = get_email_template_context(application)
+        context["additional_information_deadline_date"] = formatted_info_needed_by
+        context["additional_information_deadline_time"] = "23:00"
+
+        message = render_email_template(
+            context, "additional-information-required", "txt"
+        )
+        html_message = render_email_template(
+            context, "additional-information-required", "html"
+        )
+        send_email_to_applicant(
+            application, default_email_notification_subject(), message, html_message
+        )

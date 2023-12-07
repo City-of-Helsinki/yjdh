@@ -1,14 +1,14 @@
-Hei!
+Hello!
 
-Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen. Voit lukea viestin Helsinki-lisän asiointipalvelussa.
+You have received a new message regarding your Helsinki benefit application. You can read the message in the Helsinki benefit service.
 
-Hakemuksen tiedot
-Hakemusnumero: {{application.application_number}}
-Hakemuksen lähetyspäivä: {{ application.created_at }}
+Application details
+Application number: {{application.application_number}}
+Application submission date: {{ application.created_at }}
 
-Kirjaudu palveluun ja lue viesti: https://helsinkilisa.hel.fi
+Log in to the service and read the message: https://helsinkilisa.hel.fi
 
-Ystävällisin terveisin,
-Helsinki-lisän tiimi
+Best regards,
+The Helsinki benefit team
 
-Tämä on automaattinen ilmoitus sinulle lähetetystä verkkoviestistä. Ethän vastaa tähän sähköpostiin, sillä vastauksia ei käsitellä. Ota tarvittaessa yhteyttä neuvontaan sähköpostitse helsinkilisa@hel.fi.
+This is an automatic notification of an online message sent to you. Please do not reply to this message, as responses will not be processed. Please do not hesitate to contact the advisory service by e-mail at helsinkilisa@hel.fi.

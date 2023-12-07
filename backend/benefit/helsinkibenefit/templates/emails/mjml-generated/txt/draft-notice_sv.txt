@@ -1,17 +1,17 @@
 Hei!
 
-Helsinki-lisä-hakemuksesi {{application.application_number}} luonnos vanhentuu kahden viikon kuluttua {{ expiry_date }}. Voit päivittää Helsinki-lisä-hakemuksesi tietoja tai poistaa hakemuksen kirjautumalla Helsinki-lisä palveluun ja avaamalla hakemuksesi.
+Ditt utkast för ansökan om Helsingforstillägget {{application.application_number}} går ut om två veckor {{ application_deletion_date }}. Du kan uppdatera uppgifterna för din ansökan om Helsingforstillägget eller avlägsna ansökan genom att logga in på tjänsten för Helsingforstillägget och öppna din ansökan.
 
-Jatka Helsinki-lisä -hakemuksen täyttöä: https://helsinkilisa.hel.fi/
+Fortsätt fylla in ansökan om Helsingforstillägget: https://helsinkilisa.hel.fi/
 
-Ohjeet ja lisätietoa hakulomakkeen täyttämiseen löydät Helsingin kaupungin sivuilta.
+Anvisningar och ytterligare information om hur du ska fylla in ansökan hittar du på Helsingfors stads webbplats.
 
-Lue lisãä Helsinki-lisän hakemisesta: # 
+Läs mer om att ansöka om Helsingforstillägget: # 
 
-Ystävällisin terveisin,
-Helsinki-lisän tiimi
+Med vänliga hälsningar
+teamet för Helsingforstillägget
 
-Hakemusnumero: {{application.application_number}}
-Hakemuksen tila: Keskeneräinen
+Ansökningsnummer: {{application.application_number}}
+Ansökningsstatus: Oavslutat
 
-Tämä on automaattinen ilmoitus sinulle lähetetystä verkkoviestistä. Ethän vastaa tähän sähköpostiin, sillä vastauksia ei käsitellä. Ota tarvittaessa yhteyttä neuvontaan sähköpostitse helsinkilisa@hel.fi.
+Detta är ett automatiskt meddelande om ett nätmeddelande som skickades till dig. Svara inte på detta meddelande. Svaren behandlas inte. Vid behov ta kontakt till rådgivningen per e-post helsinkilisa@hel.fi.

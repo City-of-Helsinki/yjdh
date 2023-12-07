@@ -7,7 +7,11 @@ from django.utils.translation import gettext_lazy as _
 
 from applications.enums import ApplicationStatus
 from applications.models import Application
-from messages.automatic_messages import send_email_to_applicant
+from messages.automatic_messages import (
+    get_email_template_context,
+    render_email_template,
+    send_email_to_applicant,
+)
 
 APPLICATION_ABOUT_TO_BE_DELETED_MESSAGE = _(
     "Your application {id} will be deleted soon. If you want to continue the application process, please do so by "
@@ -48,12 +52,7 @@ def notify_applications(days_to_deletion: int, days_to_keep: int) -> int:
 
     applications_to_notify = Application.objects.filter(
         status=ApplicationStatus.DRAFT,
-        modified_at__lte=(
-            timezone.now() - timedelta(days=(days_to_keep - days_to_deletion))
-        ),
-        modified_at__gte=(
-            timezone.now() - timedelta(days=(days_to_keep - days_to_deletion + 1))
-        ),
+        modified_at__lte=(timezone.now()),
     )
 
     for application in applications_to_notify:
@@ -65,14 +64,20 @@ def notify_applications(days_to_deletion: int, days_to_keep: int) -> int:
 def _send_notification_mail(application: Application, days_to_deletion: int) -> int:
     """Send a notification mail to the applicant about the upcoming application deletion"""
 
-    subject = _("Your application is about to be deleted")
+    application_deletion_date = (
+        application.modified_at + timedelta(days=days_to_deletion)
+    ).strftime("%d.%m.%Y")
 
-    message = format_lazy(
+    format_lazy(
         APPLICATION_ABOUT_TO_BE_DELETED_MESSAGE,
         id=application.application_number,
-        application_deletion_date=(
-            application.modified_at + timedelta(days=days_to_deletion)
-        ).strftime("%d.%m.%Y"),
+        application_deletion_date=application_deletion_date,
     )
 
-    return send_email_to_applicant(application, subject, message)
+    subject = _("Your application is about to be deleted")
+    context = get_email_template_context(application)
+    context["application_deletion_date"] = application_deletion_date
+    message = render_email_template(context, "draft-notice", "txt")
+    html_message = render_email_template(context, "draft-notice", "html")
+
+    return send_email_to_applicant(application, subject, message, html_message)

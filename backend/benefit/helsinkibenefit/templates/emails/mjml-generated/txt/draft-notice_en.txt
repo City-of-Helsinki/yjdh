@@ -1,17 +1,17 @@
-Hei!
+Hello!
 
-Helsinki-lisä-hakemuksesi {{application.application_number}} luonnos vanhentuu kahden viikon kuluttua {{ expiry_date }}. Voit päivittää Helsinki-lisä-hakemuksesi tietoja tai poistaa hakemuksen kirjautumalla Helsinki-lisä palveluun ja avaamalla hakemuksesi.
+Your Helsinki benefit draft application {{application.application_number}} will expire in two weeks on {{ application_deletion_date }}. You can update the information in your Helsinki benefit application or delete your application by logging in to the Helsinki benefit e-service and opening your application.
 
-Jatka Helsinki-lisä -hakemuksen täyttöä: https://helsinkilisa.hel.fi/
+Continue filling in the Helsinki benefit application: https://helsinkilisa.hel.fi/
 
-Ohjeet ja lisätietoa hakulomakkeen täyttämiseen löydät Helsingin kaupungin sivuilta.
+Visit the City of Helsinki’s website for instructions and more information on completing the application form.
 
-Lue lisãä Helsinki-lisän hakemisesta: # 
+Read more about applying for the Helsinki benefit: # 
 
-Ystävällisin terveisin,
-Helsinki-lisän tiimi
+Best regards,
+The Helsinki benefit team
 
-Hakemusnumero: {{application.application_number}}
-Hakemuksen tila: Keskeneräinen
+Application number: {{application.application_number}}
+Application status: Unfinished
 
-Tämä on automaattinen ilmoitus sinulle lähetetystä verkkoviestistä. Ethän vastaa tähän sähköpostiin, sillä vastauksia ei käsitellä. Ota tarvittaessa yhteyttä neuvontaan sähköpostitse helsinkilisa@hel.fi.
+This is an automatic notification of an online message sent to you. Please do not reply to this message, as responses will not be processed. Please do not hesitate to contact the advisory service by e-mail at helsinkilisa@hel.fi.
