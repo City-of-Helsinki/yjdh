@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.3.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.2.0...benefit-applicant-v3.3.0) (2023-12-07)
+
+
+### Features
+
+* Add Askem feedback buttons (HL-922) ([5e6911e](https://github.com/City-of-Helsinki/yjdh/commit/5e6911ea4d6fdd52a0a76119311b4f6469d53ee5))
+* Add cookie consents modal (HL-909) ([4325ed4](https://github.com/City-of-Helsinki/yjdh/commit/4325ed4ede6c3dbb2baaeefc849c4252cca77984))
+* Full pdf summary of applications (HL-708, HL-903) ([#2524](https://github.com/City-of-Helsinki/yjdh/issues/2524)) ([644aaf1](https://github.com/City-of-Helsinki/yjdh/commit/644aaf1d13532acbcbc2f1252335a1ff7f88405d))
+* Open drawer on click of new messages bar ([#2492](https://github.com/City-of-Helsinki/yjdh/issues/2492)) ([11c80ab](https://github.com/City-of-Helsinki/yjdh/commit/11c80abd7ae4536db45c0d26f507af705f6fdc37))
+
+
+### Bug Fixes
+
+* Application pdf summary improvements ([#2537](https://github.com/City-of-Helsinki/yjdh/issues/2537)) ([8b86192](https://github.com/City-of-Helsinki/yjdh/commit/8b861927ee6a1ae333f43702be9351a29011393f))
+* Application summary pdf issues found during tests ([#2547](https://github.com/City-of-Helsinki/yjdh/issues/2547)) ([a838481](https://github.com/City-of-Helsinki/yjdh/commit/a8384811ab08a033acf9bd4dfb424fd60dd7e56e))
+* New version of employee concent files ([#2568](https://github.com/City-of-Helsinki/yjdh/issues/2568)) ([8df0441](https://github.com/City-of-Helsinki/yjdh/commit/8df04415986dbbc443b0ea7d84456eff31de88fd))
+* Sort imports DateInput ([4325ed4](https://github.com/City-of-Helsinki/yjdh/commit/4325ed4ede6c3dbb2baaeefc849c4252cca77984))
+* Wrap i18n key with translation fuction ([#2483](https://github.com/City-of-Helsinki/yjdh/issues/2483)) ([051469d](https://github.com/City-of-Helsinki/yjdh/commit/051469d148f280448b447c44cd801f91e9021ac3))
+
 ## [3.2.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.1.0...benefit-applicant-v3.2.0) (2023-11-14)
 
 
