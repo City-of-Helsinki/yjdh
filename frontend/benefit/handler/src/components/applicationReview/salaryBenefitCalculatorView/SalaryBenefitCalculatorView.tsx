@@ -618,7 +618,7 @@ const SalaryBenefitCalculatorView: React.FC<
         <CalculatorErrors data={calculationsErrors} />
       </$GridCell>
 
-      {isRecalculationRequired && (
+      {isRecalculationRequired && data?.calculation?.rows.length > 0 && (
         <$GridCell $colStart={1} $colSpan={11}>
           <$Notification
             type="alert"
