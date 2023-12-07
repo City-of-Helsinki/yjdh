@@ -159,8 +159,8 @@ env = environ.Env(
     GDPR_API_QUERY_SCOPE=(str, "helsinkibenefit.gdprquery"),
     GDPR_API_DELETE_SCOPE=(str, "helsinkibenefit.gdprdelete"),
     # For AHJO Rest API authentication
-    AHJO_CLIENT_ID=(str, ""),
-    AHJO_CLIENT_SECRET=(str, ""),
+    AHJO_CLIENT_ID=(str, "foo"),
+    AHJO_CLIENT_SECRET=(str, "bar"),
     AHJO_TOKEN_URL=(str, "https://johdontyopoytahyte.hel.fi/ids4/connect/token"),
     AHJO_REST_API_URL=(str, "https://ahjohyte.hel.fi:9802/ahjorest/v1"),
     AHJO_REDIRECT_URL=(str, "https://helsinkilisa/dummyredirect.html"),
