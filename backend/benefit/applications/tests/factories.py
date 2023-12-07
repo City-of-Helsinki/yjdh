@@ -89,7 +89,7 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     alternative_company_postcode = factory.Faker("postcode", locale="fi_FI")
     company_bank_account_number = factory.Faker("iban", locale="fi_FI")
     company_contact_person_phone_number = factory.Sequence(
-        lambda n: f"050-10000{n}"
+        lambda n: f"045191{n}"
     )  # max.length in validation seems to be 10 digits
     company_contact_person_email = factory.Faker("email", locale="fi_FI")
     company_contact_person_first_name = factory.Faker("first_name", locale="fi_FI")

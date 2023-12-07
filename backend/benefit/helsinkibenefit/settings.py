@@ -20,6 +20,7 @@ else:
     default_var_root = environ.Path(checkout_dir("var"))
 
 env = environ.Env(
+    API_BASE_URL=(str, "https://localhost:8000"),
     DEBUG=(bool, False),
     SECRET_KEY=(str, ""),
     MEDIA_ROOT=(environ.Path(), default_var_root("media")),
@@ -158,9 +159,9 @@ env = environ.Env(
     GDPR_API_QUERY_SCOPE=(str, "helsinkibenefit.gdprquery"),
     GDPR_API_DELETE_SCOPE=(str, "helsinkibenefit.gdprdelete"),
     # For AHJO Rest API authentication
-    AHJO_CLIENT_ID=(str, ""),
-    AHJO_CLIENT_SECRET=(str, ""),
-    AHJO_TOKEN_URL=(str, ""),
+    AHJO_CLIENT_ID=(str, "foo"),
+    AHJO_CLIENT_SECRET=(str, "bar"),
+    AHJO_TOKEN_URL=(str, "https://johdontyopoytahyte.hel.fi/ids4/connect/token"),
     AHJO_REST_API_URL=(str, "https://ahjohyte.hel.fi:9802/ahjorest/v1"),
     AHJO_REDIRECT_URL=(str, "https://helsinkilisa/dummyredirect.html"),
     AHJO_ALLOWED_IP=(str, ""),
@@ -169,6 +170,8 @@ if os.path.exists(env_file):
     env.read_env(env_file)
 
 os.environ["HTTPS"] = "on"
+
+API_BASE_URL = env.str("API_BASE_URL")
 
 BASE_DIR = str(checkout_dir)
 
