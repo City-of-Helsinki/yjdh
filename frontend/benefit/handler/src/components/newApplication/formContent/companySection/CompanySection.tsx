@@ -427,7 +427,7 @@ const CompanySection: React.FC<Props> = ({
         <FormSection header={t(`${translationsBase}.headings.company3`)}>
           <$GridCell $colSpan={8}>
             <SelectionGroup
-              id={`${fields.deMinimisAid.name}Set`}
+              id={`${fields.deMinimisAid.name}`}
               label={fields.deMinimisAid.label}
               direction="vertical"
               required

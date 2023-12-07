@@ -33,6 +33,9 @@ export const isEmpty = (value?: string): boolean =>
 export const getNumberValue = (s: unknown): number =>
   Number(isString(s) ? s.toString().replace(/,/, '.') : s);
 
+export const getNumberValueOrNull = (s: unknown): number | null =>
+  !s ? null : getNumberValue(s);
+
 export const stringFloatToFixed = (value: string): string =>
   value.includes(',') ? value.slice(0, value.indexOf(',') + 3) : value;
 

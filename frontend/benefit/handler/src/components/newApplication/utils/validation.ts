@@ -9,7 +9,6 @@ import {
   SUPPORTED_LANGUAGES,
 } from 'benefit/handler/constants';
 import {
-  BENEFIT_TYPES,
   EMPLOYEE_KEYS,
   ORGANIZATION_TYPES,
   PAY_SUBSIDY_GRANTED,
@@ -30,7 +29,10 @@ import {
   convertToUIDateFormat,
   validateDateIsFromCurrentYearOnwards,
 } from 'shared/utils/date.utils';
-import { getNumberValue } from 'shared/utils/string.utils';
+import {
+  getNumberValue,
+  getNumberValueOrNull,
+} from 'shared/utils/string.utils';
 import * as Yup from 'yup';
 
 import { getValidationSchema as getDeminimisValidationSchema } from '../formContent/companySection/deMinimisAid/utils/validation';
@@ -167,6 +169,18 @@ export const getValidationSchema = (
         then: Yup.boolean()
           .nullable()
           .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      })
+      .test({
+        message: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
+        test: (val) => {
+          if (
+            organizationType?.toLowerCase() ===
+            ORGANIZATION_TYPES.COMPANY.toLowerCase()
+          ) {
+            return typeof val === 'boolean';
+          }
+          return true;
+        },
       }),
     [APPLICATION_FIELD_KEYS.DE_MINIMIS_AID_SET]: Yup.array().of(
       getDeminimisValidationSchema(t).nullable()
@@ -177,7 +191,7 @@ export const getValidationSchema = (
     [APPLICATION_FIELD_KEYS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION]:
       Yup.string(),
     [APPLICATION_FIELD_KEYS.PAY_SUBSIDY_GRANTED]: Yup.mixed().oneOf(
-      [null, ...Object.values(PAY_SUBSIDY_GRANTED)],
+      Object.values(PAY_SUBSIDY_GRANTED),
       t(VALIDATION_MESSAGE_KEYS.INVALID)
     ),
     [APPLICATION_FIELD_KEYS.APPRENTICESHIP_PROGRAM]: Yup.boolean()
@@ -192,6 +206,81 @@ export const getValidationSchema = (
           .nullable()
           .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
       }),
+    [APPLICATION_FIELD_KEYS.EMPLOYEE]: Yup.object().shape({
+      [EMPLOYEE_KEYS.FIRST_NAME]: Yup.string()
+        .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
+        .max(
+          MAX_SHORT_STRING_LENGTH,
+          t(VALIDATION_MESSAGE_KEYS.STRING_MAX, {
+            max: MAX_LONG_STRING_LENGTH,
+          })
+        )
+        .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      [EMPLOYEE_KEYS.LAST_NAME]: Yup.string()
+        .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
+        .max(
+          MAX_SHORT_STRING_LENGTH,
+          t(VALIDATION_MESSAGE_KEYS.STRING_MAX, {
+            max: MAX_LONG_STRING_LENGTH,
+          })
+        )
+        .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      [EMPLOYEE_KEYS.SOCIAL_SECURITY_NUMBER]: Yup.string()
+        .test({
+          message: t(VALIDATION_MESSAGE_KEYS.SSN_INVALID),
+          test: (val) => (val ? FinnishSSN.validate(val) : true),
+        })
+        .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      [EMPLOYEE_KEYS.IS_LIVING_IN_HELSINKI]: Yup.boolean().oneOf(
+        [true],
+        t('common:applications.sections.fields.isLivingInHelsinki.error')
+      ),
+      [EMPLOYEE_KEYS.JOB_TITLE]: Yup.string()
+        .nullable()
+        .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      [EMPLOYEE_KEYS.WORKING_HOURS]: Yup.number()
+        .test(
+          'is-decimal',
+          t(VALIDATION_MESSAGE_KEYS.NUMBER_TWO_DECIMALS),
+          (value: number): boolean =>
+            value ? /^\d+.?\d{1,2}$/.test(String(value)) : false
+        )
+        .transform((_value, originalValue) =>
+          Number(getNumberValue(originalValue))
+        )
+        .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
+        .nullable()
+        .min(EMPLOYEE_MIN_WORKING_HOURS, (param) => ({
+          min: param.min,
+          key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,
+        }))
+        .max(EMPLOYEE_MAX_WORKING_HOURS, (param) => ({
+          max: param.max,
+          key: VALIDATION_MESSAGE_KEYS.NUMBER_MAX,
+        }))
+        .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      [EMPLOYEE_KEYS.MONTHLY_PAY]: Yup.number()
+        .transform((_value, originalValue) =>
+          getNumberValueOrNull(originalValue)
+        )
+        .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
+        .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      [EMPLOYEE_KEYS.VACATION_MONEY]: Yup.number()
+        .transform((_value, originalValue) =>
+          getNumberValueOrNull(originalValue)
+        )
+        .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
+        .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      [EMPLOYEE_KEYS.OTHER_EXPENSES]: Yup.number()
+        .transform((_value, originalValue) =>
+          getNumberValueOrNull(originalValue)
+        )
+        .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
+        .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      [EMPLOYEE_KEYS.COLLECTIVE_BARGAINING_AGREEMENT]: Yup.string().required(
+        t(VALIDATION_MESSAGE_KEYS.REQUIRED)
+      ),
+    }),
     [APPLICATION_FIELD_KEYS.START_DATE]: Yup.string()
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED))
       .test({
@@ -203,91 +292,4 @@ export const getValidationSchema = (
     [APPLICATION_FIELD_KEYS.END_DATE]: Yup.string().required(
       t(VALIDATION_MESSAGE_KEYS.REQUIRED)
     ),
-    [APPLICATION_FIELD_KEYS.EMPLOYEE]: Yup.object()
-      .shape({
-        [EMPLOYEE_KEYS.FIRST_NAME]: Yup.string()
-          .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
-          .max(
-            MAX_SHORT_STRING_LENGTH,
-            t(VALIDATION_MESSAGE_KEYS.STRING_MAX, {
-              max: MAX_LONG_STRING_LENGTH,
-            })
-          )
-          .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-        [EMPLOYEE_KEYS.LAST_NAME]: Yup.string()
-          .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
-          .max(
-            MAX_SHORT_STRING_LENGTH,
-            t(VALIDATION_MESSAGE_KEYS.STRING_MAX, {
-              max: MAX_LONG_STRING_LENGTH,
-            })
-          )
-          .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-        [EMPLOYEE_KEYS.SOCIAL_SECURITY_NUMBER]: Yup.string()
-          .test({
-            message: t(VALIDATION_MESSAGE_KEYS.SSN_INVALID),
-            test: (val) => (val ? FinnishSSN.validate(val) : true),
-          })
-          .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-        [EMPLOYEE_KEYS.IS_LIVING_IN_HELSINKI]: Yup.boolean().oneOf(
-          [true],
-          t('common:applications.sections.fields.isLivingInHelsinki.error')
-        ),
-      })
-      .when(APPLICATION_FIELD_KEYS.BENEFIT_TYPE, {
-        is: BENEFIT_TYPES.COMMISSION,
-        then: Yup.object().shape({
-          [EMPLOYEE_KEYS.COMMISSION_DESCRIPTION]: Yup.string()
-            .nullable()
-            .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-          [EMPLOYEE_KEYS.EMPLOYEE_COMMISSION_AMOUNT]: Yup.number()
-            .transform((_value, originalValue) =>
-              Number(getNumberValue(originalValue))
-            )
-            .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
-            .nullable()
-            .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-        }),
-        otherwise: Yup.object().shape({
-          [EMPLOYEE_KEYS.JOB_TITLE]: Yup.string()
-            .nullable()
-            .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-          [EMPLOYEE_KEYS.WORKING_HOURS]: Yup.number()
-            .test(
-              'is-decimal',
-              t(VALIDATION_MESSAGE_KEYS.NUMBER_TWO_DECIMALS),
-              (value: number): boolean =>
-                value ? /^\d+.?\d{1,2}$/.test(String(value)) : false
-            )
-            .transform((_value, originalValue) =>
-              Number(getNumberValue(originalValue))
-            )
-            .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
-            .nullable()
-            .min(EMPLOYEE_MIN_WORKING_HOURS, (param) => ({
-              min: param.min,
-              key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,
-            }))
-            .max(EMPLOYEE_MAX_WORKING_HOURS, (param) => ({
-              max: param.max,
-              key: VALIDATION_MESSAGE_KEYS.NUMBER_MAX,
-            }))
-            .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-          [EMPLOYEE_KEYS.VACATION_MONEY]: Yup.number()
-            .transform((_value, originalValue) => getNumberValue(originalValue))
-            .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
-            .nullable()
-            .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-          [EMPLOYEE_KEYS.MONTHLY_PAY]: Yup.number()
-            .transform((_value, originalValue) => getNumberValue(originalValue))
-            .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
-            .nullable()
-            .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-          [EMPLOYEE_KEYS.OTHER_EXPENSES]: Yup.number()
-            .transform((_value, originalValue) => getNumberValue(originalValue))
-            .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
-            .nullable()
-            .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-        }),
-      }),
   });
