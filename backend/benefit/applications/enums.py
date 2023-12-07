@@ -172,3 +172,8 @@ class ApplicationActions(models.TextChoices):
 class AhjoCallBackStatus(models.TextChoices):
     SUCCESS = "Success", _("Success")
     FAILURE = "Failure", _("Failure")
+
+
+class AhjoRequestType(models.TextChoices):
+    OPEN_CASE = "open_case", _("Open case in Ahjo")
+    DELETE_APPLICATION = "delete_application", _("Delete application in Ahjo")
