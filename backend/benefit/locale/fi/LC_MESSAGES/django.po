@@ -660,8 +660,8 @@ msgstr ""
 "{additional_information_needed_by} mennessä, muuten hakemusta ei voida "
 "käsitellä."
 
-msgid "You have received a new message from Helsinki benefit"
-msgstr "Olet saanut uuden viestin Helsinki-lisä -hakemukseen"
+msgid "You have received a new message regarding your Helsinki benefit application"
+msgstr "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen"
 
 #, python-format
 msgid ""
@@ -989,3 +989,9 @@ msgstr "Ei myönnetty"
 
 msgid "Printed at"
 msgstr "Tulostettu"
+
+msgid "Your Helsinki benefit draft application will expire"
+msgstr "Helsinki-lisä -hakemuksesi luonnos vanhenee"
+
+msgid "Your Helsinki benefit application requires additional information"
+msgstr "Helsinki-lisä -hakemus tarvitsee lisätietoja"

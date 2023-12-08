@@ -1,3 +1,4 @@
+import email
 import uuid
 from copy import deepcopy
 
@@ -322,12 +323,20 @@ def test_create_message(
             assert_email_subject_language(str(mailoutbox[0].subject), email_language)
             assert_email_body_language(str(mailoutbox[0].body), email_language)
             if email_language == "fi":
-                assert "Olet saanut uuden viestin" in mailoutbox[0].subject
-                assert "on tullut uusi viesti" in mailoutbox[0].body
                 assert mailoutbox[0].to == [
                     handling_application.company_contact_person_email
                 ]
                 assert mailoutbox[0].from_email == settings.DEFAULT_FROM_EMAIL
+                assert "Olet saanut uuden viestin" in mailoutbox[0].subject
+
+                # Parse email to an object and assert that it contains the correct text content
+                email_parts = email.message_from_string(mailoutbox[0].body)
+                for part in email_parts.walk():
+                    if part.get_content_type() == "text/plain":
+                        assert (
+                            "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen. Voit lukea viestin"
+                            in part.get_payload()
+                        )
 
     assert result.status_code == 201
     message_qs = Message.objects.filter(message_type=msg_type)
