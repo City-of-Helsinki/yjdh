@@ -1,0 +1,6 @@
+<mj-section padding-top="0px" padding-bottom="30px">
+  <mj-column>
+    <mj-spacer />
+    <mj-text font-size="14px" color="#666">${general.automaticReplyDisclaimer}</mj-text>
+  </mj-column>
+</mj-section>

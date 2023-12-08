@@ -1,0 +1,17 @@
+${general.greeting}
+
+${draftExpiring.bodyText}
+
+${draftExpiring.ctaButton}: https://helsinkilisa.hel.fi/
+
+${draftExpiring.helper.text}
+
+${draftExpiring.helper.link.title}: ${draftExpiring.helper.link.url} 
+
+${general.bestRegards1}
+${general.bestRegards2}
+
+${application.applicationNumber}: {{application.application_number}}
+${application.status.title}: ${application.status.unfinished}
+
+${general.automaticReplyDisclaimer}

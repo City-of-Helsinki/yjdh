@@ -1,0 +1,30 @@
+<mj-section
+  padding-top="31px"
+  background-size="190px"
+  background-height="31px"
+  background-reoeat="repeat"
+  mode="fixed-height"
+  background-url="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAL4AAAAfCAMAAABu6ofkAAAAKlBMVEX////+/v79/f38/Pz7+/v6+vr5+fn4+Pj39/f29vb19fX09PTz8/Py8vKhYjBHAAABFUlEQVR42u3Xh3HlMAwAUTATBLb/dm/SJWcb4qc841fBSszy4yTA3WzpHK3mJPeWSutD1zJ3AIT/mY6abxle+zSeEl7g2rPcSG7TeJHwCp81yR2UYbxKeIPWdLzdeYvwJh9ZjkndgEg+oEWOyAOI54O1JI9WFOL5hz6gLAjkBz5gR3w8H6zKQ2SFDfmwimyXJmzKB82b4wdszIeRZJ/mbM7He5I9ikE8/9Aazgrx/ENrOE94WD5oObhi4/mg+bp4J5R/cgTyIEAIWC1JTJlwLD/4HkhtwdH8wBCUSZxAnLYsn5LqdLhLPmCjpg+ml764inAd017T2+VtLq4kXMxNR2+15PQnOudS+5jLuZywkbs7Wwnf2i8LApgKO+qCJwAAAABJRU5ErkJggg=="
+  <!--
+  background-url="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAlgAAAAfCAMAAAAMekMTAAAAKlBMVEX////+/v79/f38/Pz7+/v6+vr5+fn4+Pj39/f29vb19fX09PTz8/Py8vKhYjBHAAACVUlEQVR42u3bBxagPAgEYCA9MPc/7l+299Uoiu/5nWAwEDu9Xq/Xc9Q25lQzfGSmOkdvJQtTeJzKk/Oz5Nr6+CY+zD7Erw85/P/n/+7wf8lP+D0drQjFxLl2xUd/yJ8l7ET0afgjm60kjpq//iU/4S9sVKFYpPylp2Ln59wmNpst8xPzEzawHqe41BR/ETk/l4HdRmEKQurEJoSNRuYIXWVYECU/l4lFs3CErlJsRdjMmtCd+C9lRc+fBw4Z+UlTQdhjZrqLNBw30n1TYTjMKj8mP2EfvWdLTgMLwuTnZjiFNX7IVNMTxiZNLAvQWtJxoutP6DKwH2E/Kxy/rcK0FjecrPEDxoIWlybQuCzQHL+tYrQWd6whrJkpSF2h83MxLAtw0uCKVYRVQ0KMe+T8WeFGM7k7MhbkvyH71hU3f5pwNYVcJcUB5P9cxbeuqPm5w13nuNe25L8h+9YVMz83XKJx1LGgkFfB0nGVmYJdswe4iueKw8h/afzHPdh7nqK4kJaIb59A/jdYvq8/wuXPiotpDrjbUrCplwZ/fvm5KG6ghf13K7/G8v9gKHU4cMjvsCwBbnDlxJMF4TTW5IbP4OLkTx236snhe7Fl5Dv2/ssSJL80xe20isO3uWsIJxsLP/Zw7gZ/bvlTVQQxqzj8R7CAcD5tmff8SDThzy2/lG4Ixfqe2ZA6XPITfOiombf8XAd/TvlZchuGkGzDL5UspU23/ARHpqPVkpPwd/XIxx9oDe4c8jNLyqX1oQhPR/8Y/xf5p3N+wkXsIzzV8+NfWwDBwev1L2J66MRqciTsAAAAAElFTkSuQmCC"
+  --
+>
+  >
+</mj-section>
+
+<mj-section background-color="#F2F2F2" padding-top="60px" padding-bottom="40px">
+  <mj-column>
+    <mj-text font-weight="600" font-size="20px">${general.serviceName}</mj-text>
+    <mj-divider border-width="1px" />
+    <mj-spacer height="8px" />
+    <mj-text>
+      <a href="${footer.links.aboutHelsinkiBenefit.url}">${footer.links.aboutHelsinkiBenefit.title}</a>
+    </mj-text>
+    <mj-text>
+      <a href="${footer.links.customerService.url}">${footer.links.customerService.title}</a>
+    </mj-text>
+    <mj-spacer height="8px" />
+    <mj-divider border-width="1px" />
+    <mj-text>© ${general.cityOfHelsinki} {{current_year}} </mj-text>
+  </mj-column>
+</mj-section>

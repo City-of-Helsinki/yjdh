@@ -1,0 +1,60 @@
+{
+  "footer": {
+    "links": {
+      "aboutHelsinkiBenefit": {
+        "title": "Tietoa Helsinki-lisästä",
+        "url": "#"
+      },
+      "customerService": {
+        "title": "Asiakaspalvelu ja yhteystiedot",
+        "url": "#"
+      }
+    }
+  },
+  "general": {
+    "greeting": "Hei!",
+    "cityOfHelsinki": "Helsingin kaupunki",
+    "serviceName": "Helsinki-lisä",
+    "bestRegards1": "Ystävällisin terveisin,",
+    "bestRegards2": "Helsinki-lisän tiimi",
+    "automaticReplyDisclaimer": "Tämä on automaattinen ilmoitus sinulle lähetetystä verkkoviestistä. Ethän vastaa tähän sähköpostiin, sillä vastauksia ei käsitellä. Ota tarvittaessa yhteyttä neuvontaan sähköpostitse helsinkilisa@hel.fi."
+  },
+  "receivedMessage": {
+    "headerText": "Olet saanut uuden viestin",
+    "heading": "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen",
+    "bodyText": "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen. Voit lukea viestin Helsinki-lisän asiointipalvelussa.",
+    "ctaButton": "Kirjaudu palveluun ja lue viesti"
+  },
+  "draftExpiring": {
+    "headerText": "Helsinki-lisä -hakemuksesi luonnos vanhenee",
+    "heading": "Helsinki-lisä -hakemuksesi luonnos vanhenee {{ application_deletion_date }}",
+    "bodyText": "Helsinki-lisä -hakemuksesi {{application.application_number}} luonnos vanhentuu kahden viikon kuluttua {{ application_deletion_date }}. Voit päivittää Helsinki-lisä-hakemuksesi tietoja tai poistaa hakemuksen kirjautumalla Helsinki-lisä palveluun ja avaamalla hakemuksesi.",
+    "ctaButton": "Jatka Helsinki-lisä -hakemuksen täyttöä",
+    "helper": {
+      "text": "Ohjeet ja lisätietoa hakulomakkeen täyttämiseen löydät Helsingin kaupungin sivuilta.",
+      "link": {
+        "title": "Lue lisãä Helsinki-lisän hakemisesta",
+        "url": "#"
+      }
+    }
+  },
+  "additionalInformationRequired": {
+    "headerText": "Hakemuksesi tarvitsee lisätietoja",
+    "heading": "Helsinki-lisä -hakemus tarvitsee lisätietoja",
+    "bodyText": "Lähettämästäsi Helsinki-lisä-hakemuksesta puuttuu tarvittavia tietoja. Kirjaudu Helsinki-lisän asiointipalveluun ja täytä puttuvat tiedot {{ additional_information_deadline_date }} klo {{ additional_information_deadline_time }} mennessä.",
+    "ctaButton": "Kirjaudu palveluun ja täydennä hakemusta",
+    "helper": {
+      "text": "Mikäli sinulla herää kysyttävää, lähetä meille viesti Helsinki-lisän asiointipalvelun kautta."
+    }
+  },
+  "application": {
+    "applicationDetails": "Hakemuksen tiedot",
+    "applicationNumber": "Hakemusnumero",
+    "createdAt": "Hakemuksen lähetyspäivä",
+    "status": {
+      "title": "Hakemuksen tila",
+      "unfinished": "Keskeneräinen",
+      "additionalInformationRequired": "Odottaa lisätietoja"
+    }
+  }
+}
