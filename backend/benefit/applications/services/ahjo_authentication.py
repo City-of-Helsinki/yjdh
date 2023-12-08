@@ -4,7 +4,7 @@ from typing import Dict, Union
 
 import requests
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 
 from applications.models import AhjoSetting
 
@@ -17,8 +17,7 @@ class AhjoToken:
 
 
 class AhjoConnector:
-    def __init__(self, requests_module: requests.Session = requests) -> None:
-        self.requests_module: requests = requests_module
+    def __init__(self) -> None:
         self.token_url: str = settings.AHJO_TOKEN_URL
         self.client_id: str = settings.AHJO_CLIENT_ID
         self.client_secret: str = settings.AHJO_CLIENT_SECRET
@@ -29,7 +28,7 @@ class AhjoConnector:
         self.headers: Dict[str, str] = {
             "Content-Type": "application/x-www-form-urlencoded",
         }
-        self.timout: int = 10
+        self.timeout: int = 10
 
     def is_configured(self) -> bool:
         """Check if all required config options are set"""
@@ -56,7 +55,7 @@ class AhjoConnector:
         this is only used when getting the initial token or when the token has expired.
         """
         if not auth_code:
-            raise Exception("No auth code")
+            raise ImproperlyConfigured("no auth code configured")
         payload = {
             "client_id": self.client_id,
             "client_secret": self.client_secret,
@@ -72,7 +71,7 @@ class AhjoConnector:
         """
         token = self.get_token_from_db()
         if not token.refresh_token:
-            raise Exception("No refresh token")
+            raise ImproperlyConfigured("No refresh token configured")
 
         payload = {
             "client_id": self.client_id,
@@ -85,8 +84,8 @@ class AhjoConnector:
 
     def do_token_request(self, payload: Dict[str, str]) -> AhjoToken:
         # Make the POST request
-        response = self.requests_module.post(
-            self.token_url, headers=self.headers, data=payload, timeout=self.timout
+        response = requests.post(
+            self.token_url, headers=self.headers, data=payload, timeout=self.timeout
         )
 
         # Check if the request was successful

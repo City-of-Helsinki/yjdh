@@ -9,6 +9,7 @@ from django.utils import timezone
 
 from applications.enums import ApplicationStatus, BenefitType
 from applications.models import Application
+from applications.services.ahjo_payload import prepare_open_case_payload
 from applications.services.applications_csv_report import ApplicationsCsvService
 from applications.tests.factories import (
     ApplicationBatchFactory,
@@ -257,6 +258,79 @@ def set_debug_to_false(settings):
     settings.DEBUG = False
 
 
+@pytest.fixture()
+def ahjo_payload_record(decided_application):
+    application = decided_application
+
+    record_title = "Hakemus"
+    record_type = "hakemus"
+    acquired = application.created_at.isoformat()
+    reference = str(application.application_number)
+    documents = []
+    agent = application.calculation.handler
+    publicity_class = "Salassa pidettävä"
+
+    return {
+        "Title": record_title,
+        "Type": record_type,
+        "Acquired": acquired,
+        "PublicityClass": publicity_class,
+        "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
+        "Language": "fi",
+        "PersonalData": "Sisältää erityisiä henkilötietoja",
+        "Reference": reference,
+        "Documents": documents,
+        "Agents": [
+            {
+                "Role": "mainCreator",
+                "Name": f"{agent.last_name}, {agent.first_name}",
+                "ID": agent.ad_username,
+            }
+        ],
+    }
+
+
+@pytest.fixture()
+def ahjo_open_case_top_level_dict(decided_application):
+    application = decided_application
+    title = f"Avustuksen myöntäminen, työllisyyspalvelut, \
+työnantajan Helsinki-lisä vuonna {application.created_at.year}, \
+työnantaja {application.company_name}"
+
+    return {
+        "Title": title,
+        "Acquired": application.created_at.isoformat(),
+        "ClassificationCode": "02 05 01 00",
+        "ClassificationTitle": "Kunnan myöntämät avustukset",
+        "Language": "fi",
+        "PublicityClass": "Julkinen",
+        "InternalTitle": f"Avustuksen myöntäminen, työllisyyspalvelut, \
+              työnantajan Helsinki-lisä vuonna {application.created_at.year}, \
+              työnantaja {application.company_name}",
+        "Subjects": [
+            {"Subject": "Helsinki-lisät", "Scheme": "hki-yhpa"},
+            {"Subject": "kunnan myöntämät avustukset", "Scheme": "hki-yhpa"},
+            {"Subject": "työnantajat", "Scheme": "hki-yhpa"},
+            {"Subject": "työllisyydenhoito"},
+        ],
+        "PersonalData": "Sisältää erityisiä henkilötietoja",
+        "Reference": application.application_number,
+        "Records": [],
+        "Agents": [
+            {
+                "Role": "sender_initiator",
+                "CorporateName": application.company.name,
+                "ContactPerson": application.contact_person,
+                "Type": "ExterOnal",
+                "Email": application.company_contact_person_email,
+                "AddressStreet": application.company.street_address,
+                "AddressPostalCode": application.company.postcode,
+                "AddressCity": application.company.city,
+            }
+        ],
+    }
+
+
 def split_lines_at_semicolon(csv_string):
     # split CSV into lines and columns without using the csv library
     csv_lines = csv_string.splitlines()
@@ -279,3 +353,8 @@ def pytest_sessionfinish(session, exitstatus):
         except OSError as e:
             print(f"Error while deleting file in media folder: {e}")
     print(f"\nTests finished, deleted {number_of_files} files in the media folder")
+
+
+@pytest.fixture()
+def ahjo_open_case_payload(decided_application):
+    return prepare_open_case_payload(decided_application)
