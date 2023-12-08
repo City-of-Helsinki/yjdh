@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.4.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.3.0...benefit-backend-v1.4.0) (2023-12-07)
+
+
+### Features
+
+* Add AD username column to user ([#2499](https://github.com/City-of-Helsinki/yjdh/issues/2499)) ([acc1147](https://github.com/City-of-Helsinki/yjdh/commit/acc114772ffc7724030e68c94d651938f8d26951))
+* Ahjo download link and  callback url ([33bf40b](https://github.com/City-of-Helsinki/yjdh/commit/33bf40bbe36555cee3797265b31e4300b27eba2e))
+* Full pdf summary of applications (HL-708, HL-903) ([#2524](https://github.com/City-of-Helsinki/yjdh/issues/2524)) ([644aaf1](https://github.com/City-of-Helsinki/yjdh/commit/644aaf1d13532acbcbc2f1252335a1ff7f88405d))
+* Hl 1048  add bom ([#2495](https://github.com/City-of-Helsinki/yjdh/issues/2495)) ([a6d4323](https://github.com/City-of-Helsinki/yjdh/commit/a6d43231045564e552f3d8f8f0f97f02957d7720))
+* Hl 970 open ahjo case ([#2519](https://github.com/City-of-Helsinki/yjdh/issues/2519)) ([faa899c](https://github.com/City-of-Helsinki/yjdh/commit/faa899c111e0790258a1b31dba23a59920a80f2f))
+* Optionally add a byte order mark to csv export ([#2455](https://github.com/City-of-Helsinki/yjdh/issues/2455)) ([1d23a7a](https://github.com/City-of-Helsinki/yjdh/commit/1d23a7aa69e11175183e760728823223f466dc7a))
+* Upgrade django to 3.2.23 (i.e. latest 3.2.x) in all backends ([410ac0e](https://github.com/City-of-Helsinki/yjdh/commit/410ac0e2f042774e0fdd12a862242ce481dff46b))
+
+
+### Bug Fixes
+
+* Add missing migration file ([#2545](https://github.com/City-of-Helsinki/yjdh/issues/2545)) ([70401dc](https://github.com/City-of-Helsinki/yjdh/commit/70401dc744853f3e6283d0bf7d80fe6b759079b4))
+* Allow applicant messages for all but cancelled and archived app ([#2496](https://github.com/City-of-Helsinki/yjdh/issues/2496)) ([968ec9d](https://github.com/City-of-Helsinki/yjdh/commit/968ec9d2d99f919d3979c094b627dcfd5b4683fd))
+* Application pdf summary improvements ([#2537](https://github.com/City-of-Helsinki/yjdh/issues/2537)) ([8b86192](https://github.com/City-of-Helsinki/yjdh/commit/8b861927ee6a1ae333f43702be9351a29011393f))
+* Application summary pdf issues found during tests ([#2547](https://github.com/City-of-Helsinki/yjdh/issues/2547)) ([a838481](https://github.com/City-of-Helsinki/yjdh/commit/a8384811ab08a033acf9bd4dfb424fd60dd7e56e))
+* Messages can not be sent if application is already in a batch ([#2543](https://github.com/City-of-Helsinki/yjdh/issues/2543)) ([113c426](https://github.com/City-of-Helsinki/yjdh/commit/113c42638510ec53dbb3c92f8de54e8ddb846846))
+* Migration to add description type based on row type (HL-1046) ([36b15ba](https://github.com/City-of-Helsinki/yjdh/commit/36b15baa435e856905b67b549511eafab63abc16))
+
 ## [1.3.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.2.0...benefit-backend-v1.3.0) (2023-11-14)
 
 
