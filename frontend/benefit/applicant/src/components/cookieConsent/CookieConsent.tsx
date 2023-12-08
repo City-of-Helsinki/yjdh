@@ -81,7 +81,7 @@ const CookieConsent: React.FC = () => {
     language: {
       onLanguageChange,
     },
-    focusTargetSelector: '#focused-element-after-cookie-consent-closed',
+    focusTargetSelector: '#main_content',
   };
 
   return <CookieModal contentSource={contentSource} />;
