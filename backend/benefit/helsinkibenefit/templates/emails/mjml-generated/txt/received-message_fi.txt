@@ -1,0 +1,14 @@
+{% comment %} NEVER MAKE MODIFICATIONS TO THIS GENERATED FILE DIRECTLY, ALL MODIFICATIONS SHOULD BE DONE TO MJML TEMPLATE FILES! {% endcomment %}Hei!
+
+Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen. Voit lukea viestin Helsinki-lisän asiointipalvelussa.
+
+Hakemuksen tiedot
+Hakemusnumero: {{application.application_number}}
+Hakemuksen lähetyspäivä: {{ application.created_at }}
+
+Kirjaudu palveluun ja lue viesti: https://helsinkilisa.hel.fi
+
+Ystävällisin terveisin,
+Helsinki-lisän tiimi
+
+Tämä on automaattinen ilmoitus sinulle lähetetystä verkkoviestistä. Ethän vastaa tähän sähköpostiin, sillä vastauksia ei käsitellä. Ota tarvittaessa yhteyttä neuvontaan sähköpostitse helsinkilisa@hel.fi.

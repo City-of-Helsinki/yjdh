@@ -1,0 +1,17 @@
+{% comment %} NEVER MAKE MODIFICATIONS TO THIS GENERATED FILE DIRECTLY, ALL MODIFICATIONS SHOULD BE DONE TO MJML TEMPLATE FILES! {% endcomment %}Hei!
+
+Helsinki-lisä -hakemuksesi {{application.application_number}} luonnos vanhentuu kahden viikon kuluttua {{ application_deletion_date }}. Voit päivittää Helsinki-lisä-hakemuksesi tietoja tai poistaa hakemuksen kirjautumalla Helsinki-lisä palveluun ja avaamalla hakemuksesi.
+
+Jatka Helsinki-lisä -hakemuksen täyttöä: https://helsinkilisa.hel.fi/
+
+Ohjeet ja lisätietoa hakulomakkeen täyttämiseen löydät Helsingin kaupungin sivuilta.
+
+Lue lisãä Helsinki-lisän hakemisesta: # 
+
+Ystävällisin terveisin,
+Helsinki-lisän tiimi
+
+Hakemusnumero: {{application.application_number}}
+Hakemuksen tila: Keskeneräinen
+
+Tämä on automaattinen ilmoitus sinulle lähetetystä verkkoviestistä. Ethän vastaa tähän sähköpostiin, sillä vastauksia ei käsitellä. Ota tarvittaessa yhteyttä neuvontaan sähköpostitse helsinkilisa@hel.fi.

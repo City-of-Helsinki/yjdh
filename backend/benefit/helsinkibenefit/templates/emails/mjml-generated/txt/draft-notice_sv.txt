@@ -1,0 +1,17 @@
+{% comment %} NEVER MAKE MODIFICATIONS TO THIS GENERATED FILE DIRECTLY, ALL MODIFICATIONS SHOULD BE DONE TO MJML TEMPLATE FILES! {% endcomment %}Hej!
+
+Ditt utkast för ansökan om Helsingforstillägget {{application.application_number}} går ut om två veckor {{ application_deletion_date }}. Du kan uppdatera uppgifterna för din ansökan om Helsingforstillägget eller avlägsna ansökan genom att logga in på tjänsten för Helsingforstillägget och öppna din ansökan.
+
+Fortsätt fylla in ansökan om Helsingforstillägget: https://helsinkilisa.hel.fi/
+
+Anvisningar och ytterligare information om hur du ska fylla in ansökan hittar du på Helsingfors stads webbplats.
+
+Läs mer om att ansöka om Helsingforstillägget: # 
+
+Med vänliga hälsningar
+teamet för Helsingforstillägget
+
+Ansökningsnummer: {{application.application_number}}
+Ansökningsstatus: Oavslutat
+
+Detta är ett automatiskt meddelande om ett nätmeddelande som skickades till dig. Svara inte på detta meddelande. Svaren behandlas inte. Vid behov ta kontakt till rådgivningen per e-post helsinkilisa@hel.fi.
