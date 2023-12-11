@@ -1057,7 +1057,8 @@
     "multiple": "Koonnit",
     "tabs": {
       "pending": "Odottaa Ahjoon vientiä",
-      "toPaymentAndArchive": "Odottaa maksuun tai arkistoon vientiä"
+      "inspection": "Odottaa maksuun vientiä",
+      "completion": "Lähetetty maksuun"
     },
     "list": {
       "columns": {

@@ -18,8 +18,8 @@ import React from 'react';
 import Modal from 'shared/components/modal/Modal';
 import { useTheme } from 'styled-components';
 
-import ConfirmModalContent from '../applicationReview/actions/ConfirmModalContent/confirm';
-import { $TooltipWrapper } from './batchAction/BatchActions.sc';
+import ConfirmModalContent from '../../applicationReview/actions/ConfirmModalContent/confirm';
+import { $TooltipWrapper } from '../batchAction/BatchActions.sc';
 
 type BatchProps = {
   batch: BatchProposal;
@@ -28,7 +28,7 @@ type BatchProps = {
 
 type ButtonAhjoStates = 'primary' | 'secondary';
 
-const BatchActionsDraft: React.FC<BatchProps> = ({
+const BatchFooterDraft: React.FC<BatchProps> = ({
   batch,
   setBatchCloseAnimation,
 }: BatchProps) => {
@@ -235,4 +235,4 @@ const BatchActionsDraft: React.FC<BatchProps> = ({
     </>
   );
 };
-export default BatchActionsDraft;
+export default BatchFooterDraft;

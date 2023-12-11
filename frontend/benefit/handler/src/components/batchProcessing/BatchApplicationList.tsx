@@ -36,8 +36,9 @@ import {
   $TableGrid,
   $TableWrapper,
 } from '../table/TableExtras.sc';
-import BatchActionsDraft from './BatchActionsDraft';
-import BatchActionsInspection from './BatchActionsInspection';
+import BatchFooterCompletion from './batchFooter/BatchFooterCompletion';
+import BatchFooterDraft from './batchFooter/BatchFooterDraft';
+import BatchFooterInspection from './batchFooter/BatchFooterInspection';
 
 type BatchProps = {
   batch: BatchProposal;
@@ -241,17 +242,20 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
                 BATCH_STATUSES.DRAFT,
                 BATCH_STATUSES.AHJO_REPORT_CREATED,
               ].includes(status) ? (
-                <BatchActionsDraft
+                <BatchFooterDraft
                   batch={batch}
                   setBatchCloseAnimation={setBatchCloseAnimation}
                 />
               ) : null}
 
-              {[
-                BATCH_STATUSES.AWAITING_FOR_DECISION,
-                BATCH_STATUSES.DECIDED_ACCEPTED,
-              ].includes(status) ? (
-                <BatchActionsInspection
+              {[BATCH_STATUSES.AWAITING_FOR_DECISION].includes(status) ? (
+                <BatchFooterInspection
+                  batch={batch}
+                  setBatchCloseAnimation={setBatchCloseAnimation}
+                />
+              ) : null}
+              {[BATCH_STATUSES.DECIDED_ACCEPTED].includes(status) ? (
+                <BatchFooterCompletion
                   batch={batch}
                   setBatchCloseAnimation={setBatchCloseAnimation}
                 />

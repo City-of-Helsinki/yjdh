@@ -9,19 +9,15 @@ import React from 'react';
 import Modal from 'shared/components/modal/Modal';
 import { useTheme } from 'styled-components';
 
-import ConfirmModalContent from '../applicationReview/actions/ConfirmModalContent/confirm';
+import ConfirmModalContent from '../../applicationReview/actions/ConfirmModalContent/confirm';
 
 type BatchProps = {
   batch: BatchProposal;
-  isInspectionFormSent: boolean;
-  setInspectionFormSent: React.Dispatch<React.SetStateAction<boolean>>;
   setBatchCloseAnimation: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const BatchActionsCompletion: React.FC<BatchProps> = ({
+const BatchFooterCompletion: React.FC<BatchProps> = ({
   batch,
-  isInspectionFormSent,
-  setInspectionFormSent,
   setBatchCloseAnimation,
 }: BatchProps) => {
   const theme = useTheme();
@@ -43,9 +39,6 @@ const BatchActionsCompletion: React.FC<BatchProps> = ({
   const [isModalBatchToInspection, setModalBatchToInspection] =
     React.useState(false);
 
-  const [isMountedAfterFormSubmission, setMountedAfterFormSubmission] =
-    React.useState(isInspectionFormSent);
-
   const handleModalClose = (): void => {
     setModalBatchToCompletion(false);
     setModalBatchToInspection(false);
@@ -62,55 +55,43 @@ const BatchActionsCompletion: React.FC<BatchProps> = ({
   }, [downloadP2PFile, id]);
 
   React.useEffect(() => {
-    if (isMountedAfterFormSubmission) {
-      setInspectionFormSent(false);
-      setIsDownloadingAttachments(true);
-      handleDownloadP2PFile();
-      setMountedAfterFormSubmission(false);
-    }
     if (!isDownloading) {
       setIsDownloadingAttachments(false);
     }
     if (isDownloadError) {
       setIsDownloadingAttachments(false);
     }
-  }, [
-    isDownloading,
-    isDownloadError,
-    isMountedAfterFormSubmission,
-    setInspectionFormSent,
-    setIsDownloadingAttachments,
-    handleDownloadP2PFile,
-    id,
-  ]);
+  }, [isDownloading, isDownloadError]);
 
   return (
     <>
-      <Modal
-        id={`batch-confirmation-modal-${id}`}
-        isOpen={isModalBatchToCompletion}
-        submitButtonLabel=""
-        cancelButtonLabel=""
-        handleSubmit={noop}
-        handleToggle={noop}
-        variant="primary"
-        customContent={
-          isModalBatchToCompletion ? (
-            <ConfirmModalContent
-              variant="primary"
-              heading={t(
-                'common:batches.dialog.fromInspectionToArchive.heading'
-              )}
-              text={t('common:batches.dialog.fromInspectionToArchive.text')}
-              onClose={handleModalClose}
-              onSubmit={() =>
-                handleBatchStatusChange(BATCH_STATUSES.SENT_TO_TALPA)
-              }
-            />
-          ) : null
-        }
-      />
-      {isModalBatchToCompletion ? (
+      {isModalBatchToCompletion && (
+        <Modal
+          id={`batch-confirmation-modal-${id}`}
+          isOpen={isModalBatchToCompletion}
+          submitButtonLabel=""
+          cancelButtonLabel=""
+          handleSubmit={noop}
+          handleToggle={noop}
+          variant="primary"
+          customContent={
+            isModalBatchToCompletion ? (
+              <ConfirmModalContent
+                variant="primary"
+                heading={t(
+                  'common:batches.dialog.fromInspectionToArchive.heading'
+                )}
+                text={t('common:batches.dialog.fromInspectionToArchive.text')}
+                onClose={handleModalClose}
+                onSubmit={() =>
+                  handleBatchStatusChange(BATCH_STATUSES.SENT_TO_TALPA)
+                }
+              />
+            ) : null
+          }
+        />
+      )}
+      {isModalBatchToCompletion && (
         <Modal
           id={`batch-confirmation-modal-${id}`}
           isOpen={isModalBatchToCompletion}
@@ -135,9 +116,8 @@ const BatchActionsCompletion: React.FC<BatchProps> = ({
             ) : null
           }
         />
-      ) : null}
-
-      {isModalBatchToInspection ? (
+      )}
+      {isModalBatchToInspection && (
         <Modal
           id={`batch-confirmation-modal-${id}`}
           isOpen={isModalBatchToInspection}
@@ -164,8 +144,7 @@ const BatchActionsCompletion: React.FC<BatchProps> = ({
             ) : null
           }
         />
-      ) : null}
-
+      )}
       <Button
         theme="black"
         disabled={isDownloadingAttachments}
@@ -199,4 +178,4 @@ const BatchActionsCompletion: React.FC<BatchProps> = ({
   );
 };
 
-export default BatchActionsCompletion;
+export default BatchFooterCompletion;

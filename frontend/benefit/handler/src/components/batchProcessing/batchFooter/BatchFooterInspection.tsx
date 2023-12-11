@@ -19,15 +19,13 @@ import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import Modal from 'shared/components/modal/Modal';
 import theme from 'shared/styles/theme';
 
-import ConfirmModalContent from '../applicationReview/actions/ConfirmModalContent/confirm';
-import { $InspectionTypeContainer } from '../table/BatchCompletion.sc';
-import { $FormSection } from '../table/TableExtras.sc';
-import { useBatchActionsInspected } from './useBatchActionsInspected';
+import ConfirmModalContent from '../../applicationReview/actions/ConfirmModalContent/confirm';
+import { $InspectionTypeContainer } from '../../table/BatchCompletion.sc';
+import { $FormSection } from '../../table/TableExtras.sc';
+import { useBatchActionsInspected } from '../useBatchActionsInspected';
 
 type BatchProps = {
   batch: BatchProposal;
-  isInspectionFormSent: boolean;
-  setInspectionFormSent: React.Dispatch<React.SetStateAction<boolean>>;
   setBatchCloseAnimation: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -36,16 +34,14 @@ interface ModalTranslations {
   text: string;
 }
 
-const BatchActionsInspectionForm: React.FC<BatchProps> = ({
+const BatchFooterInspection: React.FC<BatchProps> = ({
   batch,
-  isInspectionFormSent,
-  setInspectionFormSent,
   setBatchCloseAnimation,
 }: // eslint-disable-next-line sonarjs/cognitive-complexity
 BatchProps) => {
   const { id, proposal_for_decision: proposalForDecision } = batch;
   const { t } = useTranslation();
-  const { formik, yearFromNow, isSuccess, isError } = useBatchActionsInspected(
+  const { formik, yearFromNow } = useBatchActionsInspected(
     batch,
     setBatchCloseAnimation
   );
@@ -57,21 +53,12 @@ BatchProps) => {
 
   const [inspectorMode, setInspectorMode] = React.useState('ahjo');
 
-  React.useEffect(() => {
-    if (isError) {
-      setInspectionFormSent(false);
-    }
-    if (isSuccess) {
-      setInspectionFormSent(true);
-    }
-  }, [isSuccess, isError, setInspectionFormSent]);
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(formik.errors, formik.touched, fieldName, t, true);
 
   const handleModalClose = (): void => {
     setModalBatchToDraft(false);
     setModalBatchToCompletion(false);
-    setInspectionFormSent(false);
   };
 
   const handleBatchStatusChange = (): void => {
@@ -87,12 +74,10 @@ BatchProps) => {
       .submitForm()
       .then(() => {
         setModalBatchToCompletion(false);
-        setInspectionFormSent(true);
         return true;
       })
       .catch(() => {
         setModalBatchToCompletion(false);
-        setInspectionFormSent(false);
         return false;
       });
 
@@ -109,13 +94,11 @@ BatchProps) => {
         if (Object.keys(errors).length > 0) {
           return null;
         }
-        setInspectionFormSent(true);
         setModalBatchToCompletion(true);
         return true;
       })
       .catch(() => {
         setModalBatchToCompletion(false);
-        setInspectionFormSent(false);
       });
   };
 
@@ -365,9 +348,12 @@ BatchProps) => {
           </>
         ) : null}
         <$FormSection>
-          <$GridCell $colSpan={3}>
+          <$GridCell
+            $colSpan={
+              proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED ? 3 : 2
+            }
+          >
             <Button
-              disabled={isInspectionFormSent}
               type="submit"
               theme="coat"
               variant="primary"
@@ -394,4 +380,4 @@ BatchProps) => {
   );
 };
 
-export default BatchActionsInspectionForm;
+export default BatchFooterInspection;
