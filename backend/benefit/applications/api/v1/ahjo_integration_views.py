@@ -147,9 +147,6 @@ class AhjoCallbackView(APIView):
                 status=status.HTTP_200_OK,
             )
 
-    def _create_status(self, application: Application, status: AhjoStatusEnum):
-        return AhjoStatus.objects.create(application=application, status=status)
-
     def _handle_open_case_callback(self, application: Application, callback_data: dict):
         application.ahjo_case_guid = callback_data["caseGuid"]
         application.ahjo_case_id = callback_data["caseId"]
