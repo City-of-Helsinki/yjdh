@@ -164,7 +164,8 @@ env = environ.Env(
     AHJO_TOKEN_URL=(str, "https://johdontyopoytahyte.hel.fi/ids4/connect/token"),
     AHJO_REST_API_URL=(str, "https://ahjohyte.hel.fi:9802/ahjorest/v1"),
     AHJO_REDIRECT_URL=(str, "https://helsinkilisa/dummyredirect.html"),
-    AHJO_ALLOWED_IP=(str, ""),
+    AHJO_ALLOWED_IP=(list, ["*"]),
+    DISABLE_AHJO_SAFE_LIST_CHECK=(bool, False),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -518,4 +519,5 @@ AHJO_TOKEN_URL = env("AHJO_TOKEN_URL")
 AHJO_REST_API_URL = env("AHJO_REST_API_URL")
 AHJO_REDIRECT_URL = env("AHJO_REDIRECT_URL")
 
-REST_SAFE_LIST_IPS = (env("AHJO_ALLOWED_IP"),)
+REST_SAFE_LIST_IPS = env.list("AHJO_ALLOWED_IP")
+DISABLE_AHJO_SAFE_LIST_CHECK = env.bool("DISABLE_AHJO_SAFE_LIST_CHECK")

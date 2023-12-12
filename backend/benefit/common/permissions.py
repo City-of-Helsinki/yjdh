@@ -75,7 +75,7 @@ class SafeListPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
         remote_addr = request.META["REMOTE_ADDR"]
-        if settings.NEXT_PUBLIC_MOCK_FLAG:
+        if settings.NEXT_PUBLIC_MOCK_FLAG or settings.DISABLE_AHJO_SAFE_LIST_CHECK:
             # disable safe list check in mock mode
             return True
 
