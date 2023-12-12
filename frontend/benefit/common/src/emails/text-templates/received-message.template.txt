@@ -1,0 +1,14 @@
+${general.greeting}
+
+${receivedMessage.bodyText}
+
+${application.applicationDetails}
+${application.applicationNumber}: {{application.application_number}}
+${application.createdAt}: {{ application.created_at }}
+
+${receivedMessage.ctaButton}: https://helsinkilisa.hel.fi
+
+${general.bestRegards1}
+${general.bestRegards2}
+
+${general.automaticReplyDisclaimer}

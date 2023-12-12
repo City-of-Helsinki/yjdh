@@ -1,0 +1,14 @@
+{% comment %} NEVER MAKE MODIFICATIONS TO THIS GENERATED FILE DIRECTLY, ALL MODIFICATIONS SHOULD BE DONE TO MJML TEMPLATE FILES! {% endcomment %}Hej!
+
+Du har fått ett nytt meddelande om ansökningen om Helsingforstillägget. Du kan läsa meddelandet i e-tjänst för sysselsättning Helsingforstillägg.
+
+Uppgifter om ansökningen
+Ansökningsnummer: {{application.application_number}}
+Datum då ansökningen skickades: {{ application.created_at }}
+
+Logg in i tjänsten och läs meddelandet: https://helsinkilisa.hel.fi
+
+Med vänliga hälsningar
+teamet för Helsingforstillägget
+
+Detta är ett automatiskt meddelande om ett nätmeddelande som skickades till dig. Svara inte på detta meddelande. Svaren behandlas inte. Vid behov ta kontakt till rådgivningen per e-post helsinkilisa@hel.fi.

@@ -1,12 +1,18 @@
 from django.conf import settings
 from django.db import transaction
+from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 from rest_framework import viewsets
 from rest_framework.exceptions import NotFound
 
 from applications.models import Application
 from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
-from messages.automatic_messages import send_email_to_applicant
+from messages.automatic_messages import (
+    get_default_email_notification_subject,
+    get_email_template_context,
+    render_email_template,
+    send_email_to_applicant,
+)
 from messages.models import Message, MessageType
 from messages.permissions import HasMessagePermission
 from messages.serializers import MessageSerializer, NoteSerializer
@@ -48,12 +54,23 @@ class HandlerMessageViewSet(ApplicantMessageViewSet):
 
     def perform_create(self, serializer):
         message = serializer.save()
+        application = message.application
         # Never send email if it's a handler's note!
         if message.message_type in [
             MessageType.HANDLER_MESSAGE,
             MessageType.APPLICANT_MESSAGE,
         ]:
-            send_email_to_applicant(message.application)
+            with translation.override(application.applicant_language):
+                subject = get_default_email_notification_subject()
+                context = get_email_template_context(application)
+                text_message = render_email_template(context, "received-message", "txt")
+                html_message = render_email_template(
+                    context, "received-message", "html"
+                )
+
+                send_email_to_applicant(
+                    application, subject, text_message, html_message
+                )
 
     def get_queryset(self):
         try:

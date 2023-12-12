@@ -1,0 +1,12 @@
+${general.greeting}
+
+${additionalInformationRequired.bodyText}
+${additionalInformationRequired.helper.text}
+
+${application.applicationDetails}
+${application.applicationNumber}: {{application.application_number}}
+${application.status.title}: ${application.status.additionalInformationRequired}
+${application.createdAt}: {{ application.created_at }}
+
+${general.bestRegards1}
+${general.bestRegards2}

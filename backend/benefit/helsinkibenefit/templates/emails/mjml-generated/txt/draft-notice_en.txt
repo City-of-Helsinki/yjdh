@@ -1,0 +1,17 @@
+{% comment %} NEVER MAKE MODIFICATIONS TO THIS GENERATED FILE DIRECTLY, ALL MODIFICATIONS SHOULD BE DONE TO MJML TEMPLATE FILES! {% endcomment %}Hello!
+
+Your Helsinki benefit draft application {{application.application_number}} will expire in two weeks on {{ application_deletion_date }}. You can update the information in your Helsinki benefit application or delete your application by logging in to the Helsinki benefit e-service and opening your application.
+
+Continue filling in the Helsinki benefit application: https://helsinkilisa.hel.fi/
+
+Visit the City of Helsinki’s website for instructions and more information on completing the application form.
+
+Read more about applying for the Helsinki benefit: # 
+
+Best regards,
+The Helsinki benefit team
+
+Application number: {{application.application_number}}
+Application status: Unfinished
+
+This is an automatic notification of an online message sent to you. Please do not reply to this message, as responses will not be processed. Please do not hesitate to contact the advisory service by e-mail at helsinkilisa@hel.fi.

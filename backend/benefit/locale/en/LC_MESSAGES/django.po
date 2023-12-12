@@ -650,7 +650,7 @@ msgid ""
 "processed."
 msgstr ""
 
-msgid "You have received a new message from Helsinki benefit"
+msgid "You have received a new message regarding your Helsinki benefit application"
 msgstr ""
 
 #, python-format
@@ -819,3 +819,6 @@ msgstr "The Helsinki Benefit card"
 
 msgid "employee_consent"
 msgstr "Employee's consent for processing personal data"
+
+msgid "Your Helsinki benefit application requires additional information"
+msgstr ""

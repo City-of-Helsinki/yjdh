@@ -657,8 +657,8 @@ msgstr ""
 "Din ansökan har öppnats för redigering. Gör ändringarna senast "
 "{additional_information_needed_by}, annars kan ansökan inte behandlas."
 
-msgid "You have received a new message from Helsinki benefit"
-msgstr "Du har fått ett nytt meddelande om Helsingforstilläg"
+msgid "You have received a new message regarding your Helsinki benefit application"
+msgstr "Du har fått ett nytt meddelande om ansökningen om Helsingforstillägget"
 
 #, python-format
 msgid ""
@@ -981,3 +981,9 @@ msgstr "Inget stöd"
 
 msgid "Printed at"
 msgstr "Tryckt"
+
+msgid "Your Helsinki benefit draft application will expire"
+msgstr "Ditt utkast för ansökan går ut"
+
+msgid "Your Helsinki benefit application requires additional information"
+msgstr "Ansökan om Helsingforstillägget behöver ytterligare information"

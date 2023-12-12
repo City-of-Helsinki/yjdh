@@ -1,0 +1,12 @@
+{% comment %} NEVER MAKE MODIFICATIONS TO THIS GENERATED FILE DIRECTLY, ALL MODIFICATIONS SHOULD BE DONE TO MJML TEMPLATE FILES! {% endcomment %}Hej!
+
+Den ansökan om Helsingforstillägget du skickade saknar nödvändiga uppgifter. Logg in på e-tjänst för sysselsättning Helsingforstillägg och fyll in de saknande uppgifterna senast {{ additional_information_deadline_date }} kl. {{ additional_information_deadline_time }}.
+Om du har frågor, skicka oss ett meddelande genom e-tjänst för sysselsättning Helsingforstillägg.
+
+Uppgifter om ansökningen
+Ansökningsnummer: {{application.application_number}}
+Ansökningsstatus: Väntar på mer information
+Datum då ansökningen skickades: {{ application.created_at }}
+
+Med vänliga hälsningar
+teamet för Helsingforstillägget

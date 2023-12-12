@@ -1,0 +1,14 @@
+{% comment %} NEVER MAKE MODIFICATIONS TO THIS GENERATED FILE DIRECTLY, ALL MODIFICATIONS SHOULD BE DONE TO MJML TEMPLATE FILES! {% endcomment %}Hello!
+
+You have received a new message regarding your Helsinki benefit application. You can read the message in the Helsinki benefit service.
+
+Application details
+Application number: {{application.application_number}}
+Application submission date: {{ application.created_at }}
+
+Log in to the service and read the message: https://helsinkilisa.hel.fi
+
+Best regards,
+The Helsinki benefit team
+
+This is an automatic notification of an online message sent to you. Please do not reply to this message, as responses will not be processed. Please do not hesitate to contact the advisory service by e-mail at helsinkilisa@hel.fi.
