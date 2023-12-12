@@ -310,25 +310,25 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             ApplicationBatchStatus.DECIDED_ACCEPTED,
             ApplicationBatchStatus.DECIDED_REJECTED,
             ApplicationBatchStatus.SENT_TO_TALPA,
+            ApplicationBatchStatus.COMPLETED,
         ]:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+        # Patch all required fields after batch inspection
         if new_status in [
             ApplicationBatchStatus.DECIDED_ACCEPTED,
             ApplicationBatchStatus.DECIDED_REJECTED,
         ]:
-            # Patch all required fields after batch inspection
             for key in request.data:
                 setattr(batch, key, request.data.get(key))
 
+        # Archive all applications if this batch will be completed
         if new_status in [
-            ApplicationBatchStatus.SENT_TO_TALPA,
+            ApplicationBatchStatus.COMPLETED,
             ApplicationBatchStatus.DECIDED_REJECTED,
         ]:
-            # Archive all applications if this batch will be completed
             Application.objects.filter(batch=batch).update(archived=True)
 
-        previous_status = batch.status
         batch.status = new_status
 
         try:
@@ -352,6 +352,8 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        previous_status = batch.status
 
         return Response(
             {

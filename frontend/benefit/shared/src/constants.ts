@@ -161,6 +161,7 @@ export enum BATCH_STATUSES {
   DECIDED_ACCEPTED = 'accepted',
   DECIDED_REJECTED = 'rejected',
   SENT_TO_TALPA = 'sent_to_talpa',
+  COMPLETED = 'completed',
 }
 
 export enum PROPOSALS_FOR_DECISION {

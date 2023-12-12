@@ -12,7 +12,9 @@ import {
   IconAngleDown,
   IconAngleUp,
   IconArrowUndo,
+  IconCheckCircle,
   IconCheckCircleFill,
+  IconClock,
   IconCrossCircleFill,
   Table,
 } from 'hds-react';
@@ -208,6 +210,32 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
             <dd>{convertToUIDateAndTimeFormat(created_at)}</dd>
           </div>
           <div>
+            <dt>{t('common:batches.list.columns.createdAt')}</dt>
+            <dd>{convertToUIDateAndTimeFormat(created_at)}</dd>
+          </div>
+          {[
+            BATCH_STATUSES.SENT_TO_TALPA,
+            BATCH_STATUSES.DECIDED_ACCEPTED,
+          ].includes(status) && (
+            <div>
+              <dt>{t('common:batches.list.columns.status')}</dt>
+              <dd>
+                {status === BATCH_STATUSES.SENT_TO_TALPA ? (
+                  <IconCheckCircle color="var(--color-tram)" />
+                ) : (
+                  <IconClock color="var(--color-metro)" />
+                )}
+                <$BatchStatusValue>
+                  {status === BATCH_STATUSES.SENT_TO_TALPA
+                    ? t('common:batches.list.columns.statuses.inPayment')
+                    : t(
+                        'common:batches.list.columns.statuses.waitingForPayment'
+                      )}
+                </$BatchStatusValue>
+              </dd>
+            </div>
+          )}
+          <div>
             {applications.length > 0 ? (
               <button
                 type="button"
@@ -218,6 +246,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
             ) : null}
           </div>
         </$HorizontalList>
+
         {applications?.length ? (
           <$TableBody $isCollapsed={isCollapsed} aria-hidden={isCollapsed}>
             <Table
@@ -235,31 +264,34 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
                   BATCH_STATUSES.DECIDED_ACCEPTED,
                 ].includes(status)
                   ? theme.colors.coatOfArmsLight
-                  : null
+                  : theme.colors.infoLight
               }
             >
               {[
                 BATCH_STATUSES.DRAFT,
                 BATCH_STATUSES.AHJO_REPORT_CREATED,
-              ].includes(status) ? (
+              ].includes(status) && (
                 <BatchFooterDraft
                   batch={batch}
                   setBatchCloseAnimation={setBatchCloseAnimation}
                 />
-              ) : null}
+              )}
 
-              {[BATCH_STATUSES.AWAITING_FOR_DECISION].includes(status) ? (
+              {[BATCH_STATUSES.AWAITING_FOR_DECISION].includes(status) && (
                 <BatchFooterInspection
                   batch={batch}
                   setBatchCloseAnimation={setBatchCloseAnimation}
                 />
-              ) : null}
-              {[BATCH_STATUSES.DECIDED_ACCEPTED].includes(status) ? (
+              )}
+              {[
+                BATCH_STATUSES.DECIDED_ACCEPTED,
+                BATCH_STATUSES.SENT_TO_TALPA,
+              ].includes(status) && (
                 <BatchFooterCompletion
                   batch={batch}
                   setBatchCloseAnimation={setBatchCloseAnimation}
                 />
-              ) : null}
+              )}
             </$TableFooter>
           </$TableBody>
         ) : (

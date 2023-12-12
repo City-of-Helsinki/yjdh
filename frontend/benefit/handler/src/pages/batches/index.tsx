@@ -63,7 +63,12 @@ const BatchIndex: NextPage = () => {
           </Tabs.TabPanel>
           <Tabs.TabPanel>
             <$Heading>{t('common:batches.tabs.completion')}</$Heading>
-            <BatchProposals status={[BATCH_STATUSES.DECIDED_ACCEPTED]} />
+            <BatchProposals
+              status={[
+                BATCH_STATUSES.DECIDED_ACCEPTED,
+                BATCH_STATUSES.SENT_TO_TALPA,
+              ]}
+            />
           </Tabs.TabPanel>
         </Tabs>
       </Container>
