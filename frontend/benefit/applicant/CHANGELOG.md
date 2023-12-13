@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.3.0...benefit-applicant-v3.3.1) (2023-12-13)
+
+
+### Bug Fixes
+
+* Cookie banner fix (HL-909) ([#2596](https://github.com/City-of-Helsinki/yjdh/issues/2596)) ([2426c5f](https://github.com/City-of-Helsinki/yjdh/commit/2426c5f14ecb0d761cdf13b8e7c27f431b931039))
+
 ## [3.3.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.2.0...benefit-applicant-v3.3.0) (2023-12-07)
 
 
