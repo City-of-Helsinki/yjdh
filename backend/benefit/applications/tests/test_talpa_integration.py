@@ -1,6 +1,10 @@
 import datetime
 import decimal
 
+import pytest
+from django.urls import reverse
+
+from applications.enums import ApplicationStatus
 from applications.tests.common import (
     check_csv_cell_list_lines_generator,
     check_csv_string_lines_generator,
@@ -118,3 +122,45 @@ def test_write_talpa_csv_file(
         contents = f.read()
         assert contents.startswith('"Hakemusnumero";"Työnantajan tyyppi"')
         assert "äöÄÖtest" in contents
+
+
+@pytest.mark.django_db
+def test_talpa_callback_success(talpa_client, decided_application):
+    url = reverse(
+        "talpa_callback_url",
+    )
+
+    payload = {
+        "status": "Success",
+        "successful_applications": [decided_application.application_number],
+        "failed_applications": [],
+    }
+
+    response = talpa_client.post(url, data=payload)
+
+    assert response.status_code == 200
+    assert response.data == {"message": "Callback received"}
+
+
+@pytest.mark.django_db
+def test_talpa_callback_rejected_application(
+    talpa_client, decided_application, settings
+):
+    url = reverse(
+        "talpa_callback_url",
+    )
+
+    payload = {
+        "status": "Success",
+        "successful_applications": [],
+        "failed_applications": [decided_application.application_number],
+    }
+
+    response = talpa_client.post(url, data=payload)
+
+    assert response.status_code == 200
+    assert response.data == {"message": "Callback received"}
+
+    decided_application.refresh_from_db()
+
+    assert decided_application.status == ApplicationStatus.REJECTED_BY_TALPA

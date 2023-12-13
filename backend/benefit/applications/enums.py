@@ -13,6 +13,7 @@ class ApplicationStatus(models.TextChoices):
     CANCELLED = "cancelled", _("Cancelled")
     ACCEPTED = "accepted", _("Accepted")
     REJECTED = "rejected", _("Rejected")
+    REJECTED_BY_TALPA = "rejected_by_talpa", _("Rejected by Talpa")
 
     @classmethod
     def is_editable_status(cls, user, status):
