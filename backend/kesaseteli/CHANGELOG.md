@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.2.0...kesaseteli-backend-v1.3.0) (2023-12-13)
+
+
+### Features
+
+* **ks-backend:** Set default EMAIL_HOST to relay.hel.fi ([94ba1fb](https://github.com/City-of-Helsinki/yjdh/commit/94ba1fb96cb9d9026908dbaae59ef83010e3c909))
+* Upgrade django to 3.2.23 (i.e. latest 3.2.x) in all backends ([410ac0e](https://github.com/City-of-Helsinki/yjdh/commit/410ac0e2f042774e0fdd12a862242ce481dff46b))
+
 ## [1.2.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.1.0...kesaseteli-backend-v1.2.0) (2023-06-08)
 
 
