@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.3.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.2.0...kesaseteli-backend-v1.3.0) (2023-12-13)
+## [1.3.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.2.0...kesaseteli-backend-v1.3.0) (2023-12-14)
 
 
 ### Features
