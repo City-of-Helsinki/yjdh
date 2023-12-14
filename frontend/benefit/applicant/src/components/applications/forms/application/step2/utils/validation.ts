@@ -113,7 +113,9 @@ export const getValidationSchema = (
           max: param.max,
           key: VALIDATION_MESSAGE_KEYS.NUMBER_MAX,
         }))
-        .transform((_value, originalValue) => getNumberValue(originalValue))
+        .transform((_value, originalValue) =>
+          originalValue ? getNumberValue(originalValue) : null
+        )
         .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
         .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
       [EMPLOYEE_KEYS.MONTHLY_PAY]: Yup.number()
@@ -125,7 +127,9 @@ export const getValidationSchema = (
           max: param.max,
           key: VALIDATION_MESSAGE_KEYS.NUMBER_MAX,
         }))
-        .transform((_value, originalValue) => getNumberValue(originalValue))
+        .transform((_value, originalValue) =>
+          originalValue ? getNumberValue(originalValue) : null
+        )
         .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
         .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
       [EMPLOYEE_KEYS.OTHER_EXPENSES]: Yup.number()
@@ -137,7 +141,9 @@ export const getValidationSchema = (
           max: param.max,
           key: VALIDATION_MESSAGE_KEYS.NUMBER_MAX,
         }))
-        .transform((_value, originalValue) => getNumberValue(originalValue))
+        .transform((_value, originalValue) =>
+          originalValue ? getNumberValue(originalValue) : null
+        )
         .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
         .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
       [EMPLOYEE_KEYS.COLLECTIVE_BARGAINING_AGREEMENT]: Yup.string().required(
