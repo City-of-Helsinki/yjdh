@@ -26,16 +26,16 @@ type ExtendedComponentProps = {
 
 const useApplicationFormStep5 = (
   application: Application,
-  onSubmit?: () => void
+  setIsSubmittedApplication: React.Dispatch<React.SetStateAction<boolean>>
 ): ExtendedComponentProps => {
   const translationsBase = 'common:applications.sections';
   const { t } = useTranslation();
   const router = useRouter();
 
-  const { mutate: updateApplicationStep5, error: updateApplicationErrorStep5 } =
-    useUpdateApplicationQuery();
-
   const isSubmit = !application?.applicantTermsApprovalNeeded;
+
+  const { mutate: updateApplicationStep5, error: updateApplicationErrorStep5 } =
+    useUpdateApplicationQuery(setIsSubmittedApplication);
 
   useEffect(() => {
     // todo:custom error messages
@@ -119,9 +119,6 @@ const useApplicationFormStep5 = (
       },
       { deep: true }
     ) as ApplicationData;
-    if (isSubmit && onSubmit) {
-      onSubmit();
-    }
     updateApplicationStep5(currentApplicationData);
   };
   const handleClose = (): void => {

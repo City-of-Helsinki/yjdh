@@ -13,12 +13,12 @@ import StepperActions from '../stepperActions/StepperActions';
 import { useApplicationFormStep6 } from './useApplicationFormStep6';
 
 type ExtendedProps = {
-  onSubmit?: () => void;
+  setIsSubmittedApplication: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const ApplicationFormStep6: React.FC<
   DynamicFormStepComponentProps & ExtendedProps
-> = ({ data, onSubmit }) => {
+> = ({ data, setIsSubmittedApplication }) => {
   const {
     t,
     handleSubmit,
@@ -32,7 +32,7 @@ const ApplicationFormStep6: React.FC<
     checkedArray,
     applicantTermsInEffectUrl,
     applicantTermsInEffectMd,
-  } = useApplicationFormStep6(data, onSubmit);
+  } = useApplicationFormStep6(data, setIsSubmittedApplication);
 
   return (
     <form onSubmit={handleSubmit} noValidate>

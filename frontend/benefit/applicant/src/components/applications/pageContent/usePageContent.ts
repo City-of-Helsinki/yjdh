@@ -24,7 +24,7 @@ type ExtendedComponentProps = {
   isError: boolean;
   isLoading: boolean;
   isSubmittedApplication: boolean;
-  handleSubmit: () => void;
+  setIsSubmittedApplication: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const isApplicationLoaded = (id: number | string, status: string): boolean =>
@@ -116,8 +116,6 @@ const usePageContent = (): ExtendedComponentProps => {
     }));
   }, [t, currentStep]);
 
-  const handleSubmit = (): void => setIsSubmittedApplication(true);
-
   return {
     t,
     id,
@@ -127,8 +125,8 @@ const usePageContent = (): ExtendedComponentProps => {
     isLoading,
     isError: Boolean(id && existingApplicationError),
     isReadOnly,
+    setIsSubmittedApplication,
     isSubmittedApplication,
-    handleSubmit,
   };
 };
 
