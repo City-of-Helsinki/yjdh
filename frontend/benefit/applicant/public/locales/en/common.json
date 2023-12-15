@@ -431,7 +431,8 @@
     "accessibilityStatement": "Accessibility statement",
     "aboutTheService": "About the service",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/information/accessibility",
-    "aboutTheServiceLink": "https://www.hel.fi/en/business-and-work/employers/helsinki-benefit-for-employers"
+    "aboutTheServiceLink": "https://www.hel.fi/en/business-and-work/employers/helsinki-benefit-for-employers",
+    "cookieSettings": "Cookie settings"
   },
   "notifications": {
     "applicationSubmitted": {
@@ -617,7 +618,8 @@
     "createApplication": "Helsinki benefit - Application - Create",
     "editApplication": "Helsinki benefit - Application - Edit",
     "viewApplication": "Helsinki benefit - Application - View",
-    "accessibilityStatement": "Helsinki benefit - Accessibility statement"
+    "accessibilityStatement": "Helsinki benefit - Accessibility statement",
+    "cookieSettings": "Helsinki benefit - Cookie settings"
   },
   "accessibilityStatement": {
     "h1": "Accessibility statement",

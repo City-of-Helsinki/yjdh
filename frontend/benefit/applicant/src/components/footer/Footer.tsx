@@ -25,6 +25,11 @@ const FooterSection: React.FC = () => {
           />
           <Footer.Item
             as="a"
+            href={`/${locale}/cookie-settings`}
+            label={t('common:footer.cookieSettings')}
+          />
+          <Footer.Item
+            as="a"
             rel="noopener noreferrer"
             target="_blank"
             href={t('common:footer.aboutTheServiceLink')}

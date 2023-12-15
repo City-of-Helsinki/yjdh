@@ -4,12 +4,12 @@ import {
 } from 'benefit/applicant/constants';
 import useLocale from 'benefit/applicant/hooks/useLocale';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
-import { CookieModal } from 'hds-react';
+import { CookieModal, CookiePage } from 'hds-react';
 import { useRouter } from 'next/router';
 import React from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
-const CookieConsent: React.FC = () => {
+const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
   const locale = useLocale();
   const router = useRouter();
   const { axios } = useBackendAPI();
@@ -84,7 +84,11 @@ const CookieConsent: React.FC = () => {
     focusTargetSelector: '#main_content',
   };
 
-  return <CookieModal contentSource={contentSource} />;
+  return asPage ? (
+    <CookiePage contentSource={contentSource} />
+  ) : (
+    <CookieModal contentSource={contentSource} />
+  );
 };
 
 export default CookieConsent;
