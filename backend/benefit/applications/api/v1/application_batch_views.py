@@ -319,6 +319,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
 
         if new_status in [
             ApplicationBatchStatus.SENT_TO_TALPA,
+            ApplicationBatchStatus.DECIDED_REJECTED,
         ]:
             # Archive all applications if this batch will be completed
             Application.objects.filter(batch=batch).update(archived=True)
