@@ -819,7 +819,7 @@ def test_application_batches_talpa_export(anonymous_client, application_batch):
     application_batch.status = ApplicationBatchStatus.DECIDED_REJECTED
     fill_as_valid_batch_completion_and_save(application_batch)
     response = anonymous_client.get(reverse("v1:applicationbatch-talpa-export-batch"))
-    assert response.status_code == 400
+    assert response.status_code == 404
     assert "There is no available application to export" in response.data["detail"]
 
     application_batch.status = ApplicationBatchStatus.DECIDED_ACCEPTED

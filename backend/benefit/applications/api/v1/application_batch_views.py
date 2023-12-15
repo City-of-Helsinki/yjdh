@@ -178,7 +178,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
                         " later"
                     )
                 },
-                status=status.HTTP_400_BAD_REQUEST,
+                status=status.HTTP_404_NOT_FOUND,
             )
         applications = Application.objects.filter(batch__in=approved_batches).order_by(
             "company__name", "application_number"
