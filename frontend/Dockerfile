@@ -28,37 +28,11 @@ COPY --chown=appuser:appuser $PROJECT/shared/package.json* $PROJECT/shared/packa
 COPY --chown=appuser:appuser shared/package.json shared/package.json
 RUN --mount=type=cache,target="$PWD/.yarn_cache",sharing=locked YARN_CACHE_FOLDER="$PWD"/.yarn_cache yarn --frozen-lockfile --check-files --network-timeout 600000
 
-# =============================
-FROM appbase AS development
-# =============================
-
-# Copy all files
-COPY --chown=appuser:appuser . .
-
-# Use non-root user
-USER appuser
-
-# Set V8 max heap size to 2GB (default is 512MB)
-# This prevents Docker Compose from crashing due to out of memory errors
-ENV NODE_OPTIONS="--max_old_space_size=2048"
-
-ARG PROJECT
-ARG FOLDER
-# Use non-root user
-USER appuser
-WORKDIR /app
-
-# Copy all files
-COPY --chown=appuser:appuser . .
-
-ENV NEXT_TELEMETRY_DISABLED 1
-# Bake package.json start command into the image
-ENV DEV_START "yarn --cwd $PROJECT/$FOLDER dev"
-CMD ["sh", "-c", "${DEV_START}"]
-
 # ===================================
 FROM appbase AS staticbuilder
 # ===================================
+
+ENV NODE_OPTIONS="--max_old_space_size=2048"
 
 # Set environmental variables for frontend (used in CI)
 ARG NEXT_PUBLIC_BACKEND_URL
@@ -103,7 +77,6 @@ USER root
 RUN rm -rf node_modules
 
 USER appuser
-RUN yarn cache clean
 
 # ==========================================
 FROM helsinkitest/node:18-slim AS production
