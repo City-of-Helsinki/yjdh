@@ -1,6 +1,6 @@
 from django.db import transaction
 from django.forms import ValidationError
-from django.http import HttpResponse, StreamingHttpResponse
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.text import format_lazy
@@ -161,11 +161,14 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         permission_classes=[AllowAny],
     )
     @transaction.atomic
-    def talpa_export_batch(self, request, *args, **kwargs) -> StreamingHttpResponse:
+    def talpa_export_batch(self, request, *args, **kwargs) -> HttpResponse:
         """
         Export ApplicationBatch to CSV format for Talpa Robot
         """
-        skip_update = request.query_params.get("skip_update") == "1"
+        skip_update = (
+            request.query_params.get("skip_update")
+            and request.query_params.get("skip_update") == "1"
+        )
 
         approved_batches = ApplicationBatch.objects.filter(
             status=ApplicationBatchStatus.DECIDED_ACCEPTED
@@ -189,10 +192,11 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             date=timezone.now().strftime("%Y%m%d_%H%M%S"),
         )
 
-        response = StreamingHttpResponse(
-            csv_service.get_csv_string_lines_generator(True, True),
+        response = HttpResponse(
+            csv_service.get_csv_string(True).encode("utf-8"),
             content_type="text/csv",
         )
+
         response["Content-Disposition"] = "attachment; filename={filename}.csv".format(
             filename=file_name
         )

@@ -8,7 +8,7 @@ import pytest
 import pytz
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
-from django.http import StreamingHttpResponse
+from django.http import HttpResponse
 from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers.application import ApplicationBatchSerializer
@@ -838,6 +838,6 @@ def test_application_batches_talpa_export(anonymous_client, application_batch):
     assert application_batch.status == ApplicationBatchStatus.SENT_TO_TALPA
     assert app_batch_2.status == ApplicationBatchStatus.SENT_TO_TALPA
 
-    assert isinstance(response, StreamingHttpResponse)
+    assert isinstance(response, HttpResponse)
     assert response.headers["Content-Type"] == "text/csv"
     assert response.status_code == 200
