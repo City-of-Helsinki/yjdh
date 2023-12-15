@@ -42,7 +42,7 @@ const checkIsServerReady = (response) => {
 
   server.get('*', (req, res) => handle(req, res));
 
-  if (process.env.NEXT_SERVE_WITH_CERTS) {
+  if (process.env.NEXT_SERVE_WITH_CUSTOM_CERTS) {
     let options;
     try {
       options = {
