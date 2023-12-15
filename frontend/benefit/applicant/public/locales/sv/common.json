@@ -205,7 +205,7 @@
         "heading4Sub1": "Du kan ansöka om Helsingforstillägget för anställningsförhållandets tid men för högst 12 månader.",
         "heading5Employment": "Anställningsförhållande",
         "heading5EmploymentSub1": "Anställningskostnaderna",
-        "salaryExpensesExplanation": "Ange bruttolönen, bikostnaderna och semesterpenning i euro per månad.",
+        "salaryExpensesExplanation": "Ange bruttolönen, bikostnaderna och semesterpenning i euro per månad. Om semesterpenning inte betalas ut, ange 0 i fältet.",
         "tooltips": {
           "heading5Employment": "Kollektivavtal som tillämpas: t.ex. kollektivavtal för handeln. Sätt streck om branschen inte har ett bindande kollektivavtal.",
           "heading5EmploymentSub1": "Bruttolön innebär lönebeloppet innan avdraget av skatter och lagstadgade avgifter. Bruttolön anges i arbetsavtalet. Om tillägg såsom kväll-, natt- eller skiftsarbetstillägg betalas som en del av lönen, beräkna en uppskattning om beloppet på tilläggen in i bruttolönen.",
