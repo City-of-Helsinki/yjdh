@@ -48,7 +48,7 @@ const PageContent: React.FC = () => {
     isLoading,
     isReadOnly,
     isSubmittedApplication,
-    handleSubmit,
+    setIsSubmittedApplication,
   } = usePageContent();
 
   const theme = useTheme();
@@ -226,10 +226,16 @@ const PageContent: React.FC = () => {
       {currentStep === 3 && <ApplicationFormStep3 data={application} />}
       {currentStep === 4 && <ApplicationFormStep4 data={application} />}
       {currentStep === 5 && (
-        <ApplicationFormStep5 onSubmit={handleSubmit} data={application} />
+        <ApplicationFormStep5
+          setIsSubmittedApplication={setIsSubmittedApplication}
+          data={application}
+        />
       )}
       {currentStep === 6 && (
-        <ApplicationFormStep6 onSubmit={handleSubmit} data={application} />
+        <ApplicationFormStep6
+          setIsSubmittedApplication={setIsSubmittedApplication}
+          data={application}
+        />
       )}
     </Container>
   );

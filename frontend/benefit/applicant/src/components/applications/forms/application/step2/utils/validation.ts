@@ -118,20 +118,7 @@ export const getValidationSchema = (
         )
         .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
         .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-      [EMPLOYEE_KEYS.MONTHLY_PAY]: Yup.number()
-        .min(0, (param) => ({
-          min: param.min,
-          key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,
-        }))
-        .max(MAX_MONTHLY_PAY, (param) => ({
-          max: param.max,
-          key: VALIDATION_MESSAGE_KEYS.NUMBER_MAX,
-        }))
-        .transform((_value, originalValue) =>
-          originalValue ? getNumberValue(originalValue) : null
-        )
-        .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
-        .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      [EMPLOYEE_KEYS.MONTHLY_PAY]: Yup.number(),
       [EMPLOYEE_KEYS.OTHER_EXPENSES]: Yup.number()
         .min(0, (param) => ({
           min: param.min,

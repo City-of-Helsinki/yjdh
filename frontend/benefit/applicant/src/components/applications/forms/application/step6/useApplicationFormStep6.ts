@@ -35,7 +35,7 @@ type ExtendedComponentProps = {
 
 const useApplicationFormStep6 = (
   application: Application,
-  onSubmit?: () => void
+  setIsSubmittedApplication: React.Dispatch<React.SetStateAction<boolean>>
 ): ExtendedComponentProps => {
   const translationsBase = 'common:applications.sections.send';
   const { t } = useTranslation();
@@ -55,7 +55,9 @@ const useApplicationFormStep6 = (
 
   const { onSave, onBack, onDelete } = useFormActions(application);
 
-  const { mutate: updateApplicationStep6 } = useUpdateApplicationQuery();
+  const { mutate: updateApplicationStep6 } = useUpdateApplicationQuery(
+    setIsSubmittedApplication
+  );
 
   const handleClick = (consentIndex: number): void => {
     const newValue = !checkedArray[consentIndex];
@@ -114,9 +116,6 @@ const useApplicationFormStep6 = (
         },
         { deep: true }
       ) as ApplicationData;
-      if (onSubmit) {
-        onSubmit();
-      }
       updateApplicationStep6(currentApplicationData);
     }
   };
