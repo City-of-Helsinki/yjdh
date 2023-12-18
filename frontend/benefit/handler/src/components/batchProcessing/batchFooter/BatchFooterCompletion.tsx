@@ -166,7 +166,7 @@ const BatchFooterCompletion: React.FC<BatchProps> = ({
           <h3>{t('common:batches.form.headings.decisionDetails')}</h3>
         </$GridCell>
 
-        <$GridCell $colSpan={3}>
+        <$GridCell $colSpan={3} $colStart={1}>
           <$ViewFieldBold>
             {t('common:batches.form.fields.decisionMakerName')}
           </$ViewFieldBold>
@@ -193,55 +193,55 @@ const BatchFooterCompletion: React.FC<BatchProps> = ({
           </$ViewFieldBold>
           <$ViewField>{convertToUIDateFormat(decision_date)}</$ViewField>
         </$GridCell>
-
-        {expert_inspector_name?.length && expert_inspector_title?.length ? (
-          <>
-            <$GridCell $colSpan={3} $colStart={1}>
-              <$ViewFieldBold>
-                {t('common:batches.form.fields.expertInspectorName')}
-              </$ViewFieldBold>
-              <$ViewField>{expert_inspector_name}</$ViewField>
-            </$GridCell>
-
-            <$GridCell $colSpan={3}>
-              <$ViewFieldBold>
-                {t('common:batches.form.fields.expertInspectorTitle')}
-              </$ViewFieldBold>
-              <$ViewField>{expert_inspector_title}</$ViewField>
-            </$GridCell>
-
-            <$GridCell $colSpan={3}>
-              <$ViewFieldBold>
-                {t('common:batches.form.fields.p2pCheckerName')}
-              </$ViewFieldBold>
-              <$ViewField>{p2p_checker_name}</$ViewField>
-            </$GridCell>
-          </>
-        ) : (
-          <>
-            <$GridCell $colSpan={3} $colStart={1}>
-              <$ViewFieldBold>
-                {t('common:batches.form.fields.p2pInspectorName')}
-              </$ViewFieldBold>
-              <$ViewField>{p2p_inspector_name}</$ViewField>
-            </$GridCell>
-
-            <$GridCell $colSpan={3}>
-              <$ViewFieldBold>
-                {t('common:batches.form.fields.p2pInspectorEmail')}
-              </$ViewFieldBold>
-              <$ViewField>{p2p_inspector_email}</$ViewField>
-            </$GridCell>
-
-            <$GridCell $colSpan={3}>
-              <$ViewFieldBold>
-                {t('common:batches.form.fields.p2pCheckerName')}
-              </$ViewFieldBold>
-              <$ViewField>{p2p_checker_name}</$ViewField>
-            </$GridCell>
-          </>
-        )}
       </$FormSection>
+
+      {expert_inspector_name?.length && expert_inspector_title?.length ? (
+        <$FormSection css="width: 100%">
+          <$GridCell $colSpan={3} $colStart={1}>
+            <$ViewFieldBold>
+              {t('common:batches.form.fields.expertInspectorName')}
+            </$ViewFieldBold>
+            <$ViewField>{expert_inspector_name}</$ViewField>
+          </$GridCell>
+
+          <$GridCell $colSpan={3}>
+            <$ViewFieldBold>
+              {t('common:batches.form.fields.expertInspectorTitle')}
+            </$ViewFieldBold>
+            <$ViewField>{expert_inspector_title}</$ViewField>
+          </$GridCell>
+
+          <$GridCell $colSpan={6}>
+            <$ViewFieldBold>
+              {t('common:batches.form.fields.p2pCheckerName')}
+            </$ViewFieldBold>
+            <$ViewField>{p2p_checker_name}</$ViewField>
+          </$GridCell>
+        </$FormSection>
+      ) : (
+        <$FormSection>
+          <$GridCell $colSpan={3} $colStart={1}>
+            <$ViewFieldBold>
+              {t('common:batches.form.fields.p2pInspectorName')}
+            </$ViewFieldBold>
+            <$ViewField>{p2p_inspector_name}</$ViewField>
+          </$GridCell>
+
+          <$GridCell $colSpan={3}>
+            <$ViewFieldBold>
+              {t('common:batches.form.fields.p2pInspectorEmail')}
+            </$ViewFieldBold>
+            <$ViewField>{p2p_inspector_email}</$ViewField>
+          </$GridCell>
+
+          <$GridCell $colSpan={3}>
+            <$ViewFieldBold>
+              {t('common:batches.form.fields.p2pCheckerName')}
+            </$ViewFieldBold>
+            <$ViewField>{p2p_checker_name}</$ViewField>
+          </$GridCell>
+        </$FormSection>
+      )}
 
       <div style={{ display: 'flex', width: '100%' }}>
         {batchStatus === BATCH_STATUSES.DECIDED_ACCEPTED && (

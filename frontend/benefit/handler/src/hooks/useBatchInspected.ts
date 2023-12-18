@@ -81,10 +81,9 @@ const useBatchInspected = (
         );
 
         if (
-          [
-            BATCH_STATUSES.DECIDED_REJECTED,
-            BATCH_STATUSES.DECIDED_ACCEPTED,
-          ].includes(backendStatus)
+          [BATCH_STATUSES.COMPLETED, BATCH_STATUSES.DECIDED_ACCEPTED].includes(
+            backendStatus
+          )
         ) {
           setBatchCloseAnimation(true);
           setTimeout(() => {

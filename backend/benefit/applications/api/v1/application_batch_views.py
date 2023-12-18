@@ -325,7 +325,6 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         # Archive all applications if this batch will be completed
         if new_status in [
             ApplicationBatchStatus.COMPLETED,
-            ApplicationBatchStatus.DECIDED_REJECTED,
         ]:
             Application.objects.filter(batch=batch).update(archived=True)
 

@@ -88,6 +88,7 @@ export const $HintText = styled.p`
 
 export const $FormSection = styled(FormSection)`
   margin-bottom: var(--spacing-m);
+  width: 100%;
 
   + hr {
     display: none;
@@ -108,7 +109,8 @@ export const $TableFooter = styled.footer<$TableFooterProps>`
   align-items: center;
   box-sizing: border-box;
 
-  form {
+  form,
+  > section {
     display: grid;
     width: 100%;
   }

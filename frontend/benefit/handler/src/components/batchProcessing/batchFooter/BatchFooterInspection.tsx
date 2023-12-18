@@ -61,7 +61,7 @@ BatchProps) => {
     setModalBatchToCompletion(false);
   };
 
-  const handleBatchStatusChange = (): void => {
+  const handleSubmitToDraft = (): void => {
     changeBatchStatus({
       id,
       status: BATCH_STATUSES.DRAFT,
@@ -138,7 +138,7 @@ BatchProps) => {
                 )}
                 text={t('common:batches.dialog.fromInspectionToDraft.text')}
                 onClose={handleModalClose}
-                onSubmit={handleBatchStatusChange}
+                onSubmit={handleSubmitToDraft}
               />
             ) : null}
             {isModalBatchToCompletion ? (
