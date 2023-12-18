@@ -1,6 +1,7 @@
 const express = require('express');
 const next = require('next');
-
+const https = require('https');
+const fs = require('fs');
 const port = process.env.PORT || 3000;
 const app = next({ dev: process.env.NODE_ENV !== 'production' });
 const handle = app.getRequestHandler();
@@ -41,7 +42,27 @@ const checkIsServerReady = (response) => {
 
   server.get('*', (req, res) => handle(req, res));
 
-  await server.listen(port);
+  if (process.env.NEXT_SERVE_WITH_CUSTOM_CERTS) {
+    let options;
+    try {
+      options = {
+        key: fs.readFileSync(
+          process.cwd() + '/../../shared/src/server/localhost.key'
+        ),
+        cert: fs.readFileSync(
+          process.cwd() + '/../../shared/src/server/localhost.crt'
+        ),
+      };
+    } catch (e) {
+      console.error(
+        'No certificate file(s) found. Copy it from the local-proxy container.'
+      );
+      return;
+    }
+    https.createServer(options, server).listen(port);
+  } else {
+    await server.listen(port);
+  }
   signalReady();
   console.log(`> Ready on https://localhost:${port}`); // eslint-disable-line no-console
 })();
