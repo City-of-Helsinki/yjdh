@@ -205,7 +205,7 @@
         "heading4Sub1": "Voit hakea Helsinki-lisää työsuhteen keston ajaksi, mutta enintään 12 kuukaudeksi.",
         "heading5Employment": "Työsuhde",
         "heading5EmploymentSub1": "Palkkauskustannukset",
-        "salaryExpensesExplanation": "Ilmoita bruttopalkka, sivukulut ja lomaraha euroina kuukaudessa.",
+        "salaryExpensesExplanation": "Ilmoita bruttopalkka, sivukulut ja lomaraha euroina kuukaudessa. Jos lomarahaa ei makseta, merkitse kenttään 0.",
         "tooltips": {
           "heading5Employment": "Sovellettava työehtosopimus: esim. Kaupan työehtosopimus. Jos alalla ei ole velvoittavaa työehtosopimusta, merkitse viiva.",
           "heading5EmploymentSub1": "Bruttopalkka tarkoittaa palkkasummaa ennen verojen ja lakisääteisten maksujen vähentämistä. Bruttopalkka on merkitty työsopimukseen. Mikäli osana palkkaa maksetaan lisiä, kuten ilta-, yö- tai vuorolisiä, laske arvio lisien määristä mukaan bruttopalkkaan.",

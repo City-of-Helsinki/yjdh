@@ -205,7 +205,7 @@
         "heading4Sub1": "You can apply for the Helsinki benefit for the duration of the employment relationship, but only up to 12 months.",
         "heading5Employment": "Employment relationship",
         "heading5EmploymentSub1": "Salary costs",
-        "salaryExpensesExplanation": "Please report gross salary, Indirect labour costs and holiday pay in euros per month",
+        "salaryExpensesExplanation": "Please report gross salary, Indirect labour costs and holiday pay in euros per month. If holiday pay is not paid, mark 0 in the field.",
         "tooltips": {
           "heading5Employment": "Collective agreement applied: e.g. Collective Agreement for the Commercial Sector. If there is no binding collective agreement in the sector, put in a dash.",
           "heading5EmploymentSub1": "Gross salary refers to total salary before deducting taxes and statutory contributions. Gross salary is stated in employment contracts. If bonuses are paid as part of salary – such as evening, night or shift work – include an estimate of the amount of bonuses in the gross salary.",
