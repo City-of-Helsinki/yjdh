@@ -3,11 +3,11 @@
     "links": {
       "aboutHelsinkiBenefit": {
         "title": "Tietoa Helsinki-lisästä",
-        "url": "#"
+        "url": "https://www.hel.fi/fi/yritykset-ja-tyo/tyonantajat/taloudelliset-tuet/helsinki-lisa-tyonantajille"
       },
       "customerService": {
         "title": "Asiakaspalvelu ja yhteystiedot",
-        "url": "#"
+        "url": "https://www.hel.fi/fi/yritykset-ja-tyo/tyonantajat/taloudelliset-tuet/helsinki-lisa-tyonantajille#yhteystiedot"
       }
     }
   },
@@ -34,7 +34,7 @@
       "text": "Ohjeet ja lisätietoa hakulomakkeen täyttämiseen löydät Helsingin kaupungin sivuilta.",
       "link": {
         "title": "Lue lisãä Helsinki-lisän hakemisesta",
-        "url": "#"
+        "url": "https://www.hel.fi/fi/yritykset-ja-tyo/tyonantajat/taloudelliset-tuet/helsinki-lisa-tyonantajille"
       }
     }
   },

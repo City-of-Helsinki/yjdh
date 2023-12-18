@@ -3,11 +3,11 @@
     "links": {
       "aboutHelsinkiBenefit": {
         "title": "Information about the Helsinki benefit",
-        "url": "#"
+        "url": "https://www.hel.fi/en/business-and-work/employers/financial-support/helsinki-benefit-for-employers"
       },
       "customerService": {
         "title": "Customer service and contact details",
-        "url": "#"
+        "url": "https://www.hel.fi/en/business-and-work/employers/financial-support/helsinki-benefit-for-employers#contact-information"
       }
     }
   },
@@ -34,7 +34,7 @@
       "text": "Visit the City of Helsinki’s website for instructions and more information on completing the application form.",
       "link": {
         "title": "Read more about applying for the Helsinki benefit",
-        "url": "#"
+        "url": "https://www.hel.fi/en/business-and-work/employers/financial-support/helsinki-benefit-for-employers"
       }
     }
   },

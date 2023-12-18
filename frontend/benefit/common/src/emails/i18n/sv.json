@@ -3,11 +3,11 @@
     "links": {
       "aboutHelsinkiBenefit": {
         "title": "Information om Helsingforstillägget",
-        "url": "#"
+        "url": "https://www.hel.fi/sv/foretag-och-arbete/arbetsgivare/ekonomiska-stod/helsingforstillagget-for-arbetsgivare"
       },
       "customerService": {
         "title": "Kundtjänst och kontaktuppgifter",
-        "url": "#"
+        "url": "https://www.hel.fi/sv/foretag-och-arbete/arbetsgivare/ekonomiska-stod/helsingforstillagget-for-arbetsgivare#kontaktuppgifter"
       }
     }
   },
@@ -34,7 +34,7 @@
       "text": "Anvisningar och ytterligare information om hur du ska fylla in ansökan hittar du på Helsingfors stads webbplats.",
       "link": {
         "title": "Läs mer om att ansöka om Helsingforstillägget",
-        "url": "#"
+        "url": "https://www.hel.fi/sv/foretag-och-arbete/arbetsgivare/ekonomiska-stod/helsingforstillagget-for-arbetsgivare"
       }
     }
   },
