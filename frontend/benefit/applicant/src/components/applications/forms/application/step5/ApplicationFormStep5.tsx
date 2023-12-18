@@ -23,12 +23,12 @@ import { useApplicationFormStep5 } from './useApplicationFormStep5';
 
 type ExtendedProps = {
   isReadOnly?: boolean;
-  onSubmit?: () => void;
+  setIsSubmittedApplication?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const ApplicationFormStep5: React.FC<
   DynamicFormStepComponentProps & ExtendedProps
-> = ({ data, isReadOnly, onSubmit }) => {
+> = ({ data, isReadOnly, setIsSubmittedApplication }) => {
   const {
     t,
     handleBack,
@@ -39,7 +39,7 @@ const ApplicationFormStep5: React.FC<
     handleClose,
     translationsBase,
     isSubmit,
-  } = useApplicationFormStep5(data, onSubmit);
+  } = useApplicationFormStep5(data, setIsSubmittedApplication);
 
   const theme = useTheme();
 
