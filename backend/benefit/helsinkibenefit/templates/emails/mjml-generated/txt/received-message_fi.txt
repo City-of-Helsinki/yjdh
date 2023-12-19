@@ -1,6 +1,6 @@
 {% comment %} NEVER MAKE MODIFICATIONS TO THIS GENERATED FILE DIRECTLY, ALL MODIFICATIONS SHOULD BE DONE TO MJML TEMPLATE FILES! {% endcomment %}Hei!
 
-Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen. Voit lukea viestin Helsinki-lisän asiointipalvelussa.
+Olet saanut uuden viestin Helsinki-lisä -hakemukseen liittyen. Voit lukea viestin Helsinki-lisän asiointipalvelussa.
 
 Hakemuksen tiedot
 Hakemusnumero: {{application.application_number}}

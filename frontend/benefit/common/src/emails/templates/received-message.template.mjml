@@ -15,10 +15,12 @@
 
     <mj-section background-color="#fff" padding-bottom="0px">
       <mj-column>
-        <mj-text font-weight="600" font-size="34px">${receivedMessage.heading}</mj-text>
+        <mj-text font-weight="600" font-size="34px"
+          ><h1 style="font-size: 34px; line-height: 150%;">${receivedMessage.heading}</h1></mj-text
+        >
         <mj-divider border-color="#0072c6" />
         <mj-text padding-bottom="20px" padding-top="10px">${general.greeting}</mj-text>
-        <mj-text>${receivedMessage.bodyText}</mj-text>
+        <mj-text><p>${receivedMessage.bodyText}</p></mj-text>
       </mj-column>
     </mj-section>
     <mj-section padding-bottom="0px">
