@@ -2,13 +2,9 @@
   "high": true,
   "allowlist": [
     "json5",                // jest, eslint, testcafe, next, babel
-    "parse-url",            // lerna
-    "parse-path",           // lerna
     "moment",               // testcafe
     "http-cache-semantics", // testcafe
-    "requestretry",         // slack-node
     "decode-uri-component", // testcafe, lerna
-    "@babel/traverse",       // jest
-    "sharp"       // next / TET project
+    "@babel/traverse"       // jest
   ]
 }

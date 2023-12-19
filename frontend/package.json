@@ -90,7 +90,6 @@
     "@types/react-leaflet": "^2.8.2",
     "@types/react-leaflet-markercluster": "^3.0.0",
     "@types/react-table": "^7.7.0",
-    "@types/slack-node": "^0.1.4",
     "@types/styled-components": "^5.1.24",
     "@types/uuid": "^8.3.1",
     "@typescript-eslint/eslint-plugin": "^5.28.0",
@@ -149,9 +148,7 @@
     "prettier": "^2.5.1",
     "pretty": "^2.0.0",
     "react-i18next": "^12.2.0",
-    "slack-node": "^0.2.0",
     "testcafe": "^3.3.0",
-    "testcafe-reporter-custom": "^1.2.1",
     "testcafe-reporter-html": "^1.4.6",
     "ts-jest": "^27.1.3",
     "typescript": "^4.5.5"
