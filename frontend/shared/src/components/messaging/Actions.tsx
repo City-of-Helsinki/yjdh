@@ -1,4 +1,5 @@
 import { Button, TextArea } from 'hds-react';
+import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useTheme } from 'styled-components';
 
@@ -12,6 +13,8 @@ interface ActionProps {
   maxLength?: number;
   notification?: string;
   onSend: (message: string) => void;
+  canWriteNewMessages?: boolean;
+  disabledText?: string;
 }
 
 const Actions: React.FC<ActionProps> = ({
@@ -22,6 +25,8 @@ const Actions: React.FC<ActionProps> = ({
   maxLength = 1024,
   notification,
   onSend,
+  canWriteNewMessages = true,
+  disabledText = '',
 }) => {
   const theme = useTheme();
   const componentId = 'MessagesForm_Message';
@@ -41,6 +46,7 @@ const Actions: React.FC<ActionProps> = ({
       {notification && <$Notification>{notification}</$Notification>}
       <$Actions>
         <TextArea
+          disabled={!canWriteNewMessages}
           id={componentId}
           css={`
             margin-bottom: ${theme.spacing.s};
@@ -51,6 +57,9 @@ const Actions: React.FC<ActionProps> = ({
           value={messageValue}
           invalid={!isValid}
           aria-invalid={!isValid}
+          required={canWriteNewMessages}
+          hideLabel={canWriteNewMessages && disabledText.length === 0}
+          label={canWriteNewMessages ? placeholder : disabledText}
           errorText={isValid ? '' : errorText}
         />
         <$FormActions>
@@ -59,7 +68,7 @@ const Actions: React.FC<ActionProps> = ({
             type="submit"
             theme="coat"
             size="small"
-            disabled={!messageValue || !isValid}
+            disabled={!messageValue || !isValid || !canWriteNewMessages}
             onClick={handleSend}
           >
             {sendText}
