@@ -11,12 +11,14 @@ interface ComponentProps {
   isOpen: boolean;
   onClose?: () => void;
   customItemsMessages?: React.ReactNode;
+  canWriteNewMessages?: boolean;
 }
 
 const Messenger: React.FC<ComponentProps> = ({
   isOpen,
   onClose,
   customItemsMessages,
+  canWriteNewMessages,
 }) => {
   const { t, messages, handleSendMessage } = useMessenger(isOpen);
 
@@ -39,6 +41,8 @@ const Messenger: React.FC<ComponentProps> = ({
         >
           <Messages data={messages} variant="message" withScroll />
           <Actions
+            canWriteNewMessages={canWriteNewMessages}
+            disabledText={t('common:messenger.cannotWriteNewMessages')}
             customItems={customItemsMessages}
             sendText={t('common:messenger.send')}
             errorText={t('common:form.validation.string.max', { max: 1024 })}

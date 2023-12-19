@@ -606,7 +606,8 @@
     "send": "Submit",
     "isSecure": "Messages are encrypted",
     "noMessages": "No messages",
-    "close": "Close"
+    "close": "Close",
+    "cannotWriteNewMessages": "Your application is being processed. You cannot write a new message right now. Please wait for your application to be processed."
   },
   "application": {
     "tooltipShowInfo": "Show information"

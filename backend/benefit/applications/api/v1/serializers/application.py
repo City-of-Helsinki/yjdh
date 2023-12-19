@@ -1317,6 +1317,13 @@ class ApplicantApplicationStatusChoiceField(serializers.ChoiceField):
         return super().to_representation(value_shown_to_applicant)
 
 
+class SimpleApplicationBatchSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        if instance:
+            return True
+        return None
+
+
 class ApplicantApplicationSerializer(BaseApplicationSerializer):
     status = ApplicantApplicationStatusChoiceField(
         choices=ApplicationStatus.choices,
@@ -1326,6 +1333,16 @@ class ApplicantApplicationSerializer(BaseApplicationSerializer):
             " limited"
         ),
     )
+
+    batch = SimpleApplicationBatchSerializer(
+        allow_null=True,
+        required=False,
+    )
+
+    def get_batch(self, _):
+        if self.batch:
+            return True
+        return None
 
     def get_company_for_new_application(self, _):
         """
@@ -1340,6 +1357,9 @@ class ApplicantApplicationSerializer(BaseApplicationSerializer):
                 _("Application can not be changed in this status")
             )
         return self._base_update(instance, validated_data)
+
+    class Meta(BaseApplicationSerializer.Meta):
+        fields = BaseApplicationSerializer.Meta.fields + ["batch"]
 
 
 class HandlerApplicationSerializer(BaseApplicationSerializer):

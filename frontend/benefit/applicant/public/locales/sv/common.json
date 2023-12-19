@@ -606,7 +606,8 @@
     "send": "Skicka",
     "isSecure": "Meddelandena är skyddade",
     "noMessages": "Inga meddelanden",
-    "close": "Stäng"
+    "close": "Stäng",
+    "cannotWriteNewMessages": "Din ansökan behandlas. Du kan inte skriva ett nytt meddelande just nu. Vänta tills din ansökan behandlas."
   },
   "application": {
     "tooltipShowInfo": "Visa information"
