@@ -100,6 +100,7 @@ class AttachmentType(models.TextChoices):
     EMPLOYEE_CONSENT = "employee_consent", _("employee consent")
     FULL_APPLICATION = "full_application", _("full application")
     OTHER_ATTACHMENT = "other_attachment", _("other attachment")
+    PDF_SUMMARY = "pdf_summary", _("pdf summary")
 
 
 class AttachmentRequirement(models.TextChoices):

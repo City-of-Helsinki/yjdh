@@ -9,7 +9,6 @@ from django.utils import timezone
 
 from applications.enums import ApplicationStatus, BenefitType
 from applications.models import Application
-from applications.services.ahjo_payload import prepare_open_case_payload
 from applications.services.applications_csv_report import ApplicationsCsvService
 from applications.tests.factories import (
     ApplicationBatchFactory,
@@ -353,8 +352,3 @@ def pytest_sessionfinish(session, exitstatus):
         except OSError as e:
             print(f"Error while deleting file in media folder: {e}")
     print(f"\nTests finished, deleted {number_of_files} files in the media folder")
-
-
-@pytest.fixture()
-def ahjo_open_case_payload(decided_application):
-    return prepare_open_case_payload(decided_application)
