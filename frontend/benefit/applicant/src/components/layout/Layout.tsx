@@ -40,8 +40,10 @@ const Layout: React.FC<Props> = ({ children, ...rest }) => {
 
   const bgColor = selectBgColor(router.pathname);
 
-  const isAccessibilityStatement =
-    router.pathname === ROUTES.ACCESSIBILITY_STATEMENT;
+  const isTermsRoute = ![
+    ROUTES.ACCESSIBILITY_STATEMENT,
+    ROUTES.COOKIE_SETTINGS,
+  ].includes(router.pathname as ROUTES);
 
   React.useEffect(() => {
     if (IS_CLIENT) {
@@ -56,9 +58,7 @@ const Layout: React.FC<Props> = ({ children, ...rest }) => {
   return (
     <$Main $backgroundColor={bgColor} {...rest}>
       <Header />
-      {isAuthenticated &&
-      !isAccessibilityStatement &&
-      !isTermsOfServiceApproved ? (
+      {isAuthenticated && isTermsRoute && !isTermsOfServiceApproved ? (
         <TermsOfService
           setIsTermsOfServiceApproved={setIsTermsOfServiceApproved}
         />

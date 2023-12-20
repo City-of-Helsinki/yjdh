@@ -13,6 +13,7 @@ export enum ROUTES {
   LOGIN = '/login',
   TERMS_OF_SERVICE = '/terms-of-service',
   ACCESSIBILITY_STATEMENT = '/accessibility-statement',
+  COOKIE_SETTINGS = '/cookie-settings',
 }
 
 export const MAX_DEMINIMIS_AID_TOTAL_AMOUNT = 200_000;

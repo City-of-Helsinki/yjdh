@@ -431,7 +431,8 @@
     "accessibilityStatement": "Tillgänglighetsutlåtande",
     "aboutTheService": "Information om tjänsten",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/information/tillganglighet",
-    "aboutTheServiceLink": "https://www.hel.fi/sv/foretag-och-arbete/arbetsgivare/arbetsgivarens-helsingforstillagg"
+    "aboutTheServiceLink": "https://www.hel.fi/sv/foretag-och-arbete/arbetsgivare/arbetsgivarens-helsingforstillagg",
+    "cookieSettings": "Cookie -inställningar"
   },
   "notifications": {
     "applicationSubmitted": {
@@ -617,7 +618,8 @@
     "createApplication": "Helsingforstillägg - Ansökan - Skapa",
     "editApplication": "Helsingforstillägg - Ansökan - Redigera",
     "viewApplication": "Helsingforstillägg - Ansökan - Granska",
-    "accessibilityStatement": "Helsingforstillägg - Tillgänglighetsförklaring"
+    "accessibilityStatement": "Helsingforstillägg - Tillgänglighetsförklaring",
+    "cookieSettings": "Helsingforstillägg - Cookie -inställningar"
   },
   "accessibilityStatement": {
     "h1": "Tillgänglighetsutlåtande",

@@ -33,7 +33,9 @@ const App: React.FC<AppProps> = (appProps) => {
 
   const { t } = useTranslation();
 
-  const showCookieBanner = process.env.NEXT_PUBLIC_SHOW_COOKIE_BANNER === '1';
+  const showCookieBanner =
+    process.env.NEXT_PUBLIC_SHOW_COOKIE_BANNER === '1' &&
+    router.route !== ROUTES.COOKIE_SETTINGS;
 
   useEffect(() => {
     setAppLoaded();
@@ -48,6 +50,10 @@ const App: React.FC<AppProps> = (appProps) => {
 
       case ROUTES.ACCESSIBILITY_STATEMENT:
         document.title = t('common:pageTitles.accessibilityStatement');
+        break;
+
+      case ROUTES.COOKIE_SETTINGS:
+        document.title = t('common:pageTitles.cookieSettings');
         break;
 
       default:

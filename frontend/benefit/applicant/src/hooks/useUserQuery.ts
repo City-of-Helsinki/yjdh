@@ -12,12 +12,16 @@ import {
   setLocalStorageItem,
 } from 'shared/utils/localstorage.utils';
 
-import { LOCAL_STORAGE_KEYS } from '../constants';
+import { LOCAL_STORAGE_KEYS, ROUTES } from '../constants';
 
 // check that authentication is still alive in every 5 minutes
 const FIVE_MINUTES = 5 * 60 * 1000;
 
-const UNAUTHORIZER_ROUTES = new Set(['/login', '/accessibility-statement']);
+const UNAUTHORIZER_ROUTES = new Set([
+  ROUTES.LOGIN,
+  ROUTES.ACCESSIBILITY_STATEMENT,
+  ROUTES.COOKIE_SETTINGS,
+]);
 
 const useUserQuery = (
   queryKeys?: string | unknown[]
@@ -33,7 +37,7 @@ const useUserQuery = (
     if (logout) {
       void router.push(`${locale}/login?logout=true`);
     } else if (/40[13]/.test(error.message)) {
-      if (UNAUTHORIZER_ROUTES.has(router.route)) {
+      if (UNAUTHORIZER_ROUTES.has(router.route as ROUTES)) {
         return;
       }
       void router.push(`${locale}/login`);

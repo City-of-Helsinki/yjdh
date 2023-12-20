@@ -431,7 +431,8 @@
     "accessibilityStatement": "Saavutettavuusseloste",
     "aboutTheService": "Tietoa palvelusta",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/tietoa-hel-fista/saavutettavuus/saavutettavuusselosteet",
-    "aboutTheServiceLink": "https://www.hel.fi/fi/yritykset-ja-tyo/tyonantajat/taloudelliset-tuet/tyonantajan-helsinki-lisa"
+    "aboutTheServiceLink": "https://www.hel.fi/fi/yritykset-ja-tyo/tyonantajat/taloudelliset-tuet/tyonantajan-helsinki-lisa",
+    "cookieSettings": "Evästeasetukset"
   },
   "notifications": {
     "applicationSubmitted": {
@@ -617,7 +618,8 @@
     "createApplication": "Helsinki-lisä - Hakemus - Luo uusi",
     "editApplication": "Helsinki-lisä - Hakemus - Muokkaa hakemusta",
     "viewApplication": "Helsinki-lisä - Hakemus - Tarkastele hakemusta",
-    "accessibilityStatement": "Helsinki-lisä - Saavutettavuusseloste"
+    "accessibilityStatement": "Helsinki-lisä - Saavutettavuusseloste",
+    "cookieSettings": "Helsinki-lisä - Evästeasetukset"
   },
   "accessibilityStatement": {
     "h1": "Saavutettavuusseloste",
