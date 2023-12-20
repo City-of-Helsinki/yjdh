@@ -6,7 +6,7 @@ Jatka Helsinki-lisä -hakemuksen täyttöä: https://helsinkilisa.hel.fi/
 
 Ohjeet ja lisätietoa hakulomakkeen täyttämiseen löydät Helsingin kaupungin sivuilta.
 
-Lue lisää Helsinki-lisän hakemisesta: https://www.hel.fi/fi/yritykset-ja-tyo/tyonantajat/taloudelliset-tuet/helsinki-lisa-tyonantajille 
+Lue lisãä Helsinki-lisän hakemisesta: https://www.hel.fi/fi/yritykset-ja-tyo/tyonantajat/taloudelliset-tuet/helsinki-lisa-tyonantajille 
 
 Ystävällisin terveisin,
 Helsinki-lisän tiimi

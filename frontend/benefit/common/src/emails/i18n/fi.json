@@ -21,8 +21,8 @@
   },
   "receivedMessage": {
     "headerText": "Olet saanut uuden viestin",
-    "heading": "Olet saanut uuden viestin Helsinki-lisä -hakemukseen liittyen",
-    "bodyText": "Olet saanut uuden viestin Helsinki-lisä -hakemukseen liittyen. Voit lukea viestin Helsinki-lisän asiointipalvelussa.",
+    "heading": "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen",
+    "bodyText": "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen. Voit lukea viestin Helsinki-lisän asiointipalvelussa.",
     "ctaButton": "Kirjaudu palveluun ja lue viesti"
   },
   "draftExpiring": {
@@ -33,7 +33,7 @@
     "helper": {
       "text": "Ohjeet ja lisätietoa hakulomakkeen täyttämiseen löydät Helsingin kaupungin sivuilta.",
       "link": {
-        "title": "Lue lisää Helsinki-lisän hakemisesta",
+        "title": "Lue lisãä Helsinki-lisän hakemisesta",
         "url": "https://www.hel.fi/fi/yritykset-ja-tyo/tyonantajat/taloudelliset-tuet/helsinki-lisa-tyonantajille"
       }
     }
@@ -41,7 +41,7 @@
   "additionalInformationRequired": {
     "headerText": "Hakemuksesi tarvitsee lisätietoja",
     "heading": "Helsinki-lisä -hakemus tarvitsee lisätietoja",
-    "bodyText": "Lähettämästäsi Helsinki-lisä-hakemuksesta puuttuu tarvittavia tietoja. Kirjaudu Helsinki-lisän asiointipalveluun ja täytä puuttuvat tiedot {{ additional_information_deadline_date }} klo {{ additional_information_deadline_time }} mennessä.",
+    "bodyText": "Lähettämästäsi Helsinki-lisä-hakemuksesta puuttuu tarvittavia tietoja. Kirjaudu Helsinki-lisän asiointipalveluun ja täytä puttuvat tiedot {{ additional_information_deadline_date }} klo {{ additional_information_deadline_time }} mennessä.",
     "ctaButton": "Kirjaudu palveluun ja täydennä hakemusta",
     "helper": {
       "text": "Mikäli sinulla herää kysyttävää, lähetä meille viesti Helsinki-lisän asiointipalvelun kautta."

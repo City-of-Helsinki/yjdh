@@ -15,10 +15,10 @@
 
     <mj-section background-color="#fff" padding-bottom="0px">
       <mj-column>
-        <mj-text font-weight="600" font-size="34px"><h1 style="font-size: 34px; line-height: 125%;">${draftExpiring.heading}</h1></mj-text>
+        <mj-text font-weight="600" font-size="34px">${draftExpiring.heading}</mj-text>
         <mj-divider border-color="#0072c6" />
         <mj-text padding-bottom="20px" padding-top="10px">${general.greeting}</mj-text>
-        <mj-text><p>${draftExpiring.bodyText}</p></mj-text>
+        <mj-text>${draftExpiring.bodyText}</mj-text>
       </mj-column>
     </mj-section>
 
