@@ -7,7 +7,7 @@ on:
     branches: [main]
   pull_request:
     paths:
-      - '.github/workflows/yarn-audit-scheduled.yml'
+      - ".github/workflows/yarn-audit-scheduled.yml"
 defaults:
   run:
     working-directory: ./frontend
@@ -35,13 +35,3 @@ jobs:
         run: yarn --prefer-offline --frozen-lockfile --check-files
       - name: Run audit
         run: yarn audit-ci --config audit-ci.jsonc
-      - name: Yarn audit scan failure slack notification
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_COLOR: ${{ job.status }}
-          SLACK_USERNAME: GitHub-Alerts
-          SLACK_TITLE: ${{ github.workflow }} has *FAILED*!
-          SLACK_MESSAGE: "*Yarn audit has found some vulnerabilities!*"
-          SLACK_CHANNEL: yjdh-alerts
-        if: failure()
