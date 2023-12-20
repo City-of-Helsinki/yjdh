@@ -1,6 +1,6 @@
 {% comment %} NEVER MAKE MODIFICATIONS TO THIS GENERATED FILE DIRECTLY, ALL MODIFICATIONS SHOULD BE DONE TO MJML TEMPLATE FILES! {% endcomment %}Hei!
 
-Lähettämästäsi Helsinki-lisä-hakemuksesta puuttuu tarvittavia tietoja. Kirjaudu Helsinki-lisän asiointipalveluun ja täytä puttuvat tiedot {{ additional_information_deadline_date }} klo {{ additional_information_deadline_time }} mennessä.
+Lähettämästäsi Helsinki-lisä-hakemuksesta puuttuu tarvittavia tietoja. Kirjaudu Helsinki-lisän asiointipalveluun ja täytä puuttuvat tiedot {{ additional_information_deadline_date }} klo {{ additional_information_deadline_time }} mennessä.
 Mikäli sinulla herää kysyttävää, lähetä meille viesti Helsinki-lisän asiointipalvelun kautta.
 
 Hakemuksen tiedot
