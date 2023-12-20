@@ -333,8 +333,9 @@ def test_create_message(
                 email_parts = email.message_from_string(mailoutbox[0].body)
                 for part in email_parts.walk():
                     if part.get_content_type() == "text/plain":
+                        print(part.get_payload())
                         assert (
-                            "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen. Voit lukea viestin"
+                            "Olet saanut uuden viestin Helsinki-lisä -hakemukseen liittyen. Voit lukea viestin"
                             in part.get_payload()
                         )
 
