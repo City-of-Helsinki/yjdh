@@ -2,10 +2,10 @@ name: Shared Lint, Unit and Component tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
     paths:
-      - '.github/workflows/shared-tests.yml'
+      - ".github/workflows/shared-tests.yml"
   workflow_dispatch:
 defaults:
   run:
@@ -38,13 +38,3 @@ jobs:
         run: yarn test:coverage
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
-      - name: Shared test failure slack notification
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_COLOR: ${{ job.status }}
-          SLACK_USERNAME: GitHub-Alerts
-          SLACK_TITLE: ${{ github.workflow }} has *FAILED*!
-          SLACK_MESSAGE: "*Shared tests have failed on ${{ github.ref }}!*"
-          SLACK_CHANNEL: yjdh-alerts
-        if: failure() && (contains(github.ref, 'develop') || contains(github.ref, 'main'))
