@@ -16,7 +16,11 @@ from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.db.models import QuerySet
 from django.urls import reverse
 
-from applications.enums import AhjoStatus as AhjoStatusEnum, ApplicationStatus
+from applications.enums import (
+    AhjoRequestType,
+    AhjoStatus as AhjoStatusEnum,
+    ApplicationStatus,
+)
 from applications.models import AhjoSetting, AhjoStatus, Application
 from applications.services.ahjo_authentication import AhjoConnector
 from applications.services.ahjo_payload import prepare_open_case_payload
@@ -383,9 +387,14 @@ def get_token() -> str:
         return
 
 
-def prepare_headers(access_token: str, application_uuid: uuid) -> dict:
+def prepare_headers(
+    access_token: str, application: Application, request_type: AhjoRequestType
+) -> dict:
     """Prepare the headers for the Ahjo request."""
-    url = reverse("ahjo_callback_url", kwargs={"uuid": str(application_uuid)})
+    url = reverse(
+        "ahjo_callback_url",
+        kwargs={"request_type": request_type, "uuid": str(application.id)},
+    )
 
     return {
         "Authorization": f"Bearer {access_token}",
@@ -394,7 +403,7 @@ def prepare_headers(access_token: str, application_uuid: uuid) -> dict:
     }
 
 
-def get_application_for_ahjo(id: uuid) -> Optional[Application]:
+def get_application_for_ahjo(id: uuid.UUID) -> Optional[Application]:
     """Get the first accepted application."""
     application = (
         Application.objects.filter(pk=id, status=ApplicationStatus.ACCEPTED)
@@ -411,52 +420,87 @@ def get_application_for_ahjo(id: uuid) -> Optional[Application]:
     return application
 
 
-def create_status_for_application(application: Application):
+def create_status_for_application(application: Application, status: AhjoStatusEnum):
     """Create a new AhjoStatus for the application."""
-    AhjoStatus.objects.create(
-        application=application, status=AhjoStatusEnum.REQUEST_TO_OPEN_CASE_SENT
-    )
+    AhjoStatus.objects.create(application=application, status=status)
 
 
-def do_ahjo_request_with_json_payload(
-    url: str, headers: dict, data: dict, application: Application, timeout: int = 10
+def send_request_to_ahjo(
+    request_type: AhjoRequestType,
+    headers: dict,
+    application: Application,
+    data: dict = {},
+    timeout: int = 10,
 ):
+    """Send a request to Ahjo."""
     headers["Content-Type"] = "application/json"
 
-    json_data = json.dumps(data)
+    url_base = f"{settings.AHJO_REST_API_URL}/cases"
+
+    if request_type == AhjoRequestType.OPEN_CASE:
+        method = "POST"
+        status = AhjoStatusEnum.REQUEST_TO_OPEN_CASE_SENT
+        api_url = url_base
+        data = json.dumps(data)
+    elif request_type == AhjoRequestType.DELETE_APPLICATION:
+        method = "DELETE"
+        status = AhjoStatusEnum.DELETE_REQUEST_SENT
+        api_url = f"{url_base}/{application.ahjo_case_id}"
 
     try:
-        response = requests.post(
-            f"{url}/cases", headers=headers, timeout=timeout, data=json_data
+        response = requests.request(
+            method, api_url, headers=headers, timeout=timeout, data=data
         )
         response.raise_for_status()
 
         if response.ok:
-            create_status_for_application(application)
+            create_status_for_application(application, status)
             LOGGER.info(
-                f"Open case for application {application.id} Request to Ahjo was successful."
+                f"Request for application {application.id} to Ahjo was successful."
             )
 
     except requests.exceptions.HTTPError as e:
-        # Handle the HTTP error
-        LOGGER.error(f"HTTP error occurred while sending request to Ahjo: {e}")
+        LOGGER.error(
+            f"HTTP error occurred while sending a {request_type} request to Ahjo: {e}"
+        )
+        raise
     except requests.exceptions.RequestException as e:
-        # Handle the network error
-        LOGGER.error(f"Network error occurred while sending request to Ahjo: {e}")
+        LOGGER.error(
+            f"Network error occurred while sending a {request_type} request to Ahjo: {e}"
+        )
+        raise
     except Exception as e:
-        # Handle any other error
-        LOGGER.error(f"Error occurred while sending request to Ahjo: {e}")
+        LOGGER.error(
+            f"Error occurred while sending request a {request_type} to Ahjo: {e}"
+        )
+        raise
 
 
-def open_case_in_ahjo(application_id: uuid):
+def open_case_in_ahjo(application_id: uuid.UUID):
     """Open a case in Ahjo."""
     try:
         application = get_application_for_ahjo(application_id)
-        ahjo_api_url = settings.AHJO_REST_API_URL
         ahjo_token = get_token()
-        headers = prepare_headers(ahjo_token.access_token, application.id)
+        headers = prepare_headers(
+            ahjo_token.access_token, application.id, AhjoRequestType.OPEN_CASE
+        )
         data = prepare_open_case_payload(application)
-        do_ahjo_request_with_json_payload(ahjo_api_url, headers, data, application)
+        send_request_to_ahjo(AhjoRequestType.OPEN_CASE, headers, data, application)
+    except ObjectDoesNotExist as e:
+        LOGGER.error(f"Object not found: {e}")
+    except ImproperlyConfigured as e:
+        LOGGER.error(f"Improperly configured: {e}")
+
+
+def delete_application_in_ahjo(application_id: uuid.UUID):
+    """Delete/cancel an application in Ahjo."""
+    try:
+        application = get_application_for_ahjo(application_id)
+        ahjo_token = get_token()
+        headers = prepare_headers(
+            ahjo_token.access_token, application.id, AhjoRequestType.DELETE_APPLICATION
+        )
+        send_request_to_ahjo(AhjoRequestType.DELETE_APPLICATION, headers, application)
     except ObjectDoesNotExist as e:
         LOGGER.error(f"Object not found: {e}")
     except ImproperlyConfigured as e:

@@ -11,7 +11,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from applications.api.v1.serializers.ahjo_callback import AhjoCallbackSerializer
-from applications.enums import AhjoCallBackStatus, AhjoStatus as AhjoStatusEnum
+from applications.enums import (
+    AhjoCallBackStatus,
+    AhjoRequestType,
+    AhjoStatus as AhjoStatusEnum,
+)
 from applications.models import AhjoStatus, Application, Attachment
 from common.permissions import SafeListPermission
 from shared.audit_log import audit_logging
@@ -76,7 +80,14 @@ class AhjoCallbackView(APIView):
                 required=True,
                 type=OpenApiTypes.UUID,
                 location=OpenApiParameter.PATH,
-            )
+            ),
+            OpenApiParameter(
+                name="request_id",
+                description="The type of request that Ahjo responded to",
+                required=True,
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.PATH,
+            ),
         ],
         description="Callback endpoint for Ahjo to send updates to the application.",
         request=AhjoCallbackSerializer,
@@ -97,21 +108,28 @@ class AhjoCallbackView(APIView):
         if callback_data["message"] == AhjoCallBackStatus.SUCCESS:
             ahjo_request_id = callback_data["requestId"]
             application = get_object_or_404(Application, pk=application_id)
-            application.ahjo_case_guid = callback_data["caseGuid"]
-            application.ahjo_case_id = callback_data["caseId"]
-            application.save()
+            request_type = self.kwargs["request_type"]
 
-            AhjoStatus.objects.create(
-                application=application, status=AhjoStatusEnum.CASE_OPENED
-            )
+            if request_type == AhjoRequestType.OPEN_CASE:
+                application = self._handle_open_case_callback(
+                    application, callback_data
+                )
+                ahjo_status = AhjoStatusEnum.CASE_OPENED
+                info = f"""Application ahjo_case_guid and ahjo_case_id
+                were updated by Ahjo request id: {ahjo_request_id}"""
+            elif request_type == AhjoRequestType.DELETE_APPLICATION:
+                self._handle_delete_callback()
+                ahjo_status = AhjoStatusEnum.DELETE_REQUEST_RECEIVED
+                info = f"""Application was marked for cancellation in Ahjo with request id: {ahjo_request_id}"""
+
+            AhjoStatus.objects.create(application=application, status=ahjo_status)
 
             audit_logging.log(
                 request.user,
                 "",
                 Operation.UPDATE,
                 application,
-                additional_information=f"""Application ahjo_case_guid and ahjo_case_id were updated
-                by Ahjo request id: {ahjo_request_id}""",
+                additional_information=info,
             )
 
             return Response(
@@ -128,3 +146,13 @@ class AhjoCallbackView(APIView):
                 {"message": "Callback received but unsuccessful"},
                 status=status.HTTP_200_OK,
             )
+
+    def _handle_open_case_callback(self, application: Application, callback_data: dict):
+        application.ahjo_case_guid = callback_data["caseGuid"]
+        application.ahjo_case_id = callback_data["caseId"]
+        application.save()
+        return application
+
+    def _handle_delete_callback(self):
+        # do anything that needs to be done when Ahjo sends a delete callback
+        pass

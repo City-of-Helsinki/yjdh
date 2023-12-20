@@ -66,7 +66,7 @@ router.register(r"previousbenefits", calculator_views.PreviousBenefitViewSet)
 urlpatterns = [
     path("admin/", admin.site.urls),
     path(
-        "v1/ahjo-integration/callback/<uuid:uuid>",
+        "v1/ahjo-integration/callback/<str:request_type>/<uuid:uuid>",
         AhjoCallbackView.as_view(),
         name="ahjo_callback_url",
     ),
