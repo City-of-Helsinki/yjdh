@@ -6,7 +6,9 @@ import { isString } from 'shared/utils/type-guards';
  */
 
 const maskFinnishSsn = (text: unknown): unknown =>
-  isString(text) ? text.replace(/\d{6}.\d{3}[\dA-z]/g, '*'.repeat(11)) : text;
+  isString(text)
+    ? text.replace(/\d{6}[+-y]\d{3}[\dA-z]/g, '*'.repeat(11))
+    : text;
 
 /* Gets the length of the given variable */
 const getLengthOfAttribute = (attrValue: unknown): number =>
