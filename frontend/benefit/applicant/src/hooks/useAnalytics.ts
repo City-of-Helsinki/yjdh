@@ -18,11 +18,12 @@ export const useAskem = (
     // eslint-disable-next-line scanjs-rules/assign_to_src
     script.src = ASKEM_SCRIPT_URL;
     script.type = 'text/javascript';
+    const canonicalUrl = `${window.location.host}/application`;
 
     window.rnsData = {
       apiKey: process.env.NEXT_PUBLIC_ASKEM_API_KEY,
       title: 'Helsinki-lisä',
-      canonicalUrl: window.location.href,
+      canonicalUrl,
     };
 
     document.body.append(script);
