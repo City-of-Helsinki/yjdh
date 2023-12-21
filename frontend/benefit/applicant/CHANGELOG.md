@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.4.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.3.1...benefit-applicant-v3.4.0) (2023-12-21)
+
+
+### Features
+
+* Cookie settings page (HL-1077) ([#2616](https://github.com/City-of-Helsinki/yjdh/issues/2616)) ([173eb3b](https://github.com/City-of-Helsinki/yjdh/commit/173eb3bae1818d1f31abe2ae1eae8ad666622d19))
+* Don't assume but actually implement form submission state ([#2607](https://github.com/City-of-Helsinki/yjdh/issues/2607)) ([acd3b38](https://github.com/City-of-Helsinki/yjdh/commit/acd3b3847fde9b3827915563d2f0e508a52a5348))
+
+
+### Bug Fixes
+
+* Don't send application id to askem (HL-1089) ([#2624](https://github.com/City-of-Helsinki/yjdh/issues/2624)) ([0720e28](https://github.com/City-of-Helsinki/yjdh/commit/0720e289365774a34551df12af545c4dd8b7b1c3))
+* Yup fails to validate 0 as min value ([e4127b8](https://github.com/City-of-Helsinki/yjdh/commit/e4127b89ccde1681644ee7e9af9a33f2728c6f34))
+
 ## [3.3.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.3.0...benefit-applicant-v3.3.1) (2023-12-13)
 
 
