@@ -2,7 +2,6 @@ from datetime import date, datetime
 
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
-from django.core.validators import MaxLengthValidator, MinLengthValidator
 from django.db import connection, models
 from django.db.models import JSONField, OuterRef, Subquery
 from django.db.models.constraints import UniqueConstraint
@@ -212,10 +211,6 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     company_contact_person_phone_number = PhoneNumberField(
         verbose_name=_("company contact person's phone number"),
         blank=True,
-        validators=[
-            MinLengthValidator(limit_value=3),
-            MaxLengthValidator(limit_value=13),
-        ],
     )
     company_contact_person_email = models.EmailField(
         blank=True, verbose_name=_("company contact person's email")
@@ -745,10 +740,6 @@ class Employee(UUIDModel, TimeStampedModel):
     phone_number = PhoneNumberField(
         verbose_name=_("phone number"),
         blank=True,
-        validators=[
-            MinLengthValidator(limit_value=3),
-            MaxLengthValidator(limit_value=13),
-        ],
     )
     email = models.EmailField(blank=True, verbose_name=_("email"))
 
