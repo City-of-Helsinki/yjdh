@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v2.2.0...benefit-handler-v2.2.1) (2023-12-21)
+
+
+### Bug Fixes
+
+* Handler application validations (HL-991) ([#2587](https://github.com/City-of-Helsinki/yjdh/issues/2587)) ([4369883](https://github.com/City-of-Helsinki/yjdh/commit/43698830dbcd11134398975221a8c61719a1058b))
+
 ## [2.2.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v2.1.0...benefit-handler-v2.2.0) (2023-12-07)
 
 
