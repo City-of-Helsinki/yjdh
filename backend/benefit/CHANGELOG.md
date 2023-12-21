@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.5.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.4.0...benefit-backend-v1.5.0) (2023-12-21)
+
+
+### Features
+
+* Enable/disable Ahjo IP restriction, allow multiple IPs ([#2598](https://github.com/City-of-Helsinki/yjdh/issues/2598)) ([e78e1be](https://github.com/City-of-Helsinki/yjdh/commit/e78e1be62091b4d43656a044a8bbe8fb28e8819f))
+* Hl 1069 cancel application in  ahjo ([a9f66d7](https://github.com/City-of-Helsinki/yjdh/commit/a9f66d76afbb316120a6198d10cfaf0b7f599bea))
+* Return 404 instead of 400 when no applications for talpa robot ([#2600](https://github.com/City-of-Helsinki/yjdh/issues/2600)) ([e044f9b](https://github.com/City-of-Helsinki/yjdh/commit/e044f9b0d2b37ce9f4c3f0e377ffdcd79bc3a80e))
+* Use MJML to generate HTML emails (HL-999) ([#2586](https://github.com/City-of-Helsinki/yjdh/issues/2586)) ([7939f5e](https://github.com/City-of-Helsinki/yjdh/commit/7939f5e2a023f8fc13c55ff95c5a0621005feff1))
+
+
+### Bug Fixes
+
+* Generate talpa export csv synchronously ([#2608](https://github.com/City-of-Helsinki/yjdh/issues/2608)) ([05e78d4](https://github.com/City-of-Helsinki/yjdh/commit/05e78d4227688fabf66d7e5b0606855926a1f940))
+* Redo various issues with typos and text flow ([#2622](https://github.com/City-of-Helsinki/yjdh/issues/2622)) ([#2637](https://github.com/City-of-Helsinki/yjdh/issues/2637)) ([37e3e5d](https://github.com/City-of-Helsinki/yjdh/commit/37e3e5d9306ee1ee891a99ab67e9a0a78f9c6f40))
+* Remove phone number length restriction (HL-1088) ([#2648](https://github.com/City-of-Helsinki/yjdh/issues/2648)) ([857fad7](https://github.com/City-of-Helsinki/yjdh/commit/857fad70bb111e4b970486c60cf6829292e183af))
+* Revert various issues with typos and text flow ([#2622](https://github.com/City-of-Helsinki/yjdh/issues/2622)) ([c870fcb](https://github.com/City-of-Helsinki/yjdh/commit/c870fcb932b2eff85e3c03339a9fd859877ba274))
+* Show rejected in archive (HL-1039) ([#2588](https://github.com/City-of-Helsinki/yjdh/issues/2588)) ([b1fd901](https://github.com/City-of-Helsinki/yjdh/commit/b1fd90178542a9b0c98cb4b0bcf5ddf0ec3e50e3))
+* Some urls were missing from email templates ([#2614](https://github.com/City-of-Helsinki/yjdh/issues/2614)) ([cab15b0](https://github.com/City-of-Helsinki/yjdh/commit/cab15b026bd64a3f03e9bf6b9b0129b19d0a60ae))
+* Various issues with typos and text flow ([#2622](https://github.com/City-of-Helsinki/yjdh/issues/2622)) ([928dd92](https://github.com/City-of-Helsinki/yjdh/commit/928dd92fe4b564e29b2cc4d41929d551c8dd1ac4))
+
 ## [1.4.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.3.0...benefit-backend-v1.4.0) (2023-12-07)
 
 
