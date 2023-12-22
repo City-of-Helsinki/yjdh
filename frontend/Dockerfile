@@ -1,5 +1,5 @@
 # =======================================
-FROM helsinkitest/node:18-slim AS distbase
+FROM docker.io/helsinkitest/node:18-slim AS distbase
 # =======================================
 
 # Install ca-certificates so that Sentry can upload source maps
