@@ -39,6 +39,7 @@ services:
   youth:
     build:
       context: ./frontend
+      dockerfile: Dockerfile-localdevelopment
       target: development
       args:
         PORT: 3000
