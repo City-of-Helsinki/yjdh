@@ -1,5 +1,5 @@
 # ==============================
-FROM helsinkitest/python:3.9-slim as appbase
+FROM helsinkitest/python:3.9-slim AS appbase
 # ==============================
 ARG SENTRY_RELEASE
 
@@ -29,7 +29,7 @@ ENTRYPOINT ["/entrypoint/docker-entrypoint.sh"]
 COPY --chown=appuser:appuser benefit /app/
 
 # ==============================
-FROM appbase as development
+FROM appbase AS development
 # ==============================
 
 COPY --chown=appuser:appuser benefit/requirements-dev.txt /app/requirements-dev.txt
@@ -50,7 +50,7 @@ RUN django-admin compilemessages
 EXPOSE 8000/tcp
 
 # ==============================
-FROM appbase as production
+FROM appbase AS production
 # ==============================
 ARG SENTRY_RELEASE
 ENV SENTRY_RELEASE=$SENTRY_RELEASE
