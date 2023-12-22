@@ -24,7 +24,7 @@
     "axios": "^0.27.2",
     "dotenv": "^16.0.0",
     "hds-design-tokens": "^2.17.0",
-    "hds-react": "^2.17.0",
+    "hds-react": "^3.3.0",
     "ibantools": "^4.1.5",
     "lodash": "^4.17.21",
     "next": "14.0.3",
