@@ -11,8 +11,8 @@ services:
       POSTGRES_USER: tet
       POSTGRES_PASSWORD: tet
       POSTGRES_DB: tet
-      LC_COLLATE: 'fi_FI.UTF-8'
-      LC_CTYPE: 'fi_FI.UTF-8'
+      LC_COLLATE: "fi_FI.UTF-8"
+      LC_CTYPE: "fi_FI.UTF-8"
     ports:
       - 5434:5432
     volumes:
@@ -41,6 +41,7 @@ services:
   youth:
     build:
       context: ./frontend
+      dockerfile: Dockerfile-localdevelopment
       target: development
       args:
         PORT: 3000
@@ -58,6 +59,7 @@ services:
   admin:
     build:
       context: ./frontend
+      dockerfile: Dockerfile-localdevelopment
       target: development
       args:
         PORT: 3000
