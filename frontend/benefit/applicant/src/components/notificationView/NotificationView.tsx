@@ -15,11 +15,16 @@ import {
 } from './NotificatinsView.sc';
 
 type Props = {
+  applicationId: string;
   title: string;
   message: string;
 };
 
-const NotificationView: React.FC<Props> = ({ title, message }) => {
+const NotificationView: React.FC<Props> = ({
+  applicationId,
+  title,
+  message,
+}) => {
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -28,7 +33,10 @@ const NotificationView: React.FC<Props> = ({ title, message }) => {
   };
 
   const handleReload = (): void => {
-    void router.reload();
+    void router.push({
+      pathname: ROUTES.APPLICATION_FORM,
+      query: { id: applicationId },
+    });
   };
 
   return (

@@ -714,5 +714,10 @@
   },
   "toast": {
     "closeToast": "Sulje ilmoitus"
+  },
+  "cookieNotification": {
+    "title": "Sivun palautenappeja ei voida näyttää",
+    "text": "Toiminnon käyttämiseksi vaaditaan, että hyväksyt sivuston evästeet. Pääsen antamaan palautetta tästä sivusta sallimalla evästeasetuksista tilastointiin liittyvät evästeet.",
+    "button": "Muokkaa evästeasetuksia"
   }
 }

@@ -33,9 +33,9 @@ const isApplicationLoaded = (id: number | string, status: string): boolean =>
 const usePageContent = (): ExtendedComponentProps => {
   const router = useRouter();
   const id = router?.query?.id?.toString() ?? '';
+  const isSubmittedQueryParam = !!router?.query?.isSubmitted;
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
-
   const [isSubmittedApplication, setIsSubmittedApplication] =
     useState<boolean>(false);
 
@@ -58,7 +58,8 @@ const usePageContent = (): ExtendedComponentProps => {
     if (router.isReady && !router.query.id) {
       setIsLoading(false);
     }
-  }, [router]);
+    setIsSubmittedApplication(isSubmittedQueryParam);
+  }, [router, isSubmittedQueryParam]);
 
   const application: Application = existingApplication
     ? camelcaseKeys(

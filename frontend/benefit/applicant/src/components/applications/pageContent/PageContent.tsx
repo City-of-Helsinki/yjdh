@@ -12,6 +12,7 @@ import ApplicationFormStep3 from 'benefit/applicant/components/applications/form
 import ApplicationFormStep4 from 'benefit/applicant/components/applications/forms/application/step4/ApplicationFormStep4';
 import ApplicationFormStep5 from 'benefit/applicant/components/applications/forms/application/step5/ApplicationFormStep5';
 import ApplicationFormStep6 from 'benefit/applicant/components/applications/forms/application/step6/ApplicationFormStep6';
+import NoCookieConsentsNotification from 'benefit/applicant/components/cookieConsent/NoCookieConsentsNotification';
 import { $Hr } from 'benefit/applicant/components/pages/Pages.sc';
 import { SUBMITTED_STATUSES } from 'benefit/applicant/constants';
 import { useAskem } from 'benefit/applicant/hooks/useAnalytics';
@@ -92,6 +93,7 @@ const PageContent: React.FC = () => {
     return (
       <>
         <NotificationView
+          applicationId={application.id}
           title={t('common:notifications.applicationSubmitted.label')}
           message={t('common:notifications.applicationSubmitted.message', {
             applicationNumber: application?.applicationNumber,
@@ -101,15 +103,19 @@ const PageContent: React.FC = () => {
             ),
           })}
         />
-        {canShowAskem && (
+        {router.locale === 'fi' && (
           <Container>
             <$Hr />
-            <$AskemContainer>
-              <$AskemItem />
-              <$AskemItem>
-                <div className="rns" />
-              </$AskemItem>
-            </$AskemContainer>
+            {canShowAskem ? (
+              <$AskemContainer>
+                <$AskemItem />
+                <$AskemItem>
+                  <div className="rns" />
+                </$AskemItem>
+              </$AskemContainer>
+            ) : (
+              <NoCookieConsentsNotification submittedApplication={application.id} />
+            )}
             <$Hr />
           </Container>
         )}
