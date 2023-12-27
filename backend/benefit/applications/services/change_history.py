@@ -64,13 +64,21 @@ def get_history_for_application_2(application_id: str):
     hist_application_when_stop_editing = application.history.as_of(ts_end)._history
     hist_employee_when_start_editing = employee.history.as_of(ts_start)._history
     hist_employee_when_stop_editing = employee.history.as_of(ts_end)._history
+
     application_delta = hist_application_when_stop_editing.diff_against(
-        hist_application_when_start_editing
+        hist_application_when_start_editing,
+        excluded_fields=("application_step", "status"),
     )
     employee_delta = hist_employee_when_stop_editing.diff_against(
-        hist_employee_when_start_editing
+        hist_employee_when_start_editing,
+        excluded_fields=("encrypted_first_name", "encrypted_last_name"),
     )
-    for change in application_delta.changes:
-        print("{} changed from {} to {}".format(change.field, change.old, change.new))
-    for change in employee_delta.changes:
-        print("{} changed from {} to {}".format(change.field, change.old, change.new))
+    changes = [
+        {"field": change.field, "old": change.old, "new": change.new}
+        for change in application_delta.changes
+    ]
+    changes += [
+        {"field": f"employee.{change.field}", "old": change.old, "new": change.new}
+        for change in employee_delta.changes
+    ]
+    return changes
