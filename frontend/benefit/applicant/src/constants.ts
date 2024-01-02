@@ -1,3 +1,5 @@
+import  subMonths from 'date-fns/subMonths';
+
 import {
   APPLICATION_FIELDS_STEP1_KEYS,
   APPLICATION_FIELDS_STEP2,
@@ -52,7 +54,7 @@ export const DE_MINIMIS_AID_GRANTED_AT_MIN_DATE = new Date(
   1
 );
 
-export const APPLICATION_START_DATE = new Date(new Date().getFullYear(), 0, 1);
+export const APPLICATION_START_DATE = subMonths(new Date(), 4);
 
 export const APPLICATION_INITIAL_VALUES = {
   status: APPLICATION_STATUSES.DRAFT,
