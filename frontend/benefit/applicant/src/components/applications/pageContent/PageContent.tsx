@@ -54,11 +54,7 @@ const PageContent: React.FC = () => {
 
   const theme = useTheme();
   const router = useRouter();
-  const canShowAskem = useAskem(
-    router.locale,
-    isSubmittedApplication,
-    isLoading
-  );
+  const canShowAskem = useAskem(router.locale, isSubmittedApplication);
 
   useEffect(() => {
     if (isReadOnly) document.title = t('common:pageTitles.viewApplication');
@@ -114,7 +110,9 @@ const PageContent: React.FC = () => {
                 </$AskemItem>
               </$AskemContainer>
             ) : (
-              <NoCookieConsentsNotification submittedApplication={application.id} />
+              <NoCookieConsentsNotification
+                submittedApplication={application.id}
+              />
             )}
             <$Hr />
           </Container>

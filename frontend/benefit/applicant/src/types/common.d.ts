@@ -20,6 +20,7 @@ type RNSData = {
   apiKey: string;
   title: string;
   canonicalUrl: string;
+  disableFonts?: boolean;
 };
 
 export type ConsentsCookie = {
