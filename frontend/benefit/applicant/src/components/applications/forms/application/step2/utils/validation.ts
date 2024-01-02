@@ -11,8 +11,9 @@ import {
   PAY_SUBSIDY_GRANTED,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
-import { validateDateIsFromCurrentYearOnwards } from 'benefit-shared/utils/dates';
-import startOfYear from 'date-fns/startOfYear';
+import { validateIsTodayOrPastDate } from 'benefit-shared/utils/dates';
+import  subMonths from 'date-fns/subMonths';
+
 import { FinnishSSN } from 'finnish-ssn';
 import { TFunction } from 'next-i18next';
 import { NAMES_REGEX } from 'shared/constants';
@@ -45,9 +46,9 @@ export const getValidationSchema = (
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED))
       .test({
         message: t(VALIDATION_MESSAGE_KEYS.DATE_MIN, {
-          min: convertToUIDateFormat(startOfYear(new Date())),
+          min: convertToUIDateFormat(subMonths(new Date(), 4)),
         }),
-        test: (value = '') => validateDateIsFromCurrentYearOnwards(value),
+        test: (value = '') => validateIsTodayOrPastDate(value),
       }),
     [APPLICATION_FIELDS_STEP2_KEYS.END_DATE]: Yup.string().required(
       t(VALIDATION_MESSAGE_KEYS.REQUIRED)
