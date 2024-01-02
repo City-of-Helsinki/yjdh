@@ -109,6 +109,9 @@ msgstr "De minimis -tuen kokonaismäärä liian suuri"
 msgid "start_date must not be in a past year"
 msgstr "Aloituspäivä ei saa olla menneessä vuodessa"
 
+msgid "start_date must not be more than 4 months in the past"
+msgstr "Aloituspäivä voi olla enintään 4 kuukautta menneisyydessä"
+
 msgid "end_date must not be in a past year"
 msgstr "Päättymispäivä ei saa olla menneessä vuodessa"
 
