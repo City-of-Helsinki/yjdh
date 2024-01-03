@@ -198,3 +198,5 @@ export enum CALCULATION_ROW_DESCRIPTION_TYPES {
   DATE_TOTAL = 'date_total',
   DEDUCTION = 'deduction',
 }
+
+export const HELSINKI_CONSENT_COOKIE_NAME = 'city-of-helsinki-cookie-consents'

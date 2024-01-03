@@ -41,6 +41,7 @@ services:
   youth:
     build:
       context: ./frontend
+      dockerfile: Dockerfile-localdevelopment
       target: development
       args:
         PORT: 3100
@@ -58,6 +59,7 @@ services:
   handler:
     build:
       context: ./frontend
+      dockerfile: Dockerfile-localdevelopment
       target: development
       args:
         PORT: 3200

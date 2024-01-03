@@ -4,6 +4,7 @@ import {
   APPLICATION_FIELDS_STEP2_KEYS,
   APPLICATION_STATUSES,
 } from 'benefit-shared/constants';
+import subMonths from 'date-fns/subMonths';
 
 export const IS_CLIENT = typeof window !== 'undefined';
 
@@ -52,7 +53,7 @@ export const DE_MINIMIS_AID_GRANTED_AT_MIN_DATE = new Date(
   1
 );
 
-export const APPLICATION_START_DATE = new Date(new Date().getFullYear(), 0, 1);
+export const APPLICATION_START_DATE = subMonths(new Date(), 4);
 
 export const APPLICATION_INITIAL_VALUES = {
   status: APPLICATION_STATUSES.DRAFT,

@@ -1,6 +1,7 @@
 import {
   getMaxEndDate,
   getMinEndDate,
+  validateDateWithinFourMonths,
 } from '@frontend/benefit-shared/src/utils/dates';
 import { BENEFIT_TYPES } from 'benefit-shared/constants';
 
@@ -61,6 +62,37 @@ describe('dates', () => {
 
       expect(maxEndDate1).toBeUndefined();
       expect(maxEndDate2).toBeUndefined();
+    });
+  });
+
+  describe('validateDateWithinFourMonths', () => {
+    it('should return true when date is exactly four months ago', () => {
+      const fourMonthsAgo = new Date();
+      fourMonthsAgo.setMonth(fourMonthsAgo.getMonth() - 4);
+
+      expect(validateDateWithinFourMonths(fourMonthsAgo)).toBe(true);
+    });
+
+    it('should return true when date is within four months', () => {
+      const twoMonthsAgo = new Date();
+      twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
+
+      expect(validateDateWithinFourMonths(twoMonthsAgo)).toBe(true);
+    });
+
+    it('should return true when date is two months in the future', () => {
+      const twoMonthsInTheFuture = new Date();
+      twoMonthsInTheFuture.setMonth(twoMonthsInTheFuture.getMonth() + 2);
+
+      expect(validateDateWithinFourMonths(twoMonthsInTheFuture)).toBe(true);
+    });
+
+
+    it('should return false when date is more than four months in the past', () => {
+      const fiveMonthsAgo = new Date();
+      fiveMonthsAgo.setMonth(fiveMonthsAgo.getMonth() - 5);
+
+      expect(validateDateWithinFourMonths(fiveMonthsAgo)).toBe(false);
     });
   });
 });

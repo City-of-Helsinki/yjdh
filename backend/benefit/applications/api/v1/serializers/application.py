@@ -703,13 +703,18 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             )
 
     def _validate_date_range_on_submit(self, start_date, end_date):
-        if start_date < date(date.today().year, 1, 1):
+        four_months_ago = date.today() - relativedelta(months=4)
+        if start_date < four_months_ago:
             raise serializers.ValidationError(
-                {"start_date": _("start_date must not be in a past year")}
+                {
+                    "start_date": _(
+                        "start_date must not be more than 4 months in the past"
+                    )
+                }
             )
-        if end_date < date(date.today().year, 1, 1):
+        if end_date < start_date:
             raise serializers.ValidationError(
-                {"end_date": _("end_date must not be in a past year")}
+                {"end_date": _("application end_date can not be less than start_date")}
             )
 
     def _validate_date_range(self, start_date, end_date, benefit_type):

@@ -41,6 +41,7 @@ services:
   employer:
     build:
       context: ./frontend
+      dockerfile: Dockerfile-localdevelopment
       target: development
       args:
         PORT: 3100

@@ -107,6 +107,9 @@ msgstr "Totalt belopp av de minimis-stöd är för stort"
 msgid "start_date must not be in a past year"
 msgstr "Startdatum får inte vara under föregående år"
 
+msgid "start_date must not be more than 4 months in the past"
+msgstr "Startdatumet får inte ligga mer än fyra månader bakåt i tiden"
+
 msgid "end_date must not be in a past year"
 msgstr "Slutdatum får inte vara under föregående år"
 

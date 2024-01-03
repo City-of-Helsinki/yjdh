@@ -68,4 +68,16 @@ export const $AskemItem = styled.div`
   ${respondAbove('sm')`
     min-width: 13%;
   `}
+  .rns-plugin {
+    .rns-header {
+      font-weight: 500;
+    }
+    .rns-inputs .rns-form-submit {
+      background-color: ${(props) => props.theme.colors.coatOfArms};
+      color: white;
+      font-family: var(--font-default);
+      padding: ${(props) => props.theme.spacing.xs}
+        ${(props) => props.theme.spacing.m};
+    }
+  }
 `;

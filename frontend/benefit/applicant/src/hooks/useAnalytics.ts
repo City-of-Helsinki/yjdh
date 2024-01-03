@@ -5,12 +5,11 @@ import { canShowAskem } from '../utils/cookie';
 
 export const useAskem = (
   lang: string | undefined,
-  isSubmittedApplication: boolean,
-  isLoading: boolean
+  isSubmittedApplication: boolean
 ): boolean => {
   const showAskem = canShowAskem(lang);
   useEffect(() => {
-    if (!canShowAskem || isLoading) {
+    if (!canShowAskem) {
       return () => {};
     }
 
@@ -18,18 +17,19 @@ export const useAskem = (
     // eslint-disable-next-line scanjs-rules/assign_to_src
     script.src = ASKEM_SCRIPT_URL;
     script.type = 'text/javascript';
-    const canonicalUrl = `${window.location.host}/application`;
+    const canonicalUrl = `https://${window.location.host}/application`;
 
     window.rnsData = {
       apiKey: process.env.NEXT_PUBLIC_ASKEM_API_KEY,
       title: 'Helsinki-lisä',
       canonicalUrl,
+      disableFonts: true,
     };
 
     document.body.append(script);
     return () => {
       script.remove();
     };
-  }, [lang, isSubmittedApplication, isLoading, showAskem]);
+  }, [lang, isSubmittedApplication, showAskem]);
   return showAskem;
 };

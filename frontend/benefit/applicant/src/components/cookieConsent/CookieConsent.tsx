@@ -1,10 +1,13 @@
 import {
   ASKEM_HOSTNAME,
+  ROUTES,
   SUPPORTED_LANGUAGES,
 } from 'benefit/applicant/constants';
 import useLocale from 'benefit/applicant/hooks/useLocale';
+import { useTranslation } from 'benefit/applicant/i18n';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
-import { CookieModal, CookiePage } from 'hds-react';
+import { Button, Container, CookieModal, CookiePage } from 'hds-react';
+import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import React from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
@@ -14,6 +17,8 @@ const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
   const router = useRouter();
   const { axios } = useBackendAPI();
   const { pathname, asPath, query } = router;
+  const { t } = useTranslation();
+  const submittedApplication = useSearchParams().get('submittedApplication');
 
   const onLanguageChange = (newLanguage: SUPPORTED_LANGUAGES): void => {
     void axios.get(BackendEndpoint.USER_OPTIONS, {
@@ -84,8 +89,26 @@ const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
     focusTargetSelector: '#main_content',
   };
 
+  const handleBack = (): void => {
+    if (submittedApplication) {
+      void router.push({
+        pathname: ROUTES.APPLICATION_FORM,
+        query: { id: submittedApplication, isSubmitted: true },
+      });
+    } else {
+      void router.back();
+    }
+  };
+
   return asPage ? (
-    <CookiePage contentSource={contentSource} />
+    <>
+      <CookiePage contentSource={contentSource} />
+      <Container>
+        <Button onClick={handleBack}>
+          {t('common:applications.actions.back')}
+        </Button>
+      </Container>
+    </>
   ) : (
     <CookieModal contentSource={contentSource} />
   );
