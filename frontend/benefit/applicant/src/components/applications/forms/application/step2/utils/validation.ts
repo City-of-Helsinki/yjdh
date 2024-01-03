@@ -12,8 +12,7 @@ import {
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
 import { validateIsTodayOrPastDate } from 'benefit-shared/utils/dates';
-import  subMonths from 'date-fns/subMonths';
-
+import subMonths from 'date-fns/subMonths';
 import { FinnishSSN } from 'finnish-ssn';
 import { TFunction } from 'next-i18next';
 import { NAMES_REGEX } from 'shared/constants';

@@ -1,11 +1,10 @@
-import  subMonths from 'date-fns/subMonths';
-
 import {
   APPLICATION_FIELDS_STEP1_KEYS,
   APPLICATION_FIELDS_STEP2,
   APPLICATION_FIELDS_STEP2_KEYS,
   APPLICATION_STATUSES,
 } from 'benefit-shared/constants';
+import subMonths from 'date-fns/subMonths';
 
 export const IS_CLIENT = typeof window !== 'undefined';
 
