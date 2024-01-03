@@ -90,7 +90,12 @@ const HandledView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
               $colSpan={2}
             >
               <$ViewFieldBold large>
-                {formatFloatToCurrency(totalRow.amount, 'EUR', 'fi-FI', 0)}
+                {formatFloatToCurrency(
+                  totalRow?.amount || 0,
+                  'EUR',
+                  'fi-FI',
+                  0
+                )}
               </$ViewFieldBold>
             </$GridCell>
           </$HandledRow>
