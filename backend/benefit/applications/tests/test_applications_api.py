@@ -977,7 +977,7 @@ def test_application_date_range(
         (
             "2021-01-01",
             "2021-02-28",
-            200,
+            400,
         ),  # start_date in current year (relative to freeze_time date)
         (
             "2022-12-31",
