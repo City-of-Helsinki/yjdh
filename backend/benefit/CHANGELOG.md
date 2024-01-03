@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.5.0...benefit-backend-v1.5.1) (2024-01-03)
+
+
+### Bug Fixes
+
+* HL-1093 year 2024 bug ([#2684](https://github.com/City-of-Helsinki/yjdh/issues/2684)) ([b5c94c4](https://github.com/City-of-Helsinki/yjdh/commit/b5c94c40449a47ac4524d2c3c5fedc1fab15fa6b))
+* Use base64 encoded image ([#2661](https://github.com/City-of-Helsinki/yjdh/issues/2661)) ([07efaee](https://github.com/City-of-Helsinki/yjdh/commit/07efaee741015a1d9769d2e733f73bbd357ddcab))
+
 ## [1.5.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.4.0...benefit-backend-v1.5.0) (2023-12-21)
 
 
