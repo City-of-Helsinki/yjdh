@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.5.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.4.0...benefit-applicant-v3.5.0) (2024-01-03)
+
+
+### Features
+
+* Show "no cookie consents" notification (HL-1078) ([#2623](https://github.com/City-of-Helsinki/yjdh/issues/2623)) ([aca3fe0](https://github.com/City-of-Helsinki/yjdh/commit/aca3fe0bccd9e7a0494b842f1086c344b896905c))
+
+
+### Bug Fixes
+
+* Askem issues solved (HL-1094) ([#2676](https://github.com/City-of-Helsinki/yjdh/issues/2676)) ([6e503d9](https://github.com/City-of-Helsinki/yjdh/commit/6e503d943340d172d102a43b3263f305e7fd65cb))
+* HL-1093 year 2024 bug ([#2684](https://github.com/City-of-Helsinki/yjdh/issues/2684)) ([b5c94c4](https://github.com/City-of-Helsinki/yjdh/commit/b5c94c40449a47ac4524d2c3c5fedc1fab15fa6b))
+* Start_date can now be in the future ([#2686](https://github.com/City-of-Helsinki/yjdh/issues/2686)) ([4137a9c](https://github.com/City-of-Helsinki/yjdh/commit/4137a9c489cbc648610f9b3d67d063c8f4b52624))
+
 ## [3.4.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.3.1...benefit-applicant-v3.4.0) (2023-12-21)
 
 
