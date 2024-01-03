@@ -11,7 +11,7 @@ import {
   PAY_SUBSIDY_GRANTED,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
-import { validateIsTodayOrPastDate } from 'benefit-shared/utils/dates';
+import { validateDateWithinFourMonths } from 'benefit-shared/utils/dates';
 import subMonths from 'date-fns/subMonths';
 import { FinnishSSN } from 'finnish-ssn';
 import { TFunction } from 'next-i18next';
@@ -47,7 +47,7 @@ export const getValidationSchema = (
         message: t(VALIDATION_MESSAGE_KEYS.DATE_MIN, {
           min: convertToUIDateFormat(subMonths(new Date(), 4)),
         }),
-        test: (value = '') => validateIsTodayOrPastDate(value),
+        test: (value = '') => validateDateWithinFourMonths(value),
       }),
     [APPLICATION_FIELDS_STEP2_KEYS.END_DATE]: Yup.string().required(
       t(VALIDATION_MESSAGE_KEYS.REQUIRED)
