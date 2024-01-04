@@ -53,6 +53,8 @@ export enum EMPLOYEE_KEYS {
   EMPLOYEE_COMMISSION_AMOUNT = 'commissionAmount',
 }
 
+export const MAX_MONTHLY_PAY = 99_999;
+
 export enum APPLICATION_FIELDS_STEP1_KEYS {
   USE_ALTERNATIVE_ADDRESS = 'useAlternativeAddress',
   ALTERNATIVE_COMPANY_STREET_ADDRESS = 'alternativeCompanyStreetAddress',
@@ -199,4 +201,4 @@ export enum CALCULATION_ROW_DESCRIPTION_TYPES {
   DEDUCTION = 'deduction',
 }
 
-export const HELSINKI_CONSENT_COOKIE_NAME = 'city-of-helsinki-cookie-consents'
+export const HELSINKI_CONSENT_COOKIE_NAME = 'city-of-helsinki-cookie-consents';

@@ -17,7 +17,6 @@ export enum ROUTES {
 }
 
 export const MAX_DEMINIMIS_AID_TOTAL_AMOUNT = 200_000;
-export const MAX_MONTHLY_PAY = 99_999;
 
 export enum SUPPORTED_LANGUAGES {
   FI = 'fi',

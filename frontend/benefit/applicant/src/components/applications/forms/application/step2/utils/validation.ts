@@ -1,12 +1,13 @@
+import { validateNumberField } from '@frontend/benefit-shared/src/utils/validation';
 import {
   EMPLOYEE_MAX_WORKING_HOURS,
   EMPLOYEE_MIN_WORKING_HOURS,
-  MAX_MONTHLY_PAY,
   MAX_SHORT_STRING_LENGTH,
 } from 'benefit/applicant/constants';
 import {
   APPLICATION_FIELDS_STEP2_KEYS,
   EMPLOYEE_KEYS,
+  MAX_MONTHLY_PAY,
   ORGANIZATION_TYPES,
   PAY_SUBSIDY_GRANTED,
   VALIDATION_MESSAGE_KEYS,
@@ -17,7 +18,6 @@ import { FinnishSSN } from 'finnish-ssn';
 import { TFunction } from 'next-i18next';
 import { NAMES_REGEX } from 'shared/constants';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import { getNumberValue } from 'shared/utils/string.utils';
 import * as Yup from 'yup';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -89,63 +89,26 @@ export const getValidationSchema = (
       [EMPLOYEE_KEYS.JOB_TITLE]: Yup.string()
         .nullable()
         .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-      [EMPLOYEE_KEYS.WORKING_HOURS]: Yup.number()
-        .transform((_value, originalValue) =>
-          Number(getNumberValue(originalValue))
-        )
-        .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
-        .nullable()
-        .min(EMPLOYEE_MIN_WORKING_HOURS, (param) => ({
-          min: param.min,
-          key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,
-        }))
-        .max(EMPLOYEE_MAX_WORKING_HOURS, (param) => ({
-          max: param.max,
-          key: VALIDATION_MESSAGE_KEYS.NUMBER_MAX,
-        }))
-        .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-      [EMPLOYEE_KEYS.VACATION_MONEY]: Yup.number()
-        .min(0, (param) => ({
-          min: param.min,
-          key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,
-        }))
-        .max(MAX_MONTHLY_PAY, (param) => ({
-          max: param.max,
-          key: VALIDATION_MESSAGE_KEYS.NUMBER_MAX,
-        }))
-        .transform((_value, originalValue) =>
-          originalValue ? getNumberValue(originalValue) : null
-        )
-        .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
-        .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-      [EMPLOYEE_KEYS.MONTHLY_PAY]: Yup.number()
-        .min(0, (param) => ({
-          min: param.min,
-          key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,
-        }))
-        .max(MAX_MONTHLY_PAY, (param) => ({
-          max: param.max,
-          key: VALIDATION_MESSAGE_KEYS.NUMBER_MAX,
-        }))
-        .transform((_value, originalValue) =>
-          originalValue ? getNumberValue(originalValue) : null
-        )
-        .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
-        .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-      [EMPLOYEE_KEYS.OTHER_EXPENSES]: Yup.number()
-        .min(0, (param) => ({
-          min: param.min,
-          key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,
-        }))
-        .max(MAX_MONTHLY_PAY, (param) => ({
-          max: param.max,
-          key: VALIDATION_MESSAGE_KEYS.NUMBER_MAX,
-        }))
-        .transform((_value, originalValue) =>
-          originalValue ? getNumberValue(originalValue) : null
-        )
-        .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
-        .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      [EMPLOYEE_KEYS.WORKING_HOURS]: validateNumberField(
+        EMPLOYEE_MIN_WORKING_HOURS,
+        EMPLOYEE_MAX_WORKING_HOURS,
+        {
+          required: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
+          typeError: t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID),
+        }
+      ),
+      [EMPLOYEE_KEYS.VACATION_MONEY]: validateNumberField(0, MAX_MONTHLY_PAY, {
+        required: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
+        typeError: t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID),
+      }),
+      [EMPLOYEE_KEYS.MONTHLY_PAY]: validateNumberField(0, MAX_MONTHLY_PAY, {
+        required: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
+        typeError: t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID),
+      }),
+      [EMPLOYEE_KEYS.OTHER_EXPENSES]: validateNumberField(0, MAX_MONTHLY_PAY, {
+        required: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
+        typeError: t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID),
+      }),
       [EMPLOYEE_KEYS.COLLECTIVE_BARGAINING_AGREEMENT]: Yup.string().required(
         t(VALIDATION_MESSAGE_KEYS.REQUIRED)
       ),
