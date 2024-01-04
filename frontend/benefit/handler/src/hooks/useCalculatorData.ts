@@ -18,6 +18,7 @@ type ExtendedComponentProps = {
   handleClear: () => void;
   getErrorMessage: (fieldName: string) => string | undefined;
   isRecalculationRequired: boolean;
+  setIsRecalculationRequired: (value: boolean) => void;
 };
 
 const useCalculatorData = (
@@ -67,6 +68,7 @@ const useCalculatorData = (
     handleSubmit,
     handleClear,
     isRecalculationRequired,
+    setIsRecalculationRequired,
   };
 };
 

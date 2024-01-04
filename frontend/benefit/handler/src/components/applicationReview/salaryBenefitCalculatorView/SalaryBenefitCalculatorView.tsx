@@ -66,6 +66,7 @@ const SalaryBenefitCalculatorView: React.FC<
     handleSubmit,
     handleClear,
     isRecalculationRequired,
+    setIsRecalculationRequired,
   } = useCalculatorData(CALCULATION_TYPES.SALARY, formik);
 
   const eurosPerMonth = 'common:utility.eurosPerMonth';
@@ -78,13 +79,17 @@ const SalaryBenefitCalculatorView: React.FC<
       <$GridCell $colStart={1} $colSpan={11}>
         <$TabButton
           active={!isManualCalculator}
-          onClick={() => isManualCalculator && changeCalculatorMode()}
+          onClick={() =>
+            changeCalculatorMode('auto') && setIsRecalculationRequired(true)
+          }
         >
           {t(`${translationsBase}.calculator`)}
         </$TabButton>
         <$TabButton
           active={isManualCalculator}
-          onClick={() => !isManualCalculator && changeCalculatorMode()}
+          onClick={() =>
+            changeCalculatorMode('manual') && setIsRecalculationRequired(true)
+          }
         >
           {t(`${translationsBase}.calculateManually`)}
         </$TabButton>
@@ -610,7 +615,8 @@ const SalaryBenefitCalculatorView: React.FC<
           {t(`${translationsBase}.calculate`)}
         </Button>
         <Button onClick={handleClear} theme="coat" variant="secondary">
-          {t(`${translationsBase}.clear`)}
+          {isManualCalculator && t(`${translationsBase}.clear`)}
+          {!isManualCalculator && t(`${translationsBase}.reset`)}
         </Button>
       </$GridCell>
 
@@ -628,7 +634,11 @@ const SalaryBenefitCalculatorView: React.FC<
           </$Notification>
         </$GridCell>
       )}
-      <SalaryCalculatorResults data={data} />
+      <SalaryCalculatorResults
+        data={data}
+        isManualCalculator={isManualCalculator}
+        isRecalculationRequired={isRecalculationRequired}
+      />
     </ReviewSection>
   );
 };
