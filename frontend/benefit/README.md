@@ -1,39 +1,32 @@
-
 ## Environments
-Production environment:
-[TODO: Add url when deployed]
-Project is automatically deployed to production when adding new relase tag, e.g. release-v0.1.0, to repo
 
-Testing environment: [https://<TODO>.test.kuva.hel.ninja](https://<TODO>.test.kuva.hel.ninja)
-Project is automatically deployed to testing environment when pushing to develop brach
+Production environment: [https://helsinkilisa.hel.fi](https://helsinkilisa.hel.fi)
 
-## Requirements
+Test / dev / stage environments: See main page of project's Confluence page.
 
-- Node 18.x
-- Lerna  
-- Yarn
-- Git
-- Docker
-
-### Install NodeJS
-
-    # Use node manager (n or nvm, for example)
-    n 18
-    nvm install 18 --lts
-    # Alternative methods
-    https://nodejs.org/dist/
-    https://nodejs.org/en/download/package-manager
+In addition, each PR's latest commit is deployed in temporary test environment, see links in GitHub PR's.
 
 ## Available Scripts
 
-In the project directory, you can run:
+In the project directory
 
-### `yarn dev`
+- frontend/benefit/handler
+- frontend/benefit/handler
 
-Runs the app in the development mode.<br />
+you can run:
+
+### `yarn next dev --experimental-https -p xxxx`
+
+### `yarn next dev --experimental-https -p xxxx`
+
+Spin up a next dev server with port xxxx. Applicant should use port `3000` and handler should use port `3100`` by default. In order to get certificates working, you might have to allow requests to https://localhost in your browser's advanced configuration: [StackOverflow](https://stackoverflow.com/questions/7580508/getting-chrome-to-accept-self-signed-localhost-certificate)
+
+### `yarn dev` (deprecated)
+
+Runs the app in the development mode.
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.<br />
+The page will reload if you make edits.
 You will also see any lint errors in the console (TODO).
 
 ### `yarn build`
@@ -42,7 +35,7 @@ Builds the app for production to the `build` folder.
 
 ### `yarn benefit-applicant:start`
 
-Runs the built app in the production mode.<br />
+Runs the built app in the production mode.
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 ### `yarn test`
@@ -52,35 +45,3 @@ Launches the test runner in the interactive watch mode.
 ### `yarn audit`
 
 Audit report for npm packages.
-
-#### how to fix audit errors
-
-For example if you got something like this:
-┌───────────────┬──────────────────────────────────────────────────────────────┐
-│ moderate      │ Regular Expression Denial of Service                         │
-├───────────────┼──────────────────────────────────────────────────────────────┤
-│ Package       │ browserslist                                                 │
-├───────────────┼──────────────────────────────────────────────────────────────┤
-│ Patched in    │ >=4.16.5                                                     │
-├───────────────┼──────────────────────────────────────────────────────────────┤
-│ Dependency of │ @frontend/shared                                             │
-├───────────────┼──────────────────────────────────────────────────────────────┤
-│ Path          │ @frontend/shared > next > browserslist                       │
-├───────────────┼──────────────────────────────────────────────────────────────┤
-│ More info     │ https://www.npmjs.com/advisories/1747                        │
-└───────────────┴──────────────────────────────────────────────────────────────┘
-
-This can be fixed usually by:
-Adding `"browserslist" : "^4.16.5"`
-to the `"resolutions"` part of the [package.json](./package.json)
-Run `yarn`
-Then `yarn audit` again and error should be vanished :)
-
-More info: https://stackoverflow.com/questions/51699564/how-to-fix-npm-audit-fix-issues
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
