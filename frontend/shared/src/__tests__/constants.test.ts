@@ -4,6 +4,7 @@ import {
   ADDRESS_REGEX,
   CITY_REGEX,
   COMPANY_BANK_ACCOUNT_NUMBER,
+  FINNISH_SSN_REGEX,
   NAMES_REGEX,
   PHONE_NUMBER_REGEX,
   POSTAL_CODE_REGEX,
@@ -195,6 +196,98 @@ describe('constants', () => {
         const accountNumber = faker.finance.account(8);
 
         expect(accountNumber).not.toMatch(COMPANY_BANK_ACCOUNT_NUMBER);
+      });
+    });
+
+    describe('FINNISH_SSN_REGEX', () => {
+      it('should match Finnish non-temporary social security numbers', () => {
+        const socialSecurityNumbers = [
+          '010100+002H',
+          '010203-1230',
+          '111111-002V',
+          '111111-111C',
+          '111111A111C',
+          '111111U111C',
+          '111111V111C',
+          '111111W111C',
+          '111111X111C',
+          '111111Y111C',
+          '121212A899H',
+          '121212B899H',
+          '121212C899H',
+          '121212D899H',
+          '121212E899H',
+          '121212F899H',
+          '300522A0024',
+          '300522B0024',
+          // All possible checksum characters & before first & beyond last
+          '111111B098Y',
+          '111111B0990',
+          '111111B1001',
+          '111111B1012',
+          '111111B1023',
+          '111111B1034',
+          '111111B1045',
+          '111111B1056',
+          '111111B1067',
+          '111111B1078',
+          '111111B1089',
+          '111111B109A',
+          '111111B110B',
+          '111111B111C',
+          '111111B112D',
+          '111111B113E',
+          '111111B114F',
+          '111111B115H',
+          '111111B116J',
+          '111111B117K',
+          '111111B118L',
+          '111111B119M',
+          '111111B120N',
+          '111111B121P',
+          '111111B122R',
+          '111111B123S',
+          '111111B124T',
+          '111111B125U',
+          '111111B126V',
+          '111111B127W',
+          '111111B128X',
+          '111111B129Y',
+          '111111B1300',
+        ];
+
+        socialSecurityNumbers.forEach((socialSecurityNumber) => {
+          expect(socialSecurityNumber).toMatch(FINNISH_SSN_REGEX);
+        });
+      });
+
+      it('should not match Finnish temporary or invalid social security numbers', () => {
+        const socialSecurityNumbers = [
+          '111111-900U', // Otherwise valid but 900–999 individual number is rejected
+          '111111-9991', // Otherwise valid but 900–999 individual number is rejected
+          '111111-900U', // Otherwise valid but 900–999 individual number is rejected
+          '111111-9991', // Otherwise valid but 900–999 individual number is rejected
+          '311299A999E', // Otherwise valid but 900–999 individual number is rejected
+          '311299F999E', // Otherwise valid but 900–999 individual number is rejected
+          '30052 2A0025', //  Inner whitespace
+          '111111 -111x', //  Invalid checksum, inner whitespace
+          '111111/111C', //  Invalid century character
+          '111111G111C', //  Invalid century character
+          '111111M111C', //  Invalid century character
+          '111111R111C', //  Invalid century character
+          '111111T111C', //  Invalid century character
+          '111111Z111C', //  Invalid century character
+          '111111B111G', // Invalid checksum character
+          '111111B111I', // Invalid checksum character
+          '111111B111O', // Invalid checksum character
+          '111111B111Q', // Invalid checksum character
+          '111111B111Z', // Invalid checksum character
+          '111111B111', // Missing checksum
+        ];
+
+        socialSecurityNumbers.forEach((socialSecurityNumber) => {
+          expect(socialSecurityNumber).not.toMatch(FINNISH_SSN_REGEX);
+        });
       });
     });
   });

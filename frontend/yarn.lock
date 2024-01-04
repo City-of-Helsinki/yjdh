@@ -7178,15 +7178,10 @@ finnish-business-ids@^3.1.1:
   resolved "https://registry.yarnpkg.com/finnish-business-ids/-/finnish-business-ids-3.1.1.tgz#cedde5d391bd290f9112e51d81cb2a340f4a7ee4"
   integrity sha512-9MbFNBoLas7BoYw+rtPYy0xTAtfE1ResD0CUMEZLXuSythlpThZjuBHF35ELNIMslSnZnHRVpzYKrQrf9buWSQ==
 
-finnish-ssn@2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/finnish-ssn/-/finnish-ssn-2.0.4.tgz#5614b48b91ba63f4a27367971797291a47628d8c"
-  integrity sha512-boRI1T1W4Y+d6A8A5aujN7HJVE6HEXtXOevasvo8Xipi2gxcBKTSj07OWVoJl2bq4eBtH4drh2UgNMnQpHIJ+A==
-
-finnish-ssn@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/finnish-ssn/-/finnish-ssn-2.1.1.tgz#0f0685666530ddc4c36a0c0d34d0ba0c413d7cb2"
-  integrity sha512-0mwAfmHw2PlSZ+niAWNtYvzw+byG881qSIN9sWZRadxE3CW8KdtIYlfwvk0J7MzlnrE7HM19DM78LJrt7X1PvQ==
+finnish-ssn@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/finnish-ssn/-/finnish-ssn-2.1.2.tgz#5fa8d42a42fe7b3de214240c7dd373f3b18fda3f"
+  integrity sha512-B8xXx9KNnwG0l0wUkz6OtctYs/ffTlvVcbj4W1qFMgI/YyB5XCjEqTcbZ3ZK0tgOourb54CSZAenQQQNVxzBMA==
 
 flat-cache@^3.0.4:
   version "3.0.4"

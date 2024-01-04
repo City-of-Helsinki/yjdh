@@ -8,6 +8,7 @@ import maskGDPRData from 'shared/utils/mask-gdpr-data';
 const fakeObjectFactory = new FakeObjectFactory({ useUuid: false });
 
 const masked = (str?: string): string => '*'.repeat(str?.length ?? 0);
+const MASKED_SSN = '***********' as const;
 
 describe('frontend/shared/src/utils/masked-gdpr-data.ts', () => {
   it('masks youth application', () => {
@@ -66,8 +67,13 @@ describe('frontend/shared/src/utils/masked-gdpr-data.ts', () => {
     );
     const text1 = faker.lorem.text();
     const text2 = faker.lorem.text();
-    expect(maskGDPRData(text1 + ssn + text2)).toEqual(
-      text1 + masked(ssn) + text2
+    const expectedResult = text1 + MASKED_SSN + text2;
+    expect(maskGDPRData(text1 + ssn + text2)).toEqual(expectedResult);
+    expect(maskGDPRData(text1 + ssn.toLowerCase() + text2)).toEqual(
+      expectedResult
+    );
+    expect(maskGDPRData(text1 + ssn.toUpperCase() + text2)).toEqual(
+      expectedResult
     );
   });
 
@@ -80,17 +86,30 @@ describe('frontend/shared/src/utils/masked-gdpr-data.ts', () => {
     );
     const text1 = faker.lorem.text();
     const text2 = faker.lorem.text();
-    const obj = {
-      foo: {
-        bar: text1 + ssn1 + text2,
-      },
-      baz: `${ssn1}0${ssn2}`,
+    const expectedResult = {
+      foo: { bar: text1 + MASKED_SSN + text2 },
+      baz: `${MASKED_SSN}0${MASKED_SSN}`,
     };
-    expect(maskGDPRData(obj)).toEqual({
-      foo: {
-        bar: text1 + masked(ssn1) + text2,
-      },
-      baz: `${masked(ssn1)}0${masked(ssn2)}`,
-    });
+
+    expect(
+      maskGDPRData({
+        foo: { bar: text1 + ssn1 + text2 },
+        baz: `${ssn1}0${ssn2}`,
+      })
+    ).toEqual(expectedResult);
+
+    expect(
+      maskGDPRData({
+        foo: { bar: text1 + ssn1.toLowerCase() + text2 },
+        baz: `${ssn1.toLowerCase()}0${ssn2.toLowerCase()}`,
+      })
+    ).toEqual(expectedResult);
+
+    expect(
+      maskGDPRData({
+        foo: { bar: text1 + ssn1.toUpperCase() + text2 },
+        baz: `${ssn1.toUpperCase()}0${ssn2.toUpperCase()}`,
+      })
+    ).toEqual(expectedResult);
   });
 });

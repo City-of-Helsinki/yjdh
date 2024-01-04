@@ -1156,6 +1156,16 @@ def test_youth_applications_reactivate_unexpired_inactive__vtj_disabled(
         "121212A899H",
         "111111-111C",
         "111111A111C",
+        "111111B111C",
+        "111111C111C",
+        "111111D111C",
+        "111111E111C",
+        "111111F111C",
+        "111111U111C",
+        "111111V111C",
+        "111111W111C",
+        "111111X111C",
+        "111111Y111C",
         # Django Rest Framework's serializers.CharField trims leading and trailing
         # whitespace by default, so we allow them here.
         "     111111-111C",
@@ -1853,6 +1863,13 @@ def test_youth_application_post_empty_required_field(
         # Not uppercase
         "111111-111c",
         "111111a111C",
+        # Invalid century character
+        "111111/111C",
+        "111111G111C",
+        "111111M111C",
+        "111111R111C",
+        "111111T111C",
+        "111111Z111C",
         # Invalid checksum
         "111111-111X",  # "111111-111C" would be valid
         "111111A111W",  # "111111A111C" would be valid
