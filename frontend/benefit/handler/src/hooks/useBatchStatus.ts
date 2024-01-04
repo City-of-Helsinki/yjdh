@@ -80,6 +80,7 @@ const useBatchStatus = (
         );
         if (
           previousStatus === BATCH_STATUSES.AWAITING_FOR_DECISION ||
+          backendStatus === BATCH_STATUSES.COMPLETED ||
           (previousStatus === BATCH_STATUSES.AHJO_REPORT_CREATED &&
             backendStatus === BATCH_STATUSES.AWAITING_FOR_DECISION)
         ) {

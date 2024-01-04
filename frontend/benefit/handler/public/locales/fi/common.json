@@ -1057,15 +1057,18 @@
     "multiple": "Koonnit",
     "tabs": {
       "pending": "Odottaa Ahjoon vientiä",
-      "toPaymentAndArchive": "Odottaa maksuun tai arkistoon vientiä"
+      "inspection": "Odottaa maksuun vientiä",
+      "completion": "Lähetetty maksuun"
     },
     "list": {
       "columns": {
-        "createdAt": "Luotu",
+        "createdAt": "Luotu ",
         "status": "Tila",
         "statuses": {
           "accepted": "Myönteiset",
-          "rejected": "Kielteiset"
+          "rejected": "Kielteiset",
+          "inPayment": "Maksussa",
+          "waitingForPayment": "Menossa maksuun"
         },
         "handler": "Käsittelijä"
       },
@@ -1090,7 +1093,7 @@
       "statusChange": {
         "awaiting_ahjo_decision": "Koonti merkitty Ahjoon viedyksi",
         "exported_ahjo_report": "Ahjo-valmistelu aloitettu, koonti lukittu",
-        "sent_to_talpa": "Koonti käsitelty ja arkistoitu",
+        "completed": "Koonti käsitelty ja arkistoitu",
         "draft": "Koonti palautettu takaisin odottamaan päätösvalmistelua",
         "accepted": "Tarkastustiedot tallennettu",
         "rejected": "Koonti arkistoitu"

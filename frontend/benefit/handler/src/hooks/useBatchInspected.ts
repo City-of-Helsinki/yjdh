@@ -54,11 +54,15 @@ const useBatchInspected = (
   return useMutation<Response, Error, Payload>(
     'changeBatchStatus',
     ({ id, status, form }: Payload) => {
-      const parsed = parse(String(form.decision_date), 'd.M.yyyy', new Date());
-      const parsedAsDatenew = format(parsed, 'yyyy-MM-dd');
+      const parsedDate = parse(
+        String(form.decision_date),
+        'd.M.yyyy',
+        new Date()
+      );
+      const decision_date = format(parsedDate, 'yyyy-MM-dd');
       const formattedForm: BatchCompletionDetails = {
         ...form,
-        decision_date: parsedAsDatenew,
+        decision_date,
       };
       const request = axios.patch<Response>(
         HandlerEndpoint.BATCH_STATUS_CHANGE(id),
@@ -76,7 +80,11 @@ const useBatchInspected = (
           ''
         );
 
-        if (backendStatus === BATCH_STATUSES.DECIDED_REJECTED) {
+        if (
+          [BATCH_STATUSES.COMPLETED, BATCH_STATUSES.DECIDED_ACCEPTED].includes(
+            backendStatus
+          )
+        ) {
           setBatchCloseAnimation(true);
           setTimeout(() => {
             void queryClient.invalidateQueries('applicationsList');

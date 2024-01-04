@@ -43,7 +43,8 @@ const BatchIndex: NextPage = () => {
         <Tabs>
           <Tabs.TabList style={{ marginBottom: 'var(--spacing-m)' }}>
             <Tabs.Tab>{t('common:batches.tabs.pending')}</Tabs.Tab>
-            <Tabs.Tab>{t('common:batches.tabs.toPaymentAndArchive')}</Tabs.Tab>
+            <Tabs.Tab>{t('common:batches.tabs.inspection')}</Tabs.Tab>
+            <Tabs.Tab>{t('common:batches.tabs.completion')}</Tabs.Tab>
           </Tabs.TabList>
 
           <Tabs.TabPanel>
@@ -57,11 +58,15 @@ const BatchIndex: NextPage = () => {
           </Tabs.TabPanel>
 
           <Tabs.TabPanel>
-            <$Heading>{t('common:batches.tabs.toPaymentAndArchive')}</$Heading>
+            <$Heading>{t('common:batches.tabs.inspection')}</$Heading>
+            <BatchProposals status={[BATCH_STATUSES.AWAITING_FOR_DECISION]} />
+          </Tabs.TabPanel>
+          <Tabs.TabPanel>
+            <$Heading>{t('common:batches.tabs.completion')}</$Heading>
             <BatchProposals
               status={[
-                BATCH_STATUSES.AWAITING_FOR_DECISION,
                 BATCH_STATUSES.DECIDED_ACCEPTED,
+                BATCH_STATUSES.SENT_TO_TALPA,
               ]}
             />
           </Tabs.TabPanel>

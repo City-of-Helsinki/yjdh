@@ -269,7 +269,7 @@ def test_deassign_applications_from_batch_all(handler_api_client, application_ba
 @pytest.mark.parametrize(
     "batch_status,status_code,changed_status",
     [
-        (ApplicationBatchStatus.COMPLETED, 400, None),
+        (ApplicationBatchStatus.COMPLETED, 200, None),
         (ApplicationBatchStatus.SENT_TO_TALPA, 200, None),
         (ApplicationBatchStatus.RETURNED, 400, None),
         (ApplicationBatchStatus.DECIDED_ACCEPTED, 200, None),

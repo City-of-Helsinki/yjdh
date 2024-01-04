@@ -192,7 +192,7 @@ const useBatchActionsInspected = (
       markBatchAs(
         proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED
           ? BATCH_STATUSES.DECIDED_ACCEPTED
-          : BATCH_STATUSES.DECIDED_REJECTED,
+          : BATCH_STATUSES.COMPLETED,
         values
       ),
   };
