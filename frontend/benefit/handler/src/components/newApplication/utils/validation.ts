@@ -10,10 +10,12 @@ import {
 } from 'benefit/handler/constants';
 import {
   EMPLOYEE_KEYS,
+  MAX_MONTHLY_PAY,
   ORGANIZATION_TYPES,
   PAY_SUBSIDY_GRANTED,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
+import { validateNumberField } from 'benefit-shared/utils/validation';
 import startOfYear from 'date-fns/startOfYear';
 import { FinnishSSN } from 'finnish-ssn';
 import { TFunction } from 'next-i18next';
@@ -29,10 +31,7 @@ import {
   convertToUIDateFormat,
   validateDateIsFromCurrentYearOnwards,
 } from 'shared/utils/date.utils';
-import {
-  getNumberValue,
-  getNumberValueOrNull,
-} from 'shared/utils/string.utils';
+import { getNumberValueOrNull } from 'shared/utils/string.utils';
 import * as Yup from 'yup';
 
 import { getValidationSchema as getDeminimisValidationSchema } from '../formContent/companySection/deMinimisAid/utils/validation';
@@ -246,7 +245,7 @@ export const getValidationSchema = (
             value ? /^\d+.?\d{1,2}$/.test(String(value)) : false
         )
         .transform((_value, originalValue) =>
-          Number(getNumberValue(originalValue))
+          Number(getNumberValueOrNull(originalValue))
         )
         .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
         .nullable()
@@ -259,24 +258,18 @@ export const getValidationSchema = (
           key: VALIDATION_MESSAGE_KEYS.NUMBER_MAX,
         }))
         .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-      [EMPLOYEE_KEYS.MONTHLY_PAY]: Yup.number()
-        .transform((_value, originalValue) =>
-          getNumberValueOrNull(originalValue)
-        )
-        .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
-        .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-      [EMPLOYEE_KEYS.VACATION_MONEY]: Yup.number()
-        .transform((_value, originalValue) =>
-          getNumberValueOrNull(originalValue)
-        )
-        .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
-        .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-      [EMPLOYEE_KEYS.OTHER_EXPENSES]: Yup.number()
-        .transform((_value, originalValue) =>
-          getNumberValueOrNull(originalValue)
-        )
-        .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
-        .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      [EMPLOYEE_KEYS.MONTHLY_PAY]: validateNumberField(0, MAX_MONTHLY_PAY, {
+        required: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
+        typeError: t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID),
+      }),
+      [EMPLOYEE_KEYS.VACATION_MONEY]: validateNumberField(0, MAX_MONTHLY_PAY, {
+        required: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
+        typeError: t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID),
+      }),
+      [EMPLOYEE_KEYS.OTHER_EXPENSES]: validateNumberField(0, MAX_MONTHLY_PAY, {
+        required: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
+        typeError: t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID),
+      }),
       [EMPLOYEE_KEYS.COLLECTIVE_BARGAINING_AGREEMENT]: Yup.string().required(
         t(VALIDATION_MESSAGE_KEYS.REQUIRED)
       ),

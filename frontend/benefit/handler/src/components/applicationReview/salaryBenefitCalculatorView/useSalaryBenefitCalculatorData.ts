@@ -101,7 +101,7 @@ const useSalaryBenefitCalculatorData = (
           ? application?.trainingCompensations
           : [],
     },
-    validationSchema: getValidationSchema(),
+    validationSchema: getValidationSchema(t),
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,
