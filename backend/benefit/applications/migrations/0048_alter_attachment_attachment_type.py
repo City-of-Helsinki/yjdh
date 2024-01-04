@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('applications', '0046_add_ahjo_ids_to_application'),
+        ('applications', '0047_remove_phone_number_restriction'),
     ]
 
     operations = [
