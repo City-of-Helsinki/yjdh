@@ -15,6 +15,24 @@ from stdnum.fi.hetu import (
 
 _ALWAYS_FALSE_Q_FILTER = Q(pk=None)  # A hack but works as primary keys can't be null
 
+# Mapping from Finnish social security number century character to century number.
+# Should be the same as stdnum.fi.hetu._century_codes but that dictionary is private.
+_CENTURY_CHAR_TO_CENTURY_NUMBER = {
+    "+": 1800,
+    "-": 1900,
+    "A": 2000,
+    "B": 2000,
+    "C": 2000,
+    "D": 2000,
+    "E": 2000,
+    "F": 2000,
+    "U": 1900,
+    "V": 1900,
+    "W": 1900,
+    "X": 1900,
+    "Y": 1900,
+}
+
 
 def any_of_q_filter(**kwargs):
     """
@@ -123,5 +141,5 @@ def social_security_number_birthdate(social_security_number) -> date:
     month = int(compacted_social_security_number[2:4])
     year_mod_100 = int(compacted_social_security_number[4:6])
     century_char = compacted_social_security_number[6]
-    century = {"+": 1800, "-": 1900, "A": 2000}[century_char]
+    century = _CENTURY_CHAR_TO_CENTURY_NUMBER[century_char]
     return date(year=century + year_mod_100, month=month, day=day)

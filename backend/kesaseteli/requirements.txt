@@ -152,7 +152,7 @@ python-dateutil==2.8.1
     #   azure-storage-common
     #   faker
     #   pysaml2
-python-stdnum==1.17
+python-stdnum==1.19
     # via
     #   -r requirements.in
     #   django-localflavor

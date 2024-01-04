@@ -16,7 +16,7 @@ filetype
 mozilla-django-oidc
 pillow
 psycopg2
-python-stdnum
+python-stdnum>=1.19
 requests
 sentry-sdk
 xlsxwriter

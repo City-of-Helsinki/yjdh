@@ -5,31 +5,54 @@ from django.conf import settings
 
 
 def create_finnish_social_security_number(
-    birthdate: date, individual_number: int
+    birthdate: date, century_variant: int, individual_number: int
 ) -> str:
     """
-    Create a Finnish social security number based on birthdate and individual number
+    Create a Finnish social security number based on birthdate, century variant and
+    individual number
 
     :param birthdate: Date of birth
+    :param century_variant: Non-negative integer value for deciding which century
+                            character variant to use, e.g. birthdates in 2000–2099 may
+                            have century character A, B, C, D, E or F. There's no upper
+                            limit as (century_variant % available_century_characters) is
+                            the value being used.
     :param individual_number: Integer value where 2 <= individual_number <= 999
     :return: Finnish social security number in format <ddmmyyciiis> where
              dd = day of birth with leading zeroes,
              mm = month of birth with leading zeroes,
              yy = year of birth modulo 100 with leading zeroes,
-             c = century of birth ("+" = 1800, "-" = 1900, "A" = 2000),
+             c = century of birth, where c is
+                 "+" = 1800,
+                 "-" = 1900 if (century_variant % 6) == 0,
+                 "Y" = 1900 if (century_variant % 6) == 1,
+                 "X" = 1900 if (century_variant % 6) == 2,
+                 "W" = 1900 if (century_variant % 6) == 3,
+                 "V" = 1900 if (century_variant % 6) == 4,
+                 "U" = 1900 if (century_variant % 6) == 5,
+                 "A" = 2000 if (century_variant % 6) == 0,
+                 "B" = 2000 if (century_variant % 6) == 1,
+                 "C" = 2000 if (century_variant % 6) == 2,
+                 "D" = 2000 if (century_variant % 6) == 3,
+                 "E" = 2000 if (century_variant % 6) == 4,
+                 "F" = 2000 if (century_variant % 6) == 5,
              iii = individual number in range 2–999 with leading zeroes,
              s = checksum value calculated from <ddmmyyiii>.
     :raises ValueError: if not (1800 <= birthdate.year <= 2099)
+    :raises ValueError: if century_variant < 0
     :raises ValueError: if not (2 <= individual_number <= 999)
     """
     if not (1800 <= birthdate.year <= 2099):
         raise ValueError("Invalid birthdate year, only years 1800–2099 are supported")
+    if century_variant < 0:
+        raise ValueError("Invalid century variant, must be non-negative")
     if not (2 <= individual_number <= 999):
         raise ValueError("Invalid individual number, must be in range 2–999")
     ddmmyy: str = f"{birthdate.day:02}{birthdate.month:02}{birthdate.year % 100:02}"
     iii: str = f"{individual_number:003}"
     ddmmyyiii: str = f"{ddmmyy}{iii}"
-    century_char: str = {18: "+", 19: "-", 20: "A"}[birthdate.year // 100]
+    century_chars: str = {18: "+", 19: "-YXWVU", 20: "ABCDEF"}[birthdate.year // 100]
+    century_char: str = century_chars[century_variant % len(century_chars)]
     checksum_char: str = "0123456789ABCDEFHJKLMNPRSTUVWXY"[int(ddmmyyiii) % 31]
     return f"{ddmmyy}{century_char}{iii}{checksum_char}"
 

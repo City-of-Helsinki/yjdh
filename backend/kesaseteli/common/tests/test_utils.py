@@ -159,7 +159,7 @@ def test_utc_datetime(args):
     assert result.tzinfo == timezone.utc
 
 
-@pytest.mark.parametrize("year", [1800, 2022, 2023, 2099])
+@pytest.mark.parametrize("year", [1800, 1987, 2022, 2023, 2024, 2025, 2099])
 def test_get_random_social_security_number_for_year(year):
     for _ in range(1000):
         result = get_random_social_security_number_for_year(year)

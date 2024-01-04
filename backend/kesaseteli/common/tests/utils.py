@@ -21,6 +21,7 @@ def get_random_social_security_number_for_year(year: int) -> str:
             tzinfo=timezone.utc,
         )
         .date(),
+        century_variant=get_faker().pyint(0, 99),  # Inclusive range
         individual_number=get_faker().pyint(2, 899),  # Inclusive range
     )
 
