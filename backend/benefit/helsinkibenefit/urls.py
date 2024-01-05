@@ -16,9 +16,8 @@ from applications.api.v1.ahjo_integration_views import (
     AhjoAttachmentView,
     AhjoCallbackView,
 )
-
-from applications.api.v1.talpa_integration_views import TalpaCallbackView
 from applications.api.v1.review_state_views import ReviewStateView
+from applications.api.v1.talpa_integration_views import TalpaCallbackView
 from calculator.api.v1 import views as calculator_views
 from common.debug_util import debug_env
 from companies.api.v1.views import (
@@ -81,7 +80,7 @@ urlpatterns = [
         "v1/talpa-integration/callback/",
         TalpaCallbackView.as_view(),
         name="talpa_callback_url",
-        ),
+    ),
     path("gdpr-api/v1/user/<uuid:uuid>", UserUuidGDPRAPIView.as_view(), name="gdpr_v1"),
     path("v1/", include((router.urls, "v1"), namespace="v1")),
     path("v1/", include(applicant_app_router.urls)),
