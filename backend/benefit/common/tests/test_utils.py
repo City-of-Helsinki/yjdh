@@ -6,13 +6,14 @@ from datetime import date
 import pytest
 from dateutil.relativedelta import relativedelta
 from django.core.files.uploadedfile import SimpleUploadedFile
-
+from django.http import HttpRequest
 from common.utils import (
     date_range_overlap,
     days360,
     duration_in_months,
     get_date_range_end_with_days360,
     hash_file,
+    get_request_ip_address
 )
 
 
@@ -145,3 +146,17 @@ def test_hash_file():
 
     # Assert that the actual hash matches the expected hash
     assert actual_hash == expected_hash
+
+def test_get_request_ip_address_with_x_forwarded_for():
+    request = HttpRequest()
+    request.META['HTTP_X_FORWARDED_FOR'] = '192.168.1.1, 192.168.1.2'
+    assert get_request_ip_address(request) == '192.168.1.1'
+
+def test_get_request_ip_address_with_remote_addr():
+    request = HttpRequest()
+    request.META['REMOTE_ADDR'] = '192.168.1.1'
+    assert get_request_ip_address(request) == '192.168.1.1'
+
+def test_get_request_ip_address_with_no_ip():
+    request = HttpRequest()
+    assert get_request_ip_address(request) is None
