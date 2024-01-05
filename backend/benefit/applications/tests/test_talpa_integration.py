@@ -13,6 +13,7 @@ from applications.tests.conftest import *  # noqa
 from applications.tests.conftest import split_lines_at_semicolon
 from common.tests.conftest import *  # noqa
 from helsinkibenefit.tests.conftest import *  # noqa
+from shared.audit_log.models import AuditLogEntry
 
 
 def test_talpa_lines(applications_csv_service):
@@ -141,11 +142,15 @@ def test_talpa_callback_success(talpa_client, decided_application):
     assert response.status_code == 200
     assert response.data == {"message": "Callback received"}
 
+    audit_log_entry = AuditLogEntry.objects.latest("created_at")
+    assert (
+        audit_log_entry.message["audit_event"]["target"]["id"]
+        == f"{decided_application.id}"
+    )
+
 
 @pytest.mark.django_db
-def test_talpa_callback_rejected_application(
-    talpa_client, decided_application, settings
-):
+def test_talpa_callback_rejected_application(talpa_client, decided_application):
     url = reverse(
         "talpa_callback_url",
     )
