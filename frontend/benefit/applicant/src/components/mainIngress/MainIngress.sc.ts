@@ -1,9 +1,10 @@
 import { $Notification as NotificationBase } from 'benefit/applicant/components/Notification/Notification.sc';
+import { Koros } from 'hds-react';
 import { respondAbove } from 'shared/styles/mediaQueries';
 import styled from 'styled-components';
 
 export const $Container = styled.div`
-  padding-bottom: ${(props) => props.theme.spacing.m};
+  background-color: ${(props) => props.theme.colors.silver};
 `;
 
 export const $TextContainer = styled.div`
@@ -43,4 +44,15 @@ export const $ActionContainer = styled.div`
 
 export const $Notification = styled(NotificationBase)`
   margin-bottom: ${(props) => props.theme.spacing.xs};
+`;
+
+export const $KorosContainer = styled.div`
+  position: relative;
+  overflow: hidden;
+  margin-bottom: ${(props) => props.theme.spacing.m};
+`;
+
+export const $Koros = styled(Koros)`
+  fill: ${(props) => props.theme.colors.silver};
+  margin-top: calc(${(props) => props.theme.spacing.xl} * -1);
 `;
