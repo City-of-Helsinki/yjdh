@@ -1,6 +1,5 @@
-import uuid
 from datetime import datetime
-from typing import List, Union
+from typing import List
 
 from django.conf import settings
 from django.urls import reverse
@@ -15,10 +14,12 @@ def _prepare_top_level_dict(application: Application, case_records: List[dict]) 
     """Prepare the dictionary that is sent to Ahjo"""
     application_date = application.created_at.isoformat()
     application_year = application.created_at.year
+    # TODO: what value to use if application is submitted via paper?
+    manner_of_receipt = "sähköinen asiointi"
     title = f"Avustuksen myöntäminen, työllisyyspalvelut, \
 työnantajan Helsinki-lisä vuonna {application.created_at.year}, \
 työnantaja {application.company_name}"
-
+    handler = application.calculation.handler
     case_dict = {
         "Title": title,
         "Acquired": application_date,
@@ -36,6 +37,7 @@ työnantaja {application.company_name}"
             {"Subject": "työllisyydenhoito"},
         ],
         "PersonalData": "Sisältää erityisiä henkilötietoja",
+        "MannerOfReceipt": manner_of_receipt,
         "Reference": application.application_number,
         "Records": case_records,
         "Agents": [
@@ -48,7 +50,12 @@ työnantaja {application.company_name}"
                 "AddressStreet": application.company.street_address,
                 "AddressPostalCode": application.company.postcode,
                 "AddressCity": application.company.city,
-            }
+            },
+            {
+                "Role": "draftsman",
+                "Name": f"{handler.last_name}, {handler.first_name}",
+                "ID": handler.ad_username,
+            },
         ],
     }
     return case_dict
@@ -72,7 +79,6 @@ def _prepare_record(
     record_title: str,
     record_type: str,
     acquired: datetime,
-    reference: Union[int, uuid.UUID],
     documents: List[dict],
     handler: User,
     publicity_class: str = "Salassa pidettävä",
@@ -87,7 +93,6 @@ def _prepare_record(
         "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
         "Language": "fi",
         "PersonalData": "Sisältää erityisiä henkilötietoja",
-        "Reference": str(reference),
         "Documents": documents,
         "Agents": [
             {
@@ -110,7 +115,6 @@ def _prepare_case_records(
         "Hakemus",
         "hakemus",
         application.created_at.isoformat(),
-        application.application_number,
         [_prepare_record_document_dict(pdf_summary)],
         handler,
     )
@@ -124,7 +128,6 @@ def _prepare_case_records(
             "Hakemuksen Liite",
             "liite",
             attachment.created_at.isoformat(),
-            attachment.id,
             [_prepare_record_document_dict(attachment)],
             handler,
         )

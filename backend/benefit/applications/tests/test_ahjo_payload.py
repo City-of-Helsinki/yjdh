@@ -19,7 +19,6 @@ def test_prepare_record(decided_application, ahjo_payload_record):
         ahjo_payload_record["Title"],
         ahjo_payload_record["Type"],
         application.created_at.isoformat(),
-        application.application_number,
         [],
         application.calculation.handler,
     )
@@ -73,7 +72,6 @@ def test_prepare_case_records(decided_application, settings):
             "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
             "Language": "fi",
             "PersonalData": "Sisältää erityisiä henkilötietoja",
-            "Reference": str(application.application_number),
             "Documents": [_prepare_record_document_dict(fake_summary)],
             "Agents": [
                 {
@@ -92,7 +90,6 @@ def test_prepare_case_records(decided_application, settings):
             "Hakemuksen Liite",
             "liite",
             attachment.created_at.isoformat(),
-            attachment.id,
             [_prepare_record_document_dict(attachment)],
             handler,
         )

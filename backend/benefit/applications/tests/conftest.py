@@ -264,7 +264,6 @@ def ahjo_payload_record(decided_application):
     record_title = "Hakemus"
     record_type = "hakemus"
     acquired = application.created_at.isoformat()
-    reference = str(application.application_number)
     documents = []
     agent = application.calculation.handler
     publicity_class = "Salassa pidettävä"
@@ -277,7 +276,6 @@ def ahjo_payload_record(decided_application):
         "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
         "Language": "fi",
         "PersonalData": "Sisältää erityisiä henkilötietoja",
-        "Reference": reference,
         "Documents": documents,
         "Agents": [
             {
@@ -295,6 +293,7 @@ def ahjo_open_case_top_level_dict(decided_application):
     title = f"Avustuksen myöntäminen, työllisyyspalvelut, \
 työnantajan Helsinki-lisä vuonna {application.created_at.year}, \
 työnantaja {application.company_name}"
+    handler = application.calculation.handler
 
     return {
         "Title": title,
@@ -313,6 +312,7 @@ työnantaja {application.company_name}"
             {"Subject": "työllisyydenhoito"},
         ],
         "PersonalData": "Sisältää erityisiä henkilötietoja",
+        "MannerOfReceipt": "sähköinen asiointi",
         "Reference": application.application_number,
         "Records": [],
         "Agents": [
@@ -325,7 +325,12 @@ työnantaja {application.company_name}"
                 "AddressStreet": application.company.street_address,
                 "AddressPostalCode": application.company.postcode,
                 "AddressCity": application.company.city,
-            }
+            },
+            {
+                "Role": "draftsman",
+                "Name": f"{handler.last_name}, {handler.first_name}",
+                "ID": handler.ad_username,
+            },
         ],
     }
 
