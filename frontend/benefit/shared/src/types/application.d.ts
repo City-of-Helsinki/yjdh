@@ -74,6 +74,8 @@ export type ApplicationInBatch = {
   employee_name: string;
   handled_at: string;
   business_id: string;
+  calculation?: CalculationData;
+  benefitAmount: number | string;
 };
 
 interface ApplicationAllowedAction {

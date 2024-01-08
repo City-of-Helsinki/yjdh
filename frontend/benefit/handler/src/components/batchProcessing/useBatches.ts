@@ -32,20 +32,24 @@ const useBatchProposal = (filterByStatus: BATCH_STATUSES[]): BatchListProps => {
             id,
             status,
             company,
-            company_name,
             application_number,
             employee,
             handled_at,
+            calculation,
           } = app;
+
+          const benefitAmount =
+            calculation?.rows.length > 0 ? calculation.rows.pop().amount : 0;
 
           return {
             id,
+            company_name: company?.name || '',
             application_number,
             employee_name:
               getFullName(employee?.first_name, employee?.last_name) || '-',
             status,
+            benefitAmount,
             handled_at: convertToUIDateFormat(handled_at),
-            company_name: company?.name || company_name,
             business_id: company?.business_id,
           };
         }
