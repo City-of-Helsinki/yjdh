@@ -461,7 +461,7 @@
   "mainIngress": {
     "heading": "Applications",
     "description1": "Welcome to the Helsinki benefit service.",
-    "description2": " You can save an incomplete application and continue to fill it in later.",
+    "description2": "Before filling out the application, review the necessary information and required attachments if needed. You can save an incomplete application as a draft and return to it later.",
     "linkText": " Please take a look at the required information and attachments before filling in the application.",
     "newApplicationBtnText": "Submit a new application"
   },

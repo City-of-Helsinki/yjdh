@@ -461,7 +461,7 @@
   "mainIngress": {
     "heading": "Hakemukset",
     "description1": "Tervetuloa Helsinki-lisän asiointipalveluun.",
-    "description2": " Voit tallentaa hakemuksen keskeneräisenä ja jatkaa täyttämistä myöhemmin.",
+    "description2": "Ennen hakemuksen täyttämistä tutustu hakemisessa vaadittaviin tietoihin ja liitteisiin. Voit tallentaa hakemuksen keskeneräisenä luonnokseksi ja jatkaa sen täyttämistä myöhemmin.",
     "linkText": " Tutustu vaadittaviin tietoihin ja tarvittaviin liitteisiin ennen hakemuksen täyttämistä.",
     "newApplicationBtnText": "Tee uusi hakemus"
   },

@@ -32,9 +32,10 @@ const MainIngress: React.FC = () => {
           {notificationItems}
           <$TextContainer>
             <$Description>
-              {t('common:mainIngress.description1')}
-              {/* TODO: uncomment once having link to redirect to more info url,
-            handleMoreInfoClick is from useMainIngress */}
+              {t('common:mainIngress.description1')}{' '}
+              {/* TODO: uncomment once having link to redirect to more info url
+                   or remove if this won't be used.
+                   handleMoreInfoClick is from useMainIngress */}
               {/* <$Link onClick={handleMoreInfoClick}>
               {t('common:mainIngress.linkText')}
             </$Link> */}
