@@ -64,7 +64,6 @@ def test_send_request_to_ahjo(
     request_url,
     ahjo_status,
     application_with_ahjo_case_id,
-    ahjo_open_case_payload,
 ):
     headers = {"Authorization": "Bearer test"}
 
@@ -74,7 +73,7 @@ def test_send_request_to_ahjo(
         elif request_type == AhjoRequestType.DELETE_APPLICATION:
             m.delete(request_url)
         send_request_to_ahjo(
-            request_type, headers, application_with_ahjo_case_id, ahjo_open_case_payload
+            request_type, headers, application_with_ahjo_case_id, {"foo": "bar"}
         )
         assert m.called
 

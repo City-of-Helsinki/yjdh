@@ -1,5 +1,8 @@
+from django.core.files.base import ContentFile
 from django.urls import reverse
 
+from applications.enums import AttachmentType
+from applications.models import Attachment
 from applications.services.ahjo_payload import (
     _prepare_case_records,
     _prepare_record,
@@ -47,6 +50,18 @@ def test_prepare_record_document_dict(decided_application, settings):
 def test_prepare_case_records(decided_application, settings):
     settings.DEBUG = True
     application = decided_application
+
+    fake_file = ContentFile(
+        b"fake file content",
+        f"application_summary_{application.application_number}.pdf",
+    )
+
+    fake_summary = Attachment.objects.create(
+        application=application,
+        attachment_file=fake_file,
+        content_type="application/pdf",
+        attachment_type=AttachmentType.PDF_SUMMARY,
+    )
     handler = application.calculation.handler
     handler_name = f"{handler.last_name}, {handler.first_name}"
     want = [
@@ -59,7 +74,7 @@ def test_prepare_case_records(decided_application, settings):
             "Language": "fi",
             "PersonalData": "Sisältää erityisiä henkilötietoja",
             "Reference": str(application.application_number),
-            "Documents": [],
+            "Documents": [_prepare_record_document_dict(fake_summary)],
             "Agents": [
                 {
                     "Role": "mainCreator",
@@ -70,7 +85,9 @@ def test_prepare_case_records(decided_application, settings):
         }
     ]
 
-    for attachment in application.attachments.all():
+    for attachment in application.attachments.exclude(
+        attachment_type=AttachmentType.PDF_SUMMARY
+    ):
         document_record = _prepare_record(
             "Hakemuksen Liite",
             "liite",
@@ -82,7 +99,7 @@ def test_prepare_case_records(decided_application, settings):
 
         want.append(document_record)
 
-    got = _prepare_case_records(application)
+    got = _prepare_case_records(application, fake_summary)
 
     assert want == got
 

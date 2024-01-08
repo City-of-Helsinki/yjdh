@@ -1,4 +1,5 @@
 import io
+import os
 import uuid
 import zipfile
 from datetime import date
@@ -16,14 +17,16 @@ from applications.enums import (
     AhjoRequestType,
     AhjoStatus,
     ApplicationStatus,
+    AttachmentType,
     BenefitType,
 )
-from applications.models import Application
+from applications.models import Application, Attachment
 from applications.services.ahjo_integration import (
     ACCEPTED_TITLE,
     export_application_batch,
     ExportFileInfo,
     generate_composed_files,
+    generate_pdf_summary_as_attachment,
     generate_single_approved_file,
     generate_single_declined_file,
     get_application_for_ahjo,
@@ -476,3 +479,21 @@ def test_get_application_for_ahjo_no_ad_username(decided_application):
     # Try to get an application with a handler that has no ad_username
     with pytest.raises(ImproperlyConfigured):
         get_application_for_ahjo(decided_application.id)
+
+
+@pytest.mark.django_db
+def test_generate_pdf_summary_as_attachment(decided_application):
+    attachment = generate_pdf_summary_as_attachment(decided_application)
+    assert isinstance(attachment, Attachment)
+
+    assert attachment.application == decided_application
+    assert attachment.content_type == "application/pdf"
+    assert attachment.attachment_type == AttachmentType.PDF_SUMMARY
+    assert (
+        attachment.attachment_file.name
+        == f"application_summary_{decided_application.application_number}.pdf"
+    )
+    assert attachment.attachment_file.size > 0
+    assert os.path.exists(attachment.attachment_file.path)
+    if os.path.exists(attachment.attachment_file.path):
+        os.remove(attachment.attachment_file.path)

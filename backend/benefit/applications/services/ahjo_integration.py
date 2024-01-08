@@ -13,6 +13,7 @@ import pdfkit
 import requests
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
+from django.core.files.base import ContentFile
 from django.db.models import QuerySet
 from django.urls import reverse
 
@@ -20,11 +21,15 @@ from applications.enums import (
     AhjoRequestType,
     AhjoStatus as AhjoStatusEnum,
     ApplicationStatus,
+    AttachmentType,
 )
-from applications.models import AhjoSetting, AhjoStatus, Application
+from applications.models import AhjoSetting, AhjoStatus, Application, Attachment
 from applications.services.ahjo_authentication import AhjoConnector
 from applications.services.ahjo_payload import prepare_open_case_payload
 from applications.services.applications_csv_report import ApplicationsCsvService
+from applications.services.generate_application_summary import (
+    generate_application_summary_file,
+)
 from companies.models import Company
 
 
@@ -366,6 +371,21 @@ def export_application_batch(batch) -> bytes:
     return generate_zip(pdf_files)
 
 
+def generate_pdf_summary_as_attachment(application: Application) -> Attachment:
+    """Generate a pdf summary of the given application and return it as an Attachment."""
+    pdf_data = generate_application_summary_file(application)
+    pdf_file = ContentFile(
+        pdf_data, f"application_summary_{application.application_number}.pdf"
+    )
+    attachment = Attachment.objects.create(
+        application=application,
+        attachment_file=pdf_file,
+        content_type="application/pdf",
+        attachment_type=AttachmentType.PDF_SUMMARY,
+    )
+    return attachment
+
+
 def get_token() -> str:
     """Get the access token from Ahjo Service."""
     try:
@@ -484,7 +504,8 @@ def open_case_in_ahjo(application_id: uuid.UUID):
         headers = prepare_headers(
             ahjo_token.access_token, application.id, AhjoRequestType.OPEN_CASE
         )
-        data = prepare_open_case_payload(application)
+        pdf_summary = generate_pdf_summary_as_attachment(application)
+        data = prepare_open_case_payload(application, pdf_summary)
         send_request_to_ahjo(AhjoRequestType.OPEN_CASE, headers, data, application)
     except ObjectDoesNotExist as e:
         LOGGER.error(f"Object not found: {e}")

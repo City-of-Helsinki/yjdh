@@ -5,6 +5,7 @@ from typing import List, Union
 from django.conf import settings
 from django.urls import reverse
 
+from applications.enums import AttachmentType
 from applications.models import Application, Attachment
 from common.utils import hash_file
 from users.models import User
@@ -98,8 +99,11 @@ def _prepare_record(
     }
 
 
-def _prepare_case_records(application: Application) -> List[dict]:
-    """Prepare the list of case records"""
+def _prepare_case_records(
+    application: Application, pdf_summary: Attachment
+) -> List[dict]:
+    """Prepare the list of case records from  application's attachments,
+    including the pdf summary of the application."""
     case_records = []
     handler = application.calculation.handler
     main_document_record = _prepare_record(
@@ -107,13 +111,15 @@ def _prepare_case_records(application: Application) -> List[dict]:
         "hakemus",
         application.created_at.isoformat(),
         application.application_number,
-        [],  # TODO Pdf version of the application goes here with prepare_record()
+        [_prepare_record_document_dict(pdf_summary)],
         handler,
     )
 
     case_records.append(main_document_record)
 
-    for attachment in application.attachments.all():
+    for attachment in application.attachments.exclude(
+        attachment_type=AttachmentType.PDF_SUMMARY
+    ):
         document_record = _prepare_record(
             "Hakemuksen Liite",
             "liite",
@@ -127,8 +133,10 @@ def _prepare_case_records(application: Application) -> List[dict]:
     return case_records
 
 
-def prepare_open_case_payload(application: Application) -> dict:
+def prepare_open_case_payload(
+    application: Application, pdf_summary: Attachment
+) -> dict:
     "Prepare the complete dictionary payload that is sent to Ahjo"
-    case_records = _prepare_case_records(application)
+    case_records = _prepare_case_records(application, pdf_summary)
     payload = _prepare_top_level_dict(application, case_records)
     return payload
