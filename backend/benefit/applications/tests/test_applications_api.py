@@ -296,15 +296,25 @@ def test_application_single_read_as_applicant(
 ):
     application.status = actual_status
     application.save()
+
     response = api_client.get(get_detail_url(application))
+    assert response.status_code == 200
+
     assert response.data["ahjo_decision"] is None
     assert response.data["application_number"] is not None
     assert response.data["status"] == visible_status
-    assert "batch" not in response.data
+    assert response.data["batch"] is None
     assert Decimal(response.data["duration_in_months_rounded"]) == duration_in_months(
         application.start_date, application.end_date, decimal_places=2
     )
+
+    application.batch = ApplicationBatchFactory()
+    application.save()
+
+    response = api_client.get(get_detail_url(application))
+
     assert response.status_code == 200
+    assert response.data["batch"] is True
 
 
 @pytest.mark.parametrize(

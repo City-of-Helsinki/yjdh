@@ -22,6 +22,7 @@ type ExtendedComponentProps = {
   unreadMessagesCount: number | undefined | null;
   setMessagesDrawerVisiblity: (state: boolean) => void;
   isMessagesDrawerVisible: boolean;
+  canWriteNewMessages: boolean;
 };
 
 const useHeader = (): ExtendedComponentProps => {
@@ -45,6 +46,7 @@ const useHeader = (): ExtendedComponentProps => {
   );
 
   const { data: application } = useApplicationQuery(id);
+  const canWriteNewMessages = !application?.batch;
 
   useEffect(() => {
     if (application?.unread_messages_count) {
@@ -103,6 +105,7 @@ const useHeader = (): ExtendedComponentProps => {
     hasMessenger,
     unreadMessagesCount,
     isMessagesDrawerVisible,
+    canWriteNewMessages,
   };
 };
 

@@ -607,7 +607,8 @@
     "send": "Lähetä",
     "isSecure": "Viestit ovat salattuja",
     "noMessages": "Ei viestejä",
-    "close": "Sulje"
+    "close": "Sulje",
+    "cannotWriteNewMessages": "Hakemuksesi käsittely on käynnissä. Et voi kirjoittaa uutta viestiä juuri nyt. Ole hyvä ja odota hakemuksesi käsittelyä."
   },
   "application": {
     "tooltipShowInfo": "Näytä info"

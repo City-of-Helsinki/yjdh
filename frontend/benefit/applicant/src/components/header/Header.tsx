@@ -22,6 +22,7 @@ const Header: React.FC = () => {
     isMessagesDrawerVisible,
     handleLanguageChange,
     setMessagesDrawerVisiblity,
+    canWriteNewMessages,
   } = useHeader();
   const router = useRouter();
   const { asPath } = router;
@@ -83,6 +84,7 @@ const Header: React.FC = () => {
         <Messenger
           isOpen={isMessagesDrawerVisible}
           onClose={() => setMessagesDrawerVisiblity(false)}
+          canWriteNewMessages={canWriteNewMessages}
           customItemsMessages={
             <$CustomMessagesActions>
               <IconLock />
