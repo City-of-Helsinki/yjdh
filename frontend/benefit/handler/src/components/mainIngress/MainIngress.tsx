@@ -25,7 +25,7 @@ const MainIngress: React.FC = () => {
 
         <$ActionContainer>
           <Button
-            onClick={() => router.push(ROUTES.APPLICATION_FORM)}
+            onClick={() => router.push(ROUTES.APPLICATION_FORM_NEW)}
             variant="secondary"
             iconLeft={<IconPlus />}
             theme="black"

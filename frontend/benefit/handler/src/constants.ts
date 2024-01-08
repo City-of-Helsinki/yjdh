@@ -10,7 +10,7 @@ export enum ROUTES {
   HOME = '/',
   LOGIN = '/login',
   APPLICATION = '/application',
-  APPLICATION_FORM = '/new-application',
+  APPLICATION_FORM_NEW = '/application/new',
 
   // temporary urls, not defined yet
   APPLICATIONS_BATCHES = '/batches',

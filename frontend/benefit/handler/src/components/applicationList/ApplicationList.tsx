@@ -36,7 +36,7 @@ const buildApplicationUrl = (
   openDrawer = false
 ): string => {
   if (status === APPLICATION_STATUSES.DRAFT) {
-    return `${ROUTES.APPLICATION_FORM}?id=${id}`;
+    return `${ROUTES.APPLICATION_FORM_NEW}?id=${id}`;
   }
 
   const applicationUrl = `${ROUTES.APPLICATION}?id=${id}`;

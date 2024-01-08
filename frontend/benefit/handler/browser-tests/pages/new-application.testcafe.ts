@@ -22,7 +22,7 @@ test('Fill in new application', async (t: TestController) => {
   const mainIngress = new MainIngress(fi.mainIngress.heading, 'h1');
   await mainIngress.isLoaded();
 
-  await t.navigateTo('/new-application');
+  await t.navigateTo('/application/new');
 
   const searchCompanyInput = Selector(
     '[data-testid="company-search-input"]'
