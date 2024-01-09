@@ -1,5 +1,4 @@
 import { Button, TextArea } from 'hds-react';
-import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useTheme } from 'styled-components';
 
