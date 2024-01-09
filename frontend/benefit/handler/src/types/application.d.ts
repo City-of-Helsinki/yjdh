@@ -70,6 +70,8 @@ export type SubmittedApplication = {
 
 export interface ApplicationReviewViewProps {
   data: Application;
+  isManualCalculator?: boolean;
+  isRecalculationRequired?: boolean;
   isUploading?: boolean;
   handleUpload?: (attachment: FormData) => void;
 }

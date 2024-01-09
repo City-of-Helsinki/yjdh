@@ -15,7 +15,6 @@ import fromPairs from 'lodash/fromPairs';
 import { useTranslation } from 'next-i18next';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
-import useToggle from 'shared/hooks/useToggle';
 import { OptionType } from 'shared/types/common';
 import {
   convertToUIDateFormat,
@@ -37,7 +36,7 @@ type ExtendedComponentProps = {
   getStateAidMaxPercentageSelectValue: () => OptionType | undefined;
   paySubsidyPercentageOptions: OptionType[];
   isManualCalculator: boolean;
-  changeCalculatorMode: () => void;
+  changeCalculatorMode: (mode: 'auto' | 'manual') => true;
   getPaySubsidyPercentageSelectValue: (
     percent: number
   ) => OptionType | undefined;
@@ -53,7 +52,7 @@ const useSalaryBenefitCalculatorData = (
 ): ExtendedComponentProps => {
   const { t } = useTranslation();
 
-  const [isManualCalculator, toggleManualCalculator] = useToggle(
+  const [isManualCalculator, setIsManualCalculator] = useState(
     !!application.calculation?.overrideMonthlyBenefitAmount
   );
 
@@ -101,7 +100,7 @@ const useSalaryBenefitCalculatorData = (
           ? application?.trainingCompensations
           : [],
     },
-    validationSchema: getValidationSchema(),
+    validationSchema: getValidationSchema(t),
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,
@@ -149,12 +148,13 @@ const useSalaryBenefitCalculatorData = (
     );
   };
 
-  const changeCalculatorMode = (): void => {
+  const changeCalculatorMode = (mode: 'auto' | 'manual'): true => {
     // Backend detects manual mode if overrideMonthlyBenefitAmount is not null
     // so to switch to auto mode, we set empty value here
     if (isManualCalculator)
       void formik.setFieldValue(fields.overrideMonthlyBenefitAmount.name, null);
-    toggleManualCalculator();
+    setIsManualCalculator(mode === 'manual');
+    return true;
   };
 
   const stateAidMaxPercentageOptions = React.useMemo(
