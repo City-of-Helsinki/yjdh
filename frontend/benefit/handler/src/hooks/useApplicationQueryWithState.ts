@@ -5,7 +5,7 @@ import React from 'react';
 import { useQuery, UseQueryResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
-import { getApplication } from '../components/newApplication/utils/applicationForm';
+import { getApplication } from '../components/applicationForm/utils/applicationForm';
 
 const useApplicationQueryWithState = (
   id: string,

@@ -41,13 +41,16 @@ const DeMinimisAidsList: React.FC = () => {
             bgColor
             bgHorizontalPadding
           >
-            <$GridCell $colSpan={4}>
+            <$GridCell $colSpan={4} alignSelf="center">
               {grant[DE_MINIMIS_AID_KEYS.GRANTER]}
             </$GridCell>
-            <$GridCell $colSpan={2}>{`${formatStringFloatValue(
+            <$GridCell
+              $colSpan={2}
+              alignSelf="center"
+            >{`${formatStringFloatValue(
               grant[DE_MINIMIS_AID_KEYS.AMOUNT]
             )} €`}</$GridCell>
-            <$GridCell $colSpan={2}>
+            <$GridCell $colSpan={2} alignSelf="center">
               {convertToUIDateFormat(grant[DE_MINIMIS_AID_KEYS.GRANTED_AT])}
             </$GridCell>
           </$GridCell>

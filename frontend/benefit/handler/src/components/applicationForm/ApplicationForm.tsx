@@ -1,3 +1,6 @@
+import { ROUTES } from 'benefit/handler/constants';
+import { useApplicationFormContext } from 'benefit/handler/hooks/useApplicationFormContext';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import {
   Button,
   Dialog,
@@ -6,13 +9,15 @@ import {
   LoadingSpinner,
   Stepper,
 } from 'hds-react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Container from 'shared/components/container/Container';
 import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
+import theme from 'shared/styles/theme';
 
+import ApplicationHeader from '../applicationHeader/ApplicationHeader';
 import ActionBar from './actionBar/ActionBar';
 import { $MainHeading, $SpinnerContainer } from './ApplicationForm.sc';
 import CompanySearch from './companySearch/CompanySearch';
@@ -50,21 +55,42 @@ const ApplicationForm: React.FC = () => {
     handleConsentClick,
   } = useApplicationForm();
 
-  // 'theme' prop didn't work for some reason
-  const colorBlack90 = 'var(--color-black-90)';
+  const { isFormActionEdit, isFormActionNew } = useApplicationFormContext();
+
   const stepperCss = {
     'pointer-events': 'none',
     p: {
       'text-decoration': 'none !important',
     },
-    '--hds-not-selected-step-label-color': colorBlack90,
+    '--hds-not-selected-step-label-color': theme.colors.black90,
     '--hds-step-background-color': 'var(--color-white)',
-    '--hds-step-content-color': colorBlack90,
+    '--hds-step-content-color': theme.colors.black90,
     '--hds-stepper-background-color': 'var(--color-white)',
-    '--hds-stepper-color': colorBlack90,
+    '--hds-stepper-color': theme.colors.black90,
     '--hds-stepper-disabled-color': 'var(--color-black-30)',
-    '--hds-stepper-focus-border-color': colorBlack90,
+    '--hds-stepper-focus-border-color': theme.colors.black90,
   };
+
+  useEffect(() => {
+    if (!application.applicationOrigin) {
+      return;
+    }
+    // Case /new route is used but the application is already submitted
+    if (isFormActionNew && application?.status !== APPLICATION_STATUSES.DRAFT) {
+      void router.push(`${ROUTES.APPLICATION_FORM_EDIT}?id=${application.id}`);
+    }
+    // Case /edit route is used but the application is still in draft state
+    if (isFormActionEdit && application.status === 'draft') {
+      void router.push(`${ROUTES.APPLICATION_FORM_NEW}?id=${application.id}`);
+    }
+  }, [
+    isFormActionNew,
+    router,
+    application.applicationOrigin,
+    application.status,
+    application.id,
+    isFormActionEdit,
+  ]);
 
   if (isLoading) {
     return (
@@ -76,35 +102,41 @@ const ApplicationForm: React.FC = () => {
 
   return (
     <Container>
-      <$Grid>
-        <$GridCell $colSpan={6} css="display: flex; align-items: center;">
-          <Button
-            variant="supplementary"
-            role="link"
-            size="small"
-            theme="black"
-            iconLeft={<IconAngleLeft />}
-            onClick={() =>
-              id ? setIsConfirmationModalOpen(true) : router.push('/')
-            }
-          >
-            {t(`${translationsBase}.back2`)}
-          </Button>
-        </$GridCell>
-        <$GridCell $colSpan={6}>
-          <Stepper
-            steps={stepState.steps}
-            language="fi"
-            selectedStep={stepState.activeStepIndex}
-            onStepClick={(e) => e.stopPropagation()}
-            css={stepperCss}
-          />
-        </$GridCell>
-      </$Grid>
-      <div>
-        <$MainHeading>{t('common:mainIngress.heading')}</$MainHeading>
-      </div>
-      {stepState.activeStepIndex === 0 && <CompanySearch />}
+      {isFormActionNew && (
+        <>
+          <$Grid>
+            <$GridCell $colSpan={6} css="display: flex; align-items: center;">
+              <Button
+                variant="supplementary"
+                role="link"
+                size="small"
+                theme="black"
+                iconLeft={<IconAngleLeft />}
+                onClick={() =>
+                  id ? setIsConfirmationModalOpen(true) : router.push('/')
+                }
+              >
+                {t(`${translationsBase}.back2`)}
+              </Button>
+            </$GridCell>
+            <$GridCell $colSpan={6}>
+              <Stepper
+                steps={stepState.steps}
+                language="fi"
+                selectedStep={stepState.activeStepIndex}
+                onStepClick={(e) => e.stopPropagation()}
+                css={stepperCss}
+              />
+            </$GridCell>
+          </$Grid>
+
+          <div>
+            <$MainHeading>{t('common:mainIngress.heading')}</$MainHeading>
+          </div>
+        </>
+      )}
+
+      {stepState.activeStepIndex === 0 && isFormActionNew && <CompanySearch />}
       {stepState.activeStepIndex === 1 && (
         <>
           <FormContent
@@ -177,7 +209,7 @@ const ApplicationForm: React.FC = () => {
             <Button
               theme="coat"
               variant="primary"
-              onClick={() => router.push('/')}
+              onClick={() => router.push(ROUTES.HOME)}
               data-testid="modalBack"
             >
               {t(`${translationsBase}.backWithoutSaving`)}

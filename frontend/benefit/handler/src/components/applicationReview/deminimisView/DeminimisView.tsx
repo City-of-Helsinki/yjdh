@@ -4,7 +4,7 @@ import {
   $SummaryTableValue,
   $ViewField,
   $ViewFieldBold,
-} from 'benefit/handler/components/newApplication/ApplicationForm.sc';
+} from 'benefit/handler/components/applicationForm/ApplicationForm.sc';
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
 import { ACTIONLESS_STATUSES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';

@@ -172,17 +172,22 @@ const getSubsidyOptions = (): OptionType[] =>
     value: option,
   }));
 
-const requiredAttachments = (values: Application): boolean => {
+const requiredAttachments = (
+  values: Application,
+  isFormActionNew: boolean
+): boolean => {
+  const hasFullApplication = isFormActionNew
+    ? !isEmpty(
+        values.attachments?.find(
+          (att: BenefitAttachment) =>
+            att.attachmentType === ATTACHMENT_TYPES.FULL_APPLICATION
+        )
+      )
+    : true;
   const hasWorkContract = !isEmpty(
     values.attachments?.find(
       (att: BenefitAttachment) =>
         att.attachmentType === ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT
-    )
-  );
-  const hasFullApplication = !isEmpty(
-    values.attachments?.find(
-      (att: BenefitAttachment) =>
-        att.attachmentType === ATTACHMENT_TYPES.FULL_APPLICATION
     )
   );
   let hasPaySubsidyDecision = true;

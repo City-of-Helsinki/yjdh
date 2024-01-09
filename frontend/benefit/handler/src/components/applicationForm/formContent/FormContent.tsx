@@ -6,6 +6,7 @@ import {
   ApplicationFields,
 } from 'benefit/handler/types/application';
 import {
+  APPLICATION_ORIGINS,
   APPLICATION_START_DATE,
   ATTACHMENT_TYPES,
   ORGANIZATION_TYPES,
@@ -76,6 +77,7 @@ const FormContent: React.FC<Props> = ({
   checkedConsentArray,
   getConsentErrorText,
   handleConsentClick,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
     t,
@@ -119,32 +121,35 @@ const FormContent: React.FC<Props> = ({
 
   return (
     <form onSubmit={handleSave} noValidate>
-      <FormSection
-        header={t(`${translationsBase}.headings.paper`)}
-        columns={12}
-      >
-        <$GridCell $colStart={1} $colSpan={6}>
-          <$DateHeader>
-            {t(`${translationsBase}.paperDateExplanation`)}
-          </$DateHeader>
-        </$GridCell>
-        <$GridCell $colStart={1} $colSpan={4}>
-          <DateInput
-            id={fields.paperApplicationDate.name}
-            name={fields.paperApplicationDate.name}
-            label={fields.paperApplicationDate.label}
-            language={language}
-            onBlur={formik.handleBlur}
-            onChange={(value) =>
-              formik.setFieldValue(fields.paperApplicationDate.name, value)
-            }
-            value={formik.values.paperApplicationDate ?? ''}
-            invalid={!!getErrorMessage(fields.paperApplicationDate.name)}
-            aria-invalid={!!getErrorMessage(fields.paperApplicationDate.name)}
-            errorText={getErrorMessage(fields.paperApplicationDate.name)}
-          />
-        </$GridCell>
-      </FormSection>
+      {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER && (
+        <FormSection
+          header={t(`${translationsBase}.headings.paper`)}
+          columns={12}
+        >
+          <$GridCell $colStart={1} $colSpan={6}>
+            <$DateHeader>
+              {t(`${translationsBase}.paperDateExplanation`)}
+            </$DateHeader>
+          </$GridCell>
+          <$GridCell $colStart={1} $colSpan={4}>
+            <DateInput
+              id={fields.paperApplicationDate.name}
+              name={fields.paperApplicationDate.name}
+              label={fields.paperApplicationDate.label}
+              language={language}
+              onBlur={formik.handleBlur}
+              onChange={(value) =>
+                formik.setFieldValue(fields.paperApplicationDate.name, value)
+              }
+              value={formik.values.paperApplicationDate ?? ''}
+              invalid={!!getErrorMessage(fields.paperApplicationDate.name)}
+              aria-invalid={!!getErrorMessage(fields.paperApplicationDate.name)}
+              errorText={getErrorMessage(fields.paperApplicationDate.name)}
+            />
+          </$GridCell>
+        </FormSection>
+      )}
+
       <CompanySection
         t={t}
         translationsBase={translationsBase}
@@ -156,6 +161,7 @@ const FormContent: React.FC<Props> = ({
         showDeminimisSection={showDeminimisSection}
         deMinimisAidSet={deMinimisAidSet}
       />
+
       <FormSection header={t(`${translationsBase}.headings.employment1`)}>
         <$GridCell $colSpan={3}>
           <TextInput
@@ -631,14 +637,16 @@ const FormContent: React.FC<Props> = ({
             {t(`${translationsBase}.attachments.attachmentsIngress`)}
           </$Description>
         </$GridCell>
-        <$GridCell $colSpan={12}>
-          <AttachmentsList
-            attachments={attachments}
-            attachmentType={ATTACHMENT_TYPES.FULL_APPLICATION}
-            handleQuietSave={handleQuietSave}
-            required
-          />
-        </$GridCell>
+        {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER && (
+          <$GridCell $colSpan={12}>
+            <AttachmentsList
+              attachments={attachments}
+              attachmentType={ATTACHMENT_TYPES.FULL_APPLICATION}
+              handleQuietSave={handleQuietSave}
+              required
+            />
+          </$GridCell>
+        )}
         <$GridCell $colSpan={12}>
           <AttachmentsList
             attachments={attachments}
@@ -675,13 +683,15 @@ const FormContent: React.FC<Props> = ({
             handleQuietSave={handleQuietSave}
           />
         </$GridCell>
-        <$GridCell $colSpan={12}>
-          <AttachmentsList
-            attachments={attachments}
-            attachmentType={ATTACHMENT_TYPES.OTHER_ATTACHMENT}
-            handleQuietSave={handleQuietSave}
-          />
-        </$GridCell>
+        {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER && (
+          <$GridCell $colSpan={12}>
+            <AttachmentsList
+              attachments={attachments}
+              attachmentType={ATTACHMENT_TYPES.OTHER_ATTACHMENT}
+              handleQuietSave={handleQuietSave}
+            />
+          </$GridCell>
+        )}
       </FormSection>
       <FormSection
         paddingBottom

@@ -69,7 +69,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
     <$Grid
       css={`
         background-color: ${bgColor};
-        margin-bottom: ${theme.spacing.s};
+        margin-bottom: ${theme.spacing.m};
         gap: 0;
         border: ${withBorder
           ? `2px solid ${theme.colors.coatOfArmsMediumLight}`

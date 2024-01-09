@@ -14,7 +14,7 @@ import ConfirmModalContent from '../../applicationReview/actions/ConfirmModalCon
 import {
   $ViewField,
   $ViewFieldBold,
-} from '../../newApplication/ApplicationForm.sc';
+} from '../../applicationForm/ApplicationForm.sc';
 import { $FormSection } from '../../table/TableExtras.sc';
 
 type BatchProps = {

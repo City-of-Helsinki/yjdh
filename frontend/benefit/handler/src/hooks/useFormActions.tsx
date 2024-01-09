@@ -1,4 +1,4 @@
-import { APPLICATION_FIELD_KEYS } from 'benefit/handler/constants';
+import { APPLICATION_FIELD_KEYS, ROUTES } from 'benefit/handler/constants';
 import DeMinimisContext from 'benefit/handler/context/DeMinimisContext';
 import { StepActionType } from 'benefit/handler/hooks/useSteps';
 import { Application } from 'benefit/handler/types/application';
@@ -19,6 +19,7 @@ import { convertToBackendDateFormat, parseDate } from 'shared/utils/date.utils';
 import { getNumberValue, stringToFloatValue } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
 
+import { useApplicationFormContext } from './useApplicationFormContext';
 import useCreateApplicationQuery from './useCreateApplicationQuery';
 import useDeleteApplicationQuery from './useDeleteApplicationQuery';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
@@ -57,6 +58,8 @@ const useFormActions = (application: Partial<Application>): FormActions => {
 
   const { mutate: deleteApplication, error: deleteApplicationError } =
     useDeleteApplicationQuery();
+
+  const { isFormActionNew } = useApplicationFormContext();
 
   const createApplicationAndAppendId = async (
     data: ApplicationData
@@ -174,7 +177,10 @@ const useFormActions = (application: Partial<Application>): FormActions => {
       paperApplicationDate: paperApplicationDate
         ? convertToBackendDateFormat(parseDate(paperApplicationDate))
         : undefined,
-      apprenticeshipProgram,
+      apprenticeshipProgram:
+        paySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
+          ? null
+          : apprenticeshipProgram,
     };
 
     const deMinimisAidSet =
@@ -248,7 +254,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
           applicantName,
         }),
       });
-      await router.push(`application?id=${applicationId}`);
+      await router.push(`${ROUTES.APPLICATION}?id=${applicationId}`);
     } catch (error) {
       // useEffect will catch this error
     }
@@ -267,7 +273,12 @@ const useFormActions = (application: Partial<Application>): FormActions => {
       const result = applicationId
         ? await updateApplication(data)
         : await createApplicationAndAppendId(data);
-      dispatchStep({ type: 'completeStep', payload: activeStep });
+      if (isFormActionNew) {
+        dispatchStep({ type: 'completeStep', payload: activeStep });
+      } else {
+        void router.push(`${ROUTES.APPLICATION}?id=${applicationId}&updated=1`);
+      }
+
       return result;
     } catch (error) {
       // useEffect will catch this error

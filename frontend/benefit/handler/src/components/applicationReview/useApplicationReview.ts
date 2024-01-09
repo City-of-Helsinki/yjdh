@@ -14,6 +14,7 @@ import { useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import showErrorToast from 'shared/components/toast/show-error-toast';
+import showSuccessToast from 'shared/components/toast/show-success-toast';
 import hdsToast from 'shared/components/toast/Toast';
 import snakecaseKeys from 'snakecase-keys';
 
@@ -37,6 +38,8 @@ const useApplicationReview = (): ExtendedComponentProps => {
   const id = router?.query?.id?.toString() ?? '';
   const [isLoading, setIsLoading] = useState(true);
 
+  const shouldShowUpdatedToast = router?.query?.updated;
+
   const {
     status: applicationDataStatus,
     data: applicationData,
@@ -55,10 +58,8 @@ const useApplicationReview = (): ExtendedComponentProps => {
     error: reviewStateDataError,
   } = useReviewStateQuery(id);
 
-  const {
-    mutate: updateReviewState,
-    isError: isUpdatingReviewStateError,
-  } = useUpdateReviewStateQuery();
+  const { mutate: updateReviewState, isError: isUpdatingReviewStateError } =
+    useUpdateReviewStateQuery();
 
   const handleUpload = (attachment: FormData): void => {
     uploadAttachment({
@@ -94,7 +95,12 @@ const useApplicationReview = (): ExtendedComponentProps => {
         text: t('common:error.generic.text'),
       });
     }
-  }, [t, applicationDataError, reviewStateDataError, isUpdatingReviewStateError]);
+  }, [
+    t,
+    applicationDataError,
+    reviewStateDataError,
+    isUpdatingReviewStateError,
+  ]);
 
   useEffect(() => {
     const loadingDataStatuses = new Set(['idle', 'loading']);
@@ -126,6 +132,17 @@ const useApplicationReview = (): ExtendedComponentProps => {
   const reviewState: ReviewState = camelcaseKeys(reviewStateData || {}, {
     deep: true,
   });
+
+  useEffect(() => {
+    if (shouldShowUpdatedToast && application?.applicationNumber) {
+      showSuccessToast(
+        t(`common:notifications.applicationEdited.label`),
+        t(`common:notifications.applicationEdited.message`, {
+          applicationNumber: application.applicationNumber,
+        })
+      );
+    }
+  }, [shouldShowUpdatedToast, t, application.applicationNumber]);
 
   return {
     t,

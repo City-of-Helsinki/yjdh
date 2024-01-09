@@ -1,4 +1,4 @@
-import ApplicationForm from 'benefit/handler/components/newApplication/ApplicationForm';
+import ApplicationForm from 'benefit/handler/components/applicationForm/ApplicationForm';
 import AppContext from 'benefit/handler/context/AppContext';
 import DeMinimisProvider from 'benefit/handler/context/DeMinimisProvider';
 import { GetStaticProps, NextPage } from 'next';

@@ -2,6 +2,7 @@ import {
   APPLICATION_FIELD_KEYS,
   APPLICATION_FIELDS,
 } from 'benefit/handler/constants';
+import { useApplicationFormContext } from 'benefit/handler/hooks/useApplicationFormContext';
 import useApplicationQueryWithState from 'benefit/handler/hooks/useApplicationQueryWithState';
 import useFormActions from 'benefit/handler/hooks/useFormActions';
 import {
@@ -87,6 +88,8 @@ export const useApplicationForm = (): ExtendedComponentProps => {
   const { stepState, dispatchStep, activeStep } = useSteps(id);
   let organizationType = 'company';
 
+  const { isFormActionNew } = useApplicationFormContext();
+
   React.useEffect(() => {
     if (id) {
       dispatchStep({ type: 'setActive', payload: 1 });
@@ -96,6 +99,7 @@ export const useApplicationForm = (): ExtendedComponentProps => {
   const [application, setApplication] = React.useState<Application>(
     getApplication({} as ApplicationData)
   );
+
   const {
     status: applicationDataStatus,
     data: applicationData,
@@ -103,6 +107,10 @@ export const useApplicationForm = (): ExtendedComponentProps => {
   } = useApplicationQueryWithState(id, setApplication);
 
   React.useEffect(() => {
+    // Set initial values if already present
+    if (applicationData) {
+      setApplication(getApplication(applicationData));
+    }
     if (applicationDataError) {
       errorToast(
         t('common:error.generic.label'),
@@ -150,7 +158,7 @@ export const useApplicationForm = (): ExtendedComponentProps => {
   const fields = React.useMemo(() => getFields(t, tSections), [t, tSections]);
 
   const isRequiredAttachmentsUploaded = (): boolean =>
-    requiredAttachments(values);
+    requiredAttachments(values, isFormActionNew);
 
   const getInitialConsentValues = (): boolean[] =>
     application?.applicantTermsInEffect?.applicantConsents.map(() => false) ||
