@@ -27,6 +27,7 @@ import {
   convertToUIDateAndTimeFormat,
   sortFinnishDate,
 } from 'shared/utils/date.utils';
+import { formatFloatToCurrency } from 'shared/utils/string.utils';
 import styled from 'styled-components';
 
 import { $Empty } from '../applicationList/ApplicationList.sc';
@@ -119,6 +120,13 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
       customSortCompareFunction: sortFinnishDate,
     },
     {
+      headerName: t('common:applications.list.columns.benefitAmount'),
+      key: 'total_amount',
+      isSortable: true,
+      transform: ({ benefitAmount: amount }: { benefitAmount: number | 0 }) =>
+        formatFloatToCurrency(amount, 'EUR', 'fi-FI', 0),
+    },
+    {
       transform: ({ id: appId }: { id: string }) =>
         IS_WAITING_FOR_AHJO ? (
           <Button
@@ -204,10 +212,6 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
           <div>
             <dt>{t('common:batches.list.columns.handler')}</dt>
             <dd>{handler?.first_name}</dd>
-          </div>
-          <div>
-            <dt>{t('common:batches.list.columns.createdAt')}</dt>
-            <dd>{convertToUIDateAndTimeFormat(created_at)}</dd>
           </div>
           <div>
             <dt>{t('common:batches.list.columns.createdAt')}</dt>

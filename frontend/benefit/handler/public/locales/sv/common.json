@@ -146,6 +146,7 @@
         "dataReceived": "Ladattu",
         "status": "Käsittelyn tulos",
         "statusArchive": "Käsittelyn tulos",
+        "benefitAmount": "Tuen määrä",
         "statuses": {
           "cancelled": "Peruutettu",
           "accepted": "Puolettu",

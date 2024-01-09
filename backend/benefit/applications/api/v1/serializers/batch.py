@@ -8,6 +8,7 @@ from applications.api.v1.status_transition_validator import (
 )
 from applications.enums import ApplicationBatchStatus, ApplicationStatus
 from applications.models import Application, ApplicationBatch, Company, Employee
+from calculator.api.v1.serializers import CalculationSerializer
 from users.api.v1.serializers import UserSerializer
 
 
@@ -179,6 +180,10 @@ class BatchEmployeeSerializer(ReadOnlySerializer):
 class BatchApplicationSerializer(ReadOnlySerializer):
     company = BatchCompanySerializer(read_only=True)
     employee = BatchEmployeeSerializer(read_only=True)
+    calculation = CalculationSerializer(
+        read_only=True,
+        allow_null=True,
+    )
 
     handled_at = serializers.SerializerMethodField(
         "get_handled_at",
@@ -199,4 +204,5 @@ class BatchApplicationSerializer(ReadOnlySerializer):
             "application_number",
             "handled_at",
             "employee",
+            "calculation",
         ]
