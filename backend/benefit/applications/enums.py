@@ -124,6 +124,7 @@ class ApplicationBatchStatus(models.TextChoices):
     )  # Theoretically possible: means that a decision was not made
     SENT_TO_TALPA = "sent_to_talpa", _("Sent to Talpa")
     COMPLETED = "completed", _("Processing is completed")
+    REJECTED_BY_TALPA = "rejected_by_talpa", _("Rejected by Talpa")
 
 
 class AhjoDecision(models.TextChoices):
