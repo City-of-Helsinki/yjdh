@@ -1284,6 +1284,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
 
     def _update_de_minimis_aid(self, application, de_minimis_data):
         serializer = DeMinimisAidSerializer(data=de_minimis_data, many=True)
+        user = self.get_logged_in_user()
+
         if not serializer.is_valid():
             raise BenefitAPIException(
                 format_lazy(
@@ -1293,13 +1295,30 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             )
         # Clear the previous DeMinimisAid objects from the database.
         # The request must always contain all the DeMinimisAid objects for this application.
-        application.de_minimis_aid_set.all().delete()
+        current_de_minimis_aid_set = application.de_minimis_aid_set.all()
+        for de_minimis in current_de_minimis_aid_set:
+            audit_logging.log(
+                user,
+                "",
+                Operation.DELETE,
+                de_minimis,
+            )
+        current_de_minimis_aid_set.delete()
+
         for idx, aid_item in enumerate(serializer.validated_data):
             aid_item["application_id"] = application.pk
             aid_item[
                 "ordering"
             ] = idx  # use the ordering defined in the JSON sent by the client
-        serializer.save()
+
+        de_minimis_list = serializer.save()
+        for de_minimis in de_minimis_list:
+            audit_logging.log(
+                user,
+                "",
+                Operation.CREATE,
+                de_minimis,
+            )
 
     def get_logged_in_user(self):
         return get_request_user_from_context(self)
