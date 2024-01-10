@@ -56,6 +56,8 @@ from common.utils import (
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from messages.automatic_messages import send_application_reopened_message
+from shared.audit_log import audit_logging
+from shared.audit_log.enums import Operation
 from terms.api.v1.serializers import (
     ApplicantTermsApprovalSerializer,
     ApproveTermsSerializer,
@@ -1247,8 +1249,21 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         return application
 
     def _update_or_create_employee(self, application, employee_data):
-        employee, _ = Employee.objects.update_or_create(
+        employee, was_created = Employee.objects.update_or_create(
             application=application, defaults=employee_data
+        )
+        user = self.get_logged_in_user()
+
+        if was_created:
+            audit_log_operation = Operation.CREATE
+        else:
+            audit_log_operation = Operation.UPDATE
+
+        audit_logging.log(
+            user,
+            "",
+            audit_log_operation,
+            employee,
         )
         return employee
 
