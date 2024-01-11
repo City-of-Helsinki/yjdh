@@ -710,6 +710,11 @@ class Employee(UUIDModel, TimeStampedModel):
         on_delete=models.CASCADE,
     )
 
+    history = HistoricalRecords(
+        table_name="bf_applications_employee_history",
+        cascade_delete_history=True,
+    )
+
     encrypted_first_name = EncryptedCharField(
         max_length=128, verbose_name=_("first name"), blank=True
     )
