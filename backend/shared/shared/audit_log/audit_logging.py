@@ -121,7 +121,7 @@ def _is_sensitive_field(change_field: str) -> bool:
         "encrypted_last_name",
         "first_name",
         "last_name",
-        "social_security_number"
+        "social_security_number",
     ]
 
 
