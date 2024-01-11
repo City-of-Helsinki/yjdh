@@ -2,13 +2,14 @@ import { $Notification } from 'benefit/applicant/components/Notification/Notific
 import { Button, IconPlus } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
-import theme from 'shared/styles/theme';
 
 import {
   $ActionContainer,
   $Container,
   $Description,
   $Heading,
+  $Koros,
+  $KorosContainer,
   $TextContainer,
 } from './MainIngress.sc';
 import { useMainIngress } from './useMainIngress';
@@ -24,36 +25,39 @@ const MainIngress: React.FC = () => {
   ));
 
   return (
-    <Container
-      backgroundColor={theme.colors.silverLight}
-      data-testid="main-ingress"
-    >
+    <div data-testid="main-ingress">
       <$Container>
-        <$Heading>{t('common:mainIngress.heading')}</$Heading>
-        {notificationItems}
-        <$TextContainer>
-          <$Description>
-            {t('common:mainIngress.description1')}
-            {/* TODO: uncomment once having link to redirect to more info url,
-            handleMoreInfoClick is from useMainIngress */}
-            {/* <$Link onClick={handleMoreInfoClick}>
+        <Container>
+          <$Heading>{t('common:mainIngress.heading')}</$Heading>
+          {notificationItems}
+          <$TextContainer>
+            <$Description>
+              {t('common:mainIngress.description1')}{' '}
+              {/* TODO: uncomment once having link to redirect to more info url
+                   or remove if this won't be used.
+                   handleMoreInfoClick is from useMainIngress */}
+              {/* <$Link onClick={handleMoreInfoClick}>
               {t('common:mainIngress.linkText')}
             </$Link> */}
-            {t('common:mainIngress.description2')}
-          </$Description>
-          <$ActionContainer>
-            <Button
-              data-testid="newApplicationButton"
-              iconLeft={<IconPlus />}
-              onClick={handleNewApplicationClick}
-              theme="coat"
-            >
-              {t('common:mainIngress.newApplicationBtnText')}
-            </Button>
-          </$ActionContainer>
-        </$TextContainer>
+              {t('common:mainIngress.description2')}
+            </$Description>
+            <$ActionContainer>
+              <Button
+                data-testid="newApplicationButton"
+                iconLeft={<IconPlus />}
+                onClick={handleNewApplicationClick}
+                theme="coat"
+              >
+                {t('common:mainIngress.newApplicationBtnText')}
+              </Button>
+            </$ActionContainer>
+          </$TextContainer>
+        </Container>
       </$Container>
-    </Container>
+      <$KorosContainer>
+        <$Koros type="basic" rotate="180deg" />
+      </$KorosContainer>
+    </div>
   );
 };
 

@@ -461,9 +461,21 @@
   "mainIngress": {
     "heading": "Hakemukset",
     "description1": "Tervetuloa Helsinki-lisän asiointipalveluun.",
-    "description2": " Voit tallentaa hakemuksen keskeneräisenä ja jatkaa täyttämistä myöhemmin.",
+    "description2": "Ennen hakemuksen täyttämistä tutustu hakemisessa vaadittaviin tietoihin ja liitteisiin. Voit tallentaa hakemuksen keskeneräisenä luonnokseksi ja jatkaa sen täyttämistä myöhemmin.",
     "linkText": " Tutustu vaadittaviin tietoihin ja tarvittaviin liitteisiin ennen hakemuksen täyttämistä.",
     "newApplicationBtnText": "Tee uusi hakemus"
+  },
+  "prerequisiteReminder": {
+    "heading": "Muistitko nämä ennen hakulomakkeen täyttämistä?",
+    "body": "Tarvitset hakemuksen liitteiksi työllistettävän allekirjoituksen henkilötietojen käsittelystä, allekirjoitetun työsopimuksen, sekä jonkin seuraavista: palkkatukipäätös, 55 vuotta täyttäneiden työllistämistukipäätös tai Helsinki-lisä -kortti.",
+    "downloadButton": {
+      "href": "https://stplattaprod.blob.core.windows.net/tyoyrittaminen5ce88prod/Helsinki-lisä_tiedoksianto.pdf",
+      "label": "Lataa tiedoksianto työllistettävän henkilötietojen käsittelystä"
+    },
+    "moreDetailsLink": {
+      "href": "https://hel.fi/helsinki-lisa",
+      "label": "Katso ohjeet Helsinki-lisän hakemiseen"
+    }
   },
   "attachmentsIngress": {
     "text": "Lisää hakemukselle seuraavat liitteet. Kaikki *-merkityt liitteet ovat pakollisia. Tiedostomuoto voi olla JPG, PNG tai PDF ja kooltaan maksimissaan 10 MB."

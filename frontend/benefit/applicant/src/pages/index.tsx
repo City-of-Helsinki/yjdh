@@ -1,5 +1,6 @@
 import ApplicationsList from 'benefit/applicant/components/applications/applicationList/ApplicationList';
 import MainIngress from 'benefit/applicant/components/mainIngress/MainIngress';
+import PrerequisiteReminder from 'benefit/applicant/components/prerequisiteReminder/PrerequisiteReminder';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
@@ -32,6 +33,7 @@ const ApplicantIndex: NextPage = () => {
           heading={t('common:applications.list.submitted.heading')}
           status={SUBMITTED_STATUSES}
         />
+        <PrerequisiteReminder />
       </FrontPageProvider>
     </>
   );

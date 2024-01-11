@@ -461,9 +461,21 @@
   "mainIngress": {
     "heading": "Applications",
     "description1": "Welcome to the Helsinki benefit service.",
-    "description2": " You can save an incomplete application and continue to fill it in later.",
+    "description2": "Before filling out the application, review the necessary information and required attachments if needed. You can save an incomplete application as a draft and return to it later.",
     "linkText": " Please take a look at the required information and attachments before filling in the application.",
     "newApplicationBtnText": "Submit a new application"
+  },
+  "prerequisiteReminder": {
+    "heading": "Did you remember these before filling out the application form?",
+    "body": "You need the following attachments for the application: a notice of personal data processing signed by the hired person, a signed employment contract, and one of the following: a pay subsidy decision, a decision on employment subsidy for ages 55 and above, or a Helsinki benefit card.",
+    "downloadButton": {
+      "href": "https://stplattaprod.blob.core.windows.net/tyoyrittaminen5ce88prod/Helsinki_benefit_notification_0.pdf",
+      "label": "Download the notice of personal data processing"
+    },
+    "moreDetailsLink": {
+      "href": "https://hel.fi/helsinki-benefit",
+      "label": "See the instructions for applying for the Helsinki benefit"
+    }
   },
   "attachmentsIngress": {
     "text": "Add the following attachments to the application. All attachments marked with * are required. The accepted file formats are JPG, PNG and PDF and the maximum file size is 10 MB."

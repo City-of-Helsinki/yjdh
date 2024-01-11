@@ -461,9 +461,21 @@
   "mainIngress": {
     "heading": "Ansökningar",
     "description1": "Välkommen till e-tjänsten för Helsingforstillägg.",
-    "description2": " Du kan spara en halvfärdig ansökan och komplettera den senare.",
+    "description2": "Innan du fyller i ansökan, bekanta dig med den information och de bilagor som krävs för att ansöka. Du kan spara en halvfärdig ansökan och komplettera den senare.",
     "linkText": " Se vilka uppgifter och bilagor som krävs innan du fyller i ansökan.",
     "newApplicationBtnText": "Gör en ny ansökan"
+  },
+  "prerequisiteReminder": {
+    "heading": "Kom du ihåg dessa innan du fyllde i ansökan om Helsingforstillägget?",
+    "body": "Du behöver följande bilagor till ansökan: ett meddelande om personuppgiftsbehandling undertecknat av den som anställs, \nundertecknat arbetsavtal, och något av följande: beslutet om lönesubvention, beslutet om sysselsättningsstöd för personer som fyllt 55 år eller Helsingforstillägg-kortet.",
+    "downloadButton": {
+      "href": "https://stplattaprod.blob.core.windows.net/tyoyrittaminen5ce88prod/Helsingforstillägg_delgivning_0.pdf",
+      "label": "Ladda ner meddelandet om behandlingen av personuppgifter"
+    },
+    "moreDetailsLink": {
+      "href": "https://hel.fi/helsingforstillagg",
+      "label": "Se instruktionerna för att ansöka om Helsingforstilläggetn"
+    }
   },
   "attachmentsIngress": {
     "text": "Bifoga följande bilagor till ansökan. Alla bilagor märkta med * är obligatoriska. Filformatet kan vara JPG, PNG eller PDF och den maximala filstorleken får vara 10 MB."
