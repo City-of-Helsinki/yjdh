@@ -427,9 +427,9 @@ def test_application_post_success(api_client, application):
     )
     assert new_application.official_company_postcode == new_application.company.postcode
     assert new_application.official_company_city == new_application.company.city
-    audit_event = (
-        audit_models.AuditLogEntry.objects.all().first().message["audit_event"]
-    )
+
+    audit_event = audit_models.AuditLogEntry.objects.last().message["audit_event"]
+
     assert audit_event["status"] == "SUCCESS"
     assert audit_event["target"]["id"] == str(Application.objects.all().first().id)
     assert audit_event["operation"] == "CREATE"
@@ -617,9 +617,9 @@ def test_application_put_edit_fields(api_client, application):
     )  # normalized format
     application.refresh_from_db()
     assert application.company_contact_person_phone_number == "0505658789"
-    audit_event = (
-        audit_models.AuditLogEntry.objects.all().first().message["audit_event"]
-    )
+
+    audit_event = audit_models.AuditLogEntry.objects.last().message["audit_event"]
+
     assert audit_event["status"] == "SUCCESS"
     assert audit_event["target"]["id"] == str(application.id)
     assert audit_event["operation"] == "UPDATE"
