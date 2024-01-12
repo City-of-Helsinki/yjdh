@@ -6,7 +6,7 @@ import zipfile
 from collections import defaultdict
 from dataclasses import dataclass
 from io import BytesIO
-from typing import List, Optional
+from typing import List, Optional, Tuple, Union
 
 import jinja2
 import pdfkit
@@ -14,7 +14,7 @@ import requests
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.core.files.base import ContentFile
-from django.db.models import QuerySet
+from django.db.models import F, OuterRef, QuerySet, Subquery
 from django.urls import reverse
 
 from applications.enums import (
@@ -24,7 +24,7 @@ from applications.enums import (
     AttachmentType,
 )
 from applications.models import AhjoSetting, AhjoStatus, Application, Attachment
-from applications.services.ahjo_authentication import AhjoConnector
+from applications.services.ahjo_authentication import AhjoConnector, AhjoToken
 from applications.services.ahjo_payload import prepare_open_case_payload
 from applications.services.applications_csv_report import ApplicationsCsvService
 from applications.services.generate_application_summary import (
@@ -386,7 +386,7 @@ def generate_pdf_summary_as_attachment(application: Application) -> Attachment:
     return attachment
 
 
-def get_token() -> str:
+def get_token() -> Union[AhjoToken, None]:
     """Get the access token from Ahjo Service."""
     try:
         ahjo_auth_code = AhjoSetting.objects.get(name="ahjo_code").data
@@ -394,17 +394,17 @@ def get_token() -> str:
         connector = AhjoConnector()
 
         if not connector.is_configured():
-            LOGGER.warning("AHJO connector is not configured")
+            LOGGER.error("AHJO connector is not configured")
             return
         return connector.get_access_token(ahjo_auth_code["code"])
     except ObjectDoesNotExist:
         LOGGER.error(
             "Error: Ahjo auth code not found in database. Please set the 'ahjo_code' setting."
         )
-        return
+        return None
     except Exception as e:
-        LOGGER.warning(f"Error retrieving access token: {e}")
-        return
+        LOGGER.error(f"Error retrieving Ahjo access token: {e}")
+        return None
 
 
 def prepare_headers(
@@ -445,13 +445,35 @@ def create_status_for_application(application: Application, status: AhjoStatusEn
     AhjoStatus.objects.create(application=application, status=status)
 
 
+def get_applications_for_open_case() -> QuerySet[Application]:
+    """Query applications which have their latest AhjoStatus relation as SUBMITTED_BUT_NOT_SENT_TO_AHJO
+    and are in the HANDLING state, so they will have a handler."""
+    latest_ahjo_status_subquery = AhjoStatus.objects.filter(
+        application=OuterRef("pk")
+    ).order_by("-created_at")
+
+    applications = (
+        Application.objects.annotate(
+            latest_ahjo_status_id=Subquery(latest_ahjo_status_subquery.values("id")[:1])
+        )
+        .filter(
+            status=ApplicationStatus.HANDLING,
+            ahjo_status__id=F("latest_ahjo_status_id"),
+            ahjo_status__status=AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
+        )
+        .prefetch_related("attachments", "calculation", "company")
+    )
+
+    return applications
+
+
 def send_request_to_ahjo(
     request_type: AhjoRequestType,
     headers: dict,
     application: Application,
     data: dict = {},
     timeout: int = 10,
-):
+) -> Union[Tuple[Application, str], None]:
     """Send a request to Ahjo."""
     headers["Content-Type"] = "application/json"
 
@@ -459,12 +481,10 @@ def send_request_to_ahjo(
 
     if request_type == AhjoRequestType.OPEN_CASE:
         method = "POST"
-        status = AhjoStatusEnum.REQUEST_TO_OPEN_CASE_SENT
         api_url = url_base
         data = json.dumps(data)
     elif request_type == AhjoRequestType.DELETE_APPLICATION:
         method = "DELETE"
-        status = AhjoStatusEnum.DELETE_REQUEST_SENT
         api_url = f"{url_base}/{application.ahjo_case_id}"
 
     try:
@@ -474,39 +494,43 @@ def send_request_to_ahjo(
         response.raise_for_status()
 
         if response.ok:
-            create_status_for_application(application, status)
             LOGGER.info(
                 f"Request for application {application.id} to Ahjo was successful."
             )
+            return application, response.text
 
     except requests.exceptions.HTTPError as e:
         LOGGER.error(
-            f"HTTP error occurred while sending a {request_type} request to Ahjo: {e}"
+            f"HTTP error occurred while sending a {request_type} request for application {application.id} to Ahjo: {e}"
         )
         raise
     except requests.exceptions.RequestException as e:
         LOGGER.error(
-            f"Network error occurred while sending a {request_type} request to Ahjo: {e}"
+            f"HTTP error occurred while sending a {request_type} request for application {application.id} to Ahjo: {e}"
         )
         raise
     except Exception as e:
         LOGGER.error(
-            f"Error occurred while sending request a {request_type} to Ahjo: {e}"
+            f"HTTP error occurred while sending a {request_type} request for application {application.id} to Ahjo: {e}"
         )
         raise
 
 
-def open_case_in_ahjo(application_id: uuid.UUID):
+def send_open_case_request_to_ahjo(
+    application: Application, ahjo_auth_token: str
+) -> Union[Tuple[Application, str], None]:
     """Open a case in Ahjo."""
     try:
-        application = get_application_for_ahjo(application_id)
-        ahjo_token = get_token()
         headers = prepare_headers(
-            ahjo_token.access_token, application.id, AhjoRequestType.OPEN_CASE
+            ahjo_auth_token, application, AhjoRequestType.OPEN_CASE
         )
+
         pdf_summary = generate_pdf_summary_as_attachment(application)
         data = prepare_open_case_payload(application, pdf_summary)
-        send_request_to_ahjo(AhjoRequestType.OPEN_CASE, headers, data, application)
+
+        return send_request_to_ahjo(
+            AhjoRequestType.OPEN_CASE, headers, application, data
+        )
     except ObjectDoesNotExist as e:
         LOGGER.error(f"Object not found: {e}")
     except ImproperlyConfigured as e:
@@ -521,7 +545,9 @@ def delete_application_in_ahjo(application_id: uuid.UUID):
         headers = prepare_headers(
             ahjo_token.access_token, application.id, AhjoRequestType.DELETE_APPLICATION
         )
-        send_request_to_ahjo(AhjoRequestType.DELETE_APPLICATION, headers, application)
+        application, response = send_request_to_ahjo(
+            AhjoRequestType.DELETE_APPLICATION, headers, application
+        )
     except ObjectDoesNotExist as e:
         LOGGER.error(f"Object not found: {e}")
     except ImproperlyConfigured as e:

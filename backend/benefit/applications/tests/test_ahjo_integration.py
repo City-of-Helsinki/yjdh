@@ -2,7 +2,7 @@ import io
 import os
 import uuid
 import zipfile
-from datetime import date
+from datetime import date, timedelta
 from typing import List
 from unittest.mock import patch
 
@@ -10,17 +10,18 @@ import pytest
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.http import FileResponse
 from django.urls import reverse
+from django.utils import timezone
 
 from applications.api.v1.ahjo_integration_views import AhjoAttachmentView
 from applications.enums import (
     AhjoCallBackStatus,
     AhjoRequestType,
-    AhjoStatus,
+    AhjoStatus as AhjoStatusEnum,
     ApplicationStatus,
     AttachmentType,
     BenefitType,
 )
-from applications.models import Application, Attachment
+from applications.models import AhjoStatus, Application, Attachment
 from applications.services.ahjo_integration import (
     ACCEPTED_TITLE,
     export_application_batch,
@@ -30,6 +31,7 @@ from applications.services.ahjo_integration import (
     generate_single_approved_file,
     generate_single_declined_file,
     get_application_for_ahjo,
+    get_applications_for_open_case,
     REJECTED_TITLE,
 )
 from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
@@ -374,11 +376,11 @@ def test_get_attachment_unauthorized_ip_not_allowed(
     [
         (
             AhjoRequestType.OPEN_CASE,
-            AhjoStatus.CASE_OPENED,
+            AhjoStatusEnum.CASE_OPENED,
         ),
         (
             AhjoRequestType.DELETE_APPLICATION,
-            AhjoStatus.DELETE_REQUEST_RECEIVED,
+            AhjoStatusEnum.DELETE_REQUEST_RECEIVED,
         ),
     ],
 )
@@ -497,3 +499,34 @@ def test_generate_pdf_summary_as_attachment(decided_application):
     assert os.path.exists(attachment.attachment_file.path)
     if os.path.exists(attachment.attachment_file.path):
         os.remove(attachment.attachment_file.path)
+
+
+@pytest.mark.django_db
+def test_get_applications_for_open_case(
+    multiple_decided_applications, multiple_handling_applications
+):
+    now = timezone.now()
+    for application in multiple_handling_applications:
+        status = AhjoStatus.objects.create(
+            application=application,
+            status=AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
+        )
+
+        status.created_at = now - timedelta(days=1)
+        status.save()
+
+    # create all possible statuses for decided_applications, one day apart in the future
+    for application in multiple_decided_applications:
+        for index, value in enumerate(AhjoStatusEnum.choices):
+            ahjo_status = AhjoStatus.objects.create(
+                application=application,
+                status=value[0],
+            )
+            ahjo_status.created_at = now + timedelta(days=index)
+            ahjo_status.save()
+
+    applications_for_open_case = get_applications_for_open_case()
+    # only handled_applications should be returned as their last  AhjoStatus is SUBMITTED_BUT_NOT_SENT_TO_AHJO
+    # and their application status is HANDLING
+    assert applications_for_open_case.count() == len(multiple_handling_applications)
+    assert list(applications_for_open_case) == multiple_handling_applications
