@@ -8,7 +8,7 @@ class MainIngress extends ApplicantPageComponent {
   }
 
   newApplicationButton = this.component.findByRole('button', {
-    name: this.translations.mainIngress.newApplicationBtnText,
+    name: this.translations.mainIngress.frontPage.newApplicationBtnText,
   });
 
   public async clickCreateNewApplicationButton(): Promise<void> {
