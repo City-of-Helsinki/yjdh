@@ -57,7 +57,7 @@ export const $TableGrid = styled.div<TableGridProps>`
   transition: all 0.65s ease-out;
   grid-template-rows: ${(props) => (props.animateClose ? '0fr' : '1fr')};
   opacity: ${(props) => (props.animateClose ? '0' : '1')};
-  margin-bottom: ${(props) => (props.animateClose ? '0' : 'var(--spacing-l)')};
+  margin-bottom: ${(props) => (props.animateClose ? '0' : 'var(--spacing-xs)')};
 `;
 
 type TableWrapperProps = {
