@@ -423,7 +423,11 @@
       "title": "Application’s messages"
     },
     "languageMenuButtonAriaLabel": "Select language",
-    "menuToggleAriaLabel": "Menu"
+    "menuToggleAriaLabel": "Menu",
+    "navigation": {
+      "home": "Applications",
+      "decisions": "Archive"
+    }
   },
   "footer": {
     "copyrightText": "Copyright",
@@ -459,11 +463,17 @@
     "en": "In English"
   },
   "mainIngress": {
-    "heading": "Applications",
-    "description1": "Welcome to the Helsinki benefit service.",
-    "description2": "Before filling out the application, review the necessary information and required attachments if needed. You can save an incomplete application as a draft and return to it later.",
-    "linkText": " Please take a look at the required information and attachments before filling in the application.",
-    "newApplicationBtnText": "Submit a new application"
+    "frontPage": {
+      "heading": "Applications",
+      "description1": "Welcome to the Helsinki benefit service.",
+      "description2": "Before filling out the application, review the necessary information and required attachments if needed. You can save an incomplete application as a draft and return to it later.",
+      "linkText": " Please take a look at the required information and attachments before filling in the application.",
+      "newApplicationBtnText": "Submit a new application"
+    },
+    "decisions": {
+      "heading": "Archive",
+      "description": "Review Helsinki benefit applications for which decisions have been made."
+    }
   },
   "prerequisiteReminder": {
     "heading": "Did you remember these before filling out the application form?",
@@ -628,6 +638,7 @@
   "pageTitles": {
     "login": "Helsinki benefit - Log in",
     "home": "Helsinki benefit - Frontpage",
+    "decisions": "Helsinki benefit - Archive",
     "createApplication": "Helsinki benefit - Application - Create",
     "editApplication": "Helsinki benefit - Application - Edit",
     "viewApplication": "Helsinki benefit - Application - View",
@@ -732,5 +743,8 @@
     "title": "Sivun palautenappeja ei voida näyttää",
     "text": "Toiminnon käyttämiseksi vaaditaan, että hyväksyt sivuston evästeet. Pääsen antamaan palautetta tästä sivusta sallimalla evästeasetuksista tilastointiin liittyvät evästeet.",
     "button": "Muokkaa evästeasetuksia"
+  },
+  "decisions": {
+    "heading": "Archive"
   }
 }

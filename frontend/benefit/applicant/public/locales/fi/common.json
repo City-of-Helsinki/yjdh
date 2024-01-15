@@ -423,7 +423,11 @@
       "title": "Hakemuksen viestit"
     },
     "languageMenuButtonAriaLabel": "Valitse kieli",
-    "menuToggleAriaLabel": "Valikko"
+    "menuToggleAriaLabel": "Valikko",
+    "navigation": {
+      "home": "Hakemukset",
+      "decisions": "Arkisto"
+    }
   },
   "footer": {
     "copyrightText": "Copyright",
@@ -459,11 +463,17 @@
     "en": "In English"
   },
   "mainIngress": {
-    "heading": "Hakemukset",
-    "description1": "Tervetuloa Helsinki-lisän asiointipalveluun.",
-    "description2": "Ennen hakemuksen täyttämistä tutustu hakemisessa vaadittaviin tietoihin ja liitteisiin. Voit tallentaa hakemuksen keskeneräisenä luonnokseksi ja jatkaa sen täyttämistä myöhemmin.",
-    "linkText": " Tutustu vaadittaviin tietoihin ja tarvittaviin liitteisiin ennen hakemuksen täyttämistä.",
-    "newApplicationBtnText": "Tee uusi hakemus"
+    "frontPage": {
+      "heading": "Hakemukset",
+      "description1": "Tervetuloa Helsinki-lisän asiointipalveluun.",
+      "description2": "Ennen hakemuksen täyttämistä tutustu hakemisessa vaadittaviin tietoihin ja liitteisiin. Voit tallentaa hakemuksen keskeneräisenä luonnokseksi ja jatkaa sen täyttämistä myöhemmin.",
+      "linkText": " Tutustu vaadittaviin tietoihin ja tarvittaviin liitteisiin ennen hakemuksen täyttämistä.",
+      "newApplicationBtnText": "Tee uusi hakemus"
+    },
+    "decisions": {
+      "heading": "Arkisto",
+      "description": "Tarkastele Helsinki-lisä -hakemuksia, joille on tehty päätös."
+    }
   },
   "prerequisiteReminder": {
     "heading": "Muistitko nämä ennen hakulomakkeen täyttämistä?",
@@ -628,6 +638,7 @@
   "pageTitles": {
     "login": "Helsinki-lisä - Kirjautuminen",
     "home": "Helsinki-lisä - Etusivu",
+    "decisions": "Helsinki-lisä - Arkisto",
     "createApplication": "Helsinki-lisä - Hakemus - Luo uusi",
     "editApplication": "Helsinki-lisä - Hakemus - Muokkaa hakemusta",
     "viewApplication": "Helsinki-lisä - Hakemus - Tarkastele hakemusta",
@@ -732,5 +743,8 @@
     "title": "Sivun palautenappeja ei voida näyttää",
     "text": "Toiminnon käyttämiseksi vaaditaan, että hyväksyt sivuston evästeet. Pääsen antamaan palautetta tästä sivusta sallimalla evästeasetuksista tilastointiin liittyvät evästeet.",
     "button": "Muokkaa evästeasetuksia"
+  },
+  "decisions": {
+    "heading": "Arkisto"
   }
 }

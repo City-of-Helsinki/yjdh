@@ -1,3 +1,5 @@
+import { ROUTES } from 'benefit/applicant/constants';
+import AppContext from 'benefit/applicant/context/AppContext';
 import useApplicationQuery from 'benefit/applicant/hooks/useApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { getLanguageOptions } from 'benefit/applicant/utils/common';
@@ -5,14 +7,15 @@ import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import { NavigationItem, OptionType } from 'shared/types/common';
 
 type ExtendedComponentProps = {
   t: TFunction;
   languageOptions: OptionType<string>[];
-  navigationItems?: NavigationItem[];
+  navigationItems: NavigationItem[];
+  isNavigationVisible: boolean;
   hasMessenger: boolean;
   handleLanguageChange: (
     e: React.SyntheticEvent<unknown>,
@@ -31,6 +34,7 @@ const useHeader = (): ExtendedComponentProps => {
   const id = router?.query?.id?.toString() ?? '';
   const openDrawer = Boolean(router?.query?.openDrawer);
   const { axios } = useBackendAPI();
+  const { isNavigationVisible } = React.useContext(AppContext);
 
   const [hasMessenger, setHasMessenger] = useState<boolean>(false);
   const [unreadMessagesCount, setUnredMessagesCount] = useState<
@@ -96,6 +100,20 @@ const useHeader = (): ExtendedComponentProps => {
     void router.push(url);
   };
 
+  const navigationItems = useMemo<Array<NavigationItem>>(
+    () => [
+      {
+        label: t('common:header.navigation.home'),
+        url: ROUTES.HOME,
+      },
+      {
+        label: t('common:header.navigation.decisions'),
+        url: ROUTES.DECISIONS,
+      },
+    ],
+    [t]
+  );
+
   return {
     t,
     handleLanguageChange,
@@ -106,6 +124,8 @@ const useHeader = (): ExtendedComponentProps => {
     unreadMessagesCount,
     isMessagesDrawerVisible,
     canWriteNewMessages,
+    navigationItems,
+    isNavigationVisible,
   };
 };
 

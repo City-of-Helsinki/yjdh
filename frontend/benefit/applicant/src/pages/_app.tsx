@@ -6,6 +6,7 @@ import 'hds-design-tokens';
 import AuthProvider from 'benefit/applicant/auth/AuthProvider';
 import CookieConsent from 'benefit/applicant/components/cookieConsent/CookieConsent';
 import Layout from 'benefit/applicant/components/layout/Layout';
+import AppContextProvider from 'benefit/applicant/context/AppContextProvider';
 import useLocale from 'benefit/applicant/hooks/useLocale';
 import { appWithTranslation } from 'benefit/applicant/i18n';
 import {
@@ -44,6 +45,10 @@ const App: React.FC<AppProps> = (appProps) => {
         document.title = t('common:pageTitles.home');
         break;
 
+      case ROUTES.DECISIONS:
+        document.title = t('common:pageTitles.decisions');
+        break;
+
       case ROUTES.LOGIN:
         document.title = t('common:pageTitles.login');
         break;
@@ -68,16 +73,18 @@ const App: React.FC<AppProps> = (appProps) => {
       headers={getHeaders(locale)}
       isLocalStorageCsrf
     >
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          {showCookieBanner && <CookieConsent />}
-          <BaseApp
-            layout={Layout}
-            title={!isServerSide() && document.title}
-            {...appProps}
-          />
-        </AuthProvider>
-      </QueryClientProvider>
+      <AppContextProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            {showCookieBanner && <CookieConsent />}
+            <BaseApp
+              layout={Layout}
+              title={!isServerSide() && document.title}
+              {...appProps}
+            />
+          </AuthProvider>
+        </QueryClientProvider>
+      </AppContextProvider>
     </BackendAPIProvider>
   );
 };

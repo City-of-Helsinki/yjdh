@@ -423,7 +423,11 @@
       "title": "Meddelanden om ansökan"
     },
     "languageMenuButtonAriaLabel": "Ändra språk",
-    "menuToggleAriaLabel": "Menu"
+    "menuToggleAriaLabel": "Menu",
+    "navigation": {
+      "home": "Ansökningar",
+      "decisions": "Arkiv"
+    }
   },
   "footer": {
     "copyrightText": "Copyright",
@@ -459,11 +463,17 @@
     "en": "In English"
   },
   "mainIngress": {
-    "heading": "Ansökningar",
-    "description1": "Välkommen till e-tjänsten för Helsingforstillägg.",
-    "description2": "Innan du fyller i ansökan, bekanta dig med den information och de bilagor som krävs för att ansöka. Du kan spara en halvfärdig ansökan och komplettera den senare.",
-    "linkText": " Se vilka uppgifter och bilagor som krävs innan du fyller i ansökan.",
-    "newApplicationBtnText": "Gör en ny ansökan"
+    "frontPage": {
+      "heading": "Ansökningar",
+      "description1": "Välkommen till e-tjänsten för Helsingforstillägg.",
+      "description2": "Innan du fyller i ansökan, bekanta dig med den information och de bilagor som krävs för att ansöka. Du kan spara en halvfärdig ansökan och komplettera den senare.",
+      "linkText": " Se vilka uppgifter och bilagor som krävs innan du fyller i ansökan.",
+      "newApplicationBtnText": "Gör en ny ansökan"
+    },
+    "decisions": {
+      "heading": "Arkiv",
+      "description": "Se Helsingforstillägget-ansökningarna, för vilka beslut har fattats."
+    }
   },
   "prerequisiteReminder": {
     "heading": "Kom du ihåg dessa innan du fyllde i ansökan om Helsingforstillägget?",
@@ -628,6 +638,7 @@
   "pageTitles": {
     "login": "Helsingforstillägg - Logga in",
     "home": "Helsingforstillägg - Framsida",
+    "decisions": "Helsingforstillägg - Arkiv",
     "createApplication": "Helsingforstillägg - Ansökan - Skapa",
     "editApplication": "Helsingforstillägg - Ansökan - Redigera",
     "viewApplication": "Helsingforstillägg - Ansökan - Granska",
@@ -732,5 +743,8 @@
     "title": "Sivun palautenappeja ei voida näyttää",
     "text": "Toiminnon käyttämiseksi vaaditaan, että hyväksyt sivuston evästeet. Pääsen antamaan palautetta tästä sivusta sallimalla evästeasetuksista tilastointiin liittyvät evästeet.",
     "button": "Muokkaa evästeasetuksia"
+  },
+  "decisions": {
+    "heading": "Arkiv"
   }
 }

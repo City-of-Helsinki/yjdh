@@ -23,6 +23,8 @@ const Header: React.FC = () => {
     handleLanguageChange,
     setMessagesDrawerVisiblity,
     canWriteNewMessages,
+    navigationItems,
+    isNavigationVisible,
   } = useHeader();
   const router = useRouter();
   const { asPath } = router;
@@ -79,6 +81,8 @@ const Header: React.FC = () => {
               ]
             : undefined
         }
+        navigationItems={navigationItems}
+        isNavigationVisible={isNavigationVisible}
       />
       {isAuthenticated && hasMessenger && (
         <Messenger

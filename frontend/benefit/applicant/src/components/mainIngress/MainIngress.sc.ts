@@ -32,16 +32,6 @@ export const $Link = styled.span`
   cursor: pointer;
 `;
 
-export const $ActionContainer = styled.div`
-  display: flex;
-  align-items: center;
-  flex: 1 0 30%;
-  box-sizing: border-box;
-  ${respondAbove('sm')`
-    justify-content: flex-end;
-  `}
-`;
-
 export const $Notification = styled(NotificationBase)`
   margin-bottom: ${(props) => props.theme.spacing.xs};
 `;
