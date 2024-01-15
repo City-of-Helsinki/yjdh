@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v1.1.0...kesaseteli-youth-v1.1.1) (2024-01-15)
+
+
+### Bug Fixes
+
+* Upgrade all Finnish SSN related code to support new format ([490fd61](https://github.com/City-of-Helsinki/yjdh/commit/490fd610a11ac9eef0a181350b1a1af4c232a566))
+
 ## [1.1.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v1.0.0...kesaseteli-youth-v1.1.0) (2023-12-13)
 
 
