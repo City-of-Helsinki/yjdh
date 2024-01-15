@@ -68,7 +68,7 @@ const useBatchProposal = (filterByStatus: BATCH_STATUSES[]): BatchListProps => {
     });
   }
 
-  const shouldShowSkeleton = query.isLoading;
+  const shouldShowSkeleton = query.isLoading || query.isFetching;
 
   const shouldHideList =
     Boolean(query.error) ||

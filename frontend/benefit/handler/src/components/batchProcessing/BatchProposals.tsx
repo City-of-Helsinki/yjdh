@@ -9,13 +9,24 @@ import { BatchListProps, useBatchProposal } from './useBatches';
 
 type BatchProps = {
   status: BATCH_STATUSES[];
+  setBatchCount: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const BatchProposals: React.FC<BatchProps> = ({ status }: BatchProps) => {
+const BatchProposals: React.FC<BatchProps> = ({
+  status,
+  setBatchCount,
+}: BatchProps) => {
   const { t, batches, shouldShowSkeleton, shouldHideList }: BatchListProps =
     useBatchProposal(status);
 
   const list = React.useMemo(() => batches, [batches]);
+
+  React.useEffect(() => {
+    setBatchCount(`(${list.length})`);
+    if (shouldShowSkeleton) {
+      setBatchCount('(0)');
+    }
+  }, [list, setBatchCount, shouldShowSkeleton]);
 
   if (shouldShowSkeleton) {
     return <LoadingSpinner small />;
