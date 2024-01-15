@@ -35,7 +35,8 @@ type Response = {
 };
 
 const useBatchInspected = (
-  setBatchCloseAnimation: React.Dispatch<React.SetStateAction<boolean>>
+  setBatchCloseAnimation: React.Dispatch<React.SetStateAction<boolean>>,
+  numberOfApplications?: number
 ): UseMutationResult<Response, Error, Payload> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
@@ -76,8 +77,12 @@ const useBatchInspected = (
     {
       onSuccess: ({ status: backendStatus }: Response) => {
         showSuccessToast(
-          t(`common:batches.notifications.statusChange.${backendStatus}`),
-          ''
+          t(
+            `common:batches.notifications.statusChange.${backendStatus}.heading`
+          ),
+          t(`common:batches.notifications.statusChange.${backendStatus}.text`, {
+            count: numberOfApplications,
+          })
         );
 
         if (

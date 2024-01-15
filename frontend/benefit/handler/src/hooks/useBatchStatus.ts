@@ -75,7 +75,9 @@ const useBatchStatus = (
     {
       onSuccess: ({ status: backendStatus, previousStatus }: Response) => {
         showSuccessToast(
-          t(`common:batches.notifications.statusChange.${backendStatus}`),
+          t(
+            `common:batches.notifications.statusChange.${backendStatus}.heading`
+          ),
           ''
         );
         if (

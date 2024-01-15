@@ -37,6 +37,7 @@ const useBatchActionsInspected = (
   setBatchCloseAnimation?: React.Dispatch<React.SetStateAction<boolean>>
 ): ApplicationListProps => {
   const {
+    applications,
     proposal_for_decision: proposalForDecision,
     id,
     decision_maker_name,
@@ -54,7 +55,7 @@ const useBatchActionsInspected = (
     isSuccess,
     isError,
     mutate: setBatchDecided,
-  } = useBatchInspected(setBatchCloseAnimation);
+  } = useBatchInspected(setBatchCloseAnimation, applications.length);
 
   const parseLocalizedDateString = (
     _: string,

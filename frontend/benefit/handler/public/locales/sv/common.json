@@ -1092,12 +1092,27 @@
         }
       },
       "statusChange": {
-        "awaiting_ahjo_decision": "Koonti merkitty Ahjoon viedyksi",
-        "exported_ahjo_report": "Ahjo-valmistelu aloitettu, koonti lukittu",
-        "completed": "Koonti käsitelty ja arkistoitu",
-        "draft": "Koonti palautettu takaisin odottamaan päätösvalmistelua",
-        "accepted": "Tarkastustiedot tallennettu",
-        "rejected": "Koonti arkistoitu"
+        "awaiting_ahjo_decision": {
+          "heading": "Koonti merkitty Ahjoon viedyksi",
+          "text": ""
+        },
+        "exported_ahjo_report": {
+          "heading": "Ahjo-valmistelu aloitettu, koonti lukittu",
+          "text": ""
+        },
+        "completed": {
+          "heading": "Koonti käsitelty ja arkistoitu",
+          "text": ""
+        },
+        "draft": {
+          "heading": "Koonti palautettu takaisin odottamaan päätösvalmistelua",
+          "text": ""
+        },
+        "accepted": {
+          "heading": "Hakemuksia siirretty maksuun",
+          "text": "Olet lähettänyt {{ count }} myönteistä hakemusta maksuun. Hakemukset siirtyvät automaattisesti maksuun tänään klo 23.00."
+        },
+        "rejected": { "heading": "Koonti arkistoitu", "text": "" }
       },
       "errors": {
         "batchInvalidDraftAlreadyExists": {
@@ -1120,10 +1135,10 @@
       "markAsReadyForAhjo": "Aloita Ahjo-valmistelu",
       "markAsRegisteredToAhjo": "Merkitse Ahjoon viedyksi",
       "markedAsRegisteredToAhjo": "Viety Ahjoon",
-      "markToTalpa": "Hyväksy tarkastustiedot",
+      "markToTalpa": "Siirrä maksuun",
       "markToArchive": "Arkistoi",
       "markAsWaitingForAhjo": "Palauta odottamaan Ahjoon vientiä",
-      "returnToInspection": "Muokkaa tarkastustietoja",
+      "returnToInspection": "Palauta odottamaan maksuun vientiä",
       "downloadFiles": "Lataa liitteet",
       "downloadP2PFile": "Lataa Talpa-tiedosto",
       "deleteBatch": "Tyhjennä koonti",
@@ -1151,11 +1166,11 @@
         "text": "Oletko varma, että haluat palauttaa koonnin odottamaan Ahjoon vientiä?"
       },
       "fromInspectionToCompletion": {
-        "heading": "Hyväksy tarkastustiedot",
-        "text": "Haluatko merkitä koonnin tarkastetuksi?"
+        "heading": "Siirrä koonti maksuun",
+        "text": "Haluatko siirtää koonnin maksuun?"
       },
       "fromCompletionToInspection": {
-        "heading": "Palauta koonti aiempaan vaiheeseen",
+        "heading": "Palauta koonti odottamaan maksuun vientiä",
         "text": "Haluatko palata aiempaan vaiheeseen ja tehdä muutoksia asiantarkastajien nimiin?"
       },
       "fromCompletionToArchive": {
@@ -1168,7 +1183,7 @@
         "decisionMakerName": "Päättäjän nimi",
         "decisionMakerTitle": "Päättäjän titteli",
         "sectionOfTheLaw": "Pykälä",
-        "decisionDate": "Päätöksen päivämäärä",
+        "decisionDate": "Päätöspäivä",
         "expertInspectorName": "Asiantarkistajan nimi, Ahjo",
         "expertInspectorTitle": "Asiantarkistajan titteli, Ahjo",
         "p2pInspectorName": "Tarkastajan nimi, P2P",
