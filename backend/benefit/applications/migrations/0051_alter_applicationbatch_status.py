@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('applications', '0049_add_rejected_by_talpa_status'),
+        ('applications', '0050_add_rejected_by_talpa_status'),
     ]
 
     operations = [

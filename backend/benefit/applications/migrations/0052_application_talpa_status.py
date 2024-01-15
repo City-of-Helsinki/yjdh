@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('applications', '0050_alter_applicationbatch_status'),
+        ('applications', '0051_alter_applicationbatch_status'),
     ]
 
     operations = [

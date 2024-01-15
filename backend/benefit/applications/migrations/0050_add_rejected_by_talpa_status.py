@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('applications', '0048_alter_attachment_attachment_type'),
+        ('applications', '0049_historicalemployee'),
     ]
 
     operations = [
