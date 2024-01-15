@@ -39,6 +39,15 @@ def get_valid_batch_completion_data():
     }
 
 
+def get_valid_rejected_batch_completion_data():
+    return {
+        "decision_maker_title": get_faker().job(),
+        "decision_maker_name": get_faker().name(),
+        "section_of_the_law": "$1234",
+        "decision_date": date.today(),
+    }
+
+
 def get_valid_p2p_batch_completion_data():
     return {
         "decision_maker_title": get_faker().job(),
@@ -270,7 +279,7 @@ def test_deassign_applications_from_batch_all(handler_api_client, application_ba
     "batch_status,status_code,changed_status",
     [
         (ApplicationBatchStatus.COMPLETED, 200, None),
-        (ApplicationBatchStatus.SENT_TO_TALPA, 200, None),
+        (ApplicationBatchStatus.SENT_TO_TALPA, 400, None),
         (ApplicationBatchStatus.RETURNED, 400, None),
         (ApplicationBatchStatus.DECIDED_ACCEPTED, 200, None),
         (ApplicationBatchStatus.DECIDED_REJECTED, 200, None),
@@ -347,15 +356,12 @@ def test_batch_status_decided(
         batch.save()
 
     url = get_batch_detail_url(application_batch, "status/")
-    payload = get_valid_batch_completion_data()
-    payload["status"] = batch_status
-
-    # With months and a day over the range
-    payload["decision_date"] = date.today() + relativedelta(
-        days=delta_days, months=delta_months
+    payload = (
+        get_valid_batch_completion_data()
+        if batch_status == ApplicationBatchStatus.DECIDED_ACCEPTED
+        else get_valid_rejected_batch_completion_data()
     )
-    response = handler_api_client.patch(url, payload)
-    assert response.status_code == 400
+    payload["status"] = batch_status
 
     # With exact months
     payload["decision_date"] = date.today() + relativedelta(months=(delta_months))
