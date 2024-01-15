@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from applications.api.v1.serializers.talpa_callback import TalpaCallbackSerializer
-from applications.enums import ApplicationBatchStatus, ApplicationStatus
+from applications.enums import ApplicationBatchStatus, ApplicationTalpaStatus
 from applications.models import Application
 from common.authentications import RobotBasicAuthentication
 from common.utils import get_request_ip_address
@@ -56,6 +56,10 @@ class TalpaCallbackView(APIView):
         """Add audit log entries for applications which were processed successfully by TALPA"""
         successful_applications = self._get_applications(application_numbers)
         if successful_applications:
+            successful_applications.update(
+                talpa_status=ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
+            )
+
             for application in successful_applications:
                 audit_logging.log(
                     AnonymousUser,
@@ -76,7 +80,9 @@ class TalpaCallbackView(APIView):
                 if batch:
                     batch.status = ApplicationBatchStatus.REJECTED_BY_TALPA
                     batch.save()
-                    applications.update(status=ApplicationStatus.REJECTED_BY_TALPA)
+                    applications.update(
+                        talpa_status=ApplicationTalpaStatus.REJECTED_BY_TALPA
+                    )
                 else:
                     LOGGER.error(
                         f"No batch associated with applications: {applications.values_list('id', flat=True)}"

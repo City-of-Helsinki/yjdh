@@ -17,6 +17,7 @@ from applications.enums import (
     ApplicationOrigin,
     ApplicationStatus,
     ApplicationStep,
+    ApplicationTalpaStatus,
     AttachmentType,
     BenefitType,
     PaySubsidyGranted,
@@ -138,6 +139,13 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
         verbose_name=_("status"),
         choices=ApplicationStatus.choices,
         default=ApplicationStatus.DRAFT,
+    )
+
+    talpa_status = models.CharField(
+        max_length=64,
+        verbose_name=_("talpa_status"),
+        choices=ApplicationTalpaStatus.choices,
+        default=ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
     )
 
     application_origin = models.CharField(

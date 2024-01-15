@@ -4,7 +4,7 @@ import decimal
 import pytest
 from django.urls import reverse
 
-from applications.enums import ApplicationBatchStatus, ApplicationStatus
+from applications.enums import ApplicationBatchStatus, ApplicationTalpaStatus
 from applications.tests.common import (
     check_csv_cell_list_lines_generator,
     check_csv_string_lines_generator,
@@ -148,6 +148,13 @@ def test_talpa_callback_success(talpa_client, decided_application):
         == f"{decided_application.id}"
     )
 
+    decided_application.refresh_from_db()
+
+    assert (
+        decided_application.talpa_status
+        == ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
+    )
+
 
 @pytest.mark.django_db
 def test_talpa_callback_rejected_application(
@@ -173,5 +180,5 @@ def test_talpa_callback_rejected_application(
 
     decided_application.refresh_from_db()
 
-    assert decided_application.status == ApplicationStatus.REJECTED_BY_TALPA
+    assert decided_application.talpa_status == ApplicationTalpaStatus.REJECTED_BY_TALPA
     assert decided_application.batch.status == ApplicationBatchStatus.REJECTED_BY_TALPA
