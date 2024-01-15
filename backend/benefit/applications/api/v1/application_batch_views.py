@@ -70,6 +70,14 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         "applications__company_contact_person_email",
     ]
 
+    def get_queryset(self):
+        order_by = self.request.query_params.get("order_by") or None
+
+        if order_by:
+            self.queryset = self.queryset.order_by(order_by)
+
+        return self.queryset
+
     def get_serializer_class(self):
         """
         ApplicationBatchSerializer for default behaviour on mutation functions,
