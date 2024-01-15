@@ -103,12 +103,26 @@ def _add_changes(target: Union[Model, ModelBase], message: dict) -> None:
 
         changes_list = []
         for change in delta.changes:
+            if _is_sensitive_field(change.field):
+                continue
             changes_list.append(
                 f"{change.field} changed from {change.old} to {change.new}"
             )
 
         if changes_list:
             message["audit_event"]["target"]["changes"] = changes_list
+
+
+def _is_sensitive_field(change_field: str) -> bool:
+    "Check if a given field is sensitive personal data."
+    return change_field in [
+        "encrypted_social_security_number",
+        "encrypted_first_name",
+        "encrypted_last_name",
+        "first_name",
+        "last_name",
+        "social_security_number",
+    ]
 
 
 def _get_target_id(target: Union[Model, ModelBase]) -> Optional[str]:

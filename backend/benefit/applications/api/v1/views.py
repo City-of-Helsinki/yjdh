@@ -45,6 +45,8 @@ from applications.services.generate_application_summary import (
 )
 from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
 from messages.models import MessageType
+from shared.audit_log import audit_logging
+from shared.audit_log.enums import Operation
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
 from users.utils import get_company_from_request
 
@@ -241,7 +243,14 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
                 status=status.HTTP_403_FORBIDDEN,
             )
         if instance := self._get_attachment(attachment_pk):
+            audit_logging.log(
+                request.user,
+                "",
+                Operation.DELETE,
+                instance,
+            )
             instance.delete()
+
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return self._attachment_not_found()
@@ -258,6 +267,12 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         if (
             attachment := self._get_attachment(attachment_pk)
         ) and attachment.attachment_file:
+            audit_logging.log(
+                request.user,
+                "",
+                Operation.READ,
+                attachment,
+            )
             return FileResponse(attachment.attachment_file)
         else:
             return self._attachment_not_found()
