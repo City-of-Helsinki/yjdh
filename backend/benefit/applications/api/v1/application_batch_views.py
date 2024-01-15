@@ -80,7 +80,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
 
         return ApplicationBatchListSerializer
 
-    def get_batch(self, id: str) -> ApplicationBatch:
+    def _get_batch(self, id: str) -> ApplicationBatch:
         """
         Just a wrapper for Django's get_object_or_404 function
         """
@@ -91,7 +91,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         """
         Override default destroy(), batch can only be deleted if it's status is "draft"
         """
-        batch = self.get_batch(pk)
+        batch = self._get_batch(pk)
         if batch.status == ApplicationBatchStatus.DRAFT:
             batch.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -272,7 +272,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         Remove one or more applications from a specific batch
         """
         application_ids = request.data.get("application_ids")
-        batch = self.get_batch(pk)
+        batch = self._get_batch(pk)
 
         deassign_apps = Application.objects.filter(
             batch=batch,
@@ -302,7 +302,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         Assign a new status for batch: as pending for Ahjo proposal or switch back to draft
         """
         new_status = request.data["status"]
-        batch = self.get_batch(pk)
+        batch = self._get_batch(pk)
         if new_status not in [
             ApplicationBatchStatus.DRAFT,
             ApplicationBatchStatus.AHJO_REPORT_CREATED,
