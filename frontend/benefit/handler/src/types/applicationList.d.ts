@@ -3,6 +3,7 @@ import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 export interface ApplicationListTableTransforms {
   id?: string;
   companyName?: string;
+  company_name?: string;
   unreadMessagesCount?: number;
   additionalInformationNeededBy?: string | Date;
   status?: APPLICATION_STATUSES;

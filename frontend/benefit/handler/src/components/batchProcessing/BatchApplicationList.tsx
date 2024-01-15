@@ -1,3 +1,4 @@
+import { ROUTES } from 'benefit/handler/constants';
 import useRemoveAppFromBatch from 'benefit/handler/hooks/useRemoveAppFromBatch';
 import {
   BATCH_STATUSES,
@@ -22,6 +23,7 @@ import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Modal from 'shared/components/modal/Modal';
+import { $Link } from 'shared/components/table/Table.sc';
 import theme from 'shared/styles/theme';
 import {
   convertToUIDateAndTimeFormat,
@@ -52,10 +54,11 @@ const $BatchStatusValue = styled.span`
   margin-top: 4px;
 `;
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
   const { t } = useTranslation();
   const {
-    id,
+    id: batchId,
     status,
     created_at,
     applications: apps,
@@ -65,14 +68,15 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
 
   const applications = React.useMemo(() => apps, [apps]);
 
-  const IS_WAITING_FOR_AHJO = [
+  const IS_WAITING_FOR_INSPECTION = [
     BATCH_STATUSES.DRAFT,
     BATCH_STATUSES.AHJO_REPORT_CREATED,
   ].includes(status);
+
   const [isCollapsed, setIsCollapsed] = React.useState<boolean>(
-    !IS_WAITING_FOR_AHJO
+    !IS_WAITING_FOR_INSPECTION
   );
-  const [isConfirmAppRemoval, setConfirmAppRemoval] = React.useState(false);
+  const [isConfirmAppRemoval, setIsConfirmAppRemoval] = React.useState(false);
   const [appToRemove, setAppToRemove] =
     React.useState<ApplicationInBatch | null>(null);
   const [batchCloseAnimation, setBatchCloseAnimation] = React.useState(false);
@@ -81,20 +85,26 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
   const openAppRemovalDialog = (appId: string): void => {
     const selectedApp = apps.find((app) => app.id === appId);
     setAppToRemove(selectedApp);
-    setConfirmAppRemoval(true);
+    setIsConfirmAppRemoval(true);
   };
 
   const onAppRemovalSubmit = (): void => {
-    removeApp({ appIds: [appToRemove.id], batchId: id });
-    setConfirmAppRemoval(false);
+    removeApp({ appIds: [appToRemove.id], batchId });
+    setIsConfirmAppRemoval(false);
     setAppToRemove(null);
   };
 
-  const cols = [
+  const cols: BatchTableColumns[] = [
     {
       headerName: t('common:applications.list.columns.companyName'),
       key: 'company_name',
       isSortable: true,
+      transform: ({ id, company_name: companyName }: BatchTableTransforms) => (
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        <$Link href={`${ROUTES.APPLICATION}?id=${id}`} target="_blank">
+          {companyName}
+        </$Link>
+      ),
     },
     {
       headerName: t('common:applications.list.columns.companyId'),
@@ -119,30 +129,36 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
       isSortable: true,
       customSortCompareFunction: sortFinnishDate,
     },
-    {
+  ];
+
+  if (proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED) {
+    cols.push({
       headerName: t('common:applications.list.columns.benefitAmount'),
       key: 'total_amount',
       isSortable: true,
-      transform: ({ benefitAmount: amount }: { benefitAmount: number | 0 }) =>
+      transform: ({ benefitAmount: amount }: { benefitAmount: number }) =>
         formatFloatToCurrency(amount, 'EUR', 'fi-FI', 0),
-    },
-    {
-      transform: ({ id: appId }: { id: string }) =>
-        IS_WAITING_FOR_AHJO ? (
+    });
+  }
+
+  if (IS_WAITING_FOR_INSPECTION) {
+    cols.push({
+      headerName: '',
+      key: 'remove',
+      transform: ({ id }: { id: string }) =>
+        IS_WAITING_FOR_INSPECTION ? (
           <Button
             theme="black"
             variant="supplementary"
             iconLeft={<IconArrowUndo />}
-            onClick={() => openAppRemovalDialog(appId)}
+            onClick={() => openAppRemovalDialog(id)}
             disabled={status !== BATCH_STATUSES.DRAFT}
           >
             {' '}
           </Button>
         ) : null,
-      headerName: '',
-      key: 'remove',
-    },
-  ];
+    });
+  }
 
   const proposalForDecisionHeader = (): JSX.Element => {
     if (proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED) {
@@ -183,7 +199,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
         }
       >
         <Modal
-          id={`batch-confirmation-modal-app-removal-${id}`}
+          id={`batch-confirmation-modal-app-removal-${batchId}`}
           isOpen={isConfirmAppRemoval}
           submitButtonLabel=""
           cancelButtonLabel=""
@@ -198,7 +214,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
                 text={t('common:batches.dialog.removeApplication.text', {
                   applicationNumber: `${appToRemove.company_name} / ${appToRemove.employee_name} (${appToRemove.application_number})`,
                 })}
-                onClose={() => setConfirmAppRemoval(false)}
+                onClose={() => setIsConfirmAppRemoval(false)}
                 onSubmit={onAppRemovalSubmit}
               />
             ) : null
@@ -271,10 +287,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
                   : theme.colors.infoLight
               }
             >
-              {[
-                BATCH_STATUSES.DRAFT,
-                BATCH_STATUSES.AHJO_REPORT_CREATED,
-              ].includes(status) && (
+              {IS_WAITING_FOR_INSPECTION && (
                 <BatchFooterDraft
                   batch={batch}
                   setBatchCloseAnimation={setBatchCloseAnimation}
