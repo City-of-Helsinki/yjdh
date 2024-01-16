@@ -70,6 +70,14 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         "applications__company_contact_person_email",
     ]
 
+    def get_queryset(self):
+        order_by = self.request.query_params.get("order_by") or None
+
+        if order_by:
+            self.queryset = self.queryset.order_by(order_by)
+
+        return self.queryset
+
     def get_serializer_class(self):
         """
         ApplicationBatchSerializer for default behaviour on mutation functions,
@@ -80,7 +88,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
 
         return ApplicationBatchListSerializer
 
-    def get_batch(self, id: str) -> ApplicationBatch:
+    def _get_batch(self, id: str) -> ApplicationBatch:
         """
         Just a wrapper for Django's get_object_or_404 function
         """
@@ -91,7 +99,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         """
         Override default destroy(), batch can only be deleted if it's status is "draft"
         """
-        batch = self.get_batch(pk)
+        batch = self._get_batch(pk)
         if batch.status == ApplicationBatchStatus.DRAFT:
             batch.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -272,7 +280,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         Remove one or more applications from a specific batch
         """
         application_ids = request.data.get("application_ids")
-        batch = self.get_batch(pk)
+        batch = self._get_batch(pk)
 
         deassign_apps = Application.objects.filter(
             batch=batch,
@@ -302,57 +310,22 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         Assign a new status for batch: as pending for Ahjo proposal or switch back to draft
         """
         new_status = request.data["status"]
-        batch = self.get_batch(pk)
-        if new_status not in [
-            ApplicationBatchStatus.DRAFT,
-            ApplicationBatchStatus.AHJO_REPORT_CREATED,
-            ApplicationBatchStatus.AWAITING_AHJO_DECISION,
-            ApplicationBatchStatus.DECIDED_ACCEPTED,
-            ApplicationBatchStatus.DECIDED_REJECTED,
-            ApplicationBatchStatus.SENT_TO_TALPA,
-            ApplicationBatchStatus.COMPLETED,
-        ]:
+
+        if _unallowed_status_change(new_status):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        # Patch all required fields after batch inspection
-        if new_status in [
-            ApplicationBatchStatus.DECIDED_ACCEPTED,
-            ApplicationBatchStatus.DECIDED_REJECTED,
-        ]:
-            for key in request.data:
-                setattr(batch, key, request.data.get(key))
+        batch = self._get_batch(pk)
+        previous_status = batch.status
+
+        _save_batch_or_raise(batch, new_status, request.data)
+
+        # Decided on rejection, can set status to completed
+        if new_status == ApplicationBatchStatus.DECIDED_REJECTED:
+            _save_batch_or_raise(batch, ApplicationBatchStatus.COMPLETED, request.data)
 
         # Archive all applications if this batch will be completed
-        if new_status in [
-            ApplicationBatchStatus.COMPLETED,
-        ]:
+        if batch.status == ApplicationBatchStatus.COMPLETED:
             Application.objects.filter(batch=batch).update(archived=True)
-
-        batch.status = new_status
-
-        try:
-            batch.save()
-        except BatchCompletionDecisionDateError:
-            return Response(
-                {"errorKey": "batchInvalidDecisionDate"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        except BatchTooManyDraftsError:
-            return Response(
-                {"errorKey": "batchInvalidDraftAlreadyExists"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        except BatchCompletionRequiredFieldsError:
-            return Response(
-                {"errorKey": "batchInvalidCompletionRequiredFieldsMissing"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        except ValidationError:
-            return Response(
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        previous_status = batch.status
 
         return Response(
             {
@@ -363,3 +336,46 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             },
             status=status.HTTP_200_OK,
         )
+
+
+def _save_batch_or_raise(batch, new_status, data):
+    # Patch all required fields after batch inspection
+    if new_status in [
+        ApplicationBatchStatus.DECIDED_ACCEPTED,
+        ApplicationBatchStatus.DECIDED_REJECTED,
+    ]:
+        for key in data:
+            setattr(batch, key, data.get(key))
+    try:
+        batch.status = new_status
+        batch.save()
+    except BatchCompletionDecisionDateError:
+        return Response(
+            {"errorKey": "batchInvalidDecisionDate"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    except BatchTooManyDraftsError:
+        return Response(
+            {"errorKey": "batchInvalidDraftAlreadyExists"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    except BatchCompletionRequiredFieldsError:
+        return Response(
+            {"errorKey": "batchInvalidCompletionRequiredFieldsMissing"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    except ValidationError:
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+def _unallowed_status_change(new_status):
+    return new_status not in [
+        ApplicationBatchStatus.DRAFT,
+        ApplicationBatchStatus.AHJO_REPORT_CREATED,
+        ApplicationBatchStatus.AWAITING_AHJO_DECISION,
+        ApplicationBatchStatus.DECIDED_ACCEPTED,
+        ApplicationBatchStatus.DECIDED_REJECTED,
+        ApplicationBatchStatus.COMPLETED,
+    ]

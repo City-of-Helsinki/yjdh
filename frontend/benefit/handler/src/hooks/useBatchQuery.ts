@@ -7,7 +7,8 @@ import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 const useBatchQuery = (
-  status: BATCH_STATUSES[]
+  status: BATCH_STATUSES[],
+  orderBy?: string
 ): UseQueryResult<BatchProposal[], Error> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
@@ -21,6 +22,7 @@ const useBatchQuery = (
 
   const params = {
     status: status.join(','),
+    order_by: orderBy || '-created_at',
   };
 
   return useQuery<BatchProposal[], Error>(

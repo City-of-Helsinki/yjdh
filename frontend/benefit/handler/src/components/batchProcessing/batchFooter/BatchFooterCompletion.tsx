@@ -170,14 +170,14 @@ const BatchFooterCompletion: React.FC<BatchProps> = ({
           <$ViewFieldBold>
             {t('common:batches.form.fields.decisionMakerName')}
           </$ViewFieldBold>
-          <$ViewField>{decision_maker_title}</$ViewField>
+          <$ViewField>{decision_maker_name}</$ViewField>
         </$GridCell>
 
         <$GridCell $colSpan={3}>
           <$ViewFieldBold>
             {t('common:batches.form.fields.decisionMakerTitle')}
           </$ViewFieldBold>
-          <$ViewField>{decision_maker_name}</$ViewField>
+          <$ViewField>{decision_maker_title}</$ViewField>
         </$GridCell>
 
         <$GridCell $colSpan={2}>

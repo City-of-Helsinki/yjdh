@@ -21,6 +21,9 @@ const BatchIndex: NextPage = () => {
   } = React.useContext(AppContext);
 
   const { t } = useTranslation();
+  const [batchPendingCount, setBatchPendingCount] = React.useState('');
+  const [batchInspectionCount, setBatchInspectionCount] = React.useState('');
+  const [batchCompletionCount, setBatchCompletionCount] = React.useState('');
 
   useEffect(() => {
     setIsNavigationVisible(true);
@@ -48,8 +51,11 @@ const BatchIndex: NextPage = () => {
           </Tabs.TabList>
 
           <Tabs.TabPanel>
-            <$Heading>{t('common:batches.tabs.pending')}</$Heading>
+            <$Heading>
+              {t('common:batches.tabs.pending')} {batchPendingCount}
+            </$Heading>
             <BatchProposals
+              setBatchCount={setBatchPendingCount}
               status={[
                 BATCH_STATUSES.DRAFT,
                 BATCH_STATUSES.AHJO_REPORT_CREATED,
@@ -58,12 +64,20 @@ const BatchIndex: NextPage = () => {
           </Tabs.TabPanel>
 
           <Tabs.TabPanel>
-            <$Heading>{t('common:batches.tabs.inspection')}</$Heading>
-            <BatchProposals status={[BATCH_STATUSES.AWAITING_FOR_DECISION]} />
+            <$Heading>
+              {t('common:batches.tabs.inspection')} {batchInspectionCount}
+            </$Heading>
+            <BatchProposals
+              setBatchCount={setBatchInspectionCount}
+              status={[BATCH_STATUSES.AWAITING_FOR_DECISION]}
+            />
           </Tabs.TabPanel>
           <Tabs.TabPanel>
-            <$Heading>{t('common:batches.tabs.completion')}</$Heading>
+            <$Heading>
+              {t('common:batches.tabs.completion')} {batchCompletionCount}
+            </$Heading>
             <BatchProposals
+              setBatchCount={setBatchCompletionCount}
               status={[
                 BATCH_STATUSES.DECIDED_ACCEPTED,
                 BATCH_STATUSES.SENT_TO_TALPA,
