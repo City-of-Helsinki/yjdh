@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.3.0...kesaseteli-backend-v1.3.1) (2024-01-16)
+
+
+### Bug Fixes
+
+* Upgrade all Finnish SSN related code to support new format ([490fd61](https://github.com/City-of-Helsinki/yjdh/commit/490fd610a11ac9eef0a181350b1a1af4c232a566))
+
 ## [1.3.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.2.0...kesaseteli-backend-v1.3.0) (2023-12-14)
 
 
