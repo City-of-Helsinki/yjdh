@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.6.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.5.0...benefit-applicant-v3.6.0) (2024-01-16)
+
+
+### Features
+
+* Applicant landing page adjustments (HL-1033) ([#2709](https://github.com/City-of-Helsinki/yjdh/issues/2709)) ([bb5a55d](https://github.com/City-of-Helsinki/yjdh/commit/bb5a55d48714177c867702c276a49ce754ed2e9b))
+* Applicant messenger should be disabled if app is in a batch (hl-1059) ([#2619](https://github.com/City-of-Helsinki/yjdh/issues/2619)) ([fe0995f](https://github.com/City-of-Helsinki/yjdh/commit/fe0995fe1ee96414f36ab113de88b7b81054eec6))
+
+
+### Bug Fixes
+
+* App crash on empty calculations (HL-1041) ([#2688](https://github.com/City-of-Helsinki/yjdh/issues/2688)) ([728af1f](https://github.com/City-of-Helsinki/yjdh/commit/728af1f79200b1b524569ca80716b6be6de316d7))
+* Benefit applicant is now safe for search robots ([180be58](https://github.com/City-of-Helsinki/yjdh/commit/180be58885683877fef0c640dcdcc987e60b21d5))
+* Upgrade all Finnish SSN related code to support new format ([490fd61](https://github.com/City-of-Helsinki/yjdh/commit/490fd610a11ac9eef0a181350b1a1af4c232a566))
+
 ## [3.5.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.4.0...benefit-applicant-v3.5.0) (2024-01-03)
 
 
