@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.6.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.5.1...benefit-backend-v1.6.0) (2024-01-16)
+
+
+### Features
+
+* Add callback for Talpa robot ([#2654](https://github.com/City-of-Helsinki/yjdh/issues/2654)) ([58376c5](https://github.com/City-of-Helsinki/yjdh/commit/58376c5e3ff10230ad641666e240c994d1988764))
+* Applicant messenger should be disabled if app is in a batch (hl-1059) ([#2619](https://github.com/City-of-Helsinki/yjdh/issues/2619)) ([fe0995f](https://github.com/City-of-Helsinki/yjdh/commit/fe0995fe1ee96414f36ab113de88b7b81054eec6))
+* Application pdf summary to open case request ([#2625](https://github.com/City-of-Helsinki/yjdh/issues/2625)) ([7f44c5e](https://github.com/City-of-Helsinki/yjdh/commit/7f44c5e832ccece7405d5b5159899399600c3096))
+* Show benefit amount in batch app listing ([#2706](https://github.com/City-of-Helsinki/yjdh/issues/2706)) ([63bc823](https://github.com/City-of-Helsinki/yjdh/commit/63bc82392072a14652b4f2efe80707c62052baaf))
+* Update open case payload to latest version ([#2702](https://github.com/City-of-Helsinki/yjdh/issues/2702)) ([878567f](https://github.com/City-of-Helsinki/yjdh/commit/878567fea89394ceccce3efa454e965b21b49138))
+
+
+### Bug Fixes
+
+* An array of fixes for HL-1053 ([#2726](https://github.com/City-of-Helsinki/yjdh/issues/2726)) ([6800c39](https://github.com/City-of-Helsinki/yjdh/commit/6800c392848e5c0e0221abad55e6153ba4d85968))
+* Modify batches to better support TALPA and handler's work (HL-1053) ([#2615](https://github.com/City-of-Helsinki/yjdh/issues/2615)) ([8c58eb0](https://github.com/City-of-Helsinki/yjdh/commit/8c58eb0a74810f7895fc8ecf4dee31fe40ebc55e))
+* Upgrade all Finnish SSN related code to support new format ([490fd61](https://github.com/City-of-Helsinki/yjdh/commit/490fd610a11ac9eef0a181350b1a1af4c232a566))
+
 ## [1.5.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.5.0...benefit-backend-v1.5.1) (2024-01-03)
 
 
