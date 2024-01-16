@@ -39,9 +39,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         batch_count = 6
-        total_created = ((len(ApplicationStatus.values) * 2) + batch_count) * options[
-            "number"
+        statuses = ApplicationStatus.values
+        filtered_statuses = [
+            status for status in statuses if status != "rejected_by_talpa"
         ]
+        total_created = ((len(filtered_statuses) * 2) + batch_count) * options["number"]
         if not settings.DEBUG:
             self.stdout.write(
                 "Seeding is allowed only when the DEBUG variable set to True"
@@ -128,7 +130,6 @@ def run_seed(number):
 
     _create_batch(ApplicationBatchStatus.DECIDED_ACCEPTED, ApplicationStatus.ACCEPTED)
     _create_batch(ApplicationBatchStatus.DECIDED_REJECTED, ApplicationStatus.REJECTED)
-
     cancelled_deletion_threshold = _past_datetime(30)
     draft_deletion_threshold = _past_datetime(180)
     draft_notify_threshold = _past_datetime(180 - 14)

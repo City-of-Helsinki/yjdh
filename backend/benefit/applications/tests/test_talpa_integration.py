@@ -1,6 +1,10 @@
 import datetime
 import decimal
 
+import pytest
+from django.urls import reverse
+
+from applications.enums import ApplicationBatchStatus, ApplicationTalpaStatus
 from applications.tests.common import (
     check_csv_cell_list_lines_generator,
     check_csv_string_lines_generator,
@@ -9,6 +13,7 @@ from applications.tests.conftest import *  # noqa
 from applications.tests.conftest import split_lines_at_semicolon
 from common.tests.conftest import *  # noqa
 from helsinkibenefit.tests.conftest import *  # noqa
+from shared.audit_log.models import AuditLogEntry
 
 
 def test_talpa_lines(applications_csv_service):
@@ -118,3 +123,62 @@ def test_write_talpa_csv_file(
         contents = f.read()
         assert contents.startswith('"Hakemusnumero";"Työnantajan tyyppi"')
         assert "äöÄÖtest" in contents
+
+
+@pytest.mark.django_db
+def test_talpa_callback_success(talpa_client, decided_application):
+    url = reverse(
+        "talpa_callback_url",
+    )
+
+    payload = {
+        "status": "Success",
+        "successful_applications": [decided_application.application_number],
+        "failed_applications": [],
+    }
+
+    response = talpa_client.post(url, data=payload)
+
+    assert response.status_code == 200
+    assert response.data == {"message": "Callback received"}
+
+    audit_log_entry = AuditLogEntry.objects.latest("created_at")
+    assert (
+        audit_log_entry.message["audit_event"]["target"]["id"]
+        == f"{decided_application.id}"
+    )
+
+    decided_application.refresh_from_db()
+
+    assert (
+        decided_application.talpa_status
+        == ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
+    )
+
+
+@pytest.mark.django_db
+def test_talpa_callback_rejected_application(
+    talpa_client, decided_application, application_batch
+):
+    decided_application.batch = application_batch
+    decided_application.save()
+
+    url = reverse(
+        "talpa_callback_url",
+    )
+
+    payload = {
+        "status": "Success",
+        "successful_applications": [],
+        "failed_applications": [decided_application.application_number],
+    }
+
+    response = talpa_client.post(url, data=payload)
+
+    assert response.status_code == 200
+    assert response.data == {"message": "Callback received"}
+
+    decided_application.refresh_from_db()
+
+    assert decided_application.talpa_status == ApplicationTalpaStatus.REJECTED_BY_TALPA
+    assert decided_application.batch.status == ApplicationBatchStatus.REJECTED_BY_TALPA

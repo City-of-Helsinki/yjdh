@@ -15,13 +15,15 @@ from applications.tests.factories import CancelledApplicationFactory
 def test_seed_applications_with_arguments(set_debug_to_true):
     amount = 5
     statuses = ApplicationStatus.values
+    # exlude rejected_by_talpa status as it is not used in seeder
+    filtered_statuses = [status for status in statuses if status != "rejected_by_talpa"]
     batch_count = 6
-    total_created = ((len(ApplicationStatus.values) * 2) + batch_count) * amount
+    total_created = ((len(filtered_statuses) * 2) + batch_count) * amount
     out = StringIO()
     call_command("seed", number=amount, stdout=out)
 
     seeded_applications = Application.objects.filter(
-        status__in=statuses,
+        status__in=filtered_statuses,
     )
     assert seeded_applications.count() == total_created
     assert f"Created {total_created} applications" in out.getvalue()

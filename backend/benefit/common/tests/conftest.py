@@ -1,3 +1,4 @@
+import base64
 import random
 
 import factory.random
@@ -82,6 +83,16 @@ def ahjo_user_token(ahjo_user):
 def ahjo_client():
     client = _api_client()
     return client
+
+
+@pytest.fixture
+def talpa_client(anonymous_client, settings):
+    credentials = base64.b64encode(settings.TALPA_ROBOT_AUTH_CREDENTIAL.encode("utf-8"))
+
+    anonymous_client.credentials(
+        HTTP_AUTHORIZATION="Basic {}".format(credentials.decode("utf-8"))
+    )
+    return anonymous_client
 
 
 def reseed(number):

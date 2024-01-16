@@ -7,6 +7,7 @@ from typing import Iterator, Tuple, Union
 
 from dateutil.relativedelta import relativedelta
 from django.core.files import File
+from django.http import HttpRequest
 from phonenumber_field.serializerfields import (
     PhoneNumberField as DefaultPhoneNumberField,
 )
@@ -441,3 +442,12 @@ def hash_file(file: File) -> str:
 
         # Return the hexadecimal representation of the hash
     return sha256.hexdigest()
+
+
+def get_request_ip_address(request: HttpRequest) -> Union[str, None]:
+    """Get the IP address of a request"""
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+    if x_forwarded_for:
+        return x_forwarded_for.split(",")[0]
+
+    return request.META.get("REMOTE_ADDR", None)
