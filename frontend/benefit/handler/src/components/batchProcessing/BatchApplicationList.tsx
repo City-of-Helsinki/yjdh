@@ -1,8 +1,13 @@
 import { ROUTES } from 'benefit/handler/constants';
 import useRemoveAppFromBatch from 'benefit/handler/hooks/useRemoveAppFromBatch';
 import {
+  BatchTableColumns,
+  BatchTableTransforms,
+} from 'benefit/handler/types/batchList';
+import {
   BATCH_STATUSES,
   PROPOSALS_FOR_DECISION,
+  TALPA_STATUSES,
 } from 'benefit-shared/constants';
 import {
   ApplicationInBatch,
@@ -10,9 +15,11 @@ import {
 } from 'benefit-shared/types/application';
 import {
   Button,
+  IconAlertCircle,
   IconAngleDown,
   IconAngleUp,
   IconArrowUndo,
+  IconCheck,
   IconCheckCircle,
   IconCheckCircleFill,
   IconClock,
@@ -159,6 +166,25 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
         ) : null,
     });
   }
+  if (status === BATCH_STATUSES.REJECTED_BY_TALPA) {
+    cols.push({
+      headerName: '',
+      key: 'talpa_status',
+      transform: ({ talpa_status }: BatchTableTransforms) => (
+        <>
+          {talpa_status === TALPA_STATUSES.NOT_SENT_TO_TALPA && (
+            <IconClock color="var(--color-metro)" />
+          )}
+          {talpa_status === TALPA_STATUSES.REJECTED_BY_TALPA && (
+            <IconAlertCircle color="var(--color-alert-dark)" />
+          )}
+          {talpa_status === TALPA_STATUSES.SUCCESFULLY_SENT_TO_TALPA && (
+            <IconCheck color="var(--color-tram)" />
+          )}
+        </>
+      ),
+    });
+  }
 
   const proposalForDecisionHeader = (): JSX.Element => {
     if (proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED) {
@@ -236,21 +262,27 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
           {[
             BATCH_STATUSES.SENT_TO_TALPA,
             BATCH_STATUSES.DECIDED_ACCEPTED,
+            BATCH_STATUSES.REJECTED_BY_TALPA,
           ].includes(status) && (
             <div>
               <dt>{t('common:batches.list.columns.status')}</dt>
               <dd>
-                {status === BATCH_STATUSES.SENT_TO_TALPA ? (
+                {status === BATCH_STATUSES.DECIDED_ACCEPTED && (
+                  <IconClock color="var(--color-info)" />
+                )}
+                {status === BATCH_STATUSES.SENT_TO_TALPA && (
                   <IconCheckCircle color="var(--color-tram)" />
-                ) : (
-                  <IconClock color="var(--color-metro)" />
+                )}
+                {status === BATCH_STATUSES.REJECTED_BY_TALPA && (
+                  <IconAlertCircle color="var(--color-alert-dark)" />
                 )}
                 <$BatchStatusValue>
-                  {status === BATCH_STATUSES.SENT_TO_TALPA
-                    ? t('common:batches.list.columns.statuses.inPayment')
-                    : t(
-                        'common:batches.list.columns.statuses.waitingForPayment'
-                      )}
+                  {status === BATCH_STATUSES.DECIDED_ACCEPTED &&
+                    t('common:batches.list.columns.statuses.waitingForPayment')}
+                  {status === BATCH_STATUSES.REJECTED_BY_TALPA &&
+                    t('common:batches.list.columns.statuses.issueInTalpa')}
+                  {status === BATCH_STATUSES.SENT_TO_TALPA &&
+                    t('common:batches.list.columns.statuses.inPayment')}
                 </$BatchStatusValue>
               </dd>
             </div>
@@ -303,6 +335,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
               {[
                 BATCH_STATUSES.DECIDED_ACCEPTED,
                 BATCH_STATUSES.SENT_TO_TALPA,
+                BATCH_STATUSES.REJECTED_BY_TALPA,
               ].includes(status) && (
                 <BatchFooterCompletion
                   batch={batch}

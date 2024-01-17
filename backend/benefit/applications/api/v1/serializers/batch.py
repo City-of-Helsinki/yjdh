@@ -205,4 +205,5 @@ class BatchApplicationSerializer(ReadOnlySerializer):
             "handled_at",
             "employee",
             "calculation",
+            "talpa_status",
         ]
