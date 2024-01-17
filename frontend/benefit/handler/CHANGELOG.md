@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.1.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v3.0.0...benefit-handler-v3.1.0) (2024-01-17)
+
+
+### Features
+
+* Show benefit amount in batch app listing ([#2706](https://github.com/City-of-Helsinki/yjdh/issues/2706)) ([63bc823](https://github.com/City-of-Helsinki/yjdh/commit/63bc82392072a14652b4f2efe80707c62052baaf))
+
+
+### Bug Fixes
+
+* An array of fixes for HL-1053 ([#2726](https://github.com/City-of-Helsinki/yjdh/issues/2726)) ([6800c39](https://github.com/City-of-Helsinki/yjdh/commit/6800c392848e5c0e0221abad55e6153ba4d85968))
+* App crash on empty calculations (HL-1041) ([#2688](https://github.com/City-of-Helsinki/yjdh/issues/2688)) ([728af1f](https://github.com/City-of-Helsinki/yjdh/commit/728af1f79200b1b524569ca80716b6be6de316d7))
+* Modify batches to better support TALPA and handler's work (HL-1053) ([#2615](https://github.com/City-of-Helsinki/yjdh/issues/2615)) ([8c58eb0](https://github.com/City-of-Helsinki/yjdh/commit/8c58eb0a74810f7895fc8ecf4dee31fe40ebc55e))
+* Remove isFetching as it caused render flicker ([6a00d9a](https://github.com/City-of-Helsinki/yjdh/commit/6a00d9a02a26eb468b92ed1490538bdf950deb92))
+* Upgrade all Finnish SSN related code to support new format ([490fd61](https://github.com/City-of-Helsinki/yjdh/commit/490fd610a11ac9eef0a181350b1a1af4c232a566))
+
 ## [3.0.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v2.2.1...benefit-handler-v3.0.0) (2023-12-21)
 
 
