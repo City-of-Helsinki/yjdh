@@ -50,14 +50,14 @@ const BatchFooterCompletion: React.FC<BatchProps> = ({
   } = useDownloadP2PFile();
 
   const { mutate: changeBatchStatus } = useBatchStatus(setBatchCloseAnimation);
-  const [isModalBatchToCompletion, setModalBatchToCompletion] =
+  const [isModalBatchToCompletion, setIsModalBatchToCompletion] =
     React.useState(false);
-  const [isModalBatchToInspection, setModalBatchToInspection] =
+  const [isModalBatchToInspection, setIsModalBatchToInspection] =
     React.useState(false);
 
   const handleModalClose = (): void => {
-    setModalBatchToCompletion(false);
-    setModalBatchToInspection(false);
+    setIsModalBatchToCompletion(false);
+    setIsModalBatchToInspection(false);
   };
 
   const handleBatchStatusChange = (status: BATCH_STATUSES): void => {
@@ -251,7 +251,7 @@ const BatchFooterCompletion: React.FC<BatchProps> = ({
             iconLeft={<IconArrowUndo />}
             isLoading={isDownloadingAttachments}
             disabled={isDownloadingAttachments}
-            onClick={() => setModalBatchToInspection(true)}
+            onClick={() => setIsModalBatchToInspection(true)}
           >
             {t('common:batches.actions.returnToInspection')}
           </Button>
@@ -262,7 +262,7 @@ const BatchFooterCompletion: React.FC<BatchProps> = ({
             theme="coat"
             variant="primary"
             disabled={isDownloadingAttachments}
-            onClick={() => setModalBatchToCompletion(true)}
+            onClick={() => setIsModalBatchToCompletion(true)}
           >
             {t('common:batches.actions.markToArchive')}
           </Button>
