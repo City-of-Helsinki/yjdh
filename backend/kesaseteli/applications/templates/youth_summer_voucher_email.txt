@@ -4,7 +4,7 @@
 
 {{first_name}} {{last_name}}
 {% trans 'Kesäsetelinumero:' %} {{summer_voucher_serial_number}}
-{% trans 'Kesäsetelin summa:' %} {% trans '325€' %}
+{% trans 'Kesäsetelin summa:' %} {% trans '350€' %}
 {% trans 'Postinumero:' %} {{postcode}}
 {% trans 'Koulu:' %} {{school}}
 {% trans 'Puhelinnumero:' %} {{phone_number}}
@@ -27,7 +27,7 @@
 ------------------------------------------------------------------------
 {% trans 'Ohjeita työnantajalle' %}:
 
-{% trans 'Kesäseteli on nuorten, yrittäjien ja Helsingin kaupungin yhteinen hanke.' %} {% trans 'Kaupunki korvaa 325 euroa työnantajalle, joka palkkaa Kesäseteliin oikeutetun nuoren töihin 1.6.–15.8.2023 välisenä aikana.' %} {% trans 'Kesätyön vähimmäisvaatimuksina ovat 60 tunnin työaika ja 400 euron palkka.' %}
+{% trans 'Kesäseteli on nuorten, yrittäjien ja Helsingin kaupungin yhteinen hanke.' %} {% trans 'Kaupunki korvaa 350 euroa työnantajalle, joka palkkaa Kesäseteliin oikeutetun nuoren töihin 1.6.–15.8.2023 välisenä aikana.' %} {% trans 'Kesätyön vähimmäisvaatimuksina ovat 60 tunnin työaika ja 400 euron palkka.' %}
 
 {% trans 'Muut käyttöehdot voit lukea täältä:' %}
 {% trans 'https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/tyonantajalle-2/' %}
