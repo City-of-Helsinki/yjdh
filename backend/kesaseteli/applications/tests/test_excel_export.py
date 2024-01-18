@@ -40,6 +40,7 @@ from applications.exporters.excel_exporter import (
     REMOVABLE_TALPA_FIELD_TITLES,
     SALARY_PAID_FIELD_TITLE,
     SPECIAL_CASE_FIELD_TITLE,
+    SUM_FIELD_TITLE,
     WORK_HOURS_FIELD_TITLE,
 )
 from applications.models import EmployerSummerVoucher, YouthApplication
@@ -327,6 +328,8 @@ def test_excel_view_download_content(  # noqa: C901
                 assert (output_column.value is None and salary_paid is None) or Decimal(
                     output_column.value
                 ) == salary_paid
+            elif excel_field.title == SUM_FIELD_TITLE:
+                assert output_column.value == str(voucher.value_in_euros)
             elif excel_field.model_fields == ["attachments"]:
                 expected_attachment_uri = get_attachment_uri(
                     voucher, excel_field, voucher.attachments, response.wsgi_request
@@ -350,6 +353,48 @@ def test_excel_view_download_content(  # noqa: C901
                 assert (
                     output_column.value == excel_field.value % values_tuple
                 ), excel_field.title
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.parametrize(
+    "employer_summer_voucher_creation_date,sum_field_value",
+    [
+        (date(2021, 6, 1), "325"),
+        (date(2022, 6, 1), "325"),
+        (date(2023, 6, 1), "325"),
+        (date(2024, 1, 1), "325"),
+        (date(2024, 5, 31), "325"),
+        (date(2024, 6, 1), "350"),
+        (date(2024, 12, 31), "350"),
+    ],
+)
+def test_excel_view_download_sum_field_value(  # noqa: C901
+    staff_client,
+    employer_summer_voucher_creation_date: date,
+    sum_field_value: str,
+):
+    with freeze_time(employer_summer_voucher_creation_date):
+        EmployerSummerVoucherFactory(
+            application=EmployerApplicationFactory(
+                status=EmployerApplicationStatus.SUBMITTED
+            )
+        )
+
+    # Use earlier date because fetching file fails if frozen date is in the future
+    with freeze_time(date(employer_summer_voucher_creation_date.year, 1, 1)):
+        response = staff_client.get(
+            f"{excel_download_url()}?download=annual&columns=talpa"
+        )
+
+    workbook = openpyxl.load_workbook(filename=BytesIO(response.getvalue()))
+    rows_generator = workbook.active.rows
+    header_row = next(rows_generator)
+    data_row = next(rows_generator)
+
+    titles = [column.value for column in header_row]
+    sum_field_index = titles.index(SUM_FIELD_TITLE)
+    assert data_row[sum_field_index].value == sum_field_value
 
 
 @pytest.mark.django_db

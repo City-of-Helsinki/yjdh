@@ -245,7 +245,7 @@ FIELDS = [
         30,
         "#F7DAE3",
     ),
-    ExcelField(SUM_FIELD_TITLE, "325", [], 15, "#F7DAE3"),
+    ExcelField(SUM_FIELD_TITLE, "%s", ["value_in_euros"], 15, "#F7DAE3"),
     ExcelField(_("Tarkastaja etunimi"), "", [], 30, "#F7DAE3"),
     ExcelField(_("Tarkastaja sukunimi"), "", [], 30, "#F7DAE3"),
     ExcelField(_("Hyväksyjä etunimi"), "", [], 30, "#F7DAE3"),

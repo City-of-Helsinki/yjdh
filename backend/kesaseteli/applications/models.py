@@ -888,7 +888,7 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
 
     def youth_summer_voucher_logo(self, language) -> MIMEImage:
         return YouthSummerVoucher._template_image(
-            filename=f"youth_summer_voucher-325e-{language}.png",
+            filename=f"youth_summer_voucher-350e-{language}.png",
             content_id="youth_summer_voucher_logo",
         )
 
@@ -1116,6 +1116,15 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     )
 
     ordering = models.IntegerField(default=0)
+
+    @property
+    def value_in_euros(self) -> int:
+        if self.created_at.date() < date(2024, 6, 1):
+            # Use 2023 year's value (325e) for late coming employer applications in 2024
+            # before 2024's summer job period starts (i.e. 1st of June 2024).
+            return 325
+        else:
+            return 350
 
     @property
     def last_submitted_at(self) -> Optional[datetime]:

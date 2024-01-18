@@ -572,7 +572,7 @@ msgstr ""
 msgid "Kesäsetelisi ja ohjeet sen käyttämiseen"
 msgstr ""
 
-msgid "Helsinki, Kesäseteli, 325€"
+msgid "Helsinki, Kesäseteli, 350€"
 msgstr ""
 
 msgid "Kesäsetelisi, ole hyvä"
@@ -595,7 +595,7 @@ msgstr ""
 msgid "Kesäsetelin summa:"
 msgstr ""
 
-msgid "325€"
+msgid "350€"
 msgstr ""
 
 msgid "Postinumero:"
@@ -669,7 +669,7 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Kaupunki korvaa 325 euroa työnantajalle, joka palkkaa Kesäseteliin "
+"Kaupunki korvaa 350 euroa työnantajalle, joka palkkaa Kesäseteliin "
 "oikeutetun nuoren töihin 1.6.–15.8.2023 välisenä aikana."
 msgstr ""
 
