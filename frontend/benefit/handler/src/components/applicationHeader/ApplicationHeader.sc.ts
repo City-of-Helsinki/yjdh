@@ -4,6 +4,7 @@ export const $Wrapper = styled.div`
   padding: ${(props) => props.theme.spacing.xs2} 0;
   background-color: ${(props) => props.theme.colors.coatOfArms};
   color: ${(props) => props.theme.colors.white};
+  margin-bottom: ${(props) => props.theme.spacing.xl};
 `;
 
 export const $InnerWrapper = styled.div`
