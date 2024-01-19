@@ -191,16 +191,15 @@ def test_youth_application_factory(  # noqa: C901
 
 
 @pytest.mark.django_db
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
 @pytest.mark.parametrize(
-    "youth_application_factory,expected_need_additional_info",
+    "youth_application_factory",
     [
-        (AdditionalInfoRequestedYouthApplicationFactory, True),
-        (AdditionalInfoProvidedYouthApplicationFactory, True),
-        (InactiveNoNeedAdditionalInfoYouthApplicationFactory, False),
-        (InactiveNeedAdditionalInfoYouthApplicationFactory, True),
+        AdditionalInfoRequestedYouthApplicationFactory,
+        AdditionalInfoProvidedYouthApplicationFactory,
+        InactiveNeedAdditionalInfoYouthApplicationFactory,
     ],
 )
+@pytest.mark.parametrize("next_public_mock_flag", [False, True])
 @pytest.mark.parametrize("next_public_disable_vtj", [False, True])
 @pytest.mark.parametrize(
     "freeze_date", ["2021-01-01", "2021-06-15", "2021-12-31", "2023-07-16"]
@@ -209,17 +208,42 @@ def test_need_additional_info(
     settings,
     make_youth_application_activation_link_unexpired,
     youth_application_factory,
-    expected_need_additional_info: bool,
+    next_public_mock_flag: bool,
     next_public_disable_vtj: bool,
     freeze_date: str,
 ):
+    settings.NEXT_PUBLIC_MOCK_FLAG = next_public_mock_flag
     settings.NEXT_PUBLIC_DISABLE_VTJ = next_public_disable_vtj
     for _ in range(10):  # Run more than once because factories generate random data
         with freeze_time(freeze_date):
             youth_application: YouthApplication = youth_application_factory()
-            assert (
-                youth_application.need_additional_info == expected_need_additional_info
-            )
+            assert youth_application.need_additional_info
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "youth_application_factory", [InactiveNoNeedAdditionalInfoYouthApplicationFactory]
+)
+@pytest.mark.parametrize("next_public_mock_flag", [False, True])
+@pytest.mark.parametrize("next_public_disable_vtj", [False, True])
+@pytest.mark.parametrize(
+    "freeze_date", ["2021-01-01", "2021-06-15", "2021-12-31", "2023-07-16"]
+)
+def test_no_need_additional_info(
+    settings,
+    make_youth_application_activation_link_unexpired,
+    youth_application_factory,
+    next_public_mock_flag: bool,
+    next_public_disable_vtj: bool,
+    freeze_date: str,
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = next_public_mock_flag
+    settings.NEXT_PUBLIC_DISABLE_VTJ = next_public_disable_vtj
+    for _ in range(10):  # Run more than once because factories generate random data
+        with freeze_time(freeze_date):
+            youth_application: YouthApplication = youth_application_factory()
+            # If VTJ is disabled, additional info is always needed, otherwise not
+            assert youth_application.need_additional_info == next_public_disable_vtj
 
 
 @pytest.mark.django_db

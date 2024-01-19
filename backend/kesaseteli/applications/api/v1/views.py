@@ -409,30 +409,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         elif youth_application.has_activation_link_expired:
             return HttpResponseRedirect(youth_application.expired_page_url())
         elif youth_application.activate():
-            if settings.NEXT_PUBLIC_DISABLE_VTJ:
-                if youth_application.need_additional_info:
-                    return self._set_application_needs_additional_info(
-                        youth_application=youth_application
-                    )
-                LOGGER.info(
-                    f"Activated youth application {youth_application.pk}: "
-                    "VTJ is disabled, sending application to be processed by a handler"
-                )
-                youth_application.status = (
-                    YouthApplicationStatus.AWAITING_MANUAL_PROCESSING
-                )
-                youth_application.save()
-                was_email_sent = youth_application.send_processing_email_to_handler(
-                    request
-                )
-                if not was_email_sent:
-                    transaction.set_rollback(True)
-                    with translation.override(youth_application.language):
-                        return HttpResponse(
-                            _("Failed to send manual processing email to handler"),
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        )
-            elif youth_application.accept_automatically():
+            if youth_application.accept_automatically():
                 LOGGER.info(
                     f"Activated youth application {youth_application.pk}: "
                     "Youth application was accepted automatically using data from VTJ"
