@@ -16,6 +16,7 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const { t } = useTranslation();
   return (
     <ReviewSection
+      id={data.id}
       header={t(`${translationsBase}.headings.heading1`)}
       action={!ACTIONLESS_STATUSES.includes(data.status) ? <span /> : null}
       section="company"

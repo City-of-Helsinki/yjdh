@@ -23,6 +23,7 @@ const EmployeeView: React.FC<ApplicationReviewViewProps> = ({
   const { t } = useTranslation();
   return (
     <ReviewSection
+      id={data.id}
       header={t(`${translationsBase}.headings.heading5`)}
       section="employee"
       action={

@@ -16,6 +16,7 @@ const CoOperationNegotiationsView: React.FC<ApplicationReviewViewProps> = ({
   const { t } = useTranslation();
   return (
     <ReviewSection
+      id={data.id}
       header={t(`${translationsBase}.headings.heading4`)}
       action={!ACTIONLESS_STATUSES.includes(data.status) ? <span /> : null}
       section="coOperationNegotiations"

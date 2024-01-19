@@ -1,5 +1,9 @@
+import { ROUTES } from 'benefit/handler/constants';
 import ReviewStateContext from 'benefit/handler/context/ReviewStateContext';
 import { ReviewState } from 'benefit/handler/types/application';
+import { Button, IconPen } from 'hds-react';
+import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import Heading from 'shared/components/forms/heading/Heading';
 import { HeadingProps } from 'shared/components/forms/heading/Heading.sc';
@@ -11,7 +15,12 @@ import {
   GridProps,
 } from 'shared/components/forms/section/FormSection.sc';
 
-import { $ActionLeft, $CheckIcon, $CheckIconFill } from './ReviewSection.sc';
+import {
+  $ActionLeft,
+  $CheckIcon,
+  $CheckIconFill,
+  $EditButtonContainer,
+} from './ReviewSection.sc';
 import { useReviewSection } from './useReviewSection';
 
 export type ReviewSectionProps = {
@@ -21,6 +30,7 @@ export type ReviewSectionProps = {
   withBorder?: boolean;
   withoutDivider?: boolean;
   header?: string;
+  id?: string;
   section?: keyof ReviewState;
 } & HeadingProps &
   GridProps;
@@ -35,12 +45,16 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
   role,
   loading,
   section,
+  id,
   ...rest
 }) => {
   const { theme, bgColor, withAction } = useReviewSection(action, withMargin);
   const { reviewState, handleUpdateReviewState } =
     React.useContext(ReviewStateContext);
   const sectionState = reviewState[section];
+
+  const router = useRouter();
+  const { t } = useTranslation();
 
   const handleReviewClick = (): void => {
     handleUpdateReviewState({ ...reviewState, [section]: !sectionState });
@@ -81,7 +95,22 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
           <$ActionLeft>{action && <CheckIcon />}</$ActionLeft>
         </$GridCell>
       )}
-      <$GridCell $colStart={2} $colSpan={12}>
+      {id && withAction && (
+        <$EditButtonContainer>
+          <Button
+            theme="black"
+            variant="supplementary"
+            iconLeft={<IconPen />}
+            onClick={() =>
+              router.push(`${String(ROUTES.APPLICATION_FORM_EDIT)}?id=${id}`)
+            }
+          >
+            {t(`common:review.actions.edit`)}
+          </Button>
+        </$EditButtonContainer>
+      )}
+
+      <$GridCell $colSpan={12} $colStart={2}>
         <$Section paddingBottom={withAction && !withMargin}>
           {header && (
             <Heading
