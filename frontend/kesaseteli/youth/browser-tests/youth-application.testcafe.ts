@@ -88,7 +88,7 @@ test('If I send two applications with same email, I will see "email is in use" -
 });
 
 if (!isRealIntegrationsEnabled()) {
-  test("If I'm 9th grader and attend helsinkian school, then application is automatically accepted", async () => {
+  test("If I'm 9th grader and I attend helsinkian school but I live outside Helsinki, then I need to also give additional info application", async () => {
     await youthForm.sendYouthApplication(
       fakeYouthApplication({
         ...is9thGraderAge(),
@@ -98,10 +98,10 @@ if (!isRealIntegrationsEnabled()) {
     );
     await thankYouPage.isLoaded();
     await thankYouPage.clickActivationLink();
-    await new NotificationPage('accepted').isLoaded();
+    await new AdditionalInfoPage().isLoaded();
   });
 
-  test("If I'm 9th grader and live in Helsinki but I attend other unlisted school, then application is automatically accepted", async () => {
+  test("If I'm 9th grader and live in Helsinki and I attend other unlisted school, then application is automatically accepted", async () => {
     await youthForm.sendYouthApplication(
       fakeYouthApplication({
         ...is9thGraderAge(),
@@ -114,7 +114,20 @@ if (!isRealIntegrationsEnabled()) {
     await new NotificationPage('accepted').isLoaded();
   });
 
-  test("If I'm upper secondary education first year and I live in Helsinki but I attend other unlisted school, then application is automatically accepted", async () => {
+  test("If I'm 9th grader and live in Helsinki and I attend helsinkian school, then application is automatically accepted", async () => {
+    await youthForm.sendYouthApplication(
+      fakeYouthApplication({
+        ...is9thGraderAge(),
+        ...livesInHelsinki,
+        ...attendsHelsinkianSchool,
+      })
+    );
+    await thankYouPage.isLoaded();
+    await thankYouPage.clickActivationLink();
+    await new NotificationPage('accepted').isLoaded();
+  });
+
+  test("If I live in Helsinki and I attend other unlisted school but I'm upper secondary education first year, then I need to also give additional info application", async () => {
     await youthForm.sendYouthApplication(
       fakeYouthApplication({
         ...isUpperSecondaryEducation1stYearStudentAge(),
@@ -124,7 +137,20 @@ if (!isRealIntegrationsEnabled()) {
     );
     await thankYouPage.isLoaded();
     await thankYouPage.clickActivationLink();
-    await new NotificationPage('accepted').isLoaded();
+    await new AdditionalInfoPage().isLoaded();
+  });
+
+  test("If I live in Helsinki and I attend helsinkian school but I'm upper secondary education first year, then I need to also give additional info application", async () => {
+    await youthForm.sendYouthApplication(
+      fakeYouthApplication({
+        ...isUpperSecondaryEducation1stYearStudentAge(),
+        ...livesInHelsinki,
+        ...attendsHelsinkianSchool,
+      })
+    );
+    await thankYouPage.isLoaded();
+    await thankYouPage.clickActivationLink();
+    await new AdditionalInfoPage().isLoaded();
   });
 
   test('If I fill application in swedish, send it and activate it, I will see activation message in swedish', async () => {
@@ -151,7 +177,20 @@ if (!isRealIntegrationsEnabled()) {
     await new AdditionalInfoPage().isLoaded();
   });
 
-  test("If I'm upper secondary education first year and I live outside Helsinki, then I need to also give additional info application", async () => {
+  test("If I'm upper secondary education first year and I live outside Helsinki and I attend other unlisted school, then I need to also give additional info application", async () => {
+    await youthForm.sendYouthApplication(
+      fakeYouthApplication({
+        ...isUpperSecondaryEducation1stYearStudentAge(),
+        ...livesOutsideHelsinki,
+        ...attendsUnlistedSchool,
+      })
+    );
+    await thankYouPage.isLoaded();
+    await thankYouPage.clickActivationLink();
+    await new AdditionalInfoPage().isLoaded();
+  });
+
+  test("If I'm upper secondary education first year and I live outside Helsinki and I attend helsinkian school, then I need to also give additional info application", async () => {
     await youthForm.sendYouthApplication(
       fakeYouthApplication({
         ...isUpperSecondaryEducation1stYearStudentAge(),

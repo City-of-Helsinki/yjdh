@@ -737,7 +737,7 @@ def test_youth_applications_activate_unexpired_inactive_with_rejection(
 
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_DISABLE_VTJ=False)
-@pytest.mark.parametrize("application_year", [2022, 2023])
+@pytest.mark.parametrize("application_year", [2022, 2023, 2024])
 @pytest.mark.parametrize("applicant_age", [15, 16, 17, 18])
 @pytest.mark.parametrize("is_helsinkian", [False, True])
 @pytest.mark.parametrize("attends_helsinkian_school", [False, True])
@@ -794,10 +794,7 @@ def test_youth_applications_activate_unexpired_inactive__vtj_enabled(
     assert response.status_code == status.HTTP_302_FOUND
     app.refresh_from_db()
 
-    if is_alive and (
-        (applicant_age == 16 and (is_helsinkian or attends_helsinkian_school))
-        or (applicant_age == 17 and is_helsinkian)
-    ):
+    if is_alive and is_helsinkian and applicant_age == 16:
         assert response.url == app.accepted_page_url()
         assert app.status == YouthApplicationStatus.ACCEPTED
     else:
@@ -807,7 +804,7 @@ def test_youth_applications_activate_unexpired_inactive__vtj_enabled(
 
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_DISABLE_VTJ=True)
-@pytest.mark.parametrize("application_year", [2022, 2023])
+@pytest.mark.parametrize("application_year", [2022, 2023, 2024])
 @pytest.mark.parametrize("applicant_age", [15, 16, 17, 18])
 @pytest.mark.parametrize("is_helsinkian", [False, True])
 @pytest.mark.parametrize("attends_helsinkian_school", [False, True])
@@ -850,12 +847,8 @@ def test_youth_applications_activate_unexpired_inactive__vtj_disabled(
     assert response.status_code == status.HTTP_302_FOUND
     app.refresh_from_db()
 
-    if applicant_age == 16 and attends_helsinkian_school:
-        assert response.url == app.activated_page_url()
-        assert app.status == YouthApplicationStatus.AWAITING_MANUAL_PROCESSING
-    else:
-        assert response.url == app.additional_info_page_url(app.pk)
-        assert app.status == YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+    assert response.url == app.additional_info_page_url(app.pk)
+    assert app.status == YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
 
     assert app.encrypted_original_vtj_json is None
     assert app.encrypted_handler_vtj_json is None
@@ -925,36 +918,24 @@ def test_youth_applications_activate_unexpired_active(
 
 
 @pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_DISABLE_VTJ=False)
+@pytest.mark.parametrize("language", get_supported_languages())
+@pytest.mark.parametrize("rejected_application_exists", [False, True])
 @pytest.mark.parametrize(
-    "language,disable_vtj,rejected_application_exists,youth_application_factory,need_additional_info",
+    "youth_application_factory,need_additional_info",
     [
-        (
-            language,
-            disable_vtj,
-            rejected_application_exists,
-            youth_application_factory,
-            need_additional_info,
-        )
-        for language in get_supported_languages()
-        for disable_vtj in [True]
-        for rejected_application_exists in [False, True]
-        for youth_application_factory, need_additional_info in [
-            (InactiveNoNeedAdditionalInfoYouthApplicationFactory, False),
-            (InactiveNeedAdditionalInfoYouthApplicationFactory, True),
-        ]
+        (InactiveNoNeedAdditionalInfoYouthApplicationFactory, False),
+        (InactiveNeedAdditionalInfoYouthApplicationFactory, True),
     ],
 )
 def test_youth_applications_activate_expired_inactive(
     api_client,
     make_youth_application_activation_link_expired,
-    settings,
     language,
-    disable_vtj,
     rejected_application_exists,
     youth_application_factory,
     need_additional_info,
 ):
-    settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj
     inactive_youth_application = youth_application_factory(language=language)
     create_same_person_previous_year_accepted_application(inactive_youth_application)
 
@@ -1050,7 +1031,7 @@ def test_youth_applications_activate_expired_active(
 
 
 @pytest.mark.django_db
-@override_settings(NEXT_PUBLIC_DISABLE_VTJ=True)
+@override_settings(NEXT_PUBLIC_DISABLE_VTJ=False)
 def test_youth_applications_dual_activate_unexpired_inactive(
     api_client,
     make_youth_application_activation_link_unexpired,
@@ -1077,11 +1058,11 @@ def test_youth_applications_dual_activate_unexpired_inactive(
     app_1.refresh_from_db()
     app_2.refresh_from_db()
 
-    assert not app_1.has_youth_summer_voucher
+    assert app_1.has_youth_summer_voucher
     assert app_1.is_active
-    assert app_1.status == YouthApplicationStatus.AWAITING_MANUAL_PROCESSING
+    assert app_1.status == YouthApplicationStatus.ACCEPTED
     assert response_1.status_code == status.HTTP_302_FOUND
-    assert response_1.url == app_1.activated_page_url()
+    assert response_1.url == app_1.accepted_page_url()
 
     assert not app_2.has_youth_summer_voucher
     assert not app_2.is_active
@@ -1096,7 +1077,7 @@ def test_youth_applications_dual_activate_unexpired_inactive(
     [
         (
             InactiveNoNeedAdditionalInfoYouthApplicationFactory,
-            YouthApplicationStatus.AWAITING_MANUAL_PROCESSING,
+            YouthApplicationStatus.ACCEPTED,
         ),
         (
             InactiveNeedAdditionalInfoYouthApplicationFactory,
@@ -1104,26 +1085,22 @@ def test_youth_applications_dual_activate_unexpired_inactive(
         ),
     ],
 )
-@override_settings(NEXT_PUBLIC_DISABLE_VTJ=True)
-def test_youth_applications_reactivate_unexpired_inactive__vtj_disabled(
+@override_settings(NEXT_PUBLIC_DISABLE_VTJ=False)
+def test_youth_applications_reactivate_unexpired_inactive(
     app_factory,
     expected_status,
     api_client,
     make_youth_application_activation_link_unexpired,
 ):
     """
-    When user tries to activate and reactivate an application, he/she should
+    When user tries to activate and then reactivate an application, they should
     get redirected to the correct url.
 
     - Application should get the expected status on the first activation
     - User should get redirected correctly when trying to reactivate the
       application.
     """
-    app = app_factory(
-        # Disabled VTJ means there's no VTJ data
-        encrypted_original_vtj_json=None,
-        encrypted_handler_vtj_json=None,
-    )
+    app = app_factory()
 
     # Activate and reactivate
     for i in range(2):
@@ -1133,15 +1110,12 @@ def test_youth_applications_reactivate_unexpired_inactive__vtj_disabled(
 
         assert response.status_code == status.HTTP_302_FOUND
 
-        if i == 0 and app.status == YouthApplicationStatus.AWAITING_MANUAL_PROCESSING:
-            assert response.url == app.activated_page_url()
-        elif app.status == YouthApplicationStatus.AWAITING_MANUAL_PROCESSING:
+        if i == 0 and app.status == YouthApplicationStatus.ACCEPTED:
+            assert response.url == app.accepted_page_url()
+        elif app.status == YouthApplicationStatus.ACCEPTED:
             assert response.url == app.already_activated_page_url()
         else:
             assert response.url == app.additional_info_page_url(pk=app.pk)
-
-        assert app.encrypted_original_vtj_json is None
-        assert app.encrypted_handler_vtj_json is None
 
 
 @override_settings(
@@ -1531,32 +1505,6 @@ def test_youth_application_additional_info_request_email_link_path(api_client):
     EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
     DEFAULT_FROM_EMAIL="Test sender <testsender@hel.fi>",
     HANDLER_EMAIL="Test handler <testhandler@hel.fi>",
-    NEXT_PUBLIC_DISABLE_VTJ=True,
-)
-def test_youth_application_processing_email_sending_on_activate__vtj_disabled(
-    settings,
-    api_client,
-    make_youth_application_activation_link_unexpired,
-):
-    youth_application = InactiveNoNeedAdditionalInfoYouthApplicationFactory()
-    assert not youth_application.is_active
-    assert not youth_application.has_activation_link_expired
-    assert not youth_application.need_additional_info
-    start_mail_count = len(mail.outbox)
-    api_client.get(get_activation_url(youth_application.pk))
-
-    assert len(mail.outbox) == start_mail_count + 1
-    processing_email = mail.outbox[-1]
-    assert processing_email.subject == youth_application.processing_email_subject()
-    assert processing_email.from_email == "Test sender <testsender@hel.fi>"
-    assert processing_email.to == ["Test handler <testhandler@hel.fi>"]
-
-
-@pytest.mark.django_db
-@override_settings(
-    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
-    DEFAULT_FROM_EMAIL="Test sender <testsender@hel.fi>",
-    HANDLER_EMAIL="Test handler <testhandler@hel.fi>",
 )
 @pytest.mark.parametrize("disable_vtj", [False, True])
 def test_youth_application_processing_email_sending_after_additional_info(
@@ -1579,36 +1527,6 @@ def test_youth_application_processing_email_sending_after_additional_info(
     assert processing_email.subject == youth_application.processing_email_subject()
     assert processing_email.from_email == "Test sender <testsender@hel.fi>"
     assert processing_email.to == ["Test handler <testhandler@hel.fi>"]
-
-
-@pytest.mark.django_db
-@override_settings(
-    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
-    NEXT_PUBLIC_DISABLE_VTJ=True,
-)
-@pytest.mark.parametrize(
-    "youth_application_language,expected_email_language",
-    [(language, "fi") for language in get_supported_languages()],
-)
-def test_youth_application_processing_email_language_on_activate__vtj_disabled(
-    settings,
-    api_client,
-    make_youth_application_activation_link_unexpired,
-    youth_application_language,
-    expected_email_language,
-):
-    youth_application = InactiveNoNeedAdditionalInfoYouthApplicationFactory(
-        language=youth_application_language
-    )
-    assert not youth_application.is_active
-    assert not youth_application.has_activation_link_expired
-    assert not youth_application.need_additional_info
-    start_mail_count = len(mail.outbox)
-    api_client.get(get_activation_url(youth_application.pk))
-    assert len(mail.outbox) == start_mail_count + 1
-    processing_email = mail.outbox[-1]
-    assert_email_subject_language(processing_email.subject, expected_email_language)
-    assert_email_body_language(processing_email.body, expected_email_language)
 
 
 @pytest.mark.django_db

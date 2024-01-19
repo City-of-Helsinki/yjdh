@@ -748,11 +748,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
 
     @property
     def is_applicant_in_target_group(self) -> bool:
-        if self.is_9th_grader_age:
-            return self.is_helsinkian or self.attends_helsinkian_school
-        elif self.is_upper_secondary_education_1st_year_student_age:
-            return self.is_helsinkian
-        return False
+        return self.is_9th_grader_age and self.is_helsinkian
 
     @property
     def can_accept_automatically(self) -> bool:
@@ -773,7 +769,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
                  additional info has been provided or not.
         """
         if settings.NEXT_PUBLIC_DISABLE_VTJ:
-            return not (self.is_9th_grader_age and self.attends_helsinkian_school)
+            return True
 
         return (
             self.is_applicant_dead_according_to_vtj

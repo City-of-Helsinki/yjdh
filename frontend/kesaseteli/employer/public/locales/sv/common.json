@@ -85,7 +85,7 @@
     "form": {
       "selectionGroups": {
         "target_group": {
-          "primary_target_group": "Niondeklassist, tiondeklassist eller Valmaklassist",
+          "primary_target_group": "Niondeklassist eller TUVAklassist",
           "secondary_target_group": "Annan åldersgrupp"
         },
         "hired_without_voucher_assessment": {

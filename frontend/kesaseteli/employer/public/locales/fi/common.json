@@ -85,7 +85,7 @@
     "form": {
       "selectionGroups": {
         "target_group": {
-          "primary_target_group": "9. luokkalainen, 10. luokkalainen tai Valma-luokkalainen",
+          "primary_target_group": "9. luokkalainen tai TUVA-luokkalainen",
           "secondary_target_group": "Jokin muu ikäryhmä"
         },
         "hired_without_voucher_assessment": {
