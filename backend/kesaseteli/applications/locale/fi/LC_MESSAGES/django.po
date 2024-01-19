@@ -640,7 +640,7 @@ msgstr ""
 msgid "Työtunteja on vähintään 18h/viikko."
 msgstr ""
 
-msgid "Työnantaja maksaa sinulle palkkaa vähintään 400 euroa (60 työtunnilta)."
+msgid "Työnantaja maksaa sinulle palkkaa vähintään 500 euroa (60 työtunnilta)."
 msgstr ""
 
 msgid "Summa pitää sisällään lomakorvauksen."
@@ -670,11 +670,11 @@ msgstr ""
 
 msgid ""
 "Kaupunki korvaa 350 euroa työnantajalle, joka palkkaa Kesäseteliin "
-"oikeutetun nuoren töihin 1.6.–15.8.2023 välisenä aikana."
+"oikeutetun nuoren töihin 1.6.–15.8.2024 välisenä aikana."
 msgstr ""
 
 msgid ""
-"Kesätyön vähimmäisvaatimuksina ovat 60 tunnin työaika ja 400 euron palkka."
+"Kesätyön vähimmäisvaatimuksina ovat 60 tunnin työaika ja 500 euron palkka."
 msgstr ""
 
 msgid "Muut käyttöehdot voit lukea täältä:"
