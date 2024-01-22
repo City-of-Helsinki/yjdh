@@ -1,5 +1,5 @@
 import io
-from typing import Iterable, List, NamedTuple
+from typing import Iterable, List, Literal, NamedTuple
 
 from django.db.models import QuerySet
 from django.http import HttpRequest
@@ -13,6 +13,8 @@ from applications.enums import ExcelColumns
 from applications.models import EmployerSummerVoucher
 from common.utils import getattr_nested
 
+ExcelFieldType = Literal["int", "str"]
+
 
 class ExcelField(NamedTuple):
     title: str
@@ -20,6 +22,7 @@ class ExcelField(NamedTuple):
     model_fields: List[str]
     width: int
     background_color: str
+    type: ExcelFieldType = "str"
 
 
 APPLICATION_LANGUAGE_FIELD_TITLE = _("Hakemuksen kieli")
@@ -29,9 +32,9 @@ EMPLOYMENT_START_DATE_FIELD_TITLE = _("Työsuhteen aloituspäivämäärä")
 HIRED_WITHOUT_VOUCHER_ASSESSMENT_FIELD_TITLE = _("Olisitko palkannut?")
 ORDER_FIELD_TITLE = _("Järjestys")
 RECEIVED_DATE_FIELD_TITLE = _("Saatu pvm")
-SALARY_PAID_FIELD_TITLE = _("Maksettu palkka")
+SALARY_PAID_FIELD_TITLE = _("Maksettu palkka (€)")
 SPECIAL_CASE_FIELD_TITLE = _("Erikoistapaus (esim yhdeksäsluokkalainen)")
-SUM_FIELD_TITLE = _("Summa")
+SUM_FIELD_TITLE = _("Summa (€)")
 WORK_HOURS_FIELD_TITLE = _("Työtunnit")
 INVOICER_EMAIL_FIELD_TITLE = _("Laskuttajan sähköposti")
 INVOICER_NAME_FIELD_TITLE = _("Laskuttajan nimi")
@@ -245,7 +248,7 @@ FIELDS = [
         30,
         "#F7DAE3",
     ),
-    ExcelField(SUM_FIELD_TITLE, "%s", ["value_in_euros"], 15, "#F7DAE3"),
+    ExcelField(SUM_FIELD_TITLE, "%s", ["value_in_euros"], 15, "#F7DAE3", "int"),
     ExcelField(_("Tarkastaja etunimi"), "", [], 30, "#F7DAE3"),
     ExcelField(_("Tarkastaja sukunimi"), "", [], 30, "#F7DAE3"),
     ExcelField(_("Hyväksyjä etunimi"), "", [], 30, "#F7DAE3"),
@@ -368,11 +371,15 @@ def generate_data_row(
                 values.append(value)
 
             cell_value = field.value % tuple(values)
+            if field.type == "int" and cell_value.isdigit():
+                cell_value = int(cell_value)
 
         if is_template and cell_value in [None, ""]:
-            # Assume string type for empty values in template and
-            # place a placeholder for xlsx-streaming package to infer cell type from
-            cell_value = "placeholder value"
+            # Place a placeholder for xlsx-streaming package to infer cell type from
+            if field.type == "int":
+                cell_value = 0  # Integer placeholder
+            else:
+                cell_value = "placeholder value"  # String placeholder
 
         result.append(cell_value)
 

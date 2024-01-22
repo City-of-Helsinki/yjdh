@@ -329,7 +329,7 @@ def test_excel_view_download_content(  # noqa: C901
                     output_column.value
                 ) == salary_paid
             elif excel_field.title == SUM_FIELD_TITLE:
-                assert output_column.value == str(voucher.value_in_euros)
+                assert output_column.value == voucher.value_in_euros
             elif excel_field.model_fields == ["attachments"]:
                 expected_attachment_uri = get_attachment_uri(
                     voucher, excel_field, voucher.attachments, response.wsgi_request
@@ -360,19 +360,19 @@ def test_excel_view_download_content(  # noqa: C901
 @pytest.mark.parametrize(
     "employer_summer_voucher_creation_date,sum_field_value",
     [
-        (date(2021, 6, 1), "325"),
-        (date(2022, 6, 1), "325"),
-        (date(2023, 6, 1), "325"),
-        (date(2024, 1, 1), "325"),
-        (date(2024, 5, 31), "325"),
-        (date(2024, 6, 1), "350"),
-        (date(2024, 12, 31), "350"),
+        (date(2021, 6, 1), 325),
+        (date(2022, 6, 1), 325),
+        (date(2023, 6, 1), 325),
+        (date(2024, 1, 1), 325),
+        (date(2024, 5, 31), 325),
+        (date(2024, 6, 1), 350),
+        (date(2024, 12, 31), 350),
     ],
 )
 def test_excel_view_download_sum_field_value(  # noqa: C901
     staff_client,
     employer_summer_voucher_creation_date: date,
-    sum_field_value: str,
+    sum_field_value: int,
 ):
     with freeze_time(employer_summer_voucher_creation_date):
         EmployerSummerVoucherFactory(

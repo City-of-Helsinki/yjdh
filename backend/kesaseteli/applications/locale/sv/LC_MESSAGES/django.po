@@ -252,7 +252,10 @@ msgstr ""
 msgid "Työtunnit"
 msgstr ""
 
-msgid "Maksettu palkka"
+msgid "Maksettu palkka (€)"
+msgstr ""
+
+msgid "Summa (€)"
 msgstr ""
 
 msgid "Muut edut"
