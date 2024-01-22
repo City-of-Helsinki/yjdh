@@ -1,3 +1,5 @@
+from typing import List
+
 from django.utils import translation
 
 from applications.enums import ApplicationBatchStatus, ApplicationOrigin, BenefitType
@@ -89,10 +91,13 @@ class ApplicationsCsvService(CsvExportBase):
 
     """
 
-    def __init__(self, applications, prune_data_for_talpa=False):
+    def __init__(
+        self, applications, prune_data_for_talpa=False, prune_sensitive_data=False
+    ):
         self.applications = applications
         self.export_notes = []
         self.prune_data_for_talpa = prune_data_for_talpa
+        self.prune_sensitive_data = prune_sensitive_data
 
     @property
     def CSV_COLUMNS(self):
@@ -395,11 +400,24 @@ class ApplicationsCsvService(CsvExportBase):
 
         columns.append(CsvColumn("Huom", get_export_notes))
 
+        if self.prune_sensitive_data:
+            return self._remove_sensitive_columns(columns)
+
         return columns
 
     MAX_AHJO_ROWS = 2
     MAX_PAY_SUBSIDIES = 2
     MAX_DE_MINIMIS_AIDS = 5
+
+    def _remove_sensitive_columns(self, columns: List[CsvColumn]) -> List[CsvColumn]:
+        """Remove sensitive employee data from the CsvColumns list"""
+        sensitive_col_headings = [
+            "Työntekijän etunimi",
+            "Työntekijän sukunimi",
+            "Työntekijän puhelinnumero",
+            "Työntekijän sähköposti",
+        ]
+        return [col for col in columns if col.heading not in sensitive_col_headings]
 
     def get_applications(self):
         return self.applications
