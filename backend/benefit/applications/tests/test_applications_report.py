@@ -651,7 +651,7 @@ def test_applications_csv_non_ascii_characters(
     csv_lines = split_lines_at_semicolon(
         applications_csv_service_with_one_application.get_csv_string()
     )
-    assert csv_lines[1][8] == '"test äöÄÖtest"'  # string is quoted
+    assert csv_lines[1][12] == '"test äöÄÖtest"'  # string is quoted
 
 
 def test_applications_csv_delimiter(applications_csv_service_with_one_application):
