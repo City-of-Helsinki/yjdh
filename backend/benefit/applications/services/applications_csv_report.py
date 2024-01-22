@@ -1,6 +1,6 @@
 from django.utils import translation
 
-from applications.enums import BenefitType
+from applications.enums import ApplicationBatchStatus, ApplicationOrigin, BenefitType
 from applications.services.csv_export_base import (
     CsvColumn,
     CsvExportBase,
@@ -64,8 +64,18 @@ def current_ahjo_row_field_getter(field_name):
     return getter
 
 
-def get_benefit_type_label(benefit_type):
+def get_benefit_type_label(benefit_type) -> str:
     return str(BenefitType(benefit_type).label)
+
+
+def get_batch_status_label(batch_status: str) -> str:
+    if batch_status == "":
+        return ""
+    return str(ApplicationBatchStatus(batch_status).label)
+
+
+def get_application_origin_label(application_origin: str) -> str:
+    return str(ApplicationOrigin(application_origin).label)
 
 
 class ApplicationsCsvService(CsvExportBase):
@@ -123,6 +133,16 @@ class ApplicationsCsvService(CsvExportBase):
             CsvColumn("Hakemusnumero", "application_number"),
             CsvColumn("Hakemusrivi", "application_row_idx"),
             CsvColumn("Hakemuksen tila", "status"),
+            CsvColumn(
+                "Hakemuksen tyyppi", "application_origin", get_application_origin_label
+            ),
+            CsvColumn("Hakemus saapunut", "created_at", format_datetime),
+            csv_default_column(
+                "Koonnin status", "batch.status", get_batch_status_label
+            ),
+            csv_default_column(
+                "Koonnin statuksen päivämäärä", "batch.modified_at", format_datetime
+            ),
             csv_default_column("Haettava lisä", "benefit_type", get_benefit_type_label),
             csv_default_column("Haettu alkupäivä", "start_date"),
             csv_default_column("Haettu päättymispäivä", "end_date"),
