@@ -553,6 +553,9 @@ msgstr "Laskelma on jo olemassa"
 msgid "handler"
 msgstr "käsittelijä"
 
+msgid "applicant"
+msgstr "hakija"
+
 msgid "calculation"
 msgstr "laskelma"
 

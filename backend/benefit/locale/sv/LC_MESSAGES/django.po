@@ -548,6 +548,9 @@ msgstr "Beräkning finns redan"
 msgid "handler"
 msgstr "handläggare"
 
+msgid "applicant"
+msgstr "sökande"
+
 msgid "calculation"
 msgstr "beräkning"
 
