@@ -39,6 +39,10 @@ from applications.models import (
     ApplicationLogEntry,
     Employee,
 )
+from applications.services.change_history import (
+    get_application_change_history_for_applicant,
+    get_application_change_history_for_handler,
+)
 from calculator.api.v1.serializers import (
     CalculationSerializer,
     PaySubsidySerializer,
@@ -182,6 +186,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "duration_in_months_rounded",
             "total_deminimis_amount",
             "ahjo_status",
+            "changes",
         ]
         read_only_fields = [
             "submitted_at",
@@ -205,6 +210,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "warnings",
             "duration_in_months_rounded",
             "total_deminimis_amount",
+            "changes",
         ]
         extra_kwargs = {
             "company_name": {
@@ -1383,6 +1389,14 @@ class ApplicantApplicationSerializer(BaseApplicationSerializer):
             return True
         return None
 
+    changes = serializers.SerializerMethodField(
+        help_text=("Possible changes made by handler to the application."),
+    )
+
+    def get_changes(self, obj):
+        changes = get_application_change_history_for_applicant(obj)
+        return ChangeHistorySerializer(changes, many=True).data
+
     def get_company_for_new_application(self, _):
         """
         Company field is read_only. When creating a new application, assign company.
@@ -1451,6 +1465,16 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             " only create applications for their own company."
         ),
     )
+
+    changes = serializers.SerializerMethodField(
+        help_text=(
+            "Possible changes made by applicant when additional information is asked."
+        ),
+    )
+
+    def get_changes(self, obj):
+        changes = get_application_change_history_for_handler(obj)
+        return ChangeHistorySerializer(changes, many=True).data
 
     def get_company_for_new_application(self, _):
         """
@@ -1638,3 +1662,9 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         if instance.status == ApplicationStatus.HANDLING and instance.batch:
             instance.batch = None
             instance.save()
+
+
+class ChangeHistorySerializer(serializers.Serializer):
+    field = serializers.CharField()
+    old = serializers.CharField()
+    new = serializers.CharField()

@@ -351,7 +351,8 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     bases = models.ManyToManyField("ApplicationBasis", related_name="applications")
 
     history = HistoricalRecords(
-        table_name="bf_applications_application_history", cascade_delete_history=True
+        table_name="bf_applications_application_history",
+        cascade_delete_history=True,
     )
     # This is the diary number in Ahjo
     ahjo_case_id = models.CharField(max_length=64, null=True, blank=True)
@@ -855,6 +856,9 @@ class Attachment(UUIDModel, TimeStampedModel):
         verbose_name=_("technical content type of the attachment"),
     )
     attachment_file = models.FileField(verbose_name=_("application attachment content"))
+    history = HistoricalRecords(
+        table_name="bf_applications_attachment_history", cascade_delete_history=True
+    )
 
     class Meta:
         db_table = "bf_applications_attachment"
