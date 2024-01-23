@@ -817,10 +817,6 @@ class Employee(UUIDModel, TimeStampedModel):
         blank=True,
     )
 
-    history = HistoricalRecords(
-        table_name="bf_applications_employee_history", cascade_delete_history=True
-    )
-
     @property
     def birthday(self):
         if not self.social_security_number:
