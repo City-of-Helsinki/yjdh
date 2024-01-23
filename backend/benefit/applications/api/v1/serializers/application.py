@@ -1388,6 +1388,7 @@ class ApplicantApplicationSerializer(BaseApplicationSerializer):
         if self.batch:
             return True
         return None
+
     changes = serializers.SerializerMethodField(
         help_text=("Possible changes made by handler to the application."),
     )
