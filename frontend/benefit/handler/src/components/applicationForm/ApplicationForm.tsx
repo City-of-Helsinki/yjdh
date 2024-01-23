@@ -101,123 +101,129 @@ const ApplicationForm: React.FC = () => {
   }
 
   return (
-    <Container>
-      {isFormActionNew && (
-        <>
-          <$Grid>
-            <$GridCell $colSpan={6} css="display: flex; align-items: center;">
+    <>
+      {isFormActionEdit && <ApplicationHeader data={application} />}
+
+      <Container>
+        {isFormActionNew && (
+          <>
+            <$Grid>
+              <$GridCell $colSpan={6} css="display: flex; align-items: center;">
+                <Button
+                  variant="supplementary"
+                  role="link"
+                  size="small"
+                  theme="black"
+                  iconLeft={<IconAngleLeft />}
+                  onClick={() =>
+                    id ? setIsConfirmationModalOpen(true) : router.push('/')
+                  }
+                >
+                  {t(`${translationsBase}.back2`)}
+                </Button>
+              </$GridCell>
+              <$GridCell $colSpan={6}>
+                <Stepper
+                  steps={stepState.steps}
+                  language="fi"
+                  selectedStep={stepState.activeStepIndex}
+                  onStepClick={(e) => e.stopPropagation()}
+                  css={stepperCss}
+                />
+              </$GridCell>
+            </$Grid>
+
+            <div>
+              <$MainHeading>{t('common:mainIngress.heading')}</$MainHeading>
+            </div>
+          </>
+        )}
+
+        {stepState.activeStepIndex === 0 && isFormActionNew && (
+          <CompanySearch />
+        )}
+        {stepState.activeStepIndex === 1 && (
+          <>
+            <FormContent
+              application={application}
+              formik={formik}
+              fields={fields}
+              handleSave={handleSave}
+              handleQuietSave={handleQuietSave}
+              showDeminimisSection={showDeminimisSection}
+              minEndDate={minEndDate}
+              maxEndDate={maxEndDate}
+              setEndDate={setEndDate}
+              deMinimisAidSet={deMinimisAidSet}
+              attachments={attachments}
+              checkedConsentArray={checkedConsentArray}
+              getConsentErrorText={getConsentErrorText}
+              handleConsentClick={handleConsentClick}
+            />
+            <ActionBar
+              id={id}
+              handleSave={handleSave}
+              handleSaveDraft={handleSaveDraft}
+              handleDelete={handleDelete}
+            />
+          </>
+        )}
+        {stepState.activeStepIndex === 2 && isFormActionNew && (
+          <>
+            <Review
+              data={application}
+              fields={fields}
+              dispatchStep={dispatchStep}
+            />
+            <ActionBar
+              id={id}
+              handleSubmit={handleSubmit}
+              handleSaveDraft={handleSaveDraft}
+              handleDelete={handleDelete}
+              handleBack={() => dispatchStep({ type: 'setActive', payload: 1 })}
+            />
+          </>
+        )}
+        {isConfirmationModalOpen && (
+          <Dialog
+            id="back-dialog"
+            aria-labelledby="back-dialog"
+            isOpen={isConfirmationModalOpen}
+            close={() => setIsConfirmationModalOpen(false)}
+            closeButtonLabelText={t(`${translationsBase}.close`)}
+            variant="primary"
+            theme={{ '--accent-line-color': 'var(--color-coat-of-arms)' }}
+          >
+            <Dialog.Header
+              title={t(`${translationsBase}.backWithoutSavingConfirm`)}
+              id="back-dialog-header"
+              iconLeft={<IconAlertCircle aria-hidden="true" />}
+            />
+            <Dialog.Content>
+              {t(`${translationsBase}.backWithoutSavingDescription`)}
+            </Dialog.Content>
+            <Dialog.ActionButtons>
               <Button
-                variant="supplementary"
-                role="link"
-                size="small"
-                theme="black"
-                iconLeft={<IconAngleLeft />}
-                onClick={() =>
-                  id ? setIsConfirmationModalOpen(true) : router.push('/')
-                }
+                theme="coat"
+                variant="secondary"
+                onClick={() => setIsConfirmationModalOpen(false)}
+                data-testid="modalCancel"
               >
-                {t(`${translationsBase}.back2`)}
+                {t(`${translationsBase}.backWithoutBack`)}
               </Button>
-            </$GridCell>
-            <$GridCell $colSpan={6}>
-              <Stepper
-                steps={stepState.steps}
-                language="fi"
-                selectedStep={stepState.activeStepIndex}
-                onStepClick={(e) => e.stopPropagation()}
-                css={stepperCss}
-              />
-            </$GridCell>
-          </$Grid>
-
-          <div>
-            <$MainHeading>{t('common:mainIngress.heading')}</$MainHeading>
-          </div>
-        </>
-      )}
-
-      {stepState.activeStepIndex === 0 && isFormActionNew && <CompanySearch />}
-      {stepState.activeStepIndex === 1 && (
-        <>
-          <FormContent
-            application={application}
-            formik={formik}
-            fields={fields}
-            handleSave={handleSave}
-            handleQuietSave={handleQuietSave}
-            showDeminimisSection={showDeminimisSection}
-            minEndDate={minEndDate}
-            maxEndDate={maxEndDate}
-            setEndDate={setEndDate}
-            deMinimisAidSet={deMinimisAidSet}
-            attachments={attachments}
-            checkedConsentArray={checkedConsentArray}
-            getConsentErrorText={getConsentErrorText}
-            handleConsentClick={handleConsentClick}
-          />
-          <ActionBar
-            id={id}
-            handleSave={handleSave}
-            handleSaveDraft={handleSaveDraft}
-            handleDelete={handleDelete}
-          />
-        </>
-      )}
-      {stepState.activeStepIndex === 2 && (
-        <>
-          <Review
-            data={application}
-            fields={fields}
-            dispatchStep={dispatchStep}
-          />
-          <ActionBar
-            id={id}
-            handleSubmit={handleSubmit}
-            handleSaveDraft={handleSaveDraft}
-            handleDelete={handleDelete}
-            handleBack={() => dispatchStep({ type: 'setActive', payload: 1 })}
-          />
-        </>
-      )}
-      {isConfirmationModalOpen && (
-        <Dialog
-          id="back-dialog"
-          aria-labelledby="back-dialog"
-          isOpen={isConfirmationModalOpen}
-          close={() => setIsConfirmationModalOpen(false)}
-          closeButtonLabelText={t(`${translationsBase}.close`)}
-          variant="primary"
-          theme={{ '--accent-line-color': 'var(--color-coat-of-arms)' }}
-        >
-          <Dialog.Header
-            title={t(`${translationsBase}.backWithoutSavingConfirm`)}
-            id="back-dialog-header"
-            iconLeft={<IconAlertCircle aria-hidden="true" />}
-          />
-          <Dialog.Content>
-            {t(`${translationsBase}.backWithoutSavingDescription`)}
-          </Dialog.Content>
-          <Dialog.ActionButtons>
-            <Button
-              theme="coat"
-              variant="secondary"
-              onClick={() => setIsConfirmationModalOpen(false)}
-              data-testid="modalCancel"
-            >
-              {t(`${translationsBase}.backWithoutBack`)}
-            </Button>
-            <Button
-              theme="coat"
-              variant="primary"
-              onClick={() => router.push(ROUTES.HOME)}
-              data-testid="modalBack"
-            >
-              {t(`${translationsBase}.backWithoutSaving`)}
-            </Button>
-          </Dialog.ActionButtons>
-        </Dialog>
-      )}
-    </Container>
+              <Button
+                theme="coat"
+                variant="primary"
+                onClick={() => router.push(ROUTES.HOME)}
+                data-testid="modalBack"
+              >
+                {t(`${translationsBase}.backWithoutSaving`)}
+              </Button>
+            </Dialog.ActionButtons>
+          </Dialog>
+        )}
+      </Container>
+    </>
   );
 };
 
