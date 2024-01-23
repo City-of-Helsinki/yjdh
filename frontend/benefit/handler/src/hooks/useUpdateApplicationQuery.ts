@@ -32,9 +32,10 @@ const useUpdateApplicationQuery = (): UseMutationResult<
         void queryClient.invalidateQueries('application');
       },
       onError: (error: AxiosError) => {
-        const errorStatus = error.response?.data
-          ? Object.values(error.response.data)
-          : error.code;
+        const errorStatus = error.code;
+        if (error.response)
+          // eslint-disable-next-line no-console
+          console.warn('Error response:', error.response?.data ?? '');
         showErrorToast(
           t('common:applications.list.errors.fetch.label'),
           t('common:applications.list.errors.fetch.text', {

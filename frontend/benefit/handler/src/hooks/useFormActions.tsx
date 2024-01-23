@@ -13,9 +13,10 @@ import {
   PAY_SUBSIDY_OPTIONS,
 } from 'benefit-shared/constants';
 import { ApplicationData, Employee } from 'benefit-shared/types/application';
+import { prettyPrintObject } from 'benefit-shared/utils/errors';
 import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
+import { TFunction, useTranslation } from 'next-i18next';
 import React from 'react';
 import hdsToast from 'shared/components/toast/Toast';
 import { getFullName } from 'shared/utils/application.utils';
@@ -54,6 +55,44 @@ interface FormActions {
   ) => Promise<ApplicationData | void>;
 }
 
+const getErrorContent = (
+  t: TFunction,
+  errorData: {
+    data: Record<string, string[]>;
+  }
+): JSX.Element[] => {
+  try {
+    return Object.entries(errorData).map(([key, value]) => {
+      if (key === APPLICATION_FIELD_KEYS.EMPLOYEE) {
+        return Object.entries(camelcaseKeys(value)).map(
+          ([emplKey, emplValue]) => (
+            <a
+              key={emplKey}
+              href={`#${APPLICATION_FIELD_KEYS.EMPLOYEE}.${emplKey}`}
+            >
+              {emplValue}
+            </a>
+          )
+        )[0];
+      }
+      if (key === 'approveTerms') {
+        return (
+          <p key={`${key}-${String(value)}`}>{t('common:error.terms.text')}</p>
+        );
+      }
+      return typeof value === 'string' ? (
+        <a key={key} href={`#${key}`}>
+          {value}
+        </a>
+      ) : (
+        <>{prettyPrintObject(errorData)}</>
+      );
+    });
+  } catch (fatalError: unknown) {
+    return [<p key="fatalError">Unresolved error</p>];
+  }
+};
+
 const useFormActions = (application: Partial<Application>): FormActions => {
   const router = useRouter();
 
@@ -90,38 +129,15 @@ const useFormActions = (application: Partial<Application>): FormActions => {
     if (error) {
       const errorData = camelcaseKeys(error.response?.data ?? {});
       const isContentTypeHTML = typeof errorData === 'string';
+      const errorText = isContentTypeHTML
+        ? t('common:error.generic.text')
+        : getErrorContent(t, errorData);
+
       hdsToast({
-        autoDismissTime: 0,
+        autoDismissTime: 20_000,
         type: 'error',
         labelText: t('common:error.generic.label'),
-        text: isContentTypeHTML
-          ? t('common:error.generic.text')
-          : Object.entries(errorData).map(([key, value]) => {
-              if (key === APPLICATION_FIELD_KEYS.EMPLOYEE) {
-                return Object.entries(camelcaseKeys(value)).map(
-                  ([emplKey, emplValue]) => (
-                    <a
-                      key={emplKey}
-                      href={`#${APPLICATION_FIELD_KEYS.EMPLOYEE}.${emplKey}`}
-                    >
-                      {emplValue}
-                    </a>
-                  )
-                )[0];
-              }
-              if (key === 'approveTerms') {
-                return (
-                  <p key={`${key}-${String(value)}`}>
-                    {t('common:error.terms.text')}
-                  </p>
-                );
-              }
-              return (
-                <a key={key} href={`#${key}`}>
-                  {value}
-                </a>
-              );
-            }),
+        text: errorText,
       });
     }
   }, [
