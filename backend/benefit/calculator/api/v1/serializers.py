@@ -278,7 +278,7 @@ class PaySubsidySerializer(serializers.ModelSerializer):
         if "action" in request.data:
             action = request.data["action"]
         if self._are_dates_required() and action not in [
-            ApplicationActions.APPLICANT_TOGGLE_EDIT
+            ApplicationActions.HANDLER_ALLOW_APPLICATION_EDIT,
         ]:
             if data.get("start_date") is None:
                 raise serializers.ValidationError(

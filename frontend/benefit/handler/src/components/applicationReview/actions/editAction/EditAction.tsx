@@ -15,7 +15,7 @@ const EditAction: React.FC<Props> = ({ application }) => {
   const { t } = useTranslation();
   const { updateStatus } = useApplicationActions(
     application,
-    APPLICATION_ACTIONS.APPLICANT_TOGGLE_EDIT
+    APPLICATION_ACTIONS.HANDLER_ALLOW_APPLICATION_EDIT
   );
 
   const [isUpdatingApplication, setIsUpdatingApplication] =

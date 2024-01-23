@@ -1,4 +1,8 @@
-import { APPLICATION_FIELD_KEYS, ROUTES } from 'benefit/handler/constants';
+import {
+  APPLICATION_ACTIONS,
+  APPLICATION_FIELD_KEYS,
+  ROUTES,
+} from 'benefit/handler/constants';
 import DeMinimisContext from 'benefit/handler/context/DeMinimisContext';
 import { StepActionType } from 'benefit/handler/hooks/useSteps';
 import { Application } from 'benefit/handler/types/application';
@@ -192,6 +196,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
       ...application,
       ...normalizedValues,
       deMinimisAidSet,
+      action: APPLICATION_ACTIONS.HANDLER_ALLOW_APPLICATION_EDIT,
     };
   };
 

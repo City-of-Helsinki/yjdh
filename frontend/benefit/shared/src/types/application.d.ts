@@ -1,3 +1,4 @@
+import { APPLICATION_ACTIONS } from 'benefit/handler/constants';
 import {
   CALCULATION_ROW_DESCRIPTION_TYPES,
   CALCULATION_ROW_TYPES,
@@ -407,6 +408,7 @@ export type ApplicationData = {
   unread_messages_count?: number;
   application_origin?: APPLICATION_ORIGINS;
   paper_application_date?: string;
+  action?: APPLICATION_ACTIONS;
 };
 
 export type EmployeeData = {
