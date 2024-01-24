@@ -117,11 +117,13 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
           id={getId('employee_name')}
           validation={{ required: true, maxLength: 256 }}
           onChange={enableFetchEmployeeDataButton}
+          autoComplete="off"
         />
         <TextInput
           id={getId('summer_voucher_serial_number')}
           validation={{ required: true, maxLength: 64 }}
           onChange={enableFetchEmployeeDataButton}
+          autoComplete="off"
         />
         <TextInput
           id={getId('employee_ssn')}
@@ -129,6 +131,7 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
             required: true,
             maxLength: 32,
           }}
+          autoComplete="off"
         />
         <SelectionGroup
           id={getId('target_group')}
@@ -151,10 +154,12 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
             pattern: POSTAL_CODE_REGEX,
             maxLength: 256,
           }}
+          autoComplete="off"
         />
         <TextInput
           id={getId('employee_phone_number')}
           validation={{ required: true, maxLength: 64 }}
+          autoComplete="off"
         />
         <TextInput
           id={getId('employment_postcode')}
@@ -213,6 +218,7 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
           placeholder={t(
             'common:application.step2.employment_description_placeholder'
           )}
+          autoComplete="off"
         />
         <TextInput
           id={getId('employment_salary_paid')}

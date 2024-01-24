@@ -79,6 +79,7 @@ const SocialSecurityNumberInput = <T,>({
         invalid={Boolean(errorText)}
         {...(process.env.NODE_ENV !== 'test' && { onChange: handleChange })}
         aria-invalid={Boolean(errorText)}
+        autoComplete="off"
       />
     </$GridCell>
   );

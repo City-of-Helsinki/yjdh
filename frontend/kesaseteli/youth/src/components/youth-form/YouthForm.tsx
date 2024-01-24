@@ -21,7 +21,7 @@ const YouthForm: React.FC = () => {
   return (
     <>
       <Heading header={t('common:youthApplication.form.title')} />
-      <form data-testid="youth-form">
+      <form data-testid="youth-form" autoComplete="off">
         <FormSection columns={2}>
           <$GridCell $colSpan={2}>
             {submitError ? (

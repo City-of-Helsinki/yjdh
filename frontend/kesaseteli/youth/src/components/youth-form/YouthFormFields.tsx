@@ -27,6 +27,7 @@ const YouthFormFields: React.FC = () => {
           pattern: NAMES_REGEX,
           maxLength: 128,
         })}
+        autoComplete="off"
       />
       <TextInput<YouthFormData>
         {...register('last_name', {
@@ -34,11 +35,13 @@ const YouthFormFields: React.FC = () => {
           pattern: NAMES_REGEX,
           maxLength: 128,
         })}
+        autoComplete="off"
       />
       <SocialSecurityNumberInput<YouthFormData>
         {...register('social_security_number', {
           required: true,
         })}
+        autoComplete="off"
       />
       <TextInput<YouthFormData>
         {...register('postcode', {
@@ -47,6 +50,7 @@ const YouthFormFields: React.FC = () => {
           minLength: 5,
           maxLength: 5,
         })}
+        autoComplete="off"
       />
       <SchoolSelection />
       <TextInput<YouthFormData>
@@ -55,6 +59,7 @@ const YouthFormFields: React.FC = () => {
           maxLength: 64,
           pattern: PHONE_NUMBER_REGEX,
         })}
+        autoComplete="off"
       />
       <TextInput<YouthFormData>
         {...register('email', {
@@ -62,6 +67,7 @@ const YouthFormFields: React.FC = () => {
           maxLength: 254,
           pattern: EMAIL_REGEX,
         })}
+        autoComplete="off"
       />
       <$GridCell $colSpan={2}>
         <Checkbox<YouthFormData>

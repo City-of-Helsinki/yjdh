@@ -10,6 +10,7 @@ type InputProps<T, V = string> = {
   errorText?: string;
   placeholder?: string;
   disabled?: boolean;
+  autoComplete?: string;
 };
 
 export default InputProps;
