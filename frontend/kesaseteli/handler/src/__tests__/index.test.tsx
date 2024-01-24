@@ -253,8 +253,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         });
         const indexPageApi = await getIndexPageApi(application);
         await indexPageApi.expectations.pageIsLoaded();
-        // eslint-disable-next-line unicorn/prefer-ternary
-        if ([16, 17].includes(age)) {
+        if (age === 16) {
           indexPageApi.expectations.vtjErrorMessageIsNotPresent(
             'notInTargetAgeGroup',
             { age }
