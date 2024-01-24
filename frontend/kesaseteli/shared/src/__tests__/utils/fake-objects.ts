@@ -151,12 +151,7 @@ export const fakeUpperSecondaryEducation1stYearStudentSSN = (): string =>
   fakeSSN(upperSecondaryEducation1stYearStudentYear);
 
 export const fakeYouthTargetGroupAgeSSN = (): string =>
-  fakeSSN(
-    faker.datatype.number({
-      min: upperSecondaryEducation1stYearStudentYear,
-      max: ninethGraderYear,
-    })
-  );
+  fakeSSN(ninethGraderYear);
 
 type TargetGroupData = {
   social_security_number: string;

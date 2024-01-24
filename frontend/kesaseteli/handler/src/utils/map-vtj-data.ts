@@ -64,7 +64,7 @@ export const mapVtjData = (application: ActivatedYouthApplication): VtjInfo => {
     vtjData.Henkilo.Henkilotunnus['#text']
   );
   const age = new Date().getFullYear() - dateOfBirth.getFullYear();
-  const notInTargetAgeGroup = ![16, 17].includes(age);
+  const notInTargetAgeGroup = age !== 16;
 
   const isDead = vtjData.Henkilo.Kuolintiedot.Kuollut === '1';
   return {
