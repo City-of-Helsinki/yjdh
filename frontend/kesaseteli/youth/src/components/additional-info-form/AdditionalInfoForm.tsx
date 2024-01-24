@@ -63,6 +63,7 @@ const AdditionalInfoForm: React.FC<Props> = ({ applicationId }) => {
               required: true,
               maxLength: 4096,
             })}
+            autoComplete="off"
           />
           <$GridCell>
             <SaveFormButton

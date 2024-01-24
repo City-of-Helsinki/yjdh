@@ -16,6 +16,7 @@ export type TextInputProps = {
   placeholder?: string;
   helperFormat?: string;
   onChange?: (value: string) => void;
+  autoComplete?: string;
 } & GridCellProps;
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -25,6 +26,7 @@ const TextInput: React.FC<TextInputProps> = ({
   helperFormat,
   placeholder,
   onChange,
+  autoComplete,
   ...$gridCellProps
 }) => {
   const { t } = useTranslation();
@@ -57,6 +59,7 @@ const TextInput: React.FC<TextInputProps> = ({
       errorText={errorText()}
       label={t(`common:application.form.inputs.${fieldName}`)}
       onChange={onChange}
+      autoComplete={autoComplete}
       {...$gridCellProps}
     />
   );
