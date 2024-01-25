@@ -16,6 +16,7 @@ from freezegun import freeze_time
 from PIL import Image
 from rest_framework.reverse import reverse
 
+from applications.api.v1.application_views import BaseApplicationViewSet
 from applications.api.v1.serializers.application import (
     ApplicantApplicationSerializer,
     HandlerApplicationSerializer,
@@ -24,7 +25,6 @@ from applications.api.v1.serializers.attachment import AttachmentSerializer
 from applications.api.v1.status_transition_validator import (
     ApplicantApplicationStatusValidator,
 )
-from applications.api.v1.views import BaseApplicationViewSet
 from applications.enums import (
     AhjoStatus,
     ApplicationBatchStatus,
