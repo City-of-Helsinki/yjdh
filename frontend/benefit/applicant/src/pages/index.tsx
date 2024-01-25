@@ -39,10 +39,17 @@ const ApplicantIndex: NextPage = () => {
         <ApplicationsList
           heading={t('common:applications.list.drafts.heading')}
           status={['draft']}
+          orderByOptions={[
+            {
+              label: t('common:sortOrder.modifiedAt.desc'),
+              value: '-modified_at',
+            },
+          ]}
         />
         <ApplicationsList
           heading={t('common:applications.list.submitted.heading')}
           status={SUBMITTED_STATUSES}
+          isArchived={false}
         />
         <PrerequisiteReminder />
       </FrontPageProvider>

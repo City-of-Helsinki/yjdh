@@ -122,7 +122,11 @@ const useApplicationFormStep5 = (
     updateApplicationStep5(currentApplicationData);
   };
   const handleClose = (): void => {
-    void router.push(ROUTES.HOME);
+    if (application.archivedForApplicant) {
+      void router.push(ROUTES.DECISIONS);
+    } else {
+      void router.push(ROUTES.HOME);
+    }
   };
 
   return {

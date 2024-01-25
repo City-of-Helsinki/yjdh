@@ -21,7 +21,8 @@
         "check": "Tarkastele",
         "editEndDate": "Muokkaa viimeistään",
         "newMessages_one": "{{count}} uusi",
-        "newMessages_other": "{{count}} uutta"
+        "newMessages_other": "{{count}} uutta",
+        "sortOrder": "Järjestä hakemukset"
       }
     },
     "pageHeaders": {
@@ -40,7 +41,7 @@
       "draft": "Luonnos",
       "additionalInformationNeeded": "Lisätietoja tarvitaan",
       "received": "Vastaanotettu",
-      "approved": "Hyväksytty",
+      "accepted": "Hyväksytty",
       "rejected": "Hylätty",
       "handling": "Käsittelyssä",
       "cancelled": "Peruttu"
@@ -604,7 +605,9 @@
     "yes": "Kyllä",
     "no": "Ei",
     "close": "Sulje",
-    "home": "Palaa etusivulle"
+    "home": "Palaa etusivulle",
+    "pagination": "Sivut",
+    "back": "Takaisin"
   },
   "messenger": {
     "messages": "Hakemuksen viestit",
@@ -745,6 +748,18 @@
     "button": "Muokkaa evästeasetuksia"
   },
   "decisions": {
-    "heading": "Arkisto"
+    "heading_one": "<strong>{{count}}</strong> hakemus, jolle on tehty päätös",
+    "heading_other": "<strong>{{count}}</strong> hakemusta, joille on tehty päätös",
+    "noDecisions": "Ei vielä yhtään Helsinki-lisä -hakemusta, joille on tehty päätös."
+  },
+  "sortOrder": {
+    "label": "Järjestä",
+    "submittedAt": {
+      "asc": "Vanhin ensin",
+      "desc": "Uusin ensin"
+    },
+    "name": {
+      "asc": "Aakkosjärjestyksessä"
+    }
   }
 }

@@ -24,6 +24,7 @@ from applications.api.v1.status_transition_validator import (
 from applications.benefit_aggregation import get_former_benefit_info
 from applications.enums import (
     ApplicationActions,
+    ApplicationBatchStatus,
     ApplicationOrigin,
     ApplicationStatus,
     AttachmentRequirement,
@@ -187,6 +188,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "total_deminimis_amount",
             "ahjo_status",
             "changes",
+            "archived_for_applicant",
         ]
         read_only_fields = [
             "submitted_at",
@@ -211,6 +213,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "duration_in_months_rounded",
             "total_deminimis_amount",
             "changes",
+            "archived_for_applicant",
         ]
         extra_kwargs = {
             "company_name": {
@@ -434,6 +437,11 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "If application status is changed in the request, set the comment field in"
             " the ApplicationLogEntry"
         ),
+    )
+
+    archived_for_applicant = serializers.SerializerMethodField(
+        method_name="get_archived_for_applicant",
+        help_text=("Should be shown in the archive view for an applicant"),
     )
 
     def get_applicant_terms_approval_needed(self, obj):
@@ -1341,6 +1349,24 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             return Company.objects.all().order_by("name").first()
         return get_company_from_request(self.context.get("request"))
 
+    def get_archived_for_applicant(self, application):
+        """
+        Determine if the application is old enough and already handled so that it will
+        be shown in the archive section for the applicant.
+
+        Make sure any changes here are reflected in the filter set as well.
+        """
+
+        if application.batch is None:
+            return False
+
+        return application.batch.status in [
+            ApplicationBatchStatus.DECIDED_ACCEPTED,
+            ApplicationBatchStatus.DECIDED_REJECTED,
+            ApplicationBatchStatus.SENT_TO_TALPA,
+            ApplicationBatchStatus.COMPLETED,
+        ] and application.batch.decision_date < date.today() + relativedelta(days=-14)
+
 
 class ApplicantApplicationStatusChoiceField(serializers.ChoiceField):
     """
@@ -1349,8 +1375,6 @@ class ApplicantApplicationStatusChoiceField(serializers.ChoiceField):
 
     STATUS_OVERRIDES = {
         ApplicationStatus.RECEIVED: ApplicationStatus.HANDLING,
-        ApplicationStatus.ACCEPTED: ApplicationStatus.HANDLING,
-        ApplicationStatus.REJECTED: ApplicationStatus.HANDLING,
     }
 
     def to_representation(self, value):

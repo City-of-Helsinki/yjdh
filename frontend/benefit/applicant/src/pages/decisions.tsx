@@ -1,3 +1,4 @@
+import DecisionsApplicationList from 'benefit/applicant/components/decisions/DecisionsApplicationList';
 import DecisionsMainIngress from 'benefit/applicant/components/mainIngress/decisions/DecisionsMainIngress';
 import AppContext from 'benefit/applicant/context/AppContext';
 import { useTranslation } from 'benefit/applicant/i18n';
@@ -28,7 +29,7 @@ const ApplicantDecisions: NextPage = () => {
       </Head>
       <DecisionsMainIngress />
       <Container>
-        <h2>{t('common:decisions.heading')} (0)</h2>
+        <DecisionsApplicationList />
       </Container>
     </>
   );

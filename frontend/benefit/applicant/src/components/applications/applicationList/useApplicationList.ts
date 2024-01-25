@@ -10,8 +10,12 @@ import {
 import { IconPen } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import { TFunction } from 'next-i18next';
+import React, { useEffect, useState } from 'react';
+import useLocale from 'shared/hooks/useLocale';
+import { Language } from 'shared/i18n/i18n';
 import isServerSide from 'shared/server/is-server-side';
+import { OptionType } from 'shared/types/common';
 import {
   convertToUIDateAndTimeFormat,
   convertToUIDateFormat,
@@ -22,10 +26,23 @@ import { DefaultTheme } from 'styled-components';
 const translationListBase = 'common:applications.list';
 const translationStatusBase = 'common:applications.statuses';
 
+interface Props {
+  status: string[];
+  isArchived?: boolean;
+  initialPage?: number;
+  orderByOptions?: OptionType[];
+}
+
 interface ApplicationListProps {
   list: ApplicationListItemData[];
   shouldShowSkeleton: boolean;
   shouldHideList: boolean;
+  currentPage: number | null;
+  setPage: (newPage: number | null) => void;
+  t: TFunction;
+  orderBy: OptionType;
+  setOrderBy: (option: OptionType) => void;
+  language: Language;
 }
 
 const getAvatarBGColor = (
@@ -41,7 +58,7 @@ const getAvatarBGColor = (
     case APPLICATION_STATUSES.RECEIVED:
       return 'info';
 
-    case APPLICATION_STATUSES.APPROVED:
+    case APPLICATION_STATUSES.ACCEPTED:
       return 'success';
 
     case APPLICATION_STATUSES.REJECTED:
@@ -57,15 +74,30 @@ const getEmployeeFullName = (firstName: string, lastName: string): string => {
   return name === ' ' ? '-' : name;
 };
 
-const getOrderBy = (status: string[]): string =>
-  status.includes('draft') ? '-modified_at' : '-submitted_at';
-
-const useApplicationList = (status: string[]): ApplicationListProps => {
+const useApplicationList = ({
+  status,
+  isArchived,
+  initialPage,
+  orderByOptions,
+}: Props): ApplicationListProps => {
   const { t } = useTranslation();
   const router = useRouter();
-  const orderBy = getOrderBy(status);
-  const { data, error, isLoading } = useApplicationsQuery(status, orderBy);
+  const [orderBy, setOrderBy] = useState<OptionType>(
+    orderByOptions?.[0] || {
+      label: 'common:sortOrder.submittedAt.desc',
+      value: '-submitted_at',
+    }
+  );
+  const language = useLocale();
+
+  const { data, error, isLoading } = useApplicationsQuery({
+    status,
+    isArchived,
+    orderBy: orderBy.value.toString(),
+  });
+
   const { errors, setError } = React.useContext(FrontPageContext);
+  const [currentPage, setPage] = useState<number | null>(initialPage ?? null);
 
   useEffect(() => {
     if (error && !errors.includes(error)) {
@@ -179,6 +211,12 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
     list: list || [],
     shouldShowSkeleton,
     shouldHideList,
+    currentPage,
+    setPage,
+    t,
+    orderBy,
+    setOrderBy,
+    language,
   };
 };
 

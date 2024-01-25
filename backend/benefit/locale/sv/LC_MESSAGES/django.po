@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-01 10:42+0200\n"
+"POT-Creation-Date: 2024-01-25 18:30+0200\n"
 "PO-Revision-Date: 2022-11-01 10:47+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -36,50 +36,6 @@ msgstr ""
 msgid "TALPA export {date}"
 msgstr "TALPA-export {date}"
 
-#, python-brace-format
-msgid "Upload file size cannot be greater than {size} bytes"
-msgstr "Den fil som laddas upp kan inte vara större än {size} byte"
-
-msgid "Too many attachments"
-msgstr "För många bilagor"
-
-msgid "Not a valid pdf file"
-msgstr "Ingen giltig PDF-fil"
-
-msgid "Not a valid image file"
-msgstr "Ingen giltig bildfil"
-
-msgid "Grant date too much in past"
-msgstr "Beviljandedatum för tidigt"
-
-msgid "Grant date can not be in the future"
-msgstr "Beviljandedatum kan inte vara i framtiden"
-
-msgid "Social security number invalid"
-msgstr "Personbeteckning felaktig"
-
-msgid "Social security number checksum invalid"
-msgstr "Personbeteckning kontrollsumma felaktig"
-
-#, python-brace-format
-msgid "Working hour must be greater than {min_hour} per week"
-msgstr "Antalet arbetstimmar måste vara högre än {min_hour} per vecka"
-
-msgid "Monthly pay must be greater than 0"
-msgstr "Månatlig lön måste vara större än 0"
-
-msgid "Vacation money must be a positive number"
-msgstr "Semesterpenning måste vara ett positivt tal"
-
-msgid "Other expenses must be a positive number"
-msgstr "Andra kostnader måste vara ett positivt tal"
-
-msgid "Applications in a batch can not be changed when batch is in this status"
-msgstr "Ansökningar i en sats kan inte ändras när satsen har denna status"
-
-msgid "This application has invalid status and can not be added to this batch"
-msgstr "Denna ansökan har felaktig status och kan inte läggas till denna sats"
-
 msgid "This should be unreachable"
 msgstr "Detta bör vara onåbart"
 
@@ -104,14 +60,8 @@ msgstr "Denna ansökan kan inte ha de minimis-stöd"
 msgid "Total amount of de minimis aid too large"
 msgstr "Totalt belopp av de minimis-stöd är för stort"
 
-msgid "start_date must not be in a past year"
-msgstr "Startdatum får inte vara under föregående år"
-
 msgid "start_date must not be more than 4 months in the past"
 msgstr "Startdatumet får inte ligga mer än fyra månader bakåt i tiden"
-
-msgid "end_date must not be in a past year"
-msgstr "Slutdatum får inte vara under föregående år"
 
 msgid "application end_date can not be less than start_date"
 msgstr "end_date för ansökan kan inte vara tidigare än start_date"
@@ -125,9 +75,6 @@ msgstr "längsta varaktighet för understödet är en månad"
 msgid ""
 "This application can not have a description for co-operation negotiations"
 msgstr "Denna ansökan kan inte ha en beskrivning för samarbetsförhandlingar"
-
-msgid "Pay subsidy percent required"
-msgstr "Lönesubventionsprocent krävs"
 
 #, python-brace-format
 msgid "This application can not have {key}"
@@ -144,6 +91,14 @@ msgstr "Detta fält är tillgängligt endast för sammanslutningar"
 
 msgid "This benefit type can not be selected"
 msgstr "Denna understödstyp kan inte väljas"
+
+msgid ""
+"Apprenticeship program can not be selected if there is no granted pay subsidy"
+msgstr ""
+
+msgid ""
+"Apprenticeship program has to be yes or no if there is a granted pay subsidy"
+msgstr ""
 
 msgid "Application does not have the employee consent attachment"
 msgstr "Den anställdas samtycke har inte bifogats ansökan"
@@ -170,6 +125,10 @@ msgstr "Ansökan kan inte ändras i denna status"
 msgid "create_application_for_company missing from request"
 msgstr "create_application_for_company saknas från begäran"
 
+#, python-brace-format
+msgid "company with id {company_id} not found"
+msgstr ""
+
 msgid "The calculation should be created when the application is submitted"
 msgstr "Beräkningen bör skapas när ansökan skickas"
 
@@ -181,12 +140,56 @@ msgid "Reading {localized_model_name} data failed: {errors}"
 msgstr "Data {localized_model_name} kan inte läsas: {errors}"
 
 #, python-brace-format
+msgid "Upload file size cannot be greater than {size} bytes"
+msgstr "Den fil som laddas upp kan inte vara större än {size} byte"
+
+msgid "Too many attachments"
+msgstr "För många bilagor"
+
+msgid "Not a valid pdf file"
+msgstr "Ingen giltig PDF-fil"
+
+msgid "Not a valid image file"
+msgstr "Ingen giltig bildfil"
+
+msgid "Applications in a batch can not be changed when batch is in this status"
+msgstr "Ansökningar i en sats kan inte ändras när satsen har denna status"
+
+msgid "This application has invalid status and can not be added to this batch"
+msgstr "Denna ansökan har felaktig status och kan inte läggas till denna sats"
+
+msgid "Grant date too much in past"
+msgstr "Beviljandedatum för tidigt"
+
+msgid "Grant date can not be in the future"
+msgstr "Beviljandedatum kan inte vara i framtiden"
+
+msgid "Social security number invalid"
+msgstr "Personbeteckning felaktig"
+
+#, python-brace-format
+msgid "Working hour must be greater than {min_hour} per week"
+msgstr "Antalet arbetstimmar måste vara högre än {min_hour} per vecka"
+
+msgid "Monthly pay must be greater than 0"
+msgstr "Månatlig lön måste vara större än 0"
+
+msgid "Vacation money must be a positive number"
+msgstr "Semesterpenning måste vara ett positivt tal"
+
+msgid "Other expenses must be a positive number"
+msgstr "Andra kostnader måste vara ett positivt tal"
+
+#, python-brace-format
 msgid "State transition not allowed: {status} to {value}"
 msgstr "Tillståndsövergång tillåts inte: {status} till {value}"
 
 #, python-brace-format
 msgid "Initial status must be {initial_status}"
 msgstr "Initialstatus måste vara {initial_status}"
+
+msgid "Displayed in the archive in the applicant view"
+msgstr ""
 
 msgid "Operation not allowed for this application status."
 msgstr "Åtgärd tillåts inte för denna ansökningsstatus"
@@ -195,7 +198,7 @@ msgid "File not found."
 msgstr "Fil hittades inte."
 
 #, python-brace-format
-msgid "Helsinki-lisän hakemukset viety {date}"
+msgid "Helsinki-lisan hakemukset viety {date}"
 msgstr ""
 
 msgid "Benefit can not be granted before 24-month waiting period expires"
@@ -281,6 +284,26 @@ msgstr "läroavtal"
 msgid "helsinki benefit voucher"
 msgstr "sedel för Helsingforstillägg"
 
+#, fuzzy
+#| msgid "employee_consent"
+msgid "employee consent"
+msgstr "Behandlingen av personuppgifterna av personen som ska sysselsättas"
+
+#, fuzzy
+#| msgid "application"
+msgid "full application"
+msgstr "Ansökan"
+
+#, fuzzy
+#| msgid "attachment"
+msgid "other attachment"
+msgstr "bilaga"
+
+#, fuzzy
+#| msgid "Step 4 - summary"
+msgid "pdf summary"
+msgstr "Steg 4 – sammanfattning"
+
 msgid "attachment is required"
 msgstr "bilaga är obligatorisk"
 
@@ -308,11 +331,124 @@ msgstr "Skickad till Talpa"
 msgid "Processing is completed"
 msgstr "Processen är slutförd"
 
+#, fuzzy
+#| msgid "Rejected"
+msgid "Rejected by Talpa"
+msgstr "Avvisad"
+
+#, fuzzy
+#| msgid "Sent to Talpa"
+msgid "Not sent to Talpa"
+msgstr "Skickad till Talpa"
+
+#, fuzzy
+#| msgid "Sent to Talpa"
+msgid "Successfully sent to Talpa"
+msgstr "Skickad till Talpa"
+
+msgid "Handler"
+msgstr "Handläggare"
+
+#, fuzzy
+#| msgid "application"
+msgid "Applicant"
+msgstr "Ansökan"
+
+#, fuzzy
+#| msgid "Pay subsidy end date"
+msgid "Pay subsidy granted (default)"
+msgstr "Slutdatum för lönesubvention"
+
+#, fuzzy
+#| msgid "Pay subsidy end date"
+msgid "Pay subsidy granted (aged)"
+msgstr "Slutdatum för lönesubvention"
+
+#, fuzzy
+#| msgid "pay subsidy"
+msgid "No granted pay subsidy"
+msgstr "lönesubvention"
+
+msgid "Submitted but not sent to AHJO"
+msgstr ""
+
+msgid "Request to open the case sent to AHJO"
+msgstr ""
+
+msgid "Case opened in AHJO"
+msgstr ""
+
+msgid "Update request sent"
+msgstr ""
+
+msgid "Update request received"
+msgstr ""
+
+#, fuzzy
+#| msgid "Decision date"
+msgid "Decision proposal sent"
+msgstr "Beslutsdatum"
+
+#, fuzzy
+#| msgid "Decision date"
+msgid "Decision proposal accepted"
+msgstr "Beslutsdatum"
+
+#, fuzzy
+#| msgid "Decision date"
+msgid "Decision proposal rejected"
+msgstr "Beslutsdatum"
+
+msgid "Delete request sent"
+msgstr ""
+
+msgid "Delete request received"
+msgstr ""
+
+msgid "Allow/disallow applicant's modifications"
+msgstr ""
+
+msgid "Success"
+msgstr ""
+
+msgid "Failure"
+msgstr ""
+
+#, fuzzy
+#| msgid "Rejected in Ahjo"
+msgid "Open case in Ahjo"
+msgstr "Avvisad i Ahjo"
+
+#, fuzzy
+#| msgid "Incomplete application"
+msgid "Delete application in Ahjo"
+msgstr "Ofullständig ansökan"
+
+#, python-brace-format
+msgid ""
+"Your application {id} will be deleted soon. If you want to continue the "
+"application process, please do so by {application_deletion_date}, otherwise "
+"the application will deleted permanently."
+msgstr ""
+
+msgid "Your Helsinki benefit draft application will expire"
+msgstr "Ditt utkast för ansökan går ut"
+
 msgid "company"
 msgstr "företag"
 
 msgid "status"
 msgstr "status"
+
+#, fuzzy
+#| msgid "status"
+msgid "talpa_status"
+msgstr "status"
+
+#, fuzzy
+#| msgid "application log entry"
+msgid "application origin"
+msgstr "registrering i ansökningslogg"
 
 msgid "application number"
 msgstr "ansökningsnummer"
@@ -368,6 +504,11 @@ msgstr "startdatum för understöd"
 msgid "benefit end date"
 msgstr "slutdatum för understöd"
 
+#, fuzzy
+#| msgid "application batches"
+msgid "paper application date"
+msgstr "ansökningssatser"
+
 msgid "ahjo batch"
 msgstr "ahjo-sats"
 
@@ -416,11 +557,29 @@ msgstr "lag som tillämpas i Ahjos beslut"
 msgid "date of the decision in Ahjo"
 msgstr "datum då beslut fattas vid Ahjo"
 
+#, fuzzy
+#| msgid "Expert inspector's name"
+msgid "P2P inspector's name"
+msgstr "Namn på sakkunnig inspektör"
+
+#, fuzzy
+#| msgid "Expert inspector's email address"
+msgid "P2P inspector's email address"
+msgstr "E-postadress till sakkunnig inspektör"
+
+msgid "P2P acceptor's title"
+msgstr ""
+
 msgid "Expert inspector's name"
 msgstr "Namn på sakkunnig inspektör"
 
 msgid "Expert inspector's email address"
 msgstr "E-postadress till sakkunnig inspektör"
+
+#, fuzzy
+#| msgid "Expert inspector's name"
+msgid "Expert inspector's title"
+msgstr "Namn på sakkunnig inspektör"
 
 msgid "application batch"
 msgstr "ansökningssats"
@@ -491,6 +650,212 @@ msgstr "bilaga"
 msgid "attachments"
 msgstr "bilagor"
 
+msgid "paper"
+msgstr ""
+
+#, fuzzy
+#| msgid "company contact person's email"
+msgid "company contact person"
+msgstr "kontaktpersonens e-postadress"
+
+msgid "co-operation negotiations"
+msgstr ""
+
+msgid "pay subsidy"
+msgstr "lönesubvention"
+
+#, fuzzy
+#| msgid "benefit end date"
+msgid "benefit"
+msgstr "slutdatum för understöd"
+
+#, fuzzy
+#| msgid "employee"
+msgid "employment"
+msgstr "anställd"
+
+msgid "approval"
+msgstr ""
+
+#, fuzzy
+#| msgid "status"
+msgid "ahjo status"
+msgstr "status"
+
+#, fuzzy
+#| msgid "status"
+msgid "ahjo statuses"
+msgstr "status"
+
+#, fuzzy
+#| msgid "File not found."
+msgid "Not found"
+msgstr "Fil hittades inte."
+
+msgid "Employer information"
+msgstr "Arbetsgivarinformation"
+
+msgid "Name of the employer"
+msgstr "Arbetsgivarens namn"
+
+msgid "Business ID"
+msgstr "FO-nummer"
+
+msgid "Street address"
+msgstr "Adress"
+
+msgid "Delivery address"
+msgstr "Leveransadress"
+
+msgid "Bank account number"
+msgstr "Kontonummer"
+
+msgid "Does the employer engage in economic activity?"
+msgstr "Har arbetsgivaren ekonomisk verksamhet?"
+
+msgid "Yes"
+msgstr ""
+
+#, fuzzy
+#| msgid "Note"
+msgid "No"
+msgstr "Anteckning"
+
+msgid "Contact person for the employer"
+msgstr "Arbetsgivarens kontaktperson"
+
+msgid "Name"
+msgstr "Namn"
+
+msgid "Telephone"
+msgstr "Telefon"
+
+msgid "Email address"
+msgstr "E-postadress"
+
+msgid "Preferred language of communication"
+msgstr "Affärsspråk"
+
+msgid "De minimis aid received by the employer"
+msgstr "De minimis-stöden som arbetsgivaren fått"
+
+msgid "Granter"
+msgstr "Beviljare av stödet"
+
+msgid "Amount"
+msgstr "Stödbeloppet"
+
+msgid "Date"
+msgstr "Datum"
+
+msgid "Total"
+msgstr "Sammanlagt"
+
+msgid "No, the applicant has not listed any previous de minimis aids."
+msgstr "Nej, arbetsgivaren har inte angett några tidigare de minimis-stöd."
+
+msgid "Change negotiations or co-determination negotiations"
+msgstr "Samarbetsförhandlingar eller samarbetsförfarande"
+
+msgid ""
+"Yes, the organization has ongoing or completed change negotiations within "
+"the previous 12 months."
+msgstr ""
+"Ja, organisationen har pågående eller avslutade samarbetsförhandlingar under "
+"de föregående 12 månaderna."
+
+msgid ""
+"No, the organization does not have change negotiations in progress or that "
+"have ended in the previous 12 months."
+msgstr ""
+"Nej, organisationen har inga samarbetsförhandlingar på gång eller som har "
+"avslutats under de senaste 12 månaderna."
+
+msgid "Describe the situation"
+msgstr "Beskrivning av situationen"
+
+msgid "Person to be hired"
+msgstr "Personen som ska sysselsättas"
+
+msgid "First name"
+msgstr "Förnamn"
+
+msgid "Last name"
+msgstr "Efternamn"
+
+msgid "Personal identity code"
+msgstr "Personbeteckning"
+
+msgid "The subsidised employee’s municipality of residence is Helsinki"
+msgstr "Personen som anställs bor i Helsingfors"
+
+msgid "Has the person who is being employed been assigned a job supervisor?"
+msgstr "Har personen som ska sysselsättas utsetts en arbetsledande chef?"
+
+msgid "Employment relationship"
+msgstr "Anställningsförhållande"
+
+msgid "Job title"
+msgstr "Titel"
+
+msgid "Working hours per week"
+msgstr "Arbetstid per vecka"
+
+msgid "Gross salary per month"
+msgstr "Bruttolön per månad"
+
+msgid "Holiday pay per month"
+msgstr "Semesterpenning per månad"
+
+msgid "Indirect labour costs per month"
+msgstr "Bikostnader per månad"
+
+msgid "Applicable collective agreement"
+msgstr "Kollektivavtal som tillämpas"
+
+msgid "Yhdistyksellä on yritystoimintaa"
+msgstr ""
+
+msgid "Is this an apprenticeship?"
+msgstr "Handlar det om ett läroavtal?"
+
+msgid "Received aid"
+msgstr "Beviljat stöd"
+
+msgid "Benefit is applied for the period"
+msgstr "Stillägg tillämpas för perioden"
+
+msgid "Applying for dates"
+msgstr "Ansöker om datum"
+
+msgid "Attachments"
+msgstr "Bilagor"
+
+msgid "granted_aged"
+msgstr "Sysselsättningsstöd för personer som fyllt 55 år"
+
+msgid "Printed at"
+msgstr "Tryckt"
+
+# Application printout
+msgid "City of Helsinki"
+msgstr "Helsingfors stad"
+
+msgid "Helsinki-benefit online service"
+msgstr "Helsingforstillägg e-tjänst"
+
+msgid "Helsinki-benefit application"
+msgstr "Helsingforstillägg ansökning"
+
+msgid "Employee"
+msgstr "Anställd"
+
+msgid "Application received"
+msgstr "Ansökning mottagen"
+
+msgid "Application number"
+msgstr "Ansökningsnummer"
+
 msgid "Date range too large"
 msgstr "Tidsperiod för lång"
 
@@ -512,6 +877,9 @@ msgstr "Startdatum kan inte vara tomt"
 msgid "End date cannot be empty"
 msgstr "Slutdatum kan inte vara tomt"
 
+msgid "State aid maximum percentage cannot be empty"
+msgstr "Maximalt statsunderstöd får inte vara tom"
+
 msgid "Description row, amount ignored"
 msgstr "Beskrivningsrad, belopp ignorerat"
 
@@ -520,9 +888,6 @@ msgstr "Lönekostnader"
 
 msgid "State aid maximum %"
 msgstr "Maximalt statsunderstöd %"
-
-msgid "State aid maximum percentage cannot be empty"
-msgstr "Maximalt statsunderstöd får inte vara tom"
 
 msgid "Pay subsidy/month"
 msgstr "Lönesubvention/månad"
@@ -541,6 +906,17 @@ msgstr "Utbildningsersättningens belopp per månad"
 
 msgid "Total amount of deductions monthly"
 msgstr "Totalbelopp av avdrag per månad"
+
+msgid "Basic date range description"
+msgstr ""
+
+#, fuzzy
+#| msgid "Date range too large"
+msgid "Date range description for total row"
+msgstr "Tidsperiod för lång"
+
+msgid "Deduction description"
+msgstr ""
 
 msgid "Calculation already exists"
 msgstr "Beräkning finns redan"
@@ -578,9 +954,6 @@ msgstr "Slutdatum för lönesubvention"
 
 msgid "Work time percent"
 msgstr "Arbetstidsprocent"
-
-msgid "pay subsidy"
-msgstr "lönesubvention"
 
 msgid "pay subsidies"
 msgstr "lönesubventioner"
@@ -631,10 +1004,14 @@ msgid "Invalid IBAN"
 msgstr "Felaktigt IBAN-kontonummer"
 
 msgid "You have to accept Terms of Service before doing any action"
-msgstr "Du måste godkänna användarvillkoren för tjänsten innan du kan göra något"
+msgstr ""
+"Du måste godkänna användarvillkoren för tjänsten innan du kan göra något"
 
 msgid "Company information is not available"
 msgstr "Företagets uppgifter är inte tillgängliga"
+
+msgid "Your IP address is not on the safe list."
+msgstr ""
 
 msgid "bank account number"
 msgstr "bankkontonummer"
@@ -651,9 +1028,6 @@ msgstr "Engelska"
 msgid "Swedish"
 msgstr "Svenska"
 
-msgid "Application number"
-msgstr "Ansökningsnummer"
-
 #, python-brace-format
 msgid ""
 "Your application has been opened for editing. Please make the corrections by "
@@ -663,8 +1037,12 @@ msgstr ""
 "Din ansökan har öppnats för redigering. Gör ändringarna senast "
 "{additional_information_needed_by}, annars kan ansökan inte behandlas."
 
-msgid "You have received a new message regarding your Helsinki benefit application"
+msgid ""
+"You have received a new message regarding your Helsinki benefit application"
 msgstr "Du har fått ett nytt meddelande om ansökningen om Helsingforstillägget"
+
+msgid "Your Helsinki benefit application requires additional information"
+msgstr "Ansökan om Helsingforstillägget behöver ytterligare information"
 
 #, python-format
 msgid ""
@@ -743,8 +1121,29 @@ msgstr "Villkor för tjänsten – visas vid inloggning"
 msgid "Terms of application - show at application submit"
 msgstr "Ansökningsvillkor – visas vid inlämning av ansökan"
 
+#, fuzzy
+#| msgid "Terms of application - show at application submit"
+msgid ""
+"Terms of application for handler - show at application submit for handler"
+msgstr "Ansökningsvillkor – visas vid inlämning av ansökan"
+
 msgid "type of terms"
 msgstr "typ av villkor"
+
+#, fuzzy
+#| msgid "finnish terms (pdf file)"
+msgid "Finnish terms (md)"
+msgstr "villkoren på finska (PDF-fil)"
+
+#, fuzzy
+#| msgid "english terms (pdf file)"
+msgid "English terms (md)"
+msgstr "villkoren på engelska (PDF-fil)"
+
+#, fuzzy
+#| msgid "swedish terms (pdf file)"
+msgid "Swedish terms (md)"
+msgstr "villkoren på svenska (PDF-fil)"
 
 msgid "first day these terms are in effect"
 msgstr "första datum då dessa villkor gäller"
@@ -757,6 +1156,9 @@ msgstr "villkoren på engelska (PDF-fil)"
 
 msgid "swedish terms (pdf file)"
 msgstr "villkoren på svenska (PDF-fil)"
+
+msgid "PDF or MD fields are missing for FI/EN/SV! Fill in either or"
+msgstr ""
 
 msgid "terms"
 msgstr "villkor"
@@ -800,196 +1202,50 @@ msgstr "godkännande av villkoren för tjänsten"
 msgid "terms of service approvals"
 msgstr "godkännanden av villkoren för tjänsten"
 
-# Application printout
+#~ msgid "Social security number checksum invalid"
+#~ msgstr "Personbeteckning kontrollsumma felaktig"
 
-msgid "City of Helsinki"
-msgstr "Helsingfors stad"
+#~ msgid "start_date must not be in a past year"
+#~ msgstr "Startdatum får inte vara under föregående år"
 
-msgid "Helsinki-benefit online service"
-msgstr "Helsingforstillägg e-tjänst"
+#~ msgid "end_date must not be in a past year"
+#~ msgstr "Slutdatum får inte vara under föregående år"
 
-msgid "Helsinki-benefit application"
-msgstr "Helsingforstillägg ansökning"
+#~ msgid "Pay subsidy percent required"
+#~ msgstr "Lönesubventionsprocent krävs"
 
-msgid "Employee"
-msgstr "Anställd"
+#~ msgid "Helsinki benefit is granted"
+#~ msgstr "Helsingforstillägg beviljas"
 
-msgid "Application received"
-msgstr "Ansökning mottagen"
+#~ msgid "Helsinki benefit is not granted"
+#~ msgstr "Helsingforstillägg beviljas inte"
 
-msgid "Employer information"
-msgstr "Arbetsgivarinformation"
- 
-msgid "Name of the employer"
-msgstr "Arbetsgivarens namn"
- 
-msgid "Business ID"
-msgstr "FO-nummer"
- 
-msgid "Street address"
-msgstr "Adress"
- 
-msgid "Bank account number"
-msgstr "Kontonummer"
- 
-msgid "Does the employer engage in economic activity?"
-msgstr "Har arbetsgivaren ekonomisk verksamhet?"
- 
-msgid "Delivery address"
-msgstr "Leveransadress"
- 
-msgid "Contact person for the employer"
-msgstr "Arbetsgivarens kontaktperson"
- 
-msgid "Name"
-msgstr "Namn"
- 
-msgid "Telephone"
-msgstr "Telefon"
- 
-msgid "Email address"
-msgstr "E-postadress"
- 
-msgid "Preferred language of communication"
-msgstr "Affärsspråk"
- 
-msgid "De minimis aid received by the employer"
-msgstr "De minimis-stöden som arbetsgivaren fått"
- 
-msgid "Granter"
-msgstr "Beviljare av stödet"
- 
-msgid "Amount"
-msgstr "Stödbeloppet"
- 
-msgid "Date"
-msgstr "Datum"
- 
-msgid "Total"
-msgstr "Sammanlagt"
- 
-msgid "No, the applicant has not listed any previous de minimis aids."
-msgstr "Nej, arbetsgivaren har inte angett några tidigare de minimis-stöd."
- 
-msgid "Change negotiations or co-determination negotiations"
-msgstr "Samarbetsförhandlingar eller samarbetsförfarande"
- 
-msgid "Yes, the organization has ongoing or completed change negotiations within the previous 12 months."
-msgstr "Ja, organisationen har pågående eller avslutade samarbetsförhandlingar under de föregående 12 månaderna."
- 
-msgid "No, the organization does not have change negotiations in progress or that have ended in the previous 12 months."
-msgstr "Nej, organisationen har inga samarbetsförhandlingar på gång eller som har avslutats under de senaste 12 månaderna."
- 
-msgid "Describe the situation"
-msgstr "Beskrivning av situationen"
- 
-msgid "Person to be hired"
-msgstr "Personen som ska sysselsättas"
- 
-msgid "First name"
-msgstr "Förnamn"
- 
-msgid "Last name"
-msgstr "Efternamn"
- 
-msgid "Personal identity code"
-msgstr "Personbeteckning"
- 
-msgid "The subsidised employee’s municipality of residence is Helsinki"
-msgstr "Personen som anställs bor i Helsingfors"
- 
-msgid "Has the person who is being employed been assigned a job supervisor?"
-msgstr "Har personen som ska sysselsättas utsetts en arbetsledande chef?"
+#~ msgid "Granted as de minimis aid"
+#~ msgstr "Beviljas som stöd av de minimis stöd"
 
-msgid "Employment relationship"
-msgstr "Anställningsförhållande"
- 
-msgid "Job title"
-msgstr "Titel"
- 
-msgid "Working hours per week"
-msgstr "Arbetstid per vecka"
- 
-msgid "Gross salary per month"
-msgstr "Bruttolön per månad"
- 
-msgid "Indirect labour costs per month"
-msgstr "Bikostnader per månad"
- 
-msgid "Holiday pay per month"
-msgstr "Semesterpenning per månad"
- 
-msgid "Applicable collective agreement"
-msgstr "Kollektivavtal som tillämpas"
- 
-msgid "Is this an apprenticeship?"
-msgstr "Handlar det om ett läroavtal?"
- 
-msgid "Received aid"
-msgstr "Beviljat stöd"
- 
-msgid "Benefit is applied for the period"
-msgstr "Stillägg tillämpas för perioden"
- 
-msgid "Helsinki benefit is granted"
-msgstr "Helsingforstillägg beviljas"
- 
-msgid "Helsinki benefit is not granted"
-msgstr "Helsingforstillägg beviljas inte"
- 
-msgid "Applying for dates"
-msgstr "Ansöker om datum"
- 
-msgid "Decision date"
-msgstr "Beslutsdatum"
- 
-msgid "Handler"
-msgstr "Handläggare"
- 
-msgid "Granted as de minimis aid"
-msgstr "Beviljas som stöd av de minimis stöd"
- 
-msgid "Attachments"
-msgstr "Bilagor"
- 
-msgid "employee_consent"
-msgstr "Behandlingen av personuppgifterna av personen som ska sysselsättas"
+#~ msgid "employment_contract"
+#~ msgstr "Arbetsavtal"
 
-msgid "employment_contract"
-msgstr "Arbetsavtal"
+#~ msgid "pay_subsidy_decision"
+#~ msgstr "Beslut om lönesubvention"
 
-msgid "pay_subsidy_decision"
-msgstr "Beslut om lönesubvention"
+#~ msgid "education_contract"
+#~ msgstr "Avtal om ordnandet av läroavtalsutbildning"
 
-msgid "education_contract"
-msgstr "Avtal om ordnandet av läroavtalsutbildning"
+#~ msgid "helsinki_benefit_voucher"
+#~ msgstr "Helsingforstilläggskortet"
 
-msgid "helsinki_benefit_voucher"
-msgstr "Helsingforstilläggskortet"
+#~ msgid "fi"
+#~ msgstr "Finska"
 
-msgid "fi"
-msgstr "Finska"
+#~ msgid "sv"
+#~ msgstr "Svenska"
 
-msgid "sv"
-msgstr "Svenska"
+#~ msgid "en"
+#~ msgstr "Engelska"
 
-msgid "en"
-msgstr "Engelska"
+#~ msgid "granted"
+#~ msgstr "Lönesubvention"
 
-msgid "granted"
-msgstr "Lönesubvention"
-
-msgid "granted_aged"
-msgstr "Sysselsättningsstöd för personer som fyllt 55 år"
-
-msgid "not_granted"
-msgstr "Inget stöd"
-
-msgid "Printed at"
-msgstr "Tryckt"
-
-msgid "Your Helsinki benefit draft application will expire"
-msgstr "Ditt utkast för ansökan går ut"
-
-msgid "Your Helsinki benefit application requires additional information"
-msgstr "Ansökan om Helsingforstillägget behöver ytterligare information"
+#~ msgid "not_granted"
+#~ msgstr "Inget stöd"

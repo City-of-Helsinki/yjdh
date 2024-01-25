@@ -21,7 +21,8 @@
         "check": "Recensioner",
         "editEndDate": "Redigera senast",
         "newMessages_one": "{{count}} ny",
-        "newMessages_other": "{{count}} nya"
+        "newMessages_other": "{{count}} nya",
+        "sortOrder": "Sortera ansökningar"
       }
     },
     "pageHeaders": {
@@ -40,7 +41,7 @@
       "draft": "Utkast",
       "additionalInformationNeeded": "Ytterligare uppgifter behövs",
       "received": "Mottagen",
-      "approved": "Godkänd",
+      "accepted": "Godkänd",
       "rejected": "Avvisad",
       "handling": "Behandling",
       "cancelled": "Peruttu"
@@ -604,7 +605,9 @@
     "yes": "Ja",
     "no": "Nej",
     "close": "Stäng",
-    "home": "Gå tillbaka till ingångssidan"
+    "home": "Gå tillbaka till ingångssidan",
+    "pagination": "Sidor",
+    "back": "Tillbaka"
   },
   "messenger": {
     "messages": "Meddelanden om ansökan",
@@ -745,6 +748,18 @@
     "button": "Muokkaa evästeasetuksia"
   },
   "decisions": {
-    "heading": "Arkiv"
+    "heading_one": "<strong>{{count}}</strong> ansökan, för vilken beslut har fattats.",
+    "heading_other": "<strong>{{count}}</strong> ansökningar, för vilka beslut har fattats.",
+    "noDecisions": "Inga beslut har fattats för några ansökningar om Helsingforstillägget ännu."
+  },
+  "sortOrder": {
+    "label": "Sortera",
+    "submittedAt": {
+      "asc": "Äldsta först",
+      "desc": "Senaste först"
+    },
+    "name": {
+      "asc": "I bokstavsording"
+    }
   }
 }

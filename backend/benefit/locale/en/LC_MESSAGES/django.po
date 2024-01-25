@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-01 10:42+0200\n"
+"POT-Creation-Date: 2024-01-25 18:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,50 +35,6 @@ msgstr ""
 msgid "TALPA export {date}"
 msgstr ""
 
-#, python-brace-format
-msgid "Upload file size cannot be greater than {size} bytes"
-msgstr ""
-
-msgid "Too many attachments"
-msgstr ""
-
-msgid "Not a valid pdf file"
-msgstr ""
-
-msgid "Not a valid image file"
-msgstr ""
-
-msgid "Grant date too much in past"
-msgstr ""
-
-msgid "Grant date can not be in the future"
-msgstr ""
-
-msgid "Social security number invalid"
-msgstr ""
-
-msgid "Social security number checksum invalid"
-msgstr ""
-
-#, python-brace-format
-msgid "Working hour must be greater than {min_hour} per week"
-msgstr ""
-
-msgid "Monthly pay must be greater than 0"
-msgstr ""
-
-msgid "Vacation money must be a positive number"
-msgstr ""
-
-msgid "Other expenses must be a positive number"
-msgstr ""
-
-msgid "Applications in a batch can not be changed when batch is in this status"
-msgstr ""
-
-msgid "This application has invalid status and can not be added to this batch"
-msgstr ""
-
 msgid "This should be unreachable"
 msgstr ""
 
@@ -101,13 +57,7 @@ msgstr ""
 msgid "Total amount of de minimis aid too large"
 msgstr ""
 
-msgid "start_date must not be in a past year"
-msgstr ""
-
 msgid "start_date must not be more than 4 months in the past"
-msgstr ""
-
-msgid "end_date must not be in a past year"
 msgstr ""
 
 msgid "application end_date can not be less than start_date"
@@ -121,9 +71,6 @@ msgstr ""
 
 msgid ""
 "This application can not have a description for co-operation negotiations"
-msgstr ""
-
-msgid "Pay subsidy percent required"
 msgstr ""
 
 #, python-brace-format
@@ -140,6 +87,14 @@ msgid "This field can be set for associations only"
 msgstr ""
 
 msgid "This benefit type can not be selected"
+msgstr ""
+
+msgid ""
+"Apprenticeship program can not be selected if there is no granted pay subsidy"
+msgstr ""
+
+msgid ""
+"Apprenticeship program has to be yes or no if there is a granted pay subsidy"
 msgstr ""
 
 msgid "Application does not have the employee consent attachment"
@@ -167,6 +122,10 @@ msgstr ""
 msgid "create_application_for_company missing from request"
 msgstr ""
 
+#, python-brace-format
+msgid "company with id {company_id} not found"
+msgstr ""
+
 msgid "The calculation should be created when the application is submitted"
 msgstr ""
 
@@ -178,11 +137,55 @@ msgid "Reading {localized_model_name} data failed: {errors}"
 msgstr ""
 
 #, python-brace-format
+msgid "Upload file size cannot be greater than {size} bytes"
+msgstr ""
+
+msgid "Too many attachments"
+msgstr ""
+
+msgid "Not a valid pdf file"
+msgstr ""
+
+msgid "Not a valid image file"
+msgstr ""
+
+msgid "Applications in a batch can not be changed when batch is in this status"
+msgstr ""
+
+msgid "This application has invalid status and can not be added to this batch"
+msgstr ""
+
+msgid "Grant date too much in past"
+msgstr ""
+
+msgid "Grant date can not be in the future"
+msgstr ""
+
+msgid "Social security number invalid"
+msgstr ""
+
+#, python-brace-format
+msgid "Working hour must be greater than {min_hour} per week"
+msgstr ""
+
+msgid "Monthly pay must be greater than 0"
+msgstr ""
+
+msgid "Vacation money must be a positive number"
+msgstr ""
+
+msgid "Other expenses must be a positive number"
+msgstr ""
+
+#, python-brace-format
 msgid "State transition not allowed: {status} to {value}"
 msgstr ""
 
 #, python-brace-format
 msgid "Initial status must be {initial_status}"
+msgstr ""
+
+msgid "Displayed in the archive in the applicant view"
 msgstr ""
 
 msgid "Operation not allowed for this application status."
@@ -192,7 +195,7 @@ msgid "File not found."
 msgstr ""
 
 #, python-brace-format
-msgid "Helsinki-lisän hakemukset viety {date}"
+msgid "Helsinki-lisan hakemukset viety {date}"
 msgstr ""
 
 msgid "Benefit can not be granted before 24-month waiting period expires"
@@ -276,6 +279,20 @@ msgstr ""
 msgid "helsinki benefit voucher"
 msgstr ""
 
+#, fuzzy
+#| msgid "employee_consent"
+msgid "employee consent"
+msgstr "Employee's consent for processing personal data"
+
+msgid "full application"
+msgstr ""
+
+msgid "other attachment"
+msgstr ""
+
+msgid "pdf summary"
+msgstr ""
+
 msgid "attachment is required"
 msgstr ""
 
@@ -303,10 +320,95 @@ msgstr ""
 msgid "Processing is completed"
 msgstr ""
 
+msgid "Rejected by Talpa"
+msgstr ""
+
+msgid "Not sent to Talpa"
+msgstr ""
+
+msgid "Successfully sent to Talpa"
+msgstr ""
+
+msgid "Handler"
+msgstr ""
+
+msgid "Applicant"
+msgstr ""
+
+msgid "Pay subsidy granted (default)"
+msgstr ""
+
+msgid "Pay subsidy granted (aged)"
+msgstr ""
+
+msgid "No granted pay subsidy"
+msgstr ""
+
+msgid "Submitted but not sent to AHJO"
+msgstr ""
+
+msgid "Request to open the case sent to AHJO"
+msgstr ""
+
+msgid "Case opened in AHJO"
+msgstr ""
+
+msgid "Update request sent"
+msgstr ""
+
+msgid "Update request received"
+msgstr ""
+
+msgid "Decision proposal sent"
+msgstr ""
+
+msgid "Decision proposal accepted"
+msgstr ""
+
+msgid "Decision proposal rejected"
+msgstr ""
+
+msgid "Delete request sent"
+msgstr ""
+
+msgid "Delete request received"
+msgstr ""
+
+msgid "Allow/disallow applicant's modifications"
+msgstr ""
+
+msgid "Success"
+msgstr ""
+
+msgid "Failure"
+msgstr ""
+
+msgid "Open case in Ahjo"
+msgstr ""
+
+msgid "Delete application in Ahjo"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Your application {id} will be deleted soon. If you want to continue the "
+"application process, please do so by {application_deletion_date}, otherwise "
+"the application will deleted permanently."
+msgstr ""
+
+msgid "Your Helsinki benefit draft application will expire"
+msgstr ""
+
 msgid "company"
 msgstr ""
 
 msgid "status"
+msgstr ""
+
+msgid "talpa_status"
+msgstr ""
+
+msgid "application origin"
 msgstr ""
 
 msgid "application number"
@@ -363,6 +465,9 @@ msgstr ""
 msgid "benefit end date"
 msgstr ""
 
+msgid "paper application date"
+msgstr ""
+
 msgid "ahjo batch"
 msgstr ""
 
@@ -411,10 +516,22 @@ msgstr ""
 msgid "date of the decision in Ahjo"
 msgstr ""
 
+msgid "P2P inspector's name"
+msgstr ""
+
+msgid "P2P inspector's email address"
+msgstr ""
+
+msgid "P2P acceptor's title"
+msgstr ""
+
 msgid "Expert inspector's name"
 msgstr ""
 
 msgid "Expert inspector's email address"
+msgstr ""
+
+msgid "Expert inspector's title"
 msgstr ""
 
 msgid "application batch"
@@ -486,6 +603,199 @@ msgstr ""
 msgid "attachments"
 msgstr ""
 
+msgid "paper"
+msgstr ""
+
+msgid "company contact person"
+msgstr ""
+
+msgid "co-operation negotiations"
+msgstr ""
+
+msgid "pay subsidy"
+msgstr ""
+
+msgid "benefit"
+msgstr ""
+
+#, fuzzy
+#| msgid "employee_consent"
+msgid "employment"
+msgstr "Employee's consent for processing personal data"
+
+msgid "approval"
+msgstr ""
+
+msgid "ahjo status"
+msgstr ""
+
+msgid "ahjo statuses"
+msgstr ""
+
+msgid "Not found"
+msgstr ""
+
+msgid "Employer information"
+msgstr ""
+
+msgid "Name of the employer"
+msgstr ""
+
+msgid "Business ID"
+msgstr ""
+
+msgid "Street address"
+msgstr ""
+
+msgid "Delivery address"
+msgstr ""
+
+msgid "Bank account number"
+msgstr ""
+
+msgid "Does the employer engage in economic activity?"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "Contact person for the employer"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Telephone"
+msgstr ""
+
+msgid "Email address"
+msgstr ""
+
+msgid "Preferred language of communication"
+msgstr ""
+
+msgid "De minimis aid received by the employer"
+msgstr ""
+
+#, fuzzy
+#| msgid "granted"
+msgid "Granter"
+msgstr "Pay subsidy"
+
+msgid "Amount"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Total"
+msgstr ""
+
+msgid "No, the applicant has not listed any previous de minimis aids."
+msgstr ""
+
+msgid "Change negotiations or co-determination negotiations"
+msgstr ""
+
+msgid ""
+"Yes, the organization has ongoing or completed change negotiations within "
+"the previous 12 months."
+msgstr ""
+
+msgid ""
+"No, the organization does not have change negotiations in progress or that "
+"have ended in the previous 12 months."
+msgstr ""
+
+msgid "Describe the situation"
+msgstr ""
+
+msgid "Person to be hired"
+msgstr ""
+
+msgid "First name"
+msgstr ""
+
+msgid "Last name"
+msgstr ""
+
+msgid "Personal identity code"
+msgstr ""
+
+msgid "The subsidised employee’s municipality of residence is Helsinki"
+msgstr ""
+
+msgid "Has the person who is being employed been assigned a job supervisor?"
+msgstr ""
+
+msgid "Employment relationship"
+msgstr ""
+
+msgid "Job title"
+msgstr ""
+
+msgid "Working hours per week"
+msgstr ""
+
+msgid "Gross salary per month"
+msgstr ""
+
+msgid "Holiday pay per month"
+msgstr ""
+
+msgid "Indirect labour costs per month"
+msgstr ""
+
+msgid "Applicable collective agreement"
+msgstr ""
+
+msgid "Yhdistyksellä on yritystoimintaa"
+msgstr ""
+
+msgid "Is this an apprenticeship?"
+msgstr ""
+
+msgid "Received aid"
+msgstr ""
+
+msgid "Benefit is applied for the period"
+msgstr ""
+
+msgid "Applying for dates"
+msgstr ""
+
+msgid "Attachments"
+msgstr ""
+
+msgid "granted_aged"
+msgstr "Employment aid for people aged 55 and above"
+
+msgid "Printed at"
+msgstr ""
+
+msgid "City of Helsinki"
+msgstr ""
+
+#, fuzzy
+#| msgid "helsinki_benefit_voucher"
+msgid "Helsinki-benefit online service"
+msgstr "The Helsinki Benefit card"
+
+msgid "Helsinki-benefit application"
+msgstr ""
+
+msgid "Employee"
+msgstr ""
+
+msgid "Application received"
+msgstr ""
+
+msgid "Application number"
+msgstr ""
+
 msgid "Date range too large"
 msgstr ""
 
@@ -507,6 +817,9 @@ msgstr ""
 msgid "End date cannot be empty"
 msgstr ""
 
+msgid "State aid maximum percentage cannot be empty"
+msgstr ""
+
 msgid "Description row, amount ignored"
 msgstr ""
 
@@ -514,9 +827,6 @@ msgid "Salary costs"
 msgstr ""
 
 msgid "State aid maximum %"
-msgstr ""
-
-msgid "State aid maximum percentage cannot be empty"
 msgstr ""
 
 msgid "Pay subsidy/month"
@@ -535,6 +845,15 @@ msgid "Training compensation amount monthly"
 msgstr ""
 
 msgid "Total amount of deductions monthly"
+msgstr ""
+
+msgid "Basic date range description"
+msgstr ""
+
+msgid "Date range description for total row"
+msgstr ""
+
+msgid "Deduction description"
 msgstr ""
 
 msgid "Calculation already exists"
@@ -572,9 +891,6 @@ msgid "Pay subsidy end date"
 msgstr ""
 
 msgid "Work time percent"
-msgstr ""
-
-msgid "pay subsidy"
 msgstr ""
 
 msgid "pay subsidies"
@@ -631,6 +947,9 @@ msgstr ""
 msgid "Company information is not available"
 msgstr ""
 
+msgid "Your IP address is not on the safe list."
+msgstr ""
+
 msgid "bank account number"
 msgstr ""
 
@@ -646,9 +965,6 @@ msgstr ""
 msgid "Swedish"
 msgstr ""
 
-msgid "Application number"
-msgstr ""
-
 #, python-brace-format
 msgid ""
 "Your application has been opened for editing. Please make the corrections by "
@@ -656,7 +972,11 @@ msgid ""
 "processed."
 msgstr ""
 
-msgid "You have received a new message regarding your Helsinki benefit application"
+msgid ""
+"You have received a new message regarding your Helsinki benefit application"
+msgstr ""
+
+msgid "Your Helsinki benefit application requires additional information"
 msgstr ""
 
 #, python-format
@@ -730,7 +1050,20 @@ msgstr ""
 msgid "Terms of application - show at application submit"
 msgstr ""
 
+msgid ""
+"Terms of application for handler - show at application submit for handler"
+msgstr ""
+
 msgid "type of terms"
+msgstr ""
+
+msgid "Finnish terms (md)"
+msgstr ""
+
+msgid "English terms (md)"
+msgstr ""
+
+msgid "Swedish terms (md)"
 msgstr ""
 
 msgid "first day these terms are in effect"
@@ -743,6 +1076,9 @@ msgid "english terms (pdf file)"
 msgstr ""
 
 msgid "swedish terms (pdf file)"
+msgstr ""
+
+msgid "PDF or MD fields are missing for FI/EN/SV! Fill in either or"
 msgstr ""
 
 msgid "terms"
@@ -787,44 +1123,29 @@ msgstr ""
 msgid "terms of service approvals"
 msgstr ""
 
-msgid "fi"
-msgstr "Finnish"
+#~ msgid "fi"
+#~ msgstr "Finnish"
 
-msgid "sv"
-msgstr "Swedish"
+#~ msgid "sv"
+#~ msgstr "Swedish"
 
-msgid "en"
-msgstr "English"
+#~ msgid "en"
+#~ msgstr "English"
 
-msgid "granted"
-msgstr "Pay subsidy"
+#~ msgid "not_granted"
+#~ msgstr "None"
 
-msgid "granted_aged"
-msgstr "Employment aid for people aged 55 and above"
+#~ msgid "Processing of the personal data of the person to be employed"
+#~ msgstr "Behandlingen av personuppgifterna av personen som ska sysselsättas"
 
-msgid "not_granted"
-msgstr "None"
+#~ msgid "Agreement for employee's personal data processing"
+#~ msgstr "Avtal för anställds personuppgiftsbehandling"
 
-msgid "Processing of the personal data of the person to be employed"
-msgstr "Behandlingen av personuppgifterna av personen som ska sysselsättas"
+#~ msgid "employment_contract"
+#~ msgstr "Employment contract"
 
-msgid "Agreement for employee's personal data processing"
-msgstr "Avtal för anställds personuppgiftsbehandling"
+#~ msgid "pay_subsidy_decision"
+#~ msgstr "Pay subsidy decision"
 
-msgid "employment_contract"
-msgstr "Employment contract"
-
-msgid "pay_subsidy_decision"
-msgstr "Pay subsidy decision"
-
-msgid "education_contract"
-msgstr "Agreement on providing apprenticeship training"
-
-msgid "helsinki_benefit_voucher"
-msgstr "The Helsinki Benefit card"
-
-msgid "employee_consent"
-msgstr "Employee's consent for processing personal data"
-
-msgid "Your Helsinki benefit application requires additional information"
-msgstr ""
+#~ msgid "education_contract"
+#~ msgstr "Agreement on providing apprenticeship training"

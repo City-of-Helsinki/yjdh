@@ -27,6 +27,9 @@ const selectBgColor = (pathname: string): keyof DefaultTheme['colors'] => {
     case ROUTES.HOME:
       return theme.colors.silverLight as keyof DefaultTheme['colors'];
 
+    case ROUTES.DECISIONS:
+      return theme.colors.silverLight as keyof DefaultTheme['colors'];
+
     default:
       return theme.colors.white as keyof DefaultTheme['colors'];
   }

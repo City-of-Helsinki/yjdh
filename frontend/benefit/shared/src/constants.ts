@@ -145,7 +145,6 @@ export enum APPLICATION_STATUSES {
   INFO_REQUIRED = 'additional_information_needed',
   RECEIVED = 'received',
   ACCEPTED = 'accepted',
-  APPROVED = 'approved',
   REJECTED = 'rejected',
   CANCELLED = 'cancelled',
   HANDLING = 'handling',
