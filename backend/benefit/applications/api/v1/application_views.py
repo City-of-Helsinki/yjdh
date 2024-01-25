@@ -153,6 +153,12 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         # Update the object.
         serializer.instance = self.get_queryset().get(pk=serializer.instance.pk)
 
+        # Update change reason if provided
+        if self.request.data.get("change_reason") and self.request.user.is_staff:
+            update_change_reason(
+                serializer.instance, str(self.request.data.get("change_reason"))
+            )
+
     @action(methods=["get"], detail=False, url_path="simplified_list")
     def simplified_application_list(self, request):
         """
