@@ -49,9 +49,7 @@ const EmployeeView: React.FC<ApplicationReviewViewProps> = ({
         </$ViewFieldBold>
         <$ViewField>
           {t(
-            `common:utility.${
-              data.associationImmediateManagerCheck ? 'yes' : 'no'
-            }`
+            `common:utility.${data.employee?.isLivingInHelsinki ? 'yes' : 'no'}`
           )}
         </$ViewField>
       </$GridCell>
