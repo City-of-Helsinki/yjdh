@@ -2,7 +2,7 @@ import pytest
 from django.contrib.auth.models import AnonymousUser
 from django.db.models import QuerySet
 
-from applications.api.v1.views import ApplicantApplicationViewSet
+from applications.api.v1.application_views import ApplicantApplicationViewSet
 from applications.models import Application
 
 

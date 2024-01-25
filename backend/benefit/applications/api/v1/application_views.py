@@ -19,6 +19,7 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from simple_history.utils import update_change_reason
 from sql_util.aggregates import SubqueryCount
 
 from applications.api.v1.serializers.application import (
