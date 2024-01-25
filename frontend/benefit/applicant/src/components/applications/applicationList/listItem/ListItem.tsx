@@ -64,7 +64,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
   const ActionIcon = allowedAction.Icon;
 
   return (
-    <$ListItemWrapper>
+    <>
       <$ListItem>
         <$ItemContent>
           <$Avatar $backgroundColor={avatar.color} title={contactPersonName}>
@@ -145,7 +145,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
           </$GridCell>
         </$ListInfo>
       )}
-    </$ListItemWrapper>
+    </>
   );
 };
 

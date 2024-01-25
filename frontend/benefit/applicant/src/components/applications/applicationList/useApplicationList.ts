@@ -54,7 +54,7 @@ const getAvatarBGColor = (
 ): keyof DefaultTheme['colors'] => {
   switch (status) {
     case APPLICATION_STATUSES.DRAFT:
-      return 'black40';
+      return 'black60';
 
     case APPLICATION_STATUSES.INFO_REQUIRED:
       return 'alert';
