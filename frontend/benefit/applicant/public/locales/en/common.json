@@ -21,7 +21,8 @@
         "check": "Review",
         "editEndDate": "Edit by",
         "newMessages_one": "{{count}} new",
-        "newMessages_other": "{{count}} new"
+        "newMessages_other": "{{count}} new",
+        "sortOrder": "Order applications by"
       }
     },
     "pageHeaders": {
@@ -40,7 +41,7 @@
       "draft": "Draft",
       "additionalInformationNeeded": "Additional information is needed",
       "received": "Received",
-      "approved": "Accepted",
+      "accepted": "Accepted",
       "rejected": "Rejected",
       "handling": "Handling",
       "cancelled": "Cancelled"
@@ -604,7 +605,9 @@
     "yes": "Yes",
     "no": "No",
     "close": "Close",
-    "home": "Return to the front page"
+    "home": "Return to the front page",
+    "pagination": "Pagination",
+    "back": "Back"
   },
   "messenger": {
     "messages": "Application’s messages",
@@ -745,6 +748,18 @@
     "button": "Muokkaa evästeasetuksia"
   },
   "decisions": {
-    "heading": "Archive"
+    "heading_one": "<strong>{{count}}</strong> application for which a decision has been made",
+    "heading_other": "<strong>{{count}}</strong> applications for which decisions have been made",
+    "noDecisions": "No decisions have been made for any Helsinki Benefit applications yet."
+  },
+  "sortOrder": {
+    "label": "Order by",
+    "submittedAt": {
+      "asc": "Oldest first",
+      "desc": "Newest first"
+    },
+    "name": {
+      "asc": "Alphabetically"
+    }
   }
 }

@@ -57,6 +57,8 @@ def _get_application_change_history_between_timestamps(
         hist_employee_when_stop_editing = employee.history.as_of(ts_end)._history
     except Employee.DoesNotExist:
         return []
+    except Application.DoesNotExist:
+        return []
 
     new_or_edited_attachments = Attachment.objects.filter(
         Q(created_at__gte=ts_start) | Q(modified_at=ts_start),

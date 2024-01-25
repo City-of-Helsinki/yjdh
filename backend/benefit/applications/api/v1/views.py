@@ -1,6 +1,8 @@
 import re
+from datetime import date
 from typing import List
 
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core import exceptions
 from django.db import transaction
@@ -61,6 +63,42 @@ class BaseApplicationFilter(filters.FilterSet):
             " comma-separated list, such as 'status=draft,received'",
         ),
     )
+    archived_for_applicant = filters.BooleanFilter(
+        method="_get_archived_for_applicant",
+        label=_("Displayed in the archive in the applicant view"),
+    )
+
+    def _get_archived_for_applicant(self, queryset, name, value: bool):
+        """
+        Determine if the application is old enough and already handled so that it will
+        be shown in the archive section for the applicant.
+
+        Make sure any changes here are reflected in the serializer as well.
+        """
+
+        application_statuses = [
+            ApplicationStatus.REJECTED,
+            ApplicationStatus.ACCEPTED,
+        ]
+        batch_statuses = [
+            ApplicationBatchStatus.DECIDED_ACCEPTED,
+            ApplicationBatchStatus.DECIDED_REJECTED,
+            ApplicationBatchStatus.SENT_TO_TALPA,
+            ApplicationBatchStatus.COMPLETED,
+        ]
+        archive_threshold = date.today() + relativedelta(days=-14)
+
+        query = {
+            "status__in": application_statuses,
+            "batch__isnull": False,
+            "batch__status__in": batch_statuses,
+            "batch__decision_date__lte": archive_threshold.isoformat(),
+        }
+
+        if value:
+            return queryset.filter(**query)
+        else:
+            return queryset.filter(~Q(**query))
 
 
 class ApplicantApplicationFilter(BaseApplicationFilter):
@@ -161,7 +199,19 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         context = self.get_serializer_context()
         qs = self._get_simplified_queryset(request, context)
         serializer = self.serializer_class(qs, many=True, context=context)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        data = serializer.data
+
+        # Sorting by encrypted fields has to be done after the data has been retrieved and decrypted
+        if request.query_params.get("order_by") in ["employee_name"]:
+            data = sorted(
+                data,
+                key=lambda item: (
+                    item["employee"]["last_name"].lower(),
+                    item["employee"]["first_name"].lower(),
+                ),
+            )
+
+        return Response(data, status=status.HTTP_200_OK)
 
     @action(
         methods=("POST",),
@@ -214,7 +264,9 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         if exclude_batched:
             qs = qs.filter(batch__isnull=True)
 
-        qs = qs.filter(archived=request.query_params.get("filter_archived") == "1")
+        user = self.request.user
+        if hasattr(user, "is_handler") and user.is_handler():
+            qs = qs.filter(archived=request.query_params.get("filter_archived") == "1")
 
         return qs
 

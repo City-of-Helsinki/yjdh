@@ -264,6 +264,7 @@ export type Application = {
   unreadMessagesCount?: number;
   organizationType?: ORGANIZATION_TYPES;
   associationImmediateManagerCheck?: boolean;
+  archivedForApplicant?: boolean;
 } & Step1 &
   Step2;
 

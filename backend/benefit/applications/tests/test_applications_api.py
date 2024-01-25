@@ -9,6 +9,7 @@ from unittest import mock
 
 import faker
 import pytest
+from dateutil.relativedelta import relativedelta
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import override_settings
 from freezegun import freeze_time
@@ -26,6 +27,7 @@ from applications.api.v1.status_transition_validator import (
 from applications.api.v1.views import BaseApplicationViewSet
 from applications.enums import (
     AhjoStatus,
+    ApplicationBatchStatus,
     ApplicationStatus,
     ApplicationStep,
     AttachmentType,
@@ -261,6 +263,66 @@ def test_applications_simple_list_filter(
     assert response.status_code == 200
 
 
+def test_applications_filter_archived_for_applicant(
+    api_client, mock_get_organisation_roles_and_create_company
+):
+    recent_batch = ApplicationBatchFactory(
+        decision_date=date.today() - relativedelta(days=2),
+        status=ApplicationBatchStatus.COMPLETED,
+    )
+    old_batch = ApplicationBatchFactory(
+        decision_date=date.today() - relativedelta(days=15),
+        status=ApplicationBatchStatus.COMPLETED,
+    )
+    pending_batch = ApplicationBatchFactory(
+        decision_date=date.today() - relativedelta(days=15),
+        status=ApplicationBatchStatus.AWAITING_AHJO_DECISION,
+    )
+    company = mock_get_organisation_roles_and_create_company
+
+    apps = [
+        # Decided but not yet in a batch, should appear on main page
+        DecidedApplicationFactory(application_number=123450),
+        # Batch processed and decided 15 days ago, should appear on archive page
+        DecidedApplicationFactory(application_number=123451, batch=old_batch),
+        # Batch processed and decided 15 days ago and archived for handlers, should still appear on archive page
+        DecidedApplicationFactory(
+            application_number=123452, batch=old_batch, archived=True
+        ),
+        # Batch processed and decided two days ago, should appear on main page
+        DecidedApplicationFactory(application_number=123453, batch=recent_batch),
+        # Batch decided 15 days ago but not yet fully processed, should appear on main page
+        DecidedApplicationFactory(application_number=123454, batch=pending_batch),
+        # Fresh application not yet decided, should appear on main page
+        ReceivedApplicationFactory(application_number=123455),
+    ]
+
+    for app in apps:
+        app.company = company
+        app.save()
+
+    response = api_client.get(
+        reverse("v1:applicant-application-simplified-application-list"),
+        {"archived_for_applicant": "true", "order_by": "application_number"},
+    )
+
+    assert len(response.data) == 2
+    assert response.data[0]["id"] == str(apps[1].id)
+    assert response.data[1]["id"] == str(apps[2].id)
+    assert response.data[0]["archived_for_applicant"]
+    assert response.data[1]["archived_for_applicant"]
+
+    response = api_client.get(
+        reverse("v1:applicant-application-simplified-application-list"),
+        {"archived_for_applicant": "false", "order_by": "application_number"},
+    )
+    assert len(response.data) == 4
+    assert response.data[0]["id"] == str(apps[0].id)
+    assert response.data[1]["id"] == str(apps[3].id)
+    assert response.data[2]["id"] == str(apps[4].id)
+    assert response.data[3]["id"] == str(apps[5].id)
+
+
 @pytest.mark.parametrize("url_func", [get_detail_url, get_handler_detail_url])
 def test_application_single_read_unauthenticated(
     anonymous_client, application, url_func
@@ -286,8 +348,8 @@ def test_application_single_read_unauthorized(
         ),
         (ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING),
         (ApplicationStatus.HANDLING, ApplicationStatus.HANDLING),
-        (ApplicationStatus.ACCEPTED, ApplicationStatus.HANDLING),
-        (ApplicationStatus.REJECTED, ApplicationStatus.HANDLING),
+        (ApplicationStatus.ACCEPTED, ApplicationStatus.ACCEPTED),
+        (ApplicationStatus.REJECTED, ApplicationStatus.REJECTED),
         (ApplicationStatus.CANCELLED, ApplicationStatus.CANCELLED),
     ],
 )

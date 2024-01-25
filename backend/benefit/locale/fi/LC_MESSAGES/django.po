@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-01 10:42+0200\n"
+"POT-Creation-Date: 2024-01-25 18:30+0200\n"
 "PO-Revision-Date: 2022-11-01 10:45+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -35,51 +35,6 @@ msgstr "Ei vietävää hakemusta, yritä myöhemmin uudelleen"
 msgid "TALPA export {date}"
 msgstr "TALPA-vienti {date}"
 
-#, python-brace-format
-msgid "Upload file size cannot be greater than {size} bytes"
-msgstr "Ladattavan tiedoston koko ei voi ylittää {size} tavua"
-
-msgid "Too many attachments"
-msgstr "Liian monta liitettä"
-
-msgid "Not a valid pdf file"
-msgstr "Epäkelpo PDF-tiedosto"
-
-msgid "Not a valid image file"
-msgstr "Epäkelpo kuvatiedosto"
-
-msgid "Grant date too much in past"
-msgstr "Myöntämispäivä liian kaukana menneisyydessä"
-
-msgid "Grant date can not be in the future"
-msgstr "Myöntämispäivä ei voi olla tulevaisuudessa"
-
-msgid "Social security number invalid"
-msgstr "Epäkelpo henkilötunnus"
-
-msgid "Social security number checksum invalid"
-msgstr "Epäkelpo henkilötunnuksen tarkistussumma"
-
-#, python-brace-format
-msgid "Working hour must be greater than {min_hour} per week"
-msgstr "Työajan on oltava suurempi kuin {min_hour} viikossa"
-
-msgid "Monthly pay must be greater than 0"
-msgstr "Kuukausipalkan on oltava suurempi kuin 0"
-
-msgid "Vacation money must be a positive number"
-msgstr "Lomarahojen täytyy olla positiivinen luku"
-
-msgid "Other expenses must be a positive number"
-msgstr "Muiden kulujen täytyy olla positiivinen luku"
-
-msgid "Applications in a batch can not be changed when batch is in this status"
-msgstr "Erän hakemuksia ei voida muuttaa erän ollessa tässä tilassa"
-
-msgid "This application has invalid status and can not be added to this batch"
-msgstr ""
-"Tämän hakemuksen tila on virheellinen, eikä sitä voi lisätä tähän erään"
-
 msgid "This should be unreachable"
 msgstr "Tämän pitäisi olla tavoittamattomissa"
 
@@ -88,8 +43,8 @@ msgstr "Työnjohdollinen esihenkilö on pakollinen valinta"
 
 msgid "for companies, association_immediate_manager_check must always be null"
 msgstr ""
-"yrityksen ollessa kyseessä kohteen Työnjohdollinen esihenkilö (association_immediate_manager_check) on "
-"aina oltava tyhjä"
+"yrityksen ollessa kyseessä kohteen Työnjohdollinen esihenkilö "
+"(association_immediate_manager_check) on aina oltava tyhjä"
 
 msgid ""
 "This application has non-null de_minimis_aid but is applied by an association"
@@ -98,7 +53,8 @@ msgstr ""
 "joka ei harjoita liiketoimintaa"
 
 msgid "This application has de_minimis_aid set but does not define any"
-msgstr "Tässä hakemuksessa on valittu de minimis tuki, mutta sitä ei ole annettu"
+msgstr ""
+"Tässä hakemuksessa on valittu de minimis tuki, mutta sitä ei ole annettu"
 
 msgid "This application can not have de minimis aid"
 msgstr "Tässä hakemuksessa ei voi olla de minimis -tukea"
@@ -106,14 +62,8 @@ msgstr "Tässä hakemuksessa ei voi olla de minimis -tukea"
 msgid "Total amount of de minimis aid too large"
 msgstr "De minimis -tuen kokonaismäärä liian suuri"
 
-msgid "start_date must not be in a past year"
-msgstr "Aloituspäivä ei saa olla menneessä vuodessa"
-
 msgid "start_date must not be more than 4 months in the past"
 msgstr "Aloituspäivä voi olla enintään 4 kuukautta menneisyydessä"
-
-msgid "end_date must not be in a past year"
-msgstr "Päättymispäivä ei saa olla menneessä vuodessa"
 
 msgid "application end_date can not be less than start_date"
 msgstr "hakemuksen päättymispäivä ei voi olla aiemmin kuin aloituspäivä"
@@ -128,15 +78,13 @@ msgid ""
 "This application can not have a description for co-operation negotiations"
 msgstr "Tässä hakemuksessa ei voi olla kuvausta yhteistoimintaneuvotteluista"
 
-msgid "Pay subsidy percent required"
-msgstr "Palkkatukiprosentti on pakollinen"
-
 #, python-brace-format
 msgid "This application can not have {key}"
 msgstr "Tässä hakemuksessa ei voi olla kohdetta {key}"
 
 msgid "This application can not have additional_pay_subsidy_percent"
-msgstr "Tässä hakemuksessa ei voi olla kohdetta toinen tuki prosentti "
+msgstr ""
+"Tässä hakemuksessa ei voi olla kohdetta toinen tuki prosentti "
 "additional_pay_subsidy_percent"
 
 msgid "This field is required before submitting the application"
@@ -147,6 +95,14 @@ msgstr "Tämä kenttä voidaan valita vain yhteisöille"
 
 msgid "This benefit type can not be selected"
 msgstr "Tätä avustustyyppiä ei voida valita"
+
+msgid ""
+"Apprenticeship program can not be selected if there is no granted pay subsidy"
+msgstr ""
+
+msgid ""
+"Apprenticeship program has to be yes or no if there is a granted pay subsidy"
+msgstr ""
 
 msgid "Application does not have the employee consent attachment"
 msgstr "Hakemuksessa ei ole liitteenä työntekijän suostumusta"
@@ -173,6 +129,10 @@ msgstr "Hakemusta ei voida muuttaa tässä tilassa"
 msgid "create_application_for_company missing from request"
 msgstr "create_application_for_company puuttuu pyynnöstä"
 
+#, python-brace-format
+msgid "company with id {company_id} not found"
+msgstr ""
+
 msgid "The calculation should be created when the application is submitted"
 msgstr "Laskelma on luotava, kun hakemus lähetetään"
 
@@ -184,12 +144,57 @@ msgid "Reading {localized_model_name} data failed: {errors}"
 msgstr "{localized_model_name} -tietojen lukeminen epäonnistui: {errors}"
 
 #, python-brace-format
+msgid "Upload file size cannot be greater than {size} bytes"
+msgstr "Ladattavan tiedoston koko ei voi ylittää {size} tavua"
+
+msgid "Too many attachments"
+msgstr "Liian monta liitettä"
+
+msgid "Not a valid pdf file"
+msgstr "Epäkelpo PDF-tiedosto"
+
+msgid "Not a valid image file"
+msgstr "Epäkelpo kuvatiedosto"
+
+msgid "Applications in a batch can not be changed when batch is in this status"
+msgstr "Erän hakemuksia ei voida muuttaa erän ollessa tässä tilassa"
+
+msgid "This application has invalid status and can not be added to this batch"
+msgstr ""
+"Tämän hakemuksen tila on virheellinen, eikä sitä voi lisätä tähän erään"
+
+msgid "Grant date too much in past"
+msgstr "Myöntämispäivä liian kaukana menneisyydessä"
+
+msgid "Grant date can not be in the future"
+msgstr "Myöntämispäivä ei voi olla tulevaisuudessa"
+
+msgid "Social security number invalid"
+msgstr "Epäkelpo henkilötunnus"
+
+#, python-brace-format
+msgid "Working hour must be greater than {min_hour} per week"
+msgstr "Työajan on oltava suurempi kuin {min_hour} viikossa"
+
+msgid "Monthly pay must be greater than 0"
+msgstr "Kuukausipalkan on oltava suurempi kuin 0"
+
+msgid "Vacation money must be a positive number"
+msgstr "Lomarahojen täytyy olla positiivinen luku"
+
+msgid "Other expenses must be a positive number"
+msgstr "Muiden kulujen täytyy olla positiivinen luku"
+
+#, python-brace-format
 msgid "State transition not allowed: {status} to {value}"
 msgstr "Tilan siirto ei ole sallittu: {status} arvoon {value}"
 
 #, python-brace-format
 msgid "Initial status must be {initial_status}"
 msgstr "Alkutilan on oltava {initial_status}"
+
+msgid "Displayed in the archive in the applicant view"
+msgstr ""
 
 msgid "Operation not allowed for this application status."
 msgstr "Toiminto ei ole sallittu tässä hakemuksen tilassa."
@@ -198,7 +203,7 @@ msgid "File not found."
 msgstr "Tiedostoa ei löydy."
 
 #, python-brace-format
-msgid "Helsinki-lisän hakemukset viety {date}"
+msgid "Helsinki-lisan hakemukset viety {date}"
 msgstr ""
 
 msgid "Benefit can not be granted before 24-month waiting period expires"
@@ -283,6 +288,26 @@ msgstr "oppisopimustoimiston koulutussopimus"
 msgid "helsinki benefit voucher"
 msgstr "Helsinki-lisä-seteli"
 
+#, fuzzy
+#| msgid "employee_consent"
+msgid "employee consent"
+msgstr "Suostumus työntekijän henkilötietojen käsittelyyn"
+
+#, fuzzy
+#| msgid "application"
+msgid "full application"
+msgstr "hakemus"
+
+#, fuzzy
+#| msgid "attachment"
+msgid "other attachment"
+msgstr "liite"
+
+#, fuzzy
+#| msgid "Step 4 - summary"
+msgid "pdf summary"
+msgstr "Vaihe 4 – yhteenveto"
+
 msgid "attachment is required"
 msgstr "liite on pakollinen"
 
@@ -310,11 +335,124 @@ msgstr "Lähetetty Talpaan"
 msgid "Processing is completed"
 msgstr "Käsittely on valmis"
 
+#, fuzzy
+#| msgid "Rejected"
+msgid "Rejected by Talpa"
+msgstr "Hylätty"
+
+#, fuzzy
+#| msgid "Sent to Talpa"
+msgid "Not sent to Talpa"
+msgstr "Lähetetty Talpaan"
+
+#, fuzzy
+#| msgid "Sent to Talpa"
+msgid "Successfully sent to Talpa"
+msgstr "Lähetetty Talpaan"
+
+msgid "Handler"
+msgstr "Käsittelijä"
+
+#, fuzzy
+#| msgid "application"
+msgid "Applicant"
+msgstr "hakemus"
+
+#, fuzzy
+#| msgid "Pay subsidy end date"
+msgid "Pay subsidy granted (default)"
+msgstr "Palkkatuen päättymispäivä"
+
+#, fuzzy
+#| msgid "Pay subsidy end date"
+msgid "Pay subsidy granted (aged)"
+msgstr "Palkkatuen päättymispäivä"
+
+#, fuzzy
+#| msgid "pay subsidy"
+msgid "No granted pay subsidy"
+msgstr "palkkatuki"
+
+msgid "Submitted but not sent to AHJO"
+msgstr ""
+
+msgid "Request to open the case sent to AHJO"
+msgstr ""
+
+msgid "Case opened in AHJO"
+msgstr ""
+
+msgid "Update request sent"
+msgstr ""
+
+msgid "Update request received"
+msgstr ""
+
+#, fuzzy
+#| msgid "Decision date"
+msgid "Decision proposal sent"
+msgstr "Päätöksen päivämäärä"
+
+#, fuzzy
+#| msgid "Decision date"
+msgid "Decision proposal accepted"
+msgstr "Päätöksen päivämäärä"
+
+#, fuzzy
+#| msgid "Decision date"
+msgid "Decision proposal rejected"
+msgstr "Päätöksen päivämäärä"
+
+msgid "Delete request sent"
+msgstr ""
+
+msgid "Delete request received"
+msgstr ""
+
+msgid "Allow/disallow applicant's modifications"
+msgstr ""
+
+msgid "Success"
+msgstr ""
+
+msgid "Failure"
+msgstr ""
+
+#, fuzzy
+#| msgid "Rejected in Ahjo"
+msgid "Open case in Ahjo"
+msgstr "Hylätty Ahjossa"
+
+#, fuzzy
+#| msgid "Incomplete application"
+msgid "Delete application in Ahjo"
+msgstr "Puutteellinen hakemus"
+
+#, python-brace-format
+msgid ""
+"Your application {id} will be deleted soon. If you want to continue the "
+"application process, please do so by {application_deletion_date}, otherwise "
+"the application will deleted permanently."
+msgstr ""
+
+msgid "Your Helsinki benefit draft application will expire"
+msgstr "Helsinki-lisä -hakemuksesi luonnos vanhenee"
+
 msgid "company"
 msgstr "yritys"
 
 msgid "status"
 msgstr "tila"
+
+#, fuzzy
+#| msgid "status"
+msgid "talpa_status"
+msgstr "tila"
+
+#, fuzzy
+#| msgid "application log entry"
+msgid "application origin"
+msgstr "hakemuksen lokimerkintä"
 
 msgid "application number"
 msgstr "hakemuksen numero"
@@ -370,6 +508,11 @@ msgstr "avustuksen alkamispäivä"
 msgid "benefit end date"
 msgstr "avustuksen päättymispäivä"
 
+#, fuzzy
+#| msgid "application batches"
+msgid "paper application date"
+msgstr "hakemuserät"
+
 msgid "ahjo batch"
 msgstr "Ahjo-erä"
 
@@ -418,11 +561,29 @@ msgstr "Ahjo-päätöksen lakipykälä"
 msgid "date of the decision in Ahjo"
 msgstr "päätöksen päivämäärä Ahjossa"
 
+#, fuzzy
+#| msgid "Expert inspector's name"
+msgid "P2P inspector's name"
+msgstr "Asiantuntijatarkastajan nimi"
+
+#, fuzzy
+#| msgid "Expert inspector's email address"
+msgid "P2P inspector's email address"
+msgstr "Asiantuntijatarkastajan sähköpostiosoite"
+
+msgid "P2P acceptor's title"
+msgstr ""
+
 msgid "Expert inspector's name"
 msgstr "Asiantuntijatarkastajan nimi"
 
 msgid "Expert inspector's email address"
 msgstr "Asiantuntijatarkastajan sähköpostiosoite"
+
+#, fuzzy
+#| msgid "Expert inspector's name"
+msgid "Expert inspector's title"
+msgstr "Asiantuntijatarkastajan nimi"
 
 msgid "application batch"
 msgstr "hakemuserä"
@@ -493,6 +654,214 @@ msgstr "liite"
 msgid "attachments"
 msgstr "liitteet"
 
+msgid "paper"
+msgstr ""
+
+#, fuzzy
+#| msgid "company contact person's email"
+msgid "company contact person"
+msgstr "yrityksen yhteyshenkilön sähköpostiosoite"
+
+msgid "co-operation negotiations"
+msgstr ""
+
+msgid "pay subsidy"
+msgstr "palkkatuki"
+
+#, fuzzy
+#| msgid "benefit end date"
+msgid "benefit"
+msgstr "avustuksen päättymispäivä"
+
+#, fuzzy
+#| msgid "employee"
+msgid "employment"
+msgstr "työntekijä"
+
+msgid "approval"
+msgstr ""
+
+#, fuzzy
+#| msgid "status"
+msgid "ahjo status"
+msgstr "tila"
+
+#, fuzzy
+#| msgid "status"
+msgid "ahjo statuses"
+msgstr "tila"
+
+#, fuzzy
+#| msgid "File not found."
+msgid "Not found"
+msgstr "Tiedostoa ei löydy."
+
+msgid "Employer information"
+msgstr "Työnantajan tiedot"
+
+msgid "Name of the employer"
+msgstr "Yrityksen nimi"
+
+msgid "Business ID"
+msgstr "Y-tunnus"
+
+msgid "Street address"
+msgstr "Katuosoite"
+
+msgid "Delivery address"
+msgstr "Postiosoite päätöstä varten"
+
+msgid "Bank account number"
+msgstr "Tilinumero"
+
+msgid "Does the employer engage in economic activity?"
+msgstr "Harjoittaako työnantaja taloudellista liiketoimintaa?"
+
+msgid "Yes"
+msgstr ""
+
+#, fuzzy
+#| msgid "Note"
+msgid "No"
+msgstr "Huomautus"
+
+msgid "Contact person for the employer"
+msgstr "Työnantajan yhteyshenkilö"
+
+msgid "Name"
+msgstr "Nimi"
+
+msgid "Telephone"
+msgstr "Puhelin"
+
+msgid "Email address"
+msgstr "Sähköposti"
+
+msgid "Preferred language of communication"
+msgstr "Asiointikieli"
+
+msgid "De minimis aid received by the employer"
+msgstr "Työnantajalle myönnetyt de minimis -tuet"
+
+msgid "Granter"
+msgstr "Myöntäjä"
+
+msgid "Amount"
+msgstr "Määrä"
+
+msgid "Date"
+msgstr "Pvm"
+
+msgid "Total"
+msgstr "Yhteensä"
+
+msgid "No, the applicant has not listed any previous de minimis aids."
+msgstr ""
+"Ei, työnantajalle ei ole myönnetty de minimis -tukia kuluvan vuoden ja "
+"kahden edellisen verovuoden aikana."
+
+msgid "Change negotiations or co-determination negotiations"
+msgstr "Muutosneuvottelut tai YT-tilanne"
+
+msgid ""
+"Yes, the organization has ongoing or completed change negotiations within "
+"the previous 12 months."
+msgstr ""
+"Kyllä, organisaatiolla on käynnissä olevat, tai päättyneet muutosneuvottelut "
+"edeltävän 12 kuukauden aikana."
+
+msgid ""
+"No, the organization does not have change negotiations in progress or that "
+"have ended in the previous 12 months."
+msgstr ""
+"Ei, organisaatiolla ei ole käynnissä tai edeltävän 12 kuukauden aikana "
+"päättyneitä muutosneuvotteluja"
+
+msgid "Describe the situation"
+msgstr "Kuvaus tilanteesta"
+
+msgid "Person to be hired"
+msgstr "Työllistettävän henkilön tiedot"
+
+msgid "First name"
+msgstr "Etunimi"
+
+msgid "Last name"
+msgstr "Sukunimi"
+
+msgid "Personal identity code"
+msgstr "Henkilötunnus"
+
+msgid "The subsidised employee’s municipality of residence is Helsinki"
+msgstr "Työllistetyn kotikunta Helsinki työsuhteen alkaessa"
+
+msgid "Has the person who is being employed been assigned a job supervisor?"
+msgstr "Onko työllistetylle osoitettu työnjohdollinen esihenkilö?"
+
+msgid "Employment relationship"
+msgstr "Työsuhde"
+
+msgid "Job title"
+msgstr "Tehtävänimike"
+
+msgid "Working hours per week"
+msgstr "Työtunnit / viikko"
+
+msgid "Gross salary per month"
+msgstr "Bruttopalkka / kuukausi"
+
+msgid "Holiday pay per month"
+msgstr "Lomaraha / kuukausi"
+
+msgid "Indirect labour costs per month"
+msgstr "Sivukulut / kuukausi"
+
+msgid "Applicable collective agreement"
+msgstr "Työehtosopimus"
+
+msgid "Yhdistyksellä on yritystoimintaa"
+msgstr ""
+
+msgid "Is this an apprenticeship?"
+msgstr "Onko kyseessä oppisopimus?"
+
+msgid "Received aid"
+msgstr "Myönnetty tuki"
+
+msgid "Benefit is applied for the period"
+msgstr "Haettu ajankohta"
+
+msgid "Applying for dates"
+msgstr "Ajalle"
+
+msgid "Attachments"
+msgstr "Liitteet"
+
+msgid "granted_aged"
+msgstr "55 vuotta täyttäneiden työllistämistuki"
+
+msgid "Printed at"
+msgstr "Tulostettu"
+
+# Application printout
+msgid "City of Helsinki"
+msgstr "Helsingin kaupunki"
+
+msgid "Helsinki-benefit online service"
+msgstr "Helsinki-lisän asiointipalvelu"
+
+msgid "Helsinki-benefit application"
+msgstr "Helsinki-lisä hakemus"
+
+msgid "Employee"
+msgstr "Työllistettävä"
+
+msgid "Application received"
+msgstr "Hakemus saapunut"
+
+msgid "Application number"
+msgstr "Hakemusnumero"
+
 msgid "Date range too large"
 msgstr "Päivämääräalue liian suuri"
 
@@ -502,8 +871,7 @@ msgstr ""
 "override_monthly_benefit_amount_comment"
 
 msgid "This calculation needs override_monthly_benefit_amount_comment"
-msgstr ""
-"Tässä laskelmassa on oltava manuaalisen laskelman perustelu"
+msgstr "Tässä laskelmassa on oltava manuaalisen laskelman perustelu"
 
 msgid "Handler can not be unassigned in this status"
 msgstr "Käsittelijää ei voida muuttaa tässä tilassa"
@@ -518,7 +886,9 @@ msgid "End date cannot be empty"
 msgstr "Päättymispäivä ei voi olla tyhjä"
 
 msgid "State aid maximum percentage cannot be empty"
-msgstr "Valtiontuen maksimimäärä ei voi olla tyhjä ja sen täytyy olla yksi alasvetovalikon arvoista"
+msgstr ""
+"Valtiontuen maksimimäärä ei voi olla tyhjä ja sen täytyy olla yksi "
+"alasvetovalikon arvoista"
 
 msgid "Description row, amount ignored"
 msgstr "Kuvausrivi, rahamäärä ohitettu"
@@ -546,6 +916,17 @@ msgstr "Koulutuskorvauksen määrä kuukaudelta"
 
 msgid "Total amount of deductions monthly"
 msgstr "Vähennysten kokonaismäärä kuukaudelta"
+
+msgid "Basic date range description"
+msgstr ""
+
+#, fuzzy
+#| msgid "Date range too large"
+msgid "Date range description for total row"
+msgstr "Päivämääräalue liian suuri"
+
+msgid "Deduction description"
+msgstr ""
 
 msgid "Calculation already exists"
 msgstr "Laskelma on jo olemassa"
@@ -580,9 +961,6 @@ msgstr "Palkkatuen päättymispäivä"
 
 msgid "Work time percent"
 msgstr "Työaikaprosentti"
-
-msgid "pay subsidy"
-msgstr "palkkatuki"
 
 msgid "pay subsidies"
 msgstr "palkkatuet"
@@ -638,6 +1016,9 @@ msgstr "Sinun on hyväksyttävä palveluehdot ennen mitään toimenpiteitä"
 msgid "Company information is not available"
 msgstr "Yrityksen tietoja ei ole saatavilla"
 
+msgid "Your IP address is not on the safe list."
+msgstr ""
+
 msgid "bank account number"
 msgstr "tilinumero"
 
@@ -663,8 +1044,12 @@ msgstr ""
 "{additional_information_needed_by} mennessä, muuten hakemusta ei voida "
 "käsitellä."
 
-msgid "You have received a new message regarding your Helsinki benefit application"
+msgid ""
+"You have received a new message regarding your Helsinki benefit application"
 msgstr "Olet saanut uuden viestin Helsinki-lisä -hakemukseen littyen"
+
+msgid "Your Helsinki benefit application requires additional information"
+msgstr "Helsinki-lisä -hakemus tarvitsee lisätietoja"
 
 #, python-format
 msgid ""
@@ -742,8 +1127,29 @@ msgstr "Palveluehdot – näytetään sisäänkirjautumisen yhteydessä"
 msgid "Terms of application - show at application submit"
 msgstr "Hakuehdot – näytä hakemuksen lähettämisen yhteydessä"
 
+#, fuzzy
+#| msgid "Terms of application - show at application submit"
+msgid ""
+"Terms of application for handler - show at application submit for handler"
+msgstr "Hakuehdot – näytä hakemuksen lähettämisen yhteydessä"
+
 msgid "type of terms"
 msgstr "ehtojen tyyppi"
+
+#, fuzzy
+#| msgid "finnish terms (pdf file)"
+msgid "Finnish terms (md)"
+msgstr "suomenkieliset ehdot (PDF-tiedosto)"
+
+#, fuzzy
+#| msgid "english terms (pdf file)"
+msgid "English terms (md)"
+msgstr "englanninkieliset ehdot (PDF-tiedosto)"
+
+#, fuzzy
+#| msgid "swedish terms (pdf file)"
+msgid "Swedish terms (md)"
+msgstr "ruotsinkieliset ehdot (PDF-tiedosto)"
 
 msgid "first day these terms are in effect"
 msgstr "näiden ehtojen ensimmäinen voimassaolopäivä"
@@ -756,6 +1162,9 @@ msgstr "englanninkieliset ehdot (PDF-tiedosto)"
 
 msgid "swedish terms (pdf file)"
 msgstr "ruotsinkieliset ehdot (PDF-tiedosto)"
+
+msgid "PDF or MD fields are missing for FI/EN/SV! Fill in either or"
+msgstr ""
 
 msgid "terms"
 msgstr "ehdot"
@@ -799,202 +1208,53 @@ msgstr "palveluehtojen hyväksyntä"
 msgid "terms of service approvals"
 msgstr "palveluehtojen hyväksynnät"
 
-# Application printout
+#~ msgid "Social security number checksum invalid"
+#~ msgstr "Epäkelpo henkilötunnuksen tarkistussumma"
 
-msgid "City of Helsinki"
-msgstr "Helsingin kaupunki"
+#~ msgid "start_date must not be in a past year"
+#~ msgstr "Aloituspäivä ei saa olla menneessä vuodessa"
 
-msgid "Helsinki-benefit online service"
-msgstr "Helsinki-lisän asiointipalvelu"
+#~ msgid "end_date must not be in a past year"
+#~ msgstr "Päättymispäivä ei saa olla menneessä vuodessa"
 
-msgid "Helsinki-benefit application"
-msgstr "Helsinki-lisä hakemus"
+#~ msgid "Pay subsidy percent required"
+#~ msgstr "Palkkatukiprosentti on pakollinen"
 
-msgid "Employee"
-msgstr "Työllistettävä"
+#~ msgid "Helsinki benefit is granted"
+#~ msgstr "Helsinki-lisää myönnetään"
 
-msgid "Application received"
-msgstr "Hakemus saapunut"
+#~ msgid "Helsinki benefit is not granted"
+#~ msgstr "Helsinki-lisää ei myönnetä"
 
-msgid "Application number"
-msgstr "Hakemusnumero"
+#~ msgid "Granted as de minimis aid"
+#~ msgstr "Myönnetään de minimis -tukena"
 
-msgid "Employer information"
-msgstr "Työnantajan tiedot"
- 
-msgid "Name of the employer"
-msgstr "Yrityksen nimi"
- 
-msgid "Business ID"
-msgstr "Y-tunnus"
- 
-msgid "Street address"
-msgstr "Katuosoite"
- 
-msgid "Bank account number"
-msgstr "Tilinumero"
- 
-msgid "Does the employer engage in economic activity?"
-msgstr "Harjoittaako työnantaja taloudellista liiketoimintaa?"
- 
-msgid "Delivery address"
-msgstr "Postiosoite päätöstä varten"
- 
-msgid "Contact person for the employer"
-msgstr "Työnantajan yhteyshenkilö"
- 
-msgid "Name"
-msgstr "Nimi"
- 
-msgid "Telephone"
-msgstr "Puhelin"
- 
-msgid "Email address"
-msgstr "Sähköposti"
- 
-msgid "Preferred language of communication"
-msgstr "Asiointikieli"
- 
-msgid "De minimis aid received by the employer"
-msgstr "Työnantajalle myönnetyt de minimis -tuet"
- 
-msgid "Granter"
-msgstr "Myöntäjä"
- 
-msgid "Amount"
-msgstr "Määrä"
- 
-msgid "Date"
-msgstr "Pvm"
- 
-msgid "Total"
-msgstr "Yhteensä"
- 
-msgid "No, the applicant has not listed any previous de minimis aids."
-msgstr "Ei, työnantajalle ei ole myönnetty de minimis -tukia kuluvan vuoden ja kahden edellisen verovuoden aikana."
- 
-msgid "Change negotiations or co-determination negotiations"
-msgstr "Muutosneuvottelut tai YT-tilanne"
- 
-msgid "Yes, the organization has ongoing or completed change negotiations within the previous 12 months."
-msgstr "Kyllä, organisaatiolla on käynnissä olevat, tai päättyneet muutosneuvottelut edeltävän 12 kuukauden aikana."
- 
-msgid "No, the organization does not have change negotiations in progress or that have ended in the previous 12 months."
-msgstr "Ei, organisaatiolla ei ole käynnissä tai edeltävän 12 kuukauden aikana päättyneitä muutosneuvotteluja"
- 
-msgid "Describe the situation"
-msgstr "Kuvaus tilanteesta"
- 
-msgid "Person to be hired"
-msgstr "Työllistettävän henkilön tiedot"
- 
-msgid "First name"
-msgstr "Etunimi"
- 
-msgid "Last name"
-msgstr "Sukunimi"
- 
-msgid "Personal identity code"
-msgstr "Henkilötunnus"
- 
-msgid "The subsidised employee’s municipality of residence is Helsinki"
-msgstr "Työllistetyn kotikunta Helsinki työsuhteen alkaessa"
- 
-msgid "Has the person who is being employed been assigned a job supervisor?"
-msgstr "Onko työllistetylle osoitettu työnjohdollinen esihenkilö?"
- 
-msgid "Employment relationship"
-msgstr "Työsuhde"
- 
-msgid "Job title"
-msgstr "Tehtävänimike"
- 
-msgid "Working hours per week"
-msgstr "Työtunnit / viikko"
- 
-msgid "Gross salary per month"
-msgstr "Bruttopalkka / kuukausi"
- 
-msgid "Indirect labour costs per month"
-msgstr "Sivukulut / kuukausi"
- 
-msgid "Holiday pay per month"
-msgstr "Lomaraha / kuukausi"
- 
-msgid "Applicable collective agreement"
-msgstr "Työehtosopimus"
- 
-msgid "Is this an apprenticeship?"
-msgstr "Onko kyseessä oppisopimus?"
- 
-msgid "Received aid"
-msgstr "Myönnetty tuki"
- 
-msgid "Benefit is applied for the period"
-msgstr "Haettu ajankohta"
- 
-msgid "Helsinki benefit is granted"
-msgstr "Helsinki-lisää myönnetään"
- 
-msgid "Helsinki benefit is not granted"
-msgstr "Helsinki-lisää ei myönnetä"
- 
-msgid "Applying for dates"
-msgstr "Ajalle"
- 
-msgid "Decision date"
-msgstr "Päätöksen päivämäärä"
- 
-msgid "Handler"
-msgstr "Käsittelijä"
- 
-msgid "Granted as de minimis aid"
-msgstr "Myönnetään de minimis -tukena"
- 
-msgid "Attachments"
-msgstr "Liitteet"
- 
-msgid "Processing of the personal data of the person to be employed"
-msgstr "Työllistettävän henkilötietojen käsittely"
+#~ msgid "Processing of the personal data of the person to be employed"
+#~ msgstr "Työllistettävän henkilötietojen käsittely"
 
-msgid "employee_consent"
-msgstr "Suostumus työntekijän henkilötietojen käsittelyyn"
+#~ msgid "employment_contract"
+#~ msgstr "Työsopimus"
 
-msgid "employment_contract"
-msgstr "Työsopimus"
+#~ msgid "pay_subsidy_decision"
+#~ msgstr "Palkkatukipäätös"
 
-msgid "pay_subsidy_decision"
-msgstr "Palkkatukipäätös"
+#~ msgid "education_contract"
+#~ msgstr "Sopimus oppisopimuskoulutuksen järjestämisestä"
 
-msgid "education_contract"
-msgstr "Sopimus oppisopimuskoulutuksen järjestämisestä"
+#~ msgid "helsinki_benefit_voucher"
+#~ msgstr "Helsinki-lisä -kortti"
 
-msgid "helsinki_benefit_voucher"
-msgstr "Helsinki-lisä -kortti"
+#~ msgid "fi"
+#~ msgstr "Suomi"
 
-msgid "fi"
-msgstr "Suomi"
+#~ msgid "sv"
+#~ msgstr "Ruotsi"
 
-msgid "sv"
-msgstr "Ruotsi"
+#~ msgid "en"
+#~ msgstr "Englanti"
 
-msgid "en"
-msgstr "Englanti"
+#~ msgid "granted"
+#~ msgstr "Palkkatuki"
 
-msgid "granted"
-msgstr "Palkkatuki"
-
-msgid "granted_aged"
-msgstr "55 vuotta täyttäneiden työllistämistuki"
-
-msgid "not_granted"
-msgstr "Ei myönnetty"
-
-msgid "Printed at"
-msgstr "Tulostettu"
-
-msgid "Your Helsinki benefit draft application will expire"
-msgstr "Helsinki-lisä -hakemuksesi luonnos vanhenee"
-
-msgid "Your Helsinki benefit application requires additional information"
-msgstr "Helsinki-lisä -hakemus tarvitsee lisätietoja"
+#~ msgid "not_granted"
+#~ msgstr "Ei myönnetty"

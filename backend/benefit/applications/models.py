@@ -80,6 +80,15 @@ class ApplicationManager(models.Manager):
         ApplicationStatus.CANCELLED,
     ]
 
+    COMPLETED_BATCH_STATUSES = [
+        ApplicationBatchStatus.DECIDED_ACCEPTED,
+        ApplicationBatchStatus.DECIDED_REJECTED,
+        ApplicationBatchStatus.SENT_TO_TALPA,
+        ApplicationBatchStatus.COMPLETED,
+    ]
+
+    ARCHIVE_THRESHOLD = relativedelta(days=-14)
+
     def _annotate_with_log_timestamp(self, qs, field_name, to_statuses):
         subquery = (
             ApplicationLogEntry.objects.filter(
