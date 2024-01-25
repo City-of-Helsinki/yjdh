@@ -1069,7 +1069,8 @@
           "accepted": "Myönteiset",
           "rejected": "Kielteiset",
           "inPayment": "Maksussa",
-          "waitingForPayment": "Menossa maksuun"
+          "waitingForPayment": "Menossa maksuun",
+          "issueInTalpa": "Yksi tai useampi virhe"
         },
         "handler": "Käsittelijä"
       },

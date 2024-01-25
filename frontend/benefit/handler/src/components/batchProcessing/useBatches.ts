@@ -21,13 +21,14 @@ const translationsBase = 'common:applications.list';
 
 const useBatchProposal = (filterByStatus: BATCH_STATUSES[]): BatchListProps => {
   const { t } = useTranslation();
-  const orderBy = filterByStatus.filter(
+  const orderBy = filterByStatus.some(
     (status: BATCH_STATUSES) =>
       status === BATCH_STATUSES.DECIDED_ACCEPTED ||
       status === BATCH_STATUSES.SENT_TO_TALPA
   )
     ? '-modified_at'
     : undefined;
+
   const query = useBatchQuery(filterByStatus, orderBy);
 
   let batches: BatchProposal[] = [];
@@ -42,6 +43,7 @@ const useBatchProposal = (filterByStatus: BATCH_STATUSES[]): BatchListProps => {
             application_number,
             employee,
             handled_at,
+            talpa_status,
             calculation,
           } = app;
 
@@ -49,6 +51,7 @@ const useBatchProposal = (filterByStatus: BATCH_STATUSES[]): BatchListProps => {
 
           return {
             id,
+            talpa_status,
             company_name: company?.name || '',
             application_number,
             employee_name:

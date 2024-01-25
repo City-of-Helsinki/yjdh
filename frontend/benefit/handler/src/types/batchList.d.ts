@@ -1,6 +1,9 @@
+import { TALPA_STATUSES } from 'benefit-shared/constants';
+
 type BatchTableTransforms = {
   id?: string;
   company_name?: string;
+  talpa_status?: TALPA_STATUSES;
 };
 
 type BatchTableColumns = {

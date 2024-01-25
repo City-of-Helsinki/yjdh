@@ -151,6 +151,12 @@ export enum APPLICATION_STATUSES {
   HANDLING = 'handling',
 }
 
+export enum TALPA_STATUSES {
+  NOT_SENT_TO_TALPA = 'not_sent_to_talpa',
+  REJECTED_BY_TALPA = 'rejected_by_talpa',
+  SUCCESFULLY_SENT_TO_TALPA = 'succesfully_sent_to_talpa',
+}
+
 export enum APPLICATION_ORIGINS {
   APPLICANT = 'applicant',
   HANDLER = 'handler',
@@ -162,6 +168,7 @@ export enum BATCH_STATUSES {
   AHJO_REPORT_CREATED = 'exported_ahjo_report',
   DECIDED_ACCEPTED = 'accepted',
   DECIDED_REJECTED = 'rejected',
+  REJECTED_BY_TALPA = 'rejected_by_talpa',
   SENT_TO_TALPA = 'sent_to_talpa',
   COMPLETED = 'completed',
 }

@@ -106,9 +106,13 @@ class ApplicationBatchStatusValidator(StatusTransitionValidator):
         ),
         ApplicationBatchStatus.DECIDED_ACCEPTED: (
             ApplicationBatchStatus.SENT_TO_TALPA,
+            ApplicationBatchStatus.REJECTED_BY_TALPA,
         ),
         ApplicationBatchStatus.RETURNED: (ApplicationBatchStatus.DRAFT,),
         ApplicationBatchStatus.DECIDED_REJECTED: (),
+        ApplicationBatchStatus.REJECTED_BY_TALPA: (
+            ApplicationBatchStatus.SENT_TO_TALPA,
+        ),
         ApplicationBatchStatus.SENT_TO_TALPA: (ApplicationBatchStatus.COMPLETED,),
         ApplicationBatchStatus.COMPLETED: (),
     }

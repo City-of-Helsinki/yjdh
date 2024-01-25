@@ -3,6 +3,7 @@ import {
   CALCULATION_ROW_TYPES,
   PAY_SUBSIDY_GRANTED,
   PROPOSALS_FOR_DECISION,
+  TALPA_STATUSES,
 } from 'benefit-shared/constants';
 import { Language } from 'shared/i18n/i18n';
 import { BenefitAttachment } from 'shared/types/attachment';
@@ -76,6 +77,7 @@ export type ApplicationInBatch = {
   business_id: string;
   calculation?: CalculationData;
   benefitAmount: number | string;
+  talpa_status: TALPA_STATUSES;
 };
 
 interface ApplicationAllowedAction {
