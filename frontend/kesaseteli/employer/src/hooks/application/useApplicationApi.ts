@@ -142,7 +142,7 @@ const useApplicationApi = <T = Application>(
       },
       {
         onSuccess: (data) => {
-          const { employer_summer_voucher_id, ...updatedData } = data;
+          const {employer_summer_voucher_id, ...updatedData} = data;
           updateEmployment(
             draftApplication,
             employmentIndex,
@@ -150,11 +150,21 @@ const useApplicationApi = <T = Application>(
             onSuccess
           );
         },
-        onError: () =>
-          showErrorToast(
-            t('common:application.step2.fetch_employment_error_title'),
-            t('common:application.step2.fetch_employment_error_message')
-          ),
+        onError: (error: unknown) => {
+          if (Axios.isAxiosError(error) && error.response.status === 404) {
+            // Not found error
+            showErrorToast(
+              t('common:application.step2.fetch_employment_error_title'),
+              t('common:application.step2.fetch_employment_not_found_error_message')
+            )
+          } else {
+            // General error
+            showErrorToast(
+              t('common:application.step2.fetch_employment_error_title'),
+              t('common:application.step2.fetch_employment_error_message')
+            )
+          }
+        }
       }
     );
   };

@@ -68,7 +68,8 @@
       "remove_employment": "Poista tiedot",
       "fetch_employment": "Hae tiedot",
       "fetch_employment_error_title": "Sattui virhe!",
-      "fetch_employment_error_message": "Ei hakenut työntekijän tietoja."
+      "fetch_employment_error_message": "Ei pystytty hakemaan työntekijän tietoja.",
+      "fetch_employment_not_found_error_message": "Työntekijän tietoja ei löytynyt."
     },
     "step3": {
       "name": "Lähetä",
