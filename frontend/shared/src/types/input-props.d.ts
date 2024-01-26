@@ -1,4 +1,5 @@
 import { RegisterOptions } from 'react-hook-form';
+import AutoComplete from 'shared/types/auto-complete';
 import Id from 'shared/types/id';
 
 type InputProps<T, V = string> = {
@@ -10,7 +11,7 @@ type InputProps<T, V = string> = {
   errorText?: string;
   placeholder?: string;
   disabled?: boolean;
-  autoComplete?: string;
+  autoComplete?: AutoComplete;
 };
 
 export default InputProps;

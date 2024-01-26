@@ -9,6 +9,7 @@ import SaveFormButton from 'shared/components/forms/buttons/SaveFormButton';
 import Heading from 'shared/components/forms/heading/Heading';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import AutoComplete from 'shared/types/auto-complete';
 
 const YouthForm: React.FC = () => {
   const { t } = useTranslation();
@@ -17,11 +18,12 @@ const YouthForm: React.FC = () => {
   const { handleSaveSuccess, handleErrorResponse, submitError } =
     useHandleYouthApplicationSubmit();
   const showForceSubmitLink = submitError?.type === 'please_recheck_data';
+  const formAutoComplete: AutoComplete = 'off';
 
   return (
     <>
       <Heading header={t('common:youthApplication.form.title')} />
-      <form data-testid="youth-form" autoComplete="off">
+      <form data-testid="youth-form" autoComplete={formAutoComplete}>
         <FormSection columns={2}>
           <$GridCell $colSpan={2}>
             {submitError ? (
