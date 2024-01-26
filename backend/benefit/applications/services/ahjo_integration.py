@@ -542,12 +542,18 @@ def delete_application_in_ahjo(application_id: uuid.UUID):
     try:
         application = get_application_for_ahjo(application_id)
         ahjo_token = get_token()
+        token = ahjo_token.access_token
+
         headers = prepare_headers(
-            ahjo_token.access_token, application.id, AhjoRequestType.DELETE_APPLICATION
+            token, application, AhjoRequestType.DELETE_APPLICATION
         )
-        application, response = send_request_to_ahjo(
+        application, _ = send_request_to_ahjo(
             AhjoRequestType.DELETE_APPLICATION, headers, application
         )
+        if application:
+            create_status_for_application(
+                application, AhjoStatusEnum.DELETE_REQUEST_SENT
+            )
     except ObjectDoesNotExist as e:
         LOGGER.error(f"Object not found: {e}")
     except ImproperlyConfigured as e:

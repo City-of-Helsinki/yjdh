@@ -6,7 +6,7 @@ import requests_mock
 from django.conf import settings
 from django.urls import reverse
 
-from applications.enums import AhjoRequestType, AhjoStatus
+from applications.enums import AhjoRequestType
 from applications.services.ahjo_integration import prepare_headers, send_request_to_ahjo
 
 
@@ -45,24 +45,21 @@ def test_prepare_headers(settings, request_type, decided_application):
 
 
 @pytest.mark.parametrize(
-    "request_type, request_url, ahjo_status",
+    "request_type, request_url",
     [
         (
             AhjoRequestType.OPEN_CASE,
             f"{settings.AHJO_REST_API_URL}/cases",
-            AhjoStatus.REQUEST_TO_OPEN_CASE_SENT,
         ),
         (
             AhjoRequestType.DELETE_APPLICATION,
             f"{settings.AHJO_REST_API_URL}/cases/12345",
-            AhjoStatus.DELETE_REQUEST_SENT,
         ),
     ],
 )
 def test_send_request_to_ahjo(
     request_type,
     request_url,
-    ahjo_status,
     application_with_ahjo_case_id,
 ):
     headers = {"Authorization": "Bearer test"}
@@ -76,9 +73,6 @@ def test_send_request_to_ahjo(
             request_type, headers, application_with_ahjo_case_id, {"foo": "bar"}
         )
         assert m.called
-
-    application_with_ahjo_case_id.refresh_from_db()
-    assert application_with_ahjo_case_id.ahjo_status.latest().status == ahjo_status
 
 
 @patch("applications.services.ahjo_integration.LOGGER")
