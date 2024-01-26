@@ -8,6 +8,7 @@ import TextInputBase, {
 } from 'shared/components/forms/inputs/TextInput';
 import { GridCellProps } from 'shared/components/forms/section/FormSection.sc';
 import ApplicationFormData from 'shared/types/application-form-data';
+import AutoComplete from 'shared/types/auto-complete';
 
 export type TextInputProps = {
   validation?: RegisterOptions<ApplicationFormData>;
@@ -16,7 +17,7 @@ export type TextInputProps = {
   placeholder?: string;
   helperFormat?: string;
   onChange?: (value: string) => void;
-  autoComplete?: string;
+  autoComplete?: AutoComplete;
 } & GridCellProps;
 
 const TextInput: React.FC<TextInputProps> = ({
