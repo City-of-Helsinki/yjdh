@@ -68,7 +68,8 @@
       "remove_employment": "Ta bort uppgifterna",
       "fetch_employment": "Hämta uppgifter",
       "fetch_employment_error_title": "Fel uppstod!",
-      "fetch_employment_error_message": "Kunde inte hämta arbetstagarens uppgifter."
+      "fetch_employment_error_message": "Kunde inte hämta arbetstagarens uppgifter.",
+      "fetch_employment_not_found_error_message": "Arbetstagarens information hittades inte."
     },
     "step3": {
       "name": "Skicka",

@@ -68,7 +68,8 @@
       "remove_employment": "Delete the information",
       "fetch_employment": "Load information",
       "fetch_employment_error_title": "Error occured!",
-      "fetch_employment_error_message": "Could not fetch the info of the employee."
+      "fetch_employment_error_message": "Could not fetch the info of the employee.",
+      "fetch_employment_not_found_error_message": "Employee's information was not found."
     },
     "step3": {
       "name": "Send",
