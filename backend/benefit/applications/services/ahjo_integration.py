@@ -390,21 +390,15 @@ def get_token() -> Union[AhjoToken, None]:
     """Get the access token from Ahjo Service."""
     try:
         ahjo_auth_code = AhjoSetting.objects.get(name="ahjo_code").data
-        LOGGER.info(f"Retrieved auth code: {ahjo_auth_code}")
-        connector = AhjoConnector()
-
-        if not connector.is_configured():
-            LOGGER.error("AHJO connector is not configured")
-            return
-        return connector.get_access_token(ahjo_auth_code["code"])
-    except ObjectDoesNotExist:
-        LOGGER.error(
+    except AhjoSetting.DoesNotExist:
+        raise ImproperlyConfigured(
             "Error: Ahjo auth code not found in database. Please set the 'ahjo_code' setting."
         )
-        return None
-    except Exception as e:
-        LOGGER.error(f"Error retrieving Ahjo access token: {e}")
-        return None
+    connector = AhjoConnector()
+
+    if not connector.is_configured():
+        raise ImproperlyConfigured("AHJO connector is not configured")
+    return connector.get_access_token(ahjo_auth_code["code"])
 
 
 def prepare_headers(

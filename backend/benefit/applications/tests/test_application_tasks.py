@@ -9,7 +9,8 @@ from django.core.management import call_command
 from django.utils import timezone
 
 from applications.enums import ApplicationStatus
-from applications.models import Application, Attachment
+from applications.models import AhjoSetting, Application, Attachment
+from applications.services.ahjo_authentication import AhjoToken
 from applications.tests.factories import CancelledApplicationFactory
 
 
@@ -151,19 +152,20 @@ def test_user_is_notified_of_upcoming_application_deletion(drafts_about_to_be_de
 
 
 @pytest.mark.django_db
-def test_open_cases_in_ahjo_success(capfd, dummy_ahjo_token):
+def test_open_cases_in_ahjo_success():
     # Mock external services
+    AhjoSetting.objects.create(name="ahjo_code", data={"code": "12345"})
     with patch(
-        "applications.services.ahjo_integration.get_token"
+        "applications.management.commands.open_cases_in_ahjo.get_token"
     ) as mock_get_token, patch(
-        "applications.services.ahjo_integration.get_applications_for_open_case"
+        "applications.management.commands.open_cases_in_ahjo.get_applications_for_open_case"
     ) as mock_get_applications, patch(
-        "applications.services.ahjo_integration.send_open_case_request_to_ahjo"
+        "applications.management.commands.open_cases_in_ahjo.send_open_case_request_to_ahjo"
     ) as mock_send_request, patch(
-        "applications.services.ahjo_integration.create_status_for_application"
+        "applications.management.commands.open_cases_in_ahjo.create_status_for_application"
     ) as mock_create_status:
         # Setup mock return values
-        mock_get_token.return_value = dummy_ahjo_token
+        mock_get_token.return_value = MagicMock(AhjoToken)
         mock_get_applications.return_value = [MagicMock(spec=Application)]
         mock_send_request.return_value = (
             MagicMock(spec=Application),
@@ -173,47 +175,48 @@ def test_open_cases_in_ahjo_success(capfd, dummy_ahjo_token):
         number_to_open = 1
 
         # Call the command
-        call_command("open_cases_in_ahjo", number=number_to_open)
-
-        # Capture the output
-        out, _ = capfd.readouterr()
+        out = StringIO()
+        call_command("open_cases_in_ahjo", number=number_to_open, stdout=out)
 
         # Assertions
         assert (
             f"Sending request to Ahjo to open cases for {number_to_open} applications"
-            in out
+            in out.getvalue()
         )
-        assert "Successfully submitted open case request" in out
+        assert "Successfully submitted open case request" in out.getvalue()
         assert mock_send_request.called
         assert mock_send_request.call_count == number_to_open
         assert mock_create_status.called
         assert mock_create_status.call_count == number_to_open
 
         assert (
-            f"Sent open case requests for {number_to_open} applications to Ahjo" in out
+            f"Sent open case requests for {number_to_open} applications to Ahjo"
+            in out.getvalue()
         )
 
 
 @pytest.mark.django_db
-def test_open_cases_in_ahjo_dryrun(capfd, dummy_ahjo_token):
+def test_open_cases_in_ahjo_dryrun():
+    AhjoSetting.objects.create(name="ahjo_code", data={"code": "12345"})
+
     with patch(
-        "applications.services.ahjo_integration.get_token"
+        "applications.management.commands.open_cases_in_ahjo.get_token"
     ) as mock_get_token, patch(
-        "applications.services.ahjo_integration.get_applications_for_open_case"
+        "applications.management.commands.open_cases_in_ahjo.get_applications_for_open_case"
     ) as mock_get_applications:
-        number_to_open = 3
+        number_to_open = 1
         # Setup mock return values
-        mock_get_token.return_value = dummy_ahjo_token
-        mock_get_applications.return_value = [
-            MagicMock(spec=Application) for _ in range(number_to_open)
-        ]
+        mock_get_token.return_value = MagicMock(AhjoToken)
+        mock_get_applications.return_value = [MagicMock(spec=Application)]
 
         # Call the command
-        call_command("open_cases_in_ahjo", dry_run=True, number=number_to_open)
+        out = StringIO()
+        call_command(
+            "open_cases_in_ahjo", dry_run=True, number=number_to_open, stdout=out
+        )
 
         # Capture the output
-        out, _ = capfd.readouterr()
         assert (
             f"Would send open case requests for {number_to_open} applications to Ahjo"
-            in out
+            in out.getvalue()
         )

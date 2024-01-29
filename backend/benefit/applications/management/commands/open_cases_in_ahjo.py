@@ -1,3 +1,4 @@
+import logging
 import time
 from typing import List
 
@@ -13,6 +14,8 @@ from applications.services.ahjo_integration import (
     get_token,
     send_open_case_request_to_ahjo,
 )
+
+LOGGER = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -33,9 +36,10 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        ahjo_auth_token = get_token()
-        if not ahjo_auth_token:
-            self.stdout.write("Failed to get auth token from Ahjo")
+        try:
+            ahjo_auth_token = get_token()
+        except ImproperlyConfigured as e:
+            LOGGER.error(f"Failed to get auth token from Ahjo: {e}")
             return
 
         number_to_process = options["number"]
@@ -101,5 +105,6 @@ class Command(BaseCommand):
         application.save()
 
         self.stdout.write(
-            f"Successfully submitted open case request for application {application.id} to Ahjo, received GUID: {response_text}"
+            f"Successfully submitted open case request for application {application.id} to Ahjo, \
+            received GUID: {response_text}"
         )
