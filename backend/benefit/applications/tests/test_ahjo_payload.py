@@ -72,6 +72,7 @@ def test_prepare_case_records(decided_application, settings):
             "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
             "Language": "fi",
             "PersonalData": "Sisältää erityisiä henkilötietoja",
+            "MannerOfReceipt": "sähköinen asiointi",
             "Documents": [_prepare_record_document_dict(fake_summary)],
             "Agents": [
                 {

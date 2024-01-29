@@ -276,6 +276,7 @@ def ahjo_payload_record(decided_application):
         "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
         "Language": "fi",
         "PersonalData": "Sisältää erityisiä henkilötietoja",
+        "MannerOfReceipt": "sähköinen asiointi",
         "Documents": documents,
         "Agents": [
             {
@@ -312,7 +313,6 @@ työnantaja {application.company_name}"
             {"Subject": "työllisyydenhoito"},
         ],
         "PersonalData": "Sisältää erityisiä henkilötietoja",
-        "MannerOfReceipt": "sähköinen asiointi",
         "Reference": application.application_number,
         "Records": [],
         "Agents": [

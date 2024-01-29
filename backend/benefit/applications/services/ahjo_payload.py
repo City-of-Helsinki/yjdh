@@ -9,13 +9,13 @@ from applications.models import Application, Attachment
 from common.utils import hash_file
 from users.models import User
 
+MANNER_OF_RECEIPT = "sähköinen asiointi"
+
 
 def _prepare_top_level_dict(application: Application, case_records: List[dict]) -> dict:
     """Prepare the dictionary that is sent to Ahjo"""
     application_date = application.created_at.isoformat()
     application_year = application.created_at.year
-    # TODO: what value to use if application is submitted via paper?
-    manner_of_receipt = "sähköinen asiointi"
     title = f"Avustuksen myöntäminen, työllisyyspalvelut, \
 työnantajan Helsinki-lisä vuonna {application.created_at.year}, \
 työnantaja {application.company_name}"
@@ -37,7 +37,6 @@ työnantaja {application.company_name}"
             {"Subject": "työllisyydenhoito"},
         ],
         "PersonalData": "Sisältää erityisiä henkilötietoja",
-        "MannerOfReceipt": manner_of_receipt,
         "Reference": application.application_number,
         "Records": case_records,
         "Agents": [
@@ -85,7 +84,7 @@ def _prepare_record(
 ):
     """Prepare a single record dict for Ahjo."""
 
-    return {
+    record_dict = {
         "Title": record_title,
         "Type": record_type,
         "Acquired": acquired,
@@ -93,15 +92,21 @@ def _prepare_record(
         "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
         "Language": "fi",
         "PersonalData": "Sisältää erityisiä henkilötietoja",
-        "Documents": documents,
-        "Agents": [
-            {
-                "Role": "mainCreator",
-                "Name": f"{handler.last_name}, {handler.first_name}",
-                "ID": handler.ad_username,
-            }
-        ],
     }
+
+    if record_title == "Hakemus":
+        record_dict["MannerOfReceipt"] = MANNER_OF_RECEIPT
+
+    record_dict["Documents"] = documents
+    record_dict["Agents"] = [
+        {
+            "Role": "mainCreator",
+            "Name": f"{handler.last_name}, {handler.first_name}",
+            "ID": handler.ad_username,
+        }
+    ]
+
+    return record_dict
 
 
 def _prepare_case_records(
