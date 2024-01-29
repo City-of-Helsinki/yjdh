@@ -38,7 +38,7 @@ Follow these instructions to spin up a service:
    * [tet-admin](#tet-admin-development-with-docker) 
    * [tet-youth](#tet-youth-development-with-docker) 
 
-There is additional README's about [authentication and backend development](https://github.com/City-of-Helsinki/yjdh/tree/develop/backend) and [frontend development](https://github.com/City-of-Helsinki/yjdh/tree/develop/frontend).
+There is additional README's about [authentication and backend development](https://github.com/City-of-Helsinki/yjdh/tree/main/backend) and [frontend development](https://github.com/City-of-Helsinki/yjdh/tree/main/frontend).
 
 ## Publishing with Release Please & Git workflow
 

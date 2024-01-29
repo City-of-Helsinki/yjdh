@@ -15,7 +15,7 @@ Production environment:
 Project is automatically deployed to production when adding new release tag, e.g. release-v0.1.0, to repo
 
 Testing environment: [https://<TODO>.test.kuva.hel.ninja](https://<TODO>.test.kuva.hel.ninja)
-Project is automatically deployed to testing environment when pushing to develop branch
+Project is automatically deployed to testing environment when merging a PR to main branch
 
 ## Requirements
 

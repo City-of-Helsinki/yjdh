@@ -52,6 +52,6 @@ audit_logging.log(
 ```
 
 Based on:
-- [apartment-application-service audit logging](https://github.com/City-of-Helsinki/apartment-application-service/tree/develop/audit_log)
+- [apartment-application-service audit logging](https://github.com/City-of-Helsinki/apartment-application-service/tree/main/audit_log)
 - [Helisnki Profile logging format](https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/416972828/Helsinki+profile+audit+logging#Profile-audit-log---CRUD-events---JSON-content-and-format)
 - [YJDH Audit logging specification](https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/7494172830/Audit+logging+specification)
