@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v1.1.1...kesaseteli-youth-v1.2.0) (2024-01-29)
+
+
+### Features
+
+* Don't autocomplete youth/employee's personally identifiable fields ([22a581d](https://github.com/City-of-Helsinki/yjdh/commit/22a581de28358bbfd4d42fb5f2b2a70e86bc9d5a))
+* **kesaseteli:** Update summer voucher price for year 2024 to 350e ([22ae6aa](https://github.com/City-of-Helsinki/yjdh/commit/22ae6aa3f3789638aa32edc18b2af49558a948e0))
+* **kesaseteli:** Update target groups for year 2024, update tests ([6a527ba](https://github.com/City-of-Helsinki/yjdh/commit/6a527badb87ee83302541cdd82a2391fac149821))
+
 ## [1.1.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v1.1.0...kesaseteli-youth-v1.1.1) (2024-01-15)
 
 

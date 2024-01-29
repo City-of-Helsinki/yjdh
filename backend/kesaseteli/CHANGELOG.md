@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.3.1...kesaseteli-backend-v1.4.0) (2024-01-29)
+
+
+### Features
+
+* **kesaseteli:** Update salary to 500e & year to 2024 in voucher email ([9135157](https://github.com/City-of-Helsinki/yjdh/commit/9135157820c8b51cc151963a3bcedae09202a0b7))
+* **kesaseteli:** Update summer voucher price for year 2024 to 350e ([22ae6aa](https://github.com/City-of-Helsinki/yjdh/commit/22ae6aa3f3789638aa32edc18b2af49558a948e0))
+* **kesaseteli:** Update target groups for year 2024, update tests ([6a527ba](https://github.com/City-of-Helsinki/yjdh/commit/6a527badb87ee83302541cdd82a2391fac149821))
+* Specify Excel exporter's salary & sum fields as €, cast sum as int ([401f815](https://github.com/City-of-Helsinki/yjdh/commit/401f8157f5b80bf67e1de19fd505e1bfdd754859))
+
 ## [1.3.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.3.0...kesaseteli-backend-v1.3.1) (2024-01-16)
 
 
