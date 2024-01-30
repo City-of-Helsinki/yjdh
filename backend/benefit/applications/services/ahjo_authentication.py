@@ -84,9 +84,12 @@ class AhjoConnector:
 
     def do_token_request(self, payload: Dict[str, str]) -> AhjoToken:
         # Make the POST request
-        response = requests.post(
-            self.token_url, headers=self.headers, data=payload, timeout=self.timeout
-        )
+        try:
+            response = requests.post(
+                self.token_url, headers=self.headers, data=payload, timeout=self.timeout
+            )
+        except requests.exceptions.RequestException as e:
+            raise Exception(f"Failed to get or refresh token from Ahjo: {e}")
 
         # Check if the request was successful
         if response.status_code == 200:

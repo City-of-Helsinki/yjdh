@@ -26,6 +26,9 @@ class Command(BaseCommand):
             return
         try:
             token = ahjo_connector.refresh_token()
+            self.stdout.write(
+                f"Ahjo token refreshed, token valid until {token.expires_in}"
+            )
         except Exception as e:
             self.stdout.write(f"Failed to refresh Ahjo token: {e}")
-        self.stdout.write(f"Ahjo token refreshed, token valid until {token.expires_in}")
+            return
