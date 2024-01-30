@@ -1,4 +1,7 @@
-import { APPLICATION_FIELD_KEYS } from 'benefit/handler/constants';
+import {
+  APPLICATION_ACTIONS,
+  APPLICATION_FIELD_KEYS,
+} from 'benefit/handler/constants';
 import {
   APPLICATION_ORIGINS,
   APPLICATION_STATUSES,
@@ -134,6 +137,7 @@ export type Application = {
   applicationOrigin?: APPLICATION_ORIGINS;
   paperApplicationDate?: string;
   totalDeminimisAmount?: string;
+  action?: APPLICATION_ACTIONS;
 } & ApplicationForm;
 
 export interface ApplicationForm {

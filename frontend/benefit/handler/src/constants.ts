@@ -10,7 +10,8 @@ export enum ROUTES {
   HOME = '/',
   LOGIN = '/login',
   APPLICATION = '/application',
-  APPLICATION_FORM = '/new-application',
+  APPLICATION_FORM_NEW = '/application/new',
+  APPLICATION_FORM_EDIT = '/application/edit',
 
   // temporary urls, not defined yet
   APPLICATIONS_BATCHES = '/batches',
@@ -199,5 +200,5 @@ export enum LOCAL_STORAGE_KEYS {
 }
 
 export enum APPLICATION_ACTIONS {
-  APPLICANT_TOGGLE_EDIT = 'APPLICANT_TOGGLE_EDIT',
+  HANDLER_ALLOW_APPLICATION_EDIT = 'HANDLER_ALLOW_APPLICATION_EDIT',
 }

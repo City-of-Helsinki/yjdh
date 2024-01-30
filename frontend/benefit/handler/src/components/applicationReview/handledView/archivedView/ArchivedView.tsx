@@ -1,7 +1,7 @@
 import {
   $ViewField,
   $ViewFieldBold,
-} from 'benefit/handler/components/newApplication/ApplicationForm.sc';
+} from 'benefit/handler/components/applicationForm/ApplicationForm.sc';
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
 import StatusLabel from 'benefit/handler/components/statusLabel/StatusLabel';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';

@@ -13,6 +13,7 @@ import {
   ApplicationData,
   Employee,
 } from 'benefit-shared/types/application';
+import { prettyPrintObject } from 'benefit-shared/utils/errors';
 import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect } from 'react';
@@ -33,12 +34,6 @@ interface FormActions {
   onSave: (values: Partial<Application>) => Promise<ApplicationData | void>;
   onDelete: (id: string) => void;
 }
-
-const prettyPrintObject = (object: Record<string, string[]>): string =>
-  JSON.stringify(object)
-    .replace(/["[\]{}]/g, '')
-    .replace(/:/g, ': ')
-    .replace(/,/g, '\n');
 
 const useFormActions = (application: Partial<Application>): FormActions => {
   const router = useRouter();
@@ -91,7 +86,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
                   {value}
                 </a>
               ) : (
-                prettyPrintObject(value)
+                prettyPrintObject({ data: value })
               )
             ),
       });

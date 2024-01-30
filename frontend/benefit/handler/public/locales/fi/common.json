@@ -71,6 +71,10 @@
       "label": "Hakemus tallennettu",
       "message": "Helsinki-lisä hakemus {{applicationNumber}} {{applicantName}} on tallennettu luonnoksena."
     },
+    "applicationEdited": {
+      "label": "Muokkasit hakemuksen tietoja",
+      "message": "Hakemusta {{applicationNumber}} muokattiin onnistuneesti."
+    },
     "applicationDeleted": {
       "label": "Luonnos poistettu",
       "message": "Hakemus on poistettu."
@@ -253,7 +257,9 @@
       "backWithoutBack": "Peruuta",
       "backWithoutSavingConfirm": "Tallentamattomia muutoksia",
       "backWithoutSavingDescription": "Olet muokannut sivua. Jos poistut sivulta, menetät tehdyt muutokset. Oletko varma, että haluat poistua tallentamatta?",
-      "handleAsRejected": "Käsittele kielteisenä"
+      "handleAsRejected": "Käsittele kielteisenä",
+      "save": "Tallenna",
+      "cancel": "Peruuta"
     },
     "sections": {
       "companySearch": {
@@ -647,6 +653,7 @@
   "review": {
     "actions": {
       "handle": "Ota käsittelyyn",
+      "edit": "Muokkaa hakemusta",
       "close": "Sulje",
       "done": "Tee päätösehdotus",
       "saveAndContinue": "Tallenna ja sulje",
@@ -665,7 +672,7 @@
       "reasonCancelDialogTitle": "Haluatko varmasti peruuttaa?",
       "reasonCancelDialogDescription": "Hakemus peruututan lopullisesti ja siirretään arkistoon eikä sitä voida enää palauttaa käsittelyyn",
       "reasonCancelLabel": "Syy peruutuksen",
-      "reasonRejectPlaceholder": "Helsinki-lisää ei voida myöntää koska syitä",
+      "reasonRejectPlaceholder": "Helsinki-lisää ei voida myöntää, sillä ...",
       "reasonCancelConfirm": "Peruuta hakemus",
       "grantedAsDeminimisText": "De minimis",
       "confirm": "Vahvista toimenpide",

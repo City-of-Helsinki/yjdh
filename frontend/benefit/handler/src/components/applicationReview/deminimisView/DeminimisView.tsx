@@ -4,7 +4,7 @@ import {
   $SummaryTableValue,
   $ViewField,
   $ViewFieldBold,
-} from 'benefit/handler/components/newApplication/ApplicationForm.sc';
+} from 'benefit/handler/components/applicationForm/ApplicationForm.sc';
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
 import { ACTIONLESS_STATUSES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
@@ -19,6 +19,7 @@ const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const { t } = useTranslation();
   return (
     <ReviewSection
+      id={data.id}
       header={t(`${translationsBase}.headings.heading3`)}
       action={!ACTIONLESS_STATUSES.includes(data.status) ? <span /> : null}
       section="deMinimisAids"

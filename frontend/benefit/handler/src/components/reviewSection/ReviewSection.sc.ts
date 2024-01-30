@@ -25,3 +25,10 @@ export const $CheckIconFill = styled(IconCheckCircleFill)`
   color: ${(props) => props.theme.colors.coatOfArms};
   cursor: pointer;
 `;
+
+export const $EditButtonContainer = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 99;
+`;

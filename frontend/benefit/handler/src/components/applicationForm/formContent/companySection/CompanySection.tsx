@@ -52,6 +52,27 @@ type Props = {
   showDeminimisSection: boolean;
   deMinimisAidSet: DeMinimisAid[];
 };
+
+type WithCheckboxProps = {
+  text: string;
+  isBeginning?: boolean;
+};
+
+const WithCheckbox: React.FC<WithCheckboxProps> = ({
+  text,
+  isBeginning = false,
+}) => (
+  <$IconWrapper $isBeginning={isBeginning}>
+    {!isBeginning && text}
+    <IconCheckCircleFill
+      color="var(--color-tram)"
+      aria-hidden="true"
+      aria-label="check"
+    />
+    {isBeginning && text}
+  </$IconWrapper>
+);
+
 const CompanySection: React.FC<Props> = ({
   t,
   application,
@@ -65,26 +86,6 @@ const CompanySection: React.FC<Props> = ({
 }) => {
   const theme = useTheme();
   const { setDeMinimisAids } = React.useContext(DeMinimisContext);
-
-  type WithCheckboxProps = {
-    text: string;
-    isBeginning?: boolean;
-  };
-
-  const WithCheckbox: React.FC<WithCheckboxProps> = ({
-    text,
-    isBeginning = false,
-  }) => (
-    <$IconWrapper $isBeginning={isBeginning}>
-      {!isBeginning && text}
-      <IconCheckCircleFill
-        color="var(--color-tram)"
-        aria-hidden="true"
-        aria-label="check"
-      />
-      {isBeginning && text}
-    </$IconWrapper>
-  );
 
   return (
     <>

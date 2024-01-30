@@ -174,8 +174,8 @@ class AhjoStatus(models.TextChoices):
 
 
 class ApplicationActions(models.TextChoices):
-    APPLICANT_TOGGLE_EDIT = "APPLICANT_TOGGLE_EDIT", _(
-        "Allow/disallow applicant's modifications"
+    HANDLER_ALLOW_APPLICATION_EDIT = "HANDLER_ALLOW_APPLICATION_EDIT", _(
+        "Allow/disallow applicant's modifications to the application"
     )
 
 

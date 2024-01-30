@@ -10,11 +10,11 @@ import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import Modal from 'shared/components/modal/Modal';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 
-import ConfirmModalContent from '../../applicationReview/actions/ConfirmModalContent/confirm';
 import {
   $ViewField,
   $ViewFieldBold,
-} from '../../newApplication/ApplicationForm.sc';
+} from '../../applicationForm/ApplicationForm.sc';
+import ConfirmModalContent from '../../applicationReview/actions/ConfirmModalContent/confirm';
 import { $FormSection } from '../../table/TableExtras.sc';
 
 type BatchProps = {
