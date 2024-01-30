@@ -86,7 +86,6 @@ const CompanySection: React.FC<Props> = ({
 }) => {
   const theme = useTheme();
   const { setDeMinimisAids } = React.useContext(DeMinimisContext);
-
   return (
     <>
       <FormSection
@@ -275,8 +274,8 @@ const CompanySection: React.FC<Props> = ({
           </InputMask>
           <$HelpText>{fields.companyBankAccountNumber.placeholder}</$HelpText>
         </$GridCell>
-        {application?.company?.organizationType.toLowerCase() ===
-          ORGANIZATION_TYPES.ASSOCIATION.toLowerCase() && (
+        {application?.company?.organizationType ===
+          ORGANIZATION_TYPES.ASSOCIATION && (
           <$GridCell $colSpan={8} $colStart={1}>
             <SelectionGroup
               label={fields.associationHasBusinessActivities.label}

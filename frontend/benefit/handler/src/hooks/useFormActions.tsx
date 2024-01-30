@@ -34,7 +34,8 @@ interface FormActions {
     values: Application,
     dispatchStep: React.Dispatch<StepActionType>,
     activeStep: number,
-    applicationId: string | undefined
+    applicationId: string | undefined,
+    previousValues: Application
   ) => Promise<ApplicationData | void>;
   onSubmit: (
     values: Application,
@@ -150,7 +151,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
   const { deMinimisAids } = React.useContext(DeMinimisContext);
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  const getModifiedValues = (currentValues: Application): Application => {
+  const getNormalizedValues = (currentValues: Application): Application => {
     const employee: Employee | undefined = currentValues?.employee ?? undefined;
 
     const {
@@ -159,6 +160,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
       endDate,
       apprenticeshipProgram,
       paperApplicationDate,
+      changeReason,
     } = currentValues;
 
     const paySubsidyPercent =
@@ -187,6 +189,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
     const normalizedValues = {
       ...currentValues,
       paySubsidyPercent,
+      deMinimisAid: deMinimisAids.length > 0,
       employee: employee || {},
       startDate: startDate
         ? convertToBackendDateFormat(parseDate(startDate))
@@ -203,20 +206,18 @@ const useFormActions = (application: Partial<Application>): FormActions => {
           : apprenticeshipProgram,
     };
 
-    const deMinimisAidSet =
-      deMinimisAids.length > 0
-        ? deMinimisAids
-        : currentValues.deMinimisAidSet ?? [];
-
     return {
       ...application,
       ...normalizedValues,
-      deMinimisAidSet,
+      changeReason,
+      deMinimisAidSet: deMinimisAids,
       action: APPLICATION_ACTIONS.HANDLER_ALLOW_APPLICATION_EDIT,
     };
   };
 
-  const getData = (values: Partial<Application>): ApplicationData =>
+  const prepareDataForSubmission = (
+    values: Partial<Application>
+  ): ApplicationData =>
     snakecaseKeys(
       {
         ...values,
@@ -253,7 +254,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
           (consent) => consent.id
         ),
     };
-    const data = getData(getModifiedValues(values));
+    const data = prepareDataForSubmission(getNormalizedValues(values));
 
     try {
       const result = applicationId
@@ -288,7 +289,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
     activeStep: number,
     applicationId: string | undefined
   ): Promise<ApplicationData | void> => {
-    const data = getData(getModifiedValues(currentValues));
+    const data = prepareDataForSubmission(getNormalizedValues(currentValues));
 
     try {
       const result = applicationId
@@ -308,7 +309,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
   };
 
   const onBack = async (): Promise<ApplicationData | void> => {
-    const data = getData(application);
+    const data = prepareDataForSubmission(application);
 
     try {
       return await updateApplication(data);
@@ -322,7 +323,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
     currentValues: Application,
     applicationId: string | undefined
   ): Promise<ApplicationData | void> => {
-    const data = getData(getModifiedValues(currentValues));
+    const data = prepareDataForSubmission(getNormalizedValues(currentValues));
     try {
       return applicationId
         ? await updateApplication(data)
@@ -337,7 +338,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
     currentValues: Application,
     applicationId: string | undefined
   ): Promise<ApplicationData | void> => {
-    const data = getData(getModifiedValues(currentValues));
+    const data = prepareDataForSubmission(getNormalizedValues(currentValues));
 
     try {
       const result = applicationId
@@ -386,7 +387,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
   const onCompanySelected = async (
     currentValues: Partial<Application>
   ): Promise<ApplicationData | void> => {
-    const data = getData(getModifiedValues(currentValues));
+    const data = prepareDataForSubmission(getNormalizedValues(currentValues));
     return createApplicationAndAppendId(data);
   };
 

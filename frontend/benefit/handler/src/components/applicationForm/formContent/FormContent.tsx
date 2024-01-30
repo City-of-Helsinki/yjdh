@@ -50,7 +50,7 @@ type Props = {
   formik: FormikProps<Partial<Application>>;
   fields: ApplicationFields;
   handleSave: () => void;
-  handleQuietSave: () => Promise<ApplicationData | void>;
+  handleQuietSave?: () => Promise<ApplicationData | void>;
   showDeminimisSection: boolean;
   minEndDate: Date;
   maxEndDate: Date | undefined;
@@ -236,8 +236,8 @@ const FormContent: React.FC<Props> = ({
             checked={formik.values.employee?.isLivingInHelsinki === true}
           />
         </$GridCell>
-        {application?.company?.organizationType.toLowerCase() ===
-          ORGANIZATION_TYPES.ASSOCIATION.toLowerCase() && (
+        {application?.company?.organizationType ===
+          ORGANIZATION_TYPES.ASSOCIATION && (
           <$GridCell
             $colSpan={8}
             css={`

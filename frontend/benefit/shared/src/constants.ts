@@ -5,8 +5,8 @@ export enum MESSAGE_TYPES {
 }
 
 export enum MESSAGE_URLS {
-  MESSAGES = 'messages',
-  NOTES = 'notes',
+  MESSAGES = 'messages/',
+  NOTES = 'notes/',
 }
 
 export enum VALIDATION_MESSAGE_KEYS {
