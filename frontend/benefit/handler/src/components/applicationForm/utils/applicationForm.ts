@@ -12,6 +12,7 @@ import {
   ApplicationFields,
 } from 'benefit/handler/types/application';
 import {
+  APPLICATION_STATUSES,
   ATTACHMENT_TYPES,
   EMPLOYEE_KEYS,
   PAY_SUBSIDY_OPTIONS,
@@ -40,7 +41,11 @@ type DatesType = {
   isEndDateEligible: boolean | undefined;
 };
 
-const getApplication = (applicationData: ApplicationData): Application =>
+const getApplication = (
+  applicationData?: ApplicationData,
+  id?: string | null,
+  isNewApplication = true
+): Application =>
   applicationData
     ? camelcaseKeys(
         {
@@ -69,7 +74,13 @@ const getApplication = (applicationData: ApplicationData): Application =>
           deep: true,
         }
       )
-    : APPLICATION_INITIAL_VALUES;
+    : {
+        ...APPLICATION_INITIAL_VALUES,
+        id,
+        status: isNewApplication
+          ? APPLICATION_STATUSES.DRAFT
+          : APPLICATION_STATUSES.HANDLING,
+      };
 
 const getFields = (t: TFunction, tSections: string): ApplicationFields => {
   type EmployeeFieldName =

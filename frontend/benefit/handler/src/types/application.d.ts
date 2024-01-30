@@ -51,11 +51,11 @@ export type TrainingCompensationData = {
 // handler
 
 export type CalculationFormProps = {
-  monthlyPay?: string;
-  vacationMoney?: string;
-  otherExpenses?: string;
+  monthlyPay?: string | number;
+  vacationMoney?: string | number;
+  otherExpenses?: string | number;
   stateAidMaxPercentage?: number;
-  overrideMonthlyBenefitAmount?: string | null;
+  overrideMonthlyBenefitAmount?: string | number | null;
   overrideMonthlyBenefitAmountComment?: string;
   paySubsidies?: PaySubsidy[];
   trainingCompensations?: TrainingCompensation[];
@@ -138,6 +138,7 @@ export type Application = {
   paperApplicationDate?: string;
   totalDeminimisAmount?: string;
   action?: APPLICATION_ACTIONS;
+  changeReason?: string;
 } & ApplicationForm;
 
 export interface ApplicationForm {

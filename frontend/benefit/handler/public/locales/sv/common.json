@@ -89,7 +89,7 @@
     }
   },
   "mainIngress": {
-    "heading": "Syötä hakemus",
+    "heading": "Hakemukset",
     "btnText": "Syötä hakemus"
   },
   "footer": {
@@ -570,6 +570,10 @@
           "label": "Työllistettävä on allekirjoittanut hakemuksen",
           "yes": "Kyllä",
           "no": "Ei"
+        },
+        "changeReason": {
+          "label": "Selvitys",
+          "placeholder": "Syy muokkaukseen"
         }
       },
       "salaryExpensesExplanation": "Ilmoita bruttopalkka, sivukulut ja lomaraha euroina kuukaudessa.",
@@ -648,6 +652,16 @@
     },
     "send": {
       "heading1": "Ehdot"
+    },
+    "dialog": {
+      "edit": {
+        "heading": "Ilmoita syy muokkaukselle",
+        "text": {
+          "hasChanges": "Muokkasit seuraavia tietoja:",
+          "noChanges": "Ei muutoksia lomaketietoihin. Mikäli poistit tai lisäsit liitetiedostoja, voit kirjata niiden syyn."
+        },
+        "helperText": "Kirjaa milloin ja mitä kautta hakija on ollut yhteydessä. Voit myös liittää tiedoston käydystä sähköpostikeskustelusta asiakkaan kanssa. Tiedot tulevat näkyviin hakemuksen muutoshistoriassa."
+      }
     }
   },
   "review": {
@@ -964,7 +978,8 @@
     "select": "Valitse",
     "start": "Alkamispäivä",
     "end": "Päättymispäivä",
-    "perMonth": "/kk"
+    "perMonth": "/kk",
+    "empty": "Tyhjä"
   },
   "status": {
     "draft": "Luonnos",
@@ -1226,5 +1241,75 @@
   },
   "toast": {
     "closeToast": "Sulje ilmoitus"
+  },
+  "changes": {
+    "fields": {
+      "jobTitle": {
+        "label": "Työllistettävän tehtävänimike"
+      },
+      "monthlyPay": {
+        "label": "Bruttopalkka / kk"
+      },
+      "vacationMoney": {
+        "label": "Lomaraha / kk"
+      },
+      "otherExpenses": {
+        "label": "Sivukulut / kk"
+      },
+      "workingHours": {
+        "label": "Työaika"
+      },
+      "collectiveBargainingAgreement": {
+        "label": "Työehtosopimus"
+      },
+      "companyBankAccountNumber": {
+        "label": "Tilinumero"
+      },
+      "companyContactPersonFirstName": {
+        "label": "Yhteyshenkilön etunimi"
+      },
+      "companyContactPersonLastName": {
+        "label": "Yhteyshenkilön sukunimi"
+      },
+      "companyContactPersonPhoneNumber": {
+        "label": "Yhteyshenkilön puhelinnumero"
+      },
+      "companyContactPersonEmail": {
+        "label": "Yhteyshenkilön sähköposti"
+      },
+      "deMinimisAid": {
+        "label": "De minimis -tuet"
+      },
+      "paperApplicationDate": {
+        "label": "Paperihakemuksen saapumispäivä"
+      },
+      "firstName": {
+        "label": "Työllistettävän etunimi"
+      },
+      "lastName": {
+        "label": "Työllistettävän sukunimi"
+      },
+      "socialSecurityNumber": {
+        "label": "Työllistettävän henkilötunnus"
+      },
+      "phoneNumber": {
+        "label": "Puhelin"
+      },
+      "alternativeAddress": {
+        "label": "Toimitusosoite, johon päätös toimitetaan"
+      },
+      "useAlternativeAddress": {
+        "label": "Käytä toista postiosoitetta"
+      },
+      "alternativeCompanyStreetAddress": {
+        "label": "Osoite"
+      },
+      "alternativeCompanyPostcode": {
+        "label": "Postinumero"
+      },
+      "alternativeCompanyCity": {
+        "label": "Postitoimipaikka"
+      }
+    }
   }
 }

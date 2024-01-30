@@ -137,6 +137,7 @@ export enum APPLICATION_FIELD_KEYS {
   EMPLOYEE = 'employee',
   APPLICATION_ORIGIN = 'applicationOrigin',
   PAPER_APPLICATION_DATE = 'paperApplicationDate',
+  CHANGE_REASON = 'changeReason',
 }
 
 export const APPLICATION_FIELDS = {
@@ -160,6 +161,7 @@ export const APPLICATION_INITIAL_VALUES = {
     [APPLICATION_FIELDS.employee.EMPLOYEE_COMMISSION_AMOUNT]: '' as const,
   },
   bases: [],
+  changeReason: undefined,
   [APPLICATION_FIELD_KEYS.USE_ALTERNATIVE_ADDRESS]: false,
   [APPLICATION_FIELD_KEYS.ALTERNATIVE_COMPANY_STREET_ADDRESS]: '',
   [APPLICATION_FIELD_KEYS.ALTERNATIVE_COMPANY_CITY]: '',
