@@ -20,7 +20,7 @@ type ExtendedComponentProps = {
 };
 
 const useAttachmentsList = (
-  handleQuietSave: () => Promise<ApplicationData | void>
+  handleQuietSave?: () => Promise<ApplicationData | void>
 ): ExtendedComponentProps => {
   const router = useRouter();
   const id = router?.query?.id;
@@ -58,7 +58,7 @@ const useAttachmentsList = (
   );
 
   const handleRemove = async (attachmentId: string): Promise<void> => {
-    const response = await handleQuietSave();
+    const response = handleQuietSave ? await handleQuietSave() : true;
     if (response) {
       removeAttachment({
         applicationId,
@@ -68,7 +68,7 @@ const useAttachmentsList = (
   };
 
   const handleUpload = async (attachment: FormData): Promise<void> => {
-    const response = await handleQuietSave();
+    const response = handleQuietSave ? await handleQuietSave() : true;
     if (response) {
       uploadAttachment({
         applicationId,

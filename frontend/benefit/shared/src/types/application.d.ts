@@ -187,14 +187,14 @@ export interface CalculationCommon {
 
 export type Calculation = {
   id?: string;
-  monthlyPay: string;
-  vacationMoney: string;
-  otherExpenses: string;
+  monthlyPay: string | number;
+  vacationMoney: string | number;
+  otherExpenses: string | number;
   stateAidMaxPercentage?: number;
   grantedAsDeMinimisAid?: boolean;
   targetGroupCheck?: boolean;
   calculatedBenefitAmount: string;
-  overrideMonthlyBenefitAmount: string | null;
+  overrideMonthlyBenefitAmount: string | number | null;
   overrideMonthlyBenefitAmountComment?: string;
   rows: Row[];
   handlerDetails: HandlerDetails;
