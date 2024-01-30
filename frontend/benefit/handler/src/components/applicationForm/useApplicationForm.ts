@@ -22,7 +22,9 @@ import {
   ApplicationData,
   DeMinimisAid,
 } from 'benefit-shared/types/application';
-import { FormikProps, useFormik } from 'formik';
+import { FormikErrors, FormikProps, useFormik } from 'formik';
+import cloneDeep from 'lodash/cloneDeep';
+import isEqual from 'lodash/isEqual';
 import { NextRouter, useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
 import React from 'react';
@@ -57,6 +59,7 @@ type ExtendedComponentProps = {
   handleDelete: () => void;
   handleSave: () => void;
   handleQuietSave: () => Promise<ApplicationData | void>;
+  handleValidation: () => Promise<boolean>;
   handleSubmit: () => void;
   showDeminimisSection: boolean;
   minEndDate: Date;
@@ -72,6 +75,7 @@ type ExtendedComponentProps = {
   checkedConsentArray: boolean[];
   getConsentErrorText: (consentIndex: number) => string;
   handleConsentClick: (consentIndex: number) => void;
+  initialApplication: Application;
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -90,47 +94,26 @@ export const useApplicationForm = (): ExtendedComponentProps => {
 
   const { isFormActionNew } = useApplicationFormContext();
 
+  const [application, setApplication] = React.useState<Application>(
+    getApplication(null, id, isFormActionNew)
+  );
+  const [initialApplication, setInitialApplication] =
+    React.useState<Application>(null);
+
+  const { onSave, onQuietSave, onSubmit, onNext, onDelete } =
+    useFormActions(application);
+
   React.useEffect(() => {
     if (id) {
       dispatchStep({ type: 'setActive', payload: 1 });
     }
   }, [id, dispatchStep]);
 
-  const [application, setApplication] = React.useState<Application>(
-    getApplication({} as ApplicationData)
-  );
-
   const {
     status: applicationDataStatus,
-    data: applicationData,
+    data,
     error: applicationDataError,
   } = useApplicationQueryWithState(id, setApplication);
-
-  React.useEffect(() => {
-    // Set initial values if already present
-    if (applicationData) {
-      setApplication(getApplication(applicationData));
-    }
-    if (applicationDataError) {
-      errorToast(
-        t('common:error.generic.label'),
-        t('common:error.generic.text'),
-        5000
-      );
-    }
-    if (
-      id &&
-      applicationDataStatus !== 'idle' &&
-      applicationDataStatus !== 'loading'
-    ) {
-      setIsLoading(false);
-    }
-  }, [t, applicationDataError, applicationDataStatus, id, applicationData]);
-
-  organizationType = application.company?.organizationType ?? 'company';
-
-  const { onSave, onQuietSave, onSubmit, onNext, onDelete } =
-    useFormActions(application);
 
   const formik = useFormik({
     initialValues: {
@@ -150,8 +133,59 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,
-    onSubmit: (values) => onNext(values, dispatchStep, activeStep, id),
+    onSubmit: (values) =>
+      onNext(values, dispatchStep, activeStep, id, application),
   });
+
+  React.useEffect(() => {
+    // In order to handle attachment changes, react query must call the endpoint to fetch new file names
+    // Only update the file names and prevent formik's values being overwritten
+    if (
+      data &&
+      initialApplication &&
+      formik.values.employee.id &&
+      !isEqual(formik.values.attachments, application.attachments)
+    ) {
+      const applicationWithUpdatedAttachments = {
+        ...cloneDeep(formik.values),
+        attachments: getApplication(data).attachments,
+      };
+      setApplication(applicationWithUpdatedAttachments);
+    }
+
+    // Set initial application data to formik and to review changes on submit
+    if (data && initialApplication === null) {
+      const app = getApplication(data);
+      setApplication(cloneDeep(app));
+      setInitialApplication(cloneDeep(app));
+    }
+
+    if (applicationDataError) {
+      errorToast(
+        t('common:error.generic.label'),
+        t('common:error.generic.text'),
+        5000
+      );
+    }
+    if (
+      id &&
+      applicationDataStatus !== 'idle' &&
+      applicationDataStatus !== 'loading'
+    ) {
+      setIsLoading(false);
+    }
+  }, [
+    t,
+    applicationDataError,
+    applicationDataStatus,
+    id,
+    data,
+    initialApplication,
+    application,
+    formik,
+  ]);
+
+  organizationType = application.company?.organizationType ?? 'company';
 
   const { values, setFieldValue } = formik;
 
@@ -187,32 +221,49 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     onDelete(application.id ?? '');
   };
 
+  const errorActions = (errors: FormikErrors<unknown>): boolean => {
+    let errorFieldKey = Object.keys(errors)[0] as
+      | APPLICATION_FIELD_KEYS
+      | APPLICATION_FIELD_KEYS.EMPLOYEE;
+
+    if (errorFieldKey) {
+      errorFieldKey = handleErrorFieldKeys(errorFieldKey, errors);
+      void focusAndScroll(errorFieldKey);
+      return true;
+    }
+
+    if (!isRequiredAttachmentsUploaded()) {
+      void errorToast(
+        t(`${tNotifications}.requiredAttachments.label`),
+        t(`${tNotifications}.requiredAttachments.content`)
+      );
+      return true;
+    }
+
+    if (getConsentErrors()) {
+      void errorToast(
+        t(`${tNotifications}.requiredConsents.label`),
+        t(`${tNotifications}.requiredConsents.content`)
+      );
+      return true;
+    }
+    return false;
+  };
+
   const handleSave = async (): Promise<void> =>
-    formik.validateForm().then((errs): Promise<void> | void => {
-      let errorFieldKey = Object.keys(errs)[0] as
-        | APPLICATION_FIELD_KEYS
-        | APPLICATION_FIELD_KEYS.EMPLOYEE;
-
-      if (errorFieldKey) {
-        errorFieldKey = handleErrorFieldKeys(errorFieldKey, errs);
-        return focusAndScroll(errorFieldKey);
+    formik.validateForm().then((errors): Promise<void> | void => {
+      if (!errorActions(errors)) {
+        return formik.submitForm();
       }
+      return null;
+    });
 
-      if (!isRequiredAttachmentsUploaded()) {
-        return errorToast(
-          t(`${tNotifications}.requiredAttachments.label`),
-          t(`${tNotifications}.requiredAttachments.content`)
-        );
+  const handleValidation = (): Promise<boolean> =>
+    formik.validateForm().then((errors) => {
+      if (!errorActions(errors)) {
+        return true;
       }
-
-      if (getConsentErrors()) {
-        return errorToast(
-          t(`${tNotifications}.requiredConsents.label`),
-          t(`${tNotifications}.requiredConsents.content`)
-        );
-      }
-
-      return formik.submitForm();
+      return false;
     });
 
   const handleSubmit = async (): Promise<void> => {
@@ -287,6 +338,7 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     handleSubmit,
     handleSaveDraft,
     handleDelete,
+    handleValidation,
     showDeminimisSection,
     minEndDate,
     maxEndDate,
@@ -301,5 +353,6 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     checkedConsentArray,
     getConsentErrorText,
     handleConsentClick,
+    initialApplication,
   };
 };

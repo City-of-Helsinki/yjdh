@@ -50,7 +50,7 @@ type Props = {
   formik: FormikProps<Partial<Application>>;
   fields: ApplicationFields;
   handleSave: () => void;
-  handleQuietSave: () => Promise<ApplicationData | void>;
+  handleQuietSave?: () => Promise<ApplicationData | void>;
   showDeminimisSection: boolean;
   minEndDate: Date;
   maxEndDate: Date | undefined;
@@ -121,35 +121,6 @@ const FormContent: React.FC<Props> = ({
 
   return (
     <form onSubmit={handleSave} noValidate>
-      {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER && (
-        <FormSection
-          header={t(`${translationsBase}.headings.paper`)}
-          columns={12}
-        >
-          <$GridCell $colStart={1} $colSpan={6}>
-            <$DateHeader>
-              {t(`${translationsBase}.paperDateExplanation`)}
-            </$DateHeader>
-          </$GridCell>
-          <$GridCell $colStart={1} $colSpan={4}>
-            <DateInput
-              id={fields.paperApplicationDate.name}
-              name={fields.paperApplicationDate.name}
-              label={fields.paperApplicationDate.label}
-              language={language}
-              onBlur={formik.handleBlur}
-              onChange={(value) =>
-                formik.setFieldValue(fields.paperApplicationDate.name, value)
-              }
-              value={formik.values.paperApplicationDate ?? ''}
-              invalid={!!getErrorMessage(fields.paperApplicationDate.name)}
-              aria-invalid={!!getErrorMessage(fields.paperApplicationDate.name)}
-              errorText={getErrorMessage(fields.paperApplicationDate.name)}
-            />
-          </$GridCell>
-        </FormSection>
-      )}
-
       <CompanySection
         t={t}
         translationsBase={translationsBase}
@@ -236,8 +207,8 @@ const FormContent: React.FC<Props> = ({
             checked={formik.values.employee?.isLivingInHelsinki === true}
           />
         </$GridCell>
-        {application?.company?.organizationType.toLowerCase() ===
-          ORGANIZATION_TYPES.ASSOCIATION.toLowerCase() && (
+        {application?.company?.organizationType ===
+          ORGANIZATION_TYPES.ASSOCIATION && (
           <$GridCell
             $colSpan={8}
             css={`
