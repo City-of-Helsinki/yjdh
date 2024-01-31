@@ -7,11 +7,17 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from applications.enums import (
+    AhjoStatus as AhjoStatusEnum,
     ApplicationBatchStatus,
     ApplicationOrigin,
     ApplicationStatus,
 )
-from applications.models import Application, ApplicationBasis, ApplicationBatch
+from applications.models import (
+    AhjoStatus,
+    Application,
+    ApplicationBasis,
+    ApplicationBatch,
+)
 from applications.tests.factories import (
     AdditionalInformationNeededApplicationFactory,
     ApplicationBatchFactory,
@@ -65,6 +71,7 @@ def clear_applications():
     ApplicationBatch.objects.all().delete()
 
     ApplicationBasis.objects.all().delete()
+    AhjoStatus.objects.all().delete()
     Terms.objects.all().delete()
     User.objects.filter(last_login=None).exclude(username="admin").delete()
 
@@ -87,7 +94,13 @@ def run_seed(number):
         apps = []
         for _ in range(number):
             if proposal_for_decision == ApplicationStatus.ACCEPTED:
-                apps.append(DecidedApplicationFactory())
+                app = DecidedApplicationFactory()
+                apps.append(app)
+                AhjoStatus.objects.create(
+                    status=AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
+                    application=app,
+                )
+
             elif proposal_for_decision == ApplicationStatus.REJECTED:
                 apps.append(RejectedApplicationFactory())
         batch.applications.set(apps)
@@ -114,6 +127,13 @@ def run_seed(number):
                 random_datetime = f.past_datetime(tzinfo=pytz.UTC)
                 application = factory(application_origin=application_origin)
                 application.created_at = random_datetime
+
+                if factory == HandlingApplicationFactory:
+                    AhjoStatus.objects.create(
+                        status=AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
+                        application=application,
+                    )
+
                 application.save()
 
                 application.log_entries.all().update(created_at=random_datetime)
