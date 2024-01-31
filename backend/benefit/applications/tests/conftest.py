@@ -274,19 +274,16 @@ def set_debug_to_false(settings):
 
 
 @pytest.fixture()
-def ahjo_payload_record(decided_application):
+def ahjo_record(decided_application):
     application = decided_application
-
-    record_title = "Hakemus"
-    record_type = "hakemus"
     acquired = application.created_at.isoformat()
     documents = []
     agent = application.calculation.handler
     publicity_class = "Salassa pidettävä"
 
     return {
-        "Title": record_title,
-        "Type": record_type,
+        "Title": "",
+        "Type": "",
         "Acquired": acquired,
         "PublicityClass": publicity_class,
         "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
@@ -302,6 +299,25 @@ def ahjo_payload_record(decided_application):
             }
         ],
     }
+
+
+@pytest.fixture()
+def ahjo_payload_record_for_application(ahjo_record):
+    record = ahjo_record
+    record["Title"] = "Hakemus"
+    record["Type"] = "hakemus"
+
+    return record
+
+
+@pytest.fixture()
+def ahjo_payload_record_for_attachment(ahjo_record):
+    record = ahjo_record
+    record["Title"] = "Liite"
+    record["Type"] = "liite"
+    record.pop("MannerOfReceipt", None)
+
+    return record
 
 
 @pytest.fixture()

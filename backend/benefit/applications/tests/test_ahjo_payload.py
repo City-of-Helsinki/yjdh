@@ -12,18 +12,36 @@ from applications.services.ahjo_payload import (
 from common.utils import hash_file
 
 
-def test_prepare_record(decided_application, ahjo_payload_record):
+def test_prepare_application_record(
+    decided_application, ahjo_payload_record_for_application
+):
     application = decided_application
 
     record = _prepare_record(
-        ahjo_payload_record["Title"],
-        ahjo_payload_record["Type"],
+        ahjo_payload_record_for_application["Title"],
+        ahjo_payload_record_for_application["Type"],
         application.created_at.isoformat(),
         [],
         application.calculation.handler,
     )
 
-    assert ahjo_payload_record == record
+    assert ahjo_payload_record_for_application == record
+
+
+def test_prepare_attachment_record(
+    decided_application, ahjo_payload_record_for_attachment
+):
+    application = decided_application
+
+    record = _prepare_record(
+        ahjo_payload_record_for_attachment["Title"],
+        ahjo_payload_record_for_attachment["Type"],
+        application.created_at.isoformat(),
+        [],
+        application.calculation.handler,
+    )
+
+    assert ahjo_payload_record_for_attachment == record
 
 
 def test_prepare_record_document_dict(decided_application, settings):
