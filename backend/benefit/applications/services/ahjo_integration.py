@@ -25,7 +25,10 @@ from applications.enums import (
 )
 from applications.models import AhjoSetting, AhjoStatus, Application, Attachment
 from applications.services.ahjo_authentication import AhjoConnector, AhjoToken
-from applications.services.ahjo_payload import prepare_open_case_payload
+from applications.services.ahjo_payload import (
+    prepare_open_case_payload,
+    prepare_update_application_payload,
+)
 from applications.services.applications_csv_report import ApplicationsCsvService
 from applications.services.generate_application_summary import (
     generate_application_summary_file,
@@ -481,6 +484,11 @@ def send_request_to_ahjo(
         method = "DELETE"
         api_url = f"{url_base}/{application.ahjo_case_id}"
 
+    elif request_type == AhjoRequestType.UPDATE_APPLICATION:
+        method = "PUT"
+        data = json.dumps(data)
+        api_url = f"{url_base}/{application.ahjo_case_id}/records"
+
     try:
         response = requests.request(
             method, api_url, headers=headers, timeout=timeout, data=data
@@ -547,6 +555,28 @@ def delete_application_in_ahjo(application_id: uuid.UUID):
         if application:
             create_status_for_application(
                 application, AhjoStatusEnum.DELETE_REQUEST_SENT
+            )
+    except ObjectDoesNotExist as e:
+        LOGGER.error(f"Object not found: {e}")
+    except ImproperlyConfigured as e:
+        LOGGER.error(f"Improperly configured: {e}")
+
+
+def update_application_in_ahjo(application: Application, ahjo_auth_token: str):
+    try:
+        headers = prepare_headers(
+            ahjo_auth_token, application, AhjoRequestType.UPDATE_APPLICATION
+        )
+
+        pdf_summary = generate_pdf_summary_as_attachment(application)
+        data = prepare_update_application_payload(application, pdf_summary)
+
+        result = send_request_to_ahjo(
+            AhjoRequestType.UPDATE_APPLICATION, headers, application, data
+        )
+        if result:
+            create_status_for_application(
+                application, AhjoStatusEnum.UPDATE_REQUEST_SENT
             )
     except ObjectDoesNotExist as e:
         LOGGER.error(f"Object not found: {e}")

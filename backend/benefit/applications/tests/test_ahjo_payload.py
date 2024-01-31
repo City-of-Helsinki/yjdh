@@ -44,6 +44,25 @@ def test_prepare_attachment_record(
     assert ahjo_payload_record_for_attachment == record
 
 
+def test_prepare_attachment_update_record(
+    decided_application,
+    ahjo_payload_record_for_attachment_update,
+    dummy_version_series_id,
+):
+    application = decided_application
+
+    record = _prepare_record(
+        ahjo_payload_record_for_attachment_update["Title"],
+        ahjo_payload_record_for_attachment_update["Type"],
+        application.created_at.isoformat(),
+        [],
+        application.calculation.handler,
+        ahjo_version_series_id=dummy_version_series_id,
+    )
+
+    assert ahjo_payload_record_for_attachment_update == record
+
+
 def test_prepare_record_document_dict(decided_application, settings):
     settings.DEBUG = True
     settings.API_BASE_URL = "http://test.com"
