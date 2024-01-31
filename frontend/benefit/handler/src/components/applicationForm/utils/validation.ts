@@ -15,6 +15,7 @@ import {
   PAY_SUBSIDY_GRANTED,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
+import { validateIsTodayOrPastDate } from 'benefit-shared/utils/dates';
 import { validateNumberField } from 'benefit-shared/utils/validation';
 import startOfYear from 'date-fns/startOfYear';
 import { FinnishSSN } from 'finnish-ssn';
@@ -285,4 +286,10 @@ export const getValidationSchema = (
     [APPLICATION_FIELD_KEYS.END_DATE]: Yup.string().required(
       t(VALIDATION_MESSAGE_KEYS.REQUIRED)
     ),
+    [APPLICATION_FIELD_KEYS.PAPER_APPLICATION_DATE]: Yup.string().test({
+      message: t(VALIDATION_MESSAGE_KEYS.DATE_MAX, {
+        max: convertToUIDateFormat(new Date()),
+      }),
+      test: (value = '') => value === '' || validateIsTodayOrPastDate(value),
+    }),
   });
