@@ -65,6 +65,8 @@ def _prepare_record_document_dict(attachment: Attachment) -> dict:
     # If were running in mock mode, use the local file URI
     file_url = reverse("ahjo_attachment_url", kwargs={"uuid": attachment.id})
     hash_value = hash_file(attachment.attachment_file)
+    attachment.ahjo_hash_value = hash_value
+    attachment.save()
     return {
         "FileName": f"{attachment.attachment_file.name}",
         "FormatName": f"{attachment.content_type}",

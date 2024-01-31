@@ -37,6 +37,7 @@ from applications.services.ahjo_integration import (
 from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
 from calculator.models import Calculation
 from calculator.tests.factories import PaySubsidyFactory
+from common.utils import hash_file
 from companies.tests.factories import CompanyFactory
 from helsinkibenefit.tests.conftest import *  # noqa
 from shared.common.tests.utils import normalize_whitespace
@@ -395,11 +396,24 @@ def test_ahjo_callback_success(
 ):
     settings.NEXT_PUBLIC_MOCK_FLAG = True
     auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
+    attachment = generate_pdf_summary_as_attachment(decided_application)
+    attachment_hash_value = hash_file(attachment.attachment_file)
+    attachment.ahjo_hash_value = attachment_hash_value
+    attachment.save()
+
     callback_payload = {
         "message": AhjoCallBackStatus.SUCCESS,
         "requestId": f"{uuid.uuid4()}",
         "caseId": "HEL 2023-999999",
         "caseGuid": f"{uuid.uuid4()}",
+        "records": [
+            {
+                "fileURI": "https://example.com",
+                "status": "Success",
+                "hashValue": attachment_hash_value,
+                "versionSeriesId": f"{uuid.uuid4()}",
+            }
+        ],
     }
     url = reverse(
         "ahjo_callback_url",
@@ -411,8 +425,14 @@ def test_ahjo_callback_success(
     assert response.status_code == 200
     assert response.data == {"message": "Callback received"}
     if request_type == AhjoRequestType.OPEN_CASE:
+        attachment.refresh_from_db()
+
         assert decided_application.ahjo_case_id == callback_payload["caseId"]
         assert str(decided_application.ahjo_case_guid) == callback_payload["caseGuid"]
+        assert (
+            attachment.ahjo_version_series_id
+            == callback_payload["records"][0]["versionSeriesId"]
+        )
     assert decided_application.ahjo_status.latest().status == ahjo_status
 
 

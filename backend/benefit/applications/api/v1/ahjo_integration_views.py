@@ -1,4 +1,5 @@
 import logging
+from typing import List
 
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
@@ -107,7 +108,11 @@ class AhjoCallbackView(APIView):
 
         if callback_data["message"] == AhjoCallBackStatus.SUCCESS:
             ahjo_request_id = callback_data["requestId"]
-            application = get_object_or_404(Application, pk=application_id)
+            application = (
+                Application.objects.filter(pk=application_id)
+                .prefetch_related("attachments")
+                .first()
+            )
             request_type = self.kwargs["request_type"]
 
             if request_type == AhjoRequestType.OPEN_CASE:
@@ -150,8 +155,21 @@ class AhjoCallbackView(APIView):
     def _handle_open_case_callback(self, application: Application, callback_data: dict):
         application.ahjo_case_guid = callback_data["caseGuid"]
         application.ahjo_case_id = callback_data["caseId"]
+        cb_records = callback_data["records"]
+
+        self._save_version_series_id(application.attachments.all(), cb_records)
+
         application.save()
         return application
+
+    def _save_version_series_id(self, attachments: List[Attachment], cb_records: list):
+        """Save the version series id for each attachment in the callback data \
+            if the calculated sha256 hashes match."""
+        for attachment in attachments:
+            for cb_record in cb_records:
+                if attachment.ahjo_hash_value == cb_record["hashValue"]:
+                    attachment.ahjo_version_series_id = cb_record["versionSeriesId"]
+                    attachment.save()
 
     def _handle_delete_callback(self):
         # do anything that needs to be done when Ahjo sends a delete callback
