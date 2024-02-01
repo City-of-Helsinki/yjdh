@@ -116,9 +116,7 @@ class AhjoCallbackView(APIView):
             request_type = self.kwargs["request_type"]
 
             if request_type == AhjoRequestType.OPEN_CASE:
-                application = self._handle_open_case_callback(
-                    application, callback_data
-                )
+                application = self._handle_open_case_success(application, callback_data)
                 ahjo_status = AhjoStatusEnum.CASE_OPENED
                 info = f"""Application ahjo_case_guid and ahjo_case_id
                 were updated by Ahjo request id: {ahjo_request_id}"""
@@ -143,16 +141,19 @@ class AhjoCallbackView(APIView):
             )
 
         elif callback_data["message"] == AhjoCallBackStatus.FAILURE:
-            LOGGER.error(
-                f"""Error: Received unsuccessful callback from Ahjo
-                for application {application_id} with request_id {callback_data['requestId']}"""
-            )
-            return Response(
-                {"message": "Callback received but unsuccessful"},
-                status=status.HTTP_200_OK,
-            )
+            return self._handle_open_case_failure(application, callback_data)
 
-    def _handle_open_case_callback(self, application: Application, callback_data: dict):
+    def _handle_open_case_failure(
+        self, application: Application, callback_data: dict
+    ) -> Response:
+        self._log_failure_details(application, callback_data["records"])
+
+        return Response(
+            {"message": "Callback received but unsuccessful"},
+            status=status.HTTP_200_OK,
+        )
+
+    def _handle_open_case_success(self, application: Application, callback_data: dict):
         application.ahjo_case_guid = callback_data["caseGuid"]
         application.ahjo_case_id = callback_data["caseId"]
         cb_records = callback_data["records"]
@@ -174,3 +175,15 @@ class AhjoCallbackView(APIView):
     def _handle_delete_callback(self):
         # do anything that needs to be done when Ahjo sends a delete callback
         pass
+
+    def _log_failure_details(self, application, callback_data):
+        LOGGER.error(
+            f"Received unsuccessful callback for application {application.id} \
+                with request_id {callback_data['requestId']}"
+        )
+        for cb_record in callback_data.get("records", []):
+            if cb_record.get("status") == AhjoCallBackStatus.FAILURE:
+                LOGGER.error(
+                    f"Ahjo reports failure with record, hash value {cb_record['hashValue']} \
+                        and fileURI {cb_record['fileUri']}"
+                )
