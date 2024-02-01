@@ -207,7 +207,7 @@ const ApplicationForm: React.FC = () => {
             close={() => setIsConfirmationModalOpen(false)}
             closeButtonLabelText={t(`${translationsBase}.close`)}
             variant="primary"
-            theme={{ '--accent-line-color': 'var(--color-coat-of-arms)' }}
+            theme={theme.components.modal.coat}
           >
             <Dialog.Header
               title={t(`${translationsBase}.backWithoutSavingConfirm`)}
