@@ -1,5 +1,4 @@
 import logging
-from typing import List
 
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
@@ -23,6 +22,10 @@ from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation
 
 LOGGER = logging.getLogger(__name__)
+
+
+class AhjoCallbackError(Exception):
+    pass
 
 
 class AhjoAttachmentView(APIView):
@@ -105,28 +108,41 @@ class AhjoCallbackView(APIView):
 
         callback_data = serializer.validated_data
         application_id = self.kwargs["uuid"]
+        request_type = self.kwargs["request_type"]
+
+        try:
+            application = Application.objects.get(pk=application_id)
+        except Application.DoesNotExist:
+            return Response(
+                {"error": "Application not found"}, status=status.HTTP_404_NOT_FOUND
+            )
 
         if callback_data["message"] == AhjoCallBackStatus.SUCCESS:
-            ahjo_request_id = callback_data["requestId"]
-            application = (
-                Application.objects.filter(pk=application_id)
-                .prefetch_related("attachments")
-                .first()
+            return self.handle_success_callback(
+                request, application, callback_data, request_type
             )
-            request_type = self.kwargs["request_type"]
+        elif callback_data["message"] == AhjoCallBackStatus.FAILURE:
+            return self.handle_failure_callback(application, callback_data)
 
+    def handle_success_callback(
+        self,
+        request,
+        application: Application,
+        callback_data: dict,
+        request_type: AhjoRequestType,
+    ) -> Response:
+        try:
             if request_type == AhjoRequestType.OPEN_CASE:
-                application = self._handle_open_case_success(application, callback_data)
+                self._handle_open_case_success(application, callback_data)
                 ahjo_status = AhjoStatusEnum.CASE_OPENED
-                info = f"""Application ahjo_case_guid and ahjo_case_id
-                were updated by Ahjo request id: {ahjo_request_id}"""
+                info = f"Application ahjo_case_guid and ahjo_case_id were updated by Ahjo \
+                    with request id: {callback_data['requestId']}"
             elif request_type == AhjoRequestType.DELETE_APPLICATION:
                 self._handle_delete_callback()
                 ahjo_status = AhjoStatusEnum.DELETE_REQUEST_RECEIVED
-                info = f"""Application was marked for cancellation in Ahjo with request id: {ahjo_request_id}"""
+                info = f"Application was marked for cancellation in Ahjo with request id: {callback_data['requestId']}"
 
             AhjoStatus.objects.create(application=application, status=ahjo_status)
-
             audit_logging.log(
                 request.user,
                 "",
@@ -135,46 +151,50 @@ class AhjoCallbackView(APIView):
                 additional_information=info,
             )
 
+            return Response({"message": "Callback received"}, status=status.HTTP_200_OK)
+        except AhjoCallbackError as e:
             return Response(
-                {"message": "Callback received"},
-                status=status.HTTP_200_OK,
+                {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-        elif callback_data["message"] == AhjoCallBackStatus.FAILURE:
-            return self._handle_open_case_failure(application, callback_data)
-
-    def _handle_open_case_failure(
+    def handle_failure_callback(
         self, application: Application, callback_data: dict
     ) -> Response:
-        self._log_failure_details(application, callback_data["records"])
-
+        self._log_failure_details(application, callback_data)
         return Response(
-            {"message": "Callback received but unsuccessful"},
-            status=status.HTTP_200_OK,
+            {"message": "Callback received but request was unsuccessful at AHJO"},
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
     def _handle_open_case_success(self, application: Application, callback_data: dict):
+        """Update the application with the case id (diaarinumero) and case guid from the Ahjo callback data."""
         application.ahjo_case_guid = callback_data["caseGuid"]
         application.ahjo_case_id = callback_data["caseId"]
-        cb_records = callback_data["records"]
+        cb_records = callback_data.get("records", [])
 
-        self._save_version_series_id(application.attachments.all(), cb_records)
+        self._save_version_series_id(application, cb_records)
 
         application.save()
         return application
 
-    def _save_version_series_id(self, attachments: List[Attachment], cb_records: list):
-        """Save the version series id for each attachment in the callback data \
-            if the calculated sha256 hashes match."""
-        for attachment in attachments:
-            for cb_record in cb_records:
-                if attachment.ahjo_hash_value == cb_record["hashValue"]:
-                    attachment.ahjo_version_series_id = cb_record["versionSeriesId"]
-                    attachment.save()
-
     def _handle_delete_callback(self):
         # do anything that needs to be done when Ahjo sends a delete callback
         pass
+
+    def _save_version_series_id(
+        self, application: Application, cb_records: list
+    ) -> None:
+        """Save the version series id for each attachment in the callback data \
+            if the calculated sha256 hashes match."""
+        attachment_map = {
+            attachment.ahjo_hash_value: attachment
+            for attachment in application.attachments.all()
+        }
+        for cb_record in cb_records:
+            attachment = attachment_map.get(cb_record.get("hashValue"))
+            if attachment:
+                attachment.ahjo_version_series_id = cb_record.get("versionSeriesId")
+                attachment.save()
 
     def _log_failure_details(self, application, callback_data):
         LOGGER.error(
