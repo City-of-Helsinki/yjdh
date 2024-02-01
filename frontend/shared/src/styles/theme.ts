@@ -16,6 +16,9 @@ const componentColors = {
     selectedHover: 'var(--color-black-80)',
     selectedFocus: tokens.fog,
   },
+  modal: {
+    base: tokens.coatOfArms,
+  },
 };
 
 const theme: DefaultTheme = {
@@ -182,6 +185,11 @@ const theme: DefaultTheme = {
       '--icon-color-selected': componentColors.radio.base,
       '--icon-color-hover': componentColors.radio.base,
       '--focus-outline-color': componentColors.radio.base,
+    },
+    modal: {
+      coat: {
+        '--accent-line-color': componentColors.modal.base,
+      },
     },
   },
 };
