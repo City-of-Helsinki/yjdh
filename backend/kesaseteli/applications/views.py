@@ -79,7 +79,13 @@ class EmployerApplicationExcelDownloadView(TemplateView):
         if request.GET.get("download") == "unhandled":
             return self.export_and_download_unhandled_applications(columns)
         elif request.GET.get("download") == "annual":
-            return self.export_and_download_annual_applications(columns)
+            return self.export_and_download_annual_applications(
+                columns, year=date.today().year
+            )
+        elif request.GET.get("download") == "annual-previous":
+            return self.export_and_download_annual_applications(
+                columns, year=date.today().year - 1
+            )
         else:
             return super().get(request, *args, **kwargs)
 
@@ -154,19 +160,16 @@ class EmployerApplicationExcelDownloadView(TemplateView):
         return response
 
     def export_and_download_annual_applications(
-        self, columns: ExcelColumns
+        self, columns: ExcelColumns, year: int
     ) -> Union[StreamingHttpResponse, HttpResponseRedirect]:
         """
-        Export all applications from the ongoing year to xlsx file and download the file.
-        The file is returned as a response, thus automatically downloaded. The genearted xlsx
-        file will not be saved on disk and will not be shown on the xlsx files list.
+        Export all applications from the given year to xlsx file and download the file.
+        The file is returned as a response, thus automatically downloaded. The generated
+        xlsx file will not be saved on disk and will not be shown on the xlsx files list.
         """
-        start_of_year = date(date.today().year, 1, 1)
         queryset = (
             self.base_queryset()
-            .filter(
-                application__created_at__gte=start_of_year,
-            )
+            .filter(application__created_at__year=year)
             .exclude(application__status=EmployerApplicationStatus.DRAFT)
         )
         if not queryset.exists():
