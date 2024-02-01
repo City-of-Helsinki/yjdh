@@ -41,6 +41,17 @@
         <div class="col-xs-6">
             <a href="{% url 'excel-download' %}?download=annual&columns=talpa" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">{% trans 'Lataa Talpa-Excel kaikista tämän vuoden hakemuksista' %}</a>
         </div>
+        <hr/>
+        <p>
+            {% trans 'Luo uusi excel tiedosto kaikista järjestelmän viime vuoden hakemuksista. Tiedosto sisältää myös kaikki käsitellyt hakemukset.' %}
+        </p>
+        <div class="col-xs-6">
+            <a href="{% url 'excel-download' %}?download=annual-previous&columns=reporting" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">{% trans 'Lataa raportointi-Excel kaikista viime vuoden hakemuksista' %}</a>
+        </div>
+        <br/>
+        <div class="col-xs-6">
+            <a href="{% url 'excel-download' %}?download=annual-previous&columns=talpa" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">{% trans 'Lataa Talpa-Excel kaikista viime vuoden hakemuksista' %}</a>
+        </div>
 
         <br/>
         <h2>Nuorten kesäsetelihakemukset:</h2>
