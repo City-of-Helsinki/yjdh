@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.4.0...kesaseteli-backend-v1.5.0) (2024-02-01)
+
+
+### Features
+
+* **kesaseteli:** Add annual Excel download for previous year ([8eca4e7](https://github.com/City-of-Helsinki/yjdh/commit/8eca4e789b1cb22a1ed221887437a6d499cf2aff))
+
 ## [1.4.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.3.1...kesaseteli-backend-v1.4.0) (2024-01-29)
 
 
