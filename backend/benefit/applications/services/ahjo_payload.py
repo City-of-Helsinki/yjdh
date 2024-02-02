@@ -15,21 +15,19 @@ MANNER_OF_RECEIPT = "sähköinen asiointi"
 def _prepare_top_level_dict(application: Application, case_records: List[dict]) -> dict:
     """Prepare the dictionary that is sent to Ahjo"""
     application_date = application.created_at.isoformat()
-    application_year = application.created_at.year
-    title = f"Avustuksen myöntäminen, työllisyyspalvelut, \
-työnantajan Helsinki-lisä vuonna {application.created_at.year}, \
-työnantaja {application.company_name}"
+    message_title = f"Avustukset työnantajille, Työllisyyspalvelut, \
+Työnantajan Helsinki-lisä, Työnantaja {application.company_name} {application.company.business_id},\
+hakemusnumero {application.application_number}"
+
     handler = application.calculation.handler
     case_dict = {
-        "Title": title,
+        "Title": message_title,
         "Acquired": application_date,
         "ClassificationCode": "02 05 01 00",
         "ClassificationTitle": "Kunnan myöntämät avustukset",
         "Language": "fi",
         "PublicityClass": "Julkinen",
-        "InternalTitle": f"Avustuksen myöntäminen, työllisyyspalvelut, \
-              työnantajan Helsinki-lisä vuonna {application_year}, \
-              työnantaja {application.company_name}",
+        "InternalTitle": message_title,
         "Subjects": [
             {"Subject": "Helsinki-lisät", "Scheme": "hki-yhpa"},
             {"Subject": "kunnan myöntämät avustukset", "Scheme": "hki-yhpa"},
