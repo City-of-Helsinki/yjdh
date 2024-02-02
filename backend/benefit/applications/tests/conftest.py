@@ -329,7 +329,7 @@ työnantaja {application.company_name}"
             {"Subject": "työllisyydenhoito"},
         ],
         "PersonalData": "Sisältää erityisiä henkilötietoja",
-        "Reference": application.application_number,
+        "Reference": f"{application.application_number}",
         "Records": [],
         "Agents": [
             {
