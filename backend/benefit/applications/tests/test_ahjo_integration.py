@@ -37,6 +37,7 @@ from applications.services.ahjo_integration import (
 from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
 from calculator.models import Calculation
 from calculator.tests.factories import PaySubsidyFactory
+from common.utils import hash_file
 from companies.tests.factories import CompanyFactory
 from helsinkibenefit.tests.conftest import *  # noqa
 from shared.common.tests.utils import normalize_whitespace
@@ -371,6 +372,24 @@ def test_get_attachment_unauthorized_ip_not_allowed(
     assert response.status_code == 403
 
 
+@pytest.fixture
+def ahjo_callback_payload():
+    return {
+        "message": "",
+        "requestId": f"{uuid.uuid4()}",
+        "caseId": "HEL 2023-999999",
+        "caseGuid": f"{uuid.uuid4()}",
+        "records": [
+            {
+                "fileURI": "https://example.com",
+                "status": "Success",
+                "hashValue": "",
+                "versionSeriesId": f"{uuid.uuid4()}",
+            }
+        ],
+    }
+
+
 @pytest.mark.parametrize(
     "request_type, ahjo_status",
     [
@@ -392,28 +411,65 @@ def test_ahjo_callback_success(
     settings,
     request_type,
     ahjo_status,
+    ahjo_callback_payload,
 ):
     settings.NEXT_PUBLIC_MOCK_FLAG = True
     auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
-    callback_payload = {
-        "message": AhjoCallBackStatus.SUCCESS,
-        "requestId": f"{uuid.uuid4()}",
-        "caseId": "HEL 2023-999999",
-        "caseGuid": f"{uuid.uuid4()}",
-    }
+    attachment = generate_pdf_summary_as_attachment(decided_application)
+    attachment_hash_value = hash_file(attachment.attachment_file)
+    attachment.ahjo_hash_value = attachment_hash_value
+    attachment.save()
+    ahjo_callback_payload["message"] = AhjoCallBackStatus.SUCCESS
+    ahjo_callback_payload["records"][0]["hashValue"] = attachment_hash_value
+
     url = reverse(
         "ahjo_callback_url",
         kwargs={"request_type": request_type, "uuid": decided_application.id},
     )
-    response = ahjo_client.post(url, **auth_headers, data=callback_payload)
+    response = ahjo_client.post(url, **auth_headers, data=ahjo_callback_payload)
 
     decided_application.refresh_from_db()
     assert response.status_code == 200
     assert response.data == {"message": "Callback received"}
     if request_type == AhjoRequestType.OPEN_CASE:
-        assert decided_application.ahjo_case_id == callback_payload["caseId"]
-        assert str(decided_application.ahjo_case_guid) == callback_payload["caseGuid"]
+        attachment.refresh_from_db()
+
+        assert decided_application.ahjo_case_id == ahjo_callback_payload["caseId"]
+        assert (
+            str(decided_application.ahjo_case_guid) == ahjo_callback_payload["caseGuid"]
+        )
+        assert (
+            attachment.ahjo_version_series_id
+            == ahjo_callback_payload["records"][0]["versionSeriesId"]
+        )
     assert decided_application.ahjo_status.latest().status == ahjo_status
+
+
+@pytest.mark.django_db
+def test_ahjo_open_case_callback_failure(
+    ahjo_client,
+    ahjo_user_token,
+    decided_application,
+    settings,
+    ahjo_callback_payload,
+):
+    ahjo_callback_payload["message"] = AhjoCallBackStatus.FAILURE
+
+    url = reverse(
+        "ahjo_callback_url",
+        kwargs={
+            "request_type": AhjoRequestType.OPEN_CASE,
+            "uuid": decided_application.id,
+        },
+    )
+    settings.NEXT_PUBLIC_MOCK_FLAG = True
+    auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
+    response = ahjo_client.post(url, **auth_headers, data=ahjo_callback_payload)
+
+    assert response.status_code == 400
+    assert response.data == {
+        "message": "Callback received but request was unsuccessful at AHJO"
+    }
 
 
 @pytest.mark.parametrize(
