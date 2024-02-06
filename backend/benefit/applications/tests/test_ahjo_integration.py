@@ -453,6 +453,8 @@ def test_ahjo_open_case_callback_failure(
     settings,
     ahjo_callback_payload,
 ):
+    ahjo_callback_payload.pop("caseId", None)
+    ahjo_callback_payload.pop("caseGuid", None)
     ahjo_callback_payload["message"] = AhjoCallBackStatus.FAILURE
 
     url = reverse(
