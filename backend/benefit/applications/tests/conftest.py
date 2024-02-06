@@ -282,19 +282,28 @@ def set_debug_to_false(settings):
 
 
 @pytest.fixture()
-def ahjo_payload_record(decided_application):
+def ahjo_payload_agents(decided_application):
     application = decided_application
+    agent = application.calculation.handler
+    return [
+        {
+            "Role": "mainCreator",
+            "Name": f"{agent.last_name}, {agent.first_name}",
+            "ID": agent.ad_username,
+        }
+    ]
 
-    record_title = "Hakemus"
-    record_type = "hakemus"
+
+@pytest.fixture()
+def ahjo_record(decided_application, ahjo_payload_agents):
+    application = decided_application
     acquired = application.created_at.isoformat()
     documents = []
-    agent = application.calculation.handler
     publicity_class = "Salassa pidettävä"
 
     return {
-        "Title": record_title,
-        "Type": record_type,
+        "Title": "",
+        "Type": "",
         "Acquired": acquired,
         "PublicityClass": publicity_class,
         "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
@@ -302,14 +311,47 @@ def ahjo_payload_record(decided_application):
         "PersonalData": "Sisältää erityisiä henkilötietoja",
         "MannerOfReceipt": "sähköinen asiointi",
         "Documents": documents,
-        "Agents": [
-            {
-                "Role": "mainCreator",
-                "Name": f"{agent.last_name}, {agent.first_name}",
-                "ID": agent.ad_username,
-            }
-        ],
+        "Agents": ahjo_payload_agents,
     }
+
+
+@pytest.fixture()
+def ahjo_payload_record_for_application(ahjo_record):
+    record = {**ahjo_record, "Title": "Hakemus", "Type": "hakemus"}
+    return record
+
+
+@pytest.fixture()
+def ahjo_payload_record_for_attachment(ahjo_record):
+    record = {**ahjo_record, "Title": "Liite", "Type": "liite"}
+    record.pop("MannerOfReceipt", None)
+    return record
+
+
+@pytest.fixture()
+def dummy_version_series_id():
+    return "{12345678910}"
+
+
+@pytest.fixture()
+def ahjo_payload_record_for_attachment_update(
+    ahjo_record, dummy_version_series_id, ahjo_payload_agents
+):
+    record = ahjo_record
+    record.pop("MannerOfReceipt", None)
+    record.pop("Documents", None)
+    record.pop("Agents", None)
+
+    record = {
+        **record,
+        "Title": "Liite",
+        "Type": "liite",
+        "VersionSeriesId": dummy_version_series_id,
+        "Documents": [],
+        "Agents": ahjo_payload_agents,
+    }
+
+    return record
 
 
 @pytest.fixture()

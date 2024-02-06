@@ -187,3 +187,4 @@ class AhjoCallBackStatus(models.TextChoices):
 class AhjoRequestType(models.TextChoices):
     OPEN_CASE = "open_case", _("Open case in Ahjo")
     DELETE_APPLICATION = "delete_application", _("Delete application in Ahjo")
+    UPDATE_APPLICATION = "update_application", _("Update application in Ahjo")
