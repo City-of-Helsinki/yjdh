@@ -14,7 +14,7 @@ MANNER_OF_RECEIPT = "sähköinen asiointi"
 
 def _prepare_top_level_dict(application: Application, case_records: List[dict]) -> dict:
     """Prepare the dictionary that is sent to Ahjo"""
-    application_date = application.created_at.isoformat()
+    application_date = application.created_at.isoformat("T", "seconds")
     message_title = f"Avustukset työnantajille, Työllisyyspalvelut, \
 Työnantajan Helsinki-lisä, Työnantaja {application.company_name} {application.company.business_id},\
 hakemusnumero {application.application_number}"
@@ -127,7 +127,7 @@ def _prepare_case_records(
     main_document_record = _prepare_record(
         "Hakemus",
         "hakemus",
-        application.created_at.isoformat(),
+        application.created_at.isoformat("T", "seconds"),
         [_prepare_record_document_dict(pdf_summary)],
         handler,
         ahjo_version_series_id=pdf_summary_version_series_id,
