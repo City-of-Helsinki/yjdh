@@ -473,9 +473,12 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         queryset: QuerySet[Application],
         prune_data_for_talpa: bool = False,
         remove_quotes: bool = False,
+        prune_sensitive_data: bool = True,
     ) -> StreamingHttpResponse:
         csv_service = ApplicationsCsvService(
-            queryset.order_by(self.APPLICATION_ORDERING), prune_data_for_talpa
+            queryset.order_by(self.APPLICATION_ORDERING),
+            prune_data_for_talpa,
+            prune_sensitive_data,
         )
         response = StreamingHttpResponse(
             csv_service.get_csv_string_lines_generator(remove_quotes),

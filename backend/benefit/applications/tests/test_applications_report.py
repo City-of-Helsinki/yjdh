@@ -301,6 +301,22 @@ def test_applications_csv_export_with_date_range(handler_api_client):
     )
 
 
+def test_sensitive_data_removed_csv_output(sanitized_csv_service_with_one_application):
+    csv_lines = split_lines_at_semicolon(
+        sanitized_csv_service_with_one_application.get_csv_string()
+    )
+
+    sensitive_col_headings = [
+        "Työntekijän etunimi",
+        "Työntekijän sukunimi",
+        "Työntekijän puhelinnumero",
+        "Työntekijän sähköposti",
+    ]
+
+    for col_heading in sensitive_col_headings:
+        assert col_heading not in csv_lines[0]
+
+
 def test_pruned_applications_csv_output(
     pruned_applications_csv_service_with_one_application,
 ):
@@ -651,7 +667,7 @@ def test_applications_csv_non_ascii_characters(
     csv_lines = split_lines_at_semicolon(
         applications_csv_service_with_one_application.get_csv_string()
     )
-    assert csv_lines[1][8] == '"test äöÄÖtest"'  # string is quoted
+    assert csv_lines[1][12] == '"test äöÄÖtest"'  # string is quoted
 
 
 def test_applications_csv_delimiter(applications_csv_service_with_one_application):

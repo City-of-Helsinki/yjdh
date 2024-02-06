@@ -1,6 +1,8 @@
+from typing import List
+
 from django.utils import translation
 
-from applications.enums import BenefitType
+from applications.enums import ApplicationBatchStatus, ApplicationOrigin, BenefitType
 from applications.services.csv_export_base import (
     CsvColumn,
     CsvExportBase,
@@ -64,8 +66,18 @@ def current_ahjo_row_field_getter(field_name):
     return getter
 
 
-def get_benefit_type_label(benefit_type):
+def get_benefit_type_label(benefit_type) -> str:
     return str(BenefitType(benefit_type).label)
+
+
+def get_batch_status_label(batch_status: str) -> str:
+    if batch_status == "":
+        return ""
+    return str(ApplicationBatchStatus(batch_status).label)
+
+
+def get_application_origin_label(application_origin: str) -> str:
+    return str(ApplicationOrigin(application_origin).label)
 
 
 class ApplicationsCsvService(CsvExportBase):
@@ -79,10 +91,13 @@ class ApplicationsCsvService(CsvExportBase):
 
     """
 
-    def __init__(self, applications, prune_data_for_talpa=False):
+    def __init__(
+        self, applications, prune_data_for_talpa=False, prune_sensitive_data=False
+    ):
         self.applications = applications
         self.export_notes = []
         self.prune_data_for_talpa = prune_data_for_talpa
+        self.prune_sensitive_data = prune_sensitive_data
 
     @property
     def CSV_COLUMNS(self):
@@ -123,6 +138,16 @@ class ApplicationsCsvService(CsvExportBase):
             CsvColumn("Hakemusnumero", "application_number"),
             CsvColumn("Hakemusrivi", "application_row_idx"),
             CsvColumn("Hakemuksen tila", "status"),
+            CsvColumn(
+                "Hakemuksen tyyppi", "application_origin", get_application_origin_label
+            ),
+            CsvColumn("Hakemus saapunut", "created_at", format_datetime),
+            csv_default_column(
+                "Koonnin status", "batch.status", get_batch_status_label
+            ),
+            csv_default_column(
+                "Koonnin statuksen päivämäärä", "batch.modified_at", format_datetime
+            ),
             csv_default_column("Haettava lisä", "benefit_type", get_benefit_type_label),
             csv_default_column("Haettu alkupäivä", "start_date"),
             csv_default_column("Haettu päättymispäivä", "end_date"),
@@ -375,11 +400,24 @@ class ApplicationsCsvService(CsvExportBase):
 
         columns.append(CsvColumn("Huom", get_export_notes))
 
+        if self.prune_sensitive_data:
+            return self._remove_sensitive_columns(columns)
+
         return columns
 
     MAX_AHJO_ROWS = 2
     MAX_PAY_SUBSIDIES = 2
     MAX_DE_MINIMIS_AIDS = 5
+
+    def _remove_sensitive_columns(self, columns: List[CsvColumn]) -> List[CsvColumn]:
+        """Remove sensitive employee data from the CsvColumns list"""
+        sensitive_col_headings = [
+            "Työntekijän etunimi",
+            "Työntekijän sukunimi",
+            "Työntekijän puhelinnumero",
+            "Työntekijän sähköposti",
+        ]
+        return [col for col in columns if col.heading not in sensitive_col_headings]
 
     def get_applications(self):
         return self.applications

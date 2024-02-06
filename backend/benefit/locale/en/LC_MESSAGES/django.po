@@ -543,6 +543,9 @@ msgstr ""
 msgid "handler"
 msgstr ""
 
+msgid "applicant"
+msgstr ""
+
 msgid "calculation"
 msgstr ""
 

@@ -137,6 +137,14 @@ def pruned_applications_csv_service_with_one_application(
 
 
 @pytest.fixture
+def sanitized_csv_service_with_one_application(application_batch):
+    application1 = application_batch.applications.all().first()
+    return ApplicationsCsvService(
+        Application.objects.filter(pk=application1.pk), True, True
+    )
+
+
+@pytest.fixture
 def applications_csv_with_no_applications():
     return ApplicationsCsvService([])
 
