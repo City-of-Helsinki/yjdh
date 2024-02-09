@@ -13,48 +13,49 @@ import {
 describe('constants', () => {
   describe('regex', () => {
     describe('NAMES_REGEX', () => {
-      it('should match Finnish first names, last names and full names', () => {
-        const firstName = 'Helinä';
-        const lastName = 'Aalto';
-        const fullName = 'Kalle Väyrynen';
-        const fullName2 = 'Janne Ö';
+      it('should match names in many different languages', () => {
+        const names = [
+          "Daniela O'Brian",
+          'Aalto',
+          'Bradtke',
+          'Eric',
+          'Gun-Britt',
+          'Helinä',
+          'Ingólfur Álfheiður',
+          'Janne Ö',
+          'Kalle Väyrynen',
+          'Lindén',
+          'María Kristín Þorkelsdóttir',
+          'Matti Meikäläinen',
+          'Peña',
+          'Strauß Jünemann',
+          'Åse-Marie Öllegård',
+          'Õras',
+          'Ögge Ekström',
+          'Ümit',
+          'Мельник',
+          'אברהם',
+          'حَسَّان',
+          'อาทิตย์',
+          '慧芬',
+          '王',
+        ];
 
-        expect(firstName).toMatch(NAMES_REGEX);
-        expect(lastName).toMatch(NAMES_REGEX);
-        expect(fullName).toMatch(NAMES_REGEX);
-        expect(fullName2).toMatch(NAMES_REGEX);
+        names.forEach((name) => {
+          expect(name).toMatch(NAMES_REGEX);
+        });
       });
 
-      it('should match Swedish first names, last names and full names', () => {
-        const firstName = 'Gun-Britt';
-        const lastName = 'Lindén';
-        const fullName = 'Ögge Ekström';
-
-        expect(firstName).toMatch(NAMES_REGEX);
-        expect(lastName).toMatch(NAMES_REGEX);
-        expect(fullName).toMatch(NAMES_REGEX);
-      });
-
-      it('should match English first names, last names and full names', () => {
-        const firstName = 'Eric';
-        const lastName = 'Bradtke';
-        const fullName = "Daniela O'Brian";
-
-        expect(firstName).toMatch(NAMES_REGEX);
-        expect(lastName).toMatch(NAMES_REGEX);
-        expect(fullName).toMatch(NAMES_REGEX);
-      });
-
-      it('should fail to match invalid characters', () => {
+      it('should match special characters', () => {
         const invalidCharacters = '!@#$%^&*()_+-=[]{}|;\':",./<>?';
 
-        expect(invalidCharacters).not.toMatch(NAMES_REGEX);
+        expect(invalidCharacters).toMatch(NAMES_REGEX);
       });
 
-      it('should fail to match digits', () => {
+      it('should match digits', () => {
         const digits = '1234567890';
 
-        expect(digits).not.toMatch(NAMES_REGEX);
+        expect(digits).toMatch(NAMES_REGEX);
       });
     });
 
