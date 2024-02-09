@@ -131,8 +131,8 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
 
-      await indexPageApi.actions.typeInput('first_name', '!#$%&()*+/:;<=>?@');
-      await indexPageApi.actions.typeInput('last_name', '~¡¿÷ˆ]+$');
+      await indexPageApi.actions.typeInput('first_name', ' leading whitespace');
+      await indexPageApi.actions.typeInput('last_name', '\tleading whitespace');
       // Note! 170915-915L is a fake ssn. See more info (in finnish only):
       // https://www.tuomas.salste.net/doc/tunnus/henkilotunnus.html#keinotunnus
       await indexPageApi.actions.typeInput(
@@ -184,10 +184,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
         'maxLength'
       );
 
-      await indexPageApi.actions.typeInput(
-        'unlistedSchool',
-        '!#$%&()*+/:;<=>?@'
-      );
+      await indexPageApi.actions.typeInput('unlistedSchool', ' ');
       await indexPageApi.expectations.textInputHasError(
         'unlistedSchool',
         'pattern'
@@ -306,7 +303,9 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
           ),
         });
         await waitFor(() =>
-          expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/${errorType}`)
+          expect(spyPush).toHaveBeenCalledWith(
+            `${DEFAULT_LANGUAGE}/${errorType}`
+          )
         );
       });
     }
@@ -442,7 +441,9 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
             ),
           });
           await waitFor(() =>
-            expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/${errorType}`)
+            expect(spyPush).toHaveBeenCalledWith(
+              `${DEFAULT_LANGUAGE}/${errorType}`
+            )
           );
         });
       }
