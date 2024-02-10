@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-28 16:15+0300\n"
+"POT-Creation-Date: 2024-02-12 12:51+0200\n"
 "PO-Revision-Date: 2022-03-29 08:43+0300\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -61,6 +61,12 @@ msgstr ""
 msgid "Must be set"
 msgstr ""
 
+msgid "Kyllä"
+msgstr ""
+
+msgid "Ei"
+msgstr ""
+
 #, python-format
 msgid "additional_info_user_reasons must be a list, was %(type)s"
 msgstr ""
@@ -78,14 +84,14 @@ msgstr ""
 msgid "Invalid status %(status)s for setting additional info"
 msgstr ""
 
-msgid "Failed to send youth summer voucher email"
-msgstr "Nuoren kesäsetelisähköpostin lähettäminen epäonnistui"
-
 msgid "Failed to send manual processing email to handler"
 msgstr ""
 "Manuaaliprosessointisähköpostin lähettäminen käsittelijälle epäonnistui"
 
-msgid "VTJ integration is not implemented"
+msgid "Failed to send youth summer voucher email"
+msgstr "Nuoren kesäsetelisähköpostin lähettäminen epäonnistui"
+
+msgid "Send anyway was used needlessly"
 msgstr ""
 
 msgid "Failed to send activation/additional info request email"
@@ -95,6 +101,12 @@ msgid "File not found."
 msgstr ""
 
 msgid "Operation not allowed for this application status."
+msgstr ""
+
+msgid "Reporting"
+msgstr ""
+
+msgid "Talpa"
 msgstr ""
 
 msgid "Draft"
@@ -166,115 +178,82 @@ msgstr ""
 msgid "Already assigned"
 msgstr ""
 
+msgid "Inadmissible data"
+msgstr ""
+
+msgid "Please recheck data"
+msgstr ""
+
+msgid "Kuollut"
+msgstr ""
+
+msgid "Väärä sukunimi"
+msgstr ""
+
+msgid "Ei löydy"
+msgstr ""
+
+msgid "Ei vastaa"
+msgstr ""
+
+msgid "Kotikunta Helsinki"
+msgstr ""
+
+msgid "Kotikunta Utsjoki"
+msgstr ""
+
+msgid "Hakemuksen kieli"
+msgstr ""
+
+msgid "Tilinumero"
+msgstr ""
+
+msgid "Työsuhteen päättymispäivämäärä"
+msgstr ""
+
+msgid "Työsuhteen aloituspäivämäärä"
+msgstr ""
+
+msgid "Olisitko palkannut?"
+msgstr ""
+
 msgid "Järjestys"
 msgstr ""
 
 msgid "Saatu pvm"
 msgstr ""
 
-msgid "Hakemuksen kieli"
-msgstr ""
-
-msgid "Setelin numero"
+msgid "Maksettu palkka (€)"
 msgstr ""
 
 msgid "Erikoistapaus (esim yhdeksäsluokkalainen)"
 msgstr ""
 
-msgid "Nuoren nimi"
-msgstr ""
-
-msgid "Henkilötunnus"
-msgstr ""
-
-msgid "Koulu"
-msgstr ""
-
-msgid "Kotipostinumero"
-msgstr ""
-
-msgid "Puhelin"
-msgstr ""
-
-msgid "Kotikaupunki"
-msgstr ""
-
-msgid "Työnantaja muoto"
-msgstr ""
-
-msgid "Työnantaja"
-msgstr ""
-
-msgid "Y-tunnus"
-msgstr ""
-
-msgid "Työnantajan lähiosoite"
-msgstr ""
-
-msgid "Työnantajan postinumero"
-msgstr ""
-
-msgid "Työnantajan kunta"
-msgstr ""
-
-msgid "Yhdyshenkilö"
-msgstr ""
-
-msgid "Yhdyshenkilön sähköposti"
-msgstr ""
-
-msgid "Yhdyshenkilön Puhelin"
-msgstr ""
-
-msgid "Erillinen laskuttaja"
-msgstr ""
-
-msgid "Laskuttajan nimi"
-msgstr ""
-
-msgid "Laskuttajan sähköposti"
-msgstr ""
-
-msgid "Laskuttajan Puhelin"
-msgstr ""
-
-msgid "Yrityksen toimiala"
-msgstr ""
-
-msgid "Työn suorituspaikan postinumero"
-msgstr ""
-
-msgid "Työsuhteen aloituspäivämäärä"
-msgstr ""
-
-msgid "Työsuhteen päättymispäivämäärä"
+msgid "Summa (€)"
 msgstr ""
 
 msgid "Työtunnit"
 msgstr ""
 
-msgid "Maksettu palkka (€)"
+msgid "Laskuttajan sähköposti"
 msgstr ""
 
-msgid "Summa (€)"
+msgid "Laskuttajan nimi"
 msgstr ""
 
-msgid "Muut edut"
+msgid "Laskuttajan Puhelin"
+msgstr ""
+
+msgid "Y-tunnus"
+msgstr ""
+
+msgid "Yhdyshenkilö"
+msgstr ""
+
+msgid "Erillinen laskuttaja"
 msgstr ""
 
 msgid "Raporttiin luokittelu"
-msgstr ""
-
-msgid "Työtehtävät"
-msgstr ""
-
-msgid "Olisitko palkannut?"
-msgstr ""
-
-msgid "Työnantajan kokemus"
-msgstr ""
-
-msgid "Muuta"
 msgstr ""
 
 msgid "Liite: Työsopimus 1"
@@ -307,10 +286,76 @@ msgstr ""
 msgid "Liite: Palkkalaskelma 5"
 msgstr ""
 
-msgid "Kyllä"
+msgid "Tarkastaja etunimi"
 msgstr ""
 
-msgid "Ei"
+msgid "Tarkastaja sukunimi"
+msgstr ""
+
+msgid "Hyväksyjä etunimi"
+msgstr ""
+
+msgid "Hyväksyjä sukunimi"
+msgstr ""
+
+msgid "Henkilötunnus"
+msgstr ""
+
+msgid "Koulu"
+msgstr ""
+
+msgid "Kotipostinumero"
+msgstr ""
+
+msgid "Puhelin"
+msgstr ""
+
+msgid "Kotikaupunki"
+msgstr ""
+
+msgid "Työnantaja muoto"
+msgstr ""
+
+msgid "Yhdyshenkilön sähköposti"
+msgstr ""
+
+msgid "Yhdyshenkilön Puhelin"
+msgstr ""
+
+msgid "Yrityksen toimiala"
+msgstr ""
+
+msgid "Työn suorituspaikan postinumero"
+msgstr ""
+
+msgid "Muut edut"
+msgstr ""
+
+msgid "Työtehtävät"
+msgstr ""
+
+msgid "Työnantajan kokemus"
+msgstr ""
+
+msgid "Muuta"
+msgstr ""
+
+msgid "Setelin numero"
+msgstr ""
+
+msgid "Nuoren nimi"
+msgstr ""
+
+msgid "Työnantaja"
+msgstr ""
+
+msgid "Työnantajan lähiosoite"
+msgstr ""
+
+msgid "Työnantajan postinumero"
+msgstr ""
+
+msgid "Työnantajan kunta"
 msgstr ""
 
 msgid "Setelit"
@@ -343,7 +388,16 @@ msgstr ""
 msgid "timestamp of receipt confirmation"
 msgstr ""
 
-msgid "vtj json"
+msgid "original vtj json"
+msgstr ""
+
+msgid "VTJ JSON used for automatic processing of new youth application"
+msgstr ""
+
+msgid "handler vtj json"
+msgstr ""
+
+msgid "VTJ JSON used for accepting/rejecting by human or machine"
 msgstr ""
 
 msgid "status"
@@ -424,15 +478,33 @@ msgstr ""
 msgid "summer voucher id"
 msgstr ""
 
-msgid "summer voucher exception class"
-msgstr ""
+#, fuzzy
+#| msgid "secondary target group"
+msgid "summer voucher target group"
+msgstr "syntynyt 2004"
 
-msgid "Special case of admitting the summer voucher."
+msgid "Summer voucher's target group type"
 msgstr ""
 
 #, python-format
 msgid "Vuoden %(year)s Kesäsetelisi"
 msgstr ""
+
+#, python-format
+msgid "%(value_in_currency)d%(currency_sign)s"
+msgstr "%(value_in_currency)d%(currency_sign)s"
+
+#, python-format
+msgctxt "Summer job period in youth summer voucher email (d.m.–d.m.y)"
+msgid "1.6.–15.8.%(year)d"
+msgstr "1.6.–15.8.%(year)d"
+
+#, python-format
+msgctxt ""
+"Employer summer voucher application end date in youth summer voucher email "
+"(d.m.y)"
+msgid "30.11.%(year)d"
+msgstr "30.11.%(year)d"
 
 msgid "Unable to send youth summer voucher email"
 msgstr ""
@@ -450,6 +522,9 @@ msgid "user"
 msgstr ""
 
 msgid "invoicer work address"
+msgstr ""
+
+msgid "bank account number"
 msgstr ""
 
 msgid "contact person name"
@@ -561,7 +636,10 @@ msgid ""
 "enää seuraavaan käsittelemättömien hakemusten exceliin."
 msgstr ""
 
-msgid "Lataa Excel tiedosto käsittelemättömistä hakemuksista"
+msgid "Lataa raportointi-Excel käsittelemättömistä hakemuksista"
+msgstr ""
+
+msgid "Lataa Talpa-Excel käsittelemättömistä hakemuksista"
 msgstr ""
 
 msgid ""
@@ -569,13 +647,31 @@ msgid ""
 "Tiedosto sisältää myös kaikki käsitellyt hakemukset."
 msgstr ""
 
-msgid "Lataa Excel tiedosto kaikista tämän vuoden hakemuksista"
+msgid "Lataa raportointi-Excel kaikista tämän vuoden hakemuksista"
+msgstr ""
+
+msgid "Lataa Talpa-Excel kaikista tämän vuoden hakemuksista"
+msgstr ""
+
+msgid ""
+"Luo uusi excel tiedosto kaikista järjestelmän viime vuoden hakemuksista. "
+"Tiedosto sisältää myös kaikki käsitellyt hakemukset."
+msgstr ""
+
+msgid "Lataa raportointi-Excel kaikista viime vuoden hakemuksista"
+msgstr ""
+
+msgid "Lataa Talpa-Excel kaikista viime vuoden hakemuksista"
+msgstr ""
+
+msgid "Lataa Excel kaikista nuorten vahvistetuista kesäsetelihakemuksista"
 msgstr ""
 
 msgid "Kesäsetelisi ja ohjeet sen käyttämiseen"
 msgstr ""
 
-msgid "Helsinki, Kesäseteli, 350€"
+#, python-format
+msgid "Helsinki, Kesäseteli, %(voucher_value_with_euro_sign)s"
 msgstr ""
 
 msgid "Kesäsetelisi, ole hyvä"
@@ -598,9 +694,6 @@ msgstr ""
 msgid "Kesäsetelin summa:"
 msgstr ""
 
-msgid "350€"
-msgstr ""
-
 msgid "Postinumero:"
 msgstr ""
 
@@ -611,12 +704,6 @@ msgid "Puhelinnumero:"
 msgstr ""
 
 msgid "Sähköpostiosoite:"
-msgstr ""
-
-msgid ""
-"Kun olet löytänyt kesätyöpaikan ja tehnyt työsopimuksen, voit välittää tämän "
-"sähköpostiviestin työnantajalle tai antaa heille yllä olevan "
-"kesäsetelinumeron."
 msgstr ""
 
 msgid "Ohjeita työnhakijalle"
@@ -634,28 +721,21 @@ msgid ""
 "editointi ja nahkapajan apulainen!"
 msgstr ""
 
+msgid ""
+"Kun olet löytänyt kesätyöpaikan ja tehnyt työsopimuksen, voit välittää tämän "
+"sähköpostiviestin työnantajalle tai antaa heille yllä olevan "
+"kesäsetelinumeron."
+msgstr ""
+
 msgid "Työpäivät ja palkka:"
 msgstr ""
 
-msgid "Kesäsetelillä tehdään 60 työtuntia."
-msgstr ""
-
-msgid "Työtunteja on vähintään 18h/viikko."
-msgstr ""
-
-msgid "Työnantaja maksaa sinulle palkkaa vähintään 500 euroa (60 työtunnilta)."
-msgstr ""
-
-msgid "Summa pitää sisällään lomakorvauksen."
-msgstr ""
-
-msgid "Lisäksi työnantaja maksaa normaalit työnantajamaksut."
-msgstr ""
-
+#, python-format
 msgid ""
-"Kesätyöjakso voi olla tuntimäärältään pidempi, tällöin 60 työtuntia "
-"ylittävän osuuden palkan on oltava vähintään alan työehtosopimuksen mukainen "
-"vähimmäispalkka."
+"Kesätyön vähimmäisvaatimuksena on %(min_work_hours)s tuntia töitä ja siitä "
+"vähintään %(min_work_compensation_with_euro_sign)s palkka, ellei alan "
+"työehtosopimus edellytä korkeampaa palkkaa. Lisäksi työnantaja maksaa "
+"normaalit työnantajamaksut, lomakorvauksen ja mahdolliset lisät."
 msgstr ""
 
 msgid "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/nuorelle/"
@@ -667,17 +747,13 @@ msgstr ""
 msgid "Ohjeita työnantajalle"
 msgstr ""
 
+#, python-format
 msgid ""
-"Kesäseteli on nuorten, yrittäjien ja Helsingin kaupungin yhteinen hanke."
-msgstr ""
-
-msgid ""
-"Kaupunki korvaa 350 euroa työnantajalle, joka palkkaa Kesäseteliin "
-"oikeutetun nuoren töihin 1.6.–15.8.2024 välisenä aikana."
-msgstr ""
-
-msgid ""
-"Kesätyön vähimmäisvaatimuksina ovat 60 tunnin työaika ja 500 euron palkka."
+"Kaupunki korvaa kesätyön jälkeen %(voucher_value_with_euro_sign)s "
+"työnantajalle, joka palkkaa Kesäseteliin oikeutetun nuoren töihin "
+"%(summer_job_period_localized_string)s välisenä aikana. Korvaus haetaan "
+"Kesäsetelin sivuilta olevasta linkistä ennen "
+"%(employer_summer_voucher_application_end_date_localized_string)s."
 msgstr ""
 
 msgid "Muut käyttöehdot voit lukea täältä:"
@@ -699,4 +775,70 @@ msgid "Ei uusia käsittelemättömiä hakemuksia."
 msgstr ""
 
 msgid "Hakemuksia ei löytynyt."
+msgstr ""
+
+msgid "Hakupvm"
+msgstr ""
+
+msgid "Tunniste"
+msgstr ""
+
+msgid "Hakemuksen tila"
+msgstr ""
+
+msgid "Hakuvuosi"
+msgstr ""
+
+msgid "Kesäsetelinro"
+msgstr ""
+
+msgid "Syntymävuosi"
+msgstr ""
+
+msgid "Syntymäpvm"
+msgstr ""
+
+msgid "Etunimi"
+msgstr ""
+
+msgid "Sukunimi"
+msgstr ""
+
+msgid "VTJ-sukunimi"
+msgstr ""
+
+msgid "Listaamaton koulu?"
+msgstr ""
+
+msgid "Sähköposti"
+msgstr ""
+
+msgid "Puhelinnro"
+msgstr ""
+
+msgid "Postinro"
+msgstr ""
+
+msgid "VTJ-kotikunta"
+msgstr ""
+
+msgid "Lisätietosyyt"
+msgstr ""
+
+msgid "Lisätiedot"
+msgstr ""
+
+msgid "Kieli"
+msgstr ""
+
+msgid "Vahvistettu"
+msgstr ""
+
+msgid "Lisätiedot annettu"
+msgstr ""
+
+msgid "Käsitelty"
+msgstr ""
+
+msgid "Nuorten kesäsetelihakemukset"
 msgstr ""
