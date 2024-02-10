@@ -16,7 +16,7 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.models import AnonymousUser
 from django.core import mail
 from django.test import override_settings
-from django.utils import timezone
+from django.utils import timezone, translation
 from django.utils.html import strip_tags
 from django.utils.timezone import localdate
 from freezegun import freeze_time
@@ -67,6 +67,27 @@ from shared.common.tests.conftest import (
 from shared.common.tests.factories import UserFactory
 from shared.common.tests.test_validators import get_invalid_postcode_values
 from shared.common.tests.utils import normalize_whitespace
+
+# Mandatory fields of YouthSummerVoucher in youth summer voucher email
+MANDATORY_YOUTH_SUMMER_VOUCHER_FIELDS_IN_VOUCHER_EMAIL = [
+    "employer_summer_voucher_application_end_date_localized_string",
+    "min_work_compensation_with_euro_sign",
+    "min_work_hours",
+    "summer_job_period_localized_string",
+    "summer_voucher_serial_number",
+    "voucher_value_with_euro_sign",
+    "year",
+]
+
+# Mandatory fields of YouthApplication in youth summer voucher email
+MANDATORY_YOUTH_APPLICATION_FIELDS_IN_VOUCHER_EMAIL = [
+    "email",
+    "first_name",
+    "last_name",
+    "phone_number",
+    "postcode",
+    "school",
+]
 
 
 def create_same_person_previous_year_accepted_application(
@@ -1676,6 +1697,60 @@ def test_youth_summer_voucher_email_plaintext_html_similarity(api_client, langua
         ).ratio()
         >= 0.9
     ), "Email's plaintext and HTML content should be very similar"
+
+
+@pytest.mark.django_db
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=True,
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+)
+@pytest.mark.parametrize("language", get_supported_languages())
+def test_youth_summer_voucher_email_html_content(api_client, language):
+    acceptable_youth_application = AcceptableYouthApplicationFactory(language=language)
+    api_client.patch(
+        get_accept_url(acceptable_youth_application.pk),
+        data=json.dumps(get_test_handling_data()),
+        content_type="application/json",
+    )
+    assert len(mail.outbox) > 0
+    youth_summer_voucher_email = mail.outbox[-1]
+    html_msg = youth_summer_voucher_email.alternatives[0][0]
+    acceptable_youth_application.refresh_from_db()
+    voucher = acceptable_youth_application.youth_summer_voucher
+
+    with translation.override(acceptable_youth_application.language):
+        for field in MANDATORY_YOUTH_SUMMER_VOUCHER_FIELDS_IN_VOUCHER_EMAIL:
+            assert str(getattr(voucher, field)) in html_msg
+
+        for field in MANDATORY_YOUTH_APPLICATION_FIELDS_IN_VOUCHER_EMAIL:
+            assert str(getattr(acceptable_youth_application, field)) in html_msg
+
+
+@pytest.mark.django_db
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=True,
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+)
+@pytest.mark.parametrize("language", get_supported_languages())
+def test_youth_summer_voucher_email_plaintext_content(api_client, language):
+    acceptable_youth_application = AcceptableYouthApplicationFactory(language=language)
+    api_client.patch(
+        get_accept_url(acceptable_youth_application.pk),
+        data=json.dumps(get_test_handling_data()),
+        content_type="application/json",
+    )
+    assert len(mail.outbox) > 0
+    youth_summer_voucher_email = mail.outbox[-1]
+    plaintext_msg = youth_summer_voucher_email.body
+    acceptable_youth_application.refresh_from_db()
+    voucher = acceptable_youth_application.youth_summer_voucher
+
+    with translation.override(acceptable_youth_application.language):
+        for field in MANDATORY_YOUTH_SUMMER_VOUCHER_FIELDS_IN_VOUCHER_EMAIL:
+            assert str(getattr(voucher, field)) in plaintext_msg
+
+        for field in MANDATORY_YOUTH_APPLICATION_FIELDS_IN_VOUCHER_EMAIL:
+            assert str(getattr(acceptable_youth_application, field)) in plaintext_msg
 
 
 @pytest.mark.django_db
