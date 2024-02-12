@@ -5,11 +5,10 @@ import { isString } from 'shared/utils/type-guards';
 
 export const getInitials = (name: string): string =>
   name
-    // eslint-disable-next-line security/detect-unsafe-regex
-    .match(/(^\S\S?|\b\S)?/g)
-    ?.join('')
-    .match(/(^\S|\S$)?/g)
-    ?.join('') ?? '';
+    .match(/(?<=^|\s)(\p{L})/gu)
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
 
 export const capitalize = (s: string): string =>
   (s && s[0].toUpperCase() + s.slice(1)) || '';

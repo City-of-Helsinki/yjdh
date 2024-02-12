@@ -19,11 +19,15 @@
         "applicationNumber": "Hakemusnumero",
         "status": "Tila",
         "check": "Tarkastele",
-        "editEndDate": "Muokkaa viimeistään",
+        "validUntil": "Tukiaika päättyy",
         "newMessages_one": "{{count}} uusi",
         "newMessages_other": "{{count}} uutta",
-        "sortOrder": "Järjestä hakemukset"
-      }
+        "sortOrder": "Järjestä hakemukset",
+        "expand": "Näytä lisää",
+        "contract": "Näytä vähemmän"
+      },
+      "noApplications": "Ei avoimia Helsinki-lisä -hakemuksia",
+      "navigateToDecisions": "Katso kaikki päätökset"
     },
     "pageHeaders": {
       "created": "Luotu",
@@ -39,7 +43,7 @@
     },
     "statuses": {
       "draft": "Luonnos",
-      "additionalInformationNeeded": "Lisätietoja tarvitaan",
+      "additionalInformationNeeded": "Muokkaa {{date}} mennessä",
       "received": "Vastaanotettu",
       "accepted": "Hyväksytty",
       "rejected": "Hylätty",

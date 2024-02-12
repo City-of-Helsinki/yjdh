@@ -7,7 +7,13 @@ import {
   ApplicationAllowedAction,
   ApplicationListItemData,
 } from 'benefit-shared/types/application';
-import { IconPen } from 'hds-react';
+import {
+  IconAlertCircleFill,
+  IconCheckCircle,
+  IconCheckCircleFill,
+  IconCrossCircleFill,
+  IconPen,
+} from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
@@ -29,20 +35,18 @@ const translationStatusBase = 'common:applications.statuses';
 interface Props {
   status: string[];
   isArchived?: boolean;
-  initialPage?: number;
   orderByOptions?: OptionType[];
 }
 
-interface ApplicationListProps {
+export interface ApplicationListProps {
   list: ApplicationListItemData[];
   shouldShowSkeleton: boolean;
   shouldHideList: boolean;
-  currentPage: number | null;
-  setPage: (newPage: number | null) => void;
   t: TFunction;
   orderBy: OptionType;
   setOrderBy: (option: OptionType) => void;
   language: Language;
+  hasItems: boolean;
 }
 
 const getAvatarBGColor = (
@@ -77,7 +81,6 @@ const getEmployeeFullName = (firstName: string, lastName: string): string => {
 const useApplicationList = ({
   status,
   isArchived,
-  initialPage,
   orderByOptions,
 }: Props): ApplicationListProps => {
   const { t } = useTranslation();
@@ -97,7 +100,6 @@ const useApplicationList = ({
   });
 
   const { errors, setError } = React.useContext(FrontPageContext);
-  const [currentPage, setPage] = useState<number | null>(initialPage ?? null);
 
   useEffect(() => {
     if (error && !errors.includes(error)) {
@@ -106,9 +108,38 @@ const useApplicationList = ({
   }, [errors, error, setError]);
 
   const getStatusTranslation = (
-    applicationStatus: APPLICATION_STATUSES
-  ): string => t(`${translationStatusBase}.${camelCase(applicationStatus)}`);
+    applicationStatus: APPLICATION_STATUSES,
+    values: Record<string, string>
+  ): string =>
+    t(`${translationStatusBase}.${camelCase(applicationStatus)}`, values);
 
+  const getStatusIcon = (applicationStatus: APPLICATION_STATUSES): React.FC => {
+    switch (applicationStatus) {
+      case APPLICATION_STATUSES.DRAFT:
+        return () => React.createElement('span');
+
+      case APPLICATION_STATUSES.INFO_REQUIRED:
+        return IconAlertCircleFill;
+
+      case APPLICATION_STATUSES.RECEIVED:
+        return IconCheckCircle;
+
+      case APPLICATION_STATUSES.ACCEPTED:
+        return IconCheckCircleFill;
+
+      case APPLICATION_STATUSES.REJECTED:
+        return IconCrossCircleFill;
+
+      case APPLICATION_STATUSES.CANCELLED:
+        return IconCrossCircleFill;
+
+      case APPLICATION_STATUSES.HANDLING:
+        return IconCheckCircle;
+
+      default:
+        return () => React.createElement('span');
+    }
+  };
   const getAllowedActions = (
     id: string,
     applicationStatus: APPLICATION_STATUSES
@@ -149,14 +180,23 @@ const useApplicationList = ({
       additional_information_needed_by,
       unread_messages_count,
       batch,
+      end_date,
+      company_contact_person_first_name,
+      company_contact_person_last_name,
     } = application;
 
-    const statusText = getStatusTranslation(appStatus);
-    const name = getEmployeeFullName(employee?.first_name, employee?.last_name);
+    const employeeName = getEmployeeFullName(
+      employee?.first_name,
+      employee?.last_name
+    );
+    const contactPersonName = getEmployeeFullName(
+      company_contact_person_first_name,
+      company_contact_person_last_name
+    );
 
     const avatar = {
       color: getAvatarBGColor(appStatus),
-      initials: getInitials(name),
+      initials: getInitials(contactPersonName),
     };
     const allowedAction = getAllowedActions(id, appStatus);
     const submittedAt = submitted_at
@@ -164,30 +204,39 @@ const useApplicationList = ({
       : '-';
     const modifiedAtWithTime =
       modified_at && convertToUIDateAndTimeFormat(modified_at);
-    const modifiedAt = modified_at && convertToUIDateFormat(modified_at);
+    const endDate = end_date && convertToUIDateFormat(end_date);
     const editEndDate =
       additional_information_needed_by &&
       convertToUIDateFormat(additional_information_needed_by);
+    const translationValues: Record<string, string> = {};
+
+    if (appStatus === APPLICATION_STATUSES.INFO_REQUIRED) {
+      translationValues.date = editEndDate;
+    }
+
+    const statusText = getStatusTranslation(appStatus, translationValues);
+
     const commonProps = {
       id,
-      name,
+      name: employeeName,
       avatar,
-      modifiedAt,
+      applicationNum,
       allowedAction,
       status: appStatus,
       unreadMessagesCount: unread_messages_count ?? 0,
       batch,
+      statusIcon: getStatusIcon(appStatus),
+      contactPersonName,
     };
-    const draftProps = { modifiedAt: modifiedAtWithTime, applicationNum };
+    const draftProps = { modifiedAt: modifiedAtWithTime };
     const submittedProps = {
       submittedAt,
-      applicationNum,
       statusText,
+      validUntil: appStatus === APPLICATION_STATUSES.ACCEPTED ? endDate : null,
     };
     const infoNeededProps = {
       submittedAt,
-      applicationNum,
-      editEndDate,
+      statusText,
     };
 
     if (appStatus === APPLICATION_STATUSES.DRAFT) {
@@ -207,16 +256,17 @@ const useApplicationList = ({
   const shouldHideList =
     !shouldShowSkeleton && Array.isArray(data) && data.length === 0;
 
+  const hasItems = list?.length > 0;
+
   return {
     list: list || [],
     shouldShowSkeleton,
     shouldHideList,
-    currentPage,
-    setPage,
     t,
     orderBy,
     setOrderBy,
     language,
+    hasItems,
   };
 };
 

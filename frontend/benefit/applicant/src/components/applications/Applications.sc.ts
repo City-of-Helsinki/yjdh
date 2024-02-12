@@ -81,3 +81,11 @@ export const $AskemItem = styled.div`
     }
   }
 `;
+
+export const $NoApplicationsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: ${(props) => props.theme.spacing.xs};
+  margin: ${(props) => props.theme.spacingLayout.xl} 0;
+`;
