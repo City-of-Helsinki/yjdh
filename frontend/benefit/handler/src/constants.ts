@@ -96,7 +96,7 @@ export const DE_MINIMIS_AID_GRANTED_AT_MAX_DATE = new Date();
 
 export const APPLICATION_START_DATE = new Date(new Date().getFullYear(), 0, 1);
 
-export const MAX_DEMINIMIS_AID_TOTAL_AMOUNT = 200_000;
+export const MAX_DEMINIMIS_AID_TOTAL_AMOUNT = 300_000;
 
 export const EMPLOYEE_MIN_WORKING_HOURS = 18;
 export const EMPLOYEE_MAX_WORKING_HOURS = 168;

@@ -17,8 +17,14 @@ import { useDeminimisAidsList } from './useDeminimisAidsList';
 const unsavedAidRowKey = (): number => Math.floor(Math.random() * 1000);
 
 const DeMinimisAidsList: React.FC = () => {
-  const { grants, t, translationsBase, handleRemove, deMinimisTotal } =
-    useDeminimisAidsList();
+  const {
+    grants,
+    t,
+    translationsBase,
+    handleRemove,
+    deMinimisTotal,
+    language,
+  } = useDeminimisAidsList();
   const theme = useTheme();
 
   return (
@@ -85,7 +91,10 @@ const DeMinimisAidsList: React.FC = () => {
             type="error"
           >
             {t(
-              `${translationsBase}.notifications.deMinimisAidMaxAmount.content`
+              `${translationsBase}.notifications.deMinimisAidMaxAmount.content`,
+              {
+                amount: MAX_DEMINIMIS_AID_TOTAL_AMOUNT.toLocaleString(language),
+              }
             )}
           </$Notification>
         </$GridCell>

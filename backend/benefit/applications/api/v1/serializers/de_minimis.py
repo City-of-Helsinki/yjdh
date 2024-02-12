@@ -14,7 +14,7 @@ class DeMinimisAidSerializer(serializers.ModelSerializer):
     in the Application.
     """
 
-    MAX_AID_AMOUNT = 200000
+    MAX_AID_AMOUNT = 300000
     amount = serializers.DecimalField(
         max_digits=DeMinimisAid.amount.field.max_digits,
         decimal_places=DeMinimisAid.amount.field.decimal_places,

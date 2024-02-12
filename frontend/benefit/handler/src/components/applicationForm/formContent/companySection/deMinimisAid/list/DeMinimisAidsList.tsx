@@ -15,7 +15,8 @@ import { useTheme } from 'styled-components';
 import { useDeminimisAidsList } from './useDeminimisAidsList';
 
 const DeMinimisAidsList: React.FC = () => {
-  const { grants, t, translationsBase, handleRemove } = useDeminimisAidsList();
+  const { grants, t, translationsBase, handleRemove, language } =
+    useDeminimisAidsList();
   const theme = useTheme();
 
   return (
@@ -82,7 +83,10 @@ const DeMinimisAidsList: React.FC = () => {
             type="error"
           >
             {t(
-              `${translationsBase}.notifications.deMinimisAidMaxAmount.content`
+              `${translationsBase}.notifications.deMinimisAidMaxAmount.content`,
+              {
+                amount: MAX_DEMINIMIS_AID_TOTAL_AMOUNT.toLocaleString(language),
+              }
             )}
           </$Notification>
         </$GridCell>
