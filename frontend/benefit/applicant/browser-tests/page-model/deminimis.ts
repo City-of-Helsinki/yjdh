@@ -115,7 +115,7 @@ class DeMinimisAid {
     fillTooBigAmounts: async (t: TestController): Promise<void> => {
       const rows = [
         { granter: 'One', amount: '2', grantedAt: '1.1.2023' },
-        { granter: 'Two', amount: '199999', grantedAt: '2.2.2023' },
+        { granter: 'Two', amount: '299999', grantedAt: '2.2.2023' },
       ];
       await this.actions.fillRows(t, rows);
 

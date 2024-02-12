@@ -566,7 +566,7 @@ def test_application_post_invalid_data(
     assert len(Application.objects.all()) == 0
 
     del data["id"]
-    data["de_minimis_aid_set"][0]["amount"] = "300000.00"  # value too high
+    data["de_minimis_aid_set"][0]["amount"] = "300001.00"  # value too high
     data["status"] = "foo"  # invalid value
     data["bases"] = ["something_completely_different"]  # invalid value
     data["applicant_language"] = None  # non-null required
@@ -738,7 +738,7 @@ def test_application_put_read_only_fields(api_client, application):
 
 def test_application_put_invalid_data(api_client, application):
     data = ApplicantApplicationSerializer(application).data
-    data["de_minimis_aid_set"][0]["amount"] = "300000.00"  # value too high
+    data["de_minimis_aid_set"][0]["amount"] = "300001.00"  # value too high
     data[
         "status"
     ] = ApplicationStatus.ACCEPTED  # invalid value when transitioning from draft
@@ -822,7 +822,7 @@ def test_application_edit_de_minimis_aid_too_high(api_client, application):
 
     previous_aid = copy.deepcopy(data["de_minimis_aid_set"])
     data["de_minimis_aid"] = True
-    data["de_minimis_aid_set"][0]["amount"] = "150000"
+    data["de_minimis_aid_set"][0]["amount"] = "250000"
     data["de_minimis_aid_set"][1]["amount"] = "50001"
 
     response = api_client.put(

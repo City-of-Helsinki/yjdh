@@ -95,7 +95,7 @@
           },
           "deMinimisAidMaxAmount": {
             "label": "Enimmäismäärä ylitetty",
-            "content": "De minimis -tuen enimmäismäärä on ylitetty. Tuki voi olla enintään 200 000 euroa, joka myönnetään yritykselle kuluvan vuoden ja kahden edellisen verovuoden kuluessa. Enimmäismäärässä huomioidaan kaikkien eri viranomaisten kyseisenä ajanjaksona de minimis -tukena myöntämä rahoitus."
+            "content": "De minimis -tuen enimmäismäärä on ylitetty. Tuki voi olla enintään {{amount}} euroa, joka myönnetään yritykselle kuluvan vuoden ja kahden edellisen verovuoden kuluessa. Enimmäismäärässä huomioidaan kaikkien eri viranomaisten kyseisenä ajanjaksona de minimis -tukena myöntämä rahoitus."
           },
           "deMinimisUnfinished": {
             "label": "Puuttuvia de minimis -tuen tietoja",
