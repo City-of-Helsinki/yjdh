@@ -38,3 +38,9 @@ export const $ListWrapper = styled.ul`
 export const $PaginationContainer = styled.div`
   margin-top: ${(props) => props.theme.spacing.xl2};
 `;
+
+export const $ListActionButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: ${(props) => props.theme.spacing.xs};
+`;
