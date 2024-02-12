@@ -6,7 +6,6 @@
     "http-cache-semantics", // testcafe
     "decode-uri-component", // testcafe
     "@babel/traverse", // jest
-    "follow-redirects", // axios
-    "lodash.pick" // HDS
+    "follow-redirects" // axios
   ]
 }
