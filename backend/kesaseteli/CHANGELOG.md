@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.5.0...kesaseteli-backend-v1.6.0) (2024-02-13)
+
+
+### Features
+
+* Parametrize youth summer voucher email templates & update for 2024 ([32a0e1c](https://github.com/City-of-Helsinki/yjdh/commit/32a0e1c4d05dad2809aa9e17c06d845a4d1ccffe))
+
 ## [1.5.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.4.0...kesaseteli-backend-v1.5.0) (2024-02-01)
 
 
