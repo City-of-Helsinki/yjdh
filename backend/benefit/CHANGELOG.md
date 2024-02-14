@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.7.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.6.0...benefit-backend-v1.7.0) (2024-02-14)
+
+
+### Features
+
+* Add a command for opening cases in ahjo ([#2724](https://github.com/City-of-Helsinki/yjdh/issues/2724)) ([776fbff](https://github.com/City-of-Helsinki/yjdh/commit/776fbff9fecae00597d1ae98d0d2dc795c9bf9df))
+* Application change history (HL-1061) ([#2674](https://github.com/City-of-Helsinki/yjdh/issues/2674)) ([f1e79d5](https://github.com/City-of-Helsinki/yjdh/commit/f1e79d586681452ee4f9e8db54a780001a8c80d6))
+* Change open case message title ([#2799](https://github.com/City-of-Helsinki/yjdh/issues/2799)) ([8ce03b2](https://github.com/City-of-Helsinki/yjdh/commit/8ce03b23803792af359ac5e729f7a8b5be0788c6))
+* Edit application form with handler GUI (HL-990) ([#2764](https://github.com/City-of-Helsinki/yjdh/issues/2764)) ([40cb66f](https://github.com/City-of-Helsinki/yjdh/commit/40cb66fba2cca156dbbb60c128eb5f88a7ca1743))
+* List old processed applications on the archive page (HL-1011) ([72ed278](https://github.com/City-of-Helsinki/yjdh/commit/72ed27869efa89551092028800e6c402ab69321d))
+* Query for rejected_by_talpa batches and show talpa_status icon for each app ([#2743](https://github.com/City-of-Helsinki/yjdh/issues/2743)) ([cef39d5](https://github.com/City-of-Helsinki/yjdh/commit/cef39d588e6816eb35e49e1a18962f02bc22fe75))
+
+
+### Bug Fixes
+
+* Cast open case json reference field to string ([#2788](https://github.com/City-of-Helsinki/yjdh/issues/2788)) ([d0bd02c](https://github.com/City-of-Helsinki/yjdh/commit/d0bd02ca1d1710e8a01a5676ba8ca131efcff99b))
+* Limit precision to seconds ([#2803](https://github.com/City-of-Helsinki/yjdh/issues/2803)) ([0c9626f](https://github.com/City-of-Helsinki/yjdh/commit/0c9626f07db9b86a89c12fb6fe6a1c311b1e5fe4))
+* Make caseId and caseGuid optional ([#2804](https://github.com/City-of-Helsinki/yjdh/issues/2804)) ([85c89d7](https://github.com/City-of-Helsinki/yjdh/commit/85c89d771ecc7fbaebab958ef7b5cafdd8fce795))
+* Move MannerOfReceipt into the record dict ([#2775](https://github.com/City-of-Helsinki/yjdh/issues/2775)) ([156ee20](https://github.com/City-of-Helsinki/yjdh/commit/156ee201efcc48e408267384cb04d2df8893ef4c))
+
 ## [1.6.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.5.1...benefit-backend-v1.6.0) (2024-01-16)
 
 
