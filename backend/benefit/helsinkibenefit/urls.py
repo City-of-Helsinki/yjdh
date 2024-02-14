@@ -12,6 +12,7 @@ from drf_spectacular.views import (
 from rest_framework_nested import routers
 
 from applications.api.v1 import application_batch_views, views as application_views
+from applications.api.v1.ahjo_decision_views import DecisionProposalTemplateSectionList
 from applications.api.v1.ahjo_integration_views import (
     AhjoAttachmentView,
     AhjoCallbackView,
@@ -80,6 +81,11 @@ urlpatterns = [
         "v1/talpa-integration/callback/",
         TalpaCallbackView.as_view(),
         name="talpa_callback_url",
+    ),
+    path(
+        "v1/decision-proposal-sections/",
+        DecisionProposalTemplateSectionList.as_view(),
+        name="template_section_list",
     ),
     path("gdpr-api/v1/user/<uuid:uuid>", UserUuidGDPRAPIView.as_view(), name="gdpr_v1"),
     path("v1/", include((router.urls, "v1"), namespace="v1")),

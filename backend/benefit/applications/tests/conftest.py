@@ -11,10 +11,12 @@ from applications.enums import ApplicationStatus, BenefitType
 from applications.models import Application
 from applications.services.applications_csv_report import ApplicationsCsvService
 from applications.tests.factories import (
+    AcceptedDecisionProposalFactory,
     ApplicationBatchFactory,
     ApplicationFactory,
     CancelledApplicationFactory,
     DecidedApplicationFactory,
+    DeniedDecisionProposalFactory,
     EmployeeFactory,
     HandlingApplicationFactory,
     ReceivedApplicationFactory,
@@ -397,6 +399,16 @@ hakemusnumero {application.application_number}"
             },
         ],
     }
+
+
+@pytest.fixture()
+def accepted_ahjo_decision_section():
+    return AcceptedDecisionProposalFactory()
+
+
+@pytest.fixture()
+def denied_ahjo_decision_section():
+    return DeniedDecisionProposalFactory()
 
 
 def split_lines_at_semicolon(csv_string):
