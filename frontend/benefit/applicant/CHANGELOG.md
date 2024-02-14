@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.7.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.6.0...benefit-applicant-v3.7.0) (2024-02-14)
+
+
+### Features
+
+* Add navigation and a new page for processed applications ([128023c](https://github.com/City-of-Helsinki/yjdh/commit/128023c7777b4090cefe554296c8d46dd9ea7066))
+* Adjust benefit applicant front page appearance ([2c1418c](https://github.com/City-of-Helsinki/yjdh/commit/2c1418cb9c9b25db30e4963c06e8957f9bb5bb36))
+* Edit application form with handler GUI (HL-990) ([#2764](https://github.com/City-of-Helsinki/yjdh/issues/2764)) ([40cb66f](https://github.com/City-of-Helsinki/yjdh/commit/40cb66fba2cca156dbbb60c128eb5f88a7ca1743))
+* List old processed applications on the archive page (HL-1011) ([72ed278](https://github.com/City-of-Helsinki/yjdh/commit/72ed27869efa89551092028800e6c402ab69321d))
+
 ## [3.6.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.5.0...benefit-applicant-v3.6.0) (2024-01-16)
 
 
