@@ -19,11 +19,15 @@ from applications.models import (
     ApplicationBatch,
 )
 from applications.tests.factories import (
+    AcceptedDecisionProposalFactory,
+    AcceptedDecisionProposalJustificationFactory,
     AdditionalInformationNeededApplicationFactory,
     ApplicationBatchFactory,
     ApplicationWithAttachmentFactory,
     CancelledApplicationFactory,
     DecidedApplicationFactory,
+    DeniedDecisionProposalFactory,
+    DeniedDecisionProposalJustificationFactory,
     HandlingApplicationFactory,
     ReceivedApplicationFactory,
     RejectedApplicationFactory,
@@ -166,6 +170,15 @@ def run_seed(number):
     Application.objects.filter(pk__in=ids).update(modified_at=draft_deletion_threshold)
     Application.objects.exclude(pk__in=ids).update(modified_at=draft_notify_threshold)
 
+    _create_templates()
+
 
 def _past_datetime(days: int) -> datetime:
     return timezone.now() - timedelta(days=days)
+
+
+def _create_templates():
+    AcceptedDecisionProposalFactory(),
+    AcceptedDecisionProposalJustificationFactory(),
+    DeniedDecisionProposalFactory(),
+    DeniedDecisionProposalJustificationFactory(),
