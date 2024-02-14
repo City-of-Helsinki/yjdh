@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v1.2.0...kesaseteli-youth-v1.3.0) (2024-02-14)
+
+
+### Features
+
+* Permit more names in frontend NAMES_REGEX, update tests ([6b0e8b0](https://github.com/City-of-Helsinki/yjdh/commit/6b0e8b021db21c42bf44ace0827186abd1ec1625))
+* **shared:** Add type for autoComplete property in React ([02df04c](https://github.com/City-of-Helsinki/yjdh/commit/02df04c707d4f6930663f6ce9bbc6cfac3ec1b4b))
+
 ## [1.2.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v1.1.1...kesaseteli-youth-v1.2.0) (2024-01-29)
 
 
