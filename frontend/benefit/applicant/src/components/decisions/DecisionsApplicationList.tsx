@@ -1,4 +1,4 @@
-import ApplicationsList from 'benefit/applicant/components/applications/applicationList/ApplicationList';
+import PaginatedApplicationList from 'benefit/applicant/components/applications/applicationList/PaginatedApplicationList';
 import {
   $ButtonContainer,
   $NoDecisionsText,
@@ -14,7 +14,7 @@ const DecisionsApplicationList = (): JSX.Element => {
   const router = useRouter();
 
   return (
-    <ApplicationsList
+    <PaginatedApplicationList
       heading={(count) => (
         <Trans
           i18nKey="common:decisions.heading"
@@ -26,7 +26,6 @@ const DecisionsApplicationList = (): JSX.Element => {
       )}
       status={SUBMITTED_STATUSES}
       isArchived
-      clientPaginated
       orderByOptions={[
         {
           label: t('common:sortOrder.submittedAt.desc'),

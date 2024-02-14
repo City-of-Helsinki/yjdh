@@ -65,8 +65,12 @@ from shared.common.tests.conftest import (
     superuser_client,
 )
 from shared.common.tests.factories import UserFactory
+from shared.common.tests.names import INVALID_NAMES, VALID_NAMES
 from shared.common.tests.test_validators import get_invalid_postcode_values
 from shared.common.tests.utils import normalize_whitespace
+
+# YouthApplication's fields that are validated as names
+YOUTH_APPLICATION_NAME_FIELDS = ["first_name", "last_name", "school"]
 
 # Mandatory fields of YouthSummerVoucher in youth summer voucher email
 MANDATORY_YOUTH_SUMMER_VOUCHER_FIELDS_IN_VOUCHER_EMAIL = [
@@ -1311,6 +1315,57 @@ def test_youth_application_post_valid_random_data(  # noqa: C901
     NEXT_PUBLIC_DISABLE_VTJ=True,
 )
 @pytest.mark.django_db
+@pytest.mark.parametrize("name_field", YOUTH_APPLICATION_NAME_FIELDS)
+@pytest.mark.parametrize("name", VALID_NAMES)
+def test_youth_application_post_valid_non_ascii_names(api_client, name_field, name):
+    youth_application = YouthApplicationFactory.build()
+    data = YouthApplicationSerializer(youth_application).data
+    data[name_field] = name
+    response = api_client.post(get_list_url(), data)
+
+    assert response.status_code == status.HTTP_201_CREATED
+    assert "id" in response.data
+    created_youth_application = YouthApplication.objects.get(pk=response.data["id"])
+    assert getattr(created_youth_application, name_field) == name
+
+
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=False,
+    NEXT_PUBLIC_DISABLE_VTJ=True,
+)
+@pytest.mark.django_db
+@pytest.mark.parametrize("name_field", YOUTH_APPLICATION_NAME_FIELDS)
+@pytest.mark.parametrize("name", VALID_NAMES)
+def test_youth_application_post_names_with_whitespace(api_client, name_field, name):
+    youth_application = YouthApplicationFactory.build()
+    data = YouthApplicationSerializer(youth_application).data
+    whitespace = "\t\r\n  "
+    data[name_field] = whitespace + name + whitespace
+    response = api_client.post(get_list_url(), data)
+
+    assert response.status_code == status.HTTP_201_CREATED
+    assert "id" in response.data
+    created_youth_application = YouthApplication.objects.get(pk=response.data["id"])
+    assert getattr(created_youth_application, name_field) == name.strip()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("name_field", YOUTH_APPLICATION_NAME_FIELDS)
+@pytest.mark.parametrize("name", INVALID_NAMES)
+def test_youth_application_post_invalid_names(api_client, name_field, name):
+    youth_application = YouthApplicationFactory.build()
+    data = YouthApplicationSerializer(youth_application).data
+    data[name_field] = name
+    response = api_client.post(get_list_url(), data)
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=False,
+    NEXT_PUBLIC_DISABLE_VTJ=True,
+)
+@pytest.mark.django_db
 def test_youth_application_post_valid_audit_log(api_client):
     youth_application = YouthApplicationFactory.build()
     data = YouthApplicationSerializer(youth_application).data
@@ -2528,6 +2583,7 @@ def test_youth_applications_set_excess_additional_info(
                 [AdditionalInfoUserReason.OTHER],
                 " \tLeading\n and trailing whitespace should get removed \n\t ",
             ),
+            *[([AdditionalInfoUserReason.OTHER], name) for name in VALID_NAMES],
         ]
     ],
 )

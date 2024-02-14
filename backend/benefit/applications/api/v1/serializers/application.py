@@ -511,7 +511,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         else:
             return None
 
-    ADDITIONAL_INFORMATION_DEADLINE = timedelta(days=14)
+    ADDITIONAL_INFORMATION_DEADLINE = timedelta(days=7)
 
     def get_additional_information_needed_by(self, obj):
         if info_asked_timestamp := getattr(

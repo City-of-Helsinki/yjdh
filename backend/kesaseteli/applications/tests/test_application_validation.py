@@ -9,10 +9,11 @@ from applications.api.v1.serializers import (
 from applications.enums import AttachmentType, EmployerApplicationStatus
 from applications.models import School, validate_name, YouthApplication
 from applications.tests.test_applications_api import get_detail_url
+from shared.common.tests.names import INVALID_NAMES, VALID_NAMES
 
 
 @pytest.mark.django_db
-def test_validate_name_with_all_listed_schools():
+def test_validate_name_with_all_listed_schools(school_list):
     for school in School.objects.all():
         validate_name(school.name)
 
@@ -20,9 +21,13 @@ def test_validate_name_with_all_listed_schools():
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "name",
-    [
+    VALID_NAMES
+    + [
         "Jokin muu koulu",
         "Testikoulu",
+        "Testikoulu 1",
+        "Testikoulu: Arabian yläaste",
+        "Yläaste (Arabia)",
     ],
 )
 def test_validate_name_with_valid_unlisted_school(name):
@@ -74,14 +79,7 @@ def test_validate_youth_application_vtj_data_fields(
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize(
-    "name",
-    [
-        "Testikoulu 1",  # Number is not allowed after the first character
-        "Testikoulu: Arabian yläaste",  # Colon is not allowed
-        "Yläaste (Arabia)",  # Parentheses are not allowed
-    ],
-)
+@pytest.mark.parametrize("name", INVALID_NAMES)
 def test_validate_name_with_invalid_unlisted_school(name):
     with pytest.raises(ValidationError):
         validate_name(name)

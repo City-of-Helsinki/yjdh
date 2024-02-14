@@ -8,8 +8,7 @@ export const PHONE_NUMBER_REGEX =
   // eslint-disable-next-line security/detect-unsafe-regex
   /^((\+358[ -]*)+|(\\(\d{2,3}\\)[ -]*)|(\d{2,4})[ -]*)*?\d{3,4}?[ -]*\d{3,4}?$/;
 export const POSTAL_CODE_REGEX = /^\d{5}$/;
-export const NAMES_REGEX =
-  /^[\w',.ÄÅÖäåö-][^\d!#$%&()*+/:;<=>?@[\\\]_{|}~¡¿÷ˆ]+$/;
+export const NAMES_REGEX = /^\S.*$/;
 export const CITY_REGEX = /^[ A-Za-zÄÅÖäåö-]+$/;
 
 export const EMAIL_REGEX =
