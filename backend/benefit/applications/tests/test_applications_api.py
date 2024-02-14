@@ -1353,7 +1353,7 @@ def test_application_status_change_as_handler(
         if to_status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
             assert application.messages.count() == 1
             assert (
-                "Please make the corrections by 18.06.2021"
+                "Please make the corrections by 11.06.2021"
                 in application.messages.first().content
             )
             assert len(mailoutbox) == 1
@@ -2167,7 +2167,7 @@ def test_application_additional_information_needed_by(api_client, handling_appli
         )
     response = api_client.get(get_detail_url(handling_application))
     assert response.status_code == 200
-    assert response.data["additional_information_needed_by"] == date(2021, 12, 15)
+    assert response.data["additional_information_needed_by"] == date(2021, 12, 8)
 
 
 def test_application_status_last_changed_at(api_client, handling_application):

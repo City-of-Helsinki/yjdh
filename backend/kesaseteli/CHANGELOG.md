@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.6.0...kesaseteli-backend-v1.7.0) (2024-02-14)
+
+
+### Features
+
+* Permit more names in YouthApplication (first|last)_name & school ([cc10fb1](https://github.com/City-of-Helsinki/yjdh/commit/cc10fb15ae0be349f3c5a751c113cefd4f75e912))
+
 ## [1.6.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.5.0...kesaseteli-backend-v1.6.0) (2024-02-13)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v1.2.0...kesaseteli-employer-v1.3.0) (2024-02-14)
+
+
+### Features
+
+* **shared:** Add type for autoComplete property in React ([02df04c](https://github.com/City-of-Helsinki/yjdh/commit/02df04c707d4f6930663f6ce9bbc6cfac3ec1b4b))
+
 ## [1.2.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v1.1.1...kesaseteli-employer-v1.2.0) (2024-01-29)
 
 
