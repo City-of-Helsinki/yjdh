@@ -3,7 +3,7 @@
   "backend/kesaseteli": "1.6.0",
   "backend/tet": "1.2.0",
   "frontend/benefit/applicant": "3.6.0",
-  "frontend/benefit/handler": "3.1.0",
+  "frontend/benefit/handler": "3.2.0",
   "frontend/kesaseteli/employer": "1.2.0",
   "frontend/kesaseteli/handler": "1.2.0",
   "frontend/kesaseteli/youth": "1.2.0",
