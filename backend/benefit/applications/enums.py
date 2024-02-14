@@ -188,3 +188,17 @@ class AhjoRequestType(models.TextChoices):
     OPEN_CASE = "open_case", _("Open case in Ahjo")
     DELETE_APPLICATION = "delete_application", _("Delete application in Ahjo")
     UPDATE_APPLICATION = "update_application", _("Update application in Ahjo")
+
+
+class DecisionProposalTemplateSectionType(models.TextChoices):
+    DECISION_SECTION = "decision_section", _(
+        "Template part for the decision section of a application decision proposal"
+    )
+    JUSTIFICATION_SECTION = "justification_section", _(
+        "Template part for the decision justification section of a decision proposal"
+    )
+
+
+class DecisionType(models.TextChoices):
+    ACCEPTED = "accepted_decision", _("An accepted decision")
+    DENIED = "denied_decision", _("A denied decision")
