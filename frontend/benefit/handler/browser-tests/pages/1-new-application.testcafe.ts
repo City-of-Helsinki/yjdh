@@ -4,37 +4,10 @@ import { format } from 'date-fns';
 import { Selector } from 'testcafe';
 
 import fi from '../../public/locales/fi/common.json';
+import { NEW_FORM_DATA as form } from '../constants/forms';
 import MainIngress from '../page-model/MainIngress';
 import handlerUser from '../utils/handlerUser';
 import { getFrontendUrl } from '../utils/url.utils';
-
-const form = {
-  company: {
-    id: '0201256-6',
-    bankAccountNumber: 'FI81 4975 4587 0004 02',
-    firstName: 'Kuura',
-    lastName: 'Massi-Päällikkö',
-    phone: '050 000 0000',
-    email: 'hki-benefit@example.com',
-    coOperationNegotiationsDescription: 'Lorem ipsum dolor sit amet',
-  },
-  employee: {
-    firstName: 'Ruu',
-    lastName: 'Rättisitikka',
-    ssn: '050632-8912',
-    monthlyPay: '1800',
-    vacationMoney: '100',
-    otherExpenses: '300',
-    jobTitle: 'Verkkosamooja',
-    workingHours: '30',
-    collectiveBargainingAgreement: 'Yleinen TES',
-  },
-  deminimis: {
-    granter: 'Valtio',
-    amount: '2000',
-    grantedAt: `1.1.${new Date().getFullYear()}`,
-  },
-};
 
 const url = getFrontendUrl(`/`);
 
@@ -48,7 +21,7 @@ const uploadFileAttachment = async (
   await t.wait(100);
 };
 
-fixture('New application')
+fixture('Create new application')
   .page(url)
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
@@ -127,9 +100,13 @@ test('Fill form and submit', async (t: TestController) => {
   );
 
   await uploadFileAttachment(t, '#upload_attachment_full_application');
+  await t.wait(1000);
   await uploadFileAttachment(t, '#upload_attachment_employment_contract');
-  await uploadFileAttachment(t, '#upload_attachment_pay_subsidy_decision');
+  await t.wait(1000);
   await uploadFileAttachment(t, '#upload_attachment_education_contract');
+  await t.wait(1000);
+  await uploadFileAttachment(t, '#upload_attachment_pay_subsidy_decision');
+  await t.wait(1000);
 
   /**
    * Click through all applicant terms.

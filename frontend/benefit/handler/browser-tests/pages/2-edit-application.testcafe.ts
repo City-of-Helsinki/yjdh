@@ -4,36 +4,10 @@ import { format } from 'date-fns';
 import { Selector } from 'testcafe';
 
 import fi from '../../public/locales/fi/common.json';
+import { EDIT_FORM_DATA as form } from '../constants/forms';
 import MainIngress from '../page-model/MainIngress';
 import handlerUser from '../utils/handlerUser';
 import { getFrontendUrl } from '../utils/url.utils';
-
-const form = {
-  company: {
-    bankAccountNumber: 'FI81 4975 4587 0004 02',
-    firstName: 'Malla',
-    lastName: 'Jout-Sen',
-    phone: '040 123 4567',
-    email: 'yjdh-helsinkilisa@example.net',
-    coOperationNegotiationsDescription: 'Aenean fringilla lorem tellus',
-  },
-  employee: {
-    firstName: 'Cool',
-    lastName: 'Kanerva',
-    ssn: '211081-2043',
-    monthlyPay: '1111',
-    vacationMoney: '222',
-    otherExpenses: '333',
-    jobTitle: 'Some-asiantuntija',
-    workingHours: '18',
-    collectiveBargainingAgreement: '-',
-  },
-  deminimis: {
-    granter: 'Hyvän tekijät Inc.',
-    amount: '3000',
-    grantedAt: `3.3.${new Date().getFullYear() - 1}`,
-  },
-};
 
 const url = getFrontendUrl(`/`);
 
@@ -52,12 +26,13 @@ const clearAndFill = async (
   selector: string,
   value: string
 ) => {
+  await t.click(selector);
   await t.selectText(selector);
   await t.pressKey('delete');
   await t.typeText(selector, value ?? '');
 };
 
-fixture('New application')
+fixture('Edit existing application')
   .page(url)
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
@@ -65,11 +40,11 @@ fixture('New application')
     await t.navigateTo('/');
   });
 
-test('Fill form and submit', async (t: TestController) => {
+test('Open form and edit fields, then submit', async (t: TestController) => {
   const mainIngress = new MainIngress(fi.mainIngress.heading, 'h1');
   await mainIngress.isLoaded();
 
-  // Open already created form in index page
+  // // Open already created form in index page
   const applicationLink = Selector('td')
     .withText('Ruu Rättisitikka')
     .sibling('td')
@@ -77,7 +52,7 @@ test('Fill form and submit', async (t: TestController) => {
     .find('a');
   await t.click(applicationLink);
 
-  // Start handling the application
+  // // Start handling the application
   const buttonSelector = 'main button';
   const handleButton = Selector(buttonSelector).withText(
     fi.review.actions.handle
@@ -181,13 +156,15 @@ test('Fill form and submit', async (t: TestController) => {
   await t.click(Selector('[name="application_consent_3"]'));
 
   // Validate form and submit
-  const nextButton = Selector(buttonSelector).withText(
-    fi.applications.actions.save
+  const validationButton = Selector(buttonSelector).withText(
+    fi.applications.actions.continue
   );
-  await t.click(nextButton);
+  await t.click(validationButton);
 
-  const submitButton = Selector(buttonSelector).withText(
-    fi.review.actions.handlingPanel
-  );
-  await t.expect(submitButton.visible).ok();
+  await t.typeText('#changeReason', 'Testing edit application');
+
+  const submitButton = Selector('[data-testid="confirm-ok"]');
+  await t.click(submitButton);
+
+  await t.expect(editButton.visible).ok();
 });
