@@ -1,4 +1,6 @@
+from django import forms
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
 from applications.models import (
     AhjoSetting,
@@ -7,6 +9,7 @@ from applications.models import (
     ApplicationBatch,
     ApplicationLogEntry,
     Attachment,
+    DecisionProposalTemplateSection,
     DeMinimisAid,
     Employee,
 )
@@ -107,6 +110,26 @@ class AhjoSettingAdmin(admin.ModelAdmin):
     search_fields = ["name"]
 
 
+class SafeTextareaWidget(forms.Textarea):
+    def format_value(self, value):
+        # Marks the value as safe, preventing auto-escaping
+        return mark_safe(value) if value is not None else ""
+
+
+class DecisionProposalTemplateSectionFormAdmin(forms.ModelForm):
+    class Meta:
+        model = DecisionProposalTemplateSection
+        fields = "__all__"
+        widgets = {
+            "template_text": SafeTextareaWidget(),
+        }
+
+
+class DecisionProposalTemplateSectionAdmin(admin.ModelAdmin):
+    list_display = ["name"]
+    search_fields = ["name"]
+
+
 admin.site.register(Application, ApplicationAdmin)
 admin.site.register(ApplicationBatch, ApplicationBatchAdmin)
 admin.site.register(DeMinimisAid)
@@ -115,3 +138,6 @@ admin.site.register(Attachment)
 admin.site.register(ApplicationBasis, ApplicationBasisAdmin)
 admin.site.register(ApplicationLogEntry)
 admin.site.register(AhjoSetting, AhjoSettingAdmin)
+admin.site.register(
+    DecisionProposalTemplateSection, DecisionProposalTemplateSectionAdmin
+)

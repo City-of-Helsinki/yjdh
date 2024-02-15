@@ -101,6 +101,10 @@ class AttachmentType(models.TextChoices):
     FULL_APPLICATION = "full_application", _("full application")
     OTHER_ATTACHMENT = "other_attachment", _("other attachment")
     PDF_SUMMARY = "pdf_summary", _("pdf summary")
+    DECISION_TEXT_XML = "decision_text_xml", _("public decision text xml attachment")
+    DECISION_TEXT_SECRET_XML = "decision_text_secret_xml", _(
+        "non-public decision text xml attachment"
+    )
 
 
 class AttachmentRequirement(models.TextChoices):
@@ -188,3 +192,18 @@ class AhjoRequestType(models.TextChoices):
     OPEN_CASE = "open_case", _("Open case in Ahjo")
     DELETE_APPLICATION = "delete_application", _("Delete application in Ahjo")
     UPDATE_APPLICATION = "update_application", _("Update application in Ahjo")
+    SEND_DECISION_PROPOSAL = "send_decision", _("Send decision to Ahjo")
+
+
+class DecisionProposalTemplateSectionType(models.TextChoices):
+    DECISION_SECTION = "decision_section", _(
+        "Template part for the decision section of a application decision proposal"
+    )
+    JUSTIFICATION_SECTION = "justification_section", _(
+        "Template part for the decision justification section of a decision proposal"
+    )
+
+
+class DecisionType(models.TextChoices):
+    ACCEPTED = "accepted_decision", _("An accepted decision")
+    DENIED = "denied_decision", _("A denied decision")

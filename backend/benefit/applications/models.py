@@ -20,6 +20,8 @@ from applications.enums import (
     ApplicationTalpaStatus,
     AttachmentType,
     BenefitType,
+    DecisionProposalTemplateSectionType,
+    DecisionType,
     PaySubsidyGranted,
 )
 from applications.exceptions import (
@@ -942,3 +944,81 @@ class AhjoStatus(TimeStampedModel):
         ordering = ["application__created_at", "created_at"]
         get_latest_by = "created_at"
         UniqueConstraint(fields=["application_id", "status"], name="unique_status")
+
+
+class DecisionProposalTemplateSection(UUIDModel, TimeStampedModel):
+    """Model representing a template section of a decision proposal text, usually either the decision
+    text or the following justification text.
+    """
+
+    section_type = models.CharField(
+        max_length=64,
+        verbose_name=_("type of the decision proposal template section"),
+        choices=DecisionProposalTemplateSectionType.choices,
+        default=DecisionProposalTemplateSectionType.DECISION_SECTION,
+    )
+
+    decision_type = models.CharField(
+        max_length=64,
+        verbose_name=_("type of the decision"),
+        choices=DecisionType.choices,
+        default=DecisionType.ACCEPTED,
+    )
+
+    language = models.CharField(
+        choices=APPLICATION_LANGUAGE_CHOICES,
+        default=APPLICATION_LANGUAGE_CHOICES[0][0],
+        max_length=2,
+    )
+
+    template_text = models.TextField(
+        verbose_name=_("decision proposal section text content")
+    )
+
+    name = models.CharField(
+        max_length=256, verbose_name=_("name of the decision proposal template section")
+    )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = "bf_applications_decision_proposal_template_section"
+        verbose_name = _("decision proposal template section")
+        verbose_name_plural = _("decision proposal template sections")
+
+
+class AhjoDecisionText(UUIDModel, TimeStampedModel):
+    """Model representing a submitted decision text submitted to Ahjo for an application."""
+
+    decision_type = models.CharField(
+        max_length=64,
+        verbose_name=_("type of the decision"),
+        choices=DecisionType.choices,
+        default=DecisionType.ACCEPTED,
+    )
+
+    language = models.CharField(
+        choices=APPLICATION_LANGUAGE_CHOICES,
+        default=APPLICATION_LANGUAGE_CHOICES[0][0],
+        max_length=2,
+    )
+
+    decision_text = models.TextField(verbose_name=_("decision text content"))
+
+    application = models.OneToOneField(
+        Application,
+        verbose_name=_("application"),
+        on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        return (
+            "Ahjo decision text for application %s"
+            % self.application.application_number
+        )
+
+    class Meta:
+        db_table = "bf_applications_ahjo_decision_text"
+        verbose_name = _("ahjo decision text")
+        verbose_name_plural = _("ahjo decision texts")

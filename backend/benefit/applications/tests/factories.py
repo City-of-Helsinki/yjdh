@@ -9,6 +9,8 @@ from applications.enums import (
     ApplicationStatus,
     ApplicationStep,
     BenefitType,
+    DecisionProposalTemplateSectionType,
+    DecisionType,
     PaySubsidyGranted,
 )
 from applications.models import (
@@ -20,6 +22,7 @@ from applications.models import (
     Attachment,
     ATTACHMENT_CONTENT_TYPE_CHOICES,
     AttachmentType,
+    DecisionProposalTemplateSection,
     DeMinimisAid,
     Employee,
 )
@@ -358,3 +361,134 @@ class ApplicationBatchFactory(BaseApplicationBatchFactory):
 
     class Meta:
         model = ApplicationBatch
+
+
+class AcceptedDecisionProposalFactory(factory.django.DjangoModelFactory):
+    section_type = DecisionProposalTemplateSectionType.DECISION_SECTION
+    decision_type = DecisionType.ACCEPTED
+    name = "Myönteisen päätöksen Päätös-osion teksti"
+    template_text = """<p>$decision_maker päätti myöntää $company:lle Työnantajan Helsinki-lisää \
+käytettäväksi työllistetyn helsinkiläisen työllistämiseksi $total_amount euroa ajalle $benefit_date_range.</p>
+<p>Helsinki-lisään on varattu talousarviossa Helsingin kaupungin Työllisyyspalveluille \
+vuosittain budjetoitu määräraha. Avustuksen kustannukset maksetaan \
+kaupungin Työllisyyspalveluille osoitetusta määrärahasta talousarvion \
+erikseen määritellyltä kohdalta. Työnantajan Helsinki-lisä on aina harkinnanvarainen.</p>
+"""
+
+    class Meta:
+        model = DecisionProposalTemplateSection
+
+
+class AcceptedDecisionProposalJustificationFactory(factory.django.DjangoModelFactory):
+    section_type = DecisionProposalTemplateSectionType.JUSTIFICATION_SECTION
+    decision_type = DecisionType.ACCEPTED
+    name = "Myönteisen Päätöksen perustelut-osion teksti"
+    template_text = """<p>Helsingin kaupunginhallituksen elinkeinojaosto on 11.9.2023 § 30 päättänyt \
+tukea rahallisesti yksityisen ja kolmannen sektorin työnantajia, \
+jotka tarjoavat työtä kaupungin työllisyydenhoidon \
+kohderyhmiin kuuluville helsinkiläisille.</p> \
+<h2>Avustus</h2>
+<p>Kaupunginhallituksen elinkeinojaosto on päätöksellään 11.9.2023 § 30 \
+hyväksynyt työnantajan Helsinki-lisän myöntämistä koskevat ehdot. \
+Helsinki-lisän myöntämisessä noudatetaan lisäksi kaupunginhallituksen \
+28.10.2019 § 723 hyväksymiä Helsingin kaupungin avustusten yleisohjeita.</p>\
+<p>Helsinki-lisässä on kyse työllistettävän henkilön palkkauskustannuksiin \
+kohdistuvasta avustuksesta. Helsinki-lisä kohdistuu palkan sivukuluihin ja \
+lomarahaan sekä bruttopalkan siihen osaan, jota palkkatuki ei kata. \
+Tuen määrään vaikuttavat samoihin kustannuksiin myönnetyt muut tuet \
+(esim. palkkatuki ja oppisopimuksen koulutuskorvaus). Yritykselle ja taloudellista \
+toimintaa harjoittavalle yhteisölle avustus myönnetään vähämerkityksisenä \
+tukena eli ns. de minimis -tukena, ei koskaan RPA-tukena. \
+Yleishyödyllisille yhteisöille avustus myönnetään valtiontukisääntelyn \
+ulkopuolisena tukena, jos yhdistys ei harjoita taloudellista toimintaa</p>
+<p>Avustusta myönnetään valtiontukisäännöissä määrätyn kasautumissäännö \
+sekä tuen enimmäisintensiteetin mukaisesti (tuen määrä suhteessa \
+tukikelpoisiin kustannuksiin). Helsinki-lisä voi olla enintään 800 euroa \
+kuukaudessa. Avustusta ei saa siirtää toisen tahon tai henkilön käytettäväksi. \
+Avustus maksetaan hakemuksessa ilmoitetulle pankkitilille.</p>\
+<p>Helsinki-lisää saa käyttää ainoastaan kaupunginhallituksen elinkeinojaosto \
+päätöksen 11.9.2023 §30 mukaisiin tarkoituksiin. Avustuksen saajan tulee \
+viipymättä palauttaa virheellisesti, liikaa tai ilmeisen perusteettomasti saamansa avustus. \
+Väärinkäyttötapauksessa kaupunki voi periä maksetun avustuksen takaisin.</p>
+<p>Avustuksen saaja sitoutuu antamaan tarvittaessa kaupungille tarvittavat tiedot sen \
+varmistamiseksi, että avustusta ei ole käytetty ehtojen vastaisesti.  \
+Mikäli avustus maksetaan ennen päätöksen lainvoimaisuutta, avustuksen saaja sitoutuu \
+palauttamaan jo maksetut avustukset, jos päätös muutoksenhaun johdosta muuttuu. \
+</p> \
+<h2>Valtiontukiarviointi</h2> \
+<p>Yritykselle ja taloudellista toimintaa harjoittavalle yhteisölle avustus \
+myönnetään vähämerkityksisenä tukena eli ns. de minimis -tukena. Tuen myöntämisessä \
+noudatetaan komission asetusta (EU) 2023/2831, annettu 13.12.2023, Euroopan unionista \
+tehdyn sopimuksen 107 ja 108 artiklan soveltamisesta vähämerkityksiseen \
+tukeen (EUVL L2023/281, 15.12.2023).</p>\
+<p>Kullekin hakijalle myönnettävän de minimis -tuen määrä ilmenee \
+hakijakohtaisesta liitteestä. Avustuksen saajalle voidaan myöntää de minimis \
+-tukena enintään 300 000 euroa kuluvan vuoden ja kahden sitä edeltäneen kahden \
+vuoden muodostaman jakson aikana. Avustuksen saaja vastaa siitä, että eri tahojen \
+(mm. ministeriöt, ministeriöiden alaiset viranomaiset, Business Finland, Finnvera Oyj, \
+kunnat, maakuntien liitot) myöntämien de minimis -tukien yhteismäärä ei ylitä tätä määrää. \
+Avustuksen saaja on avustushakemuksessa \
+ilmoittanut kaupungille kaikkien saamiensa de minimis -tukien määrät ja myöntöajankohdat.</p>
+"""
+
+    class Meta:
+        model = DecisionProposalTemplateSection
+
+
+class DeniedDecisionProposalFactory(factory.django.DjangoModelFactory):
+    section_type = DecisionProposalTemplateSectionType.DECISION_SECTION
+    decision_type = DecisionType.DENIED
+    name = "Kielteisen päätöksen Päätöksen päätös-osion teksti"
+    template_text = """<p>$decision_maker päätti hylätä $company:n hakemuksen koskien Työnantajan \
+Helsinki-lisää, koska myöntämisen ehdot eivät täyty.</p> \
+<p>Helsinki-lisään on varattu talousarviossa Helsingin kaupungin Työllisyyspalveluille \
+vuosittain budjetoitu määräraha. Avustuksen kustannukset maksetaan kaupungin \
+Työllisyyspalveluille osoitetusta määrärahasta. Työnantajan Helsinki-lisä on aina harkinnanvarainen.</p>
+"""
+
+    class Meta:
+        model = DecisionProposalTemplateSection
+
+
+class DeniedDecisionProposalJustificationFactory(factory.django.DjangoModelFactory):
+    section_type = DecisionProposalTemplateSectionType.JUSTIFICATION_SECTION
+    decision_type = DecisionType.DENIED
+    name = "Kielteisen päätöksen Päätöksen perustelut-osion teksti"
+    template_text = """<p>Helsingin kaupunginhallituksen elinkeinojaosto on 11.9.2023 § 30 päättänyt \
+tukea rahallisesti yksityisen ja kolmannen sektorin työnantajia, \
+jotka tarjoavat työtä kaupungin työllisyydenhoidon kohderyhmiin \
+kuuluville helsinkiläisille.</p>\
+<p>Lisätään/kirjoitetaan jokaisen päätöksen yksittäinen perustelu tähän.<p>\
+<p>Työnantajan hakemus ei täytä Helsinki-lisän ehtoja, joten avustusta ei voida myöntää.</p> \
+<h2>Avustus</h2>
+<p>Kaupunginhallituksen elinkeinojaosto on päätöksellään 11.9.2023 § 30 \
+hyväksynyt työnantajan Helsinki-lisän myöntämistä koskevat ehdot. \
+Helsinki-lisän myöntämisessä noudatetaan lisäksi kaupunginhallituksen \
+28.10.2019 § 723 hyväksymiä Helsingin kaupungin avustusten yleisohjeita.</p>\
+<p>Helsinki-lisässä on kyse työllistettävän henkilön palkkauskustannuksiin \
+kohdistuvasta avustuksesta. Helsinki-lisä kohdistuu palkan sivukuluihin ja \
+lomarahaan sekä bruttopalkan siihen osaan, jota palkkatuki ei kata. \
+Tuen määrään vaikuttavat samoihin kustannuksiin myönnetyt muut tuet \
+(esim. palkkatuki ja oppisopimuksen koulutuskorvaus). Yritykselle ja taloudellista \
+toimintaa harjoittavalle yhteisölle avustus myönnetään vähämerkityksisenä \
+tukena eli ns. de minimis -tukena, ei koskaan RPA-tukena. \
+Yleishyödyllisille yhteisöille avustus myönnetään valtiontukisääntelyn \
+ulkopuolisena tukena, jos yhdistys ei harjoita taloudellista toimintaa</p>
+<p>Avustusta myönnetään valtiontukisäännöissä määrätyn kasautumissäännö \
+sekä tuen enimmäisintensiteetin mukaisesti (tuen määrä suhteessa \
+tukikelpoisiin kustannuksiin). Helsinki-lisä voi olla enintään 800 euroa \
+kuukaudessa. Avustusta ei saa siirtää toisen tahon tai henkilön käytettäväksi. \
+Avustus maksetaan hakemuksessa ilmoitetulle pankkitilille.</p>\
+<p>Helsinki-lisää saa käyttää ainoastaan kaupunginhallituksen elinkeinojaosto \
+päätöksen 11.9.2023 §30 mukaisiin tarkoituksiin. Avustuksen saajan tulee \
+viipymättä palauttaa virheellisesti, liikaa tai ilmeisen perusteettomasti saamansa avustus. \
+Väärinkäyttötapauksessa kaupunki voi periä maksetun avustuksen takaisin.</p>
+<p>Avustuksen saaja sitoutuu antamaan tarvittaessa kaupungille tarvittavat tiedot sen \
+varmistamiseksi, että avustusta ei ole käytetty ehtojen vastaisesti.  \
+Mikäli avustus maksetaan ennen päätöksen lainvoimaisuutta, avustuksen saaja sitoutuu \
+palauttamaan jo maksetut avustukset, jos päätös muutoksenhaun johdosta muuttuu. \
+</p>
+"""
+
+    class Meta:
+        model = DecisionProposalTemplateSection

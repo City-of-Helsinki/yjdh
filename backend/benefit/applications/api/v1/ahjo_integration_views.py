@@ -117,6 +117,11 @@ class AhjoCallbackView(APIView):
                 {"error": "Application not found"}, status=status.HTTP_404_NOT_FOUND
             )
 
+        if request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
+            return self.handle_success_callback(
+                request, application, callback_data, request_type
+            )
+
         if callback_data["message"] == AhjoCallBackStatus.SUCCESS:
             return self.handle_success_callback(
                 request, application, callback_data, request_type
@@ -141,7 +146,9 @@ class AhjoCallbackView(APIView):
                 self._handle_delete_callback()
                 ahjo_status = AhjoStatusEnum.DELETE_REQUEST_RECEIVED
                 info = f"Application was marked for cancellation in Ahjo with request id: {callback_data['requestId']}"
-
+            elif request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
+                ahjo_status = AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED
+                info = "Decision proposal was sent to Ahjo"
             AhjoStatus.objects.create(application=application, status=ahjo_status)
             audit_logging.log(
                 request.user,
@@ -195,6 +202,10 @@ class AhjoCallbackView(APIView):
             if attachment:
                 attachment.ahjo_version_series_id = cb_record.get("versionSeriesId")
                 attachment.save()
+
+    def handle_decision_proposal_success(self):
+        # do anything that needs to be done when Ahjo accepts a decision proposal
+        pass
 
     def _log_failure_details(self, application, callback_data):
         LOGGER.error(

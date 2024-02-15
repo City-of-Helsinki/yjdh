@@ -21,13 +21,13 @@ from applications.enums import (
     AttachmentType,
     BenefitType,
 )
-from applications.models import AhjoStatus, Application, Attachment
+from applications.models import AhjoDecisionText, AhjoStatus, Application, Attachment
 from applications.services.ahjo_integration import (
     ACCEPTED_TITLE,
     export_application_batch,
     ExportFileInfo,
+    generate_application_attachment,
     generate_composed_files,
-    generate_pdf_summary_as_attachment,
     generate_single_approved_file,
     generate_single_declined_file,
     get_application_for_ahjo,
@@ -415,7 +415,9 @@ def test_ahjo_callback_success(
 ):
     settings.NEXT_PUBLIC_MOCK_FLAG = True
     auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
-    attachment = generate_pdf_summary_as_attachment(decided_application)
+    attachment = generate_application_attachment(
+        decided_application, AttachmentType.PDF_SUMMARY
+    )
     attachment_hash_value = hash_file(attachment.attachment_file)
     attachment.ahjo_hash_value = attachment_hash_value
     attachment.save()
@@ -543,7 +545,9 @@ def test_get_application_for_ahjo_no_ad_username(decided_application):
 
 @pytest.mark.django_db
 def test_generate_pdf_summary_as_attachment(decided_application):
-    attachment = generate_pdf_summary_as_attachment(decided_application)
+    attachment = generate_application_attachment(
+        decided_application, AttachmentType.PDF_SUMMARY
+    )
     assert isinstance(attachment, Attachment)
 
     assert attachment.application == decided_application
@@ -552,6 +556,49 @@ def test_generate_pdf_summary_as_attachment(decided_application):
     assert (
         attachment.attachment_file.name
         == f"application_summary_{decided_application.application_number}.pdf"
+    )
+    assert attachment.attachment_file.size > 0
+    assert os.path.exists(attachment.attachment_file.path)
+    if os.path.exists(attachment.attachment_file.path):
+        os.remove(attachment.attachment_file.path)
+
+
+@pytest.mark.django_db
+def test_generate_ahjo_public_decision_text_xml(decided_application):
+    AhjoDecisionText.objects.create(
+        application=decided_application, decision_text="test"
+    )
+    attachment = generate_application_attachment(
+        decided_application, AttachmentType.DECISION_TEXT_XML
+    )
+    assert isinstance(attachment, Attachment)
+
+    assert attachment.application == decided_application
+    assert attachment.content_type == "application/xml"
+    assert attachment.attachment_type == AttachmentType.DECISION_TEXT_XML
+    assert (
+        attachment.attachment_file.name
+        == f"decision_text_{decided_application.application_number}.xml"
+    )
+    assert attachment.attachment_file.size > 0
+    assert os.path.exists(attachment.attachment_file.path)
+    if os.path.exists(attachment.attachment_file.path):
+        os.remove(attachment.attachment_file.path)
+
+
+@pytest.mark.django_db
+def test_generate_ahjo_secret_decision_text_xml(decided_application):
+    attachment = generate_application_attachment(
+        decided_application, AttachmentType.DECISION_TEXT_SECRET_XML
+    )
+    assert isinstance(attachment, Attachment)
+
+    assert attachment.application == decided_application
+    assert attachment.content_type == "application/xml"
+    assert attachment.attachment_type == AttachmentType.DECISION_TEXT_SECRET_XML
+    assert (
+        attachment.attachment_file.name
+        == f"decision_text_secret_{decided_application.application_number}.xml"
     )
     assert attachment.attachment_file.size > 0
     assert os.path.exists(attachment.attachment_file.path)

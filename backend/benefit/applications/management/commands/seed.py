@@ -11,19 +11,26 @@ from applications.enums import (
     ApplicationBatchStatus,
     ApplicationOrigin,
     ApplicationStatus,
+    DecisionType,
 )
 from applications.models import (
+    AhjoDecisionText,
     AhjoStatus,
     Application,
     ApplicationBasis,
     ApplicationBatch,
 )
+from applications.tests.common import create_decision_text_for_application
 from applications.tests.factories import (
+    AcceptedDecisionProposalFactory,
+    AcceptedDecisionProposalJustificationFactory,
     AdditionalInformationNeededApplicationFactory,
     ApplicationBatchFactory,
     ApplicationWithAttachmentFactory,
     CancelledApplicationFactory,
     DecidedApplicationFactory,
+    DeniedDecisionProposalFactory,
+    DeniedDecisionProposalJustificationFactory,
     HandlingApplicationFactory,
     ReceivedApplicationFactory,
     RejectedApplicationFactory,
@@ -74,6 +81,7 @@ def clear_applications():
     AhjoStatus.objects.all().delete()
     Terms.objects.all().delete()
     User.objects.filter(last_login=None).exclude(username="admin").delete()
+    AhjoDecisionText.objects.all().delete()
 
 
 def run_seed(number):
@@ -95,6 +103,7 @@ def run_seed(number):
         for _ in range(number):
             if proposal_for_decision == ApplicationStatus.ACCEPTED:
                 app = DecidedApplicationFactory()
+                create_decision_text_for_application(app)
                 apps.append(app)
                 AhjoStatus.objects.create(
                     status=AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
@@ -102,7 +111,11 @@ def run_seed(number):
                 )
 
             elif proposal_for_decision == ApplicationStatus.REJECTED:
-                apps.append(RejectedApplicationFactory())
+                app = RejectedApplicationFactory()
+                create_decision_text_for_application(
+                    app, decision_type=DecisionType.DENIED
+                )
+                apps.append(app)
         batch.applications.set(apps)
         batch.handler = User.objects.filter(is_staff=True).last()
         batch.save()
@@ -166,6 +179,15 @@ def run_seed(number):
     Application.objects.filter(pk__in=ids).update(modified_at=draft_deletion_threshold)
     Application.objects.exclude(pk__in=ids).update(modified_at=draft_notify_threshold)
 
+    _create_templates()
+
 
 def _past_datetime(days: int) -> datetime:
     return timezone.now() - timedelta(days=days)
+
+
+def _create_templates():
+    AcceptedDecisionProposalFactory(),
+    AcceptedDecisionProposalJustificationFactory(),
+    DeniedDecisionProposalFactory(),
+    DeniedDecisionProposalJustificationFactory(),

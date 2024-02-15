@@ -15,6 +15,7 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.core.files.base import ContentFile
 from django.db.models import F, OuterRef, QuerySet, Subquery
+from django.template.loader import render_to_string
 from django.urls import reverse
 
 from applications.enums import (
@@ -23,9 +24,16 @@ from applications.enums import (
     ApplicationStatus,
     AttachmentType,
 )
-from applications.models import AhjoSetting, AhjoStatus, Application, Attachment
+from applications.models import (
+    AhjoDecisionText,
+    AhjoSetting,
+    AhjoStatus,
+    Application,
+    Attachment,
+)
 from applications.services.ahjo_authentication import AhjoConnector, AhjoToken
 from applications.services.ahjo_payload import (
+    prepare_decision_proposal_payload,
     prepare_open_case_payload,
     prepare_update_application_payload,
 )
@@ -33,6 +41,7 @@ from applications.services.applications_csv_report import ApplicationsCsvService
 from applications.services.generate_application_summary import (
     generate_application_summary_file,
 )
+from calculator.enums import RowType
 from companies.models import Company
 
 
@@ -374,17 +383,64 @@ def export_application_batch(batch) -> bytes:
     return generate_zip(pdf_files)
 
 
-def generate_pdf_summary_as_attachment(application: Application) -> Attachment:
-    """Generate a pdf summary of the given application and return it as an Attachment."""
-    pdf_data = generate_application_summary_file(application)
-    pdf_file = ContentFile(
-        pdf_data, f"application_summary_{application.application_number}.pdf"
+# Constants
+XML_VERSION = "<?xml version='1.0' encoding='UTF-8'?>"
+PDF_CONTENT_TYPE = "application/pdf"
+XML_CONTENT_TYPE = "application/xml"
+
+
+def generate_secret_xml_attachment(application: Application) -> bytes:
+    calculation_rows = application.calculation.rows.all()
+
+    sub_total_rows = calculation_rows.filter(
+        row_type=RowType.HELSINKI_BENEFIT_SUB_TOTAL_EUR
     )
+
+    context = {
+        "application": application,
+        "benefit_type": "Palkan Helsinki-lisä",
+        "calculation_rows": sub_total_rows,
+    }
+    xml_content = render_to_string("secret_decision.xml", context)
+    return xml_content.encode("utf-8")
+
+
+def generate_public_xml_attachment(content: str) -> bytes:
+    xml_str = f"""{XML_VERSION}{content}"""
+    xml_bytes = xml_str.encode("utf-8")
+    return xml_bytes
+
+
+def generate_application_attachment(
+    application: Application, type: AttachmentType
+) -> Attachment:
+    """Generate a xml decision of the given application and return it as an Attachment."""
+    if type == AttachmentType.PDF_SUMMARY:
+        attachment_data = generate_application_summary_file(application)
+        attachment_filename = (
+            f"application_summary_{application.application_number}.pdf"
+        )
+        content_type = PDF_CONTENT_TYPE
+    elif type == AttachmentType.DECISION_TEXT_XML:
+        decision = AhjoDecisionText.objects.get(application=application)
+        attachment_data = generate_public_xml_attachment(decision.decision_text)
+        attachment_filename = f"decision_text_{application.application_number}.xml"
+        content_type = XML_CONTENT_TYPE
+    elif type == AttachmentType.DECISION_TEXT_SECRET_XML:
+        attachment_data = generate_secret_xml_attachment(application)
+        attachment_filename = (
+            f"decision_text_secret_{application.application_number}.xml"
+        )
+        content_type = XML_CONTENT_TYPE
+    else:
+        raise ValueError(f"Invalid attachment type {type}")
+
+    attachment_file = ContentFile(attachment_data, attachment_filename)
     attachment = Attachment.objects.create(
         application=application,
-        attachment_file=pdf_file,
-        content_type="application/pdf",
-        attachment_type=AttachmentType.PDF_SUMMARY,
+        attachment_file=attachment_file,
+        content_type=content_type,
+        attachment_type=type,
     )
     return attachment
 
@@ -421,12 +477,10 @@ def prepare_headers(
 
 
 def get_application_for_ahjo(id: uuid.UUID) -> Optional[Application]:
-    """Get the first accepted application."""
-    application = (
-        Application.objects.filter(pk=id, status=ApplicationStatus.ACCEPTED)
-        .prefetch_related("attachments", "calculation", "company")
-        .first()
-    )
+    """Get the first accepted application with attachment, calculation and company."""
+    application = Application.objects.select_related(
+        "calculation", "company", "employee"
+    ).get(pk=id)
     if not application:
         raise ObjectDoesNotExist("No applications found for Ahjo request.")
     # Check that the handler has an ad_username set, if not, ImproperlyConfigured
@@ -489,6 +543,11 @@ def send_request_to_ahjo(
         data = json.dumps(data)
         api_url = f"{url_base}/{application.ahjo_case_id}/records"
 
+    elif request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
+        method = "POST"
+        api_url = f"{url_base}/{application.ahjo_case_id}/records"
+        data = json.dumps(data)
+
     try:
         response = requests.request(
             method, api_url, headers=headers, timeout=timeout, data=data
@@ -497,7 +556,7 @@ def send_request_to_ahjo(
 
         if response.ok:
             LOGGER.info(
-                f"Request for application {application.id} to Ahjo was successful."
+                f"Request {request_type} for application {application.id} to Ahjo was successful."
             )
             return application, response.text
 
@@ -527,7 +586,9 @@ def send_open_case_request_to_ahjo(
             ahjo_auth_token, application, AhjoRequestType.OPEN_CASE
         )
 
-        pdf_summary = generate_pdf_summary_as_attachment(application)
+        pdf_summary = generate_application_attachment(
+            application, AttachmentType.PDF_SUMMARY
+        )
         data = prepare_open_case_payload(application, pdf_summary)
 
         return send_request_to_ahjo(
@@ -568,11 +629,16 @@ def update_application_in_ahjo(application: Application, ahjo_auth_token: str):
             ahjo_auth_token, application, AhjoRequestType.UPDATE_APPLICATION
         )
 
-        pdf_summary = generate_pdf_summary_as_attachment(application)
+        pdf_summary = generate_application_attachment(
+            application, AttachmentType.PDF_SUMMARY
+        )
         data = prepare_update_application_payload(application, pdf_summary)
 
         result = send_request_to_ahjo(
-            AhjoRequestType.UPDATE_APPLICATION, headers, application, data
+            AhjoRequestType.UPDATE_APPLICATION,
+            headers,
+            application,
+            data,
         )
         if result:
             create_status_for_application(
@@ -582,3 +648,47 @@ def update_application_in_ahjo(application: Application, ahjo_auth_token: str):
         LOGGER.error(f"Object not found: {e}")
     except ImproperlyConfigured as e:
         LOGGER.error(f"Improperly configured: {e}")
+
+
+def send_decision_proposal_to_ahjo(application_id: uuid.UUID):
+    """Open a case in Ahjo."""
+    try:
+        application = get_application_for_ahjo(application_id)
+        ahjo_token = get_token()
+        headers = prepare_headers(
+            ahjo_token.access_token,
+            application.id,
+            AhjoRequestType.SEND_DECISION_PROPOSAL,
+        )
+        delete_existing_xml_attachments(application)
+        decision_xml = generate_application_attachment(
+            application, AttachmentType.DECISION_TEXT_XML
+        )
+        secret_xml = generate_application_attachment(
+            application, AttachmentType.DECISION_TEXT_SECRET_XML
+        )
+        data = prepare_decision_proposal_payload(application, decision_xml, secret_xml)
+        application, _ = send_request_to_ahjo(
+            AhjoRequestType.SEND_DECISION_PROPOSAL, headers, application, data
+        )
+        create_status_for_application(
+            application, AhjoStatusEnum.DECISION_PROPOSAL_SENT
+        )
+    except ObjectDoesNotExist as e:
+        LOGGER.error(f"Object not found: {e}")
+    except ImproperlyConfigured as e:
+        LOGGER.error(f"Improperly configured: {e}")
+
+
+def delete_existing_xml_attachments(application: Application):
+    """Delete any existing decision text attachments from the application."""
+    # TODO delete files from disk also
+    Attachment.objects.filter(
+        application=application, attachment_type=AttachmentType.DECISION_TEXT_XML
+    ).delete()
+    Attachment.objects.filter(
+        application=application, attachment_type=AttachmentType.DECISION_TEXT_SECRET_XML
+    ).delete()
+    LOGGER.info(
+        f"Deleted existing decision text attachments for application {application.id}"
+    )
