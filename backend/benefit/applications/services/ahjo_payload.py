@@ -170,3 +170,49 @@ def prepare_update_application_payload(
     """Prepare the payload that is sent to Ahjo when an application is updated, \
           in this case it only contains a Records dict"""
     return {"Records": _prepare_case_records(application, pdf_summary, is_update=True)}
+
+
+def prepare_decision_proposal_payload(
+    application: Application, decision_xml: Attachment, secret_xml: Attachment
+) -> dict:
+    """Prepare the payload that is sent to Ahjo when a decision proposal is created"""
+    handler = application.calculation.handler
+    inspector_dict = {"Role": "inspector", "Name": "Tarkastaja, Tero", "ID": "terot"}
+    # TODO remove hard coded decision maker
+    decision_maker_dict = {"Role": "decisionMaker", "ID": "U02120013070VH2"}
+
+    main_creator_dict = {
+        "Role": "mainCreator",
+        "Name": f"{handler.last_name}, {handler.first_name}",
+        "ID": handler.ad_username,
+    }
+
+    proposal_dict = {
+        "records": [
+            {
+                "Title": "Avustuksen myöntäminen, Työllisyyspalvelut, työllisyydenhoidon Helsinki-lisä vuonna 2024",
+                "Type": "viranhaltijan päätös",
+                "PublicityClass": "Julkinen",
+                "Language": "fi",
+                "PersonalData": "Sisältää henkilötietoja",
+                "Documents": [_prepare_record_document_dict(decision_xml)],
+                "Agents": [
+                    main_creator_dict,
+                    inspector_dict,
+                    decision_maker_dict,
+                ],
+            },
+            {
+                "Title": "Päätöksen liite",
+                "Type": "viranhaltijan päätöksen liite",
+                "PublicityClass": "Salassa pidettävä",
+                "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
+                "Language": "fi",
+                "PersonalData": "Sisältää erityisiä henkilötietoja",
+                "Documents": [_prepare_record_document_dict(secret_xml)],
+                "Agents": [main_creator_dict],
+            },
+        ]
+    }
+
+    return proposal_dict
