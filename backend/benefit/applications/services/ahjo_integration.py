@@ -15,6 +15,7 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.core.files.base import ContentFile
 from django.db.models import F, OuterRef, QuerySet, Subquery
+from django.template.loader import render_to_string
 from django.urls import reverse
 
 from applications.enums import (
@@ -23,7 +24,13 @@ from applications.enums import (
     ApplicationStatus,
     AttachmentType,
 )
-from applications.models import AhjoSetting, AhjoStatus, Application, Attachment
+from applications.models import (
+    AhjoDecisionText,
+    AhjoSetting,
+    AhjoStatus,
+    Application,
+    Attachment,
+)
 from applications.services.ahjo_authentication import AhjoConnector, AhjoToken
 from applications.services.ahjo_payload import (
     prepare_open_case_payload,
@@ -33,6 +40,7 @@ from applications.services.applications_csv_report import ApplicationsCsvService
 from applications.services.generate_application_summary import (
     generate_application_summary_file,
 )
+from calculator.enums import RowType
 from companies.models import Company
 
 
@@ -374,17 +382,64 @@ def export_application_batch(batch) -> bytes:
     return generate_zip(pdf_files)
 
 
-def generate_pdf_summary_as_attachment(application: Application) -> Attachment:
-    """Generate a pdf summary of the given application and return it as an Attachment."""
-    pdf_data = generate_application_summary_file(application)
-    pdf_file = ContentFile(
-        pdf_data, f"application_summary_{application.application_number}.pdf"
+# Constants
+XML_VERSION = "<?xml version='1.0' encoding='UTF-8'?>"
+PDF_CONTENT_TYPE = "application/pdf"
+XML_CONTENT_TYPE = "application/xml"
+
+
+def generate_secret_xml_attachment(application: Application) -> bytes:
+    calculation_rows = application.calculation.rows.all()
+
+    sub_total_rows = calculation_rows.filter(
+        row_type=RowType.HELSINKI_BENEFIT_SUB_TOTAL_EUR
     )
+
+    context = {
+        "application": application,
+        "benefit_type": "Palkan Helsinki-lisä",
+        "calculation_rows": sub_total_rows,
+    }
+    xml_content = render_to_string("secret_decision.xml", context)
+    return xml_content.encode("utf-8")
+
+
+def generate_public_xml_attachment(content: str) -> bytes:
+    xml_str = f"""{XML_VERSION}{content}"""
+    xml_bytes = xml_str.encode("utf-8")
+    return xml_bytes
+
+
+def generate_application_attachment(
+    application: Application, type: AttachmentType
+) -> Attachment:
+    """Generate a xml decision of the given application and return it as an Attachment."""
+    if type == AttachmentType.PDF_SUMMARY:
+        attachment_data = generate_application_summary_file(application)
+        attachment_filename = (
+            f"application_summary_{application.application_number}.pdf"
+        )
+        content_type = PDF_CONTENT_TYPE
+    elif type == AttachmentType.DECISION_TEXT_XML:
+        decision = AhjoDecisionText.objects.get(application=application)
+        attachment_data = generate_public_xml_attachment(decision.decision_text)
+        attachment_filename = f"decision_text_{application.application_number}.xml"
+        content_type = XML_CONTENT_TYPE
+    elif type == AttachmentType.DECISION_TEXT_SECRET_XML:
+        attachment_data = generate_secret_xml_attachment(application)
+        attachment_filename = (
+            f"decision_text_secret_{application.application_number}.xml"
+        )
+        content_type = XML_CONTENT_TYPE
+    else:
+        raise ValueError(f"Invalid attachment type {type}")
+
+    attachment_file = ContentFile(attachment_data, attachment_filename)
     attachment = Attachment.objects.create(
         application=application,
-        attachment_file=pdf_file,
-        content_type="application/pdf",
-        attachment_type=AttachmentType.PDF_SUMMARY,
+        attachment_file=attachment_file,
+        content_type=content_type,
+        attachment_type=type,
     )
     return attachment
 
