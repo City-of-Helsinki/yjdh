@@ -7,7 +7,6 @@
     "decode-uri-component", // testcafe
     "@babel/traverse", // jest
     "follow-redirects", // axios
-    "lodash.pick", // HDS
     "ip" // testcafe, lerna
   ]
 }
