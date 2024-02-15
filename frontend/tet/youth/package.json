@@ -37,7 +37,7 @@
     "react-leaflet-markercluster": "^3.0.0-rc1",
     "react-query": "^3.34.0",
     "sharp": "^0.33.0",
-    "styled-components": "^5.3.11"
+    "styled-components": "^6.1.8"
   },
   "devDependencies": {
     "eslint-config-adjunct": "^4.11.1",
