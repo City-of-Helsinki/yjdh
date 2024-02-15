@@ -1,9 +1,11 @@
 import DeMinimisContext from 'benefit/applicant/context/DeMinimisContext';
+import useLocale from 'benefit/applicant/hooks/useLocale';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { DeMinimisAid } from 'benefit-shared/types/application';
 import sumBy from 'lodash/sumBy';
 import { TFunction } from 'next-i18next';
 import React from 'react';
+import { Language } from 'shared/i18n/i18n';
 // import * as Yup from 'yup';
 
 type ExtendedComponentProps = {
@@ -12,6 +14,7 @@ type ExtendedComponentProps = {
   grants: DeMinimisAid[];
   deMinimisTotal: () => number;
   handleRemove: (index: number) => void;
+  language: Language;
 };
 
 const useDeminimisAidsList = (): ExtendedComponentProps => {
@@ -19,6 +22,7 @@ const useDeminimisAidsList = (): ExtendedComponentProps => {
   const translationsBase = 'common:applications.sections.company';
   const { deMinimisAids, setDeMinimisAids } =
     React.useContext(DeMinimisContext);
+  const language = useLocale();
 
   const handleRemove = (index: number): void => {
     // remove value
@@ -35,6 +39,7 @@ const useDeminimisAidsList = (): ExtendedComponentProps => {
     handleRemove,
     deMinimisTotal,
     grants: deMinimisAids,
+    language,
   };
 };
 

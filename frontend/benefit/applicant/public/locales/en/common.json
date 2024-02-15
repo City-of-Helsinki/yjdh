@@ -19,11 +19,15 @@
         "applicationNumber": "Application number",
         "status": "Status",
         "check": "Review",
-        "editEndDate": "Edit by",
+        "validUntil": "The last benefit day",
         "newMessages_one": "{{count}} new",
         "newMessages_other": "{{count}} new",
-        "sortOrder": "Order applications by"
-      }
+        "sortOrder": "Order applications by",
+        "expand": "Show more",
+        "contract": "Show less"
+      },
+      "noApplications": "No submitted Helsinki benefit applications",
+      "navigateToDecisions": "See all applications with decisions"
     },
     "pageHeaders": {
       "created": "Created",
@@ -39,7 +43,7 @@
     },
     "statuses": {
       "draft": "Draft",
-      "additionalInformationNeeded": "Additional information is needed",
+      "additionalInformationNeeded": "Edit by {{date}}",
       "received": "Received",
       "accepted": "Accepted",
       "rejected": "Rejected",
@@ -95,7 +99,7 @@
           },
           "deMinimisAidMaxAmount": {
             "label": "Maximum amount exceeded",
-            "content": "The maximum amount of de minimis aid has been exceeded. Under the EU Regulation, a company may receive a maximum EUR 200,000 of de minimis aid during the current year and the previous two tax years. All forms of de minimis aid granted by various authorities during this period will be taken into account in the maximum amount."
+            "content": "The maximum amount of de minimis aid has been exceeded. Under the EU Regulation, a company may receive a maximum EUR {{amount}} of de minimis aid during the current year and the previous two tax years. All forms of de minimis aid granted by various authorities during this period will be taken into account in the maximum amount."
           },
           "deMinimisUnfinished": {
             "label": "Missing de minimis aid information",

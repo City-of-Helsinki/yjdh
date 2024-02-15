@@ -4,30 +4,27 @@
 
 {{first_name}} {{last_name}}
 {% trans 'Kesäsetelinumero:' %} {{summer_voucher_serial_number}}
-{% trans 'Kesäsetelin summa:' %} {% trans '350€' %}
+{% trans 'Kesäsetelin summa:' %} {{voucher_value_with_euro_sign}}
 {% trans 'Postinumero:' %} {{postcode}}
 {% trans 'Koulu:' %} {{school}}
 {% trans 'Puhelinnumero:' %} {{phone_number}}
 {% trans 'Sähköpostiosoite:' %} {{email}}
-
-{% trans 'Kun olet löytänyt kesätyöpaikan ja tehnyt työsopimuksen, voit välittää tämän sähköpostiviestin työnantajalle tai antaa heille yllä olevan kesäsetelinumeron.' %}
 ------------------------------------------------------------------------
 {% trans 'Ohjeita työnhakijalle' %}:
 
 {% trans 'Kesäseteli helpottaa sinua kesätyöpaikan löytämisessä: viime vuonna tyypillisiä työtehtäviä olivat kesäleirin ohjaaja, myymälän hyllyttäjä, ravintolan saliapulainen, puutarhatyöntekijä, lastenhoitaja, verkkosivujen ja somen sisällöntuottaja ja kioskimyyjä.' %} {% trans 'Erikoisia kesätöitä olivat esimerkiksi peliohjelmointi, äänitiedostojen editointi ja nahkapajan apulainen!' %}
 
+{% trans 'Kun olet löytänyt kesätyöpaikan ja tehnyt työsopimuksen, voit välittää tämän sähköpostiviestin työnantajalle tai antaa heille yllä olevan kesäsetelinumeron.' %}
+
 {% trans 'Työpäivät ja palkka:' %}
- - {% trans 'Kesäsetelillä tehdään 60 työtuntia.' %}
- - {% trans 'Työtunteja on vähintään 18h/viikko.' %}
- - {% trans 'Työnantaja maksaa sinulle palkkaa vähintään 500 euroa (60 työtunnilta).' %} {% trans 'Summa pitää sisällään lomakorvauksen.' %} {% trans 'Lisäksi työnantaja maksaa normaalit työnantajamaksut.' %}
- - {% trans 'Kesätyöjakso voi olla tuntimäärältään pidempi, tällöin 60 työtuntia ylittävän osuuden palkan on oltava vähintään alan työehtosopimuksen mukainen vähimmäispalkka.' %}
+ - {% blocktranslate %}Kesätyön vähimmäisvaatimuksena on {{min_work_hours}} tuntia töitä ja siitä vähintään {{min_work_compensation_with_euro_sign}} palkka, ellei alan työehtosopimus edellytä korkeampaa palkkaa. Lisäksi työnantaja maksaa normaalit työnantajamaksut, lomakorvauksen ja mahdolliset lisät.{% endblocktranslate %}
 
 {% trans 'Lue lisää' %}:
 {% trans 'https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/nuorelle/' %}
 ------------------------------------------------------------------------
 {% trans 'Ohjeita työnantajalle' %}:
 
-{% trans 'Kesäseteli on nuorten, yrittäjien ja Helsingin kaupungin yhteinen hanke.' %} {% trans 'Kaupunki korvaa 350 euroa työnantajalle, joka palkkaa Kesäseteliin oikeutetun nuoren töihin 1.6.–15.8.2024 välisenä aikana.' %} {% trans 'Kesätyön vähimmäisvaatimuksina ovat 60 tunnin työaika ja 500 euron palkka.' %}
+{% blocktranslate %}Kaupunki korvaa kesätyön jälkeen {{voucher_value_with_euro_sign}} työnantajalle, joka palkkaa Kesäseteliin oikeutetun nuoren töihin {{summer_job_period_localized_string}} välisenä aikana. Korvaus haetaan Kesäsetelin sivuilta olevasta linkistä ennen {{employer_summer_voucher_application_end_date_localized_string}}.{% endblocktranslate %}
 
 {% trans 'Muut käyttöehdot voit lukea täältä:' %}
 {% trans 'https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/tyonantajalle-2/' %}

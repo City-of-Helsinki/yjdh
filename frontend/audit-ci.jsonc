@@ -6,6 +6,7 @@
     "http-cache-semantics", // testcafe
     "decode-uri-component", // testcafe
     "@babel/traverse", // jest
-    "follow-redirects" // axios
+    "follow-redirects", // axios
+    "ip" // testcafe, lerna
   ]
 }

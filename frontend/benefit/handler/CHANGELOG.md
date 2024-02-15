@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.2.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v3.1.0...benefit-handler-v3.2.0) (2024-02-14)
+
+
+### Features
+
+* Edit application form with handler GUI (HL-990) ([#2764](https://github.com/City-of-Helsinki/yjdh/issues/2764)) ([40cb66f](https://github.com/City-of-Helsinki/yjdh/commit/40cb66fba2cca156dbbb60c128eb5f88a7ca1743))
+* Query for rejected_by_talpa batches and show talpa_status icon for each app ([#2743](https://github.com/City-of-Helsinki/yjdh/issues/2743)) ([cef39d5](https://github.com/City-of-Helsinki/yjdh/commit/cef39d588e6816eb35e49e1a18962f02bc22fe75))
+
+
+### Bug Fixes
+
+* Handler review section bugs (HL-1119) ([#2769](https://github.com/City-of-Helsinki/yjdh/issues/2769)) ([f481829](https://github.com/City-of-Helsinki/yjdh/commit/f481829dc86ac72ae041696f5c5d5b63d1724023))
+
 ## [3.1.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v3.0.0...benefit-handler-v3.1.0) (2024-01-17)
 
 

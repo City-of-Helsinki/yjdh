@@ -14,7 +14,7 @@
 
             <tr style="background-color:#e1f6ea;margin:0 0 0 0;padding:0 0 0 0">
                 <td colspan="2">
-                    <img alt="{% trans 'Helsinki, Kesäseteli, 350€' %}" src="cid:youth_summer_voucher_logo">
+                    <img alt="{% blocktranslate %}Helsinki, Kesäseteli, {{voucher_value_with_euro_sign}}{% endblocktranslate %}" src="cid:youth_summer_voucher_logo">
                 </td>
             </tr>
 
@@ -29,14 +29,11 @@
                     <p>
                         <strong>{{first_name}} {{last_name}}</strong><br/>
                         <strong>{% trans 'Kesäsetelinumero:' %}</strong> {{summer_voucher_serial_number}}<br/>
-                        <strong>{% trans 'Kesäsetelin summa:' %}</strong> {% trans '350€' %}<br/>
+                        <strong>{% trans 'Kesäsetelin summa:' %}</strong> {{voucher_value_with_euro_sign}}<br/>
                         <strong>{% trans 'Postinumero:' %}</strong> {{postcode}}<br/>
                         <strong>{% trans 'Koulu:' %}</strong> {{school}}<br/>
                         <strong>{% trans 'Puhelinnumero:' %}</strong> {{phone_number}}<br/>
                         <strong>{% trans 'Sähköpostiosoite:' %}</strong> {{email}}<br/>
-                    </p>
-                    <p>
-                        {% trans 'Kun olet löytänyt kesätyöpaikan ja tehnyt työsopimuksen, voit välittää tämän sähköpostiviestin työnantajalle tai antaa heille yllä olevan kesäsetelinumeron.' %}
                     </p>
                 </td>
             </tr>
@@ -49,12 +46,12 @@
                         {% trans 'Erikoisia kesätöitä olivat esimerkiksi peliohjelmointi, äänitiedostojen editointi ja nahkapajan apulainen!' %}
                     </p>
                     <p>
+                        {% trans 'Kun olet löytänyt kesätyöpaikan ja tehnyt työsopimuksen, voit välittää tämän sähköpostiviestin työnantajalle tai antaa heille yllä olevan kesäsetelinumeron.' %}
+                    </p>
+                    <p>
                         <strong>{% trans 'Työpäivät ja palkka:' %}</strong>
                         <ul>
-                            <li>{% trans 'Kesäsetelillä tehdään 60 työtuntia.' %}</li>
-                            <li>{% trans 'Työtunteja on vähintään 18h/viikko.' %}</li>
-                            <li>{% trans 'Työnantaja maksaa sinulle palkkaa vähintään 500 euroa (60 työtunnilta).' %} {% trans 'Summa pitää sisällään lomakorvauksen.' %} {% trans 'Lisäksi työnantaja maksaa normaalit työnantajamaksut.' %}</li>
-                            <li>{% trans 'Kesätyöjakso voi olla tuntimäärältään pidempi, tällöin 60 työtuntia ylittävän osuuden palkan on oltava vähintään alan työehtosopimuksen mukainen vähimmäispalkka.' %}</li>
+                            <li>{% blocktranslate %}Kesätyön vähimmäisvaatimuksena on {{min_work_hours}} tuntia töitä ja siitä vähintään {{min_work_compensation_with_euro_sign}} palkka, ellei alan työehtosopimus edellytä korkeampaa palkkaa. Lisäksi työnantaja maksaa normaalit työnantajamaksut, lomakorvauksen ja mahdolliset lisät.{% endblocktranslate %}</li>
                         </ul>
                     </p>
                     <p>
@@ -63,9 +60,7 @@
                     <hr/>
                     <h2>{% trans 'Ohjeita työnantajalle' %}</h2>
                     <p>
-                        {% trans 'Kesäseteli on nuorten, yrittäjien ja Helsingin kaupungin yhteinen hanke.' %}
-                        {% trans 'Kaupunki korvaa 350 euroa työnantajalle, joka palkkaa Kesäseteliin oikeutetun nuoren töihin 1.6.–15.8.2024 välisenä aikana.' %}
-                        {% trans 'Kesätyön vähimmäisvaatimuksina ovat 60 tunnin työaika ja 500 euron palkka.' %}
+                        {% blocktranslate %}Kaupunki korvaa kesätyön jälkeen {{voucher_value_with_euro_sign}} työnantajalle, joka palkkaa Kesäseteliin oikeutetun nuoren töihin {{summer_job_period_localized_string}} välisenä aikana. Korvaus haetaan Kesäsetelin sivuilta olevasta linkistä ennen {{employer_summer_voucher_application_end_date_localized_string}}.{% endblocktranslate %}
                     </p>
                     <p>
                         {% trans 'Muut käyttöehdot voit lukea täältä:' %}

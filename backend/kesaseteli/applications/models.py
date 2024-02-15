@@ -15,7 +15,7 @@ from django.db.models import Q
 from django.template.loader import get_template
 from django.urls import reverse
 from django.utils import timezone, translation
-from django.utils.translation import gettext, gettext_lazy as _
+from django.utils.translation import gettext, gettext_lazy as _, pgettext
 from encrypted_fields.fields import EncryptedCharField, SearchField
 from localflavor.generic.models import IBANField
 from requests.exceptions import ReadTimeout
@@ -884,7 +884,7 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
 
     def youth_summer_voucher_logo(self, language) -> MIMEImage:
         return YouthSummerVoucher._template_image(
-            filename=f"youth_summer_voucher-350e-{language}.png",
+            filename=f"youth_summer_voucher-{self.voucher_value_in_euros}e-{language}.png",
             content_id="youth_summer_voucher_logo",
         )
 
@@ -893,6 +893,89 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
             filename="helsinki.png",
             content_id="helsinki_logo",
         )
+
+    @staticmethod
+    def _value_with_euro_sign(value_in_euros: int) -> str:
+        """
+        Given value with euro sign
+
+        Example:
+            _value_with_euro_sign(350) -> "350€" with Finnish translation active
+        """
+        return _("%(value_in_currency)d%(currency_sign)s") % {
+            "value_in_currency": value_in_euros,
+            "currency_sign": "€",
+        }
+
+    @staticmethod
+    def voucher_value_in_euros_in_year(year: int) -> int:
+        """
+        Voucher value in euros in given year
+        """
+        return 325 if year < 2024 else 350
+
+    @property
+    def voucher_value_in_euros(self) -> int:
+        """
+        Voucher value in euros in youth summer voucher's year
+        """
+        return YouthSummerVoucher.voucher_value_in_euros_in_year(self.year)
+
+    @property
+    def voucher_value_with_euro_sign(self) -> str:
+        """
+        Voucher value with euro sign in youth summer voucher's year
+        """
+        return self._value_with_euro_sign(self.voucher_value_in_euros)
+
+    @property
+    def summer_job_period_localized_string(self) -> str:
+        """
+        Summer job period as a string
+        """
+        return pgettext(
+            "Summer job period in youth summer voucher email (d.m.–d.m.y)",
+            "1.6.–15.8.%(year)d",
+        ) % {"year": self.year}
+
+    @property
+    def employer_summer_voucher_application_end_date_localized_string(self) -> str:
+        """
+        Employer summer voucher application end date as a localized string
+        """
+        return pgettext(
+            "Employer summer voucher application end date in youth summer voucher email (d.m.y)",
+            "30.11.%(year)d",
+        ) % {"year": self.year}
+
+    @property
+    def min_work_hours(self) -> int:
+        """
+        Minimum work hours for summer job in youth summer voucher's year
+        """
+        return 60
+
+    @staticmethod
+    def min_work_compensation_in_euros_in_year(year: int) -> int:
+        """
+        Minimum work compensation for summer job in euros in given year
+        """
+        return 400 if year < 2024 else 500
+
+    @property
+    def min_work_compensation_in_euros(self) -> int:
+        """
+        Minimum work compensation for summer job in euros in youth summer voucher's year
+        """
+        return YouthSummerVoucher.min_work_compensation_in_euros_in_year(self.year)
+
+    @property
+    def min_work_compensation_with_euro_sign(self) -> str:
+        """
+        Minimum work compensation for summer job with euro sign in youth summer
+        voucher's year
+        """
+        return self._value_with_euro_sign(self.min_work_compensation_in_euros)
 
     def send_youth_summer_voucher_email(
         self, language, send_to_youth=True, send_to_handler=True
@@ -921,6 +1004,13 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
                 "phone_number": self.youth_application.phone_number,
                 "email": self.youth_application.email,
                 "year": self.year,
+                "voucher_value_with_euro_sign": self.voucher_value_with_euro_sign,
+                "summer_job_period_localized_string": self.summer_job_period_localized_string,
+                "employer_summer_voucher_application_end_date_localized_string": (
+                    self.employer_summer_voucher_application_end_date_localized_string
+                ),
+                "min_work_hours": self.min_work_hours,
+                "min_work_compensation_with_euro_sign": self.min_work_compensation_with_euro_sign,
             }
             return send_mail_with_error_logging(
                 subject=self.email_subject(language),
@@ -1115,12 +1205,14 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
 
     @property
     def value_in_euros(self) -> int:
-        if self.created_at.date() < date(2024, 6, 1):
-            # Use 2023 year's value (325e) for late coming employer applications in 2024
-            # before 2024's summer job period starts (i.e. 1st of June 2024).
-            return 325
+        created_date = self.created_at.date()
+        year, month, day = created_date.year, created_date.month, created_date.day
+        if (month, day) < (2, 14):
+            # Use previous year's value for late coming employer applications before the
+            # youths' period for applying for summer vouchers starts on Feb 14
+            return YouthSummerVoucher.voucher_value_in_euros_in_year(year - 1)
         else:
-            return 350
+            return YouthSummerVoucher.voucher_value_in_euros_in_year(year)
 
     @property
     def last_submitted_at(self) -> Optional[datetime]:

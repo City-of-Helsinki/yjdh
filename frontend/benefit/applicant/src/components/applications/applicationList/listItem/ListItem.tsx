@@ -2,12 +2,10 @@ import { useTranslation } from 'benefit/applicant/i18n';
 import { Loading } from 'benefit/applicant/types/common';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
-import { Button, IconSpeechbubbleText, StatusLabel } from 'hds-react';
+import { Button, IconSpeechbubbleText } from 'hds-react';
 import React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { respondAbove } from 'shared/styles/mediaQueries';
-import styled from 'styled-components';
 
 import {
   $Avatar,
@@ -21,20 +19,11 @@ import {
   $ListInfoText,
   $ListItem,
   $ListItemWrapper,
+  $StatusDataColumn,
+  $StatusDataValue,
 } from './ListItem.sc';
 
 export type ListItemProps = ApplicationListItemData | Loading;
-
-const $StatusLabel = styled(StatusLabel)`
-  font-weight: 600;
-  text-align: center;
-  box-sizing: border-box;
-  max-width: 160px;
-  margin-right: var(--spacing-s);
-  ${respondAbove('sm')`
-    max-width: none;
-  `}
-`;
 
 const ListItem: React.FC<ListItemProps> = (props) => {
   const { t } = useTranslation();
@@ -59,15 +48,17 @@ const ListItem: React.FC<ListItemProps> = (props) => {
 
   const {
     name,
+    contactPersonName,
     avatar,
     statusText,
     modifiedAt,
     submittedAt,
     applicationNum,
     allowedAction,
-    editEndDate,
+    statusIcon: StatusIcon,
     status,
     unreadMessagesCount,
+    validUntil,
   } = props;
 
   const ActionIcon = allowedAction.Icon;
@@ -76,7 +67,9 @@ const ListItem: React.FC<ListItemProps> = (props) => {
     <$ListItemWrapper>
       <$ListItem>
         <$ItemContent>
-          <$Avatar $backgroundColor={avatar.color}>{avatar.initials}</$Avatar>
+          <$Avatar $backgroundColor={avatar.color} title={contactPersonName}>
+            {avatar.initials}
+          </$Avatar>
           <$DataColumn>
             <$DataHeader>{t(`${translationBase}.common.employee`)}</$DataHeader>
             <$DataValue>{name}</$DataValue>
@@ -102,17 +95,20 @@ const ListItem: React.FC<ListItemProps> = (props) => {
             </$DataColumn>
           )}
           {statusText && (
-            <$DataColumn>
+            <$StatusDataColumn className={`list-item-status--${status}`}>
               <$DataHeader>{t(`${translationBase}.common.status`)}</$DataHeader>
-              <$DataValue>{statusText}</$DataValue>
-            </$DataColumn>
+              <$StatusDataValue>
+                <StatusIcon />
+                <span>{statusText}</span>
+              </$StatusDataValue>
+            </$StatusDataColumn>
           )}
-          {editEndDate && (
+          {validUntil && (
             <$DataColumn>
               <$DataHeader>
-                {t(`${translationBase}.common.editEndDate`)}
+                {t(`${translationBase}.common.validUntil`)}
               </$DataHeader>
-              <$StatusLabel type="alert">{editEndDate}</$StatusLabel>
+              <$DataValue>{validUntil}</$DataValue>
             </$DataColumn>
           )}
         </$ItemContent>

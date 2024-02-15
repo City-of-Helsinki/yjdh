@@ -6,6 +6,7 @@ import {
   PROPOSALS_FOR_DECISION,
   TALPA_STATUSES,
 } from 'benefit-shared/constants';
+import React from 'react';
 import { Language } from 'shared/i18n/i18n';
 import { BenefitAttachment } from 'shared/types/attachment';
 import { DefaultTheme } from 'styled-components';
@@ -412,6 +413,8 @@ export type ApplicationData = {
   application_origin?: APPLICATION_ORIGINS;
   paper_application_date?: string;
   action?: APPLICATION_ACTIONS;
+  company_contact_person_first_name: string;
+  company_contact_person_last_name: string;
 };
 
 export type EmployeeData = {
@@ -486,11 +489,11 @@ export type ApplicationListItemData = {
   };
   status?: APPLICATION_STATUSES;
   statusText?: string;
+  statusIcon?: React.FC;
   companyName?: string;
   companyId?: string;
   createdAt?: string;
   modifiedAt?: string;
-  editEndDate?: string;
   submittedAt?: string;
   handledAt?: string;
   applicationNum?: number;
@@ -502,6 +505,8 @@ export type ApplicationListItemData = {
   unreadMessagesCount?: number;
   batch?: BatchData | string;
   applicationOrigin?: APPLICATION_ORIGINS;
+  validUntil?: string;
+  contactPersonName?: string;
 };
 
 export type TextProp = 'textFi' | 'textEn' | 'textSv';

@@ -19,11 +19,15 @@
         "applicationNumber": "Ansökningsnummer",
         "status": "Status",
         "check": "Recensioner",
-        "editEndDate": "Redigera senast",
+        "validUntil": "Sista stöddagen",
         "newMessages_one": "{{count}} ny",
         "newMessages_other": "{{count}} nya",
-        "sortOrder": "Sortera ansökningar"
-      }
+        "sortOrder": "Sortera ansökningar",
+        "expand": "Visa fler",
+        "contract": "Visa mindre"
+      },
+      "noApplications": "Inga öppna ansökningar om Helsingforstillägget",
+      "navigateToDecisions": "Se alla ansökningar med beslut"
     },
     "pageHeaders": {
       "created": "Skapats",
@@ -39,7 +43,7 @@
     },
     "statuses": {
       "draft": "Utkast",
-      "additionalInformationNeeded": "Ytterligare uppgifter behövs",
+      "additionalInformationNeeded": "Redigera senast innan {{date}}",
       "received": "Mottagen",
       "accepted": "Godkänd",
       "rejected": "Avvisad",
@@ -95,7 +99,7 @@
           },
           "deMinimisAidMaxAmount": {
             "label": "Maximibeloppet har överskridits",
-            "content": "Maximibeloppet för de minimis-stöd har överskridits. Enligt EU:s förordning kan ett företag få de minimis-stöd till ett belopp om högst 200 000 euro under det innevarandet året och under de två föregående skatteåren. I maximibeloppet beaktas samtliga de minimis-stöd som olika myndigheter har beviljat under denna tidsperiod."
+            "content": "Maximibeloppet för de minimis-stöd har överskridits. Enligt EU:s förordning kan ett företag få de minimis-stöd till ett belopp om högst {{amount}} euro under det innevarandet året och under de två föregående skatteåren. I maximibeloppet beaktas samtliga de minimis-stöd som olika myndigheter har beviljat under denna tidsperiod."
           },
           "deMinimisUnfinished": {
             "label": "Information saknar om de minimis stöd",

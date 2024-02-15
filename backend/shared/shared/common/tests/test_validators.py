@@ -4,6 +4,7 @@ import pytest
 from django.core.exceptions import ValidationError
 from django.db import models
 
+from shared.common.tests.names import INVALID_NAMES, VALID_NAMES
 from shared.common.validators import (
     validate_json,
     validate_name,
@@ -136,24 +137,7 @@ def test_validate_phone_number_with_invalid_input(value):
 
 
 # Based on frontend/shared/src/__tests__/constants.test.ts
-@pytest.mark.parametrize(
-    "value",
-    [
-        # should match Finnish first names, last names and full names
-        "Helinä",
-        "Aalto",
-        "Kalle Väyrynen",
-        "Janne Ö",
-        # should match Swedish first names, last names and full names
-        "Gun-Britt",
-        "Lindén",
-        "Ögge Ekström",
-        # should match English first names, last names and full names
-        "Eric",
-        "Bradtke",
-        "Daniela O'Brian",
-    ],
-)
+@pytest.mark.parametrize("value", VALID_NAMES)
 def test_validate_name_with_valid_input(value):
     validate_name(value)
 
@@ -161,12 +145,10 @@ def test_validate_name_with_valid_input(value):
 # Based on frontend/shared/src/__tests__/constants.test.ts
 @pytest.mark.parametrize(
     "value",
-    [
-        # should fail to match invalid characters
-        "!@#$%^&*()_+-=[]{}|;':\",./<>?",
-        # should fail to match digits
-        "1234567890",
-    ],
+    INVALID_NAMES
+    + [" " + name for name in VALID_NAMES]
+    + [name + " " for name in VALID_NAMES]
+    + [" " + name + " " for name in VALID_NAMES],
 )
 def test_validate_name_with_invalid_input(value):
     with pytest.raises(ValidationError):
