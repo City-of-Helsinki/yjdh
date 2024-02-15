@@ -101,6 +101,10 @@ class AttachmentType(models.TextChoices):
     FULL_APPLICATION = "full_application", _("full application")
     OTHER_ATTACHMENT = "other_attachment", _("other attachment")
     PDF_SUMMARY = "pdf_summary", _("pdf summary")
+    DECISION_TEXT_XML = "decision_text_xml", _("public decision text xml attachment")
+    DECISION_TEXT_SECRET_XML = "decision_text_secret_xml", _(
+        "non-public decision text xml attachment"
+    )
 
 
 class AttachmentRequirement(models.TextChoices):
