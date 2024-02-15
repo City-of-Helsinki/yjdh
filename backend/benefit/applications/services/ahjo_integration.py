@@ -635,7 +635,10 @@ def update_application_in_ahjo(application: Application, ahjo_auth_token: str):
         data = prepare_update_application_payload(application, pdf_summary)
 
         result = send_request_to_ahjo(
-            AhjoRequestType.UPDATE_APPLICATION, headers, application, data,
+            AhjoRequestType.UPDATE_APPLICATION,
+            headers,
+            application,
+            data,
         )
         if result:
             create_status_for_application(
@@ -665,7 +668,7 @@ def send_decision_proposal_to_ahjo(application_id: uuid.UUID):
             application, AttachmentType.DECISION_TEXT_SECRET_XML
         )
         data = prepare_decision_proposal_payload(application, decision_xml, secret_xml)
-        application,_ = send_request_to_ahjo(
+        application, _ = send_request_to_ahjo(
             AhjoRequestType.SEND_DECISION_PROPOSAL, headers, application, data
         )
         create_status_for_application(
