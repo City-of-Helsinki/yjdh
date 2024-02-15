@@ -147,7 +147,10 @@ def test_get_graph_api_access_token(requests_mock):
     HANDLERS_GROUP_NAME="Application handlers",
     ADFS_CONTROLLER_GROUP_UUIDS=["testgroup"],
 )
-def test_authenticate(user):
+def test_authenticate(
+    requests_mock,  # to make sure that no real requests are made
+    user,
+):
     auth_backend = HelsinkiAdfsAuthCodeBackend()
     # if helsinkibenefit fixture django_db_setup has been done, then the group has been already created
     Group.objects.get_or_create(name=settings.HANDLERS_GROUP_NAME)
@@ -176,7 +179,9 @@ def test_authenticate(user):
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
 )
-def test_authenticate_no_authorization_code():
+def test_authenticate_no_authorization_code(
+    requests_mock,  # to make sure that no real requests are made
+):
     auth_backend = HelsinkiAdfsAuthCodeBackend()
     with mock.patch("shared.azure_adfs.auth.provider_config"):
         auth_user = auth_backend.authenticate()
@@ -188,7 +193,11 @@ def test_authenticate_no_authorization_code():
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False, ADFS_LOGIN_REDIRECT_URL="http://example.com"
 )
-def test_adfs_callback(client, user):
+def test_adfs_callback(
+    client,
+    requests_mock,  # to make sure that no real requests are made
+    user,
+):
     with mock.patch("shared.azure_adfs.auth.provider_config"):
         with mock.patch.multiple(
             "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
@@ -218,26 +227,25 @@ def test_adfs_callback(client, user):
         "https://{host}/v1/test/".format(host=get_default_test_host()),
     ],
 )
-def test_adfs_callback_original_redirect(client, user, original_redirect_url):
-    with mock.patch("shared.azure_adfs.auth.provider_config"):
-        with mock.patch.multiple(
-            "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
-            exchange_auth_code=mock.MagicMock,
-            validate_access_token=mock.MagicMock(return_value={"oid": "test"}),
-            process_access_token=mock.MagicMock(return_value=user),
-            get_graph_api_access_token=mock.MagicMock,
-            update_user_groups_from_graph_api=mock.MagicMock,
-            update_userinfo_from_graph_api=mock.MagicMock,
-        ):
-            session = client.session  # Client.session property generates a new session
-            session["USE_ORIGINAL_REDIRECT_URL"] = True
-            session.save()
-            state = base64.urlsafe_b64encode(original_redirect_url.encode())
-            callback_url = reverse("django_auth_adfs:callback")
-            # Make sure the session variable is set up correctly
-            assert "USE_ORIGINAL_REDIRECT_URL" in client.session
-            assert client.session["USE_ORIGINAL_REDIRECT_URL"] is True
-            response = client.get(callback_url, {"code": "test", "state": state})
+def test_adfs_callback_original_redirect(
+    client,
+    requests_mock,  # to make sure that no real requests are made
+    user,
+    original_redirect_url,
+):
+    with mock.patch(
+        "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend.authenticate",
+        return_value=user,
+    ):
+        session = client.session  # Client.session property generates a new session
+        session["USE_ORIGINAL_REDIRECT_URL"] = True
+        session.save()
+        state = base64.urlsafe_b64encode(original_redirect_url.encode())
+        callback_url = reverse("django_auth_adfs:callback")
+        # Make sure the session variable is set up correctly
+        assert "USE_ORIGINAL_REDIRECT_URL" in client.session
+        assert client.session["USE_ORIGINAL_REDIRECT_URL"] is True
+        response = client.get(callback_url, {"code": "test", "state": state})
 
     assert response.status_code == 302
     assert response.url == original_redirect_url
@@ -249,7 +257,10 @@ def test_adfs_callback_original_redirect(client, user, original_redirect_url):
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False, ADFS_LOGIN_REDIRECT_URL_FAILURE="http://example.com"
 )
-def test_adfs_callback_no_code(client):
+def test_adfs_callback_no_code(
+    client,
+    requests_mock,  # to make sure that no real requests are made
+):
     callback_url = reverse("django_auth_adfs:callback")
     response = client.get(callback_url)
 
