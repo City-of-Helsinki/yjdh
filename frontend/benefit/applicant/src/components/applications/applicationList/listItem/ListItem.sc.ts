@@ -5,12 +5,6 @@ import styled, { DefaultTheme } from 'styled-components';
 interface AvatarProps {
   $backgroundColor: keyof DefaultTheme['colors'];
 }
-
-export const $ListItemWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
 export const $ListItem = styled.li`
   display: block;
   background-color: ${(props) => props.theme.colors.white};

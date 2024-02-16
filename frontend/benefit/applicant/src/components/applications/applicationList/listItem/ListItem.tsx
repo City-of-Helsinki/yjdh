@@ -18,7 +18,6 @@ import {
   $ListInfoInner,
   $ListInfoText,
   $ListItem,
-  $ListItemWrapper,
   $StatusDataColumn,
   $StatusDataValue,
 } from './ListItem.sc';
