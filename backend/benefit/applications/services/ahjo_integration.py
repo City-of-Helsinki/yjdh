@@ -657,7 +657,7 @@ def send_decision_proposal_to_ahjo(application_id: uuid.UUID):
         ahjo_token = get_token()
         headers = prepare_headers(
             ahjo_token.access_token,
-            application.id,
+            application,
             AhjoRequestType.SEND_DECISION_PROPOSAL,
         )
         delete_existing_xml_attachments(application)

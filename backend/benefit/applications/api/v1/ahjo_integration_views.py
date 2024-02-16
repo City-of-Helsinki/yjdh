@@ -55,7 +55,8 @@ class AhjoAttachmentView(APIView):
             "",  # Optional user backend
             Operation.READ,
             attachment,
-            additional_information="attachment was sent to AHJO!",
+            additional_information=f"attachment {attachment.attachment_file} \
+of type {attachment.attachment_type} was sent to AHJO!",
         )
         return self._prepare_file_response(attachment)
 
