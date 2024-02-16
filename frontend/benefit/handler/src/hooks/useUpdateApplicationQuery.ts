@@ -23,7 +23,7 @@ const useUpdateApplicationQuery = (): UseMutationResult<
       handleResponse<ApplicationData>(
         axios.put(
           `${BackendEndpoint.HANDLER_APPLICATIONS}${application?.id ?? ''}/`,
-          { ...application, _change_reason: 'application updated' }
+          { ...application }
         )
       ),
     {

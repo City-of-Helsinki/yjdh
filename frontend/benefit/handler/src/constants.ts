@@ -4,6 +4,7 @@ import {
   BENEFIT_TYPES,
   CALCULATION_ROW_TYPES,
   EMPLOYEE_KEYS,
+  PAY_SUBSIDY_OPTIONS,
 } from 'benefit-shared/constants';
 
 export enum ROUTES {
@@ -204,3 +205,12 @@ export enum LOCAL_STORAGE_KEYS {
 export enum APPLICATION_ACTIONS {
   HANDLER_ALLOW_APPLICATION_EDIT = 'HANDLER_ALLOW_APPLICATION_EDIT',
 }
+
+export const PAY_SUBSIDIES_OVERRIDE = {
+  startDate: null,
+  endDate: null,
+  paySubsidyPercent: PAY_SUBSIDY_OPTIONS[0],
+  workTimePercent: 100,
+  disabilityOrIllness: false,
+  durationInMonthsRounded: '',
+};
