@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-25 18:30+0200\n"
+"POT-Creation-Date: 2024-02-19 10:35+0200\n"
 "PO-Revision-Date: 2022-11-01 10:45+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -409,7 +409,7 @@ msgstr ""
 msgid "Delete request received"
 msgstr ""
 
-msgid "Allow/disallow applicant's modifications"
+msgid "Allow/disallow applicant's modifications to the application"
 msgstr ""
 
 msgid "Success"
@@ -427,6 +427,17 @@ msgstr "Hylätty Ahjossa"
 #| msgid "Incomplete application"
 msgid "Delete application in Ahjo"
 msgstr "Puutteellinen hakemus"
+
+#, fuzzy
+#| msgid "Incomplete application"
+msgid "Update application in Ahjo"
+msgstr "Puutteellinen hakemus"
+
+msgid "Termination"
+msgstr "Päättynyt"
+
+msgid "Suspension"
+msgstr "Keskeytynyt"
 
 #, python-brace-format
 msgid ""
@@ -691,6 +702,48 @@ msgstr "tila"
 msgid "ahjo statuses"
 msgstr "tila"
 
+msgid "alteration of application"
+msgstr "Muutos hakemukseen"
+
+msgid "type of alteration"
+msgstr "Muutoksen tyyppi"
+
+msgid "new benefit end date"
+msgstr "Uusi avustuksen päättymispäivä"
+
+msgid "date when employment resumes after suspended"
+msgstr "Avustuksen jatkumispäivä keskeytymisen jälkeen"
+
+msgid "reason for alteration"
+msgstr "Muutoksen syy"
+
+msgid "date when alteration notice was handled"
+msgstr "Muutosilmoituksen käsittelypäivä"
+
+msgid "the first day the unwarranted benefit will be collected from"
+msgstr "Takaisinperinnän alkamispäivä"
+
+msgid "the last day the unwarranted benefit will be collected from"
+msgstr "Takaisinperinnän päättymispäivä"
+
+msgid "amount of unwarranted benefit to be collected"
+msgstr "Takaisinperittävä summa"
+
+msgid ""
+"whether to use a separate e-invoice address from the one of the applicant "
+"organization"
+msgstr "Käytetäänkö eri verkkolaskuosoitetta kuin hakijaorganisaation "
+"verkkolaskuosoitetta?"
+
+msgid "name of the e-invoice provider"
+msgstr "Verkkolaskuoperaattorin nimi"
+
+msgid "identifier of the e-invoice provider"
+msgstr "Välittäjän tunnus"
+
+msgid "e-invoice address"
+msgstr "Verkkolaskuosoite"
+
 #, fuzzy
 #| msgid "File not found."
 msgid "Not found"
@@ -933,9 +986,6 @@ msgstr "Laskelma on jo olemassa"
 
 msgid "handler"
 msgstr "käsittelijä"
-
-msgid "applicant"
-msgstr "hakija"
 
 msgid "calculation"
 msgstr "laskelma"
@@ -1210,6 +1260,9 @@ msgstr "palveluehtojen hyväksyntä"
 
 msgid "terms of service approvals"
 msgstr "palveluehtojen hyväksynnät"
+
+#~ msgid "applicant"
+#~ msgstr "hakija"
 
 #~ msgid "Social security number checksum invalid"
 #~ msgstr "Epäkelpo henkilötunnuksen tarkistussumma"

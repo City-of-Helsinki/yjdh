@@ -13,6 +13,7 @@ from simple_history.models import HistoricalRecords
 from applications.enums import (
     AhjoDecision,
     AhjoStatus,
+    ApplicationAlterationType,
     ApplicationBatchStatus,
     ApplicationOrigin,
     ApplicationStatus,
@@ -376,6 +377,20 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
             return self.calculation.calculated_benefit_amount
         else:
             return None
+
+    @property
+    def calculated_effective_benefit_amount(self):
+        original_benefit = self.calculated_benefit_amount
+
+        if original_benefit is not None and self.alteration_set is not None:
+            return original_benefit - sum(
+                [
+                    alteration.collection_amount
+                    for alteration in self.alteration_set.all()
+                ]
+            )
+        else:
+            return original_benefit
 
     @property
     def ahjo_decision(self):
@@ -1023,3 +1038,79 @@ class AhjoDecisionText(UUIDModel, TimeStampedModel):
         db_table = "bf_applications_ahjo_decision_text"
         verbose_name = _("ahjo decision text")
         verbose_name_plural = _("ahjo decision texts")
+
+
+class ApplicationAlteration(TimeStampedModel):
+    """
+    An alteration reported by the applying organization, due to changes in
+    the employment of the employee in question. An application may have
+    multiple alterations applied to it.
+    """
+
+    application = models.ForeignKey(
+        Application,
+        verbose_name=_("alteration of application"),
+        related_name="alteration_set",
+        on_delete=models.CASCADE,
+    )
+
+    alteration_type = models.TextField(
+        verbose_name=_("type of alteration"), choices=ApplicationAlterationType.choices
+    )
+
+    end_date = models.DateField(verbose_name=_("new benefit end date"))
+
+    resume_date = models.DateField(
+        verbose_name=_("date when employment resumes after suspended"),
+        null=True,
+        blank=True,
+    )
+
+    reason = models.TextField(verbose_name=_("reason for alteration"))
+
+    handled_at = models.DateField(
+        verbose_name=_("date when alteration notice was handled"),
+        null=True,
+        blank=True,
+    )
+
+    recovery_start_date = models.DateField(
+        verbose_name=_("the first day the unwarranted benefit will be collected from"),
+        null=True,
+        blank=True,
+    )
+
+    recovery_end_date = models.DateField(
+        verbose_name=_("the last day the unwarranted benefit will be collected from"),
+        null=True,
+        blank=True,
+    )
+
+    recovery_amount = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        verbose_name=_("amount of unwarranted benefit to be collected"),
+        null=True,
+    )
+
+    use_alternate_einvoice_provider = models.BooleanField(
+        verbose_name=_(
+            "whether to use a separate e-invoice address from the one of the applicant organization"
+        ),
+        default=False,
+    )
+
+    einvoice_provider_name = models.TextField(
+        verbose_name=_("name of the e-invoice provider"),
+        blank=True,
+    )
+
+    einvoice_provider_identifier = models.TextField(
+        verbose_name=_("identifier of the e-invoice provider"),
+        blank=True,
+    )
+
+    einvoice_address = models.TextField(
+        verbose_name=_("e-invoice address"),
+        blank=True,
+    )
