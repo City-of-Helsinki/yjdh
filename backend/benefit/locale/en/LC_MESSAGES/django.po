@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-25 18:30+0200\n"
+"POT-Creation-Date: 2024-02-19 10:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -374,7 +374,7 @@ msgstr ""
 msgid "Delete request received"
 msgstr ""
 
-msgid "Allow/disallow applicant's modifications"
+msgid "Allow/disallow applicant's modifications to the application"
 msgstr ""
 
 msgid "Success"
@@ -387,6 +387,15 @@ msgid "Open case in Ahjo"
 msgstr ""
 
 msgid "Delete application in Ahjo"
+msgstr ""
+
+msgid "Update application in Ahjo"
+msgstr ""
+
+msgid "Termination"
+msgstr ""
+
+msgid "Suspension"
 msgstr ""
 
 #, python-brace-format
@@ -632,6 +641,47 @@ msgstr ""
 msgid "ahjo statuses"
 msgstr ""
 
+msgid "alteration of application"
+msgstr ""
+
+msgid "type of alteration"
+msgstr ""
+
+msgid "new benefit end date"
+msgstr ""
+
+msgid "date when employment resumes after suspended"
+msgstr ""
+
+msgid "reason for alteration"
+msgstr ""
+
+msgid "date when alteration notice was handled"
+msgstr ""
+
+msgid "the first day the unwarranted benefit will be collected from"
+msgstr ""
+
+msgid "the last day the unwarranted benefit will be collected from"
+msgstr ""
+
+msgid "amount of unwarranted benefit to be collected"
+msgstr ""
+
+msgid ""
+"whether to use a separate e-invoice address from the one of the applicant "
+"organization"
+msgstr ""
+
+msgid "name of the e-invoice provider"
+msgstr ""
+
+msgid "identifier of the e-invoice provider"
+msgstr ""
+
+msgid "e-invoice address"
+msgstr ""
+
 msgid "Not found"
 msgstr ""
 
@@ -860,9 +910,6 @@ msgid "Calculation already exists"
 msgstr ""
 
 msgid "handler"
-msgstr ""
-
-msgid "applicant"
 msgstr ""
 
 msgid "calculation"

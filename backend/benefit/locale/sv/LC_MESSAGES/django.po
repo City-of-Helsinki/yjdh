@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-25 18:30+0200\n"
+"POT-Creation-Date: 2024-02-19 10:35+0200\n"
 "PO-Revision-Date: 2022-11-01 10:47+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -405,7 +405,7 @@ msgstr ""
 msgid "Delete request received"
 msgstr ""
 
-msgid "Allow/disallow applicant's modifications"
+msgid "Allow/disallow applicant's modifications to the application"
 msgstr ""
 
 msgid "Success"
@@ -423,6 +423,17 @@ msgstr "Avvisad i Ahjo"
 #| msgid "Incomplete application"
 msgid "Delete application in Ahjo"
 msgstr "Ofullständig ansökan"
+
+#, fuzzy
+#| msgid "Incomplete application"
+msgid "Update application in Ahjo"
+msgstr "Ofullständig ansökan"
+
+msgid "Termination"
+msgstr ""
+
+msgid "Suspension"
+msgstr ""
 
 #, python-brace-format
 msgid ""
@@ -688,6 +699,59 @@ msgid "ahjo statuses"
 msgstr "status"
 
 #, fuzzy
+#| msgid "application batches"
+msgid "alteration of application"
+msgstr "ansökningssatser"
+
+#, fuzzy
+#| msgid "type of terms"
+msgid "type of alteration"
+msgstr "typ av villkor"
+
+#, fuzzy
+#| msgid "benefit end date"
+msgid "new benefit end date"
+msgstr "slutdatum för understöd"
+
+msgid "date when employment resumes after suspended"
+msgstr ""
+
+msgid "reason for alteration"
+msgstr ""
+
+msgid "date when alteration notice was handled"
+msgstr ""
+
+msgid "the first day the unwarranted benefit will be collected from"
+msgstr ""
+
+msgid "the last day the unwarranted benefit will be collected from"
+msgstr ""
+
+#, fuzzy
+#| msgid "amount of the benefit granted, calculated by the system"
+msgid "amount of unwarranted benefit to be collected"
+msgstr "understödsbelopp som beviljats, beräknat av systemet"
+
+msgid ""
+"whether to use a separate e-invoice address from the one of the applicant "
+"organization"
+msgstr ""
+
+#, fuzzy
+#| msgid "Name of the employer"
+msgid "name of the e-invoice provider"
+msgstr "Arbetsgivarens namn"
+
+msgid "identifier of the e-invoice provider"
+msgstr ""
+
+#, fuzzy
+#| msgid "Delivery address"
+msgid "e-invoice address"
+msgstr "Leveransadress"
+
+#, fuzzy
 #| msgid "File not found."
 msgid "Not found"
 msgstr "Fil hittades inte."
@@ -923,9 +987,6 @@ msgstr "Beräkning finns redan"
 
 msgid "handler"
 msgstr "handläggare"
-
-msgid "applicant"
-msgstr "sökande"
 
 msgid "calculation"
 msgstr "beräkning"
@@ -1201,6 +1262,9 @@ msgstr "godkännande av villkoren för tjänsten"
 
 msgid "terms of service approvals"
 msgstr "godkännanden av villkoren för tjänsten"
+
+#~ msgid "applicant"
+#~ msgstr "sökande"
 
 #~ msgid "Social security number checksum invalid"
 #~ msgstr "Personbeteckning kontrollsumma felaktig"

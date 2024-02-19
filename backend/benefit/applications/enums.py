@@ -207,3 +207,8 @@ class DecisionProposalTemplateSectionType(models.TextChoices):
 class DecisionType(models.TextChoices):
     ACCEPTED = "accepted_decision", _("An accepted decision")
     DENIED = "denied_decision", _("A denied decision")
+
+
+class ApplicationAlterationType(models.TextChoices):
+    TERMINATION = "termination", _("Termination")
+    SUSPENSION = "suspension", _("Suspension")
