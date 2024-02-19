@@ -15,7 +15,10 @@ import {
   PAY_SUBSIDY_GRANTED,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
-import { validateIsTodayOrPastDate } from 'benefit-shared/utils/dates';
+import {
+  validateDateWithinMonths,
+  validateIsTodayOrPastDate,
+} from 'benefit-shared/utils/dates';
 import { validateNumberField } from 'benefit-shared/utils/validation';
 import startOfYear from 'date-fns/startOfYear';
 import { FinnishSSN } from 'finnish-ssn';
@@ -28,10 +31,7 @@ import {
   PHONE_NUMBER_REGEX,
   POSTAL_CODE_REGEX,
 } from 'shared/constants';
-import {
-  convertToUIDateFormat,
-  validateDateIsFromCurrentYearOnwards,
-} from 'shared/utils/date.utils';
+import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { getNumberValueOrNull } from 'shared/utils/string.utils';
 import * as Yup from 'yup';
 
@@ -281,7 +281,7 @@ export const getValidationSchema = (
         message: t(VALIDATION_MESSAGE_KEYS.DATE_MIN, {
           min: convertToUIDateFormat(startOfYear(new Date())),
         }),
-        test: (value = '') => validateDateIsFromCurrentYearOnwards(value),
+        test: (value = '') => validateDateWithinMonths(value, 6),
       }),
     [APPLICATION_FIELD_KEYS.END_DATE]: Yup.string().required(
       t(VALIDATION_MESSAGE_KEYS.REQUIRED)

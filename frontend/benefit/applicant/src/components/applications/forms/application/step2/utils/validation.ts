@@ -12,7 +12,7 @@ import {
   PAY_SUBSIDY_GRANTED,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
-import { validateDateWithinFourMonths } from 'benefit-shared/utils/dates';
+import { validateDateWithinMonths } from 'benefit-shared/utils/dates';
 import subMonths from 'date-fns/subMonths';
 import { FinnishSSN } from 'finnish-ssn';
 import { TFunction } from 'next-i18next';
@@ -45,9 +45,9 @@ export const getValidationSchema = (
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED))
       .test({
         message: t(VALIDATION_MESSAGE_KEYS.DATE_MIN, {
-          min: convertToUIDateFormat(subMonths(new Date(), 4)),
+          min: convertToUIDateFormat(subMonths(new Date(), 6)),
         }),
-        test: (value = '') => validateDateWithinFourMonths(value),
+        test: (value = '') => validateDateWithinMonths(value, 6),
       }),
     [APPLICATION_FIELDS_STEP2_KEYS.END_DATE]: Yup.string().required(
       t(VALIDATION_MESSAGE_KEYS.REQUIRED)

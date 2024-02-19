@@ -2,7 +2,17 @@ import {
   APPLICATION_START_DATE,
   BENEFIT_TYPES,
 } from 'benefit-shared/constants';
-import { addMonths, isAfter, isEqual, isFuture, parse, startOfDay, startOfYear, subDays, subMonths } from 'date-fns';
+import {
+  addMonths,
+  isAfter,
+  isEqual,
+  isFuture,
+  parse,
+  startOfDay,
+  startOfYear,
+  subDays,
+  subMonths,
+} from 'date-fns';
 import { parseDate } from 'shared/utils/date.utils';
 
 export const getMinEndDate = (
@@ -72,7 +82,10 @@ export const validateIsTodayOrPastDate = (value: string): boolean => {
   return true;
 };
 
-export const validateDateWithinFourMonths = (value: string): boolean => {
+export const validateDateWithinMonths = (
+  value: string,
+  months: number
+): boolean => {
   const isFinnishDate = validateFinnishDatePattern(value);
   const date = isFinnishDate
     ? parse(value, 'd.M.yyyy', new Date())
@@ -82,6 +95,8 @@ export const validateDateWithinFourMonths = (value: string): boolean => {
     return false;
   }
   const startOfDayDate = startOfDay(date);
-  const fourMonthsAgo = startOfDay(subMonths(new Date(), 4));
-  return isEqual(startOfDayDate, fourMonthsAgo) || isAfter(startOfDayDate, fourMonthsAgo);
-}
+  const nMonthsAgo = startOfDay(subMonths(new Date(), months));
+  return (
+    isEqual(startOfDayDate, nMonthsAgo) || isAfter(startOfDayDate, nMonthsAgo)
+  );
+};
