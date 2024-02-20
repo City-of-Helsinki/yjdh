@@ -43,6 +43,7 @@ django_env = environ.Env(
     CACHE_URL=(str, "locmemcache://"),
     SENTRY_DSN=(str, ""),
     SENTRY_ENVIRONMENT=(str, ""),
+    DJANGO_LOG_LEVEL=(str, "INFO"),
     CORS_ALLOWED_ORIGINS=(list, []),
     CORS_ALLOW_ALL_ORIGINS=(bool, False),
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
@@ -211,8 +212,8 @@ ELASTICSEARCH_PASSWORD = django_env("ELASTICSEARCH_PASSWORD")
 
 
 LOGGING = {
-    "disable_existing_loggers": False,
     "version": 1,
+    "disable_existing_loggers": False,
     "formatters": {
         "verbose": {
             "format": "%(asctime)s p%(process)d %(name)s %(levelname)s: %(message)s",
@@ -225,7 +226,14 @@ LOGGING = {
         },
     },
     "loggers": {
-        "django": {"handlers": ["console"], "level": "INFO"},
+        "": {
+            "handlers": ["console"],
+            "level": django_env("DJANGO_LOG_LEVEL"),
+        },
+        "django": {
+            "handlers": ["console"],
+            "level": django_env("DJANGO_LOG_LEVEL"),
+        },
     },
 }
 
