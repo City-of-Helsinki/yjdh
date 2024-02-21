@@ -389,9 +389,8 @@ PDF_CONTENT_TYPE = "application/pdf"
 XML_CONTENT_TYPE = "application/xml"
 
 
-def generate_secret_xml_attachment(application: Application) -> bytes:
+def generate_secret_xml_string(application: Application) -> str:
     calculation_rows = application.calculation.rows.all()
-
     sub_total_rows = calculation_rows.filter(
         row_type=RowType.HELSINKI_BENEFIT_SUB_TOTAL_EUR
     )
@@ -402,13 +401,11 @@ def generate_secret_xml_attachment(application: Application) -> bytes:
         "calculation_rows": sub_total_rows,
     }
     xml_content = render_to_string("secret_decision.xml", context)
-    return xml_content.encode("utf-8")
+    return xml_content
 
 
-def generate_public_xml_attachment(content: str) -> bytes:
-    xml_str = f"""{XML_VERSION}{content}"""
-    xml_bytes = xml_str.encode("utf-8")
-    return xml_bytes
+def generate_public_xml_string(content: str) -> str:
+    return f"""{XML_VERSION}{content}"""
 
 
 def generate_application_attachment(
@@ -423,11 +420,13 @@ def generate_application_attachment(
         content_type = PDF_CONTENT_TYPE
     elif type == AttachmentType.DECISION_TEXT_XML:
         decision = AhjoDecisionText.objects.get(application=application)
-        attachment_data = generate_public_xml_attachment(decision.decision_text)
+        xml_string = generate_public_xml_string(decision.decision_text)
+        attachment_data = xml_string.encode("utf-8")
         attachment_filename = f"decision_text_{application.application_number}.xml"
         content_type = XML_CONTENT_TYPE
     elif type == AttachmentType.DECISION_TEXT_SECRET_XML:
-        attachment_data = generate_secret_xml_attachment(application)
+        xml_string = generate_secret_xml_string(application)
+        attachment_data = xml_string.encode("utf-8")
         attachment_filename = (
             f"decision_text_secret_{application.application_number}.xml"
         )
