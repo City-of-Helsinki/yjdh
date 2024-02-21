@@ -19,8 +19,10 @@ def test_replace_accepted_decision_template_placeholders(
         f"{decided_application.calculation.calculated_benefit_amount}"
         in replaced_template
     )
+    wanted_start_date = decided_application.calculation.start_date.strftime("%d.%m.%Y")
+    wanted_end_date = decided_application.calculation.end_date.strftime("%d.%m.%Y")
     assert (
-        f"{decided_application.calculation.start_date}-{decided_application.calculation.end_date}"
+        f"{wanted_start_date} - {wanted_end_date}"
         in replaced_template
     )
 

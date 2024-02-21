@@ -15,6 +15,8 @@ from applications.tests.factories import (
 )
 
 
+class AhjoDecisionError(Exception):
+    pass
 
 
 def replace_decision_template_placeholders(
@@ -24,14 +26,16 @@ def replace_decision_template_placeholders(
 ) -> str:
     """Replace the placeholders starting with $ in the decision template with real data"""
     text_to_replace = Template(text_to_replace)
+    start_date = application.calculation.start_date.strftime("%d.%m.%Y")
+    end_date = application.calculation.end_date.strftime("%d.%m.%Y")
     try:
         return text_to_replace.substitute(
             decision_maker=decision_maker,
             company=application.company.name,
             total_amount=application.calculation.calculated_benefit_amount,
-            benefit_date_range=f"{application.calculation.start_date}-{application.calculation.end_date}",
+            benefit_date_range=f"{start_date} - {end_date}",
         )
-    except Exception as e:
+    except AhjoDecisionError as e:
         raise ValueError(f"Error in preparing the decision proposal template: {e}")
 
 
