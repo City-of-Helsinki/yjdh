@@ -1,4 +1,4 @@
-import Messenger from 'benefit/handler/components/messenger/Messenger';
+import Sidebar from 'benefit/handler/components/sidebar/Sidebar';
 import { HANDLED_STATUSES } from 'benefit/handler/constants';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
@@ -153,7 +153,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
           }
         />
       )}
-      <Messenger
+      <Sidebar
         isOpen={isMessagesDrawerVisible}
         isReadOnly={
           application.status && HANDLED_STATUSES.includes(application.status)

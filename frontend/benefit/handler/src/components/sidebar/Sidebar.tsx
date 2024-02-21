@@ -5,7 +5,7 @@ import Drawer from 'shared/components/drawer/Drawer';
 import Actions from 'shared/components/messaging/Actions';
 
 import Messages from './Messages';
-import { useMessenger } from './useMessenger';
+import { useSidebar } from './useSidebar';
 
 interface ComponentProps {
   isOpen: boolean;
@@ -15,7 +15,7 @@ interface ComponentProps {
   customItemsNotes?: React.ReactNode;
 }
 
-const Messenger: React.FC<ComponentProps> = ({
+const Sidebar: React.FC<ComponentProps> = ({
   isOpen,
   isReadOnly,
   customItemsMessages,
@@ -23,7 +23,7 @@ const Messenger: React.FC<ComponentProps> = ({
   onClose,
 }) => {
   const { t, messages, notes, handleSendMessage, handleCreateNote } =
-    useMessenger();
+    useSidebar();
 
   return (
     <Drawer
@@ -79,4 +79,4 @@ const Messenger: React.FC<ComponentProps> = ({
   );
 };
 
-export default Messenger;
+export default Sidebar;

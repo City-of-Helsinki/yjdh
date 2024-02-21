@@ -13,7 +13,7 @@ type ExtendedComponentProps = {
   handleCreateNote: (note: string) => void;
 };
 
-const useMessenger = (): ExtendedComponentProps => {
+const useSidebar = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const router = useRouter();
   const applicationId = router.query.id ?? '';
@@ -56,4 +56,4 @@ const useMessenger = (): ExtendedComponentProps => {
   };
 };
 
-export { useMessenger };
+export { useSidebar };
