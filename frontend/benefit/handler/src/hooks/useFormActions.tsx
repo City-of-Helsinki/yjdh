@@ -1,6 +1,7 @@
 import {
   APPLICATION_ACTIONS,
   APPLICATION_FIELD_KEYS,
+  PAY_SUBSIDIES_OVERRIDE,
   ROUTES,
 } from 'benefit/handler/constants';
 import DeMinimisContext from 'benefit/handler/context/DeMinimisContext';
@@ -12,7 +13,12 @@ import {
   PAY_SUBSIDY_GRANTED,
   PAY_SUBSIDY_OPTIONS,
 } from 'benefit-shared/constants';
-import { ApplicationData, Employee } from 'benefit-shared/types/application';
+import {
+  ApplicationData,
+  Calculation,
+  Employee,
+  PaySubsidy,
+} from 'benefit-shared/types/application';
 import { prettyPrintObject } from 'benefit-shared/utils/errors';
 import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
@@ -94,7 +100,10 @@ const getErrorContent = (
   }
 };
 
-const useFormActions = (application: Partial<Application>): FormActions => {
+const useFormActions = (
+  application: Partial<Application>,
+  initialApplication: Partial<Application>
+): FormActions => {
   const router = useRouter();
 
   const { mutateAsync: createApplication, error: createApplicationError } =
@@ -150,6 +159,54 @@ const useFormActions = (application: Partial<Application>): FormActions => {
 
   const { deMinimisAids } = React.useContext(DeMinimisContext);
 
+  const getCalculationValuesOnPaySubsidyChange = (
+    values: Partial<Application>
+  ): Calculation => ({
+    ...values.calculation,
+    monthlyPay: stringToFloatValue(values.employee.monthlyPay),
+    vacationMoney: stringToFloatValue(values.employee.vacationMoney),
+    otherExpenses: stringToFloatValue(values.employee.otherExpenses),
+    startDate: null,
+    endDate: null,
+    stateAidMaxPercentage: null,
+    grantedAsDeMinimisAid: false,
+    targetGroupCheck: false,
+    overrideMonthlyBenefitAmount: null,
+    overrideMonthlyBenefitAmountComment: '',
+  });
+
+  const getPayloadForCalculation = (
+    values: Partial<Application>
+  ): Calculation => {
+    // Return the calculation values as they are
+    if (values.paySubsidyGranted === initialApplication?.paySubsidyGranted) {
+      return {
+        ...values.calculation,
+        monthlyPay: stringToFloatValue(values.employee.monthlyPay),
+        otherExpenses: stringToFloatValue(values.employee.otherExpenses),
+        vacationMoney: stringToFloatValue(values.employee.vacationMoney),
+        overrideMonthlyBenefitAmount: stringToFloatValue(
+          values.calculation.overrideMonthlyBenefitAmount
+        ),
+      };
+    }
+    return getCalculationValuesOnPaySubsidyChange(values);
+  };
+
+  const getPayloadForPaySubsidies = (
+    values: Partial<Application>
+  ): PaySubsidy[] => {
+    if (values.paySubsidyGranted === initialApplication?.paySubsidyGranted) {
+      return [...values.paySubsidies];
+    }
+    return [
+      PAY_SUBSIDY_GRANTED.GRANTED,
+      PAY_SUBSIDY_GRANTED.GRANTED_AGED,
+    ].includes(values.paySubsidyGranted)
+      ? [PAY_SUBSIDIES_OVERRIDE]
+      : [];
+  };
+
   // eslint-disable-next-line sonarjs/cognitive-complexity
   const getNormalizedValues = (currentValues: Application): Application => {
     const employee: Employee | undefined = currentValues?.employee ?? undefined;
@@ -161,6 +218,8 @@ const useFormActions = (application: Partial<Application>): FormActions => {
       apprenticeshipProgram,
       paperApplicationDate,
       changeReason,
+      calculation,
+      paySubsidies,
     } = currentValues;
 
     const paySubsidyPercent =
@@ -212,34 +271,20 @@ const useFormActions = (application: Partial<Application>): FormActions => {
       changeReason,
       deMinimisAidSet: deMinimisAids,
       action: APPLICATION_ACTIONS.HANDLER_ALLOW_APPLICATION_EDIT,
+      benefitType: BENEFIT_TYPES.SALARY,
+      calculation: calculation
+        ? getPayloadForCalculation(currentValues)
+        : undefined,
+      paySubsidies: paySubsidies
+        ? getPayloadForPaySubsidies(currentValues)
+        : undefined,
     };
   };
 
   const prepareDataForSubmission = (
     values: Partial<Application>
   ): ApplicationData =>
-    snakecaseKeys(
-      {
-        ...values,
-        benefit_type: BENEFIT_TYPES.SALARY,
-        calculation: values.calculation
-          ? {
-              ...values.calculation,
-              monthlyPay: stringToFloatValue(values.calculation.monthlyPay),
-              otherExpenses: stringToFloatValue(
-                values.calculation.otherExpenses
-              ),
-              vacationMoney: stringToFloatValue(
-                values.calculation.vacationMoney
-              ),
-              overrideMonthlyBenefitAmount: stringToFloatValue(
-                values.calculation.overrideMonthlyBenefitAmount
-              ),
-            }
-          : undefined,
-      },
-      { deep: true }
-    ) as ApplicationData;
+    snakecaseKeys(values, { deep: true }) as ApplicationData;
 
   const onSubmit = async (
     currentValues: Application,
@@ -290,7 +335,6 @@ const useFormActions = (application: Partial<Application>): FormActions => {
     applicationId: string | undefined
   ): Promise<ApplicationData | void> => {
     const data = prepareDataForSubmission(getNormalizedValues(currentValues));
-
     try {
       const result = applicationId
         ? await updateApplication(data)
@@ -339,7 +383,6 @@ const useFormActions = (application: Partial<Application>): FormActions => {
     applicationId: string | undefined
   ): Promise<ApplicationData | void> => {
     const data = prepareDataForSubmission(getNormalizedValues(currentValues));
-
     try {
       const result = applicationId
         ? await updateApplication(data)
