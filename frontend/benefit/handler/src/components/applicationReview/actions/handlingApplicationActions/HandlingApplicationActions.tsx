@@ -158,6 +158,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
         isReadOnly={
           application.status && HANDLED_STATUSES.includes(application.status)
         }
+        application={application}
         onClose={toggleMessagesDrawerVisiblity}
         customItemsMessages={<EditAction application={application} />}
         customItemsNotes={

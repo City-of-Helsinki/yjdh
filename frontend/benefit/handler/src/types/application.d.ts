@@ -29,6 +29,8 @@ import { FormikProps } from 'formik';
 import { Field } from 'shared/components/forms/fields/types';
 import { Language } from 'shared/i18n/i18n';
 
+import { ChangeListData } from './changes';
+
 export type ApplicantConsentData = {
   id: string;
   text_fi: string;
@@ -105,6 +107,11 @@ export type HandledAplication = {
   grantedAsDeMinimisAid?: boolean;
 };
 
+export type ApplicationChangesData = {
+  handler: ChangeListData[];
+  applicant: ChangeListData[];
+};
+
 // Handler application
 
 export type Application = {
@@ -139,6 +146,7 @@ export type Application = {
   totalDeminimisAmount?: string;
   action?: APPLICATION_ACTIONS;
   changeReason?: string;
+  changes?: ApplicationChangesData;
 } & ApplicationForm;
 
 export interface ApplicationForm {

@@ -1,9 +1,11 @@
+import { Application } from 'benefit/handler/types/application';
 import { Tab, TabPanel, Tabs } from 'hds-react';
 import * as React from 'react';
 import { $TabList } from 'shared/components/benefit/tabs/Tabs.sc';
 import Drawer from 'shared/components/drawer/Drawer';
 import Actions from 'shared/components/messaging/Actions';
 
+import ChangeList from './ChangeList';
 import Messages from './Messages';
 import { useSidebar } from './useSidebar';
 
@@ -13,6 +15,7 @@ interface ComponentProps {
   onClose?: () => void;
   customItemsMessages?: React.ReactNode;
   customItemsNotes?: React.ReactNode;
+  application: Application;
 }
 
 const Sidebar: React.FC<ComponentProps> = ({
@@ -21,6 +24,7 @@ const Sidebar: React.FC<ComponentProps> = ({
   customItemsMessages,
   customItemsNotes,
   onClose,
+  application,
 }) => {
   const { t, messages, notes, handleSendMessage, handleCreateNote } =
     useSidebar();
@@ -35,6 +39,7 @@ const Sidebar: React.FC<ComponentProps> = ({
         <$TabList>
           <Tab>{t('common:header.messages')}</Tab>
           <Tab>{t('common:header.notes')}</Tab>
+          <Tab>{t('common:header.changes')}</Tab>
         </$TabList>
         <TabPanel
           css={`
@@ -73,6 +78,15 @@ const Sidebar: React.FC<ComponentProps> = ({
           )}
 
           <Messages data={notes?.reverse()} variant="note" />
+        </TabPanel>
+        <TabPanel
+          css={`
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+          `}
+        >
+          <ChangeList data={application.changes} />
         </TabPanel>
       </Tabs>
     </Drawer>
