@@ -100,8 +100,10 @@ export const useApplicationForm = (): ExtendedComponentProps => {
   const [initialApplication, setInitialApplication] =
     React.useState<Application>(null);
 
-  const { onSave, onQuietSave, onSubmit, onNext, onDelete } =
-    useFormActions(application);
+  const { onSave, onQuietSave, onSubmit, onNext, onDelete } = useFormActions(
+    application,
+    initialApplication
+  );
 
   React.useEffect(() => {
     if (id) {

@@ -38,7 +38,7 @@ const useCompanySearch = (): ExtendedComponentProps => {
   const [companies, setCompanies] = useState<CompanySearchResult[]>([]);
   const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { onCompanySelected } = useFormActions({});
+  const { onCompanySelected } = useFormActions({}, {});
 
   const onCompanyChange = (businessId: string): void => {
     setSelectedCompany(businessId);

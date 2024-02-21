@@ -1295,7 +1295,7 @@
       "phoneNumber": {
         "label": "Puhelin"
       },
-      "coOperationNegotiations":{
+      "coOperationNegotiations": {
         "label": "Muutosneuvottelut"
       },
       "coOperationNegotiationsDescription": {
@@ -1321,6 +1321,12 @@
       },
       "endDate": {
         "label": "Työsuhde päättyy"
+      },
+      "paySubsidyGranted": {
+        "label": "Palkkatuki"
+      },
+      "apprenticeshipProgram": {
+        "label": "Oppisopimus"
       }
     }
   }
