@@ -18,7 +18,8 @@ import {
 import theme from 'shared/styles/theme';
 
 import ApplicationHeader from '../applicationHeader/ApplicationHeader';
-import ActionBar from './actionBar/ActionBar';
+import ActionBarEdit from './actionBar/ActionBarEdit';
+import ActionBarNew from './actionBar/ActionBarNew';
 import { $MainHeading, $SpinnerContainer } from './ApplicationForm.sc';
 import CompanySearch from './companySearch/CompanySearch';
 import FormContent from './formContent/FormContent';
@@ -41,6 +42,7 @@ const ApplicationForm: React.FC = () => {
     handleSubmit,
     handleSaveDraft,
     handleDelete,
+    handleValidation,
     showDeminimisSection,
     minEndDate,
     maxEndDate,
@@ -53,6 +55,7 @@ const ApplicationForm: React.FC = () => {
     checkedConsentArray,
     getConsentErrorText,
     handleConsentClick,
+    initialApplication,
   } = useApplicationForm();
 
   const { isFormActionEdit, isFormActionNew } = useApplicationFormContext();
@@ -149,7 +152,7 @@ const ApplicationForm: React.FC = () => {
               formik={formik}
               fields={fields}
               handleSave={handleSave}
-              handleQuietSave={handleQuietSave}
+              handleQuietSave={isFormActionNew ? handleQuietSave : null}
               showDeminimisSection={showDeminimisSection}
               minEndDate={minEndDate}
               maxEndDate={maxEndDate}
@@ -160,12 +163,24 @@ const ApplicationForm: React.FC = () => {
               getConsentErrorText={getConsentErrorText}
               handleConsentClick={handleConsentClick}
             />
-            <ActionBar
-              id={id}
-              handleSave={handleSave}
-              handleSaveDraft={handleSaveDraft}
-              handleDelete={handleDelete}
-            />
+            {isFormActionEdit && (
+              <ActionBarEdit
+                id={id}
+                fields={fields}
+                initialApplication={initialApplication}
+                formik={formik}
+                handleSave={handleSave}
+                handleValidation={handleValidation}
+              />
+            )}
+            {isFormActionNew && (
+              <ActionBarNew
+                id={id}
+                handleSave={handleSave}
+                handleSaveDraft={handleSaveDraft}
+                handleDelete={handleDelete}
+              />
+            )}
           </>
         )}
         {stepState.activeStepIndex === 2 && isFormActionNew && (
@@ -175,7 +190,7 @@ const ApplicationForm: React.FC = () => {
               fields={fields}
               dispatchStep={dispatchStep}
             />
-            <ActionBar
+            <ActionBarNew
               id={id}
               handleSubmit={handleSubmit}
               handleSaveDraft={handleSaveDraft}
@@ -192,7 +207,7 @@ const ApplicationForm: React.FC = () => {
             close={() => setIsConfirmationModalOpen(false)}
             closeButtonLabelText={t(`${translationsBase}.close`)}
             variant="primary"
-            theme={{ '--accent-line-color': 'var(--color-coat-of-arms)' }}
+            theme={theme.components.modal.coat}
           >
             <Dialog.Header
               title={t(`${translationsBase}.backWithoutSavingConfirm`)}

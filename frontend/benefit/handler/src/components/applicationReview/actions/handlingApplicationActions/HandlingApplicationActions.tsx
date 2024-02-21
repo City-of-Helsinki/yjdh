@@ -13,6 +13,7 @@ import {
 import noop from 'lodash/noop';
 import * as React from 'react';
 import Modal from 'shared/components/modal/Modal';
+import theme from 'shared/styles/theme';
 
 import EditAction from '../editAction/EditAction';
 import CancelModalContent from './CancelModalContent/CancelModalContent';
@@ -141,7 +142,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
           headerIcon={<IconInfoCircle />}
           className=""
           variant="primary"
-          theme={{ '--accent-line-color': 'var(--color-coat-of-arms)' }}
+          theme={theme.components.modal.coat}
           customContent={
             <DoneModalContent
               handledApplication={handledApplication}

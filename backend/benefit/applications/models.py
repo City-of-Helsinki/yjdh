@@ -362,6 +362,7 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     bases = models.ManyToManyField("ApplicationBasis", related_name="applications")
 
     history = HistoricalRecords(
+        history_change_reason_field=models.TextField(null=True),
         table_name="bf_applications_application_history",
         cascade_delete_history=True,
     )

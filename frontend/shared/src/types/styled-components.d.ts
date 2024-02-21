@@ -166,6 +166,11 @@ declare module 'styled-components' {
         '--icon-color-hover': string;
         '--focus-outline-color': string;
       };
+      modal: {
+        coat: {
+          '--accent-line-color': string;
+        };
+      };
     };
   }
 }

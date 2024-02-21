@@ -11,7 +11,7 @@ from drf_spectacular.views import (
 )
 from rest_framework_nested import routers
 
-from applications.api.v1 import application_batch_views, views as application_views
+from applications.api.v1 import application_batch_views, application_views
 from applications.api.v1.ahjo_decision_views import DecisionProposalTemplateSectionList
 from applications.api.v1.ahjo_integration_views import (
     AhjoAttachmentView,

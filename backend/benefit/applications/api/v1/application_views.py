@@ -21,6 +21,7 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from simple_history.utils import update_change_reason
 from sql_util.aggregates import SubqueryCount
 
 from applications.api.v1.serializers.application import (
@@ -189,6 +190,12 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         # in the serializer.instance might have become stale.
         # Update the object.
         serializer.instance = self.get_queryset().get(pk=serializer.instance.pk)
+
+        # Update change reason if provided
+        if self.request.data.get("change_reason") and self.request.user.is_staff:
+            update_change_reason(
+                serializer.instance, str(self.request.data.get("change_reason"))
+            )
 
     @action(methods=["get"], detail=False, url_path="simplified_list")
     def simplified_application_list(self, request):

@@ -1,12 +1,4 @@
-import { ROUTES } from 'benefit/handler/constants';
-import { useApplicationFormContext } from 'benefit/handler/hooks/useApplicationFormContext';
-import {
-  Button,
-  IconArrowLeft,
-  IconArrowRight,
-  IconSaveDiskette,
-  IconTrash,
-} from 'hds-react';
+import { Button, IconArrowLeft, IconArrowRight, IconTrash } from 'hds-react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
@@ -27,7 +19,7 @@ type ActionBarProps = {
   id: string | string[] | undefined;
 };
 
-const ActionBar: React.FC<ActionBarProps> = ({
+const ActionBarNew: React.FC<ActionBarProps> = ({
   handleDelete,
   handleSave,
   handleBack,
@@ -40,14 +32,12 @@ const ActionBar: React.FC<ActionBarProps> = ({
   const translationsBase = 'common:applications.actions';
   const router = useRouter();
 
-  const { isFormActionEdit, isFormActionNew } = useApplicationFormContext();
-
   return (
     <>
       <$Grid>
         <$GridCell $colSpan={6}>
           <$ButtonContainer>
-            {handleBack && isFormActionNew && (
+            {handleBack && (
               <Button
                 theme="black"
                 variant="secondary"
@@ -62,29 +52,13 @@ const ActionBar: React.FC<ActionBarProps> = ({
               <Button
                 theme="coat"
                 onClick={handleSave}
-                iconRight={
-                  isFormActionNew ? <IconArrowRight /> : <IconSaveDiskette />
-                }
+                iconRight={<IconArrowRight />}
                 data-testid="nextButton"
               >
-                {isFormActionNew && t(`${translationsBase}.continue`)}
-                {isFormActionEdit && t(`${translationsBase}.save`)}
+                {t(`${translationsBase}.continue`)}
               </Button>
             )}
-            {isFormActionEdit && (
-              <Button
-                css={{ marginLeft: 'var(--spacing-s)' }}
-                theme="black"
-                variant="secondary"
-                onClick={() =>
-                  router.push(`${ROUTES.APPLICATION}?id=${String(id)}`)
-                }
-                data-testid="cancelButton"
-              >
-                {t(`${translationsBase}.cancel`)}
-              </Button>
-            )}
-            {handleSubmit && isFormActionNew && (
+            {handleSubmit && (
               <Button
                 theme="coat"
                 onClick={handleSubmit}
@@ -96,36 +70,34 @@ const ActionBar: React.FC<ActionBarProps> = ({
             )}
           </$ButtonContainer>
         </$GridCell>
-        {isFormActionNew && (
-          <>
-            <$GridCell $colSpan={3} $colStart={7}>
-              <$ButtonContainer>
-                <Button
-                  theme="black"
-                  variant="secondary"
-                  onClick={handleSaveDraft}
-                >
-                  {t(`${translationsBase}.saveAndContinueLater`)}
-                </Button>
-              </$ButtonContainer>
-            </$GridCell>
-            <$GridCell $colSpan={3} $colStart={10} justifySelf="end">
-              <$ButtonContainer>
-                <Button
-                  theme="black"
-                  variant="supplementary"
-                  iconLeft={<IconTrash />}
-                  onClick={() =>
-                    id ? setIsConfirmationModalOpen(true) : router.push('/')
-                  }
-                  data-testid="deleteButton"
-                >
-                  {t(`${translationsBase}.deleteApplication`)}
-                </Button>
-              </$ButtonContainer>
-            </$GridCell>
-          </>
-        )}
+        <>
+          <$GridCell $colSpan={3} $colStart={7}>
+            <$ButtonContainer>
+              <Button
+                theme="black"
+                variant="secondary"
+                onClick={handleSaveDraft}
+              >
+                {t(`${translationsBase}.saveAndContinueLater`)}
+              </Button>
+            </$ButtonContainer>
+          </$GridCell>
+          <$GridCell $colSpan={3} $colStart={10} justifySelf="end">
+            <$ButtonContainer>
+              <Button
+                theme="black"
+                variant="supplementary"
+                iconLeft={<IconTrash />}
+                onClick={() =>
+                  id ? setIsConfirmationModalOpen(true) : router.push('/')
+                }
+                data-testid="deleteButton"
+              >
+                {t(`${translationsBase}.deleteApplication`)}
+              </Button>
+            </$ButtonContainer>
+          </$GridCell>
+        </>
       </$Grid>
       {isConfirmationModalOpen && handleDelete && (
         <Modal
@@ -145,4 +117,4 @@ const ActionBar: React.FC<ActionBarProps> = ({
   );
 };
 
-export default ActionBar;
+export default ActionBarNew;
