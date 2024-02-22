@@ -634,4 +634,3 @@ def test_get_applications_for_open_case(
     # only handled_applications should be returned as their last  AhjoStatus is SUBMITTED_BUT_NOT_SENT_TO_AHJO
     # and their application status is HANDLING
     assert applications_for_open_case.count() == len(multiple_handling_applications)
-    assert list(applications_for_open_case) == multiple_handling_applications

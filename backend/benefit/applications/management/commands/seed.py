@@ -20,7 +20,9 @@ from applications.models import (
     ApplicationBasis,
     ApplicationBatch,
 )
-from applications.tests.common import create_decision_text_for_application
+from applications.services.ahjo_decision_service import (
+    create_decision_text_for_application,
+)
 from applications.tests.factories import (
     AcceptedDecisionProposalFactory,
     AcceptedDecisionProposalJustificationFactory,

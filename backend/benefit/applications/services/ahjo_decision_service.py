@@ -1,8 +1,24 @@
 from string import Template
 from typing import List
 
-from applications.enums import DecisionProposalTemplateSectionType
-from applications.models import Application, DecisionProposalTemplateSection
+from django.conf import settings
+
+from applications.enums import DecisionProposalTemplateSectionType, DecisionType
+from applications.models import (
+    AhjoDecisionText,
+    Application,
+    DecisionProposalTemplateSection,
+)
+from applications.tests.factories import (
+    AcceptedDecisionProposalFactory,
+    AcceptedDecisionProposalJustificationFactory,
+    DeniedDecisionProposalFactory,
+    DeniedDecisionProposalJustificationFactory,
+)
+
+
+class AhjoDecisionError(Exception):
+    pass
 
 
 def replace_decision_template_placeholders(
@@ -12,14 +28,16 @@ def replace_decision_template_placeholders(
 ) -> str:
     """Replace the placeholders starting with $ in the decision template with real data"""
     text_to_replace = Template(text_to_replace)
+    start_date = application.calculation.start_date.strftime("%d.%m.%Y")
+    end_date = application.calculation.end_date.strftime("%d.%m.%Y")
     try:
         return text_to_replace.substitute(
             decision_maker=decision_maker,
             company=application.company.name,
             total_amount=application.calculation.calculated_benefit_amount,
-            benefit_date_range=f"{application.calculation.start_date}-{application.calculation.end_date}",
+            benefit_date_range=f"{start_date} - {end_date}",
         )
-    except Exception as e:
+    except AhjoDecisionError as e:
         raise ValueError(f"Error in preparing the decision proposal template: {e}")
 
 
@@ -35,3 +53,42 @@ def process_template_sections(
                 section.template_text, application
             )
     return template_sections
+
+
+def create_decision_text_for_application(
+    application: Application, decision_type: DecisionType = DecisionType.ACCEPTED
+) -> AhjoDecisionText:
+    """An utility function to create a decision text for an application.
+    Used for testing and seeding purposes."""
+    text = _generate_decision_text_string(application, decision_type)
+    _set_handler_to_ahjo_test_user(application)
+    return AhjoDecisionText.objects.create(
+        application=application,
+        decision_text=text,
+        decision_type=decision_type,
+    )
+
+
+def _set_handler_to_ahjo_test_user(application: Application) -> None:
+    """An utility function to set the handler of an application to the Ahjo test user.
+    Used only for testing purposes."""
+    handler = application.calculation.handler
+    handler.first_name = settings.AHJO_TEST_USER_FIRST_NAME
+    handler.last_name = settings.AHJO_TEST_USER_LAST_NAME
+    handler.ad_username = settings.AHJO_TEST_USER_AD_USERNAME
+    handler.save()
+
+
+def _generate_decision_text_string(
+    application: Application, decision_type: DecisionType
+) -> str:
+    if decision_type == DecisionType.ACCEPTED:
+        decision_section = AcceptedDecisionProposalFactory()
+        justification_section = AcceptedDecisionProposalJustificationFactory()
+    else:
+        decision_section = DeniedDecisionProposalFactory()
+        justification_section = DeniedDecisionProposalJustificationFactory()
+    decision_string = f"""<body><section id="paatos"><h1>Päätös</h1>{decision_section.template_text}</section>\
+<section id="paatoksenperustelut"><h1>Päätösteksti</h1>{justification_section.template_text}</section></body>"""
+
+    return replace_decision_template_placeholders(decision_string, application)
