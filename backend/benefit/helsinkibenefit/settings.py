@@ -166,6 +166,9 @@ env = environ.Env(
     AHJO_REDIRECT_URL=(str, "https://helsinkilisa/dummyredirect.html"),
     AHJO_ALLOWED_IP=(list, ["*"]),
     DISABLE_AHJO_SAFE_LIST_CHECK=(bool, False),
+    AHJO_TEST_USER_FIRST_NAME=(str, ""),
+    AHJO_TEST_USER_LAST_NAME=(str, ""),
+    AHJO_TEST_USER_AD_USERNAME=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -521,3 +524,7 @@ AHJO_REDIRECT_URL = env("AHJO_REDIRECT_URL")
 
 REST_SAFE_LIST_IPS = env.list("AHJO_ALLOWED_IP")
 DISABLE_AHJO_SAFE_LIST_CHECK = env.bool("DISABLE_AHJO_SAFE_LIST_CHECK")
+
+AHJO_TEST_USER_FIRST_NAME = env("AHJO_TEST_USER_FIRST_NAME")
+AHJO_TEST_USER_LAST_NAME = env("AHJO_TEST_USER_LAST_NAME")
+AHJO_TEST_USER_AD_USERNAME = env("AHJO_TEST_USER_AD_USERNAME")

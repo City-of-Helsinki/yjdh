@@ -1,6 +1,8 @@
 from string import Template
 from typing import List
 
+from django.conf import settings
+
 from applications.enums import DecisionProposalTemplateSectionType, DecisionType
 from applications.models import (
     AhjoDecisionText,
@@ -71,9 +73,9 @@ def _set_handler_to_ahjo_test_user(application: Application) -> None:
     """An utility function to set the handler of an application to the Ahjo test user.
     Used only for testing purposes."""
     handler = application.calculation.handler
-    handler.first_name = "AhjoHYTvalmTA1H2"
-    handler.last_name = "AhjoHyte2"
-    handler.ad_username = "ahjohytvalmta1h2"
+    handler.first_name = settings.AHJO_TEST_USER_FIRST_NAME
+    handler.last_name = settings.AHJO_TEST_USER_LAST_NAME
+    handler.ad_username = settings.AHJO_TEST_USER_AD_USERNAME
     handler.save()
 
 
