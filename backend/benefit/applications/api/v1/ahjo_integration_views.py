@@ -150,7 +150,16 @@ class AhjoCallbackView(APIView):
             elif request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
                 ahjo_status = AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED
                 info = "Decision proposal was sent to Ahjo"
+            elif request_type == AhjoRequestType.UPDATE_APPLICATION:
+                self._handle_update_records_success(application, callback_data)
+                ahjo_status = AhjoStatusEnum.UPDATE_REQUEST_RECEIVED
+                info = f"Updated application records were sent to Ahjo with request id: {callback_data['requestId']}"
+            else:
+                raise AhjoCallbackError(
+                    f"Unknown request type {request_type} in the Ahjo callback"
+                )
             AhjoStatus.objects.create(application=application, status=ahjo_status)
+
             audit_logging.log(
                 request.user,
                 "",
@@ -173,6 +182,10 @@ class AhjoCallbackView(APIView):
             {"message": "Callback received but request was unsuccessful at AHJO"},
             status=status.HTTP_400_BAD_REQUEST,
         )
+    
+    def _handle_update_records_success(self, application: Application, callback_data: dict):
+        cb_records = callback_data.get("records", [])
+        self._save_version_series_id(application, cb_records)
 
     def _handle_open_case_success(self, application: Application, callback_data: dict):
         """Update the application with the case id (diaarinumero) and case guid from the Ahjo callback data."""

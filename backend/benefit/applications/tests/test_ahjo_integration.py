@@ -398,6 +398,10 @@ def ahjo_callback_payload():
             AhjoStatusEnum.CASE_OPENED,
         ),
         (
+            AhjoRequestType.UPDATE_APPLICATION,
+            AhjoStatusEnum.UPDATE_REQUEST_RECEIVED,
+        ),
+        (
             AhjoRequestType.DELETE_APPLICATION,
             AhjoStatusEnum.DELETE_REQUEST_RECEIVED,
         ),
@@ -431,15 +435,19 @@ def test_ahjo_callback_success(
     response = ahjo_client.post(url, **auth_headers, data=ahjo_callback_payload)
 
     decided_application.refresh_from_db()
+    attachment.refresh_from_db()
     assert response.status_code == 200
     assert response.data == {"message": "Callback received"}
     if request_type == AhjoRequestType.OPEN_CASE:
-        attachment.refresh_from_db()
-
         assert decided_application.ahjo_case_id == ahjo_callback_payload["caseId"]
         assert (
             str(decided_application.ahjo_case_guid) == ahjo_callback_payload["caseGuid"]
         )
+        assert (
+            attachment.ahjo_version_series_id
+            == ahjo_callback_payload["records"][0]["versionSeriesId"]
+        )
+    if request_type == AhjoRequestType.UPDATE_APPLICATION:
         assert (
             attachment.ahjo_version_series_id
             == ahjo_callback_payload["records"][0]["versionSeriesId"]
