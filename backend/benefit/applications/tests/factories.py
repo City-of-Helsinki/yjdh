@@ -458,7 +458,7 @@ class DeniedDecisionProposalJustificationFactory(factory.django.DjangoModelFacto
 tukea rahallisesti yksityisen ja kolmannen sektorin työnantajia, \
 jotka tarjoavat työtä kaupungin työllisyydenhoidon kohderyhmiin \
 kuuluville helsinkiläisille.</p>\
-<p>Lisätään/kirjoitetaan jokaisen päätöksen yksittäinen perustelu tähän.<p>\
+<p>Lisätään/kirjoitetaan jokaisen päätöksen yksittäinen perustelu tähän.</p>\
 <p>Työnantajan hakemus ei täytä Helsinki-lisän ehtoja, joten avustusta ei voida myöntää.</p> \
 <h2>Avustus</h2>
 <p>Kaupunginhallituksen elinkeinojaosto on päätöksellään 11.9.2023 § 30 \
