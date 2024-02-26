@@ -1,6 +1,9 @@
 import itertools
 import operator
+import os
+from email.mime.image import MIMEImage
 from typing import List
+from unittest import mock
 
 import pytest
 from django.core import mail
@@ -19,6 +22,13 @@ from common.tests.factories import (
     YouthSummerVoucherFactory,
 )
 from shared.common.tests.utils import utc_datetime
+
+
+def _get_email_template_image_file(image_name: str) -> bytes:
+    return open(
+        os.path.join(os.path.dirname(__file__), "../templates/images/", image_name),
+        "rb",
+    ).read()
 
 
 def create_test_employer_summer_vouchers(year) -> List[EmployerSummerVoucher]:
@@ -332,3 +342,59 @@ def test_youth_summer_voucher_sending__no_optional_arguments():
     assert m.from_email == "Test sender <testsender@hel.fi>"
     assert m.to == [usv.youth_application.email]
     assert m.bcc == ["Test handler <testhandler@hel.fi>"]
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "voucher_value_in_euros,language,expected_logo_from_file",
+    [
+        (325, "fi", "youth_summer_voucher-325e-fi.png"),
+        (325, "sv", "youth_summer_voucher-325e-sv.png"),
+        (325, "en", "youth_summer_voucher-325e-en.png"),
+        (350, "fi", "youth_summer_voucher-350e-fi.png"),
+        (350, "sv", "youth_summer_voucher-350e-sv.png"),
+        (350, "en", "youth_summer_voucher-350e-en.png"),
+        (351, "fi", "youth_summer_voucher-fi.png"),
+        (352, "sv", "youth_summer_voucher-sv.png"),
+        (353, "en", "youth_summer_voucher-en.png"),
+        (1, "en", "youth_summer_voucher-en.png"),
+        (999, "fi", "youth_summer_voucher-fi.png"),
+        (12345, "sv", "youth_summer_voucher-sv.png"),
+    ],
+)
+def test_youth_summer_voucher_logo(
+    voucher_value_in_euros, language, expected_logo_from_file
+):
+    voucher = YouthSummerVoucherFactory()
+    with mock.patch(
+        "applications.models.YouthSummerVoucher.voucher_value_in_euros",
+        new_callable=mock.PropertyMock,
+        return_value=voucher_value_in_euros,
+    ):
+        logo_mime_image: MIMEImage = voucher.youth_summer_voucher_logo(
+            language=language
+        )
+
+    expected_logo_content = _get_email_template_image_file(expected_logo_from_file)
+    expected_logo_mime_image = MIMEImage(expected_logo_content)
+
+    assert logo_mime_image.get_payload() == expected_logo_mime_image.get_payload()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "language,expected_logo_from_file",
+    [
+        ("fi", "helsinki.png"),
+        ("sv", "helsingfors.png"),
+        ("en", "helsinki.png"),
+    ],
+)
+def test_youth_summer_voucher_helsinki_logo(language, expected_logo_from_file):
+    voucher = YouthSummerVoucherFactory()
+    logo_mime_image = voucher.helsinki_logo(language=language)
+
+    expected_logo_content = _get_email_template_image_file(expected_logo_from_file)
+    expected_logo_mime_image = MIMEImage(expected_logo_content)
+
+    assert logo_mime_image.get_payload() == expected_logo_mime_image.get_payload()
