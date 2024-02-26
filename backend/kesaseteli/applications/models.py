@@ -883,14 +883,21 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
             return image
 
     def youth_summer_voucher_logo(self, language) -> MIMEImage:
-        return YouthSummerVoucher._template_image(
-            filename=f"youth_summer_voucher-{self.voucher_value_in_euros}e-{language}.png",
-            content_id="youth_summer_voucher_logo",
-        )
+        try:
+            return YouthSummerVoucher._template_image(
+                filename=f"youth_summer_voucher-{self.voucher_value_in_euros}e-{language}.png",
+                content_id="youth_summer_voucher_logo",
+            )
+        except FileNotFoundError:
+            # Use fallback image without specific price
+            return YouthSummerVoucher._template_image(
+                filename=f"youth_summer_voucher-{language}.png",
+                content_id="youth_summer_voucher_logo",
+            )
 
-    def helsinki_logo(self) -> MIMEImage:
+    def helsinki_logo(self, language) -> MIMEImage:
         return YouthSummerVoucher._template_image(
-            filename="helsinki.png",
+            filename=("helsingfors.png" if language == "sv" else "helsinki.png"),
             content_id="helsinki_logo",
         )
 
@@ -1023,7 +1030,7 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
                     context
                 ),
                 images=[
-                    self.helsinki_logo(),
+                    self.helsinki_logo(language=language),
                     self.youth_summer_voucher_logo(language=language),
                 ],
             )
