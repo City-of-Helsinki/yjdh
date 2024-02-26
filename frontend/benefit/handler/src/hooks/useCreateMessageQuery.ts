@@ -29,7 +29,7 @@ const useCreateMessageQuery = (
     (message: MessageData) =>
       handleResponse<MessageData>(
         axios.post(
-          `${BackendEndpoint.HANDLER_APPLICATIONS}${applicationId}/${messageType}/`,
+          `${BackendEndpoint.HANDLER_APPLICATIONS}${applicationId}/${messageType}`,
           message
         )
       ),
