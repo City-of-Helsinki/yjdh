@@ -27,6 +27,8 @@ from applications.api.v1.status_transition_validator import (
 )
 from applications.enums import (
     AhjoStatus,
+    ApplicationAlterationState,
+    ApplicationAlterationType,
     ApplicationBatchStatus,
     ApplicationStatus,
     ApplicationStep,
@@ -35,7 +37,13 @@ from applications.enums import (
     OrganizationType,
     PaySubsidyGranted,
 )
-from applications.models import Application, ApplicationLogEntry, Attachment, Employee
+from applications.models import (
+    Application,
+    ApplicationAlteration,
+    ApplicationLogEntry,
+    Attachment,
+    Employee,
+)
 from applications.tests.conftest import *  # noqa
 from applications.tests.factories import (
     ApplicationBatchFactory,
@@ -2328,6 +2336,459 @@ def test_application_pdf_print_denied(api_client, anonymous_client):
     assert response.status_code == 403
 
 
+def test_application_alteration_create_terminated(api_client, application):
+    pk = application.id
+
+    response = api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "termination",
+            "reason": "Päättynyt",
+            "end_date": application.start_date + relativedelta(days=7),
+            "use_alternate_einvoice_provider": False,
+        },
+    )
+    assert response.status_code == 201
+
+
+def test_application_alteration_create_suspended(api_client, application):
+    pk = application.id
+
+    response = api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "suspension",
+            "reason": "Keskeytynyt",
+            "end_date": application.start_date + relativedelta(days=7),
+            "resume_date": application.start_date + relativedelta(days=14),
+            "use_alternate_einvoice_provider": False,
+        },
+    )
+    assert response.status_code == 201
+
+
+def test_application_alteration_create_missing_resume_date(api_client, application):
+    pk = application.id
+
+    response = api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "suspension",
+            "reason": "Keskeytynyt",
+            "end_date": application.start_date + relativedelta(days=7),
+            "use_alternate_einvoice_provider": False,
+        },
+    )
+    assert response.status_code == 400
+    assert "non_field_errors" in response.data
+    assert len(response.data["non_field_errors"]) == 1
+
+
+def test_application_alteration_create_missing_einvoice_fields(api_client, application):
+    pk = application.id
+
+    response = api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "termination",
+            "reason": "Päättynyt",
+            "end_date": application.start_date + relativedelta(days=7),
+            "use_alternate_einvoice_provider": True,
+        },
+    )
+    assert response.status_code == 400
+    assert "non_field_errors" in response.data
+    assert len(response.data["non_field_errors"]) == 3
+
+
+def test_application_alteration_create_outside_application_date_range(
+    api_client, application
+):
+    pk = application.id
+
+    response = api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "termination",
+            "reason": "Päättynyt",
+            "end_date": application.start_date + relativedelta(days=-7),
+            "use_alternate_einvoice_provider": False,
+        },
+    )
+    assert response.status_code == 400
+    assert "non_field_errors" in response.data
+
+    response = api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "termination",
+            "reason": "Päättynyt",
+            "end_date": application.end_date + relativedelta(days=7),
+            "use_alternate_einvoice_provider": False,
+        },
+    )
+    assert response.status_code == 400
+    assert "non_field_errors" in response.data
+
+    response = api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "suspension",
+            "reason": "Päättynyt",
+            "end_date": application.start_date + relativedelta(days=7),
+            "resume_date": application.end_date + relativedelta(days=7),
+            "use_alternate_einvoice_provider": False,
+        },
+    )
+    assert response.status_code == 400
+    assert "non_field_errors" in response.data
+
+
+def test_application_alteration_create_reversed_suspension_dates(
+    api_client, application
+):
+    pk = application.id
+
+    response = api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "suspension",
+            "reason": "Keskeytynyt",
+            "end_date": application.start_date + relativedelta(days=14),
+            "resume_date": application.start_date + relativedelta(days=7),
+            "use_alternate_einvoice_provider": False,
+        },
+    )
+    assert response.status_code == 400
+    assert "non_field_errors" in response.data
+    assert len(response.data["non_field_errors"]) == 1
+
+
+def test_application_alteration_create_overlapping_alteration(api_client, application):
+    pk = application.id
+
+    response = api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "suspension",
+            "reason": "Keskeytynyt",
+            "end_date": application.start_date + relativedelta(days=7),
+            "resume_date": application.start_date + relativedelta(days=14),
+            "use_alternate_einvoice_provider": False,
+        },
+    )
+    assert response.status_code == 201
+
+    alteration_pk = response.data["id"]
+    alteration = ApplicationAlteration.objects.get(pk=alteration_pk)
+    alteration.recovery_start_date = application.start_date + relativedelta(days=7)
+    alteration.recovery_end_date = application.start_date + relativedelta(days=14)
+    alteration.recovery_amount = 600
+    alteration.save()
+
+    response = api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "suspension",
+            "reason": "Keskeytynyt",
+            "end_date": application.start_date + relativedelta(days=9),
+            "resume_date": application.start_date + relativedelta(days=16),
+            "use_alternate_einvoice_provider": False,
+        },
+    )
+    assert response.status_code == 400
+    assert "non_field_errors" in response.data
+    assert len(response.data["non_field_errors"]) == 1
+
+    response = api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "suspension",
+            "reason": "Keskeytynyt",
+            "end_date": application.start_date + relativedelta(days=5),
+            "resume_date": application.start_date + relativedelta(days=12),
+            "use_alternate_einvoice_provider": False,
+        },
+    )
+    assert response.status_code == 400
+    assert "non_field_errors" in response.data
+    assert len(response.data["non_field_errors"]) == 1
+
+    response = api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "suspension",
+            "reason": "Keskeytynyt",
+            "end_date": application.start_date + relativedelta(days=5),
+            "resume_date": application.start_date + relativedelta(days=16),
+            "use_alternate_einvoice_provider": False,
+        },
+    )
+    assert response.status_code == 400
+    assert "non_field_errors" in response.data
+    assert len(response.data["non_field_errors"]) == 1
+
+
+def test_application_alteration_create_non_overlapping_alteration(
+    api_client, application
+):
+    pk = application.id
+
+    response = api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "suspension",
+            "reason": "Keskeytynyt",
+            "end_date": application.start_date + relativedelta(days=7),
+            "resume_date": application.start_date + relativedelta(days=14),
+            "use_alternate_einvoice_provider": False,
+        },
+    )
+    assert response.status_code == 201
+
+    alteration_pk = response.data["id"]
+    alteration = ApplicationAlteration.objects.get(pk=alteration_pk)
+    alteration.recovery_start_date = application.start_date + relativedelta(days=7)
+    alteration.recovery_end_date = application.start_date + relativedelta(days=14)
+    alteration.recovery_amount = 600
+    alteration.save()
+
+    response = api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "suspension",
+            "reason": "Keskeytynyt",
+            "end_date": application.start_date + relativedelta(days=16),
+            "resume_date": application.start_date + relativedelta(days=23),
+            "use_alternate_einvoice_provider": False,
+        },
+    )
+    assert response.status_code == 201
+
+
+def test_application_alteration_create_forbidden_anonymous(
+    anonymous_client, application
+):
+    pk = application.id
+
+    response = anonymous_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "termination",
+            "reason": "Päättynyt",
+            "end_date": application.start_date + relativedelta(days=7),
+            "use_alternate_einvoice_provider": False,
+        },
+    )
+    assert response.status_code == 403
+
+
+def test_application_alteration_create_forbidden_another_company(
+    api_client, application
+):
+    another_company = CompanyFactory()
+    application.company = another_company
+    application.save()
+
+    pk = application.id
+
+    response = api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "termination",
+            "reason": "Päättynyt",
+            "end_date": application.start_date + relativedelta(days=7),
+            "use_alternate_einvoice_provider": False,
+        },
+    )
+    assert response.status_code == 403
+
+
+def test_application_alteration_create_ignored_fields_applicant(
+    api_client, application
+):
+    pk = application.id
+    response = api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "termination",
+            "state": "handled",
+            "reason": "Päättynyt",
+            "end_date": application.start_date + relativedelta(days=7),
+            "use_alternate_einvoice_provider": False,
+            "handled_at": application.start_date + relativedelta(days=10),
+            "recovery_start_date": application.start_date + relativedelta(days=7),
+            "recovery_end_date": application.end_date,
+            "recovery_amount": 4000,
+        },
+    )
+
+    assert response.status_code == 201
+    assert response.data["state"] == "received"
+    assert response.data["recovery_start_date"] is None
+    assert response.data["recovery_end_date"] is None
+    assert response.data["recovery_amount"] is None
+    assert response.data["handled_at"] is None
+
+
+def test_application_alteration_create_ignored_fields_handler(
+    handler_api_client, application
+):
+    pk = application.id
+
+    response = handler_api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "termination",
+            "state": "handled",
+            "reason": "Päättynyt",
+            "end_date": application.start_date + relativedelta(days=7),
+            "use_alternate_einvoice_provider": False,
+            "handled_at": application.start_date + relativedelta(days=10),
+            "recovery_start_date": application.start_date + relativedelta(days=7),
+            "recovery_end_date": application.end_date,
+            "recovery_amount": 4000,
+        },
+    )
+
+    assert response.status_code == 201
+    assert response.data["state"] == "handled"
+    assert (
+        response.data["recovery_start_date"]
+        == (application.start_date + relativedelta(days=7)).isoformat()
+    )
+    assert response.data["recovery_end_date"] == application.end_date.isoformat()
+    assert response.data["recovery_amount"] == "4000.00"
+    assert (
+        response.data["handled_at"]
+        == (application.start_date + relativedelta(days=10)).isoformat()
+    )
+
+
+def test_application_alteration_patch_applicant(
+    api_client, application, mock_get_organisation_roles_and_create_company
+):
+    pk = application.id
+    response = api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "termination",
+            "reason": "Päättynyt",
+            "end_date": application.start_date + relativedelta(days=7),
+            "use_alternate_einvoice_provider": False,
+        },
+    )
+
+    response = api_client.patch(
+        reverse("v1:application-alteration-detail", kwargs={"pk": response.data["id"]}),
+        {
+            "end_date": application.start_date + relativedelta(days=12),
+            "recovery_amount": 4000,
+        },
+    )
+    assert response.status_code == 200
+    assert (
+        response.data["end_date"]
+        == (application.start_date + relativedelta(days=12)).isoformat()
+    )
+    assert response.data["recovery_amount"] is None
+
+
+def test_application_alteration_patch_handler(handler_api_client, application):
+    pk = application.id
+    response = handler_api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "termination",
+            "reason": "Päättynyt",
+            "end_date": application.start_date + relativedelta(days=7),
+            "use_alternate_einvoice_provider": False,
+        },
+    )
+
+    response = handler_api_client.patch(
+        reverse("v1:application-alteration-detail", kwargs={"pk": response.data["id"]}),
+        {
+            "end_date": application.start_date + relativedelta(days=12),
+            "recovery_amount": 4000,
+        },
+    )
+    assert response.status_code == 200
+    assert (
+        response.data["end_date"]
+        == (application.start_date + relativedelta(days=12)).isoformat()
+    )
+    assert response.data["recovery_amount"] == "4000.00"
+
+
+@pytest.mark.parametrize(
+    "initial_state,result",
+    [
+        (ApplicationAlterationState.RECEIVED, 200),
+        (ApplicationAlterationState.OPENED, 200),
+        (ApplicationAlterationState.HANDLED, 403),
+    ],
+)
+def test_application_alteration_patch_allowed_edit_states_handler(
+    handler_api_client, application, initial_state, result
+):
+    alteration = _create_application_alteration(application)
+    alteration.state = initial_state
+    alteration.save()
+
+    response = handler_api_client.patch(
+        reverse("v1:application-alteration-detail", kwargs={"pk": alteration.pk}),
+        {
+            "end_date": application.start_date + relativedelta(days=12),
+        },
+    )
+    assert response.status_code == result
+
+
+@pytest.mark.parametrize(
+    "initial_state,result",
+    [
+        (ApplicationAlterationState.RECEIVED, 200),
+        (ApplicationAlterationState.OPENED, 403),
+        (ApplicationAlterationState.HANDLED, 403),
+    ],
+)
+def test_application_alteration_patch_allowed_edit_states_applicant(
+    api_client, application, initial_state, result
+):
+    alteration = _create_application_alteration(application)
+    alteration.state = initial_state
+    alteration.save()
+
+    response = api_client.patch(
+        reverse("v1:application-alteration-detail", kwargs={"pk": alteration.pk}),
+        {
+            "end_date": application.start_date + relativedelta(days=12),
+        },
+    )
+    assert response.status_code == result
+
+
 def _create_random_applications():
     f = faker.Faker()
     combos = [
@@ -2345,3 +2806,16 @@ def _create_random_applications():
             Calculation.objects.filter(application__id=application.pk).update(
                 modified_at=random_datetime
             )
+
+
+def _create_application_alteration(application):
+    f = faker.Faker()
+
+    alteration = ApplicationAlteration()
+    alteration.application = application
+    alteration.alteration_type = ApplicationAlterationType.TERMINATION
+    alteration.end_date = application.start_date + relativedelta(days=7)
+    alteration.reason = f.sentence()
+    alteration.save()
+
+    return alteration

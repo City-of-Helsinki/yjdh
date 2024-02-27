@@ -65,6 +65,12 @@ handler_app_router.register(r"notes", HandlerNoteViewSet, basename="handler-note
 router.register(r"applicationbatches", application_batch_views.ApplicationBatchViewSet)
 router.register(r"previousbenefits", calculator_views.PreviousBenefitViewSet)
 
+router.register(
+    r"applicationalterations",
+    application_views.ApplicationAlterationViewSet,
+    basename="application-alteration",
+)
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path(

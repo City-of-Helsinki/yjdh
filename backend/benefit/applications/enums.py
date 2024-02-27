@@ -212,3 +212,9 @@ class DecisionType(models.TextChoices):
 class ApplicationAlterationType(models.TextChoices):
     TERMINATION = "termination", _("Termination")
     SUSPENSION = "suspension", _("Suspension")
+
+
+class ApplicationAlterationState(models.TextChoices):
+    RECEIVED = "received", _("Received")
+    OPENED = "opened", _("Opened")
+    HANDLED = "handled", _("Handled")

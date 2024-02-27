@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-19 10:35+0200\n"
+"POT-Creation-Date: 2024-02-27 15:46+0200\n"
 "PO-Revision-Date: 2022-11-01 10:45+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -34,6 +34,19 @@ msgstr "Ei vietävää hakemusta, yritä myöhemmin uudelleen"
 #, python-brace-format
 msgid "TALPA export {date}"
 msgstr "TALPA-vienti {date}"
+
+msgid "Displayed in the archive in the applicant view"
+msgstr ""
+
+msgid "Operation not allowed for this application status."
+msgstr "Toiminto ei ole sallittu tässä hakemuksen tilassa."
+
+msgid "File not found."
+msgstr "Tiedostoa ei löydy."
+
+#, python-brace-format
+msgid "Helsinki-lisan hakemukset viety {date}"
+msgstr ""
 
 msgid "This should be unreachable"
 msgstr "Tämän pitäisi olla tavoittamattomissa"
@@ -143,6 +156,43 @@ msgstr "Laskelman tunnus ei vastaa nykyistä tunnusta"
 msgid "Reading {localized_model_name} data failed: {errors}"
 msgstr "{localized_model_name} -tietojen lukeminen epäonnistui: {errors}"
 
+msgid "Resume date is required if the benefit period wasn't terminated"
+msgstr "Muutosjakson päättymispäivämäärä vaaditaan, mikäli tukijakso keskeytyi"
+
+msgid "E-invoice provider name"
+msgstr "Verkkolaskuoperaattorin nimi"
+
+msgid "E-invoice provider identifier"
+msgstr "Verkkolaskuoperaattorin tunnus"
+
+msgid "E-invoice address"
+msgstr "Verkkolaskuosoite"
+
+#, python-brace-format
+msgid "{field} must be filled if using an alternative e-invoice address"
+msgstr "{field} on pakollinen tieto, mikäli käytössä on poikkeava verkkolaskutunnus"
+
+msgid "Alteration cannot start before first benefit day"
+msgstr "Muutos työsuhteessa ei voi alkaa ennen tukijakson alkua"
+
+msgid "Alteration cannot start after last benefit day"
+msgstr "Muutos työsuhteessa ei voi alkaa tukijakson päättymisen jälkeen"
+
+msgid "Alteration cannot end after last benefit day"
+msgstr "Muutosjakson päättymispäivämäärä ei voi olla tukijakson päättymisen jälkeen"
+
+msgid "Alteration end date cannot be before start date"
+msgstr "Muutosjakson päättymispäivä ei voi olla aiemmin kuin aloituspäivä"
+
+msgid "Another alteration already overlaps the alteration period"
+msgstr "Valitulla aikavälillä on jo toinen muutos työsuhteessa"
+
+msgid "You are not allowed to do this action"
+msgstr "Sinä et saa tehdä tätä toimenpidettä"
+
+msgid "The alteration cannot be edited in this state"
+msgstr "Muutosta työsuhteessa ei voida muuttaa tässä tilassa"
+
 #, python-brace-format
 msgid "Upload file size cannot be greater than {size} bytes"
 msgstr "Ladattavan tiedoston koko ei voi ylittää {size} tavua"
@@ -192,19 +242,6 @@ msgstr "Tilan siirto ei ole sallittu: {status} arvoon {value}"
 #, python-brace-format
 msgid "Initial status must be {initial_status}"
 msgstr "Alkutilan on oltava {initial_status}"
-
-msgid "Displayed in the archive in the applicant view"
-msgstr ""
-
-msgid "Operation not allowed for this application status."
-msgstr "Toiminto ei ole sallittu tässä hakemuksen tilassa."
-
-msgid "File not found."
-msgstr "Tiedostoa ei löydy."
-
-#, python-brace-format
-msgid "Helsinki-lisan hakemukset viety {date}"
-msgstr ""
 
 msgid "Benefit can not be granted before 24-month waiting period expires"
 msgstr "Avustusta ei voida myöntää ennen 24 kuukauden odotusajan päättymistä"
@@ -307,6 +344,12 @@ msgstr "liite"
 #| msgid "Step 4 - summary"
 msgid "pdf summary"
 msgstr "Vaihe 4 – yhteenveto"
+
+msgid "public decision text xml attachment"
+msgstr ""
+
+msgid "non-public decision text xml attachment"
+msgstr ""
 
 msgid "attachment is required"
 msgstr "liite on pakollinen"
@@ -433,11 +476,36 @@ msgstr "Puutteellinen hakemus"
 msgid "Update application in Ahjo"
 msgstr "Puutteellinen hakemus"
 
+#, fuzzy
+#| msgid "date of the decision in Ahjo"
+msgid "Send decision to Ahjo"
+msgstr "päätöksen päivämäärä Ahjossa"
+
+msgid ""
+"Template part for the decision section of a application decision proposal"
+msgstr ""
+
+msgid ""
+"Template part for the decision justification section of a decision proposal"
+msgstr ""
+
+msgid "An accepted decision"
+msgstr "Hyväksytty päätös"
+
+msgid "A denied decision"
+msgstr "Hylätty päätös"
+
 msgid "Termination"
 msgstr "Päättynyt"
 
 msgid "Suspension"
 msgstr "Keskeytynyt"
+
+msgid "Opened"
+msgstr "Avattu"
+
+msgid "Handled"
+msgstr "Käsitelty"
 
 #, python-brace-format
 msgid ""
@@ -702,11 +770,53 @@ msgstr "tila"
 msgid "ahjo statuses"
 msgstr "tila"
 
+msgid "type of the decision proposal template section"
+msgstr ""
+
+#, fuzzy
+#| msgid "date of the decision in Ahjo"
+msgid "type of the decision"
+msgstr "päätöksen päivämäärä Ahjossa"
+
+#, fuzzy
+#| msgid "Decision date"
+msgid "decision proposal section text content"
+msgstr "Päätöksen päivämäärä"
+
+msgid "name of the decision proposal template section"
+msgstr ""
+
+#, fuzzy
+#| msgid "Decision date"
+msgid "decision proposal template section"
+msgstr "Päätöksen päivämäärä"
+
+#, fuzzy
+#| msgid "Decision date"
+msgid "decision proposal template sections"
+msgstr "Päätöksen päivämäärä"
+
+#, fuzzy
+#| msgid "application attachment content"
+msgid "decision text content"
+msgstr "hakemuksen liitteen sisältö"
+
+msgid "ahjo decision text"
+msgstr ""
+
+#, fuzzy
+#| msgid "status"
+msgid "ahjo decision texts"
+msgstr "tila"
+
 msgid "alteration of application"
 msgstr "Muutos hakemukseen"
 
 msgid "type of alteration"
 msgstr "Muutoksen tyyppi"
+
+msgid "state of alteration"
+msgstr "Muutoksen tila"
 
 msgid "new benefit end date"
 msgstr "Uusi avustuksen päättymispäivä"
@@ -732,7 +842,8 @@ msgstr "Takaisinperittävä summa"
 msgid ""
 "whether to use a separate e-invoice address from the one of the applicant "
 "organization"
-msgstr "Käytetäänkö eri verkkolaskuosoitetta kuin hakijaorganisaation "
+msgstr ""
+"Käytetäänkö eri verkkolaskuosoitetta kuin hakijaorganisaation "
 "verkkolaskuosoitetta?"
 
 msgid "name of the e-invoice provider"
@@ -1145,9 +1256,6 @@ msgstr "Sinulla ei ole oikeutta muuttaa tätä viestiä"
 
 msgid "Application not found"
 msgstr "Hakemusta ei löytynyt"
-
-msgid "You are not allowed to do this action"
-msgstr "Sinä et saa tehdä tätä toimenpidettä"
 
 msgid "Cannot do this action because application is not in the correct status"
 msgstr ""
