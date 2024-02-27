@@ -13,6 +13,7 @@ from simple_history.models import HistoricalRecords
 from applications.enums import (
     AhjoDecision,
     AhjoStatus,
+    ApplicationAlterationState,
     ApplicationAlterationType,
     ApplicationBatchStatus,
     ApplicationOrigin,
@@ -1056,6 +1057,12 @@ class ApplicationAlteration(TimeStampedModel):
 
     alteration_type = models.TextField(
         verbose_name=_("type of alteration"), choices=ApplicationAlterationType.choices
+    )
+
+    state = models.TextField(
+        verbose_name=_("state of alteration"),
+        choices=ApplicationAlterationState.choices,
+        default=ApplicationAlterationState.RECEIVED,
     )
 
     end_date = models.DateField(verbose_name=_("new benefit end date"))

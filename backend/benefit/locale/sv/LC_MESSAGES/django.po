@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-19 10:35+0200\n"
+"POT-Creation-Date: 2024-02-27 15:46+0200\n"
 "PO-Revision-Date: 2022-11-01 10:47+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -35,6 +35,19 @@ msgstr ""
 #, python-brace-format
 msgid "TALPA export {date}"
 msgstr "TALPA-export {date}"
+
+msgid "Displayed in the archive in the applicant view"
+msgstr ""
+
+msgid "Operation not allowed for this application status."
+msgstr "Åtgärd tillåts inte för denna ansökningsstatus"
+
+msgid "File not found."
+msgstr "Fil hittades inte."
+
+#, python-brace-format
+msgid "Helsinki-lisan hakemukset viety {date}"
+msgstr ""
 
 msgid "This should be unreachable"
 msgstr "Detta bör vara onåbart"
@@ -139,6 +152,51 @@ msgstr "Beräkningens ID motsvarar inte befintlig ID."
 msgid "Reading {localized_model_name} data failed: {errors}"
 msgstr "Data {localized_model_name} kan inte läsas: {errors}"
 
+msgid "Resume date is required if the benefit period wasn't terminated"
+msgstr ""
+
+#, fuzzy
+#| msgid "Name of the employer"
+msgid "E-invoice provider name"
+msgstr "Arbetsgivarens namn"
+
+msgid "E-invoice provider identifier"
+msgstr ""
+
+#, fuzzy
+#| msgid "Delivery address"
+msgid "E-invoice address"
+msgstr "Leveransadress"
+
+#, python-brace-format
+msgid "{field} must be filled if using an alternative e-invoice address"
+msgstr ""
+
+msgid "Alteration cannot start before first benefit day"
+msgstr ""
+
+msgid "Alteration cannot start after last benefit day"
+msgstr ""
+
+msgid "Alteration cannot end after last benefit day"
+msgstr ""
+
+#, fuzzy
+#| msgid "application end_date can not be less than start_date"
+msgid "Alteration end date cannot be before start date"
+msgstr "end_date för ansökan kan inte vara tidigare än start_date"
+
+msgid "Another alteration already overlaps the alteration period"
+msgstr ""
+
+msgid "You are not allowed to do this action"
+msgstr "Du får inte utföra denna åtgärd"
+
+#, fuzzy
+#| msgid "Application can not be changed in this status"
+msgid "The alteration cannot be edited in this state"
+msgstr "Ansökan kan inte ändras i denna status"
+
 #, python-brace-format
 msgid "Upload file size cannot be greater than {size} bytes"
 msgstr "Den fil som laddas upp kan inte vara större än {size} byte"
@@ -187,19 +245,6 @@ msgstr "Tillståndsövergång tillåts inte: {status} till {value}"
 #, python-brace-format
 msgid "Initial status must be {initial_status}"
 msgstr "Initialstatus måste vara {initial_status}"
-
-msgid "Displayed in the archive in the applicant view"
-msgstr ""
-
-msgid "Operation not allowed for this application status."
-msgstr "Åtgärd tillåts inte för denna ansökningsstatus"
-
-msgid "File not found."
-msgstr "Fil hittades inte."
-
-#, python-brace-format
-msgid "Helsinki-lisan hakemukset viety {date}"
-msgstr ""
 
 msgid "Benefit can not be granted before 24-month waiting period expires"
 msgstr "Understöd kan inte beviljas före utgång av väntetid på 24 månader"
@@ -303,6 +348,12 @@ msgstr "bilaga"
 #| msgid "Step 4 - summary"
 msgid "pdf summary"
 msgstr "Steg 4 – sammanfattning"
+
+msgid "public decision text xml attachment"
+msgstr ""
+
+msgid "non-public decision text xml attachment"
+msgstr ""
 
 msgid "attachment is required"
 msgstr "bilaga är obligatorisk"
@@ -429,11 +480,42 @@ msgstr "Ofullständig ansökan"
 msgid "Update application in Ahjo"
 msgstr "Ofullständig ansökan"
 
+#, fuzzy
+#| msgid "date of the decision in Ahjo"
+msgid "Send decision to Ahjo"
+msgstr "datum då beslut fattas vid Ahjo"
+
+msgid ""
+"Template part for the decision section of a application decision proposal"
+msgstr ""
+
+msgid ""
+"Template part for the decision justification section of a decision proposal"
+msgstr ""
+
+#, fuzzy
+#| msgid "Accepted in Ahjo"
+msgid "An accepted decision"
+msgstr "Godkänd i Ahjo"
+
+#, fuzzy
+#| msgid "pay subsidy decision"
+msgid "A denied decision"
+msgstr "beslut om lönesubvention"
+
 msgid "Termination"
 msgstr ""
 
 msgid "Suspension"
 msgstr ""
+
+msgid "Opened"
+msgstr ""
+
+#, fuzzy
+#| msgid "Handler"
+msgid "Handled"
+msgstr "Handläggare"
 
 #, python-brace-format
 msgid ""
@@ -698,6 +780,45 @@ msgstr "status"
 msgid "ahjo statuses"
 msgstr "status"
 
+msgid "type of the decision proposal template section"
+msgstr ""
+
+#, fuzzy
+#| msgid "date of the decision in Ahjo"
+msgid "type of the decision"
+msgstr "datum då beslut fattas vid Ahjo"
+
+#, fuzzy
+#| msgid "Decision date"
+msgid "decision proposal section text content"
+msgstr "Beslutsdatum"
+
+msgid "name of the decision proposal template section"
+msgstr ""
+
+#, fuzzy
+#| msgid "Decision date"
+msgid "decision proposal template section"
+msgstr "Beslutsdatum"
+
+#, fuzzy
+#| msgid "Decision date"
+msgid "decision proposal template sections"
+msgstr "Beslutsdatum"
+
+#, fuzzy
+#| msgid "application attachment content"
+msgid "decision text content"
+msgstr "innehåll i bilaga till ansökan"
+
+msgid "ahjo decision text"
+msgstr ""
+
+#, fuzzy
+#| msgid "status"
+msgid "ahjo decision texts"
+msgstr "status"
+
 #, fuzzy
 #| msgid "application batches"
 msgid "alteration of application"
@@ -706,6 +827,11 @@ msgstr "ansökningssatser"
 #, fuzzy
 #| msgid "type of terms"
 msgid "type of alteration"
+msgstr "typ av villkor"
+
+#, fuzzy
+#| msgid "type of terms"
+msgid "state of alteration"
 msgstr "typ av villkor"
 
 #, fuzzy
@@ -1147,9 +1273,6 @@ msgstr "Du får inte ändra detta meddelande"
 
 msgid "Application not found"
 msgstr "Ansökan hittades inte"
-
-msgid "You are not allowed to do this action"
-msgstr "Du får inte utföra denna åtgärd"
 
 msgid "Cannot do this action because application is not in the correct status"
 msgstr "Kan inte utföra åtgärden eftersom ansökan inte har handläggningsstatus"
