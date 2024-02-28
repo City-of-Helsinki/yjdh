@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.7.0...kesaseteli-backend-v1.8.0) (2024-02-28)
+
+
+### Features
+
+* **kesaseteli:** Add fallback youth summer voucher logo without price ([4a01aec](https://github.com/City-of-Helsinki/yjdh/commit/4a01aec822f53e7e963ebc74000df8e1076f5e97))
+
 ## [1.7.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.6.0...kesaseteli-backend-v1.7.0) (2024-02-14)
 
 
