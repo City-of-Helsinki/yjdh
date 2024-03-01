@@ -59,9 +59,7 @@ const ReviewEditChanges: React.FC<ReviewEditChangesProps> = ({
   const [changes, setChanges] = useState<Difference[]>([]);
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const diff: Difference[] =
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       deepDiff(initialValues, currentValues, (path: string[], key: string) =>
         getDiffPrefilter(path, key, requiredKeys)
       ) || [];
