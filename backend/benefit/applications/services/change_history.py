@@ -1,9 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.db.models import Q
-from django.utils import timezone
 from simple_history.models import ModelChange
 
+from applications.enums import ApplicationStatus
 from applications.models import (
     Application,
     ApplicationLogEntry,
@@ -15,8 +15,17 @@ from shared.audit_log.models import AuditLogEntry
 from users.models import User
 
 DISABLE_DE_MINIMIS_AIDS = True
-EXCLUDED_APPLICATION_FIELDS = ("application_step", "status")
-EXCLUDED_EMPLOYEE_FIELDS = ("encrypted_first_name", "encrypted_last_name")
+EXCLUDED_APPLICATION_FIELDS = (
+    "application_step",
+    "status",
+    "pay_subsidy_percent",
+)
+
+EXCLUDED_EMPLOYEE_FIELDS = (
+    "encrypted_first_name",
+    "encrypted_last_name",
+    "encrypted_social_security_number",
+)
 
 
 def _get_handlers(as_ids: bool = False) -> list:
@@ -26,11 +35,19 @@ def _get_handlers(as_ids: bool = False) -> list:
     ]
 
 
+def _parse_change_values(value):
+    if value is None:
+        return None
+    if isinstance(value, bool):
+        return bool(value)
+    return str(value)
+
+
 def _format_change_dict(change: ModelChange, employee: bool) -> dict:
     return {
         "field": f"{'employee.' if employee else ''}{change.field}",
-        "old": str(change.old),
-        "new": str(change.new),
+        "old": _parse_change_values(change.old),
+        "new": _parse_change_values(change.new),
     }
 
 
@@ -78,14 +95,19 @@ def _get_application_change_history_between_timestamps(
         hist_application_when_start_editing,
         excluded_fields=EXCLUDED_APPLICATION_FIELDS,
     )
+
     employee_delta = hist_employee_when_stop_editing.diff_against(
         hist_employee_when_start_editing,
         excluded_fields=EXCLUDED_EMPLOYEE_FIELDS,
     )
-    changes = [
+
+    changes = []
+
+    changes += [
         _format_change_dict(change, employee=False)
         for change in application_delta.changes
     ]
+
     changes += [
         _format_change_dict(change, employee=True) for change in employee_delta.changes
     ]
@@ -95,10 +117,27 @@ def _get_application_change_history_between_timestamps(
     if not DISABLE_DE_MINIMIS_AIDS and new_or_edited_de_minimis_aids:
         changes.append({"field": "de_minimis_aid_set", "old": None, "new": None})
 
-    return changes
+    if not changes:
+        return []
+
+    new_record = application_delta.new_record
+    return [
+        {
+            "date": new_record.history_date,
+            "user": (
+                f"{new_record.history_user.first_name} {new_record.history_user.last_name}"
+                if new_record.history_user
+                and new_record.history_user.first_name
+                and new_record.history_user.last_name
+                else "Unknown user"
+            ),
+            "reason": "",
+            "changes": changes,
+        }
+    ]
 
 
-def get_application_change_history_for_handler(application: Application) -> list:
+def get_application_change_history_made_by_applicant(application: Application) -> list:
     """
     Get change history for application comparing historic application objects between
     the last time status was changed from handling to additional_information_needed
@@ -135,7 +174,48 @@ def get_application_change_history_for_handler(application: Application) -> list
     )
 
 
-def get_application_change_history_for_applicant(application: Application) -> list:
+def _is_history_change_excluded(change, excluded_fields):
+    return change.field in excluded_fields or change.old == change.new
+
+
+def _get_change_set_base(new_record: ModelChange):
+    return {
+        "date": new_record.history_date,
+        "reason": new_record.history_change_reason,
+        "user": (
+            f"{new_record.history_user.first_name} {new_record.history_user.last_name[0]}."
+            if new_record.history_user
+            and new_record.history_user.first_name
+            and new_record.history_user.last_name
+            else "Unknown user"
+        ),
+        "changes": [],
+    }
+
+
+merge_threshold_in_seconds = 0.25
+
+
+def _filter_and_format_changes(
+    changes, excluded_fields, is_employee_change, delta_time=None
+):
+    return list(
+        map(
+            lambda change: _format_change_dict(change, is_employee_change),
+            filter(  # Only accept those changes that are within the threshold delta_time and/or not excluded field
+                lambda change: not _is_history_change_excluded(change, excluded_fields)
+                and (
+                    delta_time
+                    is None  # We'll ignore this check for application changes as delta_time's not present
+                    or 0 <= delta_time <= merge_threshold_in_seconds
+                ),
+                changes,
+            ),
+        )
+    )
+
+
+def get_application_change_history_made_by_handler(application: Application) -> list:
     """
     Get application change history between the point when application is received and
     the current time. If the application has been in status
@@ -146,52 +226,67 @@ def get_application_change_history_for_applicant(application: Application) -> li
     Also, changes made when application status is additional_information_needed are
     not tracked, even if they are made by handler.
     """
-    application_log_entries = ApplicationLogEntry.objects.filter(
-        application=application
+
+    # Get all edits made by staff users and the first edit which is queried as RECEIVED for some reason
+    staff_users = User.objects.all().filter(is_staff=True).values_list("id", flat=True)
+    application_history = (
+        application.history.filter(
+            history_user_id__in=list(staff_users),
+            status__in=[
+                ApplicationStatus.HANDLING,
+            ],
+        )
+        | application.history.filter(status=ApplicationStatus.RECEIVED)[:1]
     )
 
-    log_entry_start = (
-        application_log_entries.filter(from_status="draft")
-        .filter(to_status="received")
-        .last()
-    )
+    application_diffs = []
 
-    if not log_entry_start:
-        return []
+    for i in range(0, len(application_history) - 1):
+        diff = application_history[i].diff_against(application_history[i + 1])
+        application_diffs.append(diff)
 
-    log_entry_end = (
-        application_log_entries.filter(from_status="handling")
-        .filter(to_status="additional_information_needed")
-        .last()
-    )
+    app_diff_dates = [diff.new_record.history_date for diff in application_diffs]
 
-    ts_start = log_entry_start.created_at
-    if not log_entry_end:
-        ts_end = timezone.now()
-        return _get_application_change_history_between_timestamps(
-            ts_start, ts_end, application
+    # create Q objects for each datetime in the list
+    q_objects = Q()
+    for dt in app_diff_dates:
+        start_date = dt - timedelta(seconds=merge_threshold_in_seconds)
+        end_date = dt + timedelta(seconds=merge_threshold_in_seconds)
+        q_objects |= Q(history_date__range=(start_date, end_date))
+
+    employee_history = application.employee.history.filter(q_objects)
+    employee_diffs = []
+    for i in range(0, len(employee_history) - 1):
+        diff = employee_history[i].diff_against(employee_history[i + 1])
+        employee_diffs.append(diff)
+
+    def create_change_set(app_diff, employee_diffs):
+        change_set = _get_change_set_base(app_diff.new_record)
+        change_set["changes"] = _filter_and_format_changes(
+            app_diff.changes, EXCLUDED_APPLICATION_FIELDS, False
         )
 
-    ts_end = log_entry_end.created_at
+        for employee_diff in employee_diffs:
+            delta_time = (
+                employee_diff.new_record.history_date - app_diff.new_record.history_date
+            ).total_seconds()
+            change_set["changes"] += _filter_and_format_changes(
+                employee_diff.changes, EXCLUDED_EMPLOYEE_FIELDS, True, delta_time
+            )
 
-    changes_before_additional_info = _get_application_change_history_between_timestamps(
-        ts_start, ts_end, application
+        return change_set if len(change_set["changes"]) > 0 else None
+
+    change_sets = list(
+        filter(
+            None,
+            map(
+                lambda app_diff: create_change_set(app_diff, employee_diffs),
+                application_diffs,
+            ),
+        )
     )
 
-    log_entry_start_additional = (
-        application_log_entries.filter(from_status="additional_information_needed")
-        .filter(to_status="handling")
-        .last()
-    )
-    if not log_entry_start_additional:
-        return changes_before_additional_info
-
-    ts_start_additional = log_entry_start_additional.created_at
-    ts_end_additional = timezone.now()
-    changes_after_additional_info = _get_application_change_history_between_timestamps(
-        ts_start_additional, ts_end_additional, application
-    )
-    return changes_before_additional_info + changes_after_additional_info
+    return change_sets
 
 
 def get_application_change_history_for_applicant_from_audit_log(

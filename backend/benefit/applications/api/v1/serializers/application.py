@@ -41,8 +41,8 @@ from applications.models import (
     Employee,
 )
 from applications.services.change_history import (
-    get_application_change_history_for_applicant,
-    get_application_change_history_for_handler,
+    get_application_change_history_made_by_applicant,
+    get_application_change_history_made_by_handler,
 )
 from calculator.api.v1.serializers import (
     CalculationSerializer,
@@ -1417,8 +1417,7 @@ class ApplicantApplicationSerializer(BaseApplicationSerializer):
     )
 
     def get_changes(self, obj):
-        changes = get_application_change_history_for_applicant(obj)
-        return ChangeHistorySerializer(changes, many=True).data
+        return []
 
     def get_company_for_new_application(self, _):
         """
@@ -1496,8 +1495,10 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
     )
 
     def get_changes(self, obj):
-        changes = get_application_change_history_for_handler(obj)
-        return ChangeHistorySerializer(changes, many=True).data
+        return {
+            "handler": get_application_change_history_made_by_handler(obj),
+            "applicant": get_application_change_history_made_by_applicant(obj),
+        }
 
     def get_company_for_new_application(self, _):
         """
