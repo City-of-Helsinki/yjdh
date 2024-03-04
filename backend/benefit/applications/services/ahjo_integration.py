@@ -683,10 +683,11 @@ def delete_existing_xml_attachments(application: Application):
     """Delete any existing decision text attachments from the application."""
     # TODO delete files from disk also
     Attachment.objects.filter(
-        application=application, attachment_type=AttachmentType.DECISION_TEXT_XML
-    ).delete()
-    Attachment.objects.filter(
-        application=application, attachment_type=AttachmentType.DECISION_TEXT_SECRET_XML
+        application=application,
+        attachment_type__in=[
+            AttachmentType.DECISION_TEXT_XML,
+            AttachmentType.DECISION_TEXT_SECRET_XML,
+        ],
     ).delete()
     LOGGER.info(
         f"Deleted existing decision text attachments for application {application.id}"
