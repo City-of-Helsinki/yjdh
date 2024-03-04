@@ -272,6 +272,9 @@ const useFormActions = (
       deMinimisAidSet: deMinimisAids,
       action: APPLICATION_ACTIONS.HANDLER_ALLOW_APPLICATION_EDIT,
       benefitType: BENEFIT_TYPES.SALARY,
+      trainingCompensations: normalizedValues.trainingCompensations
+        ? []
+        : undefined,
       calculation: calculation
         ? getPayloadForCalculation(currentValues)
         : undefined,
