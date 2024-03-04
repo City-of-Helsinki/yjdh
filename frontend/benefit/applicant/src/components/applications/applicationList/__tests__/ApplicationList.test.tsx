@@ -5,6 +5,8 @@ import React from 'react';
 
 import ApplicationList, { ApplicationListProps } from '../ApplicationList';
 
+jest.mock('next/router', () => jest.requireActual('next-router-mock'));
+
 describe('ApplicationList', () => {
   const initialProps: ApplicationListProps = {
     heading: 'Application List',

@@ -7,6 +7,8 @@ import { isString } from 'shared/utils/type-guards';
 jest.setTimeout(JEST_TIMEOUT);
 expect.extend(toHaveNoViolations);
 
+jest.mock('next/router', () => jest.requireActual('next-router-mock'));
+
 // eslint-disable-next-line no-console
 const originalError = console.error;
 let consoleWarnSpy: jest.SpyInstance;
