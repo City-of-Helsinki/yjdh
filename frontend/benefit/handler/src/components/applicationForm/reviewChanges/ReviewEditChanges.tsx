@@ -18,6 +18,7 @@ import {
   getDiffPrefilter,
   translateLabelFromPath,
 } from './utils';
+import { APPLICATION_ORIGINS } from 'benefit-shared/constants';
 
 export type ReviewEditChangesProps = {
   initialValues: Application;
@@ -63,7 +64,12 @@ const ReviewEditChanges: React.FC<ReviewEditChangesProps> = ({
     const diff: Difference[] =
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       deepDiff(initialValues, currentValues, (path: string[], key: string) =>
-        getDiffPrefilter(path, key, requiredKeys)
+        getDiffPrefilter(
+          path,
+          key,
+          requiredKeys,
+          currentValues.applicationOrigin === APPLICATION_ORIGINS.HANDLER
+        )
       ) || [];
     setChanges(diff);
     // eslint-disable-next-line react-hooks/exhaustive-deps
