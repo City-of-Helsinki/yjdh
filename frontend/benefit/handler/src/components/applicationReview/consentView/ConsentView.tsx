@@ -15,13 +15,7 @@ import useLocale from 'shared/hooks/useLocale';
 import { capitalize } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
-import ConsentActions from './consentActions/ConsentActions';
-
-const ConsentView: React.FC<ApplicationReviewViewProps> = ({
-  data,
-  isUploading,
-  handleUpload,
-}) => {
+const ConsentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
   const { t } = useTranslation();
   const cbPrefix = 'application_consent';
@@ -30,16 +24,10 @@ const ConsentView: React.FC<ApplicationReviewViewProps> = ({
   const theme = useTheme();
   return (
     <ReviewSection
+      id={data.id}
       header={t(`${translationsBase}.headings.heading9`)}
       section="approval"
-      action={
-        !ACTIONLESS_STATUSES.includes(data.status) ? (
-          <ConsentActions
-            isUploading={isUploading}
-            handleUpload={handleUpload}
-          />
-        ) : null
-      }
+      action={!ACTIONLESS_STATUSES.includes(data.status) ? true : null}
     >
       {data.applicationOrigin === APPLICATION_ORIGINS.APPLICANT ? (
         <$GridCell $colSpan={12}>
