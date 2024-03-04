@@ -1,6 +1,7 @@
 import { APPLICATION_FIELD_KEYS } from 'benefit/handler/constants';
 import DeMinimisContext from 'benefit/handler/context/DeMinimisContext';
 import { Application } from 'benefit/handler/types/application';
+import { APPLICATION_ORIGINS } from 'benefit-shared/constants';
 import deepDiff from 'deep-diff';
 import { IconArrowRight } from 'hds-react';
 import { useTranslation } from 'next-i18next';
@@ -18,7 +19,6 @@ import {
   getDiffPrefilter,
   translateLabelFromPath,
 } from './utils';
-import { APPLICATION_ORIGINS } from 'benefit-shared/constants';
 
 export type ReviewEditChangesProps = {
   initialValues: Application;
