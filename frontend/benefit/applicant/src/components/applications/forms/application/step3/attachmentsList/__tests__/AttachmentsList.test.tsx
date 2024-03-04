@@ -6,6 +6,8 @@ import React from 'react';
 
 import AttachmentsList, { AttachmentsListProps } from '../AttachmentsList';
 
+jest.mock('next/router', () => jest.requireActual('next-router-mock'));
+
 describe('AttachmentsList', () => {
   const initialProps: AttachmentsListProps = {
     attachmentType: ATTACHMENT_TYPES.HELSINKI_BENEFIT_VOUCHER,
