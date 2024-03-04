@@ -28,7 +28,7 @@ export const $CheckIconFill = styled(IconCheckCircleFill)`
 
 export const $EditButtonContainer = styled.div`
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 18px;
+  right: 18px;
   z-index: 99;
 `;

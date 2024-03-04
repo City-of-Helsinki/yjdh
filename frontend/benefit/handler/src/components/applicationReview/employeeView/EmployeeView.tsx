@@ -12,13 +12,8 @@ import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { getFullName } from 'shared/utils/application.utils';
 
 import AttachmentsListView from '../../attachmentsListView/AttachmentsListView';
-import EmployeeActions from './EmployeeActions/EmployeeActions';
 
-const EmployeeView: React.FC<ApplicationReviewViewProps> = ({
-  data,
-  handleUpload,
-  isUploading,
-}) => {
+const EmployeeView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
   const { t } = useTranslation();
   return (
@@ -26,14 +21,7 @@ const EmployeeView: React.FC<ApplicationReviewViewProps> = ({
       id={data.id}
       header={t(`${translationsBase}.headings.heading5`)}
       section="employee"
-      action={
-        !ACTIONLESS_STATUSES.includes(data.status) ? (
-          <EmployeeActions
-            handleUpload={handleUpload}
-            isUploading={isUploading}
-          />
-        ) : null
-      }
+      action={!ACTIONLESS_STATUSES.includes(data.status) ? true : null}
     >
       <$GridCell $colSpan={6}>
         <$ViewFieldBold large>

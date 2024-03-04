@@ -667,7 +667,7 @@
   "review": {
     "actions": {
       "handle": "Ota käsittelyyn",
-      "edit": "Muokkaa hakemusta",
+      "edit": "Muokkaa",
       "close": "Sulje",
       "done": "Tee päätösehdotus",
       "saveAndContinue": "Tallenna ja sulje",

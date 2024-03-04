@@ -12,6 +12,7 @@ import {
   ApplicationFields,
 } from 'benefit/handler/types/application';
 import {
+  APPLICATION_ORIGINS,
   APPLICATION_STATUSES,
   ATTACHMENT_TYPES,
   EMPLOYEE_KEYS,
@@ -52,7 +53,9 @@ const getApplication = (
           ...applicationData,
           start_date: convertToUIDateFormat(applicationData.start_date),
           end_date: convertToUIDateFormat(applicationData.end_date),
-          paper_application_date: convertToUIDateFormat(applicationData.paper_application_date),
+          paper_application_date: convertToUIDateFormat(
+            applicationData.paper_application_date
+          ),
           calculation: applicationData.calculation
             ? {
                 ...applicationData.calculation,
@@ -222,11 +225,22 @@ const requiredAttachments = (
       )
     );
   }
+
+  let hasApplicantConsent = true;
+  if (values.applicationOrigin === APPLICATION_ORIGINS.APPLICANT) {
+    hasApplicantConsent = !isEmpty(
+      values?.attachments?.find(
+        (att: BenefitAttachment) =>
+          att.attachmentType === ATTACHMENT_TYPES.EMPLOYEE_CONSENT
+      )
+    );
+  }
   return (
     hasWorkContract &&
     hasFullApplication &&
     hasPaySubsidyDecision &&
-    hasApprenticeshipProgram
+    hasApprenticeshipProgram &&
+    hasApplicantConsent
   );
 };
 

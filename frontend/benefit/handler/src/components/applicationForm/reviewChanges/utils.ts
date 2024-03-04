@@ -92,7 +92,8 @@ export const getDeMinimisChanged = (
 export const getDiffPrefilter = (
   path: string[],
   key: string,
-  requiredKeys: Set<APPLICATION_FIELD_KEYS>
+  requiredKeys: Set<APPLICATION_FIELD_KEYS>,
+  isOfHandlerOrigin: boolean
 ): boolean => {
   if (path.length > 0 && path.includes('employee')) return false;
   if (
@@ -102,6 +103,14 @@ export const getDiffPrefilter = (
     ].includes(key as APPLICATION_FIELD_KEYS)
   )
     return true;
+
+  if (
+    key === APPLICATION_FIELD_KEYS.PAPER_APPLICATION_DATE &&
+    !isOfHandlerOrigin
+  ) {
+    return true;
+  }
+
   const isRequiredKey = requiredKeys.has(key as APPLICATION_FIELD_KEYS);
   return !isRequiredKey;
 };

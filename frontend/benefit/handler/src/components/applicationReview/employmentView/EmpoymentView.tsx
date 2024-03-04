@@ -14,13 +14,8 @@ import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { formatFloatToCurrency } from 'shared/utils/string.utils';
 
 import AttachmentsListView from '../../attachmentsListView/AttachmentsListView';
-import EmploymentActions from './employmentActions/EmploymentActions';
 
-const EmploymentView: React.FC<ApplicationReviewViewProps> = ({
-  data,
-  isUploading,
-  handleUpload,
-}) => {
+const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
   const { t } = useTranslation();
   return (
@@ -28,14 +23,7 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({
       id={data.id}
       header={t(`${translationsBase}.headings.heading8`)}
       section="employment"
-      action={
-        !ACTIONLESS_STATUSES.includes(data.status) ? (
-          <EmploymentActions
-            handleUpload={handleUpload}
-            isUploading={isUploading}
-          />
-        ) : null
-      }
+      action={!ACTIONLESS_STATUSES.includes(data.status) ? true : null}
     >
       <$GridCell $colSpan={6} $colStart={1}>
         <$ViewFieldBold>

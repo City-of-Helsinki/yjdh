@@ -692,6 +692,16 @@ const FormContent: React.FC<Props> = ({
             />
           </$GridCell>
         )}
+        {application.applicationOrigin === APPLICATION_ORIGINS.APPLICANT && (
+          <$GridCell $colSpan={12}>
+            <AttachmentsList
+              attachments={attachments}
+              attachmentType={ATTACHMENT_TYPES.EMPLOYEE_CONSENT}
+              handleQuietSave={handleQuietSave}
+              required
+            />
+          </$GridCell>
+        )}
       </FormSection>
       <FormSection
         paddingBottom
