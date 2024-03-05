@@ -414,6 +414,30 @@
     },
     "errors": {
       "dirtyOrInvalidForm": "Täytä lomakkeen puuttuvat tai virheelliset kentät"
+    },
+    "decision": {
+      "description": {
+        "accepted": "Helsinki-lisää on myönnetty aikavälille {{dateRangeStart}} – {{dateRangeEnd}}",
+        "rejected": "Helsinki-lisää ei myönnetty"
+      },
+      "headings": {
+        "mainHeading": "Päätöksen tiedot",
+        "caseId": "Diaarinumero",
+        "status": "Päätös",
+        "decisionDate": "Päätös tehty",
+        "benefitPeriod": "Tukiaika",
+        "benefitAmount": "Myönnetty tuki yhteensä",
+        "existingAlterations": "Muutokset työsuhteessa"
+      },
+      "alterationList": {
+        "count_one": "{{count}} ilmoitettu muutos työsuhteessa",
+        "count_other": "{{count}} ilmoitettua muutosta työsuhteessa",
+        "empty": "Ei ilmoitettuja keskeytyksiä työsuhteessa. Työsuhde on toteutunut suunnitellusti."
+      },
+      "actions": {
+        "showDecision": "Tarkastele päätöstä",
+        "reportAlteration": "Ilmoita työsuhteen muutoksesta"
+      }
     }
   },
   "serviceName": "Helsinki-lisän asiointipalvelu",

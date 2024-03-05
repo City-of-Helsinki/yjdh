@@ -8,10 +8,6 @@ import {
   ApplicationListItemData,
 } from 'benefit-shared/types/application';
 import {
-  IconAlertCircleFill,
-  IconCheckCircle,
-  IconCheckCircleFill,
-  IconCrossCircleFill,
   IconPen,
 } from 'hds-react';
 import camelCase from 'lodash/camelCase';
@@ -113,33 +109,6 @@ const useApplicationList = ({
   ): string =>
     t(`${translationStatusBase}.${camelCase(applicationStatus)}`, values);
 
-  const getStatusIcon = (applicationStatus: APPLICATION_STATUSES): React.FC => {
-    switch (applicationStatus) {
-      case APPLICATION_STATUSES.DRAFT:
-        return () => React.createElement('span');
-
-      case APPLICATION_STATUSES.INFO_REQUIRED:
-        return IconAlertCircleFill;
-
-      case APPLICATION_STATUSES.RECEIVED:
-        return IconCheckCircle;
-
-      case APPLICATION_STATUSES.ACCEPTED:
-        return IconCheckCircleFill;
-
-      case APPLICATION_STATUSES.REJECTED:
-        return IconCrossCircleFill;
-
-      case APPLICATION_STATUSES.CANCELLED:
-        return IconCrossCircleFill;
-
-      case APPLICATION_STATUSES.HANDLING:
-        return IconCheckCircle;
-
-      default:
-        return () => React.createElement('span');
-    }
-  };
   const getAllowedActions = (
     id: string,
     applicationStatus: APPLICATION_STATUSES
@@ -225,7 +194,6 @@ const useApplicationList = ({
       status: appStatus,
       unreadMessagesCount: unread_messages_count ?? 0,
       batch,
-      statusIcon: getStatusIcon(appStatus),
       contactPersonName,
     };
     const draftProps = { modifiedAt: modifiedAtWithTime };

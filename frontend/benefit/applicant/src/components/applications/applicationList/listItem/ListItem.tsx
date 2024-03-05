@@ -1,3 +1,4 @@
+import StatusIcon from 'benefit/applicant/components/applications/StatusIcon';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { Loading } from 'benefit/applicant/types/common';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
@@ -55,7 +56,6 @@ const ListItem: React.FC<ListItemProps> = (props) => {
     submittedAt,
     applicationNum,
     allowedAction,
-    statusIcon: StatusIcon,
     status,
     unreadMessagesCount,
     validUntil,
@@ -98,7 +98,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
             <$StatusDataColumn className={`list-item-status--${status}`}>
               <$DataHeader>{t(`${translationBase}.common.status`)}</$DataHeader>
               <$StatusDataValue>
-                <StatusIcon />
+                <StatusIcon status={status}/>
                 <span>{statusText}</span>
               </$StatusDataValue>
             </$StatusDataColumn>

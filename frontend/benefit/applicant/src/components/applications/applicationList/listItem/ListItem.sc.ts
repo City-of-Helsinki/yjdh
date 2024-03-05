@@ -87,25 +87,6 @@ export const $StatusDataValue = styled($DataValue)`
   align-items: center;
   gap: ${(props) => props.theme.spacing.xs3};
 
-  .list-item-status--${APPLICATION_STATUSES.HANDLING} & {
-    svg {
-      color: ${(props) => props.theme.colors.info};
-    }
-  }
-
-  .list-item-status--${APPLICATION_STATUSES.ACCEPTED} & {
-    svg {
-      color: ${(props) => props.theme.colors.success};
-    }
-  }
-
-  .list-item-status--${APPLICATION_STATUSES.REJECTED} &,
-  .list-item-status--${APPLICATION_STATUSES.CANCELLED} & {
-    svg {
-      color: ${(props) => props.theme.colors.error};
-    }
-  }
-
   .list-item-status--${APPLICATION_STATUSES.INFO_REQUIRED} & {
     color: ${(props) => props.theme.colors.alertDark};
   }

@@ -1,7 +1,7 @@
 import {
-  $HeaderItem,
+  $HeaderItem, $HeaderRightColumnItem,
   $PageHeader,
-  $PageHeading,
+  $PageHeading, $PageHeadingApplicant,
   $PageHeadingHelperText,
   $PageSubHeading,
   $SpinnerContainer,
@@ -12,6 +12,8 @@ import ApplicationFormStep3 from 'benefit/applicant/components/applications/form
 import ApplicationFormStep4 from 'benefit/applicant/components/applications/forms/application/step4/ApplicationFormStep4';
 import ApplicationFormStep5 from 'benefit/applicant/components/applications/forms/application/step5/ApplicationFormStep5';
 import ApplicationFormStep6 from 'benefit/applicant/components/applications/forms/application/step6/ApplicationFormStep6';
+import DecisionSummary from 'benefit/applicant/components/applications/pageContent/DecisionSummary';
+import StatusIcon from 'benefit/applicant/components/applications/StatusIcon';
 import NoCookieConsentsNotification from 'benefit/applicant/components/cookieConsent/NoCookieConsentsNotification';
 import { $Hr } from 'benefit/applicant/components/pages/Pages.sc';
 import { SUBMITTED_STATUSES } from 'benefit/applicant/constants';
@@ -134,23 +136,34 @@ const PageContent: React.FC = () => {
             <$PageHeading>
               {t('common:applications.pageHeaders.edit')}
             </$PageHeading>
+            <$PageHeadingApplicant>
+              {application.employee.firstName}{" "}
+              {application.employee.lastName}
+            </$PageHeadingApplicant>
           </$HeaderItem>
+          {id && application?.submittedAt && application?.applicationNumber &&
+            <$HeaderRightColumnItem>
+              <div>
+                <StatusIcon status={application.status} />
+                {t(`common:applications.statuses.${application.status}`)}
+              </div>
+              <$PageSubHeading
+                css={`
+                  font-weight: 400;
+                  font-size: ${theme.fontSize.body.m};
+                `}
+              >
+                {t('common:applications.pageHeaders.sent', {
+                  applicationNumber: application.applicationNumber,
+                  submittedAt: convertToUIDateAndTimeFormat(
+                    application?.submittedAt
+                  ),
+                })}
+              </$PageSubHeading>
+            </$HeaderRightColumnItem>
+          }
         </$PageHeader>
-        {id && application?.submittedAt && application?.applicationNumber && (
-          <$PageSubHeading
-            css={`
-              font-weight: 400;
-              font-size: ${theme.fontSize.body.m};
-            `}
-          >
-            {t('common:applications.pageHeaders.sent', {
-              applicationNumber: application.applicationNumber,
-              submittedAt: convertToUIDateAndTimeFormat(
-                application?.submittedAt
-              ),
-            })}
-          </$PageSubHeading>
-        )}
+          <DecisionSummary application={application} />
         <ApplicationFormStep5 isReadOnly data={application} />
       </Container>
     );

@@ -414,6 +414,30 @@
     },
     "errors": {
       "dirtyOrInvalidForm": "Please fill any missing or invalid form fields"
+    },
+    "decision": {
+      "description": {
+        "accepted": "Helsinki benefit has been granted from {{dateRangeStart}} to {{dateRangeEnd}}",
+        "rejected": "No Helsinki benefit was granted"
+      },
+      "headings": {
+        "mainHeading": "Decision details",
+        "caseId": "Case identifier",
+        "status": "Decision",
+        "decisionDate": "Date of decision",
+        "benefitPeriod": "Benefit period",
+        "benefitAmount": "Total amount of benefit",
+        "existingAlterations": "Alterations in employment"
+      },
+      "alterationList": {
+        "count_one": "{{count}} alteration in employment reported",
+        "count_other": "{{count}} alterations in employment reported",
+        "empty": "No reported alterations in employment. The employment has proceeded as expected."
+      },
+      "actions": {
+        "showDecision": "View the decision",
+        "reportAlteration": "Report an alteration"
+      }
     }
   },
   "serviceName": "Helsinki benefit service",

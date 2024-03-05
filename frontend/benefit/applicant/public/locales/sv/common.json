@@ -414,6 +414,30 @@
     },
     "errors": {
       "dirtyOrInvalidForm": "Fyll i eventuella saknade eller ogiltiga formulärfält"
+    },
+    "decision": {
+      "description": {
+        "accepted": "",
+        "rejected": ""
+      },
+      "headings": {
+        "mainHeading": "",
+        "caseId": "",
+        "status": "",
+        "decisionDate": "",
+        "benefitPeriod": "",
+        "benefitAmount": "",
+        "existingAlterations": ""
+      },
+      "alterationList": {
+        "count_one": "",
+        "count_other": "",
+        "empty": ""
+      },
+      "actions": {
+        "showDecision": "",
+        "reportAlteration": ""
+      }
     }
   },
   "serviceName": "E-tjänsten för Helsingforstillägg",
