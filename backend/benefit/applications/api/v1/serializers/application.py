@@ -197,9 +197,12 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "duration_in_months_rounded",
             "total_deminimis_amount",
             "ahjo_status",
+            "ahjo_case_id",
             "changes",
             "archived_for_applicant",
             "alterations",
+            "calculated_benefit_amount",
+            "ahjo_decision_date",
         ]
         read_only_fields = [
             "submitted_at",
@@ -225,6 +228,9 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "total_deminimis_amount",
             "changes",
             "archived_for_applicant",
+            "alterations",
+            "calculated_benefit_amount",
+            "ahjo_decision_date",
         ]
         extra_kwargs = {
             "company_name": {
@@ -374,6 +380,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
     ahjo_decision = serializers.ReadOnlyField()
 
     ahjo_status = serializers.SerializerMethodField("get_latest_ahjo_status")
+
+    ahjo_decision_date = serializers.SerializerMethodField("get_ahjo_decision_date")
 
     submitted_at = serializers.SerializerMethodField("get_submitted_at")
 
@@ -566,6 +574,12 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             ),
             "last_possible_end_date": last_possible_end_date,
         }
+
+    def get_ahjo_decision_date(self, obj):
+        if obj.batch is None:
+            return None
+
+        return obj.batch.decision_date
 
     def get_submitted_at(self, obj):
         return getattr(obj, "submitted_at", None)

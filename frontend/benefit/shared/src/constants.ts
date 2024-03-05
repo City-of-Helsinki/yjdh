@@ -209,3 +209,14 @@ export enum CALCULATION_ROW_DESCRIPTION_TYPES {
 }
 
 export const HELSINKI_CONSENT_COOKIE_NAME = 'city-of-helsinki-cookie-consents';
+
+export enum ALTERATION_TYPE {
+  TERMINATION = 'termination',
+  SUSPENSION = 'suspension',
+}
+
+export enum ALTERATION_STATE {
+  RECEIVED = 'received',
+  OPENED = 'opened',
+  HANDLED = 'handled',
+}

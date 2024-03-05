@@ -266,6 +266,10 @@ export type Application = {
   organizationType?: ORGANIZATION_TYPES;
   associationImmediateManagerCheck?: boolean;
   archivedForApplicant?: boolean;
+  ahjoCaseId?: string;
+  ahjoDecisionDate?: string;
+  calculatedBenefitAmount?: number;
+  alterations?: Array<ApplicationAlteration>;
 } & Step1 &
   Step2;
 
@@ -569,4 +573,40 @@ export type ApproveTermsOfServiceResponseData = {
   approved_by: string;
   terms: string;
   selected_applicant_consents: string[];
+};
+
+export type ApplicationAlteration = {
+  id?: number;
+  application: string;
+  alterationType?: ALTERATION_TYPE;
+  endDate?: string;
+  resumeDate?: string;
+  reason?: string;
+  useEinvoice: boolean;
+  einvoiceProviderName?: string;
+  einvoiceProviderIdentifier?: string;
+  einvoiceAddress?: string;
+  contactPerson?: string;
+  state?: ALTERATION_STATE;
+  recoveryStartDate?: string;
+  recoveryEndDate?: string;
+  recoveryAmount?: number;
+};
+
+export type ApplicationAlterationData = {
+  id?: number;
+  application: string;
+  alteration_type: ALTERATION_TYPE;
+  end_date: string;
+  resume_date?: string;
+  reason?: string;
+  use_einvoice: boolean;
+  einvoice_provider_name?: string;
+  einvoice_provider_identifier?: string;
+  einvoice_address?: string;
+  contact_person?: string;
+  state?: ALTERATION_STATE;
+  recovery_start_date?: string;
+  recovery_end_date?: string;
+  recovery_amount?: number;
 };

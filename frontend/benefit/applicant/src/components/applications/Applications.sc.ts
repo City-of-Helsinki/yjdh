@@ -1,3 +1,4 @@
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { respondAbove } from 'shared/styles/mediaQueries';
 import styled from 'styled-components';
 
@@ -20,10 +21,23 @@ export const $PageHeader = styled.div`
 
 export const $HeaderItem = styled.div``;
 
+export const $HeaderRightColumnItem = styled.div`
+  margin-top: ${(props) => props.theme.spacing.m};
+
+  ${respondAbove('md')`
+    text-align: right;
+  `};
+`;
+
 export const $PageHeading = styled.h1`
   font-size: ${(props) => props.theme.fontSize.heading.xl};
   font-weight: normal;
   margin: 0;
+`;
+
+export const $PageHeadingApplicant = styled.div`
+  margin-top: var(--spacing-m);
+  margin-bottom: var(--spacing-m);
 `;
 
 export const $PageSubHeading = styled.p`
@@ -88,4 +102,35 @@ export const $NoApplicationsContainer = styled.div`
   align-items: center;
   gap: ${(props) => props.theme.spacing.xs};
   margin: ${(props) => props.theme.spacingLayout.xl} 0;
+`;
+
+export const $StatusIcon = styled.span`
+  display: inline-block;
+
+  svg {
+    vertical-align: middle;
+  }
+
+  &.status-icon--${APPLICATION_STATUSES.HANDLING} {
+    svg {
+      color: ${(props) => props.theme.colors.info};
+    }
+  }
+
+  &.status-icon--${APPLICATION_STATUSES.ACCEPTED} {
+    svg {
+      color: ${(props) => props.theme.colors.success};
+    }
+  }
+
+  &.status-icon--${APPLICATION_STATUSES.REJECTED},
+  &.status-icon--${APPLICATION_STATUSES.CANCELLED} {
+    svg {
+      color: ${(props) => props.theme.colors.error};
+    }
+  }
+
+  &.status-icon--${APPLICATION_STATUSES.INFO_REQUIRED} {
+    color: ${(props) => props.theme.colors.alertDark};
+  }
 `;
