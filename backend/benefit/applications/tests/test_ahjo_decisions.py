@@ -1,7 +1,10 @@
+import uuid
+
 import pytest
 from rest_framework.reverse import reverse
 
 from applications.enums import DecisionProposalTemplateSectionType, DecisionType
+from applications.models import AhjoDecisionText
 from applications.services.ahjo_decision_service import (
     replace_decision_template_placeholders,
 )
@@ -109,3 +112,56 @@ def test_secret_xml_decision_string(decided_application):
         str(calculation.calculated_benefit_amount),
     ]
     assert all([replacement in xml_string for replacement in wanted_replacements])
+
+
+def get_decisions_url(application_id: uuid) -> str:
+    return reverse("handler-decisions-list", kwargs={"application_id": application_id})
+
+
+def test_decision_text_api_unauthenticated(anonymous_client, decided_application):
+    url = get_decisions_url(decided_application.id)
+    response = anonymous_client.post(url)
+    assert response.status_code == 403
+
+
+@pytest.mark.parametrize(
+    "decision_type, language",
+    [
+        (DecisionType.ACCEPTED, "fi"),
+        (DecisionType.ACCEPTED, "sv"),
+        (DecisionType.DENIED, "fi"),
+        (DecisionType.DENIED, "sv"),
+    ],
+)
+def test_decision_text_api_post(
+    decided_application, handler_api_client, decision_type, language
+):
+    url = get_decisions_url(decided_application.id)
+    data = {
+        "decision_type": decision_type,
+        "decision_text": "Test decision text",
+        "language": language,
+    }
+    response = handler_api_client.post(url, data)
+    assert response.status_code == 201
+
+    decision_text = AhjoDecisionText.objects.get(application=decided_application)
+
+    assert decision_text.decision_type == decision_type
+    assert decision_text.decision_text == "Test decision text"
+    assert decision_text.language == language
+
+
+def test_decision_text_api_get(decided_application, handler_api_client):
+    url = get_decisions_url(decided_application.id)
+    decision_text = AhjoDecisionText.objects.create(
+        application=decided_application,
+        decision_type=DecisionType.ACCEPTED,
+        decision_text="Test decision text",
+        language="fi",
+    )
+    response = handler_api_client.get(url)
+    assert response.status_code == 200
+    assert response.data["decision_text"] == decision_text.decision_text
+    assert response.data["decision_type"] == decision_text.decision_type
+    assert response.data["language"] == decision_text.language

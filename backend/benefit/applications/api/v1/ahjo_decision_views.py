@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
@@ -7,8 +8,13 @@ from rest_framework.views import APIView
 from applications.api.v1.serializers.decision_proposal_template import (
     DecisionProposalTemplateSectionSerializer,
 )
+from applications.api.v1.serializers.decision_text import DecisionTextSerializer
 from applications.enums import ApplicationStatus
-from applications.models import Application, DecisionProposalTemplateSection
+from applications.models import (
+    AhjoDecisionText,
+    Application,
+    DecisionProposalTemplateSection,
+)
 from applications.services.ahjo_decision_service import process_template_sections
 from common.permissions import BFIsHandler
 
@@ -65,3 +71,34 @@ class DecisionProposalTemplateSectionList(APIView):
         )
 
         return Response(serializer.data)
+
+
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name="application_id",
+            description="UUID of the application",
+            required=True,
+            type=OpenApiTypes.UUID,
+            location=OpenApiParameter.PATH,
+        ),
+    ],
+    description=("API for decision texts. Only handlers are able to access this view."),
+    request=DecisionTextSerializer,
+)
+class DecisionTextList(APIView):
+    permission_classes = [BFIsHandler]
+
+    def get(self, request, application_id):
+        decision_text = AhjoDecisionText.objects.get(application_id=application_id)
+        serializer = DecisionTextSerializer(decision_text, many=False)
+        return Response(serializer.data)
+
+    def post(self, request, application_id):
+        application = get_object_or_404(Application, pk=application_id)
+
+        serializer = DecisionTextSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(application_id=application.id)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

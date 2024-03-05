@@ -12,7 +12,10 @@ from drf_spectacular.views import (
 from rest_framework_nested import routers
 
 from applications.api.v1 import application_batch_views, application_views
-from applications.api.v1.ahjo_decision_views import DecisionProposalTemplateSectionList
+from applications.api.v1.ahjo_decision_views import (
+    DecisionProposalTemplateSectionList,
+    DecisionTextList,
+)
 from applications.api.v1.ahjo_integration_views import (
     AhjoAttachmentView,
     AhjoCallbackView,
@@ -105,6 +108,11 @@ urlpatterns = [
     path("v1/users/options/", UserOptionsView.as_view()),
     path(
         "v1/handlerapplications/<str:application_id>/review/", ReviewStateView.as_view()
+    ),
+    path(
+        "v1/handlerapplications/<str:application_id>/decisions/",
+        DecisionTextList.as_view(),
+        name="handler-decisions-list",
     ),
     path(
         "v1/print/<str:pk>/",
