@@ -27,7 +27,7 @@ const PaperView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         <$ViewFieldBold>
           {t(`${translationsBase}.fields.paperApplicationDate`)}
         </$ViewFieldBold>
-        <$ViewField>
+        <$ViewField large>
           {convertToUIDateFormat(data?.paperApplicationDate) || '-'}
         </$ViewField>
       </$GridCell>
