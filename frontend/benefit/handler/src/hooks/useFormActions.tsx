@@ -179,7 +179,10 @@ const useFormActions = (
     values: Partial<Application>
   ): Calculation => {
     // Return the calculation values as they are
-    if (values.paySubsidyGranted === initialApplication?.paySubsidyGranted) {
+    if (
+      values.paySubsidyGranted === initialApplication?.paySubsidyGranted &&
+      values.apprenticeshipProgram === initialApplication?.apprenticeshipProgram
+    ) {
       return {
         ...values.calculation,
         monthlyPay: stringToFloatValue(values.employee.monthlyPay),
@@ -196,7 +199,10 @@ const useFormActions = (
   const getPayloadForPaySubsidies = (
     values: Partial<Application>
   ): PaySubsidy[] => {
-    if (values.paySubsidyGranted === initialApplication?.paySubsidyGranted) {
+    if (
+      values.paySubsidyGranted === initialApplication?.paySubsidyGranted &&
+      values.apprenticeshipProgram === initialApplication?.apprenticeshipProgram
+    ) {
       return [...values.paySubsidies];
     }
     return [
