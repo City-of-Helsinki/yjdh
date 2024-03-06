@@ -14,6 +14,7 @@ from rest_framework_nested import routers
 from applications.api.v1 import application_batch_views, application_views
 from applications.api.v1.ahjo_decision_views import (
     DecisionProposalTemplateSectionList,
+    DecisionTextDetail,
     DecisionTextList,
 )
 from applications.api.v1.ahjo_integration_views import (
@@ -113,6 +114,11 @@ urlpatterns = [
         "v1/handlerapplications/<str:application_id>/decisions/",
         DecisionTextList.as_view(),
         name="handler-decisions-list",
+    ),
+    path(
+        "v1/handlerapplications/<str:application_id>/decisions/<str:decision_id>/",
+        DecisionTextDetail.as_view(),
+        name="handler-decisions-detail",
     ),
     path(
         "v1/print/<str:pk>/",

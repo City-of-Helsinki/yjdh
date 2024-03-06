@@ -114,12 +114,22 @@ def test_secret_xml_decision_string(decided_application):
     assert all([replacement in xml_string for replacement in wanted_replacements])
 
 
-def get_decisions_url(application_id: uuid) -> str:
+def get_decisions_list_url(application_id: uuid) -> str:
     return reverse("handler-decisions-list", kwargs={"application_id": application_id})
 
 
+def get_decisions_detail_url(application_id: uuid, decision_text_id: uuid) -> str:
+    return reverse(
+        "handler-decisions-detail",
+        kwargs={
+            "application_id": application_id,
+            "decision_id": decision_text_id,
+        },
+    )
+
+
 def test_decision_text_api_unauthenticated(anonymous_client, decided_application):
-    url = get_decisions_url(decided_application.id)
+    url = get_decisions_list_url(decided_application.id)
     response = anonymous_client.post(url)
     assert response.status_code == 403
 
@@ -133,10 +143,11 @@ def test_decision_text_api_unauthenticated(anonymous_client, decided_application
         (DecisionType.DENIED, "sv"),
     ],
 )
+@pytest.mark.django_db
 def test_decision_text_api_post(
     decided_application, handler_api_client, decision_type, language
 ):
-    url = get_decisions_url(decided_application.id)
+    url = get_decisions_list_url(decided_application.id)
     data = {
         "decision_type": decision_type,
         "decision_text": "Test decision text",
@@ -144,16 +155,14 @@ def test_decision_text_api_post(
     }
     response = handler_api_client.post(url, data)
     assert response.status_code == 201
-
     decision_text = AhjoDecisionText.objects.get(application=decided_application)
-
     assert decision_text.decision_type == decision_type
     assert decision_text.decision_text == "Test decision text"
     assert decision_text.language == language
 
 
 def test_decision_text_api_get(decided_application, handler_api_client):
-    url = get_decisions_url(decided_application.id)
+    url = get_decisions_list_url(decided_application.id)
     decision_text = AhjoDecisionText.objects.create(
         application=decided_application,
         decision_type=DecisionType.ACCEPTED,
@@ -165,3 +174,24 @@ def test_decision_text_api_get(decided_application, handler_api_client):
     assert response.data["decision_text"] == decision_text.decision_text
     assert response.data["decision_type"] == decision_text.decision_type
     assert response.data["language"] == decision_text.language
+
+
+def test_decision_text_api_put(decided_application, handler_api_client):
+    decision_text = AhjoDecisionText.objects.create(
+        application=decided_application,
+        decision_type=DecisionType.ACCEPTED,
+        decision_text="Test decision text",
+        language="fi",
+    )
+    url = get_decisions_detail_url(decided_application.id, decision_text.id)
+    data = {
+        "decision_type": DecisionType.DENIED,
+        "decision_text": "Uppdated Test decision text",
+        "language": "sv",
+    }
+    response = handler_api_client.put(url, data)
+    assert response.status_code == 200
+    decision_text.refresh_from_db()
+    assert decision_text.decision_type == data["decision_type"]
+    assert decision_text.language == data["language"]
+    assert decision_text.decision_text == data["decision_text"]

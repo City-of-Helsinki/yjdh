@@ -83,7 +83,9 @@ class DecisionProposalTemplateSectionList(APIView):
             location=OpenApiParameter.PATH,
         ),
     ],
-    description=("API for decision texts. Only handlers are able to access this view."),
+    description=(
+        "API for listing and creating decision texts. Only handlers are able to access this view."
+    ),
     request=DecisionTextSerializer,
 )
 class DecisionTextList(APIView):
@@ -101,4 +103,31 @@ class DecisionTextList(APIView):
         if serializer.is_valid():
             serializer.save(application_id=application.id)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name="application_id",
+            description="UUID of the application",
+            required=True,
+            type=OpenApiTypes.UUID,
+            location=OpenApiParameter.PATH,
+        ),
+    ],
+    description=(
+        "API for updating decision texts. Only handlers are able to access this view."
+    ),
+    request=DecisionTextSerializer,
+)
+class DecisionTextDetail(APIView):
+    permission_classes = [BFIsHandler]
+
+    def put(self, request, application_id, decision_id):
+        decision_text = get_object_or_404(AhjoDecisionText, pk=decision_id)
+        serializer = DecisionTextSerializer(decision_text, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
