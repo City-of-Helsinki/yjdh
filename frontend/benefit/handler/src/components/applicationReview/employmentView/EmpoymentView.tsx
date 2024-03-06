@@ -29,13 +29,13 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         <$ViewFieldBold>
           {t(`${translationsBase}.fields.jobTitle`)}
         </$ViewFieldBold>
-        <$ViewField>{data.employee?.jobTitle || '-'}</$ViewField>
+        <$ViewField large>{data.employee?.jobTitle || '-'}</$ViewField>
       </$GridCell>
       <$GridCell $colSpan={6}>
         <$ViewFieldBold>
           {t(`${translationsBase}.fields.workingHours`)}
         </$ViewFieldBold>
-        <$ViewField>
+        <$ViewField large>
           {parseFloat(data.employee?.workingHours).toLocaleString('fi-FI')}{' '}
           {t(`${translationsBase}.fields.workingHoursText`)}
         </$ViewField>
@@ -44,7 +44,7 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         <$ViewFieldBold>
           {t(`${translationsBase}.fields.monthlyPay`)}
         </$ViewFieldBold>
-        <$ViewField>
+        <$ViewField large>
           {data.employee?.monthlyPay &&
             t(`${translationsBase}.fields.monthlyPayText`, {
               monthlyPay: formatFloatToCurrency(
@@ -60,7 +60,7 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         <$ViewFieldBold>
           {t(`${translationsBase}.fields.vacationMoney`)}
         </$ViewFieldBold>
-        <$ViewField>
+        <$ViewField large>
           {data.employee?.vacationMoney &&
             t(`${translationsBase}.fields.vacationMoneyText`, {
               vacationMoney: formatFloatToCurrency(
@@ -76,7 +76,7 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         <$ViewFieldBold>
           {t(`${translationsBase}.fields.otherExpenses`)}
         </$ViewFieldBold>
-        <$ViewField>
+        <$ViewField large>
           {data.employee?.otherExpenses &&
             t(`${translationsBase}.fields.otherExpensesText`, {
               otherExpenses: formatFloatToCurrency(
@@ -92,13 +92,15 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         <$ViewFieldBold>
           {t(`${translationsBase}.fields.collectiveBargainingAgreement`)}
         </$ViewFieldBold>
-        <$ViewField>{data.employee?.collectiveBargainingAgreement}</$ViewField>
+        <$ViewField large>
+          {data.employee?.collectiveBargainingAgreement}
+        </$ViewField>
       </$GridCell>
       <$GridCell $colSpan={6} $colStart={1}>
         <$ViewFieldBold>
           {t(`${translationsBase}.fields.paySubsidyGranted.label`)}
         </$ViewFieldBold>
-        <$ViewField>
+        <$ViewField large>
           {t(
             `${translationsBase}.fields.paySubsidyGranted.${camelCase(
               data.paySubsidyGranted
@@ -110,7 +112,7 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         <$ViewFieldBold>
           {t(`${translationsBase}.fields.apprenticeshipProgram`)}{' '}
         </$ViewFieldBold>
-        <$ViewField>
+        <$ViewField large>
           {t(`common:utility.${data.apprenticeshipProgram ? 'yes' : 'no'}`)}
         </$ViewField>
       </$GridCell>
