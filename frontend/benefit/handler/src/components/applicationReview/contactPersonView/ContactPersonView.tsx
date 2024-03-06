@@ -30,17 +30,17 @@ const ContactPersonView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
       </$GridCell>
       <$GridCell $colSpan={6} $colStart={1}>
         <$ViewFieldBold>{t(`${translationsBase}.fields.phone`)}</$ViewFieldBold>
-        <$ViewField>{data.companyContactPersonPhoneNumber}</$ViewField>
+        <$ViewField large>{data.companyContactPersonPhoneNumber}</$ViewField>
       </$GridCell>
       <$GridCell $colSpan={6}>
         <$ViewFieldBold>{t(`${translationsBase}.fields.email`)}</$ViewFieldBold>
-        <$ViewField>{data.companyContactPersonEmail}</$ViewField>
+        <$ViewField large>{data.companyContactPersonEmail}</$ViewField>
       </$GridCell>
       <$GridCell $colSpan={6} $colStart={1}>
         <$ViewFieldBold>
           {t(`${translationsBase}.fields.applicantLanguage`)}
         </$ViewFieldBold>
-        <$ViewField>
+        <$ViewField large>
           {t(`common:languages.${data.applicantLanguage || ''}`)}
         </$ViewField>
       </$GridCell>
