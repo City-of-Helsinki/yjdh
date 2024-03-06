@@ -59,6 +59,7 @@ const CompanySearch: React.FC = () => {
                 >
                   {companies.map(({ name, business_id: businessId }) => (
                     <RadioButton
+                      style={theme.components.radio as React.CSSProperties}
                       key={businessId}
                       id={`v-radio-${businessId}`}
                       name={`v-radio-${businessId}`}
@@ -71,7 +72,7 @@ const CompanySearch: React.FC = () => {
                 </SelectionGroup>
                 <Button
                   variant="primary"
-                  theme="black"
+                  theme="coat"
                   onClick={() => onSelectCompany()}
                   css={`
                     margin-top: ${theme.spacing.l};
