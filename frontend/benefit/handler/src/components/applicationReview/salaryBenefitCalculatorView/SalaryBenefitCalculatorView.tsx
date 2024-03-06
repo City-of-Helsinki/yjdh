@@ -2,6 +2,7 @@ import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSectio
 import { CALCULATION_TYPES } from 'benefit/handler/constants';
 import { useCalculatorData } from 'benefit/handler/hooks/useCalculatorData';
 import { SalaryBenefitCalculatorViewProps } from 'benefit/handler/types/application';
+import { PAY_SUBSIDY_GRANTED } from 'benefit-shared/constants';
 import { PaySubsidy } from 'benefit-shared/types/application';
 import {
   Button,
@@ -179,16 +180,23 @@ const SalaryBenefitCalculatorView: React.FC<
             />
           </$GridCell>
 
-          <$GridCell $colStart={1} $colSpan={11}>
-            <$CalculatorHeader>
-              {t(`${translationsBase}.subsidies`)}
-            </$CalculatorHeader>
-          </$GridCell>
-          {formik.values.paySubsidies && (
+          {formik.values.paySubsidies?.length > 0 && (
             <$GridCell $colStart={1} $colSpan={11}>
-              <h3 style={{ fontSize: theme.fontSize.heading.xs, margin: 0 }}>
-                {t(`${translationsBase}.paySubsidy`)}
-              </h3>
+              <$CalculatorHeader as="div">
+                <p style={{ marginBottom: '0.5em' }}>
+                  {t(`${translationsBase}.subsidies`)}
+                </p>
+                <$ViewField>
+                  <strong>
+                    {t(`${translationsBase}.paySubsidy`)}{' '}
+                    {data.paySubsidyGranted === PAY_SUBSIDY_GRANTED.GRANTED_AGED
+                      ? `(${t(
+                          'applications.sections.fields.paySubsidyGranted.grantedAged'
+                        )})`
+                      : null}
+                  </strong>
+                </$ViewField>
+              </$CalculatorHeader>
             </$GridCell>
           )}
           {formik.values.paySubsidies?.map(
