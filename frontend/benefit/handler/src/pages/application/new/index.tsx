@@ -27,7 +27,7 @@ const NewApplication: NextPage = () => {
 
   return (
     <DeMinimisProvider>
-      <ApplicationForm />;
+      <ApplicationForm />
     </DeMinimisProvider>
   );
 };
