@@ -136,7 +136,11 @@ def _prepare_case_records(
     case_records.append(main_document_record)
 
     for attachment in application.attachments.exclude(
-        attachment_type=AttachmentType.PDF_SUMMARY
+        attachment_type__in=[
+            AttachmentType.PDF_SUMMARY,
+            AttachmentType.DECISION_TEXT_XML,
+            AttachmentType.DECISION_TEXT_SECRET_XML,
+        ]
     ):
         attachment_version_series_id = (
             pdf_summary.ahjo_version_series_id if is_update else None
