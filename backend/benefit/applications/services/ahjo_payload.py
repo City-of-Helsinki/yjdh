@@ -11,13 +11,19 @@ from users.models import User
 
 MANNER_OF_RECEIPT = "sähköinen asiointi"
 
+def prepare_title(application: Application) -> str:
+    full_title = f"Avustukset työnantajille, Työllisyyspalvelut, \
+Helsinki-lisä, Työnantaja {application.company_name} {application.company.business_id},\
+Hakemus {application.application_number}"
+    if len(full_title) > 150:
+        shortened_title = full_title.replace("työnantajille", "")
+        return shortened_title
+    return full_title
 
 def _prepare_top_level_dict(application: Application, case_records: List[dict]) -> dict:
     """Prepare the dictionary that is sent to Ahjo"""
     application_date = application.created_at.isoformat("T", "seconds")
-    message_title = f"Avustukset työnantajille, Työllisyyspalvelut, \
-Työnantajan Helsinki-lisä, Työnantaja {application.company_name} {application.company.business_id},\
-hakemusnumero {application.application_number}"
+    message_title = prepare_title(application)
 
     handler = application.calculation.handler
     case_dict = {
