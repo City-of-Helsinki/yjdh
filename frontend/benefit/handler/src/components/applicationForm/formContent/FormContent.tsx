@@ -44,6 +44,7 @@ import AttachmentsList from './attachmentsList/AttachmentsList';
 import CompanySection from './companySection/CompanySection';
 import { $DateHeader, $Description, $HelpText } from './FormContent.sc';
 import { useFormContent } from './useFormContent';
+import { useApplicationFormContext } from 'benefit/handler/hooks/useApplicationFormContext';
 
 type Props = {
   application: Application;
@@ -97,6 +98,8 @@ const FormContent: React.FC<Props> = ({
 
   const theme = useTheme();
   useAlertBeforeLeaving(formik.dirty);
+
+  const { isFormActionNew } = useApplicationFormContext();
 
   useDependentFieldsEffect(
     {
@@ -703,37 +706,39 @@ const FormContent: React.FC<Props> = ({
           </$GridCell>
         )}
       </FormSection>
-      <FormSection
-        paddingBottom
-        withoutDivider
-        header={t(`${translationsBase}.headings.validity`)}
-      >
-        {application?.applicantTermsInEffect?.applicantConsents.map(
-          (consent, i) => (
-            <$GridCell
-              $colSpan={12}
-              id="termsSection"
-              key={consent.id}
-              css={`
-                label {
-                  font-weight: 500;
-                }
-              `}
-            >
-              <$Checkbox
-                id={`${cbPrefix}_${consent.id}`}
-                name={`${cbPrefix}_${i}`}
-                label={`${consent[`text${textLocale}` as TextProp]} *`}
-                required
-                checked={checkedConsentArray[i]}
-                errorText={getConsentErrorText(i)}
-                aria-invalid={false}
-                onChange={() => handleConsentClick(i)}
-              />
-            </$GridCell>
-          )
-        )}
-      </FormSection>
+      {isFormActionNew && (
+        <FormSection
+          paddingBottom
+          withoutDivider
+          header={t(`${translationsBase}.headings.validity`)}
+        >
+          {application?.applicantTermsInEffect?.applicantConsents.map(
+            (consent, i) => (
+              <$GridCell
+                $colSpan={12}
+                id="termsSection"
+                key={consent.id}
+                css={`
+                  label {
+                    font-weight: 500;
+                  }
+                `}
+              >
+                <$Checkbox
+                  id={`${cbPrefix}_${consent.id}`}
+                  name={`${cbPrefix}_${i}`}
+                  label={`${consent[`text${textLocale}` as TextProp]} *`}
+                  required
+                  checked={checkedConsentArray[i]}
+                  errorText={getConsentErrorText(i)}
+                  aria-invalid={false}
+                  onChange={() => handleConsentClick(i)}
+                />
+              </$GridCell>
+            )
+          )}
+        </FormSection>
+      )}
     </form>
   );
 };

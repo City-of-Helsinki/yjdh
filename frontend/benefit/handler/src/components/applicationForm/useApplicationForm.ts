@@ -92,7 +92,7 @@ export const useApplicationForm = (): ExtendedComponentProps => {
   const { stepState, dispatchStep, activeStep } = useSteps(id);
   let organizationType = 'company';
 
-  const { isFormActionNew } = useApplicationFormContext();
+  const { isFormActionNew, isFormActionEdit } = useApplicationFormContext();
 
   const [application, setApplication] = React.useState<Application>(
     getApplication(null, id, isFormActionNew)
@@ -209,6 +209,7 @@ export const useApplicationForm = (): ExtendedComponentProps => {
   );
 
   const getConsentErrors = (): boolean => {
+    if (isFormActionEdit) return false;
     setConsentErrorsArray(invertBooleanArray(checkedConsentArray));
     return checkedConsentArray.some((c) => !c);
   };
