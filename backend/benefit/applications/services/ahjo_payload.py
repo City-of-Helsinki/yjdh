@@ -173,7 +173,7 @@ def prepare_update_application_payload(
 ) -> dict:
     """Prepare the payload that is sent to Ahjo when an application is updated, \
           in this case it only contains a Records dict"""
-    return {"Records": _prepare_case_records(application, pdf_summary, is_update=True)}
+    return {"records": _prepare_case_records(application, pdf_summary, is_update=True)}
 
 
 def prepare_decision_proposal_payload(
