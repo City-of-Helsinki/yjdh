@@ -106,8 +106,13 @@ class HelsinkiBenefitCalculator:
                     training_compensation,
                 )
             )
-        assert ranges[0].start_date == self.calculation.start_date
-        assert ranges[-1].end_date == self.calculation.end_date
+
+        if (
+            ranges[-1].end_date != self.calculation.end_date
+            or ranges[0].start_date != self.calculation.start_date
+        ):
+            raise ValueError("Error in range of calculation.start_date / end_date")
+
         return ranges
 
     def get_amount(self, row_type: RowType, default=None):
