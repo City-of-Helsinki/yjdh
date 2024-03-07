@@ -615,6 +615,15 @@ const SalaryBenefitCalculatorView: React.FC<
         $colSpan={11}
         style={{ marginTop: 'var(--spacing-xs)' }}
       >
+        <$ViewField
+          css={`
+            color: ${theme.colors.brick};
+          `}
+        >
+          {isDisabledAddTrainingCompensationButton === false &&
+            t('common:calculators.errors.trainingCompensation.invalid')}
+        </$ViewField>
+
         <Button
           onClick={handleSubmit}
           theme="coat"

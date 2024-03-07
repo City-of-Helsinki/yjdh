@@ -924,6 +924,11 @@
       "header": "Myönnettävä Helsinki-lisä",
       "header2": "Arvio koostuu seuraavista tiedoista:",
       "acceptedBenefit": "Myönnettävä Helsinki-lisä"
+    },
+    "errors": {
+      "trainingCompensation": {
+        "invalid": "Koulutuskorvausrivin syöttö on vielä kesken. Lisää rivi laskelmaan."
+      }
     }
   },
   "organizationTypes": {
