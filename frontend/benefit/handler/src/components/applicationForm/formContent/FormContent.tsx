@@ -1,5 +1,6 @@
 import { APPLICATION_FIELD_KEYS } from 'benefit/handler/constants';
 import { useAlertBeforeLeaving } from 'benefit/handler/hooks/useAlertBeforeLeaving';
+import { useApplicationFormContext } from 'benefit/handler/hooks/useApplicationFormContext';
 import { useDependentFieldsEffect } from 'benefit/handler/hooks/useDependentFieldsEffect';
 import {
   Application,
@@ -44,7 +45,6 @@ import AttachmentsList from './attachmentsList/AttachmentsList';
 import CompanySection from './companySection/CompanySection';
 import { $DateHeader, $Description, $HelpText } from './FormContent.sc';
 import { useFormContent } from './useFormContent';
-import { useApplicationFormContext } from 'benefit/handler/hooks/useApplicationFormContext';
 
 type Props = {
   application: Application;
