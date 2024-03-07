@@ -862,6 +862,10 @@
       "monthlyAmount": {
         "label": "Koulutuskorvaus",
         "placeholder": "Koulutuskorvaus € / kk"
+      },
+      "unknownField": {
+        "label": "Tunnistamaton kenttä",
+        "placeholder": ""
       }
     },
     "notifications": {

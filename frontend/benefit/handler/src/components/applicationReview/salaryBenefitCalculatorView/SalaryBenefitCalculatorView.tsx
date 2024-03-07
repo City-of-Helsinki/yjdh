@@ -634,11 +634,14 @@ const SalaryBenefitCalculatorView: React.FC<
           </$Notification>
         </$GridCell>
       )}
-      <SalaryCalculatorResults
-        data={data}
-        isManualCalculator={isManualCalculator}
-        isRecalculationRequired={isRecalculationRequired}
-      />
+
+      {!calculationsErrors && (
+        <SalaryCalculatorResults
+          data={data}
+          isManualCalculator={isManualCalculator}
+          isRecalculationRequired={isRecalculationRequired}
+        />
+      )}
     </ReviewSection>
   );
 };
