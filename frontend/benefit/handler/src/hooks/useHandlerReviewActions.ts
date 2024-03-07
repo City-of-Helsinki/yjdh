@@ -9,6 +9,7 @@ import { ErrorData } from 'benefit-shared/types/common';
 import camelcaseKeys from 'camelcase-keys';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import { stringToFloatValue } from 'shared/utils/string.utils';
@@ -39,6 +40,8 @@ const useHandlerReviewActions = (
   const { handledApplication } = React.useContext(AppContext);
 
   const { updateStatus } = useApplicationActions(application);
+
+  const { t } = useTranslation();
 
   // ACCEPTED, REJECTED
   const onDone = React.useCallback((): void => {
@@ -161,13 +164,25 @@ const useHandlerReviewActions = (
 
   useEffect(() => {
     if (updateApplicationQuery.error) {
-      setCalculationErrors(
-        camelcaseKeys(updateApplicationQuery.error?.response?.data ?? {})
-      );
+      // Can parse error codes from data on 400s, set generic error on 500
+      if (
+        updateApplicationQuery.error.response?.status >= 400 &&
+        updateApplicationQuery.error.response?.status < 500
+      ) {
+        setCalculationErrors(
+          camelcaseKeys(updateApplicationQuery.error.response?.data ?? {})
+        );
+      } else {
+        setCalculationErrors({
+          calculation: {
+            unknownField: t('common:calculators.notifications.error.message'),
+          },
+        } as ErrorData);
+      }
     } else {
       setCalculationErrors(null);
     }
-  }, [updateApplicationQuery.error, setCalculationErrors]);
+  }, [updateApplicationQuery.error, setCalculationErrors, t]);
 
   const onCalculateEmployment = (calculator: CalculationFormProps): void => {
     void updateApplicationQuery.mutate(getDataEmployment(calculator));
