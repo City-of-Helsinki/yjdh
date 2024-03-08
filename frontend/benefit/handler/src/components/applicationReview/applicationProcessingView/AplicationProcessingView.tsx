@@ -60,7 +60,9 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
   return (
     <ReviewSection withMargin withBorder>
       <$GridCell $colSpan={11}>
-        <$MainHeader>{t(`${translationsBase}.headings.heading10`)}</$MainHeader>
+        <$MainHeader css={{ margin: 'var(--spacing-xs) 0 var(--spacing-m)' }}>
+          {t(`${translationsBase}.headings.heading10`)}
+        </$MainHeader>
         <$Grid>
           <$GridCell $colSpan={11}>
             <$RadioButtonContainer>
@@ -114,7 +116,7 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
           </>
         )}
       </$GridCell>
-      <$GridCell $colSpan={11}>
+      <$GridCell $colSpan={11} css={{ marginBottom: 'var(--spacing-m)' }}>
         <$Grid>
           <$GridCell $colSpan={11}>
             <$RadioButtonContainer>
