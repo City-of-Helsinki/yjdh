@@ -660,7 +660,7 @@
           "hasChanges": "Muokkasit seuraavia tietoja:",
           "noChanges": "Ei muutoksia lomaketietoihin. Mikäli poistit tai lisäsit liitetiedostoja, voit kirjata niiden syyn."
         },
-        "helperText": "Kirjaa milloin ja mitä kautta hakija on ollut yhteydessä. Voit myös liittää tiedoston käydystä sähköpostikeskustelusta asiakkaan kanssa. Tiedot tulevat näkyviin hakemuksen muutoshistoriassa."
+        "helperText": "Kirjaa milloin ja mitä kautta hakija on ollut yhteydessä. Tiedot tulevat näkyviin hakemuksen muutoshistoriassa."
       }
     }
   },
