@@ -9,6 +9,7 @@ export type HeadingProps = {
   tooltip?: string;
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'div';
   'data-testid'?: string;
+  weight?: string;
 };
 
 export const $Header = styled.h1<HeadingProps>`
@@ -18,5 +19,5 @@ export const $Header = styled.h1<HeadingProps>`
   display: flex;
   align-items: center;
   gap: ${(props) => props.theme.spacing.s};
-  font-weight: 500;
+  font-weight: ${(props) => (props.weight ? props.weight : '500')};
 `;
