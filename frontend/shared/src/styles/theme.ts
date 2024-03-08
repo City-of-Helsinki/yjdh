@@ -7,6 +7,7 @@ const tokens = {
 
 const componentColors = {
   stepper: {
+    coat: tokens.coatOfArms,
     black: 'var(--color-black-90)',
     white: 'var(--color-white)',
     grey: 'var(--color-black-30)',
@@ -170,13 +171,24 @@ const theme: DefaultTheme = {
       '--header-background-color': tokens.coatOfArms,
     },
     stepper: {
-      '--hds-not-selected-step-label-color': componentColors.stepper.black,
-      '--hds-step-background-color': componentColors.stepper.white,
-      '--hds-step-content-color': componentColors.stepper.black,
-      '--hds-stepper-background-color': componentColors.stepper.white,
-      '--hds-stepper-color': componentColors.stepper.black,
-      '--hds-stepper-disabled-color': componentColors.stepper.grey,
-      '--hds-stepper-focus-border-color': componentColors.stepper.black,
+      coat: {
+        '--hds-not-selected-step-label-color': componentColors.stepper.coat,
+        '--hds-step-background-color': componentColors.stepper.white,
+        '--hds-step-content-color': componentColors.stepper.coat,
+        '--hds-stepper-background-color': componentColors.stepper.white,
+        '--hds-stepper-color': componentColors.stepper.coat,
+        '--hds-stepper-disabled-color': componentColors.stepper.grey,
+        '--hds-stepper-focus-border-color': componentColors.stepper.black,
+      },
+      black: {
+        '--hds-not-selected-step-label-color': componentColors.stepper.black,
+        '--hds-step-background-color': componentColors.stepper.white,
+        '--hds-step-content-color': componentColors.stepper.black,
+        '--hds-stepper-background-color': componentColors.stepper.white,
+        '--hds-stepper-color': componentColors.stepper.black,
+        '--hds-stepper-disabled-color': componentColors.stepper.grey,
+        '--hds-stepper-focus-border-color': componentColors.stepper.black,
+      },
     },
     radio: {
       '--border-color-selected': componentColors.radio.base,
