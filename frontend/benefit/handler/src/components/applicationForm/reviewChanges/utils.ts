@@ -114,3 +114,6 @@ export const getDiffPrefilter = (
   const isRequiredKey = requiredKeys.has(key as APPLICATION_FIELD_KEYS);
   return !isRequiredKey;
 };
+
+export const prepareChangeFieldName = (fieldName: string): string =>
+  camelCase(fieldName.replace('employee', ''));

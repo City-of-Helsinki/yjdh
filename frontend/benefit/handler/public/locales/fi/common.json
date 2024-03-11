@@ -17,7 +17,8 @@
     "loginLabel": "Kirjaudu sisään",
     "userAriaLabelPrefix": "Käyttäjä:",
     "linkSkipToContent": "Hyppää pääsisältöön",
-    "menuToggleAriaLabel": "Valikko"
+    "menuToggleAriaLabel": "Valikko",
+    "changes": "Muutoshistoria"
   },
   "messenger": {
     "list": {
@@ -1252,6 +1253,9 @@
     "closeToast": "Sulje ilmoitus"
   },
   "changes": {
+    "header": {
+      "amountOfChanges": "Muutoksia yhteensä: {{ amount }}"
+    },
     "fields": {
       "jobTitle": {
         "label": "Työllistettävän tehtävänimike"
@@ -1336,6 +1340,9 @@
       },
       "apprenticeshipProgram": {
         "label": "Oppisopimus"
+      },
+      "attachments": {
+        "label": "Liite"
       }
     }
   }

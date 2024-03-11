@@ -5,7 +5,7 @@ export const $Drawer = styled.aside`
   top: 0;
   right: 0;
   bottom: 0;
-  width: 400px;
+  width: 520px;
   height: 100vh;
   background-color: ${({ theme }) => theme.colors.white};
   z-index: 100;
@@ -21,7 +21,7 @@ export const $Close = styled.div`
   position: fixed;
   background-color: ${({ theme }) => theme.colors.white};
   padding: 0 ${({ theme }) => theme.spacing.s};
-  right: 400px;
+  right: 520px;
   box-shadow: -2px 0px 10px 0px rgb(0 0 0 / 10%);
   cursor: pointer;
 `;
