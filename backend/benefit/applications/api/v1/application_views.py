@@ -28,13 +28,16 @@ from applications.api.v1.serializers.application import (
     ApplicantApplicationSerializer,
     HandlerApplicationSerializer,
 )
+from applications.api.v1.serializers.application_alteration import (
+    ApplicationAlterationSerializer,
+)
 from applications.api.v1.serializers.attachment import AttachmentSerializer
 from applications.enums import (
     ApplicationBatchStatus,
     ApplicationOrigin,
     ApplicationStatus,
 )
-from applications.models import Application, ApplicationBatch
+from applications.models import Application, ApplicationAlteration, ApplicationBatch
 from applications.services.ahjo_integration import (
     ExportFileInfo,
     generate_zip,
@@ -361,6 +364,42 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
                 "de_minimis_aid_set": de_minimis_aid_set,
             }
         )
+
+
+class ApplicationAlterationViewSet(AuditLoggingModelViewSet):
+    serializer_class = ApplicationAlterationSerializer
+    queryset = ApplicationAlteration.objects.all()
+    http_method_names = ["post", "patch", "head"]
+
+    APPLICANT_UNEDITABLE_FIELDS = [
+        "state",
+        "recovery_start_date",
+        "recovery_end_date",
+        "handled_at",
+        "recovery_amount",
+    ]
+
+    class Meta:
+        model = ApplicationAlteration
+        fields = "__all__"
+        read_only_fields = [
+            "handled_at",
+            "recovery_amount",
+        ]
+
+    def _prune_fields(self, request):
+        if not request.user.is_handler():
+            for field in self.APPLICANT_UNEDITABLE_FIELDS:
+                if field in request.data.keys():
+                    request.data.pop(field)
+
+        return request
+
+    def create(self, request, *args, **kwargs):
+        return super().create(self._prune_fields(request), *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        return super().update(self._prune_fields(request), *args, **kwargs)
 
 
 @extend_schema(

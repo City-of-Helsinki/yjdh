@@ -137,7 +137,9 @@ const ApplicationForm: React.FC = () => {
             </$Grid>
 
             <div>
-              <$MainHeading>{t('common:mainIngress.heading')}</$MainHeading>
+              <$MainHeading>
+                {t('common:applications.pageHeaders.new')}
+              </$MainHeading>
             </div>
           </>
         )}

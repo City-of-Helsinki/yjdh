@@ -347,7 +347,7 @@ def ahjo_payload_record_for_attachment_update(
     record = {
         **record,
         "Title": "Liite",
-        "Type": "liite",
+        "Type": "hakemuksen liite",
         "VersionSeriesId": dummy_version_series_id,
         "Documents": [],
         "Agents": ahjo_payload_agents,

@@ -11,6 +11,7 @@ import {
   TrainingCompensation,
 } from 'benefit-shared/types/application';
 import { FormikProps, useFormik } from 'formik';
+import clone from 'lodash/clone';
 import fromPairs from 'lodash/fromPairs';
 import { useTranslation } from 'next-i18next';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
@@ -47,6 +48,13 @@ type ExtendedComponentProps = {
   isDisabledAddTrainingCompensationButton: boolean;
 };
 
+const initialTrainingCompensationValues = {
+  id: '',
+  monthlyAmount: '',
+  startDate: '',
+  endDate: '',
+};
+
 const useSalaryBenefitCalculatorData = (
   application: Application
 ): ExtendedComponentProps => {
@@ -60,12 +68,7 @@ const useSalaryBenefitCalculatorData = (
     useHandlerReviewActions(application);
 
   const [newTrainingCompensation, setNewTrainingCompensation] =
-    useState<TrainingCompensation>({
-      id: '',
-      monthlyAmount: '',
-      startDate: '',
-      endDate: '',
-    });
+    useState<TrainingCompensation>(clone(initialTrainingCompensationValues));
 
   const [
     isDisabledAddTrainingCompensationButton,
@@ -136,6 +139,7 @@ const useSalaryBenefitCalculatorData = (
         id: uuidv4(),
       },
     ]);
+    setNewTrainingCompensation(clone(initialTrainingCompensationValues));
   };
 
   const removeTrainingCompensation = (id: string): void => {

@@ -11,8 +11,8 @@
     "test": "jest --passWithNoTests",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",
     "test:coverage": "yarn test --verbose --coverage",
-    "browser-test": "testcafe 'chrome --allow-insecure-localhost --disable-web-security --ignore-certificate-errors --ignore-urlfetcher-cert-requests --window-size=\"1249,720\"' browser-tests/pages/",
-    "browser-test:ci": "testcafe 'chrome:headless --allow-insecure-localhost --disable-web-security --ignore-certificate-errors --ignore-urlfetcher-cert-requests --window-size=\"1249,720\"' --screenshots path=report --video report --reporter spec,html:report/index.html browser-tests/pages/ --experimental-proxyless"
+    "browser-test": "testcafe 'chrome --allow-insecure-localhost --disable-web-security --ignore-certificate-errors --ignore-urlfetcher-cert-requests --window-size=\"1249,720\"' --sf browser-tests/pages/",
+    "browser-test:ci": "testcafe 'chrome:headless --allow-insecure-localhost --disable-web-security --ignore-certificate-errors --ignore-urlfetcher-cert-requests --window-size=\"1249,720\"' --screenshots path=report --video report --reporter spec,html:report/index.html browser-tests/pages/ --sf"
   },
   "dependencies": {
     "@frontend/benefit-shared": "*",
@@ -31,7 +31,8 @@
     "hds-react": "^2.17.1",
     "ibantools": "^4.3.4",
     "lodash": "^4.17.21",
-    "next": "14.0.3",
+    "next": "14.1.1",
+    "next-router-mock": "0.9.12",
     "next-compose-plugins": "^2.2.1",
     "next-i18next": "^13.0.3",
     "next-transpile-modules": "^9.1.0",

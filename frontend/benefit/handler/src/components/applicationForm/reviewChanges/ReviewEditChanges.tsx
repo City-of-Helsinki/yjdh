@@ -1,6 +1,7 @@
 import { APPLICATION_FIELD_KEYS } from 'benefit/handler/constants';
 import DeMinimisContext from 'benefit/handler/context/DeMinimisContext';
 import { Application } from 'benefit/handler/types/application';
+import { APPLICATION_ORIGINS } from 'benefit-shared/constants';
 import deepDiff from 'deep-diff';
 import { IconArrowRight } from 'hds-react';
 import { useTranslation } from 'next-i18next';
@@ -61,7 +62,12 @@ const ReviewEditChanges: React.FC<ReviewEditChangesProps> = ({
   useEffect(() => {
     const diff: Difference[] =
       deepDiff(initialValues, currentValues, (path: string[], key: string) =>
-        getDiffPrefilter(path, key, requiredKeys)
+        getDiffPrefilter(
+          path,
+          key,
+          requiredKeys,
+          currentValues.applicationOrigin === APPLICATION_ORIGINS.HANDLER
+        )
       ) || [];
     setChanges(diff);
     // eslint-disable-next-line react-hooks/exhaustive-deps

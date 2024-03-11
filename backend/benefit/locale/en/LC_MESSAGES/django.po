@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-19 10:35+0200\n"
+"POT-Creation-Date: 2024-02-27 15:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,6 +33,19 @@ msgstr ""
 
 #, python-brace-format
 msgid "TALPA export {date}"
+msgstr ""
+
+msgid "Displayed in the archive in the applicant view"
+msgstr ""
+
+msgid "Operation not allowed for this application status."
+msgstr ""
+
+msgid "File not found."
+msgstr ""
+
+#, python-brace-format
+msgid "Helsinki-lisan hakemukset viety {date}"
 msgstr ""
 
 msgid "This should be unreachable"
@@ -136,6 +149,43 @@ msgstr ""
 msgid "Reading {localized_model_name} data failed: {errors}"
 msgstr ""
 
+msgid "Resume date is required if the benefit period wasn't terminated"
+msgstr ""
+
+msgid "E-invoice provider name"
+msgstr ""
+
+msgid "E-invoice provider identifier"
+msgstr ""
+
+msgid "E-invoice address"
+msgstr ""
+
+#, python-brace-format
+msgid "{field} must be filled if using an alternative e-invoice address"
+msgstr ""
+
+msgid "Alteration cannot start before first benefit day"
+msgstr ""
+
+msgid "Alteration cannot start after last benefit day"
+msgstr ""
+
+msgid "Alteration cannot end after last benefit day"
+msgstr ""
+
+msgid "Alteration end date cannot be before start date"
+msgstr ""
+
+msgid "Another alteration already overlaps the alteration period"
+msgstr ""
+
+msgid "You are not allowed to do this action"
+msgstr ""
+
+msgid "The alteration cannot be edited in this state"
+msgstr ""
+
 #, python-brace-format
 msgid "Upload file size cannot be greater than {size} bytes"
 msgstr ""
@@ -183,19 +233,6 @@ msgstr ""
 
 #, python-brace-format
 msgid "Initial status must be {initial_status}"
-msgstr ""
-
-msgid "Displayed in the archive in the applicant view"
-msgstr ""
-
-msgid "Operation not allowed for this application status."
-msgstr ""
-
-msgid "File not found."
-msgstr ""
-
-#, python-brace-format
-msgid "Helsinki-lisan hakemukset viety {date}"
 msgstr ""
 
 msgid "Benefit can not be granted before 24-month waiting period expires"
@@ -291,6 +328,12 @@ msgid "other attachment"
 msgstr ""
 
 msgid "pdf summary"
+msgstr ""
+
+msgid "public decision text xml attachment"
+msgstr ""
+
+msgid "non-public decision text xml attachment"
 msgstr ""
 
 msgid "attachment is required"
@@ -392,10 +435,33 @@ msgstr ""
 msgid "Update application in Ahjo"
 msgstr ""
 
+msgid "Send decision to Ahjo"
+msgstr ""
+
+msgid ""
+"Template part for the decision section of a application decision proposal"
+msgstr ""
+
+msgid ""
+"Template part for the decision justification section of a decision proposal"
+msgstr ""
+
+msgid "An accepted decision"
+msgstr ""
+
+msgid "A denied decision"
+msgstr ""
+
 msgid "Termination"
 msgstr ""
 
 msgid "Suspension"
+msgstr ""
+
+msgid "Opened"
+msgstr ""
+
+msgid "Handled"
 msgstr ""
 
 #, python-brace-format
@@ -641,10 +707,40 @@ msgstr ""
 msgid "ahjo statuses"
 msgstr ""
 
+msgid "type of the decision proposal template section"
+msgstr ""
+
+msgid "type of the decision"
+msgstr ""
+
+msgid "decision proposal section text content"
+msgstr ""
+
+msgid "name of the decision proposal template section"
+msgstr ""
+
+msgid "decision proposal template section"
+msgstr ""
+
+msgid "decision proposal template sections"
+msgstr ""
+
+msgid "decision text content"
+msgstr ""
+
+msgid "ahjo decision text"
+msgstr ""
+
+msgid "ahjo decision texts"
+msgstr ""
+
 msgid "alteration of application"
 msgstr ""
 
 msgid "type of alteration"
+msgstr ""
+
+msgid "state of alteration"
 msgstr ""
 
 msgid "new benefit end date"
@@ -1064,9 +1160,6 @@ msgid "You don't have permission to change this message"
 msgstr ""
 
 msgid "Application not found"
-msgstr ""
-
-msgid "You are not allowed to do this action"
 msgstr ""
 
 msgid "Cannot do this action because application is not in the correct status"

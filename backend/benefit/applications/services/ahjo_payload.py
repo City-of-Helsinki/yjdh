@@ -136,7 +136,11 @@ def _prepare_case_records(
     case_records.append(main_document_record)
 
     for attachment in application.attachments.exclude(
-        attachment_type=AttachmentType.PDF_SUMMARY
+        attachment_type__in=[
+            AttachmentType.PDF_SUMMARY,
+            AttachmentType.DECISION_TEXT_XML,
+            AttachmentType.DECISION_TEXT_SECRET_XML,
+        ]
     ):
         attachment_version_series_id = (
             pdf_summary.ahjo_version_series_id if is_update else None
@@ -144,7 +148,7 @@ def _prepare_case_records(
 
         document_record = _prepare_record(
             "Hakemuksen Liite",
-            "liite",
+            "hakemuksen liite",
             attachment.created_at.isoformat(),
             [_prepare_record_document_dict(attachment)],
             handler,
@@ -169,7 +173,7 @@ def prepare_update_application_payload(
 ) -> dict:
     """Prepare the payload that is sent to Ahjo when an application is updated, \
           in this case it only contains a Records dict"""
-    return {"Records": _prepare_case_records(application, pdf_summary, is_update=True)}
+    return {"records": _prepare_case_records(application, pdf_summary, is_update=True)}
 
 
 def prepare_decision_proposal_payload(

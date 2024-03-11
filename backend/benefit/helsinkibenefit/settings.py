@@ -129,7 +129,7 @@ env = environ.Env(
     EMAIL_HOST_PASSWORD=(str, ""),
     EMAIL_PORT=(int, 25),
     EMAIL_TIMEOUT=(int, 15),
-    DEFAULT_FROM_EMAIL=(str, "Helsinki-lisä <helsinkilisa@hel.fi>"),
+    DEFAULT_FROM_EMAIL=(str, "Helsinki-lisä <noreply-helsinkilisa@hel.fi>"),
     WKHTMLTOPDF_BIN=(str, "/usr/bin/wkhtmltopdf"),
     DUMMY_COMPANY_FORM_CODE=(
         int,

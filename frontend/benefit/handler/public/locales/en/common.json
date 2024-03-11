@@ -661,14 +661,14 @@
           "hasChanges": "Muokkasit seuraavia tietoja:",
           "noChanges": "Ei muutoksia lomaketietoihin. Mikäli poistit tai lisäsit liitetiedostoja, voit kirjata niiden syyn."
         },
-        "helperText": "Kirjaa milloin ja mitä kautta hakija on ollut yhteydessä. Voit myös liittää tiedoston käydystä sähköpostikeskustelusta asiakkaan kanssa. Tiedot tulevat näkyviin hakemuksen muutoshistoriassa."
+        "helperText": "Kirjaa milloin ja mitä kautta hakija on ollut yhteydessä. Tiedot tulevat näkyviin hakemuksen muutoshistoriassa."
       }
     }
   },
   "review": {
     "actions": {
       "handle": "Ota käsittelyyn",
-      "edit": "Muokkaa hakemusta",
+      "edit": "Muokkaa",
       "close": "Sulje",
       "done": "Tee päätösehdotus",
       "saveAndContinue": "Tallenna ja sulje",
@@ -863,6 +863,10 @@
       "monthlyAmount": {
         "label": "Koulutuskorvaus",
         "placeholder": "Koulutuskorvaus € / kk"
+      },
+      "unknownField": {
+        "label": "Tunnistamaton kenttä",
+        "placeholder": ""
       }
     },
     "notifications": {
@@ -921,6 +925,11 @@
       "header": "Myönnettävä Helsinki-lisä",
       "header2": "Arvio koostuu seuraavista tiedoista:",
       "acceptedBenefit": "Myönnettävä Helsinki-lisä"
+    },
+    "errors": {
+      "trainingCompensation": {
+        "invalid": "Koulutuskorvausrivin syöttö on vielä kesken. Lisää rivi laskelmaan."
+      }
     }
   },
   "organizationTypes": {

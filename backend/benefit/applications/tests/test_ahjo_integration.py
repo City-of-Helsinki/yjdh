@@ -372,6 +372,13 @@ def test_get_attachment_unauthorized_ip_not_allowed(
     assert response.status_code == 403
 
 
+def _get_callback_url(request_type: AhjoRequestType, decided_application: Application):
+    return reverse(
+        "ahjo_callback_url",
+        kwargs={"request_type": request_type, "uuid": decided_application.id},
+    )
+
+
 @pytest.fixture
 def ahjo_callback_payload():
     return {
@@ -396,6 +403,10 @@ def ahjo_callback_payload():
         (
             AhjoRequestType.OPEN_CASE,
             AhjoStatusEnum.CASE_OPENED,
+        ),
+        (
+            AhjoRequestType.UPDATE_APPLICATION,
+            AhjoStatusEnum.UPDATE_REQUEST_RECEIVED,
         ),
         (
             AhjoRequestType.DELETE_APPLICATION,
@@ -424,22 +435,23 @@ def test_ahjo_callback_success(
     ahjo_callback_payload["message"] = AhjoCallBackStatus.SUCCESS
     ahjo_callback_payload["records"][0]["hashValue"] = attachment_hash_value
 
-    url = reverse(
-        "ahjo_callback_url",
-        kwargs={"request_type": request_type, "uuid": decided_application.id},
-    )
+    url = _get_callback_url(request_type, decided_application)
     response = ahjo_client.post(url, **auth_headers, data=ahjo_callback_payload)
 
     decided_application.refresh_from_db()
+    attachment.refresh_from_db()
     assert response.status_code == 200
     assert response.data == {"message": "Callback received"}
     if request_type == AhjoRequestType.OPEN_CASE:
-        attachment.refresh_from_db()
-
         assert decided_application.ahjo_case_id == ahjo_callback_payload["caseId"]
         assert (
             str(decided_application.ahjo_case_guid) == ahjo_callback_payload["caseGuid"]
         )
+        assert (
+            attachment.ahjo_version_series_id
+            == ahjo_callback_payload["records"][0]["versionSeriesId"]
+        )
+    if request_type == AhjoRequestType.UPDATE_APPLICATION:
         assert (
             attachment.ahjo_version_series_id
             == ahjo_callback_payload["records"][0]["versionSeriesId"]
@@ -480,6 +492,7 @@ def test_ahjo_open_case_callback_failure(
     "request_type",
     [
         (AhjoRequestType.OPEN_CASE,),
+        (AhjoRequestType.UPDATE_APPLICATION,),
         (AhjoRequestType.DELETE_APPLICATION,),
     ],
 )
@@ -505,6 +518,7 @@ def test_ahjo_callback_unauthorized_wrong_or_missing_credentials(
     "request_type",
     [
         (AhjoRequestType.OPEN_CASE,),
+        (AhjoRequestType.UPDATE_APPLICATION,),
         (AhjoRequestType.DELETE_APPLICATION,),
     ],
 )

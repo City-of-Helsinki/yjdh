@@ -148,15 +148,6 @@ test('Open form and edit fields, then submit', async (t: TestController) => {
 
   await uploadFileAttachment(t, '#upload_attachment_employment_contract');
 
-  /**
-   * Click through all applicant terms.
-   * Assume terms are loaded from fixture default_terms.json using LOAD_DEFAULT_TERMS=1
-   */
-  await t.click(Selector('[name="application_consent_0"]'));
-  await t.click(Selector('[name="application_consent_1"]'));
-  await t.click(Selector('[name="application_consent_2"]'));
-  await t.click(Selector('[name="application_consent_3"]'));
-
   // Validate form and submit
   const validationButton = Selector(buttonSelector).withText(
     fi.applications.actions.continue

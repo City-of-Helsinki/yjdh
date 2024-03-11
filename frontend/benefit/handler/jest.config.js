@@ -15,6 +15,8 @@ const config = {
   setupFilesAfterEnv: [
     '<rootDir>/../../shared/src/__tests__/utils/setupTests.ts',
     '<rootDir>/test/i18n/i18n-test.ts',
+    '<rootDir>/test/next-router-mock.ts',
+    // '<rootDir>/../../shared/src/__tests__/utils/next-router-mock.ts',
   ],
   coveragePathIgnorePatterns: [
     '<rootDir>/src/pages/',

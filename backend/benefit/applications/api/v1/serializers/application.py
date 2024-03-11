@@ -12,6 +12,9 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
+from applications.api.v1.serializers.application_alteration import (
+    ApplicationAlterationSerializer,
+)
 from applications.api.v1.serializers.attachment import AttachmentSerializer
 from applications.api.v1.serializers.batch import ApplicationBatchSerializer
 from applications.api.v1.serializers.de_minimis import DeMinimisAidSerializer
@@ -37,6 +40,7 @@ from applications.models import (
     AhjoStatus,
     Application,
     ApplicationBasis,
+    ApplicationBatch,
     ApplicationLogEntry,
     Employee,
 )
@@ -126,6 +130,12 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         ),
     )
 
+    alterations = ApplicationAlterationSerializer(
+        source="alteration_set",
+        read_only=True,
+        many=True,
+    )
+
     class Meta:
         model = Application
         fields = [
@@ -189,6 +199,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "ahjo_status",
             "changes",
             "archived_for_applicant",
+            "alterations",
         ]
         read_only_fields = [
             "submitted_at",
@@ -1390,6 +1401,10 @@ class SimpleApplicationBatchSerializer(serializers.ModelSerializer):
         if instance:
             return True
         return None
+
+    class Meta:
+        model = ApplicationBatch
+        fields = []
 
 
 class ApplicantApplicationSerializer(BaseApplicationSerializer):

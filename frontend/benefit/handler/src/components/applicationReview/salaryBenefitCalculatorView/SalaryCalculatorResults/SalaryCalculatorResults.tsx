@@ -33,6 +33,11 @@ const SalaryCalculatorResults: React.FC<ApplicationReviewViewProps> = ({
   if (isRecalculationRequired) {
     return null;
   }
+
+  if (rowsWithoutTotal.length === 0) {
+    return null;
+  }
+
   return (
     <$GridCell
       $colSpan={11}
