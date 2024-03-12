@@ -7,6 +7,11 @@ const createJestConfig = nextJest({
 
 const config = {
   ...sharedConfig,
+  globals: {
+    'ts-jest': {
+      isolatedModules: true,
+    },
+  },
   moduleNameMapper: {
     [`^shared\/(.*)$`]: '<rootDir>/../../shared/src/$1',
     [`^tet-shared\/(.*)$`]: '<rootDir>../shared/src/$1',

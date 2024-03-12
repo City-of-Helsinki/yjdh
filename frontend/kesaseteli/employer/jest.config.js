@@ -4,6 +4,7 @@ module.exports = {
   globals: {
     'ts-jest': {
       tsconfig: '<rootDir>/tsconfig.jest.json',
+      isolatedModules: true,
     },
   },
   moduleNameMapper: {
