@@ -80,8 +80,14 @@ const ActionBarEdit: React.FC<ActionBarProps> = ({
                 theme="black"
                 variant="secondary"
                 onClick={() => {
-                  // eslint-disable-next-line no-alert
-                  const alert = formik.dirty && !window.confirm();
+                  const alert =
+                    formik.dirty &&
+                    // eslint-disable-next-line no-alert
+                    !window.confirm(
+                      t(
+                        'common:applications.actions.backWithoutSavingDescription'
+                      )
+                    );
 
                   if (!alert) {
                     return void router.push(
