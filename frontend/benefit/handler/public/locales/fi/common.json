@@ -628,7 +628,8 @@
         },
         "attachmentsIngress": "Lisää hakemukselle seuraavat liitteet. Kaikki *-merkityt liitteet ovat pakollisia. Tiedostomuoto voi olla JPG, PNG tai PDF ja kooltaan maksimissaan 10 MB.",
         "add": "Liitä tiedosto",
-        "remove": "Poista liite"
+        "remove": "Poista liite",
+        "confirm": "Haluatko varmasti poistaa liitteen {{ name }}? Se poistuu heti eikä tiedostoa voida enää palauttaa."
       }
     },
     "summary": {
