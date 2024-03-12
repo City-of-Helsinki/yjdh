@@ -129,7 +129,7 @@ export const useApplicationForm = (): ExtendedComponentProps => {
       [APPLICATION_FIELDS.PAPER_APPLICATION_DATE]:
         application.paperApplicationDate
           ? formatDate(parseDate(application.paperApplicationDate))
-          : undefined,
+          : formatDate(new Date()),
     },
     validationSchema: getValidationSchema(organizationType, t),
     validateOnChange: true,
