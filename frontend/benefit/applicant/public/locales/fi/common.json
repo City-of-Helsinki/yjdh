@@ -35,6 +35,7 @@
       "sent": "Hakemusnumero: {{applicationNumber}}  |  Lähetetty {{submittedAt}}",
       "new": "Uusi hakemus",
       "edit": "Helsinki-lisä -hakemus",
+      "alteration": "Ilmoita työsuhteen muutoksesta",
       "helperText": "Ole hyvä ja tarkista hakemus ennen lähetystä.",
       "guideText": "Kaikki *-merkityt kohdat ovat pakollisia"
     },
@@ -438,6 +439,74 @@
         "showDecision": "Tarkastele päätöstä",
         "reportAlteration": "Ilmoita työsuhteen muutoksesta"
       }
+    },
+    "alteration": {
+      "title": "Ilmoita työsuhteen muutoksesta",
+      "explanation": "Ilmoita, jos työllistetyn henkilön työsuhde päättyy ennenaikaisesti tai keskeytyy väliaikaisesti. Saatamme periä Helsinki-lisää takaisin, jos tukijakson aikana työsuhteeseen tulee muutoksia.",
+      "actions": {
+        "submit": "Lähetä",
+        "cancel": "Peruuta"
+      },
+      "fields": {
+        "alterationType": {
+          "label": "Millaisesta muutoksesta työsuhteessa haluat ilmoittaa?",
+          "termination": "Työsuhteen päättymisestä",
+          "suspension": "Työsuhteen keskeytymisestä väliaikaisesti"
+        },
+        "endDate": {
+          "label": "Viimeinen työpäivä"
+        },
+        "resumeDate": {
+          "label": "Töihinpaluupäivä"
+        },
+        "date": {
+          "helpText": "Kirjoita päivämäärä muodossa P.K.VVVV"
+        },
+        "terminationReason": {
+          "label": "Syy työsuhteen päättymiseen",
+          "helpText": "Kirjoita halutessasi syy työsuhteen päättymiseen"
+        },
+        "suspensionReason": {
+          "label": "Syy työsuhteen keskeytymiseen",
+          "helpText": "Kirjoita halutessasi syy työsuhteen keskeytymiseen"
+        },
+        "useEinvoice": {
+          "label": "Laskun toimitustapa",
+          "yes": "Verkkolaskutus",
+          "no": "Postiosoitteeseen: {{streetAddress}}, {{postCode}} {{city}}"
+        },
+        "einvoiceProviderName": {
+          "label": "Verkkolaskuoperaattorin nimi",
+          "placeholder": "Esim. Basware Oyj"
+        },
+        "einvoiceProviderIdentifier": {
+          "label": "Verkkolaskuoperaattorin tunnus",
+          "placeholder": "Esim. BAWCFI22"
+        },
+        "einvoiceAddress": {
+          "label": "Verkkolaskuosoite",
+          "placeholder": "Esim. 001100223300",
+          "tooltip": "Voit tarkistaa organisaatiosi verkkolaskuosoitteen verkkosivulta verkkolaskuosoite.fi"
+        },
+        "contactPersonName": {
+          "label": "Laskulle nimetty yhteyshenkilö",
+          "helpText": "Kirjoita yhteyshenkilön nimi, joka lisätään laskulle"
+        }
+      },
+      "validation": {
+        "resumeDateBeforeEndDate": "Paluupäivän on oltava keskeytymisjakson alkupäivän jälkeen",
+        "einvoiceRequiredTogether": "Verkkolaskuosoitetta käytettäessä kaikki osoitekentät on täytettävä"
+      },
+      "error": {
+        "notYetAccepted": "Et voi ilmoittaa muutosta työsuhteessa tälle hakemukselle, sillä tukea ei ole vielä myönnetty.",
+        "alreadyTerminated": "Tämä työsuhde on aiemmin jo merkitty päättyneeksi, joten et voi enää ilmoittaa uudesta muutoksesta."
+      },
+      "billing": "Laskutustiedot",
+      "successToast": {
+        "title": "Työsuhteen muutosilmoitus lähetetty",
+        "bodyTermination": "Hakemuksen {{id}} työsuhde on ilmoitettu päättyväksi.",
+        "bodySuspension": "Hakemuksen {{id}} työsuhde on ilmoitettu keskeytyväksi."
+      }
     }
   },
   "serviceName": "Helsinki-lisän asiointipalvelu",
@@ -546,7 +615,7 @@
         "mustNotInThePast": "Päivämäärä ei voi olla menneisyydessä",
         "min": "Päivämäärän on oltava aikaisintaan {{min}}",
         "max": "Päivämäärän on oltava viimeistään {{max}}",
-        "format": "This date is incorrect"
+        "format": "Epäkelpo päivämäärä"
       },
       "time": {
         "min": "Arvon tulee olla aikaisintaan {{min}}",
@@ -635,7 +704,8 @@
     "close": "Sulje",
     "home": "Palaa etusivulle",
     "pagination": "Sivut",
-    "back": "Takaisin"
+    "back": "Takaisin",
+    "submitting": "Lähetetään..."
   },
   "messenger": {
     "messages": "Hakemuksen viestit",

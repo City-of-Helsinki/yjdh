@@ -35,6 +35,7 @@
       "sent": "Application number: {{applicationNumber}}  |  Submitted {{submittedAt}}",
       "new": "New application",
       "edit": "Helsinki benefit application",
+      "alteration": "Report an alteration",
       "helperText": "Please review the application before submitting.",
       "guideText": "All items marked with * are required"
     },
@@ -438,6 +439,74 @@
         "showDecision": "View the decision",
         "reportAlteration": "Report an alteration"
       }
+    },
+    "alteration": {
+      "title": "Report an alteration",
+      "explanation": "Let us know if the employee's work contract ends early or is suspended temporarily. You may need to pay some of the granted Helsinki benefit back if the work contract was altered.",
+      "actions": {
+        "submit": "Submit",
+        "cancel": "Cancel"
+      },
+      "fields": {
+        "alterationType": {
+          "label": "How was the employment period altered?",
+          "termination": "The contract was terminated",
+          "suspension": "The contract was suspended for a time"
+        },
+        "endDate": {
+          "label": "Last date of work"
+        },
+        "resumeDate": {
+          "label": "Date when work resumed"
+        },
+        "date": {
+          "helpText": "Please enter the date using the format D.M.YYYY"
+        },
+        "terminationReason": {
+          "label": "Reason for the termination",
+          "helpText": "You may enter the reason for the termination of the work contract if you wish"
+        },
+        "suspensionReason": {
+          "label": "Reason for the suspension",
+          "helpText": "You may enter the reason for the suspension of the work contract if you wish"
+        },
+        "useEinvoice": {
+          "label": "Delivery method for the invoice",
+          "yes": "E-invoice",
+          "no": "By mail: {{streetAddress}}, {{postCode}} {{city}}"
+        },
+        "einvoiceProviderName": {
+          "label": "Name of the e-invoice provider",
+          "placeholder": "E.g. Basware Oyj"
+        },
+        "einvoiceProviderIdentifier": {
+          "label": "Identifier of the e-invoice provider",
+          "placeholder": "E.g. BAWCFI22"
+        },
+        "einvoiceAddress": {
+          "label": "E-invoice address",
+          "placeholder": "E.g. 001100223300",
+          "tooltip": "You may verify the e-invoice address of your organization on verkkolaskuosoite.fi"
+        },
+        "contactPersonName": {
+          "label": "Contact person to use for invoice",
+          "helpText": "Please enter the name of the person to whom the invoice will be addressed to"
+        }
+      },
+      "validation": {
+        "resumeDateBeforeEndDate": "The work contract cannot resume before it had been suspended",
+        "einvoiceRequiredTogether": "All e-invoice fields must be filled when billed with an e-invoice"
+      },
+      "error": {
+        "notYetAccepted": "An alteration notice cannot be sent to this application as it has not yet been approved.",
+        "alreadyTerminated": "No more alteration notices can be sent to this application as it has already been noted to have been terminated."
+      },
+      "billing": "Billing information",
+      "successToast": {
+        "title": "Alteration notification submitted",
+        "bodyTermination": "An alteration notice for the termination of contract in application {{id}} has been sent.",
+        "bodySuspension": "An alteration notice for the suspension of contract in application {{id}} has been sent."
+      }
     }
   },
   "serviceName": "Helsinki benefit service",
@@ -635,7 +704,8 @@
     "close": "Close",
     "home": "Return to the front page",
     "pagination": "Pagination",
-    "back": "Back"
+    "back": "Back",
+    "submitting": "Submitting..."
   },
   "messenger": {
     "messages": "Application’s messages",

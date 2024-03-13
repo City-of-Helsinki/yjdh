@@ -2488,7 +2488,8 @@ def test_application_alteration_create_terminated(api_client, application):
             "alteration_type": "termination",
             "reason": "Päättynyt",
             "end_date": application.start_date + relativedelta(days=7),
-            "use_alternate_einvoice_provider": False,
+            "use_einvoice": False,
+            "contact_person_name": "Ella Esimerkki",
         },
     )
     assert response.status_code == 201
@@ -2505,7 +2506,8 @@ def test_application_alteration_create_suspended(api_client, application):
             "reason": "Keskeytynyt",
             "end_date": application.start_date + relativedelta(days=7),
             "resume_date": application.start_date + relativedelta(days=14),
-            "use_alternate_einvoice_provider": False,
+            "use_einvoice": False,
+            "contact_person_name": "Ella Esimerkki",
         },
     )
     assert response.status_code == 201
@@ -2521,7 +2523,8 @@ def test_application_alteration_create_missing_resume_date(api_client, applicati
             "alteration_type": "suspension",
             "reason": "Keskeytynyt",
             "end_date": application.start_date + relativedelta(days=7),
-            "use_alternate_einvoice_provider": False,
+            "use_einvoice": False,
+            "contact_person_name": "Ella Esimerkki",
         },
     )
     assert response.status_code == 400
@@ -2539,12 +2542,54 @@ def test_application_alteration_create_missing_einvoice_fields(api_client, appli
             "alteration_type": "termination",
             "reason": "Päättynyt",
             "end_date": application.start_date + relativedelta(days=7),
-            "use_alternate_einvoice_provider": True,
+            "use_einvoice": True,
+            "contact_person_name": "Ella Esimerkki",
         },
     )
     assert response.status_code == 400
     assert "non_field_errors" in response.data
     assert len(response.data["non_field_errors"]) == 3
+
+
+def test_application_alteration_create_missing_contact_person_name(
+    api_client, application
+):
+    pk = application.id
+
+    response = api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "termination",
+            "reason": "Päättynyt",
+            "end_date": application.start_date + relativedelta(days=7),
+            "use_einvoice": False,
+            "contact_person_name": "",
+        },
+    )
+    assert response.status_code == 400
+    assert "contact_person_name" in response.data
+    assert len(response.data.keys()) == 1
+
+
+def test_application_alteration_create_use_einvoice(api_client, application):
+    pk = application.id
+
+    response = api_client.post(
+        reverse("v1:application-alteration-list"),
+        {
+            "application": pk,
+            "alteration_type": "termination",
+            "reason": "Päättynyt",
+            "end_date": application.start_date + relativedelta(days=7),
+            "use_einvoice": True,
+            "einvoice_provider_name": "Basware Oyj",
+            "einvoice_provider_identifier": "BAWCFI22",
+            "einvoice_address": "001100223300",
+            "contact_person_name": "Ella Esimerkki",
+        },
+    )
+    assert response.status_code == 201
 
 
 def test_application_alteration_create_outside_application_date_range(
@@ -2559,7 +2604,8 @@ def test_application_alteration_create_outside_application_date_range(
             "alteration_type": "termination",
             "reason": "Päättynyt",
             "end_date": application.start_date + relativedelta(days=-7),
-            "use_alternate_einvoice_provider": False,
+            "use_invoice": False,
+            "contact_person_name": "Ella Esimerkki",
         },
     )
     assert response.status_code == 400
@@ -2572,7 +2618,8 @@ def test_application_alteration_create_outside_application_date_range(
             "alteration_type": "termination",
             "reason": "Päättynyt",
             "end_date": application.end_date + relativedelta(days=7),
-            "use_alternate_einvoice_provider": False,
+            "use_invoice": False,
+            "contact_person_name": "Ella Esimerkki",
         },
     )
     assert response.status_code == 400
@@ -2586,7 +2633,8 @@ def test_application_alteration_create_outside_application_date_range(
             "reason": "Päättynyt",
             "end_date": application.start_date + relativedelta(days=7),
             "resume_date": application.end_date + relativedelta(days=7),
-            "use_alternate_einvoice_provider": False,
+            "use_invoice": False,
+            "contact_person_name": "Ella Esimerkki",
         },
     )
     assert response.status_code == 400
@@ -2606,7 +2654,8 @@ def test_application_alteration_create_reversed_suspension_dates(
             "reason": "Keskeytynyt",
             "end_date": application.start_date + relativedelta(days=14),
             "resume_date": application.start_date + relativedelta(days=7),
-            "use_alternate_einvoice_provider": False,
+            "use_invoice": False,
+            "contact_person_name": "Ella Esimerkki",
         },
     )
     assert response.status_code == 400
@@ -2625,7 +2674,8 @@ def test_application_alteration_create_overlapping_alteration(api_client, applic
             "reason": "Keskeytynyt",
             "end_date": application.start_date + relativedelta(days=7),
             "resume_date": application.start_date + relativedelta(days=14),
-            "use_alternate_einvoice_provider": False,
+            "use_invoice": False,
+            "contact_person_name": "Ella Esimerkki",
         },
     )
     assert response.status_code == 201
@@ -2645,7 +2695,8 @@ def test_application_alteration_create_overlapping_alteration(api_client, applic
             "reason": "Keskeytynyt",
             "end_date": application.start_date + relativedelta(days=9),
             "resume_date": application.start_date + relativedelta(days=16),
-            "use_alternate_einvoice_provider": False,
+            "use_invoice": False,
+            "contact_person_name": "Ella Esimerkki",
         },
     )
     assert response.status_code == 400
@@ -2660,7 +2711,8 @@ def test_application_alteration_create_overlapping_alteration(api_client, applic
             "reason": "Keskeytynyt",
             "end_date": application.start_date + relativedelta(days=5),
             "resume_date": application.start_date + relativedelta(days=12),
-            "use_alternate_einvoice_provider": False,
+            "use_invoice": False,
+            "contact_person_name": "Ella Esimerkki",
         },
     )
     assert response.status_code == 400
@@ -2675,7 +2727,8 @@ def test_application_alteration_create_overlapping_alteration(api_client, applic
             "reason": "Keskeytynyt",
             "end_date": application.start_date + relativedelta(days=5),
             "resume_date": application.start_date + relativedelta(days=16),
-            "use_alternate_einvoice_provider": False,
+            "use_invoice": False,
+            "contact_person_name": "Ella Esimerkki",
         },
     )
     assert response.status_code == 400
@@ -2696,7 +2749,8 @@ def test_application_alteration_create_non_overlapping_alteration(
             "reason": "Keskeytynyt",
             "end_date": application.start_date + relativedelta(days=7),
             "resume_date": application.start_date + relativedelta(days=14),
-            "use_alternate_einvoice_provider": False,
+            "use_invoice": False,
+            "contact_person_name": "Ella Esimerkki",
         },
     )
     assert response.status_code == 201
@@ -2716,7 +2770,8 @@ def test_application_alteration_create_non_overlapping_alteration(
             "reason": "Keskeytynyt",
             "end_date": application.start_date + relativedelta(days=16),
             "resume_date": application.start_date + relativedelta(days=23),
-            "use_alternate_einvoice_provider": False,
+            "use_invoice": False,
+            "contact_person_name": "Ella Esimerkki",
         },
     )
     assert response.status_code == 201
@@ -2734,7 +2789,8 @@ def test_application_alteration_create_forbidden_anonymous(
             "alteration_type": "termination",
             "reason": "Päättynyt",
             "end_date": application.start_date + relativedelta(days=7),
-            "use_alternate_einvoice_provider": False,
+            "use_invoice": False,
+            "contact_person_name": "Ella Esimerkki",
         },
     )
     assert response.status_code == 403
@@ -2756,7 +2812,8 @@ def test_application_alteration_create_forbidden_another_company(
             "alteration_type": "termination",
             "reason": "Päättynyt",
             "end_date": application.start_date + relativedelta(days=7),
-            "use_alternate_einvoice_provider": False,
+            "use_invoice": False,
+            "contact_person_name": "Ella Esimerkki",
         },
     )
     assert response.status_code == 403
@@ -2774,11 +2831,12 @@ def test_application_alteration_create_ignored_fields_applicant(
             "state": "handled",
             "reason": "Päättynyt",
             "end_date": application.start_date + relativedelta(days=7),
-            "use_alternate_einvoice_provider": False,
+            "use_invoice": False,
             "handled_at": application.start_date + relativedelta(days=10),
             "recovery_start_date": application.start_date + relativedelta(days=7),
             "recovery_end_date": application.end_date,
             "recovery_amount": 4000,
+            "contact_person_name": "Ella Esimerkki",
         },
     )
 
@@ -2803,11 +2861,12 @@ def test_application_alteration_create_ignored_fields_handler(
             "state": "handled",
             "reason": "Päättynyt",
             "end_date": application.start_date + relativedelta(days=7),
-            "use_alternate_einvoice_provider": False,
+            "use_invoice": False,
             "handled_at": application.start_date + relativedelta(days=10),
             "recovery_start_date": application.start_date + relativedelta(days=7),
             "recovery_end_date": application.end_date,
             "recovery_amount": 4000,
+            "contact_person_name": "Ella Esimerkki",
         },
     )
 
@@ -2836,7 +2895,8 @@ def test_application_alteration_patch_applicant(
             "alteration_type": "termination",
             "reason": "Päättynyt",
             "end_date": application.start_date + relativedelta(days=7),
-            "use_alternate_einvoice_provider": False,
+            "use_invoice": False,
+            "contact_person_name": "Ella Esimerkki",
         },
     )
 
@@ -2864,7 +2924,8 @@ def test_application_alteration_patch_handler(handler_api_client, application):
             "alteration_type": "termination",
             "reason": "Päättynyt",
             "end_date": application.start_date + relativedelta(days=7),
-            "use_alternate_einvoice_provider": False,
+            "use_invoice": False,
+            "contact_person_name": "Ella Esimerkki",
         },
     )
 
@@ -2958,6 +3019,8 @@ def _create_application_alteration(application):
     alteration.alteration_type = ApplicationAlterationType.TERMINATION
     alteration.end_date = application.start_date + relativedelta(days=7)
     alteration.reason = f.sentence()
+    alteration.contact_person_name = "Ella Esimerkki"
+    alteration.use_einvoice = False
     alteration.save()
 
     return alteration

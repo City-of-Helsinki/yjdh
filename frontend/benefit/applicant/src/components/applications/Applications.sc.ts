@@ -38,6 +38,7 @@ export const $PageHeading = styled.h1`
 export const $PageHeadingApplicant = styled.div`
   margin-top: var(--spacing-m);
   margin-bottom: var(--spacing-m);
+  font-size: ${(props) => props.theme.fontSize.body.xl};
 `;
 
 export const $PageSubHeading = styled.p`
@@ -124,7 +125,7 @@ export const $StatusIcon = styled.span`
   }
 
   &.status-icon--${APPLICATION_STATUSES.REJECTED},
-  &.status-icon--${APPLICATION_STATUSES.CANCELLED} {
+    &.status-icon--${APPLICATION_STATUSES.CANCELLED} {
     svg {
       color: ${(props) => props.theme.colors.error};
     }

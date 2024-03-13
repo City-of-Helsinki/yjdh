@@ -1073,7 +1073,10 @@ class ApplicationAlteration(TimeStampedModel):
         blank=True,
     )
 
-    reason = models.TextField(verbose_name=_("reason for alteration"))
+    reason = models.TextField(
+        verbose_name=_("reason for alteration"),
+        blank=True,
+    )
 
     handled_at = models.DateField(
         verbose_name=_("date when alteration notice was handled"),
@@ -1100,9 +1103,9 @@ class ApplicationAlteration(TimeStampedModel):
         null=True,
     )
 
-    use_alternate_einvoice_provider = models.BooleanField(
+    use_einvoice = models.BooleanField(
         verbose_name=_(
-            "whether to use a separate e-invoice address from the one of the applicant organization"
+            "whether to use handle billing with an e-invoice instead of a bill sent to a physical address"
         ),
         default=False,
     )
@@ -1120,4 +1123,8 @@ class ApplicationAlteration(TimeStampedModel):
     einvoice_address = models.TextField(
         verbose_name=_("e-invoice address"),
         blank=True,
+    )
+
+    contact_person_name = models.TextField(
+        verbose_name=_("contact person"),
     )

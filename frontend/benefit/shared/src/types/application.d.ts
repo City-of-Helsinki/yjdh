@@ -1,5 +1,7 @@
 import { APPLICATION_ACTIONS } from 'benefit/handler/constants';
 import {
+  ALTERATION_STATE,
+  ALTERATION_TYPE,
   CALCULATION_ROW_DESCRIPTION_TYPES,
   CALCULATION_ROW_TYPES,
   PAY_SUBSIDY_GRANTED,
@@ -586,7 +588,7 @@ export type ApplicationAlteration = {
   einvoiceProviderName?: string;
   einvoiceProviderIdentifier?: string;
   einvoiceAddress?: string;
-  contactPerson?: string;
+  contactPersonName?: string;
   state?: ALTERATION_STATE;
   recoveryStartDate?: string;
   recoveryEndDate?: string;
@@ -604,7 +606,7 @@ export type ApplicationAlterationData = {
   einvoice_provider_name?: string;
   einvoice_provider_identifier?: string;
   einvoice_address?: string;
-  contact_person?: string;
+  contact_person_name?: string;
   state?: ALTERATION_STATE;
   recovery_start_date?: string;
   recovery_end_date?: string;
