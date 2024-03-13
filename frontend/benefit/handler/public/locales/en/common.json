@@ -238,9 +238,17 @@
       "cancelled": "Peruttu"
     },
     "steps": {
-      "step1": "Hae työnantaja",
-      "step2": "Syötä hakemus",
-      "step3": "Yhteenveto"
+      "newApplication": {
+        "step1": "Hae työnantaja",
+        "step2": "Syötä hakemus",
+        "step3": "Yhteenveto"
+      },
+      "handlingProcess": {
+        "step1": "Käsittely",
+        "step2": "Päätöksen valmistelu",
+        "step3": "Esikatsele ja lähetä"
+      },
+      "stepperHeading": "Vaihe {{currentStep}} / {{ lastStep }}:"
     },
     "actions": {
       "saveAndContinueLater": "Tallenna luonnoksena ja sulje",
@@ -771,6 +779,9 @@
         "notGranted": "Työsuhteeseen ei ole myönnetty mitään edeltävää tukea"
       }
     },
+    "handling": {
+      "title": "Hakemuksen käsittely"
+    },
     "summary": {
       "accepted": {
         "title": "Hakemuksen käsittely",
@@ -819,6 +830,57 @@
         "ready": "Käsittely valmis",
         "dateRange": "Helsinki-lisä kuukaudessa {{dateRange}}",
         "total": "Helsinki-lisä yhteensä koko ajalta ({{months}} kk)"
+      }
+    },
+    "decisionProposal": {
+      "list": {
+        "title": "Päätösehdotuksen tiedot",
+        "text": {
+          "accepted": "Hakemus käsitellään myönteiseksi ja Helsinki-lisää myönnetään {{ months }} kuukaudelle aikavälille {{ startAndEndDate }}.",
+          "rejected": "Hakemus käsitellään kielteiseksi. Helsinki-lisää ei myönnetä hakijalle."
+        },
+        "proposalStatus": {
+          "label": "Päätösehdotus",
+          "accepted": "Myönteinen",
+          "rejected": "Kielteinen"
+        },
+        "employerName": "Hakija",
+        "employeeName": "Työllistettävä",
+        "totalAmount": "Myönnettävä tuki yhteensä",
+        "grantedAsDeMinimisAid": "Myönnetään de minimis -tukena"
+      },
+      "calculationReview": {
+        "tableCaption": "Tukijaksot",
+        "dates": "Tukijakso",
+        "duration": "Kesto",
+        "perMonth": "Tuki kuukaudessa",
+        "amount": "Tuki yhteensä"
+      },
+      "role": {
+        "title": "Valitse päättäjän rooli",
+        "fields": {
+          "decisionMaker": {
+            "label": "Päättäjän rooli",
+            "handler": "Helsinki-lisä-valmistelija",
+            "manager": "Tiimipäällikkö",
+            "tooltipText": "Hakemuksen käsittelijän ja päättäjän on oltava eri henkilöitä. Käsittelijä on henkilö, joka lähettää hakemuksen. Valitse päättäjäksi joku toinen henkilö."
+          }
+        }
+      },
+      "templates": {
+        "title": "Valitse pohja päätökselle",
+        "fields": {
+          "usedLanguage": {
+            "label": "Yhteyshenkilön asiointikieli on"
+          },
+          "select": {
+            "label": "Päätöstekstipohja",
+            "helperText": "Valitse sopiva päätöstekstipohja"
+          }
+        }
+      },
+      "editor": {
+        "title": ""
       }
     }
   },
@@ -993,7 +1055,10 @@
     "start": "Alkamispäivä",
     "end": "Päättymispäivä",
     "perMonth": "/kk",
-    "empty": "Tyhjä"
+    "empty": "Tyhjä",
+    "next": "Seuraava",
+    "previous": "Edellinen",
+    "send": "Lähetä"
   },
   "status": {
     "draft": "Luonnos",
