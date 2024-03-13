@@ -1,4 +1,3 @@
-import { startOfYear } from 'date-fns';
 import formatDateStr from 'date-fns/format';
 import isBefore from 'date-fns/isBefore';
 import isFutureFn from 'date-fns/isFuture';
@@ -7,6 +6,7 @@ import isValid from 'date-fns/isValid';
 import { enGB as en, fi, sv } from 'date-fns/locale';
 import parse from 'date-fns/parse';
 import parseISO from 'date-fns/parseISO';
+import startOfYear from 'date-fns/startOfYear';
 
 import {
   DATE_BACKEND_REGEX,
