@@ -32,7 +32,7 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
     translationsBase,
     isRemoving,
     isUploading,
-  } = useAttachmentsList(handleQuietSave);
+  } = useAttachmentsList(handleQuietSave, attachments);
 
   return (
     <AttachmentsListBase

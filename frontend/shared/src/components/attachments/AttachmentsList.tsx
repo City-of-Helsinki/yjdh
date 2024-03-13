@@ -22,7 +22,7 @@ type Props<T extends Attachment> = {
   errorMessage?: string | false;
   attachments?: T[];
   onUpload: (data: FormData) => void | Promise<void>;
-  onRemove: (fileId: string) => void | Promise<void>;
+  onRemove: (fileId: string, fileName?: string) => void | Promise<void>;
   onOpen: (attachment: T) => void | Promise<void>;
   isUploading: boolean;
   isRemoving: boolean;

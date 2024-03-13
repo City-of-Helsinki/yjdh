@@ -20,7 +20,8 @@ type ExtendedComponentProps = {
 };
 
 const useAttachmentsList = (
-  handleQuietSave?: () => Promise<ApplicationData | void>
+  handleQuietSave?: () => Promise<ApplicationData | void>,
+  attachments?: BenefitAttachment[]
 ): ExtendedComponentProps => {
   const router = useRouter();
   const id = router?.query?.id;
@@ -59,7 +60,16 @@ const useAttachmentsList = (
 
   const handleRemove = async (attachmentId: string): Promise<void> => {
     const response = handleQuietSave ? await handleQuietSave() : true;
-    if (response) {
+    const attachment = attachments?.find((file) => file.id === attachmentId);
+    if (
+      response &&
+      // eslint-disable-next-line no-alert
+      window.confirm(
+        t('common:applications.sections.attachments.confirm', {
+          name: attachment?.attachmentFileName,
+        })
+      )
+    ) {
       removeAttachment({
         applicationId,
         attachmentId,
