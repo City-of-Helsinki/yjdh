@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
@@ -46,7 +45,7 @@ class ApplicationAlterationSerializer(DynamicFieldsModelSerializer):
                     _("Resume date is required if the benefit period wasn't terminated")
                 )
             )
-        if data["use_alternate_einvoice_provider"] is True:
+        if data["use_einvoice"] is True:
             for field, field_label in [
                 ("einvoice_provider_name", _("E-invoice provider name")),
                 ("einvoice_provider_identifier", _("E-invoice provider identifier")),
@@ -57,7 +56,7 @@ class ApplicationAlterationSerializer(DynamicFieldsModelSerializer):
                         ValidationError(
                             format_lazy(
                                 _(
-                                    "{field} must be filled if using an alternative e-invoice address"
+                                    "{field} must be filled if using an e-invoice address"
                                 ),
                                 field=field_label,
                             )
@@ -124,11 +123,7 @@ class ApplicationAlterationSerializer(DynamicFieldsModelSerializer):
 
         application = merged_data["application"]
 
-        if settings.NEXT_PUBLIC_MOCK_FLAG:
-            if not (user and user.is_authenticated):
-                user = get_user_model().objects.all().order_by("username").first()
-
-        if not user.is_handler():
+        if not settings.NEXT_PUBLIC_MOCK_FLAG and not user.is_handler():
             company = get_company_from_request(request)
             if company != application.company:
                 raise PermissionDenied(_("You are not allowed to do this action"))

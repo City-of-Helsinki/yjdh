@@ -50,10 +50,10 @@ export const getMaxEndDate = (
 export const validateFinnishDatePattern = (value = ''): boolean =>
   /^([1-9]|[12]\d|3[01])\.([1-9]|1[0-2])\.20\d{2}/.test(value);
 
-export const validateDateIsFromCurrentYearOnwards = (
-  value: string
-): boolean => {
-  if (!value || value.length < 8) return false;
+export const getDateFromDateString = (value: string): Date | null => {
+  if (!value || value.length < 8) {
+    return null;
+  }
 
   const isFinnishDate = validateFinnishDatePattern(value);
   const date = isFinnishDate
@@ -61,20 +61,24 @@ export const validateDateIsFromCurrentYearOnwards = (
     : parseDate(value);
 
   if (!date || !date?.toJSON()) {
-    return false;
+    return null;
   }
+
+  return date;
+};
+
+export const validateDateIsFromCurrentYearOnwards = (
+  value: string
+): boolean => {
+  const date = getDateFromDateString(value);
+
   return date ? date >= startOfYear(new Date()) : false;
 };
 
 export const validateIsTodayOrPastDate = (value: string): boolean => {
-  if (!value || value.length < 8) return false;
+  const date = getDateFromDateString(value);
 
-  const isFinnishDate = validateFinnishDatePattern(value);
-  const date = isFinnishDate
-    ? parse(value, 'd.M.yyyy', new Date())
-    : parseDate(value);
-
-  if (!date || !date?.toJSON() || isFuture(date)) {
+  if (!date || isFuture(date)) {
     return false;
   }
   return true;
@@ -84,12 +88,9 @@ export const validateDateWithinMonths = (
   value: string,
   months: number
 ): boolean => {
-  const isFinnishDate = validateFinnishDatePattern(value);
-  const date = isFinnishDate
-    ? parse(value, 'd.M.yyyy', new Date())
-    : parseDate(value);
+  const date = getDateFromDateString(value);
 
-  if (!date || !date?.toJSON()) {
+  if (!date) {
     return false;
   }
   const startOfDayDate = startOfDay(date);
@@ -97,4 +98,30 @@ export const validateDateWithinMonths = (
   return (
     isEqual(startOfDayDate, nMonthsAgo) || isAfter(startOfDayDate, nMonthsAgo)
   );
+};
+
+export const validateIsAfterOrOnDate = (
+  value: string,
+  otherValue: string
+): boolean => {
+  const date = getDateFromDateString(value);
+  const otherDate = getDateFromDateString(otherValue);
+
+  if (!date || !otherDate || date < otherDate) {
+    return false;
+  }
+  return true;
+};
+
+export const validateIsBeforeOrOnDate = (
+  value: string,
+  otherValue: string
+): boolean => {
+  const date = getDateFromDateString(value);
+  const otherDate = getDateFromDateString(otherValue);
+
+  if (!date || !otherDate || date > otherDate) {
+    return false;
+  }
+  return true;
 };

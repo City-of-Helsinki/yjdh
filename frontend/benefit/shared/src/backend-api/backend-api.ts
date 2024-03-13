@@ -18,6 +18,7 @@ export const BackendEndpoint = {
   APPLICANT_PRINT: '/v1/print/',
   SEARCH_ORGANISATION: '/v1/company/search/',
   GET_ORGANISATION: '/v1/company/get/',
+  APPLICATION_ALTERATION: '/v1/applicationalterations/',
 } as const;
 
 const singleBatchBase = (id: string): string =>

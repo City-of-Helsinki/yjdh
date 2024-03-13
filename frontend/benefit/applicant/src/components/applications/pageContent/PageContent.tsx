@@ -1,5 +1,6 @@
 import {
-  $HeaderItem, $HeaderRightColumnItem,
+  $HeaderItem,
+  $HeaderRightColumnItem,
   $PageHeader,
   $PageHeading, $PageHeadingApplicant,
   $PageHeadingHelperText,
@@ -141,7 +142,7 @@ const PageContent: React.FC = () => {
               {application.employee.lastName}
             </$PageHeadingApplicant>
           </$HeaderItem>
-          {id && application?.submittedAt && application?.applicationNumber &&
+          {id && application?.submittedAt && application?.applicationNumber && (
             <$HeaderRightColumnItem>
               <div>
                 <StatusIcon status={application.status} />
@@ -161,9 +162,9 @@ const PageContent: React.FC = () => {
                 })}
               </$PageSubHeading>
             </$HeaderRightColumnItem>
-          }
+          )}
         </$PageHeader>
-          <DecisionSummary application={application} />
+        <DecisionSummary application={application} />
         <ApplicationFormStep5 isReadOnly data={application} />
       </Container>
     );

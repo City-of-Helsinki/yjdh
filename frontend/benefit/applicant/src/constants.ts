@@ -11,6 +11,7 @@ export const IS_CLIENT = typeof window !== 'undefined';
 export enum ROUTES {
   HOME = '/',
   APPLICATION_FORM = '/application',
+  APPLICATION_ALTERATION = '/application/alteration',
   LOGIN = '/login',
   TERMS_OF_SERVICE = '/terms-of-service',
   ACCESSIBILITY_STATEMENT = '/accessibility-statement',

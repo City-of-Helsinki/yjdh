@@ -35,6 +35,7 @@
       "sent": "Ansökningsnummer: {{applicationNumber}}  |  Skickad {{submittedAt}}",
       "new": "Ny ansökan",
       "edit": "Helsingforstillagg ansokan",
+      "alteration": "",
       "helperText": "Vänligen kontrollera ansökan innan du skickar in den.",
       "guideText": "Fälten märkta med * är obligatoriska"
     },
@@ -438,6 +439,74 @@
         "showDecision": "",
         "reportAlteration": ""
       }
+    },
+    "alteration": {
+      "title": "",
+      "explanation": "",
+      "actions": {
+        "submit": "",
+        "cancel": ""
+      },
+      "fields": {
+        "alterationType": {
+          "label": "",
+          "termination": "",
+          "suspension": ""
+        },
+        "endDate": {
+          "label": ""
+        },
+        "resumeDate": {
+          "label": ""
+        },
+        "date": {
+          "helpText": ""
+        },
+        "terminationReason": {
+          "label": "",
+          "helpText": ""
+        },
+        "suspensionReason": {
+          "label": "",
+          "helpText": ""
+        },
+        "useEinvoice": {
+          "label": "",
+          "yes": "",
+          "no": ""
+        },
+        "einvoiceProviderName": {
+          "label": "",
+          "placeholder": ""
+        },
+        "einvoiceProviderIdentifier": {
+          "label": "",
+          "placeholder": ""
+        },
+        "einvoiceAddress": {
+          "label": "",
+          "placeholder": "",
+          "tooltip": ""
+        },
+        "contactPersonName": {
+          "label": "",
+          "helpText": ""
+        }
+      },
+      "validation": {
+        "resumeDateBeforeEndDate": "",
+        "einvoiceRequiredTogether": ""
+      },
+      "error": {
+        "notYetAccepted": "",
+        "alreadyTerminated": ""
+      },
+      "billing": "",
+      "successToast": {
+        "title": "",
+        "bodyTermination": "",
+        "bodySuspension": ""
+      }
     }
   },
   "serviceName": "E-tjänsten för Helsingforstillägg",
@@ -635,7 +704,8 @@
     "close": "Stäng",
     "home": "Gå tillbaka till ingångssidan",
     "pagination": "Sidor",
-    "back": "Tillbaka"
+    "back": "Tillbaka",
+    "submitting": ""
   },
   "messenger": {
     "messages": "Meddelanden om ansökan",
