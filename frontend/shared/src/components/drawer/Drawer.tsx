@@ -9,6 +9,7 @@ export type DrawerProps = {
   footer?: React.ReactNode;
   isOpen: boolean;
   onClose?: () => void;
+  stickyBarInUse?: boolean;
 };
 
 const Drawer: React.FC<DrawerProps> = ({
@@ -18,11 +19,12 @@ const Drawer: React.FC<DrawerProps> = ({
   footer,
   closeText,
   onClose,
+  stickyBarInUse,
 }) => {
   if (!isOpen) return null;
 
   return (
-    <$Drawer>
+    <$Drawer stickyBarInUse={stickyBarInUse}>
       {title && (
         <$Top>
           <$Title>{title}</$Title>
