@@ -1342,6 +1342,21 @@
       "apprenticeshipProgram": {
         "label": "Oppisopimus"
       },
+      "commissionAmount": {
+        "label": "Toimeksiannon summa"
+      },
+      "companyDepartment": {
+        "label": "Toimipiste (valinnainen)"
+      },
+      "applicantLanguage": {
+        "label": "Asiointikieli"
+      },
+      "ahjoCaseGuid": {
+        "label": "Ahjo guid"
+      },
+      "ahjoCaseId": {
+        "label": "Diaarinro"
+      },
       "attachments": {
         "label": "Liite"
       }
