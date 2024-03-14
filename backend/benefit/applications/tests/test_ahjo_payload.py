@@ -5,11 +5,21 @@ from applications.enums import AttachmentType
 from applications.models import Attachment
 from applications.services.ahjo_payload import (
     _prepare_case_records,
+    _prepare_case_title,
     _prepare_record,
     _prepare_record_document_dict,
     _prepare_top_level_dict,
 )
 from common.utils import hash_file
+
+
+def test_prepare_case_title(decided_application):
+    application = decided_application
+    wanted_title = f"Avustukset työnantajille, työllisyyspalvelut, \
+Helsinki-lisä, {application.company_name}, \
+hakemus {application.application_number}"
+    got = _prepare_case_title(application)
+    assert wanted_title == got
 
 
 def test_prepare_application_record(
@@ -142,6 +152,6 @@ def test_prepare_case_records(decided_application, settings):
 def test_prepare_top_level_dict(decided_application, ahjo_open_case_top_level_dict):
     application = decided_application
 
-    got = _prepare_top_level_dict(application, [])
+    got = _prepare_top_level_dict(application, [], "message title")
 
     assert ahjo_open_case_top_level_dict == got

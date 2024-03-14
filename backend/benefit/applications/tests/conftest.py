@@ -359,19 +359,17 @@ def ahjo_payload_record_for_attachment_update(
 @pytest.fixture()
 def ahjo_open_case_top_level_dict(decided_application):
     application = decided_application
-    message_title = f"Avustukset työnantajille, Työllisyyspalvelut, \
-Työnantajan Helsinki-lisä, Työnantaja {application.company_name} {application.company.business_id},\
-hakemusnumero {application.application_number}"
+
     handler = application.calculation.handler
 
     return {
-        "Title": message_title,
+        "Title": "message title",
         "Acquired": application.created_at.isoformat(),
         "ClassificationCode": "02 05 01 00",
         "ClassificationTitle": "Kunnan myöntämät avustukset",
         "Language": "fi",
         "PublicityClass": "Julkinen",
-        "InternalTitle": message_title,
+        "InternalTitle": "message title",
         "Subjects": [
             {"Subject": "Helsinki-lisät", "Scheme": "hki-yhpa"},
             {"Subject": "kunnan myöntämät avustukset", "Scheme": "hki-yhpa"},
