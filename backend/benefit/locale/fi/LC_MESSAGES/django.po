@@ -281,7 +281,7 @@ msgid "Employment Benefit"
 msgstr "Työllistämisen Helsinki-lisä"
 
 msgid "Salary Benefit"
-msgstr "Palkan Helsinki-lisä"
+msgstr "Helsinki-lisä"
 
 msgid "Commission Benefit"
 msgstr "Toimeksiannon Helsinki-lisä"
