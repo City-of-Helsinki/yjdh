@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.8.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.7.0...benefit-applicant-v3.8.0) (2024-03-15)
+
+
+### Features
+
+* Review application edit changes before submit (hl-1062) ([#2838](https://github.com/City-of-Helsinki/yjdh/issues/2838)) ([2d9c08e](https://github.com/City-of-Helsinki/yjdh/commit/2d9c08e6dc33bd03d390408131db0445e2c7e517))
+
+
+### Bug Fixes
+
+* Import date-fns properly ([#2878](https://github.com/City-of-Helsinki/yjdh/issues/2878)) ([0f5f858](https://github.com/City-of-Helsinki/yjdh/commit/0f5f858adca19fc19579bb1db13c3bf1449485ca))
+* Remove unnecessary forward slash from url ([b9dce62](https://github.com/City-of-Helsinki/yjdh/commit/b9dce62cd9356e3a0ee738b67c3897e7cff1d3fb))
+
 ## [3.7.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.6.0...benefit-applicant-v3.7.0) (2024-02-14)
 
 
