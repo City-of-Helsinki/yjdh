@@ -12,22 +12,28 @@ from users.models import User
 MANNER_OF_RECEIPT = "sähköinen asiointi"
 
 
-def _prepare_top_level_dict(application: Application, case_records: List[dict]) -> dict:
+def _prepare_case_title(application: Application) -> str:
+    full_title = f"Avustukset työnantajille, työllisyyspalvelut, \
+Helsinki-lisä, {application.company_name}, \
+hakemus {application.application_number}"
+    return full_title
+
+
+def _prepare_top_level_dict(
+    application: Application, case_records: List[dict], case_title: str
+) -> dict:
     """Prepare the dictionary that is sent to Ahjo"""
     application_date = application.created_at.isoformat("T", "seconds")
-    message_title = f"Avustukset työnantajille, Työllisyyspalvelut, \
-Työnantajan Helsinki-lisä, Työnantaja {application.company_name} {application.company.business_id},\
-hakemusnumero {application.application_number}"
 
     handler = application.calculation.handler
     case_dict = {
-        "Title": message_title,
+        "Title": case_title,
         "Acquired": application_date,
         "ClassificationCode": "02 05 01 00",
         "ClassificationTitle": "Kunnan myöntämät avustukset",
         "Language": "fi",
         "PublicityClass": "Julkinen",
-        "InternalTitle": message_title,
+        "InternalTitle": case_title,
         "Subjects": [
             {"Subject": "Helsinki-lisät", "Scheme": "hki-yhpa"},
             {"Subject": "kunnan myöntämät avustukset", "Scheme": "hki-yhpa"},
@@ -164,7 +170,8 @@ def prepare_open_case_payload(
 ) -> dict:
     "Prepare the complete dictionary payload that is sent to Ahjo"
     case_records = _prepare_case_records(application, pdf_summary)
-    payload = _prepare_top_level_dict(application, case_records)
+    case_title = _prepare_case_title(application)
+    payload = _prepare_top_level_dict(application, case_records, case_title)
     return payload
 
 
