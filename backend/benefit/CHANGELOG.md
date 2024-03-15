@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.8.0...benefit-backend-v1.9.0) (2024-03-15)
+
+
+### Features
+
+* Hl 1140 shorten ahjo title ([#2879](https://github.com/City-of-Helsinki/yjdh/issues/2879)) ([7f12022](https://github.com/City-of-Helsinki/yjdh/commit/7f12022f4186def5e752d7481d96869a7f30c114))
+
 ## [1.8.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.7.0...benefit-backend-v1.8.0) (2024-03-15)
 
 
