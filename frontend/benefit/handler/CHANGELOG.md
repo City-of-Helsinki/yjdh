@@ -1,5 +1,29 @@
 # Changelog
 
+## [3.3.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v3.2.0...benefit-handler-v3.3.0) (2024-03-15)
+
+
+### Features
+
+* Add application changes to handler's side bar (hl-1063) ([#2865](https://github.com/City-of-Helsinki/yjdh/issues/2865)) ([9d6e95a](https://github.com/City-of-Helsinki/yjdh/commit/9d6e95ad823e4291a4f9933acfe2e58712183655))
+* Review application edit changes before submit (hl-1062) ([#2838](https://github.com/City-of-Helsinki/yjdh/issues/2838)) ([2d9c08e](https://github.com/City-of-Helsinki/yjdh/commit/2d9c08e6dc33bd03d390408131db0445e2c7e517))
+
+
+### Bug Fixes
+
+* Calculation and pay subsidies would not reset if changed on edit (hl-1110, hl-1127, hl-1130)  ([#2847](https://github.com/City-of-Helsinki/yjdh/issues/2847)) ([7f88cc5](https://github.com/City-of-Helsinki/yjdh/commit/7f88cc51e76733cee5855a20a997ed19bb69e41d))
+* Import date-fns properly ([#2878](https://github.com/City-of-Helsinki/yjdh/issues/2878)) ([0f5f858](https://github.com/City-of-Helsinki/yjdh/commit/0f5f858adca19fc19579bb1db13c3bf1449485ca))
+* Lint file ([480ec3f](https://github.com/City-of-Helsinki/yjdh/commit/480ec3f0f0e0a065773eff16b3d958ab817dfc2f))
+* Localization keys added to change messages ([#2880](https://github.com/City-of-Helsinki/yjdh/issues/2880)) ([fe485ab](https://github.com/City-of-Helsinki/yjdh/commit/fe485ab097a55c668792c97a94caa435fc252403))
+* Remove consent checkboxes from handler edit ([3ac9dcd](https://github.com/City-of-Helsinki/yjdh/commit/3ac9dcdbb689d4bb268f3ae4d36658996e3dcafa))
+* Remove text about adding file, not yet supported ([#2873](https://github.com/City-of-Helsinki/yjdh/issues/2873)) ([f866d04](https://github.com/City-of-Helsinki/yjdh/commit/f866d04376b43a36c8007434045298a5a9c4ec0c))
+* Remove training compensations data on changes ([#2866](https://github.com/City-of-Helsinki/yjdh/issues/2866)) ([d2bf279](https://github.com/City-of-Helsinki/yjdh/commit/d2bf27993641ca9a4e765854d056ac3fe0ae05cc))
+* Remove unnecessary forward slash from url ([b9dce62](https://github.com/City-of-Helsinki/yjdh/commit/b9dce62cd9356e3a0ee738b67c3897e7cff1d3fb))
+* Require confirm on attachment removal and on edit cancel (HL-1199 [#2875](https://github.com/City-of-Helsinki/yjdh/issues/2875)) ([b8de140](https://github.com/City-of-Helsinki/yjdh/commit/b8de140f787cc00ba3b0c2186e79f4dcc180c657))
+* Reset form calculation if there's change in apprenticeship ([99b09bf](https://github.com/City-of-Helsinki/yjdh/commit/99b09bffcb6d91cfd1a8b3e5021636bdee557498))
+* Various calculator fixes and tweaks ([#2872](https://github.com/City-of-Helsinki/yjdh/issues/2872)) ([ae0f48b](https://github.com/City-of-Helsinki/yjdh/commit/ae0f48b2b1ab0eda7d3cfbaab1f42b28c4bdf3ad))
+* Wrong translation key is used ([23f4208](https://github.com/City-of-Helsinki/yjdh/commit/23f420851baecfacaf6e8b18c1f9d8dc02decb2c))
+
 ## [3.2.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v3.1.0...benefit-handler-v3.2.0) (2024-02-14)
 
 

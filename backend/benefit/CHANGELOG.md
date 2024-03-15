@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.8.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.7.0...benefit-backend-v1.8.0) (2024-03-15)
+
+
+### Features
+
+* Add alteration notice API ([eb2fcf7](https://github.com/City-of-Helsinki/yjdh/commit/eb2fcf75c25b77ba976f45f4612b16cf63d52732))
+* Add application changes to handler's side bar (hl-1063) ([#2865](https://github.com/City-of-Helsinki/yjdh/issues/2865)) ([9d6e95a](https://github.com/City-of-Helsinki/yjdh/commit/9d6e95ad823e4291a4f9933acfe2e58712183655))
+* Add model for application alterations ([191d031](https://github.com/City-of-Helsinki/yjdh/commit/191d031688bb95f1d5f4c5310bb13d2ec295e137))
+* Handle update record callback ([#2854](https://github.com/City-of-Helsinki/yjdh/issues/2854)) ([03eaae2](https://github.com/City-of-Helsinki/yjdh/commit/03eaae2264f45f2df57f729ddbbfbec76c3b8708))
+* Remove "Palkan" from salary benefit locale ([#2881](https://github.com/City-of-Helsinki/yjdh/issues/2881)) ([afbc97a](https://github.com/City-of-Helsinki/yjdh/commit/afbc97ab461a846dd93e8ef784e4660b6d30095b))
+* Review application edit changes before submit (hl-1062) ([#2838](https://github.com/City-of-Helsinki/yjdh/issues/2838)) ([2d9c08e](https://github.com/City-of-Helsinki/yjdh/commit/2d9c08e6dc33bd03d390408131db0445e2c7e517))
+
+
+### Bug Fixes
+
+* Attachment type in ahjo payload ([#2868](https://github.com/City-of-Helsinki/yjdh/issues/2868)) ([daeb983](https://github.com/City-of-Helsinki/yjdh/commit/daeb9839f251efec2e078f13b8f58b4a689e25a7))
+* Exclude xml attachments from open case ([#2871](https://github.com/City-of-Helsinki/yjdh/issues/2871)) ([f00b4a1](https://github.com/City-of-Helsinki/yjdh/commit/f00b4a1c796dcadb142725fabfd810ada3a9dd1e))
+* Records in update dict to lowercase ([#2874](https://github.com/City-of-Helsinki/yjdh/issues/2874)) ([d536285](https://github.com/City-of-Helsinki/yjdh/commit/d536285c2b8a813de83c151c90ccc07023f3fb70))
+* Remove extra bracket from secret decision ([#2870](https://github.com/City-of-Helsinki/yjdh/issues/2870)) ([8fb25fd](https://github.com/City-of-Helsinki/yjdh/commit/8fb25fd6ae7787e45ce73ded97baaf91467ee73f))
+* Unclosed p-tag ([#2852](https://github.com/City-of-Helsinki/yjdh/issues/2852)) ([08dab8d](https://github.com/City-of-Helsinki/yjdh/commit/08dab8d31358c212321bab9cc08e58840ab4ada3))
+* Various calculator fixes and tweaks ([#2872](https://github.com/City-of-Helsinki/yjdh/issues/2872)) ([ae0f48b](https://github.com/City-of-Helsinki/yjdh/commit/ae0f48b2b1ab0eda7d3cfbaab1f42b28c4bdf3ad))
+
 ## [1.7.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.6.0...benefit-backend-v1.7.0) (2024-02-14)
 
 
