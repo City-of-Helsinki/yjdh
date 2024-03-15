@@ -76,7 +76,7 @@ django-extensions==3.2.1
     #   yjdh-backend-shared
 django-filter==22.1
     # via -r requirements.in
-django-helusers==0.7.1
+django-helusers==0.11.0
     # via helsinki-profile-gdpr-api
 django-localflavor==3.1
     # via -r requirements.in
