@@ -9,7 +9,7 @@ import {
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
 import { DeMinimisAid } from 'benefit-shared/types/application';
-import { isBefore } from 'date-fns';
+import isBefore from 'date-fns/isBefore';
 import { TFunction } from 'next-i18next';
 import { convertToUIDateFormat, parseDate } from 'shared/utils/date.utils';
 import { getNumberValue } from 'shared/utils/string.utils';

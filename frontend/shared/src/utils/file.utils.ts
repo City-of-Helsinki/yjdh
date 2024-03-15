@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import format from 'date-fns/format';
 import fileDownload from 'js-file-download';
 import ExportFileType from 'shared/types/export-file-type';
 
@@ -11,7 +11,12 @@ export const downloadFile = (data: string, type: ExportFileType): void => {
 
   if (type === 'csv') {
     // eslint-disable-next-line security/detect-non-literal-fs-filename
-    fileDownload(data, `hl ${dateString}.csv`, 'text/csv;charset=utf-8-sig', '\uFEFF');
+    fileDownload(
+      data,
+      `hl ${dateString}.csv`,
+      'text/csv;charset=utf-8-sig',
+      '\uFEFF'
+    );
   } else {
     fileDownload(data, `hl ${dateString}.zip`);
   }

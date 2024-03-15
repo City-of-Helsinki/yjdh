@@ -2,17 +2,15 @@ import {
   APPLICATION_START_DATE,
   BENEFIT_TYPES,
 } from 'benefit-shared/constants';
-import {
-  addMonths,
-  isAfter,
-  isEqual,
-  isFuture,
-  parse,
-  startOfDay,
-  startOfYear,
-  subDays,
-  subMonths,
-} from 'date-fns';
+import addMonths from 'date-fns/addMonths';
+import isAfter from 'date-fns/isAfter';
+import isEqual from 'date-fns/isEqual';
+import isFuture from 'date-fns/isFuture';
+import parse from 'date-fns/parse';
+import startOfDay from 'date-fns/startOfDay';
+import startOfYear from 'date-fns/startOfYear';
+import subDays from 'date-fns/subDays';
+import subMonths from 'date-fns/subMonths';
 import { parseDate } from 'shared/utils/date.utils';
 
 export const getMinEndDate = (

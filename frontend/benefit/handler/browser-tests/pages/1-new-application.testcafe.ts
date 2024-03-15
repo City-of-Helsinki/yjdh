@@ -1,6 +1,6 @@
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import { DATE_FORMATS } from '@frontend/shared/src/utils/date.utils';
-import { format } from 'date-fns';
+import format from 'date-fns/format';
 import { Selector } from 'testcafe';
 
 import fi from '../../public/locales/fi/common.json';
