@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 from applications.models import (
+    AhjoDecisionText,
     AhjoSetting,
     Application,
     ApplicationBasis,
@@ -130,6 +131,21 @@ class DecisionProposalTemplateSectionAdmin(admin.ModelAdmin):
     search_fields = ["name"]
 
 
+class AhjoDecisionTextFormAdmin(forms.ModelForm):
+    class Meta:
+        model = AhjoDecisionText
+        fields = "__all__"
+        widgets = {
+            "decision_text": SafeTextareaWidget(),
+        }
+
+
+class AhjoDecisionTextAdmin(admin.ModelAdmin):
+    form = AhjoDecisionTextFormAdmin
+    list_display = ["id", "decision_type", "application_id"]
+    search_fields = ["id", "decision_type", "application_id"]
+
+
 admin.site.register(Application, ApplicationAdmin)
 admin.site.register(ApplicationBatch, ApplicationBatchAdmin)
 admin.site.register(DeMinimisAid)
@@ -141,3 +157,4 @@ admin.site.register(AhjoSetting, AhjoSettingAdmin)
 admin.site.register(
     DecisionProposalTemplateSection, DecisionProposalTemplateSectionAdmin
 )
+admin.site.register(AhjoDecisionText, AhjoDecisionTextAdmin)
