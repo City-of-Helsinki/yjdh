@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.9.0...benefit-backend-v1.10.0) (2024-03-15)
+
+
+### Features
+
+* Add decision texts to Django admin ([#2882](https://github.com/City-of-Helsinki/yjdh/issues/2882)) ([504a5a3](https://github.com/City-of-Helsinki/yjdh/commit/504a5a3d600d902eb44ca32a88b1c1aa54cd1a67))
+
 ## [1.9.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.8.0...benefit-backend-v1.9.0) (2024-03-15)
 
 
