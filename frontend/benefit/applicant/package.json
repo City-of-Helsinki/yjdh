@@ -1,6 +1,6 @@
 {
   "name": "@frontend/applicant",
-  "version": "3.7.0",
+  "version": "3.8.0",
   "license": "MIT",
   "scripts": {
     "dev": "node ../../shared/src/server/next-server.js",
