@@ -32,6 +32,7 @@ from applications.services.ahjo_integration import (
     generate_single_declined_file,
     get_application_for_ahjo,
     get_applications_for_open_case,
+    prepare_delete_url,
     REJECTED_TITLE,
 )
 from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
@@ -648,3 +649,23 @@ def test_get_applications_for_open_case(
     # only handled_applications should be returned as their last  AhjoStatus is SUBMITTED_BUT_NOT_SENT_TO_AHJO
     # and their application status is HANDLING
     assert applications_for_open_case.count() == len(multiple_handling_applications)
+
+
+@pytest.mark.django_db
+def test_prepare_delete_url(settings, decided_application):
+    application = decided_application
+    application.ahjo_case_id = "HEL 1999-123"
+    application.save()
+    handler = application.calculation.handler
+    handler.ad_username = "foobar"
+    handler.save()
+
+    case_id = application.ahjo_case_id
+
+    reason = "applicationretracted"
+    lang = "fi"
+    url_base = f"{settings.AHJO_REST_API_URL}/cases"
+
+    url = prepare_delete_url(url_base, decided_application)
+    wanted_url = f"{url_base}/{case_id}?draftsmanid={handler.ad_username}&reason={reason}&apireqlang={lang}"
+    assert url == wanted_url
