@@ -1,4 +1,4 @@
-import styled, { DefaultTheme } from 'styled-components';
+import styled, { CSSProp, DefaultTheme } from 'styled-components';
 
 export type HeadingProps = {
   size?: keyof DefaultTheme['fontSize']['heading'];
@@ -10,6 +10,7 @@ export type HeadingProps = {
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'div';
   'data-testid'?: string;
   weight?: string;
+  $css?: CSSProp;
 };
 
 export const $Header = styled.h1<HeadingProps>`
