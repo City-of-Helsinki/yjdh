@@ -42,7 +42,7 @@ import styled from 'styled-components';
 import { $Empty } from '../applicationList/ApplicationList.sc';
 import ConfirmModalContent from '../applicationReview/actions/ConfirmModalContent/confirm';
 import {
-  $HorizontalList,
+  $HorizontalListTableHeader,
   $TableBody,
   $TableFooter,
   $TableGrid,
@@ -246,7 +246,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
             ) : null
           }
         />
-        <$HorizontalList>
+        <$HorizontalListTableHeader>
           <div>
             <dt>{t('common:batches.single')}</dt>
             <dd>{proposalForDecisionHeader()}</dd>
@@ -298,7 +298,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
               </button>
             ) : null}
           </div>
-        </$HorizontalList>
+        </$HorizontalListTableHeader>
 
         {applications?.length ? (
           <$TableBody $isCollapsed={isCollapsed} aria-hidden={isCollapsed}>
