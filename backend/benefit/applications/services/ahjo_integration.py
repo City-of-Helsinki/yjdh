@@ -17,6 +17,7 @@ from django.core.files.base import ContentFile
 from django.db.models import F, OuterRef, QuerySet, Subquery
 from django.template.loader import render_to_string
 from django.urls import reverse
+from django.utils import translation
 
 from applications.enums import (
     AhjoRequestType,
@@ -395,12 +396,20 @@ def generate_secret_xml_string(application: Application) -> str:
         row_type=RowType.HELSINKI_BENEFIT_SUB_TOTAL_EUR
     )
 
+    # Set the locale for this thread to the application's language
+    translation.activate(application.applicant_language)
+
     context = {
         "application": application,
         "benefit_type": "Palkan Helsinki-lisä",
         "calculation_rows": sub_total_rows,
+        "language": application.applicant_language,
     }
     xml_content = render_to_string("secret_decision.xml", context)
+
+    # Reset the locale to the default
+    translation.deactivate()
+
     return xml_content
 
 

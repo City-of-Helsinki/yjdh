@@ -1386,6 +1386,25 @@ msgstr "godkännande av villkoren för tjänsten"
 msgid "terms of service approvals"
 msgstr "godkännanden av villkoren för tjänsten"
 
+# For Ahjo secret decision XML
+msgid "Granting of Helsinki-lisä benefit"
+msgstr "Beviljande av Helsingforstillägget för anställningsstöd"
+
+msgid "Benefit type"
+msgstr "Typ av förmån"
+
+msgid "Total benefit"
+msgstr "total förmån"
+
+msgid "Benefit per month"
+msgstr "förmån per månad"
+
+msgid "Employee first name"
+msgstr "anställdas förnamn"
+
+msgid "Employee last name"
+msgstr "anställdas efternamn"
+
 #~ msgid "applicant"
 #~ msgstr "sökande"
 
