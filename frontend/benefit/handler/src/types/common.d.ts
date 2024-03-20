@@ -27,3 +27,20 @@ interface UploadErrorData {
   non_field_errors?: string[];
   [key: string]: string[] | undefined;
 }
+
+export interface DecisionProposalTemplateData {
+  id: string;
+  name: string;
+  template_decision_text: string;
+  template_justification_text: string;
+}
+
+export interface DecisionProposalTemplate {
+  id: string;
+  name: string;
+  sectionType: string;
+  templateDecisionText: string;
+  templateJustificationText: string;
+}
+
+export type DecisionProposals = DecisionProposalTemplate[];
