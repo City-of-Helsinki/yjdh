@@ -87,15 +87,15 @@ export const useSteps = (id: string | null): ExtendedComponentProps => {
     activeStepIndex: activeStep,
     steps: [
       {
-        label: t('common:applications.steps.step1'),
+        label: t('common:applications.steps.newApplication.step1'),
         state: activeStep === 0 ? StepState.available : StepState.completed,
       },
       {
-        label: t('common:applications.steps.step2'),
+        label: t('common:applications.steps.newApplication.step2'),
         state: activeStep === 0 ? StepState.disabled : StepState.available,
       },
       {
-        label: t('common:applications.steps.step3'),
+        label: t('common:applications.steps.newApplication.step3'),
         state: StepState.disabled,
       },
     ],
