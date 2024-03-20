@@ -38,10 +38,8 @@ const NotificationView: React.FC<Props> = ({ data }) => {
   const handleGoHome = (): void => {
     void router.push(ROUTES.HOME);
   };
-
   const handleStartAhjo = (): void => {
-    const activeTab =
-      handledApplication?.status === APPLICATION_STATUSES.ACCEPTED ? 4 : 5;
+    const activeTab = data?.status === APPLICATION_STATUSES.ACCEPTED ? 4 : 5;
     void router.push({ pathname: ROUTES.HOME, query: { tab: activeTab } });
   };
 
@@ -50,7 +48,7 @@ const NotificationView: React.FC<Props> = ({ data }) => {
       <$Notification>
         <$Grid>
           <$GridCell $colSpan={2}>
-            {handledApplication?.status ? (
+            {data?.status ? (
               <$IconCheckCircle size="xl" />
             ) : (
               <$IconAlertCircle size="xl" />
@@ -59,15 +57,13 @@ const NotificationView: React.FC<Props> = ({ data }) => {
           <$GridCell $colSpan={10}>
             <$NotificationTitle>
               {t(
-                `${translationsBase}.${String(
-                  handledApplication?.status ?? 'error'
-                )}.title`
+                `${translationsBase}.${String(data?.status ?? 'error')}.title`
               )}
             </$NotificationTitle>
             <$NotificationMessage>
               {t(
                 `${translationsBase}.${String(
-                  handledApplication?.status ?? 'error'
+                  data?.status ?? 'error'
                 )}.message`,
                 { applicationNum: data?.applicationNumber }
               )}

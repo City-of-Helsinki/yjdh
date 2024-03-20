@@ -21,3 +21,20 @@ export type ReviewChildProps = DynamicFormStepComponentProps & {
 interface ErrorResponse {
   response: unknown;
 }
+
+export interface DecisionProposalTemplateData {
+  id: string;
+  name: string;
+  template_decision_text: string;
+  template_justification_text: string;
+}
+
+export interface DecisionProposalTemplate {
+  id: string;
+  name: string;
+  sectionType: string;
+  templateDecisionText: string;
+  templateJustificationText: string;
+}
+
+export type DecisionProposals = DecisionProposalTemplate[];

@@ -1,6 +1,8 @@
 import { AxiosError } from 'axios';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { ApplicationData } from 'benefit-shared/types/application';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
@@ -16,6 +18,7 @@ const useUpdateApplicationQuery = (): UseMutationResult<
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   return useMutation<ApplicationData, AxiosError<ErrorData>, ApplicationData>(
     'updateApplication',
@@ -27,9 +30,17 @@ const useUpdateApplicationQuery = (): UseMutationResult<
         )
       ),
     {
-      onSuccess: () => {
+      onSuccess: (response: ApplicationData) => {
         void queryClient.invalidateQueries('applications');
         void queryClient.invalidateQueries('application');
+        if (
+          [
+            APPLICATION_STATUSES.ACCEPTED,
+            APPLICATION_STATUSES.REJECTED,
+          ].includes(response.status)
+        ) {
+          void router.push(`/application?id=${response.id}&submitted=1`);
+        }
       },
       onError: (error: AxiosError) => {
         const errorStatus = error.code;

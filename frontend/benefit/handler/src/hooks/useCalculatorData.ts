@@ -17,13 +17,12 @@ type ExtendedComponentProps = {
   handleSubmit: () => void;
   handleClear: () => void;
   getErrorMessage: (fieldName: string) => string | undefined;
-  isRecalculationRequired: boolean;
-  setIsRecalculationRequired: (value: boolean) => void;
 };
 
 const useCalculatorData = (
   calculatorType: CALCULATION_TYPES,
-  formik: FormikProps<CalculationFormProps>
+  formik: FormikProps<CalculationFormProps>,
+  setIsRecalculationRequired: (value: boolean) => void
 ): ExtendedComponentProps => {
   const language = useLocale();
   const theme = useTheme();
@@ -33,8 +32,6 @@ const useCalculatorData = (
   const { errors, touched, values, dirty } = formik;
 
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-
-  const [isRecalculationRequired, setIsRecalculationRequired] = useState(false);
 
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(errors, touched, fieldName, t, isSubmitted);
@@ -57,7 +54,7 @@ const useCalculatorData = (
 
   useEffect(() => {
     if (dirty) setIsRecalculationRequired(true);
-  }, [dirty, values]);
+  }, [dirty, values, setIsRecalculationRequired]);
 
   return {
     t,
@@ -67,8 +64,6 @@ const useCalculatorData = (
     getErrorMessage,
     handleSubmit,
     handleClear,
-    isRecalculationRequired,
-    setIsRecalculationRequired,
   };
 };
 

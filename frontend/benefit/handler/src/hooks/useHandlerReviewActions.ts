@@ -10,7 +10,7 @@ import camelcaseKeys from 'camelcase-keys';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import { stringToFloatValue } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
@@ -23,17 +23,14 @@ interface HandlerReviewActions {
   onSaveAndClose: () => void;
   onDone: () => void;
   onCancel: (cancelledApplication: HandledAplication) => void;
-  calculationsErrors: ErrorData | undefined | null;
   calculateSalaryBenefit: (values: CalculationFormProps) => void;
 }
 
 const useHandlerReviewActions = (
-  application: Application
+  application: Application,
+  setCalculationErrors?: React.Dispatch<React.SetStateAction<ErrorData>>
 ): HandlerReviewActions => {
   const updateApplicationQuery = useUpdateApplicationQuery();
-  const [calculationsErrors, setCalculationErrors] = useState<
-    ErrorData | undefined | null
-  >();
 
   const router = useRouter();
 
@@ -163,6 +160,7 @@ const useHandlerReviewActions = (
   };
 
   useEffect(() => {
+    if (!setCalculationErrors) return;
     if (updateApplicationQuery.error) {
       // Can parse error codes from data on 400s, set generic error on 500
       if (
@@ -202,7 +200,6 @@ const useHandlerReviewActions = (
     onDone,
     onCancel,
     calculateSalaryBenefit,
-    calculationsErrors,
   };
 };
 
