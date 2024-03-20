@@ -48,7 +48,7 @@ def _prepare_top_level_dict(
                 "Role": "sender_initiator",
                 "CorporateName": application.company.name,
                 "ContactPerson": application.contact_person,
-                "Type": "ExterOnal",
+                "Type": "External",
                 "Email": application.company_contact_person_email,
                 "AddressStreet": application.company.street_address,
                 "AddressPostalCode": application.company.postcode,
