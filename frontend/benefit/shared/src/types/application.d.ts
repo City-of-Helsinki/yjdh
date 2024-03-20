@@ -227,6 +227,8 @@ export type Row = {
   descriptionFi: string;
   amount: string;
   descriptionType: CALCULATION_ROW_DESCRIPTION_TYPES | null;
+  startDate?: string;
+  endDate?: string;
 };
 
 export type TrainingCompensation = {
@@ -237,6 +239,26 @@ export type TrainingCompensation = {
 };
 
 export type PaySubsidyPercent = typeof PAY_SUBSIDY_OPTIONS[number];
+
+export interface DecisionProposalDraftData {
+  handler_role?: string;
+  review_step?: number;
+  log_entry_comment?: string;
+  status?: APPLICATION_STATUSES;
+  decision_text?: string;
+  justification_text?: string;
+}
+
+export interface DecisionProposalDraft {
+  handlerRole?: string;
+  reviewStep?: number;
+  logEntryComment?: string;
+  grantedAsDeMinimisAid?: boolean;
+  status?: APPLICATION_STATUSES;
+  decisionText?: string;
+  justificationText?: string;
+  applicationId?: string;
+}
 
 export type Application = {
   id?: string;
@@ -272,6 +294,8 @@ export type Application = {
   ahjoDecisionDate?: string;
   calculatedBenefitAmount?: number;
   alterations?: Array<ApplicationAlteration>;
+  decisionProposalDraft?: DecisionProposalDraft;
+  applicationOrigin?: APPLICATION_ORIGINS;
 } & Step1 &
   Step2;
 

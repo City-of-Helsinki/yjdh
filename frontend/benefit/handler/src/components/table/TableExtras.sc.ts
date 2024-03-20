@@ -16,15 +16,9 @@ export const $HorizontalList = styled.dl`
   margin: 0;
 
   div {
-    min-width: 200px;
+    min-width: 100px;
     max-width: 300px;
     margin-right: auto;
-    &:last-child {
-      margin-left: auto;
-      margin-right: var(--spacing-m);
-      min-width: var(--spacing-l);
-      max-width: var(--spacing-l);
-    }
   }
 
   dt,
@@ -46,6 +40,15 @@ export const $HorizontalList = styled.dl`
     margin: 0;
     padding: var(--spacing-s) var(--spacing-m);
     cursor: pointer;
+  }
+`;
+
+export const $HorizontalListTableHeader = styled($HorizontalList)`
+  div:last-child {
+    margin-left: auto;
+    margin-right: var(--spacing-m);
+    min-width: var(--spacing-l);
+    max-width: var(--spacing-l);
   }
 `;
 
