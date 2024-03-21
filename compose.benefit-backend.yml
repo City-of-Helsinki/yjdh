@@ -55,9 +55,45 @@ services:
     container_name: benefit-mailhog
     networks:
       - default
+  
+  clamav:
+    image: clamav/clamav:latest
+    container_name: benefit-clamav
+    environment:
+      CLAMAV_NO_LOGFILE: "true"
+    volumes:
+      - clamav_data:/var/lib/clamav
+      - clamav_logs:/var/log/clamav
+    ports:
+      - "3310:3310"
+    networks:
+      - default
+  # TODO wait for clamav to start
+  clamav-rest-api:
+    image: benzino77/clamav-rest-api
+    container_name: benefit-clamav-rest-api
+    environment:
+      NODE_ENV: production
+      APP_PORT: 8080
+      APP_FORM_KEY: attachment_file
+      CLAMD_IP: clamav
+      APP_MAX_FILE_SIZE: 26214400
+    ports:
+      - "8080:8080"
+    depends_on:
+      - clamav
+    command: ["/usr/wait-for-it.sh", "clamav:3310", "--", "node", "src/app.js"]
+    volumes:
+      - ./backend/docker/arm/tools/wait-for-it.sh:/usr/wait-for-it.sh
+    networks:
+      - default
 
 volumes:
   pgdata:
+    driver: local
+  clamav_data:
+    driver: local
+  clamav_logs:
     driver: local
 
 networks:
