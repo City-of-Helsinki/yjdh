@@ -15,6 +15,7 @@ from applications.enums import (
 )
 from applications.models import (
     AhjoDecision,
+    AhjoDecisionProposalDraft,
     AhjoDecisionText,
     Application,
     APPLICATION_LANGUAGE_CHOICES,
@@ -68,6 +69,11 @@ class DeMinimisAidFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = DeMinimisAid
+
+
+class AhjoDecisionProposalDraftFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = AhjoDecisionProposalDraft
 
 
 class ApplicationBasisFactory(factory.django.DjangoModelFactory):
@@ -143,6 +149,11 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     )
     de_minimis_2 = factory.RelatedFactory(
         DeMinimisAidFactory,
+        factory_related_name="application",
+    )
+
+    decision_proposal_draft = factory.RelatedFactory(
+        AhjoDecisionProposalDraftFactory,
         factory_related_name="application",
     )
 

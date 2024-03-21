@@ -220,6 +220,17 @@ class ApplicationAlterationState(models.TextChoices):
     HANDLED = "handled", _("Handled")
 
 
+class HandlerRole(models.TextChoices):
+    HANDLER = "handler", _("Helsinki-benefit handler")
+    MANAGER = "manager", _("Team manager")
+
+
+class ApplicationReviewStep(models.TextChoices):
+    STEP_1 = "step_1", _("Step 1 - overview and accept/reject application")
+    STEP_2 = "step_2", _("Step 2 - preparing the decision")
+    STEP_3 = "step_3", _("Step 3 - review the decision")
+
+
 # Call gettext on some of the enums so that "makemessages" command can find them when used dynamically in templates
 _("granted")
 _("granted_aged")
