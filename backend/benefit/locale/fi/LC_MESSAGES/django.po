@@ -1400,6 +1400,9 @@ msgstr "Hakija"
 msgid "Calculation of the benefit"
 msgstr "Helsinki-lisän tukijaksot"
 
+msgid "File is infected with"
+msgstr "Ladatusta tiedostosta löytyi seuraavat haittaohjelmat: "
+
 #~ msgid "applicant"
 #~ msgstr "hakija"
 

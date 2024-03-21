@@ -253,3 +253,6 @@ AHJO_REDIRECT_URL
 ### Refreshing the token
 The token retrieved the first time is valid for 30,000 seconds, or about 8 hours. A successful token call also returns the refresh_token information, which is also stored in the Django database. Django has a registered command refresh_ahjo_token which can be scheduled to perform token refresh. The command can be run manually with
 `$ python manage.py refresh_ahjo_token`
+
+## ClamAV integration
+ClamAV is configured in the OpenShift environments to scan the attachment files uploaded by the users through a [REST api](https://helsinkisolutionoffice.atlassian.net/wiki/spaces/HELFI/pages/7629897754/Implementation+of+ClamAV+for+the+project) which is based on a solution found [here](https://github.com/benzino77/clamav-rest-api). The same setup is configured into the local development environment using `clamav/clamav:latest` and `benzino77/clamav-rest-api images`. The benefit backend connects internally to the ClamAV rest api using the `CLAMAV_URL` environmental variable, which needs to be configured  with the value `clamav-rest-api.clamav.svc.cluster.local:3000/api/v1/version`for the test, staging and prod environments.

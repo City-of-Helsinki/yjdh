@@ -1,3 +1,4 @@
+import logging
 import re
 from datetime import date
 from typing import List
@@ -55,6 +56,8 @@ from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
 from users.utils import get_company_from_request
+
+log = logging.getLogger(__name__)
 
 
 class BaseApplicationFilter(filters.FilterSet):
@@ -240,6 +243,7 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
                 {"detail": _("Operation not allowed for this application status.")},
                 status=status.HTTP_403_FORBIDDEN,
             )
+
         # Validate request data
         serializer = AttachmentSerializer(
             data={

@@ -9,11 +9,15 @@ interface Loading {
 }
 
 interface ErrorResponse {
-  response: unknown;
+  response: {
+    status: number;
+    data: ErrorData;
+  };
 }
 
 interface ErrorData {
-  data?: Record<string, string[]>;
+  non_field_errors?: string[];
+  [key: string]: string[] | undefined;
 }
 
 type RNSData = {

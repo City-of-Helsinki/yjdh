@@ -687,6 +687,9 @@
     "errorTitle": "Deleting failed",
     "errorMessage": "Something went wrong. Please try again later."
   },
+  "malware": {
+    "errorTitle": "Malware was detected in the uploaded file."
+  },
   "pdfViewer": {
     "previous": "Previous page",
     "next": "Next page",
