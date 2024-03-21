@@ -50,7 +50,12 @@ class DecisionProposalTemplateSectionList(APIView):
         try:
             application = (
                 Application.objects.filter(
-                    pk=application_id, status=ApplicationStatus.ACCEPTED
+                    pk=application_id,
+                    status__in=[
+                        ApplicationStatus.HANDLING,
+                        ApplicationStatus.ACCEPTED,
+                        ApplicationStatus.REJECTED,
+                    ],
                 )
                 .prefetch_related("calculation", "company")
                 .first()
@@ -62,9 +67,8 @@ class DecisionProposalTemplateSectionList(APIView):
 
         decision_types = self.request.query_params.getlist("decision_type")
 
-        section_types = self.request.query_params.getlist("section_type")
         template_sections = DecisionProposalTemplateSection.objects.filter(
-            section_type__in=section_types, decision_type__in=decision_types
+            decision_type__in=decision_types
         )
 
         replaced_template_sections = process_template_sections(
