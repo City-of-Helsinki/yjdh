@@ -22,6 +22,7 @@ import {
   APPLICATION_STATUSES,
 } from 'benefit-shared/constants';
 import { ApplicationAlterationData } from 'benefit-shared/types/application';
+import { isTruthy } from 'benefit-shared/utils/common';
 import camelcaseKeys from 'camelcase-keys';
 import { Button, IconArrowLeft, LoadingSpinner } from 'hds-react';
 import kebabCase from 'lodash/kebabCase';
@@ -46,7 +47,11 @@ const AlterationPage = (): JSX.Element => {
     );
   }
 
-  if (isError || !id) {
+  if (
+    !isTruthy(process.env.NEXT_PUBLIC_ENABLE_ALTERATION_FEATURES) ||
+    isError ||
+    !id
+  ) {
     return (
       <ErrorPage
         title={t('common:errorPage.title')}
