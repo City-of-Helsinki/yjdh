@@ -218,3 +218,14 @@ class ApplicationAlterationState(models.TextChoices):
     RECEIVED = "received", _("Received")
     OPENED = "opened", _("Opened")
     HANDLED = "handled", _("Handled")
+
+
+class HandlerRole(models.TextChoices):
+    HANDLER = "handler", _("Helsinki-benefit handler")
+    MANAGER = "manager", _("Team manager")
+
+
+class ApplicationReviewStep(models.TextChoices):
+    STEP_1 = "step_1", _("Step 1 - overview and accept/reject application")
+    STEP_2 = "step_2", _("Step 2 - preparing the decision")
+    STEP_3 = "step_3", _("Step 3 - review the decision")

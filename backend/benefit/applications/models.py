@@ -24,6 +24,7 @@ from applications.enums import (
     BenefitType,
     DecisionProposalTemplateSectionType,
     DecisionType,
+    HandlerRole,
     PaySubsidyGranted,
 )
 from applications.exceptions import (
@@ -1127,4 +1128,73 @@ class ApplicationAlteration(TimeStampedModel):
 
     contact_person_name = models.TextField(
         verbose_name=_("contact person"),
+    )
+
+
+class AhjoDecisionProposalDraft(TimeStampedModel):
+    """
+    Draft of decision proposal. Supports application handling
+    when drafting a decision that ultimately leads to Ahjo handling and decision.
+    """
+
+    class Meta:
+        db_table = "bf_applications_decision_proposal_draft"
+        verbose_name = _("decision_proposal_draft")
+        verbose_name_plural = _("decision_proposal_drafts")
+
+    application = models.OneToOneField(
+        Application,
+        verbose_name=_("application"),
+        related_name="decision_proposal_draft",
+        on_delete=models.CASCADE,
+    )
+
+    review_step = models.CharField(
+        max_length=64,
+        verbose_name=_("step of the draft proposal"),
+        blank=True,
+        null=True,
+        default=1,
+        choices=[(1, "step 1"), (2, "step 2"), (3, "step 3"), (4, "submitted")],
+    )
+
+    status = models.CharField(
+        max_length=64,
+        verbose_name=_("Proposal status"),
+        choices=[
+            (ApplicationStatus.ACCEPTED, "accepted"),
+            (ApplicationStatus.REJECTED, "rejected"),
+        ],
+        null=True,
+        blank=True,
+    )
+
+    log_entry_comment = models.TextField(
+        verbose_name=_("Log entry comment"),
+        blank=True,
+        null=True,
+    )
+
+    granted_as_de_minimis_aid = models.BooleanField(
+        default=False, null=True, blank=False
+    )
+
+    handler_role = models.CharField(
+        max_length=64,
+        verbose_name=_("Handler role"),
+        blank=True,
+        null=True,
+        choices=HandlerRole.choices,
+    )
+
+    decision_text = models.TextField(
+        verbose_name=_("Decision text content"),
+        blank=True,
+        null=True,
+    )
+
+    justification_text = models.TextField(
+        verbose_name=_("Justification text content"),
+        blank=True,
+        null=True,
     )
