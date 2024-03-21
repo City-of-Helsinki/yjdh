@@ -517,6 +517,17 @@ def get_applications_for_open_case() -> QuerySet[Application]:
     return applications
 
 
+def prepare_delete_url(
+    url_base: str,
+    application: Application,
+    reason: str = "applicationretracted",
+    lang: str = "fi",
+) -> str:
+    url = f"{url_base}/{application.ahjo_case_id}"
+    draftsman_id = application.calculation.handler.ad_username
+    return f"{url}?draftsmanid={draftsman_id}&reason={reason}&apireqlang={lang}"
+
+
 def send_request_to_ahjo(
     request_type: AhjoRequestType,
     headers: dict,
@@ -535,7 +546,7 @@ def send_request_to_ahjo(
         data = json.dumps(data)
     elif request_type == AhjoRequestType.DELETE_APPLICATION:
         method = "DELETE"
-        api_url = f"{url_base}/{application.ahjo_case_id}"
+        api_url = prepare_delete_url(url_base, application)
 
     elif request_type == AhjoRequestType.UPDATE_APPLICATION:
         method = "PUT"
