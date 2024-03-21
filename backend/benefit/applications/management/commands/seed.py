@@ -25,14 +25,12 @@ from applications.services.ahjo_decision_service import (
 )
 from applications.tests.factories import (
     AcceptedDecisionProposalFactory,
-    AcceptedDecisionProposalJustificationFactory,
     AdditionalInformationNeededApplicationFactory,
     ApplicationBatchFactory,
     ApplicationWithAttachmentFactory,
     CancelledApplicationFactory,
     DecidedApplicationFactory,
     DeniedDecisionProposalFactory,
-    DeniedDecisionProposalJustificationFactory,
     HandlingApplicationFactory,
     ReceivedApplicationFactory,
     RejectedApplicationFactory,
@@ -190,6 +188,4 @@ def _past_datetime(days: int) -> datetime:
 
 def _create_templates():
     AcceptedDecisionProposalFactory(),
-    AcceptedDecisionProposalJustificationFactory(),
     DeniedDecisionProposalFactory(),
-    DeniedDecisionProposalJustificationFactory(),
