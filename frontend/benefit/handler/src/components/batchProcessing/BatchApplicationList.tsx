@@ -291,6 +291,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
             {applications.length > 0 ? (
               <button
                 type="button"
+                data-testid="toggle-batch-applications"
                 onClick={() => setIsCollapsed(!isCollapsed)}
               >
                 {isCollapsed ? <IconAngleDown /> : <IconAngleUp />}
