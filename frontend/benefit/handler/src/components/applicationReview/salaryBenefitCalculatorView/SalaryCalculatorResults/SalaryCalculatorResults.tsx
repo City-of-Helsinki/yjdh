@@ -52,7 +52,7 @@ const SalaryCalculatorResults: React.FC<ApplicationReviewViewProps> = ({
           <$CalculatorTableHeader>
             {t(`${translationsBase}.header`)}
           </$CalculatorTableHeader>
-          <$Highlight>
+          <$Highlight data-testid="calculation-results-total">
             <div style={{ fontSize: theme.fontSize.body.xl }}>
               {totalRowDescription
                 ? totalRowDescription.descriptionFi

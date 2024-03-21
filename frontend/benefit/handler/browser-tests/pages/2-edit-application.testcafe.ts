@@ -18,7 +18,14 @@ const uploadFileAttachment = async (
 ) => {
   await t.scrollIntoView(Selector(selector).parent(), { offsetY: -200 });
   await t.setFilesToUpload(selector, filename);
-  await t.wait(100);
+  await t
+    .expect(
+      Selector(selector)
+        .parent()
+        .parent()
+        .find(`a[aria-label^="${filename.replace('.pdf', '')}"]`).visible
+    )
+    .ok();
 };
 
 const clearAndFill = async (
