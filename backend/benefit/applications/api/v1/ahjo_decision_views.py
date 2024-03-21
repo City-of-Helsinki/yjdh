@@ -2,15 +2,20 @@ from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from applications.api.v1.serializers.decision_proposal import (
+    AhjoDecisionProposalSerializer,
+)
 from applications.api.v1.serializers.decision_proposal_template import (
     DecisionProposalTemplateSectionSerializer,
 )
 from applications.api.v1.serializers.decision_text import DecisionTextSerializer
-from applications.enums import ApplicationStatus
+from applications.enums import ApplicationStatus, DecisionType
 from applications.models import (
+    AhjoDecisionProposalDraft,
     AhjoDecisionText,
     Application,
     DecisionProposalTemplateSection,
@@ -131,3 +136,69 @@ class DecisionTextDetail(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DecisionProposalDraftUpdate(APIView):
+    permission_classes = [BFIsHandler]
+
+    @action(methods=["PATCH"], detail=False)
+    def patch(self, request):
+        app_id = request.data["application_id"]
+        application = get_object_or_404(Application, id=app_id)
+
+        proposal_object = AhjoDecisionProposalDraft.objects.filter(
+            application=application
+        ).first()
+
+        proposal = AhjoDecisionProposalSerializer(
+            proposal_object, data=request.data, partial=True
+        )
+
+        if not proposal.is_valid():
+            return Response(proposal.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        data = proposal.validated_data
+        proposal.save()
+
+        if data.get("decision_text") and data.get("justification_text"):
+            ahjo_text = AhjoDecisionText.objects.filter(application=application)
+            if ahjo_text:
+                ahjo_text.update(
+                    language=application.applicant_language,
+                    decision_type=(
+                        DecisionType.ACCEPTED
+                        if data["status"] == ApplicationStatus.ACCEPTED
+                        else DecisionType.DENIED
+                    ),
+                    decision_text=data["decision_text"]
+                    + "\n\n"
+                    + data["justification_text"],
+                )
+            else:
+                AhjoDecisionText.objects.create(
+                    application=application,
+                    language=application.applicant_language,
+                    decision_type=(
+                        DecisionType.ACCEPTED
+                        if data["status"] == ApplicationStatus.ACCEPTED
+                        else DecisionType.DENIED
+                    ),
+                    decision_text=data["decision_text"]
+                    + "\n\n"
+                    + data["justification_text"],
+                )
+
+        if data["review_step"] >= 4:
+            # Ensure frontend has a page that exists
+            proposal.review_step = 3
+            proposal.save()
+
+            application.status = data["status"]
+            application.save()
+
+            application.calculation.granted_as_de_minimis_aid = data[
+                "granted_as_de_minimis_aid"
+            ]
+            application.calculation.save()
+
+        return Response(proposal.data, status=status.HTTP_200_OK)
