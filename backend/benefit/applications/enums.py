@@ -195,15 +195,6 @@ class AhjoRequestType(models.TextChoices):
     SEND_DECISION_PROPOSAL = "send_decision", _("Send decision to Ahjo")
 
 
-class DecisionProposalTemplateSectionType(models.TextChoices):
-    DECISION_SECTION = "decision_section", _(
-        "Template part for the decision section of a application decision proposal"
-    )
-    JUSTIFICATION_SECTION = "justification_section", _(
-        "Template part for the decision justification section of a decision proposal"
-    )
-
-
 class DecisionType(models.TextChoices):
     ACCEPTED = "accepted_decision", _("An accepted decision")
     DENIED = "denied_decision", _("A denied decision")

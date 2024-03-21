@@ -22,7 +22,6 @@ from applications.enums import (
     ApplicationTalpaStatus,
     AttachmentType,
     BenefitType,
-    DecisionProposalTemplateSectionType,
     DecisionType,
     HandlerRole,
     PaySubsidyGranted,
@@ -969,13 +968,6 @@ class DecisionProposalTemplateSection(UUIDModel, TimeStampedModel):
     text or the following justification text.
     """
 
-    section_type = models.CharField(
-        max_length=64,
-        verbose_name=_("type of the decision proposal template section"),
-        choices=DecisionProposalTemplateSectionType.choices,
-        default=DecisionProposalTemplateSectionType.DECISION_SECTION,
-    )
-
     decision_type = models.CharField(
         max_length=64,
         verbose_name=_("type of the decision"),
@@ -989,12 +981,16 @@ class DecisionProposalTemplateSection(UUIDModel, TimeStampedModel):
         max_length=2,
     )
 
-    template_text = models.TextField(
-        verbose_name=_("decision proposal section text content")
+    template_decision_text = models.TextField(
+        verbose_name=_("Proposal text, decision"), null=True
+    )
+
+    template_justification_text = models.TextField(
+        verbose_name=_("Proposal text, justification"), null=True
     )
 
     name = models.CharField(
-        max_length=256, verbose_name=_("name of the decision proposal template section")
+        max_length=256, verbose_name=_("name of the decision text template")
     )
 
     def __str__(self):
@@ -1002,8 +998,8 @@ class DecisionProposalTemplateSection(UUIDModel, TimeStampedModel):
 
     class Meta:
         db_table = "bf_applications_decision_proposal_template_section"
-        verbose_name = _("decision proposal template section")
-        verbose_name_plural = _("decision proposal template sections")
+        verbose_name = _("Ahjo decision text template")
+        verbose_name_plural = _("Ahjo decision text templates")
 
 
 class AhjoDecisionText(UUIDModel, TimeStampedModel):
