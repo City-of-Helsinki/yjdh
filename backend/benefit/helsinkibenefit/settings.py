@@ -169,6 +169,8 @@ env = environ.Env(
     AHJO_TEST_USER_FIRST_NAME=(str, ""),
     AHJO_TEST_USER_LAST_NAME=(str, ""),
     AHJO_TEST_USER_AD_USERNAME=(str, ""),
+    ENABLE_CLAMAV=(bool, False),
+    CLAMAV_URL=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -528,3 +530,6 @@ DISABLE_AHJO_SAFE_LIST_CHECK = env.bool("DISABLE_AHJO_SAFE_LIST_CHECK")
 AHJO_TEST_USER_FIRST_NAME = env("AHJO_TEST_USER_FIRST_NAME")
 AHJO_TEST_USER_LAST_NAME = env("AHJO_TEST_USER_LAST_NAME")
 AHJO_TEST_USER_AD_USERNAME = env("AHJO_TEST_USER_AD_USERNAME")
+
+ENABLE_CLAMAV = env.bool("ENABLE_CLAMAV")
+CLAMAV_URL = env.str("CLAMAV_URL")
