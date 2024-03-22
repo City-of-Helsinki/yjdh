@@ -359,6 +359,7 @@ def ahjo_payload_record_for_attachment_update(
 @pytest.fixture()
 def ahjo_open_case_top_level_dict(decided_application):
     application = decided_application
+    language = application.applicant_language
 
     handler = application.calculation.handler
 
@@ -367,7 +368,7 @@ def ahjo_open_case_top_level_dict(decided_application):
         "Acquired": application.created_at.isoformat(),
         "ClassificationCode": "02 05 01 00",
         "ClassificationTitle": "Kunnan myöntämät avustukset",
-        "Language": "fi",
+        "Language": language,
         "PublicityClass": "Julkinen",
         "InternalTitle": "message title",
         "Subjects": [

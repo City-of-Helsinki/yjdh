@@ -24,6 +24,7 @@ def _prepare_top_level_dict(
 ) -> dict:
     """Prepare the dictionary that is sent to Ahjo"""
     application_date = application.created_at.isoformat("T", "seconds")
+    language = application.applicant_language
 
     handler = application.calculation.handler
     case_dict = {
@@ -31,7 +32,7 @@ def _prepare_top_level_dict(
         "Acquired": application_date,
         "ClassificationCode": "02 05 01 00",
         "ClassificationTitle": "Kunnan myöntämät avustukset",
-        "Language": "fi",
+        "Language": language,
         "PublicityClass": "Julkinen",
         "InternalTitle": case_title,
         "Subjects": [
@@ -191,6 +192,7 @@ def prepare_decision_proposal_payload(
     inspector_dict = {"Role": "inspector", "Name": "Tarkastaja, Tero", "ID": "terot"}
     # TODO remove hard coded decision maker
     decision_maker_dict = {"Role": "decisionMaker", "ID": "U02120013070VH2"}
+    language = application.applicant_language
 
     main_creator_dict = {
         "Role": "mainCreator",
@@ -204,7 +206,7 @@ def prepare_decision_proposal_payload(
                 "Title": "Avustuksen myöntäminen, Työllisyyspalvelut, työllisyydenhoidon Helsinki-lisä vuonna 2024",
                 "Type": "viranhaltijan päätös",
                 "PublicityClass": "Julkinen",
-                "Language": "fi",
+                "Language": language,
                 "PersonalData": "Sisältää henkilötietoja",
                 "Documents": [_prepare_record_document_dict(decision_xml)],
                 "Agents": [
@@ -218,7 +220,7 @@ def prepare_decision_proposal_payload(
                 "Type": "viranhaltijan päätöksen liite",
                 "PublicityClass": "Salassa pidettävä",
                 "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
-                "Language": "fi",
+                "Language": language,
                 "PersonalData": "Sisältää erityisiä henkilötietoja",
                 "Documents": [_prepare_record_document_dict(secret_xml)],
                 "Agents": [main_creator_dict],

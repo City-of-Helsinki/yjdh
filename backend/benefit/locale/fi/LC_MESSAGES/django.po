@@ -1369,6 +1369,25 @@ msgstr "palveluehtojen hyväksyntä"
 msgid "terms of service approvals"
 msgstr "palveluehtojen hyväksynnät"
 
+# For Ahjo secret decision XML
+msgid "Granting of Helsinki-lisä benefit"
+msgstr "Työllisyydenhoidon Helsinki-lisän myöntäminen"
+
+msgid "Benefit type"
+msgstr "Tukimuoto"
+
+msgid "Total benefit"
+msgstr "tuki yhteensä"
+
+msgid "Benefit per month"
+msgstr "tuki/kk"
+
+msgid "Employee first name"
+msgstr "Työllistetyn etunimi"
+
+msgid "Employee last name"
+msgstr "Työllistetyn sukunimi"
+
 #~ msgid "applicant"
 #~ msgstr "hakija"
 
