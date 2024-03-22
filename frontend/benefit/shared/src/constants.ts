@@ -220,3 +220,8 @@ export enum ALTERATION_STATE {
   OPENED = 'opened',
   HANDLED = 'handled',
 }
+
+export enum DECISION_TYPES {
+  ACCEPTED = 'accepted_decision',
+  DENIED = 'denied_decision',
+}

@@ -9,7 +9,7 @@ const useDecisionProposalTemplateQuery = (
 ): UseQueryResult<DecisionProposalTemplateData[], Error> => {
   const { axios, handleResponse } = useBackendAPI();
   return useQuery<DecisionProposalTemplateData[], Error>(
-    ['decisionProposalTemplates', id],
+    ['decisionProposalTemplates'],
     () =>
       !id
         ? Promise.reject(new Error('Missing application id'))
@@ -20,11 +20,7 @@ const useDecisionProposalTemplateQuery = (
                 application_id: id,
               },
             })
-          ),
-    {
-      enabled: Boolean(id),
-      staleTime: Infinity,
-    }
+          )
   );
 };
 
