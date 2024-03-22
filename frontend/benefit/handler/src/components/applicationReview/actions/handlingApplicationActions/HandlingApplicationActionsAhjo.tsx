@@ -86,19 +86,32 @@ const HandlingApplicationActions: React.FC<Props> = ({
     });
   };
 
-  const disableStepButton = (activeStepIndex: number): boolean => {
-    const step1 =
-      !handledApplication?.status ||
-      application.calculation.rows.length === 0 ||
+  const disableStepButton = (currentStepIndex: number): boolean => {
+    const missingCalculation =
+      (application.calculation.rows.length === 0 &&
+        handledApplication?.status === APPLICATION_STATUSES.ACCEPTED) ||
       isRecalculationRequired ||
       isCalculationsErrors;
+    const missingLogEntry =
+      handledApplication?.logEntryComment.length <= 0 &&
+      handledApplication?.status === APPLICATION_STATUSES.REJECTED;
+
+    const missingHandlerRole = !['handler', 'manager'].includes(
+      handledApplication?.handlerRole
+    );
+
+    // Use bigger length to take HTML tags into account
+    const missingProposalTexts =
+      handledApplication?.decisionText?.length <= 8 ||
+      handledApplication?.justificationText?.length <= 8;
+
+    const step1 =
+      !handledApplication?.status || missingCalculation || missingLogEntry;
 
     const step2 =
-      activeStepIndex === 0
+      currentStepIndex === 0
         ? false
-        : handledApplication?.decisionText?.length <= 0 ||
-          handledApplication?.justificationText?.length <= 0 ||
-          !['handler', 'manager'].includes(handledApplication.handlerRole);
+        : missingProposalTexts && missingHandlerRole;
 
     return step1 || step2;
   };
