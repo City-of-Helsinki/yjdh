@@ -47,6 +47,7 @@ class DecisionProposalTemplateSectionList(APIView):
     )
     def get(self, request, format=None) -> Response:
         application_id = self.request.query_params.get("application_id")
+
         try:
             application = (
                 Application.objects.filter(
@@ -65,10 +66,15 @@ class DecisionProposalTemplateSectionList(APIView):
                 {"message": "Application not found"}, status=status.HTTP_404_NOT_FOUND
             )
 
+        language = (
+            application.applicant_language
+            if application.applicant_language == "sv"
+            else "fi"
+        )
         decision_types = self.request.query_params.getlist("decision_type")
 
         template_sections = DecisionProposalTemplateSection.objects.filter(
-            decision_type__in=decision_types
+            decision_type__in=decision_types, language=language
         )
 
         replaced_template_sections = process_template_sections(
