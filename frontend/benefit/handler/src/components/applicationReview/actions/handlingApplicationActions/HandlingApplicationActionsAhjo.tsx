@@ -13,12 +13,15 @@ import {
   IconTrash,
 } from 'hds-react';
 import noop from 'lodash/noop';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import Modal from 'shared/components/modal/Modal';
+import showErrorToast from 'shared/components/toast/show-error-toast';
 import theme from 'shared/styles/theme';
+import { focusAndScroll } from 'shared/utils/dom.utils';
 
-import useApplicationDecisionProposalMutation from '../../useApplicationDecisionProposalQuery';
 import { StepActionType, StepStateType } from '../../useApplicationStepper';
+import useDecisionProposalDraftMutation from '../../useDecisionProposalDraftMutation';
 import EditAction from '../editAction/EditAction';
 import CancelModalContent from './CancelModalContent/CancelModalContent';
 import DoneModalContent from './DoneModalContent/DoneModalContent';
@@ -48,9 +51,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
 }) => {
   const {
     t,
-    onDone,
     onBackToHandling,
-    onSaveAndClose,
     toggleMessagesDrawerVisiblity,
     openDialog,
     closeDialog,
@@ -61,46 +62,133 @@ const HandlingApplicationActions: React.FC<Props> = ({
     isConfirmationModalOpen,
     isDoneConfirmationModalOpen,
     handledApplication,
+    onDoneConfirmation,
   } = useHandlingApplicationActions(application);
 
   const lastStep =
     stepState.activeStepIndex === Number(stepState.steps?.length) - 1;
+  const router = useRouter();
+  const {
+    data,
+    mutate: updateApplication,
+    isError,
+  } = useDecisionProposalDraftMutation(application);
 
-  const { data, mutate: updateApplication } =
-    useApplicationDecisionProposalMutation(application);
+  const [isSavingAndClosing, setIsSavingAndClosing] = React.useState(false);
 
-  React.useEffect(() => {
+  const effectSaveAndClose = (): void => {
+    if (
+      data?.review_step === stepState.activeStepIndex + 1 &&
+      isSavingAndClosing
+    ) {
+      setIsSavingAndClosing(false);
+      void router.push('/');
+    }
+  };
+
+  const effectReviewStepChange = (): void => {
     if (data?.review_step) {
       stepperDispatch({
         type: 'completeStep',
         payload: data.review_step - 2,
       });
     }
-  }, [data, stepperDispatch]);
-
-  const handleNext = (): void => {
-    updateApplication({
-      ...handledApplication,
-      reviewStep: Math.min(stepState.activeStepIndex + 2, 4),
-      applicationId: application.id,
-    });
   };
 
-  const disableStepButton = (activeStepIndex: number): boolean => {
-    const step1 =
-      !handledApplication?.status ||
-      application.calculation.rows.length === 0 ||
-      isRecalculationRequired ||
-      isCalculationsErrors;
+  const effectApplicationStatusChange = (): void => {
+    if (
+      [APPLICATION_STATUSES.ACCEPTED, APPLICATION_STATUSES.REJECTED].includes(
+        application.status
+      ) &&
+      stepState.activeStepIndex === 2
+    ) {
+      router.query.action = 'submit';
+      void router.push(router);
+    }
+  };
 
-    const step2 =
-      activeStepIndex === 0
-        ? false
-        : handledApplication?.decisionText?.length <= 0 ||
-          handledApplication?.justificationText?.length <= 0 ||
-          !['handler', 'manager'].includes(handledApplication.handlerRole);
+  React.useEffect(effectApplicationStatusChange, [
+    application.status,
+    router,
+    stepState.activeStepIndex,
+  ]);
+  React.useEffect(effectReviewStepChange, [data, stepperDispatch]);
+  React.useEffect(effectSaveAndClose, [
+    data,
+    router,
+    stepState.activeStepIndex,
+    isSavingAndClosing,
+  ]);
+  React.useEffect(() => {
+    setIsSavingAndClosing(false);
+  }, [isError]);
 
-    return step1 || step2;
+  const validateNextStep = (currentStepIndex: number): boolean => {
+    if (application.status === APPLICATION_STATUSES.INFO_REQUIRED) {
+      focusAndScroll('header-info-needed');
+      showErrorToast(
+        t('common:status.additional_information_needed'),
+        t(`common:applications.statuses.additionalInformationNeeded`)
+      );
+      return true;
+    }
+    const missing = {
+      status: !handledApplication?.status,
+      calculation:
+        (application.calculation.rows.length === 0 &&
+          handledApplication?.status === APPLICATION_STATUSES.ACCEPTED) ||
+        isRecalculationRequired ||
+        isCalculationsErrors,
+      logEntry:
+        handledApplication?.logEntryComment?.length <= 0 &&
+        handledApplication?.status === APPLICATION_STATUSES.REJECTED,
+      handler: false,
+      // Use longer length to take HTML tags into account
+      decisionText: handledApplication?.decisionText?.length <= 10,
+      justificationText: handledApplication?.justificationText?.length <= 10,
+    };
+
+    const errorStep1 =
+      missing.status || missing.calculation || missing.logEntry;
+
+    let errorStep2 = false;
+    if (currentStepIndex > 0) {
+      missing.handler = !['handler', 'manager'].includes(
+        handledApplication?.handlerRole
+      );
+
+      errorStep2 =
+        missing.decisionText || missing.justificationText || missing.handler;
+    }
+
+    if (errorStep1 || errorStep2) {
+      const missingFields = Object.keys(missing).filter((key) => missing[key]);
+      let interval = 0;
+      missingFields.forEach((key) => {
+        setTimeout(() => {
+          showErrorToast(
+            t('common:review.decisionProposal.errors.title'),
+            t(`common:review.decisionProposal.errors.fields.${key}`)
+          );
+        }, interval);
+        interval += 200;
+      });
+    }
+
+    return errorStep1 || errorStep2;
+  };
+
+  const handleNext = (finishProposal = false): void => {
+    if (finishProposal || stepState.activeStepIndex < 2) {
+      updateApplication({
+        ...handledApplication,
+        reviewStep: Math.min(stepState.activeStepIndex + 2, 4),
+        applicationId: application.id,
+      });
+    } else {
+      // Final step, just open confirmation modal
+      onDoneConfirmation();
+    }
   };
 
   const handlePrev = (): void => {
@@ -111,12 +199,35 @@ const HandlingApplicationActions: React.FC<Props> = ({
     });
   };
 
+  const handleSaveAndClose = (): void => {
+    updateApplication({
+      ...handledApplication,
+      reviewStep: stepState.activeStepIndex + 1,
+      applicationId: application.id,
+    });
+    setIsSavingAndClosing(true);
+  };
+
+  const handleClose = (): void => void router.push('/');
+
   return (
     <$Wrapper data-testid={dataTestId}>
       <$Column>
-        <Button onClick={onSaveAndClose} theme="black" variant="secondary">
+        <Button onClick={handleClose} theme="black" variant="secondary">
           {t(`${translationsBase}.close`)}
         </Button>
+        {application.status === APPLICATION_STATUSES.HANDLING && (
+          <Button
+            loadingText={t('common:utility.loading')}
+            onClick={handleSaveAndClose}
+            disabled={isSavingAndClosing}
+            isLoading={isSavingAndClosing}
+            theme="black"
+            variant="secondary"
+          >
+            {t(`${translationsBase}.saveAndContinue`)}
+          </Button>
+        )}
         {[
           APPLICATION_STATUSES.ACCEPTED,
           APPLICATION_STATUSES.REJECTED,
@@ -141,7 +252,11 @@ const HandlingApplicationActions: React.FC<Props> = ({
           {t(`${translationsBase}.handlingPanel`)}
         </Button>
 
-        {application.status !== APPLICATION_STATUSES.CANCELLED &&
+        {![
+          APPLICATION_STATUSES.CANCELLED,
+          APPLICATION_STATUSES.ACCEPTED,
+          APPLICATION_STATUSES.REJECTED,
+        ].includes(application.status) &&
           !application.batch &&
           !application.archived && (
             <Button
@@ -155,49 +270,49 @@ const HandlingApplicationActions: React.FC<Props> = ({
           )}
       </$Column>
 
-      {stepState.activeStepIndex !== 0 && (
-        <Button
-          variant="secondary"
-          theme="black"
-          iconLeft={<IconArrowLeft />}
-          onClick={() => handlePrev()}
-        >
-          {t('common:utility.previous')}
-        </Button>
-      )}
-      <$Column>
-        <Button
-          theme="coat"
-          variant="primary"
-          style={{ minWidth: '158px' }}
-          disabled={disableStepButton(stepState.activeStepIndex)}
-          onClick={handleNext}
-          iconRight={lastStep ? undefined : <IconArrowRight />}
-        >
-          {lastStep ? t('common:utility.send') : t('common:utility.next')}
-        </Button>
-
-        {isConfirmationModalOpen && (
-          <Modal
-            id="Handler-confirmDeleteApplicationModal"
-            isOpen={isConfirmationModalOpen}
-            title={t(`${translationsBase}.reasonCancelDialogTitle`)}
-            submitButtonLabel=""
-            cancelButtonLabel={t('common:applications.actions.close')}
-            handleToggle={closeDialog}
-            handleSubmit={noop}
-            headerIcon={<IconInfoCircle />}
-            submitButtonIcon={<IconTrash />}
-            variant="danger"
-            customContent={
-              <CancelModalContent
-                onClose={closeDialog}
-                onSubmit={handleCancel}
-              />
+      {application?.status === APPLICATION_STATUSES.HANDLING && (
+        <$Column>
+          {stepState.activeStepIndex !== 0 && (
+            <Button
+              variant="secondary"
+              theme="black"
+              iconLeft={<IconArrowLeft />}
+              onClick={() => handlePrev()}
+            >
+              {t('common:utility.previous')}
+            </Button>
+          )}
+          <Button
+            theme="coat"
+            variant="primary"
+            style={{ minWidth: '158px' }}
+            onClick={() =>
+              !validateNextStep(stepState.activeStepIndex) ? handleNext() : null
             }
-          />
-        )}
-      </$Column>
+            iconRight={lastStep ? undefined : <IconArrowRight />}
+          >
+            {lastStep ? t('common:utility.send') : t('common:utility.next')}
+          </Button>
+        </$Column>
+      )}
+
+      {isConfirmationModalOpen && (
+        <Modal
+          id="Handler-confirmDeleteApplicationModal"
+          isOpen={isConfirmationModalOpen}
+          title={t(`${translationsBase}.reasonCancelDialogTitle`)}
+          submitButtonLabel=""
+          cancelButtonLabel={t('common:applications.actions.close')}
+          handleToggle={closeDialog}
+          handleSubmit={noop}
+          headerIcon={<IconInfoCircle />}
+          submitButtonIcon={<IconTrash />}
+          variant="danger"
+          customContent={
+            <CancelModalContent onClose={closeDialog} onSubmit={handleCancel} />
+          }
+        />
+      )}
       {isDoneConfirmationModalOpen && (
         <Modal
           id="Handler-confirmDecisionApplicationModal"
@@ -215,7 +330,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
             <DoneModalContent
               handledApplication={handledApplication}
               onClose={closeDoneDialog}
-              onSubmit={onDone}
+              onSubmit={() => handleNext(true)}
               calculationRows={application.calculation?.rows}
             />
           }
