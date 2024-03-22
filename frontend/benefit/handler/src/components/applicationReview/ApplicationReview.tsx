@@ -50,7 +50,7 @@ const ApplicationReview: React.FC = () => {
     );
   }
 
-  if (router.query.submitted === '1') {
+  if (router.query?.action === 'submit') {
     return <NotificationView data={application} />;
   }
 
