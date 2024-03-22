@@ -4,14 +4,21 @@ import History from '@tiptap/extension-history';
 import Paragraph from '@tiptap/extension-paragraph';
 import Text from '@tiptap/extension-text';
 import { EditorContent, useEditor } from '@tiptap/react';
+import AppContext from 'benefit/handler/context/AppContext';
 import { Button, IconArrowRedo, IconArrowUndo, IconTextTool } from 'hds-react';
 import React, { useEffect } from 'react';
 
+import { $Content, $EditorWrapper, $Toolbar } from './EditorAhjoProposal.sc';
+
 type EditorProps = {
-  content?: string;
+  resetWithContent?: string;
+  name: 'decisionText' | 'justificationText';
 };
 
-const EditorAhjoProposal: React.FC<EditorProps> = ({ content = '' }) => {
+const EditorAhjoProposal: React.FC<EditorProps> = ({
+  resetWithContent = '',
+  name,
+}: EditorProps) => {
   const editor = useEditor({
     extensions: [
       Document,
@@ -22,31 +29,33 @@ const EditorAhjoProposal: React.FC<EditorProps> = ({ content = '' }) => {
         levels: [2],
       }),
     ],
-    content,
+    initialContent: resetWithContent,
   });
 
+  const { handledApplication, setHandledApplication } =
+    React.useContext(AppContext);
+
   useEffect(() => {
-    if (editor && content) editor.commands.setContent(content);
-  }, [content, editor]);
+    if (editor && resetWithContent) {
+      editor.commands.setContent(resetWithContent);
+    }
+  }, [editor, resetWithContent]);
 
   if (!editor) {
     return null;
   }
 
+  // TODO: perf, this is done too many times
+  editor.on('update', () => {
+    setHandledApplication({
+      ...handledApplication,
+      [name]: editor.getHTML(),
+    });
+  });
+
   return (
-    <div
-      style={{
-        background: '#fff',
-        borderRadius: '7px',
-        border: '1px solid grey',
-      }}
-    >
-      <header
-        style={{
-          paddingLeft: '0.5em',
-          borderBottom: '1px solid grey',
-        }}
-      >
+    <$EditorWrapper>
+      <$Toolbar>
         <Button
           size="small"
           theme="black"
@@ -82,12 +91,14 @@ const EditorAhjoProposal: React.FC<EditorProps> = ({ content = '' }) => {
         >
           <IconArrowRedo />
         </Button>
-      </header>
+      </$Toolbar>
 
-      <div style={{ padding: '1em' }}>
-        <EditorContent editor={editor} />
-      </div>
-    </div>
+      <$Content>
+        <div data-testid={name}>
+          <EditorContent editor={editor} />
+        </div>
+      </$Content>
+    </$EditorWrapper>
   );
 };
 
