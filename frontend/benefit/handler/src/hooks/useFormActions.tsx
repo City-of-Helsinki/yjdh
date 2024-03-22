@@ -351,7 +351,9 @@ const useFormActions = (
       if (isFormActionNew) {
         dispatchStep({ type: 'completeStep', payload: activeStep });
       } else {
-        void router.push(`${ROUTES.APPLICATION}?id=${applicationId}&updated=1`);
+        void router.push(
+          `${ROUTES.APPLICATION}?id=${applicationId}&action=update`
+        );
       }
 
       return result;

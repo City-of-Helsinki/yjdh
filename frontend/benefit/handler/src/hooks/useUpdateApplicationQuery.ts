@@ -39,7 +39,7 @@ const useUpdateApplicationQuery = (): UseMutationResult<
             APPLICATION_STATUSES.REJECTED,
           ].includes(response.status)
         ) {
-          void router.push(`/application?id=${response.id}&submitted=1`);
+          void router.push(`/application?id=${response.id}&action=submit`);
         }
       },
       onError: (error: AxiosError) => {
