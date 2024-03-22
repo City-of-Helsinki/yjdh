@@ -38,6 +38,14 @@ const ApplicationStepper: React.FC<ApplicationStepperProps> = ({
           selectedStep={stepState.activeStepIndex}
           onStepClick={(e) => e.stopPropagation()}
         />
+
+        {stepState.activeStepIndex === 2 && (
+          <Heading
+            header={t('review.decisionProposal.preview.title')}
+            as="p"
+            weight="400"
+          />
+        )}
         <hr />
       </$ApplicationStepperWrapper>
     </Container>
