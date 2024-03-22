@@ -7,26 +7,10 @@ import fi from '../../public/locales/fi/common.json';
 import { NEW_FORM_DATA as form } from '../constants/forms';
 import MainIngress from '../page-model/MainIngress';
 import handlerUser from '../utils/handlerUser';
+import { uploadFileAttachment } from '../utils/input';
 import { getFrontendUrl } from '../utils/url.utils';
 
 const url = getFrontendUrl(`/`);
-
-const uploadFileAttachment = async (
-  t: TestController,
-  selector: string,
-  filename = 'sample.pdf'
-) => {
-  await t.scrollIntoView(Selector(selector).parent(), { offsetY: -200 });
-  await t.setFilesToUpload(selector, filename);
-  await t
-    .expect(
-      Selector(selector)
-        .parent()
-        .parent()
-        .find(`a[aria-label^="${filename.replace('.pdf', '')}"]`).visible
-    )
-    .ok();
-};
 
 fixture('Create new application')
   .page(url)
