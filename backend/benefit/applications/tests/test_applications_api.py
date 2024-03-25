@@ -3033,6 +3033,81 @@ def test_application_alteration_patch_allowed_edit_states_applicant(
     assert response.status_code == result
 
 
+def test_application_alteration_patch_forbidden_another_company(
+    api_client, application
+):
+    another_company = CompanyFactory()
+    application.company = another_company
+    application.save()
+
+    alteration = _create_application_alteration(application)
+
+    response = api_client.patch(
+        reverse("v1:application-alteration-detail", kwargs={"pk": alteration.pk}),
+        {
+            "end_date": application.start_date + relativedelta(days=12),
+        },
+    )
+    assert response.status_code == 403
+
+
+@pytest.mark.parametrize(
+    "initial_state,result",
+    [
+        (ApplicationAlterationState.RECEIVED, 204),
+        (ApplicationAlterationState.OPENED, 403),
+        (ApplicationAlterationState.HANDLED, 403),
+    ],
+)
+def test_application_alteration_allowed_delete_states_applicant(
+    api_client, application, initial_state, result
+):
+    alteration = _create_application_alteration(application)
+    alteration.state = initial_state
+    alteration.save()
+
+    response = api_client.delete(
+        reverse("v1:application-alteration-detail", kwargs={"pk": alteration.pk})
+    )
+    assert response.status_code == result
+
+
+@pytest.mark.parametrize(
+    "initial_state,result",
+    [
+        (ApplicationAlterationState.RECEIVED, 403),
+        (ApplicationAlterationState.OPENED, 403),
+        (ApplicationAlterationState.HANDLED, 403),
+    ],
+)
+def test_application_alteration_delete_handler(
+    handler_api_client, application, initial_state, result
+):
+    alteration = _create_application_alteration(application)
+    alteration.state = initial_state
+    alteration.save()
+
+    response = handler_api_client.delete(
+        reverse("v1:application-alteration-detail", kwargs={"pk": alteration.pk})
+    )
+    assert response.status_code == result
+
+
+def test_application_alteration_delete_forbidden_another_company(
+    api_client, application
+):
+    another_company = CompanyFactory()
+    application.company = another_company
+    application.save()
+
+    alteration = _create_application_alteration(application)
+
+    response = api_client.delete(
+        reverse("v1:application-alteration-detail", kwargs={"pk": alteration.pk})
+    )
+    assert response.status_code == 403
+
+
 def _create_random_applications():
     f = faker.Faker()
     combos = [
