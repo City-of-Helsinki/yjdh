@@ -542,9 +542,10 @@ def send_request_to_ahjo(
     headers: dict,
     application: Application,
     data: dict = {},
-    timeout: int = 10,
 ) -> Union[Tuple[Application, str], None]:
     """Send a request to Ahjo."""
+
+    timeout = settings.AHJO_REQUEST_TIMEOUT
     headers["Content-Type"] = "application/json"
 
     url_base = f"{settings.AHJO_REST_API_URL}/cases"
