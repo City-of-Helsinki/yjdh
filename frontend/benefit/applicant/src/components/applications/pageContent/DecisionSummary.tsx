@@ -16,6 +16,7 @@ import {
   APPLICATION_STATUSES,
 } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
+import { isTruthy } from 'benefit-shared/utils/common';
 import { Button, IconLinkExternal } from 'hds-react';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -99,31 +100,35 @@ const DecisionSummary = ({ application }: Props): JSX.Element => {
           {t('common:applications.decision.actions.showDecision')}
         </Button>
       </$ActionContainer>
-      <$Subheading>
-        {t('common:applications.decision.headings.existingAlterations')}
-      </$Subheading>
-      <$AlterationListCount>
-        {application.alterations?.length > 0
-          ? t('common:applications.decision.alterationList.count', {
-              count: application.alterations.length,
-            })
-          : t('common:applications.decision.alterationList.empty')}
-      </$AlterationListCount>
-      <$ActionContainer>
-        {application.status === APPLICATION_STATUSES.ACCEPTED &&
-          !hasHandledTermination && (
-            <Button
-              theme="coat"
-              onClick={() =>
-                router.push(
-                  `${ROUTES.APPLICATION_ALTERATION}?id=${application.id}`
-                )
-              }
-            >
-              {t('common:applications.decision.actions.reportAlteration')}
-            </Button>
-          )}
-      </$ActionContainer>
+      {isTruthy(process.env.NEXT_PUBLIC_ENABLE_ALTERATION_FEATURES) && (
+        <>
+          <$Subheading>
+            {t('common:applications.decision.headings.existingAlterations')}
+          </$Subheading>
+          <$AlterationListCount>
+            {application.alterations?.length > 0
+              ? t('common:applications.decision.alterationList.count', {
+                  count: application.alterations.length,
+                })
+              : t('common:applications.decision.alterationList.empty')}
+          </$AlterationListCount>
+          <$ActionContainer>
+            {application.status === APPLICATION_STATUSES.ACCEPTED &&
+              !hasHandledTermination && (
+                <Button
+                  theme="coat"
+                  onClick={() =>
+                    router.push(
+                      `${ROUTES.APPLICATION_ALTERATION}?id=${application.id}`
+                    )
+                  }
+                >
+                  {t('common:applications.decision.actions.reportAlteration')}
+                </Button>
+              )}
+          </$ActionContainer>
+        </>
+      )}
     </$DecisionBox>
   );
 };
