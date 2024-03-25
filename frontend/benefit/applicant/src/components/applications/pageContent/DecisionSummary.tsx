@@ -36,11 +36,10 @@ const DecisionSummary = ({ application }: Props): JSX.Element => {
   }
 
   const displayDecision = (): void => {
+    const id = application.ahjoCaseId.split(' ').join('-');
+
     // eslint-disable-next-line security/detect-non-literal-fs-filename
-    window.open(
-      `https://paatokset.hel.fi/fi/asia/${application.ahjoCaseId}`,
-      '_blank'
-    );
+    window.open(`https://paatokset.hel.fi/fi/asia/${id}`, '_blank');
   };
 
   const hasHandledTermination = application.alterations.some(
@@ -96,6 +95,7 @@ const DecisionSummary = ({ application }: Props): JSX.Element => {
           onClick={displayDecision}
           theme="black"
           variant="secondary"
+          role="link"
         >
           {t('common:applications.decision.actions.showDecision')}
         </Button>
