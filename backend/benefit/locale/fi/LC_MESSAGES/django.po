@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-27 15:46+0200\n"
+"POT-Creation-Date: 2024-03-26 12:21+0200\n"
 "PO-Revision-Date: 2022-11-01 10:45+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -168,9 +168,9 @@ msgstr "Verkkolaskuoperaattorin tunnus"
 msgid "E-invoice address"
 msgstr "Verkkolaskuosoite"
 
-#, python-brace-format
-msgid "{field} must be filled if using an alternative e-invoice address"
-msgstr "{field} on pakollinen tieto, mikäli käytössä on poikkeava verkkolaskutunnus"
+msgid "{field} must be filled if using an e-invoice address"
+msgstr ""
+"{field} on pakollinen tieto, mikäli lasku lähetetään verkkolaskuna"
 
 msgid "Alteration cannot start before first benefit day"
 msgstr "Muutos työsuhteessa ei voi alkaa ennen tukijakson alkua"
@@ -179,7 +179,8 @@ msgid "Alteration cannot start after last benefit day"
 msgstr "Muutos työsuhteessa ei voi alkaa tukijakson päättymisen jälkeen"
 
 msgid "Alteration cannot end after last benefit day"
-msgstr "Muutosjakson päättymispäivämäärä ei voi olla tukijakson päättymisen jälkeen"
+msgstr ""
+"Muutosjakson päättymispäivämäärä ei voi olla tukijakson päättymisen jälkeen"
 
 msgid "Alteration end date cannot be before start date"
 msgstr "Muutosjakson päättymispäivä ei voi olla aiemmin kuin aloituspäivä"
@@ -840,11 +841,9 @@ msgid "amount of unwarranted benefit to be collected"
 msgstr "Takaisinperittävä summa"
 
 msgid ""
-"whether to use a separate e-invoice address from the one of the applicant "
-"organization"
-msgstr ""
-"Käytetäänkö eri verkkolaskuosoitetta kuin hakijaorganisaation "
-"verkkolaskuosoitetta?"
+"whether to use handle billing with an e-invoice instead of a bill sent to a "
+"physical address"
+msgstr "Lähetetäänkö lasku verkkolaskuna kirjelaskun sijaan?"
 
 msgid "name of the e-invoice provider"
 msgstr "Verkkolaskuoperaattorin nimi"
@@ -854,6 +853,9 @@ msgstr "Välittäjän tunnus"
 
 msgid "e-invoice address"
 msgstr "Verkkolaskuosoite"
+
+msgid "contact person"
+msgstr "Yhteyshenkilö"
 
 #, fuzzy
 #| msgid "File not found."
