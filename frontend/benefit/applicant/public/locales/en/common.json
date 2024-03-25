@@ -433,7 +433,29 @@
       "alterationList": {
         "count_one": "{{count}} change in employment reported",
         "count_other": "{{count}} changes in employment reported",
-        "empty": "No reported breaks in employment. Employment realised according to plan."
+        "empty": "No reported breaks in employment. Employment realised according to plan.",
+        "item": {
+          "heading": {
+            "termination": "Employment has been terminated on {{endDate}}",
+            "suspension": "Employment has been suspended for the period of {{endDate}} – {{resumeDate}}"
+          },
+          "actions": {
+            "delete": "Delete"
+          },
+          "state": {
+            "label": "Status",
+            "received": "Received",
+            "opened": "Handling",
+            "handled": "Processed"
+          },
+          "recoveryAmount": "Recovered benefit",
+          "recoveryPeriod": "Time period for which the benefit was recovered",
+          "contactPersonName": "Invoicing contact person",
+          "einvoiceProviderName": "E-invoice operator",
+          "einvoiceProviderIdentifier": "Operator ID",
+          "einvoiceAddress": "Electronic invoicing address",
+          "deliveryAddress": "Invoice address"
+        }
       },
       "actions": {
         "showDecision": "View decision",

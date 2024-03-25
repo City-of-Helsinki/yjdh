@@ -433,7 +433,29 @@
       "alterationList": {
         "count_one": "{{count}} ilmoitettu muutos työsuhteessa",
         "count_other": "{{count}} ilmoitettua muutosta työsuhteessa",
-        "empty": "Ei ilmoitettuja keskeytyksiä työsuhteessa. Työsuhde on toteutunut suunnitellusti."
+        "empty": "Ei ilmoitettuja keskeytyksiä työsuhteessa. Työsuhde on toteutunut suunnitellusti.",
+        "item": {
+          "heading": {
+            "termination": "Työsuhde on päättynyt {{endDate}}",
+            "suspension": "Työsuhde on keskeytynyt {{endDate}}–{{resumeDate}}"
+          },
+          "actions": {
+            "delete": "Poista"
+          },
+          "state": {
+            "label": "Tila",
+            "submitted": "Lähetetty",
+            "opened": "Vastaanotettu",
+            "handled": "Käsitelty"
+          },
+          "recoveryAmount": "Takaisin peritty tuki",
+          "recoveryPeriod": "Aika, jolta tukea perittiin takaisin",
+          "contactPersonName": "Yhteyshenkilö laskutuksessa",
+          "einvoiceProviderName": "Verkkolaskuoperaattori",
+          "einvoiceProviderIdentifier": "Välittäjätunnus",
+          "einvoiceAddress": "Verkkolaskuosoite",
+          "deliveryAddress": "Laskutusosoite"
+        }
       },
       "actions": {
         "showDecision": "Tarkastele päätöstä",

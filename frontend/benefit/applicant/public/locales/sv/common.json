@@ -433,7 +433,29 @@
       "alterationList": {
         "count_one": "{{count}} ändring i anställningen anmälde",
         "count_other": "{{count}} ändrings i anställningen anmälde",
-        "empty": "Inga anmälda avbrott i anställningen. Anställningen har genomförts enligt planen."
+        "empty": "Inga anmälda avbrott i anställningen. Anställningen har genomförts enligt planen.",
+        "item": {
+          "heading": {
+            "termination": "Anställningen har avbrutits {{endDate}}",
+            "suspension": "Anställningen har avslutats {{endDate}}–{{resumeDate}}"
+          },
+          "actions": {
+            "delete": "Ta bort"
+          },
+          "state": {
+            "label": "Status",
+            "received": "Mottagen",
+            "opened": "Behandling",
+            "handled": "Behandlad"
+          },
+          "recoveryAmount": "Stöd som återkrävts",
+          "recoveryPeriod": "Tid för vilken stödet återkrävs",
+          "contactPersonName": "Kontaktperson för fakturering",
+          "einvoiceProviderName": "E-fakturaoperatörens namn",
+          "einvoiceProviderIdentifier": "Förmedlarkod",
+          "einvoiceAddress": "E-fakturaadress",
+          "deliveryAddress": "Fakturaadress"
+        }
       },
       "actions": {
         "showDecision": "Kontrollera beslutet",

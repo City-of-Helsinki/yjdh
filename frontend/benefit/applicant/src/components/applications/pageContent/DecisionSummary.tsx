@@ -1,3 +1,4 @@
+import AlterationAccordionItem from 'benefit/applicant/components/applications/alteration/AlterationAccordionItem';
 import {
   $ActionContainer,
   $AlterationListCount,
@@ -47,6 +48,16 @@ const DecisionSummary = ({ application }: Props): JSX.Element => {
       alteration.state === ALTERATION_STATE.HANDLED &&
       alteration.alterationType === ALTERATION_TYPE.TERMINATION
   );
+
+  const sortedAlterations = application.alterations?.sort((a, b) => {
+    if (a.endDate < b.endDate) {
+      return -1;
+    }
+    if (a.endDate > b.endDate) {
+      return 1;
+    }
+    return 0;
+  });
 
   return (
     <$DecisionBox>
@@ -112,20 +123,27 @@ const DecisionSummary = ({ application }: Props): JSX.Element => {
                 })
               : t('common:applications.decision.alterationList.empty')}
           </$AlterationListCount>
+          {sortedAlterations.map((alteration) => (
+            <AlterationAccordionItem
+              key={alteration.id}
+              alteration={alteration}
+              application={application}
+            />
+          ))}
           <$ActionContainer>
-            {application.status === APPLICATION_STATUSES.ACCEPTED &&
-              !hasHandledTermination && (
-                <Button
-                  theme="coat"
-                  onClick={() =>
-                    router.push(
-                      `${ROUTES.APPLICATION_ALTERATION}?id=${application.id}`
-                    )
-                  }
-                >
-                  {t('common:applications.decision.actions.reportAlteration')}
-                </Button>
-              )}
+            {application.status === APPLICATION_STATUSES.ACCEPTED && (
+              <Button
+                theme="coat"
+                onClick={() =>
+                  router.push(
+                    `${ROUTES.APPLICATION_ALTERATION}?id=${application.id}`
+                  )
+                }
+                disabled={hasHandledTermination}
+              >
+                {t('common:applications.decision.actions.reportAlteration')}
+              </Button>
+            )}
           </$ActionContainer>
         </>
       )}
