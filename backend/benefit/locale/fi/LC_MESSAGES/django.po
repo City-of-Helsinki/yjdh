@@ -1382,11 +1382,17 @@ msgstr "tuki yhteensä"
 msgid "Benefit per month"
 msgstr "tuki/kk"
 
-msgid "Employee first name"
-msgstr "Työllistetyn etunimi"
+msgid "Employee name"
+msgstr "Työllistetyn nimi"
 
-msgid "Employee last name"
-msgstr "Työllistetyn sukunimi"
+msgid "Additional information"
+msgstr "Lisätietoja"
+
+msgid "De Minimis description"
+msgstr "Tuki myönnetään vähämerkityksisenä eli de minimis-tukena"
+
+msgid "Total for benefit time period"
+msgstr "Yhteensä koko tukiajalta"
 
 #~ msgid "applicant"
 #~ msgstr "hakija"
