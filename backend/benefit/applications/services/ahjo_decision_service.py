@@ -21,19 +21,30 @@ class AhjoDecisionError(Exception):
 
 def replace_decision_template_placeholders(
     text_to_replace: str,
+    decision_type: DecisionType,
     application: Application,
-    decision_maker: str = "Päättäjä x (Helsinki-lisä-suunnittelija/Tiimipäällikkö)",
 ) -> str:
     """Replace the placeholders starting with $ in the decision template with real data"""
     text_to_replace = Template(text_to_replace)
-    start_date = application.calculation.start_date.strftime("%d.%m.%Y")
-    end_date = application.calculation.end_date.strftime("%d.%m.%Y")
+    start_date = (
+        application.calculation.start_date.strftime("%d.%m.%Y")
+        if decision_type == DecisionType.ACCEPTED
+        else application.start_date
+    )
+    end_date = (
+        application.calculation.end_date.strftime("%d.%m.%Y")
+        if decision_type == DecisionType.ACCEPTED
+        else application.end_date
+    )
     try:
         return text_to_replace.substitute(
-            decision_maker=decision_maker,
             company=application.company.name,
-            total_amount=application.calculation.calculated_benefit_amount,
-            benefit_date_range=f"{start_date} - {end_date}",
+            total_amount=(
+                application.calculation.calculated_benefit_amount
+                if decision_type == DecisionType.ACCEPTED
+                else ""
+            ),
+            benefit_date_range=(f"{start_date} - {end_date}"),
         )
     except AhjoDecisionError as e:
         raise ValueError(f"Error in preparing the decision proposal template: {e}")
@@ -47,7 +58,7 @@ def process_template_sections(
     replace placeholders if section is a decision section"""
     for section in template_sections:
         section.template_decision_text = replace_decision_template_placeholders(
-            section.template_decision_text, application
+            section.template_decision_text, section.decision_type, application
         )
     return template_sections
 
@@ -85,5 +96,7 @@ def _generate_decision_text_string(
         decision_section = DeniedDecisionProposalFactory()
     decision_string = f"""<body><section id="paatos"><h1>Päätös</h1>{decision_section.template_decision_text}</section>\
 <section id="paatoksenperustelut"><h1>Päätösteksti</h1>{decision_section.template_justification_text}</section></body>"""  # noqa
-
-    return replace_decision_template_placeholders(decision_string, application)
+    decision_type = decision_section.decision_type
+    return replace_decision_template_placeholders(
+        decision_string, decision_type, application
+    )
