@@ -18,6 +18,7 @@ from applications.models import (
     AhjoDecisionProposalDraft,
     AhjoDecisionText,
     Application,
+    ApplicationLogEntry,
     DecisionProposalTemplateSection,
 )
 from applications.services.ahjo_decision_service import process_template_sections
@@ -182,7 +183,7 @@ class DecisionProposalDraftUpdate(APIView):
                     ),
                     decision_text=data["decision_text"]
                     + "\n\n"
-                    + data["justification_text"],
+                    + data.get("justification_text"),
                 )
             else:
                 AhjoDecisionText.objects.create(
@@ -193,9 +194,9 @@ class DecisionProposalDraftUpdate(APIView):
                         if data["status"] == ApplicationStatus.ACCEPTED
                         else DecisionType.DENIED
                     ),
-                    decision_text=data["decision_text"]
+                    decision_text=data.get("decision_text")
                     + "\n\n"
-                    + data["justification_text"],
+                    + data.get("justification_text"),
                 )
 
         if data["review_step"] >= 4:
@@ -203,7 +204,14 @@ class DecisionProposalDraftUpdate(APIView):
             proposal.review_step = 3
             proposal.save()
 
-            application.status = data["status"]
+            ApplicationLogEntry.objects.create(
+                application=application,
+                from_status=application.status,
+                to_status=data["status"],
+                comment=data.get("log_entry_comment") or "",
+            )
+            application.status = data.get("status")
+
             application.save()
 
             application.calculation.granted_as_de_minimis_aid = data[
