@@ -1,3 +1,4 @@
+import logging
 import re
 from datetime import date
 from typing import List
@@ -45,6 +46,11 @@ from applications.services.ahjo_integration import (
     prepare_pdf_files,
 )
 from applications.services.applications_csv_report import ApplicationsCsvService
+from applications.services.clamav import (
+    clamav_client,
+    FileInfectedException,
+    FileScanException,
+)
 from applications.services.generate_application_summary import (
     generate_application_summary_file,
     get_context_for_summary_context,
@@ -55,6 +61,8 @@ from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
 from users.utils import get_company_from_request
+
+log = logging.getLogger(__name__)
 
 
 class BaseApplicationFilter(filters.FilterSet):
@@ -240,18 +248,28 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
                 {"detail": _("Operation not allowed for this application status.")},
                 status=status.HTTP_403_FORBIDDEN,
             )
-        # Validate request data
-        serializer = AttachmentSerializer(
-            data={
-                "application": obj.id,
-                "attachment_file": request.data["attachment_file"],
-                "content_type": request.data["attachment_file"].content_type,
-                "attachment_type": request.data["attachment_type"],
-            }
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        try:
+            if settings.ENABLE_CLAMAV:
+                file = request.data["attachment_file"]
+                clamav_client.scan(file.name, file.file)
+            # Validate request data
+            serializer = AttachmentSerializer(
+                data={
+                    "application": obj.id,
+                    "attachment_file": request.data["attachment_file"],
+                    "content_type": request.data["attachment_file"].content_type,
+                    "attachment_type": request.data["attachment_type"],
+                }
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except FileScanException as fse:
+            log.error(f"File '{fse.file_name}' scanning failed")
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        except FileInfectedException as fie:
+            log.error(f"File '{fie.file_name}' infected, viruses: {fie.viruses}")
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 
     def _get_simplified_queryset(self, request, context) -> QuerySet:
         qs = self.filter_queryset(self.get_queryset())
