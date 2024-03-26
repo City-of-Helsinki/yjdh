@@ -14,7 +14,9 @@ def test_replace_accepted_decision_template_placeholders(
     decided_application, accepted_ahjo_decision_section
 ):
     replaced_template = replace_decision_template_placeholders(
-        accepted_ahjo_decision_section.template_decision_text, decided_application
+        accepted_ahjo_decision_section.template_decision_text,
+        accepted_ahjo_decision_section.decision_type,
+        decided_application,
     )
 
     assert decided_application.company.name in replaced_template
@@ -31,7 +33,9 @@ def test_replace_denied_decision_template_placeholders(
     decided_application, denied_ahjo_decision_section
 ):
     replaced_template = replace_decision_template_placeholders(
-        denied_ahjo_decision_section.template_decision_text, decided_application
+        denied_ahjo_decision_section.template_decision_text,
+        denied_ahjo_decision_section.decision_type,
+        decided_application,
     )
 
     assert decided_application.company.name in replaced_template
