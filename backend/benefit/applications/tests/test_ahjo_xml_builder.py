@@ -108,7 +108,8 @@ def test_public_xml_file_name(decided_application, public_xml_builder):
     application = decided_application
     xml_file_name = public_xml_builder.generate_xml_file_name()
 
-    wanted_file_name = f"decision_text_{application.application_number}.xml"
+    wanted_file_name = f"Hakemus {application.created_at.strftime('%d.%m.%Y')}, \
+päätösteksti, {application.application_number}.xml"
 
     assert xml_file_name == wanted_file_name
 
@@ -142,7 +143,8 @@ def test_secret_xml_file_name(decided_application, secret_xml_builder):
     application = decided_application
     xml_file_name = secret_xml_builder.generate_xml_file_name()
 
-    wanted_file_name = f"decision_text_secret_{application.application_number}.xml"
+    wanted_file_name = f"Hakemus {application.created_at.strftime('%d.%m.%Y')}, \
+liite 1/1, {application.application_number}.xml"
 
     assert xml_file_name == wanted_file_name
 

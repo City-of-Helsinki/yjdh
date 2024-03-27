@@ -40,7 +40,8 @@ class AhjoPublicXMLBuilder(AhjoXMLBuilder):
         return f"{XML_VERSION}{self.ahjo_decision_text.decision_text}"
 
     def generate_xml_file_name(self) -> str:
-        return f"decision_text_{self.application.application_number}.xml"
+        date_str = self.application.created_at.strftime("%d.%m.%Y")
+        return f"Hakemus {date_str}, päätösteksti, {self.application.application_number}.xml"
 
 
 SECRET_ATTACHMENT_TEMPLATE = "secret_decision.xml"
@@ -156,4 +157,7 @@ class AhjoSecretXMLBuilder(AhjoXMLBuilder):
         }
 
     def generate_xml_file_name(self) -> str:
-        return f"decision_text_secret_{self.application.application_number}.xml"
+        date_str = self.application.created_at.strftime("%d.%m.%Y")
+        return (
+            f"Hakemus {date_str}, liite 1/1, {self.application.application_number}.xml"
+        )

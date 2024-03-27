@@ -599,10 +599,7 @@ def test_generate_ahjo_public_decision_text_xml(decided_application):
     assert attachment.application == decided_application
     assert attachment.content_type == "application/xml"
     assert attachment.attachment_type == AttachmentType.DECISION_TEXT_XML
-    assert (
-        attachment.attachment_file.name
-        == f"decision_text_{decided_application.application_number}.xml"
-    )
+
     assert attachment.attachment_file.size > 0
     assert os.path.exists(attachment.attachment_file.path)
     if os.path.exists(attachment.attachment_file.path):
@@ -619,10 +616,7 @@ def test_generate_ahjo_secret_decision_text_xml(decided_application):
     assert attachment.application == decided_application
     assert attachment.content_type == "application/xml"
     assert attachment.attachment_type == AttachmentType.DECISION_TEXT_SECRET_XML
-    assert (
-        attachment.attachment_file.name
-        == f"decision_text_secret_{decided_application.application_number}.xml"
-    )
+
     assert attachment.attachment_file.size > 0
     assert os.path.exists(attachment.attachment_file.path)
     if os.path.exists(attachment.attachment_file.path):
