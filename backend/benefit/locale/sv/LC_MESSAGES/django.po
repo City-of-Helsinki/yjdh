@@ -1394,16 +1394,22 @@ msgid "Benefit type"
 msgstr "Typ av förmån"
 
 msgid "Total benefit"
-msgstr "total förmån"
+msgstr "Total förmån"
 
 msgid "Benefit per month"
-msgstr "förmån per månad"
+msgstr "Förmån per månad"
 
-msgid "Employee first name"
-msgstr "anställdas förnamn"
+msgid "Employee name"
+msgstr "Den anställdes namn"
 
-msgid "Employee last name"
-msgstr "anställdas efternamn"
+msgid "Additional information"
+msgstr "Ytterligare information"
+
+msgid "De Minimis description"
+msgstr "Stödet beviljas som stöd av mindre betydelse"
+
+msgid "Total for benefit time period"
+msgstr "Totalt för hela perioden"
 
 #~ msgid "applicant"
 #~ msgstr "sökande"

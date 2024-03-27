@@ -15,9 +15,7 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.core.files.base import ContentFile
 from django.db.models import F, OuterRef, QuerySet, Subquery
-from django.template.loader import render_to_string
 from django.urls import reverse
-from django.utils import translation
 
 from applications.enums import (
     AhjoRequestType,
@@ -38,11 +36,14 @@ from applications.services.ahjo_payload import (
     prepare_open_case_payload,
     prepare_update_application_payload,
 )
+from applications.services.ahjo_xml_builder import (
+    AhjoPublicXMLBuilder,
+    AhjoSecretXMLBuilder,
+)
 from applications.services.applications_csv_report import ApplicationsCsvService
 from applications.services.generate_application_summary import (
     generate_application_summary_file,
 )
-from calculator.enums import RowType
 from companies.models import Company
 
 
@@ -385,36 +386,7 @@ def export_application_batch(batch) -> bytes:
 
 
 # Constants
-XML_VERSION = "<?xml version='1.0' encoding='UTF-8'?>"
 PDF_CONTENT_TYPE = "application/pdf"
-XML_CONTENT_TYPE = "application/xml"
-
-
-def generate_secret_xml_string(application: Application) -> str:
-    calculation_rows = application.calculation.rows.all()
-    sub_total_rows = calculation_rows.filter(
-        row_type=RowType.HELSINKI_BENEFIT_SUB_TOTAL_EUR
-    )
-
-    # Set the locale for this thread to the application's language
-    translation.activate(application.applicant_language)
-
-    context = {
-        "application": application,
-        "benefit_type": "Palkan Helsinki-lisä",
-        "calculation_rows": sub_total_rows,
-        "language": application.applicant_language,
-    }
-    xml_content = render_to_string("secret_decision.xml", context)
-
-    # Reset the locale to the default
-    translation.deactivate()
-
-    return xml_content
-
-
-def generate_public_xml_string(content: str) -> str:
-    return f"""{XML_VERSION}{content}"""
 
 
 def generate_application_attachment(
@@ -429,17 +401,20 @@ def generate_application_attachment(
         content_type = PDF_CONTENT_TYPE
     elif type == AttachmentType.DECISION_TEXT_XML:
         decision = AhjoDecisionText.objects.get(application=application)
-        xml_string = generate_public_xml_string(decision.decision_text)
+
+        xml_builder = AhjoPublicXMLBuilder(application, decision)
+        xml_string = xml_builder.generate_xml()
+
         attachment_data = xml_string.encode("utf-8")
-        attachment_filename = f"decision_text_{application.application_number}.xml"
-        content_type = XML_CONTENT_TYPE
+        attachment_filename = xml_builder.generate_xml_file_name()
+        content_type = xml_builder.content_type
     elif type == AttachmentType.DECISION_TEXT_SECRET_XML:
-        xml_string = generate_secret_xml_string(application)
+        xml_builder = AhjoSecretXMLBuilder(application)
+        xml_string = xml_builder.generate_xml()
+
         attachment_data = xml_string.encode("utf-8")
-        attachment_filename = (
-            f"decision_text_secret_{application.application_number}.xml"
-        )
-        content_type = XML_CONTENT_TYPE
+        attachment_filename = xml_builder.generate_xml_file_name()
+        content_type = xml_builder.content_type
     else:
         raise ValueError(f"Invalid attachment type {type}")
 

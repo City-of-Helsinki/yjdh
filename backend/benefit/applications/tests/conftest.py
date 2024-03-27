@@ -7,11 +7,15 @@ import pytest
 from django.conf import settings
 from django.utils import timezone
 
-from applications.enums import ApplicationStatus, BenefitType
+from applications.enums import ApplicationStatus, BenefitType, DecisionType
 from applications.models import Application
+from applications.services.ahjo_decision_service import (
+    replace_decision_template_placeholders,
+)
 from applications.services.applications_csv_report import ApplicationsCsvService
 from applications.tests.factories import (
     AcceptedDecisionProposalFactory,
+    AhjoDecisionTextFactory,
     ApplicationBatchFactory,
     ApplicationFactory,
     CancelledApplicationFactory,
@@ -408,6 +412,20 @@ def accepted_ahjo_decision_section():
 @pytest.fixture()
 def denied_ahjo_decision_section():
     return DeniedDecisionProposalFactory()
+
+
+@pytest.fixture()
+def accepted_ahjo_decision_text(decided_application):
+    template = AcceptedDecisionProposalFactory()
+    replaced_decision_text = replace_decision_template_placeholders(
+        template.template_text, decided_application
+    )
+    return AhjoDecisionTextFactory(
+        decision_type=DecisionType.ACCEPTED,
+        application=decided_application,
+        decision_text=replaced_decision_text,
+        language=decided_application.applicant_language,
+    )
 
 
 def split_lines_at_semicolon(csv_string):

@@ -15,6 +15,7 @@ from applications.enums import (
 )
 from applications.models import (
     AhjoDecision,
+    AhjoDecisionText,
     Application,
     APPLICATION_LANGUAGE_CHOICES,
     ApplicationBasis,
@@ -30,6 +31,11 @@ from calculator.models import Calculation
 from companies.tests.factories import CompanyFactory
 from shared.service_bus.enums import YtjOrganizationCode
 from users.tests.factories import BFHandlerUserFactory
+
+
+class AhjoDecisionTextFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = AhjoDecisionText
 
 
 class AttachmentFactory(factory.django.DjangoModelFactory):

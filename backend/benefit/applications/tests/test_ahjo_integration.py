@@ -28,7 +28,6 @@ from applications.services.ahjo_integration import (
     ExportFileInfo,
     generate_application_attachment,
     generate_composed_files,
-    generate_secret_xml_string,
     generate_single_approved_file,
     generate_single_declined_file,
     get_application_for_ahjo,
@@ -600,10 +599,7 @@ def test_generate_ahjo_public_decision_text_xml(decided_application):
     assert attachment.application == decided_application
     assert attachment.content_type == "application/xml"
     assert attachment.attachment_type == AttachmentType.DECISION_TEXT_XML
-    assert (
-        attachment.attachment_file.name
-        == f"decision_text_{decided_application.application_number}.xml"
-    )
+
     assert attachment.attachment_file.size > 0
     assert os.path.exists(attachment.attachment_file.path)
     if os.path.exists(attachment.attachment_file.path):
@@ -620,10 +616,7 @@ def test_generate_ahjo_secret_decision_text_xml(decided_application):
     assert attachment.application == decided_application
     assert attachment.content_type == "application/xml"
     assert attachment.attachment_type == AttachmentType.DECISION_TEXT_SECRET_XML
-    assert (
-        attachment.attachment_file.name
-        == f"decision_text_secret_{decided_application.application_number}.xml"
-    )
+
     assert attachment.attachment_file.size > 0
     assert os.path.exists(attachment.attachment_file.path)
     if os.path.exists(attachment.attachment_file.path):
@@ -658,17 +651,6 @@ def test_get_applications_for_open_case(
     # only handled_applications should be returned as their last  AhjoStatus is SUBMITTED_BUT_NOT_SENT_TO_AHJO
     # and their application status is HANDLING
     assert applications_for_open_case.count() == len(multiple_handling_applications)
-
-
-@pytest.mark.django_db
-def test_generate_secret_xml_string(decided_application):
-    application = decided_application
-    xml_content = generate_secret_xml_string(application)
-
-    wanted_language = application.applicant_language
-
-    # Check if the returned XML string contains the expected content
-    assert f'<main id="paatoksenliite" lang="{wanted_language}">' in xml_content
 
 
 @pytest.mark.django_db
