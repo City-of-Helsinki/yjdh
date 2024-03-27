@@ -34,6 +34,7 @@ const Sidebar: React.FC<ComponentProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       closeText={t('common:messenger.close')}
+      stickyBarInUse
     >
       <Tabs>
         <$TabList>

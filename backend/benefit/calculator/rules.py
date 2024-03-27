@@ -320,6 +320,7 @@ class SalaryBenefitCalculator2023(HelsinkiBenefitCalculator):
                 SalaryBenefitTotalRow,
                 start_date=self.calculation.start_date,
                 end_date=self.calculation.end_date,
+                description_type=DescriptionType.DEDUCTION,
             )
 
 

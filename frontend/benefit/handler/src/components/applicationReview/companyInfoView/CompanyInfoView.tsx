@@ -28,13 +28,13 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         <$ViewFieldBold>
           {t(`${translationsBase}.fields.businessId`)}
         </$ViewFieldBold>
-        <$ViewField>{data.company?.businessId}</$ViewField>
+        <$ViewField large>{data.company?.businessId}</$ViewField>
       </$GridCell>
       <$GridCell $colSpan={6}>
         <$ViewFieldBold>
           {t(`${translationsBase}.fields.organizationType`)}
         </$ViewFieldBold>
-        <$ViewField>
+        <$ViewField large>
           {t(`common:organizationTypes.${data.company?.organizationType}`)}
         </$ViewField>
       </$GridCell>
@@ -42,7 +42,7 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         <$ViewFieldBold>
           {t(`${translationsBase}.fields.address`)}
         </$ViewFieldBold>
-        <$ViewField>{`${data.company?.streetAddress}, ${
+        <$ViewField large>{`${data.company?.streetAddress}, ${
           data.company?.postcode || ''
         } ${data.company?.city || ''}`}</$ViewField>
       </$GridCell>
@@ -51,7 +51,7 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           <$ViewFieldBold>
             {t(`${translationsBase}.fields.alternativeAddress`)}
           </$ViewFieldBold>
-          <$ViewField>
+          <$ViewField large>
             {data.companyDepartment && <div>{data.companyDepartment}</div>}
             {[
               data.alternativeCompanyStreetAddress,
@@ -67,7 +67,7 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         <$ViewFieldBold>
           {t(`${translationsBase}.fields.bankAccountNumber`)}
         </$ViewFieldBold>
-        <$ViewField>
+        <$ViewField large>
           {friendlyFormatIBAN(data?.companyBankAccountNumber)}
         </$ViewField>
       </$GridCell>
@@ -78,7 +78,7 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
               `${translationsBase}.fields.associationHasBusinessActivities.label`
             )}
           </$ViewFieldBold>
-          <$ViewField>
+          <$ViewField large>
             {data?.associationHasBusinessActivities
               ? t(
                   `${translationsBase}.fields.associationHasBusinessActivities.yes`

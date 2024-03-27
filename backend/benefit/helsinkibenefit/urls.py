@@ -13,6 +13,7 @@ from rest_framework_nested import routers
 
 from applications.api.v1 import application_batch_views, application_views
 from applications.api.v1.ahjo_decision_views import (
+    DecisionProposalDraftUpdate,
     DecisionProposalTemplateSectionList,
     DecisionTextDetail,
     DecisionTextList,
@@ -96,6 +97,11 @@ urlpatterns = [
         "v1/decision-proposal-sections/",
         DecisionProposalTemplateSectionList.as_view(),
         name="template_section_list",
+    ),
+    path(
+        "v1/decision-proposal-drafts/",
+        DecisionProposalDraftUpdate.as_view(),
+        name="decision_proposal_draft_update",
     ),
     path("gdpr-api/v1/user/<uuid:uuid>", UserUuidGDPRAPIView.as_view(), name="gdpr_v1"),
     path("v1/", include((router.urls, "v1"), namespace="v1")),

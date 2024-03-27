@@ -40,11 +40,16 @@ import { useSalaryBenefitCalculatorData } from './useSalaryBenefitCalculatorData
 
 const SalaryBenefitCalculatorView: React.FC<
   SalaryBenefitCalculatorViewProps
-> = ({ data }) => {
+> = ({
+  application,
+  isRecalculationRequired,
+  setIsRecalculationRequired,
+  setCalculationErrors,
+  calculationsErrors,
+}) => {
   const {
     formik,
     fields,
-    calculationsErrors,
     grantedPeriod,
     stateAidMaxPercentageOptions,
     getStateAidMaxPercentageSelectValue,
@@ -57,7 +62,7 @@ const SalaryBenefitCalculatorView: React.FC<
     addNewTrainingCompensation,
     removeTrainingCompensation,
     isDisabledAddTrainingCompensationButton,
-  } = useSalaryBenefitCalculatorData(data);
+  } = useSalaryBenefitCalculatorData(application, setCalculationErrors);
   const {
     t,
     translationsBase,
@@ -66,9 +71,11 @@ const SalaryBenefitCalculatorView: React.FC<
     getErrorMessage,
     handleSubmit,
     handleClear,
-    isRecalculationRequired,
-    setIsRecalculationRequired,
-  } = useCalculatorData(CALCULATION_TYPES.SALARY, formik);
+  } = useCalculatorData(
+    CALCULATION_TYPES.SALARY,
+    formik,
+    setIsRecalculationRequired
+  );
 
   const eurosPerMonth = 'common:utility.eurosPerMonth';
   return (
@@ -189,7 +196,8 @@ const SalaryBenefitCalculatorView: React.FC<
                 <$ViewField>
                   <strong>
                     {t(`${translationsBase}.paySubsidy`)}{' '}
-                    {data.paySubsidyGranted === PAY_SUBSIDY_GRANTED.GRANTED_AGED
+                    {application.paySubsidyGranted ===
+                    PAY_SUBSIDY_GRANTED.GRANTED_AGED
                       ? `(${t(
                           'applications.sections.fields.paySubsidyGranted.grantedAged'
                         )})`
@@ -364,7 +372,7 @@ const SalaryBenefitCalculatorView: React.FC<
         </>
       )}
 
-      {!isManualCalculator && data.apprenticeshipProgram && (
+      {!isManualCalculator && application.apprenticeshipProgram && (
         <>
           <$GridCell $colStart={1} $colSpan={11}>
             <$CalculatorHeader
@@ -546,15 +554,17 @@ const SalaryBenefitCalculatorView: React.FC<
         </$CalculatorHeader>
       </$GridCell>
 
-      {data.startDate && data.endDate && (
+      {application.startDate && application.endDate && (
         <$GridCell $colStart={1} $colSpan={11} style={{ alignSelf: 'center' }}>
           <$ViewField style={{ marginBottom: theme.spacing.xs }}>
             {t(`${translationsBase}.appliedPeriod`)}
             <b>
               {t(`${translationsBase}.startEndDates`, {
-                startDate: convertToUIDateFormat(data.startDate),
-                endDate: convertToUIDateFormat(data.endDate),
-                period: formatStringFloatValue(data.durationInMonthsRounded),
+                startDate: convertToUIDateFormat(application.startDate),
+                endDate: convertToUIDateFormat(application.endDate),
+                period: formatStringFloatValue(
+                  application.durationInMonthsRounded
+                ),
               })}
             </b>
           </$ViewField>
@@ -627,6 +637,7 @@ const SalaryBenefitCalculatorView: React.FC<
         <Button
           onClick={handleSubmit}
           theme="coat"
+          data-testid="run-calculation"
           style={{ marginRight: 'var(--spacing-xs)' }}
         >
           {t(`${translationsBase}.calculate`)}
@@ -641,7 +652,7 @@ const SalaryBenefitCalculatorView: React.FC<
         <CalculatorErrors data={calculationsErrors} />
       </$GridCell>
 
-      {isRecalculationRequired && data?.calculation?.rows.length > 0 && (
+      {isRecalculationRequired && application?.calculation?.rows.length > 0 && (
         <$GridCell $colStart={1} $colSpan={11}>
           <$Notification
             type="alert"
@@ -654,7 +665,7 @@ const SalaryBenefitCalculatorView: React.FC<
 
       {!calculationsErrors && (
         <SalaryCalculatorResults
-          data={data}
+          data={application}
           isManualCalculator={isManualCalculator}
           isRecalculationRequired={isRecalculationRequired}
         />

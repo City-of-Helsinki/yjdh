@@ -30,13 +30,13 @@ const EmployeeView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
       </$GridCell>
       <$GridCell $colSpan={6} $colStart={1}>
         <$ViewFieldBold>{t(`${translationsBase}.fields.ssn`)}</$ViewFieldBold>
-        <$ViewField>{data.employee?.socialSecurityNumber}</$ViewField>
+        <$ViewField large>{data.employee?.socialSecurityNumber}</$ViewField>
       </$GridCell>
       <$GridCell $colSpan={6} $colStart={1}>
         <$ViewFieldBold>
           {t(`${translationsBase}.fields.isLivingInHelsinki`)}
         </$ViewFieldBold>
-        <$ViewField>
+        <$ViewField large>
           {t(
             `common:utility.${data.employee?.isLivingInHelsinki ? 'yes' : 'no'}`
           )}
@@ -47,7 +47,7 @@ const EmployeeView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           <$ViewFieldBold>
             {t(`${translationsBase}.fields.associationImmediateManagerCheck`)}
           </$ViewFieldBold>
-          <$ViewField>
+          <$ViewField large>
             {t(
               `common:utility.${
                 data.associationImmediateManagerCheck ? 'yes' : 'no'

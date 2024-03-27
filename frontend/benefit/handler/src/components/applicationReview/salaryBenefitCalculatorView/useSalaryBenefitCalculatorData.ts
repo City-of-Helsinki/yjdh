@@ -31,7 +31,6 @@ type ExtendedComponentProps = {
   fields: {
     [key in CALCULATION_SALARY_KEYS]: Field<CALCULATION_SALARY_KEYS>;
   };
-  calculationsErrors: ErrorData | undefined | null;
   grantedPeriod: number;
   stateAidMaxPercentageOptions: OptionType[];
   getStateAidMaxPercentageSelectValue: () => OptionType | undefined;
@@ -56,7 +55,8 @@ const initialTrainingCompensationValues = {
 };
 
 const useSalaryBenefitCalculatorData = (
-  application: Application
+  application: Application,
+  setCalculationErrors: React.Dispatch<React.SetStateAction<ErrorData>>
 ): ExtendedComponentProps => {
   const { t } = useTranslation();
 
@@ -64,8 +64,10 @@ const useSalaryBenefitCalculatorData = (
     !!application.calculation?.overrideMonthlyBenefitAmount
   );
 
-  const { calculateSalaryBenefit, calculationsErrors } =
-    useHandlerReviewActions(application);
+  const { calculateSalaryBenefit } = useHandlerReviewActions(
+    application,
+    setCalculationErrors
+  );
 
   const [newTrainingCompensation, setNewTrainingCompensation] =
     useState<TrainingCompensation>(clone(initialTrainingCompensationValues));
@@ -221,7 +223,6 @@ const useSalaryBenefitCalculatorData = (
   return {
     formik,
     fields,
-    calculationsErrors,
     grantedPeriod,
     stateAidMaxPercentageOptions,
     getStateAidMaxPercentageSelectValue,

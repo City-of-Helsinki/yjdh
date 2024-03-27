@@ -3,7 +3,7 @@ from typing import List
 
 from django.conf import settings
 
-from applications.enums import DecisionProposalTemplateSectionType, DecisionType
+from applications.enums import DecisionType
 from applications.models import (
     AhjoDecisionText,
     Application,
@@ -11,9 +11,7 @@ from applications.models import (
 )
 from applications.tests.factories import (
     AcceptedDecisionProposalFactory,
-    AcceptedDecisionProposalJustificationFactory,
     DeniedDecisionProposalFactory,
-    DeniedDecisionProposalJustificationFactory,
 )
 
 
@@ -48,10 +46,9 @@ def process_template_sections(
     """Loop through the template sections and conditionally
     replace placeholders if section is a decision section"""
     for section in template_sections:
-        if section.section_type == DecisionProposalTemplateSectionType.DECISION_SECTION:
-            section.template_text = replace_decision_template_placeholders(
-                section.template_text, application
-            )
+        section.template_decision_text = replace_decision_template_placeholders(
+            section.template_decision_text, application
+        )
     return template_sections
 
 
@@ -84,11 +81,9 @@ def _generate_decision_text_string(
 ) -> str:
     if decision_type == DecisionType.ACCEPTED:
         decision_section = AcceptedDecisionProposalFactory()
-        justification_section = AcceptedDecisionProposalJustificationFactory()
     else:
         decision_section = DeniedDecisionProposalFactory()
-        justification_section = DeniedDecisionProposalJustificationFactory()
-    decision_string = f"""<body><section id="paatos"><h1>Päätös</h1>{decision_section.template_text}</section>\
-<section id="paatoksenperustelut"><h1>Päätösteksti</h1>{justification_section.template_text}</section></body>"""
+    decision_string = f"""<body><section id="paatos"><h1>Päätös</h1>{decision_section.template_decision_text}</section>\
+<section id="paatoksenperustelut"><h1>Päätösteksti</h1>{decision_section.template_justification_text}</section></body>"""  # noqa
 
     return replace_decision_template_placeholders(decision_string, application)

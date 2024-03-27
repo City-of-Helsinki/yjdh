@@ -2,6 +2,7 @@ import {
   APPLICATION_ACTIONS,
   APPLICATION_FIELD_KEYS,
 } from 'benefit/handler/constants';
+import { ErrorData } from 'benefit/handler/types/common';
 import {
   APPLICATION_ORIGINS,
   APPLICATION_STATUSES,
@@ -20,6 +21,7 @@ import {
   Calculation,
   CalculationCommon,
   Company,
+  DecisionProposalDraft,
   DeMinimisAid,
   Employee,
   PaySubsidy,
@@ -87,7 +89,11 @@ export interface UploadProps {
 }
 
 export interface SalaryBenefitCalculatorViewProps {
-  data: Application;
+  application: Application;
+  isRecalculationRequired: boolean;
+  setIsRecalculationRequired: (value: boolean) => void;
+  setCalculationErrors: React.Dispatch<React.SetStateAction<ErrorData>>;
+  calculationsErrors: ErrorData | undefined | null;
 }
 
 export interface SalaryBenefitManualCalculatorViewProps {
@@ -99,12 +105,12 @@ export interface SalaryBenefitManualCalculatorViewProps {
 }
 
 export type HandledAplication = {
-  status?:
-    | APPLICATION_STATUSES.ACCEPTED
-    | APPLICATION_STATUSES.REJECTED
-    | APPLICATION_STATUSES.CANCELLED;
+  status?: APPLICATION_STATUSES;
   logEntryComment?: string;
   grantedAsDeMinimisAid?: boolean;
+  handlerRole?: string;
+  decisionText?: string;
+  justificationText?: string;
 };
 
 export type ApplicationChangesData = {
@@ -147,6 +153,7 @@ export type Application = {
   action?: APPLICATION_ACTIONS;
   changeReason?: string;
   changes?: ApplicationChangesData;
+  decisionProposalDraft?: DecisionProposalDraft;
 } & ApplicationForm;
 
 export interface ApplicationForm {

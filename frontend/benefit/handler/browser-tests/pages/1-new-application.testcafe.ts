@@ -18,7 +18,14 @@ const uploadFileAttachment = async (
 ) => {
   await t.scrollIntoView(Selector(selector).parent(), { offsetY: -200 });
   await t.setFilesToUpload(selector, filename);
-  await t.wait(100);
+  await t
+    .expect(
+      Selector(selector)
+        .parent()
+        .parent()
+        .find(`a[aria-label^="${filename.replace('.pdf', '')}"]`).visible
+    )
+    .ok();
 };
 
 fixture('Create new application')
@@ -100,13 +107,9 @@ test('Fill form and submit', async (t: TestController) => {
   );
 
   await uploadFileAttachment(t, '#upload_attachment_full_application');
-  await t.wait(1000);
   await uploadFileAttachment(t, '#upload_attachment_employment_contract');
-  await t.wait(1000);
   await uploadFileAttachment(t, '#upload_attachment_education_contract');
-  await t.wait(1000);
   await uploadFileAttachment(t, '#upload_attachment_pay_subsidy_decision');
-  await t.wait(1000);
 
   /**
    * Click through all applicant terms.

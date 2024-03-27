@@ -1,4 +1,4 @@
-import styled, { DefaultTheme } from 'styled-components';
+import styled, { CSSProp, DefaultTheme } from 'styled-components';
 
 export type HeadingProps = {
   size?: keyof DefaultTheme['fontSize']['heading'];
@@ -9,6 +9,8 @@ export type HeadingProps = {
   tooltip?: string;
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'div';
   'data-testid'?: string;
+  weight?: string;
+  $css?: CSSProp;
 };
 
 export const $Header = styled.h1<HeadingProps>`
@@ -18,5 +20,5 @@ export const $Header = styled.h1<HeadingProps>`
   display: flex;
   align-items: center;
   gap: ${(props) => props.theme.spacing.s};
-  font-weight: 500;
+  font-weight: ${(props) => (props.weight ? props.weight : '500')};
 `;

@@ -209,7 +209,7 @@ const PageContent: React.FC = () => {
             selectedStep={currentStep - 1}
             onStepClick={(e) => e.stopPropagation()}
             css={stepperCss}
-            theme={theme.components.stepper}
+            theme={theme.components.stepper.black}
           />
         </$HeaderItem>
       </$PageHeader>

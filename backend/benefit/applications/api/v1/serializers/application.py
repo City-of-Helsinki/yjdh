@@ -18,6 +18,9 @@ from applications.api.v1.serializers.application_alteration import (
 from applications.api.v1.serializers.attachment import AttachmentSerializer
 from applications.api.v1.serializers.batch import ApplicationBatchSerializer
 from applications.api.v1.serializers.de_minimis import DeMinimisAidSerializer
+from applications.api.v1.serializers.decision_proposal import (
+    AhjoDecisionProposalReadOnlySerializer,
+)
 from applications.api.v1.serializers.employee import EmployeeSerializer
 from applications.api.v1.serializers.utils import DynamicFieldsModelSerializer
 from applications.api.v1.status_transition_validator import (
@@ -37,6 +40,7 @@ from applications.enums import (
     PaySubsidyGranted,
 )
 from applications.models import (
+    AhjoDecisionProposalDraft,
     AhjoStatus,
     Application,
     ApplicationBasis,
@@ -1251,6 +1255,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         de_minimis_data = validated_data.pop("de_minimis_aid_set", None)
         employee_data = validated_data.pop("employee", None)
         approve_terms = validated_data.pop("approve_terms", None)
+        decision_proposal_data = validated_data.pop("decision_proposal", None)
         pre_update_status = instance.status
         application = super().update(instance, validated_data)
         if de_minimis_data is not None:
@@ -1258,6 +1263,11 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             self._update_de_minimis_aid(application, de_minimis_data)
         if employee_data is not None:
             self._update_or_create_employee(application, employee_data)
+
+        if decision_proposal_data is not None:
+            AhjoDecisionProposalDraft.objects.update_or_create(
+                application=application, defaults=decision_proposal_data
+            )
 
         if instance.status != pre_update_status:
             self.handle_status_transition(
@@ -1284,6 +1294,9 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         self.assign_default_fields_from_company(application, validated_data["company"])
         self._update_de_minimis_aid(application, de_minimis_data)
         self._update_or_create_employee(application, employee_data)
+        AhjoDecisionProposalDraft.objects.update_or_create(
+            application=application, defaults={"review_step": 1}
+        )
         return application
 
     def _update_or_create_employee(self, application, employee_data):
@@ -1507,6 +1520,10 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         read_only=True, help_text="Application batch of this application, if any"
     )
 
+    decision_proposal_draft = AhjoDecisionProposalReadOnlySerializer(
+        required=False, allow_null=True, read_only=True
+    )
+
     create_application_for_company = serializers.UUIDField(
         read_only=True,
         required=False,
@@ -1564,6 +1581,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             "handled_at",
             "application_origin",
             "paper_application_date",
+            "decision_proposal_draft",
         ]
         read_only_fields = BaseApplicationSerializer.Meta.read_only_fields + [
             "latest_decision_comment",

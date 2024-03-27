@@ -6,6 +6,11 @@ import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import { getFullName } from 'shared/utils/application.utils';
 import { formatDate } from 'shared/utils/date.utils';
+import {
+  getLocalStorageItem,
+  removeLocalStorageItem,
+  setLocalStorageItem,
+} from 'shared/utils/localstorage.utils';
 
 import {
   $Col,
@@ -17,6 +22,20 @@ import {
 } from './ApplicationHeader.sc';
 
 type ApplicationReviewProps = { data: Application };
+
+const toggleNewAhjoMode = (): void => {
+  // eslint-disable-next-line no-alert
+  const confirm = window.confirm(
+    'Kokeile Ahjo-integraation käyttöliittymää? Vain testiympäristöihin, älä käytä tuotannossa!'
+  );
+  if (!confirm) return;
+  if (getLocalStorageItem('newAhjoMode') !== '1') {
+    setLocalStorageItem('newAhjoMode', '1');
+  } else {
+    removeLocalStorageItem('newAhjoMode');
+  }
+  window.location.reload();
+};
 
 const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
   const { t } = useTranslation();
@@ -75,6 +94,14 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
             <StatusLabel status={data.status} />
           </$Col>
         </$InnerWrapper>
+        <button
+          style={{ fontSize: '10px' }}
+          type="button"
+          onClick={toggleNewAhjoMode}
+        >
+          Ahjon kokeilutila{' '}
+          {getLocalStorageItem('newAhjoMode') ? 'pois' : 'päälle'}
+        </button>
       </Container>
     </$Wrapper>
   );
