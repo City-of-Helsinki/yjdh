@@ -5,7 +5,6 @@ import uuid
 import zipfile
 from collections import defaultdict
 from dataclasses import dataclass
-from datetime import date
 from io import BytesIO
 from typing import List, Optional, Tuple, Union
 
@@ -16,9 +15,7 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.core.files.base import ContentFile
 from django.db.models import F, OuterRef, QuerySet, Subquery
-from django.template.loader import render_to_string
 from django.urls import reverse
-from django.utils import translation
 
 from applications.enums import (
     AhjoRequestType,
@@ -39,16 +36,13 @@ from applications.services.ahjo_payload import (
     prepare_open_case_payload,
     prepare_update_application_payload,
 )
+from applications.services.ahjo_xml_builder import (
+    AhjoPublicXMLBuilder,
+    AhjoSecretXMLBuilder,
+)
 from applications.services.applications_csv_report import ApplicationsCsvService
 from applications.services.generate_application_summary import (
     generate_application_summary_file,
-)
-from calculator.enums import RowType
-from calculator.models import (
-    Calculation,
-    SalaryBenefitMonthlyRow,
-    SalaryBenefitSubTotalRow,
-    SalaryBenefitTotalRow,
 )
 from companies.models import Company
 
@@ -392,123 +386,7 @@ def export_application_batch(batch) -> bytes:
 
 
 # Constants
-XML_VERSION = "<?xml version='1.0' encoding='UTF-8'?>"
 PDF_CONTENT_TYPE = "application/pdf"
-XML_CONTENT_TYPE = "application/xml"
-
-
-def get_period_rows_for_xml(
-    calculation: Calculation,
-) -> Tuple[
-    SalaryBenefitTotalRow,
-    List[Union[SalaryBenefitMonthlyRow, SalaryBenefitSubTotalRow]],
-]:
-    total_amount_row = calculation.rows.filter(
-        row_type=RowType.HELSINKI_BENEFIT_TOTAL_EUR
-    ).first()
-
-    row_types_to_list = [
-        RowType.HELSINKI_BENEFIT_MONTHLY_EUR,
-        RowType.HELSINKI_BENEFIT_SUB_TOTAL_EUR,
-    ]
-    calculation_rows = calculation.rows.filter(row_type__in=row_types_to_list)
-    return total_amount_row, calculation_rows
-
-
-@dataclass
-class BenefitPeriodRow:
-    start_date: date
-    end_date: date
-    amount_per_month: float
-    total_amount: float
-
-
-def _prepare_multiple_period_rows(
-    calculation_rows: List[Union[SalaryBenefitMonthlyRow, SalaryBenefitSubTotalRow]],
-) -> List[BenefitPeriodRow]:
-    """In the case  where there are multiple benefit periods,
-    there will be multiple pairs of sub total rows and a corresponding monthly eur rows.
-    Here we prepare the calculation rows per payment period by looping through the calculation rows
-    and parsing the data into a list of BenefitPeriodRows.
-    """
-    calculation_rows_for_xml = []
-
-    for idx, r in enumerate(calculation_rows):
-        # check that we do not go out of bounds
-        if 0 <= idx + 1 < len(calculation_rows):
-            # the dates are in the next row, which is always a sub total row
-            start_date = calculation_rows[idx + 1].start_date
-            end_date = calculation_rows[idx + 1].end_date
-            # get data only from rows that have start_date and end_date
-            if start_date and end_date:
-                calculation_rows_for_xml.append(
-                    BenefitPeriodRow(
-                        start_date=start_date,
-                        end_date=end_date,
-                        amount_per_month=r.amount,
-                        # the total amount is also in the next row
-                        total_amount=calculation_rows[idx + 1].amount,
-                    )
-                )
-
-    return calculation_rows_for_xml
-
-
-def _prepare_single_period_row(
-    calculation_row_per_month: SalaryBenefitMonthlyRow,
-    total_amount_row: SalaryBenefitTotalRow,
-) -> List[BenefitPeriodRow]:
-    """In the case where there is only one benefit period,
-    we combine the monthly eur row and the salary benefit total row into a single BenefitPeriodRow.
-    """
-    calculation_rows_for_xml = []
-    calculation_rows_for_xml.append(
-        BenefitPeriodRow(
-            start_date=total_amount_row.start_date,
-            end_date=total_amount_row.end_date,
-            amount_per_month=calculation_row_per_month.amount,
-            total_amount=total_amount_row.amount,
-        )
-    )
-    return calculation_rows_for_xml
-
-
-def generate_secret_xml_string(application: Application) -> str:
-    """Generate the secret decision XML for the given application."""
-    total_amount_row, calculation_rows = get_period_rows_for_xml(
-        application.calculation
-    )
-    # If there is only one period, we can combine the monthly eur row and the total row into a single row
-    if (
-        len(calculation_rows) == 1
-        and calculation_rows[0].row_type == RowType.HELSINKI_BENEFIT_MONTHLY_EUR
-    ):
-        calculation_data_for_xml = _prepare_single_period_row(
-            calculation_rows[0], total_amount_row
-        )
-    else:
-        calculation_data_for_xml = _prepare_multiple_period_rows(calculation_rows)
-
-    # Set the locale for this thread to the application's language
-    translation.activate(application.applicant_language)
-
-    context = {
-        "application": application,
-        "benefit_type": "Palkan Helsinki-lisä",
-        "calculation_periods": calculation_data_for_xml,
-        "total_amount_row": total_amount_row,
-        "language": application.applicant_language,
-    }
-    xml_content = render_to_string("secret_decision.xml", context)
-
-    # Reset the locale to the default
-    translation.deactivate()
-
-    return xml_content
-
-
-def generate_public_xml_string(content: str) -> str:
-    return f"""{XML_VERSION}{content}"""
 
 
 def generate_application_attachment(
@@ -523,17 +401,20 @@ def generate_application_attachment(
         content_type = PDF_CONTENT_TYPE
     elif type == AttachmentType.DECISION_TEXT_XML:
         decision = AhjoDecisionText.objects.get(application=application)
-        xml_string = generate_public_xml_string(decision.decision_text)
+
+        xml_builder = AhjoPublicXMLBuilder(application, decision)
+        xml_string = xml_builder.generate_xml()
+
         attachment_data = xml_string.encode("utf-8")
-        attachment_filename = f"decision_text_{application.application_number}.xml"
-        content_type = XML_CONTENT_TYPE
+        attachment_filename = xml_builder.generate_xml_file_name()
+        content_type = xml_builder.content_type
     elif type == AttachmentType.DECISION_TEXT_SECRET_XML:
-        xml_string = generate_secret_xml_string(application)
+        xml_builder = AhjoSecretXMLBuilder(application)
+        xml_string = xml_builder.generate_xml()
+
         attachment_data = xml_string.encode("utf-8")
-        attachment_filename = (
-            f"decision_text_secret_{application.application_number}.xml"
-        )
-        content_type = XML_CONTENT_TYPE
+        attachment_filename = xml_builder.generate_xml_file_name()
+        content_type = xml_builder.content_type
     else:
         raise ValueError(f"Invalid attachment type {type}")
 
