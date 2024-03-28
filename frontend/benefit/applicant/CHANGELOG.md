@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.9.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.8.0...benefit-applicant-v3.9.0) (2024-03-28)
+
+
+### Features
+
+* Add decision details information box to application page ([aaf7794](https://github.com/City-of-Helsinki/yjdh/commit/aaf7794044057f17d1ed99c39f6301a5f2d6826f))
+* Implement application alteration submission flow ([ebbe9e5](https://github.com/City-of-Helsinki/yjdh/commit/ebbe9e5fd2cb21ec457845e5fe16cdfa617e655a))
+
+
+### Bug Fixes
+
+* Convert spaces to dashes in ahjo case page link ([#2897](https://github.com/City-of-Helsinki/yjdh/issues/2897)) ([a9fc149](https://github.com/City-of-Helsinki/yjdh/commit/a9fc14963d50c6f596911bdb0b079e5ce4cc3b1b))
+
 ## [3.8.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.7.0...benefit-applicant-v3.8.0) (2024-03-15)
 
 
