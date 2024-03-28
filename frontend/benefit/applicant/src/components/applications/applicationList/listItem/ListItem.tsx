@@ -1,3 +1,5 @@
+import 'react-loading-skeleton/dist/skeleton.css';
+
 import StatusIcon from 'benefit/applicant/components/applications/StatusIcon';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { Loading } from 'benefit/applicant/types/common';
@@ -98,7 +100,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
             <$StatusDataColumn className={`list-item-status--${status}`}>
               <$DataHeader>{t(`${translationBase}.common.status`)}</$DataHeader>
               <$StatusDataValue>
-                <StatusIcon status={status}/>
+                <StatusIcon status={status} />
                 <span>{statusText}</span>
               </$StatusDataValue>
             </$StatusDataColumn>

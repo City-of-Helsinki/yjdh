@@ -7,9 +7,7 @@ import {
   ApplicationAllowedAction,
   ApplicationListItemData,
 } from 'benefit-shared/types/application';
-import {
-  IconPen,
-} from 'hds-react';
+import { IconPen } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
