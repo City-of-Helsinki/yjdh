@@ -7,7 +7,7 @@ export type HeadingProps = {
   loadingText?: string;
   loadingFinishedText?: string;
   tooltip?: string;
-  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'div';
+  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'p' | 'div';
   'data-testid'?: string;
   weight?: string;
   $css?: CSSProp;
