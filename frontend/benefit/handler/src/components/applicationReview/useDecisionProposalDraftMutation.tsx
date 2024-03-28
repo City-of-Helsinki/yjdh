@@ -14,7 +14,7 @@ import hdsToast from 'shared/components/toast/Toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import snakecaseKeys from 'snakecase-keys';
 
-const useApplicationDecisionProposalMutation = (
+const useDecisionProposalDraftMutation = (
   application: Application
 ): UseMutationResult<
   DecisionProposalDraftData,
@@ -64,4 +64,4 @@ const useApplicationDecisionProposalMutation = (
   );
 };
 
-export default useApplicationDecisionProposalMutation;
+export default useDecisionProposalDraftMutation;

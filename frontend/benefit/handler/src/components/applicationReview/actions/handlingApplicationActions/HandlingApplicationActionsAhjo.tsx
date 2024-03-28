@@ -17,8 +17,8 @@ import * as React from 'react';
 import Modal from 'shared/components/modal/Modal';
 import theme from 'shared/styles/theme';
 
-import useApplicationDecisionProposalMutation from '../../useApplicationDecisionProposalQuery';
 import { StepActionType, StepStateType } from '../../useApplicationStepper';
+import useDecisionProposalDraftMutation from '../../useDecisionProposalDraftMutation';
 import EditAction from '../editAction/EditAction';
 import CancelModalContent from './CancelModalContent/CancelModalContent';
 import DoneModalContent from './DoneModalContent/DoneModalContent';
@@ -67,7 +67,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
     stepState.activeStepIndex === Number(stepState.steps?.length) - 1;
 
   const { data, mutate: updateApplication } =
-    useApplicationDecisionProposalMutation(application);
+    useDecisionProposalDraftMutation(application);
 
   React.useEffect(() => {
     if (data?.review_step) {
