@@ -68,8 +68,8 @@ class AhjoDecisionProposalSerializer(serializers.ModelSerializer):
 
         if data["review_step"] >= 3:
             if (
-                len(data.get("decision_text") or "") == 0
-                or len(data.get("justification_text") or "") == 0
+                len(data.get("decision_text") or "") < 8
+                or len(data.get("justification_text") or "") < 8
             ):
                 errors.append(
                     ValidationError("Decision or justification texts cannot be empty")
