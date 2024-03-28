@@ -44,6 +44,7 @@ Load test fixtures
 
     python manage.py loaddata default_terms.json
     python manage.py loaddata groups.json
+    python manage.py loaddata test_applications.json
 
 This creates terms of service and applicant terms in the database. The attachment PDF files are not actually
 created by loading the fixture. In order to actually download the PDF files, log in via the django admin

@@ -18,6 +18,7 @@ if [[ "$LOAD_FIXTURES" = "1" ]]; then
     ./manage.py loaddata groups.json
     if [[ "$LOAD_DEFAULT_TERMS" = "1" ]]; then
         ./manage.py loaddata default_terms.json
+        ./manage.py loaddata test_applications.json
     fi
     ./manage.py set_group_permissions
 fi
