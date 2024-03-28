@@ -1101,6 +1101,7 @@ class ApplicationAlteration(TimeStampedModel):
         decimal_places=2,
         verbose_name=_("amount of unwarranted benefit to be collected"),
         null=True,
+        blank=True,
     )
 
     use_einvoice = models.BooleanField(

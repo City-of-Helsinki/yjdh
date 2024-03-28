@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-27 15:46+0200\n"
+"POT-Creation-Date: 2024-03-26 12:21+0200\n"
 "PO-Revision-Date: 2022-11-01 10:47+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -169,7 +169,7 @@ msgid "E-invoice address"
 msgstr "Leveransadress"
 
 #, python-brace-format
-msgid "{field} must be filled if using an alternative e-invoice address"
+msgid "{field} must be filled if using an e-invoice address"
 msgstr ""
 
 msgid "Alteration cannot start before first benefit day"
@@ -860,8 +860,8 @@ msgid "amount of unwarranted benefit to be collected"
 msgstr "understödsbelopp som beviljats, beräknat av systemet"
 
 msgid ""
-"whether to use a separate e-invoice address from the one of the applicant "
-"organization"
+"whether to use handle billing with an e-invoice instead of a bill sent to a "
+"physical address"
 msgstr ""
 
 #, fuzzy
@@ -876,6 +876,11 @@ msgstr ""
 #| msgid "Delivery address"
 msgid "e-invoice address"
 msgstr "Leveransadress"
+
+#, fuzzy
+#| msgid "company contact person's email"
+msgid "contact person"
+msgstr "kontaktpersonens e-postadress"
 
 #, fuzzy
 #| msgid "File not found."
