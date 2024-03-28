@@ -1,15 +1,22 @@
+import 'react-loading-skeleton/dist/skeleton.css';
+
 import ApplicationHeader from 'benefit/handler/components/applicationHeader/ApplicationHeader';
 import { HANDLED_STATUSES } from 'benefit/handler/constants';
 import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { ErrorData } from 'benefit-shared/types/common';
-import { LoadingSpinner } from 'hds-react';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import LoadingSkeleton from 'react-loading-skeleton';
 import { useQueryClient } from 'react-query';
 import Container from 'shared/components/container/Container';
+import {
+  $Grid,
+  $GridCell,
+} from 'shared/components/forms/section/FormSection.sc';
 import StickyActionBar from 'shared/components/stickyActionBar/StickyActionBar';
 import { $StickyBarSpacing } from 'shared/components/stickyActionBar/StickyActionBar.sc';
+import theme from 'shared/styles/theme';
 
 import HandlingApplicationActions from './actions/handlingApplicationActions/HandlingApplicationActions';
 import HandlingApplicationActionsAhjo from './actions/handlingApplicationActions/HandlingApplicationActionsAhjo';
@@ -44,9 +51,32 @@ const ApplicationReview: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Container>
-        <LoadingSpinner />
-      </Container>
+      <>
+        <LoadingSkeleton
+          width="100%"
+          height={96}
+          baseColor={theme.colors.coatOfArms}
+          highlightColor={theme.colors.fogDark}
+          borderRadius={0}
+        />
+
+        <Container>
+          <$Grid>
+            <$GridCell $colSpan={12}>
+              <LoadingSkeleton width="100%" height={260} />
+            </$GridCell>
+            <$GridCell $colSpan={12}>
+              <LoadingSkeleton width="100%" height={240} />
+            </$GridCell>
+            <$GridCell $colSpan={12}>
+              <LoadingSkeleton width="100%" height={330} />
+            </$GridCell>
+            <$GridCell $colSpan={12}>
+              <LoadingSkeleton width="100%" height={260} />
+            </$GridCell>
+          </$Grid>
+        </Container>
+      </>
     );
   }
 
