@@ -222,7 +222,7 @@ class PaySubsidy(UUIDModel, TimeStampedModel, DurationMixin):
     Information about pay subsidies, as entered by the handlers in the calculator.
     """
 
-    DEFAULT_WORK_TIME_PERCENT = decimal.Decimal("100")
+    DEFAULT_WORK_TIME_PERCENT = decimal.Decimal("65")
 
     application = models.ForeignKey(
         Application,
@@ -246,7 +246,7 @@ class PaySubsidy(UUIDModel, TimeStampedModel, DurationMixin):
         max_digits=5,
         decimal_places=2,
         verbose_name=_("Work time percent"),
-        default=100,
+        default=DEFAULT_WORK_TIME_PERCENT,
         null=True,
         blank=True,
     )
@@ -634,9 +634,11 @@ class TrainingCompensationMonthlyRow(CalculationRow):
 
     def calculate_amount(self):
         return to_decimal(
-            self.training_compensation.monthly_amount
-            if self.training_compensation
-            else 0,
+            (
+                self.training_compensation.monthly_amount
+                if self.training_compensation
+                else 0
+            ),
             2,
         )
 

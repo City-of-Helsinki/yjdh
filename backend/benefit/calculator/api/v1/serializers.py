@@ -220,7 +220,7 @@ class PaySubsidySerializer(serializers.ModelSerializer):
         max_digits=PaySubsidy.work_time_percent.field.max_digits,
         decimal_places=PaySubsidy.work_time_percent.field.decimal_places,
         min_value=1,
-        max_value=PaySubsidy.DEFAULT_WORK_TIME_PERCENT,
+        max_value=100,
     )
 
     def _is_manual_mode(self):
