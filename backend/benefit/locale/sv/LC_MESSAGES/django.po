@@ -1411,6 +1411,12 @@ msgstr "Stödet beviljas som stöd av mindre betydelse"
 msgid "Total for benefit time period"
 msgstr "Totalt för hela perioden"
 
+msgid "Applicant company"
+msgstr "Sökande"
+
+msgid "Calculation of the benefit"
+msgstr "Beviljade stödperioder"
+
 #~ msgid "applicant"
 #~ msgstr "sökande"
 

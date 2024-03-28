@@ -1394,6 +1394,12 @@ msgstr "Tuki myönnetään vähämerkityksisenä eli de minimis-tukena"
 msgid "Total for benefit time period"
 msgstr "Yhteensä koko tukiajalta"
 
+msgid "Applicant company"
+msgstr "Hakija"
+
+msgid "Calculation of the benefit"
+msgstr "Helsinki-lisän tukijaksot"
+
 #~ msgid "applicant"
 #~ msgstr "hakija"
 
