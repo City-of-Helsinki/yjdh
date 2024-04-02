@@ -35,7 +35,7 @@
       "sent": "Ansökningsnummer: {{applicationNumber}}  |  Skickad {{submittedAt}}",
       "new": "Ny ansökan",
       "edit": "Helsingforstillagg ansokan",
-      "alteration": "",
+      "alteration": "Anmäl ändring i anställningen",
       "helperText": "Vänligen kontrollera ansökan innan du skickar in den.",
       "guideText": "Fälten märkta med * är obligatoriska"
     },
@@ -49,7 +49,7 @@
       "accepted": "Godkänd",
       "rejected": "Avvisad",
       "handling": "Behandling",
-      "cancelled": "Peruttu"
+      "cancelled": "Annullerat"
     },
     "steps": {
       "employer": "Arbetsgivare",
@@ -418,94 +418,94 @@
     },
     "decision": {
       "description": {
-        "accepted": "",
-        "rejected": ""
+        "accepted": "Ansökan har godkänts och Helsingforstillägg har beviljats för tiden {{dateRangeStart}} - {{dateRangeEnd}}",
+        "rejected": "Ansökan har avslagits. Helsingforstillägg beviljas inte."
       },
       "headings": {
-        "mainHeading": "",
-        "caseId": "",
-        "status": "",
-        "decisionDate": "",
-        "benefitPeriod": "",
-        "benefitAmount": "",
-        "existingAlterations": ""
+        "mainHeading": "Uppgifter om beslutet",
+        "caseId": "Diarienummer",
+        "status": "Beslut",
+        "decisionDate": "Beslutet fattades",
+        "benefitPeriod": "Stödtid",
+        "benefitAmount": "Beviljat stöd sammanlagt",
+        "existingAlterations": "Ändring i anställningen"
       },
       "alterationList": {
-        "count_one": "",
-        "count_other": "",
-        "empty": ""
+        "count_one": "{{count}} ändring i anställningen anmälde",
+        "count_other": "{{count}} ändrings i anställningen anmälde",
+        "empty": "Inga anmälda avbrott i anställningen. Anställningen har genomförts enligt planen."
       },
       "actions": {
-        "showDecision": "",
-        "reportAlteration": ""
+        "showDecision": "Kontrollera beslutet",
+        "reportAlteration": "Anmäl ändring i anställningen"
       }
     },
     "alteration": {
-      "title": "",
-      "explanation": "",
+      "title": "Anmäl ändring i anställningen",
+      "explanation": "Meddela oss om den sysselsatta personens anställning avslutas eller avbrytas tillfälligt under stödperioden. Vi kan återkräva Helsingforstillägget om anställningen förändras under stödperioden.\nAlla punkter som är märkta med * är obligatoriska.",
       "actions": {
-        "submit": "",
-        "cancel": ""
+        "submit": "Skicka",
+        "cancel": "Avbryt"
       },
       "fields": {
         "alterationType": {
-          "label": "",
-          "termination": "",
-          "suspension": ""
+          "label": "Hurdan ändring i anställningen vill du anmäla?",
+          "termination": "Anställningen avslutas",
+          "suspension": "Tillfälligt avbrott i anställningen"
         },
         "endDate": {
-          "label": ""
+          "label": "Sista arbetsdagen"
         },
         "resumeDate": {
-          "label": ""
+          "label": "Datum för återvändande till arbetet"
         },
         "date": {
-          "helpText": ""
+          "helpText": "Ange datumet i formatet D.M.ÅÅÅÅ."
         },
         "terminationReason": {
-          "label": "",
-          "helpText": ""
+          "label": "Orsak till att anställningen avslutas",
+          "helpText": "Om du önskar kan du ange orsaken till att anställningen avslutas"
         },
         "suspensionReason": {
-          "label": "",
-          "helpText": ""
+          "label": "Orsak till avbrottet i anställningen",
+          "helpText": "Om du önskar kan du ange orsaken till att anställningen avslutas"
         },
         "useEinvoice": {
-          "label": "",
-          "yes": "",
-          "no": ""
+          "label": "Leveransmetod för fakturan",
+          "yes": "E-faktura",
+          "no": "Till postadressen: {{streetAddress}}, {{postCode}} {{city}}"
         },
         "einvoiceProviderName": {
-          "label": "",
-          "placeholder": ""
+          "label": "E-fakturaoperatörens namn",
+          "placeholder": "T.ex. Basware Oyj"
         },
         "einvoiceProviderIdentifier": {
-          "label": "",
-          "placeholder": ""
+          "label": "Förmedlarkod",
+          "placeholder": "T.ex. BAWCFI22"
         },
         "einvoiceAddress": {
-          "label": "",
-          "placeholder": "",
-          "tooltip": ""
+          "label": "E-fakturaadress",
+          "placeholder": "T.ex 001100223300",
+          "tooltip": "Du kan kontrollera din organisations e-fakturaadress på webbplatsen verkkolaskuosoite.fi"
         },
         "contactPersonName": {
-          "label": "",
-          "helpText": ""
+          "label": "Kontaktperson i faktureringsärenden",
+          "helpText": "Ange namnet på den kontaktperson som anges på företagets faktura "
         }
       },
       "validation": {
-        "resumeDateBeforeEndDate": "",
-        "einvoiceRequiredTogether": ""
+        "resumeDateBeforeEndDate": "Datumet för återvändande till arbetet måste vara senare än datumet när avbrottet inleds",
+        "einvoiceRequiredTogether": "Alla fälten måste fyllas i om e-faktura används"
       },
       "error": {
-        "notYetAccepted": "",
-        "alreadyTerminated": ""
+        "notYetAccepted": "Du kan inte meddela om en ändring i anställningen för den här ansökan, eftersom stöd inte ännu har beviljats.",
+        "alreadyTerminated": "Den här anställningen har tidigare markerats som avslutad, så du kan inte längre meddela om en ny ändring."
       },
-      "billing": "",
+      "billing": "Faktureringsuppgifter",
       "successToast": {
-        "title": "",
-        "bodyTermination": "",
-        "bodySuspension": ""
+        "title": "Anmälan om ändring i anställningen har skickats",
+        "bodyTermination": " Du har meddelat om ett avbrott i anställningen enligt ansökan {{id}}.",
+        "bodySuspension": "Du har meddelat att anställningen enligt ansökan {{id}} avslutas."
       }
     }
   },
@@ -705,7 +705,7 @@
     "home": "Gå tillbaka till ingångssidan",
     "pagination": "Sidor",
     "back": "Tillbaka",
-    "submitting": ""
+    "submitting": "Sändning…"
   },
   "messenger": {
     "messages": "Meddelanden om ansökan",
@@ -841,9 +841,9 @@
     "closeToast": "Stäng avisering"
   },
   "cookieNotification": {
-    "title": "Sivun palautenappeja ei voida näyttää",
-    "text": "Toiminnon käyttämiseksi vaaditaan, että hyväksyt sivuston evästeet. Pääsen antamaan palautetta tästä sivusta sallimalla evästeasetuksista tilastointiin liittyvät evästeet.",
-    "button": "Muokkaa evästeasetuksia"
+    "title": "Feedbackknappar kan inte visas",
+    "text": "För att använda denna funktion måste du acceptera cookies från webbplatsen. Du kan ge feedback på den här sidan genom att aktivera statistikrelaterade cookies.",
+    "button": "Ändra inställningarna för cookies"
   },
   "decisions": {
     "heading_one": "<strong>{{count}}</strong> ansökan, för vilken beslut har fattats.",

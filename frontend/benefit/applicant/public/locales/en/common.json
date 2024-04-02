@@ -35,7 +35,7 @@
       "sent": "Application number: {{applicationNumber}}  |  Submitted {{submittedAt}}",
       "new": "New application",
       "edit": "Helsinki benefit application",
-      "alteration": "Report an alteration",
+      "alteration": "Report changes to employment",
       "helperText": "Please review the application before submitting.",
       "guideText": "All items marked with * are required"
     },
@@ -418,94 +418,94 @@
     },
     "decision": {
       "description": {
-        "accepted": "Helsinki benefit has been granted from {{dateRangeStart}} to {{dateRangeEnd}}",
-        "rejected": "No Helsinki benefit was granted"
+        "accepted": "The application has been approved and the Helsinki benefit has been granted for the period of {{dateRangeStart}} - {{dateRangeEnd}}",
+        "rejected": "The application was rejected. No Helsinki benefit is granted."
       },
       "headings": {
         "mainHeading": "Decision details",
-        "caseId": "Case identifier",
+        "caseId": "Diary number",
         "status": "Decision",
-        "decisionDate": "Date of decision",
+        "decisionDate": "Decision made on",
         "benefitPeriod": "Benefit period",
-        "benefitAmount": "Total amount of benefit",
-        "existingAlterations": "Alterations in employment"
+        "benefitAmount": "Total benefit granted",
+        "existingAlterations": "Change to employment"
       },
       "alterationList": {
-        "count_one": "{{count}} alteration in employment reported",
-        "count_other": "{{count}} alterations in employment reported",
-        "empty": "No reported alterations in employment. The employment has proceeded as expected."
+        "count_one": "{{count}} change in employment reported",
+        "count_other": "{{count}} changes in employment reported",
+        "empty": "No reported breaks in employment. Employment realised according to plan."
       },
       "actions": {
-        "showDecision": "View the decision",
-        "reportAlteration": "Report an alteration"
+        "showDecision": "View decision",
+        "reportAlteration": "Report changes to employment"
       }
     },
     "alteration": {
-      "title": "Report an alteration",
-      "explanation": "Let us know if the employee's work contract ends early or is suspended temporarily. You may need to pay some of the granted Helsinki benefit back if the work contract was altered.",
+      "title": "Report changes to employment",
+      "explanation": "Report it if the employed person’s employment ends or is temporarily interrupted during the benefit period. We may recover some of the Helsinki benefit if the employment relationship changes during the benefit period.\nAll fields marked with * are mandatory.",
       "actions": {
         "submit": "Submit",
         "cancel": "Cancel"
       },
       "fields": {
         "alterationType": {
-          "label": "How was the employment period altered?",
-          "termination": "The contract was terminated",
-          "suspension": "The contract was suspended for a time"
+          "label": "What type of change to employment are you reporting?",
+          "termination": "Termination",
+          "suspension": "Temporary suspension"
         },
         "endDate": {
-          "label": "Last date of work"
+          "label": "Last day of employment"
         },
         "resumeDate": {
-          "label": "Date when work resumed"
+          "label": "Date of return to work"
         },
         "date": {
-          "helpText": "Please enter the date using the format D.M.YYYY"
+          "helpText": "Provide the date in the format D.M.YYYY"
         },
         "terminationReason": {
-          "label": "Reason for the termination",
+          "label": "Reason for the termination of employment",
           "helpText": "You may enter the reason for the termination of the work contract if you wish"
         },
         "suspensionReason": {
-          "label": "Reason for the suspension",
-          "helpText": "You may enter the reason for the suspension of the work contract if you wish"
+          "label": "Reason for the suspension of employment",
+          "helpText": "Please provide the reason for the termination of your employment (optional)"
         },
         "useEinvoice": {
-          "label": "Delivery method for the invoice",
-          "yes": "E-invoice",
-          "no": "By mail: {{streetAddress}}, {{postCode}} {{city}}"
+          "label": "Invoice delivery method",
+          "yes": "Electronically",
+          "no": "By post: {{streetAddress}}, {{postCode}} {{city}}"
         },
         "einvoiceProviderName": {
-          "label": "Name of the e-invoice provider",
+          "label": "E-invoice operator",
           "placeholder": "E.g. Basware Oyj"
         },
         "einvoiceProviderIdentifier": {
-          "label": "Identifier of the e-invoice provider",
+          "label": "Operator ID",
           "placeholder": "E.g. BAWCFI22"
         },
         "einvoiceAddress": {
-          "label": "E-invoice address",
+          "label": "Electronic invoicing address",
           "placeholder": "E.g. 001100223300",
-          "tooltip": "You may verify the e-invoice address of your organization on verkkolaskuosoite.fi"
+          "tooltip": "You can check your organisation’s electronic invoicing address at verkkolaskuosoite.fi"
         },
         "contactPersonName": {
-          "label": "Contact person to use for invoice",
-          "helpText": "Please enter the name of the person to whom the invoice will be addressed to"
+          "label": "Invoicing contact person",
+          "helpText": "Provide the name of the contact person added to the company invoice"
         }
       },
       "validation": {
-        "resumeDateBeforeEndDate": "The work contract cannot resume before it had been suspended",
-        "einvoiceRequiredTogether": "All e-invoice fields must be filled when billed with an e-invoice"
+        "resumeDateBeforeEndDate": "The date of return to work must be after the start of the suspension",
+        "einvoiceRequiredTogether": "All fields must be filled, if electronic invoicing is selected"
       },
       "error": {
-        "notYetAccepted": "An alteration notice cannot be sent to this application as it has not yet been approved.",
-        "alreadyTerminated": "No more alteration notices can be sent to this application as it has already been noted to have been terminated."
+        "notYetAccepted": "You cannot report a change to employment using this application, because the benefit has not been granted yet.",
+        "alreadyTerminated": "This employment has been reported as terminated previously, which means that you cannot report a new change."
       },
-      "billing": "Billing information",
+      "billing": "Invoicing details",
       "successToast": {
-        "title": "Alteration notification submitted",
-        "bodyTermination": "An alteration notice for the termination of contract in application {{id}} has been sent.",
-        "bodySuspension": "An alteration notice for the suspension of contract in application {{id}} has been sent."
+        "title": "Employment status change report sent",
+        "bodyTermination": "Employment on application {{id}} has been reported as suspended.",
+        "bodySuspension": "Employment on application {{id}} has been reported as terminated."
       }
     }
   },
@@ -841,9 +841,9 @@
     "closeToast": "Close notification"
   },
   "cookieNotification": {
-    "title": "Sivun palautenappeja ei voida näyttää",
-    "text": "Toiminnon käyttämiseksi vaaditaan, että hyväksyt sivuston evästeet. Pääsen antamaan palautetta tästä sivusta sallimalla evästeasetuksista tilastointiin liittyvät evästeet.",
-    "button": "Muokkaa evästeasetuksia"
+    "title": "Feedback buttons cannot be displayed",
+    "text": "To use this feature, you must accept cookies from the site. You can provide feedback on this page by enabling statistics-related cookies.",
+    "button": "Change cookie settings"
   },
   "decisions": {
     "heading_one": "<strong>{{count}}</strong> application for which a decision has been made",

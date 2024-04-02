@@ -418,8 +418,8 @@
     },
     "decision": {
       "description": {
-        "accepted": "Helsinki-lisää on myönnetty aikavälille {{dateRangeStart}} – {{dateRangeEnd}}",
-        "rejected": "Helsinki-lisää ei myönnetty"
+        "accepted": "Hakemus on hyväksytty ja Helsinki-lisää on myönnetty aikavälille {{dateRangeStart}} – {{dateRangeEnd}}",
+        "rejected": "Hakemus on hylätty. Helsinki-lisää ei myönnetä."
       },
       "headings": {
         "mainHeading": "Päätöksen tiedot",
@@ -442,7 +442,7 @@
     },
     "alteration": {
       "title": "Ilmoita työsuhteen muutoksesta",
-      "explanation": "Ilmoita, jos työllistetyn henkilön työsuhde päättyy ennenaikaisesti tai keskeytyy väliaikaisesti. Saatamme periä Helsinki-lisää takaisin, jos tukijakson aikana työsuhteeseen tulee muutoksia.",
+      "explanation": "Ilmoita, jos työllistetyn henkilön työsuhde päättyy tai keskeytyy väliaikaisesti tukijakson aikana. Saatamme periä Helsinki-lisää takaisin, jos tukijakson aikana työsuhteeseen tulee muutoksia. \nKaikki *-merkityt kohdat ovat pakollisia.",
       "actions": {
         "submit": "Lähetä",
         "cancel": "Peruuta"
@@ -472,7 +472,7 @@
         },
         "useEinvoice": {
           "label": "Laskun toimitustapa",
-          "yes": "Verkkolaskutus",
+          "yes": "Verkkolaskulla",
           "no": "Postiosoitteeseen: {{streetAddress}}, {{postCode}} {{city}}"
         },
         "einvoiceProviderName": {
@@ -489,12 +489,12 @@
           "tooltip": "Voit tarkistaa organisaatiosi verkkolaskuosoitteen verkkosivulta verkkolaskuosoite.fi"
         },
         "contactPersonName": {
-          "label": "Laskulle nimetty yhteyshenkilö",
+          "label": "Yhteyshenkilö laskutusasioissa",
           "helpText": "Kirjoita yhteyshenkilön nimi, joka lisätään laskulle"
         }
       },
       "validation": {
-        "resumeDateBeforeEndDate": "Paluupäivän on oltava keskeytymisjakson alkupäivän jälkeen",
+        "resumeDateBeforeEndDate": "Töihinpaluupäivän on oltava keskeytymisen alkupäivämäärän jälkeen",
         "einvoiceRequiredTogether": "Verkkolaskuosoitetta käytettäessä kaikki osoitekentät on täytettävä"
       },
       "error": {
