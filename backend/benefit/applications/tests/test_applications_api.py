@@ -357,12 +357,12 @@ def test_application_single_read_unauthorized(
         ),
         (ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING),
         (ApplicationStatus.HANDLING, ApplicationStatus.HANDLING),
-        (ApplicationStatus.ACCEPTED, ApplicationStatus.ACCEPTED),
-        (ApplicationStatus.REJECTED, ApplicationStatus.REJECTED),
+        (ApplicationStatus.ACCEPTED, ApplicationStatus.HANDLING),
+        (ApplicationStatus.REJECTED, ApplicationStatus.HANDLING),
         (ApplicationStatus.CANCELLED, ApplicationStatus.CANCELLED),
     ],
 )
-def test_application_single_read_as_applicant(
+def test_application_single_read_without_ahjo_decision_as_applicant(
     api_client, application, actual_status, visible_status
 ):
     application.status = actual_status
@@ -386,6 +386,32 @@ def test_application_single_read_as_applicant(
 
     assert response.status_code == 200
     assert response.data["batch"] is True
+
+
+@pytest.mark.parametrize(
+    "actual_status, visible_status",
+    [
+        (ApplicationStatus.ACCEPTED, ApplicationStatus.ACCEPTED),
+        (ApplicationStatus.REJECTED, ApplicationStatus.REJECTED),
+    ],
+)
+def test_application_single_read_with_ahjo_decision_as_applicant(
+    api_client, application, actual_status, visible_status
+):
+    application.status = actual_status
+    application.batch = ApplicationBatchFactory(status=ApplicationBatchStatus.COMPLETED)
+    application.save()
+
+    response = api_client.get(get_detail_url(application))
+    assert response.status_code == 200
+
+    assert response.data["ahjo_decision"] is not None
+    assert response.data["application_number"] is not None
+    assert response.data["status"] == visible_status
+    assert response.data["batch"] is True
+    assert Decimal(response.data["duration_in_months_rounded"]) == duration_in_months(
+        application.start_date, application.end_date, decimal_places=2
+    )
 
 
 @pytest.mark.parametrize(

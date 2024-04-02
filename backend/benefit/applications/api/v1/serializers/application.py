@@ -1402,11 +1402,23 @@ class ApplicantApplicationStatusChoiceField(serializers.ChoiceField):
         ApplicationStatus.RECEIVED: ApplicationStatus.HANDLING,
     }
 
-    def to_representation(self, value):
+    def get_attribute(self, obj):
+        return obj
+
+    def to_representation(self, application):
         """
         Transform the *outgoing* native value into primitive data.
         """
+
+        value = getattr(application, self.field_name)
         value_shown_to_applicant = self.STATUS_OVERRIDES.get(value, value)
+
+        if (
+            value in [ApplicationStatus.REJECTED, ApplicationStatus.ACCEPTED]
+            and not application.is_accepted_in_ahjo
+        ):
+            value_shown_to_applicant = ApplicationStatus.HANDLING
+
         return super().to_representation(value_shown_to_applicant)
 
 
