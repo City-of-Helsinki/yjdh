@@ -7,21 +7,10 @@ import fi from '../../public/locales/fi/common.json';
 import { EDIT_FORM_DATA as form, NEW_FORM_DATA } from '../constants/forms';
 import MainIngress from '../page-model/MainIngress';
 import handlerUser from '../utils/handlerUser';
-import { uploadFileAttachment } from '../utils/input';
+import { clearAndFill, uploadFileAttachment } from '../utils/input';
 import { getFrontendUrl } from '../utils/url.utils';
 
 const url = getFrontendUrl(`/`);
-
-const clearAndFill = async (
-  t: TestController,
-  selector: string,
-  value: string
-) => {
-  await t.click(selector);
-  await t.selectText(selector);
-  await t.pressKey('delete');
-  await t.typeText(selector, value ?? '');
-};
 
 fixture('Edit existing application')
   .page(url)
