@@ -202,8 +202,17 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   if (isLoading) {
     return (
       <>
-        {heading && <$Heading>{`${heading}`}</$Heading>}
-        <LoadingSkeleton width={1200} height={100} />
+        {heading && (
+          <$Heading
+            css={{ marginBottom: theme.spacing.xs }}
+          >{`${heading}`}</$Heading>
+        )}
+        <LoadingSkeleton
+          borderRadius={0}
+          baseColor={theme.colors.fog}
+          height={50}
+        />
+        <LoadingSkeleton height={67} />
       </>
     );
   }
