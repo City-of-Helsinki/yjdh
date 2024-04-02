@@ -17,8 +17,9 @@ if [[ "$LOAD_FIXTURES" = "1" ]]; then
     echo "Loading fixtures..."
     ./manage.py loaddata groups.json
     if [[ "$LOAD_DEFAULT_TERMS" = "1" ]]; then
-        ./manage.py loaddata default_terms.json
-        ./manage.py loaddata test_applications.json
+        ./manage.py loaddata default_terms.json &&
+        ./manage.py loaddata test_applications.json &&
+        ./manage.py loaddata test_decision_templates.json
     fi
     ./manage.py set_group_permissions
 fi
