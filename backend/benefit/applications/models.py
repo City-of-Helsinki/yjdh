@@ -447,6 +447,18 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
         else:
             return None
 
+    @property
+    def is_accepted_in_ahjo(self):
+        if self.batch is not None:
+            return self.batch.status in [
+                ApplicationBatchStatus.DECIDED_ACCEPTED,
+                ApplicationBatchStatus.DECIDED_REJECTED,
+                ApplicationBatchStatus.SENT_TO_TALPA,
+                ApplicationBatchStatus.COMPLETED,
+            ]
+        else:
+            return False
+
     def __str__(self):
         return "{}: {} {} {}-{}".format(
             self.pk, self.company_name, self.status, self.start_date, self.end_date
