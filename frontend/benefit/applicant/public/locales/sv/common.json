@@ -88,7 +88,7 @@
         "companyContactPerson": {
           "content": "Kontaktpersonen sköter kontakterna i ärenden med anknytning till denna ansökning om Helsingforstillägget och får uppgiften om beslutet om ansökningen."
         },
-        "deMinimisAidsHeading": "Fyll i alla de de minimis-stöd som har beviljats organisationen under innevarande år och under två föregående skatteår",
+        "deMinimisAidsHeading": "Fyll i alla de de minimis-stöd som har beviljats organisationen under innevarande år och under två föregående skatteår.\nOm du vill kan du redovisa stöd du fått för samma kalenderår tillsammans på en rad.",
         "deMinimisAidsAdd": "Spara",
         "deMinimisAidsRemove": "Ta bort",
         "deMinimisAidsYes": "Ja, de minimis-stöd har beviljats arbetsgivaren under innevarande år och de två föregående beskattningsåren enligt bifogad tabell.",
@@ -108,7 +108,7 @@
           }
         },
         "tooltips": {
-          "heading3": "De minimis-stöd är offentligt stöd av mindre betydelse som beviljas till företag, till exempel understöd, lån, räntestöd eller borgen. De minimis-stödet regleras av Europeiska kommissionens förordning 1407/2013.",
+          "heading3": "De minimis-stöd är offentligt stöd av mindre betydelse som beviljas till företag, till exempel understöd, lån, räntestöd eller borgen. De minimis-stödet regleras av Europeiska kommissionens förordning 1407/2013.\nI Finland beviljas de-minimis-stöd av ELY-centraler, Finvera, Business Finland, kommuner och landskapsförbund.",
           "associationHasBusinessActivities": "På Helsingforstillägget tillämpas reglerna om statligt stöd när stödtagaren är ett företag eller en organisation som bedriver ekonomisk verksamhet, oavsett juridisk form eller finansieringsform. Med ekonomisk verksamhet avses försäljning av tjänster och produkter, som sker fortlöpande, i förvärvssyfte och i konkurrensomständigheter (alla tre villkoren ska uppfyllas samtidigt). Reglerna om statligt stöd kan också tillämpas på icke-vinstdrivande arbetsgivare. Ekonomisk verksamhet som skattemyndigheterna inte har ansett vara beskattningsbar anses i regel inte vara ekonomisk verksamhet."
         },
         "fields": {

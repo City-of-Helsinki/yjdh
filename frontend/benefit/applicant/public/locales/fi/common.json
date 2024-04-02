@@ -88,7 +88,7 @@
         "companyContactPerson": {
           "content": "Yhteyshenkilö kommunikoi tähän Helsinki-lisä -hakemukseen liittyvissä asioissa ja saa tiedon hakemuksen päätöksestä."
         },
-        "deMinimisAidsHeading": "Täytä alle kaikki organisaatiolle myönnetyt de minimis -tuet kuluvan vuoden ja kahden edellisen verovuoden ajalta.",
+        "deMinimisAidsHeading": "Täytä alle kaikki organisaatiolle myönnetyt de minimis -tuet kuluvan vuoden ja kahden edellisen verovuoden ajalta.\nHalutessasi voit ilmoittaa saamasi saman kalenterivuoden tuet yhteenlaskettuna yhdellä rivillä.",
         "deMinimisAidsAdd": "Tallenna",
         "deMinimisAidsRemove": "Poista",
         "deMinimisAidsYes": "Kyllä, työnantajalle on myönnetty de minimis -tukia kuluvan vuoden ja kahden edellisen verovuoden aikana oheisen taulukon mukaisesti.",
@@ -108,7 +108,7 @@
           }
         },
         "tooltips": {
-          "heading3": "De minimis -tuki on vähämerkityksistä, yrityksille myönnettävää julkista tukea, kuten esimerkiksi avustusta, lainaa, korkotukea tai takausta. De minimis -tukea säätelee Euroopan komission asetus 1407/2013.",
+          "heading3": "De minimis -tuki on vähämerkityksistä, yrityksille myönnettävää julkista tukea, kuten esimerkiksi avustusta, lainaa, korkotukea tai takausta. De minimis -tukea säätelee Euroopan komission asetus 1407/2013.\nDe-minimis tukia myöntää Suomessa ELY-keskukset, Finvera, Business Finland, kunnat ja maakuntien liitot.",
           "associationHasBusinessActivities": "Helsinki-lisään sovelletaan valtiontukisääntöjä silloin, kun tuensaaja on yritys tai taloudellista toimintaa harjoittavaa yhteisö riippumatta sen oikeudellisesta muodosta tai rahoitustavasta. Taloudellisella toiminnalla tarkoitetaan palveluiden ja tuotteiden myyntiä, joka on jatkuvaa, ansiotarkoituksessa ja kilpailuolosuhteissa tapahtuvaa (kaikkien kolmen edellytyksen tulee täyttyä samanaikaisesti). Valtiontukisääntöjä voidaan soveltaa myös voittoa tavoittelemattomiin työnantajiin. Taloudellisena toimintana ei pääsääntöisesti pidetä toimintaa, jota verottaja ei ole katsonut verotettavaksi elinkeinotoiminnaksi."
         },
         "fields": {

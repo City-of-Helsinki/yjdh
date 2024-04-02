@@ -88,7 +88,7 @@
         "companyContactPerson": {
           "content": "The contact person will communicate on matters related to this Helsinki benefit application and will be informed of the decision on the application."
         },
-        "deMinimisAidsHeading": "Below, please fill in all the de minimis aid granted to the organisation for the current and two previous tax years.",
+        "deMinimisAidsHeading": "Below, please fill in all the de minimis aid granted to the organisation for the current and two previous tax years.\nIf you wish, you can report the subsidies you received for the same calendar year together in one line.",
         "deMinimisAidsAdd": "Save",
         "deMinimisAidsRemove": "Delete",
         "deMinimisAidsYes": "Yes, de minimis subsidies have been granted to the employer during the current year and the two previous tax years according to the attached table.",
@@ -108,7 +108,7 @@
           }
         },
         "tooltips": {
-          "heading3": "De minimis aid is minor public aid granted to companies, such as a grant, loan, interest subsidy or guarantee. De minimis aid is governed by Commission Regulation (EU) No 1407/2013.",
+          "heading3": "De minimis aid is minor public aid granted to companies, such as a grant, loan, interest subsidy or guarantee. De minimis aid is governed by Commission Regulation (EU) No 1407/2013.\nIn Finland, de-minimis subsidies are granted by ELY centers, Finvera, Business Finland, municipalities and regional councils.",
           "associationHasBusinessActivities": "The Helsinki benefit is subject to the rules for government grants when the beneficiary is a company or an association engaged in an economic activity, irrespective of its legal form or financing method. Economic activity refers to the sale of services and products that is continuous, for gainful purposes and under competitive conditions (all three conditions must be fulfilled at the same time). The rules for government grants can also be applied to non-profit employers. As a rule, any activities that the Tax Authority has not regarded as taxable economic activities are not considered to be economic activities."
         },
         "fields": {
