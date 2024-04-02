@@ -6,20 +6,10 @@ import { Selector } from 'testcafe';
 import fi from '../../public/locales/fi/common.json';
 import { EDIT_FORM_DATA as form } from '../constants/forms';
 import handlerUser from '../utils/handlerUser';
+import { clearAndFill } from '../utils/input';
 import { getFrontendUrl } from '../utils/url.utils';
 
 const url = getFrontendUrl(`/`);
-
-const clearAndFill = async (
-  t: TestController,
-  selector: string,
-  value: string
-) => {
-  await t.click(selector);
-  await t.selectText(selector);
-  await t.pressKey('delete');
-  await t.typeText(selector, value ?? '');
-};
 
 fixture('Review edited application')
   .page(url)

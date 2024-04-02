@@ -17,3 +17,14 @@ export const uploadFileAttachment = async (
     )
     .ok();
 };
+
+export const clearAndFill = async (
+  t: TestController,
+  selector: string,
+  value: string
+): Promise<void> => {
+  await t.click(selector);
+  await t.selectText(selector);
+  await t.pressKey('delete');
+  await t.typeText(selector, value ?? '');
+};
