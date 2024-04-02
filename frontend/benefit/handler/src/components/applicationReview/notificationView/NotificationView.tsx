@@ -1,8 +1,9 @@
 import { ROUTES } from 'benefit/handler/constants';
 import AppContext from 'benefit/handler/context/AppContext';
+import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
-import { Button } from 'hds-react';
+import { Button, IconLinkExternal } from 'hds-react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -30,8 +31,7 @@ const NotificationView: React.FC<Props> = ({ data }) => {
   const translationsBase = 'common:notifications';
   const { t } = useTranslation();
   const router = useRouter();
-  const { handledApplication, setHandledApplication } =
-    React.useContext(AppContext);
+  const { setHandledApplication } = React.useContext(AppContext);
 
   useEffect(() => () => setHandledApplication(null), [setHandledApplication]);
 
@@ -43,12 +43,15 @@ const NotificationView: React.FC<Props> = ({ data }) => {
     void router.push({ pathname: ROUTES.HOME, query: { tab: activeTab } });
   };
 
+  const isNewAhjoMode = useDetermineAhjoMode();
+  const translationKey = data?.status ?? 'error';
+
   return (
     <Container>
       <$Notification>
         <$Grid>
           <$GridCell $colSpan={2}>
-            {data?.status ? (
+            {translationKey !== 'error' ? (
               <$IconCheckCircle size="xl" />
             ) : (
               <$IconAlertCircle size="xl" />
@@ -56,26 +59,20 @@ const NotificationView: React.FC<Props> = ({ data }) => {
           </$GridCell>
           <$GridCell $colSpan={10}>
             <$NotificationTitle>
-              {t(
-                `${translationsBase}.${String(data?.status ?? 'error')}.title`
-              )}
+              {isNewAhjoMode
+                ? t(`common:review.decisionProposal.submitted.title`)
+                : t(`${translationsBase}.${translationKey}.title`)}
             </$NotificationTitle>
             <$NotificationMessage>
-              {t(
-                `${translationsBase}.${String(
-                  data?.status ?? 'error'
-                )}.message`,
-                { applicationNum: data?.applicationNumber }
-              )}
+              {isNewAhjoMode
+                ? t(`common:review.decisionProposal.submitted.text`)
+                : t(`${translationsBase}.${translationKey}.message`, {
+                    applicationNum: data?.applicationNumber,
+                  })}
             </$NotificationMessage>
           </$GridCell>
-          <$GridCell $colSpan={10} $colStart={3}>
-            <$NotificationMessage>
-              {t(`${translationsBase}.ahjoMessage.message`)}
-            </$NotificationMessage>
-          </$GridCell>
-          <$GridCell $colSpan={10} $colStart={3}>
-            {handledApplication && (
+          {isNewAhjoMode && (
+            <$GridCell $colSpan={10} $colStart={3}>
               <$ActionsContainer>
                 <Button theme="coat" onClick={handleGoHome}>
                   {t('common:utility.home')}
@@ -84,12 +81,41 @@ const NotificationView: React.FC<Props> = ({ data }) => {
                   variant="secondary"
                   theme="coat"
                   onClick={handleStartAhjo}
+                  iconRight={<IconLinkExternal />}
                 >
-                  {t(`${translationsBase}.ahjoButton.label`)}
+                  {t(`${translationsBase}.ahjoButton.linkLabel`)}
                 </Button>
               </$ActionsContainer>
-            )}
-          </$GridCell>
+            </$GridCell>
+          )}
+          {!isNewAhjoMode && (
+            <>
+              <$GridCell $colSpan={10} $colStart={3}>
+                <$NotificationMessage>
+                  {t(`${translationsBase}.ahjoMessage.message`)}
+                </$NotificationMessage>
+              </$GridCell>
+              {[
+                APPLICATION_STATUSES.ACCEPTED,
+                APPLICATION_STATUSES.REJECTED,
+              ].includes(data?.status) && (
+                <$GridCell $colSpan={10} $colStart={3}>
+                  <$ActionsContainer>
+                    <Button theme="coat" onClick={handleGoHome}>
+                      {t('common:utility.home')}
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      theme="coat"
+                      onClick={handleStartAhjo}
+                    >
+                      {t(`${translationsBase}.ahjoButton.label`)}
+                    </Button>
+                  </$ActionsContainer>
+                </$GridCell>
+              )}
+            </>
+          )}
         </$Grid>
       </$Notification>
     </Container>
