@@ -1,7 +1,8 @@
 import AlterationAccordionItem from 'benefit/applicant/components/applications/alteration/AlterationAccordionItem';
 import {
-  $ActionContainer,
+  $AlterationActionContainer,
   $AlterationListCount,
+  $DecisionActionContainer,
   $DecisionBox,
   $DecisionBoxTitle,
   $DecisionDetails,
@@ -100,7 +101,7 @@ const DecisionSummary = ({ application }: Props): JSX.Element => {
           <dd>{convertToUIDateFormat(application.ahjoDecisionDate)}</dd>
         </div>
       </$DecisionDetails>
-      <$ActionContainer>
+      <$DecisionActionContainer>
         <Button
           iconRight={<IconLinkExternal />}
           onClick={displayDecision}
@@ -110,7 +111,7 @@ const DecisionSummary = ({ application }: Props): JSX.Element => {
         >
           {t('common:applications.decision.actions.showDecision')}
         </Button>
-      </$ActionContainer>
+      </$DecisionActionContainer>
       {isTruthy(process.env.NEXT_PUBLIC_ENABLE_ALTERATION_FEATURES) && (
         <>
           <$Subheading>
@@ -130,7 +131,7 @@ const DecisionSummary = ({ application }: Props): JSX.Element => {
               application={application}
             />
           ))}
-          <$ActionContainer>
+          <$AlterationActionContainer>
             {application.status === APPLICATION_STATUSES.ACCEPTED && (
               <Button
                 theme="coat"
@@ -144,7 +145,7 @@ const DecisionSummary = ({ application }: Props): JSX.Element => {
                 {t('common:applications.decision.actions.reportAlteration')}
               </Button>
             )}
-          </$ActionContainer>
+          </$AlterationActionContainer>
         </>
       )}
     </$DecisionBox>

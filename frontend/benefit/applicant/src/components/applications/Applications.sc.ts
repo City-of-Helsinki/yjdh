@@ -6,10 +6,8 @@ export const $PageHeader = styled.div`
   display: block;
   margin-bottom: ${(props) => props.theme.spacing.s};
   margin-top: ${(props) => props.theme.spacing.m};
-
-  & > * {
-    margin-bottom: ${(props) => props.theme.spacing.m};
-  }
+  margin-bottom: ${(props) => props.theme.spacing.m};
+  border-bottom: ${(props) => `1px solid ${props.theme.colors.black20}`};
 
   ${respondAbove('md')`
     flex: 1 0 100%;

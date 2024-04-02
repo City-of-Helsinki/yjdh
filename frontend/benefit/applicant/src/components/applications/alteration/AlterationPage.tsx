@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios';
 import {
+  $AlterationFormContainer,
   $BackButtonContainer,
   $MainHeaderItem,
   $PageHeader,
@@ -28,7 +29,12 @@ import { Button, IconArrowLeft, LoadingSpinner } from 'hds-react';
 import kebabCase from 'lodash/kebabCase';
 import { useRouter } from 'next/router';
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import Container from 'shared/components/container/Container';
+import {
+  $Grid,
+  $GridCell,
+} from 'shared/components/forms/section/FormSection.sc';
 import hdsToast from 'shared/components/toast/Toast';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
@@ -38,6 +44,7 @@ const AlterationPage = (): JSX.Element => {
 
   const router = useRouter();
   const theme = useTheme();
+  const queryClient = useQueryClient();
 
   if (isLoading) {
     return (
@@ -67,6 +74,7 @@ const AlterationPage = (): JSX.Element => {
   const onSuccess = async (
     response: ApplicationAlterationData
   ): Promise<void> => {
+    await queryClient.invalidateQueries(['applications', application.id]);
     returnToApplication();
 
     const textKey =
@@ -79,7 +87,7 @@ const AlterationPage = (): JSX.Element => {
       type: 'success',
       labelText: t('common:applications.alteration.successToast.title'),
       text: t(textKey, {
-        id: application.ahjoCaseId,
+        id: application.applicationNumber,
       }),
     });
   };
@@ -180,14 +188,20 @@ const AlterationPage = (): JSX.Element => {
       </$PageHeader>
       {!hasHandledTermination && isAccepted && (
         <>
-          <p>{t('common:applications.pageHeaders.guideText')}</p>
-          <p>{t('common:applications.alteration.explanation')}</p>
-          <AlterationForm
-            application={application}
-            onCancel={returnToApplication}
-            onSuccess={onSuccess}
-            onError={onError}
-          />
+          <$Grid>
+            <$GridCell $colSpan={8}>
+              <p>{t('common:applications.alteration.explanation')}</p>
+              <p>{t('common:applications.pageHeaders.guideText')}</p>
+            </$GridCell>
+          </$Grid>
+          <$AlterationFormContainer>
+            <AlterationForm
+              application={application}
+              onCancel={returnToApplication}
+              onSuccess={onSuccess}
+              onError={onError}
+            />
+          </$AlterationFormContainer>
         </>
       )}
       {hasHandledTermination && (

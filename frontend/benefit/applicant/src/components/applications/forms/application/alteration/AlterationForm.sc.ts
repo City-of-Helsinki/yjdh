@@ -22,3 +22,7 @@ export const $SaveActionFormErrorText = styled.div`
     fill: ${(props) => props.theme.colors.error};
   }
 `;
+
+export const $H2 = styled.h2`
+  margin: 0;
+`;

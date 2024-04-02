@@ -523,10 +523,11 @@
         "notYetAccepted": "Du kan inte meddela om en ändring i anställningen för den här ansökan, eftersom stöd inte ännu har beviljats.",
         "alreadyTerminated": "Den här anställningen har tidigare markerats som avslutad, så du kan inte längre meddela om en ny ändring."
       },
+      "details": "Ändringar i anställningen",
       "billing": "Faktureringsuppgifter",
       "successToast": {
         "title": "Anmälan om ändring i anställningen har skickats",
-        "bodyTermination": " Du har meddelat om ett avbrott i anställningen enligt ansökan {{id}}.",
+        "bodyTermination": "Du har meddelat om ett avbrott i anställningen enligt ansökan {{id}}.",
         "bodySuspension": "Du har meddelat att anställningen enligt ansökan {{id}} avslutas."
       }
     }

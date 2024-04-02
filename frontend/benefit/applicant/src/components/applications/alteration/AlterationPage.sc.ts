@@ -9,7 +9,7 @@ export const $PageHeader = styled($PageHeaderBase)`
   flex-wrap: wrap;
 `;
 
-export const $MainHeaderItem = styled($PageHeaderBase)`
+export const $MainHeaderItem = styled.div`
   flex: 0 0 100%;
   margin-bottom: 0;
 `;
@@ -19,4 +19,8 @@ export const $PageHeading = styled.h1`
   font-weight: normal;
   margin-bottom: 0;
   margin-top: ${(props) => props.theme.spacingLayout.xs2};
+`;
+
+export const $AlterationFormContainer = styled.div`
+  margin-top: ${(props) => props.theme.spacingLayout.s};
 `;

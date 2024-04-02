@@ -523,6 +523,7 @@
         "notYetAccepted": "You cannot report a change to employment using this application, because the benefit has not been granted yet.",
         "alreadyTerminated": "This employment has been reported as terminated previously, which means that you cannot report a new change."
       },
+      "details": "Changes in employment",
       "billing": "Invoicing details",
       "successToast": {
         "title": "Employment status change report sent",

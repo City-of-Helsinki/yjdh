@@ -444,7 +444,7 @@
           },
           "state": {
             "label": "Tila",
-            "submitted": "Lähetetty",
+            "received": "Lähetetty",
             "opened": "Vastaanotettu",
             "handled": "Käsitelty"
           },
@@ -523,6 +523,7 @@
         "notYetAccepted": "Et voi ilmoittaa muutosta työsuhteessa tälle hakemukselle, sillä tukea ei ole vielä myönnetty.",
         "alreadyTerminated": "Tämä työsuhde on aiemmin jo merkitty päättyneeksi, joten et voi enää ilmoittaa uudesta muutoksesta."
       },
+      "details": "Muutokset työsuhteessa",
       "billing": "Laskutustiedot",
       "successToast": {
         "title": "Työsuhteen muutosilmoitus lähetetty",
