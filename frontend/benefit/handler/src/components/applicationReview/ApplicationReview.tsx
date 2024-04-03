@@ -131,18 +131,16 @@ const ApplicationReview: React.FC = () => {
             />
           )}
 
-        {isNewAhjoMode &&
-          (application.status === APPLICATION_STATUSES.HANDLING ||
-            application.status === APPLICATION_STATUSES.INFO_REQUIRED) && (
-            <HandlingApplicationActionsAhjo
-              application={application}
-              stepperDispatch={stepperDispatch}
-              stepState={stepState}
-              data-testid="handling-application-actions"
-              isRecalculationRequired={isRecalculationRequired}
-              isCalculationsErrors={!!calculationsErrors}
-            />
-          )}
+        {isNewAhjoMode && (
+          <HandlingApplicationActionsAhjo
+            application={application}
+            stepperDispatch={stepperDispatch}
+            stepState={stepState}
+            data-testid="handling-application-actions"
+            isRecalculationRequired={isRecalculationRequired}
+            isCalculationsErrors={!!calculationsErrors}
+          />
+        )}
       </StickyActionBar>
       <$StickyBarSpacing />
     </$ApplicationReview>
