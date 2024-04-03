@@ -85,6 +85,7 @@ const ApplicationReviewStep3: React.FC<ApplicationReviewStepProps> = ({
               dangerouslySetInnerHTML={{
                 __html: application.decisionProposalDraft.decisionText,
               }}
+              data-testid="decision-text-preview"
             />
           </$EditorPreview>
         </$GridCell>
@@ -104,6 +105,7 @@ const ApplicationReviewStep3: React.FC<ApplicationReviewStepProps> = ({
               dangerouslySetInnerHTML={{
                 __html: application.decisionProposalDraft.justificationText,
               }}
+              data-testid="justification-text-preview"
             />
           </$EditorPreview>
         </$GridCell>
