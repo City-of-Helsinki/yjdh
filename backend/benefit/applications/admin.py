@@ -6,6 +6,7 @@ from applications.models import (
     AhjoDecisionText,
     AhjoSetting,
     Application,
+    ApplicationAlteration,
     ApplicationBasis,
     ApplicationBatch,
     ApplicationLogEntry,
@@ -42,6 +43,27 @@ class AttachmentInline(admin.StackedInline):
     readonly_fields = ("created_at",)
 
 
+class ApplicationAlterationInline(admin.StackedInline):
+    model = ApplicationAlteration
+    fk_name = "application"
+    extra = 0
+    fields = (
+        "state",
+        "alteration_type",
+        "end_date",
+        "resume_date",
+        "reason",
+        "contact_person_name",
+        "recovery_start_date",
+        "recovery_end_date",
+        "recovery_amount",
+        "use_einvoice",
+        "einvoice_provider_name",
+        "einvoice_provider_identifier",
+        "einvoice_address",
+    )
+
+
 class ApplicationAdmin(admin.ModelAdmin):
     inlines = (
         EmployeeInline,
@@ -49,6 +71,7 @@ class ApplicationAdmin(admin.ModelAdmin):
         ApplicationBasisInline,
         AttachmentInline,
         CalculationInline,
+        ApplicationAlterationInline,
     )
     list_filter = ("status", "application_origin", "company")
     list_display = (
