@@ -1,10 +1,8 @@
-import { BENEFIT_TYPES, PAY_SUBSIDY_GRANTED } from 'benefit-shared/constants';
+import { PAY_SUBSIDY_GRANTED } from 'benefit-shared/constants';
 import React from 'react';
 
 interface FieldValues {
   useAlternativeAddress?: boolean | null;
-  apprenticeshipProgram?: boolean | null;
-  benefitType?: BENEFIT_TYPES | '';
   paySubsidyGranted?: PAY_SUBSIDY_GRANTED | null;
   associationHasBusinessActivities?: boolean | null;
   startDate?: string;
@@ -46,8 +44,6 @@ type State = EFFECTS[];
 export const useDependentFieldsEffect = (
   {
     useAlternativeAddress,
-    apprenticeshipProgram,
-    benefitType,
     paySubsidyGranted,
     associationHasBusinessActivities,
     startDate,
@@ -118,13 +114,6 @@ export const useDependentFieldsEffect = (
       );
     }
   }, [paySubsidyGranted]);
-
-  // Effects when apprenticeshipProgram changes
-  React.useEffect(() => {
-    if (benefitType === BENEFIT_TYPES.COMMISSION && apprenticeshipProgram) {
-      dispatch(createUpdateAction([EFFECTS.CLEAR_BENEFIT_VALUES]));
-    }
-  }, [apprenticeshipProgram, benefitType]);
 
   // Effects when associationHasBusinessActivities changes
   React.useEffect(() => {
