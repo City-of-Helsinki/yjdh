@@ -11,13 +11,17 @@ interface Loading {
 interface ErrorResponse {
   response: {
     status: number;
-    data: ErrorData;
+    data: UploadErrorData;
   };
 }
 
-interface ErrorData {
+interface UploadErrorData {
   non_field_errors?: string[];
   [key: string]: string[] | undefined;
+}
+
+interface ErrorData {
+  data?: Record<string, string[]>;
 }
 
 type RNSData = {
