@@ -86,6 +86,7 @@
     },
     "ahjoButton": {
       "label": "Aloita hakemuksen vieminen ahjoon",
+      "linkLabel": "Siirry Ahjoon",
       "message": ""
     }
   },
@@ -100,7 +101,7 @@
   "languages": {
     "fi": "Suomi",
     "sv": "Ruotsi",
-    "en": "English"
+    "en": "Englanti"
   },
   "supportedLanguages": {
     "fi": "Suomeksi",
@@ -833,6 +834,17 @@
       }
     },
     "decisionProposal": {
+      "errors": {
+        "title": "Vaadittavia tietoja puuttuu",
+        "fields": {
+          "calculation": "Tarkista laskelma",
+          "status": "Puoltotieto puuttuu",
+          "logEntry": "Päätöksen perustelu puuttuu",
+          "handler": "Päättäjän rooli puuttuu",
+          "decisionText": "Päätös ei voi olla tyhjä",
+          "justificationText": "Päätöksen perustelu ei voi olla tyhjä"
+        }
+      },
       "list": {
         "title": "Päätösehdotuksen tiedot",
         "text": {
@@ -877,10 +889,24 @@
             "label": "Päätöstekstipohja",
             "helperText": "Valitse sopiva päätöstekstipohja"
           }
+        },
+        "missingContent": {
+          "accepted": "Myönteiset päätöstekstipohjat puuttuvat kielelle {{ language }}.",
+          "rejected": "Kielteiset päätöstekstipohjat puuttuvat kielelle {{ language }}."
         }
       },
-      "editor": {
-        "title": ""
+      "preview": {
+        "title": "Olet siirtämässä hakemuksen päätösjonoon.",
+        "proposalTexts": "Päätösehdotuksen teksti",
+        "decisionText": "Päätös",
+        "justificationText": "Päätöksen perustelut",
+        "staticTitle": "Avustukset työnantajille, Työllisyyspalvelut, Helsinki-lisä, ",
+        "application": "hakemus",
+        "ahjoIdentifier": "HEL 2024-000172"
+      },
+      "submitted": {
+        "title": "Päätösehdotus on lähetetty Ahjoon",
+        "text": "Viimeistele päätöskäsittely Ahjossa."
       }
     }
   },
