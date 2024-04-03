@@ -45,9 +45,9 @@ export const getValidationSchema = (
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED))
       .test({
         message: t(VALIDATION_MESSAGE_KEYS.DATE_MIN, {
-          min: convertToUIDateFormat(subMonths(new Date(), 6)),
+          min: convertToUIDateFormat(subMonths(new Date(), 4)),
         }),
-        test: (value = '') => validateDateWithinMonths(value, 6),
+        test: (value = '') => validateDateWithinMonths(value, 4),
       }),
     [APPLICATION_FIELDS_STEP2_KEYS.END_DATE]: Yup.string().required(
       t(VALIDATION_MESSAGE_KEYS.REQUIRED)
