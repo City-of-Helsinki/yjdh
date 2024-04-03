@@ -20,7 +20,7 @@ import {
   validateIsTodayOrPastDate,
 } from 'benefit-shared/utils/dates';
 import { validateNumberField } from 'benefit-shared/utils/validation';
-import startOfYear from 'date-fns/startOfYear';
+import subMonths from 'date-fns/subMonths';
 import { FinnishSSN } from 'finnish-ssn';
 import { TFunction } from 'next-i18next';
 import {
@@ -279,9 +279,9 @@ export const getValidationSchema = (
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED))
       .test({
         message: t(VALIDATION_MESSAGE_KEYS.DATE_MIN, {
-          min: convertToUIDateFormat(startOfYear(new Date())),
+          min: convertToUIDateFormat(subMonths(new Date(), 4)),
         }),
-        test: (value = '') => validateDateWithinMonths(value, 6),
+        test: (value = '') => validateDateWithinMonths(value, 4),
       }),
     [APPLICATION_FIELD_KEYS.END_DATE]: Yup.string().required(
       t(VALIDATION_MESSAGE_KEYS.REQUIRED)
