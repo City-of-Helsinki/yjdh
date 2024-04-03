@@ -3,12 +3,15 @@ Get initials from full name
 */
 import { isString } from 'shared/utils/type-guards';
 
-export const getInitials = (name: string): string =>
-  name
-    .match(/(?<=^|\s)(\p{L})/gu)
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
+export const getInitials = (name: string): string => {
+  const match = name.match(/(?<=^|\s)(\p{L})/gu);
+
+  if (match) {
+    return match.slice(0, 2).join('').toUpperCase();
+  }
+
+  return '?';
+};
 
 export const capitalize = (s: string): string =>
   (s && s[0].toUpperCase() + s.slice(1)) || '';

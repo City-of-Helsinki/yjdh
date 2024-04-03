@@ -17,5 +17,10 @@ describe('string utils', () => {
       expect(getInitials('Gösta Andersson')).toBe('GA');
       expect(getInitials('Gösta Hämäläinen')).toBe('GH');
     });
+
+    it('should output a default response for non-name inputs', () => {
+      expect(getInitials('')).toBe('?');
+      expect(getInitials('12345 67890')).toBe('?');
+    });
   });
 });
