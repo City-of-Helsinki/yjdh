@@ -6,13 +6,10 @@ import {
 } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import { ErrorData } from 'benefit-shared/types/common';
-import { IconLockOpen } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
-import { convertToUIDateFormat } from 'shared/utils/date.utils';
 
 import ApplicationProcessingView from './applicationProcessingView/AplicationProcessingView';
-import { $InfoNeededBar } from './ApplicationReview.sc';
 import BenefitView from './benefitView/BenefitView';
 import CompanyInfoView from './companyInfoView/CompanyInfoView';
 import ConsentView from './consentView/ConsentView';
@@ -42,7 +39,7 @@ const ApplicationReviewStep1: React.FC<ApplicationReviewStepProps> = ({
   calculationsErrors,
   setCalculationErrors,
 }) => {
-  const { t, isUploading, handleUpload, reviewState, handleUpdateReviewState } =
+  const { isUploading, handleUpload, reviewState, handleUpdateReviewState } =
     useApplicationReview();
 
   return (
@@ -52,17 +49,6 @@ const ApplicationReviewStep1: React.FC<ApplicationReviewStepProps> = ({
         handleUpdateReviewState,
       }}
     >
-      {application.status === APPLICATION_STATUSES.INFO_REQUIRED && (
-        <$InfoNeededBar>
-          {t(`common:review.fields.editEndDate`, {
-            date: convertToUIDateFormat(
-              application.additionalInformationNeededBy
-            ),
-          })}
-          <IconLockOpen />
-        </$InfoNeededBar>
-      )}
-
       <Container data-testid="application-body">
         {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER && (
           <PaperView data={application} />
