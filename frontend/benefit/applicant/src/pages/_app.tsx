@@ -1,7 +1,8 @@
-import 'react-toastify/dist/ReactToastify.css';
 import '../styles/globals.css';
+import 'react-toastify/dist/ReactToastify.css';
 import 'benefit-shared/styles/app.css';
 import 'hds-design-tokens';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 import AuthProvider from 'benefit/applicant/auth/AuthProvider';
 import CookieConsent from 'benefit/applicant/components/cookieConsent/CookieConsent';

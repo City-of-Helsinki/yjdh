@@ -12,6 +12,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
+import { useQueryClient } from 'react-query';
 import withAuth from 'shared/components/hocs/withAuth';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
@@ -21,6 +22,8 @@ import FrontPageProvider from '../context/FrontPageProvider';
 const ApplicantIndex: NextPage = () => {
   const { t } = useTranslation();
   const router = useRouter();
+  const queryClient = useQueryClient();
+
   const { setIsNavigationVisible } = React.useContext(AppContext);
 
   useEffect(() => {
@@ -30,6 +33,14 @@ const ApplicantIndex: NextPage = () => {
       setIsNavigationVisible(false);
     };
   }, [setIsNavigationVisible]);
+
+  /**
+   * Fix a cache issue where single application's button opens up a read-only
+   * application if status changes to "additional_information_needed"
+   */
+  const effectInvalidateApplicationsCache = () =>
+    void queryClient.invalidateQueries('applications');
+  useEffect(effectInvalidateApplicationsCache, [queryClient]);
 
   const [infoNeededCount, setInfoNeededCount] = useState<number | null>(null);
   const [draftCount, setDraftCount] = useState<number | null>(null);

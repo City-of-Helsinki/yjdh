@@ -98,7 +98,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
             <$StatusDataColumn className={`list-item-status--${status}`}>
               <$DataHeader>{t(`${translationBase}.common.status`)}</$DataHeader>
               <$StatusDataValue>
-                <StatusIcon status={status}/>
+                <StatusIcon status={status} />
                 <span>{statusText}</span>
               </$StatusDataValue>
             </$StatusDataColumn>

@@ -2,7 +2,8 @@ import {
   $HeaderItem,
   $HeaderRightColumnItem,
   $PageHeader,
-  $PageHeading, $PageHeadingApplicant,
+  $PageHeading,
+  $PageHeadingApplicant,
   $PageHeadingHelperText,
   $PageSubHeading,
   $SpinnerContainer,
@@ -138,8 +139,7 @@ const PageContent: React.FC = () => {
               {t('common:applications.pageHeaders.edit')}
             </$PageHeading>
             <$PageHeadingApplicant>
-              {application.employee.firstName}{" "}
-              {application.employee.lastName}
+              {application.employee.firstName} {application.employee.lastName}
             </$PageHeadingApplicant>
           </$HeaderItem>
           {id && application?.submittedAt && application?.applicationNumber && (
