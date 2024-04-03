@@ -3,7 +3,10 @@ import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { getApplicationStepString } from 'benefit/applicant/utils/common';
-import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import {
+  APPLICATION_STATUSES,
+  PAY_SUBSIDY_GRANTED,
+} from 'benefit-shared/constants';
 import { Application, ApplicationData } from 'benefit-shared/types/application';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
@@ -99,6 +102,10 @@ const useApplicationFormStep5 = (
       {
         ...application,
         ...submitFields,
+        apprenticeshipProgram:
+          application?.paySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
+            ? null
+            : application?.apprenticeshipProgram,
         calculation: application.calculation
           ? {
               ...application.calculation,
