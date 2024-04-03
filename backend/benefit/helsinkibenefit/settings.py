@@ -48,7 +48,7 @@ env = environ.Env(
     CORS_ALLOWED_ORIGINS=(list, []),
     CORS_ALLOW_ALL_ORIGINS=(bool, False),
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
-    CSRF_TRUSTED_ORIGINS=(list, ["localhost:3000", "localhost:3100"]),
+    CSRF_TRUSTED_ORIGINS=(list, ["https://localhost:3000", "https://localhost:3100"]),
     CSRF_COOKIE_NAME=(str, "yjdhcsrftoken"),
     YTJ_BASE_URL=(str, "https://avoindata.prh.fi"),
     YTJ_TIMEOUT=(int, 30),
@@ -481,8 +481,14 @@ ADFS_CONTROLLER_GROUP_UUIDS = env.list("ADFS_CONTROLLER_GROUP_UUIDS")
 FIELD_ENCRYPTION_KEYS = [ENCRYPTION_KEY]
 
 # Django storages
-DEFAULT_FILE_STORAGE = env("DEFAULT_FILE_STORAGE")
-
+STORAGES = {
+    "default": {
+        "BACKEND": env("DEFAULT_FILE_STORAGE"),
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
 AZURE_ACCOUNT_NAME = env("AZURE_ACCOUNT_NAME")
 AZURE_ACCOUNT_KEY = env("AZURE_ACCOUNT_KEY")
 AZURE_CONTAINER = env("AZURE_CONTAINER")
