@@ -56,7 +56,7 @@ from applications.tests.factories import (
 from calculator.models import Calculation
 from calculator.tests.conftest import fill_empty_calculation_fields
 from common.tests.conftest import *  # noqa
-from common.tests.conftest import get_client_user, reseed
+from common.tests.conftest import get_client_user
 from common.utils import duration_in_months
 from companies.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
@@ -69,6 +69,14 @@ from shared.audit_log import models as audit_models
 from shared.service_bus.enums import YtjOrganizationCode
 from terms.models import TermsOfServiceApproval
 from terms.tests.conftest import *  # noqa
+
+
+@pytest.fixture(autouse=True)
+def run_before_and_after_tests():
+    from applications.tests.before_after import before_test_reseed
+
+    before_test_reseed(["test_application_history_change_sets_for_handler"])
+    yield
 
 
 def get_detail_url(application):
@@ -2334,7 +2342,6 @@ def test_handler_application_filter_archived(handler_api_client):
 
 def test_application_pdf_print(api_client, application):
     settings.NEXT_PUBLIC_MOCK_FLAG = False  # noqa
-    reseed(12345)
 
     # Can access own applications
     response = api_client.get(
@@ -2345,7 +2352,6 @@ def test_application_pdf_print(api_client, application):
 
 def test_application_pdf_print_denied(api_client, anonymous_client):
     settings.NEXT_PUBLIC_MOCK_FLAG = False  # noqa
-    reseed(12345)
 
     application = DecidedApplicationFactory()
 

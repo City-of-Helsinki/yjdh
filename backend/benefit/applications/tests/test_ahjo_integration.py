@@ -52,6 +52,14 @@ DE_MINIMIS_AID_PARTIAL_TEXT = (
 )
 
 
+@pytest.fixture(autouse=True)
+def run_before_and_after_tests():
+    from applications.tests.before_after import before_test_reseed
+
+    before_test_reseed([])
+    yield
+
+
 def _assert_html_content(html, include_keys=(), excluded_keys=()):
     for k in include_keys:
         assert k in html

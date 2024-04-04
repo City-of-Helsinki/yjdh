@@ -28,10 +28,17 @@ from applications.tests.conftest import split_lines_at_semicolon
 from applications.tests.factories import DecidedApplicationFactory, DeMinimisAidFactory
 from calculator.tests.factories import PaySubsidyFactory
 from common.tests.conftest import *  # noqa
-from common.tests.conftest import reseed
 from companies.tests.conftest import *  # noqa
 from helsinkibenefit.tests.conftest import *  # noqa
 from terms.tests.conftest import *  # noqa
+
+
+@pytest.fixture(autouse=True)
+def run_before_and_after_tests():
+    from applications.tests.before_after import before_test_reseed
+
+    before_test_reseed([])
+    yield
 
 
 def get_filenames_grouped_by_extension_from_zip(
@@ -191,7 +198,6 @@ def test_applications_csv_export_new_applications(handler_api_client):
         expected_without_quotes=True,
     )
     assert ApplicationBatch.objects.all().count() == 2
-    reseed(777)
 
 
 def test_applications_csv_export_without_calculation(

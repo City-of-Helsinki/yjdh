@@ -25,6 +25,14 @@ from applications.tests.faker import get_faker
 from applications.tests.test_applications_api import get_handler_detail_url
 
 
+@pytest.fixture(autouse=True)
+def run_before_and_after_tests():
+    from applications.tests.before_after import before_test_reseed
+
+    before_test_reseed([])
+    yield
+
+
 def get_valid_batch_completion_data():
     return {
         "decision_maker_title": get_faker().job(),
