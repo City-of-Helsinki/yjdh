@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.11.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.10.0...benefit-backend-v1.11.0) (2024-04-04)
+
+
+### Features
+
+* Add decision details information box to application page ([aaf7794](https://github.com/City-of-Helsinki/yjdh/commit/aaf7794044057f17d1ed99c39f6301a5f2d6826f))
+* Add localization for ahjo messages ([#2891](https://github.com/City-of-Helsinki/yjdh/issues/2891)) ([943be9d](https://github.com/City-of-Helsinki/yjdh/commit/943be9d2704ac09dfb3e51208a1cc104e67d1428))
+* Configure AHJO request timeout via settings ([#2896](https://github.com/City-of-Helsinki/yjdh/issues/2896)) ([c1382ad](https://github.com/City-of-Helsinki/yjdh/commit/c1382ad67872af6ec127238ebe86b60bed0f38cc))
+* Implement application alteration submission flow ([ebbe9e5](https://github.com/City-of-Helsinki/yjdh/commit/ebbe9e5fd2cb21ec457845e5fe16cdfa617e655a))
+* Include alterations in application admin view ([#2898](https://github.com/City-of-Helsinki/yjdh/issues/2898)) ([bd08f18](https://github.com/City-of-Helsinki/yjdh/commit/bd08f186e79c0b82f82244989dd535ef28da2c97))
+* Secret xml attachment as per the  new design ([#2899](https://github.com/City-of-Helsinki/yjdh/issues/2899)) ([733065b](https://github.com/City-of-Helsinki/yjdh/commit/733065bd5640e2470ee4cc6dd4a92e8c605f1d34))
+
+
+### Bug Fixes
+
+* Change default work time percentage from 100 to 65 ([#2900](https://github.com/City-of-Helsinki/yjdh/issues/2900)) ([78435bd](https://github.com/City-of-Helsinki/yjdh/commit/78435bd4daa642f12c8de4a968d3fc70407e406f))
+* Defer accepted/rejected status until the decision has been accepted in Ahjo ([#2903](https://github.com/City-of-Helsinki/yjdh/issues/2903)) ([09b6340](https://github.com/City-of-Helsinki/yjdh/commit/09b63401a437fbab81c8699be0de001e4a706ac6))
+* Flaky test because of unique username issue, reseed to address ([f6c786c](https://github.com/City-of-Helsinki/yjdh/commit/f6c786c58489cbaefd412293949587285782e8db))
+* Justify th elements to the right ([#2912](https://github.com/City-of-Helsinki/yjdh/issues/2912)) ([3d8acbe](https://github.com/City-of-Helsinki/yjdh/commit/3d8acbeb072072a418f0a21f0c453b477b6f98e5))
+* Missing query parameters for AHJO delete ([#2887](https://github.com/City-of-Helsinki/yjdh/issues/2887)) ([63c95f1](https://github.com/City-of-Helsinki/yjdh/commit/63c95f1e398126f2271e6d94f4fa13d962375976))
+* Secret decision xml formatting ([#2902](https://github.com/City-of-Helsinki/yjdh/issues/2902)) ([3ffd311](https://github.com/City-of-Helsinki/yjdh/commit/3ffd3110fc040c13aa7353f436e1f27612ac14eb))
+* Typo in Type ([#2888](https://github.com/City-of-Helsinki/yjdh/issues/2888)) ([f880842](https://github.com/City-of-Helsinki/yjdh/commit/f880842b726578b7d218fd6cc35d92a96b22ffcc))
+
 ## [1.10.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.9.0...benefit-backend-v1.10.0) (2024-03-15)
 
 
