@@ -12,6 +12,7 @@ export const $DeMinimisSubHeader = styled($SubHeader)`
   margin-top: ${(props) => props.theme.spacing.xs3};
   margin-bottom: ${(props) => props.theme.spacing.s};
   margin-left: ${(props) => props.theme.spacing.xs2};
+  white-space: pre-line;
   font-weight: 400;
   font-size: 1.1em;
 `;
