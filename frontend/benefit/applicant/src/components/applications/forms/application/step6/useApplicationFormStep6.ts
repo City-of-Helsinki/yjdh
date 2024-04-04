@@ -4,6 +4,7 @@ import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicat
 import { useTranslation } from 'benefit/applicant/i18n';
 import {
   APPLICATION_STATUSES,
+  PAY_SUBSIDY_GRANTED,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
 import {
@@ -92,6 +93,10 @@ const useApplicationFormStep6 = (
                 (consent) => consent.id
               ),
           },
+          apprenticeshipProgram:
+            application?.paySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
+              ? null
+              : application?.apprenticeshipProgram,
           status:
             application.status === APPLICATION_STATUSES.DRAFT
               ? APPLICATION_STATUSES.RECEIVED
