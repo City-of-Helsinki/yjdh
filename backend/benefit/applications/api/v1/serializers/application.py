@@ -1316,16 +1316,16 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         return application
 
     def _update_or_create_employee(self, application, employee_data):
-        employee, was_created = Employee.objects.update_or_create(
-            application=application, defaults=employee_data
-        )
-        user = self.get_logged_in_user()
-
-        if was_created:
-            audit_log_operation = Operation.CREATE
-        else:
+        try:
+            employee = Employee.objects.get(application=application)
+            for key, value in employee_data.items():
+                setattr(employee, key, value)
+            employee.save()
             audit_log_operation = Operation.UPDATE
-
+        except Employee.DoesNotExist:
+            employee = Employee.objects.create(application=application, **employee_data)
+            audit_log_operation = Operation.CREATE
+        user = self.get_logged_in_user()
         audit_logging.log(
             user,
             "",
