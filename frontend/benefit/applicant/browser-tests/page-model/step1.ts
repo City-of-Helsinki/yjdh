@@ -169,10 +169,10 @@ class Step1 extends WizardStep {
     phoneNumber: string,
     email: string
   ): Promise<void> {
-    await this.fillInput(this.firstName, firstName);
-    await this.fillInput(this.lastName, lastName);
-    await this.fillInput(this.phoneNumber, phoneNumber);
-    return this.fillInput(this.email, email);
+    await t.typeText(this.firstName, firstName);
+    await t.typeText(this.lastName, lastName);
+    await t.typeText(this.phoneNumber, phoneNumber);
+    return t.typeText(this.email, email);
   }
 
   public async fillDeminimisAid(
@@ -180,19 +180,16 @@ class Step1 extends WizardStep {
     amount?: string,
     grantedAt?: string
   ): Promise<void> {
-    if (granter) await this.fillInput(this.deminimisGranter, granter);
-    if (amount) await this.fillInput(this.deminimisAmount, amount);
-    if (grantedAt) await this.fillInput(this.deminimisGrantedAt, grantedAt);
+    if (granter) await t.typeText(this.deminimisGranter, granter);
+    if (amount) await t.typeText(this.deminimisAmount, amount);
+    if (grantedAt) await t.typeText(this.deminimisGrantedAt, grantedAt);
     return this.clickDeminimisSave();
   }
 
   public async fillCoOperationNegotiationsDescription(
     clarification: string
   ): Promise<void> {
-    await this.fillInput(
-      this.coOperationNegotiationsDescription,
-      clarification
-    );
+    await t.typeText(this.coOperationNegotiationsDescription, clarification);
   }
 
   private deminimisSave = this.component.findByRole('button', {
