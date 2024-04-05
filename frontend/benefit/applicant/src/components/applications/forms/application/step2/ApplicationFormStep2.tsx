@@ -29,7 +29,7 @@ import { useTheme } from 'styled-components';
 
 import { $SubFieldContainer } from '../Application.sc';
 import StepperActions from '../stepperActions/StepperActions';
-import { getTouchedAndInvalidFields } from '../utils';
+import { findIntersectionOfTouchedAndErroredFields } from '../utils';
 import { useApplicationFormStep2 } from './useApplicationFormStep2';
 
 const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
@@ -542,7 +542,10 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
       <StepperActions
         handleSubmit={handleSubmit}
         handleSave={
-          getTouchedAndInvalidFields(formik.touched, formik.errors).length === 0
+          findIntersectionOfTouchedAndErroredFields(
+            formik.touched,
+            formik.errors
+          ).length === 0
             ? handleSave
             : undefined
         }
