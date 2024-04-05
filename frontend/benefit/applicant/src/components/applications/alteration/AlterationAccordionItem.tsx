@@ -13,6 +13,7 @@ import {
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import { formatFloatToCurrency } from 'shared/utils/string.utils';
 
 type Props = {
   alteration: ApplicationAlteration;
@@ -61,7 +62,7 @@ const AlterationAccordionItem = ({
                   'common:applications.decision.alterationList.item.recoveryAmount'
                 )}
               </dt>
-              <dd>{alteration.recoveryAmount}</dd>
+              <dd>{formatFloatToCurrency(alteration.recoveryAmount)}</dd>
             </$GridCell>
             <$GridCell $colSpan={6}>
               <dt>
@@ -70,7 +71,8 @@ const AlterationAccordionItem = ({
                 )}
               </dt>
               <dd>
-                {alteration.recoveryStartDate}–{alteration.recoveryEndDate}
+                {convertToUIDateFormat(alteration.recoveryStartDate)}–
+                {convertToUIDateFormat(alteration.recoveryEndDate)}
               </dd>
             </$GridCell>
           </>
