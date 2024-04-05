@@ -1,3 +1,5 @@
+import { t } from 'testcafe';
+
 import WizardStep from './WizardStep';
 
 class Step2 extends WizardStep {
@@ -31,46 +33,26 @@ class Step2 extends WizardStep {
     ),
   });
 
-  private paidSubsidyDefault = this.within(
-    this.component.getByRole('group', {
-      name: this.regexp(
-        this.translations.applications.sections.employee.fields
-          .paySubsidyGranted.label
-      ),
-    })
-  ).findByRole('radio', {
-    name: this.translations.applications.sections.employee.fields
-      .paySubsidyGranted.paySubsidyDefault,
-  });
+  private paidSubsidyDefault = this.findRadioLabelWithGroupText(
+    this.translations.applications.sections.employee.fields.paySubsidyGranted
+      .label,
+    this.translations.applications.sections.employee.fields.paySubsidyGranted
+      .paySubsidyDefault
+  );
 
-  private apprenticeshipProgramFalse = this.within(
-    this.component.getByRole('group', {
-      name: this.regexp(
-        this.translations.applications.sections.employee.fields
-          .apprenticeshipProgram.label
-      ),
-    })
-  ).findByRole('radio', {
-    name: this.translations.applications.sections.employee.fields
-      .apprenticeshipProgram.no,
-  });
+  private apprenticeshipProgramFalse = this.findRadioLabelWithGroupText(
+    this.translations.applications.sections.employee.fields
+      .apprenticeshipProgram.label,
+    this.translations.applications.sections.employee.fields
+      .apprenticeshipProgram.no
+  );
 
-  private apprenticeshipProgramTrue = this.within(
-    this.component.getByRole('group', {
-      name: this.regexp(
-        this.translations.applications.sections.employee.fields
-          .apprenticeshipProgram.label
-      ),
-    })
-  ).findByRole('radio', {
-    name: this.translations.applications.sections.employee.fields
-      .apprenticeshipProgram.yes,
-  });
-
-  private benefitTypeEmployment = this.component.findByRole('radio', {
-    name: this.translations.applications.sections.employee.fields.benefitType
-      .employment,
-  });
+  private apprenticeshipProgramTrue = this.findRadioLabelWithGroupText(
+    this.translations.applications.sections.employee.fields
+      .apprenticeshipProgram.label,
+    this.translations.applications.sections.employee.fields
+      .apprenticeshipProgram.yes
+  );
 
   private startDate = this.component.findByRole('textbox', {
     name: this.regexp(
@@ -128,9 +110,9 @@ class Step2 extends WizardStep {
     lastName: string,
     ssn: string
   ): Promise<void> {
-    await this.fillInput(this.firstName, firstName);
-    await this.fillInput(this.lastName, lastName);
-    await this.fillInput(this.ssn, ssn);
+    await t.typeText(this.firstName, firstName);
+    await t.typeText(this.lastName, lastName);
+    await t.typeText(this.ssn, ssn);
     await this.clickSelectRadioButton(this.isLivingInHelsinkiCheckbox);
   }
 
@@ -149,9 +131,9 @@ class Step2 extends WizardStep {
     startDate: string,
     endDate: string
   ): Promise<void> {
-    await this.fillInput(this.endDate, endDate);
+    await t.typeText(this.endDate, endDate);
 
-    await this.fillInput(this.startDate, startDate);
+    await t.typeText(this.startDate, startDate);
   }
 
   public async fillEmploymentInfo(
@@ -162,15 +144,15 @@ class Step2 extends WizardStep {
     otherExpenses: string,
     vacationMoney: string
   ): Promise<void> {
-    await this.fillInput(this.jobTitle, jobTitle);
-    await this.fillInput(this.workingHours, workingHours);
-    await this.fillInput(
+    await t.typeText(this.jobTitle, jobTitle);
+    await t.typeText(this.workingHours, workingHours);
+    await t.typeText(
       this.collectiveBargainingAgreement,
       collectiveBargainingAgreement
     );
-    await this.fillInput(this.monthlyPay, String(monthlyPay));
-    await this.fillInput(this.vacationMoney, String(vacationMoney));
-    await this.fillInput(this.otherExpenses, otherExpenses);
+    await t.typeText(this.monthlyPay, String(monthlyPay));
+    await t.typeText(this.vacationMoney, String(vacationMoney));
+    await t.typeText(this.otherExpenses, otherExpenses);
   }
 }
 
