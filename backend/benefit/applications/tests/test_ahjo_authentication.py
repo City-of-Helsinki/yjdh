@@ -1,11 +1,17 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import pytest
 import requests_mock
 from django.core.exceptions import ImproperlyConfigured
 
 from applications.models import AhjoSetting
-from applications.services.ahjo_authentication import AhjoConnector, AhjoToken
+from applications.services.ahjo_authentication import (
+    AhjoConnector,
+    AhjoToken,
+    AhjoTokenExpiredException,
+)
+
+TOKEN_EXPIRY_SECONDS = 30000
 
 
 @pytest.fixture
@@ -18,8 +24,50 @@ def token_response():
     return {
         "access_token": "access_token",
         "refresh_token": "refresh_token",
-        "expires_in": "3600",
+        "expires_in": TOKEN_EXPIRY_SECONDS,
     }
+
+
+@pytest.fixture
+def expired_token():
+    return AhjoToken(
+        access_token="access_token",
+        refresh_token="refresh_token",
+        expires_in=TOKEN_EXPIRY_SECONDS,
+        created_at=datetime.now(timezone.utc) - timedelta(hours=22),
+    )
+
+
+@pytest.fixture
+def non_expired_token():
+    return AhjoToken(
+        access_token="access_token",
+        refresh_token="refresh_token",
+        expires_in=TOKEN_EXPIRY_SECONDS,
+        created_at=datetime.now(timezone.utc),
+    )
+
+
+@pytest.fixture
+def ahjo_setting():
+    return AhjoSetting.objects.create(
+        name="ahjo_access_token",
+        data={
+            "access_token": "access_token",
+            "refresh_token": "refresh_token",
+            "expires_in": TOKEN_EXPIRY_SECONDS,
+        },
+    )
+
+
+@pytest.fixture
+def ahjo_code():
+    return AhjoSetting.objects.create(
+        name="ahjo_code",
+        data={
+            "code": "auth_code",
+        },
+    )
 
 
 def test_is_configured(ahjo_connector):
@@ -34,7 +82,7 @@ def test_is_configured(ahjo_connector):
     assert ahjo_connector.is_configured() is False
 
 
-def test_get_new_token(ahjo_connector, token_response):
+def test_get_new_token(ahjo_connector, ahjo_code, token_response):
     # Test with valid auth code
     with requests_mock.Mocker() as m:
         m.post(
@@ -42,26 +90,22 @@ def test_get_new_token(ahjo_connector, token_response):
             json=token_response,
         )
 
-        token = ahjo_connector.get_new_token("authcode123")
-        assert isinstance(token.expires_in, datetime)
+        token = ahjo_connector.get_initial_token()
+        assert isinstance(token, AhjoToken)
+        assert isinstance(token.expires_in, int)
         assert token.access_token == "access_token"
         assert token.refresh_token == "refresh_token"
 
     # Test with missing auth code
+    AhjoSetting.objects.all().delete()
+
     with pytest.raises(ImproperlyConfigured):
-        ahjo_connector.get_new_token("")
+        ahjo_connector.get_initial_token()
 
 
-def test_refresh_token(ahjo_connector, token_response):
+def test_refresh_token(ahjo_connector, ahjo_setting, token_response):
     # Test with valid refresh token
-    AhjoSetting.objects.create(
-        name="ahjo_access_token",
-        data={
-            "access_token": "access_token",
-            "refresh_token": "refresh_token",
-            "expires_in": datetime.now().isoformat(),
-        },
-    )
+
     with requests_mock.Mocker() as m:
         m.post(
             "https://johdontyopoytahyte.hel.fi/ids4/connect/token",
@@ -69,13 +113,28 @@ def test_refresh_token(ahjo_connector, token_response):
         )
 
         token = ahjo_connector.refresh_token()
+        assert isinstance(token, AhjoToken)
         assert token.access_token == "access_token"
         assert token.refresh_token == "refresh_token"
-        assert isinstance(token.expires_in, datetime)
+        assert isinstance(token.expires_in, int)
 
     # Test with missing refresh token
     AhjoSetting.objects.all().delete()
-    with pytest.raises(Exception):
+    with pytest.raises(ImproperlyConfigured):
+        ahjo_connector.refresh_token()
+
+
+def test_refresh_expired_token(ahjo_connector, ahjo_setting, token_response):
+    # Test with valid refresh token
+    ahjo_setting.created_at = datetime.now(timezone.utc) - timedelta(hours=22)
+    ahjo_setting.save()
+    with requests_mock.Mocker() as m:
+        m.post(
+            "https://johdontyopoytahyte.hel.fi/ids4/connect/token",
+            json=token_response,
+        )
+
+    with pytest.raises(AhjoTokenExpiredException):
         ahjo_connector.refresh_token()
 
 
@@ -88,9 +147,10 @@ def test_do_token_request(ahjo_connector: AhjoConnector, token_response):
         )
 
         token = ahjo_connector.do_token_request({})
+        assert isinstance(token, AhjoToken)
         assert token.access_token == "access_token"
         assert token.refresh_token == "refresh_token"
-        assert isinstance(token.expires_in, datetime)
+        assert isinstance(token.expires_in, int)
 
         # Test with failed request
         m.post("https://johdontyopoytahyte.hel.fi/ids4/connect/token", status_code=400)
@@ -98,75 +158,43 @@ def test_do_token_request(ahjo_connector: AhjoConnector, token_response):
             ahjo_connector.do_token_request({})
 
 
-def test_get_token_from_db(ahjo_connector: AhjoConnector):
-    # Test with token in database
-    AhjoSetting.objects.create(
-        name="ahjo_access_token",
-        data={
-            "access_token": "access_token",
-            "refresh_token": "refresh_token",
-            "expires_in": datetime.now().isoformat(),
-        },
-    )
+def test_get_token_from_db(ahjo_connector: AhjoConnector, ahjo_setting):
     token = ahjo_connector.get_token_from_db()
+    assert isinstance(token, AhjoToken)
     assert token.access_token == "access_token"
     assert token.refresh_token == "refresh_token"
-    assert isinstance(token.expires_in, datetime)
+    assert isinstance(token.expires_in, int)
+    assert isinstance(token.created_at, datetime)
     assert isinstance(token, AhjoToken)
 
     # Test with no token in database
     AhjoSetting.objects.all().delete()
-    token = ahjo_connector.get_token_from_db()
-    assert token is None
+    with pytest.raises(ImproperlyConfigured):
+        token = ahjo_connector.get_token_from_db()
 
 
-def test_check_if_token_is_expired(ahjo_connector: AhjoConnector):
+def test_check_if_token_is_expired(expired_token, non_expired_token):
     # Test with expired token
-    expires_in = datetime.now() - timedelta(hours=1)
-    assert ahjo_connector._check_if_token_is_expired(expires_in) is True
+    assert expired_token.has_expired() is True
 
     # Test with valid token
-    expires_in = datetime.now() + timedelta(hours=1)
-    assert ahjo_connector._check_if_token_is_expired(expires_in) is False
+    assert non_expired_token.has_expired() is False
 
 
-def test_set_or_update_token(ahjo_connector: AhjoConnector):
+def test_create_token(ahjo_connector: AhjoConnector, non_expired_token):
     # Test with new token
-    token = AhjoToken(
+    token_to_create = AhjoToken(
         access_token="access_token",
         refresh_token="refresh_token",
-        expires_in=datetime.now() + timedelta(hours=1),
+        expires_in=TOKEN_EXPIRY_SECONDS,
     )
-    ahjo_connector.set_or_update_token(token)
+    created_token = ahjo_connector.create_token(token_to_create)
+    assert isinstance(created_token, AhjoToken)
+
     assert AhjoSetting.objects.filter(name="ahjo_access_token").exists() is True
-    assert AhjoSetting.objects.get(name="ahjo_access_token").data == {
-        "access_token": "access_token",
-        "refresh_token": "refresh_token",
-        "expires_in": token.expires_in.isoformat(),
-    }
+    token_from_db = AhjoSetting.objects.get(name="ahjo_access_token")
 
-    # Test with existing token
-    token = AhjoToken(
-        access_token="new_access_token",
-        refresh_token="new_refresh_token",
-        expires_in=datetime.now() + timedelta(hours=1),
-    )
-    ahjo_connector.set_or_update_token(token)
-    assert AhjoSetting.objects.filter(name="ahjo_access_token").count() == 1
-    assert AhjoSetting.objects.get(name="ahjo_access_token").data == {
-        "access_token": "new_access_token",
-        "refresh_token": "new_refresh_token",
-        "expires_in": token.expires_in.isoformat(),
-    }
-
-
-def test_convert_expires_in_to_datetime(ahjo_connector):
-    # Test with valid input
-    expires_in = "3600"
-    expiry_datetime = ahjo_connector.convert_expires_in_to_datetime(expires_in)
-    assert isinstance(expiry_datetime, datetime)
-    assert expiry_datetime > datetime.now()
-
-    # Test with invalid input
-    with pytest.raises(ValueError):
-        ahjo_connector.convert_expires_in_to_datetime("invalid_input")
+    assert created_token.access_token == token_to_create.access_token
+    assert created_token.refresh_token == token_to_create.refresh_token
+    assert created_token.expires_in == token_to_create.expires_in
+    assert created_token.created_at == token_from_db.created_at

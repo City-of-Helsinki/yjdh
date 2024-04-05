@@ -23,13 +23,7 @@ from applications.enums import (
     ApplicationStatus,
     AttachmentType,
 )
-from applications.models import (
-    AhjoDecisionText,
-    AhjoSetting,
-    AhjoStatus,
-    Application,
-    Attachment,
-)
+from applications.models import AhjoDecisionText, AhjoStatus, Application, Attachment
 from applications.services.ahjo_authentication import AhjoConnector, AhjoToken
 from applications.services.ahjo_payload import (
     prepare_decision_proposal_payload,
@@ -430,17 +424,11 @@ def generate_application_attachment(
 
 def get_token() -> Union[AhjoToken, None]:
     """Get the access token from Ahjo Service."""
-    try:
-        ahjo_auth_code = AhjoSetting.objects.get(name="ahjo_code").data
-    except AhjoSetting.DoesNotExist:
-        raise ImproperlyConfigured(
-            "Error: Ahjo auth code not found in database. Please set the 'ahjo_code' setting."
-        )
     connector = AhjoConnector()
 
     if not connector.is_configured():
         raise ImproperlyConfigured("AHJO connector is not configured")
-    return connector.get_access_token(ahjo_auth_code["code"])
+    return connector.get_token_from_db()
 
 
 def prepare_headers(
