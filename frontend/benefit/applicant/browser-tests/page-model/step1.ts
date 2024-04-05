@@ -1,4 +1,4 @@
-import { t } from 'testcafe';
+import { Selector, t } from 'testcafe';
 
 import WizardStep from './WizardStep';
 
@@ -63,53 +63,29 @@ class Step1 extends WizardStep {
     ),
   });
 
-  private businessActivitiesFalse = this.within(
-    this.component.getByRole('group', {
-      name: this.regexp(
-        this.translations.applications.sections.company.fields
-          .associationHasBusinessActivities.label
-      ),
-    })
-  ).findByRole('radio', {
-    name: this.translations.applications.sections.company.fields
-      .associationHasBusinessActivities.no,
-  });
+  private businessActivitiesFalse = this.findRadioLabelWithGroupText(
+    this.translations.applications.sections.company.fields
+      .associationHasBusinessActivities.label,
+    this.translations.applications.sections.company.fields
+      .associationHasBusinessActivities.no
+  );
 
-  private businessActivitiesTrue = this.within(
-    this.component.getByRole('group', {
-      name: this.regexp(
-        this.translations.applications.sections.company.fields
-          .associationHasBusinessActivities.label
-      ),
-    })
-  ).findByRole('radio', {
-    name: this.translations.applications.sections.company.fields
-      .associationHasBusinessActivities.yes,
-  });
+  private businessActivitiesTrue = this.findRadioLabelWithGroupText(
+    this.translations.applications.sections.company.fields
+      .associationHasBusinessActivities.label,
+    this.translations.applications.sections.company.fields
+      .associationHasBusinessActivities.yes
+  );
 
-  private deMinimisAidFalse = this.within(
-    this.component.getByRole('group', {
-      name: this.regexp(
-        this.translations.applications.sections.company.fields.deMinimisAid
-          .label
-      ),
-    })
-  ).findByRole('radio', {
-    name: this.translations.applications.sections.company.fields.deMinimisAid
-      .no,
-  });
+  private deMinimisAidFalse = this.findRadioLabelWithGroupText(
+    this.translations.applications.sections.company.fields.deMinimisAid.label,
+    this.translations.applications.sections.company.fields.deMinimisAid.no
+  );
 
-  private deMinimisAidTrue = this.within(
-    this.component.getByRole('group', {
-      name: this.regexp(
-        this.translations.applications.sections.company.fields.deMinimisAid
-          .label
-      ),
-    })
-  ).findByRole('radio', {
-    name: this.translations.applications.sections.company.fields.deMinimisAid
-      .yes,
-  });
+  private deMinimisAidTrue = this.findRadioLabelWithGroupText(
+    this.translations.applications.sections.company.fields.deMinimisAid.label,
+    this.translations.applications.sections.company.fields.deMinimisAid.yes
+  );
 
   hasImmediateManagerCheckbox = this.component.findByRole('checkbox', {
     name: this.regexp(
@@ -118,29 +94,19 @@ class Step1 extends WizardStep {
     ),
   });
 
-  private coOperationNegotiationsFalse = this.within(
-    this.component.getByRole('group', {
-      name: this.regexp(
-        this.translations.applications.sections.company.fields
-          .coOperationNegotiations.label
-      ),
-    })
-  ).findByRole('radio', {
-    name: this.translations.applications.sections.company.fields
-      .coOperationNegotiations.no,
-  });
+  private coOperationNegotiationsFalse = this.findRadioLabelWithGroupText(
+    this.translations.applications.sections.company.fields
+      .coOperationNegotiations.label,
+    this.translations.applications.sections.company.fields
+      .coOperationNegotiations.no
+  );
 
-  private coOperationNegotiationsTrue = this.within(
-    this.component.getByRole('group', {
-      name: this.regexp(
-        this.translations.applications.sections.company.fields
-          .coOperationNegotiations.label
-      ),
-    })
-  ).findByRole('radio', {
-    name: this.translations.applications.sections.company.fields
-      .coOperationNegotiations.yes,
-  });
+  private coOperationNegotiationsTrue = this.findRadioLabelWithGroupText(
+    this.translations.applications.sections.company.fields
+      .coOperationNegotiations.label,
+    this.translations.applications.sections.company.fields
+      .coOperationNegotiations.yes
+  );
 
   private coOperationNegotiationsDescription = this.component.findByRole(
     'textbox',

@@ -4,6 +4,7 @@ import {
   containsRegexp,
   replaceValues,
 } from '@frontend/shared/src/__tests__/utils/translation-utils';
+import { Selector } from 'testcafe';
 
 import en from '../../public/locales/en/common.json';
 import fi from '../../public/locales/fi/common.json';
@@ -25,5 +26,12 @@ abstract class ApplicantPageComponent extends TranslatedComponent<ApplicantTrans
       options
     );
   }
+
+  // eslint-disable-next-line class-methods-use-this
+  protected findRadioLabelWithGroupText = (
+    groupText: string,
+    labelText: string
+  ): Selector =>
+    Selector('fieldset').withText(groupText).find('label').withText(labelText);
 }
 export default ApplicantPageComponent;

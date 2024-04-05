@@ -33,46 +33,26 @@ class Step2 extends WizardStep {
     ),
   });
 
-  private paidSubsidyDefault = this.within(
-    this.component.getByRole('group', {
-      name: this.regexp(
-        this.translations.applications.sections.employee.fields
-          .paySubsidyGranted.label
-      ),
-    })
-  ).findByRole('radio', {
-    name: this.translations.applications.sections.employee.fields
-      .paySubsidyGranted.paySubsidyDefault,
-  });
+  private paidSubsidyDefault = this.findRadioLabelWithGroupText(
+    this.translations.applications.sections.employee.fields.paySubsidyGranted
+      .label,
+    this.translations.applications.sections.employee.fields.paySubsidyGranted
+      .paySubsidyDefault
+  );
 
-  private apprenticeshipProgramFalse = this.within(
-    this.component.getByRole('group', {
-      name: this.regexp(
-        this.translations.applications.sections.employee.fields
-          .apprenticeshipProgram.label
-      ),
-    })
-  ).findByRole('radio', {
-    name: this.translations.applications.sections.employee.fields
-      .apprenticeshipProgram.no,
-  });
+  private apprenticeshipProgramFalse = this.findRadioLabelWithGroupText(
+    this.translations.applications.sections.employee.fields
+      .apprenticeshipProgram.label,
+    this.translations.applications.sections.employee.fields
+      .apprenticeshipProgram.no
+  );
 
-  private apprenticeshipProgramTrue = this.within(
-    this.component.getByRole('group', {
-      name: this.regexp(
-        this.translations.applications.sections.employee.fields
-          .apprenticeshipProgram.label
-      ),
-    })
-  ).findByRole('radio', {
-    name: this.translations.applications.sections.employee.fields
-      .apprenticeshipProgram.yes,
-  });
-
-  private benefitTypeEmployment = this.component.findByRole('radio', {
-    name: this.translations.applications.sections.employee.fields.benefitType
-      .employment,
-  });
+  private apprenticeshipProgramTrue = this.findRadioLabelWithGroupText(
+    this.translations.applications.sections.employee.fields
+      .apprenticeshipProgram.label,
+    this.translations.applications.sections.employee.fields
+      .apprenticeshipProgram.yes
+  );
 
   private startDate = this.component.findByRole('textbox', {
     name: this.regexp(
