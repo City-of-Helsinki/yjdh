@@ -283,6 +283,7 @@ def test_applications_simple_list_filter(
 def test_applications_filter_archived_for_applicant(
     api_client, mock_get_organisation_roles_and_create_company
 ):
+    reseed(12345)
     recent_batch = ApplicationBatchFactory(
         decision_date=date.today() - relativedelta(days=2),
         status=ApplicationBatchStatus.COMPLETED,
@@ -1627,7 +1628,8 @@ def test_application_pay_subsidy(
         assert BenefitType.SALARY_BENEFIT in response.data["available_benefit_types"]
 
 
-def test_attachment_upload_too_big(api_client, application):
+def test_attachment_upload_too_big(api_client, application, settings):
+    settings.ENABLE_CLAMAV = False
     application.status = ApplicationStatus.DRAFT
     application.save()
     image = Image.new("RGB", (100, 100))
@@ -1653,7 +1655,8 @@ def test_attachment_upload_too_big(api_client, application):
     assert len(application.attachments.all()) == 0
 
 
-def test_attachment_upload_and_delete(api_client, application):
+def test_attachment_upload_and_delete(api_client, application, settings):
+    settings.ENABLE_CLAMAV = False
     image = Image.new("RGB", (100, 100))
     tmp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
     image.save(tmp_file)
@@ -1809,8 +1812,9 @@ def test_attachment_delete(request, api_client, application, status, expected_co
     ],
 )
 def test_pdf_attachment_upload_and_download_as_applicant(
-    request, api_client, application, status, upload_result
+    request, api_client, application, status, upload_result, settings
 ):
+    settings.ENABLE_CLAMAV = False
     application.status = status
     application.save()
     response = _upload_pdf(request, api_client, application)
@@ -1844,8 +1848,9 @@ def test_pdf_attachment_upload_and_download_as_applicant(
     ],
 )
 def test_pdf_attachment_upload_and_download_as_handler(
-    request, handler_api_client, application, status, upload_result
+    request, handler_api_client, application, status, upload_result, settings
 ):
+    settings.ENABLE_CLAMAV = False
     application.status = status
     application.save()
     response = _upload_pdf(
@@ -1915,7 +1920,8 @@ def test_attachment_upload_invalid_status(request, api_client, application, stat
 
 
 @pytest.mark.parametrize("extension", ["pdf", "png", "jpg"])
-def test_invalid_attachment_upload(api_client, application, extension):
+def test_invalid_attachment_upload(api_client, application, extension, settings):
+    settings.ENABLE_CLAMAV = False
     tmp_file = tempfile.NamedTemporaryFile(suffix=f".{extension}")
     tmp_file.write(b"invalid data " * 100)
     tmp_file.seek(0)
@@ -1935,7 +1941,8 @@ def test_invalid_attachment_upload(api_client, application, extension):
     assert len(application.attachments.all()) == 0
 
 
-def test_too_many_attachments(request, api_client, application):
+def test_too_many_attachments(request, api_client, application, settings):
+    settings.ENABLE_CLAMAV = False
     for _ in range(AttachmentSerializer.MAX_ATTACHMENTS_PER_APPLICATION):
         response = _upload_pdf(request, api_client, application)
         assert response.status_code == 201
@@ -1978,7 +1985,8 @@ def _submit_application(api_client, application):
         )
 
 
-def test_attachment_validation(request, api_client, application):
+def test_attachment_validation(request, api_client, application, settings):
+    settings.ENABLE_CLAMAV = False
     application.benefit_type = BenefitType.EMPLOYMENT_BENEFIT
     application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
     application.pay_subsidy_percent = 50
@@ -2019,7 +2027,8 @@ def test_attachment_validation(request, api_client, application):
     assert application.status == ApplicationStatus.RECEIVED
 
 
-def test_purge_extra_attachments(request, api_client, application):
+def test_purge_extra_attachments(request, api_client, application, settings):
+    settings.ENABLE_CLAMAV = False
     application.benefit_type = BenefitType.SALARY_BENEFIT
     application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
     application.pay_subsidy_percent = 50
@@ -2049,7 +2058,8 @@ def test_purge_extra_attachments(request, api_client, application):
     assert application.attachments.count() == 6
 
 
-def test_employee_consent_upload(request, api_client, application):
+def test_employee_consent_upload(request, api_client, application, settings):
+    settings.ENABLE_CLAMAV = False
     application.benefit_type = BenefitType.EMPLOYMENT_BENEFIT
     application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
     application.pay_subsidy_percent = 50

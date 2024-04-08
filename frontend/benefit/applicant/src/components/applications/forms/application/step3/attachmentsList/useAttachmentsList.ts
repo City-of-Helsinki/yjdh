@@ -1,6 +1,7 @@
 import useRemoveAttachmentQuery from 'benefit/applicant/hooks/useRemoveAttachmentQuery';
 import useUploadAttachmentQuery from 'benefit/applicant/hooks/useUploadAttachmentQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
+import { ErrorResponse } from 'benefit/applicant/types/common';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React from 'react';
@@ -37,16 +38,28 @@ const useAttachmentsList = (): ExtendedComponentProps => {
     mutate: uploadAttachment,
     isLoading: isUploading,
     isError: isUploadingError,
+    error: uploadError
   } = useUploadAttachmentQuery();
 
+  const [error, setError] = React.useState<ErrorResponse | null>( uploadError);
+  
   React.useEffect(() => {
-    if (isRemovingError || isUploadingError) {
+    if (isUploadingError) {
+      setError(uploadError);
+    }
+  }, [isUploadingError, uploadError]);
+
+  React.useEffect(() => {
+    if (error?.response?.status === 400) {
+      showErrorToast(t(`common:malware.errorTitle`), error?.response?.data?.non_field_errors[0]);
+    }
+    else if (isRemovingError) {
       showErrorToast(
-        t(`common:remove.errorTitle`),
-        t(`common:remove.errorMessage`)
+        t(`common:delete.errorTitle`),
+        t(`common:delete.errorMessage`)
       );
     }
-  }, [isRemovingError, isUploadingError, t]);
+  }, [isRemovingError, error, t]);
 
   const handleOpenFile = React.useCallback(
     (file: BenefitAttachment) =>

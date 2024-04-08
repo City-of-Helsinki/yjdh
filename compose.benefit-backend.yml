@@ -34,11 +34,49 @@ services:
     depends_on:
       - postgres
     container_name: benefit-backend
+  
+  applicant:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-localdevelopment
+      target: development
+      args:
+        PORT: 3000
+        PROJECT: benefit
+        FOLDER: applicant
+    platform: linux/amd64
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env.benefit-applicant
+    container_name: benefit-applicant
+  
+  handler:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-localdevelopment
+      target: development
+      args:
+        PORT: 3100
+        PROJECT: benefit
+        FOLDER: handler
+    platform: linux/amd64
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env.benefit-handler
+    container_name: benefit-handler
 
   local-proxy:
     depends_on:
       - postgres
       - backend
+      - applicant
+      - handler
     build:
       context: ./localdevelopment/benefit/nginx
     container_name: benefit-local-proxy
@@ -46,6 +84,8 @@ services:
       - ./localdevelopment/benefit/nginx/:/etc/nginx/
     ports:
       - 127.0.0.1:8000:8000
+      - 127.0.0.1:3000:3000
+      - 127.0.0.1:3100:3100
 
   mailhog:
     image: "mailhog/mailhog@sha256:8d76a3d4ffa32a3661311944007a415332c4bb855657f4f6c57996405c009bea"
@@ -55,9 +95,45 @@ services:
     container_name: benefit-mailhog
     networks:
       - default
+  
+  clamav:
+    image: clamav/clamav:latest
+    container_name: benefit-clamav
+    environment:
+      CLAMAV_NO_LOGFILE: "true"
+    volumes:
+      - clamav_data:/var/lib/clamav
+      - clamav_logs:/var/log/clamav
+    ports:
+      - "3310:3310"
+    networks:
+      - default
+
+  clamav-rest-api:
+    image: benzino77/clamav-rest-api
+    container_name: benefit-clamav-rest-api
+    environment:
+      NODE_ENV: production
+      APP_PORT: 8080
+      APP_FORM_KEY: attachment_file
+      CLAMD_IP: clamav
+      APP_MAX_FILE_SIZE: 26214400
+    ports:
+      - "8080:8080"
+    depends_on:
+      - clamav
+    command: ["/usr/wait-for-it.sh", "clamav:3310", "--timeout=30", "--", "node", "src/app.js"]
+    volumes:
+      - ./backend/docker/arm/tools/wait-for-it.sh:/usr/wait-for-it.sh
+    networks:
+      - default
 
 volumes:
   pgdata:
+    driver: local
+  clamav_data:
+    driver: local
+  clamav_logs:
     driver: local
 
 networks:

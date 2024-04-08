@@ -1,5 +1,6 @@
 import useRemoveAttachmentQuery from 'benefit/handler/hooks/useRemoveAttachmentQuery';
 import useUploadAttachmentQuery from 'benefit/handler/hooks/useUploadAttachmentQuery';
+import { ErrorResponse } from 'benefit/handler/types/common';
 import { ApplicationData } from 'benefit-shared/types/application';
 import { useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
@@ -40,16 +41,28 @@ const useAttachmentsList = (
     mutate: uploadAttachment,
     isLoading: isUploading,
     isError: isUploadingError,
+    error: uploadError
   } = useUploadAttachmentQuery();
 
+  const [error, setError] = React.useState<ErrorResponse | null>( uploadError);
+
   React.useEffect(() => {
-    if (isRemovingError || isUploadingError) {
+    if (isUploadingError) {
+      setError(uploadError);
+    }
+  }, [isUploadingError, uploadError]);
+
+  React.useEffect(() => {
+    if (error?.response?.status === 400) {
+      showErrorToast(t(`common:error.malware.errorTitle`), error?.response?.data?.non_field_errors[0]);
+    }
+    else if (isRemovingError) {
       showErrorToast(
         t(`common:error.attachments.title`),
         t(`common:error.attachments.generic`)
       );
     }
-  }, [isRemovingError, isUploadingError, t]);
+  }, [isRemovingError, error, t]);
 
   const handleOpenFile = React.useCallback(
     (file: BenefitAttachment) =>

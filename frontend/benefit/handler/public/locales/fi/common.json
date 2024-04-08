@@ -122,7 +122,10 @@
       "title": "Tapahtui virhe",
       "tooBig": "Liite on liian suuri.",
       "fileType": "Liite on väärässä muodossa.",
-      "generic": "Liitteen käsittely epäonnistui."
+      "generic": "Liitteen käsittely epäonnistui.",
+      "malware": {
+        "errorTitle": "Liitteessä havaittu haittaohjelma"
+      }
     },
     "notFound": {
       "title": "Pahoittelut, sivua ei löytynyt.",

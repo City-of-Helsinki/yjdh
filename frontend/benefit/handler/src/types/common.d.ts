@@ -17,7 +17,13 @@ export type DynamicFormStepComponentProps = {
 export type ReviewChildProps = DynamicFormStepComponentProps & {
   translationsBase: string;
 };
-
 interface ErrorResponse {
-  response: unknown;
+  response: {
+    status: number;
+    data: UploadErrorData;
+  };
+}
+interface UploadErrorData {
+  non_field_errors?: string[];
+  [key: string]: string[] | undefined;
 }

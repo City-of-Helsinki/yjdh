@@ -1422,6 +1422,9 @@ msgstr "Sökande"
 msgid "Calculation of the benefit"
 msgstr "Beviljade stödperioder"
 
+msgid "File is infected with"
+msgstr "Filen är infekterad med följande malware"
+
 #~ msgid "applicant"
 #~ msgstr "sökande"
 

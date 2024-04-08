@@ -170,6 +170,8 @@ env = environ.Env(
     AHJO_TEST_USER_LAST_NAME=(str, ""),
     AHJO_TEST_USER_AD_USERNAME=(str, ""),
     AHJO_REQUEST_TIMEOUT=(int, 60),
+    ENABLE_CLAMAV=(bool, False),
+    CLAMAV_URL=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -530,3 +532,6 @@ AHJO_TEST_USER_FIRST_NAME = env("AHJO_TEST_USER_FIRST_NAME")
 AHJO_TEST_USER_LAST_NAME = env("AHJO_TEST_USER_LAST_NAME")
 AHJO_TEST_USER_AD_USERNAME = env("AHJO_TEST_USER_AD_USERNAME")
 AHJO_REQUEST_TIMEOUT = env("AHJO_REQUEST_TIMEOUT")
+
+ENABLE_CLAMAV = env.bool("ENABLE_CLAMAV")
+CLAMAV_URL = env.str("CLAMAV_URL")

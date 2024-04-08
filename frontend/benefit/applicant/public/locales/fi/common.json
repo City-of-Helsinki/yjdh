@@ -687,6 +687,9 @@
     "errorTitle": "Liitteen poistaminen epäonnistui",
     "errorMessage": "Jotakin meni vikaan. Ole hyvä ja kokeile uudelleen myöhemmin."
   },
+  "malware": {
+    "errorTitle": "Liitteessä havaittu haittaohjelma"
+  },
   "pdfViewer": {
     "previous": "Edellinen sivu",
     "next": "Seuraava sivu",

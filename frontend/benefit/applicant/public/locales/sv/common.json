@@ -687,6 +687,9 @@
     "errorTitle": "Det gick inte att ta bort bilagan",
     "errorMessage": "Något gick fel. Vänligen försök igen senare."
   },
+  "malware": {
+    "errorTitle": "Malware upptäckt i den uppladdade filen."
+  },
   "pdfViewer": {
     "previous": "Föregående sida",
     "next": "Nästa sida",

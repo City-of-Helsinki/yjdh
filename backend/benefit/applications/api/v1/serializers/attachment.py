@@ -1,3 +1,5 @@
+import logging
+
 import filetype
 from django.conf import settings
 from django.forms import ImageField, ValidationError as DjangoFormsValidationError
@@ -9,8 +11,16 @@ from rest_framework.reverse import reverse
 
 from applications.enums import ApplicationStatus
 from applications.models import Attachment
+from applications.services.clamav import (
+    clamav_client,
+    ClamAvServiceUnavailableException,
+    FileInfectedException,
+    FileScanException,
+)
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
 from users.utils import get_request_user_from_context
+
+log = logging.getLogger(__name__)
 
 
 class AttachmentField(FileField):
@@ -84,6 +94,8 @@ class AttachmentSerializer(serializers.ModelSerializer):
                     size=MAX_UPLOAD_SIZE,
                 )
             )
+        if settings.ENABLE_CLAMAV:
+            self._scan_with_clamav(data["attachment_file"])
 
         if (
             len(data["application"].attachments.all())
@@ -116,3 +128,15 @@ class AttachmentSerializer(serializers.ModelSerializer):
             mime_type = file_type_guess.mime
         uploaded_file.seek(file_pos)  # restore position
         return mime_type == "application/pdf"
+
+    def _scan_with_clamav(self, file):
+        try:
+            clamav_client.scan(file.name, file.file)
+        except FileScanException as fse:
+            log.error(f"File '{fse.file_name}' scanning failed")
+            raise ClamAvServiceUnavailableException()
+        except FileInfectedException as fie:
+            log.error(f"File '{fie.file_name}' infected, viruses: {fie.viruses}")
+            raise serializers.ValidationError(
+                f'{_("File is infected with")} {", ".join(fie.viruses)}'
+            )
