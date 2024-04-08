@@ -20,8 +20,6 @@ const ArchiveIndex: NextPage = () => {
     setLayoutBackgroundColor(theme.colors.white);
     return () => {
       setIsNavigationVisible(false);
-      setIsFooterVisible(true);
-      setLayoutBackgroundColor(theme.colors.white);
     };
   }, [setIsFooterVisible, setIsNavigationVisible, setLayoutBackgroundColor]);
 

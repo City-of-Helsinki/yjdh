@@ -4,26 +4,14 @@ import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import * as React from 'react';
 import { useEffect } from 'react';
-import theme from 'shared/styles/theme';
 
 const ReportIndex: NextPage = () => {
-  const {
-    setIsFooterVisible,
-    setIsNavigationVisible,
-    setLayoutBackgroundColor,
-  } = React.useContext(AppContext);
+  const { setIsNavigationVisible } = React.useContext(AppContext);
 
   // configure page specific settings
   useEffect(() => {
     setIsNavigationVisible(true);
-    setIsFooterVisible(true);
-    setLayoutBackgroundColor(theme.colors.white);
-    return () => {
-      setIsNavigationVisible(false);
-      setIsFooterVisible(true);
-      setLayoutBackgroundColor(theme.colors.white);
-    };
-  }, [setIsFooterVisible, setIsNavigationVisible, setLayoutBackgroundColor]);
+  }, [setIsNavigationVisible]);
 
   return <ApplicationReports />;
 };

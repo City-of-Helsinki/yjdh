@@ -30,9 +30,7 @@ const BatchIndex: NextPage = () => {
     setIsFooterVisible(true);
     setLayoutBackgroundColor(theme.colors.silverLight);
     return () => {
-      setIsNavigationVisible(false);
-      setIsFooterVisible(true);
-      setLayoutBackgroundColor(theme.colors.silverLight);
+      setLayoutBackgroundColor(theme.colors.white);
     };
   }, [setIsFooterVisible, setIsNavigationVisible, setLayoutBackgroundColor]);
 

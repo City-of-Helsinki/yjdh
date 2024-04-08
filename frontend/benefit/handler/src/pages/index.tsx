@@ -34,7 +34,7 @@ const ApplicantIndex: NextPage = () => {
     setLayoutBackgroundColor(theme.colors.silverLight);
     return () => {
       setIsNavigationVisible(false);
-      setLayoutBackgroundColor(theme.colors.silver);
+      setLayoutBackgroundColor(theme.colors.white);
     };
   }, [setIsFooterVisible, setIsNavigationVisible, setLayoutBackgroundColor]);
 
