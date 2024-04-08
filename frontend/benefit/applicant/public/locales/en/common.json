@@ -442,7 +442,7 @@
     },
     "alteration": {
       "title": "Report changes to employment",
-      "explanation": "Report it if the employed person’s employment ends or is temporarily interrupted during the benefit period. We may recover some of the Helsinki benefit if the employment relationship changes during the benefit period.\nAll items marked with * are required.",
+      "explanation": "Report it if the employed person’s employment ends or is temporarily interrupted during the benefit period. We may recover some of the Helsinki benefit if the employment relationship changes during the benefit period.",
       "actions": {
         "submit": "Submit",
         "cancel": "Cancel"
