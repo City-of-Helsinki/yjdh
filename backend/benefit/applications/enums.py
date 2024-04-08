@@ -218,3 +218,21 @@ class ApplicationAlterationState(models.TextChoices):
     RECEIVED = "received", _("Received")
     OPENED = "opened", _("Opened")
     HANDLED = "handled", _("Handled")
+
+
+# Call gettext on some of the enums so that "makemessages" command can find them when used dynamically in templates
+_("granted")
+_("granted_aged")
+_("not_granted")
+
+_("employment_contract")
+_("pay_subsidy_decision")
+_("commission_contract")
+_("education_contract")
+_("helsinki_benefit_voucher")
+_("employee_consent")
+_("full_application")
+_("other_attachment")
+_("pdf_summary")
+_("decision_text_xml")
+_("decision_text_secret_xml")

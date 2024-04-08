@@ -86,8 +86,12 @@ The project is now running at [localhost:8000](https://localhost:8000)
 
 In `backend/benefit/`:
 
-- Run `python manage.py makemessages --no-location -l fi -l sv -l en`
+- Run `python manage.py makemessages -e xml,txt,html,py --no-location -l fi -l sv -l en`
 - Run `python manage.py compilemessages`
+
+⚠️ **Note 1: if you have technical keywords such as enum that need to have a translation, check applications/enums.py on how to get makemessages to detect them**
+
+⚠️ **Note 2: very important to include -e xml,txt,html,py - otherwise some of the files will be left without translation **
 
 ### Testing and debugging
 
@@ -215,12 +219,15 @@ There are separate Sentry projects for the Django api (`yjdh-benefit-api`), hand
 To limit the amount of possibly sensitive data sent to Sentry, the same configuration as in kesaseteli is used by default, see [`https://github.com/City-of-Helsinki/yjdh/pull/779`](https://github.com/City-of-Helsinki/yjdh/pull/779).
 
 ## AHJO integration
+
 Making request to the AHJO REST api requires a Bearer token in the authorization headers.
+
 ### Retrieving the access_token
 
 The token is retrieved following the Oauth 2.0 flow.
 To retrieve the token in Django with AhjoConnector class,
 the following settings need to be configured for Django:
+
 ```
 AHJO_CLIENT_ID
 AHJO_CLIENT_SECRET
@@ -230,29 +237,37 @@ AHJO_REDIRECT_URL
 ```
 
 1. The first step is to navigate via browser to (maintenance VPN enabled on local dev environment) [`https://johdontyopoytahyte.hel.fi/ids4/connect/authorize?scope=openid%20offline_access&response_type=code&redirect_uri=https://helsinkilisa/dummyredirect.html&client_id=client_id_goes_here`](https://johdontyopoytahyte.hel.fi/ids4/connect/authorize?scope=openid%20offline_access&response_type=code&redirect_uri=https://helsinkilisa/dummyredirect.html&client_id=client_id_goes_here)
-  - `scope=openid offline_access` is required so that the actual token call also returns a refresh token.
-  - `redirect_uri` is dummy according t, because it is not needed for anything after this, but it must be defined.
+
+- `scope=openid offline_access` is required so that the actual token call also returns a refresh token.
+- `redirect_uri` is dummy according t, because it is not needed for anything after this, but it must be defined.
+
 2. Login to the form with AD credentials (ask from fellow developer)
 3. Submitting the form redirects the browser to the redirect_uri parameter address, for example
-`https://helsinkilisa/dummyredirect.html?code=5510FE3A7A99D4A8D0FB69C0BAB70A31DD38243EFB1D606B1F96FE75383684E4-1&scope=offline_access&iss=https%3A%2F%2Fjohdontyopoytahyte.hel.fi%2Fids4`
-  - Again the `redirect_uri parameter` has no other use, so it can be  dummyredirect.html
-  - from this return address the `code` parameter is taken, in the example above:
+   `https://helsinkilisa/dummyredirect.html?code=5510FE3A7A99D4A8D0FB69C0BAB70A31DD38243EFB1D606B1F96FE75383684E4-1&scope=offline_access&iss=https%3A%2F%2Fjohdontyopoytahyte.hel.fi%2Fids4`
+
+- Again the `redirect_uri parameter` has no other use, so it can be dummyredirect.html
+- from this return address the `code` parameter is taken, in the example above:
   `5510FE3A7A99D4A8D0FB69C0BAB70A31DD38243EFB1D606B1F96FE75383684E4-1`
+
 4. In the Django admin, on the AhjoSetting tab, set the setting ahjo_code to a JSON object:
-`{"code": "5510FE3A7A99D4A8D0FB69C0BAB70A31DD38243EFB1D606B1F96FE75383684E4-1"}`
+   `{"code": "5510FE3A7A99D4A8D0FB69C0BAB70A31DD38243EFB1D606B1F96FE75383684E4-1"}`
 5. Now the AhjoConnector class can fetch the new token. At this stage of development, there is one dummy function for testing authentication, which can be used like this:
-`$ python manage.py shell`
-`$ from applications.services.ahjo_integration import dummy_ahjo_request`
-`$ dummy_ahjo_request()`
-6. Unless there is an error, there will be a new ahjo_access_token object (example below) in the database, which can be used for making actual requests to AHJO. 
+   `$ python manage.py shell`
+   `$ from applications.services.ahjo_integration import dummy_ahjo_request`
+   `$ dummy_ahjo_request()`
+6. Unless there is an error, there will be a new ahjo_access_token object (example below) in the database, which can be used for making actual requests to AHJO.
+
 ```JSON
 {"expires_in": "2023-10-06T21:02:14.459161", "access_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6IkY1QUMzRjhGNjNDQTdGQjc0QzgxODc1RkYyNTQ4M0YyMzI0RTNFMjNSUzI1NiIsIng1dCI6Ijlhd19qMlBLZjdkTWdZZGY4bFNEOGpKT1BpTSIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL2pvaGRvbnR5b3BveXRhaHl0ZS5oZWwuZmkvaWRzNCIsIm5iZiI6MTY5NjU4NTMzNCwiaWF0IjoxNjk2NTg1MzM0LCJleHAiOjE2OTY2MTUzMzQsImF1ZCI6Imh0dHBzOi8vam9oZG9udHlvcG95dGFoeXRlLmhlbC5maS9pZHM0L3Jlc291cmNlcyIsInNjb3BlIjpbIm9wZW5pZCIsIm9mZmxpbmVfYWNjZXNzIl0sImFtciI6WyJwd2QiXSwiY2xpZW50X2lkIjoiaGVsc2lua2lsaXNhIiwic3ViIjoiaGVsbGlzYWh5dCIsImF1dGhfdGltZSI6MTY5NTgwNzgzNywiaWRwIjoibG9jYWwiLCJzaWQiOiJBM0NFNkZFN0FBQkREMzQ4MUJBQTlBQzgzREVCRTZFNCIsImp0aSI6IjcyMzAyRkY0MjEwRkYxQTE4RTA1RDFFQTZCQTUwNDc3In0.iJOgkX4P1eNqDCVmXP2U198U_YIF0labba3hRP2x8oUA3DmCqCpPxvLIdMuxJ5N--xtqrW2hJw2X6XS-GQa9aSODwP5Tt5XLvzMthAzD6m4Y09uaZFoVGqvBu8Cc6oedJNQknQKTiK8vyhoHrXoG-ACOoYs1JtUBOsqR-SIgIpEZepWp3XcjlcVsSnqf1j1YTsRDl5FfoIv1lZSFTAlRmEZGirL1rRDm_2pR_HQ4y20KAaoZaBuyVoyf89duSGmvf40FlImLMXWuIcS7FkIrMUNogdgRittSJKRj5yfRnCgzjBndn0OptWtzXk5GZPfQeGERwVMJaD82X843j5UX4g", "refresh_token": "BB2AE7A54C9EB4374FCB69B21AE75484D9C33094DD92C4DADD48F5806FE726F3-1"}
 ```
+
 7. In the future, it is intended that the token will be continuously refreshed with a cron job (see refreshing the token), so points 1-4 are not needed unless for some reason the token refresh fails during the 8-hour period when the token is valid
 
 ### Refreshing the token
+
 The token retrieved the first time is valid for 30,000 seconds, or about 8 hours. A successful token call also returns the refresh_token information, which is also stored in the Django database. Django has a registered command refresh_ahjo_token which can be scheduled to perform token refresh. The command can be run manually with
 `$ python manage.py refresh_ahjo_token`
 
 ## ClamAV integration
-ClamAV is configured in the OpenShift environments to scan the attachment files uploaded by the users through a [REST api](https://helsinkisolutionoffice.atlassian.net/wiki/spaces/HELFI/pages/7629897754/Implementation+of+ClamAV+for+the+project) which is based on a solution found [here](https://github.com/benzino77/clamav-rest-api). The same setup is configured into the local development environment using `clamav/clamav:latest` and `benzino77/clamav-rest-api images`. The benefit backend connects internally to the ClamAV rest api using the `CLAMAV_URL` environmental variable, which needs to be configured  with the value `clamav-rest-api.clamav.svc.cluster.local:3000/api/v1/version`for the test, staging and prod environments.
+
+ClamAV is configured in the OpenShift environments to scan the attachment files uploaded by the users through a [REST api](https://helsinkisolutionoffice.atlassian.net/wiki/spaces/HELFI/pages/7629897754/Implementation+of+ClamAV+for+the+project) which is based on a solution found [here](https://github.com/benzino77/clamav-rest-api). The same setup is configured into the local development environment using `clamav/clamav:latest` and `benzino77/clamav-rest-api images`. The benefit backend connects internally to the ClamAV rest api using the `CLAMAV_URL` environmental variable, which needs to be configured with the value `clamav-rest-api.clamav.svc.cluster.local:3000/api/v1/version`for the test, staging and prod environments.
