@@ -442,7 +442,7 @@
     },
     "alteration": {
       "title": "Ilmoita työsuhteen muutoksesta",
-      "explanation": "Ilmoita, jos työllistetyn henkilön työsuhde päättyy tai keskeytyy väliaikaisesti tukijakson aikana. Saatamme periä Helsinki-lisää takaisin, jos tukijakson aikana työsuhteeseen tulee muutoksia. \nKaikki *-merkityt kohdat ovat pakollisia.",
+      "explanation": "Ilmoita, jos työllistetyn henkilön työsuhde päättyy tai keskeytyy väliaikaisesti tukijakson aikana. Saatamme periä Helsinki-lisää takaisin, jos tukijakson aikana työsuhteeseen tulee muutoksia.",
       "actions": {
         "submit": "Lähetä",
         "cancel": "Peruuta"

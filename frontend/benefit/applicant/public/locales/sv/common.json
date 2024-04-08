@@ -442,7 +442,7 @@
     },
     "alteration": {
       "title": "Anmäl ändring i anställningen",
-      "explanation": "Meddela oss om den sysselsatta personens anställning avslutas eller avbrytas tillfälligt under stödperioden. Vi kan återkräva Helsingforstillägget om anställningen förändras under stödperioden.\nFälten märkta med * är obligatoriska.",
+      "explanation": "Meddela oss om den sysselsatta personens anställning avslutas eller avbrytas tillfälligt under stödperioden. Vi kan återkräva Helsingforstillägget om anställningen förändras under stödperioden.",
       "actions": {
         "submit": "Skicka",
         "cancel": "Avbryt"
