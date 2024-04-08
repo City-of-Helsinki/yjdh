@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from django.db.models import Q
+from django.utils.translation import gettext_lazy as _
 from simple_history.models import ModelChange
 
 from applications.enums import ApplicationStatus
@@ -112,7 +113,14 @@ def _get_application_change_history_between_timestamps(
         _format_change_dict(change, employee=True) for change in employee_delta.changes
     ]
     if new_or_edited_attachments:
-        changes.append({"field": "attachments", "old": None, "new": None})
+        for attachment in new_or_edited_attachments:
+            changes.append(
+                {
+                    "field": "attachments",
+                    "old": None,
+                    "new": f"{attachment.attachment_file.name} ({_(attachment.attachment_type)})",
+                }
+            )
 
     if not DISABLE_DE_MINIMIS_AIDS and new_or_edited_de_minimis_aids:
         changes.append({"field": "de_minimis_aid_set", "old": None, "new": None})
