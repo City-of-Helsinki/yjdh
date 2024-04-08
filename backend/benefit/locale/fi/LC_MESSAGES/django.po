@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-26 12:21+0200\n"
+"POT-Creation-Date: 2024-04-09 11:23+0300\n"
 "PO-Revision-Date: 2022-11-01 10:45+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -168,9 +168,9 @@ msgstr "Verkkolaskuoperaattorin tunnus"
 msgid "E-invoice address"
 msgstr "Verkkolaskuosoite"
 
+#, python-brace-format
 msgid "{field} must be filled if using an e-invoice address"
-msgstr ""
-"{field} on pakollinen tieto, mikäli lasku lähetetään verkkolaskuna"
+msgstr "{field} on pakollinen tieto, mikäli lasku lähetetään verkkolaskuna"
 
 msgid "Alteration cannot start before first benefit day"
 msgstr "Muutos työsuhteessa ei voi alkaa ennen tukijakson alkua"
@@ -346,11 +346,15 @@ msgstr "liite"
 msgid "pdf summary"
 msgstr "Vaihe 4 – yhteenveto"
 
+#, fuzzy
+#| msgid "application attachment content"
 msgid "public decision text xml attachment"
-msgstr ""
+msgstr "hakemuksen liitteen sisältö"
 
+#, fuzzy
+#| msgid "application attachment content"
 msgid "non-public decision text xml attachment"
-msgstr ""
+msgstr "hakemuksen liitteen sisältö"
 
 msgid "attachment is required"
 msgstr "liite on pakollinen"
@@ -508,6 +512,62 @@ msgstr "Avattu"
 msgid "Handled"
 msgstr "Käsitelty"
 
+msgid "granted"
+msgstr "Palkkatuki"
+
+msgid "granted_aged"
+msgstr "55 vuotta täyttäneiden työllistämistuki"
+
+msgid "not_granted"
+msgstr "Ei myönnetty"
+
+msgid "employment_contract"
+msgstr "Työsopimus"
+
+msgid "pay_subsidy_decision"
+msgstr "Palkkatukipäätös"
+
+#, fuzzy
+#| msgid "commission contract"
+msgid "commission_contract"
+msgstr "toimeksiantosopimus"
+
+msgid "education_contract"
+msgstr "Sopimus oppisopimuskoulutuksen järjestämisestä"
+
+msgid "helsinki_benefit_voucher"
+msgstr "Helsinki-lisä -kortti"
+
+#, fuzzy
+#| msgid "employee_consent"
+msgid "employee_consent"
+msgstr "Suostumus työntekijän henkilötietojen käsittelyyn"
+
+#, fuzzy
+#| msgid "application"
+msgid "full_application"
+msgstr "hakemus"
+
+#, fuzzy
+#| msgid "attachment"
+msgid "other_attachment"
+msgstr "liite"
+
+#, fuzzy
+#| msgid "Step 4 - summary"
+msgid "pdf_summary"
+msgstr "Vaihe 4 – yhteenveto"
+
+#, fuzzy
+#| msgid "status"
+msgid "decision_text_xml"
+msgstr "tila"
+
+#, fuzzy
+#| msgid "application attachment content"
+msgid "decision_text_secret_xml"
+msgstr "hakemuksen liitteen sisältö"
+
 #, python-brace-format
 msgid ""
 "Your application {id} will be deleted soon. If you want to continue the "
@@ -651,8 +711,10 @@ msgstr "Asiantuntijatarkastajan nimi"
 msgid "P2P inspector's email address"
 msgstr "Asiantuntijatarkastajan sähköpostiosoite"
 
+#, fuzzy
+#| msgid "Expert inspector's name"
 msgid "P2P acceptor's title"
-msgstr ""
+msgstr "Asiantuntijatarkastajan nimi"
 
 msgid "Expert inspector's name"
 msgstr "Asiantuntijatarkastajan nimi"
@@ -742,8 +804,10 @@ msgstr ""
 msgid "company contact person"
 msgstr "yrityksen yhteyshenkilön sähköpostiosoite"
 
+#, fuzzy
+#| msgid "alteration of application"
 msgid "co-operation negotiations"
-msgstr ""
+msgstr "Muutos hakemukseen"
 
 msgid "pay subsidy"
 msgstr "palkkatuki"
@@ -771,8 +835,10 @@ msgstr "tila"
 msgid "ahjo statuses"
 msgstr "tila"
 
+#, fuzzy
+#| msgid "Decision date"
 msgid "type of the decision proposal template section"
-msgstr ""
+msgstr "Päätöksen päivämäärä"
 
 #, fuzzy
 #| msgid "date of the decision in Ahjo"
@@ -784,8 +850,10 @@ msgstr "päätöksen päivämäärä Ahjossa"
 msgid "decision proposal section text content"
 msgstr "Päätöksen päivämäärä"
 
+#, fuzzy
+#| msgid "Decision date"
 msgid "name of the decision proposal template section"
-msgstr ""
+msgstr "Päätöksen päivämäärä"
 
 #, fuzzy
 #| msgid "Decision date"
@@ -802,8 +870,10 @@ msgstr "Päätöksen päivämäärä"
 msgid "decision text content"
 msgstr "hakemuksen liitteen sisältö"
 
+#, fuzzy
+#| msgid "status"
 msgid "ahjo decision text"
-msgstr ""
+msgstr "tila"
 
 #, fuzzy
 #| msgid "status"
@@ -985,8 +1055,8 @@ msgstr "Sivukulut / kuukausi"
 msgid "Applicable collective agreement"
 msgstr "Työehtosopimus"
 
-msgid "Yhdistyksellä on yritystoimintaa"
-msgstr ""
+msgid "Association has business activities"
+msgstr "Yrityksellä on liiketoimintaa"
 
 msgid "Is this an apprenticeship?"
 msgstr "Onko kyseessä oppisopimus?"
@@ -1002,9 +1072,6 @@ msgstr "Ajalle"
 
 msgid "Attachments"
 msgstr "Liitteet"
-
-msgid "granted_aged"
-msgstr "55 vuotta täyttäneiden työllistämistuki"
 
 msgid "Printed at"
 msgstr "Tulostettu"
@@ -1027,6 +1094,37 @@ msgstr "Hakemus saapunut"
 
 msgid "Application number"
 msgstr "Hakemusnumero"
+
+# For Ahjo secret decision XML
+msgid "Granting of Helsinki-lisä benefit"
+msgstr "Työllisyydenhoidon Helsinki-lisän myöntäminen"
+
+msgid "Applicant company"
+msgstr "Hakija"
+
+msgid "Employee name"
+msgstr "Työllistetyn nimi"
+
+msgid "Benefit type"
+msgstr "Tukimuoto"
+
+msgid "Additional information"
+msgstr "Lisätietoja"
+
+msgid "De Minimis description"
+msgstr "Tuki myönnetään vähämerkityksisenä eli de minimis-tukena"
+
+msgid "Calculation of the benefit"
+msgstr "Helsinki-lisän tukijaksot"
+
+msgid "Benefit per month"
+msgstr "tuki/kk"
+
+msgid "Total benefit"
+msgstr "tuki yhteensä"
+
+msgid "Total for benefit time period"
+msgstr "Yhteensä koko tukiajalta"
 
 msgid "Date range too large"
 msgstr "Päivämääräalue liian suuri"
@@ -1083,16 +1181,20 @@ msgstr "Koulutuskorvauksen määrä kuukaudelta"
 msgid "Total amount of deductions monthly"
 msgstr "Vähennysten kokonaismäärä kuukaudelta"
 
+#, fuzzy
+#| msgid "Date range too large"
 msgid "Basic date range description"
-msgstr ""
+msgstr "Päivämääräalue liian suuri"
 
 #, fuzzy
 #| msgid "Date range too large"
 msgid "Date range description for total row"
 msgstr "Päivämääräalue liian suuri"
 
+#, fuzzy
+#| msgid "De Minimis description"
 msgid "Deduction description"
-msgstr ""
+msgstr "Tuki myönnetään vähämerkityksisenä eli de minimis-tukena"
 
 msgid "Calculation already exists"
 msgstr "Laskelma on jo olemassa"
@@ -1198,6 +1300,15 @@ msgid "English"
 msgstr "Englanti"
 
 msgid "Swedish"
+msgstr "Ruotsi"
+
+msgid "fi"
+msgstr "Suomi"
+
+msgid "en"
+msgstr "Englanti"
+
+msgid "sv"
 msgstr "Ruotsi"
 
 #, python-brace-format
@@ -1371,39 +1482,11 @@ msgstr "palveluehtojen hyväksyntä"
 msgid "terms of service approvals"
 msgstr "palveluehtojen hyväksynnät"
 
-# For Ahjo secret decision XML
-msgid "Granting of Helsinki-lisä benefit"
-msgstr "Työllisyydenhoidon Helsinki-lisän myöntäminen"
+#~ msgid "Granted as de minimis aid"
+#~ msgstr "Myönnetään de minimis -tukena"
 
-msgid "Benefit type"
-msgstr "Tukimuoto"
-
-msgid "Total benefit"
-msgstr "tuki yhteensä"
-
-msgid "Benefit per month"
-msgstr "tuki/kk"
-
-msgid "Employee name"
-msgstr "Työllistetyn nimi"
-
-msgid "Additional information"
-msgstr "Lisätietoja"
-
-msgid "De Minimis description"
-msgstr "Tuki myönnetään vähämerkityksisenä eli de minimis-tukena"
-
-msgid "Total for benefit time period"
-msgstr "Yhteensä koko tukiajalta"
-
-msgid "Applicant company"
-msgstr "Hakija"
-
-msgid "Calculation of the benefit"
-msgstr "Helsinki-lisän tukijaksot"
-
-msgid "File is infected with"
-msgstr "Ladatusta tiedostosta löytyi seuraavat haittaohjelmat: "
+#~ msgid "File is infected with"
+#~ msgstr "Ladatusta tiedostosta löytyi seuraavat haittaohjelmat: "
 
 #~ msgid "applicant"
 #~ msgstr "hakija"
@@ -1419,42 +1502,3 @@ msgstr "Ladatusta tiedostosta löytyi seuraavat haittaohjelmat: "
 
 #~ msgid "Pay subsidy percent required"
 #~ msgstr "Palkkatukiprosentti on pakollinen"
-
-#~ msgid "Helsinki benefit is granted"
-#~ msgstr "Helsinki-lisää myönnetään"
-
-#~ msgid "Helsinki benefit is not granted"
-#~ msgstr "Helsinki-lisää ei myönnetä"
-
-#~ msgid "Granted as de minimis aid"
-#~ msgstr "Myönnetään de minimis -tukena"
-
-#~ msgid "Processing of the personal data of the person to be employed"
-#~ msgstr "Työllistettävän henkilötietojen käsittely"
-
-#~ msgid "employment_contract"
-#~ msgstr "Työsopimus"
-
-#~ msgid "pay_subsidy_decision"
-#~ msgstr "Palkkatukipäätös"
-
-#~ msgid "education_contract"
-#~ msgstr "Sopimus oppisopimuskoulutuksen järjestämisestä"
-
-#~ msgid "helsinki_benefit_voucher"
-#~ msgstr "Helsinki-lisä -kortti"
-
-#~ msgid "fi"
-#~ msgstr "Suomi"
-
-#~ msgid "sv"
-#~ msgstr "Ruotsi"
-
-#~ msgid "en"
-#~ msgstr "Englanti"
-
-#~ msgid "granted"
-#~ msgstr "Palkkatuki"
-
-#~ msgid "not_granted"
-#~ msgstr "Ei myönnetty"
