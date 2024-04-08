@@ -30,6 +30,7 @@ type ExtendedComponentProps = {
 const isApplicationLoaded = (id: number | string, status: string): boolean =>
   id && status !== 'idle' && status !== 'loading';
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const usePageContent = (): ExtendedComponentProps => {
   const router = useRouter();
   const id = router?.query?.id?.toString() ?? '';
@@ -53,6 +54,12 @@ const usePageContent = (): ExtendedComponentProps => {
       setIsLoading(false);
     }
   }, [existingApplicationStatus, id, existingApplication]);
+
+  useEffect(() => {
+    if (id && !isLoading && !isApplicationLoaded(id, existingApplicationStatus)) {
+      setIsLoading(true);
+    }
+  }, [existingApplicationStatus, id, isLoading]);
 
   useEffect(() => {
     if (router.isReady && !router.query.id) {

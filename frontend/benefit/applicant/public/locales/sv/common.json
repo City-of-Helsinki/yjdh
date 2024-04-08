@@ -455,6 +455,14 @@
           "einvoiceProviderIdentifier": "Förmedlarkod",
           "einvoiceAddress": "E-fakturaadress",
           "deliveryAddress": "Fakturaadress"
+        },
+        "deleteModal": {
+          "titleTermination": "Vill du radera din anmälan om att anställningen avslutas?",
+          "titleSuspension": "Vill du radera din anmälan om ett avbrott i anställningen?",
+          "bodyTermination": "Anmälan om att anställningen avslutas raderas.",
+          "bodySuspension": "Anmälan om ett avbrott i anställningen raderas.",
+          "delete": "Radera",
+          "cancel": "Ångra"
         }
       },
       "actions": {
@@ -524,12 +532,7 @@
         "alreadyTerminated": "Den här anställningen har tidigare markerats som avslutad, så du kan inte längre meddela om en ny ändring."
       },
       "details": "Ändringar i anställningen",
-      "billing": "Faktureringsuppgifter",
-      "successToast": {
-        "title": "Anmälan om ändring i anställningen har skickats",
-        "bodyTermination": "Du har meddelat om ett avbrott i anställningen enligt ansökan {{id}}.",
-        "bodySuspension": "Du har meddelat att anställningen enligt ansökan {{id}} avslutas."
-      }
+      "billing": "Faktureringsuppgifter"
     }
   },
   "serviceName": "E-tjänsten för Helsingforstillägg",
@@ -571,6 +574,16 @@
     "applicationDeleted": {
       "label": "Utkast raderat",
       "message": "Ansökan har raderats."
+    },
+    "alterationCreated": {
+      "title": "Anmälan om ändring i anställningen har skickats",
+      "bodyTermination": "Du har meddelat om ett avbrott i anställningen enligt ansökan {{id}}.",
+      "bodySuspension": "Du har meddelat att anställningen enligt ansökan {{id}} avslutas."
+    },
+    "alterationDeleted": {
+      "labelTermination": "Anmälan om att anställningen avslutas har raderats.",
+      "labelSuspension": "Anmälan om ett avbrott i anställningen har raderats.",
+      "message": "Du kan anmäla att en anställning avbryts eller avslutas genom att välja ”Anmäl ändring i anställningen”."
     }
   },
   "languages": {
@@ -731,7 +744,8 @@
     "home": "Gå tillbaka till ingångssidan",
     "pagination": "Sidor",
     "back": "Tillbaka",
-    "submitting": "Sändning…"
+    "submitting": "Sändning…",
+    "deleting": "Raderar…"
   },
   "messenger": {
     "messages": "Meddelanden om ansökan",

@@ -79,13 +79,13 @@ const AlterationPage = (): JSX.Element => {
 
     const textKey =
       response.alteration_type === ALTERATION_TYPE.TERMINATION
-        ? 'common:applications.alteration.successToast.bodyTermination'
-        : 'common:applications.alteration.successToast.bodySuspension';
+        ? 'common:notifications.alterationCreated.bodyTermination'
+        : 'common:notifications.alterationCreated.bodySuspension';
 
     hdsToast({
       autoDismissTime: 0,
       type: 'success',
-      labelText: t('common:applications.alteration.successToast.title'),
+      labelText: t('common:notifications.alterationCreated.title'),
       text: t(textKey, {
         id: application.applicationNumber,
       }),
