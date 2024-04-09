@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-09 11:23+0300\n"
+"POT-Creation-Date: 2024-04-09 11:28+0300\n"
 "PO-Revision-Date: 2022-11-01 10:45+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -206,6 +206,9 @@ msgstr "Epäkelpo PDF-tiedosto"
 
 msgid "Not a valid image file"
 msgstr "Epäkelpo kuvatiedosto"
+
+msgid "File is infected with"
+msgstr "Ladatusta tiedostosta löytyi seuraavat haittaohjelmat: "
 
 msgid "Applications in a batch can not be changed when batch is in this status"
 msgstr "Erän hakemuksia ei voida muuttaa erän ollessa tässä tilassa"
@@ -1484,9 +1487,6 @@ msgstr "palveluehtojen hyväksynnät"
 
 #~ msgid "Granted as de minimis aid"
 #~ msgstr "Myönnetään de minimis -tukena"
-
-#~ msgid "File is infected with"
-#~ msgstr "Ladatusta tiedostosta löytyi seuraavat haittaohjelmat: "
 
 #~ msgid "applicant"
 #~ msgstr "hakija"

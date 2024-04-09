@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-09 11:23+0300\n"
+"POT-Creation-Date: 2024-04-09 11:28+0300\n"
 "PO-Revision-Date: 2022-11-01 10:47+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -217,6 +217,9 @@ msgstr "Ingen giltig PDF-fil"
 
 msgid "Not a valid image file"
 msgstr "Ingen giltig bildfil"
+
+msgid "File is infected with"
+msgstr "Filen är infekterad med följande malware"
 
 msgid "Applications in a batch can not be changed when batch is in this status"
 msgstr "Ansökningar i en sats kan inte ändras när satsen har denna status"
@@ -1520,9 +1523,6 @@ msgstr "godkännanden av villkoren för tjänsten"
 
 #~ msgid "Granted as de minimis aid"
 #~ msgstr "Beviljas som stöd av de minimis stöd"
-
-#~ msgid "File is infected with"
-#~ msgstr "Filen är infekterad med följande malware"
 
 #~ msgid "applicant"
 #~ msgstr "sökande"

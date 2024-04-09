@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-09 11:23+0300\n"
+"POT-Creation-Date: 2024-04-09 11:28+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -197,6 +197,9 @@ msgid "Not a valid pdf file"
 msgstr ""
 
 msgid "Not a valid image file"
+msgstr ""
+
+msgid "File is infected with"
 msgstr ""
 
 msgid "Applications in a batch can not be changed when batch is in this status"
