@@ -135,7 +135,7 @@ def test_prepare_case_records(decided_application, settings):
         attachment_type=AttachmentType.PDF_SUMMARY
     ):
         document_record = _prepare_record(
-            "Hakemuksen Liite",
+            "Hakemuksen liite",
             "hakemuksen liite",
             attachment.created_at.isoformat(),
             [_prepare_record_document_dict(attachment)],
