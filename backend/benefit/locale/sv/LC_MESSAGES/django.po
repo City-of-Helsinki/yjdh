@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-26 12:21+0200\n"
+"POT-Creation-Date: 2024-04-09 11:28+0300\n"
 "PO-Revision-Date: 2022-11-01 10:47+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -160,8 +160,10 @@ msgstr ""
 msgid "E-invoice provider name"
 msgstr "Arbetsgivarens namn"
 
+#, fuzzy
+#| msgid "Name of the employer"
 msgid "E-invoice provider identifier"
-msgstr ""
+msgstr "Arbetsgivarens namn"
 
 #, fuzzy
 #| msgid "Delivery address"
@@ -172,14 +174,20 @@ msgstr "Leveransadress"
 msgid "{field} must be filled if using an e-invoice address"
 msgstr ""
 
+#, fuzzy
+#| msgid "application end_date can not be less than start_date"
 msgid "Alteration cannot start before first benefit day"
-msgstr ""
+msgstr "end_date för ansökan kan inte vara tidigare än start_date"
 
+#, fuzzy
+#| msgid "application end_date can not be less than start_date"
 msgid "Alteration cannot start after last benefit day"
-msgstr ""
+msgstr "end_date för ansökan kan inte vara tidigare än start_date"
 
+#, fuzzy
+#| msgid "application end_date can not be less than start_date"
 msgid "Alteration cannot end after last benefit day"
-msgstr ""
+msgstr "end_date för ansökan kan inte vara tidigare än start_date"
 
 #, fuzzy
 #| msgid "application end_date can not be less than start_date"
@@ -209,6 +217,9 @@ msgstr "Ingen giltig PDF-fil"
 
 msgid "Not a valid image file"
 msgstr "Ingen giltig bildfil"
+
+msgid "File is infected with"
+msgstr "Filen är infekterad med följande malware"
 
 msgid "Applications in a batch can not be changed when batch is in this status"
 msgstr "Ansökningar i en sats kan inte ändras när satsen har denna status"
@@ -349,11 +360,15 @@ msgstr "bilaga"
 msgid "pdf summary"
 msgstr "Steg 4 – sammanfattning"
 
+#, fuzzy
+#| msgid "application attachment content"
 msgid "public decision text xml attachment"
-msgstr ""
+msgstr "innehåll i bilaga till ansökan"
 
+#, fuzzy
+#| msgid "application attachment content"
 msgid "non-public decision text xml attachment"
-msgstr ""
+msgstr "innehåll i bilaga till ansökan"
 
 msgid "attachment is required"
 msgstr "bilaga är obligatorisk"
@@ -517,6 +532,62 @@ msgstr ""
 msgid "Handled"
 msgstr "Handläggare"
 
+msgid "granted"
+msgstr "Lönesubvention"
+
+msgid "granted_aged"
+msgstr "Sysselsättningsstöd för personer som fyllt 55 år"
+
+msgid "not_granted"
+msgstr "Inget stöd"
+
+msgid "employment_contract"
+msgstr "Arbetsavtal"
+
+msgid "pay_subsidy_decision"
+msgstr "Beslut om lönesubvention"
+
+#, fuzzy
+#| msgid "commission contract"
+msgid "commission_contract"
+msgstr "uppdragsavtal"
+
+msgid "education_contract"
+msgstr "Avtal om ordnandet av läroavtalsutbildning"
+
+msgid "helsinki_benefit_voucher"
+msgstr "Helsingforstilläggskortet"
+
+#, fuzzy
+#| msgid "employee_consent"
+msgid "employee_consent"
+msgstr "Behandlingen av personuppgifterna av personen som ska sysselsättas"
+
+#, fuzzy
+#| msgid "application"
+msgid "full_application"
+msgstr "Ansökan"
+
+#, fuzzy
+#| msgid "attachment"
+msgid "other_attachment"
+msgstr "bilaga"
+
+#, fuzzy
+#| msgid "Step 4 - summary"
+msgid "pdf_summary"
+msgstr "Steg 4 – sammanfattning"
+
+#, fuzzy
+#| msgid "status"
+msgid "decision_text_xml"
+msgstr "status"
+
+#, fuzzy
+#| msgid "application attachment content"
+msgid "decision_text_secret_xml"
+msgstr "innehåll i bilaga till ansökan"
+
 #, python-brace-format
 msgid ""
 "Your application {id} will be deleted soon. If you want to continue the "
@@ -660,8 +731,10 @@ msgstr "Namn på sakkunnig inspektör"
 msgid "P2P inspector's email address"
 msgstr "E-postadress till sakkunnig inspektör"
 
+#, fuzzy
+#| msgid "Expert inspector's name"
 msgid "P2P acceptor's title"
-msgstr ""
+msgstr "Namn på sakkunnig inspektör"
 
 msgid "Expert inspector's name"
 msgstr "Namn på sakkunnig inspektör"
@@ -751,8 +824,10 @@ msgstr ""
 msgid "company contact person"
 msgstr "kontaktpersonens e-postadress"
 
+#, fuzzy
+#| msgid "application batches"
 msgid "co-operation negotiations"
-msgstr ""
+msgstr "ansökningssatser"
 
 msgid "pay subsidy"
 msgstr "lönesubvention"
@@ -780,8 +855,10 @@ msgstr "status"
 msgid "ahjo statuses"
 msgstr "status"
 
+#, fuzzy
+#| msgid "Decision date"
 msgid "type of the decision proposal template section"
-msgstr ""
+msgstr "Beslutsdatum"
 
 #, fuzzy
 #| msgid "date of the decision in Ahjo"
@@ -793,8 +870,10 @@ msgstr "datum då beslut fattas vid Ahjo"
 msgid "decision proposal section text content"
 msgstr "Beslutsdatum"
 
+#, fuzzy
+#| msgid "Decision date"
 msgid "name of the decision proposal template section"
-msgstr ""
+msgstr "Beslutsdatum"
 
 #, fuzzy
 #| msgid "Decision date"
@@ -811,8 +890,10 @@ msgstr "Beslutsdatum"
 msgid "decision text content"
 msgstr "innehåll i bilaga till ansökan"
 
+#, fuzzy
+#| msgid "status"
 msgid "ahjo decision text"
-msgstr ""
+msgstr "status"
 
 #, fuzzy
 #| msgid "status"
@@ -842,17 +923,23 @@ msgstr "slutdatum för understöd"
 msgid "date when employment resumes after suspended"
 msgstr ""
 
+#, fuzzy
+#| msgid "type of terms"
 msgid "reason for alteration"
-msgstr ""
+msgstr "typ av villkor"
 
 msgid "date when alteration notice was handled"
 msgstr ""
 
+#, fuzzy
+#| msgid "amount of the benefit granted, calculated by the system"
 msgid "the first day the unwarranted benefit will be collected from"
-msgstr ""
+msgstr "understödsbelopp som beviljats, beräknat av systemet"
 
+#, fuzzy
+#| msgid "amount of the benefit granted, calculated by the system"
 msgid "the last day the unwarranted benefit will be collected from"
-msgstr ""
+msgstr "understödsbelopp som beviljats, beräknat av systemet"
 
 #, fuzzy
 #| msgid "amount of the benefit granted, calculated by the system"
@@ -869,8 +956,10 @@ msgstr ""
 msgid "name of the e-invoice provider"
 msgstr "Arbetsgivarens namn"
 
+#, fuzzy
+#| msgid "Name of the employer"
 msgid "identifier of the e-invoice provider"
-msgstr ""
+msgstr "Arbetsgivarens namn"
 
 #, fuzzy
 #| msgid "Delivery address"
@@ -1008,8 +1097,8 @@ msgstr "Bikostnader per månad"
 msgid "Applicable collective agreement"
 msgstr "Kollektivavtal som tillämpas"
 
-msgid "Yhdistyksellä on yritystoimintaa"
-msgstr ""
+msgid "Association has business activities"
+msgstr "Arbetsgivaren har ekonomisk verksamhet"
 
 msgid "Is this an apprenticeship?"
 msgstr "Handlar det om ett läroavtal?"
@@ -1025,9 +1114,6 @@ msgstr "Ansöker om datum"
 
 msgid "Attachments"
 msgstr "Bilagor"
-
-msgid "granted_aged"
-msgstr "Sysselsättningsstöd för personer som fyllt 55 år"
 
 msgid "Printed at"
 msgstr "Tryckt"
@@ -1050,6 +1136,37 @@ msgstr "Ansökning mottagen"
 
 msgid "Application number"
 msgstr "Ansökningsnummer"
+
+# For Ahjo secret decision XML
+msgid "Granting of Helsinki-lisä benefit"
+msgstr "Beviljande av Helsingforstillägget för anställningsstöd"
+
+msgid "Applicant company"
+msgstr "Sökande"
+
+msgid "Employee name"
+msgstr "Den anställdes namn"
+
+msgid "Benefit type"
+msgstr "Typ av förmån"
+
+msgid "Additional information"
+msgstr "Ytterligare information"
+
+msgid "De Minimis description"
+msgstr "Stödet beviljas som stöd av mindre betydelse"
+
+msgid "Calculation of the benefit"
+msgstr "Beviljade stödperioder"
+
+msgid "Benefit per month"
+msgstr "Förmån per månad"
+
+msgid "Total benefit"
+msgstr "Total förmån"
+
+msgid "Total for benefit time period"
+msgstr "Totalt för hela perioden"
 
 msgid "Date range too large"
 msgstr "Tidsperiod för lång"
@@ -1102,16 +1219,20 @@ msgstr "Utbildningsersättningens belopp per månad"
 msgid "Total amount of deductions monthly"
 msgstr "Totalbelopp av avdrag per månad"
 
+#, fuzzy
+#| msgid "Date range too large"
 msgid "Basic date range description"
-msgstr ""
+msgstr "Tidsperiod för lång"
 
 #, fuzzy
 #| msgid "Date range too large"
 msgid "Date range description for total row"
 msgstr "Tidsperiod för lång"
 
+#, fuzzy
+#| msgid "De Minimis description"
 msgid "Deduction description"
-msgstr ""
+msgstr "Stödet beviljas som stöd av mindre betydelse"
 
 msgid "Calculation already exists"
 msgstr "Beräkning finns redan"
@@ -1218,6 +1339,15 @@ msgid "English"
 msgstr "Engelska"
 
 msgid "Swedish"
+msgstr "Svenska"
+
+msgid "fi"
+msgstr "Finska"
+
+msgid "en"
+msgstr "Engelska"
+
+msgid "sv"
 msgstr "Svenska"
 
 #, python-brace-format
@@ -1391,39 +1521,8 @@ msgstr "godkännande av villkoren för tjänsten"
 msgid "terms of service approvals"
 msgstr "godkännanden av villkoren för tjänsten"
 
-# For Ahjo secret decision XML
-msgid "Granting of Helsinki-lisä benefit"
-msgstr "Beviljande av Helsingforstillägget för anställningsstöd"
-
-msgid "Benefit type"
-msgstr "Typ av förmån"
-
-msgid "Total benefit"
-msgstr "Total förmån"
-
-msgid "Benefit per month"
-msgstr "Förmån per månad"
-
-msgid "Employee name"
-msgstr "Den anställdes namn"
-
-msgid "Additional information"
-msgstr "Ytterligare information"
-
-msgid "De Minimis description"
-msgstr "Stödet beviljas som stöd av mindre betydelse"
-
-msgid "Total for benefit time period"
-msgstr "Totalt för hela perioden"
-
-msgid "Applicant company"
-msgstr "Sökande"
-
-msgid "Calculation of the benefit"
-msgstr "Beviljade stödperioder"
-
-msgid "File is infected with"
-msgstr "Filen är infekterad med följande malware"
+#~ msgid "Granted as de minimis aid"
+#~ msgstr "Beviljas som stöd av de minimis stöd"
 
 #~ msgid "applicant"
 #~ msgstr "sökande"
@@ -1439,39 +1538,3 @@ msgstr "Filen är infekterad med följande malware"
 
 #~ msgid "Pay subsidy percent required"
 #~ msgstr "Lönesubventionsprocent krävs"
-
-#~ msgid "Helsinki benefit is granted"
-#~ msgstr "Helsingforstillägg beviljas"
-
-#~ msgid "Helsinki benefit is not granted"
-#~ msgstr "Helsingforstillägg beviljas inte"
-
-#~ msgid "Granted as de minimis aid"
-#~ msgstr "Beviljas som stöd av de minimis stöd"
-
-#~ msgid "employment_contract"
-#~ msgstr "Arbetsavtal"
-
-#~ msgid "pay_subsidy_decision"
-#~ msgstr "Beslut om lönesubvention"
-
-#~ msgid "education_contract"
-#~ msgstr "Avtal om ordnandet av läroavtalsutbildning"
-
-#~ msgid "helsinki_benefit_voucher"
-#~ msgstr "Helsingforstilläggskortet"
-
-#~ msgid "fi"
-#~ msgstr "Finska"
-
-#~ msgid "sv"
-#~ msgstr "Svenska"
-
-#~ msgid "en"
-#~ msgstr "Engelska"
-
-#~ msgid "granted"
-#~ msgstr "Lönesubvention"
-
-#~ msgid "not_granted"
-#~ msgstr "Inget stöd"

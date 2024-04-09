@@ -137,6 +137,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
             raise ClamAvServiceUnavailableException()
         except FileInfectedException as fie:
             log.error(f"File '{fie.file_name}' infected, viruses: {fie.viruses}")
+            translation_text = _("File is infected with")
             raise serializers.ValidationError(
-                f'{_("File is infected with")} {", ".join(fie.viruses)}'
+                f'{translation_text} {", ".join(fie.viruses)}'
             )

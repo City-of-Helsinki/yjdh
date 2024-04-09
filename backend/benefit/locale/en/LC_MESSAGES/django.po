@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-26 12:21+0200\n"
+"POT-Creation-Date: 2024-04-09 11:28+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -199,6 +199,9 @@ msgstr ""
 msgid "Not a valid image file"
 msgstr ""
 
+msgid "File is infected with"
+msgstr ""
+
 msgid "Applications in a batch can not be changed when batch is in this status"
 msgstr ""
 
@@ -268,14 +271,20 @@ msgstr ""
 msgid "Invalid application status change"
 msgstr ""
 
+#, fuzzy
+#| msgid "employee_consent"
 msgid "Employment Benefit"
-msgstr ""
+msgstr "Employee's consent for processing personal data"
 
+#, fuzzy
+#| msgid "employee_consent"
 msgid "Salary Benefit"
-msgstr ""
+msgstr "Employee's consent for processing personal data"
 
+#, fuzzy
+#| msgid "education_contract"
 msgid "Commission Benefit"
-msgstr ""
+msgstr "Agreement on providing apprenticeship training"
 
 msgid "Step 1 - company details"
 msgstr ""
@@ -295,26 +304,36 @@ msgstr ""
 msgid "Step 6 - terms and send"
 msgstr ""
 
+#, fuzzy
+#| msgid "employee_consent"
 msgid "Company"
-msgstr ""
+msgstr "Employee's consent for processing personal data"
 
 msgid "Association"
 msgstr ""
 
+#, fuzzy
+#| msgid "employment_contract"
 msgid "employment contract"
-msgstr ""
+msgstr "Employment contract"
 
+#, fuzzy
+#| msgid "pay_subsidy_decision"
 msgid "pay subsidy decision"
-msgstr ""
+msgstr "Pay subsidy decision"
 
+#, fuzzy
+#| msgid "education_contract"
 msgid "commission contract"
-msgstr ""
+msgstr "Agreement on providing apprenticeship training"
 
 msgid "education contract of the apprenticeship office"
 msgstr ""
 
+#, fuzzy
+#| msgid "helsinki_benefit_voucher"
 msgid "helsinki benefit voucher"
-msgstr ""
+msgstr "The Helsinki Benefit card"
 
 #, fuzzy
 #| msgid "employee_consent"
@@ -378,14 +397,20 @@ msgstr ""
 msgid "Applicant"
 msgstr ""
 
+#, fuzzy
+#| msgid "pay_subsidy_decision"
 msgid "Pay subsidy granted (default)"
-msgstr ""
+msgstr "Pay subsidy decision"
 
+#, fuzzy
+#| msgid "pay_subsidy_decision"
 msgid "Pay subsidy granted (aged)"
-msgstr ""
+msgstr "Pay subsidy decision"
 
+#, fuzzy
+#| msgid "pay_subsidy_decision"
 msgid "No granted pay subsidy"
-msgstr ""
+msgstr "Pay subsidy decision"
 
 msgid "Submitted but not sent to AHJO"
 msgstr ""
@@ -449,8 +474,10 @@ msgstr ""
 msgid "An accepted decision"
 msgstr ""
 
+#, fuzzy
+#| msgid "pay_subsidy_decision"
 msgid "A denied decision"
-msgstr ""
+msgstr "Pay subsidy decision"
 
 msgid "Termination"
 msgstr ""
@@ -464,6 +491,54 @@ msgstr ""
 msgid "Handled"
 msgstr ""
 
+#, fuzzy
+#| msgid "not_granted"
+msgid "granted"
+msgstr "None"
+
+msgid "granted_aged"
+msgstr "Employment aid for people aged 55 and above"
+
+msgid "not_granted"
+msgstr "None"
+
+msgid "employment_contract"
+msgstr "Employment contract"
+
+msgid "pay_subsidy_decision"
+msgstr "Pay subsidy decision"
+
+#, fuzzy
+#| msgid "education_contract"
+msgid "commission_contract"
+msgstr "Agreement on providing apprenticeship training"
+
+msgid "education_contract"
+msgstr "Agreement on providing apprenticeship training"
+
+#, fuzzy
+#| msgid "helsinki_benefit_voucher"
+msgid "helsinki_benefit_voucher"
+msgstr "The Helsinki Benefit card"
+
+msgid "employee_consent"
+msgstr "Employee's consent for processing personal data"
+
+msgid "full_application"
+msgstr ""
+
+msgid "other_attachment"
+msgstr ""
+
+msgid "pdf_summary"
+msgstr ""
+
+msgid "decision_text_xml"
+msgstr ""
+
+msgid "decision_text_secret_xml"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Your application {id} will be deleted soon. If you want to continue the "
@@ -471,11 +546,15 @@ msgid ""
 "the application will deleted permanently."
 msgstr ""
 
+#, fuzzy
+#| msgid "helsinki_benefit_voucher"
 msgid "Your Helsinki benefit draft application will expire"
-msgstr ""
+msgstr "The Helsinki Benefit card"
 
+#, fuzzy
+#| msgid "employee_consent"
 msgid "company"
-msgstr ""
+msgstr "Employee's consent for processing personal data"
 
 msgid "status"
 msgstr ""
@@ -489,8 +568,10 @@ msgstr ""
 msgid "application number"
 msgstr ""
 
+#, fuzzy
+#| msgid "employee_consent"
 msgid "company name"
-msgstr ""
+msgstr "Employee's consent for processing personal data"
 
 msgid "company form as user-readable text"
 msgstr ""
@@ -498,20 +579,28 @@ msgstr ""
 msgid "YTJ type code for company form"
 msgstr ""
 
+#, fuzzy
+#| msgid "employee_consent"
 msgid "company department"
-msgstr ""
+msgstr "Employee's consent for processing personal data"
 
 msgid "company street address"
 msgstr ""
 
+#, fuzzy
+#| msgid "employee_consent"
 msgid "company city"
-msgstr ""
+msgstr "Employee's consent for processing personal data"
 
+#, fuzzy
+#| msgid "employee_consent"
 msgid "company post code"
-msgstr ""
+msgstr "Employee's consent for processing personal data"
 
+#, fuzzy
+#| msgid "employee_consent"
 msgid "company bank account number"
-msgstr ""
+msgstr "Employee's consent for processing personal data"
 
 msgid "first name"
 msgstr ""
@@ -528,17 +617,23 @@ msgstr ""
 msgid "additional information about the ongoing co-operation negotiations"
 msgstr ""
 
+#, fuzzy
+#| msgid "pay_subsidy_decision"
 msgid "Pay subsidy percent"
-msgstr ""
+msgstr "Pay subsidy decision"
 
 msgid "Pay subsidy percent for second pay subsidy grant"
 msgstr ""
 
+#, fuzzy
+#| msgid "not_granted"
 msgid "benefit start from date"
-msgstr ""
+msgstr "None"
 
+#, fuzzy
+#| msgid "not_granted"
 msgid "benefit end date"
-msgstr ""
+msgstr "None"
 
 msgid "paper application date"
 msgstr ""
@@ -558,8 +653,10 @@ msgstr ""
 msgid "amount of the de minimis aid"
 msgstr ""
 
+#, fuzzy
+#| msgid "not_granted"
 msgid "benefit granted at"
-msgstr ""
+msgstr "None"
 
 msgid "de minimis aid"
 msgstr ""
@@ -657,11 +754,15 @@ msgstr ""
 msgid "Description of the commission"
 msgstr ""
 
+#, fuzzy
+#| msgid "employee_consent"
 msgid "employee"
-msgstr ""
+msgstr "Employee's consent for processing personal data"
 
+#, fuzzy
+#| msgid "employee_consent"
 msgid "employees"
-msgstr ""
+msgstr "Employee's consent for processing personal data"
 
 msgid "attachment type in business rules"
 msgstr ""
@@ -681,14 +782,18 @@ msgstr ""
 msgid "paper"
 msgstr ""
 
+#, fuzzy
+#| msgid "employee_consent"
 msgid "company contact person"
-msgstr ""
+msgstr "Employee's consent for processing personal data"
 
 msgid "co-operation negotiations"
 msgstr ""
 
+#, fuzzy
+#| msgid "pay_subsidy_decision"
 msgid "pay subsidy"
-msgstr ""
+msgstr "Pay subsidy decision"
 
 msgid "benefit"
 msgstr ""
@@ -725,8 +830,10 @@ msgstr ""
 msgid "decision proposal template sections"
 msgstr ""
 
+#, fuzzy
+#| msgid "education_contract"
 msgid "decision text content"
-msgstr ""
+msgstr "Agreement on providing apprenticeship training"
 
 msgid "ahjo decision text"
 msgstr ""
@@ -734,8 +841,10 @@ msgstr ""
 msgid "ahjo decision texts"
 msgstr ""
 
+#, fuzzy
+#| msgid "helsinki_benefit_voucher"
 msgid "alteration of application"
-msgstr ""
+msgstr "The Helsinki Benefit card"
 
 msgid "type of alteration"
 msgstr ""
@@ -743,8 +852,10 @@ msgstr ""
 msgid "state of alteration"
 msgstr ""
 
+#, fuzzy
+#| msgid "not_granted"
 msgid "new benefit end date"
-msgstr ""
+msgstr "None"
 
 msgid "date when employment resumes after suspended"
 msgstr ""
@@ -784,8 +895,10 @@ msgstr ""
 msgid "Not found"
 msgstr ""
 
+#, fuzzy
+#| msgid "employee_consent"
 msgid "Employer information"
-msgstr ""
+msgstr "Employee's consent for processing personal data"
 
 msgid "Name of the employer"
 msgstr ""
@@ -880,8 +993,10 @@ msgstr ""
 msgid "Has the person who is being employed been assigned a job supervisor?"
 msgstr ""
 
+#, fuzzy
+#| msgid "employee_consent"
 msgid "Employment relationship"
-msgstr ""
+msgstr "Employee's consent for processing personal data"
 
 msgid "Job title"
 msgstr ""
@@ -901,7 +1016,7 @@ msgstr ""
 msgid "Applicable collective agreement"
 msgstr ""
 
-msgid "Yhdistyksellä on yritystoimintaa"
+msgid "Association has business activities"
 msgstr ""
 
 msgid "Is this an apprenticeship?"
@@ -919,9 +1034,6 @@ msgstr ""
 msgid "Attachments"
 msgstr ""
 
-msgid "granted_aged"
-msgstr "Employment aid for people aged 55 and above"
-
 msgid "Printed at"
 msgstr ""
 
@@ -933,16 +1045,52 @@ msgstr ""
 msgid "Helsinki-benefit online service"
 msgstr "The Helsinki Benefit card"
 
+#, fuzzy
+#| msgid "helsinki_benefit_voucher"
 msgid "Helsinki-benefit application"
-msgstr ""
+msgstr "The Helsinki Benefit card"
 
+#, fuzzy
+#| msgid "employee_consent"
 msgid "Employee"
-msgstr ""
+msgstr "Employee's consent for processing personal data"
 
 msgid "Application received"
 msgstr ""
 
 msgid "Application number"
+msgstr ""
+
+msgid "Granting of Helsinki-lisä benefit"
+msgstr ""
+
+msgid "Applicant company"
+msgstr ""
+
+#, fuzzy
+#| msgid "employee_consent"
+msgid "Employee name"
+msgstr "Employee's consent for processing personal data"
+
+msgid "Benefit type"
+msgstr ""
+
+msgid "Additional information"
+msgstr ""
+
+msgid "De Minimis description"
+msgstr ""
+
+msgid "Calculation of the benefit"
+msgstr ""
+
+msgid "Benefit per month"
+msgstr ""
+
+msgid "Total benefit"
+msgstr ""
+
+msgid "Total for benefit time period"
 msgstr ""
 
 msgid "Date range too large"
@@ -978,20 +1126,30 @@ msgstr ""
 msgid "State aid maximum %"
 msgstr ""
 
+#, fuzzy
+#| msgid "pay_subsidy_decision"
 msgid "Pay subsidy/month"
-msgstr ""
+msgstr "Pay subsidy decision"
 
+#, fuzzy
+#| msgid "helsinki_benefit_voucher"
 msgid "Helsinki benefit amount monthly"
-msgstr ""
+msgstr "The Helsinki Benefit card"
 
+#, fuzzy
+#| msgid "helsinki_benefit_voucher"
 msgid "Helsinki benefit amount for a date range"
-msgstr ""
+msgstr "The Helsinki Benefit card"
 
+#, fuzzy
+#| msgid "helsinki_benefit_voucher"
 msgid "Helsinki benefit total amount"
-msgstr ""
+msgstr "The Helsinki Benefit card"
 
+#, fuzzy
+#| msgid "helsinki_benefit_voucher"
 msgid "Training compensation amount monthly"
-msgstr ""
+msgstr "The Helsinki Benefit card"
 
 msgid "Total amount of deductions monthly"
 msgstr ""
@@ -1024,23 +1182,31 @@ msgstr ""
 msgid "reason for overriding the calculated benefit amount"
 msgstr ""
 
+#, fuzzy
+#| msgid "helsinki_benefit_voucher"
 msgid "Incomplete application"
-msgstr ""
+msgstr "The Helsinki Benefit card"
 
 msgid "calculations"
 msgstr ""
 
+#, fuzzy
+#| msgid "pay_subsidy_decision"
 msgid "Pay subsidy start date"
-msgstr ""
+msgstr "Pay subsidy decision"
 
+#, fuzzy
+#| msgid "pay_subsidy_decision"
 msgid "Pay subsidy end date"
-msgstr ""
+msgstr "Pay subsidy decision"
 
 msgid "Work time percent"
 msgstr ""
 
+#, fuzzy
+#| msgid "pay_subsidy_decision"
 msgid "pay subsidies"
-msgstr ""
+msgstr "Pay subsidy decision"
 
 msgid "encrypted social security number"
 msgstr ""
@@ -1099,8 +1265,10 @@ msgstr ""
 msgid "bank account number"
 msgstr ""
 
+#, fuzzy
+#| msgid "employee_consent"
 msgid "companies"
-msgstr ""
+msgstr "Employee's consent for processing personal data"
 
 msgid "Finnish"
 msgstr ""
@@ -1110,6 +1278,15 @@ msgstr ""
 
 msgid "Swedish"
 msgstr ""
+
+msgid "fi"
+msgstr "Finnish"
+
+msgid "en"
+msgstr "English"
+
+msgid "sv"
+msgstr "Swedish"
 
 #, python-brace-format
 msgid ""
@@ -1236,11 +1413,15 @@ msgstr ""
 msgid "swedish text for the consent checkbox"
 msgstr ""
 
+#, fuzzy
+#| msgid "employee_consent"
 msgid "application consent"
-msgstr ""
+msgstr "Employee's consent for processing personal data"
 
+#, fuzzy
+#| msgid "employee_consent"
 msgid "application consents"
-msgstr ""
+msgstr "Employee's consent for processing personal data"
 
 msgid "timestamp of approval"
 msgstr ""
@@ -1265,30 +1446,3 @@ msgstr ""
 
 msgid "terms of service approvals"
 msgstr ""
-
-#~ msgid "fi"
-#~ msgstr "Finnish"
-
-#~ msgid "sv"
-#~ msgstr "Swedish"
-
-#~ msgid "en"
-#~ msgstr "English"
-
-#~ msgid "not_granted"
-#~ msgstr "None"
-
-#~ msgid "Processing of the personal data of the person to be employed"
-#~ msgstr "Behandlingen av personuppgifterna av personen som ska sysselsättas"
-
-#~ msgid "Agreement for employee's personal data processing"
-#~ msgstr "Avtal för anställds personuppgiftsbehandling"
-
-#~ msgid "employment_contract"
-#~ msgstr "Employment contract"
-
-#~ msgid "pay_subsidy_decision"
-#~ msgstr "Pay subsidy decision"
-
-#~ msgid "education_contract"
-#~ msgstr "Agreement on providing apprenticeship training"

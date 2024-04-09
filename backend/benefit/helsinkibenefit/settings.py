@@ -224,7 +224,17 @@ ROOT_URLCONF = "helsinkibenefit.urls"
 WSGI_APPLICATION = "helsinkibenefit.wsgi.application"
 
 LANGUAGE_CODE = "fi"
-LANGUAGES = (("fi", _("Finnish")), ("en", _("English")), ("sv", _("Swedish")))
+LANGUAGES = (
+    ("fi", _("Finnish")),
+    ("en", _("English")),
+    ("sv", _("Swedish")),
+)
+
+# Call gettext on languages so that "makemessages" command can find them when used dynamically in templates
+_("fi")
+_("en")
+_("sv")
+
 TIME_ZONE = "Europe/Helsinki"
 USE_I18N = True
 USE_L10N = True
