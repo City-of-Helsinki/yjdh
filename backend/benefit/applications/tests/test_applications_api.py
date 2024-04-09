@@ -283,7 +283,6 @@ def test_applications_simple_list_filter(
 def test_applications_filter_archived_for_applicant(
     api_client, mock_get_organisation_roles_and_create_company
 ):
-    reseed(12345)
     recent_batch = ApplicationBatchFactory(
         decision_date=date.today() - relativedelta(days=2),
         status=ApplicationBatchStatus.COMPLETED,
