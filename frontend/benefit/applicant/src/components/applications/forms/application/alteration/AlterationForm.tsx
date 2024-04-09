@@ -28,7 +28,11 @@ import {
   $Hr,
 } from 'shared/components/forms/section/FormSection.sc';
 import theme from 'shared/styles/theme';
-import { convertDateFormat } from 'shared/utils/date.utils';
+import {
+  convertDateFormat,
+  DATE_FORMATS,
+  formatDate,
+} from 'shared/utils/date.utils';
 
 type Props = {
   application: Application;
@@ -74,8 +78,10 @@ const AlterationForm = ({
   const disableOccupiedDates = (date: Date): boolean =>
     application.alterations.some(
       (alteration) =>
-        alteration.recoveryStartDate < date.toISOString() &&
-        alteration.recoveryEndDate > date.toISOString()
+        alteration.recoveryStartDate <=
+          formatDate(date, DATE_FORMATS.BACKEND_DATE) &&
+        alteration.recoveryEndDate >=
+          formatDate(date, DATE_FORMATS.BACKEND_DATE)
     );
 
   const getErrorMessage = (fieldName: string): string | undefined =>
