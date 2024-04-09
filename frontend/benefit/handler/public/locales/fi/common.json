@@ -1258,7 +1258,8 @@
   },
   "changes": {
     "header": {
-      "amountOfChanges": "Muutoksia yhteensä: {{ amount }}"
+      "amountOfChanges": "Muutoksia yhteensä: {{ amount }}",
+      "noChanges": "Ei havaittuja muutoksia"
     },
     "fields": {
       "jobTitle": {
