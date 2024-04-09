@@ -48,7 +48,8 @@ env = environ.Env(
     CORS_ALLOWED_ORIGINS=(list, []),
     CORS_ALLOW_ALL_ORIGINS=(bool, False),
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
-    CSRF_TRUSTED_ORIGINS=(list, ["https://localhost:3000", "https://localhost:3100"]),
+    DJANGO_4_CSRF_TRUSTED_ORIGINS=(list, []),
+    CSRF_TRUSTED_ORIGINS=(list, ["localhost:3000", "localhost:3100"]),
     CSRF_COOKIE_NAME=(str, "yjdhcsrftoken"),
     YTJ_BASE_URL=(str, "https://avoindata.prh.fi"),
     YTJ_TIMEOUT=(int, 30),
@@ -323,7 +324,10 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
 CORS_ALLOW_ALL_ORIGINS = env.bool("CORS_ALLOW_ALL_ORIGINS")
 CSRF_COOKIE_DOMAIN = env.str("CSRF_COOKIE_DOMAIN")
-CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
+django_4_csrf_origins = env.list("DJANGO_4_CSRF_TRUSTED_ORIGINS")
+CSRF_TRUSTED_ORIGINS = (
+    django_4_csrf_origins if django_4_csrf_origins else env.list("CSRF_TRUSTED_ORIGINS")
+)
 CSRF_COOKIE_NAME = env.str("CSRF_COOKIE_NAME")
 CSRF_COOKIE_SECURE = True
 CSRF_USE_SESSIONS = True
