@@ -203,7 +203,7 @@
                 {% if application.association_has_business_activities%}
                 <div class="row">
                     <div class="label">
-                        {{ _("Yhdistyksellä on yritystoimintaa") }}</div>
+                        {{ _("Association has business activities") }}</div>
                     <div class="value">{{ _("Yes") }}</div>
                 </div>
                 {%endif%}
@@ -248,20 +248,20 @@
             {% comment %}
             {% if application.handled_at %}
             <div class="row">
-                <div class="label">{{ _("Päätöksen päivämäärä") }}</div>
+                <div class="label">{{ _("Handled at date") }}</div>
                 <div class="value">{{ application.handled_at | date_fi }}</div>
             </div>
             {% endif %}
             {% if application.calculation.handler_details %}
             <div class="row">
-                <div class="label">{{ _("Käsittelijä") }}</div>
+                <div class="label">{{ _("Handler") }}</div>
                 <div class="value">{{ application.calculation.handler_details.first_name}} {{ application.calculation.handler_details.last_name}}</div>
                 {%endif%}
 
                 {% if application.status == "accepted" %}
                 <div class="row force-column">
-                    <div class="label">{{ _("Myönnetään de minimis -tukena") }}</div>
-                    <div class="value">{% if application.calculation.granted_as_de_minimis_aid %}Kyllä{% else %}Ei{%endif%}</div>
+                    <div class="label">{{ _("Granted as de minimis aid") }}</div>
+                    <div class="value">{% if application.calculation.granted_as_de_minimis_aid %}{{ _("Yes") }}{% else %}{{ _("No") }}{%endif%}</div>
                 </div>
                 {% endif %}
             {% endcomment %}
