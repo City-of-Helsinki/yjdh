@@ -422,7 +422,9 @@ class ApplicationAlterationViewSet(AuditLoggingModelViewSet):
             raise PermissionDenied(_("You are not allowed to do this action"))
 
         if alteration.state != ApplicationAlterationState.RECEIVED:
-            raise PermissionDenied(_("The alteration cannot be deleted in this state"))
+            raise PermissionDenied(
+                _("You cannot delete the change to employment in this state")
+            )
 
         return super().destroy(request, *args, **kwargs)
 

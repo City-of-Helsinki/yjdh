@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-09 11:28+0300\n"
+"POT-Creation-Date: 2024-04-10 09:41+0300\n"
 "PO-Revision-Date: 2022-11-01 10:45+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -43,6 +43,12 @@ msgstr "Toiminto ei ole sallittu tässä hakemuksen tilassa."
 
 msgid "File not found."
 msgstr "Tiedostoa ei löydy."
+
+msgid "You are not allowed to do this action"
+msgstr "Sinä et saa tehdä tätä toimenpidettä"
+
+msgid "You cannot delete the change to employment in this state"
+msgstr "Muutosta työsuhteessa ei voida poistaa tässä tilassa"
 
 #, python-brace-format
 msgid "Helsinki-lisan hakemukset viety {date}"
@@ -172,27 +178,32 @@ msgstr "Verkkolaskuosoite"
 msgid "{field} must be filled if using an e-invoice address"
 msgstr "{field} on pakollinen tieto, mikäli lasku lähetetään verkkolaskuna"
 
-msgid "Alteration cannot start before first benefit day"
+msgid ""
+"The change to employment cannot start before the start date of the benefit "
+"period"
 msgstr "Muutos työsuhteessa ei voi alkaa ennen tukijakson alkua"
 
-msgid "Alteration cannot start after last benefit day"
+msgid ""
+"The change to employment cannot start after the end date of the benefit "
+"period"
 msgstr "Muutos työsuhteessa ei voi alkaa tukijakson päättymisen jälkeen"
 
-msgid "Alteration cannot end after last benefit day"
-msgstr ""
-"Muutosjakson päättymispäivämäärä ei voi olla tukijakson päättymisen jälkeen"
+msgid ""
+"The end date of the change period cannot be after the end date of the "
+"benefit period"
+msgstr "Muutosjakson päättymispäivämäärä ei voi olla tukijakson päättymisen jälkeen"
 
-msgid "Alteration end date cannot be before start date"
-msgstr "Muutosjakson päättymispäivä ei voi olla aiemmin kuin aloituspäivä"
+msgid ""
+"The end date of the change period cannot be before the start date of the "
+"same period"
+msgstr "Muutosjakson päättymispäivä ei voi olla ennen sen aloituspäivää"
 
-msgid "Another alteration already overlaps the alteration period"
+msgid ""
+"Another change to employment has already been reported for the same period"
 msgstr "Valitulla aikavälillä on jo toinen muutos työsuhteessa"
 
-msgid "You are not allowed to do this action"
-msgstr "Sinä et saa tehdä tätä toimenpidettä"
-
-msgid "The alteration cannot be edited in this state"
-msgstr "Muutosta työsuhteessa ei voida muuttaa tässä tilassa"
+msgid "You cannot edit the change to employment in this state"
+msgstr "Muutosta työsuhteessa ei voida muokata tässä tilassa"
 
 #, python-brace-format
 msgid "Upload file size cannot be greater than {size} bytes"
