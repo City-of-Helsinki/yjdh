@@ -1,5 +1,5 @@
 import ListContents from 'benefit/applicant/components/applications/applicationList/listItem/ListContents';
-import React, { PropsWithChildren } from 'react';
+import React from 'react';
 import { OptionType } from 'shared/types/common';
 
 import ListItem from './listItem/ListItem';
@@ -12,16 +12,19 @@ export interface ApplicationListProps {
   orderByOptions?: OptionType[];
   noItemsText?: React.ReactNode;
   onListLengthChanged?: (isLoading: boolean, length: number) => void;
+  beforeList?: React.ReactNode;
+  afterList?: React.ReactNode;
 }
 
-const ApplicationList: React.FC<PropsWithChildren<ApplicationListProps>> = ({
+const ApplicationList: React.FC<ApplicationListProps> = ({
   heading,
   status,
   isArchived,
   orderByOptions,
   noItemsText,
-  children,
   onListLengthChanged,
+  beforeList,
+  afterList,
 }) => {
   const {
     list,
@@ -58,9 +61,9 @@ const ApplicationList: React.FC<PropsWithChildren<ApplicationListProps>> = ({
       items={items}
       noItemsText={noItemsText}
       onListLengthChanged={onListLengthChanged}
-    >
-      {children}
-    </ListContents>
+      beforeList={beforeList}
+      afterList={afterList}
+    />
   );
 };
 

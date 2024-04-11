@@ -1,7 +1,7 @@
 import { ApplicationListProps } from 'benefit/applicant/components/applications/applicationList/ApplicationList';
 import ListContents from 'benefit/applicant/components/applications/applicationList/listItem/ListContents';
 import { Pagination } from 'hds-react';
-import React, { PropsWithChildren, useState } from 'react';
+import React, { useState } from 'react';
 
 import { $PaginationContainer } from './ApplicationList.sc';
 import ListItem from './listItem/ListItem';
@@ -13,9 +13,7 @@ export interface PaginatedApplicationListProps {
   pageHref?: (index: number) => string;
 }
 
-type Props = PropsWithChildren<
-  ApplicationListProps & PaginatedApplicationListProps
->;
+type Props = ApplicationListProps & PaginatedApplicationListProps;
 
 const PaginatedApplicationList: React.FC<Props> = ({
   heading,
@@ -25,8 +23,9 @@ const PaginatedApplicationList: React.FC<Props> = ({
   initialPage,
   orderByOptions,
   noItemsText,
-  children,
   onListLengthChanged,
+  beforeList,
+  afterList,
 }) => {
   const {
     list,
@@ -71,24 +70,28 @@ const PaginatedApplicationList: React.FC<Props> = ({
       items={items}
       noItemsText={noItemsText}
       onListLengthChanged={onListLengthChanged}
-    >
-      {hasItems && (
-        <$PaginationContainer>
-          <Pagination
-            pageHref={() => '#'}
-            pageIndex={currentPage}
-            pageCount={Math.ceil(list.length / Math.max(1, itemsPerPage))}
-            paginationAriaLabel={t('common:utility.pagination')}
-            onChange={(e, index) => {
-              e.preventDefault();
-              setPage(index);
-            }}
-            language={language}
-          />
-        </$PaginationContainer>
-      )}
-      {children}
-    </ListContents>
+      beforeList={beforeList}
+      afterList={
+        <>
+          {hasItems && (
+            <$PaginationContainer>
+              <Pagination
+                pageHref={() => '#'}
+                pageIndex={currentPage}
+                pageCount={Math.ceil(list.length / Math.max(1, itemsPerPage))}
+                paginationAriaLabel={t('common:utility.pagination')}
+                onChange={(e, index) => {
+                  e.preventDefault();
+                  setPage(index);
+                }}
+                language={language}
+              />
+            </$PaginationContainer>
+          )}
+          {afterList}
+        </>
+      }
+    />
   );
 };
 

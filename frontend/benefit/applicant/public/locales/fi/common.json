@@ -27,7 +27,11 @@
         "contract": "Näytä vähemmän"
       },
       "noApplications": "Ei avoimia Helsinki-lisä -hakemuksia",
-      "navigateToDecisions": "Katso kaikki päätökset"
+      "navigateToDecisions": "Katso kaikki päätökset",
+      "alterationReminder": {
+        "label": "Muutos työsuhteessa?",
+        "body": "Jos työllistetyn henkilön työsuhde päättyy tai keskeytyy, ilmoita muutoksesta mahdollisimman pian. Ylimääräinen Helsinki-lisä saatetaan periä takaisin. Ilmoita muutoksesta avaamalla hakemus ja valitsemalla \"Ilmoita työsuhteen muutoksesta\"."
+      }
     },
     "pageHeaders": {
       "created": "Luotu",
