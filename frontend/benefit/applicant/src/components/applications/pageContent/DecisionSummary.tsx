@@ -50,15 +50,9 @@ const DecisionSummary = ({ application }: Props): JSX.Element => {
       alteration.alterationType === ALTERATION_TYPE.TERMINATION
   );
 
-  const sortedAlterations = application.alterations?.sort((a, b) => {
-    if (a.endDate < b.endDate) {
-      return -1;
-    }
-    if (a.endDate > b.endDate) {
-      return 1;
-    }
-    return 0;
-  });
+  const sortedAlterations = application.alterations?.sort(
+    (a, b) => Date.parse(a.endDate) - Date.parse(b.endDate)
+  );
 
   return (
     <$DecisionBox>
