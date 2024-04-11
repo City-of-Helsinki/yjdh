@@ -1,28 +1,35 @@
 import { Application } from 'benefit-shared/types/application';
 import { FormikErrors, FormikTouched } from 'formik';
 
-type FlattenedObject = Record<string, string>;
+type SimpleObjectNode =
+  | SimpleObject
+  | Array<SimpleObjectNode>
+  | string
+  | number
+  | boolean
+  | null;
+type SimpleObject = { [prop: string]: SimpleObjectNode };
 
-function flattenObject(
-  obj: FlattenedObject,
+const isSimpleObject = (a: SimpleObjectNode): a is SimpleObject =>
+  typeof a === 'object' && a !== null && !Array.isArray(a);
+
+const flattenObject = (
+  obj: SimpleObject,
   parentKey = '',
-  result: FlattenedObject = {}
-): FlattenedObject {
+  result: { [prop: string]: Exclude<SimpleObjectNode, SimpleObject> } = {}
+): SimpleObjectNode => {
   const appendResult = result;
   Object.keys(obj).forEach((key) => {
     const newKey = `${parentKey}${parentKey ? '.' : ''}${key}`;
-    if (
-      typeof obj[key] === 'object' &&
-      obj[key] !== null &&
-      !Array.isArray(obj[key])
-    ) {
-      flattenObject(obj[key] as unknown as FlattenedObject, newKey, result);
+    const item = obj[key];
+    if (isSimpleObject(item)) {
+      flattenObject(item, newKey, result);
     } else {
-      appendResult[newKey] = obj[key];
+      appendResult[newKey] = item;
     }
   });
   return result;
-}
+};
 
 /**
  * Used to enable / disable "save and close" button.
@@ -35,8 +42,8 @@ export const findIntersectionOfTouchedAndErroredFields = (
   touched: FormikTouched<Partial<Application>>,
   errors: FormikErrors<Partial<Application>>
 ): string[] =>
-  Object.keys(flattenObject(touched as FlattenedObject)).filter((field) =>
-    Object.keys(flattenObject(errors as FlattenedObject)).some((errorField) =>
+  Object.keys(flattenObject(touched)).filter((field) =>
+    Object.keys(flattenObject(errors)).find((errorField) =>
       errorField.includes(field)
     )
   );
