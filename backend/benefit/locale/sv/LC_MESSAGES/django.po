@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-09 11:28+0300\n"
+"POT-Creation-Date: 2024-04-10 09:41+0300\n"
 "PO-Revision-Date: 2022-11-01 10:47+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -44,6 +44,12 @@ msgstr "Åtgärd tillåts inte för denna ansökningsstatus"
 
 msgid "File not found."
 msgstr "Fil hittades inte."
+
+msgid "You are not allowed to do this action"
+msgstr "Du får inte utföra denna åtgärd"
+
+msgid "You cannot delete the change to employment in this state"
+msgstr "Du kan inte radera en ändring i en anställning i det här läget"
 
 #, python-brace-format
 msgid "Helsinki-lisan hakemukset viety {date}"
@@ -153,57 +159,47 @@ msgid "Reading {localized_model_name} data failed: {errors}"
 msgstr "Data {localized_model_name} kan inte läsas: {errors}"
 
 msgid "Resume date is required if the benefit period wasn't terminated"
-msgstr ""
+msgstr "Datum för återvändande till arbetet är en obligatorisk uppgift om anställningen avbryts"
 
-#, fuzzy
-#| msgid "Name of the employer"
 msgid "E-invoice provider name"
-msgstr "Arbetsgivarens namn"
+msgstr "E-fakturaoperatörens namn"
 
-#, fuzzy
-#| msgid "Name of the employer"
 msgid "E-invoice provider identifier"
-msgstr "Arbetsgivarens namn"
+msgstr "Förmedlarkod"
 
-#, fuzzy
-#| msgid "Delivery address"
 msgid "E-invoice address"
-msgstr "Leveransadress"
+msgstr "E-fakturaadress"
 
 #, python-brace-format
 msgid "{field} must be filled if using an e-invoice address"
-msgstr ""
+msgstr "{field} måste fyllas i om e-faktura används"
 
-#, fuzzy
-#| msgid "application end_date can not be less than start_date"
-msgid "Alteration cannot start before first benefit day"
-msgstr "end_date för ansökan kan inte vara tidigare än start_date"
+msgid ""
+"The change to employment cannot start before the start date of the benefit "
+"period"
+msgstr "En ändring i anställningen kan inte börja före stödperiodens början"
 
-#, fuzzy
-#| msgid "application end_date can not be less than start_date"
-msgid "Alteration cannot start after last benefit day"
-msgstr "end_date för ansökan kan inte vara tidigare än start_date"
+msgid ""
+"The change to employment cannot start after the end date of the benefit "
+"period"
+msgstr "En ändring i anställningen kan inte börja efter stödperiodens slut"
 
-#, fuzzy
-#| msgid "application end_date can not be less than start_date"
-msgid "Alteration cannot end after last benefit day"
-msgstr "end_date för ansökan kan inte vara tidigare än start_date"
+msgid ""
+"The end date of the change period cannot be after the end date of the "
+"benefit period"
+msgstr "Ändringsperiodens slutdatum kan inte vara efter stödperiodens slut"
 
-#, fuzzy
-#| msgid "application end_date can not be less than start_date"
-msgid "Alteration end date cannot be before start date"
-msgstr "end_date för ansökan kan inte vara tidigare än start_date"
+msgid ""
+"The end date of the change period cannot be before the start date of the "
+"same period"
+msgstr "Ändringsperiodens slutdatum kan inte vara tidigare än dess startdatum"
 
-msgid "Another alteration already overlaps the alteration period"
-msgstr ""
+msgid ""
+"Another change to employment has already been reported for the same period"
+msgstr "Det finns redan en annan ändring i anställningen under den valda perioden"
 
-msgid "You are not allowed to do this action"
-msgstr "Du får inte utföra denna åtgärd"
-
-#, fuzzy
-#| msgid "Application can not be changed in this status"
-msgid "The alteration cannot be edited in this state"
-msgstr "Ansökan kan inte ändras i denna status"
+msgid "You cannot edit the change to employment in this state"
+msgstr "Du kan inte redigera en ändring i en anställning i det här läget"
 
 #, python-brace-format
 msgid "Upload file size cannot be greater than {size} bytes"

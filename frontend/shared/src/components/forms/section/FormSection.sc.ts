@@ -19,6 +19,8 @@ export type FormSectionProps = {
 export type GridProps = {
   role?: React.HTMLAttributes<'div'>['role'];
   gap?: SpacingValue;
+  rowGap?: SpacingValue;
+  columnGap?: SpacingValue;
   columns?: number;
   bgColor?: boolean;
   bgHorizontalPadding?: boolean;
@@ -56,15 +58,16 @@ export const $SubHeader = styled.h3<$SubHeaderProps>`
 
 export const $Grid = styled.div.attrs<
   GridProps,
-  GridProps & { gap: SpacingValue }
+  Omit<GridProps, 'gap'> & { columnGap: SpacingValue, rowGap: SpacingValue }
 >((props) => ({
   ...props,
-  gap: props.gap || props.theme.spacing.s,
+  rowGap: props.rowGap || props.gap || props.theme.spacing.m,
+  columnGap: props.columnGap || props.gap || props.theme.spacing.s,
 }))<GridProps>`
   position: relative;
   display: grid;
   grid-template-columns: repeat(${(props) => props.columns ?? 12}, 1fr);
-  gap: ${(props) => props.gap};
+  gap: ${(props) => props.rowGap} ${(props) => props.columnGap};
   align-items: ${(props) => props.alignItems ?? 'initial'};
   justify-items: ${(props) => props.justifyItems ?? 'initial'};
 

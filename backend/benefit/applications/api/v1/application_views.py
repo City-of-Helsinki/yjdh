@@ -18,6 +18,7 @@ from django_filters.widgets import CSVWidget
 from drf_spectacular.utils import extend_schema
 from rest_framework import filters as drf_filters, status
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import MultiPartParser
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
@@ -34,6 +35,7 @@ from applications.api.v1.serializers.application_alteration import (
 )
 from applications.api.v1.serializers.attachment import AttachmentSerializer
 from applications.enums import (
+    ApplicationAlterationState,
     ApplicationBatchStatus,
     ApplicationOrigin,
     ApplicationStatus,
@@ -373,7 +375,7 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
 class ApplicationAlterationViewSet(AuditLoggingModelViewSet):
     serializer_class = ApplicationAlterationSerializer
     queryset = ApplicationAlteration.objects.all()
-    http_method_names = ["post", "patch", "head"]
+    http_method_names = ["post", "patch", "head", "delete"]
 
     APPLICANT_UNEDITABLE_FIELDS = [
         "state",
@@ -404,6 +406,27 @@ class ApplicationAlterationViewSet(AuditLoggingModelViewSet):
 
     def update(self, request, *args, **kwargs):
         return super().update(self._prune_fields(request), *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        # Only the applicant can delete an alteration, and only if it hasn't yet been
+        # opened by a handler.
+
+        alteration = self.get_object()
+
+        if not settings.NEXT_PUBLIC_MOCK_FLAG:
+            company = get_company_from_request(request)
+            if company != alteration.application.company:
+                raise PermissionDenied(_("You are not allowed to do this action"))
+
+        if request.user.is_handler():
+            raise PermissionDenied(_("You are not allowed to do this action"))
+
+        if alteration.state != ApplicationAlterationState.RECEIVED:
+            raise PermissionDenied(
+                _("You cannot delete the change to employment in this state")
+            )
+
+        return super().destroy(request, *args, **kwargs)
 
 
 @extend_schema(

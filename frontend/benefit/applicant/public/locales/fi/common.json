@@ -433,7 +433,37 @@
       "alterationList": {
         "count_one": "{{count}} ilmoitettu muutos työsuhteessa",
         "count_other": "{{count}} ilmoitettua muutosta työsuhteessa",
-        "empty": "Ei ilmoitettuja keskeytyksiä työsuhteessa. Työsuhde on toteutunut suunnitellusti."
+        "empty": "Ei ilmoitettuja keskeytyksiä työsuhteessa. Työsuhde on toteutunut suunnitellusti.",
+        "item": {
+          "heading": {
+            "termination": "Työsuhde on päättynyt {{endDate}}",
+            "suspension": "Työsuhde on keskeytynyt {{endDate}}–{{resumeDate}}"
+          },
+          "actions": {
+            "delete": "Poista"
+          },
+          "state": {
+            "label": "Tila",
+            "received": "Lähetetty",
+            "opened": "Vastaanotettu",
+            "handled": "Käsitelty"
+          },
+          "recoveryAmount": "Takaisin peritty tuki",
+          "recoveryPeriod": "Aika, jolta tukea perittiin takaisin",
+          "contactPersonName": "Yhteyshenkilö laskutuksessa",
+          "einvoiceProviderName": "Verkkolaskuoperaattori",
+          "einvoiceProviderIdentifier": "Välittäjätunnus",
+          "einvoiceAddress": "Verkkolaskuosoite",
+          "deliveryAddress": "Laskutusosoite"
+        },
+        "deleteModal": {
+          "titleTermination": "Haluatko poistaa tehdyn ilmoituksen työsuhteen päättymisestä?",
+          "titleSuspension": "Haluatko poistaa tehdyn ilmoituksen työsuhteen keskeytymisestä?",
+          "bodyTermination": "Tehty ilmoitus työsuhteen päättymisestä poistetaan.",
+          "bodySuspension": "Tehty ilmoitus työsuhteen keskeytymisestä poistetaan.",
+          "delete": "Poista",
+          "cancel": "Peruuta"
+        }
       },
       "actions": {
         "showDecision": "Tarkastele päätöstä",
@@ -501,12 +531,8 @@
         "notYetAccepted": "Et voi ilmoittaa muutosta työsuhteessa tälle hakemukselle, sillä tukea ei ole vielä myönnetty.",
         "alreadyTerminated": "Tämä työsuhde on aiemmin jo merkitty päättyneeksi, joten et voi enää ilmoittaa uudesta muutoksesta."
       },
-      "billing": "Laskutustiedot",
-      "successToast": {
-        "title": "Työsuhteen muutosilmoitus lähetetty",
-        "bodyTermination": "Hakemuksen {{id}} työsuhde on ilmoitettu päättyväksi.",
-        "bodySuspension": "Hakemuksen {{id}} työsuhde on ilmoitettu keskeytyväksi."
-      }
+      "details": "Muutokset työsuhteessa",
+      "billing": "Laskutustiedot"
     }
   },
   "serviceName": "Helsinki-lisän asiointipalvelu",
@@ -548,6 +574,16 @@
     "applicationDeleted": {
       "label": "Luonnos poistettu",
       "message": "Hakemus on poistettu."
+    },
+    "alterationCreated": {
+      "title": "Työsuhteen muutosilmoitus lähetetty",
+      "bodyTermination": "Hakemuksen {{id}} työsuhde on ilmoitettu päättyväksi.",
+      "bodySuspension": "Hakemuksen {{id}} työsuhde on ilmoitettu keskeytyväksi."
+    },
+    "alterationDeleted": {
+      "labelTermination": "Ilmoitus työsuhteen päättymisestä on poistettu.",
+      "labelSuspension": "Ilmoitus työsuhteen keskeytymisestä on poistettu.",
+      "message": "Voit ilmoittaa työsuhteen keskeytymisestä tai päättymisestä valitsemalla ”Ilmoita muutoksesta työsuhteessa”."
     }
   },
   "languages": {
@@ -708,7 +744,8 @@
     "home": "Palaa etusivulle",
     "pagination": "Sivut",
     "back": "Takaisin",
-    "submitting": "Lähetetään..."
+    "submitting": "Lähetetään...",
+    "deleting": "Poistetaan..."
   },
   "messenger": {
     "messages": "Hakemuksen viestit",

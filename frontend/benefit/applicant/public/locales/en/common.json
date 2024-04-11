@@ -433,7 +433,37 @@
       "alterationList": {
         "count_one": "{{count}} change in employment reported",
         "count_other": "{{count}} changes in employment reported",
-        "empty": "No reported breaks in employment. Employment realised according to plan."
+        "empty": "No reported breaks in employment. Employment realised according to plan.",
+        "item": {
+          "heading": {
+            "termination": "Employment has been terminated on {{endDate}}",
+            "suspension": "Employment has been suspended for the period of {{endDate}} – {{resumeDate}}"
+          },
+          "actions": {
+            "delete": "Delete"
+          },
+          "state": {
+            "label": "Status",
+            "received": "Received",
+            "opened": "Handling",
+            "handled": "Processed"
+          },
+          "recoveryAmount": "Recovered benefit",
+          "recoveryPeriod": "Time period for which the benefit was recovered",
+          "contactPersonName": "Invoicing contact person",
+          "einvoiceProviderName": "E-invoice operator",
+          "einvoiceProviderIdentifier": "Operator ID",
+          "einvoiceAddress": "Electronic invoicing address",
+          "deliveryAddress": "Invoice address"
+        },
+        "deleteModal": {
+          "titleTermination": "Do you want to delete the report of terminated employment?",
+          "titleSuspension": "Do you want to delete the report of suspended employment?",
+          "bodyTermination": "The report of terminated employment will be removed.",
+          "bodySuspension": "The report of suspended employment will be removed.",
+          "delete": "Delete",
+          "cancel": "Cancel"
+        }
       },
       "actions": {
         "showDecision": "View decision",
@@ -501,12 +531,8 @@
         "notYetAccepted": "You cannot report a change to employment using this application, because the benefit has not been granted yet.",
         "alreadyTerminated": "This employment has been reported as terminated previously, which means that you cannot report a new change."
       },
-      "billing": "Invoicing details",
-      "successToast": {
-        "title": "Employment status change report sent",
-        "bodyTermination": "Employment on application {{id}} has been reported as suspended.",
-        "bodySuspension": "Employment on application {{id}} has been reported as terminated."
-      }
+      "details": "Changes in employment",
+      "billing": "Invoicing details"
     }
   },
   "serviceName": "Helsinki benefit service",
@@ -548,6 +574,16 @@
     "applicationDeleted": {
       "label": "Draft deleted",
       "message": "Application has been deleted. "
+    },
+    "alterationCreated": {
+      "title": "Employment status change report sent",
+      "bodyTermination": "Employment on application {{id}} has been reported as suspended.",
+      "bodySuspension": "Employment on application {{id}} has been reported as terminated."
+    },
+    "alterationDeleted": {
+      "labelTermination": "The report of terminated employment has been removed.",
+      "labelSuspension": "The report of suspended employment has been removed.",
+      "message": "You can report a suspension or termination of employment by selecting ‘Report changes to employment’."
     }
   },
   "languages": {
@@ -708,7 +744,8 @@
     "home": "Return to the front page",
     "pagination": "Pagination",
     "back": "Back",
-    "submitting": "Submitting..."
+    "submitting": "Submitting...",
+    "deleting": "Deleting..."
   },
   "messenger": {
     "messages": "Application’s messages",

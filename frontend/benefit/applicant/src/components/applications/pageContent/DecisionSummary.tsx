@@ -1,6 +1,8 @@
+import AlterationAccordionItem from 'benefit/applicant/components/applications/alteration/AlterationAccordionItem';
 import {
-  $ActionContainer,
+  $AlterationActionContainer,
   $AlterationListCount,
+  $DecisionActionContainer,
   $DecisionBox,
   $DecisionBoxTitle,
   $DecisionDetails,
@@ -48,6 +50,10 @@ const DecisionSummary = ({ application }: Props): JSX.Element => {
       alteration.alterationType === ALTERATION_TYPE.TERMINATION
   );
 
+  const sortedAlterations = application.alterations?.sort(
+    (a, b) => Date.parse(a.endDate) - Date.parse(b.endDate)
+  );
+
   return (
     <$DecisionBox>
       <$DecisionBoxTitle>
@@ -89,7 +95,7 @@ const DecisionSummary = ({ application }: Props): JSX.Element => {
           <dd>{convertToUIDateFormat(application.ahjoDecisionDate)}</dd>
         </div>
       </$DecisionDetails>
-      <$ActionContainer>
+      <$DecisionActionContainer>
         <Button
           iconRight={<IconLinkExternal />}
           onClick={displayDecision}
@@ -99,7 +105,7 @@ const DecisionSummary = ({ application }: Props): JSX.Element => {
         >
           {t('common:applications.decision.actions.showDecision')}
         </Button>
-      </$ActionContainer>
+      </$DecisionActionContainer>
       {isTruthy(process.env.NEXT_PUBLIC_ENABLE_ALTERATION_FEATURES) && (
         <>
           <$Subheading>
@@ -112,21 +118,28 @@ const DecisionSummary = ({ application }: Props): JSX.Element => {
                 })
               : t('common:applications.decision.alterationList.empty')}
           </$AlterationListCount>
-          <$ActionContainer>
-            {application.status === APPLICATION_STATUSES.ACCEPTED &&
-              !hasHandledTermination && (
-                <Button
-                  theme="coat"
-                  onClick={() =>
-                    router.push(
-                      `${ROUTES.APPLICATION_ALTERATION}?id=${application.id}`
-                    )
-                  }
-                >
-                  {t('common:applications.decision.actions.reportAlteration')}
-                </Button>
-              )}
-          </$ActionContainer>
+          {sortedAlterations.map((alteration) => (
+            <AlterationAccordionItem
+              key={alteration.id}
+              alteration={alteration}
+              application={application}
+            />
+          ))}
+          <$AlterationActionContainer>
+            {application.status === APPLICATION_STATUSES.ACCEPTED && (
+              <Button
+                theme="coat"
+                onClick={() =>
+                  router.push(
+                    `${ROUTES.APPLICATION_ALTERATION}?id=${application.id}`
+                  )
+                }
+                disabled={hasHandledTermination}
+              >
+                {t('common:applications.decision.actions.reportAlteration')}
+              </Button>
+            )}
+          </$AlterationActionContainer>
         </>
       )}
     </$DecisionBox>

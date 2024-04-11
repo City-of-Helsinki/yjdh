@@ -71,21 +71,35 @@ class ApplicationAlterationSerializer(DynamicFieldsModelSerializer):
         errors = []
         if start_date < application.start_date:
             errors.append(
-                ValidationError(_("Alteration cannot start before first benefit day"))
+                ValidationError(
+                    _(
+                        "The change to employment cannot start before the start date of the benefit period"
+                    )
+                )
             )
         if start_date > application.end_date:
             errors.append(
-                ValidationError(_("Alteration cannot start after last benefit day"))
+                ValidationError(
+                    _(
+                        "The change to employment cannot start after the end date of the benefit period"
+                    )
+                )
             )
         if end_date is not None:
             if end_date > application.end_date:
                 errors.append(
-                    ValidationError(_("Alteration cannot end after last benefit day"))
+                    ValidationError(
+                        _(
+                            "The end date of the change period cannot be after the end date of the benefit period"
+                        )
+                    )
                 )
             if start_date > end_date:
                 errors.append(
                     ValidationError(
-                        _("Alteration end date cannot be before start date")
+                        _(
+                            "The end date of the change period cannot be before the start date of the same period"
+                        )
                     )
                 )
 
@@ -108,7 +122,9 @@ class ApplicationAlterationSerializer(DynamicFieldsModelSerializer):
 
             errors.append(
                 ValidationError(
-                    _("Another alteration already overlaps the alteration period")
+                    _(
+                        "Another change to employment has already been reported for the same period"
+                    )
                 )
             )
 
@@ -139,7 +155,7 @@ class ApplicationAlterationSerializer(DynamicFieldsModelSerializer):
 
             if current_state not in allowed_states:
                 raise PermissionDenied(
-                    _("The alteration cannot be edited in this state")
+                    _("You cannot edit the change to employment in this state")
                 )
 
         # Verify that any fields that are required based on another field are filled

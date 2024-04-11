@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-09 11:28+0300\n"
+"POT-Creation-Date: 2024-04-10 09:41+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,6 +42,12 @@ msgid "Operation not allowed for this application status."
 msgstr ""
 
 msgid "File not found."
+msgstr ""
+
+msgid "You are not allowed to do this action"
+msgstr ""
+
+msgid "You cannot delete the change to employment in this state"
 msgstr ""
 
 #, python-brace-format
@@ -165,25 +171,31 @@ msgstr ""
 msgid "{field} must be filled if using an e-invoice address"
 msgstr ""
 
-msgid "Alteration cannot start before first benefit day"
+msgid ""
+"The change to employment cannot start before the start date of the benefit "
+"period"
 msgstr ""
 
-msgid "Alteration cannot start after last benefit day"
+msgid ""
+"The change to employment cannot start after the end date of the benefit "
+"period"
 msgstr ""
 
-msgid "Alteration cannot end after last benefit day"
+msgid ""
+"The end date of the change period cannot be after the end date of the "
+"benefit period"
 msgstr ""
 
-msgid "Alteration end date cannot be before start date"
+msgid ""
+"The end date of the change period cannot be before the start date of the "
+"same period"
 msgstr ""
 
-msgid "Another alteration already overlaps the alteration period"
+msgid ""
+"Another change to employment has already been reported for the same period"
 msgstr ""
 
-msgid "You are not allowed to do this action"
-msgstr ""
-
-msgid "The alteration cannot be edited in this state"
+msgid "You cannot edit the change to employment in this state"
 msgstr ""
 
 #, python-brace-format

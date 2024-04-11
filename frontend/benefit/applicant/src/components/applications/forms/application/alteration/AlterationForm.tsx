@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios';
 import {
   $ButtonContainer,
+  $H2,
   $SaveActionFormErrorText,
 } from 'benefit/applicant/components/applications/forms/application/alteration/AlterationForm.sc';
 import useAlterationForm from 'benefit/applicant/components/applications/forms/application/alteration/useAlterationForm';
@@ -27,7 +28,11 @@ import {
   $Hr,
 } from 'shared/components/forms/section/FormSection.sc';
 import theme from 'shared/styles/theme';
-import { convertDateFormat } from 'shared/utils/date.utils';
+import {
+  convertDateFormat,
+  DATE_FORMATS,
+  formatDate,
+} from 'shared/utils/date.utils';
 
 type Props = {
   application: Application;
@@ -73,8 +78,10 @@ const AlterationForm = ({
   const disableOccupiedDates = (date: Date): boolean =>
     application.alterations.some(
       (alteration) =>
-        alteration.recoveryStartDate < date.toISOString() &&
-        alteration.recoveryEndDate > date.toISOString()
+        alteration.recoveryStartDate <=
+          formatDate(date, DATE_FORMATS.BACKEND_DATE) &&
+        alteration.recoveryEndDate >=
+          formatDate(date, DATE_FORMATS.BACKEND_DATE)
     );
 
   const getErrorMessage = (fieldName: string): string | undefined =>
@@ -84,6 +91,9 @@ const AlterationForm = ({
   return (
     <section>
       <$Grid>
+        <$GridCell $colSpan={12}>
+          <$H2>{t('common:applications.alteration.details')}</$H2>
+        </$GridCell>
         <$GridCell $colSpan={12}>
           <SelectionGroup
             label={t(
@@ -122,7 +132,7 @@ const AlterationForm = ({
         </$GridCell>
         {alterationType !== null && (
           <>
-            <$GridCell $colSpan={4}>
+            <$GridCell $colSpan={3}>
               <DateInput
                 label={t('common:applications.alteration.fields.endDate.label')}
                 helperText={t(
@@ -144,7 +154,7 @@ const AlterationForm = ({
               />
             </$GridCell>
             {alterationType === ALTERATION_TYPE.SUSPENSION && (
-              <$GridCell $colSpan={4}>
+              <$GridCell $colSpan={3}>
                 <DateInput
                   label={t(
                     'common:applications.alteration.fields.resumeDate.label'
@@ -170,7 +180,8 @@ const AlterationForm = ({
                 />
               </$GridCell>
             )}
-            <$GridCell $colSpan={12}>
+            <$GridCell $colSpan={6} />
+            <$GridCell $colSpan={6}>
               <TextInput
                 label={
                   alterationType === ALTERATION_TYPE.SUSPENSION
@@ -203,12 +214,12 @@ const AlterationForm = ({
           </>
         )}
         <$GridCell $colSpan={12}>
-          <$Hr />
+          <$Hr css="margin-top: 0;" />
         </$GridCell>
         <$GridCell $colSpan={12}>
-          <h2>{t('common:applications.alteration.billing')}</h2>
+          <$H2>{t('common:applications.alteration.billing')}</$H2>
         </$GridCell>
-        <$GridCell $colSpan={12}>
+        <$GridCell $colSpan={4}>
           <TextInput
             label={t(
               'common:applications.alteration.fields.contactPersonName.label'
@@ -227,7 +238,8 @@ const AlterationForm = ({
             required
           />
         </$GridCell>
-        <$GridCell $colSpan={12}>
+        <$GridCell $colSpan={8} />
+        <$GridCell $colSpan={8}>
           <SelectionGroup
             label={t('common:applications.alteration.fields.useEinvoice.label')}
             required
@@ -261,9 +273,10 @@ const AlterationForm = ({
             />
           </SelectionGroup>
         </$GridCell>
+        <$GridCell $colSpan={4} />
         {useEinvoice && (
           <>
-            <$GridCell $colSpan={12}>
+            <$GridCell $colSpan={4}>
               <TextInput
                 label={t(
                   'common:applications.alteration.fields.einvoiceProviderName.label'
@@ -282,7 +295,8 @@ const AlterationForm = ({
                 required
               />
             </$GridCell>
-            <$GridCell $colSpan={12}>
+            <$GridCell $colSpan={8} />
+            <$GridCell $colSpan={4}>
               <TextInput
                 label={t(
                   'common:applications.alteration.fields.einvoiceProviderIdentifier.label'
@@ -301,7 +315,8 @@ const AlterationForm = ({
                 required
               />
             </$GridCell>
-            <$GridCell $colSpan={12}>
+            <$GridCell $colSpan={8} />
+            <$GridCell $colSpan={4}>
               <TextInput
                 label={t(
                   'common:applications.alteration.fields.einvoiceAddress.label'
