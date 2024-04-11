@@ -1,8 +1,14 @@
 import { ApplicationChangesData } from 'benefit/handler/types/application';
 import { ChangeListData } from 'benefit/handler/types/changes';
+import { IconHistory } from 'hds-react';
 import orderBy from 'lodash/orderBy';
+import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import { $Actions } from 'shared/components/messaging/Messaging.sc';
+import {
+  $Actions,
+  $Empty,
+  $MessagesList,
+} from 'shared/components/messaging/Messaging.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 
 import ChangeSet from './ChangeSet';
@@ -29,6 +35,17 @@ const ChangeList: React.FC<ChangeListProps> = ({ data }: ChangeListProps) => {
   const { handler, applicant } = data;
   const combined: ChangeListData[] = [...handler, ...applicant];
   const combinedAndOrderedChangeSets = orderBy(combined, ['date'], ['desc']);
+  const { t } = useTranslation();
+  if (combinedAndOrderedChangeSets.length === 0) {
+    return (
+      <$MessagesList variant="message">
+        <$Empty>
+          <IconHistory />
+          <p>{t('common:changes.header.noChanges')}</p>
+        </$Empty>
+      </$MessagesList>
+    );
+  }
 
   return (
     <$Actions>
