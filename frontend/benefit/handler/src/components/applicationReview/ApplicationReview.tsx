@@ -1,5 +1,3 @@
-import 'react-loading-skeleton/dist/skeleton.css';
-
 import ApplicationHeader from 'benefit/handler/components/applicationHeader/ApplicationHeader';
 import { HANDLED_STATUSES } from 'benefit/handler/constants';
 import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';

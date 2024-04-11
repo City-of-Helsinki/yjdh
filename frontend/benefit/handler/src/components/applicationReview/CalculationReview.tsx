@@ -2,7 +2,6 @@ import AppContext from 'benefit/handler/context/AppContext';
 import { ApplicationListTableColumns } from 'benefit/handler/types/applicationList';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application, Row } from 'benefit-shared/types/application';
-import intervalToDuration from 'date-fns/intervalToDuration';
 import { IconCheckCircleFill, IconCrossCircleFill, Table } from 'hds-react';
 import clone from 'lodash/clone';
 import { TFunction, useTranslation } from 'next-i18next';
@@ -10,7 +9,7 @@ import * as React from 'react';
 import Heading from 'shared/components/forms/heading/Heading';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import theme from 'shared/styles/theme';
-import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import { convertToUIDateFormat, diffMonths } from 'shared/utils/date.utils';
 import { formatFloatToCurrency } from 'shared/utils/string.utils';
 
 import { $HorizontalList } from '../table/TableExtras.sc';
@@ -26,21 +25,22 @@ type BenefitRow = {
   amount: string;
   amountNumber: string;
   perMonth: string;
-  duration: string;
+  duration: number;
   startDate: string;
   endDate: string;
 };
 
-const initialBenefitRow: BenefitRow = {
-  id: '',
-  dates: '',
-  amount: '',
-  amountNumber: '',
-  perMonth: '',
-  duration: '',
-  startDate: '',
-  endDate: '',
-};
+const createBenefitRow = (): BenefitRow =>
+  clone({
+    id: '',
+    dates: '',
+    amount: '',
+    amountNumber: '',
+    perMonth: '',
+    duration: 0,
+    startDate: '',
+    endDate: '',
+  });
 
 const getTableCols = (t: TFunction): ApplicationListTableColumns[] => [
   {
@@ -73,18 +73,8 @@ const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
   const { t } = useTranslation();
   const { handledApplication } = React.useContext(AppContext);
 
-  let tableRow: BenefitRow = {
-    id: '',
-    dates: '',
-    amount: '',
-    amountNumber: '',
-    perMonth: '',
-    duration: '',
-    startDate: '',
-    endDate: '',
-  };
+  let tableRow = createBenefitRow();
 
-  // TODO: Extract to utility functions or to useApplicationReviewStep2
   const tableRows = filteredData.reduce((acc: BenefitRow[], row: Row) => {
     tableRow.id = row.id;
     if (row.rowType === 'helsinki_benefit_monthly_eur') {
@@ -97,22 +87,16 @@ const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
 
       tableRow.endDate = convertToUIDateFormat(row.endDate);
       tableRow.startDate = convertToUIDateFormat(row.startDate);
-      const duration = intervalToDuration({
-        start: new Date(row.startDate),
-        end: new Date(row.endDate),
-      });
 
-      tableRow.duration = `${
-        duration.months > 0 ? `${duration.months}kk, ` : ''
-      }${duration.days}p `;
-
-      // mergeRow.duration =
-      //   differenceInDays(new Date(row.endDate), new Date(row.startDate)) + ' p';
+      tableRow.duration = diffMonths(
+        new Date(row.endDate),
+        new Date(row.startDate)
+      );
 
       tableRow.amount = formatFloatToCurrency(row.amount);
       tableRow.amountNumber = row.amount;
       acc.push(tableRow);
-      tableRow = clone(initialBenefitRow);
+      tableRow = createBenefitRow();
     }
     return acc;
   }, []);
@@ -124,9 +108,13 @@ const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
 
   if (tableRows.length > 0)
     tableRows.push({
-      ...clone(initialBenefitRow),
+      ...createBenefitRow(),
       id: 'table-footer',
       dates: `${tableRows.at(0).startDate} - ${tableRows.at(-1).endDate}`,
+      duration: tableRows.reduce(
+        (acc: number, cur: BenefitRow) => acc + cur.duration,
+        0
+      ),
       amount: formatFloatToCurrency(totalSum),
     });
 
@@ -141,7 +129,7 @@ const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
         {handledApplication.status === APPLICATION_STATUSES.ACCEPTED && (
           <p>
             {t('common:review.decisionProposal.list.text.accepted', {
-              months: '123',
+              months: tableRows.at(-1)?.duration,
               startAndEndDate: `${tableRows.at(-1)?.dates}`,
             })}
           </p>

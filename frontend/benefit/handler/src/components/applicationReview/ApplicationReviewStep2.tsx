@@ -83,10 +83,17 @@ const ApplicationReviewStep2: React.FC<ApplicationReviewStepProps> = ({
         handledApplication?.handlerRole
       )
     );
+
     setHandledApplication({
       ...handledApplication,
-      decisionText: option.template_decision_text,
-      justificationText: option.template_justification_text,
+      decisionText: replaceDecisionTemplatePlaceholders(
+        option.template_decision_text,
+        'handler'
+      ),
+      justificationText: replaceDecisionTemplatePlaceholders(
+        option.template_justification_text,
+        'handler'
+      ),
     });
   };
 
@@ -147,14 +154,8 @@ const ApplicationReviewStep2: React.FC<ApplicationReviewStepProps> = ({
               id="radio-decision-maker-handler"
               value="handler"
               label={t(`${translationBase}.role.fields.decisionMaker.handler`)}
-              name="inspection_mode"
               onChange={(value) => {
                 if (value) {
-                  setHandledApplication({
-                    ...handledApplication,
-                    handlerRole: 'handler',
-                  });
-
                   setTemplateForDecisionText(
                     replaceDecisionTemplatePlaceholders(
                       handledApplication?.decisionText || '',
@@ -167,6 +168,18 @@ const ApplicationReviewStep2: React.FC<ApplicationReviewStepProps> = ({
                       'handler'
                     )
                   );
+                  setHandledApplication({
+                    ...handledApplication,
+                    handlerRole: 'handler',
+                    decisionText: replaceDecisionTemplatePlaceholders(
+                      handledApplication?.decisionText || '',
+                      'handler'
+                    ),
+                    justificationText: replaceDecisionTemplatePlaceholders(
+                      handledApplication?.justificationText || '',
+                      'handler'
+                    ),
+                  });
                 }
               }}
             />
@@ -179,10 +192,6 @@ const ApplicationReviewStep2: React.FC<ApplicationReviewStepProps> = ({
               name="inspection_mode"
               onChange={(value) => {
                 if (value) {
-                  setHandledApplication({
-                    ...handledApplication,
-                    handlerRole: 'manager',
-                  });
                   setTemplateForDecisionText(
                     replaceDecisionTemplatePlaceholders(
                       handledApplication?.decisionText || '',
@@ -195,6 +204,18 @@ const ApplicationReviewStep2: React.FC<ApplicationReviewStepProps> = ({
                       'manager'
                     )
                   );
+                  setHandledApplication({
+                    ...handledApplication,
+                    handlerRole: 'manager',
+                    decisionText: replaceDecisionTemplatePlaceholders(
+                      handledApplication?.decisionText || '',
+                      'manager'
+                    ),
+                    justificationText: replaceDecisionTemplatePlaceholders(
+                      handledApplication?.justificationText || '',
+                      'manager'
+                    ),
+                  });
                 }
               }}
             />
@@ -255,10 +276,7 @@ const ApplicationReviewStep2: React.FC<ApplicationReviewStepProps> = ({
             <EditorAhjoProposal
               data-testid="decision-text"
               name="decisionText"
-              resetWithContent={replaceDecisionTemplatePlaceholders(
-                templateForDecisionText,
-                handledApplication?.handlerRole
-              )}
+              resetWithContent={templateForDecisionText}
             />
           </$GridCell>
           <$GridCell $colSpan={12}>
@@ -271,10 +289,7 @@ const ApplicationReviewStep2: React.FC<ApplicationReviewStepProps> = ({
             <EditorAhjoProposal
               name="justificationText"
               data-testid="justification-text"
-              resetWithContent={replaceDecisionTemplatePlaceholders(
-                templateForJustificationText,
-                handledApplication?.handlerRole
-              )}
+              resetWithContent={templateForJustificationText}
             />
           </$GridCell>
         </$Grid>

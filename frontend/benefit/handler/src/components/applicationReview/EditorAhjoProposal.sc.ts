@@ -5,7 +5,7 @@ export const $EditorWrapper = styled.div`
   overflow: scroll;
   background: #fff;
   border-radius: 7px;
-  border: 1px solid grey;
+  border: 1px solid ${(props) => props.theme.colors.silverDark};
 `;
 
 const EDITOR_STYLES = `
@@ -29,7 +29,7 @@ const EDITOR_STYLES = `
 
 export const $Toolbar = styled.header`
   padding: 0 0.5em;
-  border-bottom: 1px solid grey;
+  border-bottom: 1px solid ${(props) => props.theme.colors.silverDark};
 `;
 
 export const $Content = styled.div`
