@@ -22,7 +22,7 @@ export type GridProps = {
   rowGap?: SpacingValue;
   columnGap?: SpacingValue;
   columns?: number;
-  bgColor?: boolean;
+  bgColor?: boolean | string;
   bgHorizontalPadding?: boolean;
   bgVerticalPadding?: boolean;
   alignItems?: 'start' | 'end' | 'center' | 'stretch';
@@ -58,7 +58,7 @@ export const $SubHeader = styled.h3<$SubHeaderProps>`
 
 export const $Grid = styled.div.attrs<
   GridProps,
-  Omit<GridProps, 'gap'> & { columnGap: SpacingValue, rowGap: SpacingValue }
+  Omit<GridProps, 'gap'> & { columnGap: SpacingValue; rowGap: SpacingValue }
 >((props) => ({
   ...props,
   rowGap: props.rowGap || props.gap || props.theme.spacing.m,
@@ -81,7 +81,9 @@ export const $Grid = styled.div.attrs<
       left: calc(-1 * ${bgHorizontalPadding ? gap : '0px'});
       right: calc(-1 * ${bgHorizontalPadding ? gap : '0px'});
       bottom: calc(-1 * ${bgVerticalPadding ? gap : '0px'});
-      background-color: ${theme.colors.black5};
+      background-color: ${
+        typeof bgColor === 'boolean' ? theme.colors.black5 : bgColor
+      };
     }
   `}
 

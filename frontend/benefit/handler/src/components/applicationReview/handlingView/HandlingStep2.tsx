@@ -8,15 +8,13 @@ import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import { $RadioButton } from 'shared/components/forms/fields/Fields.sc';
 import Heading from 'shared/components/forms/heading/Heading';
-import {
-  $Grid,
-  $GridCell,
-} from 'shared/components/forms/section/FormSection.sc';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import theme from 'shared/styles/theme';
 
 import useDecisionProposalTemplateQuery from '../../../hooks/applicationHandling/useDecisionProposalTemplateQuery';
 import CalculationReview from '../CalculationReview';
 import EditorAhjoProposal from './EditorAhjoProposal';
+import { $ReviewGrid } from './HandlingStep.sc';
 
 type HandlingStepProps = {
   application: Application;
@@ -88,11 +86,11 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
       ...handledApplication,
       decisionText: replaceDecisionTemplatePlaceholders(
         option.template_decision_text,
-        'handler'
+        handledApplication?.handlerRole
       ),
       justificationText: replaceDecisionTemplatePlaceholders(
         option.template_justification_text,
-        'handler'
+        handledApplication?.handlerRole
       ),
     });
   };
@@ -114,26 +112,11 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
 
   return (
     <Container>
-      <$Grid
-        css={`
-          border: 2px solid transparent;
-          background-color: ${theme.colors.silverLight};
-          margin-bottom: ${theme.spacing.m};
-          gap: 0;
-          padding: ${theme.spacing.l};
-        `}
-      >
+      <$ReviewGrid bgColor={theme.colors.silverLight}>
         <CalculationReview application={application} />
-      </$Grid>
+      </$ReviewGrid>
 
-      <$Grid
-        css={`
-          background-color: ${theme.colors.silverLight};
-          margin-bottom: ${theme.spacing.m};
-          gap: 0;
-          padding: ${theme.spacing.l};
-        `}
-      >
+      <$ReviewGrid bgColor={theme.colors.silverLight}>
         <$GridCell $colSpan={12}>
           <Heading
             $css={{ marginTop: 0 }}
@@ -221,16 +204,9 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
             />
           </SelectionGroup>
         </$GridCell>
-      </$Grid>
+      </$ReviewGrid>
       {handledApplication?.handlerRole && (
-        <$Grid
-          css={`
-            background-color: ${theme.colors.silverLight};
-            margin-bottom: ${theme.spacing.m};
-            gap: 0;
-            padding: ${theme.spacing.l};
-          `}
-        >
+        <$ReviewGrid bgColor={theme.colors.silverLight}>
           <$GridCell $colSpan={12}>
             <Heading
               $css={{ marginTop: 0 }}
@@ -248,7 +224,7 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
               </span>
             </p>
           </$GridCell>
-          <$GridCell $colSpan={5} css={{ marginBottom: 'var(--spacing-m)' }}>
+          <$GridCell $colSpan={5} css={{ marginBottom: theme.spacing.m }}>
             <Select
               label={t(`${translationBase}.templates.fields.select.label`)}
               helper={t(
@@ -262,7 +238,7 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
                 })
               )}
               onChange={selectTemplate}
-              style={{ marginTop: 'var(--spacing-xs)' }}
+              style={{ marginTop: theme.spacing.xs }}
             />
           </$GridCell>
 
@@ -271,7 +247,7 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
               header={t(`${translationBase}.preview.decisionText`)}
               as="h4"
               size="s"
-              $css={{ marginTop: 'var(--spacing-s)' }}
+              $css={{ marginTop: theme.spacing.s }}
             />
             <EditorAhjoProposal
               data-testid="decision-text"
@@ -284,7 +260,7 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
               header={t(`${translationBase}.preview.justificationText`)}
               size="s"
               as="h4"
-              $css={{ marginTop: 'var(--spacing-m)' }}
+              $css={{ marginTop: theme.spacing.m }}
             />
             <EditorAhjoProposal
               name="justificationText"
@@ -292,7 +268,7 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
               resetWithContent={templateForJustificationText}
             />
           </$GridCell>
-        </$Grid>
+        </$ReviewGrid>
       )}
     </Container>
   );

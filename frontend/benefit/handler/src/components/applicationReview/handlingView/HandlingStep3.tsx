@@ -3,14 +3,12 @@ import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import Heading from 'shared/components/forms/heading/Heading';
-import {
-  $Grid,
-  $GridCell,
-} from 'shared/components/forms/section/FormSection.sc';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import theme from 'shared/styles/theme';
 
 import CalculationReview from '../CalculationReview';
 import { $EditorPreview } from './EditorAhjoProposal.sc';
+import { $ReviewGrid } from './HandlingStep.sc';
 
 type HandlingStepProps = {
   application: Application;
@@ -22,24 +20,10 @@ const ApplicationReviewStep3: React.FC<HandlingStepProps> = ({
   const { t } = useTranslation();
   return (
     <Container>
-      <$Grid
-        css={`
-          border: 2px solid ${theme.colors.silver};
-          margin-bottom: ${theme.spacing.m};
-          gap: 0;
-          padding: ${theme.spacing.l};
-        `}
-      >
+      <$ReviewGrid border={theme.colors.silver}>
         <CalculationReview application={application} />
-      </$Grid>
-      <$Grid
-        css={`
-          border: 2px solid ${theme.colors.silver};
-          margin-bottom: ${theme.spacing.m};
-          gap: 0;
-          padding: ${theme.spacing.l};
-        `}
-      >
+      </$ReviewGrid>
+      <$ReviewGrid border={theme.colors.silver}>
         <$GridCell $colSpan={12}>
           <Heading
             header={`${t(
@@ -57,7 +41,7 @@ const ApplicationReviewStep3: React.FC<HandlingStepProps> = ({
             size="l"
             weight="400"
             as="p"
-            $css={{ marginTop: 0, marginBottom: 'var(--spacing-xs)' }}
+            $css={{ marginTop: 0, marginBottom: theme.spacing.xs }}
           />
           <Heading
             header={`${application?.company?.name}, ${t(
@@ -109,7 +93,7 @@ const ApplicationReviewStep3: React.FC<HandlingStepProps> = ({
             />
           </$EditorPreview>
         </$GridCell>
-      </$Grid>
+      </$ReviewGrid>
     </Container>
   );
 };
