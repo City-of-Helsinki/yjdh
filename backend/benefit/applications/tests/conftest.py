@@ -418,7 +418,9 @@ def denied_ahjo_decision_section():
 def accepted_ahjo_decision_text(decided_application):
     template = AcceptedDecisionProposalFactory()
     replaced_decision_text = replace_decision_template_placeholders(
-        template.template_text, decided_application
+        template.template_decision_text + template.template_justification_text,
+        DecisionType.ACCEPTED,
+        decided_application,
     )
     return AhjoDecisionTextFactory(
         decision_type=DecisionType.ACCEPTED,

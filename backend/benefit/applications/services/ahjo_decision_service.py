@@ -3,7 +3,7 @@ from typing import List
 
 from django.conf import settings
 
-from applications.enums import DecisionType
+from applications.enums import DecisionType, HandlerRole
 from applications.models import (
     AhjoDecisionText,
     Application,
@@ -23,6 +23,7 @@ def replace_decision_template_placeholders(
     text_to_replace: str,
     decision_type: DecisionType,
     application: Application,
+    decision_maker: HandlerRole = HandlerRole.HANDLER,
 ) -> str:
     """Replace the placeholders starting with $ in the decision template with real data"""
     text_to_replace = Template(text_to_replace)
@@ -39,6 +40,7 @@ def replace_decision_template_placeholders(
     try:
         return text_to_replace.substitute(
             company=application.company.name,
+            decision_maker=decision_maker,
             total_amount=(
                 application.calculation.calculated_benefit_amount
                 if decision_type == DecisionType.ACCEPTED
