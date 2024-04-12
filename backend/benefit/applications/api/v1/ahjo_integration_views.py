@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, timezone
 
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
@@ -58,6 +59,8 @@ class AhjoAttachmentView(APIView):
             additional_information=f"attachment {attachment.attachment_file} \
 of type {attachment.attachment_type} was sent to AHJO!",
         )
+        attachment.downloaded_by_ahjo = datetime.now(timezone.utc)
+        attachment.save()
         return self._prepare_file_response(attachment)
 
     @staticmethod

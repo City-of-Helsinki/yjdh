@@ -901,6 +901,8 @@ class Attachment(UUIDModel, TimeStampedModel):
 
     ahjo_hash_value = models.CharField(max_length=64, null=True, blank=True)
 
+    downloaded_by_ahjo = models.DateTimeField(null=True, blank=True)
+
     history = HistoricalRecords(
         table_name="bf_applications_attachment_history", cascade_delete_history=True
     )
