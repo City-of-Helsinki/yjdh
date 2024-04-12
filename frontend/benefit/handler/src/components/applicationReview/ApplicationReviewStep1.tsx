@@ -9,7 +9,7 @@ import { ErrorData } from 'benefit-shared/types/common';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
 
-import ApplicationProcessingView from './applicationProcessingView/AplicationProcessingView';
+import ApplicationProcessingView from './applicationProcessingView/ApplicationProcessingView';
 import BenefitView from './benefitView/BenefitView';
 import CompanyInfoView from './companyInfoView/CompanyInfoView';
 import ConsentView from './consentView/ConsentView';
