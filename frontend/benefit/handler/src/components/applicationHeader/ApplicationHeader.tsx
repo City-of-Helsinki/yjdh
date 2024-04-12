@@ -103,7 +103,8 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
                   type="button"
                   onClick={toggleNewAhjoMode}
                 >
-                  Ahjon kokeilutila{' '}
+                  Ahjo-kokeilu
+                  <br />
                   {getLocalStorageItem('newAhjoMode') ? 'pois' : 'päälle'}
                 </button>
               </$ItemWrapper>
