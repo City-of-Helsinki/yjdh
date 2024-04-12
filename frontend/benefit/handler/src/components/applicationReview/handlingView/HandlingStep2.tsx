@@ -14,15 +14,15 @@ import {
 } from 'shared/components/forms/section/FormSection.sc';
 import theme from 'shared/styles/theme';
 
-import CalculationReview from './CalculationReview';
+import useDecisionProposalTemplateQuery from '../../../hooks/applicationHandling/useDecisionProposalTemplateQuery';
+import CalculationReview from '../CalculationReview';
 import EditorAhjoProposal from './EditorAhjoProposal';
-import useDecisionProposalTemplateQuery from './useDecisionProposalTemplateQuery';
 
-type ApplicationReviewStepProps = {
+type HandlingStepProps = {
   application: Application;
 };
 
-const ApplicationReviewStep2: React.FC<ApplicationReviewStepProps> = ({
+const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
   application,
 }) => {
   const { applicantLanguage, id } = application;

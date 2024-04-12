@@ -9,14 +9,14 @@ import {
 } from 'shared/components/forms/section/FormSection.sc';
 import theme from 'shared/styles/theme';
 
-import CalculationReview from './CalculationReview';
+import CalculationReview from '../CalculationReview';
 import { $EditorPreview } from './EditorAhjoProposal.sc';
 
-type ApplicationReviewStepProps = {
+type HandlingStepProps = {
   application: Application;
 };
 
-const ApplicationReviewStep3: React.FC<ApplicationReviewStepProps> = ({
+const ApplicationReviewStep3: React.FC<HandlingStepProps> = ({
   application,
 }) => {
   const { t } = useTranslation();

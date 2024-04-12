@@ -9,22 +9,22 @@ import { ErrorData } from 'benefit-shared/types/common';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
 
-import ApplicationProcessingView from './applicationProcessingView/ApplicationProcessingView';
-import BenefitView from './benefitView/BenefitView';
-import CompanyInfoView from './companyInfoView/CompanyInfoView';
-import ConsentView from './consentView/ConsentView';
-import ContactPersonView from './contactPersonView/ContactPersonView';
-import CoOperationNegotiationsView from './coOperationNegotiationsView/CoOperationNegotiationsView';
-import DeminimisView from './deminimisView/DeminimisView';
-import EmployeeView from './employeeView/EmployeeView';
-import EmploymentView from './employmentView/EmpoymentView';
-import ArchivedView from './handledView/archivedView/ArchivedView';
-import HandledView from './handledView/HandledView';
-import PaperView from './paperView/PaperView';
-import SalaryBenefitCalculatorView from './salaryBenefitCalculatorView/SalaryBenefitCalculatorView';
-import { useApplicationReview } from './useApplicationReview';
+import ApplicationProcessingView from '../applicationProcessingView/ApplicationProcessingView';
+import BenefitView from '../benefitView/BenefitView';
+import CompanyInfoView from '../companyInfoView/CompanyInfoView';
+import ConsentView from '../consentView/ConsentView';
+import ContactPersonView from '../contactPersonView/ContactPersonView';
+import CoOperationNegotiationsView from '../coOperationNegotiationsView/CoOperationNegotiationsView';
+import DeminimisView from '../deminimisView/DeminimisView';
+import EmployeeView from '../employeeView/EmployeeView';
+import EmploymentView from '../employmentView/EmpoymentView';
+import ArchivedView from '../handledView/archivedView/ArchivedView';
+import HandledView from '../handledView/HandledView';
+import PaperView from '../paperView/PaperView';
+import SalaryBenefitCalculatorView from '../salaryBenefitCalculatorView/SalaryBenefitCalculatorView';
+import { useApplicationReview } from '../useApplicationReview';
 
-type ApplicationReviewStepProps = {
+type HandlingStepProps = {
   application: Application;
   setIsRecalculationRequired: React.Dispatch<React.SetStateAction<boolean>>;
   isRecalculationRequired: boolean;
@@ -32,7 +32,7 @@ type ApplicationReviewStepProps = {
   setCalculationErrors: React.Dispatch<React.SetStateAction<ErrorData>>;
 };
 
-const ApplicationReviewStep1: React.FC<ApplicationReviewStepProps> = ({
+const HandlingStep1: React.FC<HandlingStepProps> = ({
   application,
   setIsRecalculationRequired,
   isRecalculationRequired,
@@ -95,4 +95,4 @@ const ApplicationReviewStep1: React.FC<ApplicationReviewStepProps> = ({
   );
 };
 
-export default ApplicationReviewStep1;
+export default HandlingStep1;

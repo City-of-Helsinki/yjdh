@@ -20,8 +20,11 @@ import showErrorToast from 'shared/components/toast/show-error-toast';
 import theme from 'shared/styles/theme';
 import { focusAndScroll } from 'shared/utils/dom.utils';
 
-import { StepActionType, StepStateType } from '../../useApplicationStepper';
-import useDecisionProposalDraftMutation from '../../useDecisionProposalDraftMutation';
+import useDecisionProposalDraftMutation from '../../../../hooks/applicationHandling/useDecisionProposalDraftMutation';
+import {
+  StepActionType,
+  StepStateType,
+} from '../../../../hooks/applicationHandling/useHandlingStepper';
 import EditAction from '../editAction/EditAction';
 import CancelModalContent from './CancelModalContent/CancelModalContent';
 import DoneModalContent from './DoneModalContent/DoneModalContent';

@@ -1,3 +1,4 @@
+import { StepStateType } from 'benefit/handler/hooks/applicationHandling/useHandlingStepper';
 import { Stepper } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -6,7 +7,6 @@ import Heading from 'shared/components/forms/heading/Heading';
 import theme from 'shared/styles/theme';
 
 import { $ApplicationStepperWrapper } from './ApplicationStepper.sc';
-import { StepStateType } from './useApplicationStepper';
 
 type ApplicationStepperProps = { stepState: StepStateType };
 

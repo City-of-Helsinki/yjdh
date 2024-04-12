@@ -16,17 +16,17 @@ import StickyActionBar from 'shared/components/stickyActionBar/StickyActionBar';
 import { $StickyBarSpacing } from 'shared/components/stickyActionBar/StickyActionBar.sc';
 import theme from 'shared/styles/theme';
 
+import { useApplicationStepper } from '../../hooks/applicationHandling/useHandlingStepper';
 import HandlingApplicationActions from './actions/handlingApplicationActions/HandlingApplicationActions';
 import HandlingApplicationActionsAhjo from './actions/handlingApplicationActions/HandlingApplicationActionsAhjo';
 import ReceivedApplicationActions from './actions/receivedApplicationActions/ReceivedApplicationActions';
 import { $ApplicationReview } from './ApplicationReview.sc';
-import ApplicationReviewStep1 from './ApplicationReviewStep1';
-import ApplicationReviewStep2 from './ApplicationReviewStep2';
-import ApplicationReviewStep3 from './ApplicationReviewStep3';
-import ApplicationStepper from './ApplicationStepper';
+import ApplicationReviewStep1 from './handlingView/HandlingStep1';
+import ApplicationReviewStep2 from './handlingView/HandlingStep2';
+import ApplicationReviewStep3 from './handlingView/HandlingStep3';
+import ApplicationStepper from './handlingView/HandlingStepper';
 import NotificationView from './notificationView/NotificationView';
 import { useApplicationReview } from './useApplicationReview';
-import { useApplicationStepper } from './useApplicationStepper';
 
 const ApplicationReview: React.FC = () => {
   const { application, isLoading, t } = useApplicationReview();
@@ -129,16 +129,18 @@ const ApplicationReview: React.FC = () => {
             />
           )}
 
-        {isNewAhjoMode && (
-          <HandlingApplicationActionsAhjo
-            application={application}
-            stepperDispatch={stepperDispatch}
-            stepState={stepState}
-            data-testid="handling-application-actions"
-            isRecalculationRequired={isRecalculationRequired}
-            isCalculationsErrors={!!calculationsErrors}
-          />
-        )}
+        {isNewAhjoMode &&
+          (application.status === APPLICATION_STATUSES.HANDLING ||
+            application.status === APPLICATION_STATUSES.INFO_REQUIRED) && (
+            <HandlingApplicationActionsAhjo
+              application={application}
+              stepperDispatch={stepperDispatch}
+              stepState={stepState}
+              data-testid="handling-application-actions"
+              isRecalculationRequired={isRecalculationRequired}
+              isCalculationsErrors={!!calculationsErrors}
+            />
+          )}
       </StickyActionBar>
       <$StickyBarSpacing />
     </$ApplicationReview>
