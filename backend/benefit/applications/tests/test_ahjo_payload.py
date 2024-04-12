@@ -1,7 +1,7 @@
 from django.core.files.base import ContentFile
 from django.urls import reverse
 
-from applications.enums import AttachmentType
+from applications.enums import AhjoRecordTitle, AhjoRecordType, AttachmentType
 from applications.models import Attachment
 from applications.services.ahjo_payload import (
     _prepare_case_records,
@@ -112,8 +112,8 @@ def test_prepare_case_records(decided_application, settings):
     handler_name = f"{handler.last_name}, {handler.first_name}"
     want = [
         {
-            "Title": "Hakemus",
-            "Type": "hakemus",
+            "Title": AhjoRecordTitle.APPLICATION,
+            "Type": AhjoRecordType.APPLICATION,
             "Acquired": application.created_at.isoformat(),
             "PublicityClass": "Salassa pidettävä",
             "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
@@ -135,8 +135,8 @@ def test_prepare_case_records(decided_application, settings):
         attachment_type=AttachmentType.PDF_SUMMARY
     ):
         document_record = _prepare_record(
-            "Hakemuksen liite",
-            "hakemuksen liite",
+            AhjoRecordTitle.ATTACHMENT,
+            AhjoRecordType.ATTACHMENT,
             attachment.created_at.isoformat(),
             [_prepare_record_document_dict(attachment)],
             handler,

@@ -679,3 +679,36 @@ def test_prepare_delete_url(settings, decided_application):
     url = prepare_delete_url(url_base, decided_application)
     wanted_url = f"{url_base}/{case_id}?draftsmanid={handler.ad_username}&reason={reason}&apireqlang={lang}"
     assert url == wanted_url
+
+
+@pytest.mark.django_db
+def test_with_downloaded_attachments(decided_application):
+    applications = Application.objects.with_downloaded_attachments()
+    assert applications.count() == 0
+
+    decided_application.ahjo_case_id = "HEL 1999-123"
+    decided_application.save()
+
+    applications = Application.objects.with_downloaded_attachments()
+    assert applications.count() == 1
+
+    attachments = applications[0].attachments.all()
+
+    assert attachments.count() == 7
+    for a in attachments:
+        assert a.downloaded_by_ahjo is None
+        assert a.attachment_type not in [
+            AttachmentType.PDF_SUMMARY,
+            AttachmentType.FULL_APPLICATION,
+            AttachmentType.DECISION_TEXT_XML,
+            AttachmentType.DECISION_TEXT_SECRET_XML,
+        ]
+
+    attachments[0].downloaded_by_ahjo = timezone.now()
+    attachments[0].save()
+
+    applications = Application.objects.with_downloaded_attachments()
+    assert applications.count() == 1
+
+    attachments = applications[0].attachments.all()
+    assert attachments.count() == 6

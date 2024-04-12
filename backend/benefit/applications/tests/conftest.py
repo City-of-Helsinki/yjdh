@@ -7,7 +7,13 @@ import pytest
 from django.conf import settings
 from django.utils import timezone
 
-from applications.enums import ApplicationStatus, BenefitType, DecisionType
+from applications.enums import (
+    AhjoRecordTitle,
+    AhjoRecordType,
+    ApplicationStatus,
+    BenefitType,
+    DecisionType,
+)
 from applications.models import Application
 from applications.services.ahjo_decision_service import (
     replace_decision_template_placeholders,
@@ -323,13 +329,21 @@ def ahjo_record(decided_application, ahjo_payload_agents):
 
 @pytest.fixture()
 def ahjo_payload_record_for_application(ahjo_record):
-    record = {**ahjo_record, "Title": "Hakemus", "Type": "hakemus"}
+    record = {
+        **ahjo_record,
+        "Title": AhjoRecordTitle.APPLICATION,
+        "Type": AhjoRecordType.APPLICATION,
+    }
     return record
 
 
 @pytest.fixture()
 def ahjo_payload_record_for_attachment(ahjo_record):
-    record = {**ahjo_record, "Title": "Liite", "Type": "liite"}
+    record = {
+        **ahjo_record,
+        "Title": AhjoRecordTitle.ATTACHMENT,
+        "Type": AhjoRecordType.ATTACHMENT,
+    }
     record.pop("MannerOfReceipt", None)
     return record
 
@@ -350,8 +364,8 @@ def ahjo_payload_record_for_attachment_update(
 
     record = {
         **record,
-        "Title": "Liite",
-        "Type": "hakemuksen liite",
+        "Title": AhjoRecordTitle.ATTACHMENT,
+        "Type": AhjoRecordType.ATTACHMENT,
         "VersionSeriesId": dummy_version_series_id,
         "Documents": [],
         "Agents": ahjo_payload_agents,

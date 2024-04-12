@@ -4,7 +4,7 @@ from typing import List
 from django.conf import settings
 from django.urls import reverse
 
-from applications.enums import AttachmentType
+from applications.enums import AhjoRecordTitle, AhjoRecordType, AttachmentType
 from applications.models import Application, Attachment
 from common.utils import hash_file
 from users.models import User
@@ -82,8 +82,8 @@ def _prepare_record_document_dict(attachment: Attachment) -> dict:
 
 
 def _prepare_record(
-    record_title: str,
-    record_type: str,
+    record_title: AhjoRecordTitle,
+    record_type: AhjoRecordType,
     acquired: datetime,
     documents: List[dict],
     handler: User,
@@ -104,7 +104,7 @@ def _prepare_record(
     if ahjo_version_series_id is not None:
         record_dict["VersionSeriesId"] = ahjo_version_series_id
 
-    elif ahjo_version_series_id is None and record_title == "Hakemus":
+    elif ahjo_version_series_id is None and record_title == AhjoRecordTitle.APPLICATION:
         record_dict["MannerOfReceipt"] = MANNER_OF_RECEIPT
 
     record_dict["Documents"] = documents
@@ -132,8 +132,8 @@ def _prepare_case_records(
     )
 
     main_document_record = _prepare_record(
-        "Hakemus",
-        "hakemus",
+        AhjoRecordTitle.APPLICATION,
+        AhjoRecordType.APPLICATION,
         application.created_at.isoformat("T", "seconds"),
         [_prepare_record_document_dict(pdf_summary)],
         handler,
@@ -154,9 +154,9 @@ def _prepare_case_records(
         )
 
         document_record = _prepare_record(
-            "Hakemuksen liite",
-            "hakemuksen liite",
-            attachment.created_at.isoformat(),
+            AhjoRecordTitle.ATTACHMENT,
+            AhjoRecordType.ATTACHMENT,
+            attachment.created_at.isoformat("T", "seconds"),
             [_prepare_record_document_dict(attachment)],
             handler,
             ahjo_version_series_id=attachment_version_series_id,
@@ -175,6 +175,27 @@ def prepare_open_case_payload(
     payload = _prepare_top_level_dict(application, case_records, case_title)
     return payload
 
+
+def prepare_attachment_records_payload(
+    attachments: List[Attachment],
+    handler: User,
+) -> dict[str, list[dict]]:
+    """Prepare a payload for the new attachments of an application."""
+
+    attachment_list = []
+
+    for attachment in attachments:
+        attachment_list.append(
+            _prepare_record(
+                AhjoRecordTitle.ATTACHMENT,
+                AhjoRecordType.ATTACHMENT,
+                attachment.created_at.isoformat("T", "seconds"),
+                [_prepare_record_document_dict(attachment)],
+                handler,
+            )
+        )
+
+    return {"records": attachment_list}
 
 def prepare_update_application_payload(
     application: Application, pdf_summary: Attachment

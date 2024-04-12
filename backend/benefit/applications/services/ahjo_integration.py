@@ -28,6 +28,7 @@ from applications.services.ahjo_authentication import AhjoConnector, AhjoToken
 from applications.services.ahjo_payload import (
     prepare_decision_proposal_payload,
     prepare_open_case_payload,
+    prepare_attachment_records_payload,
     prepare_update_application_payload,
 )
 from applications.services.ahjo_xml_builder import (
@@ -526,7 +527,10 @@ def send_request_to_ahjo(
         data = json.dumps(data)
         api_url = f"{url_base}/{application.ahjo_case_id}/records"
 
-    elif request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
+    elif request_type in [
+        AhjoRequestType.SEND_DECISION_PROPOSAL,
+        AhjoRequestType.ADD_RECORDS,
+    ]:
         method = "POST"
         api_url = f"{url_base}/{application.ahjo_case_id}/records"
         data = json.dumps(data)
@@ -627,6 +631,40 @@ def update_application_in_ahjo(application: Application, ahjo_auth_token: str):
             create_status_for_application(
                 application, AhjoStatusEnum.UPDATE_REQUEST_SENT
             )
+    except ObjectDoesNotExist as e:
+        LOGGER.error(f"Object not found: {e}")
+    except ImproperlyConfigured as e:
+        LOGGER.error(f"Improperly configured: {e}")
+
+
+def send_new_attachment_records_to_ahjo(
+    token: AhjoToken,
+) -> List[Tuple[Application, str]]:
+    """Send any new attachments, that have been added after opening a case, to Ahjo."""
+    try:
+        applications = Application.objects.with_downloaded_attachments()
+        # TODO add a check for application status, 
+        # so that only applications in the correct status have their attachments sent
+        responses = []
+        for application in applications:
+            attachments = application.attachments.all()
+
+            headers = prepare_headers(
+                token.access_token, application, AhjoRequestType.ADD_RECORDS
+            )
+
+            data = prepare_attachment_records_payload(
+                attachments, application.calculation.handler
+            )
+
+            application, response_text = send_request_to_ahjo(
+                AhjoRequestType.ADD_RECORDS, headers, application, data
+            )
+            responses.append((application, response_text))
+            create_status_for_application(
+                application, AhjoStatusEnum.NEW_RECORDS_REQUEST_SENT
+            )
+        return responses
     except ObjectDoesNotExist as e:
         LOGGER.error(f"Object not found: {e}")
     except ImproperlyConfigured as e:

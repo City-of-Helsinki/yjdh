@@ -175,6 +175,8 @@ class AhjoStatus(models.TextChoices):
     )
     DELETE_REQUEST_SENT = "delete_request_sent", _("Delete request sent")
     DELETE_REQUEST_RECEIVED = "delete_request_received", _("Delete request received")
+    NEW_RECORDS_REQUEST_SENT = "new_record_request_sent", _("New record request sent")
+    NEW_RECORDS_RECEIVED = "new_record_received", _("New record received by Ahjo")
 
 
 class ApplicationActions(models.TextChoices):
@@ -192,6 +194,7 @@ class AhjoRequestType(models.TextChoices):
     OPEN_CASE = "open_case", _("Open case in Ahjo")
     DELETE_APPLICATION = "delete_application", _("Delete application in Ahjo")
     UPDATE_APPLICATION = "update_application", _("Update application in Ahjo")
+    ADD_RECORDS = "add_records", _("Send new records to Ahjo")
     SEND_DECISION_PROPOSAL = "send_decision", _("Send decision to Ahjo")
 
 
@@ -220,6 +223,23 @@ class ApplicationReviewStep(models.TextChoices):
     STEP_1 = "step_1", _("Step 1 - overview and accept/reject application")
     STEP_2 = "step_2", _("Step 2 - preparing the decision")
     STEP_3 = "step_3", _("Step 3 - review the decision")
+
+
+class AhjoRecordType(models.TextChoices):
+    APPLICATION = "hakemus", _("Application")
+    ATTACHMENT = "hakemuksen liite", _("Application attachment")
+    DECISION_PROPOSAL = "viranhaltijan päätös", _("Decision proposal")
+    SECRET_ATTACHMENT = "viranhaltijan päätöksen liite", _("Secret decision attachment")
+
+
+class AhjoRecordTitle(models.TextChoices):
+    APPLICATION = "Hakemus", _("Application title")
+    ATTACHMENT = "Hakemuksen liite", _("Application attachmen title")
+    DECISION_PROPOSAL = (
+        "Avustuksen myöntäminen, Työllisyyspalvelut, työllisyydenhoidon Helsinki-lisä vuonna 2024",
+        _("Decision proposal title"),
+    )
+    SECRET_ATTACHMENT = "Päätöksen liite", _("Secret decision attachment title")
 
 
 # Call gettext on some of the enums so that "makemessages" command can find them when used dynamically in templates
