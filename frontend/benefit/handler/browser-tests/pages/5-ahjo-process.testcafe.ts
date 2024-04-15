@@ -1,11 +1,11 @@
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import { Selector } from 'testcafe';
+import { ClientFunction, Selector } from 'testcafe';
 
 import fi from '../../public/locales/fi/common.json';
 import MainIngress from '../page-model/MainIngress';
 import handlerUserAhjo from '../utils/handlerUserAhjo';
-import { getFrontendUrl } from '../utils/url.utils';
 import { clearAndFill } from '../utils/input';
+import { getFrontendUrl } from '../utils/url.utils';
 
 const url = getFrontendUrl(`/`);
 
@@ -15,10 +15,13 @@ fixture('Ahjo decision proposal for application')
     clearDataToPrintOnFailure(t);
     await t.useRole(handlerUserAhjo);
     await t.navigateTo('/');
+    await ClientFunction(() =>
+      window.localStorage.setItem('newAhjoMode', '1')
+    )();
   });
 
-// eslint-disable-next-line jest/expect-expect
-test('Check validation errors', async (t: TestController) => {
+test('Check for handling validation errors', async (t: TestController) => {
+  await ClientFunction(() => window.localStorage.setItem('newAhjoMode', '1'))();
   const mainIngress = new MainIngress(fi.mainIngress.heading, 'h1');
   await mainIngress.isLoaded();
 
@@ -61,6 +64,7 @@ test('Check validation errors', async (t: TestController) => {
 });
 
 test('Open form and create a decision proposal', async (t: TestController) => {
+  await ClientFunction(() => window.localStorage.setItem('newAhjoMode', '1'))();
   const mainIngress = new MainIngress(fi.mainIngress.heading, 'h1');
   await mainIngress.isLoaded();
 
