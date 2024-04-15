@@ -124,6 +124,12 @@ const HandlingApplicationActions: React.FC<Props> = ({
     setIsSavingAndClosing(false);
   }, [isError]);
 
+  const isCalculationInvalid = (): boolean =>
+    (application.calculation.rows.length === 0 &&
+      handledApplication?.status === APPLICATION_STATUSES.ACCEPTED) ||
+    isRecalculationRequired ||
+    isCalculationsErrors;
+
   const validateNextStep = (currentStepIndex: number): boolean => {
     if (application.status === APPLICATION_STATUSES.INFO_REQUIRED) {
       focusAndScroll('header-info-needed');
@@ -135,11 +141,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
     }
     const missing = {
       status: !handledApplication?.status,
-      calculation:
-        (application.calculation.rows.length === 0 &&
-          handledApplication?.status === APPLICATION_STATUSES.ACCEPTED) ||
-        isRecalculationRequired ||
-        isCalculationsErrors,
+      calculation: isCalculationInvalid(),
       logEntry:
         handledApplication?.logEntryComment?.length <= 0 &&
         handledApplication?.status === APPLICATION_STATUSES.REJECTED,
@@ -201,6 +203,15 @@ const HandlingApplicationActions: React.FC<Props> = ({
   };
 
   const handleSaveAndClose = (): void => {
+    if (isCalculationInvalid()) {
+      focusAndScroll('endDate');
+      showErrorToast(
+        t('common:review.decisionProposal.errors.title'),
+        t(`common:review.decisionProposal.errors.fields.calculation`)
+      );
+
+      return;
+    }
     updateApplication({
       ...handledApplication,
       reviewStep: stepState.activeStepIndex + 1,
