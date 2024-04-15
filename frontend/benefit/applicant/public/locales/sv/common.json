@@ -27,7 +27,11 @@
         "contract": "Visa mindre"
       },
       "noApplications": "Inga öppna ansökningar om Helsingforstillägget",
-      "navigateToDecisions": "Se alla ansökningar med beslut"
+      "navigateToDecisions": "Se alla ansökningar med beslut",
+      "alterationReminder": {
+        "label": "Ändring i anställningen?",
+        "body": "Om sysselsatta personens anställning avslutas eller avbryts, anmäl förändringen så snart som möjligt. Eventuell extra Helsingforstillägget kan komma att återkrävas. Anmäl förändringen genom att öppna en ansökan och välja \"Anmäl ändring i anställningen\"."
+      }
     },
     "pageHeaders": {
       "created": "Skapats",

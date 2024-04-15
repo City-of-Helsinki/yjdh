@@ -7,7 +7,7 @@ import {
 import ListItem from 'benefit/applicant/components/applications/applicationList/listItem/ListItem';
 import { ApplicationListProps } from 'benefit/applicant/components/applications/applicationList/useApplicationList';
 import { Select } from 'hds-react';
-import React, { PropsWithChildren, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import Container from 'shared/components/container/Container';
 import theme from 'shared/styles/theme';
@@ -20,11 +20,11 @@ interface ListContentProps {
   items: JSX.Element[];
   noItemsText?: React.ReactNode;
   onListLengthChanged?: (isLoading: boolean, length: number) => void;
+  beforeList?: React.ReactNode;
+  afterList?: React.ReactNode;
 }
 
-type Props = PropsWithChildren<
-  Omit<ApplicationListProps, 'language'> & ListContentProps
->;
+type Props = Omit<ApplicationListProps, 'language'> & ListContentProps;
 
 const ListContents = ({
   shouldShowSkeleton,
@@ -40,7 +40,8 @@ const ListContents = ({
   hasItems,
   list,
   onListLengthChanged,
-  children,
+  beforeList,
+  afterList,
 }: Props): JSX.Element => {
   useEffect(() => {
     onListLengthChanged?.(shouldShowSkeleton, list.length);
@@ -77,11 +78,12 @@ const ListContents = ({
               )}
             </$OrderByContainer>
           </$HeadingContainer>
+          {beforeList}
           <$ListWrapper>
             {items}
             {!hasItems && noItemsText}
           </$ListWrapper>
-          {children}
+          {afterList}
         </>
       )}
     </Container>

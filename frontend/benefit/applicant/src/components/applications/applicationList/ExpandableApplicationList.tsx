@@ -1,7 +1,7 @@
 import { ApplicationListProps } from 'benefit/applicant/components/applications/applicationList/ApplicationList';
 import ListContents from 'benefit/applicant/components/applications/applicationList/listItem/ListContents';
 import { Button } from 'hds-react';
-import React, { PropsWithChildren, useState } from 'react';
+import React, { useState } from 'react';
 
 import { $ListActionButtonContainer } from './ApplicationList.sc';
 import ListItem from './listItem/ListItem';
@@ -11,9 +11,7 @@ export interface PaginatedApplicationListProps {
   initialItems: number;
 }
 
-type Props = PropsWithChildren<
-  ApplicationListProps & PaginatedApplicationListProps
->;
+type Props = ApplicationListProps & PaginatedApplicationListProps;
 
 const ExpandableApplicationList: React.FC<Props> = ({
   heading,
@@ -22,8 +20,9 @@ const ExpandableApplicationList: React.FC<Props> = ({
   initialItems,
   orderByOptions,
   noItemsText,
-  children,
   onListLengthChanged,
+  beforeList,
+  afterList,
 }) => {
   const {
     list,
@@ -66,24 +65,28 @@ const ExpandableApplicationList: React.FC<Props> = ({
       items={items}
       noItemsText={noItemsText}
       onListLengthChanged={onListLengthChanged}
-    >
-      {hasItems && showExpand && (
-        <$ListActionButtonContainer>
-          <Button
-            onClick={() => setIsExpanded(!isExpanded)}
-            variant="secondary"
-            theme="black"
-          >
-            {t(
-              isExpanded
-                ? 'common:applications.list.common.contract'
-                : 'common:applications.list.common.expand'
-            )}
-          </Button>
-        </$ListActionButtonContainer>
-      )}
-      {children}
-    </ListContents>
+      beforeList={beforeList}
+      afterList={
+        <>
+          {hasItems && showExpand && (
+            <$ListActionButtonContainer>
+              <Button
+                onClick={() => setIsExpanded(!isExpanded)}
+                variant="secondary"
+                theme="black"
+              >
+                {t(
+                  isExpanded
+                    ? 'common:applications.list.common.contract'
+                    : 'common:applications.list.common.expand'
+                )}
+              </Button>
+            </$ListActionButtonContainer>
+          )}
+          {afterList}
+        </>
+      }
+    />
   );
 };
 

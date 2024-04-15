@@ -6,7 +6,8 @@ import FrontPageMainIngress from 'benefit/applicant/components/mainIngress/front
 import PrerequisiteReminder from 'benefit/applicant/components/prerequisiteReminder/PrerequisiteReminder';
 import AppContext from 'benefit/applicant/context/AppContext';
 import { useTranslation } from 'benefit/applicant/i18n';
-import { Button, IconArrowRight } from 'hds-react';
+import { isTruthy } from 'benefit-shared/utils/common';
+import { Button, IconArrowRight, Notification } from 'hds-react';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -15,6 +16,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import withAuth from 'shared/components/hocs/withAuth';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
+import { useTheme } from 'styled-components';
 
 import { ROUTES, SUBMITTED_STATUSES } from '../constants';
 import FrontPageProvider from '../context/FrontPageProvider';
@@ -23,6 +25,7 @@ const ApplicantIndex: NextPage = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const theme = useTheme();
 
   const { setIsNavigationVisible } = React.useContext(AppContext);
 
@@ -100,18 +103,32 @@ const ApplicantIndex: NextPage = () => {
               status={SUBMITTED_STATUSES}
               isArchived={false}
               onListLengthChanged={onSubmittedChange}
-            >
-              <$ListActionButtonContainer>
-                <Button
-                  onClick={() => router.push(ROUTES.DECISIONS)}
-                  variant="secondary"
-                  theme="black"
-                  iconRight={<IconArrowRight />}
-                >
-                  {t('common:applications.list.navigateToDecisions')}
-                </Button>
-              </$ListActionButtonContainer>
-            </ApplicationList>
+              beforeList={
+                isTruthy(process.env.NEXT_PUBLIC_ENABLE_ALTERATION_FEATURES) ? (
+                  <Notification
+                    label={t(
+                      'common:applications.list.alterationReminder.label'
+                    )}
+                    type="info"
+                    style={{ marginBottom: theme.spacing.m }}
+                  >
+                    {t('common:applications.list.alterationReminder.body')}
+                  </Notification>
+                ) : null
+              }
+              afterList={
+                <$ListActionButtonContainer>
+                  <Button
+                    onClick={() => router.push(ROUTES.DECISIONS)}
+                    variant="secondary"
+                    theme="black"
+                    iconRight={<IconArrowRight />}
+                  >
+                    {t('common:applications.list.navigateToDecisions')}
+                  </Button>
+                </$ListActionButtonContainer>
+              }
+            />
           </>
         )}
         <PrerequisiteReminder />
