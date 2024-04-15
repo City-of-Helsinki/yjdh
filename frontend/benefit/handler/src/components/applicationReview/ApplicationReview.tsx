@@ -131,6 +131,8 @@ const ApplicationReview: React.FC = () => {
 
         {isNewAhjoMode &&
           (application.status === APPLICATION_STATUSES.HANDLING ||
+            application.status === APPLICATION_STATUSES.ACCEPTED ||
+            application.status === APPLICATION_STATUSES.REJECTED ||
             application.status === APPLICATION_STATUSES.INFO_REQUIRED) && (
             <HandlingApplicationActionsAhjo
               application={application}

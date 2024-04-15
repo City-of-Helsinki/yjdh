@@ -6,7 +6,6 @@ import {
   Button,
   IconArrowLeft,
   IconArrowRight,
-  IconArrowUndo,
   IconInfoCircle,
   IconLock,
   IconPen,
@@ -54,7 +53,6 @@ const HandlingApplicationActions: React.FC<Props> = ({
 }) => {
   const {
     t,
-    onBackToHandling,
     toggleMessagesDrawerVisiblity,
     openDialog,
     closeDialog,
@@ -231,21 +229,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
             {t(`${translationsBase}.saveAndContinue`)}
           </Button>
         )}
-        {[
-          APPLICATION_STATUSES.ACCEPTED,
-          APPLICATION_STATUSES.REJECTED,
-        ].includes(application.status) &&
-          !application.batch &&
-          !application.archived && (
-            <Button
-              onClick={onBackToHandling}
-              theme="black"
-              variant="secondary"
-              iconLeft={<IconArrowUndo />}
-            >
-              {t(`${translationsBase}.backToHandling`)}
-            </Button>
-          )}
+
         <Button
           onClick={toggleMessagesDrawerVisiblity}
           theme="black"
