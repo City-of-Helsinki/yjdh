@@ -2,11 +2,12 @@ import {
   DE_MINIMIS_AID_GRANTED_AT_MAX_DATE,
   MAX_DEMINIMIS_AID_TOTAL_AMOUNT,
 } from 'benefit/handler/constants';
+import DeMinimisContext from 'benefit/handler/context/DeMinimisContext';
 import { DE_MINIMIS_AID_KEYS } from 'benefit-shared/constants';
 import { DeMinimisAid } from 'benefit-shared/types/application';
 import { Button, DateInput, IconPlusCircle, TextInput } from 'hds-react';
 import sumBy from 'lodash/sumBy';
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import {
   $Grid,
   $GridCell,
@@ -35,6 +36,36 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
     grants,
   } = useDeminimisAid(data);
   const theme = useTheme();
+
+  const { setUnfinishedDeMinimisAidRow } = React.useContext(DeMinimisContext);
+
+  const validateDeMinimisRow = (): boolean =>
+    !(
+      formik.values.granter &&
+      formik.values.amount &&
+      formik.values.grantedAt
+    ) ||
+    !formik.isValid ||
+    sumBy(grants, 'amount') > MAX_DEMINIMIS_AID_TOTAL_AMOUNT;
+
+  /**
+   * Only empty inputs are consired complete because row addition clears them.
+   */
+  const isFormInputIncomplete: () => boolean = useCallback(
+    (): boolean =>
+      formik.values.granter?.length > 0 ||
+      formik.values.amount?.length > 0 ||
+      formik.values.grantedAt?.length > 0,
+    [formik.values]
+  );
+
+  useEffect(() => {
+    if (isFormInputIncomplete()) {
+      setUnfinishedDeMinimisAidRow(true);
+    } else {
+      setUnfinishedDeMinimisAidRow(false);
+    }
+  }, [setUnfinishedDeMinimisAidRow, isFormInputIncomplete]);
 
   return (
     <$GridCell
@@ -120,15 +151,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
       >
         <Button
           theme="coat"
-          disabled={
-            !(
-              formik.values.granter &&
-              formik.values.amount &&
-              formik.values.grantedAt
-            ) ||
-            !formik.isValid ||
-            sumBy(grants, 'amount') > MAX_DEMINIMIS_AID_TOTAL_AMOUNT
-          }
+          disabled={validateDeMinimisRow()}
           onClick={(e) => handleSubmit(e)}
           iconLeft={<IconPlusCircle />}
           fullWidth
