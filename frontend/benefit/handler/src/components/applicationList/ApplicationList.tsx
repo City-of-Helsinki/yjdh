@@ -57,6 +57,18 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   const theme = useTheme();
 
   const isAllStatuses: boolean = status === ALL_APPLICATION_STATUSES;
+  const isVisibleOnlyForStatus = React.useMemo(
+    () => ({
+      draft: status.includes(APPLICATION_STATUSES.DRAFT) && !isAllStatuses,
+      received:
+        status.includes(APPLICATION_STATUSES.RECEIVED) && !isAllStatuses,
+      handling:
+        status.includes(APPLICATION_STATUSES.HANDLING) && !isAllStatuses,
+      infoRequired:
+        status.includes(APPLICATION_STATUSES.INFO_REQUIRED) && !isAllStatuses,
+    }),
+    [isAllStatuses, status]
+  );
 
   const columns = React.useMemo(() => {
     const cols: ApplicationListTableColumns[] = [
@@ -98,7 +110,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       },
     ];
 
-    if (status.includes(APPLICATION_STATUSES.HANDLING) && !isAllStatuses) {
+    if (isVisibleOnlyForStatus.handling) {
       cols.push({
         headerName: getHeader('handlerName'),
         key: 'handlerName',
@@ -115,7 +127,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       });
     }
 
-    if (status.includes(APPLICATION_STATUSES.DRAFT) && !isAllStatuses) {
+    if (isVisibleOnlyForStatus.draft) {
       cols.push({
         headerName: getHeader('modifiedAt'),
         key: 'modifiedAt',
@@ -145,7 +157,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       });
     }
 
-    if (status.includes(APPLICATION_STATUSES.RECEIVED) && !isAllStatuses) {
+    if (isVisibleOnlyForStatus.received) {
       cols.push({
         transform: ({ applicationOrigin }: ApplicationListTableTransforms) => (
           <div>
@@ -164,7 +176,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       });
     }
 
-    if (status.includes(APPLICATION_STATUSES.INFO_REQUIRED) && !isAllStatuses) {
+    if (isVisibleOnlyForStatus.infoRequired) {
       cols.push({
         transform: ({
           additionalInformationNeededBy,
@@ -209,7 +221,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     });
 
     return cols.filter(Boolean);
-  }, [t, getHeader, status, theme, isAllStatuses]);
+  }, [t, getHeader, status, theme, isAllStatuses, isVisibleOnlyForStatus]);
 
   if (isLoading) {
     return (
