@@ -2,7 +2,6 @@ import AttachmentsIngress from 'benefit/applicant/components/attachmentsIngress/
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import {
   ATTACHMENT_TYPES,
-  BENEFIT_TYPES,
   PAY_SUBSIDY_GRANTED,
 } from 'benefit-shared/constants';
 import React from 'react';
@@ -33,7 +32,6 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
     handleNext,
     handleSave,
     handleDelete,
-    benefitType,
     apprenticeshipProgram,
     paySubsidyGranted,
     showSubsidyMessage,
@@ -47,15 +45,17 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
     <>
       <AttachmentsIngress />
       <ul>
-        {(benefitType === BENEFIT_TYPES.SALARY ||
-          benefitType === BENEFIT_TYPES.EMPLOYMENT) && (
+        <AttachmentsList
+          as="li"
+          attachments={attachments}
+          attachmentType={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
+          required
+        />
+        {[
+          PAY_SUBSIDY_GRANTED.GRANTED,
+          PAY_SUBSIDY_GRANTED.GRANTED_AGED,
+        ].includes(paySubsidyGranted) && (
           <>
-            <AttachmentsList
-              as="li"
-              attachments={attachments}
-              attachmentType={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
-              required
-            />
             {apprenticeshipProgram && (
               <AttachmentsList
                 as="li"
@@ -64,30 +64,17 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
                 required
               />
             )}
-            {[
-              PAY_SUBSIDY_GRANTED.GRANTED,
-              PAY_SUBSIDY_GRANTED.GRANTED_AGED,
-            ].includes(paySubsidyGranted) && (
-              <AttachmentsList
-                as="li"
-                attachments={attachments}
-                attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
-                attachmentTypeTranslationKey={translationKeyForPaySubsidyAttachement(
-                  paySubsidyGranted
-                )}
-                showMessage={showSubsidyMessage}
-                required
-              />
-            )}
+            <AttachmentsList
+              as="li"
+              attachments={attachments}
+              attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
+              attachmentTypeTranslationKey={translationKeyForPaySubsidyAttachement(
+                paySubsidyGranted
+              )}
+              showMessage={showSubsidyMessage}
+              required
+            />
           </>
-        )}
-        {benefitType === BENEFIT_TYPES.COMMISSION && (
-          <AttachmentsList
-            as="li"
-            attachments={attachments}
-            attachmentType={ATTACHMENT_TYPES.COMMISSION_CONTRACT}
-            required
-          />
         )}
         <AttachmentsList
           as="li"
