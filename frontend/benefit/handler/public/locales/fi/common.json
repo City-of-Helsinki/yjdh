@@ -336,6 +336,10 @@
           "label": "Enimmäismäärä ylitetty",
           "content": "De minimis-tuen enimmäismäärä on ylitetty. Tuki voi olla enintään {{amount}} euroa, joka myönnetään yritykselle kuluvan vuoden ja kahden edellisen verovuoden kuluessa. Enimmäismäärässä huomioidaan kaikkien eri viranomaisten kyseisenä ajanjaksona de minimis -tukena myöntämä rahoitus."
         },
+        "deMinimisUnfinished": {
+          "label": "Puuttuvia de minimis -tuen tietoja",
+          "content": "Täytä puuttuvat minimis -kentät ja paina 'Lisää' painiketta."
+        },
         "salaryBenefit": {
           "label": "Palkkatuettu oppisopimus",
           "content": "Palkkatuettuun oppisopimukseen voi hakea joko työllistämisen tai palkan Helsinki-lisää"
