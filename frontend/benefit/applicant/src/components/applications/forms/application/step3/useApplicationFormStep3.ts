@@ -37,6 +37,11 @@ const useApplicationFormStep3 = (
   };
 
   const isRequiredAttachmentsUploaded = (): boolean => {
+    const applicantHasPaySubsidyGranted = [
+      PAY_SUBSIDY_GRANTED.GRANTED,
+      PAY_SUBSIDY_GRANTED.GRANTED_AGED,
+    ].includes(application.paySubsidyGranted);
+
     if (
       application.benefitType === BENEFIT_TYPES.EMPLOYMENT ||
       application.benefitType === BENEFIT_TYPES.SALARY
@@ -47,12 +52,7 @@ const useApplicationFormStep3 = (
         )
       );
       let hasPaySubsidyDecision = true;
-      if (
-        [
-          PAY_SUBSIDY_GRANTED.GRANTED,
-          PAY_SUBSIDY_GRANTED.GRANTED_AGED,
-        ].includes(application.paySubsidyGranted)
-      ) {
+      if (applicantHasPaySubsidyGranted) {
         hasPaySubsidyDecision = !isEmpty(
           application?.attachments?.find(
             (att) =>
@@ -61,7 +61,7 @@ const useApplicationFormStep3 = (
         );
       }
       let hasApprenticeshipProgram = true;
-      if (application.apprenticeshipProgram) {
+      if (application.apprenticeshipProgram && applicantHasPaySubsidyGranted) {
         hasApprenticeshipProgram = !isEmpty(
           application?.attachments?.find(
             (att) => att.attachmentType === ATTACHMENT_TYPES.EDUCATION_CONTRACT
