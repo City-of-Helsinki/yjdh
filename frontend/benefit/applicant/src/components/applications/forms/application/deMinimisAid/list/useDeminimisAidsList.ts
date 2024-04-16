@@ -6,7 +6,6 @@ import sumBy from 'lodash/sumBy';
 import { TFunction } from 'next-i18next';
 import React from 'react';
 import { Language } from 'shared/i18n/i18n';
-// import * as Yup from 'yup';
 
 type ExtendedComponentProps = {
   t: TFunction;
