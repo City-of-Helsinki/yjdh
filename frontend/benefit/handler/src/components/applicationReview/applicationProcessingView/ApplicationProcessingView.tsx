@@ -1,5 +1,6 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
 import AppContext from 'benefit/handler/context/AppContext';
+import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
 import { Application } from 'benefit/handler/types/application';
 import { extractCalculatorRows } from 'benefit/handler/utils/calculator';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
@@ -35,12 +36,28 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
   const { handledApplication, setHandledApplication } =
     React.useContext(AppContext);
 
+  const isNewAhjoMode = useDetermineAhjoMode();
+
   const toggleGrantedAsDeMinimisAid = (): void => {
     setHandledApplication({
       ...handledApplication,
       grantedAsDeMinimisAid: !handledApplication?.grantedAsDeMinimisAid,
     });
   };
+
+  React.useEffect(() => {
+    if (!handledApplication && isNewAhjoMode) {
+      setHandledApplication({
+        status: data?.decisionProposalDraft?.status,
+        grantedAsDeMinimisAid:
+          !!data?.decisionProposalDraft?.grantedAsDeMinimisAid,
+        logEntryComment: data?.decisionProposalDraft?.logEntryComment,
+        handlerRole: data?.decisionProposalDraft?.handlerRole,
+        justificationText: data?.decisionProposalDraft?.justificationText,
+        decisionText: data?.decisionProposalDraft?.decisionText,
+      });
+    }
+  }, [data, handledApplication, setHandledApplication, isNewAhjoMode]);
 
   const onCommentsChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -60,7 +77,9 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
   return (
     <ReviewSection withMargin withBorder>
       <$GridCell $colSpan={11}>
-        <$MainHeader>{t(`${translationsBase}.headings.heading10`)}</$MainHeader>
+        <$MainHeader css={{ margin: 'var(--spacing-xs) 0 var(--spacing-m)' }}>
+          {t(`${translationsBase}.headings.heading10`)}
+        </$MainHeader>
         <$Grid>
           <$GridCell $colSpan={11}>
             <$RadioButtonContainer>
@@ -73,6 +92,7 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                 onChange={(value) => {
                   if (value) {
                     setHandledApplication({
+                      ...handledApplication,
                       logEntryComment: '',
                       status: APPLICATION_STATUSES.REJECTED,
                       grantedAsDeMinimisAid: false,
@@ -114,7 +134,7 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
           </>
         )}
       </$GridCell>
-      <$GridCell $colSpan={11}>
+      <$GridCell $colSpan={11} css={{ marginBottom: 'var(--spacing-m)' }}>
         <$Grid>
           <$GridCell $colSpan={11}>
             <$RadioButtonContainer>
@@ -127,6 +147,7 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                 onChange={(value) => {
                   if (value) {
                     setHandledApplication({
+                      ...handledApplication,
                       logEntryComment: '',
                       status: APPLICATION_STATUSES.ACCEPTED,
                     });
@@ -184,23 +205,25 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                     ))}
                 </$GridCell>
               )}
-              <$GridCell
-                $colSpan={8}
-                $colStart={1}
-                style={{ paddingTop: theme.spacing.l }}
-              >
-                <TextArea
-                  id="proccessAcceptedComments"
-                  name="proccessAcceptedComments"
-                  label={t(`${translationsBase}.fields.reason`)}
-                  value={handledApplication?.logEntryComment}
-                  onChange={onCommentsChange}
-                />
+              {!isNewAhjoMode && (
+                <$GridCell
+                  $colSpan={8}
+                  $colStart={1}
+                  style={{ paddingTop: theme.spacing.l }}
+                >
+                  <TextArea
+                    id="proccessAcceptedComments"
+                    name="proccessAcceptedComments"
+                    label={t(`${translationsBase}.fields.reason`)}
+                    value={handledApplication?.logEntryComment}
+                    onChange={onCommentsChange}
+                  />
 
-                <$HelpText>
-                  {t(`${translationsBase}.actions.reasonAcceptPlaceholder`)}
-                </$HelpText>
-              </$GridCell>
+                  <$HelpText>
+                    {t(`${translationsBase}.actions.reasonAcceptPlaceholder`)}
+                  </$HelpText>
+                </$GridCell>
+              )}
             </$Grid>
             <$Grid>
               <$GridCell $colSpan={12}>

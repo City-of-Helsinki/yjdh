@@ -1,0 +1,314 @@
+[
+  {
+    "model": "companies.company",
+    "pk": "746afc66-6f5a-4cb4-805f-4b58380b4745",
+    "fields": {
+      "name": "Automaattinen Testaus Keskus Oy",
+      "business_id": "5177536-7",
+      "company_form": "OY",
+      "street_address": "Reikäkorttitehtaankatu 3",
+      "postcode": "00120",
+      "city": "Helsinki",
+      "bank_account_number": "FI2112345600000785",
+      "company_form_code": 16
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": "47ecedfa-351b-4815-bfac-96bdbc640178",
+    "fields": {
+      "password": "",
+      "last_login": "2024-03-26T13:46:05.974Z",
+      "is_superuser": false,
+      "username": "handler_examplesson",
+      "first_name": "Handy",
+      "last_name": "Examplesson",
+      "email": "handler-test@example.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2024-03-26T13:46:05.966Z",
+      "ad_username": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "applications.application",
+    "pk": "fd89abe9-54e6-4112-a7ac-50147d95e530",
+    "fields": {
+      "created_at": "2024-03-26T13:45:24.607Z",
+      "modified_at": "2024-03-26T13:46:26.545Z",
+      "company": "746afc66-6f5a-4cb4-805f-4b58380b4745",
+      "status": "handling",
+      "talpa_status": "not_sent_to_talpa",
+      "application_origin": "applicant",
+      "application_number": 999999,
+      "company_name": "Automaattinen Testaus Keskus Oy",
+      "company_form": "OY",
+      "company_form_code": 16,
+      "company_department": "ATK Oy Tampereen keskusyksikkö",
+      "official_company_street_address": "Reikäkorttitehtaankatu 3",
+      "official_company_city": "Helsinki",
+      "official_company_postcode": "00120",
+      "use_alternative_address": true,
+      "alternative_company_street_address": "Toinentie 2",
+      "alternative_company_city": "Tampere",
+      "alternative_company_postcode": "33101",
+      "company_bank_account_number": "FI6033556370003404",
+      "company_contact_person_first_name": "Lumo",
+      "company_contact_person_last_name": "Tuomenkäpy",
+      "company_contact_person_phone_number": "+358501234567",
+      "company_contact_person_email": "lumo.tuanoinnii@example.com",
+      "association_has_business_activities": null,
+      "applicant_language": "fi",
+      "association_immediate_manager_check": null,
+      "co_operation_negotiations": false,
+      "co_operation_negotiations_description": "",
+      "pay_subsidy_granted": "not_granted",
+      "pay_subsidy_percent": null,
+      "additional_pay_subsidy_percent": null,
+      "apprenticeship_program": null,
+      "archived": false,
+      "application_step": "step_6",
+      "benefit_type": "salary_benefit",
+      "start_date": "2024-01-01",
+      "end_date": "2024-02-01",
+      "paper_application_date": null,
+      "de_minimis_aid": false,
+      "batch": null,
+      "ahjo_case_id": null,
+      "ahjo_case_guid": null,
+      "bases": []
+    }
+  },
+  {
+    "model": "applications.attachment",
+    "pk": "70a660b2-f674-4238-8693-421b4af668e2",
+    "fields": {
+      "created_at": "2024-03-26T13:45:42.731Z",
+      "modified_at": "2024-03-26T13:45:42.731Z",
+      "application": "fd89abe9-54e6-4112-a7ac-50147d95e530",
+      "attachment_type": "employment_contract",
+      "content_type": "image/png",
+      "attachment_file": "1_BqII2rT.png",
+      "ahjo_version_series_id": null,
+      "ahjo_hash_value": null
+    }
+  },
+  {
+    "model": "applications.attachment",
+    "pk": "8744af7d-9624-4fc4-bbb0-31faaab6060d",
+    "fields": {
+      "created_at": "2024-03-26T13:45:46.601Z",
+      "modified_at": "2024-03-26T13:45:46.601Z",
+      "application": "fd89abe9-54e6-4112-a7ac-50147d95e530",
+      "attachment_type": "employee_consent",
+      "content_type": "image/png",
+      "attachment_file": "1_xELpIpP.png",
+      "ahjo_version_series_id": null,
+      "ahjo_hash_value": null
+    }
+  },
+  {
+    "model": "applications.employee",
+    "pk": "eff3b55d-b671-4ca7-be78-70cc0ee30279",
+    "fields": {
+      "created_at": "2024-03-26T13:45:24.616Z",
+      "modified_at": "2024-03-26T13:46:26.552Z",
+      "application": "fd89abe9-54e6-4112-a7ac-50147d95e530",
+      "encrypted_first_name": "Aari",
+      "encrypted_last_name": "Hömpömpö",
+      "first_name": "Aari",
+      "last_name": "Hömpömpö",
+      "encrypted_social_security_number": "051201U7113",
+      "social_security_number": "051201U7113",
+      "phone_number": "",
+      "email": "",
+      "employee_language": "fi",
+      "job_title": "Et atque enim possim",
+      "monthly_pay": "1595.00",
+      "vacation_money": "47.00",
+      "other_expenses": "18.00",
+      "working_hours": "168.00",
+      "collective_bargaining_agreement": "Dolor minus laboris",
+      "is_living_in_helsinki": true,
+      "commission_amount": null,
+      "commission_description": ""
+    }
+  },
+  {
+    "model": "applications.ahjodecisionproposaldraft",
+    "pk": 1,
+    "fields": {
+      "created_at": "2024-03-26T13:45:24.620Z",
+      "modified_at": "2024-03-26T13:45:24.620Z",
+      "application": "fd89abe9-54e6-4112-a7ac-50147d95e530",
+      "review_step": "1",
+      "status": null,
+      "log_entry_comment": null,
+      "granted_as_de_minimis_aid": false,
+      "handler_role": null,
+      "decision_text": null,
+      "justification_text": null
+    }
+  },
+  {
+    "model": "applications.reviewstate",
+    "pk": "fd89abe9-54e6-4112-a7ac-50147d95e530",
+    "fields": {
+      "paper": false,
+      "company": false,
+      "company_contact_person": false,
+      "de_minimis_aids": false,
+      "co_operation_negotiations": false,
+      "employee": false,
+      "pay_subsidy": false,
+      "benefit": false,
+      "employment": false,
+      "approval": false
+    }
+  },
+  {
+    "model": "applications.applicationlogentry",
+    "pk": "b0c8ee99-298e-4964-ab3f-8331462ba876",
+    "fields": {
+      "created_at": "2024-03-26T13:45:54.570Z",
+      "modified_at": "2024-03-26T13:45:54.570Z",
+      "application": "fd89abe9-54e6-4112-a7ac-50147d95e530",
+      "from_status": "draft",
+      "to_status": "received",
+      "comment": ""
+    }
+  },
+  {
+    "model": "applications.applicationlogentry",
+    "pk": "f776e9a1-bc93-46c9-871d-d484a5293247",
+    "fields": {
+      "created_at": "2024-03-26T13:46:09.717Z",
+      "modified_at": "2024-03-26T13:46:09.717Z",
+      "application": "fd89abe9-54e6-4112-a7ac-50147d95e530",
+      "from_status": "received",
+      "to_status": "handling",
+      "comment": ""
+    }
+  },
+  {
+    "model": "calculator.calculation",
+    "pk": "84e253ab-ebb2-434c-ab8a-48e52b0f1717",
+    "fields": {
+      "created_at": "2024-03-26T13:45:54.568Z",
+      "modified_at": "2024-03-26T13:46:26.569Z",
+      "handler": "47ecedfa-351b-4815-bfac-96bdbc640178",
+      "application": "fd89abe9-54e6-4112-a7ac-50147d95e530",
+      "monthly_pay": "1595.00",
+      "vacation_money": "47.00",
+      "other_expenses": "18.00",
+      "start_date": "2024-01-01",
+      "end_date": "2024-02-01",
+      "state_aid_max_percentage": 100,
+      "calculated_benefit_amount": "824.00",
+      "override_monthly_benefit_amount": null,
+      "granted_as_de_minimis_aid": false,
+      "target_group_check": false,
+      "override_monthly_benefit_amount_comment": ""
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "02893d7b-4a09-49bb-b1cf-530a96e6a343",
+    "fields": {
+      "created_at": "2024-03-26T13:46:26.568Z",
+      "modified_at": "2024-03-26T13:46:26.568Z",
+      "calculation": "84e253ab-ebb2-434c-ab8a-48e52b0f1717",
+      "row_type": "helsinki_benefit_total_eur",
+      "ordering": 4,
+      "description_fi": "Helsinki-lisä yhteensä",
+      "amount": "824.00",
+      "start_date": "2024-01-01",
+      "end_date": "2024-02-01",
+      "description_type": "deduction"
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "2612daa1-5772-4ee8-9081-72c592b1286c",
+    "fields": {
+      "created_at": "2024-03-26T13:46:26.565Z",
+      "modified_at": "2024-03-26T13:46:26.565Z",
+      "calculation": "84e253ab-ebb2-434c-ab8a-48e52b0f1717",
+      "row_type": "state_aid_max_monthly_eur",
+      "ordering": 1,
+      "description_fi": "Valtiotukimaksimi",
+      "amount": "1660.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "716ce541-1e0e-480d-b072-2b5359ef930d",
+    "fields": {
+      "created_at": "2024-03-26T13:46:26.566Z",
+      "modified_at": "2024-03-26T13:46:26.566Z",
+      "calculation": "84e253ab-ebb2-434c-ab8a-48e52b0f1717",
+      "row_type": "helsinki_benefit_monthly_eur",
+      "ordering": 2,
+      "description_fi": "Helsinki-lisä",
+      "amount": "800.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "9702a546-ba01-45b7-8f65-241c692512b8",
+    "fields": {
+      "created_at": "2024-03-26T13:46:26.564Z",
+      "modified_at": "2024-03-26T13:46:26.564Z",
+      "calculation": "84e253ab-ebb2-434c-ab8a-48e52b0f1717",
+      "row_type": "salary_costs",
+      "ordering": 0,
+      "description_fi": "Palkkauskustannukset",
+      "amount": "1660.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "f9301e6f-e50a-468e-afc7-67a5d960fcc8",
+    "fields": {
+      "created_at": "2024-03-26T13:46:26.567Z",
+      "modified_at": "2024-03-26T13:46:26.567Z",
+      "calculation": "84e253ab-ebb2-434c-ab8a-48e52b0f1717",
+      "row_type": "helsinki_benefit_sub_total_eur",
+      "ordering": 3,
+      "description_fi": "Yhteensä ajanjaksolta",
+      "amount": "824.00",
+      "start_date": "2024-01-01",
+      "end_date": "2024-02-01",
+      "description_type": null
+    }
+  },
+  {
+    "model": "terms.applicanttermsapproval",
+    "pk": "06ebf56e-f9ac-4a84-9cc6-f5f55571e0c1",
+    "fields": {
+      "created_at": "2024-03-26T13:45:54.565Z",
+      "modified_at": "2024-03-26T13:45:54.565Z",
+      "approved_at": "2024-03-26T13:45:54.564Z",
+      "approved_by": "47ecedfa-351b-4815-bfac-96bdbc640178",
+      "terms": "1282f1dc-9019-4311-83d0-8f5956634392",
+      "application": "fd89abe9-54e6-4112-a7ac-50147d95e530",
+      "selected_applicant_consents": [
+        "1282f1dc-9019-4311-83d0-8f5956634392",
+        "061ed4a3-2195-46e0-a7d6-0859671bb277",
+        "d9a849c1-3700-4b04-9224-37d29c7abddf",
+        "f0478de2-bc68-469d-89ba-543ea040a0f6"
+      ]
+    }
+  }
+]

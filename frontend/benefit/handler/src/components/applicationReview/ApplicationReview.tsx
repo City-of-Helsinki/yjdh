@@ -1,135 +1,151 @@
 import ApplicationHeader from 'benefit/handler/components/applicationHeader/ApplicationHeader';
 import { HANDLED_STATUSES } from 'benefit/handler/constants';
-import ReviewStateContext from 'benefit/handler/context/ReviewStateContext';
-import {
-  APPLICATION_ORIGINS,
-  APPLICATION_STATUSES,
-} from 'benefit-shared/constants';
-import { IconLockOpen, LoadingSpinner } from 'hds-react';
+import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import { ErrorData } from 'benefit-shared/types/common';
+import { useRouter } from 'next/router';
 import * as React from 'react';
+import LoadingSkeleton from 'react-loading-skeleton';
+import { useQueryClient } from 'react-query';
 import Container from 'shared/components/container/Container';
+import {
+  $Grid,
+  $GridCell,
+} from 'shared/components/forms/section/FormSection.sc';
 import StickyActionBar from 'shared/components/stickyActionBar/StickyActionBar';
 import { $StickyBarSpacing } from 'shared/components/stickyActionBar/StickyActionBar.sc';
-import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import theme from 'shared/styles/theme';
 
+import { useApplicationStepper } from '../../hooks/applicationHandling/useHandlingStepper';
 import HandlingApplicationActions from './actions/handlingApplicationActions/HandlingApplicationActions';
+import HandlingApplicationActionsAhjo from './actions/handlingApplicationActions/HandlingApplicationActionsAhjo';
 import ReceivedApplicationActions from './actions/receivedApplicationActions/ReceivedApplicationActions';
-import ApplicationProcessingView from './applicationProcessingView/AplicationProcessingView';
-import { $InfoNeededBar } from './ApplicationReview.sc';
-import BenefitView from './benefitView/BenefitView';
-import CompanyInfoView from './companyInfoView/CompanyInfoView';
-import ConsentView from './consentView/ConsentView';
-import ContactPersonView from './contactPersonView/ContactPersonView';
-import CoOperationNegotiationsView from './coOperationNegotiationsView/CoOperationNegotiationsView';
-import DeminimisView from './deminimisView/DeminimisView';
-import EmployeeView from './employeeView/EmployeeView';
-import EmploymentView from './employmentView/EmpoymentView';
-import ArchivedView from './handledView/archivedView/ArchivedView';
-import HandledView from './handledView/HandledView';
+import { $ApplicationReview } from './ApplicationReview.sc';
+import ApplicationReviewStep1 from './handlingView/HandlingStep1';
+import ApplicationReviewStep2 from './handlingView/HandlingStep2';
+import ApplicationReviewStep3 from './handlingView/HandlingStep3';
+import ApplicationStepper from './handlingView/HandlingStepper';
 import NotificationView from './notificationView/NotificationView';
-import PaperView from './paperView/PaperView';
-import SalaryBenefitCalculatorView from './salaryBenefitCalculatorView/SalaryBenefitCalculatorView';
 import { useApplicationReview } from './useApplicationReview';
 
 const ApplicationReview: React.FC = () => {
-  const {
-    application,
-    handledApplication,
-    isLoading,
+  const { application, isLoading, t } = useApplicationReview();
+
+  const isNewAhjoMode = useDetermineAhjoMode();
+
+  const { stepState, stepperDispatch } = useApplicationStepper(
+    application?.id ?? '',
     t,
-    isUploading,
-    handleUpload,
-    reviewState,
-    handleUpdateReviewState,
-  } = useApplicationReview();
+    useQueryClient()
+  );
+
+  const [isRecalculationRequired, setIsRecalculationRequired] =
+    React.useState<boolean>(false);
+  const [calculationsErrors, setCalculationErrors] = React.useState<
+    ErrorData | undefined | null
+  >();
+
+  const router = useRouter();
 
   if (isLoading) {
     return (
-      <Container>
-        <LoadingSpinner />
-      </Container>
+      <>
+        <LoadingSkeleton
+          width="100%"
+          height={96}
+          baseColor={theme.colors.coatOfArms}
+          highlightColor={theme.colors.fogDark}
+          borderRadius={0}
+        />
+
+        <Container>
+          <$Grid>
+            <$GridCell $colSpan={12}>
+              <LoadingSkeleton width="100%" height={260} />
+            </$GridCell>
+            <$GridCell $colSpan={12}>
+              <LoadingSkeleton width="100%" height={240} />
+            </$GridCell>
+            <$GridCell $colSpan={12}>
+              <LoadingSkeleton width="100%" height={330} />
+            </$GridCell>
+            <$GridCell $colSpan={12}>
+              <LoadingSkeleton width="100%" height={260} />
+            </$GridCell>
+          </$Grid>
+        </Container>
+      </>
     );
   }
 
-  if (handledApplication?.status === application.status) {
+  if (router.query?.action === 'submit') {
     return <NotificationView data={application} />;
   }
 
   return (
-    <>
+    <$ApplicationReview>
       <ApplicationHeader data={application} data-testid="application-header" />
-      <ReviewStateContext.Provider
-        value={{
-          reviewState,
-          handleUpdateReviewState,
-        }}
-      >
-        {application.status === APPLICATION_STATUSES.INFO_REQUIRED && (
-          <$InfoNeededBar>
-            {t(`common:review.fields.editEndDate`, {
-              date: convertToUIDateFormat(
-                application.additionalInformationNeededBy
-              ),
-            })}
-            <IconLockOpen />
-          </$InfoNeededBar>
+
+      {isNewAhjoMode &&
+        [
+          APPLICATION_STATUSES.HANDLING,
+          APPLICATION_STATUSES.INFO_REQUIRED,
+        ].includes(application.status) && (
+          <ApplicationStepper stepState={stepState} />
         )}
-        <Container data-testid="application-body">
-          {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER && (
-            <PaperView data={application} />
-          )}
-          <CompanyInfoView data={application} />
-          <ContactPersonView data={application} />
-          <DeminimisView data={application} />
-          <CoOperationNegotiationsView data={application} />
-          <EmployeeView
-            data={application}
-            handleUpload={handleUpload}
-            isUploading={isUploading}
+
+      {stepState.activeStepIndex === 0 && (
+        <ApplicationReviewStep1
+          application={application}
+          setIsRecalculationRequired={setIsRecalculationRequired}
+          setCalculationErrors={setCalculationErrors}
+          calculationsErrors={calculationsErrors}
+          isRecalculationRequired={isRecalculationRequired}
+        />
+      )}
+
+      {stepState.activeStepIndex === 1 && (
+        <ApplicationReviewStep2 application={application} />
+      )}
+      {stepState.activeStepIndex === 2 && (
+        <ApplicationReviewStep3 application={application} />
+      )}
+
+      <StickyActionBar>
+        {application.status === APPLICATION_STATUSES.RECEIVED && (
+          <ReceivedApplicationActions
+            application={application}
+            data-testid="received-application-actions"
           />
-          <EmploymentView
-            data={application}
-            handleUpload={handleUpload}
-            isUploading={isUploading}
-          />
-          <BenefitView data={application} />
-          <ConsentView
-            data={application}
-            handleUpload={handleUpload}
-            isUploading={isUploading}
-          />
-          {application.status === APPLICATION_STATUSES.HANDLING && (
-            <>
-              <SalaryBenefitCalculatorView data={application} />
-              <ApplicationProcessingView data={application} />
-            </>
-          )}
-          {application.status &&
-            HANDLED_STATUSES.includes(application.status) && (
-              <HandledView data={application} />
-            )}
-          {application.archived && <ArchivedView data={application} />}
-        </Container>
-        <StickyActionBar>
-          {application.status === APPLICATION_STATUSES.RECEIVED && (
-            <ReceivedApplicationActions
-              application={application}
-              data-testid="received-application-actions"
-            />
-          )}
-          {(application.status === APPLICATION_STATUSES.HANDLING ||
+        )}
+
+        {!isNewAhjoMode &&
+          (application.status === APPLICATION_STATUSES.HANDLING ||
             application.status === APPLICATION_STATUSES.INFO_REQUIRED ||
-            (application.status &&
-              HANDLED_STATUSES.includes(application.status))) && (
+            HANDLED_STATUSES.includes(application.status)) && (
             <HandlingApplicationActions
               application={application}
               data-testid="handling-application-actions"
             />
           )}
-        </StickyActionBar>
-        <$StickyBarSpacing />
-      </ReviewStateContext.Provider>
-    </>
+
+        {isNewAhjoMode &&
+          (application.status === APPLICATION_STATUSES.HANDLING ||
+            application.status === APPLICATION_STATUSES.ACCEPTED ||
+            application.status === APPLICATION_STATUSES.REJECTED ||
+            application.status === APPLICATION_STATUSES.INFO_REQUIRED) && (
+            <HandlingApplicationActionsAhjo
+              application={application}
+              stepperDispatch={stepperDispatch}
+              stepState={stepState}
+              data-testid="handling-application-actions"
+              isRecalculationRequired={isRecalculationRequired}
+              isCalculationsErrors={!!calculationsErrors}
+            />
+          )}
+      </StickyActionBar>
+      <$StickyBarSpacing />
+    </$ApplicationReview>
   );
 };
 

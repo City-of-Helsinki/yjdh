@@ -11,7 +11,7 @@ class ClamavClient:
     BASE_URL = None
 
     def __init__(self):
-        if not settings.CLAMAV_URL:
+        if not settings.CLAMAV_URL and not settings.NEXT_PUBLIC_MOCK_FLAG:
             log.warning(
                 "CLAMAV_URL not defined in settings -- Clamav Client not enabled"
             )

@@ -38,7 +38,7 @@ const useApplicationReview = (): ExtendedComponentProps => {
   const id = router?.query?.id?.toString() ?? '';
   const [isLoading, setIsLoading] = useState(true);
 
-  const shouldShowUpdatedToast = router?.query?.updated;
+  const shouldShowUpdatedToast = router?.query?.action === 'update';
 
   const {
     status: applicationDataStatus,
@@ -141,8 +141,14 @@ const useApplicationReview = (): ExtendedComponentProps => {
           applicationNumber: application.applicationNumber,
         })
       );
+      window.history.replaceState(
+        null,
+        '',
+        `${window.location.pathname}?id=${application.id}`
+      );
     }
-  }, [shouldShowUpdatedToast, t, application.applicationNumber]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return {
     t,

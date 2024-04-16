@@ -7,19 +7,10 @@ import fi from '../../public/locales/fi/common.json';
 import { NEW_FORM_DATA as form } from '../constants/forms';
 import MainIngress from '../page-model/MainIngress';
 import handlerUser from '../utils/handlerUser';
+import { uploadFileAttachment } from '../utils/input';
 import { getFrontendUrl } from '../utils/url.utils';
 
 const url = getFrontendUrl(`/`);
-
-const uploadFileAttachment = async (
-  t: TestController,
-  selector: string,
-  filename = 'sample.pdf'
-) => {
-  await t.scrollIntoView(Selector(selector).parent(), { offsetY: -200 });
-  await t.setFilesToUpload(selector, filename);
-  await t.wait(100);
-};
 
 fixture('Create new application')
   .page(url)
@@ -100,13 +91,9 @@ test('Fill form and submit', async (t: TestController) => {
   );
 
   await uploadFileAttachment(t, '#upload_attachment_full_application');
-  await t.wait(1000);
   await uploadFileAttachment(t, '#upload_attachment_employment_contract');
-  await t.wait(1000);
   await uploadFileAttachment(t, '#upload_attachment_education_contract');
-  await t.wait(1000);
   await uploadFileAttachment(t, '#upload_attachment_pay_subsidy_decision');
-  await t.wait(1000);
 
   /**
    * Click through all applicant terms.

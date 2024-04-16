@@ -9,12 +9,12 @@ from applications.enums import (
     ApplicationStatus,
     ApplicationStep,
     BenefitType,
-    DecisionProposalTemplateSectionType,
     DecisionType,
     PaySubsidyGranted,
 )
 from applications.models import (
     AhjoDecision,
+    AhjoDecisionProposalDraft,
     AhjoDecisionText,
     Application,
     APPLICATION_LANGUAGE_CHOICES,
@@ -68,6 +68,11 @@ class DeMinimisAidFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = DeMinimisAid
+
+
+class AhjoDecisionProposalDraftFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = AhjoDecisionProposalDraft
 
 
 class ApplicationBasisFactory(factory.django.DjangoModelFactory):
@@ -143,6 +148,11 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     )
     de_minimis_2 = factory.RelatedFactory(
         DeMinimisAidFactory,
+        factory_related_name="application",
+    )
+
+    decision_proposal_draft = factory.RelatedFactory(
+        AhjoDecisionProposalDraftFactory,
         factory_related_name="application",
     )
 
@@ -370,10 +380,9 @@ class ApplicationBatchFactory(BaseApplicationBatchFactory):
 
 
 class AcceptedDecisionProposalFactory(factory.django.DjangoModelFactory):
-    section_type = DecisionProposalTemplateSectionType.DECISION_SECTION
     decision_type = DecisionType.ACCEPTED
     name = "Myönteisen päätöksen Päätös-osion teksti"
-    template_text = """<p>$decision_maker päätti myöntää $company:lle Työnantajan Helsinki-lisää \
+    template_decision_text = """<p>$decision_maker päätti myöntää $company:lle Työnantajan Helsinki-lisää \
 käytettäväksi työllistetyn helsinkiläisen työllistämiseksi $total_amount euroa ajalle $benefit_date_range.</p>
 <p>Helsinki-lisään on varattu talousarviossa Helsingin kaupungin Työllisyyspalveluille \
 vuosittain budjetoitu määräraha. Avustuksen kustannukset maksetaan \
@@ -381,15 +390,7 @@ kaupungin Työllisyyspalveluille osoitetusta määrärahasta talousarvion \
 erikseen määritellyltä kohdalta. Työnantajan Helsinki-lisä on aina harkinnanvarainen.</p>
 """
 
-    class Meta:
-        model = DecisionProposalTemplateSection
-
-
-class AcceptedDecisionProposalJustificationFactory(factory.django.DjangoModelFactory):
-    section_type = DecisionProposalTemplateSectionType.JUSTIFICATION_SECTION
-    decision_type = DecisionType.ACCEPTED
-    name = "Myönteisen Päätöksen perustelut-osion teksti"
-    template_text = """<p>Helsingin kaupunginhallituksen elinkeinojaosto on 11.9.2023 § 30 päättänyt \
+    template_justification_text = """<p>Helsingin kaupunginhallituksen elinkeinojaosto on 11.9.2023 § 30 päättänyt \
 tukea rahallisesti yksityisen ja kolmannen sektorin työnantajia, \
 jotka tarjoavat työtä kaupungin työllisyydenhoidon \
 kohderyhmiin kuuluville helsinkiläisille.</p> \
@@ -442,25 +443,15 @@ ilmoittanut kaupungille kaikkien saamiensa de minimis -tukien määrät ja myön
 
 
 class DeniedDecisionProposalFactory(factory.django.DjangoModelFactory):
-    section_type = DecisionProposalTemplateSectionType.DECISION_SECTION
     decision_type = DecisionType.DENIED
     name = "Kielteisen päätöksen Päätöksen päätös-osion teksti"
-    template_text = """<p>$decision_maker päätti hylätä $company:n hakemuksen koskien Työnantajan \
+    template_decision_text = """<p>$decision_maker päätti hylätä $company:n hakemuksen koskien Työnantajan \
 Helsinki-lisää, koska myöntämisen ehdot eivät täyty.</p> \
 <p>Helsinki-lisään on varattu talousarviossa Helsingin kaupungin Työllisyyspalveluille \
 vuosittain budjetoitu määräraha. Avustuksen kustannukset maksetaan kaupungin \
 Työllisyyspalveluille osoitetusta määrärahasta. Työnantajan Helsinki-lisä on aina harkinnanvarainen.</p>
 """
-
-    class Meta:
-        model = DecisionProposalTemplateSection
-
-
-class DeniedDecisionProposalJustificationFactory(factory.django.DjangoModelFactory):
-    section_type = DecisionProposalTemplateSectionType.JUSTIFICATION_SECTION
-    decision_type = DecisionType.DENIED
-    name = "Kielteisen päätöksen Päätöksen perustelut-osion teksti"
-    template_text = """<p>Helsingin kaupunginhallituksen elinkeinojaosto on 11.9.2023 § 30 päättänyt \
+    template_justification_text = """<p>Helsingin kaupunginhallituksen elinkeinojaosto on 11.9.2023 § 30 päättänyt \
 tukea rahallisesti yksityisen ja kolmannen sektorin työnantajia, \
 jotka tarjoavat työtä kaupungin työllisyydenhoidon kohderyhmiin \
 kuuluville helsinkiläisille.</p>\

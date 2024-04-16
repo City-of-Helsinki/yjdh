@@ -1,12 +1,16 @@
 import styled from 'styled-components';
 
-export const $Drawer = styled.aside`
+type DrawerProps = {
+  stickyBarInUse?: boolean;
+};
+
+export const $Drawer = styled.aside<DrawerProps>`
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   width: 520px;
-  height: 100vh;
+  height: calc(100vh - ${(props) => (props.stickyBarInUse ? '80' : '0')}px);
   background-color: ${({ theme }) => theme.colors.white};
   z-index: 100;
   box-shadow: -2px 0px 10px 0px rgb(0 0 0 / 10%);

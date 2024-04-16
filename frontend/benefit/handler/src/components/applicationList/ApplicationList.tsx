@@ -1,3 +1,5 @@
+import 'react-loading-skeleton/dist/skeleton.css';
+
 import { ALL_APPLICATION_STATUSES, ROUTES } from 'benefit/handler/constants';
 import {
   ApplicationListTableColumns,
@@ -5,14 +7,9 @@ import {
 } from 'benefit/handler/types/applicationList';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
-import {
-  IconSpeechbubbleText,
-  LoadingSpinner,
-  StatusLabel,
-  Table,
-  Tag,
-} from 'hds-react';
+import { IconSpeechbubbleText, StatusLabel, Table, Tag } from 'hds-react';
 import * as React from 'react';
+import LoadingSkeleton from 'react-loading-skeleton';
 import { $Link } from 'shared/components/table/Table.sc';
 import {
   convertToUIDateFormat,
@@ -205,8 +202,17 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   if (isLoading) {
     return (
       <>
-        {heading && <$Heading>{`${heading}`}</$Heading>}
-        <LoadingSpinner small />
+        {heading && (
+          <$Heading
+            css={{ marginBottom: theme.spacing.xs }}
+          >{`${heading}`}</$Heading>
+        )}
+        <LoadingSkeleton
+          borderRadius={0}
+          baseColor={theme.colors.fog}
+          height={50}
+        />
+        <LoadingSkeleton height={67} />
       </>
     );
   }

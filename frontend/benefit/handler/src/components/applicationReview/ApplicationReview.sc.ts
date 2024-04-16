@@ -15,6 +15,12 @@ type TabButtonProps = {
   active?: boolean;
 };
 
+export const $ApplicationReview = styled.div`
+  hr {
+    border: 1px solid ${(props) => props.theme.colors.silver};
+  }
+`;
+
 export const $MainHeader = styled.h1`
   font-size: ${(props) => props.theme.fontSize.heading.m};
 `;
@@ -124,5 +130,19 @@ export const $InfoNeededBar = styled.div`
   font-size: ${(props) => props.theme.fontSize.body.l};
   svg {
     padding-left: ${(props) => props.theme.spacing.xs};
+  }
+`;
+
+export const $CalculationReviewTableWrapper = styled.div`
+  max-width: 714px;
+  margin-top: ${(props) => props.theme.spacing.xs};
+
+  caption {
+    font-weight: 500;
+  }
+
+  table > tbody > tr:last-child td {
+    background-color: ${(props) => props.theme.colors.coatOfArmsLight};
+    font-weight: 500;
   }
 `;

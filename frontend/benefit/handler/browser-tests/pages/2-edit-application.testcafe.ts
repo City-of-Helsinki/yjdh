@@ -7,30 +7,10 @@ import fi from '../../public/locales/fi/common.json';
 import { EDIT_FORM_DATA as form, NEW_FORM_DATA } from '../constants/forms';
 import MainIngress from '../page-model/MainIngress';
 import handlerUser from '../utils/handlerUser';
+import { clearAndFill, uploadFileAttachment } from '../utils/input';
 import { getFrontendUrl } from '../utils/url.utils';
 
 const url = getFrontendUrl(`/`);
-
-const uploadFileAttachment = async (
-  t: TestController,
-  selector: string,
-  filename = 'sample2.pdf'
-) => {
-  await t.scrollIntoView(Selector(selector).parent(), { offsetY: -200 });
-  await t.setFilesToUpload(selector, filename);
-  await t.wait(100);
-};
-
-const clearAndFill = async (
-  t: TestController,
-  selector: string,
-  value: string
-) => {
-  await t.click(selector);
-  await t.selectText(selector);
-  await t.pressKey('delete');
-  await t.typeText(selector, value ?? '');
-};
 
 fixture('Edit existing application')
   .page(url)
@@ -146,7 +126,11 @@ test('Open form and edit fields, then submit', async (t: TestController) => {
     format(new Date(), DATE_FORMATS.UI_DATE)
   );
 
-  await uploadFileAttachment(t, '#upload_attachment_employment_contract');
+  await uploadFileAttachment(
+    t,
+    '#upload_attachment_employment_contract',
+    'sample2.pdf'
+  );
 
   // Validate form and submit
   const validationButton = Selector(buttonSelector).withText(

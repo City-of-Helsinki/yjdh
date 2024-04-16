@@ -26,14 +26,14 @@ const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
     >
       {data.deMinimisAidSet && data.deMinimisAidSet?.length > 0 ? (
         <>
-          <$GridCell $colSpan={4}>
+          <$GridCell $colSpan={3}>
             <$SummaryTableHeader>
               <$ViewFieldBold>
                 {t(`${translationsBase}.fields.deMinimisAidGranter`)}
               </$ViewFieldBold>
             </$SummaryTableHeader>
           </$GridCell>
-          <$GridCell $colSpan={3}>
+          <$GridCell $colSpan={2}>
             <$SummaryTableHeader>
               <$ViewFieldBold>
                 {t(`${translationsBase}.fields.deMinimisAidAmount`)}
@@ -51,10 +51,10 @@ const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
             <React.Fragment
               key={`${granter ?? ''}${convertToUIDateFormat(grantedAt)}`}
             >
-              <$GridCell $colStart={1} $colSpan={4}>
+              <$GridCell $colStart={1} $colSpan={3}>
                 <$SummaryTableValue>{granter}</$SummaryTableValue>
               </$GridCell>
-              <$GridCell $colSpan={3}>
+              <$GridCell $colSpan={2}>
                 <$SummaryTableValue>
                   {amount
                     ? formatFloatToCurrency(amount, 'EUR', 'FI-fi', 0)
@@ -68,12 +68,12 @@ const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
               </$GridCell>
             </React.Fragment>
           ))}
-          <$GridCell $colSpan={4} $colStart={1}>
+          <$GridCell $colSpan={3} $colStart={1}>
             <$SummaryTableLastLine>
               {t(`${translationsBase}.fields.deMinimisAidTotal`)}
             </$SummaryTableLastLine>
           </$GridCell>
-          <$GridCell $colSpan={3}>
+          <$GridCell $colSpan={2}>
             <$SummaryTableLastLine>
               {data?.totalDeminimisAmount
                 ? formatFloatToCurrency(

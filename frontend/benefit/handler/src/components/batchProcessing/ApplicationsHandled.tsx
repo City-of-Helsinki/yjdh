@@ -4,8 +4,9 @@ import {
 } from 'benefit/handler/components/applicationList/ApplicationList.sc';
 import useAddToBatchQuery from 'benefit/handler/hooks/useApplicationToBatch';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
-import { Button, LoadingSpinner, Table } from 'hds-react';
+import { Button, Table } from 'hds-react';
 import React, { useEffect, useMemo, useState } from 'react';
+import LoadingSkeleton from 'react-loading-skeleton';
 import Container from 'shared/components/container/Container';
 import { $Link } from 'shared/components/table/Table.sc';
 import theme from 'shared/styles/theme';
@@ -89,11 +90,16 @@ const ApplicationsHandled: React.FC<Props> = ({
   if (shouldShowSkeleton) {
     return (
       <Container>
-        <$Heading>
+        <$Heading css={{ marginBottom: theme.spacing.xs }}>
           {t(`common:applications.list.headings.${status}`)}{' '}
           {t(`common:applications.list.headings.decisions`)}
         </$Heading>
-        <LoadingSpinner small />
+        <LoadingSkeleton
+          borderRadius={0}
+          baseColor={theme.colors.fog}
+          height={50}
+        />
+        <LoadingSkeleton height={67} />
       </Container>
     );
   }

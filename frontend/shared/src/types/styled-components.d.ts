@@ -1,5 +1,14 @@
 import 'styled-components';
 
+type StepperTheme = {
+  '--hds-not-selected-step-label-color': string;
+  '--hds-step-background-color': string;
+  '--hds-step-content-color': string;
+  '--hds-stepper-background-color': string;
+  '--hds-stepper-color': string;
+  '--hds-stepper-disabled-color': string;
+  '--hds-stepper-focus-border-color': string;
+};
 declare module 'styled-components' {
   export interface DefaultTheme {
     colors: {
@@ -143,13 +152,8 @@ declare module 'styled-components' {
     };
     components: {
       stepper: {
-        '--hds-not-selected-step-label-color': string;
-        '--hds-step-background-color': string;
-        '--hds-step-content-color': string;
-        '--hds-stepper-background-color': string;
-        '--hds-stepper-color': string;
-        '--hds-stepper-disabled-color': string;
-        '--hds-stepper-focus-border-color': string;
+        coat: StepperTheme;
+        black: StepperTheme;
       };
       tabs: {
         '--tab-color': string;
