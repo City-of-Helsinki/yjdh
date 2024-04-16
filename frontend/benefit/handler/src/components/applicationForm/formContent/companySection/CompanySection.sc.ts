@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const $CompanyInfoWrapper = styled.div`
   display: grid;
-  grid-template-columns: 200px 300px;
+  grid-template-columns: 200px 460px;
   grid-template-rows: repeat(5, 50px);
   font-size: 1.1em;
 `;
