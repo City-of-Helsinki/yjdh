@@ -145,6 +145,7 @@
         "companyName": "Työnantaja",
         "companyId": "Y-tunnus",
         "submittedAt": "Saapunut",
+        "modifiedAt": "Muokattu",
         "applicationNum": "Hakemusnumero",
         "employeeName": "Työllistetty",
         "employeeNameArchive": "Työllistetty",

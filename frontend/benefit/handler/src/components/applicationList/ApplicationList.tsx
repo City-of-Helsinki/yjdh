@@ -115,6 +115,15 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       });
     }
 
+    if (status.includes(APPLICATION_STATUSES.DRAFT) && !isAllStatuses) {
+      cols.push({
+        headerName: getHeader('modifiedAt'),
+        key: 'modifiedAt',
+        isSortable: true,
+        customSortCompareFunction: sortFinnishDate,
+      });
+    }
+
     if (isAllStatuses) {
       cols.push({
         transform: ({

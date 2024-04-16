@@ -5,7 +5,10 @@ import {
   ApplicationListItemData,
 } from 'benefit-shared/types/application';
 import { getFullName } from 'shared/utils/application.utils';
-import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import {
+  convertToUIDateAndTimeFormat,
+  convertToUIDateFormat,
+} from 'shared/utils/date.utils';
 
 interface ApplicationListProps {
   list: ApplicationListItemData[];
@@ -26,6 +29,7 @@ const useApplicationListData = (
         employee,
         company,
         submitted_at,
+        modified_at,
         application_number: applicationNum,
         calculation,
         additional_information_needed_by,
@@ -43,6 +47,7 @@ const useApplicationListData = (
         employeeName:
           getFullName(employee?.first_name, employee?.last_name) || '-',
         submittedAt: convertToUIDateFormat(submitted_at) || '-',
+        modifiedAt: convertToUIDateAndTimeFormat(modified_at) || '-',
         additionalInformationNeededBy:
           convertToUIDateFormat(additional_information_needed_by) || '-',
         applicationNum,
