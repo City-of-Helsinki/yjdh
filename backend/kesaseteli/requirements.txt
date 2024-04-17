@@ -177,7 +177,7 @@ six==1.16.0
     #   pyopenssl
     #   pysaml2
     #   python-dateutil
-sqlparse==0.4.1
+sqlparse==0.5.0
     # via django
 stack-data==0.2.0
     # via ipython
