@@ -457,7 +457,7 @@ def prepare_headers(
 
 
 def get_application_for_ahjo(id: uuid.UUID) -> Optional[Application]:
-    """Get the first accepted application with attachment, calculation and company."""
+    """Get the application with calculation, company and employee."""
     application = Application.objects.select_related(
         "calculation", "company", "employee"
     ).get(pk=id)
@@ -520,19 +520,20 @@ def send_request_to_ahjo(
     timeout = settings.AHJO_REQUEST_TIMEOUT
     headers["Content-Type"] = "application/json"
 
+    data = json.dumps(data, default=str)
+
     url_base = f"{settings.AHJO_REST_API_URL}/cases"
 
     if request_type == AhjoRequestType.OPEN_CASE:
         method = "POST"
         api_url = url_base
-        data = json.dumps(data)
     elif request_type == AhjoRequestType.DELETE_APPLICATION:
         method = "DELETE"
         api_url = prepare_delete_url(url_base, application)
+        data = None
 
     elif request_type == AhjoRequestType.UPDATE_APPLICATION:
         method = "PUT"
-        data = json.dumps(data)
         api_url = f"{url_base}/{application.ahjo_case_id}/records"
 
     elif request_type in [
@@ -541,7 +542,6 @@ def send_request_to_ahjo(
     ]:
         method = "POST"
         api_url = f"{url_base}/{application.ahjo_case_id}/records"
-        data = json.dumps(data)
 
     try:
         response = requests.request(
