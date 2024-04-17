@@ -26,9 +26,9 @@ from applications.enums import (
 from applications.models import AhjoDecisionText, AhjoStatus, Application, Attachment
 from applications.services.ahjo_authentication import AhjoConnector, AhjoToken
 from applications.services.ahjo_payload import (
+    prepare_attachment_records_payload,
     prepare_decision_proposal_payload,
     prepare_open_case_payload,
-    prepare_attachment_records_payload,
     prepare_update_application_payload,
 )
 from applications.services.ahjo_xml_builder import (
@@ -387,7 +387,7 @@ PDF_CONTENT_TYPE = "application/pdf"
 def generate_application_attachment(
     application: Application, type: AttachmentType
 ) -> Attachment:
-    """Generate a xml decision of the given application and return it as an Attachment."""
+    """Generate and save an Attachment of the requested type for the given application"""
     if type == AttachmentType.PDF_SUMMARY:
         attachment_data = generate_application_summary_file(application)
         attachment_filename = (
@@ -414,12 +414,20 @@ def generate_application_attachment(
         raise ValueError(f"Invalid attachment type {type}")
 
     attachment_file = ContentFile(attachment_data, attachment_filename)
-    attachment = Attachment.objects.create(
-        application=application,
-        attachment_file=attachment_file,
-        content_type=content_type,
-        attachment_type=type,
-    )
+    if type == AttachmentType.PDF_SUMMARY:
+        # As there should only exist one pdf summary, update or create the attachment if it is one
+        attachment, _ = Attachment.objects.update_or_create(
+            application=application,
+            attachment_type=type,
+            defaults={"attachment_file": attachment_file, "content_type": content_type},
+        )
+    else:
+        attachment = Attachment.objects.create(
+            application=application,
+            attachment_file=attachment_file,
+            content_type=content_type,
+            attachment_type=type,
+        )
     return attachment
 
 

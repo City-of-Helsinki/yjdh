@@ -575,7 +575,7 @@ def test_get_application_for_ahjo_no_ad_username(decided_application):
 
 
 @pytest.mark.django_db
-def test_generate_pdf_summary_as_attachment(decided_application):
+def test_create_or_update_pdf_summary_as_attachment_(decided_application):
     attachment = generate_application_attachment(
         decided_application, AttachmentType.PDF_SUMMARY
     )
@@ -592,6 +592,15 @@ def test_generate_pdf_summary_as_attachment(decided_application):
     assert os.path.exists(attachment.attachment_file.path)
     if os.path.exists(attachment.attachment_file.path):
         os.remove(attachment.attachment_file.path)
+
+    attachment = generate_application_attachment(
+        decided_application, AttachmentType.PDF_SUMMARY
+    )
+
+    summaries = Attachment.objects.filter(
+        application=decided_application, attachment_type=AttachmentType.PDF_SUMMARY
+    )
+    assert summaries.count() == 1
 
 
 @pytest.mark.django_db
