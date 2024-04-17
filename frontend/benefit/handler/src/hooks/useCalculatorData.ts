@@ -1,6 +1,13 @@
-import { CALCULATION_TYPES } from 'benefit/handler/constants';
-import { CalculationFormProps } from 'benefit/handler/types/application';
+import {
+  CALCULATION_TYPES,
+  PAY_SUBSIDIES_OVERRIDE,
+} from 'benefit/handler/constants';
+import {
+  Application,
+  CalculationFormProps,
+} from 'benefit/handler/types/application';
 import { getErrorText } from 'benefit/handler/utils/forms';
+import { PAY_SUBSIDY_GRANTED } from 'benefit-shared/constants';
 import { FormikProps } from 'formik';
 import { TFunction, useTranslation } from 'next-i18next';
 import { useEffect, useState } from 'react';
@@ -15,14 +22,15 @@ type ExtendedComponentProps = {
   theme: DefaultTheme;
   language: Language;
   handleSubmit: () => void;
-  handleClear: () => void;
+  handleClear: (confirm: boolean) => true;
   getErrorMessage: (fieldName: string) => string | undefined;
 };
 
 const useCalculatorData = (
   calculatorType: CALCULATION_TYPES,
   formik: FormikProps<CalculationFormProps>,
-  setIsRecalculationRequired: (value: boolean) => void
+  setIsRecalculationRequired: (value: boolean) => void,
+  application: Application
 ): ExtendedComponentProps => {
   const language = useLocale();
   const theme = useTheme();
@@ -48,8 +56,32 @@ const useCalculatorData = (
     });
   };
 
-  const handleClear = (): void => {
-    formik.resetForm();
+  /**
+   * Clear all fields in the calculation form
+   * @param confirm true: do the actual clearing, false: just scroll to field
+   * @returns true to allow chaining
+   */
+  const handleClear = (confirm: boolean): true => {
+    if (confirm) {
+      formik.setFieldValue('endDate', '');
+      formik.setFieldValue('startDate', '');
+      formik.setFieldValue('workTimePercent', '65');
+      formik.setFieldValue('monthlyAmount', '');
+      formik.setFieldValue(
+        'paySubsidies',
+        application.paySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
+          ? []
+          : [PAY_SUBSIDIES_OVERRIDE]
+      );
+      formik.setFieldValue('trainingCompensations', []);
+      // Manual calculation fields
+      formik.setFieldValue('overrideMonthlyBenefitAmount', '');
+      formik.setFieldValue('overrideMonthlyBenefitAmountComment', '');
+    }
+    setTimeout(() => {
+      focusAndScroll('monthlyPay');
+    }, 20);
+    return true;
   };
 
   useEffect(() => {

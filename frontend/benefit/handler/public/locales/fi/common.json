@@ -1016,7 +1016,8 @@
       "remove": "Poista",
       "calculator": "Laskuri",
       "calculateManually": "Laske käsin",
-      "clear": "Tyhjennä"
+      "clear": "Tyhjennä",
+      "confirmClear": "Tyhjennetäänkö kaikki laskelman kentät?"
     },
     "result": {
       "header": "Myönnettävä Helsinki-lisä",
