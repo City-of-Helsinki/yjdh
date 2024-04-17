@@ -233,8 +233,8 @@ def prepare_decision_proposal_payload(
     proposal_dict = {
         "records": [
             {
-                "Title": "Avustuksen myöntäminen, Työllisyyspalvelut, työllisyydenhoidon Helsinki-lisä vuonna 2024",
-                "Type": "viranhaltijan päätös",
+                "Title": AhjoRecordTitle.DECISION_PROPOSAL,
+                "Type": AhjoRecordType.DECISION_PROPOSAL,
                 "PublicityClass": "Julkinen",
                 "Language": language,
                 "PersonalData": "Sisältää henkilötietoja",
@@ -246,8 +246,8 @@ def prepare_decision_proposal_payload(
                 ],
             },
             {
-                "Title": "Päätöksen liite",
-                "Type": "viranhaltijan päätöksen liite",
+                "Title": AhjoRecordTitle.SECRET_ATTACHMENT,
+                "Type": AhjoRecordType.SECRET_ATTACHMENT,
                 "PublicityClass": "Salassa pidettävä",
                 "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
                 "Language": language,
