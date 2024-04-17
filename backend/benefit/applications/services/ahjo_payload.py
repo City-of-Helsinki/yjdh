@@ -12,6 +12,23 @@ from users.models import User
 MANNER_OF_RECEIPT = "sähköinen asiointi"
 
 
+def _prepare_record_title(
+    application: Application,
+    record_type: AhjoRecordType,
+    current: int = 0,
+    total: int = 0,
+) -> str:
+    """Prepare the title for the application record in Ahjo in the format:
+    Hakemus 11.4.2024, 128123
+    or for an attachment:
+    Hakemus 11.4.2024, liite 1/3, 128123
+    """
+    formatted_date = application.created_at.strftime("%d.%m.%Y")
+    if record_type == AhjoRecordType.APPLICATION:
+        return f"{AhjoRecordTitle.APPLICATION} {formatted_date}, {application.application_number}"
+    return f"{AhjoRecordTitle.APPLICATION} {formatted_date}, liite {current}/{total}, {application.application_number}"
+
+
 def _prepare_case_title(application: Application) -> str:
     full_title = f"Avustukset työnantajille, työllisyyspalvelut, \
 Helsinki-lisä, {application.company_name}, \
@@ -82,7 +99,7 @@ def _prepare_record_document_dict(attachment: Attachment) -> dict:
 
 
 def _prepare_record(
-    record_title: AhjoRecordTitle,
+    record_title: str,
     record_type: AhjoRecordType,
     acquired: datetime,
     documents: List[dict],
@@ -104,7 +121,7 @@ def _prepare_record(
     if ahjo_version_series_id is not None:
         record_dict["VersionSeriesId"] = ahjo_version_series_id
 
-    elif ahjo_version_series_id is None and record_title == AhjoRecordTitle.APPLICATION:
+    elif ahjo_version_series_id is None and record_type == AhjoRecordType.APPLICATION:
         record_dict["MannerOfReceipt"] = MANNER_OF_RECEIPT
 
     record_dict["Documents"] = documents
@@ -132,7 +149,7 @@ def _prepare_case_records(
     )
 
     main_document_record = _prepare_record(
-        AhjoRecordTitle.APPLICATION,
+        _prepare_record_title(application, AhjoRecordType.APPLICATION),
         AhjoRecordType.APPLICATION,
         application.created_at.isoformat("T", "seconds"),
         [_prepare_record_document_dict(pdf_summary)],
@@ -142,19 +159,25 @@ def _prepare_case_records(
 
     case_records.append(main_document_record)
 
-    for attachment in application.attachments.exclude(
+    open_case_attachments = application.attachments.exclude(
         attachment_type__in=[
             AttachmentType.PDF_SUMMARY,
+            AttachmentType.FULL_APPLICATION,
             AttachmentType.DECISION_TEXT_XML,
             AttachmentType.DECISION_TEXT_SECRET_XML,
         ]
-    ):
+    )
+    total_attachments = open_case_attachments.count()
+    position = 1
+    for attachment in open_case_attachments:
         attachment_version_series_id = (
             pdf_summary.ahjo_version_series_id if is_update else None
         )
 
         document_record = _prepare_record(
-            AhjoRecordTitle.ATTACHMENT,
+            _prepare_record_title(
+                application, AhjoRecordType.ATTACHMENT, position, total_attachments
+            ),
             AhjoRecordType.ATTACHMENT,
             attachment.created_at.isoformat("T", "seconds"),
             [_prepare_record_document_dict(attachment)],
@@ -162,6 +185,7 @@ def _prepare_case_records(
             ahjo_version_series_id=attachment_version_series_id,
         )
         case_records.append(document_record)
+        position += 1
 
     return case_records
 
@@ -178,37 +202,43 @@ def prepare_open_case_payload(
 
 def prepare_attachment_records_payload(
     attachments: List[Attachment],
-    handler: User,
+    application: Application,
 ) -> dict[str, list[dict]]:
     """Prepare a payload for the new attachments of an application."""
 
     attachment_list = []
-
+    position = 1
+    total_attachments = len(attachments)
     for attachment in attachments:
         attachment_list.append(
             _prepare_record(
-                AhjoRecordTitle.ATTACHMENT,
+                _prepare_record_title(
+                    application, AhjoRecordType.ATTACHMENT, position, total_attachments
+                ),
                 AhjoRecordType.ATTACHMENT,
                 attachment.created_at.isoformat("T", "seconds"),
                 [_prepare_record_document_dict(attachment)],
-                handler,
+                application.calculation.handler,
             )
         )
+        position += 1
 
     return {"records": attachment_list}
 
 
-def prepare_update_application_payload(pdf_summary: Attachment, handler: User) -> dict:
+def prepare_update_application_payload(
+    pdf_summary: Attachment, application: Application
+) -> dict:
     """Prepare the payload that is sent to Ahjo when an application is updated, \
           in this case it only contains a Records dict"""
     return {
         "records": [
             _prepare_record(
-                AhjoRecordTitle.APPLICATION,
+                _prepare_record_title(application, AhjoRecordType.APPLICATION),
                 AhjoRecordType.APPLICATION,
                 pdf_summary.created_at.isoformat("T", "seconds"),
                 [_prepare_record_document_dict(pdf_summary)],
-                handler,
+                application.calculation.handler,
             )
         ]
     }
