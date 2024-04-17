@@ -32,11 +32,11 @@ export const focusAndScroll = (elementId: string): void => {
 };
 
 /**
- * Focus and scroll to any element using querySelector
+ * Focus and scroll to any element using query selector
  * @param elementSelector
  * @returns void
  */
-export const focusAndScrollTo = (elementSelector: string): void => {
+export const focusAndScrollToSelector = (elementSelector: string): void => {
   const element = document.querySelector(elementSelector);
   return handleScroll(element as HTMLElement);
 };
