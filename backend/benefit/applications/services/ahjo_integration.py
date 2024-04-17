@@ -618,7 +618,12 @@ def delete_application_in_ahjo(application_id: uuid.UUID):
         LOGGER.error(f"Improperly configured: {e}")
 
 
-def update_application_in_ahjo(application: Application, ahjo_auth_token: str):
+def update_application_summary_record_in_ahjo(
+    application: Application, ahjo_auth_token: str
+):
+    """Update the application summary pdf in Ahjo.
+    Should be done just before the decision proposal is sent.
+    """
     try:
         headers = prepare_headers(
             ahjo_auth_token, application, AhjoRequestType.UPDATE_APPLICATION
@@ -627,7 +632,9 @@ def update_application_in_ahjo(application: Application, ahjo_auth_token: str):
         pdf_summary = generate_application_attachment(
             application, AttachmentType.PDF_SUMMARY
         )
-        data = prepare_update_application_payload(application, pdf_summary)
+        data = prepare_update_application_payload(
+            pdf_summary, application.calculation.handler
+        )
 
         result = send_request_to_ahjo(
             AhjoRequestType.UPDATE_APPLICATION,

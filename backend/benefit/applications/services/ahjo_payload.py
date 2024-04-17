@@ -197,12 +197,21 @@ def prepare_attachment_records_payload(
 
     return {"records": attachment_list}
 
-def prepare_update_application_payload(
-    application: Application, pdf_summary: Attachment
-) -> dict:
+
+def prepare_update_application_payload(pdf_summary: Attachment, handler: User) -> dict:
     """Prepare the payload that is sent to Ahjo when an application is updated, \
           in this case it only contains a Records dict"""
-    return {"records": _prepare_case_records(application, pdf_summary, is_update=True)}
+    return {
+        "records": [
+            _prepare_record(
+                AhjoRecordTitle.APPLICATION,
+                AhjoRecordType.APPLICATION,
+                pdf_summary.created_at.isoformat("T", "seconds"),
+                [_prepare_record_document_dict(pdf_summary)],
+                handler,
+            )
+        ]
+    }
 
 
 def prepare_decision_proposal_payload(

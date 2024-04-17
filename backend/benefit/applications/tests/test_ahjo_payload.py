@@ -9,6 +9,7 @@ from applications.services.ahjo_payload import (
     _prepare_record,
     _prepare_record_document_dict,
     _prepare_top_level_dict,
+    prepare_update_application_payload,
 )
 from common.utils import hash_file
 
@@ -155,3 +156,49 @@ def test_prepare_top_level_dict(decided_application, ahjo_open_case_top_level_di
     got = _prepare_top_level_dict(application, [], "message title")
 
     assert ahjo_open_case_top_level_dict == got
+
+
+def test_prepare_update_application_payload(decided_application):
+    application = decided_application
+    handler = application.calculation.handler
+    handler_name = f"{handler.last_name}, {handler.first_name}"
+    handler_id = handler.ad_username
+
+    fake_file = ContentFile(
+        b"fake file content",
+        f"application_summary_{application.application_number}.pdf",
+    )
+
+    fake_summary = Attachment.objects.create(
+        application=application,
+        attachment_file=fake_file,
+        content_type="application/pdf",
+        attachment_type=AttachmentType.PDF_SUMMARY,
+    )
+
+    want = {
+        "records": [
+            {
+                "Title": AhjoRecordTitle.APPLICATION,
+                "Type": AhjoRecordType.APPLICATION,
+                "Acquired": application.created_at.isoformat(),
+                "PublicityClass": "Salassa pidettävä",
+                "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
+                "Language": "fi",
+                "PersonalData": "Sisältää erityisiä henkilötietoja",
+                "MannerOfReceipt": "sähköinen asiointi",
+                "Documents": [_prepare_record_document_dict(fake_summary)],
+                "Agents": [
+                    {
+                        "Role": "mainCreator",
+                        "Name": handler_name,
+                        "ID": handler_id,
+                    }
+                ],
+            }
+        ]
+    }
+
+    got = prepare_update_application_payload(fake_summary, handler)
+
+    assert want == got
