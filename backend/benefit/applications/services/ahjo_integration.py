@@ -632,9 +632,7 @@ def update_application_summary_record_in_ahjo(
         pdf_summary = generate_application_attachment(
             application, AttachmentType.PDF_SUMMARY
         )
-        data = prepare_update_application_payload(
-            pdf_summary, application.calculation.handler
-        )
+        data = prepare_update_application_payload(pdf_summary, application)
 
         result = send_request_to_ahjo(
             AhjoRequestType.UPDATE_APPLICATION,
@@ -658,7 +656,7 @@ def send_new_attachment_records_to_ahjo(
     """Send any new attachments, that have been added after opening a case, to Ahjo."""
     try:
         applications = Application.objects.with_downloaded_attachments()
-        # TODO add a check for application status, 
+        # TODO add a check for application status,
         # so that only applications in the correct status have their attachments sent
         responses = []
         for application in applications:
@@ -668,9 +666,7 @@ def send_new_attachment_records_to_ahjo(
                 token.access_token, application, AhjoRequestType.ADD_RECORDS
             )
 
-            data = prepare_attachment_records_payload(
-                attachments, application.calculation.handler
-            )
+            data = prepare_attachment_records_payload(attachments, application)
 
             application, response_text = send_request_to_ahjo(
                 AhjoRequestType.ADD_RECORDS, headers, application, data
