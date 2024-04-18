@@ -869,7 +869,7 @@
       "calculationReview": {
         "tableCaption": "Tukijaksot",
         "dates": "Tukijakso",
-        "duration": "Kesto",
+        "duration": "Kesto (kk)",
         "perMonth": "Tuki kuukaudessa",
         "amount": "Tuki yhteensä"
       },
