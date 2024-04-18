@@ -153,7 +153,7 @@ class AhjoCallbackView(APIView):
             elif request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
                 ahjo_status = AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED
                 info = "Decision proposal was sent to Ahjo"
-            elif request_type in AhjoRequestType.UPDATE_APPLICATION:
+            elif request_type == AhjoRequestType.UPDATE_APPLICATION:
                 self._handle_update_or_add_records_success(application, callback_data)
                 ahjo_status = AhjoStatusEnum.UPDATE_REQUEST_RECEIVED
                 info = f"Updated application records were sent to Ahjo with request id: {callback_data['requestId']}"
