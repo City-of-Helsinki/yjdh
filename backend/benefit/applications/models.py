@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date
 
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
@@ -34,6 +34,7 @@ from applications.exceptions import (
 from common.localized_iban_field import LocalizedIBANField
 from common.utils import DurationMixin
 from companies.models import Company
+from shared.common.utils import social_security_number_birthdate
 from shared.models.abstract_models import TimeStampedModel, UUIDModel
 from users.models import User
 
@@ -863,7 +864,7 @@ class Employee(UUIDModel, TimeStampedModel):
             return None
         # invalid social security number results in ValueError.
         # input validation should ensure it's always valid.
-        return datetime.strptime(self.social_security_number[:6], "%d%m%y").date()
+        return social_security_number_birthdate(self.social_security_number)
 
     def __str__(self):
         return "{} {} ({})".format(self.first_name, self.last_name, self.email)
