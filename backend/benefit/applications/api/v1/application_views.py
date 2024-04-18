@@ -257,6 +257,7 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def _get_simplified_queryset(self, request, context) -> QuerySet:

@@ -3,7 +3,7 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.db import connection, models
-from django.db.models import JSONField, OuterRef, Subquery
+from django.db.models import JSONField, OuterRef, Prefetch, Subquery
 from django.db.models.constraints import UniqueConstraint
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
@@ -120,6 +120,29 @@ class ApplicationManager(models.Manager):
             qs, "submitted_at", [ApplicationStatus.RECEIVED]
         )
         return qs
+
+    def with_downloaded_attachments(self):
+        """
+        Returns applications with only those attachments that have
+        null in 'downloaded_by_ahjo' and where  the applications have a non-null ahjo_case_id,
+        which means that a case has been opened for them in AHJO.
+        """
+
+        qs = self.get_queryset().filter(ahjo_case_id__isnull=False)
+        attachments_queryset = Attachment.objects.filter(
+            downloaded_by_ahjo__isnull=True,
+            attachment_type__in=[
+                AttachmentType.EMPLOYMENT_CONTRACT,
+                AttachmentType.PAY_SUBSIDY_DECISION,
+                AttachmentType.COMMISSION_CONTRACT,
+                AttachmentType.EDUCATION_CONTRACT,
+                AttachmentType.HELSINKI_BENEFIT_VOUCHER,
+                AttachmentType.EMPLOYEE_CONSENT,
+                AttachmentType.OTHER_ATTACHMENT,
+            ],
+        )
+        attachments_prefetch = Prefetch("attachments", queryset=attachments_queryset)
+        return qs.prefetch_related(attachments_prefetch)
 
 
 class Application(UUIDModel, TimeStampedModel, DurationMixin):
@@ -901,6 +924,8 @@ class Attachment(UUIDModel, TimeStampedModel):
     ahjo_version_series_id = models.CharField(max_length=64, null=True, blank=True)
 
     ahjo_hash_value = models.CharField(max_length=64, null=True, blank=True)
+
+    downloaded_by_ahjo = models.DateTimeField(null=True, blank=True)
 
     history = HistoricalRecords(
         table_name="bf_applications_attachment_history", cascade_delete_history=True

@@ -26,6 +26,7 @@ from applications.enums import (
 from applications.models import AhjoDecisionText, AhjoStatus, Application, Attachment
 from applications.services.ahjo_authentication import AhjoConnector, AhjoToken
 from applications.services.ahjo_payload import (
+    prepare_attachment_records_payload,
     prepare_decision_proposal_payload,
     prepare_open_case_payload,
     prepare_update_application_payload,
@@ -386,7 +387,7 @@ PDF_CONTENT_TYPE = "application/pdf"
 def generate_application_attachment(
     application: Application, type: AttachmentType
 ) -> Attachment:
-    """Generate a xml decision of the given application and return it as an Attachment."""
+    """Generate and save an Attachment of the requested type for the given application"""
     if type == AttachmentType.PDF_SUMMARY:
         attachment_data = generate_application_summary_file(application)
         attachment_filename = (
@@ -413,12 +414,20 @@ def generate_application_attachment(
         raise ValueError(f"Invalid attachment type {type}")
 
     attachment_file = ContentFile(attachment_data, attachment_filename)
-    attachment = Attachment.objects.create(
-        application=application,
-        attachment_file=attachment_file,
-        content_type=content_type,
-        attachment_type=type,
-    )
+    if type == AttachmentType.PDF_SUMMARY:
+        # As there should only exist one pdf summary, update or create the attachment if it is one
+        attachment, _ = Attachment.objects.update_or_create(
+            application=application,
+            attachment_type=type,
+            defaults={"attachment_file": attachment_file, "content_type": content_type},
+        )
+    else:
+        attachment = Attachment.objects.create(
+            application=application,
+            attachment_file=attachment_file,
+            content_type=content_type,
+            attachment_type=type,
+        )
     return attachment
 
 
@@ -448,7 +457,7 @@ def prepare_headers(
 
 
 def get_application_for_ahjo(id: uuid.UUID) -> Optional[Application]:
-    """Get the first accepted application with attachment, calculation and company."""
+    """Get the application with calculation, company and employee."""
     application = Application.objects.select_related(
         "calculation", "company", "employee"
     ).get(pk=id)
@@ -511,25 +520,28 @@ def send_request_to_ahjo(
     timeout = settings.AHJO_REQUEST_TIMEOUT
     headers["Content-Type"] = "application/json"
 
+    data = json.dumps(data, default=str)
+
     url_base = f"{settings.AHJO_REST_API_URL}/cases"
 
     if request_type == AhjoRequestType.OPEN_CASE:
         method = "POST"
         api_url = url_base
-        data = json.dumps(data)
     elif request_type == AhjoRequestType.DELETE_APPLICATION:
         method = "DELETE"
         api_url = prepare_delete_url(url_base, application)
+        data = None
 
     elif request_type == AhjoRequestType.UPDATE_APPLICATION:
         method = "PUT"
-        data = json.dumps(data)
         api_url = f"{url_base}/{application.ahjo_case_id}/records"
 
-    elif request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
+    elif request_type in [
+        AhjoRequestType.SEND_DECISION_PROPOSAL,
+        AhjoRequestType.ADD_RECORDS,
+    ]:
         method = "POST"
         api_url = f"{url_base}/{application.ahjo_case_id}/records"
-        data = json.dumps(data)
 
     try:
         response = requests.request(
@@ -606,7 +618,12 @@ def delete_application_in_ahjo(application_id: uuid.UUID):
         LOGGER.error(f"Improperly configured: {e}")
 
 
-def update_application_in_ahjo(application: Application, ahjo_auth_token: str):
+def update_application_summary_record_in_ahjo(
+    application: Application, ahjo_auth_token: str
+):
+    """Update the application summary pdf in Ahjo.
+    Should be done just before the decision proposal is sent.
+    """
     try:
         headers = prepare_headers(
             ahjo_auth_token, application, AhjoRequestType.UPDATE_APPLICATION
@@ -615,7 +632,7 @@ def update_application_in_ahjo(application: Application, ahjo_auth_token: str):
         pdf_summary = generate_application_attachment(
             application, AttachmentType.PDF_SUMMARY
         )
-        data = prepare_update_application_payload(application, pdf_summary)
+        data = prepare_update_application_payload(pdf_summary, application)
 
         result = send_request_to_ahjo(
             AhjoRequestType.UPDATE_APPLICATION,
@@ -627,6 +644,38 @@ def update_application_in_ahjo(application: Application, ahjo_auth_token: str):
             create_status_for_application(
                 application, AhjoStatusEnum.UPDATE_REQUEST_SENT
             )
+    except ObjectDoesNotExist as e:
+        LOGGER.error(f"Object not found: {e}")
+    except ImproperlyConfigured as e:
+        LOGGER.error(f"Improperly configured: {e}")
+
+
+def send_new_attachment_records_to_ahjo(
+    token: AhjoToken,
+) -> List[Tuple[Application, str]]:
+    """Send any new attachments, that have been added after opening a case, to Ahjo."""
+    try:
+        applications = Application.objects.with_downloaded_attachments()
+        # TODO add a check for application status,
+        # so that only applications in the correct status have their attachments sent
+        responses = []
+        for application in applications:
+            attachments = application.attachments.all()
+
+            headers = prepare_headers(
+                token.access_token, application, AhjoRequestType.ADD_RECORDS
+            )
+
+            data = prepare_attachment_records_payload(attachments, application)
+
+            application, response_text = send_request_to_ahjo(
+                AhjoRequestType.ADD_RECORDS, headers, application, data
+            )
+            responses.append((application, response_text))
+            create_status_for_application(
+                application, AhjoStatusEnum.NEW_RECORDS_REQUEST_SENT
+            )
+        return responses
     except ObjectDoesNotExist as e:
         LOGGER.error(f"Object not found: {e}")
     except ImproperlyConfigured as e:

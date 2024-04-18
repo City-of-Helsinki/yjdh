@@ -172,6 +172,7 @@ env = environ.Env(
     AHJO_REQUEST_TIMEOUT=(int, 60),
     ENABLE_CLAMAV=(bool, False),
     CLAMAV_URL=(str, ""),
+    ENABLE_AHJO_AUTOMATION=(bool, False),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -545,3 +546,4 @@ AHJO_REQUEST_TIMEOUT = env("AHJO_REQUEST_TIMEOUT")
 
 ENABLE_CLAMAV = env.bool("ENABLE_CLAMAV")
 CLAMAV_URL = env.str("CLAMAV_URL")
+ENABLE_AHJO_AUTOMATION = env.bool("ENABLE_AHJO_AUTOMATION")

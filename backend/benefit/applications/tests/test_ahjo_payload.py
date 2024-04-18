@@ -1,14 +1,16 @@
 from django.core.files.base import ContentFile
 from django.urls import reverse
 
-from applications.enums import AttachmentType
+from applications.enums import AhjoRecordTitle, AhjoRecordType, AttachmentType
 from applications.models import Attachment
 from applications.services.ahjo_payload import (
     _prepare_case_records,
     _prepare_case_title,
     _prepare_record,
     _prepare_record_document_dict,
+    _prepare_record_title,
     _prepare_top_level_dict,
+    prepare_update_application_payload,
 )
 from common.utils import hash_file
 
@@ -19,6 +21,22 @@ def test_prepare_case_title(decided_application):
 Helsinki-lisä, {application.company_name}, \
 hakemus {application.application_number}"
     got = _prepare_case_title(application)
+    assert wanted_title == got
+
+
+def test_prepare_record_title(decided_application):
+    application = decided_application
+    formatted_date = application.created_at.strftime("%d.%m.%Y")
+    wanted_title = f"{AhjoRecordTitle.APPLICATION} {formatted_date}, {application.application_number}"
+    got = _prepare_record_title(application, AhjoRecordType.APPLICATION)
+    assert wanted_title == got
+
+
+def test_prepare_record_title_for_attachment(decided_application):
+    application = decided_application
+    formatted_date = application.created_at.strftime("%d.%m.%Y")
+    wanted_title = f"{AhjoRecordTitle.APPLICATION} {formatted_date}, liite 1/3, {application.application_number}"
+    got = _prepare_record_title(application, AhjoRecordType.ATTACHMENT, 1, 3)
     assert wanted_title == got
 
 
@@ -112,9 +130,9 @@ def test_prepare_case_records(decided_application, settings):
     handler_name = f"{handler.last_name}, {handler.first_name}"
     want = [
         {
-            "Title": "Hakemus",
-            "Type": "hakemus",
-            "Acquired": application.created_at.isoformat(),
+            "Title": _prepare_record_title(application, AhjoRecordType.APPLICATION),
+            "Type": AhjoRecordType.APPLICATION,
+            "Acquired": application.created_at.isoformat("T", "seconds"),
             "PublicityClass": "Salassa pidettävä",
             "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
             "Language": "fi",
@@ -130,19 +148,30 @@ def test_prepare_case_records(decided_application, settings):
             ],
         }
     ]
+    open_case_attachments = application.attachments.exclude(
+        attachment_type__in=[
+            AttachmentType.PDF_SUMMARY,
+            AttachmentType.FULL_APPLICATION,
+            AttachmentType.DECISION_TEXT_XML,
+            AttachmentType.DECISION_TEXT_SECRET_XML,
+        ]
+    )
+    total_attachments = open_case_attachments.count()
+    pos = 1
 
-    for attachment in application.attachments.exclude(
-        attachment_type=AttachmentType.PDF_SUMMARY
-    ):
+    for attachment in open_case_attachments:
         document_record = _prepare_record(
-            "Hakemuksen liite",
-            "hakemuksen liite",
-            attachment.created_at.isoformat(),
+            _prepare_record_title(
+                application, AhjoRecordType.ATTACHMENT, pos, total_attachments
+            ),
+            AhjoRecordType.ATTACHMENT,
+            attachment.created_at.isoformat("T", "seconds"),
             [_prepare_record_document_dict(attachment)],
             handler,
         )
 
         want.append(document_record)
+        pos += 1
 
     got = _prepare_case_records(application, fake_summary)
 
@@ -155,3 +184,49 @@ def test_prepare_top_level_dict(decided_application, ahjo_open_case_top_level_di
     got = _prepare_top_level_dict(application, [], "message title")
 
     assert ahjo_open_case_top_level_dict == got
+
+
+def test_prepare_update_application_payload(decided_application):
+    application = decided_application
+    handler = application.calculation.handler
+    handler_name = f"{handler.last_name}, {handler.first_name}"
+    handler_id = handler.ad_username
+
+    fake_file = ContentFile(
+        b"fake file content",
+        f"application_summary_{application.application_number}.pdf",
+    )
+
+    fake_summary = Attachment.objects.create(
+        application=application,
+        attachment_file=fake_file,
+        content_type="application/pdf",
+        attachment_type=AttachmentType.PDF_SUMMARY,
+    )
+
+    want = {
+        "records": [
+            {
+                "Title": _prepare_record_title(application, AhjoRecordType.APPLICATION),
+                "Type": AhjoRecordType.APPLICATION,
+                "Acquired": application.created_at.isoformat(),
+                "PublicityClass": "Salassa pidettävä",
+                "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
+                "Language": "fi",
+                "PersonalData": "Sisältää erityisiä henkilötietoja",
+                "MannerOfReceipt": "sähköinen asiointi",
+                "Documents": [_prepare_record_document_dict(fake_summary)],
+                "Agents": [
+                    {
+                        "Role": "mainCreator",
+                        "Name": handler_name,
+                        "ID": handler_id,
+                    }
+                ],
+            }
+        ]
+    }
+
+    got = prepare_update_application_payload(fake_summary, decided_application)
+
+    assert want == got
