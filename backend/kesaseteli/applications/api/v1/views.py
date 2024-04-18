@@ -10,7 +10,7 @@ from django.db.models.functions import Concat
 from django.db.utils import ProgrammingError
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
-from django.utils import translation
+from django.utils import timezone, translation
 from django.utils.decorators import method_decorator
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
@@ -34,6 +34,7 @@ from applications.api.v1.serializers import (
     AttachmentSerializer,
     EmployerApplicationSerializer,
     EmployerSummerVoucherSerializer,
+    NonVtjYouthApplicationSerializer,
     SchoolSerializer,
     YouthApplicationAdditionalInfoSerializer,
     YouthApplicationHandlingSerializer,
@@ -41,6 +42,7 @@ from applications.api.v1.serializers import (
     YouthApplicationStatusSerializer,
 )
 from applications.enums import (
+    AdditionalInfoUserReason,
     EmployerApplicationStatus,
     YouthApplicationRejectedReason,
     YouthApplicationStatus,
@@ -145,7 +147,10 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         youth_application: YouthApplication = self.get_object().lock_for_update()
         # Update unhandled youth applications' encrypted_handler_vtj_json so
         # handlers can accept/reject using it
-        if not youth_application.is_handled:
+        if (
+            youth_application.has_social_security_number
+            and not youth_application.is_handled
+        ):
             youth_application.encrypted_handler_vtj_json = (
                 youth_application.fetch_vtj_json(
                     end_user=VTJClient.get_end_user(request)
@@ -293,7 +298,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
                     "employee_name": youth_application.name,
                     "employee_ssn": youth_application.social_security_number,
                     "employee_phone_number": youth_application.phone_number,
-                    "employee_home_city": youth_application.vtj_home_municipality,
+                    "employee_home_city": youth_application.home_municipality,
                     "employee_postcode": youth_application.postcode,
                     "employee_school": youth_application.school,
                 },
@@ -306,7 +311,10 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def accept(self, request, *args, **kwargs) -> HttpResponse:
         youth_application: YouthApplication = self.get_object().lock_for_update()
 
-        if settings.NEXT_PUBLIC_DISABLE_VTJ:
+        if (
+            settings.NEXT_PUBLIC_DISABLE_VTJ
+            or not youth_application.has_social_security_number
+        ):
             encrypted_handler_vtj_json = None
         else:
             try:
@@ -351,7 +359,10 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def reject(self, request, *args, **kwargs) -> HttpResponse:
         youth_application: YouthApplication = self.get_object().lock_for_update()
 
-        if settings.NEXT_PUBLIC_DISABLE_VTJ:
+        if (
+            settings.NEXT_PUBLIC_DISABLE_VTJ
+            or not youth_application.has_social_security_number
+        ):
             encrypted_handler_vtj_json = None
         else:
             try:
@@ -569,6 +580,58 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         except ValidationError as e:
             LOGGER.error(
                 f"Youth application submission rejected because of validation error. "
+                f"Validation error codes: {str(e.get_codes())}"
+            )
+            raise
+
+    @transaction.atomic
+    @enforce_handler_view_adfs_login
+    @action(methods=["post"], detail=False, url_path="create-without-ssn")
+    def create_without_ssn(self, request, *args, **kwargs) -> HttpResponse:
+        """
+        Create a YouthApplication without a social security number.
+        """
+        try:
+            data = request.data.copy()
+            data["is_unlisted_school"] = True
+            data["receipt_confirmed_at"] = timezone.now()
+            data["additional_info_provided_at"] = timezone.now()
+            data["additional_info_user_reasons"] = [AdditionalInfoUserReason.OTHER]
+            data["status"] = YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED
+            data["creator"] = request.user.id
+            data["handler"] = None
+
+            serializer = NonVtjYouthApplicationSerializer(
+                data=data, context=self.get_serializer_context()
+            )
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            app: YouthApplication = serializer.instance
+
+            was_email_sent = app.send_processing_email_to_handler(request)
+            if not was_email_sent:
+                transaction.set_rollback(True)
+                with translation.override(app.language):
+                    return HttpResponse(
+                        _("Failed to send manual processing email to handler"),
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    )
+
+            LOGGER.info(
+                f"Created youth application {app.id} without social security number: "
+                "Sending application to be processed by a handler"
+            )
+
+            headers = self.get_success_headers(serializer.data)
+            return Response(
+                data={"id": app.id},
+                status=status.HTTP_201_CREATED,
+                headers=headers,
+            )
+        except ValidationError as e:
+            LOGGER.error(
+                "Youth application without social security number "
+                "submission rejected because of validation error. "
                 f"Validation error codes: {str(e.get_codes())}"
             )
             raise

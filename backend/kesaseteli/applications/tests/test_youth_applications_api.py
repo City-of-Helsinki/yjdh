@@ -4,7 +4,6 @@ import unicodedata
 import uuid
 from datetime import date, timedelta
 from difflib import SequenceMatcher
-from enum import auto, Enum
 from typing import List, NamedTuple, Optional
 from unittest import mock
 from urllib.parse import urlparse
@@ -12,7 +11,6 @@ from urllib.parse import urlparse
 import factory.random
 import pytest
 from dateutil.relativedelta import relativedelta
-from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.models import AnonymousUser
 from django.core import mail
 from django.test import override_settings
@@ -53,7 +51,17 @@ from common.tests.factories import (
     YouthApplicationFactory,
 )
 from common.tests.utils import get_random_social_security_number_for_year
-from common.urls import handler_403_url, handler_youth_application_processing_url
+from common.urls import (
+    get_accept_url,
+    get_activation_url,
+    get_additional_info_url,
+    get_create_without_ssn_url,
+    get_detail_url,
+    get_list_url,
+    get_processing_url,
+    RedirectTo,
+    reverse_youth_application_action,
+)
 from shared.audit_log.models import AuditLogEntry
 from shared.common.lang_test_utils import (
     assert_email_body_language,
@@ -110,30 +118,6 @@ def create_same_person_previous_year_accepted_application(
     assert result.created_at.year == app.created_at.year - 1
     assert result.status == YouthApplicationStatus.ACCEPTED
     return result
-
-
-def reverse_youth_application_action(action, pk):
-    return reverse(f"v1:youthapplication-{action}", kwargs={"pk": pk})
-
-
-class RedirectTo(Enum):
-    adfs_login = auto()
-    handler_403 = auto()
-    handler_process = auto()
-
-    @staticmethod
-    def get_redirect_url(redirect_to, youth_application_action, youth_application_pk):
-        return {
-            RedirectTo.adfs_login: get_django_adfs_login_url(
-                redirect_url=reverse_youth_application_action(
-                    youth_application_action, youth_application_pk
-                )
-            ),
-            RedirectTo.handler_403: handler_403_url(),
-            RedirectTo.handler_process: handler_youth_application_processing_url(
-                youth_application_pk
-            ),
-        }[redirect_to]
 
 
 def get_random_pk() -> uuid.UUID:
@@ -197,6 +181,7 @@ def get_read_only_fields() -> List[str]:
     """
     return [
         "id",
+        "creator",
         "created_at",
         "modified_at",
         "receipt_confirmed_at",
@@ -208,6 +193,8 @@ def get_read_only_fields() -> List[str]:
         "additional_info_user_reasons",
         "additional_info_description",
         "additional_info_provided_at",
+        "non_vtj_birthdate",
+        "non_vtj_home_municipality",
     ]
 
 
@@ -303,42 +290,6 @@ def test_youth_application_serializer_fields():
     )
 
 
-def get_list_url():
-    return reverse("v1:youthapplication-list")
-
-
-def get_activation_url(pk):
-    return reverse_youth_application_action("activate", pk)
-
-
-def get_detail_url(pk):
-    return reverse_youth_application_action("detail", pk)
-
-
-def get_processing_url(pk):
-    return reverse_youth_application_action("process", pk)
-
-
-def get_accept_url(pk):
-    return reverse_youth_application_action("accept", pk)
-
-
-def get_additional_info_url(pk):
-    return reverse_youth_application_action("additional-info", pk)
-
-
-def get_reject_url(pk):
-    return reverse_youth_application_action("reject", pk)
-
-
-def get_django_adfs_login_url(redirect_url):
-    return "{login_url}?{redirect_field_name}={redirect_url}".format(
-        login_url=reverse("django_auth_adfs:login"),
-        redirect_field_name=REDIRECT_FIELD_NAME,
-        redirect_url=redirect_url,
-    )
-
-
 def get_test_vtj_json() -> dict:
     return {"first_name": "Maija", "last_name": "Meikäläinen"}
 
@@ -359,6 +310,7 @@ def get_test_vtj_json() -> dict:
             "accept",
             "activate",
             "additional-info",
+            "create-without-ssn",
             "detail",
             "list",
             "process",
@@ -373,6 +325,7 @@ def get_test_vtj_json() -> dict:
             ("patch", "accept"),
             ("patch", "reject"),
             ("post", "additional-info"),
+            ("post", "create-without-ssn"),
             ("post", "list"),
         ]
     ],
@@ -402,6 +355,8 @@ def test_youth_applications_not_allowed_methods(
 
     if action == "list":
         endpoint_url = get_list_url()
+    elif action == "create-without-ssn":
+        endpoint_url = get_create_without_ssn_url()
     else:
         endpoint_url = reverse_youth_application_action(action, pk=youth_application.pk)
 

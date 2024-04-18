@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import date, datetime
 from typing import Optional, Union
 
 import filetype
@@ -12,7 +12,11 @@ from PIL import Image, UnidentifiedImageError
 from rest_framework import serializers
 
 from applications.api.v1.validators import validate_additional_info_user_reasons
-from applications.enums import AttachmentType, EmployerApplicationStatus
+from applications.enums import (
+    AttachmentType,
+    EmployerApplicationStatus,
+    get_supported_languages,
+)
 from applications.models import (
     Attachment,
     EmployerApplication,
@@ -488,6 +492,7 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = [
             "id",
+            "creator",
             "created_at",
             "modified_at",
             "receipt_confirmed_at",
@@ -497,6 +502,8 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             "additional_info_user_reasons",
             "additional_info_description",
             "additional_info_provided_at",
+            "non_vtj_birthdate",
+            "non_vtj_home_municipality",
         ] + vtj_data_fields
         fields = read_only_fields + [
             "first_name",
@@ -520,6 +527,11 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
     )
     encrypted_handler_vtj_json = serializers.SerializerMethodField(
         "get_encrypted_handler_vtj_json"
+    )
+    creator = serializers.PrimaryKeyRelatedField(
+        required=False,
+        allow_null=True,
+        queryset=HandlerPermission.get_handler_users_queryset(),
     )
     handler = serializers.PrimaryKeyRelatedField(
         required=False,
@@ -558,6 +570,82 @@ class YouthApplicationStatusSerializer(serializers.ModelSerializer):
         fields = read_only_fields = [
             "status",
         ]
+
+
+class NonVtjYouthApplicationSerializer(serializers.ModelSerializer):
+    """
+    Serializer for creating youth applications without VTJ data.
+
+    NOTE:
+        Use ONLY when applicant has no permanent Finnish personal identity code.
+    """
+
+    class Meta:
+        model = YouthApplication
+        fields = [
+            "first_name",
+            "last_name",
+            "non_vtj_birthdate",
+            "non_vtj_home_municipality",
+            "school",
+            "is_unlisted_school",
+            "email",
+            "phone_number",
+            "postcode",
+            "language",
+            "receipt_confirmed_at",
+            "status",
+            "creator",
+            "handler",
+            "additional_info_provided_at",
+            "additional_info_user_reasons",
+            "additional_info_description",
+        ]
+
+    def validate_additional_info_description(self, value):
+        if value is None or str(value).strip() == "":
+            raise serializers.ValidationError(
+                {"additional_info_description": _("Must be set")}
+            )
+        return value
+
+    def validate_language(self, value):
+        if value not in get_supported_languages():
+            raise serializers.ValidationError({"language": _("Invalid language")})
+        return value
+
+    def validate_non_vtj_birthdate(self, value):
+        if not isinstance(value, date):
+            try:
+                date.fromisoformat(value)
+            except (TypeError, ValueError):
+                raise serializers.ValidationError(
+                    {"non_vtj_birthdate": _("Invalid date")}
+                )
+        return value
+
+    def validate(self, data):
+        data = super().validate(data)
+        self.validate_additional_info_description(
+            data.get("additional_info_description", None)
+        )
+        self.validate_language(data.get("language", None))
+        self.validate_non_vtj_birthdate(data.get("non_vtj_birthdate", None))
+        return data
+
+    def to_internal_value(self, data):
+        # Convert optional fields' input values from None to ""
+        if data.get("additional_info_description", None) is None:
+            data["additional_info_description"] = ""
+        if data.get("non_vtj_home_municipality", None) is None:
+            data["non_vtj_home_municipality"] = ""
+        return super().to_internal_value(data)
+
+    creator = serializers.PrimaryKeyRelatedField(
+        required=not HandlerPermission.allow_empty_handler(),
+        allow_null=HandlerPermission.allow_empty_handler(),
+        queryset=HandlerPermission.get_handler_users_queryset(),
+    )
 
 
 class YouthApplicationAdditionalInfoSerializer(serializers.ModelSerializer):

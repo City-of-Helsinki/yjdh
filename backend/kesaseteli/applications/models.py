@@ -41,7 +41,7 @@ from common.utils import (
     are_same_text_lists,
     are_same_texts,
     send_mail_with_error_logging,
-    validate_finnish_social_security_number,
+    validate_optional_finnish_social_security_number,
 )
 from companies.models import Company
 from shared.common.utils import MatchesAnyOfQuerySet, social_security_number_birthdate
@@ -193,7 +193,27 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     social_security_number = SearchField(
         hash_key=settings.SOCIAL_SECURITY_NUMBER_HASH_KEY,
         encrypted_field_name="encrypted_social_security_number",
-        validators=[validate_finnish_social_security_number],
+        validators=[validate_optional_finnish_social_security_number],
+    )
+    non_vtj_birthdate = models.DateField(
+        null=True,
+        blank=True,
+        default=None,
+        verbose_name=_("non-vtj birthdate"),
+        help_text=_(
+            "Birthdate of person who has no permanent Finnish personal identity code, "
+            "and thus no data obtainable through the VTJ integration"
+        ),
+    )
+    non_vtj_home_municipality = models.CharField(
+        blank=True,
+        default="",
+        max_length=64,
+        verbose_name=_("non-vtj home municipality"),
+        help_text=_(
+            "Home municipality of person who has no permanent Finnish personal identity code, "
+            "and thus no data obtainable through the VTJ integration"
+        ),
     )
     school = models.CharField(
         max_length=256,
@@ -244,10 +264,18 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         choices=YouthApplicationStatus.choices,
         default=YouthApplicationStatus.SUBMITTED,
     )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="created_youth_applications",
+        verbose_name=_("creator"),
+        blank=True,
+        null=True,
+    )
     handler = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
-        related_name="youth_applications",
+        related_name="handled_youth_applications",
         verbose_name=_("handler"),
         blank=True,
         null=True,
@@ -600,7 +628,12 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             self.status in YouthApplicationStatus.acceptable_values()
             and HandlerPermission.has_user_permission(handler)
             and (
+                encrypted_handler_vtj_json is None
+                or self.is_valid_encrypted_handler_vtj_json(encrypted_handler_vtj_json)
+            )
+            and (
                 settings.NEXT_PUBLIC_DISABLE_VTJ
+                or not self.has_social_security_number
                 or self.is_valid_encrypted_handler_vtj_json(encrypted_handler_vtj_json)
             )
             and not self.has_youth_summer_voucher
@@ -662,7 +695,12 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             self.status in YouthApplicationStatus.rejectable_values()
             and HandlerPermission.has_user_permission(handler)
             and (
+                encrypted_handler_vtj_json is None
+                or self.is_valid_encrypted_handler_vtj_json(encrypted_handler_vtj_json)
+            )
+            and (
                 settings.NEXT_PUBLIC_DISABLE_VTJ
+                or not self.has_social_security_number
                 or self.is_valid_encrypted_handler_vtj_json(encrypted_handler_vtj_json)
             )
         )
@@ -689,9 +727,14 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     @property
     def birthdate(self) -> date:
         """
-        Applicant's birthdate based on their social security number.
+        Applicant's birthdate based on their social security number,
+        or on their provided birthdate through other means as a fallback.
         """
-        return social_security_number_birthdate(self.social_security_number)
+        return (
+            social_security_number_birthdate(self.social_security_number)
+            if self.has_social_security_number
+            else self.non_vtj_birthdate
+        )
 
     @property
     def is_9th_grader_age(self) -> bool:
@@ -739,8 +782,16 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         return ""
 
     @property
+    def home_municipality(self) -> Optional[str]:
+        return (
+            self.vtj_home_municipality
+            if self.has_social_security_number
+            else self.non_vtj_home_municipality
+        )
+
+    @property
     def is_helsinkian(self) -> bool:
-        return are_same_texts(self.vtj_home_municipality, "Helsinki")
+        return are_same_texts(self.home_municipality, "Helsinki")
 
     @property
     def is_last_name_as_in_vtj(self) -> bool:
@@ -760,6 +811,10 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         )
 
     @property
+    def has_social_security_number(self) -> bool:
+        return bool(self.social_security_number)
+
+    @property
     def need_additional_info(self) -> bool:
         """
         Does the youth application initially need additional info to be processed?
@@ -768,11 +823,10 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
                  otherwise False. Note that this value does NOT change based on whether
                  additional info has been provided or not.
         """
-        if settings.NEXT_PUBLIC_DISABLE_VTJ:
-            return True
-
         return (
-            self.is_applicant_dead_according_to_vtj
+            settings.NEXT_PUBLIC_DISABLE_VTJ
+            or not self.has_social_security_number
+            or self.is_applicant_dead_according_to_vtj
             or not self.is_social_security_number_valid_according_to_vtj
             or not self.is_last_name_as_in_vtj
             or not self.is_applicant_in_target_group

@@ -408,7 +408,7 @@ def test_youth_excel_download_content(staff_client):  # noqa: C901
         return app.created_at, app.pk
 
     InactiveYouthApplicationFactory()  # This should not be exported
-    apps = (
+    apps: List[YouthApplication] = (
         ActiveYouthApplicationFactory.create_batch(size=12)
         + [
             YouthApplicationFactory(status=status)
