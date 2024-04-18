@@ -220,3 +220,12 @@ export const PAY_SUBSIDIES_OVERRIDE = {
   disabilityOrIllness: false,
   durationInMonthsRounded: '',
 };
+
+export enum APPLICATION_LIST_TABS {
+  ALL = '0',
+  DRAFT = '1',
+  RECEIVED = '2',
+  HANDLING = '3',
+  ACCEPTED = '4',
+  REJECTED = '5',
+}
