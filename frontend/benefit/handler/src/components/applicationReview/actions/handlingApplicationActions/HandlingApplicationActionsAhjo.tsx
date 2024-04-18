@@ -1,5 +1,8 @@
 import Sidebar from 'benefit/handler/components/sidebar/Sidebar';
-import { HANDLED_STATUSES } from 'benefit/handler/constants';
+import {
+  APPLICATION_LIST_TABS,
+  HANDLED_STATUSES,
+} from 'benefit/handler/constants';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import {
@@ -80,13 +83,22 @@ const HandlingApplicationActions: React.FC<Props> = ({
 
   const [isSavingAndClosing, setIsSavingAndClosing] = React.useState(false);
 
+  const navigateToIndex = React.useCallback(
+    (): void =>
+      void router.push({
+        pathname: '/',
+        query: { tab: APPLICATION_LIST_TABS.HANDLING },
+      }),
+    [router]
+  );
+
   const effectSaveAndClose = (): void => {
     if (
       data?.review_step === stepState.activeStepIndex + 1 &&
       isSavingAndClosing
     ) {
       setIsSavingAndClosing(false);
-      void router.push('/');
+      navigateToIndex();
     }
   };
 
@@ -122,6 +134,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
     router,
     stepState.activeStepIndex,
     isSavingAndClosing,
+    navigateToIndex,
   ]);
   React.useEffect(() => {
     setIsSavingAndClosing(false);
@@ -242,7 +255,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
     setIsSavingAndClosing(true);
   };
 
-  const handleClose = (): void => void router.push('/');
+  const handleClose = (): void => navigateToIndex();
 
   return (
     <$Wrapper data-testid={dataTestId}>
