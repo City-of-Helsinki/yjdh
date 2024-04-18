@@ -360,6 +360,9 @@ def determine_target_group_social_security_number(youth_application):
 
 @factory.django.mute_signals(post_save)
 class AbstractYouthApplicationFactory(factory.django.DjangoModelFactory):
+    creator = (
+        None  # For most cases there's no creator, only non-VTJ applications have one
+    )
     created_at = timezone.now()
     modified_at = factory.LazyAttribute(determine_modified_at)
     first_name = factory.Faker("first_name")
@@ -413,6 +416,83 @@ class AbstractYouthApplicationFactory(factory.django.DjangoModelFactory):
 
 class YouthApplicationFactory(AbstractYouthApplicationFactory):
     status = factory.Faker("random_element", elements=YouthApplicationStatus.values)
+
+
+class AbstractNonVtjYouthApplicationFactory(AbstractYouthApplicationFactory):
+    """
+    An abstract base class for youth applications created using
+    YouthApplicationViewSet.create_without_ssn endpoint.
+
+    These youth applications don't have a social security number or VTJ data.
+    """
+
+    # Non-VTJ youth applications always have empty social security number and no VTJ data:
+    social_security_number = ""
+    encrypted_original_vtj_json = None
+    encrypted_handler_vtj_json = None
+
+    # Fields that are only applicable to non-VTJ youth applications:
+    non_vtj_birthdate = factory.Faker("date_of_birth", minimum_age=1, maximum_age=99)
+    non_vtj_home_municipality = factory.Faker(
+        "random_element",
+        elements=[
+            "Helsinki",
+            "Espoo",
+            "Vantaa",
+            "Utsjoki",
+            "Stockholm",
+            "Tallinn",
+            "",  # Not a required field so may be empty
+        ],
+    )
+
+    # Non-VTJ youth applications should always have a creator
+    # as they are created by a handler user:
+    creator = factory.SubFactory(HandlerUserFactory)
+
+    # Non-VTJ youth applications should always have additional info:
+    additional_info_description = factory.Faker("text", max_nb_chars=80)
+
+    # All non-VTJ youth applications are created into a state from whence they can
+    # directly be approved/rejected. Thus, all their timestamps should be set to
+    # the same value i.e. the time of creation:
+    created_at = timezone.now()
+    modified_at = timezone.now()
+    receipt_confirmed_at = timezone.now()
+    additional_info_provided_at = timezone.now()
+
+    # Fields that always have the same values in all non-VTJ youth applications:
+    is_unlisted_school = True
+    additional_info_user_reasons = [AdditionalInfoUserReason.OTHER.value]
+
+    class Meta:
+        abstract = True
+
+
+class AcceptableNonVtjYouthApplicationFactory(AbstractNonVtjYouthApplicationFactory):
+    """
+    A youth application created using YouthApplicationViewSet.create_without_ssn endpoint.
+    """
+
+    status = YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value
+
+
+class AcceptedNonVtjYouthApplicationFactory(AbstractNonVtjYouthApplicationFactory):
+    """
+    A youth application created using YouthApplicationViewSet.create_without_ssn endpoint
+    and then accepted.
+    """
+
+    status = YouthApplicationStatus.ACCEPTED.value
+
+
+class RejectedNonVtjYouthApplicationFactory(AbstractNonVtjYouthApplicationFactory):
+    """
+    A youth application created using YouthApplicationViewSet.create_without_ssn endpoint
+    and then rejected.
+    """
+
+    status = YouthApplicationStatus.REJECTED.value
 
 
 class UnhandledYouthApplicationFactory(AbstractYouthApplicationFactory):

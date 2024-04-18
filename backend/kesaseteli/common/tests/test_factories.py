@@ -3,11 +3,17 @@ from django.test import override_settings
 from freezegun import freeze_time
 from requests.exceptions import ReadTimeout
 
-from applications.enums import VtjTestCase, YouthApplicationStatus
+from applications.enums import (
+    AdditionalInfoUserReason,
+    VtjTestCase,
+    YouthApplicationStatus,
+)
 from applications.models import YouthApplication
 from applications.tests.conftest import *  # noqa
 from common.tests.factories import (
+    AcceptableNonVtjYouthApplicationFactory,
     AcceptableYouthApplicationFactory,
+    AcceptedNonVtjYouthApplicationFactory,
     AcceptedYouthApplicationFactory,
     ActiveUnhandledYouthApplicationFactory,
     ActiveYouthApplicationFactory,
@@ -19,11 +25,21 @@ from common.tests.factories import (
     InactiveVtjTestCaseYouthApplicationFactory,
     InactiveYouthApplicationFactory,
     RejectableYouthApplicationFactory,
+    RejectedNonVtjYouthApplicationFactory,
     RejectedYouthApplicationFactory,
     UnhandledYouthApplicationFactory,
     YouthApplicationFactory,
     YouthSummerVoucherFactory,
 )
+from shared.common.utils import social_security_number_birthdate
+
+EXPECTED_NON_VTJ_YOUTH_APPLICATION_ATTRIBUTES = {
+    "is_unlisted_school": True,
+    "social_security_number": "",
+    "encrypted_original_vtj_json": None,
+    "encrypted_handler_vtj_json": None,
+    "additional_info_user_reasons": [AdditionalInfoUserReason.OTHER.value],
+}
 
 
 @freeze_time()
@@ -99,6 +115,21 @@ from common.tests.factories import (
             [YouthApplicationStatus.SUBMITTED.value],
             {},
         ),
+        (
+            AcceptableNonVtjYouthApplicationFactory,
+            YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
+            EXPECTED_NON_VTJ_YOUTH_APPLICATION_ATTRIBUTES,
+        ),
+        (
+            AcceptedNonVtjYouthApplicationFactory,
+            YouthApplicationStatus.ACCEPTED.value,
+            EXPECTED_NON_VTJ_YOUTH_APPLICATION_ATTRIBUTES,
+        ),
+        (
+            RejectedNonVtjYouthApplicationFactory,
+            YouthApplicationStatus.REJECTED.value,
+            EXPECTED_NON_VTJ_YOUTH_APPLICATION_ATTRIBUTES,
+        ),
     ],
 )
 def test_youth_application_factory(  # noqa: C901
@@ -145,6 +176,39 @@ def test_youth_application_factory(  # noqa: C901
             assert youth_application.need_additional_info
             assert not youth_application.can_set_additional_info
             assert youth_application.has_additional_info
+
+        assert youth_application.has_social_security_number == bool(
+            youth_application.social_security_number
+        )
+        assert bool(youth_application.social_security_number) == (
+            not youth_application.non_vtj_birthdate
+        )
+        assert bool(youth_application.social_security_number) == (
+            not youth_application.creator
+        )
+
+        # Non-VTJ youth applications, i.e. youth applications without a social
+        # security number, are created into state ADDITIONAL_INFORMATION_PROVIDED
+        # and can only be either ACCEPTED or REJECTED after that:
+        if not youth_application.has_social_security_number:
+            assert youth_application.status in [
+                YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
+                YouthApplicationStatus.ACCEPTED.value,
+                YouthApplicationStatus.REJECTED.value,
+            ]
+
+        # non_vtj_home_municipality can only be set if non_vtj_birthdate is set:
+        assert not (
+            youth_application.non_vtj_home_municipality
+            and not youth_application.non_vtj_birthdate
+        )
+
+        if youth_application.has_social_security_number:
+            assert youth_application.birthdate == social_security_number_birthdate(
+                youth_application.social_security_number
+            )
+        else:
+            assert youth_application.birthdate == youth_application.non_vtj_birthdate
 
         # Test VTJ test cases
         if youth_application.is_vtj_test_case:
@@ -197,6 +261,9 @@ def test_youth_application_factory(  # noqa: C901
         AdditionalInfoRequestedYouthApplicationFactory,
         AdditionalInfoProvidedYouthApplicationFactory,
         InactiveNeedAdditionalInfoYouthApplicationFactory,
+        AcceptableNonVtjYouthApplicationFactory,
+        AcceptedNonVtjYouthApplicationFactory,
+        RejectedNonVtjYouthApplicationFactory,
     ],
 )
 @pytest.mark.parametrize("next_public_mock_flag", [False, True])
