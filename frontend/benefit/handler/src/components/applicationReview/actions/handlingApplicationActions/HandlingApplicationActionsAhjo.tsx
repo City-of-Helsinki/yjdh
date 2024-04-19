@@ -47,6 +47,7 @@ export type Props = {
   'data-testid'?: string;
   isRecalculationRequired: boolean;
   isCalculationsErrors: boolean;
+  isApplicationReadOnly: boolean;
 };
 
 const HandlingApplicationActions: React.FC<Props> = ({
@@ -56,6 +57,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
   'data-testid': dataTestId,
   isRecalculationRequired,
   isCalculationsErrors,
+  isApplicationReadOnly,
 }) => {
   const {
     t,
@@ -267,7 +269,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
           <Button
             loadingText={t('common:utility.loading')}
             onClick={handleSaveAndClose}
-            disabled={isSavingAndClosing}
+            disabled={isSavingAndClosing || isApplicationReadOnly}
             isLoading={isSavingAndClosing}
             theme="black"
             variant="secondary"
@@ -295,6 +297,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
             <Button
               onClick={openDialog}
               theme="black"
+              disabled={isApplicationReadOnly}
               variant="supplementary"
               iconLeft={<IconTrash />}
             >
@@ -318,6 +321,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
           <Button
             theme="coat"
             variant="primary"
+            disabled={isApplicationReadOnly}
             style={{ minWidth: '158px' }}
             onClick={() =>
               !validateNextStep(stepState.activeStepIndex) ? handleNext() : null
@@ -373,7 +377,8 @@ const HandlingApplicationActions: React.FC<Props> = ({
         application={application}
         isOpen={isMessagesDrawerVisible}
         isReadOnly={
-          application.status && HANDLED_STATUSES.includes(application.status)
+          isApplicationReadOnly ||
+          (application.status && HANDLED_STATUSES.includes(application.status))
         }
         onClose={toggleMessagesDrawerVisiblity}
         customItemsMessages={<EditAction application={application} />}

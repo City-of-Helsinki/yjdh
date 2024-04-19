@@ -3,12 +3,14 @@ import useApplicationQuery from 'benefit/handler/hooks/useApplicationQuery';
 import useReviewStateQuery from 'benefit/handler/hooks/useReviewStateQuery';
 import useUpdateReviewStateQuery from 'benefit/handler/hooks/useUpdateReviewStateQuery';
 import useUploadAttachmentQuery from 'benefit/handler/hooks/useUploadAttachmentQuery';
+import useUserQuery from 'benefit/handler/hooks/useUserQuery';
 import {
   Application,
   HandledAplication,
   ReviewState,
   ReviewStateData,
 } from 'benefit/handler/types/application';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
@@ -29,11 +31,14 @@ type ExtendedComponentProps = {
   handleUpload: (attachment: FormData) => void;
   reviewState: ReviewState;
   handleUpdateReviewState: (reviewState: ReviewState) => void;
+  isApplicationReadOnly: boolean;
 };
 
 const useApplicationReview = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const router = useRouter();
+  const { data: user } = useUserQuery();
+
   const { handledApplication } = React.useContext(AppContext);
   const id = router?.query?.id?.toString() ?? '';
   const [isLoading, setIsLoading] = useState(true);
@@ -133,6 +138,11 @@ const useApplicationReview = (): ExtendedComponentProps => {
     deep: true,
   });
 
+  const isApplicationReadOnly =
+    application.handler &&
+    application?.handler.id !== user?.id &&
+    application?.status === APPLICATION_STATUSES.HANDLING;
+
   useEffect(() => {
     if (shouldShowUpdatedToast && application?.applicationNumber) {
       showSuccessToast(
@@ -161,6 +171,7 @@ const useApplicationReview = (): ExtendedComponentProps => {
     handleUpload,
     reviewState,
     handleUpdateReviewState,
+    isApplicationReadOnly,
   };
 };
 

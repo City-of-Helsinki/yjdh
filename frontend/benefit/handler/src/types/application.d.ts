@@ -26,6 +26,7 @@ import {
   Employee,
   PaySubsidy,
   TrainingCompensation,
+  User,
 } from 'benefit-shared/types/application';
 import { FormikProps } from 'formik';
 import { Field } from 'shared/components/forms/fields/types';
@@ -154,6 +155,7 @@ export type Application = {
   changeReason?: string;
   changes?: ApplicationChangesData;
   decisionProposalDraft?: DecisionProposalDraft;
+  handler?: User;
 } & ApplicationForm;
 
 export interface ApplicationForm {

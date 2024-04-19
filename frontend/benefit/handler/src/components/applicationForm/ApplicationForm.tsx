@@ -56,6 +56,7 @@ const ApplicationForm: React.FC = () => {
     getConsentErrorText,
     handleConsentClick,
     initialApplication,
+    user,
   } = useApplicationForm();
 
   const { isFormActionEdit, isFormActionNew } = useApplicationFormContext();
@@ -102,10 +103,17 @@ const ApplicationForm: React.FC = () => {
       </$SpinnerContainer>
     );
   }
+  const isApplicationReadOnly =
+    application.handler && application?.handler.id !== user?.id;
 
   return (
     <>
-      {isFormActionEdit && <ApplicationHeader data={application} />}
+      {isFormActionEdit && (
+        <ApplicationHeader
+          data={application}
+          isApplicationReadOnly={isApplicationReadOnly}
+        />
+      )}
 
       <Container>
         {isFormActionNew && (
