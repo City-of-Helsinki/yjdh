@@ -7,7 +7,10 @@ import {
   CalculationFormProps,
 } from 'benefit/handler/types/application';
 import { getErrorText } from 'benefit/handler/utils/forms';
-import { PAY_SUBSIDY_GRANTED } from 'benefit-shared/constants';
+import {
+  PAY_SUBSIDY_GRANTED,
+  PAY_SUBSIDY_PERCENT,
+} from 'benefit-shared/constants';
 import { FormikProps } from 'formik';
 import { TFunction, useTranslation } from 'next-i18next';
 import { useEffect, useState } from 'react';
@@ -65,7 +68,10 @@ const useCalculatorData = (
     if (confirm) {
       formik.setFieldValue('endDate', '');
       formik.setFieldValue('startDate', '');
-      formik.setFieldValue('workTimePercent', '65');
+      formik.setFieldValue(
+        'workTimePercent',
+        String(PAY_SUBSIDY_PERCENT.DEFAULT)
+      );
       formik.setFieldValue('monthlyAmount', '');
       formik.setFieldValue(
         'paySubsidies',
