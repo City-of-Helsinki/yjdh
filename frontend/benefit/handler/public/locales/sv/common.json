@@ -789,6 +789,10 @@
         "notGranted": "Työsuhteeseen ei ole myönnetty mitään edeltävää tukea"
       }
     },
+    "notifications": {
+      "editEndDate": "Hakemus avattu muokattavaksi ja lukittuu {{date}}",
+      "handlerMismatch": "{{handler}} käsittelee hakemusta. Muutosten tekeminen on estetty."
+    },
     "handling": {
       "title": "Hakemuksen käsittely"
     },
