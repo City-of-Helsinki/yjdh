@@ -192,7 +192,10 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
     ]
 
     def perform_update(self, serializer):
+        print("init update")
         super().perform_update(serializer)
+        print("first update done")
+
         # In case new AuditLogEntry objects were created during the
         # processing of the update, then the annotation value for handled_at
         # in the serializer.instance might have become stale.
@@ -567,6 +570,14 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         return self._csv_pdf_response(
             self._create_application_batch(ApplicationStatus.REJECTED)
         )
+
+    @action(methods=["PATCH"], detail=True, url_path="change-handler")
+    @transaction.atomic
+    def change_handler(self, request, pk=None) -> HttpResponse:
+        application = self.get_object()
+        application.handler = request.user
+        application.save()
+        return Response(status=status.HTTP_200_OK)
 
     def _create_application_batch(self, status) -> QuerySet[Application]:
         """

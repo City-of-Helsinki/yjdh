@@ -11,6 +11,7 @@ from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
+from rest_framework.exceptions import PermissionDenied
 
 from applications.api.v1.serializers.application_alteration import (
     ApplicationAlterationSerializer,
@@ -78,6 +79,7 @@ from terms.api.v1.serializers import (
 )
 from terms.enums import TermsType
 from terms.models import ApplicantTermsApproval, Terms
+from users.api.v1.serializers import UserSerializer
 from users.utils import get_company_from_request, get_request_user_from_context
 
 
@@ -1066,6 +1068,12 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
 
     def validate(self, data):
         """ """
+        print("### 2 ###")
+        if (
+            self.instance.status == ApplicationStatus.HANDLING
+            and self.instance.handler.id != self.context["request"].user.id
+        ):
+            raise PermissionDenied(_("You are not allowed to do this action"))
         company = self.get_company(data)
         self._handle_breaking_changes(company, data)
         self._validate_date_range(
@@ -1161,6 +1169,14 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                 self.get_additional_information_needed_by(instance),
             )
 
+        # Assign current user as handler
+        if (
+            instance.status == ApplicationStatus.HANDLING
+            and previous_status != ApplicationStatus.HANDLING
+        ):
+            instance.handler = self.context["request"].user
+            instance.save()
+
     def _validate_employee_consent(self, instance):
         consent_count = instance.attachments.filter(
             attachment_type=AttachmentType.EMPLOYEE_CONSENT
@@ -1252,6 +1268,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
 
     @transaction.atomic
     def _base_update(self, instance, validated_data):
+        print("### 1 ###")
+
         de_minimis_data = validated_data.pop("de_minimis_aid_set", None)
         employee_data = validated_data.pop("employee", None)
         approve_terms = validated_data.pop("approve_terms", None)
@@ -1532,6 +1550,10 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         read_only=True, help_text="Application batch of this application, if any"
     )
 
+    handler = UserSerializer(
+        read_only=True, help_text="Handler of this application, if any"
+    )
+
     decision_proposal_draft = AhjoDecisionProposalReadOnlySerializer(
         required=False, allow_null=True, read_only=True
     )
@@ -1594,6 +1616,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             "application_origin",
             "paper_application_date",
             "decision_proposal_draft",
+            "handler",
         ]
         read_only_fields = BaseApplicationSerializer.Meta.read_only_fields + [
             "latest_decision_comment",
