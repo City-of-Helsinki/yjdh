@@ -476,28 +476,6 @@ def create_status_for_application(application: Application, status: AhjoStatusEn
     AhjoStatus.objects.create(application=application, status=status)
 
 
-def get_applications_for_open_case() -> QuerySet[Application]:
-    """Query applications which have their latest AhjoStatus relation as SUBMITTED_BUT_NOT_SENT_TO_AHJO
-    and are in the HANDLING state, so they will have a handler."""
-    latest_ahjo_status_subquery = AhjoStatus.objects.filter(
-        application=OuterRef("pk")
-    ).order_by("-created_at")
-
-    applications = (
-        Application.objects.annotate(
-            latest_ahjo_status_id=Subquery(latest_ahjo_status_subquery.values("id")[:1])
-        )
-        .filter(
-            status=ApplicationStatus.HANDLING,
-            ahjo_status__id=F("latest_ahjo_status_id"),
-            ahjo_status__status=AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
-        )
-        .prefetch_related("attachments", "calculation", "company")
-    )
-
-    return applications
-
-
 def prepare_delete_url(
     url_base: str,
     application: Application,

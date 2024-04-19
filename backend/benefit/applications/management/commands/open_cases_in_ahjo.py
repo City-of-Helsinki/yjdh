@@ -5,12 +5,11 @@ from typing import List
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand
 
-from applications.enums import AhjoStatus as AhjoStatusEnum
+from applications.enums import AhjoStatus as AhjoStatusEnum, ApplicationStatus
 from applications.models import Application
 from applications.services.ahjo_authentication import AhjoToken
 from applications.services.ahjo_integration import (
     create_status_for_application,
-    get_applications_for_open_case,
     get_token,
     send_open_case_request_to_ahjo,
 )
@@ -45,7 +44,9 @@ class Command(BaseCommand):
         number_to_process = options["number"]
         dry_run = options["dry_run"]
 
-        applications = get_applications_for_open_case()
+        applications = Application.objects.get_by_statuses(
+            [ApplicationStatus.HANDLING], AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO
+        )
 
         if not applications:
             self.stdout.write("No applications to process")

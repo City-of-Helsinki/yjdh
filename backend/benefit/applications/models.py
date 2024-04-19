@@ -1,9 +1,10 @@
 from datetime import date
+from typing import List
 
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.db import connection, models
-from django.db.models import JSONField, OuterRef, Prefetch, Subquery
+from django.db.models import F, JSONField, OuterRef, Prefetch, Subquery
 from django.db.models.constraints import UniqueConstraint
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
@@ -12,7 +13,7 @@ from simple_history.models import HistoricalRecords
 
 from applications.enums import (
     AhjoDecision,
-    AhjoStatus,
+    AhjoStatus as AhjoStatusEnum,
     ApplicationAlterationState,
     ApplicationAlterationType,
     ApplicationBatchStatus,
@@ -143,6 +144,47 @@ class ApplicationManager(models.Manager):
         )
         attachments_prefetch = Prefetch("attachments", queryset=attachments_queryset)
         return qs.prefetch_related(attachments_prefetch)
+
+    def get_by_statuses(
+        self, application_statuses: List[ApplicationStatus], ahjo_status: AhjoStatusEnum
+    ):
+        """
+        Query applications by their latest AhjoStatus relation
+        and their current ApplicationStatus.
+        """
+        # Subquery to get the latest AhjoStatus id for each application
+        latest_ahjo_status_subquery = (
+            AhjoStatus.objects.filter(application=OuterRef("pk"))
+            .order_by("-created_at")
+            .values("id")[:1]
+        )
+
+        # Excluded attachment types
+        excluded_types = [
+            AttachmentType.PDF_SUMMARY,
+            AttachmentType.FULL_APPLICATION,
+            AttachmentType.DECISION_TEXT_XML,
+            AttachmentType.DECISION_TEXT_SECRET_XML,
+        ]
+
+        # Prefetch query for attachments excluding specified types
+        attachments_queryset = Attachment.objects.exclude(
+            attachment_type__in=excluded_types
+        )
+        attachments_prefetch = Prefetch("attachments", queryset=attachments_queryset)
+
+        # Annotate applications with the latest AhjoStatus id and filter accordingly
+        applications = (
+            self.annotate(latest_ahjo_status_id=Subquery(latest_ahjo_status_subquery))
+            .filter(
+                status__in=application_statuses,
+                ahjo_status__id=F("latest_ahjo_status_id"),
+                ahjo_status__status=ahjo_status,
+            )
+            .prefetch_related(attachments_prefetch, "calculation", "company")
+        )
+
+        return applications
 
 
 class Application(UUIDModel, TimeStampedModel, DurationMixin):
@@ -979,8 +1021,8 @@ class AhjoStatus(TimeStampedModel):
     status = models.CharField(
         max_length=64,
         verbose_name=_("status"),
-        choices=AhjoStatus.choices,
-        default=AhjoStatus.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
+        choices=AhjoStatusEnum.choices,
+        default=AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
     )
     application = models.ForeignKey(
         Application,

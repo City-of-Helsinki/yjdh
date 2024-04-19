@@ -31,7 +31,6 @@ from applications.services.ahjo_integration import (
     generate_single_approved_file,
     generate_single_declined_file,
     get_application_for_ahjo,
-    get_applications_for_open_case,
     prepare_delete_url,
     REJECTED_TITLE,
 )
@@ -664,7 +663,9 @@ def test_get_applications_for_open_case(
             ahjo_status.created_at = now + timedelta(days=index)
             ahjo_status.save()
 
-    applications_for_open_case = get_applications_for_open_case()
+    applications_for_open_case = Application.objects.get_by_statuses(
+        [ApplicationStatus.HANDLING], AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO
+    )
     # only handled_applications should be returned as their last  AhjoStatus is SUBMITTED_BUT_NOT_SENT_TO_AHJO
     # and their application status is HANDLING
     assert applications_for_open_case.count() == len(multiple_handling_applications)
