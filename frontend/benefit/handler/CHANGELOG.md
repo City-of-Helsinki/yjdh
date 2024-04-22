@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.4.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v3.3.0...benefit-handler-v3.4.0) (2024-04-22)
+
+
+### Features
+
+* Add 'empty' text to unchanged app's change set ([#2924](https://github.com/City-of-Helsinki/yjdh/issues/2924)) ([ff0fbd0](https://github.com/City-of-Helsinki/yjdh/commit/ff0fbd074a032191f4bafb633d838673b9ccd8aa))
+* ClamAV malware scanning for attachments ([#2894](https://github.com/City-of-Helsinki/yjdh/issues/2894)) ([56e640b](https://github.com/City-of-Helsinki/yjdh/commit/56e640bbd5a53dd2401e61b6f1d719a85b248b27))
+* Implement new Ahjo process UI for handler (HL-1167) ([8f3d591](https://github.com/City-of-Helsinki/yjdh/commit/8f3d5914d4828b5f8985f88e7485a5be32a12e31))
+
+
+### Bug Fixes
+
+* **handler:** Add missing column "modifiedAt" for draft list (HL-914) ([#2928](https://github.com/City-of-Helsinki/yjdh/issues/2928)) ([d7ac20a](https://github.com/City-of-Helsinki/yjdh/commit/d7ac20a8a9002d77fa9f85f07eff43cb316bf16f))
+* **handler:** Company name would overlap business id ([#2929](https://github.com/City-of-Helsinki/yjdh/issues/2929)) ([155bca7](https://github.com/City-of-Helsinki/yjdh/commit/155bca74c4999dfcf50ca39547b13ba3d46c3fd6))
+* **handler:** De minimis validation as in applicant form ([#2932](https://github.com/City-of-Helsinki/yjdh/issues/2932)) ([53e3b5d](https://github.com/City-of-Helsinki/yjdh/commit/53e3b5df789302f09302af80278d86cfb2823d00))
+* **handler:** Validation minimum for start date should be 4 months earlier, not today ([#2910](https://github.com/City-of-Helsinki/yjdh/issues/2910)) ([fe3bafb](https://github.com/City-of-Helsinki/yjdh/commit/fe3bafba37248b1adc3a9248c021f90052ddedc6))
+
 ## [3.3.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v3.2.0...benefit-handler-v3.3.0) (2024-03-15)
 
 
