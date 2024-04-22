@@ -773,7 +773,6 @@
       "noSupport": "Ei puolleta",
       "support": "Puolletaan",
       "reason": "Perustelu",
-      "editEndDate": "Hakemus avattu muokattavaksi ja lukittuu {{date}}",
       "ssn": "Henkilötunnus",
       "email": "Sähköposti",
       "phone": "Puhelin",
@@ -1467,6 +1466,9 @@
       },
       "attachments": {
         "label": "Liite"
+      },
+      "handler": {
+        "label": "Käsittelijä"
       }
     }
   }

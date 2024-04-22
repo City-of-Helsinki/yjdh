@@ -1466,6 +1466,9 @@
       },
       "attachments": {
         "label": "Liite"
+      },
+      "handler": {
+        "label": "Käsittelijä"
       }
     }
   }
