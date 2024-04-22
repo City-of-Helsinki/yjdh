@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.10.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.9.0...benefit-applicant-v3.10.0) (2024-04-19)
+
+
+### Features
+
+* Add reminder about alterations to applicant main page (HL-1100) ([#2927](https://github.com/City-of-Helsinki/yjdh/issues/2927)) ([bc04999](https://github.com/City-of-Helsinki/yjdh/commit/bc04999e169c2ba18a113aa9d78cc5821cdb25f9))
+* ClamAV malware scanning for attachments ([#2894](https://github.com/City-of-Helsinki/yjdh/issues/2894)) ([56e640b](https://github.com/City-of-Helsinki/yjdh/commit/56e640bbd5a53dd2401e61b6f1d719a85b248b27))
+* Implement new Ahjo process UI for handler (HL-1167) ([8f3d591](https://github.com/City-of-Helsinki/yjdh/commit/8f3d5914d4828b5f8985f88e7485a5be32a12e31))
+* Implement the existing alteration list and alteration deletion for the applicant (HL-1154) ([#2925](https://github.com/City-of-Helsinki/yjdh/issues/2925)) ([aea007f](https://github.com/City-of-Helsinki/yjdh/commit/aea007f32f8620ac81417d7a2cf7d0556454e262))
+
+
+### Bug Fixes
+
+* Added missing localizations and better de minimis text (Hl-1236) ([#2905](https://github.com/City-of-Helsinki/yjdh/issues/2905)) ([d6c2d4f](https://github.com/City-of-Helsinki/yjdh/commit/d6c2d4fad9480e0feee9d978056e2ed6e46e15ea))
+* **applicant:** Add more logic to disable/enable save and close button ([#2918](https://github.com/City-of-Helsinki/yjdh/issues/2918)) ([ef38ce4](https://github.com/City-of-Helsinki/yjdh/commit/ef38ce415e1f389821e100a60bf1c31c8aa582ee))
+* No apprenticeship information should be required for applicant without pay subsidy (HL-1257) ([#2909](https://github.com/City-of-Helsinki/yjdh/issues/2909)) ([278985b](https://github.com/City-of-Helsinki/yjdh/commit/278985b42d72b7b9b4de8623d4e107874d76fa17))
+* Require apprenticeship file only if pay subsidy is granted (HL-1262) ([#2930](https://github.com/City-of-Helsinki/yjdh/issues/2930)) ([8ead4a2](https://github.com/City-of-Helsinki/yjdh/commit/8ead4a2706aa1cb4e3a4fcb6b3a8a854d16db069))
+* Validation minimum for start date should be 4 months earlier, not 6 ([#2908](https://github.com/City-of-Helsinki/yjdh/issues/2908)) ([ffe3daf](https://github.com/City-of-Helsinki/yjdh/commit/ffe3daf9f670a8712bb86f9fdc5c801c75355ce5))
+
 ## [3.9.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.8.0...benefit-applicant-v3.9.0) (2024-04-04)
 
 
