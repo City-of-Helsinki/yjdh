@@ -192,9 +192,7 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
     ]
 
     def perform_update(self, serializer):
-        print("init update")
         super().perform_update(serializer)
-        print("first update done")
 
         # In case new AuditLogEntry objects were created during the
         # processing of the update, then the annotation value for handled_at

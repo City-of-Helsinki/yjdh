@@ -1067,10 +1067,10 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         )
 
     def validate(self, data):
-        """ """
-        print("### 2 ###")
         if (
-            self.instance.status == ApplicationStatus.HANDLING
+            self.instance
+            and self.instance.handler
+            and self.instance.status == ApplicationStatus.HANDLING
             and self.instance.handler.id != self.context["request"].user.id
         ):
             raise PermissionDenied(_("You are not allowed to do this action"))
@@ -1268,8 +1268,6 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
 
     @transaction.atomic
     def _base_update(self, instance, validated_data):
-        print("### 1 ###")
-
         de_minimis_data = validated_data.pop("de_minimis_aid_set", None)
         employee_data = validated_data.pop("employee", None)
         approve_terms = validated_data.pop("approve_terms", None)
@@ -1621,6 +1619,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         read_only_fields = BaseApplicationSerializer.Meta.read_only_fields + [
             "latest_decision_comment",
             "handled_at",
+            "handler",
         ]
 
     @transaction.atomic

@@ -2496,9 +2496,14 @@ def test_application_history_change_sets_for_handler(
             response = update_application(application_payload)
 
         changes = response.data["changes"]["handler"]
-        assert len(changes) == len(update_payloads)
 
         update_payloads.reverse()
+
+        # Add a row which gets inserted when application status changes to "handling"
+        user = get_client_user(handler_api_client)
+        update_payloads.append({"change_reason": None, "handler": str(user.id)})
+
+        assert len(changes) == len(update_payloads)
 
         # Assert that each field change exist in change sets
         for i, row in enumerate(update_payloads):
