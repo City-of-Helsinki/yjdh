@@ -101,10 +101,11 @@ const Header: React.FC<HeaderProps> = ({
                 key={item.url}
                 active={isTabActive(item.url)}
                 href={item.url}
-                label={item.label}
                 onClick={() => handleClickLink(item.url)}
                 icon={item.icon}
-              />
+              >
+                {item.label}
+              </Navigation.Item>
             ))}
           </Navigation.Row>
         )}

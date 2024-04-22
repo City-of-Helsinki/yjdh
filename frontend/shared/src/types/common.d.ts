@@ -6,7 +6,7 @@ export type OptionType<T extends string | number = string | number> = {
 };
 
 export type NavigationItem = {
-  label: string;
+  label: React.ReactNode;
   url: string;
   icon?: React.ReactNode;
 };

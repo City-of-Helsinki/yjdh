@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-10 09:41+0300\n"
+"POT-Creation-Date: 2024-04-22 19:07+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -454,6 +454,12 @@ msgstr ""
 msgid "Delete request received"
 msgstr ""
 
+msgid "New record request sent"
+msgstr ""
+
+msgid "New record received by Ahjo"
+msgstr ""
+
 msgid "Allow/disallow applicant's modifications to the application"
 msgstr ""
 
@@ -472,15 +478,10 @@ msgstr ""
 msgid "Update application in Ahjo"
 msgstr ""
 
+msgid "Send new records to Ahjo"
+msgstr ""
+
 msgid "Send decision to Ahjo"
-msgstr ""
-
-msgid ""
-"Template part for the decision section of a application decision proposal"
-msgstr ""
-
-msgid ""
-"Template part for the decision justification section of a decision proposal"
 msgstr ""
 
 msgid "An accepted decision"
@@ -501,6 +502,57 @@ msgid "Opened"
 msgstr ""
 
 msgid "Handled"
+msgstr ""
+
+#, fuzzy
+#| msgid "helsinki_benefit_voucher"
+msgid "Helsinki-benefit handler"
+msgstr "The Helsinki Benefit card"
+
+msgid "Team manager"
+msgstr ""
+
+msgid "Step 1 - overview and accept/reject application"
+msgstr ""
+
+msgid "Step 2 - preparing the decision"
+msgstr ""
+
+msgid "Step 3 - review the decision"
+msgstr ""
+
+#, fuzzy
+#| msgid "employee_consent"
+msgid "Application"
+msgstr "Employee's consent for processing personal data"
+
+#, fuzzy
+#| msgid "employee_consent"
+msgid "Application attachment"
+msgstr "Employee's consent for processing personal data"
+
+msgid "Decision proposal"
+msgstr ""
+
+#, fuzzy
+#| msgid "education_contract"
+msgid "Secret decision attachment"
+msgstr "Agreement on providing apprenticeship training"
+
+#, fuzzy
+#| msgid "employee_consent"
+msgid "Application title"
+msgstr "Employee's consent for processing personal data"
+
+#, fuzzy
+#| msgid "employee_consent"
+msgid "Application attachmen title"
+msgstr "Employee's consent for processing personal data"
+
+msgid "Decision proposal title"
+msgstr ""
+
+msgid "Secret decision attachment title"
 msgstr ""
 
 #, fuzzy
@@ -824,23 +876,29 @@ msgstr ""
 msgid "ahjo statuses"
 msgstr ""
 
-msgid "type of the decision proposal template section"
-msgstr ""
-
 msgid "type of the decision"
 msgstr ""
 
-msgid "decision proposal section text content"
+msgid "Proposal text, decision"
 msgstr ""
 
-msgid "name of the decision proposal template section"
+msgid "Proposal text, justification"
 msgstr ""
 
-msgid "decision proposal template section"
-msgstr ""
+#, fuzzy
+#| msgid "education_contract"
+msgid "name of the decision text template"
+msgstr "Agreement on providing apprenticeship training"
 
-msgid "decision proposal template sections"
-msgstr ""
+#, fuzzy
+#| msgid "education_contract"
+msgid "Ahjo decision text template"
+msgstr "Agreement on providing apprenticeship training"
+
+#, fuzzy
+#| msgid "education_contract"
+msgid "Ahjo decision text templates"
+msgstr "Agreement on providing apprenticeship training"
 
 #, fuzzy
 #| msgid "education_contract"
@@ -903,6 +961,40 @@ msgstr ""
 
 msgid "contact person"
 msgstr ""
+
+msgid "whether the alteration should be recovered"
+msgstr ""
+
+msgid "the justification provided in the recovering bill, if eligible"
+msgstr ""
+
+msgid "decision_proposal_draft"
+msgstr ""
+
+msgid "decision_proposal_drafts"
+msgstr ""
+
+msgid "step of the draft proposal"
+msgstr ""
+
+msgid "Proposal status"
+msgstr ""
+
+msgid "Log entry comment"
+msgstr ""
+
+msgid "Handler role"
+msgstr ""
+
+#, fuzzy
+#| msgid "education_contract"
+msgid "Decision text content"
+msgstr "Agreement on providing apprenticeship training"
+
+#, fuzzy
+#| msgid "education_contract"
+msgid "Justification text content"
+msgstr "Agreement on providing apprenticeship training"
 
 msgid "Not found"
 msgstr ""

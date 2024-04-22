@@ -1,5 +1,7 @@
+import NumberTag from 'benefit/handler/components/header/NumberTag';
 import { ROUTES } from 'benefit/handler/constants';
 import AppContext from 'benefit/handler/context/AppContext';
+import useApplicationAlterationsQuery from 'benefit/handler/hooks/useApplicationAlterationsQuery';
 import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
 import { useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
@@ -31,9 +33,23 @@ const useHeader = (): ExtendedComponentProps => {
     [t]
   );
 
+  const { data: alterationData, isLoading: isAlterationListLoading } =
+    useApplicationAlterationsQuery();
+
   const items = {
     default: [
       { label: t('common:header.navigation.applications'), url: ROUTES.HOME },
+      {
+        label: (
+          <>
+            {t('common:header.navigation.alterations')}
+            {!isAlterationListLoading && (
+              <NumberTag count={alterationData.length} />
+            )}
+          </>
+        ),
+        url: ROUTES.ALTERATIONS,
+      },
       {
         label: t('common:header.navigation.batches'),
         url: ROUTES.APPLICATIONS_BATCHES,
@@ -49,6 +65,17 @@ const useHeader = (): ExtendedComponentProps => {
     ],
     newAhjo: [
       { label: t('common:header.navigation.applications'), url: ROUTES.HOME },
+      {
+        label: (
+          <>
+            {t('common:header.navigation.alterations')}
+            {!isAlterationListLoading && (
+              <NumberTag count={alterationData.length} />
+            )}
+          </>
+        ),
+        url: ROUTES.ALTERATIONS,
+      },
       {
         label: t('common:header.navigation.archive'),
         url: ROUTES.APPLICATIONS_ARCHIVE,
@@ -90,4 +117,6 @@ const useHeader = (): ExtendedComponentProps => {
   };
 };
 
+// For consistency with hooks from .ts files
+// eslint-disable-next-line import/prefer-default-export
 export { useHeader };

@@ -1193,6 +1193,25 @@ class ApplicationAlteration(TimeStampedModel):
         verbose_name=_("contact person"),
     )
 
+    is_recoverable = models.BooleanField(
+        verbose_name=_("whether the alteration should be recovered"),
+        default=False,
+    )
+
+    recovery_justification = models.TextField(
+        verbose_name=_(
+            "the justification provided in the recovering bill, if eligible"
+        ),
+        blank=True,
+    )
+
+    handled_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+
 
 class AhjoDecisionProposalDraft(TimeStampedModel):
     """

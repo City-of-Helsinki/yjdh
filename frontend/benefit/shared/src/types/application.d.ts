@@ -608,6 +608,7 @@ export type ApproveTermsOfServiceResponseData = {
 
 export type ApplicationAlteration = {
   id?: number;
+  createdAt?: string;
   application: string;
   alterationType?: ALTERATION_TYPE;
   endDate?: string;
@@ -622,10 +623,15 @@ export type ApplicationAlteration = {
   recoveryStartDate?: string;
   recoveryEndDate?: string;
   recoveryAmount?: number;
+  applicationCompanyName?: string;
+  applicationNumber?: number;
+  applicationEmployeeFirstName?: string;
+  applicationEmployeeLastName?: string;
 };
 
 export type ApplicationAlterationData = {
   id?: number;
+  created_at?: string;
   application: string;
   alteration_type: ALTERATION_TYPE;
   end_date: string;
@@ -640,4 +646,8 @@ export type ApplicationAlterationData = {
   recovery_start_date?: string;
   recovery_end_date?: string;
   recovery_amount?: number;
+  application_company_name?: string;
+  application_number?: number;
+  application_employee_first_name?: string;
+  application_employee_last_name?: string;
 };

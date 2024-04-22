@@ -14,7 +14,8 @@ from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 
 from applications.api.v1.serializers.application_alteration import (
-    ApplicationAlterationSerializer,
+    ApplicantApplicationAlterationSerializer,
+    HandlerApplicationAlterationSerializer,
 )
 from applications.api.v1.serializers.attachment import AttachmentSerializer
 from applications.api.v1.serializers.batch import ApplicationBatchSerializer
@@ -134,12 +135,6 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "List of de minimis aid associated with this application."
             "Total amount must be less than MAX_AID_AMOUNT"
         ),
-    )
-
-    alterations = ApplicationAlterationSerializer(
-        source="alteration_set",
-        read_only=True,
-        many=True,
     )
 
     class Meta:
@@ -1495,6 +1490,12 @@ class ApplicantApplicationSerializer(BaseApplicationSerializer):
         """
         return self.get_logged_in_user_company()
 
+    alterations = ApplicantApplicationAlterationSerializer(
+        source="alteration_set",
+        read_only=True,
+        many=True,
+    )
+
     @do_delayed_calls_at_end()  # application recalculation
     def update(self, instance, validated_data):
         if not ApplicationStatus.is_applicant_editable_status(instance.status):
@@ -1601,6 +1602,12 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
 
     def get_handled_at(self, obj):
         return getattr(obj, "handled_at", None)
+
+    alterations = HandlerApplicationAlterationSerializer(
+        source="alteration_set",
+        read_only=True,
+        many=True,
+    )
 
     class Meta(BaseApplicationSerializer.Meta):
         fields = BaseApplicationSerializer.Meta.fields + [

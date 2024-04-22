@@ -212,6 +212,7 @@ class ApplicationAlterationState(models.TextChoices):
     RECEIVED = "received", _("Received")
     OPENED = "opened", _("Opened")
     HANDLED = "handled", _("Handled")
+    CANCELLED = "cancelled", _("Cancelled")
 
 
 class HandlerRole(models.TextChoices):

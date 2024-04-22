@@ -19,6 +19,7 @@ export const BackendEndpoint = {
   SEARCH_ORGANISATION: '/v1/company/search/',
   GET_ORGANISATION: '/v1/company/get/',
   APPLICATION_ALTERATION: '/v1/applicationalterations/',
+  HANDLER_APPLICATION_ALTERATION: '/v1/handlerapplicationalterations/',
   DECISION_PROPOSAL_TEMPLATE: 'v1/decision-proposal-sections/',
   DECISION_PROPOSAL_DRAFT: 'v1/decision-proposal-drafts/',
 } as const;

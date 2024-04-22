@@ -1,0 +1,24 @@
+import styled from 'styled-components';
+
+export const $Heading = styled.h1`
+  display: inline-block;
+  font-size: ${(props) => props.theme.fontSize.heading.xl};
+  font-weight: normal;
+`;
+
+export const $Subheading = styled.h2`
+  display: inline-block;
+  font-size: ${(props) => props.theme.fontSize.heading.s};
+  font-weight: normal;
+  margin: ${(props) => props.theme.spacing.s} 0;
+
+  strong {
+    font-weight: 500;
+  }
+`;
+
+export const $EmptyListText = styled.p`
+  font-size: ${(props) => props.theme.fontSize.heading.l};
+  font-weight: normal;
+  margin: 0;
+`;
