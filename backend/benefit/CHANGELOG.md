@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.12.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.11.0...benefit-backend-v1.12.0) (2024-04-19)
+
+
+### Features
+
+* ClamAV malware scanning for attachments ([#2894](https://github.com/City-of-Helsinki/yjdh/issues/2894)) ([56e640b](https://github.com/City-of-Helsinki/yjdh/commit/56e640bbd5a53dd2401e61b6f1d719a85b248b27))
+* Implement new Ahjo process UI for handler (HL-1167) ([8f3d591](https://github.com/City-of-Helsinki/yjdh/commit/8f3d5914d4828b5f8985f88e7485a5be32a12e31))
+* Implement the existing alteration list and alteration deletion for the applicant (HL-1154) ([#2925](https://github.com/City-of-Helsinki/yjdh/issues/2925)) ([aea007f](https://github.com/City-of-Helsinki/yjdh/commit/aea007f32f8620ac81417d7a2cf7d0556454e262))
+* Used the shared ssn function for birthday ([#2941](https://github.com/City-of-Helsinki/yjdh/issues/2941)) ([84e7ca7](https://github.com/City-of-Helsinki/yjdh/commit/84e7ca78a31cb4b97c26fcf359185f0be60cc27a))
+
+
+### Bug Fixes
+
+* Failing ahjo token refresh ([#2926](https://github.com/City-of-Helsinki/yjdh/issues/2926)) ([065fdfb](https://github.com/City-of-Helsinki/yjdh/commit/065fdfbb3c1fa6ba0795526d087fe9d24ef319f3))
+* Lowercase L in attachment title ([#2920](https://github.com/City-of-Helsinki/yjdh/issues/2920)) ([3ed504f](https://github.com/City-of-Helsinki/yjdh/commit/3ed504f956b625bdcd1c7a76e2655071fdf618c8))
+* Show filename on change set when applicant adds a new file ([#2922](https://github.com/City-of-Helsinki/yjdh/issues/2922)) ([aa84b60](https://github.com/City-of-Helsinki/yjdh/commit/aa84b6060ef95ab973b01fa05b0e8e2fc3b90742))
+
 ## [1.11.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.10.0...benefit-backend-v1.11.0) (2024-04-04)
 
 
