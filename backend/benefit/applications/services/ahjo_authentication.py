@@ -20,6 +20,10 @@ class AhjoTokenRetrievalException(Exception):
     pass
 
 
+class InvalidTokenException(Exception):
+    pass
+
+
 @dataclass
 class AhjoToken:
     access_token: str = ""

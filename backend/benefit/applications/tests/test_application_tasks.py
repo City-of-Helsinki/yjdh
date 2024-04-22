@@ -158,7 +158,7 @@ def test_open_cases_in_ahjo_success():
     with patch(
         "applications.management.commands.open_cases_in_ahjo.get_token"
     ) as mock_get_token, patch(
-        "applications.management.commands.open_cases_in_ahjo.get_applications_for_open_case"
+        "applications.management.commands.open_cases_in_ahjo.Application.objects.get_by_statuses"
     ) as mock_get_applications, patch(
         "applications.management.commands.open_cases_in_ahjo.send_open_case_request_to_ahjo"
     ) as mock_send_request, patch(
@@ -202,7 +202,7 @@ def test_open_cases_in_ahjo_dryrun():
     with patch(
         "applications.management.commands.open_cases_in_ahjo.get_token"
     ) as mock_get_token, patch(
-        "applications.management.commands.open_cases_in_ahjo.get_applications_for_open_case"
+        "applications.management.commands.open_cases_in_ahjo.Application.objects.get_by_statuses"
     ) as mock_get_applications:
         number_to_open = 1
         # Setup mock return values

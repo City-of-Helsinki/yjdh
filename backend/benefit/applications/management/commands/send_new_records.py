@@ -4,7 +4,11 @@ import time
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand
 
-from applications.services.ahjo_authentication import AhjoToken
+from applications.models import Application
+from applications.services.ahjo_authentication import (
+    AhjoToken,
+    AhjoTokenExpiredException,
+)
 from applications.services.ahjo_integration import (
     get_token,
     send_new_attachment_records_to_ahjo,
@@ -19,6 +23,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             ahjo_auth_token = get_token()
+        except AhjoTokenExpiredException as e:
+            LOGGER.error(f"Failed to get auth token from Ahjo: {e}")
+            return
         except ImproperlyConfigured as e:
             LOGGER.error(f"Failed to get auth token from Ahjo: {e}")
             return
@@ -29,8 +36,8 @@ class Command(BaseCommand):
         start_time = time.time()
 
         self.stdout.write("Sending new records to Ahjo")
-
-        responses = send_new_attachment_records_to_ahjo(ahjo_auth_token)
+        applications = Application.objects.with_downloaded_attachments()
+        responses = send_new_attachment_records_to_ahjo(applications, ahjo_auth_token)
         self.stdout.write(f"Sent records for {len(responses)} applications to Ahjo")
         end_time = time.time()
         elapsed_time = end_time - start_time

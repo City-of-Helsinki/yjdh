@@ -7,7 +7,10 @@ from django.core.management.base import BaseCommand
 
 from applications.enums import AhjoStatus as AhjoStatusEnum, ApplicationStatus
 from applications.models import Application
-from applications.services.ahjo_authentication import AhjoToken
+from applications.services.ahjo_authentication import (
+    AhjoToken,
+    AhjoTokenExpiredException,
+)
 from applications.services.ahjo_integration import (
     create_status_for_application,
     get_token,
@@ -37,6 +40,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             ahjo_auth_token = get_token()
+        except AhjoTokenExpiredException as e:
+            LOGGER.error(f"Failed to get auth token from Ahjo: {e}")
+            return
         except ImproperlyConfigured as e:
             LOGGER.error(f"Failed to get auth token from Ahjo: {e}")
             return
@@ -58,6 +64,16 @@ class Command(BaseCommand):
             self.stdout.write(
                 f"Would send open case requests for {len(applications)} applications to Ahjo"
             )
+            if len(applications):
+                self.stdout.write("Would send open case requests for applications:")
+                for application in applications:
+                    if not application.calculation.handler.ad_username:
+                        raise ImproperlyConfigured(
+                            f"No ad_username set for the handler of application {application.id}."
+                        )
+                    self.stdout.write(
+                        f"ID: {application.id}, number: {application.application_number}"
+                    )
             return
 
         self.run_requests(applications[:number_to_process], ahjo_auth_token)
@@ -71,12 +87,8 @@ class Command(BaseCommand):
         )
 
         for application in applications:
-            if not application.calculation.handler.ad_username:
-                raise ImproperlyConfigured(
-                    f"No ad_username set for the handler for Ahjo open case request for application {application.id}."
-                )
             sent_application, response_text = send_open_case_request_to_ahjo(
-                application, ahjo_auth_token.access_token
+                application, ahjo_auth_token
             )
             if sent_application:
                 successful_applications.append(sent_application)
