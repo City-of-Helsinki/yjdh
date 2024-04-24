@@ -8,7 +8,7 @@ import pytest
 from django.core.management import call_command
 from django.utils import timezone
 
-from applications.enums import ApplicationStatus
+from applications.enums import AhjoRequestType, ApplicationStatus
 from applications.models import AhjoSetting, Application, Attachment
 from applications.services.ahjo_authentication import AhjoToken
 from applications.tests.factories import CancelledApplicationFactory
@@ -151,72 +151,64 @@ def test_user_is_notified_of_upcoming_application_deletion(drafts_about_to_be_de
     )
 
 
-@pytest.mark.django_db
-def test_open_cases_in_ahjo_success():
-    # Mock external services
+@pytest.mark.parametrize(
+    "request_type, patch_db_function, patch_request",
+    [
+        (
+            AhjoRequestType.OPEN_CASE,
+            "applications.management.commands.send_ahjo_requests.Application.objects.get_by_statuses",
+            "applications.management.commands.send_ahjo_requests.send_open_case_request_to_ahjo",
+        ),
+        (
+            AhjoRequestType.SEND_DECISION_PROPOSAL,
+            "applications.management.commands.send_ahjo_requests.Application.objects.get_for_ahjo_decision",
+            "applications.management.commands.send_ahjo_requests.send_decision_proposal_to_ahjo",
+        ),
+        (
+            AhjoRequestType.ADD_RECORDS,
+            "applications.management.commands.send_ahjo_requests.Application.objects.with_non_downloaded_attachments",
+            "applications.management.commands.send_ahjo_requests.send_new_attachment_records_to_ahjo",
+        ),
+        (
+            AhjoRequestType.UPDATE_APPLICATION,
+            "applications.management.commands.send_ahjo_requests.Application.objects.get_by_statuses",
+            "applications.management.commands.send_ahjo_requests.update_application_summary_record_in_ahjo",
+        ),
+    ],
+)
+def test_send_ahjo_requests(request_type, patch_db_function, patch_request):
     AhjoSetting.objects.create(name="ahjo_code", data={"code": "12345"})
     with patch(
-        "applications.management.commands.open_cases_in_ahjo.get_token"
-    ) as mock_get_token, patch(
-        "applications.management.commands.open_cases_in_ahjo.Application.objects.get_by_statuses"
-    ) as mock_get_applications, patch(
-        "applications.management.commands.open_cases_in_ahjo.send_open_case_request_to_ahjo"
-    ) as mock_send_request, patch(
-        "applications.management.commands.open_cases_in_ahjo.create_status_for_application"
-    ) as mock_create_status:
-        # Setup mock return values
+        "applications.management.commands.send_ahjo_requests.get_token"
+    ) as mock_get_token, patch(patch_db_function) as mock_get_applications, patch(
+        patch_request
+    ) as mock_send_request:
         mock_get_token.return_value = MagicMock(AhjoToken)
-        mock_get_applications.return_value = [MagicMock(spec=Application)]
+        number_to_send = 5
+
+        mock_get_applications.return_value = [
+            MagicMock(spec=Application) for _ in range(number_to_send)
+        ]
         mock_send_request.return_value = (
             MagicMock(spec=Application),
             "{response_text}",
         )
 
-        number_to_open = 1
-
-        # Call the command
-        out = StringIO()
-        call_command("open_cases_in_ahjo", number=number_to_open, stdout=out)
-
-        # Assertions
-        assert (
-            f"Sending request to Ahjo to open cases for {number_to_open} applications"
-            in out.getvalue()
-        )
-        assert "Successfully submitted open case request" in out.getvalue()
-        assert mock_send_request.called
-        assert mock_send_request.call_count == number_to_open
-        assert mock_create_status.called
-        assert mock_create_status.call_count == number_to_open
-
-        assert (
-            f"Sent open case requests for {number_to_open} applications to Ahjo"
-            in out.getvalue()
-        )
-
-
-@pytest.mark.django_db
-def test_open_cases_in_ahjo_dryrun():
-    AhjoSetting.objects.create(name="ahjo_code", data={"code": "12345"})
-
-    with patch(
-        "applications.management.commands.open_cases_in_ahjo.get_token"
-    ) as mock_get_token, patch(
-        "applications.management.commands.open_cases_in_ahjo.Application.objects.get_by_statuses"
-    ) as mock_get_applications:
-        number_to_open = 1
-        # Setup mock return values
-        mock_get_token.return_value = MagicMock(AhjoToken)
-        mock_get_applications.return_value = [MagicMock(spec=Application)]
-
         # Call the command
         out = StringIO()
         call_command(
-            "open_cases_in_ahjo", dry_run=True, number=number_to_open, stdout=out
+            "send_ahjo_requests",
+            request_type=request_type,
+            number=number_to_send,
+            stdout=out,
         )
 
-        # Capture the output
         assert (
-            f"Would send open case requests for {number_to_open} applications to Ahjo"
+            f"Sending {request_type} request to Ahjo for {number_to_send} applications"
+            in out.getvalue()
+        )
+
+        assert (
+            f"Sent {request_type} requests for {number_to_send} applications to Ahjo"
             in out.getvalue()
         )
