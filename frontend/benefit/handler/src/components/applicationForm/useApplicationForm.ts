@@ -2,6 +2,7 @@ import {
   APPLICATION_FIELD_KEYS,
   APPLICATION_FIELDS,
 } from 'benefit/handler/constants';
+import DeMinimisContext from 'benefit/handler/context/DeMinimisContext';
 import { useApplicationFormContext } from 'benefit/handler/hooks/useApplicationFormContext';
 import useApplicationQueryWithState from 'benefit/handler/hooks/useApplicationQueryWithState';
 import useFormActions from 'benefit/handler/hooks/useFormActions';
@@ -104,6 +105,9 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     application,
     initialApplication
   );
+
+  const { deMinimisAids, unfinishedDeMinimisAidRow } =
+    React.useContext(DeMinimisContext);
 
   React.useEffect(() => {
     if (id) {
@@ -253,8 +257,35 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     return false;
   };
 
+  /**
+   * De Minimis has it's own formik, just use context to see if there's a row that's not finished
+   * @returns true if valid false if not
+   */
+  const checkDeMinimisForm = (): boolean => {
+    if (
+      values.deMinimisAid &&
+      (unfinishedDeMinimisAidRow || deMinimisAids.length === 0)
+    ) {
+      void errorToast(
+        t(
+          'common:applications.sections.notifications.deMinimisUnfinished.label'
+        ),
+        t(
+          'common:applications.sections.notifications.deMinimisUnfinished.content'
+        )
+      );
+      focusAndScroll('deMinimisAidTrue');
+      return false;
+    }
+    return true;
+  };
+
   const handleSave = async (): Promise<void> =>
     formik.validateForm().then((errors): Promise<void> | void => {
+      if (!checkDeMinimisForm()) {
+        return null;
+      }
+
       if (!errorActions(errors)) {
         return formik.submitForm();
       }
