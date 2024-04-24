@@ -54,7 +54,11 @@ export const DE_MINIMIS_AID_GRANTED_AT_MIN_DATE = new Date(
   1
 );
 
-export const APPLICATION_START_DATE = subMonths(new Date(), 4);
+export const APPLICATION_START_DATE_WITHIN_MONTHS = 4;
+export const APPLICATION_START_DATE = subMonths(
+  new Date(),
+  APPLICATION_START_DATE_WITHIN_MONTHS
+);
 
 export const APPLICATION_INITIAL_VALUES = {
   status: APPLICATION_STATUSES.DRAFT,
