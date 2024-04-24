@@ -18,6 +18,7 @@ from applications.enums import (
     AhjoRequestType,
     AhjoStatus as AhjoStatusEnum,
     ApplicationStatus,
+    ApplicationTalpaStatus,
     AttachmentType,
     BenefitType,
 )
@@ -701,3 +702,78 @@ def test_with_non_downloaded_attachments(decided_application):
 
     attachments = applications[0].attachments.all()
     assert attachments.count() == 6
+
+
+dummy_case_id = "HEL 1999-123"
+
+
+@pytest.mark.parametrize(
+    "application_status,talpa_status, case_id, decision_text, count",
+    [
+        (
+            ApplicationStatus.DRAFT,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            False,
+            0,
+        ),
+        (
+            ApplicationStatus.HANDLING,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            False,
+            0,
+        ),
+        (
+            ApplicationStatus.RECEIVED,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            False,
+            0,
+        ),
+        (
+            ApplicationStatus.CANCELLED,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            False,
+            0,
+        ),
+        (
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            False,
+            0,
+        ),
+        (
+            ApplicationStatus.ACCEPTED,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            True,
+            1,
+        ),
+        (
+            ApplicationStatus.REJECTED,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            True,
+            1,
+        ),
+    ],
+)
+@pytest.mark.django_db
+def test_get_for_ahjo_decision(
+    decided_application, application_status, talpa_status, case_id, decision_text, count
+):
+    decided_application.status = application_status
+    decided_application.talpa_status = talpa_status
+    decided_application.ahjo_case_id = case_id
+    decided_application.save()
+
+    if decision_text:
+        AhjoDecisionText.objects.create(
+            application=decided_application, decision_text="test"
+        )
+
+    applications = Application.objects.get_for_ahjo_decision()
+    assert applications.count() == count

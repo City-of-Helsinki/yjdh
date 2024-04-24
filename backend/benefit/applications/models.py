@@ -186,6 +186,28 @@ class ApplicationManager(models.Manager):
 
         return applications
 
+    def get_for_ahjo_decision(self):
+        """
+        Get applications that are in a state where a decision proposal should be sent to Ahjo.
+        """
+
+        return (
+            self.get_queryset()
+            .filter(
+                status__in=[
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.REJECTED,
+                ],
+                talpa_status=ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+                ahjo_case_id__isnull=False,
+                ahjodecisiontext__isnull=False,
+                id__in=AhjoDecisionText.objects.filter(
+                    application_id=OuterRef("id")
+                ).values("application_id"),
+            )
+            .select_related("ahjodecisiontext")
+        )
+
 
 class Application(UUIDModel, TimeStampedModel, DurationMixin):
     """
