@@ -671,14 +671,14 @@ def test_get_applications_for_open_case(
 
 
 @pytest.mark.django_db
-def test_with_downloaded_attachments(decided_application):
-    applications = Application.objects.with_downloaded_attachments()
+def test_with_non_downloaded_attachments(decided_application):
+    applications = Application.objects.with_non_downloaded_attachments()
     assert applications.count() == 0
 
     decided_application.ahjo_case_id = "HEL 1999-123"
     decided_application.save()
 
-    applications = Application.objects.with_downloaded_attachments()
+    applications = Application.objects.with_non_downloaded_attachments()
     assert applications.count() == 1
 
     attachments = applications[0].attachments.all()
@@ -696,7 +696,7 @@ def test_with_downloaded_attachments(decided_application):
     attachments[0].downloaded_by_ahjo = timezone.now()
     attachments[0].save()
 
-    applications = Application.objects.with_downloaded_attachments()
+    applications = Application.objects.with_non_downloaded_attachments()
     assert applications.count() == 1
 
     attachments = applications[0].attachments.all()

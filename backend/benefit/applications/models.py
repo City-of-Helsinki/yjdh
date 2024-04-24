@@ -122,7 +122,7 @@ class ApplicationManager(models.Manager):
         )
         return qs
 
-    def with_downloaded_attachments(self):
+    def with_non_downloaded_attachments(self):
         """
         Returns applications with only those attachments that have
         null in 'downloaded_by_ahjo' and where  the applications have a non-null ahjo_case_id,
