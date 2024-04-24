@@ -553,8 +553,6 @@ def send_new_attachment_records_to_ahjo(
 
         data = prepare_attachment_records_payload(attachments, application)
 
-        print(data)
-
         application, response_text = ahjo_client.send_request_to_ahjo(data)
 
         return application, response_text
@@ -584,7 +582,6 @@ def send_decision_proposal_to_ahjo(
         )
 
         data = prepare_decision_proposal_payload(application, decision_xml, secret_xml)
-        print(data)
         response, response_text = ahjo_client.send_request_to_ahjo(data)
         create_status_for_application(
             application, AhjoStatusEnum.DECISION_PROPOSAL_SENT
