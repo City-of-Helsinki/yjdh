@@ -3113,6 +3113,18 @@ def test_application_alteration_delete_forbidden_another_company(
     assert response.status_code == 403
 
 
+def test_application_handler_change(api_client, handler_api_client, application):
+    response = api_client.patch(
+        reverse("v1:handler-application-change-handler", kwargs={"pk": application.id}),
+    )
+    assert response.status_code == 403
+
+    response = handler_api_client.patch(
+        reverse("v1:handler-application-change-handler", kwargs={"pk": application.id}),
+    )
+    assert response.status_code == 200
+
+
 def _create_random_applications():
     f = faker.Faker()
     combos = [
