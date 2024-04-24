@@ -7,6 +7,7 @@
     "decode-uri-component", // testcafe
     "@babel/traverse", // jest
     "follow-redirects", // axios
-    "ip" // testcafe, lerna
+    "ip", // testcafe, lerna
+    "html-minifier"
   ]
 }
