@@ -63,6 +63,9 @@ def test_ahjo_requests(
     settings,
 ):
     application = application_with_ahjo_case_id
+    handler = application.calculation.handler
+    handler.ad_username = "test"
+    handler.save()
     settings.API_BASE_URL = "http://test.com"
 
     request = ahjo_request_class(application)
@@ -89,9 +92,6 @@ def test_ahjo_requests(
         )
 
     elif request.request_type == AhjoRequestType.DELETE_APPLICATION:
-        handler = application.calculation.handler
-        handler.ad_username = "test"
-        handler.save()
         draftsman_id = application.calculation.handler.ad_username
         reason = request.reason
         url = f"{settings.AHJO_REST_API_URL}{API_CASES_BASE}/{application.ahjo_case_id}"
