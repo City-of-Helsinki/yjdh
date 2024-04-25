@@ -283,7 +283,8 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
 
         user = self.request.user
         if hasattr(user, "is_handler") and user.is_handler():
-            qs = qs.filter(archived=request.query_params.get("filter_archived") == "1")
+            should_filter_archived = request.query_params.get("filter_archived") == "1"
+            qs = qs.filter(archived=should_filter_archived)
 
         return qs
 
