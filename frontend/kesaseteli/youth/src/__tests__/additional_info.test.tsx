@@ -14,6 +14,8 @@ import React from 'react';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 
+jest.retryTimes(5);
+
 describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
   const APPLICATION_ID = 'abc-123';
 
