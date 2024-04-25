@@ -5,6 +5,7 @@ from django.utils.safestring import mark_safe
 from applications.models import (
     AhjoDecisionText,
     AhjoSetting,
+    AhjoStatus,
     Application,
     ApplicationAlteration,
     ApplicationBasis,
@@ -20,6 +21,16 @@ from calculator.admin import CalculationInline
 
 class ApplicationBasisInline(admin.TabularInline):
     model = Application.bases.through
+
+
+class AhjoStatusInline(admin.TabularInline):
+    model = AhjoStatus
+    fk_name = "application"
+    extra = 0
+    readonly_fields = (
+        "created_at",
+        "status",
+    )
 
 
 class DeMinimisAidInline(admin.StackedInline):
@@ -72,6 +83,7 @@ class ApplicationAdmin(admin.ModelAdmin):
         AttachmentInline,
         CalculationInline,
         ApplicationAlterationInline,
+        AhjoStatusInline,
     )
     list_filter = ("status", "application_origin", "company")
     list_display = (
