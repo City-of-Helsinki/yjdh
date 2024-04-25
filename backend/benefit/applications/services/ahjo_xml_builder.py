@@ -51,8 +51,8 @@ SECRET_ATTACHMENT_TEMPLATE = "secret_decision.xml"
 class BenefitPeriodRow:
     start_date: date
     end_date: date
-    amount_per_month: float
-    total_amount: float
+    amount_per_month: int
+    total_amount: int
 
 
 class AhjoSecretXMLBuilder(AhjoXMLBuilder):
@@ -105,9 +105,9 @@ class AhjoSecretXMLBuilder(AhjoXMLBuilder):
                         BenefitPeriodRow(
                             start_date=start_date,
                             end_date=end_date,
-                            amount_per_month=r.amount,
+                            amount_per_month=int(r.amount),
                             # the total amount is also in the next row
-                            total_amount=calculation_rows[idx + 1].amount,
+                            total_amount=int(calculation_rows[idx + 1].amount),
                         )
                     )
 
@@ -126,8 +126,8 @@ class AhjoSecretXMLBuilder(AhjoXMLBuilder):
             BenefitPeriodRow(
                 start_date=total_amount_row.start_date,
                 end_date=total_amount_row.end_date,
-                amount_per_month=calculation_row_per_month.amount,
-                total_amount=total_amount_row.amount,
+                amount_per_month=int(calculation_row_per_month.amount),
+                total_amount=int(total_amount_row.amount),
             )
         )
         return calculation_rows_for_xml

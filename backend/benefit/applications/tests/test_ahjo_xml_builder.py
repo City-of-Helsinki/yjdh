@@ -133,8 +133,8 @@ def test_secret_xml_decision_string(decided_application, secret_xml_builder):
         decided_application.employee.last_name,
         decided_application.employee.first_name,
         f"{row.start_date.strftime('%d.%m.%Y')} - {row.end_date.strftime('%d.%m.%Y')}",
-        str(row.amount),
-        str(calculation.calculated_benefit_amount),
+        str(int(row.amount)),
+        str(int(calculation.calculated_benefit_amount)),
     ]
     assert all([replacement in xml_string for replacement in wanted_replacements])
 
@@ -177,13 +177,13 @@ def test_prepare_multiple_period_rows(
     assert len(period_rows) == 2
     assert period_rows[0].start_date == sub_total_row_1.start_date
     assert period_rows[0].end_date == sub_total_row_1.end_date
-    assert period_rows[0].amount_per_month == monthly_row_1.amount
-    assert period_rows[0].total_amount == sub_total_row_1.amount
+    assert period_rows[0].amount_per_month == int(monthly_row_1.amount)
+    assert period_rows[0].total_amount == int(sub_total_row_1.amount)
 
     assert period_rows[1].start_date == sub_total_row_2.start_date
     assert period_rows[1].end_date == sub_total_row_2.end_date
-    assert period_rows[1].amount_per_month == monthly_row_2.amount
-    assert period_rows[1].total_amount == sub_total_row_2.amount
+    assert period_rows[1].amount_per_month == int(monthly_row_2.amount)
+    assert period_rows[1].total_amount == int(sub_total_row_2.amount)
 
 
 def test_prepare_single_period_row(secret_xml_builder, monthly_row_1, total_eur_row):
@@ -194,8 +194,8 @@ def test_prepare_single_period_row(secret_xml_builder, monthly_row_1, total_eur_
     assert len(period_rows) == 1
     assert period_rows[0].start_date == total_eur_row.start_date
     assert period_rows[0].end_date == total_eur_row.end_date
-    assert period_rows[0].amount_per_month == monthly_row_1.amount
-    assert period_rows[0].total_amount == total_eur_row.amount
+    assert period_rows[0].amount_per_month == int(monthly_row_1.amount)
+    assert period_rows[0].total_amount == int(total_eur_row.amount)
 
 
 def test_get_context_for_secret_xml_with_single_period(
@@ -208,8 +208,10 @@ def test_get_context_for_secret_xml_with_single_period(
     assert isinstance(context["calculation_periods"][0], BenefitPeriodRow)
     assert context["calculation_periods"][0].start_date == total_eur_row.start_date
     assert context["calculation_periods"][0].end_date == total_eur_row.end_date
-    assert context["calculation_periods"][0].amount_per_month == monthly_row_1.amount
-    assert context["calculation_periods"][0].total_amount == total_eur_row.amount
+    assert context["calculation_periods"][0].amount_per_month == int(
+        monthly_row_1.amount
+    )
+    assert context["calculation_periods"][0].total_amount == int(total_eur_row.amount)
     assert context["language"] == decided_application.applicant_language
     assert isinstance(context["total_amount_row"], CalculationRow)
     assert context["total_amount_row"] == total_eur_row
@@ -241,10 +243,14 @@ def test_get_context_for_secret_xml_with_multiple_periods(
     assert isinstance(context["calculation_periods"][0], BenefitPeriodRow)
     assert context["calculation_periods"][0].start_date == sub_total_row_1.start_date
     assert context["calculation_periods"][0].end_date == sub_total_row_1.end_date
-    assert context["calculation_periods"][0].amount_per_month == monthly_row_1.amount
-    assert context["calculation_periods"][0].total_amount == sub_total_row_1.amount
+    assert context["calculation_periods"][0].amount_per_month == int(
+        monthly_row_1.amount
+    )
+    assert context["calculation_periods"][0].total_amount == int(sub_total_row_1.amount)
     assert isinstance(context["calculation_periods"][1], BenefitPeriodRow)
     assert context["calculation_periods"][1].start_date == sub_total_row_2.start_date
     assert context["calculation_periods"][1].end_date == sub_total_row_2.end_date
-    assert context["calculation_periods"][1].amount_per_month == monthly_row_2.amount
-    assert context["calculation_periods"][1].total_amount == sub_total_row_2.amount
+    assert context["calculation_periods"][1].amount_per_month == int(
+        monthly_row_2.amount
+    )
+    assert context["calculation_periods"][1].total_amount == int(sub_total_row_2.amount)
