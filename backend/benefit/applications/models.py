@@ -585,6 +585,9 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
     Represents grouping of applications for:
     * Decision making in Ahjo
     * Transferring payment data to Talpa
+
+    If Ahjo automation / integration is in use, a single application batch will be created for each
+    application, after a case has been opened in Ahjo after which auto_generated_by ahjo is set to True.
     """
 
     handler = models.ForeignKey(
@@ -603,18 +606,29 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
 
     proposal_for_decision = models.CharField(
         max_length=64,
+        blank=True,
+        null=True,
         verbose_name=_("proposal for decision"),
         choices=AhjoDecision.choices,
     )
 
     decision_maker_title = models.CharField(
-        max_length=64, blank=True, verbose_name=_("decision maker's title in Ahjo")
+        max_length=64,
+        blank=True,
+        null=True,
+        verbose_name=_("decision maker's title in Ahjo"),
     )
     decision_maker_name = models.CharField(
-        max_length=128, blank=True, verbose_name=_("decision maker's name in Ahjo")
+        max_length=128,
+        blank=True,
+        null=True,
+        verbose_name=_("decision maker's name in Ahjo"),
     )
     section_of_the_law = models.CharField(
-        max_length=16, blank=True, verbose_name=_("section of the law in Ahjo decision")
+        max_length=16,
+        blank=True,
+        null=True,
+        verbose_name=_("section of the law in Ahjo decision"),
     )
     decision_date = models.DateField(
         verbose_name=_("date of the decision in Ahjo"),
@@ -623,23 +637,30 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
         validators=[validate_decision_date],
     )
     p2p_inspector_name = models.CharField(
-        max_length=128, blank=True, verbose_name=_("P2P inspector's name")
+        max_length=128, blank=True, null=True, verbose_name=_("P2P inspector's name")
     )
     p2p_inspector_email = models.EmailField(
-        blank=True, verbose_name=_("P2P inspector's email address")
+        blank=True, null=True, verbose_name=_("P2P inspector's email address")
     )
     p2p_checker_name = models.CharField(
-        max_length=64, blank=True, verbose_name=_("P2P acceptor's title")
+        max_length=64, blank=True, null=True, verbose_name=_("P2P acceptor's title")
     )
 
     expert_inspector_name = models.CharField(
-        max_length=128, blank=True, verbose_name=_("Expert inspector's name")
+        max_length=128, blank=True, null=True, verbose_name=_("Expert inspector's name")
     )
     expert_inspector_email = models.EmailField(
-        blank=True, verbose_name=_("Expert inspector's email address")
+        blank=True, null=True, verbose_name=_("Expert inspector's email address")
     )
+
     expert_inspector_title = models.CharField(
-        max_length=64, blank=True, verbose_name=_("Expert inspector's title")
+        max_length=64, blank=True, null=True, verbose_name=_("Expert inspector's title")
+    )
+
+    auto_generated_by_ahjo = models.BooleanField(
+        blank=True,
+        default=False,
+        verbose_name=_("Batch created through Ahjo integration"),
     )
 
     def clean(self):
