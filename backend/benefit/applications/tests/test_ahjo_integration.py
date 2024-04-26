@@ -17,6 +17,7 @@ from applications.enums import (
     AhjoCallBackStatus,
     AhjoRequestType,
     AhjoStatus as AhjoStatusEnum,
+    ApplicationBatchStatus,
     ApplicationStatus,
     AttachmentType,
     BenefitType,
@@ -468,6 +469,10 @@ def test_ahjo_callback_success(
             attachment.ahjo_version_series_id
             == ahjo_callback_payload["records"][0]["versionSeriesId"]
         )
+        batch = decided_application.batch
+        assert batch.auto_generated_by_ahjo
+        assert batch.handler == decided_application.calculation.handler
+        assert batch.status == ApplicationBatchStatus.DRAFT
     if request_type == AhjoRequestType.UPDATE_APPLICATION:
         assert (
             attachment.ahjo_version_series_id
