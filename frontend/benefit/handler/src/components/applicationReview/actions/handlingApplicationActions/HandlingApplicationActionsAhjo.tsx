@@ -1,5 +1,8 @@
 import Sidebar from 'benefit/handler/components/sidebar/Sidebar';
-import { HANDLED_STATUSES } from 'benefit/handler/constants';
+import {
+  APPLICATION_LIST_TABS,
+  HANDLED_STATUSES,
+} from 'benefit/handler/constants';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import {
@@ -17,7 +20,10 @@ import * as React from 'react';
 import Modal from 'shared/components/modal/Modal';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import theme from 'shared/styles/theme';
-import { focusAndScroll } from 'shared/utils/dom.utils';
+import {
+  focusAndScroll,
+  focusAndScrollToSelector,
+} from 'shared/utils/dom.utils';
 
 import useDecisionProposalDraftMutation from '../../../../hooks/applicationHandling/useDecisionProposalDraftMutation';
 import {
@@ -77,13 +83,22 @@ const HandlingApplicationActions: React.FC<Props> = ({
 
   const [isSavingAndClosing, setIsSavingAndClosing] = React.useState(false);
 
+  const navigateToIndex = React.useCallback(
+    (): void =>
+      void router.push({
+        pathname: '/',
+        query: { tab: APPLICATION_LIST_TABS.HANDLING },
+      }),
+    [router]
+  );
+
   const effectSaveAndClose = (): void => {
     if (
       data?.review_step === stepState.activeStepIndex + 1 &&
       isSavingAndClosing
     ) {
       setIsSavingAndClosing(false);
-      void router.push('/');
+      navigateToIndex();
     }
   };
 
@@ -119,10 +134,17 @@ const HandlingApplicationActions: React.FC<Props> = ({
     router,
     stepState.activeStepIndex,
     isSavingAndClosing,
+    navigateToIndex,
   ]);
   React.useEffect(() => {
     setIsSavingAndClosing(false);
   }, [isError]);
+
+  const isCalculationInvalid = (): boolean =>
+    (application.calculation.rows.length === 0 &&
+      handledApplication?.status === APPLICATION_STATUSES.ACCEPTED) ||
+    isRecalculationRequired ||
+    isCalculationsErrors;
 
   const validateNextStep = (currentStepIndex: number): boolean => {
     if (application.status === APPLICATION_STATUSES.INFO_REQUIRED) {
@@ -133,39 +155,54 @@ const HandlingApplicationActions: React.FC<Props> = ({
       );
       return true;
     }
-    const missing = {
-      status: !handledApplication?.status,
-      calculation:
-        (application.calculation.rows.length === 0 &&
-          handledApplication?.status === APPLICATION_STATUSES.ACCEPTED) ||
-        isRecalculationRequired ||
-        isCalculationsErrors,
-      logEntry:
-        handledApplication?.logEntryComment?.length <= 0 &&
-        handledApplication?.status === APPLICATION_STATUSES.REJECTED,
-      handler: false,
-      // Use longer length to take HTML tags into account
-      decisionText: handledApplication?.decisionText?.length <= 10,
-      justificationText: handledApplication?.justificationText?.length <= 10,
+    const fields = {
+      missing: {
+        status: !handledApplication?.status,
+        calculation: isCalculationInvalid(),
+        logEntry:
+          handledApplication?.logEntryComment?.length <= 0 &&
+          handledApplication?.status === APPLICATION_STATUSES.REJECTED,
+        handler: false,
+        // Use longer length to take HTML tags into account
+        decisionText: handledApplication?.decisionText?.length <= 10,
+        justificationText: handledApplication?.justificationText?.length <= 10,
+      },
+      id: {
+        status: '#proccessRejectedRadio',
+        calculation: '#endDate',
+        logEntry: '#proccessRejectedRadio',
+        handler: '#radio-decision-maker-handler',
+        decisionText: '[data-testid="decisionText"]',
+        justificationText: '[data-testid="justificationText"]',
+      },
     };
 
     const errorStep1 =
-      missing.status || missing.calculation || missing.logEntry;
+      fields.missing.status ||
+      fields.missing.calculation ||
+      fields.missing.logEntry;
 
     let errorStep2 = false;
     if (currentStepIndex > 0) {
-      missing.handler = !['handler', 'manager'].includes(
+      fields.missing.handler = !['handler', 'manager'].includes(
         handledApplication?.handlerRole
       );
 
       errorStep2 =
-        missing.decisionText || missing.justificationText || missing.handler;
+        fields.missing.decisionText ||
+        fields.missing.justificationText ||
+        fields.missing.handler;
     }
 
     if (errorStep1 || errorStep2) {
-      const missingFields = Object.keys(missing).filter((key) => missing[key]);
+      const missingFields = Object.keys(fields.missing).filter(
+        (key) => fields.missing[key]
+      );
       let interval = 0;
-      missingFields.forEach((key) => {
+      missingFields.forEach((key, index) => {
+        if (index === 0) {
+          focusAndScrollToSelector(String(fields.id[key]));
+        }
         setTimeout(() => {
           showErrorToast(
             t('common:review.decisionProposal.errors.title'),
@@ -187,7 +224,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
         applicationId: application.id,
       });
     } else {
-      // Final step, just open confirmation modal
+      // Final step, just open confirmation modal before submitting
       onDoneConfirmation();
     }
   };
@@ -201,6 +238,15 @@ const HandlingApplicationActions: React.FC<Props> = ({
   };
 
   const handleSaveAndClose = (): void => {
+    if (isCalculationInvalid()) {
+      focusAndScroll('endDate');
+      showErrorToast(
+        t('common:review.decisionProposal.errors.title'),
+        t(`common:review.decisionProposal.errors.fields.calculation`)
+      );
+
+      return;
+    }
     updateApplication({
       ...handledApplication,
       reviewStep: stepState.activeStepIndex + 1,
@@ -209,7 +255,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
     setIsSavingAndClosing(true);
   };
 
-  const handleClose = (): void => void router.push('/');
+  const handleClose = (): void => navigateToIndex();
 
   return (
     <$Wrapper data-testid={dataTestId}>

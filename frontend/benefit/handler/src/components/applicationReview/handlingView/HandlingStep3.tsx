@@ -52,8 +52,7 @@ const ApplicationReviewStep3: React.FC<HandlingStepProps> = ({
             weight="400"
             $css={{ marginTop: 0, marginBottom: theme.spacing.s }}
           />
-          <p>{t('common:review.decisionProposal.preview.ahjoIdentifier')}</p>
-
+          <p>{application?.ahjoCaseId}</p>
           <Heading
             header={`${t(
               'common:review.decisionProposal.preview.decisionText'

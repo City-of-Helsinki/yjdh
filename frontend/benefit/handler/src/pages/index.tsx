@@ -17,7 +17,7 @@ import theme from 'shared/styles/theme';
 import { useApplicationList } from '../components/applicationList/useApplicationList';
 import { useApplicationListData } from '../components/applicationList/useApplicationListData';
 import { $BackgroundWrapper } from '../components/layout/Layout';
-import { ALL_APPLICATION_STATUSES } from '../constants';
+import { ALL_APPLICATION_STATUSES, APPLICATION_LIST_TABS } from '../constants';
 
 const ApplicantIndex: NextPage = () => {
   const {
@@ -65,6 +65,8 @@ const ApplicantIndex: NextPage = () => {
   const router = useRouter();
   const { tab } = router.query;
   const [activeTab, setActiveTab] = React.useState<number | null>(null);
+  const updateTabToUrl = (tabNumber: APPLICATION_LIST_TABS): void =>
+    window.history.pushState({ tab }, '', `/?tab=${tabNumber}`);
 
   React.useEffect(() => {
     if (!router.isReady) return;
@@ -86,31 +88,43 @@ const ApplicantIndex: NextPage = () => {
         <Container>
           <Tabs theme={theme.components.tabs} initiallyActiveTab={activeTab}>
             <Tabs.TabList style={{ marginBottom: 'var(--spacing-m)' }}>
-              <Tabs.Tab>
+              <Tabs.Tab
+                onClick={() => updateTabToUrl(APPLICATION_LIST_TABS.ALL)}
+              >
                 {getListHeadingByStatus('all', ALL_APPLICATION_STATUSES)}
               </Tabs.Tab>
-              <Tabs.Tab>
+              <Tabs.Tab
+                onClick={() => updateTabToUrl(APPLICATION_LIST_TABS.DRAFT)}
+              >
                 {getListHeadingByStatus(APPLICATION_STATUSES.DRAFT, [
                   APPLICATION_STATUSES.DRAFT,
                 ])}
               </Tabs.Tab>
-              <Tabs.Tab>
+              <Tabs.Tab
+                onClick={() => updateTabToUrl(APPLICATION_LIST_TABS.RECEIVED)}
+              >
                 {getListHeadingByStatus(APPLICATION_STATUSES.RECEIVED, [
                   APPLICATION_STATUSES.RECEIVED,
                 ])}
               </Tabs.Tab>
-              <Tabs.Tab>
+              <Tabs.Tab
+                onClick={() => updateTabToUrl(APPLICATION_LIST_TABS.HANDLING)}
+              >
                 {getListHeadingByStatus(APPLICATION_STATUSES.HANDLING, [
                   APPLICATION_STATUSES.HANDLING,
                   APPLICATION_STATUSES.INFO_REQUIRED,
                 ])}
               </Tabs.Tab>
-              <Tabs.Tab>
+              <Tabs.Tab
+                onClick={() => updateTabToUrl(APPLICATION_LIST_TABS.ACCEPTED)}
+              >
                 {getListHeadingByStatus(APPLICATION_STATUSES.ACCEPTED, [
                   APPLICATION_STATUSES.ACCEPTED,
                 ])}
               </Tabs.Tab>
-              <Tabs.Tab>
+              <Tabs.Tab
+                onClick={() => updateTabToUrl(APPLICATION_LIST_TABS.REJECTED)}
+              >
                 {getListHeadingByStatus(APPLICATION_STATUSES.REJECTED, [
                   APPLICATION_STATUSES.REJECTED,
                 ])}

@@ -143,6 +143,6 @@ export const $CalculationReviewTableWrapper = styled.div`
 
   table > tbody > tr:last-child td {
     background-color: ${(props) => props.theme.colors.coatOfArmsLight};
-    font-weight: 500;
+    font-weight: 600;
   }
 `;
