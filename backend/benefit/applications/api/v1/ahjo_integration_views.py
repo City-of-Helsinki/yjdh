@@ -17,6 +17,7 @@ from applications.enums import (
     AhjoCallBackStatus,
     AhjoRequestType,
     AhjoStatus as AhjoStatusEnum,
+    ApplicationBatchStatus,
 )
 from applications.models import AhjoStatus, Application, ApplicationBatch, Attachment
 from common.permissions import SafeListPermission
@@ -155,6 +156,7 @@ class AhjoCallbackView(APIView):
                     info = f"Application was marked for cancellation \
 in Ahjo with request id: {callback_data['requestId']}"
                 elif request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
+                    self.handle_decision_proposal_success(application)
                     ahjo_status = AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED
                     info = "Decision proposal was sent to Ahjo"
                 elif request_type == AhjoRequestType.UPDATE_APPLICATION:
@@ -253,9 +255,11 @@ with request id: {callback_data['requestId']}"
                 attachment.ahjo_version_series_id = cb_record.get("versionSeriesId")
                 attachment.save()
 
-    def handle_decision_proposal_success(self):
-        # do anything that needs to be done when Ahjo accepts a decision proposal
-        pass
+    def handle_decision_proposal_success(self, application: Application):
+        # do anything that needs to be done when Ahjo has received a decision proposal request
+        batch = application.batch
+        batch.status = ApplicationBatchStatus.AWAITING_AHJO_DECISION
+        batch.save()
 
     def _log_failure_details(self, application, callback_data):
         LOGGER.error(
