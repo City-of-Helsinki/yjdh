@@ -1627,6 +1627,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
                 pay_subsidy_data = None
         training_compensation_data = validated_data.pop("training_compensations", None)
         previous_status = instance.status
+
         application = self._base_update(instance, validated_data)
         if calculation_data is not None:
             self._update_calculation(instance, calculation_data, previous_status)
@@ -1728,8 +1729,14 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             instance, previous_status, approve_terms, log_entry_comment
         )
         # Extend from base class function.
+        self._archive_application(instance)
         self._assign_handler_if_needed(instance)
         self._remove_batch_if_needed(instance)
+
+    def _archive_application(self, instance):
+        if instance.status == ApplicationStatus.CANCELLED:
+            instance.archived = True
+            instance.save()
 
     def _assign_handler_if_needed(self, instance):
         # Assign current user to the application.calculation.handler

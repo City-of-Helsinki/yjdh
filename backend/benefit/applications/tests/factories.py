@@ -273,6 +273,7 @@ class HandlingApplicationFactory(ReceivedApplicationFactory):
 
 class CancelledApplicationFactory(ApplicationWithAttachmentFactory):
     status = ApplicationStatus.CANCELLED
+    archived = True
 
     @factory.post_generation
     def cancelled_log_event(self, created, extracted, **kwargs):
