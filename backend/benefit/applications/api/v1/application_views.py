@@ -287,6 +287,10 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
             should_filter_archived = request.query_params.get("filter_archived") == "1"
             qs = qs.filter(archived=should_filter_archived)
 
+        ahjo_cases = request.query_params.get("ahjo_case") == "1"
+        if ahjo_cases:
+            qs = qs.filter(ahjo_case_id__isnull=False, ahjo_case_id__gt="")
+
         return qs
 
     def _get_attachment(self, attachment_pk):

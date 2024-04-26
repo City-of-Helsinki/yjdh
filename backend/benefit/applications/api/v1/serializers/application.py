@@ -1608,6 +1608,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             "pay_subsidies",
             "training_compensations",
             "batch",
+            "talpa_status",
             "create_application_for_company",
             "latest_decision_comment",
             "handled_at",
