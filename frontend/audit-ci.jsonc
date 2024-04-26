@@ -3,11 +3,8 @@
   "allowlist": [
     "json5", // jest, testcafe
     "moment", // testcafe
-    "http-cache-semantics", // testcafe
     "decode-uri-component", // testcafe
     "@babel/traverse", // jest
-    "follow-redirects", // axios
-    "ip", // testcafe, lerna
     "html-minifier"
   ]
 }
