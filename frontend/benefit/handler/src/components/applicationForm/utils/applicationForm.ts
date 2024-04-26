@@ -22,6 +22,7 @@ import {
 import { ApplicationData } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
 import isAfter from 'date-fns/isAfter';
+import isValid from 'date-fns/isValid';
 import isWithinInterval from 'date-fns/isWithinInterval';
 import { FormikErrors } from 'formik';
 import fromPairs from 'lodash/fromPairs';
@@ -172,7 +173,7 @@ const getDates = (values: Application): DatesType => {
   const endDate = parseDate(values.endDate);
   const isEndDateEligible =
     endDate &&
-    (maxEndDate
+    (isValid(maxEndDate) && maxEndDate
       ? isWithinInterval(endDate, { start: minEndDate, end: maxEndDate })
       : isAfter(endDate, minEndDate));
   return {

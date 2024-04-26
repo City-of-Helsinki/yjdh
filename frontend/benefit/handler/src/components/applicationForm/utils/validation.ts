@@ -1,5 +1,7 @@
 import {
   APPLICATION_FIELD_KEYS,
+  APPLICATION_START_DATE,
+  APPLICATION_START_DATE_WITHIN_MONTHS,
   EMPLOYEE_MAX_WORKING_HOURS,
   EMPLOYEE_MIN_WORKING_HOURS,
   MAX_LONG_STRING_LENGTH,
@@ -20,7 +22,6 @@ import {
   validateIsTodayOrPastDate,
 } from 'benefit-shared/utils/dates';
 import { validateNumberField } from 'benefit-shared/utils/validation';
-import subMonths from 'date-fns/subMonths';
 import { FinnishSSN } from 'finnish-ssn';
 import { TFunction } from 'next-i18next';
 import {
@@ -279,9 +280,10 @@ export const getValidationSchema = (
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED))
       .test({
         message: t(VALIDATION_MESSAGE_KEYS.DATE_MIN, {
-          min: convertToUIDateFormat(subMonths(new Date(), 4)),
+          min: convertToUIDateFormat(APPLICATION_START_DATE),
         }),
-        test: (value = '') => validateDateWithinMonths(value, 4),
+        test: (value = '') =>
+          validateDateWithinMonths(value, APPLICATION_START_DATE_WITHIN_MONTHS),
       }),
     [APPLICATION_FIELD_KEYS.END_DATE]: Yup.string().required(
       t(VALIDATION_MESSAGE_KEYS.REQUIRED)

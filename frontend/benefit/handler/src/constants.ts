@@ -6,6 +6,7 @@ import {
   EMPLOYEE_KEYS,
   PAY_SUBSIDY_OPTIONS,
 } from 'benefit-shared/constants';
+import subMonths from 'date-fns/subMonths';
 
 export enum ROUTES {
   HOME = '/',
@@ -101,7 +102,11 @@ export const DE_MINIMIS_AID_GRANTED_AT_MIN_DATE = new Date(
   1
 );
 
-export const APPLICATION_START_DATE = new Date(new Date().getFullYear(), 0, 1);
+export const APPLICATION_START_DATE_WITHIN_MONTHS = 12;
+export const APPLICATION_START_DATE = subMonths(
+  new Date(),
+  APPLICATION_START_DATE_WITHIN_MONTHS
+);
 
 export const MAX_DEMINIMIS_AID_TOTAL_AMOUNT = 300_000;
 

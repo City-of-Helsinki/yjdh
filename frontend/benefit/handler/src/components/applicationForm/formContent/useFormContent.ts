@@ -1,3 +1,4 @@
+import { APPLICATION_START_DATE_WITHIN_MONTHS } from 'benefit/applicant/src/constants';
 import { SUPPORTED_LANGUAGES } from 'benefit/handler/constants';
 import DeMinimisContext from 'benefit/handler/context/DeMinimisContext';
 import {
@@ -5,12 +6,14 @@ import {
   ApplicationFields,
 } from 'benefit/handler/types/application';
 import { getErrorText } from 'benefit/handler/utils/forms';
+import parse from 'date-fns/parse';
 import { FormikProps } from 'formik';
 import { TFunction, useTranslation } from 'next-i18next';
 import React from 'react';
 import useLocale from 'shared/hooks/useLocale';
 import { OptionType } from 'shared/types/common';
 import { getLanguageOptions } from 'shared/utils/common';
+import { diffMonths } from 'shared/utils/date.utils';
 import { capitalize } from 'shared/utils/string.utils';
 
 type ExtendedComponentProps = {
@@ -27,6 +30,7 @@ type ExtendedComponentProps = {
   clearDatesValues: () => void;
   clearAlternativeAddressValues: () => void;
   getErrorMessage: (fieldName: string) => string | undefined;
+  displayPastApplicationDatesWarning: () => boolean;
 };
 
 const useFormContent = (
@@ -37,7 +41,7 @@ const useFormContent = (
   const translationsBase = 'common:applications.sections';
   const cbPrefix = 'application_consent';
   const { setDeMinimisAids } = React.useContext(DeMinimisContext);
-  const { touched, errors, setFieldValue } = formik;
+  const { touched, errors, setFieldValue, values } = formik;
 
   const languageOptions = React.useMemo(
     (): OptionType<string>[] => getLanguageOptions(t, 'languages'),
@@ -100,6 +104,23 @@ const useFormContent = (
     setFieldValue(fields.benefitType.name, null);
   }, [fields.benefitType.name, setFieldValue]);
 
+  const displayPastApplicationDatesWarning = (): boolean => {
+    const { startDate, endDate } = values;
+    if (!startDate || !endDate) {
+      return false;
+    }
+
+    const parsedStartDate = parse(startDate, 'd.M.yyyy', new Date());
+    const parsedEndDate = parse(endDate, 'd.M.yyyy', new Date());
+
+    return (
+      diffMonths(new Date(), parsedStartDate) >
+        APPLICATION_START_DATE_WITHIN_MONTHS ||
+      diffMonths(new Date(), parsedEndDate) >
+        APPLICATION_START_DATE_WITHIN_MONTHS
+    );
+  };
+
   const language = SUPPORTED_LANGUAGES.FI;
   const locale = useLocale();
   const textLocale = capitalize(locale);
@@ -118,6 +139,7 @@ const useFormContent = (
     clearDatesValues,
     clearAlternativeAddressValues,
     getErrorMessage,
+    displayPastApplicationDatesWarning,
   };
 };
 

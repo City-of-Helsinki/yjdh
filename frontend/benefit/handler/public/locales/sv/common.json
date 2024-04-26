@@ -368,6 +368,10 @@
         "requiredConsents": {
           "label": "Puuttuvat suostumukset",
           "content": "Yksi tai useampi suostumus puuttuu."
+        },
+        "pastApplicationDates": {
+          "label": "Haetusta ajanjaksosta on jo pidempi aika",
+          "content": "Huomaathan että hakijan ilmoittama ajanjakson on pääsääntöisesti enintään {{months}} kuukauden sisällä hakupäivästä."
         }
       },
       "fields": {

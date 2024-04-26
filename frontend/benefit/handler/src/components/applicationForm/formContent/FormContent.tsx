@@ -1,4 +1,8 @@
-import { APPLICATION_FIELD_KEYS } from 'benefit/handler/constants';
+import { APPLICATION_START_DATE_WITHIN_MONTHS } from 'benefit/applicant/src/constants';
+import {
+  APPLICATION_FIELD_KEYS,
+  APPLICATION_START_DATE,
+} from 'benefit/handler/constants';
 import { useAlertBeforeLeaving } from 'benefit/handler/hooks/useAlertBeforeLeaving';
 import { useApplicationFormContext } from 'benefit/handler/hooks/useApplicationFormContext';
 import { useDependentFieldsEffect } from 'benefit/handler/hooks/useDependentFieldsEffect';
@@ -8,7 +12,6 @@ import {
 } from 'benefit/handler/types/application';
 import {
   APPLICATION_ORIGINS,
-  APPLICATION_START_DATE,
   ATTACHMENT_TYPES,
   ORGANIZATION_TYPES,
   PAY_SUBSIDY_GRANTED,
@@ -21,7 +24,7 @@ import {
 } from 'benefit-shared/types/application';
 import { paySubsidyTitle } from 'benefit-shared/utils/common';
 import { FormikProps } from 'formik';
-import { DateInput, SelectionGroup, TextInput } from 'hds-react';
+import { DateInput, Notification, SelectionGroup, TextInput } from 'hds-react';
 import React from 'react';
 import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
 import {
@@ -94,6 +97,7 @@ const FormContent: React.FC<Props> = ({
     clearContractValues,
     clearAlternativeAddressValues,
     getErrorMessage,
+    displayPastApplicationDatesWarning,
   } = useFormContent(formik, fields);
 
   const theme = useTheme();
@@ -629,6 +633,22 @@ const FormContent: React.FC<Props> = ({
             required
           />
         </$GridCell>
+        {displayPastApplicationDatesWarning() && (
+          <$GridCell $colSpan={13} $colStart={1}>
+            <Notification
+              label={t(
+                'common:applications.sections.notifications.pastApplicationDates.label'
+              )}
+              type="alert"
+              style={{ marginTop: 'var(--spacing-s)' }}
+            >
+              {t(
+                'common:applications.sections.notifications.pastApplicationDates.content',
+                { months: APPLICATION_START_DATE_WITHIN_MONTHS }
+              )}
+            </Notification>
+          </$GridCell>
+        )}
       </FormSection>
       <FormSection
         paddingBottom
