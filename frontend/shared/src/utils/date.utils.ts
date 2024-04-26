@@ -215,10 +215,7 @@ export const isWithinInterval = (
   return (!start || start <= curr) && (curr <= end || !end);
 };
 
-export const sortFinnishDate = (a: string, b: string): number => {
-  const aDate = parse(a, 'dd.MM.yyyy', new Date());
-  const bDate = parse(b, 'dd.MM.yyyy', new Date());
-
+const compareDates = (aDate: Date, bDate: Date): number => {
   if (isSameDay(aDate, bDate)) {
     return 0;
   }
@@ -228,4 +225,16 @@ export const sortFinnishDate = (a: string, b: string): number => {
   }
 
   return 1;
+};
+
+export const sortFinnishDate = (a: string, b: string): number => {
+  const aDate = parse(a, 'dd.MM.yyyy', new Date());
+  const bDate = parse(b, 'dd.MM.yyyy', new Date());
+  return compareDates(aDate, bDate);
+};
+
+export const sortFinnishDateTime = (a: string, b: string): number => {
+  const aDate = parse(a, 'dd.MM.yyyy. HH:mm', new Date());
+  const bDate = parse(b, 'dd.MM.yyyy. HH:mm', new Date());
+  return compareDates(aDate, bDate);
 };

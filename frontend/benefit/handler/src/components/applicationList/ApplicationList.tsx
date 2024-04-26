@@ -14,6 +14,7 @@ import { $Link } from 'shared/components/table/Table.sc';
 import {
   convertToUIDateFormat,
   sortFinnishDate,
+  sortFinnishDateTime,
 } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
@@ -129,7 +130,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         headerName: getHeader('modifiedAt'),
         key: 'modifiedAt',
         isSortable: true,
-        customSortCompareFunction: sortFinnishDate,
+        customSortCompareFunction: sortFinnishDateTime,
       });
     }
 

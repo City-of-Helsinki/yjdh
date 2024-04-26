@@ -216,7 +216,7 @@ export const PAY_SUBSIDIES_OVERRIDE = {
   startDate: null,
   endDate: null,
   paySubsidyPercent: PAY_SUBSIDY_OPTIONS[0],
-  workTimePercent: 100,
+  workTimePercent: 65,
   disabilityOrIllness: false,
   durationInMonthsRounded: '',
 };

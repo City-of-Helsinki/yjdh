@@ -16,6 +16,7 @@ import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { Option } from 'shared/components/forms/fields/types';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import Modal from 'shared/components/modal/Modal';
 import $Notification from 'shared/components/notification/Notification.sc';
 import {
   convertToUIDateFormat,
@@ -74,10 +75,24 @@ const SalaryBenefitCalculatorView: React.FC<
   } = useCalculatorData(
     CALCULATION_TYPES.SALARY,
     formik,
-    setIsRecalculationRequired
+    setIsRecalculationRequired,
+    application
   );
 
   const eurosPerMonth = 'common:utility.eurosPerMonth';
+  const [isResetConfirmOpen, setIsResetConfirmOpen] = React.useState(false);
+
+  const onClear = (): void => {
+    setNewTrainingCompensation({
+      id: '',
+      monthlyAmount: '',
+      startDate: '',
+      endDate: '',
+    });
+    handleClear(true);
+    setIsResetConfirmOpen(false);
+  };
+
   return (
     <ReviewSection withMargin withBorder>
       <$GridCell $colSpan={11}>
@@ -642,9 +657,13 @@ const SalaryBenefitCalculatorView: React.FC<
         >
           {t(`${translationsBase}.calculate`)}
         </Button>
-        <Button onClick={handleClear} theme="coat" variant="secondary">
-          {isManualCalculator && t(`${translationsBase}.clear`)}
-          {!isManualCalculator && t(`${translationsBase}.reset`)}
+
+        <Button
+          onClick={() => setIsResetConfirmOpen(true)}
+          theme="coat"
+          variant="secondary"
+        >
+          {t(`${translationsBase}.clear`)}
         </Button>
       </$GridCell>
 
@@ -668,6 +687,20 @@ const SalaryBenefitCalculatorView: React.FC<
           data={application}
           isManualCalculator={isManualCalculator}
           isRecalculationRequired={isRecalculationRequired}
+        />
+      )}
+      {isResetConfirmOpen && (
+        <Modal
+          id="confirmResetCalculation"
+          isOpen={isResetConfirmOpen}
+          title={t(`${translationsBase}.confirmClear`)}
+          submitButtonLabel={t('common:utility.yes')}
+          cancelButtonLabel={t('common:utility.no')}
+          handleToggle={() => setIsResetConfirmOpen(false)}
+          handleSubmit={() => onClear()}
+          className=""
+          variant="danger"
+          theme={theme.components.modal.coat}
         />
       )}
     </ReviewSection>

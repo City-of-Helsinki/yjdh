@@ -225,3 +225,7 @@ export enum DECISION_TYPES {
   ACCEPTED = 'accepted_decision',
   DENIED = 'denied_decision',
 }
+
+export enum PAY_SUBSIDY_PERCENT {
+  DEFAULT = 65,
+}
