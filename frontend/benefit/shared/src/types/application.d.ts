@@ -296,6 +296,7 @@ export type Application = {
   alterations?: Array<ApplicationAlteration>;
   decisionProposalDraft?: DecisionProposalDraft;
   applicationOrigin?: APPLICATION_ORIGINS;
+  handler?: User;
 } & Step1 &
   Step2;
 

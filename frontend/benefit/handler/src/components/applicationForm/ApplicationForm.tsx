@@ -18,6 +18,10 @@ import {
 import theme from 'shared/styles/theme';
 
 import ApplicationHeader from '../applicationHeader/ApplicationHeader';
+import {
+  $ApplicationModify,
+  $ApplicationReviewLocked,
+} from '../applicationReview/ApplicationReview.sc';
 import ActionBarEdit from './actionBar/ActionBarEdit';
 import ActionBarNew from './actionBar/ActionBarNew';
 import { $MainHeading, $SpinnerContainer } from './ApplicationForm.sc';
@@ -56,6 +60,7 @@ const ApplicationForm: React.FC = () => {
     getConsentErrorText,
     handleConsentClick,
     initialApplication,
+    user,
   } = useApplicationForm();
 
   const { isFormActionEdit, isFormActionNew } = useApplicationFormContext();
@@ -102,12 +107,21 @@ const ApplicationForm: React.FC = () => {
       </$SpinnerContainer>
     );
   }
+  const isApplicationReadOnly =
+    application.handler && application?.handler.id !== user?.id;
 
   return (
-    <>
-      {isFormActionEdit && <ApplicationHeader data={application} />}
+    <$ApplicationModify>
+      {isFormActionEdit && (
+        <ApplicationHeader
+          data={application}
+          isApplicationReadOnly={isApplicationReadOnly}
+        />
+      )}
+      {isApplicationReadOnly && <$ApplicationReviewLocked />}
 
       <Container>
+        {isApplicationReadOnly}
         {isFormActionNew && (
           <>
             <$Grid>
@@ -240,7 +254,7 @@ const ApplicationForm: React.FC = () => {
           </Dialog>
         )}
       </Container>
-    </>
+    </$ApplicationModify>
   );
 };
 

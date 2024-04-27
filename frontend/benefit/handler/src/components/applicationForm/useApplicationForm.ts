@@ -11,6 +11,7 @@ import {
   StepStateType,
   useSteps,
 } from 'benefit/handler/hooks/useSteps';
+import useUserQuery from 'benefit/handler/hooks/useUserQuery';
 import {
   Application,
   ApplicationFields,
@@ -31,6 +32,7 @@ import { TFunction, useTranslation } from 'next-i18next';
 import React from 'react';
 import { BenefitAttachment } from 'shared/types/attachment';
 import { OptionType } from 'shared/types/common';
+import User from 'shared/types/user';
 import { invertBooleanArray } from 'shared/utils/array.utils';
 import { formatDate, parseDate } from 'shared/utils/date.utils';
 import { focusAndScroll } from 'shared/utils/dom.utils';
@@ -77,6 +79,7 @@ type ExtendedComponentProps = {
   getConsentErrorText: (consentIndex: number) => string;
   handleConsentClick: (consentIndex: number) => void;
   initialApplication: Application;
+  user: User;
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -92,7 +95,6 @@ export const useApplicationForm = (): ExtendedComponentProps => {
   const [isLoading, setIsLoading] = React.useState<boolean>(!!id);
   const { stepState, dispatchStep, activeStep } = useSteps(id);
   let organizationType = 'company';
-
   const { isFormActionNew, isFormActionEdit } = useApplicationFormContext();
 
   const [application, setApplication] = React.useState<Application>(
@@ -108,6 +110,7 @@ export const useApplicationForm = (): ExtendedComponentProps => {
 
   const { deMinimisAids, unfinishedDeMinimisAidRow } =
     React.useContext(DeMinimisContext);
+  const { data: user } = useUserQuery();
 
   React.useEffect(() => {
     if (id) {
@@ -388,5 +391,6 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     getConsentErrorText,
     handleConsentClick,
     initialApplication,
+    user,
   };
 };

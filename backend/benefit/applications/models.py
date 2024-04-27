@@ -396,6 +396,13 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     ahjo_case_id = models.CharField(max_length=64, null=True, blank=True)
     ahjo_case_guid = models.UUIDField(null=True, blank=True)
 
+    handler = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+
     @property
     def calculated_benefit_amount(self):
         if hasattr(self, "calculation"):

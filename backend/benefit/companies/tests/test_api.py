@@ -164,7 +164,6 @@ def test_get_company_from_yrtti(
     matcher = re.compile(re.escape(YRTTI_BASIC_INFO_PATH))
     requests_mock.post(matcher, json=DUMMY_YRTTI_RESPONSE)
     response = api_client.get(get_company_api_url(business_id))
-    print(response.data)
     assert response.status_code == 200
 
     company = Company.objects.get(business_id=business_id)

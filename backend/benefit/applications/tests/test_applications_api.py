@@ -2496,9 +2496,14 @@ def test_application_history_change_sets_for_handler(
             response = update_application(application_payload)
 
         changes = response.data["changes"]["handler"]
-        assert len(changes) == len(update_payloads)
 
         update_payloads.reverse()
+
+        # Add a row which gets inserted when application status changes to "handling"
+        user = get_client_user(handler_api_client)
+        update_payloads.append({"change_reason": None, "handler": str(user.id)})
+
+        assert len(changes) == len(update_payloads)
 
         # Assert that each field change exist in change sets
         for i, row in enumerate(update_payloads):
@@ -3106,6 +3111,18 @@ def test_application_alteration_delete_forbidden_another_company(
         reverse("v1:application-alteration-detail", kwargs={"pk": alteration.pk})
     )
     assert response.status_code == 403
+
+
+def test_application_handler_change(api_client, handler_api_client, application):
+    response = api_client.patch(
+        reverse("v1:handler-application-change-handler", kwargs={"pk": application.id}),
+    )
+    assert response.status_code == 403
+
+    response = handler_api_client.patch(
+        reverse("v1:handler-application-change-handler", kwargs={"pk": application.id}),
+    )
+    assert response.status_code == 200
 
 
 def _create_random_applications():

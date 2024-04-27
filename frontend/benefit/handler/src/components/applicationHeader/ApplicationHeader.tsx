@@ -1,7 +1,8 @@
 import StatusLabel from 'benefit/handler/components/statusLabel/StatusLabel';
+import useChangeHandlerMutation from 'benefit/handler/hooks/useChangeHandlerMutation';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
-import { IconLockOpen } from 'hds-react';
+import { Button, IconLockOpen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
@@ -13,7 +14,7 @@ import {
   setLocalStorageItem,
 } from 'shared/utils/localstorage.utils';
 
-import { $InfoNeededBar } from '../applicationReview/ApplicationReview.sc';
+import { $NoticeBar } from '../applicationReview/ApplicationReview.sc';
 import {
   $Background,
   $Col,
@@ -24,7 +25,10 @@ import {
   $Wrapper,
 } from './ApplicationHeader.sc';
 
-type ApplicationReviewProps = { data: Application };
+type ApplicationReviewProps = {
+  data: Application;
+  isApplicationReadOnly: boolean;
+};
 
 const toggleNewAhjoMode = (): void => {
   // eslint-disable-next-line no-alert
@@ -40,18 +44,27 @@ const toggleNewAhjoMode = (): void => {
   window.location.reload();
 };
 
-const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
+const ApplicationHeader: React.FC<ApplicationReviewProps> = ({
+  data,
+  isApplicationReadOnly,
+}) => {
   const { t } = useTranslation();
   const translationBase = 'common:applications.list.columns';
+
   const employeeName = getFullName(
     data.employee?.firstName,
     data.employee?.lastName
   );
 
   const handlerName = getFullName(
-    data.calculation?.handlerDetails?.firstName,
-    data.calculation?.handlerDetails?.lastName
+    data.handler?.firstName,
+    data.handler?.lastName
   );
+  const { mutate: changeHandler } = useChangeHandlerMutation();
+
+  const takeControl = (): void => {
+    changeHandler(data.id);
+  };
 
   if (!data.applicationNumber || data.status === APPLICATION_STATUSES.DRAFT) {
     return null;
@@ -115,14 +128,30 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
           </$InnerWrapper>
         </Container>
       </$Background>
+      {isApplicationReadOnly && (
+        <$NoticeBar>
+          {t(`common:review.notifications.handlerMismatch`, {
+            handler: `${data.handler?.firstName} ${data.handler?.lastName[0]}.`,
+          })}{' '}
+          <Button
+            variant="supplementary"
+            theme="coat"
+            size="small"
+            iconLeft={<IconLockOpen />}
+            onClick={() => takeControl()}
+          >
+            {t('common:review.actions.handle')}
+          </Button>
+        </$NoticeBar>
+      )}
 
       {data.status === APPLICATION_STATUSES.INFO_REQUIRED && (
-        <$InfoNeededBar>
-          {t(`common:review.fields.editEndDate`, {
+        <$NoticeBar>
+          {t(`common:review.notifications.editEndDate`, {
             date: convertToUIDateFormat(data.additionalInformationNeededBy),
           })}
           <IconLockOpen />
-        </$InfoNeededBar>
+        </$NoticeBar>
       )}
     </$Wrapper>
   );

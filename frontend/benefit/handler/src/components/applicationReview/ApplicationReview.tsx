@@ -20,7 +20,10 @@ import { useApplicationStepper } from '../../hooks/applicationHandling/useHandli
 import HandlingApplicationActions from './actions/handlingApplicationActions/HandlingApplicationActions';
 import HandlingApplicationActionsAhjo from './actions/handlingApplicationActions/HandlingApplicationActionsAhjo';
 import ReceivedApplicationActions from './actions/receivedApplicationActions/ReceivedApplicationActions';
-import { $ApplicationReview } from './ApplicationReview.sc';
+import {
+  $ApplicationReview,
+  $ApplicationReviewLocked,
+} from './ApplicationReview.sc';
 import ApplicationReviewStep1 from './handlingView/HandlingStep1';
 import ApplicationReviewStep2 from './handlingView/HandlingStep2';
 import ApplicationReviewStep3 from './handlingView/HandlingStep3';
@@ -29,7 +32,8 @@ import NotificationView from './notificationView/NotificationView';
 import { useApplicationReview } from './useApplicationReview';
 
 const ApplicationReview: React.FC = () => {
-  const { application, isLoading, t } = useApplicationReview();
+  const { application, isLoading, t, isApplicationReadOnly } =
+    useApplicationReview();
 
   const isNewAhjoMode = useDetermineAhjoMode();
 
@@ -83,33 +87,39 @@ const ApplicationReview: React.FC = () => {
   }
 
   return (
-    <$ApplicationReview>
-      <ApplicationHeader data={application} data-testid="application-header" />
+    <>
+      <ApplicationHeader
+        data={application}
+        isApplicationReadOnly={isApplicationReadOnly}
+        data-testid="application-header"
+      />
+      <$ApplicationReview>
+        {isApplicationReadOnly && <$ApplicationReviewLocked />}
+        {isNewAhjoMode &&
+          [
+            APPLICATION_STATUSES.HANDLING,
+            APPLICATION_STATUSES.INFO_REQUIRED,
+          ].includes(application.status) && (
+            <ApplicationStepper stepState={stepState} />
+          )}
 
-      {isNewAhjoMode &&
-        [
-          APPLICATION_STATUSES.HANDLING,
-          APPLICATION_STATUSES.INFO_REQUIRED,
-        ].includes(application.status) && (
-          <ApplicationStepper stepState={stepState} />
+        {stepState.activeStepIndex === 0 && (
+          <ApplicationReviewStep1
+            application={application}
+            setIsRecalculationRequired={setIsRecalculationRequired}
+            setCalculationErrors={setCalculationErrors}
+            calculationsErrors={calculationsErrors}
+            isRecalculationRequired={isRecalculationRequired}
+          />
         )}
 
-      {stepState.activeStepIndex === 0 && (
-        <ApplicationReviewStep1
-          application={application}
-          setIsRecalculationRequired={setIsRecalculationRequired}
-          setCalculationErrors={setCalculationErrors}
-          calculationsErrors={calculationsErrors}
-          isRecalculationRequired={isRecalculationRequired}
-        />
-      )}
-
-      {stepState.activeStepIndex === 1 && (
-        <ApplicationReviewStep2 application={application} />
-      )}
-      {stepState.activeStepIndex === 2 && (
-        <ApplicationReviewStep3 application={application} />
-      )}
+        {stepState.activeStepIndex === 1 && (
+          <ApplicationReviewStep2 application={application} />
+        )}
+        {stepState.activeStepIndex === 2 && (
+          <ApplicationReviewStep3 application={application} />
+        )}
+      </$ApplicationReview>
 
       <StickyActionBar>
         {application.status === APPLICATION_STATUSES.RECEIVED && (
@@ -138,6 +148,7 @@ const ApplicationReview: React.FC = () => {
               application={application}
               stepperDispatch={stepperDispatch}
               stepState={stepState}
+              isApplicationReadOnly={isApplicationReadOnly}
               data-testid="handling-application-actions"
               isRecalculationRequired={isRecalculationRequired}
               isCalculationsErrors={!!calculationsErrors}
@@ -145,7 +156,7 @@ const ApplicationReview: React.FC = () => {
           )}
       </StickyActionBar>
       <$StickyBarSpacing />
-    </$ApplicationReview>
+    </>
   );
 };
 

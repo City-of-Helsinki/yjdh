@@ -15,10 +15,30 @@ type TabButtonProps = {
   active?: boolean;
 };
 
-export const $ApplicationReview = styled.div`
+export const $ApplicationModify = styled.div`
+  z-index: 2;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  flex-direction: column;
+`;
+
+export const $ApplicationReview = styled($ApplicationModify)`
+  padding: ${(props) => props.theme.spacing.xl2} 0 0;
   hr {
     border: 1px solid ${(props) => props.theme.colors.silver};
   }
+`;
+
+export const $ApplicationReviewLocked = styled.div`
+  position: absolute;
+  z-index: 100;
+  width: 100%;
+  height: calc(100% + ${(props) => props.theme.spacing.xl});
+  top: calc(-1 * ${(props) => props.theme.spacing.xl});
+  cursor: not-allowed;
+  background: rgba(0, 0, 0, 0.175);
 `;
 
 export const $MainHeader = styled.h1`
@@ -121,8 +141,13 @@ export const $Highlight = styled.div`
   margin: ${(props) => props.theme.spacing.xs};
 `;
 
-export const $InfoNeededBar = styled.div`
-  margin-bottom: ${(props) => props.theme.spacing.m};
+export const $NoticeBar = styled.div`
+  position: relative;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
   padding: ${(props) => props.theme.spacing.s};
   max-width: 100%;
   background-color: ${(props) => props.theme.colors.summerMediumLight};
