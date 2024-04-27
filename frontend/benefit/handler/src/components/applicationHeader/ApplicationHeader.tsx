@@ -14,7 +14,7 @@ import {
   setLocalStorageItem,
 } from 'shared/utils/localstorage.utils';
 
-import { $InfoNeededBar } from '../applicationReview/ApplicationReview.sc';
+import { $NoticeBar } from '../applicationReview/ApplicationReview.sc';
 import {
   $Background,
   $Col,
@@ -129,7 +129,7 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({
         </Container>
       </$Background>
       {isApplicationReadOnly && (
-        <$InfoNeededBar>
+        <$NoticeBar>
           {t(`common:review.notifications.handlerMismatch`, {
             handler: `${data.handler?.firstName} ${data.handler?.lastName[0]}.`,
           })}{' '}
@@ -142,16 +142,16 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({
           >
             {t('common:review.actions.handle')}
           </Button>
-        </$InfoNeededBar>
+        </$NoticeBar>
       )}
 
       {data.status === APPLICATION_STATUSES.INFO_REQUIRED && (
-        <$InfoNeededBar>
+        <$NoticeBar>
           {t(`common:review.notifications.editEndDate`, {
             date: convertToUIDateFormat(data.additionalInformationNeededBy),
           })}
           <IconLockOpen />
-        </$InfoNeededBar>
+        </$NoticeBar>
       )}
     </$Wrapper>
   );

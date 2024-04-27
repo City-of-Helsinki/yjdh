@@ -93,7 +93,7 @@ const ApplicationReview: React.FC = () => {
         isApplicationReadOnly={isApplicationReadOnly}
         data-testid="application-header"
       />
-      <$ApplicationReview editDisabled={isApplicationReadOnly}>
+      <$ApplicationReview>
         {isApplicationReadOnly && <$ApplicationReviewLocked />}
         {isNewAhjoMode &&
           [
