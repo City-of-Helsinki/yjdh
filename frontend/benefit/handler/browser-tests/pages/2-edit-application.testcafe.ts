@@ -24,6 +24,9 @@ test('Open form and edit fields, then submit', async (t: TestController) => {
   const mainIngress = new MainIngress(fi.mainIngress.heading, 'h1');
   await mainIngress.isLoaded();
 
+  // Open application list in "received" tab
+  await t.click('#tab-2-button');
+
   // Open already created application in index page
   const applicationLink = Selector('td')
     .withText(
