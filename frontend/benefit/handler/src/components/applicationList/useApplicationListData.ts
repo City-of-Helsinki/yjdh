@@ -36,6 +36,8 @@ const useApplicationListData = (
         status: applicationStatus,
         unread_messages_count,
         batch,
+        talpa_status,
+        ahjo_case_id,
         application_origin: applicationOrigin,
       } = application;
 
@@ -60,6 +62,8 @@ const useApplicationListData = (
         unreadMessagesCount: unread_messages_count ?? 0,
         batch: batch ?? null,
         applicationOrigin,
+        talpaStatus: talpa_status,
+        ahjoCaseId: ahjo_case_id,
       };
     }
   );

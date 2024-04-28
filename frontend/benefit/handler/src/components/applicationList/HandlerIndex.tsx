@@ -1,75 +1,82 @@
-import ApplicationList from 'benefit/handler/components/applicationList/ApplicationList';
-import ApplicationsHandled from 'benefit/handler/components/batchProcessing/ApplicationsHandled';
-import MainIngress from 'benefit/handler/components/mainIngress/MainIngress';
-import AppContext from 'benefit/handler/context/AppContext';
+import { ALL_APPLICATION_STATUSES } from 'benefit/handler/constants';
 import FrontPageProvider from 'benefit/handler/context/FrontPageProvider';
-import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
 import { LoadingSpinner, Tabs } from 'hds-react';
-import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import * as React from 'react';
-import { useEffect } from 'react';
 import Container from 'shared/components/container/Container';
-import theme from 'shared/styles/theme';
+import { useTheme } from 'styled-components';
 
-import HandlerIndex from '../components/applicationList/HandlerIndex';
-import { useApplicationList } from '../components/applicationList/useApplicationList';
-import { useApplicationListData } from '../components/applicationList/useApplicationListData';
-import { $BackgroundWrapper } from '../components/layout/Layout';
-import { ALL_APPLICATION_STATUSES, APPLICATION_LIST_TABS } from '../constants';
+import { $BackgroundWrapper } from '../layout/Layout';
+import MainIngress from '../mainIngress/MainIngress';
+import ApplicationList from './ApplicationList';
+import { useApplicationList } from './useApplicationList';
 
-const ApplicantIndex: NextPage = () => {
-  const {
-    setIsFooterVisible,
-    setIsNavigationVisible,
-    setLayoutBackgroundColor,
-    layoutBackgroundColor,
-  } = React.useContext(AppContext);
+export interface ApplicationListProps {
+  layoutBackgroundColor: string;
+  list?: ApplicationListItemData[];
+  isLoading: boolean;
+}
+const translationBase = 'common:applications.list.headings';
 
-  // configure page specific settings
-  useEffect(() => {
-    setIsNavigationVisible(true);
-    setIsFooterVisible(true);
-    setLayoutBackgroundColor(theme.colors.silverLight);
-    return () => {
-      setIsNavigationVisible(false);
-      setLayoutBackgroundColor(theme.colors.silver);
-    };
-  }, [setIsFooterVisible, setIsNavigationVisible, setLayoutBackgroundColor]);
-
-  const translationBase = 'common:applications.list.headings';
-
-  const { list, shouldShowSkeleton } = useApplicationListData(
-    ALL_APPLICATION_STATUSES,
-    true
-  );
+const HandlerIndex: React.FC<ApplicationListProps> = ({
+  // heading,
+  // status,
+  layoutBackgroundColor,
+  list = [],
+  isLoading = true,
+}) => {
   const { t } = useApplicationList();
-  const isNewAhjoMode = useDetermineAhjoMode();
+
+  const theme = useTheme();
 
   const getHeadingTranslation = (
-    headingStatus: APPLICATION_STATUSES | 'all'
+    headingStatus: APPLICATION_STATUSES | 'all' | 'pending' | 'inPayment'
   ): string => t(`${translationBase}.${headingStatus}`);
 
-  const getTabCount = (statuses: APPLICATION_STATUSES[]): number =>
-    list.filter((app: ApplicationListItemData) => statuses.includes(app.status))
-      .length;
+  const getTabCountPending = (): number =>
+    list.filter(
+      (app: ApplicationListItemData) =>
+        app.talpaStatus === 'not_sent_to_talpa' &&
+        app.ahjoCaseId &&
+        [APPLICATION_STATUSES.ACCEPTED, APPLICATION_STATUSES.REJECTED].includes(
+          app.status
+        )
+    ).length;
+
+  const getTabCountInPayment = (): number =>
+    list.filter(
+      (app: ApplicationListItemData) =>
+        app.talpaStatus !== 'not_sent_to_talpa' &&
+        [APPLICATION_STATUSES.ACCEPTED].includes(app.status)
+    ).length;
+
+  const getTabCount = (
+    statuses: APPLICATION_STATUSES[],
+    handled?: 'inPayment' | 'pending'
+  ): number => {
+    if (handled === 'pending') return getTabCountPending();
+    if (handled === 'inPayment') return getTabCountInPayment();
+    return list.filter((app: ApplicationListItemData) =>
+      statuses.includes(app.status)
+    ).length;
+  };
 
   const getListHeadingByStatus = (
-    headingStatus: APPLICATION_STATUSES | 'all',
+    headingStatus: APPLICATION_STATUSES | 'all' | 'pending' | 'inPayment',
     statuses: APPLICATION_STATUSES[]
   ): string =>
     list && list?.length > 0
-      ? `${getHeadingTranslation(headingStatus)} (${getTabCount(statuses)})`
+      ? `${getHeadingTranslation(headingStatus)} (${getTabCount(
+          statuses,
+          headingStatus as 'inPayment' | 'pending'
+        )})`
       : getHeadingTranslation(headingStatus);
 
   const router = useRouter();
   const { tab } = router.query;
   const [activeTab, setActiveTab] = React.useState<number | null>(null);
-  const updateTabToUrl = (tabNumber: APPLICATION_LIST_TABS): void =>
-    window.history.pushState({ tab }, '', `/?tab=${tabNumber}`);
 
   React.useEffect(() => {
     if (!router.isReady) return;
@@ -84,65 +91,48 @@ const ApplicantIndex: NextPage = () => {
     );
   }
 
-  return isNewAhjoMode ? (
-    <HandlerIndex
-      list={list}
-      isLoading={shouldShowSkeleton}
-      layoutBackgroundColor={layoutBackgroundColor}
-    />
-  ) : (
+  return (
     <FrontPageProvider>
       <$BackgroundWrapper backgroundColor={layoutBackgroundColor}>
         <MainIngress />
         <Container>
           <Tabs theme={theme.components.tabs} initiallyActiveTab={activeTab}>
             <Tabs.TabList style={{ marginBottom: 'var(--spacing-m)' }}>
-              <Tabs.Tab
-                onClick={() => updateTabToUrl(APPLICATION_LIST_TABS.ALL)}
-              >
+              <Tabs.Tab>
                 {getListHeadingByStatus('all', ALL_APPLICATION_STATUSES)}
               </Tabs.Tab>
-              <Tabs.Tab
-                onClick={() => updateTabToUrl(APPLICATION_LIST_TABS.DRAFT)}
-              >
+              <Tabs.Tab>
                 {getListHeadingByStatus(APPLICATION_STATUSES.DRAFT, [
                   APPLICATION_STATUSES.DRAFT,
                 ])}
               </Tabs.Tab>
-              <Tabs.Tab
-                onClick={() => updateTabToUrl(APPLICATION_LIST_TABS.RECEIVED)}
-              >
+              <Tabs.Tab>
                 {getListHeadingByStatus(APPLICATION_STATUSES.RECEIVED, [
                   APPLICATION_STATUSES.RECEIVED,
                 ])}
               </Tabs.Tab>
-              <Tabs.Tab
-                onClick={() => updateTabToUrl(APPLICATION_LIST_TABS.HANDLING)}
-              >
+              <Tabs.Tab>
                 {getListHeadingByStatus(APPLICATION_STATUSES.HANDLING, [
                   APPLICATION_STATUSES.HANDLING,
                   APPLICATION_STATUSES.INFO_REQUIRED,
                 ])}
               </Tabs.Tab>
-              <Tabs.Tab
-                onClick={() => updateTabToUrl(APPLICATION_LIST_TABS.ACCEPTED)}
-              >
-                {getListHeadingByStatus(APPLICATION_STATUSES.ACCEPTED, [
+              <Tabs.Tab>
+                {getListHeadingByStatus('pending', [
                   APPLICATION_STATUSES.ACCEPTED,
+                  APPLICATION_STATUSES.REJECTED,
                 ])}
               </Tabs.Tab>
-              <Tabs.Tab
-                onClick={() => updateTabToUrl(APPLICATION_LIST_TABS.REJECTED)}
-              >
-                {getListHeadingByStatus(APPLICATION_STATUSES.REJECTED, [
-                  APPLICATION_STATUSES.REJECTED,
+              <Tabs.Tab>
+                {getListHeadingByStatus('inPayment', [
+                  APPLICATION_STATUSES.ACCEPTED,
                 ])}
               </Tabs.Tab>
             </Tabs.TabList>
 
             <Tabs.TabPanel>
               <ApplicationList
-                isLoading={shouldShowSkeleton}
+                isLoading={isLoading}
                 list={list}
                 heading={t(`${translationBase}.all`)}
                 status={ALL_APPLICATION_STATUSES}
@@ -151,7 +141,7 @@ const ApplicantIndex: NextPage = () => {
 
             <Tabs.TabPanel>
               <ApplicationList
-                isLoading={shouldShowSkeleton}
+                isLoading={isLoading}
                 list={list.filter((app) =>
                   [APPLICATION_STATUSES.DRAFT].includes(app.status)
                 )}
@@ -162,7 +152,7 @@ const ApplicantIndex: NextPage = () => {
 
             <Tabs.TabPanel>
               <ApplicationList
-                isLoading={shouldShowSkeleton}
+                isLoading={isLoading}
                 list={list.filter((app) =>
                   [APPLICATION_STATUSES.RECEIVED].includes(app.status)
                 )}
@@ -173,7 +163,7 @@ const ApplicantIndex: NextPage = () => {
 
             <Tabs.TabPanel>
               <ApplicationList
-                isLoading={shouldShowSkeleton}
+                isLoading={isLoading}
                 list={list.filter((app) =>
                   [APPLICATION_STATUSES.HANDLING].includes(app.status)
                 )}
@@ -181,7 +171,7 @@ const ApplicantIndex: NextPage = () => {
                 status={[APPLICATION_STATUSES.HANDLING]}
               />
               <ApplicationList
-                isLoading={shouldShowSkeleton}
+                isLoading={isLoading}
                 list={list.filter((app) =>
                   [APPLICATION_STATUSES.INFO_REQUIRED].includes(app.status)
                 )}
@@ -191,16 +181,35 @@ const ApplicantIndex: NextPage = () => {
             </Tabs.TabPanel>
 
             <Tabs.TabPanel>
-              <ApplicationsHandled
-                status={APPLICATION_STATUSES.ACCEPTED}
-                excludeBatched
+              <ApplicationList
+                isLoading={isLoading}
+                list={list.filter(
+                  (app) =>
+                    [
+                      APPLICATION_STATUSES.ACCEPTED,
+                      APPLICATION_STATUSES.REJECTED,
+                    ].includes(app.status) &&
+                    app.talpaStatus === 'not_sent_to_talpa' &&
+                    app.ahjoCaseId
+                )}
+                heading={t(`${translationBase}.pending`)}
+                status={[
+                  APPLICATION_STATUSES.ACCEPTED,
+                  APPLICATION_STATUSES.REJECTED,
+                ]}
               />
             </Tabs.TabPanel>
 
             <Tabs.TabPanel>
-              <ApplicationsHandled
-                status={APPLICATION_STATUSES.REJECTED}
-                excludeBatched
+              <ApplicationList
+                isLoading={isLoading}
+                list={list.filter(
+                  (app) =>
+                    [APPLICATION_STATUSES.ACCEPTED].includes(app.status) &&
+                    app.talpaStatus !== 'not_sent_to_talpa'
+                )}
+                heading={t(`${translationBase}.inPayment`)}
+                status={[APPLICATION_STATUSES.ACCEPTED]}
               />
             </Tabs.TabPanel>
           </Tabs>
@@ -210,10 +219,4 @@ const ApplicantIndex: NextPage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => ({
-  props: {
-    ...(await serverSideTranslations(locale || '', ['common'])),
-  },
-});
-
-export default ApplicantIndex;
+export default HandlerIndex;

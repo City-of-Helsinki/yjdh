@@ -1,5 +1,3 @@
-import 'react-loading-skeleton/dist/skeleton.css';
-
 import { ALL_APPLICATION_STATUSES, ROUTES } from 'benefit/handler/constants';
 import {
   ApplicationListTableColumns,
@@ -18,7 +16,12 @@ import {
 } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
-import { $CellContent, $EmptyHeading, $Heading } from './ApplicationList.sc';
+import {
+  $CellContent,
+  $EmptyHeading,
+  $Heading,
+  $TagWrapper,
+} from './ApplicationList.sc';
 import { useApplicationList } from './useApplicationList';
 
 export interface ApplicationListProps {
@@ -64,8 +67,58 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         status.includes(APPLICATION_STATUSES.HANDLING) && !isAllStatuses,
       infoRequired:
         status.includes(APPLICATION_STATUSES.INFO_REQUIRED) && !isAllStatuses,
+      accepted:
+        status.includes(APPLICATION_STATUSES.ACCEPTED) && !isAllStatuses,
+      rejected:
+        status.includes(APPLICATION_STATUSES.REJECTED) && !isAllStatuses,
     }),
     [isAllStatuses, status]
+  );
+
+  const getTagStyleForStatus = React.useMemo(
+    () =>
+      (
+        appStatus: APPLICATION_STATUSES
+      ): { background: string; text: string } => {
+        let background: string;
+        let text: string = theme.colors.black;
+        switch (appStatus) {
+          case APPLICATION_STATUSES.DRAFT:
+            background = theme.colors.black50;
+            text = theme.colors.white;
+            break;
+
+          case APPLICATION_STATUSES.INFO_REQUIRED:
+            background = theme.colors.alertLight;
+            break;
+
+          case APPLICATION_STATUSES.RECEIVED:
+            background = theme.colors.black20;
+            break;
+
+          case APPLICATION_STATUSES.ACCEPTED:
+            background = theme.colors.tramLight;
+            break;
+
+          case APPLICATION_STATUSES.REJECTED:
+            background = theme.colors.brickMediumLight;
+            break;
+
+          case APPLICATION_STATUSES.CANCELLED:
+            background = theme.colors.alertDark;
+            break;
+
+          case APPLICATION_STATUSES.HANDLING:
+            background = theme.colors.infoLight;
+            break;
+
+          default:
+            background = theme.colors.black40;
+            break;
+        }
+        return { background, text };
+      },
+    [theme.colors]
   );
 
   const columns = React.useMemo(() => {
@@ -134,12 +187,16 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       });
     }
 
-    if (isAllStatuses) {
+    if (
+      isVisibleOnlyForStatus.accepted ||
+      isVisibleOnlyForStatus.rejected ||
+      isAllStatuses
+    ) {
       cols.push({
         transform: ({
           status: applicationStatus,
         }: ApplicationListTableTransforms) => (
-          <div>
+          <$TagWrapper $colors={getTagStyleForStatus(applicationStatus)}>
             <Tag>
               {t(
                 `common:applications.list.columns.applicationStatuses.${String(
@@ -147,7 +204,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
                 )}`
               )}
             </Tag>
-          </div>
+          </$TagWrapper>
         ),
         headerName: getHeader('applicationStatus'),
         key: 'status',
@@ -219,7 +276,15 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     });
 
     return cols.filter(Boolean);
-  }, [t, getHeader, status, theme, isAllStatuses, isVisibleOnlyForStatus]);
+  }, [
+    t,
+    getHeader,
+    status,
+    theme,
+    isAllStatuses,
+    isVisibleOnlyForStatus,
+    getTagStyleForStatus,
+  ]);
 
   if (isLoading) {
     return (
@@ -240,6 +305,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   }
 
   const statusAsString = isAllStatuses ? 'all' : status.join(',');
+
   return (
     <div data-testid={`application-list-${statusAsString}`}>
       {list.length > 0 ? (

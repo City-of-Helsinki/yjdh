@@ -446,6 +446,8 @@ export type ApplicationData = {
   action?: APPLICATION_ACTIONS;
   company_contact_person_first_name: string;
   company_contact_person_last_name: string;
+  talpa_status: TALPA_STATUSES;
+  ahjo_case_id: string;
 };
 
 export type EmployeeData = {
@@ -538,6 +540,8 @@ export type ApplicationListItemData = {
   applicationOrigin?: APPLICATION_ORIGINS;
   validUntil?: string;
   contactPersonName?: string;
+  talpaStatus?: string;
+  ahjoCaseId?: string;
 };
 
 export type TextProp = 'textFi' | 'textEn' | 'textSv';

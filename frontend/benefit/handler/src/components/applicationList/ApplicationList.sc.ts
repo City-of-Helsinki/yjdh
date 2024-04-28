@@ -20,3 +20,17 @@ export const $CellContent = styled.div`
   align-items: center;
   background-color: ${(props) => props.theme.colors.white};
 `;
+
+type TagWrapperProps = {
+  $colors: {
+    background: string;
+    text: string;
+  };
+};
+
+export const $TagWrapper = styled.div<TagWrapperProps>`
+  #hds-tag {
+    background: ${(props) => props.$colors.background};
+    color: ${(props) => props.$colors.text};
+  }
+`;
