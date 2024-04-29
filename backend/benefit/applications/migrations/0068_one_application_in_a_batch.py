@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('applications', '0066_alter_ahjostatus_status'),
+        ('applications', '0067_add_handler_to_application'),
     ]
 
     operations = [
