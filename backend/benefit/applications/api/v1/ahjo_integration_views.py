@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime, timezone
 
+from django.db import transaction
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
@@ -16,8 +17,9 @@ from applications.enums import (
     AhjoCallBackStatus,
     AhjoRequestType,
     AhjoStatus as AhjoStatusEnum,
+    ApplicationBatchStatus,
 )
-from applications.models import AhjoStatus, Application, Attachment
+from applications.models import AhjoStatus, Application, ApplicationBatch, Attachment
 from common.permissions import SafeListPermission
 from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation
@@ -133,6 +135,7 @@ class AhjoCallbackView(APIView):
         elif callback_data["message"] == AhjoCallBackStatus.FAILURE:
             return self.handle_failure_callback(application, callback_data)
 
+    @transaction.atomic
     def handle_success_callback(
         self,
         request,
@@ -141,41 +144,52 @@ class AhjoCallbackView(APIView):
         request_type: AhjoRequestType,
     ) -> Response:
         try:
-            if request_type == AhjoRequestType.OPEN_CASE:
-                self._handle_open_case_success(application, callback_data)
-                ahjo_status = AhjoStatusEnum.CASE_OPENED
-                info = f"Application ahjo_case_guid and ahjo_case_id were updated by Ahjo \
-                    with request id: {callback_data['requestId']}"
-            elif request_type == AhjoRequestType.DELETE_APPLICATION:
-                self._handle_delete_callback()
-                ahjo_status = AhjoStatusEnum.DELETE_REQUEST_RECEIVED
-                info = f"Application was marked for cancellation in Ahjo with request id: {callback_data['requestId']}"
-            elif request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
-                ahjo_status = AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED
-                info = "Decision proposal was sent to Ahjo"
-            elif request_type == AhjoRequestType.UPDATE_APPLICATION:
-                self._handle_update_or_add_records_success(application, callback_data)
-                ahjo_status = AhjoStatusEnum.UPDATE_REQUEST_RECEIVED
-                info = f"Updated application records were sent to Ahjo with request id: {callback_data['requestId']}"
-            elif request_type == AhjoRequestType.ADD_RECORDS:
-                self._handle_update_or_add_records_success(application, callback_data)
-                ahjo_status = AhjoStatusEnum.NEW_RECORDS_RECEIVED
-                info = f"A attachments were sent as records to Ahjo with request id: {callback_data['requestId']}"
-            else:
-                raise AhjoCallbackError(
-                    f"Unknown request type {request_type} in the Ahjo callback"
+            with transaction.atomic():
+                if request_type == AhjoRequestType.OPEN_CASE:
+                    self._handle_open_case_success(application, callback_data)
+                    ahjo_status = AhjoStatusEnum.CASE_OPENED
+                    info = f"Application ahjo_case_guid and ahjo_case_id were updated by Ahjo \
+                        with request id: {callback_data['requestId']}"
+                elif request_type == AhjoRequestType.DELETE_APPLICATION:
+                    self._handle_delete_callback()
+                    ahjo_status = AhjoStatusEnum.DELETE_REQUEST_RECEIVED
+                    info = f"Application was marked for cancellation \
+in Ahjo with request id: {callback_data['requestId']}"
+                elif request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
+                    self.handle_decision_proposal_success(application)
+                    ahjo_status = AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED
+                    info = "Decision proposal was sent to Ahjo"
+                elif request_type == AhjoRequestType.UPDATE_APPLICATION:
+                    self._handle_update_or_add_records_success(
+                        application, callback_data
+                    )
+                    ahjo_status = AhjoStatusEnum.UPDATE_REQUEST_RECEIVED
+                    info = f"Updated application records were sent to Ahjo \
+with request id: {callback_data['requestId']}"
+                elif request_type == AhjoRequestType.ADD_RECORDS:
+                    self._handle_update_or_add_records_success(
+                        application, callback_data
+                    )
+                    ahjo_status = AhjoStatusEnum.NEW_RECORDS_RECEIVED
+                    info = f"A attachments were sent as records to Ahjo \
+with request id: {callback_data['requestId']}"
+                else:
+                    raise AhjoCallbackError(
+                        f"Unknown request type {request_type} in the Ahjo callback"
+                    )
+                AhjoStatus.objects.create(application=application, status=ahjo_status)
+
+                audit_logging.log(
+                    request.user,
+                    "",
+                    Operation.UPDATE,
+                    application,
+                    additional_information=info,
                 )
-            AhjoStatus.objects.create(application=application, status=ahjo_status)
 
-            audit_logging.log(
-                request.user,
-                "",
-                Operation.UPDATE,
-                application,
-                additional_information=info,
-            )
-
-            return Response({"message": "Callback received"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"message": "Callback received"}, status=status.HTTP_200_OK
+                )
         except AhjoCallbackError as e:
             return Response(
                 {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -196,8 +210,12 @@ class AhjoCallbackView(APIView):
         cb_records = callback_data.get("records", [])
         self._save_version_series_id(application, cb_records)
 
+    @transaction.atomic
     def _handle_open_case_success(self, application: Application, callback_data: dict):
-        """Update the application with the case id (diaarinumero) and case guid from the Ahjo callback data."""
+        """Update the application with the case id (diaarinumero) and case guid from the Ahjo callback data.
+        If the application has attachments with a matching hash value, save the version series id for each attachment.
+        Create a new single-application ApplicationBatch for the application and set the batch_id for the application.
+        """
         if callback_data["caseGuid"]:
             application.ahjo_case_guid = callback_data["caseGuid"]
         if callback_data["caseId"]:
@@ -205,6 +223,13 @@ class AhjoCallbackView(APIView):
         cb_records = callback_data.get("records", [])
 
         self._save_version_series_id(application, cb_records)
+
+        handler = application.calculation.handler
+
+        batch = ApplicationBatch.objects.create(
+            handler=handler, auto_generated_by_ahjo=True
+        )
+        application.batch_id = batch.id
 
         application.save()
         return application
@@ -230,9 +255,11 @@ class AhjoCallbackView(APIView):
                 attachment.ahjo_version_series_id = cb_record.get("versionSeriesId")
                 attachment.save()
 
-    def handle_decision_proposal_success(self):
-        # do anything that needs to be done when Ahjo accepts a decision proposal
-        pass
+    def handle_decision_proposal_success(self, application: Application):
+        # do anything that needs to be done when Ahjo has received a decision proposal request
+        batch = application.batch
+        batch.status = ApplicationBatchStatus.AWAITING_AHJO_DECISION
+        batch.save()
 
     def _log_failure_details(self, application, callback_data):
         LOGGER.error(

@@ -17,11 +17,18 @@ from applications.enums import (
     AhjoCallBackStatus,
     AhjoRequestType,
     AhjoStatus as AhjoStatusEnum,
+    ApplicationBatchStatus,
     ApplicationStatus,
     AttachmentType,
     BenefitType,
 )
-from applications.models import AhjoDecisionText, AhjoStatus, Application, Attachment
+from applications.models import (
+    AhjoDecisionText,
+    AhjoStatus,
+    Application,
+    ApplicationBatch,
+    Attachment,
+)
 from applications.services.ahjo_integration import (
     ACCEPTED_TITLE,
     export_application_batch,
@@ -429,6 +436,10 @@ def ahjo_callback_payload():
             AhjoRequestType.DELETE_APPLICATION,
             AhjoStatusEnum.DELETE_REQUEST_RECEIVED,
         ),
+        (
+            AhjoRequestType.SEND_DECISION_PROPOSAL,
+            AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
+        ),
     ],
 )
 @pytest.mark.django_db
@@ -452,6 +463,11 @@ def test_ahjo_callback_success(
     ahjo_callback_payload["message"] = AhjoCallBackStatus.SUCCESS
     ahjo_callback_payload["records"][0]["hashValue"] = attachment_hash_value
 
+    if request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
+        batch = ApplicationBatch.objects.create()
+        decided_application.batch_id = batch.id
+        decided_application.save()
+
     url = _get_callback_url(request_type, decided_application)
     response = ahjo_client.post(url, **auth_headers, data=ahjo_callback_payload)
 
@@ -468,11 +484,19 @@ def test_ahjo_callback_success(
             attachment.ahjo_version_series_id
             == ahjo_callback_payload["records"][0]["versionSeriesId"]
         )
+        batch = decided_application.batch
+        assert batch.auto_generated_by_ahjo
+        assert batch.handler == decided_application.calculation.handler
+        assert batch.status == ApplicationBatchStatus.DRAFT
     if request_type == AhjoRequestType.UPDATE_APPLICATION:
         assert (
             attachment.ahjo_version_series_id
             == ahjo_callback_payload["records"][0]["versionSeriesId"]
         )
+    if request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
+        batch = decided_application.batch
+        assert batch.status == ApplicationBatchStatus.AWAITING_AHJO_DECISION
+
     assert decided_application.ahjo_status.latest().status == ahjo_status
 
 
