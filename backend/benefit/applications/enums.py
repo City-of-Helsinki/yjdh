@@ -173,6 +173,7 @@ class AhjoStatus(models.TextChoices):
     DECISION_PROPOSAL_REJECTED = "decision_proposal_rejected", _(
         "Decision proposal rejected"
     )
+    SCHEDULED_FOR_DELETION = "scheduled_for_deletion", _("Scheduled for deletion")
     DELETE_REQUEST_SENT = "delete_request_sent", _("Delete request sent")
     DELETE_REQUEST_RECEIVED = "delete_request_received", _("Delete request received")
     NEW_RECORDS_REQUEST_SENT = "new_record_request_sent", _("New record request sent")

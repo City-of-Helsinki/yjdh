@@ -20,7 +20,7 @@ from applications.enums import (
     ApplicationBatchStatus,
 )
 from applications.models import AhjoStatus, Application, ApplicationBatch, Attachment
-from common.permissions import SafeListPermission
+from common.permissions import BFIsHandler, SafeListPermission
 from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation
 
@@ -29,6 +29,47 @@ LOGGER = logging.getLogger(__name__)
 
 class AhjoCallbackError(Exception):
     pass
+
+
+class AhjoApplicationView(APIView):
+    permission_classes = [BFIsHandler]
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="uuid",
+                description="UUID of the application",
+                required=True,
+                type=OpenApiTypes.UUID,
+                location=OpenApiParameter.PATH,
+            )
+        ],
+        description="Sends a delete / cancel case request to Ahjo for given application.",
+    )
+    def delete(self, request, *args, **kwargs):
+        application_id = self.kwargs["uuid"]
+
+        application = get_object_or_404(Application, pk=application_id)
+
+        if (
+            application.ahjo_status.latest().status
+            == AhjoStatusEnum.DECISION_PROPOSAL_SENT
+        ):
+            return Response(
+                {
+                    "message": "Cannot delete because a decision proposal has been sent to Ahjo"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        AhjoStatus.objects.create(
+            application=application, status=AhjoStatusEnum.SCHEDULED_FOR_DELETION
+        )
+
+        return Response(
+            {"message": "Application scheduled for cancellation in Ahjo"},
+            status=status.HTTP_200_OK,
+        )
 
 
 class AhjoAttachmentView(APIView):
