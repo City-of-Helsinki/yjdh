@@ -423,7 +423,9 @@
     "decision": {
       "description": {
         "accepted": "The application has been approved and the Helsinki benefit has been granted for the period of {{dateRangeStart}} - {{dateRangeEnd}}",
-        "rejected": "The application was rejected. No Helsinki benefit is granted."
+        "rejected": "The application was rejected. No Helsinki benefit is granted.",
+        "handling": "The application is being processed.",
+        "cancelled": "The application has been cancelled."
       },
       "headings": {
         "mainHeading": "Decision details",

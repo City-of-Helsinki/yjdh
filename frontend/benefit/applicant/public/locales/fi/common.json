@@ -423,7 +423,9 @@
     "decision": {
       "description": {
         "accepted": "Hakemus on hyväksytty ja Helsinki-lisää on myönnetty aikavälille {{dateRangeStart}} – {{dateRangeEnd}}",
-        "rejected": "Hakemus on hylätty. Helsinki-lisää ei myönnetä."
+        "rejected": "Hakemus on hylätty. Helsinki-lisää ei myönnetä.",
+        "handling": "Hakemus on käsittelyssä.",
+        "cancelled": "Hakemus on peruttu."
       },
       "headings": {
         "mainHeading": "Päätöksen tiedot",
