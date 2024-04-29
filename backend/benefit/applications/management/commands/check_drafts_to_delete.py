@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from applications.enums import ApplicationStatus
+from applications.enums import ApplicationOrigin, ApplicationStatus
 from applications.models import Application
 from messages.automatic_messages import (
     get_email_template_context,
@@ -49,18 +49,16 @@ def notify_applications(days_to_deletion: int, days_to_keep: int) -> int:
     """Query applications that are close to the deletion date and send a notification to the applicant.
     Returns the number of notified applications."""
 
+    draft_scope_in_days = days_to_keep - days_to_deletion
     applications_to_notify = Application.objects.filter(
+        application_origin=ApplicationOrigin.APPLICANT,
         status=ApplicationStatus.DRAFT,
-        modified_at__lte=(
-            timezone.now() - timedelta(days=(days_to_keep - days_to_deletion))
-        ),
-        modified_at__gte=(
-            timezone.now() - timedelta(days=(days_to_keep - days_to_deletion + 1))
-        ),
+        modified_at__lte=(timezone.now() - timedelta(days=(draft_scope_in_days))),
+        modified_at__gte=(timezone.now() - timedelta(days=(draft_scope_in_days + 1))),
     )
 
     for application in applications_to_notify:
-        _send_notification_mail(application, days_to_deletion)
+        _send_notification_mail(application, days_to_keep)
 
     return applications_to_notify.count()
 
@@ -69,11 +67,10 @@ def get_draft_notice_email_notification_subject():
     return str(_("Your Helsinki benefit draft application will expire"))
 
 
-def _send_notification_mail(application: Application, days_to_deletion: int) -> int:
+def _send_notification_mail(application: Application, days_to_keep: int) -> int:
     """Send a notification mail to the applicant about the upcoming application deletion"""
-
     application_deletion_date = (
-        application.modified_at + timedelta(days=days_to_deletion)
+        application.modified_at + timedelta(days=(days_to_keep))
     ).strftime("%d.%m.%Y")
     context = get_email_template_context(application)
     context["application_deletion_date"] = application_deletion_date
