@@ -62,6 +62,9 @@ def process_template_sections(
         section.template_decision_text = replace_decision_template_placeholders(
             section.template_decision_text, section.decision_type, application
         )
+        section.template_justification_text = replace_decision_template_placeholders(
+            section.template_justification_text, section.decision_type, application
+        )
     return template_sections
 
 
