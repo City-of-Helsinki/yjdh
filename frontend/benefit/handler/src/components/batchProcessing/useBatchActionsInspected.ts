@@ -119,17 +119,19 @@ const useBatchActionsInspected = (
       .required(t('common:form.validation.date.format')),
     p2pAnyString: string().when('inspection_mode', {
       is: 'p2p',
-      then: string().required(translations.required),
+      then: string().nullable().required(translations.required),
     }),
     p2pFullName: string().when('inspection_mode', {
       is: 'p2p',
       then: string()
+        .nullable()
         .matches(/^(.*)\s(\w+)/, translations.invalidName)
         .required(translations.required),
     }),
     email: string().when('inspection_mode', {
       is: 'p2p',
       then: string()
+        .nullable()
         .email(t('common:form.validation.email.invalid'))
         .required(translations.required),
     }),
@@ -165,15 +167,13 @@ const useBatchActionsInspected = (
       form,
     });
 
-  console.log(decision_date);
-
   const formOptions = {
     initialValues: {
       inspection_mode: 'ahjo',
-      decision_maker_name,
-      decision_maker_title,
-      expert_inspector_name,
-      expert_inspector_title,
+      decision_maker_name: decision_maker_name || '',
+      decision_maker_title: decision_maker_title || '',
+      expert_inspector_name: expert_inspector_name || '',
+      expert_inspector_title: expert_inspector_title || '',
       section_of_the_law:
         section_of_the_law && section_of_the_law?.length > 0
           ? section_of_the_law
@@ -182,9 +182,9 @@ const useBatchActionsInspected = (
         decision_date && decision_date?.length > 0
           ? format(parse(decision_date, 'yyyy-MM-dd', new Date()), 'd.M.yyyy')
           : format(new Date(), 'd.M.yyyy'),
-      p2p_inspector_name,
-      p2p_inspector_email,
-      p2p_checker_name,
+      p2p_inspector_email: p2p_inspector_email || '',
+      p2p_inspector_name: p2p_inspector_name || '',
+      p2p_checker_name: p2p_checker_name || '',
     },
     validationSchema:
       proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED
