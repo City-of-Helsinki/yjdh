@@ -143,8 +143,10 @@ class ApplicationBatchSerializer(serializers.ModelSerializer):
 class ApplicationBatchListSerializer(ApplicationBatchSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
+
+        # Do not include applications that have been sent to Ahjo
         applications = BatchApplicationSerializer(
-            Application.objects.filter(batch=instance),
+            Application.objects.filter(batch=instance, ahjo_case_id__isnull=True),
             many=True,
         ).data
         representation["applications"] = applications

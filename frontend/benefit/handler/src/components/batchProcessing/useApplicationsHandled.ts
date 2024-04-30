@@ -41,6 +41,7 @@ const useApplicationsHandled = (
         application_number: applicationNum,
         status: appStatus,
         batch,
+        talpa_status,
       } = application;
 
       return {
@@ -54,6 +55,7 @@ const useApplicationsHandled = (
         handledAt: convertToUIDateFormat(handled_at) || '-',
         dataReceived: getBatchDataReceived(status, batch?.created_at),
         applicationNum,
+        talpaStatus: talpa_status,
       };
     });
 

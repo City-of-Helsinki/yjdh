@@ -1,5 +1,6 @@
 import { ROUTES } from 'benefit/handler/constants';
 import AppContext from 'benefit/handler/context/AppContext';
+import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
 import { useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
 import React from 'react';
@@ -23,14 +24,15 @@ const useHeader = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const router = useRouter();
   const { isNavigationVisible } = React.useContext(AppContext);
+  const isNewAhjoMode = useDetermineAhjoMode();
 
   const languageOptions = React.useMemo(
     (): OptionType<string>[] => getLanguageOptions(t, 'supportedLanguages'),
     [t]
   );
 
-  const navigationItems = React.useMemo(
-    (): NavigationItem[] => [
+  const items = {
+    default: [
       { label: t('common:header.navigation.applications'), url: ROUTES.HOME },
       {
         label: t('common:header.navigation.batches'),
@@ -45,7 +47,22 @@ const useHeader = (): ExtendedComponentProps => {
         url: ROUTES.APPLICATIONS_REPORTS,
       },
     ],
-    [t]
+    newAhjo: [
+      { label: t('common:header.navigation.applications'), url: ROUTES.HOME },
+      {
+        label: t('common:header.navigation.archive'),
+        url: ROUTES.APPLICATIONS_ARCHIVE,
+      },
+      {
+        label: t('common:header.navigation.reports'),
+        url: ROUTES.APPLICATIONS_REPORTS,
+      },
+    ],
+  };
+
+  const navigationItems = React.useMemo(
+    (): NavigationItem[] => (isNewAhjoMode ? items.newAhjo : items.default),
+    [items.default, items.newAhjo, isNewAhjoMode]
   );
 
   const handleLanguageChange = (

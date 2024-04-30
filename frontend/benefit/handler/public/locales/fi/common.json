@@ -188,6 +188,7 @@
           "rejected": "Ei yhtään käsiteltyä kielteistä hakemusta.",
           "received": "Ei yhtään saapunutta hakemusta.",
           "archived": "Ei yhtään arkistoitua hakemusta.",
+          "accepted,rejected": "Ei yhtään päätettävänä olevaa hakemusta.",
           "additional_information_needed": "Ei yhtään lisätietoja odottavaa hakemusta.",
           "all": "Ei yhtään hakemusta.",
           "draft": "Ei yhtään luonnosta."
@@ -201,7 +202,9 @@
         "accepted": "Myönteiset",
         "rejected": "Kielteiset",
         "infoRequired": "Odottaa lisätietoja",
-        "decisions": "päätökset"
+        "decisions": "päätökset",
+        "pending": "Päätettävänä",
+        "inPayment": "Maksussa"
       },
       "errors": {
         "fetch": {

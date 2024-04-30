@@ -8,11 +8,6 @@ import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import { getFullName } from 'shared/utils/application.utils';
 import { convertToUIDateFormat, formatDate } from 'shared/utils/date.utils';
-import {
-  getLocalStorageItem,
-  removeLocalStorageItem,
-  setLocalStorageItem,
-} from 'shared/utils/localstorage.utils';
 
 import { $NoticeBar } from '../applicationReview/ApplicationReview.sc';
 import {
@@ -28,20 +23,6 @@ import {
 type ApplicationReviewProps = {
   data: Application;
   isApplicationReadOnly: boolean;
-};
-
-const toggleNewAhjoMode = (): void => {
-  // eslint-disable-next-line no-alert
-  const confirm = window.confirm(
-    'Kokeile Ahjo-integraation käyttöliittymää? Vain testiympäristöihin, älä käytä tuotannossa!'
-  );
-  if (!confirm) return;
-  if (getLocalStorageItem('newAhjoMode') !== '1') {
-    setLocalStorageItem('newAhjoMode', '1');
-  } else {
-    removeLocalStorageItem('newAhjoMode');
-  }
-  window.location.reload();
 };
 
 const ApplicationHeader: React.FC<ApplicationReviewProps> = ({
@@ -109,17 +90,6 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({
                 <$ItemValue>
                   {data.submittedAt && formatDate(new Date(data.submittedAt))}
                 </$ItemValue>
-              </$ItemWrapper>
-              <$ItemWrapper>
-                <button
-                  style={{ fontSize: '10px' }}
-                  type="button"
-                  onClick={toggleNewAhjoMode}
-                >
-                  Ahjo-kokeilu
-                  <br />
-                  {getLocalStorageItem('newAhjoMode') ? 'pois' : 'päälle'}
-                </button>
               </$ItemWrapper>
             </$Col>
             <$Col>

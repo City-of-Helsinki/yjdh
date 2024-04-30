@@ -3,6 +3,7 @@ import useLogin from 'benefit/handler/hooks/useLogin';
 import useLogout from 'benefit/handler/hooks/useLogout';
 import useUserQuery from 'benefit/handler/hooks/useUserQuery';
 import noop from 'lodash/noop';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import BaseHeader from 'shared/components/header/Header';
@@ -24,9 +25,17 @@ const Header: React.FC = () => {
   const { asPath } = router;
   const isLoginPage = asPath?.startsWith(ROUTES.LOGIN);
 
+  const TemporaryAhjoModeSwitch = dynamic(
+    () => import('benefit/handler/components/header/TemporaryAhjoModeSwitch'),
+    {
+      ssr: false,
+    }
+  );
+
   return (
     <BaseHeader
       title={t('common:appName')}
+      customItems={[<TemporaryAhjoModeSwitch />]}
       titleUrl={ROUTES.HOME}
       skipToContentLabel={t('common:header.linkSkipToContent')}
       menuToggleAriaLabel={t('common:header.menuToggleAriaLabel')}
