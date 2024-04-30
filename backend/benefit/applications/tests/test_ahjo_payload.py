@@ -26,8 +26,7 @@ hakemus {application.application_number}"
 
 def test_prepare_record_title(decided_application):
     application = decided_application
-    formatted_date = application.created_at.strftime("%d.%m.%Y")
-    wanted_title = f"{AhjoRecordTitle.APPLICATION} {formatted_date}, {application.application_number}"
+    wanted_title = f"{AhjoRecordTitle.APPLICATION}, {application.application_number}"
     got = _prepare_record_title(application, AhjoRecordType.APPLICATION)
     assert wanted_title == got
 
