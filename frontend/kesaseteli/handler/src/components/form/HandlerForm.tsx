@@ -14,7 +14,10 @@ import React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
 import { $Notification } from 'shared/components/notification/Notification.sc';
-import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
+import {
+  convertToUIDateAndTimeFormat,
+  convertToUIDateFormat,
+} from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
 type Props = {
@@ -31,6 +34,8 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
     first_name,
     last_name,
     social_security_number,
+    non_vtj_birthdate,
+    non_vtj_home_municipality,
     postcode,
     school,
     is_unlisted_school,
@@ -92,7 +97,21 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
         {!isVtjDisabled() && <VtjInfo application={application} />}
       </$GridCell>
       <Field type="name" value={`${first_name} ${last_name}`} />
-      <Field type="social_security_number" value={social_security_number} />
+      {social_security_number && (
+        <Field type="social_security_number" value={social_security_number} />
+      )}
+      {non_vtj_birthdate && (
+        <Field
+          type="non_vtj_birthdate"
+          value={convertToUIDateFormat(non_vtj_birthdate)}
+        />
+      )}
+      {non_vtj_home_municipality && (
+        <Field
+          type="non_vtj_home_municipality"
+          value={non_vtj_home_municipality}
+        />
+      )}
       <Field type="postcode" value={postcode} />
       <Field
         type="school"
@@ -135,10 +154,9 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
         </>
       )}
       {waitingForHandlerAction ? (
-        <ActionButtons
-          application={application}
-          $rowSpan={additionalInfoProvided ? 12 : 8}
-        />
+        <$GridCell $colSpan={2}>
+          <ActionButtons application={application} />
+        </$GridCell>
       ) : (
         <$GridCell>
           <$Notification

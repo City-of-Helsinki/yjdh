@@ -19,7 +19,12 @@ type Props = GridCellProps & {
 const ActionButtons: React.FC<Props> = ({ application, ...gridCellprops }) => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { id, encrypted_handler_vtj_json } = application;
+  const {
+    id,
+    encrypted_handler_vtj_json,
+    non_vtj_birthdate,
+    social_security_number,
+  } = application;
   const { confirm } = useConfirm();
   const { isLoading, mutate } = useCompleteYouthApplicationQuery(id);
   const isVtjEnabled = !isVtjDisabled();
@@ -51,6 +56,13 @@ const ActionButtons: React.FC<Props> = ({ application, ...gridCellprops }) => {
     }
   };
 
+  const isDisabled =
+    isLoading ||
+    // Social security number requires VTJ data for processing
+    (social_security_number && vtjDataNotFound) ||
+    // Missing social security number requires birthdate for processing
+    (!social_security_number && !non_vtj_birthdate);
+
   return (
     <$GridCell {...gridCellprops}>
       <Button
@@ -59,7 +71,7 @@ const ActionButtons: React.FC<Props> = ({ application, ...gridCellprops }) => {
         iconLeft={icon.accept}
         onClick={() => complete('accept')}
         isLoading={isLoading}
-        disabled={vtjDataNotFound || isLoading}
+        disabled={isDisabled}
         css={`
           margin-right: ${theme.spacing.l};
         `}
@@ -73,7 +85,7 @@ const ActionButtons: React.FC<Props> = ({ application, ...gridCellprops }) => {
         onClick={() => complete('reject')}
         loadingText={t(`common:handlerApplication.saving`)}
         isLoading={isLoading}
-        disabled={vtjDataNotFound || isLoading}
+        disabled={isDisabled}
       >
         {t(`common:handlerApplication.reject`)}
       </Button>

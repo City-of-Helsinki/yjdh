@@ -1,5 +1,6 @@
 const VTJ_EXCEPTIONS = [
   'notFound',
+  'missingSsn',
   'differentLastName',
   'notInTargetAgeGroup',
   'addressNotFound',
