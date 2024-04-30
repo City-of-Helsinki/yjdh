@@ -25,7 +25,7 @@ def _prepare_record_title(
     """
     formatted_date = application.created_at.strftime("%d.%m.%Y")
     if record_type == AhjoRecordType.APPLICATION:
-        return f"{AhjoRecordTitle.APPLICATION} {formatted_date}, {application.application_number}"
+        return f"{AhjoRecordTitle.APPLICATION}, {application.application_number}"
     return f"{AhjoRecordTitle.APPLICATION} {formatted_date}, liite {current}/{total}, {application.application_number}"
 
 
