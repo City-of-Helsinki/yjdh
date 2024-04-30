@@ -35,6 +35,7 @@ interface ApplicationListProps {
 const useBatchActionsInspected = (
   batch: BatchProposal,
   setBatchCloseAnimation?: React.Dispatch<React.SetStateAction<boolean>>
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): ApplicationListProps => {
   const {
     applications,
