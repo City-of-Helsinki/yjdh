@@ -165,6 +165,8 @@ const useBatchActionsInspected = (
       form,
     });
 
+  console.log(decision_date);
+
   const formOptions = {
     initialValues: {
       inspection_mode: 'ahjo',
@@ -173,9 +175,11 @@ const useBatchActionsInspected = (
       expert_inspector_name,
       expert_inspector_title,
       section_of_the_law:
-        section_of_the_law.length > 0 ? section_of_the_law : '§',
+        section_of_the_law && section_of_the_law?.length > 0
+          ? section_of_the_law
+          : '§',
       decision_date:
-        decision_date && decision_date.length > 0
+        decision_date && decision_date?.length > 0
           ? format(parse(decision_date, 'yyyy-MM-dd', new Date()), 'd.M.yyyy')
           : format(new Date(), 'd.M.yyyy'),
       p2p_inspector_name,
