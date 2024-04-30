@@ -22,6 +22,10 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
     postcode,
   } = application;
 
+  if (!social_security_number) {
+    return <VtjErrorNotification reason="missingSsn" type="error" />;
+  }
+
   if (!vtjData || !('Henkilo' in vtjData)) {
     return (
       <VtjErrorNotification

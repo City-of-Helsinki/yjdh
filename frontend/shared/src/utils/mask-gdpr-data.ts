@@ -66,6 +66,7 @@ export const ATTRIBUTES_TO_MASK = [
   'employee_name',
   'employee_ssn',
   'employee_phone_number',
+  'non_vtj_birthdate',
   // benefit attributes
   'lastName',
   'phoneNumber',

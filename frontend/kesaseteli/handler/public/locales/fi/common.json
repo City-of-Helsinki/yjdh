@@ -29,6 +29,8 @@
     "title": "Hakemuksen tiedot",
     "name": "Nimi",
     "social_security_number": "Hlö-tunnus",
+    "non_vtj_birthdate": "Syntymäaika (Ei VTJ:stä!)",
+    "non_vtj_home_municipality": "Kotikunta (Ei VTJ:stä!)",
     "postcode": "Postinumero",
     "school": "Koulu",
     "is_unlisted_school": "(Koulua ei löytynyt listalta)",
@@ -56,6 +58,7 @@
     },
     "vtjException": {
       "notFound": "Väestötietojärjestelmästä ei löytynyt tietoja henkilötunnuksella: {{ social_security_number }}!",
+      "missingSsn": "Henkilötunnus puuttuu!",
       "differentLastName": "Sukunimi poikkeaa hakemukselle syötetystä sukunimestä ({{ last_name }})",
       "notInTargetAgeGroup": "Henkilö ei kuulu iän puolesta kohderyhmään ({{ age }}-vuotias)",
       "addressNotFound": "Osoitetietoja ei löytynyt!",

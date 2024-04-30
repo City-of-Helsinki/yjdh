@@ -4,6 +4,8 @@ type YouthApplication = {
   first_name: string;
   last_name: string;
   social_security_number: string;
+  non_vtj_birthdate?: Date;
+  non_vtj_home_municipality?: string;
   postcode: string;
   school?: string;
   is_unlisted_school: boolean;
