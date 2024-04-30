@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-10 09:41+0300\n"
+"POT-Creation-Date: 2024-04-22 19:07+0300\n"
 "PO-Revision-Date: 2022-11-01 10:45+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -191,7 +191,8 @@ msgstr "Muutos työsuhteessa ei voi alkaa tukijakson päättymisen jälkeen"
 msgid ""
 "The end date of the change period cannot be after the end date of the "
 "benefit period"
-msgstr "Muutosjakson päättymispäivämäärä ei voi olla tukijakson päättymisen jälkeen"
+msgstr ""
+"Muutosjakson päättymispäivämäärä ei voi olla tukijakson päättymisen jälkeen"
 
 msgid ""
 "The end date of the change period cannot be before the start date of the "
@@ -471,6 +472,12 @@ msgstr ""
 msgid "Delete request received"
 msgstr ""
 
+msgid "New record request sent"
+msgstr ""
+
+msgid "New record received by Ahjo"
+msgstr ""
+
 msgid "Allow/disallow applicant's modifications to the application"
 msgstr ""
 
@@ -497,16 +504,13 @@ msgstr "Puutteellinen hakemus"
 
 #, fuzzy
 #| msgid "date of the decision in Ahjo"
-msgid "Send decision to Ahjo"
+msgid "Send new records to Ahjo"
 msgstr "päätöksen päivämäärä Ahjossa"
 
-msgid ""
-"Template part for the decision section of a application decision proposal"
-msgstr ""
-
-msgid ""
-"Template part for the decision justification section of a decision proposal"
-msgstr ""
+#, fuzzy
+#| msgid "date of the decision in Ahjo"
+msgid "Send decision to Ahjo"
+msgstr "päätöksen päivämäärä Ahjossa"
 
 msgid "An accepted decision"
 msgstr "Hyväksytty päätös"
@@ -525,6 +529,67 @@ msgstr "Avattu"
 
 msgid "Handled"
 msgstr "Käsitelty"
+
+#, fuzzy
+#| msgid "Helsinki-benefit online service"
+msgid "Helsinki-benefit handler"
+msgstr "Helsinki-lisän asiointipalvelu"
+
+msgid "Team manager"
+msgstr ""
+
+msgid "Step 1 - overview and accept/reject application"
+msgstr ""
+
+#, fuzzy
+#| msgid "date of the decision in Ahjo"
+msgid "Step 2 - preparing the decision"
+msgstr "päätöksen päivämäärä Ahjossa"
+
+#, fuzzy
+#| msgid "date of the decision in Ahjo"
+msgid "Step 3 - review the decision"
+msgstr "päätöksen päivämäärä Ahjossa"
+
+#, fuzzy
+#| msgid "application"
+msgid "Application"
+msgstr "hakemus"
+
+#, fuzzy
+#| msgid "application attachment content"
+msgid "Application attachment"
+msgstr "hakemuksen liitteen sisältö"
+
+#, fuzzy
+#| msgid "Decision date"
+msgid "Decision proposal"
+msgstr "Päätöksen päivämäärä"
+
+#, fuzzy
+#| msgid "application attachment content"
+msgid "Secret decision attachment"
+msgstr "hakemuksen liitteen sisältö"
+
+#, fuzzy
+#| msgid "Application received"
+msgid "Application title"
+msgstr "Hakemus saapunut"
+
+#, fuzzy
+#| msgid "application attachment content"
+msgid "Application attachmen title"
+msgstr "hakemuksen liitteen sisältö"
+
+#, fuzzy
+#| msgid "Decision date"
+msgid "Decision proposal title"
+msgstr "Päätöksen päivämäärä"
+
+#, fuzzy
+#| msgid "application attachment content"
+msgid "Secret decision attachment title"
+msgstr "hakemuksen liitteen sisältö"
 
 msgid "granted"
 msgstr "Palkkatuki"
@@ -850,34 +915,32 @@ msgid "ahjo statuses"
 msgstr "tila"
 
 #, fuzzy
-#| msgid "Decision date"
-msgid "type of the decision proposal template section"
-msgstr "Päätöksen päivämäärä"
-
-#, fuzzy
 #| msgid "date of the decision in Ahjo"
 msgid "type of the decision"
 msgstr "päätöksen päivämäärä Ahjossa"
 
 #, fuzzy
-#| msgid "Decision date"
-msgid "decision proposal section text content"
-msgstr "Päätöksen päivämäärä"
+#| msgid "proposal for decision"
+msgid "Proposal text, decision"
+msgstr "päätösehdotus"
+
+msgid "Proposal text, justification"
+msgstr ""
 
 #, fuzzy
 #| msgid "Decision date"
-msgid "name of the decision proposal template section"
+msgid "name of the decision text template"
 msgstr "Päätöksen päivämäärä"
 
 #, fuzzy
-#| msgid "Decision date"
-msgid "decision proposal template section"
-msgstr "Päätöksen päivämäärä"
+#| msgid "status"
+msgid "Ahjo decision text template"
+msgstr "tila"
 
 #, fuzzy
-#| msgid "Decision date"
-msgid "decision proposal template sections"
-msgstr "Päätöksen päivämäärä"
+#| msgid "status"
+msgid "Ahjo decision text templates"
+msgstr "tila"
 
 #, fuzzy
 #| msgid "application attachment content"
@@ -940,6 +1003,48 @@ msgstr "Verkkolaskuosoite"
 
 msgid "contact person"
 msgstr "Yhteyshenkilö"
+
+msgid "whether the alteration should be recovered"
+msgstr "Peritäänkö tukea takaisin?"
+
+msgid "the justification provided in the recovering bill, if eligible"
+msgstr "Tuen takaisinperinnän perustelu, mikäli tukea peritään takaisin"
+
+#, fuzzy
+#| msgid "Decision date"
+msgid "decision_proposal_draft"
+msgstr "Päätöksen päivämäärä"
+
+#, fuzzy
+#| msgid "Decision date"
+msgid "decision_proposal_drafts"
+msgstr "Päätöksen päivämäärä"
+
+msgid "step of the draft proposal"
+msgstr ""
+
+#, fuzzy
+#| msgid "status"
+msgid "Proposal status"
+msgstr "tila"
+
+msgid "Log entry comment"
+msgstr ""
+
+#, fuzzy
+#| msgid "Handler"
+msgid "Handler role"
+msgstr "Käsittelijä"
+
+#, fuzzy
+#| msgid "application attachment content"
+msgid "Decision text content"
+msgstr "hakemuksen liitteen sisältö"
+
+#, fuzzy
+#| msgid "application attachment content"
+msgid "Justification text content"
+msgstr "hakemuksen liitteen sisältö"
 
 #, fuzzy
 #| msgid "File not found."
@@ -1495,6 +1600,26 @@ msgstr "palveluehtojen hyväksyntä"
 
 msgid "terms of service approvals"
 msgstr "palveluehtojen hyväksynnät"
+
+#, fuzzy
+#~| msgid "Decision date"
+#~ msgid "type of the decision proposal template section"
+#~ msgstr "Päätöksen päivämäärä"
+
+#, fuzzy
+#~| msgid "Decision date"
+#~ msgid "decision proposal section text content"
+#~ msgstr "Päätöksen päivämäärä"
+
+#, fuzzy
+#~| msgid "Decision date"
+#~ msgid "decision proposal template section"
+#~ msgstr "Päätöksen päivämäärä"
+
+#, fuzzy
+#~| msgid "Decision date"
+#~ msgid "decision proposal template sections"
+#~ msgstr "Päätöksen päivämäärä"
 
 #~ msgid "Granted as de minimis aid"
 #~ msgstr "Myönnetään de minimis -tukena"

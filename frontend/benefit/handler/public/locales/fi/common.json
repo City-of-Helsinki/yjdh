@@ -5,7 +5,8 @@
       "applications": "Hakemukset",
       "batches": "Koonnit",
       "archive": "Arkisto",
-      "reports": "Raportointi"
+      "reports": "Raportointi",
+      "alterations": "Muutosilmoitukset"
     },
     "messages": "Viestit",
     "notes": "Muistiinpanot",
@@ -687,6 +688,25 @@
           "noChanges": "Ei muutoksia lomaketietoihin. Mikäli poistit tai lisäsit liitetiedostoja, voit kirjata niiden syyn."
         },
         "helperText": "Kirjaa milloin ja mitä kautta hakija on ollut yhteydessä. Tiedot tulevat näkyviin hakemuksen muutoshistoriassa."
+      }
+    },
+    "alterations": {
+      "list": {
+        "heading": "Muutosilmoitukset",
+        "subheading_one": "<b>{{count}}</b> muutosilmoitus",
+        "subheading_other": "<b>{{count}}</b> muutosilmoitusta",
+        "empty": "Ei yhtään saapunutta muutosilmoitusta.",
+        "columns": {
+          "applicant": "Hakija",
+          "applicationNumber": "Hakemus",
+          "receivedDate": "Saapunut",
+          "employee": "Työllistettävä",
+          "summary": "Ilmoitettu muutos"
+        },
+        "summary": {
+          "termination": "Työsuhde päättyy {{endDate}}",
+          "suspension": "Tyosuhde keskeytyy {{endDate}}–{{resumeDate}}"
+        }
       }
     }
   },

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-10 09:41+0300\n"
+"POT-Creation-Date: 2024-04-22 19:07+0300\n"
 "PO-Revision-Date: 2022-11-01 10:47+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -159,7 +159,9 @@ msgid "Reading {localized_model_name} data failed: {errors}"
 msgstr "Data {localized_model_name} kan inte läsas: {errors}"
 
 msgid "Resume date is required if the benefit period wasn't terminated"
-msgstr "Datum för återvändande till arbetet är en obligatorisk uppgift om anställningen avbryts"
+msgstr ""
+"Datum för återvändande till arbetet är en obligatorisk uppgift om "
+"anställningen avbryts"
 
 msgid "E-invoice provider name"
 msgstr "E-fakturaoperatörens namn"
@@ -196,7 +198,8 @@ msgstr "Ändringsperiodens slutdatum kan inte vara tidigare än dess startdatum"
 
 msgid ""
 "Another change to employment has already been reported for the same period"
-msgstr "Det finns redan en annan ändring i anställningen under den valda perioden"
+msgstr ""
+"Det finns redan en annan ändring i anställningen under den valda perioden"
 
 msgid "You cannot edit the change to employment in this state"
 msgstr "Du kan inte redigera en ändring i en anställning i det här läget"
@@ -467,6 +470,12 @@ msgstr ""
 msgid "Delete request received"
 msgstr ""
 
+msgid "New record request sent"
+msgstr ""
+
+msgid "New record received by Ahjo"
+msgstr ""
+
 msgid "Allow/disallow applicant's modifications to the application"
 msgstr ""
 
@@ -493,16 +502,13 @@ msgstr "Ofullständig ansökan"
 
 #, fuzzy
 #| msgid "date of the decision in Ahjo"
-msgid "Send decision to Ahjo"
+msgid "Send new records to Ahjo"
 msgstr "datum då beslut fattas vid Ahjo"
 
-msgid ""
-"Template part for the decision section of a application decision proposal"
-msgstr ""
-
-msgid ""
-"Template part for the decision justification section of a decision proposal"
-msgstr ""
+#, fuzzy
+#| msgid "date of the decision in Ahjo"
+msgid "Send decision to Ahjo"
+msgstr "datum då beslut fattas vid Ahjo"
 
 #, fuzzy
 #| msgid "Accepted in Ahjo"
@@ -527,6 +533,67 @@ msgstr ""
 #| msgid "Handler"
 msgid "Handled"
 msgstr "Handläggare"
+
+#, fuzzy
+#| msgid "Helsinki-benefit online service"
+msgid "Helsinki-benefit handler"
+msgstr "Helsingforstillägg e-tjänst"
+
+msgid "Team manager"
+msgstr ""
+
+msgid "Step 1 - overview and accept/reject application"
+msgstr ""
+
+#, fuzzy
+#| msgid "date of the decision in Ahjo"
+msgid "Step 2 - preparing the decision"
+msgstr "datum då beslut fattas vid Ahjo"
+
+#, fuzzy
+#| msgid "date of the decision in Ahjo"
+msgid "Step 3 - review the decision"
+msgstr "datum då beslut fattas vid Ahjo"
+
+#, fuzzy
+#| msgid "application"
+msgid "Application"
+msgstr "Ansökan"
+
+#, fuzzy
+#| msgid "application attachment content"
+msgid "Application attachment"
+msgstr "innehåll i bilaga till ansökan"
+
+#, fuzzy
+#| msgid "Decision date"
+msgid "Decision proposal"
+msgstr "Beslutsdatum"
+
+#, fuzzy
+#| msgid "application attachment content"
+msgid "Secret decision attachment"
+msgstr "innehåll i bilaga till ansökan"
+
+#, fuzzy
+#| msgid "Application received"
+msgid "Application title"
+msgstr "Ansökning mottagen"
+
+#, fuzzy
+#| msgid "application attachment content"
+msgid "Application attachmen title"
+msgstr "innehåll i bilaga till ansökan"
+
+#, fuzzy
+#| msgid "Decision date"
+msgid "Decision proposal title"
+msgstr "Beslutsdatum"
+
+#, fuzzy
+#| msgid "application attachment content"
+msgid "Secret decision attachment title"
+msgstr "innehåll i bilaga till ansökan"
 
 msgid "granted"
 msgstr "Lönesubvention"
@@ -852,34 +919,32 @@ msgid "ahjo statuses"
 msgstr "status"
 
 #, fuzzy
-#| msgid "Decision date"
-msgid "type of the decision proposal template section"
-msgstr "Beslutsdatum"
-
-#, fuzzy
 #| msgid "date of the decision in Ahjo"
 msgid "type of the decision"
 msgstr "datum då beslut fattas vid Ahjo"
 
 #, fuzzy
-#| msgid "Decision date"
-msgid "decision proposal section text content"
-msgstr "Beslutsdatum"
+#| msgid "proposal for decision"
+msgid "Proposal text, decision"
+msgstr "beslutsförslag"
+
+msgid "Proposal text, justification"
+msgstr ""
 
 #, fuzzy
 #| msgid "Decision date"
-msgid "name of the decision proposal template section"
+msgid "name of the decision text template"
 msgstr "Beslutsdatum"
 
 #, fuzzy
-#| msgid "Decision date"
-msgid "decision proposal template section"
-msgstr "Beslutsdatum"
+#| msgid "status"
+msgid "Ahjo decision text template"
+msgstr "status"
 
 #, fuzzy
-#| msgid "Decision date"
-msgid "decision proposal template sections"
-msgstr "Beslutsdatum"
+#| msgid "status"
+msgid "Ahjo decision text templates"
+msgstr "status"
 
 #, fuzzy
 #| msgid "application attachment content"
@@ -966,6 +1031,48 @@ msgstr "Leveransadress"
 #| msgid "company contact person's email"
 msgid "contact person"
 msgstr "kontaktpersonens e-postadress"
+
+msgid "whether the alteration should be recovered"
+msgstr ""
+
+msgid "the justification provided in the recovering bill, if eligible"
+msgstr ""
+
+#, fuzzy
+#| msgid "Decision date"
+msgid "decision_proposal_draft"
+msgstr "Beslutsdatum"
+
+#, fuzzy
+#| msgid "Decision date"
+msgid "decision_proposal_drafts"
+msgstr "Beslutsdatum"
+
+msgid "step of the draft proposal"
+msgstr ""
+
+#, fuzzy
+#| msgid "status"
+msgid "Proposal status"
+msgstr "status"
+
+msgid "Log entry comment"
+msgstr ""
+
+#, fuzzy
+#| msgid "Handler"
+msgid "Handler role"
+msgstr "Handläggare"
+
+#, fuzzy
+#| msgid "application attachment content"
+msgid "Decision text content"
+msgstr "innehåll i bilaga till ansökan"
+
+#, fuzzy
+#| msgid "application attachment content"
+msgid "Justification text content"
+msgstr "innehåll i bilaga till ansökan"
 
 #, fuzzy
 #| msgid "File not found."
@@ -1516,6 +1623,26 @@ msgstr "godkännande av villkoren för tjänsten"
 
 msgid "terms of service approvals"
 msgstr "godkännanden av villkoren för tjänsten"
+
+#, fuzzy
+#~| msgid "Decision date"
+#~ msgid "type of the decision proposal template section"
+#~ msgstr "Beslutsdatum"
+
+#, fuzzy
+#~| msgid "Decision date"
+#~ msgid "decision proposal section text content"
+#~ msgstr "Beslutsdatum"
+
+#, fuzzy
+#~| msgid "Decision date"
+#~ msgid "decision proposal template section"
+#~ msgstr "Beslutsdatum"
+
+#, fuzzy
+#~| msgid "Decision date"
+#~ msgid "decision proposal template sections"
+#~ msgstr "Beslutsdatum"
 
 #~ msgid "Granted as de minimis aid"
 #~ msgstr "Beviljas som stöd av de minimis stöd"

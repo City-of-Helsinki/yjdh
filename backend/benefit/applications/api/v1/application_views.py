@@ -31,7 +31,8 @@ from applications.api.v1.serializers.application import (
     HandlerApplicationSerializer,
 )
 from applications.api.v1.serializers.application_alteration import (
-    ApplicationAlterationSerializer,
+    ApplicantApplicationAlterationSerializer,
+    HandlerApplicationAlterationSerializer,
 )
 from applications.api.v1.serializers.attachment import AttachmentSerializer
 from applications.enums import (
@@ -156,6 +157,14 @@ class HandlerApplicationFilter(BaseApplicationFilter):
             "employee__last_name": ["iexact", "icontains"],
             "start_date": ["lt", "lte", "gt", "gte", "exact"],
             "end_date": ["lt", "lte", "gt", "gte", "exact"],
+        }
+
+
+class HandlerApplicationAlterationFilter(filters.FilterSet):
+    class Meta:
+        model = ApplicationAlteration
+        fields = {
+            "state": ["exact"],
         }
 
 
@@ -379,18 +388,9 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         )
 
 
-class ApplicationAlterationViewSet(AuditLoggingModelViewSet):
-    serializer_class = ApplicationAlterationSerializer
+class BaseApplicationAlterationViewSet(AuditLoggingModelViewSet):
     queryset = ApplicationAlteration.objects.all()
     http_method_names = ["post", "patch", "head", "delete"]
-
-    APPLICANT_UNEDITABLE_FIELDS = [
-        "state",
-        "recovery_start_date",
-        "recovery_end_date",
-        "handled_at",
-        "recovery_amount",
-    ]
 
     class Meta:
         model = ApplicationAlteration
@@ -400,24 +400,12 @@ class ApplicationAlterationViewSet(AuditLoggingModelViewSet):
             "recovery_amount",
         ]
 
-    def _prune_fields(self, request):
-        if not request.user.is_handler():
-            for field in self.APPLICANT_UNEDITABLE_FIELDS:
-                if field in request.data.keys():
-                    request.data.pop(field)
 
-        return request
-
-    def create(self, request, *args, **kwargs):
-        return super().create(self._prune_fields(request), *args, **kwargs)
-
-    def update(self, request, *args, **kwargs):
-        return super().update(self._prune_fields(request), *args, **kwargs)
+class ApplicantApplicationAlterationViewSet(BaseApplicationAlterationViewSet):
+    serializer_class = ApplicantApplicationAlterationSerializer
+    permission_classes = [BFIsApplicant, TermsOfServiceAccepted]
 
     def destroy(self, request, *args, **kwargs):
-        # Only the applicant can delete an alteration, and only if it hasn't yet been
-        # opened by a handler.
-
         alteration = self.get_object()
 
         if not settings.NEXT_PUBLIC_MOCK_FLAG:
@@ -425,15 +413,35 @@ class ApplicationAlterationViewSet(AuditLoggingModelViewSet):
             if company != alteration.application.company:
                 raise PermissionDenied(_("You are not allowed to do this action"))
 
-        if request.user.is_handler():
-            raise PermissionDenied(_("You are not allowed to do this action"))
-
         if alteration.state != ApplicationAlterationState.RECEIVED:
             raise PermissionDenied(
                 _("You cannot delete the change to employment in this state")
             )
 
         return super().destroy(request, *args, **kwargs)
+
+
+class HandlerApplicationAlterationViewSet(BaseApplicationAlterationViewSet):
+    filter_backends = [
+        drf_filters.OrderingFilter,
+        filters.DjangoFilterBackend,
+    ]
+
+    serializer_class = HandlerApplicationAlterationSerializer
+    permission_classes = [BFIsHandler]
+    http_method_names = BaseApplicationAlterationViewSet.http_method_names + ["get"]
+    filterset_class = HandlerApplicationAlterationFilter
+
+    def update(self, request, *args, **kwargs):
+        if "state" in request.data.keys():
+            current_state = self.get_object().state
+            if (
+                current_state == ApplicationAlterationState.HANDLED
+                and current_state != request.data["state"]
+            ):
+                raise PermissionDenied(_("You are not allowed to do this action"))
+
+        return super().update(request, *args, **kwargs)
 
 
 @extend_schema(

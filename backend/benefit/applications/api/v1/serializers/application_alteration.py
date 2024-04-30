@@ -2,6 +2,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 
 from applications.api.v1.serializers.utils import DynamicFieldsModelSerializer
@@ -10,10 +11,41 @@ from applications.models import ApplicationAlteration
 from users.utils import get_company_from_request, get_request_user_from_context
 
 
-class ApplicationAlterationSerializer(DynamicFieldsModelSerializer):
+class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = ApplicationAlteration
-        fields = "__all__"
+        fields = [
+            "id",
+            "created_at",
+            "application",
+            "alteration_type",
+            "state",
+            "end_date",
+            "resume_date",
+            "reason",
+            "handled_at",
+            "handled_by",
+            "recovery_start_date",
+            "recovery_end_date",
+            "recovery_amount",
+            "recovery_justification",
+            "is_recoverable",
+            "use_einvoice",
+            "einvoice_provider_name",
+            "einvoice_provider_identifier",
+            "einvoice_address",
+            "contact_person_name",
+            "application_company_name",
+            "application_number",
+            "application_employee_first_name",
+            "application_employee_last_name",
+        ]
+        read_only_fields = [
+            "application_company_name",
+            "application_number",
+            "application_employee_first_name",
+            "application_employee_last_name",
+        ]
 
     ALLOWED_APPLICANT_EDIT_STATES = [
         ApplicationAlterationState.RECEIVED,
@@ -23,6 +55,31 @@ class ApplicationAlterationSerializer(DynamicFieldsModelSerializer):
         ApplicationAlterationState.RECEIVED,
         ApplicationAlterationState.OPENED,
     ]
+
+    application_company_name = serializers.SerializerMethodField(
+        "get_application_company_name"
+    )
+
+    application_number = serializers.SerializerMethodField("get_application_number")
+
+    application_employee_first_name = serializers.SerializerMethodField(
+        "get_application_employee_first_name"
+    )
+    application_employee_last_name = serializers.SerializerMethodField(
+        "get_application_employee_last_name"
+    )
+
+    def get_application_company_name(self, obj):
+        return obj.application.company.name
+
+    def get_application_number(self, obj):
+        return obj.application.application_number
+
+    def get_application_employee_first_name(self, obj):
+        return obj.application.employee.first_name
+
+    def get_application_employee_last_name(self, obj):
+        return obj.application.employee.last_name
 
     def _get_merged_object_for_validation(self, new_data):
         def _get_field(field_name):
@@ -184,3 +241,21 @@ class ApplicationAlterationSerializer(DynamicFieldsModelSerializer):
             raise ValidationError(errors)
 
         return data
+
+
+class ApplicantApplicationAlterationSerializer(BaseApplicationAlterationSerializer):
+    class Meta(BaseApplicationAlterationSerializer.Meta):
+        read_only_fields = BaseApplicationAlterationSerializer.Meta.read_only_fields + [
+            "handled_at",
+            "recovery_amount",
+            "state",
+            "recovery_start_date",
+            "recovery_end_date",
+            "recovery_justification",
+            "is_recoverable",
+            "handled_by",
+        ]
+
+
+class HandlerApplicationAlterationSerializer(BaseApplicationAlterationSerializer):
+    pass

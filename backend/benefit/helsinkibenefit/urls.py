@@ -72,8 +72,13 @@ router.register(r"previousbenefits", calculator_views.PreviousBenefitViewSet)
 
 router.register(
     r"applicationalterations",
-    application_views.ApplicationAlterationViewSet,
+    application_views.ApplicantApplicationAlterationViewSet,
     basename="application-alteration",
+)
+router.register(
+    r"handlerapplicationalterations",
+    application_views.HandlerApplicationAlterationViewSet,
+    basename="handler-application-alteration",
 )
 
 urlpatterns = [

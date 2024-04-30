@@ -19,6 +19,7 @@ export enum ROUTES {
   APPLICATIONS_BATCHES = '/batches',
   APPLICATIONS_ARCHIVE = '/archive',
   APPLICATIONS_REPORTS = '/reports',
+  ALTERATIONS = '/alterations',
 }
 
 export enum EXPORT_APPLICATIONS_ROUTES {
