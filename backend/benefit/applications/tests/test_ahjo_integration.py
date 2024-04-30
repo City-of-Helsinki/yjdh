@@ -3,7 +3,7 @@ import os
 import uuid
 import zipfile
 from datetime import date, timedelta
-from typing import List
+from typing import List, Union
 from unittest.mock import patch
 
 import pytest
@@ -15,6 +15,7 @@ from django.utils import timezone
 from applications.api.v1.ahjo_integration_views import AhjoAttachmentView
 from applications.enums import (
     AhjoCallBackStatus,
+    AhjoDecisionUpdateType,
     AhjoRequestType,
     AhjoStatus as AhjoStatusEnum,
     ApplicationBatchStatus,
@@ -395,10 +396,20 @@ def test_get_attachment_unauthorized_ip_not_allowed(
     assert response.status_code == 403
 
 
-def _get_callback_url(request_type: AhjoRequestType, decided_application: Application):
+def _get_callback_url(
+    request_type: AhjoRequestType, decided_application: Union[Application, None]
+):
+    kwargs_dict = {}
+    route_name = "ahjo_decision_callback_url"
+
+    if not request_type == AhjoRequestType.SUBSCRIBE_TO_DECISIONS:
+        kwargs_dict["request_type"] = request_type
+        kwargs_dict["uuid"] = str(decided_application.id)
+        route_name = "ahjo_callback_url"
+
     return reverse(
-        "ahjo_callback_url",
-        kwargs={"request_type": request_type, "uuid": decided_application.id},
+        route_name,
+        kwargs=kwargs_dict,
     )
 
 
@@ -474,6 +485,7 @@ def test_ahjo_callback_success(
     attachment.refresh_from_db()
     assert response.status_code == 200
     assert response.data == {"message": "Callback received"}
+
     if request_type == AhjoRequestType.OPEN_CASE:
         assert decided_application.ahjo_case_id == ahjo_callback_payload["caseId"]
         assert (
@@ -487,16 +499,56 @@ def test_ahjo_callback_success(
         assert batch.auto_generated_by_ahjo
         assert batch.handler == decided_application.calculation.handler
         assert batch.status == ApplicationBatchStatus.DRAFT
+
     if request_type == AhjoRequestType.UPDATE_APPLICATION:
         assert (
             attachment.ahjo_version_series_id
             == ahjo_callback_payload["records"][0]["versionSeriesId"]
         )
+
     if request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
         batch = decided_application.batch
         assert batch.status == ApplicationBatchStatus.AWAITING_AHJO_DECISION
 
     assert decided_application.ahjo_status.latest().status == ahjo_status
+
+
+@pytest.mark.parametrize(
+    "updatetype_from_ahjo, status_after_callback",
+    [
+        (AhjoDecisionUpdateType.ADDED, AhjoStatusEnum.SIGNED_IN_AHJO),
+        (AhjoDecisionUpdateType.REMOVED, AhjoStatusEnum.REMOVED_IN_AHJO),
+    ],
+)
+def test_subscribe_to_decisions_callback_success(
+    ahjo_client,
+    ahjo_user_token,
+    decided_application,
+    status_after_callback,
+    settings,
+    updatetype_from_ahjo,
+):
+    dummy_case_id = "HEL 1999-123"
+    decided_application.ahjo_case_id = dummy_case_id
+    decided_application.save()
+
+    settings.NEXT_PUBLIC_MOCK_FLAG = True
+    auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
+
+    callback_payload = {
+        "updatetype": updatetype_from_ahjo,
+        "id": f"{uuid.uuid4()}",
+        "caseId": dummy_case_id,
+        "caseGuid": f"{uuid.uuid4()}",
+    }
+    cb_url = _get_callback_url(AhjoRequestType.SUBSCRIBE_TO_DECISIONS, None)
+    response = ahjo_client.post(cb_url, **auth_headers, data=callback_payload)
+
+    assert response.status_code == 200
+    assert response.data == {"message": "Callback received"}
+
+    decided_application.refresh_from_db()
+    assert decided_application.ahjo_status.latest().status == status_after_callback
 
 
 @pytest.mark.django_db

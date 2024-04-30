@@ -178,6 +178,9 @@ class AhjoStatus(models.TextChoices):
     DELETE_REQUEST_RECEIVED = "delete_request_received", _("Delete request received")
     NEW_RECORDS_REQUEST_SENT = "new_record_request_sent", _("New record request sent")
     NEW_RECORDS_RECEIVED = "new_record_received", _("New record received by Ahjo")
+    REMOVED_IN_AHJO = "removed", _("Decision cancelled in Ahjo")
+    SIGNED_IN_AHJO = "signed", _("Decision signed and completed in Ahjo")
+    UPDATED_IN_AHJO = "updated", _("Decision updated in Ahjo")
 
 
 class ApplicationActions(models.TextChoices):
@@ -197,6 +200,7 @@ class AhjoRequestType(models.TextChoices):
     UPDATE_APPLICATION = "update_application", _("Update application in Ahjo")
     ADD_RECORDS = "add_records", _("Send new records to Ahjo")
     SEND_DECISION_PROPOSAL = "send_decision", _("Send decision to Ahjo")
+    SUBSCRIBE_TO_DECISIONS = "subscribe_to_decisions", _("Subscribe to decisions API")
 
 
 class DecisionType(models.TextChoices):
@@ -242,6 +246,12 @@ class AhjoRecordTitle(models.TextChoices):
         _("Decision proposal title"),
     )
     SECRET_ATTACHMENT = "Päätöksen liite", _("Secret decision attachment title")
+
+
+class AhjoDecisionUpdateType(models.TextChoices):
+    ADDED = "Added", _("Added")
+    REMOVED = "Removed", _("Removed")
+    UPDATED = "Updated", _("Updated")
 
 
 # Call gettext on some of the enums so that "makemessages" command can find them when used dynamically in templates

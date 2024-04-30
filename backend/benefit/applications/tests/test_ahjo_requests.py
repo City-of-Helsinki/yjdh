@@ -15,6 +15,7 @@ from applications.services.ahjo_client import (
     AhjoDecisionProposalRequest,
     AhjoDeleteCaseRequest,
     AhjoOpenCaseRequest,
+    AhjoSubscribeDecisionRequest,
     AhjoUpdateRecordsRequest,
     MissingHandlerIdError,
 )
@@ -38,18 +39,45 @@ def ahjo_open_case_request(application_with_ahjo_case_id):
 
 
 @pytest.mark.parametrize(
-    "ahjo_request_class, request_type, request_method",
+    "ahjo_request_class, request_type, request_method, callback_route",
     [
-        (AhjoOpenCaseRequest, AhjoRequestType.OPEN_CASE, "POST"),
-        (AhjoDecisionProposalRequest, AhjoRequestType.SEND_DECISION_PROPOSAL, "POST"),
-        (AhjoUpdateRecordsRequest, AhjoRequestType.UPDATE_APPLICATION, "PUT"),
-        (AhjoDeleteCaseRequest, AhjoRequestType.DELETE_APPLICATION, "DELETE"),
-        (AhjoAddRecordsRequest, AhjoRequestType.ADD_RECORDS, "POST"),
+        (AhjoOpenCaseRequest, AhjoRequestType.OPEN_CASE, "POST", "ahjo_callback_url"),
+        (
+            AhjoDecisionProposalRequest,
+            AhjoRequestType.SEND_DECISION_PROPOSAL,
+            "POST",
+            "ahjo_callback_url",
+        ),
+        (
+            AhjoUpdateRecordsRequest,
+            AhjoRequestType.UPDATE_APPLICATION,
+            "PUT",
+            "ahjo_callback_url",
+        ),
+        (
+            AhjoDeleteCaseRequest,
+            AhjoRequestType.DELETE_APPLICATION,
+            "DELETE",
+            "ahjo_callback_url",
+        ),
+        (
+            AhjoAddRecordsRequest,
+            AhjoRequestType.ADD_RECORDS,
+            "POST",
+            "ahjo_callback_url",
+        ),
+        (
+            AhjoSubscribeDecisionRequest,
+            AhjoRequestType.SUBSCRIBE_TO_DECISIONS,
+            "POST",
+            "",
+        ),
     ],
 )
 def test_ahjo_requests(
     ahjo_request_class,
     application_with_ahjo_case_id,
+    callback_route,
     dummy_token,
     request_type,
     request_method,
@@ -65,12 +93,9 @@ def test_ahjo_requests(
     assert request.application == application
     assert request.request_type == request_type
     assert request.request_method == request_method
-    assert request.url_base == f"{settings.AHJO_REST_API_URL}{API_CASES_BASE}"
+    assert request.url_base == f"{settings.AHJO_REST_API_URL}"
     assert request.lang == "fi"
-    assert (
-        str(request)
-        == f"Request of type {request_type} for application {application.id}"
-    )
+    assert str(request) == f"Request of type {request_type}"
     if request.request_type == AhjoRequestType.OPEN_CASE:
         assert request.api_url() == f"{settings.AHJO_REST_API_URL}{API_CASES_BASE}"
 
@@ -92,23 +117,31 @@ def test_ahjo_requests(
             request.api_url()
             == f"{url}?draftsmanid={draftsman_id}&reason={reason}&apireqlang={request.lang}"
         )
+    elif request.request_type == AhjoRequestType.SUBSCRIBE_TO_DECISIONS:
+        assert request.api_url() == f"{settings.AHJO_REST_API_URL}/decisions/subscribe"
 
     client = AhjoApiClient(dummy_token, request)
 
-    url = reverse(
-        "ahjo_callback_url",
-        kwargs={
-            "request_type": request.request_type,
-            "uuid": str(application.id),
-        },
-    )
+    if not request.request_type == AhjoRequestType.SUBSCRIBE_TO_DECISIONS:
+        url = reverse(
+            callback_route,
+            kwargs={
+                "request_type": request.request_type,
+                "uuid": str(application.id),
+            },
+        )
 
-    assert client.prepare_ahjo_headers() == {
-        "Authorization": f"Bearer {dummy_token.access_token}",
-        "Accept": "application/hal+json",
-        "X-CallbackURL": f"{settings.API_BASE_URL}{url}",
-        "Content-Type": "application/json",
-    }
+        assert client.prepare_ahjo_headers() == {
+            "Authorization": f"Bearer {dummy_token.access_token}",
+            "Accept": "application/hal+json",
+            "X-CallbackURL": f"{settings.API_BASE_URL}{url}",
+            "Content-Type": "application/json",
+        }
+    else:
+        assert client.prepare_ahjo_headers() == {
+            "Authorization": f"Bearer {dummy_token.access_token}",
+            "Content-Type": "application/json",
+        }
 
     with requests_mock.Mocker() as m:
         m.register_uri(
@@ -126,6 +159,7 @@ def test_ahjo_requests(
         (AhjoUpdateRecordsRequest, AhjoRequestType.UPDATE_APPLICATION, "PUT"),
         (AhjoDeleteCaseRequest, AhjoRequestType.DELETE_APPLICATION, "DELETE"),
         (AhjoAddRecordsRequest, AhjoRequestType.ADD_RECORDS, "POST"),
+        (AhjoSubscribeDecisionRequest, AhjoRequestType.SUBSCRIBE_TO_DECISIONS, "POST"),
     ],
 )
 @patch("applications.services.ahjo_client.LOGGER")

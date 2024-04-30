@@ -2,7 +2,7 @@ import json
 import logging
 import uuid
 from dataclasses import dataclass, field
-from typing import Tuple, Union
+from typing import Optional, Tuple, Union
 
 import requests
 from django.conf import settings
@@ -19,17 +19,14 @@ API_CASES_BASE = "/cases"
 
 @dataclass
 class AhjoRequest:
-    application: Application
     request_type = AhjoRequestType
-    url_base: str = field(
-        default_factory=lambda: f"{settings.AHJO_REST_API_URL}{API_CASES_BASE}"
-    )
+    application: Optional[Application] = None
+
     lang: str = "fi"
+    url_base: str = field(default_factory=lambda: settings.AHJO_REST_API_URL)
 
     def __str__(self):
-        return (
-            f"Request of type {self.request_type} for application {self.application.id}"
-        )
+        return f"Request of type {self.request_type}"
 
     def api_url(self) -> str:
         if not self.application.calculation.handler.ad_username:
@@ -38,7 +35,9 @@ class AhjoRequest:
             )
         if not self.application.ahjo_case_id:
             raise MissingAhjoCaseIdError("Application does not have an Ahjo case id")
-        return f"{self.url_base}/{self.application.ahjo_case_id}/records"
+        return (
+            f"{self.url_base}{API_CASES_BASE}/{self.application.ahjo_case_id}/records"
+        )
 
 
 @dataclass
@@ -54,7 +53,7 @@ class AhjoOpenCaseRequest(AhjoRequest):
             raise MissingHandlerIdError(
                 f"Application {self.application.id} handler does not have an ad_username"
             )
-        return self.url_base
+        return f"{self.url_base}{API_CASES_BASE}"
 
 
 @dataclass
@@ -99,10 +98,21 @@ class AhjoDeleteCaseRequest(AhjoRequest):
             )
         if not self.application.ahjo_case_id:
             raise MissingAhjoCaseIdError("Application does not have an Ahjo case id")
-        # Remove /records from the url, as it is not needed for delete requests
-        url = super().api_url().replace("/records", "")
+        url = f"{self.url_base}{API_CASES_BASE}/{self.application.ahjo_case_id}"
         draftsman_id = self.application.calculation.handler.ad_username
         return f"{url}?draftsmanid={draftsman_id}&reason={self.reason}&apireqlang={self.lang}"
+
+
+@dataclass
+class AhjoSubscribeDecisionRequest(AhjoRequest):
+    """Request to subscribe to a decision in Ahjo."""
+
+    application = None
+    request_type = AhjoRequestType.SUBSCRIBE_TO_DECISIONS
+    request_method = "POST"
+
+    def api_url(self) -> str:
+        return f"{self.url_base}/decisions/subscribe"
 
 
 class AhjoApiClientException(Exception):
@@ -139,21 +149,29 @@ class AhjoApiClient:
     def prepare_ahjo_headers(self) -> dict:
         """Prepare the headers for the Ahjo given Ahjo request type.
         The headers are used to authenticate the request to Ahjo and register a callback address.
+        If the request is a subscription request, the headers are prepared \
+        without a callback address in the JSON payload and the Accept and X-CallbackURL headers \
+        are not needed.
         """
-        url = reverse(
-            "ahjo_callback_url",
-            kwargs={
-                "request_type": self._request.request_type,
-                "uuid": str(self._request.application.id),
-            },
-        )
 
-        return {
+        headers_dict = {
             "Authorization": f"Bearer {self.ahjo_token.access_token}",
-            "Accept": "application/hal+json",
-            "X-CallbackURL": f"{settings.API_BASE_URL}{url}",
             "Content-Type": "application/json",
         }
+
+        if not self._request.request_type == AhjoRequestType.SUBSCRIBE_TO_DECISIONS:
+            url = reverse(
+                "ahjo_callback_url",
+                kwargs={
+                    "uuid": str(self._request.application.id),
+                    "request_type": self._request.request_type,
+                },
+            )
+
+            headers_dict["Accept"] = "application/hal+json"
+            headers_dict["X-CallbackURL"] = f"{settings.API_BASE_URL}{url}"
+
+        return headers_dict
 
     def send_request_to_ahjo(
         self,
@@ -183,7 +201,6 @@ class AhjoApiClient:
             if response.ok:
                 LOGGER.debug(f"Request {self._request} to Ahjo was successful.")
                 return self._request.application, response.text
-            return self._request.application, str(uuid.uuid4())
         except MissingHandlerIdError as e:
             LOGGER.error(f"Missing handler id: {e}")
         except MissingAhjoCaseIdError as e:

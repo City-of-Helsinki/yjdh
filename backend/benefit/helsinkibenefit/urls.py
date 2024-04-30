@@ -22,6 +22,7 @@ from applications.api.v1.ahjo_integration_views import (
     AhjoApplicationView,
     AhjoAttachmentView,
     AhjoCallbackView,
+    AhjoDecisionCallbackView,
 )
 from applications.api.v1.review_state_views import ReviewStateView
 from applications.api.v1.talpa_integration_views import TalpaCallbackView
@@ -88,6 +89,11 @@ urlpatterns = [
         "v1/ahjo-integration/callback/<str:request_type>/<uuid:uuid>",
         AhjoCallbackView.as_view(),
         name="ahjo_callback_url",
+    ),
+    path(
+        "v1/ahjo-integration/decision-callback/",
+        AhjoDecisionCallbackView.as_view(),
+        name="ahjo_decision_callback_url",
     ),
     path(
         "v1/ahjo-integration/attachment/<uuid:uuid>",
