@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 import uuid
@@ -10,21 +9,25 @@ from typing import List, Optional, Tuple, Union
 
 import jinja2
 import pdfkit
-import requests
-from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.core.files.base import ContentFile
-from django.db.models import F, OuterRef, QuerySet, Subquery
-from django.urls import reverse
+from django.db.models import QuerySet
 
 from applications.enums import (
-    AhjoRequestType,
     AhjoStatus as AhjoStatusEnum,
     ApplicationStatus,
     AttachmentType,
 )
 from applications.models import AhjoDecisionText, AhjoStatus, Application, Attachment
 from applications.services.ahjo_authentication import AhjoConnector, AhjoToken
+from applications.services.ahjo_client import (
+    AhjoAddRecordsRequest,
+    AhjoApiClient,
+    AhjoDecisionProposalRequest,
+    AhjoDeleteCaseRequest,
+    AhjoOpenCaseRequest,
+    AhjoUpdateRecordsRequest,
+)
 from applications.services.ahjo_payload import (
     prepare_attachment_records_payload,
     prepare_decision_proposal_payload,
@@ -440,22 +443,6 @@ def get_token() -> Union[AhjoToken, None]:
     return connector.get_token_from_db()
 
 
-def prepare_headers(
-    access_token: str, application: Application, request_type: AhjoRequestType
-) -> dict:
-    """Prepare the headers for the Ahjo request."""
-    url = reverse(
-        "ahjo_callback_url",
-        kwargs={"request_type": request_type, "uuid": str(application.id)},
-    )
-
-    return {
-        "Authorization": f"Bearer {access_token}",
-        "Accept": "application/hal+json",
-        "X-CallbackURL": f"{settings.API_BASE_URL}{url}",
-    }
-
-
 def get_application_for_ahjo(id: uuid.UUID) -> Optional[Application]:
     """Get the application with calculation, company and employee."""
     application = Application.objects.select_related(
@@ -476,142 +463,45 @@ def create_status_for_application(application: Application, status: AhjoStatusEn
     AhjoStatus.objects.create(application=application, status=status)
 
 
-def get_applications_for_open_case() -> QuerySet[Application]:
-    """Query applications which have their latest AhjoStatus relation as SUBMITTED_BUT_NOT_SENT_TO_AHJO
-    and are in the HANDLING state, so they will have a handler."""
-    latest_ahjo_status_subquery = AhjoStatus.objects.filter(
-        application=OuterRef("pk")
-    ).order_by("-created_at")
-
-    applications = (
-        Application.objects.annotate(
-            latest_ahjo_status_id=Subquery(latest_ahjo_status_subquery.values("id")[:1])
-        )
-        .filter(
-            status=ApplicationStatus.HANDLING,
-            ahjo_status__id=F("latest_ahjo_status_id"),
-            ahjo_status__status=AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
-        )
-        .prefetch_related("attachments", "calculation", "company")
-    )
-
-    return applications
-
-
-def prepare_delete_url(
-    url_base: str,
-    application: Application,
-    reason: str = "applicationretracted",
-    lang: str = "fi",
-) -> str:
-    url = f"{url_base}/{application.ahjo_case_id}"
-    draftsman_id = application.calculation.handler.ad_username
-    return f"{url}?draftsmanid={draftsman_id}&reason={reason}&apireqlang={lang}"
-
-
-def send_request_to_ahjo(
-    request_type: AhjoRequestType,
-    headers: dict,
-    application: Application,
-    data: dict = {},
-) -> Union[Tuple[Application, str], None]:
-    """Send a request to Ahjo."""
-
-    timeout = settings.AHJO_REQUEST_TIMEOUT
-    headers["Content-Type"] = "application/json"
-
-    data = json.dumps(data, default=str)
-
-    url_base = f"{settings.AHJO_REST_API_URL}/cases"
-
-    if request_type == AhjoRequestType.OPEN_CASE:
-        method = "POST"
-        api_url = url_base
-    elif request_type == AhjoRequestType.DELETE_APPLICATION:
-        method = "DELETE"
-        api_url = prepare_delete_url(url_base, application)
-        data = None
-
-    elif request_type == AhjoRequestType.UPDATE_APPLICATION:
-        method = "PUT"
-        api_url = f"{url_base}/{application.ahjo_case_id}/records"
-
-    elif request_type in [
-        AhjoRequestType.SEND_DECISION_PROPOSAL,
-        AhjoRequestType.ADD_RECORDS,
-    ]:
-        method = "POST"
-        api_url = f"{url_base}/{application.ahjo_case_id}/records"
-
-    try:
-        response = requests.request(
-            method, api_url, headers=headers, timeout=timeout, data=data
-        )
-        response.raise_for_status()
-
-        if response.ok:
-            LOGGER.info(
-                f"Request {request_type} for application {application.id} to Ahjo was successful."
-            )
-            return application, response.text
-
-    except requests.exceptions.HTTPError as e:
-        LOGGER.error(
-            f"HTTP error occurred while sending a {request_type} request for application {application.id} to Ahjo: {e}"
-        )
-        raise
-    except requests.exceptions.RequestException as e:
-        LOGGER.error(
-            f"HTTP error occurred while sending a {request_type} request for application {application.id} to Ahjo: {e}"
-        )
-        raise
-    except Exception as e:
-        LOGGER.error(
-            f"HTTP error occurred while sending a {request_type} request for application {application.id} to Ahjo: {e}"
-        )
-        raise
-
-
 def send_open_case_request_to_ahjo(
-    application: Application, ahjo_auth_token: str
-) -> Union[Tuple[Application, str], None]:
+    application: Application, ahjo_token: AhjoToken
+) -> Union[Tuple[Application, str], Tuple[None, None]]:
     """Open a case in Ahjo."""
     try:
-        headers = prepare_headers(
-            ahjo_auth_token, application, AhjoRequestType.OPEN_CASE
-        )
+        ahjo_request = AhjoOpenCaseRequest(application)
+        ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
 
         pdf_summary = generate_application_attachment(
             application, AttachmentType.PDF_SUMMARY
         )
         data = prepare_open_case_payload(application, pdf_summary)
 
-        return send_request_to_ahjo(
-            AhjoRequestType.OPEN_CASE, headers, application, data
-        )
+        result, response_text = ahjo_client.send_request_to_ahjo(data)
+        if result:
+            create_status_for_application(
+                application, AhjoStatusEnum.REQUEST_TO_OPEN_CASE_SENT
+            )
+        return result, response_text
+    except ValueError as e:
+        LOGGER.error(f"Value error: {e}")
     except ObjectDoesNotExist as e:
         LOGGER.error(f"Object not found: {e}")
     except ImproperlyConfigured as e:
         LOGGER.error(f"Improperly configured: {e}")
 
 
-def delete_application_in_ahjo(application_id: uuid.UUID):
+def delete_application_in_ahjo(
+    application: Application, ahjo_token: AhjoToken
+) -> Union[Tuple[Application, str], None]:
     """Delete/cancel an application in Ahjo."""
     try:
-        application = get_application_for_ahjo(application_id)
-        ahjo_token = get_token()
-        token = ahjo_token.access_token
+        application = get_application_for_ahjo(application.id)
+        ahjo_request = AhjoDeleteCaseRequest(application)
+        ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
 
-        headers = prepare_headers(
-            token, application, AhjoRequestType.DELETE_APPLICATION
-        )
-        application, _ = send_request_to_ahjo(
-            AhjoRequestType.DELETE_APPLICATION, headers, application
-        )
-        if application:
-            create_status_for_application(
-                application, AhjoStatusEnum.DELETE_REQUEST_SENT
-            )
+        return ahjo_client.send_request_to_ahjo(None)
+    except ValueError as e:
+        LOGGER.error(f"Value error: {e}")
     except ObjectDoesNotExist as e:
         LOGGER.error(f"Object not found: {e}")
     except ImproperlyConfigured as e:
@@ -619,31 +509,29 @@ def delete_application_in_ahjo(application_id: uuid.UUID):
 
 
 def update_application_summary_record_in_ahjo(
-    application: Application, ahjo_auth_token: str
-):
+    application: Application, ahjo_token: AhjoToken
+) -> Union[Tuple[Application, str], None]:
     """Update the application summary pdf in Ahjo.
     Should be done just before the decision proposal is sent.
     """
     try:
-        headers = prepare_headers(
-            ahjo_auth_token, application, AhjoRequestType.UPDATE_APPLICATION
-        )
+        ahjo_request = AhjoUpdateRecordsRequest(application)
+        ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
 
         pdf_summary = generate_application_attachment(
             application, AttachmentType.PDF_SUMMARY
         )
         data = prepare_update_application_payload(pdf_summary, application)
 
-        result = send_request_to_ahjo(
-            AhjoRequestType.UPDATE_APPLICATION,
-            headers,
-            application,
-            data,
-        )
+        result, response_text = ahjo_client.send_request_to_ahjo(data)
+
         if result:
             create_status_for_application(
                 application, AhjoStatusEnum.UPDATE_REQUEST_SENT
             )
+        return result, response_text
+    except ValueError as e:
+        LOGGER.error(f"Value error: {e}")
     except ObjectDoesNotExist as e:
         LOGGER.error(f"Object not found: {e}")
     except ImproperlyConfigured as e:
@@ -651,61 +539,56 @@ def update_application_summary_record_in_ahjo(
 
 
 def send_new_attachment_records_to_ahjo(
-    token: AhjoToken,
-) -> List[Tuple[Application, str]]:
+    application: Application,
+    ahjo_token: AhjoToken,
+) -> Union[Tuple[Application, str], None]:
     """Send any new attachments, that have been added after opening a case, to Ahjo."""
     try:
-        applications = Application.objects.with_downloaded_attachments()
         # TODO add a check for application status,
         # so that only applications in the correct status have their attachments sent
-        responses = []
-        for application in applications:
-            attachments = application.attachments.all()
+        ahjo_request = AhjoAddRecordsRequest(application)
+        ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
 
-            headers = prepare_headers(
-                token.access_token, application, AhjoRequestType.ADD_RECORDS
-            )
+        attachments = application.attachments.all()
 
-            data = prepare_attachment_records_payload(attachments, application)
+        data = prepare_attachment_records_payload(attachments, application)
 
-            application, response_text = send_request_to_ahjo(
-                AhjoRequestType.ADD_RECORDS, headers, application, data
-            )
-            responses.append((application, response_text))
-            create_status_for_application(
-                application, AhjoStatusEnum.NEW_RECORDS_REQUEST_SENT
-            )
-        return responses
+        application, response_text = ahjo_client.send_request_to_ahjo(data)
+
+        return application, response_text
+    except ValueError as e:
+        LOGGER.error(f"Value error: {e}")
     except ObjectDoesNotExist as e:
         LOGGER.error(f"Object not found: {e}")
     except ImproperlyConfigured as e:
         LOGGER.error(f"Improperly configured: {e}")
 
 
-def send_decision_proposal_to_ahjo(application_id: uuid.UUID):
-    """Open a case in Ahjo."""
+def send_decision_proposal_to_ahjo(
+    application: Application, ahjo_token: AhjoToken
+) -> Union[Tuple[Application, str], None]:
+    """Send a decision proposal and it's XML attachments to Ahjo."""
     try:
-        application = get_application_for_ahjo(application_id)
-        ahjo_token = get_token()
-        headers = prepare_headers(
-            ahjo_token.access_token,
-            application,
-            AhjoRequestType.SEND_DECISION_PROPOSAL,
-        )
+        ahjo_request = AhjoDecisionProposalRequest(application=application)
+        ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
+
         delete_existing_xml_attachments(application)
+
         decision_xml = generate_application_attachment(
             application, AttachmentType.DECISION_TEXT_XML
         )
         secret_xml = generate_application_attachment(
             application, AttachmentType.DECISION_TEXT_SECRET_XML
         )
+
         data = prepare_decision_proposal_payload(application, decision_xml, secret_xml)
-        application, _ = send_request_to_ahjo(
-            AhjoRequestType.SEND_DECISION_PROPOSAL, headers, application, data
-        )
+        response, response_text = ahjo_client.send_request_to_ahjo(data)
         create_status_for_application(
             application, AhjoStatusEnum.DECISION_PROPOSAL_SENT
         )
+        return response, response_text
+    except ValueError as e:
+        LOGGER.error(f"Value error: {e}")
     except ObjectDoesNotExist as e:
         LOGGER.error(f"Object not found: {e}")
     except ImproperlyConfigured as e:

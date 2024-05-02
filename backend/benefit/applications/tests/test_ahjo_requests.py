@@ -1,13 +1,35 @@
+from datetime import datetime, timezone
 from unittest.mock import patch
 
 import pytest
 import requests
 import requests_mock
-from django.conf import settings
 from django.urls import reverse
 
 from applications.enums import AhjoRequestType
-from applications.services.ahjo_integration import prepare_headers, send_request_to_ahjo
+from applications.services.ahjo_authentication import AhjoToken, InvalidTokenException
+from applications.services.ahjo_client import (
+    AhjoAddRecordsRequest,
+    AhjoApiClient,
+    AhjoApiClientException,
+    AhjoDecisionProposalRequest,
+    AhjoDeleteCaseRequest,
+    AhjoOpenCaseRequest,
+    AhjoUpdateRecordsRequest,
+    MissingHandlerIdError,
+)
+
+API_CASES_BASE = "/cases"
+
+
+@pytest.fixture
+def dummy_token():
+    return AhjoToken(
+        access_token="test",
+        expires_in=3600,
+        refresh_token="test",
+        created_at=datetime.now(timezone.utc),
+    )
 
 
 @pytest.fixture
@@ -17,129 +39,161 @@ def application_with_ahjo_case_id(decided_application):
     return decided_application
 
 
+@pytest.fixture
+def ahjo_open_case_request(application_with_ahjo_case_id):
+    return AhjoOpenCaseRequest(application_with_ahjo_case_id)
+
+
 @pytest.mark.parametrize(
-    "request_type",
+    "ahjo_request_class, request_type, request_method",
     [
-        (AhjoRequestType.OPEN_CASE,),
-        (AhjoRequestType.DELETE_APPLICATION,),
+        (AhjoOpenCaseRequest, AhjoRequestType.OPEN_CASE, "POST"),
+        (AhjoDecisionProposalRequest, AhjoRequestType.SEND_DECISION_PROPOSAL, "POST"),
+        (AhjoUpdateRecordsRequest, AhjoRequestType.UPDATE_APPLICATION, "PUT"),
+        (AhjoDeleteCaseRequest, AhjoRequestType.DELETE_APPLICATION, "DELETE"),
+        (AhjoAddRecordsRequest, AhjoRequestType.ADD_RECORDS, "POST"),
     ],
 )
-def test_prepare_headers(settings, request_type, decided_application):
+def test_ahjo_requests(
+    ahjo_request_class,
+    application_with_ahjo_case_id,
+    dummy_token,
+    request_type,
+    request_method,
+    settings,
+):
+    application = application_with_ahjo_case_id
+    handler = application.calculation.handler
+    handler.ad_username = "test"
+    handler.save()
     settings.API_BASE_URL = "http://test.com"
-    access_token = "test_token"
+
+    request = ahjo_request_class(application)
+    assert request.application == application
+    assert request.request_type == request_type
+    assert request.request_method == request_method
+    assert request.url_base == f"{settings.AHJO_REST_API_URL}{API_CASES_BASE}"
+    assert request.lang == "fi"
+    assert (
+        str(request)
+        == f"Request of type {request_type} for application {application.id}"
+    )
+    if request.request_type == AhjoRequestType.OPEN_CASE:
+        assert request.api_url() == f"{settings.AHJO_REST_API_URL}{API_CASES_BASE}"
+
+    elif request.request_type in [
+        AhjoRequestType.SEND_DECISION_PROPOSAL,
+        AhjoRequestType.UPDATE_APPLICATION,
+        AhjoRequestType.ADD_RECORDS,
+    ]:
+        assert (
+            request.api_url()
+            == f"{settings.AHJO_REST_API_URL}{API_CASES_BASE}/{application.ahjo_case_id}/records"
+        )
+
+    elif request.request_type == AhjoRequestType.DELETE_APPLICATION:
+        draftsman_id = application.calculation.handler.ad_username
+        reason = request.reason
+        url = f"{settings.AHJO_REST_API_URL}{API_CASES_BASE}/{application.ahjo_case_id}"
+        assert (
+            request.api_url()
+            == f"{url}?draftsmanid={draftsman_id}&reason={reason}&apireqlang={request.lang}"
+        )
+
+    client = AhjoApiClient(dummy_token, request)
 
     url = reverse(
         "ahjo_callback_url",
-        kwargs={"request_type": request_type, "uuid": decided_application.id},
+        kwargs={
+            "request_type": request.request_type,
+            "uuid": str(application.id),
+        },
     )
 
-    headers = prepare_headers(access_token, decided_application, request_type)
-
-    expected_headers = {
-        "Authorization": f"Bearer {access_token}",
+    assert client.prepare_ahjo_headers() == {
+        "Authorization": f"Bearer {dummy_token.access_token}",
         "Accept": "application/hal+json",
         "X-CallbackURL": f"{settings.API_BASE_URL}{url}",
+        "Content-Type": "application/json",
     }
 
-    assert headers == expected_headers
+    with requests_mock.Mocker() as m:
+        m.register_uri(
+            request.request_method, request.api_url(), text="ahjoRequestGuid"
+        )
+        client.send_request_to_ahjo({"foo": "bar"})
+        assert m.called
 
 
 @pytest.mark.parametrize(
-    "request_type, request_url",
+    "ahjo_request_class, request_type, request_method",
     [
-        (
-            AhjoRequestType.OPEN_CASE,
-            f"{settings.AHJO_REST_API_URL}/cases",
-        ),
-        (
-            AhjoRequestType.DELETE_APPLICATION,
-            f"{settings.AHJO_REST_API_URL}/cases/12345",
-        ),
+        (AhjoOpenCaseRequest, AhjoRequestType.OPEN_CASE, "POST"),
+        (AhjoDecisionProposalRequest, AhjoRequestType.SEND_DECISION_PROPOSAL, "POST"),
+        (AhjoUpdateRecordsRequest, AhjoRequestType.UPDATE_APPLICATION, "PUT"),
+        (AhjoDeleteCaseRequest, AhjoRequestType.DELETE_APPLICATION, "DELETE"),
+        (AhjoAddRecordsRequest, AhjoRequestType.ADD_RECORDS, "POST"),
     ],
 )
-def test_send_request_to_ahjo(
-    request_type,
-    request_url,
+@patch("applications.services.ahjo_client.LOGGER")
+def test_requests_exceptions(
+    mock_logger,
     application_with_ahjo_case_id,
+    decided_application,
+    ahjo_request_class,
+    dummy_token,
+    request_type,
+    request_method,
 ):
-    headers = {"Authorization": "Bearer test"}
+    application = decided_application
+    ahjo_request_without_ad_username = ahjo_request_class(application)
+
+    if isinstance(ahjo_request_without_ad_username, AhjoDeleteCaseRequest):
+        with pytest.raises(MissingHandlerIdError):
+            ahjo_request_without_ad_username.api_url()
+
+    with pytest.raises(InvalidTokenException):
+        AhjoApiClient(ahjo_token="foo", ahjo_request=ahjo_request_without_ad_username)
+
+    with pytest.raises(InvalidTokenException):
+        AhjoApiClient(
+            ahjo_token=AhjoToken(access_token=None),
+            ahjo_request=ahjo_request_without_ad_username,
+        )
+
+    handler = application.calculation.handler
+    handler.ad_username = "test"
+    handler.save()
+
+    configured_request = ahjo_request_class(application)
+
+    client = AhjoApiClient(dummy_token, configured_request)
 
     with requests_mock.Mocker() as m:
-        if request_type == AhjoRequestType.OPEN_CASE:
-            m.post(request_url, text="data")
-        elif request_type == AhjoRequestType.DELETE_APPLICATION:
-            m.delete(request_url)
-        send_request_to_ahjo(
-            request_type, headers, application_with_ahjo_case_id, {"foo": "bar"}
+        m.register_uri(
+            configured_request.request_method,
+            configured_request.api_url(),
+            status_code=400,
         )
-        assert m.called
-
-
-@patch("applications.services.ahjo_integration.LOGGER")
-def test_http_error(mock_logger, application_with_ahjo_case_id):
-    headers = {}
-
-    with requests_mock.Mocker() as m, pytest.raises(requests.exceptions.HTTPError):
-        m.post(f"{settings.AHJO_REST_API_URL}/cases", status_code=400)
-        send_request_to_ahjo(
-            AhjoRequestType.OPEN_CASE, headers, application_with_ahjo_case_id
-        )
-
-        assert m.called
+        client.send_request_to_ahjo()
         mock_logger.error.assert_called()
 
-    with requests_mock.Mocker() as m, pytest.raises(requests.exceptions.HTTPError):
-        m.delete(f"{settings.AHJO_REST_API_URL}/cases/12345", status_code=400)
-        send_request_to_ahjo(
-            AhjoRequestType.DELETE_APPLICATION, headers, application_with_ahjo_case_id
+    exception = requests.exceptions.RequestException
+    with requests_mock.Mocker() as m:
+        m.register_uri(
+            configured_request.request_method,
+            configured_request.api_url(),
+            exc=exception,
         )
-
-        assert m.called
+        client.send_request_to_ahjo()
         mock_logger.error.assert_called()
 
-
-@patch("applications.services.ahjo_integration.LOGGER")
-def test_network_error(mock_logger, application_with_ahjo_case_id):
-    headers = {}
-    exception = requests.exceptions.ConnectionError
-
-    with requests_mock.Mocker() as m, pytest.raises(exception):
-        m.post(f"{settings.AHJO_REST_API_URL}/cases", exc=exception)
-        send_request_to_ahjo(
-            AhjoRequestType.OPEN_CASE, headers, application_with_ahjo_case_id
+    exception = AhjoApiClientException
+    with requests_mock.Mocker() as m:
+        m.register_uri(
+            configured_request.request_method,
+            configured_request.api_url(),
+            exc=exception,
         )
-
-        assert m.called
-        mock_logger.error.assert_called()
-
-    with requests_mock.Mocker() as m, pytest.raises(exception):
-        m.delete(f"{settings.AHJO_REST_API_URL}/cases/12345", exc=exception)
-        send_request_to_ahjo(
-            AhjoRequestType.DELETE_APPLICATION, headers, application_with_ahjo_case_id
-        )
-
-        assert m.called
-        mock_logger.error.assert_called()
-
-
-@patch("applications.services.ahjo_integration.LOGGER")
-def test_other_error(mock_logger, application_with_ahjo_case_id):
-    headers = {}
-
-    with requests_mock.Mocker() as m, pytest.raises(Exception):
-        m.post(f"{settings.AHJO_REST_API_URL}/cases", exc=Exception)
-        send_request_to_ahjo(
-            AhjoRequestType.OPEN_CASE, headers, application_with_ahjo_case_id
-        )
-
-        assert m.called
-        mock_logger.error.assert_called()
-
-    with requests_mock.Mocker() as m, pytest.raises(Exception):
-        m.delete(f"{settings.AHJO_REST_API_URL}/cases/12345", exc=Exception)
-        send_request_to_ahjo(
-            AhjoRequestType.DELETE_APPLICATION, headers, application_with_ahjo_case_id
-        )
-
-        assert m.called
+        client.send_request_to_ahjo()
         mock_logger.error.assert_called()

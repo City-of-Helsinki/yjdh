@@ -19,6 +19,7 @@ from applications.enums import (
     AhjoStatus as AhjoStatusEnum,
     ApplicationBatchStatus,
     ApplicationStatus,
+    ApplicationTalpaStatus,
     AttachmentType,
     BenefitType,
 )
@@ -38,8 +39,6 @@ from applications.services.ahjo_integration import (
     generate_single_approved_file,
     generate_single_declined_file,
     get_application_for_ahjo,
-    get_applications_for_open_case,
-    prepare_delete_url,
     REJECTED_TITLE,
 )
 from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
@@ -688,41 +687,23 @@ def test_get_applications_for_open_case(
             ahjo_status.created_at = now + timedelta(days=index)
             ahjo_status.save()
 
-    applications_for_open_case = get_applications_for_open_case()
+    applications_for_open_case = Application.objects.get_by_statuses(
+        [ApplicationStatus.HANDLING], AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO
+    )
     # only handled_applications should be returned as their last  AhjoStatus is SUBMITTED_BUT_NOT_SENT_TO_AHJO
     # and their application status is HANDLING
     assert applications_for_open_case.count() == len(multiple_handling_applications)
 
 
 @pytest.mark.django_db
-def test_prepare_delete_url(settings, decided_application):
-    application = decided_application
-    application.ahjo_case_id = "HEL 1999-123"
-    application.save()
-    handler = application.calculation.handler
-    handler.ad_username = "foobar"
-    handler.save()
-
-    case_id = application.ahjo_case_id
-
-    reason = "applicationretracted"
-    lang = "fi"
-    url_base = f"{settings.AHJO_REST_API_URL}/cases"
-
-    url = prepare_delete_url(url_base, decided_application)
-    wanted_url = f"{url_base}/{case_id}?draftsmanid={handler.ad_username}&reason={reason}&apireqlang={lang}"
-    assert url == wanted_url
-
-
-@pytest.mark.django_db
-def test_with_downloaded_attachments(decided_application):
-    applications = Application.objects.with_downloaded_attachments()
+def test_with_non_downloaded_attachments(decided_application):
+    applications = Application.objects.with_non_downloaded_attachments()
     assert applications.count() == 0
 
     decided_application.ahjo_case_id = "HEL 1999-123"
     decided_application.save()
 
-    applications = Application.objects.with_downloaded_attachments()
+    applications = Application.objects.with_non_downloaded_attachments()
     assert applications.count() == 1
 
     attachments = applications[0].attachments.all()
@@ -740,8 +721,83 @@ def test_with_downloaded_attachments(decided_application):
     attachments[0].downloaded_by_ahjo = timezone.now()
     attachments[0].save()
 
-    applications = Application.objects.with_downloaded_attachments()
+    applications = Application.objects.with_non_downloaded_attachments()
     assert applications.count() == 1
 
     attachments = applications[0].attachments.all()
     assert attachments.count() == 6
+
+
+dummy_case_id = "HEL 1999-123"
+
+
+@pytest.mark.parametrize(
+    "application_status,talpa_status, case_id, decision_text, count",
+    [
+        (
+            ApplicationStatus.DRAFT,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            False,
+            0,
+        ),
+        (
+            ApplicationStatus.HANDLING,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            False,
+            0,
+        ),
+        (
+            ApplicationStatus.RECEIVED,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            False,
+            0,
+        ),
+        (
+            ApplicationStatus.CANCELLED,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            False,
+            0,
+        ),
+        (
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            False,
+            0,
+        ),
+        (
+            ApplicationStatus.ACCEPTED,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            True,
+            1,
+        ),
+        (
+            ApplicationStatus.REJECTED,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            True,
+            1,
+        ),
+    ],
+)
+@pytest.mark.django_db
+def test_get_for_ahjo_decision(
+    decided_application, application_status, talpa_status, case_id, decision_text, count
+):
+    decided_application.status = application_status
+    decided_application.talpa_status = talpa_status
+    decided_application.ahjo_case_id = case_id
+    decided_application.save()
+
+    if decision_text:
+        AhjoDecisionText.objects.create(
+            application=decided_application, decision_text="test"
+        )
+
+    applications = Application.objects.get_for_ahjo_decision()
+    assert applications.count() == count
