@@ -423,7 +423,9 @@
     "decision": {
       "description": {
         "accepted": "Ansökan har godkänts och Helsingforstillägg har beviljats för tiden {{dateRangeStart}} - {{dateRangeEnd}}",
-        "rejected": "Ansökan har avslagits. Helsingforstillägg beviljas inte."
+        "rejected": "Ansökan har avslagits. Helsingforstillägg beviljas inte.",
+        "handling": "Ansökan behandlas.",
+        "cancelled": "Ansökan har avbrutits."
       },
       "headings": {
         "mainHeading": "Uppgifter om beslutet",
