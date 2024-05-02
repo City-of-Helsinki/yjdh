@@ -78,7 +78,12 @@ const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
   const tableRows = filteredData.reduce((acc: BenefitRow[], row: Row) => {
     tableRow.id = row.id;
     if (row.rowType === 'helsinki_benefit_monthly_eur') {
-      tableRow.perMonth = `${formatFloatToCurrency(row.amount)} / kk`;
+      tableRow.perMonth = `${formatFloatToCurrency(
+        row.amount,
+        'EUR',
+        'fi-FI',
+        0
+      )} / kk`;
     }
     if (row.rowType === 'helsinki_benefit_sub_total_eur') {
       tableRow.dates = `${convertToUIDateFormat(
@@ -93,7 +98,7 @@ const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
         new Date(row.startDate)
       );
 
-      tableRow.amount = formatFloatToCurrency(row.amount);
+      tableRow.amount = formatFloatToCurrency(row.amount, 'EUR', 'fi-FI', 0);
       tableRow.amountNumber = row.amount;
       acc.push(tableRow);
       tableRow = createBenefitRow();
@@ -115,7 +120,7 @@ const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
         (acc: number, cur: BenefitRow) => acc + cur.duration,
         0
       ),
-      amount: formatFloatToCurrency(totalSum),
+      amount: formatFloatToCurrency(totalSum, 'EUR', 'fi-FI', 0),
     });
 
   return (
@@ -181,7 +186,7 @@ const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
             <>
               <div>
                 <dt>{t('common:review.decisionProposal.list.totalAmount')}</dt>
-                <dd>{formatFloatToCurrency(totalSum)}</dd>
+                <dd>{formatFloatToCurrency(totalSum, 'EUR', 'fi-FI', 0)}</dd>
               </div>
               <div>
                 <dt>
