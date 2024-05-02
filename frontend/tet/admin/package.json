@@ -3,9 +3,9 @@
   "version": "1.1.0",
   "license": "MIT",
   "scripts": {
-    "dev": "cross-env PORT=3000 node ../../shared/src/server/next-server.js",
+    "dev": "PORT=3000 node ../../shared/src/server/next-server.js",
     "build": "next build",
-    "start": "cross-env NODE_ENV=production PORT=3000 node ../../shared/src/server/next-server.js",
+    "start": "NODE_ENV=production PORT=3000 node ../../shared/src/server/next-server.js",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest --runInBand --no-cache",
     "test:debug-dom": "cross-env DEBUG_PRINT_LIMIT=1000000 yarn test",
