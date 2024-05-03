@@ -1,6 +1,8 @@
 import { HttpRequestHook } from '@frontend/shared/browser-tests/http-utils/http-request-hook';
 import requestLogger from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
+import { addMonths, subMonths } from 'date-fns';
 import { t } from 'testcafe';
 
 import DeMinimisAid from '../page-model/deminimis';
@@ -25,7 +27,8 @@ fixture('Company')
     clearDataToPrintOnFailure(testController);
   });
 
-const currentYear = new Date().getFullYear();
+const startDate = subMonths(new Date(), 4);
+const endDate = addMonths(new Date(), 3);
 const form: ApplicationFormData = {
   organization: {
     iban: '6051437344779954',
@@ -45,8 +48,8 @@ const form: ApplicationFormData = {
     monthlyPay: '2300',
     otherExpenses: '300',
     vacationMoney: '500',
-    startDate: `1.1.${currentYear}`,
-    endDate: `1.2.${currentYear}`,
+    startDate: convertToUIDateFormat(startDate),
+    endDate: convertToUIDateFormat(endDate),
   },
   deMinimisAid: {
     granter: 'One',
