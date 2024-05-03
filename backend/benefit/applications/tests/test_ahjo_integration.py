@@ -802,6 +802,7 @@ def test_get_for_ahjo_decision(
     applications = Application.objects.get_for_ahjo_decision()
     assert applications.count() == count
 
+
 @pytest.mark.parametrize(
     "initial_ahjo_status, expected_status, status_message, status_after",
     [
@@ -816,10 +817,9 @@ def test_get_for_ahjo_decision(
             400,
             "Cannot delete because a decision proposal has been sent to Ahjo",
             AhjoStatusEnum.DECISION_PROPOSAL_SENT,
-		)
-	]
+        ),
+    ],
 )
-
 @pytest.mark.django_db
 def test_delete_application_ahjo_api(
     decided_application,
