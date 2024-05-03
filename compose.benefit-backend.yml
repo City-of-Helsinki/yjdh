@@ -34,49 +34,11 @@ services:
     depends_on:
       - postgres
     container_name: benefit-backend
-  
-  applicant:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile-localdevelopment
-      target: development
-      args:
-        PORT: 3000
-        PROJECT: benefit
-        FOLDER: applicant
-    platform: linux/amd64
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-      - /app/.next
-    env_file:
-      - .env.benefit-applicant
-    container_name: benefit-applicant
-  
-  handler:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile-localdevelopment
-      target: development
-      args:
-        PORT: 3100
-        PROJECT: benefit
-        FOLDER: handler
-    platform: linux/amd64
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-      - /app/.next
-    env_file:
-      - .env.benefit-handler
-    container_name: benefit-handler
 
   local-proxy:
     depends_on:
       - postgres
       - backend
-      - applicant
-      - handler
     build:
       context: ./localdevelopment/benefit/nginx
     container_name: benefit-local-proxy
@@ -95,7 +57,7 @@ services:
     container_name: benefit-mailhog
     networks:
       - default
-  
+
   clamav:
     image: clamav/clamav:latest
     container_name: benefit-clamav
@@ -122,7 +84,15 @@ services:
       - "8080:8080"
     depends_on:
       - clamav
-    command: ["/usr/wait-for-it.sh", "clamav:3310", "--timeout=30", "--", "node", "src/app.js"]
+    command:
+      [
+        "/usr/wait-for-it.sh",
+        "clamav:3310",
+        "--timeout=30",
+        "--",
+        "node",
+        "src/app.js",
+      ]
     volumes:
       - ./backend/docker/arm/tools/wait-for-it.sh:/usr/wait-for-it.sh
     networks:
