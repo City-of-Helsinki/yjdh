@@ -5,9 +5,15 @@ from typing import List
 
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
+from django.contrib.postgres.search import (
+    SearchQuery,
+    SearchRank,
+    SearchVector,
+    TrigramSimilarity,
+)
 from django.core import exceptions
 from django.db import transaction
-from django.db.models import Q, QuerySet
+from django.db.models import Q, QuerySet, Value
 from django.http import FileResponse, HttpResponse, StreamingHttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -28,6 +34,7 @@ from sql_util.aggregates import SubqueryCount
 
 from applications.api.v1.serializers.application import (
     ApplicantApplicationSerializer,
+    BaseApplicationSerializer,
     HandlerApplicationSerializer,
 )
 from applications.api.v1.serializers.application_alteration import (
@@ -683,3 +690,136 @@ class PrintDetail(APIView):
         if pdf:
             return HttpResponse(pdf, "application/pdf")
         raise Exception("PDF error")
+
+
+class Search(APIView):
+    permission_classes = [BFIsHandler]
+
+    def get(self, request, *args, **kwargs):
+        search_query_str = request.query_params.get("q")
+        limit = request.query_params.get("limit") or 99999
+
+        in_memory_filter = False
+        in_memory_query_str = ""
+
+        # Store and strip filters from query string
+        if re.search("nimi:", search_query_str):
+            in_memory_query_str = re.sub(
+                "(.*)+nimi:(\\w+)", "\g<2>", search_query_str
+            ).lower()
+            search_query_str = re.sub(" nimi:.+", "", search_query_str)
+            in_memory_filter = True
+
+        query = SearchQuery(search_query_str, search_type="websearch")
+
+        # Detect input pattern, default to string search
+        mode = "string"
+        search_vectors = SearchVector("ahjo_case_id", weight="A") + SearchVector(
+            "company__name", weight="B"
+        )
+        if re.search("^HEL\\s\\d+", search_query_str, re.I):
+            mode = "ahjo"
+            search_vectors = SearchVector("ahjo_case_id", weight="A")
+        elif re.search("^\\d{6}([-+a-z])\\d{3}\\w", search_query_str, re.I):
+            mode = "hetu"
+        elif re.search("^\\d+", search_query_str):
+            mode = "numbers"
+            search_vectors = SearchVector(
+                "application_number", weight="A"
+            ) + SearchVector("company__business_id", weight="C")
+
+        # Perform search vector query
+        if mode == "ahjo" or mode == "numbers":
+            applications = (
+                Application.objects.annotate(
+                    search=search_vectors,
+                    rank=SearchRank(
+                        search_vectors,
+                        query,
+                        # normalization=Value(2).bitor(Value(4)),
+                        cover_density=True,
+                    ),
+                )
+                .filter(search=query)
+                .order_by("-rank")[: int(limit)]
+            )
+        # Perform trigram query
+        elif mode == "string":
+            applications = (
+                Application.objects.annotate(
+                    search=search_vectors,
+                    similarity=TrigramSimilarity("company__name", search_query_str),
+                    rank=SearchRank(
+                        search_vectors,
+                        query,
+                        # normalization=Value(2).bitor(Value(4)),
+                        # cover_density=True,
+                    ),
+                )
+                .filter(similarity__gt=0.3)
+                .order_by("-similarity", "-handled_at")[: int(limit)]
+            )
+        # Just filter by exact SSN
+        elif mode == "hetu":
+            applications = Application.objects.filter(
+                employee__social_security_number=search_query_str
+            )
+
+        data = HandlerApplicationSerializer(applications, many=True).data
+
+        if in_memory_filter:
+            in_memory_filtered = []
+
+            # In case of only filter in use, perform expensive in-memory search from all applications
+            # TODO: bug -- it is performed when there was a search query, but with no results
+            if len(applications) == 0:
+                applications = Application.objects.all()
+                data = HandlerApplicationSerializer(applications, many=True).data
+                mode = "by_name"
+
+            # Do the actual in-memory filtering
+            # TODO: Use https://pypi.org/project/fuzzysearch/ or similar for better results and less logic
+            for app in data:
+                if (
+                    in_memory_query_str in app["employee"]["first_name"].lower()
+                    or in_memory_query_str in app["employee"]["last_name"].lower()
+                    or in_memory_query_str
+                    in (
+                        app["employee"]["first_name"]
+                        + " "
+                        + app["employee"]["last_name"]
+                    ).lower()
+                    or in_memory_query_str
+                    in (
+                        app["employee"]["last_name"]
+                        + " "
+                        + app["employee"]["first_name"]
+                    ).lower()
+                ):
+                    in_memory_filtered.append(app)
+                    print("match!")
+            data = in_memory_filtered
+
+        pruned_data = []
+        for item in data:
+            item.pop("bases")
+            item.pop("applicant_terms_approval")
+            item.pop("applicant_terms_in_effect")
+            item.pop("attachment_requirements")
+            item.pop("attachments")
+            item.pop("de_minimis_aid_set")
+            item.pop("pay_subsidies")
+            item.pop("changes")
+
+            pruned_data.append(item)
+
+        return Response(
+            {
+                "q": search_query_str,
+                "filter": in_memory_query_str,
+                "pattern": mode,
+                "count": len(pruned_data),
+                "data": pruned_data,
+            },
+            status=status.HTTP_200_OK,
+        )

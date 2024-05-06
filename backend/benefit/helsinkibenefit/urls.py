@@ -136,6 +136,11 @@ urlpatterns = [
         application_views.PrintDetail.as_view(),
         name="print_summary_pdf",
     ),
+    path(
+        "v1/search/",
+        application_views.Search.as_view(),
+        name="search_applications",
+    ),
     path("oidc/", include("shared.oidc.urls")),
     path("oauth2/", include("shared.azure_adfs.urls")),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
