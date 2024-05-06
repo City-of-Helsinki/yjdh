@@ -42,7 +42,7 @@ def replace_decision_template_placeholders(
             company=application.company.name,
             decision_maker=decision_maker,
             total_amount=(
-                application.calculation.calculated_benefit_amount
+                int(application.calculation.calculated_benefit_amount)
                 if decision_type == DecisionType.ACCEPTED
                 else ""
             ),

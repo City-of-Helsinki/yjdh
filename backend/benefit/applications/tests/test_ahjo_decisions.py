@@ -18,12 +18,9 @@ def test_replace_accepted_decision_template_placeholders(
         accepted_ahjo_decision_section.decision_type,
         decided_application,
     )
-
+    total_amount = int(decided_application.calculation.calculated_benefit_amount)
     assert decided_application.company.name in replaced_template
-    assert (
-        f"{decided_application.calculation.calculated_benefit_amount}"
-        in replaced_template
-    )
+    assert f"{total_amount}" in replaced_template
     wanted_start_date = decided_application.calculation.start_date.strftime("%d.%m.%Y")
     wanted_end_date = decided_application.calculation.end_date.strftime("%d.%m.%Y")
     assert f"{wanted_start_date} - {wanted_end_date}" in replaced_template
