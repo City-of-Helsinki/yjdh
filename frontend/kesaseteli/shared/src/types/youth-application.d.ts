@@ -4,7 +4,8 @@ type YouthApplication = {
   first_name: string;
   last_name: string;
   social_security_number: string;
-  non_vtj_birthdate?: Date;
+  // Non-VTJ birthdate as YYYY-MM-DD string, e.g. "2023-12-31"
+  non_vtj_birthdate?: string;
   non_vtj_home_municipality?: string;
   postcode: string;
   school?: string;

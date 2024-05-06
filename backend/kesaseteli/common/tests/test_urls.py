@@ -2,7 +2,11 @@ import uuid
 
 import pytest
 
-from common.urls import handler_403_url, handler_youth_application_processing_url
+from common.urls import (
+    handler_403_url,
+    handler_create_application_without_ssn_url,
+    handler_youth_application_processing_url,
+)
 
 
 @pytest.mark.parametrize(
@@ -17,6 +21,28 @@ from common.urls import handler_403_url, handler_youth_application_processing_ur
 def test_handler_403_url(settings, handler_url, expected_result):
     settings.HANDLER_URL = handler_url
     assert handler_403_url() == expected_result
+
+
+@pytest.mark.parametrize(
+    "handler_url, expected_result",
+    [
+        ("https://example.org", "https://example.org/create-application-without-ssn"),
+        ("https://example.com/", "https://example.com/create-application-without-ssn"),
+        (
+            "https://test.org:3200",
+            "https://test.org:3200/create-application-without-ssn",
+        ),
+        (
+            "https://test.example.com:80/",
+            "https://test.example.com:80/create-application-without-ssn",
+        ),
+    ],
+)
+def test_handler_create_application_without_ssn_url(
+    settings, handler_url, expected_result
+):
+    settings.HANDLER_URL = handler_url
+    assert handler_create_application_without_ssn_url() == expected_result
 
 
 @pytest.mark.parametrize(

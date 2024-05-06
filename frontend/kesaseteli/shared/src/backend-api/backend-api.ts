@@ -19,6 +19,8 @@ export const BackendEndpoint = {
   ATTACHMENTS: '/attachments/',
   USER: '/oidc/userinfo/',
   YOUTH_APPLICATIONS: '/v1/youthapplications/',
+  CREATE_YOUTH_APPLICATION_WITHOUT_SSN:
+    '/v1/youthapplications/create-without-ssn/',
   EMPLOYMENT: '/v1/youthapplications/fetch_employee_data/',
   SCHOOLS: '/v1/schools/',
   ...(isRealIntegrationsEnabled() && isSuomiFiEnabled()

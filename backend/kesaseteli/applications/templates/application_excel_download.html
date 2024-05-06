@@ -9,8 +9,10 @@
             </div>
         {% endif %}
 
-
         <div class="col-md-12 text-end mt-2">
+            <a href="{{ handler_create_application_without_ssn_url }}" class="btn btn-link btn-md">
+                {% trans 'Luo hakemus ilman henkilötunnusta' %}
+            </a>
             <a href="{% url 'logout' %}" class="btn btn-info btn-md">{% trans 'Kirjaudu ulos' %}</a>
         </div>
 

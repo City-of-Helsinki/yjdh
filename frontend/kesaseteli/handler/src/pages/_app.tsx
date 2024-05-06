@@ -1,6 +1,7 @@
 import 'react-toastify/dist/ReactToastify.css';
 import 'hds-design-tokens';
 
+import Footer from 'kesaseteli/handler/components/footer/Footer';
 import Header from 'kesaseteli/handler/components/header/Header';
 import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
 import createQueryClient from 'kesaseteli-shared/query-client/create-query-client';
@@ -23,7 +24,7 @@ const App: React.FC<AppProps> = (appProps: AppProps) => (
   <BackendAPIProvider baseURL={getBackendDomain()}>
     <QueryClientProvider client={queryClient}>
       <DialogContextProvider>
-        <BaseApp header={<Header />} {...appProps} />
+        <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
         <Portal>
           <DialogContext.Consumer>
             {([state]) => <ConfirmDialog {...state} />}

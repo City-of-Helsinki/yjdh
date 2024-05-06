@@ -1,9 +1,14 @@
 {
   "appName": "Kesäsetelin käsittelijäliittymä",
   "header": {
+    "createApplicationWithoutSsnLabel": "Luo hakemus ilman henkilötunnusta",
     "linkSkipToContent": "Siirry sisältöön",
     "menuToggleAriaLabel": "Valikko",
     "languageMenuButtonAriaLabel": "Valitse kieli"
+  },
+  "footer": {
+    "copyrightText": "Helsingin kaupunki",
+    "allRightsReservedText": "Kaikki oikeudet pidätetään"
   },
   "errorPage": {
     "title": "Tapahtui odottamaton virhe",
@@ -94,9 +99,60 @@
       "submit": "Hylkää"
     }
   },
-  "applications" : {
+  "applications": {
     "actions": {
       "close": "Sulje"
+    }
+  },
+  "applicationWithoutSsn": {
+    "form": {
+      "title": "Kesäsetelin tiedot",
+      "info": "Täytäthän kaikki tiedot mahdollisimman paikkansapitävästi",
+      "requiredInfo": "Kaikki * merkityt kentät ovat pakollisia julkaisuun",
+      "sendButton": "Lähetä tiedot",
+      "usageInfo": "Käytä tätä lomaketta vain, jos henkilöllä ei ole pysyvää suomalaista henkilötunnusta!",
+      "emailCheckAlert": "Tarkista ennen lähettämistä, että sähköpostiosoite on oikein! Jos se on väärin, niin kesäseteli ei välity henkilölle!",
+      "helpers": {
+        "date": "Käytä muotoa P.K.VVVV",
+        "format": "Käytä muotoa"
+      },
+      "errors": {
+        "required": "Tieto puuttuu tai on virheellinen",
+        "maxLength": "Syöttämäsi tieto on liian pitkä",
+        "pattern": "Syöttämäsi tieto on virheellistä muotoa",
+        "validate": "Syöttämäsi tieto on virheellistä muotoa",
+        "selectionGroups": "Valitse jokin vaihtoehto"
+      },
+      "inputs": {
+        "firstName": "Etunimi",
+        "lastName": "Sukunimi",
+        "nonVtjBirthdate": "Syntymäpäivä",
+        "email": "Sähköpostiosoite",
+        "school": "Koulu",
+        "phoneNumber": "Puhelinnumero",
+        "postcode": "Postinumero",
+        "language": "Kieli",
+        "nonVtjHomeMunicipality": "Kotikunta",
+        "additionalInfoDescription": "Lisätiedot"
+      },
+      "checkNotification": {
+        "label": "Hups! Jokin tiedoista ei ole oikein",
+        "validation": "Tarkista seuraavat kentät: {{ fields}}"
+      },
+      "selectionGroups": {
+        "language": {
+          "fi": "Suomi",
+          "sv": "Ruotsi",
+          "en": "Englanti"
+        }
+      }
+    }
+  },
+  "notificationPages": {
+    "thankyou": {
+      "title": "Hienoa! Olet lähettänyt tiedot kesäsetelijärjestelmään",
+      "message": "Hakemuksen käsittelylinkki löytyy käsittelijöiden sähköpostista.",
+      "processingLinkLabel": "KÄSITTELE"
     }
   }
 }
