@@ -29,6 +29,7 @@ from applications.exporters.excel_exporter import (
 )
 from applications.models import EmployerSummerVoucher, YouthApplication
 from common.decorators import enforce_handler_view_adfs_login
+from common.urls import handler_create_application_without_ssn_url
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
 
@@ -40,6 +41,12 @@ class EmployerApplicationExcelDownloadView(TemplateView):
     """
 
     template_name = "application_excel_download.html"
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(
+            **kwargs,
+            handler_create_application_without_ssn_url=handler_create_application_without_ssn_url(),
+        )
 
     @staticmethod
     def base_queryset(filter_pks=None) -> QuerySet[EmployerSummerVoucher]:

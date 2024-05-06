@@ -14,6 +14,14 @@ def handler_403_url():
     return urljoin(settings.HANDLER_URL, "/fi/403")
 
 
+def handler_create_application_without_ssn_url():
+    """
+    Get handlers' URL "create youth application without social security number" page URL.
+    :return: URL for handlers' "create youth application without social security number" page.
+    """
+    return urljoin(settings.HANDLER_URL, "/create-application-without-ssn")
+
+
 def handler_youth_application_processing_url(youth_application_pk):
     """
     Get handlers' youth application processing URL.
