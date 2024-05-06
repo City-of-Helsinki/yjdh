@@ -1,3 +1,4 @@
+import copy
 from dataclasses import dataclass
 from datetime import date
 from typing import List, Tuple
@@ -75,12 +76,15 @@ class AhjoSecretXMLBuilder(AhjoXMLBuilder):
             row_type=RowType.HELSINKI_BENEFIT_TOTAL_EUR
         ).first()
 
+        total_amount_row_with_int = copy.copy(total_amount_row)
+        total_amount_row_with_int.amount = int(total_amount_row_with_int.amount)
+
         row_types_to_list = [
             RowType.HELSINKI_BENEFIT_MONTHLY_EUR,
             RowType.HELSINKI_BENEFIT_SUB_TOTAL_EUR,
         ]
         calculation_rows = calculation.rows.filter(row_type__in=row_types_to_list)
-        return total_amount_row, calculation_rows
+        return total_amount_row_with_int, calculation_rows
 
     def _prepare_multiple_period_rows(
         self,

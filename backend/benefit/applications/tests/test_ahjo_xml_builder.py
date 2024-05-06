@@ -215,10 +215,16 @@ def test_get_context_for_secret_xml_with_single_period(
     assert context["language"] == decided_application.applicant_language
     assert isinstance(context["total_amount_row"], CalculationRow)
     assert context["total_amount_row"] == total_eur_row
+    assert context["total_amount_row"].amount == int(total_eur_row.amount)
 
 
 def test_get_context_for_secret_xml_with_multiple_periods(
-    calculation, decided_application, monthly_row_1, sub_total_row_1, secret_xml_builder
+    calculation,
+    decided_application,
+    monthly_row_1,
+    sub_total_row_1,
+    secret_xml_builder,
+    total_eur_row,
 ):
     monthly_row_2 = CalculationRowFactory(
         calculation=calculation,
@@ -254,3 +260,5 @@ def test_get_context_for_secret_xml_with_multiple_periods(
         monthly_row_2.amount
     )
     assert context["calculation_periods"][1].total_amount == int(sub_total_row_2.amount)
+    assert context["total_amount_row"] == total_eur_row
+    assert context["total_amount_row"].amount == int(total_eur_row.amount)
