@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.9.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.8.0...kesaseteli-backend-v1.9.0) (2024-05-07)
+
+
+### Features
+
+* **ks-backend:** Add create_without_ssn endpoint & tests for it ([097b099](https://github.com/City-of-Helsinki/yjdh/commit/097b09944c83e03ff0dae0848ab07d33f3dc8900))
+* **ks-handler:** Add UI for creating youth application without SSN ([e46958c](https://github.com/City-of-Helsinki/yjdh/commit/e46958cdee39abc3fd5c2fada5e2b2e894e8be95))
+
 ## [1.8.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.7.0...kesaseteli-backend-v1.8.0) (2024-02-28)
 
 
