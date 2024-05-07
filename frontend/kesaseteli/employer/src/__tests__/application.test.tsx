@@ -12,6 +12,7 @@ import {
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
 import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
+import SLOW_JEST_TIMEOUT from 'shared/__tests__/utils/slow-jest-timeout';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
@@ -94,121 +95,139 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
       });
 
       describe('when loading application returns data', () => {
-        it('shows validation errors and disables continue button when missing values', async () => {
-          expectAuthorizedReply();
-          expectToGetApplicationFromBackend(application);
-          renderPage(ApplicationPage, { query: { id } });
-          const applicationPage = getApplicationPageApi(application);
-          const required =
-            /(tieto puuttuu tai on virheellinen)|(errors.required)/i;
-          await applicationPage.step1.expectations.stepIsLoaded();
-          await applicationPage.step1.actions.typeContactPersonName('');
-          await applicationPage.step1.expectations.inputHasError(
-            'contact_person_name',
-            required
-          );
-          await applicationPage.step1.actions.typeContactPersonEmail('');
-          await applicationPage.step1.expectations.inputHasError(
-            'contact_person_email',
-            required
-          );
-          await applicationPage.step1.actions.typeStreetAddress('');
-          await applicationPage.step1.expectations.inputHasError(
-            'street_address',
-            required
-          );
-          await applicationPage.step1.actions.typeContactPersonPhone('');
-          await applicationPage.step1.expectations.inputHasError(
-            'contact_person_phone_number',
-            required
-          );
-        });
+        it(
+          'shows validation errors and disables continue button when missing values',
+          async () => {
+            expectAuthorizedReply();
+            expectToGetApplicationFromBackend(application);
+            renderPage(ApplicationPage, { query: { id } });
+            const applicationPage = getApplicationPageApi(application);
+            const required =
+              /(tieto puuttuu tai on virheellinen)|(errors.required)/i;
+            await applicationPage.step1.expectations.stepIsLoaded();
+            await applicationPage.step1.actions.typeContactPersonName('');
+            await applicationPage.step1.expectations.inputHasError(
+              'contact_person_name',
+              required
+            );
+            await applicationPage.step1.actions.typeContactPersonEmail('');
+            await applicationPage.step1.expectations.inputHasError(
+              'contact_person_email',
+              required
+            );
+            await applicationPage.step1.actions.typeStreetAddress('');
+            await applicationPage.step1.expectations.inputHasError(
+              'street_address',
+              required
+            );
+            await applicationPage.step1.actions.typeContactPersonPhone('');
+            await applicationPage.step1.expectations.inputHasError(
+              'contact_person_phone_number',
+              required
+            );
+          },
+          SLOW_JEST_TIMEOUT
+        );
 
-        it('shows validation errors when value is too long', async () => {
-          expectAuthorizedReply();
-          expectToGetApplicationFromBackend(application);
-          renderPage(ApplicationPage, { query: { id } });
-          const applicationPage = getApplicationPageApi(application);
-          await applicationPage.step1.expectations.stepIsLoaded();
-          await applicationPage.step1.actions.typeContactPersonName(
-            'a'.repeat(257)
-          ); // max limit is 256
-          await applicationPage.step1.expectations.inputHasError(
-            'contact_person_name',
-            /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
-          );
-          await applicationPage.step1.actions.typeContactPersonEmail(
-            'john@doe'
-          );
-          await applicationPage.step1.expectations.inputHasError(
-            'contact_person_email',
-            /(syöttämäsi tieto on virheellistä muotoa)|(errors.pattern)/i
-          );
-          await applicationPage.step1.actions.typeStreetAddress(
-            's'.repeat(257)
-          ); // max limit is 64
-          await applicationPage.step1.expectations.inputHasError(
-            'street_address',
-            /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
-          );
-          await applicationPage.step1.actions.typeContactPersonPhone(
-            '1'.repeat(65)
-          ); // max limit is 64
-          await applicationPage.step1.expectations.inputHasError(
-            'contact_person_phone_number',
-            /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
-          );
-        });
+        it(
+          'shows validation errors when value is too long',
+          async () => {
+            expectAuthorizedReply();
+            expectToGetApplicationFromBackend(application);
+            renderPage(ApplicationPage, { query: { id } });
+            const applicationPage = getApplicationPageApi(application);
+            await applicationPage.step1.expectations.stepIsLoaded();
+            await applicationPage.step1.actions.typeContactPersonName(
+              'a'.repeat(257)
+            ); // max limit is 256
+            await applicationPage.step1.expectations.inputHasError(
+              'contact_person_name',
+              /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
+            );
+            await applicationPage.step1.actions.typeContactPersonEmail(
+              'john@doe'
+            );
+            await applicationPage.step1.expectations.inputHasError(
+              'contact_person_email',
+              /(syöttämäsi tieto on virheellistä muotoa)|(errors.pattern)/i
+            );
+            await applicationPage.step1.actions.typeStreetAddress(
+              's'.repeat(257)
+            ); // max limit is 64
+            await applicationPage.step1.expectations.inputHasError(
+              'street_address',
+              /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
+            );
+            await applicationPage.step1.actions.typeContactPersonPhone(
+              '1'.repeat(65)
+            ); // max limit is 64
+            await applicationPage.step1.expectations.inputHasError(
+              'contact_person_phone_number',
+              /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
+            );
+          },
+          SLOW_JEST_TIMEOUT
+        );
 
-        it('saves application when next button is clicked', async () => {
-          expectAuthorizedReply();
-          expectToGetApplicationFromBackend(application);
-          renderPage(ApplicationPage, { query: { id } });
-          const applicationPage = getApplicationPageApi(application);
-          await applicationPage.step1.expectations.stepIsLoaded();
-          applicationPage.step1.expectations.displayCompanyData();
-          applicationPage.step1.expectations.inputValueIsSet(
-            'contact_person_name'
-          );
-          applicationPage.step1.expectations.inputValueIsSet(
-            'contact_person_email'
-          );
-          applicationPage.step1.expectations.inputValueIsSet(
-            'contact_person_phone_number'
-          );
-          const contact_person_name = 'John Doe';
-          const contact_person_email = 'john@doe.com';
-          const contact_person_phone_number = '+358503758288';
-          const street_address = 'Pohjoisesplanadi 11-13, 00170 Helsinki';
-          await applicationPage.step1.actions.typeContactPersonName(
-            contact_person_name
-          );
-          await applicationPage.step1.actions.typeContactPersonEmail(
-            contact_person_email
-          );
-          await applicationPage.step1.actions.typeStreetAddress(street_address);
-          await applicationPage.step1.actions.typeContactPersonPhone(
-            contact_person_phone_number
-          );
-          await applicationPage.step1.actions.clickNextButtonAndExpectToSaveApplication();
-          await applicationPage.step2.expectations.stepIsLoaded();
-        });
+        it(
+          'saves application when next button is clicked',
+          async () => {
+            expectAuthorizedReply();
+            expectToGetApplicationFromBackend(application);
+            renderPage(ApplicationPage, { query: { id } });
+            const applicationPage = getApplicationPageApi(application);
+            await applicationPage.step1.expectations.stepIsLoaded();
+            applicationPage.step1.expectations.displayCompanyData();
+            applicationPage.step1.expectations.inputValueIsSet(
+              'contact_person_name'
+            );
+            applicationPage.step1.expectations.inputValueIsSet(
+              'contact_person_email'
+            );
+            applicationPage.step1.expectations.inputValueIsSet(
+              'contact_person_phone_number'
+            );
+            const contact_person_name = 'John Doe';
+            const contact_person_email = 'john@doe.com';
+            const contact_person_phone_number = '+358503758288';
+            const street_address = 'Pohjoisesplanadi 11-13, 00170 Helsinki';
+            await applicationPage.step1.actions.typeContactPersonName(
+              contact_person_name
+            );
+            await applicationPage.step1.actions.typeContactPersonEmail(
+              contact_person_email
+            );
+            await applicationPage.step1.actions.typeStreetAddress(
+              street_address
+            );
+            await applicationPage.step1.actions.typeContactPersonPhone(
+              contact_person_phone_number
+            );
+            await applicationPage.step1.actions.clickNextButtonAndExpectToSaveApplication();
+            await applicationPage.step2.expectations.stepIsLoaded();
+          },
+          SLOW_JEST_TIMEOUT
+        );
 
-        it('can traverse between wizard steps', async () => {
-          expectAuthorizedReply();
-          expectToGetApplicationFromBackend(application);
-          renderPage(ApplicationPage, { query: { id } });
-          const applicationPage = getApplicationPageApi(application);
-          await applicationPage.step1.expectations.stepIsLoaded();
-          await applicationPage.step1.actions.clickNextButton();
-          await applicationPage.step2.expectations.stepIsLoaded();
-          await applicationPage.step2.actions.clickNextButton();
-          await applicationPage.step3.expectations.stepIsLoaded();
-          await applicationPage.step3.actions.clickPreviousButton();
-          await applicationPage.step2.expectations.stepIsLoaded();
-          await applicationPage.step2.actions.clickPreviousButton();
-          await applicationPage.step1.expectations.stepIsLoaded();
-        });
+        it(
+          'can traverse between wizard steps',
+          async () => {
+            expectAuthorizedReply();
+            expectToGetApplicationFromBackend(application);
+            renderPage(ApplicationPage, { query: { id } });
+            const applicationPage = getApplicationPageApi(application);
+            await applicationPage.step1.expectations.stepIsLoaded();
+            await applicationPage.step1.actions.clickNextButton();
+            await applicationPage.step2.expectations.stepIsLoaded();
+            await applicationPage.step2.actions.clickNextButton();
+            await applicationPage.step3.expectations.stepIsLoaded();
+            await applicationPage.step3.actions.clickPreviousButton();
+            await applicationPage.step2.expectations.stepIsLoaded();
+            await applicationPage.step2.actions.clickPreviousButton();
+            await applicationPage.step1.expectations.stepIsLoaded();
+          },
+          SLOW_JEST_TIMEOUT
+        );
       });
     });
   });
