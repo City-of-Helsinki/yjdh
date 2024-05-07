@@ -71,8 +71,10 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
     ]
 
     def get_queryset(self):
-        order_by = self.request.query_params.get("order_by") or None
+        # Do not include applications that have been sent to Ahjo via integration
+        self.queryset = self.queryset.filter(auto_generated_by_ahjo=False)
 
+        order_by = self.request.query_params.get("order_by") or None
         if order_by:
             self.queryset = self.queryset.order_by(order_by)
 
