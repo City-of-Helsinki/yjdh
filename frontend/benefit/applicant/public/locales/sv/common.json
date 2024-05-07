@@ -710,7 +710,8 @@
     "attachments": {
       "title": "Ett fel uppstod",
       "tooBig": "Storleken på bilagan är för stor.",
-      "fileType": "Typen av bilaga är inte tillåten."
+      "fileType": "Typen av bilaga är inte tillåten.",
+      "malformed": "Bilagan stöds inte. Se till att filformatet är korrekt och att dess storlek inte överstiger den maximalt tillåtna storleken."
     },
     "notFound": {
       "title": "Tyvärr hittas inte sidan du sökte.",

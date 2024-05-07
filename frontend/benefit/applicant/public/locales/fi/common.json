@@ -710,7 +710,8 @@
     "attachments": {
       "title": "Tapahtui virhe",
       "tooBig": "Liite on liian suuri.",
-      "fileType": "Liite on väärässä muodossa."
+      "fileType": "Liite on väärässä muodossa.",
+      "malformed": "Lataamasi tiedosto on viallinen. Tarkistathan että tiedostomuoto on oikea eikä sen koko ylitä sallittua maksimikokoa."
     },
     "notFound": {
       "title": "Pahoittelut, sivua ei löytynyt.",

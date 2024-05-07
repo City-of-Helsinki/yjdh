@@ -1,8 +1,12 @@
 import Toast from 'shared/components/toast/Toast';
 
-const showErrorToast = (title: string, message: string): void =>
+const showErrorToast = (
+  title: string,
+  message: string,
+  autoDismissTime = 5000
+): void =>
   void Toast({
-    autoDismissTime: 5000,
+    autoDismissTime,
     type: 'error',
     labelText: title,
     text: message,

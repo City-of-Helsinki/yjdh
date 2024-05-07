@@ -38,11 +38,11 @@ const useAttachmentsList = (): ExtendedComponentProps => {
     mutate: uploadAttachment,
     isLoading: isUploading,
     isError: isUploadingError,
-    error: uploadError
+    error: uploadError,
   } = useUploadAttachmentQuery();
 
-  const [error, setError] = React.useState<ErrorResponse | null>( uploadError);
-  
+  const [error, setError] = React.useState<ErrorResponse | null>(uploadError);
+
   React.useEffect(() => {
     if (isUploadingError) {
       setError(uploadError);
@@ -50,10 +50,34 @@ const useAttachmentsList = (): ExtendedComponentProps => {
   }, [isUploadingError, uploadError]);
 
   React.useEffect(() => {
-    if (error?.response?.status === 400) {
-      showErrorToast(t(`common:malware.errorTitle`), error?.response?.data?.non_field_errors[0]);
+    if (error && !error?.response?.data) {
+      showErrorToast(
+        t('common:error.generic.label'),
+        t('common:error.generic.text')
+      );
+      return;
     }
-    else if (isRemovingError) {
+    if (error?.response?.status >= 400) {
+      const backendValidationError =
+        error?.response?.data?.non_field_errors?.at(0);
+      const malwareError =
+        error?.response?.data?.key?.includes('malware') || false;
+      if (backendValidationError && malwareError) {
+        showErrorToast(
+          t(`common:error.malware.errorTitle`),
+          error?.response?.data?.non_field_errors[0],
+          320_000
+        );
+      } else if (backendValidationError) {
+        showErrorToast(
+          t(`common:error.generic.label`),
+          `${error?.response?.data?.non_field_errors[0]}. ${t(
+            'common:error.attachments.malformed'
+          )}`,
+          30_000
+        );
+      }
+    } else if (isRemovingError) {
       showErrorToast(
         t(`common:delete.errorTitle`),
         t(`common:delete.errorMessage`)
