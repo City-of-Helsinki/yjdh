@@ -1,0 +1,3 @@
+const SLOW_JEST_TIMEOUT = 100_000;
+
+export default SLOW_JEST_TIMEOUT;

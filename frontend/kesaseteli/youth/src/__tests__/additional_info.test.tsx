@@ -11,10 +11,9 @@ import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render
 import { fakeAdditionalInfoApplication } from 'kesaseteli-shared/__tests__/utils/fake-objects';
 import YouthApplicationStatusType from 'kesaseteli-shared/types/youth-application-status-type';
 import React from 'react';
+import SLOW_JEST_TIMEOUT from 'shared/__tests__/utils/slow-jest-timeout';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
-
-jest.retryTimes(5);
 
 describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
   const APPLICATION_ID = 'abc-123';
@@ -132,50 +131,66 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
     });
 
     describe(`sends filled form data to the backend`, () => {
-      it(`with default language`, async () => {
-        expectToGetYouthApplicationStatus(APPLICATION_ID, {
-          status: 'additional_information_requested',
-        });
-        renderPage(AdditionalInfoPage, {
-          query: { id: APPLICATION_ID },
-        });
-        const { additional_info_description, additional_info_user_reasons } =
-          fakeAdditionalInfoApplication();
-        const additionalInfoPageApi = getAdditionalInfoPageApi(APPLICATION_ID);
-        await additionalInfoPageApi.expectations.formIsPresent();
-        await additionalInfoPageApi.actions.clickAndSelectReasonsFromDropdown(
-          additional_info_user_reasons
-        );
-        await additionalInfoPageApi.actions.inputDescription(
-          additional_info_description
-        );
-        await additionalInfoPageApi.actions.clickSendButton(200);
-        await additionalInfoPageApi.expectations.notificationIsPresent('sent');
-      });
+      it(
+        `with default language`,
+        async () => {
+          expectToGetYouthApplicationStatus(APPLICATION_ID, {
+            status: 'additional_information_requested',
+          });
+          renderPage(AdditionalInfoPage, {
+            query: { id: APPLICATION_ID },
+          });
+          const { additional_info_description, additional_info_user_reasons } =
+            fakeAdditionalInfoApplication();
+          const additionalInfoPageApi =
+            getAdditionalInfoPageApi(APPLICATION_ID);
+          await additionalInfoPageApi.expectations.formIsPresent();
+          await additionalInfoPageApi.actions.clickAndSelectReasonsFromDropdown(
+            additional_info_user_reasons
+          );
+          await additionalInfoPageApi.actions.inputDescription(
+            additional_info_description
+          );
+          await additionalInfoPageApi.actions.clickSendButton(200);
+          await additionalInfoPageApi.expectations.notificationIsPresent(
+            'sent'
+          );
+        },
+        SLOW_JEST_TIMEOUT
+      );
 
-      it(`with changed language`, async () => {
-        expectToGetYouthApplicationStatus(APPLICATION_ID, {
-          status: 'additional_information_requested',
-        });
-        renderPage(AdditionalInfoPage, {
-          query: { id: APPLICATION_ID },
-          locale: 'sv',
-        });
-        const { additional_info_description, additional_info_user_reasons } =
-          fakeAdditionalInfoApplication();
-        const additionalInfoPageApi = getAdditionalInfoPageApi(APPLICATION_ID, {
-          language: 'sv',
-        });
-        await additionalInfoPageApi.expectations.formIsPresent();
-        await additionalInfoPageApi.actions.clickAndSelectReasonsFromDropdown(
-          additional_info_user_reasons
-        );
-        await additionalInfoPageApi.actions.inputDescription(
-          additional_info_description
-        );
-        await additionalInfoPageApi.actions.clickSendButton(200);
-        await additionalInfoPageApi.expectations.notificationIsPresent('sent');
-      });
+      it(
+        `with changed language`,
+        async () => {
+          expectToGetYouthApplicationStatus(APPLICATION_ID, {
+            status: 'additional_information_requested',
+          });
+          renderPage(AdditionalInfoPage, {
+            query: { id: APPLICATION_ID },
+            locale: 'sv',
+          });
+          const { additional_info_description, additional_info_user_reasons } =
+            fakeAdditionalInfoApplication();
+          const additionalInfoPageApi = getAdditionalInfoPageApi(
+            APPLICATION_ID,
+            {
+              language: 'sv',
+            }
+          );
+          await additionalInfoPageApi.expectations.formIsPresent();
+          await additionalInfoPageApi.actions.clickAndSelectReasonsFromDropdown(
+            additional_info_user_reasons
+          );
+          await additionalInfoPageApi.actions.inputDescription(
+            additional_info_description
+          );
+          await additionalInfoPageApi.actions.clickSendButton(200);
+          await additionalInfoPageApi.expectations.notificationIsPresent(
+            'sent'
+          );
+        },
+        SLOW_JEST_TIMEOUT
+      );
     });
   });
 });

@@ -37,15 +37,23 @@ const getAdditionalInfoPageApi = (
     expectations: {
       async formIsPresent() {
         await waitForLoadingCompleted();
-        await screen.findByRole('heading', {
-          name: translations.additionalInfo.title,
-        });
+        await screen.findByRole(
+          'heading',
+          {
+            name: translations.additionalInfo.title,
+          },
+          { timeout: 5000 }
+        );
       },
       async notificationIsPresent(type: NotificationType) {
         await waitForBackendRequestsToComplete();
-        await screen.findByRole('heading', {
-          name: translations.additionalInfo.notification[type],
-        });
+        await screen.findByRole(
+          'heading',
+          {
+            name: translations.additionalInfo.notification[type],
+          },
+          { timeout: 5000 }
+        );
       },
       async exceptionTypeDropDownHasError(errorText: RegExp) {
         const elem = await screen.findByTestId(

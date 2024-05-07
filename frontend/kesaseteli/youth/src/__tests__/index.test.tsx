@@ -21,8 +21,6 @@ import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 import { difference } from 'shared/utils/array.utils';
 
-jest.retryTimes(5);
-
 describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
   it('should not violate accessibility', async () => {
     expectToGetSchoolsFromBackend();
