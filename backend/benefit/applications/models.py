@@ -189,10 +189,19 @@ class ApplicationManager(models.Manager):
     def get_for_ahjo_decision(self):
         """
         Get applications that are in a state where a decision proposal should be sent to Ahjo.
+        This means applications that have been accepted or rejected, their talpa status is not_processed_by_talpa,
+        have a ahjo_case_id, a decisiontext and their latest ahjo_status is case_opened.
         """
+
+        latest_ahjo_status_subquery = (
+            AhjoStatus.objects.filter(application=OuterRef("pk"))
+            .order_by("-created_at")
+            .values("id")[:1]
+        )
 
         return (
             self.get_queryset()
+            .annotate(latest_ahjo_status_id=Subquery(latest_ahjo_status_subquery))
             .filter(
                 status__in=[
                     ApplicationStatus.ACCEPTED,
@@ -204,6 +213,8 @@ class ApplicationManager(models.Manager):
                 id__in=AhjoDecisionText.objects.filter(
                     application_id=OuterRef("id")
                 ).values("application_id"),
+                ahjo_status__id=F("latest_ahjo_status_id"),
+                ahjo_status__status__in=[AhjoStatusEnum.CASE_OPENED],
             )
             .select_related("ahjodecisiontext")
         )
