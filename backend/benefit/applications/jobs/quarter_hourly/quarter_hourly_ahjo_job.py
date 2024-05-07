@@ -17,7 +17,7 @@ class Job(QuarterHourlyJob):
             )
             call_command(
                 "send_ahjo_requests",
-                request_type=AhjoRequestType.SEND_DECISION_PROPOSAL,
+                request_type=AhjoRequestType.ADD_RECORDS,
             )
             call_command(
                 "send_ahjo_requests", request_type=AhjoRequestType.UPDATE_APPLICATION

@@ -732,10 +732,11 @@ dummy_case_id = "HEL 1999-123"
 
 
 @pytest.mark.parametrize(
-    "application_status,talpa_status, case_id, decision_text, count",
+    "application_status, ahjo_status,talpa_status, case_id, decision_text, count",
     [
         (
             ApplicationStatus.DRAFT,
+            AhjoStatusEnum.CASE_OPENED,
             ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
             dummy_case_id,
             False,
@@ -743,6 +744,7 @@ dummy_case_id = "HEL 1999-123"
         ),
         (
             ApplicationStatus.HANDLING,
+            AhjoStatusEnum.CASE_OPENED,
             ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
             dummy_case_id,
             False,
@@ -750,6 +752,7 @@ dummy_case_id = "HEL 1999-123"
         ),
         (
             ApplicationStatus.RECEIVED,
+            AhjoStatusEnum.CASE_OPENED,
             ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
             dummy_case_id,
             False,
@@ -757,6 +760,7 @@ dummy_case_id = "HEL 1999-123"
         ),
         (
             ApplicationStatus.CANCELLED,
+            AhjoStatusEnum.CASE_OPENED,
             ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
             dummy_case_id,
             False,
@@ -764,6 +768,7 @@ dummy_case_id = "HEL 1999-123"
         ),
         (
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            AhjoStatusEnum.CASE_OPENED,
             ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
             dummy_case_id,
             False,
@@ -771,6 +776,7 @@ dummy_case_id = "HEL 1999-123"
         ),
         (
             ApplicationStatus.ACCEPTED,
+            AhjoStatusEnum.CASE_OPENED,
             ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
             dummy_case_id,
             True,
@@ -778,21 +784,62 @@ dummy_case_id = "HEL 1999-123"
         ),
         (
             ApplicationStatus.REJECTED,
+            AhjoStatusEnum.CASE_OPENED,
             ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
             dummy_case_id,
             True,
             1,
         ),
+        (
+            ApplicationStatus.ACCEPTED,
+            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            True,
+            0,
+        ),
+        (
+            ApplicationStatus.REJECTED,
+            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            True,
+            0,
+        ),
+        (
+            ApplicationStatus.ACCEPTED,
+            AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            True,
+            0,
+        ),
+        (
+            ApplicationStatus.REJECTED,
+            AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            True,
+            0,
+        ),
     ],
 )
 @pytest.mark.django_db
 def test_get_for_ahjo_decision(
-    decided_application, application_status, talpa_status, case_id, decision_text, count
+    decided_application,
+    application_status,
+    ahjo_status,
+    talpa_status,
+    case_id,
+    decision_text,
+    count,
 ):
     decided_application.status = application_status
     decided_application.talpa_status = talpa_status
     decided_application.ahjo_case_id = case_id
     decided_application.save()
+
+    decided_application.ahjo_status.create(status=ahjo_status)
 
     if decision_text:
         AhjoDecisionText.objects.create(
