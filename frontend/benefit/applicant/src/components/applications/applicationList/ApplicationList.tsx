@@ -6,7 +6,7 @@ import ListItem from './listItem/ListItem';
 import useApplicationList from './useApplicationList';
 
 export interface ApplicationListProps {
-  heading: ((count: number) => React.ReactNode) | React.ReactNode;
+  heading: React.ReactNode;
   status: string[];
   isArchived?: boolean;
   orderByOptions?: OptionType[];
@@ -43,9 +43,6 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   const items =
     list?.map((props) => <ListItem key={props.id} {...props} />) || [];
 
-  const headingText =
-    heading instanceof Function ? heading(list.length) : heading;
-
   return (
     <ListContents
       list={list}
@@ -56,7 +53,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       setOrderBy={setOrderBy}
       orderByOptions={orderByOptions}
       hasItems={hasItems}
-      headingText={headingText}
+      headingText={heading}
       status={status}
       items={items}
       noItemsText={noItemsText}

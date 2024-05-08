@@ -52,9 +52,6 @@ const PaginatedApplicationList: React.FC<Props> = ({
     );
   }
 
-  const headingText =
-    heading instanceof Function ? heading(list.length) : heading;
-
   return (
     <ListContents
       list={list}
@@ -65,7 +62,7 @@ const PaginatedApplicationList: React.FC<Props> = ({
       setOrderBy={setOrderBy}
       orderByOptions={orderByOptions}
       hasItems={hasItems}
-      headingText={headingText}
+      headingText={heading}
       status={status}
       items={items}
       noItemsText={noItemsText}

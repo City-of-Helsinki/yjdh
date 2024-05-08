@@ -47,9 +47,6 @@ const ExpandableApplicationList: React.FC<Props> = ({
     items = items.slice(0, initialItems);
   }
 
-  const headingText =
-    heading instanceof Function ? heading(list.length) : heading;
-
   return (
     <ListContents
       list={list}
@@ -60,7 +57,7 @@ const ExpandableApplicationList: React.FC<Props> = ({
       setOrderBy={setOrderBy}
       orderByOptions={orderByOptions}
       hasItems={hasItems}
-      headingText={headingText}
+      headingText={heading}
       status={status}
       items={items}
       noItemsText={noItemsText}
