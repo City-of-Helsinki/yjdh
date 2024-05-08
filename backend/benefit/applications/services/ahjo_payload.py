@@ -231,14 +231,19 @@ def prepare_update_application_payload(
 ) -> dict:
     """Prepare the payload that is sent to Ahjo when an application is updated, \
           in this case it only contains a Records dict"""
+    if not pdf_summary.ahjo_version_series_id:
+        raise ValueError("Attachment must have an ahjo_version_series_id for update.")
     return {
         "records": [
             _prepare_record(
-                _prepare_record_title(application, AhjoRecordType.APPLICATION),
-                AhjoRecordType.APPLICATION,
-                pdf_summary.created_at.isoformat("T", "seconds"),
-                [_prepare_record_document_dict(pdf_summary)],
-                application.calculation.handler,
+                record_title=_prepare_record_title(
+                    application, AhjoRecordType.APPLICATION
+                ),
+                record_type=AhjoRecordType.APPLICATION,
+                acquired=pdf_summary.created_at.isoformat("T", "seconds"),
+                documents=[_prepare_record_document_dict(pdf_summary)],
+                handler=application.calculation.handler,
+                ahjo_version_series_id=pdf_summary.ahjo_version_series_id,
             )
         ]
     }
