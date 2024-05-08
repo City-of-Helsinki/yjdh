@@ -8,7 +8,7 @@ import {
   PROPOSALS_FOR_DECISION,
   TALPA_STATUSES,
 } from 'benefit-shared/constants';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Language } from 'shared/i18n/i18n';
 import { BenefitAttachment } from 'shared/types/attachment';
 import { DefaultTheme } from 'styled-components';
@@ -627,6 +627,12 @@ export type ApplicationAlteration = {
   applicationNumber?: number;
   applicationEmployeeFirstName?: string;
   applicationEmployeeLastName?: string;
+  isRecoverable?: boolean;
+  recoveryJustification?: string;
+  handledBy?: User;
+  handledAt?: string;
+  cancelledBy?: User;
+  cancelledAt?: string;
 };
 
 export type ApplicationAlterationData = {
@@ -650,4 +656,22 @@ export type ApplicationAlterationData = {
   application_number?: number;
   application_employee_first_name?: string;
   application_employee_last_name?: string;
+  is_recoverable?: boolean;
+  recovery_justification?: string;
+  handled_by?: UserData;
+  handled_at?: string;
+  cancelled_by?: UserData;
+  cancelled_at?: string;
 };
+
+export type AlterationAccordionItemProps = {
+  alteration: ApplicationAlteration;
+  application: Application;
+};
+
+export type DecisionDetailAccessorFunction = (app: Application) => ReactNode;
+
+export type DecisionDetailList = Array<{
+  accessor: DecisionDetailAccessorFunction,
+  key: string
+}>;

@@ -1,5 +1,6 @@
 import useApplicationsQuery from 'benefit/handler/hooks/useApplicationsQuery';
 import { getBatchDataReceived } from 'benefit/handler/utils/common';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import {
   ApplicationData,
   ApplicationListItemData,
@@ -22,7 +23,11 @@ const translationsBase = 'common:applications.list';
 const useApplicationsArchive = (): ApplicationListProps => {
   const { t } = useTranslation();
   const query = useApplicationsQuery(
-    ['accepted', 'rejected', 'cancelled'],
+    [
+      APPLICATION_STATUSES.ACCEPTED,
+      APPLICATION_STATUSES.REJECTED,
+      APPLICATION_STATUSES.CANCELLED
+    ],
     '-handled_at',
     false,
     true

@@ -174,6 +174,9 @@ declare module 'styled-components' {
         coat: {
           '--accent-line-color': string;
         };
+        danger: {
+          '--accent-line-color': string;
+        };
       };
     };
   }

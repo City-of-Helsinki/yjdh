@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-22 19:07+0300\n"
+"POT-Creation-Date: 2024-05-08 09:42+0300\n"
 "PO-Revision-Date: 2022-11-01 10:47+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -810,6 +810,9 @@ msgstr "E-postadress till sakkunnig inspektör"
 msgid "Expert inspector's title"
 msgstr "Namn på sakkunnig inspektör"
 
+msgid "Batch created through Ahjo integration"
+msgstr ""
+
 msgid "application batch"
 msgstr "ansökningssats"
 
@@ -963,80 +966,88 @@ msgstr "status"
 
 #, fuzzy
 #| msgid "application batches"
-msgid "alteration of application"
+msgid "Alteration of application"
 msgstr "ansökningssatser"
 
 #, fuzzy
 #| msgid "type of terms"
-msgid "type of alteration"
+msgid "Type of alteration"
 msgstr "typ av villkor"
 
 #, fuzzy
 #| msgid "type of terms"
-msgid "state of alteration"
+msgid "State of alteration"
 msgstr "typ av villkor"
 
 #, fuzzy
 #| msgid "benefit end date"
-msgid "new benefit end date"
+msgid "New benefit end date"
 msgstr "slutdatum för understöd"
 
-msgid "date when employment resumes after suspended"
+msgid "Date when employment resumes after suspended"
 msgstr ""
 
 #, fuzzy
 #| msgid "type of terms"
-msgid "reason for alteration"
+msgid "Reason for alteration"
 msgstr "typ av villkor"
 
-msgid "date when alteration notice was handled"
+msgid "Date when alteration notice was handled"
 msgstr ""
 
 #, fuzzy
 #| msgid "amount of the benefit granted, calculated by the system"
-msgid "the first day the unwarranted benefit will be collected from"
+msgid "The first day the unwarranted benefit will be collected from"
 msgstr "understödsbelopp som beviljats, beräknat av systemet"
 
 #, fuzzy
 #| msgid "amount of the benefit granted, calculated by the system"
-msgid "the last day the unwarranted benefit will be collected from"
+msgid "The last day the unwarranted benefit will be recovered from"
 msgstr "understödsbelopp som beviljats, beräknat av systemet"
 
 #, fuzzy
 #| msgid "amount of the benefit granted, calculated by the system"
-msgid "amount of unwarranted benefit to be collected"
+msgid "Amount of unwarranted benefit to be recovered"
 msgstr "understödsbelopp som beviljats, beräknat av systemet"
 
 msgid ""
-"whether to use handle billing with an e-invoice instead of a bill sent to a "
+"Whether to use handle billing with an e-invoice instead of a bill sent to a "
 "physical address"
 msgstr ""
 
 #, fuzzy
 #| msgid "Name of the employer"
-msgid "name of the e-invoice provider"
+msgid "Name of the e-invoice provider"
 msgstr "Arbetsgivarens namn"
 
 #, fuzzy
 #| msgid "Name of the employer"
-msgid "identifier of the e-invoice provider"
+msgid "Identifier of the e-invoice provider"
 msgstr "Arbetsgivarens namn"
 
 #, fuzzy
-#| msgid "Delivery address"
-msgid "e-invoice address"
-msgstr "Leveransadress"
-
-#, fuzzy
 #| msgid "company contact person's email"
-msgid "contact person"
+msgid "Contact person"
 msgstr "kontaktpersonens e-postadress"
 
-msgid "whether the alteration should be recovered"
+msgid "Whether the alteration should be recovered"
 msgstr ""
 
-msgid "the justification provided in the recovering bill, if eligible"
+msgid "The justification provided in the recovering bill, if eligible"
 msgstr ""
+
+#, fuzzy
+#| msgid "Handler"
+msgid "Handled by"
+msgstr "Handläggare"
+
+msgid "The date the alteration was cancelled after it had been handled"
+msgstr ""
+
+#, fuzzy
+#| msgid "Cancelled"
+msgid "Cancelled by"
+msgstr "Återkallad"
 
 #, fuzzy
 #| msgid "Decision date"
@@ -1623,6 +1634,11 @@ msgstr "godkännande av villkoren för tjänsten"
 
 msgid "terms of service approvals"
 msgstr "godkännanden av villkoren för tjänsten"
+
+#, fuzzy
+#~| msgid "Delivery address"
+#~ msgid "e-invoice address"
+#~ msgstr "Leveransadress"
 
 #, fuzzy
 #~| msgid "Decision date"

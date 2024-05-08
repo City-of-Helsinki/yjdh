@@ -5,8 +5,7 @@ import useLocale from 'benefit/applicant/hooks/useLocale';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { ALTERATION_STATE, ALTERATION_TYPE } from 'benefit-shared/constants';
 import {
-  Application,
-  ApplicationAlteration,
+  AlterationAccordionItemProps,
 } from 'benefit-shared/types/application';
 import { prettyPrintObject } from 'benefit-shared/utils/errors';
 import camelcaseKeys from 'camelcase-keys';
@@ -20,15 +19,10 @@ import hdsToast from 'shared/components/toast/Toast';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { formatFloatToCurrency } from 'shared/utils/string.utils';
 
-type Props = {
-  alteration: ApplicationAlteration;
-  application: Application;
-};
-
 const AlterationAccordionItem = ({
   alteration,
   application,
-}: Props): JSX.Element => {
+}: AlterationAccordionItemProps): JSX.Element => {
   const locale = useLocale();
   const { t } = useTranslation();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);

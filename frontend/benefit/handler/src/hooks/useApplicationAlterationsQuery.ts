@@ -11,27 +11,27 @@ const useApplicationAlterationsQuery = (
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
 
-  const status = ['received'];
+  const state = ['received'];
 
   const handleError = (): void => {
     showErrorToast(
       t('common:applications.list.errors.fetch.label'),
       t('common:applications.list.errors.fetch.text', {
-        status,
+        state,
       })
     );
   };
 
   const params: {
     order_by: string;
-    status: Array<string>;
+    state: string;
   } = {
     order_by: orderBy,
-    status,
+    state: state.join(','),
   };
 
   return useQuery<ApplicationAlterationData[], Error>(
-    ['applicationAlterationList', ...status],
+    ['applicationAlterationList', ...state],
     async () => {
       const res = axios.get<ApplicationAlterationData[]>(
         `${BackendEndpoint.HANDLER_APPLICATION_ALTERATION}`,

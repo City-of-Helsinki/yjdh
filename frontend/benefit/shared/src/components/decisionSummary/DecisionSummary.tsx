@@ -1,4 +1,3 @@
-import AlterationAccordionItem from 'benefit/applicant/components/applications/alteration/AlterationAccordionItem';
 import {
   $AlterationActionContainer,
   $AlterationListCount,
@@ -8,30 +7,24 @@ import {
   $DecisionDetails,
   $DecisionNumber,
   $Subheading,
-} from 'benefit/applicant/components/applications/pageContent/PageContent.sc';
-import StatusIcon from 'benefit/applicant/components/applications/StatusIcon';
-import { ROUTES } from 'benefit/applicant/constants';
-import { useTranslation } from 'benefit/applicant/i18n';
-import {
-  ALTERATION_STATE,
-  ALTERATION_TYPE,
-  APPLICATION_STATUSES,
-} from 'benefit-shared/constants';
-import { Application } from 'benefit-shared/types/application';
+} from 'benefit-shared/components/decisionSummary/DecisionSummary.sc';
+import { AlterationAccordionItemProps, Application, DecisionDetailList } from 'benefit-shared/types/application';
 import { isTruthy } from 'benefit-shared/utils/common';
 import { Button, IconLinkExternal } from 'hds-react';
-import { useRouter } from 'next/router';
-import React from 'react';
+import { useTranslation } from 'next-i18next';
+import React, { ReactNode } from 'react';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
 
 type Props = {
   application: Application;
+  actions: ReactNode;
+  itemComponent: React.ComponentType<AlterationAccordionItemProps>;
+  detailList: DecisionDetailList;
+  extraInformation?: ReactNode;
 };
 
-const DecisionSummary = ({ application }: Props): JSX.Element => {
+const DecisionSummary = ({ application, actions, itemComponent: ItemComponent, detailList, extraInformation }: Props): JSX.Element => {
   const { t } = useTranslation();
-  const router = useRouter();
 
   if (!application.ahjoCaseId) {
     return null;
@@ -43,12 +36,6 @@ const DecisionSummary = ({ application }: Props): JSX.Element => {
     // eslint-disable-next-line security/detect-non-literal-fs-filename
     window.open(`https://paatokset.hel.fi/fi/asia/${id}`, '_blank');
   };
-
-  const hasHandledTermination = application.alterations.some(
-    (alteration) =>
-      alteration.state === ALTERATION_STATE.HANDLED &&
-      alteration.alterationType === ALTERATION_TYPE.TERMINATION
-  );
 
   const sortedAlterations = application.alterations?.sort(
     (a, b) => Date.parse(a.endDate) - Date.parse(b.endDate)
@@ -71,30 +58,14 @@ const DecisionSummary = ({ application }: Props): JSX.Element => {
         })}
       </$Subheading>
       <$DecisionDetails>
-        <div>
-          <dt>{t('common:applications.decision.headings.status')}</dt>
+        {detailList.map((detail) => <div key={detail.key}>
+          <dt>{t(`common:applications.decision.headings.${detail.key}`)}</dt>
           <dd>
-            <StatusIcon status={application.status} />
-            {t(`common:applications.statuses.${application.status}`)}
+            {detail.accessor(application) || '-'}
           </dd>
-        </div>
-        <div>
-          <dt>{t('common:applications.decision.headings.benefitAmount')}</dt>
-          <dd>{formatFloatToCurrency(application.calculatedBenefitAmount)}</dd>
-        </div>
-        <div>
-          <dt>{t('common:applications.decision.headings.benefitPeriod')}</dt>
-          <dd>
-            {`${convertToUIDateFormat(
-              application.startDate
-            )} – ${convertToUIDateFormat(application.endDate)}`}
-          </dd>
-        </div>
-        <div>
-          <dt>{t('common:applications.decision.headings.decisionDate')}</dt>
-          <dd>{convertToUIDateFormat(application.ahjoDecisionDate)}</dd>
-        </div>
+        </div>)}
       </$DecisionDetails>
+      {extraInformation}
       <$DecisionActionContainer>
         <Button
           iconRight={<IconLinkExternal />}
@@ -119,26 +90,14 @@ const DecisionSummary = ({ application }: Props): JSX.Element => {
               : t('common:applications.decision.alterationList.empty')}
           </$AlterationListCount>
           {sortedAlterations.map((alteration) => (
-            <AlterationAccordionItem
+            <ItemComponent
               key={alteration.id}
               alteration={alteration}
               application={application}
             />
           ))}
           <$AlterationActionContainer>
-            {application.status === APPLICATION_STATUSES.ACCEPTED && (
-              <Button
-                theme="coat"
-                onClick={() =>
-                  router.push(
-                    `${ROUTES.APPLICATION_ALTERATION}?id=${application.id}`
-                  )
-                }
-                disabled={hasHandledTermination}
-              >
-                {t('common:applications.decision.actions.reportAlteration')}
-              </Button>
-            )}
+            {actions}
           </$AlterationActionContainer>
         </>
       )}

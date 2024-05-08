@@ -1,4 +1,4 @@
-import { $StatusIcon } from 'benefit/applicant/components/applications/Applications.sc';
+import { $StatusIcon } from 'benefit-shared/components/statusIcon/StatusIcon.sc';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { IconAlertCircleFill, IconCheckCircle, IconCheckCircleFill, IconCrossCircleFill } from 'hds-react';
 import React from 'react';

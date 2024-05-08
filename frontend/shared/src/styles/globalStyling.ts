@@ -26,5 +26,13 @@ const GlobalStyle = createGlobalStyle`
 	div#hds-tag {
 		border-radius: 15px;
 	}
+
+  .sr-only {
+    position: absolute !important;
+    height: 1px; width: 1px;
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px);
+    clip: rect(1px, 1px, 1px, 1px);
+  }
 `;
 export default GlobalStyle;
