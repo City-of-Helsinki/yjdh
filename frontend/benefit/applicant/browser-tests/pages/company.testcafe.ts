@@ -2,7 +2,8 @@ import { HttpRequestHook } from '@frontend/shared/browser-tests/http-utils/http-
 import requestLogger from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
-import { addMonths, subMonths } from 'date-fns';
+import addDays from 'date-fns/addDays';
+import subMonths from 'date-fns/subMonths';
 import { t } from 'testcafe';
 
 import DeMinimisAid from '../page-model/deminimis';
@@ -28,7 +29,7 @@ fixture('Company')
   });
 
 const startDate = subMonths(new Date(), 4);
-const endDate = addMonths(new Date(), 3);
+const endDate = addDays(startDate, 30);
 const form: ApplicationFormData = {
   organization: {
     iban: '6051437344779954',
