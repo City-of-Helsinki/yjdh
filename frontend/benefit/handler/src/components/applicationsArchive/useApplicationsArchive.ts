@@ -19,6 +19,42 @@ interface ApplicationListProps {
 
 const translationsBase = 'common:applications.list';
 
+export const prepareData = (
+  data: ApplicationData[]
+): ApplicationListItemData[] =>
+  data
+    ? data
+        .sort(
+          (a: ApplicationData, b: ApplicationData): number =>
+            Date.parse(b.handled_at ?? '') - Date.parse(a.handled_at ?? '')
+        )
+        .map((application: ApplicationData): ApplicationListItemData => {
+          const {
+            id = '',
+            employee,
+            company,
+            handled_at,
+            application_number: applicationNum,
+            status,
+            batch,
+          } = application;
+
+          return {
+            id,
+            status,
+            companyName: company ? company.name : '-',
+            companyId: company ? company.business_id : '-',
+            employeeName:
+              getFullNameListing(employee?.first_name, employee?.last_name) ||
+              '-',
+            handledAt: convertToUIDateFormat(handled_at) || '-',
+            dataReceived: getBatchDataReceived(status, batch?.created_at),
+            applicationNum,
+            batch: batch ?? null,
+          };
+        })
+    : [];
+
 const useApplicationsArchive = (): ApplicationListProps => {
   const { t } = useTranslation();
   const query = useApplicationsQuery(
@@ -28,35 +64,7 @@ const useApplicationsArchive = (): ApplicationListProps => {
     true
   );
 
-  const list = query.data
-    ?.sort(
-      (a: ApplicationData, b: ApplicationData): number =>
-        Date.parse(b.handled_at ?? '') - Date.parse(a.handled_at ?? '')
-    )
-    .map((application: ApplicationData): ApplicationListItemData => {
-      const {
-        id = '',
-        employee,
-        company,
-        handled_at,
-        application_number: applicationNum,
-        status,
-        batch,
-      } = application;
-
-      return {
-        id,
-        status,
-        companyName: company ? company.name : '-',
-        companyId: company ? company.business_id : '-',
-        employeeName:
-          getFullNameListing(employee?.first_name, employee?.last_name) || '-',
-        handledAt: convertToUIDateFormat(handled_at) || '-',
-        dataReceived: getBatchDataReceived(status, batch?.created_at),
-        applicationNum,
-        batch: batch ?? null,
-      };
-    });
+  const list = prepareData(query?.data);
 
   const shouldShowSkeleton = query.isLoading;
 

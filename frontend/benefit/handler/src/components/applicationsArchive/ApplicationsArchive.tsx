@@ -1,5 +1,5 @@
+import useSearchApplicationQuery from 'benefit/handler/hooks/useSearchApplicationQuery';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
-import Fuse from 'fuse.js';
 import {
   IconCheckCircleFill,
   IconCrossCircleFill,
@@ -15,38 +15,30 @@ import { useTheme } from 'styled-components';
 
 import { $EmptyHeading } from '../applicationList/ApplicationList.sc';
 import { $ArchiveCount, $Heading, $Status } from './ApplicationsArchive.sc';
-import { useApplicationsArchive } from './useApplicationsArchive';
+import { prepareData, useApplicationsArchive } from './useApplicationsArchive';
 
 const ApplicationsArchive: React.FC = () => {
   const {
     t,
-    list,
+    list: firstLoadData,
     shouldShowSkeleton,
     shouldHideList,
     translationsBase,
     getHeader,
   } = useApplicationsArchive();
+
+  const [searchValue, setSearchValue] = React.useState<string>('');
+  const {
+    data: searchResults,
+    isLoading,
+    mutate,
+  } = useSearchApplicationQuery(searchValue);
+
+  const onSearch = (e: React.FormEvent<HTMLInputElement>): void => {
+    setSearchValue(e.currentTarget.value);
+    mutate(e.currentTarget.value);
+  };
   const theme = useTheme();
-  const [filterValue, setFilterValue] = React.useState<string>('');
-  const handleChangeSearchValue = (
-    e: React.FormEvent<HTMLInputElement>
-  ): void => setFilterValue(e.currentTarget.value);
-  let filteredList = list;
-  const fuse = new Fuse(list, {
-    threshold: 0,
-    ignoreLocation: true,
-    keys: [
-      'applicationNum',
-      'companyId',
-      'employeeName',
-      'handledAt',
-      'companyName',
-    ],
-  });
-  if (filterValue.length > 1) {
-    const fuseList = fuse.search(filterValue);
-    filteredList = fuseList.map((item) => item.item);
-  }
 
   interface TableTransforms {
     id?: string;
@@ -127,19 +119,56 @@ const ApplicationsArchive: React.FC = () => {
             id="table-filter"
             label={t('common:search.input.filter.label')}
             placeholder={t('common:search.input.filter.placeholder')}
-            onChange={handleChangeSearchValue}
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.currentTarget.value)}
+            onKeyUp={(e) =>
+              e.key.toLowerCase() === 'enter' ? onSearch(e) : null
+            }
+            css="margin-bottom: var(--spacing-m);"
+          />
+          {/* }
+          <TextInput
+            id="table-filter"
+            label={t('common:search.input.filter.label')}
+            placeholder={t('common:search.input.filter.placeholder')}
+            onChange={onSearch}
             value={filterValue}
             css="margin-bottom: var(--spacing-m);"
           />
-          <$ArchiveCount>{`${t(`${translationsBase}.total.count`, {
-            count: filteredList.length,
-          })}`}</$ArchiveCount>
-          <Table
-            indexKey="id"
-            theme={theme.components.table}
-            rows={filteredList}
-            cols={cols}
-          />
+          { */}
+
+          {isLoading && <LoadingSpinner />}
+
+          {!isLoading && firstLoadData.length > 0 && !searchResults && (
+            <>
+              <$ArchiveCount>{`${t(`${translationsBase}.total.count`, {
+                count: firstLoadData.length || 0,
+              })}`}</$ArchiveCount>
+              <Table
+                indexKey="id"
+                theme={theme.components.table}
+                rows={firstLoadData || []}
+                cols={cols}
+              />
+            </>
+          )}
+
+          {!isLoading && searchResults?.data.length > 0 && (
+            <Table
+              indexKey="id"
+              theme={theme.components.table}
+              rows={
+                searchResults && searchResults.data
+                  ? prepareData(searchResults?.data)
+                  : []
+              }
+              cols={cols}
+            />
+          )}
+
+          <div style={{ margin: '40px 0' }}>
+            <code>{JSON.stringify(searchResults, null, '\t')}</code>
+          </div>
         </>
       ) : (
         <$EmptyHeading>
