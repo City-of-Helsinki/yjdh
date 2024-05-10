@@ -42,12 +42,13 @@ const ApplicantIndex: NextPage = () => {
 
   const translationBase = 'common:applications.list.headings';
 
+  const isNewAhjoMode = useDetermineAhjoMode();
+
   const { list, shouldShowSkeleton } = useApplicationListData(
     ALL_APPLICATION_STATUSES,
-    true
+    !isNewAhjoMode
   );
   const { t } = useApplicationList();
-  const isNewAhjoMode = useDetermineAhjoMode();
 
   const getHeadingTranslation = (
     headingStatus: APPLICATION_STATUSES | 'all'

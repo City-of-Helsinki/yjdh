@@ -52,12 +52,16 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
         [APPLICATION_STATUSES.ACCEPTED].includes(app.status)
     ).length;
 
+  const getTabCountAll = (): number =>
+    list.filter((app: ApplicationListItemData) => !app.batch).length;
+
   const getTabCount = (
     statuses: APPLICATION_STATUSES[],
     handled?: 'inPayment' | 'pending'
   ): number => {
     if (handled === 'pending') return getTabCountPending();
     if (handled === 'inPayment') return getTabCountInPayment();
+    if (handled === 'all') return getTabCountAll();
     return list.filter((app: ApplicationListItemData) =>
       statuses.includes(app.status)
     ).length;
@@ -133,7 +137,7 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
             <Tabs.TabPanel>
               <ApplicationList
                 isLoading={isLoading}
-                list={list}
+                list={list.filter((app) => !app.batch)}
                 heading={t(`${translationBase}.all`)}
                 status={ALL_APPLICATION_STATUSES}
               />
