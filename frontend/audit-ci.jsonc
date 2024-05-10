@@ -5,6 +5,7 @@
     "moment", // testcafe
     "decode-uri-component", // testcafe
     "@babel/traverse", // jest
-    "html-minifier"
+    "html-minifier",
+    "pdfjs-dist" // react-pdf
   ]
 }
