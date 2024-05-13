@@ -466,6 +466,8 @@ def pytest_sessionfinish(session, exitstatus):
         except OSError as e:
             print(f"Error while deleting file in media folder: {e}")
     print(f"\nTests finished, deleted {number_of_files} files in the media folder")
+
+
 @pytest.fixture
 def application_with_ahjo_case_id(decided_application):
     decided_application.ahjo_case_id = "HEL 2024 12345"

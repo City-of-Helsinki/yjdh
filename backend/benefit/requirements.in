@@ -20,6 +20,7 @@ factory-boy # TODO: added temporarily so that NEXT_PUBLIC_MOCK_FLAG can be set o
 filetype
 helsinki-profile-gdpr-api
 jinja2
+lxml
 mozilla_django_oidc
 pdfkit
 pillow
