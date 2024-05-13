@@ -6,6 +6,7 @@ import {
 } from 'benefit/applicant/components/applications/applicationList/ApplicationList.sc';
 import ListItem from 'benefit/applicant/components/applications/applicationList/listItem/ListItem';
 import { ApplicationListProps } from 'benefit/applicant/components/applications/applicationList/useApplicationList';
+import ApplicationListProvider from 'benefit/applicant/context/ApplicationListProvider';
 import { Select } from 'hds-react';
 import React, { useEffect } from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
@@ -62,13 +63,13 @@ const ListContents = ({
         </>
       )}
       {!shouldShowSkeleton && (
-        <>
+        <ApplicationListProvider list={list} count={list.length}>
           <$HeadingContainer>
             <$Heading>{headingText}</$Heading>
             <$OrderByContainer>
               {orderByOptions?.length > 1 && (
                 <Select<OptionType>
-                  id={`application-list-'${status.join('-')}-order-by`}
+                  id={`application-list-${status.join('-')}-order-by`}
                   options={orderByOptions}
                   defaultValue={orderBy}
                   onChange={setOrderBy}
@@ -84,7 +85,7 @@ const ListContents = ({
             {!hasItems && noItemsText}
           </$ListWrapper>
           {afterList}
-        </>
+        </ApplicationListProvider>
       )}
     </Container>
   );
