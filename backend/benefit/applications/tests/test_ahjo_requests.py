@@ -33,13 +33,6 @@ def dummy_token():
 
 
 @pytest.fixture
-def application_with_ahjo_case_id(decided_application):
-    decided_application.ahjo_case_id = "12345"
-    decided_application.save()
-    return decided_application
-
-
-@pytest.fixture
 def ahjo_open_case_request(application_with_ahjo_case_id):
     return AhjoOpenCaseRequest(application_with_ahjo_case_id)
 
