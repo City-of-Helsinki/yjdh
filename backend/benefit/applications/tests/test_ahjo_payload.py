@@ -1,3 +1,5 @@
+import uuid
+
 from django.core.files.base import ContentFile
 from django.urls import reverse
 
@@ -201,6 +203,7 @@ def test_prepare_update_application_payload(decided_application):
         attachment_file=fake_file,
         content_type="application/pdf",
         attachment_type=AttachmentType.PDF_SUMMARY,
+        ahjo_version_series_id=str(uuid.uuid4()),
     )
 
     want = {
@@ -213,7 +216,7 @@ def test_prepare_update_application_payload(decided_application):
                 "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
                 "Language": "fi",
                 "PersonalData": "Sisältää erityisiä henkilötietoja",
-                "MannerOfReceipt": "sähköinen asiointi",
+                "VersionSeriesId": str(fake_summary.ahjo_version_series_id),
                 "Documents": [_prepare_record_document_dict(fake_summary)],
                 "Agents": [
                     {
