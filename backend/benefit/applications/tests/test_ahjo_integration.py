@@ -724,6 +724,13 @@ def test_with_non_downloaded_attachments(decided_application):
     attachments = applications[0].attachments.all()
     assert attachments.count() == 6
 
+    for a in attachments:
+        a.downloaded_by_ahjo = timezone.now()
+        a.save()
+
+    applications = Application.objects.with_non_downloaded_attachments()
+    assert applications.count() == 0
+
 
 dummy_case_id = "HEL 1999-123"
 

@@ -4,7 +4,7 @@ from typing import List
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.db import connection, models
-from django.db.models import F, JSONField, OuterRef, Prefetch, Subquery
+from django.db.models import Exists, F, JSONField, OuterRef, Prefetch, Subquery
 from django.db.models.constraints import UniqueConstraint
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
@@ -129,7 +129,7 @@ class ApplicationManager(models.Manager):
         which means that a case has been opened for them in AHJO.
         """
 
-        qs = self.get_queryset().filter(ahjo_case_id__isnull=False)
+        # Define a queryset for attachments where downloaded_by_ahjo is NULL
         attachments_queryset = Attachment.objects.filter(
             downloaded_by_ahjo__isnull=True,
             attachment_type__in=[
@@ -142,7 +142,26 @@ class ApplicationManager(models.Manager):
                 AttachmentType.OTHER_ATTACHMENT,
             ],
         )
+
+        # Create an Exists subquery for at least one undownloaded attachment
+        attachment_exists = Exists(
+            attachments_queryset.filter(application_id=OuterRef("pk"))
+        )
+
+        # Annotate applications with a boolean indicating the existence of undownloaded attachments
+        qs = (
+            self.get_queryset()
+            .annotate(has_undownloaded_attachments=attachment_exists)
+            .filter(
+                ahjo_case_id__isnull=False,
+                has_undownloaded_attachments=True,  # Filter using the annotated field
+            )
+        )
+
+        # Use Prefetch to specify the filtered queryset for prefetching attachments
         attachments_prefetch = Prefetch("attachments", queryset=attachments_queryset)
+
+        # Return the filtered applications with the specified prefetched related attachments
         return qs.prefetch_related(attachments_prefetch)
 
     def get_by_statuses(
