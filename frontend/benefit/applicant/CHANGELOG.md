@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.11.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.10.0...benefit-applicant-v3.11.0) (2024-05-14)
+
+
+### Features
+
+* Enhance error notifications when uploading malformed or malwared file (hl-1267) ([#2973](https://github.com/City-of-Helsinki/yjdh/issues/2973)) ([cd61403](https://github.com/City-of-Helsinki/yjdh/commit/cd614030233cf69b36e49a23869d82be4aa9b776))
+* **handler:** Add error validation logic and toast for de minimis aid form (HL-1202) ([#2933](https://github.com/City-of-Helsinki/yjdh/issues/2933)) ([752d9eb](https://github.com/City-of-Helsinki/yjdh/commit/752d9ebf75406b3616a6dfba791aa73f54cdf311))
+
+
+### Bug Fixes
+
+* Filter batches using auto_generated_by_ahjo value (hl-1304) ([#2979](https://github.com/City-of-Helsinki/yjdh/issues/2979)) ([f6a8c64](https://github.com/City-of-Helsinki/yjdh/commit/f6a8c64b759df6e5f2bcee9c22abc19a0c4eeefd))
+* **frontend:** Don't use cross-env in scripts, didn't work in pipelines ([628d466](https://github.com/City-of-Helsinki/yjdh/commit/628d466c58fbbff7bf79e11f92a89ef9a2822439))
+* **frontend:** Use cross-env in scripts to make them cross-platform ([7307e57](https://github.com/City-of-Helsinki/yjdh/commit/7307e5797d6b0a0bc24eded97d6724a5724a4547))
+* Loc key added for application.handling & .cancelled ([#2962](https://github.com/City-of-Helsinki/yjdh/issues/2962)) ([045f045](https://github.com/City-of-Helsinki/yjdh/commit/045f045c6a0eb230b81891e8da3ef0a428153727))
+* Make start and end date relative to current date ([cef205f](https://github.com/City-of-Helsinki/yjdh/commit/cef205f2745159a40621da74d463110820e46be1))
+* Move alteration guide infobox to archive page ([#2985](https://github.com/City-of-Helsinki/yjdh/issues/2985)) (HL-1284) ([0bcf707](https://github.com/City-of-Helsinki/yjdh/commit/0bcf7078adc27b6e07ed44ba2ddfe45463df479e))
+* Patch vulnerable pdf libraries ([e7240ff](https://github.com/City-of-Helsinki/yjdh/commit/e7240ff167242dc28172fed2eee9a56cee1227af))
+* Resolve issues with start date on handler's side (HL-1270) ([#2948](https://github.com/City-of-Helsinki/yjdh/issues/2948)) ([090fe5e](https://github.com/City-of-Helsinki/yjdh/commit/090fe5ef82e0a1fe5a905fdd55f5139fa416952c))
+
 ## [3.10.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.9.0...benefit-applicant-v3.10.0) (2024-04-19)
 
 
