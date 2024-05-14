@@ -1,6 +1,7 @@
 from datetime import date
 
 import pytest
+from django.utils.translation import gettext_lazy as _
 from rest_framework.reverse import reverse
 
 from applications.enums import ApplicationStatus
@@ -139,5 +140,7 @@ def test_decision_proposal_drafting(
     if review_step == 4:
         final_ahjo_text = AhjoDecisionText.objects.get(application=application)
         assert (
-            final_ahjo_text.decision_text == f"{decision_text}\n\n{justification_text}"
+            final_ahjo_text.decision_text
+            == f'<section id="paatos"><h1>{_("Päätös")}</h1>{decision_text}</section>\
+<section id="paatoksenperustelut"><h1>{_("Päätöksen perustelut")}</h1>{justification_text}</section>'
         )
