@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2024-03-21T102300">
+	<xs:annotation>
+		<xs:documentation>Schema based on a subset of XHTML for sending decision text and decision attachment text to an Ahjo case via Ahjo REST API</xs:documentation>
+	</xs:annotation>
+	<xs:element name="body">
+		<xs:annotation>
+			<xs:documentation>Root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="section" minOccurs="2" maxOccurs="2">
+					<xs:annotation>
+						<xs:documentation>Used for decision text (public)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="main" type="maintype">
+					<xs:annotation>
+						<xs:documentation>Used for decision attachment text (confidential)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="section">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="h1" minOccurs="1" maxOccurs="1"/>
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="h2" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="p" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:choice>
+			</xs:sequence>
+			<xs:attribute name="id" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="paatos"/>
+						<xs:enumeration value="paatoksenperustelut"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="maintype">
+		<xs:sequence>
+			<xs:element name="h1" type="xs:string" minOccurs="0"/>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="h2" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="p" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="table" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="id" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="paatoksenliite"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="lang" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="fi"/>
+					<xs:enumeration value="sv"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:element name="h1">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="Päätös" xml:lang="fi"/>
+				<xs:enumeration value="Päätöksen perustelut" xml:lang="fi"/>
+				<xs:enumeration value="Beslut" xml:lang="sv"/>
+				<xs:enumeration value="Beslutsmotivering" xml:lang="sv"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="p">
+		<xs:complexType mixed="true">
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="mark"/>
+				<xs:element ref="br"/>
+				<xs:element ref="strong"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mark">
+		<xs:annotation>
+			<xs:documentation>For marking personal data within paragraphs.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType mixed="true">
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="br"/>
+			</xs:choice>
+			<xs:attribute name="class" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="henkilotietoa"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="br">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value=""/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="strong">
+		<xs:complexType mixed="true">
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="br"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="table">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="thead" type="theadtbodytfoot" minOccurs="0"/>
+				<xs:element name="tbody" type="theadtbodytfoot"/>
+				<xs:element name="tfoot" type="theadtbodytfoot" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="class">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="twocols-noborders">
+							<xs:annotation>
+								<xs:documentation>twocols-noborders is used in two-column tables that have no visible borders and where the first column is a header column. PDF conversion scales down the width of the first column based on the content and the width is at maximum 50 %.</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value="rowbordersonly">
+							<xs:annotation>
+								<xs:documentation>rowbordersonly tables only have horizontal cell borders</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="theadtbodytfoot">
+		<xs:sequence>
+			<xs:element name="tr" type="trtype" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="trtype">
+		<xs:choice maxOccurs="unbounded">
+			<xs:element name="td">
+				<xs:complexType mixed="true">
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element ref="mark"/>
+						<xs:element ref="br"/>
+						<xs:element ref="strong"/>
+					</xs:choice>
+					<xs:attribute name="colspan" type="xs:positiveInteger"/>
+					<xs:attribute name="rowspan" type="xs:positiveInteger"/>
+					<xs:attribute name="class">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="sum">
+									<xs:annotation>
+										<xs:documentation>Cell contents aligned right</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="th">
+				<xs:complexType mixed="true">
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element ref="mark"/>
+						<xs:element ref="br"/>
+						<xs:element ref="strong"/>
+					</xs:choice>
+					<xs:attribute name="colspan" type="xs:positiveInteger"/>
+					<xs:attribute name="rowspan" type="xs:positiveInteger"/>
+					<xs:attribute name="scope">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="row"/>
+								<xs:enumeration value="col"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="class">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="sum"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+</xs:schema>

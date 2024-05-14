@@ -1,17 +1,25 @@
 import copy
+import os
 from dataclasses import dataclass
 from datetime import date
 from typing import List, Tuple
 
+from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils import translation
 from django.utils.translation import gettext_lazy as _
+from lxml import etree
+from lxml.etree import XMLSchema, XMLSchemaParseError, XMLSyntaxError
 
 from applications.models import AhjoDecisionText, Application
 from calculator.enums import RowType
 from calculator.models import Calculation, CalculationRow
 
 XML_VERSION = "<?xml version='1.0' encoding='UTF-8'?>"
+XML_SCHEMA_PATH = os.path.join(
+    settings.BASE_DIR, "applications", "resources", "hkilisa-paatosteksti.xsd"
+)
+SECRET_ATTACHMENT_TEMPLATE = "secret_decision.xml"
 
 AhjoXMLString = str
 
@@ -27,6 +35,39 @@ class AhjoXMLBuilder:
     def generate_xml_file_name(self) -> str:
         raise NotImplementedError("Subclasses must implement generate_xml_file_name")
 
+    def load_xsd_as_string(self, xsd_path: str) -> str:
+        """
+        Loads an XSD file from the resources directory of an app.
+        """
+
+        # Open the file and return its contents
+        with open(xsd_path, "r") as file:
+            return file.read()
+
+    def validate_against_schema(self, xml_string: str, xsd_string: str) -> bool:
+        try:
+            # Parse the XML string
+            xml_doc = etree.fromstring(xml_string.encode("utf-8"))
+
+            # Parse the XSD schema
+            xsd_doc = etree.fromstring(xsd_string.encode("utf-8"))
+            schema = XMLSchema(xsd_doc)
+
+            # Validate the XML against the schema
+            schema.assertValid(
+                xml_doc
+            )  # This will raise an exception if the document is not valid
+            return True  # Return True if no exception was raised
+        except XMLSchemaParseError as e:
+            print(f"Schema Error: {e}")
+            raise
+        except XMLSyntaxError as e:
+            print(f"XML Error: {e}")
+            raise
+        except etree.DocumentInvalid as e:
+            print(f"Validation Error: {e}")
+            return False  # Return False if the document is invalid
+
 
 class AhjoPublicXMLBuilder(AhjoXMLBuilder):
     """Generates the XML for the public decision."""
@@ -38,14 +79,17 @@ class AhjoPublicXMLBuilder(AhjoXMLBuilder):
         self.ahjo_decision_text = ahjo_decision_text
 
     def generate_xml(self) -> AhjoXMLString:
-        return f"{XML_VERSION}{self.ahjo_decision_text.decision_text}"
+        xml_string = (
+            f"{XML_VERSION}<body>{self.ahjo_decision_text.decision_text}</body>"
+        )
+        self.validate_against_schema(
+            xml_string, self.load_xsd_as_string(XML_SCHEMA_PATH)
+        )
+        return xml_string
 
     def generate_xml_file_name(self) -> str:
         date_str = self.application.created_at.strftime("%d.%m.%Y")
         return f"Hakemus {date_str}, päätösteksti, {self.application.application_number}.xml"
-
-
-SECRET_ATTACHMENT_TEMPLATE = "secret_decision.xml"
 
 
 @dataclass
@@ -62,11 +106,15 @@ class AhjoSecretXMLBuilder(AhjoXMLBuilder):
         # Set the locale for this thread to the application's language
         translation.activate(self.application.applicant_language)
 
-        xml_content = render_to_string(SECRET_ATTACHMENT_TEMPLATE, context)
+        xml_string = render_to_string(SECRET_ATTACHMENT_TEMPLATE, context)
 
         # Reset the locale to the default
         translation.deactivate()
-        return xml_content
+        self.validate_against_schema(
+            xml_string, self.load_xsd_as_string(XML_SCHEMA_PATH)
+        )
+
+        return xml_string
 
     def _get_period_rows_for_xml(
         self,
