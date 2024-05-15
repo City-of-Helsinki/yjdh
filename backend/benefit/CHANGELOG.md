@@ -1,5 +1,31 @@
 # Changelog
 
+## [1.13.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.12.0...benefit-backend-v1.13.0) (2024-05-14)
+
+
+### Features
+
+* Add ahjo_status to Django admin ([#2955](https://github.com/City-of-Helsinki/yjdh/issues/2955)) ([148b15f](https://github.com/City-of-Helsinki/yjdh/commit/148b15f451330e0e8a774207984d7742e65eeda6))
+* Cast row amounts to integers ([#2953](https://github.com/City-of-Helsinki/yjdh/issues/2953)) ([dee7db9](https://github.com/City-of-Helsinki/yjdh/commit/dee7db9f28ccf59c0ff265b960a667708df13372))
+* Enhance error notifications when uploading malformed or malwared file (hl-1267) ([#2973](https://github.com/City-of-Helsinki/yjdh/issues/2973)) ([cd61403](https://github.com/City-of-Helsinki/yjdh/commit/cd614030233cf69b36e49a23869d82be4aa9b776))
+* Implement received alterations page for handlers (HL-1246) ([#2947](https://github.com/City-of-Helsinki/yjdh/issues/2947)) ([850b364](https://github.com/City-of-Helsinki/yjdh/commit/850b364fdc756d773a2c57f32b716a9201080d43))
+* Introduce handler lock to edits (hl-1149) ([#2945](https://github.com/City-of-Helsinki/yjdh/issues/2945)) ([f116b32](https://github.com/City-of-Helsinki/yjdh/commit/f116b32746a5f0a84f61d24efdcd83787a4d613b))
+* Prepare handler application index for new ahjo integration (hl-1278) ([#2958](https://github.com/City-of-Helsinki/yjdh/issues/2958)) ([1ad52cf](https://github.com/City-of-Helsinki/yjdh/commit/1ad52cfb09f8145944e930fcac0e1bbdf1203256))
+* Remove date from application record title ([#2963](https://github.com/City-of-Helsinki/yjdh/issues/2963)) ([2683210](https://github.com/City-of-Helsinki/yjdh/commit/2683210c49a1244e92db50cc53c6b5b88826efb2))
+
+
+### Bug Fixes
+
+* Do not show cents for benefit amount (hl-1294) ([#2971](https://github.com/City-of-Helsinki/yjdh/issues/2971)) ([2e7806b](https://github.com/City-of-Helsinki/yjdh/commit/2e7806b747d437c8c6130e83429d03b0afb72e95))
+* Enable justification text variable replacement ([#2959](https://github.com/City-of-Helsinki/yjdh/issues/2959)) ([b7b4f79](https://github.com/City-of-Helsinki/yjdh/commit/b7b4f79e1cd562af4c2338828b7fcd89e75d774e))
+* Filter batches using auto_generated_by_ahjo value ([d27d5cc](https://github.com/City-of-Helsinki/yjdh/commit/d27d5ccb84bf5646f507c0fcca2a0085d0ef3e5e))
+* Filter batches using auto_generated_by_ahjo value (hl-1304) ([#2979](https://github.com/City-of-Helsinki/yjdh/issues/2979)) ([f6a8c64](https://github.com/City-of-Helsinki/yjdh/commit/f6a8c64b759df6e5f2bcee9c22abc19a0c4eeefd))
+* **handler:** Archived page to show cancelled applications (hl-1287) ([#2951](https://github.com/City-of-Helsinki/yjdh/issues/2951)) ([b1c2930](https://github.com/City-of-Helsinki/yjdh/commit/b1c2930ff2f5d8f75d276e9dbd62944a630476cf))
+* Ignore paper apps, correct date to email template ([#2960](https://github.com/City-of-Helsinki/yjdh/issues/2960)) ([1dbf1da](https://github.com/City-of-Helsinki/yjdh/commit/1dbf1da6fdd431be5574568f80d76b92883acfbf))
+* Query for the undownloaded attachments ([#2983](https://github.com/City-of-Helsinki/yjdh/issues/2983)) ([b01d039](https://github.com/City-of-Helsinki/yjdh/commit/b01d039642e3876ce38ada581980e09a8cf11228))
+* Send ahjo_version_series_id in update payload ([#2984](https://github.com/City-of-Helsinki/yjdh/issues/2984)) ([a2136f1](https://github.com/City-of-Helsinki/yjdh/commit/a2136f15c11ceed46f660b5a88d9f60966cde80b))
+* Total amount as int ([#2975](https://github.com/City-of-Helsinki/yjdh/issues/2975)) ([d3a346d](https://github.com/City-of-Helsinki/yjdh/commit/d3a346d24583c72a789c91539849c6bf208a405c))
+
 ## [1.12.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.11.0...benefit-backend-v1.12.0) (2024-04-19)
 
 
