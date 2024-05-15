@@ -1,5 +1,30 @@
 # Changelog
 
+## [3.5.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v3.4.0...benefit-handler-v3.5.0) (2024-05-15)
+
+
+### Features
+
+* Clear all calculation form fields from "clear" button ([#2943](https://github.com/City-of-Helsinki/yjdh/issues/2943)) ([a65bb5b](https://github.com/City-of-Helsinki/yjdh/commit/a65bb5b3b622c6beb7eabe29ccd62d7b39f4545f))
+* **handler:** Add error validation logic and toast for de minimis aid form (HL-1202) ([#2933](https://github.com/City-of-Helsinki/yjdh/issues/2933)) ([752d9eb](https://github.com/City-of-Helsinki/yjdh/commit/752d9ebf75406b3616a6dfba791aa73f54cdf311))
+* Implement received alterations page for handlers (HL-1246) ([#2947](https://github.com/City-of-Helsinki/yjdh/issues/2947)) ([850b364](https://github.com/City-of-Helsinki/yjdh/commit/850b364fdc756d773a2c57f32b716a9201080d43))
+* Introduce handler lock to edits (hl-1149) ([#2945](https://github.com/City-of-Helsinki/yjdh/issues/2945)) ([f116b32](https://github.com/City-of-Helsinki/yjdh/commit/f116b32746a5f0a84f61d24efdcd83787a4d613b))
+* Minor additions and fixes to decision drafting (HL-1274) ([#2942](https://github.com/City-of-Helsinki/yjdh/issues/2942)) ([f6cf6fb](https://github.com/City-of-Helsinki/yjdh/commit/f6cf6fbdfd539a0ab3f9e5bae69356c73731147e))
+* Prepare handler application index for new ahjo integration (hl-1278) ([#2958](https://github.com/City-of-Helsinki/yjdh/issues/2958)) ([1ad52cf](https://github.com/City-of-Helsinki/yjdh/commit/1ad52cfb09f8145944e930fcac0e1bbdf1203256))
+
+
+### Bug Fixes
+
+* Do not show cents for benefit amount (hl-1294) ([#2971](https://github.com/City-of-Helsinki/yjdh/issues/2971)) ([2e7806b](https://github.com/City-of-Helsinki/yjdh/commit/2e7806b747d437c8c6130e83429d03b0afb72e95))
+* Filter batches using auto_generated_by_ahjo value (hl-1304) ([#2979](https://github.com/City-of-Helsinki/yjdh/issues/2979)) ([f6a8c64](https://github.com/City-of-Helsinki/yjdh/commit/f6a8c64b759df6e5f2bcee9c22abc19a0c4eeefd))
+* **frontend:** Don't use cross-env in scripts, didn't work in pipelines ([628d466](https://github.com/City-of-Helsinki/yjdh/commit/628d466c58fbbff7bf79e11f92a89ef9a2822439))
+* **frontend:** Use cross-env in scripts to make them cross-platform ([7307e57](https://github.com/City-of-Helsinki/yjdh/commit/7307e5797d6b0a0bc24eded97d6724a5724a4547))
+* P2p fields are now null by default ([c2a96ce](https://github.com/City-of-Helsinki/yjdh/commit/c2a96ce85520db714369f41f2f2ff5768e1269e0))
+* Resolve issues with start date on handler's side (HL-1270) ([#2948](https://github.com/City-of-Helsinki/yjdh/issues/2948)) ([090fe5e](https://github.com/City-of-Helsinki/yjdh/commit/090fe5ef82e0a1fe5a905fdd55f5139fa416952c))
+* Section of the law is now null by default ([fa48f1b](https://github.com/City-of-Helsinki/yjdh/commit/fa48f1bfd96a7d52ad6e531e6c4505bb93c1d333))
+* **test:** More robust second test in case first one fails a few times ([acc8ef3](https://github.com/City-of-Helsinki/yjdh/commit/acc8ef3d4bff3dc4a4123f1ea5e5245198e00e42))
+* Try fixing failing tests ([#2952](https://github.com/City-of-Helsinki/yjdh/issues/2952)) ([3353dc8](https://github.com/City-of-Helsinki/yjdh/commit/3353dc84ce83906c4fe0bb8e4300b9a56640e47d))
+
 ## [3.4.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v3.3.0...benefit-handler-v3.4.0) (2024-04-22)
 
 
