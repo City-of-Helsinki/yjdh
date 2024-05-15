@@ -41,6 +41,10 @@ const Messages: React.FC<ComponentProps> = ({ data, variant, withScroll }) => {
           variant={variant}
           alignRight={message.messageType === MESSAGE_TYPES.HANDLER_MESSAGE}
           wrapAsColumn
+          seenByApplicant={
+            message.messageType === MESSAGE_TYPES.HANDLER_MESSAGE &&
+            message.seenByApplicant
+          }
         />
       ))}
       {data.length === 0 && (

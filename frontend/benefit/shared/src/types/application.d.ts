@@ -113,6 +113,7 @@ export type MessageData = {
   content: string;
   message_type: MESSAGE_TYPES;
   sender?: string;
+  seen_by_applicant?: boolean;
 };
 
 export type Message = {
@@ -122,6 +123,7 @@ export type Message = {
   content: string;
   messageType: MESSAGE_TYPES;
   sender?: string;
+  seenByApplicant?: boolean;
 };
 
 export type ApplicantTerms = {
