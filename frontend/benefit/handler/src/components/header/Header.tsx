@@ -35,7 +35,11 @@ const Header: React.FC = () => {
   return (
     <BaseHeader
       title={t('common:appName')}
-      customItems={[<TemporaryAhjoModeSwitch />]}
+      customItems={[
+        process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT !== 'production' ? (
+          <TemporaryAhjoModeSwitch />
+        ) : null,
+      ]}
       titleUrl={ROUTES.HOME}
       skipToContentLabel={t('common:header.linkSkipToContent')}
       menuToggleAriaLabel={t('common:header.menuToggleAriaLabel')}
