@@ -200,6 +200,7 @@ class AhjoRequestType(models.TextChoices):
     UPDATE_APPLICATION = "update_application", _("Update application in Ahjo")
     ADD_RECORDS = "add_records", _("Send new records to Ahjo")
     SEND_DECISION_PROPOSAL = "send_decision", _("Send decision to Ahjo")
+    GET_DECISION_DETAILS = "get_decision_details", _("Get decision details from Ahjo")
     SUBSCRIBE_TO_DECISIONS = "subscribe_to_decisions", _("Subscribe to decisions API")
 
 

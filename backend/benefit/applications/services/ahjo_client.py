@@ -1,7 +1,7 @@
 import json
 import logging
 from dataclasses import dataclass, field
-from typing import Optional, Tuple, Union
+from typing import Dict, Optional, Tuple, Union
 
 import requests
 from django.conf import settings
@@ -114,6 +114,18 @@ class AhjoSubscribeDecisionRequest(AhjoRequest):
         return f"{self.url_base}/decisions/subscribe"
 
 
+class AhjoDecisionDetailsRequest(AhjoRequest):
+    """Request to get a decision detail from Ahjo."""
+
+    request_type = AhjoRequestType.GET_DECISION_DETAILS
+    request_method = "GET"
+
+    def api_url(self) -> str:
+        if not self.application.ahjo_case_id:
+            raise MissingAhjoCaseIdError("Application does not have an Ahjo case id")
+        return f"{self.url_base}/decisions/{self.application.ahjo_case_id}"
+
+
 class AhjoApiClientException(Exception):
     pass
 
@@ -157,16 +169,18 @@ class AhjoApiClient:
             "Authorization": f"Bearer {self.ahjo_token.access_token}",
             "Content-Type": "application/json",
         }
-
-        if not self._request.request_type == AhjoRequestType.SUBSCRIBE_TO_DECISIONS:
+        # Other request types than GET_DECISION_DETAILS require a callback url
+        if self._request.request_type not in [
+            AhjoRequestType.GET_DECISION_DETAILS,
+            AhjoRequestType.SUBSCRIBE_TO_DECISIONS,
+        ]:
             url = reverse(
                 "ahjo_callback_url",
                 kwargs={
-                    "uuid": str(self._request.application.id),
                     "request_type": self._request.request_type,
+                    "uuid": str(self._request.application.id),
                 },
             )
-
             headers_dict["Accept"] = "application/hal+json"
             headers_dict["X-CallbackURL"] = f"{settings.API_BASE_URL}{url}"
 
@@ -175,7 +189,7 @@ class AhjoApiClient:
     def send_request_to_ahjo(
         self,
         data: Union[dict, None] = None,
-    ) -> Union[Tuple[Application, str], None]:
+    ) -> Union[Dict, Tuple[Application, str], None]:
         """Send a request to Ahjo.
         The request can be either opening a new case (POST),
         updating the records of an existing case (PUT),
@@ -198,8 +212,14 @@ class AhjoApiClient:
             response.raise_for_status()
 
             if response.ok:
-                LOGGER.debug(f"Request {self._request} to Ahjo was successful.")
-                return self._request.application, response.text
+                if (
+                    not self._request.request_type
+                    == AhjoRequestType.GET_DECISION_DETAILS
+                ):
+                    LOGGER.debug(f"Request {self._request} to Ahjo was successful.")
+                    return self._request.application, response.text
+                else:
+                    return response.json()
         except MissingHandlerIdError as e:
             LOGGER.error(f"Missing handler id: {e}")
         except MissingAhjoCaseIdError as e:
