@@ -852,3 +852,48 @@ def test_get_for_ahjo_decision(
 
     applications = Application.objects.get_for_ahjo_decision()
     assert applications.count() == count
+
+
+@pytest.mark.parametrize(
+    "initial_ahjo_status, expected_status, status_message, status_after",
+    [
+        (
+            AhjoStatusEnum.CASE_OPENED,
+            200,
+            "Application scheduled for cancellation in Ahjo",
+            AhjoStatusEnum.SCHEDULED_FOR_DELETION,
+        ),
+        (
+            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
+            400,
+            "Cannot delete because a decision proposal has been sent to Ahjo",
+            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
+        ),
+    ],
+)
+@pytest.mark.django_db
+def test_delete_application_ahjo_api(
+    decided_application,
+    handler_api_client,
+    initial_ahjo_status,
+    expected_status,
+    status_message,
+    status_after,
+):
+    status = AhjoStatus.objects.create(
+        application=decided_application, status=initial_ahjo_status
+    )
+    status.created_at = timezone.now() - timedelta(days=1)
+    status.save()
+
+    url = reverse(
+        "ahjo_application_url",
+        kwargs={"uuid": decided_application.id},
+    )
+    response = handler_api_client.delete(url)
+
+    decided_application.refresh_from_db()
+
+    assert response.status_code == expected_status
+    assert response.data == {"message": status_message}
+    assert decided_application.ahjo_status.latest().status == status_after

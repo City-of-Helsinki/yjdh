@@ -19,6 +19,7 @@ from applications.api.v1.ahjo_decision_views import (
     DecisionTextList,
 )
 from applications.api.v1.ahjo_integration_views import (
+    AhjoApplicationView,
     AhjoAttachmentView,
     AhjoCallbackView,
 )
@@ -107,6 +108,11 @@ urlpatterns = [
         "v1/decision-proposal-drafts/",
         DecisionProposalDraftUpdate.as_view(),
         name="decision_proposal_draft_update",
+    ),
+    path(
+        "v1/ahjo-integration/application/<uuid:uuid>",
+        AhjoApplicationView.as_view(),
+        name="ahjo_application_url",
     ),
     path("gdpr-api/v1/user/<uuid:uuid>", UserUuidGDPRAPIView.as_view(), name="gdpr_v1"),
     path("v1/", include((router.urls, "v1"), namespace="v1")),
