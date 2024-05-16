@@ -9,9 +9,11 @@ from typing import List, Optional, Tuple, Union
 
 import jinja2
 import pdfkit
+from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.core.files.base import ContentFile
 from django.db.models import QuerySet
+from django.urls import reverse
 
 from applications.enums import (
     AhjoStatus as AhjoStatusEnum,
@@ -26,6 +28,7 @@ from applications.services.ahjo_client import (
     AhjoDecisionProposalRequest,
     AhjoDeleteCaseRequest,
     AhjoOpenCaseRequest,
+    AhjoSubscribeDecisionRequest,
     AhjoUpdateRecordsRequest,
 )
 from applications.services.ahjo_payload import (
@@ -608,3 +611,20 @@ def delete_existing_xml_attachments(application: Application):
     LOGGER.info(
         f"Deleted existing decision text attachments for application {application.id}"
     )
+
+
+def send_subscription_request_to_ahjo(
+    ahjo_auth_token: AhjoToken,
+) -> Union[Tuple[None, str], None]:
+    """Send a subscription request to Ahjo."""
+    try:
+        ahjo_request = AhjoSubscribeDecisionRequest()
+        ahjo_client = AhjoApiClient(ahjo_auth_token, ahjo_request)
+        url = reverse("ahjo_decision_callback_url")
+        data = {"callbackUrl": f"{settings.API_BASE_URL}{url}"}
+        return ahjo_client.send_request_to_ahjo(data)
+
+    except ObjectDoesNotExist as e:
+        LOGGER.error(f"Object not found: {e}")
+    except ImproperlyConfigured as e:
+        LOGGER.error(f"Improperly configured: {e}")

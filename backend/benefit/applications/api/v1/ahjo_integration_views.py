@@ -12,9 +12,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from applications.api.v1.serializers.ahjo_callback import AhjoCallbackSerializer
+from applications.api.v1.serializers.ahjo_callback import (
+    AhjoCallbackSerializer,
+    AhjoDecisionCallbackSerializer,
+)
 from applications.enums import (
     AhjoCallBackStatus,
+    AhjoDecisionUpdateType,
     AhjoRequestType,
     AhjoStatus as AhjoStatusEnum,
     ApplicationBatchStatus,
@@ -313,3 +317,41 @@ with request id: {callback_data['requestId']}"
                     f"Ahjo reports failure with record, hash value {cb_record['hashValue']} \
                         and fileURI {cb_record['fileUri']}"
                 )
+
+
+class AhjoDecisionCallbackView(APIView):
+    authentication_classes = [
+        TokenAuthentication,
+    ]
+    permission_classes = [IsAuthenticated, SafeListPermission]
+
+    def post(self, request, *args, **kwargs):
+        serializer = AhjoDecisionCallbackSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        callback_data = serializer.validated_data
+        ahjo_case_id = callback_data["caseId"]
+        update_type = callback_data["updatetype"]
+
+        application = get_object_or_404(Application, ahjo_case_id=ahjo_case_id)
+
+        if update_type == AhjoDecisionUpdateType.ADDED:
+            AhjoStatus.objects.create(
+                application=application, status=AhjoStatusEnum.SIGNED_IN_AHJO
+            )
+        elif update_type == AhjoDecisionUpdateType.REMOVED:
+            AhjoStatus.objects.create(
+                application=application, status=AhjoStatusEnum.REMOVED_IN_AHJO
+            )
+        # TODO what to do if updatetype is "updated"
+        audit_logging.log(
+            request.user,
+            "",
+            Operation.UPDATE,
+            application,
+            additional_information=f"Decision proposal update type: {update_type} was received from Ahjo",
+        )
+
+        return Response({"message": "Callback received"}, status=status.HTTP_200_OK)

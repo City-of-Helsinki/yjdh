@@ -14,3 +14,10 @@ class AhjoCallbackSerializer(serializers.Serializer):
         if message not in ["Success", "Failure"]:
             raise serializers.ValidationError("Invalid message value.")
         return message
+
+
+class AhjoDecisionCallbackSerializer(serializers.Serializer):
+    updatetype = serializers.CharField(required=True)
+    id = serializers.CharField(required=True)
+    caseId = serializers.CharField(required=True)
+    caseGuid = serializers.UUIDField(format="hex_verbose", required=True)
