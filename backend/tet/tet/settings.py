@@ -141,6 +141,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 # Application definition
 
 INSTALLED_APPS = [
+    "helusers.apps.HelusersConfig",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -159,7 +160,9 @@ INSTALLED_APPS = [
 ]
 
 if ENABLE_ADMIN:
-    INSTALLED_APPS.append("django.contrib.admin")
+    INSTALLED_APPS.append(
+        "helusers.apps.HelusersAdminConfig",
+    )
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
