@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v3.5.0...benefit-handler-v4.0.0) (2024-05-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* **backend:** handler is assigned to applicant user if additional information is submitted
+
+### Bug Fixes
+
+* **backend:** Handler is assigned to applicant user if additional information is submitted ([bb7b280](https://github.com/City-of-Helsinki/yjdh/commit/bb7b280c6717bf7cda2e2f5d861c703a5fbeffa4))
+
 ## [3.5.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v3.4.0...benefit-handler-v3.5.0) (2024-05-15)
 
 
