@@ -1167,7 +1167,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         # Assign current user as handler
         if (
             instance.status == ApplicationStatus.HANDLING
-            and previous_status != ApplicationStatus.HANDLING
+            and previous_status != ApplicationStatus.HANDLING and
+            self.context["request"].user.is_handler()
         ):
             instance.handler = self.context["request"].user
             instance.save()

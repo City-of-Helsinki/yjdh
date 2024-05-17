@@ -147,7 +147,7 @@ export const $NoticeBar = styled.div`
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 100;
   padding: ${(props) => props.theme.spacing.s};
   max-width: 100%;
   background-color: ${(props) => props.theme.colors.summerMediumLight};
