@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+from datetime import datetime
+
 from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -253,6 +256,14 @@ class AhjoDecisionUpdateType(models.TextChoices):
     ADDED = "Added", _("Added")
     REMOVED = "Removed", _("Removed")
     UPDATED = "Updated", _("Updated")
+
+
+@dataclass
+class AhjoDecisionDetails:
+    decision_maker_name: str
+    decision_maker_title: str
+    section_of_the_law: str
+    decision_date: datetime
 
 
 # Call gettext on some of the enums so that "makemessages" command can find them when used dynamically in templates

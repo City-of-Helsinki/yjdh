@@ -1,7 +1,7 @@
 import json
 import logging
 from dataclasses import dataclass, field
-from typing import Dict, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 import requests
 from django.conf import settings
@@ -189,12 +189,14 @@ class AhjoApiClient:
     def send_request_to_ahjo(
         self,
         data: Union[dict, None] = None,
-    ) -> Union[Dict, Tuple[Application, str], None]:
+    ) -> Union[Tuple[Application, str], Tuple[Application, List], None]:
         """Send a request to Ahjo.
         The request can be either opening a new case (POST),
         updating the records of an existing case (PUT),
         sending a decision proposal (POST)or deleting an application (DELETE).
-        Returns a tuple of the application and the request id given by Ahjo if the request was successful.
+
+        Returns a tuple of the application and the response content,
+        which can be the id given by Ahjo or a JSON list depending on the request type.
         """
 
         try:
@@ -219,7 +221,7 @@ class AhjoApiClient:
                     LOGGER.debug(f"Request {self._request} to Ahjo was successful.")
                     return self._request.application, response.text
                 else:
-                    return response.json()
+                    return self._request.application, response.json()
         except MissingHandlerIdError as e:
             LOGGER.error(f"Missing handler id: {e}")
         except MissingAhjoCaseIdError as e:

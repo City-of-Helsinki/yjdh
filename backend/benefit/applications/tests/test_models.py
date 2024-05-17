@@ -4,7 +4,8 @@ import pytest
 
 from applications.enums import AhjoDecision, ApplicationBatchStatus
 from applications.exceptions import BatchCompletionRequiredFieldsError
-from applications.models import Application, ApplicationBatch, Employee
+from applications.models import AhjoSetting, Application, ApplicationBatch, Employee
+from applications.services.ahjo_decision_service import AhjoDecisionDetails
 from applications.tests.factories import BaseApplicationBatchFactory
 from applications.tests.test_application_batch_api import (
     fill_as_valid_batch_completion_and_save,
@@ -29,6 +30,64 @@ def test_application_batch(application_batch):
     for application in application_batch.applications.all():
         assert application_batch.proposal_for_decision == application.status
         assert application.batch == application_batch
+
+
+@pytest.fixture
+def p2p_settings():
+    return AhjoSetting.objects.create(
+        name="p2p_settings",
+        data={
+            "acceptor_name": "Test Test",
+            "inspector_name": "Test Inspector",
+            "inspector_email": "inspector@test.test",
+        },
+    )
+
+
+@pytest.fixture
+def decision_details():
+    return AhjoDecisionDetails(
+        decision_maker_name="Test Test",
+        decision_maker_title="Test Title",
+        section_of_the_law="16 §",
+        decision_date=date.today(),
+    )
+
+
+@pytest.mark.parametrize(
+    "batch_status, proposal_for_decision",
+    [
+        (ApplicationBatchStatus.DECIDED_ACCEPTED, AhjoDecision.DECIDED_ACCEPTED),
+        (ApplicationBatchStatus.DECIDED_REJECTED, AhjoDecision.DECIDED_REJECTED),
+    ],
+)
+def test_application_batch_update_after_details_request(
+    application_with_ahjo_decision,
+    batch_status,
+    decision_details,
+    p2p_settings,
+    proposal_for_decision,
+):
+    application_batch = ApplicationBatch.objects.create(
+        status=ApplicationBatchStatus.DRAFT,
+        handler=application_with_ahjo_decision.calculation.handler,
+        proposal_for_decision=proposal_for_decision,
+        auto_generated_by_ahjo=True,
+    )
+
+    application_batch.update_batch_after_details_request(batch_status, decision_details)
+    assert application_batch.decision_maker_name == decision_details.decision_maker_name
+    assert (
+        application_batch.decision_maker_title == decision_details.decision_maker_title
+    )
+    assert application_batch.section_of_the_law == decision_details.section_of_the_law
+    assert application_batch.decision_date == decision_details.decision_date
+
+    assert application_batch.p2p_checker_name == p2p_settings.data["acceptor_name"]
+    assert application_batch.p2p_inspector_name == p2p_settings.data["inspector_name"]
+    assert application_batch.p2p_inspector_email == p2p_settings.data["inspector_email"]
+
+    assert application_batch.status == batch_status
 
 
 @pytest.mark.parametrize(

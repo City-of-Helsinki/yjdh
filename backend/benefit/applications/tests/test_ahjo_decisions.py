@@ -4,10 +4,9 @@ from datetime import datetime
 import pytest
 from rest_framework.reverse import reverse
 
-from applications.enums import DecisionType
+from applications.enums import AhjoDecisionDetails, DecisionType
 from applications.models import AhjoDecisionText
 from applications.services.ahjo_decision_service import (
-    AhjoDecisionDetails,
     parse_details_from_decision_response,
     replace_decision_template_placeholders,
 )
@@ -169,4 +168,6 @@ def test_parse_details_from_decision_response(
     assert details.decision_date == datetime.strptime(
         ahjo_decision_detail_response[0]["DateDecision"], "%Y-%m-%dT%H:%M:%S.%f"
     )
-    assert details.section_of_law == ahjo_decision_detail_response[0]["Section"] + " §"
+    assert (
+        details.section_of_the_law == ahjo_decision_detail_response[0]["Section"] + " §"
+    )

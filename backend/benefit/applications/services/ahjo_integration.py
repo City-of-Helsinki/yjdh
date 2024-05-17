@@ -5,7 +5,7 @@ import zipfile
 from collections import defaultdict
 from dataclasses import dataclass
 from io import BytesIO
-from typing import Dict, List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 import jinja2
 import pdfkit
@@ -632,7 +632,7 @@ def send_subscription_request_to_ahjo(
 
 def get_decision_details_from_ahjo(
     application: Application, ahjo_token: AhjoToken
-) -> Union[Dict, None]:
+) -> Union[List, None]:
     try:
         ahjo_request = AhjoDecisionDetailsRequest(application)
         ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)

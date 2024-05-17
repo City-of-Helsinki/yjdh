@@ -174,9 +174,16 @@ def test_user_is_notified_of_upcoming_application_deletion(drafts_about_to_be_de
             "applications.management.commands.send_ahjo_requests.Application.objects.get_by_statuses",
             "applications.management.commands.send_ahjo_requests.update_application_summary_record_in_ahjo",
         ),
+        (
+            AhjoRequestType.GET_DECISION_DETAILS,
+            "applications.management.commands.send_ahjo_requests.Application.objects.get_by_statuses",
+            "applications.management.commands.send_ahjo_requests.get_decision_details_from_ahjo",
+        ),
     ],
 )
-def test_send_ahjo_requests(request_type, patch_db_function, patch_request):
+def test_send_ahjo_requests(
+    request_type, patch_db_function, patch_request, ahjo_decision_detail_response
+):
     AhjoSetting.objects.create(name="ahjo_code", data={"code": "12345"})
     with patch(
         "applications.management.commands.send_ahjo_requests.get_token"
@@ -186,12 +193,17 @@ def test_send_ahjo_requests(request_type, patch_db_function, patch_request):
         mock_get_token.return_value = MagicMock(AhjoToken)
         number_to_send = 5
 
-        mock_get_applications.return_value = [
-            MagicMock(spec=Application) for _ in range(number_to_send)
-        ]
+        if request_type == AhjoRequestType.GET_DECISION_DETAILS:
+            mock_response = ahjo_decision_detail_response
+        else:
+            mock_response = "{response_text}"
+
+        applications = [MagicMock(spec=Application) for _ in range(number_to_send)]
+
+        mock_get_applications.return_value = applications
         mock_send_request.return_value = (
             MagicMock(spec=Application),
-            "{response_text}",
+            mock_response,
         )
 
         # Call the command
