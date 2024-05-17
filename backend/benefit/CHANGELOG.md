@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.0.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.13.0...benefit-backend-v2.0.0) (2024-05-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* **backend:** handler is assigned to applicant user if additional information is submitted
+
+### Features
+
+* Api endpoint for ahjo delete ([#2961](https://github.com/City-of-Helsinki/yjdh/issues/2961)) ([e5e3240](https://github.com/City-of-Helsinki/yjdh/commit/e5e3240332f763718e0d84a5dbd0d6ad9b7318bd))
+* Callback endpoint for decision status ([#2977](https://github.com/City-of-Helsinki/yjdh/issues/2977)) ([3e72d40](https://github.com/City-of-Helsinki/yjdh/commit/3e72d404db3a793682dd9272031fa6f0db74a6ad))
+
+
+### Bug Fixes
+
+* **backend:** Handler is assigned to applicant user if additional information is submitted ([bb7b280](https://github.com/City-of-Helsinki/yjdh/commit/bb7b280c6717bf7cda2e2f5d861c703a5fbeffa4))
+
 ## [1.13.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.12.0...benefit-backend-v1.13.0) (2024-05-14)
 
 
