@@ -102,7 +102,7 @@ const AlterationPage = (): JSX.Element => {
       value: string
     ): JSX.Element => {
       const fieldLabel = t(
-        `common:applications.alteration.fields.${fieldKey}.label`,
+        `common:applications.alterations.new.fields.${fieldKey}.label`,
         ''
       );
 
@@ -161,7 +161,7 @@ const AlterationPage = (): JSX.Element => {
       <$PageHeader>
         <$MainHeaderItem>
           <$PageHeading>
-            {t(`common:applications.alteration.title`)}
+            {t(`common:applications.alterations.new.title`)}
           </$PageHeading>
         </$MainHeaderItem>
         <$HeaderItem>
@@ -190,7 +190,7 @@ const AlterationPage = (): JSX.Element => {
         <>
           <$Grid>
             <$GridCell $colSpan={8}>
-              <p>{t('common:applications.alteration.explanation')}</p>
+              <p>{t('common:applications.alterations.new.explanation')}</p>
               <p>{t('common:applications.pageHeaders.guideText')}</p>
             </$GridCell>
           </$Grid>
@@ -205,10 +205,12 @@ const AlterationPage = (): JSX.Element => {
         </>
       )}
       {hasHandledTermination && (
-        <p>{t('common:applications.alteration.error.alreadyTerminated')}</p>
+        <p>
+          {t('common:applications.alterations.new.error.alreadyTerminated')}
+        </p>
       )}
       {!isAccepted && (
-        <p>{t('common:applications.alteration.error.notYetAccepted')}</p>
+        <p>{t('common:applications.alterations.new.error.notYetAccepted')}</p>
       )}
     </Container>
   );

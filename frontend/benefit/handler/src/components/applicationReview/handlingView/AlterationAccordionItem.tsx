@@ -10,6 +10,7 @@ import {
 import AlterationCancelModal from 'benefit/handler/components/applicationReview/handlingView/AlterationCancelModal';
 import AlterationDeleteModal from 'benefit/handler/components/applicationReview/handlingView/AlterationDeleteModal';
 import { $DecisionCalculatorAccordionIconContainer } from 'benefit/handler/components/applicationReview/handlingView/DecisionCalculationAccordion.sc';
+import { ROUTES } from 'benefit/handler/constants';
 import useDeleteApplicationAlterationQuery from 'benefit/handler/hooks/useDeleteApplicationAlterationQuery';
 import useUpdateApplicationAlterationQuery from 'benefit/handler/hooks/useUpdateApplicationAlterationQuery';
 import { ErrorData } from 'benefit/handler/types/common';
@@ -18,6 +19,7 @@ import { AlterationAccordionItemProps } from 'benefit-shared/types/application';
 import { prettyPrintObject } from 'benefit-shared/utils/errors';
 import camelcaseKeys from 'camelcase-keys';
 import { Button, IconCross, IconInfoCircle, IconTrash } from 'hds-react';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
 import {
@@ -37,6 +39,7 @@ const AlterationAccordionItem = ({
 AlterationAccordionItemProps): JSX.Element => {
   const locale = useLocale();
   const { t } = useTranslation();
+  const router = useRouter();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const { mutate: deleteAlteration, status: deleteStatus } =
     useDeleteApplicationAlterationQuery();
@@ -350,7 +353,15 @@ AlterationAccordionItemProps): JSX.Element => {
         </$Grid>
         <$ActionContainer>
           {alteration.state === ALTERATION_STATE.RECEIVED && (
-            <Button theme="coat" variant="primary" onClick={() => {}}>
+            <Button
+              theme="coat"
+              variant="primary"
+              onClick={() =>
+                router.push(
+                  `${ROUTES.HANDLE_ALTERATION}/?applicationId=${alteration.application}&alterationId=${alteration.id}`
+                )
+              }
+            >
               {t(
                 'common:applications.decision.alterationList.item.actions.beginHandling'
               )}

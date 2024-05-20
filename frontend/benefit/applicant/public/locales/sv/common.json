@@ -476,69 +476,71 @@
         "reportAlteration": "Anmäl ändring i anställningen"
       }
     },
-    "alteration": {
-      "title": "Anmäl ändring i anställningen",
-      "explanation": "Meddela oss om den sysselsatta personens anställning avslutas eller avbrytas tillfälligt under stödperioden. Vi kan återkräva Helsingforstillägget om anställningen förändras under stödperioden.",
-      "actions": {
-        "submit": "Skicka",
-        "cancel": "Avbryt"
-      },
-      "fields": {
-        "alterationType": {
-          "label": "Hurdan ändring i anställningen vill du anmäla?",
-          "termination": "Anställningen avslutas",
-          "suspension": "Tillfälligt avbrott i anställningen"
+    "alterations": {
+      "new": {
+        "title": "Anmäl ändring i anställningen",
+        "explanation": "Meddela oss om den sysselsatta personens anställning avslutas eller avbrytas tillfälligt under stödperioden. Vi kan återkräva Helsingforstillägget om anställningen förändras under stödperioden.",
+        "actions": {
+          "submit": "Skicka",
+          "cancel": "Avbryt"
         },
-        "endDate": {
-          "label": "Sista arbetsdagen"
+        "fields": {
+          "alterationType": {
+            "label": "Hurdan ändring i anställningen vill du anmäla?",
+            "termination": "Anställningen avslutas",
+            "suspension": "Tillfälligt avbrott i anställningen"
+          },
+          "endDate": {
+            "label": "Sista arbetsdagen"
+          },
+          "resumeDate": {
+            "label": "Datum för återvändande till arbetet"
+          },
+          "date": {
+            "helpText": "Ange datumet i formatet D.M.ÅÅÅÅ."
+          },
+          "terminationReason": {
+            "label": "Orsak till att anställningen avslutas",
+            "helpText": "Om du önskar kan du ange orsaken till att anställningen avslutas"
+          },
+          "suspensionReason": {
+            "label": "Orsak till avbrottet i anställningen",
+            "helpText": "Om du önskar kan du ange orsaken till att anställningen avslutas"
+          },
+          "useEinvoice": {
+            "label": "Leveransmetod för fakturan",
+            "yes": "E-faktura",
+            "no": "Till postadressen: {{streetAddress}}, {{postCode}} {{city}}"
+          },
+          "einvoiceProviderName": {
+            "label": "E-fakturaoperatörens namn",
+            "placeholder": "T.ex. Basware Oyj"
+          },
+          "einvoiceProviderIdentifier": {
+            "label": "Förmedlarkod",
+            "placeholder": "T.ex. BAWCFI22"
+          },
+          "einvoiceAddress": {
+            "label": "E-fakturaadress",
+            "placeholder": "T.ex 001100223300",
+            "tooltip": "Du kan kontrollera din organisations e-fakturaadress på webbplatsen verkkolaskuosoite.fi"
+          },
+          "contactPersonName": {
+            "label": "Kontaktperson i faktureringsärenden",
+            "helpText": "Ange namnet på den kontaktperson som anges på företagets faktura "
+          }
         },
-        "resumeDate": {
-          "label": "Datum för återvändande till arbetet"
+        "validation": {
+          "resumeDateBeforeEndDate": "Datumet för återvändande till arbetet måste vara senare än datumet när avbrottet inleds",
+          "einvoiceRequiredTogether": "Alla fälten måste fyllas i om e-faktura används"
         },
-        "date": {
-          "helpText": "Ange datumet i formatet D.M.ÅÅÅÅ."
+        "error": {
+          "notYetAccepted": "Du kan inte meddela om en ändring i anställningen för den här ansökan, eftersom stöd inte ännu har beviljats.",
+          "alreadyTerminated": "Den här anställningen har tidigare markerats som avslutad, så du kan inte längre meddela om en ny ändring."
         },
-        "terminationReason": {
-          "label": "Orsak till att anställningen avslutas",
-          "helpText": "Om du önskar kan du ange orsaken till att anställningen avslutas"
-        },
-        "suspensionReason": {
-          "label": "Orsak till avbrottet i anställningen",
-          "helpText": "Om du önskar kan du ange orsaken till att anställningen avslutas"
-        },
-        "useEinvoice": {
-          "label": "Leveransmetod för fakturan",
-          "yes": "E-faktura",
-          "no": "Till postadressen: {{streetAddress}}, {{postCode}} {{city}}"
-        },
-        "einvoiceProviderName": {
-          "label": "E-fakturaoperatörens namn",
-          "placeholder": "T.ex. Basware Oyj"
-        },
-        "einvoiceProviderIdentifier": {
-          "label": "Förmedlarkod",
-          "placeholder": "T.ex. BAWCFI22"
-        },
-        "einvoiceAddress": {
-          "label": "E-fakturaadress",
-          "placeholder": "T.ex 001100223300",
-          "tooltip": "Du kan kontrollera din organisations e-fakturaadress på webbplatsen verkkolaskuosoite.fi"
-        },
-        "contactPersonName": {
-          "label": "Kontaktperson i faktureringsärenden",
-          "helpText": "Ange namnet på den kontaktperson som anges på företagets faktura "
-        }
-      },
-      "validation": {
-        "resumeDateBeforeEndDate": "Datumet för återvändande till arbetet måste vara senare än datumet när avbrottet inleds",
-        "einvoiceRequiredTogether": "Alla fälten måste fyllas i om e-faktura används"
-      },
-      "error": {
-        "notYetAccepted": "Du kan inte meddela om en ändring i anställningen för den här ansökan, eftersom stöd inte ännu har beviljats.",
-        "alreadyTerminated": "Den här anställningen har tidigare markerats som avslutad, så du kan inte längre meddela om en ny ändring."
-      },
-      "details": "Ändringar i anställningen",
-      "billing": "Faktureringsuppgifter"
+        "details": "Ändringar i anställningen",
+        "billing": "Faktureringsuppgifter"
+      }
     }
   },
   "serviceName": "E-tjänsten för Helsingforstillägg",

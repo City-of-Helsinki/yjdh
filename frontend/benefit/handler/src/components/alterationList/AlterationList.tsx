@@ -1,11 +1,13 @@
 import {
   $EmptyListText,
-  $Heading, $Link,
+  $Heading,
+  $Link,
   $Subheading,
 } from 'benefit/handler/components/alterationList/AlterationList.sc';
 import { ROUTES } from 'benefit/handler/constants';
 import { ApplicationAlterationData } from 'benefit-shared/types/application';
 import { IconArrowRight, Table } from 'hds-react';
+import { useRouter } from 'next/router';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
@@ -22,16 +24,24 @@ type Props = {
 const AlterationList: React.FC<Props> = ({ isLoading, list, heading }) => {
   const theme = useTheme();
   const { t } = useTranslation();
+  const router = useRouter();
 
   const columns = [
     {
       headerName: t('common:applications.alterations.list.columns.applicant'),
       key: 'application_company_name',
       isSortable: true,
-      transform: ({ application_company_name, application }: ApplicationAlterationData) =>
-        <$Link href={`${ROUTES.APPLICATION}/?id=${application}`} target="_blank">
+      transform: ({
+        application_company_name,
+        application,
+      }: ApplicationAlterationData) => (
+        <$Link
+          href={`${ROUTES.APPLICATION}/?id=${application}`}
+          target="_blank"
+        >
           {application_company_name}
         </$Link>
+      ),
     },
     {
       headerName: t(
@@ -79,15 +89,19 @@ const AlterationList: React.FC<Props> = ({ isLoading, list, heading }) => {
       headerName: '',
       key: 'actions',
       isSortable: false,
-      transform: () => (
+      transform: ({ id, application }: ApplicationAlterationData) => (
         <div>
           <LinkButton
             style={{ display: 'flex', alignItems: 'center' }}
             theme="coat"
             iconRight={<IconArrowRight />}
-            onClick={() => {}}
+            onClick={() =>
+              router.push(
+                `${ROUTES.HANDLE_ALTERATION}/?applicationId=${application}&alterationId=${id}`
+              )
+            }
           >
-            Käsittele
+            {t('common:applications.alterations.list.actions.startHandling')}
           </LinkButton>
         </div>
       ),

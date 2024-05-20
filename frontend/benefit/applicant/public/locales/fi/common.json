@@ -30,7 +30,7 @@
       "navigateToDecisions": "Katso kaikki päätökset",
       "alterationReminder": {
         "label": "Muutos työsuhteessa?",
-        "body": "Jos työllistetyn henkilön työsuhde päättyy tai keskeytyy, ilmoita muutoksesta mahdollisimman pian. Ylimääräinen Helsinki-lisä saatetaan periä takaisin. Ilmoita muutoksesta avaamalla hakemus ja valitsemalla \"Ilmoita työsuhteen muutoksesta\"."
+        "body": "Jos työllistetyn henkilön työsuhde päättyy tai keskeytyy, ilmoita muutoksesta mahdollisimman pian. Ylimääräinen Helsinki-lisä saatetaan laskuttaa takaisin. Ilmoita muutoksesta avaamalla hakemus ja valitsemalla \"Ilmoita työsuhteen muutoksesta\"."
       }
     },
     "pageHeaders": {
@@ -454,8 +454,8 @@
             "opened": "Vastaanotettu",
             "handled": "Käsitelty"
           },
-          "recoveryAmount": "Takaisin peritty tuki",
-          "recoveryPeriod": "Aika, jolta tukea perittiin takaisin",
+          "recoveryAmount": "Takaisinlaskutettu tuki",
+          "recoveryPeriod": "Aika, jolta tukea laskutettiin takaisin",
           "contactPersonName": "Yhteyshenkilö laskutuksessa",
           "einvoiceProviderName": "Verkkolaskuoperaattori",
           "einvoiceProviderIdentifier": "Välittäjätunnus",
@@ -476,69 +476,71 @@
         "reportAlteration": "Ilmoita työsuhteen muutoksesta"
       }
     },
-    "alteration": {
-      "title": "Ilmoita työsuhteen muutoksesta",
-      "explanation": "Ilmoita, jos työllistetyn henkilön työsuhde päättyy tai keskeytyy väliaikaisesti tukijakson aikana. Saatamme periä Helsinki-lisää takaisin, jos tukijakson aikana työsuhteeseen tulee muutoksia.",
-      "actions": {
-        "submit": "Lähetä",
-        "cancel": "Peruuta"
-      },
-      "fields": {
-        "alterationType": {
-          "label": "Millaisesta muutoksesta työsuhteessa haluat ilmoittaa?",
-          "termination": "Työsuhteen päättymisestä",
-          "suspension": "Työsuhteen keskeytymisestä väliaikaisesti"
+    "alterations": {
+      "new": {
+        "title": "Ilmoita työsuhteen muutoksesta",
+        "explanation": "Ilmoita, jos työllistetyn henkilön työsuhde päättyy tai keskeytyy väliaikaisesti tukijakson aikana. Saatamme laskuttaa Helsinki-lisää takaisin, jos tukijakson aikana työsuhteeseen tulee muutoksia.",
+        "actions": {
+          "submit": "Lähetä",
+          "cancel": "Peruuta"
         },
-        "endDate": {
-          "label": "Viimeinen työpäivä"
+        "fields": {
+          "alterationType": {
+            "label": "Millaisesta muutoksesta työsuhteessa haluat ilmoittaa?",
+            "termination": "Työsuhteen päättymisestä",
+            "suspension": "Työsuhteen keskeytymisestä väliaikaisesti"
+          },
+          "endDate": {
+            "label": "Viimeinen työpäivä"
+          },
+          "resumeDate": {
+            "label": "Töihinpaluupäivä"
+          },
+          "date": {
+            "helpText": "Kirjoita päivämäärä muodossa P.K.VVVV"
+          },
+          "terminationReason": {
+            "label": "Syy työsuhteen päättymiseen",
+            "helpText": "Kirjoita halutessasi syy työsuhteen päättymiseen"
+          },
+          "suspensionReason": {
+            "label": "Syy työsuhteen keskeytymiseen",
+            "helpText": "Kirjoita halutessasi syy työsuhteen keskeytymiseen"
+          },
+          "useEinvoice": {
+            "label": "Laskun toimitustapa",
+            "yes": "Verkkolaskulla",
+            "no": "Postiosoitteeseen: {{streetAddress}}, {{postCode}} {{city}}"
+          },
+          "einvoiceProviderName": {
+            "label": "Verkkolaskuoperaattorin nimi",
+            "placeholder": "Esim. Basware Oyj"
+          },
+          "einvoiceProviderIdentifier": {
+            "label": "Verkkolaskuoperaattorin tunnus",
+            "placeholder": "Esim. BAWCFI22"
+          },
+          "einvoiceAddress": {
+            "label": "Verkkolaskuosoite",
+            "placeholder": "Esim. 001100223300",
+            "tooltip": "Voit tarkistaa organisaatiosi verkkolaskuosoitteen verkkosivulta verkkolaskuosoite.fi"
+          },
+          "contactPersonName": {
+            "label": "Yhteyshenkilö laskutusasioissa",
+            "helpText": "Kirjoita yhteyshenkilön nimi, joka lisätään laskulle"
+          }
         },
-        "resumeDate": {
-          "label": "Töihinpaluupäivä"
+        "validation": {
+          "resumeDateBeforeEndDate": "Töihinpaluupäivän on oltava keskeytymisen alkupäivämäärän jälkeen",
+          "einvoiceRequiredTogether": "Verkkolaskuosoitetta käytettäessä kaikki osoitekentät on täytettävä"
         },
-        "date": {
-          "helpText": "Kirjoita päivämäärä muodossa P.K.VVVV"
+        "error": {
+          "notYetAccepted": "Et voi ilmoittaa muutosta työsuhteessa tälle hakemukselle, sillä tukea ei ole vielä myönnetty.",
+          "alreadyTerminated": "Tämä työsuhde on aiemmin jo merkitty päättyneeksi, joten et voi enää ilmoittaa uudesta muutoksesta."
         },
-        "terminationReason": {
-          "label": "Syy työsuhteen päättymiseen",
-          "helpText": "Kirjoita halutessasi syy työsuhteen päättymiseen"
-        },
-        "suspensionReason": {
-          "label": "Syy työsuhteen keskeytymiseen",
-          "helpText": "Kirjoita halutessasi syy työsuhteen keskeytymiseen"
-        },
-        "useEinvoice": {
-          "label": "Laskun toimitustapa",
-          "yes": "Verkkolaskulla",
-          "no": "Postiosoitteeseen: {{streetAddress}}, {{postCode}} {{city}}"
-        },
-        "einvoiceProviderName": {
-          "label": "Verkkolaskuoperaattorin nimi",
-          "placeholder": "Esim. Basware Oyj"
-        },
-        "einvoiceProviderIdentifier": {
-          "label": "Verkkolaskuoperaattorin tunnus",
-          "placeholder": "Esim. BAWCFI22"
-        },
-        "einvoiceAddress": {
-          "label": "Verkkolaskuosoite",
-          "placeholder": "Esim. 001100223300",
-          "tooltip": "Voit tarkistaa organisaatiosi verkkolaskuosoitteen verkkosivulta verkkolaskuosoite.fi"
-        },
-        "contactPersonName": {
-          "label": "Yhteyshenkilö laskutusasioissa",
-          "helpText": "Kirjoita yhteyshenkilön nimi, joka lisätään laskulle"
-        }
-      },
-      "validation": {
-        "resumeDateBeforeEndDate": "Töihinpaluupäivän on oltava keskeytymisen alkupäivämäärän jälkeen",
-        "einvoiceRequiredTogether": "Verkkolaskuosoitetta käytettäessä kaikki osoitekentät on täytettävä"
-      },
-      "error": {
-        "notYetAccepted": "Et voi ilmoittaa muutosta työsuhteessa tälle hakemukselle, sillä tukea ei ole vielä myönnetty.",
-        "alreadyTerminated": "Tämä työsuhde on aiemmin jo merkitty päättyneeksi, joten et voi enää ilmoittaa uudesta muutoksesta."
-      },
-      "details": "Muutokset työsuhteessa",
-      "billing": "Laskutustiedot"
+        "details": "Muutokset työsuhteessa",
+        "billing": "Laskutustiedot"
+      }
     }
   },
   "serviceName": "Helsinki-lisän asiointipalvelu",

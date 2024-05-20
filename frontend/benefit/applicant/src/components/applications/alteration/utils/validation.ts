@@ -53,7 +53,7 @@ export const getValidationSchema = (application: Application, t: TFunction) => {
               .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED))
               .test({
                 message: t(
-                  'common:applications.alteration.validation.resumeDateBeforeEndDate'
+                  'common:applications.alterations.new.validation.resumeDateBeforeEndDate'
                 ),
                 test: (value = '') => !validateIsBeforeOrOnDate(value, endDate),
               })
@@ -67,7 +67,9 @@ export const getValidationSchema = (application: Application, t: TFunction) => {
           ),
       }),
     reason: Yup.string(),
-    contactPersonName: Yup.string().required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+    contactPersonName: Yup.string().required(
+      t(VALIDATION_MESSAGE_KEYS.REQUIRED)
+    ),
     useEinvoice: Yup.boolean().required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     einvoiceProviderName: einvoiceRequired,
     einvoiceProviderIdentifier: einvoiceRequired,
