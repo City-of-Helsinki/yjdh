@@ -449,18 +449,21 @@ class HandlerApplicationAlterationViewSet(BaseApplicationAlterationViewSet):
         allowed = True
         current_state = self.get_object().state
 
+        is_simple_state_change = (
+            "state" in request.data.keys() and len(request.data.keys()) == 1
+        )
+        forbidden_if_handled = not (
+            is_simple_state_change
+            and request.data["state"]
+            in HandlerApplicationAlterationViewSet.FROZEN_STATUSES
+        )
+
         # If the alteration has been handled, the only allowed edit is to cancel it.
         # If the alteration has been cancelled, it cannot be modified in any way anymore.
-        if current_state == ApplicationAlterationState.CANCELLED:
+        if current_state == ApplicationAlterationState.CANCELLED or (
+            current_state == ApplicationAlterationState.HANDLED and forbidden_if_handled
+        ):
             allowed = False
-        elif current_state == ApplicationAlterationState.HANDLED:
-            if not (
-                "state" in request.data.keys()
-                and len(request.data.keys()) == 1
-                and request.data["state"]
-                in HandlerApplicationAlterationViewSet.FROZEN_STATUSES
-            ):
-                allowed = False
 
         if allowed:
             return super().update(request, *args, **kwargs)
