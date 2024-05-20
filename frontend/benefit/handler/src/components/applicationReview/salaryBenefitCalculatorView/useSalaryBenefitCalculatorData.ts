@@ -205,12 +205,6 @@ const useSalaryBenefitCalculatorData = (
   );
 
   useEffect(() => {
-    if (grantedPeriod < 0) {
-      void setFieldValue(fields.endDate.name, startDate);
-    }
-  }, [grantedPeriod, startDate, fields.endDate.name, setFieldValue]);
-
-  useEffect(() => {
     if (
       newTrainingCompensation.monthlyAmount &&
       newTrainingCompensation.startDate &&
