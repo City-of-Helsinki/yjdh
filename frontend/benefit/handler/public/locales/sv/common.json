@@ -192,7 +192,8 @@
           "cancelled": "Peruutettu",
           "accepted": "Hyväksytty",
           "rejected": "Hylätty"
-        }
+        },
+        "calculationEndDate": "Laskentapäivä"
       },
       "messages": {
         "empty": {
@@ -1598,12 +1599,14 @@
   },
   "search": {
     "input": {
-      "filter": {
-        "label": "Suodata",
-        "placeholder": "Avainsana"
+      "keyword": {
+        "helperText": "Kirjoita hakemusnumero, työllistettävän nimi tai hetu, työnantajan nimi, y-tunnus tai diaari",
+        "label": "Etsi hakemusta",
+        "placeholder": "Kirjoita hakusana"
       }
     },
-    "keyword": "Hakusana"
+    "perfomingSearch": "Etsitään ...",
+    "noResults": "Ei hakutuloksia."
   },
   "toast": {
     "closeToast": "Sulje ilmoitus"
