@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
@@ -172,7 +173,12 @@ class DecisionProposalDraftUpdate(APIView):
         proposal.save()
 
         if data.get("decision_text") and data.get("justification_text"):
+            decision_part = data.get("decision_text")
+            justification_part = data.get("justification_text")
             ahjo_text = AhjoDecisionText.objects.filter(application=application)
+            decision_text = f'<section id="paatos"><h1>{_("Päätös")}</h1>{decision_part}</section>\
+<section id="paatoksenperustelut"><h1>{_("Päätöksen perustelut")}</h1>{justification_part}</section>'
+
             if ahjo_text:
                 ahjo_text.update(
                     language=application.applicant_language,
@@ -181,9 +187,7 @@ class DecisionProposalDraftUpdate(APIView):
                         if data["status"] == ApplicationStatus.ACCEPTED
                         else DecisionType.DENIED
                     ),
-                    decision_text=data["decision_text"]
-                    + "\n\n"
-                    + data.get("justification_text"),
+                    decision_text=decision_text,
                 )
             else:
                 AhjoDecisionText.objects.create(
@@ -194,9 +198,7 @@ class DecisionProposalDraftUpdate(APIView):
                         if data["status"] == ApplicationStatus.ACCEPTED
                         else DecisionType.DENIED
                     ),
-                    decision_text=data.get("decision_text")
-                    + "\n\n"
-                    + data.get("justification_text"),
+                    decision_text=decision_text,
                 )
 
         if data["review_step"] >= 4:
