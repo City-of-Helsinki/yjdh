@@ -6,6 +6,7 @@ from datetime import timedelta
 import factory
 import pytest
 from django.conf import settings
+from django.db import connection
 from django.utils import timezone
 
 from applications.enums import (
@@ -38,6 +39,14 @@ from helsinkibenefit.tests.conftest import *  # noqa
 from shared.service_bus.enums import YtjOrganizationCode
 from terms.tests.conftest import *  # noqa
 from terms.tests.factories import TermsOfServiceApprovalFactory
+
+
+@pytest.fixture(scope="session", autouse=True)
+def django_db_setup(django_db_setup, django_db_blocker):
+    """Test session DB setup."""
+    with django_db_blocker.unblock():
+        with connection.cursor() as cursor:
+            cursor.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
 
 
 @pytest.fixture

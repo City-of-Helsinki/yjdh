@@ -25,6 +25,7 @@ from applications.api.v1.ahjo_integration_views import (
     AhjoDecisionCallbackView,
 )
 from applications.api.v1.review_state_views import ReviewStateView
+from applications.api.v1.search_views import SearchView
 from applications.api.v1.talpa_integration_views import TalpaCallbackView
 from calculator.api.v1 import views as calculator_views
 from common.debug_util import debug_env
@@ -147,6 +148,11 @@ urlpatterns = [
         "v1/print/<str:pk>/",
         application_views.PrintDetail.as_view(),
         name="print_summary_pdf",
+    ),
+    path(
+        "v1/search/",
+        SearchView.as_view(),
+        name="search_applications",
     ),
     path("oidc/", include("shared.oidc.urls")),
     path("oauth2/", include("shared.azure_adfs.urls")),

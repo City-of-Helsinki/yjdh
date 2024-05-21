@@ -23,7 +23,10 @@ from applications.api.v1.serializers.de_minimis import DeMinimisAidSerializer
 from applications.api.v1.serializers.decision_proposal import (
     AhjoDecisionProposalReadOnlySerializer,
 )
-from applications.api.v1.serializers.employee import EmployeeSerializer
+from applications.api.v1.serializers.employee import (
+    EmployeeSerializer,
+    SearchEmployeeSerializer,
+)
 from applications.api.v1.serializers.utils import DynamicFieldsModelSerializer
 from applications.api.v1.status_transition_validator import (
     ApplicantApplicationStatusValidator,
@@ -55,6 +58,7 @@ from applications.services.change_history import (
     get_application_change_history_made_by_handler,
 )
 from calculator.api.v1.serializers import (
+    CalculationSearchSerializer,
     CalculationSerializer,
     PaySubsidySerializer,
     TrainingCompensationSerializer,
@@ -68,7 +72,7 @@ from common.utils import (
     to_decimal,
     update_object,
 )
-from companies.api.v1.serializers import CompanySerializer
+from companies.api.v1.serializers import CompanySearchSerializer, CompanySerializer
 from companies.models import Company
 from messages.automatic_messages import send_application_reopened_message
 from shared.audit_log import audit_logging
@@ -1789,3 +1793,115 @@ class ChangeHistorySerializer(serializers.Serializer):
     field = serializers.CharField()
     old = serializers.CharField()
     new = serializers.CharField()
+
+
+class HandlerApplicationListSerializer(serializers.Serializer):
+    model = Application
+    ADDITIONAL_INFORMATION_DEADLINE = timedelta(days=7)
+
+    class Meta:
+        fields = [
+            "id",
+            "status",
+            "application_number",
+            "handled_at",
+            "modified_at",
+            "submitted_at",
+            "modified_at",
+            "employee",
+            "company",
+            "application_origin",
+            "unread_message_count",
+            "handler",
+            "additional_information_needed_by",
+            "calculation",
+        ]
+
+        read_only_fields = [
+            "id",
+            "status",
+            "application_number",
+            "handled_at",
+            "modified_at",
+            "submitted_at",
+            "modified_at",
+            "employee",
+            "company",
+            "application_origin",
+            "unread_message_count",
+            "additional_information_needed_by",
+            "handler",
+            "calculation",
+        ]
+
+    additional_information_needed_by = serializers.SerializerMethodField(
+        "get_additional_information_needed_by"
+    )
+
+    handled_at = serializers.SerializerMethodField(
+        "get_handled_at",
+        help_text=(
+            "Timestamp when the application was handled (accepted/rejected/cancelled)"
+        ),
+    )
+
+    application_number = serializers.IntegerField()
+
+    status = serializers.ChoiceField(
+        choices=ApplicationStatus.choices,
+        validators=[ApplicantApplicationStatusValidator()],
+        help_text="Status of the application, visible to the applicant",
+    )
+
+    application_origin = serializers.CharField()
+
+    submitted_at = serializers.SerializerMethodField("get_submitted_at")
+
+    modified_at = serializers.SerializerMethodField(
+        "get_modified_at",
+        help_text=(
+            "Last modified timestamp. Only handlers see the timestamp of non-draft"
+            " applications."
+        ),
+    )
+    handler = UserSerializer()
+
+    employee = SearchEmployeeSerializer()
+    company = CompanySearchSerializer()
+    calculation = CalculationSearchSerializer()
+
+    id = serializers.UUIDField()
+
+    unread_messages_count = serializers.IntegerField(
+        read_only=True, help_text="Count of unread messages"
+    )
+
+    def get_handled_at(self, obj):
+        return getattr(obj, "handled_at", None)
+
+    def get_additional_information_needed_by(self, obj):
+        if info_asked_timestamp := getattr(
+            obj, "additional_information_requested_at", None
+        ):
+            return info_asked_timestamp.date() + self.ADDITIONAL_INFORMATION_DEADLINE
+        else:
+            return None
+
+    def get_submitted_at(self, obj):
+        return getattr(obj, "submitted_at", None)
+
+    def get_modified_at(self, obj):
+        if not self.logged_in_user_is_admin() and obj.status != ApplicationStatus.DRAFT:
+            return None
+        return obj.modified_at
+
+    def logged_in_user_is_admin(self):
+        if settings.NEXT_PUBLIC_MOCK_FLAG:
+            return True
+        user = get_request_user_from_context(self)
+        if user and hasattr(user, "is_handler"):
+            return user.is_handler()
+        return False
+
+
+# handler name, submittedAt, modifiedAt, applicationOrigin, , unreadMessagesCount

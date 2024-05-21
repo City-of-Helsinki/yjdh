@@ -75,3 +75,19 @@ class EmployeeSerializer(serializers.ModelSerializer):
                 _("Other expenses must be a positive number")
             )
         return value
+
+
+class SearchEmployeeSerializer(serializers.ModelSerializer):
+    """
+    Employee objects are meant to be edited together with their Application object.
+    """
+
+    class Meta:
+        model = Employee
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "social_security_number",
+        ]
+        read_only_fields = ["id", "first_name", "last_name", "social_security_number"]
