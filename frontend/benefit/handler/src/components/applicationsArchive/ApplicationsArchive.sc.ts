@@ -1,4 +1,5 @@
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import { TextInput } from 'hds-react';
 import styled from 'styled-components';
 
 type StatusProps = {
@@ -28,4 +29,8 @@ export const $Empty = styled.div`
   background-color: ${(props) => props.theme.colors.black5};
   color: ${(props) => props.theme.colors.black50};
   padding: ${(props) => props.theme.spacing.s};
+`;
+
+export const $TextInput = styled(TextInput)`
+  max-width: 660px;
 `;

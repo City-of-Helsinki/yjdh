@@ -542,6 +542,7 @@ export type ApplicationListItemData = {
   contactPersonName?: string;
   talpaStatus?: string;
   ahjoCaseId?: string;
+  calculationEndDate?: string;
 };
 
 export type TextProp = 'textFi' | 'textEn' | 'textSv';

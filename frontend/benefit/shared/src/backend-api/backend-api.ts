@@ -22,6 +22,7 @@ export const BackendEndpoint = {
   HANDLER_APPLICATION_ALTERATION: '/v1/handlerapplicationalterations/',
   DECISION_PROPOSAL_TEMPLATE: 'v1/decision-proposal-sections/',
   DECISION_PROPOSAL_DRAFT: 'v1/decision-proposal-drafts/',
+  SEARCH: 'v1/search/',
 } as const;
 
 const singleBatchBase = (id: string): string =>

@@ -181,7 +181,7 @@ const useSalaryBenefitCalculatorData = (
     []
   );
 
-  const { setFieldValue, values } = formik;
+  const { values } = formik;
 
   const getStateAidMaxPercentageSelectValue = (): OptionType | undefined => {
     const { stateAidMaxPercentage } = values;
