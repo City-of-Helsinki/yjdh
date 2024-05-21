@@ -4,17 +4,24 @@ from typing import List
 from django.conf import settings
 from django.urls import reverse
 
-from applications.enums import AhjoRecordTitle, AhjoRecordType, AttachmentType
+from applications.enums import (
+    AhjoRecordTitle,
+    AhjoRecordType,
+    AhjoRequestType,
+    AttachmentType,
+)
 from applications.models import Application, Attachment
 from common.utils import hash_file
 from users.models import User
 
 MANNER_OF_RECEIPT = "sähköinen asiointi"
+IS_UPDATE_TITLE_PART = " täydennys,"
 
 
 def _prepare_record_title(
     application: Application,
     record_type: AhjoRecordType,
+    request_type: AhjoRequestType,
     current: int = 0,
     total: int = 0,
 ) -> str:
@@ -22,10 +29,17 @@ def _prepare_record_title(
     Hakemus 11.4.2024, 128123
     or for an attachment:
     Hakemus 11.4.2024, liite 1/3, 128123
+    If the request type is an update, add the word "täydennys" to the title.
     """
     formatted_date = application.created_at.strftime("%d.%m.%Y")
+    title_part = (
+        IS_UPDATE_TITLE_PART
+        if request_type == AhjoRequestType.UPDATE_APPLICATION
+        else ""
+    )
+
     if record_type == AhjoRecordType.APPLICATION:
-        return f"{AhjoRecordTitle.APPLICATION}, {application.application_number}"
+        return f"{AhjoRecordTitle.APPLICATION},{title_part} {formatted_date}, {application.application_number}"
     return f"{AhjoRecordTitle.APPLICATION} {formatted_date}, liite {current}/{total}, {application.application_number}"
 
 
@@ -149,7 +163,9 @@ def _prepare_case_records(
     )
 
     main_document_record = _prepare_record(
-        _prepare_record_title(application, AhjoRecordType.APPLICATION),
+        _prepare_record_title(
+            application, AhjoRecordType.APPLICATION, AhjoRequestType.OPEN_CASE
+        ),
         AhjoRecordType.APPLICATION,
         application.created_at.isoformat("T", "seconds"),
         [_prepare_record_document_dict(pdf_summary)],
@@ -176,7 +192,11 @@ def _prepare_case_records(
 
         document_record = _prepare_record(
             _prepare_record_title(
-                application, AhjoRecordType.ATTACHMENT, position, total_attachments
+                application,
+                AhjoRecordType.ATTACHMENT,
+                AhjoRequestType.OPEN_CASE,
+                position,
+                total_attachments,
             ),
             AhjoRecordType.ATTACHMENT,
             attachment.created_at.isoformat("T", "seconds"),
@@ -213,7 +233,11 @@ def prepare_attachment_records_payload(
         attachment_list.append(
             _prepare_record(
                 _prepare_record_title(
-                    application, AhjoRecordType.ATTACHMENT, position, total_attachments
+                    application,
+                    AhjoRecordType.ATTACHMENT,
+                    AhjoRequestType.ADD_RECORDS,
+                    position,
+                    total_attachments,
                 ),
                 AhjoRecordType.ATTACHMENT,
                 attachment.created_at.isoformat("T", "seconds"),
@@ -237,7 +261,9 @@ def prepare_update_application_payload(
         "records": [
             _prepare_record(
                 record_title=_prepare_record_title(
-                    application, AhjoRecordType.APPLICATION
+                    application,
+                    AhjoRecordType.APPLICATION,
+                    AhjoRequestType.UPDATE_APPLICATION,
                 ),
                 record_type=AhjoRecordType.APPLICATION,
                 acquired=pdf_summary.created_at.isoformat("T", "seconds"),

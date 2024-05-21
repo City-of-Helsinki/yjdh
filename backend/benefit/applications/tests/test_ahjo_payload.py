@@ -1,9 +1,15 @@
 import uuid
 
+import pytest
 from django.core.files.base import ContentFile
 from django.urls import reverse
 
-from applications.enums import AhjoRecordTitle, AhjoRecordType, AttachmentType
+from applications.enums import (
+    AhjoRecordTitle,
+    AhjoRecordType,
+    AhjoRequestType,
+    AttachmentType,
+)
 from applications.models import Attachment
 from applications.services.ahjo_payload import (
     _prepare_case_records,
@@ -26,10 +32,31 @@ hakemus {application.application_number}"
     assert wanted_title == got
 
 
-def test_prepare_record_title(decided_application):
+@pytest.mark.parametrize(
+    "record_title, record_type, request_type, wanted_title_addition",
+    [
+        (
+            AhjoRecordTitle.APPLICATION,
+            AhjoRecordType.APPLICATION,
+            AhjoRequestType.OPEN_CASE,
+            "",
+        ),
+        (
+            AhjoRecordTitle.APPLICATION,
+            AhjoRecordType.APPLICATION,
+            AhjoRequestType.UPDATE_APPLICATION,
+            " täydennys,",
+        ),
+    ],
+)
+def test_prepare_record_title(
+    decided_application, record_title, record_type, request_type, wanted_title_addition
+):
     application = decided_application
-    wanted_title = f"{AhjoRecordTitle.APPLICATION}, {application.application_number}"
-    got = _prepare_record_title(application, AhjoRecordType.APPLICATION)
+    formatted_date = application.created_at.strftime("%d.%m.%Y")
+
+    wanted_title = f"{record_title},{wanted_title_addition} {formatted_date}, {application.application_number}"
+    got = _prepare_record_title(application, record_type, request_type)
     assert wanted_title == got
 
 
@@ -37,7 +64,9 @@ def test_prepare_record_title_for_attachment(decided_application):
     application = decided_application
     formatted_date = application.created_at.strftime("%d.%m.%Y")
     wanted_title = f"{AhjoRecordTitle.APPLICATION} {formatted_date}, liite 1/3, {application.application_number}"
-    got = _prepare_record_title(application, AhjoRecordType.ATTACHMENT, 1, 3)
+    got = _prepare_record_title(
+        application, AhjoRecordType.ATTACHMENT, AhjoRequestType.OPEN_CASE, 1, 3
+    )
     assert wanted_title == got
 
 
@@ -131,7 +160,9 @@ def test_prepare_case_records(decided_application, settings):
     handler_name = f"{handler.last_name}, {handler.first_name}"
     want = [
         {
-            "Title": _prepare_record_title(application, AhjoRecordType.APPLICATION),
+            "Title": _prepare_record_title(
+                application, AhjoRecordType.APPLICATION, AhjoRequestType.OPEN_CASE
+            ),
             "Type": AhjoRecordType.APPLICATION,
             "Acquired": application.created_at.isoformat("T", "seconds"),
             "PublicityClass": "Salassa pidettävä",
@@ -163,7 +194,11 @@ def test_prepare_case_records(decided_application, settings):
     for attachment in open_case_attachments:
         document_record = _prepare_record(
             _prepare_record_title(
-                application, AhjoRecordType.ATTACHMENT, pos, total_attachments
+                application,
+                AhjoRecordType.ATTACHMENT,
+                AhjoRequestType.OPEN_CASE,
+                pos,
+                total_attachments,
             ),
             AhjoRecordType.ATTACHMENT,
             attachment.created_at.isoformat("T", "seconds"),
@@ -209,7 +244,11 @@ def test_prepare_update_application_payload(decided_application):
     want = {
         "records": [
             {
-                "Title": _prepare_record_title(application, AhjoRecordType.APPLICATION),
+                "Title": _prepare_record_title(
+                    application,
+                    AhjoRecordType.APPLICATION,
+                    AhjoRequestType.UPDATE_APPLICATION,
+                ),
                 "Type": AhjoRecordType.APPLICATION,
                 "Acquired": application.created_at.isoformat(),
                 "PublicityClass": "Salassa pidettävä",
