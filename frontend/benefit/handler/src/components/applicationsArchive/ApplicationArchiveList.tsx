@@ -1,13 +1,15 @@
+import { getTagStyleForStatus } from 'benefit/handler/utils/applications';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { ApplicationData } from 'benefit-shared/types/application';
-import { IconCheckCircleFill, IconCrossCircleFill, Table } from 'hds-react';
+import { Table, Tag } from 'hds-react';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import { $Link } from 'shared/components/table/Table.sc';
 import { sortFinnishDate } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
-import { $ArchiveCount, $Status } from './ApplicationsArchive.sc';
+import { $TagWrapper } from '../applicationList/ApplicationList.sc';
+import { $ArchiveCount } from './ApplicationsArchive.sc';
 import {
   prepareSearchData,
   useApplicationsArchive,
@@ -39,17 +41,15 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
   const getTransformForArchivedStatus = ({
     status,
   }: TableTransforms): JSX.Element => (
-    <$Status status={status}>
-      {status === APPLICATION_STATUSES.ACCEPTED && (
-        <IconCheckCircleFill color="var(--color-tram)" />
-      )}
-      {status === APPLICATION_STATUSES.REJECTED && (
-        <IconCrossCircleFill color="var(--color-brick)" />
-      )}
-      <span>
-        {t(`${translationsBase}.columns.statuses.${status}`)?.toString()}
-      </span>
-    </$Status>
+    <$TagWrapper $colors={getTagStyleForStatus(status)}>
+      <Tag>
+        {t(
+          `common:applications.list.columns.applicationStatuses.${String(
+            status
+          )}`
+        )}
+      </Tag>
+    </$TagWrapper>
   );
 
   const cols = [

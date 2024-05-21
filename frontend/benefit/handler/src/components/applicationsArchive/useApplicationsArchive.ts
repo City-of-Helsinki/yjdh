@@ -38,6 +38,7 @@ export const prepareData = (
             application_number: applicationNum,
             status,
             batch,
+            calculation,
           } = application;
           return {
             id,
@@ -51,6 +52,8 @@ export const prepareData = (
             dataReceived: getBatchDataReceived(status, batch?.created_at),
             applicationNum,
             batch: batch ?? null,
+            calculationEndDate:
+              convertToUIDateFormat(calculation?.end_date) || '-',
           };
         })
     : [];
@@ -85,7 +88,8 @@ export const prepareSearchData = (
               '-',
             handledAt: convertToUIDateFormat(handled_at) || '-',
             applicationNum,
-            calculationEndDate: calculation?.end_date || '-',
+            calculationEndDate:
+              convertToUIDateFormat(calculation?.end_date) || '-',
           };
         })
     : [];
