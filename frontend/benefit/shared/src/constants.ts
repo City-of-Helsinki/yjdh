@@ -219,6 +219,7 @@ export enum ALTERATION_STATE {
   RECEIVED = 'received',
   OPENED = 'opened',
   HANDLED = 'handled',
+  CANCELLED = 'cancelled',
 }
 
 export enum DECISION_TYPES {

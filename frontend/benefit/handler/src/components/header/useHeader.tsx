@@ -43,7 +43,7 @@ const useHeader = (): ExtendedComponentProps => {
         label: (
           <>
             {t('common:header.navigation.alterations')}
-            {!isAlterationListLoading && (
+            {!isAlterationListLoading && alterationData.length > 0 && (
               <NumberTag count={alterationData.length} />
             )}
           </>

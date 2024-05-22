@@ -1,8 +1,9 @@
 import {
   $EmptyListText,
-  $Heading,
+  $Heading, $Link,
   $Subheading,
 } from 'benefit/handler/components/alterationList/AlterationList.sc';
+import { ROUTES } from 'benefit/handler/constants';
 import { ApplicationAlterationData } from 'benefit-shared/types/application';
 import { IconArrowRight, Table } from 'hds-react';
 import { Trans, useTranslation } from 'next-i18next';
@@ -27,13 +28,17 @@ const AlterationList: React.FC<Props> = ({ isLoading, list, heading }) => {
       headerName: t('common:applications.alterations.list.columns.applicant'),
       key: 'application_company_name',
       isSortable: true,
+      transform: ({ application_company_name, application }: ApplicationAlterationData) =>
+        <$Link href={`${ROUTES.APPLICATION}/?id=${application}`} target="_blank">
+          {application_company_name}
+        </$Link>
     },
     {
       headerName: t(
         'common:applications.alterations.list.columns.applicationNumber'
       ),
       key: 'application_number',
-      isSortable: false,
+      isSortable: true,
     },
     {
       headerName: t(

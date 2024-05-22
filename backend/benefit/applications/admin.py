@@ -59,19 +59,28 @@ class ApplicationAlterationInline(admin.StackedInline):
     fk_name = "application"
     extra = 0
     fields = (
+        # Common state
         "state",
         "alteration_type",
+        # Applicant-provided data
         "end_date",
         "resume_date",
         "reason",
         "contact_person_name",
-        "recovery_start_date",
-        "recovery_end_date",
-        "recovery_amount",
         "use_einvoice",
         "einvoice_provider_name",
         "einvoice_provider_identifier",
         "einvoice_address",
+        # Handler-provided data
+        "is_recoverable",
+        "handled_at",
+        "handled_by",
+        "recovery_start_date",
+        "recovery_end_date",
+        "recovery_amount",
+        "recovery_justification",
+        "cancelled_at",
+        "cancelled_by",
     )
 
 

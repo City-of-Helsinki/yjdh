@@ -1207,48 +1207,48 @@ class ApplicationAlteration(TimeStampedModel):
 
     application = models.ForeignKey(
         Application,
-        verbose_name=_("alteration of application"),
+        verbose_name=_("Alteration of application"),
         related_name="alteration_set",
         on_delete=models.CASCADE,
     )
 
     alteration_type = models.TextField(
-        verbose_name=_("type of alteration"), choices=ApplicationAlterationType.choices
+        verbose_name=_("Type of alteration"), choices=ApplicationAlterationType.choices
     )
 
     state = models.TextField(
-        verbose_name=_("state of alteration"),
+        verbose_name=_("State of alteration"),
         choices=ApplicationAlterationState.choices,
         default=ApplicationAlterationState.RECEIVED,
     )
 
-    end_date = models.DateField(verbose_name=_("new benefit end date"))
+    end_date = models.DateField(verbose_name=_("New benefit end date"))
 
     resume_date = models.DateField(
-        verbose_name=_("date when employment resumes after suspended"),
+        verbose_name=_("Date when employment resumes after suspended"),
         null=True,
         blank=True,
     )
 
     reason = models.TextField(
-        verbose_name=_("reason for alteration"),
+        verbose_name=_("Reason for alteration"),
         blank=True,
     )
 
     handled_at = models.DateField(
-        verbose_name=_("date when alteration notice was handled"),
+        verbose_name=_("Date when alteration notice was handled"),
         null=True,
         blank=True,
     )
 
     recovery_start_date = models.DateField(
-        verbose_name=_("the first day the unwarranted benefit will be collected from"),
+        verbose_name=_("The first day the unwarranted benefit will be collected from"),
         null=True,
         blank=True,
     )
 
     recovery_end_date = models.DateField(
-        verbose_name=_("the last day the unwarranted benefit will be collected from"),
+        verbose_name=_("The last day the unwarranted benefit will be recovered from"),
         null=True,
         blank=True,
     )
@@ -1256,45 +1256,45 @@ class ApplicationAlteration(TimeStampedModel):
     recovery_amount = models.DecimalField(
         max_digits=8,
         decimal_places=2,
-        verbose_name=_("amount of unwarranted benefit to be collected"),
+        verbose_name=_("Amount of unwarranted benefit to be recovered"),
         null=True,
         blank=True,
     )
 
     use_einvoice = models.BooleanField(
         verbose_name=_(
-            "whether to use handle billing with an e-invoice instead of a bill sent to a physical address"
+            "Whether to use handle billing with an e-invoice instead of a bill sent to a physical address"
         ),
         default=False,
     )
 
     einvoice_provider_name = models.TextField(
-        verbose_name=_("name of the e-invoice provider"),
+        verbose_name=_("Name of the e-invoice provider"),
         blank=True,
     )
 
     einvoice_provider_identifier = models.TextField(
-        verbose_name=_("identifier of the e-invoice provider"),
+        verbose_name=_("Identifier of the e-invoice provider"),
         blank=True,
     )
 
     einvoice_address = models.TextField(
-        verbose_name=_("e-invoice address"),
+        verbose_name=_("E-invoice address"),
         blank=True,
     )
 
     contact_person_name = models.TextField(
-        verbose_name=_("contact person"),
+        verbose_name=_("Contact person"),
     )
 
     is_recoverable = models.BooleanField(
-        verbose_name=_("whether the alteration should be recovered"),
+        verbose_name=_("Whether the alteration should be recovered"),
         default=False,
     )
 
     recovery_justification = models.TextField(
         verbose_name=_(
-            "the justification provided in the recovering bill, if eligible"
+            "The justification provided in the recovering bill, if eligible"
         ),
         blank=True,
     )
@@ -1304,6 +1304,25 @@ class ApplicationAlteration(TimeStampedModel):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
+        related_name="+",
+        verbose_name=_("Handled by"),
+    )
+
+    cancelled_at = models.DateField(
+        verbose_name=_(
+            "The date the alteration was cancelled after it had been handled"
+        ),
+        null=True,
+        blank=True,
+    )
+
+    cancelled_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="+",
+        verbose_name=_("Cancelled by"),
     )
 
 

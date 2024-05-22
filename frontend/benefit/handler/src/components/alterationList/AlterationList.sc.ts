@@ -22,3 +22,9 @@ export const $EmptyListText = styled.p`
   font-weight: normal;
   margin: 0;
 `;
+
+export const $Link = styled.a`
+  color: ${(props) => props.theme.colors.coatOfArms};
+  text-decoration: none;
+  font-weight: 500;
+`;

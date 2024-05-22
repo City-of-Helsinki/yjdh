@@ -1,3 +1,4 @@
+import AlterationAccordionItem from 'benefit/applicant/components/applications/alteration/AlterationAccordionItem';
 import {
   $HeaderItem,
   $HeaderRightColumnItem,
@@ -14,18 +15,21 @@ import ApplicationFormStep3 from 'benefit/applicant/components/applications/form
 import ApplicationFormStep4 from 'benefit/applicant/components/applications/forms/application/step4/ApplicationFormStep4';
 import ApplicationFormStep5 from 'benefit/applicant/components/applications/forms/application/step5/ApplicationFormStep5';
 import ApplicationFormStep6 from 'benefit/applicant/components/applications/forms/application/step6/ApplicationFormStep6';
-import DecisionSummary from 'benefit/applicant/components/applications/pageContent/DecisionSummary';
-import StatusIcon from 'benefit/applicant/components/applications/StatusIcon';
 import NoCookieConsentsNotification from 'benefit/applicant/components/cookieConsent/NoCookieConsentsNotification';
 import { $Hr } from 'benefit/applicant/components/pages/Pages.sc';
-import { SUBMITTED_STATUSES } from 'benefit/applicant/constants';
+import { ROUTES, SUBMITTED_STATUSES } from 'benefit/applicant/constants';
 import { useAskem } from 'benefit/applicant/hooks/useAnalytics';
-import { IconInfoCircleFill, LoadingSpinner, Stepper } from 'hds-react';
+import DecisionSummary from 'benefit-shared/components/decisionSummary/DecisionSummary';
+import StatusIcon from 'benefit-shared/components/statusIcon/StatusIcon';
+import { ALTERATION_STATE, ALTERATION_TYPE, APPLICATION_STATUSES } from 'benefit-shared/constants';
+import { DecisionDetailList } from 'benefit-shared/types/application';
+import { Button, IconInfoCircleFill, LoadingSpinner, Stepper } from 'hds-react';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import Container from 'shared/components/container/Container';
 import { getFullName } from 'shared/utils/application.utils';
-import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
+import { convertToUIDateAndTimeFormat, convertToUIDateFormat } from 'shared/utils/date.utils';
+import { formatFloatToCurrency } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
 import ErrorPage from '../../errorPage/ErrorPage';
@@ -70,6 +74,28 @@ const PageContent: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [currentStep]);
+
+  const decisionDetailList = useMemo<DecisionDetailList>(() => [
+    {
+      accessor: (app) => <>
+        <StatusIcon status={app.status} />
+        {t(`common:applications.statuses.${app.status}`)}
+      </>,
+      key: 'status',
+    },
+    {
+      accessor: (app) => formatFloatToCurrency(app.calculatedBenefitAmount),
+      key: 'benefitAmount',
+    },
+    {
+      accessor: (app) => `${convertToUIDateFormat(app.startDate)} – ${convertToUIDateFormat(app.endDate)}`,
+      key: 'benefitPeriod',
+    },
+    {
+      accessor: (app) => convertToUIDateFormat(app.ahjoDecisionDate),
+      key: 'decisionDate',
+    }
+  ], [t]);
 
   if (isLoading) {
     return (
@@ -131,6 +157,12 @@ const PageContent: React.FC = () => {
     SUBMITTED_STATUSES.includes(application.status) &&
     isReadOnly
   ) {
+    const hasHandledTermination = application.alterations?.some(
+      (alteration) =>
+        alteration.state === ALTERATION_STATE.HANDLED &&
+        alteration.alterationType === ALTERATION_TYPE.TERMINATION
+    );
+
     return (
       <Container>
         <$PageHeader>
@@ -164,7 +196,24 @@ const PageContent: React.FC = () => {
             </$HeaderRightColumnItem>
           )}
         </$PageHeader>
-        <DecisionSummary application={application} />
+        <DecisionSummary
+          application={application}
+          actions={application.status === APPLICATION_STATUSES.ACCEPTED ? (
+              <Button
+                theme="coat"
+                onClick={() =>
+                  router.push(
+                    `${ROUTES.APPLICATION_ALTERATION}?id=${application.id}`
+                  )
+                }
+                disabled={hasHandledTermination}
+              >
+                {t('common:applications.decision.actions.reportAlteration')}
+              </Button>
+            ) : null}
+          itemComponent={AlterationAccordionItem}
+          detailList={decisionDetailList}
+        />
         <ApplicationFormStep5 isReadOnly data={application} />
       </Container>
     );

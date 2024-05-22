@@ -1,6 +1,6 @@
-import StatusIcon from 'benefit/applicant/components/applications/StatusIcon';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { Loading } from 'benefit/applicant/types/common';
+import StatusIcon from 'benefit-shared/components/statusIcon/StatusIcon';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
 import { Button, IconSpeechbubbleText } from 'hds-react';

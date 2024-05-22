@@ -31,7 +31,9 @@ export const $Subheading = styled.h2`
 export const $DecisionDetails = styled.dl`
   display: flex;
   flex-direction: column;
-  gap: ${(props) => props.theme.spacing.s};
+  flex-wrap: wrap;
+  box-sizing: border-box;
+  margin: 0 calc(${(props) => props.theme.spacing.s} * -1);
 
   ${respondAbove('md')`
     flex-direction: row;
@@ -41,6 +43,11 @@ export const $DecisionDetails = styled.dl`
       width: 25%;
     }
   `};
+
+  div {
+    box-sizing: border-box;
+    padding: ${(props) => props.theme.spacing.s};
+  }
 
   dt {
     font-weight: 500;

@@ -3,6 +3,7 @@ import { DefaultTheme } from 'styled-components';
 const tokens = {
   coatOfArms: 'var(--color-coat-of-arms)',
   fog: 'var(--color-fog)',
+  danger: 'var(--color-error)'
 };
 
 const componentColors = {
@@ -19,6 +20,7 @@ const componentColors = {
   },
   modal: {
     base: tokens.coatOfArms,
+    danger: tokens.danger
   },
 };
 
@@ -201,6 +203,9 @@ const theme: DefaultTheme = {
     modal: {
       coat: {
         '--accent-line-color': componentColors.modal.base,
+      },
+      danger: {
+        '--accent-line-color': componentColors.modal.danger,
       },
     },
   },

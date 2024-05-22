@@ -1,3 +1,6 @@
 module.exports = {
-  extends: ['../../.eslintrc.base.js'],
+  extends: ['../../.eslintrc.nextjs.js'],
+  rules: {
+    '@next/next/no-document-import-in-page': 'off'
+  }
 };

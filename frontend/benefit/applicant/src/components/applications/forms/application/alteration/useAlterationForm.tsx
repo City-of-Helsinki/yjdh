@@ -55,7 +55,7 @@ const useAlterationForm = ({
       ...data,
       endDate: convertDateFormat(data.endDate),
       resumeDate: convertDateFormat(data.resumeDate) || undefined,
-    }) as ApplicationAlterationData;
+    }, { deep: true }) as ApplicationAlterationData;
 
     createQuery(payload);
   };

@@ -1,5 +1,8 @@
+from datetime import date
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -8,6 +11,7 @@ from rest_framework.exceptions import PermissionDenied
 from applications.api.v1.serializers.utils import DynamicFieldsModelSerializer
 from applications.enums import ApplicationAlterationState, ApplicationAlterationType
 from applications.models import ApplicationAlteration
+from users.api.v1.serializers import UserSerializer
 from users.utils import get_company_from_request, get_request_user_from_context
 
 
@@ -25,6 +29,8 @@ class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):
             "reason",
             "handled_at",
             "handled_by",
+            "cancelled_at",
+            "cancelled_by",
             "recovery_start_date",
             "recovery_end_date",
             "recovery_amount",
@@ -45,6 +51,10 @@ class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):
             "application_number",
             "application_employee_first_name",
             "application_employee_last_name",
+            "handled_at",
+            "handled_by",
+            "cancelled_at",
+            "cancelled_by",
         ]
 
     ALLOWED_APPLICANT_EDIT_STATES = [
@@ -54,6 +64,7 @@ class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):
     ALLOWED_HANDLER_EDIT_STATES = [
         ApplicationAlterationState.RECEIVED,
         ApplicationAlterationState.OPENED,
+        ApplicationAlterationState.HANDLED,
     ]
 
     application_company_name = serializers.SerializerMethodField(
@@ -67,6 +78,14 @@ class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):
     )
     application_employee_last_name = serializers.SerializerMethodField(
         "get_application_employee_last_name"
+    )
+
+    handled_by = UserSerializer(
+        read_only=True, help_text="Handler of this alteration, if any"
+    )
+    cancelled_by = UserSerializer(
+        read_only=True,
+        help_text="The handler responsible for the cancellation of this alteration, if any",
     )
 
     def get_application_company_name(self, obj):
@@ -162,10 +181,13 @@ class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):
 
         return errors
 
-    def _validate_date_range_overlaps(self, application, start_date, end_date):
+    def _validate_date_range_overlaps(self, self_id, application, start_date, end_date):
         errors = []
 
         for alteration in application.alteration_set.all():
+            if self_id is not None and alteration.id == self_id:
+                continue
+
             if (
                 alteration.recovery_start_date is None
                 or alteration.recovery_end_date is None
@@ -189,6 +211,7 @@ class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):
 
     def validate(self, data):
         merged_data = self._get_merged_object_for_validation(data)
+        self_id = "id" in merged_data and merged_data["id"] or None
 
         # Verify that the user is allowed to make the request
         user = get_request_user_from_context(self)
@@ -234,7 +257,7 @@ class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):
 
         if alteration_end_date is not None:
             errors += self._validate_date_range_overlaps(
-                application, alteration_start_date, alteration_end_date
+                self_id, application, alteration_start_date, alteration_end_date
             )
 
         if len(errors) > 0:
@@ -245,17 +268,62 @@ class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):
 
 class ApplicantApplicationAlterationSerializer(BaseApplicationAlterationSerializer):
     class Meta(BaseApplicationAlterationSerializer.Meta):
-        read_only_fields = BaseApplicationAlterationSerializer.Meta.read_only_fields + [
+        fields = [
+            "id",
+            "created_at",
+            "application",
+            "alteration_type",
+            "state",
+            "end_date",
+            "resume_date",
+            "reason",
             "handled_at",
+            "handled_by",
+            "recovery_start_date",
+            "recovery_end_date",
+            "recovery_amount",
+            "is_recoverable",
+            "use_einvoice",
+            "einvoice_provider_name",
+            "einvoice_provider_identifier",
+            "einvoice_address",
+            "contact_person_name",
+            "application_company_name",
+            "application_number",
+            "application_employee_first_name",
+            "application_employee_last_name",
+        ]
+        read_only_fields = BaseApplicationAlterationSerializer.Meta.read_only_fields + [
             "recovery_amount",
             "state",
             "recovery_start_date",
             "recovery_end_date",
             "recovery_justification",
             "is_recoverable",
-            "handled_by",
         ]
 
 
 class HandlerApplicationAlterationSerializer(BaseApplicationAlterationSerializer):
-    pass
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        # Add handler/canceller information on state update.
+        # The transition itself is validated in the viewset and is one-way
+        # (only received -> handled -> cancelled allowed), so we don't need to
+        # care about the present values in those fields.
+
+        new_state = (
+            validated_data["state"] if "state" in validated_data else instance.state
+        )
+        if instance.state != new_state:
+            user = get_request_user_from_context(self)
+
+            if new_state == ApplicationAlterationState.HANDLED:
+                instance.handled_at = date.today()
+                instance.handled_by = user
+            elif new_state == ApplicationAlterationState.CANCELLED:
+                instance.cancelled_at = date.today()
+                instance.cancelled_by = user
+
+            instance.save()
+
+        return super().update(instance, validated_data)

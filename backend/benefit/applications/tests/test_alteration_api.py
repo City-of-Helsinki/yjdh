@@ -1,3 +1,5 @@
+from datetime import date
+
 import faker
 import pytest
 from dateutil.relativedelta import relativedelta
@@ -390,7 +392,6 @@ def test_application_alteration_forbidden_handler_in_applicant_api(
 def test_application_alteration_create_ignored_fields_applicant(
     api_client,
     application,
-    user,
 ):
     pk = application.id
     response = api_client.post(
@@ -407,7 +408,6 @@ def test_application_alteration_create_ignored_fields_applicant(
             "recovery_end_date": application.end_date,
             "recovery_amount": 4000,
             "is_recoverable": True,
-            "recovery_justification": "sas",
             "handled_by": 1,
             "contact_person_name": "Ella Esimerkki",
         },
@@ -418,7 +418,6 @@ def test_application_alteration_create_ignored_fields_applicant(
     assert response.data["recovery_start_date"] is None
     assert response.data["recovery_end_date"] is None
     assert response.data["recovery_amount"] is None
-    assert response.data["recovery_justification"] == ""
     assert response.data["is_recoverable"] is False
     assert response.data["handled_by"] is None
     assert response.data["handled_at"] is None
@@ -438,7 +437,6 @@ def test_application_alteration_create_ignored_fields_handler(
             "reason": "Päättynyt",
             "end_date": application.start_date + relativedelta(days=7),
             "use_invoice": False,
-            "handled_at": application.start_date + relativedelta(days=10),
             "recovery_start_date": application.start_date + relativedelta(days=7),
             "recovery_end_date": application.end_date,
             "recovery_amount": 4000,
@@ -454,10 +452,6 @@ def test_application_alteration_create_ignored_fields_handler(
     )
     assert response.data["recovery_end_date"] == application.end_date.isoformat()
     assert response.data["recovery_amount"] == "4000.00"
-    assert (
-        response.data["handled_at"]
-        == (application.start_date + relativedelta(days=10)).isoformat()
-    )
 
 
 def test_application_alteration_patch_applicant(api_client, application):
@@ -519,6 +513,49 @@ def test_application_alteration_patch_handler(handler_api_client, application):
         == (application.start_date + relativedelta(days=12)).isoformat()
     )
     assert response.data["recovery_amount"] == "4000.00"
+
+
+def test_application_alteration_handler_automatic_state_change_fields(
+    handler_api_client, application, admin_user
+):
+    alteration = _create_application_alteration(application)
+    today = date.today()
+
+    assert alteration.handled_at is None
+    assert alteration.handled_by is None
+    assert alteration.cancelled_at is None
+    assert alteration.cancelled_by is None
+
+    response = handler_api_client.patch(
+        reverse(
+            "v1:handler-application-alteration-detail",
+            kwargs={"pk": alteration.id},
+        ),
+        {
+            "state": "handled",
+        },
+    )
+    assert response.status_code == 200
+    assert response.data["state"] == "handled"
+    assert date.fromisoformat(response.data["handled_at"]) == today
+    assert response.data["handled_by"]["id"] == str(admin_user.id)
+    assert response.data["cancelled_at"] is None
+    assert response.data["cancelled_by"] is None
+
+    response = handler_api_client.patch(
+        reverse(
+            "v1:handler-application-alteration-detail",
+            kwargs={"pk": alteration.id},
+        ),
+        {
+            "state": "cancelled",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.data["state"] == "cancelled"
+    assert date.fromisoformat(response.data["handled_at"]) == today
+    assert response.data["handled_by"]["id"] == str(admin_user.id)
 
 
 @pytest.mark.parametrize(

@@ -1492,7 +1492,7 @@ class ApplicantApplicationSerializer(BaseApplicationSerializer):
         return self.get_logged_in_user_company()
 
     alterations = ApplicantApplicationAlterationSerializer(
-        source="alteration_set",
+        source="visible_alterations",
         read_only=True,
         many=True,
     )

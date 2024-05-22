@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core import exceptions
 from django.db import transaction
-from django.db.models import Q, QuerySet
+from django.db.models import Prefetch, Q, QuerySet
 from django.http import FileResponse, HttpResponse, StreamingHttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -163,9 +163,17 @@ class HandlerApplicationFilter(BaseApplicationFilter):
 class HandlerApplicationAlterationFilter(filters.FilterSet):
     class Meta:
         model = ApplicationAlteration
-        fields = {
-            "state": ["exact"],
-        }
+        fields = []
+
+    state = filters.MultipleChoiceFilter(
+        field_name="state",
+        widget=CSVWidget,
+        choices=ApplicationAlterationState.choices,
+        help_text=(
+            "Filter by alteration state. Multiple states may be specified as a"
+            " comma-separated list, such as 'state=handled,cancelled'",
+        ),
+    )
 
 
 class BaseApplicationViewSet(AuditLoggingModelViewSet):
@@ -427,21 +435,40 @@ class HandlerApplicationAlterationViewSet(BaseApplicationAlterationViewSet):
         filters.DjangoFilterBackend,
     ]
 
+    FROZEN_STATUSES = [
+        ApplicationAlterationState.HANDLED,
+        ApplicationAlterationState.CANCELLED,
+    ]
+
     serializer_class = HandlerApplicationAlterationSerializer
     permission_classes = [BFIsHandler]
     http_method_names = BaseApplicationAlterationViewSet.http_method_names + ["get"]
     filterset_class = HandlerApplicationAlterationFilter
 
     def update(self, request, *args, **kwargs):
-        if "state" in request.data.keys():
-            current_state = self.get_object().state
-            if (
-                current_state == ApplicationAlterationState.HANDLED
-                and current_state != request.data["state"]
-            ):
-                raise PermissionDenied(_("You are not allowed to do this action"))
+        allowed = True
+        current_state = self.get_object().state
 
-        return super().update(request, *args, **kwargs)
+        is_simple_state_change = (
+            "state" in request.data.keys() and len(request.data.keys()) == 1
+        )
+        forbidden_if_handled = not (
+            is_simple_state_change
+            and request.data["state"]
+            in HandlerApplicationAlterationViewSet.FROZEN_STATUSES
+        )
+
+        # If the alteration has been handled, the only allowed edit is to cancel it.
+        # If the alteration has been cancelled, it cannot be modified in any way anymore.
+        if current_state == ApplicationAlterationState.CANCELLED or (
+            current_state == ApplicationAlterationState.HANDLED and forbidden_if_handled
+        ):
+            allowed = False
+
+        if allowed:
+            return super().update(request, *args, **kwargs)
+        else:
+            raise PermissionDenied(_("You are not allowed to do this action"))
 
 
 @extend_schema(
@@ -467,6 +494,16 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.prefetch_related(
+            Prefetch(
+                "alteration_set",
+                queryset=ApplicationAlteration.objects.filter(
+                    ~Q(state__in=[ApplicationAlterationState.CANCELLED])
+                ),
+                to_attr="visible_alterations",
+            )
+        )
+
         if settings.NEXT_PUBLIC_MOCK_FLAG:
             return qs
         company = get_company_from_request(self.request)

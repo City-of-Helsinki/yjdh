@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-22 19:07+0300\n"
+"POT-Creation-Date: 2024-05-08 09:42+0300\n"
 "PO-Revision-Date: 2022-11-01 10:45+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -806,6 +806,9 @@ msgstr "Asiantuntijatarkastajan sähköpostiosoite"
 msgid "Expert inspector's title"
 msgstr "Asiantuntijatarkastajan nimi"
 
+msgid "Batch created through Ahjo integration"
+msgstr ""
+
 msgid "application batch"
 msgstr "hakemuserä"
 
@@ -957,58 +960,64 @@ msgstr "tila"
 msgid "ahjo decision texts"
 msgstr "tila"
 
-msgid "alteration of application"
+msgid "Alteration of application"
 msgstr "Muutos hakemukseen"
 
-msgid "type of alteration"
+msgid "Type of alteration"
 msgstr "Muutoksen tyyppi"
 
-msgid "state of alteration"
+msgid "State of alteration"
 msgstr "Muutoksen tila"
 
-msgid "new benefit end date"
+msgid "New benefit end date"
 msgstr "Uusi avustuksen päättymispäivä"
 
-msgid "date when employment resumes after suspended"
+msgid "Date when employment resumes after suspended"
 msgstr "Avustuksen jatkumispäivä keskeytymisen jälkeen"
 
-msgid "reason for alteration"
+msgid "Reason for alteration"
 msgstr "Muutoksen syy"
 
-msgid "date when alteration notice was handled"
+msgid "Date when alteration notice was handled"
 msgstr "Muutosilmoituksen käsittelypäivä"
 
-msgid "the first day the unwarranted benefit will be collected from"
+msgid "The first day the unwarranted benefit will be collected from"
 msgstr "Takaisinperinnän alkamispäivä"
 
-msgid "the last day the unwarranted benefit will be collected from"
+msgid "The last day the unwarranted benefit will be recovered from"
 msgstr "Takaisinperinnän päättymispäivä"
 
-msgid "amount of unwarranted benefit to be collected"
+msgid "Amount of unwarranted benefit to be recovered"
 msgstr "Takaisinperittävä summa"
 
 msgid ""
-"whether to use handle billing with an e-invoice instead of a bill sent to a "
+"Whether to use handle billing with an e-invoice instead of a bill sent to a "
 "physical address"
 msgstr "Lähetetäänkö lasku verkkolaskuna kirjelaskun sijaan?"
 
-msgid "name of the e-invoice provider"
+msgid "Name of the e-invoice provider"
 msgstr "Verkkolaskuoperaattorin nimi"
 
-msgid "identifier of the e-invoice provider"
+msgid "Identifier of the e-invoice provider"
 msgstr "Välittäjän tunnus"
 
-msgid "e-invoice address"
-msgstr "Verkkolaskuosoite"
-
-msgid "contact person"
+msgid "Contact person"
 msgstr "Yhteyshenkilö"
 
-msgid "whether the alteration should be recovered"
+msgid "Whether the alteration should be recovered"
 msgstr "Peritäänkö tukea takaisin?"
 
-msgid "the justification provided in the recovering bill, if eligible"
+msgid "The justification provided in the recovering bill, if eligible"
 msgstr "Tuen takaisinperinnän perustelu, mikäli tukea peritään takaisin"
+
+msgid "Handled by"
+msgstr "Käsittelijä"
+
+msgid "The date the alteration was cancelled after it had been handled"
+msgstr "Muutosilmoituksen peruutuspäivä"
+
+msgid "Cancelled by"
+msgstr "Muutosilmoituksen peruuttanut käsittelijä"
 
 #, fuzzy
 #| msgid "Decision date"
@@ -1600,6 +1609,9 @@ msgstr "palveluehtojen hyväksyntä"
 
 msgid "terms of service approvals"
 msgstr "palveluehtojen hyväksynnät"
+
+#~ msgid "e-invoice address"
+#~ msgstr "Verkkolaskuosoite"
 
 #, fuzzy
 #~| msgid "Decision date"

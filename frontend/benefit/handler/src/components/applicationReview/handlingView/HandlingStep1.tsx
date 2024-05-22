@@ -1,13 +1,19 @@
+import AlterationAccordionItem from 'benefit/handler/components/applicationReview/handlingView/AlterationAccordionItem';
+import DecisionCalculationAccordion
+  from 'benefit/handler/components/applicationReview/handlingView/DecisionCalculationAccordion';
 import { HANDLED_STATUSES } from 'benefit/handler/constants';
 import ReviewStateContext from 'benefit/handler/context/ReviewStateContext';
-import {
-  APPLICATION_ORIGINS,
-  APPLICATION_STATUSES,
-} from 'benefit-shared/constants';
-import { Application } from 'benefit-shared/types/application';
+import DecisionSummary from 'benefit-shared/components/decisionSummary/DecisionSummary';
+import StatusIcon from 'benefit-shared/components/statusIcon/StatusIcon';
+import { APPLICATION_ORIGINS, APPLICATION_STATUSES, } from 'benefit-shared/constants';
+import { Application, DecisionDetailList } from 'benefit-shared/types/application';
 import { ErrorData } from 'benefit-shared/types/common';
 import * as React from 'react';
+import { useMemo } from 'react';
 import Container from 'shared/components/container/Container';
+import { getFullName } from 'shared/utils/application.utils';
+import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import { formatFloatToCurrency } from 'shared/utils/string.utils';
 
 import ApplicationProcessingView from '../applicationProcessingView/ApplicationProcessingView';
 import BenefitView from '../benefitView/BenefitView';
@@ -39,8 +45,47 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
   calculationsErrors,
   setCalculationErrors,
 }) => {
-  const { isUploading, handleUpload, reviewState, handleUpdateReviewState } =
+  const { isUploading, handleUpload, reviewState, handleUpdateReviewState, t } =
     useApplicationReview();
+
+  const decisionDetailList = useMemo<DecisionDetailList>(() => [
+    {
+      accessor: (app) => <>
+        <StatusIcon status={app.status} />
+        {t(`common:applications.statuses.${app.status}`)}
+      </>,
+      key: 'status',
+    },
+    {
+      accessor: (app) => formatFloatToCurrency(app.calculatedBenefitAmount),
+      key: 'benefitAmount',
+    },
+    {
+      accessor: (app) => `${convertToUIDateFormat(app.startDate)} – ${convertToUIDateFormat(app.endDate)}`,
+      key: 'benefitPeriod',
+    },
+    {
+      accessor: (app) => app.batch?.sectionOfTheLaw,
+      key: 'sectionOfLaw',
+    },
+    {
+      accessor: (app) => app.calculation.grantedAsDeMinimisAid ? t('utility.yes') : t('utility.no'),
+      key: 'grantedAsDeMinimis',
+    },
+    {
+      accessor: (app) => convertToUIDateFormat(app.ahjoDecisionDate),
+      key: 'decisionDate',
+    },
+    {
+      accessor: (app) => app.batch?.handler && getFullName(app.batch.handler.firstName, app.batch.handler.lastName),
+      key: 'handler',
+    },
+    {
+      accessor: (app) => app.batch?.decisionMakerName,
+      key: 'decisionMaker',
+    },
+  ], [t]);
+
 
   return (
     <ReviewStateContext.Provider
@@ -50,6 +95,13 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
       }}
     >
       <Container data-testid="application-body">
+        <DecisionSummary
+          application={application}
+          actions={null}
+          itemComponent={AlterationAccordionItem}
+          detailList={decisionDetailList}
+          extraInformation={<DecisionCalculationAccordion data={application} />}
+        />
         {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER && (
           <PaperView data={application} />
         )}
