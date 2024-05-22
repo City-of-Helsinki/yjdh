@@ -47,15 +47,8 @@ const AlterationForm = ({
   onSuccess,
   onError,
 }: Props): JSX.Element => {
-  const {
-    t,
-    formik,
-    language,
-    isSubmitted,
-    isSubmitting,
-    error,
-    handleSubmit,
-  } = useAlterationForm({ application, onSuccess, onError });
+  const { t, formik, language, isSubmitted, isSubmitting, handleSubmit } =
+    useAlterationForm({ application, onSuccess, onError });
 
   const { alterationType, useEinvoice, endDate } = formik.values;
 
@@ -75,6 +68,8 @@ const AlterationForm = ({
   }, [minEndDate, endDate]);
   const maxResumeDate = maxEndDate;
 
+  const translationBase = 'common:applications.alterations.new';
+
   const disableOccupiedDates = (date: Date): boolean =>
     application.alterations.some(
       (alteration) =>
@@ -92,13 +87,11 @@ const AlterationForm = ({
     <section>
       <$Grid>
         <$GridCell $colSpan={12}>
-          <$H2>{t('common:applications.alteration.details')}</$H2>
+          <$H2>{t(`${translationBase}.details`)}</$H2>
         </$GridCell>
         <$GridCell $colSpan={12}>
           <SelectionGroup
-            label={t(
-              'common:applications.alteration.fields.alterationType.label'
-            )}
+            label={t(`${translationBase}.fields.alterationType.label`)}
             required
             aria-invalid={!!getErrorMessage('alterationType')}
             errorText={getErrorMessage('alterationType')}
@@ -108,9 +101,7 @@ const AlterationForm = ({
               key="alteration-alteration-type-termination"
               id="alteration-alteration-type-termination"
               value={ALTERATION_TYPE.TERMINATION}
-              label={t(
-                'common:applications.alteration.fields.alterationType.termination'
-              )}
+              label={t(`${translationBase}.fields.alterationType.termination`)}
               name="alterationType"
               checked={alterationType === ALTERATION_TYPE.TERMINATION}
               onChange={formik.handleChange}
@@ -120,9 +111,7 @@ const AlterationForm = ({
               key="alteration-alteration-type-suspension"
               id="alteration-alteration-type-suspension"
               value={ALTERATION_TYPE.SUSPENSION}
-              label={t(
-                'common:applications.alteration.fields.alterationType.suspension'
-              )}
+              label={t(`${translationBase}.fields.alterationType.suspension`)}
               name="alterationType"
               checked={alterationType === ALTERATION_TYPE.SUSPENSION}
               onChange={formik.handleChange}
@@ -134,10 +123,8 @@ const AlterationForm = ({
           <>
             <$GridCell $colSpan={3}>
               <DateInput
-                label={t('common:applications.alteration.fields.endDate.label')}
-                helperText={t(
-                  'common:applications.alteration.fields.date.helpText'
-                )}
+                label={t(`${translationBase}.fields.endDate.label`)}
+                helperText={t(`${translationBase}.fields.date.helpText`)}
                 value={formik.values.endDate}
                 id="alteration-end-date"
                 name="endDate"
@@ -156,12 +143,8 @@ const AlterationForm = ({
             {alterationType === ALTERATION_TYPE.SUSPENSION && (
               <$GridCell $colSpan={3}>
                 <DateInput
-                  label={t(
-                    'common:applications.alteration.fields.resumeDate.label'
-                  )}
-                  helperText={t(
-                    'common:applications.alteration.fields.date.helpText'
-                  )}
+                  label={t(`${translationBase}.fields.resumeDate.label`)}
+                  helperText={t(`${translationBase}.fields.date.helpText`)}
                   value={formik.values.resumeDate}
                   id="alteration-resume-date"
                   name="resumeDate"
@@ -185,12 +168,8 @@ const AlterationForm = ({
               <TextInput
                 label={
                   alterationType === ALTERATION_TYPE.SUSPENSION
-                    ? t(
-                        'common:applications.alteration.fields.suspensionReason.label'
-                      )
-                    : t(
-                        'common:applications.alteration.fields.terminationReason.label'
-                      )
+                    ? t(`${translationBase}.fields.suspensionReason.label`)
+                    : t(`${translationBase}.fields.terminationReason.label`)
                 }
                 value={formik.values.reason}
                 id="alteration-reason"
@@ -200,12 +179,8 @@ const AlterationForm = ({
                 errorText={getErrorMessage('reason')}
                 helperText={
                   alterationType === ALTERATION_TYPE.SUSPENSION
-                    ? t(
-                        'common:applications.alteration.fields.suspensionReason.helpText'
-                      )
-                    : t(
-                        'common:applications.alteration.fields.terminationReason.helpText'
-                      )
+                    ? t(`${translationBase}.fields.suspensionReason.helpText`)
+                    : t(`${translationBase}.fields.terminationReason.helpText`)
                 }
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -217,15 +192,13 @@ const AlterationForm = ({
           <$Hr css="margin-top: 0;" />
         </$GridCell>
         <$GridCell $colSpan={12}>
-          <$H2>{t('common:applications.alteration.billing')}</$H2>
+          <$H2>{t(`${translationBase}.billing`)}</$H2>
         </$GridCell>
         <$GridCell $colSpan={4}>
           <TextInput
-            label={t(
-              'common:applications.alteration.fields.contactPersonName.label'
-            )}
+            label={t(`${translationBase}.fields.contactPersonName.label`)}
             helperText={t(
-              'common:applications.alteration.fields.contactPersonName.helpText'
+              `${translationBase}.fields.contactPersonName.helpText`
             )}
             value={formik.values.contactPersonName}
             id="alteration-contact-person-name"
@@ -241,7 +214,7 @@ const AlterationForm = ({
         <$GridCell $colSpan={8} />
         <$GridCell $colSpan={8}>
           <SelectionGroup
-            label={t('common:applications.alteration.fields.useEinvoice.label')}
+            label={t(`${translationBase}.fields.useEinvoice.label`)}
             required
             aria-invalid={!!getErrorMessage('useEinvoice')}
             errorText={getErrorMessage('useEinvoice')}
@@ -251,7 +224,7 @@ const AlterationForm = ({
               key="alteration-use-einvoice-no"
               id="alteration-use-einvoice-no"
               value="0"
-              label={t('common:applications.alteration.fields.useEinvoice.no', {
+              label={t(`${translationBase}.fields.useEinvoice.no`, {
                 streetAddress: application.company.streetAddress,
                 postCode: application.company.postcode,
                 city: application.company.city,
@@ -265,7 +238,7 @@ const AlterationForm = ({
               key="alteration-use-einvoice-yes"
               id="alteration-use-einvoice-yes"
               value="1"
-              label={t('common:applications.alteration.fields.useEinvoice.yes')}
+              label={t(`${translationBase}.fields.useEinvoice.yes`)}
               name="useEinvoice"
               checked={!!useEinvoice}
               onChange={() => formik.setFieldValue('useEinvoice', true)}
@@ -279,10 +252,10 @@ const AlterationForm = ({
             <$GridCell $colSpan={4}>
               <TextInput
                 label={t(
-                  'common:applications.alteration.fields.einvoiceProviderName.label'
+                  `${translationBase}.fields.einvoiceProviderName.label`
                 )}
                 placeholder={t(
-                  'common:applications.alteration.fields.einvoiceProviderName.placeholder'
+                  `${translationBase}.fields.einvoiceProviderName.placeholder`
                 )}
                 value={formik.values.einvoiceProviderName}
                 id="alteration-einvoice-provider-name"
@@ -299,10 +272,10 @@ const AlterationForm = ({
             <$GridCell $colSpan={4}>
               <TextInput
                 label={t(
-                  'common:applications.alteration.fields.einvoiceProviderIdentifier.label'
+                  `${translationBase}.fields.einvoiceProviderIdentifier.label`
                 )}
                 placeholder={t(
-                  'common:applications.alteration.fields.einvoiceProviderIdentifier.placeholder'
+                  `${translationBase}.fields.einvoiceProviderIdentifier.placeholder`
                 )}
                 value={formik.values.einvoiceProviderIdentifier}
                 id="alteration-einvoice-provider-identifier"
@@ -318,14 +291,12 @@ const AlterationForm = ({
             <$GridCell $colSpan={8} />
             <$GridCell $colSpan={4}>
               <TextInput
-                label={t(
-                  'common:applications.alteration.fields.einvoiceAddress.label'
-                )}
+                label={t(`${translationBase}.fields.einvoiceAddress.label`)}
                 placeholder={t(
-                  'common:applications.alteration.fields.einvoiceAddress.placeholder'
+                  `${translationBase}.fields.einvoiceAddress.placeholder`
                 )}
                 tooltipText={t(
-                  'common:applications.alteration.fields.einvoiceAddress.tooltip'
+                  `${translationBase}.fields.einvoiceAddress.tooltip`
                 )}
                 value={formik.values.einvoiceAddress}
                 id="alteration-einvoice-address"
@@ -342,10 +313,9 @@ const AlterationForm = ({
         )}
       </$Grid>
       <$Hr />
-      {error && <div>{JSON.stringify(error)}</div>}
       <$ButtonContainer>
         <Button theme="black" variant="secondary" onClick={onCancel}>
-          {t(`common:applications.alteration.actions.cancel`)}
+          {t(`${translationBase}.actions.cancel`)}
         </Button>
         <Button
           onClick={handleSubmit}
@@ -355,7 +325,7 @@ const AlterationForm = ({
           isLoading={isSubmitting}
           loadingText={t(`common:utility.submitting`)}
         >
-          {t(`common:applications.alteration.actions.submit`)}
+          {t(`${translationBase}.actions.submit`)}
         </Button>
       </$ButtonContainer>
       {isSubmitted && !formik.isValid && (

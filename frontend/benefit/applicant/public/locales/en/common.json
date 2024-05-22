@@ -476,69 +476,71 @@
         "reportAlteration": "Report changes to employment"
       }
     },
-    "alteration": {
-      "title": "Report changes to employment",
-      "explanation": "Report it if the employed person’s employment ends or is temporarily interrupted during the benefit period. We may recover some of the Helsinki benefit if the employment relationship changes during the benefit period.",
-      "actions": {
-        "submit": "Submit",
-        "cancel": "Cancel"
-      },
-      "fields": {
-        "alterationType": {
-          "label": "What type of change to employment are you reporting?",
-          "termination": "Termination",
-          "suspension": "Temporary suspension"
+    "alterations": {
+      "new": {
+        "title": "Report changes to employment",
+        "explanation": "Report it if the employed person’s employment ends or is temporarily interrupted during the benefit period. We may recover some of the Helsinki benefit if the employment relationship changes during the benefit period.",
+        "actions": {
+          "submit": "Submit",
+          "cancel": "Cancel"
         },
-        "endDate": {
-          "label": "Last day of employment"
+        "fields": {
+          "alterationType": {
+            "label": "What type of change to employment are you reporting?",
+            "termination": "Termination",
+            "suspension": "Temporary suspension"
+          },
+          "endDate": {
+            "label": "Last day of employment"
+          },
+          "resumeDate": {
+            "label": "Date of return to work"
+          },
+          "date": {
+            "helpText": "Provide the date in the format D.M.YYYY"
+          },
+          "terminationReason": {
+            "label": "Reason for the termination of employment",
+            "helpText": "You may enter the reason for the termination of the work contract if you wish"
+          },
+          "suspensionReason": {
+            "label": "Reason for the suspension of employment",
+            "helpText": "Please provide the reason for the termination of your employment (optional)"
+          },
+          "useEinvoice": {
+            "label": "Invoice delivery method",
+            "yes": "Electronically",
+            "no": "By post: {{streetAddress}}, {{postCode}} {{city}}"
+          },
+          "einvoiceProviderName": {
+            "label": "E-invoice operator",
+            "placeholder": "E.g. Basware Oyj"
+          },
+          "einvoiceProviderIdentifier": {
+            "label": "Operator ID",
+            "placeholder": "E.g. BAWCFI22"
+          },
+          "einvoiceAddress": {
+            "label": "Electronic invoicing address",
+            "placeholder": "E.g. 001100223300",
+            "tooltip": "You can check your organisation’s electronic invoicing address at verkkolaskuosoite.fi"
+          },
+          "contactPersonName": {
+            "label": "Invoicing contact person",
+            "helpText": "Provide the name of the contact person added to the company invoice"
+          }
         },
-        "resumeDate": {
-          "label": "Date of return to work"
+        "validation": {
+          "resumeDateBeforeEndDate": "The date of return to work must be after the start of the suspension",
+          "einvoiceRequiredTogether": "All fields must be filled, if electronic invoicing is selected"
         },
-        "date": {
-          "helpText": "Provide the date in the format D.M.YYYY"
+        "error": {
+          "notYetAccepted": "You cannot report a change to employment using this application, because the benefit has not been granted yet.",
+          "alreadyTerminated": "This employment has been reported as terminated previously, which means that you cannot report a new change."
         },
-        "terminationReason": {
-          "label": "Reason for the termination of employment",
-          "helpText": "You may enter the reason for the termination of the work contract if you wish"
-        },
-        "suspensionReason": {
-          "label": "Reason for the suspension of employment",
-          "helpText": "Please provide the reason for the termination of your employment (optional)"
-        },
-        "useEinvoice": {
-          "label": "Invoice delivery method",
-          "yes": "Electronically",
-          "no": "By post: {{streetAddress}}, {{postCode}} {{city}}"
-        },
-        "einvoiceProviderName": {
-          "label": "E-invoice operator",
-          "placeholder": "E.g. Basware Oyj"
-        },
-        "einvoiceProviderIdentifier": {
-          "label": "Operator ID",
-          "placeholder": "E.g. BAWCFI22"
-        },
-        "einvoiceAddress": {
-          "label": "Electronic invoicing address",
-          "placeholder": "E.g. 001100223300",
-          "tooltip": "You can check your organisation’s electronic invoicing address at verkkolaskuosoite.fi"
-        },
-        "contactPersonName": {
-          "label": "Invoicing contact person",
-          "helpText": "Provide the name of the contact person added to the company invoice"
-        }
-      },
-      "validation": {
-        "resumeDateBeforeEndDate": "The date of return to work must be after the start of the suspension",
-        "einvoiceRequiredTogether": "All fields must be filled, if electronic invoicing is selected"
-      },
-      "error": {
-        "notYetAccepted": "You cannot report a change to employment using this application, because the benefit has not been granted yet.",
-        "alreadyTerminated": "This employment has been reported as terminated previously, which means that you cannot report a new change."
-      },
-      "details": "Changes in employment",
-      "billing": "Invoicing details"
+        "details": "Changes in employment",
+        "billing": "Invoicing details"
+      }
     }
   },
   "serviceName": "Helsinki benefit service",

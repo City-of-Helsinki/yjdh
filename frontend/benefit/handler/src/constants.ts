@@ -14,12 +14,11 @@ export enum ROUTES {
   APPLICATION = '/application',
   APPLICATION_FORM_NEW = '/application/new',
   APPLICATION_FORM_EDIT = '/application/edit',
-
-  // temporary urls, not defined yet
   APPLICATIONS_BATCHES = '/batches',
   APPLICATIONS_ARCHIVE = '/archive',
   APPLICATIONS_REPORTS = '/reports',
   ALTERATIONS = '/alterations',
+  HANDLE_ALTERATION = '/alterations/handle',
 }
 
 export enum EXPORT_APPLICATIONS_ROUTES {

@@ -97,6 +97,10 @@
     "alterationCancelled": {
       "label": "Käsitelty takaisinlasku on poistettu",
       "message": "Poistit hakemuksen {{applicationNumber}} muutosilmoituksen."
+    },
+    "alterationHandled": {
+      "label": "Muutosilmoitus on käsitelty",
+      "message": "Käsittelit hakemuksen {{applicationNumber}} muutosilmoituksen ja merkitsit takaisinlaskupyynnön lähetetyksi Talpaan. "
     }
   },
   "mainIngress": {
@@ -701,7 +705,9 @@
     "decision": {
       "description": {
         "accepted": "Hakemus on hyväksytty ja Helsinki-lisää on myönnetty aikavälille {{dateRangeStart}} – {{dateRangeEnd}}",
-        "rejected": "Hakemus on hylätty. Helsinki-lisää ei myönnetä."
+        "rejected": "Hakemus on hylätty. Helsinki-lisää ei myönnetä.",
+        "handling": "Hakemus on käsittelyssä.",
+        "cancelled": "Hakemus on peruttu."
       },
       "headings": {
         "mainHeading": "Päätöksen tiedot",
@@ -737,8 +743,8 @@
             "handled": "Käsitelty",
             "cancelled": "Peruutettu"
           },
-          "recoveryAmount": "Takaisin peritty tuki",
-          "recoveryPeriod": "Aika, jolta tukea perittiin takaisin",
+          "recoveryAmount": "Takaisinlaskutettu tuki",
+          "recoveryPeriod": "Aika, jolta tukea laskutettiin takaisin",
           "contactPersonName": "Yhteyshenkilö laskutuksessa",
           "einvoiceProviderName": "Verkkolaskuoperaattori",
           "einvoiceProviderIdentifier": "Välittäjätunnus",
@@ -776,71 +782,71 @@
       },
       "calculation": "Laskelma"
     },
-    "alteration": {
-      "title": "Ilmoita työsuhteen muutoksesta",
-      "explanation": "Ilmoita, jos työllistetyn henkilön työsuhde päättyy tai keskeytyy väliaikaisesti tukijakson aikana. Saatamme periä Helsinki-lisää takaisin, jos tukijakson aikana työsuhteeseen tulee muutoksia.",
-      "actions": {
-        "submit": "Lähetä",
-        "cancel": "Peruuta"
-      },
-      "fields": {
-        "alterationType": {
-          "label": "Millaisesta muutoksesta työsuhteessa haluat ilmoittaa?",
-          "termination": "Työsuhteen päättymisestä",
-          "suspension": "Työsuhteen keskeytymisestä väliaikaisesti"
-        },
-        "endDate": {
-          "label": "Viimeinen työpäivä"
-        },
-        "resumeDate": {
-          "label": "Töihinpaluupäivä"
-        },
-        "date": {
-          "helpText": "Kirjoita päivämäärä muodossa P.K.VVVV"
-        },
-        "terminationReason": {
-          "label": "Syy työsuhteen päättymiseen",
-          "helpText": "Kirjoita halutessasi syy työsuhteen päättymiseen"
-        },
-        "suspensionReason": {
-          "label": "Syy työsuhteen keskeytymiseen",
-          "helpText": "Kirjoita halutessasi syy työsuhteen keskeytymiseen"
-        },
-        "useEinvoice": {
-          "label": "Laskun toimitustapa",
-          "yes": "Verkkolaskulla",
-          "no": "Postiosoitteeseen: {{streetAddress}}, {{postCode}} {{city}}"
-        },
-        "einvoiceProviderName": {
-          "label": "Verkkolaskuoperaattorin nimi",
-          "placeholder": "Esim. Basware Oyj"
-        },
-        "einvoiceProviderIdentifier": {
-          "label": "Verkkolaskuoperaattorin tunnus",
-          "placeholder": "Esim. BAWCFI22"
-        },
-        "einvoiceAddress": {
-          "label": "Verkkolaskuosoite",
-          "placeholder": "Esim. 001100223300",
-          "tooltip": "Voit tarkistaa organisaatiosi verkkolaskuosoitteen verkkosivulta verkkolaskuosoite.fi"
-        },
-        "contactPersonName": {
-          "label": "Yhteyshenkilö laskutusasioissa",
-          "helpText": "Kirjoita yhteyshenkilön nimi, joka lisätään laskulle"
-        }
-      },
-      "validation": {
-        "resumeDateBeforeEndDate": "Töihinpaluupäivän on oltava keskeytymisen alkupäivämäärän jälkeen",
-        "einvoiceRequiredTogether": "Verkkolaskuosoitetta käytettäessä kaikki osoitekentät on täytettävä"
-      },
-      "error": {
-        "notYetAccepted": "Et voi ilmoittaa muutosta työsuhteessa tälle hakemukselle, sillä tukea ei ole vielä myönnetty.",
-        "alreadyTerminated": "Tämä työsuhde on aiemmin jo merkitty päättyneeksi, joten et voi enää ilmoittaa uudesta muutoksesta."
-      },
-      "details": "Muutokset työsuhteessa",
-      "billing": "Laskutustiedot"
-    },
     "alterations": {
+      "new": {
+        "title": "Ilmoita työsuhteen muutoksesta",
+        "explanation": "Ilmoita, jos työllistetyn henkilön työsuhde päättyy tai keskeytyy väliaikaisesti tukijakson aikana. Saatamme periä Helsinki-lisää takaisin, jos tukijakson aikana työsuhteeseen tulee muutoksia.",
+        "actions": {
+          "submit": "Lähetä",
+          "cancel": "Peruuta"
+        },
+        "fields": {
+          "alterationType": {
+            "label": "Millaisesta muutoksesta työsuhteessa haluat ilmoittaa?",
+            "termination": "Työsuhteen päättymisestä",
+            "suspension": "Työsuhteen keskeytymisestä väliaikaisesti"
+          },
+          "endDate": {
+            "label": "Viimeinen työpäivä"
+          },
+          "resumeDate": {
+            "label": "Töihinpaluupäivä"
+          },
+          "date": {
+            "helpText": "Kirjoita päivämäärä muodossa P.K.VVVV"
+          },
+          "terminationReason": {
+            "label": "Syy työsuhteen päättymiseen",
+            "helpText": "Kirjoita halutessasi syy työsuhteen päättymiseen"
+          },
+          "suspensionReason": {
+            "label": "Syy työsuhteen keskeytymiseen",
+            "helpText": "Kirjoita halutessasi syy työsuhteen keskeytymiseen"
+          },
+          "useEinvoice": {
+            "label": "Laskun toimitustapa",
+            "yes": "Verkkolaskulla",
+            "no": "Postiosoitteeseen: {{streetAddress}}, {{postCode}} {{city}}"
+          },
+          "einvoiceProviderName": {
+            "label": "Verkkolaskuoperaattorin nimi",
+            "placeholder": "Esim. Basware Oyj"
+          },
+          "einvoiceProviderIdentifier": {
+            "label": "Verkkolaskuoperaattorin tunnus",
+            "placeholder": "Esim. BAWCFI22"
+          },
+          "einvoiceAddress": {
+            "label": "Verkkolaskuosoite",
+            "placeholder": "Esim. 001100223300",
+            "tooltip": "Voit tarkistaa organisaatiosi verkkolaskuosoitteen verkkosivulta verkkolaskuosoite.fi"
+          },
+          "contactPersonName": {
+            "label": "Yhteyshenkilö laskutusasioissa",
+            "helpText": "Kirjoita yhteyshenkilön nimi, joka lisätään laskulle"
+          }
+        },
+        "validation": {
+          "resumeDateBeforeEndDate": "Töihinpaluupäivän on oltava keskeytymisen alkupäivämäärän jälkeen",
+          "einvoiceRequiredTogether": "Verkkolaskuosoitetta käytettäessä kaikki osoitekentät on täytettävä"
+        },
+        "error": {
+          "notYetAccepted": "Et voi ilmoittaa muutosta työsuhteessa tälle hakemukselle, sillä tukea ei ole vielä myönnetty.",
+          "alreadyTerminated": "Tämä työsuhde on aiemmin jo merkitty päättyneeksi, joten et voi enää ilmoittaa uudesta muutoksesta."
+        },
+        "details": "Muutokset työsuhteessa",
+        "billing": "Laskutustiedot"
+      },
       "list": {
         "heading": "Muutosilmoitukset",
         "subheading_one": "<b>{{count}}</b> muutosilmoitus",
@@ -853,9 +859,77 @@
           "employee": "Työllistettävä",
           "summary": "Ilmoitettu muutos"
         },
+        "actions": {
+          "startHandling": "Käsittele"
+        },
         "summary": {
           "termination": "Työsuhde päättyy {{endDate}}",
           "suspension": "Tyosuhde keskeytyy {{endDate}}–{{resumeDate}}"
+        }
+      },
+      "handling": {
+        "headings": {
+          "pageHeading": "Käsittele muutosilmoitus",
+          "alterationData": "Muutosilmoituksen tiedot",
+          "recoveryCalculator": "Laske takaisinlaskutettavan tuen määrä",
+          "isRecoverable": "Käsittele muutosilmoitus?",
+          "recoveryJustification": "Lisää laskulle selite",
+          "noRecoveryJustification": "Lisää perustelu",
+          "downloadTalpaCsv": "Lataa ja lähetä"
+        },
+        "summary": {
+          "endDate": "Viimeinen työpäivä",
+          "resumeDate": "Töihinpaluupäivä",
+          "contactPerson": "Yhteyshenkilö laskutuksessa",
+          "einvoiceProviderName": "Verkkolaskuoperaattori",
+          "einvoiceProviderIdentifier": "Välittäjätunnus",
+          "einvoiceAddress": "Verkkolaskuosoite",
+          "billingAddress": "Laskutusosoite",
+          "reasonTermination": "Syy työsuhteen päättymiseen",
+          "reasonSuspension": "Syy työsuhteen keskeytymiseen",
+          "type": {
+            "label": "Ilmoitettu muutos",
+            "termination": "Työsuhteen päättyminen",
+            "suspension": "Työsuhteen keskeytyminen"
+          }
+        },
+        "talpaCsv": {
+          "guideText": "Lataa laskutustiedot ja lähetä tiedosto suojatulla sähköpostilla Talpaan.",
+          "button": "Lataa maksatustiedot (csv)"
+        },
+        "fields": {
+          "recoveryStartDate": {
+            "label": "Takaisinlaskutuksen alkamispäivä"
+          },
+          "recoveryEndDate": {
+            "label": "Takaisinlaskutuksen päättymispäivä"
+          },
+          "recoveryAmount": {
+            "label": "Laskutettava määrä"
+          },
+          "isRecoverable": {
+            "label": "Laskutetaanko ylimääräinen tuki takaisin?",
+            "hintText": "Tukea laskutetaan aina takaisin, jos takaisinlaskutettavan tuen määrä on yli 20 euroa.",
+            "yes": "Ylimääräinen tuki laskutetaan takaisin",
+            "no": "Ylimääräistä tukea ei laskuteta"
+          },
+          "recoveryJustification": {
+            "label": "Selite"
+          },
+          "noRecoveryJustification": {
+            "label": "Perustelu"
+          }
+        },
+        "error": {
+          "alterationNotFound": "Valittua muutosilmoitusta ei löytynyt!",
+          "alreadyHandled": "Valittu muutosilmoitus on jo käsitelty!",
+          "dirtyOrInvalidForm": "Täytä lomakkeen puuttuvat tai virheelliset kentät"
+        },
+        "actions": {
+          "close": "Peruuta",
+          "handle": "Merkitse käsitellyksi",
+          "returnToApplication": "Palaa hakemukseen",
+          "returnToAlterationList": "Palaa muutosilmoituksiin"
         }
       }
     }
@@ -1270,7 +1344,8 @@
     "next": "Seuraava",
     "previous": "Edellinen",
     "send": "Lähetä",
-    "deleting": "Poistetaan..."
+    "deleting": "Poistetaan...",
+    "submitting": "Lähetetään..."
   },
   "status": {
     "draft": "Luonnos",

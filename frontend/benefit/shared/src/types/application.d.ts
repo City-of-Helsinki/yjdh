@@ -614,7 +614,7 @@ export type ApplicationAlteration = {
   endDate?: string;
   resumeDate?: string;
   reason?: string;
-  useEinvoice: boolean;
+  useEinvoice?: boolean;
   einvoiceProviderName?: string;
   einvoiceProviderIdentifier?: string;
   einvoiceAddress?: string;
@@ -622,7 +622,7 @@ export type ApplicationAlteration = {
   state?: ALTERATION_STATE;
   recoveryStartDate?: string;
   recoveryEndDate?: string;
-  recoveryAmount?: number;
+  recoveryAmount?: string;
   applicationCompanyName?: string;
   applicationNumber?: number;
   applicationEmployeeFirstName?: string;
@@ -643,7 +643,7 @@ export type ApplicationAlterationData = {
   end_date: string;
   resume_date?: string;
   reason?: string;
-  use_einvoice: boolean;
+  use_einvoice?: boolean;
   einvoice_provider_name?: string;
   einvoice_provider_identifier?: string;
   einvoice_address?: string;
@@ -651,7 +651,7 @@ export type ApplicationAlterationData = {
   state?: ALTERATION_STATE;
   recovery_start_date?: string;
   recovery_end_date?: string;
-  recovery_amount?: number;
+  recovery_amount?: string;
   application_company_name?: string;
   application_number?: number;
   application_employee_first_name?: string;
@@ -672,6 +672,6 @@ export type AlterationAccordionItemProps = {
 export type DecisionDetailAccessorFunction = (app: Application) => ReactNode;
 
 export type DecisionDetailList = Array<{
-  accessor: DecisionDetailAccessorFunction,
-  key: string
+  accessor: DecisionDetailAccessorFunction;
+  key: string;
 }>;
