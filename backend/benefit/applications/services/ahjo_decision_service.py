@@ -133,7 +133,9 @@ def parse_details_from_decision_response(decision_data: Dict) -> AhjoDecisionDet
 
 def parse_decision_maker_from_html(html_content: str) -> str:
     """Parse the decision maker from the given html string"""
-    match = re.search(r'<div class="Puheenjohtajanimi">([^<]+)</div>', html_content)
+    match = re.search(
+        r'<div class="Puheenjohtajanimi">([^<]+)</div>', html_content, re.I
+    )
     if match:
         return match.group(1)
     else:
