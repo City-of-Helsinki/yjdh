@@ -11,6 +11,7 @@ from applications.enums import (
     ApplicationBatchStatus,
     ApplicationOrigin,
     ApplicationStatus,
+    BenefitType,
     DecisionType,
 )
 from applications.models import (
@@ -141,6 +142,7 @@ def run_seed(number):
                 random_datetime = f.past_datetime(tzinfo=pytz.UTC)
                 application = factory(application_origin=application_origin)
                 application.created_at = random_datetime
+                application.benefit_type = BenefitType.SALARY_BENEFIT
 
                 if factory == HandlingApplicationFactory:
                     user = User.objects.filter(is_staff=False).first()
