@@ -1,20 +1,15 @@
 import ApplicationHeader from 'benefit/handler/components/applicationHeader/ApplicationHeader';
 import { HANDLED_STATUSES } from 'benefit/handler/constants';
 import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
+import { StepStateType } from 'benefit/handler/hooks/useSteps';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { ErrorData } from 'benefit-shared/types/common';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import LoadingSkeleton from 'react-loading-skeleton';
 import { useQueryClient } from 'react-query';
-import Container from 'shared/components/container/Container';
-import {
-  $Grid,
-  $GridCell,
-} from 'shared/components/forms/section/FormSection.sc';
+import ErrorPage from 'shared/components/pages/ErrorPage';
 import StickyActionBar from 'shared/components/stickyActionBar/StickyActionBar';
 import { $StickyBarSpacing } from 'shared/components/stickyActionBar/StickyActionBar.sc';
-import theme from 'shared/styles/theme';
 
 import { useApplicationStepper } from '../../hooks/applicationHandling/useHandlingStepper';
 import HandlingApplicationActions from './actions/handlingApplicationActions/HandlingApplicationActions';
@@ -24,12 +19,25 @@ import {
   $ApplicationReview,
   $ApplicationReviewLocked,
 } from './ApplicationReview.sc';
+import ApplicationReviewLoading from './ApplicationReviewLoading';
 import ApplicationReviewStep1 from './handlingView/HandlingStep1';
 import ApplicationReviewStep2 from './handlingView/HandlingStep2';
 import ApplicationReviewStep3 from './handlingView/HandlingStep3';
 import ApplicationStepper from './handlingView/HandlingStepper';
 import NotificationView from './notificationView/NotificationView';
 import { useApplicationReview } from './useApplicationReview';
+
+const renderStepper = (
+  isNewAhjoMode,
+  stepState: StepStateType,
+  status: APPLICATION_STATUSES
+): JSX.Element =>
+  isNewAhjoMode &&
+  [APPLICATION_STATUSES.HANDLING, APPLICATION_STATUSES.INFO_REQUIRED].includes(
+    status
+  ) ? (
+    <ApplicationStepper stepState={stepState} />
+  ) : null;
 
 const ApplicationReview: React.FC = () => {
   const { application, isLoading, t, isApplicationReadOnly } =
@@ -52,39 +60,34 @@ const ApplicationReview: React.FC = () => {
   const router = useRouter();
 
   if (isLoading) {
-    return (
-      <>
-        <LoadingSkeleton
-          width="100%"
-          height={96}
-          baseColor={theme.colors.coatOfArms}
-          highlightColor={theme.colors.fogDark}
-          borderRadius={0}
-        />
-
-        <Container>
-          <$Grid>
-            <$GridCell $colSpan={12}>
-              <LoadingSkeleton width="100%" height={260} />
-            </$GridCell>
-            <$GridCell $colSpan={12}>
-              <LoadingSkeleton width="100%" height={240} />
-            </$GridCell>
-            <$GridCell $colSpan={12}>
-              <LoadingSkeleton width="100%" height={330} />
-            </$GridCell>
-            <$GridCell $colSpan={12}>
-              <LoadingSkeleton width="100%" height={260} />
-            </$GridCell>
-          </$Grid>
-        </Container>
-      </>
-    );
+    return <ApplicationReviewLoading />;
   }
 
   if (router.query?.action === 'submit') {
     return <NotificationView data={application} />;
   }
+
+  if (!application?.id) {
+    return (
+      <ErrorPage
+        title={t('common:error.notFound.title')}
+        message={t('common:error.notFound.text')}
+      />
+    );
+  }
+
+  const showNewAhjoActions =
+    isNewAhjoMode &&
+    (application.status === APPLICATION_STATUSES.HANDLING ||
+      application.status === APPLICATION_STATUSES.ACCEPTED ||
+      application.status === APPLICATION_STATUSES.REJECTED ||
+      application.status === APPLICATION_STATUSES.INFO_REQUIRED);
+
+  const showOldActions =
+    !isNewAhjoMode &&
+    (application.status === APPLICATION_STATUSES.HANDLING ||
+      application.status === APPLICATION_STATUSES.INFO_REQUIRED ||
+      HANDLED_STATUSES.includes(application.status));
 
   return (
     <>
@@ -94,14 +97,8 @@ const ApplicationReview: React.FC = () => {
         data-testid="application-header"
       />
       <$ApplicationReview>
+        {renderStepper(isNewAhjoMode, stepState, application?.status)}
         {isApplicationReadOnly && <$ApplicationReviewLocked />}
-        {isNewAhjoMode &&
-          [
-            APPLICATION_STATUSES.HANDLING,
-            APPLICATION_STATUSES.INFO_REQUIRED,
-          ].includes(application.status) && (
-            <ApplicationStepper stepState={stepState} />
-          )}
 
         {stepState.activeStepIndex === 0 && (
           <ApplicationReviewStep1
@@ -129,31 +126,24 @@ const ApplicationReview: React.FC = () => {
           />
         )}
 
-        {!isNewAhjoMode &&
-          (application.status === APPLICATION_STATUSES.HANDLING ||
-            application.status === APPLICATION_STATUSES.INFO_REQUIRED ||
-            HANDLED_STATUSES.includes(application.status)) && (
-            <HandlingApplicationActions
-              application={application}
-              data-testid="handling-application-actions"
-            />
-          )}
+        {showOldActions && (
+          <HandlingApplicationActions
+            application={application}
+            data-testid="handling-application-actions"
+          />
+        )}
 
-        {isNewAhjoMode &&
-          (application.status === APPLICATION_STATUSES.HANDLING ||
-            application.status === APPLICATION_STATUSES.ACCEPTED ||
-            application.status === APPLICATION_STATUSES.REJECTED ||
-            application.status === APPLICATION_STATUSES.INFO_REQUIRED) && (
-            <HandlingApplicationActionsAhjo
-              application={application}
-              stepperDispatch={stepperDispatch}
-              stepState={stepState}
-              isApplicationReadOnly={isApplicationReadOnly}
-              data-testid="handling-application-actions"
-              isRecalculationRequired={isRecalculationRequired}
-              isCalculationsErrors={!!calculationsErrors}
-            />
-          )}
+        {showNewAhjoActions && (
+          <HandlingApplicationActionsAhjo
+            application={application}
+            stepperDispatch={stepperDispatch}
+            stepState={stepState}
+            isApplicationReadOnly={isApplicationReadOnly}
+            data-testid="handling-application-actions"
+            isRecalculationRequired={isRecalculationRequired}
+            isCalculationsErrors={!!calculationsErrors}
+          />
+        )}
       </StickyActionBar>
       <$StickyBarSpacing />
     </>
