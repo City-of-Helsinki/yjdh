@@ -492,9 +492,8 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
             )
         )
 
-    def get_queryset(self):
-        qs = super().get_queryset()
-        qs = qs.prefetch_related(
+    def _prefetch_alterations(self, qs):
+        return qs.prefetch_related(
             Prefetch(
                 "alteration_set",
                 queryset=ApplicationAlteration.objects.filter(
@@ -504,11 +503,18 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
             )
         )
 
+    def get_queryset(self):
         if settings.NEXT_PUBLIC_MOCK_FLAG:
+            qs = super().get_queryset()
+            qs = self._prefetch_alterations(qs)
             return qs
+
         company = get_company_from_request(self.request)
         if company:
-            return self._annotate_unread_messages_count(company.applications).all()
+            qs = company.applications
+            qs = self._annotate_unread_messages_count(qs)
+            qs = self._prefetch_alterations(qs)
+            return qs.all()
         else:
             return Application.objects.none()
 

@@ -28,6 +28,7 @@ from applications.api.v1.status_transition_validator import (
 from applications.enums import (
     AhjoStatus,
     ApplicationActions,
+    ApplicationAlterationState,
     ApplicationBatchStatus,
     ApplicationStatus,
     ApplicationStep,
@@ -45,6 +46,7 @@ from applications.tests.factories import (
     HandlingApplicationFactory,
     ReceivedApplicationFactory,
 )
+from applications.tests.test_alteration_api import _create_application_alteration
 from calculator.models import Calculation
 from calculator.tests.conftest import fill_empty_calculation_fields
 from common.tests.conftest import *  # noqa
@@ -2526,6 +2528,33 @@ def test_application_handler_change(api_client, handler_api_client, application)
         reverse("v1:handler-application-change-handler", kwargs={"pk": application.id}),
     )
     assert response.status_code == 200
+
+
+def test_application_alterations(api_client, handler_api_client, application):
+    cancelled_alteration = _create_application_alteration(application)
+    cancelled_alteration.state = ApplicationAlterationState.CANCELLED
+    cancelled_alteration.save()
+
+    handled_alteration = _create_application_alteration(application)
+    handled_alteration.state = ApplicationAlterationState.HANDLED
+    handled_alteration.save()
+
+    received_alteration = _create_application_alteration(application)
+    received_alteration.state = ApplicationAlterationState.RECEIVED
+    received_alteration.save()
+
+    response = api_client.get(
+        reverse("v1:applicant-application-detail", kwargs={"pk": application.id}),
+    )
+    assert len(response.data["alterations"]) == 2
+    assert cancelled_alteration.pk not in [
+        alteration["id"] for alteration in response.data["alterations"]
+    ]
+
+    response = handler_api_client.get(
+        reverse("v1:handler-application-detail", kwargs={"pk": application.id}),
+    )
+    assert len(response.data["alterations"]) == 3
 
 
 def _create_random_applications():
