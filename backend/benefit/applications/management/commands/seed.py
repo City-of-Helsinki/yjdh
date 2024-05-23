@@ -56,7 +56,7 @@ class Command(BaseCommand):
         batch_count = 6
         statuses = ApplicationStatus.values
         filtered_statuses = [
-            status for status in statuses if status != "rejected_by_talpa"
+            status for status in statuses if status != ApplicationStatus.ARCHIVAL
         ]
         total_created = ((len(filtered_statuses) * 2) + batch_count) * options["number"]
         if not settings.DEBUG:

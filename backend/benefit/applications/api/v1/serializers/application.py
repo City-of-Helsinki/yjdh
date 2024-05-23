@@ -51,6 +51,7 @@ from applications.models import (
     ApplicationBasis,
     ApplicationBatch,
     ApplicationLogEntry,
+    ArchivalApplication,
     Employee,
 )
 from applications.services.change_history import (
@@ -1902,3 +1903,32 @@ class HandlerApplicationListSerializer(serializers.Serializer):
         if user and hasattr(user, "is_handler"):
             return user.is_handler()
         return False
+
+
+class ArchivalApplicationListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ArchivalApplication
+        fields = [
+            "id",
+            "company",
+            "employee",
+            "status",
+            "application_number",
+            "handled_at",
+        ]
+
+    company = CompanySerializer(read_only=True)
+    application_number = serializers.CharField()
+    handled_at = serializers.DateField()
+    employee = serializers.SerializerMethodField(
+        "get_employee",
+        help_text=(
+            "Timestamp when the application was handled (accepted/rejected/cancelled)"
+        ),
+    )
+
+    def get_employee(self, obj):
+        return {
+            "first_name": getattr(obj, "employee_first_name", ""),
+            "last_name": getattr(obj, "employee_last_name", ""),
+        }
