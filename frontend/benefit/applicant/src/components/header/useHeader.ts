@@ -76,8 +76,12 @@ const useHeader = (): ExtendedComponentProps => {
   );
   useEffect(() => {
     setHasMessenger(
-      status === APPLICATION_STATUSES.INFO_REQUIRED ||
-        status === APPLICATION_STATUSES.HANDLING
+      [
+        APPLICATION_STATUSES.INFO_REQUIRED,
+        APPLICATION_STATUSES.HANDLING,
+        APPLICATION_STATUSES.REJECTED,
+        APPLICATION_STATUSES.ACCEPTED,
+      ].includes(status)
     );
   }, [status, setHasMessenger]);
 

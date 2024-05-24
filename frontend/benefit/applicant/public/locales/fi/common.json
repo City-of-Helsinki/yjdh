@@ -780,7 +780,7 @@
     "isSecure": "Viestit ovat salattuja",
     "noMessages": "Ei viestejä",
     "close": "Sulje",
-    "cannotWriteNewMessages": "Hakemuksesi käsittely on käynnissä. Et voi kirjoittaa uutta viestiä juuri nyt. Ole hyvä ja odota hakemuksesi käsittelyä."
+    "cannotWriteNewMessages": "Hakemuksesi käsittely on edennyt päätöksentekoon tai se on jo käsitelty. Et voi enää kirjoittaa uutta viestiä."
   },
   "application": {
     "tooltipShowInfo": "Näytä info"
