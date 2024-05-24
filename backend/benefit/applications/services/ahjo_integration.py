@@ -25,6 +25,7 @@ from applications.services.ahjo_authentication import AhjoConnector, AhjoToken
 from applications.services.ahjo_client import (
     AhjoAddRecordsRequest,
     AhjoApiClient,
+    AhjoDecisionDetailsRequest,
     AhjoDecisionProposalRequest,
     AhjoDeleteCaseRequest,
     AhjoOpenCaseRequest,
@@ -623,7 +624,19 @@ def send_subscription_request_to_ahjo(
         url = reverse("ahjo_decision_callback_url")
         data = {"callbackUrl": f"{settings.API_BASE_URL}{url}"}
         return ahjo_client.send_request_to_ahjo(data)
+    except ObjectDoesNotExist as e:
+        LOGGER.error(f"Object not found: {e}")
+    except ImproperlyConfigured as e:
+        LOGGER.error(f"Improperly configured: {e}")
 
+
+def get_decision_details_from_ahjo(
+    application: Application, ahjo_token: AhjoToken
+) -> Union[List, None]:
+    try:
+        ahjo_request = AhjoDecisionDetailsRequest(application)
+        ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
+        return ahjo_client.send_request_to_ahjo()
     except ObjectDoesNotExist as e:
         LOGGER.error(f"Object not found: {e}")
     except ImproperlyConfigured as e:

@@ -1,5 +1,6 @@
 import logging
 import time
+from typing import Dict, List, Union
 
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand
@@ -8,6 +9,7 @@ from django.db.models import QuerySet
 from applications.enums import (
     AhjoRequestType,
     AhjoStatus as AhjoStatusEnum,
+    ApplicationBatchStatus,
     ApplicationStatus,
 )
 from applications.models import Application
@@ -15,7 +17,11 @@ from applications.services.ahjo_authentication import (
     AhjoToken,
     AhjoTokenExpiredException,
 )
+from applications.services.ahjo_decision_service import (
+    parse_details_from_decision_response,
+)
 from applications.services.ahjo_integration import (
+    get_decision_details_from_ahjo,
     get_token,
     send_decision_proposal_to_ahjo,
     send_new_attachment_records_to_ahjo,
@@ -70,6 +76,12 @@ class Command(BaseCommand):
                 [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
                 AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
             )
+        elif request_type == AhjoRequestType.GET_DECISION_DETAILS:
+            applications = Application.objects.get_by_statuses(
+                [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
+                AhjoStatusEnum.SIGNED_IN_AHJO,
+            )
+
         return applications
 
     def handle(self, *args, **options):
@@ -151,7 +163,8 @@ for {len(applications)} applications"
                 )
             )
             self.stdout.write(
-                f"Submitting {len(successful_applications)} open case requests took {elapsed_time} seconds to run."
+                f"Submitting {len(successful_applications)} {ahjo_request_type} \
+requests took {elapsed_time} seconds to run."
             )
         if failed_applications:
             self.stdout.write(
@@ -160,24 +173,56 @@ for {len(applications)} applications"
                 )
             )
 
-    def _handle_successful_request(
+    def _handle_details_request_success(
+        self, application: Application, response_dict: Dict
+    ) -> str:
+        """Extract the details from the dict and update the application batch with them and also
+        with the p2p settings from ahjo_settings table"""
+
+        details = parse_details_from_decision_response(response_dict)
+
+        batch_status_to_update = ApplicationBatchStatus.DECIDED_ACCEPTED
+        if application.status == ApplicationStatus.REJECTED:
+            batch_status_to_update = ApplicationBatchStatus.DECIDED_REJECTED
+
+        batch = application.batch
+        batch.update_batch_after_details_request(batch_status_to_update, details)
+
+        return f"Successfully received and updated decision details \
+for application {application.id} and batch {batch.id} from Ahjo"
+
+    def _handle_application_request_success(
         self,
-        counter: int,
         application: Application,
+        counter: int,
         response_text: str,
         request_type: AhjoRequestType,
-    ):
+    ) -> str:
         # The guid is returned in the response text in text format {guid}, so remove brackets here
         response_text = response_text.replace("{", "").replace("}", "")
         application.ahjo_case_guid = response_text
         application.save()
 
-        self.stdout.write(
-            self.style.SUCCESS(
-                f"{counter}. Successfully submitted {request_type} request for application {application.id} to Ahjo, \
+        return f"{counter}. Successfully submitted {request_type} request for application {application.id} to Ahjo, \
             received GUID: {response_text}"
+
+    def _handle_successful_request(
+        self,
+        counter: int,
+        application: Application,
+        response_content: Union[str, List],
+        request_type: AhjoRequestType,
+    ) -> None:
+        if request_type == AhjoRequestType.GET_DECISION_DETAILS:
+            success_text = self._handle_details_request_success(
+                application, response_content[0]
             )
-        )
+        else:
+            success_text = self._handle_application_request_success(
+                application, counter, response_content, request_type
+            )
+
+        self.stdout.write(self.style.SUCCESS(success_text))
 
     def _handle_failed_request(
         self, counter: int, application: Application, request_type: AhjoRequestType
@@ -194,5 +239,6 @@ for {len(applications)} applications"
             AhjoRequestType.SEND_DECISION_PROPOSAL: send_decision_proposal_to_ahjo,
             AhjoRequestType.ADD_RECORDS: send_new_attachment_records_to_ahjo,
             AhjoRequestType.UPDATE_APPLICATION: update_application_summary_record_in_ahjo,
+            AhjoRequestType.GET_DECISION_DETAILS: get_decision_details_from_ahjo,
         }
         return request_handlers.get(request_type)

@@ -12,6 +12,7 @@ from applications.services.ahjo_client import (
     AhjoAddRecordsRequest,
     AhjoApiClient,
     AhjoApiClientException,
+    AhjoDecisionDetailsRequest,
     AhjoDecisionProposalRequest,
     AhjoDeleteCaseRequest,
     AhjoOpenCaseRequest,
@@ -72,6 +73,7 @@ def ahjo_open_case_request(application_with_ahjo_case_id):
             "POST",
             "",
         ),
+        (AhjoDecisionDetailsRequest, AhjoRequestType.GET_DECISION_DETAILS, "GET", ""),
     ],
 )
 def test_ahjo_requests(
@@ -96,6 +98,7 @@ def test_ahjo_requests(
     assert request.url_base == f"{settings.AHJO_REST_API_URL}"
     assert request.lang == "fi"
     assert str(request) == f"Request of type {request_type}"
+
     if request.request_type == AhjoRequestType.OPEN_CASE:
         assert request.api_url() == f"{settings.AHJO_REST_API_URL}{API_CASES_BASE}"
 
@@ -120,9 +123,18 @@ def test_ahjo_requests(
     elif request.request_type == AhjoRequestType.SUBSCRIBE_TO_DECISIONS:
         assert request.api_url() == f"{settings.AHJO_REST_API_URL}/decisions/subscribe"
 
+    elif request.request_type == AhjoRequestType.GET_DECISION_DETAILS:
+        assert (
+            request.api_url()
+            == f"{settings.AHJO_REST_API_URL}/decisions/{application.ahjo_case_id}"
+        )
+
     client = AhjoApiClient(dummy_token, request)
 
-    if not request.request_type == AhjoRequestType.SUBSCRIBE_TO_DECISIONS:
+    if request.request_type not in [
+        AhjoRequestType.SUBSCRIBE_TO_DECISIONS,
+        AhjoRequestType.GET_DECISION_DETAILS,
+    ]:
         url = reverse(
             callback_route,
             kwargs={
@@ -160,6 +172,7 @@ def test_ahjo_requests(
         (AhjoDeleteCaseRequest, AhjoRequestType.DELETE_APPLICATION, "DELETE"),
         (AhjoAddRecordsRequest, AhjoRequestType.ADD_RECORDS, "POST"),
         (AhjoSubscribeDecisionRequest, AhjoRequestType.SUBSCRIBE_TO_DECISIONS, "POST"),
+        (AhjoDecisionDetailsRequest, AhjoRequestType.GET_DECISION_DETAILS, "GET"),
     ],
 )
 @patch("applications.services.ahjo_client.LOGGER")
