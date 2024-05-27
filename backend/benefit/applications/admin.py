@@ -190,13 +190,18 @@ class AhjoDecisionTextAdmin(admin.ModelAdmin):
     search_fields = ["id", "decision_type", "application_id"]
 
 
+class ApplicationLogEntryAdmin(admin.ModelAdmin):
+    list_display = ["application", "created_at", "modified_at"]
+    search_fields = ["application__id"]
+
+
 admin.site.register(Application, ApplicationAdmin)
 admin.site.register(ApplicationBatch, ApplicationBatchAdmin)
 admin.site.register(DeMinimisAid)
 admin.site.register(Employee)
 admin.site.register(Attachment)
 admin.site.register(ApplicationBasis, ApplicationBasisAdmin)
-admin.site.register(ApplicationLogEntry)
+admin.site.register(ApplicationLogEntry, ApplicationLogEntryAdmin)
 admin.site.register(AhjoSetting, AhjoSettingAdmin)
 admin.site.register(
     DecisionProposalTemplateSection, DecisionProposalTemplateSectionAdmin
