@@ -221,7 +221,16 @@ class AhjoDecisionTextAdmin(admin.ModelAdmin):
 
 
 class ApplicationLogEntryAdmin(admin.ModelAdmin):
+    fields = [
+        "application",
+        "created_at",
+        "modified_at",
+        "from_status",
+        "to_status",
+        "comment",
+    ]
     list_display = ["application", "created_at", "modified_at"]
+    readonly_fields = ["created_at", "modified_at"]
     search_fields = ["application__id"]
 
 
