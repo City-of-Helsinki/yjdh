@@ -124,7 +124,7 @@ test('New application', async () => {
   await step3.employmentContractNeeded();
   await step3.paySubsidyDecisionNeeded();
   await step3.helsinkiBenefitVoucherNeeded();
-  await step3.stageUploadFiles([
+  await step3.stageUploadFiles('sample.pdf', [
     '#upload_attachment_employment_contract',
     '#upload_attachment_pay_subsidy_decision',
     '#upload_attachment_education_contract',
@@ -135,7 +135,8 @@ test('New application', async () => {
   const step4 = new Step4();
   await step4.isLoaded();
   await step4.employeeConsentNeeded();
-  await step4.stageUploadFiles();
+  await step4.stageUploadFiles('sample.pdf');
+
   await step4.clickSubmit();
 
   const step5 = new Step5(form);

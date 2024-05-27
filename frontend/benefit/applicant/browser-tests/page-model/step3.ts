@@ -1,4 +1,4 @@
-import { t } from 'testcafe';
+import { Selector, t } from 'testcafe';
 
 import WizardStep from './WizardStep';
 
@@ -37,13 +37,24 @@ class Step3 extends WizardStep {
     await t.expect(this.educationContract.exists).ok();
   }
 
-  async stageUploadFiles(uploadIds: string[]): Promise<void> {
+  async stageUploadFiles(filename: string, uploadIds: string[]): Promise<void> {
     // eslint-disable-next-line no-restricted-syntax
     for (const id of uploadIds) {
+      const filenameWithoutExtension = filename.replace(/\.\w+$/, '');
+
       // eslint-disable-next-line no-await-in-loop
-      await t.setFilesToUpload(id, 'sample.pdf');
+      await t.setFilesToUpload(id, filename);
+
+      // eslint-disable-next-line no-await-in-loop
+      await t
+        .expect(
+          Selector(id)
+            .parent()
+            .parent()
+            .find(`a[aria-label^="${filenameWithoutExtension}"]`).visible
+        )
+        .ok();
     }
-    await t.wait(500);
   }
 }
 

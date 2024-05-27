@@ -1,4 +1,4 @@
-import { t } from 'testcafe';
+import { Selector, t } from 'testcafe';
 
 import WizardStep from './WizardStep';
 
@@ -14,12 +14,12 @@ class Step4 extends WizardStep {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  async stageUploadFiles(): Promise<void> {
-    await t.setFilesToUpload(
-      '#upload_attachment_employee_consent',
-      'sample.pdf'
-    );
-    await t.wait(500);
+  async stageUploadFiles(filename: string): Promise<void> {
+    const filenameWithoutExtension = filename.replace(/\.\w+$/, '');
+    await t.setFilesToUpload('#upload_attachment_employee_consent', filename);
+    await t
+      .expect(Selector(`a[aria-label^="${filenameWithoutExtension}"]`).visible)
+      .ok();
   }
 }
 
