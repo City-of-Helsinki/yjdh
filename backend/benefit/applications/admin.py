@@ -234,10 +234,23 @@ class ApplicationLogEntryAdmin(admin.ModelAdmin):
     search_fields = ["application__id"]
 
 
+class EmployeeAdmin(admin.ModelAdmin):
+    exclude = ("encrypted_social_security_number", "social_security_number")
+    list_display = [
+        "id",
+        "first_name",
+        "last_name",
+        "application",
+        "created_at",
+        "modified_at",
+    ]
+    search_fields = ["id", "application__id"]
+
+
 admin.site.register(Application, ApplicationAdmin)
 admin.site.register(ApplicationBatch, ApplicationBatchAdmin)
 admin.site.register(DeMinimisAid)
-admin.site.register(Employee)
+admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(Attachment)
 admin.site.register(ApplicationBasis, ApplicationBasisAdmin)
 admin.site.register(ApplicationLogEntry, ApplicationLogEntryAdmin)
