@@ -1,11 +1,12 @@
 import { ALL_APPLICATION_STATUSES } from 'benefit/handler/constants';
 import FrontPageProvider from 'benefit/handler/context/FrontPageProvider';
-import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import { APPLICATION_STATUSES, BATCH_STATUSES } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
 import { LoadingSpinner, Tabs } from 'hds-react';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
+import { isString } from 'shared/utils/type-guards';
 import { useTheme } from 'styled-components';
 
 import { $BackgroundWrapper } from '../layout/Layout';
@@ -38,18 +39,24 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
   const getTabCountPending = (): number =>
     list.filter(
       (app: ApplicationListItemData) =>
-        app.talpaStatus === 'not_sent_to_talpa' &&
         app.ahjoCaseId &&
+        !isString(app.batch) &&
         [APPLICATION_STATUSES.ACCEPTED, APPLICATION_STATUSES.REJECTED].includes(
           app.status
-        )
+        ) &&
+        ![
+          BATCH_STATUSES.DECIDED_ACCEPTED,
+          BATCH_STATUSES.DECIDED_REJECTED,
+          BATCH_STATUSES.SENT_TO_TALPA,
+        ].includes(app.batch.status)
     ).length;
 
   const getTabCountInPayment = (): number =>
     list.filter(
       (app: ApplicationListItemData) =>
-        app.talpaStatus !== 'not_sent_to_talpa' &&
-        [APPLICATION_STATUSES.ACCEPTED].includes(app.status)
+        !isString(app.batch) &&
+        [APPLICATION_STATUSES.ACCEPTED].includes(app.status) &&
+        app.batch.status === BATCH_STATUSES.DECIDED_ACCEPTED
     ).length;
 
   const getTabCountAll = (): number =>
@@ -189,12 +196,16 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
                 isLoading={isLoading}
                 list={list.filter(
                   (app) =>
+                    !isString(app.batch) &&
+                    app.ahjoCaseId &&
                     [
                       APPLICATION_STATUSES.ACCEPTED,
                       APPLICATION_STATUSES.REJECTED,
                     ].includes(app.status) &&
-                    app.talpaStatus === 'not_sent_to_talpa' &&
-                    app.ahjoCaseId
+                    ![
+                      BATCH_STATUSES.DECIDED_ACCEPTED,
+                      BATCH_STATUSES.DECIDED_REJECTED,
+                    ].includes(app?.batch?.status)
                 )}
                 heading={t(`${translationBase}.pending`)}
                 status={[
@@ -210,7 +221,10 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
                 list={list.filter(
                   (app) =>
                     [APPLICATION_STATUSES.ACCEPTED].includes(app.status) &&
-                    app.talpaStatus !== 'not_sent_to_talpa'
+                    !isString(app.batch) &&
+                    [BATCH_STATUSES.DECIDED_ACCEPTED].includes(
+                      app?.batch?.status
+                    )
                 )}
                 heading={t(`${translationBase}.inPayment`)}
                 status={[APPLICATION_STATUSES.ACCEPTED]}

@@ -33,7 +33,7 @@ import {
 
 export type BatchData = {
   id: string;
-  status: APPLICATION_STATUSES;
+  status: BATCH_STATUSES;
   applications: string[];
   proposal_for_decision: PROPOSALS_FOR_DECISION;
   decision_maker_title?: string;
@@ -71,7 +71,7 @@ export type BatchProposal = {
 
 export type ApplicationInBatch = {
   id: string;
-  status: APPLICATION_STATUSES;
+  status: BATCH_STATUSES;
   company?: CompanyData;
   company_name: string;
   employee?: EmployeeData;
@@ -158,7 +158,7 @@ export type ApproveTerms = {
 
 export type Batch = {
   id: string;
-  status: APPLICATION_STATUSES;
+  status: BATCH_STATUSES;
   applications: string[] | ApplicationData[];
   proposalForDecision: PROPOSALS_FOR_DECISION;
   decisionMakerTitle?: string;

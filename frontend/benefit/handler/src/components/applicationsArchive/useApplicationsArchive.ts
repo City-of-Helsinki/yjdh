@@ -26,7 +26,7 @@ const useApplicationsArchive = (): ApplicationListProps => {
     [
       APPLICATION_STATUSES.ACCEPTED,
       APPLICATION_STATUSES.REJECTED,
-      APPLICATION_STATUSES.CANCELLED
+      APPLICATION_STATUSES.CANCELLED,
     ],
     '-handled_at',
     false,
@@ -59,7 +59,7 @@ const useApplicationsArchive = (): ApplicationListProps => {
         handledAt: convertToUIDateFormat(handled_at) || '-',
         dataReceived: getBatchDataReceived(status, batch?.created_at),
         applicationNum,
-        batch: batch ?? null,
+        batch,
       };
     });
 
