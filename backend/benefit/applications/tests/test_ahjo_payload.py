@@ -19,6 +19,7 @@ from applications.services.ahjo_payload import (
     _prepare_record_title,
     _prepare_top_level_dict,
     prepare_update_application_payload,
+    resolve_payload_language,
 )
 from common.utils import hash_file
 
@@ -271,3 +272,24 @@ def test_prepare_update_application_payload(decided_application):
     got = prepare_update_application_payload(fake_summary, decided_application)
 
     assert want == got
+
+
+@pytest.mark.parametrize(
+    [
+        "applicant_language",
+        "expected_payload_language",
+    ],
+    [
+        ("fi", "fi"),
+        ("sv", "fi"),
+        ("en", "fi"),
+    ],
+)
+def test_resolve_payload_language(
+    decided_application, applicant_language, expected_payload_language
+):
+    decided_application.applicant_language = applicant_language
+
+    got = resolve_payload_language(decided_application)
+
+    assert expected_payload_language == got

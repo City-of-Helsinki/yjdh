@@ -10,7 +10,7 @@ from applications.enums import (
     AhjoRequestType,
     AttachmentType,
 )
-from applications.models import Application, Attachment
+from applications.models import Application, APPLICATION_LANGUAGE_CHOICES, Attachment
 from common.utils import hash_file
 from users.models import User
 
@@ -50,12 +50,23 @@ hakemus {application.application_number}"
     return full_title
 
 
+def resolve_payload_language(application: Application) -> str:
+    """Ahjo cannot at the moment handle en and sv language cases, so if the language is en or sv we use fi"""
+    if application.applicant_language in [
+        APPLICATION_LANGUAGE_CHOICES[1][0],
+        APPLICATION_LANGUAGE_CHOICES[2][0],
+    ]:
+        language = APPLICATION_LANGUAGE_CHOICES[0][0]
+    else:
+        language = application.applicant_language
+    return language
+
+
 def _prepare_top_level_dict(
     application: Application, case_records: List[dict], case_title: str
 ) -> dict:
     """Prepare the dictionary that is sent to Ahjo"""
     application_date = application.created_at.isoformat("T", "seconds")
-    language = application.applicant_language
 
     handler = application.calculation.handler
     case_dict = {
@@ -63,7 +74,7 @@ def _prepare_top_level_dict(
         "Acquired": application_date,
         "ClassificationCode": "02 05 01 00",
         "ClassificationTitle": "Kunnan myöntämät avustukset",
-        "Language": language,
+        "Language": resolve_payload_language(application),
         "PublicityClass": "Julkinen",
         "InternalTitle": case_title,
         "Subjects": [
@@ -120,6 +131,7 @@ def _prepare_record(
     handler: User,
     publicity_class: str = "Salassa pidettävä",
     ahjo_version_series_id: str = None,
+    language: str = "fi",  # TODO refactor so all these parameters are passes as a dataclass
 ):
     """Prepare a single record dict for Ahjo."""
 
@@ -129,7 +141,7 @@ def _prepare_record(
         "Acquired": acquired,
         "PublicityClass": publicity_class,
         "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
-        "Language": "fi",
+        "Language": language,
         "PersonalData": "Sisältää erityisiä henkilötietoja",
     }
     if ahjo_version_series_id is not None:
@@ -157,20 +169,22 @@ def _prepare_case_records(
     including the pdf summary of the application."""
     case_records = []
     handler = application.calculation.handler
+    language = resolve_payload_language(application)
 
     pdf_summary_version_series_id = (
         pdf_summary.ahjo_version_series_id if is_update else None
     )
 
     main_document_record = _prepare_record(
-        _prepare_record_title(
+        record_title=_prepare_record_title(
             application, AhjoRecordType.APPLICATION, AhjoRequestType.OPEN_CASE
         ),
-        AhjoRecordType.APPLICATION,
-        application.created_at.isoformat("T", "seconds"),
-        [_prepare_record_document_dict(pdf_summary)],
-        handler,
+        record_type=AhjoRecordType.APPLICATION,
+        acquired=application.created_at.isoformat("T", "seconds"),
+        documents=[_prepare_record_document_dict(pdf_summary)],
+        handler=handler,
         ahjo_version_series_id=pdf_summary_version_series_id,
+        language=language,
     )
 
     case_records.append(main_document_record)
@@ -191,18 +205,19 @@ def _prepare_case_records(
         )
 
         document_record = _prepare_record(
-            _prepare_record_title(
+            record_title=_prepare_record_title(
                 application,
                 AhjoRecordType.ATTACHMENT,
                 AhjoRequestType.OPEN_CASE,
                 position,
                 total_attachments,
             ),
-            AhjoRecordType.ATTACHMENT,
-            attachment.created_at.isoformat("T", "seconds"),
-            [_prepare_record_document_dict(attachment)],
-            handler,
+            record_type=AhjoRecordType.ATTACHMENT,
+            acquired=attachment.created_at.isoformat("T", "seconds"),
+            documents=[_prepare_record_document_dict(attachment)],
+            handler=handler,
             ahjo_version_series_id=attachment_version_series_id,
+            language=language,
         )
         case_records.append(document_record)
         position += 1
@@ -225,6 +240,7 @@ def prepare_attachment_records_payload(
     application: Application,
 ) -> dict[str, list[dict]]:
     """Prepare a payload for the new attachments of an application."""
+    language = resolve_payload_language(application)
 
     attachment_list = []
     position = 1
@@ -232,17 +248,18 @@ def prepare_attachment_records_payload(
     for attachment in attachments:
         attachment_list.append(
             _prepare_record(
-                _prepare_record_title(
+                record_title=_prepare_record_title(
                     application,
                     AhjoRecordType.ATTACHMENT,
                     AhjoRequestType.ADD_RECORDS,
                     position,
                     total_attachments,
                 ),
-                AhjoRecordType.ATTACHMENT,
-                attachment.created_at.isoformat("T", "seconds"),
-                [_prepare_record_document_dict(attachment)],
-                application.calculation.handler,
+                record_type=AhjoRecordType.ATTACHMENT,
+                acquired=attachment.created_at.isoformat("T", "seconds"),
+                documents=[_prepare_record_document_dict(attachment)],
+                handler=application.calculation.handler,
+                language=language,
             )
         )
         position += 1
@@ -257,6 +274,7 @@ def prepare_update_application_payload(
           in this case it only contains a Records dict"""
     if not pdf_summary.ahjo_version_series_id:
         raise ValueError("Attachment must have an ahjo_version_series_id for update.")
+    language = resolve_payload_language(application)
     return {
         "records": [
             _prepare_record(
@@ -270,6 +288,7 @@ def prepare_update_application_payload(
                 documents=[_prepare_record_document_dict(pdf_summary)],
                 handler=application.calculation.handler,
                 ahjo_version_series_id=pdf_summary.ahjo_version_series_id,
+                language=language,
             )
         ]
     }
@@ -283,7 +302,7 @@ def prepare_decision_proposal_payload(
     inspector_dict = {"Role": "inspector", "Name": "Tarkastaja, Tero", "ID": "terot"}
     # TODO remove hard coded decision maker
     decision_maker_dict = {"Role": "decisionMaker", "ID": "U02120013070VH2"}
-    language = application.applicant_language
+    language = resolve_payload_language(application)
 
     main_creator_dict = {
         "Role": "mainCreator",
