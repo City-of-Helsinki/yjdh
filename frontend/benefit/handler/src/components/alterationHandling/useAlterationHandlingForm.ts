@@ -6,12 +6,14 @@ import {
   Application,
   ApplicationAlteration,
 } from 'benefit-shared/types/application';
+import { add, sub } from 'date-fns';
 import { FormikProps, useFormik } from 'formik';
 import { TFunction, useTranslation } from 'next-i18next';
 import { useState } from 'react';
 import {
   convertToBackendDateFormat,
   convertToUIDateFormat,
+  parseDate,
 } from 'shared/utils/date.utils';
 import { stringToFloatValue } from 'shared/utils/string.utils';
 
@@ -53,7 +55,9 @@ const useAlterationHandling = ({
             data.recoveryStartDate
           ),
           recovery_end_date: convertToBackendDateFormat(data.recoveryEndDate),
-          recovery_amount: String(stringToFloatValue(data.recoveryAmount)),
+          recovery_amount: data.isRecoverable
+            ? String(stringToFloatValue(data.recoveryAmount))
+            : '0',
           recovery_justification: data.recoveryJustification,
           is_recoverable: data.isRecoverable,
           state: ALTERATION_STATE.HANDLED,
@@ -66,13 +70,16 @@ const useAlterationHandling = ({
     );
   };
 
+  const startDate = add(parseDate(alteration.endDate), { days: 1 });
+  const endDate = alteration.resumeDate
+    ? sub(parseDate(alteration.resumeDate), { days: 1 })
+    : parseDate(application.endDate);
+
   const formik = useFormik<Partial<ApplicationAlteration>>({
     initialValues: {
       application: application.id,
-      recoveryStartDate: convertToUIDateFormat(alteration.endDate),
-      recoveryEndDate: convertToUIDateFormat(
-        alteration.resumeDate || application.endDate
-      ),
+      recoveryStartDate: convertToUIDateFormat(startDate),
+      recoveryEndDate: convertToUIDateFormat(endDate),
       recoveryAmount: '0',
       isRecoverable: true,
       recoveryJustification: '',

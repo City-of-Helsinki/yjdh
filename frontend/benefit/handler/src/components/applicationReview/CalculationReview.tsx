@@ -1,127 +1,32 @@
+import CalculationTable from 'benefit/handler/components/applicationReview/calculationTable/CalculationTable';
+import useCalculationTable from 'benefit/handler/components/applicationReview/calculationTable/useCalculationTable';
 import AppContext from 'benefit/handler/context/AppContext';
-import { ApplicationListTableColumns } from 'benefit/handler/types/applicationList';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
-import { Application, Row } from 'benefit-shared/types/application';
-import { IconCheckCircleFill, IconCrossCircleFill, Table } from 'hds-react';
-import clone from 'lodash/clone';
-import { TFunction, useTranslation } from 'next-i18next';
+import { Application } from 'benefit-shared/types/application';
+import { IconCheckCircleFill, IconCrossCircleFill } from 'hds-react';
+import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import Heading from 'shared/components/forms/heading/Heading';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import theme from 'shared/styles/theme';
-import { convertToUIDateFormat, diffMonths } from 'shared/utils/date.utils';
 import { formatFloatToCurrency } from 'shared/utils/string.utils';
 
 import { $HorizontalList } from '../table/TableExtras.sc';
-import { $CalculationReviewTableWrapper } from './ApplicationReview.sc';
 
 type ApplicationReviewStepProps = {
   application: Application;
 };
 
-type BenefitRow = {
-  id: string;
-  dates: string;
-  amount: string;
-  amountNumber: string;
-  perMonth: string;
-  duration: number;
-  startDate: string;
-  endDate: string;
-};
-
-const createBenefitRow = (): BenefitRow =>
-  clone({
-    id: '',
-    dates: '',
-    amount: '',
-    amountNumber: '',
-    perMonth: '',
-    duration: 0,
-    startDate: '',
-    endDate: '',
-  });
-
-const getTableCols = (t: TFunction): ApplicationListTableColumns[] => [
-  {
-    key: 'dates',
-    headerName: t('common:review.decisionProposal.calculationReview.dates'),
-  },
-  {
-    key: 'duration',
-    headerName: t('common:review.decisionProposal.calculationReview.duration'),
-  },
-  {
-    key: 'perMonth',
-    headerName: t('common:review.decisionProposal.calculationReview.perMonth'),
-  },
-  {
-    key: 'amount',
-    headerName: t('common:review.decisionProposal.calculationReview.amount'),
-  },
-];
-
 const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
   application,
 }) => {
   const { company, employee, calculation, decisionProposalDraft } = application;
-  const filteredData: Row[] = calculation.rows.filter((row) =>
-    ['helsinki_benefit_monthly_eur', 'helsinki_benefit_sub_total_eur'].includes(
-      row.rowType
-    )
-  );
   const { t } = useTranslation();
   const { handledApplication } = React.useContext(AppContext);
 
-  let tableRow = createBenefitRow();
-
-  const tableRows = filteredData.reduce((acc: BenefitRow[], row: Row) => {
-    tableRow.id = row.id;
-    if (row.rowType === 'helsinki_benefit_monthly_eur') {
-      tableRow.perMonth = `${formatFloatToCurrency(
-        row.amount,
-        'EUR',
-        'fi-FI',
-        0
-      )} / kk`;
-    }
-    if (row.rowType === 'helsinki_benefit_sub_total_eur') {
-      tableRow.dates = `${convertToUIDateFormat(
-        row.startDate
-      )} - ${convertToUIDateFormat(row.endDate)}`;
-
-      tableRow.endDate = convertToUIDateFormat(row.endDate);
-      tableRow.startDate = convertToUIDateFormat(row.startDate);
-
-      tableRow.duration = diffMonths(
-        new Date(row.endDate),
-        new Date(row.startDate)
-      );
-
-      tableRow.amount = formatFloatToCurrency(row.amount, 'EUR', 'fi-FI', 0);
-      tableRow.amountNumber = row.amount;
-      acc.push(tableRow);
-      tableRow = createBenefitRow();
-    }
-    return acc;
-  }, []);
-
-  const totalSum = tableRows.reduce(
-    (acc: number, cur: BenefitRow) => acc + parseFloat(cur.amountNumber),
-    0
-  );
-
-  if (tableRows.length > 0)
-    tableRows.push({
-      ...createBenefitRow(),
-      id: 'table-footer',
-      dates: `${tableRows.at(0).startDate} - ${tableRows.at(-1).endDate}`,
-      duration: tableRows.reduce(
-        (acc: number, cur: BenefitRow) => acc + cur.duration,
-        0
-      ),
-      amount: formatFloatToCurrency(totalSum, 'EUR', 'fi-FI', 0),
-    });
+  const { tableRows, totalSum } = useCalculationTable({
+    calculation,
+  });
 
   return (
     <>
@@ -208,18 +113,12 @@ const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
         <$GridCell $colSpan={12}>
           <hr />
 
-          <$CalculationReviewTableWrapper>
-            <Table
-              caption={t(
-                'common:review.decisionProposal.calculationReview.tableCaption'
-              )}
-              renderIndexCol={false}
-              cols={getTableCols(t)}
-              rows={tableRows}
-              indexKey="id"
-              theme={theme.components.table}
-            />
-          </$CalculationReviewTableWrapper>
+          <CalculationTable
+            tableRows={tableRows}
+            caption={t(
+              'common:review.decisionProposal.calculationReview.tableCaption'
+            )}
+          />
         </$GridCell>
       )}
     </>

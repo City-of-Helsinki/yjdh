@@ -139,6 +139,7 @@ export const $Highlight = styled.div`
   border-left: 8px solid ${(props) => props.theme.colors.coatOfArms};
   padding-left: ${(props) => props.theme.spacing.l};
   margin: ${(props) => props.theme.spacing.xs};
+  line-height: ${(props) => props.theme.lineHeight.l};
 `;
 
 export const $NoticeBar = styled.div`
@@ -155,19 +156,5 @@ export const $NoticeBar = styled.div`
   font-size: ${(props) => props.theme.fontSize.body.l};
   svg {
     padding-left: ${(props) => props.theme.spacing.xs};
-  }
-`;
-
-export const $CalculationReviewTableWrapper = styled.div`
-  max-width: 714px;
-  margin-top: ${(props) => props.theme.spacing.xs};
-
-  caption {
-    font-weight: 500;
-  }
-
-  table > tbody > tr:last-child td {
-    background-color: ${(props) => props.theme.colors.coatOfArmsLight};
-    font-weight: 600;
   }
 `;

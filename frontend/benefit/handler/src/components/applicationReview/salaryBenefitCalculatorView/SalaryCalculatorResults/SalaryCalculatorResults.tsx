@@ -1,3 +1,4 @@
+import SalaryCalculatorHighlight from 'benefit/handler/components/applicationReview/salaryBenefitCalculatorView/SalaryCalculatorResults/SalaryCalculatorHighlight';
 import { CALCULATION_PER_MONTH_ROW_TYPES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import { extractCalculatorRows } from 'benefit/handler/utils/calculator';
@@ -16,7 +17,6 @@ import { useTheme } from 'styled-components';
 import {
   $CalculatorTableHeader,
   $CalculatorTableRow,
-  $Highlight,
 } from '../../ApplicationReview.sc';
 
 const SalaryCalculatorResults: React.FC<ApplicationReviewViewProps> = ({
@@ -52,16 +52,15 @@ const SalaryCalculatorResults: React.FC<ApplicationReviewViewProps> = ({
           <$CalculatorTableHeader>
             {t(`${translationsBase}.header`)}
           </$CalculatorTableHeader>
-          <$Highlight data-testid="calculation-results-total">
-            <div style={{ fontSize: theme.fontSize.body.xl }}>
-              {totalRowDescription
+          <SalaryCalculatorHighlight
+            testId="calculation-results-total"
+            description={
+              totalRowDescription
                 ? totalRowDescription.descriptionFi
-                : totalRow?.descriptionFi}
-            </div>
-            <div style={{ fontSize: theme.fontSize.heading.xl }}>
-              {formatFloatToCurrency(totalRow.amount, 'EUR', 'fi-FI', 0)}
-            </div>
-          </$Highlight>
+                : totalRow?.descriptionFi
+            }
+            amount={totalRow.amount}
+          />
           <hr style={{ margin: theme.spacing.s }} />
         </>
       )}
