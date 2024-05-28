@@ -48,7 +48,7 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
           BATCH_STATUSES.DECIDED_ACCEPTED,
           BATCH_STATUSES.DECIDED_REJECTED,
           BATCH_STATUSES.SENT_TO_TALPA,
-        ].includes(app.batch.status)
+        ].includes(app.batch?.status)
     ).length;
 
   const getTabCountInPayment = (): number =>
@@ -56,7 +56,7 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
       (app: ApplicationListItemData) =>
         !isString(app.batch) &&
         [APPLICATION_STATUSES.ACCEPTED].includes(app.status) &&
-        app.batch.status === BATCH_STATUSES.DECIDED_ACCEPTED
+        app.batch?.status === BATCH_STATUSES.DECIDED_ACCEPTED
     ).length;
 
   const getTabCountAll = (): number =>
