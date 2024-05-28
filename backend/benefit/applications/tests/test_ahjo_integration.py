@@ -714,10 +714,15 @@ def test_generate_ahjo_secret_decision_text_xml(decided_application):
 
 @pytest.mark.django_db
 def test_get_applications_for_open_case(
-    multiple_decided_applications, multiple_handling_applications
+    multiple_decided_applications,
+    multiple_decided_applications_for_open_case,
+    multiple_handling_applications,
 ):
     now = timezone.now()
-    for application in multiple_handling_applications:
+    applications_for_open_case = (
+        multiple_decided_applications_for_open_case + multiple_handling_applications
+    )
+    for application in applications_for_open_case:
         status = AhjoStatus.objects.create(
             application=application,
             status=AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
@@ -737,11 +742,17 @@ def test_get_applications_for_open_case(
             ahjo_status.save()
 
     applications_for_open_case = Application.objects.get_by_statuses(
-        [ApplicationStatus.HANDLING], AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO
+        [
+            ApplicationStatus.HANDLING,
+            ApplicationStatus.ACCEPTED,
+            ApplicationStatus.REJECTED,
+        ],
+        AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
+        True,
     )
     # only handled_applications should be returned as their last  AhjoStatus is SUBMITTED_BUT_NOT_SENT_TO_AHJO
     # and their application status is HANDLING
-    assert applications_for_open_case.count() == len(multiple_handling_applications)
+    assert applications_for_open_case.count() == len(applications_for_open_case)
 
 
 @pytest.mark.django_db

@@ -93,6 +93,16 @@ def multiple_handling_applications(mock_get_organisation_roles_and_create_compan
 
 
 @pytest.fixture
+def multiple_decided_applications_for_open_case(
+    mock_get_organisation_roles_and_create_company,
+):
+    with factory.Faker.override_default_locale("fi_FI"):
+        return DecidedApplicationFactory.create_batch(
+            5, company=mock_get_organisation_roles_and_create_company
+        )
+
+
+@pytest.fixture
 def application_batch():
     with factory.Faker.override_default_locale("fi_FI"):
         return ApplicationBatchFactory()
