@@ -42,8 +42,6 @@ test('Handler makes a favorable decision', async (t: TestController) => {
 
   // Fill in the dates
   await clearAndFill(t, '#startDate', format(startDate, DATE_FORMATS.UI_DATE));
-  await t.click('#endDate');
-  await t.click('#startDate');
   await clearAndFill(t, '#endDate', format(endDate, DATE_FORMATS.UI_DATE));
 
   // Click "Calculate" button

@@ -32,5 +32,13 @@ export const $TagWrapper = styled.div<TagWrapperProps>`
   #hds-tag {
     background: ${(props) => props.$colors.background};
     color: ${(props) => props.$colors.text};
+
+    #hds-tag-label span {
+      display: flex;
+      align-items: center;
+      svg {
+        margin-right: 2px;
+      }
+    }
   }
 `;

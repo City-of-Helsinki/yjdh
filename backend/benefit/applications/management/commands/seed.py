@@ -11,6 +11,7 @@ from applications.enums import (
     ApplicationBatchStatus,
     ApplicationOrigin,
     ApplicationStatus,
+    BenefitType,
     DecisionType,
 )
 from applications.models import (
@@ -35,6 +36,7 @@ from applications.tests.factories import (
     ReceivedApplicationFactory,
     RejectedApplicationFactory,
 )
+from messages.models import Message, MessageType
 from terms.models import Terms
 from users.models import User
 
@@ -140,8 +142,24 @@ def run_seed(number):
                 random_datetime = f.past_datetime(tzinfo=pytz.UTC)
                 application = factory(application_origin=application_origin)
                 application.created_at = random_datetime
+                application.benefit_type = BenefitType.SALARY_BENEFIT
 
                 if factory == HandlingApplicationFactory:
+                    user = User.objects.filter(is_staff=False).first()
+                    staff_user = User.objects.filter(is_staff=True).first()
+                    Message.objects.create(
+                        content="Apua, en osaa täyttää hakemusta!",
+                        application=application,
+                        message_type=MessageType.APPLICANT_MESSAGE,
+                        sender=user,
+                        seen_by_applicant=True,
+                    )
+                    Message.objects.create(
+                        content="Ei hätää, autan sinua.",
+                        application=application,
+                        message_type=MessageType.HANDLER_MESSAGE,
+                        sender=staff_user,
+                    )
                     AhjoStatus.objects.create(
                         status=AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
                         application=application,

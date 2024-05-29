@@ -352,3 +352,16 @@ class PreviousBenefitSerializer(serializers.ModelSerializer):
             "total_amount",
         ]
         read_only_fields = []
+
+
+class CalculationSearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Calculation
+        fields = [
+            "start_date",
+            "end_date",
+        ]
+        read_only_fields = [
+            "start_date",
+            "end_date",
+        ]

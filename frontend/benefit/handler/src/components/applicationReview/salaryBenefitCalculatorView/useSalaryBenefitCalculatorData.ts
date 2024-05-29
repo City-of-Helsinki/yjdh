@@ -181,7 +181,7 @@ const useSalaryBenefitCalculatorData = (
     []
   );
 
-  const { setFieldValue, values } = formik;
+  const { values } = formik;
 
   const getStateAidMaxPercentageSelectValue = (): OptionType | undefined => {
     const { stateAidMaxPercentage } = values;
@@ -203,12 +203,6 @@ const useSalaryBenefitCalculatorData = (
     () => diffMonths(parseDate(endDate), parseDate(startDate)),
     [endDate, startDate]
   );
-
-  useEffect(() => {
-    if (grantedPeriod < 0) {
-      void setFieldValue(fields.endDate.name, startDate);
-    }
-  }, [grantedPeriod, startDate, fields.endDate.name, setFieldValue]);
 
   useEffect(() => {
     if (
