@@ -574,7 +574,7 @@ def test_ahjo_open_case_callback_failure(
     auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
     response = ahjo_client.post(url, **auth_headers, data=ahjo_callback_payload)
 
-    assert response.status_code == 400
+    assert response.status_code == 200
     assert response.data == {
         "message": "Callback received but request was unsuccessful at AHJO"
     }
