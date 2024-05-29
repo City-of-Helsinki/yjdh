@@ -1,7 +1,7 @@
 import { getTagStyleForStatus } from 'benefit/handler/utils/applications';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { ApplicationData } from 'benefit-shared/types/application';
-import { Table, Tag } from 'hds-react';
+import { IconAlertCircle, IconCheck, IconCross, Table, Tag } from 'hds-react';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import { $Link } from 'shared/components/table/Table.sc';
@@ -22,6 +22,17 @@ type SearchProps = {
   searchString: string;
 };
 
+const STATUS_SORT_RANK = {
+  [APPLICATION_STATUSES.ACCEPTED]: 1,
+  [APPLICATION_STATUSES.REJECTED]: 0,
+  [APPLICATION_STATUSES.CANCELLED]: -1,
+};
+
+const sortByStatus = (
+  a: APPLICATION_STATUSES,
+  b: APPLICATION_STATUSES
+): number => STATUS_SORT_RANK[a] - STATUS_SORT_RANK[b];
+
 const ApplicationArchiveList: React.FC<SearchProps> = ({
   data = [],
   isSearchLoading,
@@ -32,10 +43,9 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
   const theme = useTheme();
 
   interface TableTransforms {
-    id?: string;
-    companyName?: string;
-    status?: APPLICATION_STATUSES;
-    endDate?: string;
+    id: string;
+    companyName: string;
+    status: APPLICATION_STATUSES;
   }
 
   const getTransformForArchivedStatus = ({
@@ -43,6 +53,9 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
   }: TableTransforms): JSX.Element => (
     <$TagWrapper $colors={getTagStyleForStatus(status)}>
       <Tag>
+        {status === APPLICATION_STATUSES.ACCEPTED && <IconCheck />}
+        {status === APPLICATION_STATUSES.REJECTED && <IconCross />}
+        {status === APPLICATION_STATUSES.CANCELLED && <IconAlertCircle />}
         {t(
           `common:applications.list.columns.applicationStatuses.${String(
             status
@@ -95,12 +108,14 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
       headerName: t(`${translationsBase}.columns.statusArchive`)?.toString(),
       key: 'status',
       isSortable: true,
+      customSortCompareFunction: sortByStatus,
     },
   ];
 
   const hasSearchLoadedWithResults =
     !isSearchLoading &&
     submittedSearchString !== '' &&
+    submittedSearchString === searchString &&
     searchString.length > 0 &&
     data?.length > 0;
 
@@ -154,6 +169,7 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
             theme={theme.components.table}
             rows={prepareSearchData(data)}
             cols={cols}
+            zebra
           />
         </>
       )}

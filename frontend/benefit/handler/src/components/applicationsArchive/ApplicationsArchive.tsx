@@ -1,10 +1,11 @@
 import useSearchApplicationQuery from 'benefit/handler/hooks/useSearchApplicationQuery';
+import { SearchInput } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
 
 import { $EmptyHeading } from '../applicationList/ApplicationList.sc';
 import ApplicationArchiveList from './ApplicationArchiveList';
-import { $Heading, $TextInput } from './ApplicationsArchive.sc';
+import { $Heading } from './ApplicationsArchive.sc';
 import ArchiveLoading from './ArchiveLoading';
 import { useApplicationsArchive } from './useApplicationsArchive';
 
@@ -22,12 +23,10 @@ const ApplicationsArchive: React.FC = () => {
     mutate,
   } = useSearchApplicationQuery(searchString, true);
 
-  const onSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (e.key.toLowerCase() === 'enter') {
-      setSubmittedSearchString(e.currentTarget.value);
-      setSearchString(e.currentTarget.value);
-      mutate(e.currentTarget.value);
-    }
+  const onSearch = (value: string): void => {
+    setSubmittedSearchString(value);
+    setSearchString(value);
+    mutate(value);
   };
 
   if (shouldShowSkeleton) {
@@ -40,17 +39,17 @@ const ApplicationsArchive: React.FC = () => {
         'common:header.navigation.archive'
       )}`}</$Heading>
       <>
-        <$TextInput
-          tooltipText="Voit tarkentaa hakua työllistettävän nimellä lisäämällä kentän loppuun nimi:etunimi jokunimi sukunimi"
-          disabled={isSearchLoading}
-          id="table-filter"
-          helperText={t('common:search.input.keyword.helperText')}
-          label={t('common:search.input.keyword.label')}
-          placeholder={t('common:search.input.keyword.placeholder')}
-          onChange={(e) => setSearchString(e.currentTarget.value)}
-          onKeyUp={(e) => onSearch(e)}
-          css="margin-bottom: var(--spacing-m);"
-        />
+        <div style={{ maxWidth: 630 }}>
+          <SearchInput
+            // tooltipText="Voit tarkentaa hakua työllistettävän nimellä lisäämällä kentän loppuun nimi:etunimi jokunimi sukunimi"
+            helperText={t('common:search.input.keyword.helperText')}
+            label={t('common:search.input.keyword.label')}
+            placeholder={t('common:search.input.keyword.placeholder')}
+            onChange={(e) => setSearchString(e)}
+            onSubmit={(e) => onSearch(e)}
+            css="margin-bottom: var(--spacing-m);"
+          />
+        </div>
 
         <ApplicationArchiveList
           data={searchResults?.matches}

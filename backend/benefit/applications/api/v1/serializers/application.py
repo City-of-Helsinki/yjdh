@@ -1902,6 +1902,3 @@ class HandlerApplicationListSerializer(serializers.Serializer):
         if user and hasattr(user, "is_handler"):
             return user.is_handler()
         return False
-
-
-# handler name, submittedAt, modifiedAt, applicationOrigin, , unreadMessagesCount

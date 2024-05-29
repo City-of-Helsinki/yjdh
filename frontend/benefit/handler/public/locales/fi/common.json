@@ -160,15 +160,15 @@
         "companyId": "Y-tunnus",
         "submittedAt": "Saapunut",
         "modifiedAt": "Muokattu",
-        "applicationNum": "Hakemusnumero",
+        "applicationNum": "Hakemus",
         "employeeName": "Työllistetty",
         "employeeNameArchive": "Työllistetty",
         "handlerName": "Käsittelijä",
         "companyForm": "Yritysmuoto",
-        "handledAt": "Käsittelypvm",
+        "handledAt": "Käsitelty",
         "dataReceived": "Ladattu",
         "status": "Käsittelyn tulos",
-        "statusArchive": "Käsittelyn tulos",
+        "statusArchive": "Päätös tai tila",
         "benefitAmount": "Tuen määrä",
         "statuses": {
           "cancelled": "Peruutettu",
@@ -193,7 +193,7 @@
           "accepted": "Hyväksytty",
           "rejected": "Hylätty"
         },
-        "calculationEndDate": "Laskentapäivä"
+        "calculationEndDate": "Viim. tukipäivä"
       },
       "messages": {
         "empty": {
@@ -1605,7 +1605,7 @@
         "placeholder": "Kirjoita hakusana"
       }
     },
-    "perfomingSearch": "Etsitään ...",
+    "perfomingSearch": "Etsitään…",
     "noResults": "Ei hakutuloksia."
   },
   "toast": {
