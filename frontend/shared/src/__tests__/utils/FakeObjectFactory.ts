@@ -83,7 +83,8 @@ class FakeObjectFactory {
       contact_person_email: faker.internet.email(),
       contact_person_phone_number: faker.phone.phoneNumber(),
       street_address: faker.address.streetAddress(),
-      bank_account_number: faker.finance.iban(),
+      // bank_account_number: faker.finance.iban(), // This generates invalid IBANs
+      bank_account_number: 'GB33BUKB20201555555555',
     };
   }
 

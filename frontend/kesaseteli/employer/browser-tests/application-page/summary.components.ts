@@ -10,12 +10,8 @@ import ContactInfo from '@frontend/shared/src/types/contact-info';
 import Employment from '@frontend/shared/src/types/employment';
 import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
 import { friendlyFormatIBAN } from 'ibantools';
-import TestController from 'testcafe';
 
-import {
-  getAttachmentFileName,
-  getSelectionGroupTranslation,
-} from '../utils/application.utils';
+import { getSelectionGroupTranslation } from '../utils/application.utils';
 
 export const getSummaryComponents = async (t: TestController) => {
   const screen = screenContext(t);
@@ -146,13 +142,13 @@ export const getSummaryComponents = async (t: TestController) => {
         const expectAttachments = (
           field: 'employment_contract' | 'payslip'
         ) => {
-          const attachments = employment[field];
+          const attachments =
+            field === 'employment_contract'
+              ? ['sample1', 'sample2', 'sample3', 'sample4', 'sample5']
+              : ['sample6', 'sample7'];
           return Promise.all(
             attachments.map((attachment) =>
-              expectEmploymentFieldhasValue(
-                field,
-                getAttachmentFileName(attachment)
-              )
+              expectEmploymentFieldhasValue(field, attachment)
             )
           );
         };

@@ -3,7 +3,6 @@ import {
   screenContext,
   withinContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import TestController from 'testcafe';
 
 import { getSummaryComponents } from './summary.components';
 

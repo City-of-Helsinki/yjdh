@@ -12,13 +12,36 @@ import {
   EmployeeHiredWithoutVoucherAssessment,
   EmploymentExceptionReason,
 } from '@frontend/shared/src/types/employment';
-import TestController from 'testcafe';
+import { Selector } from 'testcafe';
 
 import {
   getAttachmentFileName,
-  getAttachmentFilePath,
   getSelectionGroupTranslation,
 } from '../utils/application.utils';
+
+const uploadFiles = async (
+  t: TestController,
+  attachments: string[],
+  selector: SelectorPromise
+) => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const attachment of attachments) {
+    const filenameWithoutExtension = attachment.replace(/\.\w+$/, '');
+
+    // eslint-disable-next-line no-await-in-loop
+    await t.setFilesToUpload(selector, attachment);
+
+    // eslint-disable-next-line no-await-in-loop
+    await t
+      .expect(
+        Selector(selector)
+          .parent()
+          .parent()
+          .find(`a[aria-label^="${filenameWithoutExtension}"]`).visible
+      )
+      .ok();
+  }
+};
 
 export const getStep2Components = (t: TestController) => {
   const screen = screenContext(t);
@@ -274,23 +297,15 @@ export const getStep2Components = (t: TestController) => {
           serialNumber
         );
       },
-      async addEmploymentContractAttachment(attachment: KesaseteliAttachment) {
-        await t
-          .setFilesToUpload(
-            selectors.employmentContractAttachmentInput(),
-            getAttachmentFilePath(attachment)
-          )
-          .click(selectors.employmentContractAttachmentButton());
-        await expectations.isAttachmentUploaded(attachment);
+      async addEmploymentContractAttachment(attachments: string[]) {
+        await uploadFiles(
+          t,
+          attachments,
+          selectors.employmentContractAttachmentInput()
+        );
       },
-      async addPayslipAttachments(attachment: KesaseteliAttachment) {
-        await t
-          .setFilesToUpload(
-            selectors.payslipAttachmentInput(),
-            getAttachmentFilePath(attachment)
-          )
-          .click(selectors.payslipAttachmentButton());
-        await expectations.isAttachmentUploaded(attachment);
+      async addPayslipAttachments(attachments: string[]) {
+        await uploadFiles(t, attachments, selectors.payslipAttachmentInput());
       },
       fillStartDate(dateAsString?: string) {
         return fillInput(
