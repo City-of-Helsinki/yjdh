@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib import admin
+from django.urls import reverse
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from applications.models import (
@@ -104,6 +106,7 @@ class ApplicationAdmin(admin.ModelAdmin):
         "company_contact_person_email",
         "company_contact_person_first_name",
         "company_contact_person_last_name",
+        "batch",
         "created_at",
         "modified_at",
         "__str__",
@@ -123,6 +126,33 @@ class ApplicationAdmin(admin.ModelAdmin):
     date_hierarchy = "created_at"
     ordering = ("-created_at",)
     exclude = ("bases",)
+
+    readonly_fields = ["batch_details"]
+
+    fieldsets = (
+        (None, {"fields": ("status", "batch")}),
+        (
+            "Batch Information",
+            {
+                "fields": ("batch_details",),
+            },
+        ),
+    )
+
+    def batch_details(self, obj):
+        if obj.batch:
+            url = reverse(
+                "admin:applications_applicationbatch_change", args=[obj.batch.id]
+            )
+            return format_html(
+                '<a href="{}">{}</a>',
+                url,
+                obj.batch.id,
+            )
+
+        return "Not assigned to any batch"
+
+    batch_details.short_description = "Batch Details"
 
 
 class ApplicationInline(admin.StackedInline):
@@ -190,13 +220,40 @@ class AhjoDecisionTextAdmin(admin.ModelAdmin):
     search_fields = ["id", "decision_type", "application_id"]
 
 
+class ApplicationLogEntryAdmin(admin.ModelAdmin):
+    fields = [
+        "application",
+        "created_at",
+        "modified_at",
+        "from_status",
+        "to_status",
+        "comment",
+    ]
+    list_display = ["application", "created_at", "modified_at"]
+    readonly_fields = ["created_at", "modified_at"]
+    search_fields = ["application__id"]
+
+
+class EmployeeAdmin(admin.ModelAdmin):
+    exclude = ("encrypted_social_security_number", "social_security_number")
+    list_display = [
+        "id",
+        "first_name",
+        "last_name",
+        "application",
+        "created_at",
+        "modified_at",
+    ]
+    search_fields = ["id", "application__id"]
+
+
 admin.site.register(Application, ApplicationAdmin)
 admin.site.register(ApplicationBatch, ApplicationBatchAdmin)
 admin.site.register(DeMinimisAid)
-admin.site.register(Employee)
+admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(Attachment)
 admin.site.register(ApplicationBasis, ApplicationBasisAdmin)
-admin.site.register(ApplicationLogEntry)
+admin.site.register(ApplicationLogEntry, ApplicationLogEntryAdmin)
 admin.site.register(AhjoSetting, AhjoSettingAdmin)
 admin.site.register(
     DecisionProposalTemplateSection, DecisionProposalTemplateSectionAdmin
