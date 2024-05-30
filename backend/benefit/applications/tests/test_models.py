@@ -4,8 +4,7 @@ import pytest
 
 from applications.enums import AhjoDecision, ApplicationBatchStatus
 from applications.exceptions import BatchCompletionRequiredFieldsError
-from applications.models import AhjoSetting, Application, ApplicationBatch, Employee
-from applications.services.ahjo_decision_service import AhjoDecisionDetails
+from applications.models import Application, ApplicationBatch, Employee
 from applications.tests.factories import BaseApplicationBatchFactory
 from applications.tests.test_application_batch_api import (
     fill_as_valid_batch_completion_and_save,
@@ -30,28 +29,6 @@ def test_application_batch(application_batch):
     for application in application_batch.applications.all():
         assert application_batch.proposal_for_decision == application.status
         assert application.batch == application_batch
-
-
-@pytest.fixture
-def p2p_settings():
-    return AhjoSetting.objects.create(
-        name="p2p_settings",
-        data={
-            "acceptor_name": "Test Test",
-            "inspector_name": "Test Inspector",
-            "inspector_email": "inspector@test.test",
-        },
-    )
-
-
-@pytest.fixture
-def decision_details():
-    return AhjoDecisionDetails(
-        decision_maker_name="Test Test",
-        decision_maker_title="Test Title",
-        section_of_the_law="16 §",
-        decision_date=date.today(),
-    )
 
 
 @pytest.mark.parametrize(

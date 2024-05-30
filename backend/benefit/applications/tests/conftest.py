@@ -1,7 +1,7 @@
 import os
 import random
 import uuid
-from datetime import timedelta
+from datetime import date, timedelta
 
 import factory
 import pytest
@@ -10,13 +10,14 @@ from django.db import connection
 from django.utils import timezone
 
 from applications.enums import (
+    AhjoDecisionDetails,
     AhjoRecordTitle,
     AhjoRecordType,
     ApplicationStatus,
     BenefitType,
     DecisionType,
 )
-from applications.models import Application
+from applications.models import AhjoSetting, Application
 from applications.services.ahjo_decision_service import (
     replace_decision_template_placeholders,
 )
@@ -742,3 +743,25 @@ julkinen, julkaisujärjestelmä",
             "CaseID": f"{application_with_ahjo_decision.ahjo_case_id}",
         }
     ]
+
+
+@pytest.fixture
+def p2p_settings():
+    return AhjoSetting.objects.create(
+        name="p2p_settings",
+        data={
+            "acceptor_name": "Test Test",
+            "inspector_name": "Test Inspector",
+            "inspector_email": "inspector@test.test",
+        },
+    )
+
+
+@pytest.fixture
+def decision_details():
+    return AhjoDecisionDetails(
+        decision_maker_name="Test Test",
+        decision_maker_title="Test Title",
+        section_of_the_law="16 §",
+        decision_date=date.today(),
+    )
