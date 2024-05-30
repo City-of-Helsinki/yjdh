@@ -10,6 +10,7 @@ from django.core.management import call_command
 from django.utils import timezone
 
 from applications.enums import (
+    AhjoDecision,
     AhjoRequestType,
     AhjoStatus as AhjoStatusEnum,
     ApplicationStatus,
@@ -247,4 +248,7 @@ def test_send_ahjo_requests(
             assert (
                 application.ahjo_status.latest().status
                 == AhjoStatusEnum.DETAILS_RECEIVED_FROM_AHJO
+            )
+            assert (
+                application.batch.proposal_for_decision == AhjoDecision.DECIDED_ACCEPTED
             )

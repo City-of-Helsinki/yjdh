@@ -10,7 +10,6 @@ from django.db import connection
 from django.utils import timezone
 
 from applications.enums import (
-    AhjoDecision,
     AhjoDecisionDetails,
     AhjoRecordTitle,
     AhjoRecordType,
@@ -772,6 +771,5 @@ def decision_details():
 def batch_for_decision_details(application_with_ahjo_decision):
     return ApplicationBatch.objects.create(
         handler=application_with_ahjo_decision.calculation.handler,
-        proposal_for_decision=AhjoDecision.DECIDED_ACCEPTED,
         auto_generated_by_ahjo=True,
     )

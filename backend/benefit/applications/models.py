@@ -851,6 +851,11 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
             self.p2p_inspector_name = p2p_settings.data["inspector_name"]
             self.p2p_inspector_email = p2p_settings.data["inspector_email"]
 
+            if status_to_update == ApplicationBatchStatus.DECIDED_ACCEPTED:
+                self.proposal_for_decision = AhjoDecision.DECIDED_ACCEPTED
+            elif status_to_update == ApplicationBatchStatus.DECIDED_REJECTED:
+                self.proposal_for_decision = AhjoDecision.DECIDED_REJECTED
+
             self.status = status_to_update
             self.save()
         except ObjectDoesNotExist:

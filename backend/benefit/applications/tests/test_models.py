@@ -48,7 +48,6 @@ def test_application_batch_update_after_details_request(
     application_batch = ApplicationBatch.objects.create(
         status=ApplicationBatchStatus.DRAFT,
         handler=application_with_ahjo_decision.calculation.handler,
-        proposal_for_decision=proposal_for_decision,
         auto_generated_by_ahjo=True,
     )
 
@@ -65,6 +64,7 @@ def test_application_batch_update_after_details_request(
     assert application_batch.p2p_inspector_email == p2p_settings.data["inspector_email"]
 
     assert application_batch.status == batch_status
+    assert application_batch.proposal_for_decision == proposal_for_decision
 
 
 @pytest.mark.parametrize(
