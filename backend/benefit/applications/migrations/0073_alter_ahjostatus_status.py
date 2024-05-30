@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('applications', '0071_auto_20240507_0226'),
+        ('applications', '0072_install_trigram_functions'),
     ]
 
     operations = [
