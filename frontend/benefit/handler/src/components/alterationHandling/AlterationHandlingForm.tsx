@@ -1,17 +1,18 @@
 import { AxiosError } from 'axios';
 import AlterationCalculator from 'benefit/handler/components/alterationHandling/AlterationCalculator';
 import {
-  $AlterationDetails,
   $PageHeading,
   $SaveActionFormErrorText,
   $StickyBarColumn,
   $StickyBarWrapper,
   $TalpaGuideText,
 } from 'benefit/handler/components/alterationHandling/AlterationHandling.sc';
+import AlterationHandlingConfirmationModal from 'benefit/handler/components/alterationHandling/AlterationHandlingConfirmationModal';
 import AlterationHandlingSection from 'benefit/handler/components/alterationHandling/AlterationHandlingSection';
+import AlterationSummary from 'benefit/handler/components/alterationHandling/AlterationSummary';
 import useAlterationHandlingForm from 'benefit/handler/components/alterationHandling/useAlterationHandlingForm';
+import { DEFAULT_MINIMUM_RECOVERY_AMOUNT } from 'benefit/handler/constants';
 import { getErrorText } from 'benefit/handler/utils/forms';
-import { ALTERATION_TYPE } from 'benefit-shared/constants';
 import {
   Application,
   ApplicationAlteration,
@@ -21,6 +22,7 @@ import {
   IconAlertCircleFill,
   IconCheck,
   IconDownload,
+  Notification,
   RadioButton,
   SelectionGroup,
   TextArea,
@@ -33,13 +35,13 @@ import {
 } from 'shared/components/forms/section/FormSection.sc';
 import StickyActionBar from 'shared/components/stickyActionBar/StickyActionBar';
 import { $StickyBarSpacing } from 'shared/components/stickyActionBar/StickyActionBar.sc';
-import { formatDate } from 'shared/utils/date.utils';
+import { getNumberValue } from 'shared/utils/string.utils';
 
 type Props = {
   application: Application;
   alteration: ApplicationAlteration;
   onError: (error: AxiosError<unknown>) => void;
-  onSuccess: () => void;
+  onSuccess: (isRecoverable: boolean) => void;
   onClose: () => void;
 };
 
@@ -50,24 +52,48 @@ const AlterationHandlingForm = ({
   onSuccess,
   onClose,
 }: Props): JSX.Element => {
-  const { t, formik, isSubmitted, isSubmitting, handleAlteration } =
-    useAlterationHandlingForm({
-      onError,
-      onSuccess,
-      application,
-      alteration,
-    });
+  const {
+    t,
+    formik,
+    isSubmitted,
+    isSubmitting,
+    handleAlteration,
+    validateForm,
+  } = useAlterationHandlingForm({
+    onError,
+    onSuccess,
+    application,
+    alteration,
+  });
 
   const [isCalculationOutOfDate, setCalculationOutOfDate] =
     useState<boolean>(true);
 
+  const [isConfirmationModalOpen, setConfirmationModalOpen] =
+    useState<boolean>(false);
+
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(formik.errors, formik.touched, fieldName, t, isSubmitted);
+
+  const openConfirmationModal = (): void => {
+    void validateForm().then((isValid) => {
+      if (isValid) {
+        setConfirmationModalOpen(true);
+      }
+
+      return null;
+    });
+  };
+
+  const translationBase = 'common:applications.alterations.handling';
 
   const hasErrors =
     Object.keys(formik.errors).length > 0 || isCalculationOutOfDate;
 
-  const translationBase = 'common:applications.alterations.handling';
+  const isNonRecoverableOverLimit =
+    !formik.values.isRecoverable &&
+    getNumberValue(formik.values.recoveryAmount) >
+      DEFAULT_MINIMUM_RECOVERY_AMOUNT;
 
   return (
     <>
@@ -79,73 +105,10 @@ const AlterationHandlingForm = ({
           heading={t(`${translationBase}.headings.alterationData`)}
           withBottomHeadingBorder
         >
-          <$AlterationDetails>
-            <div>
-              <dt>{t(`${translationBase}.summary.type.label`)}</dt>
-              <dd>
-                {t(
-                  `${translationBase}.summary.type.${alteration.alterationType}`
-                )}
-              </dd>
-            </div>
-            <div>
-              <dt>{t(`${translationBase}.summary.endDate`)}</dt>
-              <dd>{formatDate(new Date(alteration.endDate))}</dd>
-            </div>
-            <div>
-              {alteration.alterationType === ALTERATION_TYPE.SUSPENSION && (
-                <>
-                  <dt>{t(`${translationBase}.summary.resumeDate`)}</dt>
-                  <dd>{formatDate(new Date(alteration.resumeDate))}</dd>
-                </>
-              )}
-            </div>
-            <div />
-            <div>
-              <dt>{t(`${translationBase}.summary.contactPerson`)}</dt>
-              <dd>{alteration.contactPersonName}</dd>
-            </div>
-            {alteration.useEinvoice ? (
-              <>
-                <div>
-                  <dt>
-                    {t(`${translationBase}.summary.einvoiceProviderName`)}
-                  </dt>
-                  <dd>{alteration.einvoiceProviderName}</dd>
-                </div>
-                <div>
-                  <dt>
-                    {t(`${translationBase}.summary.einvoiceProviderIdentifier`)}
-                  </dt>
-                  <dd>{alteration.einvoiceProviderIdentifier}</dd>
-                </div>
-                <div>
-                  <dt>{t(`${translationBase}.summary.einvoiceAddress`)}</dt>
-                  <dd>{alteration.einvoiceAddress}</dd>
-                </div>
-              </>
-            ) : (
-              <>
-                <div>
-                  <dt>{t(`${translationBase}.summary.billingAddress`)}</dt>
-                  <dd>
-                    {application.company.streetAddress},{' '}
-                    {application.company.postcode} {application.company.city}
-                  </dd>
-                </div>
-                <div />
-                <div />
-              </>
-            )}
-            <div>
-              <dt>
-                {alteration.alterationType === ALTERATION_TYPE.TERMINATION
-                  ? t(`${translationBase}.summary.reasonTermination`)
-                  : t(`${translationBase}.summary.reasonSuspension`)}
-              </dt>
-              <dd>{alteration.reason || '-'}</dd>
-            </div>
-          </$AlterationDetails>
+          <AlterationSummary
+            alteration={alteration}
+            application={application}
+          />
         </AlterationHandlingSection>
 
         <AlterationHandlingSection
@@ -169,7 +132,11 @@ const AlterationHandlingForm = ({
                 label={t(`${translationBase}.fields.isRecoverable.label`)}
                 direction="vertical"
                 required
-                errorText={getErrorMessage('isRecoverable')}
+                errorText={
+                  isCalculationOutOfDate
+                    ? null
+                    : getErrorMessage('isRecoverable')
+                }
                 tooltipText={t(
                   `${translationBase}.fields.isRecoverable.hintText`
                 )}
@@ -197,6 +164,23 @@ const AlterationHandlingForm = ({
                   checked={formik.values.isRecoverable === false}
                 />
               </SelectionGroup>
+            </$GridCell>
+            <$GridCell $colSpan={6}>
+              {isNonRecoverableOverLimit && (
+                <Notification
+                  label={t(
+                    `${translationBase}.fields.isRecoverable.limitWarning.heading`
+                  )}
+                  type="alert"
+                >
+                  {t(
+                    `${translationBase}.fields.isRecoverable.limitWarning.body`,
+                    {
+                      limit: DEFAULT_MINIMUM_RECOVERY_AMOUNT,
+                    }
+                  )}
+                </Notification>
+              )}
             </$GridCell>
           </$Grid>
         </AlterationHandlingSection>
@@ -234,26 +218,28 @@ const AlterationHandlingForm = ({
           </$Grid>
         </AlterationHandlingSection>
 
-        <AlterationHandlingSection
-          heading={t(`${translationBase}.headings.downloadTalpaCsv`)}
-        >
-          <$Grid>
-            <$GridCell $colSpan={12}>
-              {/* TODO: Talpa integration to be implemented in HL-887 */}
-              <$TalpaGuideText>
-                {t(`${translationBase}.talpaCsv.guideText`)}
-              </$TalpaGuideText>
-              <Button
-                disabled
-                theme="coat"
-                iconLeft={<IconDownload />}
-                onClick={() => {}}
-              >
-                {t(`${translationBase}.talpaCsv.button`)}
-              </Button>
-            </$GridCell>
-          </$Grid>
-        </AlterationHandlingSection>
+        {formik.values.isRecoverable && (
+          <AlterationHandlingSection
+            heading={t(`${translationBase}.headings.downloadTalpaCsv`)}
+          >
+            <$Grid>
+              <$GridCell $colSpan={12}>
+                {/* TODO: Talpa integration to be implemented in HL-887 */}
+                <$TalpaGuideText>
+                  {t(`${translationBase}.talpaCsv.guideText`)}
+                </$TalpaGuideText>
+                <Button
+                  disabled
+                  theme="coat"
+                  iconLeft={<IconDownload />}
+                  onClick={() => {}}
+                >
+                  {t(`${translationBase}.talpaCsv.button`)}
+                </Button>
+              </$GridCell>
+            </$Grid>
+          </AlterationHandlingSection>
+        )}
       </Container>
       <StickyActionBar>
         <$StickyBarWrapper>
@@ -278,7 +264,7 @@ const AlterationHandlingForm = ({
               </$SaveActionFormErrorText>
             )}
             <Button
-              onClick={handleAlteration}
+              onClick={openConfirmationModal}
               theme="coat"
               iconLeft={<IconCheck />}
               disabled={
@@ -294,6 +280,13 @@ const AlterationHandlingForm = ({
         </$StickyBarWrapper>
       </StickyActionBar>
       <$StickyBarSpacing />
+      <AlterationHandlingConfirmationModal
+        onClose={() => setConfirmationModalOpen(false)}
+        onSubmit={handleAlteration}
+        isOpen={isConfirmationModalOpen}
+        isWorking={isSubmitting}
+        values={formik.values}
+      />
     </>
   );
 };

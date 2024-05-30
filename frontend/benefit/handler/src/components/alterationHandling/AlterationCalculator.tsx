@@ -11,11 +11,9 @@ import { $TabButton } from 'benefit/handler/components/applicationReview/Applica
 import CalculationTable from 'benefit/handler/components/applicationReview/calculationTable/CalculationTable';
 import useCalculationTable from 'benefit/handler/components/applicationReview/calculationTable/useCalculationTable';
 import SalaryCalculatorHighlight from 'benefit/handler/components/applicationReview/salaryBenefitCalculatorView/SalaryCalculatorResults/SalaryCalculatorHighlight';
+import { ApplicationAlterationHandlingForm } from 'benefit/handler/types/application';
 import { ALTERATION_STATE } from 'benefit-shared/constants';
-import {
-  Application,
-  ApplicationAlteration,
-} from 'benefit-shared/types/application';
+import { Application } from 'benefit-shared/types/application';
 import { areIntervalsOverlapping, max, min } from 'date-fns';
 import { FormikProps } from 'formik';
 import {
@@ -44,15 +42,10 @@ import {
 } from 'shared/utils/string.utils';
 
 type Props = {
-  formik: FormikProps<Partial<ApplicationAlteration>>;
+  formik: FormikProps<ApplicationAlterationHandlingForm>;
   application: Application;
   getErrorMessage: (fieldName: string) => string | undefined;
   onCalculationChange: (outOfDate: boolean) => void;
-};
-
-type CalculationResult = {
-  amount: string;
-  description: string;
 };
 
 const AlterationCalculator = ({
@@ -68,13 +61,13 @@ const AlterationCalculator = ({
 
   const translationBase = 'common:applications.alterations.handling';
 
-  const [calculationResult, setCalculationResult] =
-    useState<CalculationResult | null>(null);
+  const [calculationDescription, setCalculationDescription] = useState<
+    string | null
+  >(null);
   const [calculationOutOfDate, setCalculationOutOfDate] =
     useState<boolean>(false);
   const [calculationRangeValid, setCalculationRangeValid] =
     useState<boolean>(true);
-  const [isManual, setManual] = useState<boolean>(false);
 
   const applicationStartDate = new Date(application.startDate);
   const applicationEndDate = new Date(application.endDate);
@@ -116,7 +109,8 @@ const AlterationCalculator = ({
     setCalculationRangeValid(true);
 
     if (startDate > endDate) {
-      setCalculationResult(null);
+      formik.setFieldValue('recoveryAmount', '0');
+      setCalculationDescription(null);
       return;
     }
 
@@ -127,15 +121,17 @@ const AlterationCalculator = ({
       })
     ) {
       setCalculationRangeValid(false);
-      setCalculationResult(null);
+      formik.setFieldValue('recoveryAmount', '0');
+      setCalculationDescription(null);
       setCalculationOutOfDate(false);
       return;
     }
 
     let total: number;
 
-    if (isManual) {
-      total = getNumberValue(formik.values?.recoveryAmount || 0);
+    // eslint-disable-next-line unicorn/prefer-ternary
+    if (formik.values.isManual) {
+      total = getNumberValue(formik.values?.manualRecoveryAmount || 0);
     } else {
       total = tableRows.reduce((sum, row) => {
         if (!row.startDate || !row.endDate) {
@@ -169,17 +165,16 @@ const AlterationCalculator = ({
 
         return sum + amountOverOverlapPeriod;
       }, 0);
-      formik.setFieldValue('recoveryAmount', total.toFixed(2));
     }
 
-    setCalculationResult({
-      amount: total.toFixed(2),
-      description: t(`${translationBase}.calculation.resultDescription`, {
+    formik.setFieldValue('recoveryAmount', total.toFixed(2));
+    setCalculationDescription(
+      t(`${translationBase}.calculation.resultDescription`, {
         months: diffMonths(endDate, startDate),
         startDate: formik.values.recoveryStartDate,
         endDate: formik.values.recoveryEndDate,
-      }),
-    });
+      })
+    );
     setCalculationOutOfDate(false);
     onCalculationChange(false);
   };
@@ -193,13 +188,14 @@ const AlterationCalculator = ({
     };
 
   const selectTab = (manualTab: boolean): void => {
-    setManual(manualTab);
+    formik.setFieldValue('isManual', manualTab);
     setCalculationOutOfDate(true);
     onCalculationChange(true);
   };
 
   const showRangeError = !calculationOutOfDate && !calculationRangeValid;
-  const showOutdatedError = calculationOutOfDate && calculationResult !== null;
+  const showOutdatedError =
+    calculationOutOfDate && calculationDescription !== null;
 
   return (
     <div>
@@ -214,10 +210,16 @@ const AlterationCalculator = ({
       <$Calculation>
         <$Grid>
           <$GridCell $colSpan={4}>
-            <$TabButton active={!isManual} onClick={() => selectTab(false)}>
+            <$TabButton
+              active={!formik.values.isManual}
+              onClick={() => selectTab(false)}
+            >
               {t(`${translationBase}.calculation.tabs.calculator`)}
             </$TabButton>
-            <$TabButton active={isManual} onClick={() => selectTab(true)}>
+            <$TabButton
+              active={formik.values.isManual}
+              onClick={() => selectTab(true)}
+            >
               {t(`${translationBase}.calculation.tabs.manual`)}
             </$TabButton>
           </$GridCell>
@@ -276,23 +278,25 @@ const AlterationCalculator = ({
             </Fieldset>
           </$GridCell>
           <$GridCell $colSpan={6} />
-          {isManual && (
+          {formik.values.isManual && (
             <>
               <$GridCell $colSpan={3}>
                 <TextInput
                   label={t(`${translationBase}.fields.recoveryAmount.label`)}
-                  id="recovery-amount"
-                  name="recoveryAmount"
+                  id="manual-recovery-amount"
+                  name="manualRecoveryAmount"
                   onBlur={formik.handleBlur}
                   onChange={(e) =>
-                    handleChange('recoveryAmount')(
+                    handleChange('manualRecoveryAmount')(
                       stringFloatToFixed(e.target.value)
                     )
                   }
-                  value={formatStringFloatValue(formik.values.recoveryAmount)}
-                  invalid={!!getErrorMessage('recoveryAmount')}
-                  aria-invalid={!!getErrorMessage('recoveryAmount')}
-                  errorText={getErrorMessage('recoveryAmount')}
+                  value={formatStringFloatValue(
+                    formik.values.manualRecoveryAmount
+                  )}
+                  invalid={!!getErrorMessage('manualRecoveryAmount')}
+                  aria-invalid={!!getErrorMessage('manualRecoveryAmount')}
+                  errorText={getErrorMessage('manualRecoveryAmount')}
                   required
                 />
               </$GridCell>
@@ -303,11 +307,11 @@ const AlterationCalculator = ({
             <Button theme="coat" onClick={calculateRecoveryAmount}>
               {t(`${translationBase}.calculation.actions.calculate`)}
             </Button>
-            {calculationResult && (
+            {calculationDescription && (
               <$HighlightWrapper>
                 <SalaryCalculatorHighlight
-                  description={calculationResult.description}
-                  amount={calculationResult.amount}
+                  description={calculationDescription}
+                  amount={formik.values.recoveryAmount}
                 />
               </$HighlightWrapper>
             )}

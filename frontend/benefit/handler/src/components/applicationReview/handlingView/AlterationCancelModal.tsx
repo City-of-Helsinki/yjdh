@@ -1,6 +1,4 @@
-import {
-  $SecondaryDangerButton
-} from 'benefit/handler/components/applicationReview/handlingView/AlterationAccordionItem.sc';
+import { $SecondaryDangerButton } from 'benefit/handler/components/applicationReview/handlingView/AlterationAccordionItem.sc';
 import { ALTERATION_TYPE } from 'benefit-shared/constants';
 import { ApplicationAlteration } from 'benefit-shared/types/application';
 import { Button, Dialog, IconInfoCircle, IconTrash } from 'hds-react';
@@ -20,12 +18,12 @@ type Props = {
 };
 
 const AlterationCancelModal = ({
-                                 onClose,
-                                 onSetCancelled,
-                                 isOpen,
-                                 isDeleting,
-  alteration
-                               }: Props): JSX.Element => {
+  onClose,
+  onSetCancelled,
+  isOpen,
+  isDeleting,
+  alteration,
+}: Props): JSX.Element => {
   const { t } = useTranslation();
 
   return (
@@ -34,13 +32,20 @@ const AlterationCancelModal = ({
       id="ActionBar-confirmEditApplicationModal"
       isOpen={isOpen}
       title={t(
-        `common:applications.decision.alterationList.cancelModal.title${alteration.alterationType === ALTERATION_TYPE.TERMINATION ? 'Termination' : 'Suspension'}`, {
+        `common:applications.decision.alterationList.cancelModal.title${
+          alteration.alterationType === ALTERATION_TYPE.TERMINATION
+            ? 'Termination'
+            : 'Suspension'
+        }`,
+        {
           endDate: formatDate(new Date(alteration.endDate)),
-          resumeDate: alteration.resumeDate ? formatDate(new Date(alteration.resumeDate)) : '-'
+          resumeDate: alteration.resumeDate
+            ? formatDate(new Date(alteration.resumeDate))
+            : '-',
         }
       )}
-      submitButtonLabel={t(`common.save`)}
-      cancelButtonLabel={t(`common.backWithoutBack`)}
+      submitButtonLabel=""
+      cancelButtonLabel=""
       handleToggle={null}
       handleSubmit={noop}
       headerIcon={<IconInfoCircle />}
@@ -54,10 +59,7 @@ const AlterationCancelModal = ({
             </p>
           </Dialog.Content>
           <Dialog.ActionButtons>
-            <$SecondaryDangerButton
-              disabled={isDeleting}
-              onClick={onClose}
-            >
+            <$SecondaryDangerButton disabled={isDeleting} onClick={onClose}>
               {t(
                 'common:applications.decision.alterationList.cancelModal.cancel'
               )}

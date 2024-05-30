@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios';
 import { getValidationSchema } from 'benefit/handler/components/alterationHandling/utils/validation';
 import useUpdateApplicationAlterationQuery from 'benefit/handler/hooks/useUpdateApplicationAlterationQuery';
+import { ApplicationAlterationHandlingForm } from 'benefit/handler/types/application';
 import { ALTERATION_STATE } from 'benefit-shared/constants';
 import {
   Application,
@@ -21,14 +22,15 @@ type Props = {
   application: Application;
   alteration: ApplicationAlteration;
   onError: (error: AxiosError<unknown>) => void;
-  onSuccess: () => void;
+  onSuccess: (isRecoverable: boolean) => void;
 };
 
 type AlterationHandlingProps = {
   isSubmitted: boolean;
   isSubmitting: boolean;
   t: TFunction;
-  formik: FormikProps<Partial<ApplicationAlteration>>;
+  formik: FormikProps<ApplicationAlterationHandlingForm>;
+  validateForm: () => Promise<boolean>;
   handleAlteration: () => void;
 };
 
@@ -44,7 +46,7 @@ const useAlterationHandling = ({
   const { mutate: updateAlteration, status: updateStatus } =
     useUpdateApplicationAlterationQuery();
 
-  const submitForm = (data: Partial<ApplicationAlteration>): void => {
+  const submitForm = (data: ApplicationAlterationHandlingForm): void => {
     updateAlteration(
       {
         id: alteration.id,
@@ -64,7 +66,7 @@ const useAlterationHandling = ({
         },
       },
       {
-        onSuccess,
+        onSuccess: () => onSuccess(data.isRecoverable),
         onError,
       }
     );
@@ -75,12 +77,14 @@ const useAlterationHandling = ({
     ? sub(parseDate(alteration.resumeDate), { days: 1 })
     : parseDate(application.endDate);
 
-  const formik = useFormik<Partial<ApplicationAlteration>>({
+  const formik = useFormik<ApplicationAlterationHandlingForm>({
     initialValues: {
       application: application.id,
       recoveryStartDate: convertToUIDateFormat(startDate),
       recoveryEndDate: convertToUIDateFormat(endDate),
       recoveryAmount: '0',
+      manualRecoveryAmount: '0',
+      isManual: false,
       isRecoverable: true,
       recoveryJustification: '',
     },
@@ -88,15 +92,11 @@ const useAlterationHandling = ({
     validationSchema: getValidationSchema(application, alteration, t),
   });
 
-  const handleSubmit = (): void => {
+  const validateForm = async (): Promise<boolean> => {
     setIsSubmitted(true);
-    void formik.validateForm().then((errors) => {
+    return formik.validateForm().then<boolean>((errors) => {
       const invalidFields = Object.keys(errors);
-      if (invalidFields.length === 0) {
-        void formik.submitForm();
-      }
-
-      return null;
+      return invalidFields.length === 0;
     });
   };
 
@@ -105,7 +105,8 @@ const useAlterationHandling = ({
     isSubmitting: updateStatus === 'loading',
     t,
     formik,
-    handleAlteration: handleSubmit,
+    handleAlteration: () => void formik.submitForm,
+    validateForm,
   };
 };
 

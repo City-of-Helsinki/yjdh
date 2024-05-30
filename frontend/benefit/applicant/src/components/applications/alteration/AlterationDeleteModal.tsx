@@ -36,8 +36,8 @@ const AlterationDeleteModal = ({
             : 'Suspension'
         }`
       )}
-      submitButtonLabel={t(`common.save`)}
-      cancelButtonLabel={t(`common.backWithoutBack`)}
+      submitButtonLabel=""
+      cancelButtonLabel=""
       handleToggle={null}
       handleSubmit={noop}
       headerIcon={<IconInfoCircle />}

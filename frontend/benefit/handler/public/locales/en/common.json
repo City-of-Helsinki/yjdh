@@ -100,8 +100,14 @@
       "message": "Poistit hakemuksen {{applicationNumber}} muutosilmoituksen."
     },
     "alterationHandled": {
-      "label": "Muutosilmoitus on käsitelty",
-      "message": "Käsittelit hakemuksen {{applicationNumber}} muutosilmoituksen ja merkitsit takaisinlaskupyynnön lähetetyksi Talpaan. "
+      "recoverable": {
+        "label": "Muutosilmoitus on käsitelty",
+        "message": "Käsittelit hakemuksen {{applicationNumber}} muutosilmoituksen ja merkitsit takaisinlaskutuspyynnön lähetetyksi Talpaan."
+      },
+      "nonrecoverable": {
+        "label": "Muutosilmoitus on käsitelty",
+        "message": "Käsittelit hakemuksen {{applicationNumber}} muutosilmoituksen ilman takaisinlaskutusta."
+      }
     }
   },
   "mainIngress": {
@@ -937,13 +943,28 @@
             "label": "Laskutetaanko ylimääräinen tuki takaisin?",
             "hintText": "Tukea laskutetaan aina takaisin, jos takaisinlaskutettavan tuen määrä on yli 20 euroa.",
             "yes": "Ylimääräinen tuki laskutetaan takaisin",
-            "no": "Ylimääräistä tukea ei laskuteta"
+            "no": "Ylimääräistä tukea ei laskuteta",
+            "limitWarning": {
+              "heading": "Oletko varma, ettei tukea laskuteta takaisin?",
+              "body": "Takaisinlaskutettava tuki on yli {{limit}} euroa."
+            },
+            "emptyRecovery": "Takaisinlaskutus ei ole mahdollista, kun takaisinlaskutettavan tuen määrä on nolla euroa"
           },
           "recoveryJustification": {
             "label": "Selite"
           },
           "noRecoveryJustification": {
             "label": "Perustelu"
+          }
+        },
+        "confirmation": {
+          "recoverable": {
+            "title": "Olet merkitsemässä laskutustiedot lähetetyksi Talpaan",
+            "description": "Helsinki-lisän ylimääräinen osuus laskutetaan takaisin ajalta {{startDate}}–{{endDate}}, yhteensä {{amount}}."
+          },
+          "nonrecoverable": {
+            "title": "Olet merkitsemässä muutosilmoituksen käsitellyksi. Haluatko jatkaa?",
+            "description": "Ylimääräistä tukea ei laskuteta takaisin."
           }
         },
         "error": {
