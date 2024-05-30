@@ -158,12 +158,12 @@ export const getStep1Components = (t: TestController) => {
           address
         );
       },
-      fillBankAccountNumber(address: string) {
+      fillBankAccountNumber(bankAccountNumber: string) {
         return fillInput(
           t,
-          'street_address',
+          'bank_account_number',
           selectors.bankAccountNumberInput(),
-          address
+          bankAccountNumber
         );
       },
     };

@@ -70,16 +70,18 @@ export const fillStep2EmployeeForm = async (
     employment.summer_voucher_serial_number
   );
   await step2Employment.actions.removeExistingAttachments();
-  await Promise.all(
-    employment.employment_contract.map(async (attachment) =>
-      step2Employment.actions.addEmploymentContractAttachment(attachment)
-    )
-  );
-  await Promise.all(
-    employment.payslip.map(async (attachment) =>
-      step2Employment.actions.addPayslipAttachments(attachment)
-    )
-  );
+  await step2Employment.actions.addEmploymentContractAttachment([
+    'sample1.pdf',
+    'sample2.pdf',
+    'sample3.pdf',
+    'sample4.pdf',
+    'sample5.pdf',
+  ]);
+
+  await step2Employment.actions.addPayslipAttachments([
+    'sample6.pdf',
+    'sample7.pdf',
+  ]);
   await step2Employment.actions.fillStartDate(
     convertToUIDateFormat(employment.employment_start_date)
   );
