@@ -10,6 +10,7 @@ from django.db import connection
 from django.utils import timezone
 
 from applications.enums import (
+    AhjoDecision,
     AhjoDecisionDetails,
     AhjoRecordTitle,
     AhjoRecordType,
@@ -17,7 +18,7 @@ from applications.enums import (
     BenefitType,
     DecisionType,
 )
-from applications.models import AhjoSetting, Application
+from applications.models import AhjoSetting, Application, ApplicationBatch
 from applications.services.ahjo_decision_service import (
     replace_decision_template_placeholders,
 )
@@ -764,4 +765,13 @@ def decision_details():
         decision_maker_title="Test Title",
         section_of_the_law="16 §",
         decision_date=date.today(),
+    )
+
+
+@pytest.fixture
+def batch_for_decision_details(application_with_ahjo_decision):
+    return ApplicationBatch.objects.create(
+        handler=application_with_ahjo_decision.calculation.handler,
+        proposal_for_decision=AhjoDecision.DECIDED_ACCEPTED,
+        auto_generated_by_ahjo=True,
     )
