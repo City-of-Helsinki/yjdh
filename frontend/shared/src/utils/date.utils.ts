@@ -3,7 +3,7 @@ import isBefore from 'date-fns/isBefore';
 import isFutureFn from 'date-fns/isFuture';
 import isSameDay from 'date-fns/isSameDay';
 import isValid from 'date-fns/isValid';
-import { da, enGB as en, fi, sv } from 'date-fns/locale';
+import { enGB as en, fi, sv } from 'date-fns/locale';
 import parse from 'date-fns/parse';
 import parseISO from 'date-fns/parseISO';
 import startOfYear from 'date-fns/startOfYear';
@@ -15,7 +15,6 @@ import {
 } from '../constants';
 import { DEFAULT_LANGUAGE, Language } from '../i18n/i18n';
 import { isString } from './type-guards';
-import { isDate } from 'date-fns';
 
 export const DATE_FORMATS = {
   UI_DATE: 'd.M.yyyy',
