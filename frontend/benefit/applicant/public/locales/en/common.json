@@ -780,7 +780,7 @@
     "isSecure": "Messages are encrypted",
     "noMessages": "No messages",
     "close": "Close",
-    "cannotWriteNewMessages": "Your application is being processed. You cannot write a new message right now. Please wait for your application to be processed."
+    "cannotWriteNewMessages": "Your application has progressed to the decision-making stage or it has already been processed. You can no longer write a new message."
   },
   "application": {
     "tooltipShowInfo": "Show information"

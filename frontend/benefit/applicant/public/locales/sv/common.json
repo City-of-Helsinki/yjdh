@@ -780,7 +780,7 @@
     "isSecure": "Meddelandena är skyddade",
     "noMessages": "Inga meddelanden",
     "close": "Stäng",
-    "cannotWriteNewMessages": "Din ansökan behandlas. Du kan inte skriva ett nytt meddelande just nu. Vänta tills din ansökan behandlas."
+    "cannotWriteNewMessages": "Din ansökan har gått vidare till beslutsfattandet eller har redan behandlats. Du kan inte längre skriva ett nytt meddelande."
   },
   "application": {
     "tooltipShowInfo": "Visa information"
