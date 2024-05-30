@@ -246,7 +246,7 @@ with request id: {callback_data['requestId']}"
         self._log_failure_details(application, callback_data)
         return Response(
             {"message": "Callback received but request was unsuccessful at AHJO"},
-            status=status.HTTP_400_BAD_REQUEST,
+            status=status.HTTP_200_OK,
         )
 
     def _handle_update_or_add_records_success(
