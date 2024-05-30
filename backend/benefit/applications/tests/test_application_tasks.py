@@ -1,6 +1,7 @@
 import os
 import random
-from datetime import timedelta
+import uuid
+from datetime import datetime, timedelta
 from io import StringIO
 from unittest.mock import MagicMock, patch
 
@@ -8,7 +9,12 @@ import pytest
 from django.core.management import call_command
 from django.utils import timezone
 
-from applications.enums import AhjoRequestType, ApplicationStatus
+from applications.enums import (
+    AhjoDecision,
+    AhjoRequestType,
+    AhjoStatus as AhjoStatusEnum,
+    ApplicationStatus,
+)
 from applications.models import AhjoSetting, Application, Attachment
 from applications.services.ahjo_authentication import AhjoToken
 from applications.tests.factories import CancelledApplicationFactory
@@ -181,28 +187,41 @@ def test_user_is_notified_of_upcoming_application_deletion(drafts_about_to_be_de
         ),
     ],
 )
+@patch("applications.management.commands.send_ahjo_requests.get_token")
 def test_send_ahjo_requests(
-    request_type, patch_db_function, patch_request, ahjo_decision_detail_response
+    mock_get_token,
+    request_type,
+    patch_db_function,
+    patch_request,
+    p2p_settings,
+    batch_for_decision_details,
+    ahjo_decision_detail_response,
+    application_with_ahjo_decision,
 ):
     AhjoSetting.objects.create(name="ahjo_code", data={"code": "12345"})
-    with patch(
-        "applications.management.commands.send_ahjo_requests.get_token"
-    ) as mock_get_token, patch(patch_db_function) as mock_get_applications, patch(
+    with patch(patch_db_function) as mock_get_applications, patch(
         patch_request
     ) as mock_send_request:
         mock_get_token.return_value = MagicMock(AhjoToken)
         number_to_send = 5
 
+        application = application_with_ahjo_decision
+
         if request_type == AhjoRequestType.GET_DECISION_DETAILS:
             mock_response = ahjo_decision_detail_response
+            # Set the decision date to the current date in the same format as in the response
+            date_str = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
+            mock_response[0]["DateDecision"] = date_str
+            application.batch_id = batch_for_decision_details.id
+            application.save()
         else:
-            mock_response = "{response_text}"
+            mock_response = f"{uuid.uuid4()}"
 
         applications = [MagicMock(spec=Application) for _ in range(number_to_send)]
 
         mock_get_applications.return_value = applications
         mock_send_request.return_value = (
-            MagicMock(spec=Application),
+            application,
             mock_response,
         )
 
@@ -224,3 +243,12 @@ def test_send_ahjo_requests(
             f"Sent {request_type} requests for {number_to_send} applications to Ahjo"
             in out.getvalue()
         )
+
+        if request_type == AhjoRequestType.GET_DECISION_DETAILS:
+            assert (
+                application.ahjo_status.latest().status
+                == AhjoStatusEnum.DETAILS_RECEIVED_FROM_AHJO
+            )
+            assert (
+                application.batch.proposal_for_decision == AhjoDecision.DECIDED_ACCEPTED
+            )

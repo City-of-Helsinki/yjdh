@@ -184,6 +184,9 @@ class AhjoStatus(models.TextChoices):
     REMOVED_IN_AHJO = "removed", _("Decision cancelled in Ahjo")
     SIGNED_IN_AHJO = "signed", _("Decision signed and completed in Ahjo")
     UPDATED_IN_AHJO = "updated", _("Decision updated in Ahjo")
+    DETAILS_RECEIVED_FROM_AHJO = "details_received", _(
+        "Decision details received from Ahjo"
+    )
 
 
 class ApplicationActions(models.TextChoices):

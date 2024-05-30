@@ -12,7 +12,7 @@ from applications.enums import (
     ApplicationBatchStatus,
     ApplicationStatus,
 )
-from applications.models import Application
+from applications.models import AhjoStatus, Application
 from applications.services.ahjo_authentication import (
     AhjoToken,
     AhjoTokenExpiredException,
@@ -187,6 +187,10 @@ requests took {elapsed_time} seconds to run."
 
         batch = application.batch
         batch.update_batch_after_details_request(batch_status_to_update, details)
+
+        AhjoStatus.objects.create(
+            application=application, status=AhjoStatusEnum.DETAILS_RECEIVED_FROM_AHJO
+        )
 
         return f"Successfully received and updated decision details \
 for application {application.id} and batch {batch.id} from Ahjo"

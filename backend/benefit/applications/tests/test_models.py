@@ -4,8 +4,7 @@ import pytest
 
 from applications.enums import AhjoDecision, ApplicationBatchStatus
 from applications.exceptions import BatchCompletionRequiredFieldsError
-from applications.models import AhjoSetting, Application, ApplicationBatch, Employee
-from applications.services.ahjo_decision_service import AhjoDecisionDetails
+from applications.models import Application, ApplicationBatch, Employee
 from applications.tests.factories import BaseApplicationBatchFactory
 from applications.tests.test_application_batch_api import (
     fill_as_valid_batch_completion_and_save,
@@ -32,28 +31,6 @@ def test_application_batch(application_batch):
         assert application.batch == application_batch
 
 
-@pytest.fixture
-def p2p_settings():
-    return AhjoSetting.objects.create(
-        name="p2p_settings",
-        data={
-            "acceptor_name": "Test Test",
-            "inspector_name": "Test Inspector",
-            "inspector_email": "inspector@test.test",
-        },
-    )
-
-
-@pytest.fixture
-def decision_details():
-    return AhjoDecisionDetails(
-        decision_maker_name="Test Test",
-        decision_maker_title="Test Title",
-        section_of_the_law="16 §",
-        decision_date=date.today(),
-    )
-
-
 @pytest.mark.parametrize(
     "batch_status, proposal_for_decision",
     [
@@ -71,7 +48,6 @@ def test_application_batch_update_after_details_request(
     application_batch = ApplicationBatch.objects.create(
         status=ApplicationBatchStatus.DRAFT,
         handler=application_with_ahjo_decision.calculation.handler,
-        proposal_for_decision=proposal_for_decision,
         auto_generated_by_ahjo=True,
     )
 
@@ -88,6 +64,7 @@ def test_application_batch_update_after_details_request(
     assert application_batch.p2p_inspector_email == p2p_settings.data["inspector_email"]
 
     assert application_batch.status == batch_status
+    assert application_batch.proposal_for_decision == proposal_for_decision
 
 
 @pytest.mark.parametrize(
