@@ -28,8 +28,10 @@ fixture('Company')
     clearDataToPrintOnFailure(testController);
   });
 
-const startDate = subMonths(new Date(), 4);
+const currentDate = new Date().setUTCDate(1);
+const startDate = subMonths(currentDate, 3);
 const endDate = addDays(startDate, 30);
+
 const form: ApplicationFormData = {
   organization: {
     iban: '6051437344779954',
