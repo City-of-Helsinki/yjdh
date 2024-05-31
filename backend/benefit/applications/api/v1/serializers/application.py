@@ -1472,15 +1472,10 @@ class ApplicantApplicationSerializer(BaseApplicationSerializer):
         ),
     )
 
-    batch = SimpleApplicationBatchSerializer(
-        allow_null=True,
-        required=False,
-    )
+    has_batch = serializers.SerializerMethodField()
 
-    def get_batch(self, _):
-        if self.batch:
-            return True
-        return None
+    def get_has_batch(self, obj):
+        return obj.batch is not None
 
     changes = serializers.SerializerMethodField(
         help_text=("Possible changes made by handler to the application."),
@@ -1510,7 +1505,7 @@ class ApplicantApplicationSerializer(BaseApplicationSerializer):
         return self._base_update(instance, validated_data)
 
     class Meta(BaseApplicationSerializer.Meta):
-        fields = BaseApplicationSerializer.Meta.fields + ["batch"]
+        fields = BaseApplicationSerializer.Meta.fields + ["batch", "has_batch"]
 
 
 class HandlerApplicationSerializer(BaseApplicationSerializer):

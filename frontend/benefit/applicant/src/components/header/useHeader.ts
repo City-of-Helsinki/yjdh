@@ -50,7 +50,7 @@ const useHeader = (): ExtendedComponentProps => {
   );
 
   const { data: application } = useApplicationQuery(id);
-  const canWriteNewMessages = !application?.batch;
+  const canWriteNewMessages = !application?.has_batch;
 
   useEffect(() => {
     if (application?.unread_messages_count) {
