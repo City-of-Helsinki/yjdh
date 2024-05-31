@@ -4,6 +4,8 @@ Refer to [top level README](https://github.com/City-of-Helsinki/yjdh/blob/main/R
 
 [kesaseteli/README.md](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/kesaseteli/README.md) or [benefit/README.md](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/benefit/README.md) contain more information about the local setup. This applies to TET pretty well.
 
+Django updated to version 4.2 during May 2024, as security support for 3.2 ends 30.4.2024. Django 4.2 will stop receiving security updates 30.4.2026.
+
 ## Authentication in YJDH
 
 The authentication setups used by YJDH projects are described in this document. The emphasis is on

@@ -8,7 +8,7 @@ from dateutil.parser import isoparse
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.sessions.middleware import SessionMiddleware
-from django.test import override_settings, RequestFactory
+from django.test import override_settings
 from django.utils import timezone
 
 from shared.common.tests.conftest import store_tokens_in_session
@@ -78,6 +78,8 @@ def test_authenticate(
     requests_mock,
     oidc_save_personally_identifiable_info: Optional[bool],
     expect_personal_info_removal: bool,
+    mock_request,
+    get_response,
 ):
     set_setting_to_value_or_del_with_none(
         "OIDC_SAVE_PERSONALLY_IDENTIFIABLE_INFO",
@@ -88,11 +90,8 @@ def test_authenticate(
     matcher = re.compile(re.escape(settings.OIDC_OP_USER_ENDPOINT))
     requests_mock.get(matcher, json=_test_claims)
 
-    state = "test"
-    code = "test"
-    factory = RequestFactory()
-    request = factory.get("/", {"code": code, "state": state})
-    middleware = SessionMiddleware()
+    request = mock_request
+    middleware = SessionMiddleware(get_response)
     middleware.process_request(request)
     request.session.save()
 

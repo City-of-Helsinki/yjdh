@@ -115,6 +115,8 @@ application using the applicant UI.
 1. Install `pip-tools`:
 
    - `pip install pip-tools`
+   - `pip install --upgrade pip-tools`
+
 
 2. Add new packages to `requirements.in` or `requirements-dev.in`
 
