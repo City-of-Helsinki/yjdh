@@ -61,7 +61,6 @@ class HelsinkiOIDCAuthenticationBackend(OIDCAuthenticationBackend):
 
     def authenticate(self, request, **kwargs):
         """Authenticates a user based on the OIDC code flow."""
-
         if not request:
             return None
 
@@ -96,6 +95,8 @@ class HelsinkiOIDCAuthenticationBackend(OIDCAuthenticationBackend):
 
         # Validate the token
         payload = self.verify_token(id_token, nonce=nonce)
+        print("request:", request)
+        print("payload:", payload)
 
         if payload:
             try:
