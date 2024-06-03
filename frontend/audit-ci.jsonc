@@ -6,6 +6,7 @@
     "decode-uri-component", // testcafe
     "@babel/traverse", // jest
     "html-minifier",
-    "pdfjs-dist" // react-pdf
+    "pdfjs-dist", // react-pdf
+    "ip" // testcafe, lerna
   ]
 }
