@@ -799,7 +799,7 @@ dummy_case_id = "HEL 1999-123"
 
 
 @pytest.mark.parametrize(
-    "application_status, ahjo_status,talpa_status, case_id, decision_text, count",
+    "application_status, ahjo_status, talpa_status, case_id, decision_text, count",
     [
         (
             ApplicationStatus.DRAFT,
@@ -887,6 +887,38 @@ dummy_case_id = "HEL 1999-123"
             ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
             dummy_case_id,
             True,
+            0,
+        ),
+        (
+            ApplicationStatus.ACCEPTED,
+            AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            True,
+            1,
+        ),
+        (
+            ApplicationStatus.REJECTED,
+            AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            True,
+            1,
+        ),
+        (
+            ApplicationStatus.ACCEPTED,
+            AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            False,
+            0,
+        ),
+        (
+            ApplicationStatus.REJECTED,
+            AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            dummy_case_id,
+            False,
             0,
         ),
     ],
