@@ -23,6 +23,7 @@ class MessageSerializer(serializers.ModelSerializer):
             "modified_at",
             "content",
             "message_type",
+            "seen_by_applicant",
         ]
 
     # An applicant is only allowed to send a message if application is in one of these statuses

@@ -47,6 +47,11 @@ export const $Date = styled.span`
   color: ${({ theme }) => theme.colors.black50};
 `;
 
+export const $SeenByUser = styled.span`
+  font-size: ${({ theme }) => theme.fontSize.body.s};
+  color: ${({ theme }) => theme.colors.black50};
+`;
+
 export const $MessageContainer = styled.div`
   display: flex;
   flex-direction: column;

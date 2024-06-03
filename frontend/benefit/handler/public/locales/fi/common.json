@@ -46,7 +46,8 @@
     "send": "Lähetä",
     "save": "Tallenna",
     "close": "Sulje",
-    "noMessages": "Ei viestejä"
+    "noMessages": "Ei viestejä",
+    "seenByUser": "Viesti luettu"
   },
   "notifications": {
     "accepted": {
