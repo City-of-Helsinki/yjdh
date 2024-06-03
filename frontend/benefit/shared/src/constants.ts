@@ -34,6 +34,7 @@ export enum VALIDATION_MESSAGE_KEYS {
   TIME_MAX = 'common:form.validation.time.max',
   REQUIRED_IS_LIVING_IN_HELSINKI = 'common:applications.sections.employee.fields.isLivingInHelsinki.error',
   PHONE_NUMBER_LENGTH_MAX = 'common:form.validation.phoneNumber.max',
+  EMPTY_RECOVERY = 'common:applications.alterations.handling.fields.isRecoverable.emptyRecovery',
 }
 
 export const PAY_SUBSIDY_OPTIONS = [50, 70, 100] as const;

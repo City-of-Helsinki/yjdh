@@ -10,8 +10,9 @@ import {
 import { validateNumberField } from 'benefit-shared/utils/validation';
 import { TFunction } from 'next-i18next';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import { getNumberValueOrNull } from 'shared/utils/string.utils';
 import * as Yup from 'yup';
-import { RequiredNumberSchema } from 'yup/lib/number';
+import { RequiredBooleanSchema } from 'yup/lib/boolean';
 import { RequiredStringSchema } from 'yup/lib/string';
 
 export const getValidationSchema = (
@@ -60,21 +61,28 @@ export const getValidationSchema = (
                 : true,
           })
       ),
-    recoveryAmount: validateNumberField(
-      0,
-      application?.calculation?.calculatedBenefitAmount
-        ? Number(application.calculation.calculatedBenefitAmount)
-        : Infinity,
-      {
-        required: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
-        typeError: t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID),
-      }
-    ).when('isRecoverable', {
-      is: (isRecoverable) => isRecoverable === true,
-      then: (schema: RequiredNumberSchema<number>) =>
-        schema.min(0.01, t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+    manualRecoveryAmount: Yup.string().when('isManual', {
+      is: (isManual) => isManual === true,
+      then: () =>
+        validateNumberField(
+          0,
+          application?.calculation?.calculatedBenefitAmount
+            ? Number(application.calculation.calculatedBenefitAmount)
+            : Infinity,
+          {
+            required: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
+            typeError: t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID),
+          }
+        ),
     }),
-    isRecoverable: Yup.boolean().required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+    isManual: Yup.boolean().required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+    isRecoverable: Yup.boolean()
+      .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED))
+      .when('recoveryAmount', {
+        is: (recoveryAmount) => getNumberValueOrNull(recoveryAmount) === 0,
+        then: (schema: RequiredBooleanSchema<boolean>) =>
+          schema.oneOf([false], t(VALIDATION_MESSAGE_KEYS.EMPTY_RECOVERY)),
+      }),
     recoveryJustification: Yup.string().required(
       t(VALIDATION_MESSAGE_KEYS.REQUIRED)
     ),

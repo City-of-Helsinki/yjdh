@@ -25,12 +25,15 @@ const AlterationHandling = (): JSX.Element => {
 
   const translationBase = 'common:applications.alterations.handling';
 
-  const onSuccess = (): void => {
+  const onSuccess = (isRecoverable: boolean): void => {
+    const notificationTranslationBase = `common:notifications.alterationHandled.${
+      isRecoverable ? 'recoverable' : 'nonrecoverable'
+    }`;
     hdsToast({
       autoDismissTime: 0,
       type: 'success',
-      labelText: t('common:notifications.alterationHandled.label'),
-      text: t('common:notifications.alterationHandled.message', {
+      labelText: t(`${notificationTranslationBase}.label`),
+      text: t(`${notificationTranslationBase}.message`, {
         applicationNumber: application.applicationNumber,
       }),
     });
@@ -137,7 +140,9 @@ const AlterationHandling = (): JSX.Element => {
           alteration={alteration}
           onError={onError}
           onSuccess={onSuccess}
-          onClose={() => router.push(`${ROUTES.APPLICATION}?id=${application.id}`)}
+          onClose={() =>
+            router.push(`${ROUTES.APPLICATION}?id=${application.id}`)
+          }
         />
       ) : (
         <Container>

@@ -234,3 +234,5 @@ export enum APPLICATION_LIST_TABS {
   ACCEPTED = '4',
   REJECTED = '5',
 }
+
+export const DEFAULT_MINIMUM_RECOVERY_AMOUNT = 20;

@@ -15,6 +15,7 @@ import {
 import {
   ApplicantTerms,
   ApplicantTermsApproval,
+  ApplicationAlteration,
   ApproveTerms,
   Batch,
   BenefitAttachment,
@@ -227,3 +228,9 @@ export type ReviewStateData = {
   employment?: boolean;
   approval?: boolean;
 };
+
+export type ApplicationAlterationHandlingForm =
+  Partial<ApplicationAlteration> & {
+    manualRecoveryAmount: string;
+    isManual: boolean;
+  };

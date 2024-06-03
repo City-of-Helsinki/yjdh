@@ -1,6 +1,4 @@
-import {
-  $SecondaryDangerButton
-} from 'benefit/handler/components/applicationReview/handlingView/AlterationAccordionItem.sc';
+import { $SecondaryDangerButton } from 'benefit/handler/components/applicationReview/handlingView/AlterationAccordionItem.sc';
 import { Button, Dialog, IconInfoCircle, IconTrash } from 'hds-react';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
@@ -28,11 +26,9 @@ const AlterationDeleteModal = ({
       theme={theme.components.modal.danger}
       id="ActionBar-confirmEditApplicationModal"
       isOpen={isOpen}
-      title={t(
-        'common:applications.decision.alterationList.deleteModal.title'
-      )}
-      submitButtonLabel={t(`common.save`)}
-      cancelButtonLabel={t(`common.backWithoutBack`)}
+      title={t('common:applications.decision.alterationList.deleteModal.title')}
+      submitButtonLabel=""
+      cancelButtonLabel=""
       handleToggle={null}
       handleSubmit={noop}
       headerIcon={<IconInfoCircle />}
@@ -46,10 +42,7 @@ const AlterationDeleteModal = ({
             </p>
           </Dialog.Content>
           <Dialog.ActionButtons>
-            <$SecondaryDangerButton
-              disabled={isDeleting}
-              onClick={onClose}
-            >
+            <$SecondaryDangerButton disabled={isDeleting} onClick={onClose}>
               {t(
                 'common:applications.decision.alterationList.deleteModal.cancel'
               )}
