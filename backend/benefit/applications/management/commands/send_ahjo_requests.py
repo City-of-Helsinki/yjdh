@@ -21,6 +21,7 @@ from applications.services.ahjo_decision_service import (
     parse_details_from_decision_response,
 )
 from applications.services.ahjo_integration import (
+    delete_application_in_ahjo,
     get_decision_details_from_ahjo,
     get_token,
     send_decision_proposal_to_ahjo,
@@ -35,7 +36,8 @@ LOGGER = logging.getLogger(__name__)
 class Command(BaseCommand):
     help = f"Send the specified requests to Ahjo Rest API. Possible request types are: \
 {AhjoRequestType.OPEN_CASE}, {AhjoRequestType.SEND_DECISION_PROPOSAL}, \
-{AhjoRequestType.ADD_RECORDS}, {AhjoRequestType.UPDATE_APPLICATION}"
+{AhjoRequestType.ADD_RECORDS}, {AhjoRequestType.UPDATE_APPLICATION}, \
+{AhjoRequestType.GET_DECISION_DETAILS}, {AhjoRequestType.DELETE_APPLICATION}"
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -87,6 +89,17 @@ class Command(BaseCommand):
                 [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
                 AhjoStatusEnum.SIGNED_IN_AHJO,
                 False,
+            )
+        elif request_type == AhjoRequestType.DELETE_APPLICATION:
+            applications = Application.objects.get_by_statuses(
+                [
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.REJECTED,
+                    ApplicationStatus.HANDLING,
+                    ApplicationStatus.DRAFT,
+                    ApplicationStatus.RECEIVED,
+                ],
+                AhjoStatusEnum.SCHEDULED_FOR_DELETION,
             )
 
         return applications
@@ -251,5 +264,6 @@ for application {application.id} and batch {batch.id} from Ahjo"
             AhjoRequestType.ADD_RECORDS: send_new_attachment_records_to_ahjo,
             AhjoRequestType.UPDATE_APPLICATION: update_application_summary_record_in_ahjo,
             AhjoRequestType.GET_DECISION_DETAILS: get_decision_details_from_ahjo,
+            AhjoRequestType.DELETE_APPLICATION: delete_application_in_ahjo,
         }
         return request_handlers.get(request_type)
