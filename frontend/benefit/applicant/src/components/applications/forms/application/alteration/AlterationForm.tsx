@@ -6,7 +6,7 @@ import {
 } from 'benefit/applicant/components/applications/forms/application/alteration/AlterationForm.sc';
 import useAlterationForm from 'benefit/applicant/components/applications/forms/application/alteration/useAlterationForm';
 import { getErrorText } from 'benefit/applicant/utils/forms';
-import { ALTERATION_TYPE } from 'benefit-shared/constants';
+import { ALTERATION_STATE, ALTERATION_TYPE } from 'benefit-shared/constants';
 import {
   Application,
   ApplicationAlterationData,
@@ -73,6 +73,7 @@ const AlterationForm = ({
   const disableOccupiedDates = (date: Date): boolean =>
     application.alterations.some(
       (alteration) =>
+        alteration.state === ALTERATION_STATE.HANDLED &&
         alteration.recoveryStartDate <=
           formatDate(date, DATE_FORMATS.BACKEND_DATE) &&
         alteration.recoveryEndDate >=

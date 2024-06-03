@@ -895,11 +895,35 @@
             "suspension": "Työsuhteen keskeytyminen"
           }
         },
+        "calculation": {
+          "tableCaption": "Tukijaksot",
+          "tabs": {
+            "calculator": "Laskuri",
+            "manual": "Laske käsin"
+          },
+          "fieldsHeader": "Takaisinlaskutettava tuki",
+          "resultDescription": "Takaisinlaskutettava Helsinki-lisä aikaväliltä {{startDate}}–{{endDate}} ({{months}} kk)",
+          "actions": {
+            "calculate": "Laske"
+          },
+          "outOfDate": {
+            "heading": "Laskelman arvot muuttuneet",
+            "body": "Ole hyvä ja laske uudestaan"
+          },
+          "invalidRange": {
+            "heading": "Takaisinlaskutuksen aikajakso on epäkelpo",
+            "body": "Valitulla ajanjaksolla on jo yksi tai useampi aiemmin käsitelty ja takaisinlaskutettu muutosjakso"
+          }
+        },
         "talpaCsv": {
           "guideText": "Lataa laskutustiedot ja lähetä tiedosto suojatulla sähköpostilla Talpaan.",
           "button": "Lataa maksatustiedot (csv)"
         },
         "fields": {
+          "recoveryPeriod": {
+            "label": "Tukea laskutetaan takaisin ajalta",
+            "helpText": "Tukea ei voi laskuttaa takaisin tukijakson ylittävältä ajalta, eikä aikaisemman työsuhteen keskeytyksen ajalta."
+          },
           "recoveryStartDate": {
             "label": "Takaisinlaskutuksen alkamispäivä"
           },
@@ -907,7 +931,7 @@
             "label": "Takaisinlaskutuksen päättymispäivä"
           },
           "recoveryAmount": {
-            "label": "Laskutettava määrä"
+            "label": "Takaisinlaskutettavan tuen määrä"
           },
           "isRecoverable": {
             "label": "Laskutetaanko ylimääräinen tuki takaisin?",
@@ -925,7 +949,8 @@
         "error": {
           "alterationNotFound": "Valittua muutosilmoitusta ei löytynyt!",
           "alreadyHandled": "Valittu muutosilmoitus on jo käsitelty!",
-          "dirtyOrInvalidForm": "Täytä lomakkeen puuttuvat tai virheelliset kentät"
+          "dirtyOrInvalidForm": "Täytä lomakkeen puuttuvat tai virheelliset kentät",
+          "calculationOutOfDate": "Laskelma ei ole ajan tasalla"
         },
         "actions": {
           "close": "Peruuta",

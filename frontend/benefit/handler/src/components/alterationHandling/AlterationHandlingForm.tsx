@@ -1,4 +1,5 @@
 import { AxiosError } from 'axios';
+import AlterationCalculator from 'benefit/handler/components/alterationHandling/AlterationCalculator';
 import {
   $AlterationDetails,
   $PageHeading,
@@ -17,16 +18,14 @@ import {
 } from 'benefit-shared/types/application';
 import {
   Button,
-  DateInput,
   IconAlertCircleFill,
   IconCheck,
   IconDownload,
   RadioButton,
   SelectionGroup,
   TextArea,
-  TextInput,
 } from 'hds-react';
-import React from 'react';
+import React, { useState } from 'react';
 import Container from 'shared/components/container/Container';
 import {
   $Grid,
@@ -34,14 +33,7 @@ import {
 } from 'shared/components/forms/section/FormSection.sc';
 import StickyActionBar from 'shared/components/stickyActionBar/StickyActionBar';
 import { $StickyBarSpacing } from 'shared/components/stickyActionBar/StickyActionBar.sc';
-import {
-  convertToBackendDateFormat,
-  formatDate,
-} from 'shared/utils/date.utils';
-import {
-  formatStringFloatValue,
-  stringFloatToFixed,
-} from 'shared/utils/string.utils';
+import { formatDate } from 'shared/utils/date.utils';
 
 type Props = {
   application: Application;
@@ -65,12 +57,17 @@ const AlterationHandlingForm = ({
       application,
       alteration,
     });
-  const translationBase = 'common:applications.alterations.handling';
+
+  const [isCalculationOutOfDate, setCalculationOutOfDate] =
+    useState<boolean>(true);
 
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(formik.errors, formik.touched, fieldName, t, isSubmitted);
 
-  const hasErrors = Object.keys(formik.errors).length > 0;
+  const hasErrors =
+    Object.keys(formik.errors).length > 0 || isCalculationOutOfDate;
+
+  const translationBase = 'common:applications.alterations.handling';
 
   return (
     <>
@@ -154,71 +151,12 @@ const AlterationHandlingForm = ({
         <AlterationHandlingSection
           heading={t(`${translationBase}.headings.recoveryCalculator`)}
         >
-          <$Grid>
-            <$GridCell $colSpan={3}>
-              <DateInput
-                label={t(`${translationBase}.fields.recoveryStartDate.label`)}
-                value={formik.values.recoveryStartDate}
-                id="recovery-start-date"
-                name="recoveryStartDate"
-                required
-                invalid={!!getErrorMessage('recoveryStartDate')}
-                aria-invalid={!!getErrorMessage('recoveryStartDate')}
-                errorText={getErrorMessage('recoveryStartDate')}
-                onChange={(value) =>
-                  formik.setFieldValue('recoveryStartDate', value)
-                }
-                onBlur={formik.handleBlur}
-                language="fi"
-                minDate={new Date(application.startDate)}
-                maxDate={new Date(application.endDate)}
-              />
-            </$GridCell>
-            <$GridCell $colSpan={3}>
-              <DateInput
-                label={t(`${translationBase}.fields.recoveryEndDate.label`)}
-                value={formik.values.recoveryEndDate}
-                id="recovery-end-date"
-                name="recoveryEndDate"
-                required
-                invalid={!!getErrorMessage('recoveryEndDate')}
-                aria-invalid={!!getErrorMessage('recoveryEndDate')}
-                errorText={getErrorMessage('recoveryEndDate')}
-                onChange={(value) =>
-                  formik.setFieldValue('recoveryEndDate', value)
-                }
-                onBlur={formik.handleBlur}
-                language="fi"
-                minDate={
-                  new Date(
-                    convertToBackendDateFormat(
-                      formik.values.recoveryStartDate ?? application.startDate
-                    )
-                  )
-                }
-                maxDate={new Date(application.endDate)}
-              />
-            </$GridCell>
-            <$GridCell $colSpan={3}>
-              <TextInput
-                label={t(`${translationBase}.fields.recoveryAmount.label`)}
-                id="recovery-amount"
-                name="recoveryAmount"
-                onBlur={formik.handleBlur}
-                onChange={(e) =>
-                  formik.setFieldValue(
-                    'recoveryAmount',
-                    stringFloatToFixed(e.target.value)
-                  )
-                }
-                value={formatStringFloatValue(formik.values.recoveryAmount)}
-                invalid={!!getErrorMessage('recoveryAmount')}
-                aria-invalid={!!getErrorMessage('recoveryAmount')}
-                errorText={getErrorMessage('recoveryAmount')}
-                required
-              />
-            </$GridCell>
-          </$Grid>
+          <AlterationCalculator
+            formik={formik}
+            application={application}
+            getErrorMessage={getErrorMessage}
+            onCalculationChange={setCalculationOutOfDate}
+          />
         </AlterationHandlingSection>
 
         <AlterationHandlingSection
@@ -328,16 +266,25 @@ const AlterationHandlingForm = ({
             {hasErrors && isSubmitted && (
               <$SaveActionFormErrorText>
                 <IconAlertCircleFill />
-                <p aria-live="polite">
-                  {t(`${translationBase}.error.dirtyOrInvalidForm`)}
-                </p>
+                {isCalculationOutOfDate ? (
+                  <p aria-live="polite">
+                    {t(`${translationBase}.error.calculationOutOfDate`)}
+                  </p>
+                ) : (
+                  <p aria-live="polite">
+                    {t(`${translationBase}.error.dirtyOrInvalidForm`)}
+                  </p>
+                )}
               </$SaveActionFormErrorText>
             )}
             <Button
               onClick={handleAlteration}
               theme="coat"
               iconLeft={<IconCheck />}
-              disabled={isSubmitting || (isSubmitted && !formik.isValid)}
+              disabled={
+                isSubmitting ||
+                (isSubmitted && (!formik.isValid || isCalculationOutOfDate))
+              }
               isLoading={isSubmitting}
               loadingText={t('common:utility.submitting')}
             >
