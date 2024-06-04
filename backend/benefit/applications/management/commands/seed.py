@@ -8,6 +8,7 @@ from django.utils import timezone
 
 from applications.enums import (
     AhjoStatus as AhjoStatusEnum,
+    ApplicationAlterationType,
     ApplicationBatchStatus,
     ApplicationOrigin,
     ApplicationStatus,
@@ -27,6 +28,7 @@ from applications.services.ahjo_decision_service import (
 from applications.tests.factories import (
     AcceptedDecisionProposalFactory,
     AdditionalInformationNeededApplicationFactory,
+    ApplicationAlterationFactory,
     ApplicationBatchFactory,
     ApplicationWithAttachmentFactory,
     CancelledApplicationFactory,
@@ -110,6 +112,11 @@ def run_seed(number):
                 AhjoStatus.objects.create(
                     status=AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
                     application=app,
+                )
+
+                ApplicationAlterationFactory(
+                    application=app,
+                    alteration_type=ApplicationAlterationType.TERMINATION,
                 )
 
             elif proposal_for_decision == ApplicationStatus.REJECTED:
