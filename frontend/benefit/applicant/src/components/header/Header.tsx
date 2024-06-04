@@ -62,6 +62,7 @@ const Header: React.FC = () => {
           isAuthenticated && hasMessenger
             ? [
                 <Button
+                  key="open-messenger-button"
                   variant={unreadMessagesCount ? 'primary' : 'secondary'}
                   css={`
                     border: none;
