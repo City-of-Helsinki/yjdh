@@ -6,6 +6,8 @@ from datetime import date, timedelta
 import factory
 
 from applications.enums import (
+    ApplicationAlterationState,
+    ApplicationAlterationType,
     ApplicationStatus,
     ApplicationStep,
     BenefitType,
@@ -18,6 +20,7 @@ from applications.models import (
     AhjoDecisionText,
     Application,
     APPLICATION_LANGUAGE_CHOICES,
+    ApplicationAlteration,
     ApplicationBasis,
     ApplicationBatch,
     Attachment,
@@ -490,3 +493,60 @@ palauttamaan jo maksetut avustukset, jos päätös muutoksenhaun johdosta muuttu
 
     class Meta:
         model = DecisionProposalTemplateSection
+
+
+class ApplicationAlterationFactory(factory.django.DjangoModelFactory):
+    state = ApplicationAlterationState.RECEIVED
+
+    end_date = factory.Faker(
+        "date_between_dates",
+        date_start=factory.LazyAttribute(lambda _: date.today() - timedelta(days=30)),
+        date_end=factory.LazyAttribute(lambda _: date.today()),
+    )
+
+    resume_date = factory.Faker(
+        "date_between_dates",
+        date_start=factory.LazyAttribute(lambda _: date.today() - timedelta(days=30)),
+        date_end=factory.LazyAttribute(lambda _: date.today()),
+    )
+
+    reason = factory.Faker("sentence", nb_words=2)
+
+    handled_at = factory.Faker(
+        "date_between_dates",
+        date_start=factory.LazyAttribute(lambda _: date.today() - timedelta(days=30)),
+        date_end=factory.LazyAttribute(lambda _: date.today()),
+    )
+
+    recovery_start_date = factory.Faker(
+        "date_between_dates",
+        date_start=factory.LazyAttribute(lambda _: date.today() - timedelta(days=30)),
+        date_end=factory.LazyAttribute(lambda _: date.today()),
+    )
+
+    recovery_end_date = factory.Faker(
+        "date_between_dates",
+        date_start=factory.LazyAttribute(lambda _: date.today() - timedelta(days=30)),
+        date_end=factory.LazyAttribute(lambda _: date.today()),
+    )
+
+    recovery_amount = factory.Faker(
+        "pydecimal", left_digits=4, right_digits=2, positive=True
+    )
+
+    use_einvoice = factory.Faker("boolean")
+
+    einvoice_provider_name = factory.Faker("company")
+
+    einvoice_provider_identifier = factory.Faker("sentence", nb_words=2)
+
+    einvoice_address = factory.Faker("street_address", locale="fi_FI")
+
+    contact_person_name = factory.Faker("name", locale="fi_FI")
+
+    is_recoverable = factory.Faker("boolean")
+
+    recovery_justification = factory.Faker("sentence", nb_words=2)
+
+    class Meta:
+        model = ApplicationAlteration
