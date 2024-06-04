@@ -255,7 +255,7 @@ class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):
             application, alteration_start_date, alteration_end_date
         )
 
-        if alteration_end_date is not None:
+        if alteration_end_date is not None and merged_data["state"] != ApplicationAlterationState.CANCELLED:
             errors += self._validate_date_range_overlaps(
                 self_id, application, alteration_start_date, alteration_end_date
             )
