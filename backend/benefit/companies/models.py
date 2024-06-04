@@ -20,3 +20,6 @@ class Company(AbstractCompany):
         db_table = "bf_companies_company"
         verbose_name = _("company")
         verbose_name_plural = _("companies")
+
+    def get_full_address(self):
+        return f"{self.street_address}, {self.postcode} {self.city}"

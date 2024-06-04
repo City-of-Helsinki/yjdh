@@ -7,7 +7,6 @@ import factory
 
 from applications.enums import (
     ApplicationAlterationState,
-    ApplicationAlterationType,
     ApplicationStatus,
     ApplicationStep,
     BenefitType,
