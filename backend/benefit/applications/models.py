@@ -167,11 +167,14 @@ class ApplicationManager(models.Manager):
         return qs.prefetch_related(attachments_prefetch)
 
     def get_by_statuses(
-        self, application_statuses: List[ApplicationStatus], ahjo_status: AhjoStatusEnum
+        self,
+        application_statuses: List[ApplicationStatus],
+        ahjo_status: AhjoStatusEnum,
+        has_no_case_id: bool,
     ):
         """
         Query applications by their latest AhjoStatus relation
-        and their current ApplicationStatus.
+        and their current ApplicationStatus and if they have a case id in Ahjo or not.
         """
         # Subquery to get the latest AhjoStatus id for each application
         latest_ahjo_status_subquery = (
@@ -201,6 +204,7 @@ class ApplicationManager(models.Manager):
                 status__in=application_statuses,
                 ahjo_status__id=F("latest_ahjo_status_id"),
                 ahjo_status__status=ahjo_status,
+                ahjo_case_id__isnull=has_no_case_id,
             )
             .prefetch_related(attachments_prefetch, "calculation", "company")
         )

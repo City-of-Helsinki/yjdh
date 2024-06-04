@@ -62,8 +62,13 @@ class Command(BaseCommand):
     ) -> QuerySet[Application]:
         if request_type == AhjoRequestType.OPEN_CASE:
             applications = Application.objects.get_by_statuses(
-                [ApplicationStatus.HANDLING],
+                [
+                    ApplicationStatus.HANDLING,
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.REJECTED,
+                ],
                 AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
+                True,
             )
         elif request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
             applications = Application.objects.get_for_ahjo_decision()
@@ -75,11 +80,13 @@ class Command(BaseCommand):
             applications = Application.objects.get_by_statuses(
                 [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
                 AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
+                False,
             )
         elif request_type == AhjoRequestType.GET_DECISION_DETAILS:
             applications = Application.objects.get_by_statuses(
                 [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
                 AhjoStatusEnum.SIGNED_IN_AHJO,
+                False,
             )
 
         return applications
