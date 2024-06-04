@@ -21,6 +21,7 @@ from applications.models import AhjoSetting, Application, ApplicationBatch
 from applications.services.ahjo_decision_service import (
     replace_decision_template_placeholders,
 )
+from applications.services.ahjo_payload import resolve_payload_language
 from applications.services.applications_csv_report import ApplicationsCsvService
 from applications.tests.factories import (
     AcceptedDecisionProposalFactory,
@@ -398,7 +399,7 @@ def ahjo_payload_record_for_attachment_update(
 @pytest.fixture()
 def ahjo_open_case_top_level_dict(decided_application):
     application = decided_application
-    language = application.applicant_language
+    language = resolve_payload_language(application)
 
     handler = application.calculation.handler
 
