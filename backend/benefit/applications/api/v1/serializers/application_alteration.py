@@ -191,6 +191,7 @@ class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):
             if (
                 alteration.recovery_start_date is None
                 or alteration.recovery_end_date is None
+                or alteration.state == ApplicationAlterationState.CANCELLED
             ):
                 continue
 
