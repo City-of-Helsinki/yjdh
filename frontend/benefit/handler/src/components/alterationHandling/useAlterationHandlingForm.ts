@@ -105,7 +105,7 @@ const useAlterationHandling = ({
     isSubmitting: updateStatus === 'loading',
     t,
     formik,
-    handleAlteration: () => void formik.submitForm,
+    handleAlteration: () => void formik.submitForm(),
     validateForm,
   };
 };
