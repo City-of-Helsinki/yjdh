@@ -129,16 +129,6 @@ class ApplicationAdmin(admin.ModelAdmin):
 
     readonly_fields = ["batch_details"]
 
-    fieldsets = (
-        (None, {"fields": ("status", "batch")}),
-        (
-            "Batch Information",
-            {
-                "fields": ("batch_details",),
-            },
-        ),
-    )
-
     def batch_details(self, obj):
         if obj.batch:
             url = reverse(
