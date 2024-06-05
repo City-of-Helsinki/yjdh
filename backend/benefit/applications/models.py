@@ -239,7 +239,10 @@ class ApplicationManager(models.Manager):
                     application_id=OuterRef("id")
                 ).values("application_id"),
                 ahjo_status__id=F("latest_ahjo_status_id"),
-                ahjo_status__status__in=[AhjoStatusEnum.CASE_OPENED],
+                ahjo_status__status__in=[
+                    AhjoStatusEnum.CASE_OPENED,
+                    AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+                ],
             )
             .select_related("ahjodecisiontext")
         )
