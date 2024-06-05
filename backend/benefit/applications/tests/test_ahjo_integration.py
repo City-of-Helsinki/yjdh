@@ -719,10 +719,10 @@ def test_get_applications_for_open_case(
     multiple_handling_applications,
 ):
     now = timezone.now()
-    applications_for_open_case = (
+    wanted_applications_for_open_case = (
         multiple_decided_applications_for_open_case + multiple_handling_applications
     )
-    for application in applications_for_open_case:
+    for application in wanted_applications_for_open_case:
         status = AhjoStatus.objects.create(
             application=application,
             status=AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
@@ -752,7 +752,7 @@ def test_get_applications_for_open_case(
     )
     # only handled_applications should be returned as their last  AhjoStatus is SUBMITTED_BUT_NOT_SENT_TO_AHJO
     # and their application status is HANDLING
-    assert applications_for_open_case.count() == len(applications_for_open_case)
+    assert applications_for_open_case.count() == len(wanted_applications_for_open_case)
 
 
 @pytest.mark.django_db
