@@ -11,6 +11,7 @@ const config = {
     [`^shared\/(.*)$`]: '<rootDir>/../../shared/src/$1',
     [`^tet-shared\/(.*)$`]: '<rootDir>../shared/src/$1',
     [`^tet/youth\/(.*)$`]: '<rootDir>src/$1',
+    '^axios$': require.resolve('axios'),
   },
   setupFilesAfterEnv: [
     '<rootDir>/../../shared/src/__tests__/utils/setupTests.ts',
