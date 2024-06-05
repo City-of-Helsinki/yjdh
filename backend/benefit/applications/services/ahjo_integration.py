@@ -499,7 +499,6 @@ def delete_application_in_ahjo(
 ) -> Union[Tuple[Application, str], None]:
     """Delete/cancel an application in Ahjo."""
     try:
-        application = get_application_for_ahjo(application.id)
         ahjo_request = AhjoDeleteCaseRequest(application)
         ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
 

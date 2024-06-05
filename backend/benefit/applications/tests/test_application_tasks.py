@@ -185,6 +185,11 @@ def test_user_is_notified_of_upcoming_application_deletion(drafts_about_to_be_de
             "applications.management.commands.send_ahjo_requests.Application.objects.get_by_statuses",
             "applications.management.commands.send_ahjo_requests.get_decision_details_from_ahjo",
         ),
+        (
+            AhjoRequestType.DELETE_APPLICATION,
+            "applications.management.commands.send_ahjo_requests.Application.objects.get_by_statuses",
+            "applications.management.commands.send_ahjo_requests.delete_application_in_ahjo",
+        ),
     ],
 )
 @patch("applications.management.commands.send_ahjo_requests.get_token")
