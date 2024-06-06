@@ -1,12 +1,8 @@
 import { respondAbove } from 'shared/styles/mediaQueries';
 import styled from 'styled-components';
 
-export const $ButtonContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-top: ${(props) => props.theme.spacingLayout.s};
+export const $Section = styled.section`
+  margin-bottom: ${(props) => props.theme.spacing.xl};
 `;
 
 export const $SaveActionFormErrorText = styled.div`

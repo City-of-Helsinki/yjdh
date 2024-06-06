@@ -6,11 +6,11 @@ import {
   Application,
   CalculationFormProps,
 } from 'benefit/handler/types/application';
-import { getErrorText } from 'benefit/handler/utils/forms';
 import {
   PAY_SUBSIDY_GRANTED,
   PAY_SUBSIDY_PERCENT,
 } from 'benefit-shared/constants';
+import { getErrorText } from 'benefit-shared/utils/forms';
 import { FormikProps } from 'formik';
 import { TFunction, useTranslation } from 'next-i18next';
 import { useEffect, useState } from 'react';

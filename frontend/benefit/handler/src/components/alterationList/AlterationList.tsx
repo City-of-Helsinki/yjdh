@@ -1,6 +1,5 @@
 import {
   $EmptyListText,
-  $Heading,
   $Link,
   $Subheading,
 } from 'benefit/handler/components/alterationList/AlterationList.sc';
@@ -18,10 +17,9 @@ import { useTheme } from 'styled-components';
 type Props = {
   isLoading: boolean;
   list: Array<ApplicationAlterationData>;
-  heading: string;
 };
 
-const AlterationList: React.FC<Props> = ({ isLoading, list, heading }) => {
+const AlterationList: React.FC<Props> = ({ isLoading, list }) => {
   const theme = useTheme();
   const { t } = useTranslation();
   const router = useRouter();
@@ -111,11 +109,6 @@ const AlterationList: React.FC<Props> = ({ isLoading, list, heading }) => {
   if (isLoading) {
     return (
       <>
-        {heading && (
-          <$Heading
-            css={{ marginBottom: theme.spacing.xs }}
-          >{`${heading}`}</$Heading>
-        )}
         <LoadingSkeleton
           borderRadius={0}
           baseColor={theme.colors.fog}

@@ -108,6 +108,11 @@
         "label": "Muutosilmoitus on käsitelty",
         "message": "Käsittelit hakemuksen {{applicationNumber}} muutosilmoituksen ilman takaisinlaskutusta."
       }
+    },
+    "alterationCreated": {
+      "title": "Uusi työsuhteen muutos ilmoitettu",
+      "bodyTermination": "Työsuhde on päättynyt {{startDate}}. Käsittele tehty muutosilmoitus.",
+      "bodySuspension": "Työsuhde on keskeytynyt {{startDate}}–{{endDate}}. Käsittele tehty muutosilmoitus."
     }
   },
   "mainIngress": {
@@ -786,17 +791,18 @@
       },
       "actions": {
         "showDecision": "Tarkastele päätöstä",
-        "reportAlteration": "Ilmoita työsuhteen muutoksesta"
+        "reportAlteration": "Tee uusi muutosilmoitus"
       },
       "calculation": "Laskelma"
     },
     "alterations": {
       "new": {
-        "title": "Ilmoita työsuhteen muutoksesta",
-        "explanation": "Ilmoita, jos työllistetyn henkilön työsuhde päättyy tai keskeytyy väliaikaisesti tukijakson aikana. Saatamme periä Helsinki-lisää takaisin, jos tukijakson aikana työsuhteeseen tulee muutoksia.",
+        "title": "Ilmoita muutoksesta työsuhteessa",
+        "explanation": "Ilmoita, jos työllistetyn henkilön työsuhde päättyy tai keskeytyy väliaikaisesti tukijakson aikana.",
         "actions": {
-          "submit": "Lähetä",
-          "cancel": "Peruuta"
+          "submit": "Tallenna",
+          "cancel": "Peruuta",
+          "returnToApplication": "Palaa hakemukseen"
         },
         "fields": {
           "alterationType": {
@@ -850,7 +856,9 @@
         },
         "error": {
           "notYetAccepted": "Et voi ilmoittaa muutosta työsuhteessa tälle hakemukselle, sillä tukea ei ole vielä myönnetty.",
-          "alreadyTerminated": "Tämä työsuhde on aiemmin jo merkitty päättyneeksi, joten et voi enää ilmoittaa uudesta muutoksesta."
+          "alreadyTerminated": "Tämä työsuhde on aiemmin jo merkitty päättyneeksi, joten et voi enää ilmoittaa uudesta muutoksesta.",
+          "dirtyOrInvalidForm": "Täytä lomakkeen puuttuvat tai virheelliset kentät",
+          "pendingAlteration": "Et voi ilmoittaa muutosta työsuhteessa hakemukselle, jolla on käsittelemättömiä muutosilmoituksia jo ennestään."
         },
         "details": "Muutokset työsuhteessa",
         "billing": "Laskutustiedot"

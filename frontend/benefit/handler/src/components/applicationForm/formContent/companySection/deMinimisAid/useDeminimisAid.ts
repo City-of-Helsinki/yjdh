@@ -1,8 +1,8 @@
 import { SUPPORTED_LANGUAGES } from 'benefit/handler/constants';
 import DeMinimisContext from 'benefit/handler/context/DeMinimisContext';
-import { getErrorText } from 'benefit/handler/utils/forms';
 import { DE_MINIMIS_AID_KEYS } from 'benefit-shared/constants';
 import { DeMinimisAid } from 'benefit-shared/types/application';
+import { getErrorText } from 'benefit-shared/utils/forms';
 import { FormikProps, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
 import { TFunction, useTranslation } from 'next-i18next';

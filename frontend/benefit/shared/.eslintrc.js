@@ -1,6 +1,7 @@
 module.exports = {
   extends: ['../../.eslintrc.nextjs.js'],
   rules: {
-    '@next/next/no-document-import-in-page': 'off'
+    '@next/next/no-document-import-in-page': 'off',
+    'unicorn/no-thenable': 'off'
   }
 };

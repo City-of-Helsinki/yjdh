@@ -1,10 +1,10 @@
 import useBatchStatus from 'benefit/handler/hooks/useBatchStatus';
-import { getErrorText } from 'benefit/handler/utils/forms';
 import {
   BATCH_STATUSES,
   PROPOSALS_FOR_DECISION,
 } from 'benefit-shared/constants';
 import { BatchProposal } from 'benefit-shared/types/application';
+import { getErrorText } from 'benefit-shared/utils/forms';
 import {
   Button,
   DateInput,

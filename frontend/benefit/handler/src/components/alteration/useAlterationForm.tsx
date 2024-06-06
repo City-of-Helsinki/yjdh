@@ -1,21 +1,19 @@
 import { AxiosError } from 'axios';
-import useCreateApplicationAlterationQuery from 'benefit/applicant/hooks/useCreateApplicationAlterationQuery';
-import { useTranslation } from 'benefit/applicant/i18n';
+import useCreateApplicationAlterationQuery from 'benefit/handler/hooks/useCreateApplicationAlterationQuery';
+import { getValidationSchema } from 'benefit-shared/components/alterationForm/utils/validation';
 import {
   Application,
   ApplicationAlteration,
   ApplicationAlterationData,
 } from 'benefit-shared/types/application';
 import { FormikProps, useFormik } from 'formik';
-import { TFunction } from 'next-i18next';
+import { TFunction, useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { MutationFunction } from 'react-query';
 import useLocale from 'shared/hooks/useLocale';
 import { Language } from 'shared/i18n/i18n';
 import { convertDateFormat } from 'shared/utils/date.utils';
 import snakecaseKeys from 'snakecase-keys';
-
-import { getValidationSchema } from '../../../alteration/utils/validation';
 
 type Props = {
   application: Application;
@@ -51,11 +49,14 @@ const useAlterationForm = ({
   });
 
   const submitForm = (data: ApplicationAlteration): void => {
-    const payload = snakecaseKeys({
-      ...data,
-      endDate: convertDateFormat(data.endDate),
-      resumeDate: convertDateFormat(data.resumeDate) || undefined,
-    }, { deep: true }) as ApplicationAlterationData;
+    const payload = snakecaseKeys(
+      {
+        ...data,
+        endDate: convertDateFormat(data.endDate),
+        resumeDate: convertDateFormat(data.resumeDate) || undefined,
+      },
+      { deep: true }
+    ) as ApplicationAlterationData;
 
     createQuery(payload);
   };

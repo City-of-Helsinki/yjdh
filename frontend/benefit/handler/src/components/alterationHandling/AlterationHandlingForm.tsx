@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios';
 import AlterationCalculator from 'benefit/handler/components/alterationHandling/AlterationCalculator';
+import AlterationCsvButton from 'benefit/handler/components/alterationHandling/AlterationCsvButton';
 import {
   $PageHeading,
   $SaveActionFormErrorText,
@@ -12,16 +13,15 @@ import AlterationHandlingSection from 'benefit/handler/components/alterationHand
 import AlterationSummary from 'benefit/handler/components/alterationHandling/AlterationSummary';
 import useAlterationHandlingForm from 'benefit/handler/components/alterationHandling/useAlterationHandlingForm';
 import { DEFAULT_MINIMUM_RECOVERY_AMOUNT } from 'benefit/handler/constants';
-import { getErrorText } from 'benefit/handler/utils/forms';
 import {
   Application,
   ApplicationAlteration,
 } from 'benefit-shared/types/application';
+import { getErrorText } from 'benefit-shared/utils/forms';
 import {
   Button,
   IconAlertCircleFill,
   IconCheck,
-  IconDownload,
   Notification,
   RadioButton,
   SelectionGroup,
@@ -224,18 +224,10 @@ const AlterationHandlingForm = ({
           >
             <$Grid>
               <$GridCell $colSpan={12}>
-                {/* TODO: Talpa integration to be implemented in HL-887 */}
                 <$TalpaGuideText>
                   {t(`${translationBase}.talpaCsv.guideText`)}
                 </$TalpaGuideText>
-                <Button
-                  disabled
-                  theme="coat"
-                  iconLeft={<IconDownload />}
-                  onClick={() => {}}
-                >
-                  {t(`${translationBase}.talpaCsv.button`)}
-                </Button>
+                <AlterationCsvButton alteration={alteration} />
               </$GridCell>
             </$Grid>
           </AlterationHandlingSection>

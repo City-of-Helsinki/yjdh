@@ -3,12 +3,12 @@ import useCompanyQuery from 'benefit/applicant/hooks/useCompanyQuery';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { getLanguageOptions } from 'benefit/applicant/utils/common';
-import { getErrorText } from 'benefit/applicant/utils/forms';
 import {
   APPLICATION_FIELDS_STEP1_KEYS,
   ORGANIZATION_TYPES,
 } from 'benefit-shared/constants';
 import { Application, DeMinimisAid } from 'benefit-shared/types/application';
+import { getErrorText } from 'benefit-shared/utils/forms';
 import { FormikErrors, FormikProps, FormikValues, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
