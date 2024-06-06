@@ -6,6 +6,7 @@ from typing import List
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core import exceptions
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.db import transaction
 from django.db.models import Prefetch, Q, QuerySet
 from django.http import FileResponse, HttpResponse, StreamingHttpResponse
@@ -41,12 +42,21 @@ from applications.enums import (
     ApplicationOrigin,
     ApplicationStatus,
 )
-from applications.models import Application, ApplicationAlteration, ApplicationBatch
+from applications.models import (
+    AhjoSetting,
+    Application,
+    ApplicationAlteration,
+    ApplicationBatch,
+)
 from applications.services.ahjo_integration import (
     ExportFileInfo,
     generate_zip,
     prepare_csv_file,
     prepare_pdf_files,
+)
+from applications.services.application_alteration_csv_report import (
+    AlterationCsvConfigurableFields,
+    ApplicationAlterationCsvService,
 )
 from applications.services.applications_csv_report import ApplicationsCsvService
 from applications.services.generate_application_summary import (
@@ -471,6 +481,54 @@ class HandlerApplicationAlterationViewSet(BaseApplicationAlterationViewSet):
             return super().update(request, *args, **kwargs)
         else:
             raise PermissionDenied(_("You are not allowed to do this action"))
+
+    @action(methods=["PATCH"], detail=False)
+    def update_with_csv(self, request):
+        """
+        Update alteration and respond with a CSV file.
+        """
+        queryset = ApplicationAlteration.objects.filter(
+            application_id__in=[request.GET.get("application_id")],
+            id__in=[request.GET.get("alteration_id")],
+        )
+        try:
+            alteration_fields = AhjoSetting.objects.get(
+                name="application_alteration_fields"
+            )
+            configurable_fields = AlterationCsvConfigurableFields(
+                account_number=alteration_fields.data["account_number"],
+                billing_department=alteration_fields.data["billing_department"],
+            )
+            return self._alterations_csv_response(queryset, configurable_fields)
+        except ObjectDoesNotExist:
+            raise ImproperlyConfigured(
+                "application_alteration_fields fields not found in the ahjo_settings table"
+            )
+
+    def _alterations_csv_response(
+        self,
+        queryset: QuerySet[ApplicationAlteration],
+        config: AlterationCsvConfigurableFields,
+    ) -> StreamingHttpResponse:
+        """Generate a response with a CSV file containing application alteration data."""
+        csv_service = ApplicationAlterationCsvService(queryset, config)
+        response = StreamingHttpResponse(
+            csv_service.get_csv_string_lines_generator(
+                remove_quotes=True, add_bom=True
+            ),
+            content_type="text/csv",
+        )
+        response["Content-Disposition"] = "attachment; filename={filename}.csv".format(
+            filename=self._alteration_filename()
+        )
+        return response
+
+    @staticmethod
+    def _alteration_filename():
+        return format_lazy(
+            _("Takaisinmaksu viety {date}"),
+            date=timezone.now().strftime("%Y%m%d_%H%M%S"),
+        )
 
 
 @extend_schema(

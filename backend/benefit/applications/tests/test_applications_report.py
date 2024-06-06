@@ -18,7 +18,7 @@ from applications.enums import (
     BenefitType,
     PaySubsidyGranted,
 )
-from applications.models import ApplicationBatch
+from applications.models import AhjoSetting, ApplicationBatch
 from applications.tests.common import (
     check_csv_cell_list_lines_generator,
     check_csv_string_lines_generator,
@@ -198,6 +198,19 @@ def test_applications_csv_export_new_applications(handler_api_client):
         expected_without_quotes=True,
     )
     assert ApplicationBatch.objects.all().count() == 2
+
+
+def test_application_alteration_csv_export(handler_api_client):
+    AhjoSetting.objects.create(
+        name="application_alteration_fields",
+        data={
+            "account_number": "FI1234567890",
+            "billing_department": "1800 Kaupunginkanslia (Kansl)",
+        },
+    )
+    url = reverse("v1:handler-application-alteration-list") + "export_alterations_csv/"
+    response = handler_api_client.get(url)
+    assert response.status_code == 200
 
 
 def test_applications_csv_export_without_calculation(

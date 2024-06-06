@@ -33,7 +33,7 @@ class ApplicationAlterationCsvService(CsvExportBase):
         if alteration.recovery_start_date and alteration.recovery_end_date:
             start = alteration.recovery_start_date.strftime("%d.%m.%Y")
             end = alteration.recovery_end_date.strftime("%d.%m.%Y")
-            return f'"{start} - {end}"'
+            return f"{start} - {end}"
         return None
 
     def get_title(self, alteration: ApplicationAlteration) -> str:
