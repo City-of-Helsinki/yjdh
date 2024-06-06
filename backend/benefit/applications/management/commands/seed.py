@@ -117,6 +117,7 @@ def run_seed(number):
                 ApplicationAlterationFactory(
                     application=app,
                     alteration_type=ApplicationAlterationType.TERMINATION,
+                    handled_by=app.calculation.handler,
                 )
 
             elif proposal_for_decision == ApplicationStatus.REJECTED:
