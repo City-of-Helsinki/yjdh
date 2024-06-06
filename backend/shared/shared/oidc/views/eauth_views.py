@@ -81,10 +81,7 @@ class EauthAuthenticationRequestView(View):
             print("session:", request.session.__dict__)
 
             user_info = get_userinfo(request)
-            print("userinfo: ", user_info)
-
             user_ssn = user_info.get("national_id_num")
-            print("user ssn:", user_ssn)
 
             # When authenticating via Tunnistamo, we need to call Helsinki Profile GraphQL API
             if user_ssn is None:
