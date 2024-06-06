@@ -100,6 +100,7 @@ class Command(BaseCommand):
                     ApplicationStatus.RECEIVED,
                 ],
                 AhjoStatusEnum.SCHEDULED_FOR_DELETION,
+                False,
             )
 
         return applications
