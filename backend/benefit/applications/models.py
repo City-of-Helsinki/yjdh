@@ -496,7 +496,7 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
         cascade_delete_history=True,
     )
     # This is the diary number in Ahjo
-    ahjo_case_id = models.CharField(max_length=64, null=True, blank=True)
+    ahjo_case_id = models.CharField(max_length=64, null=True, blank=True, unique=True)
     ahjo_case_guid = models.UUIDField(null=True, blank=True)
 
     handler = models.ForeignKey(
