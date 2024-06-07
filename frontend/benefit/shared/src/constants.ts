@@ -149,6 +149,7 @@ export enum APPLICATION_STATUSES {
   REJECTED = 'rejected',
   CANCELLED = 'cancelled',
   HANDLING = 'handling',
+  ARCHIVAL = 'archival',
 }
 
 export enum TALPA_STATUSES {

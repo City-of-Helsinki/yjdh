@@ -198,7 +198,8 @@
           "additional_information_needed": "Odottaa lisätietoja",
           "cancelled": "Peruutettu",
           "accepted": "Hyväksytty",
-          "rejected": "Hylätty"
+          "rejected": "Hylätty",
+          "archival": "Hyväksytty (vanha)"
         },
         "calculationEndDate": "Viim. tukipäivä"
       },
@@ -1403,7 +1404,8 @@
     "approved": "Hyväksytty",
     "rejected": "Kielteinen",
     "cancelled": "Peruutettu",
-    "handling": "Käsittelyssä"
+    "handling": "Käsittelyssä",
+    "archival": "Hyväksytty (vanha)"
   },
   "upload": {
     "isUploading": "Ladataan...",

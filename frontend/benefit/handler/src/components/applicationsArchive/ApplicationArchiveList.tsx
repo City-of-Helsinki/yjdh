@@ -26,6 +26,7 @@ const STATUS_SORT_RANK = {
   [APPLICATION_STATUSES.ACCEPTED]: 1,
   [APPLICATION_STATUSES.REJECTED]: 0,
   [APPLICATION_STATUSES.CANCELLED]: -1,
+  [APPLICATION_STATUSES.ARCHIVAL]: -2,
 };
 
 const sortByStatus = (
@@ -56,6 +57,8 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
         {status === APPLICATION_STATUSES.ACCEPTED && <IconCheck />}
         {status === APPLICATION_STATUSES.REJECTED && <IconCross />}
         {status === APPLICATION_STATUSES.CANCELLED && <IconAlertCircle />}
+        {status === APPLICATION_STATUSES.ARCHIVAL && <IconCheck />}
+
         {t(
           `common:applications.list.columns.applicationStatuses.${String(
             status
@@ -67,11 +70,16 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
 
   const cols = [
     {
-      transform: ({ id, companyName }: TableTransforms) => (
-        <$Link href={`/application?id=${String(id)}`}>
-          {String(companyName)}
-        </$Link>
-      ),
+      transform: ({ id, companyName, status }: TableTransforms) =>
+        status === APPLICATION_STATUSES.ARCHIVAL ? (
+          <strong css="font-weight: 500; opacity: 0.5;">
+            {String(companyName)}
+          </strong>
+        ) : (
+          <$Link href={`/application?id=${String(id)}`}>
+            {String(companyName)}
+          </$Link>
+        ),
       headerName: getHeader('companyName'),
       key: 'companyName',
       isSortable: true,

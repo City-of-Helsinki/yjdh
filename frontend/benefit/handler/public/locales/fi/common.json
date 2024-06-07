@@ -198,7 +198,8 @@
           "additional_information_needed": "Odottaa lisätietoja",
           "cancelled": "Peruutettu",
           "accepted": "Hyväksytty",
-          "rejected": "Hylätty"
+          "rejected": "Hylätty",
+          "archival": "Hyväksytty (vanha)"
         },
         "calculationEndDate": "Viim. tukipäivä"
       },

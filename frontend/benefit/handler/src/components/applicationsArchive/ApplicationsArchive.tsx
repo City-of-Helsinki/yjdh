@@ -41,7 +41,6 @@ const ApplicationsArchive: React.FC = () => {
       <>
         <div style={{ maxWidth: 630 }}>
           <SearchInput
-            // tooltipText="Voit tarkentaa hakua työllistettävän nimellä lisäämällä kentän loppuun nimi:etunimi jokunimi sukunimi"
             helperText={t('common:search.input.keyword.helperText')}
             label={t('common:search.input.keyword.label')}
             placeholder={t('common:search.input.keyword.placeholder')}
