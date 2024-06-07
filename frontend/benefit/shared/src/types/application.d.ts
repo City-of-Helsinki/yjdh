@@ -441,6 +441,7 @@ export type ApplicationData = {
   training_compensations: TrainingCompensationData[];
   handled_at?: string;
   batch?: BatchData;
+  has_batch?: boolean;
   latest_decision_comment?: string;
   unread_messages_count?: number;
   application_origin?: APPLICATION_ORIGINS;
