@@ -510,6 +510,10 @@ def test_ahjo_callback_success(
         batch = decided_application.batch
         assert batch.status == ApplicationBatchStatus.AWAITING_AHJO_DECISION
 
+    if request_type == AhjoRequestType.DELETE_APPLICATION:
+        decided_application.refresh_from_db()
+        assert decided_application.status == ApplicationStatus.CANCELLED
+
     assert decided_application.ahjo_status.latest().status == ahjo_status
 
 

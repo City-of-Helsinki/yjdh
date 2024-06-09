@@ -22,6 +22,7 @@ from applications.enums import (
     AhjoRequestType,
     AhjoStatus as AhjoStatusEnum,
     ApplicationBatchStatus,
+    ApplicationStatus,
 )
 from applications.models import AhjoStatus, Application, ApplicationBatch, Attachment
 from common.permissions import BFIsHandler, SafeListPermission
@@ -196,9 +197,9 @@ class AhjoCallbackView(APIView):
                     info = f"Application ahjo_case_guid and ahjo_case_id were updated by Ahjo \
                         with request id: {callback_data['requestId']}"
                 elif request_type == AhjoRequestType.DELETE_APPLICATION:
-                    self._handle_delete_callback()
+                    self._handle_delete_callback_success(application)
                     ahjo_status = AhjoStatusEnum.DELETE_REQUEST_RECEIVED
-                    info = f"Application was marked for cancellation \
+                    info = f"Application {application.application_number} was marked for cancellation \
 in Ahjo with request id: {callback_data['requestId']}"
                 elif request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
                     self.handle_decision_proposal_success(application)
@@ -279,9 +280,10 @@ with request id: {callback_data['requestId']}"
         application.save()
         return application
 
-    def _handle_delete_callback(self):
+    def _handle_delete_callback_success(self, application):
         # do anything that needs to be done when Ahjo sends a delete callback
-        pass
+        application.status = ApplicationStatus.CANCELLED
+        application.save()
 
     def _save_version_series_id(
         self, application: Application, cb_records: list
