@@ -2,6 +2,7 @@ from datetime import timedelta
 
 import pytest
 
+from applications.enums import ApplicationStatus
 from applications.services.ahjo_xml_builder import (
     AhjoPublicXMLBuilder,
     AhjoSecretXMLBuilder,
@@ -114,7 +115,19 @@ päätösteksti, {application.application_number}.xml"
     assert xml_file_name == wanted_file_name
 
 
-def test_secret_xml_decision_string(decided_application, secret_xml_builder):
+@pytest.mark.parametrize(
+    "application_status",
+    [
+        ApplicationStatus.ACCEPTED,
+        ApplicationStatus.REJECTED,
+    ],
+)
+def test_secret_xml_decision_string(
+    application_status, decided_application, secret_xml_builder
+):
+    decided_application.status = application_status
+    decided_application.save()
+
     calculation = decided_application.calculation
     row = CalculationRowFactory(
         calculation=calculation,
@@ -124,18 +137,39 @@ def test_secret_xml_decision_string(decided_application, secret_xml_builder):
         end_date=calculation.end_date,
     )
 
-    xml_string = secret_xml_builder.generate_xml()
+    if application_status == ApplicationStatus.ACCEPTED:
+        xml_string = secret_xml_builder.generate_xml()
 
-    wanted_replacements = [
-        str(decided_application.application_number),
-        decided_application.company.name,
-        decided_application.company.business_id,
-        decided_application.employee.last_name,
-        decided_application.employee.first_name,
-        f"{row.start_date.strftime('%d.%m.%Y')} - {row.end_date.strftime('%d.%m.%Y')}",
-        str(int(row.amount)),
-        str(int(calculation.calculated_benefit_amount)),
-    ]
+        wanted_replacements = [
+            str(decided_application.application_number),
+            decided_application.company.name,
+            decided_application.company.business_id,
+            decided_application.employee.last_name,
+            decided_application.employee.first_name,
+            f"{row.start_date.strftime('%d.%m.%Y')} - {row.end_date.strftime('%d.%m.%Y')}",
+            str(int(row.amount)),
+            str(int(calculation.calculated_benefit_amount)),
+        ]
+
+    elif application_status == ApplicationStatus.REJECTED:
+        xml_string = secret_xml_builder.generate_xml()
+
+        wanted_replacements = [
+            str(decided_application.application_number),
+            decided_application.company.name,
+            decided_application.company.business_id,
+            decided_application.employee.last_name,
+            decided_application.employee.first_name,
+        ]
+        unwanted_replacements = [
+            f"{row.start_date.strftime('%d.%m.%Y')} - {row.end_date.strftime('%d.%m.%Y')}",
+            str(int(row.amount)),
+            str(int(calculation.calculated_benefit_amount)),
+        ]
+        assert all(
+            [replacement not in xml_string for replacement in unwanted_replacements]
+        )
+
     assert all([replacement in xml_string for replacement in wanted_replacements])
 
 
@@ -198,12 +232,28 @@ def test_prepare_single_period_row(secret_xml_builder, monthly_row_1, total_eur_
     assert period_rows[0].total_amount == int(total_eur_row.amount)
 
 
+def test_get_context_for_secret_xml_for_rejected_application(
+    decided_application, secret_xml_builder
+):
+    decided_application.status = ApplicationStatus.REJECTED
+    decided_application.save()
+
+    context = secret_xml_builder.get_context_for_secret_xml()
+
+    assert context["application"] == decided_application
+    assert context["language"] == decided_application.applicant_language
+    assert context["include_calculation_data"] is False
+    assert "calculation_periods" not in context
+    assert "total_amount_row" not in context
+
+
 def test_get_context_for_secret_xml_with_single_period(
     decided_application, monthly_row_1, total_eur_row, secret_xml_builder
 ):
     context = secret_xml_builder.get_context_for_secret_xml()
 
     assert context["application"] == decided_application
+    assert context["include_calculation_data"] is True
     assert len(context["calculation_periods"]) == 1
     assert isinstance(context["calculation_periods"][0], BenefitPeriodRow)
     assert context["calculation_periods"][0].start_date == total_eur_row.start_date
@@ -245,6 +295,8 @@ def test_get_context_for_secret_xml_with_multiple_periods(
     context = secret_xml_builder.get_context_for_secret_xml()
 
     assert context["application"] == decided_application
+    assert context["include_calculation_data"] is True
+
     assert len(context["calculation_periods"]) == 2
     assert isinstance(context["calculation_periods"][0], BenefitPeriodRow)
     assert context["calculation_periods"][0].start_date == sub_total_row_1.start_date
