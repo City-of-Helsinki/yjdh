@@ -105,10 +105,12 @@ class BaseApplicationFilter(filters.FilterSet):
             "batch__decision_date__lte": archive_threshold.isoformat(),
         }
 
+        query = Q(**query) | Q(status=ApplicationStatus.CANCELLED)
+
         if value:
-            return queryset.filter(**query)
+            return queryset.filter(query)
         else:
-            return queryset.filter(~Q(**query))
+            return queryset.filter(~query)
 
 
 class ApplicantApplicationFilter(BaseApplicationFilter):

@@ -1411,6 +1411,9 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         Make sure any changes here are reflected in the filter set as well.
         """
 
+        if application.status == ApplicationStatus.CANCELLED:
+            return True
+
         if application.batch is None:
             return False
 
