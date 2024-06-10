@@ -191,8 +191,7 @@ def _prepare_case_records(
 
     open_case_attachments = application.attachments.exclude(
         attachment_type__in=[
-            AttachmentType.PDF_SUMMARY,
-            AttachmentType.FULL_APPLICATION,
+            AttachmentType.PDF_SUMMARY,  # The main document is already added
             AttachmentType.DECISION_TEXT_XML,
             AttachmentType.DECISION_TEXT_SECRET_XML,
         ]
