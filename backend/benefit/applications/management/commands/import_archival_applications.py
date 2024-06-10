@@ -188,6 +188,7 @@ class Command(BaseCommand):
             company_found = True
             pruned_data = {k: v for k, v in row.items() if k in KEYS_TO_IMPORT}
 
+            print(pruned_data)
             company = None
             company_str = f"{row['company_name']} ({row['business_id']})"
 

@@ -1915,17 +1915,36 @@ class ArchivalApplicationListSerializer(serializers.ModelSerializer):
             "status",
             "application_number",
             "handled_at",
+            "calculation",
+            "handled_at",
         ]
 
+    handled_at = serializers.SerializerMethodField(
+        "get_handled_at",
+        help_text=(
+            "Archival applications do not have a handled_at timestamp, use start_date instead"
+        ),
+    )
     company = CompanySerializer(read_only=True)
     application_number = serializers.CharField()
-    handled_at = serializers.DateField()
     employee = serializers.SerializerMethodField(
         "get_employee",
         help_text=(
             "Timestamp when the application was handled (accepted/rejected/cancelled)"
         ),
     )
+    calculation = serializers.SerializerMethodField(
+        "get_calculation",
+        help_text=("Start and end date"),
+    )
+
+    def get_handled_at(self, obj):
+        return getattr(obj, "start_date", None)
+
+    def get_calculation(self, obj):
+        return {
+            "end_date": getattr(obj, "end_date", ""),
+        }
 
     def get_employee(self, obj):
         return {
