@@ -12,6 +12,19 @@ from companies.models import Company
 from companies.services import get_or_create_organisation_with_business_id
 
 
+def validate_data(row):
+    from pandas import Timestamp
+
+    return [
+        validate_company_id(row["business_id"]),
+        len(str(row["year_of_birth"])) == 4,
+        type(row["start_date"]) is Timestamp,
+        type(row["end_date"]) is Timestamp,
+        datetime.now() > row["start_date"],
+        datetime.now() > row["end_date"],
+    ]
+
+
 def validate_company_id(company_id):
     # Some old company id's have only 6 digits. They should be prefixed with 0.
     if re.match(r"^\d{6}\-\d", company_id):
@@ -64,92 +77,35 @@ class Command(BaseCommand):
         # import at file level causes pytest crash
         is_pytest = os.environ.get("PYTEST_CURRENT_TEST")
         if is_pytest:
-            pass
+
+            def isna(value):
+                return value is None
+
         else:
-            from pandas import isna, read_excel, Timestamp
+            from pandas import isna, read_excel
 
         EXPECTED_SPREADSHEET_COLUMNS = [
-            "Tarkastettu",
-            " Miten Saapunut ",
-            "Saapumispmv",
-            "pankkitili",
-            "Hakemusnro",
             "hakija",
+            "Hakemusnro",
             "y-tunnus",
             "työllistetyn sukunimi",
             "työllistetyn etunimi",
             "alkaa",
             "loppuu",
-            "tukimuoto",
-            "tuki/kk",
-            "tuki yht.",
             "kk",
-            "VAKU/palkkatuki",
-            "OPSO",
-            "miten kohderyhmää?",
             "synt. vuosi",
-            "1/2",
-            "2/2",
-            "palkka €",
-            "otettu käsittelyyn",
-            "lisätieto saapumistapa",
-            "lisätietojen saapumis pvm",
-            "lisätietojen lähettäjä",
-            "vireillepanija/yhteyshenkilö",
-            "sähköposti",
-            "puhelin",
-            "katuosoite",
-            "postinumero",
-            "postitoimipaikka",
-            "suostumus sähköiseen asiointiin",
-            "lähetetty Ahjossa pvm",
-            "Päättäjä",
-            "Pykälä",
-            "Päätöspäivä",
-            "siirretty robotille pvm",
-            "tarkastettu P2P:ssä pvm",
         ]
 
-        ALL_KEYS = [
-            "handler",
-            "delivery_type",
-            "submitted_at",
-            "bank_account_number",
-            "application_number",
+        KEYS = [
             "company_name",
+            "application_number",
             "business_id",
             "employee_last_name",
             "employee_first_name",
             "start_date",
             "end_date",
-            "benefit_type",
-            "per_month",
-            "total",
             "months_total",
-            "tech_subsidy_1",
-            "apprenticeship",
-            "target_group",
             "year_of_birth",
-            "first_half",
-            "second_half",
-            "salary",
-            "taken_into_handling_at",
-            "additional_info_delivery_type",
-            "additional_info_delivery_at",
-            "additional_info_delivery_by",
-            "company_contact_name",
-            "company_email",
-            "company_phone",
-            "company_address",
-            "company_postal_code",
-            "company_city",
-            "service_agreement",
-            "ahjo_date",
-            "decision_maker_role",
-            "section_of_the_law",
-            "decision_date",
-            "talpa_robot_at",
-            "handled_at",
         ]
 
         KEYS_TO_IMPORT = [
@@ -158,19 +114,16 @@ class Command(BaseCommand):
             "employee_first_name",
             "start_date",
             "end_date",
-            "benefit_type",
             "months_total",
             "year_of_birth",
-            "handled_at",
         ]
 
-        filepath = os.path.abspath(os.path.dirname(__file__)) + "/../../resources"
-
         # mock data if it's a pytest run
-        if os.environ.get("PYTEST_CURRENT_TEST"):
-            columns = EXPECTED_SPREADSHEET_COLUMNS
-            values = ImportArchivalApplicationsTestUtility.test_data
+        if is_pytest:
+            columns = ImportArchivalApplicationsTestUtility.test_data["columns"]
+            values = ImportArchivalApplicationsTestUtility.test_data["values"]
         else:
+            filepath = os.path.abspath(os.path.dirname(__file__)) + "/../../resources"
             sheet = read_excel(f"{filepath}/{filename}")
             columns = sheet.columns
             values = sheet.values
@@ -189,35 +142,37 @@ class Command(BaseCommand):
             )
         print(f"Verifying data from {filename}")
         print(f"• Found {len(values)} rows of data with {len(columns)} columns")
-        if len(ALL_KEYS) != len(EXPECTED_SPREADSHEET_COLUMNS):
+        if len(KEYS) != len(EXPECTED_SPREADSHEET_COLUMNS):
             raise CommandError(
                 "Mismatch in mapped keys and spreadsheet columns length, check spreadsheet and KEYS variable"
             )
 
-        for col in columns:
-            if col not in EXPECTED_SPREADSHEET_COLUMNS:
-                print(f'Column "{col}" not found in spreadsheet keys')
+        column_index = []
+        for expected_col in EXPECTED_SPREADSHEET_COLUMNS:
+            if expected_col not in columns:
+                print(f'! Column "{expected_col}" not found in spreadsheet keys')
                 raise CommandError("Excel is not in expected format")
-
+            column_index.append(
+                {
+                    "index": list(columns).index(expected_col),
+                    "name": expected_col,
+                    "key": KEYS[list(EXPECTED_SPREADSHEET_COLUMNS).index(expected_col)],
+                }
+            )
         print("• Spreadsheet's column headers are as expected")
 
         mapped_rows = []
-        for i, value in enumerate(values):
-            if len(value) == len(EXPECTED_SPREADSHEET_COLUMNS):
-                row = dict(zip(ALL_KEYS, value))
+        for row in values:
+            mapped_row = {}
+            for column in column_index:
+                value = row[column["index"]]
+                if isna(value):
+                    value = None
+                if isinstance(value, float):
+                    value = round(value, 2)
+                mapped_row[column["key"]] = value
 
-                # Replace all pandas custom none-types with plain None
-                if not os.environ.get("PYTEST_CURRENT_TEST"):
-                    row = {k: v if not isna(v) else None for k, v in row.items()}
-
-                # Remove additional decimals
-                row["months_total"] = "{:.2f}".format(row["months_total"])
-
-                mapped_rows.append(row)
-            else:
-                print(
-                    f"! Warning: row number {i+2} does not have the correct number of values, will not be imported"
-                )
+            mapped_rows.append(mapped_row)
 
         print(f"• Collected {len(mapped_rows)} rows to import")
 
@@ -233,25 +188,10 @@ class Command(BaseCommand):
             company_found = True
             pruned_data = {k: v for k, v in row.items() if k in KEYS_TO_IMPORT}
 
-            valid_data = (
-                [
-                    validate_company_id(row["business_id"]),
-                    len(str(row["year_of_birth"])) == 4,
-                    type(row["start_date"]) is Timestamp,
-                    type(row["end_date"]) is Timestamp,
-                    type(row["handled_at"]) is Timestamp,
-                    datetime.now() > row["start_date"],
-                    datetime.now() > row["end_date"],
-                    datetime.now() > row["handled_at"],
-                ]
-                if not is_pytest
-                else [True]
-            )
-
             company = None
             company_str = f"{row['company_name']} ({row['business_id']})"
 
-            if not all(valid_data):
+            if not is_pytest and not all(validate_data(row)):
                 print(
                     f"! Skipping: invalid data for {application_number} / {company_str}"
                 )
