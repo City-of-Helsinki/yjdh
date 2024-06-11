@@ -16,7 +16,7 @@ type ExtendedComponentProps = {
   onSaveAndClose: () => void;
   onBackToHandling: () => void;
   onCommentsChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  toggleMessagesDrawerVisiblity: () => void;
+  toggleMessagesDrawerVisibility: () => void;
   handleCancel: (application: HandledAplication) => void;
   openDialog: () => void;
   closeDialog: () => void;
@@ -42,7 +42,7 @@ const useHandlingApplicationActions = (
     React.useContext(AppContext);
   const router = useRouter();
   const { openDrawer } = router.query;
-  const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] = useToggle(
+  const [isMessagesDrawerVisible, toggleMessagesDrawerVisibility] = useToggle(
     Boolean(openDrawer)
   );
 
@@ -104,7 +104,7 @@ const useHandlingApplicationActions = (
     onSaveAndClose,
     onCommentsChange,
     onBackToHandling,
-    toggleMessagesDrawerVisiblity,
+    toggleMessagesDrawerVisibility,
     handleCancel,
     openDialog,
     closeDialog,

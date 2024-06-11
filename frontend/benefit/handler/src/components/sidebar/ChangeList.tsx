@@ -50,17 +50,16 @@ const ChangeList: React.FC<ChangeListProps> = ({ data }: ChangeListProps) => {
   return (
     <$Actions>
       {combinedAndOrderedChangeSets.map((changeSet, index) => (
-        <>
+        <React.Fragment
+          key={`${changeSet.date}-${changeSet.reason}-${changeSet.user}`}
+        >
           {!doesPreviousDateMatch(
             changeSet,
             combinedAndOrderedChangeSets,
             index
           ) && <p>{convertToUIDateFormat(changeSet.date)}</p>}
-          <ChangeSet
-            key={`${changeSet.date}-${changeSet.reason}-${changeSet.user}`}
-            data={changeSet}
-          />
-        </>
+          <ChangeSet data={changeSet} />
+        </React.Fragment>
       ))}
     </$Actions>
   );

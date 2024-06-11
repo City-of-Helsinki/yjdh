@@ -61,7 +61,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
 }) => {
   const {
     t,
-    toggleMessagesDrawerVisiblity,
+    toggleMessagesDrawerVisibility,
     openDialog,
     closeDialog,
     closeDoneDialog,
@@ -279,7 +279,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
         )}
 
         <Button
-          onClick={toggleMessagesDrawerVisiblity}
+          onClick={toggleMessagesDrawerVisibility}
           theme="black"
           variant="secondary"
           iconLeft={<IconPen />}
@@ -376,16 +376,16 @@ const HandlingApplicationActions: React.FC<Props> = ({
       <Sidebar
         application={application}
         isOpen={isMessagesDrawerVisible}
-        isReadOnly={
+        messagesReadOnly={
           isApplicationReadOnly ||
           (application.status && HANDLED_STATUSES.includes(application.status))
         }
-        onClose={toggleMessagesDrawerVisiblity}
+        onClose={toggleMessagesDrawerVisibility}
         customItemsMessages={<EditAction application={application} />}
         customItemsNotes={
           <$CustomNotesActions>
             <IconLock />
-            <p>{t('common:messenger.showToHanlderOnly')}</p>
+            <p>{t('common:messenger.showToHandlerOnly')}</p>
           </$CustomNotesActions>
         }
       />

@@ -12,7 +12,11 @@ import AlterationHandlingConfirmationModal from 'benefit/handler/components/alte
 import AlterationHandlingSection from 'benefit/handler/components/alterationHandling/AlterationHandlingSection';
 import AlterationSummary from 'benefit/handler/components/alterationHandling/AlterationSummary';
 import useAlterationHandlingForm from 'benefit/handler/components/alterationHandling/useAlterationHandlingForm';
-import { DEFAULT_MINIMUM_RECOVERY_AMOUNT } from 'benefit/handler/constants';
+import { $CustomNotesActions } from 'benefit/handler/components/applicationReview/actions/handlingApplicationActions/HandlingApplicationActions.sc';
+import Sidebar from 'benefit/handler/components/sidebar/Sidebar';
+import {
+  DEFAULT_MINIMUM_RECOVERY_AMOUNT,
+} from 'benefit/handler/constants';
 import {
   Application,
   ApplicationAlteration,
@@ -22,6 +26,8 @@ import {
   Button,
   IconAlertCircleFill,
   IconCheck,
+  IconLock,
+  IconPen,
   Notification,
   RadioButton,
   SelectionGroup,
@@ -70,6 +76,9 @@ const AlterationHandlingForm = ({
     useState<boolean>(true);
 
   const [isConfirmationModalOpen, setConfirmationModalOpen] =
+    useState<boolean>(false);
+
+  const [isMessagesDrawerVisible, toggleMessagesDrawerVisibility] =
     useState<boolean>(false);
 
   const getErrorMessage = (fieldName: string): string | undefined =>
@@ -239,6 +248,16 @@ const AlterationHandlingForm = ({
             <Button onClick={onClose} theme="black" variant="secondary">
               {t(`${translationBase}.actions.close`)}
             </Button>
+            <Button
+              onClick={() =>
+                toggleMessagesDrawerVisibility(!isMessagesDrawerVisible)
+              }
+              theme="black"
+              variant="secondary"
+              iconLeft={<IconPen />}
+            >
+              {t('common:review.actions.handlingPanel')}
+            </Button>
           </$StickyBarColumn>
           <$StickyBarColumn>
             {hasErrors && isSubmitted && (
@@ -278,6 +297,18 @@ const AlterationHandlingForm = ({
         isOpen={isConfirmationModalOpen}
         isWorking={isSubmitting}
         values={formik.values}
+      />
+      <Sidebar
+        isOpen={isMessagesDrawerVisible}
+        messagesReadOnly
+        application={application}
+        onClose={() => toggleMessagesDrawerVisibility(false)}
+        customItemsNotes={
+          <$CustomNotesActions>
+            <IconLock />
+            <p>{t('common:messenger.showToHandlerOnly')}</p>
+          </$CustomNotesActions>
+        }
       />
     </>
   );
