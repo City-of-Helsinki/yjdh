@@ -1,6 +1,8 @@
 import re
+from datetime import datetime
 from typing import Union
 
+from dateutil.relativedelta import relativedelta
 from django.contrib.postgres.search import (
     SearchQuery,
     SearchRank,
@@ -44,14 +46,23 @@ class SearchView(APIView):
         search_string = (
             request.query_params.get("q", "").strip() if "q" in request.GET else None
         )
-        archived = request.query_params.get("archived") == "1" or False
-        search_from_archival = request.query_params.get("archival") == "1" or False
-
         if search_string is None:
             return Response(
                 {"error": _("Search query 'q' is required")},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        archived = request.query_params.get("archived") == "1" or False
+
+        subsidy_in_effect = None
+        if request.query_params.get("subsidy_in_effect"):
+            subsidy_in_effect = int(request.query_params.get("subsidy_in_effect"))
+
+        years_since_decision = None
+        if request.query_params.get("years_since_decision"):
+            years_since_decision = int(request.query_params.get("years_since_decision"))
+        search_from_archival = request.query_params.get("archival") == "1" or False
+
         filters = _detect_filters(search_string)
         in_memory_filter_str = filters["in_memory_filter_str"]
         search_string = filters["search_string"]
@@ -70,32 +81,65 @@ class SearchView(APIView):
         elif re.search("^\\d+", search_string):
             detected_pattern = SearchPattern.NUMBERS
 
+        queryset = _prepare_queryset(archived, subsidy_in_effect, years_since_decision)
+
         return search_applications(
+            queryset,
             search_string,
             in_memory_filter_str,
             detected_pattern,
-            archived,
             search_from_archival,
         )
 
 
+def _prepare_queryset(archived, subsidy_in_effect, years_since_decision):
+    queryset = Application.objects.filter(archived=archived)
+
+    if subsidy_in_effect and subsidy_in_effect == 1:
+        queryset = queryset.filter(
+            calculation__start_date__lte=datetime.now(),
+            calculation__end_date__gte=datetime.now(),
+        )
+    elif subsidy_in_effect and subsidy_in_effect == 3:
+        queryset = queryset.filter(
+            calculation__end_date__gte=datetime.now().date()
+            - relativedelta(years=subsidy_in_effect)
+        )
+
+    if years_since_decision and years_since_decision > 1:
+        queryset = queryset.filter(
+            batch__isnull=False,
+            batch__decision_date__gte=datetime.now()
+            - relativedelta(years=years_since_decision),
+        )
+
+    return queryset
+
+
 def search_applications(
+    queryset,
     search_string,
     in_memory_filter_str,
     detected_pattern,
-    archived,
     search_from_archival=False,
 ) -> Response:
+    if (search_string == "") and (in_memory_filter_str == ""):
+        data = []
+        if search_from_archival:
+            data = ArchivalApplicationListSerializer(
+                ArchivalApplication.objects.all(), many=True
+            ).data
+        else:
+            data = HandlerApplicationListSerializer(queryset, many=True).data
+        return _create_search_response(None, data, SearchPattern.ALL, "")
+
     # Return early in case of number-like pattern
     if detected_pattern in [SearchPattern.AHJO, SearchPattern.NUMBERS]:
         return _query_and_respond_to_numbers(
-            search_string, detected_pattern, search_from_archival
+            queryset, search_string, detected_pattern, search_from_archival
         )
     elif detected_pattern == SearchPattern.SSN:
-        return _query_and_respond_to_ssn(
-            search_string,
-            detected_pattern,
-        )
+        return _query_and_respond_to_ssn(queryset, search_string, detected_pattern)
     elif detected_pattern == SearchPattern.ARCHIVAL:
         return _query_and_respond_to_archival_application(
             search_string, detected_pattern
@@ -104,7 +148,7 @@ def search_applications(
     # Perform trigram query for company name
     if detected_pattern in [SearchPattern.COMPANY, SearchPattern.IN_MEMORY]:
         results_for_related_company = _query_for_company(
-            archived, search_string, search_from_archival
+            queryset, search_string, search_from_archival
         )
         applications = results_for_related_company["applications"]
         archival_applications = results_for_related_company["archival"]
@@ -122,7 +166,7 @@ def search_applications(
         in_memory_results = _perform_in_memory_search(
             applications,
             detected_pattern,
-            archived,
+            queryset,
             search_string,
             in_memory_filter_str,
         )
@@ -135,12 +179,11 @@ def search_applications(
             in_memory_results_archival = _perform_in_memory_search(
                 archival_data,
                 detected_pattern,
-                archived,
+                queryset,
                 search_string,
                 in_memory_filter_str,
                 True,
             )
-            in_memory_results_archival["data"]
             filtered_data += in_memory_results_archival["data"]
 
         detected_pattern = in_memory_results["detected_pattern"]
@@ -208,16 +251,18 @@ def _get_filter_combinations(app):
     ]
 
 
-def _query_and_respond_to_ssn(search_query_str, detected_pattern):
+def _query_and_respond_to_ssn(
+    queryset,
+    search_query_str,
+    detected_pattern,
+):
     """
     Because of limitation in django-searchable-encrypted-fields,
     filter by exact SSN and if no match is found then try uppercase
     """
-    applications = Application.objects.filter(
-        employee__social_security_number=search_query_str
-    )
+    applications = queryset.filter(employee__social_security_number=search_query_str)
     if applications.count() == 0:
-        applications = Application.objects.filter(
+        applications = queryset.filter(
             employee__social_security_number=search_query_str.upper()
         )
     return _create_search_response(
@@ -241,11 +286,16 @@ def _query_and_respond_to_archival_application(search_query_str, detected_patter
     )
 
 
-def _query_and_respond_to_numbers(search_query_str, detected_pattern, archival=False):
+def _query_and_respond_to_numbers(
+    queryset,
+    search_query_str,
+    detected_pattern,
+    archival=False,
+):
     """
     Perform simple LIKE query for application number, AHJO case ID and company business ID
     """
-    applications = Application.objects.filter(
+    applications = queryset.filter(
         Q(company__business_id__icontains=search_query_str)
         | Q(ahjo_case_id__icontains=search_query_str)
         | Q(application_number__icontains=search_query_str)
@@ -294,7 +344,7 @@ def _create_search_response(
 def _perform_in_memory_search(
     data,
     detected_pattern,
-    archived,
+    queryset,
     search_string,
     in_memory_filter_str,
     archival_applications=False,
@@ -305,9 +355,7 @@ def _perform_in_memory_search(
     # No previous search results, use all applications as haystack
     if len(data) == 0 or search_string == "":
         applications = (
-            ArchivalApplication.objects.all()
-            if archival_applications
-            else Application.objects.filter(archived=archived)
+            ArchivalApplication.objects.all() if archival_applications else queryset
         )
         data = (
             ArchivalApplicationListSerializer(applications, many=True).data
@@ -332,14 +380,13 @@ def _perform_in_memory_search(
     return {**in_memory_results, **{"detected_pattern": detected_pattern}}
 
 
-def _query_for_company(archived, search_string, search_from_archival):
+def _query_for_company(queryset, search_string, search_from_archival):
     search_vectors = SearchVector("company__name")
     query = SearchQuery(search_string, search_type="websearch")
 
     return {
         "applications": (
-            Application.objects.filter(archived=archived)
-            .annotate(
+            queryset.annotate(
                 search=search_vectors,
                 similarity=TrigramSimilarity("company__name", search_string),
                 rank=SearchRank(search_vectors, query),
@@ -348,8 +395,7 @@ def _query_for_company(archived, search_string, search_from_archival):
             .order_by("-similarity", "-handled_at")
         ),
         "archival": (
-            ArchivalApplication.objects.all()
-            .annotate(
+            ArchivalApplication.objects.annotate(
                 search=search_vectors,
                 similarity=TrigramSimilarity("company__name", search_string),
                 rank=SearchRank(search_vectors, query),

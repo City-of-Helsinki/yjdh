@@ -1962,7 +1962,7 @@ class ArchivalApplicationListSerializer(serializers.ModelSerializer):
     employee = serializers.SerializerMethodField(
         "get_employee",
         help_text=(
-            "Timestamp when the application was handled (accepted/rejected/cancelled)"
+            "Wrap employee data in a dictionary to match the structure of the normal applications"
         ),
     )
     calculation = serializers.SerializerMethodField(
