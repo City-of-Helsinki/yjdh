@@ -1,27 +1,41 @@
+from datetime import datetime
+from urllib.parse import urlencode
+
 import pytest
+from dateutil.relativedelta import relativedelta
 from django.core.management import call_command
+from rest_framework.reverse import reverse
 
 from applications.api.v1.search_views import SearchPattern
+from applications.enums import ApplicationBatchStatus
 from applications.models import ArchivalApplication
+from applications.tests.factories import ApplicationBatchFactory
 from applications.tests.test_command_import_archival_applications import (
     ImportArchivalApplicationsTestUtility,
+)
+from calculator.models import Calculation
+
+api_url = reverse(
+    "search_applications",
 )
 
 
 def setup_application_data(application, archived):
-    # Setup some bogus data
-    application.company.company_name = "Pitkänen Ruuskanen Oyj"
+    application.company.name = "Pitkänen Ruuskanen Oyj"
     application.company.save()
 
     application.employee.social_security_number = "040337W935P"
-    application.employee.encrypted_social_security_number = "040337W935P"
     application.employee.first_name = "Mikro Tietokoneinen"
     application.employee.last_name = "Matriisi-Artikkeli"
     application.employee.save()
 
+    application.batch = ApplicationBatchFactory(status=ApplicationBatchStatus.COMPLETED)
+    application.batch.save()
+
     application.application_number = 125010
     application.ahjo_case_id = "HEL 2024-000123"
-    application.archived = archived
+    if archived == 1:
+        application.archived = True
     application.save()
 
     return application
@@ -30,10 +44,10 @@ def setup_application_data(application, archived):
 @pytest.mark.parametrize(
     "q, detected_pattern",
     [
-        ("HEL 2024-000123", SearchPattern.AHJO),
-        ("12345", SearchPattern.NUMBERS),
-        ("0877830-1", SearchPattern.NUMBERS),
-        ("040337W935P", SearchPattern.SSN),
+        ("HEL 2024-123456", SearchPattern.AHJO),
+        ("54321", SearchPattern.NUMBERS),
+        ("0877830-3", SearchPattern.NUMBERS),
+        ("010101W123P", SearchPattern.SSN),
         ("No result Oy", SearchPattern.COMPANY),
         (
             "No result Oy nimi:nobody",
@@ -41,8 +55,14 @@ def setup_application_data(application, archived):
         ),
     ],
 )
-def test_search_with_no_results(handler_api_client, q, detected_pattern):
-    response = handler_api_client.get(f"/v1/search/?q={q}")
+def test_search_with_no_results(handler_api_client, q, detected_pattern, application):
+    application = setup_application_data(application, False)
+    params = urlencode(
+        {
+            "q": q,
+        },
+    )
+    response = handler_api_client.get(f"{api_url}?{params}")
     data = response.json()
     assert data["detected_pattern"] == detected_pattern
     assert len(data["matches"]) == 0
@@ -51,37 +71,37 @@ def test_search_with_no_results(handler_api_client, q, detected_pattern):
 
 
 def test_search_with_no_search_query(handler_api_client):
-    response = handler_api_client.get("/v1/search/")
+    response = handler_api_client.get(reverse("search_applications"))
     assert response.status_code == 400
 
 
 @pytest.mark.parametrize(
     "q, detected_pattern, archived",
     [
-        ("12501", SearchPattern.NUMBERS, False),
-        ("HEL 2024-000", SearchPattern.AHJO, False),
-        ("0877830", SearchPattern.NUMBERS, False),
-        ("040337W935P", SearchPattern.SSN, False),
-        ("Ruskanen As Oy", SearchPattern.COMPANY, False),
+        ("12501", SearchPattern.NUMBERS, 1),
+        ("HEL 2024-000", SearchPattern.AHJO, 1),
+        ("0877830", SearchPattern.NUMBERS, 1),
+        ("040337W935P", SearchPattern.SSN, 1),
+        ("Pitkäne As Oy", SearchPattern.COMPANY, 1),
         (
             "Pitkäne ruskane Ky nimi:matriizi-article",
             f"{SearchPattern.COMPANY} {SearchPattern.IN_MEMORY}",
-            False,
+            1,
         ),
         (
             "Pitkäne ruskane Ky nimi:mikro",
             f"{SearchPattern.COMPANY} {SearchPattern.IN_MEMORY}-fallback",
-            False,
+            1,
         ),
         (
             "nimi:micro tietsikaneinen",
             f"{SearchPattern.ALL} {SearchPattern.IN_MEMORY}",
-            False,
+            1,
         ),
         (
             "nimi:mikro",
             f"{SearchPattern.ALL} {SearchPattern.IN_MEMORY}-fallback",
-            False,
+            1,
         ),
     ],
 )
@@ -89,13 +109,173 @@ def test_search_with_results(
     handler_api_client, q, detected_pattern, archived, application
 ):
     application = setup_application_data(application, archived)
-    response = handler_api_client.get(f"/v1/search/?q={q}")
+
+    params = urlencode(
+        {
+            "q": q,
+            "archived": archived,
+        },
+    )
+    response = handler_api_client.get(f"{api_url}?{params}")
     data = response.json()
 
     assert response.status_code == 200
     assert len(data["matches"]) > 0
     assert data["detected_pattern"] == detected_pattern
     assert data["matches"][0]["application_number"] == application.application_number
+
+
+@pytest.mark.parametrize(
+    "q, detected_pattern, subsidy_in_effect, archived",
+    [
+        ("12501", SearchPattern.NUMBERS, 1, 1),
+        ("HEL 2024-000", SearchPattern.AHJO, 1, 1),
+        ("0877830", SearchPattern.NUMBERS, 1, 1),
+        ("040337W935P", SearchPattern.SSN, 1, 1),
+        ("Pitkäne As Oy", SearchPattern.COMPANY, 1, 1),
+        (
+            "Pitkäne ruskane Ky nimi:matriizi-article",
+            f"{SearchPattern.COMPANY} {SearchPattern.IN_MEMORY}",
+            1,
+            1,
+        ),
+        (
+            "Pitkäne ruskane Ky nimi:mikro",
+            f"{SearchPattern.COMPANY} {SearchPattern.IN_MEMORY}-fallback",
+            1,
+            1,
+        ),
+        (
+            "nimi:micro tietsikaneinen",
+            f"{SearchPattern.ALL} {SearchPattern.IN_MEMORY}",
+            1,
+            1,
+        ),
+        (
+            "nimi:mikro",
+            f"{SearchPattern.ALL} {SearchPattern.IN_MEMORY}-fallback",
+            1,
+            1,
+        ),
+    ],
+)
+def test_search_filter_subsidy_in_effect(
+    handler_api_client, q, detected_pattern, archived, application, subsidy_in_effect
+):
+    application = setup_application_data(application, archived)
+    application.calculation = Calculation(
+        application=application,
+        monthly_pay=1234,
+        vacation_money=123,
+        other_expenses=321,
+        start_date=datetime.now() - relativedelta(days=30),
+        end_date=datetime.now(),
+        state_aid_max_percentage=50,
+        calculated_benefit_amount=0,
+        override_monthly_benefit_amount=None,
+    )
+    application.calculation.save()
+
+    params = urlencode(
+        {
+            "q": q,
+            "archived": archived,
+            "subsidy_in_effect": subsidy_in_effect,
+        },
+    )
+    response = handler_api_client.get(f"{api_url}?{params}")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert len(data["matches"]) > 0
+    assert data["detected_pattern"] == detected_pattern
+    assert data["matches"][0]["application_number"] == application.application_number
+
+    # Subsidy end date is in the past
+    application.calculation.end_date = datetime.now() - relativedelta(days=1)
+    application.calculation.save()
+
+    response = handler_api_client.get(f"{api_url}?{params}")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert len(data["matches"]) == 0
+
+    # Subsidy start / end date is in the future
+    application.calculation.end_date = datetime.now() + relativedelta(days=31)
+    application.calculation.start_date = datetime.now() + relativedelta(days=1)
+    application.calculation.save()
+
+    response = handler_api_client.get(f"{api_url}?{params}")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert len(data["matches"]) == 0
+
+
+@pytest.mark.parametrize(
+    "q, detected_pattern, years_since_decision, archived",
+    [
+        ("12501", SearchPattern.NUMBERS, 3, 1),
+        ("HEL 2024-000", SearchPattern.AHJO, 3, 1),
+        ("0877830", SearchPattern.NUMBERS, 3, 1),
+        ("040337W935P", SearchPattern.SSN, 3, 1),
+        ("Pitkäne As Oy", SearchPattern.COMPANY, 3, 1),
+        (
+            "Pitkäne ruskane Ky nimi:matriizi-article",
+            f"{SearchPattern.COMPANY} {SearchPattern.IN_MEMORY}",
+            3,
+            1,
+        ),
+        (
+            "Pitkäne ruskane Ky nimi:mikro",
+            f"{SearchPattern.COMPANY} {SearchPattern.IN_MEMORY}-fallback",
+            3,
+            1,
+        ),
+        (
+            "nimi:micro tietsikaneinen",
+            f"{SearchPattern.ALL} {SearchPattern.IN_MEMORY}",
+            3,
+            1,
+        ),
+        (
+            "nimi:mikro",
+            f"{SearchPattern.ALL} {SearchPattern.IN_MEMORY}-fallback",
+            3,
+            1,
+        ),
+    ],
+)
+def test_search_filter_years_since_decision(
+    handler_api_client, q, detected_pattern, archived, application, years_since_decision
+):
+    application = setup_application_data(application, archived)
+    application.batch.decision_date = datetime.now() - relativedelta(years=3)
+    application.batch.save()
+
+    params = urlencode(
+        {
+            "q": q,
+            "archived": archived,
+            "years_since_decision": years_since_decision,
+        }
+    )
+
+    response = handler_api_client.get(f"{api_url}?{params}")
+    data = response.json()
+    assert response.status_code == 200
+    assert len(data["matches"]) > 0
+    assert data["detected_pattern"] == detected_pattern
+    assert data["matches"][0]["application_number"] == application.application_number
+
+    # Decision date is one day over three years
+    application.batch.decision_date = datetime.now() - relativedelta(years=3, days=1)
+    application.batch.save()
+    response = handler_api_client.get(f"{api_url}?{params}")
+    data = response.json()
+    assert response.status_code == 200
+    assert len(data["matches"]) == 0
 
 
 @pytest.mark.parametrize(
@@ -114,9 +294,15 @@ def test_search_archival_application(handler_api_client, q, detected_pattern):
     assert archival_applications.count() == 2
 
     searched_app = ArchivalApplication.objects.filter(application_number=q).first()
-    response = handler_api_client.get(f"/v1/search/?q={q}&archival=1")
-    assert response.status_code == 200
 
+    params = urlencode(
+        {
+            "q": q,
+            "archival": 1,
+        },
+    )
+    response = handler_api_client.get(f"{api_url}?{params}")
+    assert response.status_code == 200
     data = response.json()
     assert data["detected_pattern"] == detected_pattern
 
