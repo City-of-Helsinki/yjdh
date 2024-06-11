@@ -11,6 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from lxml import etree
 from lxml.etree import XMLSchema, XMLSchemaParseError, XMLSyntaxError
 
+from applications.enums import ApplicationStatus
 from applications.models import AhjoDecisionText, Application
 from calculator.enums import RowType
 from calculator.models import Calculation, CalculationRow
@@ -103,6 +104,7 @@ class BenefitPeriodRow:
 class AhjoSecretXMLBuilder(AhjoXMLBuilder):
     def generate_xml(self) -> AhjoXMLString:
         context = self.get_context_for_secret_xml()
+
         # Set the locale for this thread to the application's language
         translation.activate(self.application.applicant_language)
 
@@ -185,6 +187,20 @@ class AhjoSecretXMLBuilder(AhjoXMLBuilder):
         return calculation_rows_for_xml
 
     def get_context_for_secret_xml(self) -> dict:
+        """Get the context for the secret XML."""
+        context = {
+            "application": self.application,
+            "benefit_type": _("Salary Benefit"),
+            "language": self.application.applicant_language,
+            "include_calculation_data": False,
+        }
+        if self.application.status == ApplicationStatus.ACCEPTED:
+            context_rest = self.get_context_for_accepted_decision_xml()
+            context = {**context, **context_rest}
+            context["include_calculation_data"] = True
+        return context
+
+    def get_context_for_accepted_decision_xml(self) -> dict:
         total_amount_row, calculation_rows = self._get_period_rows_for_xml(
             self.application.calculation
         )
@@ -201,11 +217,8 @@ class AhjoSecretXMLBuilder(AhjoXMLBuilder):
                 calculation_rows
             )
         return {
-            "application": self.application,
-            "benefit_type": _("Salary Benefit"),
             "calculation_periods": calculation_data_for_xml,
             "total_amount_row": total_amount_row,
-            "language": self.application.applicant_language,
         }
 
     def generate_xml_file_name(self) -> str:
