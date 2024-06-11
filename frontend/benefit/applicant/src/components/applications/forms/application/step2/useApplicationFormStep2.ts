@@ -6,7 +6,6 @@ import { SUPPORTED_LANGUAGES } from 'benefit/applicant/constants';
 import useCompanyQuery from 'benefit/applicant/hooks/useCompanyQuery';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import { useTranslation } from 'benefit/applicant/i18n';
-import { getErrorText } from 'benefit/applicant/utils/forms';
 import {
   APPLICATION_FIELDS_STEP2,
   APPLICATION_FIELDS_STEP2_KEYS,
@@ -14,6 +13,7 @@ import {
   ORGANIZATION_TYPES,
 } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
+import { getErrorText } from 'benefit-shared/utils/forms';
 import isAfter from 'date-fns/isAfter';
 import isWithinInterval from 'date-fns/isWithinInterval';
 import { FormikProps, useFormik } from 'formik';

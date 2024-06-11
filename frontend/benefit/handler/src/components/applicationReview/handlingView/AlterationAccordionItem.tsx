@@ -1,4 +1,5 @@
 import { AxiosError } from 'axios';
+import AlterationCsvButton from 'benefit/handler/components/alterationHandling/AlterationCsvButton';
 import {
   $ActionContainer,
   $AlterationAccordionItem,
@@ -366,6 +367,13 @@ AlterationAccordionItemProps): JSX.Element => {
                 'common:applications.decision.alterationList.item.actions.beginHandling'
               )}
             </Button>
+          )}
+          {alteration.state === ALTERATION_STATE.HANDLED && (
+            <AlterationCsvButton
+              theme="black"
+              alteration={alteration}
+              secondary
+            />
           )}
           {(deletable || cancellable) && (
             <Button

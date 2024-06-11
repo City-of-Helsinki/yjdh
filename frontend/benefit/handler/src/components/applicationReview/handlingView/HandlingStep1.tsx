@@ -1,13 +1,21 @@
 import AlterationAccordionItem from 'benefit/handler/components/applicationReview/handlingView/AlterationAccordionItem';
-import DecisionCalculationAccordion
-  from 'benefit/handler/components/applicationReview/handlingView/DecisionCalculationAccordion';
-import { HANDLED_STATUSES } from 'benefit/handler/constants';
+import DecisionCalculationAccordion from 'benefit/handler/components/applicationReview/handlingView/DecisionCalculationAccordion';
+import { HANDLED_STATUSES, ROUTES } from 'benefit/handler/constants';
 import ReviewStateContext from 'benefit/handler/context/ReviewStateContext';
 import DecisionSummary from 'benefit-shared/components/decisionSummary/DecisionSummary';
 import StatusIcon from 'benefit-shared/components/statusIcon/StatusIcon';
-import { APPLICATION_ORIGINS, APPLICATION_STATUSES, } from 'benefit-shared/constants';
-import { Application, DecisionDetailList } from 'benefit-shared/types/application';
+import {
+  ALTERATION_STATE,
+  APPLICATION_ORIGINS,
+  APPLICATION_STATUSES,
+} from 'benefit-shared/constants';
+import {
+  Application,
+  DecisionDetailList,
+} from 'benefit-shared/types/application';
 import { ErrorData } from 'benefit-shared/types/common';
+import { Button, IconPlus } from 'hds-react';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useMemo } from 'react';
 import Container from 'shared/components/container/Container';
@@ -47,45 +55,66 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
 }) => {
   const { isUploading, handleUpload, reviewState, handleUpdateReviewState, t } =
     useApplicationReview();
+  const router = useRouter();
 
-  const decisionDetailList = useMemo<DecisionDetailList>(() => [
-    {
-      accessor: (app) => <>
-        <StatusIcon status={app.status} />
-        {t(`common:applications.statuses.${app.status}`)}
-      </>,
-      key: 'status',
-    },
-    {
-      accessor: (app) => formatFloatToCurrency(app.calculatedBenefitAmount),
-      key: 'benefitAmount',
-    },
-    {
-      accessor: (app) => `${convertToUIDateFormat(app.startDate)} – ${convertToUIDateFormat(app.endDate)}`,
-      key: 'benefitPeriod',
-    },
-    {
-      accessor: (app) => app.batch?.sectionOfTheLaw,
-      key: 'sectionOfLaw',
-    },
-    {
-      accessor: (app) => app.calculation.grantedAsDeMinimisAid ? t('utility.yes') : t('utility.no'),
-      key: 'grantedAsDeMinimis',
-    },
-    {
-      accessor: (app) => convertToUIDateFormat(app.ahjoDecisionDate),
-      key: 'decisionDate',
-    },
-    {
-      accessor: (app) => app.batch?.handler && getFullName(app.batch.handler.firstName, app.batch.handler.lastName),
-      key: 'handler',
-    },
-    {
-      accessor: (app) => app.batch?.decisionMakerName,
-      key: 'decisionMaker',
-    },
-  ], [t]);
+  const decisionDetailList = useMemo<DecisionDetailList>(
+    () => [
+      {
+        accessor: (app) => (
+          <>
+            <StatusIcon status={app.status} />
+            {t(`common:applications.statuses.${app.status}`)}
+          </>
+        ),
+        key: 'status',
+      },
+      {
+        accessor: (app) => formatFloatToCurrency(app.calculatedBenefitAmount),
+        key: 'benefitAmount',
+      },
+      {
+        accessor: (app) =>
+          `${convertToUIDateFormat(app.startDate)} – ${convertToUIDateFormat(
+            app.endDate
+          )}`,
+        key: 'benefitPeriod',
+      },
+      {
+        accessor: (app) => app.batch?.sectionOfTheLaw,
+        key: 'sectionOfLaw',
+      },
+      {
+        accessor: (app) =>
+          app.calculation.grantedAsDeMinimisAid
+            ? t('utility.yes')
+            : t('utility.no'),
+        key: 'grantedAsDeMinimis',
+      },
+      {
+        accessor: (app) => convertToUIDateFormat(app.ahjoDecisionDate),
+        key: 'decisionDate',
+      },
+      {
+        accessor: (app) =>
+          app.batch?.handler &&
+          getFullName(app.batch.handler.firstName, app.batch.handler.lastName),
+        key: 'handler',
+      },
+      {
+        accessor: (app) => app.batch?.decisionMakerName,
+        key: 'decisionMaker',
+      },
+    ],
+    [t]
+  );
 
+  const hasPendingAlteration = application.alterations.some(
+    (alteration) => alteration.state === ALTERATION_STATE.RECEIVED
+  );
+
+  const isAccepted = application.status === APPLICATION_STATUSES.ACCEPTED;
+
+  const canCreate = !hasPendingAlteration && isAccepted;
 
   return (
     <ReviewStateContext.Provider
@@ -97,7 +126,22 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
       <Container data-testid="application-body">
         <DecisionSummary
           application={application}
-          actions={null}
+          actions={[
+            <Button
+              theme="black"
+              variant={canCreate ? 'secondary' : 'primary'}
+              onClick={() =>
+                router.push(
+                  `${ROUTES.NEW_ALTERATION}?applicationId=${application.id}`
+                )
+              }
+              iconLeft={<IconPlus />}
+              disabled={!canCreate}
+              aria-disabled={!canCreate}
+            >
+              {t('common:applications.decision.actions.reportAlteration')}
+            </Button>,
+          ]}
           itemComponent={AlterationAccordionItem}
           detailList={decisionDetailList}
           extraInformation={<DecisionCalculationAccordion data={application} />}

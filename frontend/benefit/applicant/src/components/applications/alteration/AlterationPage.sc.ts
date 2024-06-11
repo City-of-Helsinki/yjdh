@@ -24,3 +24,11 @@ export const $PageHeading = styled.h1`
 export const $AlterationFormContainer = styled.div`
   margin-top: ${(props) => props.theme.spacingLayout.s};
 `;
+
+export const $AlterationFormButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: ${(props) => props.theme.spacingLayout.s};
+`;

@@ -1,6 +1,5 @@
-import { AxiosError } from 'axios';
+import AlterationFormContainer from 'benefit/applicant/components/applications/alteration/AlterationFormContainer';
 import {
-  $AlterationFormContainer,
   $BackButtonContainer,
   $MainHeaderItem,
   $PageHeader,
@@ -14,7 +13,6 @@ import {
   $PageSubHeading,
   $SpinnerContainer,
 } from 'benefit/applicant/components/applications/Applications.sc';
-import AlterationForm from 'benefit/applicant/components/applications/forms/application/alteration/AlterationForm';
 import ErrorPage from 'benefit/applicant/components/errorPage/ErrorPage';
 import { ROUTES } from 'benefit/applicant/constants';
 import {
@@ -22,20 +20,15 @@ import {
   ALTERATION_TYPE,
   APPLICATION_STATUSES,
 } from 'benefit-shared/constants';
-import { ApplicationAlterationData } from 'benefit-shared/types/application';
 import { isTruthy } from 'benefit-shared/utils/common';
-import camelcaseKeys from 'camelcase-keys';
 import { Button, IconArrowLeft, LoadingSpinner } from 'hds-react';
-import kebabCase from 'lodash/kebabCase';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { useQueryClient } from 'react-query';
 import Container from 'shared/components/container/Container';
 import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
-import hdsToast from 'shared/components/toast/Toast';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
@@ -44,9 +37,11 @@ const AlterationPage = (): JSX.Element => {
 
   const router = useRouter();
   const theme = useTheme();
-  const queryClient = useQueryClient();
 
-  if (isLoading) {
+  const returnToApplication = (): void =>
+    void router.push(`${ROUTES.APPLICATION_FORM}?id=${id}`);
+
+  if (isLoading || (!isError && !application)) {
     return (
       <$SpinnerContainer>
         <LoadingSpinner />
@@ -67,75 +62,6 @@ const AlterationPage = (): JSX.Element => {
       />
     );
   }
-
-  const returnToApplication = (): void =>
-    void router.push(`${ROUTES.APPLICATION_FORM}?id=${id}`);
-
-  const onSuccess = async (
-    response: ApplicationAlterationData
-  ): Promise<void> => {
-    await queryClient.invalidateQueries(['applications', application.id]);
-    returnToApplication();
-
-    const textKey =
-      response.alteration_type === ALTERATION_TYPE.TERMINATION
-        ? 'common:notifications.alterationCreated.bodyTermination'
-        : 'common:notifications.alterationCreated.bodySuspension';
-
-    hdsToast({
-      autoDismissTime: 0,
-      type: 'success',
-      labelText: t('common:notifications.alterationCreated.title'),
-      text: t(textKey, {
-        id: application.applicationNumber,
-      }),
-    });
-  };
-
-  const onError = (error: AxiosError<unknown>): void => {
-    const errorData = camelcaseKeys(error.response?.data ?? {});
-    const errors = [];
-
-    const getErrorItem = (
-      fieldKey: string,
-      itemKey: string,
-      value: string
-    ): JSX.Element => {
-      const fieldLabel = t(
-        `common:applications.alterations.new.fields.${fieldKey}.label`,
-        ''
-      );
-
-      if (!fieldLabel) {
-        return <li key={`${itemKey}`}>{value}</li>;
-      }
-
-      return (
-        <li key={`${itemKey}`}>
-          <a href={`#alteration-${kebabCase(fieldKey)}`}>
-            {fieldLabel}: {value}
-          </a>
-        </li>
-      );
-    };
-
-    Object.entries(errorData).forEach(([key, value]) => {
-      if (Array.isArray(value)) {
-        value.forEach((item: string) =>
-          errors.push(getErrorItem(key, `${key}_${item}`, item))
-        );
-      } else {
-        errors.push(getErrorItem(key, key, value as string));
-      }
-    });
-
-    hdsToast({
-      autoDismissTime: 0,
-      type: 'error',
-      labelText: t('common:error.generic.label'),
-      text: errors,
-    });
-  };
 
   const hasHandledTermination = application.alterations.some(
     (alteration) =>
@@ -194,14 +120,11 @@ const AlterationPage = (): JSX.Element => {
               <p>{t('common:applications.pageHeaders.guideText')}</p>
             </$GridCell>
           </$Grid>
-          <$AlterationFormContainer>
-            <AlterationForm
-              application={application}
-              onCancel={returnToApplication}
-              onSuccess={onSuccess}
-              onError={onError}
-            />
-          </$AlterationFormContainer>
+          <AlterationFormContainer
+            onCancel={returnToApplication}
+            onSuccess={returnToApplication}
+            application={application}
+          />
         </>
       )}
       {hasHandledTermination && (

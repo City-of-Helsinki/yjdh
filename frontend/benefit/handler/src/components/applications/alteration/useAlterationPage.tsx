@@ -1,9 +1,8 @@
-import useApplicationQuery from 'benefit/applicant/hooks/useApplicationQuery';
-import { useTranslation } from 'benefit/applicant/i18n';
+import useApplicationQuery from 'benefit/handler/hooks/useApplicationQuery';
 import { Application } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
-import { TFunction } from 'next-i18next';
+import { TFunction, useTranslation } from 'next-i18next';
 import { useEffect, useState } from 'react';
 
 type AlterationPageProps = {
@@ -19,7 +18,7 @@ const isApplicationLoaded = (id: number | string, status: string): boolean =>
 
 const useAlterationPage = (): AlterationPageProps => {
   const router = useRouter();
-  const id = router?.query?.id?.toString() ?? '';
+  const id = router?.query?.applicationId?.toString() ?? '';
   const { t } = useTranslation();
 
   const [isLoading, setIsLoading] = useState(true);

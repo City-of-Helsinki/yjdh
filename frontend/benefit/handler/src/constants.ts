@@ -19,6 +19,7 @@ export enum ROUTES {
   APPLICATIONS_REPORTS = '/reports',
   ALTERATIONS = '/alterations',
   HANDLE_ALTERATION = '/alterations/handle',
+  NEW_ALTERATION = '/alterations/new',
 }
 
 export enum EXPORT_APPLICATIONS_ROUTES {

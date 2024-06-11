@@ -5,7 +5,7 @@ import {
   Application,
   ApplicationFields,
 } from 'benefit/handler/types/application';
-import { getErrorText } from 'benefit/handler/utils/forms';
+import { getErrorText } from 'benefit-shared/utils/forms';
 import parse from 'date-fns/parse';
 import { FormikProps } from 'formik';
 import { TFunction, useTranslation } from 'next-i18next';

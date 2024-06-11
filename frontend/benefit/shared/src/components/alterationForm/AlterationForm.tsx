@@ -1,27 +1,13 @@
-import { AxiosError } from 'axios';
 import {
-  $ButtonContainer,
   $H2,
-  $SaveActionFormErrorText,
-} from 'benefit/applicant/components/applications/forms/application/alteration/AlterationForm.sc';
-import useAlterationForm from 'benefit/applicant/components/applications/forms/application/alteration/useAlterationForm';
-import { getErrorText } from 'benefit/applicant/utils/forms';
+  $Section,
+} from 'benefit-shared/components/alterationForm/AlterationForm.sc';
 import { ALTERATION_STATE, ALTERATION_TYPE } from 'benefit-shared/constants';
-import {
-  Application,
-  ApplicationAlterationData,
-} from 'benefit-shared/types/application';
-import {
-  Button,
-  DateInput,
-  IconAlertCircleFill,
-  IconArrowRight,
-  RadioButton,
-  SelectionGroup,
-  TextInput,
-} from 'hds-react';
-import React, { useMemo } from 'react';
-import { MutationFunction } from 'react-query';
+import AlterationFormContext from 'benefit-shared/context/AlterationFormContext';
+import { Application } from 'benefit-shared/types/application';
+import { getErrorText } from 'benefit-shared/utils/forms';
+import { DateInput, RadioButton, SelectionGroup, TextInput } from 'hds-react';
+import React, { useContext, useMemo } from 'react';
 import {
   $Grid,
   $GridCell,
@@ -36,19 +22,12 @@ import {
 
 type Props = {
   application: Application;
-  onCancel: () => void;
-  onSuccess?: MutationFunction<void, ApplicationAlterationData>;
-  onError?: (error: AxiosError<unknown>) => void;
 };
 
-const AlterationForm = ({
-  application,
-  onCancel,
-  onSuccess,
-  onError,
-}: Props): JSX.Element => {
-  const { t, formik, language, isSubmitted, isSubmitting, handleSubmit } =
-    useAlterationForm({ application, onSuccess, onError });
+const AlterationForm = ({ application }: Props): JSX.Element => {
+  const { t, formik, language, isSubmitted } = useContext(
+    AlterationFormContext
+  );
 
   const { alterationType, useEinvoice, endDate } = formik.values;
 
@@ -85,7 +64,7 @@ const AlterationForm = ({
 
   /* eslint-disable unicorn/consistent-destructuring */
   return (
-    <section>
+    <$Section>
       <$Grid>
         <$GridCell $colSpan={12}>
           <$H2>{t(`${translationBase}.details`)}</$H2>
@@ -313,31 +292,7 @@ const AlterationForm = ({
           </>
         )}
       </$Grid>
-      <$Hr />
-      <$ButtonContainer>
-        <Button theme="black" variant="secondary" onClick={onCancel}>
-          {t(`${translationBase}.actions.cancel`)}
-        </Button>
-        <Button
-          onClick={handleSubmit}
-          disabled={isSubmitting || (isSubmitted && !formik.isValid)}
-          theme="coat"
-          iconRight={<IconArrowRight />}
-          isLoading={isSubmitting}
-          loadingText={t(`common:utility.submitting`)}
-        >
-          {t(`${translationBase}.actions.submit`)}
-        </Button>
-      </$ButtonContainer>
-      {isSubmitted && !formik.isValid && (
-        <$SaveActionFormErrorText>
-          <IconAlertCircleFill />
-          <p aria-live="polite">
-            {t('common:applications.errors.dirtyOrInvalidForm')}
-          </p>
-        </$SaveActionFormErrorText>
-      )}
-    </section>
+    </$Section>
   );
   /* eslint-enable unicorn/consistent-destructuring */
 };
