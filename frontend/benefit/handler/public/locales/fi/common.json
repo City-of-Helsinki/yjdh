@@ -1654,11 +1654,20 @@
     }
   },
   "search": {
-    "input": {
-      "keyword": {
-        "helperText": "Kirjoita hakemusnumero, työllistettävän nimi tai hetu, työnantajan nimi, y-tunnus tai diaari",
-        "label": "Etsi hakemusta",
-        "placeholder": "Kirjoita hakusana"
+    "fields": {
+      "searchInput": {
+        "keyword": {
+          "helperText": "Kirjoita hakemusnumero, työllistettävän nimi tai hetu, työnantajan nimi, y-tunnus tai diaari",
+          "label": "Etsi hakemusta",
+          "placeholder": "Kirjoita hakusana"
+        }
+      },
+      "filters": {
+        "title": "Suodata hakutuloksia",
+        "decisionDateInThreeYears": "Päätös tehty 3v sisällä",
+        "subsidyInEffectNow": "Tukiaika voimassa",
+        "subsidyInEffectThreeYears": "Tukiaika päättynyt 3v sisällä",
+        "noFilter": "Ei rajausta"
       }
     },
     "performingSearch": "Etsitään…",

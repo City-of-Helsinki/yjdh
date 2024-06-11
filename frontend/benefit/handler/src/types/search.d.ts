@@ -1,6 +1,6 @@
 import { ApplicationData } from 'benefit-shared/types/application';
 
-export interface SearchData {
+export interface SearchResponse {
   q: string;
   matches: ApplicationData[];
   filter: string;

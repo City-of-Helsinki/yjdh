@@ -1,62 +1,21 @@
-import useApplicationsQuery from 'benefit/handler/hooks/useApplicationsQuery';
-import { getBatchDataReceived } from 'benefit/handler/utils/common';
-import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import useSearchApplicationQuery from 'benefit/handler/hooks/useSearchApplicationQuery';
+import { SearchResponse } from 'benefit/handler/types/search';
 import {
   ApplicationData,
   ApplicationListItemData,
 } from 'benefit-shared/types/application';
 import { TFunction, useTranslation } from 'next-i18next';
+import { useEffect } from 'react';
 import { getFullNameListing } from 'shared/utils/application.utils';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 
 interface ApplicationListProps {
   t: TFunction;
-  list: ApplicationListItemData[];
-  shouldShowSkeleton: boolean;
+  searchResults: SearchResponse;
+  isSearchLoading: boolean;
   shouldHideList: boolean;
-  getHeader: (id: string) => string;
-  translationsBase: string;
+  submitSearch: (value: string) => void;
 }
-
-const translationsBase = 'common:applications.list';
-
-export const prepareData = (
-  data: ApplicationData[]
-): ApplicationListItemData[] =>
-  data
-    ? data
-        .sort(
-          (a: ApplicationData, b: ApplicationData): number =>
-            Date.parse(b.handled_at ?? '') - Date.parse(a.handled_at ?? '')
-        )
-        .map((application: ApplicationData): ApplicationListItemData => {
-          const {
-            id = '',
-            employee,
-            company,
-            handled_at,
-            application_number: applicationNum,
-            status,
-            batch,
-            calculation,
-          } = application;
-          return {
-            id,
-            status,
-            companyName: company ? company.name : '-',
-            companyId: company ? company.business_id : '-',
-            employeeName:
-              getFullNameListing(employee?.first_name, employee?.last_name) ||
-              '-',
-            handledAt: convertToUIDateFormat(handled_at) || '-',
-            dataReceived: getBatchDataReceived(status, batch?.created_at),
-            applicationNum,
-            batch: batch ?? null,
-            calculationEndDate:
-              convertToUIDateFormat(calculation?.end_date) || '-',
-          };
-        })
-    : [];
 
 export const prepareSearchData = (
   data: ApplicationData[]
@@ -94,39 +53,41 @@ export const prepareSearchData = (
         })
     : [];
 
-const useApplicationsArchive = (): ApplicationListProps => {
+const useApplicationsArchive = (
+  searchString: string,
+  archived: boolean,
+  includeArchivalApplications: boolean,
+  subsidyInEffect: number,
+  decisionRange: number
+): ApplicationListProps => {
   const { t } = useTranslation();
-  const query = useApplicationsQuery(
-    [
-      APPLICATION_STATUSES.ACCEPTED,
-      APPLICATION_STATUSES.REJECTED,
-      APPLICATION_STATUSES.CANCELLED,
-    ],
-    '-handled_at',
-    false,
-    true
+
+  const {
+    data: searchResults,
+    isLoading: isSearchLoading,
+    error,
+    mutate: getSearchResults,
+  } = useSearchApplicationQuery(
+    searchString,
+    archived,
+    includeArchivalApplications,
+    subsidyInEffect,
+    decisionRange
   );
 
-  const list = prepareData(query?.data);
-
-  const shouldShowSkeleton = query.isLoading;
+  useEffect(() => {
+    getSearchResults('');
+  }, [getSearchResults]);
 
   const shouldHideList =
-    Boolean(query.error) ||
-    (!shouldShowSkeleton &&
-      Array.isArray(query.data) &&
-      query.data.length === 0);
-
-  const getHeader = (id: string): string =>
-    t(`${translationsBase}.columns.${id}`);
+    Boolean(error) || (!isSearchLoading && searchResults?.matches.length === 0);
 
   return {
     t,
-    list: list || [],
-    shouldShowSkeleton,
+    searchResults,
+    isSearchLoading,
     shouldHideList,
-    getHeader,
-    translationsBase,
+    submitSearch: (value: string) => getSearchResults(value),
   };
 };
 

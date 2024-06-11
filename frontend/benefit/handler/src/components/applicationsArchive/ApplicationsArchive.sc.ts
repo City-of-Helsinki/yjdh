@@ -34,3 +34,8 @@ export const $Empty = styled.div`
 export const $TextInput = styled(TextInput)`
   max-width: 660px;
 `;
+
+export const $CompanyNameDisabled = styled.strong`
+  font-weight: 500;
+  opacity: 0.5;
+`;

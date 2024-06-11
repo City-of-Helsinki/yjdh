@@ -4,14 +4,26 @@ import { useMutation, UseMutationResult } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
-import { SearchData } from '../types/search';
+import { SUBSIDY_IN_EFFECT } from '../components/applicationsArchive/ApplicationsArchive';
+import { SearchResponse } from '../types/search';
 
 const useSearchApplicationQuery = (
   q: string,
-  archived = false
-): UseMutationResult<SearchData, Error> => {
+  archived = false,
+  includeArchivalApplications = false,
+  subsidyInEffect = SUBSIDY_IN_EFFECT.RANGE_UNLIMITED,
+  decisionRange = 0
+): UseMutationResult<SearchResponse, Error> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
+
+  const params = {
+    q,
+    ...(archived && { archived: '1' }),
+    ...(includeArchivalApplications && { archival: '1' }),
+    ...(subsidyInEffect && { subsidy_in_effect: subsidyInEffect }),
+    ...(decisionRange && { years_since_decision: decisionRange }),
+  };
 
   const handleError = (): void => {
     showErrorToast(
@@ -19,12 +31,11 @@ const useSearchApplicationQuery = (
       t('common:applications.list.errors.fetch.text', { status: 'error' })
     );
   };
-
-  return useMutation<SearchData, Error>(
+  return useMutation<SearchResponse, Error>(
     ['applicationsList'],
     async () => {
-      const res = axios.get<SearchData>(`${BackendEndpoint.SEARCH}`, {
-        params: { q, archived: archived ? '1' : '0', archival: 1 },
+      const res = axios.get<SearchResponse>(`${BackendEndpoint.SEARCH}`, {
+        params,
       });
       return handleResponse(res);
     },
