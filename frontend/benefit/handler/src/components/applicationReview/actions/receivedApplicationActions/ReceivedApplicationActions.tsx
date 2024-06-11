@@ -1,3 +1,4 @@
+import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
 import useHandlerReviewActions from 'benefit/handler/hooks/useHandlerReviewActions';
 import useUpdateApplicationQuery from 'benefit/handler/hooks/useUpdateApplicationQuery';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
@@ -27,6 +28,8 @@ const ReceivedApplicationActions: React.FC<Props> = ({
 
   const { mutate: updateApplication } = useUpdateApplicationQuery();
 
+  const isNewAhjoMode = useDetermineAhjoMode();
+
   const handleStatusChange = (): void => {
     const currentApplicationData = snakecaseKeys(
       {
@@ -49,6 +52,7 @@ const ReceivedApplicationActions: React.FC<Props> = ({
             }
           : undefined,
         status: APPLICATION_STATUSES.HANDLING,
+        handled_by_ahjo_automation: isNewAhjoMode,
       },
       { deep: true }
     ) as ApplicationData;
