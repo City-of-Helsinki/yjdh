@@ -184,7 +184,6 @@ def test_prepare_case_records(decided_application, settings):
     open_case_attachments = application.attachments.exclude(
         attachment_type__in=[
             AttachmentType.PDF_SUMMARY,
-            AttachmentType.FULL_APPLICATION,
             AttachmentType.DECISION_TEXT_XML,
             AttachmentType.DECISION_TEXT_SECRET_XML,
         ]
