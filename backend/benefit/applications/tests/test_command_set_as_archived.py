@@ -29,6 +29,7 @@ data_for_application = {
     "company_contact_person_phone_number": "05012345678",
     "company_contact_person_email": "test@example.com",
     "company_bank_account_number": "FI8149754587000402",
+    "handled_by_ahjo_automation": False,
 }
 
 

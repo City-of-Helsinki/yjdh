@@ -498,6 +498,7 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     # This is the diary number in Ahjo
     ahjo_case_id = models.CharField(max_length=64, null=True, blank=True)
     ahjo_case_guid = models.UUIDField(null=True, blank=True)
+    handled_by_ahjo_automation = models.BooleanField(default=False)
 
     handler = models.ForeignKey(
         User,
