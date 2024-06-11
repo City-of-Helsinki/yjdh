@@ -748,8 +748,14 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                 {"de_minimis_aid_set": _("Total amount of de minimis aid too large")}
             )
 
-    def _validate_date_range_on_submit(self, start_date, end_date):
+    def _validate_date_range_on_submit(self, start_date, end_date, is_staff_user):
         four_months_ago = date.today() - relativedelta(months=4)
+        if end_date < start_date:
+            raise serializers.ValidationError(
+                {"end_date": _("application end_date can not be less than start_date")}
+            )
+        if is_staff_user:
+            return
         if start_date < four_months_ago:
             raise serializers.ValidationError(
                 {
@@ -758,42 +764,31 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                     )
                 }
             )
-        if end_date < start_date:
-            raise serializers.ValidationError(
-                {"end_date": _("application end_date can not be less than start_date")}
-            )
 
-    def _validate_date_range(self, start_date, end_date, benefit_type):
+    def _validate_date_range(self, start_date, end_date, is_staff_user=False):
         # keeping all start/end date validation together
-        if end_date:
-            if start_date:
-                if end_date < start_date:
-                    raise serializers.ValidationError(
-                        {
-                            "end_date": _(
-                                "application end_date can not be less than start_date"
-                            )
-                        }
-                    )
-                if (
-                    benefit_type != BenefitType.COMMISSION_BENEFIT
-                    and start_date + relativedelta(months=1) - relativedelta(days=1)
-                    > end_date
-                ):
-                    # A commission can have very short duration and doesn't have the 1 month minimum period as the
-                    # employment and salary based benefits.
-                    # These two option have identical duration periods which need to be between 1-12 months.
-                    # (note: we'll allow full month ranges, like 2021-02-01 - 2021-02-28
-                    raise serializers.ValidationError(
-                        {"end_date": _("minimum duration of the benefit is one month")}
-                    )
-                if (
-                    start_date + relativedelta(months=Application.BENEFIT_MAX_MONTHS)
-                    <= end_date
-                ):
-                    raise serializers.ValidationError(
-                        {"end_date": _("maximum duration of the benefit is 12 months")}
-                    )
+        if end_date and start_date:
+            if end_date < start_date:
+                raise serializers.ValidationError(
+                    {
+                        "end_date": _(
+                            "application end_date can not be less than start_date"
+                        )
+                    }
+                )
+            if is_staff_user:
+                return
+            if start_date + relativedelta(months=1) - relativedelta(days=1) > end_date:
+                raise serializers.ValidationError(
+                    {"end_date": _("minimum duration of the benefit is one month")}
+                )
+            if (
+                start_date + relativedelta(months=Application.BENEFIT_MAX_MONTHS)
+                <= end_date
+            ):
+                raise serializers.ValidationError(
+                    {"end_date": _("maximum duration of the benefit is 12 months")}
+                )
 
     def _validate_co_operation_negotiations(
         self, co_operation_negotiations, co_operation_negotiations_description
@@ -1066,17 +1061,21 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         )
 
     def validate(self, data):
+        user = self.get_logged_in_user()
         if (
             self.instance
             and self.instance.handler
             and self.instance.status == ApplicationStatus.HANDLING
-            and self.instance.handler.id != self.context["request"].user.id
+            and self.instance.handler.id != getattr(user, "id", None)
         ):
             raise PermissionDenied(_("You are not allowed to do this action"))
         company = self.get_company(data)
         self._handle_breaking_changes(company, data)
+
         self._validate_date_range(
-            data.get("start_date"), data.get("end_date"), data.get("benefit_type")
+            data.get("start_date"),
+            data.get("end_date"),
+            getattr(user, "is_staff", False),
         )
         self._validate_co_operation_negotiations(
             data.get("co_operation_negotiations"),
@@ -1137,8 +1136,9 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             if previous_status == ApplicationStatus.DRAFT:
                 # Do not validate if previous_status is ADDITIONAL_INFORMATION_NEEDED, as the validation
                 # rule only applies to the first application submission.
+                user = self.get_logged_in_user()
                 self._validate_date_range_on_submit(
-                    instance.start_date, instance.end_date
+                    instance.start_date, instance.end_date, user.is_staff
                 )
 
                 # We are submitting the application here as a handler or a user

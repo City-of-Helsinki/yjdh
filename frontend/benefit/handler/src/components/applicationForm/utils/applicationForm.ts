@@ -167,9 +167,9 @@ const handleErrorFieldKeys = (
 };
 
 const getDates = (values: Application): DatesType => {
-  const minEndDate = getMinEndDate(values.startDate, values.benefitType);
+  const minEndDate = getMinEndDate(values.startDate, true);
   const minEndDateFormatted = convertToUIDateFormat(minEndDate);
-  const maxEndDate = getMaxEndDate(values.startDate, values.benefitType);
+  const maxEndDate = getMaxEndDate(values.startDate, 24);
   const endDate = parseDate(values.endDate);
   const isEndDateEligible =
     endDate &&
