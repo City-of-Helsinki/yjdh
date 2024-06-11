@@ -15,7 +15,7 @@ const useApplicationsQuery = ({
   const { axios, handleResponse } = useBackendAPI();
 
   return useQuery<ApplicationData[], Error>(
-    ['applicationsList', ...status, orderBy],
+    ['applicationsList', ...status, orderBy, isArchived ? '1' : '0'],
     async () => {
       const res = axios.get<ApplicationData[]>(
         `${BackendEndpoint.APPLICATIONS_SIMPLIFIED}`,
