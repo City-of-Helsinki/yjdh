@@ -434,7 +434,8 @@
         "decisionDate": "Päätös tehty",
         "benefitPeriod": "Tukiaika",
         "benefitAmount": "Myönnetty tuki yhteensä",
-        "existingAlterations": "Muutokset työsuhteessa"
+        "existingAlterations": "Muutokset työsuhteessa",
+        "extraDetails": "Lisätiedot"
       },
       "alterationList": {
         "count_one": "{{count}} ilmoitettu muutos työsuhteessa",
@@ -471,6 +472,7 @@
           "cancel": "Peruuta"
         }
       },
+      "grantedAsDeMinimisAid": "Tuki on myönnetty de minimis -tukena",
       "actions": {
         "showDecision": "Tarkastele päätöstä",
         "reportAlteration": "Ilmoita työsuhteen muutoksesta"

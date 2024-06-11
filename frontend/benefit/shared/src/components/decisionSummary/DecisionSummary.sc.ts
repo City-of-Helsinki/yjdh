@@ -1,4 +1,4 @@
-import { respondAbove } from 'shared/styles/mediaQueries';
+import { $Grid } from 'shared/components/forms/section/FormSection.sc';
 import styled from 'styled-components';
 
 export const $DecisionBox = styled.section`
@@ -28,26 +28,10 @@ export const $Subheading = styled.h2`
   font-size: ${(props) => props.theme.fontSize.heading.s};
 `;
 
-export const $DecisionDetails = styled.dl`
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  box-sizing: border-box;
-  margin: 0 calc(${(props) => props.theme.spacing.s} * -1);
-
-  ${respondAbove('md')`
-    flex-direction: row;
-    justify-content: stretch;
-
-    div {
-      width: 25%;
-    }
-  `};
-
-  div {
-    box-sizing: border-box;
-    padding: ${(props) => props.theme.spacing.s};
-  }
+export const $DecisionDetails = styled($Grid)`
+  margin: ${(props) => props.theme.spacing.l} 0
+    ${(props) => props.theme.spacing.s};
+  row-gap: ${(props) => props.theme.spacing.l};
 
   dt {
     font-weight: 500;

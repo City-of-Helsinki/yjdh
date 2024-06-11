@@ -21,14 +21,21 @@ import { ROUTES, SUBMITTED_STATUSES } from 'benefit/applicant/constants';
 import { useAskem } from 'benefit/applicant/hooks/useAnalytics';
 import DecisionSummary from 'benefit-shared/components/decisionSummary/DecisionSummary';
 import StatusIcon from 'benefit-shared/components/statusIcon/StatusIcon';
-import { ALTERATION_STATE, ALTERATION_TYPE, APPLICATION_STATUSES } from 'benefit-shared/constants';
+import {
+  ALTERATION_STATE,
+  ALTERATION_TYPE,
+  APPLICATION_STATUSES,
+} from 'benefit-shared/constants';
 import { DecisionDetailList } from 'benefit-shared/types/application';
 import { Button, IconInfoCircleFill, LoadingSpinner, Stepper } from 'hds-react';
 import { useRouter } from 'next/router';
 import React, { useEffect, useMemo } from 'react';
 import Container from 'shared/components/container/Container';
 import { getFullName } from 'shared/utils/application.utils';
-import { convertToUIDateAndTimeFormat, convertToUIDateFormat } from 'shared/utils/date.utils';
+import {
+  convertToUIDateAndTimeFormat,
+  convertToUIDateFormat,
+} from 'shared/utils/date.utils';
 import { formatFloatToCurrency } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
@@ -75,27 +82,41 @@ const PageContent: React.FC = () => {
     window.scrollTo(0, 0);
   }, [currentStep]);
 
-  const decisionDetailList = useMemo<DecisionDetailList>(() => [
-    {
-      accessor: (app) => <>
-        <StatusIcon status={app.status} />
-        {t(`common:applications.statuses.${app.status}`)}
-      </>,
-      key: 'status',
-    },
-    {
-      accessor: (app) => formatFloatToCurrency(app.calculatedBenefitAmount),
-      key: 'benefitAmount',
-    },
-    {
-      accessor: (app) => `${convertToUIDateFormat(app.startDate)} – ${convertToUIDateFormat(app.endDate)}`,
-      key: 'benefitPeriod',
-    },
-    {
-      accessor: (app) => convertToUIDateFormat(app.ahjoDecisionDate),
-      key: 'decisionDate',
-    }
-  ], [t]);
+  const decisionDetailList = useMemo<DecisionDetailList>(
+    () => [
+      {
+        accessor: (app) => (
+          <>
+            <StatusIcon status={app.status} />
+            {t(`common:applications.statuses.${app.status}`)}
+          </>
+        ),
+        key: 'status',
+      },
+      {
+        accessor: (app) => formatFloatToCurrency(app.calculatedBenefitAmount),
+        key: 'benefitAmount',
+      },
+      {
+        accessor: (app) =>
+          `${convertToUIDateFormat(app.startDate)} – ${convertToUIDateFormat(
+            app.endDate
+          )}`,
+        key: 'benefitPeriod',
+      },
+      {
+        accessor: (app) => convertToUIDateFormat(app.ahjoDecisionDate),
+        key: 'decisionDate',
+      },
+      {
+        accessor: () => t('common:applications.decision.grantedAsDeMinimisAid'),
+        key: 'extraDetails',
+        width: 6,
+        showIf: (app) => app.isGrantedAsDeMinimisAid === true,
+      },
+    ],
+    [t]
+  );
 
   if (isLoading) {
     return (
@@ -198,7 +219,8 @@ const PageContent: React.FC = () => {
         </$PageHeader>
         <DecisionSummary
           application={application}
-          actions={application.status === APPLICATION_STATUSES.ACCEPTED ? (
+          actions={
+            application.status === APPLICATION_STATUSES.ACCEPTED ? (
               <Button
                 theme="coat"
                 onClick={() =>
@@ -210,7 +232,8 @@ const PageContent: React.FC = () => {
               >
                 {t('common:applications.decision.actions.reportAlteration')}
               </Button>
-            ) : null}
+            ) : null
+          }
           itemComponent={AlterationAccordionItem}
           detailList={decisionDetailList}
         />
