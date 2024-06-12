@@ -40,7 +40,7 @@
       "note": ""
     },
     "showEveryone": "Nämä viestit näkyvät hakijalle",
-    "showToHanlderOnly": "Näkyy vain käsittelijöille",
+    "showToHandlerOnly": "Näkyy vain käsittelijöille",
     "compose": "Kirjoita viesti",
     "composeNote": "Kirjoita sisäinen muistiinpano",
     "send": "Lähetä",

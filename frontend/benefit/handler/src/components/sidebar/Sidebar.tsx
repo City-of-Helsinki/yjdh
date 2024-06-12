@@ -11,7 +11,8 @@ import { useSidebar } from './useSidebar';
 
 interface ComponentProps {
   isOpen: boolean;
-  isReadOnly?: boolean;
+  messagesReadOnly?: boolean;
+  notesReadOnly?: boolean;
   onClose?: () => void;
   customItemsMessages?: React.ReactNode;
   customItemsNotes?: React.ReactNode;
@@ -20,14 +21,15 @@ interface ComponentProps {
 
 const Sidebar: React.FC<ComponentProps> = ({
   isOpen,
-  isReadOnly,
+  messagesReadOnly,
+  notesReadOnly,
   customItemsMessages,
   customItemsNotes,
   onClose,
   application,
 }) => {
   const { t, messages, notes, handleSendMessage, handleCreateNote } =
-    useSidebar();
+    useSidebar(application?.id);
 
   return (
     <Drawer
@@ -50,7 +52,7 @@ const Sidebar: React.FC<ComponentProps> = ({
           `}
         >
           <Messages data={messages} variant="message" withScroll />
-          {!isReadOnly && (
+          {!messagesReadOnly && (
             <Actions
               customItems={customItemsMessages}
               sendText={t('common:messenger.send')}
@@ -68,7 +70,7 @@ const Sidebar: React.FC<ComponentProps> = ({
             flex-grow: 1;
           `}
         >
-          {!isReadOnly && (
+          {!notesReadOnly && (
             <Actions
               customItems={customItemsNotes}
               sendText={t('common:messenger.save')}

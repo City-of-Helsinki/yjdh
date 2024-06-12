@@ -2,7 +2,6 @@ import useCreateMessageQuery from 'benefit/handler/hooks/useCreateMessageQuery';
 import useMessagesQuery from 'benefit/handler/hooks/useMessagesQuery';
 import { MESSAGE_TYPES, MESSAGE_URLS } from 'benefit-shared/constants';
 import { Message } from 'benefit-shared/types/application';
-import { useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
 
 type ExtendedComponentProps = {
@@ -13,10 +12,8 @@ type ExtendedComponentProps = {
   handleCreateNote: (note: string) => void;
 };
 
-const useSidebar = (): ExtendedComponentProps => {
+const useSidebar = (applicationId: string): ExtendedComponentProps => {
   const { t } = useTranslation();
-  const router = useRouter();
-  const applicationId = router.query.id ?? '';
   const { data: messages } = useMessagesQuery(
     applicationId.toString(),
     MESSAGE_URLS.MESSAGES
