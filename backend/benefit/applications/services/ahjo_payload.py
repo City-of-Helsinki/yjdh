@@ -272,7 +272,9 @@ def prepare_update_application_payload(
     """Prepare the payload that is sent to Ahjo when an application is updated, \
           in this case it only contains a Records dict"""
     if not pdf_summary.ahjo_version_series_id:
-        raise ValueError("Attachment must have an ahjo_version_series_id for update.")
+        raise ValueError(
+            f"Attachment for {application.application_number} must have a ahjo_version_series_id for update."
+        )
     language = resolve_payload_language(application)
     return {
         "records": [
