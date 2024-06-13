@@ -1432,3 +1432,89 @@ class AhjoDecisionProposalDraft(TimeStampedModel):
         blank=True,
         null=True,
     )
+
+
+class ArchivalApplication(UUIDModel, TimeStampedModel):
+    class Meta:
+        db_table = "bf_applications_archival_application"
+
+    application_number = models.TextField(
+        verbose_name="application_number",
+        blank=True,
+        null=True,
+    )
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        related_name="archival_applications",
+        verbose_name=_("company"),
+        null=True,
+    )
+
+    submitted_at = models.TextField(
+        verbose_name="submitted_at",
+        blank=True,
+        null=True,
+    )
+
+    encrypted_employee_first_name = EncryptedCharField(
+        max_length=128, verbose_name=_("first name"), blank=True
+    )
+
+    encrypted_employee_last_name = EncryptedCharField(
+        max_length=128, verbose_name=_("last name"), blank=True
+    )
+
+    employee_first_name = SearchField(
+        hash_key=settings.EMPLOYEE_FIRST_NAME_HASH_KEY,
+        encrypted_field_name="encrypted_employee_first_name",
+    )
+
+    employee_last_name = SearchField(
+        hash_key=settings.EMPLOYEE_LAST_NAME_HASH_KEY,
+        encrypted_field_name="encrypted_employee_last_name",
+    )
+
+    start_date = models.DateField(
+        verbose_name="start_date",
+        blank=True,
+        null=True,
+    )
+    end_date = models.DateField(
+        verbose_name="end_date",
+        blank=True,
+        null=True,
+    )
+    benefit_type = models.TextField(
+        verbose_name="benefit_type",
+        blank=True,
+        null=True,
+    )
+
+    months_total = models.TextField(
+        verbose_name="months_total",
+        blank=True,
+        null=True,
+    )
+
+    year_of_birth = models.TextField(
+        verbose_name="day_of_birth",
+        blank=True,
+        null=True,
+    )
+
+    status = models.TextField(
+        choices=ApplicationStatus.choices, default=ApplicationStatus.ARCHIVAL
+    )
+
+    handled_at = models.DateField(
+        verbose_name="handled_at",
+        blank=True,
+        null=True,
+    )
+
+    def employee(self):
+        return {
+            "first_name": self.employee_first_name,
+            "last_name": self.employee_last_name,
+        }

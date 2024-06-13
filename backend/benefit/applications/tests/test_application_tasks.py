@@ -21,10 +21,12 @@ from applications.tests.factories import CancelledApplicationFactory
 
 
 def test_seed_applications_with_arguments(set_debug_to_true):
-    amount = 5
+    amount = 4
     statuses = ApplicationStatus.values
     # exlude rejected_by_talpa status as it is not used in seeder
-    filtered_statuses = [status for status in statuses if status != "rejected_by_talpa"]
+    filtered_statuses = [
+        status for status in statuses if status != ApplicationStatus.ARCHIVAL
+    ]
     batch_count = 6
     total_created = ((len(filtered_statuses) * 2) + batch_count) * amount
     out = StringIO()

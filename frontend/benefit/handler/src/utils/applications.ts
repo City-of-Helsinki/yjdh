@@ -37,6 +37,12 @@ export const getTagStyleForStatus = (
       background = theme.colors.infoLight;
       break;
 
+    case APPLICATION_STATUSES.ARCHIVAL:
+      background = theme.colors.info;
+      text = theme.colors.white;
+
+      break;
+
     default:
       background = theme.colors.black40;
       break;

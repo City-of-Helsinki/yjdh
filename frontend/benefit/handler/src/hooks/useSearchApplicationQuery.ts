@@ -24,7 +24,7 @@ const useSearchApplicationQuery = (
     ['applicationsList'],
     async () => {
       const res = axios.get<SearchData>(`${BackendEndpoint.SEARCH}`, {
-        params: { q, archived: archived ? '1' : '0' },
+        params: { q, archived: archived ? '1' : '0', archival: 1 },
       });
       return handleResponse(res);
     },

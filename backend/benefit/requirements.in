@@ -23,6 +23,7 @@ helsinki-profile-gdpr-api
 jinja2
 lxml
 mozilla_django_oidc
+pandas
 pdfkit
 pillow
 psycopg2
