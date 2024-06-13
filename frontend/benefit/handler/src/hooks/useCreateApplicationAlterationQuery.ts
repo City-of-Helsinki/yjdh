@@ -27,7 +27,7 @@ const useCreateApplicationQuery = ({
     'createApplicationAlteration',
     (alteration: ApplicationAlterationData) =>
       handleResponse<ApplicationAlterationData>(
-        axios.post(BackendEndpoint.APPLICATION_ALTERATION, alteration)
+        axios.post(BackendEndpoint.HANDLER_APPLICATION_ALTERATION, alteration)
       ),
     {
       onSuccess,
