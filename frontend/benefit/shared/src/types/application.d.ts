@@ -292,6 +292,7 @@ export type Application = {
   organizationType?: ORGANIZATION_TYPES;
   associationImmediateManagerCheck?: boolean;
   archivedForApplicant?: boolean;
+  isGrantedAsDeMinimisAid?: boolean | null;
   ahjoCaseId?: string;
   ahjoDecisionDate?: string;
   calculatedBenefitAmount?: number;
@@ -451,6 +452,8 @@ export type ApplicationData = {
   company_contact_person_last_name: string;
   talpa_status: TALPA_STATUSES;
   ahjo_case_id: string;
+  archived_for_applicant?: boolean;
+  is_granted_as_de_minimis_aid?: boolean | null;
 };
 
 export type EmployeeData = {
@@ -676,6 +679,8 @@ export type AlterationAccordionItemProps = {
 export type DecisionDetailAccessorFunction = (app: Application) => ReactNode;
 
 export type DecisionDetailList = Array<{
-  accessor: DecisionDetailAccessorFunction;
   key: string;
+  accessor: DecisionDetailAccessorFunction;
+  width?: number;
+  showIf?: (app: Application) => boolean;
 }>;

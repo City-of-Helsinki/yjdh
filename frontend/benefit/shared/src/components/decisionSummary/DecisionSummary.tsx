@@ -8,11 +8,16 @@ import {
   $DecisionNumber,
   $Subheading,
 } from 'benefit-shared/components/decisionSummary/DecisionSummary.sc';
-import { AlterationAccordionItemProps, Application, DecisionDetailList } from 'benefit-shared/types/application';
+import {
+  AlterationAccordionItemProps,
+  Application,
+  DecisionDetailList,
+} from 'benefit-shared/types/application';
 import { isTruthy } from 'benefit-shared/utils/common';
 import { Button, IconLinkExternal } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { ReactNode } from 'react';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 
 type Props = {
@@ -23,7 +28,13 @@ type Props = {
   extraInformation?: ReactNode;
 };
 
-const DecisionSummary = ({ application, actions, itemComponent: ItemComponent, detailList, extraInformation }: Props): JSX.Element => {
+const DecisionSummary = ({
+  application,
+  actions,
+  itemComponent: ItemComponent,
+  detailList,
+  extraInformation,
+}: Props): JSX.Element => {
   const { t } = useTranslation();
 
   if (!application.ahjoCaseId) {
@@ -57,13 +68,21 @@ const DecisionSummary = ({ application, actions, itemComponent: ItemComponent, d
           dateRangeEnd: convertToUIDateFormat(application.endDate),
         })}
       </$Subheading>
-      <$DecisionDetails>
-        {detailList.map((detail) => <div key={detail.key}>
-          <dt>{t(`common:applications.decision.headings.${detail.key}`)}</dt>
-          <dd>
-            {detail.accessor(application) || '-'}
-          </dd>
-        </div>)}
+      <$DecisionDetails as="dl">
+        {detailList.map((detail) => {
+          if (detail.showIf && !detail.showIf(application)) {
+            return null;
+          }
+
+          return (
+            <$GridCell $colSpan={detail.width || 3} key={detail.key}>
+              <dt>
+                {t(`common:applications.decision.headings.${detail.key}`)}
+              </dt>
+              <dd>{detail.accessor(application) || '-'}</dd>
+            </$GridCell>
+          );
+        })}
       </$DecisionDetails>
       {extraInformation}
       <$DecisionActionContainer>
@@ -96,9 +115,7 @@ const DecisionSummary = ({ application, actions, itemComponent: ItemComponent, d
               application={application}
             />
           ))}
-          <$AlterationActionContainer>
-            {actions}
-          </$AlterationActionContainer>
+          <$AlterationActionContainer>{actions}</$AlterationActionContainer>
         </>
       )}
     </$DecisionBox>

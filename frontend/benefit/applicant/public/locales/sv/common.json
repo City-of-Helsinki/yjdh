@@ -434,7 +434,8 @@
         "decisionDate": "Beslutet fattades",
         "benefitPeriod": "Stödtid",
         "benefitAmount": "Beviljat stöd sammanlagt",
-        "existingAlterations": "Ändring i anställningen"
+        "existingAlterations": "Ändring i anställningen",
+        "extraDetails": "Ytterligare information"
       },
       "alterationList": {
         "count_one": "{{count}} ändring i anställningen anmälde",
@@ -471,6 +472,7 @@
           "cancel": "Ångra"
         }
       },
+      "grantedAsDeMinimisAid": "Stödet har beviljats som de minimis-stöd",
       "actions": {
         "showDecision": "Kontrollera beslutet",
         "reportAlteration": "Anmäl ändring i anställningen"

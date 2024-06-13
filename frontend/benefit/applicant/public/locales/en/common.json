@@ -434,7 +434,8 @@
         "decisionDate": "Decision made on",
         "benefitPeriod": "Benefit period",
         "benefitAmount": "Total benefit granted",
-        "existingAlterations": "Change to employment"
+        "existingAlterations": "Change to employment",
+        "extraDetails": "Additional details"
       },
       "alterationList": {
         "count_one": "{{count}} change in employment reported",
@@ -471,6 +472,7 @@
           "cancel": "Cancel"
         }
       },
+      "grantedAsDeMinimisAid": "Benefit was granted as de minimis aid",
       "actions": {
         "showDecision": "View decision",
         "reportAlteration": "Report changes to employment"

@@ -205,6 +205,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "ahjo_case_id",
             "changes",
             "archived_for_applicant",
+            "is_granted_as_de_minimis_aid",
             "alterations",
             "calculated_benefit_amount",
             "ahjo_decision_date",
@@ -233,6 +234,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "total_deminimis_amount",
             "changes",
             "archived_for_applicant",
+            "is_granted_as_de_minimis_aid",
             "alterations",
             "calculated_benefit_amount",
             "ahjo_decision_date",
@@ -465,7 +467,12 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
 
     archived_for_applicant = serializers.SerializerMethodField(
         method_name="get_archived_for_applicant",
-        help_text=("Should be shown in the archive view for an applicant"),
+        help_text="Should be shown in the archive view for an applicant",
+    )
+
+    is_granted_as_de_minimis_aid = serializers.SerializerMethodField(
+        method_name="get_is_granted_as_de_minimis_aid",
+        help_text="Granted as de minimis aid",
     )
 
     def get_applicant_terms_approval_needed(self, obj):
@@ -1423,6 +1430,12 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             ApplicationBatchStatus.SENT_TO_TALPA,
             ApplicationBatchStatus.COMPLETED,
         ] and application.batch.decision_date < date.today() + relativedelta(days=-14)
+
+    def get_is_granted_as_de_minimis_aid(self, application):
+        if not hasattr(application, "calculation"):
+            return None
+
+        return application.calculation.granted_as_de_minimis_aid
 
 
 class ApplicantApplicationStatusChoiceField(serializers.ChoiceField):
