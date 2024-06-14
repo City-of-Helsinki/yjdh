@@ -1513,6 +1513,13 @@ class ApplicantApplicationSerializer(BaseApplicationSerializer):
         many=True,
     )
 
+    handled_by_ahjo_automation = serializers.BooleanField(
+        read_only=True,
+        help_text=(
+            "True if the application has been handled by the Ahjo automation system"
+        ),
+    )
+
     @do_delayed_calls_at_end()  # application recalculation
     def update(self, instance, validated_data):
         if not ApplicationStatus.is_applicant_editable_status(instance.status):
@@ -1522,7 +1529,11 @@ class ApplicantApplicationSerializer(BaseApplicationSerializer):
         return self._base_update(instance, validated_data)
 
     class Meta(BaseApplicationSerializer.Meta):
-        fields = BaseApplicationSerializer.Meta.fields + ["batch", "has_batch"]
+        fields = BaseApplicationSerializer.Meta.fields + [
+            "batch",
+            "has_batch",
+            "handled_by_ahjo_automation",
+        ]
 
 
 class HandlerApplicationSerializer(BaseApplicationSerializer):
@@ -1590,6 +1601,14 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         ),
     )
 
+    handled_by_ahjo_automation = serializers.BooleanField(
+        read_only=False,
+        required=False,
+        help_text=(
+            "True if the application has been handled by the Ahjo automation system"
+        ),
+    )
+
     def get_changes(self, obj):
         return {
             "handler": get_application_change_history_made_by_handler(obj),
@@ -1640,6 +1659,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             "paper_application_date",
             "decision_proposal_draft",
             "handler",
+            "handled_by_ahjo_automation",
         ]
         read_only_fields = BaseApplicationSerializer.Meta.read_only_fields + [
             "latest_decision_comment",

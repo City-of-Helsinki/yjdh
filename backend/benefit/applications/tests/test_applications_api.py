@@ -1307,30 +1307,32 @@ def test_application_status_change_as_applicant(
 
 
 @pytest.mark.parametrize(
-    "from_status,to_status,expected_code",
+    "from_status,to_status,expected_code,handled_by_ahjo_automation",
     [
-        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 200),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING, 200),
+        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 200, False),
+        (ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING, 200, True),
         (
             ApplicationStatus.HANDLING,
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
             200,
+            False,
         ),
         (
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
             ApplicationStatus.HANDLING,
             200,
+            False,
         ),
-        (ApplicationStatus.HANDLING, ApplicationStatus.ACCEPTED, 200),
-        (ApplicationStatus.HANDLING, ApplicationStatus.REJECTED, 200),
-        (ApplicationStatus.HANDLING, ApplicationStatus.CANCELLED, 200),
-        (ApplicationStatus.ACCEPTED, ApplicationStatus.HANDLING, 200),
-        (ApplicationStatus.REJECTED, ApplicationStatus.HANDLING, 200),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.DRAFT, 400),
-        (ApplicationStatus.ACCEPTED, ApplicationStatus.RECEIVED, 400),
-        (ApplicationStatus.CANCELLED, ApplicationStatus.ACCEPTED, 400),
-        (ApplicationStatus.CANCELLED, ApplicationStatus.HANDLING, 400),
-        (ApplicationStatus.REJECTED, ApplicationStatus.DRAFT, 400),
+        (ApplicationStatus.HANDLING, ApplicationStatus.ACCEPTED, 200, False),
+        (ApplicationStatus.HANDLING, ApplicationStatus.REJECTED, 200, False),
+        (ApplicationStatus.HANDLING, ApplicationStatus.CANCELLED, 200, False),
+        (ApplicationStatus.ACCEPTED, ApplicationStatus.HANDLING, 200, False),
+        (ApplicationStatus.REJECTED, ApplicationStatus.HANDLING, 200, False),
+        (ApplicationStatus.RECEIVED, ApplicationStatus.DRAFT, 400, False),
+        (ApplicationStatus.ACCEPTED, ApplicationStatus.RECEIVED, 400, False),
+        (ApplicationStatus.CANCELLED, ApplicationStatus.ACCEPTED, 400, False),
+        (ApplicationStatus.CANCELLED, ApplicationStatus.HANDLING, 400, False),
+        (ApplicationStatus.REJECTED, ApplicationStatus.DRAFT, 400, False),
     ],
 )
 @pytest.mark.parametrize("log_entry_comment", [None, "", "comment"])
@@ -1342,6 +1344,7 @@ def test_application_status_change_as_handler(
     from_status,
     to_status,
     expected_code,
+    handled_by_ahjo_automation,
     log_entry_comment,
     mailoutbox,
 ):
@@ -1359,12 +1362,16 @@ def test_application_status_change_as_handler(
     application.refresh_from_db()
     data = HandlerApplicationSerializer(application).data
     data["status"] = to_status
+
+    data["handled_by_ahjo_automation"] = handled_by_ahjo_automation
+
     if log_entry_comment is not None:
         # the field is write-only
         data["log_entry_comment"] = log_entry_comment
     data["bases"] = []  # as of 2021-10, bases are not used when submitting application
     if to_status in [ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING]:
         add_attachments_to_application(request, application)
+        data["handled_by_ahjo_automation"] = True
     if data["company"]["organization_type"] == OrganizationType.ASSOCIATION:
         data["association_has_business_activities"] = False
         data["association_immediate_manager_check"] = True
@@ -1390,6 +1397,9 @@ def test_application_status_change_as_handler(
         assert (
             application.log_entries.all().first().comment == expected_log_entry_comment
         )
+
+        if handled_by_ahjo_automation:
+            assert response.data["handled_by_ahjo_automation"] is True
 
         if to_status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
             assert application.messages.count() == 1

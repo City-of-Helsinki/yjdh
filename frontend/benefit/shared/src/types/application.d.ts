@@ -454,6 +454,7 @@ export type ApplicationData = {
   ahjo_case_id: string;
   archived_for_applicant?: boolean;
   is_granted_as_de_minimis_aid?: boolean | null;
+  handled_by_ahjo_automation?: boolean;
 };
 
 export type EmployeeData = {

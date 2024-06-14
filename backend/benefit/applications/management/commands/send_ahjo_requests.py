@@ -103,7 +103,12 @@ class Command(BaseCommand):
                 False,
             )
 
-        return applications
+        # Only send applications that have automation enabled
+        applications_with_ahjo_automation = applications.filter(
+            handled_by_ahjo_automation=True
+        )
+
+        return applications_with_ahjo_automation
 
     def handle(self, *args, **options):
         try:
@@ -160,6 +165,7 @@ for {len(applications)} applications"
         request_handler = self._get_request_handler(ahjo_request_type)
 
         counter = 0
+
         for application in applications:
             sent_application, response_text = request_handler(
                 application, ahjo_auth_token

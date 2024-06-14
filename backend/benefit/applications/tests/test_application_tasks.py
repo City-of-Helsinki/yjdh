@@ -224,9 +224,14 @@ def test_send_ahjo_requests(
         else:
             mock_response = f"{uuid.uuid4()}"
 
-        applications = [MagicMock(spec=Application) for _ in range(number_to_send)]
+        applications = [
+            MagicMock(spec=Application, handled_by_ahjo_automation=True)
+            for _ in range(number_to_send)
+        ]
+        applications_qs = MagicMock()
+        applications_qs.filter.return_value = applications
 
-        mock_get_applications.return_value = applications
+        mock_get_applications.return_value = applications_qs
         mock_send_request.return_value = (
             application,
             mock_response,
