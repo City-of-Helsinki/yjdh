@@ -1603,6 +1603,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
 
     handled_by_ahjo_automation = serializers.BooleanField(
         read_only=False,
+        required=False,
         help_text=(
             "True if the application has been handled by the Ahjo automation system"
         ),
