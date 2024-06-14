@@ -26,11 +26,11 @@ def validate_data(row):
 
 
 def validate_company_id(company_id):
-    # Some old company id's have only 6 digits. They should be prefixed with 0.
+    # Some old company id's have only 6 digits. They should be prefixed with 0
     if re.match(r"^\d{6}\-\d", company_id):
         company_id = "0" + company_id
 
-    # Ensure that the company ID is entered in correct format.
+    # Ensure that the company ID is entered in correct format
     if not re.match(r"^\d{7}\-\d", company_id):
         return False
 
@@ -44,15 +44,15 @@ def validate_company_id(company_id):
 
     remainder = total_count % 11
 
-    # Remainder 1 is not valid.
+    # Remainder 1 is not valid
     if remainder == 1:
         return False
 
-    # Remainder 0 leads into checksum 0.
+    # Remainder 0 leads into checksum 0
     if remainder == 0:
         return checksum == remainder
 
-    # If remainder is not 0, the checksum should be remainder deducted from 11.
+    # If remainder is not 0, the checksum should be remainder deducted from 11
     return checksum == 11 - remainder
 
 
@@ -125,8 +125,10 @@ class Command(BaseCommand):
         else:
             filepath = os.path.abspath(os.path.dirname(__file__)) + "/../../resources"
             sheet = read_excel(f"{filepath}/{filename}")
-            columns = sheet.columns
+            columns = [x.strip(" ") for x in sheet.columns]
             values = sheet.values
+
+        columns = [x.strip(" ") for x in columns]
 
         if not production:
             print(
@@ -185,10 +187,9 @@ class Command(BaseCommand):
                 f"\n{application_number}",
             )
 
-            company_found = True
             pruned_data = {k: v for k, v in row.items() if k in KEYS_TO_IMPORT}
 
-            print(pruned_data)
+            company_found = True
             company = None
             company_str = f"{row['company_name']} ({row['business_id']})"
 
