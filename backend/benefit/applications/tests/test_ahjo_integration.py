@@ -717,6 +717,30 @@ def test_generate_ahjo_secret_decision_text_xml(decided_application):
 
 
 @pytest.mark.django_db
+def test_get_applications_for_ahjo_update(
+    multiple_applications_with_ahjo_case_id,
+):
+    for a in multiple_applications_with_ahjo_case_id:
+        AhjoStatus.objects.create(
+            application=a,
+            status=AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
+        )
+
+    applications_for_ahjo_update = Application.objects.get_by_statuses(
+        [
+            ApplicationStatus.ACCEPTED,
+            ApplicationStatus.REJECTED,
+        ],
+        AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
+        False,
+    )
+
+    assert applications_for_ahjo_update.count() == len(
+        multiple_applications_with_ahjo_case_id
+    )
+
+
+@pytest.mark.django_db
 def test_get_applications_for_open_case(
     multiple_decided_applications,
     multiple_decided_applications_for_open_case,
@@ -745,6 +769,23 @@ def test_get_applications_for_open_case(
             ahjo_status.created_at = now + timedelta(days=index)
             ahjo_status.save()
 
+    wanted_open_case_attachments = [
+        AttachmentType.EMPLOYMENT_CONTRACT,
+        AttachmentType.PAY_SUBSIDY_DECISION,
+        AttachmentType.COMMISSION_CONTRACT,
+        AttachmentType.EDUCATION_CONTRACT,
+        AttachmentType.HELSINKI_BENEFIT_VOUCHER,
+        AttachmentType.EMPLOYEE_CONSENT,
+        AttachmentType.OTHER_ATTACHMENT,
+        AttachmentType.FULL_APPLICATION,
+    ]
+
+    unwanted_open_case_attachments = [
+        AttachmentType.PDF_SUMMARY,
+        AttachmentType.DECISION_TEXT_XML,
+        AttachmentType.DECISION_TEXT_SECRET_XML,
+    ]
+
     applications_for_open_case = Application.objects.get_by_statuses(
         [
             ApplicationStatus.HANDLING,
@@ -754,6 +795,12 @@ def test_get_applications_for_open_case(
         AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
         True,
     )
+
+    for app in applications_for_open_case:
+        attachments = app.attachments.all()
+        for a in attachments:
+            assert a.attachment_type in wanted_open_case_attachments
+            assert a.attachment_type not in unwanted_open_case_attachments
     # only handled_applications should be returned as their last  AhjoStatus is SUBMITTED_BUT_NOT_SENT_TO_AHJO
     # and their application status is HANDLING
     assert applications_for_open_case.count() == len(wanted_applications_for_open_case)

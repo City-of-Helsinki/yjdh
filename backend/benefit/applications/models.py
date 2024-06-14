@@ -186,7 +186,6 @@ class ApplicationManager(models.Manager):
         # Excluded attachment types
         excluded_types = [
             AttachmentType.PDF_SUMMARY,
-            AttachmentType.FULL_APPLICATION,
             AttachmentType.DECISION_TEXT_XML,
             AttachmentType.DECISION_TEXT_SECRET_XML,
         ]

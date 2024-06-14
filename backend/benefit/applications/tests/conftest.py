@@ -492,9 +492,29 @@ def pytest_sessionfinish(session, exitstatus):
 
 @pytest.fixture
 def application_with_ahjo_case_id(decided_application):
-    decided_application.ahjo_case_id = "HEL 2024 12345"
-    decided_application.save()
+    decided_application.ahjo_case_id = generate_ahjo_case_id()
     return decided_application
+
+
+@pytest.fixture
+def multiple_applications_with_ahjo_case_id(
+    mock_get_organisation_roles_and_create_company,
+):
+    with factory.Faker.override_default_locale("fi_FI"):
+        applications = DecidedApplicationFactory.create_batch(
+            5, company=mock_get_organisation_roles_and_create_company
+        )
+
+        for a in applications:
+            a.ahjo_case_id = generate_ahjo_case_id()
+            a.save()
+        return applications
+
+
+def generate_ahjo_case_id():
+    year = random.randint(2000, 2099)
+    case_id = random.randint(10000, 99999)
+    return f"HEL {year} {case_id}"
 
 
 @pytest.fixture
