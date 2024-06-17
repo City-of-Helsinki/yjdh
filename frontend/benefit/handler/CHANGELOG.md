@@ -1,5 +1,29 @@
 # Changelog
 
+## [4.1.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.0.0...benefit-handler-v4.1.0) (2024-06-17)
+
+
+### Features
+
+* Add alteration handling page with base components ([#3040](https://github.com/City-of-Helsinki/yjdh/issues/3040)) ([ded3f47](https://github.com/City-of-Helsinki/yjdh/commit/ded3f474c27b8800dceccd5003fc11b581936fd2))
+* Add application alteration creation for handler UI ([#3075](https://github.com/City-of-Helsinki/yjdh/issues/3075)) (HL-1253) ([1f1c84a](https://github.com/City-of-Helsinki/yjdh/commit/1f1c84a23f1dc8c2fdbebe0e2cf47725d0522fe9))
+* Confirmation modal and additional state checks for alteration handler ([#3061](https://github.com/City-of-Helsinki/yjdh/issues/3061)) (HL-1251, HL-1252, HL-1328) ([87e36f8](https://github.com/City-of-Helsinki/yjdh/commit/87e36f8d6f2a825ecfdece6aaf8ec92df5355354))
+* Extend access to handler sidebar notes ([#3084](https://github.com/City-of-Helsinki/yjdh/issues/3084)) (HL-1343) ([c3b0820](https://github.com/City-of-Helsinki/yjdh/commit/c3b082027ad31f29b86834b0391bda612a18a77d))
+* **handler:** Add seen by applicant in the messaging bar ([#2989](https://github.com/City-of-Helsinki/yjdh/issues/2989)) ([c4eca38](https://github.com/City-of-Helsinki/yjdh/commit/c4eca38e2f0b7f609d61493392fefd7beb9d817a))
+* Implement calculator elements for alteration handling ([#3052](https://github.com/City-of-Helsinki/yjdh/issues/3052)) (HL-1155) ([3b3fc93](https://github.com/City-of-Helsinki/yjdh/commit/3b3fc93d0d62b7d21b3ab9e7941e622a99a4591f))
+* Implement search feature and GUI to handler's archive (hl-684) ([#3039](https://github.com/City-of-Helsinki/yjdh/issues/3039)) ([fe9112f](https://github.com/City-of-Helsinki/yjdh/commit/fe9112f0c5f612b8c65b990cc210ca2d95d2fbcc))
+* Implement the app page components for alterations for handler (HL-1247) ([#2982](https://github.com/City-of-Helsinki/yjdh/issues/2982)) ([ffaee28](https://github.com/City-of-Helsinki/yjdh/commit/ffaee289177fb29e38b2e5bf7c107bbfa1d2826f))
+* Import old applications from spreadsheet file (hl-1310) ([#3056](https://github.com/City-of-Helsinki/yjdh/issues/3056)) ([0302394](https://github.com/City-of-Helsinki/yjdh/commit/030239460de752ad03c7aed4d1f1c525449035fc))
+
+
+### Bug Fixes
+
+* Nonfunctional alteration submission and misc. oversights in date overlap detection ([#3068](https://github.com/City-of-Helsinki/yjdh/issues/3068)) ([9e7dfb9](https://github.com/City-of-Helsinki/yjdh/commit/9e7dfb907e6a69031a9a5bfa98e6f1b61ed7ed4e))
+* Prevent app from crashing if application does not have a batch ([bdf394b](https://github.com/City-of-Helsinki/yjdh/commit/bdf394bf352e612cd5da9a745cf36a95b2579ea2))
+* Show apps in tabs based on batch status ([e5ffa13](https://github.com/City-of-Helsinki/yjdh/commit/e5ffa13dbfcca5ce769e3d21822b09eaf17e0871))
+* Typo in translation key ([bbfaf86](https://github.com/City-of-Helsinki/yjdh/commit/bbfaf86057599b146f3aa9560c62e32d07f7e20e))
+* Use correct API endpoint for alteration creation for handler ([#3087](https://github.com/City-of-Helsinki/yjdh/issues/3087)) ([8a4c215](https://github.com/City-of-Helsinki/yjdh/commit/8a4c2150b36fbf950ae13cd70db824bc38ccd43c))
+
 ## [4.0.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v3.5.0...benefit-handler-v4.0.0) (2024-05-17)
 
 
