@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.12.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.11.0...benefit-applicant-v3.12.0) (2024-06-17)
+
+
+### Features
+
+* Add alteration handling page with base components ([#3040](https://github.com/City-of-Helsinki/yjdh/issues/3040)) ([ded3f47](https://github.com/City-of-Helsinki/yjdh/commit/ded3f474c27b8800dceccd5003fc11b581936fd2))
+* Add application alteration creation for handler UI ([#3075](https://github.com/City-of-Helsinki/yjdh/issues/3075)) (HL-1253) ([1f1c84a](https://github.com/City-of-Helsinki/yjdh/commit/1f1c84a23f1dc8c2fdbebe0e2cf47725d0522fe9))
+* **applicant:** Display chat icon in app view for statuses "accepted", "rejected" (hl-1292) ([#3046](https://github.com/City-of-Helsinki/yjdh/issues/3046)) ([fe856be](https://github.com/City-of-Helsinki/yjdh/commit/fe856bea20fbdc890d2f8cc57cd0f504b0d216a7))
+* Confirmation modal and additional state checks for alteration handler ([#3061](https://github.com/City-of-Helsinki/yjdh/issues/3061)) (HL-1251, HL-1252, HL-1328) ([87e36f8](https://github.com/City-of-Helsinki/yjdh/commit/87e36f8d6f2a825ecfdece6aaf8ec92df5355354))
+* Implement calculator elements for alteration handling ([#3052](https://github.com/City-of-Helsinki/yjdh/issues/3052)) (HL-1155) ([3b3fc93](https://github.com/City-of-Helsinki/yjdh/commit/3b3fc93d0d62b7d21b3ab9e7941e622a99a4591f))
+* Implement the app page components for alterations for handler (HL-1247) ([#2982](https://github.com/City-of-Helsinki/yjdh/issues/2982)) ([ffaee28](https://github.com/City-of-Helsinki/yjdh/commit/ffaee289177fb29e38b2e5bf7c107bbfa1d2826f))
+* Show de minimis status in the decision box for applicant ([#3085](https://github.com/City-of-Helsinki/yjdh/issues/3085)) (HL-1266) ([e511717](https://github.com/City-of-Helsinki/yjdh/commit/e5117172964d8635c40a98e50a054339898a7407))
+
+
+### Bug Fixes
+
+* Batch in applicantApplication error ([#3062](https://github.com/City-of-Helsinki/yjdh/issues/3062)) ([86c52e8](https://github.com/City-of-Helsinki/yjdh/commit/86c52e8e2b976774ac8f8b66db7b71b51f0dba7b))
+* Date picking fails on month change ([8681c03](https://github.com/City-of-Helsinki/yjdh/commit/8681c03d97ea5d0eb3ccee91e891830a40d23d17))
+* Include archive status flag in application list query key ([#3082](https://github.com/City-of-Helsinki/yjdh/issues/3082)) ([99d21c9](https://github.com/City-of-Helsinki/yjdh/commit/99d21c9e4b2c728a0e6579d0b6356f8bb7b6c4be))
+* Possibility to open messenger for cancelled application ([#3069](https://github.com/City-of-Helsinki/yjdh/issues/3069)) ([4f75c38](https://github.com/City-of-Helsinki/yjdh/commit/4f75c3813ec75a1154c52f1619b8507b52e636d6))
+
 ## [3.11.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.10.0...benefit-applicant-v3.11.0) (2024-05-14)
 
 
