@@ -34,6 +34,7 @@ from applications.api.v1.status_transition_validator import (
 )
 from applications.benefit_aggregation import get_former_benefit_info
 from applications.enums import (
+    AhjoStatus as AhjoStatusEnum,
     ApplicationActions,
     ApplicationBatchStatus,
     ApplicationOrigin,
@@ -1796,14 +1797,23 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             instance, previous_status, approve_terms, log_entry_comment
         )
         # Extend from base class function.
-        self._archive_application(instance)
+        if instance.status == ApplicationStatus.CANCELLED:
+            self._cancel_application(instance)
         self._assign_handler_if_needed(instance)
         self._remove_batch_if_needed(instance)
 
-    def _archive_application(self, instance):
-        if instance.status == ApplicationStatus.CANCELLED:
-            instance.archived = True
-            instance.save()
+    def _cancel_application(self, instance):
+        instance.archived = True
+        instance.save()
+        has_ahjo_status = instance.ahjo_status.first()
+        if (
+            has_ahjo_status
+            and instance.ahjo_status.latest().status
+            != AhjoStatusEnum.DECISION_PROPOSAL_SENT
+        ):
+            AhjoStatus.objects.create(
+                application=instance, status=AhjoStatusEnum.SCHEDULED_FOR_DELETION
+            )
 
     def _assign_handler_if_needed(self, instance):
         # Assign current user to the application.calculation.handler
