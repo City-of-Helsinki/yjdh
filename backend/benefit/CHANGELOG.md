@@ -1,5 +1,42 @@
 # Changelog
 
+## [2.1.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.0.0...benefit-backend-v2.1.0) (2024-06-17)
+
+
+### Features
+
+* Adjust title of ahjo application record ([#3030](https://github.com/City-of-Helsinki/yjdh/issues/3030)) ([0301827](https://github.com/City-of-Helsinki/yjdh/commit/0301827591d1ec441c859798b193a3318d81f4b5))
+* **applicant:** Display chat icon in app view for statuses "accepted", "rejected" (hl-1292) ([#3046](https://github.com/City-of-Helsinki/yjdh/issues/3046)) ([fe856be](https://github.com/City-of-Helsinki/yjdh/commit/fe856bea20fbdc890d2f8cc57cd0f504b0d216a7))
+* Cancelled status after ahjo delete callback ([#3078](https://github.com/City-of-Helsinki/yjdh/issues/3078)) ([128fae4](https://github.com/City-of-Helsinki/yjdh/commit/128fae47e2c930ad4373d51150cee5eae402d94c))
+* Change failure response to ahjo as 200 ok ([#3054](https://github.com/City-of-Helsinki/yjdh/issues/3054)) ([8f9b5ac](https://github.com/City-of-Helsinki/yjdh/commit/8f9b5ac9d736ec09bc5d325e504a55459a78f0da))
+* **handler:** Add seen by applicant in the messaging bar ([#2989](https://github.com/City-of-Helsinki/yjdh/issues/2989)) ([c4eca38](https://github.com/City-of-Helsinki/yjdh/commit/c4eca38e2f0b7f609d61493392fefd7beb9d817a))
+* Implement search feature and GUI to handler's archive (hl-684) ([#3039](https://github.com/City-of-Helsinki/yjdh/issues/3039)) ([fe9112f](https://github.com/City-of-Helsinki/yjdh/commit/fe9112f0c5f612b8c65b990cc210ca2d95d2fbcc))
+* Implement the app page components for alterations for handler (HL-1247) ([#2982](https://github.com/City-of-Helsinki/yjdh/issues/2982)) ([ffaee28](https://github.com/City-of-Helsinki/yjdh/commit/ffaee289177fb29e38b2e5bf7c107bbfa1d2826f))
+* Import old applications from spreadsheet file (hl-1310) ([#3056](https://github.com/City-of-Helsinki/yjdh/issues/3056)) ([0302394](https://github.com/City-of-Helsinki/yjdh/commit/030239460de752ad03c7aed4d1f1c525449035fc))
+* Run ahjo decision details requests hourly ([#3049](https://github.com/City-of-Helsinki/yjdh/issues/3049)) ([a3f56d9](https://github.com/City-of-Helsinki/yjdh/commit/a3f56d96d134664bb0d1b23af7977b95425b6570))
+* Schedule Ahjo case delete ([#3064](https://github.com/City-of-Helsinki/yjdh/issues/3064)) ([392d7c8](https://github.com/City-of-Helsinki/yjdh/commit/392d7c8ca9fc51153f182a2c1adcaaa488332fb5))
+* Show de minimis status in the decision box for applicant ([#3085](https://github.com/City-of-Helsinki/yjdh/issues/3085)) (HL-1266) ([e511717](https://github.com/City-of-Helsinki/yjdh/commit/e5117172964d8635c40a98e50a054339898a7407))
+* Update  ahjo status after decision details request success ([#3059](https://github.com/City-of-Helsinki/yjdh/issues/3059)) ([7a7bb2c](https://github.com/City-of-Helsinki/yjdh/commit/7a7bb2c332389e0170b98840055af9c313bdf602))
+
+
+### Bug Fixes
+
+* Add missing tags when saving decision text ([#2987](https://github.com/City-of-Helsinki/yjdh/issues/2987)) ([c8372a9](https://github.com/City-of-Helsinki/yjdh/commit/c8372a94af42b185cee4c42194e7b359471a3db5))
+* Batch in applicantApplication error ([#3062](https://github.com/City-of-Helsinki/yjdh/issues/3062)) ([86c52e8](https://github.com/City-of-Helsinki/yjdh/commit/86c52e8e2b976774ac8f8b66db7b71b51f0dba7b))
+* En language in ahjo requests ([#3053](https://github.com/City-of-Helsinki/yjdh/issues/3053)) ([ee32a43](https://github.com/City-of-Helsinki/yjdh/commit/ee32a43ad92994b3b3f8b18e9bd0c3320e7b9887))
+* Excluded full_application attachment ([#3081](https://github.com/City-of-Helsinki/yjdh/issues/3081)) ([2500943](https://github.com/City-of-Helsinki/yjdh/commit/2500943180fd2b635782dbed8d164c0c9fa046d7))
+* Make ahjo_case_id read_only ([#3091](https://github.com/City-of-Helsinki/yjdh/issues/3091)) ([2e623ef](https://github.com/City-of-Helsinki/yjdh/commit/2e623efd412bc922b3eaeb9491ccd2ca42dafec3))
+* Missing parameter for delete request query ([#3073](https://github.com/City-of-Helsinki/yjdh/issues/3073)) ([39fe7d1](https://github.com/City-of-Helsinki/yjdh/commit/39fe7d111ddc06f80f0b15d63c6d86c99e761e21))
+* Move cancelled applications to archive page ([#3079](https://github.com/City-of-Helsinki/yjdh/issues/3079)) (HL-1321) ([9e0c05d](https://github.com/City-of-Helsinki/yjdh/commit/9e0c05d504c3325309872a1de9b9641d67e45571))
+* No calculation data for rejected applications ([#3080](https://github.com/City-of-Helsinki/yjdh/issues/3080)) ([7f7f96d](https://github.com/City-of-Helsinki/yjdh/commit/7f7f96d8a6346a8b8689c4c361b0e3d53affacb5))
+* Nonfunctional alteration submission and misc. oversights in date overlap detection ([#3068](https://github.com/City-of-Helsinki/yjdh/issues/3068)) ([9e7dfb9](https://github.com/City-of-Helsinki/yjdh/commit/9e7dfb907e6a69031a9a5bfa98e6f1b61ed7ed4e))
+* Overwritten test variable ([#3066](https://github.com/City-of-Helsinki/yjdh/issues/3066)) ([7c4ad63](https://github.com/City-of-Helsinki/yjdh/commit/7c4ad634f81bed3ce2d392ce7dd91331b2d33ab9))
+* Prefetch alterations regardless of auth mock flag ([#3043](https://github.com/City-of-Helsinki/yjdh/issues/3043)) ([721dd43](https://github.com/City-of-Helsinki/yjdh/commit/721dd43d45ffa8102612a41770d1ae239ec30bc8))
+* Query handled applications for open case ([#3051](https://github.com/City-of-Helsinki/yjdh/issues/3051)) ([62f45d7](https://github.com/City-of-Helsinki/yjdh/commit/62f45d737d90cc6af27af08280da42ecb488a547))
+* Return missing admin fields ([#3071](https://github.com/City-of-Helsinki/yjdh/issues/3071)) ([988034a](https://github.com/City-of-Helsinki/yjdh/commit/988034a66398c28cf4b03914ca395a866d74ad3f))
+* Send decision also after new records are sent ([#3063](https://github.com/City-of-Helsinki/yjdh/issues/3063)) ([c316246](https://github.com/City-of-Helsinki/yjdh/commit/c3162464840dd5cf59e012f53ab3775008038742))
+* Small code style fix ([#3037](https://github.com/City-of-Helsinki/yjdh/issues/3037)) ([0fb579c](https://github.com/City-of-Helsinki/yjdh/commit/0fb579c6ecede9ce989486ba737fb69ee46f076f))
+
 ## [2.0.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v1.13.0...benefit-backend-v2.0.0) (2024-05-17)
 
 
