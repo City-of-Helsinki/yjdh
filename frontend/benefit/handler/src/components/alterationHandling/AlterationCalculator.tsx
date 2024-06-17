@@ -150,7 +150,8 @@ const AlterationCalculator = ({
             {
               start: rowStartDate,
               end: rowEndDate,
-            }
+            },
+            { inclusive: true }
           )
         ) {
           return sum;
