@@ -239,6 +239,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "alterations",
             "calculated_benefit_amount",
             "ahjo_decision_date",
+            "ahjo_case_id",
         ]
         extra_kwargs = {
             "company_name": {
