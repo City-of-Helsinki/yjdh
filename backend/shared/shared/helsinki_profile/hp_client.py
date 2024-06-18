@@ -112,11 +112,21 @@ class HelsinkiProfileClient:
         """
         Exchanges OIDC access token for API access token using Tunnistus Keycloak
         """
+
+        if "test" in settings.HELSINKI_PROFILE_API_URL:
+            audience = "-test"
+        elif "stage" in settings.HELSINKI_PROFILE_API_URL:
+            audience = "-stage"
+        else:
+            audience = ""  # production
+
+        audience = settings.HELSINKI_PROFILE_API_URL
+
         try:
             response = requests.post(
                 settings.TUNNISTUS_API_TOKENS_ENDPOINT,
                 data={
-                    "audience": "profile-api-test",  # TODO: use setting
+                    "audience": f"profile-api{audience}",  # TODO: use setting
                     "grant_type": "urn:ietf:params:oauth:grant-type:uma-ticket",
                     "permission": "#access",
                 },
