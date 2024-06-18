@@ -120,8 +120,6 @@ class HelsinkiProfileClient:
         else:
             audience = ""  # production
 
-        audience = settings.HELSINKI_PROFILE_API_URL
-
         try:
             response = requests.post(
                 settings.TUNNISTUS_API_TOKENS_ENDPOINT,
