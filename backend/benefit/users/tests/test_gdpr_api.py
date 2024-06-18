@@ -19,8 +19,9 @@ def get_api_token_for_user_with_scopes(user, scopes: list, requests_mock):
     """Build a proper auth token with desired scopes."""
     audience = api_token_auth_settings.AUDIENCE
     issuer = api_token_auth_settings.ISSUER
+    auth_field = api_token_auth_settings.API_AUTHORIZATION_FIELD
     config_url = f"{issuer}/.well-known/openid-configuration"
-    jwks_url = f"{issuer}/protocol/openid-connect/certs"
+    jwks_url = f"{issuer}/jwks"
 
     configuration = {
         "issuer": issuer,
@@ -34,11 +35,11 @@ def get_api_token_for_user_with_scopes(user, scopes: list, requests_mock):
 
     jwt_data = {
         "iss": issuer,
-        "aud": audience,
         "sub": str(user.username),
-        "iat": int(now.timestamp()),
+        "aud": audience,
         "exp": int(expire.timestamp()),
-        "authorization": {"permissions": [{"scopes": scopes}]},
+        "iat": int(now.timestamp()),
+        auth_field: scopes,
     }
     encoded_jwt = jwt.encode(
         jwt_data, key=rsa_key.private_key_pem, algorithm=rsa_key.jose_algorithm
@@ -98,7 +99,7 @@ def test_gdpr_api_requires_authentication(gdpr_api_client):
     assert response.status_code == 401
 
 
-def test_user_can_only_access_their_own_profile(gdpr_api_client, requests_mock):
+def test_user_can_only_access_his_own_profile(gdpr_api_client, requests_mock):
     user = HelsinkiProfileUserFactory()
     auth_header = get_api_token_for_user_with_scopes(
         user,

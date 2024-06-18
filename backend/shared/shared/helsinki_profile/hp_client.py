@@ -18,8 +18,7 @@ class HelsinkiProfileClient:
     def __init__(self):
         if not all(
             [
-                settings.TUNNISTAMO_API_TOKENS_ENDPOINT
-                or settings.TUNNISTUS_API_TOKENS_ENDPOINT,
+                settings.TUNNISTAMO_API_TOKENS_ENDPOINT,
                 settings.HELSINKI_PROFILE_API_URL,
                 settings.HELSINKI_PROFILE_SCOPE,
             ]
@@ -39,25 +38,21 @@ class HelsinkiProfileClient:
 
         :return dict with queried values (value may be `None`)
         """
-
-        api_access_token = ""
-        if hasattr(settings, "TUNNISTUS_API_TOKENS_ENDPOINT"):
-            api_access_token = self.get_api_access_token_tunnistus(oidc_access_token)
-        else:
-            api_access_token = self.get_api_access_token(oidc_access_token)
-
-        try:
-            payload = {
-                "query": """
-                    query myProfile {
-                        myProfile {
-                            verifiedPersonalInformation {
-                                nationalIdentificationNumber
-                            }
+        payload = {
+            "query": """
+                query myProfile {
+                    myProfile {
+                        verifiedPersonalInformation {
+                            nationalIdentificationNumber
                         }
                     }
-                """,
-            }
+                }
+            """,
+        }
+
+        api_access_token = self.get_api_access_token(oidc_access_token)
+
+        try:
             response = requests.post(
                 settings.HELSINKI_PROFILE_API_URL,
                 json=payload,
@@ -65,9 +60,7 @@ class HelsinkiProfileClient:
                 verify=True,
                 headers={"Authorization": "Bearer " + api_access_token},
             )
-            print(response)
             response.raise_for_status()
-            print("get profile: ", response.json())
         except RequestException as e:
             raise HelsinkiProfileException(str(e))
 
@@ -89,7 +82,7 @@ class HelsinkiProfileClient:
 
     def get_api_access_token(self, oidc_access_token):
         """
-        Exchanges OIDC access token for API access token using Tunnistamo
+        Exchanges OIDC access token for API access token
         """
         try:
             response = requests.get(
@@ -99,36 +92,6 @@ class HelsinkiProfileClient:
             )
             response.raise_for_status()
             data = response.json()
-        except RequestException as e:
-            raise HelsinkiProfileException(str(e))
-
-        if settings.HELSINKI_PROFILE_SCOPE not in data:
-            raise HelsinkiProfileException(
-                "Could not obtain API access token, check setting HELSINKI_PROFILE_SCOPE"
-            )
-        return data[settings.HELSINKI_PROFILE_SCOPE]
-
-    def get_api_access_token_tunnistus(self, oidc_access_token):
-        """
-        Exchanges OIDC access token for API access token using Tunnistus Keycloak
-        """
-        try:
-            response = requests.post(
-                settings.TUNNISTUS_API_TOKENS_ENDPOINT,
-                data={
-                    "audience": "profile-api-test",  # TODO: use setting
-                    "grant_type": "urn:ietf:params:oauth:grant-type:uma-ticket",
-                    "permission": "#access",
-                },
-                headers={
-                    "Authorization": f"Bearer {oidc_access_token}",
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-                timeout=10,
-            )
-            response.raise_for_status()
-            data = response.json()
-            print(data)
         except RequestException as e:
             raise HelsinkiProfileException(str(e))
 

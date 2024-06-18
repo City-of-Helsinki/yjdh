@@ -78,13 +78,9 @@ class EauthAuthenticationRequestView(View):
         else:
             if not request.session.get("oidc_access_token"):
                 return self.login_failure()
-            print("session:", request.session.__dict__)
 
             user_info = get_userinfo(request)
-            print("userinfo: ", user_info)
-
             user_ssn = user_info.get("national_id_num")
-            print("user ssn:", user_ssn)
 
             # When authenticating via Tunnistamo, we need to call Helsinki Profile GraphQL API
             if user_ssn is None:
@@ -93,16 +89,10 @@ class EauthAuthenticationRequestView(View):
                         request.session.get("oidc_access_token")
                     )
                 except HelsinkiProfileException as e:
-                    print(
-                        "Reading nationalIdentificationNumber from Helsinki Profile API failed: ",
-                        e,
-                    )
                     logger.warning(
                         f"Reading nationalIdentificationNumber from Helsinki Profile API failed: {str(e)}"
                     )
                     return self.login_failure()
-                print("Profile: ", profile)
-
                 user_ssn = profile["user_ssn"]
 
         if user_ssn is None:
