@@ -17,13 +17,11 @@ export enum FILTER_SELECTION {
 }
 
 export enum SUBSIDY_IN_EFFECT {
-  RANGE_UNLIMITED = null,
   RANGE_THREE_YEARS = 3,
   RANGE_NOW = 'now',
 }
 
 export enum DECISION_RANGE {
-  RANGE_UNLIMITED = null,
   RANGE_THREE_YEARS = 3,
 }
 interface ApplicationListProps {

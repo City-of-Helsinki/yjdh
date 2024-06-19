@@ -22,10 +22,11 @@ const ApplicationsArchive: React.FC = () => {
   const [includeArchivalApplications, setIncludeArchivalApplications] =
     React.useState<boolean>(false);
   const [subsidyInEffect, setSubsidyInEffect] =
-    React.useState<SUBSIDY_IN_EFFECT>(SUBSIDY_IN_EFFECT.RANGE_THREE_YEARS);
-  const [decisionRange, setDecisionRange] = React.useState<number>(
-    DECISION_RANGE.RANGE_UNLIMITED
-  );
+    React.useState<SUBSIDY_IN_EFFECT | null>(
+      SUBSIDY_IN_EFFECT.RANGE_THREE_YEARS
+    );
+  const [decisionRange, setDecisionRange] =
+    React.useState<DECISION_RANGE | null>(null);
   const [filterSelection, setFilterSelection] =
     React.useState<FILTER_SELECTION>(
       FILTER_SELECTION.SUBSIDY_IN_EFFECT_RANGE_THREE_YEARS
@@ -47,8 +48,8 @@ const ApplicationsArchive: React.FC = () => {
 
   const showArchivalApplications = (): void => {
     setIncludeArchivalApplications(!includeArchivalApplications);
-    setSubsidyInEffect(SUBSIDY_IN_EFFECT.RANGE_UNLIMITED);
-    setDecisionRange(DECISION_RANGE.RANGE_UNLIMITED);
+    setSubsidyInEffect(null);
+    setDecisionRange(null);
   };
 
   const handleSubsidyFilterChange = (
@@ -56,7 +57,7 @@ const ApplicationsArchive: React.FC = () => {
     value?: SUBSIDY_IN_EFFECT
   ): void => {
     setFilterSelection(selection);
-    setDecisionRange(DECISION_RANGE.RANGE_UNLIMITED);
+    setDecisionRange(null);
     setSubsidyInEffect(value);
   };
   const handleDecisionFilterChange = (
@@ -65,11 +66,11 @@ const ApplicationsArchive: React.FC = () => {
   ): void => {
     setFilterSelection(selection);
     setDecisionRange(value);
-    setSubsidyInEffect(SUBSIDY_IN_EFFECT.RANGE_UNLIMITED);
+    setSubsidyInEffect(null);
   };
   const handleFiltersOff = (): void => {
-    setDecisionRange(DECISION_RANGE.RANGE_UNLIMITED);
-    setSubsidyInEffect(SUBSIDY_IN_EFFECT.RANGE_UNLIMITED);
+    setDecisionRange(null);
+    setSubsidyInEffect(null);
     setFilterSelection(FILTER_SELECTION.NO_FILTER);
   };
 
