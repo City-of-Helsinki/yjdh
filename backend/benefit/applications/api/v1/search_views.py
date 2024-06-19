@@ -35,6 +35,10 @@ class SearchPattern(models.TextChoices):
     ARCHIVAL = "archived_application", _("Archival application")
 
 
+class SubsidyInEffect(models.TextChoices):
+    NOW = "now", _("Now")
+
+
 class SearchView(APIView):
     permission_classes = [BFIsHandler]
     filter_backends = [
@@ -53,15 +57,13 @@ class SearchView(APIView):
             )
 
         archived = request.query_params.get("archived") == "1" or False
+        search_from_archival = request.query_params.get("archival") == "1" or False
 
-        subsidy_in_effect = None
-        if request.query_params.get("subsidy_in_effect"):
-            subsidy_in_effect = int(request.query_params.get("subsidy_in_effect"))
+        subsidy_in_effect = request.query_params.get("subsidy_in_effect")
 
         years_since_decision = None
         if request.query_params.get("years_since_decision"):
             years_since_decision = int(request.query_params.get("years_since_decision"))
-        search_from_archival = request.query_params.get("archival") == "1" or False
 
         filters = _detect_filters(search_string)
         in_memory_filter_str = filters["in_memory_filter_str"]
@@ -95,18 +97,18 @@ class SearchView(APIView):
 def _prepare_queryset(archived, subsidy_in_effect, years_since_decision):
     queryset = Application.objects.filter(archived=archived)
 
-    if subsidy_in_effect and subsidy_in_effect == 1:
+    if subsidy_in_effect and subsidy_in_effect == SubsidyInEffect.NOW:
         queryset = queryset.filter(
             calculation__start_date__lte=datetime.now(),
             calculation__end_date__gte=datetime.now(),
         )
-    elif subsidy_in_effect and subsidy_in_effect == 3:
+    elif subsidy_in_effect and subsidy_in_effect.isnumeric():
         queryset = queryset.filter(
             calculation__end_date__gte=datetime.now().date()
-            - relativedelta(years=subsidy_in_effect)
+            - relativedelta(years=int(subsidy_in_effect))
         )
 
-    if years_since_decision and years_since_decision > 1:
+    if years_since_decision:
         queryset = queryset.filter(
             batch__isnull=False,
             batch__decision_date__gte=datetime.now()

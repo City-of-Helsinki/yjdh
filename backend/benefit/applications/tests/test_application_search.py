@@ -6,7 +6,7 @@ from dateutil.relativedelta import relativedelta
 from django.core.management import call_command
 from rest_framework.reverse import reverse
 
-from applications.api.v1.search_views import SearchPattern
+from applications.api.v1.search_views import SearchPattern, SubsidyInEffect
 from applications.enums import ApplicationBatchStatus
 from applications.models import ArchivalApplication
 from applications.tests.factories import ApplicationBatchFactory
@@ -128,33 +128,33 @@ def test_search_with_results(
 @pytest.mark.parametrize(
     "q, detected_pattern, subsidy_in_effect, archived",
     [
-        ("12501", SearchPattern.NUMBERS, 1, 1),
-        ("HEL 2024-000", SearchPattern.AHJO, 1, 1),
-        ("0877830", SearchPattern.NUMBERS, 1, 1),
-        ("040337W935P", SearchPattern.SSN, 1, 1),
-        ("Pitkäne As Oy", SearchPattern.COMPANY, 1, 1),
+        ("12501", SearchPattern.NUMBERS, SubsidyInEffect.NOW, 1),
+        ("HEL 2024-000", SearchPattern.AHJO, SubsidyInEffect.NOW, 1),
+        ("0877830", SearchPattern.NUMBERS, SubsidyInEffect.NOW, 1),
+        ("040337W935P", SearchPattern.SSN, SubsidyInEffect.NOW, 1),
+        ("Pitkäne As Oy", SearchPattern.COMPANY, SubsidyInEffect.NOW, 1),
         (
             "Pitkäne ruskane Ky nimi:matriizi-article",
             f"{SearchPattern.COMPANY} {SearchPattern.IN_MEMORY}",
-            1,
+            SubsidyInEffect.NOW,
             1,
         ),
         (
             "Pitkäne ruskane Ky nimi:mikro",
             f"{SearchPattern.COMPANY} {SearchPattern.IN_MEMORY}-fallback",
-            1,
+            SubsidyInEffect.NOW,
             1,
         ),
         (
             "nimi:micro tietsikaneinen",
             f"{SearchPattern.ALL} {SearchPattern.IN_MEMORY}",
-            1,
+            SubsidyInEffect.NOW,
             1,
         ),
         (
             "nimi:mikro",
             f"{SearchPattern.ALL} {SearchPattern.IN_MEMORY}-fallback",
-            1,
+            SubsidyInEffect.NOW,
             1,
         ),
     ],
