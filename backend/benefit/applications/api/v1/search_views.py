@@ -126,14 +126,7 @@ def search_applications(
     search_from_archival=False,
 ) -> Response:
     if search_string == "" and in_memory_filter_str == "":
-        data = []
-        if search_from_archival:
-            data = ArchivalApplicationListSerializer(
-                ArchivalApplication.objects.all(), many=True
-            ).data
-        else:
-            data = HandlerApplicationListSerializer(queryset, many=True).data
-        return _create_search_response(None, data, SearchPattern.ALL, "")
+        return _query_and_respond_to_empty_search(queryset, search_from_archival)
 
     # Return early in case of number-like pattern
     if detected_pattern in [SearchPattern.AHJO, SearchPattern.NUMBERS]:
@@ -251,6 +244,17 @@ def _get_filter_combinations(app):
         app["employee"]["first_name"].lower(),
         app["employee"]["last_name"].lower(),
     ]
+
+
+def _query_and_respond_to_empty_search(queryset, search_from_archival):
+    data = []
+    if search_from_archival:
+        data = ArchivalApplicationListSerializer(
+            ArchivalApplication.objects.all(), many=True
+        ).data
+    else:
+        data = HandlerApplicationListSerializer(queryset, many=True).data
+    return _create_search_response(None, data, SearchPattern.ALL, "")
 
 
 def _query_and_respond_to_ssn(
