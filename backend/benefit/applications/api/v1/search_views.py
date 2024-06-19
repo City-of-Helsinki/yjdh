@@ -123,7 +123,7 @@ def search_applications(
     detected_pattern,
     search_from_archival=False,
 ) -> Response:
-    if (search_string == "") and (in_memory_filter_str == ""):
+    if search_string == "" and in_memory_filter_str == "":
         data = []
         if search_from_archival:
             data = ArchivalApplicationListSerializer(
