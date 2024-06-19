@@ -9,6 +9,23 @@ import { useEffect } from 'react';
 import { getFullNameListing } from 'shared/utils/application.utils';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 
+export enum FILTER_SELECTION {
+  SUBSIDY_IN_EFFECT_RANGE_THREE_YEARS = 1,
+  SUBSIDY_IN_EFFECT_NOW = 2,
+  DECISION_RANGE_THREE_YEARS = 3,
+  NO_FILTER = 4,
+}
+
+export enum SUBSIDY_IN_EFFECT {
+  RANGE_UNLIMITED = null,
+  RANGE_THREE_YEARS = 3,
+  RANGE_NOW = 'now',
+}
+
+export enum DECISION_RANGE {
+  RANGE_UNLIMITED = null,
+  RANGE_THREE_YEARS = 3,
+}
 interface ApplicationListProps {
   t: TFunction;
   searchResults: SearchResponse;
@@ -57,7 +74,7 @@ const useApplicationsArchive = (
   searchString: string,
   archived: boolean,
   includeArchivalApplications: boolean,
-  subsidyInEffect: number,
+  subsidyInEffect: SUBSIDY_IN_EFFECT,
   decisionRange: number
 ): ApplicationListProps => {
   const { t } = useTranslation();

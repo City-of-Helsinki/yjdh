@@ -9,18 +9,12 @@ import {
 
 import ApplicationArchiveList from './ApplicationArchiveList';
 import { $Heading } from './ApplicationsArchive.sc';
-import { useApplicationsArchive } from './useApplicationsArchive';
-
-export enum SUBSIDY_IN_EFFECT {
-  RANGE_UNLIMITED = null,
-  RANGE_THREE_YEARS = 3,
-  RANGE_NOW = 1,
-}
-
-export enum DECISION_RANGE {
-  RANGE_UNLIMITED = null,
-  RANGE_THREE_YEARS = 3,
-}
+import {
+  DECISION_RANGE,
+  FILTER_SELECTION,
+  SUBSIDY_IN_EFFECT,
+  useApplicationsArchive,
+} from './useApplicationsArchive';
 
 const ApplicationsArchive: React.FC = () => {
   const [searchString, setSearchString] = React.useState<string>('');
@@ -32,7 +26,10 @@ const ApplicationsArchive: React.FC = () => {
   const [decisionRange, setDecisionRange] = React.useState<number>(
     DECISION_RANGE.RANGE_UNLIMITED
   );
-  const [filterSelection, setFilterSelection] = React.useState<number>(1);
+  const [filterSelection, setFilterSelection] =
+    React.useState<FILTER_SELECTION>(
+      FILTER_SELECTION.SUBSIDY_IN_EFFECT_RANGE_THREE_YEARS
+    );
 
   const { t, isSearchLoading, searchResults, submitSearch } =
     useApplicationsArchive(
@@ -55,15 +52,15 @@ const ApplicationsArchive: React.FC = () => {
   };
 
   const handleSubsidyFilterChange = (
-    selection: number,
-    value?: number
+    selection: FILTER_SELECTION,
+    value?: SUBSIDY_IN_EFFECT
   ): void => {
     setFilterSelection(selection);
     setDecisionRange(DECISION_RANGE.RANGE_UNLIMITED);
     setSubsidyInEffect(value);
   };
   const handleDecisionFilterChange = (
-    selection: number,
+    selection: FILTER_SELECTION,
     value?: number
   ): void => {
     setFilterSelection(selection);
@@ -73,7 +70,7 @@ const ApplicationsArchive: React.FC = () => {
   const handleFiltersOff = (): void => {
     setDecisionRange(DECISION_RANGE.RANGE_UNLIMITED);
     setSubsidyInEffect(SUBSIDY_IN_EFFECT.RANGE_UNLIMITED);
-    setFilterSelection(4);
+    setFilterSelection(FILTER_SELECTION.NO_FILTER);
   };
 
   return (
@@ -121,10 +118,13 @@ const ApplicationsArchive: React.FC = () => {
                 label={t(
                   'common:search.fields.filters.subsidyInEffectThreeYears'
                 )}
-                checked={filterSelection === 1}
+                checked={
+                  filterSelection ===
+                  FILTER_SELECTION.SUBSIDY_IN_EFFECT_RANGE_THREE_YEARS
+                }
                 onClick={() =>
                   handleSubsidyFilterChange(
-                    1,
+                    FILTER_SELECTION.SUBSIDY_IN_EFFECT_RANGE_THREE_YEARS,
                     SUBSIDY_IN_EFFECT.RANGE_THREE_YEARS
                   )
                 }
@@ -132,9 +132,14 @@ const ApplicationsArchive: React.FC = () => {
               <RadioButton
                 id="subsidy-in-effect"
                 label={t('common:search.fields.filters.subsidyInEffectNow')}
-                checked={filterSelection === 2}
+                checked={
+                  filterSelection === FILTER_SELECTION.SUBSIDY_IN_EFFECT_NOW
+                }
                 onClick={() =>
-                  handleSubsidyFilterChange(2, SUBSIDY_IN_EFFECT.RANGE_NOW)
+                  handleSubsidyFilterChange(
+                    FILTER_SELECTION.SUBSIDY_IN_EFFECT_NOW,
+                    SUBSIDY_IN_EFFECT.RANGE_NOW
+                  )
                 }
               />
               <RadioButton
@@ -142,10 +147,13 @@ const ApplicationsArchive: React.FC = () => {
                 label={t(
                   'common:search.fields.filters.decisionDateInThreeYears'
                 )}
-                checked={filterSelection === 3}
+                checked={
+                  filterSelection ===
+                  FILTER_SELECTION.DECISION_RANGE_THREE_YEARS
+                }
                 onClick={() =>
                   handleDecisionFilterChange(
-                    3,
+                    FILTER_SELECTION.DECISION_RANGE_THREE_YEARS,
                     DECISION_RANGE.RANGE_THREE_YEARS
                   )
                 }
@@ -154,7 +162,7 @@ const ApplicationsArchive: React.FC = () => {
               <RadioButton
                 id="show-all"
                 label={t('common:search.fields.filters.noFilter')}
-                checked={filterSelection === 4}
+                checked={filterSelection === FILTER_SELECTION.NO_FILTER}
                 onClick={() => handleFiltersOff()}
               />
             </SelectionGroup>

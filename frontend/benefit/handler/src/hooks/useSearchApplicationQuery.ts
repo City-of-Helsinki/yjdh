@@ -4,14 +4,14 @@ import { useMutation, UseMutationResult } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
-import { SUBSIDY_IN_EFFECT } from '../components/applicationsArchive/ApplicationsArchive';
+import { SUBSIDY_IN_EFFECT } from '../components/applicationsArchive/useApplicationsArchive';
 import { SearchResponse } from '../types/search';
 
 const useSearchApplicationQuery = (
   q: string,
   archived = false,
   includeArchivalApplications = false,
-  subsidyInEffect = SUBSIDY_IN_EFFECT.RANGE_UNLIMITED,
+  subsidyInEffect: SUBSIDY_IN_EFFECT = SUBSIDY_IN_EFFECT.RANGE_UNLIMITED,
   decisionRange = 0
 ): UseMutationResult<SearchResponse, Error> => {
   const { axios, handleResponse } = useBackendAPI();
