@@ -202,9 +202,9 @@
           "handling": "Käsittelyssä",
           "additional_information_needed": "Odottaa lisätietoja",
           "cancelled": "Peruutettu",
-          "accepted": "Hyväksytty",
+          "accepted": "Myönteinen",
           "rejected": "Hylätty",
-          "archival": "Hyväksytty (vanha)"
+          "archival": "Myönteinen"
         },
         "calculationEndDate": "Viim. tukipäivä"
       },
@@ -264,7 +264,7 @@
       "draft": "Luonnos",
       "additionalInformationNeeded": "Lisätietoja tarvitaan",
       "received": "Vastaanotettu",
-      "accepted": "Hyväksytty",
+      "accepted": "Myönteinen",
       "rejected": "Hylätty",
       "handling": "Käsittelyssä",
       "cancelled": "Peruttu"
@@ -1122,7 +1122,7 @@
       },
       "archived": {
         "ready": "Päätös tehty",
-        "accepted": "Hakemus hyväksyttiin",
+        "accepted": "Hakemus myönteinen",
         "rejected": "Hakemusta ei hyväksytty ",
         "cancelled": "Hakemus peruttiin",
         "decisionMakerName": "Päättäjä",
@@ -1409,7 +1409,7 @@
     "additional_information_needed": "Odottaa lisätietoja",
     "received": "Saapunut",
     "accepted": "Myönteinen",
-    "approved": "Hyväksytty",
+    "approved": "Myönteinen",
     "rejected": "Kielteinen",
     "cancelled": "Peruutettu",
     "handling": "Käsittelyssä"
