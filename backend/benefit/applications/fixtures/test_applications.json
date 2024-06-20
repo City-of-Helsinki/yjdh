@@ -310,5 +310,1119 @@
         "f0478de2-bc68-469d-89ba-543ea040a0f6"
       ]
     }
+  },
+  {
+    "model": "applications.applicationbatch",
+    "pk": "18938478-5bf9-4192-888d-804af997f76d",
+    "fields": {
+      "created_at": "2024-06-13T14:02:03.208Z",
+      "modified_at": "2024-06-13T14:02:13.212Z",
+      "handler": "47ecedfa-351b-4815-bfac-96bdbc640178",
+      "status": "completed",
+      "proposal_for_decision": "accepted",
+      "decision_maker_title": "Päätöksentekijä",
+      "decision_maker_name": "Malli Päättäjä",
+      "section_of_the_law": "§123",
+      "decision_date": "2024-06-13",
+      "p2p_inspector_name": null,
+      "p2p_inspector_email": null,
+      "p2p_checker_name": null,
+      "expert_inspector_name": "Malli Tarkastaja",
+      "expert_inspector_email": "malli.tarkastaja@example.com",
+      "expert_inspector_title": "Tarkastaja",
+      "auto_generated_by_ahjo": false
+    }
+  },
+  {
+    "model": "terms.applicantconsent",
+    "pk": "f0478de2-bc68-469d-89ba-543ea040a0f6",
+    "fields": {
+      "created_at": "2020-12-31T22:00:00Z",
+      "modified_at": "2020-12-31T22:00:00Z",
+      "terms": "1282f1dc-9019-4311-83d0-8f5956634392",
+      "text_fi": "Suostun sähköiseen tiedoksiantoon",
+      "text_en": "translation TBD",
+      "text_sv": "translation TBD",
+      "ordering": 4
+    }
+  },
+  {
+    "model": "terms.applicantconsent",
+    "pk": "d9a849c1-3700-4b04-9224-37d29c7abddf",
+    "fields": {
+      "created_at": "2020-12-31T22:00:00Z",
+      "modified_at": "2020-12-31T22:00:00Z",
+      "terms": "1282f1dc-9019-4311-83d0-8f5956634392",
+      "text_fi": "Vakuutan, että yrityksellä ei ole verovelkoja",
+      "text_en": "translation TBD",
+      "text_sv": "translation TBD",
+      "ordering": 3
+    }
+  },
+  {
+    "model": "terms.applicantconsent",
+    "pk": "061ed4a3-2195-46e0-a7d6-0859671bb277",
+    "fields": {
+      "created_at": "2020-12-31T22:00:00Z",
+      "modified_at": "2020-12-31T22:00:00Z",
+      "terms": "1282f1dc-9019-4311-83d0-8f5956634392",
+      "text_fi": "Vakuutan, että ilmoittamani pankkitili on yrityksen virallinen tili ja että minulla on oikeus hakea Helsinki-lisää organisaation puolesta",
+      "text_en": "translation TBD",
+      "text_sv": "translation TBD",
+      "ordering": 1
+    }
+  },
+  {
+    "model": "terms.applicantconsent",
+    "pk": "1282f1dc-9019-4311-83d0-8f5956634392",
+    "fields": {
+      "created_at": "2020-12-31T22:00:00Z",
+      "modified_at": "2020-12-31T22:00:00Z",
+      "terms": "1282f1dc-9019-4311-83d0-8f5956634392",
+      "text_fi": "Hyväksyn edellä mainitut ehdot",
+      "text_en": "translation TBD",
+      "text_sv": "translation TBD",
+      "ordering": 0
+    }
+  },
+  {
+    "model": "terms.terms",
+    "pk": "1282f1dc-9019-4311-83d0-8f5956634392",
+    "fields": {
+      "created_at": "2020-12-31T22:00:00Z",
+      "modified_at": "2020-12-31T22:00:00Z",
+      "terms_type": "applicant_terms",
+      "terms_md_fi": "# Applicant terms",
+      "terms_md_en": "# Hakuehdot",
+      "terms_md_sv": "# Sökandevillkor",
+      "effective_from": "2021-01-01",
+      "terms_pdf_fi": "/var/media/please_upload_actual_pdf_manually.pdf",
+      "terms_pdf_en": "/var/media/please_upload_actual_pdf_manually.pdf",
+      "terms_pdf_sv": "/var/media/please_upload_actual_pdf_manually.pdf"
+    }
+  },
+  {
+    "model": "applications.application",
+    "pk": "3544c528-73cc-4a08-8240-09f713a14990",
+    "fields": {
+      "created_at": "2024-06-13T13:36:57.757Z",
+      "modified_at": "2024-06-13T14:04:17.252Z",
+      "company": "746afc66-6f5a-4cb4-805f-4b58380b4745",
+      "status": "accepted",
+      "talpa_status": "successfully_sent_to_talpa",
+      "application_origin": "applicant",
+      "application_number": 126015,
+      "company_name": "Automaattinen Testaus Keskus Oy",
+      "company_form": "oy",
+      "company_form_code": 16,
+      "company_department": "",
+      "official_company_street_address": "Reikäkorttitehtaankatu 3",
+      "official_company_city": "Helsinki",
+      "official_company_postcode": "00120",
+      "use_alternative_address": false,
+      "alternative_company_street_address": "",
+      "alternative_company_city": "",
+      "alternative_company_postcode": "",
+      "company_bank_account_number": "FI2112345600000785",
+      "company_contact_person_first_name": "Testi",
+      "company_contact_person_last_name": "Hakija",
+      "company_contact_person_phone_number": "+358505555555",
+      "company_contact_person_email": "testi.hakija@example.com",
+      "association_has_business_activities": null,
+      "applicant_language": "fi",
+      "association_immediate_manager_check": null,
+      "co_operation_negotiations": false,
+      "co_operation_negotiations_description": "",
+      "pay_subsidy_granted": "granted",
+      "pay_subsidy_percent": 50,
+      "additional_pay_subsidy_percent": null,
+      "apprenticeship_program": true,
+      "archived": true,
+      "application_step": "step_1",
+      "benefit_type": "salary_benefit",
+      "start_date": "2024-06-17",
+      "end_date": "2024-10-17",
+      "paper_application_date": null,
+      "de_minimis_aid": true,
+      "batch": "18938478-5bf9-4192-888d-804af997f76d",
+      "ahjo_case_id": "HEL 2024-999992",
+      "ahjo_case_guid": "dbb01a61-2937-4613-9052-e1c2ecae183f",
+      "handler": "47ecedfa-351b-4815-bfac-96bdbc640178",
+      "bases": []
+    }
+  },
+  {
+    "model": "calculator.trainingcompensation",
+    "pk": "7a3acb7f-251a-499a-ae5e-7ba0fbe5fdf6",
+    "fields": {
+      "created_at": "2024-06-13T13:50:26.424Z",
+      "modified_at": "2024-06-13T13:50:58.061Z",
+      "application": "3544c528-73cc-4a08-8240-09f713a14990",
+      "ordering": 2,
+      "start_date": "2024-07-23",
+      "end_date": "2024-07-29",
+      "monthly_amount": "100.00"
+    }
+  },
+  {
+    "model": "calculator.trainingcompensation",
+    "pk": "dfe29ccf-663f-4366-bc97-da339832f6cc",
+    "fields": {
+      "created_at": "2024-06-13T13:50:26.422Z",
+      "modified_at": "2024-06-13T13:50:58.059Z",
+      "application": "3544c528-73cc-4a08-8240-09f713a14990",
+      "ordering": 1,
+      "start_date": "2024-07-07",
+      "end_date": "2024-07-17",
+      "monthly_amount": "200.00"
+    }
+  },
+  {
+    "model": "calculator.trainingcompensation",
+    "pk": "381f10ab-ec16-4cbc-9e30-edcca69c0523",
+    "fields": {
+      "created_at": "2024-06-13T13:50:26.413Z",
+      "modified_at": "2024-06-13T13:50:58.056Z",
+      "application": "3544c528-73cc-4a08-8240-09f713a14990",
+      "ordering": 0,
+      "start_date": "2024-06-25",
+      "end_date": "2024-07-06",
+      "monthly_amount": "300.00"
+    }
+  },
+  {
+    "model": "calculator.paysubsidy",
+    "pk": "fb1bd224-4a01-45ad-a95c-2b0cc2cc07a4",
+    "fields": {
+      "created_at": "2024-06-13T13:43:35.578Z",
+      "modified_at": "2024-06-13T13:50:58.054Z",
+      "application": "3544c528-73cc-4a08-8240-09f713a14990",
+      "ordering": 0,
+      "start_date": "2024-06-17",
+      "end_date": "2024-08-14",
+      "pay_subsidy_percent": 50,
+      "work_time_percent": "65.00",
+      "disability_or_illness": false
+    }
+  },
+  {
+    "model": "calculator.calculation",
+    "pk": "a698bcb1-abea-4da1-a447-cb3742017afe",
+    "fields": {
+      "created_at": "2024-06-13T13:43:35.580Z",
+      "modified_at": "2024-06-13T14:01:53.857Z",
+      "handler": "47ecedfa-351b-4815-bfac-96bdbc640178",
+      "application": "3544c528-73cc-4a08-8240-09f713a14990",
+      "monthly_pay": "1000.00",
+      "vacation_money": "0.00",
+      "other_expenses": "500.00",
+      "start_date": "2024-06-17",
+      "end_date": "2024-10-17",
+      "state_aid_max_percentage": 50,
+      "calculated_benefit_amount": "1865.00",
+      "override_monthly_benefit_amount": null,
+      "granted_as_de_minimis_aid": false,
+      "target_group_check": false,
+      "override_monthly_benefit_amount_comment": ""
+    }
+  },
+  {
+    "model": "terms.applicanttermsapproval",
+    "pk": "0efef7ae-9228-4d88-bcd4-f6288477f92c",
+    "fields": {
+      "created_at": "2024-06-13T13:43:35.567Z",
+      "modified_at": "2024-06-13T13:43:35.567Z",
+      "approved_at": "2024-06-13T13:43:35.567Z",
+      "approved_by": "47ecedfa-351b-4815-bfac-96bdbc640178",
+      "terms": "1282f1dc-9019-4311-83d0-8f5956634392",
+      "application": "3544c528-73cc-4a08-8240-09f713a14990",
+      "selected_applicant_consents": [
+        "1282f1dc-9019-4311-83d0-8f5956634392",
+        "061ed4a3-2195-46e0-a7d6-0859671bb277",
+        "d9a849c1-3700-4b04-9224-37d29c7abddf",
+        "f0478de2-bc68-469d-89ba-543ea040a0f6"
+      ]
+    }
+  },
+  {
+    "model": "applications.ahjodecisionproposaldraft",
+    "pk": 36,
+    "fields": {
+      "created_at": "2024-06-13T13:36:57.794Z",
+      "modified_at": "2024-06-13T13:36:57.794Z",
+      "application": "3544c528-73cc-4a08-8240-09f713a14990",
+      "review_step": "1",
+      "status": null,
+      "log_entry_comment": null,
+      "granted_as_de_minimis_aid": false,
+      "handler_role": null,
+      "decision_text": null,
+      "justification_text": null
+    }
+  },
+  {
+    "model": "applications.ahjostatus",
+    "pk": 27,
+    "fields": {
+      "created_at": "2024-06-13T13:43:35.585Z",
+      "modified_at": "2024-06-13T13:43:35.585Z",
+      "status": "submitted_but_not_sent_to_ahjo",
+      "application": "3544c528-73cc-4a08-8240-09f713a14990"
+    }
+  },
+  {
+    "model": "applications.reviewstate",
+    "pk": "3544c528-73cc-4a08-8240-09f713a14990",
+    "fields": {
+      "paper": false,
+      "company": false,
+      "company_contact_person": false,
+      "de_minimis_aids": false,
+      "co_operation_negotiations": false,
+      "employee": false,
+      "pay_subsidy": false,
+      "benefit": false,
+      "employment": false,
+      "approval": false
+    }
+  },
+  {
+    "model": "applications.attachment",
+    "pk": "d7bf0215-a67a-4293-a3e5-1df46ed7c436",
+    "fields": {
+      "created_at": "2024-06-13T13:43:11.416Z",
+      "modified_at": "2024-06-13T13:43:11.416Z",
+      "application": "3544c528-73cc-4a08-8240-09f713a14990",
+      "attachment_type": "pay_subsidy_decision",
+      "content_type": "image/jpeg",
+      "attachment_file": "Find_9hvj5yH.jpg",
+      "ahjo_version_series_id": null,
+      "ahjo_hash_value": null,
+      "downloaded_by_ahjo": null
+    }
+  },
+  {
+    "model": "applications.attachment",
+    "pk": "5b9b65c2-607d-4b77-8fc2-f877adc22a57",
+    "fields": {
+      "created_at": "2024-06-13T13:43:13.804Z",
+      "modified_at": "2024-06-13T13:43:13.804Z",
+      "application": "3544c528-73cc-4a08-8240-09f713a14990",
+      "attachment_type": "helsinki_benefit_voucher",
+      "content_type": "image/jpeg",
+      "attachment_file": "Find_ZJfPdIl.jpg",
+      "ahjo_version_series_id": null,
+      "ahjo_hash_value": null,
+      "downloaded_by_ahjo": null
+    }
+  },
+  {
+    "model": "applications.attachment",
+    "pk": "ffcb644f-fb97-4a7b-9366-09f6838faaf5",
+    "fields": {
+      "created_at": "2024-06-13T13:43:04.818Z",
+      "modified_at": "2024-06-13T13:43:04.818Z",
+      "application": "3544c528-73cc-4a08-8240-09f713a14990",
+      "attachment_type": "employment_contract",
+      "content_type": "image/jpeg",
+      "attachment_file": "Find.jpg",
+      "ahjo_version_series_id": null,
+      "ahjo_hash_value": null,
+      "downloaded_by_ahjo": null
+    }
+  },
+  {
+    "model": "applications.attachment",
+    "pk": "d7b892fe-4638-4778-b14a-f96e75e9bf76",
+    "fields": {
+      "created_at": "2024-06-13T13:43:20.561Z",
+      "modified_at": "2024-06-13T13:43:20.561Z",
+      "application": "3544c528-73cc-4a08-8240-09f713a14990",
+      "attachment_type": "employee_consent",
+      "content_type": "image/jpeg",
+      "attachment_file": "Find_Zyluwbn.jpg",
+      "ahjo_version_series_id": null,
+      "ahjo_hash_value": null,
+      "downloaded_by_ahjo": null
+    }
+  },
+  {
+    "model": "applications.attachment",
+    "pk": "7ee7d667-6c28-4d70-b710-c316f30af299",
+    "fields": {
+      "created_at": "2024-06-13T13:43:08.509Z",
+      "modified_at": "2024-06-13T13:43:08.509Z",
+      "application": "3544c528-73cc-4a08-8240-09f713a14990",
+      "attachment_type": "education_contract",
+      "content_type": "image/jpeg",
+      "attachment_file": "Find_OJZmq3B.jpg",
+      "ahjo_version_series_id": null,
+      "ahjo_hash_value": null,
+      "downloaded_by_ahjo": null
+    }
+  },
+  {
+    "model": "applications.employee",
+    "pk": "38a895a5-9244-4bfb-96f1-efbef9fb1ce9",
+    "fields": {
+      "created_at": "2024-06-13T13:36:57.781Z",
+      "modified_at": "2024-06-13T14:01:53.844Z",
+      "application": "3544c528-73cc-4a08-8240-09f713a14990",
+      "encrypted_first_name": "Koeh",
+      "encrypted_last_name": "Enkilö",
+      "first_name": "Koeh",
+      "last_name": "Enkilö",
+      "encrypted_social_security_number": "111111A111C",
+      "social_security_number": "111111A111C",
+      "phone_number": "",
+      "email": "",
+      "employee_language": "fi",
+      "job_title": "Toimistotyöt",
+      "monthly_pay": "1000.00",
+      "vacation_money": "0.00",
+      "other_expenses": "500.00",
+      "working_hours": "20.00",
+      "collective_bargaining_agreement": "TES",
+      "is_living_in_helsinki": true,
+      "commission_amount": null,
+      "commission_description": ""
+    }
+  },
+  {
+    "model": "applications.applicationlogentry",
+    "pk": "5afd584f-55a7-40b7-8ed7-88ca172e6b4c",
+    "fields": {
+      "created_at": "2024-06-13T14:01:53.853Z",
+      "modified_at": "2024-06-13T14:01:53.853Z",
+      "application": "3544c528-73cc-4a08-8240-09f713a14990",
+      "from_status": "handling",
+      "to_status": "accepted",
+      "comment": ""
+    }
+  },
+  {
+    "model": "applications.applicationlogentry",
+    "pk": "21427757-f794-4e4f-a67e-ed0c91031284",
+    "fields": {
+      "created_at": "2024-06-13T13:47:44.635Z",
+      "modified_at": "2024-06-13T13:47:44.635Z",
+      "application": "3544c528-73cc-4a08-8240-09f713a14990",
+      "from_status": "received",
+      "to_status": "handling",
+      "comment": ""
+    }
+  },
+  {
+    "model": "applications.applicationlogentry",
+    "pk": "72e56143-ec93-4b90-8b74-48e511de9594",
+    "fields": {
+      "created_at": "2024-06-13T13:43:35.586Z",
+      "modified_at": "2024-06-13T13:43:35.586Z",
+      "application": "3544c528-73cc-4a08-8240-09f713a14990",
+      "from_status": "draft",
+      "to_status": "received",
+      "comment": ""
+    }
+  },
+  {
+    "model": "applications.deminimisaid",
+    "pk": "b7d32649-ee4c-4892-bb70-b0d14fd8e062",
+    "fields": {
+      "created_at": "2024-06-13T14:01:53.841Z",
+      "modified_at": "2024-06-13T14:01:53.841Z",
+      "application": "3544c528-73cc-4a08-8240-09f713a14990",
+      "granter": "Myöntäjä",
+      "amount": "400.00",
+      "granted_at": "2024-04-23",
+      "ordering": 0
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "c9886eb9-80a2-455f-86fb-a0bd99fe8984",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.110Z",
+      "modified_at": "2024-06-13T13:50:58.110Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "helsinki_benefit_total_eur",
+      "ordering": 42,
+      "description_fi": "Helsinki-lisä yhteensä",
+      "amount": "1865.00",
+      "start_date": "2024-06-17",
+      "end_date": "2024-10-17",
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "e41a4e61-4aa1-484b-a8ad-586973cce198",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.109Z",
+      "modified_at": "2024-06-13T13:50:58.109Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "description",
+      "ordering": 41,
+      "description_fi": "Koko ajalta 17.6.2024 - 17.10.2024 (4.03 kk)",
+      "amount": "0.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": "date_total"
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "51965c5b-1cb3-4ffa-b4f4-133581752fa6",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.109Z",
+      "modified_at": "2024-06-13T13:50:58.109Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "helsinki_benefit_sub_total_eur",
+      "ordering": 40,
+      "description_fi": "Yhteensä ajanjaksolta",
+      "amount": "1575.00",
+      "start_date": "2024-08-15",
+      "end_date": "2024-10-17",
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "4812f3b6-b12e-47b2-ab93-63b174765db9",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.108Z",
+      "modified_at": "2024-06-13T13:50:58.108Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "helsinki_benefit_monthly_eur",
+      "ordering": 39,
+      "description_fi": "Helsinki-lisä",
+      "amount": "750.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "6344e7bf-0e8c-4ec8-9325-f0ce37b69130",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.107Z",
+      "modified_at": "2024-06-13T13:50:58.107Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "description",
+      "ordering": 38,
+      "description_fi": "Ajalta 15.8.2024 - 17.10.2024 (2.10 kk)",
+      "amount": "0.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": "date"
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "b1aa79f4-eaff-4b36-af82-91420353eb99",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.106Z",
+      "modified_at": "2024-06-13T13:50:58.106Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "helsinki_benefit_sub_total_eur",
+      "ordering": 37,
+      "description_fi": "Yhteensä ajanjaksolta",
+      "amount": "125.00",
+      "start_date": "2024-07-30",
+      "end_date": "2024-08-14",
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "4d15a19e-828b-447a-9bc3-50519bac3d92",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.106Z",
+      "modified_at": "2024-06-13T13:50:58.106Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "helsinki_benefit_monthly_eur",
+      "ordering": 36,
+      "description_fi": "Helsinki-lisä",
+      "amount": "250.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "bf278746-9af2-4ac2-8f27-90cec0bfc0a7",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.105Z",
+      "modified_at": "2024-06-13T13:50:58.105Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "pay_subsidy_monthly_eur",
+      "ordering": 35,
+      "description_fi": "Palkkatuki tai yli 55-vuotiaan tuki",
+      "amount": "500.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "489f63cb-7eac-4f20-9d1c-cd994679e720",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.105Z",
+      "modified_at": "2024-06-13T13:50:58.105Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "description",
+      "ordering": 34,
+      "description_fi": "Vähennettävät korvaukset / kk",
+      "amount": "0.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": "deduction"
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "b4708048-6670-410a-aa90-a96a3fc21125",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.104Z",
+      "modified_at": "2024-06-13T13:50:58.104Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "description",
+      "ordering": 33,
+      "description_fi": "Ajalta 30.7.2024 - 14.8.2024 (0.50 kk)",
+      "amount": "0.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": "date"
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "cb2491b4-8195-4d62-8242-5bd93b96776a",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.104Z",
+      "modified_at": "2024-06-13T13:50:58.104Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "helsinki_benefit_sub_total_eur",
+      "ordering": 32,
+      "description_fi": "Yhteensä ajanjaksolta",
+      "amount": "35.00",
+      "start_date": "2024-07-23",
+      "end_date": "2024-07-29",
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "3e3d5143-fee8-4fbb-a86d-c0a868ef7ad8",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.103Z",
+      "modified_at": "2024-06-13T13:50:58.103Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "helsinki_benefit_monthly_eur",
+      "ordering": 31,
+      "description_fi": "Helsinki-lisä",
+      "amount": "150.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "82b85c36-5e79-4835-a4c2-fb73303cfb93",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.103Z",
+      "modified_at": "2024-06-13T13:50:58.103Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "deductions_total_eur",
+      "ordering": 30,
+      "description_fi": "Vähennykset yhteensä",
+      "amount": "600.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "be24617f-8a1a-408a-bc9f-4fb6a22fa40b",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.102Z",
+      "modified_at": "2024-06-13T13:50:58.102Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "training_compensation_monthly_eur",
+      "ordering": 29,
+      "description_fi": "Oppisopimuksen koulutuskorvaus",
+      "amount": "100.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "98e3534a-40a6-4373-82a3-f9baf0d8774e",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.102Z",
+      "modified_at": "2024-06-13T13:50:58.102Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "pay_subsidy_monthly_eur",
+      "ordering": 28,
+      "description_fi": "Palkkatuki tai yli 55-vuotiaan tuki",
+      "amount": "500.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "d044f399-74d9-4ac8-b0d1-24a93d54ce7f",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.102Z",
+      "modified_at": "2024-06-13T13:50:58.102Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "description",
+      "ordering": 27,
+      "description_fi": "Vähennettävät korvaukset / kk",
+      "amount": "0.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": "deduction"
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "5c46d6c9-72df-491c-be76-ab72b21babf4",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.102Z",
+      "modified_at": "2024-06-13T13:50:58.102Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "description",
+      "ordering": 26,
+      "description_fi": "Ajalta 23.7.2024 - 29.7.2024 (0.23 kk)",
+      "amount": "0.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": "date"
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "86774443-f41f-4f63-acc0-8e6f97b56d51",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.101Z",
+      "modified_at": "2024-06-13T13:50:58.101Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "helsinki_benefit_sub_total_eur",
+      "ordering": 25,
+      "description_fi": "Yhteensä ajanjaksolta",
+      "amount": "43.00",
+      "start_date": "2024-07-18",
+      "end_date": "2024-07-22",
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "49fab1a1-ca27-4ee4-9d8c-4bbf6d439635",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.101Z",
+      "modified_at": "2024-06-13T13:50:58.101Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "helsinki_benefit_monthly_eur",
+      "ordering": 24,
+      "description_fi": "Helsinki-lisä",
+      "amount": "250.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "5b84430b-d97e-4c37-8e98-84d9e555bd06",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.100Z",
+      "modified_at": "2024-06-13T13:50:58.100Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "pay_subsidy_monthly_eur",
+      "ordering": 23,
+      "description_fi": "Palkkatuki tai yli 55-vuotiaan tuki",
+      "amount": "500.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "d50edc63-b342-40fb-a5c6-87462b751c29",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.100Z",
+      "modified_at": "2024-06-13T13:50:58.100Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "description",
+      "ordering": 22,
+      "description_fi": "Vähennettävät korvaukset / kk",
+      "amount": "0.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": "deduction"
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "23839c26-ad39-48ab-8afd-b5fa6d32aa96",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.100Z",
+      "modified_at": "2024-06-13T13:50:58.100Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "description",
+      "ordering": 21,
+      "description_fi": "Ajalta 18.7.2024 - 22.7.2024 (0.17 kk)",
+      "amount": "0.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": "date"
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "77fab7c4-caac-4ace-a749-259cdd769134",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.099Z",
+      "modified_at": "2024-06-13T13:50:58.099Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "helsinki_benefit_sub_total_eur",
+      "ordering": 20,
+      "description_fi": "Yhteensä ajanjaksolta",
+      "amount": "19.00",
+      "start_date": "2024-07-07",
+      "end_date": "2024-07-17",
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "45c32247-6b3b-49db-b3e7-59db020a59ea",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.099Z",
+      "modified_at": "2024-06-13T13:50:58.099Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "helsinki_benefit_monthly_eur",
+      "ordering": 19,
+      "description_fi": "Helsinki-lisä",
+      "amount": "50.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "04b1ef09-46a9-4113-91c7-2f0505c6ab20",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.098Z",
+      "modified_at": "2024-06-13T13:50:58.098Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "deductions_total_eur",
+      "ordering": 18,
+      "description_fi": "Vähennykset yhteensä",
+      "amount": "700.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "3bd08b0e-fccb-41ff-911f-452848c06898",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.097Z",
+      "modified_at": "2024-06-13T13:50:58.097Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "training_compensation_monthly_eur",
+      "ordering": 17,
+      "description_fi": "Oppisopimuksen koulutuskorvaus",
+      "amount": "200.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "f624fb30-7631-4902-9843-f898c449edce",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.097Z",
+      "modified_at": "2024-06-13T13:50:58.097Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "pay_subsidy_monthly_eur",
+      "ordering": 16,
+      "description_fi": "Palkkatuki tai yli 55-vuotiaan tuki",
+      "amount": "500.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "12648ba9-ca53-4e07-8a22-c00c090589fe",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.097Z",
+      "modified_at": "2024-06-13T13:50:58.097Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "description",
+      "ordering": 15,
+      "description_fi": "Vähennettävät korvaukset / kk",
+      "amount": "0.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": "deduction"
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "b6c32ede-7d19-471c-9a14-bed61d7173c7",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.097Z",
+      "modified_at": "2024-06-13T13:50:58.097Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "description",
+      "ordering": 14,
+      "description_fi": "Ajalta 7.7.2024 - 17.7.2024 (0.37 kk)",
+      "amount": "0.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": "date"
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "92ce9099-c433-4920-9dd5-c606935a35ae",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.096Z",
+      "modified_at": "2024-06-13T13:50:58.096Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "helsinki_benefit_sub_total_eur",
+      "ordering": 13,
+      "description_fi": "Yhteensä ajanjaksolta",
+      "amount": "0.00",
+      "start_date": "2024-06-25",
+      "end_date": "2024-07-06",
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "27ddb9d3-5dd4-4e51-8466-593322ad66dd",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.095Z",
+      "modified_at": "2024-06-13T13:50:58.095Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "helsinki_benefit_monthly_eur",
+      "ordering": 12,
+      "description_fi": "Helsinki-lisä",
+      "amount": "0.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "e6534afe-e954-44db-b19f-3bfe8d7b469c",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.095Z",
+      "modified_at": "2024-06-13T13:50:58.095Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "deductions_total_eur",
+      "ordering": 11,
+      "description_fi": "Vähennykset yhteensä",
+      "amount": "800.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "13415bb1-42d4-4076-9a36-7886dd3c0abf",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.094Z",
+      "modified_at": "2024-06-13T13:50:58.094Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "training_compensation_monthly_eur",
+      "ordering": 10,
+      "description_fi": "Oppisopimuksen koulutuskorvaus",
+      "amount": "300.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "e2e752ee-c32e-443a-9631-177d3a13e0c9",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.094Z",
+      "modified_at": "2024-06-13T13:50:58.094Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "pay_subsidy_monthly_eur",
+      "ordering": 9,
+      "description_fi": "Palkkatuki tai yli 55-vuotiaan tuki",
+      "amount": "500.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "6e04f8da-df6f-4d99-bd74-73a22006abfd",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.093Z",
+      "modified_at": "2024-06-13T13:50:58.093Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "description",
+      "ordering": 8,
+      "description_fi": "Vähennettävät korvaukset / kk",
+      "amount": "0.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": "deduction"
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "c862009e-ecc1-4ff1-84fb-28371fd71d9b",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.093Z",
+      "modified_at": "2024-06-13T13:50:58.093Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "description",
+      "ordering": 7,
+      "description_fi": "Ajalta 25.6.2024 - 6.7.2024 (0.40 kk)",
+      "amount": "0.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": "date"
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "050a3049-88bb-47ca-8cc0-28ae8ee245b1",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.093Z",
+      "modified_at": "2024-06-13T13:50:58.093Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "helsinki_benefit_sub_total_eur",
+      "ordering": 6,
+      "description_fi": "Yhteensä ajanjaksolta",
+      "amount": "68.00",
+      "start_date": "2024-06-17",
+      "end_date": "2024-06-24",
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "1d5cbfe3-bf34-4dd5-854e-cfeb32ba0f8a",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.092Z",
+      "modified_at": "2024-06-13T13:50:58.092Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "helsinki_benefit_monthly_eur",
+      "ordering": 5,
+      "description_fi": "Helsinki-lisä",
+      "amount": "250.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "0152e634-c029-447b-9472-5a016d2053b3",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.092Z",
+      "modified_at": "2024-06-13T13:50:58.092Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "pay_subsidy_monthly_eur",
+      "ordering": 4,
+      "description_fi": "Palkkatuki tai yli 55-vuotiaan tuki",
+      "amount": "500.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "425eda81-e3ac-435d-970e-43ffa3ed65be",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.091Z",
+      "modified_at": "2024-06-13T13:50:58.091Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "description",
+      "ordering": 3,
+      "description_fi": "Vähennettävät korvaukset / kk",
+      "amount": "0.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": "deduction"
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "85891d03-dcc8-48e2-bc8e-75360c85110a",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.091Z",
+      "modified_at": "2024-06-13T13:50:58.091Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "description",
+      "ordering": 2,
+      "description_fi": "Ajalta 17.6.2024 - 24.6.2024 (0.27 kk)",
+      "amount": "0.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": "date"
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "150c7c68-a66f-49c1-9e9e-a7efa860adf0",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.091Z",
+      "modified_at": "2024-06-13T13:50:58.091Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "state_aid_max_monthly_eur",
+      "ordering": 1,
+      "description_fi": "Valtiotukimaksimi",
+      "amount": "750.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
+  },
+  {
+    "model": "calculator.calculationrow",
+    "pk": "d0aa68d8-ae4a-4c61-b4cf-07960b1eb0e9",
+    "fields": {
+      "created_at": "2024-06-13T13:50:58.090Z",
+      "modified_at": "2024-06-13T13:50:58.090Z",
+      "calculation": "a698bcb1-abea-4da1-a447-cb3742017afe",
+      "row_type": "salary_costs",
+      "ordering": 0,
+      "description_fi": "Palkkauskustannukset",
+      "amount": "1500.00",
+      "start_date": null,
+      "end_date": null,
+      "description_type": null
+    }
   }
 ]

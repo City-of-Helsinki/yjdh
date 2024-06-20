@@ -20,7 +20,7 @@ export const uploadFileAttachment = async (
 
 export const clearAndFill = async (
   t: TestController,
-  selector: string,
+  selector: string | Selector,
   value: string
 ): Promise<void> => {
   await t.click(selector);

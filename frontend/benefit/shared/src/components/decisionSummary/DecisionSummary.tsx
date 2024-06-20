@@ -108,13 +108,15 @@ const DecisionSummary = ({
                 })
               : t('common:applications.decision.alterationList.empty')}
           </$AlterationListCount>
-          {sortedAlterations.map((alteration) => (
-            <ItemComponent
-              key={alteration.id}
-              alteration={alteration}
-              application={application}
-            />
-          ))}
+          <div data-testid="alteration-list">
+            {sortedAlterations.map((alteration) => (
+              <ItemComponent
+                key={alteration.id}
+                alteration={alteration}
+                application={application}
+              />
+            ))}
+          </div>
           <$AlterationActionContainer>{actions}</$AlterationActionContainer>
         </>
       )}

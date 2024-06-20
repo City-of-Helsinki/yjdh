@@ -86,7 +86,17 @@ test('Handler processes favorable decision to Ahjo / Talpa', async (t: TestContr
   // Navigate to batches
   await t.click(Selector('a').withText(fi.header.navigation.batches));
 
-  // Click "Mark as ready for Ahjo" button
+  // Visit the completed tab and read the current number of listed applications
+  await t.click(Selector('li').withText(fi.batches.tabs.completion));
+  await t
+    .expect(Selector('h2').withText(fi.batches.tabs.completion).exists)
+    .ok();
+  const currentCompletedBatchesCount = await Selector('h2')
+    .withText(fi.batches.tabs.completion)
+    .textContent.then((text) => text.match(/\((\d+)\)/)?.[1]);
+
+  // Return to pending tab and click "Mark as ready for Ahjo" button
+  await t.click(Selector('li').withText(fi.batches.tabs.pending));
   await t.click(
     Selector('button').withText(fi.batches.actions.markAsReadyForAhjo)
   );
@@ -131,5 +141,12 @@ test('Handler processes favorable decision to Ahjo / Talpa', async (t: TestContr
 
   // See if the last tab is populated with the batch
   await t.click(Selector('li').withText(fi.batches.tabs.completion));
-  await t.expect(Selector('h2').withText('(1)').exists).ok();
+  await t.wait(1000);
+
+  await t
+    .expect(
+      Selector('h2').withText(`(${Number(currentCompletedBatchesCount) + 1})`)
+        .exists
+    )
+    .ok();
 });
