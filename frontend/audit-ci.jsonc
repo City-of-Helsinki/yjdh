@@ -7,6 +7,7 @@
     "@babel/traverse", // jest
     "html-minifier",
     "pdfjs-dist", // react-pdf
-    "ip" // testcafe, lerna
+    "ip", // testcafe, lerna
+    "ws" // testcafe, jest
   ]
 }
