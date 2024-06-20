@@ -3,7 +3,7 @@ import time
 from datetime import datetime
 from typing import Dict, List, Union
 
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.core.management.base import BaseCommand
 from django.db.models import QuerySet
 
@@ -168,12 +168,27 @@ for {len(applications)} applications"
         request_handler = self._get_request_handler(ahjo_request_type)
 
         counter = 0
+        exception_messages = {
+            ValueError: "Value error for application",
+            ObjectDoesNotExist: "Object not found error for application",
+            ImproperlyConfigured: "Improperly configured error for application",
+        }
 
         for application in applications:
-            sent_application, response_text = request_handler(
-                application, ahjo_auth_token
-            )
             counter += 1
+
+            try:
+                sent_application, response_text = request_handler(
+                    application, ahjo_auth_token
+                )
+            except tuple(exception_messages.keys()) as e:
+                LOGGER.error(
+                    f"{exception_messages[type(e)]} {application.application_number}: {e}"
+                )
+                failed_applications.append(application)
+                self._handle_failed_request(counter, application, ahjo_request_type)
+                continue
+
             if sent_application:
                 successful_applications.append(sent_application)
                 self._handle_successful_request(
@@ -186,6 +201,20 @@ for {len(applications)} applications"
         end_time = time.time()
         elapsed_time = end_time - start_time
 
+        self._print_results(
+            successful_applications,
+            failed_applications,
+            ahjo_request_type,
+            elapsed_time,
+        )
+
+    def _print_results(
+        self,
+        successful_applications,
+        failed_applications,
+        ahjo_request_type,
+        elapsed_time,
+    ):
         if successful_applications:
             self.stdout.write(
                 self.style.SUCCESS(
