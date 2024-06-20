@@ -21,9 +21,16 @@ export interface ApplicationListProps {
 }
 const translationBase = 'common:applications.list.headings';
 
+const batchStatusesHandlingComplete = (batchStatus: BATCH_STATUSES): boolean =>
+  [
+    BATCH_STATUSES.DECIDED_ACCEPTED,
+    BATCH_STATUSES.DECIDED_REJECTED,
+    BATCH_STATUSES.SENT_TO_TALPA,
+    BATCH_STATUSES.COMPLETED,
+    BATCH_STATUSES.REJECTED_BY_TALPA,
+  ].includes(batchStatus);
+
 const HandlerIndex: React.FC<ApplicationListProps> = ({
-  // heading,
-  // status,
   layoutBackgroundColor,
   list = [],
   isLoading = true,
@@ -44,11 +51,7 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
         [APPLICATION_STATUSES.ACCEPTED, APPLICATION_STATUSES.REJECTED].includes(
           app.status
         ) &&
-        ![
-          BATCH_STATUSES.DECIDED_ACCEPTED,
-          BATCH_STATUSES.DECIDED_REJECTED,
-          BATCH_STATUSES.SENT_TO_TALPA,
-        ].includes(app.batch?.status)
+        !batchStatusesHandlingComplete(app?.batch?.status)
     ).length;
 
   const getTabCountInPayment = (): number =>
@@ -202,10 +205,7 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
                       APPLICATION_STATUSES.ACCEPTED,
                       APPLICATION_STATUSES.REJECTED,
                     ].includes(app.status) &&
-                    ![
-                      BATCH_STATUSES.DECIDED_ACCEPTED,
-                      BATCH_STATUSES.DECIDED_REJECTED,
-                    ].includes(app?.batch?.status)
+                    !batchStatusesHandlingComplete(app?.batch?.status)
                 )}
                 heading={t(`${translationBase}.pending`)}
                 status={[
