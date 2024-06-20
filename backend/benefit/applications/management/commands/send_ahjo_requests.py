@@ -1,5 +1,6 @@
 import logging
 import time
+from datetime import datetime
 from typing import Dict, List, Union
 
 from django.core.exceptions import ImproperlyConfigured
@@ -127,7 +128,7 @@ class Command(BaseCommand):
         applications = self.get_applications_for_request(request_type)
 
         if not applications:
-            self.stdout.write("No applications to process")
+            self.stdout.write(self._print_with_timestamp("No applications to process"))
             return
 
         applications = applications[:number_to_process]
@@ -158,8 +159,10 @@ class Command(BaseCommand):
         failed_applications = []
 
         self.stdout.write(
-            f"Sending {ahjo_request_type} request to Ahjo \
+            self._print_with_timestamp(
+                f"Sending {ahjo_request_type} request to Ahjo \
 for {len(applications)} applications"
+            )
         )
 
         request_handler = self._get_request_handler(ahjo_request_type)
@@ -186,7 +189,9 @@ for {len(applications)} applications"
         if successful_applications:
             self.stdout.write(
                 self.style.SUCCESS(
-                    f"Sent {ahjo_request_type} requests for {len(successful_applications)} applications to Ahjo"
+                    self._print_with_timestamp(
+                        f"Sent {ahjo_request_type} requests for {len(successful_applications)} applications to Ahjo"
+                    )
                 )
             )
             self.stdout.write(
@@ -196,7 +201,9 @@ requests took {elapsed_time} seconds to run."
         if failed_applications:
             self.stdout.write(
                 self.style.ERROR(
-                    f"Failed to submit {ahjo_request_type} {len(failed_applications)} applications to Ahjo"
+                    self._print_with_timestamp(
+                        f"Failed to submit {ahjo_request_type} {len(failed_applications)} applications to Ahjo"
+                    )
                 )
             )
 
@@ -234,7 +241,8 @@ for application {application.id} and batch {batch.id} from Ahjo"
         application.ahjo_case_guid = response_text
         application.save()
 
-        return f"{counter}. Successfully submitted {request_type} request for application {application.id} to Ahjo, \
+        return f"{counter}. Successfully submitted {request_type} request for application {application.id}, \
+            number: {application.application_number}, to Ahjo, \
             received GUID: {response_text}"
 
     def _handle_successful_request(
@@ -253,14 +261,17 @@ for application {application.id} and batch {batch.id} from Ahjo"
                 application, counter, response_content, request_type
             )
 
-        self.stdout.write(self.style.SUCCESS(success_text))
+        self.stdout.write(self.style.SUCCESS(self._print_with_timestamp(success_text)))
 
     def _handle_failed_request(
         self, counter: int, application: Application, request_type: AhjoRequestType
     ):
         self.stdout.write(
             self.style.ERROR(
-                f"{counter}. Failed to submit {request_type} for application {application.id} to Ahjo"
+                self._print_with_timestamp(
+                    f"{counter}. Failed to submit {request_type} for application {application.id} \
+                number: {application.application_number}, to Ahjo"
+                )
             )
         )
 
@@ -274,3 +285,6 @@ for application {application.id} and batch {batch.id} from Ahjo"
             AhjoRequestType.DELETE_APPLICATION: delete_application_in_ahjo,
         }
         return request_handlers.get(request_type)
+
+    def _print_with_timestamp(self, text: str) -> str:
+        return f"{datetime.now()}: {text}"
