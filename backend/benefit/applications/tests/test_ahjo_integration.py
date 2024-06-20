@@ -473,8 +473,11 @@ def test_ahjo_callback_success(
     ahjo_callback_payload["message"] = AhjoCallBackStatus.SUCCESS
     ahjo_callback_payload["records"][0]["hashValue"] = attachment_hash_value
 
-    if request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
-        batch = ApplicationBatch.objects.create()
+    if request_type in [
+        AhjoRequestType.SEND_DECISION_PROPOSAL,
+        AhjoRequestType.DELETE_APPLICATION,
+    ]:
+        batch = ApplicationBatch.objects.create(auto_generated_by_ahjo=True)
         decided_application.batch_id = batch.id
         decided_application.save()
 
@@ -508,11 +511,14 @@ def test_ahjo_callback_success(
 
     if request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
         batch = decided_application.batch
+
         assert batch.status == ApplicationBatchStatus.AWAITING_AHJO_DECISION
 
     if request_type == AhjoRequestType.DELETE_APPLICATION:
         decided_application.refresh_from_db()
+
         assert decided_application.status == ApplicationStatus.CANCELLED
+        assert decided_application.batch.status == ApplicationBatchStatus.CANCELLED
 
     assert decided_application.ahjo_status.latest().status == ahjo_status
 

@@ -285,6 +285,11 @@ with request id: {callback_data['requestId']}"
         application.status = ApplicationStatus.CANCELLED
         application.save()
 
+        if application.batch and application.batch.auto_generated_by_ahjo:
+            batch = application.batch
+            batch.status = ApplicationBatchStatus.CANCELLED
+            batch.save()
+
     def _save_version_series_id(
         self, application: Application, cb_records: list
     ) -> None:

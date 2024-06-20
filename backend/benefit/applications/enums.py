@@ -132,6 +132,7 @@ class ApplicationBatchStatus(models.TextChoices):
     SENT_TO_TALPA = "sent_to_talpa", _("Sent to Talpa")
     COMPLETED = "completed", _("Processing is completed")
     REJECTED_BY_TALPA = "rejected_by_talpa", _("Rejected by Talpa")
+    CANCELLED = "cancelled", _("Cancelled")
 
 
 class ApplicationTalpaStatus(models.TextChoices):
