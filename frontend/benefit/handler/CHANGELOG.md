@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.2.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.1.0...benefit-handler-v4.2.0) (2024-06-24)
+
+
+### Features
+
+* Add filters to search & improve spreadsheet import (hl-1322) ([#3090](https://github.com/City-of-Helsinki/yjdh/issues/3090)) ([b587b4c](https://github.com/City-of-Helsinki/yjdh/commit/b587b4c1f2dadbcea006c4732005beb471b43f6e))
+
+
+### Bug Fixes
+
+* Applications would show up in decision list even though complete ([#3097](https://github.com/City-of-Helsinki/yjdh/issues/3097)) ([019d149](https://github.com/City-of-Helsinki/yjdh/commit/019d149103f5c95df5b7daf8eb7cbbd3d0a19810))
+* Handle single-day alteration calculation on row terminus date correctly ([#3093](https://github.com/City-of-Helsinki/yjdh/issues/3093)) ([c75a323](https://github.com/City-of-Helsinki/yjdh/commit/c75a323a64ef965bfcd620a37a9f90baf7568062))
+
 ## [4.1.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.0.0...benefit-handler-v4.1.0) (2024-06-17)
 
 
