@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.1.0...benefit-backend-v2.2.0) (2024-06-24)
+
+
+### Features
+
+* Add filters to search & improve spreadsheet import (hl-1322) ([#3090](https://github.com/City-of-Helsinki/yjdh/issues/3090)) ([b587b4c](https://github.com/City-of-Helsinki/yjdh/commit/b587b4c1f2dadbcea006c4732005beb471b43f6e))
+
 ## [2.1.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.0.0...benefit-backend-v2.1.0) (2024-06-17)
 
 
