@@ -28,7 +28,6 @@ from sql_util.aggregates import SubqueryCount
 
 from applications.api.v1.serializers.application import (
     ApplicantApplicationSerializer,
-    ArchivalApplicationListSerializer,
     HandlerApplicationSerializer,
 )
 from applications.api.v1.serializers.application_alteration import (
@@ -42,12 +41,7 @@ from applications.enums import (
     ApplicationOrigin,
     ApplicationStatus,
 )
-from applications.models import (
-    Application,
-    ApplicationAlteration,
-    ApplicationBatch,
-    ArchivalApplication,
-)
+from applications.models import Application, ApplicationAlteration, ApplicationBatch
 from applications.services.ahjo_integration import (
     ExportFileInfo,
     generate_zip,
@@ -591,12 +585,8 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         )
         serializer = self.serializer_class(qs, many=True, context=context)
 
-        archived = ArchivalApplicationListSerializer(
-            ArchivalApplication.objects.all(), many=True
-        )
-
         return Response(
-            serializer.data + archived.data,
+            serializer.data,
             status=status.HTTP_200_OK,
         )
 

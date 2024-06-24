@@ -2,6 +2,7 @@ import { getTagStyleForStatus } from 'benefit/handler/utils/applications';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { ApplicationData } from 'benefit-shared/types/application';
 import { IconAlertCircle, IconCheck, IconCross, Table, Tag } from 'hds-react';
+import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import { $Link } from 'shared/components/table/Table.sc';
@@ -9,17 +10,12 @@ import { sortFinnishDate } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
 import { $TagWrapper } from '../applicationList/ApplicationList.sc';
-import { $ArchiveCount } from './ApplicationsArchive.sc';
-import {
-  prepareSearchData,
-  useApplicationsArchive,
-} from './useApplicationsArchive';
+import { $ArchiveCount, $CompanyNameDisabled } from './ApplicationsArchive.sc';
+import { prepareSearchData } from './useApplicationsArchive';
 
 type SearchProps = {
   data: ApplicationData[];
   isSearchLoading: boolean;
-  submittedSearchString: string;
-  searchString: string;
 };
 
 const STATUS_SORT_RANK = {
@@ -37,10 +33,9 @@ const sortByStatus = (
 const ApplicationArchiveList: React.FC<SearchProps> = ({
   data = [],
   isSearchLoading,
-  submittedSearchString,
-  searchString,
 }) => {
-  const { t, list, translationsBase, getHeader } = useApplicationsArchive();
+  const { t } = useTranslation();
+
   const theme = useTheme();
 
   interface TableTransforms {
@@ -48,6 +43,8 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
     companyName: string;
     status: APPLICATION_STATUSES;
   }
+
+  const rows = React.useMemo(() => prepareSearchData(data), [data]);
 
   const getTransformForArchivedStatus = ({
     status,
@@ -68,13 +65,15 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
     </$TagWrapper>
   );
 
+  const translationsBase = 'common:applications.list';
+  const getHeader = (id: string): string =>
+    t(`${translationsBase}.columns.${id}`);
+
   const cols = [
     {
       transform: ({ id, companyName, status }: TableTransforms) =>
         status === APPLICATION_STATUSES.ARCHIVAL ? (
-          <strong css="font-weight: 500; opacity: 0.5;">
-            {String(companyName)}
-          </strong>
+          <$CompanyNameDisabled>{String(companyName)}</$CompanyNameDisabled>
         ) : (
           <$Link href={`/application?id=${String(id)}`}>
             {String(companyName)}
@@ -120,40 +119,11 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
     },
   ];
 
-  const hasSearchLoadedWithResults =
-    !isSearchLoading &&
-    submittedSearchString !== '' &&
-    submittedSearchString === searchString &&
-    searchString.length > 0 &&
-    data?.length > 0;
-
-  const hasSearchLoadedWithNoResults =
-    !isSearchLoading &&
-    submittedSearchString !== '' &&
-    searchString !== '' &&
-    data?.length === 0;
-
-  const hasCurrentlyNoSearch =
-    !isSearchLoading &&
-    list.length > 0 &&
-    (submittedSearchString === '' || searchString === '');
+  const hasSearchLoadedWithResults = !isSearchLoading && data.length > 0;
+  const hasSearchLoadedWithNoResults = !isSearchLoading && data.length === 0;
 
   return (
     <>
-      {hasCurrentlyNoSearch && (
-        <>
-          <$ArchiveCount>{`${t(`${translationsBase}.total.count`, {
-            count: list?.length || 0,
-          })}`}</$ArchiveCount>
-          <Table
-            indexKey="id"
-            theme={theme.components.table}
-            rows={list || []}
-            cols={cols}
-          />
-        </>
-      )}
-
       {isSearchLoading && (
         <>
           <$ArchiveCount>{t('common:search.performingSearch')}</$ArchiveCount>
@@ -165,7 +135,6 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
           <LoadingSkeleton height={67} />
         </>
       )}
-
       {hasSearchLoadedWithResults && (
         <>
           <$ArchiveCount>{`${t(`${translationsBase}.total.count`, {
@@ -175,12 +144,13 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
             aria-live="polite"
             indexKey="id"
             theme={theme.components.table}
-            rows={prepareSearchData(data)}
+            rows={rows}
             cols={cols}
             zebra
           />
         </>
       )}
+
       {hasSearchLoadedWithNoResults && (
         <h2 aria-live="polite">{t('common:search.noResults')}</h2>
       )}
