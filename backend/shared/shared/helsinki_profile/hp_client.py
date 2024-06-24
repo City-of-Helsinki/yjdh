@@ -65,9 +65,7 @@ class HelsinkiProfileClient:
                 verify=True,
                 headers={"Authorization": "Bearer " + api_access_token},
             )
-            print(response)
             response.raise_for_status()
-            print("get profile: ", response.json())
         except RequestException as e:
             raise HelsinkiProfileException(str(e))
 
@@ -136,7 +134,7 @@ class HelsinkiProfileClient:
             )
             response.raise_for_status()
             data = response.json()
-            print(data)
+
         except RequestException as e:
             raise HelsinkiProfileException(str(e))
 
