@@ -9,6 +9,7 @@ import {
   convertToUIDateAndTimeFormat,
   convertToUIDateFormat,
 } from 'shared/utils/date.utils';
+import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
 
 interface ApplicationListProps {
   list: ApplicationListItemData[];
@@ -20,9 +21,10 @@ const useApplicationListData = (
   status: APPLICATION_STATUSES[],
   excludeBatched?: boolean
 ): ApplicationListProps => {
+  const isNewAhjoMode = useDetermineAhjoMode();
   const query = useApplicationsQuery(status, '-submitted_at', excludeBatched);
 
-  const list = query.data?.map(
+  let list = query.data?.map(
     (application: ApplicationData): ApplicationListItemData => {
       const {
         id = '',
@@ -39,6 +41,7 @@ const useApplicationListData = (
         talpa_status,
         ahjo_case_id,
         application_origin: applicationOrigin,
+        handled_by_ahjo_automation,
       } = application;
 
       return {
@@ -64,9 +67,20 @@ const useApplicationListData = (
         applicationOrigin,
         talpaStatus: talpa_status,
         ahjoCaseId: ahjo_case_id,
+        handledByAhjoAutomation: handled_by_ahjo_automation,
       };
     }
   );
+
+  if (!isNewAhjoMode && list) {
+    list = list.filter(
+      (application) =>
+        ![
+          APPLICATION_STATUSES.ACCEPTED,
+          APPLICATION_STATUSES.REJECTED,
+        ].includes(application.status) && !application.handledByAhjoAutomation
+    );
+  }
 
   const shouldShowSkeleton = query.isLoading;
 

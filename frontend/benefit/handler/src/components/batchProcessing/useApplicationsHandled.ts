@@ -32,6 +32,7 @@ const useApplicationsHandled = (
       (a: ApplicationData, b: ApplicationData): number =>
         Date.parse(b.handled_at ?? '') - Date.parse(a.handled_at ?? '')
     )
+    .filter((app: ApplicationData) => !app.handled_by_ahjo_automation)
     .map((application: ApplicationData): ApplicationListItemData => {
       const {
         id = '',
