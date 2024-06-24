@@ -1,4 +1,5 @@
 import useApplicationsQuery from 'benefit/handler/hooks/useApplicationsQuery';
+import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import {
   ApplicationData,
@@ -20,10 +21,11 @@ const useApplicationListData = (
   status: APPLICATION_STATUSES[],
   excludeBatched?: boolean
 ): ApplicationListProps => {
+  const isNewAhjoMode = useDetermineAhjoMode();
   const query = useApplicationsQuery(status, '-submitted_at', excludeBatched);
 
-  const list = query.data?.map(
-    (application: ApplicationData): ApplicationListItemData => {
+  const list = query.data
+    ?.map((application: ApplicationData): ApplicationListItemData => {
       const {
         id = '',
         employee,
@@ -39,6 +41,7 @@ const useApplicationListData = (
         talpa_status,
         ahjo_case_id,
         application_origin: applicationOrigin,
+        handled_by_ahjo_automation,
       } = application;
 
       return {
@@ -64,9 +67,18 @@ const useApplicationListData = (
         applicationOrigin,
         talpaStatus: talpa_status,
         ahjoCaseId: ahjo_case_id,
+        handledByAhjoAutomation: handled_by_ahjo_automation,
       };
-    }
-  );
+    })
+    .filter(
+      (application) =>
+        isNewAhjoMode ||
+        (![
+          APPLICATION_STATUSES.ACCEPTED,
+          APPLICATION_STATUSES.REJECTED,
+        ].includes(application.status) &&
+          !application.handledByAhjoAutomation)
+    );
 
   const shouldShowSkeleton = query.isLoading;
 

@@ -550,6 +550,7 @@ export type ApplicationListItemData = {
   talpaStatus?: string;
   ahjoCaseId?: string;
   calculationEndDate?: string;
+  handledByAhjoAutomation?: boolean;
 };
 
 export type TextProp = 'textFi' | 'textEn' | 'textSv';

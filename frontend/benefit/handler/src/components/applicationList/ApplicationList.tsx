@@ -55,7 +55,6 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   isLoading = true,
 }) => {
   const { t, translationsBase, getHeader } = useApplicationList();
-
   const theme = useTheme();
 
   const isAllStatuses: boolean = status === ALL_APPLICATION_STATUSES;
