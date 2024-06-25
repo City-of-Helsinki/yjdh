@@ -74,11 +74,32 @@ const useApplicationListData = (
     })
     .filter(
       (application) =>
-        isNewAhjoMode ||
-        (![
+        [APPLICATION_STATUSES.DRAFT, APPLICATION_STATUSES.RECEIVED].includes(
+          application.status
+        ) ||
+        ([
+          APPLICATION_STATUSES.HANDLING,
+          APPLICATION_STATUSES.INFO_REQUIRED,
+        ].includes(application.status) &&
+          isNewAhjoMode &&
+          application.handledByAhjoAutomation) ||
+        ([
           APPLICATION_STATUSES.ACCEPTED,
           APPLICATION_STATUSES.REJECTED,
         ].includes(application.status) &&
+          isNewAhjoMode &&
+          application.handledByAhjoAutomation) ||
+        ([
+          APPLICATION_STATUSES.HANDLING,
+          APPLICATION_STATUSES.INFO_REQUIRED,
+        ].includes(application.status) &&
+          !isNewAhjoMode &&
+          !application.handledByAhjoAutomation) ||
+        ([
+          APPLICATION_STATUSES.ACCEPTED,
+          APPLICATION_STATUSES.REJECTED,
+        ].includes(application.status) &&
+          !isNewAhjoMode &&
           !application.handledByAhjoAutomation)
     );
 
