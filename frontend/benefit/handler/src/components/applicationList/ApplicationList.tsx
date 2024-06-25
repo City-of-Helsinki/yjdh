@@ -120,7 +120,10 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       },
     ];
 
-    if (isVisibleOnlyForStatus.handling) {
+    if (
+      isVisibleOnlyForStatus.handling ||
+      isVisibleOnlyForStatus.infoRequired
+    ) {
       cols.push({
         headerName: getHeader('handlerName'),
         key: 'handlerName',
