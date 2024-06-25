@@ -67,10 +67,13 @@ const useHeader = (): ExtendedComponentProps => {
     if (isMessagesDrawerVisible && Number(unreadMessagesCount) > 0) {
       setUnredMessagesCount(null);
     }
+  }, [isMessagesDrawerVisible, unreadMessagesCount]);
+
+  useEffect(() => {
     if (openDrawer) {
       setMessagesDrawerVisiblity(true);
     }
-  }, [isMessagesDrawerVisible, unreadMessagesCount, openDrawer]);
+  }, [openDrawer]);
 
   const status = React.useMemo(
     (): APPLICATION_STATUSES =>
