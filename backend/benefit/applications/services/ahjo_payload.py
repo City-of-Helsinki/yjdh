@@ -45,9 +45,15 @@ def _prepare_record_title(
 
 def _prepare_case_title(application: Application) -> str:
     full_title = f"Avustukset työnantajille, työllisyyspalvelut, \
-Helsinki-lisä, {application.company_name}, \
+Helsinki-lisä, {_truncate_company_name(application.company_name)}, \
 hakemus {application.application_number}"
     return full_title
+
+
+def _truncate_company_name(company_name: str) -> str:
+    """Truncate the company name to 100 characters, \
+    because Ahjo has a technical limitation of 100 characters for the company name."""
+    return company_name[:100]
 
 
 def resolve_payload_language(application: Application) -> str:
