@@ -59,10 +59,10 @@ const useApplicationListData = (
         applicationNum,
         // refactor when we have handler data
         handlerName:
-          getFullName(
+          `${getFullName(
             calculation?.handler_details?.first_name,
-            calculation?.handler_details?.last_name
-          ) || '-',
+            calculation?.handler_details?.last_name.at(0)
+          )}.` || '-',
         unreadMessagesCount: unread_messages_count ?? 0,
         batch: batch ?? null,
         applicationOrigin,
