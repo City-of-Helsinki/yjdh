@@ -14,9 +14,7 @@ import AlterationSummary from 'benefit/handler/components/alterationHandling/Alt
 import useAlterationHandlingForm from 'benefit/handler/components/alterationHandling/useAlterationHandlingForm';
 import { $CustomNotesActions } from 'benefit/handler/components/applicationReview/actions/handlingApplicationActions/HandlingApplicationActions.sc';
 import Sidebar from 'benefit/handler/components/sidebar/Sidebar';
-import {
-  DEFAULT_MINIMUM_RECOVERY_AMOUNT,
-} from 'benefit/handler/constants';
+import { DEFAULT_MINIMUM_RECOVERY_AMOUNT } from 'benefit/handler/constants';
 import {
   Application,
   ApplicationAlteration,
@@ -137,7 +135,7 @@ const AlterationHandlingForm = ({
           <$Grid>
             <$GridCell $colSpan={12}>
               <SelectionGroup
-                id="isRecoverable"
+                id="is-recoverable"
                 label={t(`${translationBase}.fields.isRecoverable.label`)}
                 direction="vertical"
                 required
@@ -151,7 +149,7 @@ const AlterationHandlingForm = ({
                 )}
               >
                 <RadioButton
-                  id="isRecoverable-yes"
+                  id="is-recoverable-yes"
                   name="isRecoverable"
                   label={t(`${translationBase}.fields.isRecoverable.yes`)}
                   value="1"
@@ -162,7 +160,7 @@ const AlterationHandlingForm = ({
                   checked={formik.values.isRecoverable === true}
                 />
                 <RadioButton
-                  id="isRecoverable-no"
+                  id="is-recoverable-no"
                   name="isRecoverable"
                   label={t(`${translationBase}.fields.isRecoverable.no`)}
                   value="0"

@@ -52,3 +52,22 @@ export const EDIT_FORM_DATA = {
     grantedAt: `3.3.${new Date().getFullYear() - 1}`,
   },
 };
+
+export const NEW_TERMINATION_ALTERATION_DATA = {
+  endDate: '23.8.2024',
+  contactPersonName: 'Yhteys Henkilö',
+  einvoiceAddress: '012345012345',
+  einvoiceProviderIdentifier: 'LILAFI11',
+  einvoiceProviderName: 'Liiba Laaba Oy',
+  reason: 'Ei soveltunut työhön',
+};
+
+export const NEW_SUSPENSION_ALTERATION_DATA = {
+  endDate: '24.6.2024',
+  resumeDate: '12.8.2024',
+  contactPersonName: 'Sauli Säätäjä',
+  einvoiceAddress: '678678678',
+  einvoiceProviderIdentifier: 'ELKLFI99',
+  einvoiceProviderName: 'Eelin Keelin Oy',
+  reason: 'Omaehtoinen loma',
+};

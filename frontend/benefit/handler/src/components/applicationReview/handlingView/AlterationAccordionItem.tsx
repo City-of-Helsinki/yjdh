@@ -135,7 +135,11 @@ AlterationAccordionItemProps): JSX.Element => {
         <IconInfoCircle />
       </$DecisionCalculatorAccordionIconContainer>
       <$TagContainer>
-        <$Tag $state={alteration.state} aria-hidden="true">
+        <$Tag
+          $state={alteration.state}
+          aria-hidden="true"
+          data-testid="alteration-state-tag"
+        >
           {t(
             `applications.decision.alterationList.item.state.${alteration.state}`
           )}

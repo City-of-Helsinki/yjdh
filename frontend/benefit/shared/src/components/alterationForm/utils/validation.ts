@@ -47,23 +47,30 @@ export const getValidationSchema = (application: Application, t: TFunction) => {
         then: Yup.string()
           .nullable()
           .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED))
-          .when(['endDate'], (endDate: string) =>
+          .test({
+            message: t(VALIDATION_MESSAGE_KEYS.DATE_MIN, {
+              min: convertToUIDateFormat(application.startDate),
+            }),
+            test: (value = '') =>
+              validateIsAfterOrOnDate(value, application.startDate),
+          })
+          .test({
+            message: t(VALIDATION_MESSAGE_KEYS.DATE_MAX, {
+              max: convertToUIDateFormat(application.endDate),
+            }),
+            test: (value = '') =>
+              validateIsBeforeOrOnDate(value, application.endDate),
+          })
+          .when(['endDate'], (endDate: string, schema: Yup.StringSchema) =>
             Yup.string()
-              .nullable()
-              .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED))
               .test({
                 message: t(
                   'common:applications.alterations.new.validation.resumeDateBeforeEndDate'
                 ),
                 test: (value = '') => !validateIsBeforeOrOnDate(value, endDate),
               })
-              .test({
-                message: t(VALIDATION_MESSAGE_KEYS.DATE_MAX, {
-                  max: convertToUIDateFormat(application.endDate),
-                }),
-                test: (value = '') =>
-                  validateIsBeforeOrOnDate(value, application.endDate),
-              })
+              // eslint-disable-next-line unicorn/prefer-spread
+              .concat(schema)
           ),
       }),
     reason: Yup.string(),

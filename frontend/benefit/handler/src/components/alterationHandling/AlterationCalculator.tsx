@@ -313,6 +313,7 @@ const AlterationCalculator = ({
                 <SalaryCalculatorHighlight
                   description={calculationDescription}
                   amount={formik.values.recoveryAmount}
+                  testId="calculationResult"
                 />
               </$HighlightWrapper>
             )}
