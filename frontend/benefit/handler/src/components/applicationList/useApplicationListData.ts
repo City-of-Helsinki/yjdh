@@ -42,6 +42,7 @@ const useApplicationListData = (
         ahjo_case_id,
         application_origin: applicationOrigin,
         handled_by_ahjo_automation,
+        handled_at: handledAt,
       } = application;
 
       return {
@@ -68,6 +69,7 @@ const useApplicationListData = (
         talpaStatus: talpa_status,
         ahjoCaseId: ahjo_case_id,
         handledByAhjoAutomation: handled_by_ahjo_automation,
+        handledAt: convertToUIDateFormat(handledAt) || '-',
       };
     })
     .filter(

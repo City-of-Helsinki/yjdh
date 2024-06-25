@@ -137,6 +137,15 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       });
     }
 
+    if (isVisibleOnlyForStatus.accepted || isVisibleOnlyForStatus.rejected) {
+      cols.push({
+        headerName: getHeader('handledAt'),
+        key: 'handledAt',
+        isSortable: true,
+        customSortCompareFunction: sortFinnishDate,
+      });
+    }
+
     if (isVisibleOnlyForStatus.draft) {
       cols.push({
         headerName: getHeader('modifiedAt'),
