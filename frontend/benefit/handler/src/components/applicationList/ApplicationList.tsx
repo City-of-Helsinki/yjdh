@@ -261,6 +261,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
           indexKey="id"
           rows={list}
           cols={columns}
+          zebra
         />
       ) : (
         <$EmptyHeading>
