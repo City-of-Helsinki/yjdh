@@ -22,6 +22,7 @@ import {
   $EmptyHeading,
   $Heading,
   $TagWrapper,
+  $UnreadMessagesCount,
 } from './ApplicationList.sc';
 import { useApplicationList } from './useApplicationList';
 
@@ -220,6 +221,9 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
           {Number(unreadMessagesCount) > 0 ? (
             <$Link href={buildApplicationUrl(id, applicationStatus, true)}>
               <IconSpeechbubbleText color={theme.colors.coatOfArms} />
+              <$UnreadMessagesCount>
+                {Number(unreadMessagesCount)}
+              </$UnreadMessagesCount>
             </$Link>
           ) : null}
         </$CellContent>

@@ -18,7 +18,7 @@ export const $CellContent = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${(props) => props.theme.colors.white};
+  position: relative;
 `;
 
 type TagWrapperProps = {
@@ -41,4 +41,19 @@ export const $TagWrapper = styled.div<TagWrapperProps>`
       }
     }
   }
+`;
+
+export const $UnreadMessagesCount = styled.div`
+  position: absolute;
+  text-align: center;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  top: -5px;
+  right: -11px;
+  border-radius: 50%;
+  font-size: ${(props) => props.theme.fontSize.body.s};
+  font-weight: 300;
+  color: ${(props) => props.theme.colors.white};
+  background-color: ${(props) => props.theme.colors.coatOfArms};
 `;
