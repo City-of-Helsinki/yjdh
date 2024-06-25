@@ -90,12 +90,12 @@ const Header: React.FC = () => {
           isOpen={isMessagesDrawerVisible}
           onClose={() => setMessagesDrawerVisiblity(false)}
           canWriteNewMessages={canWriteNewMessages}
-          customItemsMessages={
-            <$CustomMessagesActions>
+          customItemsMessages={[
+            <$CustomMessagesActions key="isSecure">
               <IconLock />
               <p>{t('common:messenger.isSecure')}</p>
-            </$CustomMessagesActions>
-          }
+            </$CustomMessagesActions>,
+          ]}
         />
       )}
     </>

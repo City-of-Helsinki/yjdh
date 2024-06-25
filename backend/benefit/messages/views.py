@@ -2,8 +2,10 @@ from django.conf import settings
 from django.db import transaction
 from django.utils import translation
 from django.utils.translation import gettext_lazy as _
-from rest_framework import viewsets
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
+from rest_framework.response import Response
 
 from applications.models import Application
 from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
@@ -79,10 +81,27 @@ class HandlerMessageViewSet(ApplicantMessageViewSet):
             return Message.objects.none()
         return application.messages.get_messages_qs()
 
-    @transaction.atomic
     def list(self, request, *args, **kwargs):
-        self.get_queryset().update(seen_by_handler=True)
         return super(viewsets.ModelViewSet, self).list(request, *args, **kwargs)
+
+    @transaction.atomic
+    @action(detail=False, methods=["post"])
+    def mark_read(self, *args, **kwargs):
+        self.get_queryset().update(seen_by_handler=True)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @transaction.atomic
+    @action(detail=False, methods=["post"])
+    def mark_unread(self, *args, **kwargs):
+        last_message = self.get_queryset().order_by("-created_at").first()
+        if (
+            last_message is not None
+            and last_message.message_type == MessageType.APPLICANT_MESSAGE
+        ):
+            last_message.seen_by_handler = False
+            last_message.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class HandlerNoteViewSet(HandlerMessageViewSet):

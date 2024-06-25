@@ -559,19 +559,10 @@ def test_applications_list_with_message_count(
     assert response.data["unread_messages_count"] == 0
 
 
-@pytest.mark.parametrize(
-    "view_name",
-    [
-        "applicant-message-list",
-        "handler-message-list",
-    ],
-)
-def test_list_messages_read_receipt(
+def test_list_messages_read_receipt_applicant(
     api_client,
-    handler_api_client,
     handling_application,
     mock_get_organisation_roles_and_create_company,
-    view_name,
 ):
     handling_application.company = mock_get_organisation_roles_and_create_company
     handling_application.save()
@@ -586,21 +577,81 @@ def test_list_messages_read_receipt(
     assert Message.objects.filter(seen_by_applicant=True).count() == 0
     assert Message.objects.filter(seen_by_handler=True).count() == 0
 
-    if view_name == "applicant-message-list":
-        result = api_client.get(
-            reverse(view_name, kwargs={"application_pk": handling_application.pk})
+    result = api_client.get(
+        reverse(
+            "applicant-message-list", kwargs={"application_pk": handling_application.pk}
         )
-        assert result.status_code == 200
-        assert len(result.data) == 2
-        assert Message.objects.filter(seen_by_applicant=True).count() == 2
-        assert Message.objects.filter(seen_by_handler=True).count() == 0
-    else:
-        result = handler_api_client.get(
-            reverse(view_name, kwargs={"application_pk": handling_application.pk})
+    )
+    assert result.status_code == 200
+    assert len(result.data) == 2
+    assert Message.objects.filter(seen_by_applicant=True).count() == 2
+    assert Message.objects.filter(seen_by_handler=True).count() == 0
+
+
+@pytest.mark.parametrize(
+    "first_message_type,second_message_type,expected_count_after_mark_unread",
+    [
+        (MessageType.APPLICANT_MESSAGE, MessageType.HANDLER_MESSAGE, 2),
+        (MessageType.HANDLER_MESSAGE, MessageType.APPLICANT_MESSAGE, 1),
+    ],
+)
+def test_list_messages_read_receipt_handler(
+    handler_api_client,
+    handling_application,
+    mock_get_organisation_roles_and_create_company,
+    first_message_type,
+    second_message_type,
+    expected_count_after_mark_unread,
+):
+    handling_application.company = mock_get_organisation_roles_and_create_company
+    handling_application.save()
+
+    first_message = MessageFactory(
+        application=handling_application, message_type=first_message_type
+    )
+    first_message.created_at = "2021-06-04 00:00:00+00:00"
+    first_message.save()
+    second_message = MessageFactory(
+        application=handling_application, message_type=second_message_type
+    )
+    second_message.created_at = "2021-06-04 01:00:00+00:00"
+    second_message.save()
+
+    assert Message.objects.count() == 2
+    assert Message.objects.filter(seen_by_applicant=True).count() == 0
+    assert Message.objects.filter(seen_by_handler=True).count() == 0
+
+    result = handler_api_client.get(
+        reverse(
+            "handler-message-list", kwargs={"application_pk": handling_application.pk}
         )
-        assert result.status_code == 200
-        assert Message.objects.filter(seen_by_applicant=True).count() == 0
-        assert Message.objects.filter(seen_by_handler=True).count() == 2
+    )
+    assert result.status_code == 200
+    assert Message.objects.filter(seen_by_applicant=True).count() == 0
+    assert Message.objects.filter(seen_by_handler=True).count() == 0
+
+    result = handler_api_client.post(
+        reverse(
+            "handler-message-mark-read",
+            kwargs={"application_pk": handling_application.pk},
+        )
+    )
+    assert result.status_code == 204
+    assert Message.objects.filter(seen_by_applicant=True).count() == 0
+    assert Message.objects.filter(seen_by_handler=True).count() == 2
+
+    result = handler_api_client.post(
+        reverse(
+            "handler-message-mark-unread",
+            kwargs={"application_pk": handling_application.pk},
+        )
+    )
+    assert result.status_code == 204
+    assert Message.objects.filter(seen_by_applicant=True).count() == 0
+    assert (
+        Message.objects.filter(seen_by_handler=True).count()
+        == expected_count_after_mark_unread
+    )
 
 
 def test_applications_list_with_message_count_multiple_messages(
