@@ -29,10 +29,7 @@ class AhjoStatusInline(admin.TabularInline):
     model = AhjoStatus
     fk_name = "application"
     extra = 0
-    readonly_fields = (
-        "created_at",
-        "status",
-    )
+    readonly_fields = ("created_at",)
 
 
 class DeMinimisAidInline(admin.StackedInline):
