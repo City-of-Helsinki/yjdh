@@ -49,6 +49,10 @@ const buildApplicationUrl = (
   return applicationUrl;
 };
 
+const dateForAdditionalInformationNeededBy = (
+  dateString: string | Date
+): string => ` ${String(dateString).replace(/\d{4}$/, '')}`;
+
 const ApplicationList: React.FC<ApplicationListProps> = ({
   heading,
   status,
@@ -150,6 +154,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       cols.push({
         transform: ({
           status: applicationStatus,
+          additionalInformationNeededBy,
         }: ApplicationListTableTransforms) => (
           <$TagWrapper $colors={getTagStyleForStatus(applicationStatus)}>
             <Tag>
@@ -158,6 +163,10 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
                   applicationStatus
                 )}`
               )}
+              {applicationStatus === APPLICATION_STATUSES.INFO_REQUIRED &&
+                dateForAdditionalInformationNeededBy(
+                  additionalInformationNeededBy
+                )}
             </Tag>
           </$TagWrapper>
         ),
