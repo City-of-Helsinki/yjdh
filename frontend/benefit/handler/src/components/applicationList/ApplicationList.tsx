@@ -6,15 +6,11 @@ import {
 import { getTagStyleForStatus } from 'benefit/handler/utils/applications';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
-import { IconSpeechbubbleText, StatusLabel, Table, Tag } from 'hds-react';
+import { IconSpeechbubbleText, Table, Tag } from 'hds-react';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import { $Link } from 'shared/components/table/Table.sc';
-import {
-  convertToUIDateFormat,
-  sortFinnishDate,
-  sortFinnishDateTime,
-} from 'shared/utils/date.utils';
+import { sortFinnishDate, sortFinnishDateTime } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
 import {
@@ -161,6 +157,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     if (
       isVisibleOnlyForStatus.accepted ||
       isVisibleOnlyForStatus.rejected ||
+      isVisibleOnlyForStatus.infoRequired ||
       isAllStatuses
     ) {
       cols.push({
@@ -204,31 +201,6 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         headerName: getHeader('origin'),
         key: 'applicationOrigin',
         isSortable: true,
-      });
-    }
-
-    if (isVisibleOnlyForStatus.infoRequired) {
-      cols.push({
-        transform: ({
-          additionalInformationNeededBy,
-          status: itemStatus,
-        }: ApplicationListTableTransforms) => (
-          <div>
-            {itemStatus === APPLICATION_STATUSES.INFO_REQUIRED ? (
-              <StatusLabel type="alert">
-                {t(
-                  `common:applications.list.columns.additionalInformationNeededByVal`,
-                  {
-                    date: convertToUIDateFormat(additionalInformationNeededBy),
-                  }
-                )}
-              </StatusLabel>
-            ) : null}
-          </div>
-        ),
-        headerName: getHeader('additionalInformationNeededBy'),
-        key: 'additionalInformationNeededBy',
-        isSortable: false,
       });
     }
 
