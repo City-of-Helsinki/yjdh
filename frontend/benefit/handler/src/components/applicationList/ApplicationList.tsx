@@ -127,7 +127,12 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       });
     }
 
-    if (!status.includes(APPLICATION_STATUSES.DRAFT) || isAllStatuses) {
+    if (
+      (!status.includes(APPLICATION_STATUSES.DRAFT) &&
+        !status.includes(APPLICATION_STATUSES.ACCEPTED) &&
+        !status.includes(APPLICATION_STATUSES.REJECTED)) ||
+      isAllStatuses
+    ) {
       cols.push({
         headerName: getHeader('submittedAt'),
         key: 'submittedAt',
