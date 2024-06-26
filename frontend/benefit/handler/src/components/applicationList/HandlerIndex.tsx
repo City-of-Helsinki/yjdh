@@ -21,7 +21,7 @@ export interface ApplicationListProps {
 }
 const translationBase = 'common:applications.list.headings';
 
-const batchStatusesHandlingComplete = (batchStatus: BATCH_STATUSES): boolean =>
+const isBatchStatusHandlingComplete = (batchStatus: BATCH_STATUSES): boolean =>
   [
     BATCH_STATUSES.DECIDED_ACCEPTED,
     BATCH_STATUSES.DECIDED_REJECTED,
@@ -29,6 +29,11 @@ const batchStatusesHandlingComplete = (batchStatus: BATCH_STATUSES): boolean =>
     BATCH_STATUSES.COMPLETED,
     BATCH_STATUSES.REJECTED_BY_TALPA,
   ].includes(batchStatus);
+
+const isAcceptedOrRejected = (status: APPLICATION_STATUSES): boolean =>
+  [APPLICATION_STATUSES.ACCEPTED, APPLICATION_STATUSES.REJECTED].includes(
+    status
+  );
 
 const HandlerIndex: React.FC<ApplicationListProps> = ({
   layoutBackgroundColor,
@@ -47,11 +52,9 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
     list.filter(
       (app: ApplicationListItemData) =>
         app.ahjoCaseId &&
+        isAcceptedOrRejected(app.status) &&
         !isString(app.batch) &&
-        [APPLICATION_STATUSES.ACCEPTED, APPLICATION_STATUSES.REJECTED].includes(
-          app.status
-        ) &&
-        !batchStatusesHandlingComplete(app?.batch?.status)
+        !isBatchStatusHandlingComplete(app?.batch?.status)
     ).length;
 
   const getTabCountInPayment = (): number =>
@@ -62,8 +65,10 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
         app.batch?.status === BATCH_STATUSES.DECIDED_ACCEPTED
     ).length;
 
-  const getTabCountAll = (): number =>
-    list.filter((app: ApplicationListItemData) => !app.batch).length;
+  const getTabCountUndecided = (): number =>
+    list.filter(
+      (app: ApplicationListItemData) => !isAcceptedOrRejected(app.status)
+    ).length;
 
   const getTabCount = (
     statuses: APPLICATION_STATUSES[],
@@ -71,7 +76,7 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
   ): number => {
     if (handled === 'pending') return getTabCountPending();
     if (handled === 'inPayment') return getTabCountInPayment();
-    if (handled === 'all') return getTabCountAll();
+    if (handled === 'all') return getTabCountUndecided();
     return list.filter((app: ApplicationListItemData) =>
       statuses.includes(app.status)
     ).length;
@@ -147,7 +152,7 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
             <Tabs.TabPanel>
               <ApplicationList
                 isLoading={isLoading}
-                list={list.filter((app) => !app.batch)}
+                list={list.filter((app) => !isAcceptedOrRejected(app.status))}
                 heading={t(`${translationBase}.all`)}
                 status={ALL_APPLICATION_STATUSES}
               />
@@ -205,7 +210,7 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
                       APPLICATION_STATUSES.ACCEPTED,
                       APPLICATION_STATUSES.REJECTED,
                     ].includes(app.status) &&
-                    !batchStatusesHandlingComplete(app?.batch?.status)
+                    !isBatchStatusHandlingComplete(app?.batch?.status)
                 )}
                 heading={t(`${translationBase}.pending`)}
                 status={[
