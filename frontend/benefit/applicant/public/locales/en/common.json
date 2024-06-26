@@ -13,7 +13,7 @@
       "common": {
         "created": "Created",
         "employee": "Employee",
-        "saved": "Tallennettu",
+        "saved": "Saved",
         "edit": "Edit",
         "sent": "Submitted",
         "applicationNumber": "Application number",
@@ -425,7 +425,8 @@
         "accepted": "The application has been approved and the Helsinki benefit has been granted for the period of {{dateRangeStart}} - {{dateRangeEnd}}",
         "rejected": "The application was rejected. No Helsinki benefit is granted.",
         "handling": "The application is being processed.",
-        "cancelled": "The application has been cancelled."
+        "cancelled": "The application has been cancelled.",
+        "additional_information_needed": "The application is being processed."
       },
       "headings": {
         "mainHeading": "Decision details",
@@ -453,7 +454,8 @@
             "label": "Status",
             "received": "Received",
             "opened": "Handling",
-            "handled": "Processed"
+            "handled": "Processed",
+            "additional_information_needed": "Additional information is needed"
           },
           "recoveryAmount": "Recovered benefit",
           "recoveryPeriod": "Time period for which the benefit was recovered",

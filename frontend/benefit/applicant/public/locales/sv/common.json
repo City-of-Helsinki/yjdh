@@ -425,7 +425,8 @@
         "accepted": "Ansökan har godkänts och Helsingforstillägg har beviljats för tiden {{dateRangeStart}} - {{dateRangeEnd}}",
         "rejected": "Ansökan har avslagits. Helsingforstillägg beviljas inte.",
         "handling": "Ansökan behandlas.",
-        "cancelled": "Ansökan har avbrutits."
+        "cancelled": "Ansökan har avbrutits.",
+        "additional_information_needed": "Ansökan behandlas."
       },
       "headings": {
         "mainHeading": "Uppgifter om beslutet",
@@ -453,7 +454,8 @@
             "label": "Status",
             "received": "Mottagen",
             "opened": "Behandling",
-            "handled": "Behandlad"
+            "handled": "Behandlad",
+            "additional_information_needed": "Ytterligare uppgifter behövs"
           },
           "recoveryAmount": "Stöd som återkrävts",
           "recoveryPeriod": "Tid för vilken stödet återkrävs",
