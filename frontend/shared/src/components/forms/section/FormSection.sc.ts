@@ -1,4 +1,5 @@
 import { HeadingProps } from 'shared/components/forms/heading/Heading.sc';
+import { respondBelow } from 'shared/styles/mediaQueries';
 import styled, { DefaultTheme } from 'styled-components';
 
 type SpacingKeys = keyof DefaultTheme['spacing'];
@@ -102,6 +103,12 @@ export const $GridCell = styled.div<GridCellProps>`
   grid-row: auto / span ${(props) => props.$rowSpan ?? 1};
   align-self: ${(props) => props.alignSelf ?? 'initial'};
   justify-self: ${(props) => props.justifySelf ?? 'initial'};
+
+  ${respondBelow('sm')`
+    &:empty {
+      display: none;
+    }
+  `};
 `;
 
 export const $Action = styled.div`
