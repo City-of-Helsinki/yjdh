@@ -111,6 +111,8 @@ elasticsearch==7.17.9
     # via -r requirements.in
 elementpath==4.0.1
     # via xmlschema
+et-xmlfile==1.1.0
+    # via openpyxl
 factory-boy==3.2.1
     # via -r requirements.in
 faker==17.0.0
@@ -147,6 +149,8 @@ mozilla-django-oidc==3.0.0
     #   yjdh-backend-shared
 numpy==1.26.4
     # via pandas
+openpyxl==3.1.3
+    # via -r requirements.in
 packaging==23.0
     # via deprecation
 pandas==2.2.2
