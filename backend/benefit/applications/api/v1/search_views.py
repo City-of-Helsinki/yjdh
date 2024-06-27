@@ -71,7 +71,7 @@ class SearchView(APIView):
         detected_pattern = filters["detected_pattern"]
 
         # Archival application number starts with R or Y followed by numbers
-        if re.search("^[RY]\\d+", search_string, re.I) and search_from_archival:
+        if re.search("^[RY]\\d+", search_string, re.I):
             detected_pattern = SearchPattern.ARCHIVAL
         # Ahjo case id starts with HEL and is followed by numbers
         elif re.search("^HEL\\s\\d+", search_string, re.I):
@@ -165,7 +165,7 @@ def search_applications(
         return _query_and_respond_to_ssn(queryset, search_string, detected_pattern)
     elif detected_pattern == SearchPattern.ARCHIVAL:
         return _query_and_respond_to_archival_application(
-            search_string, detected_pattern
+            archival_application_queryset, search_string, detected_pattern
         )
 
     # Perform trigram query for company name
@@ -305,12 +305,14 @@ def _query_and_respond_to_ssn(
     )
 
 
-def _query_and_respond_to_archival_application(search_query_str, detected_pattern):
-    applications = ArchivalApplication.objects.filter(
+def _query_and_respond_to_archival_application(
+    archival_application_queryset, search_query_str, detected_pattern
+):
+    archival_application_queryset = archival_application_queryset.filter(
         Q(application_number__icontains=search_query_str)
     )
     return _create_search_response(
-        applications=applications,
+        applications=archival_application_queryset,
         serialized_data=None,
         detected_pattern=detected_pattern,
         search_query_str=search_query_str,
