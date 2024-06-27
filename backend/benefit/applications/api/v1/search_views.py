@@ -159,7 +159,10 @@ def search_applications(
     # Return early in case of number-like pattern
     if detected_pattern in [SearchPattern.AHJO, SearchPattern.NUMBERS]:
         return _query_and_respond_to_numbers(
-            queryset, search_string, detected_pattern, search_from_archival
+            queryset,
+            archival_application_queryset,
+            search_string,
+            detected_pattern,
         )
     elif detected_pattern == SearchPattern.SSN:
         return _query_and_respond_to_ssn(queryset, search_string, detected_pattern)
@@ -322,9 +325,9 @@ def _query_and_respond_to_archival_application(
 
 def _query_and_respond_to_numbers(
     queryset,
+    archival_application_queryset,
     search_query_str,
     detected_pattern,
-    archival=False,
 ):
     """
     Perform simple LIKE query for application number, AHJO case ID and company business ID
@@ -336,11 +339,10 @@ def _query_and_respond_to_numbers(
     )
     data = HandlerApplicationListSerializer(applications, many=True).data
 
-    if archival:
-        archival_applications = ArchivalApplication.objects.filter(
-            Q(company__business_id__icontains=search_query_str)
-        )
-        data += ArchivalApplicationListSerializer(archival_applications, many=True).data
+    archival_applications = archival_application_queryset.filter(
+        company__business_id__icontains=search_query_str
+    )
+    data += ArchivalApplicationListSerializer(archival_applications, many=True).data
 
     return _create_search_response(
         applications=None,
