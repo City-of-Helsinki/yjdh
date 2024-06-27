@@ -83,10 +83,17 @@ class SearchView(APIView):
         elif re.search("^\\d+", search_string):
             detected_pattern = SearchPattern.NUMBERS
 
-        queryset = _prepare_queryset(archived, subsidy_in_effect, years_since_decision)
+        queryset = _prepare_application_queryset(
+            archived, subsidy_in_effect, years_since_decision
+        )
+
+        archival_application_queryset = _prepare_archival_application_queryset(
+            subsidy_in_effect, years_since_decision
+        )
 
         return search_applications(
             queryset,
+            archival_application_queryset,
             search_string,
             in_memory_filter_str,
             detected_pattern,
@@ -94,7 +101,7 @@ class SearchView(APIView):
         )
 
 
-def _prepare_queryset(archived, subsidy_in_effect, years_since_decision):
+def _prepare_application_queryset(archived, subsidy_in_effect, years_since_decision):
     queryset = Application.objects.filter(archived=archived)
 
     if subsidy_in_effect and subsidy_in_effect == SubsidyInEffect.NOW:
@@ -107,26 +114,47 @@ def _prepare_queryset(archived, subsidy_in_effect, years_since_decision):
             calculation__end_date__gte=datetime.now().date()
             - relativedelta(years=int(subsidy_in_effect))
         )
-
     if years_since_decision:
         queryset = queryset.filter(
             batch__isnull=False,
             batch__decision_date__gte=datetime.now()
             - relativedelta(years=years_since_decision),
         )
-
     return queryset
+
+
+def _prepare_archival_application_queryset(subsidy_in_effect, years_since_decision):
+    queryset = ArchivalApplication.objects
+    if subsidy_in_effect and subsidy_in_effect == SubsidyInEffect.NOW:
+        return queryset.filter(
+            start_date__lte=datetime.now(),
+            end_date__gte=datetime.now(),
+        )
+    elif subsidy_in_effect:
+        return queryset.filter(
+            end_date__gte=datetime.now().date()
+            - relativedelta(years=int(subsidy_in_effect))
+        )
+    elif years_since_decision:
+        return queryset.filter(
+            end_date__gte=datetime.now().date()
+            - relativedelta(years=int(years_since_decision))
+        )
+    return queryset.all()
 
 
 def search_applications(
     queryset,
+    archival_application_queryset,
     search_string,
     in_memory_filter_str,
     detected_pattern,
     search_from_archival=False,
 ) -> Response:
     if search_string == "" and in_memory_filter_str == "":
-        return _query_and_respond_to_empty_search(queryset, search_from_archival)
+        return _query_and_respond_to_empty_search(
+            queryset, archival_application_queryset
+        )
 
     # Return early in case of number-like pattern
     if detected_pattern in [SearchPattern.AHJO, SearchPattern.NUMBERS]:
@@ -246,14 +274,12 @@ def _get_filter_combinations(app):
     ]
 
 
-def _query_and_respond_to_empty_search(queryset, search_from_archival):
+def _query_and_respond_to_empty_search(queryset, archival_application_queryset):
     data = []
-    if search_from_archival:
-        data = ArchivalApplicationListSerializer(
-            ArchivalApplication.objects.all(), many=True
-        ).data
-    else:
-        data = HandlerApplicationListSerializer(queryset, many=True).data
+    data += HandlerApplicationListSerializer(queryset, many=True).data
+    data += ArchivalApplicationListSerializer(
+        archival_application_queryset, many=True
+    ).data
     return _create_search_response(None, data, SearchPattern.ALL, "")
 
 
