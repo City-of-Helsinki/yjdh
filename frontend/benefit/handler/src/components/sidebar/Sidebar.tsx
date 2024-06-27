@@ -1,6 +1,8 @@
 import { Application } from 'benefit/handler/types/application';
-import { Tab, TabPanel, Tabs } from 'hds-react';
+import { MESSAGE_TYPES } from 'benefit-shared/constants';
+import { Button, Tab, TabPanel, Tabs } from 'hds-react';
 import * as React from 'react';
+import { useEffect } from 'react';
 import { $TabList } from 'shared/components/benefit/tabs/Tabs.sc';
 import Drawer from 'shared/components/drawer/Drawer';
 import Actions from 'shared/components/messaging/Actions';
@@ -14,8 +16,8 @@ interface ComponentProps {
   messagesReadOnly?: boolean;
   notesReadOnly?: boolean;
   onClose?: () => void;
-  customItemsMessages?: React.ReactNode;
-  customItemsNotes?: React.ReactNode;
+  customItemsMessages?: Array<React.ReactNode>;
+  customItemsNotes?: Array<React.ReactNode>;
   application: Application;
 }
 
@@ -28,8 +30,31 @@ const Sidebar: React.FC<ComponentProps> = ({
   onClose,
   application,
 }) => {
-  const { t, messages, notes, handleSendMessage, handleCreateNote } =
-    useSidebar(application?.id);
+  const {
+    t,
+    messages,
+    notes,
+    handleSendMessage,
+    handleCreateNote,
+    handleMarkMessagesRead,
+    handleMarkLastMessageUnread,
+  } = useSidebar(application?.id);
+
+  useEffect(() => {
+    if (isOpen) {
+      handleMarkMessagesRead();
+    }
+  }, [handleMarkMessagesRead, isOpen, messages.length]);
+
+  const closeAndMarkAsUnread = (): void => {
+    handleMarkLastMessageUnread(null, {
+      onSuccess: onClose,
+    });
+  };
+
+  const isLastMessageFromApplicant =
+    messages.length > 0 &&
+    messages.at(-1).messageType === MESSAGE_TYPES.APPLICANT_MESSAGE;
 
   return (
     <Drawer
@@ -54,7 +79,19 @@ const Sidebar: React.FC<ComponentProps> = ({
           <Messages data={messages} variant="message" withScroll />
           {!messagesReadOnly && (
             <Actions
-              customItems={customItemsMessages}
+              customItems={[
+                ...(customItemsMessages || []),
+                <Button
+                  onClick={closeAndMarkAsUnread}
+                  variant="secondary"
+                  theme="black"
+                  size="small"
+                  key="markAsUnread"
+                  disabled={!isLastMessageFromApplicant}
+                >
+                  {t('common:messenger.markAsUnread')}
+                </Button>,
+              ]}
               sendText={t('common:messenger.send')}
               errorText={t('common:form.validation.string.max', { max: 1024 })}
               placeholder={t('common:messenger.compose')}

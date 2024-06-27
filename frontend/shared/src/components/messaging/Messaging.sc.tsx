@@ -92,6 +92,7 @@ export const $FormActions = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: ${(props) => props.theme.spacing.s};
 `;
 
 export const $Hr = styled.hr`

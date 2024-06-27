@@ -31,6 +31,10 @@
         "fetch": {
           "label": "Tapahtui virhe",
           "text": " Virhe tapahtui viestejä haettaessa. Yritä myöhemmin uudelleen."
+        },
+        "readMarkerOperation": {
+          "label": "Tapahtui virhe",
+          "text": "Viestien lukumerkintöjen päivitys ei onnistunut. Yritä myöhemmin uudelleen."
         }
       }
     },
@@ -47,7 +51,8 @@
     "save": "Tallenna",
     "close": "Sulje",
     "noMessages": "Ei viestejä",
-    "seenByUser": "Viesti luettu"
+    "seenByUser": "Viesti luettu",
+    "markAsUnread": "Merkitse lukemattomaksi"
   },
   "notifications": {
     "accepted": {

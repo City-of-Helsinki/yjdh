@@ -10,7 +10,7 @@ import { useMessenger } from './useMessenger';
 interface ComponentProps {
   isOpen: boolean;
   onClose?: () => void;
-  customItemsMessages?: React.ReactNode;
+  customItemsMessages?: Array<React.ReactNode>;
   canWriteNewMessages?: boolean;
 }
 

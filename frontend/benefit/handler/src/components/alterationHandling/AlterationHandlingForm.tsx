@@ -301,12 +301,12 @@ const AlterationHandlingForm = ({
         messagesReadOnly
         application={application}
         onClose={() => toggleMessagesDrawerVisibility(false)}
-        customItemsNotes={
-          <$CustomNotesActions>
+        customItemsNotes={[
+          <$CustomNotesActions key="showToHandlerOnly">
             <IconLock />
             <p>{t('common:messenger.showToHandlerOnly')}</p>
-          </$CustomNotesActions>
-        }
+          </$CustomNotesActions>,
+        ]}
       />
     </>
   );

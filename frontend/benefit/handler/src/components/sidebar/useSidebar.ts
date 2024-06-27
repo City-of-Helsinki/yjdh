@@ -1,8 +1,11 @@
 import useCreateMessageQuery from 'benefit/handler/hooks/useCreateMessageQuery';
+import useMarkLastMessageUnreadQuery from 'benefit/handler/hooks/useMarkLastMessageUnreadQuery';
+import useMarkMessagesReadQuery from 'benefit/handler/hooks/useMarkMessagesReadQuery';
 import useMessagesQuery from 'benefit/handler/hooks/useMessagesQuery';
 import { MESSAGE_TYPES, MESSAGE_URLS } from 'benefit-shared/constants';
 import { Message } from 'benefit-shared/types/application';
 import { TFunction, useTranslation } from 'next-i18next';
+import { UseMutateFunction } from 'react-query';
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -10,6 +13,8 @@ type ExtendedComponentProps = {
   notes: Message[];
   handleSendMessage: (message: string) => void;
   handleCreateNote: (note: string) => void;
+  handleMarkMessagesRead: UseMutateFunction<void, Error>;
+  handleMarkLastMessageUnread: UseMutateFunction<void, Error>;
 };
 
 const useSidebar = (applicationId: string): ExtendedComponentProps => {
@@ -32,6 +37,14 @@ const useSidebar = (applicationId: string): ExtendedComponentProps => {
     MESSAGE_URLS.NOTES
   );
 
+  const { mutate: markMessagesRead } = useMarkMessagesReadQuery(
+    applicationId.toString()
+  );
+
+  const { mutate: markLastMessageUnread } = useMarkLastMessageUnreadQuery(
+    applicationId.toString()
+  );
+
   const handleSendMessage = (message: string): void =>
     createMessage({
       message_type: MESSAGE_TYPES.HANDLER_MESSAGE,
@@ -50,6 +63,8 @@ const useSidebar = (applicationId: string): ExtendedComponentProps => {
     notes: notes || [],
     handleSendMessage,
     handleCreateNote,
+    handleMarkMessagesRead: markMessagesRead,
+    handleMarkLastMessageUnread: markLastMessageUnread,
   };
 };
 

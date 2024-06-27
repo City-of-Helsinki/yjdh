@@ -1,11 +1,10 @@
 import { Button, TextArea } from 'hds-react';
 import React from 'react';
-import { useTheme } from 'styled-components';
 
 import { $Actions, $FormActions, $Notification } from './Messaging.sc';
 
 interface ActionProps {
-  customItems?: React.ReactNode;
+  customItems?: Array<React.ReactNode>;
   placeholder?: string;
   sendText: string;
   errorText: string;
@@ -27,7 +26,6 @@ const Actions: React.FC<ActionProps> = ({
   canWriteNewMessages = true,
   disabledText = '',
 }) => {
-  const theme = useTheme();
   const componentId = 'MessagesForm_Message';
   const [messageValue, setMessageValue] = React.useState<string>('');
   const isValid = messageValue.length <= maxLength;
@@ -40,6 +38,8 @@ const Actions: React.FC<ActionProps> = ({
     setMessageValue('');
   };
 
+  const showAllActionsOnOneLine = customItems?.length < 2;
+
   return (
     <>
       {notification && <$Notification>{notification}</$Notification>}
@@ -47,9 +47,6 @@ const Actions: React.FC<ActionProps> = ({
         <TextArea
           disabled={!canWriteNewMessages}
           id={componentId}
-          css={`
-            margin-bottom: ${theme.spacing.s};
-          `}
           name={componentId}
           placeholder={placeholder}
           onChange={handleChange}
@@ -62,17 +59,19 @@ const Actions: React.FC<ActionProps> = ({
           errorText={isValid ? '' : errorText}
         />
         <$FormActions>
-          {customItems}
+          {showAllActionsOnOneLine && customItems}
           <Button
             type="submit"
             theme="coat"
             size="small"
             disabled={!messageValue || !isValid || !canWriteNewMessages}
             onClick={handleSend}
+            css="margin-left: auto"
           >
             {sendText}
           </Button>
         </$FormActions>
+        {!showAllActionsOnOneLine && <$FormActions>{customItems}</$FormActions>}
       </$Actions>
     </>
   );

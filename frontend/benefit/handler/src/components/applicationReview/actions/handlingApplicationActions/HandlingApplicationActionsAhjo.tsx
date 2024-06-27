@@ -381,13 +381,15 @@ const HandlingApplicationActions: React.FC<Props> = ({
           (application.status && HANDLED_STATUSES.includes(application.status))
         }
         onClose={toggleMessagesDrawerVisibility}
-        customItemsMessages={<EditAction application={application} />}
-        customItemsNotes={
-          <$CustomNotesActions>
+        customItemsMessages={[
+          <EditAction application={application} key="edit" />,
+        ]}
+        customItemsNotes={[
+          <$CustomNotesActions key="showToHandlerOnly">
             <IconLock />
             <p>{t('common:messenger.showToHandlerOnly')}</p>
-          </$CustomNotesActions>
-        }
+          </$CustomNotesActions>,
+        ]}
       />
     </$Wrapper>
   );
