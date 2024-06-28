@@ -223,9 +223,13 @@ class AhjoApiClient:
                 else:
                     return self._request.application, response.json()
         except MissingHandlerIdError as e:
-            LOGGER.error(f"Missing handler id: {e}")
+            LOGGER.error(
+                f"Missing handler id for application {self._request.application.application_number}: {e}"
+            )
         except MissingAhjoCaseIdError as e:
-            LOGGER.error(f"Missing Ahjo case id: {e}")
+            LOGGER.error(
+                f"Missing Ahjo case id for application {self._request.application.application_number}: {e}"
+            )
         except requests.exceptions.HTTPError as e:
             LOGGER.error(
                 f"A HTTP error occurred while sending {self._request} to Ahjo: {e}"

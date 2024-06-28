@@ -471,44 +471,32 @@ def send_open_case_request_to_ahjo(
     application: Application, ahjo_token: AhjoToken
 ) -> Union[Tuple[Application, str], Tuple[None, None]]:
     """Open a case in Ahjo."""
-    try:
-        ahjo_request = AhjoOpenCaseRequest(application)
-        ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
 
-        pdf_summary = generate_application_attachment(
-            application, AttachmentType.PDF_SUMMARY
+    ahjo_request = AhjoOpenCaseRequest(application)
+    ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
+
+    pdf_summary = generate_application_attachment(
+        application, AttachmentType.PDF_SUMMARY
+    )
+    data = prepare_open_case_payload(application, pdf_summary)
+
+    result, response_text = ahjo_client.send_request_to_ahjo(data)
+    if result:
+        create_status_for_application(
+            application, AhjoStatusEnum.REQUEST_TO_OPEN_CASE_SENT
         )
-        data = prepare_open_case_payload(application, pdf_summary)
-
-        result, response_text = ahjo_client.send_request_to_ahjo(data)
-        if result:
-            create_status_for_application(
-                application, AhjoStatusEnum.REQUEST_TO_OPEN_CASE_SENT
-            )
-        return result, response_text
-    except ValueError as e:
-        LOGGER.error(f"Value error: {e}")
-    except ObjectDoesNotExist as e:
-        LOGGER.error(f"Object not found: {e}")
-    except ImproperlyConfigured as e:
-        LOGGER.error(f"Improperly configured: {e}")
+    return result, response_text
 
 
 def delete_application_in_ahjo(
     application: Application, ahjo_token: AhjoToken
 ) -> Union[Tuple[Application, str], None]:
     """Delete/cancel an application in Ahjo."""
-    try:
-        ahjo_request = AhjoDeleteCaseRequest(application)
-        ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
 
-        return ahjo_client.send_request_to_ahjo(None)
-    except ValueError as e:
-        LOGGER.error(f"Value error: {e}")
-    except ObjectDoesNotExist as e:
-        LOGGER.error(f"Object not found: {e}")
-    except ImproperlyConfigured as e:
-        LOGGER.error(f"Improperly configured: {e}")
+    ahjo_request = AhjoDeleteCaseRequest(application)
+    ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
+
+    return ahjo_client.send_request_to_ahjo(None)
 
 
 def update_application_summary_record_in_ahjo(
@@ -517,28 +505,20 @@ def update_application_summary_record_in_ahjo(
     """Update the application summary pdf in Ahjo.
     Should be done just before the decision proposal is sent.
     """
-    try:
-        ahjo_request = AhjoUpdateRecordsRequest(application)
-        ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
 
-        pdf_summary = generate_application_attachment(
-            application, AttachmentType.PDF_SUMMARY
-        )
-        data = prepare_update_application_payload(pdf_summary, application)
+    ahjo_request = AhjoUpdateRecordsRequest(application)
+    ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
 
-        result, response_text = ahjo_client.send_request_to_ahjo(data)
+    pdf_summary = generate_application_attachment(
+        application, AttachmentType.PDF_SUMMARY
+    )
+    data = prepare_update_application_payload(pdf_summary, application)
 
-        if result:
-            create_status_for_application(
-                application, AhjoStatusEnum.UPDATE_REQUEST_SENT
-            )
-        return result, response_text
-    except ValueError as e:
-        LOGGER.error(f"Value error: {e}")
-    except ObjectDoesNotExist as e:
-        LOGGER.error(f"Object not found: {e}")
-    except ImproperlyConfigured as e:
-        LOGGER.error(f"Improperly configured: {e}")
+    result, response_text = ahjo_client.send_request_to_ahjo(data)
+
+    if result:
+        create_status_for_application(application, AhjoStatusEnum.UPDATE_REQUEST_SENT)
+    return result, response_text
 
 
 def send_new_attachment_records_to_ahjo(
@@ -546,56 +526,42 @@ def send_new_attachment_records_to_ahjo(
     ahjo_token: AhjoToken,
 ) -> Union[Tuple[Application, str], None]:
     """Send any new attachments, that have been added after opening a case, to Ahjo."""
-    try:
-        # TODO add a check for application status,
-        # so that only applications in the correct status have their attachments sent
-        ahjo_request = AhjoAddRecordsRequest(application)
-        ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
 
-        attachments = application.attachments.all()
+    # TODO add a check for application status,
+    # so that only applications in the correct status have their attachments sent
+    ahjo_request = AhjoAddRecordsRequest(application)
+    ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
 
-        data = prepare_attachment_records_payload(attachments, application)
+    attachments = application.attachments.all()
 
-        application, response_text = ahjo_client.send_request_to_ahjo(data)
+    data = prepare_attachment_records_payload(attachments, application)
 
-        return application, response_text
-    except ValueError as e:
-        LOGGER.error(f"Value error: {e}")
-    except ObjectDoesNotExist as e:
-        LOGGER.error(f"Object not found: {e}")
-    except ImproperlyConfigured as e:
-        LOGGER.error(f"Improperly configured: {e}")
+    application, response_text = ahjo_client.send_request_to_ahjo(data)
+
+    return application, response_text
 
 
 def send_decision_proposal_to_ahjo(
     application: Application, ahjo_token: AhjoToken
 ) -> Union[Tuple[Application, str], None]:
     """Send a decision proposal and it's XML attachments to Ahjo."""
-    try:
-        ahjo_request = AhjoDecisionProposalRequest(application=application)
-        ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
 
-        delete_existing_xml_attachments(application)
+    ahjo_request = AhjoDecisionProposalRequest(application=application)
+    ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
 
-        decision_xml = generate_application_attachment(
-            application, AttachmentType.DECISION_TEXT_XML
-        )
-        secret_xml = generate_application_attachment(
-            application, AttachmentType.DECISION_TEXT_SECRET_XML
-        )
+    delete_existing_xml_attachments(application)
 
-        data = prepare_decision_proposal_payload(application, decision_xml, secret_xml)
-        response, response_text = ahjo_client.send_request_to_ahjo(data)
-        create_status_for_application(
-            application, AhjoStatusEnum.DECISION_PROPOSAL_SENT
-        )
-        return response, response_text
-    except ValueError as e:
-        LOGGER.error(f"Value error: {e}")
-    except ObjectDoesNotExist as e:
-        LOGGER.error(f"Object not found: {e}")
-    except ImproperlyConfigured as e:
-        LOGGER.error(f"Improperly configured: {e}")
+    decision_xml = generate_application_attachment(
+        application, AttachmentType.DECISION_TEXT_XML
+    )
+    secret_xml = generate_application_attachment(
+        application, AttachmentType.DECISION_TEXT_SECRET_XML
+    )
+
+    data = prepare_decision_proposal_payload(application, decision_xml, secret_xml)
+    response, response_text = ahjo_client.send_request_to_ahjo(data)
+    create_status_for_application(application, AhjoStatusEnum.DECISION_PROPOSAL_SENT)
+    return response, response_text
 
 
 def delete_existing_xml_attachments(application: Application):
@@ -632,11 +598,6 @@ def send_subscription_request_to_ahjo(
 def get_decision_details_from_ahjo(
     application: Application, ahjo_token: AhjoToken
 ) -> Union[List, None]:
-    try:
-        ahjo_request = AhjoDecisionDetailsRequest(application)
-        ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
-        return ahjo_client.send_request_to_ahjo()
-    except ObjectDoesNotExist as e:
-        LOGGER.error(f"Object not found: {e}")
-    except ImproperlyConfigured as e:
-        LOGGER.error(f"Improperly configured: {e}")
+    ahjo_request = AhjoDecisionDetailsRequest(application)
+    ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
+    return ahjo_client.send_request_to_ahjo()

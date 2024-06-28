@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime, timezone
+from typing import Dict
 
 from django.db import transaction
 from django.http import FileResponse
@@ -181,44 +182,51 @@ class AhjoCallbackView(APIView):
         elif callback_data["message"] == AhjoCallBackStatus.FAILURE:
             return self.handle_failure_callback(application, callback_data)
 
+    def cb_info_message(
+        self,
+        application: Application,
+        callback_data: Dict,
+        request_type: AhjoRequestType,
+    ) -> str:
+        """Return a string with information about the received callback."""
+        return f"Application {application.application_number}: \
+        received a callback for request_type {request_type} \
+        with request id: {callback_data['requestId']}, full callback data: {callback_data}"
+
     @transaction.atomic
     def handle_success_callback(
         self,
         request,
         application: Application,
-        callback_data: dict,
+        callback_data: Dict,
         request_type: AhjoRequestType,
     ) -> Response:
         try:
             with transaction.atomic():
+                info = self.cb_info_message(application, callback_data, request_type)
                 if request_type == AhjoRequestType.OPEN_CASE:
                     self._handle_open_case_success(application, callback_data)
                     ahjo_status = AhjoStatusEnum.CASE_OPENED
-                    info = f"Application ahjo_case_guid and ahjo_case_id were updated by Ahjo \
-                        with request id: {callback_data['requestId']}"
                 elif request_type == AhjoRequestType.DELETE_APPLICATION:
                     self._handle_delete_callback_success(application)
                     ahjo_status = AhjoStatusEnum.DELETE_REQUEST_RECEIVED
-                    info = f"Application {application.application_number} was marked for cancellation \
-in Ahjo with request id: {callback_data['requestId']}"
+
                 elif request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
                     self.handle_decision_proposal_success(application)
                     ahjo_status = AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED
-                    info = "Decision proposal was sent to Ahjo"
+                    info = self.cb_info_message(
+                        application, callback_data, request_type
+                    )
                 elif request_type == AhjoRequestType.UPDATE_APPLICATION:
                     self._handle_update_or_add_records_success(
                         application, callback_data
                     )
                     ahjo_status = AhjoStatusEnum.UPDATE_REQUEST_RECEIVED
-                    info = f"Updated application records were sent to Ahjo \
-with request id: {callback_data['requestId']}"
                 elif request_type == AhjoRequestType.ADD_RECORDS:
                     self._handle_update_or_add_records_success(
                         application, callback_data
                     )
                     ahjo_status = AhjoStatusEnum.NEW_RECORDS_RECEIVED
-                    info = f"A attachments were sent as records to Ahjo \
-with request id: {callback_data['requestId']}"
                 else:
                     raise AhjoCallbackError(
                         f"Unknown request type {request_type} in the Ahjo callback"
@@ -316,7 +324,7 @@ with request id: {callback_data['requestId']}"
     def _log_failure_details(self, application, callback_data):
         LOGGER.error(
             f"Received unsuccessful callback for application {application.id} \
-                with request_id {callback_data['requestId']}"
+                with request_id {callback_data['requestId']}, callback data: {callback_data}"
         )
         for cb_record in callback_data.get("records", []):
             if cb_record.get("status") == AhjoCallBackStatus.FAILURE:
@@ -358,7 +366,8 @@ class AhjoDecisionCallbackView(APIView):
             "",
             Operation.UPDATE,
             application,
-            additional_information=f"Decision proposal update type: {update_type} was received from Ahjo",
+            additional_information=f"Decision proposal update type: {update_type} was received \
+            from Ahjo for application {application.application_number}",
         )
 
         return Response({"message": "Callback received"}, status=status.HTTP_200_OK)
