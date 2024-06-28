@@ -42,6 +42,7 @@ const useApplicationListData = (
         ahjo_case_id,
         application_origin: applicationOrigin,
         handled_by_ahjo_automation,
+        handled_at: handledAt,
       } = application;
 
       return {
@@ -58,25 +59,47 @@ const useApplicationListData = (
         applicationNum,
         // refactor when we have handler data
         handlerName:
-          getFullName(
+          `${getFullName(
             calculation?.handler_details?.first_name,
-            calculation?.handler_details?.last_name
-          ) || '-',
+            calculation?.handler_details?.last_name.at(0)
+          )}.` || '-',
         unreadMessagesCount: unread_messages_count ?? 0,
         batch: batch ?? null,
         applicationOrigin,
         talpaStatus: talpa_status,
         ahjoCaseId: ahjo_case_id,
         handledByAhjoAutomation: handled_by_ahjo_automation,
+        handledAt: convertToUIDateFormat(handledAt) || '-',
       };
     })
     .filter(
       (application) =>
-        isNewAhjoMode ||
-        (![
+        [APPLICATION_STATUSES.DRAFT, APPLICATION_STATUSES.RECEIVED].includes(
+          application.status
+        ) ||
+        ([
+          APPLICATION_STATUSES.HANDLING,
+          APPLICATION_STATUSES.INFO_REQUIRED,
+        ].includes(application.status) &&
+          isNewAhjoMode &&
+          application.handledByAhjoAutomation) ||
+        ([
           APPLICATION_STATUSES.ACCEPTED,
           APPLICATION_STATUSES.REJECTED,
         ].includes(application.status) &&
+          isNewAhjoMode &&
+          application.handledByAhjoAutomation) ||
+        ([
+          APPLICATION_STATUSES.HANDLING,
+          APPLICATION_STATUSES.INFO_REQUIRED,
+        ].includes(application.status) &&
+          !isNewAhjoMode &&
+          !application.handledByAhjoAutomation) ||
+        ([
+          APPLICATION_STATUSES.ACCEPTED,
+          APPLICATION_STATUSES.REJECTED,
+        ].includes(application.status) &&
+          !isNewAhjoMode &&
           !application.handledByAhjoAutomation)
     );
 
