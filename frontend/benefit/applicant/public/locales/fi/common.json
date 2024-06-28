@@ -425,7 +425,8 @@
         "accepted": "Hakemus on hyväksytty ja Helsinki-lisää on myönnetty aikavälille {{dateRangeStart}} – {{dateRangeEnd}}",
         "rejected": "Hakemus on hylätty. Helsinki-lisää ei myönnetä.",
         "handling": "Hakemus on käsittelyssä.",
-        "cancelled": "Hakemus on peruttu."
+        "cancelled": "Hakemus on peruttu.",
+        "additional_information_needed": "Hakemus on käsittelyssä."
       },
       "headings": {
         "mainHeading": "Päätöksen tiedot",
@@ -453,7 +454,8 @@
             "label": "Tila",
             "received": "Lähetetty",
             "opened": "Vastaanotettu",
-            "handled": "Käsitelty"
+            "handled": "Käsitelty",
+            "additional_information_needed": "Lisätietoa tarvitaan"
           },
           "recoveryAmount": "Takaisinlaskutettu tuki",
           "recoveryPeriod": "Aika, jolta tukea laskutettiin takaisin",
