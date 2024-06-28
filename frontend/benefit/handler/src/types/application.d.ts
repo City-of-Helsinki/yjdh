@@ -30,6 +30,7 @@ import {
   User,
 } from 'benefit-shared/types/application';
 import { FormikProps } from 'formik';
+import { ButtonTheme } from 'hds-react';
 import { Field } from 'shared/components/forms/fields/types';
 import { Language } from 'shared/i18n/i18n';
 
@@ -234,3 +235,21 @@ export type ApplicationAlterationHandlingForm =
     manualRecoveryAmount: string;
     isManual: boolean;
   };
+
+  type AlterationCsvData = {
+    application: string;
+    recoveryStartDate: string;
+    recoveryEndDate: string;
+    recoveryAmount: string;
+    recoveryJustification: string;
+    isRecoverable: boolean;
+  };
+  
+  type AlterationCsvProps = {
+    alteration: ApplicationAlteration;
+    values: AlterationCsvData;
+    theme?: ButtonTheme;
+    secondary?: boolean;
+    onSubmit: () => void;
+  };
+  

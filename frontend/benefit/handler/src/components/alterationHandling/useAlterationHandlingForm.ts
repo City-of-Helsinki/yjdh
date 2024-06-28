@@ -86,7 +86,7 @@ const useAlterationHandling = ({
       manualRecoveryAmount: '0',
       isManual: false,
       isRecoverable: true,
-      recoveryJustification: '',
+      recoveryJustification: alteration.recoveryJustification || '',
     },
     onSubmit: submitForm,
     validationSchema: getValidationSchema(application, alteration, t),
