@@ -1,4 +1,4 @@
-import { Checkbox, RadioButton, SearchInput, SelectionGroup } from 'hds-react';
+import { RadioButton, SearchInput, SelectionGroup } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import Heading from 'shared/components/forms/heading/Heading';
@@ -19,8 +19,6 @@ import {
 const ApplicationsArchive: React.FC = () => {
   const [searchString, setSearchString] = React.useState<string>('');
 
-  const [includeArchivalApplications, setIncludeArchivalApplications] =
-    React.useState<boolean>(false);
   const [subsidyInEffect, setSubsidyInEffect] =
     React.useState<SUBSIDY_IN_EFFECT | null>(
       SUBSIDY_IN_EFFECT.RANGE_THREE_YEARS
@@ -36,7 +34,7 @@ const ApplicationsArchive: React.FC = () => {
     useApplicationsArchive(
       searchString,
       true,
-      includeArchivalApplications,
+      true,
       subsidyInEffect,
       decisionRange
     );
@@ -46,11 +44,10 @@ const ApplicationsArchive: React.FC = () => {
     submitSearch(value);
   };
 
-  const showArchivalApplications = (): void => {
-    setIncludeArchivalApplications(!includeArchivalApplications);
-    setSubsidyInEffect(null);
-    setDecisionRange(null);
-  };
+  React.useEffect(() => {
+    submitSearch(searchString);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterSelection]);
 
   const handleSubsidyFilterChange = (
     selection: FILTER_SELECTION,
@@ -89,23 +86,13 @@ const ApplicationsArchive: React.FC = () => {
             placeholder={t(
               'common:search.fields.searchInput.keyword.placeholder'
             )}
-            onChange={(e) => setSearchString(e)}
-            onSubmit={(e) => onSearch(e)}
+            onChange={(value) => setSearchString(value)}
+            onSubmit={(value) => onSearch(value)}
             css="margin-bottom: var(--spacing-m);"
           />
         </div>
 
         <$Grid>
-          <$GridCell $colSpan={12}>
-            <SelectionGroup>
-              <Checkbox
-                id="include-archival-applications"
-                label="Näytä hyväksytyt vanhat hakemukset"
-                checked={includeArchivalApplications}
-                onClick={() => showArchivalApplications()}
-              />
-            </SelectionGroup>
-          </$GridCell>
           <$GridCell $colSpan={6}>
             <Heading
               as="h4"
@@ -113,7 +100,7 @@ const ApplicationsArchive: React.FC = () => {
               $css={{ margin: 0 }}
             />
 
-            <SelectionGroup disabled={includeArchivalApplications}>
+            <SelectionGroup disabled={isSearchLoading}>
               <RadioButton
                 id="subsidy-past-three-years"
                 label={t(

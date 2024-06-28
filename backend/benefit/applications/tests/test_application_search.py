@@ -7,7 +7,7 @@ from django.core.management import call_command
 from rest_framework.reverse import reverse
 
 from applications.api.v1.search_views import SearchPattern, SubsidyInEffect
-from applications.enums import ApplicationBatchStatus
+from applications.enums import ApplicationBatchStatus, ApplicationStatus
 from applications.models import ArchivalApplication
 from applications.tests.factories import ApplicationBatchFactory
 from applications.tests.test_command_import_archival_applications import (
@@ -21,6 +21,7 @@ api_url = reverse(
 
 
 def setup_application_data(application, archived):
+    application.status = ApplicationStatus.ACCEPTED
     application.company.name = "Pitkänen Ruuskanen Oyj"
     application.company.save()
 
@@ -259,6 +260,7 @@ def test_search_filter_years_since_decision(
             "q": q,
             "archived": archived,
             "years_since_decision": years_since_decision,
+            "archival": True,
         }
     )
 

@@ -143,6 +143,8 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
           <Table
             aria-live="polite"
             indexKey="id"
+            initialSortingColumnKey="handledAt"
+            initialSortingOrder="desc"
             theme={theme.components.table}
             rows={rows}
             cols={cols}
