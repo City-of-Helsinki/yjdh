@@ -310,15 +310,15 @@ def _query_and_respond_to_ssn(
     Because of limitation in django-searchable-encrypted-fields,
     filter by exact SSN and if no match is found then try uppercase
     """
-    applications = application_queryset.filter(
+    application_queryset = application_queryset.filter(
         employee__social_security_number=search_query_str
     )
-    if applications.count() == 0:
-        applications = application_queryset.filter(
+    if application_queryset.count() == 0:
+        application_queryset = application_queryset.filter(
             employee__social_security_number=search_query_str.upper()
         )
     return _create_search_response(
-        applications,
+        application_queryset,
         None,
         detected_pattern,
         search_query_str,
@@ -332,7 +332,7 @@ def _query_and_respond_to_archival_application(
         Q(application_number__icontains=search_query_str)
     )
     return _create_search_response(
-        applications=archival_application_queryset,
+        queryset=archival_application_queryset,
         serialized_data=None,
         detected_pattern=detected_pattern,
         search_query_str=search_query_str,
@@ -362,7 +362,7 @@ def _query_and_respond_to_numbers(
     data += ArchivalApplicationListSerializer(archival_applications, many=True).data
 
     return _create_search_response(
-        applications=None,
+        queryset=None,
         serialized_data=data,
         detected_pattern=detected_pattern,
         search_query_str=search_query_str,
@@ -370,7 +370,7 @@ def _query_and_respond_to_numbers(
 
 
 def _create_search_response(
-    applications: Union[Application, None],
+    queryset: Union[Application, None],
     serialized_data: Union[list, None],
     detected_pattern: str,
     search_query_str: str,
@@ -379,7 +379,7 @@ def _create_search_response(
     serializer=HandlerApplicationListSerializer,
 ):
     if serialized_data is None:
-        serialized_data = serializer(applications, many=True).data
+        serialized_data = serializer(queryset, many=True).data
 
     return Response(
         {
