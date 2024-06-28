@@ -151,3 +151,13 @@ def test_decision_proposal_drafting():
         ImportArchivalApplicationsTestUtility.test_data["values"]
     )
     assert Company.objects.all().count() == 3
+
+    # Assert the values of the retrieved archival application
+    app = ArchivalApplication.objects.filter(application_number="R001").first()
+    assert app.application_number == "R001"
+    assert app.company.name == "ATK Testi Oy"
+    assert app.company.business_id == "5553844-9"
+    assert app.employee_last_name == "Testinen"
+    assert app.employee_first_name == "Henna"
+    assert app.months_total == "12.0"
+    assert app.year_of_birth == "1992"
