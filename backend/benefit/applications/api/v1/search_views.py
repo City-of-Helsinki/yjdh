@@ -21,6 +21,7 @@ from applications.api.v1.serializers.application import (
     ArchivalApplicationListSerializer,
     HandlerApplicationListSerializer,
 )
+from applications.enums import ApplicationStatus
 from applications.models import Application, ArchivalApplication
 from common.permissions import BFIsHandler
 
@@ -106,19 +107,29 @@ def _prepare_application_queryset(archived, subsidy_in_effect, years_since_decis
 
     if subsidy_in_effect and subsidy_in_effect == SubsidyInEffect.NOW:
         queryset = queryset.filter(
+            status=ApplicationStatus.ACCEPTED,
             calculation__start_date__lte=datetime.now(),
             calculation__end_date__gte=datetime.now(),
         )
     elif subsidy_in_effect and subsidy_in_effect.isnumeric():
         queryset = queryset.filter(
+            status=ApplicationStatus.ACCEPTED,
             calculation__end_date__gte=datetime.now().date()
-            - relativedelta(years=int(subsidy_in_effect))
+            - relativedelta(years=int(subsidy_in_effect)),
         )
     if years_since_decision:
         queryset = queryset.filter(
-            batch__isnull=False,
-            batch__decision_date__gte=datetime.now()
-            - relativedelta(years=years_since_decision),
+            Q(
+                status=ApplicationStatus.ACCEPTED,
+                batch__isnull=False,
+                batch__decision_date__gte=datetime.now()
+                - relativedelta(years=years_since_decision),
+            )
+            | Q(
+                status=ApplicationStatus.REJECTED,
+                handled_at__gte=datetime.now()
+                - relativedelta(years=years_since_decision),
+            ),
         )
     return queryset
 
@@ -195,22 +206,22 @@ def search_applications(
             queryset,
             search_string,
             in_memory_filter_str,
+            HandlerApplicationListSerializer,
         )
         filtered_data = in_memory_results["data"]
 
-        if search_from_archival:
-            archival_data = ArchivalApplicationListSerializer(
-                archival_applications, many=True
-            ).data
-            in_memory_results_archival = _perform_in_memory_search(
-                archival_data,
-                detected_pattern,
-                queryset,
-                search_string,
-                in_memory_filter_str,
-                True,
-            )
-            filtered_data += in_memory_results_archival["data"]
+        archival_data = ArchivalApplicationListSerializer(
+            archival_applications, many=True
+        ).data
+        in_memory_results_archival = _perform_in_memory_search(
+            archival_data,
+            detected_pattern,
+            archival_application_queryset,
+            search_string,
+            in_memory_filter_str,
+            ArchivalApplicationListSerializer,
+        )
+        filtered_data += in_memory_results_archival["data"]
 
         detected_pattern = in_memory_results["detected_pattern"]
     else:
@@ -383,21 +394,14 @@ def _perform_in_memory_search(
     queryset,
     search_string,
     in_memory_filter_str,
-    archival_applications=False,
+    serializer,
 ):
     """Perform more expensive in-memory search from within applications"""
     if detected_pattern == SearchPattern.COMPANY:
         in_memory_filter_str = search_string
     # No previous search results, use all applications as haystack
     if len(data) == 0 or search_string == "":
-        applications = (
-            ArchivalApplication.objects.all() if archival_applications else queryset
-        )
-        data = (
-            ArchivalApplicationListSerializer(applications, many=True).data
-            if archival_applications
-            else HandlerApplicationListSerializer(applications, many=True).data
-        )
+        data = serializer(queryset, many=True).data
         detected_pattern = f"{SearchPattern.ALL} {SearchPattern.IN_MEMORY}"
     else:
         detected_pattern = f"{SearchPattern.COMPANY} {SearchPattern.IN_MEMORY}"
@@ -431,15 +435,13 @@ def _query_for_company_name(queryset, archival_application_queryset, search_stri
             .order_by("-similarity", "-handled_at")
         ),
         "archival": (
-            ArchivalApplication.objects.annotate(
+            archival_application_queryset.annotate(
                 search=search_vectors,
                 similarity=TrigramSimilarity("company__name", search_string),
                 rank=SearchRank(search_vectors, query),
             )
             .filter(similarity__gt=0.3)
             .order_by("-similarity", "-handled_at")
-            if search_from_archival
-            else []
         ),
     }
 
