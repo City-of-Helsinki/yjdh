@@ -102,6 +102,11 @@ const AlterationHandlingForm = ({
     getNumberValue(formik.values.recoveryAmount) >
       DEFAULT_MINIMUM_RECOVERY_AMOUNT;
 
+    const handleAlterationCsvDownload = () => {
+      // You can add any necessary logic here after the CSV download
+      console.log('CSV download completed');
+    };
+
   return (
     <>
       <Container>
@@ -234,7 +239,10 @@ const AlterationHandlingForm = ({
                 <$TalpaGuideText>
                   {t(`${translationBase}.talpaCsv.guideText`)}
                 </$TalpaGuideText>
-                <AlterationCsvButton alteration={alteration} />
+                <AlterationCsvButton 
+                  alteration={alteration}
+                  values={formik.values}
+                  onSubmit={handleAlterationCsvDownload} />
               </$GridCell>
             </$Grid>
           </AlterationHandlingSection>
