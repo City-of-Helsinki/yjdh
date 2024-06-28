@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.13.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.12.0...benefit-applicant-v3.13.0) (2024-06-28)
+
+
+### Features
+
+* Allow handler to mark last application message as unread ([#3120](https://github.com/City-of-Helsinki/yjdh/issues/3120)) (HL-1117) ([79efe24](https://github.com/City-of-Helsinki/yjdh/commit/79efe243d59c113e51182363b7c8ed15029c21e0))
+
+
+### Bug Fixes
+
+* Fix applicant messager drawer refusing to close in some cases ([#3110](https://github.com/City-of-Helsinki/yjdh/issues/3110)) (HL-1345) ([13b4eee](https://github.com/City-of-Helsinki/yjdh/commit/13b4eee53918297bb0ce98b05f34e7974749187e))
+
 ## [3.12.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.11.0...benefit-applicant-v3.12.0) (2024-06-17)
 
 
