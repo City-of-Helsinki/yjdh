@@ -487,9 +487,20 @@ class HandlerApplicationAlterationViewSet(BaseApplicationAlterationViewSet):
         """
         Update alteration and respond with a CSV file.
         """
-        queryset = ApplicationAlteration.objects.filter(
+        alteration = ApplicationAlteration.objects.get(
             application_id__in=[request.GET.get("application_id")],
             id__in=[request.GET.get("alteration_id")],
+        )
+
+        alteration.recovery_justification = request.data.get("recovery_justification")
+        alteration.recovery_amount = request.data.get("recovery_amount")
+        alteration.recovery_end_date = request.data.get("recovery_end_date")
+        alteration.recovery_start_date = request.data.get("recovery_start_date")
+
+        alteration.save()
+        # CsvService requires a queryset, so we need to create a queryset with the alteration
+        queryset = ApplicationAlteration.objects.filter(
+            id__in=[alteration.id],
         )
         try:
             alteration_fields = AhjoSetting.objects.get(
@@ -512,10 +523,9 @@ class HandlerApplicationAlterationViewSet(BaseApplicationAlterationViewSet):
     ) -> StreamingHttpResponse:
         """Generate a response with a CSV file containing application alteration data."""
         csv_service = ApplicationAlterationCsvService(queryset, config)
-        response = StreamingHttpResponse(
-            csv_service.get_csv_string_lines_generator(
-                remove_quotes=True, add_bom=True
-            ),
+
+        response = HttpResponse(
+            csv_service.get_csv_string(True).encode("utf-8"),
             content_type="text/csv",
         )
         response["Content-Disposition"] = "attachment; filename={filename}.csv".format(
@@ -739,6 +749,7 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
             csv_service.get_csv_string_lines_generator(remove_quotes),
             content_type="text/csv",
         )
+
         response["Content-Disposition"] = "attachment; filename={filename}.csv".format(
             filename=self._export_filename_without_suffix()
         )
