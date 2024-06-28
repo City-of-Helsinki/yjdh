@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.3.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.2.0...benefit-handler-v4.3.0) (2024-06-28)
+
+
+### Features
+
+* Allow handler to mark last application message as unread ([#3120](https://github.com/City-of-Helsinki/yjdh/issues/3120)) (HL-1117) ([79efe24](https://github.com/City-of-Helsinki/yjdh/commit/79efe243d59c113e51182363b7c8ed15029c21e0))
+
+
+### Bug Fixes
+
+* Remove list items that are handled with new ahjo mode ([#3113](https://github.com/City-of-Helsinki/yjdh/issues/3113)) ([5ea5967](https://github.com/City-of-Helsinki/yjdh/commit/5ea59679d5fd6218639186352d9369d369cd4f8f))
+
 ## [4.2.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.1.0...benefit-handler-v4.2.0) (2024-06-24)
 
 
