@@ -18,6 +18,7 @@ from applications.services.ahjo_payload import (
     _prepare_record_document_dict,
     _prepare_record_title,
     _prepare_top_level_dict,
+    _truncate_company_name,
     prepare_update_application_payload,
     resolve_payload_language,
 )
@@ -31,6 +32,15 @@ Helsinki-lisä, {application.company_name}, \
 hakemus {application.application_number}"
     got = _prepare_case_title(application)
     assert wanted_title == got
+
+
+def test_truncate_company_name():
+    short = "a" * 50
+    too_long = "a" * 105
+    not_too_long = "a" * 100
+    assert len(_truncate_company_name(too_long)) == 100
+    assert len(_truncate_company_name(not_too_long)) == 100
+    assert len(_truncate_company_name(short)) == 50
 
 
 @pytest.mark.parametrize(
