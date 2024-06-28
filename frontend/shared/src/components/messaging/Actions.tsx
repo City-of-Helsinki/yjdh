@@ -38,7 +38,8 @@ const Actions: React.FC<ActionProps> = ({
     setMessageValue('');
   };
 
-  const showAllActionsOnOneLine = customItems?.length < 2;
+  const showAllActionsOnOneLine =
+    customItems?.filter((item) => !!item).length < 2;
 
   return (
     <>

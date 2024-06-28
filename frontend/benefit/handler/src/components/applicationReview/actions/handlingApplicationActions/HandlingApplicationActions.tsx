@@ -1,5 +1,4 @@
 import Sidebar from 'benefit/handler/components/sidebar/Sidebar';
-import { HANDLED_STATUSES } from 'benefit/handler/constants';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import {
@@ -52,6 +51,11 @@ const HandlingApplicationActions: React.FC<Props> = ({
     isDoneConfirmationModalOpen,
     handledApplication,
   } = useHandlingApplicationActions(application);
+
+  const canBeOpenedForEdit = [
+    APPLICATION_STATUSES.HANDLING,
+    APPLICATION_STATUSES.INFO_REQUIRED,
+  ].includes(application.status);
 
   return (
     <$Wrapper data-testid={dataTestId}>
@@ -156,12 +160,15 @@ const HandlingApplicationActions: React.FC<Props> = ({
       <Sidebar
         isOpen={isMessagesDrawerVisible}
         messagesReadOnly={
-          application.status && HANDLED_STATUSES.includes(application.status)
+          application.status &&
+          application.status === APPLICATION_STATUSES.CANCELLED
         }
         application={application}
         onClose={toggleMessagesDrawerVisibility}
         customItemsMessages={[
-          <EditAction application={application} key="edit" />,
+          canBeOpenedForEdit ? (
+            <EditAction application={application} key="edit" />
+          ) : null,
         ]}
         customItemsNotes={[
           <$CustomNotesActions key="showToHandlerOnly">
