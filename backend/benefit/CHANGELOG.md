@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.3.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.2.0...benefit-backend-v2.3.0) (2024-06-28)
+
+
+### Features
+
+* Allow ahjo_status change in admin ([#3115](https://github.com/City-of-Helsinki/yjdh/issues/3115)) ([226ad18](https://github.com/City-of-Helsinki/yjdh/commit/226ad18375e0de6f5fbf5886742db47e747d9435))
+* Allow handler to mark last application message as unread ([#3120](https://github.com/City-of-Helsinki/yjdh/issues/3120)) (HL-1117) ([79efe24](https://github.com/City-of-Helsinki/yjdh/commit/79efe243d59c113e51182363b7c8ed15029c21e0))
+* Cancel batch after application cancel ([#3100](https://github.com/City-of-Helsinki/yjdh/issues/3100)) ([aff14ec](https://github.com/City-of-Helsinki/yjdh/commit/aff14ecbb5a322da1fd919260cc602227776d22b))
+* Enqueue for ahjo deletion on cancellation ([#3092](https://github.com/City-of-Helsinki/yjdh/issues/3092)) ([19cea8c](https://github.com/City-of-Helsinki/yjdh/commit/19cea8c07708bdce3540eca9537af91f1d7ed413))
+* HL 1365 improve logging, HL-1363 don't block ahjo requests ([#3099](https://github.com/City-of-Helsinki/yjdh/issues/3099)) ([cb1cb45](https://github.com/City-of-Helsinki/yjdh/commit/cb1cb45d75a0f580739b4f64c90dc047890632cf))
+* Truncate company name in open case request ([#3118](https://github.com/City-of-Helsinki/yjdh/issues/3118)) ([4b15459](https://github.com/City-of-Helsinki/yjdh/commit/4b1545950c9508d093ed42beb75cf81d2e1187a8))
+
+
+### Bug Fixes
+
+* Resolve pip problems ([#3125](https://github.com/City-of-Helsinki/yjdh/issues/3125)) ([fb3742b](https://github.com/City-of-Helsinki/yjdh/commit/fb3742b2bab8b9f44154d7cb028b8b7d06010277))
+
 ## [2.2.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.1.0...benefit-backend-v2.2.0) (2024-06-24)
 
 
