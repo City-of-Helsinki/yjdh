@@ -173,8 +173,8 @@ def search_applications(
 
     # Perform trigram query for company name
     if detected_pattern in [SearchPattern.COMPANY, SearchPattern.IN_MEMORY]:
-        results_for_related_company = _query_for_company(
-            queryset, search_string, search_from_archival
+        results_for_related_company = _query_for_company_name(
+            queryset, archival_application_queryset, search_string
         )
         applications = results_for_related_company["applications"]
         archival_applications = results_for_related_company["archival"]
@@ -416,7 +416,7 @@ def _perform_in_memory_search(
     return {**in_memory_results, **{"detected_pattern": detected_pattern}}
 
 
-def _query_for_company(queryset, search_string, search_from_archival):
+def _query_for_company_name(queryset, archival_application_queryset, search_string):
     search_vectors = SearchVector("company__name")
     query = SearchQuery(search_string, search_type="websearch")
 
