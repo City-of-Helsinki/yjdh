@@ -84,7 +84,7 @@ class SearchView(APIView):
         elif re.search("^\\d+", search_string):
             detected_pattern = SearchPattern.NUMBERS
 
-        queryset = _prepare_application_queryset(
+        application_queryset = _prepare_application_queryset(
             archived, subsidy_in_effect, years_since_decision
         )
 
@@ -93,7 +93,7 @@ class SearchView(APIView):
         )
 
         return search_applications(
-            queryset,
+            application_queryset,
             archival_application_queryset,
             search_string,
             in_memory_filter_str,
@@ -155,7 +155,7 @@ def _prepare_archival_application_queryset(subsidy_in_effect, years_since_decisi
 
 
 def search_applications(
-    queryset,
+    application_queryset,
     archival_application_queryset,
     search_string,
     in_memory_filter_str,
@@ -164,19 +164,21 @@ def search_applications(
 ) -> Response:
     if search_string == "" and in_memory_filter_str == "":
         return _query_and_respond_to_empty_search(
-            queryset, archival_application_queryset
+            application_queryset, archival_application_queryset
         )
 
     # Return early in case of number-like pattern
     if detected_pattern in [SearchPattern.AHJO, SearchPattern.NUMBERS]:
         return _query_and_respond_to_numbers(
-            queryset,
+            application_queryset,
             archival_application_queryset,
             search_string,
             detected_pattern,
         )
     elif detected_pattern == SearchPattern.SSN:
-        return _query_and_respond_to_ssn(queryset, search_string, detected_pattern)
+        return _query_and_respond_to_ssn(
+            application_queryset, search_string, detected_pattern
+        )
     elif detected_pattern == SearchPattern.ARCHIVAL:
         return _query_and_respond_to_archival_application(
             archival_application_queryset, search_string, detected_pattern
@@ -185,7 +187,7 @@ def search_applications(
     # Perform trigram query for company name
     if detected_pattern in [SearchPattern.COMPANY, SearchPattern.IN_MEMORY]:
         results_for_related_company = _query_for_company_name(
-            queryset, archival_application_queryset, search_string
+            application_queryset, archival_application_queryset, search_string
         )
         applications = results_for_related_company["applications"]
         archival_applications = results_for_related_company["archival"]
@@ -203,7 +205,7 @@ def search_applications(
         in_memory_results = _perform_in_memory_search(
             applications,
             detected_pattern,
-            queryset,
+            application_queryset,
             search_string,
             in_memory_filter_str,
             HandlerApplicationListSerializer,
@@ -288,9 +290,11 @@ def _get_filter_combinations(app):
     ]
 
 
-def _query_and_respond_to_empty_search(queryset, archival_application_queryset):
+def _query_and_respond_to_empty_search(
+    application_queryset, archival_application_queryset
+):
     data = []
-    data += HandlerApplicationListSerializer(queryset, many=True).data
+    data += HandlerApplicationListSerializer(application_queryset, many=True).data
     data += ArchivalApplicationListSerializer(
         archival_application_queryset, many=True
     ).data
@@ -298,7 +302,7 @@ def _query_and_respond_to_empty_search(queryset, archival_application_queryset):
 
 
 def _query_and_respond_to_ssn(
-    queryset,
+    application_queryset,
     search_query_str,
     detected_pattern,
 ):
@@ -306,9 +310,11 @@ def _query_and_respond_to_ssn(
     Because of limitation in django-searchable-encrypted-fields,
     filter by exact SSN and if no match is found then try uppercase
     """
-    applications = queryset.filter(employee__social_security_number=search_query_str)
+    applications = application_queryset.filter(
+        employee__social_security_number=search_query_str
+    )
     if applications.count() == 0:
-        applications = queryset.filter(
+        applications = application_queryset.filter(
             employee__social_security_number=search_query_str.upper()
         )
     return _create_search_response(
@@ -335,7 +341,7 @@ def _query_and_respond_to_archival_application(
 
 
 def _query_and_respond_to_numbers(
-    queryset,
+    application_queryset,
     archival_application_queryset,
     search_query_str,
     detected_pattern,
@@ -343,7 +349,7 @@ def _query_and_respond_to_numbers(
     """
     Perform simple LIKE query for application number, AHJO case ID and company business ID
     """
-    applications = queryset.filter(
+    applications = application_queryset.filter(
         Q(company__business_id__icontains=search_query_str)
         | Q(ahjo_case_id__icontains=search_query_str)
         | Q(application_number__icontains=search_query_str)
@@ -420,13 +426,15 @@ def _perform_in_memory_search(
     return {**in_memory_results, **{"detected_pattern": detected_pattern}}
 
 
-def _query_for_company_name(queryset, archival_application_queryset, search_string):
+def _query_for_company_name(
+    application_queryset, archival_application_queryset, search_string
+):
     search_vectors = SearchVector("company__name")
     query = SearchQuery(search_string, search_type="websearch")
 
     return {
         "applications": (
-            queryset.annotate(
+            application_queryset.annotate(
                 search=search_vectors,
                 similarity=TrigramSimilarity("company__name", search_string),
                 rank=SearchRank(search_vectors, query),
