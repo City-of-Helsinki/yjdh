@@ -54,9 +54,11 @@ def any_of_q_filter(**kwargs):
     return reduce(
         operator.or_,
         (
-            ~Q(**{key[len("not__") :]: value})
-            if key.startswith("not__")
-            else Q(**{key: value})
+            (
+                ~Q(**{key[len("not__") :]: value})
+                if key.startswith("not__")
+                else Q(**{key: value})
+            )
             for key, value in kwargs.items()
         ),
     )
