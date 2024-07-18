@@ -78,9 +78,7 @@ COMPOSED_DECLINED_TEMPLATE_IDS = [
 
 
 ACCEPTED_TITLE = "Työllisyydenhoidon Helsinki-lisän myöntäminen työnantajille"
-REJECTED_TITLE = (
-    "Työllisyydenhoidon Helsinki-lisä, kielteiset päätökset työnantajille"
-)
+REJECTED_TITLE = "Työllisyydenhoidon Helsinki-lisä, kielteiset päätökset työnantajille"
 
 
 JINJA_TEMPLATES_COMPOSED = {
@@ -330,9 +328,11 @@ def generate_single_approved_file(
     return generate_pdf(
         apps=apps,
         template_config=JINJA_TEMPLATES_SINGLE[
-            TEMPLATE_ID_BENEFIT_WITH_DE_MINIMIS_AID
-            if any(filter(_get_granted_as_de_minimis_aid, apps))
-            else TEMPLATE_ID_BENEFIT_WITHOUT_DE_MINIMIS_AID
+            (
+                TEMPLATE_ID_BENEFIT_WITH_DE_MINIMIS_AID
+                if any(filter(_get_granted_as_de_minimis_aid, apps))
+                else TEMPLATE_ID_BENEFIT_WITHOUT_DE_MINIMIS_AID
+            )
         ],
         company=company,
         attachment_number=attachment_number,

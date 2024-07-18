@@ -353,9 +353,11 @@ AUTHENTICATION_BACKENDS = [
 # If Suomi.fi not enabled we will enable the legacy Kesäseteli auth.
 AUTHENTICATION_BACKENDS.insert(
     0,
-    "shared.suomi_fi.auth.SuomiFiSAML2AuthenticationBackend"
-    if NEXT_PUBLIC_ENABLE_SUOMIFI
-    else "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
+    (
+        "shared.suomi_fi.auth.SuomiFiSAML2AuthenticationBackend"
+        if NEXT_PUBLIC_ENABLE_SUOMIFI
+        else "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend"
+    ),
 )
 
 OIDC_RP_SIGN_ALGO = "RS256"

@@ -268,9 +268,9 @@ class YouthApplicationExcelExportViewSet(AuditLoggingModelViewSet):
                 ),
                 content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             )
-            response[
-                "Content-Disposition"
-            ] = f"attachment; filename={self.xlsx_filename}"
+            response["Content-Disposition"] = (
+                f"attachment; filename={self.xlsx_filename}"
+            )
             return response
 
     @property
@@ -288,9 +288,13 @@ class YouthApplicationExcelExportViewSet(AuditLoggingModelViewSet):
     def generate_data_row(self, app: YouthApplication, is_template: bool = False):
         data = self.serializer_class(app).data
         return [
-            YouthApplicationExcelExportSerializer.get_placeholder_value(source_field)
-            if is_template and not data.get(source_field)
-            else data.get(source_field)
+            (
+                YouthApplicationExcelExportSerializer.get_placeholder_value(
+                    source_field
+                )
+                if is_template and not data.get(source_field)
+                else data.get(source_field)
+            )
             for source_field in self.source_fields()
         ]
 

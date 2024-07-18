@@ -613,9 +613,9 @@ def test_application_post_invalid_data(
     data["applicant_language"] = None  # non-null required
     data["company_bank_account_number"] = "FI91 4008 0282 0002 02"  # invalid number
 
-    data[
-        "company_contact_person_phone_number"
-    ] = "+359505658789"  # Invalid country code
+    data["company_contact_person_phone_number"] = (
+        "+359505658789"  # Invalid country code
+    )
 
     api_client.defaults["HTTP_ACCEPT_LANGUAGE"] = language
     response = api_client.post(
@@ -780,9 +780,9 @@ def test_application_put_read_only_fields(api_client, application):
 def test_application_put_invalid_data(api_client, application):
     data = ApplicantApplicationSerializer(application).data
     data["de_minimis_aid_set"][0]["amount"] = "300001.00"  # value too high
-    data[
-        "status"
-    ] = ApplicationStatus.ACCEPTED  # invalid value when transitioning from draft
+    data["status"] = (
+        ApplicationStatus.ACCEPTED
+    )  # invalid value when transitioning from draft
     data["bases"] = ["something_completely_different"]  # invalid value
     data["applicant_language"] = None  # non-null required
     response = api_client.put(

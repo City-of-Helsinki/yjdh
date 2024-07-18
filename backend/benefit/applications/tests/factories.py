@@ -227,7 +227,7 @@ class ReceivedApplicationFactory(ApplicationWithAttachmentFactory):
         )
 
     @factory.post_generation
-    def calculation(self, created, extracted, **kwargs):
+    def calculation(self, created, extracted, **kwargs):  # noqa: F811
         self.calculation = Calculation.objects.create_for_application(self, **kwargs)
         self.calculation.init_calculator()
         self.calculation.calculate()

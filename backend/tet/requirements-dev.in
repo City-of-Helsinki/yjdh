@@ -3,9 +3,9 @@
 -c requirements.txt
 
 # These need to be kept in sync with .pre-commit-config.yaml in the root of the repository.
-black==23.1.0
-flake8==6.0.0
-isort==5.12.0
+black==24.4.2
+flake8==7.1.0
+isort==5.13.2
 
 ipython
 pip-tools

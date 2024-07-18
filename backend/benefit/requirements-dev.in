@@ -1,7 +1,9 @@
-black
-flake8
+# These need to be kept in sync with .pre-commit-config.yaml in the root of the repository.
+black==24.4.2
+flake8==7.1.0
+isort==5.13.2
+
 ipython
-isort
 langdetect
 pip-tools==7.4.1
 pytest

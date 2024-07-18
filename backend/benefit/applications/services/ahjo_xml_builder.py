@@ -121,7 +121,10 @@ class AhjoSecretXMLBuilder(AhjoXMLBuilder):
     def _get_period_rows_for_xml(
         self,
         calculation: Calculation,
-    ) -> Tuple[CalculationRow, List[CalculationRow],]:
+    ) -> Tuple[
+        CalculationRow,
+        List[CalculationRow],
+    ]:
         total_amount_row = calculation.rows.filter(
             row_type=RowType.HELSINKI_BENEFIT_TOTAL_EUR
         ).first()

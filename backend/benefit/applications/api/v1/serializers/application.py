@@ -1384,9 +1384,9 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
 
         for idx, aid_item in enumerate(serializer.validated_data):
             aid_item["application_id"] = application.pk
-            aid_item[
-                "ordering"
-            ] = idx  # use the ordering defined in the JSON sent by the client
+            aid_item["ordering"] = (
+                idx  # use the ordering defined in the JSON sent by the client
+            )
 
         de_minimis_list = serializer.save()
         for de_minimis in de_minimis_list:
@@ -1780,9 +1780,9 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             )
         for idx, nested_object in enumerate(serializer.validated_data):
             nested_object["application_id"] = application.pk
-            nested_object[
-                "ordering"
-            ] = idx  # use the ordering defined in the JSON sent by the client
+            nested_object["ordering"] = (
+                idx  # use the ordering defined in the JSON sent by the client
+            )
         serializer.save()
         if hasattr(application, "calculation"):
             call_now_or_later(

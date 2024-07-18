@@ -358,9 +358,9 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
 
         for idx, summer_voucher_item in enumerate(serializer.validated_data):
             summer_voucher_item["application_id"] = application.pk
-            summer_voucher_item[
-                "ordering"
-            ] = idx  # use the ordering defined in the JSON sent by the client
+            summer_voucher_item["ordering"] = (
+                idx  # use the ordering defined in the JSON sent by the client
+            )
         serializer.save()
 
     def validate(self, data):

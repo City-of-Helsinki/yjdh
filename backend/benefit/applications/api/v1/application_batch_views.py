@@ -235,7 +235,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
 
         if (
             app_status not in [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED]
-            or type(app_ids) != list
+            or type(app_ids) is not list
         ):
             return Response(
                 {"detail": "Status or application id is not valid"},
