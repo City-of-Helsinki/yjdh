@@ -1,49 +1,60 @@
 # ==============================
-FROM helsinkitest/python:3.8-slim as appbase
+FROM registry.access.redhat.com/ubi9/python-39 AS appbase
 # ==============================
+
+USER root
+WORKDIR /app
+
 RUN mkdir /entrypoint
 
-COPY --chown=appuser:appuser kesaseteli/requirements.txt /app/requirements.txt
-COPY --chown=appuser:appuser kesaseteli/requirements-prod.txt /app/requirements-prod.txt
-COPY --chown=appuser:appuser kesaseteli/.prod/escape_json.c /app/.prod/escape_json.c
-COPY --chown=appuser:appuser shared /shared/
+COPY --chown=default:root kesaseteli/requirements.txt /app/requirements.txt
+COPY --chown=default:root kesaseteli/requirements-prod.txt /app/requirements-prod.txt
+COPY --chown=default:root kesaseteli/.prod/escape_json.c /app/.prod/escape_json.c
+COPY --chown=default:root shared /shared/
 
-RUN apt-install.sh \
-        git \
-        netcat-traditional \
-        libpq-dev \
-        build-essential \
-        gettext \
-        xmlsec1 \
-        libsasl2-dev \
-        libssl-dev \
+RUN dnf update -y \
+    && dnf install -y \
+           git \
+           nc \
+           postgresql-devel \
+           gcc \
+           gettext \
+           xmlsec1 \
+           cyrus-sasl-devel \
+           openssl-devel \
     && pip install -U pip \
     && pip install --no-cache-dir -r /app/requirements.txt \
-    && pip install --no-cache-dir  -r /app/requirements-prod.txt \
+    && pip install --no-cache-dir -r /app/requirements-prod.txt \
     && uwsgi --build-plugin /app/.prod/escape_json.c \
     && mv /app/escape_json_plugin.so /app/.prod/escape_json_plugin.so \
-    && apt-cleanup.sh build-essential
+    && dnf remove -y gcc cyrus-sasl-devel openssl-devel \
+    && dnf clean all
 
-COPY --chown=appuser:appuser kesaseteli/docker-entrypoint.sh /entrypoint/docker-entrypoint.sh
+COPY --chown=default:root kesaseteli/docker-entrypoint.sh /entrypoint/docker-entrypoint.sh
 ENTRYPOINT ["/entrypoint/docker-entrypoint.sh"]
 
-COPY --chown=appuser:appuser kesaseteli/media/ /var/media/
+COPY --chown=default:root kesaseteli/media/ /var/media/
 
 # ==============================
-FROM appbase as development
+FROM appbase AS development
 # ==============================
 
-COPY --chown=appuser:appuser kesaseteli/requirements-dev.txt /app/requirements-dev.txt
-RUN apt-install.sh \
-        build-essential \
+COPY --chown=default:root kesaseteli/requirements-dev.txt /app/requirements-dev.txt
+RUN dnf install -y gcc \
     && pip install --no-cache-dir -r /app/requirements-dev.txt \
-    && apt-cleanup.sh build-essential
+    && dnf remove -y gcc \
+    && dnf clean all
 
 ENV DEV_SERVER=1
 
-COPY --chown=appuser:appuser /kesaseteli/ /app/
+COPY --chown=default:root /kesaseteli/ /app/
 
-USER appuser
+# Mark the app directory as safe to get rid of git's
+# "fatal: detected dubious ownership in repository at '/app'" warning
+# when spinning up the container
+RUN git config --system --add safe.directory /app
+
+USER default
 
 # Compile messages as a part of Docker image build so it doesn't have to be done during
 # container startup. This removes the need for writeable localization directories.
@@ -52,14 +63,19 @@ RUN django-admin compilemessages
 EXPOSE 8000/tcp
 
 # ==============================
-FROM appbase as production
+FROM appbase AS production
 # ==============================
 
-COPY --chown=appuser:appuser /kesaseteli/ /app/
+COPY --chown=default:root /kesaseteli/ /app/
+
+# Mark the app directory as safe to get rid of git's
+# "fatal: detected dubious ownership in repository at '/app'" warning
+# when spinning up the container
+RUN git config --system --add safe.directory /app
 
 RUN SECRET_KEY="only-used-for-collectstatic" python manage.py collectstatic
 
-USER appuser
+USER default
 
 # Compile messages as a part of Docker image build so it doesn't have to be done during
 # container startup. This removes the need for writeable localization directories.
