@@ -31,6 +31,7 @@ from applications.tests.data.mock_vtj import (
     mock_vtj_person_id_query_not_found_content,
 )
 from common.tests.faker import get_faker
+from common.tests.mixins import SaveAfterPostGenerationMixin
 from common.tests.utils import get_random_social_security_number_for_year
 from companies.models import Company
 from shared.common.tests.factories import (
@@ -39,7 +40,7 @@ from shared.common.tests.factories import (
 )
 
 
-class CompanyFactory(factory.django.DjangoModelFactory):
+class CompanyFactory(SaveAfterPostGenerationMixin, factory.django.DjangoModelFactory):
     name = factory.Faker("company")
     business_id = factory.Faker("numerify", text="#######-#")
     company_form = "oy"
@@ -54,7 +55,9 @@ class CompanyFactory(factory.django.DjangoModelFactory):
         model = Company
 
 
-class AttachmentFactory(factory.django.DjangoModelFactory):
+class AttachmentFactory(
+    SaveAfterPostGenerationMixin, factory.django.DjangoModelFactory
+):
     attachment_type = factory.Faker("random_element", elements=AttachmentType.values)
     content_type = factory.Faker(
         "random_element", elements=[val[1] for val in ATTACHMENT_CONTENT_TYPE_CHOICES]
@@ -65,7 +68,9 @@ class AttachmentFactory(factory.django.DjangoModelFactory):
         model = Attachment
 
 
-class EmployerSummerVoucherFactory(factory.django.DjangoModelFactory):
+class EmployerSummerVoucherFactory(
+    SaveAfterPostGenerationMixin, factory.django.DjangoModelFactory
+):
     summer_voucher_serial_number = factory.Faker("md5")
     target_group = factory.Faker(
         "random_element", elements=SummerVoucherExceptionReason.values
@@ -103,7 +108,9 @@ class EmployerSummerVoucherFactory(factory.django.DjangoModelFactory):
         model = EmployerSummerVoucher
 
 
-class EmployerApplicationFactory(factory.django.DjangoModelFactory):
+class EmployerApplicationFactory(
+    SaveAfterPostGenerationMixin, factory.django.DjangoModelFactory
+):
     company = factory.SubFactory(CompanyFactory)
     user = factory.SubFactory(DuplicateAllowingUserFactory)
     status = factory.Faker("random_element", elements=EmployerApplicationStatus.values)
@@ -359,7 +366,9 @@ def determine_target_group_social_security_number(youth_application):
 
 
 @factory.django.mute_signals(post_save)
-class AbstractYouthApplicationFactory(factory.django.DjangoModelFactory):
+class AbstractYouthApplicationFactory(
+    SaveAfterPostGenerationMixin, factory.django.DjangoModelFactory
+):
     creator = (
         None  # For most cases there's no creator, only non-VTJ applications have one
     )
@@ -595,7 +604,9 @@ class RejectedYouthApplicationFactory(AbstractYouthApplicationFactory):
 
 
 @factory.django.mute_signals(post_save)
-class YouthSummerVoucherFactory(factory.django.DjangoModelFactory):
+class YouthSummerVoucherFactory(
+    SaveAfterPostGenerationMixin, factory.django.DjangoModelFactory
+):
     # Passing in youth_summer_voucher=None here disables RelatedFactory in
     # AcceptedYouthApplicationFactory and prevents it from creating another
     # YouthSummerVoucher.

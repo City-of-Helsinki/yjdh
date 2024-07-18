@@ -1,7 +1,12 @@
+# NOTE: You need to comment out "-e file:../shared" in requirements.txt when running pip-compile.
+# Otherwise, you might get an "Unnamed requirements are not allowed as constraints" error.
 -c requirements.txt
-black
-flake8
-isort
+
+# These need to be kept in sync with .pre-commit-config.yaml in the root of the repository.
+black==23.1.0
+flake8==6.0.0
+isort==5.12.0
+
 langdetect
 openpyxl
 pip-tools

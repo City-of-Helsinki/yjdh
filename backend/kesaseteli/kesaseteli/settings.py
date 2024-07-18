@@ -11,6 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from saml2.sigver import get_xmlsec_binary
 from sentry_sdk.integrations.django import DjangoIntegration
 
+from common.backward_compatibility import convert_to_django_4_2_csrf_trusted_origins
 from shared.suomi_fi.utils import get_contact_person_configuration
 
 checkout_dir = environ.Path(__file__) - 2
@@ -180,9 +181,9 @@ SENTRY_WITH_LOCALS = env.bool("SENTRY_WITH_LOCALS")
 sentry_sdk.init(
     attach_stacktrace=SENTRY_ATTACH_STACKTRACE,
     max_breadcrumbs=SENTRY_MAX_BREADCRUMBS,
-    request_bodies=SENTRY_REQUEST_BODIES,
+    max_request_body_size=SENTRY_REQUEST_BODIES,
     send_default_pii=SENTRY_SEND_DEFAULT_PII,
-    with_locals=SENTRY_WITH_LOCALS,
+    include_local_variables=SENTRY_WITH_LOCALS,
     dsn=env.str("SENTRY_DSN"),
     release="n/a",
     environment=env("SENTRY_ENVIRONMENT"),
@@ -285,7 +286,9 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
 CORS_ALLOW_ALL_ORIGINS = env.bool("CORS_ALLOW_ALL_ORIGINS")
 CSRF_COOKIE_DOMAIN = env.str("CSRF_COOKIE_DOMAIN")
-CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
+CSRF_TRUSTED_ORIGINS = convert_to_django_4_2_csrf_trusted_origins(
+    env.list("CSRF_TRUSTED_ORIGINS")
+)
 CSRF_COOKIE_NAME = env.str("CSRF_COOKIE_NAME")
 CSRF_COOKIE_SECURE = True
 
@@ -353,9 +356,11 @@ AUTHENTICATION_BACKENDS = [
 # If Suomi.fi not enabled we will enable the legacy Kesäseteli auth.
 AUTHENTICATION_BACKENDS.insert(
     0,
-    "shared.suomi_fi.auth.SuomiFiSAML2AuthenticationBackend"
-    if NEXT_PUBLIC_ENABLE_SUOMIFI
-    else "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
+    (
+        "shared.suomi_fi.auth.SuomiFiSAML2AuthenticationBackend"
+        if NEXT_PUBLIC_ENABLE_SUOMIFI
+        else "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend"
+    ),
 )
 
 OIDC_RP_SIGN_ALGO = "RS256"
