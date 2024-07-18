@@ -15,7 +15,10 @@ import {
   PHONE_NUMBER_REGEX,
   POSTAL_CODE_REGEX,
 } from 'shared/constants';
-import { SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
+import type { Language } from 'shared/i18n/i18n';
+
+/* Prioritize English for immigrants/refugees */
+export const LANGUAGES_IN_PRIORITY_ORDER: Language[] = ['en', 'fi', 'sv'];
 
 const CreateApplicationWithoutSsnForm: React.FC = () => {
   const { t } = useTranslation();
@@ -39,10 +42,7 @@ const CreateApplicationWithoutSsnForm: React.FC = () => {
         id="language"
         validation={{ required: true }}
         direction="horizontal"
-        values={
-          /* Prioritize English for immigrants/refugees by sorting i.e. ["en", "fi", "sv"] */
-          [...SUPPORTED_LANGUAGES].sort()
-        }
+        values={LANGUAGES_IN_PRIORITY_ORDER}
         $colSpan={2}
       />
       <TextInput
