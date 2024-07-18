@@ -48,6 +48,7 @@ def log(
     """
     current_time = get_time()
     user_id = str(actor.pk) if getattr(actor, "pk", None) else ""
+    provider = DJANGO_BACKEND_MAPPING[actor_backend] if actor_backend else ""
 
     if actor is None:
         role = Role.SYSTEM
@@ -67,9 +68,7 @@ def log(
             "actor": {
                 "role": str(role.value),
                 "user_id": user_id,
-                "provider": DJANGO_BACKEND_MAPPING[actor_backend]
-                if actor_backend
-                else "",
+                "provider": provider,
                 "ip_address": ip_address,
             },
             "operation": str(operation.value),
