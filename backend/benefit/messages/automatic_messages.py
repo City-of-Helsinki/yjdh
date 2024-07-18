@@ -95,12 +95,14 @@ def send_email_to_applicant(
     with translation.override(application.applicant_language):
         try:
             return send_mail(
-                subject=subject
-                if subject
-                else get_default_email_notification_subject(),
-                message=text_message
-                if text_message
-                else _message_notification_email_body(application),
+                subject=(
+                    subject if subject else get_default_email_notification_subject()
+                ),
+                message=(
+                    text_message
+                    if text_message
+                    else _message_notification_email_body(application)
+                ),
                 html_message=html_message or None,
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[application.company_contact_person_email],

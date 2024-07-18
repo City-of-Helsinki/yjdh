@@ -8,7 +8,7 @@ default_stages: [commit, manual]
 
 repos:
   - repo: https://github.com/psf/black
-    rev: 23.1.0
+    rev: 24.4.2
     hooks:
       - id: black
         name: (BF) black
@@ -23,7 +23,7 @@ repos:
         name: (Shared) black
         files: ^backend/shared
   - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
+    rev: 5.13.2
     hooks:
       - id: isort
         name: (BF) isort
@@ -42,7 +42,7 @@ repos:
         args: [--settings-file, backend/shared/setup.cfg]
         files: ^backend/shared
   - repo: https://github.com/pycqa/flake8
-    rev: 6.0.0
+    rev: 7.1.0
     hooks:
       - id: flake8
         name: (BF) flake8

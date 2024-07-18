@@ -3,6 +3,7 @@ Contents copied from tet.tet.views. More info there.
 As kesaseteli doesn't use helusers package, kesaseteli tests fail when these put
 under shared code, that's why copied.
 """
+
 from typing import Optional
 
 from django.contrib.auth import get_user_model
