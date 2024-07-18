@@ -288,9 +288,13 @@ class YouthApplicationExcelExportViewSet(AuditLoggingModelViewSet):
     def generate_data_row(self, app: YouthApplication, is_template: bool = False):
         data = self.serializer_class(app).data
         return [
-            YouthApplicationExcelExportSerializer.get_placeholder_value(source_field)
-            if is_template and not data.get(source_field)
-            else data.get(source_field)
+            (
+                YouthApplicationExcelExportSerializer.get_placeholder_value(
+                    source_field
+                )
+                if is_template and not data.get(source_field)
+                else data.get(source_field)
+            )
             for source_field in self.source_fields()
         ]
 

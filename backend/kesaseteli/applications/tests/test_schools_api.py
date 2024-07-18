@@ -18,7 +18,7 @@ def test_schools_list_status_ok(api_client, school_list):
 @pytest.mark.django_db
 def test_schools_list_returns_list(api_client, school_list):
     response = api_client.get(get_schools_api_url())
-    assert type(response.json()) == list
+    assert isinstance(response.json(), list)
 
 
 @pytest.mark.django_db
@@ -36,7 +36,7 @@ def test_schools_list_returns_school_count(api_client, school_list):
 @pytest.mark.django_db
 def test_schools_list_returns_string_collection(api_client, school_list):
     response = api_client.get(get_schools_api_url())
-    assert all(type(element) == str for element in response.json())
+    assert all(isinstance(element, str) for element in response.json())
 
 
 @pytest.mark.django_db
