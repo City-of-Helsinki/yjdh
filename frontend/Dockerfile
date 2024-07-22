@@ -1,13 +1,21 @@
 # =======================================
-FROM docker.io/helsinkitest/node:18-slim AS distbase
+FROM registry.access.redhat.com/ubi9/nodejs-18 AS distbase
 # =======================================
 
+USER root
+
 # Install ca-certificates so that Sentry can upload source maps
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && apt-get clean
+RUN yum update -y && yum install -y ca-certificates && yum clean all
+
+# Install yarn
+RUN curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo
+RUN yum -y install yarn
 
 # =============================
 FROM distbase AS appbase
 # =============================
+
+USER root
 
 # Build ARGS
 ARG PROJECT
@@ -21,10 +29,10 @@ RUN yarn policies set-version "$YARN_VERSION" && \
 WORKDIR /app
 
 # Install dependencies
-COPY --chown=appuser:0 package.json yarn.lock lerna.json ./
-COPY --chown=appuser:0 $PROJECT/$FOLDER/package.json $PROJECT/$FOLDER/package.json
-COPY --chown=appuser:0 $PROJECT/shared/package.json* $PROJECT/shared/package.json
-COPY --chown=appuser:0 shared/package.json shared/package.json
+COPY --chown=default:root package.json yarn.lock lerna.json ./
+COPY --chown=default:root $PROJECT/$FOLDER/package.json $PROJECT/$FOLDER/package.json
+COPY --chown=default:root $PROJECT/shared/package.json* $PROJECT/shared/package.json
+COPY --chown=default:root shared/package.json shared/package.json
 RUN --mount=type=cache,target=/app/.yarn_cache,sharing=locked YARN_CACHE_FOLDER=/app/.yarn_cache yarn --frozen-lockfile --check-files --network-timeout 600000
 
 # ===================================
@@ -58,11 +66,11 @@ ARG NEXT_PUBLIC_ASKEM_API_KEY
 ARG NEXT_PUBLIC_SHOW_COOKIE_BANNER
 ARG NEXT_PUBLIC_ENABLE_ALTERATION_FEATURES
 
-USER appuser:0
+USER default:root
 WORKDIR /app
 
 # copy all files
-COPY --chown=appuser:0 . .
+COPY --chown=default:root . .
 
 # Build application
 WORKDIR /app/$PROJECT/$FOLDER/
@@ -88,20 +96,23 @@ RUN rm -rf $PROJECT/$FOLDER/node_modules \
            $PROJECT/node_modules \
            shared/node_modules \
            node_modules
-           
-USER appuser:0
 
-# Install production dependencies           
+# Install production dependencies
 RUN --mount=type=cache,target=/app/.yarn_cache,sharing=locked YARN_CACHE_FOLDER=/app/.yarn_cache yarn install --production --check-files --ignore-scripts --prefer-offline && yarn cache clean --force
 
+# Change ownership to default:root to ensure accessibility
+RUN chown -R default:root /app
+
+USER default:root
+
 # Copy files needed by nextjs
-COPY --chown=appuser:0 --from=staticbuilder app/$PROJECT/$FOLDER/.next $PROJECT/$FOLDER/.next
-COPY --chown=appuser:0 --from=staticbuilder app/$PROJECT/$FOLDER/next-i18next.config.js app/$PROJECT/$FOLDER/next.config.js $PROJECT/$FOLDER/
-COPY --chown=appuser:0 --from=staticbuilder app/next.config.js ./
-COPY --chown=appuser:0 --from=staticbuilder app/shared/src/server/next-server.js shared/src/server/
+COPY --chown=default:root --from=staticbuilder app/$PROJECT/$FOLDER/.next $PROJECT/$FOLDER/.next
+COPY --chown=default:root --from=staticbuilder app/$PROJECT/$FOLDER/next-i18next.config.js app/$PROJECT/$FOLDER/next.config.js $PROJECT/$FOLDER/
+COPY --chown=default:root --from=staticbuilder app/next.config.js ./
+COPY --chown=default:root --from=staticbuilder app/shared/src/server/next-server.js shared/src/server/
 
 # Copy public directory
-COPY --chown=appuser:0 $PROJECT/$FOLDER/public $PROJECT/$FOLDER/public
+COPY --chown=default:root $PROJECT/$FOLDER/public $PROJECT/$FOLDER/public
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
