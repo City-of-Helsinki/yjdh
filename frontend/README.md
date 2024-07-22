@@ -9,7 +9,7 @@ Project is automatically deployed to testing environment when merging a PR to ma
 
 ## Requirements
 
-- Node 18.x (match with dockerfile: helsinkitest/node:18-slim)
+- Node 18.x (match with dockerfile: registry.access.redhat.com/ubi9/nodejs-18)
 - Yarn
 - Git
 - Docker

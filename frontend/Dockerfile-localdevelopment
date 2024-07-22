@@ -1,13 +1,21 @@
 # =======================================
-FROM docker.io/helsinkitest/node:18-slim AS distbase
+FROM registry.access.redhat.com/ubi9/nodejs-18 AS distbase
 # =======================================
 
+USER root
+
 # Install ca-certificates so that Sentry can upload source maps
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && apt-get clean
+RUN yum update -y && yum install -y ca-certificates && yum clean all
+
+# Install yarn
+RUN curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo
+RUN yum -y install yarn
 
 # =============================
 FROM distbase AS appbase
 # =============================
+
+USER root
 
 # Build ARGS
 ARG PROJECT
@@ -22,10 +30,10 @@ RUN yarn config set ignore-engines true
 WORKDIR /app
 
 # Install dependencies
-COPY --chown=appuser:appuser package.json yarn.lock ./
-COPY --chown=appuser:appuser $PROJECT/$FOLDER/package.json $PROJECT/$FOLDER/package.json
-COPY --chown=appuser:appuser $PROJECT/shared/package.json* $PROJECT/shared/package.json
-COPY --chown=appuser:appuser shared/package.json shared/package.json
+COPY --chown=default:default package.json yarn.lock ./
+COPY --chown=default:default $PROJECT/$FOLDER/package.json $PROJECT/$FOLDER/package.json
+COPY --chown=default:default $PROJECT/shared/package.json* $PROJECT/shared/package.json
+COPY --chown=default:default shared/package.json shared/package.json
 RUN --mount=type=cache,target="$PWD/.yarn_cache",sharing=locked YARN_CACHE_FOLDER="$PWD"/.yarn_cache yarn --frozen-lockfile --check-files --network-timeout 600000
 
 # =============================
@@ -33,10 +41,10 @@ FROM appbase AS development
 # =============================
 
 # Copy all files
-COPY --chown=appuser:appuser . .
+COPY --chown=default:default . .
 
 # Use non-root user
-USER appuser
+USER default
 
 # Set V8 max heap size to 2GB (default is 512MB)
 # This prevents Docker Compose from crashing due to out of memory errors
@@ -45,11 +53,11 @@ ENV NODE_OPTIONS="--max_old_space_size=2048"
 ARG PROJECT
 ARG FOLDER
 # Use non-root user
-USER appuser
+USER default
 WORKDIR /app
 
 # Copy all files
-COPY --chown=appuser:appuser . .
+COPY --chown=default:default . .
 
 ENV NEXT_TELEMETRY_DISABLED 1
 # Bake package.json start command into the image
