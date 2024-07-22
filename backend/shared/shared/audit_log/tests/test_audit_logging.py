@@ -1,10 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from unittest import mock
 
 import pytest
 from django.contrib.auth.models import AnonymousUser
 from django.test import override_settings
-from django.utils import timezone
+from django.utils.timezone import now
 
 from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation, Status
@@ -388,11 +388,11 @@ def test_clear_audit_log(user, fixed_datetime):
     new_sent_log.is_sent = True
     new_sent_log.save()
 
-    expired_unsent_log.created_at = timezone.now() - timedelta(days=35)
+    expired_unsent_log.created_at = now() - timedelta(days=35)
     expired_unsent_log.save()
 
     expired_sent_log.is_sent = True
-    expired_sent_log.created_at = timezone.now() - timedelta(days=35)
+    expired_sent_log.created_at = now() - timedelta(days=35)
     expired_sent_log.save()
 
     deleted_count = clear_audit_log_entries()

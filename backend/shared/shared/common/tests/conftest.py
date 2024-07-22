@@ -2,7 +2,7 @@ from datetime import timedelta
 
 import pytest
 from django.test import Client
-from django.utils import timezone
+from django.utils.timezone import now
 
 from shared.common.tests.factories import (
     StaffSuperuserFactory,
@@ -14,26 +14,19 @@ from shared.common.tests.factories import (
 
 def store_tokens_in_session(client):
     s = client.session
+    now_plus_1_hour = now() + timedelta(hours=1)
     s.update(
         {
             "oidc_id_token": "test",
             "oidc_access_token": "test",
             "oidc_refresh_token": "test",
-            "oidc_access_token_expires": (
-                timezone.now() + timedelta(hours=1)
-            ).isoformat(),
-            "oidc_refresh_token_expires": (
-                timezone.now() + timedelta(hours=1)
-            ).isoformat(),
+            "oidc_access_token_expires": now_plus_1_hour.isoformat(),
+            "oidc_refresh_token_expires": now_plus_1_hour.isoformat(),
             "eauth_id_token": "test",
             "eauth_access_token": "test",
             "eauth_refresh_token": "test",
-            "eauth_access_token_expires": (
-                timezone.now() + timedelta(hours=1)
-            ).isoformat(),
-            "eauth_refresh_token_expires": (
-                timezone.now() + timedelta(hours=1)
-            ).isoformat(),
+            "eauth_access_token_expires": now_plus_1_hour.isoformat(),
+            "eauth_refresh_token_expires": now_plus_1_hour.isoformat(),
         }
     )
     s.save()
