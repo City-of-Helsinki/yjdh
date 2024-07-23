@@ -16,7 +16,7 @@ jobs:
   pytest:
     name: Python tests
     runs-on: ubuntu-latest
-    container: python:3.8-buster
+    container: python:3.9-buster
 
     services:
       postgres:
