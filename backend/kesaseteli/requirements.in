@@ -10,7 +10,7 @@ django-simple-history
 django-storages[azure]
 djangorestframework
 django~=4.2
-elasticsearch
+elasticsearch~=7.17  # TODO: remove and update to 8.x when elasticsearch servers are updated to elasticsearch 8
 factory-boy
 filetype
 ipython
