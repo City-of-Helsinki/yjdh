@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.10.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.9.0...kesaseteli-backend-v1.10.0) (2024-07-26)
+
+
+### Features
+
+* Upgrade Django to 4.2 & all dependencies except black/isort/flake8 ([2cc6daf](https://github.com/City-of-Helsinki/yjdh/commit/2cc6dafec36f7868d443e94c9927d83d0a20dcfc))
+* Upgrade Kesäseteli's backend to Red Hat's ubi9 image of Python 3.9 ([fce22cb](https://github.com/City-of-Helsinki/yjdh/commit/fce22cbbe84c434e3d19d34f1a73d3d9539d552f))
+
+
+### Bug Fixes
+
+* **kesaseteli:** Downgrade to elasticsearch v7 to fix send_audit_log ([6d38c02](https://github.com/City-of-Helsinki/yjdh/commit/6d38c0242184b5271e46cd6797ceb6f38dc32bc3))
+
 ## [1.9.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.8.0...kesaseteli-backend-v1.9.0) (2024-05-07)
 
 
