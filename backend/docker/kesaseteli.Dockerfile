@@ -20,6 +20,7 @@ RUN dnf update -y \
            gcc \
            gettext \
            xmlsec1 \
+           xmlsec1-openssl \
            cyrus-sasl-devel \
            openssl-devel \
     && pip install -U pip \
