@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.4.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v1.3.0...kesaseteli-youth-v1.4.0) (2024-07-27)
+
+
+### Features
+
+* **ks-handler:** Add UI for creating youth application without SSN ([e46958c](https://github.com/City-of-Helsinki/yjdh/commit/e46958cdee39abc3fd5c2fada5e2b2e894e8be95))
+
+
+### Bug Fixes
+
+* **frontend:** Don't use cross-env in scripts, didn't work in pipelines ([628d466](https://github.com/City-of-Helsinki/yjdh/commit/628d466c58fbbff7bf79e11f92a89ef9a2822439))
+* **frontend:** Use cross-env in scripts to make them cross-platform ([7307e57](https://github.com/City-of-Helsinki/yjdh/commit/7307e5797d6b0a0bc24eded97d6724a5724a4547))
+* Incorrect iban generation; kiss with file uploads ([#3057](https://github.com/City-of-Helsinki/yjdh/issues/3057)) ([b9b3810](https://github.com/City-of-Helsinki/yjdh/commit/b9b38101282a2d48216ea7123e6eb8e8075e5a2c))
+* Try fixing failing tests ([#2952](https://github.com/City-of-Helsinki/yjdh/issues/2952)) ([3353dc8](https://github.com/City-of-Helsinki/yjdh/commit/3353dc84ce83906c4fe0bb8e4300b9a56640e47d))
+
 ## [1.3.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v1.2.0...kesaseteli-youth-v1.3.0) (2024-02-14)
 
 
