@@ -84,49 +84,29 @@ class Command(BaseCommand):
         else:
             from pandas import isna, read_excel
 
-        EXPECTED_SPREADSHEET_COLUMNS = [
-            "hakija",
-            "Hakemusnro",
-            "y-tunnus",
-            "työllistetyn sukunimi",
-            "työllistetyn etunimi",
-            "alkaa",
-            "loppuu",
-            "kk",
-            "synt. vuosi",
-        ]
+        EXPECTED_SPREADSHEET_COLUMNS = {
+            "company_name": "hakija",
+            "application_number": "Hakemusnro",
+            "business_id": "y-tunnus",
+            "employee_last_name": "työllistetyn sukunimi",
+            "employee_first_name": "työllistetyn etunimi",
+            "start_date": "alkaa",
+            "end_date": "loppuu",
+            "months_total": "kk",
+            "year_of_birth": "synt. vuosi",
+        }
 
-        KEYS = [
-            "company_name",
-            "application_number",
-            "business_id",
-            "employee_last_name",
-            "employee_first_name",
-            "start_date",
-            "end_date",
-            "months_total",
-            "year_of_birth",
-        ]
-
-        KEYS_TO_IMPORT = [
-            "application_number",
-            "employee_last_name",
-            "employee_first_name",
-            "start_date",
-            "end_date",
-            "months_total",
-            "year_of_birth",
-        ]
+        OPTIONAL_SPREADSHEET_COLUMNS = {"handled_at": "Päätöspäivä"}
 
         # mock data if it's a pytest run
         if is_pytest:
             columns = ImportArchivalApplicationsTestUtility.test_data["columns"]
-            values = ImportArchivalApplicationsTestUtility.test_data["values"]
+            spreadsheet_data = ImportArchivalApplicationsTestUtility.test_data["values"]
         else:
             filepath = os.path.abspath(os.path.dirname(__file__)) + "/../../resources"
             sheet = read_excel(f"{filepath}/{filename}")
             columns = [x.strip(" ") for x in sheet.columns]
-            values = sheet.values
+            spreadsheet_data = sheet.values
 
         columns = [x.strip(" ") for x in columns]
 
@@ -143,36 +123,45 @@ class Command(BaseCommand):
                 "######################\n",
             )
         print(f"Verifying data from {filename}")
-        print(f"• Found {len(values)} rows of data with {len(columns)} columns")
-        if len(KEYS) != len(EXPECTED_SPREADSHEET_COLUMNS):
-            raise CommandError(
-                "Mismatch in mapped keys and spreadsheet columns length, check spreadsheet and KEYS variable"
-            )
+        print(
+            f"• Found {len(spreadsheet_data)} rows of data with {len(columns)} columns"
+        )
 
         column_index = []
-        for expected_col in EXPECTED_SPREADSHEET_COLUMNS:
-            if expected_col not in columns:
-                print(f'! Column "{expected_col}" not found in spreadsheet keys')
+
+        for technical_key, spreadsheet_key in EXPECTED_SPREADSHEET_COLUMNS.items():
+            if spreadsheet_key not in columns:
+                print(f'! Column "{spreadsheet_key}" not found in spreadsheet keys')
                 raise CommandError("Excel is not in expected format")
             column_index.append(
                 {
-                    "index": list(columns).index(expected_col),
-                    "name": expected_col,
-                    "key": KEYS[list(EXPECTED_SPREADSHEET_COLUMNS).index(expected_col)],
+                    "index": list(columns).index(spreadsheet_key),
+                    "name": spreadsheet_key,
+                    "key": technical_key,
                 }
             )
         print("• Spreadsheet's column headers are as expected")
 
+        for technical_key, spreadsheet_key in OPTIONAL_SPREADSHEET_COLUMNS.items():
+            if spreadsheet_key in columns:
+                column_index.append(
+                    {
+                        "index": list(columns).index(spreadsheet_key),
+                        "name": spreadsheet_key,
+                        "key": technical_key,
+                    }
+                )
+
         mapped_rows = []
-        for row in values:
+        for row in spreadsheet_data:
             mapped_row = {}
             for column in column_index:
-                value = row[column["index"]]
-                if isna(value):
-                    value = None
-                if isinstance(value, float):
-                    value = round(value, 2)
-                mapped_row[column["key"]] = value
+                spreadsheet_key = row[column["index"]]
+                if isna(spreadsheet_key):
+                    spreadsheet_key = None
+                if isinstance(spreadsheet_key, float):
+                    spreadsheet_key = round(spreadsheet_key, 2)
+                mapped_row[column["key"]] = spreadsheet_key
 
             mapped_rows.append(mapped_row)
 
@@ -186,8 +175,6 @@ class Command(BaseCommand):
             print(
                 f"\n{application_number}",
             )
-
-            pruned_data = {k: v for k, v in row.items() if k in KEYS_TO_IMPORT}
 
             company_found = True
             company = None
@@ -228,7 +215,9 @@ class Command(BaseCommand):
                         print("- Removing: imported previously")
                         app.delete()
 
-                app = ArchivalApplication(**pruned_data, company=company)
+                row.pop("company_name")
+                row.pop("business_id")
+                app = ArchivalApplication(**row, company=company)
                 if production:
                     print("+ Created: application imported!")
                     app.save()
