@@ -6,15 +6,11 @@ import {
 import { getTagStyleForStatus } from 'benefit/handler/utils/applications';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
-import { IconSpeechbubbleText, StatusLabel, Table, Tag } from 'hds-react';
+import { IconSpeechbubbleText, Table, Tag } from 'hds-react';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import { $Link } from 'shared/components/table/Table.sc';
-import {
-  convertToUIDateFormat,
-  sortFinnishDate,
-  sortFinnishDateTime,
-} from 'shared/utils/date.utils';
+import { sortFinnishDate, sortFinnishDateTime } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
 import {
@@ -22,6 +18,7 @@ import {
   $EmptyHeading,
   $Heading,
   $TagWrapper,
+  $UnreadMessagesCount,
 } from './ApplicationList.sc';
 import { useApplicationList } from './useApplicationList';
 
@@ -47,6 +44,10 @@ const buildApplicationUrl = (
   }
   return applicationUrl;
 };
+
+const dateForAdditionalInformationNeededBy = (
+  dateString: string | Date
+): string => ` ${String(dateString).replace(/\d{4}$/, '')}`;
 
 const ApplicationList: React.FC<ApplicationListProps> = ({
   heading,
@@ -115,7 +116,10 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       },
     ];
 
-    if (isVisibleOnlyForStatus.handling) {
+    if (
+      isVisibleOnlyForStatus.handling ||
+      isVisibleOnlyForStatus.infoRequired
+    ) {
       cols.push({
         headerName: getHeader('handlerName'),
         key: 'handlerName',
@@ -123,10 +127,24 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       });
     }
 
-    if (!status.includes(APPLICATION_STATUSES.DRAFT) || isAllStatuses) {
+    if (
+      (!status.includes(APPLICATION_STATUSES.DRAFT) &&
+        !status.includes(APPLICATION_STATUSES.ACCEPTED) &&
+        !status.includes(APPLICATION_STATUSES.REJECTED)) ||
+      isAllStatuses
+    ) {
       cols.push({
         headerName: getHeader('submittedAt'),
         key: 'submittedAt',
+        isSortable: true,
+        customSortCompareFunction: sortFinnishDate,
+      });
+    }
+
+    if (isVisibleOnlyForStatus.accepted || isVisibleOnlyForStatus.rejected) {
+      cols.push({
+        headerName: getHeader('handledAt'),
+        key: 'handledAt',
         isSortable: true,
         customSortCompareFunction: sortFinnishDate,
       });
@@ -144,11 +162,13 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     if (
       isVisibleOnlyForStatus.accepted ||
       isVisibleOnlyForStatus.rejected ||
+      isVisibleOnlyForStatus.infoRequired ||
       isAllStatuses
     ) {
       cols.push({
         transform: ({
           status: applicationStatus,
+          additionalInformationNeededBy,
         }: ApplicationListTableTransforms) => (
           <$TagWrapper $colors={getTagStyleForStatus(applicationStatus)}>
             <Tag>
@@ -157,6 +177,10 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
                   applicationStatus
                 )}`
               )}
+              {applicationStatus === APPLICATION_STATUSES.INFO_REQUIRED &&
+                dateForAdditionalInformationNeededBy(
+                  additionalInformationNeededBy
+                )}
             </Tag>
           </$TagWrapper>
         ),
@@ -185,31 +209,6 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       });
     }
 
-    if (isVisibleOnlyForStatus.infoRequired) {
-      cols.push({
-        transform: ({
-          additionalInformationNeededBy,
-          status: itemStatus,
-        }: ApplicationListTableTransforms) => (
-          <div>
-            {itemStatus === APPLICATION_STATUSES.INFO_REQUIRED ? (
-              <StatusLabel type="alert">
-                {t(
-                  `common:applications.list.columns.additionalInformationNeededByVal`,
-                  {
-                    date: convertToUIDateFormat(additionalInformationNeededBy),
-                  }
-                )}
-              </StatusLabel>
-            ) : null}
-          </div>
-        ),
-        headerName: getHeader('additionalInformationNeededBy'),
-        key: 'additionalInformationNeededBy',
-        isSortable: false,
-      });
-    }
-
     cols.push({
       transform: ({
         unreadMessagesCount,
@@ -220,6 +219,9 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
           {Number(unreadMessagesCount) > 0 ? (
             <$Link href={buildApplicationUrl(id, applicationStatus, true)}>
               <IconSpeechbubbleText color={theme.colors.coatOfArms} />
+              <$UnreadMessagesCount>
+                {Number(unreadMessagesCount)}
+              </$UnreadMessagesCount>
             </$Link>
           ) : null}
         </$CellContent>
@@ -261,6 +263,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
           indexKey="id"
           rows={list}
           cols={columns}
+          zebra
         />
       ) : (
         <$EmptyHeading>

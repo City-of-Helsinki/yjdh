@@ -121,6 +121,7 @@ const ApplicationsHandled: React.FC<Props> = ({
             checkboxSelection
             selectedRows={selectedRows}
             setSelectedRows={setSelectedRows}
+            zebra
           />
           <$TableFooter>
             <$HintText>
