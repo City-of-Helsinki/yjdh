@@ -1,3 +1,4 @@
+import re
 from datetime import date
 from typing import List
 
@@ -1059,6 +1060,16 @@ class Employee(UUIDModel, TimeStampedModel):
         verbose_name_plural = _("employees")
 
 
+def cleanup_filename(instance, filename):
+    filename = re.sub(
+        r"^[\s.]", "_", filename
+    )  # replace leading whitespace and dots with underscore
+    filename = re.sub(
+        r"\.[^.]+$", lambda m: m.group(0).lower(), filename
+    )  # replace extension with lowercase
+    return filename
+
+
 class Attachment(UUIDModel, TimeStampedModel):
     """
     created_at field from TimeStampedModel provides the upload timestamp
@@ -1080,7 +1091,9 @@ class Attachment(UUIDModel, TimeStampedModel):
         choices=ATTACHMENT_CONTENT_TYPE_CHOICES,
         verbose_name=_("technical content type of the attachment"),
     )
-    attachment_file = models.FileField(verbose_name=_("application attachment content"))
+    attachment_file = models.FileField(
+        verbose_name=_("application attachment content"), upload_to=cleanup_filename
+    )
 
     ahjo_version_series_id = models.CharField(max_length=64, null=True, blank=True)
 
