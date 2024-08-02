@@ -93,11 +93,13 @@ class HandlerMessageViewSet(ApplicantMessageViewSet):
     @transaction.atomic
     @action(detail=False, methods=["post"])
     def mark_unread(self, *args, **kwargs):
-        last_message = self.get_queryset().order_by("-created_at").first()
-        if (
-            last_message is not None
-            and last_message.message_type == MessageType.APPLICANT_MESSAGE
-        ):
+        last_message = (
+            self.get_queryset()
+            .order_by("-created_at")
+            .filter(message_type=MessageType.APPLICANT_MESSAGE)
+            .first()
+        )
+        if last_message is not None:
             last_message.seen_by_handler = False
             last_message.save()
 
