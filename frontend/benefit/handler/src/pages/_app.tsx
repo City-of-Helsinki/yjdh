@@ -22,6 +22,8 @@ import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import BaseApp from 'shared/components/app/BaseApp';
 import useLocale from 'shared/hooks/useLocale';
 
+import Layout from '../layout/Layout';
+
 const queryClient = new QueryClient();
 
 const App: React.FC<AppProps> = (appProps) => {
@@ -40,7 +42,12 @@ const App: React.FC<AppProps> = (appProps) => {
       <AppContextProvider>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
+            <BaseApp
+              header={<Header />}
+              footer={<Footer />}
+              {...appProps}
+              layout={Layout}
+            />
           </AuthProvider>
         </QueryClientProvider>
       </AppContextProvider>
