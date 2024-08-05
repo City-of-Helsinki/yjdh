@@ -1,15 +1,15 @@
 # =======================================
-FROM registry.access.redhat.com/ubi9/nodejs-18 AS distbase
+FROM registry.access.redhat.com/ubi9/nodejs-18-minimal AS distbase
 # =======================================
 
 USER root
 
 # Install ca-certificates so that Sentry can upload source maps
-RUN yum update -y && yum install -y ca-certificates && yum clean all
+RUN microdnf update -y && microdnf install -y ca-certificates && microdnf clean all
 
 # Install yarn
 RUN curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo
-RUN yum -y install yarn
+RUN microdnf -y install yarn
 
 # =============================
 FROM distbase AS appbase
@@ -28,6 +28,9 @@ RUN yarn policies set-version "$YARN_VERSION"
 RUN yarn config set ignore-engines true
 
 WORKDIR /app
+
+RUN groupadd --gid 1000 default
+RUN useradd --uid 1000 --gid default --create-home --shell /bin/bash default
 
 # Install dependencies
 COPY --chown=default:default package.json yarn.lock ./
