@@ -200,7 +200,9 @@ def test_applications_csv_export_new_applications(handler_api_client):
     assert ApplicationBatch.objects.all().count() == 2
 
 
-def test_application_alteration_csv_export(handler_api_client):
+def test_application_alteration_csv_export(
+    application_alteration, handler_api_client, decided_application
+):
     AhjoSetting.objects.create(
         name="application_alteration_fields",
         data={
@@ -208,9 +210,29 @@ def test_application_alteration_csv_export(handler_api_client):
             "billing_department": "1800 Kaupunginkanslia (Kansl)",
         },
     )
-    url = reverse("v1:handler-application-alteration-list") + "export_alterations_csv/"
-    response = handler_api_client.get(url)
+
+    url = (
+        reverse("v1:handler-application-alteration-list")
+        + f"update_with_csv/?application_id={decided_application.pk}&"
+        + f"alteration_id={application_alteration.id}"
+    )
+    payload = {
+        "application": decided_application.pk,
+        "recovery_start_date": "2024-10-02",
+        "recovery_end_date": "2024-11-01",
+        "recovery_amount": "200",
+        "recovery_justification": "For reasons",
+        "is_recoverable": True,
+    }
+    response = handler_api_client.patch(url, payload)
     assert response.status_code == 200
+
+    updated_alteration = ApplicationAlteration.objects.get(pk=application_alteration.pk)
+
+    assert updated_alteration.recovery_start_date == date(2024, 10, 2)
+    assert updated_alteration.recovery_end_date == date(2024, 11, 1)
+    assert updated_alteration.recovery_amount == Decimal("200")
+    assert updated_alteration.recovery_justification == "For reasons"
 
 
 def test_applications_csv_export_without_calculation(
