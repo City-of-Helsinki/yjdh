@@ -58,6 +58,9 @@ class ApplicationAlterationCsvService(CsvExportBase):
         return f"{application.company_contact_person_first_name} {application.company_contact_person_last_name} \
             {application.company_contact_person_email} {application.company_contact_person_phone_number}"
 
+    def get_recovery_justification(self, alteration: ApplicationAlteration) -> str:
+        return alteration.recovery_justification
+
     @property
     def CSV_COLUMNS(self):
         columns = [
@@ -76,6 +79,7 @@ class ApplicationAlterationCsvService(CsvExportBase):
             CsvColumn("Lisätietoja antaa", self.get_handler_name),
             CsvColumn("Otsikko", self.get_title),
             CsvColumn("Laskuttava yksikkö", self.get_billing_department),
+            CsvColumn("Selite", self.get_recovery_justification),
         ]
         return columns
 
