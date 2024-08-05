@@ -18,7 +18,7 @@ from applications.enums import (
     BenefitType,
     PaySubsidyGranted,
 )
-from applications.models import AhjoSetting, ApplicationBatch
+from applications.models import AhjoSetting, ApplicationAlteration, ApplicationBatch
 from applications.tests.common import (
     check_csv_cell_list_lines_generator,
     check_csv_string_lines_generator,
