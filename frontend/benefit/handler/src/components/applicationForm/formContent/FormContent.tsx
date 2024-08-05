@@ -706,15 +706,6 @@ const FormContent: React.FC<Props> = ({
             handleQuietSave={handleQuietSave}
           />
         </$GridCell>
-        {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER && (
-          <$GridCell $colSpan={12}>
-            <AttachmentsList
-              attachments={attachments}
-              attachmentType={ATTACHMENT_TYPES.OTHER_ATTACHMENT}
-              handleQuietSave={handleQuietSave}
-            />
-          </$GridCell>
-        )}
         {application.applicationOrigin === APPLICATION_ORIGINS.APPLICANT && (
           <$GridCell $colSpan={12}>
             <AttachmentsList
@@ -725,6 +716,13 @@ const FormContent: React.FC<Props> = ({
             />
           </$GridCell>
         )}
+        <$GridCell $colSpan={12}>
+          <AttachmentsList
+            attachments={attachments}
+            attachmentType={ATTACHMENT_TYPES.OTHER_ATTACHMENT}
+            handleQuietSave={handleQuietSave}
+          />
+        </$GridCell>
       </FormSection>
       {isFormActionNew && (
         <FormSection
