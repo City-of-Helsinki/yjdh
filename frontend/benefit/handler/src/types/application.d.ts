@@ -236,18 +236,9 @@ export type ApplicationAlterationHandlingForm =
     isManual: boolean;
   };
 
-  type AlterationCsvData = {
-    application: string;
-    recoveryStartDate: string;
-    recoveryEndDate: string;
-    recoveryAmount: string;
-    recoveryJustification: string;
-    isRecoverable: boolean;
-  };
-  
-  type AlterationCsvProps = {
+export type AlterationCsvProps = {
     alteration: ApplicationAlteration;
-    values: AlterationCsvData;
+    values: ApplicationAlterationHandlingForm;
     theme?: ButtonTheme;
     secondary?: boolean;
     onSubmit: () => void;
