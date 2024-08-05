@@ -847,3 +847,12 @@ def application_alteration_csv_service():
         ),
         config=config,
     )
+
+
+@pytest.fixture
+def application_alteration(decided_application):
+    return ApplicationAlterationFactory(
+        application=decided_application,
+        alteration_type=ApplicationAlterationType.TERMINATION,
+        handled_by=decided_application.handler,
+    )
