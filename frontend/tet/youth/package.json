@@ -19,7 +19,7 @@
   "dependencies": {
     "@frontend/shared": "*",
     "@frontend/tet-shared": "*",
-    "@sentry/browser": "^7.16.0",
+    "@sentry/browser": "^8.23.0",
     "@sentry/nextjs": "^7.16.0",
     "axios": "^0.27.2",
     "dotenv": "^16.0.0",
