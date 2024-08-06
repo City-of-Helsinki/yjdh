@@ -238,9 +238,9 @@ export type ApplicationAlterationHandlingForm =
 
 export type AlterationCsvProps = {
     alteration: ApplicationAlteration;
-    values: ApplicationAlterationHandlingForm;
+    values?: ApplicationAlterationHandlingForm;
     theme?: ButtonTheme;
     secondary?: boolean;
-    onSubmit: () => void;
+    onSubmit?: () => void;
   };
   
