@@ -15,15 +15,15 @@ COPY --chown=default:root shared /shared/
 
 RUN dnf update -y \
     && dnf install -y \
-       git \
-       nc \
-       postgresql-devel \
-       gcc \
-       gettext \
-       xmlsec1 \
-       xmlsec1-openssl \
-       cyrus-sasl-devel \
-       openssl-devel \
+           git \
+           nc \
+           postgresql-devel \
+           gcc \
+           gettext \
+           xmlsec1 \
+           xmlsec1-openssl \
+           cyrus-sasl-devel \
+           openssl-devel \
     && pip install -U pip \
     && pip install --no-cache-dir -r /app/requirements.txt \
     && pip install --no-cache-dir -r /app/requirements-prod.txt \
@@ -33,10 +33,10 @@ RUN dnf update -y \
     && dnf clean all
 
 # Install wkhtmltopdf and it's deps from CentOS9 repo and binary
-COPY --chown=default:root docker/ubi/centos9.repo /etc/yum.repos.d/centos9.repo
+COPY --chown=default:root docker/ubi/centos9-aarch.repo /etc/yum.repos.d/centos9.repo
 RUN rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official
 RUN dnf install -y xorg-x11-server-Xvfb compat-openssl11
-RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox-0.12.6.1-3.fedora37.x86_64.rpm && dnf localinstall -y wkhtmltox-0.12.6.1-3.fedora37.x86_64.rpm
+RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox-0.12.6.1-3.almalinux8.aarch64.rpm && dnf localinstall -y wkhtmltox-0.12.6.1-3.almalinux8.aarch64.rpm
 RUN rm -f /etc/yum.repos.d/centos9.repo
 
 COPY --chown=default:root /benefit/ /app/

@@ -21,7 +21,7 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: ./docker/benefit-arm.Dockerfile
+      dockerfile: ./docker/benefit-ubi-arm.Dockerfile
       target: development
     env_file:
       - .env.benefit-backend

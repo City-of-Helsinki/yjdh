@@ -5,7 +5,6 @@ services:
     build:
       context: ./backend
       dockerfile: ./docker/finnish_postgres.Dockerfile
-    platform: linux/amd64
     restart: on-failure
     environment:
       POSTGRES_USER: benefit
@@ -22,9 +21,8 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: ./docker/benefit.Dockerfile
+      dockerfile: ./docker/benefit-ubi-arm.Dockerfile
       target: development
-    platform: linux/amd64
     env_file:
       - .env.benefit-backend
     environment:
@@ -46,7 +44,6 @@ services:
         PORT: 3000
         PROJECT: benefit
         FOLDER: applicant
-    platform: linux/amd64
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -64,7 +61,6 @@ services:
         PORT: 3100
         PROJECT: benefit
         FOLDER: handler
-    platform: linux/amd64
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -81,7 +77,6 @@ services:
       - handler
     build:
       context: ./localdevelopment/benefit/nginx
-    platform: linux/amd64
     container_name: benefit-local-proxy
     volumes:
       - ./localdevelopment/benefit/nginx/:/etc/nginx/

@@ -1,5 +1,5 @@
 # ==============================
-FROM postgres:12 as finnish_postgres
+FROM postgres:12 AS finnish_postgres
 # ==============================
 RUN sed -i -e 's/# fi_FI.UTF-8 UTF-8/fi_FI.UTF-8 UTF-8/' /etc/locale.gen \
     && locale-gen
