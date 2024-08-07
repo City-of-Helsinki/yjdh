@@ -3,12 +3,9 @@ import { AlterationCsvProps } from 'benefit/handler/types/application';
 import { Button, IconDownload } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import {
-  convertToBackendDateFormat,
-} from 'shared/utils/date.utils';
+import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import { downloadFile } from 'shared/utils/file.utils';
 import { stringToFloatValue } from 'shared/utils/string.utils';
-
 
 const AlterationCsvButton: React.FC<AlterationCsvProps> = ({
   theme,
@@ -20,11 +17,11 @@ const AlterationCsvButton: React.FC<AlterationCsvProps> = ({
   const { t } = useTranslation();
   const updateMutation = updateApplicationAlterationWithCsvQuery();
 
-  const data =  {
+  if (!values) return null;
+
+  const data = {
     application: values.application,
-    recovery_start_date: convertToBackendDateFormat(
-      values.recoveryStartDate
-    ),
+    recovery_start_date: convertToBackendDateFormat(values.recoveryStartDate),
     recovery_end_date: convertToBackendDateFormat(values.recoveryEndDate),
     recovery_amount: values.isRecoverable
       ? String(stringToFloatValue(values.recoveryAmount))
@@ -38,7 +35,7 @@ const AlterationCsvButton: React.FC<AlterationCsvProps> = ({
       const response = await updateMutation.mutateAsync({
         id: alteration.id,
         applicationId: alteration.application,
-        data, 
+        data,
       });
       downloadFile(response, 'csv');
       onSubmit(); // Call the onSubmit function after successful download
@@ -46,8 +43,7 @@ const AlterationCsvButton: React.FC<AlterationCsvProps> = ({
       // Handle error (e.g., show an error message to the user)
     }
   };
-  
-  
+
   return (
     <Button
       theme={theme}
