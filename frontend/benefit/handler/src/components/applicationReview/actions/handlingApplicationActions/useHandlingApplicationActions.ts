@@ -40,6 +40,7 @@ const useHandlingApplicationActions = (
   const { updateStatus } = useApplicationActions(application);
   const { handledApplication, setHandledApplication } =
     React.useContext(AppContext);
+  const { setIsSidebarVisible } = React.useContext(AppContext);
   const router = useRouter();
   const { openDrawer } = router.query;
   const [isMessagesDrawerVisible, toggleMessagesDrawerVisibility] = useToggle(
@@ -82,7 +83,10 @@ const useHandlingApplicationActions = (
     if (application.status === APPLICATION_STATUSES.CANCELLED) {
       setIsConfirmationModalOpen(false);
     }
-  }, [application]);
+    if (isMessagesDrawerVisible !== null) {
+      setIsSidebarVisible(isMessagesDrawerVisible);
+    }
+  }, [application, isMessagesDrawerVisible, setIsSidebarVisible]);
 
   const handleCancel = (cancelledApplication: HandledAplication): void => {
     // workaround for broken hds dialog

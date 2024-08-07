@@ -52,9 +52,11 @@ const Sidebar: React.FC<ComponentProps> = ({
     });
   };
 
-  const isLastMessageFromApplicant =
-    messages.length > 0 &&
-    messages.at(-1).messageType === MESSAGE_TYPES.APPLICANT_MESSAGE;
+  const haveApplicantMessages =
+    messages?.length > 0 &&
+    messages.some(
+      (message) => message.messageType === MESSAGE_TYPES.APPLICANT_MESSAGE
+    );
 
   return (
     <Drawer
@@ -87,7 +89,7 @@ const Sidebar: React.FC<ComponentProps> = ({
                   theme="black"
                   size="small"
                   key="markAsUnread"
-                  disabled={!isLastMessageFromApplicant}
+                  disabled={!haveApplicantMessages}
                 >
                   {t('common:messenger.markAsUnread')}
                 </Button>,

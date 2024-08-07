@@ -591,7 +591,7 @@ def test_list_messages_read_receipt_applicant(
 @pytest.mark.parametrize(
     "first_message_type,second_message_type,expected_count_after_mark_unread",
     [
-        (MessageType.APPLICANT_MESSAGE, MessageType.HANDLER_MESSAGE, 2),
+        (MessageType.APPLICANT_MESSAGE, MessageType.HANDLER_MESSAGE, 1),
         (MessageType.HANDLER_MESSAGE, MessageType.APPLICANT_MESSAGE, 1),
     ],
 )

@@ -5,27 +5,43 @@ type DrawerProps = {
 };
 
 export const $Drawer = styled.aside<DrawerProps>`
+  @keyframes animate-open {
+    100% {
+      margin-right: 0;
+    }
+  }
+
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   width: 520px;
+  margin-right: -520px;
   height: calc(100vh - ${(props) => (props.stickyBarInUse ? '80' : '0')}px);
   background-color: ${({ theme }) => theme.colors.white};
   z-index: 100;
   box-shadow: -2px 0px 10px 0px rgb(0 0 0 / 10%);
   display: flex;
+  animation: animate-open 0.3s ease-out forwards;
   flex-direction: column;
+  overflow: hidden;
 `;
 
 export const $Close = styled.div`
+  @keyframes animate-open {
+    100% {
+      right: 520px;
+    }
+  }
   display: flex;
   justify-content: center;
   align-items: center;
   position: fixed;
   background-color: ${({ theme }) => theme.colors.white};
   padding: 0 ${({ theme }) => theme.spacing.s};
-  right: 520px;
+  right: 0px;
+  animation: animate-open 0.3s ease-in-out forwards;
+
   box-shadow: -2px 0px 10px 0px rgb(0 0 0 / 10%);
   cursor: pointer;
 `;
