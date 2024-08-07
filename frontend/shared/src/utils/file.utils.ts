@@ -4,7 +4,7 @@ import ExportFileType from 'shared/types/export-file-type';
 
 import { DATE_FORMATS } from './date.utils';
 
-export const downloadFile = (data: string, type: ExportFileType): void => {
+export const downloadFile = (data: string | Blob, type: ExportFileType): void => {
   const now = new Date();
   const dateFormat = `${DATE_FORMATS.BACKEND_DATE} HH.mm.ss`;
   const dateString = format(now, dateFormat);
