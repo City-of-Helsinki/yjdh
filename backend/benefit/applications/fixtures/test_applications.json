@@ -78,6 +78,7 @@
       "batch": null,
       "ahjo_case_id": null,
       "ahjo_case_guid": null,
+      "handled_by_ahjo_automation": true,
       "bases": []
     }
   },
