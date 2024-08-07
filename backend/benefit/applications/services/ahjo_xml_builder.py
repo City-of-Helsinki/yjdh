@@ -90,7 +90,9 @@ class AhjoPublicXMLBuilder(AhjoXMLBuilder):
 
     def generate_xml_file_name(self) -> str:
         date_str = self.application.created_at.strftime("%d.%m.%Y")
-        return f"Hakemus {date_str}, päätösteksti, {self.application.application_number}.xml"
+        return (
+            f"Hakemus {date_str} päätösteksti {self.application.application_number}.xml"
+        )
 
 
 @dataclass
@@ -223,6 +225,4 @@ class AhjoSecretXMLBuilder(AhjoXMLBuilder):
 
     def generate_xml_file_name(self) -> str:
         date_str = self.application.created_at.strftime("%d.%m.%Y")
-        return (
-            f"Hakemus {date_str}, liite 1/1, {self.application.application_number}.xml"
-        )
+        return f"Hakemus {date_str} päätöksen liite {self.application.application_number}.xml"
