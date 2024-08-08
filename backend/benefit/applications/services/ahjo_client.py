@@ -231,9 +231,7 @@ class AhjoApiClient:
                 f"Missing Ahjo case id for application {self._request.application.application_number}: {e}"
             )
         except requests.exceptions.HTTPError as e:
-            LOGGER.error(
-                f"A HTTP error occurred while sending {self._request} to Ahjo: {e}"
-            )
+            self.handle_http_error(e)
         except requests.exceptions.RequestException as e:
             LOGGER.error(
                 f"A network error occurred while sending {self._request} to Ahjo: {e}"
@@ -243,3 +241,22 @@ class AhjoApiClient:
                 f"An error occurred while sending {self._request} to Ahjo: {e}"
             )
         return None, None
+
+    def handle_http_error(self, e: requests.exceptions.HTTPError) -> Tuple[None, dict]:
+        """Handle HTTP errors that occur when sending a request to Ahjo.
+        Also log any validation errors received from Ahjo.
+        """
+        error_response = e.response
+        application_number = self._request.application.application_number
+        try:
+            error_json = error_response.json()
+        except json.JSONDecodeError:
+            error_json = None
+
+        error_message = f"A HTTP error occurred while sending {self._request} for application \
+{application_number} to Ahjo: {e}"
+
+        if error_json:
+            error_message += f" Error message: {error_json}"
+
+        LOGGER.error(error_message)
