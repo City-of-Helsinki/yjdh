@@ -11,18 +11,16 @@ const url = getFrontendUrl(`/`);
 
 fixture('Ahjo decision proposal for application')
   .page(url)
+  .clientScripts({
+    content: 'window.localStorage.setItem("newAhjoMode", "1");',
+  })
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     await t.useRole(handlerUserAhjo);
     await t.navigateTo('/');
-    await ClientFunction(() =>
-      window.localStorage.setItem('newAhjoMode', '1')
-    )();
   });
 
 test('Check for handling validation errors', async (t: TestController) => {
-  await ClientFunction(() => window.localStorage.setItem('newAhjoMode', '1'))();
-  await t.navigateTo('/');
   const mainIngress = new MainIngress(fi.mainIngress.heading, 'h1');
   await mainIngress.isLoaded();
 
