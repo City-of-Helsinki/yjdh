@@ -22,6 +22,7 @@ fixture('Ahjo decision proposal for application')
 
 test('Check for handling validation errors', async (t: TestController) => {
   await ClientFunction(() => window.localStorage.setItem('newAhjoMode', '1'))();
+  await t.navigateTo('/');
   const mainIngress = new MainIngress(fi.mainIngress.heading, 'h1');
   await mainIngress.isLoaded();
 
