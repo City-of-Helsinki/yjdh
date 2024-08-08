@@ -50,6 +50,7 @@ export const prepareSearchData = (
             application_number: applicationNum,
             status,
             calculation,
+            alterations,
           } = application;
 
           return {
@@ -62,6 +63,7 @@ export const prepareSearchData = (
               '-',
             handledAt: convertToUIDateFormat(handled_at) || '-',
             applicationNum,
+            alterations,
             calculationEndDate:
               convertToUIDateFormat(calculation?.end_date) || '-',
           };

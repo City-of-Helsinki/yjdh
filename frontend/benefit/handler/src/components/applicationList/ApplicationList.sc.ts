@@ -57,3 +57,21 @@ export const $UnreadMessagesCount = styled.div`
   color: ${(props) => props.theme.colors.white};
   background-color: ${(props) => props.theme.colors.coatOfArms};
 `;
+
+interface $AlterationBadgeProps {
+  $requiresAttention?: boolean;
+}
+export const $AlterationBadge = styled.div<$AlterationBadgeProps>`
+  background: ${(props) =>
+    props.$requiresAttention
+      ? props.theme.colors.coatOfArms
+      : props.theme.colors.black40};
+  color: ${({ theme }) => theme.colors.white};
+  font-size: 14px;
+  line-height: 1;
+  width: 14px;
+  height: 14px;
+  text-align: center;
+  padding: 0.3rem 0.35rem;
+  border-radius: 50%;
+`;
