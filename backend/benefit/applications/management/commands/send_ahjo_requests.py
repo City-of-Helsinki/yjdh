@@ -95,6 +95,7 @@ class Command(BaseCommand):
             applications = Application.objects.get_by_statuses(
                 [
                     ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.CANCELLED,
                     ApplicationStatus.REJECTED,
                     ApplicationStatus.HANDLING,
                     ApplicationStatus.DRAFT,
