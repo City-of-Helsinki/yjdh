@@ -16,6 +16,7 @@ from rest_framework.exceptions import PermissionDenied
 from applications.api.v1.serializers.application_alteration import (
     ApplicantApplicationAlterationSerializer,
     HandlerApplicationAlterationSerializer,
+    SimpleApplicationAlterationSerializer,
 )
 from applications.api.v1.serializers.attachment import AttachmentSerializer
 from applications.api.v1.serializers.batch import ApplicationBatchSerializer
@@ -1858,6 +1859,7 @@ class HandlerApplicationListSerializer(serializers.Serializer):
             "handler",
             "additional_information_needed_by",
             "calculation",
+            "alterations",
         ]
 
         read_only_fields = [
@@ -1875,10 +1877,17 @@ class HandlerApplicationListSerializer(serializers.Serializer):
             "additional_information_needed_by",
             "handler",
             "calculation",
+            "alterations",
         ]
 
     additional_information_needed_by = serializers.SerializerMethodField(
         "get_additional_information_needed_by"
+    )
+
+    alterations = SimpleApplicationAlterationSerializer(
+        source="alteration_set",
+        read_only=True,
+        many=True,
     )
 
     handled_at = serializers.SerializerMethodField(
