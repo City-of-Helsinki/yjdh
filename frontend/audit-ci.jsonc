@@ -8,6 +8,7 @@
     "html-minifier",
     "pdfjs-dist", // react-pdf
     "ip", // testcafe, lerna
-    "ws" // testcafe, jest
+    "ws", // testcafe, jest
+    "semver" // testcafe, jest, eslint
   ]
 }
