@@ -43,17 +43,35 @@ def _prepare_record_title(
     return f"{AhjoRecordTitle.APPLICATION} {formatted_date}, liite {current}/{total}, {application.application_number}"
 
 
-def _prepare_case_title(application: Application) -> str:
+def prepare_case_title(application: Application, company_name: str) -> str:
+    """Prepare the case title for Ahjo"""
     full_title = f"Avustukset työnantajille, työllisyyspalvelut, \
-Helsinki-lisä, {_truncate_company_name(application.company_name)}, \
+Helsinki-lisä, {company_name}, \
 hakemus {application.application_number}"
     return full_title
 
 
-def _truncate_company_name(company_name: str) -> str:
-    """Truncate the company name to 100 characters, \
+def prepare_final_case_title(application: Application) -> str:
+    """Prepare the final case title for Ahjo, if the full title is over 100 characters, \
+    truncate the company name to fit the limit."""
+    limit = 100
+    full_case_title = prepare_case_title(application, application.company_name)
+    length_of_full_title = len(full_case_title)
+
+    if length_of_full_title <= limit:
+        return full_case_title
+    else:
+        over_limit = length_of_full_title - limit
+        truncated_company_name = truncate_company_name(
+            application.company_name, over_limit
+        )
+        return prepare_case_title(application, truncated_company_name)
+
+
+def truncate_company_name(company_name: str, chars_to_truncate: int) -> str:
+    """Truncate the company name to a number of characters, \
     because Ahjo has a technical limitation of 100 characters for the company name."""
-    return company_name[:100]
+    return company_name[:-chars_to_truncate]
 
 
 def resolve_payload_language(application: Application) -> str:
@@ -235,7 +253,7 @@ def prepare_open_case_payload(
 ) -> dict:
     "Prepare the complete dictionary payload that is sent to Ahjo"
     case_records = _prepare_case_records(application, pdf_summary)
-    case_title = _prepare_case_title(application)
+    case_title = prepare_final_case_title(application)
     payload = _prepare_top_level_dict(application, case_records, case_title)
     return payload
 
