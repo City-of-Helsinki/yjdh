@@ -1,5 +1,25 @@
 # Changelog
 
+## [4.3.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.2.0...benefit-handler-v4.3.0) (2024-08-09)
+
+
+### Features
+
+* Add 'other attachments' file upload dialog to all applications ([#3190](https://github.com/City-of-Helsinki/yjdh/issues/3190)) ([de917de](https://github.com/City-of-Helsinki/yjdh/commit/de917dea4e16652d7b7e6a64369260d8ca1804c6))
+* Add alteration count and state to archive listing ([#3198](https://github.com/City-of-Helsinki/yjdh/issues/3198)) ([09a645e](https://github.com/City-of-Helsinki/yjdh/commit/09a645e7a5b5be4638702d5ea639e2965a04e248))
+* Allow handler to mark last application message as unread ([#3120](https://github.com/City-of-Helsinki/yjdh/issues/3120)) (HL-1117) ([79efe24](https://github.com/City-of-Helsinki/yjdh/commit/79efe243d59c113e51182363b7c8ed15029c21e0))
+* Improve on table listings (HL-1325) ([#3119](https://github.com/City-of-Helsinki/yjdh/issues/3119)) ([349858f](https://github.com/City-of-Helsinki/yjdh/commit/349858f653e6c7f8926c28821f445fba76e836f7))
+* Offset application content when sidebar is open (hl-1200) ([#3189](https://github.com/City-of-Helsinki/yjdh/issues/3189)) ([c1e05a2](https://github.com/City-of-Helsinki/yjdh/commit/c1e05a2923916de27c1966b08feb034416eb8731))
+
+
+### Bug Fixes
+
+* Allow handler to use messenger on accepted/rejected applications ([#3124](https://github.com/City-of-Helsinki/yjdh/issues/3124)) ([b1f72a7](https://github.com/City-of-Helsinki/yjdh/commit/b1f72a751d63e3e69b8bff9ba8717d32b46f5333))
+* For some reason new ahjo mode is not on ([3423b9d](https://github.com/City-of-Helsinki/yjdh/commit/3423b9d8fd956ba03af1caef0a5616a38ca70ee2))
+* New ahjo mode is not on in e2e tests ([faf3c75](https://github.com/City-of-Helsinki/yjdh/commit/faf3c7523644f9d24a5fed598825fb9343302193))
+* Remove irrelevant fields from decision box et cetera ([#3123](https://github.com/City-of-Helsinki/yjdh/issues/3123)) ([46dfc21](https://github.com/City-of-Helsinki/yjdh/commit/46dfc2195c568e6e4ea292eb77e7434ed45d9c7d))
+* Remove list items that are handled with new ahjo mode ([#3113](https://github.com/City-of-Helsinki/yjdh/issues/3113)) ([5ea5967](https://github.com/City-of-Helsinki/yjdh/commit/5ea59679d5fd6218639186352d9369d369cd4f8f))
+
 ## [4.2.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.1.0...benefit-handler-v4.2.0) (2024-06-24)
 
 
