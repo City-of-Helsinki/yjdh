@@ -34,7 +34,7 @@ const SalaryCalculatorResults: React.FC<ApplicationReviewViewProps> = ({
     return null;
   }
 
-  if (rowsWithoutTotal.length === 0) {
+  if (rowsWithoutTotal.length === 0 && !isManualCalculator) {
     return null;
   }
 

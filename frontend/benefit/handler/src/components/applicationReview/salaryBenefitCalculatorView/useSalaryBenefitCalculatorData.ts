@@ -24,7 +24,10 @@ import {
 } from 'shared/utils/date.utils';
 import { v4 as uuidv4 } from 'uuid';
 
-import { getValidationSchema } from './utils/validation';
+import {
+  getManualValidationSchema,
+  getValidationSchema,
+} from './utils/validation';
 
 type ExtendedComponentProps = {
   formik: FormikProps<CalculationFormProps>;
@@ -105,7 +108,9 @@ const useSalaryBenefitCalculatorData = (
           ? application?.trainingCompensations
           : [],
     },
-    validationSchema: getValidationSchema(t),
+    validationSchema: isManualCalculator
+      ? getManualValidationSchema(t)
+      : getValidationSchema(t),
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,

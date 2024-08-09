@@ -6,8 +6,6 @@ import { Field } from 'shared/components/forms/fields/types';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { formatStringFloatValue } from 'shared/utils/string.utils';
 
-import { $CalculatorText } from '../ApplicationReview.sc';
-
 const SalaryBenefitManualCalculatorView: React.FC<
   SalaryBenefitManualCalculatorViewProps
 > = ({ formik, fields, getErrorMessage }) => {
@@ -19,12 +17,10 @@ const SalaryBenefitManualCalculatorView: React.FC<
   return (
     <>
       <$GridCell $colStart={1} $colSpan={2}>
-        <$CalculatorText>{overrideMonthlyBenefitAmount?.label}</$CalculatorText>
-      </$GridCell>
-      <$GridCell $colStart={1} $colSpan={2}>
         <TextInput
           id={overrideMonthlyBenefitAmount?.name}
           name={overrideMonthlyBenefitAmount?.name}
+          label={overrideMonthlyBenefitAmount?.label}
           onChange={(e) =>
             formik.setFieldValue(
               overrideMonthlyBenefitAmount?.name,
@@ -37,6 +33,7 @@ const SalaryBenefitManualCalculatorView: React.FC<
           invalid={!!getErrorMessage(overrideMonthlyBenefitAmount?.name)}
           aria-invalid={!!getErrorMessage(overrideMonthlyBenefitAmount?.name)}
           errorText={getErrorMessage(overrideMonthlyBenefitAmount?.name)}
+          required
         />
       </$GridCell>
 
