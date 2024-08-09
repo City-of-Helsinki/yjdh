@@ -13,14 +13,15 @@ from applications.enums import (
 from applications.models import Attachment
 from applications.services.ahjo_payload import (
     _prepare_case_records,
-    _prepare_case_title,
     _prepare_record,
     _prepare_record_document_dict,
     _prepare_record_title,
     _prepare_top_level_dict,
-    _truncate_company_name,
+    prepare_case_title,
+    prepare_final_case_title,
     prepare_update_application_payload,
     resolve_payload_language,
+    truncate_company_name,
 )
 from common.utils import hash_file
 
@@ -30,7 +31,7 @@ def test_prepare_case_title(decided_application):
     wanted_title = f"Avustukset työnantajille, työllisyyspalvelut, \
 Helsinki-lisä, {application.company_name}, \
 hakemus {application.application_number}"
-    got = _prepare_case_title(application)
+    got = prepare_case_title(application, decided_application.company_name)
     assert wanted_title == got
 
 
@@ -38,9 +39,15 @@ def test_truncate_company_name():
     short = "a" * 50
     too_long = "a" * 105
     not_too_long = "a" * 100
-    assert len(_truncate_company_name(too_long)) == 100
-    assert len(_truncate_company_name(not_too_long)) == 100
-    assert len(_truncate_company_name(short)) == 50
+    assert len(truncate_company_name(too_long, 5)) == 100
+    assert len(truncate_company_name(not_too_long, 5)) == 95
+    assert len(truncate_company_name(short, 5)) == 45
+
+
+def test_prepare_final_case_title_truncate(decided_application):
+    application = decided_application
+    application.company_name = "a" * 105
+    assert len(prepare_final_case_title(application)) == 100
 
 
 @pytest.mark.parametrize(
