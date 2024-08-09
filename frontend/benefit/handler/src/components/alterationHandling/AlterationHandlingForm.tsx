@@ -49,6 +49,10 @@ type Props = {
   onClose: () => void;
 };
 
+const handleAlterationCsvDownload = (): void => {
+  // TODO add any necessary logic here after the CSV download
+};
+
 const AlterationHandlingForm = ({
   application,
   alteration,
@@ -234,7 +238,10 @@ const AlterationHandlingForm = ({
                 <$TalpaGuideText>
                   {t(`${translationBase}.talpaCsv.guideText`)}
                 </$TalpaGuideText>
-                <AlterationCsvButton alteration={alteration} />
+                <AlterationCsvButton 
+                  alteration={alteration}
+                  values={formik.values}
+                  onSubmit={handleAlterationCsvDownload} />
               </$GridCell>
             </$Grid>
           </AlterationHandlingSection>
