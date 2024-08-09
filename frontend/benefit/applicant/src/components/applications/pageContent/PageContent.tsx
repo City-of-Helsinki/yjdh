@@ -71,6 +71,11 @@ const PageContent: React.FC = () => {
   const router = useRouter();
   const canShowAskem = useAskem(router.locale, isSubmittedApplication);
 
+  const showMonetaryFields = ![
+    APPLICATION_STATUSES.CANCELLED,
+    APPLICATION_STATUSES.REJECTED,
+  ].includes(application.status);
+
   useEffect(() => {
     if (isReadOnly) document.title = t('common:pageTitles.viewApplication');
     else if (router.query.id)
@@ -96,6 +101,7 @@ const PageContent: React.FC = () => {
       {
         accessor: (app) => formatFloatToCurrency(app.calculatedBenefitAmount),
         key: 'benefitAmount',
+        showIf: () => showMonetaryFields,
       },
       {
         accessor: (app) =>
@@ -103,6 +109,7 @@ const PageContent: React.FC = () => {
             app.endDate
           )}`,
         key: 'benefitPeriod',
+        showIf: () => showMonetaryFields,
       },
       {
         accessor: (app) => convertToUIDateFormat(app.ahjoDecisionDate),
@@ -112,10 +119,11 @@ const PageContent: React.FC = () => {
         accessor: () => t('common:applications.decision.grantedAsDeMinimisAid'),
         key: 'extraDetails',
         width: 6,
-        showIf: (app) => app.isGrantedAsDeMinimisAid === true,
+        showIf: (app) =>
+          app.isGrantedAsDeMinimisAid === true && showMonetaryFields,
       },
     ],
-    [t]
+    [t, showMonetaryFields]
   );
 
   if (isLoading) {

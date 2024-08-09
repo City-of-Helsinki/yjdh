@@ -57,6 +57,14 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
     useApplicationReview();
   const router = useRouter();
 
+  const showMonetaryFields = ![
+    APPLICATION_STATUSES.CANCELLED,
+    APPLICATION_STATUSES.REJECTED,
+    APPLICATION_STATUSES.INFO_REQUIRED,
+  ].includes(application.status);
+  const showBasicDecisionFields =
+    application.status !== APPLICATION_STATUSES.CANCELLED;
+
   const decisionDetailList = useMemo<DecisionDetailList>(
     () => [
       {
@@ -71,6 +79,7 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
       {
         accessor: (app) => formatFloatToCurrency(app.calculatedBenefitAmount),
         key: 'benefitAmount',
+        showIf: () => showMonetaryFields,
       },
       {
         accessor: (app) =>
@@ -78,10 +87,12 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
             app.endDate
           )}`,
         key: 'benefitPeriod',
+        showIf: () => showMonetaryFields,
       },
       {
         accessor: (app) => app.batch?.sectionOfTheLaw,
         key: 'sectionOfLaw',
+        showIf: () => showBasicDecisionFields,
       },
       {
         accessor: (app) =>
@@ -89,10 +100,12 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
             ? t('utility.yes')
             : t('utility.no'),
         key: 'grantedAsDeMinimis',
+        showIf: () => showMonetaryFields,
       },
       {
         accessor: (app) => convertToUIDateFormat(app.ahjoDecisionDate),
         key: 'decisionDate',
+        showIf: () => showBasicDecisionFields,
       },
       {
         accessor: (app) =>
@@ -103,9 +116,10 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
       {
         accessor: (app) => app.batch?.decisionMakerName,
         key: 'decisionMaker',
+        showIf: () => showBasicDecisionFields,
       },
     ],
-    [t]
+    [t, showMonetaryFields, showBasicDecisionFields]
   );
 
   const hasPendingAlteration = application.alterations.some(
@@ -144,7 +158,11 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
           ]}
           itemComponent={AlterationAccordionItem}
           detailList={decisionDetailList}
-          extraInformation={<DecisionCalculationAccordion data={application} />}
+          extraInformation={
+            showMonetaryFields ? (
+              <DecisionCalculationAccordion data={application} />
+            ) : null
+          }
         />
         {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER && (
           <PaperView data={application} />

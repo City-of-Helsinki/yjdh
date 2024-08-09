@@ -685,4 +685,5 @@ export type DecisionDetailList = Array<{
   accessor: DecisionDetailAccessorFunction;
   width?: number;
   showIf?: (app: Application) => boolean;
+  invisible?: boolean;
 }>;
