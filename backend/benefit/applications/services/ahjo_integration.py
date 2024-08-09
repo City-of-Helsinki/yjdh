@@ -496,7 +496,10 @@ def delete_application_in_ahjo(
     ahjo_request = AhjoDeleteCaseRequest(application)
     ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
 
-    return ahjo_client.send_request_to_ahjo(None)
+    result, response_text = ahjo_client.send_request_to_ahjo(None)
+    if result:
+        create_status_for_application(application, ahjo_request.result_status)
+    return result, response_text
 
 
 def update_application_summary_record_in_ahjo(
