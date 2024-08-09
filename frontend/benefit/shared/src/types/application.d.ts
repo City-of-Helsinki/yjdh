@@ -455,6 +455,7 @@ export type ApplicationData = {
   archived_for_applicant?: boolean;
   is_granted_as_de_minimis_aid?: boolean | null;
   handled_by_ahjo_automation?: boolean;
+  alterations: ApplicationAlterationData[];
 };
 
 export type EmployeeData = {
@@ -551,6 +552,7 @@ export type ApplicationListItemData = {
   ahjoCaseId?: string;
   calculationEndDate?: string;
   handledByAhjoAutomation?: boolean;
+  alterations?: ApplicationAlterationData[];
 };
 
 export type TextProp = 'textFi' | 'textEn' | 'textSv';

@@ -1,6 +1,12 @@
 import { getTagStyleForStatus } from 'benefit/handler/utils/applications';
-import { APPLICATION_STATUSES } from 'benefit-shared/constants';
-import { ApplicationData } from 'benefit-shared/types/application';
+import {
+  ALTERATION_STATE,
+  APPLICATION_STATUSES,
+} from 'benefit-shared/constants';
+import {
+  ApplicationAlterationData,
+  ApplicationData,
+} from 'benefit-shared/types/application';
 import { IconAlertCircle, IconCheck, IconCross, Table, Tag } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -9,7 +15,10 @@ import { $Link } from 'shared/components/table/Table.sc';
 import { sortFinnishDate } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
-import { $TagWrapper } from '../applicationList/ApplicationList.sc';
+import {
+  $AlterationBadge,
+  $TagWrapper,
+} from '../applicationList/ApplicationList.sc';
 import { $ArchiveCount, $CompanyNameDisabled } from './ApplicationsArchive.sc';
 import { prepareSearchData } from './useApplicationsArchive';
 
@@ -42,6 +51,7 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
     id: string;
     companyName: string;
     status: APPLICATION_STATUSES;
+    alterations: ApplicationAlterationData[];
   }
 
   const rows = React.useMemo(() => prepareSearchData(data), [data]);
@@ -116,6 +126,22 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
       key: 'status',
       isSortable: true,
       customSortCompareFunction: sortByStatus,
+    },
+    {
+      transform: ({ alterations }: TableTransforms) =>
+        alterations.length > 0 && (
+          <$AlterationBadge
+            $requiresAttention={alterations.some(({ state }) =>
+              [ALTERATION_STATE.RECEIVED, ALTERATION_STATE.OPENED].includes(
+                state
+              )
+            )}
+          >
+            {alterations.length}
+          </$AlterationBadge>
+        ),
+      headerName: '',
+      key: 'alterations',
     },
   ];
 
