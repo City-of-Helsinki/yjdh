@@ -53,6 +53,31 @@ const HandledView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
             </$ViewFieldBold>
           </$GridCell>
         )}
+        {data.calculation?.overrideMonthlyBenefitAmount && (
+          <$HandledRow key="manual-calculation-per-month">
+            <$GridCell $colSpan={9} $colStart={1}>
+              <$ViewField large>
+                {t(`${translationsBase}.common.dateRange`, {
+                  dateRange: dateRangeRows
+                    .at(0)
+                    ?.descriptionFi.toLocaleLowerCase(),
+                })}{' '}
+                ({t('calculators.salary.manualInput').toLowerCase()})
+              </$ViewField>
+            </$GridCell>
+            <$GridCell $colSpan={2}>
+              <$ViewFieldBold large>
+                {formatFloatToCurrency(
+                  data.calculation?.overrideMonthlyBenefitAmount,
+                  'EUR',
+                  'fi-FI',
+                  0
+                )}
+                {t('common:utility.perMonth')}
+              </$ViewFieldBold>
+            </$GridCell>
+          </$HandledRow>
+        )}
         {data.status === APPLICATION_STATUSES.ACCEPTED &&
           helsinkiBenefitMonthlyRows.map((row, index) => (
             <$HandledRow key={row.id}>
