@@ -18,6 +18,7 @@ import {
   Calculation,
   Employee,
   PaySubsidy,
+  TrainingCompensation,
 } from 'benefit-shared/types/application';
 import { prettyPrintObject } from 'benefit-shared/utils/errors';
 import camelcaseKeys from 'camelcase-keys';
@@ -213,6 +214,20 @@ const useFormActions = (
       : [];
   };
 
+  const getPayloadForTrainingCompensations = (
+    values: Partial<Application>
+  ): TrainingCompensation[] => {
+    if (
+      values.apprenticeshipProgram ===
+        initialApplication?.apprenticeshipProgram &&
+      values.paySubsidyGranted !== PAY_SUBSIDY_GRANTED.NOT_GRANTED
+    ) {
+      // Return the training compensation values as they are
+      return values?.trainingCompensations || [];
+    }
+    return [];
+  };
+
   // eslint-disable-next-line sonarjs/cognitive-complexity
   const getNormalizedValues = (currentValues: Application): Application => {
     const employee: Employee | undefined = currentValues?.employee ?? undefined;
@@ -279,7 +294,7 @@ const useFormActions = (
       action: APPLICATION_ACTIONS.HANDLER_ALLOW_APPLICATION_EDIT,
       benefitType: BENEFIT_TYPES.SALARY,
       trainingCompensations: normalizedValues.trainingCompensations
-        ? []
+        ? getPayloadForTrainingCompensations(currentValues)
         : undefined,
       calculation: calculation
         ? getPayloadForCalculation(currentValues)
