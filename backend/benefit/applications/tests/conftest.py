@@ -13,19 +13,30 @@ from applications.enums import (
     AhjoDecisionDetails,
     AhjoRecordTitle,
     AhjoRecordType,
+    ApplicationAlterationType,
     ApplicationStatus,
     BenefitType,
     DecisionType,
 )
-from applications.models import AhjoSetting, Application, ApplicationBatch
+from applications.models import (
+    AhjoSetting,
+    Application,
+    ApplicationAlteration,
+    ApplicationBatch,
+)
 from applications.services.ahjo_decision_service import (
     replace_decision_template_placeholders,
 )
 from applications.services.ahjo_payload import resolve_payload_language
+from applications.services.application_alteration_csv_report import (
+    AlterationCsvConfigurableFields,
+    ApplicationAlterationCsvService,
+)
 from applications.services.applications_csv_report import ApplicationsCsvService
 from applications.tests.factories import (
     AcceptedDecisionProposalFactory,
     AhjoDecisionTextFactory,
+    ApplicationAlterationFactory,
     ApplicationBatchFactory,
     ApplicationFactory,
     CancelledApplicationFactory,
@@ -38,6 +49,7 @@ from applications.tests.factories import (
 from common.tests.conftest import *  # noqa
 from companies.tests.conftest import *  # noqa
 from helsinkibenefit.tests.conftest import *  # noqa
+from shared.common.tests.factories import UserFactory
 from shared.service_bus.enums import YtjOrganizationCode
 from terms.tests.conftest import *  # noqa
 from terms.tests.factories import TermsOfServiceApprovalFactory
@@ -803,4 +815,44 @@ def batch_for_decision_details(application_with_ahjo_decision):
     return ApplicationBatch.objects.create(
         handler=application_with_ahjo_decision.calculation.handler,
         auto_generated_by_ahjo=True,
+    )
+
+
+@pytest.fixture
+def application_alteration_csv_service():
+    application_1 = DecidedApplicationFactory(application_number=100003)
+    application_2 = DecidedApplicationFactory(application_number=100004)
+
+    handled_by = UserFactory()
+
+    ApplicationAlterationFactory(
+        application=application_1,
+        alteration_type=ApplicationAlterationType.TERMINATION,
+        handled_by=handled_by,
+    )
+
+    ApplicationAlterationFactory(
+        application=application_2,
+        alteration_type=ApplicationAlterationType.SUSPENSION,
+        handled_by=handled_by,
+    )
+
+    config = AlterationCsvConfigurableFields(
+        account_number="123456",
+    )
+
+    return ApplicationAlterationCsvService(
+        ApplicationAlteration.objects.filter(
+            application_id__in=[application_1.id, application_2.id]
+        ),
+        config=config,
+    )
+
+
+@pytest.fixture
+def application_alteration(decided_application):
+    return ApplicationAlterationFactory(
+        application=decided_application,
+        alteration_type=ApplicationAlterationType.TERMINATION,
+        handled_by=decided_application.handler,
     )

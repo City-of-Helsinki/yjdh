@@ -18,7 +18,7 @@ from applications.enums import (
     BenefitType,
     PaySubsidyGranted,
 )
-from applications.models import ApplicationBatch
+from applications.models import AhjoSetting, ApplicationAlteration, ApplicationBatch
 from applications.tests.common import (
     check_csv_cell_list_lines_generator,
     check_csv_string_lines_generator,
@@ -200,6 +200,41 @@ def test_applications_csv_export_new_applications(handler_api_client):
     assert ApplicationBatch.objects.all().count() == 2
 
 
+def test_application_alteration_csv_export(
+    application_alteration, handler_api_client, decided_application
+):
+    AhjoSetting.objects.create(
+        name="application_alteration_fields",
+        data={
+            "account_number": "FI1234567890",
+            "billing_department": "1800 Kaupunginkanslia (Kansl)",
+        },
+    )
+
+    url = (
+        reverse("v1:handler-application-alteration-list")
+        + f"update_with_csv/?application_id={decided_application.pk}&"
+        + f"alteration_id={application_alteration.id}"
+    )
+    payload = {
+        "application": decided_application.pk,
+        "recovery_start_date": "2024-10-02",
+        "recovery_end_date": "2024-11-01",
+        "recovery_amount": "200",
+        "recovery_justification": "For reasons",
+        "is_recoverable": True,
+    }
+    response = handler_api_client.patch(url, payload)
+    assert response.status_code == 200
+
+    updated_alteration = ApplicationAlteration.objects.get(pk=application_alteration.pk)
+
+    assert updated_alteration.recovery_start_date == date(2024, 10, 2)
+    assert updated_alteration.recovery_end_date == date(2024, 11, 1)
+    assert updated_alteration.recovery_amount == Decimal("200")
+    assert updated_alteration.recovery_justification == "For reasons"
+
+
 def test_applications_csv_export_without_calculation(
     handler_api_client, received_application
 ):
@@ -321,6 +356,123 @@ def test_sensitive_data_removed_csv_output(sanitized_csv_service_with_one_applic
 
     for col_heading in sensitive_col_headings:
         assert col_heading not in csv_lines[0]
+
+
+def test_application_alteration_csv_output(application_alteration_csv_service):
+    csv_lines = split_lines_at_semicolon(
+        application_alteration_csv_service.get_csv_string()
+    )
+
+    alteration_1 = application_alteration_csv_service.get_alterations()[0]
+    alteration_2 = application_alteration_csv_service.get_alterations()[1]
+
+    assert csv_lines[0][0] == '\ufeff"Viitetiedot"'
+    assert csv_lines[0][1] == '"Aikajakso, jolta tukea peritään takaisin"'
+    assert csv_lines[0][2] == '"Summatieto"'
+
+    assert csv_lines[0][3] == '"Laskutettavan virallinen nimi"'
+    assert csv_lines[0][4] == '"Laskutusosoite"'
+    assert csv_lines[0][5] == '"Y-tunnus"'
+
+    assert csv_lines[0][6] == '"Laskutettavan yhteyshenkilö"'
+    assert csv_lines[0][7] == '"Verkkolaskuosoite/OVT-tunnus"'
+    assert csv_lines[0][8] == '"Operaattori-/välittäjätunnus"'
+
+    assert csv_lines[0][9] == '"Tilitunniste"'
+    assert csv_lines[0][10] == '"Lisätietoja antaa"'
+    assert csv_lines[0][11] == '"Otsikko"'
+
+    assert csv_lines[0][12] == '"Laskuttava yksikkö"'
+
+    assert int(csv_lines[1][0]) == alteration_1.application.application_number
+    assert (
+        csv_lines[1][1]
+        == f'"{application_alteration_csv_service.get_recovery_period(alteration_1)}"'
+    )
+    assert Decimal(csv_lines[1][2]) == alteration_1.recovery_amount
+
+    assert csv_lines[1][3] == f'"{alteration_1.application.company.name}"'
+    assert (
+        csv_lines[1][4]
+        == f'"{application_alteration_csv_service.get_company_address(alteration_1)}"'
+    )
+    assert csv_lines[1][5] == f'"{alteration_1.application.company.business_id}"'
+
+    assert (
+        csv_lines[1][6]
+        == f'"{application_alteration_csv_service.get_company_contact_person(alteration_1)}"'
+    )
+    assert csv_lines[1][7] == f'"{alteration_1.einvoice_address}"'
+    assert csv_lines[1][8] == f'"{alteration_1.einvoice_provider_identifier}"'
+
+    assert (
+        csv_lines[1][9]
+        == f'"{application_alteration_csv_service.get_account_number(alteration_1)}"'
+    )
+    assert (
+        csv_lines[1][10]
+        == f'"{application_alteration_csv_service.get_handler_name(alteration_1)}"'
+    )
+    assert (
+        csv_lines[1][11]
+        == f'"{application_alteration_csv_service.get_title(alteration_1)}"'
+    )
+
+    assert (
+        csv_lines[1][12]
+        == f'"{application_alteration_csv_service.get_billing_department(alteration_1)}"'
+    )
+
+    assert int(csv_lines[2][0]) == alteration_2.application.application_number
+    assert (
+        csv_lines[2][1]
+        == f'"{application_alteration_csv_service.get_recovery_period(alteration_2)}"'
+    )
+    assert Decimal(csv_lines[2][2]) == alteration_2.recovery_amount
+
+    assert csv_lines[2][3] == f'"{alteration_2.application.company.name}"'
+    assert (
+        csv_lines[2][4]
+        == f'"{application_alteration_csv_service.get_company_address(alteration_2)}"'
+    )
+    assert csv_lines[2][5] == f'"{alteration_2.application.company.business_id}"'
+
+    assert (
+        csv_lines[2][6]
+        == f'"{application_alteration_csv_service.get_company_contact_person(alteration_2)}"'
+    )
+    assert csv_lines[2][7] == f'"{alteration_2.einvoice_address}"'
+    assert csv_lines[2][8] == f'"{alteration_2.einvoice_provider_identifier}"'
+
+    assert (
+        csv_lines[2][9]
+        == f'"{application_alteration_csv_service.get_account_number(alteration_2)}"'
+    )
+    assert (
+        csv_lines[2][10]
+        == f'"{application_alteration_csv_service.get_handler_name(alteration_2)}"'
+    )
+    assert (
+        csv_lines[2][11]
+        == f'"{application_alteration_csv_service.get_title(alteration_2)}"'
+    )
+
+    assert (
+        csv_lines[2][12]
+        == f'"{application_alteration_csv_service.get_billing_department(alteration_2)}"'
+    )
+
+
+def test_write_application_alterations_csv_file(
+    application_alteration_csv_service, tmp_path
+):
+    alteration = application_alteration_csv_service.get_alterations()[0]
+    output_file = tmp_path / "output.csv"
+    application_alteration_csv_service.write_csv_file(output_file)
+    with open(output_file, encoding="utf-8") as f:
+        contents = f.read()
+        print(contents)
+        assert str(alteration.recovery_amount) in contents
 
 
 def test_pruned_applications_csv_output(
