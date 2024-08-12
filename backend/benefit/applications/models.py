@@ -1162,6 +1162,9 @@ class AhjoStatus(TimeStampedModel):
         related_name="ahjo_status",
         on_delete=models.CASCADE,
     )
+    error_from_ahjo = JSONField(
+        null=True,
+    )
 
     def __str__(self):
         return self.status
