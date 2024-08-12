@@ -129,7 +129,7 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
     },
     {
       transform: ({ alterations }: TableTransforms) =>
-        alterations.length > 0 && (
+        alterations?.length > 0 && (
           <$AlterationBadge
             $requiresAttention={alterations.some(({ state }) =>
               [ALTERATION_STATE.RECEIVED, ALTERATION_STATE.OPENED].includes(
