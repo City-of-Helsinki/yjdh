@@ -253,6 +253,9 @@ class AhjoCallbackView(APIView):
         self, application: Application, callback_data: dict
     ) -> Response:
         self._log_failure_details(application, callback_data)
+        latest_status = application.ahjo_status.latest()
+        latest_status.error_from_ahjo = callback_data.get("failureDetails", None)
+        latest_status.save()
         return Response(
             {"message": "Callback received but request was unsuccessful at AHJO"},
             status=status.HTTP_200_OK,
