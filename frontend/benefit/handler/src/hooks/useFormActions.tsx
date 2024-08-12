@@ -168,7 +168,7 @@ const useFormActions = (
     otherExpenses: stringToFloatValue(values.employee.otherExpenses),
     startDate: null,
     endDate: null,
-    stateAidMaxPercentage: null,
+    stateAidMaxPercentage: values.calculation?.stateAidMaxPercentage || null,
     grantedAsDeMinimisAid: false,
     targetGroupCheck: false,
     overrideMonthlyBenefitAmount: null,
