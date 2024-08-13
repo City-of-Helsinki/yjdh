@@ -9,6 +9,7 @@
     "pdfjs-dist", // react-pdf
     "ip", // testcafe, lerna
     "ws", // testcafe, jest
-    "semver" // testcafe, jest, eslint
+    "semver", // testcafe, jest, eslint
+    "axios" // tet, ks
   ]
 }
