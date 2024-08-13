@@ -50,10 +50,14 @@ const useHeader = (): ExtendedComponentProps => {
   );
 
   const { data: application } = useApplicationQuery(id);
-  const canWriteNewMessages = !(
-    application?.has_batch ||
-    application?.status === APPLICATION_STATUSES.CANCELLED
-  );
+
+  const hasCorrectStatus = ![
+    APPLICATION_STATUSES.CANCELLED,
+    APPLICATION_STATUSES.ARCHIVAL,
+  ].includes(application?.status);
+
+  const canWriteNewMessages =
+    hasCorrectStatus && !application?.archived_for_applicant;
 
   useEffect(() => {
     if (application?.unread_messages_count) {
