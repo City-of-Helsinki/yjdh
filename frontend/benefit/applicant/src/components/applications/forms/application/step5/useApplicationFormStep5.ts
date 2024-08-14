@@ -106,6 +106,9 @@ const useApplicationFormStep5 = (
           application?.paySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
             ? null
             : application?.apprenticeshipProgram,
+        trainingCompensations: application?.apprenticeshipProgram
+          ? application?.trainingCompensations
+          : [],
         calculation: application.calculation
           ? {
               ...application.calculation,

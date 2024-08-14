@@ -14,6 +14,7 @@ import {
   $Section,
   GridProps,
 } from 'shared/components/forms/section/FormSection.sc';
+import styled from 'styled-components';
 
 import {
   $ActionLeft,
@@ -34,6 +35,13 @@ export type ReviewSectionProps = {
   section?: keyof ReviewState;
 } & HeadingProps &
   GridProps;
+
+const $ReviewSection = styled($Grid)`
+  hr {
+    border-color: ${({ theme }) => theme.colors.coatOfArms};
+    opacity: 0.125;
+  }
+`;
 
 const ReviewSection: React.FC<ReviewSectionProps> = ({
   children,
@@ -80,7 +88,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
   };
 
   return (
-    <$Grid
+    <$ReviewSection
       css={`
         background-color: ${bgColor};
         margin-bottom: ${theme.spacing.m};
@@ -160,7 +168,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
           </$GridCell>
         </>
       )}
-    </$Grid>
+    </$ReviewSection>
   );
 };
 

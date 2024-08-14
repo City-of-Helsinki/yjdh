@@ -172,6 +172,10 @@ const SalaryBenefitCalculatorView: React.FC<
         <$HelpText>{t(eurosPerMonth)}</$HelpText>
       </$GridCell>
 
+      <$GridCell $colSpan={11}>
+        <hr />
+      </$GridCell>
+
       {!isManualCalculator && (
         <>
           <$GridCell $colSpan={11}>
@@ -202,6 +206,10 @@ const SalaryBenefitCalculatorView: React.FC<
             />
           </$GridCell>
 
+          <$GridCell $colSpan={11}>
+            <hr />
+          </$GridCell>
+
           {formik.values.paySubsidies?.length > 0 && (
             <$GridCell $colStart={1} $colSpan={11}>
               <$CalculatorHeader as="div">
@@ -222,38 +230,11 @@ const SalaryBenefitCalculatorView: React.FC<
               </$CalculatorHeader>
             </$GridCell>
           )}
+
           {formik.values.paySubsidies?.map(
             // eslint-disable-next-line sonarjs/cognitive-complexity
             (item: PaySubsidy, index: number) => (
               <React.Fragment key={item.id}>
-                <$GridCell $colStart={1}>
-                  <$CalculatorText>
-                    {t(`${translationsBase}.salarySubsidyPercentage`)}
-                  </$CalculatorText>
-                </$GridCell>
-                {item.paySubsidyPercent === 100 && (
-                  <$GridCell $colStart={3} $colSpan={2}>
-                    <$CalculatorText>
-                      {fields.workTimePercent.label}
-                    </$CalculatorText>
-                  </$GridCell>
-                )}
-                <$GridCell
-                  $colStart={item.paySubsidyPercent === 100 ? 6 : 3}
-                  $colSpan={4}
-                >
-                  <$CalculatorText>
-                    {t(`${translationsBase}.salarySupportPeriod`, {
-                      period: formatStringFloatValue(
-                        diffMonths(
-                          parseDate(item.endDate),
-                          parseDate(item.startDate)
-                        )
-                      ),
-                    })}
-                  </$CalculatorText>
-                </$GridCell>
-
                 <$GridCell $colStart={1}>
                   <Select
                     value={getPaySubsidyPercentageSelectValue(
@@ -261,7 +242,7 @@ const SalaryBenefitCalculatorView: React.FC<
                     )}
                     helper=""
                     optionLabelField="label"
-                    label=""
+                    label={t(`${translationsBase}.salarySubsidyPercentage`)}
                     onChange={(paySubsidyPercent: Option) => {
                       formik.setFieldValue(
                         fields.paySubsidies.name,
@@ -293,6 +274,7 @@ const SalaryBenefitCalculatorView: React.FC<
                     <TextInput
                       id={fields.workTimePercent.name}
                       name={fields.workTimePercent.name}
+                      label={fields.workTimePercent.label}
                       onChange={(e) => {
                         formik.setFieldValue(
                           fields.paySubsidies.name,
@@ -325,6 +307,14 @@ const SalaryBenefitCalculatorView: React.FC<
                   $colSpan={3}
                 >
                   <DateInput
+                    label={t(`${translationsBase}.salarySupportPeriod`, {
+                      period: formatStringFloatValue(
+                        diffMonths(
+                          parseDate(item.endDate),
+                          parseDate(item.startDate)
+                        )
+                      ),
+                    })}
                     id={fields.startDate.name}
                     name={fields.startDate.name}
                     placeholder={fields.startDate.placeholder}
@@ -354,6 +344,7 @@ const SalaryBenefitCalculatorView: React.FC<
                   $colSpan={3}
                 >
                   <DateInput
+                    label={fields.endDate.label}
                     id={fields.endDate.name}
                     name={fields.endDate.name}
                     placeholder={fields.endDate.placeholder}
@@ -380,6 +371,9 @@ const SalaryBenefitCalculatorView: React.FC<
                     value={convertToUIDateFormat(item.endDate)}
                     style={{ paddingRight: `${theme.spacing.s}` }}
                   />
+                </$GridCell>
+                <$GridCell $colSpan={11}>
+                  <hr />
                 </$GridCell>
               </React.Fragment>
             )
@@ -559,6 +553,9 @@ const SalaryBenefitCalculatorView: React.FC<
             >
               {t(`${translationsBase}.add`)}
             </Button>
+          </$GridCell>
+          <$GridCell $colSpan={11}>
+            <hr />
           </$GridCell>
         </>
       )}

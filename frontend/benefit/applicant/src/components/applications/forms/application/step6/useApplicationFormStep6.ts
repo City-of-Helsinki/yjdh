@@ -97,6 +97,9 @@ const useApplicationFormStep6 = (
             application?.paySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
               ? null
               : application?.apprenticeshipProgram,
+          trainingCompensations: application?.apprenticeshipProgram
+            ? application?.trainingCompensations
+            : [],
           status:
             application.status === APPLICATION_STATUSES.DRAFT
               ? APPLICATION_STATUSES.RECEIVED
