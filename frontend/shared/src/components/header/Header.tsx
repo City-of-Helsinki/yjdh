@@ -38,6 +38,7 @@ export type HeaderProps = {
   theme?: ThemeOption;
   hideLogin?: boolean;
   onTitleClick?: () => void;
+  className?: string;
 };
 
 const Header: React.FC<HeaderProps> = ({
@@ -55,6 +56,7 @@ const Header: React.FC<HeaderProps> = ({
   hideLogin,
   theme,
   onTitleClick,
+  className,
 }) => {
   const {
     locale,
@@ -80,7 +82,7 @@ const Header: React.FC<HeaderProps> = ({
   );
 
   return (
-    <div data-testid="header">
+    <div data-testid="header" className={className}>
       <Navigation
         theme={theme}
         menuOpen={menuOpen}
