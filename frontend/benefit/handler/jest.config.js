@@ -11,6 +11,7 @@ const config = {
     [`^shared\/(.*)$`]: '<rootDir>/../../shared/src/$1',
     [`^benefit-shared\/(.*)$`]: '<rootDir>../shared/src/$1',
     [`benefit/handler\/(.*)$`]: '<rootDir>/src/$1',
+    axios: 'axios/dist/node/axios.cjs',
   },
   setupFilesAfterEnv: [
     '<rootDir>/../../shared/src/__tests__/utils/setupTests.ts',

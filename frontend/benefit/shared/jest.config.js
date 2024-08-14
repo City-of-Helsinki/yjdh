@@ -9,6 +9,7 @@ module.exports = {
   moduleNameMapper: {
     ['^benefit/shared/test/(.*)$']: '<rootDir>/test/$1',
     [`^benefit/shared\/(.*)$`]: '<rootDir>src/$1',
+    axios: 'axios/dist/node/axios.cjs',
   },
   setupFilesAfterEnv: [
     '<rootDir>/../../shared/src/__tests__/utils/setupTests.ts',
