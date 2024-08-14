@@ -41,6 +41,32 @@ class HelsinkiBenefitCalculator:
         self.calculation = calculation
         self._row_counter = 0
 
+    def _get_change_days(
+        self, pay_subsidies, training_compensations, start_date, end_date
+    ):
+        change_days = {start_date, end_date + datetime.timedelta(days=1)}
+        for item in pay_subsidies + training_compensations:
+            if item.start_date is not None and item.start_date > start_date:
+                change_days.add(item.start_date)
+            if item.end_date is not None and item.end_date < end_date:
+                change_days.add(item.end_date + datetime.timedelta(days=1))
+        return change_days
+
+    def _get_item_in_effect(
+        self, items: list[PaySubsidy], day: datetime.date
+    ) -> Union[PaySubsidy, None]:
+        """Return the first item in the list whose start date is less than or equal to the given day,
+        and whose end date is greater than or equal to the given day.
+        If no such item is found, it returns None."""
+        for item in items:
+            if (
+                item.start_date is not None
+                and item.end_date is not None
+                and (item.start_date <= day <= item.end_date)
+            ):
+                return item
+        return None
+
     @staticmethod
     def get_calculator(calculation: Calculation):
         # in future, one might use e.g. application date to determine the correct calculator
@@ -54,9 +80,10 @@ class HelsinkiBenefitCalculator:
             return DummyBenefitCalculator(calculation)
 
     def get_sub_total_ranges(self):
-        # return a list of BenefitSubRange(start_date, end_date, pay_subsidy, training_compensation)
-        # that require a separate calculation.
-        # date range are inclusive
+        """return a list of BenefitSubRange(start_date, end_date, pay_subsidy, training_compensation)
+        that require a separate calculation.
+        date range are inclusive"""
+
         if self.calculation.start_date is None or self.calculation.end_date is None:
             raise ValueError(
                 "Cannot get sub total range of calculation start_date or end_date"
@@ -67,35 +94,18 @@ class HelsinkiBenefitCalculator:
         training_compensations = list(
             self.calculation.application.training_compensations.order_by("start_date")
         )
-
-        change_days = {
+        change_days = self._get_change_days(
+            pay_subsidies,
+            training_compensations,
             self.calculation.start_date,
-            self.calculation.end_date + datetime.timedelta(days=1),
-        }
-        for item in pay_subsidies + training_compensations:
-            if item.start_date > self.calculation.start_date:
-                change_days.add(item.start_date)
-            if item.end_date < self.calculation.end_date:
-                # the end_date of PaySubsidy and TrainingCompensation is the last day it is in effect so the
-                # change day is the day after end_date
-                change_days.add(item.end_date + datetime.timedelta(days=1))
-
-        def get_item_in_effect(
-            items: list[PaySubsidy], day: datetime.date
-        ) -> Union[PaySubsidy, None]:
-            # Return the first item in the list whose start date is less than or equal to the given day,
-            # and whose end date is greater than or equal to the given day.
-            # If no such item is found, it returns None.
-            for item in items:
-                if item.start_date <= day <= item.end_date:
-                    return item
-            return None
+            self.calculation.end_date,
+        )
 
         ranges = []
         assert len(change_days) >= 2
         for range_start, range_end in pairwise(sorted(change_days)):
-            pay_subsidy = get_item_in_effect(pay_subsidies, range_start)
-            training_compensation = get_item_in_effect(
+            pay_subsidy = self._get_item_in_effect(pay_subsidies, range_start)
+            training_compensation = self._get_item_in_effect(
                 training_compensations, range_start
             )
             ranges.append(
