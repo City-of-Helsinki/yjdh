@@ -13,6 +13,7 @@ from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 
+from applications.api.v1.serializers.ahjo_status import AhjoStatusSerializer
 from applications.api.v1.serializers.application_alteration import (
     ApplicantApplicationAlterationSerializer,
     HandlerApplicationAlterationSerializer,
@@ -1549,6 +1550,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
     * latest_decision_comment
     * handled_at
     * paper_application_date
+    * ahjo_error
     """
 
     # more status transitions
@@ -1612,6 +1614,19 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         ),
     )
 
+    ahjo_error = serializers.SerializerMethodField()
+
+    def get_latest_ahjo_error(self, obj) -> Union[Dict, None]:
+        """Get the latest Ahjo error for the application"""
+        try:
+            status = obj.ahjo_status.latest()
+        except AhjoStatus.DoesNotExist:
+            return None
+        return AhjoStatusSerializer(status).data
+
+    def get_ahjo_error(self, obj):
+        return self.get_latest_ahjo_error(obj)
+
     def get_changes(self, obj):
         return {
             "handler": get_application_change_history_made_by_handler(obj),
@@ -1663,6 +1678,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             "decision_proposal_draft",
             "handler",
             "handled_by_ahjo_automation",
+            "ahjo_error",
         ]
         read_only_fields = BaseApplicationSerializer.Meta.read_only_fields + [
             "latest_decision_comment",

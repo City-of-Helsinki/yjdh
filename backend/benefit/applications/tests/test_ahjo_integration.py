@@ -561,6 +561,22 @@ def test_subscribe_to_decisions_callback_success(
     assert decided_application.ahjo_status.latest().status == status_after_callback
 
 
+@pytest.mark.parametrize(
+    "request_type, last_ahjo_status, failure_details",
+    [
+        (
+            AhjoRequestType.OPEN_CASE,
+            AhjoStatusEnum.REQUEST_TO_OPEN_CASE_SENT,
+            [
+                {
+                    "id": "INVALID_RECORD_TYPE",
+                    "message": "Asiakirjan tyyppi ei ole sallittu.",
+                    "context": "(Tähän tulisi tietoa virheen esiintymispaikasta jos mahdollista antaa.)",
+                }
+            ],
+        ),
+    ],
+)
 @pytest.mark.django_db
 def test_ahjo_open_case_callback_failure(
     ahjo_client,
@@ -568,15 +584,25 @@ def test_ahjo_open_case_callback_failure(
     decided_application,
     settings,
     ahjo_callback_payload,
+    request_type,
+    last_ahjo_status,
+    failure_details,
 ):
     ahjo_callback_payload.pop("caseId", None)
     ahjo_callback_payload.pop("caseGuid", None)
     ahjo_callback_payload["message"] = AhjoCallBackStatus.FAILURE
 
+    AhjoStatus.objects.create(
+        application=decided_application,
+        status=last_ahjo_status,
+    )
+
+    ahjo_callback_payload["failureDetails"] = failure_details
+
     url = reverse(
         "ahjo_callback_url",
         kwargs={
-            "request_type": AhjoRequestType.OPEN_CASE,
+            "request_type": request_type,
             "uuid": decided_application.id,
         },
     )
@@ -588,6 +614,12 @@ def test_ahjo_open_case_callback_failure(
     assert response.data == {
         "message": "Callback received but request was unsuccessful at AHJO"
     }
+
+    decided_application.refresh_from_db()
+
+    latest_status = decided_application.ahjo_status.latest()
+    assert latest_status.status == last_ahjo_status
+    assert latest_status.error_from_ahjo == ahjo_callback_payload["failureDetails"]
 
 
 @pytest.mark.parametrize(

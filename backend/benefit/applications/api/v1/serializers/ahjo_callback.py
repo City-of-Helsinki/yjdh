@@ -7,6 +7,7 @@ class AhjoCallbackSerializer(serializers.Serializer):
     caseId = serializers.CharField(required=False)
     caseGuid = serializers.UUIDField(format="hex_verbose", required=False)
     records = serializers.ListField(required=False)
+    failureDetails = serializers.ListField(required=False)
 
     # You can add additional validation here if needed
     def validate_message(self, message):
