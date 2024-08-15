@@ -27,7 +27,10 @@ from applications.models import (
 from applications.services.ahjo_decision_service import (
     replace_decision_template_placeholders,
 )
-from applications.services.ahjo_payload import resolve_payload_language
+from applications.services.ahjo_payload import (
+    resolve_payload_language,
+    truncate_company_name,
+)
 from applications.services.application_alteration_csv_report import (
     AlterationCsvConfigurableFields,
     ApplicationAlterationCsvService,
@@ -435,7 +438,7 @@ def ahjo_open_case_top_level_dict(decided_application):
         "Agents": [
             {
                 "Role": "sender_initiator",
-                "CorporateName": application.company.name,
+                "CorporateName": truncate_company_name(application.company.name, 100),
                 "ContactPerson": application.contact_person,
                 "Type": "External",
                 "Email": application.company_contact_person_email,

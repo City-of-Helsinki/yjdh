@@ -113,7 +113,7 @@ def _prepare_top_level_dict(
         "Agents": [
             {
                 "Role": "sender_initiator",
-                "CorporateName": application.company.name,
+                "CorporateName": truncate_company_name(application.company.name, 100),
                 "ContactPerson": application.contact_person,
                 "Type": "External",
                 "Email": application.company_contact_person_email,
