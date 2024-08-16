@@ -60,6 +60,8 @@ from helsinkibenefit.tests.conftest import *  # noqa
 from messages.automatic_messages import (
     get_additional_information_email_notification_subject,
 )
+from messages.models import Message, MessageType
+from messages.tests.factories import MessageFactory
 from shared.audit_log import models as audit_models
 from shared.service_bus.enums import YtjOrganizationCode
 from terms.models import TermsOfServiceApproval
@@ -613,9 +615,9 @@ def test_application_post_invalid_data(
     data["applicant_language"] = None  # non-null required
     data["company_bank_account_number"] = "FI91 4008 0282 0002 02"  # invalid number
 
-    data[
-        "company_contact_person_phone_number"
-    ] = "+359505658789"  # Invalid country code
+    data["company_contact_person_phone_number"] = (
+        "+359505658789"  # Invalid country code
+    )
 
     api_client.defaults["HTTP_ACCEPT_LANGUAGE"] = language
     response = api_client.post(
@@ -780,9 +782,9 @@ def test_application_put_read_only_fields(api_client, application):
 def test_application_put_invalid_data(api_client, application):
     data = ApplicantApplicationSerializer(application).data
     data["de_minimis_aid_set"][0]["amount"] = "300001.00"  # value too high
-    data[
-        "status"
-    ] = ApplicationStatus.ACCEPTED  # invalid value when transitioning from draft
+    data["status"] = (
+        ApplicationStatus.ACCEPTED
+    )  # invalid value when transitioning from draft
     data["bases"] = ["something_completely_different"]  # invalid value
     data["applicant_language"] = None  # non-null required
     response = api_client.put(
@@ -2569,6 +2571,31 @@ def test_application_alterations(api_client, handler_api_client, application):
         reverse("v1:handler-application-detail", kwargs={"pk": application.id}),
     )
     assert len(response.data["alterations"]) == 3
+
+
+def test_applications_with_unread_messages(api_client, handler_api_client, application):
+    response = api_client.get(
+        reverse("v1:handler-application-with-messages"),
+    )
+    assert response.status_code == 403
+
+    assert len(Message.objects.all()) == 0
+    MessageFactory(
+        application=application,
+        message_type=MessageType.APPLICANT_MESSAGE,
+        content="Hello",
+    )
+
+    response = handler_api_client.get(
+        reverse("v1:handler-application-with-messages"),
+    )
+    assert len(response.data) == 1
+    Message.objects.all().update(seen_by_handler=True)
+    response = handler_api_client.get(
+        reverse("v1:handler-application-with-messages"),
+    )
+
+    assert len(response.data) == 0
 
 
 def _create_random_applications():
