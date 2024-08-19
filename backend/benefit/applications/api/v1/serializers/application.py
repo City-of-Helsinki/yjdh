@@ -395,6 +395,19 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
 
     ahjo_decision_date = serializers.SerializerMethodField("get_ahjo_decision_date")
 
+    calculated_benefit_amount = serializers.SerializerMethodField()
+
+    def get_calculated_benefit_amount(self, obj):
+        # Check if ahjo_status is None or does not have any related objects
+        if obj.ahjo_status is None or not obj.ahjo_status.exists():
+            return None
+
+        latest_status = obj.ahjo_status.latest().status
+
+        if latest_status != AhjoStatusEnum.DETAILS_RECEIVED_FROM_AHJO:
+            return None
+        return obj.calculated_benefit_amount
+
     submitted_at = serializers.SerializerMethodField("get_submitted_at")
 
     modified_at = serializers.SerializerMethodField(
