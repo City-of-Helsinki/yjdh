@@ -22,6 +22,7 @@ import { useAskem } from 'benefit/applicant/hooks/useAnalytics';
 import DecisionSummary from 'benefit-shared/components/decisionSummary/DecisionSummary';
 import StatusIcon from 'benefit-shared/components/statusIcon/StatusIcon';
 import {
+  AHJO_STATUSES,
   ALTERATION_STATE,
   ALTERATION_TYPE,
   APPLICATION_STATUSES,
@@ -225,7 +226,7 @@ const PageContent: React.FC = () => {
             </$HeaderRightColumnItem>
           )}
         </$PageHeader>
-        {application.ahjoStatus === 'details_received' && ( 
+        {application.ahjoStatus === AHJO_STATUSES.DETAILS_RECEIVED && ( 
           <DecisionSummary
             application={application}
             actions={

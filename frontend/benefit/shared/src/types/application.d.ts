@@ -300,7 +300,7 @@ export type Application = {
   decisionProposalDraft?: DecisionProposalDraft;
   applicationOrigin?: APPLICATION_ORIGINS;
   handler?: User;
-  ahjoStatus: string;
+  ahjoStatus?: string;
 } & Step1 &
   Step2;
 
