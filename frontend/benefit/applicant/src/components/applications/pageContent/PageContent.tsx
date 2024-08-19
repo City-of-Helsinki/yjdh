@@ -225,26 +225,28 @@ const PageContent: React.FC = () => {
             </$HeaderRightColumnItem>
           )}
         </$PageHeader>
-        <DecisionSummary
-          application={application}
-          actions={
-            application.status === APPLICATION_STATUSES.ACCEPTED ? (
-              <Button
-                theme="coat"
-                onClick={() =>
-                  router.push(
-                    `${ROUTES.APPLICATION_ALTERATION}?id=${application.id}`
-                  )
-                }
-                disabled={hasHandledTermination}
-              >
-                {t('common:applications.decision.actions.reportAlteration')}
-              </Button>
-            ) : null
-          }
-          itemComponent={AlterationAccordionItem}
-          detailList={decisionDetailList}
-        />
+        {application.ahjoStatus === 'details_received' && ( 
+          <DecisionSummary
+            application={application}
+            actions={
+              application.status === APPLICATION_STATUSES.ACCEPTED ? (
+                <Button
+                  theme="coat"
+                  onClick={() =>
+                    router.push(
+                      `${ROUTES.APPLICATION_ALTERATION}?id=${application.id}`
+                    )
+                  }
+                  disabled={hasHandledTermination}
+                >
+                  {t('common:applications.decision.actions.reportAlteration')}
+                </Button>
+              ) : null
+            }
+            itemComponent={AlterationAccordionItem}
+            detailList={decisionDetailList}
+          />
+        )}
         <ApplicationFormStep5 isReadOnly data={application} />
       </Container>
     );
