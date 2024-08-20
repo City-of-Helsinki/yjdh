@@ -6,9 +6,11 @@ import noop from 'lodash/noop';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import BaseHeader from 'shared/components/header/Header';
 import { getFullName } from 'shared/utils/application.utils';
+import { DefaultTheme } from 'styled-components';
 
+import { $BaseHeader } from './Header.sc';
+import HeaderNotifier from './HeaderNotifier';
 import { useHeader } from './useHeader';
 
 const Header: React.FC = () => {
@@ -33,12 +35,13 @@ const Header: React.FC = () => {
   );
 
   return (
-    <BaseHeader
+    <$BaseHeader
       title={t('common:appName')}
       customItems={[
         process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT !== 'production' ? (
           <TemporaryAhjoModeSwitch />
         ) : null,
+        <HeaderNotifier />,
       ]}
       titleUrl={ROUTES.HOME}
       skipToContentLabel={t('common:header.linkSkipToContent')}
@@ -46,7 +49,7 @@ const Header: React.FC = () => {
       isNavigationVisible={isNavigationVisible}
       navigationItems={navigationItems}
       onLanguageChange={handleLanguageChange}
-      theme="dark"
+      theme={'dark' as unknown as DefaultTheme}
       login={{
         isAuthenticated: !isLoginPage && isSuccess,
         loginLabel: t('common:header.loginLabel'),
