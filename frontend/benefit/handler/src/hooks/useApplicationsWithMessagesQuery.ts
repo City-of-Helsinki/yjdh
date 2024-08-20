@@ -25,7 +25,7 @@ const useApplicationMessagesQuery = (): UseQueryResult<
     ['messageNotifications'],
     async () => {
       const res = axios.get<ApplicationData[]>(
-        `${BackendEndpoint.APPLICATIONS_WITH_MESSAGES}`,
+        `${BackendEndpoint.APPLICATIONS_WITH_UNREAD_MESSAGES}`,
         {
           params,
         }

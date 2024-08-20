@@ -660,7 +660,7 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         )
 
     @action(detail=False, methods=["get"])
-    def with_messages(self, request, *args, **kwargs):
+    def with_unread_messages(self, request, *args, **kwargs):
         applications_with_unread_messages = Application.objects.filter(
             messages__message_type=MessageType.APPLICANT_MESSAGE,
             messages__seen_by_handler=False,

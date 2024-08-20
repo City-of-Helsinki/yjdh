@@ -25,7 +25,8 @@ export const BackendEndpoint = {
   DECISION_PROPOSAL_TEMPLATE: 'v1/decision-proposal-sections/',
   DECISION_PROPOSAL_DRAFT: 'v1/decision-proposal-drafts/',
   SEARCH: 'v1/search/',
-  APPLICATIONS_WITH_MESSAGES: 'v1/handlerapplications/with_messages/',
+  APPLICATIONS_WITH_UNREAD_MESSAGES:
+    'v1/handlerapplications/with_unread_messages/',
 } as const;
 
 const singleBatchBase = (id: string): string =>
