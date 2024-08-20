@@ -41,7 +41,7 @@ FROM appbase AS development
 # ==============================
 
 COPY --chown=default:root kesaseteli/requirements-dev.txt /app/requirements-dev.txt
-RUN dnf install -y gcc \
+RUN dnf install -y gcc --allowerasing \
     && pip install --no-cache-dir -r /app/requirements-dev.txt \
     && dnf remove -y gcc \
     && dnf clean all

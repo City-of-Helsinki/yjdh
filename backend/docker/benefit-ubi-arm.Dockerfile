@@ -23,8 +23,8 @@ RUN dnf update -y \
            xmlsec1 \
            xmlsec1-openssl \
            cyrus-sasl-devel \
-           openssl-devel \
-    && pip install -U pip \
+           openssl-devel
+RUN pip install -U pip \
     && pip install --no-cache-dir -r /app/requirements.txt \
     && pip install --no-cache-dir -r /app/requirements-prod.txt \
     && uwsgi --build-plugin /app/.prod/escape_json.c \
@@ -54,7 +54,7 @@ FROM appbase AS development
 # ==============================
 
 COPY --chown=default:root benefit/requirements-dev.txt /app/requirements-dev.txt
-RUN dnf install -y gcc \
+RUN dnf install -y gcc --allowerasing \
     && pip install --no-cache-dir -r /app/requirements-dev.txt \
     && dnf remove -y gcc \
     && dnf clean all
