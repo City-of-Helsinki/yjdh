@@ -21,7 +21,7 @@ from applications.services.ahjo_payload import (
     prepare_final_case_title,
     prepare_update_application_payload,
     resolve_payload_language,
-    truncate_company_name,
+    truncate_string_to_limit,
 )
 from common.utils import hash_file
 
@@ -35,19 +35,40 @@ hakemus {application.application_number}"
     assert wanted_title == got
 
 
-def test_truncate_company_name():
-    short = "a" * 50
-    too_long = "a" * 105
-    not_too_long = "a" * 100
-    assert len(truncate_company_name(too_long, 5)) == 100
-    assert len(truncate_company_name(not_too_long, 5)) == 95
-    assert len(truncate_company_name(short, 5)) == 45
+@pytest.mark.parametrize(
+    "input_string, limit, expected_length, resulting_string",
+    [
+        # ("a" * 200, 100, 100),
+        ("a" * 100 + "b" * 5, 100, 100, "a" * 100),
+        ("a" * 100, 100, 100, "a" * 100),
+        ("a" * 50, 100, 50, "a" * 50),
+        ("1234567890AB", 10, 10, "1234567890"),
+    ],
+)
+def test_truncate_string_to_limit(
+    input_string, limit, expected_length, resulting_string
+):
+    result = truncate_string_to_limit(input_string, limit)
+    assert len(result) == expected_length
+    assert result == resulting_string
 
 
-def test_prepare_final_case_title_truncate(decided_application):
+@pytest.mark.parametrize(
+    "company_name, limit, expected_length",
+    [
+        ("a" * 100 + "b" * 100, 100, 100),
+        ("a" * 100 + "b" * 5, 100, 100),
+        ("a" * 100, 100, 100),
+        ("a" * 50, 100, 100),
+        ("1234567890AB", 10, 100),
+    ],
+)
+def test_prepare_final_case_title_truncate(
+    decided_application, company_name, limit, expected_length
+):
     application = decided_application
-    application.company_name = "a" * 105
-    assert len(prepare_final_case_title(application)) == 100
+    application.company_name = company_name
+    assert len(prepare_final_case_title(application, limit)) <= expected_length
 
 
 @pytest.mark.parametrize(

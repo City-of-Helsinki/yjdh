@@ -29,7 +29,7 @@ from applications.services.ahjo_decision_service import (
 )
 from applications.services.ahjo_payload import (
     resolve_payload_language,
-    truncate_company_name,
+    truncate_string_to_limit,
 )
 from applications.services.application_alteration_csv_report import (
     AlterationCsvConfigurableFields,
@@ -438,7 +438,9 @@ def ahjo_open_case_top_level_dict(decided_application):
         "Agents": [
             {
                 "Role": "sender_initiator",
-                "CorporateName": truncate_company_name(application.company.name, 100),
+                "CorporateName": truncate_string_to_limit(
+                    application.company.name, 100
+                ),
                 "ContactPerson": application.contact_person,
                 "Type": "External",
                 "Email": application.company_contact_person_email,
