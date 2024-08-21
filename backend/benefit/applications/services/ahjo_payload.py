@@ -51,10 +51,9 @@ hakemus {application.application_number}"
     return full_title
 
 
-def prepare_final_case_title(application: Application) -> str:
+def prepare_final_case_title(application: Application, limit: int = 100) -> str:
     """Prepare the final case title for Ahjo, if the full title is over 100 characters, \
     truncate the company name to fit the limit."""
-    limit = 100
     full_case_title = prepare_case_title(application, application.company_name)
     length_of_full_title = len(full_case_title)
 
@@ -62,16 +61,22 @@ def prepare_final_case_title(application: Application) -> str:
         return full_case_title
     else:
         over_limit = length_of_full_title - limit
-        truncated_company_name = truncate_company_name(
-            application.company_name, over_limit
+        truncated_company_name = truncate_string_to_limit(
+            application.company_name, len(application.company_name) - over_limit
         )
         return prepare_case_title(application, truncated_company_name)
 
 
-def truncate_company_name(company_name: str, chars_to_truncate: int) -> str:
-    """Truncate the company name to a number of characters, \
-    because Ahjo has a technical limitation of 100 characters for the company name."""
-    return company_name[:-chars_to_truncate]
+def truncate_string_to_limit(string_to_truncate: str, final_length: int) -> str:
+    """Truncate the given string to the specified final length."""
+    if len(string_to_truncate) > final_length:
+        return string_to_truncate[:final_length]
+    return string_to_truncate
+
+
+def truncate_from_end_of_string(string_to_truncate: str, limit: int):
+    """Truncate the given number of characters from the end of the string"""
+    return string_to_truncate[-limit:]
 
 
 def resolve_payload_language(application: Application) -> str:
@@ -113,7 +118,9 @@ def _prepare_top_level_dict(
         "Agents": [
             {
                 "Role": "sender_initiator",
-                "CorporateName": truncate_company_name(application.company.name, 100),
+                "CorporateName": truncate_string_to_limit(
+                    application.company.name, 100
+                ),
                 "ContactPerson": application.contact_person,
                 "Type": "External",
                 "Email": application.company_contact_person_email,
