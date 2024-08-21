@@ -2072,6 +2072,7 @@ def test_employee_consent_upload(request, api_client, application, settings):
     application.pay_subsidy_percent = 50
     application.apprenticeship_program = False
     application.save()
+
     # add the required attachments except consent
     response = _upload_pdf(
         request,
@@ -2096,7 +2097,7 @@ def test_employee_consent_upload(request, api_client, application, settings):
         == "Application does not have the employee consent attachment"
     )
 
-    # upload the consent
+    # upload the consent two times
     _upload_pdf(
         request,
         api_client,
@@ -2115,24 +2116,19 @@ def test_employee_consent_upload(request, api_client, application, settings):
         ).count()
         == 2
     )
-    # Cannot upload multiple employee consent
     response = _submit_application(api_client, application)
-    assert response.status_code == 400
-    assert (
-        str(response.data[0])
-        == "Application cannot have more than one employee consent attachment"
-    )
+    assert response.status_code == 200
+
     application.attachments.filter(attachment_type=AttachmentType.EMPLOYEE_CONSENT)[
         0
     ].delete()
+
     assert (
         application.attachments.filter(
             attachment_type=AttachmentType.EMPLOYEE_CONSENT
         ).count()
         == 1
     )
-    response = _submit_application(api_client, application)
-    assert response.status_code == 200
     application.refresh_from_db()
     assert application.status == ApplicationStatus.RECEIVED
 
