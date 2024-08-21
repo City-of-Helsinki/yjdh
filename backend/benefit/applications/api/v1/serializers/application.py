@@ -1284,18 +1284,23 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         employee_data = validated_data.pop("employee", None)
         approve_terms = validated_data.pop("approve_terms", None)
         decision_proposal_data = validated_data.pop("decision_proposal", None)
+        apprenticeship_program = validated_data.get("apprenticeship_program", None)
         pre_update_status = instance.status
         application = super().update(instance, validated_data)
+
         if de_minimis_data is not None:
             # if it is a patch request that didn't have de_minimis_data_set, do nothing
             self._update_de_minimis_aid(application, de_minimis_data)
         if employee_data is not None:
             self._update_or_create_employee(application, employee_data)
-
         if decision_proposal_data is not None:
             AhjoDecisionProposalDraft.objects.update_or_create(
                 application=application, defaults=decision_proposal_data
             )
+        if apprenticeship_program is None or apprenticeship_program is False:
+            application.training_compensations.all().delete()
+        if application.pay_subsidy_granted == PaySubsidyGranted.NOT_GRANTED:
+            application.pay_subsidies.all().delete()
 
         if instance.status != pre_update_status:
             self.handle_status_transition(
