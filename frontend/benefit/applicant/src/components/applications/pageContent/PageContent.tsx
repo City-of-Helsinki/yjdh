@@ -22,6 +22,7 @@ import { useAskem } from 'benefit/applicant/hooks/useAnalytics';
 import DecisionSummary from 'benefit-shared/components/decisionSummary/DecisionSummary';
 import StatusIcon from 'benefit-shared/components/statusIcon/StatusIcon';
 import {
+  AHJO_STATUSES,
   ALTERATION_STATE,
   ALTERATION_TYPE,
   APPLICATION_STATUSES,
@@ -225,26 +226,28 @@ const PageContent: React.FC = () => {
             </$HeaderRightColumnItem>
           )}
         </$PageHeader>
-        <DecisionSummary
-          application={application}
-          actions={
-            application.status === APPLICATION_STATUSES.ACCEPTED ? (
-              <Button
-                theme="coat"
-                onClick={() =>
-                  router.push(
-                    `${ROUTES.APPLICATION_ALTERATION}?id=${application.id}`
-                  )
-                }
-                disabled={hasHandledTermination}
-              >
-                {t('common:applications.decision.actions.reportAlteration')}
-              </Button>
-            ) : null
-          }
-          itemComponent={AlterationAccordionItem}
-          detailList={decisionDetailList}
-        />
+        {application.ahjoStatus === AHJO_STATUSES.DETAILS_RECEIVED && ( 
+          <DecisionSummary
+            application={application}
+            actions={
+              application.status === APPLICATION_STATUSES.ACCEPTED ? (
+                <Button
+                  theme="coat"
+                  onClick={() =>
+                    router.push(
+                      `${ROUTES.APPLICATION_ALTERATION}?id=${application.id}`
+                    )
+                  }
+                  disabled={hasHandledTermination}
+                >
+                  {t('common:applications.decision.actions.reportAlteration')}
+                </Button>
+              ) : null
+            }
+            itemComponent={AlterationAccordionItem}
+            detailList={decisionDetailList}
+          />
+        )}
         <ApplicationFormStep5 isReadOnly data={application} />
       </Container>
     );

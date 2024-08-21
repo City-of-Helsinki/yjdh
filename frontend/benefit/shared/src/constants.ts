@@ -232,3 +232,7 @@ export enum DECISION_TYPES {
 export enum PAY_SUBSIDY_PERCENT {
   DEFAULT = 65,
 }
+
+export enum AHJO_STATUSES {
+  DETAILS_RECEIVED = 'details_received',
+}
