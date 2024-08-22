@@ -59,6 +59,7 @@ ATTACHMENT_CONTENT_TYPE_CHOICES = (
     ("application/pdf", "pdf"),
     ("image/png", "png"),
     ("image/jpeg", "jpeg"),
+    ("application/xml", "xml"),
 )
 
 
