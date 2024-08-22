@@ -1211,12 +1211,6 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                 raise serializers.ValidationError(
                     _("Application does not have the employee consent attachment")
                 )
-            if consent_count > 1:
-                raise serializers.ValidationError(
-                    _(
-                        "Application cannot have more than one employee consent attachment"
-                    )
-                )
 
     def _update_applicant_terms_approval(self, instance, approve_terms):
         if ApplicantTermsApproval.terms_approval_needed(instance):
