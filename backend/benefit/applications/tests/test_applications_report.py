@@ -358,10 +358,14 @@ def test_sensitive_data_removed_csv_output(sanitized_csv_service_with_one_applic
         assert col_heading not in csv_lines[0]
 
 
-def test_application_alteration_csv_output(application_alteration_csv_service):
+def test_application_alteration_csv_output(
+    application_alteration_csv_service, settings
+):
     csv_lines = split_lines_at_semicolon(
         application_alteration_csv_service.get_csv_string()
     )
+
+    settings.DEFAULT_SYSTEM_EMAIL = "helsinkilisa@hel.fi"
 
     alteration_1 = application_alteration_csv_service.get_alterations()[0]
     alteration_2 = application_alteration_csv_service.get_alterations()[1]
@@ -409,10 +413,13 @@ def test_application_alteration_csv_output(application_alteration_csv_service):
         csv_lines[1][9]
         == f'"{application_alteration_csv_service.get_account_number(alteration_1)}"'
     )
-    assert (
-        csv_lines[1][10]
-        == f'"{application_alteration_csv_service.get_handler_name(alteration_1)}"'
+
+    handler_string = (
+        f'"{application_alteration_csv_service.get_handler_name(alteration_1)}"'
     )
+    assert csv_lines[1][10] == handler_string
+
+    assert settings.DEFAULT_SYSTEM_EMAIL in handler_string
     assert (
         csv_lines[1][11]
         == f'"{application_alteration_csv_service.get_title(alteration_1)}"'

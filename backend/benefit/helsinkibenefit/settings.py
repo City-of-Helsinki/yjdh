@@ -130,6 +130,7 @@ env = environ.Env(
     EMAIL_PORT=(int, 25),
     EMAIL_TIMEOUT=(int, 15),
     DEFAULT_FROM_EMAIL=(str, "Helsinki-lisä <noreply-helsinkilisa@hel.fi>"),
+    DEFAULT_SYSTEM_EMAIL=(str, "helsinkilisa@hel.fi"),
     WKHTMLTOPDF_BIN=(str, "/usr/bin/wkhtmltopdf"),
     DUMMY_COMPANY_FORM_CODE=(
         int,
@@ -556,3 +557,4 @@ AHJO_REQUEST_TIMEOUT = env("AHJO_REQUEST_TIMEOUT")
 ENABLE_CLAMAV = env.bool("ENABLE_CLAMAV")
 CLAMAV_URL = env.str("CLAMAV_URL")
 ENABLE_AHJO_AUTOMATION = env.bool("ENABLE_AHJO_AUTOMATION")
+DEFAULT_SYSTEM_EMAIL = env.str("DEFAULT_SYSTEM_EMAIL")
