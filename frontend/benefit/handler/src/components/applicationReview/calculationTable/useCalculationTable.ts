@@ -35,24 +35,13 @@ const createBenefitRow = (): BenefitRow =>
     endDate: '',
   });
 
-const useCalculationTable = ({ calculation }: Props): CalculationTableProps => {
-  const filteredData: Row[] = calculation.rows.filter((row) =>
-    ['helsinki_benefit_monthly_eur', 'helsinki_benefit_sub_total_eur'].includes(
-      row.rowType
-    )
-  );
-
-  let tableRow = createBenefitRow();
-
-  const tableRows = filteredData.reduce((acc: BenefitRow[], row: Row) => {
+const reduceTableRows = (filteredData: Row[]): BenefitRow[] => {
+  let perMonth = '';
+  return filteredData.reduce((acc: BenefitRow[], row: Row) => {
+    const tableRow = createBenefitRow();
     tableRow.id = row.id;
     if (row.rowType === 'helsinki_benefit_monthly_eur') {
-      tableRow.perMonth = `${formatFloatToCurrency(
-        row.amount,
-        'EUR',
-        'fi-FI',
-        0
-      )} / kk`;
+      perMonth = `${formatFloatToCurrency(row.amount, 'EUR', 'fi-FI', 0)} / kk`;
     }
     if (row.rowType === 'helsinki_benefit_sub_total_eur') {
       tableRow.dates = `${convertToUIDateFormat(
@@ -69,11 +58,54 @@ const useCalculationTable = ({ calculation }: Props): CalculationTableProps => {
 
       tableRow.amount = formatFloatToCurrency(row.amount, 'EUR', 'fi-FI', 0);
       tableRow.amountNumber = row.amount;
+      tableRow.perMonth = perMonth;
       acc.push(tableRow);
-      tableRow = createBenefitRow();
     }
     return acc;
   }, []);
+};
+
+const useCalculationTable = ({ calculation }: Props): CalculationTableProps => {
+  const filteredData: Row[] = calculation.rows.filter((row) =>
+    ['helsinki_benefit_monthly_eur', 'helsinki_benefit_sub_total_eur'].includes(
+      row.rowType
+    )
+  );
+
+  const duration = diffMonths(
+    new Date(calculation.rows.at(0).endDate),
+    new Date(calculation.rows.at(0).startDate)
+  );
+
+  const tableRows: BenefitRow[] = calculation.overrideMonthlyBenefitAmount
+    ? [
+        {
+          id: 'manual-calculation',
+          dates: `${convertToUIDateFormat(
+            calculation.rows.at(0).startDate
+          )} - ${convertToUIDateFormat(calculation.rows.at(0).endDate)}`,
+          duration,
+          startDate: convertToUIDateFormat(calculation.rows.at(0).startDate),
+          endDate: convertToUIDateFormat(calculation.rows.at(0).endDate),
+          amount: formatFloatToCurrency(
+            String(
+              parseFloat(calculation.overrideMonthlyBenefitAmount as string) *
+                duration
+            ),
+            'EUR',
+            'fi-FI',
+            0
+          ),
+          amountNumber: formatFloatToCurrency(calculation.rows.at(0).amount),
+          perMonth: `${formatFloatToCurrency(
+            calculation.overrideMonthlyBenefitAmount,
+            'EUR',
+            'fi-FI',
+            0
+          )} / kk`,
+        },
+      ]
+    : reduceTableRows(filteredData);
 
   const totalSum = tableRows.reduce(
     (acc: number, cur: BenefitRow) => acc + parseFloat(cur.amountNumber),
