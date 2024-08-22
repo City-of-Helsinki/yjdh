@@ -54,11 +54,7 @@ class MessageSerializer(serializers.ModelSerializer):
             if company != application.company:
                 raise PermissionDenied(_("You are not allowed to do this action"))
 
-            if (
-                application.status not in self.APPLICANT_MESSAGE_ALLOWED_STATUSES
-                or application.batch
-                or application.archived
-            ):
+            if application.status not in self.APPLICANT_MESSAGE_ALLOWED_STATUSES:
                 raise serializers.ValidationError(
                     _(
                         "Cannot do this action because "

@@ -245,8 +245,8 @@ def test_create_handler_message_invalid(handler_api_client, handling_application
         (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, False, 201),
         (ApplicationStatus.ACCEPTED, False, 201),
         (ApplicationStatus.REJECTED, False, 201),
-        (ApplicationStatus.ACCEPTED, True, 400),
-        (ApplicationStatus.REJECTED, True, 400),
+        (ApplicationStatus.ACCEPTED, True, 201),
+        (ApplicationStatus.REJECTED, True, 201),
         (ApplicationStatus.CANCELLED, False, 400),
     ],
 )
