@@ -215,8 +215,7 @@ const useFormActions = (
     values: Partial<Application>
   ): TrainingCompensation[] => {
     if (
-      values.apprenticeshipProgram ===
-        initialApplication?.apprenticeshipProgram &&
+      values.apprenticeshipProgram &&
       values.paySubsidyGranted !== PAY_SUBSIDY_GRANTED.NOT_GRANTED
     ) {
       // Return the training compensation values as they are
