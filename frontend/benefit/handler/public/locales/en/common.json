@@ -269,7 +269,7 @@
     },
     "statuses": {
       "draft": "Luonnos",
-      "additionalInformationNeeded": "Lisätietoja tarvitaan",
+      "additional_information_needed": "Lisätietoja tarvitaan",
       "received": "Vastaanotettu",
       "accepted": "Myönteinen",
       "rejected": "Kielteinen",
@@ -1796,6 +1796,12 @@
       },
       "handler": {
         "label": "Käsittelijä"
+      },
+      "batch": {
+        "label": "Koonti"
+      },
+      "handledByAhjoAutomation": {
+        "label": "Käsitelty Ahjo automaatiolla"
       }
     }
   }
