@@ -1,10 +1,12 @@
 from dataclasses import dataclass
 from typing import Union
 
+from django.conf import settings
 from django.db.models.query import QuerySet
 
 from applications.models import ApplicationAlteration
 from applications.services.csv_export_base import CsvColumn, CsvExportBase
+from users.models import User
 
 
 @dataclass
@@ -22,10 +24,12 @@ class ApplicationAlterationCsvService(CsvExportBase):
         self,
         application_alterations: QuerySet[ApplicationAlteration],
         config: AlterationCsvConfigurableFields,
+        current_user: User,
     ):
         self.application_alterations = application_alterations
         self.billing_department = config.billing_department
         self.account_number = config.account_number
+        self.current_user = current_user
 
     def get_recovery_period(
         self, alteration: ApplicationAlteration
@@ -46,9 +50,9 @@ class ApplicationAlterationCsvService(CsvExportBase):
         return self.account_number
 
     def get_handler_name(self, alteration: ApplicationAlteration) -> Union[str, None]:
-        if alteration.handled_by:
-            return f"{alteration.handled_by.get_full_name()}, {alteration.handled_by.email}"
-        return ""
+        email = settings.DEFAULT_SYSTEM_EMAIL
+
+        return f"{self.current_user.get_full_name()}, {email}"
 
     def get_company_address(self, alteration: ApplicationAlteration) -> str:
         return alteration.application.company.get_full_address()

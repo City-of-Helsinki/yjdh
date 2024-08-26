@@ -69,6 +69,7 @@ from messages.models import MessageType
 from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
+from users.models import User
 from users.utils import get_company_from_request
 
 log = logging.getLogger(__name__)
@@ -511,7 +512,9 @@ class HandlerApplicationAlterationViewSet(BaseApplicationAlterationViewSet):
                 account_number=alteration_fields.data["account_number"],
                 billing_department=alteration_fields.data["billing_department"],
             )
-            return self._alterations_csv_response(queryset, configurable_fields)
+            return self._alterations_csv_response(
+                queryset, configurable_fields, request.user
+            )
         except ObjectDoesNotExist:
             raise ImproperlyConfigured(
                 "application_alteration_fields fields not found in the ahjo_settings table"
@@ -521,9 +524,10 @@ class HandlerApplicationAlterationViewSet(BaseApplicationAlterationViewSet):
         self,
         queryset: QuerySet[ApplicationAlteration],
         config: AlterationCsvConfigurableFields,
+        user: User,
     ) -> StreamingHttpResponse:
         """Generate a response with a CSV file containing application alteration data."""
-        csv_service = ApplicationAlterationCsvService(queryset, config)
+        csv_service = ApplicationAlterationCsvService(queryset, config, user)
 
         response = HttpResponse(
             csv_service.get_csv_string(True).encode("utf-8"),

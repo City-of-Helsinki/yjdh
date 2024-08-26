@@ -851,6 +851,7 @@ def application_alteration_csv_service():
             application_id__in=[application_1.id, application_2.id]
         ),
         config=config,
+        current_user=handled_by,
     )
 
 
