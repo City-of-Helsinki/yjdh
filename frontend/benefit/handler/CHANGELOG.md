@@ -1,5 +1,35 @@
 # Changelog
 
+## [4.3.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.2.0...benefit-handler-v4.3.0) (2024-08-26)
+
+
+### Features
+
+* Add 'other attachments' file upload dialog to all applications ([#3190](https://github.com/City-of-Helsinki/yjdh/issues/3190)) ([de917de](https://github.com/City-of-Helsinki/yjdh/commit/de917dea4e16652d7b7e6a64369260d8ca1804c6))
+* Add alteration count and state to archive listing ([#3198](https://github.com/City-of-Helsinki/yjdh/issues/3198)) ([09a645e](https://github.com/City-of-Helsinki/yjdh/commit/09a645e7a5b5be4638702d5ea639e2965a04e248))
+* Add unread messages notifier into header (hl-1410) ([#3214](https://github.com/City-of-Helsinki/yjdh/issues/3214)) ([56a47c3](https://github.com/City-of-Helsinki/yjdh/commit/56a47c304cd1ce866eee81779509ada4d0707f9d))
+* Allow handler to mark last application message as unread ([#3120](https://github.com/City-of-Helsinki/yjdh/issues/3120)) (HL-1117) ([79efe24](https://github.com/City-of-Helsinki/yjdh/commit/79efe243d59c113e51182363b7c8ed15029c21e0))
+* Improve on table listings (HL-1325) ([#3119](https://github.com/City-of-Helsinki/yjdh/issues/3119)) ([349858f](https://github.com/City-of-Helsinki/yjdh/commit/349858f653e6c7f8926c28821f445fba76e836f7))
+* Offset application content when sidebar is open (hl-1200) ([#3189](https://github.com/City-of-Helsinki/yjdh/issues/3189)) ([c1e05a2](https://github.com/City-of-Helsinki/yjdh/commit/c1e05a2923916de27c1966b08feb034416eb8731))
+
+
+### Bug Fixes
+
+* Add missing localization keys and fix one ([#3224](https://github.com/City-of-Helsinki/yjdh/issues/3224)) ([69ac2d5](https://github.com/City-of-Helsinki/yjdh/commit/69ac2d58715b9c5304104f046abc4b9def8b3329))
+* Add monthly pay for manual calculation for accepted application ([#3203](https://github.com/City-of-Helsinki/yjdh/issues/3203)) ([0d59e8d](https://github.com/City-of-Helsinki/yjdh/commit/0d59e8d35171a144159664fc8839f37586e9c996))
+* Allow handler to use messenger on accepted/rejected applications ([#3124](https://github.com/City-of-Helsinki/yjdh/issues/3124)) ([b1f72a7](https://github.com/City-of-Helsinki/yjdh/commit/b1f72a751d63e3e69b8bff9ba8717d32b46f5333))
+* For some reason new ahjo mode is not on ([3423b9d](https://github.com/City-of-Helsinki/yjdh/commit/3423b9d8fd956ba03af1caef0a5616a38ca70ee2))
+* Hotfix table list not crashing the app ([e8acb5b](https://github.com/City-of-Helsinki/yjdh/commit/e8acb5b93ab060080930b74fb9cd486127290fb1))
+* New ahjo mode is not on in e2e tests ([faf3c75](https://github.com/City-of-Helsinki/yjdh/commit/faf3c7523644f9d24a5fed598825fb9343302193))
+* Remove float to string conversion ([d16171c](https://github.com/City-of-Helsinki/yjdh/commit/d16171cdd30f542d8cfacd33d2e1a60edee24c55))
+* Remove irrelevant fields from decision box et cetera ([#3123](https://github.com/City-of-Helsinki/yjdh/issues/3123)) ([46dfc21](https://github.com/City-of-Helsinki/yjdh/commit/46dfc2195c568e6e4ea292eb77e7434ed45d9c7d))
+* Remove list items that are handled with new ahjo mode ([#3113](https://github.com/City-of-Helsinki/yjdh/issues/3113)) ([5ea5967](https://github.com/City-of-Helsinki/yjdh/commit/5ea59679d5fd6218639186352d9369d369cd4f8f))
+* Reset a few values when apprenticeship or pay subsidy type is changed ([#3218](https://github.com/City-of-Helsinki/yjdh/issues/3218)) ([bed8592](https://github.com/City-of-Helsinki/yjdh/commit/bed859218d78d185d2aaf41bb219ae9129cd5c33))
+* Retain or remove training compensation on applicant changes (hl-1184)  ([#3205](https://github.com/City-of-Helsinki/yjdh/issues/3205)) ([de58e4b](https://github.com/City-of-Helsinki/yjdh/commit/de58e4b9e35132080d3a611dd44b22819a53f69f))
+* Retain training compensation on edit if apprenticeship still applies ([#3204](https://github.com/City-of-Helsinki/yjdh/issues/3204)) ([651a82c](https://github.com/City-of-Helsinki/yjdh/commit/651a82ca93096dba84cc0eb17a7014249efe2f95))
+* State aid max percentage was selected even though prop was null (hl-1185) ([#3207](https://github.com/City-of-Helsinki/yjdh/issues/3207)) ([a46fb10](https://github.com/City-of-Helsinki/yjdh/commit/a46fb1034ea480b4cc7cf8bd46b8b15b2087b15e))
+* Validation and fixes to manual calculation (hl-1107) ([#3202](https://github.com/City-of-Helsinki/yjdh/issues/3202)) ([13f1f5b](https://github.com/City-of-Helsinki/yjdh/commit/13f1f5bdf5e6c60f551293e974f64de5202a12c9))
+
 ## [4.2.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.1.0...benefit-handler-v4.2.0) (2024-06-24)
 
 
