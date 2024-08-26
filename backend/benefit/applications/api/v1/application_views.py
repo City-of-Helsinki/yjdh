@@ -29,6 +29,7 @@ from sql_util.aggregates import SubqueryCount
 
 from applications.api.v1.serializers.application import (
     ApplicantApplicationSerializer,
+    HandlerApplicationListSerializer,
     HandlerApplicationSerializer,
 )
 from applications.api.v1.serializers.application_alteration import (
@@ -656,6 +657,18 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         return Response(
             serializer.data,
             status=status.HTTP_200_OK,
+        )
+
+    @action(detail=False, methods=["get"])
+    def with_unread_messages(self, request, *args, **kwargs):
+        applications_with_unread_messages = Application.objects.filter(
+            messages__message_type=MessageType.APPLICANT_MESSAGE,
+            messages__seen_by_handler=False,
+        ).distinct()
+        return Response(
+            HandlerApplicationListSerializer(
+                applications_with_unread_messages, many=True
+            ).data,
         )
 
     @action(methods=["GET"], detail=False)

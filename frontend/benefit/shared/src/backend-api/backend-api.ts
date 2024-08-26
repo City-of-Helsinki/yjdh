@@ -20,10 +20,13 @@ export const BackendEndpoint = {
   GET_ORGANISATION: '/v1/company/get/',
   APPLICATION_ALTERATION: '/v1/applicationalterations/',
   HANDLER_APPLICATION_ALTERATION: '/v1/handlerapplicationalterations/',
-  HANDLER_APPLICATION_ALTERATION_UPDATE_WITH_CSV: 'v1/handlerapplicationalterations/update_with_csv/',
+  HANDLER_APPLICATION_ALTERATION_UPDATE_WITH_CSV:
+    'v1/handlerapplicationalterations/update_with_csv/',
   DECISION_PROPOSAL_TEMPLATE: 'v1/decision-proposal-sections/',
   DECISION_PROPOSAL_DRAFT: 'v1/decision-proposal-drafts/',
   SEARCH: 'v1/search/',
+  APPLICATIONS_WITH_UNREAD_MESSAGES:
+    'v1/handlerapplications/with_unread_messages/',
 } as const;
 
 const singleBatchBase = (id: string): string =>

@@ -2,7 +2,7 @@ import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { MESSAGE_URLS } from 'benefit-shared/constants';
 import { MessageData } from 'benefit-shared/types/application';
 import { useTranslation } from 'next-i18next';
-import { useMutation, UseMutationResult } from 'react-query';
+import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
@@ -11,6 +11,7 @@ const useMarkLastMessageUnreadQuery = (
 ): UseMutationResult<void, Error, void> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
 
   const handleError = (): void => {
     showErrorToast(
@@ -29,6 +30,12 @@ const useMarkLastMessageUnreadQuery = (
     },
     {
       onError: () => handleError(),
+      onSuccess: () => {
+        setTimeout(
+          () => void queryClient.invalidateQueries(['messageNotifications']),
+          10
+        );
+      },
     }
   );
 };
