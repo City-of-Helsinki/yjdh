@@ -59,6 +59,7 @@ ATTACHMENT_CONTENT_TYPE_CHOICES = (
     ("application/pdf", "pdf"),
     ("image/png", "png"),
     ("image/jpeg", "jpeg"),
+    ("application/xml", "xml"),
 )
 
 
@@ -1164,6 +1165,7 @@ class AhjoStatus(TimeStampedModel):
     )
     error_from_ahjo = JSONField(
         null=True,
+        blank=True,
     )
 
     def __str__(self):

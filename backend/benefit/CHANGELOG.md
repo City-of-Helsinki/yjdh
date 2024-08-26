@@ -1,5 +1,40 @@
 # Changelog
 
+## [2.3.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.2.0...benefit-backend-v2.3.0) (2024-08-26)
+
+
+### Features
+
+* Add alteration count and state to archive listing ([#3198](https://github.com/City-of-Helsinki/yjdh/issues/3198)) ([09a645e](https://github.com/City-of-Helsinki/yjdh/commit/09a645e7a5b5be4638702d5ea639e2965a04e248))
+* Add cancelled applications to delete request ([#3199](https://github.com/City-of-Helsinki/yjdh/issues/3199)) ([3820390](https://github.com/City-of-Helsinki/yjdh/commit/38203900f55be728d8ce1662b3c49b43d63c3293))
+* Add unread messages notifier into header (hl-1410) ([#3214](https://github.com/City-of-Helsinki/yjdh/issues/3214)) ([56a47c3](https://github.com/City-of-Helsinki/yjdh/commit/56a47c304cd1ce866eee81779509ada4d0707f9d))
+* Allow ahjo_status change in admin ([#3115](https://github.com/City-of-Helsinki/yjdh/issues/3115)) ([226ad18](https://github.com/City-of-Helsinki/yjdh/commit/226ad18375e0de6f5fbf5886742db47e747d9435))
+* Allow handler to mark last application message as unread ([#3120](https://github.com/City-of-Helsinki/yjdh/issues/3120)) (HL-1117) ([79efe24](https://github.com/City-of-Helsinki/yjdh/commit/79efe243d59c113e51182363b7c8ed15029c21e0))
+* Cancel batch after application cancel ([#3100](https://github.com/City-of-Helsinki/yjdh/issues/3100)) ([aff14ec](https://github.com/City-of-Helsinki/yjdh/commit/aff14ecbb5a322da1fd919260cc602227776d22b))
+* Enqueue for ahjo deletion on cancellation ([#3092](https://github.com/City-of-Helsinki/yjdh/issues/3092)) ([19cea8c](https://github.com/City-of-Helsinki/yjdh/commit/19cea8c07708bdce3540eca9537af91f1d7ed413))
+* Hide decisionSummary if details unreceived from ahjo ([#3216](https://github.com/City-of-Helsinki/yjdh/issues/3216)) ([ec07dd4](https://github.com/City-of-Helsinki/yjdh/commit/ec07dd4d97a8a375130ff4371afcdc4783eccf73))
+* HL 1365 improve logging, HL-1363 don't block ahjo requests ([#3099](https://github.com/City-of-Helsinki/yjdh/issues/3099)) ([cb1cb45](https://github.com/City-of-Helsinki/yjdh/commit/cb1cb45d75a0f580739b4f64c90dc047890632cf))
+* Logged in user to alteration csv ([#3223](https://github.com/City-of-Helsinki/yjdh/issues/3223)) ([15e1869](https://github.com/City-of-Helsinki/yjdh/commit/15e1869cb1b07ffc48dbaac31edf66d7ae9f5c3d))
+* Offset application content when sidebar is open (hl-1200) ([#3189](https://github.com/City-of-Helsinki/yjdh/issues/3189)) ([c1e05a2](https://github.com/City-of-Helsinki/yjdh/commit/c1e05a2923916de27c1966b08feb034416eb8731))
+* Truncate company name in open case request ([#3118](https://github.com/City-of-Helsinki/yjdh/issues/3118)) ([4b15459](https://github.com/City-of-Helsinki/yjdh/commit/4b1545950c9508d093ed42beb75cf81d2e1187a8))
+
+
+### Bug Fixes
+
+* Forgot the flag for handled_by_ahjo_automation for fixture ([6cee77e](https://github.com/City-of-Helsinki/yjdh/commit/6cee77ea8cc5ef79fc1393e2867470f1abcaa1da))
+* HL-1191, HL-1405 , HL-1420 ([#3225](https://github.com/City-of-Helsinki/yjdh/issues/3225)) ([0eb0ee8](https://github.com/City-of-Helsinki/yjdh/commit/0eb0ee850de3feaca009b67244be7178935049cc))
+* Loosen validation rules for new messages ([#3222](https://github.com/City-of-Helsinki/yjdh/issues/3222)) ([2512a8b](https://github.com/City-of-Helsinki/yjdh/commit/2512a8bdc25990d70c4e2c2b1c1ee487d57007c6))
+* Missing delete_request_sent ahjo_status ([#3200](https://github.com/City-of-Helsinki/yjdh/issues/3200)) ([ab41393](https://github.com/City-of-Helsinki/yjdh/commit/ab41393d24d43d1e1486d5bd000032d04d14ef63))
+* Over eager corporate name truncate ([#3219](https://github.com/City-of-Helsinki/yjdh/issues/3219)) ([f95cc66](https://github.com/City-of-Helsinki/yjdh/commit/f95cc662eccec523bebf8ed126e259ffbc553612))
+* Remove comma from xml filenames ([#3193](https://github.com/City-of-Helsinki/yjdh/issues/3193)) ([381d7ba](https://github.com/City-of-Helsinki/yjdh/commit/381d7ba1c724b847325a1726b4515d4d3a8a21c4))
+* Remove employee consent attachment limit to 1 ([#3221](https://github.com/City-of-Helsinki/yjdh/issues/3221)) ([94ba9e9](https://github.com/City-of-Helsinki/yjdh/commit/94ba9e96266ac99731b16d0047ac1458d73f8145))
+* Reset a few values when apprenticeship or pay subsidy type is changed ([#3218](https://github.com/City-of-Helsinki/yjdh/issues/3218)) ([bed8592](https://github.com/City-of-Helsinki/yjdh/commit/bed859218d78d185d2aaf41bb219ae9129cd5c33))
+* Resolve pip problems ([#3125](https://github.com/City-of-Helsinki/yjdh/issues/3125)) ([fb3742b](https://github.com/City-of-Helsinki/yjdh/commit/fb3742b2bab8b9f44154d7cb028b8b7d06010277))
+* Sanitize filename and it's extension to Ahjo requirements ([#3187](https://github.com/City-of-Helsinki/yjdh/issues/3187)) ([cd70f6c](https://github.com/City-of-Helsinki/yjdh/commit/cd70f6c84a134dd97482875d4a0def958f6cd842))
+* State aid max percentage was selected even though prop was null (hl-1185) ([#3207](https://github.com/City-of-Helsinki/yjdh/issues/3207)) ([a46fb10](https://github.com/City-of-Helsinki/yjdh/commit/a46fb1034ea480b4cc7cf8bd46b8b15b2087b15e))
+* Trim the ahjo case title to 100 characters ([#3201](https://github.com/City-of-Helsinki/yjdh/issues/3201)) ([45fc384](https://github.com/City-of-Helsinki/yjdh/commit/45fc38454059e2353d1c57454747130edc08d685))
+* Truncate corporateName to 100 chars ([#3213](https://github.com/City-of-Helsinki/yjdh/issues/3213)) ([6315278](https://github.com/City-of-Helsinki/yjdh/commit/63152780c2ac63437383de27560e57ca6b7e3527))
+
 ## [2.2.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.1.0...benefit-backend-v2.2.0) (2024-06-24)
 
 
