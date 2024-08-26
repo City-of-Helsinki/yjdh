@@ -96,7 +96,7 @@ const useCalculationTable = ({ calculation }: Props): CalculationTableProps => {
             'fi-FI',
             0
           ),
-          amountNumber: formatFloatToCurrency(calculation.rows.at(0).amount),
+          amountNumber: calculation.rows.at(0).amount,
           perMonth: `${formatFloatToCurrency(
             calculation.overrideMonthlyBenefitAmount,
             'EUR',
