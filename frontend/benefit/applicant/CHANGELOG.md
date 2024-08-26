@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.13.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.12.0...benefit-applicant-v3.13.0) (2024-08-26)
+
+
+### Features
+
+* Allow handler to mark last application message as unread ([#3120](https://github.com/City-of-Helsinki/yjdh/issues/3120)) (HL-1117) ([79efe24](https://github.com/City-of-Helsinki/yjdh/commit/79efe243d59c113e51182363b7c8ed15029c21e0))
+* Hide decisionSummary if details unreceived from ahjo ([#3216](https://github.com/City-of-Helsinki/yjdh/issues/3216)) ([ec07dd4](https://github.com/City-of-Helsinki/yjdh/commit/ec07dd4d97a8a375130ff4371afcdc4783eccf73))
+
+
+### Bug Fixes
+
+* Chat is open until it's archived for applicant ([#3209](https://github.com/City-of-Helsinki/yjdh/issues/3209)) ([03283ab](https://github.com/City-of-Helsinki/yjdh/commit/03283abb270e88e1844f23b81f8c58da6d0124d9))
+* Fix applicant messager drawer refusing to close in some cases ([#3110](https://github.com/City-of-Helsinki/yjdh/issues/3110)) (HL-1345) ([13b4eee](https://github.com/City-of-Helsinki/yjdh/commit/13b4eee53918297bb0ce98b05f34e7974749187e))
+* Remove irrelevant fields from decision box et cetera ([#3123](https://github.com/City-of-Helsinki/yjdh/issues/3123)) ([46dfc21](https://github.com/City-of-Helsinki/yjdh/commit/46dfc2195c568e6e4ea292eb77e7434ed45d9c7d))
+* Reset a few values when apprenticeship or pay subsidy type is changed ([#3218](https://github.com/City-of-Helsinki/yjdh/issues/3218)) ([bed8592](https://github.com/City-of-Helsinki/yjdh/commit/bed859218d78d185d2aaf41bb219ae9129cd5c33))
+* Retain or remove training compensation on applicant changes (hl-1184)  ([#3205](https://github.com/City-of-Helsinki/yjdh/issues/3205)) ([de58e4b](https://github.com/City-of-Helsinki/yjdh/commit/de58e4b9e35132080d3a611dd44b22819a53f69f))
+
 ## [3.12.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.11.0...benefit-applicant-v3.12.0) (2024-06-17)
 
 
