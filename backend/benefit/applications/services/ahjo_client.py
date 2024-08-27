@@ -8,7 +8,7 @@ from django.conf import settings
 from django.urls import reverse
 
 from applications.enums import AhjoRequestType, AhjoStatus as AhjoStatusEnum
-from applications.models import Application
+from applications.models import AhjoSetting, Application
 from applications.services.ahjo_authentication import AhjoToken, InvalidTokenException
 
 LOGGER = logging.getLogger(__name__)
@@ -126,6 +126,26 @@ class AhjoDecisionDetailsRequest(AhjoRequest):
         return f"{self.url_base}/decisions/{self.application.ahjo_case_id}"
 
 
+class AhjoDecisionMakerRequest(AhjoRequest):
+    """Request to get a decision maker from Ahjo."""
+
+    application = None
+    request_type = AhjoRequestType.GET_DECISION_MAKER
+    request_method = "GET"
+
+    @staticmethod
+    def org_identifier() -> str:
+        try:
+            return AhjoSetting.objects.get(name="ahjo_org_identifier").data["id"]
+        except AhjoSetting.DoesNotExist:
+            raise AhjoSetting.DoesNotExist(
+                "No organization identifier found in the database"
+            )
+
+    def api_url(self) -> str:
+        return f"{self.url_base}/agents/decisionmakers?start={self.org_identifier()}"
+
+
 class AhjoApiClientException(Exception):
     pass
 
@@ -169,10 +189,13 @@ class AhjoApiClient:
             "Authorization": f"Bearer {self.ahjo_token.access_token}",
             "Content-Type": "application/json",
         }
-        # Other request types than GET_DECISION_DETAILS require a callback url
+        # Other request types than GET_DECISION_DETAILS and
+        # SUBSCRIBE_TO_DECISIONS, GET_DECISION_MAKER require a callback url
+
         if self._request.request_type not in [
             AhjoRequestType.GET_DECISION_DETAILS,
             AhjoRequestType.SUBSCRIBE_TO_DECISIONS,
+            AhjoRequestType.GET_DECISION_MAKER,
         ]:
             url = reverse(
                 "ahjo_callback_url",
@@ -214,9 +237,9 @@ class AhjoApiClient:
             response.raise_for_status()
 
             if response.ok:
+                # Other requests return a text response
                 if (
-                    not self._request.request_type
-                    == AhjoRequestType.GET_DECISION_DETAILS
+                    self._request.request_type not in [AhjoRequestType.GET_DECISION_DETAILS, AhjoRequestType.GET_DECISION_MAKER]
                 ):
                     LOGGER.debug(f"Request {self._request} to Ahjo was successful.")
                     return self._request.application, response.text
@@ -247,14 +270,21 @@ class AhjoApiClient:
         Also log any validation errors received from Ahjo.
         """
         error_response = e.response
-        application_number = self._request.application.application_number
         try:
             error_json = error_response.json()
         except json.JSONDecodeError:
             error_json = None
 
-        error_message = f"A HTTP error occurred while sending {self._request} for application \
-{application_number} to Ahjo: {e}"
+        if hasattr(self._request, "application"):
+            application_number = self._request.application.application_number
+
+            error_message = f"A HTTP error occurred while sending {self._request} for application \
+    {application_number} to Ahjo: {e}"
+
+        else:
+            error_message = (
+                f"A HTTP error occurred while sending {self._request} to Ahjo: {e}"
+            )
 
         if error_json:
             error_message += f" Error message: {error_json}"

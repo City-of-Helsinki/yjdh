@@ -210,6 +210,9 @@ class AhjoRequestType(models.TextChoices):
     SEND_DECISION_PROPOSAL = "send_decision", _("Send decision to Ahjo")
     GET_DECISION_DETAILS = "get_decision_details", _("Get decision details from Ahjo")
     SUBSCRIBE_TO_DECISIONS = "subscribe_to_decisions", _("Subscribe to decisions API")
+    GET_DECISION_MAKER = "get_decision_maker", _(
+        "Get decision maker name from Ahjo API"
+    )
 
 
 class DecisionType(models.TextChoices):
