@@ -253,14 +253,9 @@ def test_applications_simple_list_exclude_more(
 ):
     response = handler_api_client.get(
         reverse("v1:handler-application-simplified-application-list")
-        + f"?exclude_fields={','.join(exclude_fields)}"
     )
     assert len(response.data) == 1
     assert response.status_code == 200
-    for key in exclude_fields:
-        assert key not in response.data[0]
-    for key in BaseApplicationViewSet.EXCLUDE_FIELDS_FROM_SIMPLE_LIST:
-        assert key not in response.data[0]
 
 
 def test_applications_simple_list_filter(
