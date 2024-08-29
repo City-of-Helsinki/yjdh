@@ -203,7 +203,10 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
           HANDLED_STATUSES.includes(application.status) && (
             <HandledView data={application} />
           )}
-        {application.archived && <ArchivedView data={application} />}
+        {application.archived &&
+          application.status === APPLICATION_STATUSES.ACCEPTED && (
+            <ArchivedView data={application} />
+          )}
       </Container>
     </ReviewStateContext.Provider>
   );

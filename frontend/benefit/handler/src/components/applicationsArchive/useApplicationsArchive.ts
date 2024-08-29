@@ -1,5 +1,6 @@
 import useSearchApplicationQuery from 'benefit/handler/hooks/useSearchApplicationQuery';
 import { SearchResponse } from 'benefit/handler/types/search';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import {
   ApplicationData,
   ApplicationListItemData,
@@ -64,8 +65,12 @@ export const prepareSearchData = (
             handledAt: convertToUIDateFormat(handled_at) || '-',
             applicationNum,
             alterations,
-            calculationEndDate:
-              convertToUIDateFormat(calculation?.end_date) || '-',
+            calculationEndDate: [
+              APPLICATION_STATUSES.ACCEPTED,
+              APPLICATION_STATUSES.ARCHIVAL,
+            ].includes(status)
+              ? convertToUIDateFormat(calculation?.end_date) || '-'
+              : '-',
           };
         })
     : [];
