@@ -4,7 +4,7 @@ import { respondAbovePx } from 'shared/styles/mediaQueries';
 import styled from 'styled-components';
 
 export const $BaseHeader = styled(BaseHeader)`
-  z-index: 99999;
+  z-index: 100;
   background: #1a1a1a;
 `;
 
@@ -157,6 +157,9 @@ export const $ApplicationWithMessages = styled(Link)`
 
   div {
     margin-right: 1rem;
+    hyphens: auto;
+    max-width: 130px;
+
     &:first-child {
       width: 90px;
       min-width: 90px;
@@ -170,6 +173,7 @@ export const $ApplicationWithMessages = styled(Link)`
       margin: 0 0 0 auto;
       width: 20px;
       height: 24px;
+      max-width: 20px;
     }
   }
 
