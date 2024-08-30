@@ -10,7 +10,12 @@ from applications.enums import (
     AhjoRequestType,
     AttachmentType,
 )
-from applications.models import Application, APPLICATION_LANGUAGE_CHOICES, Attachment
+from applications.models import (
+    AhjoDecisionText,
+    Application,
+    APPLICATION_LANGUAGE_CHOICES,
+    Attachment,
+)
 from common.utils import hash_file
 from users.models import User
 
@@ -327,13 +332,20 @@ def prepare_update_application_payload(
 
 
 def prepare_decision_proposal_payload(
-    application: Application, decision_xml: Attachment, secret_xml: Attachment
+    application: Application,
+    decision_xml: Attachment,
+    decision_text: AhjoDecisionText,
+    secret_xml: Attachment,
 ) -> dict:
     """Prepare the payload that is sent to Ahjo when a decision proposal is created"""
     handler = application.calculation.handler
     inspector_dict = {"Role": "inspector", "Name": "Tarkastaja, Tero", "ID": "terot"}
-    # TODO remove hard coded decision maker
-    decision_maker_dict = {"Role": "decisionMaker", "ID": "U02120013070VH2"}
+
+    decision_maker_dict = {
+        "Role": "decisionMaker",
+        "ID": decision_text.decision_maker_id,
+    }
+
     language = resolve_payload_language(application)
 
     main_creator_dict = {

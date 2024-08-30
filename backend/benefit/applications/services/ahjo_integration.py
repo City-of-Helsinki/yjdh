@@ -402,7 +402,7 @@ PDF_CONTENT_TYPE = "application/pdf"
 
 
 def generate_application_attachment(
-    application: Application, type: AttachmentType
+    application: Application, type: AttachmentType, decision: AhjoDecisionText = None
 ) -> Attachment:
     """Generate and save an Attachment of the requested type for the given application"""
     if type == AttachmentType.PDF_SUMMARY:
@@ -412,8 +412,6 @@ def generate_application_attachment(
         )
         content_type = PDF_CONTENT_TYPE
     elif type == AttachmentType.DECISION_TEXT_XML:
-        decision = AhjoDecisionText.objects.get(application=application)
-
         xml_builder = AhjoPublicXMLBuilder(application, decision)
         xml_string = xml_builder.generate_xml()
 
@@ -564,11 +562,12 @@ def send_decision_proposal_to_ahjo(
 
     ahjo_request = AhjoDecisionProposalRequest(application=application)
     ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
+    decision = AhjoDecisionText.objects.get(application=application)
 
     delete_existing_xml_attachments(application)
 
     decision_xml = generate_application_attachment(
-        application, AttachmentType.DECISION_TEXT_XML
+        application, AttachmentType.DECISION_TEXT_XML, decision
     )
     secret_xml = generate_application_attachment(
         application, AttachmentType.DECISION_TEXT_SECRET_XML

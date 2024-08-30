@@ -722,8 +722,9 @@ def test_create_or_update_pdf_summary_as_attachment_(decided_application):
 
 @pytest.mark.django_db
 def test_generate_ahjo_public_decision_text_xml(application_with_ahjo_decision):
+    decision = AhjoDecisionText.objects.get(application=application_with_ahjo_decision)
     attachment = generate_application_attachment(
-        application_with_ahjo_decision, AttachmentType.DECISION_TEXT_XML
+        application_with_ahjo_decision, AttachmentType.DECISION_TEXT_XML, decision
     )
     assert isinstance(attachment, Attachment)
 
