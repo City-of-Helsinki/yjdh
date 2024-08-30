@@ -1,6 +1,7 @@
 import Header from 'benefit/applicant/components/header/Header';
 import TermsOfService from 'benefit/applicant/components/termsOfService/TermsOfService';
 import { IS_CLIENT, LOCAL_STORAGE_KEYS } from 'benefit/applicant/constants';
+import AppContext from 'benefit/applicant/context/AppContext';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -43,6 +44,8 @@ const Layout: React.FC<Props> = ({ children, ...rest }) => {
 
   const bgColor = selectBgColor(router.pathname);
 
+  const { isSidebarVisible } = React.useContext(AppContext);
+
   const isTermsRoute = ![
     ROUTES.ACCESSIBILITY_STATEMENT,
     ROUTES.COOKIE_SETTINGS,
@@ -59,7 +62,11 @@ const Layout: React.FC<Props> = ({ children, ...rest }) => {
   }, []);
 
   return (
-    <$Main $backgroundColor={bgColor} {...rest}>
+    <$Main
+      $backgroundColor={bgColor}
+      $isSidebarVisible={isSidebarVisible}
+      {...rest}
+    >
       <Header />
       {isAuthenticated && isTermsRoute && !isTermsOfServiceApproved ? (
         <TermsOfService
