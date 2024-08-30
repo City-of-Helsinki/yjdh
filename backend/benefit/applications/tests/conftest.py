@@ -1062,3 +1062,14 @@ def decisionmaker_response():
             ],
         },
     )
+
+
+@pytest.fixture
+def fake_decisionmakers():
+    return [
+        {
+            "ID": "ABCDEFGH12345678",
+            "Name": "Tiimipäällikkö, työnantajille myönnettävät taloudelliset tuet",
+        },
+        {"ID": "HIJKLMNOPQRSTUWXYZ", "Name": "Helsinki-lisä-suunnittelija"},
+    ]

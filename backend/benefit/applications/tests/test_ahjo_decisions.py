@@ -100,13 +100,19 @@ def test_decision_text_api_unauthenticated(anonymous_client, decided_application
 )
 @pytest.mark.django_db
 def test_decision_text_api_post(
-    decided_application, handler_api_client, decision_type, language
+    decided_application,
+    handler_api_client,
+    decision_type,
+    language,
+    fake_decisionmakers,
 ):
     url = get_decisions_list_url(decided_application.id)
     data = {
         "decision_type": decision_type,
         "decision_text": "Test decision text",
         "language": language,
+        "decision_maker_id": fake_decisionmakers[0]["ID"],
+        "decision_maker_name": fake_decisionmakers[0]["Name"],
     }
     response = handler_api_client.post(url, data)
     assert response.status_code == 201
@@ -114,6 +120,8 @@ def test_decision_text_api_post(
     assert decision_text.decision_type == decision_type
     assert decision_text.decision_text == "Test decision text"
     assert decision_text.language == language
+    assert decision_text.decision_maker_id == fake_decisionmakers[0]["ID"]
+    assert decision_text.decision_maker_name == fake_decisionmakers[0]["Name"]
 
 
 def test_decision_text_api_get(decided_application, handler_api_client):
@@ -131,18 +139,24 @@ def test_decision_text_api_get(decided_application, handler_api_client):
     assert response.data["language"] == decision_text.language
 
 
-def test_decision_text_api_put(decided_application, handler_api_client):
+def test_decision_text_api_put(
+    decided_application, handler_api_client, fake_decisionmakers
+):
     decision_text = AhjoDecisionText.objects.create(
         application=decided_application,
         decision_type=DecisionType.ACCEPTED,
         decision_text="Test decision text",
         language="fi",
+        decision_maker_id=fake_decisionmakers[0]["ID"],
+        decision_maker_name=fake_decisionmakers[0]["Name"],
     )
     url = get_decisions_detail_url(decided_application.id, decision_text.id)
     data = {
         "decision_type": DecisionType.DENIED,
         "decision_text": "Uppdated Test decision text",
         "language": "sv",
+        "decision_maker_id": fake_decisionmakers[1]["ID"],
+        "decision_maker_name": fake_decisionmakers[1]["Name"],
     }
     response = handler_api_client.put(url, data)
     assert response.status_code == 200
@@ -150,6 +164,8 @@ def test_decision_text_api_put(decided_application, handler_api_client):
     assert decision_text.decision_type == data["decision_type"]
     assert decision_text.language == data["language"]
     assert decision_text.decision_text == data["decision_text"]
+    assert decision_text.decision_maker_id == data["decision_maker_id"]
+    assert decision_text.decision_maker_name == data["decision_maker_name"]
 
 
 def test_parse_details_from_decision_response(
