@@ -1242,6 +1242,18 @@ class AhjoDecisionText(UUIDModel, TimeStampedModel):
         verbose_name=_("application"),
         on_delete=models.CASCADE,
     )
+    decision_maker_name = models.TextField(
+        verbose_name=_("the name of the decision maker"),
+        null=True,
+        blank=True,
+    )
+
+    decision_maker_id = models.CharField(
+        verbose_name=_("the ID of the decision maker"),
+        null=True,
+        blank=True,
+        max_length=64,
+    )
 
     def __str__(self):
         return (
