@@ -238,9 +238,10 @@ class AhjoApiClient:
 
             if response.ok:
                 # Other requests return a text response
-                if (
-                    self._request.request_type not in [AhjoRequestType.GET_DECISION_DETAILS, AhjoRequestType.GET_DECISION_MAKER]
-                ):
+                if self._request.request_type not in [
+                    AhjoRequestType.GET_DECISION_DETAILS,
+                    AhjoRequestType.GET_DECISION_MAKER,
+                ]:
                     LOGGER.debug(f"Request {self._request} to Ahjo was successful.")
                     return self._request.application, response.text
                 else:
