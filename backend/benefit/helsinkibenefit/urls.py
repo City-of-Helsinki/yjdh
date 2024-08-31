@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import include, path
 from django.views.decorators.http import require_GET
+from applications.api.v1.ahjo_setting_views import AhjoSettingDetailView
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
@@ -85,7 +86,10 @@ router.register(
 )
 
 urlpatterns = [
+
     path("admin/", admin.site.urls),
+    path('v1/ahjosettings/decision-maker/', AhjoSettingDetailView.as_view(), name='ahjo-setting-detail'),
+
     path(
         "v1/ahjo-integration/callback/<str:request_type>/<uuid:uuid>",
         AhjoCallbackView.as_view(),

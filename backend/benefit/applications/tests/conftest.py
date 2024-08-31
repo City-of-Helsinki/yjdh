@@ -1073,3 +1073,11 @@ def fake_decisionmakers():
         },
         {"ID": "HIJKLMNOPQRSTUWXYZ", "Name": "Helsinki-lisä-suunnittelija"},
     ]
+
+
+@pytest.fixture
+def decision_maker_settings(fake_decisionmakers):
+    return AhjoSetting.objects.create(
+        name="ahjo_decision_maker",
+        data=fake_decisionmakers,
+    )
