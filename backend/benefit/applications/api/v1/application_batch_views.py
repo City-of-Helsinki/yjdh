@@ -1,3 +1,5 @@
+import logging
+
 from django.db import transaction
 from django.forms import ValidationError
 from django.http import HttpResponse
@@ -17,7 +19,11 @@ from applications.api.v1.serializers.batch import (
     ApplicationBatchListSerializer,
     ApplicationBatchSerializer,
 )
-from applications.enums import ApplicationBatchStatus, ApplicationStatus
+from applications.enums import (
+    ApplicationBatchStatus,
+    ApplicationStatus,
+    ApplicationTalpaStatus,
+)
 from applications.exceptions import (
     BatchCompletionDecisionDateError,
     BatchCompletionRequiredFieldsError,
@@ -29,6 +35,8 @@ from applications.services.applications_csv_report import ApplicationsCsvService
 from common.authentications import RobotBasicAuthentication
 from common.permissions import BFIsHandler
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
+
+LOGGER = logging.getLogger(__name__)
 
 
 class ApplicationBatchFilter(filters.FilterSet):
@@ -213,7 +221,19 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         # for easier testing in the test environment do not update the batches as sent_to_talpa
         # remove this when TALPA integration is ready for production
         if not skip_update:
-            approved_batches.all().update(status=ApplicationBatchStatus.SENT_TO_TALPA)
+            try:
+                # Update all approved batches to SENT_TO_TALPA status in a single query
+                approved_batches.update(status=ApplicationBatchStatus.SENT_TO_TALPA)
+                # Update all applications in the approved batches to SUCCESSFULLY_SENT_TO_TALPA status and archived=True
+                for a in applications:
+                    a.talpa_status = ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
+                    a.archived = True
+                    a.save()
+
+            except Exception as e:
+                LOGGER.error(
+                    f"An error occurred while updating batches after Talpa csv download: {e}"
+                )
         return response
 
     @action(methods=["PATCH"], detail=False)

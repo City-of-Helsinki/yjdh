@@ -12,7 +12,12 @@ from django.http import HttpResponse
 from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers.application import ApplicationBatchSerializer
-from applications.enums import AhjoDecision, ApplicationBatchStatus, ApplicationStatus
+from applications.enums import (
+    AhjoDecision,
+    ApplicationBatchStatus,
+    ApplicationStatus,
+    ApplicationTalpaStatus,
+)
 from applications.exceptions import BatchTooManyDraftsError
 from applications.models import Application, ApplicationBatch
 from applications.tests.conftest import *  # noqa
@@ -844,13 +849,25 @@ def test_application_batches_talpa_export(anonymous_client, application_batch):
     app_batch_2.status = ApplicationBatchStatus.DECIDED_ACCEPTED
     fill_as_valid_batch_completion_and_save(app_batch_2)
 
+    url = reverse("v1:applicationbatch-talpa-export-batch")
+
     # Export accepted batches then change it status
-    response = anonymous_client.get(reverse("v1:applicationbatch-talpa-export-batch"))
+    response = anonymous_client.get(f"{url}?skip_update=0")
 
     application_batch.refresh_from_db()
     app_batch_2.refresh_from_db()
     assert application_batch.status == ApplicationBatchStatus.SENT_TO_TALPA
     assert app_batch_2.status == ApplicationBatchStatus.SENT_TO_TALPA
+
+    applications = Application.objects.filter(
+        batch__in=[application_batch, app_batch_2]
+    )
+    for application in applications:
+        assert (
+            application.talpa_status
+            == ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
+        )
+        assert application.archived is True
 
     assert isinstance(response, HttpResponse)
     assert response.headers["Content-Type"] == "text/csv"
