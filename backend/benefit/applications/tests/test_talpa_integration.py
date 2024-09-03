@@ -155,6 +155,8 @@ def test_talpa_callback_success(talpa_client, decided_application):
         == ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
     )
 
+    assert decided_application.archived == True
+
 
 @pytest.mark.django_db
 def test_talpa_callback_rejected_application(

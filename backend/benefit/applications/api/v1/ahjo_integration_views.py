@@ -169,7 +169,7 @@ class AhjoCallbackView(APIView):
             return Response(
                 {"error": "Application not found"}, status=status.HTTP_404_NOT_FOUND
             )
-
+        # TODO how to check the success of the callback if it has no message property?
         if request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
             return self.handle_success_callback(
                 request, application, callback_data, request_type
@@ -294,6 +294,7 @@ class AhjoCallbackView(APIView):
     def _handle_delete_callback_success(self, application):
         # do anything that needs to be done when Ahjo sends a delete callback
         application.status = ApplicationStatus.CANCELLED
+        application.archived = True
         application.save()
 
         if application.batch and application.batch.auto_generated_by_ahjo:
