@@ -36,7 +36,7 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
   application,
 }) => {
   const { applicantLanguage, id } = application;
-
+ 
   const { t } = useTranslation();
   const translationBase = 'common:review.decisionProposal';
   const { handledApplication, setHandledApplication } =
@@ -46,6 +46,8 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
     React.useState<string>(handledApplication?.justificationText || '');
   const [templateForDecisionText, setTemplateForDecisionText] =
     React.useState<string>(handledApplication?.decisionText || '');
+  
+  const [selectedDecisionMaker, setSelectedDecisionMaker] = React.useState<DecisionMaker | null>(null);
 
   const [selectedDecisionMaker, setSelectedDecisionMaker] =
     React.useState<DecisionMaker | null>(null);
@@ -119,7 +121,7 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={12}>
-          <SelectionGroup
+        <SelectionGroup
             label={t(`${translationBase}.role.fields.decisionMaker.label`)}
             tooltipText={t(
               `${translationBase}.role.fields.decisionMaker.tooltipText`
