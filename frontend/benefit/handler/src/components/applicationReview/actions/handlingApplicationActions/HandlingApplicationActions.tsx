@@ -159,10 +159,6 @@ const HandlingApplicationActions: React.FC<Props> = ({
       )}
       <Sidebar
         isOpen={isMessagesDrawerVisible}
-        messagesReadOnly={
-          application.status &&
-          application.status === APPLICATION_STATUSES.CANCELLED
-        }
         application={application}
         onClose={toggleMessagesDrawerVisibility}
         customItemsMessages={[

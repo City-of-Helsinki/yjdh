@@ -14,7 +14,6 @@ import { useSidebar } from './useSidebar';
 interface ComponentProps {
   isOpen: boolean;
   messagesReadOnly?: boolean;
-  notesReadOnly?: boolean;
   onClose?: () => void;
   customItemsMessages?: Array<React.ReactNode>;
   customItemsNotes?: Array<React.ReactNode>;
@@ -24,7 +23,6 @@ interface ComponentProps {
 const Sidebar: React.FC<ComponentProps> = ({
   isOpen,
   messagesReadOnly,
-  notesReadOnly,
   customItemsMessages,
   customItemsNotes,
   onClose,
@@ -109,16 +107,13 @@ const Sidebar: React.FC<ComponentProps> = ({
             flex-grow: 1;
           `}
         >
-          {!notesReadOnly && (
-            <Actions
-              customItems={customItemsNotes}
-              sendText={t('common:messenger.save')}
-              errorText={t('common:form.validation.string.max', { max: 1024 })}
-              placeholder={t('common:messenger.composeNote')}
-              onSend={handleCreateNote}
-            />
-          )}
-
+          <Actions
+            customItems={customItemsNotes}
+            sendText={t('common:messenger.save')}
+            errorText={t('common:form.validation.string.max', { max: 1024 })}
+            placeholder={t('common:messenger.composeNote')}
+            onSend={handleCreateNote}
+          />
           <Messages data={notes?.reverse()} variant="note" />
         </TabPanel>
         <TabPanel
