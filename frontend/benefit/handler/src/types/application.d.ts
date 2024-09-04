@@ -114,6 +114,8 @@ export type HandledAplication = {
   handlerRole?: string;
   decisionText?: string;
   justificationText?: string;
+  decisionMakerName?: string;
+  decisionMakerId?: string;
 };
 
 export type ApplicationChangesData = {

@@ -28,7 +28,6 @@ from applications.models import (
     Application,
     Attachment,
 )
-from applications.services.ahjo_attachment_handler import AhjoAttachmentHandler
 from applications.services.ahjo_authentication import AhjoConnector, AhjoToken
 from applications.services.ahjo_client import (
     AhjoAddRecordsRequest,
@@ -482,9 +481,6 @@ def send_open_case_request_to_ahjo(
 
     ahjo_request = AhjoOpenCaseRequest(application)
     ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
-    # attachment_handler = AhjoAttachmentHandler(application, AttachmentType.PDF_SUMMARY)
-
-    # pdf_summary = attachment_handler.generate_attachment()
 
     pdf_summary = generate_application_attachment(
         application, AttachmentType.PDF_SUMMARY

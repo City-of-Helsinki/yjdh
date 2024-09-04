@@ -94,6 +94,8 @@ class AhjoDecisionProposalDraftViewSet(viewsets.ViewSet):
                     decision_text=data["decision_text"]
                     + "\n\n"
                     + data["justification_text"],
+                    decision_maker_id=data["decision_maker_id"],
+                    decision_maker_name=data["decision_maker_name"],
                 )
             else:
                 AhjoDecisionText.objects.create(
@@ -107,6 +109,8 @@ class AhjoDecisionProposalDraftViewSet(viewsets.ViewSet):
                     decision_text=data["decision_text"]
                     + "\n\n"
                     + data["justification_text"],
+                    decision_maker_id=data["decision_maker_id"],
+                    decision_maker_name=data["decision_maker_name"],
                 )
 
         if data["review_step"] >= 4:

@@ -117,6 +117,7 @@ def test_decision_proposal_drafting(
     handler_role,
     decision_text,
     justification_text,
+    fake_decisionmakers,
 ):
     if review_step == 4:
         _prepare_calculation(application=application)
@@ -133,6 +134,8 @@ def test_decision_proposal_drafting(
             "handler_role": handler_role,
             "decision_text": decision_text,
             "justification_text": justification_text,
+            "decision_maker_id": fake_decisionmakers[0]["ID"],
+            "decision_maker_name": fake_decisionmakers[0]["Name"],
         },
     )
     assert response.status_code == response_status
@@ -144,3 +147,6 @@ def test_decision_proposal_drafting(
             == f'<section id="paatos"><h1>{_("Päätös")}</h1>{decision_text}</section>\
 <section id="paatoksenperustelut"><h1>{_("Päätöksen perustelut")}</h1>{justification_text}</section>'
         )
+
+        assert final_ahjo_text.decision_maker_id == fake_decisionmakers[0]["ID"]
+        assert final_ahjo_text.decision_maker_name == fake_decisionmakers[0]["Name"]

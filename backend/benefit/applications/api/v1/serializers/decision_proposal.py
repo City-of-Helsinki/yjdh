@@ -16,6 +16,8 @@ class AhjoDecisionProposalReadOnlySerializer(serializers.ModelSerializer):
             "review_step",
             "handler_role",
             "log_entry_comment",
+            "decision_maker_id",
+            "decision_maker_name",
         ]
 
 
@@ -35,6 +37,8 @@ class AhjoDecisionProposalSerializer(serializers.ModelSerializer):
             "review_step",
             "handler_role",
             "log_entry_comment",
+            "decision_maker_id",
+            "decision_maker_name",
         ]
 
     def validate(self, data):

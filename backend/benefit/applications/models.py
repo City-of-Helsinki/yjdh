@@ -1462,6 +1462,18 @@ class AhjoDecisionProposalDraft(TimeStampedModel):
         blank=True,
         null=True,
     )
+    decision_maker_name = models.TextField(
+        verbose_name=_("the name of the decision maker role"),
+        null=True,
+        blank=True,
+    )
+
+    decision_maker_id = models.CharField(
+        verbose_name=_("the ID of the decision maker"),
+        null=True,
+        blank=True,
+        max_length=64,
+    )
 
 
 class ArchivalApplication(UUIDModel, TimeStampedModel):
