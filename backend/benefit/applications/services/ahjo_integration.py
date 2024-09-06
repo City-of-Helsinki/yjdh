@@ -506,10 +506,16 @@ def update_application_summary_record_in_ahjo(
     application: Application, ahjo_token: AhjoToken
 ) -> Union[Tuple[Application, str], None]:
     """Update the application summary pdf in Ahjo.
-    Should be done just before the decision proposal is sent.
+    Should be done about the same time proposal is sent.
     """
-
     ahjo_request = AhjoUpdateRecordsRequest(application)
+    if application.ahjo_status.latest().error_from_ahjo:
+        # If there are errors from Ahjo, do not send the update request
+        raise ValueError(
+            f"Application {application.id} has errors \
+in Ahjo status {application.ahjo_status.latest().status}, not sending {ahjo_request}."
+        )
+
     ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
 
     pdf_summary = generate_application_attachment(
