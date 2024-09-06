@@ -1,5 +1,7 @@
+import { ROUTES } from 'benefit/handler/constants';
 import useApplicationMessagesQuery from 'benefit/handler/hooks/useApplicationsWithMessagesQuery';
 import { IconAngleRight, IconBell } from 'hds-react';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 
@@ -20,6 +22,13 @@ const Header: React.FC = () => {
     setMessageCenterActive(!messageCenterActive);
   };
 
+  const router = useRouter();
+
+  const handleMessageItemClick = (id: string): void => {
+    setMessageCenterActive(false);
+    void router.push(`${ROUTES.APPLICATION}?id=${String(id)}&openDrawer=1`);
+  };
+
   return (
     <$HeaderNotifier
       $enabled={applicationsWithMessages?.length > 0}
@@ -35,10 +44,9 @@ const Header: React.FC = () => {
         <h2>{t('common:header.messages')}</h2>
         <ul>
           {applicationsWithMessages.map((application) => (
-            <li>
+            <li key={application.id}>
               <$ApplicationWithMessages
-                onClick={() => setMessageCenterActive(false)}
-                href={`/application?id=${String(application.id)}&openDrawer=1`}
+                onClick={() => handleMessageItemClick(application.id)}
               >
                 <div>
                   <strong>Hakemus {application.application_number}</strong>

@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import BaseHeader from 'shared/components/header/Header';
 import { respondAbovePx } from 'shared/styles/mediaQueries';
 import styled from 'styled-components';
@@ -147,18 +146,27 @@ export const $Box = styled.div<$BoxProps>`
   }
 `;
 
-export const $ApplicationWithMessages = styled(Link)`
+export const $ApplicationWithMessages = styled.button`
   text-decoration: none;
   color: #222;
   display: flex;
   align-items: center;
   padding: 0.75rem 1rem 0.75rem 1rem;
   cursor: pointer;
+  appearance: none;
+  line-height: normal;
+  border: 0;
+  text-align: left;
+  width: 100%;
+  background: transparent;
 
   div {
     margin-right: 1rem;
     hyphens: auto;
     max-width: 130px;
+    &:hover {
+      background: ${(props) => props.theme.colors.black10};
+    }
 
     &:first-child {
       width: 90px;
