@@ -432,22 +432,26 @@ def ahjo_callback_payload():
 
 
 @pytest.mark.parametrize(
-    "request_type, ahjo_status",
+    "request_type, previous_ahjo_status, ahjo_status",
     [
         (
             AhjoRequestType.OPEN_CASE,
+            AhjoStatusEnum.REQUEST_TO_OPEN_CASE_SENT,
             AhjoStatusEnum.CASE_OPENED,
         ),
         (
             AhjoRequestType.UPDATE_APPLICATION,
+            AhjoStatusEnum.UPDATE_REQUEST_SENT,
             AhjoStatusEnum.UPDATE_REQUEST_RECEIVED,
         ),
         (
             AhjoRequestType.DELETE_APPLICATION,
+            AhjoStatusEnum.DELETE_REQUEST_SENT,
             AhjoStatusEnum.DELETE_REQUEST_RECEIVED,
         ),
         (
             AhjoRequestType.SEND_DECISION_PROPOSAL,
+            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
             AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
         ),
     ],
@@ -459,6 +463,7 @@ def test_ahjo_callback_success(
     decided_application,
     settings,
     request_type,
+    previous_ahjo_status,
     ahjo_status,
     ahjo_callback_payload,
 ):
@@ -472,6 +477,14 @@ def test_ahjo_callback_success(
     attachment.save()
     ahjo_callback_payload["message"] = AhjoCallBackStatus.SUCCESS
     ahjo_callback_payload["records"][0]["hashValue"] = attachment_hash_value
+
+    status = AhjoStatus.objects.create(
+        application=decided_application,
+        status=previous_ahjo_status,
+    )
+    # make sure the previous status is created earlier than the new status
+    status.created_at = timezone.now() - timedelta(days=5)
+    status.save()
 
     if request_type in [
         AhjoRequestType.SEND_DECISION_PROPOSAL,
