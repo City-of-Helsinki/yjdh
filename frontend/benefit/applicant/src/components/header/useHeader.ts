@@ -1,4 +1,4 @@
-import { ROUTES } from 'benefit/applicant/constants';
+import { ROUTES, SUPPORTED_LANGUAGES } from 'benefit/applicant/constants';
 import AppContext from 'benefit/applicant/context/AppContext';
 import useApplicationQuery from 'benefit/applicant/hooks/useApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useMemo, useState } from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
+import useGetLanguage from 'shared/hooks/useGetLanguage';
 import { NavigationItem, OptionType } from 'shared/types/common';
 
 type ExtendedComponentProps = {
@@ -35,7 +36,9 @@ const useHeader = (): ExtendedComponentProps => {
   const openDrawer = Boolean(router?.query?.openDrawer);
   const { axios } = useBackendAPI();
   const { isNavigationVisible } = React.useContext(AppContext);
-
+  const getLanguage = useGetLanguage();
+  const navigationUriBase =
+    getLanguage() === SUPPORTED_LANGUAGES.FI ? '/' : `/${getLanguage()}`;
   const [hasMessenger, setHasMessenger] = useState<boolean>(false);
   const [unreadMessagesCount, setUnredMessagesCount] = useState<
     number | undefined | null
@@ -127,14 +130,14 @@ const useHeader = (): ExtendedComponentProps => {
     () => [
       {
         label: t('common:header.navigation.home'),
-        url: ROUTES.HOME,
+        url: `${navigationUriBase}${ROUTES.HOME}`,
       },
       {
         label: t('common:header.navigation.decisions'),
-        url: ROUTES.DECISIONS,
+        url: `${navigationUriBase}${ROUTES.DECISIONS}`,
       },
     ],
-    [t]
+    [t, navigationUriBase]
   );
 
   return {
