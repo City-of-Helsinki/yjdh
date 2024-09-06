@@ -42,6 +42,7 @@ const useHeader = (): ExtendedComponentProps => {
   >(null);
   const [isMessagesDrawerVisible, setMessagesDrawerVisiblity] =
     useState(openDrawer);
+  const { setIsSidebarVisible } = React.useContext(AppContext);
   const { pathname, asPath, query } = router;
 
   const languageOptions = React.useMemo(
@@ -84,6 +85,13 @@ const useHeader = (): ExtendedComponentProps => {
       application?.status || APPLICATION_STATUSES.DRAFT,
     [application]
   );
+
+  useEffect(() => {
+    if (isMessagesDrawerVisible !== null) {
+      setIsSidebarVisible(isMessagesDrawerVisible);
+    }
+  }, [isMessagesDrawerVisible, setIsSidebarVisible]);
+
   useEffect(() => {
     setHasMessenger(
       [

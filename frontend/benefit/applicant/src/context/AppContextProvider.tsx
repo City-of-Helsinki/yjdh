@@ -7,12 +7,16 @@ const AppContextProvider = <P,>({
 }: React.PropsWithChildren<P>): JSX.Element => {
   const [isNavigationVisible, setIsNavigationVisible] =
     React.useState<boolean>(false);
+  const [isSidebarVisible, setIsSidebarVisible] =
+    React.useState<boolean>(false);
 
   return (
     <AppContext.Provider
       value={{
         isNavigationVisible,
+        isSidebarVisible,
         setIsNavigationVisible,
+        setIsSidebarVisible,
       }}
     >
       {children}
