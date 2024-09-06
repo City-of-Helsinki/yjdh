@@ -1,4 +1,7 @@
-import { ALL_APPLICATION_STATUSES } from 'benefit/handler/constants';
+import {
+  ALL_APPLICATION_STATUSES,
+  APPLICATION_LIST_TABS,
+} from 'benefit/handler/constants';
 import FrontPageProvider from 'benefit/handler/context/FrontPageProvider';
 import { APPLICATION_STATUSES, BATCH_STATUSES } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
@@ -110,6 +113,9 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
     );
   }
 
+  const updateTabToUrl = (tabNumber: APPLICATION_LIST_TABS): void =>
+    window.history.pushState({ tab }, '', `/?tab=${tabNumber}`);
+
   return (
     <FrontPageProvider>
       <$BackgroundWrapper backgroundColor={layoutBackgroundColor}>
@@ -117,32 +123,44 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
         <Container>
           <Tabs theme={theme.components.tabs} initiallyActiveTab={activeTab}>
             <Tabs.TabList style={{ marginBottom: 'var(--spacing-m)' }}>
-              <Tabs.Tab>
+              <Tabs.Tab
+                onClick={() => updateTabToUrl(APPLICATION_LIST_TABS.ALL)}
+              >
                 {getListHeadingByStatus('all', ALL_APPLICATION_STATUSES)}
               </Tabs.Tab>
-              <Tabs.Tab>
+              <Tabs.Tab
+                onClick={() => updateTabToUrl(APPLICATION_LIST_TABS.DRAFT)}
+              >
                 {getListHeadingByStatus(APPLICATION_STATUSES.DRAFT, [
                   APPLICATION_STATUSES.DRAFT,
                 ])}
               </Tabs.Tab>
-              <Tabs.Tab>
+              <Tabs.Tab
+                onClick={() => updateTabToUrl(APPLICATION_LIST_TABS.RECEIVED)}
+              >
                 {getListHeadingByStatus(APPLICATION_STATUSES.RECEIVED, [
                   APPLICATION_STATUSES.RECEIVED,
                 ])}
               </Tabs.Tab>
-              <Tabs.Tab>
+              <Tabs.Tab
+                onClick={() => updateTabToUrl(APPLICATION_LIST_TABS.HANDLING)}
+              >
                 {getListHeadingByStatus(APPLICATION_STATUSES.HANDLING, [
                   APPLICATION_STATUSES.HANDLING,
                   APPLICATION_STATUSES.INFO_REQUIRED,
                 ])}
               </Tabs.Tab>
-              <Tabs.Tab>
+              <Tabs.Tab
+                onClick={() => updateTabToUrl(APPLICATION_LIST_TABS.ACCEPTED)}
+              >
                 {getListHeadingByStatus('pending', [
                   APPLICATION_STATUSES.ACCEPTED,
                   APPLICATION_STATUSES.REJECTED,
                 ])}
               </Tabs.Tab>
-              <Tabs.Tab>
+              <Tabs.Tab
+                onClick={() => updateTabToUrl(APPLICATION_LIST_TABS.IN_PAYMENT)}
+              >
                 {getListHeadingByStatus('inPayment', [
                   APPLICATION_STATUSES.ACCEPTED,
                 ])}
