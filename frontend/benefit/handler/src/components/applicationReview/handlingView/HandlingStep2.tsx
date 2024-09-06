@@ -36,7 +36,7 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
   application,
 }) => {
   const { applicantLanguage, id } = application;
- 
+
   const { t } = useTranslation();
   const translationBase = 'common:review.decisionProposal';
   const { handledApplication, setHandledApplication } =
@@ -46,8 +46,9 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
     React.useState<string>(handledApplication?.justificationText || '');
   const [templateForDecisionText, setTemplateForDecisionText] =
     React.useState<string>(handledApplication?.decisionText || '');
-  
-  const [selectedDecisionMaker, setSelectedDecisionMaker] = React.useState<DecisionMaker | null>(null);
+
+  const [selectedDecisionMaker, setSelectedDecisionMaker] =
+    React.useState<DecisionMaker | null>(null);
 
   const decisionType =
     handledApplication?.status === 'accepted'
@@ -55,21 +56,21 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
       : DECISION_TYPES.DENIED;
 
   const { data: sections } = useDecisionProposalTemplateQuery(id, decisionType);
-  const { data: decisionMakerOptions} = useAhjoSettingsQuery();
+  const { data: decisionMakerOptions } = useAhjoSettingsQuery();
 
   const selectTemplate = (option: DecisionProposalTemplateData): void => {
     if (!selectedDecisionMaker) return;
-    
+
     setTemplateForDecisionText(
       replaceDecisionTemplatePlaceholders(
         option.template_decision_text,
-        selectedDecisionMaker.Name
+        selectedDecisionMaker.name
       )
     );
     setTemplateForJustificationText(
       replaceDecisionTemplatePlaceholders(
         option.template_justification_text,
-        selectedDecisionMaker.Name
+        selectedDecisionMaker.name
       )
     );
 
@@ -77,14 +78,14 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
       ...handledApplication,
       decisionText: replaceDecisionTemplatePlaceholders(
         option.template_decision_text,
-        selectedDecisionMaker.Name
+        selectedDecisionMaker.name
       ),
       justificationText: replaceDecisionTemplatePlaceholders(
         option.template_justification_text,
-        selectedDecisionMaker.Name
+        selectedDecisionMaker.name
       ),
-      decisionMakerId: selectedDecisionMaker.ID,
-      decisionMakerName: selectedDecisionMaker.Name
+      decisionMakerId: selectedDecisionMaker.id,
+      decisionMakerName: selectedDecisionMaker.name,
     });
   };
 
@@ -118,32 +119,36 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={12}>
-        <SelectionGroup
+          <SelectionGroup
             label={t(`${translationBase}.role.fields.decisionMaker.label`)}
             tooltipText={t(
               `${translationBase}.role.fields.decisionMaker.tooltipText`
             )}
           >
-            {decisionMakerOptions.map((option) => (
+            {decisionMakerOptions?.map((option) => (
               <$RadioButton
-                key={`radio-decision-maker-${option.ID}`}
-                id={`radio-decision-maker-${option.ID}`}
-                value={option.ID}
-                label={option.Name}
+                key={`radio-decision-maker-${option.id}`}
+                id={`radio-decision-maker-${option.id}`}
+                value={option.id}
+                label={option.name}
+                checked={selectedDecisionMaker?.id === option?.id}
                 onChange={(value) => {
-                  setSelectedDecisionMaker({ID:option.ID, Name: option.Name});
+                  setSelectedDecisionMaker({
+                    id: option.id,
+                    name: option.name,
+                  });
                   if (value) {
                     setTemplateForDecisionText(
                       replaceDecisionTemplatePlaceholders(
                         handledApplication?.decisionText || '',
-                        option.Name
+                        option.name
                       )
                     );
 
                     setTemplateForJustificationText(
                       replaceDecisionTemplatePlaceholders(
                         handledApplication?.justificationText || '',
-                        option.Name
+                        option.name
                       )
                     );
 
@@ -152,11 +157,11 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
                       handlerRole: 'handler',
                       decisionText: replaceDecisionTemplatePlaceholders(
                         handledApplication?.decisionText || '',
-                        option.Name
+                        option.name
                       ),
                       justificationText: replaceDecisionTemplatePlaceholders(
                         handledApplication?.justificationText || '',
-                        option.Name
+                        option.name
                       ),
                     });
                   }
