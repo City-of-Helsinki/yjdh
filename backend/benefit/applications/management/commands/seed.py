@@ -211,7 +211,8 @@ def run_seed(number):
 
     _create_dummy_ahjo_user_and_token()
 
-    _create_dummy_ahjo_settings()
+    if not AhjoSetting.objects.exists():
+        _create_dummy_ahjo_settings()
 
 
 def _past_datetime(days: int) -> datetime:
