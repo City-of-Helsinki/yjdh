@@ -1198,7 +1198,7 @@
         "fields": {
           "decisionMaker": {
             "label": "Päättäjän rooli",
-            "handler": "Helsinki-lisä-valmistelija",
+            "handler": "Helsinki-lisä-suunnittelija",
             "manager": "Tiimipäällikkö",
             "tooltipText": "Hakemuksen käsittelijän ja päättäjän on oltava eri henkilöitä. Käsittelijä on henkilö, joka lähettää hakemuksen. Valitse päättäjäksi joku toinen henkilö."
           }
