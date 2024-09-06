@@ -385,7 +385,7 @@ class ApplicationBatchFactory(BaseApplicationBatchFactory):
 class AcceptedDecisionProposalFactory(factory.django.DjangoModelFactory):
     decision_type = DecisionType.ACCEPTED
     name = "Myönteisen päätöksen Päätös-osion teksti"
-    template_decision_text = """<p>$decision_maker päätti myöntää $company:lle Työnantajan Helsinki-lisää \
+    template_decision_text = """<p>@decision_maker päätti myöntää $company:lle Työnantajan Helsinki-lisää \
 käytettäväksi työllistetyn helsinkiläisen työllistämiseksi $total_amount euroa ajalle $benefit_date_range.</p>
 <p>Helsinki-lisään on varattu talousarviossa Helsingin kaupungin Työllisyyspalveluille \
 vuosittain budjetoitu määräraha. Avustuksen kustannukset maksetaan \
@@ -448,7 +448,7 @@ ilmoittanut kaupungille kaikkien saamiensa de minimis -tukien määrät ja myön
 class DeniedDecisionProposalFactory(factory.django.DjangoModelFactory):
     decision_type = DecisionType.DENIED
     name = "Kielteisen päätöksen Päätöksen päätös-osion teksti"
-    template_decision_text = """<p>$decision_maker päätti hylätä $company:n hakemuksen koskien Työnantajan \
+    template_decision_text = """<p>@decision_maker päätti hylätä $company:n hakemuksen koskien Työnantajan \
 Helsinki-lisää, koska myöntämisen ehdot eivät täyty.</p> \
 <p>Helsinki-lisään on varattu talousarviossa Helsingin kaupungin Työllisyyspalveluille \
 vuosittain budjetoitu määräraha. Avustuksen kustannukset maksetaan kaupungin \
