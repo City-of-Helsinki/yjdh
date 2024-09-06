@@ -656,7 +656,7 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
             status=ApplicationStatus.DRAFT,
             application_origin=ApplicationOrigin.APPLICANT,
         )
-        serializer = self.serializer_class(qs, many=True, context=context)
+        serializer = HandlerApplicationListSerializer(qs, many=True, context=context)
 
         return Response(
             serializer.data,

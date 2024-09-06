@@ -1888,6 +1888,8 @@ class HandlerApplicationListSerializer(serializers.Serializer):
             "additional_information_needed_by",
             "calculation",
             "alterations",
+            "archived",
+            "handled_by_ahjo_automation",
         ]
 
         read_only_fields = [
@@ -1906,7 +1908,11 @@ class HandlerApplicationListSerializer(serializers.Serializer):
             "handler",
             "calculation",
             "alterations",
+            "archived",
+            "handled_by_ahjo_automation",
         ]
+
+    archived = serializers.BooleanField()
 
     additional_information_needed_by = serializers.SerializerMethodField(
         "get_additional_information_needed_by"
@@ -1922,6 +1928,14 @@ class HandlerApplicationListSerializer(serializers.Serializer):
         "get_handled_at",
         help_text=(
             "Timestamp when the application was handled (accepted/rejected/cancelled)"
+        ),
+    )
+
+    handled_by_ahjo_automation = serializers.BooleanField(
+        read_only=True,
+        required=False,
+        help_text=(
+            "True if the application has been handled by the Ahjo automation system"
         ),
     )
 
