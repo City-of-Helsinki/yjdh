@@ -569,7 +569,12 @@ def send_decision_proposal_to_ahjo(
         application, AttachmentType.DECISION_TEXT_SECRET_XML
     )
 
-    data = prepare_decision_proposal_payload(application, decision_xml, secret_xml)
+    data = prepare_decision_proposal_payload(
+        application=application,
+        decision_xml=decision_xml,
+        decision_text=decision,
+        secret_xml=secret_xml,
+    )
     response, response_text = ahjo_client.send_request_to_ahjo(data)
     create_status_for_application(application, AhjoStatusEnum.DECISION_PROPOSAL_SENT)
     return response, response_text

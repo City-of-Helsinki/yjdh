@@ -339,7 +339,6 @@ def prepare_decision_proposal_payload(
 ) -> dict:
     """Prepare the payload that is sent to Ahjo when a decision proposal is created"""
     handler = application.calculation.handler
-    inspector_dict = {"Role": "inspector", "Name": "Tarkastaja, Tero", "ID": "terot"}
 
     decision_maker_dict = {
         "Role": "decisionMaker",
@@ -365,7 +364,6 @@ def prepare_decision_proposal_payload(
                 "Documents": [_prepare_record_document_dict(decision_xml)],
                 "Agents": [
                     main_creator_dict,
-                    inspector_dict,
                     decision_maker_dict,
                 ],
             },

@@ -535,7 +535,7 @@ def generate_ahjo_case_id():
 
 
 @pytest.fixture
-def application_with_ahjo_decision(application_with_ahjo_case_id):
+def application_with_ahjo_decision(application_with_ahjo_case_id, fake_decisionmakers):
     template = AcceptedDecisionProposalFactory()
     replaced_decision_text = replace_decision_template_placeholders(
         template.template_decision_text + template.template_justification_text,
@@ -547,6 +547,8 @@ def application_with_ahjo_decision(application_with_ahjo_case_id):
         decision_type=DecisionType.ACCEPTED,
         decision_text=replaced_decision_text,
         language="fi",
+        decision_maker_id=fake_decisionmakers[0]["ID"],
+        decision_maker_name=fake_decisionmakers[0]["Name"],
     )
     return application_with_ahjo_case_id
 
