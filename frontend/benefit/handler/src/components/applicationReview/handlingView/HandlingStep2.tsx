@@ -47,8 +47,6 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
   const [templateForDecisionText, setTemplateForDecisionText] =
     React.useState<string>(handledApplication?.decisionText || '');
   
-  const [selectedDecisionMaker, setSelectedDecisionMaker] = React.useState<DecisionMaker | null>(null);
-
   const [selectedDecisionMaker, setSelectedDecisionMaker] =
     React.useState<DecisionMaker | null>(null);
 
