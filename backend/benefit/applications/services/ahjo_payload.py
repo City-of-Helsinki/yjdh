@@ -51,8 +51,8 @@ hakemus {application.application_number}"
     return full_title
 
 
-def prepare_final_case_title(application: Application, limit: int = 100) -> str:
-    """Prepare the final case title for Ahjo, if the full title is over 100 characters, \
+def prepare_final_case_title(application: Application, limit: int = 150) -> str:
+    """Prepare the final case title for Ahjo, if the full title is over 150 characters, \
     truncate the company name to fit the limit."""
     full_case_title = prepare_case_title(application, application.company_name)
     length_of_full_title = len(full_case_title)
