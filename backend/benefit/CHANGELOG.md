@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.3.0...benefit-backend-v2.3.1) (2024-09-09)
+
+
+### Bug Fixes
+
+* Open case title limit to 150 chars ([#3292](https://github.com/City-of-Helsinki/yjdh/issues/3292)) ([1bfc1b2](https://github.com/City-of-Helsinki/yjdh/commit/1bfc1b28b3ac8ac2cf0d65a04f4c9fbef78b445e))
+
 ## [2.3.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.2.0...benefit-backend-v2.3.0) (2024-08-26)
 
 
