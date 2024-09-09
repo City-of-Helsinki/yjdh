@@ -42,12 +42,16 @@ from applications.enums import (
     ApplicationBatchStatus,
     ApplicationOrigin,
     ApplicationStatus,
+    ApplicationStep,
+    ApplicationTalpaStatus,
 )
 from applications.models import (
     AhjoSetting,
     Application,
     ApplicationAlteration,
     ApplicationBatch,
+    DeMinimisAid,
+    Employee,
 )
 from applications.services.ahjo_integration import (
     ExportFileInfo,
@@ -722,6 +726,47 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         application.handler = request.user
         application.save()
         return Response(status=status.HTTP_200_OK)
+
+    @action(methods=["GET"], detail=True, url_path="clone_as_draft")
+    @transaction.atomic
+    def change_handler(self, request, pk=None) -> HttpResponse:
+        application = self.get_object()
+
+        de_minimis_aids = DeMinimisAid.objects.filter(
+            application__pk=application.id
+        ).all()
+        last_order = DeMinimisAid.objects.last().ordering + 1
+
+        application.pk = None
+        application.status = ApplicationStatus.RECEIVED
+        application.application_number = (
+            Application.objects.last().application_number + 1
+        )
+        application.batch_id = None
+        application.save()
+        for index, aid in enumerate(de_minimis_aids):
+            aid.pk = None
+            aid.ordering = last_order + index
+            aid.application = application
+            aid.save()
+
+        # TODO: Remove employee clone
+        employee = Employee.objects.create(application=application)
+        employee.save()
+
+        # Reset data
+        # application.benefit_type = None
+        application.pay_subsidy_granted = None
+        application.apprenticeship_program = None
+        application.archived = False
+        application.application_step = ApplicationStep.STEP_1
+        application.ahjo_case_id = None
+        application.handler_id = None
+        application.talpa_status = ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA
+        application.status = ApplicationStatus.DRAFT
+        application.save()
+
+        return Response({"id": application.id}, status=status.HTTP_201_CREATED)
 
     def _create_application_batch(self, status) -> QuerySet[Application]:
         """
