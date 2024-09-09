@@ -234,6 +234,7 @@ export enum APPLICATION_LIST_TABS {
   HANDLING = '3',
   ACCEPTED = '4',
   REJECTED = '5',
+  IN_PAYMENT = '5',
 }
 
 export const DEFAULT_MINIMUM_RECOVERY_AMOUNT = 20;
