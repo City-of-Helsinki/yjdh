@@ -56,11 +56,11 @@ def test_truncate_string_to_limit(
 @pytest.mark.parametrize(
     "company_name, limit, expected_length",
     [
-        ("a" * 100 + "b" * 100, 100, 100),
-        ("a" * 100 + "b" * 5, 100, 100),
-        ("a" * 100, 100, 100),
-        ("a" * 50, 100, 100),
-        ("1234567890AB", 10, 100),
+        ("a" * 100 + "b" * 100, 100, 150),
+        ("a" * 100 + "b" * 5, 100, 150),
+        ("a" * 100, 100, 150),
+        ("a" * 50, 100, 150),
+        ("1234567890AB", 10, 150),
     ],
 )
 def test_prepare_final_case_title_truncate(
