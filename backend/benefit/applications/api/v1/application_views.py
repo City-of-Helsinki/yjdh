@@ -530,7 +530,7 @@ class HandlerApplicationAlterationViewSet(BaseApplicationAlterationViewSet):
         csv_service = ApplicationAlterationCsvService(queryset, config, user)
 
         response = HttpResponse(
-            csv_service.get_csv_string(True).encode("utf-8"),
+            csv_service.get_csv_string(False).encode("utf-8"),
             content_type="text/csv",
         )
         response["Content-Disposition"] = "attachment; filename={filename}.csv".format(
