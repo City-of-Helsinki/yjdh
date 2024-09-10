@@ -53,8 +53,8 @@ const Header: React.FC = () => {
                 </div>
                 <div>{application.company.name}</div>
                 <div>
-                  {application.employee.first_name}{' '}
-                  {application.employee.last_name}
+                  {application.employee?.first_name}{' '}
+                  {application.employee?.last_name}
                 </div>
                 <div>
                   <IconAngleRight />
