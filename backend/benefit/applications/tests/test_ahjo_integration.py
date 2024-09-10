@@ -532,6 +532,7 @@ def test_ahjo_callback_success(
 
         assert decided_application.status == ApplicationStatus.CANCELLED
         assert decided_application.batch.status == ApplicationBatchStatus.CANCELLED
+        assert decided_application.archived is True
 
     assert decided_application.ahjo_status.latest().status == ahjo_status
 

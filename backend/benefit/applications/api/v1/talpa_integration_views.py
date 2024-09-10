@@ -57,7 +57,8 @@ class TalpaCallbackView(APIView):
         successful_applications = self._get_applications(application_numbers)
         if successful_applications:
             successful_applications.update(
-                talpa_status=ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
+                talpa_status=ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA,
+                archived=True,
             )
 
             for application in successful_applications:
