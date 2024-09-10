@@ -43,7 +43,6 @@ from applications.enums import (
     ApplicationOrigin,
     ApplicationStatus,
     ApplicationStep,
-    ApplicationTalpaStatus,
 )
 from applications.models import (
     AhjoSetting,
@@ -69,6 +68,7 @@ from applications.services.generate_application_summary import (
     get_context_for_summary_context,
 )
 from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
+from companies.models import Company
 from messages.models import MessageType
 from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation
@@ -729,44 +729,94 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
 
     @action(methods=["GET"], detail=True, url_path="clone_as_draft")
     @transaction.atomic
-    def change_handler(self, request, pk=None) -> HttpResponse:
-        application = self.get_object()
+    def clone_as_draft(self, request, pk=None) -> HttpResponse:
+        application_base = self.get_object()
+        company = Company.objects.get(id=application_base.company.id)
+        cloned_application = Application(
+            **{
+                "alternative_company_city": application_base.alternative_company_city,
+                "alternative_company_postcode": application_base.alternative_company_postcode,
+                "alternative_company_street_address": application_base.alternative_company_street_address,
+                "applicant_language": "fi",
+                "application_step": ApplicationStep.STEP_1,
+                "archived": False,
+                "association_has_business_activities": application_base.association_has_business_activities,
+                "association_immediate_manager_check": application_base.association_immediate_manager_check,
+                "benefit_type": "salary_benefit",
+                "co_operation_negotiations": application_base.co_operation_negotiations,
+                "co_operation_negotiations_description": application_base.co_operation_negotiations_description,
+                "company_bank_account_number": application_base.company_bank_account_number,
+                "company_contact_person_email": application_base.company_contact_person_email,
+                "company_contact_person_first_name": application_base.company_contact_person_first_name,
+                "company_contact_person_last_name": application_base.company_contact_person_last_name,
+                "company_contact_person_phone_number": application_base.company_contact_person_phone_number,
+                "company_department": application_base.company_department,
+                "company_form_code": company.company_form_code,
+                "status": "draft",
+                "use_alternative_address": application_base.use_alternative_address,
+            }
+        )
+
+        cloned_application.company = company
+
+        clone_employee = request.query_params.get("employee") or None
+        clone_work = request.query_params.get("work") or None
+        if clone_employee or clone_work:
+            employee = Employee.objects.get(id=application_base.employee.id)
+            employee.pk = None
+            employee.application = cloned_application
+        else:
+            employee = Employee.objects.create(application=cloned_application)
+
+        if not clone_employee:
+            employee.first_name = ""
+            employee.last_name = ""
+            employee.social_security_number = ""
+            employee.is_living_in_helsinki = False
+
+        if not clone_work:
+            employee.job_title = ""
+            employee.monthly_pay = None
+            employee.vacation_money = None
+            employee.other_expenses = None
+            employee.working_hours = None
+            employee.collective_bargaining_agreement = ""
+
+        employee.save()
+
+        clone_subsidies = request.query_params.get("pay_subsidy") or None
+        if clone_subsidies:
+            cloned_application.pay_subsidy_granted = (
+                application_base.pay_subsidy_granted
+            )
+            cloned_application.apprenticeship_program = (
+                application_base.apprenticeship_program
+            )
+            cloned_application.pay_subsidy_percent = (
+                application_base.pay_subsidy_percent
+            )
 
         de_minimis_aids = DeMinimisAid.objects.filter(
-            application__pk=application.id
+            application__pk=application_base.id
         ).all()
-        last_order = DeMinimisAid.objects.last().ordering + 1
 
-        application.pk = None
-        application.status = ApplicationStatus.RECEIVED
-        application.application_number = (
-            Application.objects.last().application_number + 1
-        )
-        application.batch_id = None
-        application.save()
+        last_order = DeMinimisAid.objects.last().ordering + 1
         for index, aid in enumerate(de_minimis_aids):
             aid.pk = None
             aid.ordering = last_order + index
-            aid.application = application
+            aid.application = cloned_application
             aid.save()
 
-        # TODO: Remove employee clone
-        employee = Employee.objects.create(application=application)
-        employee.save()
+        if len(de_minimis_aids) > 0:
+            cloned_application.de_minimis_aid = True
 
-        # Reset data
-        # application.benefit_type = None
-        application.pay_subsidy_granted = None
-        application.apprenticeship_program = None
-        application.archived = False
-        application.application_step = ApplicationStep.STEP_1
-        application.ahjo_case_id = None
-        application.handler_id = None
-        application.talpa_status = ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA
-        application.status = ApplicationStatus.DRAFT
-        application.save()
+        cloned_application.save()
 
-        return Response({"id": application.id}, status=status.HTTP_201_CREATED)
+        rid = str(cloned_application.id)
+        return Response(
+            {"id": "https://localhost:3000/application?id=" + rid},
+            status=status.HTTP_201_CREATED,
+        )
 
     def _create_application_batch(self, status) -> QuerySet[Application]:
         """
