@@ -203,6 +203,11 @@ class AhjoCallbackView(APIView):
     ) -> Response:
         try:
             with transaction.atomic():
+                # Clear any previous error messages before creating a new success status
+                latest_status = application.ahjo_status.latest()
+                if latest_status.error_from_ahjo is not None:
+                    latest_status.error_from_ahjo = None
+                    latest_status.save()
                 info = self.cb_info_message(application, callback_data, request_type)
                 if request_type == AhjoRequestType.OPEN_CASE:
                     self._handle_open_case_success(application, callback_data)
