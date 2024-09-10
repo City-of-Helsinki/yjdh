@@ -79,6 +79,7 @@ class AhjoAddRecordsRequest(AhjoRequest):
 
     request_type = AhjoRequestType.ADD_RECORDS
     request_method = "POST"
+    result_status = AhjoStatusEnum.NEW_RECORDS_REQUEST_SENT
 
 
 @dataclass
