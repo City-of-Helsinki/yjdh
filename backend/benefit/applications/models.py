@@ -171,12 +171,17 @@ class ApplicationManager(models.Manager):
     def get_by_statuses(
         self,
         application_statuses: List[ApplicationStatus],
-        ahjo_status: AhjoStatusEnum,
+        ahjo_statuses: List[AhjoStatusEnum],
         has_no_case_id: bool,
     ):
         """
         Query applications by their latest AhjoStatus relation
         and their current ApplicationStatus and if they have a case id in Ahjo or not.
+        The latest ahjo status can be one of several as for example in the case of update
+        records request, where the previous status can be either:
+        AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
+        or
+        AhjoStatusEnum.NEW_RECORDS_RECEIVED
         """
         # Subquery to get the latest AhjoStatus id for each application
         latest_ahjo_status_subquery = (
@@ -204,7 +209,7 @@ class ApplicationManager(models.Manager):
             .filter(
                 status__in=application_statuses,
                 ahjo_status__id=F("latest_ahjo_status_id"),
-                ahjo_status__status=ahjo_status,
+                ahjo_status__status__in=ahjo_statuses,
                 ahjo_case_id__isnull=has_no_case_id,
             )
             .prefetch_related(attachments_prefetch, "calculation", "company")
