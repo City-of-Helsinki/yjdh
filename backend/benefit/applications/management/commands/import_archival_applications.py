@@ -17,11 +17,10 @@ def validate_data(row):
 
     return [
         validate_company_id(row["business_id"]),
-        len(str(row["year_of_birth"])) == 4,
+        len(str(int(row["year_of_birth"] or 0))) == 4,
         type(row["start_date"]) is Timestamp,
         type(row["end_date"]) is Timestamp,
         datetime.now() > row["start_date"],
-        datetime.now() > row["end_date"],
     ]
 
 
@@ -67,13 +66,20 @@ class Command(BaseCommand):
         )
 
         parser.add_argument(
+            "--sheet_name",
+            type=str,
+            default="0",
+            help="Spreadsheet file's sheet number",
+        )
+
+        parser.add_argument(
             "--production",
             type=bool,
             default=None,
             help="Set to True to actually import the data, otherwise will only do a dry run",
         )
 
-    def handle(self, filename, production, *args, **options):  # noqa
+    def handle(self, filename, production, sheet_name, *args, **options):  # noqa
         # import at file level causes pytest crash
         is_pytest = os.environ.get("PYTEST_CURRENT_TEST")
         if is_pytest:
@@ -104,7 +110,10 @@ class Command(BaseCommand):
             spreadsheet_data = ImportArchivalApplicationsTestUtility.test_data["values"]
         else:
             filepath = os.path.abspath(os.path.dirname(__file__)) + "/../../resources"
-            sheet = read_excel(f"{filepath}/{filename}")
+            sheet = read_excel(
+                f"{filepath}/{filename}",
+                sheet_name=(int(sheet_name) if sheet_name.isnumeric() else sheet_name),
+            )
             columns = [x.strip(" ") for x in sheet.columns]
             spreadsheet_data = sheet.values
 
@@ -170,6 +179,7 @@ class Command(BaseCommand):
         print("\nNow importing rows ...")
 
         rows_imported = 0
+        rows_skipped = 0
         for row in mapped_rows:
             application_number = row.get("application_number")
             print(
@@ -181,6 +191,7 @@ class Command(BaseCommand):
             company_str = f"{row['company_name']} ({row['business_id']})"
 
             if not is_pytest and not all(validate_data(row)):
+                rows_skipped += 1
                 print(
                     f"! Skipping: invalid data for {application_number} / {company_str}"
                 )
@@ -225,4 +236,6 @@ class Command(BaseCommand):
                 else:
                     print(f"• Skipping: {app.application_number}")
 
-        print(f"\nDone! Imported {rows_imported} rows as ArchivalApplication.\n")
+        print(
+            f"\nDone! Imported {rows_imported} rows as ArchivalApplication.\nSkipped {rows_skipped} rows.\n"
+        )
