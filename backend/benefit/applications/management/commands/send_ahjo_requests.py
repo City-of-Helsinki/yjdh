@@ -82,10 +82,7 @@ class Command(BaseCommand):
         elif request_type == AhjoRequestType.UPDATE_APPLICATION:
             applications = Application.objects.get_by_statuses(
                 [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
-                [
-                    AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
-                    AhjoStatusEnum.NEW_RECORDS_RECEIVED,
-                ],
+                [AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED],
                 False,
             )
         elif request_type == AhjoRequestType.GET_DECISION_DETAILS:
