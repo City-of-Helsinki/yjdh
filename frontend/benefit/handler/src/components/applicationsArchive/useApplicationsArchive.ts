@@ -97,10 +97,6 @@ const useApplicationsArchive = (
     decisionRange
   );
 
-  useEffect(() => {
-    getSearchResults('');
-  }, [getSearchResults]);
-
   const shouldHideList =
     Boolean(error) || (!isSearchLoading && searchResults?.matches.length === 0);
 
