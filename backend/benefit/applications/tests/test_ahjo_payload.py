@@ -72,30 +72,59 @@ def test_prepare_final_case_title_truncate(
 
 
 @pytest.mark.parametrize(
-    "record_title, record_type, request_type, wanted_title_addition",
+    "record_title, record_type, request_type, wanted_title_addition, part, total",
     [
         (
             AhjoRecordTitle.APPLICATION,
             AhjoRecordType.APPLICATION,
             AhjoRequestType.OPEN_CASE,
             "",
+            0,
+            0,
         ),
         (
             AhjoRecordTitle.APPLICATION,
             AhjoRecordType.APPLICATION,
             AhjoRequestType.UPDATE_APPLICATION,
-            " täydennys,",
+            ", täydennys",
+            0,
+            0,
+        ),
+        (
+            AhjoRecordTitle.APPLICATION,
+            AhjoRecordType.ATTACHMENT,
+            AhjoRequestType.ADD_RECORDS,
+            ", täydennys",
+            0,
+            0,
+        ),
+        (
+            AhjoRecordTitle.APPLICATION,
+            AhjoRecordType.ATTACHMENT,
+            AhjoRequestType.OPEN_CASE,
+            "",
+            1,
+            3,
         ),
     ],
 )
 def test_prepare_record_title(
-    decided_application, record_title, record_type, request_type, wanted_title_addition
+    decided_application,
+    record_title,
+    record_type,
+    request_type,
+    wanted_title_addition,
+    part,
+    total,
 ):
     application = decided_application
     formatted_date = application.created_at.strftime("%d.%m.%Y")
 
-    wanted_title = f"{record_title},{wanted_title_addition} {formatted_date}, {application.application_number}"
-    got = _prepare_record_title(application, record_type, request_type)
+    if part and total:
+        wanted_title = f"{record_title}{wanted_title_addition} {formatted_date}, liite {part}/{total}, {application.application_number}"
+    else:
+        wanted_title = f"{record_title}{wanted_title_addition} {formatted_date}, {application.application_number}"
+    got = _prepare_record_title(application, record_type, request_type, part, total)
     assert wanted_title == got
 
 

@@ -15,7 +15,6 @@ from common.utils import hash_file
 from users.models import User
 
 MANNER_OF_RECEIPT = "sähköinen asiointi"
-IS_UPDATE_TITLE_PART = " täydennys,"
 
 
 def _prepare_record_title(
@@ -25,21 +24,32 @@ def _prepare_record_title(
     current: int = 0,
     total: int = 0,
 ) -> str:
-    """Prepare the title for the application record in Ahjo in the format:
-    Hakemus 11.4.2024, 128123
-    or for an attachment:
-    Hakemus 11.4.2024, liite 1/3, 128123
-    If the request type is an update, add the word "täydennys" to the title.
+    """Prepare the title for the application record in Ahjo in the required format:
+    If the request type is an update or adding new records, add the word "täydennys" to the title.
+    For example:
+        for open case:
+            Hakemus 22.8.2024, 125xxx
+        for adding new records:
+            Hakemus, täydennys (päivämäärä jolloin täydennys saapunut), 125xxx
+        and for attachments in the open case request:
+            Hakemus 26.3.2024, liite 1/1, 123xxx
     """
     formatted_date = application.created_at.strftime("%d.%m.%Y")
-    title_part = (
-        IS_UPDATE_TITLE_PART
-        if request_type == AhjoRequestType.UPDATE_APPLICATION
-        else ""
-    )
 
-    if record_type == AhjoRecordType.APPLICATION:
-        return f"{AhjoRecordTitle.APPLICATION},{title_part} {formatted_date}, {application.application_number}"
+    if (
+        request_type == AhjoRequestType.OPEN_CASE
+        and record_type == AhjoRecordType.APPLICATION
+    ):
+        return f"{AhjoRecordTitle.APPLICATION} {formatted_date}, {application.application_number}"
+    elif (
+        request_type == AhjoRequestType.UPDATE_APPLICATION
+        and record_type == AhjoRecordType.APPLICATION
+    ) or (
+        request_type == AhjoRequestType.ADD_RECORDS
+        and record_type == AhjoRecordType.ATTACHMENT
+    ):
+        return f"{AhjoRecordTitle.APPLICATION}, täydennys {formatted_date}, {application.application_number}"
+
     return f"{AhjoRecordTitle.APPLICATION} {formatted_date}, liite {current}/{total}, {application.application_number}"
 
 
