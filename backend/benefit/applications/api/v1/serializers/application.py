@@ -1890,6 +1890,8 @@ class HandlerApplicationListSerializer(serializers.Serializer):
             "alterations",
             "archived",
             "handled_by_ahjo_automation",
+            "ahjo_case_id",
+            "batch",
         ]
 
         read_only_fields = [
@@ -1910,6 +1912,8 @@ class HandlerApplicationListSerializer(serializers.Serializer):
             "alterations",
             "archived",
             "handled_by_ahjo_automation",
+            "ahjo_case_id",
+            "batch",
         ]
 
     archived = serializers.BooleanField()
@@ -1939,6 +1943,13 @@ class HandlerApplicationListSerializer(serializers.Serializer):
         ),
     )
 
+    batch = serializers.SerializerMethodField("get_batch_status")
+
+    def get_batch_status(self, obj):
+        print(obj.batch)
+        return {"status": getattr(obj.batch, "status", None)}
+
+    ahjo_case_id = serializers.CharField()
     application_number = serializers.IntegerField()
 
     status = serializers.ChoiceField(
