@@ -1009,6 +1009,7 @@
       "saveAndContinue": "Tallenna ja sulje",
       "backToHandling": "Palauta käsittelyyn",
       "handlingPanel": "Käsittelypaneeli",
+      "search": "Hae arkistosta",
       "cancel": "Peruuta hakemus",
       "addAttachment": "Liitä uusi tiedosto",
       "addPreviouslyGrantedBenefit": "Lisää aikaisempi lisä",
@@ -1035,7 +1036,8 @@
       "description": "Perustelu",
       "acceptedSubsidy": "Myönnettävä tuki",
       "eurosTotal": "{{total}} euroa yhteensä",
-      "eurosPerMonth": "{{euros}} euroa kuukaudessa {{dateRange}}"
+      "eurosPerMonth": "{{euros}} euroa kuukaudessa {{dateRange}}",
+      "searchPriorApplications": "Hae työllistettävän aiempia tukia"
     },
     "headings": {
       "heading1": "Työnantajan tiedot",
