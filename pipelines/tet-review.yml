@@ -23,7 +23,7 @@ pr:
     - main
   paths:
     include:
-      - azure-pipelines/tet-review.yml
+      - pipelines/tet-review.yml
       - backend/docker/tet.Dockerfile
       - backend/tet/**
       - backend/shared/**
@@ -54,7 +54,7 @@ extends:
   # Filename in Azure DevOps Repository (note possible -ui or -api)
   # Django example: azure-pipelines-PROJECTNAME-api-release.yml
   # Drupal example: azure-pipelines-drupal-release.yml
-  template: azure-pipelines-tet-review.yml@yjdh-tet-pipelines
+  template: pipelines/yjdh-tet-review.yml@yjdh-tet-pipelines
     # Application build arguments and config map values as key value pairs.
     # The values here will override the values defined in the yjdh-tet-pipelines repository.
     # for example
