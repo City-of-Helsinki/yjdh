@@ -3,6 +3,7 @@ module.exports = {
   ...sharedConfig,
   moduleNameMapper: {
     [`^shared/(.*)$`]: '<rootDir>/src/$1',
+    axios: '<rootDir>/axios/dist/node/axios.cjs',
   },
   setupFilesAfterEnv: ['<rootDir>/src/__tests__/utils/setupTests.ts'],
   coveragePathIgnorePatterns: [
