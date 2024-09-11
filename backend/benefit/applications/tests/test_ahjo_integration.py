@@ -777,7 +777,7 @@ def test_get_applications_for_ahjo_update(
             application=a,
             status=AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
         )
-    for a in multiple_applications_with_ahjo_case_id[:5]:
+    for a in multiple_applications_with_ahjo_case_id[5:]:
         AhjoStatus.objects.create(
             application=a,
             status=AhjoStatusEnum.NEW_RECORDS_RECEIVED,
