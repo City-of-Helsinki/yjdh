@@ -545,9 +545,11 @@ def send_new_attachment_records_to_ahjo(
 
     data = prepare_attachment_records_payload(attachments, application)
 
-    application, response_text = ahjo_client.send_request_to_ahjo(data)
+    result, response_text = ahjo_client.send_request_to_ahjo(data)
 
-    return application, response_text
+    if result:
+        create_status_for_application(application, ahjo_request.result_status)
+    return result, response_text
 
 
 def send_decision_proposal_to_ahjo(

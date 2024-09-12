@@ -519,7 +519,7 @@ def multiple_applications_with_ahjo_case_id(
 ):
     with factory.Faker.override_default_locale("fi_FI"):
         applications = DecidedApplicationFactory.create_batch(
-            5, company=mock_get_organisation_roles_and_create_company
+            10, company=mock_get_organisation_roles_and_create_company
         )
 
         for a in applications:

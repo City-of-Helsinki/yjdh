@@ -70,7 +70,7 @@ class Command(BaseCommand):
                     ApplicationStatus.ACCEPTED,
                     ApplicationStatus.REJECTED,
                 ],
-                AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
+                [AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO],
                 True,
             )
         elif request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
@@ -82,13 +82,13 @@ class Command(BaseCommand):
         elif request_type == AhjoRequestType.UPDATE_APPLICATION:
             applications = Application.objects.get_by_statuses(
                 [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
-                AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
+                [AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED],
                 False,
             )
         elif request_type == AhjoRequestType.GET_DECISION_DETAILS:
             applications = Application.objects.get_by_statuses(
                 [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
-                AhjoStatusEnum.SIGNED_IN_AHJO,
+                [AhjoStatusEnum.SIGNED_IN_AHJO],
                 False,
             )
         elif request_type == AhjoRequestType.DELETE_APPLICATION:

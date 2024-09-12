@@ -772,10 +772,15 @@ def test_generate_ahjo_secret_decision_text_xml(decided_application):
 def test_get_applications_for_ahjo_update(
     multiple_applications_with_ahjo_case_id,
 ):
-    for a in multiple_applications_with_ahjo_case_id:
+    for a in multiple_applications_with_ahjo_case_id[:5]:
         AhjoStatus.objects.create(
             application=a,
             status=AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
+        )
+    for a in multiple_applications_with_ahjo_case_id[5:]:
+        AhjoStatus.objects.create(
+            application=a,
+            status=AhjoStatusEnum.NEW_RECORDS_RECEIVED,
         )
 
     applications_for_ahjo_update = Application.objects.get_by_statuses(
@@ -783,7 +788,10 @@ def test_get_applications_for_ahjo_update(
             ApplicationStatus.ACCEPTED,
             ApplicationStatus.REJECTED,
         ],
-        AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
+        [
+            AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
+            AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+        ],
         False,
     )
 
@@ -844,7 +852,7 @@ def test_get_applications_for_open_case(
             ApplicationStatus.ACCEPTED,
             ApplicationStatus.REJECTED,
         ],
-        AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
+        [AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO],
         True,
     )
 
