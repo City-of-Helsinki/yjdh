@@ -121,7 +121,8 @@ def test_prepare_record_title(
     formatted_date = application.created_at.strftime("%d.%m.%Y")
 
     if part and total:
-        wanted_title = f"{record_title}{wanted_title_addition} {formatted_date}, liite {part}/{total}, {application.application_number}"
+        wanted_title = f"{record_title}{wanted_title_addition} {formatted_date},\
+ liite {part}/{total}, {application.application_number}"
     else:
         wanted_title = f"{record_title}{wanted_title_addition} {formatted_date}, {application.application_number}"
     got = _prepare_record_title(application, record_type, request_type, part, total)
