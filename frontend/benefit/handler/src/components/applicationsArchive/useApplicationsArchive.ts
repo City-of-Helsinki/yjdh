@@ -6,7 +6,6 @@ import {
   ApplicationListItemData,
 } from 'benefit-shared/types/application';
 import { TFunction, useTranslation } from 'next-i18next';
-import { useEffect } from 'react';
 import { getFullNameListing } from 'shared/utils/application.utils';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 
