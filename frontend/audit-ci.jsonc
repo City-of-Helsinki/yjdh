@@ -11,8 +11,7 @@
     "ws", // testcafe, jest
     "semver", // testcafe, jest, eslint
     "axios", // tet, ks
-    "path-to-regexp", // express
-    "body-parser", // express
     "rollup", // sentry
+    "axios" // tet, ks
   ]
 }
