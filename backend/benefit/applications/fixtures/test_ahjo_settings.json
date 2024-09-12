@@ -1,0 +1,55 @@
+[
+  {
+    "model": "applications.ahjosetting",
+    "pk": 1,
+    "fields": {
+      "created_at": "2024-09-05T12:30:41.465Z",
+      "modified_at": "2024-09-05T12:30:41.465Z",
+      "name": "application_alteration_fields",
+      "data": {
+        "account_number": "FI1234567890",
+        "billing_department": "1800 Kaupunginkanslia (Kansl)"
+      }
+    }
+  },
+  {
+    "model": "applications.ahjosetting",
+    "pk": 2,
+    "fields": {
+      "created_at": "2024-09-05T12:30:41.466Z",
+      "modified_at": "2024-09-05T12:30:41.466Z",
+      "name": "p2p_settings",
+      "data": {
+        "acceptor_name": "Jaska Jokunen",
+        "inspector_name": "Tiina Testi",
+        "inspector_email": "tarkastaja@testi.com"
+      }
+    }
+  },
+  {
+    "model": "applications.ahjosetting",
+    "pk": 3,
+    "fields": {
+      "created_at": "2024-09-05T12:30:41.466Z",
+      "modified_at": "2024-09-05T12:30:41.466Z",
+      "name": "ahjo_org_identifier",
+      "data": { "id": "1234567-8" }
+    }
+  },
+  {
+    "model": "applications.ahjosetting",
+    "pk": 4,
+    "fields": {
+      "created_at": "2024-09-05T12:30:41.467Z",
+      "modified_at": "2024-09-05T12:30:41.467Z",
+      "name": "ahjo_decision_maker",
+      "data": [
+        {
+          "ID": "ABCDEFGH12345678",
+          "Name": "Tiimipäällikkö, työnantajille myönnettävät taloudelliset tuet"
+        },
+        { "ID": "HIJKLMNOPQRSTUWXYZ", "Name": "Helsinki-lisä-suunnittelija" }
+      ]
+    }
+  }
+]

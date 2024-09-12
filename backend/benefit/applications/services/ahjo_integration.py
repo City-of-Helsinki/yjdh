@@ -16,19 +16,28 @@ from django.db.models import QuerySet
 from django.urls import reverse
 
 from applications.enums import (
+    AhjoRequestType,
     AhjoStatus as AhjoStatusEnum,
     ApplicationStatus,
     AttachmentType,
 )
-from applications.models import AhjoDecisionText, AhjoStatus, Application, Attachment
+from applications.models import (
+    AhjoDecisionText,
+    AhjoSetting,
+    AhjoStatus,
+    Application,
+    Attachment,
+)
 from applications.services.ahjo_authentication import AhjoConnector, AhjoToken
 from applications.services.ahjo_client import (
     AhjoAddRecordsRequest,
     AhjoApiClient,
     AhjoDecisionDetailsRequest,
+    AhjoDecisionMakerRequest,
     AhjoDecisionProposalRequest,
     AhjoDeleteCaseRequest,
     AhjoOpenCaseRequest,
+    AhjoRequest,
     AhjoSubscribeDecisionRequest,
     AhjoUpdateRecordsRequest,
 )
@@ -392,7 +401,7 @@ PDF_CONTENT_TYPE = "application/pdf"
 
 
 def generate_application_attachment(
-    application: Application, type: AttachmentType
+    application: Application, type: AttachmentType, decision: AhjoDecisionText = None
 ) -> Attachment:
     """Generate and save an Attachment of the requested type for the given application"""
     if type == AttachmentType.PDF_SUMMARY:
@@ -402,8 +411,6 @@ def generate_application_attachment(
         )
         content_type = PDF_CONTENT_TYPE
     elif type == AttachmentType.DECISION_TEXT_XML:
-        decision = AhjoDecisionText.objects.get(application=application)
-
         xml_builder = AhjoPublicXMLBuilder(application, decision)
         xml_string = xml_builder.generate_xml()
 
@@ -559,17 +566,23 @@ def send_decision_proposal_to_ahjo(
 
     ahjo_request = AhjoDecisionProposalRequest(application=application)
     ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
+    decision = AhjoDecisionText.objects.get(application=application)
 
     delete_existing_xml_attachments(application)
 
     decision_xml = generate_application_attachment(
-        application, AttachmentType.DECISION_TEXT_XML
+        application, AttachmentType.DECISION_TEXT_XML, decision
     )
     secret_xml = generate_application_attachment(
         application, AttachmentType.DECISION_TEXT_SECRET_XML
     )
 
-    data = prepare_decision_proposal_payload(application, decision_xml, secret_xml)
+    data = prepare_decision_proposal_payload(
+        application=application,
+        decision_xml=decision_xml,
+        decision_text=decision,
+        secret_xml=secret_xml,
+    )
     response, response_text = ahjo_client.send_request_to_ahjo(data)
     create_status_for_application(application, AhjoStatusEnum.DECISION_PROPOSAL_SENT)
     return response, response_text
@@ -612,3 +625,42 @@ def get_decision_details_from_ahjo(
     ahjo_request = AhjoDecisionDetailsRequest(application)
     ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
     return ahjo_client.send_request_to_ahjo()
+
+
+class AhjoRequestHandler:
+    def __init__(self, ahjo_token: AhjoToken, ahjo_request_type: AhjoRequest):
+        self.ahjo_token = ahjo_token
+        self.ahjo_request_type = ahjo_request_type
+
+    def handle_request_without_application(self):
+        if self.ahjo_request_type == AhjoRequestType.GET_DECISION_MAKER:
+            self.get_decision_maker_from_ahjo()
+        else:
+            raise ValueError("Invalid request type")
+
+    def get_decision_maker_from_ahjo(self) -> Union[List, None]:
+        ahjo_client = AhjoApiClient(self.ahjo_token, AhjoDecisionMakerRequest())
+        result = ahjo_client.send_request_to_ahjo()
+        AhjoResponseHandler.handle_decisionmaker_response(result)
+
+
+class AhjoResponseHandler:
+    @staticmethod
+    def handle_decisionmaker_response(response: tuple[None, dict]) -> None:
+        filtered_data = AhjoResponseHandler.filter_decision_makers(response[1])
+        if filtered_data:
+            AhjoSetting.objects.update_or_create(
+                name="ahjo_decision_maker", defaults={"data": filtered_data}
+            )
+
+    @staticmethod
+    def filter_decision_makers(data: dict) -> List[dict]:
+        """Filter the decision makers Name and ID from the Ahjo response."""
+        result = []
+        for item in data["decisionMakers"]:
+            organization = item.get("Organization")
+            if organization and organization.get("IsDecisionMaker"):
+                result.append(
+                    {"Name": organization.get("Name"), "ID": organization.get("ID")}
+                )
+        return result

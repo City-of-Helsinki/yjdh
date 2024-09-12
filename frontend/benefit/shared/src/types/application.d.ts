@@ -260,6 +260,8 @@ export interface DecisionProposalDraft {
   decisionText?: string;
   justificationText?: string;
   applicationId?: string;
+  decisionMakerId?: string;
+  decsionMakerName?: string;
 }
 
 export type Application = {
@@ -304,6 +306,17 @@ export type Application = {
 } & Step1 &
   Step2;
 
+export type DecisionMaker = {
+  id: string;
+  name: string;
+};
+
+export type DecisionMakerOptions = Array<DecisionMaker>;
+
+export interface AhjoSettingsResponse {
+  name: string;
+  data: DecisionMakerOptions;
+}
 export interface Step1 {
   [APPLICATION_FIELDS_STEP1_KEYS.USE_ALTERNATIVE_ADDRESS]?: boolean;
   [APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_STREET_ADDRESS]?: string;

@@ -27,6 +27,7 @@ export const BackendEndpoint = {
   SEARCH: 'v1/search/',
   APPLICATIONS_WITH_UNREAD_MESSAGES:
     'v1/handlerapplications/with_unread_messages/',
+  AHJO_SETTINGS: 'v1/ahjosettings/decision-maker/',
 } as const;
 
 const singleBatchBase = (id: string): string =>

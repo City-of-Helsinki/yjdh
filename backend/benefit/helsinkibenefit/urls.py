@@ -24,6 +24,7 @@ from applications.api.v1.ahjo_integration_views import (
     AhjoCallbackView,
     AhjoDecisionCallbackView,
 )
+from applications.api.v1.ahjo_setting_views import AhjoSettingDetailView
 from applications.api.v1.review_state_views import ReviewStateView
 from applications.api.v1.search_views import SearchView
 from applications.api.v1.talpa_integration_views import TalpaCallbackView
@@ -86,6 +87,11 @@ router.register(
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path(
+        "v1/ahjosettings/decision-maker/",
+        AhjoSettingDetailView.as_view(),
+        name="ahjo-setting-detail",
+    ),
     path(
         "v1/ahjo-integration/callback/<str:request_type>/<uuid:uuid>",
         AhjoCallbackView.as_view(),

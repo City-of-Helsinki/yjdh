@@ -188,6 +188,8 @@ class DecisionProposalDraftUpdate(APIView):
                         else DecisionType.DENIED
                     ),
                     decision_text=decision_text,
+                    decision_maker_id=data.get("decision_maker_id"),
+                    decision_maker_name=data.get("decision_maker_name"),
                 )
             else:
                 AhjoDecisionText.objects.create(
@@ -199,6 +201,8 @@ class DecisionProposalDraftUpdate(APIView):
                         else DecisionType.DENIED
                     ),
                     decision_text=decision_text,
+                    decision_maker_id=data.get("decision_maker_id"),
+                    decision_maker_name=data.get("decision_maker_name"),
                 )
 
         if data["review_step"] >= 4:

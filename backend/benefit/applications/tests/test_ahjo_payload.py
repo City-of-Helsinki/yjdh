@@ -10,7 +10,7 @@ from applications.enums import (
     AhjoRequestType,
     AttachmentType,
 )
-from applications.models import Attachment
+from applications.models import AhjoDecisionText, Attachment
 from applications.services.ahjo_payload import (
     _prepare_case_records,
     _prepare_record,
@@ -18,6 +18,7 @@ from applications.services.ahjo_payload import (
     _prepare_record_title,
     _prepare_top_level_dict,
     prepare_case_title,
+    prepare_decision_proposal_payload,
     prepare_final_case_title,
     prepare_update_application_payload,
     resolve_payload_language,
@@ -330,3 +331,65 @@ def test_resolve_payload_language(
     got = resolve_payload_language(decided_application)
 
     assert expected_payload_language == got
+
+
+def test_prepare_decision_proposal_payload(application_with_ahjo_decision):
+    application = application_with_ahjo_decision
+    handler = application.calculation.handler
+    handler.ad_username = "test_user"
+    handler.save()
+    handler_name = f"{handler.last_name}, {handler.first_name}"
+    handler_id = handler.ad_username
+    language = resolve_payload_language(application)
+    decision = AhjoDecisionText.objects.get(application=application)
+
+    attachment_for_testing = application.attachments.first()
+
+    want = {
+        "records": [
+            {
+                "Title": AhjoRecordTitle.DECISION_PROPOSAL,
+                "Type": AhjoRecordType.DECISION_PROPOSAL,
+                "PublicityClass": "Julkinen",
+                "Language": language,
+                "PersonalData": "Sisältää henkilötietoja",
+                "Documents": [_prepare_record_document_dict(attachment_for_testing)],
+                "Agents": [
+                    {
+                        "Role": "mainCreator",
+                        "Name": handler_name,
+                        "ID": handler_id,
+                    },
+                    {
+                        "Role": "decisionMaker",
+                        "ID": decision.decision_maker_id,
+                    },
+                ],
+            },
+            {
+                "Title": AhjoRecordTitle.SECRET_ATTACHMENT,
+                "Type": AhjoRecordType.SECRET_ATTACHMENT,
+                "PublicityClass": "Salassa pidettävä",
+                "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
+                "Language": language,
+                "PersonalData": "Sisältää erityisiä henkilötietoja",
+                "Documents": [_prepare_record_document_dict(attachment_for_testing)],
+                "Agents": [
+                    {
+                        "Role": "mainCreator",
+                        "Name": handler_name,
+                        "ID": handler_id,
+                    }
+                ],
+            },
+        ]
+    }
+
+    got = prepare_decision_proposal_payload(
+        application=application,
+        decision_xml=attachment_for_testing,
+        decision_text=decision,
+        secret_xml=attachment_for_testing,
+    )
+
+    assert want == got

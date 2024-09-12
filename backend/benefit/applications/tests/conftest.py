@@ -535,7 +535,7 @@ def generate_ahjo_case_id():
 
 
 @pytest.fixture
-def application_with_ahjo_decision(application_with_ahjo_case_id):
+def application_with_ahjo_decision(application_with_ahjo_case_id, fake_decisionmakers):
     template = AcceptedDecisionProposalFactory()
     replaced_decision_text = replace_decision_template_placeholders(
         template.template_decision_text + template.template_justification_text,
@@ -547,6 +547,8 @@ def application_with_ahjo_decision(application_with_ahjo_case_id):
         decision_type=DecisionType.ACCEPTED,
         decision_text=replaced_decision_text,
         language="fi",
+        decision_maker_id=fake_decisionmakers[0]["ID"],
+        decision_maker_name=fake_decisionmakers[0]["Name"],
     )
     return application_with_ahjo_case_id
 
@@ -861,4 +863,223 @@ def application_alteration(decided_application):
         application=decided_application,
         alteration_type=ApplicationAlterationType.TERMINATION,
         handled_by=decided_application.handler,
+    )
+
+
+@pytest.fixture
+def decisionmaker_response():
+    return (
+        None,
+        {
+            "decisionMakers": [
+                {
+                    "Organization": {
+                        "links": [],
+                        "Name": "Tiimipäällikkö, työnantajille myönnettävät taloudelliset tuet",
+                        "ID": "XYZÅÄÖ123",
+                        "TypeId": "12",
+                        "Existing": "true",
+                        "Formed": "2023-03-01T00:00:00.000",
+                        "Dissolved": "2100-01-01T00:00:00.000",
+                        "Type": "Viranhaltija",
+                        "Sector": {
+                            "links": [],
+                            "SectorID": "456",
+                            "Sector": "Keskushallinto",
+                            "PendingCases": 0,
+                        },
+                        "OrganizationLevelAbove": {
+                            "organizations": [
+                                {
+                                    "links": [
+                                        {
+                                            "rel": "self",
+                                            "href": "https://dummy.url",
+                                        }
+                                    ],
+                                    "Name": "Työnantajille myönnettävät taloudelliset tuet",
+                                    "ID": "XYZÅÄÖ123",
+                                    "TypeId": "20",
+                                    "Existing": "true",
+                                    "Formed": "2023-03-01T00:00:00.000",
+                                    "Dissolved": "2100-01-01T00:00:00.000",
+                                }
+                            ],
+                            "count": 1,
+                            "links": [],
+                        },
+                        "OrganizationLevelBelow": {
+                            "organizations": [],
+                            "count": 0,
+                            "links": [],
+                        },
+                        "IsDecisionMaker": True,
+                    },
+                    "Sector": {
+                        "links": [],
+                        "SectorID": "123",
+                        "Sector": "Keskushallinto",
+                        "PendingCases": 0,
+                    },
+                    "Composition": [],
+                },
+                {
+                    "Organization": {
+                        "links": [],
+                        "Name": "Helsinki-lisä-suunnittelija",
+                        "ID": "XYZÅÄÖ123",
+                        "TypeId": "12",
+                        "Existing": "true",
+                        "Formed": "2023-05-26T00:00:00.000",
+                        "Dissolved": "2100-01-01T00:00:00.000",
+                        "Type": "Viranhaltija",
+                        "Sector": {
+                            "links": [],
+                            "SectorID": "U50",
+                            "Sector": "Keskushallinto",
+                            "PendingCases": 0,
+                        },
+                        "OrganizationLevelAbove": {
+                            "organizations": [
+                                {
+                                    "links": [
+                                        {
+                                            "rel": "self",
+                                            "href": "https://dummy.url",
+                                        }
+                                    ],
+                                    "Name": "Työnantajille myönnettävät taloudelliset tuet",
+                                    "ID": "XYZÅÄÖ123",
+                                    "TypeId": "5",
+                                    "Existing": "true",
+                                    "Formed": "2023-03-01T00:00:00.000",
+                                    "Dissolved": "2100-01-01T00:00:00.000",
+                                }
+                            ],
+                            "count": 1,
+                            "links": [],
+                        },
+                        "OrganizationLevelBelow": {
+                            "organizations": [],
+                            "count": 0,
+                            "links": [],
+                        },
+                        "IsDecisionMaker": True,
+                    },
+                    "Sector": {
+                        "links": [],
+                        "SectorID": "123",
+                        "Sector": "Keskushallinto",
+                        "PendingCases": 0,
+                    },
+                    "Composition": [],
+                },
+                {
+                    "Organization": {
+                        "links": [],
+                        "Name": "Työnantajille myönnettävät taloudelliset tuet",
+                        "ID": "XYZÅÄÖ123",
+                        "TypeId": "20",
+                        "Existing": "true",
+                        "Formed": "2023-03-01T00:00:00.000",
+                        "Dissolved": "2100-01-01T00:00:00.000",
+                        "Type": "Tiimi",
+                        "Sector": {
+                            "links": [],
+                            "SectorID": "U50",
+                            "Sector": "Keskushallinto",
+                            "PendingCases": 0,
+                        },
+                        "OrganizationLevelAbove": {
+                            "organizations": [
+                                {
+                                    "links": [
+                                        {
+                                            "rel": "self",
+                                            "href": "https://dummy.url",
+                                        }
+                                    ],
+                                    "Name": "Työllisyyspalvelut",
+                                    "ID": "XYZÅÄÖ123",
+                                    "TypeId": "10",
+                                    "Existing": "true",
+                                    "Formed": "2023-03-01T00:00:00.000",
+                                    "Dissolved": "2100-01-01T00:00:00.000",
+                                }
+                            ],
+                            "count": 1,
+                            "links": [],
+                        },
+                        "OrganizationLevelBelow": {
+                            "organizations": [
+                                {
+                                    "links": [
+                                        {
+                                            "rel": "self",
+                                            "href": "https://dummy.url",
+                                        }
+                                    ],
+                                    "Name": "Tiimipäällikkö, työnantajille myönnettävät taloudelliset tuet",
+                                    "ID": "ABCDEFG3456",
+                                    "TypeId": "11",
+                                    "Existing": "true",
+                                    "Formed": "2023-03-01T00:00:00.000",
+                                    "Dissolved": "2100-01-01T00:00:00.000",
+                                },
+                                {
+                                    "links": [
+                                        {
+                                            "rel": "self",
+                                            "href": "https://dummy.url",
+                                        }
+                                    ],
+                                    "Name": "Helsinki-lisä-suunnittelija",
+                                    "ID": "ABCDEFG123",
+                                    "TypeId": "00",
+                                    "Existing": "true",
+                                    "Formed": "2023-05-26T00:00:00.000",
+                                    "Dissolved": "2100-01-01T00:00:00.000",
+                                },
+                            ],
+                            "count": 2,
+                            "links": [],
+                        },
+                        "IsDecisionMaker": False,
+                    },
+                    "Sector": {
+                        "links": [],
+                        "SectorID": "ABCD",
+                        "Sector": "Keskushallinto",
+                        "PendingCases": 0,
+                    },
+                    "Composition": [],
+                },
+            ],
+            "count": 3,
+            "links": [
+                {
+                    "rel": "self",
+                    "href": "https://dummy.url",
+                }
+            ],
+        },
+    )
+
+
+@pytest.fixture
+def fake_decisionmakers():
+    return [
+        {
+            "ID": "ABCDEFGH12345678",
+            "Name": "Tiimipäällikkö, työnantajille myönnettävät taloudelliset tuet",
+        },
+        {"ID": "HIJKLMNOPQRSTUWXYZ", "Name": "Helsinki-lisä-suunnittelija"},
+    ]
+
+
+@pytest.fixture
+def decision_maker_settings(fake_decisionmakers):
+    return AhjoSetting.objects.create(
+        name="ahjo_decision_maker",
+        data=fake_decisionmakers,
     )

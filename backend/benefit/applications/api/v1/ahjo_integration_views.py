@@ -257,10 +257,10 @@ class AhjoCallbackView(APIView):
     def handle_failure_callback(
         self, application: Application, callback_data: dict
     ) -> Response:
-        self._log_failure_details(application, callback_data)
         latest_status = application.ahjo_status.latest()
         latest_status.error_from_ahjo = callback_data.get("failureDetails", None)
         latest_status.save()
+        self._log_failure_details(application, callback_data)
         return Response(
             {"message": "Callback received but request was unsuccessful at AHJO"},
             status=status.HTTP_200_OK,
@@ -339,7 +339,7 @@ class AhjoCallbackView(APIView):
             if cb_record.get("status") == AhjoCallBackStatus.FAILURE:
                 LOGGER.error(
                     f"Ahjo reports failure with record, hash value {cb_record['hashValue']} \
-                        and fileURI {cb_record['fileUri']}"
+                        and fileURI {cb_record['fileURI']}"
                 )
 
 

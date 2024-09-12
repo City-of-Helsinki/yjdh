@@ -1,7 +1,8 @@
 import AppContext from 'benefit/handler/context/AppContext';
+import useAhjoSettingsQuery from 'benefit/handler/hooks/useAhjoSettingsQuery';
 import { DecisionProposalTemplateData } from 'benefit/handler/types/common';
 import { DECISION_TYPES } from 'benefit-shared/constants';
-import { Application } from 'benefit-shared/types/application';
+import { Application, DecisionMaker } from 'benefit-shared/types/application';
 import { Select, SelectionGroup } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -20,11 +21,22 @@ type HandlingStepProps = {
   application: Application;
 };
 
+const replaceDecisionTemplatePlaceholders = (
+  text: string,
+  role: string
+): string => {
+  let replacedText = '';
+
+  replacedText = text.replace(/@role/gi, role);
+
+  return replacedText;
+};
+
 const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
   application,
 }) => {
   const { applicantLanguage, id } = application;
-
+ 
   const { t } = useTranslation();
   const translationBase = 'common:review.decisionProposal';
   const { handledApplication, setHandledApplication } =
@@ -34,6 +46,9 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
     React.useState<string>(handledApplication?.justificationText || '');
   const [templateForDecisionText, setTemplateForDecisionText] =
     React.useState<string>(handledApplication?.decisionText || '');
+  
+  const [selectedDecisionMaker, setSelectedDecisionMaker] =
+    React.useState<DecisionMaker | null>(null);
 
   const decisionType =
     handledApplication?.status === 'accepted'
@@ -41,44 +56,21 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
       : DECISION_TYPES.DENIED;
 
   const { data: sections } = useDecisionProposalTemplateQuery(id, decisionType);
+  const { data: decisionMakerOptions } = useAhjoSettingsQuery();
 
-  const replaceDecisionTemplatePlaceholders = (
-    text: string,
-    role: string
-  ): string => {
-    let replacedText = '';
-
-    const translations = {
-      handler: t(`${translationBase}.role.fields.decisionMaker.manager`),
-      manager: t(`${translationBase}.role.fields.decisionMaker.handler`),
-      currentRole: t(`${translationBase}.role.fields.decisionMaker.${role}`),
-    };
-
-    replacedText = text.replace(/@role/gi, translations.currentRole);
-    // eslint-disable-next-line security/detect-non-literal-regexp
-    const roleKeyRegExp = new RegExp(
-      `(${translations.handler}|${translations.manager})`,
-      'gi'
-    );
-
-    replacedText = replacedText.replace(
-      roleKeyRegExp,
-      translations.currentRole
-    );
-
-    return replacedText;
-  };
   const selectTemplate = (option: DecisionProposalTemplateData): void => {
+    if (!selectedDecisionMaker) return;
+
     setTemplateForDecisionText(
       replaceDecisionTemplatePlaceholders(
         option.template_decision_text,
-        handledApplication?.handlerRole
+        selectedDecisionMaker.name
       )
     );
     setTemplateForJustificationText(
       replaceDecisionTemplatePlaceholders(
         option.template_justification_text,
-        handledApplication?.handlerRole
+        selectedDecisionMaker.name
       )
     );
 
@@ -86,12 +78,14 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
       ...handledApplication,
       decisionText: replaceDecisionTemplatePlaceholders(
         option.template_decision_text,
-        handledApplication?.handlerRole
+        selectedDecisionMaker.name
       ),
       justificationText: replaceDecisionTemplatePlaceholders(
         option.template_justification_text,
-        handledApplication?.handlerRole
+        selectedDecisionMaker.name
       ),
+      decisionMakerId: selectedDecisionMaker.id,
+      decisionMakerName: selectedDecisionMaker.name,
     });
   };
 
@@ -125,83 +119,55 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={12}>
-          <SelectionGroup
+        <SelectionGroup
             label={t(`${translationBase}.role.fields.decisionMaker.label`)}
             tooltipText={t(
               `${translationBase}.role.fields.decisionMaker.tooltipText`
             )}
           >
-            <$RadioButton
-              checked={handledApplication?.handlerRole === 'handler'}
-              key="radio-decision-maker-handler"
-              id="radio-decision-maker-handler"
-              value="handler"
-              label={t(`${translationBase}.role.fields.decisionMaker.handler`)}
-              onChange={(value) => {
-                if (value) {
-                  setTemplateForDecisionText(
-                    replaceDecisionTemplatePlaceholders(
-                      handledApplication?.decisionText || '',
-                      'handler'
-                    )
-                  );
-                  setTemplateForJustificationText(
-                    replaceDecisionTemplatePlaceholders(
-                      handledApplication?.justificationText || '',
-                      'handler'
-                    )
-                  );
-                  setHandledApplication({
-                    ...handledApplication,
-                    handlerRole: 'handler',
-                    decisionText: replaceDecisionTemplatePlaceholders(
-                      handledApplication?.decisionText || '',
-                      'handler'
-                    ),
-                    justificationText: replaceDecisionTemplatePlaceholders(
-                      handledApplication?.justificationText || '',
-                      'handler'
-                    ),
+            {decisionMakerOptions?.map((option) => (
+              <$RadioButton
+                key={`radio-decision-maker-${option.id}`}
+                id={`radio-decision-maker-${option.id}`}
+                value={option.id}
+                label={option.name}
+                checked={selectedDecisionMaker?.id === option?.id}
+                onChange={(value) => {
+                  setSelectedDecisionMaker({
+                    id: option.id,
+                    name: option.name,
                   });
-                }
-              }}
-            />
-            <$RadioButton
-              checked={handledApplication?.handlerRole === 'manager'}
-              key="radio-decision-maker-manager"
-              id="radio-decision-maker-manager"
-              value="manager"
-              label={t(`${translationBase}.role.fields.decisionMaker.manager`)}
-              name="inspection_mode"
-              onChange={(value) => {
-                if (value) {
-                  setTemplateForDecisionText(
-                    replaceDecisionTemplatePlaceholders(
-                      handledApplication?.decisionText || '',
-                      'manager'
-                    )
-                  );
-                  setTemplateForJustificationText(
-                    replaceDecisionTemplatePlaceholders(
-                      handledApplication?.justificationText || '',
-                      'manager'
-                    )
-                  );
-                  setHandledApplication({
-                    ...handledApplication,
-                    handlerRole: 'manager',
-                    decisionText: replaceDecisionTemplatePlaceholders(
-                      handledApplication?.decisionText || '',
-                      'manager'
-                    ),
-                    justificationText: replaceDecisionTemplatePlaceholders(
-                      handledApplication?.justificationText || '',
-                      'manager'
-                    ),
-                  });
-                }
-              }}
-            />
+                  if (value) {
+                    setTemplateForDecisionText(
+                      replaceDecisionTemplatePlaceholders(
+                        handledApplication?.decisionText || '',
+                        option.name
+                      )
+                    );
+
+                    setTemplateForJustificationText(
+                      replaceDecisionTemplatePlaceholders(
+                        handledApplication?.justificationText || '',
+                        option.name
+                      )
+                    );
+
+                    setHandledApplication({
+                      ...handledApplication,
+                      handlerRole: 'handler',
+                      decisionText: replaceDecisionTemplatePlaceholders(
+                        handledApplication?.decisionText || '',
+                        option.name
+                      ),
+                      justificationText: replaceDecisionTemplatePlaceholders(
+                        handledApplication?.justificationText || '',
+                        option.name
+                      ),
+                    });
+                  }
+                }}
+              />
+            ))}
           </SelectionGroup>
         </$GridCell>
       </$ReviewGrid>

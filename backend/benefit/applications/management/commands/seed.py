@@ -5,6 +5,7 @@ import pytz
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+from rest_framework.authtoken.models import Token
 
 from applications.enums import (
     AhjoStatus as AhjoStatusEnum,
@@ -17,6 +18,7 @@ from applications.enums import (
 )
 from applications.models import (
     AhjoDecisionText,
+    AhjoSetting,
     AhjoStatus,
     Application,
     ApplicationBasis,
@@ -207,6 +209,11 @@ def run_seed(number):
 
     _create_templates()
 
+    _create_dummy_ahjo_user_and_token()
+
+    if not AhjoSetting.objects.exists():
+        _create_dummy_ahjo_settings()
+
 
 def _past_datetime(days: int) -> datetime:
     return timezone.now() - timedelta(days=days)
@@ -215,3 +222,46 @@ def _past_datetime(days: int) -> datetime:
 def _create_templates():
     AcceptedDecisionProposalFactory(),
     DeniedDecisionProposalFactory(),
+
+
+def _create_dummy_ahjo_user_and_token():
+    user = User.objects.create_user(
+        username="foo", email="foo@bar.com", password="foobar"
+    )
+    Token.objects.create(user=user)
+
+
+def _create_dummy_ahjo_settings():
+    AhjoSetting.objects.create(
+        name="application_alteration_fields",
+        data={
+            "account_number": "FI1234567890",
+            "billing_department": "1800 Kaupunginkanslia (Kansl)",
+        },
+    )
+
+    AhjoSetting.objects.create(
+        name="p2p_settings",
+        data={
+            "acceptor_name": "Jaska Jokunen",
+            "inspector_name": "Tiina Testi",
+            "inspector_email": "tarkastaja@testi.com",
+        },
+    )
+
+    AhjoSetting.objects.create(
+        name="ahjo_org_identifier",
+        data={
+            "id": "1234567-8",
+        },
+    )
+    AhjoSetting.objects.create(
+        name="ahjo_decision_maker",
+        data=[
+            {
+                "ID": "ABCDEFGH12345678",
+                "Name": "Tiimipäällikkö, työnantajille myönnettävät taloudelliset tuet",
+            },
+            {"ID": "HIJKLMNOPQRSTUWXYZ", "Name": "Helsinki-lisä-suunnittelija"},
+        ],
+    )

@@ -4,6 +4,7 @@ from datetime import datetime
 import pytest
 from rest_framework.reverse import reverse
 
+from applications.api.v1.serializers.decision_text import DecisionTextSerializer
 from applications.enums import AhjoDecisionDetails, DecisionType
 from applications.models import AhjoDecisionText
 from applications.services.ahjo_decision_service import (
@@ -90,30 +91,123 @@ def test_decision_text_api_unauthenticated(anonymous_client, decided_application
 
 
 @pytest.mark.parametrize(
-    "decision_type, language",
+    "decision_type, language, status_code",
     [
-        (DecisionType.ACCEPTED, "fi"),
-        (DecisionType.ACCEPTED, "sv"),
-        (DecisionType.DENIED, "fi"),
-        (DecisionType.DENIED, "sv"),
+        (DecisionType.ACCEPTED, "fi", 201),
+        (DecisionType.ACCEPTED, "sv", 201),
+        (DecisionType.DENIED, "fi", 201),
+        (DecisionType.DENIED, "sv", 201),
     ],
 )
 @pytest.mark.django_db
 def test_decision_text_api_post(
-    decided_application, handler_api_client, decision_type, language
+    decided_application,
+    handler_api_client,
+    decision_type,
+    language,
+    fake_decisionmakers,
+    status_code,
 ):
     url = get_decisions_list_url(decided_application.id)
     data = {
         "decision_type": decision_type,
         "decision_text": "Test decision text",
         "language": language,
+        "decision_maker_id": fake_decisionmakers[0]["ID"],
+        "decision_maker_name": fake_decisionmakers[0]["Name"],
     }
     response = handler_api_client.post(url, data)
-    assert response.status_code == 201
+    assert response.status_code == status_code
     decision_text = AhjoDecisionText.objects.get(application=decided_application)
     assert decision_text.decision_type == decision_type
     assert decision_text.decision_text == "Test decision text"
     assert decision_text.language == language
+    assert decision_text.decision_maker_id == fake_decisionmakers[0]["ID"]
+    assert decision_text.decision_maker_name == fake_decisionmakers[0]["Name"]
+
+
+@pytest.mark.parametrize(
+    "decision_type, language, status_code",
+    [
+        (DecisionType.ACCEPTED, "fi", 400),
+        (DecisionType.ACCEPTED, "sv", 400),
+        (DecisionType.DENIED, "fi", 400),
+        (DecisionType.DENIED, "sv", 400),
+    ],
+)
+def test_decision_text_api_without_decision_maker_data(
+    decided_application,
+    handler_api_client,
+    decision_type,
+    language,
+    status_code,
+    fake_decisionmakers,
+):
+    url = get_decisions_list_url(decided_application.id)
+
+    data = {
+        "decision_type": decision_type,
+        "decision_text": "Test decision text",
+        "language": language,
+        "decision_maker_id": None,
+        "decision_maker_name": None,
+    }
+
+    response = handler_api_client.post(url, data)
+    assert response.status_code == status_code
+
+    decision_text = AhjoDecisionText.objects.create(
+        application=decided_application,
+        decision_type=DecisionType.ACCEPTED,
+        decision_text="Test decision text",
+        language="fi",
+        decision_maker_id=fake_decisionmakers[0]["ID"],
+        decision_maker_name=fake_decisionmakers[0]["Name"],
+    )
+
+    url = get_decisions_detail_url(decided_application.id, decision_text.id)
+
+    response = handler_api_client.put(url, data)
+    assert response.status_code == status_code
+
+
+@pytest.mark.parametrize(
+    "decision_type, language",
+    [
+        (DecisionType.ACCEPTED, "fi"),
+        (
+            DecisionType.ACCEPTED,
+            "sv",
+        ),
+        (
+            DecisionType.DENIED,
+            "fi",
+        ),
+        (
+            DecisionType.DENIED,
+            "sv",
+        ),
+    ],
+)
+@pytest.mark.django_db
+def test_decision_text_serializer_validation_errors(decision_type, language):
+    invalid_data = {
+        "decision_type": decision_type,
+        "decision_text": "Test decision text",
+        "language": language,
+        "decision_maker_id": None,
+        "decision_maker_name": None,
+    }
+
+    serializer = DecisionTextSerializer(data=invalid_data)
+
+    assert not serializer.is_valid()
+
+    assert "decision_maker_name" in serializer.errors
+    assert "decision_maker_id" in serializer.errors
+
+    assert serializer.errors["decision_maker_name"] == ["This field is required."]
+    assert serializer.errors["decision_maker_id"] == ["This field is required."]
 
 
 def test_decision_text_api_get(decided_application, handler_api_client):
@@ -131,18 +225,24 @@ def test_decision_text_api_get(decided_application, handler_api_client):
     assert response.data["language"] == decision_text.language
 
 
-def test_decision_text_api_put(decided_application, handler_api_client):
+def test_decision_text_api_put(
+    decided_application, handler_api_client, fake_decisionmakers
+):
     decision_text = AhjoDecisionText.objects.create(
         application=decided_application,
         decision_type=DecisionType.ACCEPTED,
         decision_text="Test decision text",
         language="fi",
+        decision_maker_id=fake_decisionmakers[0]["ID"],
+        decision_maker_name=fake_decisionmakers[0]["Name"],
     )
     url = get_decisions_detail_url(decided_application.id, decision_text.id)
     data = {
         "decision_type": DecisionType.DENIED,
         "decision_text": "Uppdated Test decision text",
         "language": "sv",
+        "decision_maker_id": fake_decisionmakers[1]["ID"],
+        "decision_maker_name": fake_decisionmakers[1]["Name"],
     }
     response = handler_api_client.put(url, data)
     assert response.status_code == 200
@@ -150,6 +250,8 @@ def test_decision_text_api_put(decided_application, handler_api_client):
     assert decision_text.decision_type == data["decision_type"]
     assert decision_text.language == data["language"]
     assert decision_text.decision_text == data["decision_text"]
+    assert decision_text.decision_maker_id == data["decision_maker_id"]
+    assert decision_text.decision_maker_name == data["decision_maker_name"]
 
 
 def test_parse_details_from_decision_response(
