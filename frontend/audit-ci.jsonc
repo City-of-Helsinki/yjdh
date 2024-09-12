@@ -10,6 +10,8 @@
     "ip", // testcafe, lerna
     "ws", // testcafe, jest
     "semver", // testcafe, jest, eslint
-    "axios" // tet, ks
+    "axios", // tet, ks
+    "path-to-regexp", // express
+    "body-parser" // express
   ]
 }
