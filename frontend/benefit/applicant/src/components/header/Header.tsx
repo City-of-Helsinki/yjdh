@@ -1,4 +1,4 @@
-import { ROUTES } from 'benefit/applicant/constants';
+import { ROUTES, SUPPORTED_LANGUAGES } from 'benefit/applicant/constants';
 import useLogin from 'benefit/applicant/hooks/useLogin';
 import useLogout from 'benefit/applicant/hooks/useLogout';
 import useUserQuery from 'benefit/applicant/hooks/useUserQuery';
@@ -27,7 +27,7 @@ const Header: React.FC = () => {
     isNavigationVisible,
   } = useHeader();
   const router = useRouter();
-  const { asPath } = router;
+  const { asPath, locale } = router;
 
   const login = useLogin();
   const userQuery = useUserQuery();
@@ -42,7 +42,11 @@ const Header: React.FC = () => {
     <>
       <BaseHeader
         title={t('common:appName')}
-        titleUrl={ROUTES.HOME}
+        titleUrl={
+          locale === SUPPORTED_LANGUAGES.FI
+            ? ROUTES.HOME
+            : `/${locale}${ROUTES.HOME}`
+        }
         skipToContentLabel={t('common:header.linkSkipToContent')}
         menuToggleAriaLabel={t('common:header.menuToggleAriaLabel')}
         languages={languageOptions}
