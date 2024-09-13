@@ -98,8 +98,6 @@ class EauthAuthenticationRequestView(View):
                         f"Reading nationalIdentificationNumber from Helsinki Profile API failed: {str(e)}"
                     )
                     return self.login_failure()
-                print("Profile: ", profile)
-
                 user_ssn = profile["user_ssn"]
 
         if user_ssn is None:
