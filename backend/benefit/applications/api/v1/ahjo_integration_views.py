@@ -255,6 +255,10 @@ class AhjoCallbackView(APIView):
     ) -> Response:
         latest_status = application.ahjo_status.latest()
 
+        latest_status.ahjo_request_id = callback_data.get(
+            "requestId", "no request id received"
+        )
+
         latest_status.error_from_ahjo = callback_data.get(
             "failureDetails", DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE
         )

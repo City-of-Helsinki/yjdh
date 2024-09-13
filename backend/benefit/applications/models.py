@@ -1173,6 +1173,12 @@ class AhjoStatus(TimeStampedModel):
         blank=True,
     )
 
+    ahjo_request_id = models.CharField(
+        max_length=64,
+        null=True,
+        blank=True,
+    )
+
     def __str__(self):
         return self.status
 

@@ -655,6 +655,7 @@ def test_ahjo_callback_failure(
         assert latest_status.error_from_ahjo == DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE
     else:
         assert latest_status.error_from_ahjo == ahjo_callback_payload["failureDetails"]
+        assert latest_status.ahjo_request_id == ahjo_callback_payload["requestId"]
 
 
 @pytest.mark.parametrize(
