@@ -74,6 +74,7 @@
       "edit": "Edit",
       "close": "Close",
       "print": "Print the application",
+      "clone": "Copy as new application base",
       "openTermsAsPDF": "Open the terms as a PDF file",
       "continueToService": "Continue to the service",
       "pauseAndExit": "Cancel and exit",
@@ -418,7 +419,11 @@
       }
     },
     "errors": {
-      "dirtyOrInvalidForm": "Please fill any missing or invalid form fields"
+      "dirtyOrInvalidForm": "Please fill any missing or invalid form fields",
+      "cloneError": {
+        "title": "No previous applications found",
+        "message": "Please fill in a new application form"
+      }
     },
     "decision": {
       "description": {
@@ -614,7 +619,11 @@
       "description1": "Welcome to the Helsinki benefit service.",
       "description2": "Before filling out the application, review the necessary information and required attachments if needed. You can save an incomplete application as a draft and return to it later.",
       "linkText": " Please take a look at the required information and attachments before filling in the application.",
-      "newApplicationBtnText": "Submit a new application"
+      "newApplicationBtnText": "Submit a new application",
+      "cloneApplication": {
+        "helperText": "The application which was submitted last will be used as a template",
+        "buttonText": "Copy previous application"
+      }
     },
     "decisions": {
       "heading": "Archive",

@@ -74,6 +74,7 @@
       "edit": "Redigera",
       "close": "Stäng",
       "print": "Skriv ut ansökan",
+      "clone": "Kopiera ansökan",
       "openTermsAsPDF": "Öppna villkoren som PDF-fil",
       "continueToService": "Fortsätt till tjänsten",
       "pauseAndExit": "Avbryt och lämna sidan",
@@ -418,7 +419,11 @@
       }
     },
     "errors": {
-      "dirtyOrInvalidForm": "Fyll i eventuella saknade eller ogiltiga formulärfält"
+      "dirtyOrInvalidForm": "Fyll i eventuella saknade eller ogiltiga formulärfält",
+      "cloneError": {
+        "title": "Inga tidigare ansökningar har hittats",
+        "message": "Vänligen skapa en ny ansökan"
+      }
     },
     "decision": {
       "description": {
@@ -614,7 +619,11 @@
       "description1": "Välkommen till e-tjänsten för Helsingforstillägg.",
       "description2": "Innan du fyller i ansökan, bekanta dig med den information och de bilagor som krävs för att ansöka. Du kan spara en halvfärdig ansökan och komplettera den senare.",
       "linkText": " Se vilka uppgifter och bilagor som krävs innan du fyller i ansökan.",
-      "newApplicationBtnText": "Gör en ny ansökan"
+      "newApplicationBtnText": "Gör en ny ansökan",
+      "cloneApplication": {
+        "helperText": "Den ansökan som skickades in senast kommer att användas som en mall",
+        "buttonText": "Kopiera den senaste ansökan"
+      }
     },
     "decisions": {
       "heading": "Arkiv",

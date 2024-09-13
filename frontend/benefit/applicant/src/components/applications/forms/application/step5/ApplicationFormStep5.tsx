@@ -1,13 +1,16 @@
 import SummarySection from 'benefit/applicant/components/summarySection/SummarySection';
+import { SUPPORTED_LANGUAGES } from 'benefit/applicant/constants';
+import useCloneApplicationMutation from 'benefit/applicant/hooks/useCloneApplicationMutation';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import {
   BackendEndpoint,
   getBackendUrl,
 } from 'benefit-shared/backend-api/backend-api';
 import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit-shared/constants';
-import { Button, IconPen, IconPrinter } from 'hds-react';
+import { Button, IconPen, IconPlus, IconPrinter } from 'hds-react';
 import isEmpty from 'lodash/isEmpty';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
 import {
   $Grid,
   $GridCell,
@@ -40,6 +43,25 @@ const ApplicationFormStep5: React.FC<
     translationsBase,
     isSubmit,
   } = useApplicationFormStep5(data, setIsSubmittedApplication);
+
+  const {
+    data: clonedData,
+    isLoading,
+    mutate: cloneApplication,
+  } = useCloneApplicationMutation();
+
+  const handleCloneApplication = (): void => cloneApplication(data?.id);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (clonedData?.id && data?.id) {
+      void router.push(
+        `${
+          router.locale !== SUPPORTED_LANGUAGES.FI ? router.locale : ''
+        }${router.asPath.replace(data?.id, clonedData.id)}`
+      );
+    }
+  }, [clonedData?.id, router, data?.id]);
 
   const theme = useTheme();
 
@@ -157,7 +179,7 @@ const ApplicationFormStep5: React.FC<
               {t('common:utility.close')}
             </Button>
           </$GridCell>
-          <$GridCell $colSpan={11}>
+          <$GridCell $colSpan={3}>
             <Button
               iconLeft={<IconPrinter />}
               theme="coat"
@@ -174,6 +196,18 @@ const ApplicationFormStep5: React.FC<
               }
             >
               {t(`common:applications.actions.print`)}
+            </Button>
+          </$GridCell>
+          <$GridCell $colSpan={8} justifySelf="end">
+            <Button
+              isLoading={isLoading}
+              iconLeft={<IconPlus />}
+              theme="coat"
+              role="link"
+              variant="secondary"
+              onClick={() => handleCloneApplication()}
+            >
+              {t(`common:applications.actions.clone`)}
             </Button>
           </$GridCell>
         </$Grid>

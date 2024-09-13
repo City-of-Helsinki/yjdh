@@ -1,11 +1,24 @@
 import { $ActionContainer } from 'benefit/applicant/components/mainIngress/frontPage/FrontPageMainIngress.sc';
 import { useFrontPageMainIngress } from 'benefit/applicant/components/mainIngress/frontPage/useFrontPageMainIngress';
 import MainIngress from 'benefit/applicant/components/mainIngress/MainIngress';
-import { Button, IconPlus } from 'hds-react';
+import useCloneApplicationMutation from 'benefit/applicant/hooks/useCloneApplicationMutation';
+import { Button, IconCopy, IconPlus } from 'hds-react';
+import { useRouter } from 'next/router';
 import React from 'react';
 
 const FrontPageMainIngress: React.FC = () => {
   const { t, handleNewApplicationClick } = useFrontPageMainIngress();
+
+  const { data: clonedData, mutate: cloneApplication } =
+    useCloneApplicationMutation();
+
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (clonedData?.id) {
+      void router.push(`/application?id=${clonedData.id}`);
+    }
+  }, [clonedData?.id, router]);
 
   return (
     <MainIngress
@@ -32,6 +45,19 @@ const FrontPageMainIngress: React.FC = () => {
         >
           {t('common:mainIngress.frontPage.newApplicationBtnText')}
         </Button>
+        <hr />
+        <Button
+          theme="coat"
+          variant="secondary"
+          iconLeft={<IconCopy />}
+          onClick={() => cloneApplication(null)}
+          aria-labelledby="clone-application-button-helper"
+        >
+          {t('common:mainIngress.frontPage.cloneApplication.buttonText')}
+        </Button>
+        <small id="clone-application-button-helper">
+          {t('common:mainIngress.frontPage.cloneApplication.helperText')}
+        </small>
       </$ActionContainer>
     </MainIngress>
   );
