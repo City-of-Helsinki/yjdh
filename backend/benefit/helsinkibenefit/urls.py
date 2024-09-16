@@ -25,6 +25,7 @@ from applications.api.v1.ahjo_integration_views import (
     AhjoDecisionCallbackView,
 )
 from applications.api.v1.ahjo_setting_views import AhjoSettingDetailView
+from applications.api.v1.power_bi_integration_views import PowerBiIntegrationView
 from applications.api.v1.review_state_views import ReviewStateView
 from applications.api.v1.search_views import SearchView
 from applications.api.v1.talpa_integration_views import TalpaCallbackView
@@ -111,6 +112,11 @@ urlpatterns = [
         "v1/talpa-integration/callback/",
         TalpaCallbackView.as_view(),
         name="talpa_callback_url",
+    ),
+    path(
+        "v1/powerbi-integration/",
+        PowerBiIntegrationView.as_view(),
+        name="powerbi_integration_url",
     ),
     path(
         "v1/decision-proposal-sections/",

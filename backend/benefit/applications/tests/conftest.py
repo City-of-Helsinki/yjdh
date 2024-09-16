@@ -826,6 +826,18 @@ def batch_for_decision_details(application_with_ahjo_decision):
 
 
 @pytest.fixture
+def decided_application_with_decision_date(application_with_ahjo_decision):
+    batch = ApplicationBatch.objects.create(
+        handler=application_with_ahjo_decision.calculation.handler,
+        auto_generated_by_ahjo=True,
+        decision_date=date.today(),
+    )
+    application_with_ahjo_decision.batch = batch
+    application_with_ahjo_decision.save()
+    return application_with_ahjo_decision
+
+
+@pytest.fixture
 def application_alteration_csv_service():
     application_1 = DecidedApplicationFactory(application_number=100003)
     application_2 = DecidedApplicationFactory(application_number=100004)
