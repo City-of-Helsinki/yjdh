@@ -142,7 +142,7 @@ class ImportArchivalApplicationsTestUtility:
             company.save()
 
 
-def test_decision_proposal_drafting():
+def test_import_archival_applications():
     assert ArchivalApplication.objects.all().count() == 0
     ImportArchivalApplicationsTestUtility.create_companies_for_archival_applications()
 

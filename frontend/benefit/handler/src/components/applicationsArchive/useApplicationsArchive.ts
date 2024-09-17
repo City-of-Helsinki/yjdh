@@ -79,7 +79,8 @@ const useApplicationsArchive = (
   archived: boolean,
   includeArchivalApplications: boolean,
   subsidyInEffect: SUBSIDY_IN_EFFECT,
-  decisionRange: number
+  decisionRange: number,
+  applicationNum?: string
 ): ApplicationListProps => {
   const { t } = useTranslation();
 
@@ -93,7 +94,8 @@ const useApplicationsArchive = (
     archived,
     includeArchivalApplications,
     subsidyInEffect,
-    decisionRange
+    decisionRange,
+    applicationNum
   );
 
   const shouldHideList =

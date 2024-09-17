@@ -313,3 +313,61 @@ def test_search_archival_application(handler_api_client, q, detected_pattern):
         assert match["employee"]["last_name"] == searched_app.employee_last_name
         assert match["company"]["business_id"] == searched_app.company.business_id
         assert match["company"]["name"] == searched_app.company.name
+
+
+@pytest.mark.parametrize(
+    "app_no",
+    [
+        (123456),
+    ],
+)
+def test_search_related_applications(handler_api_client, app_no, application):
+    ImportArchivalApplicationsTestUtility.create_companies_for_archival_applications()
+    call_command("import_archival_applications", filename="test.xlsx", production=True)
+    archival_application = ArchivalApplication.objects.get(application_number="R001")
+    archival_application.refresh_from_db()
+
+    application.employee.first_name = str(archival_application.employee_first_name)
+    application.employee.last_name = str(archival_application.employee_last_name)
+    application.employee.social_security_number = "010192-9906"
+    application.employee.save()
+    application.application_number = app_no
+    application.status = ApplicationStatus.ACCEPTED
+    application.archived = True
+    application.save()
+    application.refresh_from_db()
+
+    params = urlencode(
+        {"q": "", "archived": 1, "archival": 1, "app_no": app_no},
+    )
+
+    response = handler_api_client.get(f"{api_url}?{params}")
+    data = response.json()
+    assert len(data["matches"]) == 2
+    for found_application in data["matches"]:
+        assert (
+            found_application["application_number"] == app_no
+            or archival_application.application_number
+        )
+        assert (
+            found_application["employee"]["first_name"]
+            == archival_application.employee_first_name
+        )
+        assert (
+            found_application["employee"]["last_name"]
+            == archival_application.employee_last_name
+        )
+
+    # Should find everyone with unspecified year_of_birth
+    archival_application.year_of_birth = "1900"
+    archival_application.save()
+    response = handler_api_client.get(f"{api_url}?{params}")
+    data = response.json()
+    assert len(data["matches"]) == 2
+
+    # Should not find anyone with wrong year_of_birth
+    archival_application.year_of_birth = "1991"
+    archival_application.save()
+    response = handler_api_client.get(f"{api_url}?{params}")
+    data = response.json()
+    assert len(data["matches"]) == 1

@@ -15,18 +15,30 @@ const useSearchApplicationQuery = (
   archived = false,
   includeArchivalApplications = false,
   subsidyInEffect?: SUBSIDY_IN_EFFECT,
-  decisionRange?: DECISION_RANGE
+  decisionRange?: DECISION_RANGE,
+  applicationNum?: string
 ): UseMutationResult<SearchResponse, Error> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
 
-  const params = {
+  const params: {
+    q: string;
+    archived?: string;
+    archival?: string;
+    subsidy_in_effect?: SUBSIDY_IN_EFFECT;
+    years_since_decision?: DECISION_RANGE;
+    app_no?: string;
+  } = {
     q,
     ...(archived && { archived: '1' }),
     ...(includeArchivalApplications && { archival: '1' }),
     ...(subsidyInEffect && { subsidy_in_effect: subsidyInEffect }),
     ...(decisionRange && { years_since_decision: decisionRange }),
   };
+
+  if (applicationNum) {
+    params.app_no = applicationNum;
+  }
 
   const handleError = (): void => {
     showErrorToast(

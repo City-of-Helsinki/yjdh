@@ -59,6 +59,7 @@ class SearchView(APIView):
 
         archived = request.query_params.get("archived") == "1" or False
         search_from_archival = request.query_params.get("archival") == "1" or False
+        application_number = request.query_params.get("app_no")
 
         subsidy_in_effect = request.query_params.get("subsidy_in_effect")
 
@@ -98,6 +99,7 @@ class SearchView(APIView):
             search_string,
             in_memory_filter_str,
             detected_pattern,
+            application_number,
             search_from_archival,
         )
 
@@ -160,8 +162,16 @@ def search_applications(
     search_string,
     in_memory_filter_str,
     detected_pattern,
+    application_number=None,
     search_from_archival=False,
 ) -> Response:
+    if application_number:
+        querysets = _query_by_application_number(
+            application_queryset, archival_application_queryset, application_number
+        )
+        application_queryset = querysets["application_queryset"]
+        archival_application_queryset = querysets["archival_application_queryset"]
+
     if search_string == "" and in_memory_filter_str == "":
         return _query_and_respond_to_empty_search(
             application_queryset, archival_application_queryset
@@ -288,6 +298,37 @@ def _get_filter_combinations(app):
         app["employee"]["first_name"].lower(),
         app["employee"]["last_name"].lower(),
     ]
+
+
+def _query_by_application_number(
+    application_queryset, archival_application_queryset, application_number
+):
+    app = Application.objects.filter(application_number=application_number).first()
+
+    # Get year of birth from SSN, assume no-one is seeking for a job before 1900's
+    year_suffix = app.employee.social_security_number[4:6]
+    ssn_separator = app.employee.social_security_number[6:7]
+    ssn_separators_born_in_2000s = ["A", "B", "C", "D", "E", "F"]
+    year_prefix = 20 if ssn_separator in ssn_separators_born_in_2000s else 19
+
+    return {
+        "application_queryset": application_queryset.filter(
+            employee__social_security_number=app.employee.social_security_number,
+            company__business_id=app.company.business_id,
+        ),
+        "archival_application_queryset": archival_application_queryset.filter(
+            Q(
+                employee_first_name=app.employee.first_name,
+                employee_last_name=app.employee.last_name,
+            )
+            & (
+                Q(year_of_birth=f"{year_prefix}{year_suffix}")
+                | Q(
+                    year_of_birth="1900"
+                )  # A few ArchivalApplication do not have birth year and is marked as 1900
+            ),
+        ),
+    }
 
 
 def _query_and_respond_to_empty_search(

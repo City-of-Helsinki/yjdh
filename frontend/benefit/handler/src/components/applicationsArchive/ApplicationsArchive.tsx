@@ -1,4 +1,13 @@
-import { RadioButton, SearchInput, SelectionGroup } from 'hds-react';
+import { ROUTES } from 'benefit/handler/constants';
+import {
+  IconCross,
+  RadioButton,
+  SearchInput,
+  SelectionGroup,
+  StatusLabel,
+} from 'hds-react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import Heading from 'shared/components/forms/heading/Heading';
@@ -6,6 +15,7 @@ import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
+import styled from 'styled-components';
 
 import ApplicationArchiveList from './ApplicationArchiveList';
 import { $Heading } from './ApplicationsArchive.sc';
@@ -16,9 +26,25 @@ import {
   useApplicationsArchive,
 } from './useApplicationsArchive';
 
+const $SearchInputArea = styled.div`
+  max-width: 630px;
+  .custom-status-label {
+    font-size: 18px;
+    padding: 0.5em 1em;
+    margin-bottom: 2em;
+    display: flex;
+    align-items: center;
+
+    a {
+      display: flex;
+      align-items: center;
+    }
+  }
+`;
+
 const ApplicationsArchive: React.FC = () => {
   const [searchString, setSearchString] = React.useState<string>('');
-
+  const [initialQuery, setInitialQuery] = React.useState<boolean>(true);
   const [subsidyInEffect, setSubsidyInEffect] =
     React.useState<SUBSIDY_IN_EFFECT | null>(
       SUBSIDY_IN_EFFECT.RANGE_THREE_YEARS
@@ -30,24 +56,22 @@ const ApplicationsArchive: React.FC = () => {
       FILTER_SELECTION.SUBSIDY_IN_EFFECT_RANGE_THREE_YEARS
     );
 
+  const router = useRouter();
+  const applicationNum = router?.query?.appNo || null;
   const { t, isSearchLoading, searchResults, submitSearch } =
     useApplicationsArchive(
       searchString,
       true,
       true,
       subsidyInEffect,
-      decisionRange
+      decisionRange,
+      applicationNum ? applicationNum.toString() : null
     );
 
   const onSearch = (value: string): void => {
     setSearchString(value);
     submitSearch(value);
   };
-
-  React.useEffect(() => {
-    submitSearch(searchString);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterSelection]);
 
   const handleSubsidyFilterChange = (
     selection: FILTER_SELECTION,
@@ -71,27 +95,61 @@ const ApplicationsArchive: React.FC = () => {
     setFilterSelection(FILTER_SELECTION.NO_FILTER);
   };
 
+  React.useEffect(() => {
+    if (!router || !router.isReady) return;
+    if (applicationNum && initialQuery) {
+      handleFiltersOff();
+      setInitialQuery(false);
+    } else if (!isSearchLoading) {
+      submitSearch(searchString);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterSelection, applicationNum, router, initialQuery]);
+
   return (
     <Container data-testid="application-list-archived">
       <$Heading as="h1" data-testid="main-ingress">{`${t(
         'common:header.navigation.archive'
       )}`}</$Heading>
       <>
-        <div style={{ maxWidth: 630 }}>
-          <SearchInput
-            helperText={t(
-              'common:search.fields.searchInput.keyword.helperText'
-            )}
-            label={t('common:search.fields.searchInput.keyword.label')}
-            placeholder={t(
-              'common:search.fields.searchInput.keyword.placeholder'
-            )}
-            onChange={(value) => setSearchString(value)}
-            onSubmit={(value) => onSearch(value)}
-            css="margin-bottom: var(--spacing-m);"
-          />
-        </div>
+        <$SearchInputArea>
+          {!applicationNum && (
+            <SearchInput
+              helperText={t(
+                'common:search.fields.searchInput.keyword.helperText'
+              )}
+              label={t('common:search.fields.searchInput.keyword.label')}
+              placeholder={t(
+                'common:search.fields.searchInput.keyword.placeholder'
+              )}
+              onChange={(value) => setSearchString(value)}
+              onSubmit={(value) => onSearch(value)}
+              css="margin-bottom: var(--spacing-m);"
+            />
+          )}
 
+          {applicationNum && (
+            <div>
+              <div
+                style={{
+                  fontSize: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <StatusLabel className="custom-status-label">
+                  <div>
+                    Haetaan aiempia työsuhteita hakemuksen{' '}
+                    <u>{applicationNum}</u> perusteella
+                  </div>
+                  <Link href={ROUTES.APPLICATIONS_ARCHIVE}>
+                    <IconCross />
+                  </Link>
+                </StatusLabel>
+              </div>
+            </div>
+          )}
+        </$SearchInputArea>
         <$Grid>
           <$GridCell $colSpan={6}>
             <Heading
