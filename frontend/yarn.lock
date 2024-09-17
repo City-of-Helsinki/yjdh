@@ -3382,9 +3382,9 @@
   integrity sha512-gkq7Ns2FcrOCRq7Q+VRYt5saMt2R9g4REAtWy/jEevJ5UV5vA2AiGnYDmxwAkHutoYU0sAUkjqx37wE0wpamNw==
 
 "@tiptap/extension-history@^2.2.4":
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/@tiptap/extension-history/-/extension-history-2.2.4.tgz#2d37ccfce9a8b7997bb4d46ebb19e986c5eb6f39"
-  integrity sha512-FDM32XYF5NU4mzh+fJ8w2CyUqv0l2Nl15sd6fOhQkVxSj8t57z+DUXc9ZR3zkH+1RAagYJo/2Gu3e99KpMr0tg==
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/@tiptap/extension-history/-/extension-history-2.7.0.tgz#39e747b1242e8ceff42dddcd1e077065eeaab01a"
+  integrity sha512-33GtG+SIHi6c8briilU2OZ7pt7W8XoNscXokJsXqLlGZDC7mlLs6N9OMQ7qNbcycz7uxRqi5k7jWpxwxRTQiKQ==
 
 "@tiptap/extension-paragraph@^2.2.4":
   version "2.2.4"
@@ -4642,7 +4642,7 @@ axios@^0.27.2:
     follow-redirects "^1.14.9"
     form-data "^4.0.0"
 
-axios@^1.5.1, axios@^1.6.5:
+axios@^1.5.1:
   version "1.6.5"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.5.tgz#2c090da14aeeab3770ad30c3a1461bc970fb0cd8"
   integrity sha512-Ii012v05KEVuUoFWmMW/UQv9aRIc3ZwkWDcM+h5Il8izZCtRVpDUfwpoFf7eOtajT3QiGR4yDUx7lPqHJULgbg==
