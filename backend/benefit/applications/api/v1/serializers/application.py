@@ -1892,6 +1892,7 @@ class HandlerApplicationListSerializer(serializers.Serializer):
             "handled_by_ahjo_automation",
             "ahjo_case_id",
             "batch",
+            "ahjo_error",
         ]
 
         read_only_fields = [
@@ -1914,6 +1915,7 @@ class HandlerApplicationListSerializer(serializers.Serializer):
             "handled_by_ahjo_automation",
             "ahjo_case_id",
             "batch",
+            "ahjo_error",
         ]
 
     archived = serializers.BooleanField()
@@ -1934,6 +1936,20 @@ class HandlerApplicationListSerializer(serializers.Serializer):
             "Timestamp when the application was handled (accepted/rejected/cancelled)"
         ),
     )
+    ahjo_error = serializers.SerializerMethodField("get_latest_ahjo_error")
+
+    def get_latest_ahjo_error(self, obj) -> Union[Dict, None]:
+        """Get the latest Ahjo error for the application"""
+        try:
+            status = obj.ahjo_status.latest()
+        except AhjoStatus.DoesNotExist:
+            return None
+        data = AhjoStatusSerializer(status).data
+        if data["error_from_ahjo"] is None:
+            data = None
+        else:
+            data.update({"status": status.status})
+        return data
 
     handled_by_ahjo_automation = serializers.BooleanField(
         read_only=True,
