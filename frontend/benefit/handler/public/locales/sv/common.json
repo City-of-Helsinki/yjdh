@@ -1016,6 +1016,7 @@
       "handlingPanel": "Käsittelypaneeli",
       "search": "Hae arkistosta",
       "cancel": "Peruuta hakemus",
+      "clone": "Kloonaa hakemus",
       "addAttachment": "Liitä uusi tiedosto",
       "addPreviouslyGrantedBenefit": "Lisää aikaisempi lisä",
       "targetGroupCheck": "Kohderyhmätarkistus",

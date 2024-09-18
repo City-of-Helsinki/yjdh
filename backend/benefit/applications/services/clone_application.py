@@ -67,6 +67,9 @@ def clone_application_based_on_other(
             application_base.apprenticeship_program
         )
         cloned_application.pay_subsidy_percent = application_base.pay_subsidy_percent
+        cloned_application.additional_pay_subsidy_percent = (
+            application_base.additional_pay_subsidy_percent
+        )
 
     de_minimis_aids = DeMinimisAid.objects.filter(
         application__pk=application_base.id
