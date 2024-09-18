@@ -274,6 +274,14 @@ class AhjoDecisionDetails:
     decision_date: datetime
 
 
+DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE = [
+    {
+        "id": "NO_ID",
+        "context": "Received an error but no failure details in the callback.",
+        "message": "Ahjo-pyynnössä tapahtui virhe, mutta Ahjo ei palauttanut tarkempia tietoja.",
+    }
+]
+
 # Call gettext on some of the enums so that "makemessages" command can find them when used dynamically in templates
 _("granted")
 _("granted_aged")

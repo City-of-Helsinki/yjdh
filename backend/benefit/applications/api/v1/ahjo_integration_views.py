@@ -24,6 +24,7 @@ from applications.enums import (
     AhjoStatus as AhjoStatusEnum,
     ApplicationBatchStatus,
     ApplicationStatus,
+    DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE,
 )
 from applications.models import AhjoStatus, Application, ApplicationBatch, Attachment
 from common.permissions import BFIsHandler, SafeListPermission
@@ -169,11 +170,6 @@ class AhjoCallbackView(APIView):
             return Response(
                 {"error": "Application not found"}, status=status.HTTP_404_NOT_FOUND
             )
-        # TODO how to check the success of the callback if it has no message property?
-        if request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
-            return self.handle_success_callback(
-                request, application, callback_data, request_type
-            )
 
         if callback_data["message"] == AhjoCallBackStatus.SUCCESS:
             return self.handle_success_callback(
@@ -258,7 +254,14 @@ class AhjoCallbackView(APIView):
         self, application: Application, callback_data: dict
     ) -> Response:
         latest_status = application.ahjo_status.latest()
-        latest_status.error_from_ahjo = callback_data.get("failureDetails", None)
+
+        latest_status.ahjo_request_id = callback_data.get(
+            "requestId", "no request id received"
+        )
+
+        latest_status.error_from_ahjo = callback_data.get(
+            "failureDetails", DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE
+        )
         latest_status.save()
         self._log_failure_details(application, callback_data)
         return Response(

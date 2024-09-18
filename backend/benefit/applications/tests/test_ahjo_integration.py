@@ -23,6 +23,7 @@ from applications.enums import (
     ApplicationTalpaStatus,
     AttachmentType,
     BenefitType,
+    DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE,
 )
 from applications.models import (
     AhjoDecisionText,
@@ -589,10 +590,26 @@ def test_subscribe_to_decisions_callback_success(
                 }
             ],
         ),
+        (
+            AhjoRequestType.SEND_DECISION_PROPOSAL,
+            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
+            [
+                {
+                    "id": "INVALID_RECORD_TYPE",
+                    "message": "Asiakirjan tyyppi ei ole sallittu.",
+                    "context": "(Tähän tulisi tietoa virheen esiintymispaikasta jos mahdollista antaa.)",
+                }
+            ],
+        ),
+        (
+            AhjoRequestType.SEND_DECISION_PROPOSAL,
+            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
+            None,
+        ),
     ],
 )
 @pytest.mark.django_db
-def test_ahjo_open_case_callback_failure(
+def test_ahjo_callback_failure(
     ahjo_client,
     ahjo_user_token,
     decided_application,
@@ -611,7 +628,8 @@ def test_ahjo_open_case_callback_failure(
         status=last_ahjo_status,
     )
 
-    ahjo_callback_payload["failureDetails"] = failure_details
+    if failure_details:
+        ahjo_callback_payload["failureDetails"] = failure_details
 
     url = reverse(
         "ahjo_callback_url",
@@ -633,7 +651,11 @@ def test_ahjo_open_case_callback_failure(
 
     latest_status = decided_application.ahjo_status.latest()
     assert latest_status.status == last_ahjo_status
-    assert latest_status.error_from_ahjo == ahjo_callback_payload["failureDetails"]
+    if not failure_details:
+        assert latest_status.error_from_ahjo == DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE
+    else:
+        assert latest_status.error_from_ahjo == ahjo_callback_payload["failureDetails"]
+        assert latest_status.ahjo_request_id == ahjo_callback_payload["requestId"]
 
 
 @pytest.mark.parametrize(
