@@ -5,6 +5,7 @@ import {
   ApplicationData,
   ApplicationListItemData,
 } from 'benefit-shared/types/application';
+import camelcaseKeys from 'camelcase-keys';
 import { getFullName } from 'shared/utils/application.utils';
 import {
   convertToUIDateAndTimeFormat,
@@ -43,6 +44,7 @@ const useApplicationListData = (
         application_origin: applicationOrigin,
         handled_by_ahjo_automation,
         handled_at: handledAt,
+        ahjo_error,
       } = application;
 
       return {
@@ -70,6 +72,7 @@ const useApplicationListData = (
         ahjoCaseId: ahjo_case_id,
         handledByAhjoAutomation: handled_by_ahjo_automation,
         handledAt: convertToUIDateFormat(handledAt) || '-',
+        ahjoError: camelcaseKeys(ahjo_error, { deep: true }) || null,
       };
     })
     .filter(

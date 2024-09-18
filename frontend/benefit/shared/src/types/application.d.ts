@@ -264,6 +264,24 @@ export interface DecisionProposalDraft {
   decsionMakerName?: string;
 }
 
+export interface AhjoError {
+  errorFromAhjo: ErrorFromAhjo[];
+  modifiedAt: string;
+  status: string;
+}
+
+export interface AhjoErrorData {
+  error_from_ahjo: ErrorFromAhjo[];
+  modified_at: string;
+  status: string;
+}
+
+export interface ErrorFromAhjo {
+  id: string;
+  context: string;
+  message: string;
+}
+
 export type Application = {
   id?: string;
   status?: APPLICATION_STATUSES;
@@ -470,6 +488,7 @@ export type ApplicationData = {
   is_granted_as_de_minimis_aid?: boolean | null;
   handled_by_ahjo_automation?: boolean;
   alterations: ApplicationAlterationData[];
+  ahjo_error?: AhjoErrorData;
 };
 
 export type EmployeeData = {
@@ -567,6 +586,7 @@ export type ApplicationListItemData = {
   calculationEndDate?: string;
   handledByAhjoAutomation?: boolean;
   alterations?: ApplicationAlterationData[];
+  ahjoError?: AhjoError;
 };
 
 export type TextProp = 'textFi' | 'textEn' | 'textSv';

@@ -244,6 +244,11 @@
         "fetch": {
           "label": "Virhe noudettaessa hakemuksia",
           "text": "Hakemusten haku epäonnistui virhekoodilla {{status}}."
+        },
+        "ahjoError": {
+          "tooltipLabel": "Odottamaton virhe hakemuksen käsittelyssä",
+          "buttonLabel": "Avaa virheilmoitus näkyviin",
+          "buttonText": "Virhe"
         }
       },
       "total": {
