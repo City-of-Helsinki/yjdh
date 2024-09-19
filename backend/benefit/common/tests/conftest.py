@@ -95,6 +95,16 @@ def talpa_client(anonymous_client, settings):
     return anonymous_client
 
 
+@pytest.fixture
+def power_bi_client(anonymous_client, settings):
+    credentials = base64.b64encode(settings.POWER_BI_AUTH_CREDENTIAL.encode("utf-8"))
+
+    anonymous_client.credentials(
+        HTTP_AUTHORIZATION="Basic {}".format(credentials.decode("utf-8"))
+    )
+    return anonymous_client
+
+
 def reseed(number):
     factory.random.reseed_random(str(number))
     random.seed(number)
