@@ -14,22 +14,24 @@ from applications.services.applications_csv_report import (
 from applications.services.csv_export_base import CsvColumn, get_organization_type
 
 
-def get_completed_in_talpa_date(application: Application) -> Union[datetime, None]:
-    if application.batch.status == ApplicationBatchStatus.COMPLETED:
-        return application.batch.modified_at.strftime("%d.%m.%Y")
-    return None
-
-
-def get_alteration_amount(application: Application):
-    if application.alteration_set:
-        return application.alteration_set.recovery_amount
-    return None
-
-
 class ApplicationsPowerBiCsvService(ApplicationsCsvService):
     """
     This subclass customizes the CSV_COLUMNS for a different export format.
     """
+
+    def get_completed_in_talpa_date(
+        self, application: Application
+    ) -> Union[datetime, None]:
+        if application.batch.status == ApplicationBatchStatus.COMPLETED:
+            return application.batch.modified_at.strftime("%d.%m.%Y")
+        return None
+
+    def get_alteration_amount(self, application: Application) -> float:
+        sum = 0
+        for alteration in application.alteration_set.all():
+            if alteration.recovery_amount:
+                sum += alteration.recovery_amount
+        return sum
 
     @property
     def CSV_COLUMNS(self):
@@ -38,7 +40,7 @@ class ApplicationsPowerBiCsvService(ApplicationsCsvService):
         """
         calculated_benefit_amount = "calculation.calculated_benefit_amount"
 
-        parent_columns = [
+        columns = [
             CsvColumn("Hakemusnumero", "application_number"),
             CsvColumn("Työnantajan tyyppi", get_organization_type),
             CsvColumn("Työnantajan Y-tunnus", "company.business_id"),
@@ -46,7 +48,6 @@ class ApplicationsPowerBiCsvService(ApplicationsCsvService):
                 "Helsinki-lisän määrä lopullinen", calculated_benefit_amount
             ),
             csv_default_column("Päätöspäivä", "batch.decision_date"),
-            CsvColumn("Hakemusnumero", "application_number"),
             CsvColumn("Hakemuksen tila", "status"),
             CsvColumn(
                 "Hakemuksen tyyppi", "application_origin", get_application_origin_label
@@ -55,8 +56,6 @@ class ApplicationsPowerBiCsvService(ApplicationsCsvService):
             csv_default_column("Haettava lisä", "benefit_type", get_benefit_type_label),
             csv_default_column("Haettu alkupäivä", "start_date"),
             csv_default_column("Haettu päättymispäivä", "end_date"),
-            CsvColumn("Työnantajan tyyppi", get_organization_type),
-            CsvColumn("Työnantajan Y-tunnus", "company.business_id"),
             CsvColumn("Työnantajan yhtiömuoto", "company_form"),
             CsvColumn("Työnantajan yhtiömuoto (YTJ-numero)", "company_form_code"),
             CsvColumn(
@@ -101,8 +100,10 @@ class ApplicationsPowerBiCsvService(ApplicationsCsvService):
                 default_value=None,
             ),
             csv_default_column("Päätöspäivä", "batch.decision_date"),
-            csv_default_column("Talpaan viennin päivä", get_completed_in_talpa_date),
-            #csv_default_column("Takaisinlaskutettu", get_alteration_amount),
+            csv_default_column(
+                "Talpaan viennin päivä", self.get_completed_in_talpa_date
+            ),
+            csv_default_column("Takaisinlaskutettu", self.get_alteration_amount),
         ]
 
-        return parent_columns
+        return columns

@@ -37,6 +37,9 @@ from applications.services.application_alteration_csv_report import (
     ApplicationAlterationCsvService,
 )
 from applications.services.applications_csv_report import ApplicationsCsvService
+from applications.services.applications_power_bi_csv_report import (
+    ApplicationsPowerBiCsvService,
+)
 from applications.tests.factories import (
     AcceptedDecisionProposalFactory,
     AhjoDecisionTextFactory,
@@ -834,6 +837,8 @@ def decided_application_with_decision_date(application_with_ahjo_decision):
         decision_date=date.today(),
     )
     batch.status = ApplicationBatchStatus.COMPLETED
+    batch.save()
+    application_with_ahjo_decision.pay_subsidy_percent = 100
     application_with_ahjo_decision.batch = batch
     application_with_ahjo_decision.save()
     return application_with_ahjo_decision
@@ -877,6 +882,13 @@ def application_alteration(decided_application):
         application=decided_application,
         alteration_type=ApplicationAlterationType.TERMINATION,
         handled_by=decided_application.handler,
+    )
+
+
+@pytest.fixture
+def application_powerbi_csv_service(decided_application_with_decision_date):
+    return ApplicationsPowerBiCsvService(
+        Application.objects.filter(id=decided_application_with_decision_date.id)
     )
 
 
