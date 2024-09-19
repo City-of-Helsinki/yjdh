@@ -25,6 +25,7 @@ const Header: React.FC = () => {
     canWriteNewMessages,
     navigationItems,
     isNavigationVisible,
+    isTabActive,
   } = useHeader();
   const router = useRouter();
   const { asPath } = router;
@@ -82,6 +83,7 @@ const Header: React.FC = () => {
               ]
             : undefined
         }
+        customActiveItemFn={isTabActive}
         navigationItems={navigationItems}
         isNavigationVisible={isNavigationVisible}
       />
