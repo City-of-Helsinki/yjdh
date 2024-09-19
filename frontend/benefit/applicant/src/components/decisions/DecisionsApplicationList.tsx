@@ -7,7 +7,6 @@ import { ROUTES, SUBMITTED_STATUSES } from 'benefit/applicant/constants';
 import ApplicationListContext from 'benefit/applicant/context/ApplicationListContext';
 import { Trans, useTranslation } from 'benefit/applicant/i18n';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
-import { isTruthy } from 'benefit-shared/utils/common';
 import { Button, IconArrowLeft, Notification } from 'hds-react';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -46,10 +45,6 @@ const DecisionsApplicationList = (): JSX.Element => {
       beforeList={
         <ApplicationListContext.Consumer>
           {({ list }) => {
-            if (!isTruthy(process.env.NEXT_PUBLIC_ENABLE_ALTERATION_FEATURES)) {
-              return null;
-            }
-
             if (
               !list.some(
                 (item) => item.status === APPLICATION_STATUSES.ACCEPTED
