@@ -12,6 +12,7 @@
     "semver", // testcafe, jest, eslint
     "axios", // tet, ks
     "path-to-regexp", // express
-    "body-parser" // express
+    "body-parser", // express
+    "next" // GHSA-gp8f-8m3g-qvj9
   ]
 }
