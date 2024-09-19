@@ -10,6 +10,7 @@ import { TFunction } from 'next-i18next';
 import React, { useEffect, useMemo, useState } from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useGetLanguage from 'shared/hooks/useGetLanguage';
+import isServerSide from 'shared/server/is-server-side';
 import { NavigationItem, OptionType } from 'shared/types/common';
 
 type ExtendedComponentProps = {
@@ -27,6 +28,39 @@ type ExtendedComponentProps = {
   setMessagesDrawerVisiblity: (state: boolean) => void;
   isMessagesDrawerVisible: boolean;
   canWriteNewMessages: boolean;
+  isTabActive: (pathname: string) => boolean;
+};
+
+const isTabActive = (pathname: string): boolean => {
+  if (!isServerSide()) {
+    const stripLocale = (path: string): string =>
+      path.replace(/\/(fi|en|sv)/, '') || '/';
+    const pathnameWithoutLocale = stripLocale(pathname);
+    const locationWithoutLocale = stripLocale(window.location.pathname);
+    if (locationWithoutLocale === '/' && pathnameWithoutLocale === '/') {
+      return true;
+    }
+    if (pathnameWithoutLocale !== '/') {
+      return locationWithoutLocale.includes(pathnameWithoutLocale);
+    }
+  }
+  return false;
+};
+
+const getNavigationUrl = (
+  locale,
+  navigationUriBase: string,
+  route: ROUTES
+): string => {
+  const homeUrl = `${
+    locale === SUPPORTED_LANGUAGES.FI ? '' : navigationUriBase
+  }${ROUTES.HOME}`;
+  if (route === ROUTES.HOME) return homeUrl;
+  if (route === ROUTES.DECISIONS)
+    return `${locale === SUPPORTED_LANGUAGES.FI ? '' : navigationUriBase}${
+      ROUTES.DECISIONS
+    }`;
+  return homeUrl;
 };
 
 const useHeader = (): ExtendedComponentProps => {
@@ -130,14 +164,18 @@ const useHeader = (): ExtendedComponentProps => {
     () => [
       {
         label: t('common:header.navigation.home'),
-        url: `${navigationUriBase}${ROUTES.HOME}`,
+        url: getNavigationUrl(getLanguage(), navigationUriBase, ROUTES.HOME),
       },
       {
         label: t('common:header.navigation.decisions'),
-        url: `${navigationUriBase}${ROUTES.DECISIONS}`,
+        url: getNavigationUrl(
+          getLanguage(),
+          navigationUriBase,
+          ROUTES.DECISIONS
+        ),
       },
     ],
-    [t, navigationUriBase]
+    [getLanguage, navigationUriBase, t]
   );
 
   return {
@@ -152,6 +190,7 @@ const useHeader = (): ExtendedComponentProps => {
     canWriteNewMessages,
     navigationItems,
     isNavigationVisible,
+    isTabActive,
   };
 };
 

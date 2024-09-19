@@ -39,6 +39,7 @@ export type HeaderProps = {
   hideLogin?: boolean;
   onTitleClick?: () => void;
   className?: string;
+  customActiveItemFn?: (url: string) => boolean;
 };
 
 const Header: React.FC<HeaderProps> = ({
@@ -57,6 +58,7 @@ const Header: React.FC<HeaderProps> = ({
   theme,
   onTitleClick,
   className,
+  customActiveItemFn,
 }) => {
   const {
     locale,
@@ -101,7 +103,11 @@ const Header: React.FC<HeaderProps> = ({
             {navigationItems?.map((item) => (
               <Navigation.Item
                 key={item.url}
-                active={isTabActive(item.url)}
+                active={
+                  customActiveItemFn
+                    ? customActiveItemFn(item.url)
+                    : isTabActive(item.url)
+                }
                 href={item.url}
                 onClick={() => handleClickLink(item.url)}
                 icon={item.icon}
