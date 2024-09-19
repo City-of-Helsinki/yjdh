@@ -374,7 +374,7 @@ def test_application_single_read_without_ahjo_decision_as_applicant(
     assert response.data["ahjo_decision"] is None
     assert response.data["application_number"] is not None
     assert response.data["status"] == visible_status
-    assert response.data["has_batch"] is False
+    assert response.data["batch_status"] is False
     assert Decimal(response.data["duration_in_months_rounded"]) == duration_in_months(
         application.start_date, application.end_date, decimal_places=2
     )
@@ -385,7 +385,7 @@ def test_application_single_read_without_ahjo_decision_as_applicant(
     response = api_client.get(get_detail_url(application))
 
     assert response.status_code == 200
-    assert response.data["has_batch"] is True
+    assert response.data["batch_status"] in ApplicationBatchStatus.values
     assert isinstance(response.data["batch"], uuid.UUID)
 
 
@@ -409,7 +409,7 @@ def test_application_single_read_with_ahjo_decision_as_applicant(
     assert response.data["ahjo_decision"] is not None
     assert response.data["application_number"] is not None
     assert response.data["status"] == visible_status
-    assert response.data["has_batch"] is True
+    assert response.data["batch_status"] in ApplicationBatchStatus.values
 
     assert isinstance(response.data["batch"], uuid.UUID)
     assert Decimal(response.data["duration_in_months_rounded"]) == duration_in_months(
