@@ -14,6 +14,7 @@ from applications.enums import (
     AhjoRecordTitle,
     AhjoRecordType,
     ApplicationAlterationType,
+    ApplicationBatchStatus,
     ApplicationStatus,
     BenefitType,
     DecisionType,
@@ -832,6 +833,7 @@ def decided_application_with_decision_date(application_with_ahjo_decision):
         auto_generated_by_ahjo=True,
         decision_date=date.today(),
     )
+    batch.status = ApplicationBatchStatus.COMPLETED
     application_with_ahjo_decision.batch = batch
     application_with_ahjo_decision.save()
     return application_with_ahjo_decision

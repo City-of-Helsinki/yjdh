@@ -47,7 +47,8 @@ class PowerBiIntegrationView(APIView):
     def get(self, request, *args, **kwargs) -> StreamingHttpResponse:
         # Apply the filter
         filterset = ApplicationPowerBiFilter(
-            request.GET, queryset=Application.objects.all()
+            request.GET,
+            queryset=Application.objects.all().prefetch_related("alteration_set"),
         )
 
         if filterset.is_valid():
