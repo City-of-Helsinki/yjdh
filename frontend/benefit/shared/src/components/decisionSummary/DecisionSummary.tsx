@@ -14,7 +14,6 @@ import {
   Application,
   DecisionDetailList,
 } from 'benefit-shared/types/application';
-import { isTruthy } from 'benefit-shared/utils/common';
 import { Button, IconLinkExternal } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { ReactNode } from 'react';
@@ -38,16 +37,20 @@ const DecisionSummary = ({
 }: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const isAccepted = ![
+  const isNotRejected = ![
     APPLICATION_STATUSES.REJECTED,
     APPLICATION_STATUSES.CANCELLED,
   ].includes(application.status);
 
-  if (!application.ahjoCaseId && isAccepted) {
+  if (
+    isNotRejected &&
+    application?.handledByAhjoAutomation &&
+    !application?.ahjoCaseId
+  ) {
     return null;
   }
 
-  const displayDecision = (): void => {
+  const openDecisionLink = (): void => {
     const id = application.ahjoCaseId.split(' ').join('-');
 
     // eslint-disable-next-line security/detect-non-literal-fs-filename
@@ -63,7 +66,7 @@ const DecisionSummary = ({
       <$DecisionBoxTitle>
         {t('common:applications.decision.headings.mainHeading')}
       </$DecisionBoxTitle>
-      {isAccepted && (
+      {isNotRejected && application.handledByAhjoAutomation && (
         <$DecisionNumber>
           {t('common:applications.decision.headings.caseId')}
           {': '}
@@ -97,11 +100,11 @@ const DecisionSummary = ({
         })}
       </$DecisionDetails>
       {extraInformation}
-      {isAccepted && (
+      {isNotRejected && application.handledByAhjoAutomation && (
         <$DecisionActionContainer>
           <Button
             iconRight={<IconLinkExternal />}
-            onClick={displayDecision}
+            onClick={openDecisionLink}
             theme="black"
             variant="secondary"
             role="link"
@@ -110,31 +113,30 @@ const DecisionSummary = ({
           </Button>
         </$DecisionActionContainer>
       )}
-      {isTruthy(process.env.NEXT_PUBLIC_ENABLE_ALTERATION_FEATURES) &&
-        isAccepted && (
-          <>
-            <$Subheading>
-              {t('common:applications.decision.headings.existingAlterations')}
-            </$Subheading>
-            <$AlterationListCount>
-              {application.alterations?.length > 0
-                ? t('common:applications.decision.alterationList.count', {
-                    count: application.alterations.length,
-                  })
-                : t('common:applications.decision.alterationList.empty')}
-            </$AlterationListCount>
-            <div data-testid="alteration-list">
-              {sortedAlterations.map((alteration) => (
-                <ItemComponent
-                  key={alteration.id}
-                  alteration={alteration}
-                  application={application}
-                />
-              ))}
-            </div>
-            <$AlterationActionContainer>{actions}</$AlterationActionContainer>
-          </>
-        )}
+      {isNotRejected && (
+        <>
+          <$Subheading>
+            {t('common:applications.decision.headings.existingAlterations')}
+          </$Subheading>
+          <$AlterationListCount>
+            {application.alterations?.length > 0
+              ? t('common:applications.decision.alterationList.count', {
+                  count: application.alterations.length,
+                })
+              : t('common:applications.decision.alterationList.empty')}
+          </$AlterationListCount>
+          <div data-testid="alteration-list">
+            {sortedAlterations.map((alteration) => (
+              <ItemComponent
+                key={alteration.id}
+                alteration={alteration}
+                application={application}
+              />
+            ))}
+          </div>
+          <$AlterationActionContainer>{actions}</$AlterationActionContainer>
+        </>
+      )}
     </$DecisionBox>
   );
 };

@@ -56,7 +56,11 @@ const usePageContent = (): ExtendedComponentProps => {
   }, [existingApplicationStatus, id, existingApplication]);
 
   useEffect(() => {
-    if (id && !isLoading && !isApplicationLoaded(id, existingApplicationStatus)) {
+    if (
+      id &&
+      !isLoading &&
+      !isApplicationLoaded(id, existingApplicationStatus)
+    ) {
       setIsLoading(true);
     }
   }, [existingApplicationStatus, id, isLoading]);
