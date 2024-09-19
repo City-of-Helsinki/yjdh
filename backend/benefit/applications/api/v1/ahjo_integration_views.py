@@ -362,7 +362,9 @@ class AhjoDecisionCallbackView(APIView):
         ahjo_case_id = callback_data["caseId"]
         update_type = callback_data["updatetype"]
 
-        application = get_object_or_404(Application, ahjo_case_id=ahjo_case_id)
+        application = get_object_or_404(
+            Application, ahjo_case_id=ahjo_case_id, handled_by_ahjo_automation=True
+        )
 
         if update_type == AhjoDecisionUpdateType.ADDED:
             AhjoStatus.objects.create(

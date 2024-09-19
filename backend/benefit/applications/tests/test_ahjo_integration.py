@@ -555,6 +555,7 @@ def test_subscribe_to_decisions_callback_success(
 ):
     dummy_case_id = "HEL 1999-123"
     decided_application.ahjo_case_id = dummy_case_id
+    decided_application.handled_by_ahjo_automation = True
     decided_application.save()
 
     settings.NEXT_PUBLIC_MOCK_FLAG = True
