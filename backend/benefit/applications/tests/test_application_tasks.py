@@ -15,7 +15,7 @@ from applications.enums import (
     AhjoStatus as AhjoStatusEnum,
     ApplicationStatus,
 )
-from applications.models import AhjoSetting, Application, Attachment
+from applications.models import AhjoSetting, AhjoStatus, Application, Attachment
 from applications.services.ahjo_authentication import AhjoToken
 from applications.tests.factories import CancelledApplicationFactory
 
@@ -160,34 +160,40 @@ def test_user_is_notified_of_upcoming_application_deletion(drafts_about_to_be_de
 
 
 @pytest.mark.parametrize(
-    "request_type, patch_db_function, patch_request",
+    "previous_ahjo_status, request_type, patch_db_function, patch_request",
     [
         (
+            AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
             AhjoRequestType.OPEN_CASE,
             "applications.management.commands.send_ahjo_requests.Application.objects.get_by_statuses",
             "applications.management.commands.send_ahjo_requests.send_open_case_request_to_ahjo",
         ),
         (
+            AhjoStatusEnum.CASE_OPENED,
             AhjoRequestType.SEND_DECISION_PROPOSAL,
             "applications.management.commands.send_ahjo_requests.Application.objects.get_for_ahjo_decision",
             "applications.management.commands.send_ahjo_requests.send_decision_proposal_to_ahjo",
         ),
         (
+            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
             AhjoRequestType.ADD_RECORDS,
             "applications.management.commands.send_ahjo_requests.Application.objects.with_non_downloaded_attachments",
             "applications.management.commands.send_ahjo_requests.send_new_attachment_records_to_ahjo",
         ),
         (
+            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
             AhjoRequestType.UPDATE_APPLICATION,
             "applications.management.commands.send_ahjo_requests.Application.objects.get_by_statuses",
             "applications.management.commands.send_ahjo_requests.update_application_summary_record_in_ahjo",
         ),
         (
+            AhjoStatusEnum.DETAILS_RECEIVED_FROM_AHJO,
             AhjoRequestType.GET_DECISION_DETAILS,
             "applications.management.commands.send_ahjo_requests.Application.objects.get_by_statuses",
             "applications.management.commands.send_ahjo_requests.get_decision_details_from_ahjo",
         ),
         (
+            AhjoStatusEnum.CASE_OPENED,
             AhjoRequestType.DELETE_APPLICATION,
             "applications.management.commands.send_ahjo_requests.Application.objects.get_by_statuses",
             "applications.management.commands.send_ahjo_requests.delete_application_in_ahjo",
@@ -197,6 +203,7 @@ def test_user_is_notified_of_upcoming_application_deletion(drafts_about_to_be_de
 @patch("applications.management.commands.send_ahjo_requests.get_token")
 def test_send_ahjo_requests(
     mock_get_token,
+    previous_ahjo_status,
     request_type,
     patch_db_function,
     patch_request,
@@ -213,6 +220,7 @@ def test_send_ahjo_requests(
         number_to_send = 5
 
         application = application_with_ahjo_decision
+        AhjoStatus.objects.create(application=application, status=previous_ahjo_status)
 
         if request_type == AhjoRequestType.GET_DECISION_DETAILS:
             mock_response = ahjo_decision_detail_response
