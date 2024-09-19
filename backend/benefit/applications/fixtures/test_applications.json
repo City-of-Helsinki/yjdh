@@ -76,8 +76,8 @@
       "paper_application_date": null,
       "de_minimis_aid": false,
       "batch": null,
-      "ahjo_case_id": null,
-      "ahjo_case_guid": null,
+      "ahjo_case_id": "HEL 2024-123",
+      "ahjo_case_guid": "ad2b11c6-4223-4af4-99ca-5b9208c5251f",
       "handled_by_ahjo_automation": true,
       "bases": []
     }
@@ -447,6 +447,7 @@
       "de_minimis_aid": true,
       "batch": "18938478-5bf9-4192-888d-804af997f76d",
       "ahjo_case_id": "HEL 2024-999992",
+      "handled_by_ahjo_automation": true,
       "ahjo_case_guid": "dbb01a61-2937-4613-9052-e1c2ecae183f",
       "handler": "47ecedfa-351b-4815-bfac-96bdbc640178",
       "bases": []
