@@ -11,6 +11,8 @@ services:
       POSTGRES_USER: tet
       POSTGRES_PASSWORD: tet
       POSTGRES_DB: tet
+      LC_COLLATE: "fi_FI.UTF-8"
+      LC_CTYPE: "fi_FI.UTF-8"
     ports:
       - 5434:5432
     volumes:
