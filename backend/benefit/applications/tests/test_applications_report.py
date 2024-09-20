@@ -19,6 +19,11 @@ from applications.enums import (
     PaySubsidyGranted,
 )
 from applications.models import AhjoSetting, ApplicationAlteration, ApplicationBatch
+from applications.services.applications_csv_report import (
+    format_bool,
+    format_datetime,
+    get_application_origin_label,
+)
 from applications.tests.common import (
     check_csv_cell_list_lines_generator,
     check_csv_string_lines_generator,
@@ -358,6 +363,112 @@ def test_sensitive_data_removed_csv_output(sanitized_csv_service_with_one_applic
         assert col_heading not in csv_lines[0]
 
 
+def test_power_bi_report_csv_output(application_powerbi_csv_service):
+    csv_lines = split_lines_at_semicolon(
+        application_powerbi_csv_service.get_csv_string()
+    )
+
+    expected_headers = [
+        '\ufeff"Hakemusnumero"',  # Ensure BOM (Byte Order Mark) is correctly handled
+        '"Työnantajan tyyppi"',
+        '"Työnantajan Y-tunnus"',
+        '"Helsinki-lisän määrä lopullinen"',
+        '"Päätöspäivä"',
+        '"Hakemuksen tila"',
+        '"Hakemuksen tyyppi"',
+        '"Hakemus saapunut"',
+        '"Haettava lisä"',
+        '"Haettu alkupäivä"',
+        '"Haettu päättymispäivä"',
+        '"Työnantajan yhtiömuoto"',
+        '"Työnantajan yhtiömuoto (YTJ-numero)"',
+        '"Yhdistys jolla taloudellista toimintaa?"',
+        '"Hakijan kieli"',
+        '"Palkkatuki myönnetty?"',
+        '"Palkkatukiprosentti"',
+        '"Oppisopimus?"',
+        '"Työntekijän kuukausipalkka (hakijalta)"',
+        '"Työntekijän lomaraha (hakijalta)"',
+        '"Työntekijän muut kulut (hakijalta)"',
+        '"Työntekijän työtunnit"',
+        '"Työntekijän syntymäpäivä"',
+        '"Helsinki-lisän määrä lopullinen"',
+        '"Laskelman alkupäivä"',
+        '"Laskelman päättymispäivä"',
+        '"Käsittelypäivä"',
+        '"Valtiotukimaksimi"',
+        '"Laskelman lopputulos"',
+        '"Myönnetään de minimis -tukena?"',
+        '"Päätöspäivä"',
+        '"Talpaan viennin päivä"',
+        '"Takaisinlaskutettu"',
+    ]
+
+    # Assert that each column header matches
+    for index, header in enumerate(expected_headers):
+        assert (
+            csv_lines[0][index] == header
+        ), f"Expected {header} but got {csv_lines[0][index]}"
+
+    applications = application_powerbi_csv_service.get_applications()
+
+    assert int(csv_lines[1][0]) == applications[0].application_number
+
+    for i, application in enumerate(applications):
+        # Index 1 corresponds to the first row of values (i.e., skipping the header row)
+        csv_row = csv_lines[i + 1]  # CSV rows start at 1 (skip header)
+
+        assert int(csv_row[0]) == application.application_number
+        assert csv_row[1] == '"Yritys"'
+        assert csv_row[2] == f'"{application.company.business_id}"'
+        assert csv_row[3] == str((application.calculation.calculated_benefit_amount))
+        assert csv_row[4] == f'"{format_datetime(application.batch.decision_date)}"'
+        assert csv_row[5] == f'"{application.status}"'
+
+        assert (
+            csv_row[6]
+            == f'"{get_application_origin_label(application.application_origin)}"'
+        )
+        assert csv_row[7] == f'"{format_datetime(application.created_at)}"'
+        assert csv_row[8] == '"Työllistämisen Helsinki-lisä"'
+        assert csv_row[9] == f'"{str(application.start_date)}"'
+        assert csv_row[10] == f'"{str(application.end_date)}"'
+
+        assert csv_row[11] == f'"{application.company_form}"'
+        assert csv_row[12] == str(application.company_form_code)
+        assert (
+            csv_row[13]
+            == f'"{format_bool(application.association_has_business_activities)}"'
+        )
+        assert csv_row[14] == f'"{application.applicant_language}"'
+        assert csv_row[15] == f'"{str(application.pay_subsidy_granted)}"'
+        assert csv_row[16] == str(application.pay_subsidy_percent)
+        assert csv_row[17] == f'"{format_bool(application.apprenticeship_program)}"'
+        assert csv_row[18] == str(application.employee.monthly_pay)
+        assert csv_row[19] == str(application.employee.vacation_money)
+        assert csv_row[20] == str(application.employee.other_expenses)
+        assert csv_row[21] == str(application.employee.working_hours)
+        assert csv_row[22] == f'"{str(application.employee.birthday)}"'
+        assert csv_row[23] == str((application.calculation.calculated_benefit_amount))
+        assert csv_row[24] == f'"{str(application.calculation.start_date)}"'
+        assert csv_row[25] == f'"{str(application.calculation.end_date)}"'
+        assert csv_row[26] == f'"{format_datetime(application.handled_at)}"'
+        assert csv_row[27] == str(application.calculation.state_aid_max_percentage)
+        assert csv_row[28] == str((application.calculation.calculated_benefit_amount))
+        assert (
+            csv_row[29]
+            == f'"{format_bool(application.calculation.granted_as_de_minimis_aid)}"'
+        )
+        assert csv_row[30] == f'"{format_datetime(application.batch.decision_date)}"'
+        assert (
+            csv_row[31]
+            == f'"{str(application_powerbi_csv_service.get_completed_in_talpa_date(application))}"'
+        )
+        assert csv_row[32] == str(
+            application_powerbi_csv_service.get_alteration_amount(application)
+        )
+
+
 def test_application_alteration_csv_output(
     application_alteration_csv_service, settings
 ):
@@ -517,6 +628,7 @@ def test_pruned_applications_csv_output(
     assert len(csv_lines[1]) == 18
 
     assert int(csv_lines[1][0]) == application.application_number
+
     assert csv_lines[1][1] == '"Yritys"'
     assert csv_lines[1][2] == f'"{application.company_bank_account_number}"'
     assert csv_lines[1][3] == f'"{application.company_name}"'

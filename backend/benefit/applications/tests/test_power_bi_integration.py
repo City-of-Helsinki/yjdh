@@ -25,7 +25,7 @@ def test_get_power_bi_data(power_bi_client, decided_application_with_decision_da
     assert len(rows) > 1
     header = rows[0]
     assert "Hakemusnumero" in header
-    assert "Työnantajan nimi" in header
+    assert "Talpaan viennin päivä" in header
 
     assert rows[1][header.index("Hakemusnumero")] == str(
         decided_application_with_decision_date.application_number
