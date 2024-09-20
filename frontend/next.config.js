@@ -1,8 +1,6 @@
 const webpack = require('webpack');
-const path = require('path');
 const withPlugins = require('next-compose-plugins');
 const { withSentryConfig } = require('@sentry/nextjs');
-const withTranspileModules = require('next-transpile-modules');
 // https://nextjs.org/docs/api-reference/next.config.js/introduction
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 const pc = require('picocolors');
@@ -63,7 +61,7 @@ const nextConfig = (override) => ({
   eslint: {
     ignoreDuringBuilds: NEXTJS_IGNORE_ESLINT,
   },
-
+  transpilePackages: ['@frontend'],
   webpack: (config) => {
     config.resolve.fallback = {
       fs: false,
@@ -124,11 +122,12 @@ if (!NEXTJS_DISABLE_SENTRY) {
     // https://github.com/getsentry/sentry-webpack-plugin#options.
     // silent: isProd, // Suppresses all logs
     dryRun: NEXTJS_SENTRY_UPLOAD_DRY_RUN,
+    disableLogger: !NEXTJS_SENTRY_DEBUG,
   });
 } else {
   console.warn(`${pc.yellow('notice')}- Sentry is disabled (NEXTJS_DISABLE_SENTRY)`);
 }
 
-const plugins = [[withTranspileModules, { transpileModules: ['@frontend'] }]];
+const plugins = [];
 
 module.exports = async (phase) => withPlugins(plugins, config(phase))(phase, { undefined });
