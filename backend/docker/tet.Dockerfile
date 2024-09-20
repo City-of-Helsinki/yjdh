@@ -14,7 +14,7 @@ RUN apt-install.sh \
         libpq-dev \
         build-essential \
         wkhtmltopdf \
-    && pip install -U pip \
+    && pip install -U pip setuptools wheel \
     && pip install --no-cache-dir -r /app/requirements.txt \
     && pip install --no-cache-dir  -r /app/requirements-prod.txt \
     && uwsgi --build-plugin /app/.prod/escape_json.c \
