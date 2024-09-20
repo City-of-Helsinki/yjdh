@@ -290,5 +290,8 @@ class AhjoApiClient:
 
         if error_json:
             error_message += f" Error message: {error_json}"
+            status = self._request.application.ahjo_status.latest()
+            status.validation_error_from_ahjo = error_json
+            status.save()
 
         LOGGER.error(error_message)

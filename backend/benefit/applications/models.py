@@ -1179,6 +1179,11 @@ class AhjoStatus(TimeStampedModel):
         blank=True,
     )
 
+    validation_error_from_ahjo = JSONField(
+        null=True,
+        blank=True,
+    )
+
     def __str__(self):
         return self.status
 
