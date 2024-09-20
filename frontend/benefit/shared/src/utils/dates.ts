@@ -66,10 +66,10 @@ export const validateIsTodayOrPastDate = (value: string): boolean => {
 };
 
 export const validateDateWithinMonths = (
-  value: string,
+  value: string | Date,
   months: number
 ): boolean => {
-  const date = getDateFromDateString(value);
+  const date = typeof value === 'string' ? getDateFromDateString(value) : value;
 
   if (!date) {
     return false;

@@ -28,10 +28,13 @@ export const BackendEndpoint = {
   APPLICATIONS_WITH_UNREAD_MESSAGES:
     'v1/handlerapplications/with_unread_messages/',
   AHJO_SETTINGS: 'v1/ahjosettings/decision-maker/',
+  APPLICATIONS_CLONE_AS_DRAFT: 'v1/applications/clone_as_draft/',
+  APPLICATIONS_CLONE_LATEST: 'v1/applications/clone_latest/',
 } as const;
 
 const singleBatchBase = (id: string): string =>
   `${BackendEndpoint.APPLICATION_BATCHES}${id}/`;
+
 export const HandlerEndpoint = {
   BATCH_APP_ASSIGN: `${BackendEndpoint.APPLICATION_BATCHES}assign_applications/`,
   BATCH_APP_DEASSIGN: (id: string): string =>
@@ -41,6 +44,14 @@ export const HandlerEndpoint = {
     `${BackendEndpoint.HANDLER_APPLICATIONS}batch_pdf_files?batch_id=${id}`,
   BATCH_DOWNLOAD_P2P_FILE: (id: string): string =>
     `${BackendEndpoint.HANDLER_APPLICATIONS}batch_p2p_file?batch_id=${id}`,
+} as const;
+
+const singleApplicationBase = (id: string): string =>
+  `${BackendEndpoint.APPLICATIONS}${id}/`;
+
+export const ApplicantEndpoint = {
+  APPLICATIONS_CLONE_AS_DRAFT: (id: string) =>
+    `${singleApplicationBase(id)}clone_as_draft/`,
 } as const;
 
 export const BackendEndPoints = Object.values(BackendEndpoint);

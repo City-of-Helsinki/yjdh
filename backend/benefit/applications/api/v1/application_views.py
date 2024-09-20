@@ -16,7 +16,8 @@ from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from django_filters import DateFromToRangeFilter, rest_framework as filters
 from django_filters.widgets import CSVWidget
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import filters as drf_filters, status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -60,6 +61,7 @@ from applications.services.application_alteration_csv_report import (
     ApplicationAlterationCsvService,
 )
 from applications.services.applications_csv_report import ApplicationsCsvService
+from applications.services.clone_application import clone_application_based_on_other
 from applications.services.generate_application_summary import (
     generate_application_summary_file,
     get_context_for_summary_context,
@@ -592,6 +594,112 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
             return qs.all()
         else:
             return Application.objects.none()
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="work",
+                description="Should work position information be cloned",
+                required=False,
+                type=OpenApiTypes.BOOL,
+                location=OpenApiParameter.PATH,
+            ),
+            OpenApiParameter(
+                name="employee",
+                description="Should employee information be cloned",
+                required=False,
+                type=OpenApiTypes.BOOL,
+                location=OpenApiParameter.PATH,
+            ),
+            OpenApiParameter(
+                name="pay_subsidy",
+                description="Should pay subsidy information be cloned",
+                required=False,
+                type=OpenApiTypes.BOOL,
+                location=OpenApiParameter.PATH,
+            ),
+        ],
+        description="Clone any application as draft.",
+    )
+    @action(methods=["GET"], detail=True, url_path="clone_as_draft")
+    @transaction.atomic
+    def clone_as_draft(self, request, pk=None) -> HttpResponse:
+        application_base = self.get_object()
+
+        clone_employee = request.query_params.get("employee") or None
+        clone_work = request.query_params.get("work") or None
+        clone_subsidies = request.query_params.get("pay_subsidy") or None
+
+        cloned_application = clone_application_based_on_other(
+            application_base, clone_employee, clone_work, clone_subsidies
+        )
+
+        return Response(
+            {"id": cloned_application.id},
+            status=status.HTTP_201_CREATED,
+        )
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="work",
+                description="Should work position information be cloned",
+                required=False,
+                type=OpenApiTypes.BOOL,
+                location=OpenApiParameter.PATH,
+            ),
+            OpenApiParameter(
+                name="employee",
+                description="Should employee information be cloned",
+                required=False,
+                type=OpenApiTypes.BOOL,
+                location=OpenApiParameter.PATH,
+            ),
+            OpenApiParameter(
+                name="pay_subsidy",
+                description="Should pay subsidy information be cloned",
+                required=False,
+                type=OpenApiTypes.BOOL,
+                location=OpenApiParameter.PATH,
+            ),
+        ],
+        description="Clone any application as draft.",
+    )
+    @action(methods=["GET"], detail=False, url_path="clone_latest")
+    @transaction.atomic
+    def clone_latest(self, request, pk=None) -> HttpResponse:
+        company = get_company_from_request(request)
+
+        try:
+            application_base = Application.objects.filter(
+                company=company,
+                status__in=[
+                    ApplicationStatus.RECEIVED,
+                    ApplicationStatus.HANDLING,
+                    ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.REJECTED,
+                ],
+            ).latest("submitted_at")
+
+        except Application.DoesNotExist:
+            return Response(
+                {"detail": _("No applications found for cloning")},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        clone_employee = request.query_params.get("employee") or None
+        clone_work = request.query_params.get("work") or None
+        clone_subsidies = request.query_params.get("pay_subsidy") or None
+
+        cloned_application = clone_application_based_on_other(
+            application_base, clone_employee, clone_work, clone_subsidies
+        )
+
+        return Response(
+            {"id": cloned_application.id},
+            status=status.HTTP_201_CREATED,
+        )
 
 
 @extend_schema(

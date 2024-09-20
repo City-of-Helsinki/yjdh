@@ -74,6 +74,7 @@
       "edit": "Muokkaa",
       "close": "Sulje",
       "print": "Tulosta hakemus",
+      "clone": "Käytä uuden hakemuksen pohjana",
       "openTermsAsPDF": "Avaa ehdot PDF-tiedostona",
       "continueToService": "Jatka palveluun",
       "pauseAndExit": "Keskeytä ja poistu",
@@ -418,7 +419,11 @@
       }
     },
     "errors": {
-      "dirtyOrInvalidForm": "Täytä lomakkeen puuttuvat tai virheelliset kentät"
+      "dirtyOrInvalidForm": "Täytä lomakkeen puuttuvat tai virheelliset kentät",
+      "cloneError": {
+        "title": "Ei aiempia lähetettyjä hakemuksia",
+        "message": "Ole hyvä ja tee kokonaan uusi hakemus"
+      }
     },
     "decision": {
       "description": {
@@ -614,7 +619,11 @@
       "description1": "Tervetuloa Helsinki-lisän asiointipalveluun.",
       "description2": "Ennen hakemuksen täyttämistä tutustu hakemisessa vaadittaviin tietoihin ja liitteisiin. Voit tallentaa hakemuksen keskeneräisenä luonnokseksi ja jatkaa sen täyttämistä myöhemmin.",
       "linkText": " Tutustu vaadittaviin tietoihin ja tarvittaviin liitteisiin ennen hakemuksen täyttämistä.",
-      "newApplicationBtnText": "Tee uusi hakemus"
+      "newApplicationBtnText": "Tee uusi hakemus",
+      "cloneApplication": {
+        "helperText": "Pohjana käytetään viimeksi lähetettyä hakemusta",
+        "buttonText": "Kopioi aiempi hakemus"
+      }
     },
     "decisions": {
       "heading": "Arkisto",
