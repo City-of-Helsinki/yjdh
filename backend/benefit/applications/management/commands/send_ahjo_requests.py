@@ -266,14 +266,15 @@ for application {application.id} and batch {batch.id} from Ahjo"
         response_text: str,
         request_type: AhjoRequestType,
     ) -> str:
-        # The guid is returned in the response text in text format {guid}, so remove brackets here
+        # The request id  is returned in the response text in text format {request_id}, so remove brackets here
         response_text = response_text.replace("{", "").replace("}", "")
-        application.ahjo_case_guid = response_text
-        application.save()
+        ahjo_status = application.ahjo_status.latest()
+        ahjo_status.ahjo_request_id = response_text
+        ahjo_status.save()
 
         return f"{counter}. Successfully submitted {request_type} request for application {application.id}, \
             number: {application.application_number}, to Ahjo, \
-            received GUID: {response_text}"
+            received Ahjo requestId: {response_text}"
 
     def _handle_successful_request(
         self,
