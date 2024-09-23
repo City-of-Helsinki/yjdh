@@ -6,17 +6,24 @@ import {
 import { getTagStyleForStatus } from 'benefit/handler/utils/applications';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
-import { IconSpeechbubbleText, Table, Tag } from 'hds-react';
+import { IconSpeechbubbleText, Table, Tag, Tooltip } from 'hds-react';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import { $Link } from 'shared/components/table/Table.sc';
-import { sortFinnishDate, sortFinnishDateTime } from 'shared/utils/date.utils';
+import {
+  convertToUIDateAndTimeFormat,
+  sortFinnishDate,
+  sortFinnishDateTime,
+} from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
 import {
-  $CellContent,
+  $ActionErrors,
+  $ActionMessages,
+  $ApplicationList,
   $EmptyHeading,
   $Heading,
+  $TableActions,
   $TagWrapper,
   $UnreadMessagesCount,
 } from './ApplicationList.sc';
@@ -214,17 +221,50 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         unreadMessagesCount,
         id,
         status: applicationStatus,
+        ahjoError,
       }: ApplicationListTableTransforms) => (
-        <$CellContent>
+        <$TableActions>
           {Number(unreadMessagesCount) > 0 ? (
-            <$Link href={buildApplicationUrl(id, applicationStatus, true)}>
-              <IconSpeechbubbleText color={theme.colors.coatOfArms} />
-              <$UnreadMessagesCount>
-                {Number(unreadMessagesCount)}
-              </$UnreadMessagesCount>
-            </$Link>
+            <$ActionMessages>
+              <$Link href={buildApplicationUrl(id, applicationStatus, true)}>
+                <IconSpeechbubbleText color={theme.colors.coatOfArms} />
+                <$UnreadMessagesCount>
+                  {Number(unreadMessagesCount)}
+                </$UnreadMessagesCount>
+              </$Link>
+            </$ActionMessages>
           ) : null}
-        </$CellContent>
+          {ahjoError?.errorFromAhjo && (
+            <$ActionErrors
+              $errorText={t(
+                'common:applications.list.errors.ahjoError.buttonText'
+              )}
+            >
+              <Tooltip
+                placement="top"
+                boxShadow
+                className="custom-tooltip-error"
+                tooltipLabel={t(
+                  'common:applications.list.errors.ahjoError.tooltipLabel'
+                )}
+                buttonLabel={t(
+                  'common:applications.list.errors.ahjoError.buttonLabel'
+                )}
+              >
+                <div>
+                  <strong>
+                    Ahjo, {convertToUIDateAndTimeFormat(ahjoError?.modifiedAt)}
+                  </strong>
+                </div>
+                <ul>
+                  {ahjoError?.errorFromAhjo?.map(({ message }) => (
+                    <li>{message}</li>
+                  ))}
+                </ul>
+              </Tooltip>
+            </$ActionErrors>
+          )}
+        </$TableActions>
       ),
       headerName: getHeader('unreadMessagesCount'),
       key: 'unreadMessagesCount',
@@ -255,7 +295,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   const statusAsString = isAllStatuses ? 'all' : status.join(',');
 
   return (
-    <div data-testid={`application-list-${statusAsString}`}>
+    <$ApplicationList data-testid={`application-list-${statusAsString}`}>
       {list.length > 0 ? (
         <Table
           heading={`${heading} (${list.length})`}
@@ -270,7 +310,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
           {t(`${translationsBase}.messages.empty.${statusAsString}`)}
         </$EmptyHeading>
       )}
-    </div>
+    </$ApplicationList>
   );
 };
 
