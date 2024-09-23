@@ -18,4 +18,3 @@ psycopg2
 python-stdnum>=1.19
 requests
 sentry-sdk
-xlsxwriter
