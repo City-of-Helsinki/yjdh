@@ -113,9 +113,6 @@ SECRET_KEY = django_env.str("SECRET_KEY")
 if DEBUG and not SECRET_KEY:
     SECRET_KEY = "xxxx"
 
-
-DEBUG = False
-
 ALLOWED_HOSTS = django_env.list("ALLOWED_HOSTS")
 USE_X_FORWARDED_HOST = django_env.bool("USE_X_FORWARDED_HOST")
 
