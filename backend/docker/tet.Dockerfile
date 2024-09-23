@@ -1,52 +1,46 @@
 # ==============================
-FROM helsinkitest/python:3.8-slim as appbase
+FROM registry.access.redhat.com/ubi9/python-39 AS appbase
 # ==============================
+USER root
+WORKDIR /app
+
 RUN mkdir /entrypoint
 
-COPY --chown=appuser:appuser tet/requirements.txt /app/requirements.txt
-COPY --chown=appuser:appuser tet/requirements-prod.txt /app/requirements-prod.txt
-COPY --chown=appuser:appuser tet/.prod/escape_json.c /app/.prod/escape_json.c
-COPY --chown=appuser:appuser shared /shared/
+COPY --chown=default:root tet/requirements.txt /app/requirements.txt
+COPY --chown=default:root tet/requirements-prod.txt /app/requirements-prod.txt
+COPY --chown=default:root tet/.prod/escape_json.c /app/.prod/escape_json.c
+COPY --chown=default:root shared /shared/
 
-RUN apt-install.sh \
-        git \
-        netcat-traditional \
-        libpq-dev \
-        build-essential \
-        wkhtmltopdf \
+RUN dnf --disableplugin subscription-manager update -y \
+    && dnf --disableplugin subscription-manager install -y \
+       nmap-ncat \
+       postgresql-devel \
     && pip install -U pip setuptools wheel \
     && pip install --no-cache-dir -r /app/requirements.txt \
-    && pip install --no-cache-dir  -r /app/requirements-prod.txt \
+    && pip install --no-cache-dir -r /app/requirements-prod.txt \
     && uwsgi --build-plugin /app/.prod/escape_json.c \
     && mv /app/escape_json_plugin.so /app/.prod/escape_json_plugin.so \
-    && apt-cleanup.sh build-essential
+    && dnf --disableplugin subscription-manager clean all
 
-COPY --chown=appuser:appuser tet/docker-entrypoint.sh /entrypoint/docker-entrypoint.sh
+COPY --chown=default:root tet/docker-entrypoint.sh /entrypoint/docker-entrypoint.sh
 ENTRYPOINT ["/entrypoint/docker-entrypoint.sh"]
-COPY --chown=appuser:appuser tet /app/
+COPY --chown=default:root tet /app/
+
+EXPOSE 8000/tcp
 
 # ==============================
-FROM appbase as development
+FROM appbase AS development
 # ==============================
 
-COPY --chown=appuser:appuser tet/requirements-dev.txt /app/requirements-dev.txt
-RUN apt-install.sh \
-        build-essential \
-    && pip install --no-cache-dir -r /app/requirements-dev.txt \
-    && apt-cleanup.sh build-essential
+COPY --chown=default:root tet/requirements-dev.txt /app/requirements-dev.txt
+RUN pip install --no-cache-dir -r /app/requirements-dev.txt
 
 ENV DEV_SERVER=1
 
-
-USER appuser
-EXPOSE 8000/tcp
+USER default
 
 # ==============================
-FROM appbase as production
+FROM appbase AS production
 # ==============================
 
-# TODO this doesn't work before STATIC_ROOT is set
-# RUN SECRET_KEY="only-used-for-collectstatic" python manage.py collectstatic --noinput
-
-USER appuser
-EXPOSE 8000/tcp
+USER default

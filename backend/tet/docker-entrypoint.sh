@@ -4,7 +4,12 @@ set -e
 
 # Wait for the database
 if [ -z "$SKIP_DATABASE_CHECK" -o "$SKIP_DATABASE_CHECK" = "0" ]; then
-    wait-for-it.sh "${DATABASE_HOST}:${DATABASE_PORT-5432}" --timeout=30
+    until nc -z -v -w30 "${DATABASE_HOST}" "${DATABASE_PORT-5432}"
+    do
+        echo "Waiting for postgres database connection..."
+        sleep 1
+    done
+    echo "Database is up!"
 fi
 
 # Apply database migrations
