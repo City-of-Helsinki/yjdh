@@ -8,7 +8,7 @@ from django.conf import settings
 from django.urls import reverse
 
 from applications.enums import AhjoRequestType, AhjoStatus as AhjoStatusEnum
-from applications.models import AhjoSetting, Application
+from applications.models import AhjoSetting, AhjoStatus, Application
 from applications.services.ahjo_authentication import AhjoToken, InvalidTokenException
 
 LOGGER = logging.getLogger(__name__)
@@ -235,6 +235,13 @@ class AhjoApiClient:
                 timeout=self._timeout,
                 data=data,
             )
+
+            if hasattr(self._request, "result_status") and self._request.result_status:
+                AhjoStatus.objects.create(
+                    application=self._request.application,
+                    status=self._request.result_status,
+                )
+
             response.raise_for_status()
 
             if response.ok:

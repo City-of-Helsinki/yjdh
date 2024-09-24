@@ -488,10 +488,6 @@ def send_open_case_request_to_ahjo(
     data = prepare_open_case_payload(application, pdf_summary)
 
     result, response_text = ahjo_client.send_request_to_ahjo(data)
-    if result:
-        create_status_for_application(
-            application, AhjoStatusEnum.REQUEST_TO_OPEN_CASE_SENT
-        )
     return result, response_text
 
 
@@ -504,8 +500,7 @@ def delete_application_in_ahjo(
     ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
 
     result, response_text = ahjo_client.send_request_to_ahjo(None)
-    if result:
-        create_status_for_application(application, ahjo_request.result_status)
+
     return result, response_text
 
 
@@ -532,8 +527,6 @@ in Ahjo status {application.ahjo_status.latest().status}, not sending {ahjo_requ
 
     result, response_text = ahjo_client.send_request_to_ahjo(data)
 
-    if result:
-        create_status_for_application(application, AhjoStatusEnum.UPDATE_REQUEST_SENT)
     return result, response_text
 
 
@@ -554,8 +547,6 @@ def send_new_attachment_records_to_ahjo(
 
     result, response_text = ahjo_client.send_request_to_ahjo(data)
 
-    if result:
-        create_status_for_application(application, ahjo_request.result_status)
     return result, response_text
 
 
@@ -584,7 +575,6 @@ def send_decision_proposal_to_ahjo(
         secret_xml=secret_xml,
     )
     response, response_text = ahjo_client.send_request_to_ahjo(data)
-    create_status_for_application(application, AhjoStatusEnum.DECISION_PROPOSAL_SENT)
     return response, response_text
 
 
