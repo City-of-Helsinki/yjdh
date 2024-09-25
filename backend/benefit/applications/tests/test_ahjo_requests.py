@@ -6,7 +6,8 @@ import requests
 import requests_mock
 from django.urls import reverse
 
-from applications.enums import AhjoRequestType
+from applications.enums import AhjoRequestType, AhjoStatus as AhjoStatusEnum
+from applications.models import AhjoStatus
 from applications.services.ahjo_authentication import AhjoToken, InvalidTokenException
 from applications.services.ahjo_client import (
     AhjoAddRecordsRequest,
@@ -164,15 +165,50 @@ def test_ahjo_requests(
 
 
 @pytest.mark.parametrize(
-    "ahjo_request_class, request_type, request_method",
+    "ahjo_request_class, request_type, request_method, previous_status",
     [
-        (AhjoOpenCaseRequest, AhjoRequestType.OPEN_CASE, "POST"),
-        (AhjoDecisionProposalRequest, AhjoRequestType.SEND_DECISION_PROPOSAL, "POST"),
-        (AhjoUpdateRecordsRequest, AhjoRequestType.UPDATE_APPLICATION, "PUT"),
-        (AhjoDeleteCaseRequest, AhjoRequestType.DELETE_APPLICATION, "DELETE"),
-        (AhjoAddRecordsRequest, AhjoRequestType.ADD_RECORDS, "POST"),
-        (AhjoSubscribeDecisionRequest, AhjoRequestType.SUBSCRIBE_TO_DECISIONS, "POST"),
-        (AhjoDecisionDetailsRequest, AhjoRequestType.GET_DECISION_DETAILS, "GET"),
+        (
+            AhjoOpenCaseRequest,
+            AhjoRequestType.OPEN_CASE,
+            "POST",
+            AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
+        ),
+        (
+            AhjoDecisionProposalRequest,
+            AhjoRequestType.SEND_DECISION_PROPOSAL,
+            "POST",
+            AhjoStatusEnum.CASE_OPENED,
+        ),
+        (
+            AhjoUpdateRecordsRequest,
+            AhjoRequestType.UPDATE_APPLICATION,
+            "PUT",
+            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
+        ),
+        (
+            AhjoDeleteCaseRequest,
+            AhjoRequestType.DELETE_APPLICATION,
+            "DELETE",
+            AhjoStatusEnum.CASE_OPENED,
+        ),
+        (
+            AhjoAddRecordsRequest,
+            AhjoRequestType.ADD_RECORDS,
+            "POST",
+            AhjoStatusEnum.CASE_OPENED,
+        ),
+        (
+            AhjoSubscribeDecisionRequest,
+            AhjoRequestType.SUBSCRIBE_TO_DECISIONS,
+            "POST",
+            AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
+        ),
+        (
+            AhjoDecisionDetailsRequest,
+            AhjoRequestType.GET_DECISION_DETAILS,
+            "GET",
+            AhjoStatusEnum.DETAILS_RECEIVED_FROM_AHJO,
+        ),
     ],
 )
 @patch("applications.services.ahjo_client.LOGGER")
@@ -184,9 +220,12 @@ def test_requests_exceptions(
     dummy_token,
     request_type,
     request_method,
+    previous_status,
 ):
     application = decided_application
     ahjo_request_without_ad_username = ahjo_request_class(application)
+
+    AhjoStatus.objects.create(application=application, status=previous_status)
 
     if isinstance(ahjo_request_without_ad_username, AhjoDeleteCaseRequest):
         with pytest.raises(MissingHandlerIdError):
@@ -210,13 +249,25 @@ def test_requests_exceptions(
     client = AhjoApiClient(dummy_token, configured_request)
 
     with requests_mock.Mocker() as m:
+        # an example of a real validation error response from ahjo
+        validation_error = [
+            {"message": "/Title: does not match the regex pattern [a-zA-Z0-9åäöÅÄÖ]+"},
+            {
+                "message": "/Records/0/SecurityReasons/0: does not match the regex pattern [a-zA-Z0-9åäöÅÄÖ]+"
+            },
+        ]
         m.register_uri(
             configured_request.request_method,
             configured_request.api_url(),
             status_code=400,
+            json=validation_error,
         )
         client.send_request_to_ahjo()
         mock_logger.error.assert_called()
+        assert (
+            application.ahjo_status.latest().validation_error_from_ahjo
+            == validation_error
+        )
 
     exception = requests.exceptions.RequestException
     with requests_mock.Mocker() as m:
