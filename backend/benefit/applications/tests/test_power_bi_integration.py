@@ -24,9 +24,9 @@ def test_get_power_bi_data(power_bi_client, decided_application_with_decision_da
     # Assert CSV has a header and at least one data row
     assert len(rows) > 1
     header = rows[0]
-    assert "Hakemusnumero" in header
+    assert '\ufeff"Hakemusnumero"' in header
     assert "Talpaan viennin päivä" in header
 
-    assert rows[1][header.index("Hakemusnumero")] == str(
+    assert rows[1][header.index('\ufeff"Hakemusnumero"')] == str(
         decided_application_with_decision_date.application_number
     )

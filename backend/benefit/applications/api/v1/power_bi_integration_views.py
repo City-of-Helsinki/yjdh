@@ -73,7 +73,7 @@ class PowerBiIntegrationView(APIView):
             prune_data_for_talpa,
         )
         response = StreamingHttpResponse(
-            csv_service.get_csv_string_lines_generator(),
+            csv_service.get_csv_string_lines_generator(add_bom=True),
             content_type="text/csv",
         )
 
