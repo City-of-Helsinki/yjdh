@@ -33,13 +33,15 @@ class TalpaCallbackView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def process_callback(self, data, request):
-        if data["status"] == "Success":
+        if data["status"] in ["Success", "Failure"]:
             self._handle_successful_applications(
                 data["successful_applications"], get_request_ip_address(request)
             )
             self._handle_failed_applications(data["failed_applications"])
         else:
-            LOGGER.error(f"Received a talpa callback with status: {data['status']}")
+            LOGGER.error(
+                f"Received a talpa callback with unknown status: {data['status']}"
+            )
 
     def _get_applications(self, application_numbers) -> Union[List[Application], None]:
         applications = Application.objects.filter(
