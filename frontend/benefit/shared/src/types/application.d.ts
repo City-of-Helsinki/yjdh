@@ -321,6 +321,8 @@ export type Application = {
   applicationOrigin?: APPLICATION_ORIGINS;
   handler?: User;
   ahjoStatus?: string;
+  handledByAhjoAutomation?: boolean;
+  batchStatus?: BATCH_STATUSES;
 } & Step1 &
   Step2;
 
@@ -474,7 +476,7 @@ export type ApplicationData = {
   training_compensations: TrainingCompensationData[];
   handled_at?: string;
   batch?: BatchData;
-  has_batch?: boolean;
+  batch_status?: BATCH_STATUSES;
   latest_decision_comment?: string;
   unread_messages_count?: number;
   application_origin?: APPLICATION_ORIGINS;

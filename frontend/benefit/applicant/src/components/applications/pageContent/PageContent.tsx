@@ -17,7 +17,11 @@ import ApplicationFormStep5 from 'benefit/applicant/components/applications/form
 import ApplicationFormStep6 from 'benefit/applicant/components/applications/forms/application/step6/ApplicationFormStep6';
 import NoCookieConsentsNotification from 'benefit/applicant/components/cookieConsent/NoCookieConsentsNotification';
 import { $Hr } from 'benefit/applicant/components/pages/Pages.sc';
-import { ROUTES, SUBMITTED_STATUSES } from 'benefit/applicant/constants';
+import {
+  ROUTES,
+  SUBMITTED_STATUSES,
+  SUPPORTED_LANGUAGES,
+} from 'benefit/applicant/constants';
 import { useAskem } from 'benefit/applicant/hooks/useAnalytics';
 import DecisionSummary from 'benefit-shared/components/decisionSummary/DecisionSummary';
 import StatusIcon from 'benefit-shared/components/statusIcon/StatusIcon';
@@ -26,6 +30,7 @@ import {
   ALTERATION_STATE,
   ALTERATION_TYPE,
   APPLICATION_STATUSES,
+  BATCH_STATUSES,
 } from 'benefit-shared/constants';
 import { DecisionDetailList } from 'benefit-shared/types/application';
 import { Button, IconInfoCircleFill, LoadingSpinner, Stepper } from 'hds-react';
@@ -159,7 +164,7 @@ const PageContent: React.FC = () => {
             ),
           })}
         />
-        {router.locale === 'fi' && (
+        {router.locale === SUPPORTED_LANGUAGES.FI && (
           <Container>
             <$Hr />
             {canShowAskem ? (
@@ -192,6 +197,17 @@ const PageContent: React.FC = () => {
         alteration.state === ALTERATION_STATE.HANDLED &&
         alteration.alterationType === ALTERATION_TYPE.TERMINATION
     );
+
+    const passesAhjoDecisionMaking =
+      application?.handledByAhjoAutomation &&
+      application?.ahjoCaseId &&
+      application?.ahjoStatus === AHJO_STATUSES.DETAILS_RECEIVED;
+
+    const passesManualDecisionMaking =
+      !application?.handledByAhjoAutomation &&
+      [BATCH_STATUSES.SENT_TO_TALPA, BATCH_STATUSES.COMPLETED].includes(
+        application?.batchStatus
+      );
 
     return (
       <Container>
@@ -226,7 +242,7 @@ const PageContent: React.FC = () => {
             </$HeaderRightColumnItem>
           )}
         </$PageHeader>
-        {application.ahjoStatus === AHJO_STATUSES.DETAILS_RECEIVED && ( 
+        {(passesAhjoDecisionMaking || passesManualDecisionMaking) && (
           <DecisionSummary
             application={application}
             actions={

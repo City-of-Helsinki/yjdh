@@ -1511,10 +1511,10 @@ class ApplicantApplicationSerializer(BaseApplicationSerializer):
         ),
     )
 
-    has_batch = serializers.SerializerMethodField()
+    batch_status = serializers.SerializerMethodField()
 
-    def get_has_batch(self, obj):
-        return obj.batch is not None
+    def get_batch_status(self, obj):
+        return getattr(obj.batch, "status", False) if obj.batch else False
 
     changes = serializers.SerializerMethodField(
         help_text=("Possible changes made by handler to the application."),
@@ -1553,7 +1553,7 @@ class ApplicantApplicationSerializer(BaseApplicationSerializer):
     class Meta(BaseApplicationSerializer.Meta):
         fields = BaseApplicationSerializer.Meta.fields + [
             "batch",
-            "has_batch",
+            "batch_status",
             "handled_by_ahjo_automation",
         ]
 

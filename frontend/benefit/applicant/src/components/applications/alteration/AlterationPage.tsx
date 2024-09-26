@@ -20,7 +20,6 @@ import {
   ALTERATION_TYPE,
   APPLICATION_STATUSES,
 } from 'benefit-shared/constants';
-import { isTruthy } from 'benefit-shared/utils/common';
 import { Button, IconArrowLeft, LoadingSpinner } from 'hds-react';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -49,11 +48,7 @@ const AlterationPage = (): JSX.Element => {
     );
   }
 
-  if (
-    !isTruthy(process.env.NEXT_PUBLIC_ENABLE_ALTERATION_FEATURES) ||
-    isError ||
-    !id
-  ) {
+  if (isError || !id) {
     return (
       <ErrorPage
         title={t('common:errorPage.title')}
