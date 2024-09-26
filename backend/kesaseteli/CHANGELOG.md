@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.10.0...kesaseteli-backend-v1.10.1) (2024-09-26)
+
+
+### Bug Fixes
+
+* Update Suomi.fi IDP test/production metadata ([9ad2230](https://github.com/City-of-Helsinki/yjdh/commit/9ad22307b3f8fcc24c559e4544ad01ebdc75c643))
+
 ## [1.10.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.9.0...kesaseteli-backend-v1.10.0) (2024-07-26)
 
 
