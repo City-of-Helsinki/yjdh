@@ -314,3 +314,27 @@ def test_get_context_for_secret_xml_with_multiple_periods(
     assert context["calculation_periods"][1].total_amount == int(sub_total_row_2.amount)
     assert context["total_amount_row"] == total_eur_row
     assert context["total_amount_row"].amount == int(total_eur_row.amount)
+
+
+@pytest.mark.parametrize(
+    "input_text, expected_output",
+    [
+        ("Hello&nbsp;World", "Hello World"),  # &nbsp; should be replaced by space
+        (
+            "Zero\u200bWidth\u200bSpace",
+            "ZeroWidthSpace",
+        ),  # Zero-width space should be removed
+        ("\ufeffBOM at start", "BOM at start"),  # BOM should be removed
+        (
+            "Non-breaking\u00a0space",
+            "Non-breaking space",
+        ),  # Non-breaking space should be replaced with space
+        (
+            "&nbsp;\u200b\u00a0\u200bTest\u200b\u200b",
+            "  Test",
+        ),  # Mixed invisible characters
+        ("No special characters", "No special characters"),  # No changes expected
+    ],
+)
+def test_sanitize_text_input(input_text, expected_output):
+    assert AhjoPublicXMLBuilder.sanitize_text_input(input_text) == expected_output
