@@ -428,6 +428,7 @@ if NEXT_PUBLIC_MOCK_FLAG:
 else:
     SUOMIFI_SERVICE_NAME_EXTRA = env("SUOMIFI_SERVICE_NAME_EXTRA")
 
+# See backend/shared/README.md for info about the Suomi.fi IDP metadata files
 SUOMIFI_IDP_METADATA_FILENAME = (
     "idp-metadata-secondary.xml"
     if SUOMIFI_TEST
