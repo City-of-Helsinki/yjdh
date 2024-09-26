@@ -125,8 +125,35 @@ def test_write_talpa_csv_file(
         assert "äöÄÖtest" in contents
 
 
+def test_talpa_callback_is_disabled(
+    talpa_client,
+    settings,
+    decided_application,
+):
+    settings.TALPA_CALLBACK_ENABLED = False
+
+    url = reverse(
+        "talpa_callback_url",
+    )
+
+    payload = {
+        "status": "Success",
+        "successful_applications": [decided_application.application_number],
+        "failed_applications": [],
+    }
+
+    response = talpa_client.post(url, data=payload)
+
+    assert response.status_code == 400
+    assert response.data == {"message": "Talpa callback is disabled"}
+
+
 @pytest.mark.django_db
-def test_talpa_callback_success(talpa_client, decided_application, application_batch):
+def test_talpa_callback_success(
+    talpa_client, decided_application, application_batch, settings
+):
+    settings.TALPA_CALLBACK_ENABLED = True
+
     decided_application.batch = application_batch
     decided_application.save()
 
@@ -165,8 +192,9 @@ def test_talpa_callback_success(talpa_client, decided_application, application_b
 
 @pytest.mark.django_db
 def test_talpa_callback_rejected_application(
-    talpa_client, decided_application, application_batch
+    talpa_client, decided_application, application_batch, settings
 ):
+    settings.TALPA_CALLBACK_ENABLED = True
     decided_application.batch = application_batch
     decided_application.save()
 

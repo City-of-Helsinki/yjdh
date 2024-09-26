@@ -1,6 +1,7 @@
 import logging
 from typing import List, Union
 
+from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.db import transaction
 from rest_framework import status
@@ -24,6 +25,13 @@ class TalpaCallbackView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
+        if settings.TALPA_CALLBACK_ENABLED is False:
+            LOGGER.warning("Talpa callback is disabled")
+            return Response(
+                {"message": "Talpa callback is disabled"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         serializer = TalpaCallbackSerializer(data=request.data)
 
         if serializer.is_valid():
