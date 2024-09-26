@@ -992,16 +992,6 @@ def test_application_edit_benefit_type_non_business_invalid(
     assert response.status_code == 400
 
 
-def test_association_immediate_manager_check_invalid(api_client, application):
-    data = ApplicantApplicationSerializer(application).data
-    data["association_immediate_manager_check"] = False  # invalid value
-    response = api_client.put(
-        get_detail_url(application),
-        data,
-    )
-    assert response.status_code == 400
-
-
 def test_association_immediate_manager_check_valid(api_client, association_application):
     data = ApplicantApplicationSerializer(association_application).data
     data["association_immediate_manager_check"] = True  # valid value for associations

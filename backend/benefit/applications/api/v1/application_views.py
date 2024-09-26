@@ -49,7 +49,6 @@ from applications.models import (
     Application,
     ApplicationAlteration,
     ApplicationBatch,
-    Attachment,
 )
 from applications.services.ahjo_integration import (
     ExportFileInfo,
@@ -67,9 +66,7 @@ from applications.services.generate_application_summary import (
     generate_application_summary_file,
     get_context_for_summary_context,
 )
-from calculator.models import Calculation
 from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
-from helsinkibenefit.settings import MEDIA_ROOT
 from messages.models import MessageType
 from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation
@@ -626,16 +623,9 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
     )
     @action(methods=["GET"], detail=True, url_path="clone_as_draft")
     @transaction.atomic
-    def clone_as_draft(self, request) -> HttpResponse:
+    def clone_as_draft(self, request, pk) -> HttpResponse:
         application_base = self.get_object()
-
-        clone_employee = request.query_params.get("employee") or None
-        clone_work = request.query_params.get("work") or None
-        clone_subsidies = request.query_params.get("pay_subsidy") or None
-
-        cloned_application = clone_application_based_on_other(
-            application_base, clone_employee, clone_work, clone_subsidies
-        )
+        cloned_application = clone_application_based_on_other(application_base)
 
         return Response(
             {"id": cloned_application.id},
@@ -691,13 +681,7 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        clone_employee = request.query_params.get("employee") or None
-        clone_work = request.query_params.get("work") or None
-        clone_subsidies = request.query_params.get("pay_subsidy") or None
-
-        cloned_application = clone_application_based_on_other(
-            application_base, clone_employee, clone_work, clone_subsidies
-        )
+        cloned_application = clone_application_based_on_other(application_base)
 
         return Response(
             {"id": cloned_application.id},
@@ -838,58 +822,18 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
     @transaction.atomic
     def clone_as_draft(self, request, pk) -> HttpResponse:
         application_base = self.get_object()
-        cloned_application = clone_application_based_on_other(
-            application_base, True, True, True
-        )
+        cloned_application = clone_application_based_on_other(application_base, True)
 
-        # Create fake image to be used as attachment's body
-        from PIL import Image  # import library
+        try:
+            cloned_application.full_clean()
+            cloned_application.employee.full_clean()
+            cloned_application.company.full_clean()
+            cloned_application.calculation.full_clean()
 
-        attachment_name = f"test-application-{cloned_application.id}"
-        temp_image = Image.new("RGB", (1, 1))
-        temp_image.save(
-            format="PNG",
-            fp=f"{MEDIA_ROOT}/{attachment_name}",
-        )
-
-        # Mimick the attachments by retaining attachment type
-        for base_attachment in application_base.attachments.all():
-            Attachment.objects.create(
-                attachment_type=base_attachment.attachment_type,
-                application=cloned_application,
-                attachment_file=f"{attachment_name}.png",
-                content_type="image/png",
+        except exceptions.ValidationError as e:
+            return Response(
+                {"detail": e.message_dict}, status=status.HTTP_400_BAD_REQUEST
             )
-
-        # Clone calculation with compensations and pay subsidies
-        cloned_application.start_date = application_base.start_date
-        cloned_application.end_date = application_base.end_date
-        cloned_application.save()
-
-        calculation_base = application_base.calculation
-        Calculation.objects.create_for_application(
-            cloned_application,
-            start_date=calculation_base.start_date,
-            end_date=calculation_base.end_date,
-            state_aid_max_percentage=calculation_base.state_aid_max_percentage,
-            override_monthly_benefit_amount=calculation_base.override_monthly_benefit_amount,
-            override_monthly_benefit_amount_comment=calculation_base.override_monthly_benefit_amount_comment,
-        )
-
-        for compensation in application_base.training_compensations.all():
-            compensation.pk = None
-            compensation.application = cloned_application
-            compensation.save()
-
-        # Remove pay subsidies made by new calculation object, then clone the old ones
-        cloned_application.pay_subsidies.filter(start_date__isnull=True).delete()
-        for pay_subsidy in application_base.pay_subsidies.all():
-            pay_subsidy.pk = None
-            pay_subsidy.application = cloned_application
-            pay_subsidy.save()
-
-        cloned_application.status = ApplicationStatus.RECEIVED
-        cloned_application.save()
 
         return Response(
             {"id": cloned_application.id},
