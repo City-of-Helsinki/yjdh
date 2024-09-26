@@ -1267,7 +1267,13 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         valid_attachment_types = {req[0] for req in attachment_requirements}
         attachments_with_invalid_type = []
 
-        for attachment in instance.attachments.all().order_by("created_at"):
+        for attachment in (
+            # exclude the PDF summary from the list of attachments,
+            # otherwise it may get deleted
+            instance.attachments.filter()
+            .exclude(attachment_type=AttachmentType.PDF_SUMMARY)
+            .order_by("created_at")
+        ):
             if attachment.attachment_type == AttachmentType.EMPLOYEE_CONSENT:
                 # validated separately
                 continue
