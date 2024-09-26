@@ -126,7 +126,10 @@ def test_write_talpa_csv_file(
 
 
 @pytest.mark.django_db
-def test_talpa_callback_success(talpa_client, decided_application):
+def test_talpa_callback_success(talpa_client, decided_application, application_batch):
+    decided_application.batch = application_batch
+    decided_application.save()
+
     url = reverse(
         "talpa_callback_url",
     )
@@ -155,6 +158,8 @@ def test_talpa_callback_success(talpa_client, decided_application):
         == ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
     )
 
+    assert decided_application.batch.status == ApplicationBatchStatus.SENT_TO_TALPA
+
     assert decided_application.archived is True
 
 
@@ -181,6 +186,7 @@ def test_talpa_callback_rejected_application(
     assert response.data == {"message": "Callback received"}
 
     decided_application.refresh_from_db()
+    decided_application.archived = False
 
     assert decided_application.talpa_status == ApplicationTalpaStatus.REJECTED_BY_TALPA
     assert decided_application.batch.status == ApplicationBatchStatus.REJECTED_BY_TALPA
