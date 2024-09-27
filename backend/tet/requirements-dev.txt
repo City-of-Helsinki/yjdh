@@ -6,13 +6,11 @@
 #
 asttokens==2.4.1
     # via stack-data
-backcall==0.2.0
-    # via ipython
 black==23.1.0
     # via -r requirements-dev.in
-build==1.2.1
+build==1.2.2
     # via pip-tools
-certifi==2024.6.2
+certifi==2024.8.30
     # via
     #   -c requirements.txt
     #   requests
@@ -26,35 +24,37 @@ click==8.1.7
     # via
     #   black
     #   pip-tools
-coverage==7.5.3
+coverage==7.6.1
     # via pytest-cov
 decorator==5.1.1
     # via ipython
 distlib==0.3.8
     # via virtualenv
-exceptiongroup==1.2.1
-    # via pytest
+exceptiongroup==1.2.2
+    # via
+    #   ipython
+    #   pytest
 execnet==2.1.1
     # via pytest-xdist
-executing==2.0.1
+executing==2.1.0
     # via stack-data
-filelock==3.14.0
+filelock==3.16.1
     # via virtualenv
 flake8==6.0.0
     # via -r requirements-dev.in
 freezegun==1.5.1
     # via pytest-freezegun
-identify==2.5.36
+identify==2.6.1
     # via pre-commit
-idna==3.7
+idna==3.10
     # via
     #   -c requirements.txt
     #   requests
-importlib-metadata==7.1.0
+importlib-metadata==8.5.0
     # via build
 iniconfig==2.0.0
     # via pytest
-ipython==8.12.3
+ipython==8.18.1
     # via -r requirements-dev.in
 isort==5.12.0
     # via -r requirements-dev.in
@@ -68,9 +68,9 @@ mccabe==0.7.0
     # via flake8
 mypy-extensions==1.0.0
     # via black
-nodeenv==1.9.0
+nodeenv==1.9.1
     # via pre-commit
-packaging==24.0
+packaging==24.1
     # via
     #   -c requirements.txt
     #   black
@@ -82,25 +82,23 @@ pathspec==0.12.1
     # via black
 pexpect==4.9.0
     # via ipython
-pickleshare==0.7.5
-    # via ipython
 pip-tools==7.4.1
     # via -r requirements-dev.in
-platformdirs==4.2.2
+platformdirs==4.3.6
     # via
     #   black
     #   virtualenv
 pluggy==1.5.0
     # via pytest
-pre-commit==3.5.0
+pre-commit==3.8.0
     # via -r requirements-dev.in
-prompt-toolkit==3.0.45
+prompt-toolkit==3.0.48
     # via ipython
-psutil==5.9.8
+psutil==6.0.0
     # via pytest-xdist
 ptyprocess==0.7.0
     # via pexpect
-pure-eval==0.2.2
+pure-eval==0.2.3
     # via stack-data
 pycodestyle==2.10.0
     # via flake8
@@ -112,7 +110,7 @@ pyproject-hooks==1.1.0
     # via
     #   build
     #   pip-tools
-pytest==8.2.1
+pytest==8.3.3
     # via
     #   -r requirements-dev.in
     #   pytest-cov
@@ -121,7 +119,7 @@ pytest==8.2.1
     #   pytest-xdist
 pytest-cov==5.0.0
     # via -r requirements-dev.in
-pytest-django==4.8.0
+pytest-django==4.9.0
     # via -r requirements-dev.in
 pytest-freezegun==0.4.2
     # via -r requirements-dev.in
@@ -131,7 +129,7 @@ python-dateutil==2.9.0.post0
     # via
     #   -c requirements.txt
     #   freezegun
-pyyaml==6.0.1
+pyyaml==6.0.2
     # via pre-commit
 requests==2.32.3
     # via
@@ -157,24 +155,24 @@ traitlets==5.14.3
     # via
     #   ipython
     #   matplotlib-inline
-typing-extensions==4.12.1
+typing-extensions==4.12.2
     # via
     #   -c requirements.txt
     #   black
     #   ipython
-urllib3==2.2.1
+urllib3==2.2.3
     # via
     #   -c requirements.txt
     #   requests
-virtualenv==20.26.2
+virtualenv==20.26.5
     # via pre-commit
 wcwidth==0.2.13
     # via prompt-toolkit
-werkzeug==3.0.3
+werkzeug==3.0.4
     # via -r requirements-dev.in
-wheel==0.43.0
+wheel==0.44.0
     # via pip-tools
-zipp==3.19.1
+zipp==3.20.2
     # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
