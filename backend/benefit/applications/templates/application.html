@@ -108,15 +108,18 @@
             </section>
             <section>
                 <h3>{{ _("Change negotiations or co-determination negotiations") }}</h3>
+                {% if application.co_operation_negotiations %}
+
                 <div class="row force-column">
                     <div class="value">
-                        {% if application.co_operation_negotiations %}
-                        {{ _("Yes, the organization has ongoing or completed change negotiations within the previous 12 months.") }}
-                        {% else %}
-                        {{ _("No, the organization does not have change negotiations in progress or that have ended in the previous 12 months.") }}
-                        {% endif %}
+                        <p>{{ _("Yes, the organization has ongoing or completed change negotiations within the previous 12 months.") }}</p>
                     </div>
                 </div>
+                {% else %}
+                <p>{{ _("No, the organization does not have change negotiations in progress or that have ended in the previous 12 months.") }}</p>
+
+                {% endif %}
+
                 {% if application.co_operation_negotiations %}
                 <div class="row">
                     <div class="label">{{ _("Describe the situation") }}</div>

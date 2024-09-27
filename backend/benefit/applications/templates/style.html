@@ -65,22 +65,32 @@
 
     .page-wrapper {
         position: relative;
-        margin: 10px 90px;
         display: flex;
         flex-flow: column;
     }
 
-    footer {
-        position: absolute;
-        display: flex;
-        border-top: 1px solid black;
-        top: 1340px;
-        padding-top: 5px;
-        width: 100%;
-        flex: 1;
-        justify-content: space-between;
+    hr {
+        border-color: #000;
     }
 
+    footer {
+        position: absolute;
+        display: block;
+        border-top: 1px solid #000;
+        top: 1250px;
+        padding-top: 5px;
+        width: 100%;
+        float: left;
+    }
+
+    footer > .left-column {
+        position: absolute;
+        left: 0;
+    }
+    footer > .right-column {
+        position: absolute;
+        right: 0;
+    }
     p,
     h1,
     h2,
@@ -92,8 +102,8 @@
     }
 
     h3 {
-        font-size: 23px;
-        margin-bottom: 20px;
+        font-size: 1.4375em;
+        margin-bottom: 0.25em;
     }
 
     section {
@@ -116,8 +126,8 @@
 
     .row {
         display: flex;
-        margin-bottom: 20px;
-        font-size: 18px;
+        margin-bottom: 0.5em;
+        font-size: 1.125em;
     }
 
     .row.force-column {
@@ -127,7 +137,7 @@
     .label {
         font-weight: 600;
         min-width: 200px;
-        max-width: 200px;
+        max-width: 400px;
         margin-right: 20px;
         line-height: 1.25;
     }
@@ -145,11 +155,10 @@
     }
 
     header {
-        font-size: 20px;
-        display: flex;
+        font-size: 1.25em;
         margin-top: 20px;
         margin-bottom: 20px;
-        justify-content: flex-start;
+        padding-bottom: 130px;
     }
 
     header > .left-column svg {
@@ -160,7 +169,14 @@
         margin-bottom: 0;
     }
 
+    header > .left-column {
+        position: absolute;
+        left: 0;
+    }
+
     header > .right-column {
+        position: absolute;
+        right: 0;
         margin-right: 30px;
         display: block;
         margin-left: auto;
@@ -172,7 +188,7 @@
 
     header div h1,
     header div h2 {
-        font-size: 16px;
+        font-size: 1em;
         font-weight: 400;
     }
 </style>

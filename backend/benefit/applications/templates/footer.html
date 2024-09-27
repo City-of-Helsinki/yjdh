@@ -1,5 +1,7 @@
 {% load application_extras %}
 <footer>
-    <div class="page-printed-at">{{ _("Printed at") }} {{ today }}</div>
-    <div class="page-count">{{ page }} / 3</div>
+    <div class="left-column page-printed-at">
+        {{ _("Printed at") }} {{ today }}
+    </div>
+    <div class="right-column page-count">{{ page }} / 3</div>
 </footer>
