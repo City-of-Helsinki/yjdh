@@ -1,13 +1,13 @@
 {
   "high": true,
   "allowlist": [
-    "json5", // jest, testcafe
+    "json5", // jest
     "moment", // testcafe
     "decode-uri-component", // testcafe
     "@babel/traverse", // jest
-    "html-minifier",
+    "html-minifier", // mjml
     "pdfjs-dist", // react-pdf
-    "ip", // testcafe, lerna
+    "ip", // lerna
     "ws", // testcafe, jest
     "semver", // testcafe, jest, eslint
     "axios", // tet, ks
