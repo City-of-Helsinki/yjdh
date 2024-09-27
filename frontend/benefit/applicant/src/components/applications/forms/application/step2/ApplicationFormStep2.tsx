@@ -41,7 +41,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
     clearBenefitValues,
     clearCommissionValues,
     clearPaySubsidyValues,
-    setEndDate,
     handleSubmit,
     handleSave,
     handleBack,
@@ -70,7 +69,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
       clearBenefitValues,
       clearCommissionValues,
       clearPaySubsidyValues,
-      setEndDate,
     }
   );
 
