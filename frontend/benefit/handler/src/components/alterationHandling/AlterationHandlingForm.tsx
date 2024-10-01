@@ -15,6 +15,7 @@ import useAlterationHandlingForm from 'benefit/handler/components/alterationHand
 import { $CustomNotesActions } from 'benefit/handler/components/applicationReview/actions/handlingApplicationActions/HandlingApplicationActions.sc';
 import Sidebar from 'benefit/handler/components/sidebar/Sidebar';
 import { DEFAULT_MINIMUM_RECOVERY_AMOUNT } from 'benefit/handler/constants';
+import { useRouterNavigation } from 'benefit/handler/hooks/applicationHandling/useRouterNavigation';
 import {
   Application,
   ApplicationAlteration,
@@ -46,7 +47,6 @@ type Props = {
   alteration: ApplicationAlteration;
   onError: (error: AxiosError<unknown>) => void;
   onSuccess: (isRecoverable: boolean) => void;
-  onClose: () => void;
 };
 
 const AlterationHandlingForm = ({
@@ -54,7 +54,6 @@ const AlterationHandlingForm = ({
   alteration,
   onError,
   onSuccess,
-  onClose,
 }: Props): JSX.Element => {
   const {
     t,
@@ -84,6 +83,7 @@ const AlterationHandlingForm = ({
   const handleAlterationCsvDownload = (): void => {
     setIsCSVDownloadDone(true);
   };
+  const { navigateBack } = useRouterNavigation(null, null, null, true);
 
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(formik.errors, formik.touched, fieldName, t, isSubmitted);
@@ -256,8 +256,12 @@ const AlterationHandlingForm = ({
       <StickyActionBar>
         <$StickyBarWrapper>
           <$StickyBarColumn>
-            <Button onClick={onClose} theme="black" variant="secondary">
-              {t(`${translationBase}.actions.close`)}
+            <Button
+              onClick={() => navigateBack()}
+              theme="black"
+              variant="secondary"
+            >
+              {t(`${translationBase}.actions.returnToAlterationList`)}
             </Button>
             <Button
               onClick={() =>
