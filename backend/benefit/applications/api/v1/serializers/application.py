@@ -1836,7 +1836,11 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         if instance.status == ApplicationStatus.CANCELLED:
             self._cancel_application(instance)
         self._assign_handler_if_needed(instance)
-        self._remove_batch_if_needed(instance)
+
+        if not instance.handled_by_ahjo_automation and instance.ahjo_case_id is None:
+            # If the application has been handled by the Ahjo automation, we don't want to
+            # remove the batch, as it's needed for the Ahjo automation
+            self._remove_batch_if_needed(instance)
 
     def _cancel_application(self, instance):
         instance.archived = True
