@@ -16,6 +16,9 @@ def clone_application_based_on_other(
     clone_all_data=False,
 ):
     company = Company.objects.get(id=application_base.company.id)
+    company.street_address = (
+        company.street_address if len(company.street_address) > 0 else "Testikatu 123"
+    )
     cloned_application = Application(
         **{
             "alternative_company_city": application_base.alternative_company_city,
@@ -43,13 +46,14 @@ def clone_application_based_on_other(
             "company_name": application_base.company_name,
             "de_minimis_aid": application_base.de_minimis_aid,
             "status": ApplicationStatus.DRAFT,
-            "official_company_street_address": application_base.official_company_street_address,
+            "official_company_street_address": company.street_address,
             "official_company_city": application_base.official_company_city,
             "official_company_postcode": application_base.official_company_postcode,
             "use_alternative_address": application_base.use_alternative_address,
         }
     )
 
+    company.save()
     cloned_application.company = company
 
     de_minimis_aids = application_base.de_minimis_aid_set.all()
