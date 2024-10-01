@@ -110,7 +110,7 @@ def _clone_handler_data(application_base, cloned_application):
     temp_image = Image.new("RGB", (1, 1))
     temp_image.save(
         format="PNG",
-        fp=f"{MEDIA_ROOT}/{attachment_name}",
+        fp=f"{MEDIA_ROOT}/{attachment_name}.png",
     )
 
     # Mimick the attachments by retaining attachment type
