@@ -257,9 +257,11 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
                   </strong>
                 </div>
                 <ul>
-                  {ahjoError?.errorFromAhjo?.map(({ message }) => (
-                    <li>{message}</li>
-                  ))}
+                  {ahjoError?.errorFromAhjo?.map(
+                    ({ message, id: ahjoErrorId }) => (
+                      <li key={ahjoErrorId}>{message}</li>
+                    )
+                  )}
                 </ul>
               </Tooltip>
             </$ActionErrors>
