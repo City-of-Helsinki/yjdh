@@ -159,10 +159,14 @@ class Command(BaseCommand):
         successful_applications = []
         failed_applications = []
 
+        application_numbers = ", ".join(
+            str(app.application_number) for app in applications
+        )
+
         self.stdout.write(
             self._print_with_timestamp(
                 f"Sending {ahjo_request_type} request to Ahjo \
-for {len(applications)} applications"
+for {len(applications)} applications: {application_numbers}"
             )
         )
 
