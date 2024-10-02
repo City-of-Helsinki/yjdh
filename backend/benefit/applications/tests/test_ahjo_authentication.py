@@ -39,16 +39,6 @@ def expired_token():
 
 
 @pytest.fixture
-def non_expired_token():
-    return AhjoToken(
-        access_token="access_token",
-        refresh_token="refresh_token",
-        expires_in=TOKEN_EXPIRY_SECONDS,
-        created_at=datetime.now(timezone.utc),
-    )
-
-
-@pytest.fixture
 def ahjo_setting():
     return AhjoSetting.objects.create(
         name="ahjo_access_token",
