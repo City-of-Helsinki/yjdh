@@ -60,57 +60,7 @@ class Command(BaseCommand):
             help="Run the command without making actual changes",
         )
 
-    def get_applications_for_request(
-        self, request_type: AhjoRequestType
-    ) -> QuerySet[Application]:
-        if request_type == AhjoRequestType.OPEN_CASE:
-            applications = Application.objects.get_by_statuses(
-                [
-                    ApplicationStatus.HANDLING,
-                    ApplicationStatus.ACCEPTED,
-                    ApplicationStatus.REJECTED,
-                ],
-                [AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO],
-                True,
-            )
-        elif request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
-            applications = Application.objects.get_for_ahjo_decision()
-
-        elif request_type == AhjoRequestType.ADD_RECORDS:
-            applications = Application.objects.with_non_downloaded_attachments()
-
-        elif request_type == AhjoRequestType.UPDATE_APPLICATION:
-            applications = Application.objects.get_by_statuses(
-                [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
-                [AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED],
-                False,
-            )
-        elif request_type == AhjoRequestType.GET_DECISION_DETAILS:
-            applications = Application.objects.get_by_statuses(
-                [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
-                [AhjoStatusEnum.SIGNED_IN_AHJO],
-                False,
-            )
-        elif request_type == AhjoRequestType.DELETE_APPLICATION:
-            applications = Application.objects.get_by_statuses(
-                [
-                    ApplicationStatus.ACCEPTED,
-                    ApplicationStatus.CANCELLED,
-                    ApplicationStatus.REJECTED,
-                    ApplicationStatus.HANDLING,
-                    ApplicationStatus.DRAFT,
-                    ApplicationStatus.RECEIVED,
-                ],
-                AhjoStatusEnum.SCHEDULED_FOR_DELETION,
-                False,
-            )
-
-        # Only send applications that have automation enabled
-        applications_with_ahjo_automation = applications.filter(
-            handled_by_ahjo_automation=True
         )
-
-        return applications_with_ahjo_automation
 
     def handle(self, *args, **options):
         try:
@@ -126,7 +76,9 @@ class Command(BaseCommand):
         dry_run = options["dry_run"]
         request_type = options["request_type"]
 
-        applications = self.get_applications_for_request(request_type)
+        applications = AhjoApplicationsService.get_applications_for_request(
+            request_type
+        )
 
         if not applications:
             self.stdout.write(self._print_with_timestamp("No applications to process"))
