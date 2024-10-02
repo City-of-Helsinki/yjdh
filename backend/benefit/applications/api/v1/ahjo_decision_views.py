@@ -158,7 +158,10 @@ class DecisionProposalDraftUpdate(APIView):
         app_id = request.data["application_id"]
         application = get_object_or_404(Application, id=app_id)
 
-        proposal_object, _ = AhjoDecisionProposalDraft.objects.get_or_create(
+        (
+            proposal_object,
+            is_created,
+        ) = AhjoDecisionProposalDraft.objects.get_or_create(  # noqa
             application=application
         )
 
