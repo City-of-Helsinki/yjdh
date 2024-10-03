@@ -707,6 +707,37 @@ def test_ahjo_callback_unauthorized_ip_not_allowed(
     assert response.status_code == 403
 
 
+def test_ahjo_callback_raises_error_without_batch(
+    ahjo_callback_payload, decided_application, ahjo_client, ahjo_user_token, settings
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = True
+
+    status = AhjoStatus.objects.create(
+        application=decided_application,
+        status=AhjoStatusEnum.CASE_OPENED,
+    )
+    status.created_at = timezone.now() - timedelta(days=5)
+    status.save()
+
+    auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
+    attachment = generate_application_attachment(
+        decided_application, AttachmentType.PDF_SUMMARY
+    )
+    attachment_hash_value = hash_file(attachment.attachment_file)
+    attachment.ahjo_hash_value = attachment_hash_value
+    attachment.save()
+    ahjo_callback_payload["message"] = AhjoCallBackStatus.SUCCESS
+    ahjo_callback_payload["records"][0]["hashValue"] = attachment_hash_value
+
+    url = _get_callback_url(AhjoRequestType.SEND_DECISION_PROPOSAL, decided_application)
+    # with pytest.raises(AhjoCallbackError):
+    response = ahjo_client.post(url, **auth_headers, data=ahjo_callback_payload)
+    assert response.status_code == 500
+    assert response.data == {
+        "error": f"Application {decided_application.id} has no batch when Ahjo has received a decision proposal request"
+    }
+
+
 @pytest.mark.django_db
 def test_get_application_for_ahjo_success(decided_application):
     user = decided_application.calculation.handler
