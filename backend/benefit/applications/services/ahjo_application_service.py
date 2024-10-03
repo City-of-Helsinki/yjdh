@@ -51,7 +51,7 @@ class AhjoApplicationsService:
                     ApplicationStatus.DRAFT,
                     ApplicationStatus.RECEIVED,
                 ],
-                AhjoStatusEnum.SCHEDULED_FOR_DELETION,
+                [AhjoStatusEnum.SCHEDULED_FOR_DELETION],
                 False,
             )
 
