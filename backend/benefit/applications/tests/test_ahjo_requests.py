@@ -124,7 +124,7 @@ def test_ahjo_requests_without_application(
             AhjoRequestType.GET_DECISION_DETAILS,
             "GET",
             "",
-            AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
+            AhjoStatusEnum.DECISION_DETAILS_REQUEST_SENT,
         ),
     ],
 )
