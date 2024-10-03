@@ -246,6 +246,7 @@ class AhjoCallbackView(APIView):
                     {"message": "Callback received"}, status=status.HTTP_200_OK
                 )
         except AhjoCallbackError as e:
+            LOGGER.error(str(e))
             return Response(
                 {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
@@ -329,6 +330,10 @@ class AhjoCallbackView(APIView):
 
     def handle_decision_proposal_success(self, application: Application):
         # do anything that needs to be done when Ahjo has received a decision proposal request
+        if not application.batch:
+            raise AhjoCallbackError(
+                f"Application {application.id} has no batch when Ahjo has received a decision proposal request"
+            )
         batch = application.batch
         batch.status = ApplicationBatchStatus.AWAITING_AHJO_DECISION
         batch.save()
