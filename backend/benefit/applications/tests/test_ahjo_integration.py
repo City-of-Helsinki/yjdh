@@ -32,6 +32,10 @@ from applications.models import (
     ApplicationBatch,
     Attachment,
 )
+from applications.services.ahjo_application_service import (
+    AhjoApplicationsService,
+    AhjoQueryParameters,
+)
 from applications.services.ahjo_integration import (
     ACCEPTED_TITLE,
     export_application_batch,
@@ -823,40 +827,138 @@ def test_generate_ahjo_secret_decision_text_xml(decided_application):
         os.remove(attachment.attachment_file.path)
 
 
+@pytest.mark.parametrize(
+    "ahjo_request_type, query_parameters",
+    [
+        (
+            AhjoRequestType.OPEN_CASE,
+            {
+                "application_statuses": [
+                    ApplicationStatus.HANDLING,
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.REJECTED,
+                ],
+                "ahjo_statuses": [AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO],
+                "has_no_case_id": True,
+            },
+        ),
+        (
+            AhjoRequestType.SEND_DECISION_PROPOSAL,
+            {
+                "application_statuses": [
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.REJECTED,
+                ],
+                "ahjo_statuses": [
+                    AhjoStatusEnum.CASE_OPENED,
+                    AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+                ],
+                "has_no_case_id": False,
+            },
+        ),
+        (
+            AhjoRequestType.UPDATE_APPLICATION,
+            {
+                "application_statuses": [
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.REJECTED,
+                ],
+                "ahjo_statuses": [
+                    AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
+                    AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+                ],
+                "has_no_case_id": False,
+            },
+        ),
+        (
+            AhjoRequestType.DELETE_APPLICATION,
+            {
+                "application_statuses": [
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.CANCELLED,
+                    ApplicationStatus.REJECTED,
+                    ApplicationStatus.HANDLING,
+                    ApplicationStatus.DRAFT,
+                    ApplicationStatus.RECEIVED,
+                ],
+                "ahjo_statuses": [AhjoStatusEnum.SCHEDULED_FOR_DELETION],
+                "has_no_case_id": False,
+            },
+        ),
+        (
+            AhjoRequestType.GET_DECISION_DETAILS,
+            {
+                "application_statuses": [
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.REJECTED,
+                ],
+                "ahjo_statuses": [AhjoStatusEnum.SIGNED_IN_AHJO],
+                "has_no_case_id": False,
+            },
+        ),
+    ],
+)
+def test_ahjo_query_parameter_resolver(ahjo_request_type, query_parameters):
+    assert AhjoQueryParameters.resolve(ahjo_request_type) == query_parameters
+
+
+@pytest.fixture
+def mock_get_by_statuses():
+    with patch(
+        "applications.models.Application.objects.get_by_statuses", autospec=True
+    ) as mock:
+        yield mock
+
+
+@pytest.fixture
+def mock_get_for_ahjo_decision():
+    with patch(
+        "applications.models.Application.objects.get_for_ahjo_decision", autospec=True
+    ) as mock:
+        yield mock
+
+
+@pytest.fixture
+def mock_with_non_downloaded_attachments():
+    with patch(
+        "applications.models.Application.objects.with_non_downloaded_attachments",
+        autospec=True,
+    ) as mock:
+        yield mock
+
+
+@pytest.mark.parametrize(
+    "request_type",
+    [
+        (AhjoRequestType.OPEN_CASE),
+        (AhjoRequestType.SEND_DECISION_PROPOSAL),
+        (AhjoRequestType.UPDATE_APPLICATION),
+        (AhjoRequestType.DELETE_APPLICATION),
+        (AhjoRequestType.GET_DECISION_DETAILS),
+    ],
+)
 @pytest.mark.django_db
-def test_get_applications_for_ahjo_update(
-    multiple_applications_with_ahjo_case_id,
+def test_applications_service(
+    request_type, mock_get_by_statuses, mock_get_for_ahjo_decision
 ):
-    for a in multiple_applications_with_ahjo_case_id[:5]:
-        AhjoStatus.objects.create(
-            application=a,
-            status=AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
-        )
-    for a in multiple_applications_with_ahjo_case_id[5:]:
-        AhjoStatus.objects.create(
-            application=a,
-            status=AhjoStatusEnum.NEW_RECORDS_RECEIVED,
-        )
+    parameters = AhjoQueryParameters.resolve(
+        request_type
+    )  # Example parameters, adjust as needed
 
-    applications_for_ahjo_update = Application.objects.get_by_statuses(
-        [
-            ApplicationStatus.ACCEPTED,
-            ApplicationStatus.REJECTED,
-        ],
-        [
-            AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
-            AhjoStatusEnum.NEW_RECORDS_RECEIVED,
-        ],
-        False,
-    )
+    with patch(
+        "applications.services.ahjo_application_service.AhjoQueryParameters.resolve",
+        return_value=parameters,
+    ):
+        AhjoApplicationsService.get_applications_for_request(request_type)
 
-    assert applications_for_ahjo_update.count() == len(
-        multiple_applications_with_ahjo_case_id
-    )
+    if request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
+        mock_get_for_ahjo_decision.assert_called_once_with(**parameters)
+    else:
+        mock_get_by_statuses.assert_called_once_with(**parameters)
 
 
 @pytest.mark.django_db
-def test_get_applications_for_open_case(
+def test_get_applications_for_open_case_request(
     multiple_decided_applications,
     multiple_decided_applications_for_open_case,
     multiple_handling_applications,
@@ -901,15 +1003,9 @@ def test_get_applications_for_open_case(
         AttachmentType.DECISION_TEXT_SECRET_XML,
     ]
 
-    applications_for_open_case = Application.objects.get_by_statuses(
-        [
-            ApplicationStatus.HANDLING,
-            ApplicationStatus.ACCEPTED,
-            ApplicationStatus.REJECTED,
-        ],
-        [AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO],
-        True,
-    )
+    parameters = AhjoQueryParameters.resolve(AhjoRequestType.OPEN_CASE)
+
+    applications_for_open_case = Application.objects.get_by_statuses(**parameters)
 
     for app in applications_for_open_case:
         attachments = app.attachments.all()
@@ -922,7 +1018,58 @@ def test_get_applications_for_open_case(
 
 
 @pytest.mark.django_db
-def test_with_non_downloaded_attachments(decided_application):
+def test_get_applications_for_update_request(
+    multiple_applications_with_ahjo_case_id,
+):
+    for a in multiple_applications_with_ahjo_case_id[:5]:
+        AhjoStatus.objects.create(
+            application=a,
+            status=AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
+        )
+    for a in multiple_applications_with_ahjo_case_id[5:]:
+        AhjoStatus.objects.create(
+            application=a,
+            status=AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+        )
+    parameters = AhjoQueryParameters.resolve(AhjoRequestType.UPDATE_APPLICATION)
+    applications_for_ahjo_update = Application.objects.get_by_statuses(**parameters)
+
+    assert applications_for_ahjo_update.count() == len(
+        multiple_applications_with_ahjo_case_id
+    )
+
+
+@pytest.mark.parametrize(
+    "application_status",
+    [
+        (ApplicationStatus.ACCEPTED),
+        (ApplicationStatus.CANCELLED),
+        (ApplicationStatus.REJECTED),
+        (ApplicationStatus.HANDLING),
+        (ApplicationStatus.DRAFT),
+        (ApplicationStatus.RECEIVED),
+    ],
+)
+def test_get_applications_for_delete_request(application_status, handling_application):
+    handling_application.status = application_status
+    handling_application.ahjo_case_id = "HEL 1999-123"
+    handling_application.save()
+
+    AhjoStatus.objects.create(
+        application_id=handling_application.id,
+        status=AhjoStatusEnum.SCHEDULED_FOR_DELETION,
+    )
+
+    parameters = AhjoQueryParameters.resolve(AhjoRequestType.DELETE_APPLICATION)
+
+    applications_for_delete = Application.objects.get_by_statuses(**parameters)
+
+    assert applications_for_delete.count() == 1
+    assert applications_for_delete[0] == handling_application
+
+
+@pytest.mark.django_db
+def test_get_applications_for_add_records_request(decided_application):
     applications = Application.objects.with_non_downloaded_attachments()
     assert applications.count() == 0
 
@@ -1090,7 +1237,7 @@ dummy_case_id = "HEL 1999-123"
     ],
 )
 @pytest.mark.django_db
-def test_get_for_ahjo_decision(
+def test_get_applications_for_ahjo_decision_proposal_request(
     decided_application,
     application_status,
     ahjo_status,
@@ -1110,9 +1257,136 @@ def test_get_for_ahjo_decision(
         AhjoDecisionText.objects.create(
             application=decided_application, decision_text="test"
         )
-
-    applications = Application.objects.get_for_ahjo_decision()
+    parameters = AhjoQueryParameters.resolve(AhjoRequestType.SEND_DECISION_PROPOSAL)
+    applications = Application.objects.get_for_ahjo_decision(**parameters)
     assert applications.count() == count
+
+
+@pytest.mark.parametrize(
+    "application_status, ahjo_status, case_id, count",
+    [
+        (
+            ApplicationStatus.DRAFT,
+            AhjoStatusEnum.CASE_OPENED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.HANDLING,
+            AhjoStatusEnum.CASE_OPENED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.RECEIVED,
+            AhjoStatusEnum.CASE_OPENED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.CANCELLED,
+            AhjoStatusEnum.CASE_OPENED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            AhjoStatusEnum.CASE_OPENED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.ACCEPTED,
+            AhjoStatusEnum.CASE_OPENED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.REJECTED,
+            AhjoStatusEnum.CASE_OPENED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.ACCEPTED,
+            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.REJECTED,
+            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.ACCEPTED,
+            AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.REJECTED,
+            AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.ACCEPTED,
+            AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.REJECTED,
+            AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.ACCEPTED,
+            AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.REJECTED,
+            AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.REJECTED,
+            AhjoStatusEnum.SIGNED_IN_AHJO,
+            dummy_case_id,
+            1,
+        ),
+        (
+            ApplicationStatus.ACCEPTED,
+            AhjoStatusEnum.SIGNED_IN_AHJO,
+            dummy_case_id,
+            1,
+        ),
+    ],
+)
+def test_get_applications_for_ahjo_details_request(
+    decided_application,
+    application_status,
+    ahjo_status,
+    case_id,
+    count,
+):
+    decided_application.status = application_status
+    decided_application.ahjo_case_id = case_id
+    decided_application.save()
+
+    decided_application.ahjo_status.create(status=ahjo_status)
+
+    parameters = AhjoQueryParameters.resolve(AhjoRequestType.GET_DECISION_DETAILS)
+    applications = Application.objects.get_by_statuses(**parameters)
+    assert applications.count() == count
+    if count:
+        assert applications.first() == decided_application
 
 
 @pytest.mark.parametrize(
