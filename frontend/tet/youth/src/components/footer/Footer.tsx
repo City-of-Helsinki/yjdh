@@ -3,8 +3,6 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import useLocale from 'shared/hooks/useLocale';
 
-// import { $FooterWrapper } from './Footer.sc';
-
 const FooterSection: React.FC = () => {
   const { t } = useTranslation();
   const newTabText = t('common:footer.newTab');
@@ -24,10 +22,14 @@ const FooterSection: React.FC = () => {
         copyrightHolder={t('common:footer.copyrightText')}
         copyrightText={t('common:footer.allRightsReservedText')}
         backToTopLabel={t('common:footer.backToTop')}
-        logo={
-          <Logo src={logoSrcFromLanguage()} size="medium" alt={t('common:helsinkiLogo')} />
-        }
+        logo={<Logo src={logoSrcFromLanguage()} size="medium" alt={t('common:helsinkiLogo')} />}
       >
+        <Footer.Link
+          as="a"
+          href={`/${locale}/cookie-settings`}
+          label={t('common:footer.cookieSettings')}
+          style={{ alignSelf: 'center' }}
+        />
         <Footer.Link
           as="a"
           rel="noopener noreferrer"

@@ -3142,6 +3142,11 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@socialgouv/matomo-next@^1.9.1":
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/@socialgouv/matomo-next/-/matomo-next-1.9.1.tgz#ff76f8eb93d636df5bfe6d6047a6edbabfe65a84"
+  integrity sha512-mhWK6EUV/qS39i8aRJTm/XFCOI6xAwxQooAFBuiByfpvIqQQqa3et01C6b53Rxb3K0ACOk6lipudXSY2sc2WSg==
+
 "@swc/core-darwin-arm64@1.4.6":
   version "1.4.6"
   resolved "https://registry.yarnpkg.com/@swc/core-darwin-arm64/-/core-darwin-arm64-1.4.6.tgz#4465c6f1ae011d4829ba8923f6aac9aae7828416"
