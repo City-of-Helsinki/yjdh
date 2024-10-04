@@ -1463,16 +1463,29 @@ def test_application_accept(
     assert handling_application.calculation.granted_as_de_minimis_aid is True
 
 
+@pytest.mark.parametrize(
+    "ahjo_case_id, handled_by_ahjo_automation, has_batch,",
+    [
+        (None, False, False),
+        ("KISSA123", True, True),
+    ],
+)
 def test_application_with_batch_back_to_handling(
     request,
     handler_api_client,
     decided_application,
+    ahjo_case_id,
+    handled_by_ahjo_automation,
+    has_batch,
 ):
     """
     When application is moved back to handling, the application
-    needs to be remvoved from any batch.
+    needs to be removed from any batch.
     """
-    decided_application.batch = ApplicationBatchFactory()
+    batch = ApplicationBatchFactory()
+    decided_application.batch = batch
+    decided_application.ahjo_case_id = ahjo_case_id
+    decided_application.handled_by_ahjo_automation = handled_by_ahjo_automation
     decided_application.save()
     data = HandlerApplicationSerializer(decided_application).data
     data["status"] = ApplicationStatus.HANDLING
@@ -1483,7 +1496,10 @@ def test_application_with_batch_back_to_handling(
     )
     assert response.status_code == 200
     decided_application.refresh_from_db()
-    assert decided_application.batch is None
+    if has_batch:
+        assert decided_application.batch == batch
+    else:
+        assert decided_application.batch is None
 
 
 @pytest.mark.parametrize(
