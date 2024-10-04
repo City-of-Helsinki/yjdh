@@ -7,6 +7,12 @@ import LinkSection from 'tet/youth/components/linkSection/LinkSection';
 import PageContent from 'tet/youth/components/pageContent/PageContent';
 import QuickSearch from 'tet/youth/components/quickSearch/QuickSearch';
 
+declare global {
+  interface Window {
+    _paq: [string, ...unknown[]][];
+  }
+}
+
 const Home: NextPage = () => (
   <>
     <Banner />

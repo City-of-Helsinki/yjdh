@@ -16,50 +16,50 @@
     "pageNotFoundLabel": "Sidan kunde inte hittas",
     "pageNotFoundContent": "Äsch, något gick fel. Pröva med att gå tillbaka till framsidan <lnk>här</lnk>"
   },
-	"frontPage": {
-		"heading": "Kom ihåg att söka PRAO-plats i tid",
-		"search": "Sök",
-		"fetch": "Ansök",
-		"advancedSearch": "Detaljerad sökning",
-		"boxTitle": "Vad är PRAO?",
-		"boxContent": "Arbetslivspraktik, eller PRAO, är en del av skolan för grundskoleelever. Under PRAO kan man lära sig om olika yrken och få uppleva arbetslivet i praktiken.",
-		"announceLinkTitle": "Meddela en PRAO-platsannonsering",
-		"announceLinkURL": "https://hel.fi",
-		"announceLinkContent": "Är du arbetsgivare och vill anmäla en ledig tjänst inom TET- platsannonsering? Gå till den arbetsgivartjänst här.",
-		"askLinkTitle": "Frågorna?",
-		"askLinkURL": "mailto:antti.varto@hel.fi",
-		"askLinkContent": "Har du några frågor om tjänsten eller märkte du något konstigt i annonserna? Ta kontakt!"
-	},
-	"filters": {
-		"searchJobs": "Sök efter PRAO-platser",
-		"searchPlaceholder": "Uppge sökord",
-		"workMethod": "Vilken sort PRAO?",
-		"workFeatures": "Arbetets karaktär",
-		"startDate": "Startdatum",
-		"endDate": "Slutdatum",
-		"language": "Välj språk",
-		"clearFilters": "Töm sökkriterier",
-		"removeFilter": "Ta borrt sökkrit: {{filter}}",
-		"removeDateFilter": "Ta borrt datumsökkrit",
-		"removeLanguageFilter": "Ta borrt språksökkrit",
+  "frontPage": {
+    "heading": "Kom ihåg att söka PRAO-plats i tid",
+    "search": "Sök",
+    "fetch": "Ansök",
+    "advancedSearch": "Detaljerad sökning",
+    "boxTitle": "Vad är PRAO?",
+    "boxContent": "Arbetslivspraktik, eller PRAO, är en del av skolan för grundskoleelever. Under PRAO kan man lära sig om olika yrken och få uppleva arbetslivet i praktiken.",
+    "announceLinkTitle": "Meddela en PRAO-platsannonsering",
+    "announceLinkURL": "https://hel.fi",
+    "announceLinkContent": "Är du arbetsgivare och vill anmäla en ledig tjänst inom TET- platsannonsering? Gå till den arbetsgivartjänst här.",
+    "askLinkTitle": "Frågorna?",
+    "askLinkURL": "mailto:antti.varto@hel.fi",
+    "askLinkContent": "Har du några frågor om tjänsten eller märkte du något konstigt i annonserna? Ta kontakt!"
+  },
+  "filters": {
+    "searchJobs": "Sök efter PRAO-platser",
+    "searchPlaceholder": "Uppge sökord",
+    "workMethod": "Vilken sort PRAO?",
+    "workFeatures": "Arbetets karaktär",
+    "startDate": "Startdatum",
+    "endDate": "Slutdatum",
+    "language": "Välj språk",
+    "clearFilters": "Töm sökkriterier",
+    "removeFilter": "Ta borrt sökkrit: {{filter}}",
+    "removeDateFilter": "Ta borrt datumsökkrit",
+    "removeLanguageFilter": "Ta borrt språksökkrit",
     "combobox": {
       "toggleButtonAriaLabel": "Visa/dölj alternativ",
       "clearButtonAriaLabel": "Rensa valen",
       "selectedItemRemoveButtonAriaLabel": "Ta bort valet"
     }
-	},
-	"postings": {
-		"searchResults_one": "{{count}} sökresultat",
-		"searchResults_other": "{{count}} sökresultat",
-		"readMore": "Läs mer",
-		"showMore": "Visa fler resultat",
-		"languages": "Språk",
-		"noResultsText": "Din sökning matchade inte några PRAO-platser. Försök att begränsa dina sökord.",
-		"fewResultsText": "Försök att rensa sökningen för att hitta fler PRAO-platser",
-		"noResultsLinks": "Inga händelser hittades som matchade dina sökkriterier. Testa att klicka på någon av dessa:",
-		"fewResultsLinks": "Också prova följande sökord:",
-		"resultsError": "Ett fel uppstod under PRAO-platser sökningen"
-	},
+  },
+  "postings": {
+    "searchResults_one": "{{count}} sökresultat",
+    "searchResults_other": "{{count}} sökresultat",
+    "readMore": "Läs mer",
+    "showMore": "Visa fler resultat",
+    "languages": "Språk",
+    "noResultsText": "Din sökning matchade inte några PRAO-platser. Försök att begränsa dina sökord.",
+    "fewResultsText": "Försök att rensa sökningen för att hitta fler PRAO-platser",
+    "noResultsLinks": "Inga händelser hittades som matchade dina sökkriterier. Testa att klicka på någon av dessa:",
+    "fewResultsLinks": "Också prova följande sökord:",
+    "resultsError": "Ett fel uppstod under PRAO-platser sökningen"
+  },
   "footer": {
     "copyrightText": "Helsingfors stad",
     "allRightsReservedText": "Med ensamrätt",
@@ -67,13 +67,14 @@
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/information/tillganglighet",
 	"backToTop": "Tillbaka till toppen",
     "privacyPolicy": "Registerbeskrivning",
-		"privacyPolicyPDF": "Öppnar en pdf-fil",
+    "privacyPolicyPDF": "Öppnar en pdf-fil",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Register för administration av grundläggande utbildning.pdf",
     "feedback": "Ge feedback",
     "feedbackLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/delta/feedback",
-		"moreInfo": "Mer information",
-		"moreInfoLink": "https://nuorten.hel.fi/sv/",
-		"newTab": "länken öppnas i en ny flik"
+    "moreInfo": "Mer information",
+    "moreInfoLink": "https://nuorten.hel.fi/sv/",
+    "newTab": "länken öppnas i en ny flik",
+    "cookieSettings": "Cookie -inställningar"
   },
   "languages": {
     "fi": "Suomeksi",
@@ -87,31 +88,34 @@
       "text": "Försök igen senare."
     }
   },
-	"editor": {
-		"posting": {
-			"website": "Hemsida",
-			"contactLanguageFi": "Finska",
-			"contactLanguageSv": "Svenska",
-			"contactLanguageEn": "Engelska"
-		}
-	},
-	"postingTemplate": {
-		"spots": "PRAO-platser",
-		"contact": "Kontaktuppgifter",
-		"description": "Beskrivning",
-		"share": "Dela händelse",
-		"dateAndTime": "Datum och tid",
-		"location": "Plats",
-		"languages": "Språk som används på PRAO-platsen"
-	},
-	"map": {
-		"readMore": "Läs mer",
-		"showList": "visa resultat i en lista",
-		"showMap": "Visa resultat på en karta",
+  "editor": {
+    "posting": {
+      "website": "Hemsida",
+      "contactLanguageFi": "Finska",
+      "contactLanguageSv": "Svenska",
+      "contactLanguageEn": "Engelska"
+    }
+  },
+  "postingTemplate": {
+    "spots": "PRAO-platser",
+    "contact": "Kontaktuppgifter",
+    "description": "Beskrivning",
+    "share": "Dela händelse",
+    "dateAndTime": "Datum och tid",
+    "location": "Plats",
+    "languages": "Språk som används på PRAO-platsen"
+  },
+  "map": {
+    "readMore": "Läs mer",
+    "showList": "visa resultat i en lista",
+    "showMap": "Visa resultat på en karta",
     "helsinkiCity": "Helsingfors stad"
-	},
-	"accessibility": {
-		"eventsLoading": "Sök efter PRAO-platser laddar",
-		"eventsReady": "Sök efter PRAO-platser är redo"
-	}
+  },
+  "accessibility": {
+    "eventsLoading": "Sök efter PRAO-platser laddar",
+    "eventsReady": "Sök efter PRAO-platser är redo"
+  },
+  "actions": {
+    "back": "Tillbaka"
+  }
 }
