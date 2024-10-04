@@ -125,8 +125,38 @@ def test_write_talpa_csv_file(
         assert "äöÄÖtest" in contents
 
 
+def test_talpa_callback_is_disabled(
+    talpa_client,
+    settings,
+    decided_application,
+):
+    settings.TALPA_CALLBACK_ENABLED = False
+
+    url = reverse(
+        "talpa_callback_url",
+    )
+
+    payload = {
+        "status": "Success",
+        "successful_applications": [decided_application.application_number],
+        "failed_applications": [],
+    }
+
+    response = talpa_client.post(url, data=payload)
+
+    assert response.status_code == 400
+    assert response.data == {"message": "Talpa callback is disabled"}
+
+
 @pytest.mark.django_db
-def test_talpa_callback_success(talpa_client, decided_application):
+def test_talpa_callback_success(
+    talpa_client, decided_application, application_batch, settings
+):
+    settings.TALPA_CALLBACK_ENABLED = True
+
+    decided_application.batch = application_batch
+    decided_application.save()
+
     url = reverse(
         "talpa_callback_url",
     )
@@ -155,13 +185,16 @@ def test_talpa_callback_success(talpa_client, decided_application):
         == ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
     )
 
+    assert decided_application.batch.status == ApplicationBatchStatus.SENT_TO_TALPA
+
     assert decided_application.archived is True
 
 
 @pytest.mark.django_db
 def test_talpa_callback_rejected_application(
-    talpa_client, decided_application, application_batch
+    talpa_client, decided_application, application_batch, settings
 ):
+    settings.TALPA_CALLBACK_ENABLED = True
     decided_application.batch = application_batch
     decided_application.save()
 
@@ -181,6 +214,7 @@ def test_talpa_callback_rejected_application(
     assert response.data == {"message": "Callback received"}
 
     decided_application.refresh_from_db()
+    decided_application.archived = False
 
     assert decided_application.talpa_status == ApplicationTalpaStatus.REJECTED_BY_TALPA
     assert decided_application.batch.status == ApplicationBatchStatus.REJECTED_BY_TALPA

@@ -175,6 +175,7 @@ env = environ.Env(
     ENABLE_CLAMAV=(bool, False),
     CLAMAV_URL=(str, ""),
     ENABLE_AHJO_AUTOMATION=(bool, False),
+    TALPA_CALLBACK_ENABLED=(bool, False),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -560,3 +561,4 @@ ENABLE_CLAMAV = env.bool("ENABLE_CLAMAV")
 CLAMAV_URL = env.str("CLAMAV_URL")
 ENABLE_AHJO_AUTOMATION = env.bool("ENABLE_AHJO_AUTOMATION")
 DEFAULT_SYSTEM_EMAIL = env.str("DEFAULT_SYSTEM_EMAIL")
+TALPA_CALLBACK_ENABLED = env.bool("TALPA_CALLBACK_ENABLED")

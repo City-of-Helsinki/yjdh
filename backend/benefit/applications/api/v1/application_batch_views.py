@@ -1,5 +1,7 @@
 import logging
 
+from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 from django.db import transaction
 from django.forms import ValidationError
 from django.http import HttpResponse
@@ -34,6 +36,9 @@ from applications.services.ahjo_integration import export_application_batch
 from applications.services.applications_csv_report import ApplicationsCsvService
 from common.authentications import RobotBasicAuthentication
 from common.permissions import BFIsHandler
+from common.utils import get_request_ip_address
+from shared.audit_log import audit_logging
+from shared.audit_log.enums import Operation
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
 LOGGER = logging.getLogger(__name__)
@@ -218,22 +223,37 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         response["Content-Disposition"] = "attachment; filename={filename}.csv".format(
             filename=file_name
         )
-        # for easier testing in the test environment do not update the batches as sent_to_talpa
-        # remove this when TALPA integration is ready for production
-        if not skip_update:
-            try:
-                # Update all approved batches to SENT_TO_TALPA status in a single query
-                approved_batches.update(status=ApplicationBatchStatus.SENT_TO_TALPA)
-                # Update all applications in the approved batches to SUCCESSFULLY_SENT_TO_TALPA status and archived=True
-                for a in applications:
-                    a.talpa_status = ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
-                    a.archived = True
-                    a.save()
+        if settings.TALPA_CALLBACK_ENABLED is False:
+            # for easier testing in the test environment do not update the batches as sent_to_talpa
+            # remove this when TALPA integration is ready for production
+            if not skip_update:
+                ip_address = get_request_ip_address(request)
+                try:
+                    # Update all approved batches to SENT_TO_TALPA status in a single query
+                    approved_batches.update(status=ApplicationBatchStatus.SENT_TO_TALPA)
+                    # Update all applications in the approved batches to
+                    # SUCCESSFULLY_SENT_TO_TALPA status and archived=True
+                    for a in applications:
+                        a.talpa_status = (
+                            ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
+                        )
+                        a.archived = True
+                        a.save()
 
-            except Exception as e:
-                LOGGER.error(
-                    f"An error occurred while updating batches after Talpa csv download: {e}"
-                )
+                        audit_logging.log(
+                            AnonymousUser,
+                            "",
+                            Operation.READ,
+                            a,
+                            ip_address=ip_address,
+                            additional_information="application csv data was downloaded by TALPA\
+    and it was marked as archived",
+                        )
+
+                except Exception as e:
+                    LOGGER.error(
+                        f"An error occurred while updating batches after Talpa csv download: {e}"
+                    )
         return response
 
     @action(methods=["PATCH"], detail=False)
