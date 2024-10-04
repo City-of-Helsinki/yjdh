@@ -79,10 +79,23 @@ class AhjoPublicXMLBuilder(AhjoXMLBuilder):
         super().__init__(application)
         self.ahjo_decision_text = ahjo_decision_text
 
+    @staticmethod
+    def sanitize_text_input(text: str) -> str:
+        replacements = {"&nbsp;": " ", "\u200b": "", "\ufeff": "", "\u00a0": " "}
+
+        for target, replacement in replacements.items():
+            text = text.replace(target, replacement)
+
+        return text
+
+    def remove_non_breaking_spaces(self, text: str) -> str:
+        return text.replace("\u00A0", " ")
+
     def generate_xml(self) -> AhjoXMLString:
         xml_string = (
             f"{XML_VERSION}<body>{self.ahjo_decision_text.decision_text}</body>"
         )
+        xml_string = self.sanitize_text_input(xml_string)
         self.validate_against_schema(
             xml_string, self.load_xsd_as_string(XML_SCHEMA_PATH)
         )

@@ -102,7 +102,7 @@ def _generate_decision_text_string(
     else:
         decision_section = DeniedDecisionProposalFactory()
     decision_string = f"""<section id="paatos"><h1>Päätös</h1>{decision_section.template_decision_text}</section>\
-<section id="paatoksenperustelut"><h1>Päätöksen perustelut/h1>{decision_section.template_justification_text}</section>"""  # noqa
+<section id="paatoksenperustelut"><h1>Päätöksen perustelut</h1>{decision_section.template_justification_text}</section>"""  # noqa
     decision_type = decision_section.decision_type
     return replace_decision_template_placeholders(
         decision_string, decision_type, application
