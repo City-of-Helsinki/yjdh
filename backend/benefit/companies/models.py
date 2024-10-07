@@ -7,7 +7,7 @@ from shared.models.abstract_models import AbstractCompany
 
 class Company(AbstractCompany):
     bank_account_number = LocalizedIBANField(
-        include_countries=("FI",), verbose_name=_("bank account number")
+        include_countries=("FI",), verbose_name=_("bank account number"), blank=True
     )
     company_form_code = models.IntegerField(
         verbose_name=_("YTJ type code for company form")

@@ -1,11 +1,19 @@
+import EditAction from 'benefit/handler/components/applicationReview/actions/editAction/EditAction';
 import Sidebar from 'benefit/handler/components/sidebar/Sidebar';
 import { APPLICATION_LIST_TABS } from 'benefit/handler/constants';
+import useDecisionProposalDraftMutation from 'benefit/handler/hooks/applicationHandling/useDecisionProposalDraftMutation';
+import {
+  StepActionType,
+  StepStateType,
+} from 'benefit/handler/hooks/applicationHandling/useHandlingStepper';
+import useCloneApplicationMutation from 'benefit/handler/hooks/useCloneApplicationMutation';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import {
   Button,
   IconArrowLeft,
   IconArrowRight,
+  IconCopy,
   IconInfoCircle,
   IconLock,
   IconPen,
@@ -22,12 +30,6 @@ import {
   focusAndScrollToSelector,
 } from 'shared/utils/dom.utils';
 
-import useDecisionProposalDraftMutation from '../../../../hooks/applicationHandling/useDecisionProposalDraftMutation';
-import {
-  StepActionType,
-  StepStateType,
-} from '../../../../hooks/applicationHandling/useHandlingStepper';
-import EditAction from '../editAction/EditAction';
 import CancelModalContent from './CancelModalContent/CancelModalContent';
 import DoneModalContent from './DoneModalContent/DoneModalContent';
 import {
@@ -256,12 +258,25 @@ const HandlingApplicationActions: React.FC<Props> = ({
 
   const handleClose = (): void => navigateToIndex();
 
+  const { data: clonedData, mutate: cloneApplication } =
+    useCloneApplicationMutation();
+
+  React.useEffect(() => {
+    if (clonedData?.id) void router.push(`/application?id=${clonedData.id}`);
+  }, [clonedData?.id, router]);
+
+  const handleClone = (): void =>
+    // eslint-disable-next-line no-alert
+    window.confirm('Haluatko varmasti kloonata tämän hakemuksen?') &&
+    cloneApplication(application.id);
+
   return (
     <$Wrapper data-testid={dataTestId}>
       <$Column>
         <Button onClick={handleClose} theme="black" variant="secondary">
           {t(`${translationsBase}.close`)}
         </Button>
+
         {application.status === APPLICATION_STATUSES.HANDLING && (
           <Button
             loadingText={t('common:utility.loading')}
@@ -283,6 +298,23 @@ const HandlingApplicationActions: React.FC<Props> = ({
         >
           {t(`${translationsBase}.handlingPanel`)}
         </Button>
+
+        {process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT !== 'production' &&
+          [
+            APPLICATION_STATUSES.ACCEPTED,
+            APPLICATION_STATUSES.REJECTED,
+            APPLICATION_STATUSES.HANDLING,
+            APPLICATION_STATUSES.RECEIVED,
+          ].includes(application.status) && (
+            <Button
+              iconLeft={<IconCopy />}
+              onClick={handleClone}
+              theme="black"
+              variant="supplementary"
+            >
+              {t(`${translationsBase}.clone`)}
+            </Button>
+          )}
 
         {![
           APPLICATION_STATUSES.CANCELLED,

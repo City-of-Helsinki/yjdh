@@ -156,8 +156,11 @@ class HelsinkiBenefitCalculator:
         return True
 
     @transaction.atomic
-    def calculate(self):
-        if self.calculation.application.status in self.CALCULATION_ALLOWED_STATUSES:
+    def calculate(self, override_status=False):
+        if (
+            self.calculation.application.status in self.CALCULATION_ALLOWED_STATUSES
+            or override_status
+        ):
             self.calculation.rows.all().delete()
             if self.can_calculate():
                 self.create_rows()

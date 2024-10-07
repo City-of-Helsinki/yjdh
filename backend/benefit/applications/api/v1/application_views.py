@@ -623,16 +623,9 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
     )
     @action(methods=["GET"], detail=True, url_path="clone_as_draft")
     @transaction.atomic
-    def clone_as_draft(self, request, pk=None) -> HttpResponse:
+    def clone_as_draft(self, request, pk) -> HttpResponse:
         application_base = self.get_object()
-
-        clone_employee = request.query_params.get("employee") or None
-        clone_work = request.query_params.get("work") or None
-        clone_subsidies = request.query_params.get("pay_subsidy") or None
-
-        cloned_application = clone_application_based_on_other(
-            application_base, clone_employee, clone_work, clone_subsidies
-        )
+        cloned_application = clone_application_based_on_other(application_base)
 
         return Response(
             {"id": cloned_application.id},
@@ -667,7 +660,7 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
     )
     @action(methods=["GET"], detail=False, url_path="clone_latest")
     @transaction.atomic
-    def clone_latest(self, request, pk=None) -> HttpResponse:
+    def clone_latest(self, request) -> HttpResponse:
         company = get_company_from_request(request)
 
         try:
@@ -688,13 +681,7 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        clone_employee = request.query_params.get("employee") or None
-        clone_work = request.query_params.get("work") or None
-        clone_subsidies = request.query_params.get("pay_subsidy") or None
-
-        cloned_application = clone_application_based_on_other(
-            application_base, clone_employee, clone_work, clone_subsidies
-        )
+        cloned_application = clone_application_based_on_other(application_base)
 
         return Response(
             {"id": cloned_application.id},
@@ -830,6 +817,28 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         application.handler = request.user
         application.save()
         return Response(status=status.HTTP_200_OK)
+
+    @action(methods=["GET"], detail=True, url_path="clone_as_draft")
+    @transaction.atomic
+    def clone_as_draft(self, request, pk) -> HttpResponse:
+        application_base = self.get_object()
+        cloned_application = clone_application_based_on_other(application_base, True)
+
+        try:
+            cloned_application.full_clean()
+            cloned_application.employee.full_clean()
+            cloned_application.company.full_clean()
+            cloned_application.calculation.full_clean()
+
+        except exceptions.ValidationError as e:
+            return Response(
+                {"detail": e.message_dict}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response(
+            {"id": cloned_application.id},
+            status=status.HTTP_201_CREATED,
+        )
 
     def _create_application_batch(self, status) -> QuerySet[Application]:
         """

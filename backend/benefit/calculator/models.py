@@ -199,9 +199,11 @@ class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
             self.calculator = HelsinkiBenefitCalculator.get_calculator(self)
         return self.calculator
 
-    def calculate(self):
+    def calculate(self, override_status=False):
+        """Do the calculation again. Override status is used to force the calculation when cloning an application"""
+
         try:
-            return self.init_calculator().calculate()
+            return self.init_calculator().calculate(override_status=override_status)
         finally:
             # Do not leave the calculator instance around. If parameters are changed,
             # a different calculator may be needed in the next run

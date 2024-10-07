@@ -709,7 +709,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                         )
                     }
                 )
-        elif association_immediate_manager_check is not None:
+        elif association_immediate_manager_check not in [None, False]:
             raise serializers.ValidationError(
                 {
                     "association_immediate_manager_check": _(
@@ -907,11 +907,12 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
     def _validate_association_has_business_activities(
         self, company, association_has_business_activities
     ):
-        if (
-            OrganizationType.resolve_organization_type(company.company_form_code)
-            == OrganizationType.COMPANY
-            and association_has_business_activities is not None
-        ):
+        if OrganizationType.resolve_organization_type(
+            company.company_form_code
+        ) == OrganizationType.COMPANY and association_has_business_activities not in [
+            None,
+            False,
+        ]:
             raise serializers.ValidationError(
                 {
                     "association_has_business_activities": _(
