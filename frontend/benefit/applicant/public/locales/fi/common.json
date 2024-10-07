@@ -634,7 +634,7 @@
     "heading": "Muistitko nämä ennen hakulomakkeen täyttämistä?",
     "body": "Tarvitset hakemuksen liitteiksi työllistettävän allekirjoituksen henkilötietojen käsittelystä, allekirjoitetun työsopimuksen, sekä jonkin seuraavista: palkkatukipäätös, 55 vuotta täyttäneiden työllistämistukipäätös tai Helsinki-lisä -kortti.",
     "downloadButton": {
-      "href": "https://stplattaprod.blob.core.windows.net/tyoyrittaminen5ce88prod/Helsinki-lisä_tiedoksianto.pdf",
+      "href": "https://stplattaprod.blob.core.windows.net/tyoyrittaminen5ce88prod/Helsinki-lisä_tiedoksianto.pdf",
       "label": "Lataa tiedoksianto työllistettävän henkilötietojen käsittelystä"
     },
     "moreDetailsLink": {
