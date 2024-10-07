@@ -4,6 +4,7 @@ import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import { Button, IconLinkExternal } from 'hds-react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -60,10 +61,21 @@ const NotificationView: React.FC<Props> = ({ data }) => {
           <$GridCell $colSpan={10}>
             <$NotificationTitle>
               {isNewAhjoMode
-                ? t(`common:review.decisionProposal.submitted.title`)
+                ? t(`common:review.decisionProposal.submitted.title`, {
+                    applicationNumber: data?.applicationNumber,
+                  })
                 : t(`${translationsBase}.${translationKey}.title`)}
             </$NotificationTitle>
             <$NotificationMessage>
+              {isNewAhjoMode && (
+                <p>
+                  {t('common:review.decisionProposal.submitted.altText')}
+                  {': '}
+                  <Link href={`${ROUTES.APPLICATION}?id=${data?.id}`}>
+                    {data?.applicationNumber}
+                  </Link>
+                </p>
+              )}
               {isNewAhjoMode
                 ? t(`common:review.decisionProposal.submitted.text`)
                 : t(`${translationsBase}.${translationKey}.message`, {
