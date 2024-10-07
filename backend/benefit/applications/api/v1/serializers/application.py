@@ -1956,9 +1956,10 @@ class HandlerApplicationListSerializer(serializers.Serializer):
             return None
         data = AhjoStatusSerializer(status).data
         if data["error_from_ahjo"] is None:
-            data = None
-        else:
-            data.update({"status": status.status})
+            if data["validation_error_from_ahjo"] is None:
+                data = None
+            else:
+                data["error_from_ahjo"] = data["validation_error_from_ahjo"]
         return data
 
     handled_by_ahjo_automation = serializers.BooleanField(
