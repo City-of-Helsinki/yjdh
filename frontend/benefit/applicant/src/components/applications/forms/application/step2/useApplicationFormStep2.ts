@@ -14,18 +14,12 @@ import {
 } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import { getErrorText } from 'benefit-shared/utils/forms';
-import isAfter from 'date-fns/isAfter';
-import isWithinInterval from 'date-fns/isWithinInterval';
 import { FormikProps, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
 import React, { useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
-import {
-  convertToUIDateFormat,
-  formatDate,
-  parseDate,
-} from 'shared/utils/date.utils';
+import { formatDate, parseDate } from 'shared/utils/date.utils';
 import { focusAndScroll } from 'shared/utils/dom.utils';
 import { isString } from 'shared/utils/type-guards';
 
@@ -55,7 +49,6 @@ type UseApplicationFormStep2Props = {
   clearBenefitValues: () => void;
   clearCommissionValues: () => void;
   clearPaySubsidyValues: () => void;
-  setEndDate: () => void;
   organizationType: ORGANIZATION_TYPES;
   formik: FormikProps<Partial<Application>>;
 };
@@ -198,29 +191,7 @@ const useApplicationFormStep2 = (
   ]);
 
   const minEndDate = getMinEndDate(values.startDate);
-  const minEndDateFormatted = convertToUIDateFormat(minEndDate);
   const maxEndDate = getMaxEndDate(values.startDate);
-  const endDate = parseDate(values.endDate);
-  const isEndDateEligible =
-    endDate &&
-    (maxEndDate
-      ? isWithinInterval(endDate, { start: minEndDate, end: maxEndDate })
-      : isAfter(endDate, minEndDate));
-
-  const setEndDate = React.useCallback(() => {
-    if (!values.startDate && values.endDate) {
-      void setFieldValue(fields.endDate.name, '');
-    } else if (values.startDate && !isEndDateEligible) {
-      void setFieldValue(fields.endDate.name, minEndDateFormatted);
-    }
-  }, [
-    values.startDate,
-    values.endDate,
-    fields.endDate.name,
-    isEndDateEligible,
-    minEndDateFormatted,
-    setFieldValue,
-  ]);
 
   let language = SUPPORTED_LANGUAGES.FI;
   switch (i18n.language) {
@@ -249,7 +220,6 @@ const useApplicationFormStep2 = (
     clearCommissionValues,
     clearPaySubsidyValues,
     getErrorMessage,
-    setEndDate,
     organizationType,
     handleSubmit,
     handleSave,

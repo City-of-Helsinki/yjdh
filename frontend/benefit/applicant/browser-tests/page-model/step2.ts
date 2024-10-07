@@ -131,9 +131,8 @@ class Step2 extends WizardStep {
     startDate: string,
     endDate: string
   ): Promise<void> {
-    await t.typeText(this.endDate, endDate);
-
     await t.typeText(this.startDate, startDate);
+    await t.typeText(this.endDate, endDate);
   }
 
   public async fillEmploymentInfo(

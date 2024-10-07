@@ -14,7 +14,12 @@ import {
   PAY_SUBSIDY_GRANTED,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
-import { validateDateWithinMonths } from 'benefit-shared/utils/dates';
+import {
+  getDateFromDateString,
+  validateDateWithinMonths,
+  validateIsAfterOrOnDate,
+} from 'benefit-shared/utils/dates';
+import addDays from 'date-fns/addDays';
 import { FinnishSSN } from 'finnish-ssn';
 import { TFunction } from 'next-i18next';
 import { NAMES_REGEX } from 'shared/constants';
@@ -51,9 +56,27 @@ export const getValidationSchema = (
         test: (value = '') =>
           validateDateWithinMonths(value, APPLICATION_START_DATE_WITHIN_MONTHS),
       }),
-    [APPLICATION_FIELDS_STEP2_KEYS.END_DATE]: Yup.string().required(
-      t(VALIDATION_MESSAGE_KEYS.REQUIRED)
-    ),
+    [APPLICATION_FIELDS_STEP2_KEYS.END_DATE]: Yup.string()
+      .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED))
+      .test({
+        message: t(VALIDATION_MESSAGE_KEYS.DATE_MIN, {
+          min: '30 päivää aloituspäivästä',
+        }),
+        test: (endDate: string, context) =>
+          validateIsAfterOrOnDate(
+            endDate,
+            convertToUIDateFormat(
+              addDays(
+                getDateFromDateString(
+                  String(
+                    (context?.parent as { startDate?: string })?.startDate
+                  ) || '30.12.2100'
+                ),
+                30
+              )
+            )
+          ),
+      }),
     [APPLICATION_FIELDS_STEP2_KEYS.ASSOCIATION_IMMEDIATE_MANAGER_CHECK]:
       Yup.boolean()
         .nullable()
