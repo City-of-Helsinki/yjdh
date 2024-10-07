@@ -634,7 +634,7 @@
     "heading": "Did you remember these before filling out the application form?",
     "body": "You need the following attachments for the application: a notice of personal data processing signed by the hired person, a signed employment contract, and one of the following: a pay subsidy decision, a decision on employment subsidy for ages 55 and above, or a Helsinki benefit card.",
     "downloadButton": {
-      "href": "https://stplattaprod.blob.core.windows.net/tyoyrittaminen5ce88prod/Helsinki_benefit_notification_0.pdf",
+      "href": "https://stplattaprod.blob.core.windows.net/tyoyrittaminen5ce88prod/Helsinki-lisa_tiedoksianto_2024_en.pdf",
       "label": "Download the notice of personal data processing"
     },
     "moreDetailsLink": {
