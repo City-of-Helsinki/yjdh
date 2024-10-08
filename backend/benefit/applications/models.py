@@ -8,6 +8,7 @@ from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.db import connection, models
 from django.db.models import Exists, F, JSONField, OuterRef, Prefetch, Subquery
 from django.db.models.constraints import UniqueConstraint
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
 from phonenumber_field.modelfields import PhoneNumberField
@@ -173,6 +174,8 @@ class ApplicationManager(models.Manager):
         application_statuses: List[ApplicationStatus],
         ahjo_statuses: List[AhjoStatusEnum],
         has_no_case_id: bool,
+        retry_failed_older_than_hours: int = 0,
+        retry_status: AhjoStatusEnum = None,
     ):
         """
         Query applications by their latest AhjoStatus relation
@@ -183,11 +186,21 @@ class ApplicationManager(models.Manager):
         or
         AhjoStatusEnum.NEW_RECORDS_RECEIVED
         """
+        # if hours are specified, then the retry_status is used to query the applications for the re-attempt
+        if retry_failed_older_than_hours > 0 and retry_status:
+            ahjo_statuses = [retry_status]
+
         # Subquery to get the latest AhjoStatus id for each application
         latest_ahjo_status_subquery = (
             AhjoStatus.objects.filter(application=OuterRef("pk"))
             .order_by("-created_at")
             .values("id")[:1]
+        )
+
+        latest_ahjo_status_created_at_subquery = (
+            AhjoStatus.objects.filter(application=OuterRef("pk"))
+            .order_by("-created_at")
+            .values("created_at")[:1]
         )
 
         # Excluded attachment types
@@ -204,18 +217,31 @@ class ApplicationManager(models.Manager):
         attachments_prefetch = Prefetch("attachments", queryset=attachments_queryset)
 
         # Annotate applications with the latest AhjoStatus id and filter accordingly
-        applications = (
-            self.annotate(latest_ahjo_status_id=Subquery(latest_ahjo_status_subquery))
-            .filter(
-                status__in=application_statuses,
-                ahjo_status__id=F("latest_ahjo_status_id"),
-                ahjo_status__status__in=ahjo_statuses,
-                ahjo_case_id__isnull=has_no_case_id,
-            )
-            .prefetch_related(attachments_prefetch, "calculation", "company")
+        applications = self.annotate(
+            latest_ahjo_status_id=Subquery(latest_ahjo_status_subquery),
+            latest_ahjo_status_created_at=Subquery(
+                latest_ahjo_status_created_at_subquery.values("created_at")
+            ),
+        ).filter(
+            status__in=application_statuses,
+            ahjo_status__id=F("latest_ahjo_status_id"),
+            ahjo_status__status__in=ahjo_statuses,
+            ahjo_case_id__isnull=has_no_case_id,
         )
 
-        return applications
+        # Dynamically add time-based filter if requested, so that applications that have
+        # been in a certain AhjoStatus for a certain time are queried
+        if retry_failed_older_than_hours > 0:
+            time_in_past = timezone.now() - timedelta(
+                hours=retry_failed_older_than_hours
+            )
+            applications = applications.filter(
+                latest_ahjo_status_created_at__lt=time_in_past
+            )
+
+        return applications.prefetch_related(
+            attachments_prefetch, "calculation", "company"
+        )
 
     def get_for_ahjo_decision(
         self,
