@@ -321,7 +321,6 @@ const HandlingApplicationActions: React.FC<Props> = ({
           APPLICATION_STATUSES.ACCEPTED,
           APPLICATION_STATUSES.REJECTED,
         ].includes(application.status) &&
-          !application.batch &&
           !application.archived && (
             <Button
               onClick={openDialog}
