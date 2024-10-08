@@ -282,7 +282,12 @@ def get_application_change_history_made_by_handler(application: Application) -> 
                 employee_diff.changes, EXCLUDED_EMPLOYEE_FIELDS, True, delta_time
             )
 
-        return change_set if len(change_set["changes"]) > 0 else None
+        return (
+            change_set
+            if len(change_set["changes"]) > 0
+            or (change_set["reason"] and len(change_set["reason"]) > 0)
+            else None
+        )
 
     change_sets = list(
         filter(
