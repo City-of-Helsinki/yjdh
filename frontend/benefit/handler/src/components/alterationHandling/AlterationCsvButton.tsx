@@ -13,6 +13,7 @@ const AlterationCsvButton: React.FC<AlterationCsvProps> = ({
   alteration,
   values,
   onSubmit,
+  isAlterationValid = true,
 }) => {
   const { t } = useTranslation();
   const updateMutation = updateApplicationAlterationWithCsvQuery();
@@ -50,7 +51,7 @@ const AlterationCsvButton: React.FC<AlterationCsvProps> = ({
       variant={secondary ? 'secondary' : 'primary'}
       iconLeft={<IconDownload />}
       onClick={handleDownloadCsv}
-      disabled={updateMutation.isLoading}
+      disabled={!isAlterationValid || updateMutation.isLoading}
     >
       {updateMutation.isLoading
         ? t('common:utility.downloading')

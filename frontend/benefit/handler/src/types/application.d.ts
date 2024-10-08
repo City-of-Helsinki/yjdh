@@ -239,10 +239,10 @@ export type ApplicationAlterationHandlingForm =
   };
 
 export type AlterationCsvProps = {
-    alteration: ApplicationAlteration;
-    values?: ApplicationAlterationHandlingForm;
-    theme?: ButtonTheme;
-    secondary?: boolean;
-    onSubmit?: () => void;
-  };
-  
+  alteration: ApplicationAlteration;
+  values?: ApplicationAlterationHandlingForm;
+  theme?: ButtonTheme;
+  secondary?: boolean;
+  onSubmit?: () => void;
+  isAlterationValid?: boolean;
+};

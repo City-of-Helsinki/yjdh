@@ -238,10 +238,14 @@ const AlterationHandlingForm = ({
                 <$TalpaGuideText>
                   {t(`${translationBase}.talpaCsv.guideText`)}
                 </$TalpaGuideText>
-                <AlterationCsvButton 
+                <AlterationCsvButton
+                  theme="coat"
+                  secondary
+                  isAlterationValid={formik.isValid && !!formik.touched}
                   alteration={alteration}
                   values={formik.values}
-                  onSubmit={handleAlterationCsvDownload} />
+                  onSubmit={handleAlterationCsvDownload}
+                />
               </$GridCell>
             </$Grid>
           </AlterationHandlingSection>
@@ -283,10 +287,7 @@ const AlterationHandlingForm = ({
               onClick={openConfirmationModal}
               theme="coat"
               iconLeft={<IconCheck />}
-              disabled={
-                isSubmitting ||
-                (isSubmitted && (!formik.isValid || isCalculationOutOfDate))
-              }
+              disabled={isSubmitting || (isSubmitted && hasErrors)}
               isLoading={isSubmitting}
               loadingText={t('common:utility.submitting')}
             >
