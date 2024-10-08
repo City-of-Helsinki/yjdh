@@ -1426,6 +1426,61 @@ def test_get_applications_for_ahjo_decision_proposal_request(
 
 
 @pytest.mark.parametrize(
+    "application_status, latest_ahjo_status, talpa_status, retry_failed_older_than_hours, wanted_count",
+    [
+        (
+            ApplicationStatus.ACCEPTED,
+            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            1,
+            1,
+        ),
+        (
+            ApplicationStatus.REJECTED,
+            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            1,
+            1,
+        ),
+    ],
+)
+@pytest.mark.django_db
+def test_retry_get_applications_for_ahjo_decision_proposal_request(
+    application_with_ahjo_case_id,
+    application_status,
+    latest_ahjo_status,
+    talpa_status,
+    retry_failed_older_than_hours,
+    wanted_count,
+):
+    application_with_ahjo_case_id.status = application_status
+    application_with_ahjo_case_id.talpa_status = talpa_status
+    application_with_ahjo_case_id.save()
+
+    ahjo_status = AhjoStatus.objects.create(
+        application_id=application_with_ahjo_case_id.id,
+        status=latest_ahjo_status,
+    )
+
+    ahjo_status.created_at = (
+        timezone.now()
+        - timedelta(hours=retry_failed_older_than_hours)
+        - timedelta(minutes=1)
+    )
+    ahjo_status.save()
+
+    AhjoDecisionText.objects.create(
+        application=application_with_ahjo_case_id, decision_text="test"
+    )
+    parameters = AhjoQueryParameters.resolve(
+        AhjoRequestType.SEND_DECISION_PROPOSAL, retry_failed_older_than_hours
+    )
+    applications = Application.objects.get_for_ahjo_decision(**parameters)
+    assert applications.count() == wanted_count
+    assert applications.first() == application_with_ahjo_case_id
+
+
+@pytest.mark.parametrize(
     "application_status, ahjo_status, case_id, count",
     [
         (
@@ -1559,7 +1614,7 @@ def test_get_applications_for_ahjo_details_request(
         (ApplicationStatus.REJECTED, AhjoStatusEnum.DECISION_DETAILS_REQUEST_SENT, 1),
     ],
 )
-def test_retry_applications_for_ahjo_details_request(
+def test_retry_get_applications_for_ahjo_details_request(
     application_with_ahjo_case_id,
     application_status,
     latest_ahjo_status,

@@ -1,5 +1,5 @@
 import re
-from datetime import date
+from datetime import date, timedelta
 from typing import List
 
 from dateutil.relativedelta import relativedelta
@@ -248,6 +248,8 @@ class ApplicationManager(models.Manager):
         application_statuses: List[ApplicationStatus],
         ahjo_statuses: List[AhjoStatusEnum],
         has_no_case_id: bool = False,
+        retry_failed_older_than_hours: int = 0,
+        retry_status: AhjoStatusEnum = None,
     ):
         """
         Get applications that are in a state where a decision proposal should be sent to Ahjo.
@@ -255,15 +257,29 @@ class ApplicationManager(models.Manager):
         have a ahjo_case_id, a decisiontext and their latest ahjo_status is case_opened.
         """
 
+        if retry_failed_older_than_hours > 0 and retry_status:
+            ahjo_statuses = [retry_status]
+
         latest_ahjo_status_subquery = (
             AhjoStatus.objects.filter(application=OuterRef("pk"))
             .order_by("-created_at")
             .values("id")[:1]
         )
 
-        return (
+        latest_ahjo_status_created_at_subquery = (
+            AhjoStatus.objects.filter(application=OuterRef("pk"))
+            .order_by("-created_at")
+            .values("created_at")[:1]
+        )
+
+        applications = (
             self.get_queryset()
-            .annotate(latest_ahjo_status_id=Subquery(latest_ahjo_status_subquery))
+            .annotate(
+                latest_ahjo_status_id=Subquery(latest_ahjo_status_subquery),
+                latest_ahjo_status_created_at=Subquery(
+                    latest_ahjo_status_created_at_subquery.values("created_at")
+                ),
+            )
             .filter(
                 status__in=application_statuses,
                 talpa_status=ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
@@ -275,8 +291,16 @@ class ApplicationManager(models.Manager):
                 ahjo_status__id=F("latest_ahjo_status_id"),
                 ahjo_status__status__in=ahjo_statuses,
             )
-            .select_related("ahjodecisiontext")
         )
+
+        if retry_failed_older_than_hours > 0:
+            time_in_past = timezone.now() - timedelta(
+                hours=retry_failed_older_than_hours
+            )
+            applications = applications.filter(
+                latest_ahjo_status_created_at__lt=time_in_past
+            )
+        return applications.select_related("ahjodecisiontext")
 
 
 class Application(UUIDModel, TimeStampedModel, DurationMixin):
