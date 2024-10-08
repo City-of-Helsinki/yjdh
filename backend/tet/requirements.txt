@@ -10,26 +10,26 @@ asgiref==3.8.1
     # via
     #   django
     #   django-cors-headers
-authlib==1.3.0
+authlib==1.3.2
     # via drf-oidc-auth
-azure-core==1.30.1
+azure-core==1.31.0
     # via
     #   azure-storage-blob
     #   django-storages
-azure-storage-blob==12.20.0
+azure-storage-blob==12.23.1
     # via django-storages
-cachetools==5.3.3
+cachetools==5.5.0
     # via django-helusers
-certifi==2024.6.2
+certifi==2024.8.30
     # via
     #   elastic-transport
     #   requests
     #   sentry-sdk
-cffi==1.16.0
+cffi==1.17.1
     # via cryptography
 charset-normalizer==3.3.2
     # via requests
-cryptography==42.0.7
+cryptography==43.0.1
     # via
     #   authlib
     #   azure-storage-blob
@@ -45,7 +45,7 @@ defusedxml==0.7.1
     #   pysaml2
 deprecation==2.1.0
     # via django-helusers
-django==4.2.13
+django==4.2.16
     # via
     #   -r requirements.in
     #   django-auth-adfs
@@ -63,7 +63,7 @@ django-auth-adfs==1.14.0
     # via
     #   -r requirements.in
     #   yjdh-backend-shared
-django-cors-headers==4.3.1
+django-cors-headers==4.4.0
     # via -r requirements.in
 django-environ==0.11.2
     # via -r requirements.in
@@ -71,13 +71,13 @@ django-extensions==3.2.3
     # via
     #   -r requirements.in
     #   yjdh-backend-shared
-django-helusers==0.12.0
+django-helusers==0.13.0
     # via -r requirements.in
 django-simple-history==3.7.0
     # via -r requirements.in
-django-storages==1.14.3
+django-storages==1.14.4
     # via -r requirements.in
-djangorestframework==3.15.1
+djangorestframework==3.15.2
     # via
     #   -r requirements.in
     #   drf-oidc-auth
@@ -87,19 +87,19 @@ drf-oidc-auth==3.0.0
     # via -r requirements.in
 ecdsa==0.19.0
     # via python-jose
-elastic-transport==8.13.1
+elastic-transport==8.15.0
     # via elasticsearch
-elasticsearch==8.13.2
+elasticsearch==8.15.1
     # via -r requirements.in
-elementpath==4.4.0
+elementpath==4.5.0
     # via xmlschema
-factory-boy==3.3.0
+factory-boy==3.3.1
     # via -r requirements.in
-faker==25.3.0
+faker==30.0.0
     # via factory-boy
 filetype==1.2.0
     # via -r requirements.in
-idna==3.7
+idna==3.10
     # via requests
 isodate==0.6.1
     # via azure-storage-blob
@@ -109,25 +109,25 @@ mozilla-django-oidc==4.0.1
     # via
     #   -r requirements.in
     #   yjdh-backend-shared
-packaging==24.0
+packaging==24.1
     # via deprecation
-pillow==10.3.0
+pillow==10.4.0
     # via -r requirements.in
 psycopg2==2.9.9
     # via -r requirements.in
-pyasn1==0.6.0
+pyasn1==0.6.1
     # via
     #   python-jose
     #   rsa
 pycparser==2.22
     # via cffi
-pyjwt==2.8.0
+pyjwt==2.9.0
     # via django-auth-adfs
-pyopenssl==24.1.0
+pyopenssl==24.2.1
     # via
     #   josepy
     #   pysaml2
-pysaml2==7.3.1
+pysaml2==7.5.0
     # via djangosaml2
 python-dateutil==2.9.0.post0
     # via
@@ -137,7 +137,7 @@ python-jose==3.3.0
     # via django-helusers
 python-stdnum==1.20
     # via -r requirements.in
-pytz==2024.1
+pytz==2024.2
     # via pysaml2
 requests==2.32.3
     # via
@@ -150,7 +150,7 @@ requests==2.32.3
     #   pysaml2
 rsa==4.9
     # via python-jose
-sentry-sdk==2.3.1
+sentry-sdk==2.14.0
     # via -r requirements.in
 six==1.16.0
     # via
@@ -158,18 +158,18 @@ six==1.16.0
     #   ecdsa
     #   isodate
     #   python-dateutil
-sqlparse==0.5.0
+sqlparse==0.5.1
     # via django
-typing-extensions==4.12.1
+typing-extensions==4.12.2
     # via
     #   asgiref
     #   azure-core
     #   azure-storage-blob
-urllib3==2.2.1
+urllib3==2.2.3
     # via
     #   django-auth-adfs
     #   elastic-transport
     #   requests
     #   sentry-sdk
-xmlschema==3.3.1
+xmlschema==2.5.1
     # via pysaml2
