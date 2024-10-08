@@ -26,6 +26,7 @@ from applications.models import (
     AhjoSetting,
     AhjoStatus,
     Application,
+    ApplicationBatch,
     Attachment,
 )
 from applications.services.ahjo_authentication import AhjoConnector, AhjoToken
