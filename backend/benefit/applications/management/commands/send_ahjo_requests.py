@@ -112,7 +112,9 @@ requests for {len(applications)} applications to Ahjo"
                 )
             return
 
-        self.run_requests(applications[:number_to_process], request_type)
+        self.run_requests(
+            applications[:number_to_process], ahjo_auth_token, request_type
+        )
 
     def run_requests(
         self,
