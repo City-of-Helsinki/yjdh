@@ -1238,7 +1238,8 @@
       },
       "submitted": {
         "title": "Päätösehdotus on lähetetty Ahjoon",
-        "text": "Viimeistele päätöskäsittely Ahjossa."
+        "text": "Viimeistele päätöskäsittely Ahjossa.",
+        "altText": "Hakemusnumero"
       }
     }
   },
