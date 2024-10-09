@@ -312,6 +312,30 @@ def get_application_change_history_made_by_handler(application: Application) -> 
         )
     )
 
+    submitted_at = (
+        ApplicationLogEntry.objects.filter(
+            application=application, to_status=ApplicationStatus.RECEIVED
+        )
+        .order_by("-created_at")
+        .values("created_at")[:1]
+    )
+
+    attachment_diffs = []
+    for attachment in application.attachments.all():
+        for new_record in attachment.history.filter(
+            history_type="+", history_date__gte=submitted_at
+        ):
+            change_set_base = _get_change_set_base(new_record)
+            change_set_base["changes"] = [
+                {
+                    "field": "attachments",
+                    "old": "+",
+                    "new": f"{new_record.attachment_file} ({_(new_record.attachment_type)})",
+                }
+            ]
+            attachment_diffs.append(change_set_base)
+    change_sets += attachment_diffs
+
     return change_sets
 
 
