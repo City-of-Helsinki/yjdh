@@ -201,7 +201,7 @@ def _get_change_set_base(new_record: ModelChange):
     }
 
 
-merge_threshold_in_seconds = 0.25
+look_up_for_application_save_in_seconds = 0.25
 
 
 def _filter_and_format_changes(
@@ -215,7 +215,7 @@ def _filter_and_format_changes(
                 and (
                     delta_time
                     is None  # We'll ignore this check for application changes as delta_time's not present
-                    or 0 <= delta_time <= merge_threshold_in_seconds
+                    or 0 <= delta_time <= look_up_for_application_save_in_seconds
                 ),
                 changes,
             ),
@@ -255,14 +255,14 @@ def get_application_change_history_made_by_handler(application: Application) -> 
 
     app_diff_dates = [diff.new_record.history_date for diff in application_diffs]
 
-    # create Q objects for each datetime in the list
-    q_objects = Q()
+    # fetch employee history changes that occured during the saving of application
+    employee_q_objects = Q()
     for dt in app_diff_dates:
-        start_date = dt - timedelta(seconds=merge_threshold_in_seconds)
-        end_date = dt + timedelta(seconds=merge_threshold_in_seconds)
-        q_objects |= Q(history_date__range=(start_date, end_date))
+        start_date = dt - timedelta(seconds=look_up_for_application_save_in_seconds)
+        end_date = dt + timedelta(seconds=look_up_for_application_save_in_seconds)
+        employee_q_objects |= Q(history_date__range=(start_date, end_date))
 
-    employee_history = application.employee.history.filter(q_objects)
+    employee_history = application.employee.history.filter(employee_q_objects)
     employee_diffs = []
     for i in range(0, len(employee_history) - 1):
         diff = employee_history[i].diff_against(employee_history[i + 1])
@@ -282,7 +282,12 @@ def get_application_change_history_made_by_handler(application: Application) -> 
                 employee_diff.changes, EXCLUDED_EMPLOYEE_FIELDS, True, delta_time
             )
 
-        return change_set if len(change_set["changes"]) > 0 else None
+        return (
+            change_set
+            if len(change_set["changes"]) > 0
+            or (change_set["reason"] and len(change_set["reason"]) > 0)
+            else None
+        )
 
     change_sets = list(
         filter(

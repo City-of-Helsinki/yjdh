@@ -85,11 +85,13 @@ const ChangeSet: React.FC<ChangeSetProps> = ({ data }: ChangeSetProps) => {
         ))}
       </dl>
       <$ChangeSetFooter>
-        <p>
-          {t('common:changes.header.amountOfChanges', {
-            amount: changes.length,
-          })}
-        </p>
+        {changes.length > 0 && (
+          <p>
+            {t('common:changes.header.amountOfChanges', {
+              amount: changes.length,
+            })}
+          </p>
+        )}
         <hr />
         <$ViewFieldBold>
           {t('common:applications.sections.fields.changeReason.placeholder')}
