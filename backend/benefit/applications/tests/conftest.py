@@ -1,7 +1,7 @@
 import os
 import random
 import uuid
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 import factory
 import pytest
@@ -25,6 +25,7 @@ from applications.models import (
     ApplicationAlteration,
     ApplicationBatch,
 )
+from applications.services.ahjo_authentication import AhjoToken
 from applications.services.ahjo_decision_service import (
     replace_decision_template_placeholders,
 )
@@ -1108,4 +1109,14 @@ def decision_maker_settings(fake_decisionmakers):
     return AhjoSetting.objects.create(
         name="ahjo_decision_maker",
         data=fake_decisionmakers,
+    )
+
+
+@pytest.fixture
+def non_expired_token():
+    return AhjoToken(
+        access_token="access_token",
+        refresh_token="refresh_token",
+        expires_in=30000,
+        created_at=datetime.now(timezone.utc),
     )

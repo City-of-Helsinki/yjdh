@@ -32,6 +32,10 @@ from applications.models import (
     ApplicationBatch,
     Attachment,
 )
+from applications.services.ahjo_application_service import (
+    AhjoApplicationsService,
+    AhjoQueryParameters,
+)
 from applications.services.ahjo_integration import (
     ACCEPTED_TITLE,
     export_application_batch,
@@ -707,6 +711,37 @@ def test_ahjo_callback_unauthorized_ip_not_allowed(
     assert response.status_code == 403
 
 
+def test_ahjo_callback_raises_error_without_batch(
+    ahjo_callback_payload, decided_application, ahjo_client, ahjo_user_token, settings
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = True
+
+    status = AhjoStatus.objects.create(
+        application=decided_application,
+        status=AhjoStatusEnum.CASE_OPENED,
+    )
+    status.created_at = timezone.now() - timedelta(days=5)
+    status.save()
+
+    auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
+    attachment = generate_application_attachment(
+        decided_application, AttachmentType.PDF_SUMMARY
+    )
+    attachment_hash_value = hash_file(attachment.attachment_file)
+    attachment.ahjo_hash_value = attachment_hash_value
+    attachment.save()
+    ahjo_callback_payload["message"] = AhjoCallBackStatus.SUCCESS
+    ahjo_callback_payload["records"][0]["hashValue"] = attachment_hash_value
+
+    url = _get_callback_url(AhjoRequestType.SEND_DECISION_PROPOSAL, decided_application)
+    # with pytest.raises(AhjoCallbackError):
+    response = ahjo_client.post(url, **auth_headers, data=ahjo_callback_payload)
+    assert response.status_code == 500
+    assert response.data == {
+        "error": f"Application {decided_application.id} has no batch when Ahjo has received a decision proposal request"
+    }
+
+
 @pytest.mark.django_db
 def test_get_application_for_ahjo_success(decided_application):
     user = decided_application.calculation.handler
@@ -792,43 +827,271 @@ def test_generate_ahjo_secret_decision_text_xml(decided_application):
         os.remove(attachment.attachment_file.path)
 
 
-@pytest.mark.django_db
-def test_get_applications_for_ahjo_update(
-    multiple_applications_with_ahjo_case_id,
+@pytest.mark.parametrize(
+    "ahjo_request_type, query_parameters,retry_failed_older_than_hours",
+    [
+        (
+            AhjoRequestType.OPEN_CASE,
+            {
+                "application_statuses": [
+                    ApplicationStatus.HANDLING,
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.REJECTED,
+                ],
+                "ahjo_statuses": [AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO],
+                "has_no_case_id": True,
+                "retry_status": AhjoStatusEnum.REQUEST_TO_OPEN_CASE_SENT,
+            },
+            0,
+        ),
+        (
+            AhjoRequestType.SEND_DECISION_PROPOSAL,
+            {
+                "application_statuses": [
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.REJECTED,
+                ],
+                "ahjo_statuses": [
+                    AhjoStatusEnum.CASE_OPENED,
+                    AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+                ],
+                "has_no_case_id": False,
+                "retry_status": AhjoStatusEnum.DECISION_PROPOSAL_SENT,
+            },
+            0,
+        ),
+        (
+            AhjoRequestType.UPDATE_APPLICATION,
+            {
+                "application_statuses": [
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.REJECTED,
+                ],
+                "ahjo_statuses": [
+                    AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
+                    AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+                ],
+                "has_no_case_id": False,
+                "retry_status": AhjoStatusEnum.UPDATE_REQUEST_SENT,
+            },
+            0,
+        ),
+        (
+            AhjoRequestType.DELETE_APPLICATION,
+            {
+                "application_statuses": [
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.CANCELLED,
+                    ApplicationStatus.REJECTED,
+                    ApplicationStatus.HANDLING,
+                    ApplicationStatus.DRAFT,
+                    ApplicationStatus.RECEIVED,
+                ],
+                "ahjo_statuses": [AhjoStatusEnum.SCHEDULED_FOR_DELETION],
+                "has_no_case_id": False,
+                "retry_status": AhjoStatusEnum.DELETE_REQUEST_SENT,
+            },
+            0,
+        ),
+        (
+            AhjoRequestType.GET_DECISION_DETAILS,
+            {
+                "application_statuses": [
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.REJECTED,
+                ],
+                "ahjo_statuses": [AhjoStatusEnum.SIGNED_IN_AHJO],
+                "has_no_case_id": False,
+                "retry_status": AhjoStatusEnum.DECISION_DETAILS_REQUEST_SENT,
+            },
+            0,
+        ),
+        (
+            AhjoRequestType.OPEN_CASE,
+            {
+                "application_statuses": [
+                    ApplicationStatus.HANDLING,
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.REJECTED,
+                ],
+                "ahjo_statuses": [AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO],
+                "has_no_case_id": True,
+                "retry_status": AhjoStatusEnum.REQUEST_TO_OPEN_CASE_SENT,
+            },
+            1,
+        ),
+        (
+            AhjoRequestType.SEND_DECISION_PROPOSAL,
+            {
+                "application_statuses": [
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.REJECTED,
+                ],
+                "ahjo_statuses": [
+                    AhjoStatusEnum.CASE_OPENED,
+                    AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+                ],
+                "has_no_case_id": False,
+                "retry_status": AhjoStatusEnum.DECISION_PROPOSAL_SENT,
+            },
+            1,
+        ),
+        (
+            AhjoRequestType.UPDATE_APPLICATION,
+            {
+                "application_statuses": [
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.REJECTED,
+                ],
+                "ahjo_statuses": [
+                    AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
+                    AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+                ],
+                "has_no_case_id": False,
+                "retry_status": AhjoStatusEnum.UPDATE_REQUEST_SENT,
+            },
+            1,
+        ),
+        (
+            AhjoRequestType.DELETE_APPLICATION,
+            {
+                "application_statuses": [
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.CANCELLED,
+                    ApplicationStatus.REJECTED,
+                    ApplicationStatus.HANDLING,
+                    ApplicationStatus.DRAFT,
+                    ApplicationStatus.RECEIVED,
+                ],
+                "ahjo_statuses": [AhjoStatusEnum.SCHEDULED_FOR_DELETION],
+                "has_no_case_id": False,
+                "retry_status": AhjoStatusEnum.DELETE_REQUEST_SENT,
+            },
+            1,
+        ),
+        (
+            AhjoRequestType.GET_DECISION_DETAILS,
+            {
+                "application_statuses": [
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.REJECTED,
+                ],
+                "ahjo_statuses": [AhjoStatusEnum.SIGNED_IN_AHJO],
+                "has_no_case_id": False,
+                "retry_status": AhjoStatusEnum.DECISION_DETAILS_REQUEST_SENT,
+            },
+            1,
+        ),
+    ],
+)
+def test_ahjo_query_parameter_resolver(
+    ahjo_request_type, query_parameters, retry_failed_older_than_hours
 ):
-    for a in multiple_applications_with_ahjo_case_id[:5]:
-        AhjoStatus.objects.create(
-            application=a,
-            status=AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
-        )
-    for a in multiple_applications_with_ahjo_case_id[5:]:
-        AhjoStatus.objects.create(
-            application=a,
-            status=AhjoStatusEnum.NEW_RECORDS_RECEIVED,
-        )
-
-    applications_for_ahjo_update = Application.objects.get_by_statuses(
-        [
-            ApplicationStatus.ACCEPTED,
-            ApplicationStatus.REJECTED,
-        ],
-        [
-            AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
-            AhjoStatusEnum.NEW_RECORDS_RECEIVED,
-        ],
-        False,
+    parameters = AhjoQueryParameters.resolve(
+        ahjo_request_type, retry_failed_older_than_hours
     )
+    if retry_failed_older_than_hours:
+        assert (
+            parameters["retry_failed_older_than_hours"] == retry_failed_older_than_hours
+        )
+    else:
+        assert parameters == query_parameters
 
-    assert applications_for_ahjo_update.count() == len(
-        multiple_applications_with_ahjo_case_id
-    )
+
+@pytest.fixture
+def mock_get_by_statuses():
+    with patch(
+        "applications.models.Application.objects.get_by_statuses", autospec=True
+    ) as mock:
+        yield mock
 
 
+@pytest.fixture
+def mock_get_for_ahjo_decision():
+    with patch(
+        "applications.models.Application.objects.get_for_ahjo_decision", autospec=True
+    ) as mock:
+        yield mock
+
+
+@pytest.fixture
+def mock_with_non_downloaded_attachments():
+    with patch(
+        "applications.models.Application.objects.with_non_downloaded_attachments",
+        autospec=True,
+    ) as mock:
+        yield mock
+
+
+@pytest.mark.parametrize(
+    "request_type",
+    [
+        (AhjoRequestType.OPEN_CASE),
+        (AhjoRequestType.SEND_DECISION_PROPOSAL),
+        (AhjoRequestType.UPDATE_APPLICATION),
+        (AhjoRequestType.DELETE_APPLICATION),
+        (AhjoRequestType.GET_DECISION_DETAILS),
+    ],
+)
 @pytest.mark.django_db
-def test_get_applications_for_open_case(
+def test_applications_service(
+    request_type, mock_get_by_statuses, mock_get_for_ahjo_decision
+):
+    parameters = AhjoQueryParameters.resolve(
+        request_type
+    )  # Example parameters, adjust as needed
+
+    with patch(
+        "applications.services.ahjo_application_service.AhjoQueryParameters.resolve",
+        return_value=parameters,
+    ):
+        AhjoApplicationsService.get_applications_for_request(request_type)
+
+    if request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
+        mock_get_for_ahjo_decision.assert_called_once_with(**parameters)
+    else:
+        mock_get_by_statuses.assert_called_once_with(**parameters)
+
+
+@pytest.fixture
+def wanted_open_case_attachments():
+    return [
+        AttachmentType.EMPLOYMENT_CONTRACT,
+        AttachmentType.PAY_SUBSIDY_DECISION,
+        AttachmentType.COMMISSION_CONTRACT,
+        AttachmentType.EDUCATION_CONTRACT,
+        AttachmentType.HELSINKI_BENEFIT_VOUCHER,
+        AttachmentType.EMPLOYEE_CONSENT,
+        AttachmentType.OTHER_ATTACHMENT,
+        AttachmentType.FULL_APPLICATION,
+    ]
+
+
+@pytest.fixture
+def unwanted_open_case_attachments():
+    return [
+        AttachmentType.PDF_SUMMARY,
+        AttachmentType.DECISION_TEXT_XML,
+        AttachmentType.DECISION_TEXT_SECRET_XML,
+    ]
+
+
+@pytest.mark.parametrize(
+    "retry_failed_older_than_hours, latest_ahjo_status",
+    [
+        (0, AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO),
+        (1, AhjoStatusEnum.REQUEST_TO_OPEN_CASE_SENT),
+    ],
+)
+@pytest.mark.django_db
+def test_get_applications_for_open_case_request(
     multiple_decided_applications,
     multiple_decided_applications_for_open_case,
     multiple_handling_applications,
+    wanted_open_case_attachments,
+    unwanted_open_case_attachments,
+    retry_failed_older_than_hours,
+    latest_ahjo_status,
 ):
     now = timezone.now()
     wanted_applications_for_open_case = (
@@ -837,7 +1100,7 @@ def test_get_applications_for_open_case(
     for application in wanted_applications_for_open_case:
         status = AhjoStatus.objects.create(
             application=application,
-            status=AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
+            status=latest_ahjo_status,
         )
 
         status.created_at = now - timedelta(days=1)
@@ -853,32 +1116,11 @@ def test_get_applications_for_open_case(
             ahjo_status.created_at = now + timedelta(days=index)
             ahjo_status.save()
 
-    wanted_open_case_attachments = [
-        AttachmentType.EMPLOYMENT_CONTRACT,
-        AttachmentType.PAY_SUBSIDY_DECISION,
-        AttachmentType.COMMISSION_CONTRACT,
-        AttachmentType.EDUCATION_CONTRACT,
-        AttachmentType.HELSINKI_BENEFIT_VOUCHER,
-        AttachmentType.EMPLOYEE_CONSENT,
-        AttachmentType.OTHER_ATTACHMENT,
-        AttachmentType.FULL_APPLICATION,
-    ]
-
-    unwanted_open_case_attachments = [
-        AttachmentType.PDF_SUMMARY,
-        AttachmentType.DECISION_TEXT_XML,
-        AttachmentType.DECISION_TEXT_SECRET_XML,
-    ]
-
-    applications_for_open_case = Application.objects.get_by_statuses(
-        [
-            ApplicationStatus.HANDLING,
-            ApplicationStatus.ACCEPTED,
-            ApplicationStatus.REJECTED,
-        ],
-        [AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO],
-        True,
+    parameters = AhjoQueryParameters.resolve(
+        AhjoRequestType.OPEN_CASE, retry_failed_older_than_hours
     )
+
+    applications_for_open_case = Application.objects.get_by_statuses(**parameters)
 
     for app in applications_for_open_case:
         attachments = app.attachments.all()
@@ -890,8 +1132,107 @@ def test_get_applications_for_open_case(
     assert applications_for_open_case.count() == len(wanted_applications_for_open_case)
 
 
+@pytest.mark.parametrize(
+    "latest_ahjo_status, retry_failed_older_than_hours",
+    [
+        (AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED, 0),
+        (AhjoStatusEnum.NEW_RECORDS_RECEIVED, 0),
+        (AhjoStatusEnum.UPDATE_REQUEST_SENT, 1),
+        (AhjoStatusEnum.UPDATE_REQUEST_SENT, 24),
+    ],
+)
 @pytest.mark.django_db
-def test_with_non_downloaded_attachments(decided_application):
+def test_get_applications_for_update_request(
+    multiple_applications_with_ahjo_case_id,
+    latest_ahjo_status,
+    retry_failed_older_than_hours,
+):
+    now = timezone.now()
+
+    for a in multiple_applications_with_ahjo_case_id[:5]:
+        ahjo_status = AhjoStatus.objects.create(
+            application=a,
+            status=latest_ahjo_status,
+        )
+        ahjo_status.created_at = (
+            now - timedelta(hours=retry_failed_older_than_hours) - timedelta(minutes=1)
+        )
+        ahjo_status.save()
+
+    for a in multiple_applications_with_ahjo_case_id[5:]:
+        ahjo_status = AhjoStatus.objects.create(
+            application=a,
+            status=latest_ahjo_status,
+        )
+        ahjo_status.created_at = (
+            now - timedelta(hours=retry_failed_older_than_hours) - timedelta(minutes=1)
+        )
+        ahjo_status.save()
+
+    parameters = AhjoQueryParameters.resolve(
+        AhjoRequestType.UPDATE_APPLICATION, retry_failed_older_than_hours
+    )
+    for application in multiple_applications_with_ahjo_case_id:
+        print(application.ahjo_status.latest().status)
+
+    applications_for_ahjo_update = Application.objects.get_by_statuses(**parameters)
+
+    assert applications_for_ahjo_update.count() == len(
+        multiple_applications_with_ahjo_case_id
+    )
+
+
+@pytest.mark.parametrize(
+    "application_status, latest_ahjo_status, retry_failed_older_than_hours",
+    [
+        (ApplicationStatus.ACCEPTED, AhjoStatusEnum.SCHEDULED_FOR_DELETION, 0),
+        (ApplicationStatus.CANCELLED, AhjoStatusEnum.SCHEDULED_FOR_DELETION, 0),
+        (ApplicationStatus.REJECTED, AhjoStatusEnum.SCHEDULED_FOR_DELETION, 0),
+        (ApplicationStatus.HANDLING, AhjoStatusEnum.SCHEDULED_FOR_DELETION, 0),
+        (ApplicationStatus.DRAFT, AhjoStatusEnum.SCHEDULED_FOR_DELETION, 0),
+        (ApplicationStatus.RECEIVED, AhjoStatusEnum.DELETE_REQUEST_SENT, 1),
+        (ApplicationStatus.ACCEPTED, AhjoStatusEnum.DELETE_REQUEST_SENT, 1),
+        (ApplicationStatus.CANCELLED, AhjoStatusEnum.DELETE_REQUEST_SENT, 1),
+        (ApplicationStatus.REJECTED, AhjoStatusEnum.DELETE_REQUEST_SENT, 1),
+        (ApplicationStatus.HANDLING, AhjoStatusEnum.DELETE_REQUEST_SENT, 1),
+        (ApplicationStatus.DRAFT, AhjoStatusEnum.DELETE_REQUEST_SENT, 1),
+        (ApplicationStatus.RECEIVED, AhjoStatusEnum.DELETE_REQUEST_SENT, 1),
+    ],
+)
+def test_get_applications_for_delete_request(
+    handling_application,
+    application_status,
+    latest_ahjo_status,
+    retry_failed_older_than_hours,
+):
+    now = timezone.now()
+
+    handling_application.status = application_status
+    handling_application.ahjo_case_id = "HEL 1999-123"
+    handling_application.save()
+
+    ahjo_status = AhjoStatus.objects.create(
+        application_id=handling_application.id,
+        status=latest_ahjo_status,
+    )
+
+    ahjo_status.created_at = (
+        now - timedelta(hours=retry_failed_older_than_hours) - timedelta(minutes=1)
+    )
+    ahjo_status.save()
+
+    parameters = AhjoQueryParameters.resolve(
+        AhjoRequestType.DELETE_APPLICATION, retry_failed_older_than_hours
+    )
+
+    applications_for_delete = Application.objects.get_by_statuses(**parameters)
+
+    assert applications_for_delete.count() == 1
+    assert applications_for_delete[0] == handling_application
+
+
+@pytest.mark.django_db
+def test_get_applications_for_add_records_request(decided_application):
     applications = Application.objects.with_non_downloaded_attachments()
     assert applications.count() == 0
 
@@ -1059,7 +1400,7 @@ dummy_case_id = "HEL 1999-123"
     ],
 )
 @pytest.mark.django_db
-def test_get_for_ahjo_decision(
+def test_get_applications_for_ahjo_decision_proposal_request(
     decided_application,
     application_status,
     ahjo_status,
@@ -1079,9 +1420,227 @@ def test_get_for_ahjo_decision(
         AhjoDecisionText.objects.create(
             application=decided_application, decision_text="test"
         )
-
-    applications = Application.objects.get_for_ahjo_decision()
+    parameters = AhjoQueryParameters.resolve(AhjoRequestType.SEND_DECISION_PROPOSAL)
+    applications = Application.objects.get_for_ahjo_decision(**parameters)
     assert applications.count() == count
+
+
+@pytest.mark.parametrize(
+    "application_status, latest_ahjo_status, talpa_status, retry_failed_older_than_hours, wanted_count",
+    [
+        (
+            ApplicationStatus.ACCEPTED,
+            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            1,
+            1,
+        ),
+        (
+            ApplicationStatus.REJECTED,
+            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
+            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA,
+            1,
+            1,
+        ),
+    ],
+)
+@pytest.mark.django_db
+def test_retry_get_applications_for_ahjo_decision_proposal_request(
+    application_with_ahjo_case_id,
+    application_status,
+    latest_ahjo_status,
+    talpa_status,
+    retry_failed_older_than_hours,
+    wanted_count,
+):
+    application_with_ahjo_case_id.status = application_status
+    application_with_ahjo_case_id.talpa_status = talpa_status
+    application_with_ahjo_case_id.save()
+
+    ahjo_status = AhjoStatus.objects.create(
+        application_id=application_with_ahjo_case_id.id,
+        status=latest_ahjo_status,
+    )
+
+    ahjo_status.created_at = (
+        timezone.now()
+        - timedelta(hours=retry_failed_older_than_hours)
+        - timedelta(minutes=1)
+    )
+    ahjo_status.save()
+
+    AhjoDecisionText.objects.create(
+        application=application_with_ahjo_case_id, decision_text="test"
+    )
+    parameters = AhjoQueryParameters.resolve(
+        AhjoRequestType.SEND_DECISION_PROPOSAL, retry_failed_older_than_hours
+    )
+    applications = Application.objects.get_for_ahjo_decision(**parameters)
+    assert applications.count() == wanted_count
+    assert applications.first() == application_with_ahjo_case_id
+
+
+@pytest.mark.parametrize(
+    "application_status, ahjo_status, case_id, count",
+    [
+        (
+            ApplicationStatus.DRAFT,
+            AhjoStatusEnum.CASE_OPENED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.HANDLING,
+            AhjoStatusEnum.CASE_OPENED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.RECEIVED,
+            AhjoStatusEnum.CASE_OPENED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.CANCELLED,
+            AhjoStatusEnum.CASE_OPENED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            AhjoStatusEnum.CASE_OPENED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.ACCEPTED,
+            AhjoStatusEnum.CASE_OPENED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.REJECTED,
+            AhjoStatusEnum.CASE_OPENED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.ACCEPTED,
+            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.REJECTED,
+            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.ACCEPTED,
+            AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.REJECTED,
+            AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.ACCEPTED,
+            AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.REJECTED,
+            AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.ACCEPTED,
+            AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.REJECTED,
+            AhjoStatusEnum.NEW_RECORDS_RECEIVED,
+            dummy_case_id,
+            0,
+        ),
+        (
+            ApplicationStatus.REJECTED,
+            AhjoStatusEnum.SIGNED_IN_AHJO,
+            dummy_case_id,
+            1,
+        ),
+        (
+            ApplicationStatus.ACCEPTED,
+            AhjoStatusEnum.SIGNED_IN_AHJO,
+            dummy_case_id,
+            1,
+        ),
+    ],
+)
+def test_get_applications_for_ahjo_details_request(
+    decided_application,
+    application_status,
+    ahjo_status,
+    case_id,
+    count,
+):
+    decided_application.status = application_status
+    decided_application.ahjo_case_id = case_id
+    decided_application.save()
+
+    decided_application.ahjo_status.create(status=ahjo_status)
+
+    parameters = AhjoQueryParameters.resolve(AhjoRequestType.GET_DECISION_DETAILS)
+    applications = Application.objects.get_by_statuses(**parameters)
+    assert applications.count() == count
+    if count:
+        assert applications.first() == decided_application
+
+
+@pytest.mark.parametrize(
+    "application_status, latest_ahjo_status, retry_failed_older_than_hours",
+    [
+        (ApplicationStatus.ACCEPTED, AhjoStatusEnum.DECISION_DETAILS_REQUEST_SENT, 1),
+        (ApplicationStatus.REJECTED, AhjoStatusEnum.DECISION_DETAILS_REQUEST_SENT, 1),
+    ],
+)
+def test_retry_get_applications_for_ahjo_details_request(
+    application_with_ahjo_case_id,
+    application_status,
+    latest_ahjo_status,
+    retry_failed_older_than_hours,
+):
+    now = timezone.now()
+    application_with_ahjo_case_id.status = application_status
+
+    application_with_ahjo_case_id.save()
+
+    ahjo_status = AhjoStatus.objects.create(
+        application_id=application_with_ahjo_case_id.id,
+        status=latest_ahjo_status,
+    )
+
+    ahjo_status.created_at = (
+        now - timedelta(hours=retry_failed_older_than_hours) - timedelta(minutes=1)
+    )
+    ahjo_status.save()
+
+    parameters = AhjoQueryParameters.resolve(
+        AhjoRequestType.GET_DECISION_DETAILS, retry_failed_older_than_hours
+    )
+    applications = Application.objects.get_by_statuses(**parameters)
+    assert applications.count() == 1
+    assert applications.first() == application_with_ahjo_case_id
 
 
 @pytest.mark.parametrize(

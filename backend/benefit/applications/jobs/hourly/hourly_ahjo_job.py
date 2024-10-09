@@ -16,7 +16,35 @@ class Job(HourlyJob):
     def execute(self):
         call_command("refresh_ahjo_token")
 
+        retry_threshold = 1
+
         if settings.ENABLE_AHJO_AUTOMATION:
             call_command(
+                "send_ahjo_requests",
+                request_type=AhjoRequestType.OPEN_CASE,
+                retry_failed_older_than_hours=retry_threshold,
+            )
+            call_command(
+                "send_ahjo_requests",
+                request_type=AhjoRequestType.SEND_DECISION_PROPOSAL,
+                retry_failed_older_than_hours=retry_threshold,
+            )
+            call_command(
+                "send_ahjo_requests",
+                request_type=AhjoRequestType.UPDATE_APPLICATION,
+                retry_failed_older_than_hours=retry_threshold,
+            )
+
+            call_command(
+                "send_ahjo_requests",
+                request_type=AhjoRequestType.DELETE_APPLICATION,
+                retry_failed_older_than_hours=retry_threshold,
+            )
+            call_command(
                 "send_ahjo_requests", request_type=AhjoRequestType.GET_DECISION_DETAILS
+            )
+            call_command(
+                "send_ahjo_requests",
+                request_type=AhjoRequestType.GET_DECISION_DETAILS,
+                retry_failed_older_than_hours=retry_threshold,
             )
