@@ -11,6 +11,7 @@ import {
   SUPPORTED_LANGUAGES,
 } from 'benefit/handler/constants';
 import {
+  APPLICATION_ORIGINS,
   EMPLOYEE_KEYS,
   MAX_MONTHLY_PAY,
   ORGANIZATION_TYPES,
@@ -39,8 +40,9 @@ import * as Yup from 'yup';
 import { getValidationSchema as getDeminimisValidationSchema } from '../formContent/companySection/deMinimisAid/utils/validation';
 
 export const getValidationSchema = (
+  t: TFunction,
   organizationType: string | undefined,
-  t: TFunction
+  applicationOrigin: APPLICATION_ORIGINS
 ): unknown =>
   Yup.object().shape({
     [APPLICATION_FIELD_KEYS.USE_ALTERNATIVE_ADDRESS]: Yup.boolean(),
@@ -288,10 +290,15 @@ export const getValidationSchema = (
     [APPLICATION_FIELD_KEYS.END_DATE]: Yup.string().required(
       t(VALIDATION_MESSAGE_KEYS.REQUIRED)
     ),
-    [APPLICATION_FIELD_KEYS.PAPER_APPLICATION_DATE]: Yup.string().test({
-      message: t(VALIDATION_MESSAGE_KEYS.DATE_MAX, {
-        max: convertToUIDateFormat(new Date()),
-      }),
-      test: (value = '') => value === '' || validateIsTodayOrPastDate(value),
-    }),
+    [APPLICATION_FIELD_KEYS.PAPER_APPLICATION_DATE]: Yup.string()
+      .test({
+        message: t(VALIDATION_MESSAGE_KEYS.DATE_MAX, {
+          max: convertToUIDateFormat(new Date()),
+        }),
+        test: (value = '') =>
+          applicationOrigin === APPLICATION_ORIGINS.APPLICANT ||
+          value === '' ||
+          validateIsTodayOrPastDate(value),
+      })
+      .nullable(),
   });

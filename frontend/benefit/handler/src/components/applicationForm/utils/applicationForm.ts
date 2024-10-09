@@ -54,9 +54,10 @@ const getApplication = (
           ...applicationData,
           start_date: convertToUIDateFormat(applicationData.start_date),
           end_date: convertToUIDateFormat(applicationData.end_date),
-          paper_application_date: convertToUIDateFormat(
-            applicationData.paper_application_date
-          ),
+          paper_application_date:
+            applicationData.application_origin === APPLICATION_ORIGINS.HANDLER
+              ? convertToUIDateFormat(applicationData.paper_application_date)
+              : null,
           calculation: applicationData.calculation
             ? {
                 ...applicationData.calculation,

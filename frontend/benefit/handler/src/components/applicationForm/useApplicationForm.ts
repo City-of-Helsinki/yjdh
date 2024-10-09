@@ -17,6 +17,7 @@ import {
   ApplicationFields,
 } from 'benefit/handler/types/application';
 import {
+  APPLICATION_ORIGINS,
   ORGANIZATION_TYPES,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
@@ -124,6 +125,14 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     error: applicationDataError,
   } = useApplicationQueryWithState(id, setApplication);
 
+  const getPaperApplicationDate = (): string | null => {
+    if (application?.applicationOrigin === APPLICATION_ORIGINS.APPLICANT)
+      return null;
+    return application?.paperApplicationDate
+      ? formatDate(parseDate(application.paperApplicationDate))
+      : formatDate(new Date());
+  };
+
   const formik = useFormik({
     initialValues: {
       ...application,
@@ -133,12 +142,13 @@ export const useApplicationForm = (): ExtendedComponentProps => {
       [APPLICATION_FIELDS.END_DATE]: application.endDate
         ? formatDate(parseDate(application.endDate))
         : undefined,
-      [APPLICATION_FIELDS.PAPER_APPLICATION_DATE]:
-        application.paperApplicationDate
-          ? formatDate(parseDate(application.paperApplicationDate))
-          : formatDate(new Date()),
+      [APPLICATION_FIELDS.PAPER_APPLICATION_DATE]: getPaperApplicationDate(),
     },
-    validationSchema: getValidationSchema(organizationType, t),
+    validationSchema: getValidationSchema(
+      t,
+      organizationType,
+      application?.applicationOrigin || APPLICATION_ORIGINS.HANDLER
+    ),
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,
