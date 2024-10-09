@@ -77,7 +77,8 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
         key: 'status',
       },
       {
-        accessor: (app) => formatFloatToCurrency(app.calculatedBenefitAmount),
+        accessor: (app) =>
+          formatFloatToCurrency(app.calculation?.calculatedBenefitAmount),
         key: 'benefitAmount',
         showIf: () => showMonetaryFields,
       },
