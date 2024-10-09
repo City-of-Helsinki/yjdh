@@ -105,7 +105,8 @@ const PageContent: React.FC = () => {
         key: 'status',
       },
       {
-        accessor: (app) => formatFloatToCurrency(app.calculatedBenefitAmount),
+        accessor: (app) =>
+          formatFloatToCurrency(app?.calculation?.calculatedBenefitAmount),
         key: 'benefitAmount',
         showIf: () => showMonetaryFields,
       },
