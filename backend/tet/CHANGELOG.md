@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.1](https://github.com/City-of-Helsinki/yjdh/compare/tet-backend-v1.3.0...tet-backend-v1.3.1) (2024-10-09)
+
+
+### Bug Fixes
+
+* **settings:** Make debug setting configurable ([61aa025](https://github.com/City-of-Helsinki/yjdh/commit/61aa025a4a61c809176743d4f7c440a0ecff808a))
+* **tet:** Upgrade dependencies, django to 4.2 ([2893b93](https://github.com/City-of-Helsinki/yjdh/commit/2893b93146360dfa5a60ef7b74512d050cb226da))
+
+
+### Dependencies
+
+* **tet:** Upgrade python dependencies ([#3379](https://github.com/City-of-Helsinki/yjdh/issues/3379)) ([7dcb01b](https://github.com/City-of-Helsinki/yjdh/commit/7dcb01bd51a36b368665c0a404144ab7e9230d5f))
+
 ## [1.3.0](https://github.com/City-of-Helsinki/yjdh/compare/tet-backend-v1.2.0...tet-backend-v1.3.0) (2024-02-20)
 
 
