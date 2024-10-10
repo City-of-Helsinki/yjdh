@@ -14,11 +14,13 @@ export const $ChangeRowValue = styled.dd<$ChangeRowValueProps>`
   svg {
     margin: 0 ${(props) => props.theme.spacing.xs3};
     width: 18px;
+    min-width: 18px;
     height: 18px;
+    min-height: 18px;
   }
 
   span {
-    white-space: pre;
+    white-space: normal;
   }
 `;
 
