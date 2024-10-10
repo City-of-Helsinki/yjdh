@@ -2,6 +2,7 @@ export type ChangeData = {
   old: string;
   new: string;
   field: string;
+  meta?: string;
 };
 
 export type ChangeListData = {

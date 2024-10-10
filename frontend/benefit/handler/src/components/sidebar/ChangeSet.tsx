@@ -18,6 +18,7 @@ import {
 import {
   formatOrTranslateValue,
   prepareChangeFieldName,
+  translateChangeFieldMeta,
   translateLabelFromPath,
 } from '../applicationForm/reviewChanges/utils';
 
@@ -85,6 +86,9 @@ const ChangeSet: React.FC<ChangeSetProps> = ({ data }: ChangeSetProps) => {
                   change.new,
                   prepareChangeFieldName(change.field)
                 )}
+                {change.meta
+                  ? ` (${translateChangeFieldMeta(t, change.meta)})`
+                  : null}
               </span>
             </$ChangeRowValue>
           </React.Fragment>
