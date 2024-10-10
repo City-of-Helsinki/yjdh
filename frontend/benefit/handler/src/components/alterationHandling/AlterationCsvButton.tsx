@@ -47,6 +47,7 @@ const AlterationCsvButton: React.FC<AlterationCsvProps> = ({
 
   return (
     <Button
+      data-testid="button-download-alteration-csv"
       theme={theme}
       variant={secondary ? 'secondary' : 'primary'}
       iconLeft={<IconDownload />}

@@ -33,6 +33,9 @@ const recoveryEndDate = Selector('#recovery-end-date');
 const accordionItemTitle = 'div[role="heading"]';
 const recoveryStartDateError = '#recovery-start-date-error';
 const recoveryEndDateError = '#recovery-end-date-error';
+const csvButton = Selector(
+  'button[data-testid="button-download-alteration-csv"]'
+);
 const handleButton = Selector('button').withText(
   fi.applications.alterations.handling.actions.handle
 );
@@ -110,9 +113,11 @@ test('Handler creates another alteration and tries to handle it with errors', as
       )
   );
 
-  // Attempt to submit the empty form, verify that validation fails
-  await t.click(handleButton);
+  // Verify that validation fails
   await expectHandleButtonDisabled(t);
+  await t.click(csvButton);
+  await t.click(handleButton);
+
   await t
     .expect(
       Selector('div').withText(
@@ -120,6 +125,7 @@ test('Handler creates another alteration and tries to handle it with errors', as
       ).exists
     )
     .ok();
+
   await t
     .expect(
       Selector('#recovery-justification-error').withText(
@@ -351,7 +357,9 @@ test('Handler handles the alteration from the last test properly', async (t: Tes
   await t.typeText('#recovery-justification', 'Selvä kuin pläkki');
 
   // Submit the handling form
+  await t.click(csvButton);
   await t.click(handleButton);
+
   const modal = Selector('div[role="dialog"]').withText(
     fi.applications.alterations.handling.confirmation.recoverable.title
   );
