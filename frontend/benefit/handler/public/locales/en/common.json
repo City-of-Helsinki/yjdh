@@ -997,7 +997,7 @@
           "calculationOutOfDate": "Laskelma ei ole ajan tasalla"
         },
         "actions": {
-          "close": "Peruuta",
+          "close": "Sulje",
           "handle": "Merkitse käsitellyksi",
           "returnToApplication": "Palaa hakemukseen",
           "returnToAlterationList": "Palaa muutosilmoituksiin"

@@ -74,7 +74,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
             {t(`${translationsBase}.saveAndContinue`)}
           </Button>
         ) : (
-          <Button onClick={onSaveAndClose} theme="coat" variant="primary">
+          <Button onClick={onSaveAndClose} theme="black" variant="secondary">
             {t(`${translationsBase}.close`)}
           </Button>
         )}
