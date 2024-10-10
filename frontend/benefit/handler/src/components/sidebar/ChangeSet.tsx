@@ -39,6 +39,10 @@ const ChangeSet: React.FC<ChangeSetProps> = ({ data }: ChangeSetProps) => {
   const { t } = useTranslation();
   const { date, user, changes, reason } = data;
 
+  const isAttachmentChange = changes.find(
+    (change) => change.field === 'attachments'
+  );
+
   return (
     <$ChangeSet>
       <$ChangeSetHeader>
@@ -63,16 +67,18 @@ const ChangeSet: React.FC<ChangeSetProps> = ({ data }: ChangeSetProps) => {
                 valueLengthsExceedRowLayout(t, change) ? 'column' : 'row'
               }
             >
-              <>
-                <span>
-                  {formatOrTranslateValue(
-                    t,
-                    change.old,
-                    prepareChangeFieldName(change.field)
-                  )}
-                </span>
-                <IconArrowRight />
-              </>
+              {!isAttachmentChange && (
+                <>
+                  <span>
+                    {formatOrTranslateValue(
+                      t,
+                      change.old,
+                      prepareChangeFieldName(change.field)
+                    )}
+                  </span>
+                  <IconArrowRight />
+                </>
+              )}
               <span>
                 {formatOrTranslateValue(
                   t,
@@ -85,7 +91,7 @@ const ChangeSet: React.FC<ChangeSetProps> = ({ data }: ChangeSetProps) => {
         ))}
       </dl>
       <$ChangeSetFooter>
-        {changes.length > 0 && (
+        {changes.length > 1 && !isAttachmentChange && (
           <p>
             {t('common:changes.header.amountOfChanges', {
               amount: changes.length,
@@ -96,7 +102,11 @@ const ChangeSet: React.FC<ChangeSetProps> = ({ data }: ChangeSetProps) => {
         <$ViewFieldBold>
           {t('common:applications.sections.fields.changeReason.placeholder')}
         </$ViewFieldBold>
-        <$ViewField>{formatOrTranslateValue(t, reason)}</$ViewField>
+        <$ViewField>
+          {isAttachmentChange
+            ? t('common:changes.fields.attachments.newAttachment')
+            : formatOrTranslateValue(t, reason)}
+        </$ViewField>
       </$ChangeSetFooter>
     </$ChangeSet>
   );

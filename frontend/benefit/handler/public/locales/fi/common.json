@@ -1800,7 +1800,8 @@
         "label": "Diaarinro"
       },
       "attachments": {
-        "label": "Liite"
+        "label": "Liite",
+        "newAttachment": "Uusi liite"
       },
       "handler": {
         "label": "Käsittelijä"
