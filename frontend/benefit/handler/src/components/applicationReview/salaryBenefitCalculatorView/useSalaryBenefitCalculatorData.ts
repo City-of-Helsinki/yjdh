@@ -83,10 +83,10 @@ const useSalaryBenefitCalculatorData = (
   const formik = useFormik<CalculationFormProps>({
     initialValues: {
       [CALCULATION_SALARY_KEYS.START_DATE]: convertToUIDateFormat(
-        application?.calculation?.startDate
+        application?.calculation?.startDate || application?.startDate
       ),
       [CALCULATION_SALARY_KEYS.END_DATE]: convertToUIDateFormat(
-        application?.calculation?.endDate
+        application?.calculation?.endDate || application?.endDate
       ),
       [CALCULATION_SALARY_KEYS.MONTHLY_PAY]:
         application?.calculation?.monthlyPay,
