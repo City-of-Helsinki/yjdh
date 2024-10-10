@@ -330,7 +330,8 @@ def get_application_change_history_made_by_handler(application: Application) -> 
                 {
                     "field": "attachments",
                     "old": "+",
-                    "new": f"{new_record.attachment_file} ({_(new_record.attachment_type)})",
+                    "new": new_record.attachment_file,
+                    "meta": new_record.attachment_type,
                 }
             ]
             attachment_diffs.append(change_set_base)

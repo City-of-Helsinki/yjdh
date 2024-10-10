@@ -1,5 +1,9 @@
 import { APPLICATION_FIELD_KEYS } from 'benefit/handler/constants';
-import { EMPLOYEE_KEYS, PAY_SUBSIDY_GRANTED } from 'benefit-shared/constants';
+import {
+  ATTACHMENT_TYPES,
+  EMPLOYEE_KEYS,
+  PAY_SUBSIDY_GRANTED,
+} from 'benefit-shared/constants';
 import { DeMinimisAid } from 'benefit-shared/types/application';
 import { formatIBAN } from 'benefit-shared/utils/common';
 import camelCase from 'lodash/camelCase';
@@ -117,3 +121,27 @@ export const getDiffPrefilter = (
 
 export const prepareChangeFieldName = (fieldName: string): string =>
   camelCase(fieldName.replace('employee', ''));
+
+export const translateChangeFieldMeta = (
+  t: TFunction,
+  meta: string
+): string => {
+  const attachmentTypes = [
+    ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT,
+    ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT,
+    ATTACHMENT_TYPES.EDUCATION_CONTRACT,
+    ATTACHMENT_TYPES.HELSINKI_BENEFIT_VOUCHER,
+    ATTACHMENT_TYPES.EMPLOYEE_CONSENT,
+    ATTACHMENT_TYPES.FULL_APPLICATION,
+    ATTACHMENT_TYPES.OTHER_ATTACHMENT,
+    // eslint-disable-next-line unicorn/no-array-callback-reference
+  ].map(camelCase);
+
+  // eslint-disable-next-line security/detect-non-literal-regexp
+  const regexp = new RegExp(attachmentTypes.join('|'), 'g');
+  const key = camelCase(meta);
+  return key.replace(
+    regexp,
+    t(`common:applications.sections.attachments.types.${key}.title`)
+  );
+};
