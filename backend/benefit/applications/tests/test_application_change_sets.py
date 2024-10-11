@@ -91,9 +91,7 @@ update_payloads = [
 ]
 
 
-def test_application_history_change_sets_for_handler(
-    request, handler_api_client, application
-):
+def test_application_history_change_sets(request, handler_api_client, application):
     # Setup application to handling status
     with freeze_time("2021-01-01") as frozen_datetime:
         add_attachments_to_application(request, application)
@@ -143,6 +141,9 @@ def test_application_history_change_sets_for_handler(
 
         # Add a mock row which gets inserted when application status changes to "handling"
         update_payloads.append({"change_reason": None, "handler": "Unknown user"})
+        update_payloads.append(
+            {"change_reason": None, "status": ApplicationStatus.HANDLING}
+        )
 
         assert len(changes) == len(update_payloads)
 

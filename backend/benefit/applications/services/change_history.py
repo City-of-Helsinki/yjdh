@@ -10,7 +10,6 @@ from users.models import User
 DISABLE_DE_MINIMIS_AIDS = True
 EXCLUDED_APPLICATION_FIELDS = (
     "application_step",
-    "status",
     "pay_subsidy_percent",
 )
 
@@ -194,6 +193,6 @@ def get_application_change_history(application: Application) -> list:
                 }
             ]
             attachment_diffs.append(change_set_base)
-    change_sets += attachment_diffs
-
+    change_sets = change_sets + attachment_diffs
+    change_sets.sort(key=lambda x: x["date"], reverse=True)
     return change_sets

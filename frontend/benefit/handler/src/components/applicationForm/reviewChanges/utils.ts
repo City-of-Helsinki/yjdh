@@ -1,5 +1,6 @@
 import { APPLICATION_FIELD_KEYS } from 'benefit/handler/constants';
 import {
+  APPLICATION_STATUSES,
   ATTACHMENT_TYPES,
   EMPLOYEE_KEYS,
   PAY_SUBSIDY_GRANTED,
@@ -61,6 +62,20 @@ export const formatOrTranslateValue = (
         )}`
       );
     }
+
+    if (
+      [
+        APPLICATION_STATUSES.HANDLING,
+        APPLICATION_STATUSES.RECEIVED,
+        APPLICATION_STATUSES.INFO_REQUIRED,
+        APPLICATION_STATUSES.ACCEPTED,
+        APPLICATION_STATUSES.REJECTED,
+        APPLICATION_STATUSES.CANCELLED,
+      ].includes(value as APPLICATION_STATUSES)
+    ) {
+      return t(`common:applications.list.columns.applicationStatuses.${value}`);
+    }
+
     return value;
   }
 

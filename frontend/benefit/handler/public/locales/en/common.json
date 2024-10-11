@@ -1835,6 +1835,9 @@
       },
       "companyForm": {
         "label": "Yritysmuoto"
+      },
+      "status": {
+        "label": "Tila"
       }
     }
   }
