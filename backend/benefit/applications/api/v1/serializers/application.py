@@ -58,10 +58,7 @@ from applications.models import (
     ArchivalApplication,
     Employee,
 )
-from applications.services.change_history import (
-    get_application_change_history_made_by_applicant,
-    get_application_change_history_made_by_handler,
-)
+from applications.services.change_history import get_application_change_history
 from calculator.api.v1.serializers import (
     CalculationSearchSerializer,
     CalculationSerializer,
@@ -1651,10 +1648,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         return self.get_latest_ahjo_error(obj)
 
     def get_changes(self, obj):
-        return {
-            "handler": get_application_change_history_made_by_handler(obj),
-            "applicant": get_application_change_history_made_by_applicant(obj),
-        }
+        return get_application_change_history(obj)
 
     def get_company_for_new_application(self, _):
         """
