@@ -1818,6 +1818,9 @@
       },
       "handledByAhjoAutomation": {
         "label": "Käsitelty Ahjo automaatiolla"
+      },
+      "status": {
+        "label": "Tila"
       }
     }
   }
