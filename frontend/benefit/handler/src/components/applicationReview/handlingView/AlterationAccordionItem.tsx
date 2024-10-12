@@ -232,7 +232,7 @@ AlterationAccordionItemProps): JSX.Element => {
                     'common:applications.decision.alterationList.item.recoveryAmount'
                   )}
                 </dt>
-                <dd>{formatFloatToCurrency(alteration.recoveryAmount)}</dd>
+                <dd>{formatFloatToCurrency(alteration.recoveryAmount, "EUR", "fi-FI", 0)}</dd>
               </$GridCell>
               <$GridCell $colSpan={3}>
                 <dt>
