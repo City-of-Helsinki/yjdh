@@ -41,6 +41,7 @@ from applications.enums import (
     ApplicationBatchStatus,
     ApplicationOrigin,
     ApplicationStatus,
+    ApplicationTalpaStatus,
     AttachmentRequirement,
     AttachmentType,
     BenefitType,
@@ -1904,6 +1905,7 @@ class HandlerApplicationListSerializer(serializers.Serializer):
             "ahjo_case_id",
             "batch",
             "ahjo_error",
+            "talpa_status",
         ]
 
         read_only_fields = [
@@ -1927,6 +1929,7 @@ class HandlerApplicationListSerializer(serializers.Serializer):
             "ahjo_case_id",
             "batch",
             "ahjo_error",
+            "talpa_status",
         ]
 
     archived = serializers.BooleanField()
@@ -1971,10 +1974,13 @@ class HandlerApplicationListSerializer(serializers.Serializer):
         ),
     )
 
-    batch = serializers.SerializerMethodField("get_batch_status")
+    batch = serializers.SerializerMethodField("get_batch_info")
 
-    def get_batch_status(self, obj):
-        return {"status": getattr(obj.batch, "status", None)}
+    def get_batch_info(self, obj):
+        return {
+            "status": getattr(obj.batch, "status", None),
+            "decision_date": getattr(obj.batch, "decision_date", None),
+        }
 
     ahjo_case_id = serializers.CharField()
     application_number = serializers.IntegerField()
@@ -1982,7 +1988,12 @@ class HandlerApplicationListSerializer(serializers.Serializer):
     status = serializers.ChoiceField(
         choices=ApplicationStatus.choices,
         validators=[ApplicantApplicationStatusValidator()],
-        help_text="Status of the application, visible to the applicant",
+        help_text="Status of the application",
+    )
+
+    talpa_status = serializers.ChoiceField(
+        choices=ApplicationTalpaStatus.choices,
+        help_text="Talpa status of the application",
     )
 
     application_origin = serializers.CharField()

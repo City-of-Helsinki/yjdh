@@ -5,7 +5,10 @@ import {
 } from 'benefit/handler/types/applicationList';
 import { getTagStyleForStatus } from 'benefit/handler/utils/applications';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
-import { ApplicationListItemData } from 'benefit-shared/types/application';
+import {
+  AhjoError,
+  ApplicationListItemData,
+} from 'benefit-shared/types/application';
 import { IconSpeechbubbleText, Table, Tag, Tooltip } from 'hds-react';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
@@ -34,6 +37,7 @@ export interface ApplicationListProps {
   status: APPLICATION_STATUSES[];
   list?: ApplicationListItemData[];
   isLoading: boolean;
+  inPayment?: boolean;
 }
 
 const buildApplicationUrl = (
@@ -61,6 +65,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   status,
   list = [],
   isLoading = true,
+  inPayment = false,
 }) => {
   const { t, translationsBase, getHeader } = useApplicationList();
   const theme = useTheme();
@@ -81,6 +86,59 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         status.includes(APPLICATION_STATUSES.REJECTED) && !isAllStatuses,
     }),
     [isAllStatuses, status]
+  );
+
+  const renderTableActions = React.useCallback(
+    (
+      id: string,
+      applicationStatus: APPLICATION_STATUSES,
+      unreadMessagesCount: number,
+      ahjoError: AhjoError
+    ): JSX.Element => (
+      <$TableActions>
+        {Number(unreadMessagesCount) > 0 ? (
+          <$ActionMessages>
+            <$Link href={buildApplicationUrl(id, applicationStatus, true)}>
+              <IconSpeechbubbleText color={theme.colors.coatOfArms} />
+              <$UnreadMessagesCount>
+                {Number(unreadMessagesCount)}
+              </$UnreadMessagesCount>
+            </$Link>
+          </$ActionMessages>
+        ) : null}
+        {ahjoError?.errorFromAhjo && (
+          <$ActionErrors
+            $errorText={t(
+              'common:applications.list.errors.ahjoError.buttonText'
+            )}
+          >
+            <Tooltip
+              placement="top"
+              boxShadow
+              className="custom-tooltip-error"
+              tooltipLabel={t(
+                'common:applications.list.errors.ahjoError.tooltipLabel'
+              )}
+              buttonLabel={t(
+                'common:applications.list.errors.ahjoError.buttonLabel'
+              )}
+            >
+              <div>
+                <strong>
+                  Ahjo, {convertToUIDateAndTimeFormat(ahjoError?.modifiedAt)}
+                </strong>
+              </div>
+              <ul>
+                {ahjoError?.errorFromAhjo?.map(({ message }) => (
+                  <li>{message}</li>
+                ))}
+              </ul>
+            </Tooltip>
+          </$ActionErrors>
+        )}
+      </$TableActions>
+    ),
+    [t, theme.colors.coatOfArms]
   );
 
   const columns = React.useMemo(() => {
@@ -133,7 +191,6 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         isSortable: true,
       });
     }
-
     if (
       (!status.includes(APPLICATION_STATUSES.DRAFT) &&
         !status.includes(APPLICATION_STATUSES.ACCEPTED) &&
@@ -148,7 +205,10 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       });
     }
 
-    if (isVisibleOnlyForStatus.accepted || isVisibleOnlyForStatus.rejected) {
+    if (
+      (!inPayment && isVisibleOnlyForStatus.accepted) ||
+      isVisibleOnlyForStatus.rejected
+    ) {
       cols.push({
         headerName: getHeader('handledAt'),
         key: 'handledAt',
@@ -167,34 +227,56 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     }
 
     if (
-      isVisibleOnlyForStatus.accepted ||
-      isVisibleOnlyForStatus.rejected ||
-      isVisibleOnlyForStatus.infoRequired ||
-      isAllStatuses
+      !inPayment &&
+      (isVisibleOnlyForStatus.accepted ||
+        isVisibleOnlyForStatus.rejected ||
+        isVisibleOnlyForStatus.infoRequired ||
+        isVisibleOnlyForStatus.handling ||
+        isAllStatuses)
     ) {
-      cols.push({
-        transform: ({
-          status: applicationStatus,
-          additionalInformationNeededBy,
-        }: ApplicationListTableTransforms) => (
-          <$TagWrapper $colors={getTagStyleForStatus(applicationStatus)}>
-            <Tag>
-              {t(
-                `common:applications.list.columns.applicationStatuses.${String(
-                  applicationStatus
-                )}`
-              )}
-              {applicationStatus === APPLICATION_STATUSES.INFO_REQUIRED &&
-                dateForAdditionalInformationNeededBy(
-                  additionalInformationNeededBy
+      cols.push(
+        {
+          transform: ({
+            status: applicationStatus,
+            additionalInformationNeededBy,
+          }: ApplicationListTableTransforms) => (
+            <$TagWrapper $colors={getTagStyleForStatus(applicationStatus)}>
+              <Tag>
+                {t(
+                  `common:applications.list.columns.applicationStatuses.${String(
+                    applicationStatus
+                  )}`
                 )}
-            </Tag>
-          </$TagWrapper>
-        ),
-        headerName: getHeader('applicationStatus'),
-        key: 'status',
-        isSortable: true,
-      });
+                {applicationStatus === APPLICATION_STATUSES.INFO_REQUIRED &&
+                  dateForAdditionalInformationNeededBy(
+                    additionalInformationNeededBy
+                  )}
+              </Tag>
+            </$TagWrapper>
+          ),
+          headerName: getHeader('applicationStatus'),
+          key: 'status',
+          isSortable: true,
+        },
+
+        {
+          transform: ({
+            id,
+            status: applicationStatus,
+            unreadMessagesCount,
+            ahjoError,
+          }: ApplicationListTableTransforms) =>
+            renderTableActions(
+              id,
+              applicationStatus,
+              unreadMessagesCount,
+              ahjoError
+            ),
+          headerName: getHeader('unreadMessagesCount'),
+          key: 'unreadMessagesCount',
+          isSortable: false,
+        }
+      );
     }
 
     if (isVisibleOnlyForStatus.received) {
@@ -216,63 +298,45 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       });
     }
 
-    cols.push({
-      transform: ({
-        unreadMessagesCount,
-        id,
-        status: applicationStatus,
-        ahjoError,
-      }: ApplicationListTableTransforms) => (
-        <$TableActions>
-          {Number(unreadMessagesCount) > 0 ? (
-            <$ActionMessages>
-              <$Link href={buildApplicationUrl(id, applicationStatus, true)}>
-                <IconSpeechbubbleText color={theme.colors.coatOfArms} />
-                <$UnreadMessagesCount>
-                  {Number(unreadMessagesCount)}
-                </$UnreadMessagesCount>
-              </$Link>
-            </$ActionMessages>
-          ) : null}
-          {ahjoError?.errorFromAhjo && (
-            <$ActionErrors
-              $errorText={t(
-                'common:applications.list.errors.ahjoError.buttonText'
-              )}
-            >
-              <Tooltip
-                placement="top"
-                boxShadow
-                className="custom-tooltip-error"
-                tooltipLabel={t(
-                  'common:applications.list.errors.ahjoError.tooltipLabel'
-                )}
-                buttonLabel={t(
-                  'common:applications.list.errors.ahjoError.buttonLabel'
-                )}
-              >
-                <div>
-                  <strong>
-                    Ahjo, {convertToUIDateAndTimeFormat(ahjoError?.modifiedAt)}
-                  </strong>
-                </div>
-                <ul>
-                  {ahjoError?.errorFromAhjo?.map(({ message }) => (
-                    <li>{message}</li>
-                  ))}
-                </ul>
-              </Tooltip>
-            </$ActionErrors>
-          )}
-        </$TableActions>
-      ),
-      headerName: getHeader('unreadMessagesCount'),
-      key: 'unreadMessagesCount',
-      isSortable: false,
-    });
+    if (inPayment) {
+      cols.push(
+        {
+          headerName: getHeader('decisionDate'),
+          key: 'decisionDate',
+          isSortable: true,
+        },
+        {
+          headerName: getHeader('talpaStatus'),
+          key: 'talpaStatus',
+          isSortable: true,
+          transform: ({ talpaStatus }) =>
+            t(`applications.list.columns.talpaStatuses.${String(talpaStatus)}`),
+        },
+        {
+          headerName: getHeader('calculatedBenefitAmount'),
+          key: 'calculatedBenefitAmount',
+          transform: ({
+            calculatedBenefitAmount,
+          }: ApplicationListTableTransforms) => calculatedBenefitAmount,
+        }
+      );
+    }
 
     return cols.filter(Boolean);
-  }, [t, getHeader, status, theme, isAllStatuses, isVisibleOnlyForStatus]);
+  }, [
+    getHeader,
+    isVisibleOnlyForStatus.handling,
+    isVisibleOnlyForStatus.infoRequired,
+    isVisibleOnlyForStatus.accepted,
+    isVisibleOnlyForStatus.rejected,
+    isVisibleOnlyForStatus.draft,
+    isVisibleOnlyForStatus.received,
+    status,
+    isAllStatuses,
+    inPayment,
+    t,
+    renderTableActions,
+  ]);
 
   if (isLoading) {
     return (
@@ -293,7 +357,6 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   }
 
   const statusAsString = isAllStatuses ? 'all' : status.join(',');
-
   return (
     <$ApplicationList data-testid={`application-list-${statusAsString}`}>
       {list.length > 0 ? (

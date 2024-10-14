@@ -589,6 +589,8 @@ export type ApplicationListItemData = {
   handledByAhjoAutomation?: boolean;
   alterations?: ApplicationAlterationData[];
   ahjoError?: AhjoError;
+  decisionDate?: string;
+  calculatedBenefitAmount?: string;
 };
 
 export type TextProp = 'textFi' | 'textEn' | 'textSv';

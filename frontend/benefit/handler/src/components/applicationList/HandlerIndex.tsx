@@ -116,6 +116,11 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
   const updateTabToUrl = (tabNumber: APPLICATION_LIST_TABS): void =>
     window.history.pushState({ tab }, '', `/?tab=${tabNumber}`);
 
+  const isInPayment = (application: ApplicationListItemData): boolean =>
+    [APPLICATION_STATUSES.ACCEPTED].includes(application.status) &&
+    !isString(application.batch) &&
+    [BATCH_STATUSES.DECIDED_ACCEPTED].includes(application?.batch?.status);
+
   return (
     <FrontPageProvider>
       <$BackgroundWrapper backgroundColor={layoutBackgroundColor}>
@@ -241,14 +246,8 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
             <Tabs.TabPanel>
               <ApplicationList
                 isLoading={isLoading}
-                list={list.filter(
-                  (app) =>
-                    [APPLICATION_STATUSES.ACCEPTED].includes(app.status) &&
-                    !isString(app.batch) &&
-                    [BATCH_STATUSES.DECIDED_ACCEPTED].includes(
-                      app?.batch?.status
-                    )
-                )}
+                list={list.filter((app) => isInPayment(app))}
+                inPayment={!!list.filter((app) => isInPayment(app))}
                 heading={t(`${translationBase}.inPayment`)}
                 status={[APPLICATION_STATUSES.ACCEPTED]}
               />
