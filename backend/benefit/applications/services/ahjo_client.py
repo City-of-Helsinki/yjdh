@@ -119,6 +119,7 @@ class AhjoDecisionDetailsRequest(AhjoRequest):
     """Request to get a decision detail from Ahjo."""
 
     request_type = AhjoRequestType.GET_DECISION_DETAILS
+    result_status = AhjoStatusEnum.DECISION_DETAILS_REQUEST_SENT
     request_method = "GET"
 
     def api_url(self) -> str:
@@ -169,6 +170,10 @@ class AhjoApiClient:
     @property
     def ahjo_token(self) -> AhjoToken:
         return self._ahjo_token
+
+    @property
+    def request(self) -> AhjoRequest:
+        return self._request
 
     @ahjo_token.setter
     def ahjo_token(self, token: AhjoToken) -> None:

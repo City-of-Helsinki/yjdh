@@ -1,19 +1,21 @@
-from datetime import datetime, timezone
+from datetime import timedelta
 from unittest.mock import patch
 
 import pytest
 import requests
 import requests_mock
 from django.urls import reverse
+from django.utils import timezone
 
 from applications.enums import AhjoRequestType, AhjoStatus as AhjoStatusEnum
-from applications.models import AhjoStatus
+from applications.models import AhjoSetting, AhjoStatus
 from applications.services.ahjo_authentication import AhjoToken, InvalidTokenException
 from applications.services.ahjo_client import (
     AhjoAddRecordsRequest,
     AhjoApiClient,
     AhjoApiClientException,
     AhjoDecisionDetailsRequest,
+    AhjoDecisionMakerRequest,
     AhjoDecisionProposalRequest,
     AhjoDeleteCaseRequest,
     AhjoOpenCaseRequest,
@@ -26,67 +28,124 @@ API_CASES_BASE = "/cases"
 
 
 @pytest.fixture
-def dummy_token():
-    return AhjoToken(
-        access_token="test",
-        expires_in=3600,
-        refresh_token="test",
-        created_at=datetime.now(timezone.utc),
-    )
-
-
-@pytest.fixture
 def ahjo_open_case_request(application_with_ahjo_case_id):
     return AhjoOpenCaseRequest(application_with_ahjo_case_id)
 
 
 @pytest.mark.parametrize(
-    "ahjo_request_class, request_type, request_method, callback_route",
+    "ahjo_request_class, request_type, request_method, url_part",
     [
-        (AhjoOpenCaseRequest, AhjoRequestType.OPEN_CASE, "POST", "ahjo_callback_url"),
+        (
+            AhjoSubscribeDecisionRequest,
+            AhjoRequestType.SUBSCRIBE_TO_DECISIONS,
+            "POST",
+            "/decisions/subscribe",
+        ),
+        (
+            AhjoDecisionMakerRequest,
+            AhjoRequestType.GET_DECISION_MAKER,
+            "GET",
+            "/agents/decisionmakers?start=",
+        ),
+    ],
+)
+def test_ahjo_requests_without_application(
+    ahjo_request_class,
+    request_type,
+    request_method,
+    url_part,
+    settings,
+    non_expired_token,
+):
+    AhjoSetting.objects.create(name="ahjo_org_identifier", data={"id": "1234567-8"})
+    settings.API_BASE_URL = "http://test.com"
+    request_instance = ahjo_request_class()
+
+    assert request_instance.request_type == request_type
+    assert request_instance.request_method == request_method
+    assert request_instance.url_base == f"{settings.AHJO_REST_API_URL}"
+    assert request_instance.lang == "fi"
+    assert str(request_instance) == f"Request of type {request_type}"
+
+    assert f"{settings.AHJO_REST_API_URL}{url_part}" in request_instance.api_url()
+
+    client = AhjoApiClient(non_expired_token, request_instance)
+
+    with requests_mock.Mocker() as m:
+        m.register_uri(
+            request_instance.request_method,
+            request_instance.api_url(),
+            text="ahjoRequestGuid",
+        )
+        client.send_request_to_ahjo({"foo": "bar"})
+        assert m.called
+
+
+@pytest.mark.parametrize(
+    "ahjo_request_class, request_type, request_method, callback_route, ahjo_status_after_request",
+    [
+        (
+            AhjoOpenCaseRequest,
+            AhjoRequestType.OPEN_CASE,
+            "POST",
+            "ahjo_callback_url",
+            AhjoStatusEnum.REQUEST_TO_OPEN_CASE_SENT,
+        ),
         (
             AhjoDecisionProposalRequest,
             AhjoRequestType.SEND_DECISION_PROPOSAL,
             "POST",
             "ahjo_callback_url",
+            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
         ),
         (
             AhjoUpdateRecordsRequest,
             AhjoRequestType.UPDATE_APPLICATION,
             "PUT",
             "ahjo_callback_url",
+            AhjoStatusEnum.UPDATE_REQUEST_SENT,
         ),
         (
             AhjoDeleteCaseRequest,
             AhjoRequestType.DELETE_APPLICATION,
             "DELETE",
             "ahjo_callback_url",
+            AhjoStatusEnum.DELETE_REQUEST_SENT,
         ),
         (
             AhjoAddRecordsRequest,
             AhjoRequestType.ADD_RECORDS,
             "POST",
             "ahjo_callback_url",
+            AhjoStatusEnum.NEW_RECORDS_REQUEST_SENT,
         ),
         (
-            AhjoSubscribeDecisionRequest,
-            AhjoRequestType.SUBSCRIBE_TO_DECISIONS,
-            "POST",
+            AhjoDecisionDetailsRequest,
+            AhjoRequestType.GET_DECISION_DETAILS,
+            "GET",
             "",
+            AhjoStatusEnum.DECISION_DETAILS_REQUEST_SENT,
         ),
-        (AhjoDecisionDetailsRequest, AhjoRequestType.GET_DECISION_DETAILS, "GET", ""),
     ],
 )
-def test_ahjo_requests(
+def test_ahjo_application_requests(
     ahjo_request_class,
     application_with_ahjo_case_id,
     callback_route,
-    dummy_token,
+    non_expired_token,
     request_type,
     request_method,
     settings,
+    ahjo_status_after_request,
 ):
     application = application_with_ahjo_case_id
+    ahjo_status = AhjoStatus.objects.create(
+        application=application, status=AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO
+    )
+
+    ahjo_status.created_at = timezone.now() - timedelta(days=5)
+    ahjo_status.save()
+
     handler = application.calculation.handler
     handler.ad_username = "test"
     handler.save()
@@ -121,8 +180,6 @@ def test_ahjo_requests(
             request.api_url()
             == f"{url}?draftsmanid={draftsman_id}&reason={reason}&apireqlang={request.lang}"
         )
-    elif request.request_type == AhjoRequestType.SUBSCRIBE_TO_DECISIONS:
-        assert request.api_url() == f"{settings.AHJO_REST_API_URL}/decisions/subscribe"
 
     elif request.request_type == AhjoRequestType.GET_DECISION_DETAILS:
         assert (
@@ -130,10 +187,9 @@ def test_ahjo_requests(
             == f"{settings.AHJO_REST_API_URL}/decisions/{application.ahjo_case_id}"
         )
 
-    client = AhjoApiClient(dummy_token, request)
+    client = AhjoApiClient(non_expired_token, request)
 
     if request.request_type not in [
-        AhjoRequestType.SUBSCRIBE_TO_DECISIONS,
         AhjoRequestType.GET_DECISION_DETAILS,
     ]:
         url = reverse(
@@ -145,14 +201,14 @@ def test_ahjo_requests(
         )
 
         assert client.prepare_ahjo_headers() == {
-            "Authorization": f"Bearer {dummy_token.access_token}",
+            "Authorization": f"Bearer {non_expired_token.access_token}",
             "Accept": "application/hal+json",
             "X-CallbackURL": f"{settings.API_BASE_URL}{url}",
             "Content-Type": "application/json",
         }
     else:
         assert client.prepare_ahjo_headers() == {
-            "Authorization": f"Bearer {dummy_token.access_token}",
+            "Authorization": f"Bearer {non_expired_token.access_token}",
             "Content-Type": "application/json",
         }
 
@@ -162,6 +218,10 @@ def test_ahjo_requests(
         )
         client.send_request_to_ahjo({"foo": "bar"})
         assert m.called
+        application.refresh_from_db()
+        assert (
+            application.ahjo_status.latest().status == ahjo_status_after_request.value
+        )
 
 
 @pytest.mark.parametrize(
@@ -217,7 +277,7 @@ def test_requests_exceptions(
     application_with_ahjo_case_id,
     decided_application,
     ahjo_request_class,
-    dummy_token,
+    non_expired_token,
     request_type,
     request_method,
     previous_status,
@@ -246,7 +306,7 @@ def test_requests_exceptions(
 
     configured_request = ahjo_request_class(application)
 
-    client = AhjoApiClient(dummy_token, configured_request)
+    client = AhjoApiClient(non_expired_token, configured_request)
 
     with requests_mock.Mocker() as m:
         # an example of a real validation error response from ahjo

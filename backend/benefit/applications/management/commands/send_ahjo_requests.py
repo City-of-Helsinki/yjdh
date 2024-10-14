@@ -14,6 +14,7 @@ from applications.enums import (
     ApplicationStatus,
 )
 from applications.models import AhjoStatus, Application
+from applications.services.ahjo_application_service import AhjoApplicationsService
 from applications.services.ahjo_authentication import (
     AhjoToken,
     AhjoTokenExpiredException,
@@ -39,6 +40,7 @@ class Command(BaseCommand):
 {AhjoRequestType.OPEN_CASE}, {AhjoRequestType.SEND_DECISION_PROPOSAL}, \
 {AhjoRequestType.ADD_RECORDS}, {AhjoRequestType.UPDATE_APPLICATION}, \
 {AhjoRequestType.GET_DECISION_DETAILS}, {AhjoRequestType.DELETE_APPLICATION}"
+    is_retry = False
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -60,57 +62,13 @@ class Command(BaseCommand):
             help="Run the command without making actual changes",
         )
 
-    def get_applications_for_request(
-        self, request_type: AhjoRequestType
-    ) -> QuerySet[Application]:
-        if request_type == AhjoRequestType.OPEN_CASE:
-            applications = Application.objects.get_by_statuses(
-                [
-                    ApplicationStatus.HANDLING,
-                    ApplicationStatus.ACCEPTED,
-                    ApplicationStatus.REJECTED,
-                ],
-                [AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO],
-                True,
-            )
-        elif request_type == AhjoRequestType.SEND_DECISION_PROPOSAL:
-            applications = Application.objects.get_for_ahjo_decision()
-
-        elif request_type == AhjoRequestType.ADD_RECORDS:
-            applications = Application.objects.with_non_downloaded_attachments()
-
-        elif request_type == AhjoRequestType.UPDATE_APPLICATION:
-            applications = Application.objects.get_by_statuses(
-                [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
-                [AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED],
-                False,
-            )
-        elif request_type == AhjoRequestType.GET_DECISION_DETAILS:
-            applications = Application.objects.get_by_statuses(
-                [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
-                [AhjoStatusEnum.SIGNED_IN_AHJO],
-                False,
-            )
-        elif request_type == AhjoRequestType.DELETE_APPLICATION:
-            applications = Application.objects.get_by_statuses(
-                [
-                    ApplicationStatus.ACCEPTED,
-                    ApplicationStatus.CANCELLED,
-                    ApplicationStatus.REJECTED,
-                    ApplicationStatus.HANDLING,
-                    ApplicationStatus.DRAFT,
-                    ApplicationStatus.RECEIVED,
-                ],
-                AhjoStatusEnum.SCHEDULED_FOR_DELETION,
-                False,
-            )
-
-        # Only send applications that have automation enabled
-        applications_with_ahjo_automation = applications.filter(
-            handled_by_ahjo_automation=True
+        parser.add_argument(
+            "--retry-failed-older-than",
+            type=int,
+            default=0,
+            help="Retry sending requests for applications that have \
+not moved to the next status in the last x hours",
         )
-
-        return applications_with_ahjo_automation
 
     def handle(self, *args, **options):
         try:
@@ -125,8 +83,14 @@ class Command(BaseCommand):
         number_to_process = options["number"]
         dry_run = options["dry_run"]
         request_type = options["request_type"]
+        retry_failed_older_than_hours = options["retry_failed_older_than"]
 
-        applications = self.get_applications_for_request(request_type)
+        if retry_failed_older_than_hours > 0:
+            self.is_retry = True
+
+        applications = AhjoApplicationsService.get_applications_for_request(
+            request_type, retry_failed_older_than_hours
+        )
 
         if not applications:
             self.stdout.write(self._print_with_timestamp("No applications to process"))
@@ -135,8 +99,11 @@ class Command(BaseCommand):
         applications = applications[:number_to_process]
 
         if dry_run:
+            message_start = "retry" if self.is_retry else "send"
+
             self.stdout.write(
-                f"Would send {request_type} requests for {len(applications)} applications to Ahjo"
+                f"Would {message_start} sending {request_type} \
+requests for {len(applications)} applications to Ahjo"
             )
 
             for application in applications:
@@ -159,12 +126,15 @@ class Command(BaseCommand):
         successful_applications = []
         failed_applications = []
 
-        self.stdout.write(
-            self._print_with_timestamp(
-                f"Sending {ahjo_request_type} request to Ahjo \
-for {len(applications)} applications"
-            )
+        application_numbers = ", ".join(
+            str(app.application_number) for app in applications
         )
+        message_start = "Retrying" if self.is_retry else "Sending"
+
+        message = f"{message_start} {ahjo_request_type} request to Ahjo \
+for {len(applications)} applications: {application_numbers}"
+
+        self.stdout.write(self._print_with_timestamp(message))
 
         request_handler = self._get_request_handler(ahjo_request_type)
 

@@ -26,6 +26,7 @@ from applications.models import (
     AhjoSetting,
     AhjoStatus,
     Application,
+    ApplicationBatch,
     Attachment,
 )
 from applications.services.ahjo_authentication import AhjoConnector, AhjoToken
@@ -558,6 +559,12 @@ def send_decision_proposal_to_ahjo(
     ahjo_request = AhjoDecisionProposalRequest(application=application)
     ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
     decision = AhjoDecisionText.objects.get(application=application)
+
+    # if application does not have a batch for some reason, create one
+    if not application.batch:
+        batch = ApplicationBatch.objects.create(auto_generated_by_ahjo=True)
+        application.batch = batch
+        application.save()
 
     delete_existing_xml_attachments(application)
 
