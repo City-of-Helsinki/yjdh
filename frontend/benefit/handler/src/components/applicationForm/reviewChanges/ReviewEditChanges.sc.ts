@@ -28,8 +28,14 @@ export const $ChangeRowLabel = styled.dt`
   margin: 0;
 `;
 
-export const $ChangeSet = styled.div`
-  background: ${(props) => props.theme.colors.silverLight};
+type $ChangeSetProps = {
+  isChangeByStaff: boolean;
+};
+export const $ChangeSet = styled.div<$ChangeSetProps>`
+  background: ${(props) =>
+    props.isChangeByStaff
+      ? props.theme.colors.silverLight
+      : props.theme.colors.fogLight};
   padding: ${(props) => props.theme.spacing.s};
   font-size: 0.99em;
   margin-bottom: ${(props) => props.theme.spacing.xs};

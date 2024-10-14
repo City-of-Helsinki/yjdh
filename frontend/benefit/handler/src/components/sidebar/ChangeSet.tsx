@@ -45,7 +45,7 @@ const ChangeSet: React.FC<ChangeSetProps> = ({ data }: ChangeSetProps) => {
   );
 
   return (
-    <$ChangeSet>
+    <$ChangeSet isChangeByStaff={user.staff}>
       <$ChangeSetHeader>
         <span>{user.name}</span>
         <span>{convertToUIDateAndTimeFormat(date)}</span>
