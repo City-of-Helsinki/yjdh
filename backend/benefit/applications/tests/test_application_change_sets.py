@@ -5,10 +5,16 @@ import faker
 from freezegun import freeze_time
 from rest_framework.reverse import reverse
 
-from applications.api.v1.serializers.application import HandlerApplicationSerializer
-from applications.enums import ApplicationActions, ApplicationStatus
+from applications.api.v1.serializers.application import (
+    ApplicantApplicationSerializer,
+    HandlerApplicationSerializer,
+)
+from applications.enums import ApplicationActions, ApplicationStatus, AttachmentType
 from applications.tests.conftest import *  # noqa
-from applications.tests.test_applications_api import add_attachments_to_application
+from applications.tests.test_applications_api import (
+    _upload_pdf,
+    add_attachments_to_application,
+)
 from helsinkibenefit.tests.conftest import *  # noqa
 from terms.tests.conftest import *  # noqa
 
@@ -98,7 +104,18 @@ handler_edit_payloads = [
 
 applicant_edit_payloads = [
     {
-        "status": ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+        "change_reason": None,
+        "company_contact_person_first_name": "Tette",
+        "company_contact_person_last_name": "Tötterström",
+        "company_contact_person_phone_number": "+358501234567",
+        "company_contact_person_email": "yjdh@example.net",
+        "applicant_language": "en",
+        "co_operation_negotiations": False,
+        "co_operation_negotiations_description": "",
+    },
+    {
+        "change_reason": None,
+        "status": ApplicationStatus.HANDLING,
         "employee": {
             "first_name": "Aura",
             "last_name": "Muumaamustikka",
@@ -111,26 +128,6 @@ applicant_edit_payloads = [
             "collective_bargaining_agreement": "JES",
             "birthday": "2008-01-01",
         },
-        "company": {
-            "street_address": "Tiukupolku 1",
-            "postcode": "54321",
-            "city": "Mikämikämaa",
-            "bank_account_number": "FI2112345600000785",
-        },
-        "official_company_street_address": "Tiukupolku 1",
-        "official_company_city": "Mikämikämaa",
-        "official_company_postcode": "54321",
-        "use_alternative_address": False,
-        "company_bank_account_number": "FI2112345600000785",
-        "company_contact_person_first_name": "Tette",
-        "company_contact_person_last_name": "Tötterström",
-        "company_contact_person_phone_number": "+358501234567",
-        "company_contact_person_email": "yjdh@example.net",
-        "applicant_language": "en",
-        "co_operation_negotiations": False,
-        "co_operation_negotiations_description": None,
-        "additional_pay_subsidy_percent": None,
-        "apprenticeship_program": None,
         "start_date": "2023-12-01",
         "end_date": "2024-01-02",
     },
@@ -148,21 +145,13 @@ def compare_fields(edit_payloads, changes):
         changed_fields = {
             change["field"]: change["new"] for change in changes[i]["changes"]
         }
-        print(changes, edit_payloads)
 
         for key in changed_fields:
-            print(
-                "\n\ninput",
-                str(expected_fields[key]),
-                "\nresponse:",
-                str(changed_fields[key]),
-            )
             assert (
                 str(expected_fields[key]) == str(changed_fields[key])
                 if isinstance(expected_fields[key], str)
                 else float(expected_fields[key]) == float(changed_fields[key])
             )
-    assert len(changes) == len(edit_payloads)
 
 
 def check_handler_changes(handler_edit_payloads, changes):
@@ -176,24 +165,27 @@ def check_handler_changes(handler_edit_payloads, changes):
     )
 
     compare_fields(handler_edit_payloads, changes)
+    assert len(changes) == len(handler_edit_payloads)
 
 
-def check_applicant_changes(applicant_edit_payloads, changes):
+def check_applicant_changes(applicant_edit_payloads, changes, application):
     # Reverse the payloads to match the order of the changes
     applicant_edit_payloads.reverse()
-
-    # Add a mock row which gets inserted when application status changes to "handling"
-    applicant_edit_payloads.append({"change_reason": None, "handler": "Unknown user"})
     applicant_edit_payloads.append(
-        {"change_reason": None, "status": ApplicationStatus.HANDLING}
+        {
+            "change_reason": None,
+            "attachments": application.attachments.last().attachment_file.name,
+        }
     )
-
-    assert len(changes) == len(applicant_edit_payloads)
 
     compare_fields(applicant_edit_payloads, changes)
 
+    assert len(changes) == len(applicant_edit_payloads)
 
-def test_application_history_change_sets(request, handler_api_client, application):
+
+def test_application_history_change_sets(
+    request, handler_api_client, api_client, application
+):
     payload = HandlerApplicationSerializer(application).data
     payload["status"] = ApplicationStatus.RECEIVED
     with mock.patch(
@@ -216,8 +208,8 @@ def test_application_history_change_sets(request, handler_api_client, applicatio
     )
     assert response.status_code == 200
 
-    # Mock the actual handler edits
-    def update_application(application_payload, frozen_datetime):
+    # Set up the handler edits
+    def update_handler_application(application_payload, frozen_datetime):
         frozen_datetime.tick(delta=timedelta(seconds=1))
         application.refresh_from_db()
         payload = HandlerApplicationSerializer(application).data
@@ -229,10 +221,49 @@ def test_application_history_change_sets(request, handler_api_client, applicatio
         assert response.status_code == 200
         return response
 
+    # Set up the applicant edits
+    def update_applicant_application(application_payload, frozen_datetime):
+        frozen_datetime.tick(delta=timedelta(seconds=1))
+        application.refresh_from_db()
+        payload = ApplicantApplicationSerializer(application).data
+        response = api_client.put(
+            get_applicant_detail_url(application),
+            {**payload, **application_payload},
+        )
+        assert response.status_code == 200
+        return response
+
     with freeze_time("2024-01-01") as frozen_datetime:
         for application_payload in handler_edit_payloads:
-            response = update_application(application_payload, frozen_datetime)
+            response = update_handler_application(application_payload, frozen_datetime)
 
     changes = response.data["changes"]
     check_handler_changes(handler_edit_payloads, changes)
-    # check_applicant_changes(applicant_edit_payloads, changes)
+    with freeze_time("2024-01-02") as frozen_datetime:
+        with mock.patch(
+            "terms.models.ApplicantTermsApproval.terms_approval_needed",
+            return_value=False,
+        ):
+            # add the required attachments except consent
+            response = _upload_pdf(
+                request,
+                api_client,
+                application,
+                attachment_type=AttachmentType.HELSINKI_BENEFIT_VOUCHER,
+            )
+            assert response.status_code == 201
+
+            for application_payload in applicant_edit_payloads:
+                response = update_applicant_application(
+                    application_payload, frozen_datetime
+                )
+
+    changes = handler_api_client.get(get_handler_detail_url(application)).data[
+        "changes"
+    ]
+
+    # Just split from the head of changes - we don't want to check handler's changes again
+    # Plus one for the attachment change
+    applicant_changes = changes[0 : len(applicant_edit_payloads) + 1]
+
+    check_applicant_changes(applicant_edit_payloads, applicant_changes, application)
