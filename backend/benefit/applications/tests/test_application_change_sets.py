@@ -17,6 +17,10 @@ def get_handler_detail_url(application):
     return reverse("v1:handler-application-detail", kwargs={"pk": application.id})
 
 
+def get_applicant_detail_url(application):
+    return reverse("v1:applicant-application-detail", kwargs={"pk": application.id})
+
+
 def _flatten_dict(d, parent_key="", sep="."):
     items = []
     for k, v in d.items():
@@ -28,7 +32,7 @@ def _flatten_dict(d, parent_key="", sep="."):
     return dict(items)
 
 
-update_payloads = [
+handler_edit_payloads = [
     {
         "change_reason": "Change employee first & last name, company contact's phone number",
         "company_contact_person_phone_number": "+35850000000",
@@ -88,23 +92,119 @@ update_payloads = [
         "start_date": "2024-01-01",
         "end_date": "2024-02-02",
     },
+    {"change_reason": None, "status": ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED},
 ]
 
 
-def test_application_history_change_sets(request, handler_api_client, application):
-    # Setup application to handling status
-    with freeze_time("2021-01-01") as frozen_datetime:
-        add_attachments_to_application(request, application)
+applicant_edit_payloads = [
+    {
+        "status": ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+        "employee": {
+            "first_name": "Aura",
+            "last_name": "Muumaamustikka",
+            "employee_language": "en",
+            "job_title": "Metsän henki",
+            "monthly_pay": 1234,
+            "vacation_money": 321,
+            "other_expenses": 313,
+            "working_hours": 33.0,
+            "collective_bargaining_agreement": "JES",
+            "birthday": "2008-01-01",
+        },
+        "company": {
+            "street_address": "Tiukupolku 1",
+            "postcode": "54321",
+            "city": "Mikämikämaa",
+            "bank_account_number": "FI2112345600000785",
+        },
+        "official_company_street_address": "Tiukupolku 1",
+        "official_company_city": "Mikämikämaa",
+        "official_company_postcode": "54321",
+        "use_alternative_address": False,
+        "company_bank_account_number": "FI2112345600000785",
+        "company_contact_person_first_name": "Tette",
+        "company_contact_person_last_name": "Tötterström",
+        "company_contact_person_phone_number": "+358501234567",
+        "company_contact_person_email": "yjdh@example.net",
+        "applicant_language": "en",
+        "co_operation_negotiations": False,
+        "co_operation_negotiations_description": None,
+        "additional_pay_subsidy_percent": None,
+        "apprenticeship_program": None,
+        "start_date": "2023-12-01",
+        "end_date": "2024-01-02",
+    },
+]
 
+
+def compare_fields(edit_payloads, changes):
+    # Assert that each field change exist in change sets
+    for i, expected_change in enumerate(edit_payloads):
+        assert changes[i]["reason"] == expected_change["change_reason"]
+        expected_change.pop("change_reason")
+
+        expected_fields = dict(_flatten_dict(expected_change))
+
+        changed_fields = {
+            change["field"]: change["new"] for change in changes[i]["changes"]
+        }
+        print(changes, edit_payloads)
+
+        for key in changed_fields:
+            print(
+                "\n\ninput",
+                str(expected_fields[key]),
+                "\nresponse:",
+                str(changed_fields[key]),
+            )
+            assert (
+                str(expected_fields[key]) == str(changed_fields[key])
+                if isinstance(expected_fields[key], str)
+                else float(expected_fields[key]) == float(changed_fields[key])
+            )
+    assert len(changes) == len(edit_payloads)
+
+
+def check_handler_changes(handler_edit_payloads, changes):
+    # Reverse the payloads to match the order of the changes
+    handler_edit_payloads.reverse()
+
+    # Add a mock row which gets inserted when application status changes to "handling"
+    handler_edit_payloads.append({"change_reason": None, "handler": "Unknown user"})
+    handler_edit_payloads.append(
+        {"change_reason": None, "status": ApplicationStatus.HANDLING}
+    )
+
+    compare_fields(handler_edit_payloads, changes)
+
+
+def check_applicant_changes(applicant_edit_payloads, changes):
+    # Reverse the payloads to match the order of the changes
+    applicant_edit_payloads.reverse()
+
+    # Add a mock row which gets inserted when application status changes to "handling"
+    applicant_edit_payloads.append({"change_reason": None, "handler": "Unknown user"})
+    applicant_edit_payloads.append(
+        {"change_reason": None, "status": ApplicationStatus.HANDLING}
+    )
+
+    assert len(changes) == len(applicant_edit_payloads)
+
+    compare_fields(applicant_edit_payloads, changes)
+
+
+def test_application_history_change_sets(request, handler_api_client, application):
     payload = HandlerApplicationSerializer(application).data
     payload["status"] = ApplicationStatus.RECEIVED
     with mock.patch(
         "terms.models.ApplicantTermsApproval.terms_approval_needed", return_value=False
     ):
+        add_attachments_to_application(request, application)
         response = handler_api_client.put(
             get_handler_detail_url(application),
             payload,
         )
+
     assert response.status_code == 200
 
     application.refresh_from_db()
@@ -117,50 +217,22 @@ def test_application_history_change_sets(request, handler_api_client, applicatio
     assert response.status_code == 200
 
     # Mock the actual handler edits
-    with freeze_time("2024-01-01") as frozen_datetime:
-
-        def update_application(application_payload):
-            frozen_datetime.tick(delta=timedelta(seconds=1))
-            application.refresh_from_db()
-            payload = HandlerApplicationSerializer(application).data
-            payload["action"] = ApplicationActions.HANDLER_ALLOW_APPLICATION_EDIT
-            response = handler_api_client.put(
-                get_handler_detail_url(application),
-                {**payload, **application_payload},
-            )
-            assert response.status_code == 200
-            return response
-
-        response = None
-        for application_payload in update_payloads:
-            response = update_application(application_payload)
-
-        changes = response.data["changes"]
-
-        update_payloads.reverse()
-
-        # Add a mock row which gets inserted when application status changes to "handling"
-        update_payloads.append({"change_reason": None, "handler": "Unknown user"})
-        update_payloads.append(
-            {"change_reason": None, "status": ApplicationStatus.HANDLING}
+    def update_application(application_payload, frozen_datetime):
+        frozen_datetime.tick(delta=timedelta(seconds=1))
+        application.refresh_from_db()
+        payload = HandlerApplicationSerializer(application).data
+        payload["action"] = ApplicationActions.HANDLER_ALLOW_APPLICATION_EDIT
+        response = handler_api_client.put(
+            get_handler_detail_url(application),
+            {**payload, **application_payload},
         )
+        assert response.status_code == 200
+        return response
 
-        assert len(changes) == len(update_payloads)
+    with freeze_time("2024-01-01") as frozen_datetime:
+        for application_payload in handler_edit_payloads:
+            response = update_application(application_payload, frozen_datetime)
 
-        # Assert that each field change exist in change sets
-        for i, row in enumerate(update_payloads):
-            assert changes[i]["reason"] == row["change_reason"]
-            row.pop("change_reason")
-
-            input_fields = dict(_flatten_dict(row))
-
-            changed_fields = {
-                change["field"]: change["new"] for change in changes[i]["changes"]
-            }
-
-            for key in changed_fields:
-                assert (
-                    str(input_fields[key]) == str(changed_fields[key])
-                    if isinstance(input_fields[key], str)
-                    else float(input_fields[key]) == float(changed_fields[key])
-                )
+    changes = response.data["changes"]
+    check_handler_changes(handler_edit_payloads, changes)
+    # check_applicant_changes(applicant_edit_payloads, changes)
