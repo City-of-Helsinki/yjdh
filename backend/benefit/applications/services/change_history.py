@@ -36,19 +36,27 @@ def _get_handlers(as_ids: bool = False) -> list:
     ]
 
 
-def _parse_change_values(value):
+def _parse_change_values(value, field):
     if value is None:
         return None
     if isinstance(value, bool):
         return bool(value)
+    if field == "handler":
+        return User.objects.get(id=value).get_full_name() or "Unknown user"
+
     return str(value)
 
 
-def _format_change_dict(change: ModelChange, employee: bool) -> dict:
+def _format_change_dict(change: ModelChange, relation_name: str = None) -> dict:
+    def _get_field_name(relation_name):
+        if relation_name:
+            return f"{relation_name}.{change.field}"
+        return f"{change.field}"
+
     return {
-        "field": f"{'employee.' if employee else ''}{change.field}",
-        "old": _parse_change_values(change.old),
-        "new": _parse_change_values(change.new),
+        "field": _get_field_name(relation_name),
+        "old": _parse_change_values(change.old, change.field),
+        "new": _parse_change_values(change.new, change.field),
     }
 
 
@@ -105,12 +113,15 @@ def _get_application_change_history_between_timestamps(
     changes = []
 
     changes += [
-        _format_change_dict(change, employee=False)
+        _format_change_dict(
+            change,
+        )
         for change in application_delta.changes
     ]
 
     changes += [
-        _format_change_dict(change, employee=True) for change in employee_delta.changes
+        _format_change_dict(change, relation_name="employee")
+        for change in employee_delta.changes
     ]
     if new_or_edited_attachments:
         for attachment in new_or_edited_attachments:
@@ -205,11 +216,11 @@ look_up_for_application_save_in_seconds = 0.25
 
 
 def _filter_and_format_changes(
-    changes, excluded_fields, is_employee_change, delta_time=None
+    changes, excluded_fields, relation_name: str = None, delta_time=None
 ):
     return list(
         map(
-            lambda change: _format_change_dict(change, is_employee_change),
+            lambda change: _format_change_dict(change, relation_name),
             filter(  # Only accept those changes that are within the threshold delta_time and/or not excluded field
                 lambda change: not _is_history_change_excluded(change, excluded_fields)
                 and (
@@ -220,6 +231,29 @@ def _filter_and_format_changes(
                 changes,
             ),
         )
+    )
+
+
+def _create_change_set(app_diff, employee_diffs):
+    change_set = _get_change_set_base(app_diff.new_record)
+    change_set["changes"] = _filter_and_format_changes(
+        app_diff.changes,
+        EXCLUDED_APPLICATION_FIELDS,
+    )
+
+    for employee_diff in employee_diffs:
+        delta_time = (
+            employee_diff.new_record.history_date - app_diff.new_record.history_date
+        ).total_seconds()
+        change_set["changes"] += _filter_and_format_changes(
+            employee_diff.changes, EXCLUDED_EMPLOYEE_FIELDS, "employee", delta_time
+        )
+
+    return (
+        change_set
+        if len(change_set["changes"]) > 0
+        or (change_set["reason"] and len(change_set["reason"]) > 0)
+        else None
     )
 
 
@@ -268,36 +302,39 @@ def get_application_change_history_made_by_handler(application: Application) -> 
         diff = employee_history[i].diff_against(employee_history[i + 1])
         employee_diffs.append(diff)
 
-    def create_change_set(app_diff, employee_diffs):
-        change_set = _get_change_set_base(app_diff.new_record)
-        change_set["changes"] = _filter_and_format_changes(
-            app_diff.changes, EXCLUDED_APPLICATION_FIELDS, False
-        )
-
-        for employee_diff in employee_diffs:
-            delta_time = (
-                employee_diff.new_record.history_date - app_diff.new_record.history_date
-            ).total_seconds()
-            change_set["changes"] += _filter_and_format_changes(
-                employee_diff.changes, EXCLUDED_EMPLOYEE_FIELDS, True, delta_time
-            )
-
-        return (
-            change_set
-            if len(change_set["changes"]) > 0
-            or (change_set["reason"] and len(change_set["reason"]) > 0)
-            else None
-        )
-
     change_sets = list(
         filter(
             None,
             map(
-                lambda app_diff: create_change_set(app_diff, employee_diffs),
+                lambda app_diff: _create_change_set(app_diff, employee_diffs),
                 application_diffs,
             ),
         )
     )
+
+    submitted_at = (
+        ApplicationLogEntry.objects.filter(
+            application=application, to_status=ApplicationStatus.RECEIVED
+        )
+        .order_by("-created_at")
+        .values("created_at")[:1]
+    )
+
+    attachment_diffs = []
+    for attachment in application.attachments.all():
+        for new_record in attachment.history.filter(
+            history_type="+", history_date__gte=submitted_at
+        ):
+            change_set_base = _get_change_set_base(new_record)
+            change_set_base["changes"] = [
+                {
+                    "field": "attachments",
+                    "old": "+",
+                    "new": f"{new_record.attachment_file} ({_(new_record.attachment_type)})",
+                }
+            ]
+            attachment_diffs.append(change_set_base)
+    change_sets += attachment_diffs
 
     return change_sets
 

@@ -2400,7 +2400,8 @@ def test_application_history_change_sets_for_handler(
     request, handler_api_client, application
 ):
     # Setup application to handling status
-    add_attachments_to_application(request, application)
+    with freeze_time("2021-01-01") as frozen_datetime:
+        add_attachments_to_application(request, application)
 
     payload = HandlerApplicationSerializer(application).data
     payload["status"] = ApplicationStatus.RECEIVED
@@ -2506,9 +2507,8 @@ def test_application_history_change_sets_for_handler(
 
         update_payloads.reverse()
 
-        # Add a row which gets inserted when application status changes to "handling"
-        user = get_client_user(handler_api_client)
-        update_payloads.append({"change_reason": None, "handler": str(user.id)})
+        # Add a mock row which gets inserted when application status changes to "handling"
+        update_payloads.append({"change_reason": None, "handler": "Unknown user"})
 
         assert len(changes) == len(update_payloads)
 
