@@ -63,10 +63,14 @@ const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
         window._paq.push(['requireConsent']);
         // eslint-disable-next-line no-underscore-dangle, unicorn/no-array-push-push
         window._paq.push(['requireCookieConsent']);
+        // eslint-disable-next-line sonarjs/no-collapsible-if
       } else if (consents.matomo === false) {
         // tell matomo to forget conset
-        // eslint-disable-next-line no-underscore-dangle, unicorn/no-array-push-push
-        window._paq.push(['forgetConsentGiven']);
+        // eslint-disable-next-line no-underscore-dangle, unicorn/no-lonely-if
+        if (window && window._paq) {
+          // eslint-disable-next-line no-underscore-dangle, unicorn/no-array-push-push
+          window._paq.push(['forgetConsentGiven']);
+        }
       }
     },
     focusTargetSelector: '#main_content',
