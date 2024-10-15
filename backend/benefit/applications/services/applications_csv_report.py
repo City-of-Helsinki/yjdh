@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List
 
 from django.utils import translation
@@ -80,6 +81,13 @@ def get_application_origin_label(application_origin: str) -> str:
     return str(ApplicationOrigin(application_origin).label)
 
 
+def get_submitted_at_date(application) -> datetime:
+    if hasattr(application, "submitted_at") and application.submitted_at:
+        return application.submitted_at
+    else:
+        return application.created_at
+
+
 class ApplicationsCsvService(CsvExportBase):
     """
     Export application data for further processing in Excel and other reporting software.
@@ -136,6 +144,7 @@ class ApplicationsCsvService(CsvExportBase):
 
         columns = [
             CsvColumn("Hakemusnumero", "application_number"),
+            CsvColumn("Hakemus saapunut", get_submitted_at_date, format_datetime),
             CsvColumn("Hakemusrivi", "application_row_idx"),
             CsvColumn("Hakemuksen tila", "status"),
             CsvColumn(

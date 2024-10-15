@@ -10,6 +10,7 @@ from applications.services.applications_csv_report import (
     format_datetime,
     get_application_origin_label,
     get_benefit_type_label,
+    get_submitted_at_date,
 )
 from applications.services.csv_export_base import CsvColumn, get_organization_type
 
@@ -52,7 +53,11 @@ class ApplicationsPowerBiCsvService(ApplicationsCsvService):
             CsvColumn(
                 "Hakemuksen tyyppi", "application_origin", get_application_origin_label
             ),
-            CsvColumn("Hakemus saapunut", "created_at", format_datetime),
+            CsvColumn(
+                "Hakemus saapunut",
+                get_submitted_at_date,
+                format_datetime,
+            ),
             csv_default_column("Haettava lisä", "benefit_type", get_benefit_type_label),
             csv_default_column("Haettu alkupäivä", "start_date"),
             csv_default_column("Haettu päättymispäivä", "end_date"),
