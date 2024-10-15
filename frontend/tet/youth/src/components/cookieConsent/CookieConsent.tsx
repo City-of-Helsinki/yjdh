@@ -47,23 +47,26 @@ const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
       ],
     },
     language: { onLanguageChange },
-    onAllConsentsGiven: (consents) => {
+    onAllConsentsGiven: (consents: { matomo: boolean }) => {
       if (consents.matomo) {
         //  start tracking
+        // eslint-disable-next-line no-underscore-dangle, unicorn/no-array-push-push
         window._paq.push(['setConsentGiven']);
+        // eslint-disable-next-line no-underscore-dangle, unicorn/no-array-push-push
         window._paq.push(['setCookieConsentGiven']);
       }
     },
-    onConsentsParsed: (consents) => {
+    onConsentsParsed: (consents: { matomo: boolean }) => {
       if (consents.matomo === undefined) {
         // tell matomo to wait for consent:
+        // eslint-disable-next-line no-underscore-dangle, unicorn/no-array-push-push
         window._paq.push(['requireConsent']);
+        // eslint-disable-next-line no-underscore-dangle, unicorn/no-array-push-push
         window._paq.push(['requireCookieConsent']);
       } else if (consents.matomo === false) {
         // tell matomo to forget conset
-        if (window && window._paq) {
-          window._paq.push(['forgetConsentGiven']);
-        }
+        // eslint-disable-next-line no-underscore-dangle, unicorn/no-array-push-push
+        window._paq.push(['forgetConsentGiven']);
       }
     },
     focusTargetSelector: '#main_content',

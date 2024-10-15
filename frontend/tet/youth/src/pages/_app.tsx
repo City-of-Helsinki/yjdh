@@ -1,6 +1,8 @@
 import 'hds-design-tokens';
 
+import init from '@socialgouv/matomo-next';
 import { AppProps } from 'next/app';
+import dynamic from 'next/dynamic';
 import { appWithTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
 import { QueryClientProvider } from 'react-query';
@@ -8,8 +10,6 @@ import BaseApp from 'shared/components/app/BaseApp';
 import Footer from 'tet/youth/components/footer/Footer';
 import Header from 'tet/youth/components/header/Header';
 import createQueryClient from 'tet/youth/query-client/create-query-client';
-import init from '@socialgouv/matomo-next';
-import dynamic from 'next/dynamic';
 
 const CookieConsent = dynamic(() => import('../components/cookieConsent/CookieConsent'), { ssr: false });
 
