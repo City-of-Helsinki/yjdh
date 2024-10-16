@@ -1,5 +1,41 @@
 # Changelog
 
+## [4.4.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.3.0...benefit-handler-v4.4.0) (2024-10-16)
+
+
+### Features
+
+* Add ahjo errors to handler's application lists (hl-1421) ([#3289](https://github.com/City-of-Helsinki/yjdh/issues/3289)) ([ddb4fe4](https://github.com/City-of-Helsinki/yjdh/commit/ddb4fe44b7453c5d2a8ed1974107096e2bc86d9f))
+* Add application number to 'Ahjo submission complete' splash screen ([#3409](https://github.com/City-of-Helsinki/yjdh/issues/3409)) ([415e2fe](https://github.com/City-of-Helsinki/yjdh/commit/415e2fe385ef50a9ea2ed2dc421aae870ee21692))
+* Add talpa status and decision date to apps which are "in payment" state ([#3444](https://github.com/City-of-Helsinki/yjdh/issues/3444)) ([3fd9088](https://github.com/City-of-Helsinki/yjdh/commit/3fd908882ef32a403f64a89f7d5c3e433d34ca3c))
+* Clone entire application (hl-1464) ([#3369](https://github.com/City-of-Helsinki/yjdh/issues/3369)) ([26051e4](https://github.com/City-of-Helsinki/yjdh/commit/26051e4935f3ba0c752ec805972a3f930f163ac0))
+* Disable CSV download on invalid alteration calculation ([#3406](https://github.com/City-of-Helsinki/yjdh/issues/3406)) ([26453a8](https://github.com/City-of-Helsinki/yjdh/commit/26453a8de8229967d2299e19c841f1f970583742))
+* Disable handle button until CSV has been downloaded (hl-1433) ([#3407](https://github.com/City-of-Helsinki/yjdh/issues/3407)) ([20f005e](https://github.com/City-of-Helsinki/yjdh/commit/20f005e097e843ced910552100ef17631d13cb70))
+* Find related applications for a single employee (hl-1354) ([#3321](https://github.com/City-of-Helsinki/yjdh/issues/3321)) ([c0dc2e7](https://github.com/City-of-Helsinki/yjdh/commit/c0dc2e7ef1dbff6968481a2e26f9e28b2c38761f))
+* Hl 1134 ([#3239](https://github.com/City-of-Helsinki/yjdh/issues/3239)) decionMaker from ahjo API ([ac1a6df](https://github.com/City-of-Helsinki/yjdh/commit/ac1a6df0a58aedd046daa1a3ed0457cab98dc9c3))
+* Include attachment additions to change set (hl-1209) ([#3423](https://github.com/City-of-Helsinki/yjdh/issues/3423)) ([e33c704](https://github.com/City-of-Helsinki/yjdh/commit/e33c7045c50f73edfb791ef76f563f4121767367))
+* Offset application content when sidebar is open ([#3234](https://github.com/City-of-Helsinki/yjdh/issues/3234)) ([0d7e32a](https://github.com/City-of-Helsinki/yjdh/commit/0d7e32a7a6421a23cd139a02433912a9c603ba21))
+* Remove decimals from alteration sum ([#3436](https://github.com/City-of-Helsinki/yjdh/issues/3436)) ([2979d18](https://github.com/City-of-Helsinki/yjdh/commit/2979d18dc82338ff2f9eee641823783105cfb73a))
+* Use applicant's startDate as initial value for calculation ([#3422](https://github.com/City-of-Helsinki/yjdh/issues/3422)) ([6b815cf](https://github.com/City-of-Helsinki/yjdh/commit/6b815cf1d0b62e112e2836989deed4f1f690fa7b))
+
+
+### Bug Fixes
+
+* Add current tab number clicks to uri when each tab is clicked ([#3288](https://github.com/City-of-Helsinki/yjdh/issues/3288)) ([a7f2d71](https://github.com/City-of-Helsinki/yjdh/commit/a7f2d716ad0cc330520fe3ae03ef42a4b1f630f8))
+* Application history did not include change reasons with 0 diffs (hl-1484) ([#3413](https://github.com/City-of-Helsinki/yjdh/issues/3413)) ([031d5bf](https://github.com/City-of-Helsinki/yjdh/commit/031d5bfee7ea4b6e330b13dc7e7c43dc62a3404f))
+* Benefit calculation amount in decision summary was 0,00 € ([#3415](https://github.com/City-of-Helsinki/yjdh/issues/3415)) ([c284214](https://github.com/City-of-Helsinki/yjdh/commit/c2842141dd66fbdea339c70fb8efa1ecf7a0c681))
+* Bump nextjs version ([#3332](https://github.com/City-of-Helsinki/yjdh/issues/3332)) ([8c8935d](https://github.com/City-of-Helsinki/yjdh/commit/8c8935df53c61546fb1909da6bc1e1f6e9b8a1d3))
+* Change outer &lt;a&gt; to &lt;button&gt; to avoid having &lt;a&gt; inside &lt;a&gt; ([#3287](https://github.com/City-of-Helsinki/yjdh/issues/3287)) ([d266b86](https://github.com/City-of-Helsinki/yjdh/commit/d266b86e12d100c8ca45e7116c2f8bb56b10a691))
+* Fix a rare case where messages center would crash the app ([cc727a0](https://github.com/City-of-Helsinki/yjdh/commit/cc727a02a2a2c167b2cf7a5ee3f8608f834bda9e))
+* **handler:** Remove section and end date when application is not accepted ([#3232](https://github.com/City-of-Helsinki/yjdh/issues/3232)) ([38c2b66](https://github.com/City-of-Helsinki/yjdh/commit/38c2b66303c4a9a06607bdd84955a3af82beb8d4))
+* **handler:** Remove unnecessary restrictions for new messages or notes ([#3231](https://github.com/City-of-Helsinki/yjdh/issues/3231)) ([f85cb31](https://github.com/City-of-Helsinki/yjdh/commit/f85cb3140bec8c7435832e4543e964c46232a3ba))
+* **handler:** Z-fight issues with header, sidebar, and toasts ([cc7ff47](https://github.com/City-of-Helsinki/yjdh/commit/cc7ff476367ac117346b859dae664f06541258f7))
+* Locked user notice bar was on top of new messages list ([#3286](https://github.com/City-of-Helsinki/yjdh/issues/3286)) ([7021896](https://github.com/City-of-Helsinki/yjdh/commit/7021896548bbcdec0f47850faca232db44d3c0c9))
+* No need to check batch on application cancel ([#3411](https://github.com/City-of-Helsinki/yjdh/issues/3411)) ([ecdde64](https://github.com/City-of-Helsinki/yjdh/commit/ecdde64bb4fa171c8051e2a7d32c4a67daec2e8a))
+* Prevent submit of paperApplicationDate to application of applicant origin ([#3412](https://github.com/City-of-Helsinki/yjdh/issues/3412)) ([78ca125](https://github.com/City-of-Helsinki/yjdh/commit/78ca125e0b71a495adda91f9a7fcb21bd7ccdbe3))
+* Remove unnecessary import ([b0b70ee](https://github.com/City-of-Helsinki/yjdh/commit/b0b70ee821e5303d2fcdf7ec147b840dc35d1b7a))
+* Remove unnecessary print and useEffect ([687f620](https://github.com/City-of-Helsinki/yjdh/commit/687f6202448bb3c43d2500d8b1b28b6cf073df0d))
+
 ## [4.3.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.2.0...benefit-handler-v4.3.0) (2024-08-26)
 
 
