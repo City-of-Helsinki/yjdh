@@ -1187,7 +1187,7 @@ def test_submit_application_without_de_minimis_aid(
         (PaySubsidyGranted.GRANTED_AGED, False, 200, 200),
         (PaySubsidyGranted.GRANTED_AGED, None, 200, 400),
         (PaySubsidyGranted.NOT_GRANTED, None, 200, 200),
-        (PaySubsidyGranted.NOT_GRANTED, False, 200, 400),
+        (PaySubsidyGranted.NOT_GRANTED, False, 200, 200),
         (PaySubsidyGranted.NOT_GRANTED, True, 200, 400),
     ],
 )
