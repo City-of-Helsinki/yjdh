@@ -40,7 +40,7 @@ type ExtendedComponentProps = {
   fields: {
     [key in EXPORT_APPLICATIONS_IN_TIME_RANGE_FORM_KEYS]: Field<EXPORT_APPLICATIONS_IN_TIME_RANGE_FORM_KEYS>;
   };
-  exportApplicationsInTimeRange: () => void;
+  exportApplicationsInTimeRange: (type: ExportFileType, isCompact: boolean) => void;
   lastAcceptedApplicationsExportDate: string;
   lastRejectedApplicationsExportDate: string;
 };
@@ -134,7 +134,7 @@ const useApplicationReports = (): ExtendedComponentProps => {
   const { values } = formik;
   const { startDate, endDate } = values;
 
-  const exportApplicationsInTimeRange = useCallback(async () => {
+  const exportApplicationsInTimeRange = useCallback(async (type: ExportFileType, isCompact: boolean) => {
     const data = await handleResponse<string>(
       axios.get(
         `${BackendEndpoint.HANDLER_APPLICATIONS}${EXPORT_APPLICATIONS_ROUTES.IN_TIME_RANGE}/`,
@@ -142,6 +142,7 @@ const useApplicationReports = (): ExtendedComponentProps => {
           params: {
             handled_at_after: convertToBackendDateFormat(startDate),
             handled_at_before: convertToBackendDateFormat(endDate),
+            compact_list: isCompact,
           },
         }
       )

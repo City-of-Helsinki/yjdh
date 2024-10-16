@@ -10,7 +10,7 @@ from applications.enums import (
     AhjoRequestType,
     AttachmentType,
 )
-from applications.models import AhjoDecisionText, Attachment
+from applications.models import AhjoDecisionText, Application, Attachment
 from applications.services.ahjo_payload import (
     _prepare_case_records,
     _prepare_record,
@@ -118,8 +118,9 @@ def test_prepare_record_title(
     part,
     total,
 ):
-    application = decided_application
-    formatted_date = application.created_at.strftime("%d.%m.%Y")
+    application = Application.objects.get(pk=decided_application.pk)
+
+    formatted_date = application.submitted_at.strftime("%d.%m.%Y")
 
     if part and total:
         wanted_title = f"{record_title}{wanted_title_addition} {formatted_date},\
@@ -131,7 +132,8 @@ def test_prepare_record_title(
 
 
 def test_prepare_record_title_for_attachment(decided_application):
-    application = decided_application
+    application = Application.objects.get(pk=decided_application.pk)
+
     formatted_date = application.created_at.strftime("%d.%m.%Y")
     wanted_title = f"{AhjoRecordTitle.APPLICATION} {formatted_date}, liite 1/3, {application.application_number}"
     got = _prepare_record_title(
@@ -213,7 +215,7 @@ def test_prepare_record_document_dict(decided_application, settings):
 
 def test_prepare_case_records(decided_application, settings):
     settings.DEBUG = True
-    application = decided_application
+    application = Application.objects.get(pk=decided_application.pk)
 
     fake_file = ContentFile(
         b"fake file content",
@@ -284,7 +286,7 @@ def test_prepare_case_records(decided_application, settings):
 
 
 def test_prepare_top_level_dict(decided_application, ahjo_open_case_top_level_dict):
-    application = decided_application
+    application = Application.objects.get(pk=decided_application.pk)
 
     got = _prepare_top_level_dict(application, [], "message title")
 
@@ -292,7 +294,8 @@ def test_prepare_top_level_dict(decided_application, ahjo_open_case_top_level_di
 
 
 def test_prepare_update_application_payload(decided_application):
-    application = decided_application
+    application = Application.objects.get(pk=decided_application.pk)
+
     handler = application.calculation.handler
     handler_name = f"{handler.last_name}, {handler.first_name}"
     handler_id = handler.ad_username
@@ -319,7 +322,7 @@ def test_prepare_update_application_payload(decided_application):
                     AhjoRequestType.UPDATE_APPLICATION,
                 ),
                 "Type": AhjoRecordType.APPLICATION,
-                "Acquired": application.created_at.isoformat(),
+                "Acquired": application.submitted_at.isoformat(),
                 "PublicityClass": "Salassa pidettävä",
                 "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
                 "Language": "fi",

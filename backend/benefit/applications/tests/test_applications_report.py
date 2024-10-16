@@ -429,7 +429,7 @@ def test_power_bi_report_csv_output(application_powerbi_csv_service):
             csv_row[6]
             == f'"{get_application_origin_label(application.application_origin)}"'
         )
-        assert csv_row[7] == f'"{format_datetime(application.created_at)}"'
+        assert csv_row[7] == f'"{format_datetime(application.submitted_at)}"'
         assert csv_row[8] == '"Työllistämisen Helsinki-lisä"'
         assert csv_row[9] == f'"{str(application.start_date)}"'
         assert csv_row[10] == f'"{str(application.end_date)}"'
@@ -602,53 +602,54 @@ def test_pruned_applications_csv_output(
     application = (
         pruned_applications_csv_service_with_one_application.get_applications()[0]
     )
-    # Assert that there are 18 column headers in the pruned CSV
-    assert len(csv_lines[0]) == 18
+    # Assert that there are 19 column headers in the pruned CSV
+    assert len(csv_lines[0]) == 19
 
     assert csv_lines[0][0] == '\ufeff"Hakemusnumero"'
-    assert csv_lines[0][1] == '"Työnantajan tyyppi"'
-    assert csv_lines[0][2] == '"Työnantajan tilinumero"'
-    assert csv_lines[0][3] == '"Työnantajan nimi"'
-    assert csv_lines[0][4] == '"Työnantajan Y-tunnus"'
-    assert csv_lines[0][5] == '"Työnantajan katuosoite"'
-    assert csv_lines[0][6] == '"Työnantajan postinumero"'
-    assert csv_lines[0][7] == '"Työnantajan postitoimipaikka"'
-    assert csv_lines[0][8] == '"Helsinki-lisän määrä lopullinen"'
-    assert csv_lines[0][9] == '"Päättäjän nimike"'
-    assert csv_lines[0][10] == '"Päättäjän nimi"'
-    assert csv_lines[0][11] == '"Päätöspykälä"'
-    assert csv_lines[0][12] == '"Päätöspäivä"'
-    assert csv_lines[0][13] == '"Asiantarkastajan nimi Ahjo"'
-    assert csv_lines[0][14] == '"Asiantarkastajan titteli Ahjo"'
-    assert csv_lines[0][15] == '"Tarkastajan nimi, P2P"'
-    assert csv_lines[0][16] == '"Tarkastajan sähköposti, P2P"'
-    assert csv_lines[0][17] == '"Hyväksyjän nimi P2P"'
+    assert csv_lines[0][1] == '"Hakemus saapunut"'
+    assert csv_lines[0][2] == '"Työnantajan tyyppi"'
+    assert csv_lines[0][3] == '"Työnantajan tilinumero"'
+    assert csv_lines[0][4] == '"Työnantajan nimi"'
+    assert csv_lines[0][5] == '"Työnantajan Y-tunnus"'
+    assert csv_lines[0][6] == '"Työnantajan katuosoite"'
+    assert csv_lines[0][7] == '"Työnantajan postinumero"'
+    assert csv_lines[0][8] == '"Työnantajan postitoimipaikka"'
+    assert csv_lines[0][9] == '"Helsinki-lisän määrä lopullinen"'
+    assert csv_lines[0][10] == '"Päättäjän nimike"'
+    assert csv_lines[0][11] == '"Päättäjän nimi"'
+    assert csv_lines[0][12] == '"Päätöspykälä"'
+    assert csv_lines[0][13] == '"Päätöspäivä"'
+    assert csv_lines[0][14] == '"Asiantarkastajan nimi Ahjo"'
+    assert csv_lines[0][15] == '"Asiantarkastajan titteli Ahjo"'
+    assert csv_lines[0][16] == '"Tarkastajan nimi, P2P"'
+    assert csv_lines[0][17] == '"Tarkastajan sähköposti, P2P"'
+    assert csv_lines[0][18] == '"Hyväksyjän nimi P2P"'
 
-    # Assert that there are 15 columns in the pruned CSV
-    assert len(csv_lines[1]) == 18
+    # Assert that there are 19 columns in the pruned CSV
+    assert len(csv_lines[1]) == 19
 
     assert int(csv_lines[1][0]) == application.application_number
-
-    assert csv_lines[1][1] == '"Yritys"'
-    assert csv_lines[1][2] == f'"{application.company_bank_account_number}"'
-    assert csv_lines[1][3] == f'"{application.company_name}"'
-    assert csv_lines[1][4] == f'"{application.company.business_id}"'
-    assert csv_lines[1][5] == f'"{application.effective_company_street_address}"'
-    assert csv_lines[1][6] == f'"{application.effective_company_postcode}"'
-    assert csv_lines[1][7] == f'"{application.effective_company_city}"'
-    assert str(csv_lines[1][8]) == str(
+    assert csv_lines[1][1] == f'"{format_datetime(application.submitted_at)}"'
+    assert csv_lines[1][2] == '"Yritys"'
+    assert csv_lines[1][3] == f'"{application.company_bank_account_number}"'
+    assert csv_lines[1][4] == f'"{application.company_name}"'
+    assert csv_lines[1][5] == f'"{application.company.business_id}"'
+    assert csv_lines[1][6] == f'"{application.effective_company_street_address}"'
+    assert csv_lines[1][7] == f'"{application.effective_company_postcode}"'
+    assert csv_lines[1][8] == f'"{application.effective_company_city}"'
+    assert str(csv_lines[1][9]) == str(
         application.calculation.calculated_benefit_amount
     )
 
-    assert csv_lines[1][9] == f'"{application.batch.decision_maker_title}"'
-    assert csv_lines[1][10] == f'"{application.batch.decision_maker_name}"'
-    assert csv_lines[1][11] == f'"{application.batch.section_of_the_law}"'
-    assert csv_lines[1][12] == f'"{application.batch.decision_date}"'
-    assert csv_lines[1][13] == f'"{application.batch.expert_inspector_name}"'
-    assert csv_lines[1][14] == f'"{application.batch.expert_inspector_title}"'
-    assert csv_lines[1][15] == f'"{application.batch.p2p_inspector_name}"'
-    assert csv_lines[1][16] == f'"{application.batch.p2p_inspector_email}"'
-    assert csv_lines[1][17] == f'"{application.batch.p2p_checker_name}"'
+    assert csv_lines[1][10] == f'"{application.batch.decision_maker_title}"'
+    assert csv_lines[1][11] == f'"{application.batch.decision_maker_name}"'
+    assert csv_lines[1][12] == f'"{application.batch.section_of_the_law}"'
+    assert csv_lines[1][13] == f'"{application.batch.decision_date}"'
+    assert csv_lines[1][14] == f'"{application.batch.expert_inspector_name}"'
+    assert csv_lines[1][15] == f'"{application.batch.expert_inspector_title}"'
+    assert csv_lines[1][16] == f'"{application.batch.p2p_inspector_name}"'
+    assert csv_lines[1][17] == f'"{application.batch.p2p_inspector_email}"'
+    assert csv_lines[1][18] == f'"{application.batch.p2p_checker_name}"'
 
 
 def test_applications_csv_output(applications_csv_service):  # noqa: C901
@@ -764,7 +765,9 @@ def test_applications_csv_string_lines_generator(applications_csv_service):
     )
 
 
-def test_applications_csv_two_ahjo_rows(applications_csv_service_with_one_application):
+def test_applications_csv_two_ahjo_rows(
+    applications_csv_service_with_one_application, tmp_path
+):
     application = applications_csv_service_with_one_application.get_applications()[0]
     application.pay_subsidies.all().delete()
     application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
@@ -796,9 +799,11 @@ def test_applications_csv_two_ahjo_rows(applications_csv_service_with_one_applic
     assert len(application.ahjo_rows) == 2
     assert csv_lines[0][0] == '\ufeff"Hakemusnumero"'
     assert int(csv_lines[1][0]) == application.application_number
-    assert int(csv_lines[1][1]) == 1
+    assert csv_lines[1][1] == f'"{format_datetime(application.submitted_at)}"'
+    assert int(csv_lines[1][2]) == 1
     assert int(csv_lines[2][0]) == application.application_number
-    assert int(csv_lines[2][1]) == 2
+    assert csv_lines[2][1] == f'"{format_datetime(application.submitted_at)}"'
+    assert int(csv_lines[2][2]) == 2
 
     # the content of columns "Siirrettävä Ahjo-rivi / xxx" and "Hakemusrivi" change, rest of the lines are equal
     current_ahjo_row_start = csv_lines[0].index('"Siirrettävä Ahjo-rivi / tyyppi"')
@@ -806,7 +811,7 @@ def test_applications_csv_two_ahjo_rows(applications_csv_service_with_one_applic
         '"Siirrettävä Ahjo-rivi / päättymispäivä"'
     )
     assert (
-        csv_lines[1][2:current_ahjo_row_start] == csv_lines[2][2:current_ahjo_row_start]
+        csv_lines[1][3:current_ahjo_row_start] == csv_lines[2][3:current_ahjo_row_start]
     )
     assert (
         csv_lines[1][current_ahjo_row_end + 1 :]
@@ -875,7 +880,7 @@ def test_applications_csv_two_ahjo_rows(applications_csv_service_with_one_applic
         assert csv_lines[1][start_column + 5] == f'"{ahjo_row.end_date.isoformat()}"'
 
     applications_csv_service_with_one_application.write_csv_file(
-        "/tmp/two_ahjo_rows.csv"
+        tmp_path / "two_ahjo_rows.csv"
     )
 
 
@@ -944,7 +949,7 @@ def test_applications_csv_non_ascii_characters(
     csv_lines = split_lines_at_semicolon(
         applications_csv_service_with_one_application.get_csv_string()
     )
-    assert csv_lines[1][12] == '"test äöÄÖtest"'  # string is quoted
+    assert csv_lines[1][13] == '"test äöÄÖtest"'  # string is quoted
 
 
 def test_applications_csv_delimiter(applications_csv_service_with_one_application):
