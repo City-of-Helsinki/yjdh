@@ -188,6 +188,7 @@
         "statusArchive": "Päätös tai tila",
         "ahjoStatus": "Päätös",
         "talpaStatus": "Maksun tila",
+        "decisionDate": "Päätöspäivä",
         "benefitAmount": "Tuen määrä",
         "statuses": {
           "cancelled": "Peruutettu",
@@ -213,7 +214,13 @@
           "rejected": "Kielteinen",
           "archival": "Myönteinen"
         },
-        "calculationEndDate": "Viim. tukipäivä"
+        "talpaStatuses": {
+          "not_sent_to_talpa": "Odottaa maksua",
+          "rejected_by_talpa": "Virhe maksussa",
+          "successfully_sent_to_talpa": "Lähetetty maksuun"
+        },
+        "calculationEndDate": "Viim. tukipäivä",
+        "calculatedBenefitAmount": "Tukisumma"
       },
       "messages": {
         "empty": {
@@ -1144,7 +1151,7 @@
         "cancelled": "Hakemus peruttiin",
         "decisionMakerName": "Päättäjä",
         "decisionMakerTitle": "Päättäjän titteli",
-        "decisionDate": "Päätöspäivämäärä",
+        "decisionDate": "Päätöspäivä",
         "sectionOfTheLaw": "Pykälä",
         "p2pTitle": "P2P-tarkastuksen tiedot",
         "p2pInspector": "Tarkastaja, P2P",

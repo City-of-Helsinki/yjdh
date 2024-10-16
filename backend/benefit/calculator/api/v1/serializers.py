@@ -357,8 +357,18 @@ class PreviousBenefitSerializer(serializers.ModelSerializer):
 class CalculationSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Calculation
-        fields = ["start_date", "end_date", "handler_details"]
-        read_only_fields = ["start_date", "end_date", "handler_details"]
+        fields = [
+            "start_date",
+            "end_date",
+            "handler_details",
+            "calculated_benefit_amount",
+        ]
+        read_only_fields = [
+            "start_date",
+            "end_date",
+            "handler_details",
+            "calculated_benefit_amount",
+        ]
 
     handler_details = UserSerializer(
         help_text=(
