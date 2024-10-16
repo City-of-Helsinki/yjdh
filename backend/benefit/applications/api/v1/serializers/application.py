@@ -967,7 +967,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             return
         if (
             pay_subsidy_granted == PaySubsidyGranted.NOT_GRANTED
-            and apprenticeship_program is not None
+            and apprenticeship_program not in [None, False]
         ):
             raise serializers.ValidationError(
                 {
