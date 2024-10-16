@@ -15,7 +15,8 @@ export type ReportsSectionProp = {
   withDivider?: boolean;
   header: string;
   buttonText: string;
-  onDownloadButtonClick: (type: ExportFileType) => void;
+  onDownloadButtonClick: (type: ExportFileType, isCompact:boolean) => void;
+  isCompact?: boolean;
 };
 
 const ReportsSection: React.FC<ReportsSectionProp> = ({
@@ -25,6 +26,7 @@ const ReportsSection: React.FC<ReportsSectionProp> = ({
   buttonText,
   onDownloadButtonClick,
   withDivider = false,
+  isCompact = false
 }) => {
   const theme = useTheme();
 
@@ -56,7 +58,7 @@ const ReportsSection: React.FC<ReportsSectionProp> = ({
                 css={`
                   margin-top: ${theme.spacing.l};
                 `}
-                onClick={() => onDownloadButtonClick(exportFileType)}
+                onClick={() => onDownloadButtonClick(exportFileType, isCompact)}
               >
                 {buttonText} {String(exportFileType).toUpperCase()}
               </Button>

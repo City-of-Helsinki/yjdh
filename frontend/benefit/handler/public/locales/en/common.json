@@ -1500,7 +1500,8 @@
       "main": "Raportointi",
       "downloadAcceptedApplications": "Hyväksytyt hakemukset joita ei ole vielä ladattu",
       "downloadRejectedApplications": "Hylätyt hakemukset joita ei ole vielä ladattu",
-      "downloadApplicationsInTimeRange": "Lataa kaikki hakemukset tietyltä ajalta"
+      "downloadApplicationsInTimeRange": "Lataa kaikki hakemukset tietyltä ajalta",
+      "downloadSmallerListOfApplicationsInTimeRange": "Lataa kompaktimpi lista hakemuksista tietyltä ajalta"
     },
     "fields": {
       "lastDownloadDateText": "Ladattu viimeksi {{date}}",
