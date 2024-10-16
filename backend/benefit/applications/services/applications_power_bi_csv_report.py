@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import Union
 
+from django.utils import translation
+
 from applications.enums import ApplicationBatchStatus
 from applications.models import Application
 from applications.services.applications_csv_report import (
@@ -36,9 +38,6 @@ class ApplicationsPowerBiCsvService(ApplicationsCsvService):
 
     @property
     def CSV_COLUMNS(self):
-        """
-        Customize the CSV columns but also return the parent class's columns.
-        """
         calculated_benefit_amount = "calculation.calculated_benefit_amount"
 
         columns = [
@@ -112,3 +111,9 @@ class ApplicationsPowerBiCsvService(ApplicationsCsvService):
         ]
 
         return columns
+
+    def get_row_items(self):
+        with translation.override("fi"):
+            for application in self.get_applications():
+                application.application_row_idx = 1
+                yield application
