@@ -1,18 +1,27 @@
 import { Footer, IconLinkExternal } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import useLocale from 'shared/hooks/useLocale';
 
 // import { $FooterWrapper } from './Footer.sc';
 
 const FooterSection: React.FC = () => {
   const { t } = useTranslation();
+  const locale = useLocale();
   const newTabText = t('common:footer.newTab');
+
   return (
     <Footer title={t('common:appName')} theme="dark">
       <Footer.Base
         copyrightHolder={t('common:footer.copyrightText')}
         copyrightText={t('common:footer.allRightsReservedText')}
       >
+        <Footer.Item
+          as="a"
+          href={`/${locale}/cookie-settings`}
+          label={t('common:footer.cookieSettings')}
+          style={{ alignSelf: 'center' }}
+        />
         <Footer.Item
           as="a"
           rel="noopener noreferrer"
