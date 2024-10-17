@@ -49,10 +49,6 @@ type Props = {
   onSuccess: (isRecoverable: boolean) => void;
 };
 
-const handleAlterationCsvDownload = (): void => {
-  // TODO add any necessary logic here after the CSV download
-};
-
 const AlterationHandlingForm = ({
   application,
   alteration,
@@ -82,7 +78,14 @@ const AlterationHandlingForm = ({
   const [isMessagesDrawerVisible, toggleMessagesDrawerVisibility] =
     useState<boolean>(false);
 
+
   const { navigateBack } = useRouterNavigation(null, null, null, true);
+
+  const [isCSVDownloadDone, setIsCSVDownloadDone] = useState<boolean>(false);
+
+  const handleAlterationCsvDownload = (): void => {
+    setIsCSVDownloadDone(true);
+  };
 
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(formik.errors, formik.touched, fieldName, t, isSubmitted);
@@ -292,7 +295,9 @@ const AlterationHandlingForm = ({
               onClick={openConfirmationModal}
               theme="coat"
               iconLeft={<IconCheck />}
-              disabled={isSubmitting || (isSubmitted && hasErrors)}
+              disabled={
+                isSubmitting || (isSubmitted && hasErrors) || !isCSVDownloadDone
+              }
               isLoading={isSubmitting}
               loadingText={t('common:utility.submitting')}
             >

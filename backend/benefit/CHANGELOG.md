@@ -1,5 +1,48 @@
 # Changelog
 
+## [2.4.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.3.1...benefit-backend-v2.4.0) (2024-10-16)
+
+
+### Features
+
+* Add ahjo errors to handler's application lists (hl-1421) ([#3289](https://github.com/City-of-Helsinki/yjdh/issues/3289)) ([ddb4fe4](https://github.com/City-of-Helsinki/yjdh/commit/ddb4fe44b7453c5d2a8ed1974107096e2bc86d9f))
+* Add ahjo validation error message ([#3410](https://github.com/City-of-Helsinki/yjdh/issues/3410)) ([d7c6ee4](https://github.com/City-of-Helsinki/yjdh/commit/d7c6ee4ef32000e6e023b0a808138484f67f9df7))
+* Add talpa status and decision date to apps which are "in payment" state ([#3444](https://github.com/City-of-Helsinki/yjdh/issues/3444)) ([3fd9088](https://github.com/City-of-Helsinki/yjdh/commit/3fd908882ef32a403f64a89f7d5c3e433d34ca3c))
+* Clone application on applicant side (hl-1447) ([#3324](https://github.com/City-of-Helsinki/yjdh/issues/3324)) ([9bd626f](https://github.com/City-of-Helsinki/yjdh/commit/9bd626fb66521e90b5d6e70a7d14366d78874309))
+* Clone entire application (hl-1464) ([#3369](https://github.com/City-of-Helsinki/yjdh/issues/3369)) ([26051e4](https://github.com/City-of-Helsinki/yjdh/commit/26051e4935f3ba0c752ec805972a3f930f163ac0))
+* Csv for powerBI integration ([#3327](https://github.com/City-of-Helsinki/yjdh/issues/3327)) ([e061288](https://github.com/City-of-Helsinki/yjdh/commit/e0612883119997333dd90cba356e6e81be9d76c8))
+* Ensure ahjo_status is saved during  request ([#3380](https://github.com/City-of-Helsinki/yjdh/issues/3380)) ([f2e9c37](https://github.com/City-of-Helsinki/yjdh/commit/f2e9c3730a3e6f8ec49cbaa1422c1704fdc2f903))
+* Find related applications for a single employee (hl-1354) ([#3321](https://github.com/City-of-Helsinki/yjdh/issues/3321)) ([c0dc2e7](https://github.com/City-of-Helsinki/yjdh/commit/c0dc2e7ef1dbff6968481a2e26f9e28b2c38761f))
+* Hl 1134 ([#3239](https://github.com/City-of-Helsinki/yjdh/issues/3239)) decionMaker from ahjo API ([ac1a6df](https://github.com/City-of-Helsinki/yjdh/commit/ac1a6df0a58aedd046daa1a3ed0457cab98dc9c3))
+* HL 1440 & HL 1441 set archived status & talpa_status for applications ([#3236](https://github.com/City-of-Helsinki/yjdh/issues/3236)) ([e1d80ac](https://github.com/City-of-Helsinki/yjdh/commit/e1d80ac25f0f10e32d510b0fe4e692ee8e13ee90))
+* Hl 1445 add powerBI fields ([#3334](https://github.com/City-of-Helsinki/yjdh/issues/3334)) ([69a2421](https://github.com/City-of-Helsinki/yjdh/commit/69a24211d38ed390de11eaccbe885c663863bc03))
+* HL 1453 ahjo retry and other fixes ([#3414](https://github.com/City-of-Helsinki/yjdh/issues/3414)) ([bfa6591](https://github.com/City-of-Helsinki/yjdh/commit/bfa65916c21341237bfd48bcca95610bd9be9015))
+* HL 1460 ([#3305](https://github.com/City-of-Helsinki/yjdh/issues/3305)) ([1a7ca0c](https://github.com/City-of-Helsinki/yjdh/commit/1a7ca0c5e894da44523d3b78d5e0570d37d059b7))
+* HL 1476 talpa improvements ([#3371](https://github.com/City-of-Helsinki/yjdh/issues/3371)) ([348aa31](https://github.com/City-of-Helsinki/yjdh/commit/348aa313944ea6c392904bae4d48e7db316a713e))
+* Include attachment additions to change set (hl-1209) ([#3423](https://github.com/City-of-Helsinki/yjdh/issues/3423)) ([e33c704](https://github.com/City-of-Helsinki/yjdh/commit/e33c7045c50f73edfb791ef76f563f4121767367))
+* Schedule decisionmaker request (Hl 1468) ([#3329](https://github.com/City-of-Helsinki/yjdh/issues/3329)) ([e64ad61](https://github.com/City-of-Helsinki/yjdh/commit/e64ad6194b299dac4ec60c74d3782164e8fcab2c))
+* Store ahjo validation errors to ahjoStatus ([#3342](https://github.com/City-of-Helsinki/yjdh/issues/3342)) ([ef3e6cb](https://github.com/City-of-Helsinki/yjdh/commit/ef3e6cbffe24168993936e7c529a8e9b0b27db31))
+
+
+### Bug Fixes
+
+* Add an option to specify sheet, changes on import validation ([9a31f2e](https://github.com/City-of-Helsinki/yjdh/commit/9a31f2e32106e980c08034ef42498b2382e808e9))
+* Add missing batch.status and ahjo_case_id to serializer ([ff80631](https://github.com/City-of-Helsinki/yjdh/commit/ff80631e9b7428b8eb332c3f3e94b64d22f038a8))
+* Add SBOM to powerBI csv ([#3355](https://github.com/City-of-Helsinki/yjdh/issues/3355)) ([6ce299f](https://github.com/City-of-Helsinki/yjdh/commit/6ce299f4384fdd0ec6fb60db50112a7f22192d07))
+* Application history did not include change reasons with 0 diffs (hl-1484) ([#3413](https://github.com/City-of-Helsinki/yjdh/issues/3413)) ([031d5bf](https://github.com/City-of-Helsinki/yjdh/commit/031d5bfee7ea4b6e330b13dc7e7c43dc62a3404f))
+* Broken html to pdf layout in application print ([#3378](https://github.com/City-of-Helsinki/yjdh/issues/3378)) ([012302c](https://github.com/City-of-Helsinki/yjdh/commit/012302c81cdc2c1bf41aa26b0b506d763783ea9d))
+* Conflict with _ as it was already defined ([9bb81d9](https://github.com/City-of-Helsinki/yjdh/commit/9bb81d93e97c105c0ff86bfd8ddd813f028fb755))
+* Do not remove batch if ahjo automation ([#3381](https://github.com/City-of-Helsinki/yjdh/issues/3381)) ([57e5eca](https://github.com/City-of-Helsinki/yjdh/commit/57e5eca3f809519d9cd1a1f68ad5aa54300fa99f))
+* Get or create non-existing decision draft object ([ad1f3e0](https://github.com/City-of-Helsinki/yjdh/commit/ad1f3e0bb0e728da62bba4324946e839b293380e))
+* HL 1461 + HL 1466 fixes ([#3336](https://github.com/City-of-Helsinki/yjdh/issues/3336)) ([f140a59](https://github.com/City-of-Helsinki/yjdh/commit/f140a59661cfcf6e7c2c068a10fdc6b4bfcd090d))
+* HL 1465 improve Ahjo callback error logging ([#3325](https://github.com/City-of-Helsinki/yjdh/issues/3325)) ([cadaa1b](https://github.com/City-of-Helsinki/yjdh/commit/cadaa1ba05f551bae306fa7eca0b05f7e652c4e6))
+* HL-1478 xml error ([#3368](https://github.com/City-of-Helsinki/yjdh/issues/3368)) ([2b08d0c](https://github.com/City-of-Helsinki/yjdh/commit/2b08d0caeac7d7d2053c0576ec00bd6e27e599eb))
+* Pdf_summary delete on application update ([#3356](https://github.com/City-of-Helsinki/yjdh/issues/3356)) ([508b66c](https://github.com/City-of-Helsinki/yjdh/commit/508b66ca3e9a9f9b7f6f162537642eafedfff6ba))
+* Record title for add records request ([#3320](https://github.com/City-of-Helsinki/yjdh/issues/3320)) ([8c119f4](https://github.com/City-of-Helsinki/yjdh/commit/8c119f4d4eb91fc174a664923762bad44a8cbd0f))
+* Remove unnecessary print and useEffect ([687f620](https://github.com/City-of-Helsinki/yjdh/commit/687f6202448bb3c43d2500d8b1b28b6cf073df0d))
+* Retry command call and settings ([#3442](https://github.com/City-of-Helsinki/yjdh/issues/3442)) ([6882559](https://github.com/City-of-Helsinki/yjdh/commit/68825594414491e8b317728cc0af62fd2722adbb))
+* Whitespace crash in alteration csv ([#3306](https://github.com/City-of-Helsinki/yjdh/issues/3306)) ([535794e](https://github.com/City-of-Helsinki/yjdh/commit/535794ea4e6ad9de0f49050b674a855a471f4880))
+
 ## [2.3.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.3.0...benefit-backend-v2.3.1) (2024-09-09)
 
 

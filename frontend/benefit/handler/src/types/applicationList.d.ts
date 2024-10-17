@@ -9,6 +9,7 @@ export interface ApplicationListTableTransforms {
   status?: APPLICATION_STATUSES;
   applicationOrigin?: APPLICATION_ORIGINS;
   ahjoError: AhjoError;
+  calculatedBenefitAmount?: string;
 }
 
 export interface ApplicationListTableColumns {

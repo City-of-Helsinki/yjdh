@@ -1,5 +1,5 @@
-import datetime
 import decimal
+from datetime import datetime, timezone
 
 import pytest
 from django.urls import reverse
@@ -101,12 +101,13 @@ def test_talpa_csv_date(pruned_applications_csv_service_with_one_application):
     application = (
         pruned_applications_csv_service_with_one_application.get_applications().first()
     )
-    application.batch.decision_date = datetime.date(2021, 8, 27)
+    now = datetime.now(timezone.utc)
+    application.batch.decision_date = now
     application.batch.save()
     csv_lines = split_lines_at_semicolon(
         pruned_applications_csv_service_with_one_application.get_csv_string()
     )
-    assert csv_lines[1][12] == '"2021-08-27"'
+    assert csv_lines[1][12] == f'"{now.strftime("%Y-%m-%d")}"'
 
 
 def test_write_talpa_csv_file(

@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.14.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.13.0...benefit-applicant-v3.14.0) (2024-10-16)
+
+
+### Features
+
+* Clone application on applicant side (hl-1447) ([#3324](https://github.com/City-of-Helsinki/yjdh/issues/3324)) ([9bd626f](https://github.com/City-of-Helsinki/yjdh/commit/9bd626fb66521e90b5d6e70a7d14366d78874309))
+* Fix routing; active tab function was off if locale was used ([#3331](https://github.com/City-of-Helsinki/yjdh/issues/3331)) ([9855504](https://github.com/City-of-Helsinki/yjdh/commit/9855504ca8e7e112058722bc4b407b14dc73e12f))
+* Offset application content when sidebar is open ([#3234](https://github.com/City-of-Helsinki/yjdh/issues/3234)) ([0d7e32a](https://github.com/City-of-Helsinki/yjdh/commit/0d7e32a7a6421a23cd139a02433912a9c603ba21))
+
+
+### Bug Fixes
+
+* Benefit calculation amount in decision summary was 0,00 € ([#3415](https://github.com/City-of-Helsinki/yjdh/issues/3415)) ([c284214](https://github.com/City-of-Helsinki/yjdh/commit/c2842141dd66fbdea339c70fb8efa1ecf7a0c681))
+* Bump nextjs version ([#3332](https://github.com/City-of-Helsinki/yjdh/issues/3332)) ([8c8935d](https://github.com/City-of-Helsinki/yjdh/commit/8c8935df53c61546fb1909da6bc1e1f6e9b8a1d3))
+* Header links did not include language uri ([#3238](https://github.com/City-of-Helsinki/yjdh/issues/3238)) ([485308b](https://github.com/City-of-Helsinki/yjdh/commit/485308bb5de75d25fe100e367c38475e31c02233))
+* New version of employee data processing pdf ([#3408](https://github.com/City-of-Helsinki/yjdh/issues/3408)) ([cde593c](https://github.com/City-of-Helsinki/yjdh/commit/cde593cd54d238a98b1a56c312db9a45642d6481))
+* Remove end date autofill and fix validation ([#3377](https://github.com/City-of-Helsinki/yjdh/issues/3377)) ([8d334ef](https://github.com/City-of-Helsinki/yjdh/commit/8d334ef35f2c3910e2cf6e8a2d95a5c2b25714e6))
+
 ## [3.13.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.12.0...benefit-applicant-v3.13.0) (2024-08-26)
 
 
