@@ -118,11 +118,6 @@ export type HandledAplication = {
   decisionMakerId?: string;
 };
 
-export type ApplicationChangesData = {
-  handler: ChangeListData[];
-  applicant: ChangeListData[];
-};
-
 // Handler application
 
 export type Application = {
@@ -157,7 +152,7 @@ export type Application = {
   totalDeminimisAmount?: string;
   action?: APPLICATION_ACTIONS;
   changeReason?: string;
-  changes?: ApplicationChangesData;
+  changes?: ChangeListData[];
   decisionProposalDraft?: DecisionProposalDraft;
   handler?: User;
 } & ApplicationForm;
