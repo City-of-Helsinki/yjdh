@@ -31,6 +31,7 @@ import { convertToBackendDateFormat, parseDate } from 'shared/utils/date.utils';
 import { getNumberValue, stringToFloatValue } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
 
+import { useRouterNavigation } from './applicationHandling/useRouterNavigation';
 import { useApplicationFormContext } from './useApplicationFormContext';
 import useCreateApplicationQuery from './useCreateApplicationQuery';
 import useDeleteApplicationQuery from './useDeleteApplicationQuery';
@@ -130,6 +131,7 @@ const useFormActions = (
     useUpdateApplicationQuery();
 
   const { t } = useTranslation();
+  const { navigateBack } = useRouterNavigation(application.status);
 
   React.useEffect(() => {
     const error =
@@ -414,9 +416,9 @@ const useFormActions = (
         result?.employee?.first_name,
         result?.employee?.last_name
       );
+
       const applicantName = fullName ? `(${fullName})` : '';
       const applicationNumber = result?.application_number ?? '';
-
       hdsToast({
         autoDismissTime: 5000,
         type: 'success',
@@ -426,8 +428,8 @@ const useFormActions = (
           applicantName,
         }),
       });
+      await navigateBack();
 
-      await router.push('/');
       return result;
     } catch (error) {
       // useEffect will catch this error

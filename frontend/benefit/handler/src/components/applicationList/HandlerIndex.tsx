@@ -24,6 +24,15 @@ export interface ApplicationListProps {
 }
 const translationBase = 'common:applications.list.headings';
 
+const updateTabToUrl = (tabNumber: APPLICATION_LIST_TABS): void => {
+  const newUrl = `/?tab=${tabNumber}`;
+  window.history.replaceState(
+    { ...window.history.state, as: '/', url: newUrl },
+    '',
+    newUrl
+  );
+};
+
 const isBatchStatusHandlingComplete = (batchStatus: BATCH_STATUSES): boolean =>
   [
     BATCH_STATUSES.DECIDED_ACCEPTED,
