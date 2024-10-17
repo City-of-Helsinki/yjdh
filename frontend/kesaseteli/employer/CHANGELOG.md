@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v1.4.0...kesaseteli-employer-v1.4.1) (2024-10-17)
+
+
+### Bug Fixes
+
+* Bump nextjs version ([#3332](https://github.com/City-of-Helsinki/yjdh/issues/3332)) ([8c8935d](https://github.com/City-of-Helsinki/yjdh/commit/8c8935df53c61546fb1909da6bc1e1f6e9b8a1d3))
+
 ## [1.4.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v1.3.0...kesaseteli-employer-v1.4.0) (2024-07-27)
 
 
