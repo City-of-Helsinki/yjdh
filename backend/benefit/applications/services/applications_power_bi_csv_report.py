@@ -32,7 +32,8 @@ class ApplicationsPowerBiCsvService(ApplicationsCsvService):
     def get_alteration_amount(self, application: Application) -> float:
         sum = 0
         for alteration in application.alteration_set.all():
-            if alteration.recovery_amount:
+            # Only include alterations with recovery amount over 20€
+            if alteration.recovery_amount and alteration.recovery_amount > 20:
                 sum += alteration.recovery_amount
         return sum
 
