@@ -382,7 +382,7 @@ test('Handler handles the alteration from the last test properly', async (t: Tes
     )
     .ok();
   await t
-    .expect(item.find('dl dd').withText(getCurrencyString(180)).exists)
+    .expect(item.find('dl dd').withText(getCurrencyString(180, 0)).exists)
     .ok();
 });
 
