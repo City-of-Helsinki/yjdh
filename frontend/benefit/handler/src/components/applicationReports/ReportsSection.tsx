@@ -15,7 +15,8 @@ export type ReportsSectionProp = {
   withDivider?: boolean;
   header: string;
   buttonText: string;
-  onDownloadButtonClick: (type: ExportFileType) => void;
+  compactButtonText: string;
+  onDownloadButtonClick: (type: ExportFileType, isCompact:boolean) => void;
 };
 
 const ReportsSection: React.FC<ReportsSectionProp> = ({
@@ -23,6 +24,7 @@ const ReportsSection: React.FC<ReportsSectionProp> = ({
   children,
   header,
   buttonText,
+  compactButtonText,
   onDownloadButtonClick,
   withDivider = false,
 }) => {
@@ -56,9 +58,21 @@ const ReportsSection: React.FC<ReportsSectionProp> = ({
                 css={`
                   margin-top: ${theme.spacing.l};
                 `}
-                onClick={() => onDownloadButtonClick(exportFileType)}
+                onClick={() => onDownloadButtonClick(exportFileType, false)}
               >
                 {buttonText} {String(exportFileType).toUpperCase()}
+              </Button>
+            </$GridCell>
+            <$GridCell>
+              <Button
+                theme="coat"
+                iconLeft={<IconDownload />}
+                css={`
+                  margin-top: ${theme.spacing.l};
+                `}
+                onClick={() => onDownloadButtonClick(exportFileType, true)}
+              >
+                {compactButtonText}
               </Button>
             </$GridCell>
           </$Grid>
