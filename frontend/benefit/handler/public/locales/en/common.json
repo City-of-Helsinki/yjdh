@@ -1500,9 +1500,7 @@
       "main": "Raportointi",
       "downloadAcceptedApplications": "Hyväksytyt hakemukset joita ei ole vielä ladattu",
       "downloadRejectedApplications": "Hylätyt hakemukset joita ei ole vielä ladattu",
-      "downloadApplicationsInTimeRange": "Lataa kaikki hakemukset tietyltä ajalta",
-      "downloadSmallerListOfApplicationsInTimeRange": "Lataa kompaktimpi lista hakemuksista tietyltä ajalta"
-    },
+      "downloadApplicationsInTimeRange": "Lataa kaikki hakemukset tietyltä ajalta"    },
     "fields": {
       "lastDownloadDateText": "Ladattu viimeksi {{date}}",
       "startDate": "Alkaen",
@@ -1511,7 +1509,8 @@
     "buttons": {
       "downloadAcceptedApplications": "Hyväksytyt hakemukset",
       "downloadRejectedApplications": "Hylätyt hakemukset",
-      "downloadApplicationsInTimeRange": "Kaikki hakemukset valitulta ajalta"
+      "downloadApplicationsInTimeRange": "Kaikki hakemukset valitulta ajalta",
+      "downloadCompactList": "Lataa kompaktimpi lista hakemuksista"
     }
   },
   "login": {
