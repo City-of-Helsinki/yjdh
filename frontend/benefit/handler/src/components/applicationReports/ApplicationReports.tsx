@@ -28,50 +28,9 @@ const ApplicationReports: React.FC = () => {
         buttonText={`${t(
           `${translationsBase}.buttons.downloadApplicationsInTimeRange`
         )}`}
-        isCompact={false}
-      >
-        <$GridCell $colSpan={3} css="font-weight: 500;">{`${t(
-          `${translationsBase}.fields.startDate`
-        )}`}</$GridCell>
-        <$GridCell $colSpan={3} css="font-weight: 500;">{`${t(
-          `${translationsBase}.fields.endDate`
-        )}`}</$GridCell>
-        <$GridCell $colStart={1} $colSpan={3}>
-          <DateInputWithSeparator
-            id={`${t(`${translationsBase}.fields.startDate`)}`}
-            name={`${t(`${translationsBase}.fields.startDate`)}`}
-            placeholder={`${t(`${translationsBase}.fields.startDate`)}`}
-            value={convertToUIDateFormat(formik.values.startDate)}
-            onChange={(value) =>
-              formik.setFieldValue(fields.startDate.name, value)
-            }
-          />
-        </$GridCell>
-        <$GridCell $colSpan={3}>
-          <DateInput
-            id={`${t(`${translationsBase}.fields.endDate`)}`}
-            name={`${t(`${translationsBase}.fields.endDate`)}`}
-            placeholder={`${t(`${translationsBase}.fields.endDate`)}`}
-            value={convertToUIDateFormat(formik.values.endDate)}
-            onChange={(value) =>
-              formik.setFieldValue(
-                fields.endDate.name,
-                getCorrectEndDate(formik.values.startDate, value)
-              )
-            }
-          />
-        </$GridCell>
-      </ReportsSection>
-      <ReportsSection
-        exportFileType="csv"
-        onDownloadButtonClick={exportApplicationsInTimeRange}
-        header={`${t(
-          `${translationsBase}.headings.downloadSmallerListOfApplicationsInTimeRange`
+        compactButtonText={`${t(
+          `${translationsBase}.buttons.downloadCompactList`
         )}`}
-        buttonText={`${t(
-          `${translationsBase}.buttons.downloadApplicationsInTimeRange`
-        )}`}
-        isCompact={true}
       >
         <$GridCell $colSpan={3} css="font-weight: 500;">{`${t(
           `${translationsBase}.fields.startDate`
