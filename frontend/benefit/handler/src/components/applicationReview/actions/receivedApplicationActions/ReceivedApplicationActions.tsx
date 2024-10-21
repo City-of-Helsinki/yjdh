@@ -1,5 +1,5 @@
+import { useRouterNavigation } from 'benefit/handler/hooks/applicationHandling/useRouterNavigation';
 import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
-import useHandlerReviewActions from 'benefit/handler/hooks/useHandlerReviewActions';
 import useUpdateApplicationQuery from 'benefit/handler/hooks/useUpdateApplicationQuery';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application, ApplicationData } from 'benefit-shared/types/application';
@@ -24,7 +24,10 @@ const ReceivedApplicationActions: React.FC<Props> = ({
 }) => {
   const translationsBase = 'common:review.actions';
   const { t } = useTranslation();
-  const { onSaveAndClose } = useHandlerReviewActions(application);
+  const { navigateBack } = useRouterNavigation(
+    application?.status,
+    application?.batch?.status
+  );
 
   const { mutate: updateApplication } = useUpdateApplicationQuery();
 
@@ -61,14 +64,18 @@ const ReceivedApplicationActions: React.FC<Props> = ({
 
   return (
     <$Grid data-testid={dataTestId}>
+      <$GridCell>
+        <Button
+          onClick={() => navigateBack()}
+          theme="black"
+          variant="secondary"
+        >
+          {t(`${translationsBase}.close`)}
+        </Button>
+      </$GridCell>
       <$GridCell $colSpan={2}>
         <Button onClick={handleStatusChange} theme="coat">
           {t(`${translationsBase}.handle`)}
-        </Button>
-      </$GridCell>
-      <$GridCell>
-        <Button onClick={onSaveAndClose} theme="black" variant="secondary">
-          {t(`${translationsBase}.close`)}
         </Button>
       </$GridCell>
     </$Grid>
