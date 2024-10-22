@@ -1819,6 +1819,21 @@
       },
       "handledByAhjoAutomation": {
         "label": "Käsitelty Ahjo automaatiolla"
+      },
+      "officialCompanyStreetAddress": {
+        "label": "Katuosoite"
+      },
+      "companyName": {
+        "label": "Työantaja"
+      },
+      "officialCompanyPostcode": {
+        "label": "Postinumero"
+      },
+      "officialCompanyCity": {
+        "label": "Postitoimipaikka"
+      },
+      "companyForm": {
+        "label": "Yritysmuoto"
       }
     }
   }
