@@ -1,4 +1,5 @@
 import copy
+import logging
 import os
 from dataclasses import dataclass
 from datetime import date
@@ -23,6 +24,8 @@ XML_SCHEMA_PATH = os.path.join(
 SECRET_ATTACHMENT_TEMPLATE = "secret_decision.xml"
 
 AhjoXMLString = str
+
+LOGGER = logging.getLogger(__name__)
 
 
 class AhjoXMLBuilder:
@@ -60,14 +63,20 @@ class AhjoXMLBuilder:
             )  # This will raise an exception if the document is not valid
             return True  # Return True if no exception was raised
         except XMLSchemaParseError as e:
-            print(f"Schema Error: {e}")
+            LOGGER.error(
+                f"Decision proposal XML Schema Error for application {self.application.application_number}: {e}"
+            )
             raise
         except XMLSyntaxError as e:
-            print(f"XML Error: {e}")
+            LOGGER.error(
+                f"Decision proposal XML Syntax Error for application {self.application.application_number}: {e}"
+            )
             raise
         except etree.DocumentInvalid as e:
-            print(f"Validation Error: {e}")
-            return False  # Return False if the document is invalid
+            LOGGER.error(
+                f"Decision proposal Validation Error for application {self.application.application_number}: {e}"
+            )
+        return False  # Return False if the document is invalid
 
 
 class AhjoPublicXMLBuilder(AhjoXMLBuilder):
