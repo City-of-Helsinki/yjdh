@@ -740,6 +740,7 @@
         "accepted": "Hakemus on hyväksytty ja Helsinki-lisää on myönnetty aikavälille {{dateRangeStart}} – {{dateRangeEnd}}",
         "rejected": "Hakemus on hylätty. Helsinki-lisää ei myönnetä.",
         "handling": "Hakemus on käsittelyssä.",
+        "received": "Hakemus on vastaanotettu.",
         "cancelled": "Hakemus on peruttu.",
         "additional_information_needed": "Hakemus on käsittelyssä."
       },
