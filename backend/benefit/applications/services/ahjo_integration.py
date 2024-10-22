@@ -14,6 +14,8 @@ from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.core.files.base import ContentFile
 from django.db.models import QuerySet
 from django.urls import reverse
+from lxml import etree
+from lxml.etree import XMLSchemaParseError, XMLSyntaxError
 
 from applications.enums import (
     AhjoRequestType,
@@ -42,6 +44,7 @@ from applications.services.ahjo_client import (
     AhjoSubscribeDecisionRequest,
     AhjoUpdateRecordsRequest,
 )
+from applications.services.ahjo_error_writer import AhjoErrorWriter
 from applications.services.ahjo_payload import (
     prepare_attachment_records_payload,
     prepare_decision_proposal_payload,
@@ -551,6 +554,12 @@ def send_new_attachment_records_to_ahjo(
     return result, response_text
 
 
+class DecisionProposalError(Exception):
+    """Custom exception for errors in XML generation."""
+
+    pass
+
+
 def send_decision_proposal_to_ahjo(
     application: Application, ahjo_token: AhjoToken
 ) -> Union[Tuple[Application, str], None]:
@@ -568,19 +577,35 @@ def send_decision_proposal_to_ahjo(
 
     delete_existing_xml_attachments(application)
 
-    decision_xml = generate_application_attachment(
-        application, AttachmentType.DECISION_TEXT_XML, decision
-    )
-    secret_xml = generate_application_attachment(
-        application, AttachmentType.DECISION_TEXT_SECRET_XML
-    )
+    try:
+        decision_xml = generate_application_attachment(
+            application, AttachmentType.DECISION_TEXT_XML, decision
+        )
+        secret_xml = generate_application_attachment(
+            application, AttachmentType.DECISION_TEXT_SECRET_XML
+        )
 
-    data = prepare_decision_proposal_payload(
-        application=application,
-        decision_xml=decision_xml,
-        decision_text=decision,
-        secret_xml=secret_xml,
-    )
+        data = prepare_decision_proposal_payload(
+            application=application,
+            decision_xml=decision_xml,
+            decision_text=decision,
+            secret_xml=secret_xml,
+        )
+    except XMLSchemaParseError as e:
+        AhjoErrorWriter.write_error_to_ahjo_status(application, str(e))
+        return (None, None)
+    except XMLSyntaxError as e:
+        AhjoErrorWriter.write_error_to_ahjo_status(application, str(e))
+        return (None, None)
+    except etree.DocumentInvalid as e:
+        AhjoErrorWriter.write_error_to_ahjo_status(application, str(e))
+        return (None, None)
+    except DecisionProposalError as e:
+        LOGGER.error(
+            f"Error in generating decision proposal payload\
+        for application {application.application_number}: {e}"
+        )
+        return (None, None)
     response, response_text = ahjo_client.send_request_to_ahjo(data)
     return response, response_text
 
