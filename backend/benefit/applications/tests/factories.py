@@ -248,6 +248,7 @@ class HandlingApplicationFactory(ReceivedApplicationFactory):
     @factory.post_generation
     def calculation(self, created, extracted, **kwargs):
         from calculator.tests.factories import (  # avoid circular import
+            InstalmentFactory,
             PaySubsidyFactory,
         )
 
@@ -266,6 +267,20 @@ class HandlingApplicationFactory(ReceivedApplicationFactory):
             application=self,
             start_date=self.calculation.start_date,
             end_date=self.calculation.end_date,
+        )
+
+        InstalmentFactory(
+            calculation=self.calculation,
+            instalment_number=1,
+            amount=9600.00,
+            due_date=self.start_date,
+        )
+
+        InstalmentFactory(
+            calculation=self.calculation,
+            instalment_number=2,
+            amount=2000.00,
+            due_date=self.start_date + timedelta(days=30),
         )
         self.calculation.calculate()
         self.status = previous_status

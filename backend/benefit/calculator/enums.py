@@ -28,3 +28,12 @@ class DescriptionType(models.TextChoices):
     DATE = "date", _("Basic date range description")
     DATE_TOTAL = "date_total", _("Date range description for total row")
     DEDUCTION = "deduction", _("Deduction description")
+
+
+class InstalmentStatus(models.TextChoices):
+    WAITING = "waiting", _("Waiting")
+    ACCEPTED = "accepted", _("Accepted")
+    PAID = "paid", _("Paid")
+    CANCELLED = "cancelled", _("Cancelled")
+    ERROR_IN_TALPA = "error_in_talpa", _("Error in TALPA")
+    COMPLETED = "completed", _("Completed")
