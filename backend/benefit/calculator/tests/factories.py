@@ -9,6 +9,7 @@ from calculator.enums import RowType
 from calculator.models import (
     Calculation,
     CalculationRow,
+    Instalment,
     PaySubsidy,
     PreviousBenefit,
     STATE_AID_MAX_PERCENTAGE_CHOICES,
@@ -142,3 +143,32 @@ class PreviousBenefitFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = PreviousBenefit
+
+
+class InstalmentFactory(factory.django.DjangoModelFactory):
+    due_date = (
+        factory.Faker(
+            "date_between_dates",
+            date_start=date(date.today().year, 1, 1),
+            date_end=date.today() + timedelta(days=100),
+        ),
+    )
+
+    class Meta:
+        model = Instalment
+
+
+class CalculationWithInstalmentsFactory(CalculationFactory):
+    instalment_1 = factory.RelatedFactory(
+        InstalmentFactory,
+        instalment_number=1,
+        amount=decimal.Decimal("9600"),
+        factory_related_name="calculation",
+    )
+
+    instalment_2 = factory.RelatedFactory(
+        InstalmentFactory,
+        instalment_numberr=2,
+        amount=decimal.Decimal("2000"),
+        factory_related_name="calculation",
+    )
