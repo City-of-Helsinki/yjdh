@@ -30,9 +30,9 @@ from common.utils import hash_file
 def test_prepare_case_title(decided_application):
     application = decided_application
     wanted_title = f"Avustukset työnantajille, työllisyyspalvelut, \
-Helsinki-lisä, {application.company_name}, \
+Helsinki-lisä, {application.company.name}, \
 hakemus {application.application_number}"
-    got = prepare_case_title(application, decided_application.company_name)
+    got = prepare_case_title(application, decided_application.company.name)
     assert wanted_title == got
 
 
@@ -68,7 +68,8 @@ def test_prepare_final_case_title_truncate(
     decided_application, company_name, limit, expected_length
 ):
     application = decided_application
-    application.company_name = company_name
+    application.company.name = company_name
+    application.company.save()
     assert len(prepare_final_case_title(application, limit)) <= expected_length
 
 

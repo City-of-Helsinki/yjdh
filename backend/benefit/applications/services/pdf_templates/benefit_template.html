@@ -28,7 +28,7 @@
     %}
     <tr>
         <td>{{ app.ahjo_application_number }}</td>
-        <td>{{ app.company_name }}</td>
+        <td>{{ app.company.name }}</td>
         <td>{{ app.company.business_id }}</td>
         {% if show_employee_names %}
         <td>{{ app.employee.first_name }} {{ app.employee.last_name }}</td>
@@ -58,7 +58,7 @@
     {% else %} {% for ahjo_row in app.ahjo_rows %}
     <tr>
         <td>{{ app.ahjo_application_number }}</td>
-        <td>{{ app.company_name }}</td>
+        <td>{{ app.company.name }}</td>
         <td>{{ app.company.business_id }}</td>
         {% if show_employee_names %}
         <td>{{ app.employee.first_name }} {{ app.employee.last_name }}</td>
