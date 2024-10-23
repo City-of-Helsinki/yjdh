@@ -9,6 +9,8 @@ const FooterSection: React.FC = () => {
   const { t } = useTranslation();
   const locale = useLocale();
 
+  return null;
+
   return (
     <$FooterWrapper>
       <Footer title={t('common:appName')} theme="dark">

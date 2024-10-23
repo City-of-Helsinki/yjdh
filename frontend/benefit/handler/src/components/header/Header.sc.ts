@@ -1,4 +1,4 @@
-import BaseHeader from 'shared/components/header/Header';
+import BaseHeader from 'shared/components/header/HeaderV3';
 import { respondAbovePx } from 'shared/styles/mediaQueries';
 import styled from 'styled-components';
 
