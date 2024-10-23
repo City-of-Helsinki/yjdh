@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.14.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.14.0...benefit-applicant-v3.14.1) (2024-10-23)
+
+
+### Bug Fixes
+
+* Resolve issues in alteration sum for the applicant (hl-1504 cont.) ([#3446](https://github.com/City-of-Helsinki/yjdh/issues/3446)) ([09ff6c0](https://github.com/City-of-Helsinki/yjdh/commit/09ff6c0cabc1c1aba1f6424e5f140344ff3d7753))
+
 ## [3.14.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.13.0...benefit-applicant-v3.14.0) (2024-10-16)
 
 
