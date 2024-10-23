@@ -279,7 +279,7 @@ class AhjoApiClient:
             )
         return None, None
 
-    def handle_http_error(self, e: requests.exceptions.HTTPError) -> Tuple[None, dict]:
+    def handle_http_error(self, e: requests.exceptions.HTTPError) -> None:
         """Handle HTTP errors that occur when sending a request to Ahjo.
         Also log any validation errors received from Ahjo.
         """
@@ -292,13 +292,10 @@ class AhjoApiClient:
         if hasattr(self._request, "application"):
             application_number = self._request.application.application_number
 
-            error_message = f"A HTTP error occurred while sending {self._request} for application \
-    {application_number} to Ahjo: {e}"
+            error_message = self.format_error_message(e, application_number)
 
         else:
-            error_message = (
-                f"A HTTP error occurred while sending {self._request} to Ahjo: {e}"
-            )
+            error_message = self.format_error_message(e)
 
         if error_json:
             error_message += f" Error message: {error_json}"
@@ -307,3 +304,11 @@ class AhjoApiClient:
             status.save()
 
         LOGGER.error(error_message)
+
+    def format_error_message(
+        self,
+        e: Union[requests.exceptions.HTTPError, requests.exceptions.RequestException],
+        application_number: Union[int, None] = None,
+    ) -> str:
+        return f"A HTTP or network error occurred while sending {self.request} for application \
+    {application_number} to Ahjo: {e}"
