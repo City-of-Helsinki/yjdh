@@ -3383,9 +3383,9 @@
   integrity sha512-gkq7Ns2FcrOCRq7Q+VRYt5saMt2R9g4REAtWy/jEevJ5UV5vA2AiGnYDmxwAkHutoYU0sAUkjqx37wE0wpamNw==
 
 "@tiptap/extension-history@^2.2.4":
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/@tiptap/extension-history/-/extension-history-2.2.4.tgz#2d37ccfce9a8b7997bb4d46ebb19e986c5eb6f39"
-  integrity sha512-FDM32XYF5NU4mzh+fJ8w2CyUqv0l2Nl15sd6fOhQkVxSj8t57z+DUXc9ZR3zkH+1RAagYJo/2Gu3e99KpMr0tg==
+  version "2.9.1"
+  resolved "https://registry.yarnpkg.com/@tiptap/extension-history/-/extension-history-2.9.1.tgz#7e60f4add5cdcbfa18a2edb7e9571c72f4c9c31a"
+  integrity sha512-wp9qR1NM+LpvyLZFmdNaAkDq0d4jDJ7z7Fz7icFQPu31NVxfQYO3IXNmvJDCNu8hFAbImpA5aG8MBuwzRo0H9w==
 
 "@tiptap/extension-paragraph@^2.2.4":
   version "2.2.4"
