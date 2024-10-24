@@ -38,10 +38,10 @@ const Header: React.FC = () => {
     <$BaseHeader
       title={t('common:appName')}
       customItems={[
+        <HeaderNotifier />,
         process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT !== 'production' ? (
           <TemporaryAhjoModeSwitch />
         ) : null,
-        <HeaderNotifier />,
       ]}
       titleUrl={ROUTES.HOME}
       skipToContentLabel={t('common:header.linkSkipToContent')}

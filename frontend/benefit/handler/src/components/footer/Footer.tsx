@@ -13,6 +13,7 @@ const FooterSection: React.FC = () => {
   if (!isFooterVisible) {
     return null;
   }
+  return null;
 
   return (
     <$FooterWrapper layoutBackgroundColor={layoutBackgroundColor}>
