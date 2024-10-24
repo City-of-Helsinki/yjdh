@@ -1,15 +1,11 @@
+from dataclasses import dataclass, field
 from datetime import datetime
 from typing import List
 
 from django.conf import settings
 from django.urls import reverse
 
-from applications.enums import (
-    AhjoRecordTitle,
-    AhjoRecordType,
-    AhjoRequestType,
-    AttachmentType,
-)
+from applications.enums import AhjoRecordTitle, AhjoRecordType, AttachmentType
 from applications.models import (
     AhjoDecisionText,
     Application,
@@ -22,40 +18,164 @@ from users.models import User
 MANNER_OF_RECEIPT = "sähköinen asiointi"
 
 
-def _prepare_record_title(
-    application: Application,
-    record_type: AhjoRecordType,
-    request_type: AhjoRequestType,
-    current: int = 0,
-    total: int = 0,
-) -> str:
-    """Prepare the title for the application record in Ahjo in the required format:
-    If the request type is an update or adding new records, add the word "täydennys" to the title.
-    For example:
-        for open case:
-            Hakemus 22.8.2024, 125xxx
-        for adding new records:
-            Hakemus, täydennys (päivämäärä jolloin täydennys saapunut), 125xxx
-        and for attachments in the open case request:
-            Hakemus 26.3.2024, liite 1/1, 123xxx
+@dataclass
+class AhjoTitle:
     """
-    formatted_date = application.created_at.strftime("%d.%m.%Y")
+    Base class for creating title strings for various record types related to an application.
 
-    if (
-        request_type == AhjoRequestType.OPEN_CASE
-        and record_type == AhjoRecordType.APPLICATION
-    ):
-        return f"{AhjoRecordTitle.APPLICATION} {formatted_date}, {application.application_number}"
-    elif (
-        request_type == AhjoRequestType.UPDATE_APPLICATION
-        and record_type == AhjoRecordType.APPLICATION
-    ) or (
-        request_type == AhjoRequestType.ADD_RECORDS
-        and record_type == AhjoRecordType.ATTACHMENT
-    ):
-        return f"{AhjoRecordTitle.APPLICATION}, täydennys {formatted_date}, {application.application_number}"
+    Attributes:
+        application (Application): The application object that contains details
+        like created or modified date, and application number.
+        prefix (str): A string to be added before the date in the title.
+        suffix (str): A string to be added after the date in the title.
+    """
 
-    return f"{AhjoRecordTitle.APPLICATION} {formatted_date}, liite {current}/{total}, {application.application_number}"
+    application: Application = None
+    prefix: str = ""
+    suffix: str = ""
+
+    def format_title_string(self, formatted_date: str, application_number: str) -> str:
+        """
+        Formats the title string using the provided date and application number.
+
+        Args:
+            formatted_date (str): A formatted string representing the date.
+            application_number (str): The application number as a string.
+
+        Returns:
+            str: A formatted title string that includes the prefix, date, suffix, and application number.
+        """
+        return f"{AhjoRecordTitle.APPLICATION}{self.prefix} {formatted_date},{self.suffix} {application_number}"
+
+
+@dataclass
+class OpenCaseRecordTitle(AhjoTitle):
+    """
+    A class for creating the title of an open case record.
+
+    Inherits from AhjoTitle. Uses the application's creation date and application number to format the title.
+
+    Methods:
+        __str__(): Returns the formatted string representation of the open case title.
+    """
+
+    def __str__(self):
+        """
+        Returns a formatted title string for an open case, using the application's creation date and application number.
+
+        Returns:
+            str: The formatted title string.
+        """
+        formatted_date = self.application.created_at.strftime("%d.%m.%Y")
+        return self.format_title_string(
+            formatted_date, self.application.application_number
+        )
+
+
+@dataclass
+class UpdateRecordsRecordTitle(AhjoTitle):
+    """
+    A class for creating the title of an update record.
+
+    Inherits from AhjoTitle. Uses the application's modification date and application number to format the title.
+    The prefix is set to ", täydennys," by default.
+
+    Attributes:
+        prefix (str): A default string ", täydennys," that is used in the title of update records.
+
+    Methods:
+        __str__(): Returns the formatted string representation of the update record title.
+    """
+
+    prefix: str = field(default=", täydennys,")
+
+    def __str__(self):
+        """
+        Returns a formatted title string for an update record,
+        using the application's modification date and application number.
+
+        Returns:
+            str: The formatted title string.
+        """
+        modified_at = self.application.modified_at
+        formatted_date = modified_at.strftime("%d.%m.%Y")
+        return self.format_title_string(
+            formatted_date, self.application.application_number
+        )
+
+
+@dataclass
+class AddRecordsRecordTitle(AhjoTitle):
+    """
+    A class for creating the title of an additional record sent after the initial open case request.
+
+    Inherits from AhjoTitle. Uses the application's creation date and application number to format the title.
+    The prefix is set to ", täydennys," by default.
+
+    Attributes:
+        prefix (str): A default string ", täydennys," that is used in the title of additional records.
+
+    Methods:
+        __str__(): Returns the formatted string representation of the additional record title.
+    """
+
+    prefix: str = field(default=", täydennys,")
+
+    def __str__(self):
+        """
+        Returns a formatted title string for an additional record,
+        using the application's creation date and application number.
+
+        Returns:
+            str: The formatted title string.
+        """
+        formatted_date = self.application.created_at.strftime("%d.%m.%Y")
+        return self.format_title_string(
+            formatted_date, self.application.application_number
+        )
+
+
+@dataclass
+class AhjoBaseRecordTitle(AhjoTitle):
+    """
+    A class for creating the title of a basic attachment/record
+    with a suffix indicating the current item and total items.
+
+    Inherits from AhjoTitle.
+    This class adds a suffix that indicates how many parts (e.g., "liite 1/5") are in the document.
+
+    Attributes:
+        current (int): The current item number in the list of records.
+        total (int): The total number of items.
+
+    Methods:
+        set_suffix(): Updates the suffix to include the current and total numbers.
+        __str__(): Returns the formatted string representation of the base record title.
+    """
+
+    current: int = 0
+    total: int = 0
+
+    def set_suffix(self):
+        """
+        Updates the suffix with the current and total items, forming a string like "liite 1/5".
+        """
+        self.suffix = f" liite {self.current}/{self.total},"
+
+    def __str__(self):
+        """
+        Returns a formatted title string for a base record,
+        using the application's modification date and application number.
+        The suffix includes the current and total items.
+
+        Returns:
+            str: The formatted title string.
+        """
+        self.set_suffix()
+        formatted_date = self.application.modified_at.strftime("%d.%m.%Y")
+        return self.format_title_string(
+            formatted_date, self.application.application_number
+        )
 
 
 def prepare_case_title(application: Application, company_name: str) -> str:
@@ -222,9 +342,7 @@ def _prepare_case_records(
     )
 
     main_document_record = _prepare_record(
-        record_title=_prepare_record_title(
-            application, AhjoRecordType.APPLICATION, AhjoRequestType.OPEN_CASE
-        ),
+        record_title=f"{OpenCaseRecordTitle(application)}",
         record_type=AhjoRecordType.APPLICATION,
         acquired=application.created_at.isoformat("T", "seconds"),
         documents=[_prepare_record_document_dict(pdf_summary)],
@@ -250,13 +368,7 @@ def _prepare_case_records(
         )
 
         document_record = _prepare_record(
-            record_title=_prepare_record_title(
-                application,
-                AhjoRecordType.ATTACHMENT,
-                AhjoRequestType.OPEN_CASE,
-                position,
-                total_attachments,
-            ),
+            record_title=f"{AhjoBaseRecordTitle(application=application,  current=position, total=total_attachments)}",
             record_type=AhjoRecordType.ATTACHMENT,
             acquired=attachment.created_at.isoformat("T", "seconds"),
             documents=[_prepare_record_document_dict(attachment)],
@@ -288,18 +400,11 @@ def prepare_attachment_records_payload(
     language = resolve_payload_language(application)
 
     attachment_list = []
-    position = 1
-    total_attachments = len(attachments)
+
     for attachment in attachments:
         attachment_list.append(
             _prepare_record(
-                record_title=_prepare_record_title(
-                    application,
-                    AhjoRecordType.ATTACHMENT,
-                    AhjoRequestType.ADD_RECORDS,
-                    position,
-                    total_attachments,
-                ),
+                record_title=f"{AddRecordsRecordTitle(application)}",
                 record_type=AhjoRecordType.ATTACHMENT,
                 acquired=attachment.created_at.isoformat("T", "seconds"),
                 documents=[_prepare_record_document_dict(attachment)],
@@ -307,7 +412,6 @@ def prepare_attachment_records_payload(
                 language=language,
             )
         )
-        position += 1
 
     return {"records": attachment_list}
 
@@ -325,11 +429,7 @@ def prepare_update_application_payload(
     return {
         "records": [
             _prepare_record(
-                record_title=_prepare_record_title(
-                    application,
-                    AhjoRecordType.APPLICATION,
-                    AhjoRequestType.UPDATE_APPLICATION,
-                ),
+                record_title=f"{UpdateRecordsRecordTitle(application)}",
                 record_type=AhjoRecordType.APPLICATION,
                 acquired=pdf_summary.created_at.isoformat("T", "seconds"),
                 documents=[_prepare_record_document_dict(pdf_summary)],
