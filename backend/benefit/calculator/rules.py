@@ -4,9 +4,10 @@ import decimal
 import logging
 from typing import Union
 
+from django.conf import settings
 from django.db import transaction
 
-from applications.enums import ApplicationStatus, BenefitType
+from applications.enums import ApplicationStatus, BenefitType, PaySubsidyGranted
 from calculator.enums import DescriptionType, RowType
 from calculator.models import (
     Calculation,
@@ -218,6 +219,29 @@ class SalaryBenefitCalculator2023(HelsinkiBenefitCalculator):
     PAY_SUBSIDY_MAX_FOR_70_PERCENT = 1770
     PAY_SUBSIDY_MAX_FOR_50_PERCENT = 1260
     SALARY_BENEFIT_MAX = 800
+    SALARY_BENEFIT_NEW_MAX = settings.SALARY_BENEFIT_NEW_MAX
+
+    @property
+    def is_subsidised(self) -> bool:
+        return (
+            self.calculation.application.pay_subsidy_granted
+            in [PaySubsidyGranted.GRANTED, PaySubsidyGranted.GRANTED_AGED]
+            or self.calculation.application.pay_subsidies.exists()
+        )
+
+    @property
+    def max_monthly_benefit(self) -> int:
+        """If the pay subsidy or subsidy for persons aged 55 or older has been granted,
+        the maximum amount of the salary benefit is 800 euros per month.
+        Otherwise it will be the new maximum amount."""
+        # Enable the new maximum amount only if the instalments are enabled
+        if settings.PAYMENT_INSTALMENTS_ENABLED is False:
+            return self.SALARY_BENEFIT_MAX
+
+        if self.is_subsidised:
+            return int(self.SALARY_BENEFIT_MAX)
+        else:
+            return int(self.SALARY_BENEFIT_NEW_MAX)
 
     def can_calculate(self):
         if not all(
@@ -306,7 +330,7 @@ class SalaryBenefitCalculator2023(HelsinkiBenefitCalculator):
 
             self._create_row(
                 SalaryBenefitMonthlyRow,
-                max_benefit=self.SALARY_BENEFIT_MAX,
+                max_benefit=self.max_monthly_benefit,
                 monthly_deductions=monthly_deductions,
             )
             self._create_row(
