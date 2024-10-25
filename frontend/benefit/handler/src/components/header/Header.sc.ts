@@ -7,6 +7,17 @@ export const $BaseHeader = styled(BaseHeader)`
   background: #1a1a1a;
 `;
 
+export const $HeaderCustomItems = styled.ul`
+  display: flex;
+  align-items: center;
+  margin-right: var(--spacing-s);
+  list-style-type: none;
+  margin: 0;
+  > li {
+    margin-right: var(--spacing-xs);
+  }
+`;
+
 export const $ToggleButton = styled.button`
   all: initial;
   border-radius: 50%;
