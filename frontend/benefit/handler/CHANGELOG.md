@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.4.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.4.0...benefit-handler-v4.4.1) (2024-10-25)
+
+
+### Bug Fixes
+
+* Chrome v130 crashes on startup ([#3450](https://github.com/City-of-Helsinki/yjdh/issues/3450)) ([cad4466](https://github.com/City-of-Helsinki/yjdh/commit/cad44663f83bf1a90f4158c68c4f8b4a069ccfe8))
+
 ## [4.4.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.3.0...benefit-handler-v4.4.0) (2024-10-16)
 
 
