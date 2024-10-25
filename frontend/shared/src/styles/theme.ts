@@ -3,7 +3,7 @@ import { DefaultTheme } from 'styled-components';
 const tokens = {
   coatOfArms: 'var(--color-coat-of-arms)',
   fog: 'var(--color-fog)',
-  danger: 'var(--color-error)'
+  danger: 'var(--color-error)',
 };
 
 const componentColors = {
@@ -20,7 +20,7 @@ const componentColors = {
   },
   modal: {
     base: tokens.coatOfArms,
-    danger: tokens.danger
+    danger: tokens.danger,
   },
 };
 
@@ -160,6 +160,9 @@ const theme: DefaultTheme = {
     m: '768px',
     l: '992px',
     xl: '1248px',
+  },
+  headerWidth: {
+    max: '1260px',
   },
   contentWidth: {
     max: '1240px',

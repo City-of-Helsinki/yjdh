@@ -147,6 +147,9 @@ declare module 'styled-components' {
       l: '992px';
       xl: '1248px';
     };
+    headerWidth: {
+      max: '1260px';
+    };
     contentWidth: {
       max: '1240px';
     };
