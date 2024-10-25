@@ -6,7 +6,7 @@ import { Button, IconLock, IconSpeechbubbleText } from 'hds-react';
 import noop from 'lodash/noop';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import BaseHeader from 'shared/components/header/Header';
+import BaseHeader from 'shared/components/header/HeaderV3';
 import { getFullName } from 'shared/utils/application.utils';
 
 import Messenger from '../messenger/Messenger';
