@@ -12,7 +12,7 @@ from applications.models import Application
 from applications.services.applications_power_bi_csv_report import (
     ApplicationsPowerBiCsvService,
 )
-from common.authentications import RobotBasicAuthentication
+from common.authentications import PowerBiAuthentication
 
 LOGGER = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ class ApplicationPowerBiFilter(filters.FilterSet):
 
 
 class PowerBiIntegrationView(APIView):
-    authentication_classes = [RobotBasicAuthentication]
+    authentication_classes = [PowerBiAuthentication]
     permission_classes = [AllowAny]
     filter_backends = [DjangoFilterBackend]
     filterset_class = ApplicationPowerBiFilter
