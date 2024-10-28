@@ -1441,11 +1441,11 @@ msgstr "Ruotsi"
 
 #, python-brace-format
 msgid ""
-"Your application has been opened for editing. Please make the corrections by "
+"Your application has been opened for editing. Please make the corrections and send application again by "
 "{additional_information_needed_by}, otherwise the application cannot be "
 "processed."
 msgstr ""
-"Hakemuksesi on avattu muokattavaksi. Tee korjaukset viimeistään "
+"Hakemuksesi on avattu muokattavaksi. Tee korjaukset ja lähetä lomake uudelleen viimeistään "
 "{additional_information_needed_by} mennessä, muuten hakemusta ei voida "
 "käsitellä."
 
