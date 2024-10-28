@@ -1,4 +1,3 @@
-import { ROUTES } from 'benefit/handler/constants';
 import AppContext from 'benefit/handler/context/AppContext';
 import {
   CalculationFormProps,
@@ -8,13 +7,13 @@ import { Application, ApplicationData } from 'benefit-shared/types/application';
 import { ErrorData } from 'benefit-shared/types/common';
 import camelcaseKeys from 'camelcase-keys';
 import isEmpty from 'lodash/isEmpty';
-import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
 import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import { stringToFloatValue } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
 
+import { useRouterNavigation } from './applicationHandling/useRouterNavigation';
 import { useApplicationActions } from './useApplicationActions';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 
@@ -31,8 +30,6 @@ const useHandlerReviewActions = (
   setCalculationErrors?: React.Dispatch<React.SetStateAction<ErrorData>>
 ): HandlerReviewActions => {
   const updateApplicationQuery = useUpdateApplicationQuery();
-
-  const router = useRouter();
 
   const { handledApplication } = React.useContext(AppContext);
 
@@ -190,8 +187,10 @@ const useHandlerReviewActions = (
     void updateApplicationQuery.mutate(getSalaryBenefitData(values));
   };
 
+  const { navigateBack } = useRouterNavigation(application.status);
+
   const onSaveAndClose = (): void => {
-    void router.push(ROUTES.HOME);
+    void navigateBack();
   };
 
   return {

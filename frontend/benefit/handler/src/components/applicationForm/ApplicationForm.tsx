@@ -1,4 +1,5 @@
 import { ROUTES } from 'benefit/handler/constants';
+import { useRouterNavigation } from 'benefit/handler/hooks/applicationHandling/useRouterNavigation';
 import { useApplicationFormContext } from 'benefit/handler/hooks/useApplicationFormContext';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import {
@@ -64,6 +65,8 @@ const ApplicationForm: React.FC = () => {
   } = useApplicationForm();
 
   const { isFormActionEdit, isFormActionNew } = useApplicationFormContext();
+
+  const { navigateBack } = useRouterNavigation(application.status);
 
   const stepperCss = {
     'pointer-events': 'none',
@@ -245,7 +248,7 @@ const ApplicationForm: React.FC = () => {
               <Button
                 theme="coat"
                 variant="primary"
-                onClick={() => router.push(ROUTES.HOME)}
+                onClick={() => navigateBack()}
                 data-testid="modalBack"
               >
                 {t(`${translationsBase}.backWithoutSaving`)}

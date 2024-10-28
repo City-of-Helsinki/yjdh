@@ -6,6 +6,7 @@ import {
   StepActionType,
   StepStateType,
 } from 'benefit/handler/hooks/applicationHandling/useHandlingStepper';
+import { useRouterNavigation } from 'benefit/handler/hooks/applicationHandling/useRouterNavigation';
 import useCloneApplicationMutation from 'benefit/handler/hooks/useCloneApplicationMutation';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
@@ -73,6 +74,12 @@ const HandlingApplicationActions: React.FC<Props> = ({
     onDoneConfirmation,
   } = useHandlingApplicationActions(application);
 
+  const { navigateBack } = useRouterNavigation(
+    application?.status,
+    application?.batch?.status,
+    application?.archived
+  );
+
   const lastStep =
     stepState.activeStepIndex === Number(stepState.steps?.length) - 1;
   const router = useRouter();
@@ -88,9 +95,13 @@ const HandlingApplicationActions: React.FC<Props> = ({
     (): void =>
       void router.push({
         pathname: '/',
-        query: { tab: APPLICATION_LIST_TABS.HANDLING },
+        query: {
+          tab: APPLICATION_LIST_TABS[
+            application?.status as unknown as keyof typeof APPLICATION_LIST_TABS
+          ],
+        },
       }),
-    [router]
+    [router, application.status]
   );
 
   const effectSaveAndClose = (): void => {
@@ -99,7 +110,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
       isSavingAndClosing
     ) {
       setIsSavingAndClosing(false);
-      navigateToIndex();
+      void navigateBack();
     }
   };
 
@@ -136,6 +147,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
     stepState.activeStepIndex,
     isSavingAndClosing,
     navigateToIndex,
+    navigateBack,
   ]);
   React.useEffect(() => {
     setIsSavingAndClosing(false);
@@ -256,7 +268,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
     setIsSavingAndClosing(true);
   };
 
-  const handleClose = (): void => navigateToIndex();
+  const handleClose = (): void => void navigateBack();
 
   const { data: clonedData, mutate: cloneApplication } =
     useCloneApplicationMutation();
@@ -325,7 +337,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
             <Button
               onClick={openDialog}
               theme="black"
-              disabled={isApplicationReadOnly}
+              disabled={isApplicationReadOnly && !application.ahjoCaseId}
               variant="supplementary"
               iconLeft={<IconTrash />}
             >
