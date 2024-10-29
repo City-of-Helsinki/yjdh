@@ -644,7 +644,8 @@
         },
         "changeReason": {
           "label": "Selvitys",
-          "placeholder": "Syy muokkaukseen"
+          "placeholder": "Syy muokkaukseen",
+          "additionalInformationRequired": "Lisätietoja vaadittu"
         }
       },
       "salaryExpensesExplanation": "Ilmoita bruttopalkka, sivukulut ja lomaraha euroina kuukaudessa.",
@@ -1835,6 +1836,9 @@
       },
       "companyForm": {
         "label": "Yritysmuoto"
+      },
+      "status": {
+        "label": "Tila"
       }
     }
   }

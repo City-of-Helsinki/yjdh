@@ -18,6 +18,7 @@ import {
 import {
   formatOrTranslateValue,
   prepareChangeFieldName,
+  translateChangeFieldMeta,
   translateLabelFromPath,
 } from '../applicationForm/reviewChanges/utils';
 
@@ -44,15 +45,15 @@ const ChangeSet: React.FC<ChangeSetProps> = ({ data }: ChangeSetProps) => {
   );
 
   return (
-    <$ChangeSet>
+    <$ChangeSet isChangeByStaff={user.staff}>
       <$ChangeSetHeader>
-        <span>{user}</span>
+        <span>{user.name}</span>
         <span>{convertToUIDateAndTimeFormat(date)}</span>
       </$ChangeSetHeader>
       <dl>
         {changes.map((change: ChangeData) => (
           <React.Fragment
-            key={`${date}-${reason}-${user}-${change?.field}-${change?.old}-${change?.new}`}
+            key={`${date}-${reason}-${user.name}-${change?.field}-${change?.old}-${change?.new}`}
           >
             <$ChangeRowLabel>
               <$ViewFieldBold>
@@ -85,6 +86,9 @@ const ChangeSet: React.FC<ChangeSetProps> = ({ data }: ChangeSetProps) => {
                   change.new,
                   prepareChangeFieldName(change.field)
                 )}
+                {change.meta
+                  ? ` (${translateChangeFieldMeta(t, change.meta)})`
+                  : null}
               </span>
             </$ChangeRowValue>
           </React.Fragment>
@@ -105,7 +109,11 @@ const ChangeSet: React.FC<ChangeSetProps> = ({ data }: ChangeSetProps) => {
         <$ViewField>
           {isAttachmentChange
             ? t('common:changes.fields.attachments.newAttachment')
-            : formatOrTranslateValue(t, reason)}
+            : user.staff
+            ? formatOrTranslateValue(t, reason)
+            : t(
+                'common:applications.sections.fields.changeReason.additionalInformationRequired'
+              )}
         </$ViewField>
       </$ChangeSetFooter>
     </$ChangeSet>

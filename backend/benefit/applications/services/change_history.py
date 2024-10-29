@@ -1,24 +1,15 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django.db.models import Q
-from django.utils.translation import gettext_lazy as _
 from simple_history.models import ModelChange
 
 from applications.enums import ApplicationStatus
-from applications.models import (
-    Application,
-    ApplicationLogEntry,
-    Attachment,
-    DeMinimisAid,
-    Employee,
-)
-from shared.audit_log.models import AuditLogEntry
+from applications.models import Application, ApplicationLogEntry
 from users.models import User
 
 DISABLE_DE_MINIMIS_AIDS = True
 EXCLUDED_APPLICATION_FIELDS = (
     "application_step",
-    "status",
     "pay_subsidy_percent",
 )
 
@@ -27,13 +18,6 @@ EXCLUDED_EMPLOYEE_FIELDS = (
     "encrypted_last_name",
     "encrypted_social_security_number",
 )
-
-
-def _get_handlers(as_ids: bool = False) -> list:
-    return [
-        (user.id if as_ids else user)
-        for user in User.objects.filter(Q(is_staff=True) | Q(is_superuser=True))
-    ]
 
 
 def _parse_change_values(value, field):
@@ -60,139 +44,6 @@ def _format_change_dict(change: ModelChange, relation_name: str = None) -> dict:
     }
 
 
-def _get_application_change_history_between_timestamps(
-    ts_start: datetime, ts_end: datetime, application: Application
-) -> list:
-    """
-    Change history between two timestamps. Related objects handled here
-    separately (employee, attachments, de_minimis_aid_set).
-
-    One-to-many related objects are handled in a way if there's new or modified
-    objects between the above mentioned status changes, the field in question
-    is considered changed. In this case field is added to the changes list and
-    old/new values set to None. The fields that are like this are attachments
-    and de_minimis_aid_set.
-    """
-    employee = application.employee
-    try:
-        hist_application_when_start_editing = application.history.as_of(
-            ts_start
-        )._history
-        hist_application_when_stop_editing = application.history.as_of(ts_end)._history
-        hist_employee_when_start_editing = employee.history.as_of(ts_start)._history
-        hist_employee_when_stop_editing = employee.history.as_of(ts_end)._history
-    except Employee.DoesNotExist:
-        return []
-    except Application.DoesNotExist:
-        return []
-
-    new_or_edited_attachments = Attachment.objects.filter(
-        Q(created_at__gte=ts_start) | Q(modified_at=ts_start),
-        Q(created_at__lte=ts_end) | Q(modified_at__lte=ts_end),
-        application=application,
-    )
-
-    new_or_edited_de_minimis_aids = []
-    if not DISABLE_DE_MINIMIS_AIDS:
-        new_or_edited_de_minimis_aids = DeMinimisAid.objects.filter(
-            Q(created_at__gte=ts_start) | Q(modified_at=ts_start),
-            Q(created_at__lte=ts_end) | Q(modified_at__lte=ts_end),
-            application=application,
-        )
-
-    application_delta = hist_application_when_stop_editing.diff_against(
-        hist_application_when_start_editing,
-        excluded_fields=EXCLUDED_APPLICATION_FIELDS,
-    )
-
-    employee_delta = hist_employee_when_stop_editing.diff_against(
-        hist_employee_when_start_editing,
-        excluded_fields=EXCLUDED_EMPLOYEE_FIELDS,
-    )
-
-    changes = []
-
-    changes += [
-        _format_change_dict(
-            change,
-        )
-        for change in application_delta.changes
-    ]
-
-    changes += [
-        _format_change_dict(change, relation_name="employee")
-        for change in employee_delta.changes
-    ]
-    if new_or_edited_attachments:
-        for attachment in new_or_edited_attachments:
-            changes.append(
-                {
-                    "field": "attachments",
-                    "old": None,
-                    "new": f"{attachment.attachment_file.name} ({_(attachment.attachment_type)})",
-                }
-            )
-
-    if not DISABLE_DE_MINIMIS_AIDS and new_or_edited_de_minimis_aids:
-        changes.append({"field": "de_minimis_aid_set", "old": None, "new": None})
-
-    if not changes:
-        return []
-
-    new_record = application_delta.new_record
-    return [
-        {
-            "date": new_record.history_date,
-            "user": (
-                f"{new_record.history_user.first_name} {new_record.history_user.last_name}"
-                if new_record.history_user
-                and new_record.history_user.first_name
-                and new_record.history_user.last_name
-                else "Unknown user"
-            ),
-            "reason": "",
-            "changes": changes,
-        }
-    ]
-
-
-def get_application_change_history_made_by_applicant(application: Application) -> list:
-    """
-    Get change history for application comparing historic application objects between
-    the last time status was changed from handling to additional_information_needed
-    and back to handling. This procudes a list of changes that are made by applicant
-    when status is additional_information_needed.
-
-    NOTE: As the de minimis aids are always removed and created again when
-    updated (BaseApplicationSerializer -> _update_de_minimis_aid()), this
-    solution always thinks that de minimis aids are changed.
-    That's why tracking de minimis aids are disabled for now.
-    """
-    application_log_entries = ApplicationLogEntry.objects.filter(
-        application=application
-    )
-
-    log_entry_start = (
-        application_log_entries.filter(from_status="handling")
-        .filter(to_status="additional_information_needed")
-        .last()
-    )
-    log_entry_end = (
-        application_log_entries.filter(from_status="additional_information_needed")
-        .filter(to_status="handling")
-        .last()
-    )
-
-    if not log_entry_start or not log_entry_end:
-        return []
-
-    ts_start = log_entry_start.created_at
-    ts_end = log_entry_end.created_at
-    return _get_application_change_history_between_timestamps(
-        ts_start, ts_end, application
-    )
-
-
 def _is_history_change_excluded(change, excluded_fields):
     return change.field in excluded_fields or change.old == change.new
 
@@ -201,13 +52,16 @@ def _get_change_set_base(new_record: ModelChange):
     return {
         "date": new_record.history_date,
         "reason": new_record.history_change_reason,
-        "user": (
-            f"{new_record.history_user.first_name} {new_record.history_user.last_name[0]}."
-            if new_record.history_user
-            and new_record.history_user.first_name
-            and new_record.history_user.last_name
-            else "Unknown user"
-        ),
+        "user": {
+            "staff": getattr(new_record.history_user, "is_staff", False),
+            "name": (
+                f"{new_record.history_user.first_name} {new_record.history_user.last_name[0]}."
+                if new_record.history_user
+                and new_record.history_user.first_name
+                and new_record.history_user.last_name
+                else "Unknown user"
+            ),
+        },
         "changes": [],
     }
 
@@ -257,25 +111,27 @@ def _create_change_set(app_diff, employee_diffs):
     )
 
 
-def get_application_change_history_made_by_handler(application: Application) -> list:
+def get_application_change_history(application: Application) -> list:
     """
     Get application change history between the point when application is received and
-    the current time. If the application has been in status
-    additional_information_needed, changes made then are not included.
-    This solution should work for getting changes made by handler.
+    the current time.
 
-    NOTE: The same de minimis aid restriction here, so they are not tracked.
-    Also, changes made when application status is additional_information_needed are
-    not tracked, even if they are made by handler.
+    NOTE: The de minimis aid is not tracked here.
     """
 
-    # Get all edits made by staff users and the first edit which is queried as RECEIVED for some reason
-    staff_users = User.objects.all().filter(is_staff=True).values_list("id", flat=True)
+    # Exclude any non-human users
+    users = User.objects.exclude(
+        username__icontains="ahjorestapi",
+        first_name__exact="",
+        last_name__exact="",
+    ).values_list("id", flat=True)
+
     application_history = (
         application.history.filter(
-            history_user_id__in=list(staff_users),
+            history_user__id__in=users,
             status__in=[
                 ApplicationStatus.HANDLING,
+                ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
             ],
         )
         | application.history.filter(status=ApplicationStatus.RECEIVED)[:1]
@@ -323,37 +179,20 @@ def get_application_change_history_made_by_handler(application: Application) -> 
     attachment_diffs = []
     for attachment in application.attachments.all():
         for new_record in attachment.history.filter(
-            history_type="+", history_date__gte=submitted_at
+            history_type="+",
+            history_date__gte=submitted_at,
+            history_user_id__in=list(users),
         ):
             change_set_base = _get_change_set_base(new_record)
             change_set_base["changes"] = [
                 {
                     "field": "attachments",
                     "old": "+",
-                    "new": f"{new_record.attachment_file} ({_(new_record.attachment_type)})",
+                    "new": new_record.attachment_file,
+                    "meta": new_record.attachment_type,
                 }
             ]
             attachment_diffs.append(change_set_base)
-    change_sets += attachment_diffs
-
+    change_sets = change_sets + attachment_diffs
+    change_sets.sort(key=lambda x: x["date"], reverse=True)
     return change_sets
-
-
-def get_application_change_history_for_applicant_from_audit_log(
-    application: Application,
-) -> list:
-    """
-    Get all changes to application that is made by handlers. Audit log based solution.
-    As the audit log doesn't contain changes to related models, this is mostly useless.
-    Maybe this can be used later when the audit log is fixed. Remove if you want.
-    """
-    handler_user_ids = _get_handlers(as_ids=True)
-    changes = []
-    for log_entry in (
-        AuditLogEntry.objects.filter(message__audit_event__operation="UPDATE")
-        .filter(message__audit_event__target__id=str(application.id))
-        .filter(message__audit_event__target__changes__isnull=False)
-        .filter(message__audit_event__actor__user_id__in=handler_user_ids)
-    ):
-        changes += log_entry.message["audit_event"]["target"]["changes"]
-    return changes

@@ -1,4 +1,3 @@
-import { ApplicationChangesData } from 'benefit/handler/types/application';
 import { ChangeListData } from 'benefit/handler/types/changes';
 import { IconHistory } from 'hds-react';
 import orderBy from 'lodash/orderBy';
@@ -14,7 +13,7 @@ import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import ChangeSet from './ChangeSet';
 
 type ChangeListProps = {
-  data: ApplicationChangesData;
+  data: ChangeListData[];
 };
 
 const previousDate = (
@@ -32,11 +31,10 @@ const doesPreviousDateMatch = (
     convertToUIDateFormat(previousDate(combinedAndOrderedChangeSets, index));
 
 const ChangeList: React.FC<ChangeListProps> = ({ data }: ChangeListProps) => {
-  const { handler, applicant } = data;
-  const combined: ChangeListData[] = [...handler, ...applicant];
-  const combinedAndOrderedChangeSets = orderBy(combined, ['date'], ['desc']);
+  const orderedData = orderBy(data, ['date'], ['desc']);
   const { t } = useTranslation();
-  if (combinedAndOrderedChangeSets.length === 0) {
+
+  if (orderedData.length === 0) {
     return (
       <$MessagesList variant="message">
         <$Empty>
@@ -49,15 +47,13 @@ const ChangeList: React.FC<ChangeListProps> = ({ data }: ChangeListProps) => {
 
   return (
     <$Actions>
-      {combinedAndOrderedChangeSets.map((changeSet, index) => (
+      {orderedData.map((changeSet, index) => (
         <React.Fragment
-          key={`${changeSet.date}-${changeSet.reason}-${changeSet.user}`}
+          key={`${changeSet.date}-${changeSet.reason}-${changeSet.user.name}`}
         >
-          {!doesPreviousDateMatch(
-            changeSet,
-            combinedAndOrderedChangeSets,
-            index
-          ) && <p>{convertToUIDateFormat(changeSet.date)}</p>}
+          {!doesPreviousDateMatch(changeSet, orderedData, index) && (
+            <p>{convertToUIDateFormat(changeSet.date)}</p>
+          )}
           <ChangeSet data={changeSet} />
         </React.Fragment>
       ))}
