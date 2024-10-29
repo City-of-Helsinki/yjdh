@@ -38,3 +38,7 @@ class RobotBasicAuthentication(authentication.BaseAuthentication):
 
     def authenticate_header(self, request):
         return 'Basic realm="{}"'.format(self.www_authenticate_realm)
+
+
+class PowerBiAuthentication(RobotBasicAuthentication):
+    credentials = settings.POWER_BI_AUTH_CREDENTIAL
