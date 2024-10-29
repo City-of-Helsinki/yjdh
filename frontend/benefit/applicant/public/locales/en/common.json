@@ -65,9 +65,20 @@
     },
     "actions": {
       "saveAndContinueLater": "Save and close",
-      "deleteApplication": "Delete the application",
-      "deleteApplicationConfirm": "Are you sure you want to delete the draft?",
-      "deleteApplicationDescription": "The application will be permanently deleted and cannot be recovered.",
+      "deleteApplication": {
+        "action": "Delete the application",
+        "confirm": {
+          "title": "Are you sure you want to delete the draft?",
+          "text": "The application will be permanently deleted and cannot be recovered."
+        }
+      },
+      "cancelApplication": {
+        "action": "Cancel the application",
+        "confirm": {
+          "title": "Are you sure you want to cancel the application?",
+          "text": "The application will be cancelled and it cannot be recovered."
+        }
+      },
       "continue": "Continue",
       "send": "Send application",
       "back": "Back",
@@ -589,8 +600,8 @@
       "message": "Helsinki-benefit application {{applicationNumber}} {{applicantName}} has been saved."
     },
     "applicationDeleted": {
-      "label": "Draft deleted",
-      "message": "Application has been deleted. "
+      "label": "Application cancelled",
+      "message": "Application and all it's data has been deleted. "
     },
     "alterationCreated": {
       "title": "Employment status change report sent",
