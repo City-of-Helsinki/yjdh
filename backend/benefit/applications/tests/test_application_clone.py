@@ -194,7 +194,8 @@ employee_fields = {
 }
 
 
-def test_application_full_clone(api_client, handler_api_client):
+def test_application_full_clone(api_client, handler_api_client, settings):
+    settings.PAYMENT_INSTALMENTS_ENABLED = True
     application = _set_up_decided_application()
     # Endpoint should only be available for handlers
     response = api_client.get(
