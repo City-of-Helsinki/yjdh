@@ -3,7 +3,7 @@ import useAhjoSettingsQuery from 'benefit/handler/hooks/useAhjoSettingsQuery';
 import { DecisionProposalTemplateData } from 'benefit/handler/types/common';
 import { DECISION_TYPES } from 'benefit-shared/constants';
 import { Application, DecisionMaker } from 'benefit-shared/types/application';
-import { Select, SelectionGroup } from 'hds-react';
+import { LoadingSpinner, Select, SelectionGroup } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
@@ -36,7 +36,7 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
   application,
 }) => {
   const { applicantLanguage, id } = application;
- 
+
   const { t } = useTranslation();
   const translationBase = 'common:review.decisionProposal';
   const { handledApplication, setHandledApplication } =
@@ -46,7 +46,7 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
     React.useState<string>(handledApplication?.justificationText || '');
   const [templateForDecisionText, setTemplateForDecisionText] =
     React.useState<string>(handledApplication?.decisionText || '');
-  
+
   const [selectedDecisionMaker, setSelectedDecisionMaker] =
     React.useState<DecisionMaker | null>(null);
 
@@ -55,7 +55,10 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
       ? DECISION_TYPES.ACCEPTED
       : DECISION_TYPES.DENIED;
 
-  const { data: sections } = useDecisionProposalTemplateQuery(id, decisionType);
+  const { data: sections, isLoading } = useDecisionProposalTemplateQuery(
+    id,
+    decisionType
+  );
   const { data: decisionMakerOptions } = useAhjoSettingsQuery();
 
   const selectTemplate = (option: DecisionProposalTemplateData): void => {
@@ -89,6 +92,14 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
     });
   };
 
+  if (isLoading) {
+    return (
+      <Container>
+        <LoadingSpinner />
+      </Container>
+    );
+  }
+
   if (!sections || sections?.length === 0) {
     const language =
       applicantLanguage === 'en' ? 'fi' : (applicantLanguage as 'fi' | 'sv');
@@ -119,7 +130,7 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={12}>
-        <SelectionGroup
+          <SelectionGroup
             label={t(`${translationBase}.role.fields.decisionMaker.label`)}
             tooltipText={t(
               `${translationBase}.role.fields.decisionMaker.tooltipText`
