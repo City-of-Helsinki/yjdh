@@ -28,6 +28,8 @@ const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
     calculation,
   });
 
+  if (!decisionProposalDraft) return null;
+
   return (
     <>
       <$GridCell $colSpan={12}>
