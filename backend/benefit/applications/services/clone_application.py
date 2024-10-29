@@ -1,3 +1,8 @@
+from io import BytesIO
+
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from PIL import Image
+
 from applications.enums import ApplicationStatus, ApplicationStep
 from applications.models import (
     Application,
@@ -8,7 +13,6 @@ from applications.models import (
 )
 from calculator.models import Calculation
 from companies.models import Company
-from helsinkibenefit.settings import MEDIA_ROOT
 
 
 def clone_application_based_on_other(
@@ -107,14 +111,21 @@ def _clone_handler_data(application_base, cloned_application):
         application_base.additional_pay_subsidy_percent
     )
 
-    # Create fake image to be used as attachment's body
-    from PIL import Image
-
-    attachment_name = f"test-application-{cloned_application.id}"
-    temp_image = Image.new("RGB", (1, 1))
+    temp_image = Image.new("RGB", (1, 1), 0xFFFFFF)
+    temp_image_io = BytesIO()
     temp_image.save(
+        temp_image_io,
         format="PNG",
-        fp=f"{MEDIA_ROOT}/{attachment_name}.png",
+    )
+    attachment_name = f"test-application-{cloned_application.id}.png"
+
+    file_in_memory_upload = InMemoryUploadedFile(
+        temp_image_io,
+        None,
+        attachment_name,
+        "image/png",
+        len(temp_image_io.getvalue()),
+        None,
     )
 
     # Mimick the attachments by retaining attachment type
@@ -122,7 +133,7 @@ def _clone_handler_data(application_base, cloned_application):
         Attachment.objects.create(
             attachment_type=base_attachment.attachment_type,
             application=cloned_application,
-            attachment_file=f"{attachment_name}.png",
+            attachment_file=file_in_memory_upload,
             content_type="image/png",
         )
 
