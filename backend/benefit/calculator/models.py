@@ -10,7 +10,7 @@ from encrypted_fields.fields import EncryptedCharField, SearchField
 from simple_history.models import HistoricalRecords
 
 from applications.models import Application, PAY_SUBSIDY_PERCENT_CHOICES
-from calculator.enums import DescriptionType, RowType
+from calculator.enums import DescriptionType, InstalmentStatus, RowType
 from common.exceptions import BenefitAPIException
 from common.utils import (
     date_range_overlap,
@@ -831,3 +831,41 @@ class ManualOverrideTotalRow(CalculationRow):
 
     class Meta:
         proxy = True
+
+
+class Instalment(UUIDModel, TimeStampedModel):
+    """
+    Instalment model for Helsinki benefit grantend benefits that are paid in (two )instalments
+    """
+
+    calculation = models.ForeignKey(
+        Calculation,
+        verbose_name=_("calculation"),
+        related_name="instalments",
+        on_delete=models.CASCADE,
+    )
+
+    instalment_number = models.IntegerField()
+
+    amount = models.DecimalField(
+        max_digits=7,
+        decimal_places=2,
+        verbose_name=_("row amount"),
+        blank=True,
+    )
+
+    due_date = models.DateField(blank=True, null=True, verbose_name=_("Due date"))
+
+    status = models.CharField(
+        max_length=64,
+        verbose_name=_("status"),
+        choices=InstalmentStatus.choices,
+        default=InstalmentStatus.WAITING,
+        blank=True,
+    )
+
+    class Meta:
+        db_table = "bf_calculator_instalment"
+        verbose_name = _("instalment")
+        verbose_name_plural = _("instalments")
+        ordering = ("created_at",)
