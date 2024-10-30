@@ -6,6 +6,7 @@ from typing import Union
 
 from django.conf import settings
 from django.db import transaction
+from django.utils import timezone
 
 from applications.enums import ApplicationStatus, BenefitType, PaySubsidyGranted
 from calculator.enums import DescriptionType, RowType
@@ -16,6 +17,7 @@ from calculator.models import (
     DescriptionRow,
     EmployeeBenefitMonthlyRow,
     EmployeeBenefitTotalRow,
+    Instalment,
     ManualOverrideTotalRow,
     PaySubsidy,
     PaySubsidyMonthlyRow,
@@ -41,6 +43,7 @@ class HelsinkiBenefitCalculator:
     def __init__(self, calculation: Calculation):
         self.calculation = calculation
         self._row_counter = 0
+        self.instalment_threshold = settings.INSTALMENT_THRESHOLD
 
     def _get_change_days(
         self, pay_subsidies, training_compensations, start_date, end_date
@@ -156,6 +159,45 @@ class HelsinkiBenefitCalculator:
             return False
         return True
 
+    def create_instalments(self, total_benefit_amount: decimal.Decimal) -> None:
+        """Create one instalment in the usual case,
+        two instalments if the benefit amount exceeds the threshold,
+        with the second instalment due 6 months later.
+        """
+        instalments = self._calculate_instalment_amounts(total_benefit_amount)
+        self._create_instalments(instalments)
+
+    def _calculate_instalment_amounts(
+        self, total_benefit_amount: decimal.Decimal
+    ) -> list[tuple[int, decimal.Decimal, datetime.datetime]]:
+        """Calculate the number of instalments and their amounts based on the total benefit.
+        Returns a list of tuples containing (instalment_number, amount, due_date).
+        """
+        if total_benefit_amount <= self.instalment_threshold:
+            return [(1, total_benefit_amount, timezone.now())]
+
+        second_instalment_amount = total_benefit_amount - self.instalment_threshold
+        return [
+            (1, self.instalment_threshold, timezone.now()),
+            (
+                2,
+                second_instalment_amount,
+                timezone.now() + datetime.timedelta(days=181),
+            ),
+        ]
+
+    def _create_instalments(
+        self, instalments: list[tuple[int, decimal.Decimal, datetime.datetime]]
+    ) -> None:
+        """Create instalment objects from the provided instalment data."""
+        for instalment_number, amount, due_date in instalments:
+            Instalment.objects.create(
+                calculation=self.calculation,
+                instalment_number=instalment_number,
+                amount=amount,
+                due_date=due_date,
+            )
+
     @transaction.atomic
     def calculate(self, override_status=False):
         if (
@@ -163,12 +205,15 @@ class HelsinkiBenefitCalculator:
             or override_status
         ):
             self.calculation.rows.all().delete()
+            self.calculation.instalments.all().delete()
             if self.can_calculate():
                 self.create_rows()
                 # the total benefit amount is stored in Calculation model, for easier processing.
-                self.calculation.calculated_benefit_amount = self.get_amount(
+                total_benefit_amount = self.get_amount(
                     RowType.HELSINKI_BENEFIT_TOTAL_EUR
                 )
+                self.calculation.calculated_benefit_amount = total_benefit_amount
+                self.create_instalments(total_benefit_amount)
             else:
                 self.calculation.calculated_benefit_amount = None
             self.calculation.save()

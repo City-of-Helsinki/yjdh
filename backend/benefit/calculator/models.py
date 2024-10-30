@@ -864,6 +864,12 @@ class Instalment(UUIDModel, TimeStampedModel):
         blank=True,
     )
 
+    def __str__(self):
+        return f"Instalment of {self.amount}€, \
+number {self.instalment_number}/{self.calculation.instalments.count()} \
+for application {self.calculation.application.application_number}, \
+due in {self.due_date}, status: {self.status}."
+
     class Meta:
         db_table = "bf_calculator_instalment"
         verbose_name = _("instalment")
