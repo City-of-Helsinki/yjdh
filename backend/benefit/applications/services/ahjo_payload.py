@@ -230,12 +230,17 @@ def _prepare_top_level_dict(
     application: Application, case_records: List[dict], case_title: str
 ) -> dict:
     """Prepare the dictionary that is sent to Ahjo"""
-    application_date = application.created_at.isoformat("T", "seconds")
+
+    application_date = (
+        application.submitted_at
+        if hasattr(application, "submitted_at")
+        else application.created_at
+    )
 
     handler = application.calculation.handler
     case_dict = {
         "Title": case_title,
-        "Acquired": application_date,
+        "Acquired": application_date.isoformat("T", "seconds"),
         "ClassificationCode": "02 05 01 00",
         "ClassificationTitle": "Kunnan myöntämät avustukset",
         "Language": resolve_payload_language(application),

@@ -61,6 +61,9 @@ from applications.services.application_alteration_csv_report import (
     ApplicationAlterationCsvService,
 )
 from applications.services.applications_csv_report import ApplicationsCsvService
+from applications.services.applications_power_bi_csv_report import (
+    ApplicationsPowerBiCsvService,
+)
 from applications.services.clone_application import clone_application_based_on_other
 from applications.services.generate_application_summary import (
     generate_application_summary_file,
@@ -774,7 +777,11 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
     def export_csv(self, request) -> StreamingHttpResponse:
         queryset = self.get_queryset()
         filtered_queryset = self.filter_queryset(queryset)
-        return self._csv_response(filtered_queryset)
+        compact_list = (
+            request.query_params.get("compact_list", "false").lower() == "true"
+        )
+
+        return self._csv_response(filtered_queryset, compact_list)
 
     APPLICATION_ORDERING = "application_number"
 
@@ -873,12 +880,20 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         prune_data_for_talpa: bool = False,
         remove_quotes: bool = False,
         prune_sensitive_data: bool = True,
+        compact_list: bool = False,
     ) -> StreamingHttpResponse:
-        csv_service = ApplicationsCsvService(
-            queryset.order_by(self.APPLICATION_ORDERING),
-            prune_data_for_talpa,
-            prune_sensitive_data,
-        )
+        if compact_list:
+            # The PowerBi service already provides a more compact list,
+            # so we use it here as well
+            csv_service = ApplicationsPowerBiCsvService(
+                queryset.order_by(self.APPLICATION_ORDERING),
+            )
+        else:
+            csv_service = ApplicationsCsvService(
+                queryset.order_by(self.APPLICATION_ORDERING),
+                prune_data_for_talpa,
+                prune_sensitive_data,
+            )
         response = StreamingHttpResponse(
             csv_service.get_csv_string_lines_generator(remove_quotes),
             content_type="text/csv",

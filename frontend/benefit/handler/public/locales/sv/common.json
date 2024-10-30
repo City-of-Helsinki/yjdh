@@ -1510,7 +1510,8 @@
     "buttons": {
       "downloadAcceptedApplications": "Hyväksytyt hakemukset",
       "downloadRejectedApplications": "Hylätyt hakemukset",
-      "downloadApplicationsInTimeRange": "Kaikki hakemukset valitulta ajalta"
+      "downloadApplicationsInTimeRange": "Kaikki hakemukset valitulta ajalta",
+      "downloadCompactList": "Lataa kompaktimpi lista hakemuksista"
     }
   },
   "login": {

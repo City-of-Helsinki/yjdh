@@ -429,7 +429,7 @@ def test_power_bi_report_csv_output(application_powerbi_csv_service):
             csv_row[6]
             == f'"{get_application_origin_label(application.application_origin)}"'
         )
-        assert csv_row[7] == f'"{format_datetime(application.created_at)}"'
+        assert csv_row[7] == f'"{format_datetime(application.submitted_at)}"'
         assert csv_row[8] == '"Työllistämisen Helsinki-lisä"'
         assert csv_row[9] == f'"{str(application.start_date)}"'
         assert csv_row[10] == f'"{str(application.end_date)}"'
@@ -624,11 +624,10 @@ def test_pruned_applications_csv_output(
     assert csv_lines[0][16] == '"Tarkastajan sähköposti, P2P"'
     assert csv_lines[0][17] == '"Hyväksyjän nimi P2P"'
 
-    # Assert that there are 15 columns in the pruned CSV
+    # Assert that there are 19 columns in the pruned CSV
     assert len(csv_lines[1]) == 18
 
     assert int(csv_lines[1][0]) == application.application_number
-
     assert csv_lines[1][1] == '"Yritys"'
     assert csv_lines[1][2] == f'"{application.company_bank_account_number}"'
     assert csv_lines[1][3] == f'"{application.company_name}"'
@@ -764,7 +763,9 @@ def test_applications_csv_string_lines_generator(applications_csv_service):
     )
 
 
-def test_applications_csv_two_ahjo_rows(applications_csv_service_with_one_application):
+def test_applications_csv_two_ahjo_rows(
+    applications_csv_service_with_one_application, tmp_path
+):
     application = applications_csv_service_with_one_application.get_applications()[0]
     application.pay_subsidies.all().delete()
     application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
@@ -796,9 +797,11 @@ def test_applications_csv_two_ahjo_rows(applications_csv_service_with_one_applic
     assert len(application.ahjo_rows) == 2
     assert csv_lines[0][0] == '\ufeff"Hakemusnumero"'
     assert int(csv_lines[1][0]) == application.application_number
-    assert int(csv_lines[1][1]) == 1
+    assert csv_lines[1][1] == f'"{format_datetime(application.submitted_at)}"'
+    assert int(csv_lines[1][2]) == 1
     assert int(csv_lines[2][0]) == application.application_number
-    assert int(csv_lines[2][1]) == 2
+    assert csv_lines[2][1] == f'"{format_datetime(application.submitted_at)}"'
+    assert int(csv_lines[2][2]) == 2
 
     # the content of columns "Siirrettävä Ahjo-rivi / xxx" and "Hakemusrivi" change, rest of the lines are equal
     current_ahjo_row_start = csv_lines[0].index('"Siirrettävä Ahjo-rivi / tyyppi"')
@@ -806,7 +809,7 @@ def test_applications_csv_two_ahjo_rows(applications_csv_service_with_one_applic
         '"Siirrettävä Ahjo-rivi / päättymispäivä"'
     )
     assert (
-        csv_lines[1][2:current_ahjo_row_start] == csv_lines[2][2:current_ahjo_row_start]
+        csv_lines[1][3:current_ahjo_row_start] == csv_lines[2][3:current_ahjo_row_start]
     )
     assert (
         csv_lines[1][current_ahjo_row_end + 1 :]
@@ -875,7 +878,7 @@ def test_applications_csv_two_ahjo_rows(applications_csv_service_with_one_applic
         assert csv_lines[1][start_column + 5] == f'"{ahjo_row.end_date.isoformat()}"'
 
     applications_csv_service_with_one_application.write_csv_file(
-        "/tmp/two_ahjo_rows.csv"
+        tmp_path / "two_ahjo_rows.csv"
     )
 
 
@@ -944,7 +947,7 @@ def test_applications_csv_non_ascii_characters(
     csv_lines = split_lines_at_semicolon(
         applications_csv_service_with_one_application.get_csv_string()
     )
-    assert csv_lines[1][12] == '"test äöÄÖtest"'  # string is quoted
+    assert csv_lines[1][13] == '"test äöÄÖtest"'  # string is quoted
 
 
 def test_applications_csv_delimiter(applications_csv_service_with_one_application):
