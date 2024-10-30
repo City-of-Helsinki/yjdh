@@ -825,7 +825,8 @@ def test_application_batch_export(mock_export, handler_api_client, application_b
 
 
 def test_application_batches_talpa_export(anonymous_client, application_batch):
-    response = anonymous_client.get(reverse("v1:applicationbatch-talpa-export-batch"))
+    url = reverse("v1:applicationbatch-talpa-export-batch")
+    response = anonymous_client.get(url)
     assert response.status_code == 401
 
     # Add basic auth header
@@ -837,7 +838,7 @@ def test_application_batches_talpa_export(anonymous_client, application_batch):
     # Export invalid batch
     application_batch.status = ApplicationBatchStatus.DECIDED_REJECTED
     fill_as_valid_batch_completion_and_save(application_batch)
-    response = anonymous_client.get(reverse("v1:applicationbatch-talpa-export-batch"))
+    response = anonymous_client.get(url)
     assert response.status_code == 404
     assert "There is no available application to export" in response.data["detail"]
 
@@ -848,8 +849,6 @@ def test_application_batches_talpa_export(anonymous_client, application_batch):
     app_batch_2 = ApplicationBatchFactory()
     app_batch_2.status = ApplicationBatchStatus.DECIDED_ACCEPTED
     fill_as_valid_batch_completion_and_save(app_batch_2)
-
-    url = reverse("v1:applicationbatch-talpa-export-batch")
 
     # Export accepted batches then change it status
     response = anonymous_client.get(f"{url}?skip_update=0")

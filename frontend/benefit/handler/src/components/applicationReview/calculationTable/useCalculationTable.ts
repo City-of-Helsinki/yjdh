@@ -72,10 +72,13 @@ const useCalculationTable = ({ calculation }: Props): CalculationTableProps => {
     )
   );
 
-  const duration = diffMonths(
-    new Date(calculation.rows.at(0).endDate),
-    new Date(calculation.rows.at(0).startDate)
-  );
+  const duration =
+    calculation?.rows?.length > 0
+      ? diffMonths(
+          new Date(calculation.rows.at(0).endDate),
+          new Date(calculation.rows.at(0).startDate)
+        )
+      : 0;
 
   const tableRows: BenefitRow[] = calculation.overrideMonthlyBenefitAmount
     ? [
