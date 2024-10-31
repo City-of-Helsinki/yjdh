@@ -65,9 +65,20 @@
     },
     "actions": {
       "saveAndContinueLater": "Spara och stäng",
-      "deleteApplication": "Ta bort ansökan",
-      "deleteApplicationConfirm": "Är du säker på att du vill ta bort utkastet?",
-      "deleteApplicationDescription": "Ansökan raderas permanent och den kan inte återställas.",
+      "deleteApplication": {
+        "action": "Ta bort ansökan",
+        "confirm": {
+          "title": "Är du säker på att du vill ta bort utkastet?",
+          "text": "Ansökan raderas permanent och den kan inte återställas."
+        }
+      },
+      "cancelApplication": {
+        "action": "Avbryta ansökan",
+        "confirm": {
+          "title": "Är du säker på att du vill avbryta ansökan?",
+          "text": "Ansökan kommer att avbrytas och den kan inte återställas."
+        }
+      },
       "continue": "Fortsätt",
       "send": "Skicka",
       "back": "Tillbaka",
@@ -589,8 +600,8 @@
       "message": "Helsingforstillägg applikationen {{applicationNumber}} {{applicantName}} sparas."
     },
     "applicationDeleted": {
-      "label": "Utkast raderat",
-      "message": "Ansökan har raderats."
+      "label": "Ansökan har avbrutits",
+      "message": "Ansökan och all information om den har raderats."
     },
     "alterationCreated": {
       "title": "Anmälan om ändring i anställningen har skickats",

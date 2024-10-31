@@ -94,6 +94,7 @@ const ApplicationFormStep6: React.FC<
         handleSave={handleSave}
         handleBack={handleBack}
         handleDelete={handleDelete}
+        applicationStatus={data?.status}
         lastStep
       />
     </form>

@@ -65,9 +65,20 @@
     },
     "actions": {
       "saveAndContinueLater": "Tallenna ja sulje",
-      "deleteApplication": "Poista hakemus",
-      "deleteApplicationConfirm": "Haluatko varmasti poistaa luonnoksen?",
-      "deleteApplicationDescription": "Hakemus poistetaan lopullisesti eikä sitä voida enää palauttaa.",
+      "deleteApplication": {
+        "action": "Poista hakemus",
+        "confirm": {
+          "title": "Haluatko varmasti poistaa luonnoksen?",
+          "text": "Hakemus poistetaan lopullisesti eikä sitä voida enää palauttaa."
+        }
+      },
+      "cancelApplication": {
+        "action": "Peruuta hakemus",
+        "confirm": {
+          "title": "Haluatko varmasti peruuttaa hakemuksen?",
+          "text": "Hakemus peruutetaan, eikä sitä voida enää palauttaa."
+        }
+      },
       "continue": "Jatka",
       "send": "Lähetä",
       "back": "Takaisin",
@@ -589,8 +600,8 @@
       "message": "Helsinki-lisä hakemus {{applicationNumber}} {{applicantName}} on tallennettu."
     },
     "applicationDeleted": {
-      "label": "Luonnos poistettu",
-      "message": "Hakemus on poistettu."
+      "label": "Hakemus poistettu",
+      "message": "Hakemus on peruutettu ja sen tiedot on poistettu."
     },
     "alterationCreated": {
       "title": "Työsuhteen muutosilmoitus lähetetty",

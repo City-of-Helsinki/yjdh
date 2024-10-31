@@ -1,4 +1,5 @@
 import { useTranslation } from 'benefit/applicant/i18n';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import {
   Button,
   IconAlertCircleFill,
@@ -22,6 +23,7 @@ type StepperActionsProps = {
   handleDelete?: () => void;
   handleSubmit: () => void;
   handleSave?: () => void;
+  applicationStatus: APPLICATION_STATUSES;
 };
 
 const onClickSave = (e: MouseEvent, handleSave: () => void | false): void => {
@@ -53,10 +55,16 @@ const StepperActions: React.FC<StepperActionsProps> = ({
   handleDelete,
   handleSubmit,
   handleSave,
+  applicationStatus,
 }: StepperActionsProps) => {
   const { t } = useTranslation();
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const translationsBase = 'common:applications.actions';
+
+  const cancelModalTranslationsBase =
+    applicationStatus === APPLICATION_STATUSES.DRAFT
+      ? 'deleteApplication'
+      : 'cancelApplication';
 
   return (
     <>
@@ -115,7 +123,7 @@ const StepperActions: React.FC<StepperActionsProps> = ({
               onClick={() => setIsConfirmationModalOpen(true)}
               data-testid="deleteButton"
             >
-              {t(`${translationsBase}.deleteApplication`)}
+              {t(`${translationsBase}.${cancelModalTranslationsBase}.action`)}
             </Button>
           </$GridCell>
         )}
@@ -124,14 +132,18 @@ const StepperActions: React.FC<StepperActionsProps> = ({
         <Modal
           id="StepperActions-confirmDeleteApplicationModal"
           isOpen={isConfirmationModalOpen}
-          title={t(`${translationsBase}.deleteApplicationConfirm`)}
-          submitButtonLabel={t(`${translationsBase}.deleteApplication`)}
+          title={t(
+            `${translationsBase}.${cancelModalTranslationsBase}.confirm.title`
+          )}
+          submitButtonLabel={t(
+            `${translationsBase}.${cancelModalTranslationsBase}.action`
+          )}
           cancelButtonLabel={t(`${translationsBase}.close`)}
           handleToggle={() => setIsConfirmationModalOpen(false)}
           handleSubmit={handleDelete}
           variant="danger"
         >
-          {t(`${translationsBase}.deleteApplicationDescription`)}
+          {t(`${translationsBase}.${cancelModalTranslationsBase}.confirm.text`)}
         </Modal>
       )}
     </>
