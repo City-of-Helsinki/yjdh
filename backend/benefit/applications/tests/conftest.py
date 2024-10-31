@@ -41,6 +41,7 @@ from applications.services.applications_csv_report import ApplicationsCsvService
 from applications.services.applications_power_bi_csv_report import (
     ApplicationsPowerBiCsvService,
 )
+from applications.services.talpa_csv_service import TalpaCsvService
 from applications.tests.factories import (
     AcceptedDecisionProposalFactory,
     AhjoDecisionTextFactory,
@@ -174,7 +175,7 @@ def pruned_applications_csv_service():
     # retrieve the objects through the default manager so that annotations are added
     application1 = DecidedApplicationFactory(application_number=100001)
     application2 = DecidedApplicationFactory(application_number=100002)
-    return ApplicationsCsvService(
+    return TalpaCsvService(
         Application.objects.filter(pk__in=[application1.pk, application2.pk]).order_by(
             "application_number"
         ),
@@ -187,14 +188,14 @@ def pruned_applications_csv_service_with_one_application(
     applications_csv_service, application_batch
 ):
     application1 = application_batch.applications.all().first()
-    return ApplicationsCsvService(Application.objects.filter(pk=application1.pk), True)
+    return TalpaCsvService(Application.objects.filter(pk=application1.pk), True)
 
 
 @pytest.fixture
 def sanitized_csv_service_with_one_application(application_batch):
     application1 = application_batch.applications.all().first()
     return ApplicationsCsvService(
-        Application.objects.filter(pk=application1.pk), True, True
+        Application.objects.filter(pk=application1.pk), prune_sensitive_data=True
     )
 
 

@@ -807,7 +807,8 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
     @transaction.atomic
     def export_new_accepted_applications_csv_pdf(self, request) -> HttpResponse:
         return self._csv_pdf_response(
-            self._create_application_batch(ApplicationStatus.ACCEPTED), True, True
+            self._create_application_batch(ApplicationStatus.ACCEPTED),
+            remove_quotes=True,
         )
 
     @action(methods=["GET"], detail=False)
@@ -877,7 +878,6 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
     def _csv_response(
         self,
         queryset: QuerySet[Application],
-        prune_data_for_talpa: bool = False,
         remove_quotes: bool = False,
         prune_sensitive_data: bool = True,
         compact_list: bool = False,
@@ -891,7 +891,6 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         else:
             csv_service = ApplicationsCsvService(
                 queryset.order_by(self.APPLICATION_ORDERING),
-                prune_data_for_talpa,
                 prune_sensitive_data,
             )
         response = StreamingHttpResponse(
@@ -911,14 +910,13 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
     def _csv_pdf_response(
         self,
         queryset: QuerySet[Application],
-        prune_data_for_talpa: bool = False,
         remove_quotes: bool = False,
     ) -> HttpResponse:
         ordered_queryset = queryset.order_by(self.APPLICATION_ORDERING)
         export_filename_without_suffix = self._export_filename_without_suffix()
 
         csv_file = prepare_csv_file(
-            ordered_queryset, prune_data_for_talpa, export_filename_without_suffix
+            ordered_queryset, remove_quotes, export_filename_without_suffix
         )
 
         pdf_files: List[ExportFileInfo] = prepare_pdf_files(ordered_queryset)

@@ -94,53 +94,16 @@ class ApplicationsCsvService(CsvExportBase):
 
     For easier processing, if an application would need two Ahjo rows, the two rows are produced in the output.
 
-    If the prune_data_for_talpa flag is set, then only the columns needed for Talpa are included in the output.
-
-
     """
 
-    def __init__(
-        self, applications, prune_data_for_talpa=False, prune_sensitive_data=False
-    ):
+    def __init__(self, applications, prune_sensitive_data=False):
         self.applications = applications
         self.export_notes = []
-        self.prune_data_for_talpa = prune_data_for_talpa
         self.prune_sensitive_data = prune_sensitive_data
 
     @property
-    def CSV_COLUMNS(self):
+    def CSV_COLUMNS(self) -> List[CsvColumn]:
         calculated_benefit_amount = "calculation.calculated_benefit_amount"
-        """Return only columns that are needed for Talpa"""
-        if self.prune_data_for_talpa:
-            talpa_columns = [
-                CsvColumn("Hakemusnumero", "application_number"),
-                CsvColumn("Työnantajan tyyppi", get_organization_type),
-                CsvColumn("Työnantajan tilinumero", "company_bank_account_number"),
-                CsvColumn("Työnantajan nimi", "company_name"),
-                CsvColumn("Työnantajan Y-tunnus", "company.business_id"),
-                CsvColumn("Työnantajan katuosoite", "effective_company_street_address"),
-                CsvColumn("Työnantajan postinumero", "effective_company_postcode"),
-                CsvColumn("Työnantajan postitoimipaikka", "effective_company_city"),
-                csv_default_column(
-                    "Helsinki-lisän määrä lopullinen", calculated_benefit_amount
-                ),
-                csv_default_column("Päättäjän nimike", "batch.decision_maker_title"),
-                csv_default_column("Päättäjän nimi", "batch.decision_maker_name"),
-                csv_default_column("Päätöspykälä", "batch.section_of_the_law"),
-                csv_default_column("Päätöspäivä", "batch.decision_date"),
-                csv_default_column(
-                    "Asiantarkastajan nimi Ahjo", "batch.expert_inspector_name"
-                ),
-                csv_default_column(
-                    "Asiantarkastajan titteli Ahjo", "batch.expert_inspector_title"
-                ),
-                csv_default_column("Tarkastajan nimi, P2P", "batch.p2p_inspector_name"),
-                csv_default_column(
-                    "Tarkastajan sähköposti, P2P", "batch.p2p_inspector_email"
-                ),
-                csv_default_column("Hyväksyjän nimi P2P", "batch.p2p_checker_name"),
-            ]
-            return talpa_columns
 
         columns = [
             CsvColumn("Hakemusnumero", "application_number"),
@@ -434,13 +397,6 @@ class ApplicationsCsvService(CsvExportBase):
     def get_row_items(self):
         with translation.override("fi"):
             for application in self.get_applications():
-                # for applications with multiple ahjo rows, output the same number of rows.
-                # If no Ahjo rows (calculation incomplete), always output just one row.
-                if self.prune_data_for_talpa:
-                    # For Talpa, only one row per application is needed
-                    application.application_row_idx = 1
-                    yield application
-                    continue
                 for application_row_idx, unused in enumerate(
                     application.ahjo_rows or [None]
                 ):

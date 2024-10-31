@@ -284,13 +284,13 @@ def prepare_pdf_files(apps: QuerySet[Application]) -> List[ExportFileInfo]:
 
 def prepare_csv_file(
     ordered_queryset: QuerySet[Application],
-    prune_data_for_talpa: bool = False,
+    remove_quotes: bool = False,
     export_filename: str = "",
 ) -> ExportFileInfo:
-    csv_service = ApplicationsCsvService(ordered_queryset, prune_data_for_talpa)
-    csv_file_content: bytes = csv_service.get_csv_string(prune_data_for_talpa).encode(
-        "utf-8"
-    )
+    csv_service = ApplicationsCsvService(ordered_queryset)
+    csv_file_content: bytes = csv_service.get_csv_string(
+        remove_quotes=remove_quotes
+    ).encode("utf-8")
     csv_filename = f"{export_filename}.csv"
     csv_file_info: ExportFileInfo = ExportFileInfo(
         filename=csv_filename,

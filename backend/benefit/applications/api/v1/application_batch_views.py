@@ -33,7 +33,7 @@ from applications.exceptions import (
 )
 from applications.models import Application, ApplicationBatch
 from applications.services.ahjo_integration import export_application_batch
-from applications.services.applications_csv_report import ApplicationsCsvService
+from applications.services.talpa_csv_service import TalpaCsvService
 from common.authentications import RobotBasicAuthentication
 from common.permissions import BFIsHandler
 from common.utils import get_request_ip_address
@@ -209,7 +209,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         applications = Application.objects.filter(batch__in=approved_batches).order_by(
             "company__name", "application_number"
         )
-        csv_service = ApplicationsCsvService(applications, True)
+        csv_service = TalpaCsvService(applications)
         file_name = format_lazy(
             _("TALPA export {date}"),
             date=timezone.now().strftime("%Y%m%d_%H%M%S"),
