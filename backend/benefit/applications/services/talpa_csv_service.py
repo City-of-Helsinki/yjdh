@@ -1,19 +1,49 @@
-from django.utils import translation
+import decimal
+import logging
 
+from django.conf import settings
+from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
+from django.utils import timezone, translation
+
+from applications.models import Application
 from applications.services.applications_csv_report import (
     ApplicationsCsvService,
     csv_default_column,
 )
 from applications.services.csv_export_base import CsvColumn, get_organization_type
+from calculator.enums import InstalmentStatus
+
+LOGGER = logging.getLogger(__name__)
 
 
 class TalpaCsvService(ApplicationsCsvService):
     """Return only columns that are needed for Talpa"""
 
+    def get_relevant_instalment_amount(
+        self, application: Application
+    ) -> decimal.Decimal:
+        """Return the amount of the currently accepted and due instalment"""
+        # TODO remove this flag when the feature is enabled ready for production
+        if settings.PAYMENT_INSTALMENTS_ENABLED:
+            try:
+                instalment = application.calculation.instalments.get(
+                    status=InstalmentStatus.ACCEPTED,
+                    due_date__lte=timezone.now().date(),
+                )
+                return instalment.amount
+            except ObjectDoesNotExist:
+                LOGGER.error(
+                    f"Valid payable Instalment not found for application {application.application_number}"
+                )
+            except MultipleObjectsReturned:
+                LOGGER.error(
+                    f"Multiple payable Instalments found for application \
+{application.application_number}, there should be only one"
+                )
+        return application.calculation.calculated_benefit_amount
+
     @property
     def CSV_COLUMNS(self):
-        calculated_benefit_amount = "calculation.calculated_benefit_amount"
-
         columns = [
             CsvColumn("Hakemusnumero", "application_number"),
             CsvColumn("Työnantajan tyyppi", get_organization_type),
@@ -24,7 +54,7 @@ class TalpaCsvService(ApplicationsCsvService):
             CsvColumn("Työnantajan postinumero", "effective_company_postcode"),
             CsvColumn("Työnantajan postitoimipaikka", "effective_company_city"),
             csv_default_column(
-                "Helsinki-lisän määrä lopullinen", calculated_benefit_amount
+                "Helsinki-lisän määrä lopullinen", self.get_relevant_instalment_amount
             ),
             csv_default_column("Päättäjän nimike", "batch.decision_maker_title"),
             csv_default_column("Päättäjän nimi", "batch.decision_maker_name"),
