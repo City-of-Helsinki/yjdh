@@ -1,4 +1,7 @@
-import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import {
+  APPLICATION_STATUSES,
+  INSTALMENT_STATUSES,
+} from 'benefit-shared/constants';
 import theme from 'shared/styles/theme';
 
 export const getTagStyleForStatus = (
@@ -41,6 +44,47 @@ export const getTagStyleForStatus = (
       background = theme.colors.info;
       text = theme.colors.white;
 
+      break;
+
+    default:
+      background = theme.colors.black40;
+      break;
+  }
+  return { background, text };
+};
+
+export const getInstalmentTagStyleForStatus = (
+  status?: INSTALMENT_STATUSES
+): { background: string; text: string } => {
+  let background: string;
+  let text: string = theme.colors.black;
+  switch (status) {
+    case INSTALMENT_STATUSES.WAITING:
+      background = theme.colors.black30;
+      text = theme.colors.white;
+      break;
+
+    case INSTALMENT_STATUSES.ACCEPTED:
+      background = theme.colors.tramLight;
+      break;
+
+    case INSTALMENT_STATUSES.CANCELLED:
+      background = theme.colors.summer;
+      break;
+
+    case INSTALMENT_STATUSES.PAID:
+      background = theme.colors.tram;
+      text = theme.colors.white;
+      break;
+
+    case INSTALMENT_STATUSES.ERROR_IN_TALPA:
+      background = theme.colors.error;
+      text = theme.colors.white;
+      break;
+
+    case INSTALMENT_STATUSES.COMPLETED:
+      background = theme.colors.coatOfArms;
+      text = theme.colors.white;
       break;
 
     default:

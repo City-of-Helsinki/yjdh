@@ -79,6 +79,14 @@ export const $AlterationBadge = styled.div<$AlterationBadgeProps>`
 
 export const $ApplicationList = styled.div``;
 
+export const $InstalmentList = styled.div`
+  [class*='actionButtonContainer'] {
+    button {
+      display: none;
+    }
+  }
+`;
+
 type $ActionErrorsProps = {
   $errorText: string;
 };
