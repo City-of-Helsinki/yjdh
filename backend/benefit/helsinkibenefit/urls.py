@@ -147,6 +147,10 @@ urlpatterns = [
         "v1/handlerapplications/<str:application_id>/review/", ReviewStateView.as_view()
     ),
     path(
+        "v1/handlerinstalments/<str:instalment_id>/",
+        calculator_views.InstalmentView.as_view(),
+    ),
+    path(
         "v1/handlerapplications/<str:application_id>/decisions/",
         DecisionTextList.as_view(),
         name="handler-decisions-list",
