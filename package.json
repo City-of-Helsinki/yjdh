@@ -46,5 +46,6 @@
     "tet:rebuild": "yarn clean; rm -rf frontend/tet/admin/.next; rm -rf frontend/tet/youth/.next; yarn tet build --no-cache; yarn tet:up",
     "tet-admin:rebuild": "yarn clean; rm -rf frontend/tet/admin/.next; yarn tet-admin build --no-cache; yarn tet-admin:up",
     "tet-youth:rebuild": "yarn clean; rm -rf frontend/tet/youth/.next; yarn tet-youth build --no-cache; yarn tet-youth:up"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }
