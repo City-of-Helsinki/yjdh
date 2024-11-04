@@ -1,5 +1,20 @@
 # Changelog
 
+## [4.5.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.4.0...benefit-handler-v4.5.0) (2024-11-04)
+
+
+### Features
+
+* Fix issues with applicant changes (hl-1222) ([#3440](https://github.com/City-of-Helsinki/yjdh/issues/3440)) ([3610df9](https://github.com/City-of-Helsinki/yjdh/commit/3610df9c52a0a2eb9579e35fb9a632afb98409ce))
+* UseRouterNavigation hook to centralize and perform "back" actions througout the app ([#3394](https://github.com/City-of-Helsinki/yjdh/issues/3394)) ([b933b1f](https://github.com/City-of-Helsinki/yjdh/commit/b933b1fe7dc8f774e810b09a1dba78a86955f3eb))
+
+
+### Bug Fixes
+
+* Chrome v130 crashes on startup ([#3450](https://github.com/City-of-Helsinki/yjdh/issues/3450)) ([cad4466](https://github.com/City-of-Helsinki/yjdh/commit/cad44663f83bf1a90f4158c68c4f8b4a069ccfe8))
+* Repair some app crashing bugs when drafting the decision proposal (hl-1522) ([#3478](https://github.com/City-of-Helsinki/yjdh/issues/3478)) ([4cb17ac](https://github.com/City-of-Helsinki/yjdh/commit/4cb17ac7fadedbdd308e41eae44cfe390f400a98))
+* Text improvements & added localizations (Hl-1425 & HL-1486) ([#3451](https://github.com/City-of-Helsinki/yjdh/issues/3451)) ([6105923](https://github.com/City-of-Helsinki/yjdh/commit/6105923d44818a3ddf32c787f206ba45d1a7f429))
+
 ## [4.4.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.3.0...benefit-handler-v4.4.0) (2024-10-16)
 
 
