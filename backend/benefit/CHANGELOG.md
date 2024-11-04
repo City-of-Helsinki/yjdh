@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.5.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.4.1...benefit-backend-v2.5.0) (2024-11-04)
+
+
+### Features
+
+* Create instalments when calculating benefit ([#3479](https://github.com/City-of-Helsinki/yjdh/issues/3479)) ([f9822b4](https://github.com/City-of-Helsinki/yjdh/commit/f9822b43029e1f9b5846ae85e2dbd2fc21e10fab))
+* Don't block ahjo requests if xml build fails ([#3463](https://github.com/City-of-Helsinki/yjdh/issues/3463)) ([8a03c49](https://github.com/City-of-Helsinki/yjdh/commit/8a03c495042711e1c242480f0271053392666b5c))
+* Fix issues with applicant changes (hl-1222) ([#3440](https://github.com/City-of-Helsinki/yjdh/issues/3440)) ([3610df9](https://github.com/City-of-Helsinki/yjdh/commit/3610df9c52a0a2eb9579e35fb9a632afb98409ce))
+* Instalment model ([#3467](https://github.com/City-of-Helsinki/yjdh/issues/3467)) ([bd48949](https://github.com/City-of-Helsinki/yjdh/commit/bd489495b139aaa4ec950a01e265dfb7e188a3c4))
+* New max benefit per month ([#3471](https://github.com/City-of-Helsinki/yjdh/issues/3471)) ([e5fc8a2](https://github.com/City-of-Helsinki/yjdh/commit/e5fc8a2e86e042cf37fa289efc24a5ec953f51bb))
+* Separate credentials for PowerBI ([#3472](https://github.com/City-of-Helsinki/yjdh/issues/3472)) ([1e61b44](https://github.com/City-of-Helsinki/yjdh/commit/1e61b4489b8352493fc706403a27e62dc7684156))
+
+
+### Bug Fixes
+
+* Clone application fixes for attachments and status change (hl-1511) ([#3445](https://github.com/City-of-Helsinki/yjdh/issues/3445)) ([dad6a9d](https://github.com/City-of-Helsinki/yjdh/commit/dad6a9d2fb16a514531ec8c961a448e9062fa399))
+* Modified_at date for ahjo update request ([#3452](https://github.com/City-of-Helsinki/yjdh/issues/3452)) ([d502a59](https://github.com/City-of-Helsinki/yjdh/commit/d502a59198c3965f377d16d4161768420da7f9d8))
+* Repair some app crashing bugs when drafting the decision proposal (hl-1522) ([#3478](https://github.com/City-of-Helsinki/yjdh/issues/3478)) ([4cb17ac](https://github.com/City-of-Helsinki/yjdh/commit/4cb17ac7fadedbdd308e41eae44cfe390f400a98))
+* Text improvements & added localizations (Hl-1425 & HL-1486) ([#3451](https://github.com/City-of-Helsinki/yjdh/issues/3451)) ([6105923](https://github.com/City-of-Helsinki/yjdh/commit/6105923d44818a3ddf32c787f206ba45d1a7f429))
+
 ## [2.4.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.4.0...benefit-backend-v2.4.1) (2024-10-23)
 
 
