@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.14.2](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.14.1...benefit-applicant-v3.14.2) (2024-11-04)
+
+
+### Bug Fixes
+
+* Chrome v130 crashes on startup ([#3450](https://github.com/City-of-Helsinki/yjdh/issues/3450)) ([cad4466](https://github.com/City-of-Helsinki/yjdh/commit/cad44663f83bf1a90f4158c68c4f8b4a069ccfe8))
+
 ## [3.14.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.14.0...benefit-applicant-v3.14.1) (2024-10-23)
 
 
