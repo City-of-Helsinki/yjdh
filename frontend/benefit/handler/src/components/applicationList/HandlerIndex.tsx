@@ -65,7 +65,10 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
       (app: ApplicationListItemData) =>
         !isString(app.batch) &&
         [APPLICATION_STATUSES.ACCEPTED].includes(app.status) &&
-        app.batch?.status === BATCH_STATUSES.DECIDED_ACCEPTED
+        [
+          BATCH_STATUSES.DECIDED_ACCEPTED,
+          BATCH_STATUSES.REJECTED_BY_TALPA,
+        ].includes(app?.batch?.status)
     ).length;
 
   const getTabCountUndecided = (): number =>
@@ -119,7 +122,10 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
   const isInPayment = (application: ApplicationListItemData): boolean =>
     [APPLICATION_STATUSES.ACCEPTED].includes(application.status) &&
     !isString(application.batch) &&
-    [BATCH_STATUSES.DECIDED_ACCEPTED].includes(application?.batch?.status);
+    [
+      BATCH_STATUSES.DECIDED_ACCEPTED,
+      BATCH_STATUSES.REJECTED_BY_TALPA,
+    ].includes(application?.batch?.status);
 
   return (
     <FrontPageProvider>
