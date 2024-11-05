@@ -44,6 +44,7 @@ class HelsinkiBenefitCalculator:
         self.calculation = calculation
         self._row_counter = 0
         self.instalment_threshold = settings.INSTALMENT_THRESHOLD
+        self.first_instalment_limit = settings.FIRST_INSTALMENT_LIMIT
 
     def _get_change_days(
         self, pay_subsidies, training_compensations, start_date, end_date
@@ -172,13 +173,19 @@ class HelsinkiBenefitCalculator:
     ) -> list[tuple[int, decimal.Decimal, datetime.datetime]]:
         """Calculate the number of instalments and their amounts based on the total benefit.
         Returns a list of tuples containing (instalment_number, amount, due_date).
+        If the total benefit is less or equal to the instalment threshold, a single instalment is created.
+        If not, two instalments are created, with the amount of
+        the first instalment being equal to the FIRST_INSTALMENT_LIMIT,
+        and the second being equal to the rest of the total.
         """
         if total_benefit_amount <= self.instalment_threshold:
             return [(1, total_benefit_amount, timezone.now())]
 
-        second_instalment_amount = total_benefit_amount - self.instalment_threshold
+        first_instalment_amount = self.first_instalment_limit
+        second_instalment_amount = total_benefit_amount - first_instalment_amount
+
         return [
-            (1, self.instalment_threshold, timezone.now()),
+            (1, first_instalment_amount, timezone.now()),
             (
                 2,
                 second_instalment_amount,

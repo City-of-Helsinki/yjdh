@@ -707,6 +707,7 @@ def test_application_calculation_instalments(
     settings.PAYMENT_INSTALMENTS_ENABLED = True
     settings.INSTALMENT_THRESHOLD = 9600
     settings.SALARY_BENEFIT_NEW_MAX = 1500
+    settings.FIRST_INSTALMENT_LIMIT = 9000
 
     if has_subsidies is False:
         handling_application.pay_subsidies.all().delete()
@@ -742,12 +743,12 @@ def test_application_calculation_instalments(
         )
 
     if number_of_instalments == 2:
-        assert instalment_1.amount == decimal.Decimal(settings.INSTALMENT_THRESHOLD)
+        assert instalment_1.amount == decimal.Decimal(settings.FIRST_INSTALMENT_LIMIT)
         instalment_2 = handling_application.calculation.instalments.all()[1]
         assert (
             instalment_2.amount
             == handling_application.calculation.calculated_benefit_amount
-            - decimal.Decimal(settings.INSTALMENT_THRESHOLD)
+            - decimal.Decimal(settings.FIRST_INSTALMENT_LIMIT)
         )
 
         due_date = instalment_2.due_date
