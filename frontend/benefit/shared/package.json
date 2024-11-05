@@ -18,7 +18,7 @@
     "camelcase-keys": "^7.0.1",
     "date-fns": "^2.24.0",
     "formik": "^2.2.9",
-    "hds-react": "^3.10.1",
+    "hds-react": "^3.11.0",
     "ibantools": "^4.1.5",
     "next": "14.2.12",
     "next-i18next": "^13.0.3",
