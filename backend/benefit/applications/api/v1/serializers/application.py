@@ -62,9 +62,11 @@ from applications.services.change_history import get_application_change_history
 from calculator.api.v1.serializers import (
     CalculationSearchSerializer,
     CalculationSerializer,
+    InstalmentSerializer,
     PaySubsidySerializer,
     TrainingCompensationSerializer,
 )
+from calculator.enums import InstalmentStatus
 from calculator.models import Calculation
 from common.delay_call import call_now_or_later, do_delayed_calls_at_end
 from common.exceptions import BenefitAPIException
@@ -1903,6 +1905,7 @@ class HandlerApplicationListSerializer(serializers.Serializer):
             "batch",
             "ahjo_error",
             "talpa_status",
+            "pending_instalment",
         ]
 
         read_only_fields = [
@@ -1927,6 +1930,7 @@ class HandlerApplicationListSerializer(serializers.Serializer):
             "batch",
             "ahjo_error",
             "talpa_status",
+            "pending_instalment",
         ]
 
     archived = serializers.BooleanField()
@@ -1947,6 +1951,26 @@ class HandlerApplicationListSerializer(serializers.Serializer):
             "Timestamp when the application was handled (accepted/rejected/cancelled)"
         ),
     )
+    pending_instalment = serializers.SerializerMethodField("get_pending_instalment")
+
+    def get_pending_instalment(self, application):
+        """Get the latest pending instalment for the application"""
+        try:
+            instalments = application.calculation.instalments.filter(
+                instalment_number__gt=1
+            )
+            instalment = (
+                instalments.exclude(status=InstalmentStatus.COMPLETED)
+                .order_by("-due_date")
+                .first()
+                or None
+            )
+            if instalment is not None:
+                return InstalmentSerializer(instalment).data
+        except AttributeError:
+            return None
+        return None
+
     ahjo_error = serializers.SerializerMethodField("get_latest_ahjo_error")
 
     def get_latest_ahjo_error(self, obj) -> Union[Dict, None]:

@@ -419,6 +419,14 @@ export type PaySubsidyData = {
   duration_in_months_rounded: string;
 };
 
+export type Instalment = {
+  id: string;
+  instalmentNumber: number;
+  amount: string;
+  dueDate: string;
+  status: INSTALMENT_STATUSES;
+};
+
 export type ApplicationData = {
   id?: string;
   status?: APPLICATION_STATUSES;
@@ -491,6 +499,7 @@ export type ApplicationData = {
   handled_by_ahjo_automation?: boolean;
   alterations: ApplicationAlterationData[];
   ahjo_error?: AhjoErrorData;
+  pending_instalment?: Instalment;
 };
 
 export type EmployeeData = {
@@ -591,6 +600,7 @@ export type ApplicationListItemData = {
   ahjoError?: AhjoError;
   decisionDate?: string;
   calculatedBenefitAmount?: string;
+  pendingInstalment?: Instalment;
 };
 
 export type TextProp = 'textFi' | 'textEn' | 'textSv';

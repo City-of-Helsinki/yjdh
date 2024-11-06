@@ -18,6 +18,7 @@ import {
   sortFinnishDate,
   sortFinnishDateTime,
 } from 'shared/utils/date.utils';
+import { formatFloatToCurrency } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
 import {
@@ -56,6 +57,25 @@ const buildApplicationUrl = (
   return applicationUrl;
 };
 
+const getFirstInstalmentTotalAmount = (
+  calculatedBenefitAmount: string,
+  pendingInstalmentAmount?: string
+): string | JSX.Element => {
+  let firstInstalment = parseInt(calculatedBenefitAmount, 10);
+  if (pendingInstalmentAmount) {
+    firstInstalment -= parseInt(pendingInstalmentAmount, 10);
+  }
+  return pendingInstalmentAmount ? (
+    <>
+      <strong>
+        {formatFloatToCurrency(firstInstalment, null, 'fi-FI', 0)}
+      </strong>{' '}
+      / {formatFloatToCurrency(calculatedBenefitAmount, 'EUR', 'fi-FI', 0)}
+    </>
+  ) : (
+    formatFloatToCurrency(firstInstalment, 'EUR', 'fi-FI', 0)
+  );
+};
 const dateForAdditionalInformationNeededBy = (
   dateString: string | Date
 ): string => ` ${String(dateString).replace(/\d{4}$/, '')}`;
@@ -139,6 +159,26 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       </$TableActions>
     ),
     [t, theme.colors.coatOfArms]
+  );
+
+  const renderTagWrapper = React.useCallback(
+    (
+      applicationStatus: APPLICATION_STATUSES,
+      additionalInformationNeededBy: string | Date
+    ): JSX.Element => (
+      <$TagWrapper $colors={getTagStyleForStatus(applicationStatus)}>
+        <Tag>
+          {t(
+            `common:applications.list.columns.applicationStatuses.${String(
+              applicationStatus
+            )}`
+          )}
+          {applicationStatus === APPLICATION_STATUSES.INFO_REQUIRED &&
+            dateForAdditionalInformationNeededBy(additionalInformationNeededBy)}
+        </Tag>
+      </$TagWrapper>
+    ),
+    [t]
   );
 
   const columns = React.useMemo(() => {
@@ -239,21 +279,8 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
           transform: ({
             status: applicationStatus,
             additionalInformationNeededBy,
-          }: ApplicationListTableTransforms) => (
-            <$TagWrapper $colors={getTagStyleForStatus(applicationStatus)}>
-              <Tag>
-                {t(
-                  `common:applications.list.columns.applicationStatuses.${String(
-                    applicationStatus
-                  )}`
-                )}
-                {applicationStatus === APPLICATION_STATUSES.INFO_REQUIRED &&
-                  dateForAdditionalInformationNeededBy(
-                    additionalInformationNeededBy
-                  )}
-              </Tag>
-            </$TagWrapper>
-          ),
+          }: ApplicationListTableTransforms) =>
+            renderTagWrapper(applicationStatus, additionalInformationNeededBy),
           headerName: getHeader('applicationStatus'),
           key: 'status',
           isSortable: true,
@@ -306,8 +333,8 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
           isSortable: true,
         },
         {
-          headerName: getHeader('talpaStatus'),
-          key: 'talpaStatus',
+          headerName: getHeader('paymentStatus'),
+          key: 'paymentStatus',
           isSortable: true,
           transform: ({ talpaStatus }) =>
             t(`applications.list.columns.talpaStatuses.${String(talpaStatus)}`),
@@ -317,7 +344,12 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
           key: 'calculatedBenefitAmount',
           transform: ({
             calculatedBenefitAmount,
-          }: ApplicationListTableTransforms) => calculatedBenefitAmount,
+            pendingInstalment,
+          }: ApplicationListTableTransforms) =>
+            getFirstInstalmentTotalAmount(
+              String(calculatedBenefitAmount),
+              String(pendingInstalment?.amount) || null
+            ),
         }
       );
     }
@@ -334,8 +366,9 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     status,
     isAllStatuses,
     inPayment,
-    t,
+    renderTagWrapper,
     renderTableActions,
+    t,
   ]);
 
   if (isLoading) {

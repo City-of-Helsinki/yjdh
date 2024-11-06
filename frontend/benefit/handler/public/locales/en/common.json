@@ -187,8 +187,9 @@
         "status": "Tila",
         "statusArchive": "Päätös",
         "ahjoStatus": "Päätös",
-        "talpaStatus": "Maksun tila",
+        "paymentStatus": "Maksun tila",
         "decisionDate": "Päätöspäivä",
+        "dueDate": "Eräpäivä",
         "benefitAmount": "Tuen määrä",
         "statuses": {
           "cancelled": "Peruutettu",
@@ -219,6 +220,13 @@
           "rejected_by_talpa": "Virhe maksussa",
           "successfully_sent_to_talpa": "Lähetetty maksuun"
         },
+        "instalmentStatuses": {
+          "cancelled": "Peruttu",
+          "accepted": "Hyväksytty",
+          "waiting": "Odottaa",
+          "completed": "Valmis",
+          "error_in_talpa": "Virhe maksussa"
+        },
         "calculationEndDate": "Viim. tukipäivä",
         "calculatedBenefitAmount": "Tukisumma"
       },
@@ -231,6 +239,7 @@
           "archived": "Ei yhtään arkistoitua hakemusta.",
           "accepted,rejected": "Ei yhtään päätettävänä olevaa hakemusta.",
           "additional_information_needed": "Ei yhtään lisätietoja odottavaa hakemusta.",
+          "instalments": "Ei yhtään maksua odottavaa maksuerää.",
           "all": "Ei yhtään hakemusta.",
           "draft": "Ei yhtään luonnosta."
         }
@@ -245,7 +254,8 @@
         "infoRequired": "Odottaa lisätietoja",
         "decisions": "päätökset",
         "pending": "Päätettävänä",
-        "inPayment": "Maksussa"
+        "inPayment": "Maksussa",
+        "instalments": "Maksuerät"
       },
       "errors": {
         "fetch": {
@@ -267,7 +277,11 @@
         "count_other": "Valittu {{count}} hakemusta"
       },
       "actions": {
-        "addToBatch": "Lisää valitut koontiin"
+        "addToBatch": "Lisää valitut koontiin",
+        "return": "Palauta",
+        "confirm": "Hyväksy",
+        "cancel": "Peru",
+        "finish": "Siirrä arkistoon"
       }
     },
     "pageHeaders": {
@@ -1500,7 +1514,8 @@
       "main": "Raportointi",
       "downloadAcceptedApplications": "Hyväksytyt hakemukset joita ei ole vielä ladattu",
       "downloadRejectedApplications": "Hylätyt hakemukset joita ei ole vielä ladattu",
-      "downloadApplicationsInTimeRange": "Lataa kaikki hakemukset tietyltä ajalta"    },
+      "downloadApplicationsInTimeRange": "Lataa kaikki hakemukset tietyltä ajalta"
+    },
     "fields": {
       "lastDownloadDateText": "Ladattu viimeksi {{date}}",
       "startDate": "Alkaen",
