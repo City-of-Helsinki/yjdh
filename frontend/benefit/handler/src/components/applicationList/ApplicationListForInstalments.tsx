@@ -18,13 +18,14 @@ import {
   IconArrowUndo,
   IconCheck,
   IconCross,
-  IconDocument,
   Table,
   Tag,
 } from 'hds-react';
+import noop from 'lodash/noop';
 import { TFunction } from 'next-i18next';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
+import Modal from 'shared/components/modal/Modal';
 import { $Link } from 'shared/components/table/Table.sc';
 import {
   convertToUIDateFormat,
@@ -33,6 +34,7 @@ import {
 import { formatFloatToCurrency } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
+import ConfirmModalContent from '../applicationReview/actions/ConfirmModalContent/confirm';
 import {
   $Column,
   $Wrapper,
@@ -95,6 +97,8 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
   const { t, translationsBase, getHeader } = useApplicationList();
   const theme = useTheme();
   const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
+  const [isInstalmentCancelModalShown, setIsInstalmentCancelModalShown] =
+    React.useState(false);
   const { mutate: changeInstalmentStatus, isLoading: isLoadingStatusChange } =
     useInstalmentStatusTransition();
 
@@ -202,6 +206,14 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
         app.id === String(selectedApplication?.id)
     )?.pendingInstalment || null;
 
+  const onSubmitCancel = (): void => {
+    changeInstalmentStatus({
+      id: selectedInstalment?.id,
+      status: INSTALMENT_STATUSES.CANCELLED,
+    });
+    setIsInstalmentCancelModalShown(false);
+  };
+
   return (
     <$InstalmentList data-testid="instalment-list">
       {list.length > 0 ? (
@@ -252,12 +264,7 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
                           disabled={isLoading || isLoadingStatusChange}
                           theme="coat"
                           iconLeft={<IconCross />}
-                          onClick={() =>
-                            changeInstalmentStatus({
-                              id: selectedInstalment.id,
-                              status: INSTALMENT_STATUSES.CANCELLED,
-                            })
-                          }
+                          onClick={() => setIsInstalmentCancelModalShown(true)}
                         >
                           {t(`${translationsBase}.actions.cancel`)}
                         </Button>
@@ -283,32 +290,39 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
                           {t(`${translationsBase}.actions.return`)}
                         </Button>
                       )}
-
-                      {[
-                        INSTALMENT_STATUSES.CANCELLED,
-                        INSTALMENT_STATUSES.PAID,
-                      ].includes(
-                        selectedInstalment?.status as INSTALMENT_STATUSES
-                      ) && (
-                        <Button
-                          disabled={isLoading || isLoadingStatusChange}
-                          theme="coat"
-                          iconLeft={<IconDocument />}
-                          onClick={() =>
-                            changeInstalmentStatus({
-                              id: selectedInstalment.id,
-                              status: INSTALMENT_STATUSES.COMPLETED,
-                            })
-                          }
-                        >
-                          {t(`${translationsBase}.actions.finish`)}
-                        </Button>
-                      )}
                     </>
                   )}
               </$Column>
             </$Wrapper>
           </$TableFooter>
+          <Modal
+            id="instalment-cancel-confirm"
+            isOpen={isInstalmentCancelModalShown}
+            submitButtonLabel=""
+            cancelButtonLabel=""
+            handleSubmit={noop}
+            handleToggle={noop}
+            variant="danger"
+            customContent={
+              <ConfirmModalContent
+                variant="danger"
+                heading={t(
+                  'common:instalments.dialog.cancelInstalment.heading'
+                )}
+                text={t('common:instalments.dialog.cancelInstalment.text', {
+                  sum: formatFloatToCurrency(
+                    selectedInstalment?.amount,
+                    'EUR',
+                    'fi-FI',
+                    0
+                  ),
+                  details: `${selectedApplication?.applicationNum}, ${selectedApplication?.companyName} / ${selectedApplication?.employeeName}`,
+                })}
+                onClose={() => setIsInstalmentCancelModalShown(false)}
+                onSubmit={onSubmitCancel}
+              />
+            }
+          />
         </>
       ) : (
         <$EmptyHeading>
