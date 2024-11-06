@@ -6,7 +6,7 @@
 #
 asttokens==2.4.1
     # via stack-data
-black==23.1.0
+black==24.3.0
     # via -r requirements-dev.in
 build==1.2.2
     # via pip-tools
@@ -168,7 +168,7 @@ virtualenv==20.26.5
     # via pre-commit
 wcwidth==0.2.13
     # via prompt-toolkit
-werkzeug==3.0.4
+werkzeug==3.0.6
     # via -r requirements-dev.in
 wheel==0.44.0
     # via pip-tools
