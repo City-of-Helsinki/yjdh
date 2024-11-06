@@ -9,7 +9,10 @@ import {
   APPLICATION_STATUSES,
   INSTALMENT_STATUSES,
 } from 'benefit-shared/constants';
-import { ApplicationListItemData } from 'benefit-shared/types/application';
+import {
+  ApplicationListItemData,
+  Instalment,
+} from 'benefit-shared/types/application';
 import {
   Button,
   IconArrowUndo,
@@ -19,6 +22,7 @@ import {
   Table,
   Tag,
 } from 'hds-react';
+import { TFunction } from 'next-i18next';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import { $Link } from 'shared/components/table/Table.sc';
@@ -63,6 +67,25 @@ const buildApplicationUrl = (
   }
   return applicationUrl;
 };
+
+export const renderInstalmentTagPerStatus = (
+  t: TFunction,
+  pendingInstalment: Instalment
+): JSX.Element => (
+  <$TagWrapper
+    $colors={getInstalmentTagStyleForStatus(
+      pendingInstalment?.status as INSTALMENT_STATUSES
+    )}
+  >
+    <Tag>
+      {t(
+        `common:applications.list.columns.instalmentStatuses.${
+          pendingInstalment?.status as INSTALMENT_STATUSES
+        }`
+      )}
+    </Tag>
+  </$TagWrapper>
+);
 
 const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
   heading,
@@ -128,21 +151,8 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
       },
 
       {
-        transform: ({ pendingInstalment }: ApplicationListTableTransforms) => (
-          <$TagWrapper
-            $colors={getInstalmentTagStyleForStatus(
-              pendingInstalment?.status as INSTALMENT_STATUSES
-            )}
-          >
-            <Tag>
-              {t(
-                `common:applications.list.columns.instalmentStatuses.${
-                  pendingInstalment?.status as INSTALMENT_STATUSES
-                }`
-              )}
-            </Tag>
-          </$TagWrapper>
-        ),
+        transform: ({ pendingInstalment }: ApplicationListTableTransforms) =>
+          renderInstalmentTagPerStatus(t, pendingInstalment),
         headerName: getHeader('paymentStatus'),
         key: 'status',
         isSortable: true,
@@ -153,14 +163,7 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
           pendingInstalment,
         }: ApplicationListTableTransforms) => (
           <>
-            <strong>
-              {formatFloatToCurrency(
-                pendingInstalment?.amount,
-                null,
-                'fi-FI',
-                0
-              )}{' '}
-            </strong>
+            {formatFloatToCurrency(pendingInstalment?.amount, null, 'fi-FI', 0)}{' '}
             /{' '}
             {formatFloatToCurrency(calculatedBenefitAmount, 'EUR', 'fi-FI', 0)}
           </>
