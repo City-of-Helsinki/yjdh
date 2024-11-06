@@ -1,4 +1,4 @@
-import { IconGlobe, LogoLanguage, Navigation } from 'hds-react';
+import { Header as HdsHeader, Logo, logoFi, logoSv } from 'hds-react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -21,13 +21,13 @@ const Header: React.FC = () => {
       SUPPORTED_LANGUAGES.map((language) => ({
         label: t(`common:languages.${language}`),
         value: language,
+        isPrimary: true,
       })),
     [t],
   );
 
   const onLanguageChange = React.useCallback(
-    (e: React.SyntheticEvent<unknown>, { value: lang }: OptionType<string>): void => {
-      e.preventDefault();
+    (lang: OptionType<string>): void => {
       void router.push(asPath, asPath, {
         locale: lang,
       });
@@ -35,40 +35,23 @@ const Header: React.FC = () => {
     [router, asPath],
   );
 
-  const titleClickHandler = (): void => {
-    void router.push('/');
+  const logoSrcFromLanguage = (): string => {
+    if (logoLang === 'fi') return logoFi;
+    if (logoLang === 'sv') return logoSv;
+    if (logoLang === 'en') return logoFi;
+    return logoFi;
   };
 
   return (
-    <Navigation
-      title={t('common:appName')}
-      menuToggleAriaLabel={t('common:header.menuToggleAriaLabel')}
-      skipTo={`#${MAIN_CONTENT_ID}`}
-      skipToContentLabel={t('common:header.linkSkipToContent')}
-      logoLanguage={logoLang as LogoLanguage}
-      onTitleClick={titleClickHandler}
-    >
-      <Navigation.Actions>
-        {languages && onLanguageChange && (
-          <Navigation.LanguageSelector
-            buttonAriaLabel={t('common:header.languageMenuButtonAriaLabel')}
-            label={locale?.toUpperCase()}
-            icon={<IconGlobe />}
-            closeOnItemClick
-          >
-            {languages.map((option) => (
-              <Navigation.Item
-                key={option.value}
-                href="#"
-                lang={option.value}
-                label={option.label}
-                onClick={(e: React.SyntheticEvent<unknown>) => onLanguageChange(e, option)}
-              />
-            ))}
-          </Navigation.LanguageSelector>
-        )}
-      </Navigation.Actions>
-    </Navigation>
+    <HdsHeader title={t('common:appName')} onDidChangeLanguage={onLanguageChange} languages={languages}>
+      <HdsHeader.SkipLink skipTo={`#${MAIN_CONTENT_ID}`} label={t('common:header.linkSkipToContent')} />
+      <HdsHeader.ActionBar
+        logo={<Logo alt={t('common:helsinkiLogo')} size="large" src={logoSrcFromLanguage()} />}
+        logoHref={'/'}
+      >
+        {languages && <HdsHeader.LanguageSelector ariaLabel={t('common:header.languageMenuButtonAriaLabel')} />}
+      </HdsHeader.ActionBar>
+    </HdsHeader>
   );
 };
 
