@@ -323,6 +323,7 @@ export type Application = {
   ahjoStatus?: string;
   handledByAhjoAutomation?: boolean;
   batchStatus?: BATCH_STATUSES;
+  pendingInstalment?: Instalment;
 } & Step1 &
   Step2;
 
@@ -419,10 +420,18 @@ export type PaySubsidyData = {
   duration_in_months_rounded: string;
 };
 
+export type InstalmentData = {
+  id: string;
+  instalment_number: number;
+  amount: number;
+  due_date: string;
+  status: INSTALMENT_STATUSES;
+};
+
 export type Instalment = {
   id: string;
   instalmentNumber: number;
-  amount: string;
+  amount: number;
   dueDate: string;
   status: INSTALMENT_STATUSES;
 };
@@ -499,7 +508,7 @@ export type ApplicationData = {
   handled_by_ahjo_automation?: boolean;
   alterations: ApplicationAlterationData[];
   ahjo_error?: AhjoErrorData;
-  pending_instalment?: Instalment;
+  pending_instalment?: InstalmentData;
 };
 
 export type EmployeeData = {
