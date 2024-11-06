@@ -576,6 +576,10 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     )
 
     @property
+    def number_of_instalments(self):
+        return self.calculation.instalments.count()
+
+    @property
     def calculated_benefit_amount(self):
         if hasattr(self, "calculation"):
             return self.calculation.calculated_benefit_amount

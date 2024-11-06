@@ -1,5 +1,5 @@
 import decimal
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from django.urls import reverse
@@ -11,6 +11,8 @@ from applications.tests.common import (
 )
 from applications.tests.conftest import *  # noqa
 from applications.tests.conftest import split_lines_at_semicolon
+from calculator.enums import InstalmentStatus
+from calculator.models import Instalment
 from common.tests.conftest import *  # noqa
 from helsinkibenefit.tests.conftest import *  # noqa
 from shared.audit_log.models import AuditLogEntry
@@ -149,11 +151,41 @@ def test_talpa_callback_is_disabled(
     assert response.data == {"message": "Talpa callback is disabled"}
 
 
+@pytest.mark.parametrize(
+    "instalments_enabled, number_of_instalments",
+    [
+        (False, 1),
+        (True, 1),
+        (False, 2),
+        (True, 2),
+    ],
+)
 @pytest.mark.django_db
 def test_talpa_callback_success(
-    talpa_client, decided_application, application_batch, settings
+    talpa_client,
+    decided_application,
+    application_batch,
+    settings,
+    instalments_enabled,
+    number_of_instalments,
 ):
     settings.TALPA_CALLBACK_ENABLED = True
+    settings.PAYMENT_INSTALMENTS_ENABLED = instalments_enabled
+    decided_application.calculation.instalments.all().delete()
+
+    if instalments_enabled:
+        for i in range(number_of_instalments):
+            due_date = datetime.now(timezone.utc).date()
+            if i == 1:
+                due_date = timezone.now() + timedelta(days=181)
+
+            Instalment.objects.create(
+                calculation=decided_application.calculation,
+                amount=decimal.Decimal("123.45"),
+                instalment_number=i + 1,
+                status=InstalmentStatus.ACCEPTED,
+                due_date=due_date,
+            )
 
     decided_application.batch = application_batch
     decided_application.save()
@@ -174,6 +206,7 @@ def test_talpa_callback_success(
     assert response.data == {"message": "Callback received"}
 
     audit_log_entry = AuditLogEntry.objects.latest("created_at")
+
     assert (
         audit_log_entry.message["audit_event"]["target"]["id"]
         == f"{decided_application.id}"
@@ -181,21 +214,69 @@ def test_talpa_callback_success(
 
     decided_application.refresh_from_db()
 
-    assert (
-        decided_application.talpa_status
-        == ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
-    )
+    if instalments_enabled:
+        instalments = decided_application.calculation.instalments.filter(
+            due_date__lte=timezone.now().date()
+        )
+        assert len(instalments) == 1
+        for instalment in instalments:
+            assert instalment.status == InstalmentStatus.PAID
+        if number_of_instalments == 1:
+            assert (
+                decided_application.talpa_status
+                == ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
+            )
+            assert decided_application.archived is True
+            assert (
+                decided_application.batch.status == ApplicationBatchStatus.SENT_TO_TALPA
+            )
+    else:
+        assert (
+            decided_application.talpa_status
+            == ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
+        )
 
-    assert decided_application.batch.status == ApplicationBatchStatus.SENT_TO_TALPA
+        assert decided_application.batch.status == ApplicationBatchStatus.SENT_TO_TALPA
 
-    assert decided_application.archived is True
+        assert decided_application.archived is True
 
 
+@pytest.mark.parametrize(
+    "instalments_enabled, number_of_instalments",
+    [
+        (False, 1),
+        (True, 1),
+        (False, 2),
+        (True, 2),
+    ],
+)
 @pytest.mark.django_db
 def test_talpa_callback_rejected_application(
-    talpa_client, decided_application, application_batch, settings
+    talpa_client,
+    decided_application,
+    application_batch,
+    settings,
+    instalments_enabled,
+    number_of_instalments,
 ):
     settings.TALPA_CALLBACK_ENABLED = True
+    settings.PAYMENT_INSTALMENTS_ENABLED = instalments_enabled
+    decided_application.calculation.instalments.all().delete()
+
+    if instalments_enabled:
+        for i in range(number_of_instalments):
+            due_date = datetime.now(timezone.utc).date()
+            if i == 1:
+                due_date = timezone.now() + timedelta(days=181)
+
+            Instalment.objects.create(
+                calculation=decided_application.calculation,
+                amount=decimal.Decimal("123.45"),
+                instalment_number=i + 1,
+                status=InstalmentStatus.ACCEPTED,
+                due_date=due_date,
+            )
+
     decided_application.batch = application_batch
     decided_application.save()
 
@@ -204,7 +285,7 @@ def test_talpa_callback_rejected_application(
     )
 
     payload = {
-        "status": "Success",
+        "status": "Failure",
         "successful_applications": [],
         "failed_applications": [decided_application.application_number],
     }
@@ -217,5 +298,20 @@ def test_talpa_callback_rejected_application(
     decided_application.refresh_from_db()
     decided_application.archived = False
 
-    assert decided_application.talpa_status == ApplicationTalpaStatus.REJECTED_BY_TALPA
-    assert decided_application.batch.status == ApplicationBatchStatus.REJECTED_BY_TALPA
+    if instalments_enabled:
+        instalments = decided_application.calculation.instalments.filter(
+            due_date__lte=timezone.now().date()
+        )
+        assert len(instalments) == 1
+        for instalment in instalments:
+            assert instalment.status == InstalmentStatus.ERROR_IN_TALPA
+
+        assert decided_application.archived is False
+
+    else:
+        assert (
+            decided_application.talpa_status == ApplicationTalpaStatus.REJECTED_BY_TALPA
+        )
+        assert (
+            decided_application.batch.status == ApplicationBatchStatus.REJECTED_BY_TALPA
+        )
