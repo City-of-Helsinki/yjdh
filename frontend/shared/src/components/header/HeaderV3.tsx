@@ -1,6 +1,5 @@
 import {
   Header,
-  IconGlobe,
   IconSignin,
   IconSignout,
   IconUser,
@@ -78,6 +77,11 @@ const HeaderV3: React.FC<HeaderProps> = ({
 
   const goToPage = useGoToPage();
 
+  const languageOptions = React.useMemo(
+    () => languages?.map(({ label, value }) => ({ label, value, isPrimary: true })) || [],
+    [languages],
+  );
+
   const logoSrcFromLanguageAndTheme = (): string => {
     if (theme === 'dark') {
       if (logoLang === 'fi') return logoFiDark;
@@ -110,6 +114,8 @@ const HeaderV3: React.FC<HeaderProps> = ({
           } as React.CSSProperties
         }
         title={title}
+        onDidChangeLanguage={onLanguageChange}
+        languages={languageOptions}
       >
         <Header.SkipLink
           skipTo={`#${MAIN_CONTENT_ID}`}
@@ -139,6 +145,7 @@ const HeaderV3: React.FC<HeaderProps> = ({
               label={login.loginLabel}
               onClick={() => handleLogin()}
               icon={<IconSignin />}
+              fixedRightPosition
             />
           )}
 
@@ -149,6 +156,7 @@ const HeaderV3: React.FC<HeaderProps> = ({
               aria-label={`${login.userAriaLabelPrefix} ${login.userName}`}
               label={login.userName}
               onClick={() => handleLogout}
+              fixedRightPosition
             >
               <Header.ActionBarSubItem
                 label={login.logoutLabel}
@@ -160,22 +168,8 @@ const HeaderV3: React.FC<HeaderProps> = ({
 
           {languages && onLanguageChange && (
             <Header.LanguageSelector
-              buttonAriaLabel={t('common:header.languageMenuButtonAriaLabel')}
-              label={locale?.toUpperCase()}
-              icon={<IconGlobe />}
-              closeOnItemClick
-            >
-              {languages.map((option) => (
-                <Header.ActionBarItem
-                  id={option.value}
-                  label={option.label}
-                  lang={option.value}
-                  onClick={(e: React.SyntheticEvent<unknown>) =>
-                    onLanguageChange(e, option)
-                  }
-                />
-              ))}
-            </Header.LanguageSelector>
+              ariaLabel={t('common:header.languageMenuButtonAriaLabel')}
+            />
           )}
         </Header.ActionBar>
         {isNavigationVisible && navigationItems && (
