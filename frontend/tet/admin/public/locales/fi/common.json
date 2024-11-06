@@ -1,5 +1,6 @@
 {
   "appName": "TET-paikat",
+  "helsinkiLogo": "Helsinki-logo",
   "header": {
     "loginLabel": "Kirjaudu palveluun",
     "logoutLabel": "Kirjaudu ulos",
@@ -170,6 +171,7 @@
     "allRightsReservedText": "Kaikki oikeudet pidätetään",
     "accessibilityStatement": "Saavutettavuusseloste",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/tietoa-hel-fista/saavutettavuus/saavutettavuusselosteet",
+    "backToTop": "Takaisin ylös",
     "privacyPolicy": "Rekisteriseloste",
 		"privacyPolicyPDF": "Avaa pdf-tiedoston",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
