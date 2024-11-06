@@ -18,7 +18,7 @@ babel==2.11.0
     # via -r requirements.in
 cachetools==5.3.0
     # via django-helusers
-certifi==2022.12.7
+certifi==2024.7.4
     # via
     #   elasticsearch
     #   requests
@@ -27,7 +27,7 @@ cffi==1.15.1
     # via cryptography
 charset-normalizer==3.0.1
     # via requests
-cryptography==39.0.1
+cryptography==43.0.1
     # via
     #   azure-storage-blob
     #   django-auth-adfs
@@ -41,7 +41,7 @@ defusedxml==0.7.1
     #   pysaml2
 deprecation==2.1.0
     # via django-helusers
-django==4.2.11
+django==4.2.16
     # via
     #   -r requirements.in
     #   django-auth-adfs
@@ -90,7 +90,7 @@ django-sql-utils==0.6.1
     # via -r requirements.in
 django-storages[azure]==1.13.2
     # via -r requirements.in
-djangorestframework==3.14.0
+djangorestframework==3.15.2
     # via
     #   -r requirements.in
     #   drf-nested-routers
@@ -125,13 +125,13 @@ fuzzywuzzy==0.18.0
     # via -r requirements.in
 helsinki-profile-gdpr-api==0.1.0
     # via -r requirements.in
-idna==3.4
+idna==3.7
     # via requests
 inflection==0.5.1
     # via drf-spectacular
 isodate==0.6.1
     # via azure-storage-blob
-jinja2==3.1.2
+jinja2==3.1.4
     # via -r requirements.in
 josepy==1.13.0
     # via mozilla-django-oidc
@@ -159,7 +159,7 @@ pdfkit==1.0.0
     # via -r requirements.in
 phonenumbers==8.13.6
     # via django-phonenumber-field
-pillow==9.4.0
+pillow==10.3.0
     # via -r requirements.in
 psycopg2==2.9.5
     # via -r requirements.in
@@ -169,9 +169,9 @@ pyasn1==0.4.8
     #   rsa
 pycparser==2.21
     # via cffi
-pycryptodome==3.17
+pycryptodome==3.19.1
     # via django-searchable-encrypted-fields
-pycryptodomex==3.17
+pycryptodomex==3.19.1
     # via pyjwkest
 pyjwkest==1.4.2
     # via drf-oidc-auth
@@ -211,7 +211,7 @@ pyyaml==6.0
     #   drf-spectacular
 rapidfuzz==3.9.0
     # via levenshtein
-requests==2.28.2
+requests==2.32.2
     # via
     #   -r requirements.in
     #   azure-core
@@ -222,7 +222,7 @@ requests==2.28.2
     #   pysaml2
 rsa==4.9
     # via python-jose
-sentry-sdk==1.15.0
+sentry-sdk==2.8.0
     # via -r requirements.in
 six==1.16.0
     # via
@@ -231,7 +231,7 @@ six==1.16.0
     #   isodate
     #   pyjwkest
     #   python-dateutil
-sqlparse==0.4.3
+sqlparse==0.5.0
     # via
     #   django
     #   django-sql-utils
@@ -245,7 +245,7 @@ uritemplate==4.1.1
     # via
     #   -r requirements.in
     #   drf-spectacular
-urllib3==1.26.14
+urllib3==1.26.19
     # via
     #   django-auth-adfs
     #   elasticsearch
