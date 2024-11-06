@@ -46,8 +46,10 @@ class InstalmentView(APIView):
 
     def patch(self, request, instalment_id):
         instalment = get_object_or_404(Instalment, pk=instalment_id)
-
-        serializer = InstalmentSerializer(instalment, data=request.data)
+        instalment_status = request.data["status"]
+        serializer = InstalmentSerializer(
+            instalment, data={"status": instalment_status}, partial=True
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
