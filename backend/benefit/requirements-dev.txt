@@ -10,11 +10,11 @@ attrs==22.2.0
     # via pytest
 backcall==0.2.0
     # via ipython
-black==23.1.0
+black==24.3.0
     # via -r requirements-dev.in
 build==1.2.1
     # via pip-tools
-certifi==2022.12.7
+certifi==2024.7.4
     # via requests
 cfgv==3.3.1
     # via pre-commit
@@ -42,7 +42,7 @@ freezegun==1.2.2
     # via pytest-freezegun
 identify==2.5.18
     # via pre-commit
-idna==3.4
+idna==3.7
     # via requests
 importlib-metadata==8.0.0
     # via build
@@ -99,7 +99,7 @@ pycodestyle==2.10.0
     # via flake8
 pyflakes==3.0.1
     # via flake8
-pygments==2.14.0
+pygments==2.15.0
     # via ipython
 pyproject-hooks==1.0.0
     # via
@@ -121,7 +121,7 @@ python-dateutil==2.8.2
     # via freezegun
 pyyaml==6.0
     # via pre-commit
-requests==2.28.2
+requests==2.32.2
     # via requests-mock
 requests-mock==1.10.0
     # via -r requirements-dev.in
@@ -147,13 +147,13 @@ traitlets==5.9.0
     #   matplotlib-inline
 typing-extensions==4.5.0
     # via black
-urllib3==1.26.14
+urllib3==1.26.19
     # via requests
 virtualenv==20.19.0
     # via pre-commit
 wcwidth==0.2.6
     # via prompt-toolkit
-werkzeug==2.2.3
+werkzeug==3.0.6
     # via -r requirements-dev.in
 wheel==0.38.4
     # via pip-tools
