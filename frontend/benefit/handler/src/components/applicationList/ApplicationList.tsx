@@ -327,6 +327,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     if (inPayment) {
       cols.push(
         {
+          customSortCompareFunction: sortFinnishDate,
           headerName: getHeader('decisionDate'),
           key: 'decisionDate',
           isSortable: true,
