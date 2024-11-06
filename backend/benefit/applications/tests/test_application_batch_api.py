@@ -7,17 +7,11 @@ from unittest.mock import patch
 import pytest
 import pytz
 from dateutil.relativedelta import relativedelta
-from django.conf import settings
 from django.http import HttpResponse
 from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers.application import ApplicationBatchSerializer
-from applications.enums import (
-    AhjoDecision,
-    ApplicationBatchStatus,
-    ApplicationStatus,
-    ApplicationTalpaStatus,
-)
+from applications.enums import AhjoDecision, ApplicationBatchStatus, ApplicationStatus
 from applications.exceptions import BatchTooManyDraftsError
 from applications.models import Application, ApplicationBatch
 from applications.tests.conftest import *  # noqa

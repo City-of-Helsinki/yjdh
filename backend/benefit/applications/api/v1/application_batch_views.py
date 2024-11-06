@@ -21,10 +21,7 @@ from applications.api.v1.serializers.batch import (
     ApplicationBatchListSerializer,
     ApplicationBatchSerializer,
 )
-from applications.enums import (
-    ApplicationBatchStatus,
-    ApplicationStatus,
-)
+from applications.enums import ApplicationBatchStatus, ApplicationStatus
 from applications.exceptions import (
     BatchCompletionDecisionDateError,
     BatchCompletionRequiredFieldsError,
@@ -33,6 +30,7 @@ from applications.exceptions import (
 from applications.models import Application, ApplicationBatch
 from applications.services.ahjo_integration import export_application_batch
 from applications.services.talpa_csv_service import TalpaCsvService
+from calculator.enums import InstalmentStatus
 from common.authentications import RobotBasicAuthentication
 from common.permissions import BFIsHandler
 from common.utils import get_request_ip_address
@@ -178,13 +176,21 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         """
         Export ApplicationBatch to CSV format for Talpa Robot
         """
-
-        approved_batches = ApplicationBatch.objects.filter(
-            status=ApplicationBatchStatus.DECIDED_ACCEPTED
-        )
-        applications_for_csv = Application.objects.filter(
-            batch__in=approved_batches
-        ).order_by("company__name", "application_number")
+        # if instalments feature is enabled, get the applications based on instalments
+        # TODO Remove this when instalments feature is completed
+        if settings.PAYMENT_INSTALMENTS_ENABLED:
+            applications_for_csv = Application.objects.with_due_instalments(
+                InstalmentStatus.ACCEPTED
+            )
+            approved_batches = None
+        else:
+            # Else get the applications based on the batch
+            approved_batches = ApplicationBatch.objects.filter(
+                status=ApplicationBatchStatus.DECIDED_ACCEPTED
+            )
+            applications_for_csv = Application.objects.filter(
+                batch__in=approved_batches
+            ).order_by("company__name", "application_number")
 
         if applications_for_csv.count() == 0:
             return Response(
