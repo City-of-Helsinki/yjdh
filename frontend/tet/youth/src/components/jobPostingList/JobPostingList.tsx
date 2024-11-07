@@ -75,7 +75,7 @@ const JobPostingList: React.FC<Props> = ({ firstPostingsPage, allPostings, initM
       ) : (
         <>
           {shownPostings().map((posting) => (
-            <JobPostingCard jobPosting={posting} />
+            <JobPostingCard jobPosting={posting} key={posting.id}/>
           ))}
         </>
       )}
