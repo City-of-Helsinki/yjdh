@@ -78,11 +78,8 @@ class AhjoDecisionProposalSerializer(serializers.ModelSerializer):
                 errors.append(
                     ValidationError("Decision or justification texts cannot be empty")
                 )
-            if (data.get("handler_role", None)) not in [
-                HandlerRole.HANDLER,
-                HandlerRole.MANAGER,
-            ]:
-                errors.append(ValidationError("Handler role must be specified"))
+            if len(data.get("decision_maker_id", "None")) <= 0:
+                errors.append(ValidationError("Decision maker id must be specified"))
         if len(errors) > 0:
             raise ValidationError(errors)
 
