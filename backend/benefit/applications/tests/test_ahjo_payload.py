@@ -67,10 +67,13 @@ def test_open_case_record_title_str():
 # Test UpdateRecordsRecordTitle class
 def test_update_records_record_title_str():
     mock_app = Mock(spec=Application)
-    mock_app.modified_at = datetime(2023, 2, 25)
+    mock_app.created_at = datetime(2023, 3, 10)
+    attachment_created_at = datetime(2023, 2, 25)
     mock_app.application_number = "67890"
 
-    update_records_title = UpdateRecordsRecordTitle(application=mock_app)
+    update_records_title = UpdateRecordsRecordTitle(
+        application=mock_app, attachment_created_at=attachment_created_at
+    )
     result = str(update_records_title)
     expected = f"{AhjoRecordTitle.APPLICATION}, täydennys, 25.02.2023, 67890"
     assert result == expected
@@ -80,9 +83,12 @@ def test_update_records_record_title_str():
 def test_add_records_record_title_str():
     mock_app = Mock(spec=Application)
     mock_app.created_at = datetime(2023, 3, 10)
+    attachment_created_at = datetime(2023, 3, 10)
     mock_app.application_number = "54321"
 
-    add_records_title = AddRecordsRecordTitle(application=mock_app)
+    add_records_title = AddRecordsRecordTitle(
+        application=mock_app, attachment_created_at=attachment_created_at
+    )
     result = str(add_records_title)
     expected = f"{AhjoRecordTitle.APPLICATION}, täydennys, 10.03.2023, 54321"
     assert result == expected
@@ -211,6 +217,8 @@ def test_prepare_record_title(
         and request_type == AhjoRequestType.OPEN_CASE
     ):
         got = f"{title_class(application, current=part, total=total)}"
+    elif title_class in [UpdateRecordsRecordTitle, AddRecordsRecordTitle]:
+        got = f"{title_class(application=application, attachment_created_at=application.submitted_at)}"
     else:
         got = f"{title_class(application=application)}"
     assert wanted_title == got
@@ -387,11 +395,13 @@ def test_prepare_update_application_payload(decided_application):
         attachment_type=AttachmentType.PDF_SUMMARY,
         ahjo_version_series_id=str(uuid.uuid4()),
     )
-
+    title = UpdateRecordsRecordTitle(
+        application=application, attachment_created_at=fake_summary.created_at
+    )
     want = {
         "records": [
             {
-                "Title": f"{UpdateRecordsRecordTitle(application=application,)}",
+                "Title": f"{title}",
                 "Type": AhjoRecordType.APPLICATION,
                 "Acquired": application.submitted_at.isoformat(),
                 "PublicityClass": "Salassa pidettävä",
