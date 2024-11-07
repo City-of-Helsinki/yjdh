@@ -29,10 +29,7 @@ export type HeaderProps = {
   isNavigationVisible?: boolean;
   navigationItems?: NavigationItem[];
   customItems?: React.ReactNode;
-  onLanguageChange?: (
-    e: React.SyntheticEvent<unknown>,
-    language: OptionType<string>
-  ) => void;
+  onLanguageChange?: (language: string) => void;
   login?: {
     isAuthenticated: boolean;
     loginLabel: string;
@@ -78,8 +75,13 @@ const HeaderV3: React.FC<HeaderProps> = ({
   const goToPage = useGoToPage();
 
   const languageOptions = React.useMemo(
-    () => languages?.map(({ label, value }) => ({ label, value, isPrimary: true })) || [],
-    [languages],
+    () =>
+      languages?.map(({ label, value }) => ({
+        label,
+        value,
+        isPrimary: true,
+      })) || [],
+    [languages]
   );
 
   const logoSrcFromLanguageAndTheme = (): string => {

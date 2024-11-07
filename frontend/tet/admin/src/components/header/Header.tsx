@@ -25,7 +25,7 @@ const Header: React.FC = () => {
   );
 
   const handleLanguageChange = React.useCallback(
-    (lang: OptionType<string>): void => {
+    (lang: string): void => {
       void router.push(asPath, asPath, {
         locale: lang,
       });
