@@ -175,6 +175,9 @@ const HandlingApplicationActions: React.FC<Props> = ({
         logEntry:
           handledApplication?.logEntryComment?.length <= 0 &&
           handledApplication?.status === APPLICATION_STATUSES.REJECTED,
+        decisionMakerId:
+          !handledApplication?.decisionMakerId ||
+          handledApplication?.decisionMakerId?.length <= 0,
         // Use longer length to take HTML tags into account
         decisionText: handledApplication?.decisionText?.length <= 10,
         justificationText: handledApplication?.justificationText?.length <= 10,
@@ -183,6 +186,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
         status: '#proccessRejectedRadio',
         calculation: '#endDate',
         logEntry: '#proccessRejectedRadio',
+        decisionMakerId: '#radio-decision-maker-0',
         decisionText: '[data-testid="decisionText"]',
         justificationText: '[data-testid="justificationText"]',
       },
@@ -195,11 +199,14 @@ const HandlingApplicationActions: React.FC<Props> = ({
 
     let errorStep2 = false;
     if (currentStepIndex > 0) {
+      fields.missing.decisionMakerId =
+        !handledApplication?.decisionMakerId ||
+        handledApplication?.decisionMakerId?.length <= 0;
 
       errorStep2 =
         fields.missing.decisionText ||
         fields.missing.justificationText ||
-        fields.missing.handler;
+        fields.missing.decisionMakerId;
     }
 
     if (errorStep1 || errorStep2) {
