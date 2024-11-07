@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
-from applications.enums import ApplicationStatus, HandlerRole
+from applications.enums import ApplicationStatus
 from applications.models import AhjoDecisionProposalDraft
 
 
@@ -14,7 +14,6 @@ class AhjoDecisionProposalReadOnlySerializer(serializers.ModelSerializer):
             "decision_text",
             "justification_text",
             "review_step",
-            "handler_role",
             "log_entry_comment",
             "decision_maker_id",
             "decision_maker_name",
@@ -35,7 +34,6 @@ class AhjoDecisionProposalSerializer(serializers.ModelSerializer):
             "decision_text",
             "justification_text",
             "review_step",
-            "handler_role",
             "log_entry_comment",
             "decision_maker_id",
             "decision_maker_name",

@@ -5,7 +5,7 @@ from typing import Dict, List
 
 from django.conf import settings
 
-from applications.enums import AhjoDecisionDetails, DecisionType, HandlerRole
+from applications.enums import AhjoDecisionDetails, DecisionType
 from applications.models import (
     AhjoDecisionText,
     Application,
@@ -25,7 +25,7 @@ def replace_decision_template_placeholders(
     text_to_replace: str,
     decision_type: DecisionType,
     application: Application,
-    decision_maker: HandlerRole = HandlerRole.HANDLER,
+    decision_maker,
 ) -> str:
     """Replace the placeholders starting with $ in the decision template with real data"""
     text_to_replace = Template(text_to_replace)
