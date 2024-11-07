@@ -175,7 +175,6 @@ const HandlingApplicationActions: React.FC<Props> = ({
         logEntry:
           handledApplication?.logEntryComment?.length <= 0 &&
           handledApplication?.status === APPLICATION_STATUSES.REJECTED,
-        handler: false,
         // Use longer length to take HTML tags into account
         decisionText: handledApplication?.decisionText?.length <= 10,
         justificationText: handledApplication?.justificationText?.length <= 10,
@@ -184,7 +183,6 @@ const HandlingApplicationActions: React.FC<Props> = ({
         status: '#proccessRejectedRadio',
         calculation: '#endDate',
         logEntry: '#proccessRejectedRadio',
-        handler: '#radio-decision-maker-handler',
         decisionText: '[data-testid="decisionText"]',
         justificationText: '[data-testid="justificationText"]',
       },
@@ -197,9 +195,6 @@ const HandlingApplicationActions: React.FC<Props> = ({
 
     let errorStep2 = false;
     if (currentStepIndex > 0) {
-      fields.missing.handler = !['handler', 'manager'].includes(
-        handledApplication?.handlerRole
-      );
 
       errorStep2 =
         fields.missing.decisionText ||

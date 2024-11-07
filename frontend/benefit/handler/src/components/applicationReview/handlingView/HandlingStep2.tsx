@@ -165,7 +165,8 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
 
                     setHandledApplication({
                       ...handledApplication,
-                      handlerRole: 'handler',
+                      decisionMakerId: option.id,
+                      decisionMakerName: option.name,
                       decisionText: replaceDecisionTemplatePlaceholders(
                         handledApplication?.decisionText || '',
                         option.name
@@ -182,7 +183,7 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
           </SelectionGroup>
         </$GridCell>
       </$ReviewGrid>
-      {handledApplication?.handlerRole && (
+      {selectedDecisionMaker?.id && (
         <$ReviewGrid bgColor={theme.colors.silverLight}>
           <$GridCell $colSpan={12}>
             <Heading

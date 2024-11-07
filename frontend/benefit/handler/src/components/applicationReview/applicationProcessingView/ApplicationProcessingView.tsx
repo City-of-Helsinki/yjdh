@@ -52,7 +52,6 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
         grantedAsDeMinimisAid:
           !!data?.decisionProposalDraft?.grantedAsDeMinimisAid,
         logEntryComment: data?.decisionProposalDraft?.logEntryComment,
-        handlerRole: data?.decisionProposalDraft?.handlerRole,
         justificationText: data?.decisionProposalDraft?.justificationText,
         decisionText: data?.decisionProposalDraft?.decisionText,
       });
