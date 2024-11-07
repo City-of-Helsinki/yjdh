@@ -1,5 +1,4 @@
-import { APPLICATION_ACTIONS } from 'benefit/handler/constants';
-import { useApplicationActions } from 'benefit/handler/hooks/useApplicationActions';
+import useRequireAdditionalInformation from 'benefit/handler/hooks/useRequireAdditionalInformation';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import { Button, IconLock, IconPen } from 'hds-react';
@@ -13,22 +12,20 @@ export type Props = {
 const EditAction: React.FC<Props> = ({ application }) => {
   const translationsBase = 'common:review.actions';
   const { t } = useTranslation();
-  const { updateStatus } = useApplicationActions(
-    application,
-    APPLICATION_ACTIONS.HANDLER_ALLOW_APPLICATION_EDIT
-  );
 
-  const [isUpdatingApplication, setIsUpdatingApplication] =
-    React.useState(false);
+  const {
+    mutate: requireAdditionalInformation,
+    isLoading: isUpdatingApplication,
+  } = useRequireAdditionalInformation();
 
-  const updateApplicationStatus = (status: APPLICATION_STATUSES): void => {
-    setIsUpdatingApplication(true);
-    updateStatus(status);
+  const updateApplicationStatus = (
+    status: APPLICATION_STATUSES.INFO_REQUIRED | APPLICATION_STATUSES.HANDLING
+  ): void => {
+    requireAdditionalInformation({
+      id: application.id,
+      status,
+    });
   };
-
-  React.useEffect(() => {
-    setIsUpdatingApplication(false);
-  }, [application.status]);
 
   return (
     <>
@@ -41,6 +38,7 @@ const EditAction: React.FC<Props> = ({ application }) => {
           variant="secondary"
           size="small"
           iconLeft={<IconPen />}
+          loadingText={t(`${translationsBase}.handlingToInfoRequired`)}
           isLoading={isUpdatingApplication}
         >
           {t(`${translationsBase}.handlingToInfoRequired`)}
@@ -53,6 +51,7 @@ const EditAction: React.FC<Props> = ({ application }) => {
           variant="secondary"
           size="small"
           iconLeft={<IconLock />}
+          loadingText={t(`${translationsBase}.infoRequiredToHandling`)}
           isLoading={isUpdatingApplication}
         >
           {t(`${translationsBase}.infoRequiredToHandling`)}

@@ -848,6 +848,25 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
             status=status.HTTP_201_CREATED,
         )
 
+    @action(methods=["PATCH"], detail=True, url_path="require_additional_information")
+    @transaction.atomic
+    def require_additional_information(self, request, pk) -> HttpResponse:
+        application = self.get_object()
+        application_status = request.data["status"]
+        if application_status in [
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            ApplicationStatus.HANDLING,
+        ]:
+            application.status = application_status
+            application.save()
+
+            return Response(
+                status=status.HTTP_200_OK,
+            )
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
     def _create_application_batch(self, status) -> QuerySet[Application]:
         """
         Create a new application batch out of the existing applications in the given status
