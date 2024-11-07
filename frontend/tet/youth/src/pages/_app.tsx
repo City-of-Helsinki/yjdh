@@ -5,12 +5,18 @@ import Script from 'next/script';
 import { appWithTranslation } from 'next-i18next';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
+import dynamic from 'next/dynamic';
 import BaseApp from 'shared/components/app/BaseApp';
-import Footer from 'tet/youth/components/footer/Footer';
+// import Footer from 'tet/youth/components/footer/Footer';
 import Header from 'tet/youth/components/header/Header';
 import createQueryClient from 'tet/youth/query-client/create-query-client';
 
 const queryClient = createQueryClient();
+
+// Need to import Footer dynamically because currently HDS has issues with SSR
+const DynamicFooter = dynamic(() => import('tet/youth/components/footer/Footer'), {
+  ssr: false,
+});
 
 const App: React.FC<AppProps> = (appProps) => (
   <>
@@ -34,7 +40,7 @@ const App: React.FC<AppProps> = (appProps) => (
       }}
     />
     <QueryClientProvider client={queryClient}>
-      <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
+      <BaseApp header={<Header />} footer={<DynamicFooter />} {...appProps} />
     </QueryClientProvider>
   </>
 );

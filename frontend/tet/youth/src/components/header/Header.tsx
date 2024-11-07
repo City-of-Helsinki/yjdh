@@ -27,7 +27,7 @@ const Header: React.FC = () => {
   );
 
   const onLanguageChange = React.useCallback(
-    (lang: OptionType<string>): void => {
+    (lang: string): void => {
       void router.push(asPath, asPath, {
         locale: lang,
       });
@@ -43,9 +43,12 @@ const Header: React.FC = () => {
   };
 
   return (
-    <HdsHeader title={t('common:appName')} onDidChangeLanguage={onLanguageChange} languages={languages}>
+    <HdsHeader onDidChangeLanguage={onLanguageChange} languages={languages}>
       <HdsHeader.SkipLink skipTo={`#${MAIN_CONTENT_ID}`} label={t('common:header.linkSkipToContent')} />
       <HdsHeader.ActionBar
+        title={t('common:appName')}
+        frontPageLabel={t('common:appName')}
+        titleHref="/"
         logo={<Logo alt={t('common:helsinkiLogo')} size="large" src={logoSrcFromLanguage()} />}
         logoHref={'/'}
       >
