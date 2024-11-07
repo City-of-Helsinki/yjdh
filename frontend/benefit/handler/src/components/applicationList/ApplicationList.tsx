@@ -8,6 +8,7 @@ import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import {
   AhjoError,
   ApplicationListItemData,
+  Instalment,
 } from 'benefit-shared/types/application';
 import { IconSpeechbubbleText, Table, Tag, Tooltip } from 'hds-react';
 import * as React from 'react';
@@ -59,18 +60,16 @@ const buildApplicationUrl = (
 
 const getFirstInstalmentTotalAmount = (
   calculatedBenefitAmount: string,
-  pendingInstalmentAmount?: string
+  pendingInstalment?: Instalment
 ): string | JSX.Element => {
   let firstInstalment = parseInt(calculatedBenefitAmount, 10);
-  if (pendingInstalmentAmount) {
-    firstInstalment -= parseInt(pendingInstalmentAmount, 10);
+  if (pendingInstalment) {
+    firstInstalment -= parseInt(String(pendingInstalment?.amount), 10);
   }
-  return pendingInstalmentAmount ? (
+  return pendingInstalment ? (
     <>
-      <strong>
-        {formatFloatToCurrency(firstInstalment, null, 'fi-FI', 0)}
-      </strong>{' '}
-      / {formatFloatToCurrency(calculatedBenefitAmount, 'EUR', 'fi-FI', 0)}
+      {formatFloatToCurrency(firstInstalment, null, 'fi-FI', 0)} /{' '}
+      {formatFloatToCurrency(calculatedBenefitAmount, 'EUR', 'fi-FI', 0)}
     </>
   ) : (
     formatFloatToCurrency(firstInstalment, 'EUR', 'fi-FI', 0)
@@ -328,6 +327,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     if (inPayment) {
       cols.push(
         {
+          customSortCompareFunction: sortFinnishDate,
           headerName: getHeader('decisionDate'),
           key: 'decisionDate',
           isSortable: true,
@@ -348,7 +348,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
           }: ApplicationListTableTransforms) =>
             getFirstInstalmentTotalAmount(
               String(calculatedBenefitAmount),
-              String(pendingInstalment?.amount) || null
+              pendingInstalment || null
             ),
         }
       );

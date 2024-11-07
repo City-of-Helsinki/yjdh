@@ -9,6 +9,7 @@ from calculator.api.v1.serializers import (
     InstalmentSerializer,
     PreviousBenefitSerializer,
 )
+from calculator.enums import InstalmentStatus
 from calculator.models import Instalment, PreviousBenefit
 from common.permissions import BFIsHandler
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
@@ -46,9 +47,15 @@ class InstalmentView(APIView):
 
     def patch(self, request, instalment_id):
         instalment = get_object_or_404(Instalment, pk=instalment_id)
-
-        serializer = InstalmentSerializer(instalment, data=request.data)
+        instalment_status = request.data["status"]
+        serializer = InstalmentSerializer(
+            instalment, data={"status": instalment_status}, partial=True
+        )
         if serializer.is_valid():
             serializer.save()
+            if instalment_status == InstalmentStatus.CANCELLED:
+                application = instalment.calculation.application
+                application.archived = True
+                application.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

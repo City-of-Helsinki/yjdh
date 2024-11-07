@@ -71,6 +71,14 @@ class InstalmentSerializer(serializers.ModelSerializer):
             "modified_at",
         ]
 
+    def validate_status(self, status):
+        if status not in InstalmentStatus.values:
+            raise serializers.ValidationError(
+                {"status": f"status must be one of {InstalmentStatus.values}"},
+            )
+
+        return status
+
     status = serializers.ChoiceField(
         validators=[InstalmentStatusValidator()],
         choices=InstalmentStatus.choices,

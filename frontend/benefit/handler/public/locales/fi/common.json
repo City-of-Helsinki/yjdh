@@ -224,7 +224,7 @@
           "cancelled": "Peruttu",
           "accepted": "Hyväksytty",
           "waiting": "Odottaa",
-          "completed": "Valmis",
+          "completed": "Maksettu",
           "error_in_talpa": "Virhe maksussa"
         },
         "calculationEndDate": "Viim. tukipäivä",
@@ -831,7 +831,8 @@
         "showDecision": "Tarkastele päätöstä",
         "reportAlteration": "Tee uusi muutosilmoitus"
       },
-      "calculation": "Laskelma"
+      "calculation": "Laskelma",
+      "instalments": "Maksuerät"
     },
     "alterations": {
       "new": {
@@ -1373,7 +1374,11 @@
     "result": {
       "header": "Myönnettävä Helsinki-lisä",
       "header2": "Arvio koostuu seuraavista tiedoista:",
-      "acceptedBenefit": "Myönnettävä Helsinki-lisä"
+      "header3": "Maksuerät",
+      "acceptedBenefit": "Myönnettävä Helsinki-lisä",
+      "firstInstalment": "Ensimmäinen maksuerä",
+      "secondInstalment": "Toinen maksuerä",
+      "total": "Yhteensä"
     },
     "errors": {
       "trainingCompensation": {
@@ -1853,6 +1858,14 @@
       },
       "status": {
         "label": "Tila"
+      }
+    }
+  },
+  "instalments": {
+    "dialog": {
+      "cancelInstalment": {
+        "heading": "Maksuerän peruutus",
+        "text": "Oletko varma, että haluat peruuttaa {{sum}} suuruisen maksuerän hakemukselle {{details}}?"
       }
     }
   }

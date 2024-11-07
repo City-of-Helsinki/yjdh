@@ -92,6 +92,25 @@ from users.api.v1.serializers import UserSerializer
 from users.utils import get_company_from_request, get_request_user_from_context
 
 
+def _get_pending_instalment(application, excluded_status=[]):
+    """Get the latest pending instalment for the application"""
+    try:
+        instalments = application.calculation.instalments.filter(
+            instalment_number__gt=1
+        )
+        instalment = (
+            instalments.exclude(status__in=excluded_status)
+            .order_by("-due_date")
+            .first()
+            or None
+        )
+        if instalment is not None:
+            return InstalmentSerializer(instalment).data
+    except AttributeError:
+        return None
+    return None
+
+
 class BaseApplicationSerializer(DynamicFieldsModelSerializer):
     """
     Fields in the Company model come from YTJ/other source and are not editable by user, and are listed
@@ -1638,6 +1657,11 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
 
     ahjo_error = serializers.SerializerMethodField()
 
+    pending_instalment = serializers.SerializerMethodField("get_pending_instalment")
+
+    def get_pending_instalment(self, application):
+        return _get_pending_instalment(application)
+
     def get_latest_ahjo_error(self, obj) -> Union[Dict, None]:
         """Get the latest Ahjo error for the application"""
         try:
@@ -1698,11 +1722,13 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             "handler",
             "handled_by_ahjo_automation",
             "ahjo_error",
+            "pending_instalment",
         ]
         read_only_fields = BaseApplicationSerializer.Meta.read_only_fields + [
             "latest_decision_comment",
             "handled_at",
             "handler",
+            "pending_instalment",
         ]
 
     @transaction.atomic
@@ -1954,22 +1980,7 @@ class HandlerApplicationListSerializer(serializers.Serializer):
     pending_instalment = serializers.SerializerMethodField("get_pending_instalment")
 
     def get_pending_instalment(self, application):
-        """Get the latest pending instalment for the application"""
-        try:
-            instalments = application.calculation.instalments.filter(
-                instalment_number__gt=1
-            )
-            instalment = (
-                instalments.exclude(status=InstalmentStatus.COMPLETED)
-                .order_by("-due_date")
-                .first()
-                or None
-            )
-            if instalment is not None:
-                return InstalmentSerializer(instalment).data
-        except AttributeError:
-            return None
-        return None
+        return _get_pending_instalment(application, [InstalmentStatus.COMPLETED])
 
     ahjo_error = serializers.SerializerMethodField("get_latest_ahjo_error")
 
