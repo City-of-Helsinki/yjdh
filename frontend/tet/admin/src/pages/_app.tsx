@@ -5,6 +5,7 @@ import { AppProps } from 'next/app';
 import { appWithTranslation } from 'next-i18next';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
+import dynamic from 'next/dynamic';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import BaseApp from 'shared/components/app/BaseApp';
 import ConfirmDialog from 'shared/components/confirm-dialog/ConfirmDialog';
@@ -12,12 +13,16 @@ import Portal from 'shared/components/confirm-dialog/Portal';
 import { DialogContextProvider } from 'shared/contexts/DialogContext';
 import AuthProvider from 'tet/admin/auth/AuthProvider';
 import { getBackendDomain } from 'tet/admin/backend-api/backend-api';
-import Footer from 'tet/admin/components/footer/Footer';
 import Header from 'tet/admin/components/header/Header';
 import createQueryClient from 'tet/admin/query-client/create-query-client';
 import PreviewContextProvider from 'tet/admin/store/PreviewContext';
 
 const queryClient = createQueryClient();
+
+// Need to import Footer dynamically because currently HDS has issues with SSR
+const DynamicFooter = dynamic(() => import('tet/admin/components/footer/Footer'), {
+  ssr: false,
+});
 
 const App: React.FC<AppProps> = (appProps) => (
   <BackendAPIProvider baseURL={getBackendDomain()}>
@@ -25,7 +30,7 @@ const App: React.FC<AppProps> = (appProps) => (
       <DialogContextProvider>
         <PreviewContextProvider>
           <AuthProvider>
-            <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
+            <BaseApp header={<Header />} footer={<DynamicFooter />} {...appProps} />
             <Portal>
               <ConfirmDialog />
             </Portal>
