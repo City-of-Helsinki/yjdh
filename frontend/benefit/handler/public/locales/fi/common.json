@@ -1197,7 +1197,7 @@
           "calculation": "Tarkista laskelma",
           "status": "Puoltotieto puuttuu",
           "logEntry": "Päätöksen perustelu puuttuu",
-          "handler": "Päättäjän rooli puuttuu",
+          "decisionMakerId": "Päättäjän rooli puuttuu",
           "decisionText": "Päätös ei voi olla tyhjä",
           "justificationText": "Päätöksen perustelu ei voi olla tyhjä"
         }
@@ -1216,7 +1216,8 @@
         "employerName": "Hakija",
         "employeeName": "Työllistettävä",
         "totalAmount": "Myönnettävä tuki yhteensä",
-        "grantedAsDeMinimisAid": "Myönnetään de minimis -tukena"
+        "grantedAsDeMinimisAid": "Myönnetään de minimis -tukena",
+        "decisionMaker": "Päättäjän rooli"
       },
       "calculationReview": {
         "tableCaption": "Tukijaksot",
