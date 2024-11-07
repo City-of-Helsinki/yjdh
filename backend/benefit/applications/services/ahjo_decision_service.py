@@ -25,7 +25,7 @@ def replace_decision_template_placeholders(
     text_to_replace: str,
     decision_type: DecisionType,
     application: Application,
-    decision_maker,
+    decision_maker=None,
 ) -> str:
     """Replace the placeholders starting with $ in the decision template with real data"""
     text_to_replace = Template(text_to_replace)

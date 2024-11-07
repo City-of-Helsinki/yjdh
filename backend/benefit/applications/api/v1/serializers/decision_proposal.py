@@ -6,6 +6,8 @@ from applications.models import AhjoDecisionProposalDraft
 
 
 class AhjoDecisionProposalReadOnlySerializer(serializers.ModelSerializer):
+    """Used to get the draft listed in Application serializer"""
+
     class Meta:
         model = AhjoDecisionProposalDraft
         fields = [
@@ -21,10 +23,7 @@ class AhjoDecisionProposalReadOnlySerializer(serializers.ModelSerializer):
 
 
 class AhjoDecisionProposalSerializer(serializers.ModelSerializer):
-    """
-    # TODO: Add description
-
-    """
+    """Used for manipulating the decision proposal draft on PATCH requests"""
 
     class Meta:
         model = AhjoDecisionProposalDraft
