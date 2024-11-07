@@ -8493,11 +8493,6 @@ hds-design-tokens@^2.17.1:
   resolved "https://registry.yarnpkg.com/hds-design-tokens/-/hds-design-tokens-2.17.1.tgz#d5ae14917299251c4a8a1cea5002e76fea4f622c"
   integrity sha512-EM87DUAgAVQ2ahourNyyfOSCzYHyCxNkYhJPftSe1W2CS2vHXrskWgP4PWPbGIZbYvIZeEFuHA3TqobCXmy1aw==
 
-hds-design-tokens@^3.11.0:
-  version "3.11.0"
-  resolved "https://registry.yarnpkg.com/hds-design-tokens/-/hds-design-tokens-3.11.0.tgz#b232d0e223e62b4f2db29bed4d96c64c70668e7b"
-  integrity sha512-A44gjN+TDpQQnCnw/AflCHIrqBZP8FYUW+HlPPUx4SCe4ISnEWVvxrEFWvzfOXSmO+9MDSXdNKS4ItEwluJUMQ==
-
 hds-react@^3.11.0:
   version "3.11.0"
   resolved "https://registry.yarnpkg.com/hds-react/-/hds-react-3.11.0.tgz#064018eb67520fd88223085ea6a629d79c332275"
