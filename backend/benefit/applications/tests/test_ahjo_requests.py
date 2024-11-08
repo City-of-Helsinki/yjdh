@@ -267,7 +267,7 @@ def test_ahjo_application_requests(
             AhjoDecisionDetailsRequest,
             AhjoRequestType.GET_DECISION_DETAILS,
             "GET",
-            AhjoStatusEnum.DETAILS_RECEIVED_FROM_AHJO,
+            AhjoStatusEnum.DECISION_DETAILS_REQUEST_SENT,
         ),
     ],
 )
@@ -324,10 +324,12 @@ def test_requests_exceptions(
         )
         client.send_request_to_ahjo()
         mock_logger.error.assert_called()
-        assert (
-            application.ahjo_status.latest().validation_error_from_ahjo
-            == validation_error
-        )
+        ahjo_status = application.ahjo_status.latest()
+        assert ahjo_status.status == previous_status
+        assert ahjo_status.validation_error_from_ahjo is not None
+
+        for validation_error in validation_error:
+            assert f"{validation_error}" in ahjo_status.validation_error_from_ahjo
 
     exception = requests.exceptions.RequestException
     with requests_mock.Mocker() as m:
