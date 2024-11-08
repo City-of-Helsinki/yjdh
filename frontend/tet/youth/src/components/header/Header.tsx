@@ -50,7 +50,7 @@ const Header: React.FC = () => {
         frontPageLabel={t('common:appName')}
         titleHref="/"
         logo={<Logo alt={t('common:helsinkiLogo')} size="large" src={logoSrcFromLanguage()} />}
-        logoHref={'/'}
+        logoHref="/"
       >
         {languages && <HdsHeader.LanguageSelector ariaLabel={t('common:header.languageMenuButtonAriaLabel')} />}
       </HdsHeader.ActionBar>

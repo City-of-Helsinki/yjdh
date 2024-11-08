@@ -48,7 +48,6 @@ const Header: React.FC = () => {
       menuToggleAriaLabel={t('common:header.menuToggleAriaLabel')}
       languages={languageOptions}
       onLanguageChange={handleLanguageChange}
-      onTitleClick={goToFrontPage}
       login={
         !userQuery.isLoading
           ? {

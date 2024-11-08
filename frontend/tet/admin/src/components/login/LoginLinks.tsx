@@ -1,7 +1,8 @@
+import dynamic from 'next/dynamic';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import dynamic from 'next/dynamic';
 import useLogin from 'tet/admin/hooks/backend/useLogin';
+
 import { $LoginLinks } from './LoginLinks.sc';
 
 // Need to import Footer dynamically because currently HDS has issues with SSR

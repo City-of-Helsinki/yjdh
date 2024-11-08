@@ -2,10 +2,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'hds-design-tokens';
 
 import { AppProps } from 'next/app';
+import dynamic from 'next/dynamic';
 import { appWithTranslation } from 'next-i18next';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
-import dynamic from 'next/dynamic';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import BaseApp from 'shared/components/app/BaseApp';
 import ConfirmDialog from 'shared/components/confirm-dialog/ConfirmDialog';
