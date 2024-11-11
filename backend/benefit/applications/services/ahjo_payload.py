@@ -82,23 +82,24 @@ class UpdateRecordsRecordTitle(AhjoTitle):
 
     Attributes:
         prefix (str): A default string ", täydennys," that is used in the title of update records.
+        attachment_created_at (datetime): The created_at date of the attachment that is being updated to Ahjo.
 
     Methods:
         __str__(): Returns the formatted string representation of the update record title.
     """
 
     prefix: str = field(default=", täydennys,")
+    attachment_created_at: datetime = None
 
     def __str__(self):
         """
         Returns a formatted title string for an update record,
-        using the application's modification date and application number.
+        using the created_at date of the supplied attachment and application number.
 
         Returns:
             str: The formatted title string.
         """
-        modified_at = self.application.modified_at
-        formatted_date = modified_at.strftime("%d.%m.%Y")
+        formatted_date = self.attachment_created_at.strftime("%d.%m.%Y")
         return self.format_title_string(
             formatted_date, self.application.application_number
         )
@@ -109,17 +110,19 @@ class AddRecordsRecordTitle(AhjoTitle):
     """
     A class for creating the title of an additional record sent after the initial open case request.
 
-    Inherits from AhjoTitle. Uses the application's creation date and application number to format the title.
+    Inherits from AhjoTitle. Uses the attachment's creation date and application number to format the title.
     The prefix is set to ", täydennys," by default.
 
     Attributes:
         prefix (str): A default string ", täydennys," that is used in the title of additional records.
+        attachment_created_at (datetime): The created_at date of the attachment that is being updated to Ahjo.
 
     Methods:
         __str__(): Returns the formatted string representation of the additional record title.
     """
 
     prefix: str = field(default=", täydennys,")
+    attachment_created_at: datetime = None
 
     def __str__(self):
         """
@@ -129,7 +132,7 @@ class AddRecordsRecordTitle(AhjoTitle):
         Returns:
             str: The formatted title string.
         """
-        formatted_date = self.application.created_at.strftime("%d.%m.%Y")
+        formatted_date = self.attachment_created_at.strftime("%d.%m.%Y")
         return self.format_title_string(
             formatted_date, self.application.application_number
         )
@@ -407,9 +410,12 @@ def prepare_attachment_records_payload(
     attachment_list = []
 
     for attachment in attachments:
+        title = AddRecordsRecordTitle(
+            application=application, attachment_created_at=attachment.created_at
+        )
         attachment_list.append(
             _prepare_record(
-                record_title=f"{AddRecordsRecordTitle(application)}",
+                record_title=f"{title}",
                 record_type=AhjoRecordType.ATTACHMENT,
                 acquired=attachment.created_at.isoformat("T", "seconds"),
                 documents=[_prepare_record_document_dict(attachment)],
@@ -431,10 +437,13 @@ def prepare_update_application_payload(
             f"Attachment for {application.application_number} must have a ahjo_version_series_id for update."
         )
     language = resolve_payload_language(application)
+    title = UpdateRecordsRecordTitle(
+        application=application, attachment_created_at=pdf_summary.created_at
+    )
     return {
         "records": [
             _prepare_record(
-                record_title=f"{UpdateRecordsRecordTitle(application)}",
+                record_title=f"{title}",
                 record_type=AhjoRecordType.APPLICATION,
                 acquired=pdf_summary.created_at.isoformat("T", "seconds"),
                 documents=[_prepare_record_document_dict(pdf_summary)],
