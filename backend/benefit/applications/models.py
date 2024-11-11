@@ -593,7 +593,7 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
         if original_benefit is not None and self.alteration_set is not None:
             return original_benefit - sum(
                 [
-                    alteration.collection_amount
+                    alteration.recovery_amount or 0
                     for alteration in self.alteration_set.all()
                 ]
             )
