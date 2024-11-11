@@ -89,7 +89,7 @@ router.register(
 urlpatterns = [
     path("admin/", admin.site.urls),
     path(
-        "v1/ahjosettings/decision-maker/",
+        "v1/ahjosettings/<str:name>/",
         AhjoSettingDetailView.as_view(),
         name="ahjo-setting-detail",
     ),

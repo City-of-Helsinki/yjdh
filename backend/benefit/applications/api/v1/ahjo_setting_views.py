@@ -11,6 +11,7 @@ class AhjoSettingDetailView(generics.RetrieveAPIView):
     serializer_class = AhjoSettingSerializer
 
     def get_object(self):
+        name = self.kwargs.get("name")
         queryset = AhjoSetting.objects.all()
-        setting = get_object_or_404(queryset, name="ahjo_decision_maker")
+        setting = get_object_or_404(queryset, name=name)
         return setting
