@@ -36,6 +36,7 @@ from applications.exceptions import (
     BatchCompletionRequiredFieldsError,
     BatchTooManyDraftsError,
 )
+from calculator.enums import InstalmentStatus
 from common.localized_iban_field import LocalizedIBANField
 from common.utils import DurationMixin
 from companies.models import Company
@@ -168,6 +169,18 @@ class ApplicationManager(models.Manager):
 
         # Return the filtered applications with the specified prefetched related attachments
         return qs.prefetch_related(attachments_prefetch)
+
+    def with_due_instalments(self, status: InstalmentStatus):
+        """Query applications with instalments with past due date and a specific status."""
+        return (
+            self.filter(
+                calculation__instalments__due_date__lte=timezone.now().date(),
+                calculation__instalments__status=status,
+            )
+            .select_related("calculation")
+            .select_related("batch")
+            .prefetch_related("calculation__instalments")
+        )
 
     def get_by_statuses(
         self,
@@ -561,6 +574,10 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
         null=True,
         blank=True,
     )
+
+    @property
+    def number_of_instalments(self):
+        return self.calculation.instalments.count()
 
     @property
     def calculated_benefit_amount(self):
