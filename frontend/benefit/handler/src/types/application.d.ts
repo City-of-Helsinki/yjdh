@@ -111,7 +111,6 @@ export type HandledAplication = {
   status?: APPLICATION_STATUSES;
   logEntryComment?: string;
   grantedAsDeMinimisAid?: boolean;
-  handlerRole?: string;
   decisionText?: string;
   justificationText?: string;
   decisionMakerName?: string;

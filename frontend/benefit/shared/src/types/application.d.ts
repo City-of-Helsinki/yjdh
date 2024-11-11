@@ -243,7 +243,7 @@ export type TrainingCompensation = {
 export type PaySubsidyPercent = typeof PAY_SUBSIDY_OPTIONS[number];
 
 export interface DecisionProposalDraftData {
-  handler_role?: string;
+  decision_maker_id?: string;
   review_step?: number;
   log_entry_comment?: string;
   status?: APPLICATION_STATUSES;
@@ -252,7 +252,6 @@ export interface DecisionProposalDraftData {
 }
 
 export interface DecisionProposalDraft {
-  handlerRole?: string;
   reviewStep?: number;
   logEntryComment?: string;
   grantedAsDeMinimisAid?: boolean;
@@ -261,7 +260,7 @@ export interface DecisionProposalDraft {
   justificationText?: string;
   applicationId?: string;
   decisionMakerId?: string;
-  decsionMakerName?: string;
+  decisionMakerName?: string;
 }
 
 export interface AhjoError {

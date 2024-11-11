@@ -109,6 +109,13 @@ const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
               </div>
             </>
           )}
+          <div style={{ maxWidth: '220px', minWidth: '220px' }}>
+            <dt>{t('common:review.decisionProposal.list.decisionMaker')}</dt>
+            <dd>
+              {handledApplication.decisionMakerName ||
+                decisionProposalDraft.decisionMakerName}
+            </dd>
+          </div>
         </$HorizontalList>
       </$GridCell>
       {handledApplication.status === APPLICATION_STATUSES.ACCEPTED && (

@@ -118,6 +118,7 @@ def test_decision_proposal_drafting(
     decision_text,
     justification_text,
     fake_decisionmakers,
+    decision_maker_settings,
 ):
     if review_step == 4:
         _prepare_calculation(application=application)

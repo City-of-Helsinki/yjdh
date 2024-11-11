@@ -1510,7 +1510,9 @@ class AhjoDecisionProposalDraft(TimeStampedModel):
 
     handler_role = models.CharField(
         max_length=64,
-        verbose_name=_("Handler role"),
+        verbose_name=_(
+            "Handler role (DEPRECATED, was used before dynamic fetch of decision makers)"
+        ),
         blank=True,
         null=True,
         choices=HandlerRole.choices,

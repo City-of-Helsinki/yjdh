@@ -35,7 +35,7 @@ const replaceDecisionTemplatePlaceholders = (
 const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
   application,
 }) => {
-  const { applicantLanguage, id } = application;
+  const { applicantLanguage, id, decisionProposalDraft } = application;
 
   const { t } = useTranslation();
   const translationBase = 'common:review.decisionProposal';
@@ -92,6 +92,24 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
     });
   };
 
+  React.useEffect(() => {
+    if (decisionMakerOptions && decisionMakerOptions.length > 0) {
+      setSelectedDecisionMaker({
+        id:
+          handledApplication?.decisionMakerId ||
+          decisionProposalDraft.decisionMakerId,
+        name:
+          handledApplication?.decisionMakerName ||
+          decisionProposalDraft.decisionMakerName,
+      });
+    }
+  }, [
+    decisionMakerOptions,
+    decisionProposalDraft,
+    handledApplication?.decisionMakerId,
+    handledApplication?.decisionMakerName,
+  ]);
+
   if (isLoading) {
     return (
       <Container>
@@ -136,10 +154,10 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
               `${translationBase}.role.fields.decisionMaker.tooltipText`
             )}
           >
-            {decisionMakerOptions?.map((option) => (
+            {decisionMakerOptions?.map((option, index) => (
               <$RadioButton
                 key={`radio-decision-maker-${option.id}`}
-                id={`radio-decision-maker-${option.id}`}
+                id={`radio-decision-maker-${index}`}
                 value={option.id}
                 label={option.name}
                 checked={selectedDecisionMaker?.id === option?.id}
@@ -165,7 +183,8 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
 
                     setHandledApplication({
                       ...handledApplication,
-                      handlerRole: 'handler',
+                      decisionMakerId: option.id,
+                      decisionMakerName: option.name,
                       decisionText: replaceDecisionTemplatePlaceholders(
                         handledApplication?.decisionText || '',
                         option.name
@@ -182,7 +201,7 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
           </SelectionGroup>
         </$GridCell>
       </$ReviewGrid>
-      {handledApplication?.handlerRole && (
+      {selectedDecisionMaker?.id && (
         <$ReviewGrid bgColor={theme.colors.silverLight}>
           <$GridCell $colSpan={12}>
             <Heading

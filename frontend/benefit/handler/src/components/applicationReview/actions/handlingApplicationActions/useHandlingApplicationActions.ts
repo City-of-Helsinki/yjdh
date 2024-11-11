@@ -72,7 +72,6 @@ const useHandlingApplicationActions = (
 
   const closeDialog = (): void => {
     setIsConfirmationModalOpen(false);
-    setHandledApplication(null);
   };
 
   const closeDoneDialog = (): void => {
