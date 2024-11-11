@@ -57,6 +57,14 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
       | 'instalments'
   ): string => t(`${translationBase}.${headingStatus}`);
 
+  const isInPayment = (application: ApplicationListItemData): boolean =>
+    [APPLICATION_STATUSES.ACCEPTED].includes(application.status) &&
+    !isString(application.batch) &&
+    [
+      BATCH_STATUSES.DECIDED_ACCEPTED,
+      BATCH_STATUSES.REJECTED_BY_TALPA,
+    ].includes(application?.batch?.status);
+
   const getTabCountPending = (): number =>
     list.filter(
       (app: ApplicationListItemData) =>
@@ -67,7 +75,10 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
     ).length;
 
   const getTabCountInstalments = (): number =>
-    list.filter((app: ApplicationListItemData) => app.pendingInstalment).length;
+    list.filter(
+      (app: ApplicationListItemData) =>
+        app.pendingInstalment && isInPayment(app)
+    ).length;
 
   const getTabCountInPayment = (): number =>
     list.filter(
@@ -134,14 +145,6 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
 
   const updateTabToUrl = (tabNumber: APPLICATION_LIST_TABS): void =>
     window.history.pushState({ tab }, '', `/?tab=${tabNumber}`);
-
-  const isInPayment = (application: ApplicationListItemData): boolean =>
-    [APPLICATION_STATUSES.ACCEPTED].includes(application.status) &&
-    !isString(application.batch) &&
-    [
-      BATCH_STATUSES.DECIDED_ACCEPTED,
-      BATCH_STATUSES.REJECTED_BY_TALPA,
-    ].includes(application?.batch?.status);
 
   return (
     <FrontPageProvider>
@@ -287,7 +290,9 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
             <Tabs.TabPanel>
               <ApplicationListForInstalments
                 isLoading={isLoading}
-                list={list.filter((app) => app.pendingInstalment)}
+                list={list.filter(
+                  (app) => app.pendingInstalment && isInPayment(app)
+                )}
                 heading={t(`${translationBase}.instalments`)}
               />
             </Tabs.TabPanel>
