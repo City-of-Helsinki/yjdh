@@ -10,6 +10,7 @@ from django.urls import reverse
 from applications.enums import AhjoRequestType, AhjoStatus as AhjoStatusEnum
 from applications.models import AhjoSetting, AhjoStatus, Application
 from applications.services.ahjo_authentication import AhjoToken, InvalidTokenException
+from applications.services.ahjo_error_writer import AhjoErrorWriter
 
 LOGGER = logging.getLogger(__name__)
 
@@ -23,6 +24,10 @@ class AhjoRequest:
 
     lang: str = "fi"
     url_base: str = field(default_factory=lambda: settings.AHJO_REST_API_URL)
+
+    @property
+    def has_application(self) -> bool:
+        return self.application is not None
 
     def __str__(self):
         return f"Request of type {self.request_type}"
@@ -240,9 +245,10 @@ class AhjoApiClient:
                 timeout=self._timeout,
                 data=data,
             )
-
+            # Create new ahjo status or update the last ahjo_status if a similar status exists,
+            # which means that this is a retry
             if hasattr(self._request, "result_status") and self._request.result_status:
-                AhjoStatus.objects.create(
+                AhjoStatus.objects.update_or_create(
                     application=self._request.application,
                     status=self._request.result_status,
                 )
@@ -260,19 +266,21 @@ class AhjoApiClient:
                 else:
                     return self._request.application, response.json()
         except MissingHandlerIdError as e:
-            LOGGER.error(
-                f"Missing handler id for application {self._request.application.application_number}: {e}"
-            )
+            error_message = f"Missing handler id for application {self.request.application.application_number}: {e}"
+            LOGGER.error(error_message)
+            self.write_error_to_ahjo_status(error_message)
         except MissingAhjoCaseIdError as e:
-            LOGGER.error(
-                f"Missing Ahjo case id for application {self._request.application.application_number}: {e}"
-            )
+            error_message = f"Missing Ahjo case id for application {self.request.application.application_number}: {e}"
+            LOGGER.error(error_message)
+            self.write_error_to_ahjo_status(error_message)
         except requests.exceptions.HTTPError as e:
             self.handle_http_error(e)
         except requests.exceptions.RequestException as e:
-            LOGGER.error(
+            error_message = (
                 f"A network error occurred while sending {self._request} to Ahjo: {e}"
             )
+            self.write_error_to_ahjo_status(error_message)
+            LOGGER.error(error_message)
         except AhjoApiClientException as e:
             LOGGER.error(
                 f"An error occurred while sending {self._request} to Ahjo: {e}"
@@ -299,9 +307,7 @@ class AhjoApiClient:
 
         if error_json:
             error_message += f" Error message: {error_json}"
-            status = self._request.application.ahjo_status.latest()
-            status.validation_error_from_ahjo = error_json
-            status.save()
+            self.write_error_to_ahjo_status(error_message)
 
         LOGGER.error(error_message)
 
@@ -312,3 +318,12 @@ class AhjoApiClient:
     ) -> str:
         return f"A HTTP or network error occurred while sending {self.request} for application \
     {application_number} to Ahjo: {e}"
+
+    def write_error_to_ahjo_status(self, error_message: str) -> None:
+        """Write the error message to the Ahjo status of the application for all requests that have an application.
+        The DecisionMaker request does not have an application, so it does not have an Ahjo status.
+        """
+        if self.request.has_application:
+            AhjoErrorWriter.write_to_validation_error(
+                self.request.application, error_message
+            )
