@@ -148,9 +148,11 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
                 </strong>
               </div>
               <ul>
-                {ahjoError?.errorFromAhjo?.map(({ message }) => (
-                  <li>{message}</li>
-                ))}
+                {ahjoError?.errorFromAhjo?.map
+                  ? ahjoError?.errorFromAhjo?.map(({ message }) => (
+                      <li>{message}</li>
+                    ))
+                  : ahjoError?.errorFromAhjo}
               </ul>
             </Tooltip>
           </$ActionErrors>
