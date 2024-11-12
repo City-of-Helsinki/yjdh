@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.6.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.5.0...benefit-backend-v2.6.0) (2024-11-12)
+
+
+### Features
+
+* Add accordion to decision box to list instalments (hl-1497) ([#3515](https://github.com/City-of-Helsinki/yjdh/issues/3515)) ([34e6201](https://github.com/City-of-Helsinki/yjdh/commit/34e620124426afbfd232e73eb88c46de0b7d6d15))
+* Don't create new status on retry, save error ([#3526](https://github.com/City-of-Helsinki/yjdh/issues/3526)) ([1c2d9e4](https://github.com/City-of-Helsinki/yjdh/commit/1c2d9e4f8c04199cfb9940ab03aeac0ce8aef2f4))
+* Implement instalments gui for handler (hl-1494) ([#3498](https://github.com/City-of-Helsinki/yjdh/issues/3498)) ([aaff375](https://github.com/City-of-Helsinki/yjdh/commit/aaff375519aa7f7defd8ede4beceaae96352982c))
+* Use own endpoint for requesting more information ([#3523](https://github.com/City-of-Helsinki/yjdh/issues/3523)) ([18406f6](https://github.com/City-of-Helsinki/yjdh/commit/18406f66e6b8dd3826ee63570f4140b5556522ea))
+
+
+### Bug Fixes
+
+* Attachment date in add records & update reqs ([#3525](https://github.com/City-of-Helsinki/yjdh/issues/3525)) ([af635c0](https://github.com/City-of-Helsinki/yjdh/commit/af635c04b7c2eaf0fc498d2797b13e31bf56efb4))
+* HL-1544 ([#3500](https://github.com/City-of-Helsinki/yjdh/issues/3500)) ([0b49eb3](https://github.com/City-of-Helsinki/yjdh/commit/0b49eb3c3b17bf0031369a04062c68ba83a56c92))
+* Preselect decision maker if it was selected before (hl-1530) ([#3522](https://github.com/City-of-Helsinki/yjdh/issues/3522)) ([45095c5](https://github.com/City-of-Helsinki/yjdh/commit/45095c53a41f3bbf7101effe34b6aac44c2a06c3))
+
 ## [2.5.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.4.1...benefit-backend-v2.5.0) (2024-11-04)
 
 
