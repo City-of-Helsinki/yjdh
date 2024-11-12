@@ -19,10 +19,7 @@ type ExtendedComponentProps = {
   navigationItems: NavigationItem[];
   isNavigationVisible: boolean;
   hasMessenger: boolean;
-  handleLanguageChange: (
-    e: React.SyntheticEvent<unknown>,
-    newLanguage: OptionType<string>
-  ) => void;
+  handleLanguageChange: (newLanguage: SUPPORTED_LANGUAGES) => void;
   handleNavigationItemClick: (url: string) => void;
   unreadMessagesCount: number | undefined | null;
   setMessagesDrawerVisiblity: (state: boolean) => void;
@@ -141,18 +138,13 @@ const useHeader = (): ExtendedComponentProps => {
     );
   }, [status, setHasMessenger]);
 
-  const handleLanguageChange = (
-    e: React.SyntheticEvent<unknown>,
-    newLanguage: OptionType<string>
-  ): void => {
-    e.preventDefault();
-
+  const handleLanguageChange = (newLanguage: SUPPORTED_LANGUAGES): void => {
     void axios.get(BackendEndpoint.USER_OPTIONS, {
-      params: { lang: newLanguage.value },
+      params: { lang: newLanguage },
     });
 
     void router.push({ pathname, query }, asPath, {
-      locale: newLanguage.value,
+      locale: newLanguage,
     });
   };
 
