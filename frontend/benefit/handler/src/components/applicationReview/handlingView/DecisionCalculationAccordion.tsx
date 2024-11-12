@@ -27,6 +27,7 @@ import { formatFloatToCurrency } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
 import { renderInstalmentTagPerStatus } from '../../applicationList/ApplicationListForInstalments';
+import { isInPayment } from '../../applicationList/HandlerIndex';
 import {
   $CalculatorTableHeader,
   $CalculatorTableRow,
@@ -158,7 +159,7 @@ const DecisionCalculationAccordion: React.FC<Props> = ({ data }) => {
           </$GridCell>
         </Accordion>
       </$DecisionCalculatorAccordion>
-      {data.pendingInstalment && (
+      {data.pendingInstalment && isInPayment(data) && (
         <$DecisionCalculatorAccordion>
           <$DecisionCalculatorAccordionIconContainer aria-hidden="true">
             <IconBagCogwheel />
