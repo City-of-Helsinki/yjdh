@@ -54,6 +54,8 @@ export const HandlerEndpoint = {
     `${BackendEndpoint.HANDLER_APPLICATIONS}batch_p2p_file?batch_id=${id}`,
   HANDLER_APPLICATIONS_CLONE_AS_DRAFT: (id: string) =>
     `${handlerApplicationsBase(id)}clone_as_draft/`,
+  HANDLER_REQUIRE_ADDITIONAL_INFORMATION: (id: string) =>
+    `${handlerApplicationsBase(id)}require_additional_information/`,
   HANDLER_INSTALMENT_STATUS_TRANSITION: (id: string) =>
     `${handlerInstalmentBase(id)}`,
 } as const;
