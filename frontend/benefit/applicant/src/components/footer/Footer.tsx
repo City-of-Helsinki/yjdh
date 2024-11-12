@@ -15,7 +15,7 @@ const FooterSection: React.FC = () => {
         <Footer.Base
           copyrightHolder={t('common:footer.copyrightText')}
           copyrightText={t('common:footer.allRightsReservedText')}
-          backToTopLabel="Back to top"
+          backToTopLabel={t('common:footer.backToTop')}
           logo={
             <Logo src={logoFiDark} size="medium" alt="Helsingin kaupunki" />
           }
