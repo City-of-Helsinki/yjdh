@@ -48,7 +48,10 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
     React.useState<string>(handledApplication?.decisionText || '');
 
   const [selectedDecisionMaker, setSelectedDecisionMaker] =
-    React.useState<DecisionMaker | null>(null);
+    React.useState<DecisionMaker | null>({
+      id: handledApplication?.decisionMakerId,
+      name: handledApplication?.decisionMakerName,
+    });
 
   const decisionType =
     handledApplication?.status === 'accepted'
@@ -97,10 +100,10 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
       setSelectedDecisionMaker({
         id:
           handledApplication?.decisionMakerId ||
-          decisionProposalDraft.decisionMakerId,
+          decisionProposalDraft?.decisionMakerId,
         name:
           handledApplication?.decisionMakerName ||
-          decisionProposalDraft.decisionMakerName,
+          decisionProposalDraft?.decisionMakerName,
       });
     }
   }, [

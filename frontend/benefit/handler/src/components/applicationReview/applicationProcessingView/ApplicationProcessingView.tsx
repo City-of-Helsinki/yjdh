@@ -54,6 +54,8 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
         logEntryComment: data?.decisionProposalDraft?.logEntryComment,
         justificationText: data?.decisionProposalDraft?.justificationText,
         decisionText: data?.decisionProposalDraft?.decisionText,
+        decisionMakerId: data?.decisionProposalDraft?.decisionMakerId,
+        decisionMakerName: data?.decisionProposalDraft?.decisionMakerName,
       });
     }
   }, [data, handledApplication, setHandledApplication, isNewAhjoMode]);
