@@ -1,5 +1,22 @@
 # Changelog
 
+## [4.6.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.5.0...benefit-handler-v4.6.0) (2024-11-12)
+
+
+### Features
+
+* Add accordion to decision box to list instalments (hl-1497) ([#3515](https://github.com/City-of-Helsinki/yjdh/issues/3515)) ([34e6201](https://github.com/City-of-Helsinki/yjdh/commit/34e620124426afbfd232e73eb88c46de0b7d6d15))
+* Implement instalments gui for handler (hl-1494) ([#3498](https://github.com/City-of-Helsinki/yjdh/issues/3498)) ([aaff375](https://github.com/City-of-Helsinki/yjdh/commit/aaff375519aa7f7defd8ede4beceaae96352982c))
+* Use own endpoint for requesting more information ([#3523](https://github.com/City-of-Helsinki/yjdh/issues/3523)) ([18406f6](https://github.com/City-of-Helsinki/yjdh/commit/18406f66e6b8dd3826ee63570f4140b5556522ea))
+
+
+### Bug Fixes
+
+* Allow for talpa-rejected batches to be seen ([#3501](https://github.com/City-of-Helsinki/yjdh/issues/3501)) ([d405af5](https://github.com/City-of-Helsinki/yjdh/commit/d405af537040874de4e2ca19b2a1911e5d3307d3))
+* Issues persist with chosing decision maker role (hl-1530 cont.) ([#3529](https://github.com/City-of-Helsinki/yjdh/issues/3529)) ([1a8467c](https://github.com/City-of-Helsinki/yjdh/commit/1a8467c132e04d1c261c2873a2361a32f5121244))
+* Preselect decision maker if it was selected before (hl-1530) ([#3522](https://github.com/City-of-Helsinki/yjdh/issues/3522)) ([45095c5](https://github.com/City-of-Helsinki/yjdh/commit/45095c53a41f3bbf7101effe34b6aac44c2a06c3))
+* Show applications with 2nd instalments only they are in payment ([#3528](https://github.com/City-of-Helsinki/yjdh/issues/3528)) ([db2f099](https://github.com/City-of-Helsinki/yjdh/commit/db2f0995f26a51d882765f6a5f73f0e7f0fb749b))
+
 ## [4.5.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.4.0...benefit-handler-v4.5.0) (2024-11-04)
 
 
