@@ -478,6 +478,11 @@ def test_prepare_decision_proposal_payload(application_with_ahjo_decision):
                         "Role": "decisionMaker",
                         "ID": decision.decision_maker_id,
                     },
+                    {
+                        "Role": "signer",
+                        "ID": decision.signer_id,
+                        "Name": decision.signer_name,
+                    },
                 ],
             },
             {
