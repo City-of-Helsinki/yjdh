@@ -1237,6 +1237,15 @@
           }
         }
       },
+      "signer": {
+        "title": "Valitse allekirjoittaja",
+        "fields": {
+          "signer": {
+            "label": "Päätöksen allekirjoittaja",
+            "tooltipText": "Päätöksen allekirjoittaja Ahjossa tapahtuvaa sähköistä allekirjoitusta varten. Valitse allekirjoittajaksi joku muu kuin käsittelijä."
+          }
+        }
+      },
       "templates": {
         "title": "Valitse pohja päätökselle",
         "fields": {
