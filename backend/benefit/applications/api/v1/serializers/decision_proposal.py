@@ -19,6 +19,8 @@ class AhjoDecisionProposalReadOnlySerializer(serializers.ModelSerializer):
             "log_entry_comment",
             "decision_maker_id",
             "decision_maker_name",
+            "signer_id",
+            "signer_name",
         ]
 
 
@@ -36,6 +38,8 @@ class AhjoDecisionProposalSerializer(serializers.ModelSerializer):
             "log_entry_comment",
             "decision_maker_id",
             "decision_maker_name",
+            "signer_id",
+            "signer_name",
         ]
 
     def validate(self, data):

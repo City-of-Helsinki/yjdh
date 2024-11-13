@@ -1106,10 +1106,32 @@ def fake_decisionmakers():
 
 
 @pytest.fixture
+def fake_signers():
+    return [
+        {
+            "ID": "ABCDEFGH12345678",
+            "Name": "Testaaja, Timo",
+        },
+        {
+            "ID": "HIJKLMNOPQRSTUWXYZ",
+            "Name": "Testaaja, Tiina",
+        },
+    ]
+
+
+@pytest.fixture
 def decision_maker_settings(fake_decisionmakers):
     return AhjoSetting.objects.create(
         name="ahjo_decision_maker",
         data=fake_decisionmakers,
+    )
+
+
+@pytest.fixture
+def signer_settings(fake_signers):
+    return AhjoSetting.objects.create(
+        name="ahjo_signer",
+        data=fake_signers,
     )
 
 

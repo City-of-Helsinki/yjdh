@@ -107,6 +107,7 @@ def test_decision_text_api_post(
     language,
     fake_decisionmakers,
     status_code,
+    fake_signers,
 ):
     url = get_decisions_list_url(decided_application.id)
     data = {
@@ -115,6 +116,8 @@ def test_decision_text_api_post(
         "language": language,
         "decision_maker_id": fake_decisionmakers[0]["ID"],
         "decision_maker_name": fake_decisionmakers[0]["Name"],
+        "signer_id": fake_signers[0]["ID"],
+        "signer_name": fake_signers[0]["Name"],
     }
     response = handler_api_client.post(url, data)
     assert response.status_code == status_code
@@ -226,7 +229,7 @@ def test_decision_text_api_get(decided_application, handler_api_client):
 
 
 def test_decision_text_api_put(
-    decided_application, handler_api_client, fake_decisionmakers
+    decided_application, handler_api_client, fake_decisionmakers, fake_signers
 ):
     decision_text = AhjoDecisionText.objects.create(
         application=decided_application,
@@ -235,6 +238,8 @@ def test_decision_text_api_put(
         language="fi",
         decision_maker_id=fake_decisionmakers[0]["ID"],
         decision_maker_name=fake_decisionmakers[0]["Name"],
+        signer_id=fake_signers[0]["ID"],
+        signer_name=fake_signers[0]["Name"],
     )
     url = get_decisions_detail_url(decided_application.id, decision_text.id)
     data = {
@@ -243,6 +248,8 @@ def test_decision_text_api_put(
         "language": "sv",
         "decision_maker_id": fake_decisionmakers[1]["ID"],
         "decision_maker_name": fake_decisionmakers[1]["Name"],
+        "signer_id": fake_signers[1]["ID"],
+        "signer_name": fake_signers[1]["Name"],
     }
     response = handler_api_client.put(url, data)
     assert response.status_code == 200
@@ -252,6 +259,8 @@ def test_decision_text_api_put(
     assert decision_text.decision_text == data["decision_text"]
     assert decision_text.decision_maker_id == data["decision_maker_id"]
     assert decision_text.decision_maker_name == data["decision_maker_name"]
+    assert decision_text.signer_id == data["signer_id"]
+    assert decision_text.signer_name == data["signer_name"]
 
 
 def test_parse_details_from_decision_response(
