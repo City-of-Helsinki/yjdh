@@ -190,7 +190,7 @@ hakemus {application.application_number}"
 
 
 def prepare_final_case_title(application: Application, limit: int = 150) -> str:
-    """Prepare the final case title for Ahjo, if the full title is over 150 characters, \
+    """Prepare the final case title for Ahjo, if the full title length is over the given limit, \
     truncate the company name to fit the limit."""
     full_case_title = prepare_case_title(application, application.company.name)
     length_of_full_title = len(full_case_title)
@@ -230,7 +230,10 @@ def resolve_payload_language(application: Application) -> str:
 
 
 def _prepare_top_level_dict(
-    application: Application, case_records: List[dict], case_title: str
+    application: Application,
+    case_records: List[dict],
+    public_case_title: str,
+    internal_case_title: str,
 ) -> dict:
     """Prepare the dictionary that is sent to Ahjo"""
 
@@ -242,13 +245,13 @@ def _prepare_top_level_dict(
 
     handler = application.calculation.handler
     case_dict = {
-        "Title": case_title,
+        "Title": public_case_title,
         "Acquired": application_date.isoformat("T", "seconds"),
         "ClassificationCode": "02 05 01 00",
         "ClassificationTitle": "Kunnan myöntämät avustukset",
         "Language": resolve_payload_language(application),
         "PublicityClass": "Julkinen",
-        "InternalTitle": case_title,
+        "InternalTitle": internal_case_title,
         "Subjects": [
             {"Subject": "Helsinki-lisät", "Scheme": "hki-yhpa"},
             {"Subject": "kunnan myöntämät avustukset", "Scheme": "hki-yhpa"},
@@ -395,8 +398,15 @@ def prepare_open_case_payload(
 ) -> dict:
     "Prepare the complete dictionary payload that is sent to Ahjo"
     case_records = _prepare_case_records(application, pdf_summary)
-    case_title = prepare_final_case_title(application)
-    payload = _prepare_top_level_dict(application, case_records, case_title)
+    public_case_title = prepare_final_case_title(application=application, limit=512)
+    internal_case_title = prepare_final_case_title(application=application, limit=150)
+
+    payload = _prepare_top_level_dict(
+        application=application,
+        case_records=case_records,
+        public_case_title=public_case_title,
+        internal_case_title=internal_case_title,
+    )
     return payload
 
 

@@ -425,13 +425,13 @@ def ahjo_open_case_top_level_dict(decided_application):
     handler = application.calculation.handler
 
     return {
-        "Title": "message title",
+        "Title": "a" * 512,
         "Acquired": application.created_at.isoformat(),
         "ClassificationCode": "02 05 01 00",
         "ClassificationTitle": "Kunnan myöntämät avustukset",
         "Language": language,
         "PublicityClass": "Julkinen",
-        "InternalTitle": "message title",
+        "InternalTitle": "a" * 150,
         "Subjects": [
             {"Subject": "Helsinki-lisät", "Scheme": "hki-yhpa"},
             {"Subject": "kunnan myöntämät avustukset", "Scheme": "hki-yhpa"},

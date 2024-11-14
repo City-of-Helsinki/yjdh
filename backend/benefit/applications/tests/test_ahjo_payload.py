@@ -141,6 +141,8 @@ def test_truncate_string_to_limit(
         ("a" * 100, 100, 150),
         ("a" * 50, 100, 150),
         ("1234567890AB", 10, 150),
+        # 256 characters is the maximun length for the company name in the database
+        ("a" * 256, 512, 512),
     ],
 )
 def test_prepare_final_case_title_truncate(
@@ -370,8 +372,12 @@ def test_prepare_case_records(decided_application, settings):
 
 def test_prepare_top_level_dict(decided_application, ahjo_open_case_top_level_dict):
     application = Application.objects.get(pk=decided_application.pk)
+    long_title = "a" * 512
+    short_title = "a" * 150
 
-    got = _prepare_top_level_dict(application, [], "message title")
+    got = _prepare_top_level_dict(
+        application, [], public_case_title=long_title, internal_case_title=short_title
+    )
 
     assert ahjo_open_case_top_level_dict == got
 
