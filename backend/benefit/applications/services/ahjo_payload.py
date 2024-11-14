@@ -78,17 +78,17 @@ class UpdateRecordsRecordTitle(AhjoTitle):
     A class for creating the title of an update record.
 
     Inherits from AhjoTitle. Uses the application's modification date and application number to format the title.
-    The prefix is set to ", täydennys," by default.
+    The prefix is set to ", täydennys" by default.
 
     Attributes:
-        prefix (str): A default string ", täydennys," that is used in the title of update records.
+        prefix (str): A default string ", täydennys" that is used in the title of update records.
         attachment_created_at (datetime): The created_at date of the attachment that is being updated to Ahjo.
 
     Methods:
         __str__(): Returns the formatted string representation of the update record title.
     """
 
-    prefix: str = field(default=", täydennys,")
+    prefix: str = field(default=", täydennys")
     attachment_created_at: datetime = None
 
     def __str__(self):
@@ -121,7 +121,7 @@ class AddRecordsRecordTitle(AhjoTitle):
         __str__(): Returns the formatted string representation of the additional record title.
     """
 
-    prefix: str = field(default=", täydennys,")
+    prefix: str = field(default=", täydennys")
     attachment_created_at: datetime = None
 
     def __str__(self):

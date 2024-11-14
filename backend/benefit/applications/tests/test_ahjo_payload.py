@@ -75,7 +75,7 @@ def test_update_records_record_title_str():
         application=mock_app, attachment_created_at=attachment_created_at
     )
     result = str(update_records_title)
-    expected = f"{AhjoRecordTitle.APPLICATION}, täydennys, 25.02.2023, 67890"
+    expected = f"{AhjoRecordTitle.APPLICATION}, täydennys 25.02.2023, 67890"
     assert result == expected
 
 
@@ -90,7 +90,7 @@ def test_add_records_record_title_str():
         application=mock_app, attachment_created_at=attachment_created_at
     )
     result = str(add_records_title)
-    expected = f"{AhjoRecordTitle.APPLICATION}, täydennys, 10.03.2023, 54321"
+    expected = f"{AhjoRecordTitle.APPLICATION}, täydennys 10.03.2023, 54321"
     assert result == expected
 
 
@@ -169,7 +169,7 @@ def test_prepare_final_case_title_truncate(
             AhjoRecordTitle.APPLICATION,
             AhjoRecordType.APPLICATION,
             AhjoRequestType.UPDATE_APPLICATION,
-            ", täydennys,",
+            ", täydennys",
             0,
             0,
         ),
@@ -178,7 +178,7 @@ def test_prepare_final_case_title_truncate(
             AhjoRecordTitle.APPLICATION,
             AhjoRecordType.ATTACHMENT,
             AhjoRequestType.ADD_RECORDS,
-            ", täydennys,",
+            ", täydennys",
             0,
             0,
         ),
