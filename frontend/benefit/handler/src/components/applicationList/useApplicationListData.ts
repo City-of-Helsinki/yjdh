@@ -46,6 +46,7 @@ const useApplicationListData = (
         handled_at: handledAt,
         ahjo_error,
         pending_instalment,
+        alterations,
       } = application;
 
       return {
@@ -77,6 +78,7 @@ const useApplicationListData = (
         decisionDate: convertToUIDateFormat(batch?.decision_date) || '-',
         calculatedBenefitAmount: calculation?.calculated_benefit_amount || '0',
         pendingInstalment: camelcaseKeys(pending_instalment),
+        alterations: alterations || [],
       };
     })
     .filter(

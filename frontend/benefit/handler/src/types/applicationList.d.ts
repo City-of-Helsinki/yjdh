@@ -11,6 +11,7 @@ export interface ApplicationListTableTransforms {
   ahjoError: AhjoError;
   calculatedBenefitAmount?: string;
   pendingInstalment?: Instalment;
+  alterations: ApplicationAlterationData[];
 }
 
 export interface ApplicationListTableColumns {

@@ -6,6 +6,7 @@ import {
 } from 'benefit/handler/types/applicationList';
 import { getInstalmentTagStyleForStatus } from 'benefit/handler/utils/applications';
 import {
+  ALTERATION_STATE,
   APPLICATION_STATUSES,
   INSTALMENT_STATUSES,
 } from 'benefit-shared/constants';
@@ -18,6 +19,7 @@ import {
   IconArrowUndo,
   IconCheck,
   IconCross,
+  IconErrorFill,
   Table,
   Tag,
 } from 'hds-react';
@@ -41,6 +43,7 @@ import {
 } from '../applicationReview/actions/handlingApplicationActions/HandlingApplicationActions.sc';
 import { $HintText, $TableFooter } from '../table/TableExtras.sc';
 import {
+  $AlterationBadge,
   $EmptyHeading,
   $Heading,
   $InstalmentList,
@@ -125,7 +128,6 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
         key: 'companyName',
         isSortable: true,
       },
-
       {
         headerName: getHeader('companyId'),
         key: 'companyId',
@@ -136,15 +138,6 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
         key: 'applicationNum',
         isSortable: true,
       },
-
-      // {
-      //   headerName: getHeader('employeeName'),
-      //   key: 'employeeName',
-      //   isSortable: true,
-      // },
-    ];
-
-    cols.push(
       {
         headerName: getHeader('dueDate'),
         key: 'dueDate',
@@ -162,21 +155,58 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
         isSortable: true,
       },
       {
-        transform: ({
-          calculatedBenefitAmount,
-          pendingInstalment,
-        }: ApplicationListTableTransforms) => (
-          <>
-            {formatFloatToCurrency(pendingInstalment?.amount, null, 'fi-FI', 0)}{' '}
-            /{' '}
-            {formatFloatToCurrency(calculatedBenefitAmount, 'EUR', 'fi-FI', 0)}
-          </>
-        ),
-        headerName: getHeader('calculatedBenefitAmount'),
-        key: 'calculatedBenefitAmount',
+        transform: ({ pendingInstalment }: ApplicationListTableTransforms) =>
+          pendingInstalment?.amountAfterRecoveries > 0 ? (
+            <>
+              {formatFloatToCurrency(
+                Math.max(0, pendingInstalment?.amountAfterRecoveries),
+                null,
+                'fi-FI',
+                0
+              )}
+
+              {' / '}
+              {formatFloatToCurrency(
+                pendingInstalment.amount,
+                'EUR',
+                'fi-FI',
+                0
+              )}
+            </>
+          ) : (
+            <$Wrapper>
+              <$Column>
+                <IconErrorFill color="var(--color-alert)" />{' '}
+                {formatFloatToCurrency(
+                  pendingInstalment.amountAfterRecoveries,
+                  'EUR',
+                  'fi-FI',
+                  0
+                )}
+              </$Column>
+            </$Wrapper>
+          ),
+        headerName: getHeader('instalmentAmount'),
+        key: 'instalmentAmount',
         isSortable: true,
-      }
-    );
+      },
+      {
+        transform: ({ alterations }: ApplicationListTableTransforms) =>
+          alterations?.length > 0 && (
+            <$AlterationBadge
+              $requiresAttention={alterations.some(({ state }) =>
+                [ALTERATION_STATE.RECEIVED, ALTERATION_STATE.OPENED].includes(
+                  state as ALTERATION_STATE
+                )
+              )}
+            >
+              {alterations.length}
+            </$AlterationBadge>
+          ),
+        headerName: '',
+        key: 'alterations',
+      },
+    ];
 
     return cols.filter(Boolean);
   }, [getHeader, t]);

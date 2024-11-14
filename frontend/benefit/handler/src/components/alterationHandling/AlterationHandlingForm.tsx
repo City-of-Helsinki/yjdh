@@ -294,7 +294,10 @@ const AlterationHandlingForm = ({
               theme="coat"
               iconLeft={<IconCheck />}
               disabled={
-                isSubmitting || (isSubmitted && hasErrors) || !isCSVDownloadDone
+                formik.values.isRecoverable &&
+                (isSubmitting ||
+                  (isSubmitted && hasErrors) ||
+                  !isCSVDownloadDone)
               }
               isLoading={isSubmitting}
               loadingText={t('common:utility.submitting')}

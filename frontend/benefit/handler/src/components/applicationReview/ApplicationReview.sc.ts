@@ -106,6 +106,12 @@ export const $CalculatorTableRow = styled.div<CalculatorTableRowProps>`
   margin-top: ${(props) => (props.isNewSection ? props.theme.spacing.m : '0')};
 `;
 
+export const $RowWrap = styled.div`
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+`;
+
 export const $CalculatorTableHeader = styled.div`
   font-size: ${(props) => props.theme.fontSize.heading.l};
   padding: ${({ theme: { spacing } }) => `${spacing.xs3} ${spacing.xs}`};

@@ -432,6 +432,7 @@ export type InstalmentData = {
   instalment_number: number;
   amount: number;
   due_date: string;
+  amount_after_recoveries: number;
   status: INSTALMENT_STATUSES;
 };
 
@@ -440,6 +441,7 @@ export type Instalment = {
   instalmentNumber: number;
   amount: number;
   dueDate: string;
+  amountAfterRecoveries: number;
   status: INSTALMENT_STATUSES;
 };
 
