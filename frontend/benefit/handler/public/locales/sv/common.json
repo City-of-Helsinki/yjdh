@@ -1199,6 +1199,7 @@
           "logEntry": "Päätöksen perustelu puuttuu",
           "decisionMakerId": "Päättäjän rooli puuttuu",
           "decisionText": "Päätös ei voi olla tyhjä",
+          "signerId": "Allekirjoittaja puuttuu",
           "justificationText": "Päätöksen perustelu ei voi olla tyhjä"
         }
       },
