@@ -9,7 +9,7 @@ from django.db import transaction
 from django.utils import timezone
 
 from applications.enums import ApplicationStatus, BenefitType, PaySubsidyGranted
-from calculator.enums import DescriptionType, RowType
+from calculator.enums import DescriptionType, InstalmentStatus, RowType
 from calculator.models import (
     Calculation,
     CalculationRow,
@@ -179,30 +179,37 @@ class HelsinkiBenefitCalculator:
         and the second being equal to the rest of the total.
         """
         if total_benefit_amount <= self.instalment_threshold:
-            return [(1, total_benefit_amount, timezone.now())]
+            return [
+                (1, total_benefit_amount, timezone.now(), InstalmentStatus.ACCEPTED)
+            ]
 
         first_instalment_amount = self.first_instalment_limit
         second_instalment_amount = total_benefit_amount - first_instalment_amount
 
         return [
-            (1, first_instalment_amount, timezone.now()),
+            (1, first_instalment_amount, timezone.now(), InstalmentStatus.ACCEPTED),
             (
                 2,
                 second_instalment_amount,
                 timezone.now() + datetime.timedelta(days=181),
+                InstalmentStatus.WAITING,
             ),
         ]
 
     def _create_instalments(
-        self, instalments: list[tuple[int, decimal.Decimal, datetime.datetime]]
+        self,
+        instalments: list[
+            tuple[int, decimal.Decimal, datetime.datetime, InstalmentStatus]
+        ],
     ) -> None:
         """Create instalment objects from the provided instalment data."""
-        for instalment_number, amount, due_date in instalments:
+        for instalment_number, amount, due_date, status in instalments:
             Instalment.objects.create(
                 calculation=self.calculation,
                 instalment_number=instalment_number,
                 amount=amount,
                 due_date=due_date,
+                status=status,
             )
 
     @transaction.atomic
