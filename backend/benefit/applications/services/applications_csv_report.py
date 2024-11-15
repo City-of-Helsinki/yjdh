@@ -40,7 +40,7 @@ def get_export_notes(application):
 
 def format_datetime(value):
     if value:
-        return value.isoformat()
+        return value.strftime("%Y-%m-%d")
     else:
         return ""
 

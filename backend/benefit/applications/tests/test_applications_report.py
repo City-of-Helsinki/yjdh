@@ -687,23 +687,25 @@ def test_applications_csv_output(applications_csv_service):  # noqa: C901
         elif "Siirrettävä Ahjo-rivi / alkupäivä" in col.heading:
             assert (
                 csv_lines[1][idx]
-                == f'"{application1.calculation.ahjo_rows[0].start_date.isoformat()}"'
+                == f'"{application1.calculation.ahjo_rows[0].start_date.strftime("%Y-%m-%d")}"'
             )
             assert (
                 csv_lines[2][idx]
-                == f'"{application2.calculation.ahjo_rows[0].start_date.isoformat()}"'
+                == f'"{application2.calculation.ahjo_rows[0].start_date.strftime("%Y-%m-%d")}"'
             )
         elif "Siirrettävä Ahjo-rivi / päättymispäivä" in col.heading:
             assert (
                 csv_lines[1][idx]
-                == f'"{application1.calculation.ahjo_rows[0].end_date.isoformat()}"'
+                == f'"{application1.calculation.ahjo_rows[0].end_date.strftime("%Y-%m-%d")}"'
             )
             assert (
                 csv_lines[2][idx]
-                == f'"{application2.calculation.ahjo_rows[0].end_date.isoformat()}"'
+                == f'"{application2.calculation.ahjo_rows[0].end_date.strftime("%Y-%m-%d")}"'
             )
         elif "Käsittelypäivä" in col.heading:
-            assert csv_lines[1][idx] == f'"{application1.handled_at.isoformat()}"'
+            assert (
+                csv_lines[1][idx] == f'"{application1.handled_at.strftime("%Y-%m-%d")}"'
+            )
         elif "Siirrettävä Ahjo-rivi / määrä eur kk" in col.heading:
             assert (
                 Decimal(csv_lines[1][idx])
@@ -716,11 +718,11 @@ def test_applications_csv_output(applications_csv_service):  # noqa: C901
         elif "Palkkatuki 1 / alkupäivä" in col.heading:
             assert (
                 csv_lines[1][idx]
-                == f'"{application1.pay_subsidies.all()[0].start_date.isoformat()}"'
+                == f'"{application1.pay_subsidies.all()[0].start_date.strftime("%Y-%m-%d")}"'
             )
             assert (
                 csv_lines[2][idx]
-                == f'"{application2.pay_subsidies.all()[0].start_date.isoformat()}"'
+                == f'"{application2.pay_subsidies.all()[0].start_date.strftime("%Y-%m-%d")}"'
             )
         elif "De minimis 1 / myöntäjä" in col.heading:
             assert (
@@ -734,11 +736,11 @@ def test_applications_csv_output(applications_csv_service):  # noqa: C901
         elif "De minimis 2 / myönnetty" in col.heading:
             assert (
                 csv_lines[1][idx]
-                == f'"{application1.de_minimis_aid_set.all()[1].granted_at.isoformat()}"'
+                == f'"{application1.de_minimis_aid_set.all()[1].granted_at.strftime("%Y-%m-%d")}"'
             )
             assert (
                 csv_lines[2][idx]
-                == f'"{application2.de_minimis_aid_set.all()[1].granted_at.isoformat()}"'
+                == f'"{application2.de_minimis_aid_set.all()[1].granted_at.strftime("%Y-%m-%d")}"'
             )
         elif "Laskelman lopputulos" in col.heading:
             assert (
@@ -947,7 +949,7 @@ def test_applications_csv_non_ascii_characters(
     csv_lines = split_lines_at_semicolon(
         applications_csv_service_with_one_application.get_csv_string()
     )
-    assert csv_lines[1][13] == '"test äöÄÖtest"'  # string is quoted
+    assert csv_lines[1][12] == '"test äöÄÖtest"'  # string is quoted
 
 
 def test_applications_csv_delimiter(applications_csv_service_with_one_application):
