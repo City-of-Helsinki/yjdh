@@ -25,7 +25,10 @@ class ApplicationsPowerBiCsvService(ApplicationsCsvService):
     def get_completed_in_talpa_date(
         self, application: Application
     ) -> Union[datetime, None]:
-        if application.batch.status == ApplicationBatchStatus.COMPLETED:
+        if (
+            application.batch
+            and application.batch.status == ApplicationBatchStatus.COMPLETED
+        ):
             return application.batch.modified_at.strftime("%d.%m.%Y")
         return None
 
