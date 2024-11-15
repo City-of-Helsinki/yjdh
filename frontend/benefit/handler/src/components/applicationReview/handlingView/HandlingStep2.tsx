@@ -2,7 +2,11 @@ import AppContext from 'benefit/handler/context/AppContext';
 import useAhjoSettingsQuery from 'benefit/handler/hooks/useAhjoSettingsQuery';
 import { DecisionProposalTemplateData } from 'benefit/handler/types/common';
 import { DECISION_TYPES } from 'benefit-shared/constants';
-import { AhjoSigner, Application, DecisionMaker } from 'benefit-shared/types/application';
+import {
+  AhjoSigner,
+  Application,
+  DecisionMaker,
+} from 'benefit-shared/types/application';
 import { LoadingSpinner, Select, SelectionGroup } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -52,12 +56,13 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
       id: handledApplication?.decisionMakerId,
       name: handledApplication?.decisionMakerName,
     });
-  
-  const [selectedSigner, setSelectedSigner] =
-  React.useState<AhjoSigner | null>({
-    id: handledApplication?.signerId,
-    name: handledApplication?.signerName,
-  });
+
+  const [selectedSigner, setSelectedSigner] = React.useState<AhjoSigner | null>(
+    {
+      id: handledApplication?.signerId,
+      name: handledApplication?.signerName,
+    }
+  );
 
   const decisionType =
     handledApplication?.status === 'accepted'
@@ -68,7 +73,9 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
     id,
     decisionType
   );
-  const { data: decisionMakerOptions } = useAhjoSettingsQuery('ahjo_decision_maker');
+  const { data: decisionMakerOptions } = useAhjoSettingsQuery(
+    'ahjo_decision_maker'
+  );
   const { data: signerOptions } = useAhjoSettingsQuery('ahjo_signer');
 
   const selectTemplate = (option: DecisionProposalTemplateData): void => {
@@ -121,16 +128,13 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
     handledApplication?.decisionMakerId,
     handledApplication?.decisionMakerName,
   ]);
-  
+
   React.useEffect(() => {
     if (signerOptions && signerOptions.length > 0) {
       setSelectedSigner({
-        id:
-          handledApplication?.signerId ||
-          decisionProposalDraft.signerId,
+        id: handledApplication?.signerId || decisionProposalDraft?.signerId,
         name:
-          handledApplication?.signerName ||
-          decisionProposalDraft.signerName,
+          handledApplication?.signerName || decisionProposalDraft?.signerName,
       });
     }
   }, [
@@ -184,14 +188,14 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
               `${translationBase}.signer.fields.signer.tooltipText`
             )}
           >
-             {signerOptions?.map((option, index) => (
-               <$RadioButton
-                 key={`radio-signer-${option.id}`}
-                 id={`radio-signer-${index}`}
-                 value={option.id}
-                 label={option.name}
-                 checked={selectedSigner?.id === option?.id}
-                 onChange={() => {
+            {signerOptions?.map((option, index) => (
+              <$RadioButton
+                key={`radio-signer-${option.id}`}
+                id={`radio-signer-${index}`}
+                value={option.id}
+                label={option.name}
+                checked={selectedSigner?.id === option?.id}
+                onChange={() => {
                   setSelectedSigner({
                     id: option.id,
                     name: option.name,
@@ -202,9 +206,9 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
                     signerId: option.id,
                     signerName: option.name,
                   });
-                 }}
-               />
-             ))}
+                }}
+              />
+            ))}
           </SelectionGroup>
         </$GridCell>
       </$ReviewGrid>
