@@ -657,6 +657,9 @@ msgstr ""
 msgid "Your Helsinki benefit draft application will expire"
 msgstr "Helsinki-lisä -hakemuksesi luonnos vanhenee"
 
+msgid "Your Helsinki benefit application benefit period is about to end"
+msgstr "Myönnetyn Helsinki-lisän tukiaika on päättymässä"
+
 msgid "company"
 msgstr "yritys"
 

@@ -28,6 +28,9 @@ msgstr "Kan inte exportera tom sats"
 msgid "Application batch {date}"
 msgstr "Ansökningssats {date}"
 
+msgid "Your Helsinki benefit application benefit period is about to end"
+msgstr "Den beviljade perioden för Helsingforstillägget närmar sig sitt slut"
+
 msgid "There is no available application to export, please try again later"
 msgstr ""
 "Ingen ansökan finns tillgänglig för export, vänligen försök på nytt senare"

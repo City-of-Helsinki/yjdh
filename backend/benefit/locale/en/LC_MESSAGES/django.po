@@ -615,6 +615,9 @@ msgstr ""
 msgid "Your Helsinki benefit draft application will expire"
 msgstr "The Helsinki Benefit card"
 
+msgid "Your Helsinki benefit application benefit period is about to end"
+msgstr "The granted Helsinki benefit period is ending soon"
+
 #, fuzzy
 #| msgid "employee_consent"
 msgid "company"
