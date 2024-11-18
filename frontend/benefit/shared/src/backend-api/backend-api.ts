@@ -27,7 +27,7 @@ export const BackendEndpoint = {
   SEARCH: 'v1/search/',
   APPLICATIONS_WITH_UNREAD_MESSAGES:
     'v1/handlerapplications/with_unread_messages/',
-  AHJO_SETTINGS: 'v1/ahjosettings/decision-maker/',
+  AHJO_SETTINGS: 'v1/ahjosettings/',
   APPLICATIONS_CLONE_AS_DRAFT: 'v1/applications/clone_as_draft/',
   APPLICATIONS_CLONE_LATEST: 'v1/applications/clone_latest/',
   HANDLER_APPLICATIONS_CLONE_AS_DRAFT: 'v1/handlerapplications/clone_as_draft/',

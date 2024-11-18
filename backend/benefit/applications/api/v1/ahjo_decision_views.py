@@ -187,6 +187,8 @@ class DecisionProposalDraftUpdate(APIView):
                 name="ahjo_decision_maker"
             ).data
 
+            available_signers = AhjoSetting.objects.get(name="ahjo_signer").data
+
             decision_maker_id = request.data.get("decision_maker_id")
             decision_maker = next(
                 (
@@ -197,8 +199,17 @@ class DecisionProposalDraftUpdate(APIView):
                 None,
             )
 
+            signer_id = request.data.get("signer_id")
+            signer = next(
+                (item for item in available_signers if item["ID"] == signer_id),
+                None,
+            )
+
             if decision_maker is None:
                 decision_maker = {"ID": None, "Name": None}
+
+            if signer_id is None:
+                signer = {"ID": None, "Name": None}
 
             if ahjo_text:
                 ahjo_text.update(
@@ -211,6 +222,8 @@ class DecisionProposalDraftUpdate(APIView):
                     decision_text=decision_text,
                     decision_maker_id=decision_maker["ID"],
                     decision_maker_name=decision_maker["Name"],
+                    signer_id=signer["ID"],
+                    signer_name=signer["Name"],
                 )
             else:
                 AhjoDecisionText.objects.create(
@@ -224,6 +237,8 @@ class DecisionProposalDraftUpdate(APIView):
                     decision_text=decision_text,
                     decision_maker_id=decision_maker["ID"],
                     decision_maker_name=decision_maker["Name"],
+                    signer_id=signer["ID"],
+                    signer_name=signer["Name"],
                 )
 
         if data["review_step"] >= 4:

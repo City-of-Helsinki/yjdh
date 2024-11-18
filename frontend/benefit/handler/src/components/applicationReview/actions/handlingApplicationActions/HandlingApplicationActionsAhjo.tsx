@@ -178,6 +178,9 @@ const HandlingApplicationActions: React.FC<Props> = ({
         decisionMakerId:
           !handledApplication?.decisionMakerId ||
           handledApplication?.decisionMakerId?.length <= 0,
+        signerId:
+          !handledApplication?.signerId ||
+          handledApplication?.signerId?.length <= 0,
         // Use longer length to take HTML tags into account
         decisionText: handledApplication?.decisionText?.length <= 10,
         justificationText: handledApplication?.justificationText?.length <= 10,
@@ -188,6 +191,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
         logEntry: '#proccessRejectedRadio',
         decisionMakerId: '#radio-decision-maker-0',
         decisionText: '[data-testid="decisionText"]',
+        signerId: '[data-testid="decisionText"]',
         justificationText: '[data-testid="justificationText"]',
       },
     };
@@ -203,9 +207,14 @@ const HandlingApplicationActions: React.FC<Props> = ({
         !handledApplication?.decisionMakerId ||
         handledApplication?.decisionMakerId?.length <= 0;
 
+      fields.missing.signerId =
+        !handledApplication?.signerId ||
+        handledApplication?.signerId?.length <= 0;
+
       errorStep2 =
         fields.missing.decisionText ||
         fields.missing.justificationText ||
+        fields.missing.signerId ||
         fields.missing.decisionMakerId;
     }
 

@@ -1199,6 +1199,7 @@
           "logEntry": "Päätöksen perustelu puuttuu",
           "decisionMakerId": "Päättäjän rooli puuttuu",
           "decisionText": "Päätös ei voi olla tyhjä",
+          "signerId": "Allekirjoittaja puuttuu",
           "justificationText": "Päätöksen perustelu ei voi olla tyhjä"
         }
       },
@@ -1234,6 +1235,15 @@
             "handler": "Helsinki-lisä-valmistelija",
             "manager": "Tiimipäällikkö",
             "tooltipText": "Hakemuksen käsittelijän ja päättäjän on oltava eri henkilöitä. Käsittelijä on henkilö, joka lähettää hakemuksen. Valitse päättäjäksi joku toinen henkilö."
+          }
+        }
+      },
+      "signer": {
+        "title": "Valitse allekirjoittaja",
+        "fields": {
+          "signer": {
+            "label": "Päätöksen allekirjoittaja",
+            "tooltipText": "Päätöksen allekirjoittaja Ahjossa tapahtuvaa sähköistä allekirjoitusta varten. Valitse allekirjoittajaksi joku muu kuin käsittelijä."
           }
         }
       },

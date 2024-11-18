@@ -265,3 +265,16 @@ def _create_dummy_ahjo_settings():
             {"ID": "HIJKLMNOPQRSTUWXYZ", "Name": "Helsinki-lisä-suunnittelija"},
         ],
     )
+    AhjoSetting.objects.create(
+        name="ahjo_signer",
+        data=[
+            {
+                "ID": "ABCDEFGH12345678",
+                "Name": "Testaaja, Timo",
+            },
+            {
+                "ID": "ABCDEFGH87654321",
+                "Name": "Testaaja, Tiina",
+            },
+        ],
+    )

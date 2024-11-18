@@ -19,6 +19,14 @@ class DecisionTextSerializer(serializers.ModelSerializer):
         if not decision_maker_id:
             errors["decision_maker_id"] = "This field is required."
 
+        signer_name = data.get("signer_name")
+        if not signer_name:
+            errors["signer_name"] = "This field is required."
+
+        signer_id = data.get("signer_id")
+        if not signer_id:
+            errors["signer_id"] = "This field is required."
+
         if errors:
             raise serializers.ValidationError(errors)
         return data

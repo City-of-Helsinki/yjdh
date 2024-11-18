@@ -261,6 +261,8 @@ export interface DecisionProposalDraft {
   applicationId?: string;
   decisionMakerId?: string;
   decisionMakerName?: string;
+  signerId?: string;
+  signerName?: string;
 }
 
 export interface AhjoError {
@@ -331,11 +333,17 @@ export type DecisionMaker = {
   name: string;
 };
 
+export type AhjoSigner = {
+  id: string;
+  name: string;
+};
+
 export type DecisionMakerOptions = Array<DecisionMaker>;
+export type AhjoSignerOptions = Array<AhjoSigner>;
 
 export interface AhjoSettingsResponse {
   name: string;
-  data: DecisionMakerOptions;
+  data: DecisionMakerOptions | AhjoSignerOptions;
 }
 export interface Step1 {
   [APPLICATION_FIELDS_STEP1_KEYS.USE_ALTERNATIVE_ADDRESS]?: boolean;

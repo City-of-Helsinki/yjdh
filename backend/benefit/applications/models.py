@@ -1337,6 +1337,19 @@ class AhjoDecisionText(UUIDModel, TimeStampedModel):
         max_length=64,
     )
 
+    signer_name = models.TextField(
+        verbose_name=_("the name of the signer"),
+        null=True,
+        blank=True,
+    )
+
+    signer_id = models.CharField(
+        verbose_name=_("the ID of the signer"),
+        null=True,
+        blank=True,
+        max_length=64,
+    )
+
     def __str__(self):
         return (
             "Ahjo decision text for application %s"
@@ -1554,6 +1567,19 @@ class AhjoDecisionProposalDraft(TimeStampedModel):
 
     decision_maker_id = models.CharField(
         verbose_name=_("the ID of the decision maker"),
+        null=True,
+        blank=True,
+        max_length=64,
+    )
+
+    signer_name = models.TextField(
+        verbose_name=_("the name of the signer"),
+        null=True,
+        blank=True,
+    )
+
+    signer_id = models.CharField(
+        verbose_name=_("the ID of the signer"),
         null=True,
         blank=True,
         max_length=64,

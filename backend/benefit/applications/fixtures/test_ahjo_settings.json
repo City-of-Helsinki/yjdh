@@ -51,5 +51,18 @@
         { "ID": "HIJKLMNOPQRSTUWXYZ", "Name": "Helsinki-lisä-suunnittelija" }
       ]
     }
+  },
+  {
+    "model": "applications.ahjosetting",
+    "pk": 5,
+    "fields": {
+      "created_at": "2024-11-10T12:57:07.855Z",
+      "modified_at": "2024-11-10T12:57:07.855Z",
+      "name": "ahjo_signer",
+      "data": [
+        { "ID": "ABCDEFGH12345678", "Name": "Testaaja, Timo" },
+        { "ID": "ABCDEFGH87654321", "Name": "Testaaja, Tiina" }
+      ]
+    }
   }
 ]

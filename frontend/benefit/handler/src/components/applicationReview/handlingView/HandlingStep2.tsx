@@ -2,7 +2,11 @@ import AppContext from 'benefit/handler/context/AppContext';
 import useAhjoSettingsQuery from 'benefit/handler/hooks/useAhjoSettingsQuery';
 import { DecisionProposalTemplateData } from 'benefit/handler/types/common';
 import { DECISION_TYPES } from 'benefit-shared/constants';
-import { Application, DecisionMaker } from 'benefit-shared/types/application';
+import {
+  AhjoSigner,
+  Application,
+  DecisionMaker,
+} from 'benefit-shared/types/application';
 import { LoadingSpinner, Select, SelectionGroup } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -53,6 +57,13 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
       name: handledApplication?.decisionMakerName,
     });
 
+  const [selectedSigner, setSelectedSigner] = React.useState<AhjoSigner | null>(
+    {
+      id: handledApplication?.signerId,
+      name: handledApplication?.signerName,
+    }
+  );
+
   const decisionType =
     handledApplication?.status === 'accepted'
       ? DECISION_TYPES.ACCEPTED
@@ -62,7 +73,10 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
     id,
     decisionType
   );
-  const { data: decisionMakerOptions } = useAhjoSettingsQuery();
+  const { data: decisionMakerOptions } = useAhjoSettingsQuery(
+    'ahjo_decision_maker'
+  );
+  const { data: signerOptions } = useAhjoSettingsQuery('ahjo_signer');
 
   const selectTemplate = (option: DecisionProposalTemplateData): void => {
     if (!selectedDecisionMaker) return;
@@ -92,6 +106,8 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
       ),
       decisionMakerId: selectedDecisionMaker.id,
       decisionMakerName: selectedDecisionMaker.name,
+      signerId: selectedSigner?.id,
+      signerName: selectedSigner?.name,
     });
   };
 
@@ -111,6 +127,21 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
     decisionProposalDraft,
     handledApplication?.decisionMakerId,
     handledApplication?.decisionMakerName,
+  ]);
+
+  React.useEffect(() => {
+    if (signerOptions && signerOptions.length > 0) {
+      setSelectedSigner({
+        id: handledApplication?.signerId || decisionProposalDraft?.signerId,
+        name:
+          handledApplication?.signerName || decisionProposalDraft?.signerName,
+      });
+    }
+  }, [
+    signerOptions,
+    decisionProposalDraft,
+    handledApplication?.signerId,
+    handledApplication?.signerName,
   ]);
 
   if (isLoading) {
@@ -140,6 +171,46 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
     <Container>
       <$ReviewGrid bgColor={theme.colors.silverLight}>
         <CalculationReview application={application} />
+      </$ReviewGrid>
+
+      <$ReviewGrid bgColor={theme.colors.silverLight}>
+        <$GridCell $colSpan={12}>
+          <Heading
+            $css={{ marginTop: 0 }}
+            header={t(`${translationBase}.signer.title`)}
+            as="h3"
+          />
+        </$GridCell>
+        <$GridCell $colSpan={12}>
+          <SelectionGroup
+            label={t(`${translationBase}.signer.fields.signer.label`)}
+            tooltipText={t(
+              `${translationBase}.signer.fields.signer.tooltipText`
+            )}
+          >
+            {signerOptions?.map((option, index) => (
+              <$RadioButton
+                key={`radio-signer-${option.id}`}
+                id={`radio-signer-${index}`}
+                value={option.id}
+                label={option.name}
+                checked={selectedSigner?.id === option?.id}
+                onChange={() => {
+                  setSelectedSigner({
+                    id: option.id,
+                    name: option.name,
+                  });
+
+                  setHandledApplication({
+                    ...handledApplication,
+                    signerId: option.id,
+                    signerName: option.name,
+                  });
+                }}
+              />
+            ))}
+          </SelectionGroup>
+        </$GridCell>
       </$ReviewGrid>
 
       <$ReviewGrid bgColor={theme.colors.silverLight}>

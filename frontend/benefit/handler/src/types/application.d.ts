@@ -115,6 +115,8 @@ export type HandledAplication = {
   justificationText?: string;
   decisionMakerName?: string;
   decisionMakerId?: string;
+  signerName?: string;
+  signerId?: string;
 };
 
 // Handler application

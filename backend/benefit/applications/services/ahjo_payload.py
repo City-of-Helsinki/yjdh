@@ -477,6 +477,12 @@ def prepare_decision_proposal_payload(
         "ID": handler.ad_username,
     }
 
+    signer_dict = {
+        "Role": "signer",
+        "Name": decision_text.signer_name,
+        "ID": decision_text.signer_id,
+    }
+
     proposal_dict = {
         "records": [
             {
@@ -489,6 +495,7 @@ def prepare_decision_proposal_payload(
                 "Agents": [
                     main_creator_dict,
                     decision_maker_dict,
+                    signer_dict,
                 ],
             },
             {

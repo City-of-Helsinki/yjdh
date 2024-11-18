@@ -82,6 +82,8 @@ test('Open form and create a decision proposal', async (t: TestController) => {
   await t.click(Selector('label').withText(fi.review.fields.support));
   await t.click(handleButton);
 
+  await t.click(Selector('label').withText('Testaaja, Timo'));
+
   await t.click(
     Selector('label').withText(
       fi.review.decisionProposal.role.fields.decisionMaker.handler
