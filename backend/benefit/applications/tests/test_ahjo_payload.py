@@ -75,7 +75,7 @@ def test_update_records_record_title_str():
         application=mock_app, attachment_created_at=attachment_created_at
     )
     result = str(update_records_title)
-    expected = f"{AhjoRecordTitle.APPLICATION}, täydennys, 25.02.2023, 67890"
+    expected = f"{AhjoRecordTitle.APPLICATION}, täydennys 25.02.2023, 67890"
     assert result == expected
 
 
@@ -90,7 +90,7 @@ def test_add_records_record_title_str():
         application=mock_app, attachment_created_at=attachment_created_at
     )
     result = str(add_records_title)
-    expected = f"{AhjoRecordTitle.APPLICATION}, täydennys, 10.03.2023, 54321"
+    expected = f"{AhjoRecordTitle.APPLICATION}, täydennys 10.03.2023, 54321"
     assert result == expected
 
 
@@ -141,6 +141,8 @@ def test_truncate_string_to_limit(
         ("a" * 100, 100, 150),
         ("a" * 50, 100, 150),
         ("1234567890AB", 10, 150),
+        # 256 characters is the maximun length for the company name in the database
+        ("a" * 256, 512, 512),
     ],
 )
 def test_prepare_final_case_title_truncate(
@@ -169,7 +171,7 @@ def test_prepare_final_case_title_truncate(
             AhjoRecordTitle.APPLICATION,
             AhjoRecordType.APPLICATION,
             AhjoRequestType.UPDATE_APPLICATION,
-            ", täydennys,",
+            ", täydennys",
             0,
             0,
         ),
@@ -178,7 +180,7 @@ def test_prepare_final_case_title_truncate(
             AhjoRecordTitle.APPLICATION,
             AhjoRecordType.ATTACHMENT,
             AhjoRequestType.ADD_RECORDS,
-            ", täydennys,",
+            ", täydennys",
             0,
             0,
         ),
@@ -370,8 +372,12 @@ def test_prepare_case_records(decided_application, settings):
 
 def test_prepare_top_level_dict(decided_application, ahjo_open_case_top_level_dict):
     application = Application.objects.get(pk=decided_application.pk)
+    long_title = "a" * 512
+    short_title = "a" * 150
 
-    got = _prepare_top_level_dict(application, [], "message title")
+    got = _prepare_top_level_dict(
+        application, [], public_case_title=long_title, internal_case_title=short_title
+    )
 
     assert ahjo_open_case_top_level_dict == got
 
