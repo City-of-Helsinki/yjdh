@@ -781,7 +781,7 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
             request.query_params.get("compact_list", "false").lower() == "true"
         )
 
-        return self._csv_response(filtered_queryset, compact_list)
+        return self._csv_response(queryset=filtered_queryset, compact_list=compact_list)
 
     APPLICATION_ORDERING = "application_number"
 

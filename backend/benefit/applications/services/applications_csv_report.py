@@ -40,7 +40,7 @@ def get_export_notes(application):
 
 def format_datetime(value):
     if value:
-        return value.isoformat()
+        return value.strftime("%Y-%m-%d")
     else:
         return ""
 
@@ -113,7 +113,6 @@ class ApplicationsCsvService(CsvExportBase):
             CsvColumn(
                 "Hakemuksen tyyppi", "application_origin", get_application_origin_label
             ),
-            CsvColumn("Hakemus saapunut", "created_at", format_datetime),
             csv_default_column(
                 "Koonnin status", "batch.status", get_batch_status_label
             ),
