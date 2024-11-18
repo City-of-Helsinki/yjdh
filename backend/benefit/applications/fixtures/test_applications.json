@@ -1471,8 +1471,8 @@
       "paper_application_date": null,
       "de_minimis_aid": false,
       "batch": "fb9e81a4-cf6d-4f7f-abee-366c8a5bfbfc",
-      "ahjo_case_id": null,
-      "ahjo_case_guid": null,
+      "ahjo_case_id": "HEL 2024-234",
+      "ahjo_case_guid": "9c66ead0-25c4-4eba-952e-b44774c23056",
       "handled_by_ahjo_automation": true,
       "handler": "47ecedfa-351b-4815-bfac-96bdbc640178",
       "bases": []
@@ -1542,7 +1542,7 @@
     "fields": {
       "created_at": "2024-11-04T10:10:12.358Z",
       "modified_at": "2024-11-04T10:10:12.358Z",
-      "status": "submitted_but_not_sent_to_ahjo",
+      "status": "details_received",
       "application": "10c25d67-f783-4625-9ff4-2418b629f20a",
       "error_from_ahjo": null,
       "ahjo_request_id": null,
