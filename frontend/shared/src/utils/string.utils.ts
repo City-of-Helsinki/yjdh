@@ -55,12 +55,6 @@ export const formatFloatToCurrency = (
   locale = 'fi-FI',
   minimumFractionDigits = 2
 ): string => {
-  const currencyOptions = currency
-    ? {
-        style: 'currency',
-        currency,
-      }
-    : {};
   let parsedValue: number;
   if (!value || value === '') {
     parsedValue = 0;
@@ -72,6 +66,6 @@ export const formatFloatToCurrency = (
 
   return parsedValue.toLocaleString(locale, {
     minimumFractionDigits,
-    ...currencyOptions,
+    ...(currency ? { style: 'currency', currency } : {}),
   });
 };
