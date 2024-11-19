@@ -7,6 +7,7 @@ import { getTagStyleForStatus } from 'benefit/handler/utils/applications';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import {
   AhjoError,
+  ApplicationAlteration,
   ApplicationListItemData,
   Instalment,
 } from 'benefit-shared/types/application';
@@ -60,16 +61,33 @@ const buildApplicationUrl = (
 
 const getFirstInstalmentTotalAmount = (
   calculatedBenefitAmount: string,
-  pendingInstalment?: Instalment
+  pendingInstalment?: Instalment,
+  alterations?: ApplicationAlteration[]
 ): string | JSX.Element => {
   let firstInstalment = parseInt(calculatedBenefitAmount, 10);
+  let recoveryAmount = 0;
   if (pendingInstalment) {
-    firstInstalment -= parseInt(String(pendingInstalment?.amount), 10);
+    firstInstalment -= parseInt(
+      String(pendingInstalment?.amountAfterRecoveries),
+      10
+    );
+    recoveryAmount = alterations
+      ? alterations?.reduce(
+          (prev: number, cur: ApplicationAlteration) =>
+            prev + parseInt(cur.recoveryAmount, 10),
+          0
+        )
+      : 0;
   }
   return pendingInstalment ? (
     <>
       {formatFloatToCurrency(firstInstalment, null, 'fi-FI', 0)} /{' '}
-      {formatFloatToCurrency(calculatedBenefitAmount, 'EUR', 'fi-FI', 0)}
+      {formatFloatToCurrency(
+        parseInt(calculatedBenefitAmount, 10) - recoveryAmount,
+        'EUR',
+        'fi-FI',
+        0
+      )}
     </>
   ) : (
     formatFloatToCurrency(firstInstalment, 'EUR', 'fi-FI', 0)

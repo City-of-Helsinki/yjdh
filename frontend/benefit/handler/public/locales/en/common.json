@@ -228,7 +228,8 @@
           "error_in_talpa": "Virhe maksussa"
         },
         "calculationEndDate": "Viim. tukipäivä",
-        "calculatedBenefitAmount": "Tukisumma"
+        "calculatedBenefitAmount": "Tukisumma",
+        "instalmentAmount": "Maksuerä"
       },
       "messages": {
         "empty": {
@@ -1388,8 +1389,17 @@
       "header3": "Maksuerät",
       "acceptedBenefit": "Myönnettävä Helsinki-lisä",
       "firstInstalment": "Ensimmäinen maksuerä",
-      "secondInstalment": "Toinen maksuerä",
-      "total": "Yhteensä"
+      "secondInstalment": "Toinen maksuerä, eräpäivä",
+      "total": "Yhteensä",
+      "alterationRow": "Muutosilmoitus {{startDate}} - {{endDate}}",
+      "totalRecoveries": "Takaisinlaskutettavan tuen määrä",
+      "unpaidRecoveries": {
+        "title": "Takaisinlaskutettava osuus",
+        "tooltip": "Huomaa, että takaisinlaskutettava osuus muuttuu, jos uusia muutosilmoituksia hyväksytään tai niitä peruutaan. Jos olet epävarma, tarkasta laskutuksen tilanne Talpalta."
+      },
+      "totalAfterRecoveries": "Tuki takaisinlaskutuksen jälkeen",
+      "totalPaidSum": "Toteutuneet maksuerät yhteensä",
+      "totalPlannedSum": "Maksuerät yhteensä"
     },
     "errors": {
       "trainingCompensation": {

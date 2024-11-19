@@ -66,7 +66,6 @@ from calculator.api.v1.serializers import (
     PaySubsidySerializer,
     TrainingCompensationSerializer,
 )
-from calculator.enums import InstalmentStatus
 from calculator.models import Calculation
 from common.delay_call import call_now_or_later, do_delayed_calls_at_end
 from common.exceptions import BenefitAPIException
@@ -92,18 +91,13 @@ from users.api.v1.serializers import UserSerializer
 from users.utils import get_company_from_request, get_request_user_from_context
 
 
-def _get_pending_instalment(application, excluded_status=[]):
+def _get_pending_instalment(application):
     """Get the latest pending instalment for the application"""
     try:
         instalments = application.calculation.instalments.filter(
             instalment_number__gt=1
         )
-        instalment = (
-            instalments.exclude(status__in=excluded_status)
-            .order_by("-due_date")
-            .first()
-            or None
-        )
+        instalment = instalments.filter(instalment_number=2).first() or None
         if instalment is not None:
             return InstalmentSerializer(instalment).data
     except AttributeError:
@@ -1980,7 +1974,7 @@ class HandlerApplicationListSerializer(serializers.Serializer):
     pending_instalment = serializers.SerializerMethodField("get_pending_instalment")
 
     def get_pending_instalment(self, application):
-        return _get_pending_instalment(application, [InstalmentStatus.COMPLETED])
+        return _get_pending_instalment(application)
 
     ahjo_error = serializers.SerializerMethodField("get_latest_ahjo_error")
 

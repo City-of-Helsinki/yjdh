@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
 from simple_history.models import HistoricalRecords
 
+from applications.enums import ApplicationAlterationState
 from applications.models import Application, PAY_SUBSIDY_PERCENT_CHOICES
 from calculator.enums import DescriptionType, InstalmentStatus, RowType
 from common.exceptions import BenefitAPIException
@@ -854,6 +855,18 @@ class Instalment(UUIDModel, TimeStampedModel):
         blank=True,
     )
 
+    amount_paid = models.DecimalField(
+        max_digits=7,
+        decimal_places=2,
+        editable=False,
+        verbose_name=_(
+            "To be set only ONCE when final amount is sent to Talpa. The set value should be defined by 'amount' "
+            "field that is reduced by handled ApplicationAlteration recoveries at the time of Talpa robot visit."
+        ),
+        blank=True,
+        null=True,
+    )
+
     due_date = models.DateField(blank=True, null=True, verbose_name=_("Due date"))
 
     status = models.CharField(
@@ -863,6 +876,25 @@ class Instalment(UUIDModel, TimeStampedModel):
         default=InstalmentStatus.WAITING,
         blank=True,
     )
+
+    @property
+    def amount_after_recoveries(self):
+        if self.amount_paid:
+            return max(self.amount_paid, 0)
+        if self.instalment_number == 1:
+            return max(self.amount, 0)
+
+        alteration_set = self.calculation.application.alteration_set.filter(
+            state=ApplicationAlterationState.HANDLED,
+        )
+        if alteration_set.count() == 0:
+            return max(self.amount, 0)
+
+        return max(
+            self.amount
+            - sum([alteration.recovery_amount or 0 for alteration in alteration_set]),
+            0,
+        )
 
     def __str__(self):
         return f"Instalment of {self.amount}€, \

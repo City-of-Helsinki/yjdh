@@ -13,25 +13,21 @@ import {
 import {
   CALCULATION_ROW_DESCRIPTION_TYPES,
   CALCULATION_ROW_TYPES,
-  INSTALMENT_STATUSES,
 } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
-import { Accordion, IconBagCogwheel, IconGlyphEuro } from 'hds-react';
-import Link from 'next/link';
+import { Accordion, IconGlyphEuro, IconMoneyBag } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { formatFloatToCurrency } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
-import { renderInstalmentTagPerStatus } from '../../applicationList/ApplicationListForInstalments';
-import { isInPayment } from '../../applicationList/HandlerIndex';
 import {
   $CalculatorTableHeader,
   $CalculatorTableRow,
 } from '../ApplicationReview.sc';
+import InstalmentAccordionSections from './InstalmentAccordionSections';
 
 type Props = {
   data: Application;
@@ -48,13 +44,6 @@ const DecisionCalculationAccordion: React.FC<Props> = ({ data }) => {
   const sections = groupCalculatorRows(rowsWithoutTotal);
 
   const headingSize = { fontSize: theme.fontSize.heading.l };
-  const secondInstalmentText = data.pendingInstalment ? (
-    <>
-      {' '}
-      {t(`${translationsBase}.secondInstalment`)}{' '}
-      {convertToUIDateFormat(data.pendingInstalment.dueDate)}
-    </>
-  ) : null;
 
   return (
     <>
@@ -159,88 +148,28 @@ const DecisionCalculationAccordion: React.FC<Props> = ({ data }) => {
           </$GridCell>
         </Accordion>
       </$DecisionCalculatorAccordion>
-      {data.pendingInstalment && isInPayment(data) && (
-        <$DecisionCalculatorAccordion>
-          <$DecisionCalculatorAccordionIconContainer aria-hidden="true">
-            <IconBagCogwheel />
-          </$DecisionCalculatorAccordionIconContainer>
-          <Accordion
-            heading={t('common:applications.decision.instalments')}
-            card
-            size="s"
+
+      <$DecisionCalculatorAccordion>
+        <$DecisionCalculatorAccordionIconContainer aria-hidden="true">
+          <IconMoneyBag />
+        </$DecisionCalculatorAccordionIconContainer>
+        <Accordion
+          heading={t('common:applications.decision.instalments')}
+          card
+          size="s"
+        >
+          <$GridCell
+            $colSpan={11}
+            style={{
+              padding: theme.spacing.m,
+            }}
           >
-            <$GridCell
-              $colSpan={11}
-              style={{
-                padding: theme.spacing.m,
-              }}
-            >
-              <$CalculatorContainer>
-                <$Section className="">
-                  <$CalculatorTableRow>
-                    <$ViewField>
-                      {t(`${translationsBase}.firstInstalment`)}
-                    </$ViewField>
-                    {formatFloatToCurrency(
-                      data.calculatedBenefitAmount -
-                        data.pendingInstalment.amount,
-                      'EUR',
-                      'fi-FI',
-                      0
-                    )}{' '}
-                  </$CalculatorTableRow>
-                </$Section>
-                <$Section className="">
-                  <$CalculatorTableRow>
-                    <$ViewField>
-                      {[
-                        INSTALMENT_STATUSES.WAITING,
-                        INSTALMENT_STATUSES.ERROR_IN_TALPA,
-                        INSTALMENT_STATUSES.CANCELLED,
-                        INSTALMENT_STATUSES.ACCEPTED,
-                      ].includes(
-                        data.pendingInstalment.status as INSTALMENT_STATUSES
-                      ) ? (
-                        <Link href="/?tab=6">{secondInstalmentText}</Link>
-                      ) : (
-                        secondInstalmentText
-                      )}
-                    </$ViewField>
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 'var(--spacing-xs)',
-                      }}
-                    >
-                      {renderInstalmentTagPerStatus(t, data.pendingInstalment)}
-                      {formatFloatToCurrency(
-                        data.pendingInstalment.amount,
-                        'EUR',
-                        'fi-FI',
-                        0
-                      )}
-                    </div>
-                  </$CalculatorTableRow>
-                </$Section>
-                <$Section className="subtotal">
-                  <$CalculatorTableRow>
-                    <$ViewField isBold isBig>
-                      {t(`${translationsBase}.total`)}
-                    </$ViewField>
-                    {formatFloatToCurrency(
-                      data.calculatedBenefitAmount,
-                      'EUR',
-                      'fi-FI',
-                      0
-                    )}
-                  </$CalculatorTableRow>
-                </$Section>
-              </$CalculatorContainer>
-            </$GridCell>
-          </Accordion>
-        </$DecisionCalculatorAccordion>
-      )}
+            <$CalculatorContainer>
+              <InstalmentAccordionSections data={data} />
+            </$CalculatorContainer>
+          </$GridCell>
+        </Accordion>
+      </$DecisionCalculatorAccordion>
     </>
   );
 };

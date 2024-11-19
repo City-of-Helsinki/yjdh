@@ -60,6 +60,7 @@ class InstalmentSerializer(serializers.ModelSerializer):
             "amount",
             "created_at",
             "modified_at",
+            "amount_after_recoveries",
         ]
         read_only_fields = [
             "id",
@@ -69,6 +70,7 @@ class InstalmentSerializer(serializers.ModelSerializer):
             "amount",
             "created_at",
             "modified_at",
+            "amount_after_recoveries",
         ]
 
     def validate_status(self, status):
@@ -78,6 +80,13 @@ class InstalmentSerializer(serializers.ModelSerializer):
             )
 
         return status
+
+    amount_after_recoveries = serializers.SerializerMethodField(
+        "get_amount_after_recoveries",
+    )
+
+    def amount_after_recoveries(self, obj):
+        return getattr(obj, "amount_after_recoveries", None)
 
     status = serializers.ChoiceField(
         validators=[InstalmentStatusValidator()],

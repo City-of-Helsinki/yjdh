@@ -83,7 +83,7 @@ export const getInstalmentTagStyleForStatus = (
       break;
 
     case INSTALMENT_STATUSES.COMPLETED:
-      background = theme.colors.coatOfArms;
+      background = theme.colors.success;
       text = theme.colors.white;
       break;
 
