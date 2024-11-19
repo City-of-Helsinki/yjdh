@@ -25,6 +25,7 @@ from applications.tests.test_applications_api import (
     get_handler_detail_url,
 )
 from calculator.api.v1.serializers import CalculationSerializer
+from calculator.enums import InstalmentStatus
 from calculator.tests.factories import CalculationFactory, PaySubsidyFactory
 from common.tests.conftest import get_client_user
 from common.utils import duration_in_months, to_decimal
@@ -728,6 +729,7 @@ def test_application_calculation_instalments(
     instalment_1 = handling_application.calculation.instalments.all()[0]
 
     assert instalment_1.due_date is not None
+    assert instalment_1.status == InstalmentStatus.ACCEPTED
 
     due_date = instalment_1.due_date
     now_date = timezone.now().date()
@@ -741,15 +743,19 @@ def test_application_calculation_instalments(
             instalment_1.amount
             == handling_application.calculation.calculated_benefit_amount
         )
+        assert instalment_1.status == InstalmentStatus.ACCEPTED
 
     if number_of_instalments == 2:
         assert instalment_1.amount == decimal.Decimal(settings.FIRST_INSTALMENT_LIMIT)
+        assert instalment_1.status == InstalmentStatus.ACCEPTED
+
         instalment_2 = handling_application.calculation.instalments.all()[1]
         assert (
             instalment_2.amount
             == handling_application.calculation.calculated_benefit_amount
             - decimal.Decimal(settings.FIRST_INSTALMENT_LIMIT)
         )
+        assert instalment_2.status == InstalmentStatus.WAITING
 
         due_date = instalment_2.due_date
         future_date = timezone.now() + timedelta(days=181)

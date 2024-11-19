@@ -87,12 +87,35 @@ def test_talpa_csv_delimiter(pruned_applications_csv_service_with_one_applicatio
     )
 
 
-def test_talpa_csv_decimal(pruned_applications_csv_service_with_one_application):
+@pytest.mark.parametrize(
+    "instalments_enabled",
+    [
+        (False,),
+        (True,),
+    ],
+)
+def test_talpa_csv_decimal(
+    pruned_applications_csv_service_with_one_application,
+    settings,
+    instalments_enabled,
+):
+    settings.PAYMENT_INSTALMENTS_ENABLED = instalments_enabled
     application = (
         pruned_applications_csv_service_with_one_application.applications.first()
     )
-    application.calculation.calculated_benefit_amount = decimal.Decimal("123.45")
-    application.calculation.save()
+    if instalments_enabled:
+        application.calculation.instalments.all().delete()
+        Instalment.objects.create(
+            calculation=application.calculation,
+            amount=decimal.Decimal("123.45"),
+            instalment_number=1,
+            status=InstalmentStatus.ACCEPTED,
+            due_date=datetime.now(timezone.utc).date(),
+        )
+    else:
+        application.calculation.calculated_benefit_amount = decimal.Decimal("123.45")
+        application.calculation.save()
+
     csv_lines = split_lines_at_semicolon(
         pruned_applications_csv_service_with_one_application.get_csv_string()
     )
