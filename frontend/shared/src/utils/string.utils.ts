@@ -66,6 +66,10 @@ export const formatFloatToCurrency = (
 
   return parsedValue.toLocaleString(locale, {
     minimumFractionDigits,
+    maximumFractionDigits: minimumFractionDigits,
     ...(currency ? { style: 'currency', currency } : {}),
   });
 };
+
+export const formatFloatToEvenEuros = (value: string | number): string =>
+  formatFloatToCurrency(value, 'EUR', 'fi-FI', 0);
