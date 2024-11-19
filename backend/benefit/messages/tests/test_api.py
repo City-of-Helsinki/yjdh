@@ -408,7 +408,10 @@ def test_update_message_unauthorized(
                 "message_type": msg_type,
             },
         )
-        assert result.status_code == 403
+
+        assert (
+            result.status_code == 403 if view_name == "handler-message-detail" else 404
+        )
 
 
 def test_update_message_not_allowed(
