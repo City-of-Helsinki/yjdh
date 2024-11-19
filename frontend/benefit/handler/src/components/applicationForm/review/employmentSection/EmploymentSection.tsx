@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 
 import { $ViewField, $ViewFieldBold } from '../../ApplicationForm.sc';
 import EditButton from '../summarySection/EditButton';
@@ -52,12 +52,7 @@ const EmploymentSection: React.FC<ReviewChildProps> = ({
           <$ViewField>
             {data.employee?.monthlyPay &&
               t(`${translationsBase}.fields.monthlyPay.review`, {
-                monthlyPay: formatFloatToCurrency(
-                  data.employee.monthlyPay,
-                  'EUR',
-                  'FI-fi',
-                  0
-                ),
+                monthlyPay: formatFloatToEvenEuros(data.employee.monthlyPay),
               })}
           </$ViewField>
         </$GridCell>
@@ -68,11 +63,8 @@ const EmploymentSection: React.FC<ReviewChildProps> = ({
           <$ViewField>
             {data.employee?.vacationMoney &&
               t(`${translationsBase}.fields.vacationMoney.review`, {
-                vacationMoney: formatFloatToCurrency(
-                  data.employee.vacationMoney,
-                  'EUR',
-                  'FI-fi',
-                  0
+                vacationMoney: formatFloatToEvenEuros(
+                  data.employee.vacationMoney
                 ),
               })}
           </$ViewField>
@@ -84,11 +76,8 @@ const EmploymentSection: React.FC<ReviewChildProps> = ({
           <$ViewField>
             {data.employee?.otherExpenses &&
               t(`${translationsBase}.fields.otherExpenses.review`, {
-                otherExpenses: formatFloatToCurrency(
-                  data.employee.otherExpenses,
-                  'EUR',
-                  'FI-fi',
-                  0
+                otherExpenses: formatFloatToEvenEuros(
+                  data.employee.otherExpenses
                 ),
               })}
           </$ViewField>

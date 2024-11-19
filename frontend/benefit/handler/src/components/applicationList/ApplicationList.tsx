@@ -20,7 +20,7 @@ import {
   sortFinnishDate,
   sortFinnishDateTime,
 } from 'shared/utils/date.utils';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
 import {
@@ -81,16 +81,13 @@ const getFirstInstalmentTotalAmount = (
   }
   return pendingInstalment ? (
     <>
-      {formatFloatToCurrency(firstInstalment, null, 'fi-FI', 0)} /{' '}
-      {formatFloatToCurrency(
-        parseInt(calculatedBenefitAmount, 10) - recoveryAmount,
-        'EUR',
-        'fi-FI',
-        0
+      {formatFloatToEvenEuros(firstInstalment)} /{' '}
+      {formatFloatToEvenEuros(
+        parseInt(calculatedBenefitAmount, 10) - recoveryAmount
       )}
     </>
   ) : (
-    formatFloatToCurrency(firstInstalment, 'EUR', 'fi-FI', 0)
+    formatFloatToEvenEuros(firstInstalment)
   );
 };
 const dateForAdditionalInformationNeededBy = (

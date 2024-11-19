@@ -42,7 +42,7 @@ import {
   convertToUIDateAndTimeFormat,
   convertToUIDateFormat,
 } from 'shared/utils/date.utils';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
 import ErrorPage from '../../errorPage/ErrorPage';
@@ -105,7 +105,7 @@ const PageContent: React.FC = () => {
         key: 'status',
       },
       {
-        accessor: (app) => formatFloatToCurrency(app?.calculatedBenefitAmount),
+        accessor: (app) => formatFloatToEvenEuros(app?.calculatedBenefitAmount),
         key: 'benefitAmount',
         showIf: () => showMonetaryFields,
       },

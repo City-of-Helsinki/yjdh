@@ -10,7 +10,7 @@ import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 
 import { renderInstalmentTagPerStatus } from '../../applicationList/ApplicationListForInstalments';
 import {
@@ -44,14 +44,9 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
         <$CalculatorTableRow>
           <$ViewField>{t(`${translationsBase}.firstInstalment`)}</$ViewField>
           {data.pendingInstalment &&
-            formatFloatToCurrency(amounts.firstInstalment, 'EUR', 'fi-FI', 0)}
+            formatFloatToEvenEuros(amounts.firstInstalment)}
           {!data.pendingInstalment &&
-            formatFloatToCurrency(
-              data.calculatedBenefitAmount,
-              'EUR',
-              'fi-FI',
-              0
-            )}
+            formatFloatToEvenEuros(data.calculatedBenefitAmount)}
         </$CalculatorTableRow>
       </$Section>
 
@@ -86,23 +81,13 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
                     }}
                   >
                     {isSecondInstalmentReduced &&
-                      formatFloatToCurrency(
-                        data.pendingInstalment?.amount,
-                        'EUR',
-                        'fi-FI',
-                        0
-                      )}
+                      formatFloatToEvenEuros(data.pendingInstalment?.amount)}
                   </div>
                   {isSecondInstalmentReduced && <IconArrowRight />}
                 </>
               )}
 
-              {formatFloatToCurrency(
-                amounts.secondInstalment,
-                'EUR',
-                'fi-FI',
-                0
-              )}
+              {formatFloatToEvenEuros(amounts.secondInstalment)}
             </$RowWrap>
           </$CalculatorTableRow>
         </$Section>
@@ -130,12 +115,7 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
                     })}
                   </$ViewField>
                   <$RowWrap>
-                    {formatFloatToCurrency(
-                      alteration.recoveryAmount,
-                      'EUR',
-                      'fi-FI',
-                      0
-                    )}
+                    {formatFloatToEvenEuros(alteration.recoveryAmount)}
                   </$RowWrap>
                 </$CalculatorTableRow>
               </$Section>
@@ -146,9 +126,7 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
               <$ViewField isBold>
                 {t(`${translationsBase}.totalRecoveries`)}
               </$ViewField>
-              <$RowWrap>
-                {formatFloatToCurrency(amounts.alterations, 'EUR', 'fi-FI', 0)}
-              </$RowWrap>
+              <$RowWrap>{formatFloatToEvenEuros(amounts.alterations)}</$RowWrap>
             </$CalculatorTableRow>
           </$Section>
         </>
@@ -166,7 +144,7 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
                     ? t(`${translationsBase}.totalPaidSum`)
                     : t(`${translationsBase}.totalPlannedSum`)}
                 </$ViewField>
-                {formatFloatToCurrency(amounts.total, 'EUR', 'fi-FI', 0)}
+                {formatFloatToEvenEuros(amounts.total)}
               </$CalculatorTableRow>
             </$Section>
             <$Section className="">
@@ -181,11 +159,8 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
                     </$Column>
                   </$Wrapper>
                 </$ViewField>
-                {formatFloatToCurrency(
-                  amounts.secondInstalmentMax - amounts.alterations,
-                  'EUR',
-                  'fi-FI',
-                  0
+                {formatFloatToEvenEuros(
+                  amounts.secondInstalmentMax - amounts.alterations
                 )}
               </$CalculatorTableRow>
             </$Section>
@@ -198,12 +173,7 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
           <$ViewField isBold>
             {t(`${translationsBase}.totalAfterRecoveries`)}
           </$ViewField>
-          {formatFloatToCurrency(
-            amounts.totalAfterRecoveries,
-            'EUR',
-            'fi-FI',
-            0
-          )}
+          {formatFloatToEvenEuros(amounts.totalAfterRecoveries)}
         </$CalculatorTableRow>
       </$Section>
     </>

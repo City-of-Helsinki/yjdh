@@ -12,7 +12,7 @@ import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 
 const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
@@ -56,9 +56,7 @@ const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
               </$GridCell>
               <$GridCell $colSpan={2}>
                 <$SummaryTableValue>
-                  {amount
-                    ? formatFloatToCurrency(amount, 'EUR', 'FI-fi', 0)
-                    : ''}
+                  {amount ? formatFloatToEvenEuros(amount) : ''}
                 </$SummaryTableValue>
               </$GridCell>
               <$GridCell>
@@ -76,12 +74,7 @@ const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           <$GridCell $colSpan={2}>
             <$SummaryTableLastLine>
               {data?.totalDeminimisAmount
-                ? formatFloatToCurrency(
-                    data.totalDeminimisAmount,
-                    'EUR',
-                    'FI-fi',
-                    0
-                  )
+                ? formatFloatToEvenEuros(data.totalDeminimisAmount)
                 : ''}
             </$SummaryTableLastLine>
           </$GridCell>

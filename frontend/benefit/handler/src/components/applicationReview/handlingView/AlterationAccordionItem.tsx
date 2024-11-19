@@ -31,7 +31,7 @@ import {
 import hdsToast from 'shared/components/toast/Toast';
 import useLocale from 'shared/hooks/useLocale';
 import { convertToUIDateFormat, formatDate } from 'shared/utils/date.utils';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 
 const AlterationAccordionItem = ({
   alteration,
@@ -232,7 +232,7 @@ AlterationAccordionItemProps): JSX.Element => {
                     'common:applications.decision.alterationList.item.recoveryAmount'
                   )}
                 </dt>
-                <dd>{formatFloatToCurrency(alteration.recoveryAmount, "EUR", "fi-FI", 0)}</dd>
+                <dd>{formatFloatToEvenEuros(alteration.recoveryAmount)}</dd>
               </$GridCell>
               <$GridCell $colSpan={3}>
                 <dt>
