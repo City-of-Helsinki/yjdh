@@ -49,11 +49,7 @@ class UserOptionsView(APIView):
         lang = request.GET.get("lang")
 
         if lang in ["fi", "en", "sv"]:
-            token = request.COOKIES.get("yjdhcsrftoken")
-
-            response = Response(
-                {"lang": lang, "token": token}, status=status.HTTP_200_OK
-            )
+            response = Response({"lang": lang}, status=status.HTTP_200_OK)
             response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang, httponly=True)
             return response
 

@@ -1532,6 +1532,12 @@ msgstr "Sökande får inte utföra denna åtgärd"
 msgid "Handler is not allowed to do this action"
 msgstr "Handläggare får inte utföra denna åtgärd"
 
+msgid "Handling comment"
+msgstr ""
+
+msgid "Manual calculation comment"
+msgstr ""
+
 msgid "Only the terms currently in effect can be approved"
 msgstr "Endast de villkor som för tillfället gäller kan godkännas"
 

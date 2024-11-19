@@ -1508,6 +1508,12 @@ msgstr "Hakija ei saa tehdä tätä toimenpidettä"
 msgid "Handler is not allowed to do this action"
 msgstr "Käsittelijä ei saa tehdä tätä toimenpidettä"
 
+msgid "Handling comment"
+msgstr "Käsittelyn perustelu"
+
+msgid "Manual calculation comment"
+msgstr "Manuaalisen laskelman perustelu"
+
 msgid "Only the terms currently in effect can be approved"
 msgstr "Vain voimassa olevat ehdot voidaan hyväksyä"
 
