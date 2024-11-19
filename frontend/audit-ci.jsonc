@@ -12,6 +12,7 @@
     "semver", // testcafe, jest, eslint
     "axios", // tet, ks
     "rollup", // sentry
-    "axios" // tet, ks
+    "axios", // tet, ks
+    "cross-spawn" // all dev packages
   ]
 }
