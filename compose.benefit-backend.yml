@@ -46,12 +46,12 @@ services:
     ports:
       - 127.0.0.1:8000:8000
 
-  mailhog:
-    image: "mailhog/mailhog@sha256:8d76a3d4ffa32a3661311944007a415332c4bb855657f4f6c57996405c009bea"
+  mailpit:
+    image: "axllent/mailpit:v1.21.4"
     ports:
       - 1025:1025
       - 8025:8025
-    container_name: benefit-mailhog
+    container_name: benefit-mailpit
     networks:
       - default
 
