@@ -1252,7 +1252,9 @@ class AhjoStatus(TimeStampedModel):
     )
 
     def __str__(self):
-        return self.status
+        return f"{self.status} for application {self.application.application_number}, \
+created_at: {self.created_at}, modified_at: {self.modified_at}, \
+ahjo_request_id: {self.ahjo_request_id}"
 
     class Meta:
         db_table = "bf_applications_ahjo_status"

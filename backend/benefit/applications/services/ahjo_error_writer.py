@@ -1,14 +1,27 @@
+from dataclasses import dataclass
+
 from applications.models import Application
+
+
+@dataclass
+class AhjoFormattedError:
+    application: Application
+    context: str = ""
+    error_id: str = "NO_ID"
+    message_to_handler: str = (
+        "Ahjo-pyynnössä tapahtui virhe, mutta tarkempia tietoja virheestä ei saatu."
+    )
 
 
 class AhjoErrorWriter:
     @staticmethod
-    def write_error_to_ahjo_status(application: Application, error: str) -> None:
-        latest_ahjo_status = application.ahjo_status.latest()
+    def write_error_to_ahjo_status(formatted_error: AhjoFormattedError) -> None:
+        latest_ahjo_status = formatted_error.application.ahjo_status.latest()
+
         latest_ahjo_status.error_from_ahjo = {
-            "id": "NO_ID",
-            "context": f"{error}",
-            "message": "Ahjo-pyynnössä tapahtui virhe, mutta Ahjo ei palauttanut tarkempia tietoja.",
+            "id": formatted_error.error_id,
+            "context": formatted_error.context,
+            "message": formatted_error.message_to_handler,
         }
         latest_ahjo_status.save()
 

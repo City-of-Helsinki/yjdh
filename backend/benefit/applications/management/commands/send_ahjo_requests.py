@@ -14,6 +14,7 @@ from applications.enums import (
     ApplicationStatus,
 )
 from applications.models import AhjoStatus, Application
+from applications.services.ahjo.exceptions import DecisionProposalAlreadyAcceptedError
 from applications.services.ahjo_application_service import AhjoApplicationsService
 from applications.services.ahjo_authentication import (
     AhjoToken,
@@ -143,6 +144,7 @@ for {len(applications)} applications: {application_numbers}"
             ValueError: "Value error for application",
             ObjectDoesNotExist: "Object not found error for application",
             ImproperlyConfigured: "Improperly configured error for application",
+            DecisionProposalAlreadyAcceptedError: "Decision proposal error for application",
         }
 
         for application in applications:
@@ -153,11 +155,12 @@ for {len(applications)} applications: {application_numbers}"
                     application, ahjo_auth_token
                 )
             except tuple(exception_messages.keys()) as e:
-                LOGGER.error(
-                    f"{exception_messages[type(e)]} {application.application_number}: {e}"
-                )
+                error_text = f"{exception_messages[type(e)]} {application.application_number}: {e}"
+                LOGGER.error(error_text)
                 failed_applications.append(application)
-                self._handle_failed_request(counter, application, ahjo_request_type)
+                self._handle_failed_request(
+                    counter, application, ahjo_request_type, error_text
+                )
                 continue
 
             if sent_application:
@@ -265,13 +268,21 @@ for application {application.id} and batch {batch.id} from Ahjo"
         self.stdout.write(self.style.SUCCESS(self._print_with_timestamp(success_text)))
 
     def _handle_failed_request(
-        self, counter: int, application: Application, request_type: AhjoRequestType
+        self,
+        counter: int,
+        application: Application,
+        request_type: AhjoRequestType,
+        error_text: str = None,
     ):
+        additional_error_text = ""
+        if error_text:
+            additional_error_text = f"Error: {error_text}"
+
         self.stdout.write(
             self.style.ERROR(
                 self._print_with_timestamp(
                     f"{counter}. Failed to submit {request_type} for application {application.id} \
-                number: {application.application_number}, to Ahjo"
+                number: {application.application_number}, to Ahjo. {additional_error_text}"
                 )
             )
         )
