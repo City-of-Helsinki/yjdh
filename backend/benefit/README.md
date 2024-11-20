@@ -103,7 +103,7 @@ DUMMY_COMPANY_FORM_CODE can be set to test with different company_form parameter
 To seed the database with some mock application data, run `python manage.py seed`
 , which by default generates 10 applications for each of the seven possible application statuses and one attachment with a .pdf-file for each of them. To generate more applications, use the optional `--number` flag, for example, running `python manage.py seed --number=30` creates 30 applications of each status. **Note that running the command deletes all previous application data from the database and clears the media folder.**
 
-[Mailhog](https://github.com/mailhog) is available for the local development environment (localhost:8025)[http://localhost:8025/] for previewing
+[Mailpit](https://github.com/axllent/mailpit) is available for the local development environment (localhost:8025)[http://localhost:8025/] for previewing
 and testing the emails sent by the application after setting the `EMAIL_HOST` and `EMAIL_PORT` as in the `.env.benefit-backend.example`.
 
 **Using LOAD_FIXTURES=1 is recommended for local testing** as it loads e.g. default
@@ -116,7 +116,6 @@ application using the applicant UI.
 
    - `pip install pip-tools`
    - `pip install --upgrade pip-tools`
-
 
 2. Add new packages to `requirements.in` or `requirements-dev.in`
 
