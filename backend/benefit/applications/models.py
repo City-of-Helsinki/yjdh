@@ -174,6 +174,7 @@ class ApplicationManager(models.Manager):
         """Query applications with instalments with past due date and a specific status."""
         return (
             self.filter(
+                status=ApplicationStatus.ACCEPTED,
                 calculation__instalments__due_date__lte=timezone.now().date(),
                 calculation__instalments__status=status,
             )
