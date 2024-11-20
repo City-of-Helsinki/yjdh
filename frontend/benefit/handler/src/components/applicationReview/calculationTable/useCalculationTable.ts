@@ -1,7 +1,7 @@
 import { Calculation, Row } from 'benefit-shared/types/application';
 import clone from 'lodash/clone';
 import { convertToUIDateFormat, diffMonths } from 'shared/utils/date.utils';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 
 export type BenefitRow = {
   id: string;
@@ -41,7 +41,7 @@ const reduceTableRows = (filteredData: Row[]): BenefitRow[] => {
     const tableRow = createBenefitRow();
     tableRow.id = row.id;
     if (row.rowType === 'helsinki_benefit_monthly_eur') {
-      perMonth = `${formatFloatToCurrency(row.amount, 'EUR', 'fi-FI', 0)} / kk`;
+      perMonth = `${formatFloatToEvenEuros(row.amount)} / kk`;
     }
     if (row.rowType === 'helsinki_benefit_sub_total_eur') {
       tableRow.dates = `${convertToUIDateFormat(
@@ -56,7 +56,7 @@ const reduceTableRows = (filteredData: Row[]): BenefitRow[] => {
         new Date(row.startDate)
       );
 
-      tableRow.amount = formatFloatToCurrency(row.amount, 'EUR', 'fi-FI', 0);
+      tableRow.amount = formatFloatToEvenEuros(row.amount);
       tableRow.amountNumber = row.amount;
       tableRow.perMonth = perMonth;
       acc.push(tableRow);
@@ -90,21 +90,15 @@ const useCalculationTable = ({ calculation }: Props): CalculationTableProps => {
           duration,
           startDate: convertToUIDateFormat(calculation.rows.at(0).startDate),
           endDate: convertToUIDateFormat(calculation.rows.at(0).endDate),
-          amount: formatFloatToCurrency(
+          amount: formatFloatToEvenEuros(
             String(
               parseFloat(calculation.overrideMonthlyBenefitAmount as string) *
                 duration
-            ),
-            'EUR',
-            'fi-FI',
-            0
+            )
           ),
           amountNumber: calculation.rows.at(0).amount,
-          perMonth: `${formatFloatToCurrency(
-            calculation.overrideMonthlyBenefitAmount,
-            'EUR',
-            'fi-FI',
-            0
+          perMonth: `${formatFloatToEvenEuros(
+            calculation.overrideMonthlyBenefitAmount
           )} / kk`,
         },
       ]
@@ -130,7 +124,7 @@ const useCalculationTable = ({ calculation }: Props): CalculationTableProps => {
           .reduce((acc: number, cur: BenefitRow) => acc + cur.duration, 0)
           .toFixed(2)
       ),
-      amount: formatFloatToCurrency(totalSum, 'EUR', 'fi-FI', 0),
+      amount: formatFloatToEvenEuros(totalSum),
     });
 
   return {

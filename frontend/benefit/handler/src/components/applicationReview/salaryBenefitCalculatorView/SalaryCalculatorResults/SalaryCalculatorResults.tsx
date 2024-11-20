@@ -11,7 +11,7 @@ import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
 import {
@@ -107,7 +107,7 @@ const SalaryCalculatorResults: React.FC<ApplicationReviewViewProps> = ({
                       isBold
                       style={{ marginRight: theme.spacing.xl4 }}
                     >
-                      {formatFloatToCurrency(row.amount)}
+                      {formatFloatToEvenEuros(row.amount)}
                       {isPerMonth && t('common:utility.perMonth')}
                     </$ViewField>
                   )}

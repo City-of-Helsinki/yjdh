@@ -3,7 +3,7 @@ import {
   INSTALMENT_STATUSES,
 } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 
 type Props = {
   amounts: {
@@ -37,8 +37,8 @@ const useInstalmentAccordionSections = (data: Application): Props => {
     data.calculatedBenefitAmount - amounts.alterations;
 
   const isSecondInstalmentReduced =
-    formatFloatToCurrency(amounts.secondInstalment, null, 'fi-FI', 0) !==
-    formatFloatToCurrency(amounts.secondInstalmentMax, null, 'fi-FI', 0);
+    formatFloatToEvenEuros(amounts.secondInstalment) !==
+    formatFloatToEvenEuros(amounts.secondInstalmentMax);
 
   const areInstalmentsPaid =
     data.pendingInstalment?.status === INSTALMENT_STATUSES.COMPLETED ||

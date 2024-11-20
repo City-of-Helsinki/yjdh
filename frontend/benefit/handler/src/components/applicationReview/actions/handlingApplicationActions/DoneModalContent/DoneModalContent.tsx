@@ -9,7 +9,7 @@ import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 
 import { $Header, $Text } from '../HandlingApplicationActions.sc';
 
@@ -53,19 +53,14 @@ const DoneModalContent: React.FC<ComponentProps> = ({
               <$GridCell $colSpan={12}>
                 <$Text>
                   {t(`${translationsBase}.eurosTotal`, {
-                    total: formatFloatToCurrency(
-                      totalRow.amount,
-                      null,
-                      'fi-FI',
-                      0
-                    ),
+                    total: formatFloatToEvenEuros(totalRow.amount),
                   })}
                 </$Text>
               </$GridCell>
               {helsinkiBenefitMonthlyRows.map((row, index) => (
                 <$Text key={row.id}>
                   {t(`${translationsBase}.eurosPerMonth`, {
-                    euros: formatFloatToCurrency(row.amount, null, 'fi-FI', 0),
+                    euros: formatFloatToEvenEuros(row.amount),
                     dateRange:
                       dateRangeRows[index]?.descriptionFi.toLocaleLowerCase(),
                   })}

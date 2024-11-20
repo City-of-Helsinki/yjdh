@@ -288,9 +288,11 @@ test('Handler handles the alteration from the last test properly', async (t: Tes
   // Recalculate and verify that the calculation is not zero
   await t.click(calculateButton);
   resultText = await calculationResult.textContent;
-  const expectedAmount = 68 * (0.03 / 0.27);
+  const expectedAmount = (68 * (0.03 / 0.27)).toFixed(0);
   await t
-    .expect(resultText.includes(getCurrencyString(expectedAmount, 0)))
+    .expect(
+      resultText.includes(getCurrencyString(parseInt(expectedAmount, 10), 0))
+    )
     .ok();
 
   // Select manual calculation mode

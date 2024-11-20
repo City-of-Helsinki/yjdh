@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Modal from 'shared/components/modal/Modal';
 import theme from 'shared/styles/theme';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 
 type Props = {
   onClose: () => void;
@@ -50,7 +50,7 @@ const AlterationHandlingConfirmationModal = ({
               {t(`${translationBase}.description`, {
                 startDate: values.recoveryStartDate,
                 endDate: values.recoveryEndDate,
-                amount: formatFloatToCurrency(values.recoveryAmount),
+                amount: formatFloatToEvenEuros(values.recoveryAmount),
               })}
             </p>
           </Dialog.Content>

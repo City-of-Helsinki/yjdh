@@ -33,7 +33,7 @@ import {
   convertToUIDateFormat,
   sortFinnishDate,
 } from 'shared/utils/date.utils';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
 import ConfirmModalContent from '../applicationReview/actions/ConfirmModalContent/confirm';
@@ -158,30 +158,18 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
         transform: ({ pendingInstalment }: ApplicationListTableTransforms) =>
           pendingInstalment?.amountAfterRecoveries > 0 ? (
             <>
-              {formatFloatToCurrency(
-                Math.max(0, pendingInstalment?.amountAfterRecoveries),
-                null,
-                'fi-FI',
-                0
+              {formatFloatToEvenEuros(
+                Math.max(0, pendingInstalment?.amountAfterRecoveries)
               )}
-
               {' / '}
-              {formatFloatToCurrency(
-                pendingInstalment.amount,
-                'EUR',
-                'fi-FI',
-                0
-              )}
+              {formatFloatToEvenEuros(pendingInstalment.amount)}
             </>
           ) : (
             <$Wrapper>
               <$Column>
                 <IconErrorFill color="var(--color-alert)" />{' '}
-                {formatFloatToCurrency(
-                  pendingInstalment.amountAfterRecoveries,
-                  'EUR',
-                  'fi-FI',
-                  0
+                {formatFloatToEvenEuros(
+                  pendingInstalment.amountAfterRecoveries
                 )}
               </$Column>
             </$Wrapper>
@@ -340,12 +328,7 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
                   'common:instalments.dialog.cancelInstalment.heading'
                 )}
                 text={t('common:instalments.dialog.cancelInstalment.text', {
-                  sum: formatFloatToCurrency(
-                    selectedInstalment?.amount,
-                    'EUR',
-                    'fi-FI',
-                    0
-                  ),
+                  sum: formatFloatToEvenEuros(selectedInstalment?.amount),
                   details: `${selectedApplication?.applicationNum}, ${selectedApplication?.companyName} / ${selectedApplication?.employeeName}`,
                 })}
                 onClose={() => setIsInstalmentCancelModalShown(false)}
