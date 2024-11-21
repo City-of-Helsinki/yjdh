@@ -332,7 +332,7 @@ def test_requests_exceptions(
         assert ahjo_status.validation_error_from_ahjo is not None
 
         for validation_error in validation_error:
-            assert f"{validation_error}" in ahjo_status.validation_error_from_ahjo
+            assert validation_error in ahjo_status.validation_error_from_ahjo["context"]
 
     exception = requests.exceptions.RequestException
     with requests_mock.Mocker() as m:

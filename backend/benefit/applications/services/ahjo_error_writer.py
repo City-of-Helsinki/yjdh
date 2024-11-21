@@ -26,9 +26,14 @@ class AhjoErrorWriter:
         latest_ahjo_status.save()
 
     @staticmethod
-    def write_to_validation_error(application: Application, error_message: str) -> None:
+    def write_to_validation_error(formatted_error: AhjoFormattedError) -> None:
         """Write the error message to the Ahjo status of the application."""
 
-        status = application.ahjo_status.latest()
-        status.validation_error_from_ahjo = error_message
+        status = formatted_error.application.ahjo_status.latest()
+
+        status.validation_error_from_ahjo = {
+            "id": formatted_error.error_id,
+            "context": formatted_error.context,
+            "message": formatted_error.message_to_handler,
+        }
         status.save()
