@@ -11,14 +11,14 @@ from applications.models import (
     Application,
     DecisionProposalTemplateSection,
 )
+from applications.services.ahjo.exceptions import (
+    AhjoDecisionDetailsParsingError,
+    AhjoDecisionError,
+)
 from applications.tests.factories import (
     AcceptedDecisionProposalFactory,
     DeniedDecisionProposalFactory,
 )
-
-
-class AhjoDecisionError(Exception):
-    pass
 
 
 def replace_decision_template_placeholders(
@@ -126,9 +126,11 @@ def parse_details_from_decision_response(decision_data: Dict) -> AhjoDecisionDet
             decision_date=decision_date,
         )
     except KeyError as e:
-        raise AhjoDecisionError(f"Error in parsing decision details: {e}")
+        raise AhjoDecisionDetailsParsingError(f"Error in parsing decision details: {e}")
     except ValueError as e:
-        raise AhjoDecisionError(f"Error in parsing decision details date: {e}")
+        raise AhjoDecisionDetailsParsingError(
+            f"Error in parsing decision details date: {e}"
+        )
 
 
 def parse_decision_maker_from_html(html_content: str) -> str:

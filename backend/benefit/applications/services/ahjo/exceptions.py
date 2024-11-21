@@ -13,10 +13,93 @@ class DecisionProposalAlreadyAcceptedError(DecisionProposalError):
     but for some reason a decision proposal for the application is still being sent.
 
     Attributes:
-        ahjo_status (AhjosStatusEnum): The decision_proposal_accepted status.
+        ahjo_status (AhjosStatus): The decision_proposal_accepted status.
     """
 
     def __init__(self, message: str, ahjo_status: AhjoStatus) -> None:
         self.message = message
         self.ahjo_status = ahjo_status
         super().__init__(self.message)
+
+
+class AhjoApiClientException(Exception):
+    """
+    Raised when an error occurs in the AhjoApiClient.
+    """
+
+    pass
+
+
+class MissingAhjoCaseIdError(AhjoApiClientException):
+    """
+    Raised when a Ahjo request that requires a case id is missing the case id.
+    """
+
+    pass
+
+
+class MissingHandlerIdError(AhjoApiClientException):
+    """
+    Raised when a Ahjo request that requires a handler id is missing the handler id.
+    """
+
+    pass
+
+
+class MissingOrganizationIdentifier(Exception):
+    """
+    Raised when an organization identifier is missing from AhjoSettings in the database.
+    """
+
+    pass
+
+
+class AhjoTokenExpiredException(Exception):
+    """
+    Raised when the Ahjo token has expired. The token should be re-configured manually, see instructions at:
+    https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/8687517756/Siirto+yll+pitoon#Ahjo-autentikaatio-tokenin-haku-ja-asettaminen-manuaalisesti.
+    """
+
+    pass
+
+
+class AhjoTokenRetrievalException(Exception):
+    """
+    Raised when the Ahjo token has expired or it could not be otherwise refreshed automatically.
+    The token should be re-configured manually, see instructions at:
+    https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/8687517756/Siirto+yll+pitoon#Ahjo-autentikaatio-tokenin-haku-ja-asettaminen-manuaalisesti.
+    """
+
+    pass
+
+
+class InvalidAhjoTokenException(Exception):
+    """
+    Raised when the Ahjo token is missing data or is otherwise invalid.
+    """
+
+    pass
+
+
+class AhjoCallbackError(Exception):
+    """
+    Raised when an error occurs in the Ahjo callback.
+    """
+
+    pass
+
+
+class AhjoDecisionError(Exception):
+    """
+    Raised when an error occurs in substituting application data into the decision text.
+    """
+
+    pass
+
+
+class AhjoDecisionDetailsParsingError(Exception):
+    """
+    Raised when an error occurs in parsing the decision details after a details query to Ahjo.
+    """
+
+    pass

@@ -27,15 +27,12 @@ from applications.enums import (
     DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE,
 )
 from applications.models import AhjoStatus, Application, ApplicationBatch, Attachment
+from applications.services.ahjo.exceptions import AhjoCallbackError
 from common.permissions import BFIsHandler, SafeListPermission
 from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation
 
 LOGGER = logging.getLogger(__name__)
-
-
-class AhjoCallbackError(Exception):
-    pass
 
 
 class AhjoApplicationView(APIView):

@@ -9,8 +9,15 @@ from django.urls import reverse
 
 from applications.enums import AhjoRequestType, AhjoStatus as AhjoStatusEnum
 from applications.models import AhjoSetting, AhjoStatus, Application
-from applications.services.ahjo_authentication import AhjoToken, InvalidTokenException
 from applications.services.ahjo_error_writer import AhjoErrorWriter
+from applications.services.ahjo.exceptions import (
+    AhjoApiClientException,
+    InvalidAhjoTokenException,
+    MissingAhjoCaseIdError,
+    MissingHandlerIdError,
+    MissingOrganizationIdentifier,
+)
+from applications.services.ahjo_authentication import AhjoToken
 
 LOGGER = logging.getLogger(__name__)
 
@@ -145,24 +152,12 @@ class AhjoDecisionMakerRequest(AhjoRequest):
         try:
             return AhjoSetting.objects.get(name="ahjo_org_identifier").data["id"]
         except AhjoSetting.DoesNotExist:
-            raise AhjoSetting.DoesNotExist(
-                "No organization identifier found in the database"
+            raise MissingOrganizationIdentifier(
+                "No organization identifier found in the database."
             )
 
     def api_url(self) -> str:
         return f"{self.url_base}/agents/decisionmakers?start={self.org_identifier()}"
-
-
-class AhjoApiClientException(Exception):
-    pass
-
-
-class MissingAhjoCaseIdError(AhjoApiClientException):
-    pass
-
-
-class MissingHandlerIdError(AhjoApiClientException):
-    pass
 
 
 class AhjoApiClient:
@@ -183,9 +178,11 @@ class AhjoApiClient:
     @ahjo_token.setter
     def ahjo_token(self, token: AhjoToken) -> None:
         if not isinstance(token, AhjoToken):
-            raise InvalidTokenException("Invalid token, not an instance of AhjoToken")
+            raise InvalidAhjoTokenException(
+                "Invalid token, not an instance of AhjoToken"
+            )
         if not token.access_token or not token.expires_in or not token.refresh_token:
-            raise InvalidTokenException("Invalid token, token is missing data")
+            raise InvalidAhjoTokenException("Invalid token, token is missing data")
         self._ahjo_token = token
 
     def prepare_ahjo_headers(self) -> dict:
