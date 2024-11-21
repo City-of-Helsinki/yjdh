@@ -173,7 +173,11 @@ class AhjoCallbackView(APIView):
                 request, application, callback_data, request_type
             )
         elif callback_data["message"] == AhjoCallBackStatus.FAILURE:
-            return self.handle_failure_callback(application, callback_data)
+            return self.handle_failure_callback(
+                application=application,
+                callback_data=callback_data,
+                request_type=request_type,
+            )
 
     def cb_info_message(
         self,
@@ -249,7 +253,10 @@ class AhjoCallbackView(APIView):
             )
 
     def handle_failure_callback(
-        self, application: Application, callback_data: dict
+        self,
+        application: Application,
+        callback_data: dict,
+        request_type: AhjoRequestType,
     ) -> Response:
         latest_status = application.ahjo_status.latest()
 
@@ -261,7 +268,11 @@ class AhjoCallbackView(APIView):
             "failureDetails", DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE
         )
         latest_status.save()
-        self._log_failure_details(application, callback_data)
+        self._log_failure_details(
+            application=application,
+            callback_data=callback_data,
+            request_type=request_type,
+        )
         return Response(
             {"message": "Callback received but request was unsuccessful at AHJO"},
             status=status.HTTP_200_OK,
@@ -335,9 +346,14 @@ class AhjoCallbackView(APIView):
         batch.status = ApplicationBatchStatus.AWAITING_AHJO_DECISION
         batch.save()
 
-    def _log_failure_details(self, application, callback_data):
+    def _log_failure_details(
+        self,
+        application: Application,
+        callback_data: dict,
+        request_type: AhjoRequestType,
+    ):
         LOGGER.error(
-            f"Received unsuccessful callback for application {application.id} \
+            f"Received unsuccessful callback for {request_type} for application {application.id} \
                 with request_id {callback_data['requestId']}, callback data: {callback_data}"
         )
         for cb_record in callback_data.get("records", []):
