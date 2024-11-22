@@ -676,6 +676,7 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
                     ApplicationStatus.ACCEPTED,
                     ApplicationStatus.REJECTED,
                 ],
+                application_origin=ApplicationOrigin.APPLICANT,
             ).latest("submitted_at")
 
         except Application.DoesNotExist:
