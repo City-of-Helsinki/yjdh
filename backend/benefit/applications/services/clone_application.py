@@ -4,11 +4,13 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image
 
 from applications.enums import (
+    AhjoStatus as AhjoStatusEnum,
     ApplicationStatus,
     ApplicationStep,
     AttachmentType,
 )
 from applications.models import (
+    AhjoStatus,
     Application,
     ApplicationLogEntry,
     Attachment,
@@ -164,6 +166,11 @@ def _clone_handler_data(application_base, cloned_application):
     cloned_application.start_date = application_base.start_date
     cloned_application.end_date = application_base.end_date
     cloned_application.save()
+
+    AhjoStatus.objects.create(
+        status=AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
+        application=cloned_application,
+    )
 
     calculation_base = application_base.calculation
     Calculation.objects.create_for_application(
