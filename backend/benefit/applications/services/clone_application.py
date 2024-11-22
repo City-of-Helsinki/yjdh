@@ -3,7 +3,11 @@ from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image
 
-from applications.enums import ApplicationStatus, ApplicationStep
+from applications.enums import (
+    ApplicationStatus,
+    ApplicationStep,
+    AttachmentType,
+)
 from applications.models import (
     Application,
     ApplicationLogEntry,
@@ -136,7 +140,19 @@ def _clone_handler_data(application_base, cloned_application):
     )
 
     # Mimick the attachments by retaining attachment type
-    for base_attachment in application_base.attachments.all():
+    for base_attachment in application_base.attachments.filter(
+        attachment_type__in=[
+            AttachmentType.EMPLOYMENT_CONTRACT,
+            AttachmentType.PAY_SUBSIDY_DECISION,
+            AttachmentType.COMMISSION_CONTRACT,
+            AttachmentType.EDUCATION_CONTRACT,
+            AttachmentType.HELSINKI_BENEFIT_VOUCHER,
+            AttachmentType.EMPLOYEE_CONSENT,
+            AttachmentType.FULL_APPLICATION,
+            AttachmentType.OTHER_ATTACHMENT,
+            AttachmentType.PDF_SUMMARY,
+        ]
+    ):
         Attachment.objects.create(
             attachment_type=base_attachment.attachment_type,
             application=cloned_application,
