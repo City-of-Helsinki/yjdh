@@ -12,6 +12,7 @@ export interface ApplicationListTableTransforms {
   calculatedBenefitAmount?: string;
   pendingInstalment?: Instalment;
   alterations: ApplicationAlterationData[];
+  talpaStatus?: TALPA_STATUSES;
 }
 
 export interface ApplicationListTableColumns {

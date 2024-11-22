@@ -10,10 +10,7 @@ import {
   APPLICATION_STATUSES,
   INSTALMENT_STATUSES,
 } from 'benefit-shared/constants';
-import {
-  ApplicationListItemData,
-  Instalment,
-} from 'benefit-shared/types/application';
+import { ApplicationListItemData } from 'benefit-shared/types/application';
 import {
   Button,
   IconArrowUndo,
@@ -75,22 +72,15 @@ const buildApplicationUrl = (
 
 export const renderInstalmentTagPerStatus = (
   t: TFunction,
-  pendingInstalment: Instalment
-): JSX.Element => (
-  <$TagWrapper
-    $colors={getInstalmentTagStyleForStatus(
-      pendingInstalment?.status as INSTALMENT_STATUSES
-    )}
-  >
-    <Tag>
-      {t(
-        `common:applications.list.columns.instalmentStatuses.${
-          pendingInstalment?.status as INSTALMENT_STATUSES
-        }`
-      )}
-    </Tag>
-  </$TagWrapper>
-);
+  status?: INSTALMENT_STATUSES
+): JSX.Element =>
+  status ? (
+    <$TagWrapper $colors={getInstalmentTagStyleForStatus(status)}>
+      <Tag>
+        {t(`common:applications.list.columns.instalmentStatuses.${status}`)}
+      </Tag>
+    </$TagWrapper>
+  ) : null;
 
 const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
   heading,
@@ -149,7 +139,10 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
 
       {
         transform: ({ pendingInstalment }: ApplicationListTableTransforms) =>
-          renderInstalmentTagPerStatus(t, pendingInstalment),
+          renderInstalmentTagPerStatus(
+            t,
+            pendingInstalment?.status as INSTALMENT_STATUSES
+          ),
         headerName: getHeader('paymentStatus'),
         key: 'status',
         isSortable: true,

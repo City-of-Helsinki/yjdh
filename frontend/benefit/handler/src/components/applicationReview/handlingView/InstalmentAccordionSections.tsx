@@ -12,6 +12,7 @@ import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 
+import { renderPaymentTagPerStatus } from '../../applicationList/ApplicationList';
 import { renderInstalmentTagPerStatus } from '../../applicationList/ApplicationListForInstalments';
 import {
   $Column,
@@ -68,7 +69,10 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
               )}
             </$ViewField>
             <$RowWrap>
-              {renderInstalmentTagPerStatus(t, data.pendingInstalment)}
+              {renderInstalmentTagPerStatus(
+                t,
+                data.pendingInstalment?.status as INSTALMENT_STATUSES
+              )}
 
               {(isSecondInstalmentReduced || !areInstalmentsPaid) && (
                 <>
