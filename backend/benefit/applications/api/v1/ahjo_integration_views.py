@@ -377,29 +377,30 @@ class AhjoDecisionCallbackView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         callback_data = serializer.validated_data
-        ahjo_case_id = callback_data["caseId"]
-        update_type = callback_data["updatetype"]
+        ahjo_case_id = callback_data.get("caseId", None)
+        update_type = callback_data.get("updatetype", None)
 
-        application = get_object_or_404(
-            Application, ahjo_case_id=ahjo_case_id, handled_by_ahjo_automation=True
-        )
+        if ahjo_case_id:
+            application = get_object_or_404(
+                Application, ahjo_case_id=ahjo_case_id, handled_by_ahjo_automation=True
+            )
 
-        if update_type == AhjoDecisionUpdateType.ADDED:
-            AhjoStatus.objects.create(
-                application=application, status=AhjoStatusEnum.SIGNED_IN_AHJO
+            if update_type == AhjoDecisionUpdateType.ADDED:
+                AhjoStatus.objects.create(
+                    application=application, status=AhjoStatusEnum.SIGNED_IN_AHJO
+                )
+            elif update_type == AhjoDecisionUpdateType.REMOVED:
+                AhjoStatus.objects.create(
+                    application=application, status=AhjoStatusEnum.REMOVED_IN_AHJO
+                )
+            # TODO what to do if updatetype is "updated"
+            audit_logging.log(
+                request.user,
+                "",
+                Operation.UPDATE,
+                application,
+                additional_information=f"Decision proposal callback of type: {update_type} was received \
+                from Ahjo for application {application.application_number}",
             )
-        elif update_type == AhjoDecisionUpdateType.REMOVED:
-            AhjoStatus.objects.create(
-                application=application, status=AhjoStatusEnum.REMOVED_IN_AHJO
-            )
-        # TODO what to do if updatetype is "updated"
-        audit_logging.log(
-            request.user,
-            "",
-            Operation.UPDATE,
-            application,
-            additional_information=f"Decision proposal update type: {update_type} was received \
-            from Ahjo for application {application.application_number}",
-        )
 
         return Response({"message": "Callback received"}, status=status.HTTP_200_OK)
