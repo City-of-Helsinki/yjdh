@@ -233,7 +233,10 @@ def test_send_ahjo_requests(
             mock_response = f"{uuid.uuid4()}"
 
         applications = [
-            MagicMock(spec=Application, handled_by_ahjo_automation=True)
+            MagicMock(
+                spec=Application,
+                handled_by_ahjo_automation=True,
+            )
             for _ in range(number_to_send)
         ]
         applications_qs = MagicMock()
@@ -245,6 +248,8 @@ def test_send_ahjo_requests(
             mock_response,
         )
 
+        app_numbers = ", ".join([str(application.application_number)] * number_to_send)
+
         # Call the command
         out = StringIO()
         call_command(
@@ -254,13 +259,15 @@ def test_send_ahjo_requests(
             stdout=out,
         )
 
+        print(out.getvalue())
+
         assert (
             f"Sending {request_type} request to Ahjo for {number_to_send} applications"
             in out.getvalue()
         )
 
         assert (
-            f"Sent {request_type} requests for {number_to_send} applications to Ahjo"
+            f"Sent {request_type} requests for {number_to_send} application(s): {app_numbers} to Ahjo"
             in out.getvalue()
         )
 

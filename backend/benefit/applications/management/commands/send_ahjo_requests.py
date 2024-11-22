@@ -71,6 +71,9 @@ class Command(BaseCommand):
 not moved to the next status in the last x hours",
         )
 
+    def get_application_numbers(self, applications: QuerySet[Application]) -> str:
+        return ", ".join(str(app.application_number) for app in applications)
+
     def handle(self, *args, **options):
         try:
             ahjo_auth_token = get_token()
@@ -127,9 +130,8 @@ requests for {len(applications)} applications to Ahjo"
         successful_applications = []
         failed_applications = []
 
-        application_numbers = ", ".join(
-            str(app.application_number) for app in applications
-        )
+        application_numbers = self.get_application_numbers(applications)
+
         message_start = "Retrying" if self.is_retry else "Sending"
 
         message = f"{message_start} {ahjo_request_type} request to Ahjo \
@@ -190,10 +192,14 @@ for {len(applications)} applications: {application_numbers}"
         elapsed_time,
     ):
         if successful_applications:
+            successful_application_numbers = self.get_application_numbers(
+                successful_applications
+            )
             self.stdout.write(
                 self.style.SUCCESS(
                     self._print_with_timestamp(
-                        f"Sent {ahjo_request_type} requests for {len(successful_applications)} applications to Ahjo"
+                        f"Sent {ahjo_request_type} requests for {len(successful_applications)} \
+application(s): {successful_application_numbers} to Ahjo"
                     )
                 )
             )
@@ -202,10 +208,15 @@ for {len(applications)} applications: {application_numbers}"
 requests took {elapsed_time} seconds to run."
             )
         if failed_applications:
+            failed_application_numbers = self.get_application_numbers(
+                failed_applications
+            )
+
             self.stdout.write(
                 self.style.ERROR(
                     self._print_with_timestamp(
-                        f"Failed to submit {ahjo_request_type} {len(failed_applications)} applications to Ahjo"
+                        f"Failed to submit {ahjo_request_type} {len(failed_applications)} \
+application(s): {failed_application_numbers} to Ahjo"
                     )
                 )
             )
