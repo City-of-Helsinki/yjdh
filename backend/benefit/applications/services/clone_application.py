@@ -20,9 +20,16 @@ def clone_application_based_on_other(
     clone_all_data=False,
 ):
     company = Company.objects.get(id=application_base.company.id)
-    company.street_address = (
-        company.street_address if len(company.street_address) > 0 else "Testikatu 123"
-    )
+    if clone_all_data:
+        company.street_address = (
+            company.street_address
+            if len(company.street_address) > 0
+            else "Testikatu 123"
+        )
+
+        company.postcode = company.postcode if len(company.postcode) > 0 else "00100"
+        company.city = company.city if len(company.city) > 0 else "Testilä"
+
     cloned_application = Application(
         **{
             "alternative_company_city": application_base.alternative_company_city,
