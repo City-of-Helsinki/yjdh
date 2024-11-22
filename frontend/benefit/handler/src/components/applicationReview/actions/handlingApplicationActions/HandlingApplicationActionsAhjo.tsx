@@ -323,6 +323,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
         </Button>
 
         {process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT !== 'production' &&
+          stepState.activeStepIndex === 0 &&
           [
             APPLICATION_STATUSES.ACCEPTED,
             APPLICATION_STATUSES.REJECTED,
@@ -344,6 +345,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
           APPLICATION_STATUSES.ACCEPTED,
           APPLICATION_STATUSES.REJECTED,
         ].includes(application.status) &&
+          stepState.activeStepIndex === 0 &&
           !application.archived && (
             <Button
               onClick={openDialog}
