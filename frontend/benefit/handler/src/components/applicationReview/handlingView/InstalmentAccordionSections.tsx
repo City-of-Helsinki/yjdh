@@ -41,13 +41,14 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
 
   return (
     <>
-      <$Section className="">
+      <$Section>
         <$CalculatorTableRow>
           <$ViewField>{t(`${translationsBase}.firstInstalment`)}</$ViewField>
-          {data.pendingInstalment &&
-            formatFloatToEvenEuros(amounts.firstInstalment)}
-          {!data.pendingInstalment &&
-            formatFloatToEvenEuros(data.calculatedBenefitAmount)}
+
+          <$RowWrap>
+            {renderPaymentTagPerStatus(t, data.talpaStatus)}
+            <div>{formatFloatToEvenEuros(amounts.firstInstalment)}</div>
+          </$RowWrap>
         </$CalculatorTableRow>
       </$Section>
 
@@ -74,20 +75,18 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
                 data.pendingInstalment?.status as INSTALMENT_STATUSES
               )}
 
-              {(isSecondInstalmentReduced || !areInstalmentsPaid) && (
+              {isSecondInstalmentReduced && (
                 <>
                   <div
                     style={{
-                      textDecoration:
-                        areInstalmentsPaid && isSecondInstalmentReduced
-                          ? 'line-through'
-                          : 'none',
+                      textDecoration: areInstalmentsPaid
+                        ? 'line-through'
+                        : 'none',
                     }}
                   >
-                    {isSecondInstalmentReduced &&
-                      formatFloatToEvenEuros(data.pendingInstalment?.amount)}
+                    {formatFloatToEvenEuros(amounts.secondInstalmentMax)}
                   </div>
-                  {isSecondInstalmentReduced && <IconArrowRight />}
+                  <IconArrowRight />
                 </>
               )}
 
@@ -140,7 +139,7 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
       {amounts.secondInstalment - amounts.alterations < 0 &&
         areInstalmentsPaid && (
           <>
-            <$Section className="">
+            <$Section>
               <$CalculatorTableRow>
                 <$ViewField isBold>
                   {data.pendingInstalment?.status ===
@@ -151,7 +150,7 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
                 {formatFloatToEvenEuros(amounts.total)}
               </$CalculatorTableRow>
             </$Section>
-            <$Section className="">
+            <$Section>
               <$CalculatorTableRow>
                 <$ViewField isBold>
                   <$Wrapper>
@@ -172,7 +171,7 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
           </>
         )}
 
-      <$Section className="">
+      <$Section>
         <$CalculatorTableRow>
           <$ViewField isBold>
             {t(`${translationsBase}.totalAfterRecoveries`)}
