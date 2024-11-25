@@ -210,7 +210,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         )
 
         response = HttpResponse(
-            csv_service.get_csv_string(True).encode("utf-8"),
+            csv_service.get_csv_string(remove_quotes=False).encode("utf-8"),
             content_type="text/csv",
         )
 
