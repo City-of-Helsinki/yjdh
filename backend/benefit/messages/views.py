@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 
+from applications.enums import ApplicationStatus
 from applications.models import Application
 from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
 from messages.automatic_messages import (
@@ -109,9 +110,74 @@ class HandlerMessageViewSet(ApplicantMessageViewSet):
 class HandlerNoteViewSet(HandlerMessageViewSet):
     serializer_class = NoteSerializer
 
-    def get_queryset(self):
+    def list(self, request, *args, **kwargs):
         try:
-            application = Application.objects.get(id=self.kwargs["application_pk"])
+            application = Application.objects.get(pk=self.kwargs["application_pk"])
         except Application.DoesNotExist:
             return Message.objects.none()
-        return application.messages.get_notes_qs()
+
+        messages = MessageSerializer(
+            application.messages.get_notes_qs(), many=True
+        ).data
+
+        log_entry = (
+            application.log_entries.filter(
+                application_id=self.kwargs["application_pk"],
+                from_status=ApplicationStatus.HANDLING,
+                to_status__in=[ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
+            ).first()
+            or None
+        )
+
+        if log_entry and application.status in [
+            ApplicationStatus.ACCEPTED,
+            ApplicationStatus.REJECTED,
+        ]:
+            log_entry_comment = getattr(log_entry, "comment", None)
+            content = _("Handling comment") + ": " + log_entry_comment
+            if log_entry_comment is not None and log_entry_comment != "":
+                messages.append(
+                    MessageSerializer(
+                        Message(
+                            id=getattr(log_entry, "id", None),
+                            created_at=getattr(log_entry, "created_at", None),
+                            modified_at=getattr(log_entry, "modified_at", None),
+                            content=content,
+                            message_type=MessageType.NOTE,
+                            seen_by_applicant=True,
+                            seen_by_handler=True,
+                        )
+                    ).data
+                )
+
+        calculation_comment = (
+            (application.calculation.override_monthly_benefit_amount_comment)
+            if application.calculation
+            else None
+        )
+
+        if calculation_comment:
+            content = _("Manual calculation comment") + ": " + calculation_comment
+            messages.append(
+                MessageSerializer(
+                    Message(
+                        id=application.calculation.id,
+                        created_at=getattr(application.calculation, "created_at", None),
+                        modified_at=getattr(
+                            application.calculation, "modified_at", None
+                        ),
+                        content=content,
+                        message_type=MessageType.NOTE,
+                        seen_by_applicant=True,
+                        seen_by_handler=True,
+                    )
+                ).data
+            )
+
+        if calculation_comment or log_entry:
+            messages.sort(key=lambda x: x["created_at"])
+
+        return Response(messages)
+
+
+_("Manual calculation comment")

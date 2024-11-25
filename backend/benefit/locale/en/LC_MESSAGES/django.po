@@ -1460,6 +1460,12 @@ msgstr ""
 msgid "Handler is not allowed to do this action"
 msgstr ""
 
+msgid "Handling comment"
+msgstr ""
+
+msgid "Manual calculation comment"
+msgstr ""
+
 msgid "Only the terms currently in effect can be approved"
 msgstr ""
 
