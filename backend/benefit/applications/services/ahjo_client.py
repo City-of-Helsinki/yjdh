@@ -160,6 +160,7 @@ class AhjoDecisionMakerRequest(AhjoRequest):
     def api_url(self) -> str:
         return f"{self.url_base}/agents/decisionmakers?start={self.org_identifier()}"
 
+
 @dataclass
 class AhjoSignerRequest(AhjoRequest):
     application = None
@@ -345,8 +346,8 @@ class AhjoApiClient:
         except json.JSONDecodeError:
             error_json = None
 
-        if hasattr(self._request, "application"):
-            application_number = self._request.application.application_number
+        if hasattr(self._request, "application") and self.request.application:
+            application_number = self.request.application.application_number
 
             error_message = self.format_error_message(e, application_number)
 

@@ -5,12 +5,16 @@ import zipfile
 from collections import defaultdict
 from dataclasses import dataclass
 from io import BytesIO
-from typing import List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 import jinja2
 import pdfkit
 from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
+from django.core.exceptions import (
+    ImproperlyConfigured,
+    ObjectDoesNotExist,
+    ValidationError,
+)
 from django.core.files.base import ContentFile
 from django.db.models import QuerySet
 from django.urls import reverse
@@ -31,6 +35,7 @@ from applications.models import (
     ApplicationBatch,
     Attachment,
 )
+from applications.services.ahjo.enums import AhjoSettingName
 from applications.services.ahjo.exceptions import (
     DecisionProposalAlreadyAcceptedError,
     DecisionProposalError,
@@ -670,32 +675,132 @@ class AhjoRequestHandler:
     def handle_request_without_application(self):
         if self.ahjo_request_type == AhjoRequestType.GET_DECISION_MAKER:
             self.get_decision_maker_from_ahjo()
-        else:
-            raise ValueError("Invalid request type")
 
     def get_decision_maker_from_ahjo(self) -> Union[List, None]:
         ahjo_client = AhjoApiClient(self.ahjo_token, AhjoDecisionMakerRequest())
-        result = ahjo_client.send_request_to_ahjo()
-        AhjoResponseHandler.handle_decisionmaker_response(result)
+        _, result = ahjo_client.send_request_to_ahjo()
+        AhjoResponseHandler.handle_ahjo_query_response(
+            setting_name=AhjoSettingName.DECISION_MAKER, data=result
+        )
 
 
 class AhjoResponseHandler:
     @staticmethod
-    def handle_decisionmaker_response(response: tuple[None, dict]) -> None:
-        filtered_data = AhjoResponseHandler.filter_decision_makers(response[1])
-        if filtered_data:
-            AhjoSetting.objects.update_or_create(
-                name="ahjo_decision_maker", defaults={"data": filtered_data}
+    def handle_ahjo_query_response(
+        setting_name: AhjoSettingName, data: Union[None, dict]
+    ) -> None:
+        """
+        Handle the decision maker response from Ahjo API.
+
+        Args:
+            response: Variable that is either None or the JSON response data
+
+        Raises:
+            ValueError: If response data is invalid
+            ValidationError: If data validation fails
+        """
+
+        if not data:
+            raise ValueError(
+                f"Failed to process Ahjo API response for setting {setting_name}, no data received from Ahjo."
             )
 
-    @staticmethod
-    def filter_decision_makers(data: dict) -> List[dict]:
-        """Filter the decision makers Name and ID from the Ahjo response."""
-        result = []
-        for item in data["decisionMakers"]:
-            organization = item.get("Organization")
-            if organization and organization.get("IsDecisionMaker"):
-                result.append(
-                    {"Name": organization.get("Name"), "ID": organization.get("ID")}
+        try:
+            # Validate response structure
+            if not isinstance(data, dict):
+                raise ValidationError(
+                    f"Invalid response format for setting {setting_name}: expected dictionary"
                 )
-        return result
+
+            filtered_data = AhjoResponseHandler.filter_decision_makers(data)
+
+            if not filtered_data:
+                LOGGER.warning("No valid decision makers found in response")
+                return
+
+            # Store the filtered data
+            AhjoResponseHandler._save_ahjo_setting(
+                setting_name=setting_name, filtered_data=filtered_data
+            )
+
+            LOGGER.info(f"Successfully processed {len(filtered_data)} decision makers")
+
+        except Exception as e:
+            LOGGER.error(
+                f"Failed to process Ahjo api response for setting {setting_name}: {str(e)}",
+                exc_info=True,
+            )
+            raise
+
+    @staticmethod
+    def filter_decision_makers(data: Dict) -> List[Dict[str, str]]:
+        """
+        Filter the decision makers Name and ID from the Ahjo response.
+
+        Args:
+            data: Response data dictionary
+
+        Returns:
+            List of filtered decision maker dictionaries
+
+        Raises:
+            ValidationError: If required fields are missing
+        """
+        try:
+            # Validate required field exists
+            if "decisionMakers" not in data:
+                raise ValidationError("Missing decisionMakers field in response")
+
+            result = []
+            for item in data["decisionMakers"]:
+                try:
+                    organization = item.get("Organization", {})
+
+                    # Skip if not a decision maker
+                    if not organization.get("IsDecisionMaker"):
+                        continue
+
+                    # Validate required fields
+                    name = organization.get("Name")
+                    org_id = organization.get("ID")
+
+                    if not all([name, org_id]):
+                        LOGGER.warning(
+                            f"Missing required fields for organization: {organization}"
+                        )
+                        continue
+
+                    result.append({"Name": name, "ID": org_id})
+
+                except Exception as e:
+                    LOGGER.warning(f"Failed to process decision maker: {str(e)}")
+                    continue
+
+            return result
+
+        except Exception as e:
+            LOGGER.error(f"Error filtering decision makers: {str(e)}")
+            raise ValidationError(f"Failed to filter decision makers: {str(e)}")
+
+    @staticmethod
+    def _save_ahjo_setting(
+        setting_name: AhjoSettingName, filtered_data: List[Dict[str, str]]
+    ) -> None:
+        """
+        Save an ahjo setting to database.
+
+        Args:
+            filtered_data: List of filtered setting data dictionaries
+
+        Raises:
+            ValidationError: If database operation fails
+        """
+        try:
+            AhjoSetting.objects.update_or_create(
+                name=setting_name, defaults={"data": filtered_data}
+            )
+        except Exception as e:
+            LOGGER.error(f"Failed to save setting {setting_name}: {str(e)}")
+            raise ValidationError(
+                f"Failed to save setting {setting_name} to database: {str(e)}"
+            )

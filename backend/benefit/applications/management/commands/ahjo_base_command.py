@@ -2,6 +2,7 @@ import logging
 
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 from applications.services.ahjo_authentication import AhjoTokenExpiredException
 from applications.services.ahjo_integration import AhjoRequestHandler, get_token
@@ -30,7 +31,18 @@ class AhjoRequestBaseClass(BaseCommand):
         ahjo_auth_token = self.get_token()
         if not ahjo_auth_token:
             return
-
-        handler = AhjoRequestHandler(ahjo_auth_token, self.request_type)
-        handler.handle_request_without_application()
-        self.stdout.write(f"Request {self.request_type.value} made to Ahjo")
+        try:
+            handler = AhjoRequestHandler(ahjo_auth_token, self.request_type)
+            handler.handle_request_without_application()
+            self.style.SUCCESS(
+                self.stdout.write(
+                    f"{timezone.now()}: Request {self.request_type.value} made to Ahjo"
+                )
+            )
+        except ValueError as e:
+            self.style.ERROR(
+                self.stdout.write(
+                    f"{timezone.now()}: Failed to make request {self.request_type.value} to Ahjo: {e}"
+                )
+            )
+            return

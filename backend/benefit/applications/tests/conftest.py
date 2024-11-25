@@ -1095,6 +1095,16 @@ def decisionmaker_response():
 
 
 @pytest.fixture
+def invalid_decisionmaker_response():
+    return {
+        "decisionMakers": [
+            {"Organization": {"Name": None, "ID": "ORG001", "IsDecisionMaker": True}},
+            {"Organization": {"Name": "Test Org", "ID": None, "IsDecisionMaker": True}},
+        ]
+    }
+
+
+@pytest.fixture
 def fake_decisionmakers():
     return [
         {
