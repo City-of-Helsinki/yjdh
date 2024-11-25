@@ -1,6 +1,7 @@
 import {
   APPLICATION_STATUSES,
   INSTALMENT_STATUSES,
+  TALPA_STATUSES,
 } from 'benefit-shared/constants';
 import theme from 'shared/styles/theme';
 
@@ -83,6 +84,34 @@ export const getInstalmentTagStyleForStatus = (
       break;
 
     case INSTALMENT_STATUSES.COMPLETED:
+      background = theme.colors.success;
+      text = theme.colors.white;
+      break;
+
+    default:
+      background = theme.colors.black40;
+      break;
+  }
+  return { background, text };
+};
+
+export const getTalpaTagStyleForStatus = (
+  status?: TALPA_STATUSES
+): { background: string; text: string } => {
+  let background: string;
+  let text: string = theme.colors.black;
+  switch (status) {
+    case TALPA_STATUSES.NOT_SENT_TO_TALPA:
+      background = theme.colors.black30;
+      text = theme.colors.white;
+      break;
+
+    case TALPA_STATUSES.REJECTED_BY_TALPA:
+      background = theme.colors.error;
+      text = theme.colors.white;
+      break;
+
+    case TALPA_STATUSES.SUCCESFULLY_SENT_TO_TALPA:
       background = theme.colors.success;
       text = theme.colors.white;
       break;

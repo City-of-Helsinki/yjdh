@@ -3,8 +3,11 @@ import {
   ApplicationListTableColumns,
   ApplicationListTableTransforms,
 } from 'benefit/handler/types/applicationList';
-import { getTagStyleForStatus } from 'benefit/handler/utils/applications';
-import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import {
+  getTagStyleForStatus,
+  getTalpaTagStyleForStatus,
+} from 'benefit/handler/utils/applications';
+import { APPLICATION_STATUSES, TALPA_STATUSES } from 'benefit-shared/constants';
 import {
   AhjoError,
   ApplicationAlteration,
@@ -12,6 +15,7 @@ import {
   Instalment,
 } from 'benefit-shared/types/application';
 import { IconSpeechbubbleText, Table, Tag, Tooltip } from 'hds-react';
+import { TFunction } from 'next-i18next';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import { $Link } from 'shared/components/table/Table.sc';
@@ -93,6 +97,17 @@ const getFirstInstalmentTotalAmount = (
 const dateForAdditionalInformationNeededBy = (
   dateString: string | Date
 ): string => ` ${String(dateString).replace(/\d{4}$/, '')}`;
+
+export const renderPaymentTagPerStatus = (
+  t: TFunction,
+  talpaStatus?: TALPA_STATUSES
+): JSX.Element => (
+  <$TagWrapper $colors={getTalpaTagStyleForStatus(talpaStatus)}>
+    <Tag>
+      {t(`applications.list.columns.talpaStatuses.${String(talpaStatus)}`)}
+    </Tag>
+  </$TagWrapper>
+);
 
 const ApplicationList: React.FC<ApplicationListProps> = ({
   heading,
@@ -196,6 +211,10 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     ),
     [t]
   );
+
+  const renderPaymentTagWrapper = React.useCallback(renderPaymentTagPerStatus, [
+    t,
+  ]);
 
   const columns = React.useMemo(() => {
     const cols: ApplicationListTableColumns[] = [
@@ -353,8 +372,8 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
           headerName: getHeader('paymentStatus'),
           key: 'paymentStatus',
           isSortable: true,
-          transform: ({ talpaStatus }) =>
-            t(`applications.list.columns.talpaStatuses.${String(talpaStatus)}`),
+          transform: ({ talpaStatus }: ApplicationListTableTransforms) =>
+            renderPaymentTagWrapper(t, talpaStatus as TALPA_STATUSES),
         },
         {
           headerName: getHeader('calculatedBenefitAmount'),
@@ -386,6 +405,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     renderTagWrapper,
     renderTableActions,
     t,
+    renderPaymentTagWrapper,
   ]);
 
   if (isLoading) {

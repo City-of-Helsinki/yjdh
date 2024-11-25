@@ -325,6 +325,7 @@ export type Application = {
   handledByAhjoAutomation?: boolean;
   batchStatus?: BATCH_STATUSES;
   pendingInstalment?: Instalment;
+  talpaStatus?: TALPA_STATUSES;
 } & Step1 &
   Step2;
 
