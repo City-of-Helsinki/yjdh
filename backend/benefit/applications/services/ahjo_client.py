@@ -2,6 +2,7 @@ import json
 import logging
 from dataclasses import dataclass, field
 from typing import List, Optional, Tuple, Union
+from urllib.parse import urlencode
 
 import requests
 from django.conf import settings
@@ -159,6 +160,45 @@ class AhjoDecisionMakerRequest(AhjoRequest):
     def api_url(self) -> str:
         return f"{self.url_base}/agents/decisionmakers?start={self.org_identifier()}"
 
+@dataclass
+class AhjoSignerRequest(AhjoRequest):
+    application = None
+    request_type = AhjoRequestType.GET_SIGNER
+    request_method = "GET"
+
+    @staticmethod
+    def org_identifier() -> str:
+        try:
+            setting = AhjoSetting.objects.get(name="ahjo_signer_org_ids")
+            if not setting.data:
+                raise ValueError("Signer organization identifier list is empty")
+
+            # If data is string or other type, you might want to validate it's actually a list
+            if not isinstance(setting.data, list):
+                raise ValueError("Signer organization identifier must be a list")
+
+            # Validate the list is not empty
+            if len(setting.data) == 0:
+                raise ValueError("Signer organization identifier list is empty")
+
+            return setting.data
+        except AhjoSetting.DoesNotExist:
+            raise AhjoSetting.DoesNotExist(
+                "No signer organization identifier(s) found in the database"
+            )
+
+    def api_url(self) -> str:
+        """
+        Construct an url like this:
+        https://url_base.com/organization/persons?role=decisionMaker&orgid=ID1&orgid=ID2&orgid=ID3
+        """
+        org_ids = self.org_identifier()
+        params = [("role", "decisionMaker")]
+        params.extend([("orgid", org_id) for org_id in org_ids])
+        query_string = urlencode(params)
+
+        return f"{self.url_base}/organization/persons?{query_string}"
+
 
 class AhjoApiClient:
     def __init__(self, ahjo_token: AhjoToken, ahjo_request: AhjoRequest) -> None:
@@ -204,6 +244,7 @@ class AhjoApiClient:
             AhjoRequestType.GET_DECISION_DETAILS,
             AhjoRequestType.SUBSCRIBE_TO_DECISIONS,
             AhjoRequestType.GET_DECISION_MAKER,
+            AhjoRequestType.GET_SIGNER,
         ]:
             url = reverse(
                 "ahjo_callback_url",
@@ -257,6 +298,7 @@ class AhjoApiClient:
                 if self._request.request_type not in [
                     AhjoRequestType.GET_DECISION_DETAILS,
                     AhjoRequestType.GET_DECISION_MAKER,
+                    AhjoRequestType.GET_SIGNER,
                 ]:
                     LOGGER.debug(f"Request {self._request} to Ahjo was successful.")
                     return self._request.application, response.text

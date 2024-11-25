@@ -216,6 +216,7 @@ class AhjoRequestType(models.TextChoices):
     GET_DECISION_MAKER = "get_decision_maker", _(
         "Get decision maker name from Ahjo API"
     )
+    GET_SIGNER = "get_signer", _("Get signer name a and AD id from Ahjo API")
 
 
 class DecisionType(models.TextChoices):
