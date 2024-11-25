@@ -3,8 +3,14 @@ from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image
 
-from applications.enums import ApplicationStatus, ApplicationStep
+from applications.enums import (
+    AhjoStatus as AhjoStatusEnum,
+    ApplicationStatus,
+    ApplicationStep,
+    AttachmentType,
+)
 from applications.models import (
+    AhjoStatus,
     Application,
     ApplicationLogEntry,
     Attachment,
@@ -20,9 +26,16 @@ def clone_application_based_on_other(
     clone_all_data=False,
 ):
     company = Company.objects.get(id=application_base.company.id)
-    company.street_address = (
-        company.street_address if len(company.street_address) > 0 else "Testikatu 123"
-    )
+    if clone_all_data:
+        company.street_address = (
+            company.street_address
+            if len(company.street_address) > 0
+            else "Testikatu 123"
+        )
+
+        company.postcode = company.postcode if len(company.postcode) > 0 else "00100"
+        company.city = company.city if len(company.city) > 0 else "Testilä"
+
     cloned_application = Application(
         **{
             "alternative_company_city": application_base.alternative_company_city,
@@ -129,7 +142,19 @@ def _clone_handler_data(application_base, cloned_application):
     )
 
     # Mimick the attachments by retaining attachment type
-    for base_attachment in application_base.attachments.all():
+    for base_attachment in application_base.attachments.filter(
+        attachment_type__in=[
+            AttachmentType.EMPLOYMENT_CONTRACT,
+            AttachmentType.PAY_SUBSIDY_DECISION,
+            AttachmentType.COMMISSION_CONTRACT,
+            AttachmentType.EDUCATION_CONTRACT,
+            AttachmentType.HELSINKI_BENEFIT_VOUCHER,
+            AttachmentType.EMPLOYEE_CONSENT,
+            AttachmentType.FULL_APPLICATION,
+            AttachmentType.OTHER_ATTACHMENT,
+            AttachmentType.PDF_SUMMARY,
+        ]
+    ):
         Attachment.objects.create(
             attachment_type=base_attachment.attachment_type,
             application=cloned_application,
@@ -141,6 +166,11 @@ def _clone_handler_data(application_base, cloned_application):
     cloned_application.start_date = application_base.start_date
     cloned_application.end_date = application_base.end_date
     cloned_application.save()
+
+    AhjoStatus.objects.create(
+        status=AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
+        application=cloned_application,
+    )
 
     calculation_base = application_base.calculation
     Calculation.objects.create_for_application(
