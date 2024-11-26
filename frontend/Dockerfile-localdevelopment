@@ -39,6 +39,12 @@ COPY --chown=default:default $PROJECT/shared/package.json* $PROJECT/shared/packa
 COPY --chown=default:default shared/package.json shared/package.json
 RUN --mount=type=cache,target="$PWD/.yarn_cache",sharing=locked YARN_CACHE_FOLDER="$PWD"/.yarn_cache yarn --frozen-lockfile --check-files --network-timeout 600000
 
+# Ensure the project's .next directory exist and is accessible
+# so that the express server can access the files
+RUN mkdir -p $PROJECT/$FOLDER/.next \
+    && chown -R default:default $PROJECT/$FOLDER/.next \
+    && chmod -R u=rwx,go=rx $PROJECT/$FOLDER/.next
+
 # =============================
 FROM appbase AS development
 # =============================
@@ -55,6 +61,13 @@ ENV NODE_OPTIONS="--max_old_space_size=2048"
 
 ARG PROJECT
 ARG FOLDER
+# Enable hot reload by default by polling for file changes.
+#
+# NOTE: Can be disabled by setting WATCHPACK_POLLING=false
+#       if hot reload works on your system without polling to save CPU time.
+ARG WATCHPACK_POLLING=true
+ENV WATCHPACK_POLLING=${WATCHPACK_POLLING}
+
 # Use non-root user
 USER default
 WORKDIR /app

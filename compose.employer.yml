@@ -43,17 +43,22 @@ services:
       dockerfile: Dockerfile-localdevelopment
       target: development
       args:
-        PORT: 3100
         PROJECT: kesaseteli
         FOLDER: employer
     platform: linux/amd64
     volumes:
       - ./frontend:/app
+      # Don't volume map these dirs to avoid ownership/permission issues:
       - /app/node_modules
       - /app/.next
+      - /app/shared/node_modules
+      - /app/shared/.next
+      - /app/kesaseteli/employer/node_modules
+      - /app/kesaseteli/employer/.next
     env_file:
       - .env.kesaseteli
     environment:
+      - WATCHPACK_POLLING=${WATCHPACK_POLLING:-true}
       - PORT=3000
     container_name: kesaseteli-employer
 
