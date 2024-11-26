@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.7.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.6.0...benefit-backend-v2.7.0) (2024-11-26)
+
+
+### Features
+
+* Add two calculation and application fields as notes (hl-1550) ([#3549](https://github.com/City-of-Helsinki/yjdh/issues/3549)) ([823e5cd](https://github.com/City-of-Helsinki/yjdh/commit/823e5cd5c745a88b9bce916a14183f9b96a1641b))
+* HL 1426 ahjo signer ([#3540](https://github.com/City-of-Helsinki/yjdh/issues/3540)) ([a4479bf](https://github.com/City-of-Helsinki/yjdh/commit/a4479bf7da77a74b4e6cf7b0cdb665d5f425d476))
+* Visualise instalments and alterations (hl-1496) ([#3547](https://github.com/City-of-Helsinki/yjdh/issues/3547)) ([f56e581](https://github.com/City-of-Helsinki/yjdh/commit/f56e5813a178b6aa89d38fc27e7300b9e6db6169))
+
+
+### Bug Fixes
+
+* 1st instalment status accepted when created ([#3543](https://github.com/City-of-Helsinki/yjdh/issues/3543)) ([7f4e4aa](https://github.com/City-of-Helsinki/yjdh/commit/7f4e4aaf1a4c700f63a3f15338eaf14daf1a7d7d))
+* Hl 1556 csv report ([#3544](https://github.com/City-of-Helsinki/yjdh/issues/3544)) ([d3caae5](https://github.com/City-of-Helsinki/yjdh/commit/d3caae57748ed0ada61b4a585eda90dfaa71047f))
+* HL 1558 ahjo fixes ([#3565](https://github.com/City-of-Helsinki/yjdh/issues/3565)) ([0ea3745](https://github.com/City-of-Helsinki/yjdh/commit/0ea3745446eac85e1b269bc5724ec6c4cb0b351c))
+* Quotes crashing talpa csv ([#3593](https://github.com/City-of-Helsinki/yjdh/issues/3593)) ([6a5715a](https://github.com/City-of-Helsinki/yjdh/commit/6a5715a0bb8d2b8e3ce8fecf7a0232f30e636d59))
+* Various cloning issues (hl-1539) ([#3577](https://github.com/City-of-Helsinki/yjdh/issues/3577)) ([9c4f4ea](https://github.com/City-of-Helsinki/yjdh/commit/9c4f4ea7306cabf10503046c8393e349ab7b1f38))
+
 ## [2.6.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.5.0...benefit-backend-v2.6.0) (2024-11-12)
 
 
