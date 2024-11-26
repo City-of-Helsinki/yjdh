@@ -18,7 +18,7 @@ class AhjoCallbackSerializer(serializers.Serializer):
 
 
 class AhjoDecisionCallbackSerializer(serializers.Serializer):
-    updatetype = serializers.CharField(required=True)
-    id = serializers.CharField(required=True)
-    caseId = serializers.CharField(required=True)
-    caseGuid = serializers.UUIDField(format="hex_verbose", required=True)
+    updatetype = serializers.CharField(required=False)
+    id = serializers.CharField(required=False)
+    caseId = serializers.CharField(required=False)
+    caseGuid = serializers.UUIDField(format="hex_verbose", required=False)

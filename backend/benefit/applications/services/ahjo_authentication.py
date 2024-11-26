@@ -7,21 +7,13 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 
 from applications.models import AhjoSetting
+from applications.services.ahjo.exceptions import (
+    AhjoTokenExpiredException,
+    AhjoTokenRetrievalException,
+)
 
 AUTH_TOKEN_GRANT_TYPE = "authorization_code"
 REFRESH_TOKEN_GRANT_TYPE = "refresh_token"
-
-
-class AhjoTokenExpiredException(Exception):
-    pass
-
-
-class AhjoTokenRetrievalException(Exception):
-    pass
-
-
-class InvalidTokenException(Exception):
-    pass
 
 
 @dataclass
@@ -111,7 +103,9 @@ class AhjoConnector:
                 self.token_url, headers=self.headers, data=payload, timeout=self.timeout
             )
         except requests.exceptions.RequestException as e:
-            raise Exception(f"Failed to get or refresh token from Ahjo: {e}")
+            raise AhjoTokenRetrievalException(
+                f"Failed to get or refresh token from Ahjo: {e}"
+            )
 
         # Check if the request was successful
         if response.status_code == 200:

@@ -9,8 +9,15 @@ from django.urls import reverse
 
 from applications.enums import AhjoRequestType, AhjoStatus as AhjoStatusEnum
 from applications.models import AhjoSetting, AhjoStatus, Application
-from applications.services.ahjo_authentication import AhjoToken, InvalidTokenException
-from applications.services.ahjo_error_writer import AhjoErrorWriter
+from applications.services.ahjo.exceptions import (
+    AhjoApiClientException,
+    InvalidAhjoTokenException,
+    MissingAhjoCaseIdError,
+    MissingHandlerIdError,
+    MissingOrganizationIdentifier,
+)
+from applications.services.ahjo_authentication import AhjoToken
+from applications.services.ahjo_error_writer import AhjoErrorWriter, AhjoFormattedError
 
 LOGGER = logging.getLogger(__name__)
 
@@ -145,24 +152,12 @@ class AhjoDecisionMakerRequest(AhjoRequest):
         try:
             return AhjoSetting.objects.get(name="ahjo_org_identifier").data["id"]
         except AhjoSetting.DoesNotExist:
-            raise AhjoSetting.DoesNotExist(
-                "No organization identifier found in the database"
+            raise MissingOrganizationIdentifier(
+                "No organization identifier found in the database."
             )
 
     def api_url(self) -> str:
         return f"{self.url_base}/agents/decisionmakers?start={self.org_identifier()}"
-
-
-class AhjoApiClientException(Exception):
-    pass
-
-
-class MissingAhjoCaseIdError(AhjoApiClientException):
-    pass
-
-
-class MissingHandlerIdError(AhjoApiClientException):
-    pass
 
 
 class AhjoApiClient:
@@ -183,9 +178,11 @@ class AhjoApiClient:
     @ahjo_token.setter
     def ahjo_token(self, token: AhjoToken) -> None:
         if not isinstance(token, AhjoToken):
-            raise InvalidTokenException("Invalid token, not an instance of AhjoToken")
+            raise InvalidAhjoTokenException(
+                "Invalid token, not an instance of AhjoToken"
+            )
         if not token.access_token or not token.expires_in or not token.refresh_token:
-            raise InvalidTokenException("Invalid token, token is missing data")
+            raise InvalidAhjoTokenException("Invalid token, token is missing data")
         self._ahjo_token = token
 
     def prepare_ahjo_headers(self) -> dict:
@@ -268,18 +265,27 @@ class AhjoApiClient:
         except MissingHandlerIdError as e:
             error_message = f"Missing handler id for application {self.request.application.application_number}: {e}"
             LOGGER.error(error_message)
-            self.write_error_to_ahjo_status(error_message)
+            self.write_error_to_ahjo_status(
+                context=error_message,
+                message_to_handler="Hakemuksen käsittelijältä puuttuu AD-tunnus.",
+            )
         except MissingAhjoCaseIdError as e:
             error_message = f"Missing Ahjo case id for application {self.request.application.application_number}: {e}"
             LOGGER.error(error_message)
-            self.write_error_to_ahjo_status(error_message)
+            self.write_error_to_ahjo_status(
+                context=error_message,
+                message_to_handler="Hakemuksella ei ole Ahjosta saatua Diaaria.",
+            )
         except requests.exceptions.HTTPError as e:
             self.handle_http_error(e)
         except requests.exceptions.RequestException as e:
             error_message = (
                 f"A network error occurred while sending {self._request} to Ahjo: {e}"
             )
-            self.write_error_to_ahjo_status(error_message)
+            self.write_error_to_ahjo_status(
+                context=error_message,
+                message_to_handler="Ahjo-pyynnössä tapahtui verkkoyhteysvirhe.",
+            )
             LOGGER.error(error_message)
         except AhjoApiClientException as e:
             LOGGER.error(
@@ -306,8 +312,11 @@ class AhjoApiClient:
             error_message = self.format_error_message(e)
 
         if error_json:
-            error_message += f" Error message: {error_json}"
-            self.write_error_to_ahjo_status(error_message)
+            error_message += f"{error_json}"
+            self.write_error_to_ahjo_status(
+                context=error_json,
+                message_to_handler="Ahjo palautti validaatiovirheen tai muun HTTP-virheen.",
+            )
 
         LOGGER.error(error_message)
 
@@ -319,11 +328,15 @@ class AhjoApiClient:
         return f"A HTTP or network error occurred while sending {self.request} for application \
     {application_number} to Ahjo: {e}"
 
-    def write_error_to_ahjo_status(self, error_message: str) -> None:
+    def write_error_to_ahjo_status(self, context: str, message_to_handler: str) -> None:
         """Write the error message to the Ahjo status of the application for all requests that have an application.
         The DecisionMaker request does not have an application, so it does not have an Ahjo status.
         """
         if self.request.has_application:
             AhjoErrorWriter.write_to_validation_error(
-                self.request.application, error_message
+                AhjoFormattedError(
+                    application=self.request.application,
+                    context=context,
+                    message_to_handler=message_to_handler,
+                )
             )

@@ -4,7 +4,12 @@ from datetime import datetime, timedelta, timezone
 import pytest
 from django.urls import reverse
 
-from applications.enums import ApplicationBatchStatus, ApplicationTalpaStatus
+from applications.enums import (
+    ApplicationBatchStatus,
+    ApplicationStatus,
+    ApplicationTalpaStatus,
+)
+from applications.models import Application
 from applications.tests.common import (
     check_csv_cell_list_lines_generator,
     check_csv_string_lines_generator,
@@ -338,3 +343,44 @@ def test_talpa_callback_rejected_application(
         assert (
             decided_application.batch.status == ApplicationBatchStatus.REJECTED_BY_TALPA
         )
+
+
+@pytest.mark.parametrize(
+    "application_status",
+    [
+        (ApplicationStatus.ACCEPTED),
+        (ApplicationStatus.DRAFT),
+        (ApplicationStatus.RECEIVED),
+        (ApplicationStatus.REJECTED),
+        (ApplicationStatus.ARCHIVAL),
+        (ApplicationStatus.CANCELLED),
+        (ApplicationStatus.HANDLING),
+        (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED),
+    ],
+)
+def test_talpa_csv_applications_query(
+    multiple_decided_applications, application_status, settings
+):
+    settings.TALPA_CALLBACK_ENABLED = True
+    settings.PAYMENT_INSTALMENTS_ENABLED = True
+
+    for app in multiple_decided_applications:
+        app.calculation.instalments.all().delete()
+        Instalment.objects.create(
+            calculation=app.calculation,
+            amount=decimal.Decimal("123.45"),
+            instalment_number=1,
+            status=InstalmentStatus.ACCEPTED,
+            due_date=datetime.now(timezone.utc).date(),
+        )
+        app.status = application_status
+
+        app.save()
+
+    applications_for_csv = Application.objects.with_due_instalments(
+        InstalmentStatus.ACCEPTED
+    )
+    if application_status == ApplicationStatus.ACCEPTED:
+        assert applications_for_csv.count() == len(multiple_decided_applications)
+    else:
+        assert applications_for_csv.count() == 0

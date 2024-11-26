@@ -31,6 +31,10 @@ from applications.models import (
     ApplicationBatch,
     Attachment,
 )
+from applications.services.ahjo.exceptions import (
+    DecisionProposalAlreadyAcceptedError,
+    DecisionProposalError,
+)
 from applications.services.ahjo_authentication import AhjoConnector, AhjoToken
 from applications.services.ahjo_client import (
     AhjoAddRecordsRequest,
@@ -44,7 +48,7 @@ from applications.services.ahjo_client import (
     AhjoSubscribeDecisionRequest,
     AhjoUpdateRecordsRequest,
 )
-from applications.services.ahjo_error_writer import AhjoErrorWriter
+from applications.services.ahjo_error_writer import AhjoErrorWriter, AhjoFormattedError
 from applications.services.ahjo_payload import (
     prepare_attachment_records_payload,
     prepare_decision_proposal_payload,
@@ -554,16 +558,24 @@ def send_new_attachment_records_to_ahjo(
     return result, response_text
 
 
-class DecisionProposalError(Exception):
-    """Custom exception for errors in XML generation."""
-
-    pass
-
-
 def send_decision_proposal_to_ahjo(
     application: Application, ahjo_token: AhjoToken
 ) -> Union[Tuple[Application, str], None]:
     """Send a decision proposal and it's XML attachments to Ahjo."""
+
+    # https://helsinkisolutionoffice.atlassian.net/browse/HL-1558
+    # Check if the application already has a decision proposal accepted in Ahjo status,
+    # bail out if it does
+
+    if application.ahjo_status.filter(status=AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED):
+        existing_status = application.ahjo_status.get(
+            status=AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED
+        )
+        raise DecisionProposalAlreadyAcceptedError(
+            f"The application \
+already has a decision proposal accepted in Ahjo at {existing_status.created_at}. Not sending a new one.",
+            existing_status,
+        )
 
     ahjo_request = AhjoDecisionProposalRequest(application=application)
     ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
@@ -591,18 +603,19 @@ def send_decision_proposal_to_ahjo(
             decision_text=decision,
             secret_xml=secret_xml,
         )
-    except XMLSchemaParseError as e:
-        AhjoErrorWriter.write_error_to_ahjo_status(application, str(e))
-        return (None, None)
-    except XMLSyntaxError as e:
-        AhjoErrorWriter.write_error_to_ahjo_status(application, str(e))
-        return (None, None)
-    except etree.DocumentInvalid as e:
-        AhjoErrorWriter.write_error_to_ahjo_status(application, str(e))
+    except (XMLSchemaParseError, XMLSyntaxError, etree.DocumentInvalid) as e:
+        AhjoErrorWriter.write_error_to_ahjo_status(
+            AhjoFormattedError(
+                application=application,
+                context=str(e),
+                message_to_handler="""Helsinki-lisä: Virhe päätöksen XML-tiedostossa.
+Tarkista tiedosto sekä päätösteksti ja yritä uudelleen.""",
+            )
+        )
         return (None, None)
     except DecisionProposalError as e:
         LOGGER.error(
-            f"Error in generating decision proposal payload\
+            f"Error in sending decision proposal payload\
         for application {application.application_number}: {e}"
         )
         return (None, None)

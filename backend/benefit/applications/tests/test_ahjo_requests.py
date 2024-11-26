@@ -9,11 +9,15 @@ from django.utils import timezone
 
 from applications.enums import AhjoRequestType, AhjoStatus as AhjoStatusEnum
 from applications.models import AhjoSetting, AhjoStatus
-from applications.services.ahjo_authentication import AhjoToken, InvalidTokenException
+from applications.services.ahjo.exceptions import (
+    AhjoApiClientException,
+    InvalidAhjoTokenException,
+    MissingHandlerIdError,
+)
+from applications.services.ahjo_authentication import AhjoToken
 from applications.services.ahjo_client import (
     AhjoAddRecordsRequest,
     AhjoApiClient,
-    AhjoApiClientException,
     AhjoDecisionDetailsRequest,
     AhjoDecisionMakerRequest,
     AhjoDecisionProposalRequest,
@@ -21,7 +25,6 @@ from applications.services.ahjo_client import (
     AhjoOpenCaseRequest,
     AhjoSubscribeDecisionRequest,
     AhjoUpdateRecordsRequest,
-    MissingHandlerIdError,
 )
 
 API_CASES_BASE = "/cases"
@@ -291,10 +294,10 @@ def test_requests_exceptions(
         with pytest.raises(MissingHandlerIdError):
             ahjo_request_without_ad_username.api_url()
 
-    with pytest.raises(InvalidTokenException):
+    with pytest.raises(InvalidAhjoTokenException):
         AhjoApiClient(ahjo_token="foo", ahjo_request=ahjo_request_without_ad_username)
 
-    with pytest.raises(InvalidTokenException):
+    with pytest.raises(InvalidAhjoTokenException):
         AhjoApiClient(
             ahjo_token=AhjoToken(access_token=None),
             ahjo_request=ahjo_request_without_ad_username,
@@ -329,7 +332,7 @@ def test_requests_exceptions(
         assert ahjo_status.validation_error_from_ahjo is not None
 
         for validation_error in validation_error:
-            assert f"{validation_error}" in ahjo_status.validation_error_from_ahjo
+            assert validation_error in ahjo_status.validation_error_from_ahjo["context"]
 
     exception = requests.exceptions.RequestException
     with requests_mock.Mocker() as m:
