@@ -1146,6 +1146,43 @@ def signer_settings(fake_signers):
 
 
 @pytest.fixture
+def signer_response():
+    return {
+        "agentList": [
+            {
+                "agentId": "kissa213",
+                "links": [],
+                "ID": "kissa213",
+                "Name": "Testaaja, Tiina",
+                "Title": None,
+                "Role": "decisionMaker",
+                "Email": None,
+            },
+            {
+                "agentId": "koira123",
+                "links": [],
+                "ID": "koira123",
+                "Name": "Testaaja, Timo",
+                "Title": None,
+                "Role": "decisionMaker",
+                "Email": None,
+            },
+            {
+                "agentId": "kala123",
+                "links": [],
+                "ID": "kala123",
+                "Name": "Testaaja, Teppo",
+                "Title": None,
+                "Role": "decisionMaker",
+                "Email": None,
+            },
+        ],
+        "count": 3,
+        "links": [],
+    }
+
+
+@pytest.fixture
 def non_expired_token():
     return AhjoToken(
         access_token="access_token",

@@ -9,6 +9,7 @@ from django.utils import timezone
 
 from applications.enums import AhjoRequestType, AhjoStatus as AhjoStatusEnum
 from applications.models import AhjoSetting, AhjoStatus
+from applications.services.ahjo.enums import AhjoSettingName
 from applications.services.ahjo.exceptions import (
     AhjoApiClientException,
     InvalidAhjoTokenException,
@@ -67,8 +68,12 @@ def test_ahjo_requests_without_application(
     settings,
     non_expired_token,
 ):
-    AhjoSetting.objects.create(name="ahjo_org_identifier", data={"id": "1234567-8"})
-    AhjoSetting.objects.create(name="ahjo_signer_org_ids", data=["1234567", "7654321"])
+    AhjoSetting.objects.create(
+        name=AhjoSettingName.DECISION_MAKER_ORG_ID, data={"id": "1234567-8"}
+    )
+    AhjoSetting.objects.create(
+        name=AhjoSettingName.SIGNER_ORG_IDS, data=["1234567", "7654321"]
+    )
 
     settings.API_BASE_URL = "http://test.com"
     request_instance = ahjo_request_class()

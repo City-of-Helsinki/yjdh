@@ -26,43 +26,81 @@ def test_ahjo_response_handler_filter_decision_makers(decisionmaker_response):
     ]
 
 
+def test_ahjo_response_handler_filter_signers(signer_response):
+    result = AhjoResponseHandler.filter_signers(signer_response)
+    assert len(result) == 3
+    assert result == [
+        {
+            "Name": signer_response["agentList"][0]["Name"],
+            "ID": signer_response["agentList"][0]["ID"],
+        },
+        {
+            "Name": signer_response["agentList"][1]["Name"],
+            "ID": signer_response["agentList"][1]["ID"],
+        },
+        {
+            "Name": signer_response["agentList"][2]["Name"],
+            "ID": signer_response["agentList"][2]["ID"],
+        },
+    ]
+
+
 @pytest.mark.parametrize(
-    "setting_name, test_data",
+    "setting_name",
     [
-        (AhjoSettingName.DECISION_MAKER, {"Name": "Test Org", "ID": "ORG001"}),
+        (AhjoSettingName.DECISION_MAKER),
+        (AhjoSettingName.SIGNER),
     ],
 )
 @patch("applications.models.AhjoSetting.objects.update_or_create")
 def test_handle_ahjo_query_response_successful(
-    mock_update_or_create, decisionmaker_response, setting_name, test_data
+    mock_update_or_create, decisionmaker_response, setting_name, signer_response
 ):
-    """Test successful handling of decision maker response"""
-    mock_response = decisionmaker_response[1]
+    """Test successful handling of setting response"""
+    if setting_name == AhjoSettingName.DECISION_MAKER:
+        mock_response = decisionmaker_response[1]
+        data = [
+            {
+                "Name": decisionmaker_response[1]["decisionMakers"][0]["Organization"][
+                    "Name"
+                ],
+                "ID": decisionmaker_response[1]["decisionMakers"][0]["Organization"][
+                    "ID"
+                ],
+            },
+            {
+                "Name": decisionmaker_response[1]["decisionMakers"][1]["Organization"][
+                    "Name"
+                ],
+                "ID": decisionmaker_response[1]["decisionMakers"][1]["Organization"][
+                    "ID"
+                ],
+            },
+        ]
+    if setting_name == AhjoSettingName.SIGNER:
+        mock_response = signer_response
+        data = [
+            {
+                "Name": signer_response["agentList"][0]["Name"],
+                "ID": signer_response["agentList"][0]["ID"],
+            },
+            {
+                "Name": signer_response["agentList"][1]["Name"],
+                "ID": signer_response["agentList"][1]["ID"],
+            },
+            {
+                "Name": signer_response["agentList"][2]["Name"],
+                "ID": signer_response["agentList"][2]["ID"],
+            },
+        ]
 
-    AhjoResponseHandler.handle_ahjo_query_response(setting_name, mock_response)
+    AhjoResponseHandler.handle_ahjo_query_response(
+        setting_name=setting_name, data=mock_response
+    )
 
     mock_update_or_create.assert_called_once_with(
         name=setting_name,
-        defaults={
-            "data": [
-                {
-                    "Name": decisionmaker_response[1]["decisionMakers"][0][
-                        "Organization"
-                    ]["Name"],
-                    "ID": decisionmaker_response[1]["decisionMakers"][0][
-                        "Organization"
-                    ]["ID"],
-                },
-                {
-                    "Name": decisionmaker_response[1]["decisionMakers"][1][
-                        "Organization"
-                    ]["Name"],
-                    "ID": decisionmaker_response[1]["decisionMakers"][1][
-                        "Organization"
-                    ]["ID"],
-                },
-            ]
-        },
+        defaults={"data": data},
     )
 
 
@@ -88,6 +126,7 @@ def test_filter_decision_makers_missing_decisionmakers_key():
     "setting_name, test_data",
     [
         (AhjoSettingName.DECISION_MAKER, {"Name": "Test Org", "ID": "ORG001"}),
+        (AhjoSettingName.SIGNER, [{"Name": "Test Signer", "ID": "SIGN001"}]),
     ],
 )
 @patch("applications.models.AhjoSetting.objects.update_or_create")
@@ -105,6 +144,13 @@ def test_save_ahjo_setting(mock_update_or_create, setting_name, test_data):
     "setting_name, test_data",
     [
         (AhjoSettingName.DECISION_MAKER, {"Name": "Test Org", "ID": "ORG001"}),
+        (
+            AhjoSettingName.SIGNER,
+            [
+                {"Name": "Test Signer", "ID": "SIGN001"},
+                {"Name": "Test Signer 2", "ID": "SIGN002"},
+            ],
+        ),
     ],
 )
 def test_save_ahjo_settings_database_error(setting_name, test_data):

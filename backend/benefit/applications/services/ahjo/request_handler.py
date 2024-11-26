@@ -8,6 +8,7 @@ from applications.services.ahjo_client import (
     AhjoApiClient,
     AhjoDecisionMakerRequest,
     AhjoRequest,
+    AhjoSignerRequest,
 )
 
 
@@ -18,11 +19,21 @@ class AhjoRequestHandler:
 
     def handle_request_without_application(self):
         if self.ahjo_request_type == AhjoRequestType.GET_DECISION_MAKER:
-            self.get_decision_maker_from_ahjo()
+            self.get_setting_from_ahjo(
+                request_class=AhjoDecisionMakerRequest,
+                setting_name=AhjoSettingName.DECISION_MAKER,
+            )
+        if self.ahjo_request_type == AhjoRequestType.GET_SIGNER:
+            self.get_setting_from_ahjo(
+                request_class=AhjoSignerRequest,
+                setting_name=AhjoSettingName.SIGNER,
+            )
 
-    def get_decision_maker_from_ahjo(self) -> Union[List, None]:
-        ahjo_client = AhjoApiClient(self.ahjo_token, AhjoDecisionMakerRequest())
+    def get_setting_from_ahjo(
+        self, request_class: AhjoRequest, setting_name: AhjoSettingName
+    ) -> Union[List, None]:
+        ahjo_client = AhjoApiClient(self.ahjo_token, request_class())
         _, result = ahjo_client.send_request_to_ahjo()
         AhjoResponseHandler.handle_ahjo_query_response(
-            setting_name=AhjoSettingName.DECISION_MAKER, data=result
+            setting_name=setting_name, data=result
         )

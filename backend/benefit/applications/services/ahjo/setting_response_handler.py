@@ -36,8 +36,10 @@ class AhjoResponseHandler:
                 raise ValidationError(
                     f"Invalid response format for setting {setting_name}: expected dictionary"
                 )
-
-            filtered_data = AhjoResponseHandler.filter_decision_makers(data)
+            if setting_name == AhjoSettingName.DECISION_MAKER:
+                filtered_data = AhjoResponseHandler.filter_decision_makers(data)
+            if setting_name == AhjoSettingName.SIGNER:
+                filtered_data = AhjoResponseHandler.filter_signers(data)
 
             if not filtered_data:
                 LOGGER.warning("No valid decision makers found in response")
@@ -129,3 +131,22 @@ class AhjoResponseHandler:
             raise ValidationError(
                 f"Failed to save setting {setting_name} to database: {str(e)}"
             )
+
+    @staticmethod
+    def filter_signers(data: Dict) -> List[Dict[str, str]]:
+        """
+        Filter the signers Name and ID from the Ahjo response.
+
+        Args:
+            data: Response data dictionary
+
+        Returns:
+            List of filtered signer dictionaries
+
+        Raises:
+            ValidationError: If required fields are missing
+        """
+        result = []
+        for item in data["agentList"]:
+            result.append({"ID": item["ID"], "Name": item["Name"]})
+        return result

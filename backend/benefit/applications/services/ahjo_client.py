@@ -10,6 +10,7 @@ from django.urls import reverse
 
 from applications.enums import AhjoRequestType, AhjoStatus as AhjoStatusEnum
 from applications.models import AhjoSetting, AhjoStatus, Application
+from applications.services.ahjo.enums import AhjoSettingName
 from applications.services.ahjo.exceptions import (
     AhjoApiClientException,
     InvalidAhjoTokenException,
@@ -151,7 +152,9 @@ class AhjoDecisionMakerRequest(AhjoRequest):
     @staticmethod
     def org_identifier() -> str:
         try:
-            return AhjoSetting.objects.get(name="ahjo_org_identifier").data["id"]
+            return AhjoSetting.objects.get(
+                name=AhjoSettingName.DECISION_MAKER_ORG_ID
+            ).data["id"]
         except AhjoSetting.DoesNotExist:
             raise MissingOrganizationIdentifier(
                 "No organization identifier found in the database."
@@ -170,7 +173,7 @@ class AhjoSignerRequest(AhjoRequest):
     @staticmethod
     def org_identifier() -> str:
         try:
-            setting = AhjoSetting.objects.get(name="ahjo_signer_org_ids")
+            setting = AhjoSetting.objects.get(name=AhjoSettingName.SIGNER_ORG_IDS)
             if not setting.data:
                 raise ValueError("Signer organization identifier list is empty")
 

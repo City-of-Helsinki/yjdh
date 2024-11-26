@@ -7,11 +7,12 @@ class AhjoSettingName(Enum):
     Enum representing different Ahjo setting names.
 
     The @unique decorator ensures that no two enum members have the same value.
-    Using auto() generates unique, incrementing values, but we'll use string values
-    to maintain readability and compatibility with existing database entries.
     """
 
     DECISION_MAKER = "ahjo_decision_maker"
+    DECISION_MAKER_ORG_ID = "ahjo_org_identifier"
+    SIGNER = "ahjo_signer"
+    SIGNER_ORG_IDS = "ahjo_signer_org_ids"
 
     def __str__(self):
         """
