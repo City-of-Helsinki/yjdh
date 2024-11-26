@@ -14,13 +14,14 @@ from applications.services.ahjo.exceptions import (
 
 AUTH_TOKEN_GRANT_TYPE = "authorization_code"
 REFRESH_TOKEN_GRANT_TYPE = "refresh_token"
+REFRESH_TOKEN_EXPIRES_IN = 1296000  # 15 days
 
 
 @dataclass
 class AhjoToken:
     access_token: str = ""
     refresh_token: str = ""
-    expires_in: int = (0,)
+    expires_in: int = REFRESH_TOKEN_EXPIRES_IN  # 15 days
     created_at: datetime = (None,)
 
     def expiry_datetime(self) -> datetime:
@@ -30,7 +31,7 @@ class AhjoToken:
         return self.expiry_datetime() < datetime.now(timezone.utc)
 
     def __str__(self) -> str:
-        return f"Ahjo access token, expiry date: {self.expiry_datetime()}"
+        return f"Ahjo access token, refresh_token expiry date: {self.expiry_datetime()}"
 
 
 class AhjoConnector:
@@ -111,13 +112,12 @@ class AhjoConnector:
         if response.status_code == 200:
             # Extract the access token from the JSON response
             access_token = response.json().get("access_token", "")
-            expires_in = int(response.json().get("expires_in", ""))
             refresh_token = response.json().get("refresh_token", "")
 
             token_from_api = AhjoToken(
                 access_token=access_token,
                 refresh_token=refresh_token,
-                expires_in=expires_in,
+                expires_in=REFRESH_TOKEN_EXPIRES_IN,
             )
 
             return self.create_token(token_from_api)
