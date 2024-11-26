@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.7.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.6.0...benefit-handler-v4.7.0) (2024-11-26)
+
+
+### Features
+
+* Add two calculation and application fields as notes (hl-1550) ([#3549](https://github.com/City-of-Helsinki/yjdh/issues/3549)) ([823e5cd](https://github.com/City-of-Helsinki/yjdh/commit/823e5cd5c745a88b9bce916a14183f9b96a1641b))
+* HL 1426 ahjo signer ([#3540](https://github.com/City-of-Helsinki/yjdh/issues/3540)) ([a4479bf](https://github.com/City-of-Helsinki/yjdh/commit/a4479bf7da77a74b4e6cf7b0cdb665d5f425d476))
+* Visualise instalments and alterations (hl-1496) ([#3547](https://github.com/City-of-Helsinki/yjdh/issues/3547)) ([f56e581](https://github.com/City-of-Helsinki/yjdh/commit/f56e5813a178b6aa89d38fc27e7300b9e6db6169))
+
+
+### Bug Fixes
+
+* Instalment issues (hl-1496 cont.) ([#3576](https://github.com/City-of-Helsinki/yjdh/issues/3576)) ([b9c3fcb](https://github.com/City-of-Helsinki/yjdh/commit/b9c3fcbfb7af0a4be4f51c10a2687f787af89cee))
+* Make sidebar opening/closing possible even if application is cancelled ([#3594](https://github.com/City-of-Helsinki/yjdh/issues/3594)) ([6abf5fd](https://github.com/City-of-Helsinki/yjdh/commit/6abf5fd410b15d864e40ca0c10628478c0f6b689))
+* Various cloning issues (hl-1539) ([#3577](https://github.com/City-of-Helsinki/yjdh/issues/3577)) ([9c4f4ea](https://github.com/City-of-Helsinki/yjdh/commit/9c4f4ea7306cabf10503046c8393e349ab7b1f38))
+
 ## [4.6.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.5.0...benefit-handler-v4.6.0) (2024-11-12)
 
 
