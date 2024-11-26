@@ -4,8 +4,9 @@ from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
+from applications.services.ahjo.request_handler import AhjoRequestHandler
 from applications.services.ahjo_authentication import AhjoTokenExpiredException
-from applications.services.ahjo_integration import AhjoRequestHandler, get_token
+from applications.services.ahjo_integration import get_token
 
 LOGGER = logging.getLogger(__name__)
 

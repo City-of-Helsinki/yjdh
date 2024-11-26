@@ -5,15 +5,12 @@ import zipfile
 from collections import defaultdict
 from dataclasses import dataclass
 from io import BytesIO
-from typing import Dict, List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 import jinja2
 import pdfkit
 from django.conf import settings
-from django.core.exceptions import (
-    ImproperlyConfigured,
-    ObjectDoesNotExist,
-)
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.core.files.base import ContentFile
 from django.db.models import QuerySet
 from django.urls import reverse
@@ -21,7 +18,6 @@ from lxml import etree
 from lxml.etree import XMLSchemaParseError, XMLSyntaxError
 
 from applications.enums import (
-    AhjoRequestType,
     AhjoStatus as AhjoStatusEnum,
     ApplicationStatus,
     AttachmentType,
@@ -33,7 +29,6 @@ from applications.models import (
     ApplicationBatch,
     Attachment,
 )
-from applications.services.ahjo.enums import AhjoSettingName
 from applications.services.ahjo.exceptions import (
     DecisionProposalAlreadyAcceptedError,
     DecisionProposalError,
@@ -43,11 +38,9 @@ from applications.services.ahjo_client import (
     AhjoAddRecordsRequest,
     AhjoApiClient,
     AhjoDecisionDetailsRequest,
-    AhjoDecisionMakerRequest,
     AhjoDecisionProposalRequest,
     AhjoDeleteCaseRequest,
     AhjoOpenCaseRequest,
-    AhjoRequest,
     AhjoSubscribeDecisionRequest,
     AhjoUpdateRecordsRequest,
 )
@@ -68,7 +61,6 @@ from applications.services.generate_application_summary import (
 )
 from companies.models import Company
 
-from applications.services.ahjo.setting_response_handler import AhjoResponseHandler
 
 @dataclass
 class ExportFileInfo:
@@ -664,20 +656,3 @@ def get_decision_details_from_ahjo(
     ahjo_request = AhjoDecisionDetailsRequest(application)
     ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
     return ahjo_client.send_request_to_ahjo()
-
-
-class AhjoRequestHandler:
-    def __init__(self, ahjo_token: AhjoToken, ahjo_request_type: AhjoRequest):
-        self.ahjo_token = ahjo_token
-        self.ahjo_request_type = ahjo_request_type
-
-    def handle_request_without_application(self):
-        if self.ahjo_request_type == AhjoRequestType.GET_DECISION_MAKER:
-            self.get_decision_maker_from_ahjo()
-
-    def get_decision_maker_from_ahjo(self) -> Union[List, None]:
-        ahjo_client = AhjoApiClient(self.ahjo_token, AhjoDecisionMakerRequest())
-        _, result = ahjo_client.send_request_to_ahjo()
-        AhjoResponseHandler.handle_ahjo_query_response(
-            setting_name=AhjoSettingName.DECISION_MAKER, data=result
-        )
