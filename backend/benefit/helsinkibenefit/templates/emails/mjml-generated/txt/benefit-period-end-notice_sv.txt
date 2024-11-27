@@ -1,0 +1,14 @@
+{% comment %} NEVER MAKE MODIFICATIONS TO THIS GENERATED FILE DIRECTLY, ALL MODIFICATIONS SHOULD BE DONE TO MJML TEMPLATE FILES! {% endcomment %}
+
+Hej!
+
+Du har beviljats Helsingforstillägget för en specifik anställningsrelation. Har det skett några förändringar i den anställdas anställningsförhållande under stödperioden? Som mottagare av stödet är du skyldig att informera oss om anställningsförhållandet har avslutats i förtid eller avbrutits under stödperioden. Anmälan kan enkelt göras via den onlinebaserade Helsingforstillägget serviceportal. Observera att du inte behöver vidta några åtgärder om anställningsförhållandet har fortskridit som planerat.
+
+Med vänliga hälsningar,
+teamet för Helsingforstillägget
+
+Ansökningsnummer: {{application.application_number}}
+Stödmottagare: {{benefit_company_name}}
+Helsingforstillägget period: {{benefit_start_date}} - {{benefit_end_date}}
+
+Detta är ett automatiskt meddelande om ett nätmeddelande som skickades till dig. Svara inte på detta meddelande. Svaren behandlas inte. Vid behov ta kontakt till rådgivningen per e-post helsinkilisa@hel.fi. 
