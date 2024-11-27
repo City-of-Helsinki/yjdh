@@ -548,7 +548,10 @@ def generate_ahjo_case_id():
 def application_with_ahjo_decision(application_with_ahjo_case_id, fake_decisionmakers):
     template = AcceptedDecisionProposalFactory()
     replaced_decision_text = replace_decision_template_placeholders(
-        template.template_decision_text + template.template_justification_text,
+        f"""
+        <section id="paatos"><h1>Päätös</h1>{template.template_decision_text}</section>
+        <section id="paatoksenperustelut">
+        <h1>Päätöksen perustelut</h1>{template.template_justification_text}</section>""",
         DecisionType.ACCEPTED,
         application_with_ahjo_case_id,
     )

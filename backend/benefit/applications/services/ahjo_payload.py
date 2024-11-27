@@ -218,15 +218,8 @@ def truncate_from_end_of_string(string_to_truncate: str, limit: int):
 
 
 def resolve_payload_language(application: Application) -> str:
-    """Ahjo cannot at the moment handle en and sv language cases, so if the language is en or sv we use fi"""
-    if application.applicant_language in [
-        APPLICATION_LANGUAGE_CHOICES[1][0],
-        APPLICATION_LANGUAGE_CHOICES[2][0],
-    ]:
-        language = APPLICATION_LANGUAGE_CHOICES[0][0]
-    else:
-        language = application.applicant_language
-    return language
+    """Ahjo cannot at the moment handle en and sv language cases, so if always return fi"""
+    return APPLICATION_LANGUAGE_CHOICES[0][0]
 
 
 def _prepare_top_level_dict(
