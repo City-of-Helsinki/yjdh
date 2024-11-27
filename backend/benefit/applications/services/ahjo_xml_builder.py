@@ -13,7 +13,11 @@ from lxml import etree
 from lxml.etree import XMLSchema, XMLSchemaParseError, XMLSyntaxError
 
 from applications.enums import ApplicationStatus
-from applications.models import AhjoDecisionText, Application
+from applications.models import (
+    AhjoDecisionText,
+    Application,
+    APPLICATION_LANGUAGE_CHOICES,
+)
 from calculator.enums import RowType
 from calculator.models import Calculation, CalculationRow
 
@@ -215,7 +219,8 @@ class AhjoSecretXMLBuilder(AhjoXMLBuilder):
         context = {
             "application": self.application,
             "benefit_type": _("Salary Benefit"),
-            "language": self.application.applicant_language,
+            # Ahjo only supports Finnish language
+            "language": APPLICATION_LANGUAGE_CHOICES[0][0],
             "include_calculation_data": False,
         }
         if self.application.status == ApplicationStatus.ACCEPTED:
