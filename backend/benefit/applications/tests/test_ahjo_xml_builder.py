@@ -333,6 +333,7 @@ def test_get_context_for_secret_xml_with_multiple_periods(
             "&nbsp;\u200b\u00a0\u200bTest\u200b\u200b",
             "  Test",
         ),  # Mixed invisible characters
+        ("Test & Co", "Test &amp; Co"),  # No changes expected
         ("No special characters", "No special characters"),  # No changes expected
     ],
 )

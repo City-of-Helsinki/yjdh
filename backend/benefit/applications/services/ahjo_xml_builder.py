@@ -101,6 +101,7 @@ class AhjoPublicXMLBuilder(AhjoXMLBuilder):
         for target, replacement in replacements.items():
             text = text.replace(target, replacement)
 
+        text = text.replace("&", "&amp;")
         return text
 
     def remove_non_breaking_spaces(self, text: str) -> str:
