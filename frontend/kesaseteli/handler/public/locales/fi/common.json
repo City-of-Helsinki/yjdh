@@ -8,7 +8,8 @@
   },
   "footer": {
     "copyrightText": "Helsingin kaupunki",
-    "allRightsReservedText": "Kaikki oikeudet pidätetään"
+    "allRightsReservedText": "Kaikki oikeudet pidätetään",
+    "backToTop": "Takaisin ylös"
   },
   "errorPage": {
     "title": "Tapahtui odottamaton virhe",

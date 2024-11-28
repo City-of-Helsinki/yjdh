@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import BaseHeader from 'shared/components/header/Header';
+import BaseHeader from 'shared/components/header/HeaderV3';
 import { SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 import { OptionType } from 'shared/types/common';
 
@@ -20,11 +20,7 @@ const Header: React.FC = () => {
   );
 
   const handleLanguageChange = React.useCallback(
-    (
-      e: React.SyntheticEvent<unknown>,
-      { value: lang }: OptionType<string>
-    ): void => {
-      e.preventDefault();
+    (lang: string): void => {
       void router.push(asPath, asPath, {
         locale: lang,
       });
