@@ -78,11 +78,6 @@ const actions = {
     fromLang: Language,
     toLang: Language
   ): Promise<void> => {
-    await userEvent.click(
-      screen.getAllByRole('button', {
-        name: new RegExp(languageMenuButtonAriaLabels[fromLang], 'i'),
-      })[0]
-    );
     return userEvent.click(
       screen.getAllByRole('link', {
         name: new RegExp(
