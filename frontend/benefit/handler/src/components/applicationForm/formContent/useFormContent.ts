@@ -6,6 +6,7 @@ import {
   ApplicationFields,
 } from 'benefit/handler/types/application';
 import { getErrorText } from 'benefit-shared/utils/forms';
+import { addYears } from 'date-fns';
 import parse from 'date-fns/parse';
 import { FormikProps } from 'formik';
 import { TFunction, useTranslation } from 'next-i18next';
@@ -31,6 +32,10 @@ type ExtendedComponentProps = {
   clearAlternativeAddressValues: () => void;
   getErrorMessage: (fieldName: string) => string | undefined;
   displayPastApplicationDatesWarning: () => boolean;
+  dateInputLimits: {
+    max: Date;
+    min: Date;
+  };
 };
 
 const useFormContent = (
@@ -124,6 +129,10 @@ const useFormContent = (
   const language = SUPPORTED_LANGUAGES.FI;
   const locale = useLocale();
   const textLocale = capitalize(locale);
+  const dateInputLimits = {
+    min: addYears(new Date(), -1),
+    max: addYears(new Date(), 2),
+  };
 
   return {
     t,
@@ -140,6 +149,7 @@ const useFormContent = (
     clearAlternativeAddressValues,
     getErrorMessage,
     displayPastApplicationDatesWarning,
+    dateInputLimits,
   };
 };
 

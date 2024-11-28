@@ -63,6 +63,7 @@ const SalaryBenefitCalculatorView: React.FC<
     addNewTrainingCompensation,
     removeTrainingCompensation,
     isDisabledAddTrainingCompensationButton,
+    dateInputLimits,
   } = useSalaryBenefitCalculatorData(application, setCalculationErrors);
   const {
     t,
@@ -336,6 +337,8 @@ const SalaryBenefitCalculatorView: React.FC<
                         )
                       );
                     }}
+                    minDate={dateInputLimits.min}
+                    maxDate={dateInputLimits.max}
                   />
                 </$GridCell>
 
@@ -370,6 +373,8 @@ const SalaryBenefitCalculatorView: React.FC<
                     }}
                     value={convertToUIDateFormat(item.endDate)}
                     style={{ paddingRight: `${theme.spacing.s}` }}
+                    minDate={dateInputLimits.min}
+                    maxDate={dateInputLimits.max}
                   />
                 </$GridCell>
                 <$GridCell $colSpan={11}>
@@ -510,6 +515,8 @@ const SalaryBenefitCalculatorView: React.FC<
               errorText={getErrorMessage(
                 fields.trainingCompensationStartDate.name
               )}
+              minDate={dateInputLimits.min}
+              maxDate={dateInputLimits.max}
             />
           </$GridCell>
 
@@ -540,6 +547,8 @@ const SalaryBenefitCalculatorView: React.FC<
                 fields.trainingCompensationEndDate.name
               )}
               style={{ paddingRight: `${theme.spacing.s}` }}
+              minDate={dateInputLimits.min}
+              maxDate={dateInputLimits.max}
             />
           </$GridCell>
 
@@ -608,6 +617,7 @@ const SalaryBenefitCalculatorView: React.FC<
       </$GridCell>
 
       <$GridCell $colStart={3} $colSpan={3}>
+        {/* TODO: MAX DATE */}
         <DateInput
           id={fields.endDate.name}
           name={fields.endDate.name}
@@ -621,6 +631,7 @@ const SalaryBenefitCalculatorView: React.FC<
           aria-invalid={!!getErrorMessage(fields.endDate.name)}
           errorText={getErrorMessage(fields.endDate.name)}
           style={{ paddingRight: `${theme.spacing.s}` }}
+          maxDate={dateInputLimits.max}
         />
       </$GridCell>
 
