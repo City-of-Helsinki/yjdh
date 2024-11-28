@@ -1,10 +1,4 @@
-import {
-  Footer,
-  IconLinkExternal,
-  Logo,
-  logoFiDark,
-  logoSvDark,
-} from 'hds-react';
+import { Footer, Logo, logoFiDark, logoSvDark } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import useLocale from 'shared/hooks/useLocale';
