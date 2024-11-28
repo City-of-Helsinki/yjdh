@@ -104,9 +104,6 @@ class AhjoPublicXMLBuilder(AhjoXMLBuilder):
         text = text.replace("&", "&amp;")
         return text
 
-    def remove_non_breaking_spaces(self, text: str) -> str:
-        return text.replace("\u00A0", " ")
-
     def generate_xml(self) -> AhjoXMLString:
         xml_string = (
             f"{XML_VERSION}<body>{self.ahjo_decision_text.decision_text}</body>"
