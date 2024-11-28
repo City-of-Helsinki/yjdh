@@ -3,6 +3,7 @@ import logging
 from datetime import datetime
 from typing import List
 
+from django.conf import settings
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.utils import timezone, translation
 
@@ -322,6 +323,14 @@ class ApplicationsCsvService(CsvExportBase):
                 current_ahjo_row_field_getter("end_date"),
             ),
         ]
+
+        if settings.PAYMENT_INSTALMENTS_ENABLED:
+            columns.append(
+                csv_default_column("Maksuerä 1", self.get_instalment_1),
+            )
+            columns.append(
+                csv_default_column("Maksuerä 2", self.get_instalment_2),
+            )
         # Include all the application rows in the same line for easier processing
         for idx in range(self.MAX_AHJO_ROWS):
             columns.extend(
