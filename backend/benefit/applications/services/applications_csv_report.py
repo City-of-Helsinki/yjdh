@@ -1,15 +1,21 @@
+import decimal
+import logging
 from datetime import datetime
 from typing import List
 
-from django.utils import translation
+from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
+from django.utils import timezone, translation
 
 from applications.enums import ApplicationBatchStatus, ApplicationOrigin, BenefitType
+from applications.models import Application
 from applications.services.csv_export_base import (
     CsvColumn,
     CsvExportBase,
     get_organization_type,
     nested_queryset_attr,
 )
+
+LOGGER = logging.getLogger(__name__)
 
 
 def csv_default_column(*args, **kwargs):
@@ -100,6 +106,32 @@ class ApplicationsCsvService(CsvExportBase):
         self.applications = applications
         self.export_notes = []
         self.prune_sensitive_data = prune_sensitive_data
+
+    def query_instalment_by_number(
+        self, application: Application, number: int
+    ) -> decimal.Decimal:
+        """Return the actual payable amount of the currently accepted and due instalment"""
+        try:
+            instalment = application.calculation.instalments.get(
+                due_date__lte=timezone.now().date(),
+                instalment_number=number,
+            )
+            return instalment.amount_paid
+        except ObjectDoesNotExist:
+            LOGGER.error(
+                f"Valid payable Instalment not found for application {application.application_number}"
+            )
+        except MultipleObjectsReturned:
+            LOGGER.error(
+                f"Multiple payable Instalments found for application \
+    {application.application_number}, there should be only one"
+            )
+
+    def get_instalment_1(self, application: Application) -> decimal.Decimal:
+        return self.query_instalment_by_number(application, 1)
+
+    def get_instalment_2(self, application: Application) -> decimal.Decimal:
+        return self.query_instalment_by_number(application, 2)
 
     @property
     def CSV_COLUMNS(self) -> List[CsvColumn]:
