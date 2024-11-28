@@ -255,6 +255,12 @@ def _create_dummy_ahjo_settings():
             "id": "1234567-8",
         },
     )
+
+    AhjoSetting.objects.create(
+        name="ahjo_signer_org_ids",
+        data=["1234567", "7654321"],
+    )
+
     AhjoSetting.objects.create(
         name="ahjo_decision_maker",
         data=[

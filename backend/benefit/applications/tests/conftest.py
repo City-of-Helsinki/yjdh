@@ -1102,6 +1102,16 @@ def decisionmaker_response():
 
 
 @pytest.fixture
+def invalid_decisionmaker_response():
+    return {
+        "decisionMakers": [
+            {"Organization": {"Name": None, "ID": "ORG001", "IsDecisionMaker": True}},
+            {"Organization": {"Name": "Test Org", "ID": None, "IsDecisionMaker": True}},
+        ]
+    }
+
+
+@pytest.fixture
 def fake_decisionmakers():
     return [
         {
@@ -1140,6 +1150,43 @@ def signer_settings(fake_signers):
         name="ahjo_signer",
         data=fake_signers,
     )
+
+
+@pytest.fixture
+def signer_response():
+    return {
+        "agentList": [
+            {
+                "agentId": "kissa213",
+                "links": [],
+                "ID": "kissa213",
+                "Name": "Testaaja, Tiina",
+                "Title": None,
+                "Role": "decisionMaker",
+                "Email": None,
+            },
+            {
+                "agentId": "koira123",
+                "links": [],
+                "ID": "koira123",
+                "Name": "Testaaja, Timo",
+                "Title": None,
+                "Role": "decisionMaker",
+                "Email": None,
+            },
+            {
+                "agentId": "kala123",
+                "links": [],
+                "ID": "kala123",
+                "Name": "Testaaja, Teppo",
+                "Title": None,
+                "Role": "decisionMaker",
+                "Email": None,
+            },
+        ],
+        "count": 3,
+        "links": [],
+    }
 
 
 @pytest.fixture

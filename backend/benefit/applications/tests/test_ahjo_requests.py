@@ -9,6 +9,7 @@ from django.utils import timezone
 
 from applications.enums import AhjoRequestType, AhjoStatus as AhjoStatusEnum
 from applications.models import AhjoSetting, AhjoStatus
+from applications.services.ahjo.enums import AhjoSettingName
 from applications.services.ahjo.exceptions import (
     AhjoApiClientException,
     InvalidAhjoTokenException,
@@ -23,6 +24,7 @@ from applications.services.ahjo_client import (
     AhjoDecisionProposalRequest,
     AhjoDeleteCaseRequest,
     AhjoOpenCaseRequest,
+    AhjoSignerRequest,
     AhjoSubscribeDecisionRequest,
     AhjoUpdateRecordsRequest,
 )
@@ -50,6 +52,12 @@ def ahjo_open_case_request(application_with_ahjo_case_id):
             "GET",
             "/agents/decisionmakers?start=",
         ),
+        (
+            AhjoSignerRequest,
+            AhjoRequestType.GET_SIGNER,
+            "GET",
+            "/organization/persons?role=decisionMaker",
+        ),
     ],
 )
 def test_ahjo_requests_without_application(
@@ -60,7 +68,13 @@ def test_ahjo_requests_without_application(
     settings,
     non_expired_token,
 ):
-    AhjoSetting.objects.create(name="ahjo_org_identifier", data={"id": "1234567-8"})
+    AhjoSetting.objects.create(
+        name=AhjoSettingName.DECISION_MAKER_ORG_ID, data={"id": "1234567-8"}
+    )
+    AhjoSetting.objects.create(
+        name=AhjoSettingName.SIGNER_ORG_IDS, data=["1234567", "7654321"]
+    )
+
     settings.API_BASE_URL = "http://test.com"
     request_instance = ahjo_request_class()
 
@@ -71,6 +85,12 @@ def test_ahjo_requests_without_application(
     assert str(request_instance) == f"Request of type {request_type}"
 
     assert f"{settings.AHJO_REST_API_URL}{url_part}" in request_instance.api_url()
+
+    if request_type == AhjoRequestType.GET_SIGNER:
+        assert (
+            request_instance.api_url()
+            == f"{settings.AHJO_REST_API_URL}{url_part}&orgid=1234567&orgid=7654321"
+        )
 
     client = AhjoApiClient(non_expired_token, request_instance)
 
