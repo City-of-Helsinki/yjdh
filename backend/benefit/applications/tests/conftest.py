@@ -22,6 +22,7 @@ from applications.enums import (
 from applications.models import (
     AhjoSetting,
     Application,
+    APPLICATION_LANGUAGE_CHOICES,
     ApplicationAlteration,
     ApplicationBatch,
 )
@@ -477,7 +478,10 @@ def denied_ahjo_decision_section():
 def accepted_ahjo_decision_text(decided_application):
     template = AcceptedDecisionProposalFactory()
     replaced_decision_text = replace_decision_template_placeholders(
-        template.template_decision_text + template.template_justification_text,
+        f"""
+        <section id="paatos"><h1>Päätös</h1>{template.template_decision_text}</section>
+        <section id="paatoksenperustelut">
+        <h1>Päätöksen perustelut</h1>{template.template_justification_text}</section>""",
         DecisionType.ACCEPTED,
         decided_application,
     )
@@ -485,7 +489,7 @@ def accepted_ahjo_decision_text(decided_application):
         decision_type=DecisionType.ACCEPTED,
         application=decided_application,
         decision_text=replaced_decision_text,
-        language=decided_application.applicant_language,
+        language=APPLICATION_LANGUAGE_CHOICES[0][0],
     )
 
 
@@ -544,7 +548,10 @@ def generate_ahjo_case_id():
 def application_with_ahjo_decision(application_with_ahjo_case_id, fake_decisionmakers):
     template = AcceptedDecisionProposalFactory()
     replaced_decision_text = replace_decision_template_placeholders(
-        template.template_decision_text + template.template_justification_text,
+        f"""
+        <section id="paatos"><h1>Päätös</h1>{template.template_decision_text}</section>
+        <section id="paatoksenperustelut">
+        <h1>Päätöksen perustelut</h1>{template.template_justification_text}</section>""",
         DecisionType.ACCEPTED,
         application_with_ahjo_case_id,
     )

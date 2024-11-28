@@ -3,7 +3,7 @@ import logging
 import os
 from dataclasses import dataclass
 from datetime import date
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -13,7 +13,11 @@ from lxml import etree
 from lxml.etree import XMLSchema, XMLSchemaParseError, XMLSyntaxError
 
 from applications.enums import ApplicationStatus
-from applications.models import AhjoDecisionText, Application
+from applications.models import (
+    AhjoDecisionText,
+    Application,
+    APPLICATION_LANGUAGE_CHOICES,
+)
 from calculator.enums import RowType
 from calculator.models import Calculation, CalculationRow
 
@@ -48,7 +52,9 @@ class AhjoXMLBuilder:
         with open(xsd_path, "r") as file:
             return file.read()
 
-    def validate_against_schema(self, xml_string: str, xsd_string: str) -> bool:
+    def validate_against_schema(
+        self, xml_string: str, xsd_string: str
+    ) -> Union[bool, None]:
         try:
             # Parse the XML string
             xml_doc = etree.fromstring(xml_string.encode("utf-8"))
@@ -76,7 +82,7 @@ class AhjoXMLBuilder:
             LOGGER.error(
                 f"Decision proposal Validation Error for application {self.application.application_number}: {e}"
             )
-        return False  # Return False if the document is invalid
+            raise
 
 
 class AhjoPublicXMLBuilder(AhjoXMLBuilder):
@@ -95,10 +101,8 @@ class AhjoPublicXMLBuilder(AhjoXMLBuilder):
         for target, replacement in replacements.items():
             text = text.replace(target, replacement)
 
+        text = text.replace("&", "&amp;")
         return text
-
-    def remove_non_breaking_spaces(self, text: str) -> str:
-        return text.replace("\u00A0", " ")
 
     def generate_xml(self) -> AhjoXMLString:
         xml_string = (
@@ -215,7 +219,8 @@ class AhjoSecretXMLBuilder(AhjoXMLBuilder):
         context = {
             "application": self.application,
             "benefit_type": _("Salary Benefit"),
-            "language": self.application.applicant_language,
+            # Ahjo only supports Finnish language
+            "language": APPLICATION_LANGUAGE_CHOICES[0][0],
             "include_calculation_data": False,
         }
         if self.application.status == ApplicationStatus.ACCEPTED:
