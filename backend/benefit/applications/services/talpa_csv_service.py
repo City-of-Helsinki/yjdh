@@ -22,7 +22,7 @@ class TalpaCsvService(ApplicationsCsvService):
     def get_relevant_instalment_amount(
         self, application: Application
     ) -> decimal.Decimal:
-        """Return the amount of the currently accepted and due instalment"""
+        """Return the actual payable amount of the currently accepted and due instalment"""
         # TODO remove this flag when the feature is enabled ready for production
         if settings.PAYMENT_INSTALMENTS_ENABLED:
             try:
@@ -30,7 +30,7 @@ class TalpaCsvService(ApplicationsCsvService):
                     status=InstalmentStatus.ACCEPTED,
                     due_date__lte=timezone.now().date(),
                 )
-                return instalment.amount
+                return instalment.amount_paid
             except ObjectDoesNotExist:
                 LOGGER.error(
                     f"Valid payable Instalment not found for application {application.application_number}"
