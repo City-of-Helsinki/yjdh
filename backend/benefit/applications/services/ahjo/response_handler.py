@@ -1,10 +1,25 @@
 import logging
+import re
+from datetime import datetime
 from typing import Dict, List, Union
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 
-from applications.models import AhjoSetting
+from applications.enums import (
+    AhjoDecisionDetails,
+    AhjoStatus as AhjoStatusEnum,
+    ApplicationBatchStatus,
+    ApplicationStatus,
+)
+from applications.models import AhjoSetting, AhjoStatus, Application
 from applications.services.ahjo.enums import AhjoSettingName
+from applications.services.ahjo.exceptions import (
+    AhjoDecisionDetailsParsingError,
+    AhjoDecisionError,
+)
+from calculator.enums import InstalmentStatus
+from calculator.models import Instalment
 
 LOGGER = logging.getLogger(__name__)
 
@@ -151,3 +166,80 @@ class AhjoResponseHandler:
             result.append({"ID": item["ID"], "Name": item["Name"]})
         return result
 
+
+class AhjoDecisionDetailsResponseHandler:
+    def handle_details_request_success(
+        self, application: Application, response_dict: Dict
+    ) -> str:
+        """
+        Extract the details from the dict and update the application batchwith the data.
+        and data from the the p2p settings from ahjo_settings table"""
+
+        details = self._parse_details_from_decision_response(response_dict)
+
+        batch_status_to_update = ApplicationBatchStatus.DECIDED_ACCEPTED
+        if application.status == ApplicationStatus.REJECTED:
+            batch_status_to_update = ApplicationBatchStatus.DECIDED_REJECTED
+
+        batch = application.batch
+        batch.update_batch_after_details_request(batch_status_to_update, details)
+
+        if (
+            settings.PAYMENT_INSTALMENTS_ENABLED
+            and application.status == ApplicationStatus.ACCEPTED
+        ):
+            self._update_instalments_as_accepted(application)
+
+        AhjoStatus.objects.create(
+            application=application, status=AhjoStatusEnum.DETAILS_RECEIVED_FROM_AHJO
+        )
+
+        return f"Successfully received and updated decision details \
+for application {application.id} and batch {batch.id} from Ahjo"
+
+    def _update_instalments_as_accepted(self, application: Application):
+        calculation = application.calculation
+        instalments = Instalment.objects.filter(
+            calculation=calculation, status=InstalmentStatus.WAITING
+        )
+        if instalments.exists():
+            instalments.update(status=InstalmentStatus.ACCEPTED)
+
+    def _parse_details_from_decision_response(
+        self, decision_data: Dict
+    ) -> AhjoDecisionDetails:
+        """Extract the decision details from the given decision data"""
+        try:
+            html_content = decision_data["Content"]
+            decision_maker_name = self._parse_decision_maker_from_html(html_content)
+            decision_maker_title = decision_data["Organization"]["Name"]
+            section_of_the_law = decision_data["Section"]
+            decision_date_str = decision_data["DateDecision"]
+            decision_date = datetime.strptime(decision_date_str, "%Y-%m-%dT%H:%M:%S.%f")
+
+            return AhjoDecisionDetails(
+                decision_maker_name=decision_maker_name,
+                decision_maker_title=decision_maker_title,
+                section_of_the_law=f"{section_of_the_law} §",
+                decision_date=decision_date,
+            )
+        except KeyError as e:
+            raise AhjoDecisionDetailsParsingError(
+                f"Error in parsing decision details: {e}"
+            )
+        except ValueError as e:
+            raise AhjoDecisionDetailsParsingError(
+                f"Error in parsing decision details date: {e}"
+            )
+
+    def _parse_decision_maker_from_html(self, html_content: str) -> str:
+        """Parse the decision maker from the given html string"""
+        match = re.search(
+            r'<div class="Puheenjohtajanimi">([^<]+)</div>', html_content, re.I
+        )
+        if match:
+            return match.group(1)
+        else:
+            raise AhjoDecisionError(
+                "Decision maker not found in the decision content html", html_content
+            )

@@ -1,14 +1,12 @@
 import uuid
-from datetime import datetime
 
 import pytest
 from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers.decision_text import DecisionTextSerializer
-from applications.enums import AhjoDecisionDetails, DecisionType
+from applications.enums import DecisionType
 from applications.models import AhjoDecisionText
 from applications.services.ahjo_decision_service import (
-    parse_details_from_decision_response,
     replace_decision_template_placeholders,
 )
 
@@ -261,24 +259,3 @@ def test_decision_text_api_put(
     assert decision_text.decision_maker_name == data["decision_maker_name"]
     assert decision_text.signer_id == data["signer_id"]
     assert decision_text.signer_name == data["signer_name"]
-
-
-def test_parse_details_from_decision_response(
-    ahjo_decision_detail_response, application_with_ahjo_decision
-):
-    details = parse_details_from_decision_response(ahjo_decision_detail_response[0])
-    handler = application_with_ahjo_decision.calculation.handler
-
-    assert isinstance(details, AhjoDecisionDetails)
-    assert details.decision_maker_name == f"{handler.first_name} {handler.last_name}"
-    assert (
-        details.decision_maker_title
-        == ahjo_decision_detail_response[0]["Organization"]["Name"]
-    )
-    assert isinstance(details.decision_date, datetime)
-    assert details.decision_date == datetime.strptime(
-        ahjo_decision_detail_response[0]["DateDecision"], "%Y-%m-%dT%H:%M:%S.%f"
-    )
-    assert (
-        details.section_of_the_law == ahjo_decision_detail_response[0]["Section"] + " §"
-    )
