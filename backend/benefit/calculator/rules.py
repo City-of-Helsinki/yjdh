@@ -180,14 +180,24 @@ class HelsinkiBenefitCalculator:
         """
         if total_benefit_amount <= self.instalment_threshold:
             return [
-                (1, total_benefit_amount, timezone.now(), InstalmentStatus.ACCEPTED)
+                (
+                    1,
+                    total_benefit_amount,
+                    timezone.now(),
+                    InstalmentStatus.WAITING,
+                )
             ]
 
         first_instalment_amount = self.first_instalment_limit
         second_instalment_amount = total_benefit_amount - first_instalment_amount
 
         return [
-            (1, first_instalment_amount, timezone.now(), InstalmentStatus.ACCEPTED),
+            (
+                1,
+                first_instalment_amount,
+                timezone.now(),
+                InstalmentStatus.WAITING,
+            ),
             (
                 2,
                 second_instalment_amount,
