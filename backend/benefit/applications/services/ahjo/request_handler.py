@@ -2,7 +2,7 @@ from typing import List, Union
 
 from applications.enums import AhjoRequestType
 from applications.services.ahjo.enums import AhjoSettingName
-from applications.services.ahjo.setting_response_handler import AhjoResponseHandler
+from applications.services.ahjo.response_handler import AhjoResponseHandler
 from applications.services.ahjo_authentication import AhjoToken
 from applications.services.ahjo_client import (
     AhjoApiClient,

@@ -150,3 +150,4 @@ class AhjoResponseHandler:
         for item in data["agentList"]:
             result.append({"ID": item["ID"], "Name": item["Name"]})
         return result
+

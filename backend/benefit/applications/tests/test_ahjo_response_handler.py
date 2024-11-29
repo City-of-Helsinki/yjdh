@@ -4,7 +4,7 @@ import pytest
 from django.core.exceptions import ValidationError
 
 from applications.services.ahjo.enums import AhjoSettingName
-from applications.services.ahjo.setting_response_handler import AhjoResponseHandler
+from applications.services.ahjo.response_handler import AhjoResponseHandler
 
 
 def test_ahjo_response_handler_filter_decision_makers(decisionmaker_response):
