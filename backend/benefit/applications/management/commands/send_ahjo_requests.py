@@ -3,6 +3,7 @@ import time
 from datetime import datetime
 from typing import Dict, List, Union
 
+from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.core.management.base import BaseCommand
 from django.db.models import QuerySet
@@ -32,6 +33,8 @@ from applications.services.ahjo_integration import (
     send_open_case_request_to_ahjo,
     update_application_summary_record_in_ahjo,
 )
+from calculator.enums import InstalmentStatus
+from calculator.models import Instalment
 
 LOGGER = logging.getLogger(__name__)
 
@@ -224,14 +227,26 @@ application(s): {failed_application_numbers} to Ahjo"
     def _handle_details_request_success(
         self, application: Application, response_dict: Dict
     ) -> str:
-        """Extract the details from the dict and update the application batch with them and also
-        with the p2p settings from ahjo_settings table"""
+        """
+        Extract the details from the dict and update the application batchwith the data.
+        and data from the the p2p settings from ahjo_settings table"""
 
         details = parse_details_from_decision_response(response_dict)
 
         batch_status_to_update = ApplicationBatchStatus.DECIDED_ACCEPTED
         if application.status == ApplicationStatus.REJECTED:
             batch_status_to_update = ApplicationBatchStatus.DECIDED_REJECTED
+
+        if (
+            settings.PAYMENT_INSTALMENTS_ENABLED
+            and application.status == ApplicationStatus.ACCEPTED
+        ):
+            calculation = application.calculation
+            instalments = Instalment.objects.filter(
+                calculation=calculation, status=InstalmentStatus.WAITING
+            )
+            if instalments.exists():
+                instalments.update(status=InstalmentStatus.ACCEPTED)
 
         batch = application.batch
         batch.update_batch_after_details_request(batch_status_to_update, details)
