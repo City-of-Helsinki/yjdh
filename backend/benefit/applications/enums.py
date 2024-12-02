@@ -130,6 +130,9 @@ class ApplicationBatchStatus(models.TextChoices):
         "Returned from Ahjo without decision"
     )  # Theoretically possible: means that a decision was not made
     SENT_TO_TALPA = "sent_to_talpa", _("Sent to Talpa")
+    PARTIALLY_SENT_TO_TALPA = "partially_sent_to_talpa", _(
+        "One of two instalments sent to Talpa"
+    )
     COMPLETED = "completed", _("Processing is completed")
     REJECTED_BY_TALPA = "rejected_by_talpa", _("Rejected by Talpa")
     CANCELLED = "cancelled", _("Cancelled")
@@ -138,6 +141,9 @@ class ApplicationBatchStatus(models.TextChoices):
 class ApplicationTalpaStatus(models.TextChoices):
     NOT_PROCESSED_BY_TALPA = "not_sent_to_talpa", _("Not sent to Talpa")
     REJECTED_BY_TALPA = "rejected_by_talpa", _("Rejected by Talpa")
+    PARTIALLY_SENT_TO_TALPA = "partially_sent_to_talpa", _(
+        "One of two instalments sent to Talpa"
+    )
     SUCCESSFULLY_SENT_TO_TALPA = "successfully_sent_to_talpa", _(
         "Successfully sent to Talpa"
     )

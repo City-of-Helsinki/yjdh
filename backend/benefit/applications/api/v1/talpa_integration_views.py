@@ -94,6 +94,7 @@ class TalpaCallbackView(APIView):
                 log_message="instalment was read by TALPA and marked as paid",
                 is_success=True,
             )
+
         else:
             applications = self._get_applications(application_numbers)
             self.update_application_and_related_batch(
@@ -164,8 +165,9 @@ class TalpaCallbackView(APIView):
         """
         After receiving the callback from Talpa, query the currently due instalments of the
         successful applications and update the status of the instalments.
-        If the instalmentis  1/1 or 2/2, e.g the final instalment,
-        update the application status, batch status and set the application as archived
+        If the instalments  1/1 or 2/2, e.g the final instalment,
+        update the application status, batch status to SENT_TO_TALPA.
+        Always set the application as archived after the first instalment is succesfully sent to talpa.
         """
         for application in applications:
             instalment = application.calculation.instalments.get(
@@ -176,6 +178,20 @@ class TalpaCallbackView(APIView):
             instalment.save()
 
             if is_success:
+                # after 1st instalment is sent to talpa,
+                # update the application status,
+                # batch status and set the application as archived
+                application.talpa_status = (
+                    ApplicationTalpaStatus.PARTIALLY_SENT_TO_TALPA
+                )
+                application.archived = True
+                application.save()
+
+                application.batch.status = (
+                    ApplicationBatchStatus.PARTIALLY_SENT_TO_TALPA
+                )
+                application.batch.save()
+
                 if application.number_of_instalments == 1 or (
                     application.number_of_instalments == 2
                     and instalment.instalment_number == 2
@@ -186,7 +202,6 @@ class TalpaCallbackView(APIView):
             self.write_to_audit_log(application, ip_address, log_message)
 
     def update_after_all_instalments_are_sent(self, application: Application):
-        application.archived = True
         application.talpa_status = ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
         application.save()
         application.batch.status = ApplicationBatchStatus.SENT_TO_TALPA
