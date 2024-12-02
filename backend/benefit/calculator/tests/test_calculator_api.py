@@ -729,7 +729,7 @@ def test_application_calculation_instalments(
     instalment_1 = handling_application.calculation.instalments.all()[0]
 
     assert instalment_1.due_date is not None
-    assert instalment_1.status == InstalmentStatus.ACCEPTED
+    assert instalment_1.status == InstalmentStatus.WAITING
 
     due_date = instalment_1.due_date
     now_date = timezone.now().date()
@@ -743,11 +743,11 @@ def test_application_calculation_instalments(
             instalment_1.amount
             == handling_application.calculation.calculated_benefit_amount
         )
-        assert instalment_1.status == InstalmentStatus.ACCEPTED
+        assert instalment_1.status == InstalmentStatus.WAITING
 
     if number_of_instalments == 2:
         assert instalment_1.amount == decimal.Decimal(settings.FIRST_INSTALMENT_LIMIT)
-        assert instalment_1.status == InstalmentStatus.ACCEPTED
+        assert instalment_1.status == InstalmentStatus.WAITING
 
         instalment_2 = handling_application.calculation.instalments.all()[1]
         assert (
