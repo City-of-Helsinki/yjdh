@@ -867,7 +867,7 @@ def decision_details():
         decision_maker_name="Test Test",
         decision_maker_title="Test Title",
         section_of_the_law="16 §",
-        decision_date=date.today(),
+        decision_date=datetime.now(),
     )
 
 

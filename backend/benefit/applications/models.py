@@ -925,7 +925,7 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
             self.decision_maker_name = details.decision_maker_name
             self.decision_maker_title = details.decision_maker_title
             self.section_of_the_law = details.section_of_the_law
-            self.decision_date = details.decision_date
+            self.decision_date = details.decision_date.date()
 
             p2p_settings = AhjoSetting.objects.get(name="p2p_settings")
             self.p2p_checker_name = p2p_settings.data["acceptor_name"]
