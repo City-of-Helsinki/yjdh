@@ -98,6 +98,7 @@ const FormContent: React.FC<Props> = ({
     clearAlternativeAddressValues,
     getErrorMessage,
     displayPastApplicationDatesWarning,
+    dateInputLimits,
   } = useFormContent(formik, fields);
 
   const theme = useTheme();
@@ -152,6 +153,7 @@ const FormContent: React.FC<Props> = ({
               invalid={!!getErrorMessage(fields.paperApplicationDate.name)}
               aria-invalid={!!getErrorMessage(fields.paperApplicationDate.name)}
               errorText={getErrorMessage(fields.paperApplicationDate.name)}
+              maxDate={dateInputLimits.max}
             />
           </$GridCell>
         </FormSection>
@@ -605,6 +607,7 @@ const FormContent: React.FC<Props> = ({
             aria-invalid={!!getErrorMessage(fields.startDate.name)}
             errorText={getErrorMessage(fields.startDate.name)}
             minDate={APPLICATION_START_DATE}
+            maxDate={dateInputLimits.max}
             required
           />
         </$GridCell>

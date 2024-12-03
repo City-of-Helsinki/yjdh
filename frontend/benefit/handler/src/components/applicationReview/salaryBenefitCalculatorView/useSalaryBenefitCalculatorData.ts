@@ -10,6 +10,7 @@ import {
   Application,
   TrainingCompensation,
 } from 'benefit-shared/types/application';
+import { addYears } from 'date-fns';
 import { FormikProps, useFormik } from 'formik';
 import clone from 'lodash/clone';
 import fromPairs from 'lodash/fromPairs';
@@ -48,6 +49,10 @@ type ExtendedComponentProps = {
   addNewTrainingCompensation: () => void;
   removeTrainingCompensation: (id: string) => void;
   isDisabledAddTrainingCompensationButton: boolean;
+  dateInputLimits: {
+    min: Date;
+    max: Date;
+  };
 };
 
 const initialTrainingCompensationValues = {
@@ -209,6 +214,11 @@ const useSalaryBenefitCalculatorData = (
     [endDate, startDate]
   );
 
+  const dateInputLimits = {
+    min: addYears(new Date(), -2),
+    max: addYears(new Date(), 2),
+  };
+
   useEffect(() => {
     if (
       newTrainingCompensation.monthlyAmount &&
@@ -234,6 +244,7 @@ const useSalaryBenefitCalculatorData = (
     addNewTrainingCompensation,
     removeTrainingCompensation,
     isDisabledAddTrainingCompensationButton,
+    dateInputLimits,
   };
 };
 
