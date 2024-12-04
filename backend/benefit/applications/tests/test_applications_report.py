@@ -1,3 +1,4 @@
+import decimal
 import io
 import os.path
 from collections import defaultdict
@@ -31,6 +32,8 @@ from applications.tests.common import (
 from applications.tests.conftest import *  # noqa
 from applications.tests.conftest import split_lines_at_semicolon
 from applications.tests.factories import DecidedApplicationFactory, DeMinimisAidFactory
+from calculator.enums import InstalmentStatus
+from calculator.models import Instalment
 from calculator.tests.factories import PaySubsidyFactory
 from common.tests.conftest import *  # noqa
 from companies.tests.conftest import *  # noqa
@@ -593,14 +596,35 @@ def test_write_application_alterations_csv_file(
         assert str(alteration.recovery_amount) in contents
 
 
+@pytest.mark.parametrize(
+    "instalments_enabled",
+    [
+        (False,),
+        (True,),
+    ],
+)
 def test_pruned_applications_csv_output(
-    pruned_applications_csv_service_with_one_application,
+    pruned_applications_csv_service_with_one_application, instalments_enabled, settings
 ):
-    csv_lines = split_lines_at_semicolon(
-        pruned_applications_csv_service_with_one_application.get_csv_string()
-    )
+    settings.PAYMENT_INSTALMENTS_ENABLED = instalments_enabled
+
+    instalment_amount = decimal.Decimal("123.45")
     application = (
         pruned_applications_csv_service_with_one_application.get_applications()[0]
+    )
+    if instalments_enabled:
+        application.calculation.instalments.all().delete()
+        Instalment.objects.create(
+            calculation=application.calculation,
+            amount=instalment_amount,
+            amount_paid=instalment_amount,
+            instalment_number=1,
+            status=InstalmentStatus.ACCEPTED,
+            due_date=datetime.now(timezone.utc).date(),
+        )
+
+    csv_lines = split_lines_at_semicolon(
+        pruned_applications_csv_service_with_one_application.get_csv_string()
     )
     # Assert that there are 18 column headers in the pruned CSV
     assert len(csv_lines[0]) == 18
@@ -635,9 +659,12 @@ def test_pruned_applications_csv_output(
     assert csv_lines[1][5] == f'"{application.effective_company_street_address}"'
     assert csv_lines[1][6] == f'"{application.effective_company_postcode}"'
     assert csv_lines[1][7] == f'"{application.effective_company_city}"'
-    assert str(csv_lines[1][8]) == str(
-        application.calculation.calculated_benefit_amount
-    )
+    if instalments_enabled:
+        assert str(csv_lines[1][8]) == str(instalment_amount)
+    else:
+        assert str(csv_lines[1][8]) == str(
+            application.calculation.calculated_benefit_amount
+        )
 
     assert csv_lines[1][9] == f'"{application.batch.decision_maker_title}"'
     assert csv_lines[1][10] == f'"{application.batch.decision_maker_name}"'

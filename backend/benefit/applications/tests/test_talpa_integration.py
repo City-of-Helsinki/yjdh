@@ -113,6 +113,7 @@ def test_talpa_csv_decimal(
         Instalment.objects.create(
             calculation=application.calculation,
             amount=decimal.Decimal("123.45"),
+            amount_paid=decimal.Decimal("123.45"),
             instalment_number=1,
             status=InstalmentStatus.ACCEPTED,
             due_date=datetime.now(timezone.utc).date(),

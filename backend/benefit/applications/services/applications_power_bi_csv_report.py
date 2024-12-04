@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Union
 
+from django.conf import settings
 from django.utils import translation
 
 from applications.enums import ApplicationBatchStatus
@@ -113,6 +114,14 @@ class ApplicationsPowerBiCsvService(ApplicationsCsvService):
             ),
             csv_default_column("Takaisinlaskutettu", self.get_alteration_amount),
         ]
+
+        if settings.PAYMENT_INSTALMENTS_ENABLED:
+            columns.append(
+                csv_default_column("Maksuerä 1", self.get_instalment_1),
+            )
+            columns.append(
+                csv_default_column("Maksuerä 2", self.get_instalment_2),
+            )
 
         return columns
 
