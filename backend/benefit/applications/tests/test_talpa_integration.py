@@ -204,15 +204,17 @@ def test_talpa_callback_success(
 
     if instalments_enabled:
         for i in range(number_of_instalments):
+            status = InstalmentStatus.ACCEPTED
             due_date = datetime.now(timezone.utc).date()
             if i == 1:
+                status = InstalmentStatus.WAITING
                 due_date = timezone.now() + timedelta(days=181)
 
             Instalment.objects.create(
                 calculation=decided_application.calculation,
                 amount=decimal.Decimal("123.45"),
                 instalment_number=i + 1,
-                status=InstalmentStatus.ACCEPTED,
+                status=status,
                 due_date=due_date,
             )
 
@@ -248,8 +250,10 @@ def test_talpa_callback_success(
             due_date__lte=timezone.now().date()
         )
         assert len(instalments) == 1
+
         for instalment in instalments:
             assert instalment.status == InstalmentStatus.PAID
+
         if number_of_instalments == 1:
             assert (
                 decided_application.talpa_status
@@ -259,6 +263,28 @@ def test_talpa_callback_success(
             assert (
                 decided_application.batch.status == ApplicationBatchStatus.SENT_TO_TALPA
             )
+        else:
+            # If two instalments test that the application is partially sent to talpa
+
+            instalment_1 = decided_application.calculation.instalments.get(
+                instalment_number=1
+            )
+            assert instalment_1.status == InstalmentStatus.PAID
+
+            instalment_2 = decided_application.calculation.instalments.get(
+                instalment_number=2
+            )
+            assert instalment_2.status == InstalmentStatus.WAITING
+
+            assert (
+                decided_application.talpa_status
+                == ApplicationTalpaStatus.PARTIALLY_SENT_TO_TALPA
+            )
+            assert decided_application.archived is True
+            assert (
+                decided_application.batch.status
+                == ApplicationBatchStatus.PARTIALLY_SENT_TO_TALPA
+            )
     else:
         assert (
             decided_application.talpa_status
@@ -267,7 +293,7 @@ def test_talpa_callback_success(
 
         assert decided_application.batch.status == ApplicationBatchStatus.SENT_TO_TALPA
 
-        assert decided_application.archived is True
+    assert decided_application.archived is True
 
 
 @pytest.mark.parametrize(
