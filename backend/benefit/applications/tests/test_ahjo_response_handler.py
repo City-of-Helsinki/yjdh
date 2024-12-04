@@ -1,10 +1,23 @@
+from datetime import datetime
 from unittest.mock import patch
 
 import pytest
 from django.core.exceptions import ValidationError
 
+from applications.enums import (
+    AhjoDecision,
+    AhjoDecisionDetails,
+    AhjoStatus as AhjoStatusEnum,
+    ApplicationBatchStatus,
+    ApplicationStatus,
+)
 from applications.services.ahjo.enums import AhjoSettingName
-from applications.services.ahjo.setting_response_handler import AhjoResponseHandler
+from applications.services.ahjo.response_handler import (
+    AhjoDecisionDetailsResponseHandler,
+    AhjoResponseHandler,
+)
+from calculator.enums import InstalmentStatus
+from calculator.models import Instalment
 
 
 def test_ahjo_response_handler_filter_decision_makers(decisionmaker_response):
@@ -163,3 +176,98 @@ def test_save_ahjo_settings_database_error(setting_name, test_data):
             ValidationError, match=f"Failed to save setting {setting_name} to database"
         ):
             AhjoResponseHandler._save_ahjo_setting(setting_name, test_data)
+
+
+def test_parse_details_from_decision_response(
+    ahjo_decision_detail_response, application_with_ahjo_decision
+):
+    response_handler = AhjoDecisionDetailsResponseHandler()
+    details = response_handler._parse_details_from_decision_response(
+        ahjo_decision_detail_response[0]
+    )
+    handler = application_with_ahjo_decision.calculation.handler
+
+    assert isinstance(details, AhjoDecisionDetails)
+    assert details.decision_maker_name == f"{handler.first_name} {handler.last_name}"
+    assert (
+        details.decision_maker_title
+        == ahjo_decision_detail_response[0]["Organization"]["Name"]
+    )
+    assert isinstance(details.decision_date, datetime)
+    assert details.decision_date == datetime.strptime(
+        ahjo_decision_detail_response[0]["DateDecision"], "%Y-%m-%dT%H:%M:%S.%f"
+    )
+    assert (
+        details.section_of_the_law == ahjo_decision_detail_response[0]["Section"] + " §"
+    )
+
+
+@pytest.mark.parametrize(
+    "instalments_enabled,application_status,\
+    expected_batch_status, expected_proposal_for_decision, expected_instalment_1_status",
+    [
+        (
+            True,
+            ApplicationStatus.REJECTED,
+            ApplicationBatchStatus.DECIDED_REJECTED,
+            AhjoDecision.DECIDED_REJECTED,
+            InstalmentStatus.WAITING,
+        ),
+        (
+            True,
+            ApplicationStatus.ACCEPTED,
+            ApplicationBatchStatus.DECIDED_ACCEPTED,
+            AhjoDecision.DECIDED_ACCEPTED,
+            InstalmentStatus.ACCEPTED,
+        ),
+    ],
+)
+def test_handle_details_request_success(
+    ahjo_decision_detail_response,
+    decided_application_with_decision_date,
+    rejected_decided_application_with_decision_date,
+    application_status,
+    expected_batch_status,
+    expected_proposal_for_decision,
+    expected_instalment_1_status,
+    instalments_enabled,
+    p2p_settings,
+    settings,
+):
+    settings.PAYMENT_INSTALMENTS_ENABLED = instalments_enabled
+
+    if application_status == ApplicationStatus.REJECTED:
+        application = rejected_decided_application_with_decision_date
+    else:
+        application = decided_application_with_decision_date
+
+    calculation = application.calculation
+    calculation.instalments.all().delete()
+
+    instalment_1 = Instalment.objects.create(
+        calculation=calculation,
+        status=InstalmentStatus.WAITING,
+        instalment_number=1,
+        amount=1000.00,
+        amount_paid=1000.00,
+    )
+
+    response_handler = AhjoDecisionDetailsResponseHandler()
+    success_text = response_handler.handle_details_request_success(
+        application=application, response_dict=ahjo_decision_detail_response[0]
+    )
+
+    instalment_1.refresh_from_db()
+    latest_ahjo_status = application.ahjo_status.latest()
+
+    assert (
+        success_text
+        == f"Successfully received and updated decision details \
+for application {application.id} and batch {application.batch.id} from Ahjo"
+    )
+    assert instalment_1.status == expected_instalment_1_status
+    assert latest_ahjo_status.status == AhjoStatusEnum.DETAILS_RECEIVED_FROM_AHJO
+
+    batch = application.batch
+    assert batch.status == expected_batch_status
+    assert batch.proposal_for_decision == expected_proposal_for_decision

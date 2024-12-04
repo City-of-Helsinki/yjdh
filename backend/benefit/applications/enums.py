@@ -276,12 +276,22 @@ class AhjoDecisionUpdateType(models.TextChoices):
     UPDATED = "Updated", _("Updated")
 
 
-@dataclass
+@dataclass(frozen=True, order=True)
 class AhjoDecisionDetails:
     decision_maker_name: str
     decision_maker_title: str
     section_of_the_law: str
     decision_date: datetime
+
+    def __post_init__(self):
+        if not self.decision_maker_name.strip():
+            raise ValueError("Decision maker name cannot be empty")
+        if not self.decision_maker_title.strip():
+            raise ValueError("Decision maker title cannot be empty")
+        if not self.section_of_the_law.strip():
+            raise ValueError("Section of the law cannot be empty")
+        if not isinstance(self.decision_date, datetime):
+            raise TypeError("decision_date must be a datetime object")
 
 
 DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE = [

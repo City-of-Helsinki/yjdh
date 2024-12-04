@@ -1,20 +1,15 @@
-import re
-from datetime import datetime
 from string import Template
-from typing import Dict, List
+from typing import List
 
 from django.conf import settings
 
-from applications.enums import AhjoDecisionDetails, DecisionType
+from applications.enums import DecisionType
 from applications.models import (
     AhjoDecisionText,
     Application,
     DecisionProposalTemplateSection,
 )
-from applications.services.ahjo.exceptions import (
-    AhjoDecisionDetailsParsingError,
-    AhjoDecisionError,
-)
+from applications.services.ahjo.exceptions import AhjoDecisionError
 from applications.tests.factories import (
     AcceptedDecisionProposalFactory,
     DeniedDecisionProposalFactory,
@@ -107,40 +102,3 @@ def _generate_decision_text_string(
     return replace_decision_template_placeholders(
         decision_string, decision_type, application
     )
-
-
-def parse_details_from_decision_response(decision_data: Dict) -> AhjoDecisionDetails:
-    """Extract the decision details from the given decision data"""
-    try:
-        html_content = decision_data["Content"]
-        decision_maker_name = parse_decision_maker_from_html(html_content)
-        decision_maker_title = decision_data["Organization"]["Name"]
-        section_of_the_law = decision_data["Section"]
-        decision_date_str = decision_data["DateDecision"]
-        decision_date = datetime.strptime(decision_date_str, "%Y-%m-%dT%H:%M:%S.%f")
-
-        return AhjoDecisionDetails(
-            decision_maker_name=decision_maker_name,
-            decision_maker_title=decision_maker_title,
-            section_of_the_law=f"{section_of_the_law} §",
-            decision_date=decision_date,
-        )
-    except KeyError as e:
-        raise AhjoDecisionDetailsParsingError(f"Error in parsing decision details: {e}")
-    except ValueError as e:
-        raise AhjoDecisionDetailsParsingError(
-            f"Error in parsing decision details date: {e}"
-        )
-
-
-def parse_decision_maker_from_html(html_content: str) -> str:
-    """Parse the decision maker from the given html string"""
-    match = re.search(
-        r'<div class="Puheenjohtajanimi">([^<]+)</div>', html_content, re.I
-    )
-    if match:
-        return match.group(1)
-    else:
-        raise AhjoDecisionError(
-            "Decision maker not found in the decision content html", html_content
-        )
