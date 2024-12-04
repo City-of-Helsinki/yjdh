@@ -287,9 +287,9 @@ class AhjoDecisionDetails:
         if not self.decision_maker_name.strip():
             raise ValueError("Decision maker name cannot be empty")
         if not self.decision_maker_title.strip():
-            raise ValueError("Decision maker name cannot be empty")
+            raise ValueError("Decision maker title cannot be empty")
         if not self.section_of_the_law.strip():
-            raise ValueError("Decision maker name cannot be empty")
+            raise ValueError("Section of the law cannot be empty")
         if not isinstance(self.decision_date, datetime):
             raise TypeError("decision_date must be a datetime object")
 
