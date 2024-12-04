@@ -1,6 +1,6 @@
 import decimal
 import logging
-from datetime import datetime
+from datetime import date, datetime
 from typing import List
 
 from django.conf import settings
@@ -15,6 +15,7 @@ from applications.services.csv_export_base import (
     get_organization_type,
     nested_queryset_attr,
 )
+from calculator.models import Instalment
 
 LOGGER = logging.getLogger(__name__)
 
@@ -110,16 +111,16 @@ class ApplicationsCsvService(CsvExportBase):
 
     def query_instalment_by_number(
         self, application: Application, number: int
-    ) -> decimal.Decimal:
+    ) -> Instalment:
         """Return the actual payable amount of the currently accepted and due instalment"""
         try:
             instalment = application.calculation.instalments.get(
                 due_date__lte=timezone.now().date(),
                 instalment_number=number,
             )
-            return instalment.amount_paid
+            return instalment
         except ObjectDoesNotExist:
-            LOGGER.error(
+            LOGGER.info(
                 f"Valid payable Instalment not found for application {application.application_number}"
             )
         except MultipleObjectsReturned:
@@ -128,11 +129,33 @@ class ApplicationsCsvService(CsvExportBase):
     {application.application_number}, there should be only one"
             )
 
-    def get_instalment_1(self, application: Application) -> decimal.Decimal:
-        return self.query_instalment_by_number(application, 1)
+    def get_instalment_1_amount(self, application: Application) -> decimal.Decimal:
+        instalment = self.query_instalment_by_number(application, 1)
+        if instalment and instalment.amount:
+            return instalment.amount
+        else:
+            return None
 
-    def get_instalment_2(self, application: Application) -> decimal.Decimal:
-        return self.query_instalment_by_number(application, 2)
+    def get_instalment_2_amount_paid(self, application: Application) -> decimal.Decimal:
+        instalment = self.query_instalment_by_number(application, 2)
+        if instalment and instalment.amount_paid:
+            return instalment.amount_paid
+        else:
+            return None
+
+    def get_instalment_2_amount(self, application: Application) -> decimal.Decimal:
+        instalment = self.query_instalment_by_number(application, 2)
+        if instalment and instalment.amount_paid:
+            return instalment.amount_paid
+        else:
+            return None
+
+    def get_instalment_2_due_date(self, application: Application) -> date:
+        instalment = self.query_instalment_by_number(application, 2)
+        if instalment:
+            return instalment.due_date
+        else:
+            return ""
 
     @property
     def CSV_COLUMNS(self) -> List[CsvColumn]:
@@ -326,10 +349,24 @@ class ApplicationsCsvService(CsvExportBase):
 
         if settings.PAYMENT_INSTALMENTS_ENABLED:
             columns.append(
-                csv_default_column("Maksuerä 1", self.get_instalment_1),
+                csv_default_column(
+                    "Myönnetty maksuerä 1", self.get_instalment_1_amount
+                ),
             )
             columns.append(
-                csv_default_column("Maksuerä 2", self.get_instalment_2),
+                csv_default_column(
+                    "Myönnetty maksuerä 2", self.get_instalment_2_amount
+                ),
+            )
+            columns.append(
+                csv_default_column(
+                    "Maksettu maksuerä 2", self.get_instalment_2_amount_paid
+                ),
+            )
+            columns.append(
+                csv_default_column(
+                    "Maksuerän 2 maksupäivä", self.get_instalment_2_due_date
+                ),
             )
         # Include all the application rows in the same line for easier processing
         for idx in range(self.MAX_AHJO_ROWS):
