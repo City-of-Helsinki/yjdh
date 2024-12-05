@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import BaseHeader from 'shared/components/header/HeaderV3';
-import useGoToFrontPage from 'shared/hooks/useGoToFrontPage';
 import { SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 import { OptionType } from 'shared/types/common';
 import useLogin from 'tet/admin/hooks/backend/useLogin';
@@ -13,7 +12,6 @@ const Header: React.FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const { asPath } = router;
-  const goToFrontPage = useGoToFrontPage();
 
   const languageOptions = React.useMemo(
     (): OptionType<string>[] =>
