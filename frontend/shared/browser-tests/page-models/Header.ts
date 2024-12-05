@@ -15,7 +15,7 @@ class Header<
   }
 
   private withinNavigationActions = this.within(
-    Selector('div[class*="NavigationActions"]')
+    Selector('div[class*="HeaderActionBar-module_headerActions"]')
   );
 
   private getUserInfo(user?: User): string {
