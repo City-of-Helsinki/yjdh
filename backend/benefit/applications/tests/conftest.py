@@ -194,8 +194,7 @@ def talpa_applications_csv_service():
 
 
 @pytest.fixture
-def talpa_applications_csv_service_with_one_application(application_batch
-):
+def talpa_applications_csv_service_with_one_application(application_batch):
     application1 = application_batch.applications.all().first()
 
     return TalpaCsvService(Application.objects.filter(pk=application1.pk), True)

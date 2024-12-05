@@ -48,7 +48,42 @@ def test_talpa_csv_string_lines_generator(talpa_applications_csv_service):
     )
 
 
-def test_talpa_csv_output(talpa_applications_csv_service_with_one_application):
+@pytest.mark.parametrize(
+    "instalments_enabled, number_of_instalments",
+    [
+        (False, 1),
+        (True, 1),
+        (True, 2),
+    ],
+)
+def test_talpa_csv_output(
+    talpa_applications_csv_service_with_one_application,
+    instalments_enabled,
+    number_of_instalments,
+    settings,
+):
+    settings.PAYMENT_INSTALMENTS_ENABLED = instalments_enabled
+    application = (
+        talpa_applications_csv_service_with_one_application.applications.first()
+    )
+    application.calculation.instalments.all().delete()
+
+    if instalments_enabled:
+        for i in range(number_of_instalments):
+            status = InstalmentStatus.ACCEPTED
+            due_date = datetime.now(timezone.utc).date()
+            if i == 1:
+                status = InstalmentStatus.WAITING
+                due_date = timezone.now() + timedelta(days=181)
+
+            Instalment.objects.create(
+                calculation=application.calculation,
+                amount=decimal.Decimal("123.45"),
+                instalment_number=i + 1,
+                status=status,
+                due_date=due_date,
+            )
+
     csv_lines = split_lines_at_semicolon(
         talpa_applications_csv_service_with_one_application.get_csv_string()
     )
@@ -64,6 +99,16 @@ def test_talpa_csv_output(talpa_applications_csv_service_with_one_application):
         int(csv_lines[1][0])
         == talpa_applications_csv_service_with_one_application.applications.first().application_number
     )
+
+    if instalments_enabled:
+        wanted_instalment = application.calculation.instalments.get(
+            status=InstalmentStatus.ACCEPTED,
+            due_date__lte=timezone.now().date(),
+        )
+        assert (
+            decimal.Decimal(csv_lines[1][8])
+            == wanted_instalment.amount_after_recoveries
+        )
 
 
 def test_talpa_csv_non_ascii_characters(

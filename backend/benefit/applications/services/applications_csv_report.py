@@ -130,27 +130,42 @@ class ApplicationsCsvService(CsvExportBase):
             )
 
     def get_instalment_1_amount(self, application: Application) -> decimal.Decimal:
+        """
+        Return the amount that was granted for the first instalment.
+        """
         instalment = self.query_instalment_by_number(application, 1)
         if instalment and instalment.amount:
             return instalment.amount
         else:
             return None
 
-    def get_instalment_2_amount_paid(self, application: Application) -> decimal.Decimal:
+    def get_instalment_2_amount_after_recoveries(
+        self, application: Application
+    ) -> decimal.Decimal:
+        """
+        Return the actual amount that is payable on the second instalment,
+        after possible alterations have been deductet.
+        """
         instalment = self.query_instalment_by_number(application, 2)
-        if instalment and instalment.amount_paid:
-            return instalment.amount_paid
+        if instalment and instalment.amount_after_recoveries:
+            return instalment.amount_after_recoveries
         else:
             return None
 
     def get_instalment_2_amount(self, application: Application) -> decimal.Decimal:
+        """
+        Return the amount that was granted for the second instalment.
+        """
         instalment = self.query_instalment_by_number(application, 2)
-        if instalment and instalment.amount_paid:
-            return instalment.amount_paid
+        if instalment and instalment.amount:
+            return instalment.amount
         else:
             return None
 
     def get_instalment_2_due_date(self, application: Application) -> date:
+        """
+        Return the due date of the second instalment.
+        """
         instalment = self.query_instalment_by_number(application, 2)
         if instalment:
             return instalment.due_date
@@ -360,7 +375,7 @@ class ApplicationsCsvService(CsvExportBase):
             )
             columns.append(
                 csv_default_column(
-                    "Maksettu maksuerä 2", self.get_instalment_2_amount_paid
+                    "Maksettu maksuerä 2", self.get_instalment_2_amount_after_recoveries
                 ),
             )
             columns.append(

@@ -128,7 +128,7 @@ class ApplicationsPowerBiCsvService(ApplicationsCsvService):
             )
             columns.append(
                 csv_default_column(
-                    "Maksettu maksuerä 2", self.get_instalment_2_amount_paid
+                    "Maksettu maksuerä 2", self.get_instalment_2_amount_after_recoveries
                 ),
             )
             columns.append(
