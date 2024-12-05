@@ -1469,7 +1469,8 @@
     "previous": "Edellinen",
     "send": "Lähetä",
     "deleting": "Poistetaan...",
-    "submitting": "Lähetetään..."
+    "submitting": "Lähetetään...",
+    "loadMore": "Lataa lisää"
   },
   "status": {
     "draft": "Luonnos",

@@ -60,6 +60,7 @@ class SearchView(APIView):
         archived = request.query_params.get("archived") == "1" or False
         search_from_archival = request.query_params.get("archival") == "1" or False
         application_number = request.query_params.get("app_no")
+        load_all = request.query_params.get("load_all") == "1" or False
 
         subsidy_in_effect = request.query_params.get("subsidy_in_effect")
 
@@ -101,6 +102,7 @@ class SearchView(APIView):
             detected_pattern,
             application_number,
             search_from_archival,
+            load_all,
         )
 
 
@@ -133,7 +135,7 @@ def _prepare_application_queryset(archived, subsidy_in_effect, years_since_decis
                 - relativedelta(years=years_since_decision),
             ),
         )
-    return queryset
+    return queryset.order_by("-modified_at")
 
 
 def _prepare_archival_application_queryset(subsidy_in_effect, years_since_decision):
@@ -160,10 +162,11 @@ def search_applications(
     application_queryset,
     archival_application_queryset,
     search_string,
-    in_memory_filter_str,
+    in_memory_filter_string,
     detected_pattern,
     application_number=None,
     search_from_archival=False,
+    load_all=False,
 ) -> Response:
     if application_number:
         querysets = _query_by_application_number(
@@ -172,9 +175,9 @@ def search_applications(
         application_queryset = querysets["application_queryset"]
         archival_application_queryset = querysets["archival_application_queryset"]
 
-    if search_string == "" and in_memory_filter_str == "":
+    if search_string == "" and in_memory_filter_string == "":
         return _query_and_respond_to_empty_search(
-            application_queryset, archival_application_queryset
+            application_queryset, archival_application_queryset, load_all
         )
 
     # Return early in case of number-like pattern
@@ -210,14 +213,14 @@ def search_applications(
     # Use filter string to perform in-memory search
     if (
         detected_pattern in [SearchPattern.COMPANY, SearchPattern.IN_MEMORY]
-        and in_memory_filter_str != ""
+        and in_memory_filter_string != ""
     ):
         in_memory_results = _perform_in_memory_search(
             applications,
             detected_pattern,
             application_queryset,
             search_string,
-            in_memory_filter_str,
+            in_memory_filter_string,
             HandlerApplicationListSerializer,
         )
         filtered_data = in_memory_results["data"]
@@ -230,7 +233,7 @@ def search_applications(
             detected_pattern,
             archival_application_queryset,
             search_string,
-            in_memory_filter_str,
+            in_memory_filter_string,
             ArchivalApplicationListSerializer,
         )
         filtered_data += in_memory_results_archival["data"]
@@ -249,7 +252,7 @@ def search_applications(
         detected_pattern,
         search_string,
         in_memory_results,
-        in_memory_filter_str,
+        in_memory_filter_string,
     )
 
 
@@ -332,19 +335,27 @@ def _query_by_application_number(
 
 
 def _query_and_respond_to_empty_search(
-    application_queryset, archival_application_queryset
+    application_queryset, archival_application_queryset, load_all
 ):
     data = []
-    data += HandlerApplicationListSerializer(application_queryset, many=True).data
-    data += ArchivalApplicationListSerializer(
-        archival_application_queryset, many=True
-    ).data
+    if load_all:
+        data += HandlerApplicationListSerializer(application_queryset, many=True).data
+        data += ArchivalApplicationListSerializer(
+            archival_application_queryset, many=True
+        ).data
+    else:
+        data += HandlerApplicationListSerializer(
+            application_queryset[:30], many=True
+        ).data
+        data += ArchivalApplicationListSerializer(
+            archival_application_queryset[:30], many=True
+        ).data
     return _create_search_response(None, data, SearchPattern.ALL, "")
 
 
 def _query_and_respond_to_ssn(
     application_queryset,
-    search_query_str,
+    search_query_string,
     detected_pattern,
 ):
     """
@@ -352,31 +363,31 @@ def _query_and_respond_to_ssn(
     filter by exact SSN and if no match is found then try uppercase
     """
     application_queryset = application_queryset.filter(
-        employee__social_security_number=search_query_str
+        employee__social_security_number=search_query_string
     )
     if application_queryset.count() == 0:
         application_queryset = application_queryset.filter(
-            employee__social_security_number=search_query_str.upper()
+            employee__social_security_number=search_query_string.upper()
         )
     return _create_search_response(
         application_queryset,
         None,
         detected_pattern,
-        search_query_str,
+        search_query_string,
     )
 
 
 def _query_and_respond_to_archival_application(
-    archival_application_queryset, search_query_str, detected_pattern
+    archival_application_queryset, search_query_string, detected_pattern
 ):
     archival_application_queryset = archival_application_queryset.filter(
-        Q(application_number__icontains=search_query_str)
+        Q(application_number__icontains=search_query_string)
     )
     return _create_search_response(
         queryset=archival_application_queryset,
         serialized_data=None,
         detected_pattern=detected_pattern,
-        search_query_str=search_query_str,
+        search_query_str=search_query_string,
         serializer=ArchivalApplicationListSerializer,
     )
 
