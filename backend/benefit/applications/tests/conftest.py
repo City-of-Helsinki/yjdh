@@ -181,7 +181,7 @@ def applications_csv_service_with_one_application(applications_csv_service):
 
 
 @pytest.fixture
-def pruned_applications_csv_service():
+def talpa_applications_csv_service():
     # retrieve the objects through the default manager so that annotations are added
     application1 = DecidedApplicationFactory(application_number=100001)
     application2 = DecidedApplicationFactory(application_number=100002)
@@ -194,8 +194,7 @@ def pruned_applications_csv_service():
 
 
 @pytest.fixture
-def pruned_applications_csv_service_with_one_application(
-    applications_csv_service, application_batch
+def talpa_applications_csv_service_with_one_application(application_batch
 ):
     application1 = application_batch.applications.all().first()
 

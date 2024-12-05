@@ -603,14 +603,14 @@ def test_write_application_alterations_csv_file(
         (True,),
     ],
 )
-def test_pruned_applications_csv_output(
-    pruned_applications_csv_service_with_one_application, instalments_enabled, settings
+def test_talpa_applications_csv_output(
+    talpa_applications_csv_service_with_one_application, instalments_enabled, settings
 ):
     settings.PAYMENT_INSTALMENTS_ENABLED = instalments_enabled
 
     instalment_amount = decimal.Decimal("123.45")
     application = (
-        pruned_applications_csv_service_with_one_application.get_applications()[0]
+        talpa_applications_csv_service_with_one_application.get_applications()[0]
     )
     if instalments_enabled:
         application.calculation.instalments.all().delete()
@@ -624,7 +624,7 @@ def test_pruned_applications_csv_output(
         )
 
     csv_lines = split_lines_at_semicolon(
-        pruned_applications_csv_service_with_one_application.get_csv_string()
+        talpa_applications_csv_service_with_one_application.get_csv_string()
     )
     # Assert that there are 18 column headers in the pruned CSV
     assert len(csv_lines[0]) == 18
