@@ -30,14 +30,8 @@ class Header<
       .nth(0);
   }
 
-  private languageSelector(): SelectorPromise {
-    return this.withinNavigationActions.findByRole('button', {
-      name: this.translations.header.languageMenuButtonAriaLabel,
-    });
-  }
-
   private languageSelectorItem(toLang: Language): SelectorPromise {
-    return this.withinNavigationActions.findByRole('link', {
+    return this.withinNavigationActions.findByRole('button', {
       name: this.translations.languages[toLang],
     });
   }
@@ -74,9 +68,7 @@ class Header<
   }
 
   public async changeLanguage(toLang: Language): Promise<void> {
-    return t
-      .click(this.languageSelector())
-      .click(this.languageSelectorItem(toLang));
+    return t.click(this.languageSelectorItem(toLang));
   }
 
   public clickLoginButton(): Promise<void> {

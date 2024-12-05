@@ -13,12 +13,6 @@ const defaultTranslations = {
   en: 'In English',
 };
 
-const languageMenuButtonAriaLabels = {
-  fi: 'Valitse kieli',
-  sv: 'Ändra språk',
-  en: 'Select language',
-};
-
 const expectations = {
   userIsLoggedIn: async (expectedUser?: User): Promise<void> => {
     await screen.findByRole('button', {
@@ -79,7 +73,7 @@ const actions = {
     toLang: Language
   ): Promise<void> => {
     return userEvent.click(
-      screen.getAllByRole('link', {
+      screen.getAllByRole('button', {
         name: new RegExp(
           `(${defaultTranslations[toLang]})|(languages.${toLang})`,
           'i'
