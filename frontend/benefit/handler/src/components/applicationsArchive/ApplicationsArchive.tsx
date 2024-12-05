@@ -1,5 +1,6 @@
 import { ROUTES } from 'benefit/handler/constants';
 import {
+  Button,
   IconCross,
   RadioButton,
   SearchInput,
@@ -15,6 +16,7 @@ import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
+import { focusAndScrollToSelector } from 'shared/utils/dom.utils';
 import styled from 'styled-components';
 
 import ApplicationArchiveList from './ApplicationArchiveList';
@@ -45,6 +47,9 @@ const $SearchInputArea = styled.div`
 const ApplicationsArchive: React.FC = () => {
   const [searchString, setSearchString] = React.useState<string>('');
   const [initialQuery, setInitialQuery] = React.useState<boolean>(true);
+  const [loadAll, setLoadAll] = React.useState<boolean>(false);
+  const [displayLoadAll, setDisplayLoadAll] = React.useState<boolean>(true);
+
   const [subsidyInEffect, setSubsidyInEffect] =
     React.useState<SUBSIDY_IN_EFFECT | null>(
       SUBSIDY_IN_EFFECT.RANGE_THREE_YEARS
@@ -65,7 +70,8 @@ const ApplicationsArchive: React.FC = () => {
       true,
       subsidyInEffect,
       decisionRange,
-      applicationNum ? applicationNum.toString() : null
+      applicationNum ? applicationNum.toString() : null,
+      loadAll
     );
 
   const onSearch = (value: string): void => {
@@ -80,6 +86,8 @@ const ApplicationsArchive: React.FC = () => {
     setFilterSelection(selection);
     setDecisionRange(null);
     setSubsidyInEffect(value);
+    setDisplayLoadAll(true);
+    setLoadAll(false);
   };
   const handleDecisionFilterChange = (
     selection: FILTER_SELECTION,
@@ -88,11 +96,15 @@ const ApplicationsArchive: React.FC = () => {
     setFilterSelection(selection);
     setDecisionRange(value);
     setSubsidyInEffect(null);
+    setDisplayLoadAll(true);
+    setLoadAll(false);
   };
   const handleFiltersOff = (): void => {
     setDecisionRange(null);
     setSubsidyInEffect(null);
     setFilterSelection(FILTER_SELECTION.NO_FILTER);
+    setDisplayLoadAll(true);
+    setLoadAll(false);
   };
 
   React.useEffect(() => {
@@ -102,9 +114,10 @@ const ApplicationsArchive: React.FC = () => {
       setInitialQuery(false);
     } else if (!isSearchLoading) {
       submitSearch(searchString);
+      setLoadAll(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterSelection, applicationNum, router, initialQuery]);
+  }, [filterSelection, applicationNum, router, initialQuery, loadAll]);
 
   return (
     <Container data-testid="application-list-archived">
@@ -220,6 +233,22 @@ const ApplicationsArchive: React.FC = () => {
         data={searchResults?.matches}
         isSearchLoading={isSearchLoading}
       />
+      {displayLoadAll &&
+        !isSearchLoading &&
+        searchString.length === 0 &&
+        searchResults?.matches?.length >= 30 && (
+          <Button
+            style={{ marginTop: 'var(--spacing-m)' }}
+            theme="coat"
+            onClick={() => {
+              setLoadAll(true);
+              setDisplayLoadAll(false);
+              focusAndScrollToSelector('header');
+            }}
+          >
+            {t('common:utility.loadMore')}
+          </Button>
+        )}
     </Container>
   );
 };
