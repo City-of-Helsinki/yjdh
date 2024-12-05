@@ -109,6 +109,19 @@ export const renderPaymentTagPerStatus = (
   </$TagWrapper>
 );
 
+const parseAhjoError = (ahjoError: AhjoError): JSX.Element[] => {
+  if (Array.isArray(ahjoError.errorFromAhjo))
+    return ahjoError.errorFromAhjo.map(({ message }) => <li>{message}</li>);
+
+  if (
+    typeof ahjoError.errorFromAhjo === 'object' &&
+    ahjoError.errorFromAhjo.message
+  )
+    return [<li>{ahjoError.errorFromAhjo.message}</li>];
+
+  return [<li>{String(ahjoError.errorFromAhjo)}</li>];
+};
+
 const ApplicationList: React.FC<ApplicationListProps> = ({
   heading,
   status,
@@ -177,13 +190,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
                   Ahjo, {convertToUIDateAndTimeFormat(ahjoError?.modifiedAt)}
                 </strong>
               </div>
-              <ul>
-                {ahjoError?.errorFromAhjo?.map
-                  ? ahjoError?.errorFromAhjo?.map(({ message }) => (
-                      <li>{message}</li>
-                    ))
-                  : ahjoError?.errorFromAhjo}
-              </ul>
+              <ul>{parseAhjoError(ahjoError)}</ul>
             </Tooltip>
           </$ActionErrors>
         )}

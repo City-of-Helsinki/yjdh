@@ -266,13 +266,13 @@ export interface DecisionProposalDraft {
 }
 
 export interface AhjoError {
-  errorFromAhjo: ErrorFromAhjo[];
+  errorFromAhjo: ErrorFromAhjo | ErrorFromAhjo[];
   modifiedAt: string;
   status: string;
 }
 
 export interface AhjoErrorData {
-  error_from_ahjo: ErrorFromAhjo[];
+  error_from_ahjo: ErrorFromAhjo | ErrorFromAhjo[];
   modified_at: string;
   status: string;
 }
