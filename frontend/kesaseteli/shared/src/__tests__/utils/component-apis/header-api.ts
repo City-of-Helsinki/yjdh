@@ -28,7 +28,7 @@ const expectations = {
         screen.queryAllByRole('button', {
           name: /(kirjaudu palveluun)|(header.loginlabel)/i,
         })
-      ).toHaveLength(2); // this is due to ssr bug in hds header component, it's in the dom twice after ssr and before csr
+      ).toHaveLength(1); // this is due to ssr bug in hds header component, it's in the dom twice after ssr and before csr
     });
   },
   errorToastIsShown: async (
@@ -63,7 +63,7 @@ const actions = {
       })
     );
     return userEvent.click(
-      screen.getAllByRole('link', {
+      screen.getAllByRole('button', {
         name: /(kirjaudu ulos)|(header.logoutlabel)/i,
       })[0] // this is due to ssr bug in hds header component, it's in the dom twice after ssr and before csr
     );
