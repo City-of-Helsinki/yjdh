@@ -3,6 +3,7 @@ from typing import List, Union
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import status
@@ -170,12 +171,24 @@ class TalpaCallbackView(APIView):
         Always set the application as archived after the first instalment is succesfully sent to talpa.
         """
         for application in applications:
-            instalment = application.calculation.instalments.get(
-                status=InstalmentStatus.ACCEPTED,
-                due_date__lte=timezone.now().date(),
-            )
-            instalment.status = instalment_status
-            instalment.save()
+            try:
+                instalment = application.calculation.instalments.get(
+                    status=InstalmentStatus.ACCEPTED,
+                    due_date__lte=timezone.now().date(),
+                )
+                instalment.status = instalment_status
+                if is_success:
+                    instalment.amount_paid = instalment.amount_after_recoveries
+                instalment.save()
+            except ObjectDoesNotExist:
+                LOGGER.error(
+                    f"Valid payable Instalment not found for application {application.application_number}"
+                )
+            except MultipleObjectsReturned:
+                LOGGER.error(
+                    f"Multiple payable Instalments found for application \
+{application.application_number}, there should be only one"
+                )
 
             if is_success:
                 # after 1st instalment is sent to talpa,
