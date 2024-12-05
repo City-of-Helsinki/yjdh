@@ -298,6 +298,7 @@ def test_talpa_callback_success(
 
         for instalment in instalments:
             assert instalment.status == InstalmentStatus.PAID
+            assert instalment.amount_paid == instalment.amount_after_recoveries
 
         if number_of_instalments == 1:
             assert (
@@ -314,12 +315,14 @@ def test_talpa_callback_success(
             instalment_1 = decided_application.calculation.instalments.get(
                 instalment_number=1
             )
+            assert instalment_1.amount_paid == instalment.amount_after_recoveries
             assert instalment_1.status == InstalmentStatus.PAID
 
             instalment_2 = decided_application.calculation.instalments.get(
                 instalment_number=2
             )
             assert instalment_2.status == InstalmentStatus.WAITING
+            assert instalment_2.amount_paid is None
 
             assert (
                 decided_application.talpa_status
