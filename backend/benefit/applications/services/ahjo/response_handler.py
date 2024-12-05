@@ -198,9 +198,15 @@ class AhjoDecisionDetailsResponseHandler:
 for application {application.id} and batch {batch.id} from Ahjo"
 
     def _update_instalments_as_accepted(self, application: Application):
+        """
+        Update the first instalment status to accepted after details are received
+        from Ahjo.
+        """
         calculation = application.calculation
         instalments = Instalment.objects.filter(
-            calculation=calculation, status=InstalmentStatus.WAITING
+            calculation=calculation,
+            status=InstalmentStatus.WAITING,
+            instalment_number=1,
         )
         if instalments.exists():
             instalments.update(status=InstalmentStatus.ACCEPTED)

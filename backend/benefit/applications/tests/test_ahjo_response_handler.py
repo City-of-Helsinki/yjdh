@@ -204,13 +204,15 @@ def test_parse_details_from_decision_response(
 
 @pytest.mark.parametrize(
     "instalments_enabled,application_status,\
-    expected_batch_status, expected_proposal_for_decision, expected_instalment_1_status",
+    expected_batch_status, expected_proposal_for_decision, expected_instalment_1_status, \
+        expected_instalment_2_status",
     [
         (
             True,
             ApplicationStatus.REJECTED,
             ApplicationBatchStatus.DECIDED_REJECTED,
             AhjoDecision.DECIDED_REJECTED,
+            InstalmentStatus.WAITING,
             InstalmentStatus.WAITING,
         ),
         (
@@ -219,6 +221,7 @@ def test_parse_details_from_decision_response(
             ApplicationBatchStatus.DECIDED_ACCEPTED,
             AhjoDecision.DECIDED_ACCEPTED,
             InstalmentStatus.ACCEPTED,
+            InstalmentStatus.WAITING,
         ),
     ],
 )
@@ -230,6 +233,7 @@ def test_handle_details_request_success(
     expected_batch_status,
     expected_proposal_for_decision,
     expected_instalment_1_status,
+    expected_instalment_2_status,
     instalments_enabled,
     p2p_settings,
     settings,
@@ -251,6 +255,13 @@ def test_handle_details_request_success(
         amount=1000.00,
         amount_paid=1000.00,
     )
+    instalment_2 = Instalment.objects.create(
+        calculation=calculation,
+        status=InstalmentStatus.WAITING,
+        instalment_number=1,
+        amount=500.00,
+        amount_paid=1000.00,
+    )
 
     response_handler = AhjoDecisionDetailsResponseHandler()
     success_text = response_handler.handle_details_request_success(
@@ -266,6 +277,7 @@ def test_handle_details_request_success(
 for application {application.id} and batch {application.batch.id} from Ahjo"
     )
     assert instalment_1.status == expected_instalment_1_status
+    assert instalment_2.status == expected_instalment_2_status
     assert latest_ahjo_status.status == AhjoStatusEnum.DETAILS_RECEIVED_FROM_AHJO
 
     batch = application.batch
