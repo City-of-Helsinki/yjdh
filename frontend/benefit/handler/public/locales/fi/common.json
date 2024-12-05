@@ -213,7 +213,7 @@
           "cancelled": "Peruutettu",
           "accepted": "Myönteinen",
           "rejected": "Kielteinen",
-          "archival": "Myönteinen"
+          "archival": "Paperihakemus"
         },
         "talpaStatuses": {
           "not_sent_to_talpa": "Odottaa",

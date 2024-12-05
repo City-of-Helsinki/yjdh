@@ -7,7 +7,14 @@ import {
   ApplicationAlterationData,
   ApplicationData,
 } from 'benefit-shared/types/application';
-import { IconAlertCircle, IconCheck, IconCross, Table, Tag } from 'hds-react';
+import {
+  IconAlertCircle,
+  IconCheck,
+  IconCross,
+  IconHistory,
+  Table,
+  Tag,
+} from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
@@ -64,7 +71,7 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
         {status === APPLICATION_STATUSES.ACCEPTED && <IconCheck />}
         {status === APPLICATION_STATUSES.REJECTED && <IconCross />}
         {status === APPLICATION_STATUSES.CANCELLED && <IconAlertCircle />}
-        {status === APPLICATION_STATUSES.ARCHIVAL && <IconCheck />}
+        {status === APPLICATION_STATUSES.ARCHIVAL && <IconHistory />}
 
         {t(
           `common:applications.list.columns.applicationStatuses.${String(
