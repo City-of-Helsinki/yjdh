@@ -36,6 +36,7 @@ from applications.exceptions import (
     BatchCompletionRequiredFieldsError,
     BatchTooManyDraftsError,
 )
+from calculator.enums import InstalmentStatus
 from common.localized_iban_field import LocalizedIBANField
 from common.utils import DurationMixin
 from companies.models import Company
@@ -168,6 +169,19 @@ class ApplicationManager(models.Manager):
 
         # Return the filtered applications with the specified prefetched related attachments
         return qs.prefetch_related(attachments_prefetch)
+
+    def with_due_instalments(self, status: InstalmentStatus):
+        """Query applications with instalments with past due date and a specific status."""
+        return (
+            self.filter(
+                status=ApplicationStatus.ACCEPTED,
+                calculation__instalments__due_date__lte=timezone.now().date(),
+                calculation__instalments__status=status,
+            )
+            .select_related("calculation")
+            .select_related("batch")
+            .prefetch_related("calculation__instalments")
+        )
 
     def get_by_statuses(
         self,
@@ -563,6 +577,10 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     )
 
     @property
+    def number_of_instalments(self):
+        return self.calculation.instalments.count()
+
+    @property
     def calculated_benefit_amount(self):
         if hasattr(self, "calculation"):
             return self.calculation.calculated_benefit_amount
@@ -576,7 +594,7 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
         if original_benefit is not None and self.alteration_set is not None:
             return original_benefit - sum(
                 [
-                    alteration.collection_amount
+                    alteration.recovery_amount or 0
                     for alteration in self.alteration_set.all()
                 ]
             )
@@ -907,7 +925,7 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
             self.decision_maker_name = details.decision_maker_name
             self.decision_maker_title = details.decision_maker_title
             self.section_of_the_law = details.section_of_the_law
-            self.decision_date = details.decision_date
+            self.decision_date = details.decision_date.date()
 
             p2p_settings = AhjoSetting.objects.get(name="p2p_settings")
             self.p2p_checker_name = p2p_settings.data["acceptor_name"]
@@ -1234,7 +1252,9 @@ class AhjoStatus(TimeStampedModel):
     )
 
     def __str__(self):
-        return self.status
+        return f"{self.status} for application {self.application.application_number}, \
+created_at: {self.created_at}, modified_at: {self.modified_at}, \
+ahjo_request_id: {self.ahjo_request_id}"
 
     class Meta:
         db_table = "bf_applications_ahjo_status"
@@ -1315,6 +1335,19 @@ class AhjoDecisionText(UUIDModel, TimeStampedModel):
 
     decision_maker_id = models.CharField(
         verbose_name=_("the ID of the decision maker"),
+        null=True,
+        blank=True,
+        max_length=64,
+    )
+
+    signer_name = models.TextField(
+        verbose_name=_("the name of the signer"),
+        null=True,
+        blank=True,
+    )
+
+    signer_id = models.CharField(
+        verbose_name=_("the ID of the signer"),
         null=True,
         blank=True,
         max_length=64,
@@ -1510,7 +1543,9 @@ class AhjoDecisionProposalDraft(TimeStampedModel):
 
     handler_role = models.CharField(
         max_length=64,
-        verbose_name=_("Handler role"),
+        verbose_name=_(
+            "Handler role (DEPRECATED, was used before dynamic fetch of decision makers)"
+        ),
         blank=True,
         null=True,
         choices=HandlerRole.choices,
@@ -1535,6 +1570,19 @@ class AhjoDecisionProposalDraft(TimeStampedModel):
 
     decision_maker_id = models.CharField(
         verbose_name=_("the ID of the decision maker"),
+        null=True,
+        blank=True,
+        max_length=64,
+    )
+
+    signer_name = models.TextField(
+        verbose_name=_("the name of the signer"),
+        null=True,
+        blank=True,
+    )
+
+    signer_id = models.CharField(
+        verbose_name=_("the ID of the signer"),
         null=True,
         blank=True,
         max_length=64,

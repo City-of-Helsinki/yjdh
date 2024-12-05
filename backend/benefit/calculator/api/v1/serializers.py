@@ -6,9 +6,12 @@ from rest_framework import serializers
 
 from applications.enums import ApplicationActions, ApplicationStatus, BenefitType
 from applications.models import Application
+from calculator.api.v1.validators import InstalmentStatusValidator
+from calculator.enums import InstalmentStatus
 from calculator.models import (
     Calculation,
     CalculationRow,
+    Instalment,
     PaySubsidy,
     PreviousBenefit,
     STATE_AID_MAX_PERCENTAGE_CHOICES,
@@ -43,6 +46,53 @@ class CalculationRowSerializer(serializers.ModelSerializer):
             "start_date",
             "end_date",
         ]
+
+
+class InstalmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Instalment
+        fields = [
+            "id",
+            "status",
+            "due_date",
+            "instalment_number",
+            "calculation",
+            "amount",
+            "created_at",
+            "modified_at",
+            "amount_after_recoveries",
+        ]
+        read_only_fields = [
+            "id",
+            "due_date",
+            "instalment_number",
+            "calculation",
+            "amount",
+            "created_at",
+            "modified_at",
+            "amount_after_recoveries",
+        ]
+
+    def validate_status(self, status):
+        if status not in InstalmentStatus.values:
+            raise serializers.ValidationError(
+                {"status": f"status must be one of {InstalmentStatus.values}"},
+            )
+
+        return status
+
+    amount_after_recoveries = serializers.SerializerMethodField(
+        "get_amount_after_recoveries",
+    )
+
+    def amount_after_recoveries(self, obj):
+        return getattr(obj, "amount_after_recoveries", None)
+
+    status = serializers.ChoiceField(
+        validators=[InstalmentStatusValidator()],
+        choices=InstalmentStatus.choices,
+        help_text="Status of the application, visible to the applicant",
+    )
 
 
 class CalculationSerializer(serializers.ModelSerializer):

@@ -255,6 +255,12 @@ def _create_dummy_ahjo_settings():
             "id": "1234567-8",
         },
     )
+
+    AhjoSetting.objects.create(
+        name="ahjo_signer_org_ids",
+        data=["1234567", "7654321"],
+    )
+
     AhjoSetting.objects.create(
         name="ahjo_decision_maker",
         data=[
@@ -263,5 +269,18 @@ def _create_dummy_ahjo_settings():
                 "Name": "Tiimipäällikkö, työnantajille myönnettävät taloudelliset tuet",
             },
             {"ID": "HIJKLMNOPQRSTUWXYZ", "Name": "Helsinki-lisä-suunnittelija"},
+        ],
+    )
+    AhjoSetting.objects.create(
+        name="ahjo_signer",
+        data=[
+            {
+                "ID": "ABCDEFGH12345678",
+                "Name": "Testaaja, Timo",
+            },
+            {
+                "ID": "ABCDEFGH87654321",
+                "Name": "Testaaja, Tiina",
+            },
         ],
     )

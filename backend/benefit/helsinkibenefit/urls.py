@@ -89,7 +89,7 @@ router.register(
 urlpatterns = [
     path("admin/", admin.site.urls),
     path(
-        "v1/ahjosettings/decision-maker/",
+        "v1/ahjosettings/<str:name>/",
         AhjoSettingDetailView.as_view(),
         name="ahjo-setting-detail",
     ),
@@ -145,6 +145,10 @@ urlpatterns = [
     path("v1/users/options/", UserOptionsView.as_view()),
     path(
         "v1/handlerapplications/<str:application_id>/review/", ReviewStateView.as_view()
+    ),
+    path(
+        "v1/handlerinstalments/<str:instalment_id>/",
+        calculator_views.InstalmentView.as_view(),
     ),
     path(
         "v1/handlerapplications/<str:application_id>/decisions/",

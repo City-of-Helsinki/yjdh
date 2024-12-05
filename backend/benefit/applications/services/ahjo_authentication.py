@@ -7,28 +7,21 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 
 from applications.models import AhjoSetting
+from applications.services.ahjo.exceptions import (
+    AhjoTokenExpiredException,
+    AhjoTokenRetrievalException,
+)
 
 AUTH_TOKEN_GRANT_TYPE = "authorization_code"
 REFRESH_TOKEN_GRANT_TYPE = "refresh_token"
-
-
-class AhjoTokenExpiredException(Exception):
-    pass
-
-
-class AhjoTokenRetrievalException(Exception):
-    pass
-
-
-class InvalidTokenException(Exception):
-    pass
+REFRESH_TOKEN_EXPIRES_IN = 1296000  # 15 days
 
 
 @dataclass
 class AhjoToken:
     access_token: str = ""
     refresh_token: str = ""
-    expires_in: int = (0,)
+    expires_in: int = REFRESH_TOKEN_EXPIRES_IN  # 15 days
     created_at: datetime = (None,)
 
     def expiry_datetime(self) -> datetime:
@@ -38,7 +31,7 @@ class AhjoToken:
         return self.expiry_datetime() < datetime.now(timezone.utc)
 
     def __str__(self) -> str:
-        return f"Ahjo access token, expiry date: {self.expiry_datetime()}"
+        return f"Ahjo access token, refresh_token expiry date: {self.expiry_datetime()}"
 
 
 class AhjoConnector:
@@ -111,19 +104,20 @@ class AhjoConnector:
                 self.token_url, headers=self.headers, data=payload, timeout=self.timeout
             )
         except requests.exceptions.RequestException as e:
-            raise Exception(f"Failed to get or refresh token from Ahjo: {e}")
+            raise AhjoTokenRetrievalException(
+                f"Failed to get or refresh token from Ahjo: {e}"
+            )
 
         # Check if the request was successful
         if response.status_code == 200:
             # Extract the access token from the JSON response
             access_token = response.json().get("access_token", "")
-            expires_in = int(response.json().get("expires_in", ""))
             refresh_token = response.json().get("refresh_token", "")
 
             token_from_api = AhjoToken(
                 access_token=access_token,
                 refresh_token=refresh_token,
-                expires_in=expires_in,
+                expires_in=REFRESH_TOKEN_EXPIRES_IN,
             )
 
             return self.create_token(token_from_api)

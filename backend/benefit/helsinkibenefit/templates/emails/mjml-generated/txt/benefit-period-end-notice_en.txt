@@ -1,0 +1,14 @@
+{% comment %} NEVER MAKE MODIFICATIONS TO THIS GENERATED FILE DIRECTLY, ALL MODIFICATIONS SHOULD BE DONE TO MJML TEMPLATE FILES! {% endcomment %}
+
+Hello!
+
+You have been granted Helsinki benefit for specific employment relationship. Were there any changes to the employment relationship of the person employed during the support period? As the recipient of the support, you are obligated to inform us if the employment relationship has ended prematurely or been interrupted during the support period. Notification can be easily done through the online Helsinki Benefit service. Notice that you don't need to take any action if the employment relationship has proceeded as planned.
+
+Best regards,
+The Helsinki benefit team
+
+Application number: {{application.application_number}}
+Receiver: {{benefit_company_name}}
+Helsinki benefit period: {{benefit_start_date}} - {{benefit_end_date}}
+
+This is an automatic notification of an online message sent to you. Please do not reply to this message, as responses will not be processed. Please do not hesitate to contact the advisory service by e-mail at helsinkilisa@hel.fi. 

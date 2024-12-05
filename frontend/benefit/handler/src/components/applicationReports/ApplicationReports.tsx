@@ -28,6 +28,9 @@ const ApplicationReports: React.FC = () => {
         buttonText={`${t(
           `${translationsBase}.buttons.downloadApplicationsInTimeRange`
         )}`}
+        compactButtonText={`${t(
+          `${translationsBase}.buttons.downloadCompactList`
+        )}`}
       >
         <$GridCell $colSpan={3} css="font-weight: 500;">{`${t(
           `${translationsBase}.fields.startDate`

@@ -3,6 +3,7 @@ from datetime import timedelta
 import pytest
 
 from applications.enums import ApplicationStatus
+from applications.models import APPLICATION_LANGUAGE_CHOICES
 from applications.services.ahjo_xml_builder import (
     AhjoPublicXMLBuilder,
     AhjoSecretXMLBuilder,
@@ -86,11 +87,10 @@ def total_eur_row(calculation, ordering: int = 8):
 
 
 @pytest.mark.django_db
-def test_generate_secret_xml_string(decided_application, secret_xml_builder):
-    application = decided_application
+def test_generate_secret_xml_string(secret_xml_builder):
     xml_content = secret_xml_builder.generate_xml()
 
-    wanted_language = application.applicant_language
+    wanted_language = APPLICATION_LANGUAGE_CHOICES[0][0]
 
     # Check if the returned XML string contains the expected content
     assert f'<main id="paatoksenliite" lang="{wanted_language}">' in xml_content
@@ -241,7 +241,7 @@ def test_get_context_for_secret_xml_for_rejected_application(
     context = secret_xml_builder.get_context_for_secret_xml()
 
     assert context["application"] == decided_application
-    assert context["language"] == decided_application.applicant_language
+    assert context["language"] == APPLICATION_LANGUAGE_CHOICES[0][0]
     assert context["include_calculation_data"] is False
     assert "calculation_periods" not in context
     assert "total_amount_row" not in context
@@ -262,7 +262,7 @@ def test_get_context_for_secret_xml_with_single_period(
         monthly_row_1.amount
     )
     assert context["calculation_periods"][0].total_amount == int(total_eur_row.amount)
-    assert context["language"] == decided_application.applicant_language
+    assert context["language"] == APPLICATION_LANGUAGE_CHOICES[0][0]
     assert isinstance(context["total_amount_row"], CalculationRow)
     assert context["total_amount_row"] == total_eur_row
     assert context["total_amount_row"].amount == int(total_eur_row.amount)
@@ -333,6 +333,7 @@ def test_get_context_for_secret_xml_with_multiple_periods(
             "&nbsp;\u200b\u00a0\u200bTest\u200b\u200b",
             "  Test",
         ),  # Mixed invisible characters
+        ("Test & Co", "Test &amp; Co"),  # No changes expected
         ("No special characters", "No special characters"),  # No changes expected
     ],
 )

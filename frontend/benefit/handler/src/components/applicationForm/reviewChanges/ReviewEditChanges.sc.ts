@@ -14,11 +14,13 @@ export const $ChangeRowValue = styled.dd<$ChangeRowValueProps>`
   svg {
     margin: 0 ${(props) => props.theme.spacing.xs3};
     width: 18px;
+    min-width: 18px;
     height: 18px;
+    min-height: 18px;
   }
 
   span {
-    white-space: pre;
+    white-space: normal;
   }
 `;
 
@@ -26,8 +28,14 @@ export const $ChangeRowLabel = styled.dt`
   margin: 0;
 `;
 
-export const $ChangeSet = styled.div`
-  background: ${(props) => props.theme.colors.silverLight};
+type $ChangeSetProps = {
+  isChangeByStaff: boolean;
+};
+export const $ChangeSet = styled.div<$ChangeSetProps>`
+  background: ${(props) =>
+    props.isChangeByStaff
+      ? props.theme.colors.silverLight
+      : props.theme.colors.fogLight};
   padding: ${(props) => props.theme.spacing.s};
   font-size: 0.99em;
   margin-bottom: ${(props) => props.theme.spacing.xs};

@@ -1,5 +1,60 @@
 # Changelog
 
+## [2.7.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.6.0...benefit-backend-v2.7.0) (2024-11-26)
+
+
+### Features
+
+* Add two calculation and application fields as notes (hl-1550) ([#3549](https://github.com/City-of-Helsinki/yjdh/issues/3549)) ([823e5cd](https://github.com/City-of-Helsinki/yjdh/commit/823e5cd5c745a88b9bce916a14183f9b96a1641b))
+* HL 1426 ahjo signer ([#3540](https://github.com/City-of-Helsinki/yjdh/issues/3540)) ([a4479bf](https://github.com/City-of-Helsinki/yjdh/commit/a4479bf7da77a74b4e6cf7b0cdb665d5f425d476))
+* Visualise instalments and alterations (hl-1496) ([#3547](https://github.com/City-of-Helsinki/yjdh/issues/3547)) ([f56e581](https://github.com/City-of-Helsinki/yjdh/commit/f56e5813a178b6aa89d38fc27e7300b9e6db6169))
+
+
+### Bug Fixes
+
+* 1st instalment status accepted when created ([#3543](https://github.com/City-of-Helsinki/yjdh/issues/3543)) ([7f4e4aa](https://github.com/City-of-Helsinki/yjdh/commit/7f4e4aaf1a4c700f63a3f15338eaf14daf1a7d7d))
+* Hl 1556 csv report ([#3544](https://github.com/City-of-Helsinki/yjdh/issues/3544)) ([d3caae5](https://github.com/City-of-Helsinki/yjdh/commit/d3caae57748ed0ada61b4a585eda90dfaa71047f))
+* HL 1558 ahjo fixes ([#3565](https://github.com/City-of-Helsinki/yjdh/issues/3565)) ([0ea3745](https://github.com/City-of-Helsinki/yjdh/commit/0ea3745446eac85e1b269bc5724ec6c4cb0b351c))
+* Quotes crashing talpa csv ([#3593](https://github.com/City-of-Helsinki/yjdh/issues/3593)) ([6a5715a](https://github.com/City-of-Helsinki/yjdh/commit/6a5715a0bb8d2b8e3ce8fecf7a0232f30e636d59))
+* Various cloning issues (hl-1539) ([#3577](https://github.com/City-of-Helsinki/yjdh/issues/3577)) ([9c4f4ea](https://github.com/City-of-Helsinki/yjdh/commit/9c4f4ea7306cabf10503046c8393e349ab7b1f38))
+
+## [2.6.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.5.0...benefit-backend-v2.6.0) (2024-11-12)
+
+
+### Features
+
+* Add accordion to decision box to list instalments (hl-1497) ([#3515](https://github.com/City-of-Helsinki/yjdh/issues/3515)) ([34e6201](https://github.com/City-of-Helsinki/yjdh/commit/34e620124426afbfd232e73eb88c46de0b7d6d15))
+* Don't create new status on retry, save error ([#3526](https://github.com/City-of-Helsinki/yjdh/issues/3526)) ([1c2d9e4](https://github.com/City-of-Helsinki/yjdh/commit/1c2d9e4f8c04199cfb9940ab03aeac0ce8aef2f4))
+* Implement instalments gui for handler (hl-1494) ([#3498](https://github.com/City-of-Helsinki/yjdh/issues/3498)) ([aaff375](https://github.com/City-of-Helsinki/yjdh/commit/aaff375519aa7f7defd8ede4beceaae96352982c))
+* Use own endpoint for requesting more information ([#3523](https://github.com/City-of-Helsinki/yjdh/issues/3523)) ([18406f6](https://github.com/City-of-Helsinki/yjdh/commit/18406f66e6b8dd3826ee63570f4140b5556522ea))
+
+
+### Bug Fixes
+
+* Attachment date in add records & update reqs ([#3525](https://github.com/City-of-Helsinki/yjdh/issues/3525)) ([af635c0](https://github.com/City-of-Helsinki/yjdh/commit/af635c04b7c2eaf0fc498d2797b13e31bf56efb4))
+* HL-1544 ([#3500](https://github.com/City-of-Helsinki/yjdh/issues/3500)) ([0b49eb3](https://github.com/City-of-Helsinki/yjdh/commit/0b49eb3c3b17bf0031369a04062c68ba83a56c92))
+* Preselect decision maker if it was selected before (hl-1530) ([#3522](https://github.com/City-of-Helsinki/yjdh/issues/3522)) ([45095c5](https://github.com/City-of-Helsinki/yjdh/commit/45095c53a41f3bbf7101effe34b6aac44c2a06c3))
+
+## [2.5.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.4.1...benefit-backend-v2.5.0) (2024-11-04)
+
+
+### Features
+
+* Create instalments when calculating benefit ([#3479](https://github.com/City-of-Helsinki/yjdh/issues/3479)) ([f9822b4](https://github.com/City-of-Helsinki/yjdh/commit/f9822b43029e1f9b5846ae85e2dbd2fc21e10fab))
+* Don't block ahjo requests if xml build fails ([#3463](https://github.com/City-of-Helsinki/yjdh/issues/3463)) ([8a03c49](https://github.com/City-of-Helsinki/yjdh/commit/8a03c495042711e1c242480f0271053392666b5c))
+* Fix issues with applicant changes (hl-1222) ([#3440](https://github.com/City-of-Helsinki/yjdh/issues/3440)) ([3610df9](https://github.com/City-of-Helsinki/yjdh/commit/3610df9c52a0a2eb9579e35fb9a632afb98409ce))
+* Instalment model ([#3467](https://github.com/City-of-Helsinki/yjdh/issues/3467)) ([bd48949](https://github.com/City-of-Helsinki/yjdh/commit/bd489495b139aaa4ec950a01e265dfb7e188a3c4))
+* New max benefit per month ([#3471](https://github.com/City-of-Helsinki/yjdh/issues/3471)) ([e5fc8a2](https://github.com/City-of-Helsinki/yjdh/commit/e5fc8a2e86e042cf37fa289efc24a5ec953f51bb))
+* Separate credentials for PowerBI ([#3472](https://github.com/City-of-Helsinki/yjdh/issues/3472)) ([1e61b44](https://github.com/City-of-Helsinki/yjdh/commit/1e61b4489b8352493fc706403a27e62dc7684156))
+
+
+### Bug Fixes
+
+* Clone application fixes for attachments and status change (hl-1511) ([#3445](https://github.com/City-of-Helsinki/yjdh/issues/3445)) ([dad6a9d](https://github.com/City-of-Helsinki/yjdh/commit/dad6a9d2fb16a514531ec8c961a448e9062fa399))
+* Modified_at date for ahjo update request ([#3452](https://github.com/City-of-Helsinki/yjdh/issues/3452)) ([d502a59](https://github.com/City-of-Helsinki/yjdh/commit/d502a59198c3965f377d16d4161768420da7f9d8))
+* Repair some app crashing bugs when drafting the decision proposal (hl-1522) ([#3478](https://github.com/City-of-Helsinki/yjdh/issues/3478)) ([4cb17ac](https://github.com/City-of-Helsinki/yjdh/commit/4cb17ac7fadedbdd308e41eae44cfe390f400a98))
+* Text improvements & added localizations (Hl-1425 & HL-1486) ([#3451](https://github.com/City-of-Helsinki/yjdh/issues/3451)) ([6105923](https://github.com/City-of-Helsinki/yjdh/commit/6105923d44818a3ddf32c787f206ba45d1a7f429))
+
 ## [2.4.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.4.0...benefit-backend-v2.4.1) (2024-10-23)
 
 

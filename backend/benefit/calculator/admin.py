@@ -3,6 +3,7 @@ from django.contrib import admin
 from calculator.models import (
     Calculation,
     CalculationRow,
+    Instalment,
     PaySubsidy,
     PreviousBenefit,
     TrainingCompensation,
@@ -18,9 +19,15 @@ class CalculationRowInline(admin.StackedInline):
     list_filter = ("calculation",)
 
 
+class InstalmentInline(admin.TabularInline):
+    model = Instalment
+    extra = 0
+    readonly_fields = ("created_at",)
+
+
 class CalculationInline(admin.StackedInline):
     model = Calculation
-    inlines = (CalculationRowInline,)
+    inlines = (InstalmentInline, CalculationRowInline)
     show_change_link = True
     list_display = (
         "id",
@@ -38,10 +45,14 @@ class CalculationInline(admin.StackedInline):
 
 
 class CalculationAdmin(admin.ModelAdmin):
-    inlines = (CalculationRowInline,)
+    inlines = (
+        InstalmentInline,
+        CalculationRowInline,
+    )
     list_filter = ("application", "application__status", "application__company")
     list_display = (
         "id",
+        "application_id",
         "start_date",
         "end_date",
         "calculated_benefit_amount",

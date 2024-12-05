@@ -1,26 +1,22 @@
 import logging
 import time
 from datetime import datetime
-from typing import Dict, List, Union
+from typing import List, Union
 
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.core.management.base import BaseCommand
 from django.db.models import QuerySet
 
-from applications.enums import (
-    AhjoRequestType,
-    AhjoStatus as AhjoStatusEnum,
-    ApplicationBatchStatus,
-    ApplicationStatus,
+from applications.enums import AhjoRequestType
+from applications.models import Application
+from applications.services.ahjo.exceptions import DecisionProposalAlreadyAcceptedError
+from applications.services.ahjo.response_handler import (
+    AhjoDecisionDetailsResponseHandler,
 )
-from applications.models import AhjoStatus, Application
 from applications.services.ahjo_application_service import AhjoApplicationsService
 from applications.services.ahjo_authentication import (
     AhjoToken,
     AhjoTokenExpiredException,
-)
-from applications.services.ahjo_decision_service import (
-    parse_details_from_decision_response,
 )
 from applications.services.ahjo_integration import (
     delete_application_in_ahjo,
@@ -69,6 +65,9 @@ class Command(BaseCommand):
             help="Retry sending requests for applications that have \
 not moved to the next status in the last x hours",
         )
+
+    def get_application_numbers(self, applications: QuerySet[Application]) -> str:
+        return ", ".join(str(app.application_number) for app in applications)
 
     def handle(self, *args, **options):
         try:
@@ -126,9 +125,8 @@ requests for {len(applications)} applications to Ahjo"
         successful_applications = []
         failed_applications = []
 
-        application_numbers = ", ".join(
-            str(app.application_number) for app in applications
-        )
+        application_numbers = self.get_application_numbers(applications)
+
         message_start = "Retrying" if self.is_retry else "Sending"
 
         message = f"{message_start} {ahjo_request_type} request to Ahjo \
@@ -143,6 +141,7 @@ for {len(applications)} applications: {application_numbers}"
             ValueError: "Value error for application",
             ObjectDoesNotExist: "Object not found error for application",
             ImproperlyConfigured: "Improperly configured error for application",
+            DecisionProposalAlreadyAcceptedError: "Decision proposal error for application",
         }
 
         for application in applications:
@@ -153,11 +152,12 @@ for {len(applications)} applications: {application_numbers}"
                     application, ahjo_auth_token
                 )
             except tuple(exception_messages.keys()) as e:
-                LOGGER.error(
-                    f"{exception_messages[type(e)]} {application.application_number}: {e}"
-                )
+                error_text = f"{exception_messages[type(e)]} {application.application_number}: {e}"
+                LOGGER.error(error_text)
                 failed_applications.append(application)
-                self._handle_failed_request(counter, application, ahjo_request_type)
+                self._handle_failed_request(
+                    counter, application, ahjo_request_type, error_text
+                )
                 continue
 
             if sent_application:
@@ -187,10 +187,14 @@ for {len(applications)} applications: {application_numbers}"
         elapsed_time,
     ):
         if successful_applications:
+            successful_application_numbers = self.get_application_numbers(
+                successful_applications
+            )
             self.stdout.write(
                 self.style.SUCCESS(
                     self._print_with_timestamp(
-                        f"Sent {ahjo_request_type} requests for {len(successful_applications)} applications to Ahjo"
+                        f"Sent {ahjo_request_type} requests for {len(successful_applications)} \
+application(s): {successful_application_numbers} to Ahjo"
                     )
                 )
             )
@@ -199,35 +203,18 @@ for {len(applications)} applications: {application_numbers}"
 requests took {elapsed_time} seconds to run."
             )
         if failed_applications:
+            failed_application_numbers = self.get_application_numbers(
+                failed_applications
+            )
+
             self.stdout.write(
                 self.style.ERROR(
                     self._print_with_timestamp(
-                        f"Failed to submit {ahjo_request_type} {len(failed_applications)} applications to Ahjo"
+                        f"Failed to submit {ahjo_request_type} {len(failed_applications)} \
+application(s): {failed_application_numbers} to Ahjo"
                     )
                 )
             )
-
-    def _handle_details_request_success(
-        self, application: Application, response_dict: Dict
-    ) -> str:
-        """Extract the details from the dict and update the application batch with them and also
-        with the p2p settings from ahjo_settings table"""
-
-        details = parse_details_from_decision_response(response_dict)
-
-        batch_status_to_update = ApplicationBatchStatus.DECIDED_ACCEPTED
-        if application.status == ApplicationStatus.REJECTED:
-            batch_status_to_update = ApplicationBatchStatus.DECIDED_REJECTED
-
-        batch = application.batch
-        batch.update_batch_after_details_request(batch_status_to_update, details)
-
-        AhjoStatus.objects.create(
-            application=application, status=AhjoStatusEnum.DETAILS_RECEIVED_FROM_AHJO
-        )
-
-        return f"Successfully received and updated decision details \
-for application {application.id} and batch {batch.id} from Ahjo"
 
     def _handle_application_request_success(
         self,
@@ -254,7 +241,8 @@ for application {application.id} and batch {batch.id} from Ahjo"
         request_type: AhjoRequestType,
     ) -> None:
         if request_type == AhjoRequestType.GET_DECISION_DETAILS:
-            success_text = self._handle_details_request_success(
+            response_handler = AhjoDecisionDetailsResponseHandler()
+            success_text = response_handler.handle_details_request_success(
                 application, response_content[0]
             )
         else:
@@ -265,13 +253,21 @@ for application {application.id} and batch {batch.id} from Ahjo"
         self.stdout.write(self.style.SUCCESS(self._print_with_timestamp(success_text)))
 
     def _handle_failed_request(
-        self, counter: int, application: Application, request_type: AhjoRequestType
+        self,
+        counter: int,
+        application: Application,
+        request_type: AhjoRequestType,
+        error_text: str = None,
     ):
+        additional_error_text = ""
+        if error_text:
+            additional_error_text = f"Error: {error_text}"
+
         self.stdout.write(
             self.style.ERROR(
                 self._print_with_timestamp(
                     f"{counter}. Failed to submit {request_type} for application {application.id} \
-                number: {application.application_number}, to Ahjo"
+                number: {application.application_number}, to Ahjo. {additional_error_text}"
                 )
             )
         )

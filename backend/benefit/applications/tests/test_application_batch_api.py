@@ -7,17 +7,11 @@ from unittest.mock import patch
 import pytest
 import pytz
 from dateutil.relativedelta import relativedelta
-from django.conf import settings
 from django.http import HttpResponse
 from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers.application import ApplicationBatchSerializer
-from applications.enums import (
-    AhjoDecision,
-    ApplicationBatchStatus,
-    ApplicationStatus,
-    ApplicationTalpaStatus,
-)
+from applications.enums import AhjoDecision, ApplicationBatchStatus, ApplicationStatus
 from applications.exceptions import BatchTooManyDraftsError
 from applications.models import Application, ApplicationBatch
 from applications.tests.conftest import *  # noqa
@@ -824,8 +818,12 @@ def test_application_batch_export(mock_export, handler_api_client, application_b
     assert response.status_code == 400
 
 
-def test_application_batches_talpa_export(anonymous_client, application_batch):
-    response = anonymous_client.get(reverse("v1:applicationbatch-talpa-export-batch"))
+def test_application_batches_talpa_export(
+    anonymous_client, application_batch, settings
+):
+    settings.PAYMENT_INSTALMENTS_ENABLED = False
+    url = reverse("v1:applicationbatch-talpa-export-batch")
+    response = anonymous_client.get(url)
     assert response.status_code == 401
 
     # Add basic auth header
@@ -837,7 +835,7 @@ def test_application_batches_talpa_export(anonymous_client, application_batch):
     # Export invalid batch
     application_batch.status = ApplicationBatchStatus.DECIDED_REJECTED
     fill_as_valid_batch_completion_and_save(application_batch)
-    response = anonymous_client.get(reverse("v1:applicationbatch-talpa-export-batch"))
+    response = anonymous_client.get(url)
     assert response.status_code == 404
     assert "There is no available application to export" in response.data["detail"]
 
@@ -849,26 +847,22 @@ def test_application_batches_talpa_export(anonymous_client, application_batch):
     app_batch_2.status = ApplicationBatchStatus.DECIDED_ACCEPTED
     fill_as_valid_batch_completion_and_save(app_batch_2)
 
-    url = reverse("v1:applicationbatch-talpa-export-batch")
-
-    # Export accepted batches then change it status
     response = anonymous_client.get(f"{url}?skip_update=0")
-
-    application_batch.refresh_from_db()
-    app_batch_2.refresh_from_db()
-    assert application_batch.status == ApplicationBatchStatus.SENT_TO_TALPA
-    assert app_batch_2.status == ApplicationBatchStatus.SENT_TO_TALPA
-
-    applications = Application.objects.filter(
-        batch__in=[application_batch, app_batch_2]
-    )
-    for application in applications:
-        assert (
-            application.talpa_status
-            == ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
-        )
-        assert application.archived is True
 
     assert isinstance(response, HttpResponse)
     assert response.headers["Content-Type"] == "text/csv"
     assert response.status_code == 200
+
+
+def test_application_instalments_talpa_export(anonymous_client, settings):
+    settings.PAYMENT_INSTALMENTS_ENABLED = True
+    url = reverse("v1:applicationbatch-talpa-export-batch")
+
+    # Add basic auth header
+    credentials = base64.b64encode(settings.TALPA_ROBOT_AUTH_CREDENTIAL.encode("utf-8"))
+    anonymous_client.credentials(
+        HTTP_AUTHORIZATION="Basic {}".format(credentials.decode("utf-8"))
+    )
+    response = anonymous_client.get(f"{url}?skip_update=0")
+    assert response.status_code == 404
+    assert "There is no available application to export" in response.data["detail"]

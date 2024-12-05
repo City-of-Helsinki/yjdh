@@ -167,6 +167,7 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
         handleSave={handleSave}
         handleBack={handleBack}
         handleDelete={handleDelete}
+        applicationStatus={data?.status}
       />
     </>
   );

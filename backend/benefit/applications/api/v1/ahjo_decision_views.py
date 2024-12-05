@@ -18,6 +18,7 @@ from applications.enums import ApplicationStatus, DecisionType
 from applications.models import (
     AhjoDecisionProposalDraft,
     AhjoDecisionText,
+    AhjoSetting,
     Application,
     ApplicationLogEntry,
     DecisionProposalTemplateSection,
@@ -182,6 +183,34 @@ class DecisionProposalDraftUpdate(APIView):
             decision_text = f'<section id="paatos"><h1>{_("Päätös")}</h1>{decision_part}</section>\
 <section id="paatoksenperustelut"><h1>{_("Päätöksen perustelut")}</h1>{justification_part}</section>'
 
+            available_decision_makers = AhjoSetting.objects.get(
+                name="ahjo_decision_maker"
+            ).data
+
+            available_signers = AhjoSetting.objects.get(name="ahjo_signer").data
+
+            decision_maker_id = request.data.get("decision_maker_id")
+            decision_maker = next(
+                (
+                    item
+                    for item in available_decision_makers
+                    if item["ID"] == decision_maker_id
+                ),
+                None,
+            )
+
+            signer_id = request.data.get("signer_id")
+            signer = next(
+                (item for item in available_signers if item["ID"] == signer_id),
+                None,
+            )
+
+            if decision_maker is None:
+                decision_maker = {"ID": None, "Name": None}
+
+            if signer_id is None:
+                signer = {"ID": None, "Name": None}
+
             if ahjo_text:
                 ahjo_text.update(
                     language=application.applicant_language,
@@ -191,8 +220,10 @@ class DecisionProposalDraftUpdate(APIView):
                         else DecisionType.DENIED
                     ),
                     decision_text=decision_text,
-                    decision_maker_id=data.get("decision_maker_id"),
-                    decision_maker_name=data.get("decision_maker_name"),
+                    decision_maker_id=decision_maker["ID"],
+                    decision_maker_name=decision_maker["Name"],
+                    signer_id=signer["ID"],
+                    signer_name=signer["Name"],
                 )
             else:
                 AhjoDecisionText.objects.create(
@@ -204,8 +235,10 @@ class DecisionProposalDraftUpdate(APIView):
                         else DecisionType.DENIED
                     ),
                     decision_text=decision_text,
-                    decision_maker_id=data.get("decision_maker_id"),
-                    decision_maker_name=data.get("decision_maker_name"),
+                    decision_maker_id=decision_maker["ID"],
+                    decision_maker_name=decision_maker["Name"],
+                    signer_id=signer["ID"],
+                    signer_name=signer["Name"],
                 )
 
         if data["review_step"] >= 4:

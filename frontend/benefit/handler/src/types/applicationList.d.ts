@@ -1,5 +1,5 @@
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
-import { AhjoError } from 'benefit-shared/types/application';
+import { AhjoError, Instalment } from 'benefit-shared/types/application';
 
 export interface ApplicationListTableTransforms {
   id?: string;
@@ -10,6 +10,9 @@ export interface ApplicationListTableTransforms {
   applicationOrigin?: APPLICATION_ORIGINS;
   ahjoError: AhjoError;
   calculatedBenefitAmount?: string;
+  pendingInstalment?: Instalment;
+  alterations: ApplicationAlterationData[];
+  talpaStatus?: TALPA_STATUSES;
 }
 
 export interface ApplicationListTableColumns {

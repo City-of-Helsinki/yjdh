@@ -16,7 +16,7 @@ from messages.models import Message, MessageType
 LOGGER = logging.getLogger(__name__)
 
 APPLICATION_REOPENED_MESSAGE = _(
-    "Your application has been opened for editing. Please make the corrections by "
+    "Your application has been opened for editing. Please make the corrections and send application again by "
     "{additional_information_needed_by}, otherwise the application cannot be processed."
 )
 

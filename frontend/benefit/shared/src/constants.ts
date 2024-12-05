@@ -236,3 +236,12 @@ export enum PAY_SUBSIDY_PERCENT {
 export enum AHJO_STATUSES {
   DETAILS_RECEIVED = 'details_received',
 }
+
+export enum INSTALMENT_STATUSES {
+  WAITING = 'waiting',
+  ACCEPTED = 'accepted',
+  PAID = 'paid',
+  CANCELLED = 'cancelled',
+  ERROR_IN_TALPA = 'error_in_talpa',
+  COMPLETED = 'completed',
+}

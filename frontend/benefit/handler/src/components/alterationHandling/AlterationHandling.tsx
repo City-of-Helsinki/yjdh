@@ -140,9 +140,6 @@ const AlterationHandling = (): JSX.Element => {
           alteration={alteration}
           onError={onError}
           onSuccess={onSuccess}
-          onClose={() =>
-            router.push(`${ROUTES.APPLICATION}?id=${application.id}`)
-          }
         />
       ) : (
         <Container>

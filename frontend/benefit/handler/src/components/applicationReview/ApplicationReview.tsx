@@ -79,6 +79,7 @@ const ApplicationReview: React.FC = () => {
   const showNewAhjoActions =
     isNewAhjoMode &&
     (application.status === APPLICATION_STATUSES.HANDLING ||
+      application.status === APPLICATION_STATUSES.CANCELLED ||
       application.status === APPLICATION_STATUSES.ACCEPTED ||
       application.status === APPLICATION_STATUSES.REJECTED ||
       application.status === APPLICATION_STATUSES.INFO_REQUIRED);

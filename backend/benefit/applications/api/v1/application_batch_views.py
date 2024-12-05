@@ -11,7 +11,7 @@ from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from django_filters import rest_framework as filters
 from django_filters.widgets import CSVWidget
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema
 from rest_framework import filters as drf_filters, status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
@@ -21,11 +21,7 @@ from applications.api.v1.serializers.batch import (
     ApplicationBatchListSerializer,
     ApplicationBatchSerializer,
 )
-from applications.enums import (
-    ApplicationBatchStatus,
-    ApplicationStatus,
-    ApplicationTalpaStatus,
-)
+from applications.enums import ApplicationBatchStatus, ApplicationStatus
 from applications.exceptions import (
     BatchCompletionDecisionDateError,
     BatchCompletionRequiredFieldsError,
@@ -33,7 +29,8 @@ from applications.exceptions import (
 )
 from applications.models import Application, ApplicationBatch
 from applications.services.ahjo_integration import export_application_batch
-from applications.services.applications_csv_report import ApplicationsCsvService
+from applications.services.talpa_csv_service import TalpaCsvService
+from calculator.enums import InstalmentStatus
 from common.authentications import RobotBasicAuthentication
 from common.permissions import BFIsHandler
 from common.utils import get_request_ip_address
@@ -163,15 +160,6 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         return response
 
     @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                name="skip_update",
-                description="Skip updating the batch status",
-                required=False,
-                type=str,
-                enum=["0", "1"],
-            ),
-        ],
         description="""Get application batches for the TALPA robot.
         Set skip_update=1 to skip updating the batch status to SENT_TO_TALPA""",
         methods=["GET"],
@@ -188,15 +176,23 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         """
         Export ApplicationBatch to CSV format for Talpa Robot
         """
-        skip_update = (
-            request.query_params.get("skip_update")
-            and request.query_params.get("skip_update") == "1"
-        )
+        # if instalments feature is enabled, get the applications based on instalments
+        # TODO Remove this when instalments feature is completed
+        if settings.PAYMENT_INSTALMENTS_ENABLED:
+            applications_for_csv = Application.objects.with_due_instalments(
+                InstalmentStatus.ACCEPTED
+            )
+            approved_batches = None
+        else:
+            # Else get the applications based on the batch
+            approved_batches = ApplicationBatch.objects.filter(
+                status=ApplicationBatchStatus.DECIDED_ACCEPTED
+            )
+            applications_for_csv = Application.objects.filter(
+                batch__in=approved_batches
+            ).order_by("company__name", "application_number")
 
-        approved_batches = ApplicationBatch.objects.filter(
-            status=ApplicationBatchStatus.DECIDED_ACCEPTED
-        )
-        if approved_batches.count() == 0:
+        if applications_for_csv.count() == 0:
             return Response(
                 {
                     "detail": _(
@@ -206,54 +202,34 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
                 },
                 status=status.HTTP_404_NOT_FOUND,
             )
-        applications = Application.objects.filter(batch__in=approved_batches).order_by(
-            "company__name", "application_number"
-        )
-        csv_service = ApplicationsCsvService(applications, True)
+
+        csv_service = TalpaCsvService(applications_for_csv)
         file_name = format_lazy(
             _("TALPA export {date}"),
             date=timezone.now().strftime("%Y%m%d_%H%M%S"),
         )
 
         response = HttpResponse(
-            csv_service.get_csv_string(True).encode("utf-8"),
+            csv_service.get_csv_string(remove_quotes=False).encode("utf-8"),
             content_type="text/csv",
         )
 
         response["Content-Disposition"] = "attachment; filename={filename}.csv".format(
             filename=file_name
         )
-        if settings.TALPA_CALLBACK_ENABLED is False:
-            # for easier testing in the test environment do not update the batches as sent_to_talpa
-            # remove this when TALPA integration is ready for production
-            if not skip_update:
-                ip_address = get_request_ip_address(request)
-                try:
-                    # Update all approved batches to SENT_TO_TALPA status in a single query
-                    approved_batches.update(status=ApplicationBatchStatus.SENT_TO_TALPA)
-                    # Update all applications in the approved batches to
-                    # SUCCESSFULLY_SENT_TO_TALPA status and archived=True
-                    for a in applications:
-                        a.talpa_status = (
-                            ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
-                        )
-                        a.archived = True
-                        a.save()
 
-                        audit_logging.log(
-                            AnonymousUser,
-                            "",
-                            Operation.READ,
-                            a,
-                            ip_address=ip_address,
-                            additional_information="application csv data was downloaded by TALPA\
-    and it was marked as archived",
-                        )
+        ip_address = get_request_ip_address(request)
 
-                except Exception as e:
-                    LOGGER.error(
-                        f"An error occurred while updating batches after Talpa csv download: {e}"
-                    )
+        for a in applications_for_csv:
+            audit_logging.log(
+                AnonymousUser,
+                "",
+                Operation.READ,
+                a,
+                ip_address=ip_address,
+                additional_information="application csv data was downloaded by TALPA robot",
+            )
+
         return response
 
     @action(methods=["PATCH"], detail=False)

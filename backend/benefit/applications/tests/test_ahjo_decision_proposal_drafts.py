@@ -118,6 +118,9 @@ def test_decision_proposal_drafting(
     decision_text,
     justification_text,
     fake_decisionmakers,
+    decision_maker_settings,
+    fake_signers,
+    signer_settings,
 ):
     if review_step == 4:
         _prepare_calculation(application=application)
@@ -136,6 +139,8 @@ def test_decision_proposal_drafting(
             "justification_text": justification_text,
             "decision_maker_id": fake_decisionmakers[0]["ID"],
             "decision_maker_name": fake_decisionmakers[0]["Name"],
+            "signer_id": fake_signers[0]["ID"],
+            "signer_name": fake_signers[0]["Name"],
         },
     )
     assert response.status_code == response_status
@@ -150,3 +155,5 @@ def test_decision_proposal_drafting(
 
         assert final_ahjo_text.decision_maker_id == fake_decisionmakers[0]["ID"]
         assert final_ahjo_text.decision_maker_name == fake_decisionmakers[0]["Name"]
+        assert final_ahjo_text.signer_id == fake_signers[0]["ID"]
+        assert final_ahjo_text.signer_name == fake_signers[0]["Name"]

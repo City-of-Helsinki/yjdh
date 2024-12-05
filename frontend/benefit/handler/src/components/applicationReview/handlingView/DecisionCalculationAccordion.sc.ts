@@ -4,7 +4,11 @@ import styled from 'styled-components';
 export const $DecisionCalculatorAccordion = styled.div`
   position: relative;
 
-  div[role="heading"] > div[role="button"] > span.label {
+  &:not(:last-child) {
+    margin-bottom: ${(props) => props.theme.spacing.xs};
+  }
+
+  div[role='heading'] > div[role='button'] > span.label {
     padding-left: ${(props) => props.theme.spacing.xl};
   }
 `;

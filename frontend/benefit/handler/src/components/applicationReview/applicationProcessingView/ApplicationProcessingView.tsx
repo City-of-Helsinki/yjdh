@@ -17,7 +17,7 @@ import {
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
 import theme from 'shared/styles/theme';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 
 import {
   $CalculatorHr,
@@ -52,9 +52,10 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
         grantedAsDeMinimisAid:
           !!data?.decisionProposalDraft?.grantedAsDeMinimisAid,
         logEntryComment: data?.decisionProposalDraft?.logEntryComment,
-        handlerRole: data?.decisionProposalDraft?.handlerRole,
         justificationText: data?.decisionProposalDraft?.justificationText,
         decisionText: data?.decisionProposalDraft?.decisionText,
+        decisionMakerId: data?.decisionProposalDraft?.decisionMakerId,
+        decisionMakerName: data?.decisionProposalDraft?.decisionMakerName,
       });
     }
   }, [data, handledApplication, setHandledApplication, isNewAhjoMode]);
@@ -185,7 +186,7 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                   <$CalculatorTableRow style={{ backgroundColor: 'white' }}>
                     <$ViewField>{totalRow.descriptionFi}</$ViewField>
                     <$ViewField isBold>
-                      {formatFloatToCurrency(totalRow.amount)}
+                      {formatFloatToEvenEuros(totalRow.amount)}
                     </$ViewField>
                   </$CalculatorTableRow>
                   {dateRangeRows.length === helsinkiBenefitMonthlyRows.length &&
@@ -196,7 +197,7 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                       >
                         <$ViewField>{row.descriptionFi}</$ViewField>
                         <$ViewField isBold>
-                          {formatFloatToCurrency(
+                          {formatFloatToEvenEuros(
                             helsinkiBenefitMonthlyRows[index].amount
                           )}
                           {t('common:utility.perMonth')}

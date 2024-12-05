@@ -1,5 +1,53 @@
 # Changelog
 
+## [4.7.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.6.0...benefit-handler-v4.7.0) (2024-11-26)
+
+
+### Features
+
+* Add two calculation and application fields as notes (hl-1550) ([#3549](https://github.com/City-of-Helsinki/yjdh/issues/3549)) ([823e5cd](https://github.com/City-of-Helsinki/yjdh/commit/823e5cd5c745a88b9bce916a14183f9b96a1641b))
+* HL 1426 ahjo signer ([#3540](https://github.com/City-of-Helsinki/yjdh/issues/3540)) ([a4479bf](https://github.com/City-of-Helsinki/yjdh/commit/a4479bf7da77a74b4e6cf7b0cdb665d5f425d476))
+* Visualise instalments and alterations (hl-1496) ([#3547](https://github.com/City-of-Helsinki/yjdh/issues/3547)) ([f56e581](https://github.com/City-of-Helsinki/yjdh/commit/f56e5813a178b6aa89d38fc27e7300b9e6db6169))
+
+
+### Bug Fixes
+
+* Instalment issues (hl-1496 cont.) ([#3576](https://github.com/City-of-Helsinki/yjdh/issues/3576)) ([b9c3fcb](https://github.com/City-of-Helsinki/yjdh/commit/b9c3fcbfb7af0a4be4f51c10a2687f787af89cee))
+* Make sidebar opening/closing possible even if application is cancelled ([#3594](https://github.com/City-of-Helsinki/yjdh/issues/3594)) ([6abf5fd](https://github.com/City-of-Helsinki/yjdh/commit/6abf5fd410b15d864e40ca0c10628478c0f6b689))
+* Various cloning issues (hl-1539) ([#3577](https://github.com/City-of-Helsinki/yjdh/issues/3577)) ([9c4f4ea](https://github.com/City-of-Helsinki/yjdh/commit/9c4f4ea7306cabf10503046c8393e349ab7b1f38))
+
+## [4.6.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.5.0...benefit-handler-v4.6.0) (2024-11-12)
+
+
+### Features
+
+* Add accordion to decision box to list instalments (hl-1497) ([#3515](https://github.com/City-of-Helsinki/yjdh/issues/3515)) ([34e6201](https://github.com/City-of-Helsinki/yjdh/commit/34e620124426afbfd232e73eb88c46de0b7d6d15))
+* Implement instalments gui for handler (hl-1494) ([#3498](https://github.com/City-of-Helsinki/yjdh/issues/3498)) ([aaff375](https://github.com/City-of-Helsinki/yjdh/commit/aaff375519aa7f7defd8ede4beceaae96352982c))
+* Use own endpoint for requesting more information ([#3523](https://github.com/City-of-Helsinki/yjdh/issues/3523)) ([18406f6](https://github.com/City-of-Helsinki/yjdh/commit/18406f66e6b8dd3826ee63570f4140b5556522ea))
+
+
+### Bug Fixes
+
+* Allow for talpa-rejected batches to be seen ([#3501](https://github.com/City-of-Helsinki/yjdh/issues/3501)) ([d405af5](https://github.com/City-of-Helsinki/yjdh/commit/d405af537040874de4e2ca19b2a1911e5d3307d3))
+* Issues persist with chosing decision maker role (hl-1530 cont.) ([#3529](https://github.com/City-of-Helsinki/yjdh/issues/3529)) ([1a8467c](https://github.com/City-of-Helsinki/yjdh/commit/1a8467c132e04d1c261c2873a2361a32f5121244))
+* Preselect decision maker if it was selected before (hl-1530) ([#3522](https://github.com/City-of-Helsinki/yjdh/issues/3522)) ([45095c5](https://github.com/City-of-Helsinki/yjdh/commit/45095c53a41f3bbf7101effe34b6aac44c2a06c3))
+* Show applications with 2nd instalments only they are in payment ([#3528](https://github.com/City-of-Helsinki/yjdh/issues/3528)) ([db2f099](https://github.com/City-of-Helsinki/yjdh/commit/db2f0995f26a51d882765f6a5f73f0e7f0fb749b))
+
+## [4.5.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.4.0...benefit-handler-v4.5.0) (2024-11-04)
+
+
+### Features
+
+* Fix issues with applicant changes (hl-1222) ([#3440](https://github.com/City-of-Helsinki/yjdh/issues/3440)) ([3610df9](https://github.com/City-of-Helsinki/yjdh/commit/3610df9c52a0a2eb9579e35fb9a632afb98409ce))
+* UseRouterNavigation hook to centralize and perform "back" actions througout the app ([#3394](https://github.com/City-of-Helsinki/yjdh/issues/3394)) ([b933b1f](https://github.com/City-of-Helsinki/yjdh/commit/b933b1fe7dc8f774e810b09a1dba78a86955f3eb))
+
+
+### Bug Fixes
+
+* Chrome v130 crashes on startup ([#3450](https://github.com/City-of-Helsinki/yjdh/issues/3450)) ([cad4466](https://github.com/City-of-Helsinki/yjdh/commit/cad44663f83bf1a90f4158c68c4f8b4a069ccfe8))
+* Repair some app crashing bugs when drafting the decision proposal (hl-1522) ([#3478](https://github.com/City-of-Helsinki/yjdh/issues/3478)) ([4cb17ac](https://github.com/City-of-Helsinki/yjdh/commit/4cb17ac7fadedbdd308e41eae44cfe390f400a98))
+* Text improvements & added localizations (Hl-1425 & HL-1486) ([#3451](https://github.com/City-of-Helsinki/yjdh/issues/3451)) ([6105923](https://github.com/City-of-Helsinki/yjdh/commit/6105923d44818a3ddf32c787f206ba45d1a7f429))
+
 ## [4.4.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.3.0...benefit-handler-v4.4.0) (2024-10-16)
 
 

@@ -1,4 +1,6 @@
 import uuid
+from datetime import datetime
+from unittest.mock import Mock
 
 import pytest
 from django.core.files.base import ContentFile
@@ -10,21 +12,98 @@ from applications.enums import (
     AhjoRequestType,
     AttachmentType,
 )
-from applications.models import AhjoDecisionText, Attachment
+from applications.models import AhjoDecisionText, Application, Attachment
 from applications.services.ahjo_payload import (
     _prepare_case_records,
     _prepare_record,
     _prepare_record_document_dict,
-    _prepare_record_title,
     _prepare_top_level_dict,
+    AddRecordsRecordTitle,
+    AhjoBaseRecordTitle,
+    AhjoTitle,
+    OpenCaseRecordTitle,
     prepare_case_title,
     prepare_decision_proposal_payload,
     prepare_final_case_title,
     prepare_update_application_payload,
     resolve_payload_language,
     truncate_string_to_limit,
+    UpdateRecordsRecordTitle,
 )
 from common.utils import hash_file
+
+
+# Test the AhjoTitle format_title_string method
+def test_format_title_string():
+    mock_app = Mock(spec=Application)
+    mock_app.created_at = datetime(2023, 1, 15)
+    mock_app.application_number = "12345"
+
+    ahjo_title = AhjoTitle(
+        application=mock_app, prefix=" Test Prefix", suffix=" Test Suffix"
+    )
+    formatted_date = "15.01.2023"
+    application_number = "12345"
+
+    result = ahjo_title.format_title_string(formatted_date, application_number)
+    expected = (
+        f"{AhjoRecordTitle.APPLICATION} Test Prefix 15.01.2023, Test Suffix 12345"
+    )
+    assert result == expected
+
+
+# Test OpenCaseRecordTitle class
+def test_open_case_record_title_str():
+    mock_app = Mock(spec=Application)
+    mock_app.created_at = datetime(2023, 1, 15)
+    mock_app.application_number = "12345"
+
+    open_case_title = OpenCaseRecordTitle(application=mock_app)
+    result = str(open_case_title)
+    expected = f"{AhjoRecordTitle.APPLICATION} 15.01.2023, 12345"
+    assert result == expected
+
+
+# Test UpdateRecordsRecordTitle class
+def test_update_records_record_title_str():
+    mock_app = Mock(spec=Application)
+    mock_app.created_at = datetime(2023, 3, 10)
+    attachment_created_at = datetime(2023, 2, 25)
+    mock_app.application_number = "67890"
+
+    update_records_title = UpdateRecordsRecordTitle(
+        application=mock_app, attachment_created_at=attachment_created_at
+    )
+    result = str(update_records_title)
+    expected = f"{AhjoRecordTitle.APPLICATION}, täydennys 25.02.2023, 67890"
+    assert result == expected
+
+
+# Test AddRecordsRecordTitle class
+def test_add_records_record_title_str():
+    mock_app = Mock(spec=Application)
+    mock_app.created_at = datetime(2023, 3, 10)
+    attachment_created_at = datetime(2023, 3, 10)
+    mock_app.application_number = "54321"
+
+    add_records_title = AddRecordsRecordTitle(
+        application=mock_app, attachment_created_at=attachment_created_at
+    )
+    result = str(add_records_title)
+    expected = f"{AhjoRecordTitle.APPLICATION}, täydennys 10.03.2023, 54321"
+    assert result == expected
+
+
+# Test AhjoBaseRecordTitle class
+def test_ahjo_base_record_title_str():
+    mock_app = Mock(spec=Application)
+    mock_app.modified_at = datetime(2023, 4, 5)
+    mock_app.application_number = "98765"
+
+    base_record_title = AhjoBaseRecordTitle(application=mock_app, current=1, total=5)
+    result = str(base_record_title)
+    expected = f"{AhjoRecordTitle.APPLICATION} 05.04.2023, liite 1/5, 98765"
+    assert result == expected
 
 
 def test_prepare_case_title(decided_application):
@@ -62,6 +141,8 @@ def test_truncate_string_to_limit(
         ("a" * 100, 100, 150),
         ("a" * 50, 100, 150),
         ("1234567890AB", 10, 150),
+        # 256 characters is the maximun length for the company name in the database
+        ("a" * 256, 512, 512),
     ],
 )
 def test_prepare_final_case_title_truncate(
@@ -74,9 +155,10 @@ def test_prepare_final_case_title_truncate(
 
 
 @pytest.mark.parametrize(
-    "record_title, record_type, request_type, wanted_title_addition, part, total",
+    "title_class, record_title, record_type, request_type, wanted_title_addition, part, total",
     [
         (
+            OpenCaseRecordTitle,
             AhjoRecordTitle.APPLICATION,
             AhjoRecordType.APPLICATION,
             AhjoRequestType.OPEN_CASE,
@@ -85,6 +167,7 @@ def test_prepare_final_case_title_truncate(
             0,
         ),
         (
+            UpdateRecordsRecordTitle,
             AhjoRecordTitle.APPLICATION,
             AhjoRecordType.APPLICATION,
             AhjoRequestType.UPDATE_APPLICATION,
@@ -93,6 +176,7 @@ def test_prepare_final_case_title_truncate(
             0,
         ),
         (
+            AddRecordsRecordTitle,
             AhjoRecordTitle.APPLICATION,
             AhjoRecordType.ATTACHMENT,
             AhjoRequestType.ADD_RECORDS,
@@ -101,6 +185,7 @@ def test_prepare_final_case_title_truncate(
             0,
         ),
         (
+            AhjoBaseRecordTitle,
             AhjoRecordTitle.APPLICATION,
             AhjoRecordType.ATTACHMENT,
             AhjoRequestType.OPEN_CASE,
@@ -111,6 +196,7 @@ def test_prepare_final_case_title_truncate(
     ],
 )
 def test_prepare_record_title(
+    title_class,
     decided_application,
     record_title,
     record_type,
@@ -119,25 +205,33 @@ def test_prepare_record_title(
     part,
     total,
 ):
-    application = decided_application
-    formatted_date = application.created_at.strftime("%d.%m.%Y")
+    application = Application.objects.get(pk=decided_application.pk)
+
+    formatted_date = application.submitted_at.strftime("%d.%m.%Y")
 
     if part and total:
         wanted_title = f"{record_title}{wanted_title_addition} {formatted_date},\
  liite {part}/{total}, {application.application_number}"
     else:
         wanted_title = f"{record_title}{wanted_title_addition} {formatted_date}, {application.application_number}"
-    got = _prepare_record_title(application, record_type, request_type, part, total)
+    if (
+        record_type == AhjoRecordType.ATTACHMENT
+        and request_type == AhjoRequestType.OPEN_CASE
+    ):
+        got = f"{title_class(application, current=part, total=total)}"
+    elif title_class in [UpdateRecordsRecordTitle, AddRecordsRecordTitle]:
+        got = f"{title_class(application=application, attachment_created_at=application.submitted_at)}"
+    else:
+        got = f"{title_class(application=application)}"
     assert wanted_title == got
 
 
 def test_prepare_record_title_for_attachment(decided_application):
-    application = decided_application
+    application = Application.objects.get(pk=decided_application.pk)
+
     formatted_date = application.created_at.strftime("%d.%m.%Y")
     wanted_title = f"{AhjoRecordTitle.APPLICATION} {formatted_date}, liite 1/3, {application.application_number}"
-    got = _prepare_record_title(
-        application, AhjoRecordType.ATTACHMENT, AhjoRequestType.OPEN_CASE, 1, 3
-    )
+    got = f"{AhjoBaseRecordTitle(application=application, current=1, total=3)}"
     assert wanted_title == got
 
 
@@ -214,7 +308,7 @@ def test_prepare_record_document_dict(decided_application, settings):
 
 def test_prepare_case_records(decided_application, settings):
     settings.DEBUG = True
-    application = decided_application
+    application = Application.objects.get(pk=decided_application.pk)
 
     fake_file = ContentFile(
         b"fake file content",
@@ -231,9 +325,7 @@ def test_prepare_case_records(decided_application, settings):
     handler_name = f"{handler.last_name}, {handler.first_name}"
     want = [
         {
-            "Title": _prepare_record_title(
-                application, AhjoRecordType.APPLICATION, AhjoRequestType.OPEN_CASE
-            ),
+            "Title": f"{OpenCaseRecordTitle(application=application)}",
             "Type": AhjoRecordType.APPLICATION,
             "Acquired": application.created_at.isoformat("T", "seconds"),
             "PublicityClass": "Salassa pidettävä",
@@ -263,13 +355,7 @@ def test_prepare_case_records(decided_application, settings):
 
     for attachment in open_case_attachments:
         document_record = _prepare_record(
-            _prepare_record_title(
-                application,
-                AhjoRecordType.ATTACHMENT,
-                AhjoRequestType.OPEN_CASE,
-                pos,
-                total_attachments,
-            ),
+            f"{AhjoBaseRecordTitle(application=application,current=pos,total=total_attachments,)}",
             AhjoRecordType.ATTACHMENT,
             attachment.created_at.isoformat("T", "seconds"),
             [_prepare_record_document_dict(attachment)],
@@ -285,15 +371,20 @@ def test_prepare_case_records(decided_application, settings):
 
 
 def test_prepare_top_level_dict(decided_application, ahjo_open_case_top_level_dict):
-    application = decided_application
+    application = Application.objects.get(pk=decided_application.pk)
+    long_title = "a" * 512
+    short_title = "a" * 150
 
-    got = _prepare_top_level_dict(application, [], "message title")
+    got = _prepare_top_level_dict(
+        application, [], public_case_title=long_title, internal_case_title=short_title
+    )
 
     assert ahjo_open_case_top_level_dict == got
 
 
 def test_prepare_update_application_payload(decided_application):
-    application = decided_application
+    application = Application.objects.get(pk=decided_application.pk)
+
     handler = application.calculation.handler
     handler_name = f"{handler.last_name}, {handler.first_name}"
     handler_id = handler.ad_username
@@ -310,17 +401,15 @@ def test_prepare_update_application_payload(decided_application):
         attachment_type=AttachmentType.PDF_SUMMARY,
         ahjo_version_series_id=str(uuid.uuid4()),
     )
-
+    title = UpdateRecordsRecordTitle(
+        application=application, attachment_created_at=fake_summary.created_at
+    )
     want = {
         "records": [
             {
-                "Title": _prepare_record_title(
-                    application,
-                    AhjoRecordType.APPLICATION,
-                    AhjoRequestType.UPDATE_APPLICATION,
-                ),
+                "Title": f"{title}",
                 "Type": AhjoRecordType.APPLICATION,
-                "Acquired": application.created_at.isoformat(),
+                "Acquired": application.submitted_at.isoformat(),
                 "PublicityClass": "Salassa pidettävä",
                 "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
                 "Language": "fi",
@@ -394,6 +483,11 @@ def test_prepare_decision_proposal_payload(application_with_ahjo_decision):
                     {
                         "Role": "decisionMaker",
                         "ID": decision.decision_maker_id,
+                    },
+                    {
+                        "Role": "signer",
+                        "ID": decision.signer_id,
+                        "Name": decision.signer_name,
                     },
                 ],
             },

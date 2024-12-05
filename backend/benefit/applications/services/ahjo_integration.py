@@ -14,34 +14,37 @@ from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.core.files.base import ContentFile
 from django.db.models import QuerySet
 from django.urls import reverse
+from lxml import etree
+from lxml.etree import XMLSchemaParseError, XMLSyntaxError
 
 from applications.enums import (
-    AhjoRequestType,
     AhjoStatus as AhjoStatusEnum,
     ApplicationStatus,
     AttachmentType,
 )
 from applications.models import (
     AhjoDecisionText,
-    AhjoSetting,
     AhjoStatus,
     Application,
     ApplicationBatch,
     Attachment,
+)
+from applications.services.ahjo.exceptions import (
+    DecisionProposalAlreadyAcceptedError,
+    DecisionProposalError,
 )
 from applications.services.ahjo_authentication import AhjoConnector, AhjoToken
 from applications.services.ahjo_client import (
     AhjoAddRecordsRequest,
     AhjoApiClient,
     AhjoDecisionDetailsRequest,
-    AhjoDecisionMakerRequest,
     AhjoDecisionProposalRequest,
     AhjoDeleteCaseRequest,
     AhjoOpenCaseRequest,
-    AhjoRequest,
     AhjoSubscribeDecisionRequest,
     AhjoUpdateRecordsRequest,
 )
+from applications.services.ahjo_error_writer import AhjoErrorWriter, AhjoFormattedError
 from applications.services.ahjo_payload import (
     prepare_attachment_records_payload,
     prepare_decision_proposal_payload,
@@ -281,13 +284,13 @@ def prepare_pdf_files(apps: QuerySet[Application]) -> List[ExportFileInfo]:
 
 def prepare_csv_file(
     ordered_queryset: QuerySet[Application],
-    prune_data_for_talpa: bool = False,
+    remove_quotes: bool = False,
     export_filename: str = "",
 ) -> ExportFileInfo:
-    csv_service = ApplicationsCsvService(ordered_queryset, prune_data_for_talpa)
-    csv_file_content: bytes = csv_service.get_csv_string(prune_data_for_talpa).encode(
-        "utf-8"
-    )
+    csv_service = ApplicationsCsvService(ordered_queryset)
+    csv_file_content: bytes = csv_service.get_csv_string(
+        remove_quotes=remove_quotes
+    ).encode("utf-8")
     csv_filename = f"{export_filename}.csv"
     csv_file_info: ExportFileInfo = ExportFileInfo(
         filename=csv_filename,
@@ -556,6 +559,20 @@ def send_decision_proposal_to_ahjo(
 ) -> Union[Tuple[Application, str], None]:
     """Send a decision proposal and it's XML attachments to Ahjo."""
 
+    # https://helsinkisolutionoffice.atlassian.net/browse/HL-1558
+    # Check if the application already has a decision proposal accepted in Ahjo status,
+    # bail out if it does
+
+    if application.ahjo_status.filter(status=AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED):
+        existing_status = application.ahjo_status.get(
+            status=AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED
+        )
+        raise DecisionProposalAlreadyAcceptedError(
+            f"The application \
+already has a decision proposal accepted in Ahjo at {existing_status.created_at}. Not sending a new one.",
+            existing_status,
+        )
+
     ahjo_request = AhjoDecisionProposalRequest(application=application)
     ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
     decision = AhjoDecisionText.objects.get(application=application)
@@ -568,19 +585,36 @@ def send_decision_proposal_to_ahjo(
 
     delete_existing_xml_attachments(application)
 
-    decision_xml = generate_application_attachment(
-        application, AttachmentType.DECISION_TEXT_XML, decision
-    )
-    secret_xml = generate_application_attachment(
-        application, AttachmentType.DECISION_TEXT_SECRET_XML
-    )
+    try:
+        decision_xml = generate_application_attachment(
+            application, AttachmentType.DECISION_TEXT_XML, decision
+        )
+        secret_xml = generate_application_attachment(
+            application, AttachmentType.DECISION_TEXT_SECRET_XML
+        )
 
-    data = prepare_decision_proposal_payload(
-        application=application,
-        decision_xml=decision_xml,
-        decision_text=decision,
-        secret_xml=secret_xml,
-    )
+        data = prepare_decision_proposal_payload(
+            application=application,
+            decision_xml=decision_xml,
+            decision_text=decision,
+            secret_xml=secret_xml,
+        )
+    except (XMLSchemaParseError, XMLSyntaxError, etree.DocumentInvalid) as e:
+        AhjoErrorWriter.write_error_to_ahjo_status(
+            AhjoFormattedError(
+                application=application,
+                context=str(e),
+                message_to_handler="""Helsinki-lisä: Virhe päätöksen XML-tiedostossa.
+Tarkista tiedosto sekä päätösteksti ja yritä uudelleen.""",
+            )
+        )
+        return (None, None)
+    except DecisionProposalError as e:
+        LOGGER.error(
+            f"Error in sending decision proposal payload\
+        for application {application.application_number}: {e}"
+        )
+        return (None, None)
     response, response_text = ahjo_client.send_request_to_ahjo(data)
     return response, response_text
 
@@ -622,42 +656,3 @@ def get_decision_details_from_ahjo(
     ahjo_request = AhjoDecisionDetailsRequest(application)
     ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
     return ahjo_client.send_request_to_ahjo()
-
-
-class AhjoRequestHandler:
-    def __init__(self, ahjo_token: AhjoToken, ahjo_request_type: AhjoRequest):
-        self.ahjo_token = ahjo_token
-        self.ahjo_request_type = ahjo_request_type
-
-    def handle_request_without_application(self):
-        if self.ahjo_request_type == AhjoRequestType.GET_DECISION_MAKER:
-            self.get_decision_maker_from_ahjo()
-        else:
-            raise ValueError("Invalid request type")
-
-    def get_decision_maker_from_ahjo(self) -> Union[List, None]:
-        ahjo_client = AhjoApiClient(self.ahjo_token, AhjoDecisionMakerRequest())
-        result = ahjo_client.send_request_to_ahjo()
-        AhjoResponseHandler.handle_decisionmaker_response(result)
-
-
-class AhjoResponseHandler:
-    @staticmethod
-    def handle_decisionmaker_response(response: tuple[None, dict]) -> None:
-        filtered_data = AhjoResponseHandler.filter_decision_makers(response[1])
-        if filtered_data:
-            AhjoSetting.objects.update_or_create(
-                name="ahjo_decision_maker", defaults={"data": filtered_data}
-            )
-
-    @staticmethod
-    def filter_decision_makers(data: dict) -> List[dict]:
-        """Filter the decision makers Name and ID from the Ahjo response."""
-        result = []
-        for item in data["decisionMakers"]:
-            organization = item.get("Organization")
-            if organization and organization.get("IsDecisionMaker"):
-                result.append(
-                    {"Name": organization.get("Name"), "ID": organization.get("ID")}
-                )
-        return result

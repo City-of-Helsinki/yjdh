@@ -11,7 +11,7 @@ import camelCase from 'lodash/camelCase';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 
 import AttachmentsListView from '../../attachmentsListView/AttachmentsListView';
 
@@ -47,12 +47,7 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         <$ViewField large>
           {data.employee?.monthlyPay &&
             t(`${translationsBase}.fields.monthlyPayText`, {
-              monthlyPay: formatFloatToCurrency(
-                data.employee.monthlyPay,
-                'EUR',
-                'FI-fi',
-                0
-              ),
+              monthlyPay: formatFloatToEvenEuros(data.employee.monthlyPay),
             })}
         </$ViewField>
       </$GridCell>
@@ -63,11 +58,8 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         <$ViewField large>
           {data.employee?.vacationMoney &&
             t(`${translationsBase}.fields.vacationMoneyText`, {
-              vacationMoney: formatFloatToCurrency(
-                data.employee.vacationMoney,
-                'EUR',
-                'FI-fi',
-                0
+              vacationMoney: formatFloatToEvenEuros(
+                data.employee.vacationMoney
               ),
             })}
         </$ViewField>
@@ -79,11 +71,8 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         <$ViewField large>
           {data.employee?.otherExpenses &&
             t(`${translationsBase}.fields.otherExpensesText`, {
-              otherExpenses: formatFloatToCurrency(
-                data.employee.otherExpenses,
-                'EUR',
-                'FI-fi',
-                0
+              otherExpenses: formatFloatToEvenEuros(
+                data.employee.otherExpenses
               ),
             })}
         </$ViewField>

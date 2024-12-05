@@ -28,6 +28,9 @@ msgstr "Kan inte exportera tom sats"
 msgid "Application batch {date}"
 msgstr "Ansökningssats {date}"
 
+msgid "Your Helsinki benefit application benefit period is about to end"
+msgstr "Den beviljade perioden för Helsingforstillägget närmar sig sitt slut"
+
 msgid "There is no available application to export, please try again later"
 msgstr ""
 "Ingen ansökan finns tillgänglig för export, vänligen försök på nytt senare"
@@ -1466,11 +1469,11 @@ msgstr "Svenska"
 
 #, python-brace-format
 msgid ""
-"Your application has been opened for editing. Please make the corrections by "
+"Your application has been opened for editing. Please make the corrections and send application again by "
 "{additional_information_needed_by}, otherwise the application cannot be "
 "processed."
 msgstr ""
-"Din ansökan har öppnats för redigering. Gör ändringarna senast "
+"Din ansökan har öppnats för redigering. Gör ändringarna och skicka ansökan igen senast "
 "{additional_information_needed_by}, annars kan ansökan inte behandlas."
 
 msgid ""
@@ -1531,6 +1534,12 @@ msgstr "Sökande får inte utföra denna åtgärd"
 
 msgid "Handler is not allowed to do this action"
 msgstr "Handläggare får inte utföra denna åtgärd"
+
+msgid "Handling comment"
+msgstr ""
+
+msgid "Manual calculation comment"
+msgstr ""
 
 msgid "Only the terms currently in effect can be approved"
 msgstr "Endast de villkor som för tillfället gäller kan godkännas"

@@ -615,6 +615,9 @@ msgstr ""
 msgid "Your Helsinki benefit draft application will expire"
 msgstr "The Helsinki Benefit card"
 
+msgid "Your Helsinki benefit application benefit period is about to end"
+msgstr "The granted Helsinki benefit period is ending soon"
+
 #, fuzzy
 #| msgid "employee_consent"
 msgid "company"
@@ -1399,7 +1402,7 @@ msgstr "Swedish"
 
 #, python-brace-format
 msgid ""
-"Your application has been opened for editing. Please make the corrections by "
+"Your application has been opened for editing. Please make the corrections and send application again by "
 "{additional_information_needed_by}, otherwise the application cannot be "
 "processed."
 msgstr ""
@@ -1458,6 +1461,12 @@ msgid "Applicant is not allowed to do this action"
 msgstr ""
 
 msgid "Handler is not allowed to do this action"
+msgstr ""
+
+msgid "Handling comment"
+msgstr ""
+
+msgid "Manual calculation comment"
 msgstr ""
 
 msgid "Only the terms currently in effect can be approved"

@@ -17,3 +17,5 @@ class Job(DailyJob):
         call_command("delete_applications", keep=180, status="draft")
         call_command("check_drafts_to_delete", notify=14, keep=180)
         call_command("get_decision_maker")
+        call_command("get_signer")
+        call_command("check_and_notify_ending_benefits", notify=30)

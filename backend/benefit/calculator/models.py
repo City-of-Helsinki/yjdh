@@ -9,8 +9,9 @@ from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
 from simple_history.models import HistoricalRecords
 
+from applications.enums import ApplicationAlterationState
 from applications.models import Application, PAY_SUBSIDY_PERCENT_CHOICES
-from calculator.enums import DescriptionType, RowType
+from calculator.enums import DescriptionType, InstalmentStatus, RowType
 from common.exceptions import BenefitAPIException
 from common.utils import (
     date_range_overlap,
@@ -831,3 +832,78 @@ class ManualOverrideTotalRow(CalculationRow):
 
     class Meta:
         proxy = True
+
+
+class Instalment(UUIDModel, TimeStampedModel):
+    """
+    Instalment model for Helsinki benefit grantend benefits that are paid in (two )instalments
+    """
+
+    calculation = models.ForeignKey(
+        Calculation,
+        verbose_name=_("calculation"),
+        related_name="instalments",
+        on_delete=models.CASCADE,
+    )
+
+    instalment_number = models.IntegerField()
+
+    amount = models.DecimalField(
+        max_digits=7,
+        decimal_places=2,
+        verbose_name=_("row amount"),
+        blank=True,
+    )
+
+    amount_paid = models.DecimalField(
+        max_digits=7,
+        decimal_places=2,
+        editable=False,
+        verbose_name=_(
+            "To be set only ONCE when final amount is sent to Talpa. The set value should be defined by 'amount' "
+            "field that is reduced by handled ApplicationAlteration recoveries at the time of Talpa robot visit."
+        ),
+        blank=True,
+        null=True,
+    )
+
+    due_date = models.DateField(blank=True, null=True, verbose_name=_("Due date"))
+
+    status = models.CharField(
+        max_length=64,
+        verbose_name=_("status"),
+        choices=InstalmentStatus.choices,
+        default=InstalmentStatus.WAITING,
+        blank=True,
+    )
+
+    @property
+    def amount_after_recoveries(self):
+        if self.amount_paid:
+            return max(self.amount_paid, 0)
+        if self.instalment_number == 1:
+            return max(self.amount, 0)
+
+        alteration_set = self.calculation.application.alteration_set.filter(
+            state=ApplicationAlterationState.HANDLED,
+        )
+        if alteration_set.count() == 0:
+            return max(self.amount, 0)
+
+        return max(
+            self.amount
+            - sum([alteration.recovery_amount or 0 for alteration in alteration_set]),
+            0,
+        )
+
+    def __str__(self):
+        return f"Instalment of {self.amount}€, \
+number {self.instalment_number}/{self.calculation.instalments.count()} \
+for application {self.calculation.application.application_number}, \
+due in {self.due_date}, status: {self.status}."
+
+    class Meta:
+        db_table = "bf_calculator_instalment"
+        verbose_name = _("instalment")
+        verbose_name_plural = _("instalments")
+        ordering = ("created_at",)

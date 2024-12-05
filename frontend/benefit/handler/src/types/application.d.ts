@@ -111,16 +111,12 @@ export type HandledAplication = {
   status?: APPLICATION_STATUSES;
   logEntryComment?: string;
   grantedAsDeMinimisAid?: boolean;
-  handlerRole?: string;
   decisionText?: string;
   justificationText?: string;
   decisionMakerName?: string;
   decisionMakerId?: string;
-};
-
-export type ApplicationChangesData = {
-  handler: ChangeListData[];
-  applicant: ChangeListData[];
+  signerName?: string;
+  signerId?: string;
 };
 
 // Handler application
@@ -157,7 +153,7 @@ export type Application = {
   totalDeminimisAmount?: string;
   action?: APPLICATION_ACTIONS;
   changeReason?: string;
-  changes?: ApplicationChangesData;
+  changes?: ChangeListData[];
   decisionProposalDraft?: DecisionProposalDraft;
   handler?: User;
 } & ApplicationForm;

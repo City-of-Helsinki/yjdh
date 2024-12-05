@@ -24,13 +24,13 @@ class WizardStep extends ApplicantPageComponent {
   });
 
   protected deleteButton = this.component.findByRole('button', {
-    name: this.translations.applications.actions.deleteApplication,
+    name: this.translations.applications.actions.deleteApplication.action,
   });
 
   protected dialogConfirmDeleteButton = this.within(
     this.screen.getByRole('dialog')
   ).findByRole('button', {
-    name: this.translations.applications.actions.deleteApplication,
+    name: this.translations.applications.actions.deleteApplication.action,
   });
 
   public clickSubmit(): Promise<void> {

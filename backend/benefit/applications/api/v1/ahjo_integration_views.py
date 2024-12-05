@@ -27,15 +27,12 @@ from applications.enums import (
     DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE,
 )
 from applications.models import AhjoStatus, Application, ApplicationBatch, Attachment
+from applications.services.ahjo.exceptions import AhjoCallbackError
 from common.permissions import BFIsHandler, SafeListPermission
 from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation
 
 LOGGER = logging.getLogger(__name__)
-
-
-class AhjoCallbackError(Exception):
-    pass
 
 
 class AhjoApplicationView(APIView):
@@ -176,7 +173,11 @@ class AhjoCallbackView(APIView):
                 request, application, callback_data, request_type
             )
         elif callback_data["message"] == AhjoCallBackStatus.FAILURE:
-            return self.handle_failure_callback(application, callback_data)
+            return self.handle_failure_callback(
+                application=application,
+                callback_data=callback_data,
+                request_type=request_type,
+            )
 
     def cb_info_message(
         self,
@@ -252,7 +253,10 @@ class AhjoCallbackView(APIView):
             )
 
     def handle_failure_callback(
-        self, application: Application, callback_data: dict
+        self,
+        application: Application,
+        callback_data: dict,
+        request_type: AhjoRequestType,
     ) -> Response:
         latest_status = application.ahjo_status.latest()
 
@@ -264,7 +268,11 @@ class AhjoCallbackView(APIView):
             "failureDetails", DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE
         )
         latest_status.save()
-        self._log_failure_details(application, callback_data)
+        self._log_failure_details(
+            application=application,
+            callback_data=callback_data,
+            request_type=request_type,
+        )
         return Response(
             {"message": "Callback received but request was unsuccessful at AHJO"},
             status=status.HTTP_200_OK,
@@ -338,9 +346,14 @@ class AhjoCallbackView(APIView):
         batch.status = ApplicationBatchStatus.AWAITING_AHJO_DECISION
         batch.save()
 
-    def _log_failure_details(self, application, callback_data):
+    def _log_failure_details(
+        self,
+        application: Application,
+        callback_data: dict,
+        request_type: AhjoRequestType,
+    ):
         LOGGER.error(
-            f"Received unsuccessful callback for application {application.id} \
+            f"Received unsuccessful callback for {request_type} for application {application.id} \
                 with request_id {callback_data['requestId']}, callback data: {callback_data}"
         )
         for cb_record in callback_data.get("records", []):
@@ -364,29 +377,37 @@ class AhjoDecisionCallbackView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         callback_data = serializer.validated_data
-        ahjo_case_id = callback_data["caseId"]
-        update_type = callback_data["updatetype"]
+        ahjo_case_id = callback_data.get("caseId", None)
+        update_type = callback_data.get("updatetype", None)
 
-        application = get_object_or_404(
-            Application, ahjo_case_id=ahjo_case_id, handled_by_ahjo_automation=True
-        )
+        if ahjo_case_id:
+            try:
+                application = Application.objects.get(
+                    ahjo_case_id=ahjo_case_id,
+                    handled_by_ahjo_automation=True,
+                )
+                if update_type == AhjoDecisionUpdateType.ADDED:
+                    AhjoStatus.objects.create(
+                        application=application, status=AhjoStatusEnum.SIGNED_IN_AHJO
+                    )
+                elif update_type == AhjoDecisionUpdateType.REMOVED:
+                    AhjoStatus.objects.create(
+                        application=application, status=AhjoStatusEnum.REMOVED_IN_AHJO
+                    )
 
-        if update_type == AhjoDecisionUpdateType.ADDED:
-            AhjoStatus.objects.create(
-                application=application, status=AhjoStatusEnum.SIGNED_IN_AHJO
-            )
-        elif update_type == AhjoDecisionUpdateType.REMOVED:
-            AhjoStatus.objects.create(
-                application=application, status=AhjoStatusEnum.REMOVED_IN_AHJO
-            )
-        # TODO what to do if updatetype is "updated"
-        audit_logging.log(
-            request.user,
-            "",
-            Operation.UPDATE,
-            application,
-            additional_information=f"Decision proposal update type: {update_type} was received \
-            from Ahjo for application {application.application_number}",
-        )
+                # TODO what to do if updatetype is "updated"
+                audit_logging.log(
+                    request.user,
+                    "",
+                    Operation.UPDATE,
+                    application,
+                    additional_information=f"Decision proposal callback of type: {update_type} was received \
+                    from Ahjo for application {application.application_number}",
+                )
+            except Application.DoesNotExist:
+                # Ahjo needs a 200 OK response even if an application is not found
+                return Response(
+                    {"message": "Callback received"}, status=status.HTTP_200_OK
+                )
 
         return Response({"message": "Callback received"}, status=status.HTTP_200_OK)

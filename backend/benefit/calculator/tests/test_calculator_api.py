@@ -5,6 +5,7 @@ from unittest import mock
 
 import factory
 import pytest
+from django.utils import timezone
 
 from applications.api.v1.serializers.application import (
     ApplicantApplicationSerializer,
@@ -24,6 +25,7 @@ from applications.tests.test_applications_api import (
     get_handler_detail_url,
 )
 from calculator.api.v1.serializers import CalculationSerializer
+from calculator.enums import InstalmentStatus
 from calculator.tests.factories import CalculationFactory, PaySubsidyFactory
 from common.tests.conftest import get_client_user
 from common.utils import duration_in_months, to_decimal
@@ -99,7 +101,10 @@ def test_application_try_retrieve_calculation_as_applicant(api_client, applicati
 
 
 def test_application_create_calculation_on_submit(
-    request, api_client, handler_api_client, application
+    request,
+    api_client,
+    handler_api_client,
+    application,
 ):
     # also test that calculation rows are not created yet,
     # as all fields are not filled yet.
@@ -691,3 +696,67 @@ def test_application_calculation_rows_id_exists(
     assert response.status_code == 200
     assert len(response.data["calculation"]["rows"]) > 1
     assert "id" in response.data["calculation"]["rows"][0].keys()
+
+
+@pytest.mark.parametrize(
+    "number_of_instalments, has_subsidies",
+    [(2, False), (1, True)],
+)
+def test_application_calculation_instalments(
+    handling_application, settings, number_of_instalments, has_subsidies
+):
+    settings.PAYMENT_INSTALMENTS_ENABLED = True
+    settings.INSTALMENT_THRESHOLD = 9600
+    settings.SALARY_BENEFIT_NEW_MAX = 1500
+    settings.FIRST_INSTALMENT_LIMIT = 9000
+
+    if has_subsidies is False:
+        handling_application.pay_subsidies.all().delete()
+        assert handling_application.pay_subsidies.count() == 0
+        handling_application.pay_subsidy_granted = PaySubsidyGranted.NOT_GRANTED
+        handling_application.save()
+
+        handling_application.calculation.start_date = datetime.now()
+        handling_application.calculation.end_date = (
+            handling_application.start_date + timedelta(weeks=52)
+        )
+        handling_application.calculation.save()
+
+    handling_application.calculation.init_calculator()
+    handling_application.calculation.calculate()
+
+    assert handling_application.calculation.instalments.count() == number_of_instalments
+    instalment_1 = handling_application.calculation.instalments.all()[0]
+
+    assert instalment_1.due_date is not None
+    assert instalment_1.status == InstalmentStatus.WAITING
+
+    due_date = instalment_1.due_date
+    now_date = timezone.now().date()
+
+    assert due_date == now_date
+
+    assert due_date == now_date
+
+    if number_of_instalments == 1:
+        assert (
+            instalment_1.amount
+            == handling_application.calculation.calculated_benefit_amount
+        )
+        assert instalment_1.status == InstalmentStatus.WAITING
+
+    if number_of_instalments == 2:
+        assert instalment_1.amount == decimal.Decimal(settings.FIRST_INSTALMENT_LIMIT)
+        assert instalment_1.status == InstalmentStatus.WAITING
+
+        instalment_2 = handling_application.calculation.instalments.all()[1]
+        assert (
+            instalment_2.amount
+            == handling_application.calculation.calculated_benefit_amount
+            - decimal.Decimal(settings.FIRST_INSTALMENT_LIMIT)
+        )
+        assert instalment_2.status == InstalmentStatus.WAITING
+
+        due_date = instalment_2.due_date
+        future_date = timezone.now() + timedelta(days=181)
+        assert due_date == future_date.date()

@@ -130,6 +130,9 @@ class ApplicationBatchStatus(models.TextChoices):
         "Returned from Ahjo without decision"
     )  # Theoretically possible: means that a decision was not made
     SENT_TO_TALPA = "sent_to_talpa", _("Sent to Talpa")
+    PARTIALLY_SENT_TO_TALPA = "partially_sent_to_talpa", _(
+        "One of two instalments sent to Talpa"
+    )
     COMPLETED = "completed", _("Processing is completed")
     REJECTED_BY_TALPA = "rejected_by_talpa", _("Rejected by Talpa")
     CANCELLED = "cancelled", _("Cancelled")
@@ -138,6 +141,9 @@ class ApplicationBatchStatus(models.TextChoices):
 class ApplicationTalpaStatus(models.TextChoices):
     NOT_PROCESSED_BY_TALPA = "not_sent_to_talpa", _("Not sent to Talpa")
     REJECTED_BY_TALPA = "rejected_by_talpa", _("Rejected by Talpa")
+    PARTIALLY_SENT_TO_TALPA = "partially_sent_to_talpa", _(
+        "One of two instalments sent to Talpa"
+    )
     SUCCESSFULLY_SENT_TO_TALPA = "successfully_sent_to_talpa", _(
         "Successfully sent to Talpa"
     )
@@ -216,6 +222,7 @@ class AhjoRequestType(models.TextChoices):
     GET_DECISION_MAKER = "get_decision_maker", _(
         "Get decision maker name from Ahjo API"
     )
+    GET_SIGNER = "get_signer", _("Get signer name a and AD id from Ahjo API")
 
 
 class DecisionType(models.TextChoices):
@@ -269,12 +276,22 @@ class AhjoDecisionUpdateType(models.TextChoices):
     UPDATED = "Updated", _("Updated")
 
 
-@dataclass
+@dataclass(frozen=True, order=True)
 class AhjoDecisionDetails:
     decision_maker_name: str
     decision_maker_title: str
     section_of_the_law: str
     decision_date: datetime
+
+    def __post_init__(self):
+        if not self.decision_maker_name.strip():
+            raise ValueError("Decision maker name cannot be empty")
+        if not self.decision_maker_title.strip():
+            raise ValueError("Decision maker title cannot be empty")
+        if not self.section_of_the_law.strip():
+            raise ValueError("Section of the law cannot be empty")
+        if not isinstance(self.decision_date, datetime):
+            raise TypeError("decision_date must be a datetime object")
 
 
 DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE = [

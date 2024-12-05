@@ -61,6 +61,9 @@ from applications.services.application_alteration_csv_report import (
     ApplicationAlterationCsvService,
 )
 from applications.services.applications_csv_report import ApplicationsCsvService
+from applications.services.applications_power_bi_csv_report import (
+    ApplicationsPowerBiCsvService,
+)
 from applications.services.clone_application import clone_application_based_on_other
 from applications.services.generate_application_summary import (
     generate_application_summary_file,
@@ -673,6 +676,7 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
                     ApplicationStatus.ACCEPTED,
                     ApplicationStatus.REJECTED,
                 ],
+                application_origin=ApplicationOrigin.APPLICANT,
             ).latest("submitted_at")
 
         except Application.DoesNotExist:
@@ -774,7 +778,11 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
     def export_csv(self, request) -> StreamingHttpResponse:
         queryset = self.get_queryset()
         filtered_queryset = self.filter_queryset(queryset)
-        return self._csv_response(filtered_queryset)
+        compact_list = (
+            request.query_params.get("compact_list", "false").lower() == "true"
+        )
+
+        return self._csv_response(queryset=filtered_queryset, compact_list=compact_list)
 
     APPLICATION_ORDERING = "application_number"
 
@@ -800,7 +808,8 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
     @transaction.atomic
     def export_new_accepted_applications_csv_pdf(self, request) -> HttpResponse:
         return self._csv_pdf_response(
-            self._create_application_batch(ApplicationStatus.ACCEPTED), True, True
+            self._create_application_batch(ApplicationStatus.ACCEPTED),
+            remove_quotes=True,
         )
 
     @action(methods=["GET"], detail=False)
@@ -840,6 +849,25 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
             status=status.HTTP_201_CREATED,
         )
 
+    @action(methods=["PATCH"], detail=True, url_path="require_additional_information")
+    @transaction.atomic
+    def require_additional_information(self, request, pk) -> HttpResponse:
+        application = self.get_object()
+        application_status = request.data["status"]
+        if application_status in [
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            ApplicationStatus.HANDLING,
+        ]:
+            application.status = application_status
+            application.save()
+
+            return Response(
+                status=status.HTTP_200_OK,
+            )
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
     def _create_application_batch(self, status) -> QuerySet[Application]:
         """
         Create a new application batch out of the existing applications in the given status
@@ -870,15 +898,21 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
     def _csv_response(
         self,
         queryset: QuerySet[Application],
-        prune_data_for_talpa: bool = False,
         remove_quotes: bool = False,
         prune_sensitive_data: bool = True,
+        compact_list: bool = False,
     ) -> StreamingHttpResponse:
-        csv_service = ApplicationsCsvService(
-            queryset.order_by(self.APPLICATION_ORDERING),
-            prune_data_for_talpa,
-            prune_sensitive_data,
-        )
+        if compact_list:
+            # The PowerBi service already provides a more compact list,
+            # so we use it here as well
+            csv_service = ApplicationsPowerBiCsvService(
+                queryset.order_by(self.APPLICATION_ORDERING),
+            )
+        else:
+            csv_service = ApplicationsCsvService(
+                queryset.order_by(self.APPLICATION_ORDERING),
+                prune_sensitive_data,
+            )
         response = StreamingHttpResponse(
             csv_service.get_csv_string_lines_generator(remove_quotes),
             content_type="text/csv",
@@ -896,14 +930,13 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
     def _csv_pdf_response(
         self,
         queryset: QuerySet[Application],
-        prune_data_for_talpa: bool = False,
         remove_quotes: bool = False,
     ) -> HttpResponse:
         ordered_queryset = queryset.order_by(self.APPLICATION_ORDERING)
         export_filename_without_suffix = self._export_filename_without_suffix()
 
         csv_file = prepare_csv_file(
-            ordered_queryset, prune_data_for_talpa, export_filename_without_suffix
+            ordered_queryset, remove_quotes, export_filename_without_suffix
         )
 
         pdf_files: List[ExportFileInfo] = prepare_pdf_files(ordered_queryset)

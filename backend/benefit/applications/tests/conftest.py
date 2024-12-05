@@ -22,6 +22,7 @@ from applications.enums import (
 from applications.models import (
     AhjoSetting,
     Application,
+    APPLICATION_LANGUAGE_CHOICES,
     ApplicationAlteration,
     ApplicationBatch,
 )
@@ -41,6 +42,7 @@ from applications.services.applications_csv_report import ApplicationsCsvService
 from applications.services.applications_power_bi_csv_report import (
     ApplicationsPowerBiCsvService,
 )
+from applications.services.talpa_csv_service import TalpaCsvService
 from applications.tests.factories import (
     AcceptedDecisionProposalFactory,
     AhjoDecisionTextFactory,
@@ -53,6 +55,7 @@ from applications.tests.factories import (
     EmployeeFactory,
     HandlingApplicationFactory,
     ReceivedApplicationFactory,
+    RejectedApplicationFactory,
 )
 from common.tests.conftest import *  # noqa
 from companies.tests.conftest import *  # noqa
@@ -103,6 +106,14 @@ def handling_application(mock_get_organisation_roles_and_create_company):
 def decided_application(mock_get_organisation_roles_and_create_company):
     with factory.Faker.override_default_locale("fi_FI"):
         return DecidedApplicationFactory(
+            company=mock_get_organisation_roles_and_create_company
+        )
+
+
+@pytest.fixture
+def rejected_decided_application(mock_get_organisation_roles_and_create_company):
+    with factory.Faker.override_default_locale("fi_FI"):
+        return RejectedApplicationFactory(
             company=mock_get_organisation_roles_and_create_company
         )
 
@@ -174,7 +185,7 @@ def pruned_applications_csv_service():
     # retrieve the objects through the default manager so that annotations are added
     application1 = DecidedApplicationFactory(application_number=100001)
     application2 = DecidedApplicationFactory(application_number=100002)
-    return ApplicationsCsvService(
+    return TalpaCsvService(
         Application.objects.filter(pk__in=[application1.pk, application2.pk]).order_by(
             "application_number"
         ),
@@ -187,14 +198,15 @@ def pruned_applications_csv_service_with_one_application(
     applications_csv_service, application_batch
 ):
     application1 = application_batch.applications.all().first()
-    return ApplicationsCsvService(Application.objects.filter(pk=application1.pk), True)
+
+    return TalpaCsvService(Application.objects.filter(pk=application1.pk), True)
 
 
 @pytest.fixture
 def sanitized_csv_service_with_one_application(application_batch):
     application1 = application_batch.applications.all().first()
     return ApplicationsCsvService(
-        Application.objects.filter(pk=application1.pk), True, True
+        Application.objects.filter(pk=application1.pk), prune_sensitive_data=True
     )
 
 
@@ -424,13 +436,13 @@ def ahjo_open_case_top_level_dict(decided_application):
     handler = application.calculation.handler
 
     return {
-        "Title": "message title",
+        "Title": "a" * 512,
         "Acquired": application.created_at.isoformat(),
         "ClassificationCode": "02 05 01 00",
         "ClassificationTitle": "Kunnan myöntämät avustukset",
         "Language": language,
         "PublicityClass": "Julkinen",
-        "InternalTitle": "message title",
+        "InternalTitle": "a" * 150,
         "Subjects": [
             {"Subject": "Helsinki-lisät", "Scheme": "hki-yhpa"},
             {"Subject": "kunnan myöntämät avustukset", "Scheme": "hki-yhpa"},
@@ -476,7 +488,10 @@ def denied_ahjo_decision_section():
 def accepted_ahjo_decision_text(decided_application):
     template = AcceptedDecisionProposalFactory()
     replaced_decision_text = replace_decision_template_placeholders(
-        template.template_decision_text + template.template_justification_text,
+        f"""
+        <section id="paatos"><h1>Päätös</h1>{template.template_decision_text}</section>
+        <section id="paatoksenperustelut">
+        <h1>Päätöksen perustelut</h1>{template.template_justification_text}</section>""",
         DecisionType.ACCEPTED,
         decided_application,
     )
@@ -484,7 +499,7 @@ def accepted_ahjo_decision_text(decided_application):
         decision_type=DecisionType.ACCEPTED,
         application=decided_application,
         decision_text=replaced_decision_text,
-        language=decided_application.applicant_language,
+        language=APPLICATION_LANGUAGE_CHOICES[0][0],
     )
 
 
@@ -519,6 +534,12 @@ def application_with_ahjo_case_id(decided_application):
 
 
 @pytest.fixture
+def rejected_application_with_ahjo_case_id(rejected_decided_application):
+    rejected_decided_application.ahjo_case_id = generate_ahjo_case_id()
+    return rejected_decided_application
+
+
+@pytest.fixture
 def multiple_applications_with_ahjo_case_id(
     mock_get_organisation_roles_and_create_company,
 ):
@@ -543,7 +564,10 @@ def generate_ahjo_case_id():
 def application_with_ahjo_decision(application_with_ahjo_case_id, fake_decisionmakers):
     template = AcceptedDecisionProposalFactory()
     replaced_decision_text = replace_decision_template_placeholders(
-        template.template_decision_text + template.template_justification_text,
+        f"""
+        <section id="paatos"><h1>Päätös</h1>{template.template_decision_text}</section>
+        <section id="paatoksenperustelut">
+        <h1>Päätöksen perustelut</h1>{template.template_justification_text}</section>""",
         DecisionType.ACCEPTED,
         application_with_ahjo_case_id,
     )
@@ -559,11 +583,36 @@ def application_with_ahjo_decision(application_with_ahjo_case_id, fake_decisionm
 
 
 @pytest.fixture
+def rejected_application_with_ahjo_decision(
+    rejected_application_with_ahjo_case_id, fake_decisionmakers
+):
+    template = AcceptedDecisionProposalFactory()
+    replaced_decision_text = replace_decision_template_placeholders(
+        f"""
+        <section id="paatos"><h1>Päätös</h1>{template.template_decision_text}</section>
+        <section id="paatoksenperustelut">
+        <h1>Päätöksen perustelut</h1>{template.template_justification_text}</section>""",
+        DecisionType.DENIED,
+        rejected_application_with_ahjo_case_id,
+    )
+    AhjoDecisionTextFactory(
+        application=rejected_application_with_ahjo_case_id,
+        decision_type=DecisionType.DENIED,
+        decision_text=replaced_decision_text,
+        language="fi",
+        decision_maker_id=fake_decisionmakers[0]["ID"],
+        decision_maker_name=fake_decisionmakers[0]["Name"],
+    )
+    return rejected_application_with_ahjo_case_id
+
+
+@pytest.fixture
 def ahjo_decision_detail_response(application_with_ahjo_decision):
     id = uuid.uuid4()
     handler = application_with_ahjo_decision.calculation.handler
     name = f"{handler.first_name} {handler.last_name}"
     company = application_with_ahjo_decision.company
+    today = date.today()
     content = f'<html lang="fi"><head><META content="text/html; charset=UTF-8" http-equiv="Content-Type">\
 <META name="DhId" content="{id}">\
 <META name="ThisHTMLGenerated" content="2024-04-09T13:48:35.106+03:00">\
@@ -792,7 +841,7 @@ julkinen, julkaisujärjestelmä",
                 "PersonalData": "Sisältää henkilötietoja",
                 "Issued": "2024-04-09T03:00:00.000",
             },
-            "DateDecision": "2024-04-09T03:00:00.000",
+            "DateDecision": f"{today}T03:00:00.000",
             "DecisionHistoryPDF": None,
             "DecisionHistoryHTML": "",
             "CaseID": f"{application_with_ahjo_decision.ahjo_case_id}",
@@ -818,7 +867,7 @@ def decision_details():
         decision_maker_name="Test Test",
         decision_maker_title="Test Title",
         section_of_the_law="16 §",
-        decision_date=date.today(),
+        decision_date=datetime.now(),
     )
 
 
@@ -843,6 +892,23 @@ def decided_application_with_decision_date(application_with_ahjo_decision):
     application_with_ahjo_decision.batch = batch
     application_with_ahjo_decision.save()
     return application_with_ahjo_decision
+
+
+@pytest.fixture
+def rejected_decided_application_with_decision_date(
+    rejected_application_with_ahjo_decision,
+):
+    batch = ApplicationBatch.objects.create(
+        handler=rejected_application_with_ahjo_decision.calculation.handler,
+        auto_generated_by_ahjo=True,
+        decision_date=date.today(),
+    )
+    batch.status = ApplicationBatchStatus.COMPLETED
+    batch.save()
+    rejected_application_with_ahjo_decision.pay_subsidy_percent = 100
+    rejected_application_with_ahjo_decision.batch = batch
+    rejected_application_with_ahjo_decision.save()
+    return rejected_application_with_ahjo_decision
 
 
 @pytest.fixture
@@ -1094,6 +1160,16 @@ def decisionmaker_response():
 
 
 @pytest.fixture
+def invalid_decisionmaker_response():
+    return {
+        "decisionMakers": [
+            {"Organization": {"Name": None, "ID": "ORG001", "IsDecisionMaker": True}},
+            {"Organization": {"Name": "Test Org", "ID": None, "IsDecisionMaker": True}},
+        ]
+    }
+
+
+@pytest.fixture
 def fake_decisionmakers():
     return [
         {
@@ -1105,11 +1181,70 @@ def fake_decisionmakers():
 
 
 @pytest.fixture
+def fake_signers():
+    return [
+        {
+            "ID": "ABCDEFGH12345678",
+            "Name": "Testaaja, Timo",
+        },
+        {
+            "ID": "HIJKLMNOPQRSTUWXYZ",
+            "Name": "Testaaja, Tiina",
+        },
+    ]
+
+
+@pytest.fixture
 def decision_maker_settings(fake_decisionmakers):
     return AhjoSetting.objects.create(
         name="ahjo_decision_maker",
         data=fake_decisionmakers,
     )
+
+
+@pytest.fixture
+def signer_settings(fake_signers):
+    return AhjoSetting.objects.create(
+        name="ahjo_signer",
+        data=fake_signers,
+    )
+
+
+@pytest.fixture
+def signer_response():
+    return {
+        "agentList": [
+            {
+                "agentId": "kissa213",
+                "links": [],
+                "ID": "kissa213",
+                "Name": "Testaaja, Tiina",
+                "Title": None,
+                "Role": "decisionMaker",
+                "Email": None,
+            },
+            {
+                "agentId": "koira123",
+                "links": [],
+                "ID": "koira123",
+                "Name": "Testaaja, Timo",
+                "Title": None,
+                "Role": "decisionMaker",
+                "Email": None,
+            },
+            {
+                "agentId": "kala123",
+                "links": [],
+                "ID": "kala123",
+                "Name": "Testaaja, Teppo",
+                "Title": None,
+                "Role": "decisionMaker",
+                "Email": None,
+            },
+        ],
+        "count": 3,
+        "links": [],
+    }
 
 
 @pytest.fixture

@@ -2,8 +2,12 @@ import AppContext from 'benefit/handler/context/AppContext';
 import useAhjoSettingsQuery from 'benefit/handler/hooks/useAhjoSettingsQuery';
 import { DecisionProposalTemplateData } from 'benefit/handler/types/common';
 import { DECISION_TYPES } from 'benefit-shared/constants';
-import { Application, DecisionMaker } from 'benefit-shared/types/application';
-import { Select, SelectionGroup } from 'hds-react';
+import {
+  AhjoSigner,
+  Application,
+  DecisionMaker,
+} from 'benefit-shared/types/application';
+import { LoadingSpinner, Select, SelectionGroup } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
@@ -35,8 +39,8 @@ const replaceDecisionTemplatePlaceholders = (
 const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
   application,
 }) => {
-  const { applicantLanguage, id } = application;
- 
+  const { applicantLanguage, id, decisionProposalDraft } = application;
+
   const { t } = useTranslation();
   const translationBase = 'common:review.decisionProposal';
   const { handledApplication, setHandledApplication } =
@@ -46,17 +50,33 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
     React.useState<string>(handledApplication?.justificationText || '');
   const [templateForDecisionText, setTemplateForDecisionText] =
     React.useState<string>(handledApplication?.decisionText || '');
-  
+
   const [selectedDecisionMaker, setSelectedDecisionMaker] =
-    React.useState<DecisionMaker | null>(null);
+    React.useState<DecisionMaker | null>({
+      id: handledApplication?.decisionMakerId,
+      name: handledApplication?.decisionMakerName,
+    });
+
+  const [selectedSigner, setSelectedSigner] = React.useState<AhjoSigner | null>(
+    {
+      id: handledApplication?.signerId,
+      name: handledApplication?.signerName,
+    }
+  );
 
   const decisionType =
     handledApplication?.status === 'accepted'
       ? DECISION_TYPES.ACCEPTED
       : DECISION_TYPES.DENIED;
 
-  const { data: sections } = useDecisionProposalTemplateQuery(id, decisionType);
-  const { data: decisionMakerOptions } = useAhjoSettingsQuery();
+  const { data: sections, isLoading } = useDecisionProposalTemplateQuery(
+    id,
+    decisionType
+  );
+  const { data: decisionMakerOptions } = useAhjoSettingsQuery(
+    'ahjo_decision_maker'
+  );
+  const { data: signerOptions } = useAhjoSettingsQuery('ahjo_signer');
 
   const selectTemplate = (option: DecisionProposalTemplateData): void => {
     if (!selectedDecisionMaker) return;
@@ -86,8 +106,51 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
       ),
       decisionMakerId: selectedDecisionMaker.id,
       decisionMakerName: selectedDecisionMaker.name,
+      signerId: selectedSigner?.id,
+      signerName: selectedSigner?.name,
     });
   };
+
+  React.useEffect(() => {
+    if (decisionMakerOptions && decisionMakerOptions.length > 0) {
+      setSelectedDecisionMaker({
+        id:
+          handledApplication?.decisionMakerId ||
+          decisionProposalDraft?.decisionMakerId,
+        name:
+          handledApplication?.decisionMakerName ||
+          decisionProposalDraft?.decisionMakerName,
+      });
+    }
+  }, [
+    decisionMakerOptions,
+    decisionProposalDraft,
+    handledApplication?.decisionMakerId,
+    handledApplication?.decisionMakerName,
+  ]);
+
+  React.useEffect(() => {
+    if (signerOptions && signerOptions.length > 0) {
+      setSelectedSigner({
+        id: handledApplication?.signerId || decisionProposalDraft?.signerId,
+        name:
+          handledApplication?.signerName || decisionProposalDraft?.signerName,
+      });
+    }
+  }, [
+    signerOptions,
+    decisionProposalDraft,
+    handledApplication?.signerId,
+    handledApplication?.signerName,
+  ]);
+
+  if (isLoading) {
+    return (
+      <Container>
+        <LoadingSpinner />
+      </Container>
+    );
+  }
 
   if (!sections || sections?.length === 0) {
     const language =
@@ -114,21 +177,61 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
         <$GridCell $colSpan={12}>
           <Heading
             $css={{ marginTop: 0 }}
+            header={t(`${translationBase}.signer.title`)}
+            as="h3"
+          />
+        </$GridCell>
+        <$GridCell $colSpan={12}>
+          <SelectionGroup
+            label={t(`${translationBase}.signer.fields.signer.label`)}
+            tooltipText={t(
+              `${translationBase}.signer.fields.signer.tooltipText`
+            )}
+          >
+            {signerOptions?.map((option, index) => (
+              <$RadioButton
+                key={`radio-signer-${option.id}`}
+                id={`radio-signer-${index}`}
+                value={option.id}
+                label={option.name}
+                checked={selectedSigner?.id === option?.id}
+                onChange={() => {
+                  setSelectedSigner({
+                    id: option.id,
+                    name: option.name,
+                  });
+
+                  setHandledApplication({
+                    ...handledApplication,
+                    signerId: option.id,
+                    signerName: option.name,
+                  });
+                }}
+              />
+            ))}
+          </SelectionGroup>
+        </$GridCell>
+      </$ReviewGrid>
+
+      <$ReviewGrid bgColor={theme.colors.silverLight}>
+        <$GridCell $colSpan={12}>
+          <Heading
+            $css={{ marginTop: 0 }}
             header={t(`${translationBase}.role.title`)}
             as="h3"
           />
         </$GridCell>
         <$GridCell $colSpan={12}>
-        <SelectionGroup
+          <SelectionGroup
             label={t(`${translationBase}.role.fields.decisionMaker.label`)}
             tooltipText={t(
               `${translationBase}.role.fields.decisionMaker.tooltipText`
             )}
           >
-            {decisionMakerOptions?.map((option) => (
+            {decisionMakerOptions?.map((option, index) => (
               <$RadioButton
                 key={`radio-decision-maker-${option.id}`}
-                id={`radio-decision-maker-${option.id}`}
+                id={`radio-decision-maker-${index}`}
                 value={option.id}
                 label={option.name}
                 checked={selectedDecisionMaker?.id === option?.id}
@@ -154,7 +257,8 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
 
                     setHandledApplication({
                       ...handledApplication,
-                      handlerRole: 'handler',
+                      decisionMakerId: option.id,
+                      decisionMakerName: option.name,
                       decisionText: replaceDecisionTemplatePlaceholders(
                         handledApplication?.decisionText || '',
                         option.name
@@ -171,7 +275,7 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
           </SelectionGroup>
         </$GridCell>
       </$ReviewGrid>
-      {handledApplication?.handlerRole && (
+      {selectedDecisionMaker?.id && (
         <$ReviewGrid bgColor={theme.colors.silverLight}>
           <$GridCell $colSpan={12}>
             <Heading

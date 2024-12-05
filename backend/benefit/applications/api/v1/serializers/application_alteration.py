@@ -18,8 +18,8 @@ from users.utils import get_company_from_request, get_request_user_from_context
 class SimpleApplicationAlterationSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = ApplicationAlteration
-        fields = ["state"]
-        read_only_fields = ["state"]
+        fields = ["state", "recovery_amount"]
+        read_only_fields = ["state", "recovery_amount"]
 
 
 class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):

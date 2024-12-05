@@ -187,8 +187,9 @@
         "status": "Tila",
         "statusArchive": "Päätös",
         "ahjoStatus": "Päätös",
-        "talpaStatus": "Maksun tila",
+        "paymentStatus": "Maksun tila",
         "decisionDate": "Päätöspäivä",
+        "dueDate": "Eräpäivä",
         "benefitAmount": "Tuen määrä",
         "statuses": {
           "cancelled": "Peruutettu",
@@ -219,8 +220,16 @@
           "rejected_by_talpa": "Virhe maksussa",
           "successfully_sent_to_talpa": "Lähetetty maksuun"
         },
+        "instalmentStatuses": {
+          "cancelled": "Peruttu",
+          "accepted": "Hyväksytty",
+          "waiting": "Odottaa",
+          "completed": "Maksettu",
+          "error_in_talpa": "Virhe maksussa"
+        },
         "calculationEndDate": "Viim. tukipäivä",
-        "calculatedBenefitAmount": "Tukisumma"
+        "calculatedBenefitAmount": "Tukisumma",
+        "instalmentAmount": "Maksuerä"
       },
       "messages": {
         "empty": {
@@ -231,6 +240,7 @@
           "archived": "Ei yhtään arkistoitua hakemusta.",
           "accepted,rejected": "Ei yhtään päätettävänä olevaa hakemusta.",
           "additional_information_needed": "Ei yhtään lisätietoja odottavaa hakemusta.",
+          "instalments": "Ei yhtään maksua odottavaa maksuerää.",
           "all": "Ei yhtään hakemusta.",
           "draft": "Ei yhtään luonnosta."
         }
@@ -245,7 +255,8 @@
         "infoRequired": "Odottaa lisätietoja",
         "decisions": "päätökset",
         "pending": "Päätettävänä",
-        "inPayment": "Maksussa"
+        "inPayment": "Maksussa",
+        "instalments": "Maksuerät"
       },
       "errors": {
         "fetch": {
@@ -267,7 +278,11 @@
         "count_other": "Valittu {{count}} hakemusta"
       },
       "actions": {
-        "addToBatch": "Lisää valitut koontiin"
+        "addToBatch": "Lisää valitut koontiin",
+        "return": "Palauta",
+        "confirm": "Hyväksy",
+        "cancel": "Peru",
+        "finish": "Siirrä arkistoon"
       }
     },
     "pageHeaders": {
@@ -644,7 +659,8 @@
         },
         "changeReason": {
           "label": "Selvitys",
-          "placeholder": "Syy muokkaukseen"
+          "placeholder": "Syy muokkaukseen",
+          "additionalInformationRequired": "Lisätietoja vaadittu"
         }
       },
       "salaryExpensesExplanation": "Ilmoita bruttopalkka, sivukulut ja lomaraha euroina kuukaudessa.",
@@ -740,6 +756,7 @@
         "accepted": "Hakemus on hyväksytty ja Helsinki-lisää on myönnetty aikavälille {{dateRangeStart}} – {{dateRangeEnd}}",
         "rejected": "Hakemus on hylätty. Helsinki-lisää ei myönnetä.",
         "handling": "Hakemus on käsittelyssä.",
+        "received": "Hakemus on vastaanotettu.",
         "cancelled": "Hakemus on peruttu.",
         "additional_information_needed": "Hakemus on käsittelyssä."
       },
@@ -815,7 +832,8 @@
         "showDecision": "Tarkastele päätöstä",
         "reportAlteration": "Tee uusi muutosilmoitus"
       },
-      "calculation": "Laskelma"
+      "calculation": "Laskelma",
+      "instalments": "Maksuerät"
     },
     "alterations": {
       "new": {
@@ -1004,7 +1022,7 @@
           "calculationOutOfDate": "Laskelma ei ole ajan tasalla"
         },
         "actions": {
-          "close": "Peruuta",
+          "close": "Sulje",
           "handle": "Merkitse käsitellyksi",
           "returnToApplication": "Palaa hakemukseen",
           "returnToAlterationList": "Palaa muutosilmoituksiin"
@@ -1023,7 +1041,7 @@
       "handlingPanel": "Käsittelypaneeli",
       "search": "Hae arkistosta",
       "cancel": "Peruuta hakemus",
-      "clone": "Kloonaa hakemus",
+      "clone": "Kopioi hakemus",
       "addAttachment": "Liitä uusi tiedosto",
       "addPreviouslyGrantedBenefit": "Lisää aikaisempi lisä",
       "targetGroupCheck": "Kohderyhmätarkistus",
@@ -1180,8 +1198,9 @@
           "calculation": "Tarkista laskelma",
           "status": "Puoltotieto puuttuu",
           "logEntry": "Päätöksen perustelu puuttuu",
-          "handler": "Päättäjän rooli puuttuu",
+          "decisionMakerId": "Päättäjän rooli puuttuu",
           "decisionText": "Päätös ei voi olla tyhjä",
+          "signerId": "Allekirjoittaja puuttuu",
           "justificationText": "Päätöksen perustelu ei voi olla tyhjä"
         }
       },
@@ -1199,7 +1218,8 @@
         "employerName": "Hakija",
         "employeeName": "Työllistettävä",
         "totalAmount": "Myönnettävä tuki yhteensä",
-        "grantedAsDeMinimisAid": "Myönnetään de minimis -tukena"
+        "grantedAsDeMinimisAid": "Myönnetään de minimis -tukena",
+        "decisionMaker": "Päättäjän rooli"
       },
       "calculationReview": {
         "tableCaption": "Tukijaksot",
@@ -1216,6 +1236,15 @@
             "handler": "Helsinki-lisä-valmistelija",
             "manager": "Tiimipäällikkö",
             "tooltipText": "Hakemuksen käsittelijän ja päättäjän on oltava eri henkilöitä. Käsittelijä on henkilö, joka lähettää hakemuksen. Valitse päättäjäksi joku toinen henkilö."
+          }
+        }
+      },
+      "signer": {
+        "title": "Valitse allekirjoittaja",
+        "fields": {
+          "signer": {
+            "label": "Päätöksen allekirjoittaja",
+            "tooltipText": "Päätöksen allekirjoittaja Ahjossa tapahtuvaa sähköistä allekirjoitusta varten. Valitse allekirjoittajaksi joku muu kuin käsittelijä."
           }
         }
       },
@@ -1357,7 +1386,20 @@
     "result": {
       "header": "Myönnettävä Helsinki-lisä",
       "header2": "Arvio koostuu seuraavista tiedoista:",
-      "acceptedBenefit": "Myönnettävä Helsinki-lisä"
+      "header3": "Maksuerät",
+      "acceptedBenefit": "Myönnettävä Helsinki-lisä",
+      "firstInstalment": "Ensimmäinen maksuerä",
+      "secondInstalment": "Toinen maksuerä, eräpäivä",
+      "total": "Yhteensä",
+      "alterationRow": "Muutosilmoitus {{startDate}} - {{endDate}}",
+      "totalRecoveries": "Takaisinlaskutettavan tuen määrä",
+      "unpaidRecoveries": {
+        "title": "Takaisinlaskutettava osuus",
+        "tooltip": "Huomaa, että takaisinlaskutettava osuus muuttuu, jos uusia muutosilmoituksia hyväksytään tai niitä peruutaan. Jos olet epävarma, tarkasta laskutuksen tilanne Talpalta."
+      },
+      "totalAfterRecoveries": "Tuki takaisinlaskutuksen jälkeen",
+      "totalPaidSum": "Toteutuneet maksuerät yhteensä",
+      "totalPlannedSum": "Maksuerät yhteensä"
     },
     "errors": {
       "trainingCompensation": {
@@ -1508,7 +1550,8 @@
     "buttons": {
       "downloadAcceptedApplications": "Hyväksytyt hakemukset",
       "downloadRejectedApplications": "Hylätyt hakemukset",
-      "downloadApplicationsInTimeRange": "Kaikki hakemukset valitulta ajalta"
+      "downloadApplicationsInTimeRange": "Kaikki hakemukset valitulta ajalta",
+      "downloadCompactList": "Lataa kompaktimpi lista hakemuksista"
     }
   },
   "login": {
@@ -1819,6 +1862,32 @@
       },
       "handledByAhjoAutomation": {
         "label": "Käsitelty Ahjo automaatiolla"
+      },
+      "officialCompanyStreetAddress": {
+        "label": "Katuosoite"
+      },
+      "companyName": {
+        "label": "Työantaja"
+      },
+      "officialCompanyPostcode": {
+        "label": "Postinumero"
+      },
+      "officialCompanyCity": {
+        "label": "Postitoimipaikka"
+      },
+      "companyForm": {
+        "label": "Yritysmuoto"
+      },
+      "status": {
+        "label": "Tila"
+      }
+    }
+  },
+  "instalments": {
+    "dialog": {
+      "cancelInstalment": {
+        "heading": "Maksuerän peruutus",
+        "text": "Oletko varma, että haluat peruuttaa {{sum}} suuruisen maksuerän hakemukselle {{details}}?"
       }
     }
   }

@@ -93,7 +93,7 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({
               </$ItemWrapper>
             </$Col>
             <$Col>
-              <StatusLabel status={data.status} />
+              <StatusLabel status={data.status} archived={data.archived} />
             </$Col>
           </$InnerWrapper>
         </Container>

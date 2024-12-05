@@ -36,7 +36,7 @@ import {
   convertToUIDateAndTimeFormat,
   sortFinnishDate,
 } from 'shared/utils/date.utils';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 import styled from 'styled-components';
 
 import { $Empty } from '../applicationList/ApplicationList.sc';
@@ -144,7 +144,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
       key: 'total_amount',
       isSortable: true,
       transform: ({ benefitAmount: amount }: { benefitAmount: number }) =>
-        formatFloatToCurrency(amount, 'EUR', 'fi-FI', 0),
+        formatFloatToEvenEuros(amount),
     });
   }
 

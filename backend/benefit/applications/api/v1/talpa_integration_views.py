@@ -4,6 +4,7 @@ from typing import List, Union
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.db import transaction
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -12,6 +13,7 @@ from rest_framework.views import APIView
 from applications.api.v1.serializers.talpa_callback import TalpaCallbackSerializer
 from applications.enums import ApplicationBatchStatus, ApplicationTalpaStatus
 from applications.models import Application, ApplicationBatch
+from calculator.enums import InstalmentStatus
 from common.authentications import RobotBasicAuthentication
 from common.utils import get_request_ip_address
 from shared.audit_log import audit_logging
@@ -64,33 +66,72 @@ class TalpaCallbackView(APIView):
             return None
         return applications
 
+    def _get_applications_and_instalments(
+        self, application_numbers
+    ) -> Union[List[Application], None]:
+        applications = Application.objects.with_due_instalments(
+            InstalmentStatus.ACCEPTED
+        ).filter(application_number__in=application_numbers)
+
+        if not applications.exists() and application_numbers:
+            LOGGER.error(
+                f"No applications found with numbers: {application_numbers} for update after TALPA download"
+            )
+            return []
+        return applications
+
+    @transaction.atomic
     def _handle_successful_applications(
         self, application_numbers: list, ip_address: str
     ):
-        applications = self._get_applications(application_numbers)
-        self.update_application_and_related_batch(
-            applications,
-            ip_address,
-            ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA,
-            ApplicationBatchStatus.SENT_TO_TALPA,
-            "application was read succesfully by TALPA and archived",
-            is_archived=True,
-        )
+        if settings.PAYMENT_INSTALMENTS_ENABLED:
+            applications = self._get_applications_and_instalments(application_numbers)
+
+            self.do_status_updates_based_on_instalments(
+                applications=applications,
+                instalment_status=InstalmentStatus.PAID,
+                ip_address=ip_address,
+                log_message="instalment was read by TALPA and marked as paid",
+                is_success=True,
+            )
+
+        else:
+            applications = self._get_applications(application_numbers)
+            self.update_application_and_related_batch(
+                applications,
+                ip_address,
+                ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA,
+                ApplicationBatchStatus.SENT_TO_TALPA,
+                "application was read succesfully by TALPA and archived",
+                is_archived=True,
+            )
 
     @transaction.atomic
     def _handle_failed_applications(self, application_numbers: list, ip_address: str):
         """Update applications and related batch which could not be processed with status REJECTED_BY_TALPA"""
-        applications = self._get_applications(application_numbers)
-        self.update_application_and_related_batch(
-            applications,
-            ip_address,
-            ApplicationTalpaStatus.REJECTED_BY_TALPA,
-            ApplicationBatchStatus.REJECTED_BY_TALPA,
-            "application was rejected by TALPA",
-        )
 
-    @staticmethod
+        if settings.PAYMENT_INSTALMENTS_ENABLED:
+            applications = self._get_applications_and_instalments(application_numbers)
+
+            self.do_status_updates_based_on_instalments(
+                applications=applications,
+                instalment_status=InstalmentStatus.ERROR_IN_TALPA,
+                ip_address=ip_address,
+                log_message="there was an error and the instalment was not read by TALPA",
+                is_success=False,
+            )
+        else:
+            applications = self._get_applications(application_numbers)
+            self.update_application_and_related_batch(
+                applications,
+                ip_address,
+                ApplicationTalpaStatus.REJECTED_BY_TALPA,
+                ApplicationBatchStatus.REJECTED_BY_TALPA,
+                "application was rejected by TALPA",
+            )
+
     def update_application_and_related_batch(
+        self,
         applications: List[Application],
         ip_address: str,
         application_talpa_status: ApplicationTalpaStatus,
@@ -98,7 +139,9 @@ class TalpaCallbackView(APIView):
         log_message: str,
         is_archived: bool = False,
     ):
-        """Update applications and related batch with given statuses and log the event"""
+        """Update applications and related batch with given statuses and log the event.
+        This will be deprecated after the instalments feature is enabled for all applications.
+        """
         applications.update(
             talpa_status=application_talpa_status,
             archived=is_archived,
@@ -109,11 +152,67 @@ class TalpaCallbackView(APIView):
 
         for application in applications:
             """Add audit log entries for applications which were processed by TALPA"""
-            audit_logging.log(
-                AnonymousUser,
-                "",
-                Operation.READ,
-                application,
-                ip_address=ip_address,
-                additional_information=log_message,
+            self.write_to_audit_log(application, ip_address, log_message)
+
+    def do_status_updates_based_on_instalments(
+        self,
+        applications: List[Application],
+        instalment_status: InstalmentStatus,
+        ip_address: str,
+        log_message: str,
+        is_success: bool = False,
+    ):
+        """
+        After receiving the callback from Talpa, query the currently due instalments of the
+        successful applications and update the status of the instalments.
+        If the instalments  1/1 or 2/2, e.g the final instalment,
+        update the application status, batch status to SENT_TO_TALPA.
+        Always set the application as archived after the first instalment is succesfully sent to talpa.
+        """
+        for application in applications:
+            instalment = application.calculation.instalments.get(
+                status=InstalmentStatus.ACCEPTED,
+                due_date__lte=timezone.now().date(),
             )
+            instalment.status = instalment_status
+            instalment.save()
+
+            if is_success:
+                # after 1st instalment is sent to talpa,
+                # update the application status,
+                # batch status and set the application as archived
+                application.talpa_status = (
+                    ApplicationTalpaStatus.PARTIALLY_SENT_TO_TALPA
+                )
+                application.archived = True
+                application.save()
+
+                application.batch.status = (
+                    ApplicationBatchStatus.PARTIALLY_SENT_TO_TALPA
+                )
+                application.batch.save()
+
+                if application.number_of_instalments == 1 or (
+                    application.number_of_instalments == 2
+                    and instalment.instalment_number == 2
+                ):
+                    self.update_after_all_instalments_are_sent(application)
+
+            """Add audit log entries for applications which were processed by TALPA"""
+            self.write_to_audit_log(application, ip_address, log_message)
+
+    def update_after_all_instalments_are_sent(self, application: Application):
+        application.talpa_status = ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
+        application.save()
+        application.batch.status = ApplicationBatchStatus.SENT_TO_TALPA
+        application.batch.save()
+
+    def write_to_audit_log(self, application, ip_address, log_message):
+        audit_logging.log(
+            AnonymousUser,
+            "",
+            Operation.READ,
+            application,
+            ip_address=ip_address,
+            additional_information=log_message,
+        )

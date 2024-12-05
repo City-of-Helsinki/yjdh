@@ -218,6 +218,7 @@ const ApplicationFormStep5: React.FC<
           handleSubmit={handleSubmit}
           handleBack={handleBack}
           handleDelete={handleDelete}
+          applicationStatus={data?.status}
         />
       )}
     </>

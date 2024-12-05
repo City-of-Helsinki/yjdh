@@ -1,6 +1,6 @@
 import { $Highlight } from 'benefit/handler/components/applicationReview/ApplicationReview.sc';
 import React from 'react';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
 type Props = {
@@ -20,7 +20,7 @@ const SalaryCalculatorHighlight: React.FC<Props> = ({
     <$Highlight data-testid={testId}>
       <div style={{ fontSize: theme.fontSize.body.xl }}>{description}</div>
       <div style={{ fontSize: theme.fontSize.heading.xl }}>
-        {formatFloatToCurrency(amount, 'EUR', 'fi-FI', 0)}
+        {formatFloatToEvenEuros(amount)}
       </div>
     </$Highlight>
   );

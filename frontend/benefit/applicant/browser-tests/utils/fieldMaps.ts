@@ -9,13 +9,13 @@ export type ApplicationField = {
 
 const formatFloatToCurrency = (
   value: string | number,
-  currency: 'EUR' | null,
+  currency: 'EUR' | null = 'EUR',
   locale = 'fi-FI'
 ): string => {
   const parsedValue = typeof value === 'string' ? parseFloat(value) : value;
   const currencyOptions = currency
     ? {
-        style: 'currency',
+        style: 'currency' as const,
         currency,
       }
     : {};
@@ -72,15 +72,15 @@ export const mapRequiredForm = (
   },
   {
     testId: 'application-field-monthlyPay',
-    value: formatFloatToCurrency(form.employee.monthlyPay, 'EUR'),
+    value: formatFloatToCurrency(form.employee.monthlyPay),
   },
   {
     testId: 'application-field-vacationMoney',
-    value: formatFloatToCurrency(form.employee.vacationMoney, 'EUR'),
+    value: formatFloatToCurrency(form.employee.vacationMoney),
   },
   {
     testId: 'application-field-otherExpenses',
-    value: formatFloatToCurrency(form.employee.otherExpenses, 'EUR'),
+    value: formatFloatToCurrency(form.employee.otherExpenses),
   },
   { testId: 'application-field-paySubsidyGranted', value: 'Palkkatuki' },
   { testId: 'application-field-apprenticeshipProgram', value: null },

@@ -27,10 +27,11 @@ export const BackendEndpoint = {
   SEARCH: 'v1/search/',
   APPLICATIONS_WITH_UNREAD_MESSAGES:
     'v1/handlerapplications/with_unread_messages/',
-  AHJO_SETTINGS: 'v1/ahjosettings/decision-maker/',
+  AHJO_SETTINGS: 'v1/ahjosettings/',
   APPLICATIONS_CLONE_AS_DRAFT: 'v1/applications/clone_as_draft/',
   APPLICATIONS_CLONE_LATEST: 'v1/applications/clone_latest/',
   HANDLER_APPLICATIONS_CLONE_AS_DRAFT: 'v1/handlerapplications/clone_as_draft/',
+  HANDLER_INSTALMENTS: 'v1/handlerinstalments/',
 } as const;
 
 const batchBase = (id: string): string =>
@@ -38,6 +39,9 @@ const batchBase = (id: string): string =>
 
 const handlerApplicationsBase = (id: string): string =>
   `${BackendEndpoint.HANDLER_APPLICATIONS}${id}/`;
+
+const handlerInstalmentBase = (id: string): string =>
+  `${BackendEndpoint.HANDLER_INSTALMENTS}${id}/`;
 
 export const HandlerEndpoint = {
   BATCH_APP_ASSIGN: `${BackendEndpoint.APPLICATION_BATCHES}assign_applications/`,
@@ -50,6 +54,10 @@ export const HandlerEndpoint = {
     `${BackendEndpoint.HANDLER_APPLICATIONS}batch_p2p_file?batch_id=${id}`,
   HANDLER_APPLICATIONS_CLONE_AS_DRAFT: (id: string) =>
     `${handlerApplicationsBase(id)}clone_as_draft/`,
+  HANDLER_REQUIRE_ADDITIONAL_INFORMATION: (id: string) =>
+    `${handlerApplicationsBase(id)}require_additional_information/`,
+  HANDLER_INSTALMENT_STATUS_TRANSITION: (id: string) =>
+    `${handlerInstalmentBase(id)}`,
 } as const;
 
 const applicationsBase = (id: string): string =>

@@ -12,7 +12,7 @@ import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { getFullName } from 'shared/utils/application.utils';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
 import {
@@ -67,11 +67,8 @@ const HandledView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
             </$GridCell>
             <$GridCell $colSpan={2}>
               <$ViewFieldBold large>
-                {formatFloatToCurrency(
-                  data.calculation?.overrideMonthlyBenefitAmount,
-                  'EUR',
-                  'fi-FI',
-                  0
+                {formatFloatToEvenEuros(
+                  data.calculation?.overrideMonthlyBenefitAmount
                 )}
                 {t('common:utility.perMonth')}
               </$ViewFieldBold>
@@ -91,7 +88,7 @@ const HandledView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
               </$GridCell>
               <$GridCell $colSpan={2}>
                 <$ViewFieldBold large>
-                  {formatFloatToCurrency(row.amount, 'EUR', 'fi-FI', 0)}
+                  {formatFloatToEvenEuros(row.amount)}
                   {t('common:utility.perMonth')}
                 </$ViewFieldBold>
               </$GridCell>
@@ -115,12 +112,7 @@ const HandledView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
               $colSpan={2}
             >
               <$ViewFieldBold large>
-                {formatFloatToCurrency(
-                  totalRow?.amount || 0,
-                  'EUR',
-                  'fi-FI',
-                  0
-                )}
+                {formatFloatToEvenEuros(totalRow?.amount || 0)}
               </$ViewFieldBold>
             </$GridCell>
           </$HandledRow>

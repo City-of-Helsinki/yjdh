@@ -57,7 +57,7 @@ def test_application_batch_update_after_details_request(
         application_batch.decision_maker_title == decision_details.decision_maker_title
     )
     assert application_batch.section_of_the_law == decision_details.section_of_the_law
-    assert application_batch.decision_date == decision_details.decision_date
+    assert application_batch.decision_date == decision_details.decision_date.date()
 
     assert application_batch.p2p_checker_name == p2p_settings.data["acceptor_name"]
     assert application_batch.p2p_inspector_name == p2p_settings.data["inspector_name"]

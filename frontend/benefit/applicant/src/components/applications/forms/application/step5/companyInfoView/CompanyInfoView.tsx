@@ -234,7 +234,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
                 </$GridCell>
                 <$GridCell $colSpan={2}>
                   <$SummaryTableValue data-testid="application-field-deMinimisAidsAmount">
-                    {formatFloatToCurrency(aid.amount, 'EUR')}
+                    {formatFloatToCurrency(aid.amount)}
                   </$SummaryTableValue>
                 </$GridCell>
                 <$GridCell>

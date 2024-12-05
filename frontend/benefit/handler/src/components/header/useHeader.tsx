@@ -1,13 +1,27 @@
+import axios from 'axios';
 import NumberTag from 'benefit/handler/components/header/NumberTag';
 import { ROUTES, SUPPORTED_LANGUAGES } from 'benefit/handler/constants';
 import AppContext from 'benefit/handler/context/AppContext';
 import useApplicationAlterationsQuery from 'benefit/handler/hooks/useApplicationAlterationsQuery';
 import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
+import {
+  BackendEndpoint,
+  getBackendDomain,
+} from 'benefit-shared/backend-api/backend-api';
 import { useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationItem, OptionType } from 'shared/types/common';
 import { getLanguageOptions } from 'shared/utils/common';
+
+const setLanguageToFinnish = (): void => {
+  const optionsEndpoint = `${getBackendDomain()}/${
+    BackendEndpoint.USER_OPTIONS
+  }`;
+  void axios.get(optionsEndpoint, {
+    params: { lang: SUPPORTED_LANGUAGES.FI },
+  });
+};
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -29,6 +43,8 @@ const useHeader = (): ExtendedComponentProps => {
     (): OptionType<string>[] => getLanguageOptions(t, 'supportedLanguages'),
     [t]
   );
+
+  useEffect(setLanguageToFinnish, []);
 
   const { data: alterationData, isLoading: isAlterationListLoading } =
     useApplicationAlterationsQuery();

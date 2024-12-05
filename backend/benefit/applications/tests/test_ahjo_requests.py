@@ -9,19 +9,24 @@ from django.utils import timezone
 
 from applications.enums import AhjoRequestType, AhjoStatus as AhjoStatusEnum
 from applications.models import AhjoSetting, AhjoStatus
-from applications.services.ahjo_authentication import AhjoToken, InvalidTokenException
+from applications.services.ahjo.enums import AhjoSettingName
+from applications.services.ahjo.exceptions import (
+    AhjoApiClientException,
+    InvalidAhjoTokenException,
+    MissingHandlerIdError,
+)
+from applications.services.ahjo_authentication import AhjoToken
 from applications.services.ahjo_client import (
     AhjoAddRecordsRequest,
     AhjoApiClient,
-    AhjoApiClientException,
     AhjoDecisionDetailsRequest,
     AhjoDecisionMakerRequest,
     AhjoDecisionProposalRequest,
     AhjoDeleteCaseRequest,
     AhjoOpenCaseRequest,
+    AhjoSignerRequest,
     AhjoSubscribeDecisionRequest,
     AhjoUpdateRecordsRequest,
-    MissingHandlerIdError,
 )
 
 API_CASES_BASE = "/cases"
@@ -47,6 +52,12 @@ def ahjo_open_case_request(application_with_ahjo_case_id):
             "GET",
             "/agents/decisionmakers?start=",
         ),
+        (
+            AhjoSignerRequest,
+            AhjoRequestType.GET_SIGNER,
+            "GET",
+            "/organization/persons?role=decisionMaker",
+        ),
     ],
 )
 def test_ahjo_requests_without_application(
@@ -57,7 +68,13 @@ def test_ahjo_requests_without_application(
     settings,
     non_expired_token,
 ):
-    AhjoSetting.objects.create(name="ahjo_org_identifier", data={"id": "1234567-8"})
+    AhjoSetting.objects.create(
+        name=AhjoSettingName.DECISION_MAKER_ORG_ID, data={"id": "1234567-8"}
+    )
+    AhjoSetting.objects.create(
+        name=AhjoSettingName.SIGNER_ORG_IDS, data=["1234567", "7654321"]
+    )
+
     settings.API_BASE_URL = "http://test.com"
     request_instance = ahjo_request_class()
 
@@ -68,6 +85,12 @@ def test_ahjo_requests_without_application(
     assert str(request_instance) == f"Request of type {request_type}"
 
     assert f"{settings.AHJO_REST_API_URL}{url_part}" in request_instance.api_url()
+
+    if request_type == AhjoRequestType.GET_SIGNER:
+        assert (
+            request_instance.api_url()
+            == f"{settings.AHJO_REST_API_URL}{url_part}&orgid=1234567&orgid=7654321"
+        )
 
     client = AhjoApiClient(non_expired_token, request_instance)
 
@@ -231,31 +254,31 @@ def test_ahjo_application_requests(
             AhjoOpenCaseRequest,
             AhjoRequestType.OPEN_CASE,
             "POST",
-            AhjoStatusEnum.SUBMITTED_BUT_NOT_SENT_TO_AHJO,
+            AhjoStatusEnum.REQUEST_TO_OPEN_CASE_SENT,
         ),
         (
             AhjoDecisionProposalRequest,
             AhjoRequestType.SEND_DECISION_PROPOSAL,
             "POST",
-            AhjoStatusEnum.CASE_OPENED,
+            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
         ),
         (
             AhjoUpdateRecordsRequest,
             AhjoRequestType.UPDATE_APPLICATION,
             "PUT",
-            AhjoStatusEnum.DECISION_PROPOSAL_SENT,
+            AhjoStatusEnum.UPDATE_REQUEST_SENT,
         ),
         (
             AhjoDeleteCaseRequest,
             AhjoRequestType.DELETE_APPLICATION,
             "DELETE",
-            AhjoStatusEnum.CASE_OPENED,
+            AhjoStatusEnum.DELETE_REQUEST_SENT,
         ),
         (
             AhjoAddRecordsRequest,
             AhjoRequestType.ADD_RECORDS,
             "POST",
-            AhjoStatusEnum.CASE_OPENED,
+            AhjoStatusEnum.NEW_RECORDS_REQUEST_SENT,
         ),
         (
             AhjoSubscribeDecisionRequest,
@@ -267,7 +290,7 @@ def test_ahjo_application_requests(
             AhjoDecisionDetailsRequest,
             AhjoRequestType.GET_DECISION_DETAILS,
             "GET",
-            AhjoStatusEnum.DETAILS_RECEIVED_FROM_AHJO,
+            AhjoStatusEnum.DECISION_DETAILS_REQUEST_SENT,
         ),
     ],
 )
@@ -291,10 +314,10 @@ def test_requests_exceptions(
         with pytest.raises(MissingHandlerIdError):
             ahjo_request_without_ad_username.api_url()
 
-    with pytest.raises(InvalidTokenException):
+    with pytest.raises(InvalidAhjoTokenException):
         AhjoApiClient(ahjo_token="foo", ahjo_request=ahjo_request_without_ad_username)
 
-    with pytest.raises(InvalidTokenException):
+    with pytest.raises(InvalidAhjoTokenException):
         AhjoApiClient(
             ahjo_token=AhjoToken(access_token=None),
             ahjo_request=ahjo_request_without_ad_username,
@@ -324,10 +347,12 @@ def test_requests_exceptions(
         )
         client.send_request_to_ahjo()
         mock_logger.error.assert_called()
-        assert (
-            application.ahjo_status.latest().validation_error_from_ahjo
-            == validation_error
-        )
+        ahjo_status = application.ahjo_status.latest()
+        assert ahjo_status.status == previous_status
+        assert ahjo_status.validation_error_from_ahjo is not None
+
+        for validation_error in validation_error:
+            assert validation_error in ahjo_status.validation_error_from_ahjo["context"]
 
     exception = requests.exceptions.RequestException
     with requests_mock.Mocker() as m:

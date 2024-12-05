@@ -1,3 +1,4 @@
+import decimal
 import io
 import os.path
 from collections import defaultdict
@@ -31,6 +32,8 @@ from applications.tests.common import (
 from applications.tests.conftest import *  # noqa
 from applications.tests.conftest import split_lines_at_semicolon
 from applications.tests.factories import DecidedApplicationFactory, DeMinimisAidFactory
+from calculator.enums import InstalmentStatus
+from calculator.models import Instalment
 from calculator.tests.factories import PaySubsidyFactory
 from common.tests.conftest import *  # noqa
 from companies.tests.conftest import *  # noqa
@@ -429,7 +432,7 @@ def test_power_bi_report_csv_output(application_powerbi_csv_service):
             csv_row[6]
             == f'"{get_application_origin_label(application.application_origin)}"'
         )
-        assert csv_row[7] == f'"{format_datetime(application.created_at)}"'
+        assert csv_row[7] == f'"{format_datetime(application.submitted_at)}"'
         assert csv_row[8] == '"Työllistämisen Helsinki-lisä"'
         assert csv_row[9] == f'"{str(application.start_date)}"'
         assert csv_row[10] == f'"{str(application.end_date)}"'
@@ -593,14 +596,35 @@ def test_write_application_alterations_csv_file(
         assert str(alteration.recovery_amount) in contents
 
 
+@pytest.mark.parametrize(
+    "instalments_enabled",
+    [
+        (False,),
+        (True,),
+    ],
+)
 def test_pruned_applications_csv_output(
-    pruned_applications_csv_service_with_one_application,
+    pruned_applications_csv_service_with_one_application, instalments_enabled, settings
 ):
-    csv_lines = split_lines_at_semicolon(
-        pruned_applications_csv_service_with_one_application.get_csv_string()
-    )
+    settings.PAYMENT_INSTALMENTS_ENABLED = instalments_enabled
+
+    instalment_amount = decimal.Decimal("123.45")
     application = (
         pruned_applications_csv_service_with_one_application.get_applications()[0]
+    )
+    if instalments_enabled:
+        application.calculation.instalments.all().delete()
+        Instalment.objects.create(
+            calculation=application.calculation,
+            amount=instalment_amount,
+            amount_paid=instalment_amount,
+            instalment_number=1,
+            status=InstalmentStatus.ACCEPTED,
+            due_date=datetime.now(timezone.utc).date(),
+        )
+
+    csv_lines = split_lines_at_semicolon(
+        pruned_applications_csv_service_with_one_application.get_csv_string()
     )
     # Assert that there are 18 column headers in the pruned CSV
     assert len(csv_lines[0]) == 18
@@ -624,11 +648,10 @@ def test_pruned_applications_csv_output(
     assert csv_lines[0][16] == '"Tarkastajan sähköposti, P2P"'
     assert csv_lines[0][17] == '"Hyväksyjän nimi P2P"'
 
-    # Assert that there are 15 columns in the pruned CSV
+    # Assert that there are 19 columns in the pruned CSV
     assert len(csv_lines[1]) == 18
 
     assert int(csv_lines[1][0]) == application.application_number
-
     assert csv_lines[1][1] == '"Yritys"'
     assert csv_lines[1][2] == f'"{application.company_bank_account_number}"'
     assert csv_lines[1][3] == f'"{application.company_name}"'
@@ -636,9 +659,12 @@ def test_pruned_applications_csv_output(
     assert csv_lines[1][5] == f'"{application.effective_company_street_address}"'
     assert csv_lines[1][6] == f'"{application.effective_company_postcode}"'
     assert csv_lines[1][7] == f'"{application.effective_company_city}"'
-    assert str(csv_lines[1][8]) == str(
-        application.calculation.calculated_benefit_amount
-    )
+    if instalments_enabled:
+        assert str(csv_lines[1][8]) == str(instalment_amount)
+    else:
+        assert str(csv_lines[1][8]) == str(
+            application.calculation.calculated_benefit_amount
+        )
 
     assert csv_lines[1][9] == f'"{application.batch.decision_maker_title}"'
     assert csv_lines[1][10] == f'"{application.batch.decision_maker_name}"'
@@ -688,23 +714,25 @@ def test_applications_csv_output(applications_csv_service):  # noqa: C901
         elif "Siirrettävä Ahjo-rivi / alkupäivä" in col.heading:
             assert (
                 csv_lines[1][idx]
-                == f'"{application1.calculation.ahjo_rows[0].start_date.isoformat()}"'
+                == f'"{application1.calculation.ahjo_rows[0].start_date.strftime("%Y-%m-%d")}"'
             )
             assert (
                 csv_lines[2][idx]
-                == f'"{application2.calculation.ahjo_rows[0].start_date.isoformat()}"'
+                == f'"{application2.calculation.ahjo_rows[0].start_date.strftime("%Y-%m-%d")}"'
             )
         elif "Siirrettävä Ahjo-rivi / päättymispäivä" in col.heading:
             assert (
                 csv_lines[1][idx]
-                == f'"{application1.calculation.ahjo_rows[0].end_date.isoformat()}"'
+                == f'"{application1.calculation.ahjo_rows[0].end_date.strftime("%Y-%m-%d")}"'
             )
             assert (
                 csv_lines[2][idx]
-                == f'"{application2.calculation.ahjo_rows[0].end_date.isoformat()}"'
+                == f'"{application2.calculation.ahjo_rows[0].end_date.strftime("%Y-%m-%d")}"'
             )
         elif "Käsittelypäivä" in col.heading:
-            assert csv_lines[1][idx] == f'"{application1.handled_at.isoformat()}"'
+            assert (
+                csv_lines[1][idx] == f'"{application1.handled_at.strftime("%Y-%m-%d")}"'
+            )
         elif "Siirrettävä Ahjo-rivi / määrä eur kk" in col.heading:
             assert (
                 Decimal(csv_lines[1][idx])
@@ -717,11 +745,11 @@ def test_applications_csv_output(applications_csv_service):  # noqa: C901
         elif "Palkkatuki 1 / alkupäivä" in col.heading:
             assert (
                 csv_lines[1][idx]
-                == f'"{application1.pay_subsidies.all()[0].start_date.isoformat()}"'
+                == f'"{application1.pay_subsidies.all()[0].start_date.strftime("%Y-%m-%d")}"'
             )
             assert (
                 csv_lines[2][idx]
-                == f'"{application2.pay_subsidies.all()[0].start_date.isoformat()}"'
+                == f'"{application2.pay_subsidies.all()[0].start_date.strftime("%Y-%m-%d")}"'
             )
         elif "De minimis 1 / myöntäjä" in col.heading:
             assert (
@@ -735,11 +763,11 @@ def test_applications_csv_output(applications_csv_service):  # noqa: C901
         elif "De minimis 2 / myönnetty" in col.heading:
             assert (
                 csv_lines[1][idx]
-                == f'"{application1.de_minimis_aid_set.all()[1].granted_at.isoformat()}"'
+                == f'"{application1.de_minimis_aid_set.all()[1].granted_at.strftime("%Y-%m-%d")}"'
             )
             assert (
                 csv_lines[2][idx]
-                == f'"{application2.de_minimis_aid_set.all()[1].granted_at.isoformat()}"'
+                == f'"{application2.de_minimis_aid_set.all()[1].granted_at.strftime("%Y-%m-%d")}"'
             )
         elif "Laskelman lopputulos" in col.heading:
             assert (
@@ -764,7 +792,9 @@ def test_applications_csv_string_lines_generator(applications_csv_service):
     )
 
 
-def test_applications_csv_two_ahjo_rows(applications_csv_service_with_one_application):
+def test_applications_csv_two_ahjo_rows(
+    applications_csv_service_with_one_application, tmp_path
+):
     application = applications_csv_service_with_one_application.get_applications()[0]
     application.pay_subsidies.all().delete()
     application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
@@ -796,9 +826,11 @@ def test_applications_csv_two_ahjo_rows(applications_csv_service_with_one_applic
     assert len(application.ahjo_rows) == 2
     assert csv_lines[0][0] == '\ufeff"Hakemusnumero"'
     assert int(csv_lines[1][0]) == application.application_number
-    assert int(csv_lines[1][1]) == 1
+    assert csv_lines[1][1] == f'"{format_datetime(application.submitted_at)}"'
+    assert int(csv_lines[1][2]) == 1
     assert int(csv_lines[2][0]) == application.application_number
-    assert int(csv_lines[2][1]) == 2
+    assert csv_lines[2][1] == f'"{format_datetime(application.submitted_at)}"'
+    assert int(csv_lines[2][2]) == 2
 
     # the content of columns "Siirrettävä Ahjo-rivi / xxx" and "Hakemusrivi" change, rest of the lines are equal
     current_ahjo_row_start = csv_lines[0].index('"Siirrettävä Ahjo-rivi / tyyppi"')
@@ -806,7 +838,7 @@ def test_applications_csv_two_ahjo_rows(applications_csv_service_with_one_applic
         '"Siirrettävä Ahjo-rivi / päättymispäivä"'
     )
     assert (
-        csv_lines[1][2:current_ahjo_row_start] == csv_lines[2][2:current_ahjo_row_start]
+        csv_lines[1][3:current_ahjo_row_start] == csv_lines[2][3:current_ahjo_row_start]
     )
     assert (
         csv_lines[1][current_ahjo_row_end + 1 :]
@@ -875,7 +907,7 @@ def test_applications_csv_two_ahjo_rows(applications_csv_service_with_one_applic
         assert csv_lines[1][start_column + 5] == f'"{ahjo_row.end_date.isoformat()}"'
 
     applications_csv_service_with_one_application.write_csv_file(
-        "/tmp/two_ahjo_rows.csv"
+        tmp_path / "two_ahjo_rows.csv"
     )
 
 

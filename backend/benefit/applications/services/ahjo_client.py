@@ -2,6 +2,7 @@ import json
 import logging
 from dataclasses import dataclass, field
 from typing import List, Optional, Tuple, Union
+from urllib.parse import urlencode
 
 import requests
 from django.conf import settings
@@ -9,7 +10,16 @@ from django.urls import reverse
 
 from applications.enums import AhjoRequestType, AhjoStatus as AhjoStatusEnum
 from applications.models import AhjoSetting, AhjoStatus, Application
-from applications.services.ahjo_authentication import AhjoToken, InvalidTokenException
+from applications.services.ahjo.enums import AhjoSettingName
+from applications.services.ahjo.exceptions import (
+    AhjoApiClientException,
+    InvalidAhjoTokenException,
+    MissingAhjoCaseIdError,
+    MissingHandlerIdError,
+    MissingOrganizationIdentifier,
+)
+from applications.services.ahjo_authentication import AhjoToken
+from applications.services.ahjo_error_writer import AhjoErrorWriter, AhjoFormattedError
 
 LOGGER = logging.getLogger(__name__)
 
@@ -23,6 +33,10 @@ class AhjoRequest:
 
     lang: str = "fi"
     url_base: str = field(default_factory=lambda: settings.AHJO_REST_API_URL)
+
+    @property
+    def has_application(self) -> bool:
+        return self.application is not None
 
     def __str__(self):
         return f"Request of type {self.request_type}"
@@ -138,26 +152,56 @@ class AhjoDecisionMakerRequest(AhjoRequest):
     @staticmethod
     def org_identifier() -> str:
         try:
-            return AhjoSetting.objects.get(name="ahjo_org_identifier").data["id"]
+            return AhjoSetting.objects.get(
+                name=AhjoSettingName.DECISION_MAKER_ORG_ID
+            ).data["id"]
         except AhjoSetting.DoesNotExist:
-            raise AhjoSetting.DoesNotExist(
-                "No organization identifier found in the database"
+            raise MissingOrganizationIdentifier(
+                "No organization identifier found in the database."
             )
 
     def api_url(self) -> str:
         return f"{self.url_base}/agents/decisionmakers?start={self.org_identifier()}"
 
 
-class AhjoApiClientException(Exception):
-    pass
+@dataclass
+class AhjoSignerRequest(AhjoRequest):
+    application = None
+    request_type = AhjoRequestType.GET_SIGNER
+    request_method = "GET"
 
+    @staticmethod
+    def org_identifier() -> str:
+        try:
+            setting = AhjoSetting.objects.get(name=AhjoSettingName.SIGNER_ORG_IDS)
+            if not setting.data:
+                raise ValueError("Signer organization identifier list is empty")
 
-class MissingAhjoCaseIdError(AhjoApiClientException):
-    pass
+            # If data is string or other type, you might want to validate it's actually a list
+            if not isinstance(setting.data, list):
+                raise ValueError("Signer organization identifier must be a list")
 
+            # Validate the list is not empty
+            if len(setting.data) == 0:
+                raise ValueError("Signer organization identifier list is empty")
 
-class MissingHandlerIdError(AhjoApiClientException):
-    pass
+            return setting.data
+        except AhjoSetting.DoesNotExist:
+            raise AhjoSetting.DoesNotExist(
+                "No signer organization identifier(s) found in the database"
+            )
+
+    def api_url(self) -> str:
+        """
+        Construct an url like this:
+        https://url_base.com/organization/persons?role=decisionMaker&orgid=ID1&orgid=ID2&orgid=ID3
+        """
+        org_ids = self.org_identifier()
+        params = [("role", "decisionMaker")]
+        params.extend([("orgid", org_id) for org_id in org_ids])
+        query_string = urlencode(params)
+
+        return f"{self.url_base}/organization/persons?{query_string}"
 
 
 class AhjoApiClient:
@@ -178,9 +222,11 @@ class AhjoApiClient:
     @ahjo_token.setter
     def ahjo_token(self, token: AhjoToken) -> None:
         if not isinstance(token, AhjoToken):
-            raise InvalidTokenException("Invalid token, not an instance of AhjoToken")
+            raise InvalidAhjoTokenException(
+                "Invalid token, not an instance of AhjoToken"
+            )
         if not token.access_token or not token.expires_in or not token.refresh_token:
-            raise InvalidTokenException("Invalid token, token is missing data")
+            raise InvalidAhjoTokenException("Invalid token, token is missing data")
         self._ahjo_token = token
 
     def prepare_ahjo_headers(self) -> dict:
@@ -202,6 +248,7 @@ class AhjoApiClient:
             AhjoRequestType.GET_DECISION_DETAILS,
             AhjoRequestType.SUBSCRIBE_TO_DECISIONS,
             AhjoRequestType.GET_DECISION_MAKER,
+            AhjoRequestType.GET_SIGNER,
         ]:
             url = reverse(
                 "ahjo_callback_url",
@@ -240,9 +287,10 @@ class AhjoApiClient:
                 timeout=self._timeout,
                 data=data,
             )
-
+            # Create new ahjo status or update the last ahjo_status if a similar status exists,
+            # which means that this is a retry
             if hasattr(self._request, "result_status") and self._request.result_status:
-                AhjoStatus.objects.create(
+                AhjoStatus.objects.update_or_create(
                     application=self._request.application,
                     status=self._request.result_status,
                 )
@@ -254,32 +302,44 @@ class AhjoApiClient:
                 if self._request.request_type not in [
                     AhjoRequestType.GET_DECISION_DETAILS,
                     AhjoRequestType.GET_DECISION_MAKER,
+                    AhjoRequestType.GET_SIGNER,
                 ]:
                     LOGGER.debug(f"Request {self._request} to Ahjo was successful.")
                     return self._request.application, response.text
                 else:
                     return self._request.application, response.json()
         except MissingHandlerIdError as e:
-            LOGGER.error(
-                f"Missing handler id for application {self._request.application.application_number}: {e}"
+            error_message = f"Missing handler id for application {self.request.application.application_number}: {e}"
+            LOGGER.error(error_message)
+            self.write_error_to_ahjo_status(
+                context=error_message,
+                message_to_handler="Hakemuksen käsittelijältä puuttuu AD-tunnus.",
             )
         except MissingAhjoCaseIdError as e:
-            LOGGER.error(
-                f"Missing Ahjo case id for application {self._request.application.application_number}: {e}"
+            error_message = f"Missing Ahjo case id for application {self.request.application.application_number}: {e}"
+            LOGGER.error(error_message)
+            self.write_error_to_ahjo_status(
+                context=error_message,
+                message_to_handler="Hakemuksella ei ole Ahjosta saatua Diaaria.",
             )
         except requests.exceptions.HTTPError as e:
             self.handle_http_error(e)
         except requests.exceptions.RequestException as e:
-            LOGGER.error(
+            error_message = (
                 f"A network error occurred while sending {self._request} to Ahjo: {e}"
             )
+            self.write_error_to_ahjo_status(
+                context=error_message,
+                message_to_handler="Ahjo-pyynnössä tapahtui verkkoyhteysvirhe.",
+            )
+            LOGGER.error(error_message)
         except AhjoApiClientException as e:
             LOGGER.error(
                 f"An error occurred while sending {self._request} to Ahjo: {e}"
             )
         return None, None
 
-    def handle_http_error(self, e: requests.exceptions.HTTPError) -> Tuple[None, dict]:
+    def handle_http_error(self, e: requests.exceptions.HTTPError) -> None:
         """Handle HTTP errors that occur when sending a request to Ahjo.
         Also log any validation errors received from Ahjo.
         """
@@ -289,21 +349,40 @@ class AhjoApiClient:
         except json.JSONDecodeError:
             error_json = None
 
-        if hasattr(self._request, "application"):
-            application_number = self._request.application.application_number
+        if hasattr(self._request, "application") and self.request.application:
+            application_number = self.request.application.application_number
 
-            error_message = f"A HTTP error occurred while sending {self._request} for application \
-    {application_number} to Ahjo: {e}"
+            error_message = self.format_error_message(e, application_number)
 
         else:
-            error_message = (
-                f"A HTTP error occurred while sending {self._request} to Ahjo: {e}"
-            )
+            error_message = self.format_error_message(e)
 
         if error_json:
-            error_message += f" Error message: {error_json}"
-            status = self._request.application.ahjo_status.latest()
-            status.validation_error_from_ahjo = error_json
-            status.save()
+            error_message += f"{error_json}"
+            self.write_error_to_ahjo_status(
+                context=error_json,
+                message_to_handler="Ahjo palautti validaatiovirheen tai muun HTTP-virheen.",
+            )
 
         LOGGER.error(error_message)
+
+    def format_error_message(
+        self,
+        e: Union[requests.exceptions.HTTPError, requests.exceptions.RequestException],
+        application_number: Union[int, None] = None,
+    ) -> str:
+        return f"A HTTP or network error occurred while sending {self.request} for application \
+    {application_number} to Ahjo: {e}"
+
+    def write_error_to_ahjo_status(self, context: str, message_to_handler: str) -> None:
+        """Write the error message to the Ahjo status of the application for all requests that have an application.
+        The DecisionMaker request does not have an application, so it does not have an Ahjo status.
+        """
+        if self.request.has_application:
+            AhjoErrorWriter.write_to_validation_error(
+                AhjoFormattedError(
+                    application=self.request.application,
+                    context=context,
+                    message_to_handler=message_to_handler,
+                )
+            )

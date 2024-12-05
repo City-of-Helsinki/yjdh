@@ -3,6 +3,7 @@ import {
   APPLICATION_LIST_TABS,
 } from 'benefit/handler/constants';
 import FrontPageProvider from 'benefit/handler/context/FrontPageProvider';
+import { Application } from 'benefit/handler/types/application';
 import { APPLICATION_STATUSES, BATCH_STATUSES } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
 import { LoadingSpinner, Tabs } from 'hds-react';
@@ -15,6 +16,7 @@ import { useTheme } from 'styled-components';
 import { $BackgroundWrapper } from '../layout/Layout';
 import MainIngress from '../mainIngress/MainIngress';
 import ApplicationList from './ApplicationList';
+import ApplicationListForInstalments from './ApplicationListForInstalments';
 import { useApplicationList } from './useApplicationList';
 
 export interface ApplicationListProps {
@@ -33,9 +35,18 @@ const isBatchStatusHandlingComplete = (batchStatus: BATCH_STATUSES): boolean =>
     BATCH_STATUSES.REJECTED_BY_TALPA,
   ].includes(batchStatus);
 
-const isAcceptedOrRejected = (status: APPLICATION_STATUSES): boolean =>
+export const isAcceptedOrRejected = (status: APPLICATION_STATUSES): boolean =>
   [APPLICATION_STATUSES.ACCEPTED, APPLICATION_STATUSES.REJECTED].includes(
     status
+  );
+
+export const isInPayment = (
+  application: ApplicationListItemData | Application
+): boolean =>
+  [APPLICATION_STATUSES.ACCEPTED].includes(application.status) &&
+  !isString(application.batch) &&
+  [BATCH_STATUSES.DECIDED_ACCEPTED, BATCH_STATUSES.REJECTED_BY_TALPA].includes(
+    application?.batch?.status
   );
 
 const HandlerIndex: React.FC<ApplicationListProps> = ({
@@ -48,7 +59,12 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
   const theme = useTheme();
 
   const getHeadingTranslation = (
-    headingStatus: APPLICATION_STATUSES | 'all' | 'pending' | 'inPayment'
+    headingStatus:
+      | APPLICATION_STATUSES
+      | 'all'
+      | 'pending'
+      | 'inPayment'
+      | 'instalments'
   ): string => t(`${translationBase}.${headingStatus}`);
 
   const getTabCountPending = (): number =>
@@ -60,12 +76,21 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
         !isBatchStatusHandlingComplete(app?.batch?.status)
     ).length;
 
+  const getTabCountInstalments = (): number =>
+    list.filter(
+      (app: ApplicationListItemData) =>
+        app.pendingInstalment && isInPayment(app)
+    ).length;
+
   const getTabCountInPayment = (): number =>
     list.filter(
       (app: ApplicationListItemData) =>
         !isString(app.batch) &&
         [APPLICATION_STATUSES.ACCEPTED].includes(app.status) &&
-        app.batch?.status === BATCH_STATUSES.DECIDED_ACCEPTED
+        [
+          BATCH_STATUSES.DECIDED_ACCEPTED,
+          BATCH_STATUSES.REJECTED_BY_TALPA,
+        ].includes(app?.batch?.status)
     ).length;
 
   const getTabCountUndecided = (): number =>
@@ -75,10 +100,12 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
 
   const getTabCount = (
     statuses: APPLICATION_STATUSES[],
-    handled?: 'inPayment' | 'pending'
+    handled?: 'inPayment' | 'pending' | 'instalments'
   ): number => {
     if (handled === 'pending') return getTabCountPending();
     if (handled === 'inPayment') return getTabCountInPayment();
+    if (handled === 'instalments') return getTabCountInstalments();
+
     if (handled === 'all') return getTabCountUndecided();
     return list.filter((app: ApplicationListItemData) =>
       statuses.includes(app.status)
@@ -86,13 +113,18 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
   };
 
   const getListHeadingByStatus = (
-    headingStatus: APPLICATION_STATUSES | 'all' | 'pending' | 'inPayment',
+    headingStatus:
+      | APPLICATION_STATUSES
+      | 'all'
+      | 'pending'
+      | 'inPayment'
+      | 'instalments',
     statuses: APPLICATION_STATUSES[]
   ): string =>
     list && list?.length > 0
       ? `${getHeadingTranslation(headingStatus)} (${getTabCount(
           statuses,
-          headingStatus as 'inPayment' | 'pending'
+          headingStatus as 'inPayment' | 'pending' | 'instalments'
         )})`
       : getHeadingTranslation(headingStatus);
 
@@ -115,11 +147,6 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
 
   const updateTabToUrl = (tabNumber: APPLICATION_LIST_TABS): void =>
     window.history.pushState({ tab }, '', `/?tab=${tabNumber}`);
-
-  const isInPayment = (application: ApplicationListItemData): boolean =>
-    [APPLICATION_STATUSES.ACCEPTED].includes(application.status) &&
-    !isString(application.batch) &&
-    [BATCH_STATUSES.DECIDED_ACCEPTED].includes(application?.batch?.status);
 
   return (
     <FrontPageProvider>
@@ -167,6 +194,15 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
                 onClick={() => updateTabToUrl(APPLICATION_LIST_TABS.IN_PAYMENT)}
               >
                 {getListHeadingByStatus('inPayment', [
+                  APPLICATION_STATUSES.ACCEPTED,
+                ])}
+              </Tabs.Tab>
+              <Tabs.Tab
+                onClick={() =>
+                  updateTabToUrl(APPLICATION_LIST_TABS.PENDING_INSTALMENTS)
+                }
+              >
+                {getListHeadingByStatus('instalments', [
                   APPLICATION_STATUSES.ACCEPTED,
                 ])}
               </Tabs.Tab>
@@ -250,6 +286,16 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
                 inPayment={!!list.filter((app) => isInPayment(app))}
                 heading={t(`${translationBase}.inPayment`)}
                 status={[APPLICATION_STATUSES.ACCEPTED]}
+              />
+            </Tabs.TabPanel>
+
+            <Tabs.TabPanel>
+              <ApplicationListForInstalments
+                isLoading={isLoading}
+                list={list.filter(
+                  (app) => app.pendingInstalment && isInPayment(app)
+                )}
+                heading={t(`${translationBase}.instalments`)}
               />
             </Tabs.TabPanel>
           </Tabs>

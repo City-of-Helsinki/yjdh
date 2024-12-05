@@ -4,9 +4,7 @@ import useDeleteApplicationAlterationQuery from 'benefit/applicant/hooks/useDele
 import useLocale from 'benefit/applicant/hooks/useLocale';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { ALTERATION_STATE, ALTERATION_TYPE } from 'benefit-shared/constants';
-import {
-  AlterationAccordionItemProps,
-} from 'benefit-shared/types/application';
+import { AlterationAccordionItemProps } from 'benefit-shared/types/application';
 import { prettyPrintObject } from 'benefit-shared/utils/errors';
 import camelcaseKeys from 'camelcase-keys';
 import { Button, IconTrash } from 'hds-react';
@@ -17,7 +15,7 @@ import {
 } from 'shared/components/forms/section/FormSection.sc';
 import hdsToast from 'shared/components/toast/Toast';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 
 const AlterationAccordionItem = ({
   alteration,
@@ -107,7 +105,7 @@ const AlterationAccordionItem = ({
                   'common:applications.decision.alterationList.item.recoveryAmount'
                 )}
               </dt>
-              <dd>{formatFloatToCurrency(alteration.recoveryAmount)}</dd>
+              <dd>{formatFloatToEvenEuros(alteration.recoveryAmount)}</dd>
             </$GridCell>
             <$GridCell $colSpan={6}>
               <dt>

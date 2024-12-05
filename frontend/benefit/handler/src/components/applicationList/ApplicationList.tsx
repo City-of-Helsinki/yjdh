@@ -3,13 +3,19 @@ import {
   ApplicationListTableColumns,
   ApplicationListTableTransforms,
 } from 'benefit/handler/types/applicationList';
-import { getTagStyleForStatus } from 'benefit/handler/utils/applications';
-import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import {
+  getTagStyleForStatus,
+  getTalpaTagStyleForStatus,
+} from 'benefit/handler/utils/applications';
+import { APPLICATION_STATUSES, TALPA_STATUSES } from 'benefit-shared/constants';
 import {
   AhjoError,
+  ApplicationAlteration,
   ApplicationListItemData,
+  Instalment,
 } from 'benefit-shared/types/application';
 import { IconSpeechbubbleText, Table, Tag, Tooltip } from 'hds-react';
+import { TFunction } from 'next-i18next';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import { $Link } from 'shared/components/table/Table.sc';
@@ -18,6 +24,7 @@ import {
   sortFinnishDate,
   sortFinnishDateTime,
 } from 'shared/utils/date.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
 import {
@@ -56,9 +63,51 @@ const buildApplicationUrl = (
   return applicationUrl;
 };
 
+const getFirstInstalmentTotalAmount = (
+  calculatedBenefitAmount: string,
+  pendingInstalment?: Instalment,
+  alterations?: ApplicationAlteration[]
+): string | JSX.Element => {
+  let firstInstalment = parseInt(calculatedBenefitAmount, 10);
+  let recoveryAmount = 0;
+  if (pendingInstalment) {
+    firstInstalment -= parseInt(
+      String(pendingInstalment?.amountAfterRecoveries),
+      10
+    );
+    recoveryAmount = alterations
+      ? alterations?.reduce(
+          (prev: number, cur: ApplicationAlteration) =>
+            prev + parseInt(cur.recoveryAmount, 10),
+          0
+        )
+      : 0;
+  }
+  return pendingInstalment ? (
+    <>
+      {formatFloatToEvenEuros(firstInstalment)} /{' '}
+      {formatFloatToEvenEuros(
+        parseInt(calculatedBenefitAmount, 10) - recoveryAmount
+      )}
+    </>
+  ) : (
+    formatFloatToEvenEuros(firstInstalment)
+  );
+};
 const dateForAdditionalInformationNeededBy = (
   dateString: string | Date
 ): string => ` ${String(dateString).replace(/\d{4}$/, '')}`;
+
+export const renderPaymentTagPerStatus = (
+  t: TFunction,
+  talpaStatus?: TALPA_STATUSES
+): JSX.Element => (
+  <$TagWrapper $colors={getTalpaTagStyleForStatus(talpaStatus)}>
+    <Tag>
+      {t(`applications.list.columns.talpaStatuses.${String(talpaStatus)}`)}
+    </Tag>
+  </$TagWrapper>
+);
 
 const ApplicationList: React.FC<ApplicationListProps> = ({
   heading,
@@ -129,9 +178,11 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
                 </strong>
               </div>
               <ul>
-                {ahjoError?.errorFromAhjo?.map(({ message }) => (
-                  <li>{message}</li>
-                ))}
+                {ahjoError?.errorFromAhjo?.map
+                  ? ahjoError?.errorFromAhjo?.map(({ message }) => (
+                      <li>{message}</li>
+                    ))
+                  : ahjoError?.errorFromAhjo}
               </ul>
             </Tooltip>
           </$ActionErrors>
@@ -140,6 +191,30 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     ),
     [t, theme.colors.coatOfArms]
   );
+
+  const renderTagWrapper = React.useCallback(
+    (
+      applicationStatus: APPLICATION_STATUSES,
+      additionalInformationNeededBy: string | Date
+    ): JSX.Element => (
+      <$TagWrapper $colors={getTagStyleForStatus(applicationStatus)}>
+        <Tag>
+          {t(
+            `common:applications.list.columns.applicationStatuses.${String(
+              applicationStatus
+            )}`
+          )}
+          {applicationStatus === APPLICATION_STATUSES.INFO_REQUIRED &&
+            dateForAdditionalInformationNeededBy(additionalInformationNeededBy)}
+        </Tag>
+      </$TagWrapper>
+    ),
+    [t]
+  );
+
+  const renderPaymentTagWrapper = React.useCallback(renderPaymentTagPerStatus, [
+    t,
+  ]);
 
   const columns = React.useMemo(() => {
     const cols: ApplicationListTableColumns[] = [
@@ -239,21 +314,8 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
           transform: ({
             status: applicationStatus,
             additionalInformationNeededBy,
-          }: ApplicationListTableTransforms) => (
-            <$TagWrapper $colors={getTagStyleForStatus(applicationStatus)}>
-              <Tag>
-                {t(
-                  `common:applications.list.columns.applicationStatuses.${String(
-                    applicationStatus
-                  )}`
-                )}
-                {applicationStatus === APPLICATION_STATUSES.INFO_REQUIRED &&
-                  dateForAdditionalInformationNeededBy(
-                    additionalInformationNeededBy
-                  )}
-              </Tag>
-            </$TagWrapper>
-          ),
+          }: ApplicationListTableTransforms) =>
+            renderTagWrapper(applicationStatus, additionalInformationNeededBy),
           headerName: getHeader('applicationStatus'),
           key: 'status',
           isSortable: true,
@@ -301,23 +363,29 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     if (inPayment) {
       cols.push(
         {
+          customSortCompareFunction: sortFinnishDate,
           headerName: getHeader('decisionDate'),
           key: 'decisionDate',
           isSortable: true,
         },
         {
-          headerName: getHeader('talpaStatus'),
-          key: 'talpaStatus',
+          headerName: getHeader('paymentStatus'),
+          key: 'paymentStatus',
           isSortable: true,
-          transform: ({ talpaStatus }) =>
-            t(`applications.list.columns.talpaStatuses.${String(talpaStatus)}`),
+          transform: ({ talpaStatus }: ApplicationListTableTransforms) =>
+            renderPaymentTagWrapper(t, talpaStatus as TALPA_STATUSES),
         },
         {
           headerName: getHeader('calculatedBenefitAmount'),
           key: 'calculatedBenefitAmount',
           transform: ({
             calculatedBenefitAmount,
-          }: ApplicationListTableTransforms) => calculatedBenefitAmount,
+            pendingInstalment,
+          }: ApplicationListTableTransforms) =>
+            getFirstInstalmentTotalAmount(
+              String(calculatedBenefitAmount),
+              pendingInstalment || null
+            ),
         }
       );
     }
@@ -334,8 +402,10 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     status,
     isAllStatuses,
     inPayment,
-    t,
+    renderTagWrapper,
     renderTableActions,
+    t,
+    renderPaymentTagWrapper,
   ]);
 
   if (isLoading) {

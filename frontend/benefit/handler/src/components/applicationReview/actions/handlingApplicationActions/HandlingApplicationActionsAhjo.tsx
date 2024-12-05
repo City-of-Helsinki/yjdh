@@ -6,6 +6,7 @@ import {
   StepActionType,
   StepStateType,
 } from 'benefit/handler/hooks/applicationHandling/useHandlingStepper';
+import { useRouterNavigation } from 'benefit/handler/hooks/applicationHandling/useRouterNavigation';
 import useCloneApplicationMutation from 'benefit/handler/hooks/useCloneApplicationMutation';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
@@ -73,6 +74,12 @@ const HandlingApplicationActions: React.FC<Props> = ({
     onDoneConfirmation,
   } = useHandlingApplicationActions(application);
 
+  const { navigateBack } = useRouterNavigation(
+    application?.status,
+    application?.batch?.status,
+    application?.archived
+  );
+
   const lastStep =
     stepState.activeStepIndex === Number(stepState.steps?.length) - 1;
   const router = useRouter();
@@ -88,9 +95,13 @@ const HandlingApplicationActions: React.FC<Props> = ({
     (): void =>
       void router.push({
         pathname: '/',
-        query: { tab: APPLICATION_LIST_TABS.HANDLING },
+        query: {
+          tab: APPLICATION_LIST_TABS[
+            application?.status as unknown as keyof typeof APPLICATION_LIST_TABS
+          ],
+        },
       }),
-    [router]
+    [router, application.status]
   );
 
   const effectSaveAndClose = (): void => {
@@ -99,7 +110,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
       isSavingAndClosing
     ) {
       setIsSavingAndClosing(false);
-      navigateToIndex();
+      void navigateBack();
     }
   };
 
@@ -136,6 +147,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
     stepState.activeStepIndex,
     isSavingAndClosing,
     navigateToIndex,
+    navigateBack,
   ]);
   React.useEffect(() => {
     setIsSavingAndClosing(false);
@@ -163,7 +175,12 @@ const HandlingApplicationActions: React.FC<Props> = ({
         logEntry:
           handledApplication?.logEntryComment?.length <= 0 &&
           handledApplication?.status === APPLICATION_STATUSES.REJECTED,
-        handler: false,
+        decisionMakerId:
+          !handledApplication?.decisionMakerId ||
+          handledApplication?.decisionMakerId?.length <= 0,
+        signerId:
+          !handledApplication?.signerId ||
+          handledApplication?.signerId?.length <= 0,
         // Use longer length to take HTML tags into account
         decisionText: handledApplication?.decisionText?.length <= 10,
         justificationText: handledApplication?.justificationText?.length <= 10,
@@ -172,8 +189,9 @@ const HandlingApplicationActions: React.FC<Props> = ({
         status: '#proccessRejectedRadio',
         calculation: '#endDate',
         logEntry: '#proccessRejectedRadio',
-        handler: '#radio-decision-maker-handler',
+        decisionMakerId: '#radio-decision-maker-0',
         decisionText: '[data-testid="decisionText"]',
+        signerId: '[data-testid="decisionText"]',
         justificationText: '[data-testid="justificationText"]',
       },
     };
@@ -185,14 +203,19 @@ const HandlingApplicationActions: React.FC<Props> = ({
 
     let errorStep2 = false;
     if (currentStepIndex > 0) {
-      fields.missing.handler = !['handler', 'manager'].includes(
-        handledApplication?.handlerRole
-      );
+      fields.missing.decisionMakerId =
+        !handledApplication?.decisionMakerId ||
+        handledApplication?.decisionMakerId?.length <= 0;
+
+      fields.missing.signerId =
+        !handledApplication?.signerId ||
+        handledApplication?.signerId?.length <= 0;
 
       errorStep2 =
         fields.missing.decisionText ||
         fields.missing.justificationText ||
-        fields.missing.handler;
+        fields.missing.signerId ||
+        fields.missing.decisionMakerId;
     }
 
     if (errorStep1 || errorStep2) {
@@ -256,7 +279,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
     setIsSavingAndClosing(true);
   };
 
-  const handleClose = (): void => navigateToIndex();
+  const handleClose = (): void => void navigateBack();
 
   const { data: clonedData, mutate: cloneApplication } =
     useCloneApplicationMutation();
@@ -300,6 +323,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
         </Button>
 
         {process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT !== 'production' &&
+          stepState.activeStepIndex === 0 &&
           [
             APPLICATION_STATUSES.ACCEPTED,
             APPLICATION_STATUSES.REJECTED,
@@ -321,11 +345,12 @@ const HandlingApplicationActions: React.FC<Props> = ({
           APPLICATION_STATUSES.ACCEPTED,
           APPLICATION_STATUSES.REJECTED,
         ].includes(application.status) &&
+          stepState.activeStepIndex === 0 &&
           !application.archived && (
             <Button
               onClick={openDialog}
               theme="black"
-              disabled={isApplicationReadOnly}
+              disabled={isApplicationReadOnly && !application.ahjoCaseId}
               variant="supplementary"
               iconLeft={<IconTrash />}
             >

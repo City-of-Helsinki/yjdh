@@ -11,7 +11,6 @@ import {
   convertToUIDateAndTimeFormat,
   convertToUIDateFormat,
 } from 'shared/utils/date.utils';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
 
 interface ApplicationListProps {
   list: ApplicationListItemData[];
@@ -46,6 +45,8 @@ const useApplicationListData = (
         handled_by_ahjo_automation,
         handled_at: handledAt,
         ahjo_error,
+        pending_instalment,
+        alterations,
       } = application;
 
       return {
@@ -75,12 +76,9 @@ const useApplicationListData = (
         handledAt: convertToUIDateFormat(handledAt) || '-',
         ahjoError: camelcaseKeys(ahjo_error, { deep: true }) || null,
         decisionDate: convertToUIDateFormat(batch?.decision_date) || '-',
-        calculatedBenefitAmount: formatFloatToCurrency(
-          calculation?.calculated_benefit_amount || 0,
-          'EUR',
-          'fi-FI',
-          0
-        ),
+        calculatedBenefitAmount: calculation?.calculated_benefit_amount || '0',
+        pendingInstalment: camelcaseKeys(pending_instalment),
+        alterations: alterations || [],
       };
     })
     .filter(

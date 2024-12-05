@@ -243,7 +243,7 @@ export type TrainingCompensation = {
 export type PaySubsidyPercent = typeof PAY_SUBSIDY_OPTIONS[number];
 
 export interface DecisionProposalDraftData {
-  handler_role?: string;
+  decision_maker_id?: string;
   review_step?: number;
   log_entry_comment?: string;
   status?: APPLICATION_STATUSES;
@@ -252,7 +252,6 @@ export interface DecisionProposalDraftData {
 }
 
 export interface DecisionProposalDraft {
-  handlerRole?: string;
   reviewStep?: number;
   logEntryComment?: string;
   grantedAsDeMinimisAid?: boolean;
@@ -261,7 +260,9 @@ export interface DecisionProposalDraft {
   justificationText?: string;
   applicationId?: string;
   decisionMakerId?: string;
-  decsionMakerName?: string;
+  decisionMakerName?: string;
+  signerId?: string;
+  signerName?: string;
 }
 
 export interface AhjoError {
@@ -323,6 +324,8 @@ export type Application = {
   ahjoStatus?: string;
   handledByAhjoAutomation?: boolean;
   batchStatus?: BATCH_STATUSES;
+  pendingInstalment?: Instalment;
+  talpaStatus?: TALPA_STATUSES;
 } & Step1 &
   Step2;
 
@@ -331,11 +334,17 @@ export type DecisionMaker = {
   name: string;
 };
 
+export type AhjoSigner = {
+  id: string;
+  name: string;
+};
+
 export type DecisionMakerOptions = Array<DecisionMaker>;
+export type AhjoSignerOptions = Array<AhjoSigner>;
 
 export interface AhjoSettingsResponse {
   name: string;
-  data: DecisionMakerOptions;
+  data: DecisionMakerOptions | AhjoSignerOptions;
 }
 export interface Step1 {
   [APPLICATION_FIELDS_STEP1_KEYS.USE_ALTERNATIVE_ADDRESS]?: boolean;
@@ -419,6 +428,24 @@ export type PaySubsidyData = {
   duration_in_months_rounded: string;
 };
 
+export type InstalmentData = {
+  id: string;
+  instalment_number: number;
+  amount: number;
+  due_date: string;
+  amount_after_recoveries: number;
+  status: INSTALMENT_STATUSES;
+};
+
+export type Instalment = {
+  id: string;
+  instalmentNumber: number;
+  amount: number;
+  dueDate: string;
+  amountAfterRecoveries: number;
+  status: INSTALMENT_STATUSES;
+};
+
 export type ApplicationData = {
   id?: string;
   status?: APPLICATION_STATUSES;
@@ -491,6 +518,7 @@ export type ApplicationData = {
   handled_by_ahjo_automation?: boolean;
   alterations: ApplicationAlterationData[];
   ahjo_error?: AhjoErrorData;
+  pending_instalment?: InstalmentData;
 };
 
 export type EmployeeData = {
@@ -591,6 +619,7 @@ export type ApplicationListItemData = {
   ahjoError?: AhjoError;
   decisionDate?: string;
   calculatedBenefitAmount?: string;
+  pendingInstalment?: Instalment;
 };
 
 export type TextProp = 'textFi' | 'textEn' | 'textSv';

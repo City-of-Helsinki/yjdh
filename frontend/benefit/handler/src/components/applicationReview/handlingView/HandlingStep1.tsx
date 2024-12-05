@@ -21,7 +21,7 @@ import { useMemo } from 'react';
 import Container from 'shared/components/container/Container';
 import { getFullName } from 'shared/utils/application.utils';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 
 import ApplicationProcessingView from '../applicationProcessingView/ApplicationProcessingView';
 import BenefitView from '../benefitView/BenefitView';
@@ -78,7 +78,7 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
       },
       {
         accessor: (app) =>
-          formatFloatToCurrency(app.calculation?.calculatedBenefitAmount),
+          formatFloatToEvenEuros(app.calculation?.calculatedBenefitAmount),
         key: 'benefitAmount',
         showIf: () => showMonetaryFields,
       },

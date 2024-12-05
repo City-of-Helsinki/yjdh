@@ -1,0 +1,14 @@
+{% comment %} NEVER MAKE MODIFICATIONS TO THIS GENERATED FILE DIRECTLY, ALL MODIFICATIONS SHOULD BE DONE TO MJML TEMPLATE FILES! {% endcomment %}Hei!
+
+Hei!
+
+Myönsimme teille Helsinki-lisää työntekijän palkkaamiseen. Tuliko työllistetyn henkilön työsuhteeseen muutoksia tukiaikana? Tuen saajana olet velvollinen ilmoittamaan meille, mikäli työsuhde on päättynyt ennenaikaisesti tai keskeytynyt tukijakson aikana. Ilmoittaminen hoituu helposti Helsinki-lisän asiointipalvelussa. Jos työsuhde on toteutunut suunnitellusti, sinun ei tarvitse tehdä mitään.
+
+Ystävällisin terveisin,
+Helsinki-lisän tiimi
+
+Hakemusnumero: {{application.application_number}}
+Tuen saaja: {{benefit_company_name}}
+Tukiaika: {{benefit_start_date}} - {{benefit_end_date}}
+
+Tämä on automaattinen ilmoitus sinulle lähetetystä verkkoviestistä. Ethän vastaa tähän sähköpostiin, sillä vastauksia ei käsitellä. Ota tarvittaessa yhteyttä neuvontaan sähköpostitse helsinkilisa@hel.fi.

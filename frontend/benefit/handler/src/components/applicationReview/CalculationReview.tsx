@@ -9,7 +9,7 @@ import * as React from 'react';
 import Heading from 'shared/components/forms/heading/Heading';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import theme from 'shared/styles/theme';
-import { formatFloatToCurrency } from 'shared/utils/string.utils';
+import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 
 import { $HorizontalList } from '../table/TableExtras.sc';
 
@@ -27,6 +27,8 @@ const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
   const { tableRows, totalSum } = useCalculationTable({
     calculation,
   });
+
+  if (!decisionProposalDraft) return null;
 
   return (
     <>
@@ -91,7 +93,7 @@ const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
             <>
               <div>
                 <dt>{t('common:review.decisionProposal.list.totalAmount')}</dt>
-                <dd>{formatFloatToCurrency(totalSum, 'EUR', 'fi-FI', 0)}</dd>
+                <dd>{formatFloatToEvenEuros(totalSum)}</dd>
               </div>
               <div>
                 <dt>
@@ -107,6 +109,13 @@ const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
               </div>
             </>
           )}
+          <div style={{ maxWidth: '220px', minWidth: '220px' }}>
+            <dt>{t('common:review.decisionProposal.list.decisionMaker')}</dt>
+            <dd>
+              {handledApplication.decisionMakerName ||
+                decisionProposalDraft.decisionMakerName}
+            </dd>
+          </div>
         </$HorizontalList>
       </$GridCell>
       {handledApplication.status === APPLICATION_STATUSES.ACCEPTED && (

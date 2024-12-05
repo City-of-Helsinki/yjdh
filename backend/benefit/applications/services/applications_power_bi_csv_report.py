@@ -1,6 +1,9 @@
 from datetime import datetime
 from typing import Union
 
+from django.conf import settings
+from django.utils import translation
+
 from applications.enums import ApplicationBatchStatus
 from applications.models import Application
 from applications.services.applications_csv_report import (
@@ -10,6 +13,7 @@ from applications.services.applications_csv_report import (
     format_datetime,
     get_application_origin_label,
     get_benefit_type_label,
+    get_submitted_at_date,
 )
 from applications.services.csv_export_base import CsvColumn, get_organization_type
 
@@ -22,22 +26,23 @@ class ApplicationsPowerBiCsvService(ApplicationsCsvService):
     def get_completed_in_talpa_date(
         self, application: Application
     ) -> Union[datetime, None]:
-        if application.batch.status == ApplicationBatchStatus.COMPLETED:
+        if (
+            application.batch
+            and application.batch.status == ApplicationBatchStatus.COMPLETED
+        ):
             return application.batch.modified_at.strftime("%d.%m.%Y")
         return None
 
     def get_alteration_amount(self, application: Application) -> float:
         sum = 0
         for alteration in application.alteration_set.all():
-            if alteration.recovery_amount:
+            # Only include alterations with recovery amount over 20€
+            if alteration.recovery_amount and alteration.recovery_amount > 20:
                 sum += alteration.recovery_amount
         return sum
 
     @property
     def CSV_COLUMNS(self):
-        """
-        Customize the CSV columns but also return the parent class's columns.
-        """
         calculated_benefit_amount = "calculation.calculated_benefit_amount"
 
         columns = [
@@ -52,7 +57,11 @@ class ApplicationsPowerBiCsvService(ApplicationsCsvService):
             CsvColumn(
                 "Hakemuksen tyyppi", "application_origin", get_application_origin_label
             ),
-            CsvColumn("Hakemus saapunut", "created_at", format_datetime),
+            CsvColumn(
+                "Hakemus saapunut",
+                get_submitted_at_date,
+                format_datetime,
+            ),
             csv_default_column("Haettava lisä", "benefit_type", get_benefit_type_label),
             csv_default_column("Haettu alkupäivä", "start_date"),
             csv_default_column("Haettu päättymispäivä", "end_date"),
@@ -106,4 +115,18 @@ class ApplicationsPowerBiCsvService(ApplicationsCsvService):
             csv_default_column("Takaisinlaskutettu", self.get_alteration_amount),
         ]
 
+        if settings.PAYMENT_INSTALMENTS_ENABLED:
+            columns.append(
+                csv_default_column("Maksuerä 1", self.get_instalment_1),
+            )
+            columns.append(
+                csv_default_column("Maksuerä 2", self.get_instalment_2),
+            )
+
         return columns
+
+    def get_row_items(self):
+        with translation.override("fi"):
+            for application in self.get_applications():
+                application.application_row_idx = 1
+                yield application

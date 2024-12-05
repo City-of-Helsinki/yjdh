@@ -43,16 +43,23 @@ services:
       dockerfile: Dockerfile-localdevelopment
       target: development
       args:
-        PORT: 3100
         PROJECT: kesaseteli
         FOLDER: youth
     platform: linux/amd64
     volumes:
       - ./frontend:/app
+      # Don't volume map these dirs to avoid ownership/permission issues:
       - /app/node_modules
       - /app/.next
+      - /app/shared/node_modules
+      - /app/shared/.next
+      - /app/kesaseteli/youth/node_modules
+      - /app/kesaseteli/youth/.next
     env_file:
       - .env.kesaseteli
+    environment:
+      - WATCHPACK_POLLING=${WATCHPACK_POLLING:-true}
+      - PORT=3100
     container_name: kesaseteli-youth
 
   handler:
@@ -61,16 +68,23 @@ services:
       dockerfile: Dockerfile-localdevelopment
       target: development
       args:
-        PORT: 3200
         PROJECT: kesaseteli
         FOLDER: handler
     platform: linux/amd64
     volumes:
       - ./frontend:/app
+      # Don't volume map these dirs to avoid ownership/permission issues:
       - /app/node_modules
       - /app/.next
+      - /app/shared/node_modules
+      - /app/shared/.next
+      - /app/kesaseteli/handler/node_modules
+      - /app/kesaseteli/handler/.next
     env_file:
       - .env.kesaseteli
+    environment:
+      - WATCHPACK_POLLING=${WATCHPACK_POLLING:-true}
+      - PORT=3200
     container_name: kesaseteli-handler
 
   local-proxy:

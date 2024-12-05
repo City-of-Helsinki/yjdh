@@ -4,10 +4,12 @@ import decimal
 import logging
 from typing import Union
 
+from django.conf import settings
 from django.db import transaction
+from django.utils import timezone
 
-from applications.enums import ApplicationStatus, BenefitType
-from calculator.enums import DescriptionType, RowType
+from applications.enums import ApplicationStatus, BenefitType, PaySubsidyGranted
+from calculator.enums import DescriptionType, InstalmentStatus, RowType
 from calculator.models import (
     Calculation,
     CalculationRow,
@@ -15,6 +17,7 @@ from calculator.models import (
     DescriptionRow,
     EmployeeBenefitMonthlyRow,
     EmployeeBenefitTotalRow,
+    Instalment,
     ManualOverrideTotalRow,
     PaySubsidy,
     PaySubsidyMonthlyRow,
@@ -40,6 +43,8 @@ class HelsinkiBenefitCalculator:
     def __init__(self, calculation: Calculation):
         self.calculation = calculation
         self._row_counter = 0
+        self.instalment_threshold = settings.INSTALMENT_THRESHOLD
+        self.first_instalment_limit = settings.FIRST_INSTALMENT_LIMIT
 
     def _get_change_days(
         self, pay_subsidies, training_compensations, start_date, end_date
@@ -155,6 +160,68 @@ class HelsinkiBenefitCalculator:
             return False
         return True
 
+    def create_instalments(self, total_benefit_amount: decimal.Decimal) -> None:
+        """Create one instalment in the usual case,
+        two instalments if the benefit amount exceeds the threshold,
+        with the second instalment due 6 months later.
+        """
+        instalments = self._calculate_instalment_amounts(total_benefit_amount)
+        self._create_instalments(instalments)
+
+    def _calculate_instalment_amounts(
+        self, total_benefit_amount: decimal.Decimal
+    ) -> list[tuple[int, decimal.Decimal, datetime.datetime]]:
+        """Calculate the number of instalments and their amounts based on the total benefit.
+        Returns a list of tuples containing (instalment_number, amount, due_date).
+        If the total benefit is less or equal to the instalment threshold, a single instalment is created.
+        If not, two instalments are created, with the amount of
+        the first instalment being equal to the FIRST_INSTALMENT_LIMIT,
+        and the second being equal to the rest of the total.
+        """
+        if total_benefit_amount <= self.instalment_threshold:
+            return [
+                (
+                    1,
+                    total_benefit_amount,
+                    timezone.now(),
+                    InstalmentStatus.WAITING,
+                )
+            ]
+
+        first_instalment_amount = self.first_instalment_limit
+        second_instalment_amount = total_benefit_amount - first_instalment_amount
+
+        return [
+            (
+                1,
+                first_instalment_amount,
+                timezone.now(),
+                InstalmentStatus.WAITING,
+            ),
+            (
+                2,
+                second_instalment_amount,
+                timezone.now() + datetime.timedelta(days=181),
+                InstalmentStatus.WAITING,
+            ),
+        ]
+
+    def _create_instalments(
+        self,
+        instalments: list[
+            tuple[int, decimal.Decimal, datetime.datetime, InstalmentStatus]
+        ],
+    ) -> None:
+        """Create instalment objects from the provided instalment data."""
+        for instalment_number, amount, due_date, status in instalments:
+            Instalment.objects.create(
+                calculation=self.calculation,
+                instalment_number=instalment_number,
+                amount=amount,
+                due_date=due_date,
+                status=status,
+            )
+
     @transaction.atomic
     def calculate(self, override_status=False):
         if (
@@ -162,12 +229,15 @@ class HelsinkiBenefitCalculator:
             or override_status
         ):
             self.calculation.rows.all().delete()
+            self.calculation.instalments.all().delete()
             if self.can_calculate():
                 self.create_rows()
                 # the total benefit amount is stored in Calculation model, for easier processing.
-                self.calculation.calculated_benefit_amount = self.get_amount(
+                total_benefit_amount = self.get_amount(
                     RowType.HELSINKI_BENEFIT_TOTAL_EUR
                 )
+                self.calculation.calculated_benefit_amount = total_benefit_amount
+                self.create_instalments(total_benefit_amount)
             else:
                 self.calculation.calculated_benefit_amount = None
             self.calculation.save()
@@ -218,6 +288,29 @@ class SalaryBenefitCalculator2023(HelsinkiBenefitCalculator):
     PAY_SUBSIDY_MAX_FOR_70_PERCENT = 1770
     PAY_SUBSIDY_MAX_FOR_50_PERCENT = 1260
     SALARY_BENEFIT_MAX = 800
+    SALARY_BENEFIT_NEW_MAX = settings.SALARY_BENEFIT_NEW_MAX
+
+    @property
+    def is_subsidised(self) -> bool:
+        return (
+            self.calculation.application.pay_subsidy_granted
+            in [PaySubsidyGranted.GRANTED, PaySubsidyGranted.GRANTED_AGED]
+            or self.calculation.application.pay_subsidies.exists()
+        )
+
+    @property
+    def max_monthly_benefit(self) -> int:
+        """If the pay subsidy or subsidy for persons aged 55 or older has been granted,
+        the maximum amount of the salary benefit is 800 euros per month.
+        Otherwise it will be the new maximum amount."""
+        # Enable the new maximum amount only if the instalments are enabled
+        if settings.PAYMENT_INSTALMENTS_ENABLED is False:
+            return self.SALARY_BENEFIT_MAX
+
+        if self.is_subsidised:
+            return int(self.SALARY_BENEFIT_MAX)
+        else:
+            return int(self.SALARY_BENEFIT_NEW_MAX)
 
     def can_calculate(self):
         if not all(
@@ -306,7 +399,7 @@ class SalaryBenefitCalculator2023(HelsinkiBenefitCalculator):
 
             self._create_row(
                 SalaryBenefitMonthlyRow,
-                max_benefit=self.SALARY_BENEFIT_MAX,
+                max_benefit=self.max_monthly_benefit,
                 monthly_deductions=monthly_deductions,
             )
             self._create_row(
