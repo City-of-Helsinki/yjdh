@@ -36,25 +36,60 @@ def test_talpa_lines(applications_csv_service):
     )
 
 
-def test_talpa_csv_cell_list_lines_generator(pruned_applications_csv_service):
+def test_talpa_csv_cell_list_lines_generator(talpa_applications_csv_service):
     check_csv_cell_list_lines_generator(
-        pruned_applications_csv_service, expected_row_count_with_header=3
+        talpa_applications_csv_service, expected_row_count_with_header=3
     )
 
 
-def test_talpa_csv_string_lines_generator(pruned_applications_csv_service):
+def test_talpa_csv_string_lines_generator(talpa_applications_csv_service):
     check_csv_string_lines_generator(
-        pruned_applications_csv_service, expected_row_count_with_header=3
+        talpa_applications_csv_service, expected_row_count_with_header=3
     )
 
 
-def test_talpa_csv_output(pruned_applications_csv_service_with_one_application):
+@pytest.mark.parametrize(
+    "instalments_enabled, number_of_instalments",
+    [
+        (False, 1),
+        (True, 1),
+        (True, 2),
+    ],
+)
+def test_talpa_csv_output(
+    talpa_applications_csv_service_with_one_application,
+    instalments_enabled,
+    number_of_instalments,
+    settings,
+):
+    settings.PAYMENT_INSTALMENTS_ENABLED = instalments_enabled
+    application = (
+        talpa_applications_csv_service_with_one_application.applications.first()
+    )
+    application.calculation.instalments.all().delete()
+
+    if instalments_enabled:
+        for i in range(number_of_instalments):
+            status = InstalmentStatus.ACCEPTED
+            due_date = datetime.now(timezone.utc).date()
+            if i == 1:
+                status = InstalmentStatus.WAITING
+                due_date = timezone.now() + timedelta(days=181)
+
+            Instalment.objects.create(
+                calculation=application.calculation,
+                amount=decimal.Decimal("123.45"),
+                instalment_number=i + 1,
+                status=status,
+                due_date=due_date,
+            )
+
     csv_lines = split_lines_at_semicolon(
-        pruned_applications_csv_service_with_one_application.get_csv_string()
+        talpa_applications_csv_service_with_one_application.get_csv_string()
     )
     # BOM at the beginning of the file
     assert csv_lines[0][0] == '\ufeff"Hakemusnumero"'
-    csv_columns = iter(pruned_applications_csv_service_with_one_application.CSV_COLUMNS)
+    csv_columns = iter(talpa_applications_csv_service_with_one_application.CSV_COLUMNS)
     next(csv_columns, None)  # Skip the first element
 
     for idx, col in enumerate(csv_columns, start=1):
@@ -62,33 +97,43 @@ def test_talpa_csv_output(pruned_applications_csv_service_with_one_application):
 
     assert (
         int(csv_lines[1][0])
-        == pruned_applications_csv_service_with_one_application.applications.first().application_number
+        == talpa_applications_csv_service_with_one_application.applications.first().application_number
     )
+
+    if instalments_enabled:
+        wanted_instalment = application.calculation.instalments.get(
+            status=InstalmentStatus.ACCEPTED,
+            due_date__lte=timezone.now().date(),
+        )
+        assert (
+            decimal.Decimal(csv_lines[1][8])
+            == wanted_instalment.amount_after_recoveries
+        )
 
 
 def test_talpa_csv_non_ascii_characters(
-    pruned_applications_csv_service_with_one_application,
+    talpa_applications_csv_service_with_one_application,
 ):
     application = (
-        pruned_applications_csv_service_with_one_application.applications.first()
+        talpa_applications_csv_service_with_one_application.applications.first()
     )
     application.company_name = "test äöÄÖtest"
     application.save()
     csv_lines = split_lines_at_semicolon(
-        pruned_applications_csv_service_with_one_application.get_csv_string()
+        talpa_applications_csv_service_with_one_application.get_csv_string()
     )
     assert csv_lines[1][3] == '"test äöÄÖtest"'  # string is quoted
 
 
-def test_talpa_csv_delimiter(pruned_applications_csv_service_with_one_application):
+def test_talpa_csv_delimiter(talpa_applications_csv_service_with_one_application):
     application = (
-        pruned_applications_csv_service_with_one_application.applications.first()
+        talpa_applications_csv_service_with_one_application.applications.first()
     )
     application.company_name = "test;12"
     application.save()
     assert (
         ';"test;12";'
-        in pruned_applications_csv_service_with_one_application.get_csv_string()
+        in talpa_applications_csv_service_with_one_application.get_csv_string()
     )
 
 
@@ -100,13 +145,13 @@ def test_talpa_csv_delimiter(pruned_applications_csv_service_with_one_applicatio
     ],
 )
 def test_talpa_csv_decimal(
-    pruned_applications_csv_service_with_one_application,
+    talpa_applications_csv_service_with_one_application,
     settings,
     instalments_enabled,
 ):
     settings.PAYMENT_INSTALMENTS_ENABLED = instalments_enabled
     application = (
-        pruned_applications_csv_service_with_one_application.applications.first()
+        talpa_applications_csv_service_with_one_application.applications.first()
     )
     if instalments_enabled:
         application.calculation.instalments.all().delete()
@@ -123,34 +168,34 @@ def test_talpa_csv_decimal(
         application.calculation.save()
 
     csv_lines = split_lines_at_semicolon(
-        pruned_applications_csv_service_with_one_application.get_csv_string()
+        talpa_applications_csv_service_with_one_application.get_csv_string()
     )
     assert csv_lines[1][8] == "123.45"
 
 
-def test_talpa_csv_date(pruned_applications_csv_service_with_one_application):
+def test_talpa_csv_date(talpa_applications_csv_service_with_one_application):
     application = (
-        pruned_applications_csv_service_with_one_application.get_applications().first()
+        talpa_applications_csv_service_with_one_application.get_applications().first()
     )
     now = datetime.now(timezone.utc)
     application.batch.decision_date = now
     application.batch.save()
     csv_lines = split_lines_at_semicolon(
-        pruned_applications_csv_service_with_one_application.get_csv_string()
+        talpa_applications_csv_service_with_one_application.get_csv_string()
     )
     assert csv_lines[1][12] == f'"{now.strftime("%Y-%m-%d")}"'
 
 
 def test_write_talpa_csv_file(
-    pruned_applications_csv_service_with_one_application, tmp_path
+    talpa_applications_csv_service_with_one_application, tmp_path
 ):
     application = (
-        pruned_applications_csv_service_with_one_application.applications.first()
+        talpa_applications_csv_service_with_one_application.applications.first()
     )
     application.company_name = "test äöÄÖtest"
     application.save()
     output_file = tmp_path / "output.csv"
-    pruned_applications_csv_service_with_one_application.write_csv_file(output_file)
+    talpa_applications_csv_service_with_one_application.write_csv_file(output_file)
     with open(output_file, encoding="utf-8-sig") as f:
         contents = f.read()
         assert contents.startswith('"Hakemusnumero";"Työnantajan tyyppi"')

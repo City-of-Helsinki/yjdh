@@ -117,10 +117,24 @@ class ApplicationsPowerBiCsvService(ApplicationsCsvService):
 
         if settings.PAYMENT_INSTALMENTS_ENABLED:
             columns.append(
-                csv_default_column("Maksuerä 1", self.get_instalment_1),
+                csv_default_column(
+                    "Myönnetty maksuerä 1", self.get_instalment_1_amount
+                ),
             )
             columns.append(
-                csv_default_column("Maksuerä 2", self.get_instalment_2),
+                csv_default_column(
+                    "Myönnetty maksuerä 2", self.get_instalment_2_amount
+                ),
+            )
+            columns.append(
+                csv_default_column(
+                    "Maksettu maksuerä 2", self.get_instalment_2_amount_after_recoveries
+                ),
+            )
+            columns.append(
+                csv_default_column(
+                    "Maksuerän 2 maksupäivä", self.get_instalment_2_due_date
+                ),
             )
 
         return columns
