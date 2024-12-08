@@ -54,7 +54,7 @@ class Header<
   }
 
   private logoutButton(): SelectorPromise {
-    return this.withinNavigationActions.findByRole('link', {
+    return this.withinNavigationActions.findByRole('button', {
       name: this.regexp(this.translations.header?.logoutLabel ?? ''),
     });
   }
