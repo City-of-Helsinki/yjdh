@@ -1,14 +1,9 @@
-import dynamic from 'next/dynamic';
+import { Button, Card } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import useLogin from 'tet/admin/hooks/backend/useLogin';
 
 import { $LoginLinks } from './LoginLinks.sc';
-
-// Need to import Footer dynamically because currently HDS has issues with SSR
-const DynamicCardWrapper = dynamic(() => import('./CardWrapper'), {
-  ssr: false,
-});
 
 const LoginLinks: React.FC = () => {
   const { t } = useTranslation();
@@ -17,7 +12,7 @@ const LoginLinks: React.FC = () => {
 
   return (
     <$LoginLinks>
-      <DynamicCardWrapper
+      <Card
         border
         heading={t('common:loginPage.companyLoginHeading')}
         text={t('common:loginPage.companyLoginText')}
@@ -29,11 +24,12 @@ const LoginLinks: React.FC = () => {
           '--padding-horizontal': 'var(--spacing-l)',
           '--padding-vertical': 'var(--spacing-m)',
         }}
-        buttonText={t('common:loginPage.companyLoginButton')}
-        onClick={loginOidc}
-        dataTestId="oidcLoginButton"
-      />
-      <DynamicCardWrapper
+      >
+        <Button role="link" onClick={loginOidc} data-testid="oidcLoginButton">
+          {t('common:loginPage.companyLoginButton')}
+        </Button>
+      </Card>
+      <Card
         border
         heading={t('common:loginPage.cityLoginHeading')}
         text={t('common:loginPage.cityLoginText')}
@@ -45,10 +41,11 @@ const LoginLinks: React.FC = () => {
           '--padding-horizontal': 'var(--spacing-l)',
           '--padding-vertical': 'var(--spacing-m)',
         }}
-        buttonText={t('common:loginPage.cityLoginButton')}
-        onClick={loginAdfs}
-        dataTestId="adfsLoginButton"
-      />
+      >
+        <Button role="link" onClick={loginAdfs} data-testid="adfsLoginButton">
+          {t('common:loginPage.cityLoginButton')}
+        </Button>
+      </Card>
     </$LoginLinks>
   );
 };
