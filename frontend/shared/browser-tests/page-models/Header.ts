@@ -15,7 +15,7 @@ class Header<
   }
 
   private withinNavigationActions = this.within(
-    Selector('div[class*="NavigationActions"]')
+    Selector('div[class*="HeaderActionBar-module_headerActions"]')
   );
 
   private getUserInfo(user?: User): string {
@@ -30,14 +30,8 @@ class Header<
       .nth(0);
   }
 
-  private languageSelector(): SelectorPromise {
-    return this.withinNavigationActions.findByRole('button', {
-      name: this.translations.header.languageMenuButtonAriaLabel,
-    });
-  }
-
   private languageSelectorItem(toLang: Language): SelectorPromise {
-    return this.withinNavigationActions.findByRole('link', {
+    return this.withinNavigationActions.findByRole('button', {
       name: this.translations.languages[toLang],
     });
   }
@@ -60,7 +54,7 @@ class Header<
   }
 
   private logoutButton(): SelectorPromise {
-    return this.withinNavigationActions.findByRole('link', {
+    return this.withinNavigationActions.findByRole('button', {
       name: this.regexp(this.translations.header?.logoutLabel ?? ''),
     });
   }
@@ -74,9 +68,7 @@ class Header<
   }
 
   public async changeLanguage(toLang: Language): Promise<void> {
-    return t
-      .click(this.languageSelector())
-      .click(this.languageSelectorItem(toLang));
+    return t.click(this.languageSelectorItem(toLang));
   }
 
   public clickLoginButton(): Promise<void> {

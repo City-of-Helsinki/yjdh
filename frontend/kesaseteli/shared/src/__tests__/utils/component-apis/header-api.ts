@@ -13,12 +13,6 @@ const defaultTranslations = {
   en: 'In English',
 };
 
-const languageMenuButtonAriaLabels = {
-  fi: 'Valitse kieli',
-  sv: 'Ändra språk',
-  en: 'Select language',
-};
-
 const expectations = {
   userIsLoggedIn: async (expectedUser?: User): Promise<void> => {
     await screen.findByRole('button', {
@@ -34,7 +28,7 @@ const expectations = {
         screen.queryAllByRole('button', {
           name: /(kirjaudu palveluun)|(header.loginlabel)/i,
         })
-      ).toHaveLength(2); // this is due to ssr bug in hds header component, it's in the dom twice after ssr and before csr
+      ).toHaveLength(1); // this is due to ssr bug in hds header component, it's in the dom twice after ssr and before csr
     });
   },
   errorToastIsShown: async (
@@ -69,29 +63,20 @@ const actions = {
       })
     );
     return userEvent.click(
-      screen.getAllByRole('link', {
+      screen.getAllByRole('button', {
         name: /(kirjaudu ulos)|(header.logoutlabel)/i,
       })[0] // this is due to ssr bug in hds header component, it's in the dom twice after ssr and before csr
     );
   },
-  changeLanguage: async (
-    fromLang: Language,
-    toLang: Language
-  ): Promise<void> => {
-    await userEvent.click(
+  changeLanguage: async (fromLang: Language, toLang: Language): Promise<void> =>
+    userEvent.click(
       screen.getAllByRole('button', {
-        name: new RegExp(languageMenuButtonAriaLabels[fromLang], 'i'),
-      })[0]
-    );
-    return userEvent.click(
-      screen.getAllByRole('link', {
         name: new RegExp(
           `(${defaultTranslations[toLang]})|(languages.${toLang})`,
           'i'
         ),
       })[0]
-    );
-  },
+    ),
 };
 
 const headerApi = { expectations, actions };

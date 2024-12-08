@@ -10,7 +10,7 @@ type Props = {
 const KeyWordList: React.FC<Props> = ({ list, color }) => (
   <>
     {list.map((keyword: OptionType) => (
-      <li>
+      <li key={keyword.name}>
         <Tag
           theme={{
             '--tag-background': `var(--color-${color})`,

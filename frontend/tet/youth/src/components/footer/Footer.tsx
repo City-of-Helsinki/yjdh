@@ -1,19 +1,34 @@
-import { Footer, IconLinkExternal } from 'hds-react';
+import { Footer, IconLinkExternal, Logo, logoFiDark, logoSvDark } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import useLocale from 'shared/hooks/useLocale';
 
 // import { $FooterWrapper } from './Footer.sc';
 
 const FooterSection: React.FC = () => {
   const { t } = useTranslation();
   const newTabText = t('common:footer.newTab');
+  const locale = useLocale();
+  const logoLang = locale === 'sv' ? 'sv' : 'fi';
+  const logoSrcFromLanguage = (): string => {
+    if (logoLang === 'fi') return logoFiDark;
+    if (logoLang === 'sv') return logoSvDark;
+    if (logoLang === 'en') return logoFiDark;
+
+    return logoFiDark;
+  };
+
   return (
     <Footer title={t('common:appName')} theme="dark">
       <Footer.Base
         copyrightHolder={t('common:footer.copyrightText')}
         copyrightText={t('common:footer.allRightsReservedText')}
+        backToTopLabel={t('common:footer.backToTop')}
+        logo={
+          <Logo src={logoSrcFromLanguage()} size="medium" alt={t('common:helsinkiLogo')} />
+        }
       >
-        <Footer.Item
+        <Footer.Link
           as="a"
           rel="noopener noreferrer"
           target="_blank"
@@ -22,7 +37,7 @@ const FooterSection: React.FC = () => {
           aria-label={`${t('common:footer.accessibilityStatement')} - ${newTabText}`}
           icon={<IconLinkExternal />}
         />
-        <Footer.Item
+        <Footer.Link
           as="a"
           rel="noopener noreferrer"
           target="_blank"
@@ -33,7 +48,7 @@ const FooterSection: React.FC = () => {
           )}`}
           icon={<IconLinkExternal />}
         />
-        <Footer.Item
+        <Footer.Link
           as="a"
           rel="noopener noreferrer"
           target="_blank"
@@ -42,7 +57,7 @@ const FooterSection: React.FC = () => {
           aria-label={`${t('common:footer.feedback')} - ${newTabText}`}
           icon={<IconLinkExternal />}
         />
-        <Footer.Item
+        <Footer.Link
           as="a"
           rel="noopener noreferrer"
           target="_blank"

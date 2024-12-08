@@ -1,6 +1,6 @@
 import { ROUTES } from 'benefit/handler/constants';
 import { UploadProps } from 'benefit/handler/types/application';
-import { Button, IconGlyphEuro } from 'hds-react';
+import { Button, IconEuroSign } from 'hds-react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -33,7 +33,7 @@ const EmployeeActions: React.FC<UploadProps> = () => {
             onClick={handleCloseClick}
             theme="black"
             variant="secondary"
-            iconLeft={<IconGlyphEuro />}
+            iconLeft={<IconEuroSign />}
           >
             {t(`${translationsBase}.addPreviouslyGrantedBenefit`)}
           </Button>

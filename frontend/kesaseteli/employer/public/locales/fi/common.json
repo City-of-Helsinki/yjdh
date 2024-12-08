@@ -156,7 +156,8 @@
     "accessibilityStatement": "Saavutettavuusseloste",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/tietoa-hel-fista/saavutettavuus/saavutettavuusselosteet",
     "information": "Tietoa palvelusta",
-    "informationLink": "https://kesaseteli.fi/"
+    "informationLink": "https://kesaseteli.fi/",
+    "backToTop": "Takaisin ylös"
   },
   "languages": {
     "fi": "Suomeksi",
