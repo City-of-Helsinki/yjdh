@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.8.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.7.0...benefit-handler-v4.8.0) (2024-12-09)
+
+
+### Features
+
+* Restrict date picker min/max year ranges ([#3619](https://github.com/City-of-Helsinki/yjdh/issues/3619)) ([42226ab](https://github.com/City-of-Helsinki/yjdh/commit/42226ab9ac88f3372a663c2f24d6bdbe5c5fee12))
+
+
+### Bug Fixes
+
+* Change logo and text in for archival application in archive ([a86b9f3](https://github.com/City-of-Helsinki/yjdh/commit/a86b9f3a12810c363ad3bfe30d9f4891861b567a))
+* Try to parse all kinds of ahjo errors ([#3639](https://github.com/City-of-Helsinki/yjdh/issues/3639)) ([eb0f8be](https://github.com/City-of-Helsinki/yjdh/commit/eb0f8be2e8f1af6ae4a434a33378c386e1504843))
+
 ## [4.7.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.6.0...benefit-handler-v4.7.0) (2024-11-26)
 
 
