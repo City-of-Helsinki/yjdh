@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.8.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.7.0...benefit-backend-v2.8.0) (2024-12-09)
+
+
+### Features
+
+* 2nd instalment due date into csv ([#3635](https://github.com/City-of-Helsinki/yjdh/issues/3635)) ([f9bbaf9](https://github.com/City-of-Helsinki/yjdh/commit/f9bbaf964d0e750db8ed93d22936a050271d6869))
+* Hl 1498 talpa errors ([#3620](https://github.com/City-of-Helsinki/yjdh/issues/3620)) ([47307a6](https://github.com/City-of-Helsinki/yjdh/commit/47307a6eeadfd0661258d70e8d4822d873ff9205))
+* Hl 1502 csv changes ([#3618](https://github.com/City-of-Helsinki/yjdh/issues/3618)) ([b581dc3](https://github.com/City-of-Helsinki/yjdh/commit/b581dc3e1d6b5d55e3310a33d212bac64b23528c))
+* HL 1559 signer api ([#3602](https://github.com/City-of-Helsinki/yjdh/issues/3602)) ([1e1f71d](https://github.com/City-of-Helsinki/yjdh/commit/1e1f71db168ce7050e0aa839f0fb48bf8e8e3369))
+* New command for ending benefit periods ([#3564](https://github.com/City-of-Helsinki/yjdh/issues/3564)) ([96dd4f3](https://github.com/City-of-Helsinki/yjdh/commit/96dd4f3902d1c05aaa5ebafd0534bf71d3170ec8))
+* Talpa CB batch and application talpa_status ([#3621](https://github.com/City-of-Helsinki/yjdh/issues/3621)) ([452d526](https://github.com/City-of-Helsinki/yjdh/commit/452d52671c33bb326693143f8f341ac7382b6db8))
+* Update amount_paid after talpa CB success ([#3636](https://github.com/City-of-Helsinki/yjdh/issues/3636)) ([97ab04a](https://github.com/City-of-Helsinki/yjdh/commit/97ab04ab5d0d16aa04432c1aa89f7fc111892f7e))
+
+
+### Bug Fixes
+
+* Hl 1549 xml exception ([#3607](https://github.com/City-of-Helsinki/yjdh/issues/3607)) ([c8884fb](https://github.com/City-of-Helsinki/yjdh/commit/c8884fbbc50105222d4d7356bd1a64a297323aff))
+* Token expiry based on refresh token expiry ([#3603](https://github.com/City-of-Helsinki/yjdh/issues/3603)) ([2579ed2](https://github.com/City-of-Helsinki/yjdh/commit/2579ed2bc8f801bc0b4cf9c1363963823ef705e7))
+* Update only 1st instalment after decision cb ([#3637](https://github.com/City-of-Helsinki/yjdh/issues/3637)) ([8822819](https://github.com/City-of-Helsinki/yjdh/commit/88228193d0d85e57c78337b74b40e5e9c6ff197a))
+
 ## [2.7.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.6.0...benefit-backend-v2.7.0) (2024-11-26)
 
 
