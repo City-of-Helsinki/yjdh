@@ -25,10 +25,10 @@ const expectations = {
   userIsLoggedOut: async (): Promise<void> => {
     await waitFor(() => {
       expect(
-        screen.queryAllByRole('button', {
+        screen.getByRole('button', {
           name: /(kirjaudu palveluun)|(header.loginlabel)/i,
         })
-      ).toHaveLength(1); // this is due to ssr bug in hds header component, it's in the dom twice after ssr and before csr
+      ).toBeInTheDocument();
     });
   },
   errorToastIsShown: async (
