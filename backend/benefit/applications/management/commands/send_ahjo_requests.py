@@ -18,6 +18,7 @@ from applications.services.ahjo_authentication import (
     AhjoToken,
     AhjoTokenExpiredException,
 )
+from applications.services.ahjo_error_writer import AhjoErrorWriter, AhjoFormattedError
 from applications.services.ahjo_integration import (
     delete_application_in_ahjo,
     get_decision_details_from_ahjo,
@@ -154,6 +155,11 @@ for {len(applications)} applications: {application_numbers}"
             except tuple(exception_messages.keys()) as e:
                 error_text = f"{exception_messages[type(e)]} {application.application_number}: {e}"
                 LOGGER.error(error_text)
+                AhjoErrorWriter.write_to_validation_error(
+                    AhjoFormattedError(
+                        application=application, message_to_handler=error_text
+                    )
+                )
                 failed_applications.append(application)
                 self._handle_failed_request(
                     counter, application, ahjo_request_type, error_text
