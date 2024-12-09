@@ -45,6 +45,7 @@ test('user can authenticate and log out', async (t) => {
   console.log('hep! line x2');
   t.expect(loginLink.exists);
   // eslint-disable-next-line no-console
+  console.log('hep! line x3');
 });
 
 test('user can change languages', async (t) => {
