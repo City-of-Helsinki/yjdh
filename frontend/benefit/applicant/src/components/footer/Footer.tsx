@@ -1,5 +1,5 @@
 import { useTranslation } from 'benefit/applicant/i18n';
-import { Footer } from 'hds-react';
+import { Footer, Logo, logoFiDark } from 'hds-react';
 import React from 'react';
 import useLocale from 'shared/hooks/useLocale';
 
@@ -15,20 +15,24 @@ const FooterSection: React.FC = () => {
         <Footer.Base
           copyrightHolder={t('common:footer.copyrightText')}
           copyrightText={t('common:footer.allRightsReservedText')}
+          backToTopLabel={t('common:footer.backToTop')}
+          logo={
+            <Logo src={logoFiDark} size="medium" alt="Helsingin kaupunki" />
+          }
         >
-          <Footer.Item
+          <Footer.Link
             as="a"
             rel="noopener noreferrer"
             target="_blank"
             href={`/${locale}/accessibility-statement`}
             label={t('common:footer.accessibilityStatement')}
           />
-          <Footer.Item
+          <Footer.Link
             as="a"
             href={`/${locale}/cookie-settings`}
             label={t('common:footer.cookieSettings')}
           />
-          <Footer.Item
+          <Footer.Link
             as="a"
             rel="noopener noreferrer"
             target="_blank"

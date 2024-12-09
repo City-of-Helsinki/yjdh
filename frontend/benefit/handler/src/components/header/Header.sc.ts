@@ -1,10 +1,21 @@
-import BaseHeader from 'shared/components/header/Header';
+import BaseHeader from 'shared/components/header/HeaderV3';
 import { respondAbovePx } from 'shared/styles/mediaQueries';
 import styled from 'styled-components';
 
 export const $BaseHeader = styled(BaseHeader)`
   z-index: 100;
   background: #1a1a1a;
+`;
+
+export const $HeaderCustomItems = styled.ul`
+  display: flex;
+  align-items: center;
+  margin-right: var(--spacing-s);
+  list-style-type: none;
+  margin: 0;
+  > li {
+    margin-right: var(--spacing-xs);
+  }
 `;
 
 export const $ToggleButton = styled.button`

@@ -1,6 +1,6 @@
 import { TFunction, useTranslation } from 'next-i18next';
 import { useState } from 'react';
-import { HeaderProps } from 'shared/components/header/Header';
+import { HeaderProps } from 'shared/components/header/HeaderV3';
 import useLocale from 'shared/hooks/useLocale';
 import { Language } from 'shared/i18n/i18n';
 
