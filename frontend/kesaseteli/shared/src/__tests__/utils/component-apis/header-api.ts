@@ -16,10 +16,7 @@ const defaultTranslations = {
 const expectations = {
   userIsLoggedIn: async (expectedUser?: User): Promise<void> => {
     await screen.findByRole('button', {
-      name: new RegExp(
-        `(käyttäjä)|(header.userAriaLabelPrefix) ${expectedUser?.name ?? ''}`,
-        'i'
-      ),
+      name: new RegExp(`${expectedUser?.name ?? ''}`, 'i'),
     });
   },
   userIsLoggedOut: async (): Promise<void> => {
@@ -56,10 +53,7 @@ const actions = {
   clickLogoutButton: async (user: User): Promise<void> => {
     await userEvent.click(
       screen.getByRole('button', {
-        name: new RegExp(
-          `(käyttäjä)|(header.userAriaLabelPrefix) ${user.name}`,
-          'i'
-        ),
+        name: new RegExp(`${user.name}`, 'i'),
       })
     );
     return userEvent.click(
@@ -68,16 +62,15 @@ const actions = {
       })[0] // this is due to ssr bug in hds header component, it's in the dom twice after ssr and before csr
     );
   },
-  changeLanguage: async (toLang: Language): Promise<void> => {
-    return userEvent.click(
+  changeLanguage: async (toLang: Language): Promise<void> =>
+    userEvent.click(
       screen.getByRole('button', {
         name: new RegExp(
           `(${defaultTranslations[toLang]})|(languages.${toLang})`,
           'i'
         ),
       })
-    );
-  },
+    ),
 };
 
 const headerApi = { expectations, actions };
