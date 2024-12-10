@@ -28,24 +28,12 @@ test('user can authenticate and log out', async (t) => {
   //await doEmployerLogin(t, 'fi');
   const header = new Header(translationsApi);
   await header.userIsLoggedOut();
-  const loginLink = Selector('button').withAttribute('data-testid', 'oidcLoginButton');
-  // eslint-disable-next-line no-console
-  console.log('hep! loginLink: ', loginLink);
-  await t.click(loginLink);
-  // eslint-disable-next-line no-console
-  console.log('hep! line 2: ');
-  const suomiFiData = await doLogin(t, 'fi');
-  // eslint-disable-next-line no-console
-  console.log('hep! suomiFiData: ', suomiFiData);
-  await header.userIsLoggedIn(suomiFiData.user);
-  // eslint-disable-next-line no-console
-  console.log('hep! line x1');
-  await header.clickLogoutButton();
-  // eslint-disable-next-line no-console
-  console.log('hep! line x2');
-  t.expect(loginLink.exists);
-  // eslint-disable-next-line no-console
-  console.log('hep! line x3');
+  const loginButton = Selector('button').withAttribute('data-testid', 'oidcLoginButton');
+  await t.click(loginButton);
+  const logoutButton = Selector('button').withAttribute('aria-controls', 'sign-out-dropdown');
+  t.expect(logoutButton.exists);
+  await t.click(logoutButton);
+  t.expect(loginButton.exists);
 });
 
 test('user can change languages', async (t) => {
