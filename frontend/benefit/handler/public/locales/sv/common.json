@@ -225,7 +225,8 @@
           "accepted": "Hyväksytty",
           "waiting": "Odottaa",
           "completed": "Maksettu",
-          "error_in_talpa": "Virhe maksussa"
+          "error_in_talpa": "Virhe maksussa",
+          "paid": "Merkitty maksetuksi manuaalisesti"
         },
         "calculationEndDate": "Viim. tukipäivä",
         "calculatedBenefitAmount": "Tukisumma",
@@ -282,7 +283,10 @@
         "return": "Palauta",
         "confirm": "Hyväksy",
         "cancel": "Peru",
-        "finish": "Siirrä arkistoon"
+        "finish": "Siirrä arkistoon",
+        "return_as_waiting": "Palauta odottamaan",
+        "return_as_accepted": "Palauta hyväksytyksi",
+        "mark_as_paid": "Merkitse maksetuksi"
       }
     },
     "pageHeaders": {

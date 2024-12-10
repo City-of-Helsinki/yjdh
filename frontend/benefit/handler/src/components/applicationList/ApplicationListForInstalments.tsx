@@ -12,10 +12,6 @@ import {
 } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
 import {
-  Button,
-  IconArrowUndo,
-  IconCheck,
-  IconCross,
   IconErrorFill,
   Table,
   Tag,
@@ -38,7 +34,6 @@ import {
   $Column,
   $Wrapper,
 } from '../applicationReview/actions/handlingApplicationActions/HandlingApplicationActions.sc';
-import { $HintText, $TableFooter } from '../table/TableExtras.sc';
 import {
   $AlterationBadge,
   $EmptyHeading,
@@ -46,6 +41,7 @@ import {
   $InstalmentList,
   $TagWrapper,
 } from './ApplicationList.sc';
+import ApplicationTableFooter from './ApplicationTableFooter';
 import { useApplicationList } from './useApplicationList';
 
 export interface ApplicationListProps {
@@ -241,71 +237,17 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
             setSelectedRows={setSelectedRows}
             zebra
           />
-          <$TableFooter>
-            <$Wrapper>
-              <$Column>
-                {(selectedRows.length === 0 || selectedRows.length > 1) && (
-                  <$HintText>Valitse yksi hakemus</$HintText>
-                )}
-
-                {selectedApplication &&
-                  selectedRows.length === 1 &&
-                  selectedInstalment && (
-                    <>
-                      {selectedInstalment.status ===
-                        INSTALMENT_STATUSES.WAITING && (
-                        <Button
-                          disabled={isLoading || isLoadingStatusChange}
-                          theme="coat"
-                          iconLeft={<IconCheck />}
-                          onClick={() =>
-                            changeInstalmentStatus({
-                              id: selectedInstalment.id,
-                              status: INSTALMENT_STATUSES.ACCEPTED,
-                            })
-                          }
-                        >
-                          {t(`${translationsBase}.actions.confirm`)}
-                        </Button>
-                      )}
-
-                      {selectedInstalment.status ===
-                        INSTALMENT_STATUSES.WAITING && (
-                        <Button
-                          disabled={isLoading || isLoadingStatusChange}
-                          theme="coat"
-                          iconLeft={<IconCross />}
-                          onClick={() => setIsInstalmentCancelModalShown(true)}
-                        >
-                          {t(`${translationsBase}.actions.cancel`)}
-                        </Button>
-                      )}
-
-                      {[
-                        INSTALMENT_STATUSES.ACCEPTED,
-                        INSTALMENT_STATUSES.CANCELLED,
-                      ].includes(
-                        selectedInstalment?.status as INSTALMENT_STATUSES
-                      ) && (
-                        <Button
-                          disabled={isLoading || isLoadingStatusChange}
-                          theme="coat"
-                          iconLeft={<IconArrowUndo />}
-                          onClick={() =>
-                            changeInstalmentStatus({
-                              id: selectedInstalment.id,
-                              status: INSTALMENT_STATUSES.WAITING,
-                            })
-                          }
-                        >
-                          {t(`${translationsBase}.actions.return`)}
-                        </Button>
-                      )}
-                    </>
-                  )}
-              </$Column>
-            </$Wrapper>
-          </$TableFooter>
+        {selectedRows.length > 0 && (
+          <ApplicationTableFooter
+            selectedRows={selectedRows}
+            list={list}
+            isLoading={isLoading}
+            isLoadingStatusChange={isLoadingStatusChange}
+            translationsBase={translationsBase}
+            changeInstalmentStatus={changeInstalmentStatus}
+            setIsInstalmentCancelModalShown={setIsInstalmentCancelModalShown}
+          />
+        )}
           <Modal
             id="instalment-cancel-confirm"
             isOpen={isInstalmentCancelModalShown}
