@@ -9,9 +9,12 @@ import { getBackendUrl } from 'kesaseteli-shared/backend-api/backend-api';
 import React from 'react';
 import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
-import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
+import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 
 const fakeObjectFactory = new FakeObjectFactory();
+
+// Languages need to start with sometning else than 'fi' to avoid the default language
+const LANGUAGES = ['sv', 'en', 'fi'] as const;
 
 describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => {
   it('Redirects to backend when clicked login button', async () => {
@@ -51,8 +54,8 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
     const spyRouterPush = jest.fn();
     renderComponent(<Header />, { push: spyRouterPush });
     await headerApi.expectations.userIsLoggedOut();
-    for (const lang of SUPPORTED_LANGUAGES) {
-      await headerApi.actions.changeLanguage('fi', lang);
+    for (const lang of LANGUAGES) {
+      await headerApi.actions.changeLanguage(lang);
       await waitFor(() =>
         expect(spyRouterPush).toHaveBeenCalledWith(undefined, undefined, {
           locale: String(lang),

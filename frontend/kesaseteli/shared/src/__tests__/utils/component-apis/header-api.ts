@@ -68,15 +68,16 @@ const actions = {
       })[0] // this is due to ssr bug in hds header component, it's in the dom twice after ssr and before csr
     );
   },
-  changeLanguage: async (fromLang: Language, toLang: Language): Promise<void> =>
-    userEvent.click(
-      screen.getAllByRole('button', {
+  changeLanguage: async (toLang: Language): Promise<void> => {
+    return userEvent.click(
+      screen.getByRole('button', {
         name: new RegExp(
           `(${defaultTranslations[toLang]})|(languages.${toLang})`,
           'i'
         ),
-      })[0]
-    ),
+      })
+    );
+  },
 };
 
 const headerApi = { expectations, actions };
