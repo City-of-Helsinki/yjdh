@@ -74,6 +74,8 @@ const NotificationView: React.FC<Props> = ({ data }) => {
                   <Link href={`${ROUTES.APPLICATION}?id=${data?.id}`}>
                     {data?.applicationNumber}
                   </Link>
+                  {', '}
+                  {data?.ahjoCaseId}
                 </p>
               )}
               {isNewAhjoMode
@@ -89,14 +91,14 @@ const NotificationView: React.FC<Props> = ({ data }) => {
                 <Button theme="coat" onClick={handleGoHome}>
                   {t('common:utility.home')}
                 </Button>
-                <Button
+                {/* <Button
                   variant="secondary"
                   theme="coat"
                   onClick={handleStartAhjo}
                   iconRight={<IconLinkExternal />}
                 >
                   {t(`${translationsBase}.ahjoButton.linkLabel`)}
-                </Button>
+                </Button> */}
               </$ActionsContainer>
             </$GridCell>
           )}
