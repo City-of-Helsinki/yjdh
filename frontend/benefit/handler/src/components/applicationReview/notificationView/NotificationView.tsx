@@ -3,7 +3,7 @@ import AppContext from 'benefit/handler/context/AppContext';
 import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
-import { Button, IconLinkExternal } from 'hds-react';
+import { Button } from 'hds-react'; 
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
@@ -74,6 +74,8 @@ const NotificationView: React.FC<Props> = ({ data }) => {
                   <Link href={`${ROUTES.APPLICATION}?id=${data?.id}`}>
                     {data?.applicationNumber}
                   </Link>
+                  {', '}
+                  {data?.ahjoCaseId}
                 </p>
               )}
               {isNewAhjoMode
@@ -89,14 +91,14 @@ const NotificationView: React.FC<Props> = ({ data }) => {
                 <Button theme="coat" onClick={handleGoHome}>
                   {t('common:utility.home')}
                 </Button>
-                <Button
+                {/* <Button
                   variant="secondary"
                   theme="coat"
                   onClick={handleStartAhjo}
                   iconRight={<IconLinkExternal />}
                 >
                   {t(`${translationsBase}.ahjoButton.linkLabel`)}
-                </Button>
+                </Button> */}
               </$ActionsContainer>
             </$GridCell>
           )}
