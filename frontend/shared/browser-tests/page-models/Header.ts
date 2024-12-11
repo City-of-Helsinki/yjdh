@@ -15,11 +15,11 @@ class Header<
   }
 
   private withinNavigationActions = this.within(
-    Selector('div[class*="NavigationActions"]')
+    Selector('div[class*="HeaderActionBar-module_headerActions"]')
   );
 
   private getUserInfo(user?: User): string {
-    return `${this.translations.header.userAriaLabelPrefix ?? ''} ${
+    return `${
       isRealIntegrationsEnabled() ? 'Mika Hietanen' : user?.name ?? ''
     }`;
   }
@@ -30,14 +30,8 @@ class Header<
       .nth(0);
   }
 
-  private languageSelector(): SelectorPromise {
-    return this.withinNavigationActions.findByRole('button', {
-      name: this.translations.header.languageMenuButtonAriaLabel,
-    });
-  }
-
   private languageSelectorItem(toLang: Language): SelectorPromise {
-    return this.withinNavigationActions.findByRole('link', {
+    return this.withinNavigationActions.findByRole('button', {
       name: this.translations.languages[toLang],
     });
   }
@@ -53,20 +47,21 @@ class Header<
     });
   }
 
-  private userInfoDropdown(user?: User): SelectorPromise {
-    return this.withinNavigationActions.findByRole('button', {
-      name: this.regexp(this.getUserInfo(user)),
-    });
+  private userInfoDropdown(): Selector {
+    return Selector('button').withAttribute(
+      'aria-controls',
+      'sign-out-dropdown'
+    );
   }
 
   private logoutButton(): SelectorPromise {
-    return this.withinNavigationActions.findByRole('link', {
+    return this.withinNavigationActions.findByRole('button', {
       name: this.regexp(this.translations.header?.logoutLabel ?? ''),
     });
   }
 
   public userIsLoggedIn(user?: User): Promise<void> {
-    return this.expect(this.userInfoDropdown(user));
+    return this.expect(this.userInfoDropdown());
   }
 
   public userIsLoggedOut(): Promise<void> {
@@ -74,9 +69,7 @@ class Header<
   }
 
   public async changeLanguage(toLang: Language): Promise<void> {
-    return t
-      .click(this.languageSelector())
-      .click(this.languageSelectorItem(toLang));
+    return t.click(this.languageSelectorItem(toLang));
   }
 
   public clickLoginButton(): Promise<void> {
@@ -84,7 +77,7 @@ class Header<
   }
 
   public async clickLogoutButton(user?: User): Promise<void> {
-    return t.click(this.userInfoDropdown(user)).click(this.logoutButton());
+    return t.click(this.userInfoDropdown()).click(this.logoutButton());
   }
 }
 

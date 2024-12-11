@@ -13,28 +13,19 @@ const defaultTranslations = {
   en: 'In English',
 };
 
-const languageMenuButtonAriaLabels = {
-  fi: 'Valitse kieli',
-  sv: 'Ändra språk',
-  en: 'Select language',
-};
-
 const expectations = {
   userIsLoggedIn: async (expectedUser?: User): Promise<void> => {
     await screen.findByRole('button', {
-      name: new RegExp(
-        `(käyttäjä)|(header.userAriaLabelPrefix) ${expectedUser?.name ?? ''}`,
-        'i'
-      ),
+      name: new RegExp(`${expectedUser?.name ?? ''}`, 'i'),
     });
   },
   userIsLoggedOut: async (): Promise<void> => {
     await waitFor(() => {
       expect(
-        screen.queryAllByRole('button', {
+        screen.getByRole('button', {
           name: /(kirjaudu palveluun)|(header.loginlabel)/i,
         })
-      ).toHaveLength(2); // this is due to ssr bug in hds header component, it's in the dom twice after ssr and before csr
+      ).toBeInTheDocument();
     });
   },
   errorToastIsShown: async (
@@ -62,36 +53,24 @@ const actions = {
   clickLogoutButton: async (user: User): Promise<void> => {
     await userEvent.click(
       screen.getByRole('button', {
-        name: new RegExp(
-          `(käyttäjä)|(header.userAriaLabelPrefix) ${user.name}`,
-          'i'
-        ),
+        name: new RegExp(`${user.name}`, 'i'),
       })
     );
     return userEvent.click(
-      screen.getAllByRole('link', {
+      screen.getAllByRole('button', {
         name: /(kirjaudu ulos)|(header.logoutlabel)/i,
       })[0] // this is due to ssr bug in hds header component, it's in the dom twice after ssr and before csr
     );
   },
-  changeLanguage: async (
-    fromLang: Language,
-    toLang: Language
-  ): Promise<void> => {
-    await userEvent.click(
-      screen.getAllByRole('button', {
-        name: new RegExp(languageMenuButtonAriaLabels[fromLang], 'i'),
-      })[0]
-    );
-    return userEvent.click(
-      screen.getAllByRole('link', {
+  changeLanguage: async (toLang: Language): Promise<void> =>
+    userEvent.click(
+      screen.getByRole('button', {
         name: new RegExp(
           `(${defaultTranslations[toLang]})|(languages.${toLang})`,
           'i'
         ),
-      })[0]
-    );
-  },
+      })
+    ),
 };
 
 const headerApi = { expectations, actions };

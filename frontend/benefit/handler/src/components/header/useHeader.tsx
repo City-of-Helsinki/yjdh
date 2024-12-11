@@ -28,10 +28,7 @@ type ExtendedComponentProps = {
   languageOptions: OptionType<string>[];
   isNavigationVisible?: boolean;
   navigationItems?: NavigationItem[];
-  handleLanguageChange: (
-    e: React.SyntheticEvent<unknown>,
-    newLanguage: OptionType<string>
-  ) => void;
+  handleLanguageChange: (newLanguage: SUPPORTED_LANGUAGES) => void;
   handleNavigationItemClick: (pathname: string) => void;
   handleTitleClick: () => void;
 };
@@ -108,12 +105,8 @@ const useHeader = (): ExtendedComponentProps => {
     [items.default, items.newAhjo, isNewAhjoMode]
   );
 
-  const handleLanguageChange = (
-    e: React.SyntheticEvent<unknown>,
-    newLanguage: OptionType<string>
-  ): void => {
-    e.preventDefault();
-    void router.push('/', '/', { locale: newLanguage.value });
+  const handleLanguageChange = (newLanguage: SUPPORTED_LANGUAGES): void => {
+    void router.push('/', '/', { locale: newLanguage });
   };
 
   const handleNavigationItemClick = (pathname: string): void => {

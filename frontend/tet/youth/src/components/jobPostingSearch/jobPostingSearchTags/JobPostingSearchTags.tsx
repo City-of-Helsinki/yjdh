@@ -44,7 +44,7 @@ const PostingSearchTags: React.FC<Props> = ({
       )}
       {initKeywords.length > 0 &&
         initKeywords.map((keyword) => (
-          <li>
+          <li key={keyword.label}>
             <Tag
               onDelete={() => onRemoveKeyword(keyword)}
               deleteButtonAriaLabel={t('common:filters.removeFilter', { filter: keyword.label })}
