@@ -19,7 +19,7 @@ class Header<
   );
 
   private getUserInfo(user?: User): string {
-    return `${this.translations.header.userAriaLabelPrefix ?? ''} ${
+    return `${
       isRealIntegrationsEnabled() ? 'Mika Hietanen' : user?.name ?? ''
     }`;
   }
