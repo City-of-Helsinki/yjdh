@@ -8540,10 +8540,10 @@ hds-core@3.11.0:
   resolved "https://registry.yarnpkg.com/hds-core/-/hds-core-3.11.0.tgz#27d357da72752a402d97aa7904b3491be09e3225"
   integrity sha512-405+8VHW4N3/y5ESWGOv6vUIbgp/DCYjQVpdVLsWg6RowrUwNk9VvU6N2ZpEP8HM3ujJYu/bcIQ6zzwvAOFMCA==
 
-hds-design-tokens@^2.17.1:
-  version "2.17.1"
-  resolved "https://registry.yarnpkg.com/hds-design-tokens/-/hds-design-tokens-2.17.1.tgz#d5ae14917299251c4a8a1cea5002e76fea4f622c"
-  integrity sha512-EM87DUAgAVQ2ahourNyyfOSCzYHyCxNkYhJPftSe1W2CS2vHXrskWgP4PWPbGIZbYvIZeEFuHA3TqobCXmy1aw==
+hds-design-tokens@^3.11.0:
+  version "3.11.0"
+  resolved "https://registry.yarnpkg.com/hds-design-tokens/-/hds-design-tokens-3.11.0.tgz#b232d0e223e62b4f2db29bed4d96c64c70668e7b"
+  integrity sha512-A44gjN+TDpQQnCnw/AflCHIrqBZP8FYUW+HlPPUx4SCe4ISnEWVvxrEFWvzfOXSmO+9MDSXdNKS4ItEwluJUMQ==
 
 hds-react@^3.11.0:
   version "3.11.0"
