@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.9.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.8.0...benefit-backend-v2.9.0) (2024-12-11)
+
+
+### Features
+
+* Hl 1575 instalment to accepted ([#3642](https://github.com/City-of-Helsinki/yjdh/issues/3642)) ([9981a73](https://github.com/City-of-Helsinki/yjdh/commit/9981a73f2626473cdc3c960a1b8f7b4e2ae1f87e))
+* Save missing version_series_id error ([#3641](https://github.com/City-of-Helsinki/yjdh/issues/3641)) ([3889847](https://github.com/City-of-Helsinki/yjdh/commit/38898479d2094bcfd13a60d66928225a61d414c1))
+
 ## [2.8.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.7.0...benefit-backend-v2.8.0) (2024-12-09)
 
 
