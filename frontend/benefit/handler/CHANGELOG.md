@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.9.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.8.0...benefit-handler-v4.9.0) (2024-12-11)
+
+
+### Features
+
+* Hl 1575 instalment to accepted ([#3642](https://github.com/City-of-Helsinki/yjdh/issues/3642)) ([9981a73](https://github.com/City-of-Helsinki/yjdh/commit/9981a73f2626473cdc3c960a1b8f7b4e2ae1f87e))
+
 ## [4.8.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.7.0...benefit-handler-v4.8.0) (2024-12-09)
 
 
