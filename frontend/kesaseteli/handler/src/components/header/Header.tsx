@@ -1,7 +1,7 @@
 import { IconMover } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import BaseHeader from 'shared/components/header/HeaderV3';
+import BaseHeader from 'shared/components/header/Header';
 import useLocale from 'shared/hooks/useLocale';
 
 const Header: React.FC = () => {

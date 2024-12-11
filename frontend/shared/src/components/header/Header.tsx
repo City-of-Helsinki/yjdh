@@ -45,7 +45,7 @@ export type HeaderProps = {
   customActiveItemFn?: (url: string) => boolean;
 };
 
-const HeaderV3: React.FC<HeaderProps> = ({
+const Header: React.FC<HeaderProps> = ({
   className,
   customActiveItemFn,
   customItems,
@@ -62,15 +62,8 @@ const HeaderV3: React.FC<HeaderProps> = ({
   title,
   titleUrl,
 }) => {
-  const {
-    closeMenu,
-    handleLogin,
-    handleLogout,
-    locale,
-    logoLang,
-    t,
-    toggleMenu,
-  } = useHeader(login);
+  const { closeMenu, handleLogin, handleLogout, logoLang, t, toggleMenu } =
+    useHeader(login);
 
   const goToPage = useGoToPage();
 
@@ -140,7 +133,6 @@ const HeaderV3: React.FC<HeaderProps> = ({
           onMenuClick={toggleMenu}
         >
           {customItems}
-
           {login && !login?.isAuthenticated && !hideLogin && (
             <Header.ActionBarButton
               id="sign-in"
@@ -150,6 +142,8 @@ const HeaderV3: React.FC<HeaderProps> = ({
               fixedRightPosition
             />
           )}
+
+          <div className="flex items-center space-x-4"></div>
 
           {login && login?.isAuthenticated && !hideLogin && (
             <Header.ActionBarItem
@@ -196,4 +190,4 @@ const HeaderV3: React.FC<HeaderProps> = ({
   );
 };
 
-export default HeaderV3;
+export default Header;

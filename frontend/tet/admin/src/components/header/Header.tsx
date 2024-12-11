@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import BaseHeader from 'shared/components/header/HeaderV3';
+import BaseHeader from 'shared/components/header/Header';
 import { SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 import { OptionType } from 'shared/types/common';
 import useLogin from 'tet/admin/hooks/backend/useLogin';

@@ -2,7 +2,7 @@ import { axe } from 'jest-axe';
 import React from 'react';
 import { render } from 'shared/__tests__/utils/test-utils';
 
-import Header from '../HeaderV3';
+import Header from '../Header';
 
 // "svg elements with an img role have an alternative text (svg-img-alt)"
 test.skip('test for accessibility violations', async () => {
