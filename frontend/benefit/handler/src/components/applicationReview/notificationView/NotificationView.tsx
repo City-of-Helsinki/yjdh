@@ -3,7 +3,7 @@ import AppContext from 'benefit/handler/context/AppContext';
 import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
-import { Button, IconLinkExternal } from 'hds-react';
+import { Button } from 'hds-react'; 
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
