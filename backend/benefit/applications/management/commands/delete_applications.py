@@ -1,4 +1,5 @@
 from datetime import timedelta
+from typing import List
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -9,9 +10,15 @@ from applications.models import Application
 
 class Command(BaseCommand):
     help = "Delete applications with the given status (draft or cancelled) and older than the given number of days"
-    allowed_statuses = [ApplicationStatus.DRAFT, ApplicationStatus.CANCELLED]
+    allowed_statuses = [
+        ApplicationStatus.DRAFT,
+        ApplicationStatus.CANCELLED,
+        ApplicationStatus.ARCHIVAL,
+        ApplicationStatus.ACCEPTED,
+        ApplicationStatus.REJECTED,
+    ]
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser) -> None:
         parser.add_argument(
             "--keep",
             type=int,
@@ -22,28 +29,37 @@ class Command(BaseCommand):
         parser.add_argument(
             "--status",
             type=str,
-            default="cancelled",
-            help="The status of the applications to delete",
+            nargs="+",  # Allow multiple statuses
+            help="The statuses of the applications to delete. \
+pass multiple statuses separated by spaces.",
         )
 
-    def handle(self, *args, **options):
-        if options["status"] not in self.allowed_statuses:
-            self.stdout.write(f"Status {options['status']} is not allowed")
-            return
-        number_of_deleted_applications = _delete_applications(
-            options["keep"], options["status"]
-        )
+    def handle(self, *args, **options) -> None:
+        keep_days = options["keep"]
+        statuses = options["status"]
+        if statuses:
+            invalid_statuses = [
+                status for status in statuses if status not in self.allowed_statuses
+            ]
+            if invalid_statuses:
+                self.stderr.write(
+                    f"Invalid statuses provided: {', '.join(invalid_statuses)}. \
+Allowed statuses are: {', '.join(self.allowed_statuses)}."
+                )
+                return
+
+        number_of_deleted_applications = _delete_applications(keep_days, statuses)
         self.stdout.write(
             f"Deleted {number_of_deleted_applications} applications with status {options['status']}"
         )
 
 
-def _delete_applications(days_to_keep: int, status: str) -> int:
+def _delete_applications(days_to_keep: int, statuses: List[str]) -> int:
     """Delete applications with the given status and older than the given number of days.
     Also delete their attachment files."""
 
     applications_to_delete = Application.objects.filter(
-        status=status,
+        status__in=statuses,
         modified_at__lte=(timezone.now() - timedelta(days=days_to_keep)),
     )
     number_of_applications_to_delete = applications_to_delete.count()

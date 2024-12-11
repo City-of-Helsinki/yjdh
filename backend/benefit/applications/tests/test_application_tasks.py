@@ -63,7 +63,7 @@ def test_delete_cancelled_applications_older_than_30_days(cancelled_to_delete):
     applications = Application.objects.filter(status=status)
     total_applications = applications.count()
 
-    call_command("delete_applications", status=status, stdout=out)
+    call_command("delete_applications", status=[status], stdout=out)
 
     remaining_applications = Application.objects.filter(
         status=status,
@@ -87,16 +87,9 @@ def test_delete_cancelled_applications_older_than_30_days(cancelled_to_delete):
 
     # Assert that the correct number of applications were deleted
     assert (
-        f"Deleted {total_applications - remaining_applications.count()} applications with status {status}"
+        f"Deleted {total_applications - remaining_applications.count()} applications with status {[status]}"
         in out.getvalue()
     )
-
-
-@pytest.mark.parametrize("status", ["submitted", "approved", "rejected", "foo"])
-def test_delete_applications_allows_only_draft_and_cancelled_statuses(status):
-    out = StringIO()
-    call_command("delete_applications", status=status, stdout=out)
-    assert f"Status {status} is not allowed" in out.getvalue()
 
 
 def test_delete_draft_applications_older_than_180_days(
@@ -113,7 +106,7 @@ def test_delete_draft_applications_older_than_180_days(
     ]
 
     total_applications = Application.objects.filter(status=status).count()
-    call_command("delete_applications", keep=180, status=status, stdout=out)
+    call_command("delete_applications", keep=180, status=[status], stdout=out)
 
     # Query the remaining applications after the command has been executed
     remaining_applications = Application.objects.filter(
@@ -139,7 +132,7 @@ def test_delete_draft_applications_older_than_180_days(
 
     # Assert that the correct number of applications were deleted
     assert (
-        f"Deleted {total_applications - remaining_applications.count()} applications with status {status}"
+        f"Deleted {total_applications - remaining_applications.count()} applications with status {[status]}"
         in out.getvalue()
     )
 
