@@ -1,5 +1,5 @@
 import {
-  Header,
+  Header as HdsHeader,
   IconSignin,
   IconSignout,
   IconUser,
@@ -101,7 +101,7 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <div data-testid="header" className={className}>
-      <Header
+      <HdsHeader
         theme={theme}
         style={
           {
@@ -112,11 +112,11 @@ const Header: React.FC<HeaderProps> = ({
         onDidChangeLanguage={onLanguageChange}
         languages={languageOptions}
       >
-        <Header.SkipLink
+        <HdsHeader.SkipLink
           skipTo={`#${MAIN_CONTENT_ID}`}
           label={skipToContentLabel}
         />
-        <Header.ActionBar
+        <HdsHeader.ActionBar
           frontPageLabel={title}
           title={title}
           titleAriaLabel={title}
@@ -134,7 +134,7 @@ const Header: React.FC<HeaderProps> = ({
         >
           {customItems}
           {login && !login?.isAuthenticated && !hideLogin && (
-            <Header.ActionBarButton
+            <HdsHeader.ActionBarButton
               id="sign-in"
               label={login.loginLabel}
               onClick={() => handleLogin()}
@@ -146,7 +146,7 @@ const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center space-x-4"></div>
 
           {login && login?.isAuthenticated && !hideLogin && (
-            <Header.ActionBarItem
+            <HdsHeader.ActionBarItem
               id="sign-out"
               icon={<IconUser />}
               aria-label={`${login.userAriaLabelPrefix} ${login.userName}`}
@@ -154,24 +154,24 @@ const Header: React.FC<HeaderProps> = ({
               onClick={() => handleLogout}
               fixedRightPosition
             >
-              <Header.ActionBarSubItem
+              <HdsHeader.ActionBarSubItem
                 label={login.logoutLabel}
                 onClick={handleLogout}
                 iconRight={<IconSignout />}
               />
-            </Header.ActionBarItem>
+            </HdsHeader.ActionBarItem>
           )}
 
           {languages && onLanguageChange && (
-            <Header.LanguageSelector
+            <HdsHeader.LanguageSelector
               ariaLabel={t('common:header.languageMenuButtonAriaLabel')}
             />
           )}
-        </Header.ActionBar>
+        </HdsHeader.ActionBar>
         {isNavigationVisible && navigationItems && (
-          <Header.NavigationMenu>
+          <HdsHeader.NavigationMenu>
             {navigationItems?.map((item) => (
-              <Header.Link
+              <HdsHeader.Link
                 key={item.url}
                 label={item.label as string}
                 active={
@@ -183,9 +183,9 @@ const Header: React.FC<HeaderProps> = ({
                 onClick={() => handleClickLink(item.url)}
               />
             ))}
-          </Header.NavigationMenu>
+          </HdsHeader.NavigationMenu>
         )}
-      </Header>
+      </HdsHeader>
     </div>
   );
 };
