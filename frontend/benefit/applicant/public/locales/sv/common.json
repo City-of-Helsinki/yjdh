@@ -595,6 +595,10 @@
       "label": "Ansökan om Helsingforstillägget har skickats",
       "message": "Vi har mottagit din ansökan om Helsingforstillägg med ansökningsnummer {{applicationNumber}}\n\nAnsökningen överförs till handläggning. Du kan följa upp med hur handläggningen framskrider i e-tjänsten för sysselsättning Helsingforstillägg.\n\nOm du har frågor om ansökningen, kan du skicka meddelanden i e-tjänsten för sysselsättning Helsingforstillägg eller skicka e-post till adressen helsinkilisa@hel.fi."
     },
+    "applicationReSubmitted": {
+      "label": " Ändringen av Helsingforstillägget ansökan har skickats.",
+      "message": "Vi har mottagit ändringen i din Helsingforstillägget med ansökningsnummer{{applicationNumber}}."
+    },
     "applicationSaved": {
       "label": "Applikationen sparas",
       "message": "Helsingforstillägg applikationen {{applicationNumber}} {{applicantName}} sparas."

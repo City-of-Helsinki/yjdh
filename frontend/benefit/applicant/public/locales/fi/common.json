@@ -595,6 +595,10 @@
       "label": "Helsinki-lisä -hakemus on lähetetty",
       "message": "Olemme vastaanottaneet Helsinki-lisä -hakemuksesi, jonka hakemusnumero on  {{applicationNumber}}.\n\nSeuraavaksi hakemus siirtyy käsiteltäväksi. Voit seurata käsittelyn etenemistä Helsinki-lisän asiointipalvelussa.\n\nHakemukseen liittyvissä kysymyksissä voit lähettää viestejä Helsinki-lisän asiointipalvelussa tai lähettää sähköpostia osoitteeseen helsinkilisa@hel.fi."
     },
+    "applicationReSubmitted": {
+      "label": "Helsinki-lisä -hakemuksen muutos on lähetetty",
+      "message": "Olemme vastaanottaneet muutoksen Helsinki-lisä hakemukseesi, jonka hakemusnumero on {{applicationNumber}}."
+    },
     "applicationSaved": {
       "label": "Hakemus tallennettu",
       "message": "Helsinki-lisä hakemus {{applicationNumber}} {{applicantName}} on tallennettu."
