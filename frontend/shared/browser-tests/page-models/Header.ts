@@ -47,10 +47,11 @@ class Header<
     });
   }
 
-  private userInfoDropdown(user?: User): SelectorPromise {
-    return this.withinNavigationActions.findByRole('button', {
-      name: this.regexp(this.getUserInfo(user)),
-    });
+  private userInfoDropdown(): Selector {
+    return Selector('button').withAttribute(
+      'aria-controls',
+      'sign-out-dropdown'
+    );
   }
 
   private logoutButton(): SelectorPromise {
@@ -60,7 +61,7 @@ class Header<
   }
 
   public userIsLoggedIn(user?: User): Promise<void> {
-    return this.expect(this.userInfoDropdown(user));
+    return this.expect(this.userInfoDropdown());
   }
 
   public userIsLoggedOut(): Promise<void> {
@@ -76,7 +77,7 @@ class Header<
   }
 
   public async clickLogoutButton(user?: User): Promise<void> {
-    return t.click(this.userInfoDropdown(user)).click(this.logoutButton());
+    return t.click(this.userInfoDropdown()).click(this.logoutButton());
   }
 }
 
