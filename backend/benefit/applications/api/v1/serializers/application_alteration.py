@@ -1,4 +1,5 @@
 from datetime import date
+from decimal import Decimal, ROUND_DOWN
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -94,6 +95,12 @@ class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):
         read_only=True,
         help_text="The handler responsible for the cancellation of this alteration, if any",
     )
+
+    def validate_recovery_amount(self, value):
+        if value is not None:
+            # Round down the recovery_amount to the nearest integer while keeping it as Decimal
+            return value.quantize(Decimal("1"), rounding=ROUND_DOWN)
+        return value
 
     def get_application_company_name(self, obj):
         return obj.application.company.name

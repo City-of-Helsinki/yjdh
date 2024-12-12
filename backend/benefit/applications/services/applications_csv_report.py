@@ -5,7 +5,7 @@ from typing import List
 
 from django.conf import settings
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
-from django.utils import timezone, translation
+from django.utils import translation
 
 from applications.enums import ApplicationBatchStatus, ApplicationOrigin, BenefitType
 from applications.models import Application
@@ -115,7 +115,6 @@ class ApplicationsCsvService(CsvExportBase):
         """Return the actual payable amount of the currently accepted and due instalment"""
         try:
             instalment = application.calculation.instalments.get(
-                due_date__lte=timezone.now().date(),
                 instalment_number=number,
             )
             return instalment
@@ -375,7 +374,8 @@ class ApplicationsCsvService(CsvExportBase):
             )
             columns.append(
                 csv_default_column(
-                    "Maksettu maksuerä 2", self.get_instalment_2_amount_after_recoveries
+                    "Maksettava maksuerä 2",
+                    self.get_instalment_2_amount_after_recoveries,
                 ),
             )
             columns.append(

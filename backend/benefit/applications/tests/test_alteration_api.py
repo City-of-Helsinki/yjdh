@@ -439,7 +439,7 @@ def test_application_alteration_create_ignored_fields_handler(
             "use_invoice": False,
             "recovery_start_date": application.start_date + relativedelta(days=7),
             "recovery_end_date": application.end_date,
-            "recovery_amount": 4000,
+            "recovery_amount": 4000.97,
             "contact_person_name": "Ella Esimerkki",
         },
     )
@@ -504,7 +504,7 @@ def test_application_alteration_patch_handler(handler_api_client, application):
         ),
         {
             "end_date": application.start_date + relativedelta(days=12),
-            "recovery_amount": 4000,
+            "recovery_amount": 4000.45,
         },
     )
     assert response.status_code == 200
