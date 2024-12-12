@@ -5,7 +5,7 @@ FROM registry.access.redhat.com/ubi9/nodejs-18-minimal AS distbase
 USER root
 
 # Install ca-certificates so that Sentry can upload source maps
-RUN microdnf update -y && microdnf install -y ca-certificates && microdnf clean all
+RUN microdnf update -y && microdnf install -y ca-certificates gzip && microdnf clean all
 
 # Install yarn
 RUN curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo
@@ -48,6 +48,9 @@ RUN mkdir -p $PROJECT/$FOLDER/.next \
 # =============================
 FROM appbase AS development
 # =============================
+
+# Create the directory with correct permissions for VSCode server
+RUN mkdir -p /opt/app-root/src/.vscode-server && chown -R default:default /opt/app-root/src
 
 # Copy all files
 COPY --chown=default:default . .
