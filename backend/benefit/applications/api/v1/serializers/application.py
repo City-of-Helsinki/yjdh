@@ -77,7 +77,6 @@ from common.utils import (
 )
 from companies.api.v1.serializers import CompanySearchSerializer, CompanySerializer
 from companies.models import Company
-from messages.automatic_messages import send_application_reopened_message
 from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation
 from terms.api.v1.serializers import (
@@ -1197,18 +1196,6 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             to_status=instance.status,
             comment=log_entry_comment or "",
         )
-        if instance.status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
-            # Create an automatic message for the applicant
-            # self.instance.additional_information_requested_at is not updated at this point as
-            # it's a queryset annotation, so need to refresh
-            self.instance.additional_information_requested_at = Application.objects.get(
-                pk=instance.pk
-            ).additional_information_requested_at
-            send_application_reopened_message(
-                get_request_user_from_context(self),
-                instance,
-                self.get_additional_information_needed_by(instance),
-            )
 
         # Assign current user as handler
         if (
