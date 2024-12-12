@@ -1,6 +1,7 @@
 import logging
 import re
 from datetime import date
+from decimal import Decimal, ROUND_DOWN
 from typing import List
 
 from dateutil.relativedelta import relativedelta
@@ -500,7 +501,11 @@ class HandlerApplicationAlterationViewSet(BaseApplicationAlterationViewSet):
         )
 
         alteration.recovery_justification = request.data.get("recovery_justification")
-        alteration.recovery_amount = request.data.get("recovery_amount")
+        recovery_amount = Decimal(request.data.get("recovery_amount"))
+        alteration.recovery_amount = recovery_amount.quantize(
+            Decimal("1"), rounding=ROUND_DOWN
+        )
+
         alteration.recovery_end_date = request.data.get("recovery_end_date")
         alteration.recovery_start_date = request.data.get("recovery_start_date")
 
