@@ -153,7 +153,7 @@ const PageContent: React.FC = () => {
   if (isSubmittedApplication) {
     return (
       <>
-      application.status === && APPLICATION_STATUSES.INFO_REQUIRED ? (
+      {application.status === && APPLICATION_STATUSES.INFO_REQUIRED ? (
         <NotificationView
           applicationId={application.id}
           title={t('common:notifications.applicationReSubmitted.label')}
@@ -178,6 +178,7 @@ const PageContent: React.FC = () => {
           })}
         />
         )
+      }
 
         {router.locale === SUPPORTED_LANGUAGES.FI && (
           <Container>
