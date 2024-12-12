@@ -284,10 +284,10 @@ class SalaryBenefitCalculator2023(HelsinkiBenefitCalculator):
     """
 
     # The maximum amount of pay subsidy depends on the pay subsidy percent in the pay subsidy decision.
-    PAY_SUBSIDY_MAX_FOR_100_PERCENT = 2020
-    PAY_SUBSIDY_MAX_FOR_70_PERCENT = 1770
-    PAY_SUBSIDY_MAX_FOR_50_PERCENT = 1260
-    SALARY_BENEFIT_MAX = 800
+    PAY_SUBSIDY_MAX_FOR_100_PERCENT = settings.PAY_SUBSIDY_MAX_FOR_100_PERCENT
+    PAY_SUBSIDY_MAX_FOR_70_PERCENT = settings.PAY_SUBSIDY_MAX_FOR_70_PERCENT
+    PAY_SUBSIDY_MAX_FOR_50_PERCENT = settings.PAY_SUBSIDY_MAX_FOR_50_PERCENT
+    SALARY_BENEFIT_MAX = settings.SALARY_BENEFIT_MAX
     SALARY_BENEFIT_NEW_MAX = settings.SALARY_BENEFIT_NEW_MAX
 
     @property
