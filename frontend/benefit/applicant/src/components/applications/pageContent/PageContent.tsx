@@ -166,7 +166,7 @@ const PageContent: React.FC = () => {
           })}
         />
         ):
-        <NotificationView
+        (<NotificationView
           applicationId={application.id}
           title={t('common:notifications.applicationSubmitted.label')}
           message={t('common:notifications.applicationSubmitted.message', {
@@ -177,6 +177,7 @@ const PageContent: React.FC = () => {
             ),
           })}
         />
+        )
 
         {router.locale === SUPPORTED_LANGUAGES.FI && (
           <Container>
