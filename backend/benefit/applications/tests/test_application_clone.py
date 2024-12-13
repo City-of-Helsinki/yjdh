@@ -241,7 +241,7 @@ def _set_up_decided_application():
         co_operation_negotiations_description="Very co-operation. Much contract.",
         paper_application_date="2024-10-23",
         pay_subsidy_granted=PaySubsidyGranted.GRANTED,
-        application_origin=ApplicationOrigin.HANDLER,
+        application_origin=ApplicationOrigin.APPLICANT,
         application_step=ApplicationStep.STEP_6,
         batch=ApplicationBatchFactory(
             proposal_for_decision=ApplicationStatus.ACCEPTED,
