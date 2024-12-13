@@ -8,6 +8,7 @@ from applications.enums import (
     ApplicationStatus,
     ApplicationStep,
     AttachmentType,
+    ApplicationOrigin
 )
 from applications.models import (
     AhjoStatus,
@@ -42,7 +43,7 @@ def clone_application_based_on_other(
             "alternative_company_postcode": application_base.alternative_company_postcode,
             "alternative_company_street_address": application_base.alternative_company_street_address,
             "applicant_language": "fi",
-            "application_origin": application_base.application_origin,
+            "application_origin": ApplicationOrigin.applicant,
             "application_step": ApplicationStep.STEP_1,
             "archived": False,
             "association_has_business_activities": application_base.association_has_business_activities
