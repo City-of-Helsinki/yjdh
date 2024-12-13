@@ -1387,18 +1387,6 @@ def test_application_status_change_as_handler(
         if handled_by_ahjo_automation:
             assert response.data["handled_by_ahjo_automation"] is True
 
-        if to_status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
-            assert application.messages.count() == 1
-            assert (
-                "Please make the corrections and send application again by 11.06.2021"
-                in application.messages.first().content
-            )
-            assert len(mailoutbox) == 1
-            assert (
-                get_additional_information_email_notification_subject()
-                in mailoutbox[0].subject
-            )
-
         if to_status in [
             ApplicationStatus.CANCELLED,
             ApplicationStatus.REJECTED,
@@ -2434,6 +2422,30 @@ def test_applications_with_unread_messages(api_client, handler_api_client, appli
     )
 
     assert len(response.data) == 0
+
+
+def test_require_additional_information(handler_api_client, application, mailoutbox):
+    application.status = ApplicationStatus.HANDLING
+    application.save()
+    response = handler_api_client.patch(
+        reverse(
+            "v1:handler-application-require-additional-information",
+            kwargs={"pk": application.id},
+        ),
+        {"status": ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED},
+    )
+    assert response.status_code == 200
+    print(response.__dict__)
+
+    assert application.messages.count() == 1
+    assert (
+        "Please make the corrections and send application again by 11.06.2021"
+        in application.messages.first().content
+    )
+    assert len(mailoutbox) == 1
+    assert (
+        get_additional_information_email_notification_subject() in mailoutbox[0].subject
+    )
 
 
 def _create_random_applications():

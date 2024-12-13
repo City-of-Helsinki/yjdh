@@ -109,7 +109,7 @@ export const renderPaymentTagPerStatus = (
   </$TagWrapper>
 );
 
-const parseAhjoError = (ahjoError: AhjoError): JSX.Element[] => {
+const renderAhjoError = (ahjoError: AhjoError): JSX.Element[] => {
   if (Array.isArray(ahjoError.errorFromAhjo))
     return ahjoError.errorFromAhjo.map(({ message }) => <li>{message}</li>);
 
@@ -190,7 +190,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
                   Ahjo, {convertToUIDateAndTimeFormat(ahjoError?.modifiedAt)}
                 </strong>
               </div>
-              <ul>{parseAhjoError(ahjoError)}</ul>
+              <ul>{renderAhjoError(ahjoError)}</ul>
             </Tooltip>
           </$ActionErrors>
         )}

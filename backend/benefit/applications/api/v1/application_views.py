@@ -1,6 +1,6 @@
 import logging
 import re
-from datetime import date
+from datetime import date, timedelta
 from decimal import Decimal, ROUND_DOWN
 from typing import List
 
@@ -50,6 +50,7 @@ from applications.models import (
     Application,
     ApplicationAlteration,
     ApplicationBatch,
+    ApplicationLogEntry,
 )
 from applications.services.ahjo_integration import (
     ExportFileInfo,
@@ -71,6 +72,7 @@ from applications.services.generate_application_summary import (
     get_context_for_summary_context,
 )
 from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
+from messages.automatic_messages import send_application_reopened_message
 from messages.models import MessageType
 from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation
@@ -858,13 +860,47 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
     @transaction.atomic
     def require_additional_information(self, request, pk) -> HttpResponse:
         application = self.get_object()
-        application_status = request.data["status"]
-        if application_status in [
+        to_status = request.data["status"]
+        from_status = application.status
+        if to_status in [
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
             ApplicationStatus.HANDLING,
         ]:
-            application.status = application_status
+            ApplicationLogEntry.objects.create(
+                application=application,
+                from_status=from_status,
+                to_status=to_status,
+                comment="",
+            )
+
+            application.status = to_status
             application.save()
+
+            if to_status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
+                # Create an automatic message for the applicant
+                # self.instance.additional_information_requested_at is not updated at this point as
+                # it's a queryset annotation, so need to refresh
+                application.additional_information_requested_at = (
+                    Application.objects.get(
+                        pk=application.pk
+                    ).additional_information_requested_at
+                )
+
+                info_asked_timestamp = getattr(
+                    application, "additional_information_requested_at", None
+                )
+                if info_asked_timestamp:
+                    info_asked_timestamp = info_asked_timestamp.date() + timedelta(
+                        days=7
+                    )
+                else:
+                    info_asked_timestamp = None
+
+                send_application_reopened_message(
+                    request.user,
+                    application,
+                    info_asked_timestamp,
+                )
 
             return Response(
                 status=status.HTTP_200_OK,

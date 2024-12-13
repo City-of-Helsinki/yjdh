@@ -32,6 +32,7 @@ const useRequireAdditionalInformation = (): UseMutationResult<
     {
       onSuccess: () => {
         void queryClient.invalidateQueries('application');
+        void queryClient.invalidateQueries('messages');
         void queryClient.invalidateQueries('applications');
       },
       onError: (error: AxiosError<Error, Record<string, string[]>>) => {
