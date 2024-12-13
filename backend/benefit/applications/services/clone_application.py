@@ -5,10 +5,10 @@ from PIL import Image
 
 from applications.enums import (
     AhjoStatus as AhjoStatusEnum,
+    ApplicationOrigin,
     ApplicationStatus,
     ApplicationStep,
     AttachmentType,
-    ApplicationOrigin,
 )
 from applications.models import (
     AhjoStatus,
