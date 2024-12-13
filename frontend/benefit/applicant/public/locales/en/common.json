@@ -593,7 +593,11 @@
   "notifications": {
     "applicationSubmitted": {
       "label": "The Helsinki benefit application has been submitted",
-      "message": "We have received your Helsinki benefit application with application number {{applicationNumber}}.\n\nNext, the application will be sent for processing. The designated contact person for the application will receive an email notification when it has been processed. You can follow the progress of your application in the Helsinki benefit service.\n\nIf you have questions about your application, you can use the Helsinki benefit e-service to send messages or send an email to helsinkilisa@hel.fi."
+      "message": "We have received your Helsinki benefit application with application number {{applicationNumber}}.\n\nNext, the application will be sent for processing. You can follow the progress of your application in the Helsinki benefit service.\n\nIf you have questions about your application, you can use the Helsinki benefit e-service to send messages or send an email to helsinkilisa@hel.fi."
+    },
+    "applicationReSubmitted": {
+      "label": "The modification to the Helsinki benefit application has been submitted",
+      "message": "We have received the modification to your Helsinki benefit application, with the application number {{applicationNumber}}."
     },
     "applicationSaved": {
       "label": "Application saved",

@@ -153,7 +153,20 @@ const PageContent: React.FC = () => {
   if (isSubmittedApplication) {
     return (
       <>
+      {application.status === APPLICATION_STATUSES.INFO_REQUIRED ? (
         <NotificationView
+          applicationId={application.id}
+          title={t('common:notifications.applicationReSubmitted.label')}
+          message={t('common:notifications.applicationReSubmitted.message', {
+            applicationNumber: application?.applicationNumber,
+            applicantName: getFullName(
+              application?.employee?.firstName,
+              application?.employee?.lastName
+            ),
+          })}
+        />
+        ):
+        (<NotificationView
           applicationId={application.id}
           title={t('common:notifications.applicationSubmitted.label')}
           message={t('common:notifications.applicationSubmitted.message', {
@@ -164,6 +177,9 @@ const PageContent: React.FC = () => {
             ),
           })}
         />
+        )
+      }
+
         {router.locale === SUPPORTED_LANGUAGES.FI && (
           <Container>
             <$Hr />
