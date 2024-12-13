@@ -149,11 +149,11 @@ const PageContent: React.FC = () => {
       />
     );
   }
-
+// Different confirmation messages for sending update (HANDLING) and sending new application
   if (isSubmittedApplication) {
     return (
       <>
-      {application.status === APPLICATION_STATUSES.INFO_REQUIRED ? (
+      {application.status === APPLICATION_STATUSES.HANDLING ? (
         <NotificationView
           applicationId={application.id}
           title={t('common:notifications.applicationReSubmitted.label')}
