@@ -8,7 +8,7 @@ from applications.enums import (
     ApplicationStatus,
     ApplicationStep,
     AttachmentType,
-    ApplicationOrigin
+    ApplicationOrigin,
 )
 from applications.models import (
     AhjoStatus,
