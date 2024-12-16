@@ -753,6 +753,10 @@
           "noChanges": "Ei muutoksia lomaketietoihin. Mikäli poistit tai lisäsit liitetiedostoja, voit kirjata niiden syyn."
         },
         "helperText": "Kirjaa milloin ja mitä kautta hakija on ollut yhteydessä. Tiedot tulevat näkyviin hakemuksen muutoshistoriassa."
+      },
+      "talpaStatusChange": {
+        "heading": "Maksun tilan muutos",
+        "text": "Tuen automaattinen maksu on epäonnistunut. Palauta hakemus odottamaan automaattista Talpa-käsittelyä tai merkitse maksu suoritetuksi jolloin maksutapahtuma on vahvistettava manuaalisesti Talpalta."
       }
     },
     "decision": {

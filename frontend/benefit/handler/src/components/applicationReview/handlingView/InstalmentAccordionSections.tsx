@@ -1,4 +1,5 @@
 import { $Section } from 'benefit/handler/components/applicationReview/handlingView/DecisionCalculationAccordion.sc';
+import useInstalmentStatusTransition from 'benefit/handler/hooks/useInstalmentStatusTransition';
 import {
   ALTERATION_STATE,
   INSTALMENT_STATUSES,
@@ -14,6 +15,7 @@ import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 
 import { renderPaymentTagPerStatus } from '../../applicationList/ApplicationList';
 import { renderInstalmentTagPerStatus } from '../../applicationList/ApplicationListForInstalments';
+import TalpaStatusChangeModal from '../../applicationList/TalpaStatusChangeDialog';
 import {
   $Column,
   $Wrapper,
@@ -28,7 +30,24 @@ type Props = {
 const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
   const translationsBase = 'common:calculators.result';
   const { t } = useTranslation();
+  const [showTalpaModal, setShowTaplaModal] = React.useState(false);
+  const {
+    mutate: changeInstalmentStatus,
+    isSuccess: isInstalmentStatusChanged,
+  } = useInstalmentStatusTransition();
 
+  React.useEffect(() => {
+    if (isInstalmentStatusChanged) {
+      setShowTaplaModal(false);
+    }
+  }, [isInstalmentStatusChanged]);
+
+  const handleTalpaStatusChange = (talpaStatus: INSTALMENT_STATUSES): void => {
+    changeInstalmentStatus({
+      id: data?.firstInstalment?.id,
+      status: talpaStatus,
+    });
+  };
   const secondInstalmentText = data.secondInstalment ? (
     <>
       {t(`${translationsBase}.secondInstalment`)}{' '}
@@ -39,6 +58,10 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
   const { amounts, areInstalmentsPaid, isSecondInstalmentReduced } =
     useInstalmentAccordionSections(data);
 
+  const onTalpaTagClick = (): void => {
+    setShowTaplaModal(true);
+  };
+
   return (
     <>
       <$Section>
@@ -46,7 +69,12 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
           <$ViewField>{t(`${translationsBase}.firstInstalment`)}</$ViewField>
 
           <$RowWrap>
-            {renderPaymentTagPerStatus(t, data.talpaStatus)}
+            {renderPaymentTagPerStatus(
+              t,
+              data.talpaStatus,
+              data?.firstInstalment?.id,
+              onTalpaTagClick
+            )}
             <div>{formatFloatToEvenEuros(amounts.firstInstalment)}</div>
           </$RowWrap>
         </$CalculatorTableRow>
@@ -179,6 +207,12 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
           {formatFloatToEvenEuros(amounts.totalAfterRecoveries)}
         </$CalculatorTableRow>
       </$Section>
+
+      <TalpaStatusChangeModal
+        isOpen={showTalpaModal}
+        onClose={() => setShowTaplaModal(false)}
+        onStatusChange={handleTalpaStatusChange}
+      />
     </>
   );
 };

@@ -32,6 +32,8 @@ const useInstalmentStatusTransition = (): UseMutationResult<
     {
       onSuccess: () => {
         void queryClient.invalidateQueries('applicationsList');
+        void queryClient.invalidateQueries('application');
+        void queryClient.invalidateQueries('applications');
       },
       onError: (error: AxiosError<Error, Record<string, string[]>>) => {
         showErrorToast(

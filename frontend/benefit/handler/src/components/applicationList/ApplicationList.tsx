@@ -1,5 +1,5 @@
 import { ALL_APPLICATION_STATUSES, ROUTES } from 'benefit/handler/constants';
-import useTalpaStatusTransition from 'benefit/handler/hooks/useTalpaStatusTransition';
+import useInstalmentStatusTransition from 'benefit/handler/hooks/useInstalmentStatusTransition';
 import {
   ApplicationListTableColumns,
   ApplicationListTableTransforms,
@@ -8,31 +8,21 @@ import {
   getTagStyleForStatus,
   getTalpaTagStyleForStatus,
 } from 'benefit/handler/utils/applications';
-import { APPLICATION_STATUSES, TALPA_STATUSES } from 'benefit-shared/constants';
+import {
+  APPLICATION_STATUSES,
+  INSTALMENT_STATUSES,
+  TALPA_STATUSES,
+} from 'benefit-shared/constants';
 import {
   AhjoError,
   ApplicationAlteration,
   ApplicationListItemData,
   Instalment,
 } from 'benefit-shared/types/application';
-import {
-  Button,
-  IconArrowRedo,
-  IconArrowUndo,
-  IconSpeechbubbleText,
-  Table,
-  Tag,
-  Tooltip,
-} from 'hds-react';
+import { IconSpeechbubbleText, Table, Tag, Tooltip } from 'hds-react';
 import { TFunction } from 'next-i18next';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
-import Container from 'shared/components/container/Container';
-import {
-  $Grid,
-  $GridCell,
-} from 'shared/components/forms/section/FormSection.sc';
-import Modal from 'shared/components/modal/Modal';
 import { $Link } from 'shared/components/table/Table.sc';
 import {
   convertToUIDateAndTimeFormat,
@@ -52,6 +42,7 @@ import {
   $TagWrapper,
   $UnreadMessagesCount,
 } from './ApplicationList.sc';
+import TalpaStatusChangeModal from './TalpaStatusChangeDialog';
 import { useApplicationList } from './useApplicationList';
 
 export interface ApplicationListProps {
@@ -120,7 +111,13 @@ export const renderPaymentTagPerStatus = (
   clickTalpaTag?: (id: string, talpaStatus: TALPA_STATUSES) => void
 ): JSX.Element => (
   <$TagWrapper $colors={getTalpaTagStyleForStatus(talpaStatus)}>
-    <Tag onClick={() => clickTalpaTag(id, talpaStatus)}>
+    <Tag
+      onClick={
+        talpaStatus === TALPA_STATUSES.REJECTED_BY_TALPA && id
+          ? () => clickTalpaTag(id, talpaStatus)
+          : null
+      }
+    >
       {t(`applications.list.columns.talpaStatuses.${String(talpaStatus)}`)}
     </Tag>
   </$TagWrapper>
@@ -170,7 +167,16 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   const [showTalpaModal, setShowTaplaModal] = React.useState(false);
   const [selectedApplication, setSelectedApplication] = React.useState('');
 
-  const { mutate: changeTalpaStatus } = useTalpaStatusTransition();
+  const {
+    mutate: changeInstalmentStatus,
+    isSuccess: isInstalmentStatusChanged,
+  } = useInstalmentStatusTransition();
+
+  React.useEffect(() => {
+    if (isInstalmentStatusChanged) {
+      setShowTaplaModal(false);
+    }
+  }, [isInstalmentStatusChanged]);
 
   const renderTableActions = React.useCallback(
     (
@@ -401,11 +407,14 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
           headerName: getHeader('paymentStatus'),
           key: 'paymentStatus',
           isSortable: true,
-          transform: ({ talpaStatus, id }: ApplicationListTableTransforms) =>
+          transform: ({
+            talpaStatus,
+            firstInstalment,
+          }: ApplicationListTableTransforms) =>
             renderPaymentTagPerStatus(
               t,
               talpaStatus as TALPA_STATUSES,
-              id,
+              firstInstalment?.id,
               onTalpaTagClick
             ),
         },
@@ -460,9 +469,8 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   }
 
   const statusAsString = isAllStatuses ? 'all' : status.join(',');
-  const handleTalpaStatusChange = (talpaStatus: TALPA_STATUSES): void => {
-    changeTalpaStatus({ id: selectedApplication, status: talpaStatus });
-    console.log('status:', talpaStatus, selectedApplication);
+  const handleTalpaStatusChange = (talpaStatus: INSTALMENT_STATUSES): void => {
+    changeInstalmentStatus({ id: selectedApplication, status: talpaStatus });
   };
 
   return (
@@ -482,44 +490,10 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         </$EmptyHeading>
       )}
 
-      <Modal
-        id="1234"
-        variant="primary"
+      <TalpaStatusChangeModal
         isOpen={showTalpaModal}
-        submitButtonLabel="ues"
-        cancelButtonLabel="cancel"
-        handleToggle={() => false}
-        handleSubmit={() => false}
-        customContent={
-          <Container>
-            <$Grid columns={2}>
-              <$GridCell>
-                <Button
-                  theme="coat"
-                  iconLeft={<IconArrowUndo />}
-                  onClick={() =>
-                    handleTalpaStatusChange(TALPA_STATUSES.NOT_SENT_TO_TALPA)
-                  }
-                >
-                  Palauta odottamaan
-                </Button>
-              </$GridCell>
-              <$GridCell>
-                <Button
-                  theme="coat"
-                  iconLeft={<IconArrowRedo />}
-                  onClick={() =>
-                    handleTalpaStatusChange(
-                      TALPA_STATUSES.PARTIALLY_SENT_TO_TALPA
-                    )
-                  }
-                >
-                  Merkitse maksetuksi
-                </Button>
-              </$GridCell>
-            </$Grid>
-          </Container>
-        }
+        onClose={() => setShowTaplaModal(false)}
+        onStatusChange={handleTalpaStatusChange}
       />
     </$ApplicationList>
   );

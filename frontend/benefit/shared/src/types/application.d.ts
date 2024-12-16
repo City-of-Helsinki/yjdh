@@ -324,6 +324,7 @@ export type Application = {
   ahjoStatus?: string;
   handledByAhjoAutomation?: boolean;
   batchStatus?: BATCH_STATUSES;
+  firstInstalment?: Instalment;
   secondInstalment?: Instalment;
   talpaStatus?: TALPA_STATUSES;
 } & Step1 &
@@ -518,6 +519,7 @@ export type ApplicationData = {
   handled_by_ahjo_automation?: boolean;
   alterations: ApplicationAlterationData[];
   ahjo_error?: AhjoErrorData;
+  first_instalment?: InstalmentData;
   second_instalment?: InstalmentData;
 };
 
@@ -619,6 +621,7 @@ export type ApplicationListItemData = {
   ahjoError?: AhjoError;
   decisionDate?: string;
   calculatedBenefitAmount?: string;
+  firstInstalment?: Instalment;
   secondInstalment?: Instalment;
 };
 
