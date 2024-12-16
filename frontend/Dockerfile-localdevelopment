@@ -79,6 +79,8 @@ WORKDIR /app
 COPY --chown=default:default . .
 
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV TURBOPACK 1
+
 # Bake package.json start command into the image
 ENV DEV_START "yarn --cwd $PROJECT/$FOLDER dev"
 CMD ["sh", "-c", "${DEV_START}"]
