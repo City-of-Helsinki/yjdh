@@ -90,11 +90,13 @@ from users.api.v1.serializers import UserSerializer
 from users.utils import get_company_from_request, get_request_user_from_context
 
 
-def _get_second_instalment(application):
+def _get_instalment(application, instalment_number):
     """Get the second instalment for the application"""
     try:
         instalment = (
-            application.calculation.instalments.filter(instalment_number=2).first()
+            application.calculation.instalments.filter(
+                instalment_number=instalment_number
+            ).first()
             or None
         )
         if instalment is not None:
@@ -1638,10 +1640,14 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
 
     ahjo_error = serializers.SerializerMethodField()
 
+    first_instalment = serializers.SerializerMethodField("get_first_instalment")
     second_instalment = serializers.SerializerMethodField("get_second_instalment")
 
+    def get_first_instalment(self, application):
+        return _get_instalment(application, 1)
+
     def get_second_instalment(self, application):
-        return _get_second_instalment(application)
+        return _get_instalment(application, 2)
 
     def get_latest_ahjo_error(self, obj) -> Union[Dict, None]:
         """Get the latest Ahjo error for the application"""
@@ -1703,12 +1709,14 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             "handler",
             "handled_by_ahjo_automation",
             "ahjo_error",
+            "first_instalment",
             "second_instalment",
         ]
         read_only_fields = BaseApplicationSerializer.Meta.read_only_fields + [
             "latest_decision_comment",
             "handled_at",
             "handler",
+            "first_instalment",
             "second_instalment",
         ]
 
@@ -1912,6 +1920,7 @@ class HandlerApplicationListSerializer(serializers.Serializer):
             "batch",
             "ahjo_error",
             "talpa_status",
+            "first_instalment",
             "second_instalment",
         ]
 
@@ -1937,6 +1946,7 @@ class HandlerApplicationListSerializer(serializers.Serializer):
             "batch",
             "ahjo_error",
             "talpa_status",
+            "first_instalment",
             "second_instalment",
         ]
 
@@ -1958,10 +1968,14 @@ class HandlerApplicationListSerializer(serializers.Serializer):
             "Timestamp when the application was handled (accepted/rejected/cancelled)"
         ),
     )
+    first_instalment = serializers.SerializerMethodField("get_first_instalment")
     second_instalment = serializers.SerializerMethodField("get_second_instalment")
 
+    def get_first_instalment(self, application):
+        return _get_instalment(application, 1)
+
     def get_second_instalment(self, application):
-        return _get_second_instalment(application)
+        return _get_instalment(application, 2)
 
     ahjo_error = serializers.SerializerMethodField("get_latest_ahjo_error")
 
