@@ -5,6 +5,7 @@ from rest_framework import filters as drf_filters, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from applications.enums import ApplicationTalpaStatus
 from calculator.api.v1.serializers import (
     InstalmentSerializer,
     PreviousBenefitSerializer,
@@ -53,9 +54,43 @@ class InstalmentView(APIView):
         )
         if serializer.is_valid():
             serializer.save()
-            if instalment_status == InstalmentStatus.CANCELLED:
-                application = instalment.calculation.application
-                application.archived = True
-                application.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            application = instalment.calculation.application
+            instalment_count = instalment.calculation.instalments.count()
+
+            if instalment.instalment_number == 1:
+                if instalment_status == InstalmentStatus.WAITING:
+                    application.talpa_status = (
+                        ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA
+                    )
+                    application.save()
+
+                if instalment_status == InstalmentStatus.PAID:
+                    if instalment.instalment_number == 1:
+                        application.talpa_status = (
+                            ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
+                        )
+                    else:
+                        application.talpa_status = (
+                            ApplicationTalpaStatus.PARTIALLY_SENT_TO_TALPA
+                        )
+                    instalment.amount_paid = instalment.amount_after_recoveries
+
+                    if instalment_count == 1:
+                        application.archived = True
+
+                    instalment.save()
+                    application.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            if instalment.instalment_number == 2:
+                first_instalment = instalment.calculation.instalments.get(
+                    instalment_number=1
+                )
+                if (
+                    instalment_status == InstalmentStatus.CANCELLED
+                    and first_instalment.amount_paid is not None
+                ):
+                    application.archived = True
+                    application.save()
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
