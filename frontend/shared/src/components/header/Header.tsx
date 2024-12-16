@@ -1,16 +1,24 @@
-import { IconGlobe, IconSignout, LogoLanguage, Navigation } from 'hds-react';
+import {
+  Header as HdsHeader,
+  IconSignin,
+  IconSignout,
+  IconUser,
+  Logo,
+  logoFi,
+  logoFiDark,
+  logoSv,
+  logoSvDark,
+} from 'hds-react';
 import React from 'react';
 import { MAIN_CONTENT_ID } from 'shared/constants';
 import useGoToPage from 'shared/hooks/useGoToPage';
-import {
-  NavigationItem,
-  NavigationVariant,
-  OptionType,
-  ThemeOption,
-} from 'shared/types/common';
+import theme from 'shared/styles/theme';
+import { NavigationItem, OptionType, ThemeOption } from 'shared/types/common';
 import { isTabActive } from 'shared/utils/menu.utils';
 
 import { useHeader } from './useHeader';
+
+const mainTheme = theme;
 
 export type HeaderProps = {
   title?: string;
@@ -20,12 +28,8 @@ export type HeaderProps = {
   languages?: OptionType<string>[];
   isNavigationVisible?: boolean;
   navigationItems?: NavigationItem[];
-  customItems?: React.ReactNode[];
-  navigationVariant?: NavigationVariant;
-  onLanguageChange?: (
-    e: React.SyntheticEvent<unknown>,
-    language: OptionType<string>
-  ) => void;
+  customItems?: React.ReactNode;
+  onLanguageChange?: (language: string) => void;
   login?: {
     isAuthenticated: boolean;
     loginLabel: string;
@@ -37,41 +41,53 @@ export type HeaderProps = {
   };
   theme?: ThemeOption;
   hideLogin?: boolean;
-  onTitleClick?: () => void;
   className?: string;
   customActiveItemFn?: (url: string) => boolean;
 };
 
 const Header: React.FC<HeaderProps> = ({
-  skipToContentLabel,
-  title,
-  titleUrl,
-  menuToggleAriaLabel,
-  languages,
-  isNavigationVisible = true,
-  navigationItems,
-  navigationVariant,
-  customItems,
-  onLanguageChange,
-  login,
-  hideLogin,
-  theme,
-  onTitleClick,
   className,
   customActiveItemFn,
+  customItems,
+  hideLogin,
+  isNavigationVisible = true,
+  languages,
+  login,
+  menuToggleAriaLabel,
+  navigationItems,
+  onLanguageChange,
+  skipToContentLabel,
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  theme,
+  title,
+  titleUrl,
 }) => {
-  const {
-    locale,
-    logoLang,
-    menuOpen,
-    toggleMenu,
-    closeMenu,
-    handleLogin,
-    handleLogout,
-    t,
-  } = useHeader(login);
+  const { closeMenu, handleLogin, handleLogout, logoLang, t, toggleMenu } =
+    useHeader(login);
 
   const goToPage = useGoToPage();
+
+  const languageOptions = React.useMemo(
+    () =>
+      languages?.map(({ label, value }) => ({
+        label,
+        value,
+        isPrimary: true,
+      })) || [],
+    [languages]
+  );
+
+  const logoSrcFromLanguageAndTheme = (): string => {
+    if (theme === 'dark') {
+      if (logoLang === 'fi') return logoFiDark;
+      if (logoLang === 'sv') return logoSvDark;
+      if (logoLang === 'en') return logoFiDark;
+    }
+    if (logoLang === 'fi') return logoFi;
+    if (logoLang === 'sv') return logoSv;
+    if (logoLang === 'en') return logoFi;
+    return logoFi;
+  };
 
   const handleClickLink = React.useCallback(
     (url = '/') =>
@@ -85,24 +101,79 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <div data-testid="header" className={className}>
-      <Navigation
+      <HdsHeader
         theme={theme}
-        menuOpen={menuOpen}
-        onMenuToggle={toggleMenu}
-        menuToggleAriaLabel={menuToggleAriaLabel || ''}
-        skipTo={`#${MAIN_CONTENT_ID}`}
-        skipToContentLabel={skipToContentLabel}
-        logoLanguage={logoLang as LogoLanguage}
+        style={
+          {
+            '--header-max-width': mainTheme.headerWidth.max,
+          } as React.CSSProperties
+        }
         title={title}
-        titleUrl={titleUrl}
-        titleAriaLabel={title}
-        onTitleClick={onTitleClick}
+        onDidChangeLanguage={onLanguageChange}
+        languages={languageOptions}
       >
+        <HdsHeader.SkipLink
+          skipTo={`#${MAIN_CONTENT_ID}`}
+          label={skipToContentLabel}
+        />
+        <HdsHeader.ActionBar
+          frontPageLabel={title}
+          title={title}
+          titleAriaLabel={title}
+          titleHref={titleUrl}
+          logo={
+            <Logo
+              alt="Helsinki"
+              size="large"
+              src={logoSrcFromLanguageAndTheme()}
+            />
+          }
+          logoHref={titleUrl}
+          menuButtonLabel={menuToggleAriaLabel || ''}
+          onMenuClick={toggleMenu}
+        >
+          {customItems}
+          {login && !login?.isAuthenticated && !hideLogin && (
+            <HdsHeader.ActionBarButton
+              id="sign-in"
+              label={login.loginLabel}
+              onClick={() => handleLogin()}
+              icon={<IconSignin />}
+              fixedRightPosition
+            />
+          )}
+
+          <div className="flex items-center space-x-4"></div>
+
+          {login && login?.isAuthenticated && !hideLogin && (
+            <HdsHeader.ActionBarItem
+              id="sign-out"
+              icon={<IconUser />}
+              aria-label={`${login.userAriaLabelPrefix} ${login.userName}`}
+              label={login.userName}
+              onClick={() => handleLogout}
+              fixedRightPosition
+            >
+              <HdsHeader.ActionBarSubItem
+                label={login.logoutLabel}
+                onClick={handleLogout}
+                iconRight={<IconSignout />}
+              />
+            </HdsHeader.ActionBarItem>
+          )}
+
+          {languages && onLanguageChange && (
+            <HdsHeader.LanguageSelector
+              ariaLabel={t('common:header.languageMenuButtonAriaLabel')}
+            />
+          )}
+        </HdsHeader.ActionBar>
         {isNavigationVisible && navigationItems && (
-          <Navigation.Row variant={navigationVariant || 'default'}>
+          <HdsHeader.NavigationMenu>
             {navigationItems?.map((item) => (
-              <Navigation.Item
+              <HdsHeader.Link
                 key={item.url}
+                label={item.label as string}
                 active={
                   customActiveItemFn
                     ? customActiveItemFn(item.url)
@@ -110,64 +181,11 @@ const Header: React.FC<HeaderProps> = ({
                 }
                 href={item.url}
                 onClick={() => handleClickLink(item.url)}
-                icon={item.icon}
-              >
-                {item.label}
-              </Navigation.Item>
-            ))}
-          </Navigation.Row>
-        )}
-
-        <Navigation.Actions>
-          {customItems?.map((item, index) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <Navigation.Item key={`custom-nav-item-${index}`}>
-              {item}
-            </Navigation.Item>
-          ))}
-          {login && !hideLogin && (
-            <Navigation.User
-              authenticated={login.isAuthenticated}
-              buttonAriaLabel={
-                login.userName
-                  ? `${login.userAriaLabelPrefix} ${login.userName}`
-                  : ''
-              }
-              label={login.loginLabel}
-              onSignIn={handleLogin}
-              userName={login.userName}
-            >
-              <Navigation.Item
-                href="#"
-                onClick={handleLogout}
-                variant="supplementary"
-                label={login.logoutLabel}
-                icon={<IconSignout aria-hidden />}
               />
-            </Navigation.User>
-          )}
-          {languages && onLanguageChange && (
-            <Navigation.LanguageSelector
-              buttonAriaLabel={t('common:header.languageMenuButtonAriaLabel')}
-              label={locale?.toUpperCase()}
-              icon={<IconGlobe />}
-              closeOnItemClick
-            >
-              {languages.map((option) => (
-                <Navigation.Item
-                  key={option.value}
-                  href="#"
-                  lang={option.value}
-                  label={option.label}
-                  onClick={(e: React.SyntheticEvent<unknown>) =>
-                    onLanguageChange(e, option)
-                  }
-                />
-              ))}
-            </Navigation.LanguageSelector>
-          )}
-        </Navigation.Actions>
-      </Navigation>
+            ))}
+          </HdsHeader.NavigationMenu>
+        )}
+      </HdsHeader>
     </div>
   );
 };

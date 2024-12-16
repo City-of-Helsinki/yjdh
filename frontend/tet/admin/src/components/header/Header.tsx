@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import BaseHeader from 'shared/components/header/Header';
-import useGoToFrontPage from 'shared/hooks/useGoToFrontPage';
 import { SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 import { OptionType } from 'shared/types/common';
 import useLogin from 'tet/admin/hooks/backend/useLogin';
@@ -13,7 +12,6 @@ const Header: React.FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const { asPath } = router;
-  const goToFrontPage = useGoToFrontPage();
 
   const languageOptions = React.useMemo(
     (): OptionType<string>[] =>
@@ -25,8 +23,7 @@ const Header: React.FC = () => {
   );
 
   const handleLanguageChange = React.useCallback(
-    (e: React.SyntheticEvent<unknown>, { value: lang }: OptionType<string>): void => {
-      e.preventDefault();
+    (lang: string): void => {
       void router.push(asPath, asPath, {
         locale: lang,
       });
@@ -49,7 +46,6 @@ const Header: React.FC = () => {
       menuToggleAriaLabel={t('common:header.menuToggleAriaLabel')}
       languages={languageOptions}
       onLanguageChange={handleLanguageChange}
-      onTitleClick={goToFrontPage}
       login={
         !userQuery.isLoading
           ? {

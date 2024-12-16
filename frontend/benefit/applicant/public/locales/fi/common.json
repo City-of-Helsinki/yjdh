@@ -588,7 +588,8 @@
     "aboutTheService": "Tietoa palvelusta",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/tietoa-hel-fista/saavutettavuus/saavutettavuusselosteet",
     "aboutTheServiceLink": "https://www.hel.fi/fi/yritykset-ja-tyo/tyonantajat/taloudelliset-tuet/tyonantajan-helsinki-lisa",
-    "cookieSettings": "Evästeasetukset"
+    "cookieSettings": "Evästeasetukset",
+    "backToTop": "Takaisin ylös"
   },
   "notifications": {
     "applicationSubmitted": {

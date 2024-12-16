@@ -13,6 +13,9 @@ import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 
 const fakeObjectFactory = new FakeObjectFactory();
 
+// Languages need to start with something else than 'fi' to avoid the default language
+const REVERSED_LANGUAGES = [...SUPPORTED_LANGUAGES].reverse();
+
 describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => {
   it('Redirects to backend when clicked login button', async () => {
     expectUnauthorizedReply();
@@ -51,8 +54,8 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
     const spyRouterPush = jest.fn();
     renderComponent(<Header />, { push: spyRouterPush });
     await headerApi.expectations.userIsLoggedOut();
-    for (const lang of SUPPORTED_LANGUAGES) {
-      await headerApi.actions.changeLanguage('fi', lang);
+    for (const lang of REVERSED_LANGUAGES) {
+      await headerApi.actions.changeLanguage(lang);
       await waitFor(() =>
         expect(spyRouterPush).toHaveBeenCalledWith(undefined, undefined, {
           locale: String(lang),

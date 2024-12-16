@@ -28,12 +28,12 @@ test('user can authenticate and log out', async (t) => {
   //await doEmployerLogin(t, 'fi');
   const header = new Header(translationsApi);
   await header.userIsLoggedOut();
-  const loginLink = Selector('button').withAttribute('data-testid', 'oidcLoginButton');
-  await t.click(loginLink);
-  const suomiFiData = await doLogin(t, 'fi');
-  await header.userIsLoggedIn(suomiFiData.user);
-  await header.clickLogoutButton();
-  t.expect(loginLink.exists);
+  const loginButton = Selector('button').withAttribute('data-testid', 'oidcLoginButton');
+  await t.click(loginButton);
+  const logoutButton = Selector('button').withAttribute('aria-controls', 'sign-out-dropdown');
+  t.expect(logoutButton.exists);
+  await t.click(logoutButton);
+  t.expect(loginButton.exists);
 });
 
 test('user can change languages', async (t) => {

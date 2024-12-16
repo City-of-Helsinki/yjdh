@@ -41,7 +41,7 @@ const LocationMap = dynamic(
 const keywordList = (list: OptionType[], color: string): JSX.Element => (
   <>
     {list.map((keyword: OptionType) => (
-      <li>
+      <li key={keyword.name}>
         <Tag
           theme={{
             '--tag-background': `${color}`,

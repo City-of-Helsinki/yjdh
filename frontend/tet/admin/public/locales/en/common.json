@@ -1,5 +1,6 @@
 {
   "appName": "TET Job Search",
+  "helsinkiLogo": "Helsinki logo",
   "header": {
     "loginLabel": "Sign in to the service",
     "logoutLabel": "Log out",
@@ -171,6 +172,7 @@
     "allRightsReservedText": "All rights reserved",
     "accessibilityStatement": "Accessibility statement",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/information/accessibility",
+    "backToTop": "Back to top",
     "privacyPolicy": "Privacy policy",
 		"privacyPolicyPDF": "Opens a pdf-file",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",

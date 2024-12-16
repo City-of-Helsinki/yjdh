@@ -9,7 +9,7 @@ import * as React from 'react';
 import { getFullName } from 'shared/utils/application.utils';
 import { DefaultTheme } from 'styled-components';
 
-import { $BaseHeader } from './Header.sc';
+import { $BaseHeader, $HeaderCustomItems } from './Header.sc';
 import HeaderNotifier from './HeaderNotifier';
 import { useHeader } from './useHeader';
 
@@ -34,15 +34,23 @@ const Header: React.FC = () => {
     }
   );
 
+  const customItems = (
+    <$HeaderCustomItems key="custom-items">
+      <li key="header-notifier">
+        <HeaderNotifier />
+      </li>
+      {process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT !== 'production' ? (
+        <li key="ahjo-mode-switch">
+          <TemporaryAhjoModeSwitch />
+        </li>
+      ) : null}
+    </$HeaderCustomItems>
+  );
+
   return (
     <$BaseHeader
       title={t('common:appName')}
-      customItems={[
-        process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT !== 'production' ? (
-          <TemporaryAhjoModeSwitch />
-        ) : null,
-        <HeaderNotifier />,
-      ]}
+      customItems={customItems}
       titleUrl={ROUTES.HOME}
       skipToContentLabel={t('common:header.linkSkipToContent')}
       menuToggleAriaLabel={t('common:header.menuToggleAriaLabel')}
