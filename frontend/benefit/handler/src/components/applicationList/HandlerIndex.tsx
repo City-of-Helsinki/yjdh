@@ -78,8 +78,7 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
 
   const getTabCountInstalments = (): number =>
     list.filter(
-      (app: ApplicationListItemData) =>
-        app.pendingInstalment && isInPayment(app)
+      (app: ApplicationListItemData) => app.secondInstalment && isInPayment(app)
     ).length;
 
   const getTabCountInPayment = (): number =>
@@ -199,7 +198,7 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
               </Tabs.Tab>
               <Tabs.Tab
                 onClick={() =>
-                  updateTabToUrl(APPLICATION_LIST_TABS.PENDING_INSTALMENTS)
+                  updateTabToUrl(APPLICATION_LIST_TABS.SECOND_INSTALMENTS)
                 }
               >
                 {getListHeadingByStatus('instalments', [
@@ -293,7 +292,7 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
               <ApplicationListForInstalments
                 isLoading={isLoading}
                 list={list.filter(
-                  (app) => app.pendingInstalment && isInPayment(app)
+                  (app) => app.secondInstalment && isInPayment(app)
                 )}
                 heading={t(`${translationBase}.instalments`)}
               />

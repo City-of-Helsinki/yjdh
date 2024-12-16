@@ -29,10 +29,10 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
   const translationsBase = 'common:calculators.result';
   const { t } = useTranslation();
 
-  const secondInstalmentText = data.pendingInstalment ? (
+  const secondInstalmentText = data.secondInstalment ? (
     <>
       {t(`${translationsBase}.secondInstalment`)}{' '}
-      {convertToUIDateFormat(data.pendingInstalment.dueDate)}
+      {convertToUIDateFormat(data.secondInstalment.dueDate)}
     </>
   ) : null;
 
@@ -52,7 +52,7 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
         </$CalculatorTableRow>
       </$Section>
 
-      {data.pendingInstalment && (
+      {data.secondInstalment && (
         <$Section>
           <$CalculatorTableRow>
             <$ViewField>
@@ -62,7 +62,7 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
                 INSTALMENT_STATUSES.CANCELLED,
                 INSTALMENT_STATUSES.ACCEPTED,
               ].includes(
-                data.pendingInstalment?.status as INSTALMENT_STATUSES
+                data.secondInstalment?.status as INSTALMENT_STATUSES
               ) ? (
                 <Link href="/?tab=6">{secondInstalmentText}</Link>
               ) : (
@@ -72,7 +72,7 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
             <$RowWrap>
               {renderInstalmentTagPerStatus(
                 t,
-                data.pendingInstalment?.status as INSTALMENT_STATUSES
+                data.secondInstalment?.status as INSTALMENT_STATUSES
               )}
 
               {isSecondInstalmentReduced && (
@@ -142,8 +142,8 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
             <$Section>
               <$CalculatorTableRow>
                 <$ViewField isBold>
-                  {data.pendingInstalment?.status ===
-                    INSTALMENT_STATUSES.COMPLETED || !data.pendingInstalment
+                  {data.secondInstalment?.status ===
+                    INSTALMENT_STATUSES.COMPLETED || !data.secondInstalment
                     ? t(`${translationsBase}.totalPaidSum`)
                     : t(`${translationsBase}.totalPlannedSum`)}
                 </$ViewField>

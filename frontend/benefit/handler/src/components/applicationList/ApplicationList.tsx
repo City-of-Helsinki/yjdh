@@ -1,4 +1,5 @@
 import { ALL_APPLICATION_STATUSES, ROUTES } from 'benefit/handler/constants';
+import useTalpaStatusTransition from 'benefit/handler/hooks/useTalpaStatusTransition';
 import {
   ApplicationListTableColumns,
   ApplicationListTableTransforms,
@@ -14,10 +15,24 @@ import {
   ApplicationListItemData,
   Instalment,
 } from 'benefit-shared/types/application';
-import { IconSpeechbubbleText, Table, Tag, Tooltip } from 'hds-react';
+import {
+  Button,
+  IconArrowRedo,
+  IconArrowUndo,
+  IconSpeechbubbleText,
+  Table,
+  Tag,
+  Tooltip,
+} from 'hds-react';
 import { TFunction } from 'next-i18next';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
+import Container from 'shared/components/container/Container';
+import {
+  $Grid,
+  $GridCell,
+} from 'shared/components/forms/section/FormSection.sc';
+import Modal from 'shared/components/modal/Modal';
 import { $Link } from 'shared/components/table/Table.sc';
 import {
   convertToUIDateAndTimeFormat,
@@ -65,14 +80,14 @@ const buildApplicationUrl = (
 
 const getFirstInstalmentTotalAmount = (
   calculatedBenefitAmount: string,
-  pendingInstalment?: Instalment,
+  secondInstalment?: Instalment,
   alterations?: ApplicationAlteration[]
 ): string | JSX.Element => {
   let firstInstalment = parseInt(calculatedBenefitAmount, 10);
   let recoveryAmount = 0;
-  if (pendingInstalment) {
+  if (secondInstalment) {
     firstInstalment -= parseInt(
-      String(pendingInstalment?.amountAfterRecoveries),
+      String(secondInstalment?.amountAfterRecoveries),
       10
     );
     recoveryAmount = alterations
@@ -83,7 +98,7 @@ const getFirstInstalmentTotalAmount = (
         )
       : 0;
   }
-  return pendingInstalment ? (
+  return secondInstalment ? (
     <>
       {formatFloatToEvenEuros(firstInstalment)} /{' '}
       {formatFloatToEvenEuros(
@@ -100,10 +115,12 @@ const dateForAdditionalInformationNeededBy = (
 
 export const renderPaymentTagPerStatus = (
   t: TFunction,
-  talpaStatus?: TALPA_STATUSES
+  talpaStatus?: TALPA_STATUSES,
+  id?: string,
+  clickTalpaTag?: (id: string, talpaStatus: TALPA_STATUSES) => void
 ): JSX.Element => (
   <$TagWrapper $colors={getTalpaTagStyleForStatus(talpaStatus)}>
-    <Tag>
+    <Tag onClick={() => clickTalpaTag(id, talpaStatus)}>
       {t(`applications.list.columns.talpaStatuses.${String(talpaStatus)}`)}
     </Tag>
   </$TagWrapper>
@@ -149,6 +166,11 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     }),
     [isAllStatuses, status]
   );
+
+  const [showTalpaModal, setShowTaplaModal] = React.useState(false);
+  const [selectedApplication, setSelectedApplication] = React.useState('');
+
+  const { mutate: changeTalpaStatus } = useTalpaStatusTransition();
 
   const renderTableActions = React.useCallback(
     (
@@ -218,10 +240,6 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     ),
     [t]
   );
-
-  const renderPaymentTagWrapper = React.useCallback(renderPaymentTagPerStatus, [
-    t,
-  ]);
 
   const columns = React.useMemo(() => {
     const cols: ApplicationListTableColumns[] = [
@@ -366,6 +384,10 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         isSortable: true,
       });
     }
+    const onTalpaTagClick = (id: string): void => {
+      setShowTaplaModal(true);
+      setSelectedApplication(id);
+    };
 
     if (inPayment) {
       cols.push(
@@ -379,19 +401,24 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
           headerName: getHeader('paymentStatus'),
           key: 'paymentStatus',
           isSortable: true,
-          transform: ({ talpaStatus }: ApplicationListTableTransforms) =>
-            renderPaymentTagWrapper(t, talpaStatus as TALPA_STATUSES),
+          transform: ({ talpaStatus, id }: ApplicationListTableTransforms) =>
+            renderPaymentTagPerStatus(
+              t,
+              talpaStatus as TALPA_STATUSES,
+              id,
+              onTalpaTagClick
+            ),
         },
         {
           headerName: getHeader('calculatedBenefitAmount'),
           key: 'calculatedBenefitAmount',
           transform: ({
             calculatedBenefitAmount,
-            pendingInstalment,
+            secondInstalment,
           }: ApplicationListTableTransforms) =>
             getFirstInstalmentTotalAmount(
               String(calculatedBenefitAmount),
-              pendingInstalment || null
+              secondInstalment || null
             ),
         }
       );
@@ -412,7 +439,6 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     renderTagWrapper,
     renderTableActions,
     t,
-    renderPaymentTagWrapper,
   ]);
 
   if (isLoading) {
@@ -434,6 +460,11 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   }
 
   const statusAsString = isAllStatuses ? 'all' : status.join(',');
+  const handleTalpaStatusChange = (talpaStatus: TALPA_STATUSES): void => {
+    changeTalpaStatus({ id: selectedApplication, status: talpaStatus });
+    console.log('status:', talpaStatus, selectedApplication);
+  };
+
   return (
     <$ApplicationList data-testid={`application-list-${statusAsString}`}>
       {list.length > 0 ? (
@@ -450,6 +481,46 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
           {t(`${translationsBase}.messages.empty.${statusAsString}`)}
         </$EmptyHeading>
       )}
+
+      <Modal
+        id="1234"
+        variant="primary"
+        isOpen={showTalpaModal}
+        submitButtonLabel="ues"
+        cancelButtonLabel="cancel"
+        handleToggle={() => false}
+        handleSubmit={() => false}
+        customContent={
+          <Container>
+            <$Grid columns={2}>
+              <$GridCell>
+                <Button
+                  theme="coat"
+                  iconLeft={<IconArrowUndo />}
+                  onClick={() =>
+                    handleTalpaStatusChange(TALPA_STATUSES.NOT_SENT_TO_TALPA)
+                  }
+                >
+                  Palauta odottamaan
+                </Button>
+              </$GridCell>
+              <$GridCell>
+                <Button
+                  theme="coat"
+                  iconLeft={<IconArrowRedo />}
+                  onClick={() =>
+                    handleTalpaStatusChange(
+                      TALPA_STATUSES.PARTIALLY_SENT_TO_TALPA
+                    )
+                  }
+                >
+                  Merkitse maksetuksi
+                </Button>
+              </$GridCell>
+            </$Grid>
+          </Container>
+        }
+      />
     </$ApplicationList>
   );
 };
