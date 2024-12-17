@@ -878,6 +878,13 @@ class Instalment(UUIDModel, TimeStampedModel):
     )
 
     @property
+    def is_final(self):
+        """
+        A helper property check if the instalment is the only one or the final one
+        """
+        return self.instalment_number == self.calculation.instalments.count()
+
+    @property
     def amount_after_recoveries(self):
         if self.amount_paid:
             return max(self.amount_paid, 0)
