@@ -112,6 +112,7 @@ export const getTalpaTagStyleForStatus = (
       break;
 
     case TALPA_STATUSES.SUCCESFULLY_SENT_TO_TALPA:
+    case TALPA_STATUSES.PARTIALLY_SENT_TO_TALPA:
       background = theme.colors.success;
       text = theme.colors.white;
       break;

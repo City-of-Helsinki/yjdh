@@ -1,4 +1,5 @@
 import { ALL_APPLICATION_STATUSES, ROUTES } from 'benefit/handler/constants';
+import useInstalmentStatusTransition from 'benefit/handler/hooks/useInstalmentStatusTransition';
 import {
   ApplicationListTableColumns,
   ApplicationListTableTransforms,
@@ -7,7 +8,11 @@ import {
   getTagStyleForStatus,
   getTalpaTagStyleForStatus,
 } from 'benefit/handler/utils/applications';
-import { APPLICATION_STATUSES, TALPA_STATUSES } from 'benefit-shared/constants';
+import {
+  APPLICATION_STATUSES,
+  INSTALMENT_STATUSES,
+  TALPA_STATUSES,
+} from 'benefit-shared/constants';
 import {
   AhjoError,
   ApplicationAlteration,
@@ -37,6 +42,7 @@ import {
   $TagWrapper,
   $UnreadMessagesCount,
 } from './ApplicationList.sc';
+import TalpaStatusChangeModal from './TalpaStatusChangeDialog';
 import { useApplicationList } from './useApplicationList';
 
 export interface ApplicationListProps {
@@ -65,14 +71,14 @@ const buildApplicationUrl = (
 
 const getFirstInstalmentTotalAmount = (
   calculatedBenefitAmount: string,
-  pendingInstalment?: Instalment,
+  secondInstalment?: Instalment,
   alterations?: ApplicationAlteration[]
 ): string | JSX.Element => {
   let firstInstalment = parseInt(calculatedBenefitAmount, 10);
   let recoveryAmount = 0;
-  if (pendingInstalment) {
+  if (secondInstalment) {
     firstInstalment -= parseInt(
-      String(pendingInstalment?.amountAfterRecoveries),
+      String(secondInstalment?.amountAfterRecoveries),
       10
     );
     recoveryAmount = alterations
@@ -83,7 +89,7 @@ const getFirstInstalmentTotalAmount = (
         )
       : 0;
   }
-  return pendingInstalment ? (
+  return secondInstalment ? (
     <>
       {formatFloatToEvenEuros(firstInstalment)} /{' '}
       {formatFloatToEvenEuros(
@@ -100,10 +106,18 @@ const dateForAdditionalInformationNeededBy = (
 
 export const renderPaymentTagPerStatus = (
   t: TFunction,
-  talpaStatus?: TALPA_STATUSES
+  talpaStatus?: TALPA_STATUSES,
+  id?: string,
+  clickTalpaTag?: (id: string, talpaStatus: TALPA_STATUSES) => void
 ): JSX.Element => (
   <$TagWrapper $colors={getTalpaTagStyleForStatus(talpaStatus)}>
-    <Tag>
+    <Tag
+      onClick={
+        talpaStatus === TALPA_STATUSES.REJECTED_BY_TALPA && id
+          ? () => clickTalpaTag(id, talpaStatus)
+          : null
+      }
+    >
       {t(`applications.list.columns.talpaStatuses.${String(talpaStatus)}`)}
     </Tag>
   </$TagWrapper>
@@ -149,6 +163,20 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     }),
     [isAllStatuses, status]
   );
+
+  const [showTalpaModal, setShowTaplaModal] = React.useState(false);
+  const [selectedApplication, setSelectedApplication] = React.useState('');
+
+  const {
+    mutate: changeInstalmentStatus,
+    isSuccess: isInstalmentStatusChanged,
+  } = useInstalmentStatusTransition();
+
+  React.useEffect(() => {
+    if (isInstalmentStatusChanged) {
+      setShowTaplaModal(false);
+    }
+  }, [isInstalmentStatusChanged]);
 
   const renderTableActions = React.useCallback(
     (
@@ -218,10 +246,6 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     ),
     [t]
   );
-
-  const renderPaymentTagWrapper = React.useCallback(renderPaymentTagPerStatus, [
-    t,
-  ]);
 
   const columns = React.useMemo(() => {
     const cols: ApplicationListTableColumns[] = [
@@ -366,6 +390,10 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         isSortable: true,
       });
     }
+    const onTalpaTagClick = (id: string): void => {
+      setShowTaplaModal(true);
+      setSelectedApplication(id);
+    };
 
     if (inPayment) {
       cols.push(
@@ -379,19 +407,27 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
           headerName: getHeader('paymentStatus'),
           key: 'paymentStatus',
           isSortable: true,
-          transform: ({ talpaStatus }: ApplicationListTableTransforms) =>
-            renderPaymentTagWrapper(t, talpaStatus as TALPA_STATUSES),
+          transform: ({
+            talpaStatus,
+            firstInstalment,
+          }: ApplicationListTableTransforms) =>
+            renderPaymentTagPerStatus(
+              t,
+              talpaStatus as TALPA_STATUSES,
+              firstInstalment?.id,
+              onTalpaTagClick
+            ),
         },
         {
           headerName: getHeader('calculatedBenefitAmount'),
           key: 'calculatedBenefitAmount',
           transform: ({
             calculatedBenefitAmount,
-            pendingInstalment,
+            secondInstalment,
           }: ApplicationListTableTransforms) =>
             getFirstInstalmentTotalAmount(
               String(calculatedBenefitAmount),
-              pendingInstalment || null
+              secondInstalment || null
             ),
         }
       );
@@ -412,7 +448,6 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     renderTagWrapper,
     renderTableActions,
     t,
-    renderPaymentTagWrapper,
   ]);
 
   if (isLoading) {
@@ -434,6 +469,10 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   }
 
   const statusAsString = isAllStatuses ? 'all' : status.join(',');
+  const handleTalpaStatusChange = (talpaStatus: INSTALMENT_STATUSES): void => {
+    changeInstalmentStatus({ id: selectedApplication, status: talpaStatus });
+  };
+
   return (
     <$ApplicationList data-testid={`application-list-${statusAsString}`}>
       {list.length > 0 ? (
@@ -450,6 +489,12 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
           {t(`${translationsBase}.messages.empty.${statusAsString}`)}
         </$EmptyHeading>
       )}
+
+      <TalpaStatusChangeModal
+        isOpen={showTalpaModal}
+        onClose={() => setShowTaplaModal(false)}
+        onStatusChange={handleTalpaStatusChange}
+      />
     </$ApplicationList>
   );
 };

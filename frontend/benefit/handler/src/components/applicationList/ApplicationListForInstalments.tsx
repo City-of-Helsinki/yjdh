@@ -11,11 +11,7 @@ import {
   INSTALMENT_STATUSES,
 } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
-import {
-  IconErrorFill,
-  Table,
-  Tag,
-} from 'hds-react';
+import { IconErrorFill, Table, Tag } from 'hds-react';
 import noop from 'lodash/noop';
 import { TFunction } from 'next-i18next';
 import * as React from 'react';
@@ -129,37 +125,35 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
         key: 'dueDate',
         isSortable: true,
         customSortCompareFunction: sortFinnishDate,
-        transform: ({ pendingInstalment }: ApplicationListTableTransforms) =>
-          convertToUIDateFormat(pendingInstalment?.dueDate),
+        transform: ({ secondInstalment }: ApplicationListTableTransforms) =>
+          convertToUIDateFormat(secondInstalment?.dueDate),
       },
 
       {
-        transform: ({ pendingInstalment }: ApplicationListTableTransforms) =>
+        transform: ({ secondInstalment }: ApplicationListTableTransforms) =>
           renderInstalmentTagPerStatus(
             t,
-            pendingInstalment?.status as INSTALMENT_STATUSES
+            secondInstalment?.status as INSTALMENT_STATUSES
           ),
         headerName: getHeader('paymentStatus'),
         key: 'status',
         isSortable: true,
       },
       {
-        transform: ({ pendingInstalment }: ApplicationListTableTransforms) =>
-          pendingInstalment?.amountAfterRecoveries > 0 ? (
+        transform: ({ secondInstalment }: ApplicationListTableTransforms) =>
+          secondInstalment?.amountAfterRecoveries > 0 ? (
             <>
               {formatFloatToEvenEuros(
-                Math.max(0, pendingInstalment?.amountAfterRecoveries)
+                Math.max(0, secondInstalment?.amountAfterRecoveries)
               )}
               {' / '}
-              {formatFloatToEvenEuros(pendingInstalment.amount)}
+              {formatFloatToEvenEuros(secondInstalment.amount)}
             </>
           ) : (
             <$Wrapper>
               <$Column>
                 <IconErrorFill color="var(--color-alert)" />{' '}
-                {formatFloatToEvenEuros(
-                  pendingInstalment.amountAfterRecoveries
-                )}
+                {formatFloatToEvenEuros(secondInstalment.amountAfterRecoveries)}
               </$Column>
             </$Wrapper>
           ),
@@ -211,7 +205,7 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
     list.find(
       (app: ApplicationListItemData) =>
         app.id === String(selectedApplication?.id)
-    )?.pendingInstalment || null;
+    )?.secondInstalment || null;
 
   const onSubmitCancel = (): void => {
     changeInstalmentStatus({
@@ -237,17 +231,17 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
             setSelectedRows={setSelectedRows}
             zebra
           />
-        {selectedRows.length > 0 && (
-          <ApplicationTableFooter
-            selectedRows={selectedRows}
-            list={list}
-            isLoading={isLoading}
-            isLoadingStatusChange={isLoadingStatusChange}
-            translationsBase={translationsBase}
-            changeInstalmentStatus={changeInstalmentStatus}
-            setIsInstalmentCancelModalShown={setIsInstalmentCancelModalShown}
-          />
-        )}
+          {selectedRows.length > 0 && (
+            <ApplicationTableFooter
+              selectedRows={selectedRows}
+              list={list}
+              isLoading={isLoading}
+              isLoadingStatusChange={isLoadingStatusChange}
+              translationsBase={translationsBase}
+              changeInstalmentStatus={changeInstalmentStatus}
+              setIsInstalmentCancelModalShown={setIsInstalmentCancelModalShown}
+            />
+          )}
           <Modal
             id="instalment-cancel-confirm"
             isOpen={isInstalmentCancelModalShown}

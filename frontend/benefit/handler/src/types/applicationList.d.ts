@@ -10,7 +10,8 @@ export interface ApplicationListTableTransforms {
   applicationOrigin?: APPLICATION_ORIGINS;
   ahjoError: AhjoError;
   calculatedBenefitAmount?: string;
-  pendingInstalment?: Instalment;
+  firstInstalment?: Instalment;
+  secondInstalment?: Instalment;
   alterations: ApplicationAlterationData[];
   talpaStatus?: TALPA_STATUSES;
 }

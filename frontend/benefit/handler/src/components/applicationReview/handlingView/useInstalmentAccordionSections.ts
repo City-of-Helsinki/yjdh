@@ -20,15 +20,15 @@ type Props = {
 
 const useInstalmentAccordionSections = (data: Application): Props => {
   const amounts = {
-    firstInstalment: data.pendingInstalment
+    firstInstalment: data.secondInstalment
       ? Math.max(
           0,
           parseInt(data.calculation.calculatedBenefitAmount, 10) -
-            data.pendingInstalment.amount
+            data.secondInstalment.amount
         )
       : parseInt(data.calculation.calculatedBenefitAmount, 10),
-    secondInstalment: data.pendingInstalment?.amountAfterRecoveries || 0,
-    secondInstalmentMax: data.pendingInstalment?.amount || 0,
+    secondInstalment: data.secondInstalment?.amountAfterRecoveries || 0,
+    secondInstalmentMax: data.secondInstalment?.amount || 0,
     total: 0,
     totalAfterRecoveries: 0,
     alterations:
@@ -47,8 +47,8 @@ const useInstalmentAccordionSections = (data: Application): Props => {
     formatFloatToEvenEuros(amounts.secondInstalmentMax);
 
   const areInstalmentsPaid =
-    data.pendingInstalment?.status === INSTALMENT_STATUSES.COMPLETED ||
-    !data.pendingInstalment;
+    data.secondInstalment?.status === INSTALMENT_STATUSES.COMPLETED ||
+    !data.secondInstalment;
 
   return {
     amounts,

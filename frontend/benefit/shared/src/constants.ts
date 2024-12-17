@@ -155,7 +155,8 @@ export enum APPLICATION_STATUSES {
 export enum TALPA_STATUSES {
   NOT_SENT_TO_TALPA = 'not_sent_to_talpa',
   REJECTED_BY_TALPA = 'rejected_by_talpa',
-  SUCCESFULLY_SENT_TO_TALPA = 'succesfully_sent_to_talpa',
+  SUCCESFULLY_SENT_TO_TALPA = 'successfully_sent_to_talpa',
+  PARTIALLY_SENT_TO_TALPA = 'partially_sent_to_talpa',
 }
 
 export enum APPLICATION_ORIGINS {

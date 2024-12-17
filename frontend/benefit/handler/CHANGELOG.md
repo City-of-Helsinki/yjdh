@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.9.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.8.0...benefit-handler-v4.9.0) (2024-12-17)
+
+
+### Features
+
+* Hl 1575 instalment to accepted ([#3642](https://github.com/City-of-Helsinki/yjdh/issues/3642)) ([9981a73](https://github.com/City-of-Helsinki/yjdh/commit/9981a73f2626473cdc3c960a1b8f7b4e2ae1f87e))
+* Ui to recover from first instalment talpa error (hl-1582) ([#3654](https://github.com/City-of-Helsinki/yjdh/issues/3654)) ([801797f](https://github.com/City-of-Helsinki/yjdh/commit/801797f6e717ebf5b1370903e45692a9d9344302))
+
+
+### Bug Fixes
+
+* Issues with addtional_information_required (hl-1566) ([#3649](https://github.com/City-of-Helsinki/yjdh/issues/3649)) ([3aa9281](https://github.com/City-of-Helsinki/yjdh/commit/3aa92816c4f06e7206dffd9603b9890ef31686ee))
+
 ## [4.8.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.7.0...benefit-handler-v4.8.0) (2024-12-09)
 
 
