@@ -324,7 +324,8 @@ export type Application = {
   ahjoStatus?: string;
   handledByAhjoAutomation?: boolean;
   batchStatus?: BATCH_STATUSES;
-  pendingInstalment?: Instalment;
+  firstInstalment?: Instalment;
+  secondInstalment?: Instalment;
   talpaStatus?: TALPA_STATUSES;
 } & Step1 &
   Step2;
@@ -518,7 +519,8 @@ export type ApplicationData = {
   handled_by_ahjo_automation?: boolean;
   alterations: ApplicationAlterationData[];
   ahjo_error?: AhjoErrorData;
-  pending_instalment?: InstalmentData;
+  first_instalment?: InstalmentData;
+  second_instalment?: InstalmentData;
 };
 
 export type EmployeeData = {
@@ -619,7 +621,8 @@ export type ApplicationListItemData = {
   ahjoError?: AhjoError;
   decisionDate?: string;
   calculatedBenefitAmount?: string;
-  pendingInstalment?: Instalment;
+  firstInstalment?: Instalment;
+  secondInstalment?: Instalment;
 };
 
 export type TextProp = 'textFi' | 'textEn' | 'textSv';

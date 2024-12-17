@@ -4,11 +4,11 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 
 import {
-    $Column,
-    $Wrapper,
-  } from '../applicationReview/actions/handlingApplicationActions/HandlingApplicationActions.sc';
+  $Column,
+  $Wrapper,
+} from '../applicationReview/actions/handlingApplicationActions/HandlingApplicationActions.sc';
 import { $HintText, $TableFooter } from '../table/TableExtras.sc';
-import InstalmentButton from "./InstalmentButton";
+import InstalmentButton from './InstalmentButton';
 
 interface TableFooterProps {
   selectedRows: string[];
@@ -16,9 +16,9 @@ interface TableFooterProps {
   isLoading: boolean;
   isLoadingStatusChange: boolean;
   translationsBase: string;
-  changeInstalmentStatus: (params: { 
-    id?: string; 
-    status: INSTALMENT_STATUSES 
+  changeInstalmentStatus: (params: {
+    id?: string;
+    status: INSTALMENT_STATUSES;
   }) => void;
   setIsInstalmentCancelModalShown: (show: boolean) => void;
 }
@@ -30,23 +30,22 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
   isLoadingStatusChange,
   translationsBase,
   changeInstalmentStatus,
-  setIsInstalmentCancelModalShown
+  setIsInstalmentCancelModalShown,
 }) => {
   const { t } = useTranslation();
-
 
   const selectedApplication = list.find((app) => app.id === selectedRows[0]);
   const selectedInstalment =
     list.find(
       (app: ApplicationListItemData) =>
         app.id === String(selectedApplication?.id)
-    )?.pendingInstalment || null;
+    )?.secondInstalment || null;
 
   const handleStatusChange = (status: INSTALMENT_STATUSES): void => {
-      changeInstalmentStatus({
-          id: selectedInstalment.id,
-          status,
-      });
+    changeInstalmentStatus({
+      id: selectedInstalment.id,
+      status,
+    });
   };
 
   // If no rows or multiple rows selected, show hint
@@ -117,9 +116,9 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
             INSTALMENT_STATUSES.CANCELLED,
           ].includes(selectedInstalment?.status as INSTALMENT_STATUSES) && (
             <InstalmentButton
-                isLoading={isLoading}
-                isLoadingStatusChange={isLoadingStatusChange}
-                onClick={() => handleStatusChange(INSTALMENT_STATUSES.WAITING)}
+              isLoading={isLoading}
+              isLoadingStatusChange={isLoadingStatusChange}
+              onClick={() => handleStatusChange(INSTALMENT_STATUSES.WAITING)}
             >
               {t(`${translationsBase}.actions.return`)}
             </InstalmentButton>

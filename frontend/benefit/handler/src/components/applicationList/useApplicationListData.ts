@@ -45,7 +45,8 @@ const useApplicationListData = (
         handled_by_ahjo_automation,
         handled_at: handledAt,
         ahjo_error,
-        pending_instalment,
+        first_instalment,
+        second_instalment,
         alterations,
       } = application;
 
@@ -77,7 +78,8 @@ const useApplicationListData = (
         ahjoError: camelcaseKeys(ahjo_error, { deep: true }) || null,
         decisionDate: convertToUIDateFormat(batch?.decision_date) || '-',
         calculatedBenefitAmount: calculation?.calculated_benefit_amount || '0',
-        pendingInstalment: camelcaseKeys(pending_instalment),
+        firstInstalment: camelcaseKeys(first_instalment),
+        secondInstalment: camelcaseKeys(second_instalment),
         alterations: alterations || [],
       };
     })
