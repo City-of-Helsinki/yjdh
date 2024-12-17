@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.9.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.9.0...benefit-backend-v2.9.1) (2024-12-17)
+
+
+### Bug Fixes
+
+* App and batch status updates after talpa fail ([#3656](https://github.com/City-of-Helsinki/yjdh/issues/3656)) ([b521df4](https://github.com/City-of-Helsinki/yjdh/commit/b521df47ec1c71950b32fd158613df07220ee23e))
+* Missing return statement for instalment number 2 ([43ef665](https://github.com/City-of-Helsinki/yjdh/commit/43ef665ffcbdeffad10e6afd3e78c095d75bdca5))
+* Should archive always if only 1 payment is done ([2a72155](https://github.com/City-of-Helsinki/yjdh/commit/2a721555b39775ca1881f7fbfb0d094ad7ab2dfc))
+* Wrong condition, should check instalments count ([c33d293](https://github.com/City-of-Helsinki/yjdh/commit/c33d29396d81777b199e96cc118ba9af302ca9ab))
+
 ## [2.9.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.8.0...benefit-backend-v2.9.0) (2024-12-17)
 
 
