@@ -65,7 +65,7 @@ class InstalmentView(APIView):
                     application.save()
 
                 if instalment_status == InstalmentStatus.PAID:
-                    if instalment.instalment_number == 1:
+                    if instalment_count == 1:
                         application.talpa_status = (
                             ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
                         )
