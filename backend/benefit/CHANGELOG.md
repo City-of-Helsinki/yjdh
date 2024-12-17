@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.9.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.8.0...benefit-backend-v2.9.0) (2024-12-17)
+
+
+### Features
+
+* Delete applications older than 10 years ([#3646](https://github.com/City-of-Helsinki/yjdh/issues/3646)) ([d6cabc4](https://github.com/City-of-Helsinki/yjdh/commit/d6cabc4d4e272b20c4fb2ca97f0f2b45c66a47bc))
+* Hl 1573 maintenance improvements ([#3650](https://github.com/City-of-Helsinki/yjdh/issues/3650)) ([192dc77](https://github.com/City-of-Helsinki/yjdh/commit/192dc770dd57a613bc31734287d07fab8d8c051a))
+* Hl 1575 instalment to accepted ([#3642](https://github.com/City-of-Helsinki/yjdh/issues/3642)) ([9981a73](https://github.com/City-of-Helsinki/yjdh/commit/9981a73f2626473cdc3c960a1b8f7b4e2ae1f87e))
+* Save missing version_series_id error ([#3641](https://github.com/City-of-Helsinki/yjdh/issues/3641)) ([3889847](https://github.com/City-of-Helsinki/yjdh/commit/38898479d2094bcfd13a60d66928225a61d414c1))
+* Ui to recover from first instalment talpa error (hl-1582) ([#3654](https://github.com/City-of-Helsinki/yjdh/issues/3654)) ([801797f](https://github.com/City-of-Helsinki/yjdh/commit/801797f6e717ebf5b1370903e45692a9d9344302))
+
+
+### Bug Fixes
+
+* In application cloning force origin to be applicant ([#3653](https://github.com/City-of-Helsinki/yjdh/issues/3653)) ([7ec0dd9](https://github.com/City-of-Helsinki/yjdh/commit/7ec0dd9746161a2bdfb550504cb903f2694842a8))
+* Issues with addtional_information_required (hl-1566) ([#3649](https://github.com/City-of-Helsinki/yjdh/issues/3649)) ([3aa9281](https://github.com/City-of-Helsinki/yjdh/commit/3aa92816c4f06e7206dffd9603b9890ef31686ee))
+* Round alteration recovery amount down ([#3648](https://github.com/City-of-Helsinki/yjdh/issues/3648)) ([ddd8c1e](https://github.com/City-of-Helsinki/yjdh/commit/ddd8c1e46239cc18c5279392d373b60141e1e473))
+
 ## [2.8.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.7.0...benefit-backend-v2.8.0) (2024-12-09)
 
 
