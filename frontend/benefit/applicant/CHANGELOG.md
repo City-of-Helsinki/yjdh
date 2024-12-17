@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.14.3](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.14.2...benefit-applicant-v3.14.3) (2024-12-17)
+
+
+### Bug Fixes
+
+* Application status is already change to HANDLING when showing notification ([#3651](https://github.com/City-of-Helsinki/yjdh/issues/3651)) ([ad88971](https://github.com/City-of-Helsinki/yjdh/commit/ad88971d6112f57c530b360350f56babf2e799ad))
+
 ## [3.14.2](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.14.1...benefit-applicant-v3.14.2) (2024-11-04)
 
 
