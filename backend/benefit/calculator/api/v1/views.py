@@ -74,10 +74,7 @@ class InstalmentView(APIView):
                             ApplicationTalpaStatus.PARTIALLY_SENT_TO_TALPA
                         )
                     instalment.amount_paid = instalment.amount_after_recoveries
-
-                    if instalment_count == 1:
-                        application.archived = True
-
+                    application.archived = True
                     instalment.save()
                     application.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
