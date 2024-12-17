@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 
 from applications.api.v1.serializers.talpa_callback import TalpaCallbackSerializer
 from applications.enums import ApplicationBatchStatus, ApplicationTalpaStatus
-from applications.models import Application, ApplicationBatch
+from applications.models import Application
 from calculator.enums import InstalmentStatus
 from common.authentications import RobotBasicAuthentication
 from common.utils import get_request_ip_address
@@ -123,6 +123,7 @@ class TalpaCallbackView(APIView):
             )
         else:
             applications = self._get_applications(application_numbers)
+
             self.update_application_and_related_batch(
                 applications,
                 ip_address,
@@ -143,13 +144,12 @@ class TalpaCallbackView(APIView):
         """Update applications and related batch with given statuses and log the event.
         This will be deprecated after the instalments feature is enabled for all applications.
         """
-        applications.update(
-            talpa_status=application_talpa_status,
-            archived=is_archived,
-        )
-
-        batch_ids = applications.values_list("batch_id", flat=True).distinct()
-        ApplicationBatch.objects.filter(id__in=batch_ids).update(status=batch_status)
+        for application in applications:
+            application.talpa_status = application_talpa_status
+            application.archived = is_archived
+            application.save()
+            application.batch.status = batch_status
+            application.batch.save()
 
         for application in applications:
             """Add audit log entries for applications which were processed by TALPA"""
@@ -194,22 +194,31 @@ class TalpaCallbackView(APIView):
                 # after 1st instalment is sent to talpa,
                 # update the application status,
                 # batch status and set the application as archived
-                application.talpa_status = (
-                    ApplicationTalpaStatus.PARTIALLY_SENT_TO_TALPA
+                self.update_application_and_related_batch(
+                    applications=[application],
+                    ip_address=ip_address,
+                    application_talpa_status=ApplicationTalpaStatus.PARTIALLY_SENT_TO_TALPA,
+                    batch_status=ApplicationBatchStatus.PARTIALLY_SENT_TO_TALPA,
+                    log_message=f"instalment {instalment.instalment_number}/{application.number_of_instalments} \
+was read by TALPA and marked as paid",
+                    is_archived=True,
                 )
-                application.archived = True
-                application.save()
 
-                application.batch.status = (
-                    ApplicationBatchStatus.PARTIALLY_SENT_TO_TALPA
-                )
-                application.batch.save()
-
-                if application.number_of_instalments == 1 or (
-                    application.number_of_instalments == 2
-                    and instalment.instalment_number == 2
-                ):
+                # check if this is the final instalment for the application
+                if instalment.is_final:
                     self.update_after_all_instalments_are_sent(application)
+
+            elif is_success is False and instalment.instalment_number == 1:
+                # If Talpa reports a failure for the 1st instalment
+                # update the application status, batch status to REJECTED_BY_TALPA
+
+                self.update_application_and_related_batch(
+                    applications=[application],
+                    ip_address=ip_address,
+                    application_talpa_status=ApplicationTalpaStatus.REJECTED_BY_TALPA,
+                    batch_status=ApplicationBatchStatus.REJECTED_BY_TALPA,
+                    log_message="application instalment was rejected by TALPA",
+                )
 
             """Add audit log entries for applications which were processed by TALPA"""
             self.write_to_audit_log(application, ip_address, log_message)

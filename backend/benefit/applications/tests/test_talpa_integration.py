@@ -411,13 +411,8 @@ def test_talpa_callback_rejected_application(
 
         assert decided_application.archived is False
 
-    else:
-        assert (
-            decided_application.talpa_status == ApplicationTalpaStatus.REJECTED_BY_TALPA
-        )
-        assert (
-            decided_application.batch.status == ApplicationBatchStatus.REJECTED_BY_TALPA
-        )
+    assert decided_application.talpa_status == ApplicationTalpaStatus.REJECTED_BY_TALPA
+    assert decided_application.batch.status == ApplicationBatchStatus.REJECTED_BY_TALPA
 
 
 @pytest.mark.parametrize(
