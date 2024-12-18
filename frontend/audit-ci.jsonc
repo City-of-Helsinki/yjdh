@@ -13,6 +13,7 @@
     "axios", // tet, ks
     "rollup", // sentry
     "axios", // tet, ks
-    "cross-spawn" // all dev packages
+    "cross-spawn", // all dev packages
+    "next" // next
   ]
 }
