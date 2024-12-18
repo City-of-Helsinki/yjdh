@@ -79,6 +79,51 @@ test('Handler changes Talpa status to paid', async (t: TestController) => {
     Selector('button').withText(fi.applications.list.actions.mark_as_paid)
   );
 
-  await t.navigateTo('/archive');
+  await t.click(Selector('a').withText(fi.header.navigation.archive));
   await t.expect(Selector('td').withText(`Saragossa, Milamassa`).visible).ok();
+});
+
+test('Handler changes 2nd instalment status waiting', async (t: TestController) => {
+  const mainIngress = new MainIngress(fi.mainIngress.heading, 'h1');
+  await mainIngress.isLoaded();
+
+  await t.click(
+    Selector('li').withText(fi.applications.list.headings.instalments)
+  );
+
+  const checkbox = Selector('td[data-testid="applicationNum-0"]')
+    .withText(`125000`)
+    .parent()
+    .find('input[type="checkbox"]');
+  await t.expect(checkbox.visible).ok();
+  await t.click(checkbox);
+
+  await t.click(
+    Selector('button').withText(fi.applications.list.actions.confirm)
+  );
+
+  await t.click(
+    Selector('button').withText(fi.applications.list.actions.return)
+  );
+
+  await t.click(
+    Selector('button').withText(fi.applications.list.actions.cancel)
+  );
+
+  await t
+    .expect(
+      Selector('h3').withText(fi.instalments.dialog.cancelInstalment.heading)
+        .visible
+    )
+    .ok();
+
+  await t.click(Selector('button').withText(fi.utility.confirm));
+
+  await t
+    .expect(
+      Selector('td').withText(
+        fi.applications.list.columns.instalmentStatuses.cancelled
+      ).visible
+    )
+    .ok();
 });
