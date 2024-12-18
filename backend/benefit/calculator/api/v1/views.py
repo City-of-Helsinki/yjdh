@@ -5,7 +5,7 @@ from rest_framework import filters as drf_filters, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from applications.enums import ApplicationTalpaStatus
+from applications.enums import ApplicationBatchStatus, ApplicationTalpaStatus
 from calculator.api.v1.serializers import (
     InstalmentSerializer,
     PreviousBenefitSerializer,
@@ -69,14 +69,19 @@ class InstalmentView(APIView):
                         application.talpa_status = (
                             ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
                         )
+                        application.batch.status = ApplicationBatchStatus.SENT_TO_TALPA
                     else:
                         application.talpa_status = (
                             ApplicationTalpaStatus.PARTIALLY_SENT_TO_TALPA
+                        )
+                        application.batch.status = (
+                            ApplicationBatchStatus.PARTIALLY_SENT_TO_TALPA
                         )
                     instalment.amount_paid = instalment.amount_after_recoveries
                     application.archived = True
                     instalment.save()
                     application.save()
+                    application.batch.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
             if instalment.instalment_number == 2:
                 first_instalment = instalment.calculation.instalments.get(
