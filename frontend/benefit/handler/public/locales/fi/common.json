@@ -218,6 +218,7 @@
         "talpaStatuses": {
           "not_sent_to_talpa": "Odottaa",
           "rejected_by_talpa": "Virhe maksussa",
+          "partially_sent_to_talpa": "Maksettu",
           "successfully_sent_to_talpa": "Maksettu"
         },
         "instalmentStatuses": {
