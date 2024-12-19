@@ -58,7 +58,7 @@ class InstalmentView(APIView):
             instalment_count = instalment.calculation.instalments.count()
 
             if instalment.instalment_number == 1:
-                if instalment_status == InstalmentStatus.WAITING:
+                if instalment_status == InstalmentStatus.ACCEPTED:
                     application.talpa_status = (
                         ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA
                     )

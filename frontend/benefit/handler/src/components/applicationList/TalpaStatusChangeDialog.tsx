@@ -43,7 +43,7 @@ const TalpaStatusChangeModal: React.FC<{
             <Button
               theme="coat"
               iconLeft={<IconArrowUndo />}
-              onClick={() => onStatusChange(INSTALMENT_STATUSES.WAITING)}
+              onClick={() => onStatusChange(INSTALMENT_STATUSES.ACCEPTED)}
             >
               {t('common:applications.list.actions.return_as_waiting')}
             </Button>
