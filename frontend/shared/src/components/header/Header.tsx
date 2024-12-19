@@ -143,7 +143,7 @@ const Header: React.FC<HeaderProps> = ({
             />
           )}
 
-          <div className="flex items-center space-x-4"></div>
+          <div className="flex items-center space-x-4" />
 
           {login && login?.isAuthenticated && !hideLogin && (
             <HdsHeader.ActionBarItem
