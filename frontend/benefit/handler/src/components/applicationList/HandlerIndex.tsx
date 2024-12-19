@@ -49,6 +49,17 @@ export const isInPayment = (
     application?.batch?.status
   );
 
+export const isPendingInstalment = (
+  application: ApplicationListItemData | Application
+): boolean =>
+  [APPLICATION_STATUSES.ACCEPTED].includes(application.status) &&
+  !isString(application.batch) &&
+  [
+    BATCH_STATUSES.DECIDED_ACCEPTED,
+    BATCH_STATUSES.REJECTED_BY_TALPA,
+    BATCH_STATUSES.PARTIALLY_SENT_TO_TALPA,
+  ].includes(application?.batch?.status);
+
 const HandlerIndex: React.FC<ApplicationListProps> = ({
   layoutBackgroundColor,
   list = [],
@@ -292,7 +303,7 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
               <ApplicationListForInstalments
                 isLoading={isLoading}
                 list={list.filter(
-                  (app) => app.secondInstalment && isInPayment(app)
+                  (app) => app.secondInstalment && isPendingInstalment(app)
                 )}
                 heading={t(`${translationBase}.instalments`)}
               />

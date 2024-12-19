@@ -171,6 +171,7 @@ export enum BATCH_STATUSES {
   DECIDED_ACCEPTED = 'accepted',
   DECIDED_REJECTED = 'rejected',
   REJECTED_BY_TALPA = 'rejected_by_talpa',
+  PARTIALLY_SENT_TO_TALPA = 'partially_sent_to_talpa',
   SENT_TO_TALPA = 'sent_to_talpa',
   COMPLETED = 'completed',
 }
