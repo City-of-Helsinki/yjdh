@@ -1,5 +1,5 @@
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import { Selector } from 'testcafe';
+import { ClientFunction, Selector } from 'testcafe';
 
 import fi from '../../public/locales/fi/common.json';
 import MainIngress from '../page-model/MainIngress';
@@ -10,9 +10,15 @@ const url = getFrontendUrl(`/`);
 
 fixture('Talpa error resolution by handler')
   .page(url)
+  .clientScripts({
+    content: 'window.localStorage.setItem("newAhjoMode", "1");',
+  })
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     await t.useRole(handlerUserAhjo);
+    await ClientFunction(() =>
+      window.localStorage.setItem('newAhjoMode', '1')
+    )();
     await t.navigateTo('/');
   });
 
