@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.9.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.9.0...benefit-handler-v4.9.1) (2024-12-19)
+
+
+### Bug Fixes
+
+* Issues with 2nd instalment not showing up in frontpage ([#3661](https://github.com/City-of-Helsinki/yjdh/issues/3661)) ([ee39926](https://github.com/City-of-Helsinki/yjdh/commit/ee39926333de4c0ff88369ca6d8090baebe569fe))
+* Missing translation key ([95c2794](https://github.com/City-of-Helsinki/yjdh/commit/95c2794d1fbcc5a15b88742b32019670fea0a5aa))
+
 ## [4.9.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.8.0...benefit-handler-v4.9.0) (2024-12-17)
 
 
