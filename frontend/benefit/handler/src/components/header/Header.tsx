@@ -39,11 +39,9 @@ const Header: React.FC = () => {
       <li key="header-notifier">
         <HeaderNotifier />
       </li>
-      {process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT !== 'production' ? (
-        <li key="ahjo-mode-switch">
-          <TemporaryAhjoModeSwitch />
-        </li>
-      ) : null}
+      <li key="ahjo-mode-switch">
+        <TemporaryAhjoModeSwitch />
+      </li>
     </$HeaderCustomItems>
   );
 

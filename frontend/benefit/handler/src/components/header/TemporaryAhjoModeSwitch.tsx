@@ -14,9 +14,7 @@ const toggleNewAhjoMode = (isNewMode: boolean): void => {
         'Haluatko palata vanhaan koontipohjaiseen käyttöliittymään?'
       )
     : // eslint-disable-next-line no-alert
-      window.confirm(
-        'Haluatko kokeilla uutta Ahjo-integraation käyttöliittymää? Vain testiympäristöihin, älä käytä tuotannossa!'
-      );
+      window.confirm('Ota Ahjo-integraation käyttöliittymä käyttöön?');
   if (!confirm) return;
   if (!isNewMode) {
     setLocalStorageItem('newAhjoMode', '1');
