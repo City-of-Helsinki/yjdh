@@ -1,9 +1,7 @@
 import { Selector, t } from 'testcafe';
 
 import TranslationsApi from '../../src/__tests__/types/translations';
-import isRealIntegrationsEnabled from '../../src/flags/is-real-integrations-enabled';
 import { Language } from '../../src/i18n/i18n';
-import User from '../../src/types/user';
 import TranslatedComponent, { CommonTranslations } from './TranslatedComponent';
 
 class Header<
@@ -15,14 +13,9 @@ class Header<
   }
 
   private withinNavigationActions = this.within(
+    // eslint-disable-next-line no-secrets/no-secrets
     Selector('div[class*="HeaderActionBar-module_headerActions"]')
   );
-
-  private getUserInfo(user?: User): string {
-    return `${
-      isRealIntegrationsEnabled() ? 'Mika Hietanen' : user?.name ?? ''
-    }`;
-  }
 
   private headerTitle(): Selector {
     return this.within(this.component.findByRole('banner'))
@@ -47,6 +40,7 @@ class Header<
     });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   private userInfoDropdown(): Selector {
     return Selector('button').withAttribute(
       'aria-controls',
@@ -60,7 +54,7 @@ class Header<
     });
   }
 
-  public userIsLoggedIn(user?: User): Promise<void> {
+  public userIsLoggedIn(): Promise<void> {
     return this.expect(this.userInfoDropdown());
   }
 
@@ -76,7 +70,7 @@ class Header<
     return t.click(this.loginButton());
   }
 
-  public async clickLogoutButton(user?: User): Promise<void> {
+  public async clickLogoutButton(): Promise<void> {
     return t.click(this.userInfoDropdown()).click(this.logoutButton());
   }
 }
