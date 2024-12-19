@@ -71,6 +71,7 @@ from applications.services.generate_application_summary import (
     generate_application_summary_file,
     get_context_for_summary_context,
 )
+from calculator.enums import InstalmentStatus
 from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
 from messages.automatic_messages import send_application_reopened_message
 from messages.models import MessageType
@@ -300,6 +301,18 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    def _get_application_pks_with_instalments(self) -> List[int]:
+        return Application.objects.filter(
+            status=ApplicationStatus.ACCEPTED,
+            calculation__instalments__due_date__gte=timezone.now().date(),
+            calculation__instalments__instalment_number=2,
+            calculation__instalments__status__in=[
+                InstalmentStatus.ACCEPTED,
+                InstalmentStatus.ERROR_IN_TALPA,
+                InstalmentStatus.WAITING,
+            ],
+        )
+
     def _get_simplified_queryset(self, request, context) -> QuerySet:
         qs = self.filter_queryset(self.get_queryset())
         fields = set(context.get("fields", []))
@@ -324,7 +337,14 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         user = self.request.user
         if hasattr(user, "is_handler") and user.is_handler():
             should_filter_archived = request.query_params.get("filter_archived") == "1"
-            qs = qs.filter(archived=should_filter_archived)
+            if should_filter_archived:
+                qs = qs.filter(archived=should_filter_archived)
+            else:
+                # Applications with second instalment are considered archived but should be included in main views
+                qs = qs.filter(
+                    Q(archived=should_filter_archived)
+                    | Q(pk__in=self._get_application_pks_with_instalments())
+                )
 
         ahjo_cases = request.query_params.get("ahjo_case") == "1"
         if ahjo_cases:
