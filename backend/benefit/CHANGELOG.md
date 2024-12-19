@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.2](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.9.1...benefit-backend-v2.9.2) (2024-12-19)
+
+
+### Bug Fixes
+
+* Issues with 2nd instalment not showing up in frontpage ([#3661](https://github.com/City-of-Helsinki/yjdh/issues/3661)) ([ee39926](https://github.com/City-of-Helsinki/yjdh/commit/ee39926333de4c0ff88369ca6d8090baebe569fe))
+
 ## [2.9.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.9.0...benefit-backend-v2.9.1) (2024-12-17)
 
 
