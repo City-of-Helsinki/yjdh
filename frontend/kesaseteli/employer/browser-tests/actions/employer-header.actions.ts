@@ -5,7 +5,6 @@ import {
 import Header from '@frontend/shared/browser-tests/page-models/Header';
 import { DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
 import User from '@frontend/shared/src/types/user';
-import TestController from 'testcafe';
 
 import getEmployerTranslationsApi from '../../src/__tests__/utils/i18n/get-employer-translations-api';
 
@@ -18,6 +17,6 @@ export const doEmployerLogin = async (
   await header.userIsLoggedOut();
   await header.clickLoginButton();
   const suomiFiData = await doLogin(t, lang, cachedUser);
-  await header.userIsLoggedIn(suomiFiData.user ?? cachedUser);
+  await header.userIsLoggedIn();
   return suomiFiData;
 };
