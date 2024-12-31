@@ -4,6 +4,7 @@ from typing import Optional
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse, JsonResponse
+from django.middleware.csrf import get_token
 from django.shortcuts import redirect
 from django.views import View
 
@@ -53,6 +54,12 @@ class UserInfoView(View):
 
             if not userinfo["name"]:
                 userinfo["name"] = userinfo["organization_name"]
+
+            # We want to ensure the client has some kind of CSRF token available
+            # Calling get_token ensures Django includes CSRF token in the response
+            # CSRF token does not normally get included into APIView's because
+            # DRF calls csrf_exempt by default
+            _ = get_token(request)
 
             return JsonResponse(userinfo)
         else:
