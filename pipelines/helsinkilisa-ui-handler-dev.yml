@@ -8,6 +8,8 @@ trigger:
   paths:
     include:
     - frontend/benefit/handler/**
+    - frontend/benefit/shared/**
+    - frontend/shared/**
     - frontend/*
     exclude:
     - frontend/**/browser-tests 

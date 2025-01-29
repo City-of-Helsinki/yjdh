@@ -7,7 +7,7 @@ trigger:
       - main
   paths:
     include:
-    - frontend/benefit/applicant/**
+    - frontend/benefit/**
     - frontend/*
     exclude:
     - frontend/**/browser-tests 
