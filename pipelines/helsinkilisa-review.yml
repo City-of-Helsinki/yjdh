@@ -22,13 +22,22 @@ pr:
     include:
     - main
   paths:
+    include:
+      - pipelines/helsinkilisa-review.yml
+      - backend/docker/benefit.Dockerfile
+      - backend/benefit/**
+      - backend/shared/**
+      - frontend/*
+      - frontend/benefit/**
+      - frontend/shared/**
     exclude:
-    - '*release-please*'
-    - '*.md'
-    - '.github/'
-    - 'pipelines/yjdh-helsinkilisa-ui-release.yml'
-    - 'pipelines/yjdh-helsinkilisa-ui-dev.yml'
-    - 'docker-compose*'
+      - README.md
+      - backend/tet/**
+      - backend/kesaseteli/**
+      - frontend/tet/**
+      - frontend/kesaseteli/**
+      - frontend/**/browser-tests
+      - frontend/**/__tests__
 
 # By default, use self-hosted agents
 pool: Default
@@ -43,7 +52,7 @@ resources:
 
 extends:
   # Filename in Azure DevOps Repository
-  template: components/yjdh-helsinkilisa-ui/pipelines/yjdh-helsinkilisa-ui-review.yml@yjdh-helsinkilisa-pipelines
+  template: pipelines/yjdh-helsinkilisa-review.yml@yjdh-helsinkilisa-pipelines
   # parameters:
     # Application build arguments and config map values as key value pairs.
     # Does not contain all buildArguments or configMap values, the rest located in yjdh-helsinkilisa-pipelines

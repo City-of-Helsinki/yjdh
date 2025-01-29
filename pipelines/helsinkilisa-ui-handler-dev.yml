@@ -6,13 +6,13 @@ trigger:
     include:
       - main
   paths:
+    include:
+    - frontend/benefit/handler/**
+    - frontend/*
     exclude:
-    - '*release-please*'
-    - '*.md'
-    - '.github/'
-    - 'pipelines/yjdh-helsinkilisa-ui-release.yml'
-    - 'pipelines/yjdh-helsinkilisa-ui-review.yml'
-    - 'docker-compose*'
+    - frontend/**/browser-tests 
+    - frontend/**/__tests__ 
+    - README.md
 
 # Pull request (PR) triggers cause a pipeline to run whenever a pull request is
 # opened with one of the specified target branches, or when updates are made to
@@ -38,7 +38,7 @@ resources:
 
 extends:
   # Filename in Azure DevOps Repository
-  template: components/yjdh-helsinkilisa-ui/pipelines/yjdh-helsinkilisa-ui-dev.yml@yjdh-helsinkilisa-pipelines
+  template: components/yjdh-helsinkilisa-ui-handler/pipelines/yjdh-helsinkilisa-ui-handler-dev.yml@yjdh-helsinkilisa-pipelines
   # parameters:
     # Application build arguments and config map values as key value pairs.
     # Does not contain all buildArguments or configMap values, the rest located in yjdh-helsinkilisa-pipelines

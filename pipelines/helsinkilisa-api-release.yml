@@ -4,7 +4,7 @@ trigger:
   batch: true
   tags:
     include:
-      - yjdh-v*
+      - benefit-backend-*
 
 # Pull request (PR) triggers cause a pipeline to run whenever a pull request is
 # opened with one of the specified target branches, or when updates are made to
@@ -30,7 +30,7 @@ resources:
 
 extends:
   # Filename in Azure DevOps Repository
-  template: components/yjdh-helsinkilisa-ui-handler/pipelines/yjdh-helsinkilisa-ui-handler-release.yml@yjdh-helsinkilisa-pipelines
+  template: components/yjdh-helsinkilisa-api/pipelines/yjdh-helsinkilisa-api-release.yml@yjdh-helsinkilisa-pipelines
   # parameters:
     # Application build arguments and config map values as key value pairs.
     # Does not contain all buildArguments or configMap values, the rest located in yjdh-helsinkilisa-pipelines
@@ -41,10 +41,9 @@ extends:
     # configMapStage: # pod environment variables
     #   DEBUG: 1
     ## Production definitions
-    # buildArgs:
-    #   DEBUG: 1
+    ## Production is using staging image
     # configMap: # pod environment variables
     #   DEBUG: 1
-    ## Default value to nodeVersion is set on template.
+    ## Default value to pythonVersion is set on template.
     ## Used tool version
-    # nodeVersion: 18
+    # pythonVersion: 3.11
