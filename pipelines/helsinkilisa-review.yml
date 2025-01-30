@@ -47,6 +47,7 @@ resources:
     # Azure DevOps repository
     - repository: yjdh-helsinkilisa-pipelines
       type: git
+      ref: refs/heads/ansible_automation_update
       # Azure DevOps project/repository
       name: yjdh-helsinkilisa/yjdh-helsinkilisa-pipelines
 
