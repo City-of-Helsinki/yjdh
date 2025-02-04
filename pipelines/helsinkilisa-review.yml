@@ -20,7 +20,7 @@ pr:
   # PR target branch
   branches:
     include:
-    - main
+      - main
   paths:
     include:
       - pipelines/helsinkilisa-review.yml

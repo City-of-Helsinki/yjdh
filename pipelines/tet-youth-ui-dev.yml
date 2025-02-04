@@ -7,12 +7,12 @@ trigger:
       - main
   paths:
     include:
-    - frontend/tet/youth/**
-    - frontend/*
+      - frontend/tet/youth/**
+      - frontend/*
     exclude:
-    - frontend/**/browser-tests 
-    - frontend/**/__tests__ 
-    - README.md
+      - frontend/**/browser-tests 
+      - frontend/**/__tests__ 
+      - README.md
 
 # Pull request (PR) triggers cause a pipeline to run whenever a pull request is
 # opened with one of the specified target branches, or when updates are made to
