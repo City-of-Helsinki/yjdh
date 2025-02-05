@@ -1,5 +1,5 @@
 #
-# Review pipeline. Run build and deploy for Platta test environments.
+# Review pipeline. Run build and deploy for Platta dev environments.
 # Pipeline runs different tests e.g. unittest and browser tests.
 #
 # Continuous integration (CI) triggers cause a pipeline to run whenever you push
@@ -8,14 +8,14 @@
 trigger: none
 
 # Pull request (PR) triggers cause a pipeline to run whenever a pull request is
-# opened with one of the specified target branches, or when updates are made to
+# opened with one of the specified target branches, or when updates are made to 
 # such a pull request.
 #
-# GitHub creates a new ref when a pull request is created. The ref points to a
-# merge commit, which is the merged code between the source and target branches
+# GitHub creates a new ref when a pull request is created. The ref points to a 
+# merge commit, which is the merged code between the source and target branches 
 # of the pull request.
 #
-# Opt out of pull request validation
+# Opt out of pull request validation 
 pr:
   # PR target branch
   branches:
@@ -23,7 +23,7 @@ pr:
       - main
   paths:
     include:
-      - azure-pipelines/helsinkilisa-review.yml
+      - pipelines/helsinkilisa-review.yml
       - backend/docker/benefit.Dockerfile
       - backend/benefit/**
       - backend/shared/**
@@ -32,10 +32,10 @@ pr:
       - frontend/shared/**
     exclude:
       - README.md
-      - backend/kesaseteli/**
       - backend/tet/**
-      - frontend/kesaseteli/**
+      - backend/kesaseteli/**
       - frontend/tet/**
+      - frontend/kesaseteli/**
       - frontend/**/browser-tests
       - frontend/**/__tests__
 
@@ -51,17 +51,16 @@ resources:
       name: yjdh-helsinkilisa/yjdh-helsinkilisa-pipelines
 
 extends:
-  # Filename in Azure DevOps Repository (note possible -ui or -api)
-  # Django example: azure-pipelines-PROJECTNAME-api-release.yml
-  # Drupal example: azure-pipelines-drupal-release.yml
-  template:
-    azure-pipelines-helsinkilisa-review.yml@yjdh-helsinkilisa-pipelines
+  # Filename in Azure DevOps Repository
+  template: pipelines/yjdh-helsinkilisa-review.yml@yjdh-helsinkilisa-pipelines
+  # parameters:
     # Application build arguments and config map values as key value pairs.
-    # The values here will override the values defined in the yjdh-benefit-pipelines repository.
-    # for example
-  parameters:
-    configMap: # pod environment variables
-      LOAD_DEFAULT_TERMS: 1
-      LOAD_FIXTURES: 1
+    # Does not contain all buildArguments or configMap values, the rest located in yjdh-helsinkilisa-pipelines
+    # The values here will override the values defined in the yjdh-helsinkilisa-pipelines repository
     # buildArgs:
-    #   NEXT_PUBLIC_DEBUG: 0
+    #   DEBUG: 1
+    # configMap: # pod environment variables
+    #   DEBUG: 1
+    ## Default value to nodeVersion is set on template.
+    ## Used tool version
+    # nodeVersion: 18

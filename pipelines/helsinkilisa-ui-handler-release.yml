@@ -2,17 +2,9 @@
 # an update to the specified branches or you push specified tags.
 trigger:
   batch: true
-  branches:
+  tags:
     include:
-      - main
-  paths:
-    include:
-      - frontend/tet/youth/**
-      - frontend/*
-    exclude:
-      - frontend/**/browser-tests 
-      - frontend/**/__tests__ 
-      - README.md
+      - benefit-handler-*
 
 # Pull request (PR) triggers cause a pipeline to run whenever a pull request is
 # opened with one of the specified target branches, or when updates are made to
@@ -31,18 +23,24 @@ pool: Default
 resources:
   repositories:
     # Azure DevOps repository
-    - repository: yjdh-tet-pipelines
+    - repository: yjdh-helsinkilisa-pipelines
       type: git
       # Azure DevOps project/repository
-      name: yjdh-tet/yjdh-tet-pipelines
+      name: yjdh-helsinkilisa/yjdh-helsinkilisa-pipelines
 
 extends:
   # Filename in Azure DevOps Repository
-  template: components/yjdh-tet-youth-ui/pipelines/yjdh-tet-youth-ui-dev.yml@yjdh-tet-pipelines
+  template: components/yjdh-helsinkilisa-ui-handler/pipelines/yjdh-helsinkilisa-ui-handler-release.yml@yjdh-helsinkilisa-pipelines
   # parameters:
     # Application build arguments and config map values as key value pairs.
-    # Does not contain all buildArguments or configMap values, the rest located in yjdh-tet-pipelines
-    # The values here will override the values defined in the yjdh-tet-pipelines repository
+    # Does not contain all buildArguments or configMap values, the rest located in yjdh-helsinkilisa-pipelines
+    # The values here will override the values defined in the yjdh-helsinkilisa-pipelines repository
+    ## Staging definitions
+    # buildArgsStage:
+    #   DEBUG: 1
+    # configMapStage: # pod environment variables
+    #   DEBUG: 1
+    ## Production definitions
     # buildArgs:
     #   DEBUG: 1
     # configMap: # pod environment variables
