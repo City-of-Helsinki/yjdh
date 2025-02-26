@@ -51,16 +51,19 @@ django_env = environ.Env(
     CSRF_COOKIE_NAME=(str, "yjdhcsrftoken"),
     NEXT_PUBLIC_MOCK_FLAG=(bool, False),
     SESSION_COOKIE_AGE=(int, 3600 * 2),
-    TOKEN_AUTH_ACCEPTED_AUDIENCE=(str, "https://api.hel.fi/auth/tetgdprapitest"),
-    TOKEN_AUTH_ACCEPTED_SCOPE_PREFIX=(str, "tetgdprapitest"),
-    TOKEN_AUTH_AUTHSERVER_URL=(str, "https://tunnistamo.test.hel.ninja/openid"),
-    TOKEN_AUTH_FIELD_FOR_CONSENTS=(str, "https://api.hel.fi/auth"),
+    TOKEN_AUTH_ACCEPTED_AUDIENCE=(str, "yjdh-tet-ui-dev"),
+    TOKEN_AUTH_ACCEPTED_SCOPE_PREFIX=(list, ["gdprquery", "gdprdelete"]),
+    TOKEN_AUTH_AUTHSERVER_URL=(
+        str,
+        "https://tunnistus.test.hel.ninja/auth/realms/helsinki-tunnistus",
+    ),
+    TOKEN_AUTH_FIELD_FOR_CONSENTS=(str, "authorization.permissions.scopes"),
     TOKEN_AUTH_REQUIRE_SCOPE_PREFIX=(bool, False),
     OIDC_LEEWAY=(int, 60 * 60),  # TODO: Maybe OIDC_LEEWAY could be removed? See HL-601
     OIDC_RP_CLIENT_ID=(str, ""),
     OIDC_RP_CLIENT_SECRET=(str, ""),
     OIDC_OP_BASE_URL=(str, ""),
-    TUNNISTAMO_API_TOKENS_ENDPOINT=(str, ""),
+    TUNNISTUS_API_TOKENS_ENDPOINT=(str, ""),
     HELSINKI_PROFILE_API_URL=(str, ""),
     LOGIN_REDIRECT_URL=(str, "/"),
     LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
@@ -99,8 +102,8 @@ django_env = environ.Env(
     LINKEDEVENTS_URL=(str, ""),
     LINKEDEVENTS_API_KEY=(str, ""),
     LINKEDEVENTS_TIMEOUT=(int, 20),
-    GDPR_API_QUERY_SCOPE=(str, "tetgdprapitest.gdprquery"),
-    GDPR_API_DELETE_SCOPE=(str, "tetgdprapitest.gdprdelete"),
+    GDPR_API_QUERY_SCOPE=(str, "gdprquery"),
+    GDPR_API_DELETE_SCOPE=(str, "gdprdelete"),
 )
 
 if os.path.exists(env_file):
@@ -264,11 +267,11 @@ AUTHENTICATION_BACKENDS = (
 )
 
 OIDC_API_TOKEN_AUTH = {
-    "AUDIENCE": django_env.str("TOKEN_AUTH_ACCEPTED_AUDIENCE"),
-    "API_SCOPE_PREFIX": django_env.str("TOKEN_AUTH_ACCEPTED_SCOPE_PREFIX"),
-    "ISSUER": django_env.str("TOKEN_AUTH_AUTHSERVER_URL"),
-    "API_AUTHORIZATION_FIELD": django_env.str("TOKEN_AUTH_FIELD_FOR_CONSENTS"),
-    "REQUIRE_API_SCOPE_FOR_AUTHENTICATION": django_env.bool(
+    "AUDIENCE": django_env("TOKEN_AUTH_ACCEPTED_AUDIENCE"),
+    "API_SCOPE_PREFIX": django_env("TOKEN_AUTH_ACCEPTED_SCOPE_PREFIX"),
+    "ISSUER": django_env("TOKEN_AUTH_AUTHSERVER_URL"),
+    "API_AUTHORIZATION_FIELD": django_env("TOKEN_AUTH_FIELD_FOR_CONSENTS"),
+    "REQUIRE_API_SCOPE_FOR_AUTHENTICATION": django_env(
         "TOKEN_AUTH_REQUIRE_SCOPE_PREFIX"
     ),
     "USER_RESOLVER": "tet.views.resolve_user",
@@ -291,7 +294,7 @@ OIDC_OP_USER_ENDPOINT = f"{OIDC_OP_BASE_URL}/userinfo"
 OIDC_OP_JWKS_ENDPOINT = f"{OIDC_OP_BASE_URL}/jwks"
 OIDC_OP_LOGOUT_ENDPOINT = f"{OIDC_OP_BASE_URL}/end-session"
 OIDC_OP_LOGOUT_CALLBACK_URL = django_env.str("OIDC_OP_LOGOUT_CALLBACK_URL")
-TUNNISTAMO_API_TOKENS_ENDPOINT = django_env.str("TUNNISTAMO_API_TOKENS_ENDPOINT")
+TUNNISTUS_API_TOKENS_ENDPOINT = django_env("TUNNISTUS_API_TOKENS_ENDPOINT")
 HELSINKI_PROFILE_API_URL = django_env.str("HELSINKI_PROFILE_API_URL")
 LOGOUT_REDIRECT_URL = django_env.str("LOGOUT_REDIRECT_URL")
 
