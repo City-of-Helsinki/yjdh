@@ -295,6 +295,7 @@ OIDC_OP_USER_ENDPOINT = f"{OIDC_OP_BASE_URL}/protocol/openid-connect/userinfo"
 OIDC_OP_JWKS_ENDPOINT = f"{OIDC_OP_BASE_URL}/protocol/openid-connect/certs"
 OIDC_OP_LOGOUT_ENDPOINT = f"{OIDC_OP_BASE_URL}/protocol/openid-connect/logout"
 OIDC_OP_LOGOUT_CALLBACK_URL = django_env.str("OIDC_OP_LOGOUT_CALLBACK_URL")
+TUNNISTAMO_API_TOKENS_ENDPOINT = None  # settings value must exist in hp_client
 TUNNISTUS_API_TOKENS_ENDPOINT = django_env("TUNNISTUS_API_TOKENS_ENDPOINT")
 HELSINKI_PROFILE_API_URL = django_env.str("HELSINKI_PROFILE_API_URL")
 LOGOUT_REDIRECT_URL = django_env.str("LOGOUT_REDIRECT_URL")
