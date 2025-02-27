@@ -104,6 +104,7 @@ django_env = environ.Env(
     LINKEDEVENTS_TIMEOUT=(int, 20),
     GDPR_API_QUERY_SCOPE=(str, "gdprquery"),
     GDPR_API_DELETE_SCOPE=(str, "gdprdelete"),
+    HELSINKI_PROFILE_SCOPE=(str, "access_token"),
 )
 
 if os.path.exists(env_file):
@@ -280,8 +281,8 @@ OIDC_API_TOKEN_AUTH = {
 OIDC_AUTH = {"OIDC_LEEWAY": django_env.int("OIDC_LEEWAY")}
 
 OIDC_RP_SIGN_ALGO = "RS256"
-HELSINKI_PROFILE_SCOPE = "https://api.hel.fi/auth/helsinkiprofile"
-OIDC_RP_SCOPES = f"openid profile {HELSINKI_PROFILE_SCOPE}"
+HELSINKI_PROFILE_SCOPE = django_env("HELSINKI_PROFILE_SCOPE")
+OIDC_RP_SCOPES = "openid profile email"
 
 OIDC_RP_CLIENT_ID = django_env.str("OIDC_RP_CLIENT_ID")
 OIDC_RP_CLIENT_SECRET = django_env.str("OIDC_RP_CLIENT_SECRET")
