@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.3.2](https://github.com/City-of-Helsinki/yjdh/compare/tet-backend-v1.3.1...tet-backend-v1.3.2) (2025-02-28)
+
+
+### Bug Fixes
+
+* Include CSRF token in tet userinfo endpoint response ([e7a708f](https://github.com/City-of-Helsinki/yjdh/commit/e7a708f59cbceb81960f261f65d3587e4cffde81))
+* Migrate TET from tunnistamo to tunnistus ([8cd2c2f](https://github.com/City-of-Helsinki/yjdh/commit/8cd2c2fb230757b8d305703a8ec64e936646cf39))
+* Restore required setting TUNNISTAMO_API_TOKENS_ENDPOINT ([4e605d4](https://github.com/City-of-Helsinki/yjdh/commit/4e605d46eea20834af69a49c6242d08c0ca086b1))
+* Tunnistus OIDC endpoints ([2c07009](https://github.com/City-of-Helsinki/yjdh/commit/2c0700938494d57ada0e9f8c2b246aa24bb1a11b))
+* Tunnistus related settings ([bdb4df1](https://github.com/City-of-Helsinki/yjdh/commit/bdb4df1278cd58f534e8e25ee0b2fb4dff45df8f))
+
 ## [1.3.1](https://github.com/City-of-Helsinki/yjdh/compare/tet-backend-v1.3.0...tet-backend-v1.3.1) (2024-10-09)
 
 
