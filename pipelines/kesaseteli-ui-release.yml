@@ -1,34 +1,21 @@
-#
-# Review pipeline. Run build and deploy for Platta dev environments.
-# Pipeline runs different tests e.g. unittest and browser tests.
-#
 # Continuous integration (CI) triggers cause a pipeline to run whenever you push
 # an update to the specified branches or you push specified tags.
-# only PR trigger pipeline
-trigger: none
+trigger:
+  batch: true
+  tags:
+    include:
+      - kesaseteli-employer-*
 
 # Pull request (PR) triggers cause a pipeline to run whenever a pull request is
-# opened with one of the specified target branches, or when updates are made to 
+# opened with one of the specified target branches, or when updates are made to
 # such a pull request.
 #
-# GitHub creates a new ref when a pull request is created. The ref points to a 
-# merge commit, which is the merged code between the source and target branches 
+# GitHub creates a new ref when a pull request is created. The ref points to a
+# merge commit, which is the merged code between the source and target branches
 # of the pull request.
 #
-# Opt out of pull request validation 
-pr:
-  # PR target branch
-  branches:
-    include:
-    - main
-  paths:
-    exclude:
-    - '*release-please*'
-    - '*.md'
-    - '.github/'
-    - 'pipelines/yjdh-kesaseteli-ui-release.yml'
-    - 'pipelines/yjdh-kesaseteli-ui-dev.yml'
-    - 'docker-compose*'
+# Opt out of pull request validation
+pr: none
 
 # By default, use self-hosted agents
 pool: Default
@@ -43,11 +30,17 @@ resources:
 
 extends:
   # Filename in Azure DevOps Repository
-  template: components/yjdh-kesaseteli-ui/pipelines/yjdh-kesaseteli-ui-review.yml@yjdh-kesaseteli-pipelines
+  template: components/yjdh-kesaseteli-ui/pipelines/yjdh-kesaseteli-ui-release.yml@yjdh-kesaseteli-pipelines
   # parameters:
     # Application build arguments and config map values as key value pairs.
     # Does not contain all buildArguments or configMap values, the rest located in yjdh-kesaseteli-pipelines
     # The values here will override the values defined in the yjdh-kesaseteli-pipelines repository
+    ## Staging definitions
+    # buildArgsStage:
+    #   DEBUG: 1
+    # configMapStage: # pod environment variables
+    #   DEBUG: 1
+    ## Production definitions
     # buildArgs:
     #   DEBUG: 1
     # configMap: # pod environment variables

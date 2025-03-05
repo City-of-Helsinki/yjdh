@@ -6,13 +6,15 @@ trigger:
     include:
       - main
   paths:
+    include:
+    - frontend/kesaseteli/youth/**
+    - frontend/kesaseteli/shared/**
+    - frontend/shared/**
+    - frontend/*
     exclude:
-    - '*release-please*'
-    - '*.md'
-    - '.github/'
-    - 'pipelines/kesaseteli-youth-ui-release.yml'
-    - 'pipelines/kesaseteli-youth-ui-review.yml'
-    - 'docker-compose*'
+    - README.md
+    - frontend/**/browser-tests
+    - frontend/**/__tests__
 
 # Pull request (PR) triggers cause a pipeline to run whenever a pull request is
 # opened with one of the specified target branches, or when updates are made to
