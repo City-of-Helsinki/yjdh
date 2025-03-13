@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.3](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.9.2...benefit-backend-v2.9.3) (2025-03-13)
+
+
+### Bug Fixes
+
+* **benefit:** Remove year from the application title ([#3667](https://github.com/City-of-Helsinki/yjdh/issues/3667)) ([55adb5a](https://github.com/City-of-Helsinki/yjdh/commit/55adb5ab620050bf96e5737c60aa3a26e7a8a2ac))
+
 ## [2.9.2](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.9.1...benefit-backend-v2.9.2) (2024-12-19)
 
 
