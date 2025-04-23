@@ -21,7 +21,7 @@ This monorepo contains code for three different employment services:
 ## Requirements
 
 * Docker@^19.03.0 (or higher)
-* NodeJS@^18.16.0
+* NodeJS@^22.13.1
 * Yarn@^1.22
 
 ## Get started
