@@ -19,7 +19,7 @@ Project is automatically deployed to testing environment when merging a PR to ma
 
 ## Requirements
 
-- Node 18.x
+- Node 22.x
 - Lerna
 - Yarn
 - Git
@@ -27,7 +27,7 @@ Project is automatically deployed to testing environment when merging a PR to ma
 
 ### install node with nvm
 
-    nvm install 18 --lts
+    nvm install 22 --lts
 
 
 ## Available Scripts

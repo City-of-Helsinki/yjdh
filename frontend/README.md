@@ -9,14 +9,14 @@ Project is automatically deployed to testing environment when merging a PR to ma
 
 ## Requirements
 
-- Node 18.x (match with dockerfile: registry.access.redhat.com/ubi9/nodejs-18)
+- Node 22.x (match with dockerfile: registry.access.redhat.com/ubi9/nodejs-22)
 - Yarn
 - Git
 - Docker
 
 ### install node with nvm
 
-    nvm install 18 --lts
+    nvm install 22 --lts
 
 
 ## Available Scripts

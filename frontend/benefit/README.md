@@ -9,7 +9,7 @@ Project is automatically deployed to testing environment when merging a PR to ma
 
 ## Requirements
 
-- Node 18.x
+- Node 22.x
 - Lerna  
 - Yarn
 - Git
@@ -18,8 +18,8 @@ Project is automatically deployed to testing environment when merging a PR to ma
 ### Install NodeJS
 
     # Use node manager (n or nvm, for example)
-    n 18
-    nvm install 18 --lts
+    n 22
+    nvm install 22 --lts
     # Alternative methods
     https://nodejs.org/dist/
     https://nodejs.org/en/download/package-manager

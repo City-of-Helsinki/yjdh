@@ -10,8 +10,8 @@ trigger:
       - frontend/benefit/**
       - frontend/*
     exclude:
-      - frontend/**/browser-tests 
-      - frontend/**/__tests__ 
+      - frontend/**/browser-tests
+      - frontend/**/__tests__
       - README.md
 
 # Pull request (PR) triggers cause a pipeline to run whenever a pull request is
@@ -49,4 +49,4 @@ extends:
     #   DEBUG: 1
     ## Default value to nodeVersion is set on template.
     ## Used tool version
-    # nodeVersion: 18
+    # nodeVersion: 22

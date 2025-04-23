@@ -1,5 +1,5 @@
 # =======================================
-FROM registry.access.redhat.com/ubi9/nodejs-18-minimal AS distbase
+FROM registry.access.redhat.com/ubi9/nodejs-22-minimal AS distbase
 # =======================================
 
 USER root
