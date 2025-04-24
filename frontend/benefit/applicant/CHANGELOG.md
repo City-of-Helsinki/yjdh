@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.14.4](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.14.3...benefit-applicant-v3.14.4) (2025-04-24)
+
+
+### Bug Fixes
+
+* Update traficom contact info ([#3665](https://github.com/City-of-Helsinki/yjdh/issues/3665)) ([5ca733a](https://github.com/City-of-Helsinki/yjdh/commit/5ca733a74fd30681283abecfa7e3454893af8a9c))
+
 ## [3.14.3](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.14.2...benefit-applicant-v3.14.3) (2024-12-17)
 
 
