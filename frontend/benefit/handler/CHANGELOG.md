@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.10.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.9.1...benefit-handler-v4.10.0) (2025-04-28)
+
+
+### Features
+
+* Upgrade Node to v22.13.1 HL-1583 ([6093cdd](https://github.com/City-of-Helsinki/yjdh/commit/6093cdde2bf6b29517093a08d505ee0a0ca750e0))
+
 ## [4.9.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.9.0...benefit-handler-v4.9.1) (2024-12-19)
 
 
