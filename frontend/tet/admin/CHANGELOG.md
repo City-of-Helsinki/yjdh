@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/City-of-Helsinki/yjdh/compare/tet-admin-v1.1.1...tet-admin-v1.2.0) (2025-04-28)
+
+
+### Features
+
+* Upgrade Node to v22.13.1 HL-1583 ([6093cdd](https://github.com/City-of-Helsinki/yjdh/commit/6093cdde2bf6b29517093a08d505ee0a0ca750e0))
+
 ## [1.1.1](https://github.com/City-of-Helsinki/yjdh/compare/tet-admin-v1.1.0...tet-admin-v1.1.1) (2025-02-21)
 
 
