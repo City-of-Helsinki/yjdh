@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.15.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.14.4...benefit-applicant-v3.15.0) (2025-04-28)
+
+
+### Features
+
+* Upgrade Node to v22.13.1 HL-1583 ([6093cdd](https://github.com/City-of-Helsinki/yjdh/commit/6093cdde2bf6b29517093a08d505ee0a0ca750e0))
+
 ## [3.14.4](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.14.3...benefit-applicant-v3.14.4) (2025-04-24)
 
 
