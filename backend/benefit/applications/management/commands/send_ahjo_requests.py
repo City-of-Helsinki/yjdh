@@ -247,6 +247,10 @@ application(s): {failed_application_numbers} to Ahjo"
         request_type: AhjoRequestType,
     ) -> None:
         if request_type == AhjoRequestType.GET_DECISION_DETAILS:
+            if not response_content:
+                LOGGER.error("No details found in response.")
+                return
+
             response_handler = AhjoDecisionDetailsResponseHandler()
             success_text = response_handler.handle_details_request_success(
                 application, response_content[0]

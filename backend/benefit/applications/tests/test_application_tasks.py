@@ -3,7 +3,7 @@ import random
 import uuid
 from datetime import datetime, timedelta
 from io import StringIO
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 from django.core.management import call_command
@@ -16,6 +16,9 @@ from applications.enums import (
     ApplicationStatus,
 )
 from applications.models import AhjoSetting, AhjoStatus, Application, Attachment
+from applications.services.ahjo.response_handler import (
+    AhjoDecisionDetailsResponseHandler,
+)
 from applications.services.ahjo_authentication import AhjoToken
 from applications.tests.factories import CancelledApplicationFactory
 
@@ -194,6 +197,7 @@ def test_user_is_notified_of_upcoming_application_deletion(drafts_about_to_be_de
     ],
 )
 @patch("applications.management.commands.send_ahjo_requests.get_token")
+@pytest.mark.django_db
 def test_send_ahjo_requests(
     mock_get_token,
     previous_ahjo_status,
@@ -272,3 +276,80 @@ def test_send_ahjo_requests(
             assert (
                 application.batch.proposal_for_decision == AhjoDecision.DECIDED_ACCEPTED
             )
+
+
+@pytest.mark.django_db(transaction=True)
+class TestHandleSuccessfulRequest:
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        # Import here to avoid import issues in test setup
+        from applications.management.commands.send_ahjo_requests import Command
+
+        self.command = Command()
+
+        # Create mock application
+        self.mock_app = Mock()
+        self.mock_app.id = 1
+        self.mock_app.application_number = "APP123"
+
+        # Setup common mocks
+        self.command._handle_failed_request = Mock()
+        self.command._handle_application_request_success = Mock(
+            return_value="Success text"
+        )
+        self.command._print_with_timestamp = Mock(return_value="Timestamped message")
+        self.command.stdout = Mock()
+        self.command.style = Mock()
+        self.command.style.SUCCESS = Mock(return_value="Styled success")
+
+    def test_empty_response_for_decision_details(self, caplog):
+        """Test when response_content is empty for GET_DECISION_DETAILS request"""
+        request_type = AhjoRequestType.GET_DECISION_DETAILS
+        response_content = []
+
+        self.command._handle_successful_request(
+            1, self.mock_app, response_content, request_type
+        )
+
+        assert "No details found in response." in caplog.text
+
+        self.command.stdout.write.assert_not_called()
+
+    def test_valid_response_for_decision_details(self):
+        """Test when response_content is valid for GET_DECISION_DETAILS request"""
+        request_type = AhjoRequestType.GET_DECISION_DETAILS
+        response_content = [{"key": "value"}]
+
+        with patch.object(
+            AhjoDecisionDetailsResponseHandler, "__init__", return_value=None
+        ):
+            with patch.object(
+                AhjoDecisionDetailsResponseHandler,
+                "handle_details_request_success",
+                return_value="Details success",
+            ) as mock_handler:
+                self.command._handle_successful_request(
+                    1, self.mock_app, response_content, request_type
+                )
+
+                mock_handler.assert_called_once_with(self.mock_app, response_content[0])
+                self.command._print_with_timestamp.assert_called_once_with(
+                    "Details success"
+                )
+                self.command.style.SUCCESS.assert_called_once()
+                self.command.stdout.write.assert_called_once()
+
+    def test_other_request_types(self):
+        """Test handling of request types other than GET_DECISION_DETAILS"""
+        request_type = AhjoRequestType.OPEN_CASE
+        response_content = "response-id-123"
+        self.command._handle_successful_request(
+            1, self.mock_app, response_content, request_type
+        )
+        self.command._handle_application_request_success.assert_called_once_with(
+            self.mock_app, 1, response_content, request_type
+        )
+        self.command._print_with_timestamp.assert_called_once_with("Success text")
+        self.command.style.SUCCESS.assert_called_once()
+        self.command.stdout.write.assert_called_once()
+        self.command._handle_failed_request.assert_not_called()
