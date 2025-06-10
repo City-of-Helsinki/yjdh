@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.4](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.9.3...benefit-backend-v2.9.4) (2025-06-10)
+
+
+### Bug Fixes
+
+* **benefit:** Catch empty ahjo response and log it ([b98a90e](https://github.com/City-of-Helsinki/yjdh/commit/b98a90ee33864eb5572f38ecdccd32935f34b51b))
+
 ## [2.9.3](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.9.2...benefit-backend-v2.9.3) (2025-03-13)
 
 
