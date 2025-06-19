@@ -1,9 +1,4 @@
-try:
-    import langdetect
-except ImportError:
-    # as of 2022-04, TET project doesn't have langdetect as dependency yet, and
-    # unit tests fail because pytest tries to import this file
-    pass
+import langdetect
 
 
 def assert_email_subject_language(email_subject, expected_language):

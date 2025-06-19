@@ -73,27 +73,6 @@ updates:
     commit-message:
       prefix: "deps"
     open-pull-requests-limit: 0
-  - package-ecosystem: "npm"
-    directory: "frontend/tet/admin"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "deps"
-    open-pull-requests-limit: 0
-  - package-ecosystem: "npm"
-    directory: "frontend/tet/employer"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "deps"
-    open-pull-requests-limit: 0
-  - package-ecosystem: "npm"
-    directory: "frontend/tet/youth"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "deps"
-    open-pull-requests-limit: 0
   - package-ecosystem: "pip"
     directory: "backend/"
     schedule:

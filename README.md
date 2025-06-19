@@ -13,7 +13,8 @@ This monorepo contains code for three different employment services:
   * Backend
   * Applicant
   * Handler
-* **TET Job Search**
+
+* **TET Job Search** - retired and can be found in [here](https://github.com/City-of-Helsinki/yjdh/tree/ab8b87d5466badb37dccb968830ddbb2a51ec170)
   * Backend 
   * Youth
   * Admin
@@ -34,9 +35,6 @@ Follow these instructions to spin up a service:
 	* [kesaseteli-handler](#kesaseteli-handler-development-with-docker)
 * Benefit aka. Helsinki-lisä:
   * [benefit](#benefit)
-* TET:
-   * [tet-admin](#tet-admin-development-with-docker) 
-   * [tet-youth](#tet-youth-development-with-docker) 
 
 There is additional README's about [authentication and backend development](https://github.com/City-of-Helsinki/yjdh/tree/main/backend) and [frontend development](https://github.com/City-of-Helsinki/yjdh/tree/main/frontend).
 
@@ -137,40 +135,6 @@ YJDH-Benefit provides two services for applying and for handling the application
   - The Applicant Frontend is now running at [localhost:3000](https://localhost:3000)
   - The Handler Frontend is now running at [localhost:3100](https://localhost:3100)
   - The backend is now running at [localhost:8000](https://localhost:8000)
-
-## TET Admin
-
-YJDH-TET-Admin is a UI for Helsinki city employees or private employers to add TET job advertisements (also called job postings in the code).
-
-### tet-admin development with Docker
-
-1. Run `yarn` to install necessary packages
-
-2. Copy the contents of `.env.tet.example` to `.env.tet` and modify it if needed.
-
-3. You need to set `LINKEDEVENTS_API_KEY` in `.env.tet` for this service to work. Usually this is set to Linked Events test environment (default in `.env.tet.example`), so you need to ask for this.
-
-4. Run `yarn tet-admin up` or, if you want to rebuild, then `yarn tet-admin up --build`
-  - The Frontend is now running at [localhost:3002](https://localhost:3002)
-  - The backend is now running at [localhost:8000](https://localhost:8000)
-
-Running `yarn tet-admin down` brings down all services.
-
-## TET Youth
-
-YJDH-TET-Youth is a UI for pupils to search for TET job advertisements.
-
-### tet-youth development with Docker
-
-1. Run `yarn` to install necessary packages
-
-2. Copy the contents of `.env.tet.example` to `.env.tet` and modify it if needed.
-
-3. Run `yarn tet-youth up` or, if you want to rebuild, then `yarn tet-youth up --build`
-  - The Frontend is now running at [localhost:3001](https://localhost:3001)
-  - The backend is now running at [localhost:8000](https://localhost:8000)
-
-Running `yarn tet-youth down` brings down all services.
 
 ## Known errors
 
