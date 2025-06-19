@@ -32,9 +32,7 @@ pr:
       - frontend/shared/**
     exclude:
       - README.md
-      - backend/tet/**
       - backend/kesaseteli/**
-      - frontend/tet/**
       - frontend/kesaseteli/**
       - frontend/**/browser-tests
       - frontend/**/__tests__
