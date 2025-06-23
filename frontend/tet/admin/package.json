@@ -27,7 +27,7 @@
     "hds-design-tokens": "^3.11.0",
     "hds-react": "^3.11.0",
     "leaflet": "^1.7.1",
-    "next": "14.2.12",
+    "next": "14.2.25",
     "next-compose-plugins": "^2.2.1",
     "next-i18next": "^13.0.3",
     "react": "^18.2.0",
