@@ -5,7 +5,7 @@
   "frontend/benefit/handler": "4.10.1",
   "frontend/benefit/applicant": "3.15.1",
   "frontend/kesaseteli/employer": "1.5.1",
-  "frontend/kesaseteli/handler": "1.4.0",
+  "frontend/kesaseteli/handler": "1.4.1",
   "frontend/kesaseteli/youth": "1.5.0",
   "frontend/tet/admin": "1.2.0",
   "frontend/tet/youth": "1.2.0"
