@@ -21,7 +21,7 @@
     "allRightsReservedText": "Med ensamrätt",
     "backToTop": "Tillbaka till toppen",
     "registerInformation": "Dataskyddspolicy",
-    "registerInformationLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Ungdomstjansternas%20register%20for%20sommarjobbssedlar.pdf",
+    "registerInformationLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Ungdomstjansternas-register-for-sommarjobbssedlar.pdf",
     "jobOpenings": "Öppna arbetsplatser (Endast på finska)",
     "jobOpeningsLink": "https://nuorten.helsinki/avoimet-tyopaikat/",
     "contactUs": "Ta kontakt",
@@ -36,7 +36,7 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "termsAndConditionsLink": "https://nuorten.helsinki/sv/studier-och-jobb/kesatyonhakijalle/",
+  "termsAndConditionsLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Ungdomstjansternas-register-for-sommarjobbssedlar.pdf",
   "error": {
     "generic": {
       "label": "Ett okänt fel inträffade.",
@@ -51,11 +51,11 @@
   "youthApplication": {
     "title": "Registrera dig och få din personlig Sommarsedel",
     "paragraph_1": "Det är roligt och enkelt att tjäna egna pengar!\nSommarsedeln är personlig och värd 350 euro för arbetsgivaren.",
-    "form" : {
+    "form": {
       "title": "Information om Sommarsedeln",
       "info": "Fyll i uppgifterna på samma sätt som på ditt FPA-kort",
       "button": "Skicka informationen",
-      "first_name" : "Förnamn",
+      "first_name": "Förnamn",
       "last_name": "Efternamn",
       "social_security_number": "Personbeteckning",
       "postcode": "Post nummer",
@@ -68,15 +68,15 @@
       "email": "E-postadress",
       "phone_number": "Telefonnummer",
       "termsAndConditions": "Jag har läst och godkänner <a>villkoren</a>.",
-      "termsAndConditionsLink": "https://nuorten.helsinki/sv/studier-och-jobb/sommarsedeln/kesatyonhakijalle/",
+      "termsAndConditionsLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Ungdomstjansternas-register-for-sommarjobbssedlar.pdf",
       "sendButton": "Skicka informationen",
       "requiredInfo": "Alla fält som är märkta med * är obligatoriska",
       "sendItAnyway": "Om du anser uppgifterna är rätt, kan du skicka in din ansökan för kontroll. Vi återkommer då vi behandlat ditt ärende.",
       "forceSubmitLink": "Skicka"
     },
-    "checkNotification" : {
-      "label" : "Ops! Någon av uppgifterna ör inte rätt.",
-      "recheck" : "Kontrollera att du skrivit ditt nan och personnumret, som de är på ditt FPA-kort.",
+    "checkNotification": {
+      "label": "Ops! Någon av uppgifterna ör inte rätt.",
+      "recheck": "Kontrollera att du skrivit ditt nan och personnumret, som de är på ditt FPA-kort.",
       "validation": "Kontrollera följande fält: {{ fields}}"
     }
   },
@@ -85,12 +85,12 @@
     "notification": {
       "confirmed": "E-post adressen är begräftad",
       "confirmedDescription": "",
-      "sent" : "Tack! din tilläggsinformation har skickats!",
+      "sent": "Tack! din tilläggsinformation har skickats!",
       "notFound": "Din ansökan hittas inte!"
     },
     "paragraph_1": "Din ansökan behöver mer information. Välj bland alternativen nedan och skriv din förklaring.",
     "paragraph_2": "",
-    "form" : {
+    "form": {
       "reasons": "Rubrik",
       "reasonsPlaceholder": "Välj av följande alternativ",
       "additional_info_description": "Tilläggsuppgifter",
@@ -119,42 +119,42 @@
     "clearAllChoices": "Töm alla val"
   },
   "notificationPages": {
-    "thankyou" : {
+    "thankyou": {
       "title": "Fint! Du har skickat dina uppgifter till Sommarsedelns digitala system.",
       "message": "Du fick en aktiveringslänk för Sommarsedeln per e-post. Den måste aktiveras inom {{ expirationHours }} timmar.",
       "goToFrontendPage": "Gå till Sommarsedelns förstasida"
     },
-    "emailInUse" : {
+    "emailInUse": {
       "title": "Hoppsan! E-postadressen används redan.",
       "message": "Om det handlar om ett fel, vänta i {{ expirationHours }} timmar och försöka igen.",
       "goToFrontendPage": "SV Tarkista tiedot ja lähetä uudelleen"
     },
-    "alreadyAssigned" : {
+    "alreadyAssigned": {
       "title": "Hoppsan! Du har redan ansökt om en Sommarsedel, som behandlats som bäst.",
       "message": "",
       "goToFrontendPage": ""
     },
-    "activated" : {
+    "activated": {
       "title": "Bekräftelsen lyckades",
       "message": "Bra! Du har lämnat in dina uppgifter till systemet och din ansökan kommer att behandlas så snart som möjligt – senast inom en månad. Du får sommarsedeln och bruksanvisningar via e-post när din ansökan har kontrollerats!",
       "goToFrontendPage": ""
     },
-    "expired" : {
+    "expired": {
       "title": "Hoppsan! Bekräftelselänken har gått ut.",
       "message": " Det har tyvärr gått mer än {{ expirationHours }} timmar sedan registreringsbekräftelsen. Fyll i registreringsblanketten igen.",
       "goToFrontendPage": "Registrera dig och skicka Sommarsedeln på nytt"
     },
-    "accepted" : {
+    "accepted": {
       "title": "SV Hienoa! Olet lähettänyt tietosi järjestelmään",
       "message": "SV Saat pian kesäsetelin ohjeineen sähköpostiisi",
       "goToFrontendPage": ""
     },
-    "alreadyActivated" : {
+    "alreadyActivated": {
       "title": "Hoppsan! Du har redan ansökt om en Sommarsedel, som behandlats som bäst.",
       "message": "",
       "goToFrontendPage": ""
     },
-    "inadmissibleData" : {
+    "inadmissibleData": {
       "title": "SV Hups! Antamillasi tiedoilla ei voi hakea Kesäseteliä.",
       "message": "SV Tarkistahan tietosi ja lähetä rekisteröitymislomake uudestaan.",
       "goToFrontendPage": "SV Tarkista tiedot ja lähetä kesäseteli uudelleen"

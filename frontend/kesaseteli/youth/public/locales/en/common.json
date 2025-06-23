@@ -21,7 +21,7 @@
     "allRightsReservedText": "All rights reserved",
     "backToTop": "Back to top",
     "registerInformation": "Privacy policy",
-    "registerInformationLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Youth%20services%20summer%20job%20voucher%20data%20file.pdf",
+    "registerInformationLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Youth-services-summer-job-voucher-data-file.pdf",
     "jobOpenings": "Open Summer Jobs (Only in finnish)",
     "jobOpeningsLink": "https://nuorten.helsinki/avoimet-tyopaikat/",
     "contactUs": "Contact us",
@@ -36,7 +36,7 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "termsAndConditionsLink": "https://nuorten.helsinki/en/studies-and-work/for-summer-job-seekers/",
+  "termsAndConditionsLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Youth-services-summer-job-voucher-data-file.pdf",
   "error": {
     "generic": {
       "label": "An unexpected error occurred",
@@ -51,11 +51,11 @@
   "youthApplication": {
     "title": "Sign up to receive your personal Summer Job Voucher",
     "paragraph_1": "Earning your own money is fun and easy! The Summer Job Voucher is personal and worth 350€ for the employer.",
-    "form" : {
+    "form": {
       "title": "Summer Job Voucher information",
       "info": "Please fill in the information as it appears on your Kela card",
       "button": "Submit information",
-      "first_name" : "First name",
+      "first_name": "First name",
       "last_name": "Last name",
       "social_security_number": "Personal identity code",
       "postcode": "Postal code",
@@ -68,29 +68,29 @@
       "email": "Email address",
       "phone_number": "Phone number",
       "termsAndConditions": "I have read and accept the <a>terms of use</a>.",
-      "termsAndConditionsLink": "https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/for-summer-job-seekers/",
+      "termsAndConditionsLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Youth-services-summer-job-voucher-data-file.pdf",
       "sendButton": "Submit information",
       "requiredInfo": "All fields marked with * are required",
       "sendItAnyway": "If you think the information is right, you can send in the application for control. we will be in touch with you after we checked your information.",
       "forceSubmitLink": "Send"
     },
-    "checkNotification" : {
-      "label" : "Oops! Some information is not correct.",
-      "recheck" : "Check, that you have written your name and personal number as it is on your KELA-card.",
+    "checkNotification": {
+      "label": "Oops! Some information is not correct.",
+      "recheck": "Check, that you have written your name and personal number as it is on your KELA-card.",
       "validation": "Check following form fields: {{ fields}}"
     }
   },
   "additionalInfo": {
     "title": "Please, check your application",
-    "notification" : {
+    "notification": {
       "confirmed": " Your e-mail address is confirmed",
       "confirmedDescription": "",
-      "sent" : "Thanks! Your specified information has been sent!",
+      "sent": "Thanks! Your specified information has been sent!",
       "notFound": "Your application is not found"
     },
     "paragraph_1": "Your application needs more information. Choose from the options below and write your explanation.",
     "paragraph_2": "",
-    "form" : {
+    "form": {
       "reasons": "Title",
       "reasonsPlaceholder": "Choose from following options",
       "additional_info_description": "More information",
@@ -119,42 +119,42 @@
     "clearAllChoices": "Clear all selected"
   },
   "notificationPages": {
-    "thankyou" : {
+    "thankyou": {
       "title": "Excellent! You sent your information to the Summer Job Vouchers´ digital system.",
       "message": "You have received an email with an activation link for your Summer Job Voucher, which must be activated within {{ expirationHours }} hours.",
       "goToFrontendPage": "Go to the Summer Job Voucher front page"
     },
-    "emailInUse" : {
+    "emailInUse": {
       "title": "Oops! The email is already in use.",
       "message": " If you made a mistake, please wait {{ expirationHours }} hours and try again.",
       "goToFrontendPage": "Check your information and send the application for the Summer Job Voucher again."
     },
-    "alreadyAssigned" : {
+    "alreadyAssigned": {
       "title": "Oops! You already sent a Summer Job Voucher application, which is being processed now.",
       "message": "",
       "goToFrontendPage": ""
     },
-    "activated" : {
+    "activated": {
       "title": "Confirmation succeeded",
       "message": "Great! You have submitted your information to the system and your application will be processed as soon as possible - within one month at the latest. You will receive the Summer Voucher and instructions for use by e-mail once your application has been checked!",
       "goToFrontendPage": ""
     },
-    "accepted" : {
+    "accepted": {
       "title": "EN Hienoa! Olet lähettänyt tietosi järjestelmään",
       "message": "EN Saat pian kesäsetelin ohjeineen sähköpostiisi",
       "goToFrontendPage": ""
     },
-    "expired" : {
+    "expired": {
       "title": "Oops! The confirmation link has expired",
       "message": "Unfortunately, it has been more than {{ expirationHours }} hours since your registration was confirmed. Please fill in the registration form again.",
       "goToFrontendPage": "Register yourself and send the Summer Job Voucher again"
     },
-    "alreadyActivated" : {
+    "alreadyActivated": {
       "title": "Oops! You already sent a Summer Job Voucher application, which is being processed now.",
       "message": "",
       "goToFrontendPage": ""
     },
-    "inadmissibleData" : {
+    "inadmissibleData": {
       "title": "Oops! Based on the given information it is not possible to get the Summer Job Voucher",
       "message": "Check your information and send the registration form again.",
       "goToFrontendPage": "Check your information and send the application for the Summer Job Voucher again."

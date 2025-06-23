@@ -21,7 +21,7 @@
     "allRightsReservedText": "Kaikki oikeudet pidätetään",
     "backToTop": "Takaisin ylös",
     "registerInformation": "Rekisteriseloste",
-    "registerInformationLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Nuorisopalvelujen%20kesatyosetelirekisteri.pdf",
+    "registerInformationLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Nuorisopalvelujen-kesatyosetelirekisteri.pdf",
     "jobOpenings": "Avoimet kesätyöpaikat",
     "jobOpeningsLink": "https://nuorten.helsinki/avoimet-tyopaikat/",
     "contactUs": "Ota yhteyttä",
@@ -36,7 +36,7 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "termsAndConditionsLink": "https://nuorten.helsinki/kesaseteli/nuorelle/",
+  "termsAndConditionsLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Nuorisopalvelujen-kesatyosetelirekisteri.pdf",
   "error": {
     "generic": {
       "label": "Tapahtui tuntematon virhe",
@@ -51,11 +51,11 @@
   "youthApplication": {
     "title": "Rekisteröidy ja saat henkilökohtaisen Kesäsetelin käyttöösi",
     "paragraph_1": "Oman rahan tienaaminen on hauskaa ja helppoa! Kesäseteli on henkilökohtainen ja sen arvo on työnantajalle 350 euroa.",
-    "form" : {
+    "form": {
       "title": "Kesäsetelin tiedot",
       "info": "Täytäthän tiedot samalla tavalla kuin kelakortissasi",
       "button": "Lähetä tiedot",
-      "first_name" : "Etunimi",
+      "first_name": "Etunimi",
       "last_name": "Sukunimi",
       "social_security_number": "Henkilötunnus",
       "postcode": "Postinumero",
@@ -68,29 +68,29 @@
       "email": "Sähköpostiosoite",
       "phone_number": "Puhelinnumero",
       "termsAndConditions": "Olen lukenut palvelun <a>käyttöehdot</a> ja hyväksyn ne.",
-      "termsAndConditionsLink": "https://kesasethttps://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/nuorelle/",
+      "termsAndConditionsLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Nuorisopalvelujen-kesatyosetelirekisteri.pdf",
       "sendButton": "Lähetä tiedot",
       "requiredInfo": "Kaikki * merkityt kentät ovat pakollisia julkaisuun",
       "sendItAnyway": "Mikäli tiedot ovat mielestäsi oikein, voit lähettää ne meille tarkastettavaksi. Palaamme asiaan kun olemme käsitelleet tietosi.",
       "forceSubmitLink": "Lähetä"
     },
-    "checkNotification" : {
-      "label" : "Hups! Jokin tiedoista ei ole oikein",
-      "recheck" : "Tarkistathan, että olet kirjoittanut nimesi ja henkilötunnuksesi kuten ne ovat Kela-kortissasi.",
+    "checkNotification": {
+      "label": "Hups! Jokin tiedoista ei ole oikein",
+      "recheck": "Tarkistathan, että olet kirjoittanut nimesi ja henkilötunnuksesi kuten ne ovat Kela-kortissasi.",
       "validation": "Tarkista seuraavat kentät: {{ fields}}"
     }
   },
   "additionalInfo": {
     "title": "Tarkenna hakemustasi",
-    "notification" : {
-      "confirmed" : "Sähköpostiosoite on vahvistettu",
-      "confirmedDescription" : "",
-      "sent" : "Kiitos! Tarkennus on nyt lähetetty.",
-      "notFound":  "Hakemusta ei löytynyt"
+    "notification": {
+      "confirmed": "Sähköpostiosoite on vahvistettu",
+      "confirmedDescription": "",
+      "sent": "Kiitos! Tarkennus on nyt lähetetty.",
+      "notFound": "Hakemusta ei löytynyt"
     },
     "paragraph_1": "Hakemuksesi tarvitsee lisätietoja. Valitse alla olevista vaihtoehdoista ja kirjoita sille perustelu.",
     "paragraph_2": "",
-    "form" : {
+    "form": {
       "reasons": "Otsikko",
       "reasonsPlaceholder": "Valitse seuraavista vaihtoehdoista",
       "additional_info_description": "Lisätiedot",
@@ -119,42 +119,42 @@
     "clearAllChoices": "Tyhjennä kaikki valinnat"
   },
   "notificationPages": {
-    "thankyou" : {
+    "thankyou": {
       "title": "Hienoa! Olet lähettänyt tietosi kesäsetelijärjestelmään",
       "message": "Sait sähköpostiin Kesäsetelin aktivointi-linkin, joka täytyy aktivoida {{ expirationHours }} tunnin kuluessa.",
       "goToFrontendPage": "Siirry kesäsetelin etusivulle"
     },
-    "emailInUse" : {
+    "emailInUse": {
       "title": "Hups! Sähköposti on jo käytössä.",
       "message": "Jos kyseessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen.",
       "goToFrontendPage": "Tarkista tiedot ja lähetä kesäsetelihakemus uudelleen"
     },
-    "alreadyAssigned" : {
+    "alreadyAssigned": {
       "title": "Hups! Olet jo aikaisemmin lähettänyt Kesäsetelihakemuksen ja se on nyt käsittelyssä.",
       "message": "",
       "goToFrontendPage": ""
     },
-    "activated" : {
+    "activated": {
       "title": "Vahvistus onnistui",
       "message": "Hienoa! Olet lähettänyt tietosi järjestelmään ja hakemuksesi käsitellään mahdollisimman pian - viimeistään kuukauden kuluessa. Saat Kesäsetelin ja käyttöohjeet sähköpostiisi kun hakemuksesi on tarkastettu!",
       "goToFrontendPage": ""
     },
-    "accepted" : {
+    "accepted": {
       "title": "Hienoa! Olet lähettänyt tietosi järjestelmään",
       "message": " Saat pian kesäsetelin ohjeineen sähköpostiisi",
       "goToFrontendPage": ""
     },
-    "expired" : {
+    "expired": {
       "title": "Hups! Vahvistuslinkki on vanhentunut.",
       "message": "Ikävä kyllä rekisteröinnin vahvistukseen on kulunut yli {{ expirationHours }} tuntia. Täytäthän rekisteröintikomakkeen uudelleen.",
       "goToFrontendPage": "Rekisteröidy ja lähetä kesäseteli uudelleen"
     },
-    "alreadyActivated" : {
+    "alreadyActivated": {
       "title": "Hups! Olet jo aikaisemmin lähettänyt Kesäsetelihakemuksen ja se on nyt käsittelyssä.",
       "message": "",
       "goToFrontendPage": ""
     },
-    "inadmissibleData" : {
+    "inadmissibleData": {
       "title": "Hups! Antamillasi tiedoilla ei voi hakea Kesäseteliä.",
       "message": "Tarkistahan tietosi ja lähetä rekisteröitymislomake uudestaan.",
       "goToFrontendPage": "Tarkista tiedot ja lähetä kesäsetelihakemus uudelleen"
