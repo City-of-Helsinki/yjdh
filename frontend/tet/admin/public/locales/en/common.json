@@ -47,7 +47,6 @@
     "cancel": "Cancel"
   },
   "application": {
-    "backToFrontPage": "Back to front page",
     "publishTerms": "By publishing, you accept",
     "termsLink": "the terms and conditions",
     "backToFrontPage": "Back to the front page",
@@ -85,7 +84,6 @@
     "saveDraft": "Save without publishing",
     "savePublished": "Save and publish",
     "deletePosting": "Delete advertisement",
-    "preview": "Move to preview",
     "publish": "Publish",
     "notificationTitle": "Fill in missing or incorrect information",
     "backToEdit": "Back to the form",
