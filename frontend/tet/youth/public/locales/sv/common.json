@@ -65,7 +65,7 @@
     "allRightsReservedText": "Med ensamrätt",
     "accessibilityStatement": "Tillgänglighetsutlåtande",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/information/tillganglighet",
-	"backToTop": "Tillbaka till toppen",
+    "backToTop": "Tillbaka till toppen",
     "privacyPolicy": "Registerbeskrivning",
     "privacyPolicyPDF": "Öppnar en pdf-fil",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Register för administration av grundläggande utbildning.pdf",
@@ -81,7 +81,7 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "termsAndConditionsLink": "https://kesaseteli.fi/sv/med-sommarsedeln-i-handen-ar-du-ett-steg-narmare-dina-drommars-sommarjobb/at-arbetsgivaren/",
+  "termsAndConditionsLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Ungdomstjansternas-register-for-sommarjobbssedlar.pdf",
   "error": {
     "generic": {
       "label": "Ett okänt fel inträffade.",

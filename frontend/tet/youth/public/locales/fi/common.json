@@ -65,7 +65,7 @@
     "allRightsReservedText": "Kaikki oikeudet pidätetään",
     "accessibilityStatement": "Saavutettavuusseloste",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/tietoa-hel-fista/saavutettavuus/saavutettavuusselosteet",
-	"backToTop": "Takaisin ylös",
+    "backToTop": "Takaisin ylös",
     "privacyPolicy": "Rekisteriseloste",
     "privacyPolicyPDF": "Avaa pdf-tiedoston",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
@@ -81,7 +81,7 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
+  "termsAndConditionsLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Nuorisopalvelujen-kesatyosetelirekisteri.pdf",
   "error": {
     "generic": {
       "label": "Tapahtui tuntematon virhe",

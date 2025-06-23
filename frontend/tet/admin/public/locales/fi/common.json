@@ -20,14 +20,14 @@
     "pageNotFoundContent": "Voi ei, jokin meni nyt valitettavasti vikaan. Kokeile mennä <lnk>tästä</lnk> takaisin etusivulle."
   },
   "loginPage": {
-		"pageHeading": "TET-paikkailmoitukset",
-		"pageText": "Tervetuloa TET-paikkojen ilmoituspalveluun. Palvelussa voit ilmoittaa ja hallinnoida organisaatiosi TET-paikkoja. Valitse alta haluatko ilmoittaa uuden TET-paikan yksityisen yrityksen vai Helsingin kaupungin edustajana.",
-		"companyLoginHeading": "Yksityinen organisaatio (käytössä syksyllä 2022)",
-		"companyLoginText": "Olen yksityisen organisaation edustaja",
-		"companyLoginButton": "Suomi.fi tunnistautuminen",
-		"cityLoginHeading": "Helsingin kaupunki",
-		"cityLoginText": "Olen Helsingin kaupungin edustaja",
-		"cityLoginButton": "Helsingin kaupungin sisäänkirjautuminen",
+    "pageHeading": "TET-paikkailmoitukset",
+    "pageText": "Tervetuloa TET-paikkojen ilmoituspalveluun. Palvelussa voit ilmoittaa ja hallinnoida organisaatiosi TET-paikkoja. Valitse alta haluatko ilmoittaa uuden TET-paikan yksityisen yrityksen vai Helsingin kaupungin edustajana.",
+    "companyLoginHeading": "Yksityinen organisaatio (käytössä syksyllä 2022)",
+    "companyLoginText": "Olen yksityisen organisaation edustaja",
+    "companyLoginButton": "Suomi.fi tunnistautuminen",
+    "cityLoginHeading": "Helsingin kaupunki",
+    "cityLoginText": "Olen Helsingin kaupungin edustaja",
+    "cityLoginButton": "Helsingin kaupungin sisäänkirjautuminen",
     "logoutMessageLabel": "Olet kirjautunut ulos",
     "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään",
     "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
@@ -43,66 +43,66 @@
       "registerRights2": "Rekisteröity voi muun muassa tarkistaa mitä tietoja hänestä on kerätty. Lisätietoja oikeuksista ja niiden toteuttamisesta ax 2000<a>Helsingin kaupungin tietosuojasivulla</a>."
     }
   },
-	"dialog": {
-		"cancel": "Peruuta"
-	},
+  "dialog": {
+    "cancel": "Peruuta"
+  },
   "application": {
-		"backToFrontPage": "Takaisin etusivulle",
-		"publishTerms": "Julkaisun yhteydessä hyväksyt",
-		"termsLink": "käyttöehdot",
-		"createTerms": "Olen esihenkilöasemassa tai keskustellut esihenkilön kanssa ilmoituksen teosta.",
-		"accept": "Hyväksy",
+    "backToFrontPage": "Takaisin etusivulle",
+    "publishTerms": "Julkaisun yhteydessä hyväksyt",
+    "termsLink": "käyttöehdot",
+    "createTerms": "Olen esihenkilöasemassa tai keskustellut esihenkilön kanssa ilmoituksen teosta.",
+    "accept": "Hyväksy",
     "jobPostings": {
       "title": "TET-paikkailmoitukset",
       "noPostingsFound": "Sinulla ei ole vielä yhtään TET-paikkaa.",
       "addNewPosting": "Lisää uusi TET-paikka",
-			"publishedPostings": "TET-paikat",
-			"draftPostings": "Keskeneräiset ilmoitukset",
+      "publishedPostings": "TET-paikat",
+      "draftPostings": "Keskeneräiset ilmoitukset",
       "expiredPostings": "Päättyneet ilmoitukset",
-			"openSpots_one": "{{count}} TET-paikka",
-			"openSpots_other": "{{count}} TET-paikkaa",
-			"published": "Julkaistu",
-			"notPublished": "Ei julkaistu",
-			"total": "kpl",
-			"resultsError": "TET-paikkojen haussa tapahtui virhe",
-			"menu": {
-				"publishNow": "Julkaise nyt",
-				"edit": "Muokkaa",
-				"copy": "Tee kopio",
-				"delete": "Poista"
-			}
+      "openSpots_one": "{{count}} TET-paikka",
+      "openSpots_other": "{{count}} TET-paikkaa",
+      "published": "Julkaistu",
+      "notPublished": "Ei julkaistu",
+      "total": "kpl",
+      "resultsError": "TET-paikkojen haussa tapahtui virhe",
+      "menu": {
+        "publishNow": "Julkaise nyt",
+        "edit": "Muokkaa",
+        "copy": "Tee kopio",
+        "delete": "Poista"
+      }
     }
   },
   "editor": {
-		"formLabel": "Lisää TET-paikka tai muokkaa",
-		"companyInfo": "Työnantajan tiedot",
+    "formLabel": "Lisää TET-paikka tai muokkaa",
+    "companyInfo": "Työnantajan tiedot",
     "helsinkiCity": "Helsingin kaupunki",
-		"companyInfoFetch": "Tiedot on haettu tunnistautumisen yhteydessä.",
+    "companyInfoFetch": "Tiedot on haettu tunnistautumisen yhteydessä.",
     "newTitle": "Uusi TET-paikka",
     "editTitle": "Muokkaa TET-paikkaa",
-		"copyTitle": "Kopioi TET-paikka",
+    "copyTitle": "Kopioi TET-paikka",
     "saveDraft": "Tallenna julkaisematta",
     "savePublished": "Tallenna ja julkaise",
     "deletePosting": "Poista ilmoitus",
     "preview": "Siirry esikatseluun",
     "publish": "Julkaise",
     "notificationTitle": "Täytä puuttuvat tai virheelliset tiedot",
-		"backToEdit": "Takaisin lomakkeelle",
-		"requiredInfo": "merkityt kentät ovat pakollisia",
-		"preview": "Esikatselu",
+    "backToEdit": "Takaisin lomakkeelle",
+    "requiredInfo": "merkityt kentät ovat pakollisia",
+    "preview": "Esikatselu",
     "loadingError": "Tapahtuman latauksessa tapahtui virhe. Yritäthän myöhemmin uudestaan.",
     "language": "TET-paikan kielisyys",
-		"leaveConfirm": "Muutoksia ei ole tallennettu. Haluatko silti poistua?",
-		"draftInfoHeader": "Täytä vaaditut kentät",
-		"draftInfoContent": "Täytä <1>tehtävänimike</1>, <1>toimipiste</1> ja <1>osoite</1> tallentaaksesi keskeneräisen ilmoituksen",
-		"close": "Sulje",
+    "leaveConfirm": "Muutoksia ei ole tallennettu. Haluatko silti poistua?",
+    "draftInfoHeader": "Täytä vaaditut kentät",
+    "draftInfoContent": "Täytä <1>tehtävänimike</1>, <1>toimipiste</1> ja <1>osoite</1> tallentaaksesi keskeneräisen ilmoituksen",
+    "close": "Sulje",
     "employerInfo": {
-			"contactPerson": "Yhteyshenkilö",
+      "contactPerson": "Yhteyshenkilö",
       "header": "TET-paikan tiedot",
       "addressNeededLabel": "TET-paikka suoritetaan eri osoitteessa",
       "departmentLabel": "Toimipiste tai osasto",
-			"address": "Osoite",
-			"streetAddress": "Katuosoite"
+      "address": "Osoite",
+      "streetAddress": "Katuosoite"
     },
     "posting": {
       "header": "TET-paikan kuvaus",
@@ -111,61 +111,61 @@
       "workHoursNotice": "Työaika on aina sama 30h per viikko.",
       "startDateLabel": "Alkaen",
       "endDateLabel": "Päättyen",
-			"endDateHelperText": "Jos TET-paikka on jatkuva, jätä päättymisaika tyhjäksi",
+      "endDateHelperText": "Jos TET-paikka on jatkuva, jätä päättymisaika tyhjäksi",
       "spotsLabel": "TET-paikat",
-			"spotsIncrease": "Lisää yhdellä",
-			"spotsDecrease": "Vähennä yhdellä",
-			"contactFirstName": "Etunimi",
-			"contactLastName": "Sukunimi",
-			"contactPhone": "Puhelin",
-			"contactEmail": "Sähköposti",
-			"contactLanguage": "TET-jaksolla käytetty kieli",
-			"contactLanguageFi": "Suomi",
-			"contactLanguageSv": "Ruotsi",
-			"contactLanguageEn": "Englanti",
-			"website": "Verkkosivut",
-			"validation": {
-				"required": "Tieto vaaditaan",
-				"email": "Syötä sähköposti oikeassa muodossa",
-				"max": "Maksimimerkkimäärä ylittyy",
-				"phone": "Syötä oikeassa muodossa",
-				"name": "Syötä nimi ilman erikoismerkkejä ja kirjaimia",
-				"isSet": "Valitse vähintään yksi"
-			},
-			"imageUpload": {
-				"label": "Lataa kuva toimipisteestä tai työtehtävästä raahaamalla se alle",
-				"helperText": "Leveys min 400px, max 2000px. Koko max 4MB*.jpg*.png",
-				"saveImage": "Tallenna kuva ilmoitukselle",
-				"deleteImage": "Poista tai vaihda kuva",
-				"deleteConfirmTitle": "Haluatko varmasti poistaa kuvan?",
-				"deleteConfirmContent": "Kuva poistetaan ilmoitukselta kokonaan. Toiminto on peruuttamaton",
-				"deleteButton": "Poista kuva",
-				"photographerName": "Valokuvaajan nimi",
+      "spotsIncrease": "Lisää yhdellä",
+      "spotsDecrease": "Vähennä yhdellä",
+      "contactFirstName": "Etunimi",
+      "contactLastName": "Sukunimi",
+      "contactPhone": "Puhelin",
+      "contactEmail": "Sähköposti",
+      "contactLanguage": "TET-jaksolla käytetty kieli",
+      "contactLanguageFi": "Suomi",
+      "contactLanguageSv": "Ruotsi",
+      "contactLanguageEn": "Englanti",
+      "website": "Verkkosivut",
+      "validation": {
+        "required": "Tieto vaaditaan",
+        "email": "Syötä sähköposti oikeassa muodossa",
+        "max": "Maksimimerkkimäärä ylittyy",
+        "phone": "Syötä oikeassa muodossa",
+        "name": "Syötä nimi ilman erikoismerkkejä ja kirjaimia",
+        "isSet": "Valitse vähintään yksi"
+      },
+      "imageUpload": {
+        "label": "Lataa kuva toimipisteestä tai työtehtävästä raahaamalla se alle",
+        "helperText": "Leveys min 400px, max 2000px. Koko max 4MB*.jpg*.png",
+        "saveImage": "Tallenna kuva ilmoitukselle",
+        "deleteImage": "Poista tai vaihda kuva",
+        "deleteConfirmTitle": "Haluatko varmasti poistaa kuvan?",
+        "deleteConfirmContent": "Kuva poistetaan ilmoitukselta kokonaan. Toiminto on peruuttamaton",
+        "deleteButton": "Poista kuva",
+        "photographerName": "Valokuvaajan nimi",
         "photographerNameHelperText": "Jos kuvan lisenssiehdot vaativat valokuvaajan nimen ilmoittamisen, kirjoita se tähän. Nimi tulee näkyviin kuvan alle."
-			}
+      }
     },
-		"classification": {
-			"classifications": "Luokittelut",
-			"workMethod": "Millainen TET?",
-			"workFeature": "Työn ominaisuudet",
-			"keywords": "Avainsanat",
-			"search": "Hae"
-  	},
+    "classification": {
+      "classifications": "Luokittelut",
+      "workMethod": "Millainen TET?",
+      "workFeature": "Työn ominaisuudet",
+      "keywords": "Avainsanat",
+      "search": "Hae"
+    },
     "combobox": {
       "toggleButtonAriaLabel": "Näytä/piilota vaihtoehdot",
       "clearButtonAriaLabel": "Tyhjennä valinnat",
       "selectedItemRemoveButtonAriaLabel": "Poista valinta"
     }
   },
-	"postingTemplate": {
-		"spots": "TET-paikkoja",
-		"contact": "Yhteystiedot",
-		"description": "Kuvaus",
-		"share": "Jaa tapahtuma",
-		"dateAndTime": "Päivä ja aika",
-		"location": "Paikka",
-		"languages": "TET-paikassa käytettävät kielet"
-	},
+  "postingTemplate": {
+    "spots": "TET-paikkoja",
+    "contact": "Yhteystiedot",
+    "description": "Kuvaus",
+    "share": "Jaa tapahtuma",
+    "dateAndTime": "Päivä ja aika",
+    "location": "Paikka",
+    "languages": "TET-paikassa käytettävät kielet"
+  },
   "footer": {
     "copyrightText": "Helsingin kaupunki",
     "allRightsReservedText": "Kaikki oikeudet pidätetään",
@@ -173,19 +173,19 @@
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/tietoa-hel-fista/saavutettavuus/saavutettavuusselosteet",
     "backToTop": "Takaisin ylös",
     "privacyPolicy": "Rekisteriseloste",
-		"privacyPolicyPDF": "Avaa pdf-tiedoston",
+    "privacyPolicyPDF": "Avaa pdf-tiedoston",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
     "feedback": "Anna palautetta",
     "feedbackLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/osallistu-ja-vaikuta/palaute",
-		"newTab": "linkki avautuu uuteen välilehteen"
+    "newTab": "linkki avautuu uuteen välilehteen"
   },
   "languages": {
     "fi": "Suomeksi",
     "sv": "På svenska",
     "en": "In English"
   },
-	"opensInNewPage": "Linkki avautuu toiselle verkkosivulle",
-  "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
+  "opensInNewPage": "Linkki avautuu toiselle verkkosivulle",
+  "termsAndConditionsLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Nuorisopalvelujen-kesatyosetelirekisteri.pdf",
   "error": {
     "generic": {
       "label": "Tapahtui tuntematon virhe",
@@ -204,22 +204,22 @@
     "publishErrorMessage": "TET-paikan julkaisu ei onnistunut."
   },
   "upload": {
-		"successMessage": "TET-paikka tallennettiin",
+    "successMessage": "TET-paikka tallennettiin",
     "isUploading": "Lähetetään...",
     "errorTitle": "Lähetys epäonnistui",
     "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
   },
   "delete": {
-		"deletePosting": "Poista TET-paikka",
-		"confirmation": "Haluatko varmasti poistaa TET-paikan {{posting}}?",
-		"successTitle": "TET-paikka poistettiin",
+    "deletePosting": "Poista TET-paikka",
+    "confirmation": "Haluatko varmasti poistaa TET-paikan {{posting}}?",
+    "successTitle": "TET-paikka poistettiin",
     "errorTitle": "Poistaminen epäonnistui",
     "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
   },
   "publish": {
-		"publishPosting": "Julkaise TET-paikka",
-		"confirmation": "Haluatko varmasti julkaista TET-paikan {{posting}}?",
-		"successTitle": "TET-paikka julkaistiin",
+    "publishPosting": "Julkaise TET-paikka",
+    "confirmation": "Haluatko varmasti julkaista TET-paikan {{posting}}?",
+    "successTitle": "TET-paikka julkaistiin",
     "saveSuccessMessage": "TET-paikka tallennettiin ja julkaistiin",
     "errorTitle": "Julkaiseminen epäonnistui",
     "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
@@ -242,10 +242,10 @@
       }
     }
   },
-	"map": {
-		"readMore": "Lue lisää",
-		"showList": "Näytä tulokset listana",
-		"showMap": "Näytä tulokset kartalla",
+  "map": {
+    "readMore": "Lue lisää",
+    "showList": "Näytä tulokset listana",
+    "showMap": "Näytä tulokset kartalla",
     "helsinkiCity": "Helsingin kaupunki"
-	}
+  }
 }

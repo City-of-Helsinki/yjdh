@@ -65,7 +65,7 @@
     "allRightsReservedText": "All rights reserved",
     "accessibilityStatement": "Accessibility statement",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/information/accessibility",
-	"backToTop": "Back to top",
+    "backToTop": "Back to top",
     "privacyPolicy": "Privacy policy",
     "privacyPolicyPDF": "Opens a pdf-file",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
@@ -81,7 +81,7 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/",
+  "termsAndConditionsLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Youth-services-summer-job-voucher-data-file.pdf",
   "error": {
     "generic": {
       "label": "An unexpected error occurred",

@@ -20,14 +20,14 @@
     "pageNotFoundContent": "Äsch, något gick fel. Pröva med att gå tillbaka till framsidan <lnk>här</lnk>"
   },
   "loginPage": {
-		"pageHeading": "PRAO-platsannonser",
-		"pageText": "Välkommen till PRAO-platsers aviseringstjänst. Tjänsten låter dig meddela och hantera din organisations PRAO-platser. Välj nedan om du vill anmäla en ny PRAO-plats som representant för ett privat företag eller Helsingfors stad.",
-		"companyLoginHeading": "Privat företag (i bruk hösten 2022)",
-		"companyLoginText": "Jag är representant for en privat organisation",
-		"companyLoginButton": "Suomi.fi autentisering",
-		"cityLoginHeading": "Helsingfors stad",
-		"cityLoginText": "Jag är representant för Helsingfors stad ",
-		"cityLoginButton": "Logga in för Helsingfors stad ",
+    "pageHeading": "PRAO-platsannonser",
+    "pageText": "Välkommen till PRAO-platsers aviseringstjänst. Tjänsten låter dig meddela och hantera din organisations PRAO-platser. Välj nedan om du vill anmäla en ny PRAO-plats som representant för ett privat företag eller Helsingfors stad.",
+    "companyLoginHeading": "Privat företag (i bruk hösten 2022)",
+    "companyLoginText": "Jag är representant for en privat organisation",
+    "companyLoginButton": "Suomi.fi autentisering",
+    "cityLoginHeading": "Helsingfors stad",
+    "cityLoginText": "Jag är representant för Helsingfors stad ",
+    "cityLoginButton": "Logga in för Helsingfors stad ",
     "logoutMessageLabel": "Du har loggat ut",
     "errorLabel": "Ett okänt fel inträffade. Logga in på nytt.",
     "sessionExpiredLabel": "Användarsessionen föråldrades. Logga in på nytt.",
@@ -43,67 +43,67 @@
       "registerRights2": "Den registrerade kan bland annat kontrollera vilka uppgifter som samlats om hen. Ytterligare information om rättigheterna och om utövande av dem finns på Helsingfors stads webbsida om datasekretess."
     }
   },
-	"dialog": {
-		"cancel": "Avbryt"
-	},
+  "dialog": {
+    "cancel": "Avbryt"
+  },
   "application": {
-		"backToFrontPage": "Tillbaka till startsidan",
-		"publishTerms": "Genom att publicera godkänner du",
-		"termsLink": "villkoren",
-		"backToFrontPage": "Tillbaka till startsidan",
-		"createTerms": "Jag är i positionen som arbetsledare eller har diskuterat tillkännagivandet med förmannen.",
-		"accept": "Acceptera",
+    "backToFrontPage": "Tillbaka till startsidan",
+    "publishTerms": "Genom att publicera godkänner du",
+    "termsLink": "villkoren",
+    "backToFrontPage": "Tillbaka till startsidan",
+    "createTerms": "Jag är i positionen som arbetsledare eller har diskuterat tillkännagivandet med förmannen.",
+    "accept": "Acceptera",
     "jobPostings": {
       "title": "PRAO-platsannonser",
       "noPostingsFound": "Du har ännu inga PRAO-platser.",
       "addNewPosting": "Lägg till ny praktikplats",
-			"publishedPostings": "PRAO-platser",
-			"draftPostings": "Halvfärdiga annonser",
+      "publishedPostings": "PRAO-platser",
+      "draftPostings": "Halvfärdiga annonser",
       "expiredPostings": "Utgångna annonser",
-			"openSpots_one": "{{count}} PRAO-plats",
-			"openSpots_other": "{{count}} PRAO-platser",
-			"published": "Publicerad",
-			"notPublished": "Ej publicerad",
-			"total": "st.",
-			"resultsError": "Ett fel uppstod under PRAO-platser sökningen",
-			"menu": {
-				"publishNow": "Publicera nu",
-				"edit": "Redigera",
-				"copy": "Gör en kopia",
-				"delete": "Ta bort"
-			}
+      "openSpots_one": "{{count}} PRAO-plats",
+      "openSpots_other": "{{count}} PRAO-platser",
+      "published": "Publicerad",
+      "notPublished": "Ej publicerad",
+      "total": "st.",
+      "resultsError": "Ett fel uppstod under PRAO-platser sökningen",
+      "menu": {
+        "publishNow": "Publicera nu",
+        "edit": "Redigera",
+        "copy": "Gör en kopia",
+        "delete": "Ta bort"
+      }
     }
   },
   "editor": {
-		"formLabel": "Ny PRAO-plats eller regidera",
-		"companyInfo": "Arbetsgivarinformation",
+    "formLabel": "Ny PRAO-plats eller regidera",
+    "companyInfo": "Arbetsgivarinformation",
     "helsinkiCity": "Helsingfors stad",
-		"companyInfoFetch": "Informationen har hämtats under autentiseringen.",
+    "companyInfoFetch": "Informationen har hämtats under autentiseringen.",
     "newTitle": "Ny PRAO-plats",
     "editTitle": "Redigera PRAO-plats",
-		"copyTitle": "Kopiera PRAO-plats",
+    "copyTitle": "Kopiera PRAO-plats",
     "saveDraft": "Spara som opublicerad",
     "savePublished": "Spara och publicera",
     "deletePosting": "Ta bort annons",
     "preview": "Gå till förhandsgranskning",
     "publish": "Publicera",
     "notificationTitle": "Vänligen fyll i bristfälliga eller felaktiga uppgifter",
-		"backToEdit": "Tillbaka till blanketten",
-		"requiredInfo": "Markerade fält är obligatoriska",
-		"preview": "Förhandsgranskning",
+    "backToEdit": "Tillbaka till blanketten",
+    "requiredInfo": "Markerade fält är obligatoriska",
+    "preview": "Förhandsgranskning",
     "loadingError": "Ett fel inträffade när händelsen skulle laddas. Vänligen försök igen senare.",
     "language": "PRAO-platsens språk",
-		"leaveConfirm": "Inga ändringar har sparats. Vill du fortfarande lämna?",
-		"draftInfoHeader": "Fyll i de obligatoriska fälten",
-		"draftInfoContent": "Fyll i <strong>befattning</strong>, <strong>verksmhetsställe</strong> och <strong>adress</strong> för att spara ofullständiga PRAO-platsen",
-		"close": "stänga",
+    "leaveConfirm": "Inga ändringar har sparats. Vill du fortfarande lämna?",
+    "draftInfoHeader": "Fyll i de obligatoriska fälten",
+    "draftInfoContent": "Fyll i <strong>befattning</strong>, <strong>verksmhetsställe</strong> och <strong>adress</strong> för att spara ofullständiga PRAO-platsen",
+    "close": "stänga",
     "employerInfo": {
-			"contactPerson": "Kontaktperson",
+      "contactPerson": "Kontaktperson",
       "header": "Uppgifter om verksamhetsställe",
       "addressNeededLabel": "Arbetspraktiken genomförs på en annan adress",
       "departmentLabel": "Verksamhetsställe eller avdelning",
-			"address": "Adress",
-			"streetAddress": "Gatuadress"
+      "address": "Adress",
+      "streetAddress": "Gatuadress"
     },
     "posting": {
       "header": "Uppgifter om arbetspraktikplats",
@@ -112,61 +112,61 @@
       "workHoursNotice": "Arbetstiden är alltid densamma, 30 timmar i veckan.",
       "startDateLabel": "Börjar",
       "endDateLabel": "Slutar",
-			"endDateHelperText": "Om tiden på PRAO-platsen är kontinuerlig, lämna sluttiden tom",
+      "endDateHelperText": "Om tiden på PRAO-platsen är kontinuerlig, lämna sluttiden tom",
       "spotsLabel": "Arbetspraktikplatser",
-			"spotsIncrease": "Öka med en",
-			"spotsDecrease": "Minska med en",
-			"contactFirstName": "Förnamn",
-			"contactLastName": "Efternamn",
-			"contactPhone": "Telefon",
-			"contactEmail": "E-post",
-			"contactLanguage": "Språket som används under PRAO-perioden",
-			"contactLanguageFi": "Finska",
-			"contactLanguageSv": "Svenska",
-			"contactLanguageEn": "Engelska",
-			"website": "Hemsida",
-			"validation": {
-				"required": "Uppgiften är nödvändig",
-				"email": "Vänligen mata in e-post i rätt format",
-				"max": "Överskrider maximalt antal tecken",
-				"phone": "Vänligen mata in i rätt format",
-				"name": "Mata in namn utan specialtecken och -bokstäver",
-				"isSet": "Välj minst en"
-			},
-			"imageUpload": {
-				"label": "Ladda ner en bild av en arbetsplats eller uppgift genom att dra den nedan",
-				"helperText": "Bredd min 400px, max 2000px. Storlek max 4MB*.jpg*.png",
-				"saveImage": "Spara bilden för PRAO-platsen",
-				"deleteImage": "Bort eller ändra bilden",
-				"deleteConfirmTitle": "Är du säker på att du vill ta bort bilden?",
-				"deleteConfirmContent": "Bilden kommer att tas bort helt från meddelandet. Funktionen är oåterkallelig.",
-				"deleteButton": "Bort bilden",
-				"photographerName": "Fotografens namn",
+      "spotsIncrease": "Öka med en",
+      "spotsDecrease": "Minska med en",
+      "contactFirstName": "Förnamn",
+      "contactLastName": "Efternamn",
+      "contactPhone": "Telefon",
+      "contactEmail": "E-post",
+      "contactLanguage": "Språket som används under PRAO-perioden",
+      "contactLanguageFi": "Finska",
+      "contactLanguageSv": "Svenska",
+      "contactLanguageEn": "Engelska",
+      "website": "Hemsida",
+      "validation": {
+        "required": "Uppgiften är nödvändig",
+        "email": "Vänligen mata in e-post i rätt format",
+        "max": "Överskrider maximalt antal tecken",
+        "phone": "Vänligen mata in i rätt format",
+        "name": "Mata in namn utan specialtecken och -bokstäver",
+        "isSet": "Välj minst en"
+      },
+      "imageUpload": {
+        "label": "Ladda ner en bild av en arbetsplats eller uppgift genom att dra den nedan",
+        "helperText": "Bredd min 400px, max 2000px. Storlek max 4MB*.jpg*.png",
+        "saveImage": "Spara bilden för PRAO-platsen",
+        "deleteImage": "Bort eller ändra bilden",
+        "deleteConfirmTitle": "Är du säker på att du vill ta bort bilden?",
+        "deleteConfirmContent": "Bilden kommer att tas bort helt från meddelandet. Funktionen är oåterkallelig.",
+        "deleteButton": "Bort bilden",
+        "photographerName": "Fotografens namn",
         "photographerNameHelperText": "Om licensvillkoren för bilden kräver, skriv fotografens namn här. Namnet kommer att visas under bilden."
-			}
+      }
     },
-		"classification": {
-			"classifications": "Klassificeringar",
-			"workMethod": "Vilken sort PRAO?",
-			"workFeature": "Arbetets karaktär",
-			"keywords": "Nyckelord",
-			"search": "Sök"
-  	},
+    "classification": {
+      "classifications": "Klassificeringar",
+      "workMethod": "Vilken sort PRAO?",
+      "workFeature": "Arbetets karaktär",
+      "keywords": "Nyckelord",
+      "search": "Sök"
+    },
     "combobox": {
       "toggleButtonAriaLabel": "Visa/dölj alternativ",
       "clearButtonAriaLabel": "Rensa valen",
       "selectedItemRemoveButtonAriaLabel": "Ta bort valet"
     }
   },
-	"postingTemplate": {
-		"spots": "PRAO-platser",
-		"contact": "Kontaktuppgifter",
-		"description": "Beskrivning",
-		"share": "Dela händelse",
-		"dateAndTime": "Datum och tid",
-		"location": "Plats",
-		"languages": "Språk som används på PRAO-platsen"
-	},
+  "postingTemplate": {
+    "spots": "PRAO-platser",
+    "contact": "Kontaktuppgifter",
+    "description": "Beskrivning",
+    "share": "Dela händelse",
+    "dateAndTime": "Datum och tid",
+    "location": "Plats",
+    "languages": "Språk som används på PRAO-platsen"
+  },
   "footer": {
     "copyrightText": "Helsingfors stad",
     "allRightsReservedText": "Med ensamrätt",
@@ -174,19 +174,19 @@
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/information/tillganglighet",
     "backToTop": "Tillbaka till toppen",
     "privacyPolicy": "Registerbeskrivning",
-		"privacyPolicyPDF": "Öppnar en pdf-fil",
+    "privacyPolicyPDF": "Öppnar en pdf-fil",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Register för administration av grundläggande utbildning.pdf",
     "feedback": "Ge feedback",
     "feedbackLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/delta/feedback",
-		"newTab": "länken öppnas i en ny flik"
+    "newTab": "länken öppnas i en ny flik"
   },
-	"opensInNewPage": "Länken öppnas till en annan webbplats",
+  "opensInNewPage": "Länken öppnas till en annan webbplats",
   "languages": {
     "fi": "Suomeksi",
     "sv": "På svenska",
     "en": "In English"
   },
-  "termsAndConditionsLink": "https://kesaseteli.fi/sv/med-sommarsedeln-i-handen-ar-du-ett-steg-narmare-dina-drommars-sommarjobb/at-arbetsgivaren/",
+  "termsAndConditionsLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Ungdomstjansternas-register-for-sommarjobbssedlar.pdf",
   "error": {
     "generic": {
       "label": "Ett okänt fel inträffade.",
@@ -205,22 +205,22 @@
     "publishErrorMessage": "Något gick snett. Vänligen försök igen senare."
   },
   "upload": {
-		"successMessage": "PRAO-platsen sparades",
+    "successMessage": "PRAO-platsen sparades",
     "isUploading": "Filen laddas upp...",
     "errorTitle": "Uppladdningen av filen misslyckades",
     "errorMessage": "Något gick fel. Försök igen senare."
   },
   "delete": {
-		"deletePosting": "Ta bort PRAO-plats",
-		"confirmation": "Är du säker på att du vill ta bort PRAO-platsen {{posting}}?",
-		"successTitle": "PRAO-platsen togs bort",
+    "deletePosting": "Ta bort PRAO-plats",
+    "confirmation": "Är du säker på att du vill ta bort PRAO-platsen {{posting}}?",
+    "successTitle": "PRAO-platsen togs bort",
     "errorTitle": "Borttagningen misslyckades",
     "errorMessage": "Något gick fel. Försök igen senare."
   },
   "publish": {
-		"publishPosting": "Publicera PRAO-plats",
-		"confirmation": "Är du säker på att du vill publicera PRAO-platsen {{posting}}?",
-		"successTitle": "PRAO-platsen publicerades",
+    "publishPosting": "Publicera PRAO-plats",
+    "confirmation": "Är du säker på att du vill publicera PRAO-platsen {{posting}}?",
+    "successTitle": "PRAO-platsen publicerades",
     "saveSuccessMessage": "PRAO-platsen sparades och publicerades",
     "errorTitle": "Publicering misslyckades",
     "errorMessage": "Något gick snett. Vänligen försök igen senare."
@@ -243,10 +243,10 @@
       }
     }
   },
-	"map": {
-		"readMore": "Läs mer",
-		"showList": "visa resultat i en lista",
-		"showMap": "Visa resultat på en karta",
+  "map": {
+    "readMore": "Läs mer",
+    "showList": "visa resultat i en lista",
+    "showMap": "Visa resultat på en karta",
     "helsinkiCity": "Helsingfors stad"
-	}
+  }
 }
