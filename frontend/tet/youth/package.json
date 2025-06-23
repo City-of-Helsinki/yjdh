@@ -24,7 +24,7 @@
     "@socialgouv/matomo-next": "^1.9.1",
     "axios": "^0.27.2",
     "dotenv": "^16.0.0",
-    "hds-design-tokens": "^3.11.0",
+    "hds-design-tokens": "^4.6.0",
     "hds-react": "^3.11.0",
     "leaflet": "^1.7.1",
     "leaflet.markercluster": "^1.5.3",
