@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/City-of-Helsinki/yjdh/compare/tet-youth-v1.2.0...tet-youth-v1.2.1) (2025-06-23)
+
+
+### Bug Fixes
+
+* Upgrade vulnerable Next.js version ([35259be](https://github.com/City-of-Helsinki/yjdh/commit/35259be9f183beb45638514c612e8d7829eff4da))
+
 ## [1.2.0](https://github.com/City-of-Helsinki/yjdh/compare/tet-youth-v1.1.0...tet-youth-v1.2.0) (2025-04-28)
 
 
