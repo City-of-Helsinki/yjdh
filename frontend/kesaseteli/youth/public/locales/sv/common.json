@@ -94,8 +94,8 @@
       "reasons": "Rubrik",
       "reasonsPlaceholder": "Välj av följande alternativ",
       "additional_info_description": "Tilläggsuppgifter",
-      "additional_info_attachments": "SWE Liitetiedostot",
-      "additional_info_attachmentsHelper": "SWE Voit lisätä korkeintaan 5 liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Maksimikoko 10MB",
+      "additional_info_attachments": "Bilagor",
+      "additional_info_attachmentsHelper": "Du kan lägga till högst 5 bilagor. Godkända filformat: pdf, jpg ja png. Maximistorleken 10MB.",
       "sendButton": "Skicka uppgifterna"
     },
     "reasons": {
@@ -127,7 +127,7 @@
     "emailInUse": {
       "title": "Hoppsan! E-postadressen används redan.",
       "message": "Om det handlar om ett fel, vänta i {{ expirationHours }} timmar och försöka igen.",
-      "goToFrontendPage": "SV Tarkista tiedot ja lähetä uudelleen"
+      "goToFrontendPage": "Kontrollera uppgifterna och skicka på nytt"
     },
     "alreadyAssigned": {
       "title": "Hoppsan! Du har redan ansökt om en Sommarsedel, som behandlats som bäst.",
@@ -136,7 +136,7 @@
     },
     "activated": {
       "title": "Bekräftelsen lyckades",
-      "message": "Bra! Du har lämnat in dina uppgifter till systemet och din ansökan kommer att behandlas så snart som möjligt – senast inom en månad. Du får sommarsedeln och bruksanvisningar via e-post när din ansökan har kontrollerats!",
+      "message": "Bra! Du har lämnat in dina uppgifter till systemet och din ansökan kommer att behandlas så snart som möjligt - senast inom en månad. Du får sommarsedeln och bruksanvisningar via e-post när din ansökan har kontrollerats!",
       "goToFrontendPage": ""
     },
     "expired": {
@@ -145,8 +145,8 @@
       "goToFrontendPage": "Registrera dig och skicka Sommarsedeln på nytt"
     },
     "accepted": {
-      "title": "SV Hienoa! Olet lähettänyt tietosi järjestelmään",
-      "message": "SV Saat pian kesäsetelin ohjeineen sähköpostiisi",
+      "title": "Fint! Du har skickat dina uppgifter till det elekrtorniska systemet",
+      "message": "Du får snart sommarsedeln med anvisningar till din epost",
       "goToFrontendPage": ""
     },
     "alreadyActivated": {
@@ -155,9 +155,9 @@
       "goToFrontendPage": ""
     },
     "inadmissibleData": {
-      "title": "SV Hups! Antamillasi tiedoilla ei voi hakea Kesäseteliä.",
-      "message": "SV Tarkistahan tietosi ja lähetä rekisteröitymislomake uudestaan.",
-      "goToFrontendPage": "SV Tarkista tiedot ja lähetä kesäseteli uudelleen"
+      "title": "Hups! Med de uppgifter du angivit kan du inte ansöka en Sommarsedel.",
+      "message": "Kontrollera dina uppgifter och skicka registreringsblanketten på nytt.",
+      "goToFrontendPage": "Kontrollera dina uppgifter och skicka registreringsblanketten på nytt"
     }
   }
 }
