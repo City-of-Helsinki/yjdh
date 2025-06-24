@@ -42,7 +42,7 @@
     "next": "14.2.25",
     "next-compose-plugins": "^2.2.1",
     "next-i18next": "^13.0.3",
-    "next-router-mock": "0.9.12",
+    "next-router-mock": "1.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-input-mask": "^2.0.4",
