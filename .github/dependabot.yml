@@ -6,83 +6,98 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    pull-request-branch-name:
-      separator: "-"
+    commit-message:
+      prefix: "deps"
+    # Disable version updates and only allow security updates
+    open-pull-requests-limit: 0
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "daily"
-    pull-request-branch-name:
-      separator: "-"
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 0
   - package-ecosystem: "npm"
     directory: "frontend/"
     schedule:
       interval: "daily"
-    pull-request-branch-name:
-      separator: "-"
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 0
   - package-ecosystem: "npm"
     directory: "frontend/shared"
     schedule:
       interval: "daily"
-    pull-request-branch-name:
-      separator: "-"
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 0
   - package-ecosystem: "npm"
     directory: "frontend/benefit/applicant"
     schedule:
       interval: "daily"
-    pull-request-branch-name:
-      separator: "-"
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 0
   - package-ecosystem: "npm"
     directory: "frontend/benefit/handler"
     schedule:
       interval: "daily"
-    pull-request-branch-name:
-      separator: "-"
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 0
   - package-ecosystem: "npm"
     directory: "frontend/kesaseteli/shared"
     schedule:
       interval: "daily"
-    pull-request-branch-name:
-      separator: "-"
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 0
   - package-ecosystem: "npm"
     directory: "frontend/kesaseteli/employer"
     schedule:
       interval: "daily"
-    pull-request-branch-name:
-      separator: "-"
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 0
   - package-ecosystem: "npm"
     directory: "frontend/kesaseteli/youth"
     schedule:
       interval: "daily"
-    pull-request-branch-name:
-      separator: "-"
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 0
   - package-ecosystem: "npm"
     directory: "frontend/kesaseteli/handler"
     schedule:
       interval: "daily"
-    pull-request-branch-name:
-      separator: "-"
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 0
   - package-ecosystem: "npm"
     directory: "frontend/tet/admin"
     schedule:
       interval: "daily"
-    pull-request-branch-name:
-      separator: "-"
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 0
   - package-ecosystem: "npm"
     directory: "frontend/tet/employer"
     schedule:
       interval: "daily"
-    pull-request-branch-name:
-      separator: "-"
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 0
   - package-ecosystem: "npm"
     directory: "frontend/tet/youth"
     schedule:
       interval: "daily"
-    pull-request-branch-name:
-      separator: "-"
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 0
   - package-ecosystem: "pip"
     directory: "backend/"
     schedule:
       interval: "daily"
-    pull-request-branch-name:
-      separator: "-"
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 0
