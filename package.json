@@ -1,15 +1,15 @@
 {
   "devDependencies": {
-    "@commitlint/cli": "^17.7.1",
-    "@commitlint/config-conventional": "^17.7.0",
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
     "cross-env": "^7.0.3",
-    "husky": "^8.0.3"
+    "husky": "^9.1.7"
   },
   "engines": {
     "node": ">=22.13.1 <23.11.0"
   },
   "scripts": {
-    "prepare": "husky install",
+    "prepare": "husky",
     "// clean: stop and remove docker containers and database volume": "",
     "clean": "docker compose -f compose.handler.yml down --remove-orphans; docker compose -f compose.employer.yml down --remove-orphans; docker compose -f compose.benefit.yml down --remove-orphans; docker rm -f $(docker ps -a -q); docker volume rm $(docker volume ls -q);",
     "// partial docker compose commands per service, dont use these straight. Use <service>:up, <service>:build or <service>:rebuild instead ": "",
