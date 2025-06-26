@@ -36,7 +36,7 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "termsAndConditionsLink": "https://nuorten.hel.fi/sv/studier-och-jobb/kesatyonhakijalle/",
+  "termsAndConditionsLink": "https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/anvandningsvillkor/",
   "error": {
     "generic": {
       "label": "Ett okänt fel inträffade.",
@@ -67,8 +67,8 @@
       "unlistedSchoolPlaceholder": "Te.x. Grundskolan Norsen",
       "email": "E-postadress",
       "phone_number": "Telefonnummer",
-      "termsAndConditions": "Jag har läst och godkänner <a>villkoren</a>.",
-      "termsAndConditionsLink": "https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/kesatyonhakijalle/",
+      "termsAndConditions": "Jag har läst och godkänner <a>användningsvillkor</a>.",
+      "termsAndConditionsLink": "https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/anvandningsvillkor/",
       "sendButton": "Skicka informationen",
       "requiredInfo": "Alla fält som är märkta med * är obligatoriska",
       "sendItAnyway": "Om du anser uppgifterna är rätt, kan du skicka in din ansökan för kontroll. Vi återkommer då vi behandlat ditt ärende.",

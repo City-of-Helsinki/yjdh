@@ -118,7 +118,7 @@
         "employment_description": "Employment description",
         "employment_salary_paid": "Salary paid (€)",
         "hired_without_voucher_assessment": "Would you have employed without the Summer Job Voucher?",
-        "termsAndConditions": "I have read and accept the <a>terms of use</a>."
+        "termsAndConditions": "I have read and accept the <a>terms of service</a>."
       },
       "helpers": {
         "date": "Use format D.M.YYYY",
@@ -164,7 +164,7 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "termsAndConditionsLink": "https://nuorten.hel.fi/en/studies-and-work/the-summer-job-voucher/for-employers/",
+  "termsAndConditionsLink": "https://nuorten.hel.fi/en/studies-and-work/the-summer-job-voucher/terms-of-service/",
   "error": {
     "generic": {
       "label": "An unexpected error occurred",
