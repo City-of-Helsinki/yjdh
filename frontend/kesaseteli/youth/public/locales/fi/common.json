@@ -36,7 +36,7 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "termsAndConditionsLink": "https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/nuorelle/",
+  "termsAndConditionsLink": "https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/kayttoehdot/",
   "error": {
     "generic": {
       "label": "Tapahtui tuntematon virhe",
@@ -68,7 +68,7 @@
       "email": "Sähköpostiosoite",
       "phone_number": "Puhelinnumero",
       "termsAndConditions": "Olen lukenut palvelun <a>käyttöehdot</a> ja hyväksyn ne.",
-      "termsAndConditionsLink": "https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/nuorelle/",
+      "termsAndConditionsLink": "https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/kayttoehdot/",
       "sendButton": "Lähetä tiedot",
       "requiredInfo": "Kaikki * merkityt kentät ovat pakollisia julkaisuun",
       "sendItAnyway": "Mikäli tiedot ovat mielestäsi oikein, voit lähettää ne meille tarkastettavaksi. Palaamme asiaan kun olemme käsitelleet tietosi.",

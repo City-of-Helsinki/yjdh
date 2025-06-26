@@ -118,7 +118,7 @@
         "employment_description": "Beskrivning av arbetsuppgifter",
         "employment_salary_paid": "Utbetalt lönebelopp (€)",
         "hired_without_voucher_assessment": "Skulle du ha anställt en ung sommarjobbare utan Sommarsedeln?",
-        "termsAndConditions": "Jag har läst och godkänner <a>villkoren</a>."
+        "termsAndConditions": "Jag har läst och godkänner <a>användningsvillkor</a>."
       },
       "helpers": {
         "date": "Använd ett format D.M.ÅÅÅÅ",
@@ -164,7 +164,7 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "termsAndConditionsLink": "https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/at-arbetsgivaren/",
+  "termsAndConditionsLink": "https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/anvandningsvillkor/",
   "error": {
     "generic": {
       "label": "Ett okänt fel inträffade.",

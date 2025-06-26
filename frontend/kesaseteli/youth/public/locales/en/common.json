@@ -36,7 +36,7 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "termsAndConditionsLink": "https://nuorten.hel.fi/en/studies-and-work/for-summer-job-seekers/",
+  "termsAndConditionsLink": "https://nuorten.hel.fi/en/studies-and-work/the-summer-job-voucher/terms-of-service/",
   "error": {
     "generic": {
       "label": "An unexpected error occurred",
@@ -67,8 +67,8 @@
       "unlistedSchoolPlaceholder": "E.g. International School of Helsinki",
       "email": "Email address",
       "phone_number": "Phone number",
-      "termsAndConditions": "I have read and accept the <a>terms of use</a>.",
-      "termsAndConditionsLink": "https://nuorten.hel.fi/en/studies-and-work/the-summer-job-voucher/for-summer-job-seekers/",
+      "termsAndConditions": "I have read and accept the <a>terms of service</a>.",
+      "termsAndConditionsLink": "https://nuorten.hel.fi/en/studies-and-work/the-summer-job-voucher/terms-of-service/",
       "sendButton": "Submit information",
       "requiredInfo": "All fields marked with * are required",
       "sendItAnyway": "If you think the information is right, you can send in the application for control. we will be in touch with you after we checked your information.",
