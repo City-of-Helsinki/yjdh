@@ -45,18 +45,6 @@
     "frontend/kesaseteli/youth": {
       "release-type": "node",
       "package-name": "kesaseteli-youth"
-    },
-    "backend/tet": {
-      "release-type": "python",
-      "package-name": "tet-backend"
-    },
-    "frontend/tet/admin": {
-      "release-type": "node",
-      "package-name": "tet-admin"
-    },
-    "frontend/tet/youth": {
-      "release-type": "node",
-      "package-name": "tet-youth"
     }
   },
   "plugins": ["sentence-case"]

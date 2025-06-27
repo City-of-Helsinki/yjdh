@@ -33,9 +33,7 @@ pr:
     exclude:
       - README.md
       - backend/benefit/**
-      - backend/tet/**
       - frontend/benefit/**
-      - frontend/tet/**
       - frontend/**/browser-tests
       - frontend/**/__tests__
 

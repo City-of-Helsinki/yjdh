@@ -17,9 +17,6 @@ repos:
         name: (KS) black
         files: ^backend/kesaseteli
       - id: black
-        name: (TET) black
-        files: ^backend/tet
-      - id: black
         name: (Shared) black
         files: ^backend/shared
   - repo: https://github.com/pycqa/isort
@@ -33,10 +30,6 @@ repos:
         name: (KS) isort
         args: [--settings-file, backend/kesaseteli/setup.cfg]
         files: ^backend/kesaseteli
-      - id: isort
-        name: (TET) isort
-        args: [--settings-file, backend/tet/setup.cfg]
-        files: ^backend/tet
       - id: isort
         name: (Shared) isort
         args: [--settings-file, backend/shared/setup.cfg]
@@ -56,12 +49,6 @@ repos:
         exclude: migrations|snapshots
         files: ^backend/kesaseteli
         args: [--config, backend/kesaseteli/setup.cfg]
-      - id: flake8
-        name: (TET) flake8
-        additional_dependencies: [flake8-isort, flake8-black]
-        exclude: migrations|snapshots
-        files: ^backend/tet
-        args: [--config, backend/tet/setup.cfg]
       - id: flake8
         name: (Shared) flake8
         additional_dependencies: [flake8-isort, flake8-black]

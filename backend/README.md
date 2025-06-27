@@ -2,7 +2,7 @@
 
 Refer to [top level README](https://github.com/City-of-Helsinki/yjdh/blob/main/README.md) about running YJDH services locally, which also runs the backend for the service under development.
 
-[kesaseteli/README.md](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/kesaseteli/README.md) or [benefit/README.md](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/benefit/README.md) contain more information about the local setup. This applies to TET pretty well.
+[kesaseteli/README.md](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/kesaseteli/README.md) or [benefit/README.md](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/benefit/README.md) contain more information about the local setup.
 
 Django updated to version 4.2 during May 2024, as security support for 3.2 ends 30.4.2024. Django 4.2 will stop receiving security updates 30.4.2026.
 
@@ -24,7 +24,6 @@ The last step is the same for all, but for the previous each project has a diffe
 | Project | Flow                                                                   | Tools                            |
 |---------|------------------------------------------------------------------------|----------------------------------|
 | Benefit | OIDC flow via Tunnistus service (Helsinki Profile plain suomi.fi auth) | mozilla_django_oidc              |
-| TET     | OIDC flow via Tunnistamo service + Helsinki Profile API                | mozilla_django_oidc, custom code |
 | KS      | SAML flow with suomi.fi                                                | djangosaml2                      |
 
 ## OIDC flow with Helsinki Profile
