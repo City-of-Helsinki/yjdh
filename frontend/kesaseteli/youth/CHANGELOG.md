@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.5.2](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v1.5.1...kesaseteli-youth-v1.5.2) (2025-06-30)
+
+
+### Bug Fixes
+
+* **kesaseteli:** Accessibility statement link ([198a6d5](https://github.com/City-of-Helsinki/yjdh/commit/198a6d5f60e6b4ed77e44e2d466712f20e37afbe))
+* **kesaseteli:** Change "nuorten.helsinki" links to "nuorten.hel.fi" ([433f064](https://github.com/City-of-Helsinki/yjdh/commit/433f064169250a15bae3ec9ffafe71d946dc0577))
+* **kesaseteli:** Fix register information PDF-link in footer ([2cebdfc](https://github.com/City-of-Helsinki/yjdh/commit/2cebdfc3885ae8b1256d72ea7fa73481fabd46c5))
+* **kesaseteli:** Privacy policy renamed same as title of related doc ([dbc21fe](https://github.com/City-of-Helsinki/yjdh/commit/dbc21fe986cc78a28f46339ddc92f56080899b7c))
+* **kesaseteli:** Swedish common translations to youth app ([270fbed](https://github.com/City-of-Helsinki/yjdh/commit/270fbed6e9d4e413d3ef4daf41e4ec1db40f79a5))
+* **kesaseteli:** Terms of service term renamed and link changed ([bbc52d0](https://github.com/City-of-Helsinki/yjdh/commit/bbc52d0202dd71948f413d1802eee3d0d9b9cc36))
+* **kesaseteli:** Use lang specific accessibility statement url ([f04c7e2](https://github.com/City-of-Helsinki/yjdh/commit/f04c7e2857a0fe8a5687654dd0af4ec0feae147c))
+
 ## [1.5.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v1.5.0...kesaseteli-youth-v1.5.1) (2025-06-23)
 
 
