@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.6.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v1.5.2...kesaseteli-youth-v1.6.0) (2025-06-30)
+
+
+### Features
+
+* **ks-handler:** Add UI for creating youth application without SSN ([e46958c](https://github.com/City-of-Helsinki/yjdh/commit/e46958cdee39abc3fd5c2fada5e2b2e894e8be95))
+* Make "yarn dev" crossplatform in kesaseteli handler/employer/youth ([46c8d86](https://github.com/City-of-Helsinki/yjdh/commit/46c8d864130172d2010f27adf0b3685409aaf969))
+* Upgrade Node to v22.13.1 HL-1583 ([6093cdd](https://github.com/City-of-Helsinki/yjdh/commit/6093cdde2bf6b29517093a08d505ee0a0ca750e0))
+
+
+### Bug Fixes
+
+* Bump nextjs version ([#3332](https://github.com/City-of-Helsinki/yjdh/issues/3332)) ([8c8935d](https://github.com/City-of-Helsinki/yjdh/commit/8c8935df53c61546fb1909da6bc1e1f6e9b8a1d3))
+* Chrome v130 crashes on startup ([#3450](https://github.com/City-of-Helsinki/yjdh/issues/3450)) ([cad4466](https://github.com/City-of-Helsinki/yjdh/commit/cad44663f83bf1a90f4158c68c4f8b4a069ccfe8))
+* **frontend:** Don't use cross-env in scripts, didn't work in pipelines ([628d466](https://github.com/City-of-Helsinki/yjdh/commit/628d466c58fbbff7bf79e11f92a89ef9a2822439))
+* **frontend:** Use cross-env in scripts to make them cross-platform ([7307e57](https://github.com/City-of-Helsinki/yjdh/commit/7307e5797d6b0a0bc24eded97d6724a5724a4547))
+* Incorrect iban generation; kiss with file uploads ([#3057](https://github.com/City-of-Helsinki/yjdh/issues/3057)) ([b9b3810](https://github.com/City-of-Helsinki/yjdh/commit/b9b38101282a2d48216ea7123e6eb8e8075e5a2c))
+* **kesaseteli:** Accessibility statement link ([198a6d5](https://github.com/City-of-Helsinki/yjdh/commit/198a6d5f60e6b4ed77e44e2d466712f20e37afbe))
+* **kesaseteli:** Change "nuorten.helsinki" links to "nuorten.hel.fi" ([433f064](https://github.com/City-of-Helsinki/yjdh/commit/433f064169250a15bae3ec9ffafe71d946dc0577))
+* **kesaseteli:** Fix register information PDF-link in footer ([2cebdfc](https://github.com/City-of-Helsinki/yjdh/commit/2cebdfc3885ae8b1256d72ea7fa73481fabd46c5))
+* **kesaseteli:** Privacy policy renamed same as title of related doc ([dbc21fe](https://github.com/City-of-Helsinki/yjdh/commit/dbc21fe986cc78a28f46339ddc92f56080899b7c))
+* **kesaseteli:** Swedish common translations to youth app ([270fbed](https://github.com/City-of-Helsinki/yjdh/commit/270fbed6e9d4e413d3ef4daf41e4ec1db40f79a5))
+* **kesaseteli:** Terms of service term renamed and link changed ([bbc52d0](https://github.com/City-of-Helsinki/yjdh/commit/bbc52d0202dd71948f413d1802eee3d0d9b9cc36))
+* **kesaseteli:** Use lang specific accessibility statement url ([f04c7e2](https://github.com/City-of-Helsinki/yjdh/commit/f04c7e2857a0fe8a5687654dd0af4ec0feae147c))
+* Try fixing failing tests ([#2952](https://github.com/City-of-Helsinki/yjdh/issues/2952)) ([3353dc8](https://github.com/City-of-Helsinki/yjdh/commit/3353dc84ce83906c4fe0bb8e4300b9a56640e47d))
+* Upgrade vulnerable Next.js version ([35259be](https://github.com/City-of-Helsinki/yjdh/commit/35259be9f183beb45638514c612e8d7829eff4da))
+
 ## [1.5.2](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v1.5.1...kesaseteli-youth-v1.5.2) (2025-06-30)
 
 
