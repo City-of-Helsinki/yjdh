@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.5.2](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v1.5.1...kesaseteli-employer-v1.5.2) (2025-06-30)
+
+
+### Bug Fixes
+
+* **kesaseteli:** Accessibility statement link ([198a6d5](https://github.com/City-of-Helsinki/yjdh/commit/198a6d5f60e6b4ed77e44e2d466712f20e37afbe))
+* **kesaseteli:** Terms of service term renamed and link changed ([bbc52d0](https://github.com/City-of-Helsinki/yjdh/commit/bbc52d0202dd71948f413d1802eee3d0d9b9cc36))
+* **kesaseteli:** Update terms and conditions link ([0b91729](https://github.com/City-of-Helsinki/yjdh/commit/0b91729d4b0216aa39daf340303ce9a2dcdd5532))
+* **kesaseteli:** Use lang specific accessibility statement url ([f04c7e2](https://github.com/City-of-Helsinki/yjdh/commit/f04c7e2857a0fe8a5687654dd0af4ec0feae147c))
+
 ## [1.5.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v1.5.0...kesaseteli-employer-v1.5.1) (2025-06-23)
 
 
