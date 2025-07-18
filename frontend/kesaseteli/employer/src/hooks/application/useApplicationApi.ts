@@ -81,9 +81,11 @@ const useApplicationApi = <T = Application>(
     if (
       setBackendValidationError &&
       Axios.isAxiosError(error) &&
-      error.response.status === 400
+      error.response?.status === 400 &&
+      error.response.data &&
+      typeof error.response.data === 'object'
     ) {
-      Object.keys(error.response.data).forEach((field) =>
+      Object.keys(error.response.data as Record<string, unknown>).forEach((field) =>
         setBackendValidationError(field as keyof T, {
           type: 'pattern',
         })
