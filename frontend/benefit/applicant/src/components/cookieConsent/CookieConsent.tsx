@@ -11,6 +11,7 @@ import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import React from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
+import useCookieConsent from 'shared/hooks/useCookieConsent';
 
 const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
   const locale = useLocale();
@@ -50,6 +51,12 @@ const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
 
   const askemDescription = text.askemDescription[locale];
 
+  const { onAllConsentsGiven, onConsentsParsed, optionalCookies } =
+    useCookieConsent();
+
+  const { groups } = optionalCookies;
+  const { cookies } = groups[0];
+
   const contentSource = {
     siteName: text.title[locale],
     currentLanguage: locale,
@@ -58,6 +65,7 @@ const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
         {
           commonGroup: 'statistics',
           cookies: [
+            ...cookies,
             {
               id: 'rns',
               name: 'rnsbid',
@@ -86,6 +94,8 @@ const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
     language: {
       onLanguageChange,
     },
+    onConsentsParsed,
+    onAllConsentsGiven,
     focusTargetSelector: '#main_content',
   };
 
