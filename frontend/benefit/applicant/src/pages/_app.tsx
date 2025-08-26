@@ -4,8 +4,8 @@ import 'benefit-shared/styles/app.css';
 import 'hds-design-tokens';
 import 'react-loading-skeleton/dist/skeleton.css';
 
+import init from '@socialgouv/matomo-next';
 import AuthProvider from 'benefit/applicant/auth/AuthProvider';
-import CookieConsent from 'benefit/applicant/components/cookieConsent/CookieConsent';
 import Layout from 'benefit/applicant/components/layout/Layout';
 import AppContextProvider from 'benefit/applicant/context/AppContextProvider';
 import useLocale from 'benefit/applicant/hooks/useLocale';
@@ -16,6 +16,7 @@ import {
 } from 'benefit-shared/backend-api/backend-api';
 import { setAppLoaded } from 'benefit-shared/utils/common';
 import { AppProps } from 'next/app';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
@@ -26,7 +27,18 @@ import isServerSide from 'shared/server/is-server-side';
 
 import { ROUTES } from '../constants';
 
+const CookieConsent = dynamic(
+  () => import('benefit/applicant/components/cookieConsent/CookieConsent'),
+  { ssr: false }
+);
+
 const queryClient = new QueryClient();
+
+const MATOMO_ENABLED = process.env.NEXT_PUBLIC_MATOMO_ENABLED;
+const MATOMO_URL = process.env.NEXT_PUBLIC_MATOMO_URL;
+const MATOMO_SITE_ID = process.env.NEXT_PUBLIC_MATOMO_SITE_ID;
+const MATOMO_JS_TRACKER_FILE = process.env.NEXT_PUBLIC_MATOMO_JS_TRACKER_FILE;
+const MATOMO_PHP_TRACKER_FILE = process.env.NEXT_PUBLIC_MATOMO_PHP_TRACKER_FILE;
 
 const App: React.FC<AppProps> = (appProps) => {
   const locale = useLocale();
@@ -34,6 +46,17 @@ const App: React.FC<AppProps> = (appProps) => {
   const router = useRouter();
 
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (MATOMO_ENABLED === 'true' && MATOMO_URL && MATOMO_SITE_ID) {
+      init({
+        jsTrackerFile: MATOMO_JS_TRACKER_FILE,
+        phpTrackerFile: MATOMO_PHP_TRACKER_FILE,
+        url: MATOMO_URL,
+        siteId: MATOMO_SITE_ID,
+      });
+    }
+  }, []);
 
   const showCookieBanner =
     process.env.NEXT_PUBLIC_SHOW_COOKIE_BANNER === '1' &&
