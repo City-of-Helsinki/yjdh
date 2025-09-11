@@ -8,6 +8,7 @@
     {"type": "fix", "section": "Bug Fixes"},
     {"type": "perf", "section": "Performance Improvements"},
     {"type": "deps", "section": "Dependencies"},
+    {"type": "build", "scope": "deps", "section": "Dependencies"},
     {"type": "revert", "section": "Reverts"},
     {"type": "docs", "section": "Documentation"},
     {"type": "style", "section": "Styles", "hidden": true},
