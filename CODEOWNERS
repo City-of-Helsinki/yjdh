@@ -9,6 +9,4 @@
 
 # Ratkaisutoimisto
 /backend/benefit/ @City-of-Helsinki/ratkaisutoimiston-backend
-/backend/tet/ @City-of-Helsinki/ratkaisutoimiston-backend
 /frontend/benefit/ @City-of-Helsinki/ratkaisutoimiston-frontend
-/frontend/tet/ @City-of-Helsinki/ratkaisutoimiston-frontend
