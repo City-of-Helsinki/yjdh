@@ -1,3 +1,14 @@
-* @City-of-Helsinki/ratkaisutoimiston-backend @City-of-Helsinki/ratkaisutoimiston-frontend
-/backend/ @City-of-Helsinki/ratkaisutoimiston-backend
-/frontend/ @City-of-Helsinki/ratkaisutoimiston-frontend
+# Shared
+* @City-of-Helsinki/ratkaisutoimiston-backend @City-of-Helsinki/ratkaisutoimiston-frontend @City-of-Helsinki/KuVa-developers
+/backend/ @City-of-Helsinki/ratkaisutoimiston-backend @City-of-Helsinki/KuVa-developers
+/frontend/ @City-of-Helsinki/ratkaisutoimiston-frontend @City-of-Helsinki/KuVa-developers
+
+# KuVa
+/backend/kesaseteli/ @City-of-Helsinki/KuVa-developers
+/frontend/kesaseteli/ @City-of-Helsinki/KuVa-developers
+
+# Ratkaisutoimisto
+/backend/benefit/ @City-of-Helsinki/ratkaisutoimiston-backend
+/backend/tet/ @City-of-Helsinki/ratkaisutoimiston-backend
+/frontend/benefit/ @City-of-Helsinki/ratkaisutoimiston-frontend
+/frontend/tet/ @City-of-Helsinki/ratkaisutoimiston-frontend
