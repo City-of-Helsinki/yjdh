@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.2](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.10.1...kesaseteli-backend-v1.10.2) (2025-09-12)
+
+
+### Dependencies
+
+* **deps:** Bump django from 4.2.14 to 4.2.24 in /backend/kesaseteli ([00e8f97](https://github.com/City-of-Helsinki/yjdh/commit/00e8f9760e7067e93215c4e44a1cd28e86df4551))
+
 ## [1.10.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.10.0...kesaseteli-backend-v1.10.1) (2024-09-26)
 
 
