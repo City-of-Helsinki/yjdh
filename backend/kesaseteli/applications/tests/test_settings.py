@@ -1,9 +1,7 @@
-import pytest
 from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.settings import api_settings
 
 
-@pytest.mark.xfail(reason="Browsable API is not yet disabled, but will be")
 def test_django_rest_framework_browsable_api_disabled():
     """
     Test that Django Rest Framework's Browsable API is disabled.

@@ -225,7 +225,6 @@ def test_youth_application_create_without_ssn_post_redirects_anonymous_user_to_l
     ["GET", "POST", "HEAD", "PATCH", "UPDATE", "DELETE", "PUT", "OPTIONS", "TRACE"],
 )
 @pytest.mark.django_db
-@pytest.mark.xfail(reason="Browsable API is not yet disabled, but will be")
 def test_not_acceptable_response_to_anonymous_user_requesting_html_from_endpoint(
     client, endpoint_url, method
 ):
