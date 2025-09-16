@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.3](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.10.2...kesaseteli-backend-v1.10.3) (2025-09-16)
+
+
+### Bug Fixes
+
+* **kesaseteli:** Disable Django Rest Framework Browsable API & fix tests ([d3b5afa](https://github.com/City-of-Helsinki/yjdh/commit/d3b5afa6867c9317df1080a13f341b2c691d30d2))
+
 ## [1.10.2](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.10.1...kesaseteli-backend-v1.10.2) (2025-09-12)
 
 
