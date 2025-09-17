@@ -18,3 +18,10 @@ export type Headers = {
 export type ThemeOption = 'dark' | 'light';
 
 export type NavigationVariant = 'default' | 'inline';
+
+declare global {
+  interface Window {
+    // Matomo
+    _paq: [string, ...unknown[]][];
+  }
+}

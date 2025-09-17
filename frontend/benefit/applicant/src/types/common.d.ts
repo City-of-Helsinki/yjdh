@@ -41,5 +41,7 @@ export type ConsentsCookie = {
 declare global {
   interface Window {
     rnsData: RNSData;
+    // Matomo
+    _paq: [string, ...unknown[]][];
   }
 }
