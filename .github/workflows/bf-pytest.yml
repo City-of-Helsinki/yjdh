@@ -19,7 +19,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:13
+        image: postgres:17
         ports:
           - 5432:5432
         options: >-
@@ -45,10 +45,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install libpq-dev wkhtmltopdf gettext
 
-      - name: Setup Python 3.9
+      - name: Setup Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: 3.9
+          python-version: 3.12
           cache: pip
 
       - name: Cache pip packages
