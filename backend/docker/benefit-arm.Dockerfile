@@ -1,5 +1,5 @@
 # ==============================
-FROM python:3.9-slim AS appbase
+FROM python:3.12-slim AS appbase
 # ==============================
 
 WORKDIR /
