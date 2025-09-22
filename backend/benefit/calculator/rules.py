@@ -2,7 +2,6 @@ import collections
 import datetime
 import decimal
 import logging
-from typing import Union
 
 from django.conf import settings
 from django.db import transaction
@@ -59,7 +58,7 @@ class HelsinkiBenefitCalculator:
 
     def _get_item_in_effect(
         self, items: list[PaySubsidy], day: datetime.date
-    ) -> Union[PaySubsidy, None]:
+    ) -> PaySubsidy | None:
         """Return the first item in the list whose start date is less than or equal to the given day,
         and whose end date is greater than or equal to the given day.
         If no such item is found, it returns None."""  # noqa: E501

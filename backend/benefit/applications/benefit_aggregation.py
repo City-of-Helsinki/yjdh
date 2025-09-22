@@ -2,7 +2,6 @@ import operator
 from dataclasses import dataclass, field
 from decimal import Decimal
 from itertools import chain
-from typing import List, Optional, Union
 
 from dateutil.relativedelta import relativedelta
 from django.utils.text import format_lazy
@@ -16,11 +15,11 @@ from common.utils import date_range_overlap, duration_in_months, pairwise
 
 @dataclass
 class FormerBenefitInfo:
-    warnings: List[str] = field(default_factory=list)
-    months_used: Optional[Decimal] = (
-        None  # None is used if employee info is not entered yet
-    )
-    months_remaining: Optional[Decimal] = None  # None means that there is no limit
+    warnings: list[str] = field(default_factory=list)
+    months_used: None | (
+        Decimal
+    ) = None  # None is used if employee info is not entered yet
+    months_remaining: Decimal | None = None  # None means that there is no limit
 
 
 # apprenticeship is a special case
@@ -83,7 +82,7 @@ def get_former_benefit_info(
 
 def _get_past_benefits(
     application, company, social_security_number, end_date
-) -> List[Union[PreviousBenefit, Application]]:
+) -> list[PreviousBenefit | Application]:
     """
     Return a list containing two types of objects:
     * PreviousBenefits
