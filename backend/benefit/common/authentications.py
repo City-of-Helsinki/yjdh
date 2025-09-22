@@ -37,7 +37,7 @@ class RobotBasicAuthentication(authentication.BaseAuthentication):
             raise AuthenticationFailed("Invalid username/password.")
 
     def authenticate_header(self, request):
-        return 'Basic realm="{}"'.format(self.www_authenticate_realm)
+        return f'Basic realm="{self.www_authenticate_realm}"'
 
 
 class PowerBiAuthentication(RobotBasicAuthentication):

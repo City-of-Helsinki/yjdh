@@ -2,8 +2,8 @@ import decimal
 import functools
 import hashlib
 import itertools
+from collections.abc import Iterator
 from datetime import date, timedelta
-from typing import Iterator, Tuple, Union
 
 from dateutil.relativedelta import relativedelta
 from django.core.files import File
@@ -45,7 +45,7 @@ def update_object(obj: object, data: dict, limit_to_fields=None):
     obj.save()
 
 
-def xgroup(iter, n=2, check_length=False) -> Iterator[Tuple]:
+def xgroup(iter, n=2, check_length=False) -> Iterator[tuple]:
     """
     Groups elements from an iterable into tuples of size n.
 
@@ -173,7 +173,7 @@ def nested_getattr(obj, attr, *args):
     return functools.reduce(_getattr, [obj] + attr.split("."))
 
 
-def to_decimal(numeric_value, decimal_places: Union[int, None] = None, allow_null=True):
+def to_decimal(numeric_value, decimal_places: int | None = None, allow_null=True):
     """
     Converts a numeric value to a decimal.
 
@@ -210,7 +210,7 @@ class PhoneNumberField(DefaultPhoneNumberField):
     def to_representation(self, value):
         if not value:
             return ""
-        return "0{}".format(value.national_number)
+        return f"0{value.national_number}"
 
 
 def date_range_overlap(start_1: date, end_1: date, start_2: date, end_2: date):
@@ -325,7 +325,7 @@ def days360(start_date: date, end_date: date):
 
 
 def duration_in_months(
-    start_date: date, end_date: date, decimal_places: Union[int, None] = None
+    start_date: date, end_date: date, decimal_places: int | None = None
 ):
     # This is the formula used in the application calculator Excel file 2021-09
     return to_decimal(
@@ -352,7 +352,7 @@ class DurationMixin:
         # in many calculations
         return self._get_duration_in_months(decimal_places=2)
 
-    def _get_duration_in_months(self, decimal_places: Union[int, None] = None):
+    def _get_duration_in_months(self, decimal_places: int | None = None):
         if self.start_date and self.end_date:
             return duration_in_months(
                 self.start_date, self.end_date, decimal_places=decimal_places
@@ -447,7 +447,7 @@ def hash_file(file: File) -> str:
     return sha256.hexdigest()
 
 
-def get_request_ip_address(request: HttpRequest) -> Union[str, None]:
+def get_request_ip_address(request: HttpRequest) -> str | None:
     """Get the IP address of a request"""
     x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
     if x_forwarded_for:

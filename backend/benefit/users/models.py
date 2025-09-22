@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 from uuid import uuid4
 
 from django.contrib.auth.models import AbstractUser
@@ -7,7 +6,7 @@ from django.db import models
 from helsinki_gdpr.models import SerializableMixin
 
 
-def format_date(date: datetime) -> Optional[str]:
+def format_date(date: datetime) -> str | None:
     return date.strftime("%d-%m-%Y %H:%M:%S") if date else None
 
 
