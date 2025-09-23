@@ -49,6 +49,7 @@ const App: React.FC<AppProps> = (appProps) => {
 
   useEffect(() => {
     if (MATOMO_ENABLED === 'true' && MATOMO_URL && MATOMO_SITE_ID) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       init({
         jsTrackerFile: MATOMO_JS_TRACKER_FILE,
         phpTrackerFile: MATOMO_PHP_TRACKER_FILE,
