@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.16.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.15.1...benefit-applicant-v3.16.0) (2025-09-23)
+
+
+### Features
+
+* **benefit:** Add Matomo tracking Refs: HL-1604 ([6d4b7cf](https://github.com/City-of-Helsinki/yjdh/commit/6d4b7cf523183eb108008f021f99b44dd3717ad6))
+
 ## [3.15.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.15.0...benefit-applicant-v3.15.1) (2025-06-23)
 
 
