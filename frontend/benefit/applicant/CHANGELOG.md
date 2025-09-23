@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.16.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.16.0...benefit-applicant-v3.16.1) (2025-09-23)
+
+
+### Bug Fixes
+
+* **benefit:** Matomo lint fixes Ref: HL-1604 ([428f547](https://github.com/City-of-Helsinki/yjdh/commit/428f547977b925fb40e0d529fff913fc6d581602))
+
 ## [3.16.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.15.1...benefit-applicant-v3.16.0) (2025-09-23)
 
 
