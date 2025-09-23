@@ -12,10 +12,10 @@ django-sql-utils
 django-storages[azure]
 django_auth_adfs
 djangorestframework
-django~=4.2.25
+django~=5.2.6
 drf-nested-routers
 drf-spectacular
-elasticsearch~=7.17 # TODO: remove and update to 8.x when elasticsearch servers are updated to elasticsearch 8
+elasticsearch~=8.19
 factory-boy # TODO: added temporarily so that NEXT_PUBLIC_MOCK_FLAG can be set on dev env, remove when authentication done
 filetype
 fuzzywuzzy
@@ -23,7 +23,7 @@ helsinki-profile-gdpr-api
 jinja2
 lxml
 mozilla_django_oidc
-openpyxl==3.1.3
+openpyxl
 pandas
 pdfkit
 pillow

@@ -1,5 +1,5 @@
 [tool.ruff]
-target-version = "py39"
+target-version = "py312"
 
 [tool.ruff.lint]
 select = [
@@ -23,3 +23,6 @@ extend-per-file-ignores = { "*/migrations/*" = ["E501"], "*/tests/*" = ["E501"] 
 
 [tool.ruff.lint.isort]
 known-first-party = ["shared"]
+
+[tool.pip-tools]
+strip-extras = true
