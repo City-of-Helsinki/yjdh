@@ -6,3 +6,6 @@ extend-exclude = '''
   | migrations
 )
 '''
+
+[tool.pip-tools]
+strip-extras = true
