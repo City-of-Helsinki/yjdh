@@ -17,7 +17,6 @@ from simple_history.models import HistoricalRecords
 from applications.enums import (
     AhjoDecision,
     AhjoDecisionDetails,
-    AhjoStatus as AhjoStatusEnum,
     ApplicationAlterationState,
     ApplicationAlterationType,
     ApplicationBatchStatus,
@@ -30,6 +29,9 @@ from applications.enums import (
     DecisionType,
     HandlerRole,
     PaySubsidyGranted,
+)
+from applications.enums import (
+    AhjoStatus as AhjoStatusEnum,
 )
 from applications.exceptions import (
     BatchCompletionDecisionDateError,

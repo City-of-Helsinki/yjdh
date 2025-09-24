@@ -12,8 +12,10 @@ from django.utils import timezone
 from applications.enums import (
     AhjoDecision,
     AhjoRequestType,
-    AhjoStatus as AhjoStatusEnum,
     ApplicationStatus,
+)
+from applications.enums import (
+    AhjoStatus as AhjoStatusEnum,
 )
 from applications.models import AhjoSetting, AhjoStatus, Application, Attachment
 from applications.services.ahjo.response_handler import (

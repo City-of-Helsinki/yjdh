@@ -139,7 +139,7 @@ def get_application_change_history(application: Application) -> list:
 
     application_diffs = []
 
-    for i in range(0, len(application_history) - 1):
+    for i in range(len(application_history) - 1):
         diff = application_history[i].diff_against(application_history[i + 1])
         application_diffs.append(diff)
 
@@ -154,7 +154,7 @@ def get_application_change_history(application: Application) -> list:
 
     employee_history = application.employee.history.filter(employee_q_objects)
     employee_diffs = []
-    for i in range(0, len(employee_history) - 1):
+    for i in range(len(employee_history) - 1):
         diff = employee_history[i].diff_against(employee_history[i + 1])
         employee_diffs.append(diff)
 

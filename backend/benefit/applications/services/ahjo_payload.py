@@ -7,9 +7,9 @@ from django.urls import reverse
 
 from applications.enums import AhjoRecordTitle, AhjoRecordType, AttachmentType
 from applications.models import (
+    APPLICATION_LANGUAGE_CHOICES,
     AhjoDecisionText,
     Application,
-    APPLICATION_LANGUAGE_CHOICES,
     Attachment,
 )
 from common.utils import hash_file

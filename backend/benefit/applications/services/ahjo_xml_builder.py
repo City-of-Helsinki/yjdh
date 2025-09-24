@@ -14,9 +14,9 @@ from lxml.etree import XMLSchema, XMLSchemaParseError, XMLSyntaxError
 
 from applications.enums import ApplicationStatus
 from applications.models import (
+    APPLICATION_LANGUAGE_CHOICES,
     AhjoDecisionText,
     Application,
-    APPLICATION_LANGUAGE_CHOICES,
 )
 from calculator.enums import RowType
 from calculator.models import Calculation, CalculationRow

@@ -12,7 +12,8 @@ from django.utils.translation import gettext_lazy as _
 from django_filters import rest_framework as filters
 from django_filters.widgets import CSVWidget
 from drf_spectacular.utils import extend_schema
-from rest_framework import filters as drf_filters, status
+from rest_framework import filters as drf_filters
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response

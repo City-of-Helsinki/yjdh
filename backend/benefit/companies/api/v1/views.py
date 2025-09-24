@@ -5,7 +5,7 @@ from django.db import transaction
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as __
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from requests.exceptions import HTTPError
 from rest_framework import status
 from rest_framework.response import Response

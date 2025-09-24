@@ -7,7 +7,8 @@ import requests_mock
 from django.urls import reverse
 from django.utils import timezone
 
-from applications.enums import AhjoRequestType, AhjoStatus as AhjoStatusEnum
+from applications.enums import AhjoRequestType
+from applications.enums import AhjoStatus as AhjoStatusEnum
 from applications.models import AhjoSetting, AhjoStatus
 from applications.services.ahjo.enums import AhjoSettingName
 from applications.services.ahjo.exceptions import (

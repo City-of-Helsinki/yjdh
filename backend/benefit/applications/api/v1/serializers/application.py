@@ -37,6 +37,8 @@ from applications.api.v1.status_transition_validator import (
 from applications.benefit_aggregation import get_former_benefit_info
 from applications.enums import (
     AhjoStatus as AhjoStatusEnum,
+)
+from applications.enums import (
     ApplicationActions,
     ApplicationBatchStatus,
     ApplicationOrigin,
@@ -70,8 +72,8 @@ from calculator.models import Calculation
 from common.delay_call import call_now_or_later, do_delayed_calls_at_end
 from common.exceptions import BenefitAPIException
 from common.utils import (
-    get_date_range_end_with_days360,
     PhoneNumberField,
+    get_date_range_end_with_days360,
     to_decimal,
     update_object,
 )

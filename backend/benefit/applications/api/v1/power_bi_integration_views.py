@@ -3,7 +3,8 @@ import logging
 from django.db.models import QuerySet
 from django.http import StreamingHttpResponse
 from django.utils import timezone
-from django_filters import DateFromToRangeFilter, rest_framework as filters
+from django_filters import DateFromToRangeFilter
+from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView

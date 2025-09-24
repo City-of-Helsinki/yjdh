@@ -2,7 +2,8 @@ import logging
 
 import filetype
 from django.conf import settings
-from django.forms import ImageField, ValidationError as DjangoFormsValidationError
+from django.forms import ImageField
+from django.forms import ValidationError as DjangoFormsValidationError
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -12,10 +13,10 @@ from rest_framework.reverse import reverse
 from applications.enums import ApplicationStatus
 from applications.models import Attachment
 from applications.services.clamav import (
-    clamav_client,
     ClamAvServiceUnavailableException,
     FileInfectedException,
     FileScanException,
+    clamav_client,
 )
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
 from users.utils import get_request_user_from_context
