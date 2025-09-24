@@ -148,9 +148,9 @@ def test_decision_proposal_drafting(
     if review_step == 4:
         final_ahjo_text = AhjoDecisionText.objects.get(application=application)
         assert (
-            final_ahjo_text.decision_text
-            == f'<section id="paatos"><h1>{_("Päätös")}</h1>{decision_text}</section>\
-<section id="paatoksenperustelut"><h1>{_("Päätöksen perustelut")}</h1>{justification_text}</section>'
+            final_ahjo_text.decision_text == "<section"
+            f' id="paatos"><h1>{_("Päätös")}</h1>{decision_text}</section><section'
+            f' id="paatoksenperustelut"><h1>{_("Päätöksen perustelut")}</h1>{justification_text}</section>'
         )
 
         assert final_ahjo_text.decision_maker_id == fake_decisionmakers[0]["ID"]

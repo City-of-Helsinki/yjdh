@@ -93,7 +93,9 @@ class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):
     )
     cancelled_by = UserSerializer(
         read_only=True,
-        help_text="The handler responsible for the cancellation of this alteration, if any",
+        help_text=(
+            "The handler responsible for the cancellation of this alteration, if any"
+        ),
     )
 
     def validate_recovery_amount(self, value):
@@ -146,7 +148,8 @@ class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):
                         ValidationError(
                             format_lazy(
                                 _(
-                                    "{field} must be filled if using an e-invoice address"
+                                    "{field} must be filled if using an e-invoice"
+                                    " address"
                                 ),
                                 field=field_label,
                             )
@@ -163,7 +166,8 @@ class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):
             errors.append(
                 ValidationError(
                     _(
-                        "The change to employment cannot start before the start date of the benefit period"
+                        "The change to employment cannot start before the start date of"
+                        " the benefit period"
                     )
                 )
             )
@@ -171,7 +175,8 @@ class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):
             errors.append(
                 ValidationError(
                     _(
-                        "The change to employment cannot start after the end date of the benefit period"
+                        "The change to employment cannot start after the end date of"
+                        " the benefit period"
                     )
                 )
             )
@@ -180,7 +185,8 @@ class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):
                 errors.append(
                     ValidationError(
                         _(
-                            "The end date of the change period cannot be after the end date of the benefit period"
+                            "The end date of the change period cannot be after the end"
+                            " date of the benefit period"
                         )
                     )
                 )
@@ -188,7 +194,8 @@ class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):
                 errors.append(
                     ValidationError(
                         _(
-                            "The end date of the change period cannot be before the start date of the same period"
+                            "The end date of the change period cannot be before the"
+                            " start date of the same period"
                         )
                     )
                 )
@@ -217,7 +224,8 @@ class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):
             errors.append(
                 ValidationError(
                     _(
-                        "Another change to employment has already been reported for the same period"
+                        "Another change to employment has already been reported for the"
+                        " same period"
                     )
                 )
             )

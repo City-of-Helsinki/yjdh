@@ -50,7 +50,9 @@ class AhjoApplicationView(APIView):
                 location=OpenApiParameter.PATH,
             )
         ],
-        description="Sends a delete / cancel case request to Ahjo for given application.",
+        description=(
+            "Sends a delete / cancel case request to Ahjo for given application."
+        ),
     )
     def delete(self, request, *args, **kwargs):
         application_id = self.kwargs["uuid"]
@@ -63,7 +65,10 @@ class AhjoApplicationView(APIView):
         ):
             return Response(
                 {
-                    "message": "Cannot delete because a decision proposal has been sent to Ahjo"
+                    "message": (
+                        "Cannot delete because a decision proposal has been sent to"
+                        " Ahjo"
+                    )
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
@@ -105,8 +110,10 @@ class AhjoAttachmentView(APIView):
             "",  # Optional user backend
             Operation.READ,
             attachment,
-            additional_information=f"attachment {attachment.attachment_file} \
-of type {attachment.attachment_type} was sent to AHJO!",
+            additional_information=(
+                f"attachment {attachment.attachment_file} of type"
+                f" {attachment.attachment_type} was sent to AHJO!"
+            ),
         )
         attachment.downloaded_by_ahjo = datetime.now(timezone.utc)
         attachment.save()
@@ -188,9 +195,11 @@ class AhjoCallbackView(APIView):
         request_type: AhjoRequestType,
     ) -> str:
         """Return a string with information about the received callback."""
-        return f"Application {application.application_number}: \
-        received a callback for request_type {request_type} \
-        with request id: {callback_data['requestId']}, full callback data: {callback_data}"
+        return (
+            f"Application {application.application_number}:         received a callback"
+            f" for request_type {request_type}         with request id:"
+            f" {callback_data['requestId']}, full callback data: {callback_data}"
+        )
 
     @transaction.atomic
     def handle_success_callback(
@@ -342,7 +351,8 @@ class AhjoCallbackView(APIView):
         # do anything that needs to be done when Ahjo has received a decision proposal request
         if not application.batch:
             raise AhjoCallbackError(
-                f"Application {application.id} has no batch when Ahjo has received a decision proposal request"
+                f"Application {application.id} has no batch when Ahjo has received a"
+                " decision proposal request"
             )
         batch = application.batch
         batch.status = ApplicationBatchStatus.AWAITING_AHJO_DECISION
@@ -355,14 +365,16 @@ class AhjoCallbackView(APIView):
         request_type: AhjoRequestType,
     ):
         LOGGER.error(
-            f"Received unsuccessful callback for {request_type} for application {application.id} \
-                with request_id {callback_data['requestId']}, callback data: {callback_data}"
+            f"Received unsuccessful callback for {request_type} for application"
+            f" {application.id}                 with request_id"
+            f" {callback_data['requestId']}, callback data: {callback_data}"
         )
         for cb_record in callback_data.get("records", []):
             if cb_record.get("status") == AhjoCallBackStatus.FAILURE:
                 LOGGER.error(
-                    f"Ahjo reports failure with record, hash value {cb_record['hashValue']} \
-                        and fileURI {cb_record['fileURI']}"
+                    "Ahjo reports failure with record, hash value"
+                    f" {cb_record['hashValue']}                         and fileURI"
+                    f" {cb_record['fileURI']}"
                 )
 
 
@@ -403,8 +415,11 @@ class AhjoDecisionCallbackView(APIView):
                     "",
                     Operation.UPDATE,
                     application,
-                    additional_information=f"Decision proposal callback of type: {update_type} was received \
-                    from Ahjo for application {application.application_number}",
+                    additional_information=(
+                        f"Decision proposal callback of type: {update_type} was"
+                        " received                     from Ahjo for application"
+                        f" {application.application_number}"
+                    ),
                 )
             except Application.DoesNotExist:
                 # Ahjo needs a 200 OK response even if an application is not found

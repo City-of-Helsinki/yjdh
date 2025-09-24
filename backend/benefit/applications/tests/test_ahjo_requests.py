@@ -106,7 +106,8 @@ def test_ahjo_requests_without_application(
 
 
 @pytest.mark.parametrize(
-    "ahjo_request_class, request_type, request_method, callback_route, ahjo_status_after_request",
+    "ahjo_request_class, request_type, request_method, callback_route,"
+    " ahjo_status_after_request",
     [
         (
             AhjoOpenCaseRequest,
@@ -337,7 +338,10 @@ def test_requests_exceptions(
         validation_error = [
             {"message": "/Title: does not match the regex pattern [a-zA-Z0-9åäöÅÄÖ]+"},
             {
-                "message": "/Records/0/SecurityReasons/0: does not match the regex pattern [a-zA-Z0-9åäöÅÄÖ]+"
+                "message": (
+                    "/Records/0/SecurityReasons/0: does not match the regex pattern"
+                    " [a-zA-Z0-9åäöÅÄÖ]+"
+                )
             },
         ]
         m.register_uri(

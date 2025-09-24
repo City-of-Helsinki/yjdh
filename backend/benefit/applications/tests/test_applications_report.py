@@ -140,7 +140,10 @@ def _create_applications_for_export():
 
 
 @pytest.mark.skip(
-    reason="This test fails in deploy pipeline - DETAIL:  Key (username)=(masonzachary_a45eb8) already exists."
+    reason=(
+        "This test fails in deploy pipeline - DETAIL:  Key"
+        " (username)=(masonzachary_a45eb8) already exists."
+    )
 )
 def test_applications_csv_export_new_applications(handler_api_client):
     (
@@ -181,11 +184,13 @@ def test_applications_csv_export_new_applications(handler_api_client):
     assert set(
         [
             a.pk
-            for a in ApplicationBatch.objects.filter(
-                proposal_for_decision=AhjoDecision.DECIDED_ACCEPTED
+            for a in (
+                ApplicationBatch.objects.filter(
+                    proposal_for_decision=AhjoDecision.DECIDED_ACCEPTED
+                )
+                .first()
+                .applications.all()
             )
-            .first()
-            .applications.all()
         ]
     ) == {application1.pk, application2.pk}
 

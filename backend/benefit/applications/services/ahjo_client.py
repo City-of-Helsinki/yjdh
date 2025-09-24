@@ -45,7 +45,8 @@ class AhjoRequest:
     def api_url(self) -> str:
         if not self.application.calculation.handler.ad_username:
             raise MissingHandlerIdError(
-                f"Application {self.application.id} handler does not have an ad_username"
+                f"Application {self.application.id} handler does not have an"
+                " ad_username"
             )
         if not self.application.ahjo_case_id:
             raise MissingAhjoCaseIdError("Application does not have an Ahjo case id")
@@ -65,7 +66,8 @@ class AhjoOpenCaseRequest(AhjoRequest):
     def api_url(self) -> str:
         if not self.application.calculation.handler.ad_username:
             raise MissingHandlerIdError(
-                f"Application {self.application.id} handler does not have an ad_username"
+                f"Application {self.application.id} handler does not have an"
+                " ad_username"
             )
         return f"{self.url_base}{API_CASES_BASE}"
 
@@ -109,7 +111,8 @@ class AhjoDeleteCaseRequest(AhjoRequest):
     def api_url(self) -> str:
         if not self.application.calculation.handler.ad_username:
             raise MissingHandlerIdError(
-                f"Application {self.application.id} handler does not have an ad_username"
+                f"Application {self.application.id} handler does not have an"
+                " ad_username"
             )
         if not self.application.ahjo_case_id:
             raise MissingAhjoCaseIdError("Application does not have an Ahjo case id")
@@ -310,14 +313,20 @@ class AhjoApiClient:
                 else:
                     return self._request.application, response.json()
         except MissingHandlerIdError as e:
-            error_message = f"Missing handler id for application {self.request.application.application_number}: {e}"
+            error_message = (
+                "Missing handler id for application"
+                f" {self.request.application.application_number}: {e}"
+            )
             LOGGER.error(error_message)
             self.write_error_to_ahjo_status(
                 context=error_message,
                 message_to_handler="Hakemuksen käsittelijältä puuttuu AD-tunnus.",
             )
         except MissingAhjoCaseIdError as e:
-            error_message = f"Missing Ahjo case id for application {self.request.application.application_number}: {e}"
+            error_message = (
+                "Missing Ahjo case id for application"
+                f" {self.request.application.application_number}: {e}"
+            )
             LOGGER.error(error_message)
             self.write_error_to_ahjo_status(
                 context=error_message,
@@ -362,7 +371,9 @@ class AhjoApiClient:
             error_message += f"{error_json}"
             self.write_error_to_ahjo_status(
                 context=error_json,
-                message_to_handler="Ahjo palautti validaatiovirheen tai muun HTTP-virheen.",
+                message_to_handler=(
+                    "Ahjo palautti validaatiovirheen tai muun HTTP-virheen."
+                ),
             )
 
         LOGGER.error(error_message)
@@ -373,8 +384,8 @@ class AhjoApiClient:
         application_number: Union[int, None] = None,
     ) -> str:
         return (
-            f"A HTTP or network error occurred while sending {self.request} for application \
-    {application_number} to Ahjo: {e}"
+            f"A HTTP or network error occurred while sending {self.request} for"
+            f" application     {application_number} to Ahjo: {e}"
         )
 
     def write_error_to_ahjo_status(self, context: str, message_to_handler: str) -> None:

@@ -65,7 +65,10 @@ class Migration(migrations.Migration):
                     models.DateField(
                         blank=True,
                         null=True,
-                        verbose_name="the first day the unwarranted benefit will be collected from",
+                        verbose_name=(
+                            "the first day the unwarranted benefit will be collected"
+                            " from"
+                        ),
                     ),
                 ),
                 (
@@ -73,7 +76,10 @@ class Migration(migrations.Migration):
                     models.DateField(
                         blank=True,
                         null=True,
-                        verbose_name="the last day the unwarranted benefit will be collected from",
+                        verbose_name=(
+                            "the last day the unwarranted benefit will be collected"
+                            " from"
+                        ),
                     ),
                 ),
                 (
@@ -89,7 +95,10 @@ class Migration(migrations.Migration):
                     "use_alternate_einvoice_provider",
                     models.BooleanField(
                         default=False,
-                        verbose_name="whether to use a separate e-invoice address from the one of the applicant organization",
+                        verbose_name=(
+                            "whether to use a separate e-invoice address from the one"
+                            " of the applicant organization"
+                        ),
                     ),
                 ),
                 (

@@ -120,12 +120,13 @@ class ApplicationsCsvService(CsvExportBase):
             return instalment
         except ObjectDoesNotExist:
             LOGGER.info(
-                f"Valid payable Instalment not found for application {application.application_number}"
+                "Valid payable Instalment not found for application"
+                f" {application.application_number}"
             )
         except MultipleObjectsReturned:
             LOGGER.error(
-                f"Multiple payable Instalments found for application \
-    {application.application_number}, there should be only one"
+                "Multiple payable Instalments found for application    "
+                f" {application.application_number}, there should be only one"
             )
 
     def get_instalment_1_amount(self, application: Application) -> decimal.Decimal:

@@ -47,7 +47,9 @@ class Migration(migrations.Migration):
             field=models.DateField(
                 blank=True,
                 null=True,
-                verbose_name="The date the alteration was cancelled after it had been handled",
+                verbose_name=(
+                    "The date the alteration was cancelled after it had been handled"
+                ),
             ),
         ),
         migrations.AddField(
@@ -141,7 +143,9 @@ class Migration(migrations.Migration):
             field=models.DateField(
                 blank=True,
                 null=True,
-                verbose_name="The last day the unwarranted benefit will be recovered from",
+                verbose_name=(
+                    "The last day the unwarranted benefit will be recovered from"
+                ),
             ),
         ),
         migrations.AlterField(
@@ -149,7 +153,9 @@ class Migration(migrations.Migration):
             name="recovery_justification",
             field=models.TextField(
                 blank=True,
-                verbose_name="The justification provided in the recovering bill, if eligible",
+                verbose_name=(
+                    "The justification provided in the recovering bill, if eligible"
+                ),
             ),
         ),
         migrations.AlterField(
@@ -158,7 +164,9 @@ class Migration(migrations.Migration):
             field=models.DateField(
                 blank=True,
                 null=True,
-                verbose_name="The first day the unwarranted benefit will be collected from",
+                verbose_name=(
+                    "The first day the unwarranted benefit will be collected from"
+                ),
             ),
         ),
         migrations.AlterField(
@@ -189,7 +197,10 @@ class Migration(migrations.Migration):
             name="use_einvoice",
             field=models.BooleanField(
                 default=False,
-                verbose_name="Whether to use handle billing with an e-invoice instead of a bill sent to a physical address",
+                verbose_name=(
+                    "Whether to use handle billing with an e-invoice instead of a bill"
+                    " sent to a physical address"
+                ),
             ),
         ),
     ]

@@ -315,7 +315,10 @@ DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE = [
     {
         "id": "NO_ID",
         "context": "Received an error but no failure details in the callback.",
-        "message": "Ahjo-pyynnössä tapahtui virhe, mutta Ahjo ei palauttanut tarkempia tietoja.",
+        "message": (
+            "Ahjo-pyynnössä tapahtui virhe, mutta Ahjo ei palauttanut tarkempia"
+            " tietoja."
+        ),
     }
 ]
 

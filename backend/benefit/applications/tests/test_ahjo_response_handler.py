@@ -205,9 +205,9 @@ def test_parse_details_from_decision_response(
 
 
 @pytest.mark.parametrize(
-    "instalments_enabled,application_status,\
-    expected_batch_status, expected_proposal_for_decision, expected_instalment_1_status, \
-        expected_instalment_2_status",
+    "instalments_enabled,application_status,    expected_batch_status,"
+    " expected_proposal_for_decision, expected_instalment_1_status,        "
+    " expected_instalment_2_status",
     [
         (
             True,
@@ -275,8 +275,8 @@ def test_handle_details_request_success(
 
     assert (
         success_text
-        == f"Successfully received and updated decision details \
-for application {application.id} and batch {application.batch.id} from Ahjo"
+        == "Successfully received and updated decision details for application"
+        f" {application.id} and batch {application.batch.id} from Ahjo"
     )
     assert instalment_1.status == expected_instalment_1_status
     assert instalment_2.status == expected_instalment_2_status

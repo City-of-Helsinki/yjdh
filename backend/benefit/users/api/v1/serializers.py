@@ -14,7 +14,10 @@ class UserSerializer(serializers.ModelSerializer):
     terms_of_service_approvals = TermsOfServiceApprovalSerializer(
         read_only=True,
         many=True,
-        help_text="Terms of service approvals by this user. There could be many, if user has access to many companies.",
+        help_text=(
+            "Terms of service approvals by this user. There could be many, if user has"
+            " access to many companies."
+        ),
     )
 
     class Meta:
@@ -41,8 +44,8 @@ class UserSerializer(serializers.ModelSerializer):
     terms_of_service_in_effect = serializers.SerializerMethodField(
         "get_terms_of_service_in_effect",
         help_text=(
-            "does the current user need to approve the terms of service currently in effect"
-            "for the current company"
+            "does the current user need to approve the terms of service currently in"
+            " effectfor the current company"
         ),
     )
 
@@ -70,8 +73,8 @@ class UserSerializer(serializers.ModelSerializer):
     terms_of_service_approval_needed = serializers.SerializerMethodField(
         "is_terms_of_service_approval_needed",
         help_text=(
-            "does the current user need to approve the terms of service currently in effect"
-            "for the current company"
+            "does the current user need to approve the terms of service currently in"
+            " effectfor the current company"
         ),
     )
 

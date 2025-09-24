@@ -33,10 +33,12 @@ LOGGER = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = f"Send the specified requests to Ahjo Rest API. Possible request types are: \
-{AhjoRequestType.OPEN_CASE}, {AhjoRequestType.SEND_DECISION_PROPOSAL}, \
-{AhjoRequestType.ADD_RECORDS}, {AhjoRequestType.UPDATE_APPLICATION}, \
-{AhjoRequestType.GET_DECISION_DETAILS}, {AhjoRequestType.DELETE_APPLICATION}"
+    help = (
+        "Send the specified requests to Ahjo Rest API. Possible request types are:"
+        f" {AhjoRequestType.OPEN_CASE}, {AhjoRequestType.SEND_DECISION_PROPOSAL},"
+        f" {AhjoRequestType.ADD_RECORDS}, {AhjoRequestType.UPDATE_APPLICATION},"
+        f" {AhjoRequestType.GET_DECISION_DETAILS}, {AhjoRequestType.DELETE_APPLICATION}"
+    )
     is_retry = False
 
     def add_arguments(self, parser):
@@ -63,8 +65,10 @@ class Command(BaseCommand):
             "--retry-failed-older-than",
             type=int,
             default=0,
-            help="Retry sending requests for applications that have \
-not moved to the next status in the last x hours",
+            help=(
+                "Retry sending requests for applications that have not moved to the"
+                " next status in the last x hours"
+            ),
         )
 
     def get_application_numbers(self, applications: QuerySet[Application]) -> str:
@@ -102,8 +106,8 @@ not moved to the next status in the last x hours",
             message_start = "retry" if self.is_retry else "send"
 
             self.stdout.write(
-                f"Would {message_start} sending {request_type} \
-requests for {len(applications)} applications to Ahjo"
+                f"Would {message_start} sending {request_type} requests for"
+                f" {len(applications)} applications to Ahjo"
             )
 
             for application in applications:
@@ -130,8 +134,10 @@ requests for {len(applications)} applications to Ahjo"
 
         message_start = "Retrying" if self.is_retry else "Sending"
 
-        message = f"{message_start} {ahjo_request_type} request to Ahjo \
-for {len(applications)} applications: {application_numbers}"
+        message = (
+            f"{message_start} {ahjo_request_type} request to Ahjo for"
+            f" {len(applications)} applications: {application_numbers}"
+        )
 
         self.stdout.write(self._print_with_timestamp(message))
 
@@ -142,7 +148,9 @@ for {len(applications)} applications: {application_numbers}"
             ValueError: "Value error for application",
             ObjectDoesNotExist: "Object not found error for application",
             ImproperlyConfigured: "Improperly configured error for application",
-            DecisionProposalAlreadyAcceptedError: "Decision proposal error for application",
+            DecisionProposalAlreadyAcceptedError: (
+                "Decision proposal error for application"
+            ),
         }
 
         for application in applications:
@@ -153,7 +161,10 @@ for {len(applications)} applications: {application_numbers}"
                     application, ahjo_auth_token
                 )
             except tuple(exception_messages.keys()) as e:
-                error_text = f"{exception_messages[type(e)]} {application.application_number}: {e}"
+                error_text = (
+                    f"{exception_messages[type(e)]}"
+                    f" {application.application_number}: {e}"
+                )
                 LOGGER.error(error_text)
                 AhjoErrorWriter.write_to_validation_error(
                     AhjoFormattedError(
@@ -199,14 +210,15 @@ for {len(applications)} applications: {application_numbers}"
             self.stdout.write(
                 self.style.SUCCESS(
                     self._print_with_timestamp(
-                        f"Sent {ahjo_request_type} requests for {len(successful_applications)} \
-application(s): {successful_application_numbers} to Ahjo"
+                        f"Sent {ahjo_request_type} requests for"
+                        f" {len(successful_applications)} application(s):"
+                        f" {successful_application_numbers} to Ahjo"
                     )
                 )
             )
             self.stdout.write(
-                f"Submitting {len(successful_applications)} {ahjo_request_type} \
-requests took {elapsed_time} seconds to run."
+                f"Submitting {len(successful_applications)} {ahjo_request_type}"
+                f" requests took {elapsed_time} seconds to run."
             )
         if failed_applications:
             failed_application_numbers = self.get_application_numbers(
@@ -216,8 +228,9 @@ requests took {elapsed_time} seconds to run."
             self.stdout.write(
                 self.style.ERROR(
                     self._print_with_timestamp(
-                        f"Failed to submit {ahjo_request_type} {len(failed_applications)} \
-application(s): {failed_application_numbers} to Ahjo"
+                        f"Failed to submit {ahjo_request_type}"
+                        f" {len(failed_applications)} application(s):"
+                        f" {failed_application_numbers} to Ahjo"
                     )
                 )
             )
@@ -235,9 +248,11 @@ application(s): {failed_application_numbers} to Ahjo"
         ahjo_status.ahjo_request_id = response_text
         ahjo_status.save()
 
-        return f"{counter}. Successfully submitted {request_type} request for application {application.id}, \
-            number: {application.application_number}, to Ahjo, \
-            received Ahjo requestId: {response_text}"
+        return (
+            f"{counter}. Successfully submitted {request_type} request for application"
+            f" {application.id},             number: {application.application_number},"
+            f" to Ahjo,             received Ahjo requestId: {response_text}"
+        )
 
     def _handle_successful_request(
         self,
@@ -276,8 +291,10 @@ application(s): {failed_application_numbers} to Ahjo"
         self.stdout.write(
             self.style.ERROR(
                 self._print_with_timestamp(
-                    f"{counter}. Failed to submit {request_type} for application {application.id} \
-                number: {application.application_number}, to Ahjo. {additional_error_text}"
+                    f"{counter}. Failed to submit {request_type} for application"
+                    f" {application.id}                 number:"
+                    f" {application.application_number}, to Ahjo."
+                    f" {additional_error_text}"
                 )
             )
         )
@@ -287,7 +304,9 @@ application(s): {failed_application_numbers} to Ahjo"
             AhjoRequestType.OPEN_CASE: send_open_case_request_to_ahjo,
             AhjoRequestType.SEND_DECISION_PROPOSAL: send_decision_proposal_to_ahjo,
             AhjoRequestType.ADD_RECORDS: send_new_attachment_records_to_ahjo,
-            AhjoRequestType.UPDATE_APPLICATION: update_application_summary_record_in_ahjo,
+            AhjoRequestType.UPDATE_APPLICATION: (
+                update_application_summary_record_in_ahjo
+            ),
             AhjoRequestType.GET_DECISION_DETAILS: get_decision_details_from_ahjo,
             AhjoRequestType.DELETE_APPLICATION: delete_application_in_ahjo,
         }

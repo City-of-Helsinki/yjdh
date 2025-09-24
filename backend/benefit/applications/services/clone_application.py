@@ -40,13 +40,39 @@ def clone_application_based_on_other(
         company.city = company.city if len(company.city) > 0 else "Testilä"
 
     cloned_application = Application(
-        alternative_company_city=application_base.alternative_company_city, alternative_company_postcode=application_base.alternative_company_postcode, alternative_company_street_address=application_base.alternative_company_street_address, applicant_language="fi", application_origin=(
-                application_base.application_origin
-                if clone_all_data
-                else ApplicationOrigin.APPLICANT
-            ), application_step=ApplicationStep.STEP_1, archived=False, association_has_business_activities=application_base.association_has_business_activities
-            or False, association_immediate_manager_check=application_base.association_immediate_manager_check
-            or False, benefit_type="salary_benefit", co_operation_negotiations=application_base.co_operation_negotiations, co_operation_negotiations_description=application_base.co_operation_negotiations_description, company_bank_account_number=application_base.company_bank_account_number, company_contact_person_email=application_base.company_contact_person_email, company_contact_person_first_name=application_base.company_contact_person_first_name, company_contact_person_last_name=application_base.company_contact_person_last_name, company_contact_person_phone_number=application_base.company_contact_person_phone_number, company_department=application_base.company_department, company_form=application_base.company_form, company_form_code=company.company_form_code, company_name=application_base.company_name, de_minimis_aid=application_base.de_minimis_aid, status=ApplicationStatus.DRAFT, official_company_street_address=company.street_address, official_company_city=application_base.official_company_city, official_company_postcode=application_base.official_company_postcode, use_alternative_address=application_base.use_alternative_address
+        alternative_company_city=application_base.alternative_company_city,
+        alternative_company_postcode=application_base.alternative_company_postcode,
+        alternative_company_street_address=application_base.alternative_company_street_address,
+        applicant_language="fi",
+        application_origin=(
+            application_base.application_origin
+            if clone_all_data
+            else ApplicationOrigin.APPLICANT
+        ),
+        application_step=ApplicationStep.STEP_1,
+        archived=False,
+        association_has_business_activities=application_base.association_has_business_activities
+        or False,
+        association_immediate_manager_check=application_base.association_immediate_manager_check
+        or False,
+        benefit_type="salary_benefit",
+        co_operation_negotiations=application_base.co_operation_negotiations,
+        co_operation_negotiations_description=application_base.co_operation_negotiations_description,
+        company_bank_account_number=application_base.company_bank_account_number,
+        company_contact_person_email=application_base.company_contact_person_email,
+        company_contact_person_first_name=application_base.company_contact_person_first_name,
+        company_contact_person_last_name=application_base.company_contact_person_last_name,
+        company_contact_person_phone_number=application_base.company_contact_person_phone_number,
+        company_department=application_base.company_department,
+        company_form=application_base.company_form,
+        company_form_code=company.company_form_code,
+        company_name=application_base.company_name,
+        de_minimis_aid=application_base.de_minimis_aid,
+        status=ApplicationStatus.DRAFT,
+        official_company_street_address=company.street_address,
+        official_company_city=application_base.official_company_city,
+        official_company_postcode=application_base.official_company_postcode,
+        use_alternative_address=application_base.use_alternative_address,
     )
 
     company.save()

@@ -10,8 +10,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunSQL(
-            "CREATE SEQUENCE seq_application_number INCREMENT BY 1 START WITH 125000 OWNED "
-            "BY bf_applications_application.application_number",
+            "CREATE SEQUENCE seq_application_number INCREMENT BY 1 START WITH 125000"
+            " OWNED BY bf_applications_application.application_number",
             "DROP SEQUENCE seq_application_number",
         )
     ]

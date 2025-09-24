@@ -62,7 +62,8 @@ class TalpaCallbackView(APIView):
         )
         if not applications.exists() and application_numbers:
             LOGGER.error(
-                f"No applications found with numbers: {application_numbers} for update after TALPA download"
+                f"No applications found with numbers: {application_numbers} for update"
+                " after TALPA download"
             )
             return None
         return applications
@@ -76,7 +77,8 @@ class TalpaCallbackView(APIView):
 
         if not applications.exists() and application_numbers:
             LOGGER.error(
-                f"No applications found with numbers: {application_numbers} for update after TALPA download"
+                f"No applications found with numbers: {application_numbers} for update"
+                " after TALPA download"
             )
             return []
         return applications
@@ -118,7 +120,9 @@ class TalpaCallbackView(APIView):
                 applications=applications,
                 instalment_status=InstalmentStatus.ERROR_IN_TALPA,
                 ip_address=ip_address,
-                log_message="there was an error and the instalment was not read by TALPA",
+                log_message=(
+                    "there was an error and the instalment was not read by TALPA"
+                ),
                 is_success=False,
             )
         else:
@@ -182,12 +186,13 @@ class TalpaCallbackView(APIView):
                 instalment.save()
             except ObjectDoesNotExist:
                 LOGGER.error(
-                    f"Valid payable Instalment not found for application {application.application_number}"
+                    "Valid payable Instalment not found for application"
+                    f" {application.application_number}"
                 )
             except MultipleObjectsReturned:
                 LOGGER.error(
-                    f"Multiple payable Instalments found for application \
-{application.application_number}, there should be only one"
+                    "Multiple payable Instalments found for application"
+                    f" {application.application_number}, there should be only one"
                 )
 
             if is_success:
@@ -199,8 +204,11 @@ class TalpaCallbackView(APIView):
                     ip_address=ip_address,
                     application_talpa_status=ApplicationTalpaStatus.PARTIALLY_SENT_TO_TALPA,
                     batch_status=ApplicationBatchStatus.PARTIALLY_SENT_TO_TALPA,
-                    log_message=f"instalment {instalment.instalment_number}/{application.number_of_instalments} \
-was read by TALPA and marked as paid",
+                    log_message=(
+                        "instalment"
+                        f" {instalment.instalment_number}/{application.number_of_instalments}"
+                        " was read by TALPA and marked as paid"
+                    ),
                     is_archived=True,
                 )
 

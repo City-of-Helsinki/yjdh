@@ -55,7 +55,8 @@ def _get_change_set_base(new_record: ModelChange):
         "user": {
             "staff": getattr(new_record.history_user, "is_staff", False),
             "name": (
-                f"{new_record.history_user.first_name} {new_record.history_user.last_name[0]}."
+                f"{new_record.history_user.first_name}"
+                f" {new_record.history_user.last_name[0]}."
                 if new_record.history_user
                 and new_record.history_user.first_name
                 and new_record.history_user.last_name

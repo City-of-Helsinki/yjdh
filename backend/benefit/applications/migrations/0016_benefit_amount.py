@@ -28,7 +28,9 @@ class Migration(migrations.Migration):
                 decimal_places=2,
                 max_digits=8,
                 null=True,
-                verbose_name="amount of the benefit manually entered by the application handler",
+                verbose_name=(
+                    "amount of the benefit manually entered by the application handler"
+                ),
             ),
         ),
         migrations.AddField(
@@ -50,7 +52,9 @@ class Migration(migrations.Migration):
                 decimal_places=2,
                 max_digits=8,
                 null=True,
-                verbose_name="amount of the benefit manually entered by the application handler",
+                verbose_name=(
+                    "amount of the benefit manually entered by the application handler"
+                ),
             ),
         ),
     ]

@@ -40,7 +40,9 @@ def _flatten_dict(d, parent_key="", sep="."):
 
 handler_edit_payloads = [
     {
-        "change_reason": "Change employee first & last name, company contact's phone number",
+        "change_reason": (
+            "Change employee first & last name, company contact's phone number"
+        ),
         "company_contact_person_phone_number": "+35850000000",
         "employee": {
             "first_name": "Firstname1",

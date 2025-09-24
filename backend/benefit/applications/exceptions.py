@@ -4,7 +4,6 @@ class BatchCompletionDecisionDateError(Exception):
     """
 
 
-
 class BatchCompletionRequiredFieldsError(Exception):
     """
     Raised when there is necessary information missing
@@ -12,10 +11,8 @@ class BatchCompletionRequiredFieldsError(Exception):
     """
 
 
-
 class BatchTooManyDraftsError(Exception):
     """
     Raised when there is too many drafts with the same value
     of proposal_for_decision
     """
-

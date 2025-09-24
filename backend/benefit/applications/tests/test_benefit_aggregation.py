@@ -25,7 +25,8 @@ NO_WARNINGS = None
 
 
 @pytest.mark.parametrize(
-    "previous_benefits, benefit_type, apprenticeship_program, expected_warning, months_used, months_remaining",
+    "previous_benefits, benefit_type, apprenticeship_program, expected_warning,"
+    " months_used, months_remaining",
     [
         (
             [

@@ -593,7 +593,10 @@ def test_subscribe_to_decisions_callback_success(
                 {
                     "id": "INVALID_RECORD_TYPE",
                     "message": "Asiakirjan tyyppi ei ole sallittu.",
-                    "context": "(Tähän tulisi tietoa virheen esiintymispaikasta jos mahdollista antaa.)",
+                    "context": (
+                        "(Tähän tulisi tietoa virheen esiintymispaikasta jos"
+                        " mahdollista antaa.)"
+                    ),
                 }
             ],
         ),
@@ -604,7 +607,10 @@ def test_subscribe_to_decisions_callback_success(
                 {
                     "id": "INVALID_RECORD_TYPE",
                     "message": "Asiakirjan tyyppi ei ole sallittu.",
-                    "context": "(Tähän tulisi tietoa virheen esiintymispaikasta jos mahdollista antaa.)",
+                    "context": (
+                        "(Tähän tulisi tietoa virheen esiintymispaikasta jos"
+                        " mahdollista antaa.)"
+                    ),
                 }
             ],
         ),
@@ -740,7 +746,10 @@ def test_ahjo_callback_raises_error_without_batch(
     response = ahjo_client.post(url, **auth_headers, data=ahjo_callback_payload)
     assert response.status_code == 500
     assert response.data == {
-        "error": f"Application {decided_application.id} has no batch when Ahjo has received a decision proposal request"
+        "error": (
+            f"Application {decided_application.id} has no batch when Ahjo has received"
+            " a decision proposal request"
+        )
     }
 
 
@@ -1428,7 +1437,8 @@ def test_get_applications_for_ahjo_decision_proposal_request(
 
 
 @pytest.mark.parametrize(
-    "application_status, latest_ahjo_status, talpa_status, retry_failed_older_than_hours, wanted_count",
+    "application_status, latest_ahjo_status, talpa_status,"
+    " retry_failed_older_than_hours, wanted_count",
     [
         (
             ApplicationStatus.ACCEPTED,

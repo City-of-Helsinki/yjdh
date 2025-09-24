@@ -99,7 +99,9 @@ REJECTED_TITLE = "Työllisyydenhoidon Helsinki-lisä, kielteiset päätökset 
 JINJA_TEMPLATES_COMPOSED = {
     TEMPLATE_ID_COMPOSED_ACCEPTED_PUBLIC: {
         "path": BENEFIT_TEMPLATE_FILENAME,
-        "file_name": "Liite 1 Helsinki-lisä hyväksytyt päätökset koontiliite julkinen.pdf",
+        "file_name": (
+            "Liite 1 Helsinki-lisä hyväksytyt päätökset koontiliite julkinen.pdf"
+        ),
         "context": {
             "title": ACCEPTED_TITLE,
             "show_ahjo_rows": True,
@@ -110,7 +112,9 @@ JINJA_TEMPLATES_COMPOSED = {
     },
     TEMPLATE_ID_COMPOSED_DECLINED_PUBLIC: {
         "path": BENEFIT_TEMPLATE_FILENAME,
-        "file_name": "Liite 1 Helsinki-lisä kielteiset päätökset koontiliite julkinen.pdf",
+        "file_name": (
+            "Liite 1 Helsinki-lisä kielteiset päätökset koontiliite julkinen.pdf"
+        ),
         "context": {
             "title": REJECTED_TITLE,
             "show_ahjo_rows": False,
@@ -121,8 +125,10 @@ JINJA_TEMPLATES_COMPOSED = {
     },
     TEMPLATE_ID_COMPOSED_ACCEPTED_PRIVATE: {
         "path": BENEFIT_TEMPLATE_FILENAME,
-        "file_name": "Liite 2 Helsinki-lisä hyväksytyt päätökset "
-        "koontiliite salassa pidettävä.pdf",
+        "file_name": (
+            "Liite 2 Helsinki-lisä hyväksytyt päätökset "
+            "koontiliite salassa pidettävä.pdf"
+        ),
         "context": {
             "title": ACCEPTED_TITLE,
             "show_ahjo_rows": True,
@@ -134,8 +140,10 @@ JINJA_TEMPLATES_COMPOSED = {
     },
     TEMPLATE_ID_COMPOSED_DECLINED_PRIVATE: {
         "path": BENEFIT_TEMPLATE_FILENAME,
-        "file_name": "Liite 2 Helsinki-lisä kielteiset päätökset "
-        "koontiliite salassa pidettävä.pdf",
+        "file_name": (
+            "Liite 2 Helsinki-lisä kielteiset päätökset "
+            "koontiliite salassa pidettävä.pdf"
+        ),
         "context": {
             "title": REJECTED_TITLE,
             "show_ahjo_rows": False,
@@ -150,7 +158,9 @@ JINJA_TEMPLATES_COMPOSED = {
 JINJA_TEMPLATES_SINGLE = {
     TEMPLATE_ID_BENEFIT_WITH_DE_MINIMIS_AID: {
         "path": BENEFIT_TEMPLATE_FILENAME,
-        "file_name": "Liite {attachment_number} [{company_name}] hakemukset (de minimis).pdf",
+        "file_name": (
+            "Liite {attachment_number} [{company_name}] hakemukset (de minimis).pdf"
+        ),
         "context": {
             "title": ACCEPTED_TITLE,
             "show_ahjo_rows": True,
@@ -172,8 +182,10 @@ JINJA_TEMPLATES_SINGLE = {
     },
     TEMPLATE_ID_BENEFIT_DECLINED: {
         "path": BENEFIT_TEMPLATE_FILENAME,
-        "file_name": "Liite {attachment_number} [{company_name}] Työllisyydenhoidon Helsinki-lisä, "
-        "kielteiset päätökset.pdf",
+        "file_name": (
+            "Liite {attachment_number} [{company_name}] Työllisyydenhoidon"
+            " Helsinki-lisä, kielteiset päätökset.pdf"
+        ),
         "context": {
             "title": REJECTED_TITLE,
             "show_ahjo_rows": False,
@@ -343,9 +355,11 @@ def generate_single_approved_file(
     return generate_pdf(
         apps=apps,
         template_config=JINJA_TEMPLATES_SINGLE[
-            TEMPLATE_ID_BENEFIT_WITH_DE_MINIMIS_AID
-            if any(filter(_get_granted_as_de_minimis_aid, apps))
-            else TEMPLATE_ID_BENEFIT_WITHOUT_DE_MINIMIS_AID
+            (
+                TEMPLATE_ID_BENEFIT_WITH_DE_MINIMIS_AID
+                if any(filter(_get_granted_as_de_minimis_aid, apps))
+                else TEMPLATE_ID_BENEFIT_WITHOUT_DE_MINIMIS_AID
+            )
         ],
         company=company,
         attachment_number=attachment_number,
@@ -518,8 +532,8 @@ def update_application_summary_record_in_ahjo(
     if application.ahjo_status.latest().error_from_ahjo:
         # If there are errors from Ahjo, do not send the update request
         raise ValueError(
-            f"Application {application.id} has errors \
-in Ahjo status {application.ahjo_status.latest().status}, not sending {ahjo_request}."
+            f"Application {application.id} has errors in Ahjo status"
+            f" {application.ahjo_status.latest().status}, not sending {ahjo_request}."
         )
 
     ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
@@ -568,8 +582,8 @@ def send_decision_proposal_to_ahjo(
             status=AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED
         )
         raise DecisionProposalAlreadyAcceptedError(
-            f"The application \
-already has a decision proposal accepted in Ahjo at {existing_status.created_at}. Not sending a new one.",
+            "The application already has a decision proposal accepted in Ahjo at"
+            f" {existing_status.created_at}. Not sending a new one.",
             existing_status,
         )
 
@@ -611,8 +625,8 @@ Tarkista tiedosto sekä päätösteksti ja yritä uudelleen.""",
         return (None, None)
     except DecisionProposalError as e:
         LOGGER.error(
-            f"Error in sending decision proposal payload\
-        for application {application.application_number}: {e}"
+            "Error in sending decision proposal payload        for application"
+            f" {application.application_number}: {e}"
         )
         return (None, None)
     response, response_text = ahjo_client.send_request_to_ahjo(data)

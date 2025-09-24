@@ -43,7 +43,7 @@ def replace_decision_template_placeholders(
                 if decision_type == DecisionType.ACCEPTED
                 else ""
             ),
-            benefit_date_range=(f"{start_date} - {end_date}"),
+            benefit_date_range=f"{start_date} - {end_date}",
         )
     except AhjoDecisionError as e:
         raise ValueError(f"Error in preparing the decision proposal template: {e}")

@@ -33,12 +33,13 @@ class TalpaCsvService(ApplicationsCsvService):
                 return instalment.amount_after_recoveries
             except ObjectDoesNotExist:
                 LOGGER.error(
-                    f"Valid payable Instalment not found for application {application.application_number}"
+                    "Valid payable Instalment not found for application"
+                    f" {application.application_number}"
                 )
             except MultipleObjectsReturned:
                 LOGGER.error(
-                    f"Multiple payable Instalments found for application \
-{application.application_number}, there should be only one"
+                    "Multiple payable Instalments found for application"
+                    f" {application.application_number}, there should be only one"
                 )
         else:
             return application.calculation.calculated_benefit_amount

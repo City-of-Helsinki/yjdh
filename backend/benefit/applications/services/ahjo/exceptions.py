@@ -5,7 +5,6 @@ class DecisionProposalError(Exception):
     """Custom exception for errors in the sending of decision proposals."""
 
 
-
 class DecisionProposalAlreadyAcceptedError(DecisionProposalError):
     """
     Raised when a decision proposal already has been accepted in Ahjo,
@@ -27,12 +26,10 @@ class AhjoApiClientException(Exception):
     """
 
 
-
 class MissingAhjoCaseIdError(AhjoApiClientException):
     """
     Raised when a Ahjo request that requires a case id is missing the case id.
     """
-
 
 
 class MissingHandlerIdError(AhjoApiClientException):
@@ -41,12 +38,10 @@ class MissingHandlerIdError(AhjoApiClientException):
     """
 
 
-
 class MissingOrganizationIdentifier(Exception):
     """
     Raised when an organization identifier is missing from AhjoSettings in the database.
     """
-
 
 
 class AhjoTokenExpiredException(Exception):
@@ -54,7 +49,6 @@ class AhjoTokenExpiredException(Exception):
     Raised when the Ahjo token has expired. The token should be re-configured manually, see instructions at:
     https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/8687517756/Siirto+yll+pitoon#Ahjo-autentikaatio-tokenin-haku-ja-asettaminen-manuaalisesti.
     """
-
 
 
 class AhjoTokenRetrievalException(Exception):
@@ -65,12 +59,10 @@ class AhjoTokenRetrievalException(Exception):
     """
 
 
-
 class InvalidAhjoTokenException(Exception):
     """
     Raised when the Ahjo token is missing data or is otherwise invalid.
     """
-
 
 
 class AhjoCallbackError(Exception):
@@ -79,16 +71,13 @@ class AhjoCallbackError(Exception):
     """
 
 
-
 class AhjoDecisionError(Exception):
     """
     Raised when an error occurs in substituting application data into the decision text.
     """
 
 
-
 class AhjoDecisionDetailsParsingError(Exception):
     """
     Raised when an error occurs in parsing the decision details after a details query to Ahjo.
     """
-

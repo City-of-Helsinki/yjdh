@@ -13,20 +13,27 @@ from messages.automatic_messages import (
 )
 
 APPLICATION_ABOUT_TO_BE_DELETED_MESSAGE = _(
-    "Your application {id} will be deleted soon. If you want to continue the application process, please do so by "
-    "{application_deletion_date}, otherwise the application will deleted permanently."
+    "Your application {id} will be deleted soon. If you want to continue the"
+    " application process, please do so by {application_deletion_date}, otherwise the"
+    " application will deleted permanently."
 )
 
 
 class Command(BaseCommand):
-    help = "Query draft applications that are close to the deletion date and send a notification to the applicant"
+    help = (
+        "Query draft applications that are close to the deletion date and send a"
+        " notification to the applicant"
+    )
 
     def add_arguments(self, parser):
         parser.add_argument(
             "--notify",
             type=int,
             default=14,
-            help="The number of days before the deletion date and when to notify the applicant",
+            help=(
+                "The number of days before the deletion date and when to notify the"
+                " applicant"
+            ),
         )
 
         parser.add_argument(
@@ -41,7 +48,8 @@ class Command(BaseCommand):
             options["notify"], options["keep"]
         )
         self.stdout.write(
-            f"Notified users of {number_of_notified_applications} applications about upcoming application deletion"
+            f"Notified users of {number_of_notified_applications} applications about"
+            " upcoming application deletion"
         )
 
 

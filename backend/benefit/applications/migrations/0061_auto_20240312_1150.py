@@ -24,7 +24,10 @@ class Migration(migrations.Migration):
             name="use_einvoice",
             field=models.BooleanField(
                 default=False,
-                verbose_name="whether to use handle billing with an e-invoice instead of a bill sent to a physical address",
+                verbose_name=(
+                    "whether to use handle billing with an e-invoice instead of a bill"
+                    " sent to a physical address"
+                ),
             ),
         ),
         migrations.AddField(

@@ -987,7 +987,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             raise serializers.ValidationError(
                 {
                     "apprenticeship_program": _(
-                        "Apprenticeship program can not be selected if there is no granted pay subsidy"
+                        "Apprenticeship program can not be selected if there is no"
+                        " granted pay subsidy"
                     )
                 }
             )
@@ -1000,7 +1001,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             raise serializers.ValidationError(
                 {
                     "apprenticeship_program": _(
-                        "Apprenticeship program has to be yes or no if there is a granted pay subsidy"
+                        "Apprenticeship program has to be yes or no if there is a"
+                        " granted pay subsidy"
                     )
                 }
             )
@@ -1522,7 +1524,7 @@ class ApplicantApplicationSerializer(BaseApplicationSerializer):
         return getattr(obj.batch, "status", False) if obj.batch else False
 
     changes = serializers.SerializerMethodField(
-        help_text=("Possible changes made by handler to the application."),
+        help_text="Possible changes made by handler to the application.",
     )
 
     def get_changes(self, obj):
@@ -2090,7 +2092,8 @@ class ArchivalApplicationListSerializer(serializers.ModelSerializer):
     handled_at = serializers.SerializerMethodField(
         "get_handled_at",
         help_text=(
-            "Archival applications do not have a handled_at timestamp, use start_date instead"
+            "Archival applications do not have a handled_at timestamp, use start_date"
+            " instead"
         ),
     )
     company = CompanySerializer(read_only=True)
@@ -2098,12 +2101,13 @@ class ArchivalApplicationListSerializer(serializers.ModelSerializer):
     employee = serializers.SerializerMethodField(
         "get_employee",
         help_text=(
-            "Wrap employee data in a dictionary to match the structure of the normal applications"
+            "Wrap employee data in a dictionary to match the structure of the normal"
+            " applications"
         ),
     )
     calculation = serializers.SerializerMethodField(
         "get_calculation",
-        help_text=("Start and end date"),
+        help_text="Start and end date",
     )
 
     def get_handled_at(self, obj):

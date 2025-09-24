@@ -123,7 +123,8 @@ class AhjoConnector:
             return self.create_token(token_from_api)
         else:
             raise AhjoTokenRetrievalException(
-                f"Failed to retrieve or refresh token: {response.status_code} {response.content.decode()}"
+                f"Failed to retrieve or refresh token: {response.status_code}"
+                f" {response.content.decode()}"
             )
 
     def get_token_from_db(self) -> Union[AhjoToken, None]:

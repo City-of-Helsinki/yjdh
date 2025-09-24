@@ -35,7 +35,8 @@ class GetUsersOrganizationView(APIView):
     def ytj_api_error(self):
         return Response(
             __(
-                "YTJ API is under heavy load or no company found with the given business id"
+                "YTJ API is under heavy load or no company found with the given"
+                " business id"
             ),
             status.HTTP_404_NOT_FOUND,
         )
@@ -107,9 +108,8 @@ class GetUsersOrganizationView(APIView):
                 return self.ytj_api_error
         except (ValueError, KeyError) as err:
             LOGGER.debug(
-                "Could not handle the response from Palveluväylä and YRTTI API, error: {}".format(
-                    err
-                )
+                "Could not handle the response from Palveluväylä and YRTTI API,"
+                " error: {}".format(err)
             )
             return Response(
                 __("Could not handle the response from Palveluväylä and YRTTI API"),

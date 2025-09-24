@@ -92,8 +92,10 @@ class BaseApplicationFilter(filters.FilterSet):
         widget=CSVWidget,
         choices=ApplicationStatus.choices,
         help_text=(
-            "Filter by application status. Multiple statuses may be specified as a"
-            " comma-separated list, such as 'status=draft,received'",
+            (
+                "Filter by application status. Multiple statuses may be specified as a"
+                " comma-separated list, such as 'status=draft,received'"
+            ),
         ),
     )
     archived_for_applicant = filters.BooleanFilter(
@@ -195,8 +197,10 @@ class HandlerApplicationAlterationFilter(filters.FilterSet):
         widget=CSVWidget,
         choices=ApplicationAlterationState.choices,
         help_text=(
-            "Filter by alteration state. Multiple states may be specified as a"
-            " comma-separated list, such as 'state=handled,cancelled'",
+            (
+                "Filter by alteration state. Multiple states may be specified as a"
+                " comma-separated list, such as 'state=handled,cancelled'"
+            ),
         ),
     )
 
@@ -551,7 +555,8 @@ class HandlerApplicationAlterationViewSet(BaseApplicationAlterationViewSet):
             )
         except ObjectDoesNotExist:
             raise ImproperlyConfigured(
-                "application_alteration_fields fields not found in the ahjo_settings table"
+                "application_alteration_fields fields not found in the ahjo_settings"
+                " table"
             )
 
     def _alterations_csv_response(

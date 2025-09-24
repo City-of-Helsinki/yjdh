@@ -59,8 +59,12 @@ class ApplicationAlterationCsvService(CsvExportBase):
 
     def get_company_contact_person(self, alteration: ApplicationAlteration) -> str:
         application = alteration.application
-        return f"{application.company_contact_person_first_name} {application.company_contact_person_last_name} \
-            {application.company_contact_person_email} {application.company_contact_person_phone_number}"
+        return (
+            f"{application.company_contact_person_first_name}"
+            f" {application.company_contact_person_last_name}            "
+            f" {application.company_contact_person_email}"
+            f" {application.company_contact_person_phone_number}"
+        )
 
     def get_recovery_justification(self, alteration: ApplicationAlteration) -> str:
         return alteration.recovery_justification

@@ -43,7 +43,8 @@ class AhjoRequestBaseClass(BaseCommand):
         except ValueError as e:
             self.style.ERROR(
                 self.stdout.write(
-                    f"{timezone.now()}: Failed to make request {self.request_type.value} to Ahjo: {e}"
+                    f"{timezone.now()}: Failed to make request"
+                    f" {self.request_type.value} to Ahjo: {e}"
                 )
             )
             return

@@ -61,8 +61,10 @@ class Command(BaseCommand):
             "--filename",
             type=str,
             default="test.xlsx",
-            help="Filename for Excel spreadsheet to import,"
-            "store spreadsheet under backend/benefit/applications/resources",
+            help=(
+                "Filename for Excel spreadsheet to import,"
+                "store spreadsheet under backend/benefit/applications/resources"
+            ),
         )
 
         parser.add_argument(
@@ -76,7 +78,10 @@ class Command(BaseCommand):
             "--production",
             type=bool,
             default=None,
-            help="Set to True to actually import the data, otherwise will only do a dry run",
+            help=(
+                "Set to True to actually import the data, otherwise will only do a"
+                " dry run"
+            ),
         )
 
     def handle(self, filename, production, sheet_name, *args, **options):  # noqa
@@ -237,5 +242,6 @@ class Command(BaseCommand):
                     print(f"• Skipping: {app.application_number}")
 
         print(
-            f"\nDone! Imported {rows_imported} rows as ArchivalApplication.\nSkipped {rows_skipped} rows.\n"
+            f"\nDone! Imported {rows_imported} rows as ArchivalApplication.\nSkipped"
+            f" {rows_skipped} rows.\n"
         )

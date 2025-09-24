@@ -39,11 +39,17 @@ class Migration(migrations.Migration):
                         choices=[
                             (
                                 "decision_section",
-                                "Template part for the decision section of a application decision proposal",
+                                (
+                                    "Template part for the decision section of a"
+                                    " application decision proposal"
+                                ),
                             ),
                             (
                                 "justification_section",
-                                "Template part for the decision justification section of a decision proposal",
+                                (
+                                    "Template part for the decision justification"
+                                    " section of a decision proposal"
+                                ),
                             ),
                         ],
                         default="decision_section",

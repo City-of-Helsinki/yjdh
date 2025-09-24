@@ -134,7 +134,10 @@ class Migration(migrations.Migration):
                     "co_operation_negotiations_description",
                     models.CharField(
                         max_length=256,
-                        verbose_name="additional information about the ongoing co-operation negotiations",
+                        verbose_name=(
+                            "additional information about the ongoing co-operation"
+                            " negotiations"
+                        ),
                     ),
                 ),
                 ("apprenticeship_program", models.BooleanField(null=True)),
@@ -534,7 +537,10 @@ class Migration(migrations.Migration):
                     "co_operation_negotiations_description",
                     models.CharField(
                         max_length=256,
-                        verbose_name="additional information about the ongoing co-operation negotiations",
+                        verbose_name=(
+                            "additional information about the ongoing co-operation"
+                            " negotiations"
+                        ),
                     ),
                 ),
                 ("apprenticeship_program", models.BooleanField(null=True)),

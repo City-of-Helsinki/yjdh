@@ -21,7 +21,10 @@ class Migration(migrations.Migration):
                     ),
                     (
                         "handler_terms",
-                        "Terms of application for handler - show at application submit for handler",
+                        (
+                            "Terms of application for handler - show at application"
+                            " submit for handler"
+                        ),
                     ),
                 ],
                 default="applicant_terms",

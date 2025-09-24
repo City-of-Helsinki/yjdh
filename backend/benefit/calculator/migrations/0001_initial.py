@@ -78,7 +78,9 @@ class Migration(migrations.Migration):
                         decimal_places=2,
                         max_digits=7,
                         null=True,
-                        verbose_name="amount of the benefit granted, calculated by the system",
+                        verbose_name=(
+                            "amount of the benefit granted, calculated by the system"
+                        ),
                     ),
                 ),
                 (
@@ -88,14 +90,19 @@ class Migration(migrations.Migration):
                         decimal_places=2,
                         max_digits=7,
                         null=True,
-                        verbose_name="amount of the benefit manually entered by the application handler",
+                        verbose_name=(
+                            "amount of the benefit manually entered by the application"
+                            " handler"
+                        ),
                     ),
                 ),
                 (
                     "override_benefit_amount_comment",
                     models.CharField(
                         max_length=256,
-                        verbose_name="reason for overriding the calculated benefit amount",
+                        verbose_name=(
+                            "reason for overriding the calculated benefit amount"
+                        ),
                     ),
                 ),
                 (
@@ -556,7 +563,9 @@ class Migration(migrations.Migration):
                         decimal_places=2,
                         max_digits=7,
                         null=True,
-                        verbose_name="amount of the benefit granted, calculated by the system",
+                        verbose_name=(
+                            "amount of the benefit granted, calculated by the system"
+                        ),
                     ),
                 ),
                 (
@@ -566,14 +575,19 @@ class Migration(migrations.Migration):
                         decimal_places=2,
                         max_digits=7,
                         null=True,
-                        verbose_name="amount of the benefit manually entered by the application handler",
+                        verbose_name=(
+                            "amount of the benefit manually entered by the application"
+                            " handler"
+                        ),
                     ),
                 ),
                 (
                     "override_benefit_amount_comment",
                     models.CharField(
                         max_length=256,
-                        verbose_name="reason for overriding the calculated benefit amount",
+                        verbose_name=(
+                            "reason for overriding the calculated benefit amount"
+                        ),
                     ),
                 ),
                 ("history_id", models.AutoField(primary_key=True, serialize=False)),

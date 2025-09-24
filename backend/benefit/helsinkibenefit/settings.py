@@ -379,11 +379,13 @@ SPECTACULAR_SETTINGS = {
     "ENUM_NAME_OVERRIDES": {
         "AvailableBenefitTypesEnum": "applications.enums.BenefitType",
     },
-    "DESCRIPTION": """REST API for Helsinki Benefit application management
+    "DESCRIPTION": (
+        """REST API for Helsinki Benefit application management
 
 # Authentication methods
 <SecurityDefinitions />
-""",
+"""
+    ),
     "VERSION": "0.0.1",
     "EXTERNAL_DOCS": {
         "description": "Helsinki benefit / YJDH repository in GitHub",
