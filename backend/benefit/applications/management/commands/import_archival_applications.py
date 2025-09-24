@@ -125,19 +125,19 @@ class Command(BaseCommand):
         columns = [x.strip(" ") for x in columns]
 
         if not production:
-            print(
+            print(  # noqa: T201
                 "\n ###################\n",
                 "##### DRY RUN #####\n",
                 "###################\n",
             )
         else:
-            print(
+            print(  # noqa: T201
                 "\n ######################\n",
                 "##### PRODUCTION #####\n",
                 "######################\n",
             )
-        print(f"Verifying data from {filename}")
-        print(
+        print(f"Verifying data from {filename}")  # noqa: T201
+        print(  # noqa: T201
             f"• Found {len(spreadsheet_data)} rows of data with {len(columns)} columns"
         )
 
@@ -145,7 +145,7 @@ class Command(BaseCommand):
 
         for technical_key, spreadsheet_key in EXPECTED_SPREADSHEET_COLUMNS.items():
             if spreadsheet_key not in columns:
-                print(f'! Column "{spreadsheet_key}" not found in spreadsheet keys')
+                print(f'! Column "{spreadsheet_key}" not found in spreadsheet keys')  # noqa: T201
                 raise CommandError("Excel is not in expected format")
             column_index.append(
                 {
@@ -154,7 +154,7 @@ class Command(BaseCommand):
                     "key": technical_key,
                 }
             )
-        print("• Spreadsheet's column headers are as expected")
+        print("• Spreadsheet's column headers are as expected")  # noqa: T201
 
         for technical_key, spreadsheet_key in OPTIONAL_SPREADSHEET_COLUMNS.items():
             if spreadsheet_key in columns:
@@ -179,15 +179,15 @@ class Command(BaseCommand):
 
             mapped_rows.append(mapped_row)
 
-        print(f"• Collected {len(mapped_rows)} rows to import")
+        print(f"• Collected {len(mapped_rows)} rows to import")  # noqa: T201
 
-        print("\nNow importing rows ...")
+        print("\nNow importing rows ...")  # noqa: T201
 
         rows_imported = 0
         rows_skipped = 0
         for row in mapped_rows:
             application_number = row.get("application_number")
-            print(
+            print(  # noqa: T201
                 f"\n{application_number}",
             )
 
@@ -197,7 +197,7 @@ class Command(BaseCommand):
 
             if not is_pytest and not all(validate_data(row)):
                 rows_skipped += 1
-                print(
+                print(  # noqa: T201
                     f"! Skipping: invalid data for {application_number} / {company_str}"
                 )
                 continue
@@ -212,12 +212,12 @@ class Command(BaseCommand):
                         company = get_or_create_organisation_with_business_id(
                             row["business_id"]
                         )
-                        print(f"• Found: company {company_str}")
+                        print(f"• Found: company {company_str}")  # noqa: T201
                     else:
-                        print(f"+ Created: company {company_str}")
+                        print(f"+ Created: company {company_str}")  # noqa: T201
                 except Exception:
                     company_found = False
-                    print(f"! Skipping: {company_str} not found")
+                    print(f"! Skipping: {company_str} not found")  # noqa: T201
                     continue
 
             if company_found:
@@ -229,20 +229,20 @@ class Command(BaseCommand):
 
                 if existing_apps and production:
                     for app in existing_apps:
-                        print("- Removing: imported previously")
+                        print("- Removing: imported previously")  # noqa: T201
                         app.delete()
 
                 row.pop("company_name")
                 row.pop("business_id")
                 app = ArchivalApplication(**row, company=company)
                 if production:
-                    print("+ Created: application imported!")
+                    print("+ Created: application imported!")  # noqa: T201
                     app.save()
                     rows_imported += 1
                 else:
-                    print(f"• Skipping: {app.application_number}")
+                    print(f"• Skipping: {app.application_number}")  # noqa: T201
 
-        print(
+        print(  # noqa: T201
             f"\nDone! Imported {rows_imported} rows as ArchivalApplication.\nSkipped"
             f" {rows_skipped} rows.\n"
         )

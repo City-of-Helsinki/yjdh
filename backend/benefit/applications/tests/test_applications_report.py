@@ -597,7 +597,7 @@ def test_write_application_alterations_csv_file(
     application_alteration_csv_service.write_csv_file(output_file)
     with open(output_file, encoding="utf-8") as f:
         contents = f.read()
-        print(contents)
+        print(contents)  # noqa: T201
         assert str(alteration.recovery_amount) in contents
 
 

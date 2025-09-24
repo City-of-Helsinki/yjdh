@@ -313,7 +313,7 @@ def test_multiple_benefit_per_application(mock_pdf_convert):
     assert (
         html.count(application.ahjo_application_number) == 2
     )  # Make sure there are two rows in the report
-    print(html)
+    print(html)  # noqa: T201
     _assert_html_content(
         html,
         (
@@ -1186,7 +1186,7 @@ def test_get_applications_for_update_request(
         AhjoRequestType.UPDATE_APPLICATION, retry_failed_older_than_hours
     )
     for application in multiple_applications_with_ahjo_case_id:
-        print(application.ahjo_status.latest().status)
+        print(application.ahjo_status.latest().status)  # noqa: T201
 
     applications_for_ahjo_update = Application.objects.get_by_statuses(**parameters)
 

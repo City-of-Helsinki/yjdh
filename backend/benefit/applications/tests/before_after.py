@@ -15,7 +15,7 @@ def before_test_reseed(no_reseed_for_tests: list[str] = []):
 
     for test in no_reseed_for_tests:
         if test in current_test:
-            print("passing reseed for", current_test)
+            print("passing reseed for", current_test)  # noqa: T201
         else:
-            print("reseeding with", current_test)
+            print("reseeding with", current_test)  # noqa: T201
             reseed(current_test)

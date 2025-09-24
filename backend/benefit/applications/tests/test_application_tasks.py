@@ -260,7 +260,7 @@ def test_send_ahjo_requests(
             stdout=out,
         )
 
-        print(out.getvalue())
+        print(out.getvalue())  # noqa: T201
 
         assert (
             f"Sending {request_type} request to Ahjo for {number_to_send} applications"
