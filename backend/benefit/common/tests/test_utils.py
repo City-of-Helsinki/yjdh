@@ -138,7 +138,10 @@ def test_get_date_range_end_with_days360_combinations():
 @pytest.mark.django_db
 def test_hash_file():
     # Create a dummy file with known content
-    dummy_file_content = b"Ea ullamco aliqua amet ut deserunt. Excepteur aliqua non excepteur pariatur exercitation."
+    dummy_file_content = (
+        b"Ea ullamco aliqua amet ut deserunt. Excepteur aliqua non excepteur pariatur"
+        b" exercitation."
+    )
     dummy_file = SimpleUploadedFile("dummy.txt", dummy_file_content)
     expected_hash = hashlib.sha256(dummy_file_content).hexdigest()
 

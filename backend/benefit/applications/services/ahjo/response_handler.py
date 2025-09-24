@@ -44,14 +44,16 @@ class AhjoResponseHandler:
 
         if not data:
             raise ValueError(
-                f"Failed to process Ahjo API response for setting {setting_name}, no data received from Ahjo."
+                f"Failed to process Ahjo API response for setting {setting_name}, no"
+                " data received from Ahjo."
             )
 
         try:
             # Validate response structure
             if not isinstance(data, dict):
                 raise ValidationError(
-                    f"Invalid response format for setting {setting_name}: expected dictionary"
+                    f"Invalid response format for setting {setting_name}: expected"
+                    " dictionary"
                 )
             if setting_name == AhjoSettingName.DECISION_MAKER:
                 filtered_data = AhjoResponseHandler.filter_decision_makers(data)
@@ -71,7 +73,8 @@ class AhjoResponseHandler:
 
         except Exception as e:
             LOGGER.error(
-                f"Failed to process Ahjo api response for setting {setting_name}: {str(e)}",
+                f"Failed to process Ahjo api response for setting {setting_name}:"
+                f" {str(e)}",
                 exc_info=True,
             )
             raise
@@ -196,8 +199,10 @@ class AhjoDecisionDetailsResponseHandler:
             application=application, status=AhjoStatusEnum.DETAILS_RECEIVED_FROM_AHJO
         )
 
-        return f"Successfully received and updated decision details \
-for application {application.id} and batch {batch.id} from Ahjo"
+        return (
+            "Successfully received and updated decision details for application"
+            f" {application.id} and batch {batch.id} from Ahjo"
+        )
 
     def _update_instalments_as_accepted(self, application: Application):
         """

@@ -70,17 +70,20 @@ class AhjoXMLBuilder:
             return True  # Return True if no exception was raised
         except XMLSchemaParseError as e:
             LOGGER.error(
-                f"Decision proposal XML Schema Error for application {self.application.application_number}: {e}"
+                "Decision proposal XML Schema Error for application"
+                f" {self.application.application_number}: {e}"
             )
             raise
         except XMLSyntaxError as e:
             LOGGER.error(
-                f"Decision proposal XML Syntax Error for application {self.application.application_number}: {e}"
+                "Decision proposal XML Syntax Error for application"
+                f" {self.application.application_number}: {e}"
             )
             raise
         except etree.DocumentInvalid as e:
             LOGGER.error(
-                f"Decision proposal Validation Error for application {self.application.application_number}: {e}"
+                "Decision proposal Validation Error for application"
+                f" {self.application.application_number}: {e}"
             )
             raise
 
@@ -255,4 +258,7 @@ class AhjoSecretXMLBuilder(AhjoXMLBuilder):
 
     def generate_xml_file_name(self) -> str:
         date_str = self.application.created_at.strftime("%d.%m.%Y")
-        return f"Hakemus {date_str} päätöksen liite {self.application.application_number}.xml"
+        return (
+            f"Hakemus {date_str} päätöksen liite"
+            f" {self.application.application_number}.xml"
+        )

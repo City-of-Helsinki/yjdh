@@ -92,8 +92,8 @@ def test_delete_cancelled_applications_older_than_30_days(cancelled_to_delete):
 
     # Assert that the correct number of applications were deleted
     assert (
-        f"Deleted {total_applications - remaining_applications.count()} applications with status {[status]}"
-        in out.getvalue()
+        f"Deleted {total_applications - remaining_applications.count()} applications"
+        f" with status {[status]}" in out.getvalue()
     )
 
 
@@ -137,8 +137,8 @@ def test_delete_draft_applications_older_than_180_days(
 
     # Assert that the correct number of applications were deleted
     assert (
-        f"Deleted {total_applications - remaining_applications.count()} applications with status {[status]}"
-        in out.getvalue()
+        f"Deleted {total_applications - remaining_applications.count()} applications"
+        f" with status {[status]}" in out.getvalue()
     )
 
 
@@ -152,8 +152,8 @@ def test_user_is_notified_of_upcoming_application_deletion(drafts_about_to_be_de
     )
 
     assert (
-        f"Notified users of {drafts_about_to_be_deleted.count()} applications about upcoming application deletion"
-        in out.getvalue()
+        f"Notified users of {drafts_about_to_be_deleted.count()} applications about"
+        " upcoming application deletion" in out.getvalue()
     )
 
 
@@ -267,8 +267,8 @@ def test_send_ahjo_requests(
         )
 
         assert (
-            f"Sent {request_type} requests for {number_to_send} application(s): {app_numbers} to Ahjo"
-            in out.getvalue()
+            f"Sent {request_type} requests for {number_to_send} application(s):"
+            f" {app_numbers} to Ahjo" in out.getvalue()
         )
 
         if request_type == AhjoRequestType.GET_DECISION_DETAILS:

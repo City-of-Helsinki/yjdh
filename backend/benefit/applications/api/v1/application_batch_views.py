@@ -48,8 +48,10 @@ class ApplicationBatchFilter(filters.FilterSet):
         widget=CSVWidget,
         choices=ApplicationBatchStatus.choices,
         help_text=(
-            "Filter by application batch status. Multiple statuses may be specified as"
-            " a comma-separated list, such as 'status=draft,decided'",
+            (
+                "Filter by application batch status. Multiple statuses may be specified"
+                " as a comma-separated list, such as 'status=draft,decided'"
+            ),
         ),
     )
 
@@ -228,7 +230,9 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
                 Operation.READ,
                 a,
                 ip_address=ip_address,
-                additional_information="application csv data was downloaded by TALPA robot",
+                additional_information=(
+                    "application csv data was downloaded by TALPA robot"
+                ),
             )
 
         return response
@@ -287,7 +291,10 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         else:
             return Response(
                 {
-                    "detail": "Unable to create a new batch or merge application to existing one."
+                    "detail": (
+                        "Unable to create a new batch or merge application to existing"
+                        " one."
+                    )
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )

@@ -46,7 +46,8 @@ def do_delayed_calls_at_end():
     #     ...
     if _get_pending_calls() is not None:
         raise Exception(
-            "Nested update_at_end not supported - need to use contextlib.ContextDecorator"
+            "Nested update_at_end not supported - need to use"
+            " contextlib.ContextDecorator"
         )
     _local.pending_calls = collections.OrderedDict()
     try:

@@ -97,7 +97,8 @@ class ApproveTermsSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {
                     "selected_applicant_consents": _(
-                        "User must explicitly select all the applicant consents required by the terms"
+                        "User must explicitly select all the applicant consents"
+                        " required by the terms"
                     )
                 }
             )

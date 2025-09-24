@@ -45,7 +45,10 @@ class AhjoTitle:
         Returns:
             str: A formatted title string that includes the prefix, date, suffix, and application number.
         """
-        return f"{AhjoRecordTitle.APPLICATION}{self.prefix} {formatted_date},{self.suffix} {application_number}"
+        return (
+            f"{AhjoRecordTitle.APPLICATION}{self.prefix} {formatted_date},{self.suffix}"
+            f" {application_number}"
+        )
 
 
 @dataclass
@@ -183,9 +186,10 @@ class AhjoBaseRecordTitle(AhjoTitle):
 
 def prepare_case_title(application: Application, company_name: str) -> str:
     """Prepare the case title for Ahjo"""
-    full_title = f"Avustukset työnantajille, työllisyyspalvelut, \
-Helsinki-lisä, {company_name}, \
-hakemus {application.application_number}"
+    full_title = (
+        f"Avustukset työnantajille, työllisyyspalvelut, Helsinki-lisä, {company_name},"
+        f" hakemus {application.application_number}"
+    )
     return full_title
 
 
@@ -372,7 +376,9 @@ def _prepare_case_records(
         )
 
         document_record = _prepare_record(
-            record_title=f"{AhjoBaseRecordTitle(application=application, current=position, total=total_attachments)}",
+            record_title=(
+                f"{AhjoBaseRecordTitle(application=application, current=position, total=total_attachments)}"
+            ),
             record_type=AhjoRecordType.ATTACHMENT,
             acquired=attachment.created_at.isoformat("T", "seconds"),
             documents=[_prepare_record_document_dict(attachment)],
@@ -437,7 +443,8 @@ def prepare_update_application_payload(
           in this case it only contains a Records dict"""
     if not pdf_summary.ahjo_version_series_id:
         raise ValueError(
-            f"Attachment for {application.application_number} must have a ahjo_version_series_id for update."
+            f"Attachment for {application.application_number} must have a"
+            " ahjo_version_series_id for update."
         )
     language = resolve_payload_language(application)
     title = UpdateRecordsRecordTitle(

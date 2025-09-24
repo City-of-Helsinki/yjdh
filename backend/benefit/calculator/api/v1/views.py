@@ -29,7 +29,9 @@ class PreviousBenefitFilter(filters.FilterSet):
 
 
 @extend_schema(
-    description="API for create/read/update/delete operations on PreviousBenefit objects"
+    description=(
+        "API for create/read/update/delete operations on PreviousBenefit objects"
+    )
 )
 class PreviousBenefitViewSet(AuditLoggingModelViewSet):
     queryset = PreviousBenefit.objects.all()

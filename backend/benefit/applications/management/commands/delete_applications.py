@@ -9,7 +9,10 @@ from applications.models import Application
 
 
 class Command(BaseCommand):
-    help = "Delete applications with the given status (draft or cancelled) and older than the given number of days"
+    help = (
+        "Delete applications with the given status (draft or cancelled) and older than"
+        " the given number of days"
+    )
     allowed_statuses = [
         ApplicationStatus.DRAFT,
         ApplicationStatus.CANCELLED,
@@ -30,8 +33,10 @@ class Command(BaseCommand):
             "--status",
             type=str,
             nargs="+",  # Allow multiple statuses
-            help="The statuses of the applications to delete. \
-pass multiple statuses separated by spaces.",
+            help=(
+                "The statuses of the applications to delete. pass multiple statuses"
+                " separated by spaces."
+            ),
         )
 
     def handle(self, *args, **options) -> None:
@@ -43,14 +48,15 @@ pass multiple statuses separated by spaces.",
             ]
             if invalid_statuses:
                 self.stderr.write(
-                    f"Invalid statuses provided: {', '.join(invalid_statuses)}. \
-Allowed statuses are: {', '.join(self.allowed_statuses)}."
+                    f"Invalid statuses provided: {', '.join(invalid_statuses)}. Allowed"
+                    f" statuses are: {', '.join(self.allowed_statuses)}."
                 )
                 return
 
         number_of_deleted_applications = _delete_applications(keep_days, statuses)
         self.stdout.write(
-            f"Deleted {number_of_deleted_applications} applications with status {options['status']}"
+            f"Deleted {number_of_deleted_applications} applications with status"
+            f" {options['status']}"
         )
 
 

@@ -612,121 +612,135 @@ def ahjo_decision_detail_response(application_with_ahjo_decision):
     company = application_with_ahjo_decision.company
     today = date.today()
     content = (
-        f'<html lang="fi"><head><META content="text/html; charset=UTF-8" http-equiv="Content-Type">\
-<META name="DhId" content="{id}">\
-<META name="ThisHTMLGenerated" content="2024-04-09T13:48:35.106+03:00">\
-<title>Avustuksen myöntäminen, Työllisyyspalvelut, työllisyydenhoidon Helsinki-lisä</title></head>\
-<body><div class="paatos"><div class="Otsikonviite"></div><div class="Otsikonviite2"></div>\
-<div class="Asiapykala">16 §</div>\
-<h1 class="AsiaOtsikko">Avustuksen myöntäminen, Työllisyyspalvelut, työllisyydenhoidon Helsinki-lisä</h1>\
-<div class="DnroTmuoto">HEL 2024-004415 T 02 05 01 00</div><div class="Viite"></div>\
-<div class="Viite"></div><div class="SisaltoSektio"><h3 class="SisaltoOtsikko">Päätös</h3>\
-<div><p>Helsinki-lisä-suunnittelija päätti myöntää {company}:lle \
-työnantajan Helsinki-lisää käytettäväksi helsinkiläisen työllistämiseksi \
-448 euroa kuukaudessa palkkatuetulle \
-ajalle 4.12.2023-3.10.2024 ja 800 euroa kuukaudessa ajalle 4.10.2024-3.12.2024, \
-jolta työnantaja ei saa palkkatukea. Yhteensä Helsinki-lisää myönnetään 6080 euroa. \
-<br></p><p>Helsinki-lisään on varattu talousarviossa Helsingin kaupungin \
-Työllisyyspalveluille vuosittain budjetoitu määräraha. Avustuksen kustannukset maksetaan \
-kaupungin Työllisyyspalveluille osoitetusta määrärahasta talousarvion erikseen määritellyltä kohdalta. \
-Työnantajan Helsinki-lisä on aina harkinnanvarainen.</p>\
-</div></div><div class="SisaltoSektio"><h3 class="SisaltoOtsikko">Päätösteksti</h3>\
-<div><p>Helsingin kaupunginhallituksen elinkeinojaosto on 11.9.2023 § 30 päättänyt \
-tukea rahallisesti yksityisen ja kolmannen sektorin työnantajia, \
-jotka tarjoavat työtä kaupungin työllisyydenhoidon kohderyhmiin kuuluville helsinkiläisille.</p>\
-<h4>Avustus</h4><p>Kaupunginhallituksen elinkeinojaosto on päätöksellään 11.9.2023 § 30 \
-hyväksynyt työnantajan Helsinki-lisän myöntämistä koskevat ehdot. \
-Helsinki-lisän myöntämisessä noudatetaan lisäksi kaupunginhallituksen 28.10.2019 § 723 \
-hyväksymiä Helsingin kaupungin avustusten yleisohjeita.</p>\
-<p>Helsinki-lisä on myönnetty työllistettävän henkilön palkkauksesta aiheutuviin kustannuksiin, \
-ei kuitenkaan bruttopalkkaan siltä ajalta, \
-jolta työnantaja saa myös palkkatukea. Tuen määrään vaikuttavat samoihin kustannuksiin \
-myönnetyt muut tuet (esim. palkkatuki ja oppisopimuksen koulutuskorvaus). \
-Yritykselle ja taloudellista toimintaa harjoittavalle yhteisölle avustus \
-myönnetään vähämerkityksisenä tukena eli ns. de minimis -tukena, ei koskaan yleisen ryhmäpoikkeusasetuksen \
-(komission asetus (EU) N:o 651/2014) perusteella eli ns. RPA-tukena. Yleishyödyllisille yhteisöille avustus myönnetään \
-valtiontukisääntelyn ulkopuolisena tukena, \
-jos yhdistys ei harjoita taloudellista toimintaa.</p><p>Avustusta myönnetään valtiontukisäännöissä määrätyn \
-kasautumissäännön sekä tuen enimmäisintensiteetin mukaisesti \
-(tuen määrä suhteessa tukikelpoisiin kustannuksiin). Helsinki-lisä voi olla enintään 800 euroa kuukaudessa. \
-Avustusta ei saa siirtää toisen tahon tai henkilön käytettäväksi. \
-Avustus maksetaan hakemuksessa ilmoitetulle pankkitilille.</p>\
-<p>Helsinki-lisää saa käyttää ainoastaan kaupunginhallituksen \
-elinkeinojaoston päätöksen 11.9.2023 §30 mukaisiin tarkoituksiin. \
-Avustuksen saajan tulee viipymättä palauttaa virheellisesti, \
-liikaa tai ilmeisen perusteettomasti saamansa avustus. \
-Väärinkäyttötapauksessa kaupunki voi periä maksetun avustuksen takaisin. \
-Avustuksen saaja sitoutuu antamaan tarvittaessa kaupungille \
-tarvittavat tiedot sen varmistamiseksi, että avustusta ei ole käytetty ehtojen vastaisesti. \
-Mikäli avustus maksetaan ennen päätöksen lainvoimaisuutta, avustuksen saaja sitoutuu palauttamaan \
-jo maksetut avustukset, jos päätös muutoksenhaun johdosta muuttuu.</p>\
-<h4>Valtiontukiarviointi</h4><p>Yritykselle ja taloudellista toimintaa harjoittavalle yhteisölle \
-avustus myönnetään vähämerkityksisenä tukena eli ns. de minimis -tukena. \
-Tuen myöntämisessä noudatetaan komission asetusta (EU) 2023/2831, annettu 13.12.2023, \
-Euroopan unionista tehdyn sopimuksen 107 ja 108 artiklan soveltamisesta vähämerkityksiseen \
-tukeen (EUVL L2023/281, 15.12.2023).</p>\
-<p>Kullekin hakijalle myönnettävän de minimis -tuen määrä ilmenee hakijakohtaisesta liitteestä. \
-Avustuksen saajalle voidaan myöntää de minimis -tukena enintään 300 000 euroa kuluvan vuoden ja \
-kahden sitä edeltäneen kahden vuoden muodostaman jakson aikana. \
-Avustuksen saaja vastaa siitä, että eri tahojen (mm. ministeriöt, ministeriöiden alaiset viranomaiset, \
-Business Finland, Finnvera Oyj, kunnat, maakuntien liitot) \
-myöntämien de minimis -tukien yhteismäärä ei ylitä tätä määrää. Avustuksen saaja on avustushakemuksessa \
-ilmoittanut kaupungille kaikkien saamiensa de minimis -tukien määrät \
-ja myöntöajankohdat.</p></div></div>\
-<h3 class="LisatiedotOtsikko">Lisätiedot</h3>\
-<p>{name}, suunnittelija, puhelin: 12345789 <div>testi@testi.test</div></p>\
-<div class="SahkoinenAllekirjoitusSektio">\
-<p class="SahkoisestiAllekirjoitettuTeksti">Päätös on sähköisesti allekirjoitettu.</p>\
-<p><div class="Puheenjohtajanimi">{name}</div>\
-<div class="Puheenjohtajaotsikko">helsinki-lisä-suunnittelija</div></p></div>\
-<h3 class="LiitteetOtsikko">Liitteet</h3>\
-<div>1 Salassa pidettävä<span> (Salassa pidettävä, JulkL (621/1999) 24.1 § 25 k)</span></div>\
-<h3 class="MuutoksenhakuOtsikko">Muutoksenhaku</h3><h4>OHJEET OIKAISUVAATIMUKSEN TEKEMISEKSI</h4>\
-<p>Tähän päätökseen tyytymätön voi tehdä kirjallisen oikaisuvaatimuksen. \
-Päätökseen ei saa hakea muutosta valittamalla tuomioistuimeen.</p>\
-<h5>Oikaisuvaatimusoikeus</h5><p>Oikaisuvaatimuksen saa tehdä</p>\
-<div><ul><li>se, johon päätös on kohdistettu tai jonka oikeuteen, velvollisuuteen tai etuun päätös \
-välittömästi vaikuttaa (asianosainen)</li>\
-<li>kunnan jäsen.</li></ul></div>\
-<h5>Oikaisuvaatimusaika</h5><p>Oikaisuvaatimus on tehtävä 14 päivän kuluessa päätöksen tiedoksisaannista.</p>\
-<p>Oikaisuvaatimuksen on saavuttava Helsingin kaupungin kirjaamoon määräajan viimeisenä päivänä \
-ennen kirjaamon aukioloajan päättymistä.</p>\
-<p>Mikäli päätös on annettu tiedoksi postitse, asianosaisen katsotaan saaneen päätöksestä tiedon, \
-jollei muuta näytetä, seitsemän päivän kuluttua kirjeen lähettämisestä. \
-Kunnan jäsenen katsotaan saaneen päätöksestä tiedon seitsemän päivän \
-kuluttua siitä, kun pöytäkirja on nähtävänä yleisessä tietoverkossa.</p>\
-<p>Mikäli päätös on annettu tiedoksi sähköisenä viestinä, asianosaisen katsotaan saaneen päätöksestä tiedon, \
-jollei muuta näytetä, kolmen päivän kuluttua viestin lähettämisestä.</p>\
-<p>Tiedoksisaantipäivää ei lueta oikaisuvaatimusaikaan. Jos oikaisuvaatimusajan viimeinen päivä on pyhäpäivä, \
-itsenäisyyspäivä, vapunpäivä, joulu- tai juhannusaatto tai arkilauantai, \
-saa oikaisuvaatimuksen tehdä ensimmäisenä arkipäivänä sen jälkeen.</p>\
-<h5>Oikaisuvaatimusviranomainen</h5><p>Viranomainen, jolle oikaisuvaatimus tehdään, on Helsingin kaupunginhallitus.</p>\
-<p>Oikaisuvaatimusviranomaisen asiointiosoite on seuraava:</p>\
-<p>Suojattu sähköposti: https://securemail.hel.fi/ </p>\
-<p>Käytäthän aina suojattua sähköpostia, kun lähetät henkilökohtaisia tietojasi.</p>\
-<p>Muistathan asioinnin yhteydessä mainita kirjaamisnumeron (esim. HEL 2021-000123), \
-mikäli asiasi on jo vireillä Helsingin kaupungissa.</p>\
-<div><div><table><colgroup><col width="24.25%"><col width="75.75%"></colgroup>\
-<tbody><tr><td>\
-<div>Sähköpostiosoite:</div></td><td><div>helsinki.kirjaamo@hel.fi</div></td></tr>\
-<tr><td><div>Postiosoite:</div></td><td><div>PL 10</div></td></tr>\
-<tr><td><div>&nbsp;</div></td><td><div>00099 HELSINGIN KAUPUNKI</div></td></tr>\
-<tr><td><div>Käyntiosoite:</div></td><td><div>Pohjoisesplanadi 11-13</div></td></tr>\
-<tr><td><div>Puhelinnumero:</div></td><td><div>09 310 13700</div></td></tr>\
-</tbody></table></div></div>\
-<p>Kirjaamon aukioloaika on maanantaista perjantaihin klo 08.15-16.00.</p>\
-<h5>Oikaisuvaatimuksen muoto ja sisältö</h5><p>Oikaisuvaatimus on tehtävä kirjallisena. \
-Myös sähköinen asiakirja täyttää vaatimuksen kirjallisesta muodosta.</p>\
-<p>Oikaisuvaatimuksessa on ilmoitettava</p><div><ul><li>päätös, johon oikaisuvaatimus kohdistuu</li>\
-<li>miten päätöstä halutaan oikaistavaksi</li><li>millä perusteella päätöstä halutaan oikaistavaksi</li>\
-<li>oikaisuvaatimuksen tekijä</li>\
-<li>millä perusteella oikaisuvaatimuksen tekijä on oikeutettu tekemään vaatimuksen</li>\
-<li>oikaisuvaatimuksen tekijän yhteystiedot</li></ul></div>\
-<h5>Pöytäkirja</h5><p>Päätöstä koskevia pöytäkirjan otteita ja liitteitä lähetetään pyynnöstä. \
-Asiakirjoja voi tilata Helsingin kaupungin kirjaamosta.</p>\
-<h3 class="OtteetOtsikko">Otteet</h3><table><thead><tr><th>Ote</th><th>Otteen liitteet</th></tr></thead><tbody>\
-<tr><td>{company}</td><td><div>Oikaisuvaatimusohje, kaupunginhallitus</div><div>Liite 1</div></td></tr>\
-</tbody></table></div></body></html>'
+        '<html lang="fi"><head><META content="text/html; charset=UTF-8"'
+        f' http-equiv="Content-Type"><META name="DhId" content="{id}"><META'
+        ' name="ThisHTMLGenerated"'
+        ' content="2024-04-09T13:48:35.106+03:00"><title>Avustuksen myöntäminen,'
+        " Työllisyyspalvelut, työllisyydenhoidon"
+        ' Helsinki-lisä</title></head><body><div class="paatos"><div'
+        ' class="Otsikonviite"></div><div class="Otsikonviite2"></div><div'
+        ' class="Asiapykala">16 §</div><h1 class="AsiaOtsikko">Avustuksen myöntäminen,'
+        " Työllisyyspalvelut, työllisyydenhoidon Helsinki-lisä</h1><div"
+        ' class="DnroTmuoto">HEL 2024-004415 T 02 05 01 00</div><div'
+        ' class="Viite"></div><div class="Viite"></div><div class="SisaltoSektio"><h3'
+        ' class="SisaltoOtsikko">Päätös</h3><div><p>Helsinki-lisä-suunnittelija päätti'
+        f" myöntää {company}:lle työnantajan Helsinki-lisää käytettäväksi"
+        " helsinkiläisen työllistämiseksi 448 euroa kuukaudessa palkkatuetulle ajalle"
+        " 4.12.2023-3.10.2024 ja 800 euroa kuukaudessa ajalle 4.10.2024-3.12.2024,"
+        " jolta työnantaja ei saa palkkatukea. Yhteensä Helsinki-lisää myönnetään 6080"
+        " euroa. <br></p><p>Helsinki-lisään on varattu talousarviossa Helsingin"
+        " kaupungin Työllisyyspalveluille vuosittain budjetoitu määräraha. Avustuksen"
+        " kustannukset maksetaan kaupungin Työllisyyspalveluille osoitetusta"
+        " määrärahasta talousarvion erikseen määritellyltä kohdalta. Työnantajan"
+        " Helsinki-lisä on aina harkinnanvarainen.</p></div></div><div"
+        ' class="SisaltoSektio"><h3'
+        ' class="SisaltoOtsikko">Päätösteksti</h3><div><p>Helsingin'
+        " kaupunginhallituksen elinkeinojaosto on 11.9.2023 § 30 päättänyt tukea"
+        " rahallisesti yksityisen ja kolmannen sektorin työnantajia, jotka tarjoavat"
+        " työtä kaupungin työllisyydenhoidon kohderyhmiin kuuluville"
+        " helsinkiläisille.</p><h4>Avustus</h4><p>Kaupunginhallituksen elinkeinojaosto"
+        " on päätöksellään 11.9.2023 § 30 hyväksynyt työnantajan Helsinki-lisän"
+        " myöntämistä koskevat ehdot. Helsinki-lisän myöntämisessä noudatetaan lisäksi"
+        " kaupunginhallituksen 28.10.2019 § 723 hyväksymiä Helsingin kaupungin"
+        " avustusten yleisohjeita.</p><p>Helsinki-lisä on myönnetty työllistettävän"
+        " henkilön palkkauksesta aiheutuviin kustannuksiin, ei kuitenkaan"
+        " bruttopalkkaan siltä ajalta, jolta työnantaja saa myös palkkatukea. Tuen"
+        " määrään vaikuttavat samoihin kustannuksiin myönnetyt muut tuet (esim."
+        " palkkatuki ja oppisopimuksen koulutuskorvaus). Yritykselle ja taloudellista"
+        " toimintaa harjoittavalle yhteisölle avustus myönnetään vähämerkityksisenä"
+        " tukena eli ns. de minimis -tukena, ei koskaan yleisen ryhmäpoikkeusasetuksen"
+        " (komission asetus (EU) N:o 651/2014) perusteella eli ns. RPA-tukena."
+        " Yleishyödyllisille yhteisöille avustus myönnetään valtiontukisääntelyn"
+        " ulkopuolisena tukena, jos yhdistys ei harjoita taloudellista"
+        " toimintaa.</p><p>Avustusta myönnetään valtiontukisäännöissä määrätyn"
+        " kasautumissäännön sekä tuen enimmäisintensiteetin mukaisesti (tuen määrä"
+        " suhteessa tukikelpoisiin kustannuksiin). Helsinki-lisä voi olla enintään 800"
+        " euroa kuukaudessa. Avustusta ei saa siirtää toisen tahon tai henkilön"
+        " käytettäväksi. Avustus maksetaan hakemuksessa ilmoitetulle"
+        " pankkitilille.</p><p>Helsinki-lisää saa käyttää ainoastaan"
+        " kaupunginhallituksen elinkeinojaoston päätöksen 11.9.2023 §30 mukaisiin"
+        " tarkoituksiin. Avustuksen saajan tulee viipymättä palauttaa virheellisesti,"
+        " liikaa tai ilmeisen perusteettomasti saamansa avustus."
+        " Väärinkäyttötapauksessa kaupunki voi periä maksetun avustuksen takaisin."
+        " Avustuksen saaja sitoutuu antamaan tarvittaessa kaupungille tarvittavat"
+        " tiedot sen varmistamiseksi, että avustusta ei ole käytetty ehtojen"
+        " vastaisesti. Mikäli avustus maksetaan ennen päätöksen lainvoimaisuutta,"
+        " avustuksen saaja sitoutuu palauttamaan jo maksetut avustukset, jos päätös"
+        " muutoksenhaun johdosta"
+        " muuttuu.</p><h4>Valtiontukiarviointi</h4><p>Yritykselle ja taloudellista"
+        " toimintaa harjoittavalle yhteisölle avustus myönnetään vähämerkityksisenä"
+        " tukena eli ns. de minimis -tukena. Tuen myöntämisessä noudatetaan komission"
+        " asetusta (EU) 2023/2831, annettu 13.12.2023, Euroopan unionista tehdyn"
+        " sopimuksen 107 ja 108 artiklan soveltamisesta vähämerkityksiseen tukeen"
+        " (EUVL L2023/281, 15.12.2023).</p><p>Kullekin hakijalle myönnettävän de"
+        " minimis -tuen määrä ilmenee hakijakohtaisesta liitteestä. Avustuksen"
+        " saajalle voidaan myöntää de minimis -tukena enintään 300 000 euroa kuluvan"
+        " vuoden ja kahden sitä edeltäneen kahden vuoden muodostaman jakson aikana."
+        " Avustuksen saaja vastaa siitä, että eri tahojen (mm. ministeriöt,"
+        " ministeriöiden alaiset viranomaiset, Business Finland, Finnvera Oyj, kunnat,"
+        " maakuntien liitot) myöntämien de minimis -tukien yhteismäärä ei ylitä tätä"
+        " määrää. Avustuksen saaja on avustushakemuksessa ilmoittanut kaupungille"
+        " kaikkien saamiensa de minimis -tukien määrät ja"
+        " myöntöajankohdat.</p></div></div><h3"
+        f' class="LisatiedotOtsikko">Lisätiedot</h3><p>{name}, suunnittelija, puhelin:'
+        " 12345789 <div>testi@testi.test</div></p><div"
+        ' class="SahkoinenAllekirjoitusSektio"><p'
+        ' class="SahkoisestiAllekirjoitettuTeksti">Päätös on sähköisesti'
+        f' allekirjoitettu.</p><p><div class="Puheenjohtajanimi">{name}</div><div'
+        ' class="Puheenjohtajaotsikko">helsinki-lisä-suunnittelija</div></p></div><h3'
+        ' class="LiitteetOtsikko">Liitteet</h3><div>1 Salassa pidettävä<span> (Salassa'
+        " pidettävä, JulkL (621/1999) 24.1 § 25 k)</span></div><h3"
+        ' class="MuutoksenhakuOtsikko">Muutoksenhaku</h3><h4>OHJEET OIKAISUVAATIMUKSEN'
+        " TEKEMISEKSI</h4><p>Tähän päätökseen tyytymätön voi tehdä kirjallisen"
+        " oikaisuvaatimuksen. Päätökseen ei saa hakea muutosta valittamalla"
+        " tuomioistuimeen.</p><h5>Oikaisuvaatimusoikeus</h5><p>Oikaisuvaatimuksen saa"
+        " tehdä</p><div><ul><li>se, johon päätös on kohdistettu tai jonka oikeuteen,"
+        " velvollisuuteen tai etuun päätös välittömästi vaikuttaa"
+        " (asianosainen)</li><li>kunnan"
+        " jäsen.</li></ul></div><h5>Oikaisuvaatimusaika</h5><p>Oikaisuvaatimus on"
+        " tehtävä 14 päivän kuluessa päätöksen"
+        " tiedoksisaannista.</p><p>Oikaisuvaatimuksen on saavuttava Helsingin"
+        " kaupungin kirjaamoon määräajan viimeisenä päivänä ennen kirjaamon"
+        " aukioloajan päättymistä.</p><p>Mikäli päätös on annettu tiedoksi postitse,"
+        " asianosaisen katsotaan saaneen päätöksestä tiedon, jollei muuta näytetä,"
+        " seitsemän päivän kuluttua kirjeen lähettämisestä. Kunnan jäsenen katsotaan"
+        " saaneen päätöksestä tiedon seitsemän päivän kuluttua siitä, kun pöytäkirja"
+        " on nähtävänä yleisessä tietoverkossa.</p><p>Mikäli päätös on annettu"
+        " tiedoksi sähköisenä viestinä, asianosaisen katsotaan saaneen päätöksestä"
+        " tiedon, jollei muuta näytetä, kolmen päivän kuluttua viestin"
+        " lähettämisestä.</p><p>Tiedoksisaantipäivää ei lueta oikaisuvaatimusaikaan."
+        " Jos oikaisuvaatimusajan viimeinen päivä on pyhäpäivä, itsenäisyyspäivä,"
+        " vapunpäivä, joulu- tai juhannusaatto tai arkilauantai, saa"
+        " oikaisuvaatimuksen tehdä ensimmäisenä arkipäivänä sen"
+        " jälkeen.</p><h5>Oikaisuvaatimusviranomainen</h5><p>Viranomainen, jolle"
+        " oikaisuvaatimus tehdään, on Helsingin"
+        " kaupunginhallitus.</p><p>Oikaisuvaatimusviranomaisen asiointiosoite on"
+        " seuraava:</p><p>Suojattu sähköposti: https://securemail.hel.fi/"
+        " </p><p>Käytäthän aina suojattua sähköpostia, kun lähetät henkilökohtaisia"
+        " tietojasi.</p><p>Muistathan asioinnin yhteydessä mainita kirjaamisnumeron"
+        " (esim. HEL 2021-000123), mikäli asiasi on jo vireillä Helsingin"
+        ' kaupungissa.</p><div><div><table><colgroup><col width="24.25%"><col'
+        ' width="75.75%"></colgroup><tbody><tr><td><div>Sähköpostiosoite:</div></td><td><div>helsinki.kirjaamo@hel.fi</div></td></tr><tr><td><div>Postiosoite:</div></td><td><div>PL'
+        " 10</div></td></tr><tr><td><div>&nbsp;</div></td><td><div>00099 HELSINGIN"
+        " KAUPUNKI</div></td></tr><tr><td><div>Käyntiosoite:</div></td><td><div>Pohjoisesplanadi"
+        " 11-13</div></td></tr><tr><td><div>Puhelinnumero:</div></td><td><div>09 310"
+        " 13700</div></td></tr></tbody></table></div></div><p>Kirjaamon aukioloaika on"
+        " maanantaista perjantaihin klo 08.15-16.00.</p><h5>Oikaisuvaatimuksen muoto"
+        " ja sisältö</h5><p>Oikaisuvaatimus on tehtävä kirjallisena. Myös sähköinen"
+        " asiakirja täyttää vaatimuksen kirjallisesta"
+        " muodosta.</p><p>Oikaisuvaatimuksessa on ilmoitettava</p><div><ul><li>päätös,"
+        " johon oikaisuvaatimus kohdistuu</li><li>miten päätöstä halutaan"
+        " oikaistavaksi</li><li>millä perusteella päätöstä halutaan"
+        " oikaistavaksi</li><li>oikaisuvaatimuksen tekijä</li><li>millä perusteella"
+        " oikaisuvaatimuksen tekijä on oikeutettu tekemään"
+        " vaatimuksen</li><li>oikaisuvaatimuksen tekijän"
+        " yhteystiedot</li></ul></div><h5>Pöytäkirja</h5><p>Päätöstä koskevia"
+        " pöytäkirjan otteita ja liitteitä lähetetään pyynnöstä. Asiakirjoja voi"
+        " tilata Helsingin kaupungin kirjaamosta.</p><h3"
+        ' class="OtteetOtsikko">Otteet</h3><table><thead><tr><th>Ote</th><th>Otteen'
+        f" liitteet</th></tr></thead><tbody><tr><td>{company}</td><td><div>Oikaisuvaatimusohje,"
+        " kaupunginhallitus</div><div>Liite"
+        " 1</div></td></tr></tbody></table></div></body></html>"
     )
 
     return [
@@ -734,11 +748,16 @@ Asiakirjoja voi tilata Helsingin kaupungin kirjaamosta.</p>\
             "links": [
                 {
                     "rel": "self",
-                    "href": "https://ahjo.hel.fi:9802/ahjorest/v1/decisions/%7B02A081B6-7B7C-4309-B95A-3A53D222B4CE%7D",
+                    "href": (
+                        "https://ahjo.hel.fi:9802/ahjorest/v1/decisions/%7B02A081B6-7B7C-4309-B95A-3A53D222B4CE%7D"
+                    ),
                 }
             ],
             "NativeId": "{02A081B6-7B7C-4309-B95A-3A53D222B4CE}",
-            "Title": "Avustuksen myöntäminen, Työllisyyspalvelut, työllisyydenhoidon Helsinki-lisä",
+            "Title": (
+                "Avustuksen myöntäminen, Työllisyyspalvelut, työllisyydenhoidon"
+                " Helsinki-lisä"
+            ),
             "CaseIDLabel": f"{application_with_ahjo_decision.ahjo_case_id}",
             "Section": "16",
             "Content": content,
@@ -749,7 +768,9 @@ Asiakirjoja voi tilata Helsingin kaupungin kirjaamosta.</p>\
                 "links": [
                     {
                         "rel": "self",
-                        "href": "https://ahjo.hel.fi:9802/ahjorest/v1/organization?orgid=U02120013070VH2&apireqlang=fi",
+                        "href": (
+                            "https://ahjo.hel.fi:9802/ahjorest/v1/organization?orgid=U02120013070VH2&apireqlang=fi"
+                        ),
                     }
                 ],
                 "Name": "Helsinki-lisä-suunnittelija",
@@ -814,29 +835,38 @@ Asiakirjoja voi tilata Helsingin kaupungin kirjaamosta.</p>\
                         "href": "https://test.test",
                     }
                 ],
-                "Title": "Avustuksen myöntäminen, Työllisyyspalvelut, työllisyydenhoidon Helsinki-lisä",
+                "Title": (
+                    "Avustuksen myöntäminen, Työllisyyspalvelut, työllisyydenhoidon"
+                    " Helsinki-lisä"
+                ),
                 "AttachmentNumber": None,
                 "PublicityClass": "Julkinen",
                 "SecurityReasons": None,
                 "VersionSeriesId": "{6176A8B5-B5D3-CB83-86F4-8EC1DCA00004}",
                 "NativeId": "{02A081B6-7B7C-4309-B95A-3A53D222B4CE}",
                 "Type": "viranhaltijan päätös",
-                "FileURI": "https://ahjojulkaisu.hel.fi/6176A8B5-B5D3-CB83-86F4-8EC1DCA00004.pdf",
+                "FileURI": (
+                    "https://ahjojulkaisu.hel.fi/6176A8B5-B5D3-CB83-86F4-8EC1DCA00004.pdf"
+                ),
                 "Language": "fi",
                 "PersonalData": "Sisältää henkilötietoja",
                 "Issued": "2024-04-09T03:00:00.000",
             },
             "MinutesPDF": {
                 "links": [],
-                "Title": "Helsinki-lisä-suunnittelija viranhaltijan pöytäkirja 09.04.2024/16, \
-julkinen, julkaisujärjestelmä",
+                "Title": (
+                    "Helsinki-lisä-suunnittelija viranhaltijan pöytäkirja"
+                    " 09.04.2024/16, julkinen, julkaisujärjestelmä"
+                ),
                 "AttachmentNumber": None,
                 "PublicityClass": "Julkinen",
                 "SecurityReasons": None,
                 "VersionSeriesId": "{157BBFB1-D9D8-C132-996B-8EC1DD100001}",
                 "NativeId": "{15E07229-9B33-437D-BEAB-F0FE1F5C5F94}",
                 "Type": "viranhaltijan pöytäkirja",
-                "FileURI": "https://ahjojulkaisu.hel.fi/157BBFB1-D9D8-C132-996B-8EC1DD100001.pdf",
+                "FileURI": (
+                    "https://ahjojulkaisu.hel.fi/157BBFB1-D9D8-C132-996B-8EC1DD100001.pdf"
+                ),
                 "Language": "fi",
                 "PersonalData": "Sisältää henkilötietoja",
                 "Issued": "2024-04-09T03:00:00.000",
@@ -968,7 +998,10 @@ def decisionmaker_response():
                 {
                     "Organization": {
                         "links": [],
-                        "Name": "Tiimipäällikkö, työnantajille myönnettävät taloudelliset tuet",
+                        "Name": (
+                            "Tiimipäällikkö, työnantajille myönnettävät taloudelliset"
+                            " tuet"
+                        ),
                         "ID": "XYZÅÄÖ123",
                         "TypeId": "12",
                         "Existing": "true",
@@ -990,7 +1023,9 @@ def decisionmaker_response():
                                             "href": "https://dummy.url",
                                         }
                                     ],
-                                    "Name": "Työnantajille myönnettävät taloudelliset tuet",
+                                    "Name": (
+                                        "Työnantajille myönnettävät taloudelliset tuet"
+                                    ),
                                     "ID": "XYZÅÄÖ123",
                                     "TypeId": "20",
                                     "Existing": "true",
@@ -1041,7 +1076,9 @@ def decisionmaker_response():
                                             "href": "https://dummy.url",
                                         }
                                     ],
-                                    "Name": "Työnantajille myönnettävät taloudelliset tuet",
+                                    "Name": (
+                                        "Työnantajille myönnettävät taloudelliset tuet"
+                                    ),
                                     "ID": "XYZÅÄÖ123",
                                     "TypeId": "5",
                                     "Existing": "true",
@@ -1112,7 +1149,10 @@ def decisionmaker_response():
                                             "href": "https://dummy.url",
                                         }
                                     ],
-                                    "Name": "Tiimipäällikkö, työnantajille myönnettävät taloudelliset tuet",
+                                    "Name": (
+                                        "Tiimipäällikkö, työnantajille myönnettävät"
+                                        " taloudelliset tuet"
+                                    ),
                                     "ID": "ABCDEFG3456",
                                     "TypeId": "11",
                                     "Existing": "true",

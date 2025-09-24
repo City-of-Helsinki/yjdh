@@ -20,7 +20,10 @@ class Migration(migrations.Migration):
                 ],
                 max_length=64,
                 null=True,
-                verbose_name="Handler role (deprecated, was used before dynamic fetch of decision makers)",
+                verbose_name=(
+                    "Handler role (deprecated, was used before dynamic fetch of"
+                    " decision makers)"
+                ),
             ),
         ),
     ]

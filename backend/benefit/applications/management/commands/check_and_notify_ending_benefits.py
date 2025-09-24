@@ -13,25 +13,33 @@ from messages.automatic_messages import (
 )
 
 BENEFIT_PERIOD_IS_ABOUT_TO_END_MESSAGE = _(
-    "Your application's {application_number} benefit period will end soon, at {benefit_end_date}."
+    "Your application's {application_number} benefit period will end soon, at"
+    " {benefit_end_date}."
 )
 
 
 class Command(BaseCommand):
-    help = "Query applications that are close to the end of the benefit period and send a notification to the applicant"
+    help = (
+        "Query applications that are close to the end of the benefit period and send a"
+        " notification to the applicant"
+    )
 
     def add_arguments(self, parser):
         parser.add_argument(
             "--notify",
             type=int,
             default=30,
-            help="The number of days before benefit end date and when to notify the applicant",
+            help=(
+                "The number of days before benefit end date and when to notify the"
+                " applicant"
+            ),
         )
 
     def handle(self, *args, **options):
         number_of_notified_applications = notify_applications(options["notify"])
         self.stdout.write(
-            f"Notified users of {number_of_notified_applications} applications about ending benefit period"
+            f"Notified users of {number_of_notified_applications} applications about"
+            " ending benefit period"
         )
 
 

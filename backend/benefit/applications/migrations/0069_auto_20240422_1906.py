@@ -34,7 +34,9 @@ class Migration(migrations.Migration):
             name="recovery_justification",
             field=models.TextField(
                 blank=True,
-                verbose_name="the justification provided in the recovering bill, if eligible",
+                verbose_name=(
+                    "the justification provided in the recovering bill, if eligible"
+                ),
             ),
         ),
         migrations.AlterField(

@@ -108,9 +108,10 @@ def test_ahjo_base_record_title_str():
 
 def test_prepare_case_title(decided_application):
     application = decided_application
-    wanted_title = f"Avustukset työnantajille, työllisyyspalvelut, \
-Helsinki-lisä, {application.company.name}, \
-hakemus {application.application_number}"
+    wanted_title = (
+        "Avustukset työnantajille, työllisyyspalvelut, Helsinki-lisä,"
+        f" {application.company.name}, hakemus {application.application_number}"
+    )
     got = prepare_case_title(application, decided_application.company.name)
     assert wanted_title == got
 
@@ -155,7 +156,8 @@ def test_prepare_final_case_title_truncate(
 
 
 @pytest.mark.parametrize(
-    "title_class, record_title, record_type, request_type, wanted_title_addition, part, total",
+    "title_class, record_title, record_type, request_type, wanted_title_addition, part,"
+    " total",
     [
         (
             OpenCaseRecordTitle,
@@ -210,10 +212,15 @@ def test_prepare_record_title(
     formatted_date = application.submitted_at.strftime("%d.%m.%Y")
 
     if part and total:
-        wanted_title = f"{record_title}{wanted_title_addition} {formatted_date},\
- liite {part}/{total}, {application.application_number}"
+        wanted_title = (
+            f"{record_title}{wanted_title_addition} {formatted_date}, liite"
+            f" {part}/{total}, {application.application_number}"
+        )
     else:
-        wanted_title = f"{record_title}{wanted_title_addition} {formatted_date}, {application.application_number}"
+        wanted_title = (
+            f"{record_title}{wanted_title_addition} {formatted_date},"
+            f" {application.application_number}"
+        )
     if (
         record_type == AhjoRecordType.ATTACHMENT
         and request_type == AhjoRequestType.OPEN_CASE
@@ -230,7 +237,10 @@ def test_prepare_record_title_for_attachment(decided_application):
     application = Application.objects.get(pk=decided_application.pk)
 
     formatted_date = application.created_at.strftime("%d.%m.%Y")
-    wanted_title = f"{AhjoRecordTitle.APPLICATION} {formatted_date}, liite 1/3, {application.application_number}"
+    wanted_title = (
+        f"{AhjoRecordTitle.APPLICATION} {formatted_date}, liite 1/3,"
+        f" {application.application_number}"
+    )
     got = f"{AhjoBaseRecordTitle(application=application, current=1, total=3)}"
     assert wanted_title == got
 

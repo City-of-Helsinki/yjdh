@@ -296,7 +296,8 @@ def _check_fields(original, cloned, fields):
 
         if field.name in fields["not_copied"]:
             assert original_value != cloned_value, (
-                f"Field {field.name} should not match, {original_value} != {cloned_value}"
+                f"Field {field.name} should not match, {original_value} !="
+                f" {cloned_value}"
             )
 
         if field.name not in fields["copied"] + fields["not_copied"]:

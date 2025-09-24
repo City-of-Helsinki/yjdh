@@ -189,7 +189,10 @@ class ApplicantTermsApproval(AbstractTermsApproval):
     )
 
     def __str__(self):
-        return f"{self.approved_by.email} approved terms {self.terms} at {self.approved_at}"
+        return (
+            f"{self.approved_by.email} approved terms {self.terms} at"
+            f" {self.approved_at}"
+        )
 
     @staticmethod
     def terms_approval_needed(application):

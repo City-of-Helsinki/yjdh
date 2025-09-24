@@ -335,8 +335,8 @@ def test_create_message(
                     if part.get_content_type() == "text/plain":
                         print(part.get_payload())
                         assert (
-                            "Olet saanut uuden viestin Helsinki-lisä -hakemukseen liittyen. Voit lukea viestin"
-                            in part.get_payload()
+                            "Olet saanut uuden viestin Helsinki-lisä -hakemukseen"
+                            " liittyen. Voit lukea viestin" in part.get_payload()
                         )
 
     assert result.status_code == 201
@@ -462,8 +462,8 @@ def test_delete_message_unauthenticated(
 @pytest.mark.parametrize(
     "view_name",
     [
-        ("applicant-message-detail"),
-        ("handler-message-detail"),
+        "applicant-message-detail",
+        "handler-message-detail",
     ],
 )
 def test_delete_message_unauthorized(

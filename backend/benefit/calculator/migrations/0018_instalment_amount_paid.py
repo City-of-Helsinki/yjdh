@@ -18,7 +18,12 @@ class Migration(migrations.Migration):
                 editable=False,
                 max_digits=7,
                 null=True,
-                verbose_name="To be set only ONCE when final amount is sent to Talpa. The set value should be defined by 'amount' field that is reduced by handled ApplicationAlteration recoveries at the time of Talpa robot visit.",
+                verbose_name=(
+                    "To be set only ONCE when final amount is sent to Talpa. The set"
+                    " value should be defined by 'amount' field that is reduced by"
+                    " handled ApplicationAlteration recoveries at the time of Talpa"
+                    " robot visit."
+                ),
             ),
         ),
     ]

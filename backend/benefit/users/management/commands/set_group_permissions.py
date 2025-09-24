@@ -18,7 +18,8 @@ class Command(BaseCommand):
             handler_group = Group.objects.get(name=settings.HANDLERS_GROUP_NAME)
         except Group.DoesNotExist:
             raise Exception(
-                f"Create group {settings.HANDLERS_GROUP_NAME} by loading groups.json fixture first"
+                f"Create group {settings.HANDLERS_GROUP_NAME} by loading groups.json"
+                " fixture first"
             )
         group_permissions = []
         for app_label, model in self.HANDLER_PERMISSIONS:

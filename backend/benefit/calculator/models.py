@@ -860,8 +860,9 @@ class Instalment(UUIDModel, TimeStampedModel):
         decimal_places=2,
         editable=False,
         verbose_name=_(
-            "To be set only ONCE when final amount is sent to Talpa. The set value should be defined by 'amount' "
-            "field that is reduced by handled ApplicationAlteration recoveries at the time of Talpa robot visit."
+            "To be set only ONCE when final amount is sent to Talpa. The set value"
+            " should be defined by 'amount' field that is reduced by handled"
+            " ApplicationAlteration recoveries at the time of Talpa robot visit."
         ),
         blank=True,
         null=True,
@@ -904,10 +905,12 @@ class Instalment(UUIDModel, TimeStampedModel):
         )
 
     def __str__(self):
-        return f"Instalment of {self.amount}€, \
-number {self.instalment_number}/{self.calculation.instalments.count()} \
-for application {self.calculation.application.application_number}, \
-due in {self.due_date}, status: {self.status}."
+        return (
+            f"Instalment of {self.amount}€, number"
+            f" {self.instalment_number}/{self.calculation.instalments.count()} for"
+            f" application {self.calculation.application.application_number}, due in"
+            f" {self.due_date}, status: {self.status}."
+        )
 
     class Meta:
         db_table = "bf_calculator_instalment"

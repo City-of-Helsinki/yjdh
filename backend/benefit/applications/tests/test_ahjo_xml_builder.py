@@ -109,8 +109,10 @@ def test_public_xml_file_name(decided_application, public_xml_builder):
     application = decided_application
     xml_file_name = public_xml_builder.generate_xml_file_name()
 
-    wanted_file_name = f"Hakemus {application.created_at.strftime('%d.%m.%Y')} \
-päätösteksti {application.application_number}.xml"
+    wanted_file_name = (
+        f"Hakemus {application.created_at.strftime('%d.%m.%Y')} päätösteksti"
+        f" {application.application_number}.xml"
+    )
 
     assert xml_file_name == wanted_file_name
 
@@ -146,7 +148,10 @@ def test_secret_xml_decision_string(
             decided_application.company.business_id,
             decided_application.employee.last_name,
             decided_application.employee.first_name,
-            f"{row.start_date.strftime('%d.%m.%Y')} - {row.end_date.strftime('%d.%m.%Y')}",
+            (
+                f"{row.start_date.strftime('%d.%m.%Y')} -"
+                f" {row.end_date.strftime('%d.%m.%Y')}"
+            ),
             str(int(row.amount)),
             str(int(calculation.calculated_benefit_amount)),
         ]
@@ -162,7 +167,10 @@ def test_secret_xml_decision_string(
             decided_application.employee.first_name,
         ]
         unwanted_replacements = [
-            f"{row.start_date.strftime('%d.%m.%Y')} - {row.end_date.strftime('%d.%m.%Y')}",
+            (
+                f"{row.start_date.strftime('%d.%m.%Y')} -"
+                f" {row.end_date.strftime('%d.%m.%Y')}"
+            ),
             str(int(row.amount)),
             str(int(calculation.calculated_benefit_amount)),
         ]
@@ -177,8 +185,10 @@ def test_secret_xml_file_name(decided_application, secret_xml_builder):
     application = decided_application
     xml_file_name = secret_xml_builder.generate_xml_file_name()
 
-    wanted_file_name = f"Hakemus {application.created_at.strftime('%d.%m.%Y')} \
-päätöksen liite {application.application_number}.xml"
+    wanted_file_name = (
+        f"Hakemus {application.created_at.strftime('%d.%m.%Y')} päätöksen liite"
+        f" {application.application_number}.xml"
+    )
 
     assert xml_file_name == wanted_file_name
 

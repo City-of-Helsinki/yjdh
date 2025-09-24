@@ -78,7 +78,9 @@ class Migration(migrations.Migration):
             field=models.CharField(
                 blank=True,
                 max_length=256,
-                verbose_name="additional information about the ongoing co-operation negotiations",
+                verbose_name=(
+                    "additional information about the ongoing co-operation negotiations"
+                ),
             ),
         ),
         migrations.AlterField(
@@ -141,7 +143,9 @@ class Migration(migrations.Migration):
             field=models.CharField(
                 blank=True,
                 max_length=256,
-                verbose_name="additional information about the ongoing co-operation negotiations",
+                verbose_name=(
+                    "additional information about the ongoing co-operation negotiations"
+                ),
             ),
         ),
         migrations.AlterField(
