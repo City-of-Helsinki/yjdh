@@ -1,73 +1,32 @@
-fail_fast: true
-
+# Keep tool versions in sync with the versions in requirements-dev.txt
 default_language_version:
-  python: python3
-
-exclude: ^.*\b(migrations)\b.*$
-default_stages: [commit, manual]
-
+    python: python3
+default_install_hook_types: [pre-commit, commit-msg]
+default_stages: [pre-commit, manual]
 repos:
-  - repo: https://github.com/psf/black
-    rev: 23.1.0
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
     hooks:
-      - id: black
-        name: (BF) black
-        files: ^backend/benefit
-      - id: black
-        name: (KS) black
-        files: ^backend/kesaseteli
-      - id: black
-        name: (Shared) black
-        files: ^backend/shared
-  - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-added-large-files
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.13.1
     hooks:
-      - id: isort
-        name: (BF) isort
-        args: [--settings-file, backend/benefit/setup.cfg]
-        files: ^backend/benefit
-      - id: isort
-        name: (KS) isort
-        args: [--settings-file, backend/kesaseteli/setup.cfg]
-        files: ^backend/kesaseteli
-      - id: isort
-        name: (Shared) isort
-        args: [--settings-file, backend/shared/setup.cfg]
-        files: ^backend/shared
-  - repo: https://github.com/pycqa/flake8
-    rev: 6.0.0
+      # Run the linter.
+      - id: ruff
+        args: [ "--fix" ]
+      # Run the formatter.
+      - id: ruff-format
+  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+    rev: v9.22.0
     hooks:
-      - id: flake8
-        name: (BF) flake8
-        additional_dependencies: [flake8-isort, flake8-black]
-        exclude: migrations|snapshots
-        files: ^backend/benefit
-        args: [--config, backend/benefit/setup.cfg]
-      - id: flake8
-        name: (KS) flake8
-        additional_dependencies: [flake8-isort, flake8-black]
-        exclude: migrations|snapshots
-        files: ^backend/kesaseteli
-        args: [--config, backend/kesaseteli/setup.cfg]
-      - id: flake8
-        name: (Shared) flake8
-        additional_dependencies: [flake8-isort, flake8-black]
-        exclude: migrations|snapshots
-        files: ^backend/shared
-        args: [--config, backend/shared/setup.cfg]
-  - repo: local
+      - id: commitlint
+        stages: [commit-msg, manual]
+        additional_dependencies: ["@commitlint/config-conventional"]
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.10.0
     hooks:
-    - id: lint-staged
-      name: (Frontend) Run lint-staged with lerna
-      entry: "./.husky/pre-commit"
-      language: system
-      types: [file]
-      require_serial: true
-  - repo: local
-    hooks:
-    - id: commit-msg
-      name: Validate commit message (conventional commits)
-      entry: "./.husky/commit-msg"
-      language: system
-      stages:
-        - commit-msg
+      - id: shellcheck
