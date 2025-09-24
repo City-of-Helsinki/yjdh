@@ -421,7 +421,7 @@ PDF_CONTENT_TYPE = "application/pdf"
 def generate_application_attachment(
     application: Application, type: AttachmentType, decision: AhjoDecisionText = None
 ) -> Attachment:
-    """Generate and save an Attachment of the requested type for the given application"""
+    """Generate and save an Attachment of the requested type for the given application"""  # noqa: E501
     if type == AttachmentType.PDF_SUMMARY:
         attachment_data = generate_application_summary_file(application)
         attachment_filename = (

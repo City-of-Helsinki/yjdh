@@ -22,7 +22,7 @@ def replace_decision_template_placeholders(
     application: Application,
     decision_maker=None,
 ) -> str:
-    """Replace the placeholders starting with $ in the decision template with real data"""
+    """Replace the placeholders starting with $ in the decision template with real data"""  # noqa: E501
     text_to_replace = Template(text_to_replace)
     start_date = (
         application.calculation.start_date.strftime("%d.%m.%Y")

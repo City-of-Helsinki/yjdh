@@ -22,7 +22,7 @@ class TalpaCsvService(ApplicationsCsvService):
     def get_relevant_instalment_amount(
         self, application: Application
     ) -> decimal.Decimal:
-        """Return the actual payable amount of the currently accepted and due instalment"""
+        """Return the actual payable amount of the currently accepted and due instalment"""  # noqa: E501
         # TODO remove this flag when the feature is enabled ready for production
         if settings.PAYMENT_INSTALMENTS_ENABLED:
             try:

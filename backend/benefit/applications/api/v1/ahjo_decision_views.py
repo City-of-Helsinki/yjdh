@@ -31,7 +31,7 @@ class DecisionProposalTemplateSectionList(APIView):
     """
     View to list the decision proposal templates with placeholders replaced by actual application data.
     * Only handlers are able to access this view.
-    """
+    """  # noqa: E501
 
     permission_classes = [BFIsHandler]
 
@@ -184,7 +184,7 @@ class DecisionProposalDraftUpdate(APIView):
             decision_text = (
                 "<section"
                 f' id="paatos"><h1>{_("Päätös")}</h1>{decision_part}</section><section'
-                f' id="paatoksenperustelut"><h1>{_("Päätöksen perustelut")}</h1>{justification_part}</section>'
+                f' id="paatoksenperustelut"><h1>{_("Päätöksen perustelut")}</h1>{justification_part}</section>'  # noqa: E501
             )
 
             available_decision_makers = AhjoSetting.objects.get(

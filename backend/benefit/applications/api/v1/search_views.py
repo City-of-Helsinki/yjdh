@@ -329,7 +329,7 @@ def _query_by_application_number(
                 Q(year_of_birth=f"{year_prefix}{year_suffix}")
                 | Q(
                     year_of_birth="1900"
-                )  # A few ArchivalApplication do not have birth year and is marked as 1900
+                )  # A few ArchivalApplication do not have birth year and is marked as 1900  # noqa: E501
             ),
         ),
     }
@@ -401,7 +401,7 @@ def _query_and_respond_to_numbers(
 ):
     """
     Perform simple LIKE query for application number, AHJO case ID and company business ID
-    """
+    """  # noqa: E501
     applications = application_queryset.filter(
         Q(company__business_id__icontains=search_query_str)
         | Q(ahjo_case_id__icontains=search_query_str)

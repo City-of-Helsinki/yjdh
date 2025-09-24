@@ -300,7 +300,7 @@ class AhjoCallbackView(APIView):
         """Update the application with the case id (diaarinumero) and case guid from the Ahjo callback data.
         If the application has attachments with a matching hash value, save the version series id for each attachment.
         Create a new single-application ApplicationBatch for the application and set the batch_id for the application.
-        """
+        """  # noqa: E501
         if callback_data["caseGuid"]:
             application.ahjo_case_guid = callback_data["caseGuid"]
         if callback_data["caseId"]:

@@ -178,7 +178,7 @@ class AhjoSecretXMLBuilder(AhjoXMLBuilder):
         there will be multiple pairs of sub total rows and a corresponding monthly eur rows.
         Here we prepare the calculation rows per payment period by looping through the calculation rows
         and parsing the data into a list of BenefitPeriodRows.
-        """
+        """  # noqa: E501
         calculation_rows_for_xml = []
 
         for idx, r in enumerate(calculation_rows):
@@ -208,7 +208,7 @@ class AhjoSecretXMLBuilder(AhjoXMLBuilder):
     ) -> List[BenefitPeriodRow]:
         """In the case where there is only one benefit period,
         we combine the monthly eur row and the salary benefit total row into a single BenefitPeriodRow.
-        """
+        """  # noqa: E501
         calculation_rows_for_xml = []
         calculation_rows_for_xml.append(
             BenefitPeriodRow(

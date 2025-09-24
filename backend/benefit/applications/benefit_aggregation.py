@@ -130,7 +130,7 @@ def _get_benefits_relevant_for_validation(past_benefits, start_date):
 
     :return: A new list, containing only those entries that are relevant for validating a new application
     starting on start_date.
-    """
+    """  # noqa: E501
     if not past_benefits:
         return []
     most_recent_benefit = past_benefits[0]

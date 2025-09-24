@@ -47,7 +47,7 @@ class Terms(UUIDModel, TimeStampedModel):
 
     """
     If effective_from is set to null, that means the terms are not to be displayed to the applicant.
-    """
+    """  # noqa: E501
     effective_from = models.DateField(
         verbose_name=_("first day these terms are in effect"), null=True, blank=True
     )
@@ -155,7 +155,7 @@ class AbstractTermsApproval(UUIDModel, TimeStampedModel):
         (this is actually redundant data, but I guess it helps us meet some auditing requirements). If we
         didn't have that requirement, the data model would work fine with just a ForeignKey to Terms object,
         as the applicant_consents can be accessed through it.
-    """
+    """  # noqa: E501
 
     approved_at = models.DateTimeField(verbose_name=_("timestamp of approval"))
     approved_by = models.ForeignKey(
@@ -170,7 +170,7 @@ class AbstractTermsApproval(UUIDModel, TimeStampedModel):
     )
     """
     API validates that the selected_applicant_consents must belong to the terms of this approval
-    """
+    """  # noqa: E501
     selected_applicant_consents = models.ManyToManyField(
         ApplicantConsent,
         verbose_name=_("selected applicant consents"),

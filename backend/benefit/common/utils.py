@@ -33,7 +33,7 @@ def update_object(obj: object, data: dict, limit_to_fields=None):
     In the example above, the update_object function is used to update the 'name' and 'age' fields of a User object.
     The function takes the User object, a data dictionary with field-value pairs, and updates the object accordingly.
     The updated object is then saved.
-    """
+    """  # noqa: E501
     if not data:
         return
     for k, v in data.items():
@@ -71,7 +71,7 @@ def xgroup(iter, n=2, check_length=False) -> Iterator[Tuple]:
 
     In the example above, the xgroup function is used to group elements from a list into tuples of size 3.
     Each tuple is then printed, demonstrating how the function can be used to iterate over groups of elements.
-    """
+    """  # noqa: E501
     """
     adapted from: comp.lang.python Thu Jun 5 22:58:05 CEST 2003
 
@@ -113,7 +113,7 @@ def pairwise(iterable):
 
     In the example above, the pairwise function takes a list of numbers and returns an iterator that generates pairs
     of consecutive numbers. The resulting pairs are then printed one by one.
-    """
+    """  # noqa: E501
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."
     a, b = itertools.tee(iterable)
     for unused in b:
@@ -141,7 +141,7 @@ def nested_setattr(obj: object, attr, val):
     In the example above, the nested_setattr function is used to set the 'name' and 'age' attributes of the 'profile'
     nested object within a User object. The function takes the User object, the attribute name or dotted path, and the
     corresponding value, and sets the attributes accordingly.
-    """
+    """  # noqa: E501
     pre, _, post = attr.rpartition(".")
     return setattr(nested_getattr(obj, pre) if pre else obj, post, val)
 
@@ -165,7 +165,7 @@ def nested_getattr(obj, attr, *args):
 
         person = Person("John")
         print(nested_getattr(person, "name"))  # Output: "John"
-    """
+    """  # noqa: E501
 
     def _getattr(obj, attr):
         return getattr(obj, attr, *args)
@@ -195,7 +195,7 @@ def to_decimal(numeric_value, decimal_places: Union[int, None] = None, allow_nul
 
     In the example above, the to_decimal function converts the numeric value 3.14159 to a decimal with 2 decimal places
     and assigns it to the variable dec. The resulting decimal value is then printed.
-    """
+    """  # noqa: E501
     if numeric_value is None and allow_null:
         return None
     value = decimal.Decimal(numeric_value)
@@ -240,7 +240,7 @@ def date_range_overlap(start_1: date, end_1: date, start_2: date, end_2: date):
     In the example above, the date_range_overlap function calculates the overlap between two date ranges.
     The first date range spans from January 1st to January 15th, and the second date range spans from
     January 10th to January 20th. The function returns the number of overlapping days, which is 6.
-    """
+    """  # noqa: E501
     """
     Based on: https://stackoverflow.com/questions/9044084/efficient-date-range-overlap-calculation-in-python
     """
@@ -282,7 +282,7 @@ def days360(start_date: date, end_date: date):
     Changes:
     * Added unit tests
     * forced method_eu to always be True.
-    """
+    """  # noqa: E501
     METHOD_EU = True
 
     if not isinstance(start_date, date) or not isinstance(end_date, date):
@@ -340,7 +340,7 @@ class DurationMixin:
     Depends on having start_date and end_date fields available in the object.
     The duration is calculated according to the DAYS360 Excel function, as that
     function was used by the application handlers in the application calculation Excel file.
-    """
+    """  # noqa: E501
 
     @property
     def duration_in_months(self):
@@ -393,7 +393,7 @@ def get_date_range_end_with_days360(start_date: date, n_months: int):
     In case 4, when two date ranges have the same duration_in_months, we want to return the
     longest possible duration. This will resolve the ambiguity in the applicant's favor, as
     this function is used to calculate the last valid end_date for the benefit.
-    """
+    """  # noqa: E501
     assert n_months >= 0
 
     # Using the usual calendar definition of months, so initially the start_date might

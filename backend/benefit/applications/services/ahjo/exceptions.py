@@ -48,7 +48,7 @@ class AhjoTokenExpiredException(Exception):
     """
     Raised when the Ahjo token has expired. The token should be re-configured manually, see instructions at:
     https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/8687517756/Siirto+yll+pitoon#Ahjo-autentikaatio-tokenin-haku-ja-asettaminen-manuaalisesti.
-    """
+    """  # noqa: E501
 
 
 class AhjoTokenRetrievalException(Exception):
@@ -56,7 +56,7 @@ class AhjoTokenRetrievalException(Exception):
     Raised when the Ahjo token has expired or it could not be otherwise refreshed automatically.
     The token should be re-configured manually, see instructions at:
     https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/8687517756/Siirto+yll+pitoon#Ahjo-autentikaatio-tokenin-haku-ja-asettaminen-manuaalisesti.
-    """
+    """  # noqa: E501
 
 
 class InvalidAhjoTokenException(Exception):
@@ -80,4 +80,4 @@ class AhjoDecisionError(Exception):
 class AhjoDecisionDetailsParsingError(Exception):
     """
     Raised when an error occurs in parsing the decision details after a details query to Ahjo.
-    """
+    """  # noqa: E501

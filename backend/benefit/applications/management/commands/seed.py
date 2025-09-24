@@ -95,7 +95,7 @@ def clear_applications():
 def run_seed(number):
     """Delete all existing applications and create applications for all statuses,
     with cancelled applications being modified 30 days ago and drafts being modified 180 and 166 days ago
-    """
+    """  # noqa: E501
 
     def _create_batch(
         status: ApplicationBatchStatus, proposal_for_decision: ApplicationStatus

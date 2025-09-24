@@ -118,7 +118,7 @@ class AhjoDeleteCaseRequest(AhjoRequest):
             raise MissingAhjoCaseIdError("Application does not have an Ahjo case id")
         url = f"{self.url_base}{API_CASES_BASE}/{self.application.ahjo_case_id}"
         draftsman_id = self.application.calculation.handler.ad_username
-        return f"{url}?draftsmanid={draftsman_id}&reason={self.reason}&apireqlang={self.lang}"
+        return f"{url}?draftsmanid={draftsman_id}&reason={self.reason}&apireqlang={self.lang}"  # noqa: E501
 
 
 @dataclass
@@ -240,7 +240,7 @@ class AhjoApiClient:
         If the request is a subscription request, the headers are prepared \
         without a callback address in the JSON payload and the Accept and X-CallbackURL headers \
         are not needed.
-        """
+        """  # noqa: E501
 
         headers_dict = {
             "Authorization": f"Bearer {self.ahjo_token.access_token}",
@@ -393,7 +393,7 @@ class AhjoApiClient:
     def write_error_to_ahjo_status(self, context: str, message_to_handler: str) -> None:
         """Write the error message to the Ahjo status of the application for all requests that have an application.
         The DecisionMaker request does not have an application, so it does not have an Ahjo status.
-        """
+        """  # noqa: E501
         if self.request.has_application:
             AhjoErrorWriter.write_to_validation_error(
                 AhjoFormattedError(
