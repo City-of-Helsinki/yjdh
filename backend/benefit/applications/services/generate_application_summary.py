@@ -45,7 +45,7 @@ def generate_application_summary_file(application, request=None) -> Union[bytes,
         context = get_context_for_summary_context(application)
         return generate_summary_pdf(context)
     except Exception as e:
-        print(
+        print(  # noqa: T201
             f"Cannot generate application summary PDF for application {application.id}",
             e,
         )

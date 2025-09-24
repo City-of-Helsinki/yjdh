@@ -521,8 +521,8 @@ def pytest_sessionfinish(session, exitstatus):
         try:
             os.remove(os.path.join(settings.MEDIA_ROOT, file))
         except OSError as e:
-            print(f"Error while deleting file in media folder: {e}")
-    print(f"\nTests finished, deleted {number_of_files} files in the media folder")
+            print(f"Error while deleting file in media folder: {e}")  # noqa: T201
+    print(f"\nTests finished, deleted {number_of_files} files in the media folder")  # noqa: T201
 
 
 @pytest.fixture

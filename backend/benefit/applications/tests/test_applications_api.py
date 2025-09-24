@@ -2439,7 +2439,7 @@ def test_require_additional_information(handler_api_client, application, mailout
         {"status": ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED},
     )
     assert response.status_code == 200
-    print(response.__dict__)
+    print(response.__dict__)  # noqa: T201
 
     assert application.messages.count() == 1
     assert (

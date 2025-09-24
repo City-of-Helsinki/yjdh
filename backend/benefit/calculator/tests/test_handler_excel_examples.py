@@ -142,7 +142,7 @@ class SalaryBenefitExcelTest(ExcelTestCase):
                 if value is not None:
                     value = to_decimal(value, decimal_places=2)
 
-            print(
+            print(  # noqa: T201
                 f"{get_column_letter(self.column_idx)} {target}={value} ({type(value)}"
             )
             nested_setattr(self, target, value)
@@ -208,7 +208,7 @@ class SalaryBenefitExcelTest(ExcelTestCase):
 
     def _verify_results(self):
         for row in self.application.calculation.rows.all():
-            print(row)
+            print(row)  # noqa: T201
         assert (
             self.application.calculation.calculated_benefit_amount
             == self.expected_results.calculated_benefit_amount
@@ -265,7 +265,7 @@ class EmployeeBenefitExcelTest(SalaryBenefitExcelTest):
 
     def _verify_results(self):
         for row in self.application.calculation.rows.all():
-            print(row)
+            print(row)  # noqa: T201
         assert (
             self.application.calculation.calculated_benefit_amount
             == self.expected_results.calculated_benefit_amount
@@ -291,7 +291,7 @@ def test_cases_from_excel(request, api_client):
         ):
             continue
         test_sheet = wb[sheet_name]
-        print(f"sheet {sheet_name}")
+        print(f"sheet {sheet_name}")  # noqa: T201
         run_sheet(test_handler_class, test_sheet)
 
 
