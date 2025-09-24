@@ -155,7 +155,7 @@ class ApplicationBatchListSerializer(ApplicationBatchSerializer):
 class BatchCompanySerializer(ReadOnlySerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        setattr(self.Meta, "read_only_fields", [*self.fields])
+        self.Meta.read_only_fields = [*self.fields]
 
     class Meta:
         model = Company
@@ -168,7 +168,7 @@ class BatchCompanySerializer(ReadOnlySerializer):
 class BatchEmployeeSerializer(ReadOnlySerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        setattr(self.Meta, "read_only_fields", [*self.fields])
+        self.Meta.read_only_fields = [*self.fields]
 
     class Meta:
         model = Employee

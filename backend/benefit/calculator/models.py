@@ -10,13 +10,13 @@ from encrypted_fields.fields import EncryptedCharField, SearchField
 from simple_history.models import HistoricalRecords
 
 from applications.enums import ApplicationAlterationState
-from applications.models import Application, PAY_SUBSIDY_PERCENT_CHOICES
+from applications.models import PAY_SUBSIDY_PERCENT_CHOICES, Application
 from calculator.enums import DescriptionType, InstalmentStatus, RowType
 from common.exceptions import BenefitAPIException
 from common.utils import (
+    DurationMixin,
     date_range_overlap,
     duration_in_months,
-    DurationMixin,
     nested_getattr,
     to_decimal,
 )

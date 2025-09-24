@@ -7,12 +7,12 @@ import factory
 from applications.tests.factories import ApplicationFactory
 from calculator.enums import RowType
 from calculator.models import (
+    STATE_AID_MAX_PERCENTAGE_CHOICES,
     Calculation,
     CalculationRow,
     Instalment,
     PaySubsidy,
     PreviousBenefit,
-    STATE_AID_MAX_PERCENTAGE_CHOICES,
     TrainingCompensation,
 )
 from common.utils import duration_in_months

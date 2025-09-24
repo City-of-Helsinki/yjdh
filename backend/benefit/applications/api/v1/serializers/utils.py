@@ -23,4 +23,4 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
 class ReadOnlySerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        setattr(self.Meta, "read_only_fields", [*self.fields])
+        self.Meta.read_only_fields = [*self.fields]

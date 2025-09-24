@@ -9,6 +9,8 @@ from rest_framework.authtoken.models import Token
 
 from applications.enums import (
     AhjoStatus as AhjoStatusEnum,
+)
+from applications.enums import (
     ApplicationAlterationType,
     ApplicationBatchStatus,
     ApplicationOrigin,

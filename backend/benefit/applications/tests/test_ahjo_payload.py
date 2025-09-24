@@ -14,21 +14,21 @@ from applications.enums import (
 )
 from applications.models import AhjoDecisionText, Application, Attachment
 from applications.services.ahjo_payload import (
-    _prepare_case_records,
-    _prepare_record,
-    _prepare_record_document_dict,
-    _prepare_top_level_dict,
     AddRecordsRecordTitle,
     AhjoBaseRecordTitle,
     AhjoTitle,
     OpenCaseRecordTitle,
+    UpdateRecordsRecordTitle,
+    _prepare_case_records,
+    _prepare_record,
+    _prepare_record_document_dict,
+    _prepare_top_level_dict,
     prepare_case_title,
     prepare_decision_proposal_payload,
     prepare_final_case_title,
     prepare_update_application_payload,
     resolve_payload_language,
     truncate_string_to_limit,
-    UpdateRecordsRecordTitle,
 )
 from common.utils import hash_file
 

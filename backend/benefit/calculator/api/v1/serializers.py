@@ -9,12 +9,12 @@ from applications.models import Application
 from calculator.api.v1.validators import InstalmentStatusValidator
 from calculator.enums import InstalmentStatus
 from calculator.models import (
+    STATE_AID_MAX_PERCENTAGE_CHOICES,
     Calculation,
     CalculationRow,
     Instalment,
     PaySubsidy,
     PreviousBenefit,
-    STATE_AID_MAX_PERCENTAGE_CHOICES,
     TrainingCompensation,
 )
 from users.api.v1.serializers import UserSerializer

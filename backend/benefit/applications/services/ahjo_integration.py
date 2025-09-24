@@ -19,6 +19,8 @@ from lxml.etree import XMLSchemaParseError, XMLSyntaxError
 
 from applications.enums import (
     AhjoStatus as AhjoStatusEnum,
+)
+from applications.enums import (
     ApplicationStatus,
     AttachmentType,
 )

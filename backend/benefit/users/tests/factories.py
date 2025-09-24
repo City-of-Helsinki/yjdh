@@ -7,4 +7,3 @@ class BFHandlerUserFactory(StaffUserFactory):
     Overrided just for clear naming.
     """
 
-    pass

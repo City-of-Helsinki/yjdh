@@ -1,5 +1,5 @@
 from datetime import date
-from decimal import Decimal, ROUND_DOWN
+from decimal import ROUND_DOWN, Decimal
 
 from django.conf import settings
 from django.core.exceptions import ValidationError

@@ -8,7 +8,8 @@ import requests
 from django.conf import settings
 from django.urls import reverse
 
-from applications.enums import AhjoRequestType, AhjoStatus as AhjoStatusEnum
+from applications.enums import AhjoRequestType
+from applications.enums import AhjoStatus as AhjoStatusEnum
 from applications.models import AhjoSetting, AhjoStatus, Application
 from applications.services.ahjo.enums import AhjoSettingName
 from applications.services.ahjo.exceptions import (

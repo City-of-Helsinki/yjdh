@@ -7,9 +7,11 @@ from django.core.exceptions import ValidationError
 from applications.enums import (
     AhjoDecision,
     AhjoDecisionDetails,
-    AhjoStatus as AhjoStatusEnum,
     ApplicationBatchStatus,
     ApplicationStatus,
+)
+from applications.enums import (
+    AhjoStatus as AhjoStatusEnum,
 )
 from applications.services.ahjo.enums import AhjoSettingName
 from applications.services.ahjo.response_handler import (

@@ -2,8 +2,10 @@ from django.db.models import QuerySet
 
 from applications.enums import (
     AhjoRequestType,
-    AhjoStatus as AhjoStatusEnum,
     ApplicationStatus,
+)
+from applications.enums import (
+    AhjoStatus as AhjoStatusEnum,
 )
 from applications.models import Application
 

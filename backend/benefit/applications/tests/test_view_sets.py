@@ -26,7 +26,7 @@ def test_applicant_application_view_set_get_queryset_with_anonymous_user(
 
     assert len(Application.objects.all()) == 7
     view_set: ApplicantApplicationViewSet = ApplicantApplicationViewSet()
-    setattr(view_set, "request", MockRequestWithAnonymousUser())
+    view_set.request = MockRequestWithAnonymousUser()
     queryset: QuerySet[Application] = view_set.get_queryset()
 
     if next_public_mock_flag:

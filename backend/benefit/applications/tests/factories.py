@@ -14,16 +14,16 @@ from applications.enums import (
     PaySubsidyGranted,
 )
 from applications.models import (
+    APPLICATION_LANGUAGE_CHOICES,
+    ATTACHMENT_CONTENT_TYPE_CHOICES,
     AhjoDecision,
     AhjoDecisionProposalDraft,
     AhjoDecisionText,
     Application,
-    APPLICATION_LANGUAGE_CHOICES,
     ApplicationAlteration,
     ApplicationBasis,
     ApplicationBatch,
     Attachment,
-    ATTACHMENT_CONTENT_TYPE_CHOICES,
     AttachmentType,
     DecisionProposalTemplateSection,
     DeMinimisAid,

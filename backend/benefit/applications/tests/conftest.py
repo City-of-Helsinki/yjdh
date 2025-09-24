@@ -20,9 +20,9 @@ from applications.enums import (
     DecisionType,
 )
 from applications.models import (
+    APPLICATION_LANGUAGE_CHOICES,
     AhjoSetting,
     Application,
-    APPLICATION_LANGUAGE_CHOICES,
     ApplicationAlteration,
     ApplicationBatch,
 )

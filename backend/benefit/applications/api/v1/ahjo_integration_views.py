@@ -6,7 +6,7 @@ from django.db import transaction
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -18,13 +18,15 @@ from applications.api.v1.serializers.ahjo_callback import (
     AhjoDecisionCallbackSerializer,
 )
 from applications.enums import (
+    DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE,
     AhjoCallBackStatus,
     AhjoDecisionUpdateType,
     AhjoRequestType,
-    AhjoStatus as AhjoStatusEnum,
     ApplicationBatchStatus,
     ApplicationStatus,
-    DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE,
+)
+from applications.enums import (
+    AhjoStatus as AhjoStatusEnum,
 )
 from applications.models import AhjoStatus, Application, ApplicationBatch, Attachment
 from applications.services.ahjo.exceptions import AhjoCallbackError

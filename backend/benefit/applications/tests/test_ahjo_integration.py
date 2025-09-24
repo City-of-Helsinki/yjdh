@@ -14,16 +14,18 @@ from django.utils import timezone
 
 from applications.api.v1.ahjo_integration_views import AhjoAttachmentView
 from applications.enums import (
+    DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE,
     AhjoCallBackStatus,
     AhjoDecisionUpdateType,
     AhjoRequestType,
-    AhjoStatus as AhjoStatusEnum,
     ApplicationBatchStatus,
     ApplicationStatus,
     ApplicationTalpaStatus,
     AttachmentType,
     BenefitType,
-    DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE,
+)
+from applications.enums import (
+    AhjoStatus as AhjoStatusEnum,
 )
 from applications.models import (
     AhjoDecisionText,
@@ -38,14 +40,14 @@ from applications.services.ahjo_application_service import (
 )
 from applications.services.ahjo_integration import (
     ACCEPTED_TITLE,
-    export_application_batch,
+    REJECTED_TITLE,
     ExportFileInfo,
+    export_application_batch,
     generate_application_attachment,
     generate_composed_files,
     generate_single_approved_file,
     generate_single_declined_file,
     get_application_for_ahjo,
-    REJECTED_TITLE,
 )
 from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
 from calculator.models import Calculation

@@ -6,7 +6,7 @@ from openpyxl.utils import get_column_letter
 
 from applications.enums import ApplicationStatus, BenefitType
 from applications.tests.factories import ApplicationFactory
-from calculator.models import Calculation, STATE_AID_MAX_PERCENTAGE_CHOICES
+from calculator.models import STATE_AID_MAX_PERCENTAGE_CHOICES, Calculation
 from calculator.tests.factories import PaySubsidyFactory, TrainingCompensationFactory
 from common.utils import nested_setattr, to_decimal
 from helsinkibenefit.tests.conftest import *  # noqa
