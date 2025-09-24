@@ -111,7 +111,7 @@ class TalpaCallbackView(APIView):
 
     @transaction.atomic
     def _handle_failed_applications(self, application_numbers: list, ip_address: str):
-        """Update applications and related batch which could not be processed with status REJECTED_BY_TALPA"""
+        """Update applications and related batch which could not be processed with status REJECTED_BY_TALPA"""  # noqa: E501
 
         if settings.PAYMENT_INSTALMENTS_ENABLED:
             applications = self._get_applications_and_instalments(application_numbers)
@@ -147,7 +147,7 @@ class TalpaCallbackView(APIView):
     ):
         """Update applications and related batch with given statuses and log the event.
         This will be deprecated after the instalments feature is enabled for all applications.
-        """
+        """  # noqa: E501
         for application in applications:
             application.talpa_status = application_talpa_status
             application.archived = is_archived
@@ -173,7 +173,7 @@ class TalpaCallbackView(APIView):
         If the instalments  1/1 or 2/2, e.g the final instalment,
         update the application status, batch status to SENT_TO_TALPA.
         Always set the application as archived after the first instalment is succesfully sent to talpa.
-        """
+        """  # noqa: E501
         for application in applications:
             try:
                 instalment = application.calculation.instalments.get(
@@ -206,7 +206,7 @@ class TalpaCallbackView(APIView):
                     batch_status=ApplicationBatchStatus.PARTIALLY_SENT_TO_TALPA,
                     log_message=(
                         "instalment"
-                        f" {instalment.instalment_number}/{application.number_of_instalments}"
+                        f" {instalment.instalment_number}/{application.number_of_instalments}"  # noqa: E501
                         " was read by TALPA and marked as paid"
                     ),
                     is_archived=True,

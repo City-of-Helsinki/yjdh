@@ -76,11 +76,11 @@ def _filter_and_format_changes(
     return list(
         map(
             lambda change: _format_change_dict(change, relation_name),
-            filter(  # Only accept those changes that are within the threshold delta_time and/or not excluded field
+            filter(  # Only accept those changes that are within the threshold delta_time and/or not excluded field  # noqa: E501
                 lambda change: not _is_history_change_excluded(change, excluded_fields)
                 and (
                     delta_time
-                    is None  # We'll ignore this check for application changes as delta_time's not present
+                    is None  # We'll ignore this check for application changes as delta_time's not present  # noqa: E501
                     or 0 <= delta_time <= look_up_for_application_save_in_seconds
                 ),
                 changes,

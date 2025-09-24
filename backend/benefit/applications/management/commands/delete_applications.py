@@ -62,7 +62,7 @@ class Command(BaseCommand):
 
 def _delete_applications(days_to_keep: int, statuses: List[str]) -> int:
     """Delete applications with the given status and older than the given number of days.
-    Also delete their attachment files."""
+    Also delete their attachment files."""  # noqa: E501
 
     applications_to_delete = Application.objects.filter(
         status__in=statuses,

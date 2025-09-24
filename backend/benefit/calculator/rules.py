@@ -62,7 +62,7 @@ class HelsinkiBenefitCalculator:
     ) -> Union[PaySubsidy, None]:
         """Return the first item in the list whose start date is less than or equal to the given day,
         and whose end date is greater than or equal to the given day.
-        If no such item is found, it returns None."""
+        If no such item is found, it returns None."""  # noqa: E501
         for item in items:
             if (
                 item.start_date is not None
@@ -88,7 +88,7 @@ class HelsinkiBenefitCalculator:
     def get_sub_total_ranges(self):
         """return a list of BenefitSubRange(start_date, end_date, pay_subsidy, training_compensation)
         that require a separate calculation.
-        date range are inclusive"""
+        date range are inclusive"""  # noqa: E501
 
         if self.calculation.start_date is None or self.calculation.end_date is None:
             raise ValueError(
@@ -179,7 +179,7 @@ class HelsinkiBenefitCalculator:
         If not, two instalments are created, with the amount of
         the first instalment being equal to the FIRST_INSTALMENT_LIMIT,
         and the second being equal to the rest of the total.
-        """
+        """  # noqa: E501
         if total_benefit_amount <= self.instalment_threshold:
             return [
                 (
@@ -438,7 +438,7 @@ class SalaryBenefitCalculator2023(HelsinkiBenefitCalculator):
 class EmployeeBenefitCalculator2021(HelsinkiBenefitCalculator):
     """
     Calculation of employee benefit, according to rules in effect 2021 (and possibly onwards)
-    """
+    """  # noqa: E501
 
     EMPLOYEE_BENEFIT_AMOUNT_PER_MONTH = 500
 

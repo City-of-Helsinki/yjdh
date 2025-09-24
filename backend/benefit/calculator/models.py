@@ -58,7 +58,7 @@ class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
     The fields in Calculation is editable by handler. The value entered by applicant is stored in Application
 
     For additional descriptions of the fields, see the API documentation (serializers.py)
-    """
+    """  # noqa: E501
 
     handler = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -193,7 +193,7 @@ class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
         and possibly other attributes, such as date of the application.
 
         The calculator object should not be changed while calculation is ongoing.
-        """
+        """  # noqa: E501
         from calculator.rules import HelsinkiBenefitCalculator
 
         if self.calculator is None:
@@ -201,7 +201,7 @@ class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
         return self.calculator
 
     def calculate(self, override_status=False):
-        """Do the calculation again. Override status is used to force the calculation when cloning an application"""
+        """Do the calculation again. Override status is used to force the calculation when cloning an application"""  # noqa: E501
 
         try:
             return self.init_calculator().calculate(override_status=override_status)
@@ -273,7 +273,7 @@ class PaySubsidy(UUIDModel, TimeStampedModel, DurationMixin):
         * they have the equal values in these fields: application, pay_subsidy_percent, work_time_percent,
           disability_or_illness
         * the date ranges either overlap or are adjacent to each other
-        """
+        """  # noqa: E501
         if len(pay_subsidies) == 0:
             return []
         pay_subsidies.sort(key=operator.attrgetter("start_date"))
@@ -578,7 +578,7 @@ class PaySubsidyMonthlyRow(CalculationRow):
     * 100% pay subsidy has been granted for 6 months
     * Pay subsidy is calcuated using formula:
       min(2020, (monthly_pay / work_time_fraction * 0.65) * 1.23
-    """
+    """  # noqa: E501
     MAX_WORK_TIME_FRACTION_FOR_FULL_PAY_SUBSIDY = decimal.Decimal("0.65")
     GROSS_WAGE_COEFFICIENT_FOR_FULL_PAY_SUBSIDY = decimal.Decimal("1.23")
 
@@ -590,7 +590,7 @@ class PaySubsidyMonthlyRow(CalculationRow):
     def calculate_amount(self):
         """
         1.7.2023 voimaantulevan lain mukaan lomarahaa ja sivukuluja ei oteta enää huomioon palkkatuen määrää laskiessa
-        """
+        """  # noqa: E501
         assert self.max_subsidy is not None
         assert self.pay_subsidy is not None
 
@@ -838,7 +838,7 @@ class ManualOverrideTotalRow(CalculationRow):
 class Instalment(UUIDModel, TimeStampedModel):
     """
     Instalment model for Helsinki benefit grantend benefits that are paid in (two )instalments
-    """
+    """  # noqa: E501
 
     calculation = models.ForeignKey(
         Calculation,

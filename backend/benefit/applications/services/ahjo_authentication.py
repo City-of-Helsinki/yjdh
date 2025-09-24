@@ -64,7 +64,7 @@ class AhjoConnector:
         """Retrieve the initial access token from Ahjo API using the auth code,
         this is only used when getting and setting the initial token manually.
         If the initial token fails for some reason, a new ahjo_code must be saved into django.
-        """
+        """  # noqa: E501
         try:
             auth_code = AhjoSetting.objects.get(name="ahjo_code")
 
@@ -82,7 +82,7 @@ class AhjoConnector:
     def refresh_token(self) -> AhjoToken:
         """Refresh access token from Ahjo API using the refresh token of an existing token.
         This should be used by, for example, a cron job to keep the token up to date.
-        """
+        """  # noqa: E501
         token = self.get_token_from_db()
 
         if not token.refresh_token:

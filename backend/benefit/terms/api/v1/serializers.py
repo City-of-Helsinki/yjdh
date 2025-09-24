@@ -74,7 +74,7 @@ class ApproveTermsSerializer(serializers.ModelSerializer):
 
     The Terms ID and ApplicantConsent IDs are explicitly sent in the request as an extra
     precaution, to ensure that the effective terms were shown and thta the user clicked all the required checkboxes.
-    """
+    """  # noqa: E501
 
     selected_applicant_consents = serializers.PrimaryKeyRelatedField(
         many=True, queryset=ApplicantConsent.objects.all()
@@ -83,7 +83,7 @@ class ApproveTermsSerializer(serializers.ModelSerializer):
     def validate(self, data):
         """
         Currently, all the applicant consents must be selected, none of them are optional.
-        """
+        """  # noqa: E501
         if data["terms"] != Terms.objects.get_terms_in_effect(data["terms"].terms_type):
             # Extra validation step to ensure that the terms that have been shown to the
             # user are actually the terms that are currently in effect.

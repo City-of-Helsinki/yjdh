@@ -12,7 +12,7 @@ class DeMinimisAidSerializer(serializers.ModelSerializer):
     The "ordering" field is not editable and is ignored if present in POST/PUT data.
     The ordering of the DeMinimisAid objects is determined by their order in the "de_minimis_aid_set" list
     in the Application.
-    """
+    """  # noqa: E501
 
     MAX_AID_AMOUNT = 300000
     amount = serializers.DecimalField(

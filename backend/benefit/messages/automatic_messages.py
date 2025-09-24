@@ -132,7 +132,7 @@ def send_application_reopened_message(
     :param user: The handler who is setting the application to ADDITIONAL_INFORMATION_REQUESTED status
     :param application: The application being reopened
     :param additional_information_needed_by: The date by which the applicant must provide the additional information
-    """
+    """  # noqa: E501
 
     formatted_info_needed_by = additional_information_needed_by.strftime("%d.%m.%Y")
 

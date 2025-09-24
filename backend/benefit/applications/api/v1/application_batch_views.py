@@ -243,7 +243,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         """
         Assign one or more applications to a batch. If there's no batch for given app status,
         create one as a draft and assign all applications to it.
-        """
+        """  # noqa: E501
         app_status = request.data["status"]
         app_ids = request.data["application_ids"]
 
@@ -334,7 +334,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
     def status(self, request, pk=None):
         """
         Assign a new status for batch: as pending for Ahjo proposal or switch back to draft
-        """
+        """  # noqa: E501
         new_status = request.data["status"]
 
         if _unallowed_status_change(new_status):

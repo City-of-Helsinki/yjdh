@@ -46,7 +46,7 @@ class Command(BaseCommand):
 def notify_applications(days_to_period_end: int) -> int:
     """Query applications that are close to the benefit end date and not have any alterations.
     Send a notification to the applicant.
-    Returns the number of notified applications."""
+    Returns the number of notified applications."""  # noqa: E501
 
     target_date = timezone.now() + timedelta(days=days_to_period_end)
     applications_to_notify = Application.objects.filter(
@@ -67,7 +67,7 @@ def get_benefit_notice_email_notification_subject():
 
 
 def _send_notification_mail(application: Application, target_date: date) -> int:
-    """Send a notification mail to the applicant about the upcoming end of the benefit period"""
+    """Send a notification mail to the applicant about the upcoming end of the benefit period"""  # noqa: E501
 
     context = get_email_template_context(application)
     context["upcoming_benefit_end_date"] = target_date.strftime("%d.%m.%Y")

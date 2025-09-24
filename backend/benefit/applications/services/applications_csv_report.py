@@ -32,7 +32,7 @@ def get_export_notes(application):
     """
     Report situations where the data does not fit in the fixed number of CSV columns.
     These cases should not happen, but if they do, then it's important to have some kind of notification about it.
-    """
+    """  # noqa: E501
     notes = []
     if (
         application.de_minimis_aid_set.count()
@@ -102,7 +102,7 @@ class ApplicationsCsvService(CsvExportBase):
 
     For easier processing, if an application would need two Ahjo rows, the two rows are produced in the output.
 
-    """
+    """  # noqa: E501
 
     def __init__(self, applications, prune_sensitive_data=False):
         self.applications = applications
@@ -112,7 +112,7 @@ class ApplicationsCsvService(CsvExportBase):
     def query_instalment_by_number(
         self, application: Application, number: int
     ) -> Instalment:
-        """Return the actual payable amount of the currently accepted and due instalment"""
+        """Return the actual payable amount of the currently accepted and due instalment"""  # noqa: E501
         try:
             instalment = application.calculation.instalments.get(
                 instalment_number=number,

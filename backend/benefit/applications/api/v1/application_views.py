@@ -258,7 +258,7 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         """
         Convenience action for the frontends that by default excludes the fields that are not normally
         needed in application listing pages.
-        """
+        """  # noqa: E501
         context = self.get_serializer_context()
         qs = self._get_simplified_queryset(request, context)
         serializer = self.serializer_class(qs, many=True, context=context)
@@ -437,7 +437,7 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
                 del v["id"]
         else:
             de_minimis_aid_set = []
-        """
+        """  # noqa: E501
         de_minimis_aid_set = []
         return Response(
             {
@@ -570,7 +570,7 @@ class HandlerApplicationAlterationViewSet(BaseApplicationAlterationViewSet):
         config: AlterationCsvConfigurableFields,
         user: User,
     ) -> StreamingHttpResponse:
-        """Generate a response with a CSV file containing application alteration data."""
+        """Generate a response with a CSV file containing application alteration data."""  # noqa: E501
         csv_service = ApplicationAlterationCsvService(queryset, config, user)
 
         response = HttpResponse(
@@ -947,7 +947,7 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         """
         Create a new application batch out of the existing applications in the given status
         that are not yet assigned to a batch.
-        """
+        """  # noqa: E501
         queryset = self.get_queryset().filter(status=status, batch__isnull=True)
         status_map = {
             ApplicationStatus.ACCEPTED: ApplicationBatchStatus.DECIDED_ACCEPTED,

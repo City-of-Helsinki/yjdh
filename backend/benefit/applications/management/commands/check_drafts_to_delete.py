@@ -55,7 +55,7 @@ class Command(BaseCommand):
 
 def notify_applications(days_to_deletion: int, days_to_keep: int) -> int:
     """Query applications that are close to the deletion date and send a notification to the applicant.
-    Returns the number of notified applications."""
+    Returns the number of notified applications."""  # noqa: E501
 
     draft_scope_in_days = days_to_keep - days_to_deletion
     applications_to_notify = Application.objects.filter(
@@ -76,7 +76,7 @@ def get_draft_notice_email_notification_subject():
 
 
 def _send_notification_mail(application: Application, days_to_keep: int) -> int:
-    """Send a notification mail to the applicant about the upcoming application deletion"""
+    """Send a notification mail to the applicant about the upcoming application deletion"""  # noqa: E501
     application_deletion_date = (
         application.modified_at + timedelta(days=(days_to_keep))
     ).strftime("%d.%m.%Y")

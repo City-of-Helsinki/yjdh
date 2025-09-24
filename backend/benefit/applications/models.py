@@ -117,7 +117,7 @@ class ApplicationManager(models.Manager):
         """
         Annotate the queryset with information about timestamps of past status transitions.
         If multiple transitions to the same status have occurred, then use the latest status transition timestamp.
-        """
+        """  # noqa: E501
         qs = super().get_queryset()
         qs = self._annotate_with_log_timestamp(qs, "handled_at", self.HANDLED_STATUSES)
         qs = self._annotate_with_log_timestamp(
@@ -135,7 +135,7 @@ class ApplicationManager(models.Manager):
         Returns applications with only those attachments that have
         null in 'downloaded_by_ahjo' and where  the applications have a non-null ahjo_case_id,
         which means that a case has been opened for them in AHJO.
-        """
+        """  # noqa: E501
 
         # Define a queryset for attachments where downloaded_by_ahjo is NULL
         attachments_queryset = Attachment.objects.filter(
@@ -175,7 +175,7 @@ class ApplicationManager(models.Manager):
         return qs.prefetch_related(attachments_prefetch)
 
     def with_due_instalments(self, status: InstalmentStatus):
-        """Query applications with instalments with past due date and a specific status."""
+        """Query applications with instalments with past due date and a specific status."""  # noqa: E501
         return (
             self.filter(
                 status=ApplicationStatus.ACCEPTED,
@@ -203,7 +203,7 @@ class ApplicationManager(models.Manager):
         AhjoStatusEnum.DECISION_PROPOSAL_ACCEPTED,
         or
         AhjoStatusEnum.NEW_RECORDS_RECEIVED
-        """
+        """  # noqa: E501
         # if hours are specified, then the retry_status is used to query the
         # applications for the re-attempt
         if retry_failed_older_than_hours > 0 and retry_status:
@@ -274,7 +274,7 @@ class ApplicationManager(models.Manager):
         Get applications that are in a state where a decision proposal should be sent to Ahjo.
         This means applications that have been accepted or rejected, their talpa status is not_processed_by_talpa,
         have a ahjo_case_id, a decisiontext and their latest ahjo_status is case_opened.
-        """
+        """  # noqa: E501
 
         if retry_failed_older_than_hours > 0 and retry_status:
             ahjo_statuses = [retry_status]
@@ -332,7 +332,7 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     multiple applications.
 
     For additional descriptions of the fields, see the API documentation (serializers.py)
-    """
+    """  # noqa: E501
 
     objects = ApplicationManager()
 
@@ -442,7 +442,7 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     """
     Only required if the applicant company form is an association or something else that might not have
     business activities. For "normal" businesses, this field has no effect and should always be set to None.
-    """
+    """  # noqa: E501
     association_has_business_activities = models.BooleanField(null=True)
 
     """
@@ -454,7 +454,7 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     if language is swedish, then the decision text in Ahjo must be also in swedish
     if language is english, then an english translation of the decision is included
     in Ahjo as attachment
-    """
+    """  # noqa: E501
     applicant_language = models.CharField(
         choices=APPLICATION_LANGUAGE_CHOICES,
         default=APPLICATION_LANGUAGE_CHOICES[0][0],
@@ -551,7 +551,7 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     de_minimis_aid is only applicable to applicants with business activities, otherwise it should be None.
     If value is set to True, then this application must have at least one DeMinimisAid, and if False,
     then the application must have no DeMinimisAid objects.
-    """
+    """  # noqa: E501
     de_minimis_aid = models.BooleanField(null=True)
 
     batch = models.ForeignKey(
@@ -774,7 +774,7 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
 
     If Ahjo automation / integration is in use, a single application batch will be created for each
     application, after a case has been opened in Ahjo after which auto_generated_by ahjo is set to True.
-    """
+    """  # noqa: E501
 
     handler = models.ForeignKey(
         User,
@@ -923,7 +923,7 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
         """
         Update the application batch with the details received from the Ahjo decision request and with
         details from the applications_ahjo_setting table.
-        """
+        """  # noqa: E501
         try:
             if not self.auto_generated_by_ahjo:
                 raise ImproperlyConfigured(
@@ -956,7 +956,7 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
         After the applications have been sent to Ahjo, the handlers should not be able to modify
         the applications. If the batch is returned without decision (as might theoretically happen),
         then the handlers may need to make changes again.
-        """
+        """  # noqa: E501
         return self.status in [
             ApplicationBatchStatus.DRAFT,
             ApplicationBatchStatus.RETURNED,
@@ -1001,7 +1001,7 @@ class ApplicationBasis(UUIDModel, TimeStampedModel):
     basis/justification for the application.
     The identifier is not meant to be displayed to the end user. The actual name that is shown to the applicant
     is determined by the UI, and localized as needed.
-    """
+    """  # noqa: E501
 
     identifier = models.CharField(max_length=64, unique=True)
     is_active = models.BooleanField(default=True)
@@ -1070,7 +1070,7 @@ class Employee(UUIDModel, TimeStampedModel):
         choices=APPLICATION_LANGUAGE_CHOICES,
         default=APPLICATION_LANGUAGE_CHOICES[0][0],
         max_length=2,
-        blank=True,  # as of 2021-06, only required for power of attorney, so it's optional
+        blank=True,  # as of 2021-06, only required for power of attorney, so it's optional  # noqa: E501
     )
 
     job_title = models.CharField(
@@ -1280,7 +1280,7 @@ class AhjoStatus(TimeStampedModel):
 class DecisionProposalTemplateSection(UUIDModel, TimeStampedModel):
     """Model representing a template section of a decision proposal text, usually either the decision
     text or the following justification text.
-    """
+    """  # noqa: E501
 
     decision_type = models.CharField(
         max_length=64,
@@ -1317,7 +1317,7 @@ class DecisionProposalTemplateSection(UUIDModel, TimeStampedModel):
 
 
 class AhjoDecisionText(UUIDModel, TimeStampedModel):
-    """Model representing a submitted decision text submitted to Ahjo for an application."""
+    """Model representing a submitted decision text submitted to Ahjo for an application."""  # noqa: E501
 
     decision_type = models.CharField(
         max_length=64,

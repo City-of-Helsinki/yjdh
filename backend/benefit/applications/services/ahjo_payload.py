@@ -28,7 +28,7 @@ class AhjoTitle:
         like created or modified date, and application number.
         prefix (str): A string to be added before the date in the title.
         suffix (str): A string to be added after the date in the title.
-    """
+    """  # noqa: E501
 
     application: Application = None
     prefix: str = ""
@@ -44,7 +44,7 @@ class AhjoTitle:
 
         Returns:
             str: A formatted title string that includes the prefix, date, suffix, and application number.
-        """
+        """  # noqa: E501
         return (
             f"{AhjoRecordTitle.APPLICATION}{self.prefix} {formatted_date},{self.suffix}"
             f" {application_number}"
@@ -60,7 +60,7 @@ class OpenCaseRecordTitle(AhjoTitle):
 
     Methods:
         __str__(): Returns the formatted string representation of the open case title.
-    """
+    """  # noqa: E501
 
     def __str__(self):
         """
@@ -68,7 +68,7 @@ class OpenCaseRecordTitle(AhjoTitle):
 
         Returns:
             str: The formatted title string.
-        """
+        """  # noqa: E501
         formatted_date = self.application.created_at.strftime("%d.%m.%Y")
         return self.format_title_string(
             formatted_date, self.application.application_number
@@ -89,7 +89,7 @@ class UpdateRecordsRecordTitle(AhjoTitle):
 
     Methods:
         __str__(): Returns the formatted string representation of the update record title.
-    """
+    """  # noqa: E501
 
     prefix: str = field(default=", täydennys")
     attachment_created_at: datetime = None
@@ -122,7 +122,7 @@ class AddRecordsRecordTitle(AhjoTitle):
 
     Methods:
         __str__(): Returns the formatted string representation of the additional record title.
-    """
+    """  # noqa: E501
 
     prefix: str = field(default=", täydennys")
     attachment_created_at: datetime = None
@@ -157,7 +157,7 @@ class AhjoBaseRecordTitle(AhjoTitle):
     Methods:
         set_suffix(): Updates the suffix to include the current and total numbers.
         __str__(): Returns the formatted string representation of the base record title.
-    """
+    """  # noqa: E501
 
     current: int = 0
     total: int = 0
@@ -165,7 +165,7 @@ class AhjoBaseRecordTitle(AhjoTitle):
     def set_suffix(self):
         """
         Updates the suffix with the current and total items, forming a string like "liite 1/5".
-        """
+        """  # noqa: E501
         self.suffix = f" liite {self.current}/{self.total},"
 
     def __str__(self):
@@ -195,7 +195,7 @@ def prepare_case_title(application: Application, company_name: str) -> str:
 
 def prepare_final_case_title(application: Application, limit: int = 150) -> str:
     """Prepare the final case title for Ahjo, if the full title length is over the given limit, \
-    truncate the company name to fit the limit."""
+    truncate the company name to fit the limit."""  # noqa: E501
     full_case_title = prepare_case_title(application, application.company.name)
     length_of_full_title = len(full_case_title)
 
@@ -222,7 +222,7 @@ def truncate_from_end_of_string(string_to_truncate: str, limit: int):
 
 
 def resolve_payload_language(application: Application) -> str:
-    """Ahjo cannot at the moment handle en and sv language cases, so if always return fi"""
+    """Ahjo cannot at the moment handle en and sv language cases, so if always return fi"""  # noqa: E501
     return APPLICATION_LANGUAGE_CHOICES[0][0]
 
 
@@ -305,7 +305,7 @@ def _prepare_record(
     handler: User,
     publicity_class: str = "Salassa pidettävä",
     ahjo_version_series_id: str = None,
-    language: str = "fi",  # TODO refactor so all these parameters are passes as a dataclass
+    language: str = "fi",  # TODO refactor so all these parameters are passes as a dataclass  # noqa: E501
 ):
     """Prepare a single record dict for Ahjo."""
 
@@ -377,7 +377,7 @@ def _prepare_case_records(
 
         document_record = _prepare_record(
             record_title=(
-                f"{AhjoBaseRecordTitle(application=application, current=position, total=total_attachments)}"
+                f"{AhjoBaseRecordTitle(application=application, current=position, total=total_attachments)}"  # noqa: E501
             ),
             record_type=AhjoRecordType.ATTACHMENT,
             acquired=attachment.created_at.isoformat("T", "seconds"),

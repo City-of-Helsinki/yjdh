@@ -113,7 +113,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
     Fields in the Company model come from YTJ/other source and are not editable by user, and are listed
     in read_only_fields. If sent in the request, these fields are ignored.
 
-    """
+    """  # noqa: E501
 
     status = serializers.ChoiceField(
         choices=ApplicationStatus.choices,
@@ -550,7 +550,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                     "warning string",
                 ],
             }
-        """
+        """  # noqa: E501
         warnings = {}
         if all(
             [
@@ -751,7 +751,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         * de_minimis_aid: boolean yes/no/null value
         * de_minimis_aid_set: the DeMinimisAid objects represented as list of dicts
           (at this point, the individual dicts have been already valided by DeMinimisAidSerializer
-        """
+        """  # noqa: E501
         if (
             OrganizationType.resolve_organization_type(company.company_form_code)
             == OrganizationType.ASSOCIATION
@@ -1026,7 +1026,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         """
         Make the logic of determining available benefit types available both for generating the list of
         benefit types and validating the incoming data
-        """
+        """  # noqa: E501
         if (
             OrganizationType.resolve_organization_type(company.company_form_code)
             == OrganizationType.ASSOCIATION
@@ -1053,7 +1053,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         """
         Handle cases where applicant is updating an application, moves back to a previous page
         and changes a field value in an incompatible way.
-        """
+        """  # noqa: E501
         if not self.instance:
             # only handle the changes when doing updates.
             # incompatible data that is sent when creating an application results in a
@@ -1267,7 +1267,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         * If wrong types of attachments have been uploaded, they are purged from the system. This might happen
           if the applicant first uploads attachments, but then goes back to previous steps and changes certain
           application fields before submitting the application
-        """
+        """  # noqa: E501
 
         attachment_requirements = self.get_attachment_requirements(instance)
         required_attachment_types = [
