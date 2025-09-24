@@ -355,7 +355,7 @@ def test_prepare_case_records(decided_application, settings):
 
     for attachment in open_case_attachments:
         document_record = _prepare_record(
-            f"{AhjoBaseRecordTitle(application=application,current=pos,total=total_attachments,)}",
+            f"{AhjoBaseRecordTitle(application=application, current=pos, total=total_attachments)}",
             AhjoRecordType.ATTACHMENT,
             attachment.created_at.isoformat("T", "seconds"),
             [_prepare_record_document_dict(attachment)],

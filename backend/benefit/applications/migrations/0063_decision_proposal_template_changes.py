@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0062_alter_applicationalteration_recovery_amount"),
     ]

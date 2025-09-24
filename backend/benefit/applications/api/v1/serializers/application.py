@@ -1160,12 +1160,9 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         self, instance, previous_status, approve_terms, log_entry_comment
     ):
         if (
-            (
-                previous_status,
-                instance.status,
-            )
-            in ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS
-        ):
+            previous_status,
+            instance.status,
+        ) in ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS:
             # moving out of DRAFT or ADDITIONAL_INFORMATION_NEEDED, so the applicant
             # may have modified the application
             self._validate_attachments(instance)
@@ -1410,9 +1407,9 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
 
         for idx, aid_item in enumerate(serializer.validated_data):
             aid_item["application_id"] = application.pk
-            aid_item[
-                "ordering"
-            ] = idx  # use the ordering defined in the JSON sent by the client
+            aid_item["ordering"] = (
+                idx  # use the ordering defined in the JSON sent by the client
+            )
 
         de_minimis_list = serializer.save()
         for de_minimis in de_minimis_list:
@@ -1831,9 +1828,9 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             )
         for idx, nested_object in enumerate(serializer.validated_data):
             nested_object["application_id"] = application.pk
-            nested_object[
-                "ordering"
-            ] = idx  # use the ordering defined in the JSON sent by the client
+            nested_object["ordering"] = (
+                idx  # use the ordering defined in the JSON sent by the client
+            )
         serializer.save()
         if hasattr(application, "calculation"):
             call_now_or_later(

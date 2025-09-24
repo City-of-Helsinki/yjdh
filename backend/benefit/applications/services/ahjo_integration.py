@@ -91,9 +91,7 @@ COMPOSED_DECLINED_TEMPLATE_IDS = [
 
 
 ACCEPTED_TITLE = "Työllisyydenhoidon Helsinki-lisän myöntäminen työnantajille"
-REJECTED_TITLE = (
-    "Työllisyydenhoidon Helsinki-lisä, kielteiset päätökset työnantajille"
-)
+REJECTED_TITLE = "Työllisyydenhoidon Helsinki-lisä, kielteiset päätökset työnantajille"
 
 
 JINJA_TEMPLATES_COMPOSED = {

@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("calculator", "0008_add_start_end_time_to_calc_row"),
     ]

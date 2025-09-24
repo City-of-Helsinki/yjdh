@@ -4,30 +4,47 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('calculator', '0012_history_date_format_changes'),
+        ("calculator", "0012_history_date_format_changes"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='calculation',
-            name='state_aid_max_percentage',
-            field=models.IntegerField(blank=True, choices=[(50, '50%'), (70, '70%'), (100, '100%')], default=None, null=True, verbose_name='State aid maximum %'),
+            model_name="calculation",
+            name="state_aid_max_percentage",
+            field=models.IntegerField(
+                blank=True,
+                choices=[(50, "50%"), (70, "70%"), (100, "100%")],
+                default=None,
+                null=True,
+                verbose_name="State aid maximum %",
+            ),
         ),
         migrations.AlterField(
-            model_name='historicalcalculation',
-            name='state_aid_max_percentage',
-            field=models.IntegerField(blank=True, choices=[(50, '50%'), (70, '70%'), (100, '100%')], default=None, null=True, verbose_name='State aid maximum %'),
+            model_name="historicalcalculation",
+            name="state_aid_max_percentage",
+            field=models.IntegerField(
+                blank=True,
+                choices=[(50, "50%"), (70, "70%"), (100, "100%")],
+                default=None,
+                null=True,
+                verbose_name="State aid maximum %",
+            ),
         ),
         migrations.AlterField(
-            model_name='historicalpaysubsidy',
-            name='pay_subsidy_percent',
-            field=models.IntegerField(choices=[(50, '50%'), (70, '70%'), (100, '100%')], verbose_name='Pay subsidy percent'),
+            model_name="historicalpaysubsidy",
+            name="pay_subsidy_percent",
+            field=models.IntegerField(
+                choices=[(50, "50%"), (70, "70%"), (100, "100%")],
+                verbose_name="Pay subsidy percent",
+            ),
         ),
         migrations.AlterField(
-            model_name='paysubsidy',
-            name='pay_subsidy_percent',
-            field=models.IntegerField(choices=[(50, '50%'), (70, '70%'), (100, '100%')], verbose_name='Pay subsidy percent'),
+            model_name="paysubsidy",
+            name="pay_subsidy_percent",
+            field=models.IntegerField(
+                choices=[(50, "50%"), (70, "70%"), (100, "100%")],
+                verbose_name="Pay subsidy percent",
+            ),
         ),
     ]

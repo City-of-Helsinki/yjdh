@@ -10,50 +10,220 @@ import uuid
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('applications', '0048_alter_attachment_attachment_type'),
+        ("applications", "0048_alter_attachment_attachment_type"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='HistoricalEmployee',
+            name="HistoricalEmployee",
             fields=[
-                ('created_at', models.DateTimeField(blank=True, editable=False, verbose_name='time created')),
-                ('modified_at', models.DateTimeField(blank=True, editable=False, verbose_name='time modified')),
-                ('id', models.UUIDField(db_index=True, default=uuid.uuid4, editable=False)),
-                ('encrypted_first_name', encrypted_fields.fields.EncryptedCharField(blank=True, max_length=128, verbose_name='first name')),
-                ('encrypted_last_name', encrypted_fields.fields.EncryptedCharField(blank=True, max_length=128, verbose_name='last name')),
-                ('first_name', encrypted_fields.fields.SearchField(blank=True, db_index=True, encrypted_field_name='encrypted_first_name', hash_key='02c5b8605cd4f9c188eee422209069b7bd3a607f0ae0a166eab0da223d1b6735', max_length=66, null=True)),
-                ('last_name', encrypted_fields.fields.SearchField(blank=True, db_index=True, encrypted_field_name='encrypted_last_name', hash_key='af1b5a67d11197865a731c26bf9659716b9ded71c2802b4363856fe613b6b527', max_length=66, null=True)),
-                ('encrypted_social_security_number', encrypted_fields.fields.EncryptedCharField(blank=True, max_length=11, verbose_name='social security number')),
-                ('social_security_number', encrypted_fields.fields.SearchField(blank=True, db_index=True, encrypted_field_name='encrypted_social_security_number', hash_key='ee235e39ebc238035a6264c063dd829d4b6d2270604b57ee1f463e676ec44669', max_length=66, null=True)),
-                ('phone_number', phonenumber_field.modelfields.PhoneNumberField(blank=True, max_length=128, region=None, verbose_name='phone number')),
-                ('email', models.EmailField(blank=True, max_length=254, verbose_name='email')),
-                ('employee_language', models.CharField(blank=True, choices=[('fi', 'suomi'), ('sv', 'svenska'), ('en', 'english')], default='fi', max_length=2)),
-                ('job_title', models.CharField(blank=True, max_length=128, verbose_name='job title')),
-                ('monthly_pay', models.DecimalField(blank=True, decimal_places=2, max_digits=7, null=True, verbose_name='monthly pay')),
-                ('vacation_money', models.DecimalField(blank=True, decimal_places=2, max_digits=7, null=True, verbose_name='vacation money')),
-                ('other_expenses', models.DecimalField(blank=True, decimal_places=2, max_digits=7, null=True, verbose_name='other expenses')),
-                ('working_hours', models.DecimalField(blank=True, decimal_places=2, max_digits=5, null=True, verbose_name='working hour')),
-                ('collective_bargaining_agreement', models.CharField(blank=True, max_length=64, verbose_name='collective bargaining agreement')),
-                ('is_living_in_helsinki', models.BooleanField(default=False, verbose_name='is living in helsinki')),
-                ('commission_amount', models.DecimalField(blank=True, decimal_places=2, max_digits=7, null=True, verbose_name='amount of the commission (eur)')),
-                ('commission_description', models.CharField(blank=True, max_length=256, verbose_name='Description of the commission')),
-                ('history_id', models.AutoField(primary_key=True, serialize=False)),
-                ('history_date', models.DateTimeField(db_index=True)),
-                ('history_change_reason', models.CharField(max_length=100, null=True)),
-                ('history_type', models.CharField(choices=[('+', 'Created'), ('~', 'Changed'), ('-', 'Deleted')], max_length=1)),
-                ('application', models.ForeignKey(blank=True, db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='applications.application', verbose_name='application')),
-                ('history_user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to=settings.AUTH_USER_MODEL)),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        blank=True, editable=False, verbose_name="time created"
+                    ),
+                ),
+                (
+                    "modified_at",
+                    models.DateTimeField(
+                        blank=True, editable=False, verbose_name="time modified"
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(db_index=True, default=uuid.uuid4, editable=False),
+                ),
+                (
+                    "encrypted_first_name",
+                    encrypted_fields.fields.EncryptedCharField(
+                        blank=True, max_length=128, verbose_name="first name"
+                    ),
+                ),
+                (
+                    "encrypted_last_name",
+                    encrypted_fields.fields.EncryptedCharField(
+                        blank=True, max_length=128, verbose_name="last name"
+                    ),
+                ),
+                (
+                    "first_name",
+                    encrypted_fields.fields.SearchField(
+                        blank=True,
+                        db_index=True,
+                        encrypted_field_name="encrypted_first_name",
+                        hash_key="02c5b8605cd4f9c188eee422209069b7bd3a607f0ae0a166eab0da223d1b6735",
+                        max_length=66,
+                        null=True,
+                    ),
+                ),
+                (
+                    "last_name",
+                    encrypted_fields.fields.SearchField(
+                        blank=True,
+                        db_index=True,
+                        encrypted_field_name="encrypted_last_name",
+                        hash_key="af1b5a67d11197865a731c26bf9659716b9ded71c2802b4363856fe613b6b527",
+                        max_length=66,
+                        null=True,
+                    ),
+                ),
+                (
+                    "encrypted_social_security_number",
+                    encrypted_fields.fields.EncryptedCharField(
+                        blank=True, max_length=11, verbose_name="social security number"
+                    ),
+                ),
+                (
+                    "social_security_number",
+                    encrypted_fields.fields.SearchField(
+                        blank=True,
+                        db_index=True,
+                        encrypted_field_name="encrypted_social_security_number",
+                        hash_key="ee235e39ebc238035a6264c063dd829d4b6d2270604b57ee1f463e676ec44669",
+                        max_length=66,
+                        null=True,
+                    ),
+                ),
+                (
+                    "phone_number",
+                    phonenumber_field.modelfields.PhoneNumberField(
+                        blank=True,
+                        max_length=128,
+                        region=None,
+                        verbose_name="phone number",
+                    ),
+                ),
+                (
+                    "email",
+                    models.EmailField(blank=True, max_length=254, verbose_name="email"),
+                ),
+                (
+                    "employee_language",
+                    models.CharField(
+                        blank=True,
+                        choices=[("fi", "suomi"), ("sv", "svenska"), ("en", "english")],
+                        default="fi",
+                        max_length=2,
+                    ),
+                ),
+                (
+                    "job_title",
+                    models.CharField(
+                        blank=True, max_length=128, verbose_name="job title"
+                    ),
+                ),
+                (
+                    "monthly_pay",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        max_digits=7,
+                        null=True,
+                        verbose_name="monthly pay",
+                    ),
+                ),
+                (
+                    "vacation_money",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        max_digits=7,
+                        null=True,
+                        verbose_name="vacation money",
+                    ),
+                ),
+                (
+                    "other_expenses",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        max_digits=7,
+                        null=True,
+                        verbose_name="other expenses",
+                    ),
+                ),
+                (
+                    "working_hours",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        max_digits=5,
+                        null=True,
+                        verbose_name="working hour",
+                    ),
+                ),
+                (
+                    "collective_bargaining_agreement",
+                    models.CharField(
+                        blank=True,
+                        max_length=64,
+                        verbose_name="collective bargaining agreement",
+                    ),
+                ),
+                (
+                    "is_living_in_helsinki",
+                    models.BooleanField(
+                        default=False, verbose_name="is living in helsinki"
+                    ),
+                ),
+                (
+                    "commission_amount",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        max_digits=7,
+                        null=True,
+                        verbose_name="amount of the commission (eur)",
+                    ),
+                ),
+                (
+                    "commission_description",
+                    models.CharField(
+                        blank=True,
+                        max_length=256,
+                        verbose_name="Description of the commission",
+                    ),
+                ),
+                ("history_id", models.AutoField(primary_key=True, serialize=False)),
+                ("history_date", models.DateTimeField(db_index=True)),
+                ("history_change_reason", models.CharField(max_length=100, null=True)),
+                (
+                    "history_type",
+                    models.CharField(
+                        choices=[("+", "Created"), ("~", "Changed"), ("-", "Deleted")],
+                        max_length=1,
+                    ),
+                ),
+                (
+                    "application",
+                    models.ForeignKey(
+                        blank=True,
+                        db_constraint=False,
+                        null=True,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="+",
+                        to="applications.application",
+                        verbose_name="application",
+                    ),
+                ),
+                (
+                    "history_user",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="+",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'historical employee',
-                'verbose_name_plural': 'historical employees',
-                'db_table': 'bf_applications_employee_history',
-                'ordering': ('-history_date', '-history_id'),
-                'get_latest_by': ('history_date', 'history_id'),
+                "verbose_name": "historical employee",
+                "verbose_name_plural": "historical employees",
+                "db_table": "bf_applications_employee_history",
+                "ordering": ("-history_date", "-history_id"),
+                "get_latest_by": ("history_date", "history_id"),
             },
             bases=(simple_history.models.HistoricalChanges, models.Model),
         ),

@@ -7,114 +7,189 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('applications', '0070_alter_ahjostatus_status'),
+        ("applications", "0070_alter_ahjostatus_status"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='handled_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to=settings.AUTH_USER_MODEL),
+            model_name="applicationalteration",
+            name="handled_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="+",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='alteration_type',
-            field=models.TextField(choices=[('termination', 'Termination'), ('suspension', 'Suspension')], verbose_name='Type of alteration'),
+            model_name="applicationalteration",
+            name="alteration_type",
+            field=models.TextField(
+                choices=[("termination", "Termination"), ("suspension", "Suspension")],
+                verbose_name="Type of alteration",
+            ),
         ),
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='application',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='alteration_set', to='applications.application', verbose_name='Alteration of application'),
+            model_name="applicationalteration",
+            name="application",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="alteration_set",
+                to="applications.application",
+                verbose_name="Alteration of application",
+            ),
         ),
         migrations.AddField(
-            model_name='applicationalteration',
-            name='cancelled_at',
-            field=models.DateField(blank=True, null=True, verbose_name='The date the alteration was cancelled after it had been handled'),
+            model_name="applicationalteration",
+            name="cancelled_at",
+            field=models.DateField(
+                blank=True,
+                null=True,
+                verbose_name="The date the alteration was cancelled after it had been handled",
+            ),
         ),
         migrations.AddField(
-            model_name='applicationalteration',
-            name='cancelled_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to=settings.AUTH_USER_MODEL, verbose_name='Cancelled by'),
+            model_name="applicationalteration",
+            name="cancelled_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="+",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="Cancelled by",
+            ),
         ),
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='contact_person_name',
-            field=models.TextField(verbose_name='Contact person'),
+            model_name="applicationalteration",
+            name="contact_person_name",
+            field=models.TextField(verbose_name="Contact person"),
         ),
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='einvoice_address',
-            field=models.TextField(blank=True, verbose_name='E-invoice address'),
+            model_name="applicationalteration",
+            name="einvoice_address",
+            field=models.TextField(blank=True, verbose_name="E-invoice address"),
         ),
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='einvoice_provider_identifier',
-            field=models.TextField(blank=True, verbose_name='Identifier of the e-invoice provider'),
+            model_name="applicationalteration",
+            name="einvoice_provider_identifier",
+            field=models.TextField(
+                blank=True, verbose_name="Identifier of the e-invoice provider"
+            ),
         ),
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='einvoice_provider_name',
-            field=models.TextField(blank=True, verbose_name='Name of the e-invoice provider'),
+            model_name="applicationalteration",
+            name="einvoice_provider_name",
+            field=models.TextField(
+                blank=True, verbose_name="Name of the e-invoice provider"
+            ),
         ),
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='end_date',
-            field=models.DateField(verbose_name='New benefit end date'),
+            model_name="applicationalteration",
+            name="end_date",
+            field=models.DateField(verbose_name="New benefit end date"),
         ),
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='handled_at',
-            field=models.DateField(blank=True, null=True, verbose_name='Date when alteration notice was handled'),
+            model_name="applicationalteration",
+            name="handled_at",
+            field=models.DateField(
+                blank=True,
+                null=True,
+                verbose_name="Date when alteration notice was handled",
+            ),
         ),
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='handled_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to=settings.AUTH_USER_MODEL, verbose_name='Handled by'),
+            model_name="applicationalteration",
+            name="handled_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="+",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="Handled by",
+            ),
         ),
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='is_recoverable',
-            field=models.BooleanField(default=False, verbose_name='Whether the alteration should be recovered'),
+            model_name="applicationalteration",
+            name="is_recoverable",
+            field=models.BooleanField(
+                default=False, verbose_name="Whether the alteration should be recovered"
+            ),
         ),
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='reason',
-            field=models.TextField(blank=True, verbose_name='Reason for alteration'),
+            model_name="applicationalteration",
+            name="reason",
+            field=models.TextField(blank=True, verbose_name="Reason for alteration"),
         ),
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='recovery_amount',
-            field=models.DecimalField(blank=True, decimal_places=2, max_digits=8, null=True, verbose_name='Amount of unwarranted benefit to be recovered'),
+            model_name="applicationalteration",
+            name="recovery_amount",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=2,
+                max_digits=8,
+                null=True,
+                verbose_name="Amount of unwarranted benefit to be recovered",
+            ),
         ),
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='recovery_end_date',
-            field=models.DateField(blank=True, null=True, verbose_name='The last day the unwarranted benefit will be recovered from'),
+            model_name="applicationalteration",
+            name="recovery_end_date",
+            field=models.DateField(
+                blank=True,
+                null=True,
+                verbose_name="The last day the unwarranted benefit will be recovered from",
+            ),
         ),
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='recovery_justification',
-            field=models.TextField(blank=True, verbose_name='The justification provided in the recovering bill, if eligible'),
+            model_name="applicationalteration",
+            name="recovery_justification",
+            field=models.TextField(
+                blank=True,
+                verbose_name="The justification provided in the recovering bill, if eligible",
+            ),
         ),
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='recovery_start_date',
-            field=models.DateField(blank=True, null=True, verbose_name='The first day the unwarranted benefit will be collected from'),
+            model_name="applicationalteration",
+            name="recovery_start_date",
+            field=models.DateField(
+                blank=True,
+                null=True,
+                verbose_name="The first day the unwarranted benefit will be collected from",
+            ),
         ),
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='resume_date',
-            field=models.DateField(blank=True, null=True, verbose_name='Date when employment resumes after suspended'),
+            model_name="applicationalteration",
+            name="resume_date",
+            field=models.DateField(
+                blank=True,
+                null=True,
+                verbose_name="Date when employment resumes after suspended",
+            ),
         ),
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='state',
-            field=models.TextField(choices=[('received', 'Received'), ('opened', 'Opened'), ('handled', 'Handled'), ('cancelled', 'Cancelled')], default='received', verbose_name='State of alteration'),
+            model_name="applicationalteration",
+            name="state",
+            field=models.TextField(
+                choices=[
+                    ("received", "Received"),
+                    ("opened", "Opened"),
+                    ("handled", "Handled"),
+                    ("cancelled", "Cancelled"),
+                ],
+                default="received",
+                verbose_name="State of alteration",
+            ),
         ),
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='use_einvoice',
-            field=models.BooleanField(default=False, verbose_name='Whether to use handle billing with an e-invoice instead of a bill sent to a physical address'),
+            model_name="applicationalteration",
+            name="use_einvoice",
+            field=models.BooleanField(
+                default=False,
+                verbose_name="Whether to use handle billing with an e-invoice instead of a bill sent to a physical address",
+            ),
         ),
     ]

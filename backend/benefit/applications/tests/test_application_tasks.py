@@ -210,9 +210,10 @@ def test_send_ahjo_requests(
     application_with_ahjo_decision,
 ):
     AhjoSetting.objects.create(name="ahjo_code", data={"code": "12345"})
-    with patch(patch_db_function) as mock_get_applications, patch(
-        patch_request
-    ) as mock_send_request:
+    with (
+        patch(patch_db_function) as mock_get_applications,
+        patch(patch_request) as mock_send_request,
+    ):
         mock_get_token.return_value = MagicMock(AhjoToken)
         number_to_send = 5
 

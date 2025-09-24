@@ -4,40 +4,133 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('applications', '0049_historicalemployee'),
+        ("applications", "0049_historicalemployee"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='application',
-            name='status',
-            field=models.CharField(choices=[('draft', 'Draft'), ('received', 'Received'), ('handling', 'Handling'), ('additional_information_needed', 'Additional information requested'), ('cancelled', 'Cancelled'), ('accepted', 'Accepted'), ('rejected', 'Rejected'), ('rejected_by_talpa', 'Rejected by Talpa')], default='draft', max_length=64, verbose_name='status'),
+            model_name="application",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("draft", "Draft"),
+                    ("received", "Received"),
+                    ("handling", "Handling"),
+                    (
+                        "additional_information_needed",
+                        "Additional information requested",
+                    ),
+                    ("cancelled", "Cancelled"),
+                    ("accepted", "Accepted"),
+                    ("rejected", "Rejected"),
+                    ("rejected_by_talpa", "Rejected by Talpa"),
+                ],
+                default="draft",
+                max_length=64,
+                verbose_name="status",
+            ),
         ),
         migrations.AlterField(
-            model_name='applicationlogentry',
-            name='from_status',
-            field=models.CharField(choices=[('draft', 'Draft'), ('received', 'Received'), ('handling', 'Handling'), ('additional_information_needed', 'Additional information requested'), ('cancelled', 'Cancelled'), ('accepted', 'Accepted'), ('rejected', 'Rejected'), ('rejected_by_talpa', 'Rejected by Talpa')], max_length=64),
+            model_name="applicationlogentry",
+            name="from_status",
+            field=models.CharField(
+                choices=[
+                    ("draft", "Draft"),
+                    ("received", "Received"),
+                    ("handling", "Handling"),
+                    (
+                        "additional_information_needed",
+                        "Additional information requested",
+                    ),
+                    ("cancelled", "Cancelled"),
+                    ("accepted", "Accepted"),
+                    ("rejected", "Rejected"),
+                    ("rejected_by_talpa", "Rejected by Talpa"),
+                ],
+                max_length=64,
+            ),
         ),
         migrations.AlterField(
-            model_name='applicationlogentry',
-            name='to_status',
-            field=models.CharField(choices=[('draft', 'Draft'), ('received', 'Received'), ('handling', 'Handling'), ('additional_information_needed', 'Additional information requested'), ('cancelled', 'Cancelled'), ('accepted', 'Accepted'), ('rejected', 'Rejected'), ('rejected_by_talpa', 'Rejected by Talpa')], max_length=64),
+            model_name="applicationlogentry",
+            name="to_status",
+            field=models.CharField(
+                choices=[
+                    ("draft", "Draft"),
+                    ("received", "Received"),
+                    ("handling", "Handling"),
+                    (
+                        "additional_information_needed",
+                        "Additional information requested",
+                    ),
+                    ("cancelled", "Cancelled"),
+                    ("accepted", "Accepted"),
+                    ("rejected", "Rejected"),
+                    ("rejected_by_talpa", "Rejected by Talpa"),
+                ],
+                max_length=64,
+            ),
         ),
         migrations.AlterField(
-            model_name='historicalapplication',
-            name='status',
-            field=models.CharField(choices=[('draft', 'Draft'), ('received', 'Received'), ('handling', 'Handling'), ('additional_information_needed', 'Additional information requested'), ('cancelled', 'Cancelled'), ('accepted', 'Accepted'), ('rejected', 'Rejected'), ('rejected_by_talpa', 'Rejected by Talpa')], default='draft', max_length=64, verbose_name='status'),
+            model_name="historicalapplication",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("draft", "Draft"),
+                    ("received", "Received"),
+                    ("handling", "Handling"),
+                    (
+                        "additional_information_needed",
+                        "Additional information requested",
+                    ),
+                    ("cancelled", "Cancelled"),
+                    ("accepted", "Accepted"),
+                    ("rejected", "Rejected"),
+                    ("rejected_by_talpa", "Rejected by Talpa"),
+                ],
+                default="draft",
+                max_length=64,
+                verbose_name="status",
+            ),
         ),
         migrations.AlterField(
-            model_name='historicalapplicationlogentry',
-            name='from_status',
-            field=models.CharField(choices=[('draft', 'Draft'), ('received', 'Received'), ('handling', 'Handling'), ('additional_information_needed', 'Additional information requested'), ('cancelled', 'Cancelled'), ('accepted', 'Accepted'), ('rejected', 'Rejected'), ('rejected_by_talpa', 'Rejected by Talpa')], max_length=64),
+            model_name="historicalapplicationlogentry",
+            name="from_status",
+            field=models.CharField(
+                choices=[
+                    ("draft", "Draft"),
+                    ("received", "Received"),
+                    ("handling", "Handling"),
+                    (
+                        "additional_information_needed",
+                        "Additional information requested",
+                    ),
+                    ("cancelled", "Cancelled"),
+                    ("accepted", "Accepted"),
+                    ("rejected", "Rejected"),
+                    ("rejected_by_talpa", "Rejected by Talpa"),
+                ],
+                max_length=64,
+            ),
         ),
         migrations.AlterField(
-            model_name='historicalapplicationlogentry',
-            name='to_status',
-            field=models.CharField(choices=[('draft', 'Draft'), ('received', 'Received'), ('handling', 'Handling'), ('additional_information_needed', 'Additional information requested'), ('cancelled', 'Cancelled'), ('accepted', 'Accepted'), ('rejected', 'Rejected'), ('rejected_by_talpa', 'Rejected by Talpa')], max_length=64),
+            model_name="historicalapplicationlogentry",
+            name="to_status",
+            field=models.CharField(
+                choices=[
+                    ("draft", "Draft"),
+                    ("received", "Received"),
+                    ("handling", "Handling"),
+                    (
+                        "additional_information_needed",
+                        "Additional information requested",
+                    ),
+                    ("cancelled", "Cancelled"),
+                    ("accepted", "Accepted"),
+                    ("rejected", "Rejected"),
+                    ("rejected_by_talpa", "Rejected by Talpa"),
+                ],
+                max_length=64,
+            ),
         ),
     ]

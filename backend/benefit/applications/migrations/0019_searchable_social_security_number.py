@@ -6,7 +6,6 @@ import encrypted_fields.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0018_remove_unsearchable_social_security_number"),
     ]

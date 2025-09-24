@@ -5,27 +5,82 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('applications', '0043_ahjosetting'),
+        ("applications", "0043_ahjosetting"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AhjoStatus',
+            name="AhjoStatus",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='time created')),
-                ('modified_at', models.DateTimeField(auto_now=True, verbose_name='time modified')),
-                ('status', models.CharField(choices=[('submitted_but_not_sent_to_ahjo', 'Submitted but not sent to AHJO'), ('request_to_open_case_sent', 'Request to open the case sent to AHJO'), ('diary_number_received', 'Diary number received'), ('case_opened', 'Case opened in AHJO'), ('update_request_sent', 'Update request sent'), ('update_request_received', 'Update request received'), ('decision_proposal_sent', 'Decision proposal sent'), ('decision_proposal_accepted', 'Decision proposal accepted'), ('decision_proposal_rejected', 'Decision proposal rejected'), ('delete_request_sent', 'Delete request sent'), ('delete_request_received', 'Delete request received')], default='submitted_but_not_sent_to_ahjo', max_length=64, verbose_name='status')),
-                ('application', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='ahjo_status', to='applications.application', verbose_name='application')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="time created"
+                    ),
+                ),
+                (
+                    "modified_at",
+                    models.DateTimeField(auto_now=True, verbose_name="time modified"),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            (
+                                "submitted_but_not_sent_to_ahjo",
+                                "Submitted but not sent to AHJO",
+                            ),
+                            (
+                                "request_to_open_case_sent",
+                                "Request to open the case sent to AHJO",
+                            ),
+                            ("diary_number_received", "Diary number received"),
+                            ("case_opened", "Case opened in AHJO"),
+                            ("update_request_sent", "Update request sent"),
+                            ("update_request_received", "Update request received"),
+                            ("decision_proposal_sent", "Decision proposal sent"),
+                            (
+                                "decision_proposal_accepted",
+                                "Decision proposal accepted",
+                            ),
+                            (
+                                "decision_proposal_rejected",
+                                "Decision proposal rejected",
+                            ),
+                            ("delete_request_sent", "Delete request sent"),
+                            ("delete_request_received", "Delete request received"),
+                        ],
+                        default="submitted_but_not_sent_to_ahjo",
+                        max_length=64,
+                        verbose_name="status",
+                    ),
+                ),
+                (
+                    "application",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="ahjo_status",
+                        to="applications.application",
+                        verbose_name="application",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'ahjo status',
-                'verbose_name_plural': 'ahjo statuses',
-                'db_table': 'bf_applications_ahjo_status',
-                'ordering': ['application__created_at', 'created_at'],
-                'get_latest_by': 'created_at',
+                "verbose_name": "ahjo status",
+                "verbose_name_plural": "ahjo statuses",
+                "db_table": "bf_applications_ahjo_status",
+                "ordering": ["application__created_at", "created_at"],
+                "get_latest_by": "created_at",
             },
         ),
     ]

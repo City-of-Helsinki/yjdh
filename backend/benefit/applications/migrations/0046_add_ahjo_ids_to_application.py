@@ -4,30 +4,29 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('applications', '0045_alter_ahjostatus_status'),
+        ("applications", "0045_alter_ahjostatus_status"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='application',
-            name='ahjo_case_guid',
+            model_name="application",
+            name="ahjo_case_guid",
             field=models.UUIDField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='application',
-            name='ahjo_case_id',
+            model_name="application",
+            name="ahjo_case_id",
             field=models.CharField(blank=True, max_length=64, null=True),
         ),
         migrations.AddField(
-            model_name='historicalapplication',
-            name='ahjo_case_guid',
+            model_name="historicalapplication",
+            name="ahjo_case_guid",
             field=models.UUIDField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='historicalapplication',
-            name='ahjo_case_id',
+            model_name="historicalapplication",
+            name="ahjo_case_id",
             field=models.CharField(blank=True, max_length=64, null=True),
         ),
     ]

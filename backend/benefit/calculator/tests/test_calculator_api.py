@@ -573,9 +573,9 @@ def test_ignore_pay_subsidy_dates_when_on_manual_calculator(
     data["calculation"]["start_date"] = str(handling_application.start_date)
     data["calculation"]["end_date"] = str(handling_application.end_date)
     data["calculation"]["override_monthly_benefit_amount"] = "100.00"
-    data["calculation"][
-        "override_monthly_benefit_amount_comment"
-    ] = "This is a comment."
+    data["calculation"]["override_monthly_benefit_amount_comment"] = (
+        "This is a comment."
+    )
 
     _set_two_pay_subsidies_with_empty_dates(data)
 

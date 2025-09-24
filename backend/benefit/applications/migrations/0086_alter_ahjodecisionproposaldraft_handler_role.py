@@ -4,15 +4,23 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('applications', '0085_alter_ahjostatus_status'),
+        ("applications", "0085_alter_ahjostatus_status"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ahjodecisionproposaldraft',
-            name='handler_role',
-            field=models.CharField(blank=True, choices=[('handler', 'Helsinki-benefit handler'), ('manager', 'Team manager')], max_length=64, null=True, verbose_name='Handler role (deprecated, was used before dynamic fetch of decision makers)'),
+            model_name="ahjodecisionproposaldraft",
+            name="handler_role",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("handler", "Helsinki-benefit handler"),
+                    ("manager", "Team manager"),
+                ],
+                max_length=64,
+                null=True,
+                verbose_name="Handler role (deprecated, was used before dynamic fetch of decision makers)",
+            ),
         ),
     ]

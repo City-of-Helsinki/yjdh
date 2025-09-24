@@ -8,7 +8,6 @@ import uuid
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0026_alter_applicationbatch_status"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),

@@ -5,7 +5,6 @@ import localflavor.generic.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0001_initial"),
     ]

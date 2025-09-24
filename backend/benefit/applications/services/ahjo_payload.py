@@ -372,7 +372,7 @@ def _prepare_case_records(
         )
 
         document_record = _prepare_record(
-            record_title=f"{AhjoBaseRecordTitle(application=application,  current=position, total=total_attachments)}",
+            record_title=f"{AhjoBaseRecordTitle(application=application, current=position, total=total_attachments)}",
             record_type=AhjoRecordType.ATTACHMENT,
             acquired=attachment.created_at.isoformat("T", "seconds"),
             documents=[_prepare_record_document_dict(attachment)],

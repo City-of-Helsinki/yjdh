@@ -4,23 +4,38 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('applications', '0042_reviewstate_paper'),
+        ("applications", "0042_reviewstate_paper"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AhjoSetting',
+            name="AhjoSetting",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='time created')),
-                ('modified_at', models.DateTimeField(auto_now=True, verbose_name='time modified')),
-                ('name', models.CharField(max_length=255, unique=True)),
-                ('data', models.JSONField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="time created"
+                    ),
+                ),
+                (
+                    "modified_at",
+                    models.DateTimeField(auto_now=True, verbose_name="time modified"),
+                ),
+                ("name", models.CharField(max_length=255, unique=True)),
+                ("data", models.JSONField()),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

@@ -611,7 +611,8 @@ def ahjo_decision_detail_response(application_with_ahjo_decision):
     name = f"{handler.first_name} {handler.last_name}"
     company = application_with_ahjo_decision.company
     today = date.today()
-    content = f'<html lang="fi"><head><META content="text/html; charset=UTF-8" http-equiv="Content-Type">\
+    content = (
+        f'<html lang="fi"><head><META content="text/html; charset=UTF-8" http-equiv="Content-Type">\
 <META name="DhId" content="{id}">\
 <META name="ThisHTMLGenerated" content="2024-04-09T13:48:35.106+03:00">\
 <title>Avustuksen myöntäminen, Työllisyyspalvelut, työllisyydenhoidon Helsinki-lisä</title></head>\
@@ -726,6 +727,7 @@ Asiakirjoja voi tilata Helsingin kaupungin kirjaamosta.</p>\
 <h3 class="OtteetOtsikko">Otteet</h3><table><thead><tr><th>Ote</th><th>Otteen liitteet</th></tr></thead><tbody>\
 <tr><td>{company}</td><td><div>Oikaisuvaatimusohje, kaupunginhallitus</div><div>Liite 1</div></td></tr>\
 </tbody></table></div></body></html>'
+    )
 
     return [
         {

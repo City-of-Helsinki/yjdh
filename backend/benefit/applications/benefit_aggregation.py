@@ -17,9 +17,9 @@ from common.utils import date_range_overlap, duration_in_months, pairwise
 @dataclass
 class FormerBenefitInfo:
     warnings: List[str] = field(default_factory=list)
-    months_used: Optional[
-        Decimal
-    ] = None  # None is used if employee info is not entered yet
+    months_used: Optional[Decimal] = (
+        None  # None is used if employee info is not entered yet
+    )
     months_remaining: Optional[Decimal] = None  # None means that there is no limit
 
 

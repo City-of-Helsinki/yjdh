@@ -5,15 +5,20 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('companies', '0004_localized_iban_field'),
+        ("companies", "0004_localized_iban_field"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='company',
-            name='bank_account_number',
-            field=common.localized_iban_field.LocalizedIBANField(blank=True, include_countries=('FI',), max_length=34, use_nordea_extensions=False, verbose_name='bank account number'),
+            model_name="company",
+            name="bank_account_number",
+            field=common.localized_iban_field.LocalizedIBANField(
+                blank=True,
+                include_countries=("FI",),
+                max_length=34,
+                use_nordea_extensions=False,
+                verbose_name="bank account number",
+            ),
         ),
     ]

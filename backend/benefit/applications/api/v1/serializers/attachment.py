@@ -140,7 +140,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
             translation_text = _("File is infected with")
             raise serializers.ValidationError(
                 {
-                    "non_field_errors": f'{translation_text} {", ".join(fie.viruses)}',
+                    "non_field_errors": f"{translation_text} {', '.join(fie.viruses)}",
                     "key": "malware",
                 },
             )

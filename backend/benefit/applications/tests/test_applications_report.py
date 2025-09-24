@@ -409,9 +409,9 @@ def test_power_bi_report_csv_output(application_powerbi_csv_service):
 
     # Assert that each column header matches
     for index, header in enumerate(expected_headers):
-        assert (
-            csv_lines[0][index] == header
-        ), f"Expected {header} but got {csv_lines[0][index]}"
+        assert csv_lines[0][index] == header, (
+            f"Expected {header} but got {csv_lines[0][index]}"
+        )
 
     applications = application_powerbi_csv_service.get_applications()
 

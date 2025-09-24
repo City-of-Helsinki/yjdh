@@ -6,31 +6,49 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('applications', '0068_one_application_in_a_batch'),
+        ("applications", "0068_one_application_in_a_batch"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='applicationalteration',
-            name='handled_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
+            model_name="applicationalteration",
+            name="handled_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='applicationalteration',
-            name='is_recoverable',
-            field=models.BooleanField(default=False, verbose_name='whether the alteration should be recovered'),
+            model_name="applicationalteration",
+            name="is_recoverable",
+            field=models.BooleanField(
+                default=False, verbose_name="whether the alteration should be recovered"
+            ),
         ),
         migrations.AddField(
-            model_name='applicationalteration',
-            name='recovery_justification',
-            field=models.TextField(blank=True, verbose_name='the justification provided in the recovering bill, if eligible'),
+            model_name="applicationalteration",
+            name="recovery_justification",
+            field=models.TextField(
+                blank=True,
+                verbose_name="the justification provided in the recovering bill, if eligible",
+            ),
         ),
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='state',
-            field=models.TextField(choices=[('received', 'Received'), ('opened', 'Opened'), ('handled', 'Handled'), ('cancelled', 'Cancelled')], default='received', verbose_name='state of alteration'),
+            model_name="applicationalteration",
+            name="state",
+            field=models.TextField(
+                choices=[
+                    ("received", "Received"),
+                    ("opened", "Opened"),
+                    ("handled", "Handled"),
+                    ("cancelled", "Cancelled"),
+                ],
+                default="received",
+                verbose_name="state of alteration",
+            ),
         ),
     ]
