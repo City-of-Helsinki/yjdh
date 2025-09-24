@@ -329,7 +329,8 @@ def test_create_message(
                 assert mailoutbox[0].from_email == settings.DEFAULT_FROM_EMAIL
                 assert "Olet saanut uuden viestin" in mailoutbox[0].subject
 
-                # Parse email to an object and assert that it contains the correct text content
+                # Parse email to an object and assert that it contains the correct text
+                # content
                 email_parts = email.message_from_string(mailoutbox[0].body)
                 for part in email_parts.walk():
                     if part.get_content_type() == "text/plain":

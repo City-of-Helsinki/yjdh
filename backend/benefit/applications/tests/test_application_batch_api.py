@@ -779,7 +779,8 @@ def test_application_delete(handler_api_client, application_batch):
 
 @patch("applications.api.v1.application_batch_views.export_application_batch")
 def test_application_batch_export(mock_export, handler_api_client, application_batch):
-    # Mock export pdf function to reduce test time, the unittest for the export feature will be run separately
+    # Mock export pdf function to reduce test time, the unittest for the export feature
+    # will be run separately
     mock_export.return_value = {}
     # Export invalid batch
     application_batch.status = ApplicationBatchStatus.SENT_TO_TALPA

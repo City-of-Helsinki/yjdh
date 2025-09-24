@@ -100,7 +100,8 @@ class BaseApplicationAlterationSerializer(DynamicFieldsModelSerializer):
 
     def validate_recovery_amount(self, value):
         if value is not None:
-            # Round down the recovery_amount to the nearest integer while keeping it as Decimal
+            # Round down the recovery_amount to the nearest integer while keeping it as
+            # Decimal
             return value.quantize(Decimal("1"), rounding=ROUND_DOWN)
         return value
 

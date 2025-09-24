@@ -264,7 +264,8 @@ def test_application_history_change_sets(
         "changes"
     ]
 
-    # Just split from the head of changes - we don't want to check handler's changes again
+    # Just split from the head of changes - we don't want to check handler's changes
+    # again
     # Plus one for the attachment change
     applicant_changes = changes[0 : len(applicant_edit_payloads) + 1]
 

@@ -39,15 +39,17 @@ class ApplicationStatus(models.TextChoices):
         if new_status is not None and new_status not in cls.values:
             raise ValueError(_("Invalid application status change"))
 
-        # Application can be transitioned back from these non-editable statuses, so make an exception
-        # to make the application editable if status transition is done at the same time
+        # Application can be transitioned back from these non-editable statuses, so make
+        # an exception to make the application editable if status transition is done at
+        # the same time
         if (status, new_status) in [
             (ApplicationStatus.ACCEPTED, ApplicationStatus.HANDLING),
             (ApplicationStatus.REJECTED, ApplicationStatus.HANDLING),
         ]:
             return True
 
-        # drafts may be edited by the handler when entering data from a paper application
+        # drafts may be edited by the handler when entering data from a paper
+        # application
         return status in (
             cls.DRAFT,
             cls.RECEIVED,
@@ -322,7 +324,8 @@ DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE = [
     }
 ]
 
-# Call gettext on some of the enums so that "makemessages" command can find them when used dynamically in templates
+# Call gettext on some of the enums so that "makemessages" command can find them when
+# used dynamically in templates
 _("granted")
 _("granted_aged")
 _("not_granted")

@@ -837,7 +837,8 @@ def test_applications_csv_two_ahjo_rows(
     assert csv_lines[2][1] == f'"{format_datetime(application.submitted_at)}"'
     assert int(csv_lines[2][2]) == 2
 
-    # the content of columns "Siirrettävä Ahjo-rivi / xxx" and "Hakemusrivi" change, rest of the lines are equal
+    # the content of columns "Siirrettävä Ahjo-rivi / xxx" and "Hakemusrivi" change,
+    # rest of the lines are equal
     current_ahjo_row_start = csv_lines[0].index('"Siirrettävä Ahjo-rivi / tyyppi"')
     current_ahjo_row_end = csv_lines[0].index(
         '"Siirrettävä Ahjo-rivi / päättymispäivä"'

@@ -107,7 +107,8 @@ class AttachmentSerializer(serializers.ModelSerializer):
             if not self._is_valid_pdf(data["attachment_file"]):
                 raise serializers.ValidationError(_("Not a valid pdf file"))
         elif not self._is_valid_image(data["attachment_file"]):
-            # only pdf and image files are listed in ATTACHMENT_CONTENT_TYPE_CHOICES, so if we get here,
+            # only pdf and image files are listed in ATTACHMENT_CONTENT_TYPE_CHOICES, so
+            # if we get here,
             # the content type is an image file
             raise serializers.ValidationError(_("Not a valid image file"))
         return data

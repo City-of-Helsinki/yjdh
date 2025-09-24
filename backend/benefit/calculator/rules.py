@@ -74,7 +74,8 @@ class HelsinkiBenefitCalculator:
 
     @staticmethod
     def get_calculator(calculation: Calculation):
-        # in future, one might use e.g. application date to determine the correct calculator
+        # in future, one might use e.g. application date to determine the correct
+        # calculator
         if calculation.override_monthly_benefit_amount is not None:
             return ManualOverrideCalculator(calculation)
         elif calculation.application.benefit_type == BenefitType.SALARY_BENEFIT:
@@ -131,7 +132,8 @@ class HelsinkiBenefitCalculator:
         return ranges
 
     def get_amount(self, row_type: RowType, default=None):
-        # This function is used by the various CalculationRow to retrieve a previously calculated value
+        # This function is used by the various CalculationRow to retrieve a previously
+        # calculated value
         row = (
             self.calculation.rows.order_by("-ordering")
             .filter(row_type=row_type)
@@ -232,7 +234,8 @@ class HelsinkiBenefitCalculator:
             self.calculation.instalments.all().delete()
             if self.can_calculate():
                 self.create_rows()
-                # the total benefit amount is stored in Calculation model, for easier processing.
+                # the total benefit amount is stored in Calculation model, for easier
+                # processing.
                 total_benefit_amount = self.get_amount(
                     RowType.HELSINKI_BENEFIT_TOTAL_EUR
                 )
@@ -283,7 +286,8 @@ class SalaryBenefitCalculator2023(HelsinkiBenefitCalculator):
     Calculation of salary benefit, according to rules in effect starting from 1.7.2023
     """
 
-    # The maximum amount of pay subsidy depends on the pay subsidy percent in the pay subsidy decision.
+    # The maximum amount of pay subsidy depends on the pay subsidy percent in the pay
+    # subsidy decision.
     PAY_SUBSIDY_MAX_FOR_100_PERCENT = settings.PAY_SUBSIDY_MAX_FOR_100_PERCENT
     PAY_SUBSIDY_MAX_FOR_70_PERCENT = settings.PAY_SUBSIDY_MAX_FOR_70_PERCENT
     PAY_SUBSIDY_MAX_FOR_50_PERCENT = settings.PAY_SUBSIDY_MAX_FOR_50_PERCENT
@@ -372,7 +376,8 @@ class SalaryBenefitCalculator2023(HelsinkiBenefitCalculator):
             and benefit_sub_range.training_compensation
             and benefit_sub_range.training_compensation.monthly_amount > 0
         ):
-            # as per UI design, create the totals row even if the amount of training compensation
+            # as per UI design, create the totals row even if the amount of training
+            # compensation
             # is zero, if the TrainingCompensation has been created
             self._create_row(
                 TotalDeductionsMonthlyRow, monthly_deductions=monthly_deductions

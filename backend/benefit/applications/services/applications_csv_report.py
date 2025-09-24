@@ -333,9 +333,10 @@ class ApplicationsCsvService(CsvExportBase):
                 "Tarkastajan sähköposti, P2P", "batch.p2p_inspector_email"
             ),
             csv_default_column("Hyväksyjän nimi P2P", "batch.p2p_checker_name"),
-            # In case there are multiple rows per application, always have the nth ahjo row
-            # in the same column.
-            # The row data here comes from calculation.ahjo_rows[application_row_idx - 1]
+            # In case there are multiple rows per application, always have the nth ahjo
+            # row in the same column.
+            # The row data here comes from
+            # calculation.ahjo_rows[application_row_idx - 1]
             CsvColumn(
                 "Siirrettävä Ahjo-rivi / tyyppi",
                 current_ahjo_row_field_getter("row_type"),
@@ -495,9 +496,9 @@ class ApplicationsCsvService(CsvExportBase):
                 ):
                     # The CSV output is easier to process in PowerBI
                     # if the rows belonging to the same application are numbered.
-                    # application_row_idx is also used for storing the "current" ahjo row.
-                    # application_row_idx starts at 1, which must be taken into account
-                    # when indexing application.ahjo_rows
+                    # application_row_idx is also used for storing the "current" ahjo
+                    # row. application_row_idx starts at 1, which must be taken into
+                    # account when indexing application.ahjo_rows
                     application.application_row_idx = application_row_idx + 1
                     yield application
 

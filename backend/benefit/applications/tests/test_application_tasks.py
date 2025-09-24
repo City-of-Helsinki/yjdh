@@ -224,7 +224,8 @@ def test_send_ahjo_requests(
 
         if request_type == AhjoRequestType.GET_DECISION_DETAILS:
             mock_response = ahjo_decision_detail_response
-            # Set the decision date to the current date in the same format as in the response
+            # Set the decision date to the current date in the same format as in the
+            # response
             date_str = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
             mock_response[0]["DateDecision"] = date_str
             application.batch_id = batch_for_decision_details.id

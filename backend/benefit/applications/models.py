@@ -156,7 +156,8 @@ class ApplicationManager(models.Manager):
             attachments_queryset.filter(application_id=OuterRef("pk"))
         )
 
-        # Annotate applications with a boolean indicating the existence of undownloaded attachments
+        # Annotate applications with a boolean indicating the existence of undownloaded
+        # attachments
         qs = (
             self.get_queryset()
             .annotate(has_undownloaded_attachments=attachment_exists)
@@ -169,7 +170,8 @@ class ApplicationManager(models.Manager):
         # Use Prefetch to specify the filtered queryset for prefetching attachments
         attachments_prefetch = Prefetch("attachments", queryset=attachments_queryset)
 
-        # Return the filtered applications with the specified prefetched related attachments
+        # Return the filtered applications with the specified prefetched related
+        # attachments
         return qs.prefetch_related(attachments_prefetch)
 
     def with_due_instalments(self, status: InstalmentStatus):
@@ -202,7 +204,8 @@ class ApplicationManager(models.Manager):
         or
         AhjoStatusEnum.NEW_RECORDS_RECEIVED
         """
-        # if hours are specified, then the retry_status is used to query the applications for the re-attempt
+        # if hours are specified, then the retry_status is used to query the
+        # applications for the re-attempt
         if retry_failed_older_than_hours > 0 and retry_status:
             ahjo_statuses = [retry_status]
 
@@ -407,7 +410,8 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
         max_length=256, verbose_name=_("company post code"), blank=True
     )
 
-    # the following property values are evaluated based on use_alternative_address setting
+    # the following property values are evaluated based on use_alternative_address
+    # setting
     effective_company_street_address = property(
         address_property("company_street_address")
     )

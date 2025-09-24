@@ -26,7 +26,8 @@ class MessageSerializer(serializers.ModelSerializer):
             "seen_by_applicant",
         ]
 
-    # An applicant is only allowed to send a message if application is in one of these statuses
+    # An applicant is only allowed to send a message if application is in one of these
+    # statuses
     APPLICANT_MESSAGE_ALLOWED_STATUSES = [
         ApplicationStatus.RECEIVED,
         ApplicationStatus.HANDLING,

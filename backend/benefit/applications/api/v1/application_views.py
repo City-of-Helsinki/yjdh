@@ -152,7 +152,8 @@ class ApplicantApplicationFilter(BaseApplicationFilter):
 
 
 class HandlerApplicationFilter(BaseApplicationFilter):
-    # the date when application was last set to either REJECTED, ACCEPTED or CANCELLED status
+    # the date when application was last set to either REJECTED, ACCEPTED or CANCELLED
+    # status
     handled_at = DateFromToRangeFilter(method="filter_handled_at")
 
     def filter_handled_at(self, queryset, name, value):
@@ -263,7 +264,8 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         serializer = self.serializer_class(qs, many=True, context=context)
         data = serializer.data
 
-        # Sorting by encrypted fields has to be done after the data has been retrieved and decrypted
+        # Sorting by encrypted fields has to be done after the data has been retrieved
+        # and decrypted
         if request.query_params.get("order_by") in ["employee_name"]:
             data = sorted(
                 data,
@@ -346,7 +348,8 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
             if should_filter_archived:
                 qs = qs.filter(archived=should_filter_archived)
             else:
-                # Applications with second instalment are considered archived but should be included in main views
+                # Applications with second instalment are considered archived but should
+                # be included in main views
                 qs = qs.filter(
                     Q(archived=should_filter_archived)
                     | Q(pk__in=self._get_application_pks_with_instalments())
@@ -507,7 +510,8 @@ class HandlerApplicationAlterationViewSet(BaseApplicationAlterationViewSet):
         )
 
         # If the alteration has been handled, the only allowed edit is to cancel it.
-        # If the alteration has been cancelled, it cannot be modified in any way anymore.
+        # If the alteration has been cancelled, it cannot be modified in any way
+        # anymore.
         if current_state == ApplicationAlterationState.CANCELLED or (
             current_state == ApplicationAlterationState.HANDLED and forbidden_if_handled
         ):
@@ -538,7 +542,8 @@ class HandlerApplicationAlterationViewSet(BaseApplicationAlterationViewSet):
         alteration.recovery_start_date = request.data.get("recovery_start_date")
 
         alteration.save()
-        # CsvService requires a queryset, so we need to create a queryset with the alteration
+        # CsvService requires a queryset, so we need to create a queryset with the
+        # alteration
         queryset = ApplicationAlteration.objects.filter(
             id__in=[alteration.id],
         )
@@ -597,7 +602,8 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
     filterset_class = ApplicantApplicationFilter
 
     def _annotate_unread_messages_count(self, qs):
-        # since there other annotations added elsewhere, use subquery to avoid wrong results.
+        # since there other annotations added elsewhere, use subquery to avoid wrong
+        # results.
         # also, using a subquery is more performant
         return qs.annotate(
             unread_messages_count=SubqueryCount(
@@ -754,14 +760,15 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
 
     def get_queryset(self):
         # The default ordering in the handling views:
-        # * In the "received" table, ordering should be by the send time, most recent first
+        # * In the "received" table, ordering should be by the send time, most recent
+        #   first
         # * In the "handling" table, ordering should be by the calculation modification
         #   time, most recent first
         # * In the archive page, ordering should be by handled_at, most recent first.
         # All these goals are achieved by ordering by first handled_at, then
         # calculation.modified_at.
-        # * in the "received" and "handling" table, no application has handled_at set yet,
-        #   so applications will compare as equals
+        # * in the "received" and "handling" table, no application has handled_at set
+        #   yet, so applications will compare as equals
         # * For received applications, the send time is the same as calculation
         #   modification time
         return self._annotate_unread_messages_count(
@@ -905,8 +912,8 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
 
             if to_status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
                 # Create an automatic message for the applicant
-                # self.instance.additional_information_requested_at is not updated at this point as
-                # it's a queryset annotation, so need to refresh
+                # self.instance.additional_information_requested_at is not updated at
+                # this point as it's a queryset annotation, so need to refresh
                 application.additional_information_requested_at = (
                     Application.objects.get(
                         pk=application.pk

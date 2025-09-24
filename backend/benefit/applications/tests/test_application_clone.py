@@ -203,7 +203,8 @@ def test_application_full_clone(api_client, handler_api_client, settings):
     )
     assert response.status_code == 403
 
-    # Access endpoint as a handler and a bit later than the original application created at
+    # Access endpoint as a handler and a bit later than the original application created
+    # at
     with freeze_time("2024-10-23"):
         response = handler_api_client.get(
             reverse(

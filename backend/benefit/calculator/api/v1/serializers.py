@@ -131,7 +131,8 @@ class CalculationSerializer(serializers.ModelSerializer):
     def _validate_date_range(self, start_date, end_date):
         # Only validate date range if both of them are set
         if start_date is not None and end_date is not None:
-            # validation is more relaxed as it's assumed that the handlers know what they're doing
+            # validation is more relaxed as it's assumed that the handlers know what
+            # they're doing
             if (
                 start_date + relativedelta(months=self.CALCULATION_MAX_MONTHS)
                 <= end_date
@@ -257,7 +258,8 @@ class UpdateOrderedListSerializer(serializers.ListSerializer):
                 ret.append(self.child.create(data))
             else:
                 ret.append(self.child.update(obj, data))
-            # ordering field is not exposed in API, it is added in ApplicantApplicationSerializer
+            # ordering field is not exposed in API, it is added in
+            # ApplicantApplicationSerializer
             if ordering := data.get("ordering"):
                 ret[-1].ordering = ordering
                 ret[-1].save()

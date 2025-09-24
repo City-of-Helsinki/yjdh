@@ -293,13 +293,15 @@ def test_applications_filter_archived_for_applicant(
         DecidedApplicationFactory(application_number=123450),
         # Batch processed and decided 15 days ago, should appear on archive page
         DecidedApplicationFactory(application_number=123451, batch=old_batch),
-        # Batch processed and decided 15 days ago and archived for handlers, should still appear on archive page
+        # Batch processed and decided 15 days ago and archived for handlers, should
+        # still appear on archive page
         DecidedApplicationFactory(
             application_number=123452, batch=old_batch, archived=True
         ),
         # Batch processed and decided two days ago, should appear on main page
         DecidedApplicationFactory(application_number=123453, batch=recent_batch),
-        # Batch decided 15 days ago but not yet fully processed, should appear on main page
+        # Batch decided 15 days ago but not yet fully processed, should appear on main
+        # page
         DecidedApplicationFactory(application_number=123454, batch=pending_batch),
         # Fresh application not yet decided, should appear on main page
         ReceivedApplicationFactory(application_number=123455),
@@ -1723,7 +1725,8 @@ def _upload_pdf(
 def _add_pdf_attachment(
     request, application, attachment_type=AttachmentType.EMPLOYMENT_CONTRACT
 ):
-    # add attachment, bypassing validation, so attachment can be added even if application
+    # add attachment, bypassing validation, so attachment can be added even if
+    # application
     # state does not allow it
     with open(_pdf_file_path(request), "rb") as valid_pdf_file:
         file_upload = SimpleUploadedFile(VALID_PDF_FILE, valid_pdf_file.read())
@@ -2137,7 +2140,8 @@ def test_application_number(api_client, application):
     new_application.delete()
     assert Application.objects.count() == 1
 
-    # Next application should not have old application_number if the previous one was deleted
+    # Next application should not have old application_number if the previous one was
+    # deleted
     next_application = ApplicationFactory()
     assert Application.objects.count() == 2
     assert next_application.application_number == application.application_number + 2

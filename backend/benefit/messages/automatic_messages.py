@@ -23,7 +23,8 @@ APPLICATION_REOPENED_MESSAGE = _(
 
 
 def get_default_email_notification_subject():
-    # force evaluation of lazy string so that the messages in local memory queue remain translated
+    # force evaluation of lazy string so that the messages in local memory queue remain
+    # translated
     # correctly during unit tests
     return str(
         _("You have received a new message regarding your Helsinki benefit application")
@@ -38,8 +39,10 @@ def _message_notification_email_body(application):
     if submitted_at := application.submitted_at:
         submitted_at_fmt = submitted_at.strftime("%d.%m.%Y")
     else:
-        # this should never happen in practice, as the applicants are not allowed to send messages
-        # while application remains draft, and the handlers don't see non-submitted applications
+        # this should never happen in practice, as the applicants are not allowed to
+        # send messages
+        # while application remains draft, and the handlers don't see non-submitted
+        # applications
         # at all.
         submitted_at_fmt = "n/a"
     return str(

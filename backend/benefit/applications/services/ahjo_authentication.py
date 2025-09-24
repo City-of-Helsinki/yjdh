@@ -157,7 +157,8 @@ class AhjoConnector:
             "expires_in": token.expires_in,
         }
 
-        # Delete old access token if it exists, so that only one token is stored and there will be
+        # Delete old access token if it exists, so that only one token is stored and
+        # there will be
         # no need to calculate the expiry time of the token from the modified_at field
         AhjoSetting.objects.filter(name="ahjo_access_token").delete()
 

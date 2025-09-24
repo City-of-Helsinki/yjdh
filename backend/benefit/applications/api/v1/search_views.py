@@ -465,7 +465,8 @@ def _perform_in_memory_search(
     else:
         detected_pattern = f"{SearchPattern.COMPANY} {SearchPattern.IN_MEMORY}"
 
-    # Try fuzzy matching with high threshold. If zero matches, try lower score and finally try substring matching
+    # Try fuzzy matching with high threshold. If zero matches, try lower score and
+    # finally try substring matching
     in_memory_results = _fuzzy_matching(data, in_memory_filter_str, 80)
     if not in_memory_results["data"]:
         in_memory_results = _fuzzy_matching(data, in_memory_filter_str, 70)

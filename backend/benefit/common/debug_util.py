@@ -55,5 +55,6 @@ def rest_framework_debug_exception_handler(exc, context):
     }
     """
     pdb.post_mortem()
-    # Call REST framework's default exception handler to get the standard error response.
+    # Call REST framework's default exception handler to get the standard error
+    # response.
     return exception_handler(exc, context)
