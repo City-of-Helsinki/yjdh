@@ -37,6 +37,7 @@ env = environ.Env(
     NEXT_PUBLIC_BACKEND_URL=(str, "https://localhost:8000"),
     ALLOWED_HOSTS=(list, ["*"]),
     USE_X_FORWARDED_HOST=(bool, False),
+    DATABASE_PASSWORD=(str, ""),
     DATABASE_URL=(
         str,
         "postgres:///kesaseteli",
@@ -169,6 +170,9 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 USE_X_FORWARDED_HOST = env.bool("USE_X_FORWARDED_HOST")
 
 DATABASES = {"default": env.db()}
+
+if env("DATABASE_PASSWORD"):
+    DATABASES["default"]["PASSWORD"] = env("DATABASE_PASSWORD")
 
 CACHES = {"default": env.cache()}
 
