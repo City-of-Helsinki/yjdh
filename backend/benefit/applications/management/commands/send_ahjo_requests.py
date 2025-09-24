@@ -16,7 +16,7 @@ from applications.services.ahjo.response_handler import (
 from applications.services.ahjo_application_service import AhjoApplicationsService
 from applications.services.ahjo_authentication import (
     AhjoToken,
-    AhjoTokenExpiredException,
+    AhjoTokenExpiredError,
 )
 from applications.services.ahjo_error_writer import AhjoErrorWriter, AhjoFormattedError
 from applications.services.ahjo_integration import (
@@ -77,7 +77,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             ahjo_auth_token = get_token()
-        except AhjoTokenExpiredException as e:
+        except AhjoTokenExpiredError as e:
             LOGGER.error(f"Failed to get auth token from Ahjo: {e}")
             return
         except ImproperlyConfigured as e:

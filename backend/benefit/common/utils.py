@@ -116,7 +116,7 @@ def pairwise(iterable):
     """  # noqa: E501
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."
     a, b = itertools.tee(iterable)
-    for unused in b:
+    for _ in b:
         break
     return zip(a, b)
 
@@ -283,7 +283,7 @@ def days360(start_date: date, end_date: date):
     * Added unit tests
     * forced method_eu to always be True.
     """  # noqa: E501
-    METHOD_EU = True
+    method_eu = True
 
     if not isinstance(start_date, date) or not isinstance(end_date, date):
         raise ValueError("date object needed")
@@ -296,14 +296,14 @@ def days360(start_date: date, end_date: date):
     end_year = end_date.year
 
     if start_day == 31 or (
-        METHOD_EU is False
+        method_eu is False
         and start_month == 2
         and (start_day == 29 or (start_day == 28 and start_date.is_leap_year is False))
     ):
         start_day = 30
 
     if end_day == 31:
-        if METHOD_EU is False and start_day != 30:
+        if method_eu is False and start_day != 30:
             end_day = 1
 
             if end_month == 12:
@@ -422,7 +422,7 @@ def get_date_range_end_with_days360(start_date: date, n_months: int):
         else:
             end_date += relativedelta(days=1)
     else:
-        assert False, "This should be unreachable"
+        raise AssertionError("This should be unreachable")
 
     if end_date < start_date:
         # We can't have date ranges where duration is less than one day, as the range is

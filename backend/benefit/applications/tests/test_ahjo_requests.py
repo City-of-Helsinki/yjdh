@@ -12,8 +12,8 @@ from applications.enums import AhjoStatus as AhjoStatusEnum
 from applications.models import AhjoSetting, AhjoStatus
 from applications.services.ahjo.enums import AhjoSettingName
 from applications.services.ahjo.exceptions import (
-    AhjoApiClientException,
-    InvalidAhjoTokenException,
+    AhjoApiClientError,
+    InvalidAhjoTokenError,
     MissingHandlerIdError,
 )
 from applications.services.ahjo_authentication import AhjoToken
@@ -316,10 +316,10 @@ def test_requests_exceptions(
         with pytest.raises(MissingHandlerIdError):
             ahjo_request_without_ad_username.api_url()
 
-    with pytest.raises(InvalidAhjoTokenException):
+    with pytest.raises(InvalidAhjoTokenError):
         AhjoApiClient(ahjo_token="foo", ahjo_request=ahjo_request_without_ad_username)
 
-    with pytest.raises(InvalidAhjoTokenException):
+    with pytest.raises(InvalidAhjoTokenError):
         AhjoApiClient(
             ahjo_token=AhjoToken(access_token=None),
             ahjo_request=ahjo_request_without_ad_username,
@@ -335,7 +335,7 @@ def test_requests_exceptions(
 
     with requests_mock.Mocker() as m:
         # an example of a real validation error response from ahjo
-        validation_error = [
+        validation_errors = [
             {"message": "/Title: does not match the regex pattern [a-zA-Z0-9åäöÅÄÖ]+"},
             {
                 "message": (
@@ -348,7 +348,7 @@ def test_requests_exceptions(
             configured_request.request_method,
             configured_request.api_url(),
             status_code=400,
-            json=validation_error,
+            json=validation_errors,
         )
         client.send_request_to_ahjo()
         mock_logger.error.assert_called()
@@ -356,7 +356,7 @@ def test_requests_exceptions(
         assert ahjo_status.status == previous_status
         assert ahjo_status.validation_error_from_ahjo is not None
 
-        for validation_error in validation_error:
+        for validation_error in validation_errors:
             assert validation_error in ahjo_status.validation_error_from_ahjo["context"]
 
     exception = requests.exceptions.RequestException
@@ -369,7 +369,7 @@ def test_requests_exceptions(
         client.send_request_to_ahjo()
         mock_logger.error.assert_called()
 
-    exception = AhjoApiClientException
+    exception = AhjoApiClientError
     with requests_mock.Mocker() as m:
         m.register_uri(
             configured_request.request_method,

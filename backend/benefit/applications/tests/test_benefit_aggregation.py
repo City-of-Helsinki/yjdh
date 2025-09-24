@@ -357,7 +357,7 @@ def test_application_with_previously_accepted_applications_and_previous_benefits
                 end_date=date.fromisoformat(previous_end_date),
             )
         else:
-            assert False, "unexpected"
+            raise AssertionError("unexpected")
 
     handling_application.apprenticeship_program = apprenticeship_program
     handling_application.pay_subsidy_granted = PaySubsidyGranted.GRANTED

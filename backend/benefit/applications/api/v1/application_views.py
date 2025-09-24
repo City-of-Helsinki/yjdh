@@ -954,7 +954,8 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
             ApplicationStatus.REJECTED: ApplicationBatchStatus.DECIDED_REJECTED,
         }
         if status not in status_map:
-            assert False, "Internal error, should not happen"
+            raise AssertionError("Internal error, should not happen")
+
         application_ids = [application.pk for application in queryset]
         if queryset:
             batch = ApplicationBatch.objects.create(

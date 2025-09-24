@@ -1,9 +1,10 @@
 import os
+from typing import Optional
 
 from common.tests.conftest import reseed
 
 
-def before_test_reseed(no_reseed_for_tests: list[str] = []):
+def before_test_reseed(no_reseed_for_tests: Optional[list[str]] = None):
     """
     Tests would fail in CI if same seed is used throughout all tests.
     Factories create too many similar objects and database will fail on unique
@@ -11,6 +12,9 @@ def before_test_reseed(no_reseed_for_tests: list[str] = []):
 
     :param no_reseed_for_tests: list of test names that should use the default seed defined in conftest.py
     """
+    if no_reseed_for_tests is None:
+        no_reseed_for_tests = []
+
     current_test = os.environ.get("PYTEST_CURRENT_TEST")
 
     for test in no_reseed_for_tests:

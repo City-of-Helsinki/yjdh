@@ -70,7 +70,7 @@ class ApplicationAlterationCsvService(CsvExportBase):
         return alteration.recovery_justification
 
     @property
-    def CSV_COLUMNS(self):
+    def csv_columns(self):
         columns = [
             CsvColumn("Viitetiedot", "application.application_number"),
             CsvColumn(

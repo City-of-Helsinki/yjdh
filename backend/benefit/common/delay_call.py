@@ -33,7 +33,7 @@ def call_now_or_later(func, duplicate_check=None):
 def _call_all_pending():
     if _get_pending_calls() is None:
         raise Exception("This function must be used only with update_at_end")
-    for k, func in list(_get_pending_calls().items()):
+    for func in list(_get_pending_calls().values()):
         func()
     _get_pending_calls().clear()
 

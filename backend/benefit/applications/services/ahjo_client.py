@@ -13,11 +13,11 @@ from applications.enums import AhjoStatus as AhjoStatusEnum
 from applications.models import AhjoSetting, AhjoStatus, Application
 from applications.services.ahjo.enums import AhjoSettingName
 from applications.services.ahjo.exceptions import (
-    AhjoApiClientException,
-    InvalidAhjoTokenException,
+    AhjoApiClientError,
+    InvalidAhjoTokenError,
     MissingAhjoCaseIdError,
     MissingHandlerIdError,
-    MissingOrganizationIdentifier,
+    MissingOrganizationIdentifierError,
 )
 from applications.services.ahjo_authentication import AhjoToken
 from applications.services.ahjo_error_writer import AhjoErrorWriter, AhjoFormattedError
@@ -160,7 +160,7 @@ class AhjoDecisionMakerRequest(AhjoRequest):
                 name=AhjoSettingName.DECISION_MAKER_ORG_ID
             ).data["id"]
         except AhjoSetting.DoesNotExist:
-            raise MissingOrganizationIdentifier(
+            raise MissingOrganizationIdentifierError(
                 "No organization identifier found in the database."
             )
 
@@ -227,11 +227,9 @@ class AhjoApiClient:
     @ahjo_token.setter
     def ahjo_token(self, token: AhjoToken) -> None:
         if not isinstance(token, AhjoToken):
-            raise InvalidAhjoTokenException(
-                "Invalid token, not an instance of AhjoToken"
-            )
+            raise InvalidAhjoTokenError("Invalid token, not an instance of AhjoToken")
         if not token.access_token or not token.expires_in or not token.refresh_token:
-            raise InvalidAhjoTokenException("Invalid token, token is missing data")
+            raise InvalidAhjoTokenError("Invalid token, token is missing data")
         self._ahjo_token = token
 
     def prepare_ahjo_headers(self) -> dict:
@@ -345,7 +343,7 @@ class AhjoApiClient:
                 message_to_handler="Ahjo-pyynnössä tapahtui verkkoyhteysvirhe.",
             )
             LOGGER.error(error_message)
-        except AhjoApiClientException as e:
+        except AhjoApiClientError as e:
             LOGGER.error(
                 f"An error occurred while sending {self._request} to Ahjo: {e}"
             )

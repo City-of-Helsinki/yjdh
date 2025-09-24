@@ -302,8 +302,10 @@ def _check_fields(original, cloned, fields):
             )
 
         if field.name not in fields["copied"] + fields["not_copied"]:
-            assert False, f"Unidentified field '{field.name}', please take this "
-            "field into account when renaming, removing, or adding fields"
+            raise AssertionError(
+                f"Unidentified field '{field.name}', please take this "
+                "field into account when renaming, removing, or adding fields"
+            )
 
 
 def _check_application_fields(application, cloned_application):

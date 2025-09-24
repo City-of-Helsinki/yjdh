@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from applications.services.ahjo.request_handler import AhjoRequestHandler
-from applications.services.ahjo_authentication import AhjoTokenExpiredException
+from applications.services.ahjo_authentication import AhjoTokenExpiredError
 from applications.services.ahjo_integration import get_token
 
 LOGGER = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ class AhjoRequestBaseClass(BaseCommand):
         except ImproperlyConfigured as e:
             LOGGER.error(f"Failed to get auth token for Ahjo: {e}")
             return None
-        except AhjoTokenExpiredException as e:
+        except AhjoTokenExpiredError as e:
             LOGGER.error(f"Ahjo Token expired: {e}")
             return None
 

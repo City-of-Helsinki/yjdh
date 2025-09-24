@@ -8,8 +8,8 @@ from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 
 from applications.models import AhjoSetting
 from applications.services.ahjo.exceptions import (
-    AhjoTokenExpiredException,
-    AhjoTokenRetrievalException,
+    AhjoTokenExpiredError,
+    AhjoTokenRetrievalError,
 )
 
 AUTH_TOKEN_GRANT_TYPE = "authorization_code"
@@ -104,7 +104,7 @@ class AhjoConnector:
                 self.token_url, headers=self.headers, data=payload, timeout=self.timeout
             )
         except requests.exceptions.RequestException as e:
-            raise AhjoTokenRetrievalException(
+            raise AhjoTokenRetrievalError(
                 f"Failed to get or refresh token from Ahjo: {e}"
             )
 
@@ -122,7 +122,7 @@ class AhjoConnector:
 
             return self.create_token(token_from_api)
         else:
-            raise AhjoTokenRetrievalException(
+            raise AhjoTokenRetrievalError(
                 f"Failed to retrieve or refresh token: {response.status_code}"
                 f" {response.content.decode()}"
             )
@@ -138,7 +138,7 @@ class AhjoConnector:
                 created_at=token.created_at,
             )
             if ahjo_token.has_expired():
-                raise AhjoTokenExpiredException(
+                raise AhjoTokenExpiredError(
                     f"Ahjo access token has expired in {ahjo_token.expiry_datetime()}"
                 )
             return ahjo_token

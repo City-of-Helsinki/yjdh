@@ -81,13 +81,6 @@ class InstalmentSerializer(serializers.ModelSerializer):
 
         return status
 
-    amount_after_recoveries = serializers.SerializerMethodField(
-        "get_amount_after_recoveries",
-    )
-
-    def amount_after_recoveries(self, obj):
-        return getattr(obj, "amount_after_recoveries", None)
-
     status = serializers.ChoiceField(
         validators=[InstalmentStatusValidator()],
         choices=InstalmentStatus.choices,

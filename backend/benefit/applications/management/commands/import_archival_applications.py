@@ -95,7 +95,7 @@ class Command(BaseCommand):
         else:
             from pandas import isna, read_excel
 
-        EXPECTED_SPREADSHEET_COLUMNS = {
+        expected_spreadsheet_columns = {
             "company_name": "hakija",
             "application_number": "Hakemusnro",
             "business_id": "y-tunnus",
@@ -107,7 +107,7 @@ class Command(BaseCommand):
             "year_of_birth": "synt. vuosi",
         }
 
-        OPTIONAL_SPREADSHEET_COLUMNS = {"handled_at": "Päätöspäivä"}
+        optional_spreadsheet_columns = {"handled_at": "Päätöspäivä"}
 
         # mock data if it's a pytest run
         if is_pytest:
@@ -143,7 +143,7 @@ class Command(BaseCommand):
 
         column_index = []
 
-        for technical_key, spreadsheet_key in EXPECTED_SPREADSHEET_COLUMNS.items():
+        for technical_key, spreadsheet_key in expected_spreadsheet_columns.items():
             if spreadsheet_key not in columns:
                 print(f'! Column "{spreadsheet_key}" not found in spreadsheet keys')  # noqa: T201
                 raise CommandError("Excel is not in expected format")
@@ -156,7 +156,7 @@ class Command(BaseCommand):
             )
         print("• Spreadsheet's column headers are as expected")  # noqa: T201
 
-        for technical_key, spreadsheet_key in OPTIONAL_SPREADSHEET_COLUMNS.items():
+        for technical_key, spreadsheet_key in optional_spreadsheet_columns.items():
             if spreadsheet_key in columns:
                 column_index.append(
                     {

@@ -36,11 +36,11 @@ class ClamavClient:
             or response.status_code != 200
             or not response.json()["success"]
         ):
-            raise FileScanException(name)
+            raise FileScanError(name)
 
         for entry in response.json()["data"]["result"]:
             if bool(entry["is_infected"]):
-                raise FileInfectedException(entry["name"], entry["viruses"])
+                raise FileInfectedError(entry["name"], entry["viruses"])
 
     def version(self):
         if not self.BASE_URL:
@@ -57,12 +57,12 @@ class ClamavClient:
         return response.json()
 
 
-class FileScanException(Exception):
+class FileScanError(Exception):
     def __init__(self, file_name):
         self.file_name = file_name
 
 
-class FileInfectedException(Exception):
+class FileInfectedError(Exception):
     def __init__(self, file_name, viruses):
         self.file_name = file_name
         self.viruses = viruses
