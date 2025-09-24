@@ -897,7 +897,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         ) == OrganizationType.ASSOCIATION:
             required_fields.append("association_has_business_activities")
 
-            # For associations, validate() already limits the association_immediate_manager_check value to [None, True]
+            # For associations, validate() already limits the
+            # association_immediate_manager_check value to [None, True]
             # at submit time, only True is allowed.
             required_fields.append("association_immediate_manager_check")
         elif organization_type == OrganizationType.COMPANY:
@@ -1055,7 +1056,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         """
         if not self.instance:
             # only handle the changes when doing updates.
-            # incompatible data that is sent when creating an application results in a validation error.
+            # incompatible data that is sent when creating an application results in a
+            # validation error.
             return
 
         if OrganizationType.resolve_organization_type(
@@ -1087,7 +1089,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         data["de_minimis_aid_set"] = []
 
     def _reset_benefit_type(self, data):
-        # reset the benefit type and the fields in the employee that are tied to the benefit type
+        # reset the benefit type and the fields in the employee that are tied to the
+        # benefit type
         data["benefit_type"] = ""
         data["employee"]["job_title"] = ""
         data["employee"]["commission_description"] = ""
@@ -1173,13 +1176,14 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             self._validate_employee_consent(instance)
             self._update_applicant_terms_approval(instance, approve_terms)
             if not hasattr(instance, "calculation"):
-                # if the previous status was ADDITIONAL_INFORMATION_NEEDED, then calculation already
-                # exists
+                # if the previous status was ADDITIONAL_INFORMATION_NEEDED, then
+                # calculation already exists
                 Calculation.objects.create_for_application(instance)
 
             if previous_status == ApplicationStatus.DRAFT:
-                # Do not validate if previous_status is ADDITIONAL_INFORMATION_NEEDED, as the validation
-                # rule only applies to the first application submission.
+                # Do not validate if previous_status is ADDITIONAL_INFORMATION_NEEDED,
+                # as the validation rule only applies to the first application
+                # submission.
                 user = self.get_logged_in_user()
                 self._validate_date_range_on_submit(
                     instance.start_date, instance.end_date, user.is_staff
@@ -1291,7 +1295,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                     required_attachment_types.remove(attachment.attachment_type)
 
         if required_attachment_types:
-            # if anything still remains in the list, it means some attachment(s) were missing
+            # if anything still remains in the list, it means some attachment(s) were
+            # missing
             raise serializers.ValidationError(
                 _("Application does not have required attachments")
             )
@@ -1398,7 +1403,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                 )
             )
         # Clear the previous DeMinimisAid objects from the database.
-        # The request must always contain all the DeMinimisAid objects for this application.
+        # The request must always contain all the DeMinimisAid objects for this
+        # application.
         current_de_minimis_aid_set = application.de_minimis_aid_set.all()
         for de_minimis in current_de_minimis_aid_set:
             audit_logging.log(
@@ -1731,9 +1737,10 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
                 _("Application can not be changed in this status")
             )
         calculation_data = validated_data.pop("calculation", None)
-        # FIX for HL-639 where application submitted manually by handler is missing pay subsidies in the DB
-        # because in the JSON payload pay_subsidies is an empty list and thus not None
-        # here we check that this is the final submit request from the handler and if so, we set pay_subsidies to None
+        # FIX for HL-639 where application submitted manually by handler is missing pay
+        # subsidies in the DB because in the JSON payload pay_subsidies is an empty list
+        # and thus not None here we check that this is the final submit request from the
+        # handler and if so, we set pay_subsidies to None
         if (
             instance.application_origin == ApplicationOrigin.HANDLER
             and validated_data["status"] == ApplicationStatus.RECEIVED
@@ -1786,9 +1793,9 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
                 ApplicationStatus.is_handler_editable_status(previous_status)
                 and application.status == ApplicationStatus.ACCEPTED
             ):
-                # When application is accepted, only certain fields that don't change the calculation
-                # result can be modified, otherwise the handled would be accepting a benefit amount that they've not
-                # seen.
+                # When application is accepted, only certain fields that don't change
+                # the calculation result can be modified, otherwise the handled would be
+                # accepting a benefit amount that they've not seen.
                 update_object(
                     application.calculation,
                     calculation_data,
@@ -1855,7 +1862,8 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         self._assign_handler_if_needed(instance)
 
         if not instance.handled_by_ahjo_automation and instance.ahjo_case_id is None:
-            # If the application has been handled by the Ahjo automation, we don't want to
+            # If the application has been handled by the Ahjo automation, we don't want
+            # to
             # remove the batch, as it's needed for the Ahjo automation
             self._remove_batch_if_needed(instance)
 
@@ -1874,7 +1882,8 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
 
     def _assign_handler_if_needed(self, instance):
         # Assign current user to the application.calculation.handler
-        # NOTE: This handler might be overridden if there is a handler pk included in the request post data
+        # NOTE: This handler might be overridden if there is a handler pk included in
+        # the request post data
         handler = get_request_user_from_context(self)
         if settings.NEXT_PUBLIC_MOCK_FLAG and isinstance(handler, AnonymousUser):
             handler = get_user_model().objects.all().order_by("username").first()

@@ -447,7 +447,8 @@ def generate_application_attachment(
 
     attachment_file = ContentFile(attachment_data, attachment_filename)
     if type == AttachmentType.PDF_SUMMARY:
-        # As there should only exist one pdf summary, update or create the attachment if it is one
+        # As there should only exist one pdf summary, update or create the attachment if
+        # it is one
         attachment, _ = Attachment.objects.update_or_create(
             application=application,
             attachment_type=type,

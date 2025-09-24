@@ -178,7 +178,8 @@ def test_modify_calculation(handler_api_client, handling_application):
     assert handling_application.calculation
     handling_application.pay_subsidies.all().delete()
     data["calculation"]["monthly_pay"] = "1234.56"
-    # also modify pay_subsidies. Although multiple objects are modified, calculate() should only
+    # also modify pay_subsidies. Although multiple objects are modified, calculate()
+    # should only
     # be called once.
     data["pay_subsidies"] = [
         {

@@ -275,7 +275,8 @@ def test_export_application_batch(application_batch):
 def test_multiple_benefit_per_application(mock_pdf_convert):
     mock_pdf_convert.return_value = {}
     # Test case data and expected results collected from
-    # calculator/tests/Helsinki-lisa laskurin testitapaukset.xlsx/ Sheet Palkan Helsinki-lisä / Column E
+    # calculator/tests/Helsinki-lisa laskurin testitapaukset.xlsx/ Sheet Palkan
+    # Helsinki-lisä / Column E
     application = ApplicationFactory(
         association_has_business_activities=True,
         company__company_form="ry",
@@ -1138,7 +1139,8 @@ def test_get_applications_for_open_case_request(
         for a in attachments:
             assert a.attachment_type in wanted_open_case_attachments
             assert a.attachment_type not in unwanted_open_case_attachments
-    # only handled_applications should be returned as their last  AhjoStatus is SUBMITTED_BUT_NOT_SENT_TO_AHJO
+    # only handled_applications should be returned as their last  AhjoStatus is
+    # SUBMITTED_BUT_NOT_SENT_TO_AHJO
     # and their application status is HANDLING
     assert applications_for_open_case.count() == len(wanted_applications_for_open_case)
 

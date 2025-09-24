@@ -104,7 +104,8 @@ def run_seed(number):
             status=status, proposal_for_decision=proposal_for_decision
         )
 
-        # Need to delete a few applications that are made for the batch for testing purposes
+        # Need to delete a few applications that are made for the batch for testing
+        # purposes
         Application.objects.filter(batch=batch).delete()
 
         apps = []

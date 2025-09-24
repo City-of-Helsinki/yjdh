@@ -53,14 +53,16 @@ env = environ.Env(
     CSRF_COOKIE_NAME=(str, "yjdhcsrftoken"),
     YTJ_BASE_URL=(str, "https://avoindata.prh.fi"),
     YTJ_TIMEOUT=(int, 30),
-    # Source: YTJ-rajapinnan koodiston kuvaus, available at https://liityntakatalogi.suomi.fi/dataset/xroadytj-services
+    # Source: YTJ-rajapinnan koodiston kuvaus, available at
+    # https://liityntakatalogi.suomi.fi/dataset/xroadytj-services
     # file: suomi_fi_palveluvayla_ytj_rajapinta_koodistot_v1_4.xlsx
     ASSOCIATION_FORM_CODES=(
         str,
         "18,21,25,29,31,32,35,38,39,4,44,45,46,47,50,58,6,71,9,90,94999",
     ),
     NEXT_PUBLIC_MOCK_FLAG=(bool, False),
-    # Random 32 bytes AES key, for testing purpose only, DO NOT use the same value in staging/production
+    # Random 32 bytes AES key, for testing purpose only, DO NOT use the same value in
+    # staging/production
     # Always override this value from env variables
     ENCRYPTION_KEY=(
         str,
@@ -243,7 +245,8 @@ LANGUAGES = (
     ("sv", _("Swedish")),
 )
 
-# Call gettext on languages so that "makemessages" command can find them when used dynamically in templates
+# Call gettext on languages so that "makemessages" command can find them when used
+# dynamically in templates
 _("fi")
 _("en")
 _("sv")
@@ -459,7 +462,8 @@ OIDC_OP_LOGOUT_CALLBACK_URL = env.str("OIDC_OP_LOGOUT_CALLBACK_URL")
 
 # Language selection is done with accept-language header in this project
 # UPDATE: 2023-08-07
-# Didn't seem to be working correctly with EAUTH forwards and landing back to callback url
+# Didn't seem to be working correctly with EAUTH forwards and landing back to callback
+# url
 # Changing this to False as nextjs's language autodetect seems to be at set to false too
 OIDC_DISABLE_LANGUAGE_COOKIE = False
 

@@ -170,8 +170,8 @@ class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
         # 1. Fill the fields of this Calculation based on the data that the applicant
         #    entered in the Application. The handlers are supposed to edit the values
         #    in Calculation, so the data entered by applicant stays intact.
-        # 2. reset pay subsidy objects according to the applicant's input. One exception,
-        # default value for start_time and end_time will be null
+        # 2. reset pay subsidy objects according to the applicant's input. One
+        #    exception, default value for start_time and end_time will be null
 
         for (
             source_field_name,
@@ -594,7 +594,8 @@ class PaySubsidyMonthlyRow(CalculationRow):
         assert self.max_subsidy is not None
         assert self.pay_subsidy is not None
 
-        # for calculations, use a fraction in [0,1] range instead of a percent in [0,100] range
+        # for calculations, use a fraction in [0,1] range instead of a percent in
+        # [0,100] range
         work_time_fraction = self.pay_subsidy.get_work_time_percent() * decimal.Decimal(
             "0.01"
         )

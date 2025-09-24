@@ -19,8 +19,8 @@ class BFIsApplicant(BFIsAuthenticated):
         if settings.NEXT_PUBLIC_MOCK_FLAG:
             return True
         if request.user and request.user.is_staff:
-            # Handlers are never applicants. This restriction is needed in order to limit
-            # handler's access to draft applications.
+            # Handlers are never applicants. This restriction is needed in order to
+            # limit handler's access to draft applications.
             return False
         return super().has_permission(request, view)
 

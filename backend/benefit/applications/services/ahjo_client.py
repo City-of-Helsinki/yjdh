@@ -181,7 +181,8 @@ class AhjoSignerRequest(AhjoRequest):
             if not setting.data:
                 raise ValueError("Signer organization identifier list is empty")
 
-            # If data is string or other type, you might want to validate it's actually a list
+            # If data is string or other type, you might want to validate it's actually
+            # a list
             if not isinstance(setting.data, list):
                 raise ValueError("Signer organization identifier must be a list")
 
@@ -291,7 +292,8 @@ class AhjoApiClient:
                 timeout=self._timeout,
                 data=data,
             )
-            # Create new ahjo status or update the last ahjo_status if a similar status exists,
+            # Create new ahjo status or update the last ahjo_status if a similar status
+            # exists,
             # which means that this is a retry
             if hasattr(self._request, "result_status") and self._request.result_status:
                 AhjoStatus.objects.update_or_create(

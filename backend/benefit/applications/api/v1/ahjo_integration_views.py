@@ -348,7 +348,8 @@ class AhjoCallbackView(APIView):
                 attachment.save()
 
     def handle_decision_proposal_success(self, application: Application):
-        # do anything that needs to be done when Ahjo has received a decision proposal request
+        # do anything that needs to be done when Ahjo has received a decision proposal
+        # request
         if not application.batch:
             raise AhjoCallbackError(
                 f"Application {application.id} has no batch when Ahjo has received a"

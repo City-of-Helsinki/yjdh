@@ -17,7 +17,8 @@ class StatusTransitionValidator:
 
     def __call__(self, value, serializer_field):
         if status := self.get_current_status(serializer_field):
-            # In case it's an update operation, validate with the current status in database
+            # In case it's an update operation, validate with the current status in
+            # database
             if value != status and value not in self.STATUS_TRANSITIONS[status]:
                 raise serializers.ValidationError(
                     format_lazy(

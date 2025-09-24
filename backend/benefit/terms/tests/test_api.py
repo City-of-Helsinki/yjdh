@@ -77,7 +77,8 @@ def test_approve_terms_success(
     application.status = from_status
     application.save()
     if previously_approved:
-        # Handle case where user has previously approved terms, but new terms are now in effect.
+        # Handle case where user has previously approved terms, but new terms are now in
+        # effect.
         previous_terms = TermsFactory(
             effective_from=applicant_terms.effective_from - timedelta(days=10)
         )

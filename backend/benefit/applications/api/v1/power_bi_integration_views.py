@@ -61,7 +61,8 @@ class PowerBiIntegrationView(APIView):
             )
             return response
         else:
-            # Handle invalid filters (e.g., return a default queryset or handle the error)
+            # Handle invalid filters (e.g., return a default queryset or handle the
+            # error)
             return StreamingHttpResponse("Invalid filters", status=400)
 
     def _csv_response(

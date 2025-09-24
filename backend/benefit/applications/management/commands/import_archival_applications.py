@@ -221,7 +221,8 @@ class Command(BaseCommand):
                     continue
 
             if company_found:
-                # Remove all conflicting archival applications with the same application number
+                # Remove all conflicting archival applications with the same application
+                # number
                 existing_apps = ArchivalApplication.objects.filter(
                     application_number=application_number
                 )

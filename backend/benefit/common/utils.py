@@ -396,7 +396,8 @@ def get_date_range_end_with_days360(start_date: date, n_months: int):
     """
     assert n_months >= 0
 
-    # Using the usual calendar definition of months, so initially the start_date might be off by a few days
+    # Using the usual calendar definition of months, so initially the start_date might
+    # be off by a few days
     full_months = int(n_months)
     # Make the initial guess work for February cases, too
     fractional_days = int(to_decimal((n_months - full_months) * 28, decimal_places=0))
@@ -406,16 +407,17 @@ def get_date_range_end_with_days360(start_date: date, n_months: int):
         + relativedelta(days=fractional_days - 3)
     )
     for _ in range(DATE_RANGE_MAX_ITERATIONS):
-        # calculate how much we are off from the duration that was requested, and see if the
-        # next day would be closer to the goal
+        # calculate how much we are off from the duration that was requested, and see if
+        # the next day would be closer to the goal
         difference = abs(duration_in_months(start_date, end_date) - n_months)
         next_day_difference = abs(
             duration_in_months(start_date, end_date + relativedelta(days=1)) - n_months
         )
         if difference < next_day_difference:
-            # [end_date, start_date] is the date range that most closely matches n_months.
-            # in case difference == next_day_difference, we'll advance to the next day, in order to
-            # make the resulting date range as long as possible.
+            # [end_date, start_date] is the date range that most closely matches
+            # n_months.
+            # in case difference == next_day_difference, we'll advance to the next day,
+            # in order to make the resulting date range as long as possible.
             break
         else:
             end_date += relativedelta(days=1)
@@ -423,8 +425,9 @@ def get_date_range_end_with_days360(start_date: date, n_months: int):
         assert False, "This should be unreachable"
 
     if end_date < start_date:
-        # We can't have date ranges where duration is less than one day, as the range is inclusive
-        # (for benefit calculation this is OK, as a benefit with a zero duration doesn't exist)
+        # We can't have date ranges where duration is less than one day, as the range is
+        # inclusive (for benefit calculation this is OK, as a benefit with a zero
+        # duration doesn't exist)
         return None
 
     return end_date

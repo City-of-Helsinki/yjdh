@@ -242,7 +242,8 @@ class Command(BaseCommand):
         response_text: str,
         request_type: AhjoRequestType,
     ) -> str:
-        # The request id  is returned in the response text in text format {request_id}, so remove brackets here
+        # The request id  is returned in the response text in text format {request_id},
+        # so remove brackets here
         response_text = response_text.replace("{", "").replace("}", "")
         ahjo_status = application.ahjo_status.latest()
         ahjo_status.ahjo_request_id = response_text

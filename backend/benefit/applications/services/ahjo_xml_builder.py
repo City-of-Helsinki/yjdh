@@ -239,7 +239,8 @@ class AhjoSecretXMLBuilder(AhjoXMLBuilder):
         total_amount_row, calculation_rows = self._get_period_rows_for_xml(
             self.application.calculation
         )
-        # If there is only one period, we can combine the monthly eur row and the total row into a single row
+        # If there is only one period, we can combine the monthly eur row and the total
+        # row into a single row
         if (
             len(calculation_rows) == 1
             and calculation_rows[0].row_type == RowType.HELSINKI_BENEFIT_MONTHLY_EUR

@@ -85,8 +85,8 @@ class ApproveTermsSerializer(serializers.ModelSerializer):
         Currently, all the applicant consents must be selected, none of them are optional.
         """
         if data["terms"] != Terms.objects.get_terms_in_effect(data["terms"].terms_type):
-            # Extra validation step to ensure that the terms that have been shown to the user are actually the
-            # terms that are currently in effect.
+            # Extra validation step to ensure that the terms that have been shown to the
+            # user are actually the terms that are currently in effect.
             raise serializers.ValidationError(
                 {"terms": _("Only the terms currently in effect can be approved")}
             )

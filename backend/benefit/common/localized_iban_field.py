@@ -21,8 +21,10 @@ class LocalizedIBANField(IBANField):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # switch the validator.
-        # self.validators is a read-only property so it can't be assigned to. The property value is a list that
-        # is mutable so we can replace the contents of the list with the slice assignment.
+        # self.validators is a read-only property so it can't be assigned to. The
+        # property value is a list that
+        # is mutable so we can replace the contents of the list with the slice
+        # assignment.
         # Also, avoid list modification while iterating over it.
         self.validators[:] = [
             v for v in self.validators if not isinstance(v, IBANValidator)
