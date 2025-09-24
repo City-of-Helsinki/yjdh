@@ -29,6 +29,7 @@ env = environ.Env(
     STATIC_URL=(str, "/static/"),
     ALLOWED_HOSTS=(list, ["*"]),
     USE_X_FORWARDED_HOST=(bool, False),
+    DATABASE_PASSWORD=(str, ""),
     DATABASE_URL=(
         str,
         "postgres://benefit:benefit@benefit-db:5434/benefit",
@@ -213,6 +214,9 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 USE_X_FORWARDED_HOST = env.bool("USE_X_FORWARDED_HOST")
 
 DATABASES = {"default": env.db()}
+
+if env("DATABASE_PASSWORD"):
+    DATABASES["default"]["PASSWORD"] = env("DATABASE_PASSWORD")
 
 CACHES = {"default": env.cache()}
 
