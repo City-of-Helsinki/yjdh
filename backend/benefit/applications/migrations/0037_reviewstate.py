@@ -5,24 +5,54 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('applications', '0036_alter_employee_working_hours'),
+        ("applications", "0036_alter_employee_working_hours"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ReviewState',
+            name="ReviewState",
             fields=[
-                ('application', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='applications.application', verbose_name='application')),
-                ('company', models.BooleanField(default=False, verbose_name='company')),
-                ('company_contact_person', models.BooleanField(default=False, verbose_name='company contact person')),
-                ('de_minimis_aids', models.BooleanField(default=False, verbose_name='de minimis aids')),
-                ('co_operation_negotiations', models.BooleanField(default=False, verbose_name='co-operation negotiations')),
-                ('employee', models.BooleanField(default=False, verbose_name='employee')),
-                ('pay_subsidy', models.BooleanField(default=False, verbose_name='pay subsidy')),
-                ('benefit', models.BooleanField(default=False, verbose_name='benefit')),
-                ('employment', models.BooleanField(default=False, verbose_name='employment')),
+                (
+                    "application",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        primary_key=True,
+                        serialize=False,
+                        to="applications.application",
+                        verbose_name="application",
+                    ),
+                ),
+                ("company", models.BooleanField(default=False, verbose_name="company")),
+                (
+                    "company_contact_person",
+                    models.BooleanField(
+                        default=False, verbose_name="company contact person"
+                    ),
+                ),
+                (
+                    "de_minimis_aids",
+                    models.BooleanField(default=False, verbose_name="de minimis aids"),
+                ),
+                (
+                    "co_operation_negotiations",
+                    models.BooleanField(
+                        default=False, verbose_name="co-operation negotiations"
+                    ),
+                ),
+                (
+                    "employee",
+                    models.BooleanField(default=False, verbose_name="employee"),
+                ),
+                (
+                    "pay_subsidy",
+                    models.BooleanField(default=False, verbose_name="pay subsidy"),
+                ),
+                ("benefit", models.BooleanField(default=False, verbose_name="benefit")),
+                (
+                    "employment",
+                    models.BooleanField(default=False, verbose_name="employment"),
+                ),
             ],
         ),
     ]

@@ -290,14 +290,14 @@ def _check_fields(original, cloned, fields):
             else getattr(cloned, field.name)
         )
         if field.name in fields["copied"]:
-            assert (
-                original_value == cloned_value
-            ), f"Field {field.name} should match, {original_value} != {cloned_value}"
+            assert original_value == cloned_value, (
+                f"Field {field.name} should match, {original_value} != {cloned_value}"
+            )
 
         if field.name in fields["not_copied"]:
-            assert (
-                original_value != cloned_value
-            ), f"Field {field.name} should not match, {original_value} != {cloned_value}"
+            assert original_value != cloned_value, (
+                f"Field {field.name} should not match, {original_value} != {cloned_value}"
+            )
 
         if field.name not in fields["copied"] + fields["not_copied"]:
             assert False, f"Unidentified field '{field.name}', please take this "
@@ -322,9 +322,9 @@ def _check_pay_subsidies(application, cloned_application):
     original_pay_subsidies = list(application.pay_subsidies.all())
     cloned_pay_subsidies = list(cloned_application.pay_subsidies.all())
 
-    assert len(original_pay_subsidies) == len(
-        cloned_pay_subsidies
-    ), "Number of pay subsidies should match"
+    assert len(original_pay_subsidies) == len(cloned_pay_subsidies), (
+        "Number of pay subsidies should match"
+    )
 
     for original_pay_subsidy in original_pay_subsidies:
         matched_subsidy = next(
@@ -340,9 +340,9 @@ def _check_pay_subsidies(application, cloned_application):
             ),
             None,
         )
-        assert (
-            matched_subsidy is not None
-        ), "Matching pay subsidy not found in cloned subsidies"
+        assert matched_subsidy is not None, (
+            "Matching pay subsidy not found in cloned subsidies"
+        )
         _check_fields(original_pay_subsidy, matched_subsidy, pay_subsidy_fields)
 
 
@@ -352,9 +352,9 @@ def _check_training_compensations(application, cloned_application):
         cloned_application.training_compensations.all()
     )
 
-    assert len(cloned_training_compensations) == len(
-        original_training_compensations
-    ), "Number of training compensations should match"
+    assert len(cloned_training_compensations) == len(original_training_compensations), (
+        "Number of training compensations should match"
+    )
 
     for original_compensation in original_training_compensations:
         matched_compensation = next(
@@ -369,9 +369,9 @@ def _check_training_compensations(application, cloned_application):
             ),
             None,
         )
-        assert (
-            matched_compensation is not None
-        ), "Matching compensation not found in cloned compensations"
+        assert matched_compensation is not None, (
+            "Matching compensation not found in cloned compensations"
+        )
         _check_fields(
             original_compensation, matched_compensation, training_compensation_fields
         )
@@ -381,9 +381,9 @@ def _check_de_minimis_aids(application, cloned_application):
     original_de_minimis_aids = list(application.de_minimis_aid_set.all())
     cloned_de_minimis_aids = list(cloned_application.de_minimis_aid_set.all())
 
-    assert len(cloned_de_minimis_aids) == len(
-        original_de_minimis_aids
-    ), "Number of de minimis aids should match"
+    assert len(cloned_de_minimis_aids) == len(original_de_minimis_aids), (
+        "Number of de minimis aids should match"
+    )
 
     for original_aid in original_de_minimis_aids:
         matched_aid = next(

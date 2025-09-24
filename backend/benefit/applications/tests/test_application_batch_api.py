@@ -315,10 +315,12 @@ def test_batch_status_change(
 
 def test_batch_too_many_drafts(application_batch):
     # Create a second batch to get to two batch limit
-    ApplicationBatchFactory(
-        status=ApplicationBatchStatus.DRAFT,
-        proposal_for_decision=ApplicationStatus.REJECTED,
-    ),
+    (
+        ApplicationBatchFactory(
+            status=ApplicationBatchStatus.DRAFT,
+            proposal_for_decision=ApplicationStatus.REJECTED,
+        ),
+    )
 
     # Create a batch with different status and try putting it in draft
     batch_with_status_change = ApplicationBatchFactory(

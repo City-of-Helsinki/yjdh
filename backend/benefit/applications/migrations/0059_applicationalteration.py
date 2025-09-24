@@ -5,34 +5,121 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('applications', '0058_alter_historicalapplication_history_change_reason'),
+        ("applications", "0058_alter_historicalapplication_history_change_reason"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ApplicationAlteration',
+            name="ApplicationAlteration",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='time created')),
-                ('modified_at', models.DateTimeField(auto_now=True, verbose_name='time modified')),
-                ('alteration_type', models.TextField(choices=[('termination', 'Termination'), ('suspension', 'Suspension')], verbose_name='type of alteration')),
-                ('end_date', models.DateField(verbose_name='new benefit end date')),
-                ('resume_date', models.DateField(blank=True, null=True, verbose_name='date when employment resumes after suspended')),
-                ('reason', models.TextField(verbose_name='reason for alteration')),
-                ('handled_at', models.DateField(blank=True, null=True, verbose_name='date when alteration notice was handled')),
-                ('recovery_start_date', models.DateField(blank=True, null=True, verbose_name='the first day the unwarranted benefit will be collected from')),
-                ('recovery_end_date', models.DateField(blank=True, null=True, verbose_name='the last day the unwarranted benefit will be collected from')),
-                ('recovery_amount', models.DecimalField(decimal_places=2, max_digits=8, null=True, verbose_name='amount of unwarranted benefit to be collected')),
-                ('use_alternate_einvoice_provider', models.BooleanField(default=False, verbose_name='whether to use a separate e-invoice address from the one of the applicant organization')),
-                ('einvoice_provider_name', models.TextField(blank=True, verbose_name='name of the e-invoice provider')),
-                ('einvoice_provider_identifier', models.TextField(blank=True, verbose_name='identifier of the e-invoice provider')),
-                ('einvoice_address', models.TextField(blank=True, verbose_name='e-invoice address')),
-                ('application', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='alteration_set', to='applications.application', verbose_name='alteration of application')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="time created"
+                    ),
+                ),
+                (
+                    "modified_at",
+                    models.DateTimeField(auto_now=True, verbose_name="time modified"),
+                ),
+                (
+                    "alteration_type",
+                    models.TextField(
+                        choices=[
+                            ("termination", "Termination"),
+                            ("suspension", "Suspension"),
+                        ],
+                        verbose_name="type of alteration",
+                    ),
+                ),
+                ("end_date", models.DateField(verbose_name="new benefit end date")),
+                (
+                    "resume_date",
+                    models.DateField(
+                        blank=True,
+                        null=True,
+                        verbose_name="date when employment resumes after suspended",
+                    ),
+                ),
+                ("reason", models.TextField(verbose_name="reason for alteration")),
+                (
+                    "handled_at",
+                    models.DateField(
+                        blank=True,
+                        null=True,
+                        verbose_name="date when alteration notice was handled",
+                    ),
+                ),
+                (
+                    "recovery_start_date",
+                    models.DateField(
+                        blank=True,
+                        null=True,
+                        verbose_name="the first day the unwarranted benefit will be collected from",
+                    ),
+                ),
+                (
+                    "recovery_end_date",
+                    models.DateField(
+                        blank=True,
+                        null=True,
+                        verbose_name="the last day the unwarranted benefit will be collected from",
+                    ),
+                ),
+                (
+                    "recovery_amount",
+                    models.DecimalField(
+                        decimal_places=2,
+                        max_digits=8,
+                        null=True,
+                        verbose_name="amount of unwarranted benefit to be collected",
+                    ),
+                ),
+                (
+                    "use_alternate_einvoice_provider",
+                    models.BooleanField(
+                        default=False,
+                        verbose_name="whether to use a separate e-invoice address from the one of the applicant organization",
+                    ),
+                ),
+                (
+                    "einvoice_provider_name",
+                    models.TextField(
+                        blank=True, verbose_name="name of the e-invoice provider"
+                    ),
+                ),
+                (
+                    "einvoice_provider_identifier",
+                    models.TextField(
+                        blank=True, verbose_name="identifier of the e-invoice provider"
+                    ),
+                ),
+                (
+                    "einvoice_address",
+                    models.TextField(blank=True, verbose_name="e-invoice address"),
+                ),
+                (
+                    "application",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="alteration_set",
+                        to="applications.application",
+                        verbose_name="alteration of application",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

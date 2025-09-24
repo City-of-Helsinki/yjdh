@@ -6,31 +6,61 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('applications', '0032_auto_20230526_1010'),
+        ("applications", "0032_auto_20230526_1010"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='application',
-            name='application_origin',
-            field=models.CharField(choices=[('handler', 'Handler'), ('applicant', 'Applicant')], default='applicant', max_length=64, verbose_name='application origin'),
+            model_name="application",
+            name="application_origin",
+            field=models.CharField(
+                choices=[("handler", "Handler"), ("applicant", "Applicant")],
+                default="applicant",
+                max_length=64,
+                verbose_name="application origin",
+            ),
         ),
         migrations.AddField(
-            model_name='historicalapplication',
-            name='application_origin',
-            field=models.CharField(choices=[('handler', 'Handler'), ('applicant', 'Applicant')], default='applicant', max_length=64, verbose_name='application origin'),
+            model_name="historicalapplication",
+            name="application_origin",
+            field=models.CharField(
+                choices=[("handler", "Handler"), ("applicant", "Applicant")],
+                default="applicant",
+                max_length=64,
+                verbose_name="application origin",
+            ),
         ),
         migrations.AlterField(
-            model_name='applicationbatch',
-            name='handler',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
+            model_name="applicationbatch",
+            name="handler",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='attachment',
-            name='attachment_type',
-            field=models.CharField(choices=[('employment_contract', 'employment contract'), ('pay_subsidy_decision', 'pay subsidy decision'), ('commission_contract', 'commission contract'), ('education_contract', 'education contract of the apprenticeship office'), ('helsinki_benefit_voucher', 'helsinki benefit voucher'), ('employee_consent', 'employee consent'), ('full_application', 'full application'), ('other_attachment', 'other attachment')], max_length=64, verbose_name='attachment type in business rules'),
+            model_name="attachment",
+            name="attachment_type",
+            field=models.CharField(
+                choices=[
+                    ("employment_contract", "employment contract"),
+                    ("pay_subsidy_decision", "pay subsidy decision"),
+                    ("commission_contract", "commission contract"),
+                    (
+                        "education_contract",
+                        "education contract of the apprenticeship office",
+                    ),
+                    ("helsinki_benefit_voucher", "helsinki benefit voucher"),
+                    ("employee_consent", "employee consent"),
+                    ("full_application", "full application"),
+                    ("other_attachment", "other attachment"),
+                ],
+                max_length=64,
+                verbose_name="attachment type in business rules",
+            ),
         ),
     ]

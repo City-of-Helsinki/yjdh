@@ -6,7 +6,6 @@ import uuid
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("companies", "0001_initial"),
         ("applications", "0013_application_number_auto_field"),

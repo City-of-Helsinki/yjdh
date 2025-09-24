@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("calculator", "0010_override_monthly_benefit_amount"),
     ]

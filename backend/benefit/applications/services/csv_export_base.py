@@ -140,9 +140,9 @@ class CsvExportBase:
 
         for line in self.get_csv_cell_list_lines_generator():
             line_length_set.add(len(line))
-            assert (
-                len(line_length_set) == 1
-            ), "Each CSV line must have same column count"
+            assert len(line_length_set) == 1, (
+                "Each CSV line must have same column count"
+            )
             csv_writer.writerow(line)
             yield io.getvalue()
             # Reset StringIO object

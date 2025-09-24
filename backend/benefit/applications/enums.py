@@ -10,8 +10,9 @@ class ApplicationStatus(models.TextChoices):
     DRAFT = "draft", _("Draft")
     RECEIVED = "received", _("Received")
     HANDLING = "handling", _("Handling")
-    ADDITIONAL_INFORMATION_NEEDED = "additional_information_needed", _(
-        "Additional information requested"
+    ADDITIONAL_INFORMATION_NEEDED = (
+        "additional_information_needed",
+        _("Additional information requested"),
     )
     CANCELLED = "cancelled", _("Cancelled")
     ACCEPTED = "accepted", _("Accepted")
@@ -97,8 +98,9 @@ class AttachmentType(models.TextChoices):
     EMPLOYMENT_CONTRACT = "employment_contract", _("employment contract")
     PAY_SUBSIDY_DECISION = "pay_subsidy_decision", _("pay subsidy decision")
     COMMISSION_CONTRACT = "commission_contract", _("commission contract")
-    EDUCATION_CONTRACT = "education_contract", _(
-        "education contract of the apprenticeship office"
+    EDUCATION_CONTRACT = (
+        "education_contract",
+        _("education contract of the apprenticeship office"),
     )
     HELSINKI_BENEFIT_VOUCHER = "helsinki_benefit_voucher", _("helsinki benefit voucher")
     EMPLOYEE_CONSENT = "employee_consent", _("employee consent")
@@ -106,8 +108,9 @@ class AttachmentType(models.TextChoices):
     OTHER_ATTACHMENT = "other_attachment", _("other attachment")
     PDF_SUMMARY = "pdf_summary", _("pdf summary")
     DECISION_TEXT_XML = "decision_text_xml", _("public decision text xml attachment")
-    DECISION_TEXT_SECRET_XML = "decision_text_secret_xml", _(
-        "non-public decision text xml attachment"
+    DECISION_TEXT_SECRET_XML = (
+        "decision_text_secret_xml",
+        _("non-public decision text xml attachment"),
     )
 
 
@@ -118,20 +121,24 @@ class AttachmentRequirement(models.TextChoices):
 
 class ApplicationBatchStatus(models.TextChoices):
     DRAFT = "draft", _("Draft")
-    AHJO_REPORT_CREATED = "exported_ahjo_report", _(
-        "Ahjo report created, not yet sent to AHJO"
+    AHJO_REPORT_CREATED = (
+        "exported_ahjo_report",
+        _("Ahjo report created, not yet sent to AHJO"),
     )
-    AWAITING_AHJO_DECISION = "awaiting_ahjo_decision", _(
-        "Sent to Ahjo, decision pending"
+    AWAITING_AHJO_DECISION = (
+        "awaiting_ahjo_decision",
+        _("Sent to Ahjo, decision pending"),
     )
     DECIDED_ACCEPTED = "accepted", _("Accepted in Ahjo")
     DECIDED_REJECTED = "rejected", _("Rejected in Ahjo")
-    RETURNED = "returned", _(
-        "Returned from Ahjo without decision"
+    RETURNED = (
+        "returned",
+        _("Returned from Ahjo without decision"),
     )  # Theoretically possible: means that a decision was not made
     SENT_TO_TALPA = "sent_to_talpa", _("Sent to Talpa")
-    PARTIALLY_SENT_TO_TALPA = "partially_sent_to_talpa", _(
-        "One of two instalments sent to Talpa"
+    PARTIALLY_SENT_TO_TALPA = (
+        "partially_sent_to_talpa",
+        _("One of two instalments sent to Talpa"),
     )
     COMPLETED = "completed", _("Processing is completed")
     REJECTED_BY_TALPA = "rejected_by_talpa", _("Rejected by Talpa")
@@ -141,11 +148,13 @@ class ApplicationBatchStatus(models.TextChoices):
 class ApplicationTalpaStatus(models.TextChoices):
     NOT_PROCESSED_BY_TALPA = "not_sent_to_talpa", _("Not sent to Talpa")
     REJECTED_BY_TALPA = "rejected_by_talpa", _("Rejected by Talpa")
-    PARTIALLY_SENT_TO_TALPA = "partially_sent_to_talpa", _(
-        "One of two instalments sent to Talpa"
+    PARTIALLY_SENT_TO_TALPA = (
+        "partially_sent_to_talpa",
+        _("One of two instalments sent to Talpa"),
     )
-    SUCCESSFULLY_SENT_TO_TALPA = "successfully_sent_to_talpa", _(
-        "Successfully sent to Talpa"
+    SUCCESSFULLY_SENT_TO_TALPA = (
+        "successfully_sent_to_talpa",
+        _("Successfully sent to Talpa"),
     )
 
 
@@ -168,21 +177,25 @@ class PaySubsidyGranted(models.TextChoices):
 
 class AhjoStatus(models.TextChoices):
     # The possible statuses for Ahjo processing
-    SUBMITTED_BUT_NOT_SENT_TO_AHJO = "submitted_but_not_sent_to_ahjo", _(
-        "Submitted but not sent to AHJO"
+    SUBMITTED_BUT_NOT_SENT_TO_AHJO = (
+        "submitted_but_not_sent_to_ahjo",
+        _("Submitted but not sent to AHJO"),
     )
-    REQUEST_TO_OPEN_CASE_SENT = "request_to_open_case_sent", _(
-        "Request to open the case sent to AHJO"
+    REQUEST_TO_OPEN_CASE_SENT = (
+        "request_to_open_case_sent",
+        _("Request to open the case sent to AHJO"),
     )
     CASE_OPENED = "case_opened", _("Case opened in AHJO")
     UPDATE_REQUEST_SENT = "update_request_sent", _("Update request sent")
     UPDATE_REQUEST_RECEIVED = "update_request_received", _("Update request received")
     DECISION_PROPOSAL_SENT = "decision_proposal_sent", _("Decision proposal sent")
-    DECISION_PROPOSAL_ACCEPTED = "decision_proposal_accepted", _(
-        "Decision proposal accepted"
+    DECISION_PROPOSAL_ACCEPTED = (
+        "decision_proposal_accepted",
+        _("Decision proposal accepted"),
     )
-    DECISION_PROPOSAL_REJECTED = "decision_proposal_rejected", _(
-        "Decision proposal rejected"
+    DECISION_PROPOSAL_REJECTED = (
+        "decision_proposal_rejected",
+        _("Decision proposal rejected"),
     )
     SCHEDULED_FOR_DELETION = "scheduled_for_deletion", _("Scheduled for deletion")
     DELETE_REQUEST_SENT = "delete_request_sent", _("Delete request sent")
@@ -192,17 +205,20 @@ class AhjoStatus(models.TextChoices):
     REMOVED_IN_AHJO = "removed", _("Decision cancelled in Ahjo")
     SIGNED_IN_AHJO = "signed", _("Decision signed and completed in Ahjo")
     UPDATED_IN_AHJO = "updated", _("Decision updated in Ahjo")
-    DECISION_DETAILS_REQUEST_SENT = "decision_details_request_sent", _(
-        "Decision details request sent"
+    DECISION_DETAILS_REQUEST_SENT = (
+        "decision_details_request_sent",
+        _("Decision details request sent"),
     )
-    DETAILS_RECEIVED_FROM_AHJO = "details_received", _(
-        "Decision details received from Ahjo"
+    DETAILS_RECEIVED_FROM_AHJO = (
+        "details_received",
+        _("Decision details received from Ahjo"),
     )
 
 
 class ApplicationActions(models.TextChoices):
-    HANDLER_ALLOW_APPLICATION_EDIT = "HANDLER_ALLOW_APPLICATION_EDIT", _(
-        "Allow/disallow applicant's modifications to the application"
+    HANDLER_ALLOW_APPLICATION_EDIT = (
+        "HANDLER_ALLOW_APPLICATION_EDIT",
+        _("Allow/disallow applicant's modifications to the application"),
     )
 
 
@@ -219,8 +235,9 @@ class AhjoRequestType(models.TextChoices):
     SEND_DECISION_PROPOSAL = "send_decision", _("Send decision to Ahjo")
     GET_DECISION_DETAILS = "get_decision_details", _("Get decision details from Ahjo")
     SUBSCRIBE_TO_DECISIONS = "subscribe_to_decisions", _("Subscribe to decisions API")
-    GET_DECISION_MAKER = "get_decision_maker", _(
-        "Get decision maker name from Ahjo API"
+    GET_DECISION_MAKER = (
+        "get_decision_maker",
+        _("Get decision maker name from Ahjo API"),
     )
     GET_SIGNER = "get_signer", _("Get signer name a and AD id from Ahjo API")
 

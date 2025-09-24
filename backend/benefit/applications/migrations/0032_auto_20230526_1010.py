@@ -7,21 +7,29 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('applications', '0031_application_batches_expert_inspector_title'),
+        ("applications", "0031_application_batches_expert_inspector_title"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='applicationbatch',
-            name='handler',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
+            model_name="applicationbatch",
+            name="handler",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='applicationbatch',
-            name='decision_date',
-            field=models.DateField(blank=True, null=True, validators=[applications.models.validate_decision_date], verbose_name='date of the decision in Ahjo'),
+            model_name="applicationbatch",
+            name="decision_date",
+            field=models.DateField(
+                blank=True,
+                null=True,
+                validators=[applications.models.validate_decision_date],
+                verbose_name="date of the decision in Ahjo",
+            ),
         ),
     ]

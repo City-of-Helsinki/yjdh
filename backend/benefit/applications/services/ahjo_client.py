@@ -371,8 +371,10 @@ class AhjoApiClient:
         e: Union[requests.exceptions.HTTPError, requests.exceptions.RequestException],
         application_number: Union[int, None] = None,
     ) -> str:
-        return f"A HTTP or network error occurred while sending {self.request} for application \
+        return (
+            f"A HTTP or network error occurred while sending {self.request} for application \
     {application_number} to Ahjo: {e}"
+        )
 
     def write_error_to_ahjo_status(self, context: str, message_to_handler: str) -> None:
         """Write the error message to the Ahjo status of the application for all requests that have an application.

@@ -303,9 +303,9 @@ class PaySubsidy(UUIDModel, TimeStampedModel, DurationMixin):
                     )
                 )
             else:
-                assert (
-                    ret[-1].application == subsidy.application
-                ), "Should only process PaySubsidies with the same application"
+                assert ret[-1].application == subsidy.application, (
+                    "Should only process PaySubsidies with the same application"
+                )
                 # it's a compatible PaySubsidy, just merge it with the previous one
                 ret[-1].start_date = min(ret[-1].start_date, subsidy.start_date)
                 ret[-1].end_date = max(ret[-1].end_date, subsidy.end_date)
@@ -518,8 +518,8 @@ class DateRangeDescriptionRow(CalculationRow):
 
         if start_date and end_date and prefix_text:
             self.description_fi_template = (
-                f'{prefix_text} {format_date(start_date, locale="fi_FI")} - '
-                f'{format_date(end_date, locale="fi_FI")} '
+                f"{prefix_text} {format_date(start_date, locale='fi_FI')} - "
+                f"{format_date(end_date, locale='fi_FI')} "
                 f"({to_decimal(duration_in_months(start_date, end_date), 2)} kk)"
             )
         super().__init__(*args, **kwargs)
@@ -710,9 +710,9 @@ class TotalRowMixin:
             .order_by("-ordering")
             .first()
         )
-        assert (
-            row is not None
-        ), "Application logic error - misconstructed application rows"
+        assert row is not None, (
+            "Application logic error - misconstructed application rows"
+        )
         return row.amount
 
 

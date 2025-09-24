@@ -220,8 +220,8 @@ def _past_datetime(days: int) -> datetime:
 
 
 def _create_templates():
-    AcceptedDecisionProposalFactory(),
-    DeniedDecisionProposalFactory(),
+    (AcceptedDecisionProposalFactory(),)
+    (DeniedDecisionProposalFactory(),)
 
 
 def _create_dummy_ahjo_user_and_token():

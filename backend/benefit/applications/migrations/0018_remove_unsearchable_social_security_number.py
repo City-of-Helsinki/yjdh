@@ -6,7 +6,6 @@ import encrypted_fields.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0017_add_company_department"),
     ]

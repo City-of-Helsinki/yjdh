@@ -115,9 +115,9 @@ of type {attachment.attachment_type} was sent to AHJO!",
         file_handle = attachment.attachment_file.open()
         response = FileResponse(file_handle, content_type=attachment.content_type)
         response["Content-Length"] = attachment.attachment_file.size
-        response[
-            "Content-Disposition"
-        ] = f"attachment; filename={attachment.attachment_file.name}"
+        response["Content-Disposition"] = (
+            f"attachment; filename={attachment.attachment_file.name}"
+        )
         return response
 
 

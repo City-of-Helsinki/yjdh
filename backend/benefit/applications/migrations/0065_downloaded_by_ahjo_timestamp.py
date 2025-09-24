@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('applications', '0064_decision_proposal_drafts'),
+        ("applications", "0064_decision_proposal_drafts"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='attachment',
-            name='downloaded_by_ahjo',
+            model_name="attachment",
+            name="downloaded_by_ahjo",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='historicalattachment',
-            name='downloaded_by_ahjo',
+            model_name="historicalattachment",
+            name="downloaded_by_ahjo",
             field=models.DateTimeField(blank=True, null=True),
         ),
     ]
