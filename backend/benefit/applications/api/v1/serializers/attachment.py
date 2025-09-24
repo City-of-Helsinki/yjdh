@@ -14,8 +14,8 @@ from applications.enums import ApplicationStatus
 from applications.models import Attachment
 from applications.services.clamav import (
     ClamAvServiceUnavailableException,
-    FileInfectedException,
-    FileScanException,
+    FileInfectedError,
+    FileScanError,
     clamav_client,
 )
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
@@ -134,10 +134,10 @@ class AttachmentSerializer(serializers.ModelSerializer):
     def _scan_with_clamav(self, file):
         try:
             clamav_client.scan(file.name, file.file)
-        except FileScanException as fse:
+        except FileScanError as fse:
             log.error(f"File '{fse.file_name}' scanning failed")
             raise ClamAvServiceUnavailableException()
-        except FileInfectedException as fie:
+        except FileInfectedError as fie:
             log.error(f"File '{fie.file_name}' infected, viruses: {fie.viruses}")
             translation_text = _("File is infected with")
             raise serializers.ValidationError(

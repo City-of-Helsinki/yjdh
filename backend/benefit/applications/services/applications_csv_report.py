@@ -173,7 +173,7 @@ class ApplicationsCsvService(CsvExportBase):
             return ""
 
     @property
-    def CSV_COLUMNS(self) -> List[CsvColumn]:
+    def csv_columns(self) -> List[CsvColumn]:
         calculated_benefit_amount = "calculation.calculated_benefit_amount"
 
         columns = [
@@ -491,7 +491,7 @@ class ApplicationsCsvService(CsvExportBase):
     def get_row_items(self):
         with translation.override("fi"):
             for application in self.get_applications():
-                for application_row_idx, unused in enumerate(
+                for application_row_idx, _ in enumerate(
                     application.ahjo_rows or [None]
                 ):
                     # The CSV output is easier to process in PowerBI

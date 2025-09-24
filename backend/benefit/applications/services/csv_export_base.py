@@ -57,7 +57,7 @@ class CsvExportBase:
     Common code for CSV export interfaces.
 
     Classes deriving from CsvExportBase need to define:
-    * CSV_COLUMNS: a list of CsvColumn objects
+    * csv_columns: a list of CsvColumn objects
     * get_row_items: a function that returns a sequence of any objects. These objects
       must be compatible with the CsvColumn.cell_data_source (see get_csv_cell_list_lines_generator)
     """  # noqa: E501
@@ -66,7 +66,7 @@ class CsvExportBase:
     FILE_ENCODING = "utf-8"
 
     def _get_header_row(self) -> List[str]:
-        return [col.heading for col in self.CSV_COLUMNS]
+        return [col.heading for col in self.csv_columns]
 
     def write_csv_file(self, path) -> None:
         csv_string = self.get_csv_string()
@@ -84,7 +84,7 @@ class CsvExportBase:
         self,
     ) -> Generator[List[Union[str, int, decimal.Decimal, datetime.date]], None, None]:
         """
-        Iterate through the objects returned by get_row_items. Use the CsvColumn objects in CSV_COLUMNS to
+        Iterate through the objects returned by get_row_items. Use the CsvColumn objects in csv_columns to
         construct a CSV row from each item. Notes:
         * If cell_data_source is callable, then each item is passed as a paremeter to it,
           and the resulting value is used to construct the CSV cell value
@@ -94,7 +94,7 @@ class CsvExportBase:
         yield self._get_header_row()
         for item in self.get_row_items():
             line = []
-            for column in self.CSV_COLUMNS:
+            for column in self.csv_columns:
                 if callable(column.cell_data_source):
                     cell_value = column.cell_data_source(item)
                 else:

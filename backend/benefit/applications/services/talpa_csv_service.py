@@ -45,7 +45,7 @@ class TalpaCsvService(ApplicationsCsvService):
             return application.calculation.calculated_benefit_amount
 
     @property
-    def CSV_COLUMNS(self):
+    def csv_columns(self):
         columns = [
             CsvColumn("Hakemusnumero", "application_number"),
             CsvColumn("Työnantajan tyyppi", get_organization_type),

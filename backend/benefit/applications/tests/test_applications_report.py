@@ -697,7 +697,7 @@ def test_applications_csv_output(applications_csv_service):  # noqa: C901
         assert application.ahjo_rows[0].start_date == application.calculation.start_date
         assert application.ahjo_rows[0].end_date == application.calculation.end_date
 
-    csv_columns = iter(applications_csv_service.CSV_COLUMNS)
+    csv_columns = iter(applications_csv_service.csv_columns)
     next(csv_columns, None)  # Skip the first element
 
     for idx, col in enumerate(csv_columns, start=1):

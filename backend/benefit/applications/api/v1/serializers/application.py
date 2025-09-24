@@ -904,7 +904,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         elif organization_type == OrganizationType.COMPANY:
             required_fields.append("de_minimis_aid")
         else:
-            assert False, "unreachable"
+            raise AssertionError("unreachable")
 
         # if pay_subsidy_granted is selected, then the applicant needs to also select if
         # it's an apprenticeship_program or not

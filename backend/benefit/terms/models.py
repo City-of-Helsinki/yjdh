@@ -197,7 +197,7 @@ class ApplicantTermsApproval(AbstractTermsApproval):
     @staticmethod
     def terms_approval_needed(application):
         try:
-            application.applicant_terms_approval
+            _ = application.applicant_terms_approval
         except ObjectDoesNotExist:
             return True
         else:

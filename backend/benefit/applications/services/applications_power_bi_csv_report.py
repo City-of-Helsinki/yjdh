@@ -20,7 +20,7 @@ from applications.services.csv_export_base import CsvColumn, get_organization_ty
 
 class ApplicationsPowerBiCsvService(ApplicationsCsvService):
     """
-    This subclass customizes the CSV_COLUMNS for a different export format.
+    This subclass customizes the csv_columns for a different export format.
     """
 
     def get_completed_in_talpa_date(
@@ -42,7 +42,7 @@ class ApplicationsPowerBiCsvService(ApplicationsCsvService):
         return sum
 
     @property
-    def CSV_COLUMNS(self):
+    def csv_columns(self):
         calculated_benefit_amount = "calculation.calculated_benefit_amount"
 
         columns = [

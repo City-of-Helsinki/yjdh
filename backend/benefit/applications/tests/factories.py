@@ -216,10 +216,6 @@ class ReceivedApplicationFactory(ApplicationWithAttachmentFactory):
         "terms.tests.factories.ApplicantTermsApprovalFactory",
         factory_related_name="application",
     )
-    calculation = factory.RelatedFactory(
-        "calculator.tests.factories.CalculationFactory",
-        factory_related_name="application",
-    )
 
     @factory.post_generation
     def received_log_event(self, created, extracted, **kwargs):
