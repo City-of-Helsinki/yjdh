@@ -9,8 +9,8 @@ from django.test import override_settings
 from django.urls import reverse
 
 from shared.azure_adfs.auth import (
-    adfs_login_group_name,
     HelsinkiAdfsAuthCodeBackend,
+    adfs_login_group_name,
     is_adfs_login,
     provider_config,
 )
