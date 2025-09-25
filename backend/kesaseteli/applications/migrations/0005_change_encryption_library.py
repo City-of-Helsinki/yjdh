@@ -5,7 +5,6 @@ import encrypted_fields.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0004_application_default_status"),
     ]

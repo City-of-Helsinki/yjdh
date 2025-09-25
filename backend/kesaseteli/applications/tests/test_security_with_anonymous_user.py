@@ -103,12 +103,15 @@ def test_api_root_get_forbidden_to_anonymous_user(client):
     api_root_url = reverse("v1:api-root")
     response = client.get(api_root_url, headers=HEADERS_ACCEPT_APPLICATION_JSON)
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    assert response.data == {
-        "detail": ErrorDetail(
-            string="Autentikaatiotunnuksia ei annettu.",  # Default server language is Finnish
-            code="not_authenticated",
-        )
-    }
+    assert (
+        response.data
+        == {
+            "detail": ErrorDetail(
+                string="Autentikaatiotunnuksia ei annettu.",  # Default server language is Finnish
+                code="not_authenticated",
+            )
+        }
+    )
     assert isinstance(response.accepted_renderer, JSONRenderer)
     assert response.wsgi_request.user.is_anonymous
 
@@ -238,12 +241,15 @@ def test_not_acceptable_response_to_anonymous_user_requesting_html_from_endpoint
         headers={"Accept": "text/html"},
     )
     assert response.status_code == status.HTTP_406_NOT_ACCEPTABLE
-    assert response.data == {
-        "detail": ErrorDetail(
-            string="Ei voitu vastata pyynnön Accept-otsakkeen mukaisesti.",  # Default server language is Finnish
-            code="not_acceptable",
-        ),
-    }
+    assert (
+        response.data
+        == {
+            "detail": ErrorDetail(
+                string="Ei voitu vastata pyynnön Accept-otsakkeen mukaisesti.",  # Default server language is Finnish
+                code="not_acceptable",
+            ),
+        }
+    )
     assert response.content == b"" or json.loads(response.content.decode("utf-8")) == {
         "detail": "Ei voitu vastata pyynnön Accept-otsakkeen mukaisesti."
     }

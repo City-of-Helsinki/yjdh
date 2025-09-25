@@ -6,7 +6,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("companies", "0005_remove_company_eauth_profile"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),

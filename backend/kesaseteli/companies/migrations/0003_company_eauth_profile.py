@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("oidc", "0002_eauthorizationprofile"),
         ("companies", "0002_company_optional_fields"),

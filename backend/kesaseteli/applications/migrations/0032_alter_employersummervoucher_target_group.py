@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0031_rename_summer_voucher_exception_reason_to_target_group"),
     ]

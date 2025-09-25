@@ -6,7 +6,6 @@ import shared.common.validators
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0020_rename_summer_voucher_to_employer_summer_voucher"),
     ]

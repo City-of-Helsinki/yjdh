@@ -162,18 +162,18 @@ def test_youth_application_query_set_unexpired_or_active(
         YouthApplication.objects.unexpired_or_active().values_list("pk", flat=True)
     )
 
-    assert len(unexpired_or_active_pks) == len(
-        set(unexpired_or_active_pks)
-    ), "unexpired_or_active() gave duplicates"
+    assert len(unexpired_or_active_pks) == len(set(unexpired_or_active_pks)), (
+        "unexpired_or_active() gave duplicates"
+    )
 
     for app, expected_unexpired_or_active in zip(
         apps, expected_unexpired_or_active_list
     ):
         unexpired_or_active = app.pk in unexpired_or_active_pks
-        assert (
-            unexpired_or_active == expected_unexpired_or_active
-        ), unexpired_or_active_error_message(
-            app, is_active, expected_unexpired_or_active
+        assert unexpired_or_active == expected_unexpired_or_active, (
+            unexpired_or_active_error_message(
+                app, is_active, expected_unexpired_or_active
+            )
         )
 
 
@@ -203,9 +203,9 @@ def test_youth_application_query_set_matches_email_or_social_security_number(
             email=email, social_security_number=ssn
         ).values_list("pk", flat=True)
 
-        assert len(matched_pks) == len(
-            set(matched_pks)
-        ), "matches_email_or_social_security_number() gave duplicates"
+        assert len(matched_pks) == len(set(matched_pks)), (
+            "matches_email_or_social_security_number() gave duplicates"
+        )
 
         for app in apps:
             assert (app.pk in matched_pks) == (

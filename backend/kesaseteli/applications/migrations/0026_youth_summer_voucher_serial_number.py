@@ -6,7 +6,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0025_youthapplication_handler_and_handled_at"),
     ]

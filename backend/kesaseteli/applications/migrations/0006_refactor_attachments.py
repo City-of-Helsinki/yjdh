@@ -6,7 +6,6 @@ import uuid
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0005_change_encryption_library"),
     ]

@@ -5,7 +5,6 @@ import shared.common.validators
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0021_add_encrypted_vtj_json"),
     ]

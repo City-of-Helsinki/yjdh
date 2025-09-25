@@ -268,9 +268,9 @@ class YouthApplicationExcelExportViewSet(AuditLoggingModelViewSet):
                 ),
                 content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             )
-            response[
-                "Content-Disposition"
-            ] = f"attachment; filename={self.xlsx_filename}"
+            response["Content-Disposition"] = (
+                f"attachment; filename={self.xlsx_filename}"
+            )
             return response
 
     @property

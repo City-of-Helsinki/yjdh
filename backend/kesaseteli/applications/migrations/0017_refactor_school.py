@@ -8,7 +8,6 @@ def remove_deleted_schools(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0016_add_youth_application_field_validation"),
     ]

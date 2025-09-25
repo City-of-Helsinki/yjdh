@@ -8,7 +8,6 @@ import encrypted_fields.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0015_set_real_schools"),
     ]

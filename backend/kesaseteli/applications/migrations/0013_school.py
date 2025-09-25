@@ -5,7 +5,6 @@ import uuid
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0012_add_youthapplication_youthsummervoucher"),
     ]

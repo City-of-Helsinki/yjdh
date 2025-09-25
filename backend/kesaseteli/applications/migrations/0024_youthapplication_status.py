@@ -13,7 +13,6 @@ def set_youth_application_statuses(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0023_index_youth_application_fields"),
     ]
