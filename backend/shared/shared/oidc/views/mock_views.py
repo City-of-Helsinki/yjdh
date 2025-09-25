@@ -66,6 +66,8 @@ class MockAuthenticationRequestView(View):
                 is_superuser=getattr(settings, "OIDC_MOCK_USER_IS_SUPERUSER", False),
             )
             auth.login(
-                request, user, backend="django.contrib.auth.backends.ModelBackend"  # type: ignore
+                request,
+                user,
+                backend="django.contrib.auth.backends.ModelBackend",  # type: ignore
             )
         return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL or "/")
