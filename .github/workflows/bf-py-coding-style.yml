@@ -6,54 +6,29 @@ on:
   pull_request:
     paths:
     - '.github/workflows/bf-py-coding-style.yml'
+    - 'backend/benefit/**'
+    - 'backend/shared/**'
   workflow_dispatch:
 
 env:
   DEBUG: 1
 
 jobs:
-  py-coding-style:
-    name: Python coding style
+  pre-commit:
+    name: Run pre-commit hooks
     runs-on: ubuntu-latest
-
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
-
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: Cache pip packages
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-pip-modules
-        with:
-          path: ~/.pip-cache
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/requirements.txt') }}-${{ hashFiles('**/requirements-dev.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-
-      - name: Install dependencies
-        run: cd backend/benefit && pip install -r requirements.txt -r requirements-dev.txt
-
-      - name: (BF) Formatting
-        run: cd backend/benefit && black --check .
-
-      - name: (BF) Linting
-        run: cd backend/benefit && flake8
-
-      - name: (BF) Import sorting
-        run: cd backend/benefit && isort -c .
-
-      - name: (Shared) Formatting
-        run: cd backend/shared && black --check .
-
-      - name: (Shared) Linting
-        run: cd backend/shared && flake8
-
-      - name: (Shared) Import sorting
-        run: cd backend/shared && isort -c .
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Setup Python ${{ inputs.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+    - name: Run pre-commit (benefit)
+      uses: pre-commit/action@v3.0.1
+      with:
+        extra_args: --files backend/benefit/**
+    - name: Run pre-commit (shared)
+      uses: pre-commit/action@v3.0.1
+      with:
+        extra_args: --files backend/shared/**
