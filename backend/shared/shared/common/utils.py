@@ -10,6 +10,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import resolve_url
 from stdnum.fi.hetu import (
     compact as compact_finnish_social_security_number,
+)
+from stdnum.fi.hetu import (
     validate as validate_finnish_social_security_number,
 )
 

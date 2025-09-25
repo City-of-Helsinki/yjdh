@@ -32,8 +32,8 @@ def _test_settings(settings):
 
 
 def test_test_settings(_test_settings):
-    assert getattr(_test_settings, "EXISTING_TRUE_SETTING") is True
-    assert getattr(_test_settings, "EXISTING_FALSE_SETTING") is False
+    assert _test_settings.EXISTING_TRUE_SETTING is True
+    assert _test_settings.EXISTING_FALSE_SETTING is False
     assert not hasattr(_test_settings, "INEXISTENT_SETTING")
 
 
@@ -198,7 +198,7 @@ def test_valid_consecutive_create_finnish_social_security_number(birthdate: date
     Testing consecutive social security numbers for validity to ensure all their parts
     are calculated correctly, including the checksum (i.e. the last character).
     """
-    for century_variant in range(0, 6):
+    for century_variant in range(6):
         for individual_number in range(2, 900):
             result = create_finnish_social_security_number(
                 birthdate, century_variant, individual_number
