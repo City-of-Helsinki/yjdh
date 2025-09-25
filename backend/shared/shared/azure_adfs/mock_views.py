@@ -25,7 +25,9 @@ class MockOAuth2CallbackView(View):
                 is_staff=True,
             )
             auth.login(
-                request, user, backend="django.contrib.auth.backends.ModelBackend"  # type: ignore
+                request,
+                user,
+                backend="django.contrib.auth.backends.ModelBackend",  # type: ignore
             )
             request.session["_adfs_user_id"] = str(user.id)
         return redirect(settings.ADFS_LOGIN_REDIRECT_URL)

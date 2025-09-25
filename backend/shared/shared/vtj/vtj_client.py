@@ -64,7 +64,7 @@ class VTJClient:
             auth=self._auth,
             json=self._json(social_security_number, end_user),
             timeout=self._timeout,
-            **kwargs
+            **kwargs,
         )
         response.raise_for_status()
         return response.json()
