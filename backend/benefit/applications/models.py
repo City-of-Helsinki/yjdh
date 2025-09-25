@@ -1,6 +1,5 @@
 import re
 from datetime import date, timedelta
-from typing import List
 
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
@@ -185,8 +184,8 @@ class ApplicationManager(models.Manager):
 
     def get_by_statuses(
         self,
-        application_statuses: List[ApplicationStatus],
-        ahjo_statuses: List[AhjoStatusEnum],
+        application_statuses: list[ApplicationStatus],
+        ahjo_statuses: list[AhjoStatusEnum],
         has_no_case_id: bool,
         retry_failed_older_than_hours: int = 0,
         retry_status: AhjoStatusEnum = None,
@@ -259,8 +258,8 @@ class ApplicationManager(models.Manager):
 
     def get_for_ahjo_decision(
         self,
-        application_statuses: List[ApplicationStatus],
-        ahjo_statuses: List[AhjoStatusEnum],
+        application_statuses: list[ApplicationStatus],
+        ahjo_statuses: list[AhjoStatusEnum],
         has_no_case_id: bool = False,
         retry_failed_older_than_hours: int = 0,
         retry_status: AhjoStatusEnum = None,
@@ -701,7 +700,7 @@ class DeMinimisAid(UUIDModel, TimeStampedModel):
     )
 
     def __str__(self):
-        return "{}: {} {}".format(self.pk, self.application.pk, self.granter)
+        return f"{self.pk}: {self.application.pk} {self.granter}"
 
     class Meta:
         db_table = "bf_applications_deminimisaid"
@@ -858,9 +857,7 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
                 ).exclude(id=self.id)
                 if len(drafts) > 0:
                     raise BatchTooManyDraftsError(
-                        (
-                            f"Too many existing drafts of type {self.proposal_for_decision}"
-                        )
+                        f"Too many existing drafts of type {self.proposal_for_decision}"
                     )
 
         def _clean_require_batch_data_on_completion(self):
@@ -1125,7 +1122,7 @@ class Employee(UUIDModel, TimeStampedModel):
         return social_security_number_birthdate(self.social_security_number)
 
     def __str__(self):
-        return "{} {} ({})".format(self.first_name, self.last_name, self.email)
+        return f"{self.first_name} {self.last_name} ({self.email})"
 
     class Meta:
         db_table = "bf_applications_employee"
@@ -1185,7 +1182,7 @@ class Attachment(UUIDModel, TimeStampedModel):
         ordering = ["application__created_at", "attachment_type", "created_at"]
 
     def __str__(self):
-        return "{} {}".format(self.attachment_type, self.attachment_file.name)
+        return f"{self.attachment_type} {self.attachment_file.name}"
 
 
 class ReviewState(models.Model):

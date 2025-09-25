@@ -6,13 +6,11 @@ from localflavor.generic.validators import IBANValidator
 
 class LocalizedIBANValidator(IBANValidator):
     def __init__(self, use_nordea_extensions=False, include_countries=None):
-        super(LocalizedIBANValidator, self).__init__(
-            use_nordea_extensions, include_countries
-        )
+        super().__init__(use_nordea_extensions, include_countries)
 
     def __call__(self, value):
         try:
-            super(LocalizedIBANValidator, self).__call__(value)
+            super().__call__(value)
         except ValidationError as e:
             raise ValidationError(_("Invalid IBAN")) from e
 
