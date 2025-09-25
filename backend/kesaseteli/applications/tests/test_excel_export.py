@@ -350,9 +350,9 @@ def test_excel_view_download_content(  # noqa: C901
             else:
                 query = EmployerSummerVoucher.objects.filter(pk=voucher.pk)
                 values_tuple = query.values_list(*excel_field.model_fields)[0]
-                assert (
-                    output_column.value == excel_field.value % values_tuple
-                ), excel_field.title
+                assert output_column.value == excel_field.value % values_tuple, (
+                    excel_field.title
+                )
 
 
 @pytest.mark.django_db

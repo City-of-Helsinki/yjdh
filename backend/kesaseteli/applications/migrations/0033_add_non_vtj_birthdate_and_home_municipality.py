@@ -4,20 +4,31 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('applications', '0032_alter_employersummervoucher_target_group'),
+        ("applications", "0032_alter_employersummervoucher_target_group"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='youthapplication',
-            name='non_vtj_birthdate',
-            field=models.DateField(blank=True, default=None, help_text='Birthdate of person who has no permanent Finnish personal identity code, and thus no data obtainable through the VTJ integration', null=True, verbose_name='non-vtj birthdate'),
+            model_name="youthapplication",
+            name="non_vtj_birthdate",
+            field=models.DateField(
+                blank=True,
+                default=None,
+                help_text="Birthdate of person who has no permanent Finnish personal identity code, and thus no data obtainable through the VTJ integration",
+                null=True,
+                verbose_name="non-vtj birthdate",
+            ),
         ),
         migrations.AddField(
-            model_name='youthapplication',
-            name='non_vtj_home_municipality',
-            field=models.CharField(blank=True, default='', help_text='Home municipality of person who has no permanent Finnish personal identity code, and thus no data obtainable through the VTJ integration', max_length=64, verbose_name='non-vtj home municipality'),
+            model_name="youthapplication",
+            name="non_vtj_home_municipality",
+            field=models.CharField(
+                blank=True,
+                default="",
+                help_text="Home municipality of person who has no permanent Finnish personal identity code, and thus no data obtainable through the VTJ integration",
+                max_length=64,
+                verbose_name="non-vtj home municipality",
+            ),
         ),
     ]

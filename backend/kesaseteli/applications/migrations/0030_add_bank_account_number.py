@@ -5,7 +5,6 @@ import localflavor.generic.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0029_remove_youthapplication_encrypted_vtj_json"),
     ]

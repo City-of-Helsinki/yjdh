@@ -1248,9 +1248,9 @@ def test_youth_application_post_valid_random_data(  # noqa: C901
             assert False, f"Please add manual check for field {manually_checked_field}"
 
     for required_field in required_fields:
-        assert (
-            getattr(created_app, required_field) == data[required_field]
-        ), f"{required_field} created youth application attribute incorrect"
+        assert getattr(created_app, required_field) == data[required_field], (
+            f"{required_field} created youth application attribute incorrect"
+        )
 
     for optional_field in optional_fields:
         assert getattr(created_app, optional_field) == data.get(

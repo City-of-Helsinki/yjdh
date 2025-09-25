@@ -35,7 +35,6 @@ def backward_migrate_encrypted_vtj_json_fields(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0027_add_additional_info"),
     ]

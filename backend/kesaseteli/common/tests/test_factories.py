@@ -232,9 +232,7 @@ def test_youth_application_factory(  # noqa: C901
             elif vtj_test_case == VtjTestCase.WRONG_LAST_NAME:
                 assert not youth_application.is_last_name_as_in_vtj
             elif vtj_test_case == VtjTestCase.NOT_FOUND:
-                assert (
-                    not youth_application.is_social_security_number_valid_according_to_vtj
-                )
+                assert not youth_application.is_social_security_number_valid_according_to_vtj
             elif vtj_test_case == VtjTestCase.NO_ANSWER:
                 assert youth_application.encrypted_original_vtj_json is None
             elif vtj_test_case == VtjTestCase.HOME_MUNICIPALITY_HELSINKI:
@@ -334,6 +332,6 @@ def test_youth_summer_voucher_factory():
         youth_summer_voucher.youth_application_id
         for youth_summer_voucher in youth_summer_vouchers
     ]
-    assert len(set(youth_application_pks)) == len(
-        youth_application_pks
-    ), "Duplicates in youth application primary keys"
+    assert len(set(youth_application_pks)) == len(youth_application_pks), (
+        "Duplicates in youth application primary keys"
+    )

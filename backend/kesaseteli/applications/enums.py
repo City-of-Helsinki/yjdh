@@ -38,11 +38,13 @@ class ExcelColumns(models.TextChoices):
 class EmployerApplicationStatus(models.TextChoices):
     DRAFT = "draft", _("Draft")
     SUBMITTED = "submitted", _("Submitted")
-    ADDITIONAL_INFORMATION_REQUESTED = "additional_information_requested", _(
-        "Additional information requested"
+    ADDITIONAL_INFORMATION_REQUESTED = (
+        "additional_information_requested",
+        _("Additional information requested"),
     )
-    ADDITIONAL_INFORMATION_PROVIDED = "additional_information_provided", _(
-        "Additional information provided"
+    ADDITIONAL_INFORMATION_PROVIDED = (
+        "additional_information_provided",
+        _("Additional information provided"),
     )
     ACCEPTED = "accepted", _("Accepted")
     REJECTED = "rejected", _("Rejected")
@@ -51,14 +53,17 @@ class EmployerApplicationStatus(models.TextChoices):
 
 class YouthApplicationStatus(models.TextChoices):
     SUBMITTED = "submitted", _("Submitted")
-    AWAITING_MANUAL_PROCESSING = "awaiting_manual_processing", _(
-        "Awaiting manual processing"
+    AWAITING_MANUAL_PROCESSING = (
+        "awaiting_manual_processing",
+        _("Awaiting manual processing"),
     )
-    ADDITIONAL_INFORMATION_REQUESTED = "additional_information_requested", _(
-        "Additional information requested"
+    ADDITIONAL_INFORMATION_REQUESTED = (
+        "additional_information_requested",
+        _("Additional information requested"),
     )
-    ADDITIONAL_INFORMATION_PROVIDED = "additional_information_provided", _(
-        "Additional information provided"
+    ADDITIONAL_INFORMATION_PROVIDED = (
+        "additional_information_provided",
+        _("Additional information provided"),
     )
     ACCEPTED = "accepted", _("Accepted")
     REJECTED = "rejected", _("Rejected")
@@ -146,13 +151,15 @@ class YouthApplicationStatus(models.TextChoices):
 
 
 class AdditionalInfoUserReason(models.TextChoices):
-    STUDENT_IN_HELSINKI_BUT_NOT_RESIDENT = "student_in_helsinki_but_not_resident", _(
-        "Student in Helsinki but not resident"
+    STUDENT_IN_HELSINKI_BUT_NOT_RESIDENT = (
+        "student_in_helsinki_but_not_resident",
+        _("Student in Helsinki but not resident"),
     )
     MOVING_TO_HELSINKI = "moving_to_helsinki", _("Moving to Helsinki")
     UNDERAGE_OR_OVERAGE = "underage_or_overage", _("Underage or overage")
-    PERSONAL_INFO_DIFFERS_FROM_VTJ = "personal_info_differs_from_vtj", _(
-        "Personal info differs from VTJ"
+    PERSONAL_INFO_DIFFERS_FROM_VTJ = (
+        "personal_info_differs_from_vtj",
+        _("Personal info differs from VTJ"),
     )
     UNLISTED_SCHOOL = "unlisted_school", _("Unlisted school")
     OTHER = "other", _("Other")

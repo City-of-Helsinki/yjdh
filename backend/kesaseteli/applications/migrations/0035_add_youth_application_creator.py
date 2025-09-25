@@ -6,21 +6,34 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('applications', '0034_make_social_security_number_optional'),
+        ("applications", "0034_make_social_security_number_optional"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='youthapplication',
-            name='creator',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='created_youth_applications', to=settings.AUTH_USER_MODEL, verbose_name='creator'),
+            model_name="youthapplication",
+            name="creator",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="created_youth_applications",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="creator",
+            ),
         ),
         migrations.AlterField(
-            model_name='youthapplication',
-            name='handler',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='handled_youth_applications', to=settings.AUTH_USER_MODEL, verbose_name='handler'),
+            model_name="youthapplication",
+            name="handler",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="handled_youth_applications",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="handler",
+            ),
         ),
     ]
