@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.6](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.9.5...benefit-backend-v2.9.6) (2025-09-25)
+
+
+### Bug Fixes
+
+* Postgres database to use database url + password combination ([7e539d0](https://github.com/City-of-Helsinki/yjdh/commit/7e539d0a4872f194d414c24da4386475fcf1e7b3))
+
 ## [2.9.5](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.9.4...benefit-backend-v2.9.5) (2025-09-11)
 
 
