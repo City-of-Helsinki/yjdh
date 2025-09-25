@@ -15,7 +15,8 @@ from django.db.models import Q
 from django.template.loader import get_template
 from django.urls import reverse
 from django.utils import timezone, translation
-from django.utils.translation import gettext, gettext_lazy as _, pgettext
+from django.utils.translation import gettext, pgettext
+from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
 from localflavor.generic.models import IBANField
 from requests.exceptions import ReadTimeout

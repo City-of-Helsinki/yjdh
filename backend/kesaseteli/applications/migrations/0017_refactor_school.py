@@ -1,4 +1,5 @@
 from django.db import migrations, models
+
 import shared.common.validators
 
 

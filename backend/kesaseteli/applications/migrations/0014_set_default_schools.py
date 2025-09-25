@@ -1,6 +1,5 @@
 from django.db import migrations, transaction
 
-
 DEFAULT_SCHOOL_LIST = [
     "Aleksis Kiven peruskoulu",
     "Arabian peruskoulu",

@@ -1,6 +1,5 @@
 from django.db import migrations, transaction
 
-
 REAL_SCHOOL_LIST = [
     "Aleksis Kiven peruskoulu",
     "Apollon yhteiskoulu",
