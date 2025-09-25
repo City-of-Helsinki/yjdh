@@ -1,5 +1,6 @@
-from django.db import migrations, transaction
 import encrypted_fields.fields
+from django.db import migrations, transaction
+
 import shared.common.validators
 
 

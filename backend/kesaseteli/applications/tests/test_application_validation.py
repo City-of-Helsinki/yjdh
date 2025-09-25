@@ -7,7 +7,7 @@ from applications.api.v1.serializers import (
     YouthApplicationSerializer,
 )
 from applications.enums import AttachmentType, EmployerApplicationStatus
-from applications.models import School, validate_name, YouthApplication
+from applications.models import School, YouthApplication, validate_name
 from applications.tests.test_applications_api import get_detail_url
 from shared.common.tests.names import INVALID_NAMES, VALID_NAMES
 

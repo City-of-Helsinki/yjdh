@@ -24,12 +24,7 @@ from applications.exporters.excel_exporter import (
     APPLICATION_LANGUAGE_FIELD_TITLE,
     EMPLOYMENT_END_DATE_FIELD_TITLE,
     EMPLOYMENT_START_DATE_FIELD_TITLE,
-    ExcelField,
     FIELDS,
-    get_attachment_uri,
-    get_exportable_fields,
-    get_reporting_columns,
-    get_talpa_columns,
     HIRED_WITHOUT_VOUCHER_ASSESSMENT_FIELD_TITLE,
     INVOICER_EMAIL_FIELD_TITLE,
     INVOICER_NAME_FIELD_TITLE,
@@ -42,6 +37,11 @@ from applications.exporters.excel_exporter import (
     SPECIAL_CASE_FIELD_TITLE,
     SUM_FIELD_TITLE,
     WORK_HOURS_FIELD_TITLE,
+    ExcelField,
+    get_attachment_uri,
+    get_exportable_fields,
+    get_reporting_columns,
+    get_talpa_columns,
 )
 from applications.models import EmployerSummerVoucher, YouthApplication
 from applications.tests.test_models import create_test_employer_summer_vouchers

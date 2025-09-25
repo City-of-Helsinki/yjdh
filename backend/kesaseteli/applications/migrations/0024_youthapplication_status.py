@@ -1,4 +1,5 @@
 from django.db import migrations, models
+
 from applications.enums import YouthApplicationStatus
 
 
