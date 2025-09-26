@@ -87,15 +87,18 @@ def get_or_create_company_using_organization_roles(request: HttpRequest) -> Comp
     db.
 
     Steps:
-    1. If mock flag is set, create a mock company and store dummy organization_roles in session.
-    2. Looks for organization_roles in session. If missing fetches the company name and business id from suomi.fi
-    eauthorizations API and stores them in session.
-    3. Tries to fetch a company from database with the business id from the organization_roles session variable.
+    1. If mock flag is set, create a mock company and store dummy organization_roles in
+       session.
+    2. Looks for organization_roles in session. If missing fetches the company name and
+       business id from suomi.fi eauthorizations API and stores them in session.
+    3. Tries to fetch a company from database with the business id from the
+       organization_roles session variable.
     4. If company is missing, fetch the company info
-    (company_form, industry, street_address, postcode and city) from YTJ API.
-    5. If company is missing, create a company to db with the fetched info. If company info is not found from YTJ API
-    (no company found with the provided business id or the request limit of YTJ API has been met), the company is
-    created only with the name and business id.
+       (company_form, industry, street_address, postcode and city) from YTJ API.
+    5. If company is missing, create a company to db with the fetched info. If company
+       info is not found from YTJ API (no company found with the provided business id
+       or the request limit of YTJ API has been met), the company is created only with
+       the name and business id.
     """
     if settings.NEXT_PUBLIC_MOCK_FLAG:
         return handle_mock_company(request)

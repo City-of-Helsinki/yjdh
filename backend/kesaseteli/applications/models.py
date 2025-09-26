@@ -609,7 +609,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     @property
     def has_youth_summer_voucher(self) -> bool:
         try:
-            self.youth_summer_voucher
+            _ = self.youth_summer_voucher
         except ObjectDoesNotExist:
             return False
         return True

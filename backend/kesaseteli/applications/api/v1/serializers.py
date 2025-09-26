@@ -412,8 +412,8 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
     def _validate_attachments(self):
         """
         The requirements for attachments are the minimum requirements.
-        * Sometimes, a multi-page document might be uploaded as a set of jpg files, and the backend
-          would not know that it's meant to be a single document.
+        * Sometimes, a multi-page document might be uploaded as a set of jpg files, and
+          the backend would not know that it's meant to be a single document.
         * This validator makes sure that there is at least one of each attachment type.
         """
         for summer_voucher in self.instance.summer_vouchers.all():
