@@ -91,18 +91,21 @@ class EauthAuthenticationRequestView(View):
                     )
                 except HelsinkiProfileException as e:
                     print(
-                        "Reading nationalIdentificationNumber from Helsinki Profile API failed: ",
+                        "Reading nationalIdentificationNumber from Helsinki Profile API"
+                        " failed: ",
                         e,
                     )
                     logger.warning(
-                        f"Reading nationalIdentificationNumber from Helsinki Profile API failed: {str(e)}"
+                        "Reading nationalIdentificationNumber from Helsinki Profile"
+                        f" API failed: {str(e)}"
                     )
                     return self.login_failure()
                 user_ssn = profile["user_ssn"]
 
         if user_ssn is None:
             logger.warning(
-                "Cannot use eauthorizations API due to missing nationalIdentificationNumber"
+                "Cannot use eauthorizations API due to missing"
+                " nationalIdentificationNumber"
             )
             return self.login_failure()
 
@@ -118,9 +121,11 @@ class EauthAuthenticationRequestView(View):
         params = {
             "client_id": settings.EAUTHORIZATIONS_CLIENT_ID,
             "response_type": "code",
-            "redirect_uri": request.build_absolute_uri(
-                reverse("eauth_authentication_callback")
-            ).replace("http://", "https://"),
+            "redirect_uri": (
+                request.build_absolute_uri(
+                    reverse("eauth_authentication_callback")
+                ).replace("http://", "https://")
+            ),
             "user": user_id,
         }
 
@@ -170,9 +175,11 @@ class EauthAuthenticationCallbackView(View):
         params = {
             "code": code,
             "grant_type": "authorization_code",
-            "redirect_uri": self.request.build_absolute_uri(
-                reverse("eauth_authentication_callback")
-            ).replace("http://", "https://"),
+            "redirect_uri": (
+                self.request.build_absolute_uri(
+                    reverse("eauth_authentication_callback")
+                ).replace("http://", "https://")
+            ),
         }
         query = urlencode(params)
 

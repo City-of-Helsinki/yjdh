@@ -205,7 +205,8 @@ class HelsinkiOIDCBackchannelLogoutView(View):
                 # In the rare case that two user accounts have the same email address,
                 # bail. Randomly selecting one seems really wrong.
                 logger.error(
-                    f"Login failed: Multiple users found with the given 'sub' claim: {claims.get('sub', None)}"
+                    "Login failed: Multiple users found with the given 'sub' claim:"
+                    f" {claims.get('sub', None)}"
                 )
                 return HttpResponse(
                     "Multiple users found with the given 'sub' claim",

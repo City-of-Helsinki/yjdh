@@ -79,7 +79,9 @@ def test_userinfo_view(requests_mock, user_client, user):
         "sub": "82e17287-f34e-4e4b-b3d2-15857b3f952a",
         "national_id_num": "210281-9988",
         "name": "Nordea Demo",
-        "preferred_username": "e29a380628e06d3e0e903b8fb245f1910bceee063cda47c27df1f976dc60aa9b",
+        "preferred_username": (
+            "e29a380628e06d3e0e903b8fb245f1910bceee063cda47c27df1f976dc60aa9b"
+        ),
         "given_name": "Nordea",
         "family_name": "Demo",
     }

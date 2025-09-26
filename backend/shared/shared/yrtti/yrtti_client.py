@@ -94,7 +94,9 @@ class YRTTIClient:
             "name": association_name_info["AssociationName"],
             "business_id": yrtti_data["BusinessId"],
             "company_form": YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT.label,
-            "company_form_code": YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT.value,
+            "company_form_code": (
+                YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT.value
+            ),
             "industry": association_name_info["AssociationIndustry"] or "",
             "street_address": cls._sanitize_text(address["StreetName"]),
             "postcode": address["PostCode"],
