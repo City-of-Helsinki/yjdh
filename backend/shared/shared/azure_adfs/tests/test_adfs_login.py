@@ -154,7 +154,8 @@ def test_authenticate(
     user,
 ):
     auth_backend = HelsinkiAdfsAuthCodeBackend()
-    # if helsinkibenefit fixture django_db_setup has been done, then the group has been already created
+    # if helsinkibenefit fixture django_db_setup has been done, then the group has been
+    # already created
     Group.objects.get_or_create(name=settings.HANDLERS_GROUP_NAME)
     with mock.patch("shared.azure_adfs.auth.provider_config"):
         with mock.patch.multiple(

@@ -97,8 +97,10 @@ class HelsinkiOIDCLogoutCallbackView(View):
     http_method_names = ["get"]
 
     def get(self, request):
-        # As of 2021-12, the city profile does not provide any error/status codes along with the
-        # callback. If such parameters are added in the future, we would handle them here.
+        # As of 2021-12, the city profile does not provide any error/status codes along
+        # with the
+        # callback. If such parameters are added in the future, we would handle them
+        # here.
         # Now we just assume that the logout has been done successfully and redirect to
         # the logout landing URL in the frontend.
         return HttpResponseRedirect(settings.LOGOUT_REDIRECT_URL)

@@ -83,7 +83,8 @@ class EauthAuthenticationRequestView(View):
             user_info = get_userinfo(request)
             user_ssn = user_info.get("national_id_num")
 
-            # When authenticating via Tunnistamo, we need to call Helsinki Profile GraphQL API
+            # When authenticating via Tunnistamo, we need to call Helsinki Profile
+            # GraphQL API
             if user_ssn is None:
                 try:
                     profile = HelsinkiProfileClient().get_profile(

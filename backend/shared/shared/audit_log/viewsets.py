@@ -48,7 +48,8 @@ class AuditLoggingModelViewSet(ModelViewSet):
             return super().update(request, *args, **kwargs)
         except Http404:
             if self._get_target_object():
-                # _get_target_object() performs the lookup using the unfiltered queryset.
+                # _get_target_object() performs the lookup using the unfiltered
+                # queryset.
                 # Here we'll assume that the queryset was limited based on user's
                 # permissions. Since the object exists, the 404 actually indicates
                 # an attempt to access something they don't have permission to.
