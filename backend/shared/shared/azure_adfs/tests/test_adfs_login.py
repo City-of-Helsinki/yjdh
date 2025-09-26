@@ -92,7 +92,9 @@ def test_update_userinfo_from_graph_api(requests_mock, user):
     auth_backend = HelsinkiAdfsAuthCodeBackend()
 
     user_get_response = {
-        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users(givenName,surname)/$entity",
+        "@odata.context": (
+            "https://graph.microsoft.com/v1.0/$metadata#users(givenName,surname)/$entity"
+        ),
         "givenName": "Ad",
         "surname": "Tester",
     }

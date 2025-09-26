@@ -25,7 +25,8 @@ def send_audit_log_to_elastic_search() -> int:
         and settings.ELASTICSEARCH_PASSWORD
     ):
         LOGGER.warning(
-            "Trying to send audit log to Elasticsearch without proper configuration, process skipped"
+            "Trying to send audit log to Elasticsearch without proper configuration,"
+            " process skipped"
         )
         return 0
     es = Elasticsearch(

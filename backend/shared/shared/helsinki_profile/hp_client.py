@@ -48,7 +48,8 @@ class HelsinkiProfileClient:
 
         try:
             payload = {
-                "query": """
+                "query": (
+                    """
                     query myProfile {
                         myProfile {
                             verifiedPersonalInformation {
@@ -56,7 +57,8 @@ class HelsinkiProfileClient:
                             }
                         }
                     }
-                """,
+                """
+                ),
             }
             response = requests.post(
                 settings.HELSINKI_PROFILE_API_URL,
@@ -102,7 +104,8 @@ class HelsinkiProfileClient:
 
         if settings.HELSINKI_PROFILE_SCOPE not in data:
             raise HelsinkiProfileException(
-                "Could not obtain API access token, check setting HELSINKI_PROFILE_SCOPE"
+                "Could not obtain API access token, check setting"
+                " HELSINKI_PROFILE_SCOPE"
             )
         return data[settings.HELSINKI_PROFILE_SCOPE]
 
@@ -140,6 +143,7 @@ class HelsinkiProfileClient:
 
         if settings.HELSINKI_PROFILE_SCOPE not in data:
             raise HelsinkiProfileException(
-                "Could not obtain API access token, check setting HELSINKI_PROFILE_SCOPE"
+                "Could not obtain API access token, check setting"
+                " HELSINKI_PROFILE_SCOPE"
             )
         return data[settings.HELSINKI_PROFILE_SCOPE]
