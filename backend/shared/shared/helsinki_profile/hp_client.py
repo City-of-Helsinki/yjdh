@@ -7,7 +7,7 @@ from shared.helsinki_profile.exceptions import HelsinkiProfileException
 
 class HelsinkiProfileClient:
     """
-    Client for reading data from the Helsinki Profile GraphQL API
+    Client for reading data from the Helsinki Profile GraphQL API.
 
     See [backend/README.md](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/README.md) for details
     about the auth flow.
@@ -89,7 +89,7 @@ class HelsinkiProfileClient:
 
     def get_api_access_token(self, oidc_access_token):
         """
-        Exchanges OIDC access token for API access token using Tunnistamo
+        Exchanges OIDC access token for API access token using Tunnistamo.
         """
         try:
             response = requests.get(
@@ -111,7 +111,8 @@ class HelsinkiProfileClient:
 
     def get_api_access_token_tunnistus(self, oidc_access_token):
         """
-        Exchanges OIDC access token for API access token using Tunnistus Keycloak
+        Exchanges OIDC access token for API access token using Tunnistus
+        Keycloak.
         """
 
         if "test" in settings.HELSINKI_PROFILE_API_URL:

@@ -12,7 +12,7 @@ from shared.common.utils import redirect_to_login_using_request
 
 def set_use_original_redirect_url_into_session(request: HttpRequest) -> None:
     """
-    Set request.session["USE_ORIGINAL_REDIRECT_URL"] to True
+    Set request.session["USE_ORIGINAL_REDIRECT_URL"] to True.
     """
     request.session["USE_ORIGINAL_REDIRECT_URL"] = True
 
@@ -21,8 +21,8 @@ def is_request_user_unauthenticated(request: HttpRequest) -> bool:
     """
     Is the request's user unauthenticated i.e. not authenticated?
 
-    :return: True if request has no user or the user is not authenticated, otherwise
-             False.
+    :return: True if request has no user or the user is not authenticated,
+        otherwise False.
     """
     return not bool(request.user and request.user.is_authenticated)
 
@@ -36,26 +36,28 @@ def permit_view_if_permissions_or_redirect(
     forbidden_response_func: Optional[Callable[[HttpRequest], HttpResponseBase]] = None,
 ):
     """
-    Decorator for permitting a view if all permissions pass, otherwise redirecting to
-    login URL with optional check (e.g. to remove redirection loops) and side effect
-    (e.g. set session variables) function calls before redirection. If not all
-    permissions pass nor redirection is taken then returns 403 Forbidden.
+    Decorator for permitting a view if all permissions pass, otherwise
+    redirecting to login URL with optional check (e.g. to remove redirection
+    loops) and side effect (e.g. set session variables) function calls before
+    redirection. If not all permissions pass nor redirection is taken then
+    returns 403 Forbidden.
 
-    :param permission_classes: The permission classes as in Django REST Framework, e.g.
-                               [IsAuthenticated | ReadOnly]
-    :param login_url: Login URL to be redirected to in case at least one permission
-                      doesn't pass
-    :param redirect_field_name: Name of the URL parameter to pass the current URL in
-    :param redirect_only_if_func: Function to check if redirecting should be done when
-                                  user does not pass all the permissions. The default
-                                  value is None which means redirecting should always be
-                                  done when user does not pass all the permissions.
-    :param run_before_redirect_func: Function to run before redirection, e.g. to set a
-                                     value in request's session.
-    :param forbidden_response_func: Function to generate the response to return if not
-                                    all permissions pass nor redirection is taken. The
-                                    default value is None which means that a response
-                                    with status 403 Forbidden is returned.
+    :param permission_classes: The permission classes as in Django REST
+        Framework, e.g. [IsAuthenticated | ReadOnly]
+    :param login_url: Login URL to be redirected to in case at least one
+        permission doesn't pass
+    :param redirect_field_name: Name of the URL parameter to pass the current
+        URL in
+    :param redirect_only_if_func: Function to check if redirecting should be
+        done when user does not pass all the permissions. The default value is
+        None which means redirecting should always be done when user does not
+        pass all the permissions.
+    :param run_before_redirect_func: Function to run before redirection, e.g.
+        to set a value in request's session.
+    :param forbidden_response_func: Function to generate the response to return
+        if not all permissions pass nor redirection is taken. The default value
+        is None which means that a response with status 403 Forbidden is
+        returned.
     """
 
     def decorator(view_func):

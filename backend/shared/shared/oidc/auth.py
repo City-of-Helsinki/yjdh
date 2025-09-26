@@ -17,7 +17,9 @@ LOGGER = logging.getLogger(__name__)
 
 
 class HelsinkiOIDCAuthenticationBackend(OIDCAuthenticationBackend):
-    """Override Mozilla Django OIDC authentication."""
+    """
+    Override Mozilla Django OIDC authentication.
+    """
 
     @staticmethod
     def should_personally_identifiable_info_be_saved() -> bool:
@@ -25,17 +27,22 @@ class HelsinkiOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         Should personally identifiable information be saved to user model?
 
         :return: True if OIDC_SAVE_PERSONALLY_IDENTIFIABLE_INFO setting exists
-                 and is truthy, otherwise False.
+            and is truthy, otherwise False.
         """
         return bool(getattr(settings, "OIDC_SAVE_PERSONALLY_IDENTIFIABLE_INFO", False))
 
     def verify_claims(self, claims):
-        """Override the original verify_claims method because it verifies the claim from the email and
-        email is not a mandatory field for suomi.fi authentication."""
+        """
+        Override the original verify_claims method because it verifies the
+        claim from the email and email is not a mandatory field for suomi.fi
+        authentication.
+        """
         return True
 
     def filter_users_by_claims(self, claims):
-        """Return all users matching the specified username (sub)."""
+        """
+        Return all users matching the specified username (sub).
+        """
         username = claims.get("sub")
         if not username:
             return self.UserModel.objects.none()
@@ -45,11 +52,12 @@ class HelsinkiOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         """
         Return object for a newly created user account.
 
-        :return: User with username set to "sub" claim, and if and only if personally
-                 identifiable information should be saved then with first_name set to
-                 "given_name" claim, last_name set to "family_name" claim and email set
-                 to "email" claim. In case personally identifiable information shouldn't
-                 be saved then first_name, last_name and email are set to empty strings.
+        :return: User with username set to "sub" claim, and if and only if
+            personally identifiable information should be saved then with
+            first_name set to "given_name" claim, last_name set to
+            "family_name" claim and email set to "email" claim. In case
+            personally identifiable information shouldn't be saved then
+            first_name, last_name and email are set to empty strings.
         """
         save_pii = self.should_personally_identifiable_info_be_saved()
         return self.UserModel.objects.create_user(
@@ -60,7 +68,9 @@ class HelsinkiOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         )
 
     def authenticate(self, request, **kwargs):
-        """Authenticates a user based on the OIDC code flow."""
+        """
+        Authenticates a user based on the OIDC code flow.
+        """
         if not request:
             return None
 
@@ -108,7 +118,9 @@ class HelsinkiOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         return None
 
     def refresh_tokens(self, request):
-        """Refreshes the tokens of the oidc session of the user and return it."""
+        """
+        Refreshes the tokens of the oidc session of the user and return it.
+        """
 
         if not is_active_oidc_refresh_token(request):
             raise SuspiciousOperation("Refresh token expired or does not exist")

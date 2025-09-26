@@ -80,9 +80,9 @@ class YRTTIClient:
         """
         Get the required company fields from YRTTI data.
 
-        The YRTTI API only returns data for associations, so the response does not contain
-        a field for company form.
-        Use the YTJ "yritysmuoto" code for associations when creating the Company objects
+        The YRTTI API only returns data for associations, so the response does
+        not contain a field for company form. Use the YTJ "yritysmuoto" code
+        for associations when creating the Company objects
         """
         association_name_info = cls._get_active_association_name(
             yrtti_data["AssociationNameInfo"]

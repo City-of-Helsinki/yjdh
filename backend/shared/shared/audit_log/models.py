@@ -23,7 +23,9 @@ class AuditLogEntry(models.Model):
 
 
 def _safe_get(value: dict, *keys: str) -> str:
-    """Look up a nested key in the given dict, or return "UNKNOWN" on KeyError."""
+    """
+    Look up a nested key in the given dict, or return "UNKNOWN" on KeyError.
+    """
     for key in keys:
         try:
             value = value[key]

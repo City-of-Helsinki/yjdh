@@ -15,12 +15,16 @@ User = get_user_model()
 
 
 def _now() -> datetime:
-    """Returns the current time in UTC timezone."""
+    """
+    Returns the current time in UTC timezone.
+    """
     return datetime.now(tz=timezone.utc)
 
 
 def _iso8601_date(time: datetime) -> str:
-    """Formats the timestamp in ISO-8601 format, e.g. '2020-06-01T00:00:00.000Z'."""
+    """
+    Formats the timestamp in ISO-8601 format, e.g. '2020-06-01T00:00:00.000Z'.
+    """
     return f"{time.replace(tzinfo=None).isoformat(timespec='milliseconds')}Z"
 
 
@@ -37,14 +41,13 @@ def log(
     """
     Write an event to the audit log.
 
-    Each audit log event has an actor (or None for system events),
-    an operation(e.g. READ or UPDATE), the target of the operation
-    (a Django model instance), status (e.g. SUCCESS), and a timestamp.
+    Each audit log event has an actor (or None for system events), an
+    operation(e.g. READ or UPDATE), the target of the operation (a Django model
+    instance), status (e.g. SUCCESS), and a timestamp.
 
-    If additional information is provided, the function assumes that
-    there were no changes to the object iteself but it was (re-)sent
-    to another system for example. Thus it will not log the "changes"
-    of the object.
+    If additional information is provided, the function assumes that there were
+    no changes to the object iteself but it was (re-)sent to another system for
+    example. Thus it will not log the "changes" of the object.
     """
     current_time = get_time()
     user_id = str(actor.pk) if getattr(actor, "pk", None) else ""
