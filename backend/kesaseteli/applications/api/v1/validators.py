@@ -46,5 +46,6 @@ def validate_additional_info_user_reasons(
 
     if len(input_reasons_list) != len(input_reasons_set):
         raise ValidationError(
-            "additional_info_user_reasons must contain unique values, contained duplicates"
+            "additional_info_user_reasons must contain unique values, contained"
+            " duplicates"
         )

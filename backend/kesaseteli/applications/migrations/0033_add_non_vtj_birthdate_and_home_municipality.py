@@ -15,7 +15,10 @@ class Migration(migrations.Migration):
             field=models.DateField(
                 blank=True,
                 default=None,
-                help_text="Birthdate of person who has no permanent Finnish personal identity code, and thus no data obtainable through the VTJ integration",
+                help_text=(
+                    "Birthdate of person who has no permanent Finnish personal identity"
+                    " code, and thus no data obtainable through the VTJ integration"
+                ),
                 null=True,
                 verbose_name="non-vtj birthdate",
             ),
@@ -26,7 +29,11 @@ class Migration(migrations.Migration):
             field=models.CharField(
                 blank=True,
                 default="",
-                help_text="Home municipality of person who has no permanent Finnish personal identity code, and thus no data obtainable through the VTJ integration",
+                help_text=(
+                    "Home municipality of person who has no permanent Finnish personal"
+                    " identity code, and thus no data obtainable through the VTJ"
+                    " integration"
+                ),
                 max_length=64,
                 verbose_name="non-vtj home municipality",
             ),

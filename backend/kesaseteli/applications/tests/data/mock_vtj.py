@@ -57,7 +57,9 @@ def mock_vtj_person_id_query_found_content(
             "@sanomatunnus": "PERUSSANOMA 1",
             "@tietojenPoimintaaika": "20220407090800",
             "@versio": "1.0",
-            "@xsi:schemaLocation": "http://xml.vrk.fi/schema/vtjkysely PERUSSANOMA 1.xsd",
+            "@xsi:schemaLocation": (
+                "http://xml.vrk.fi/schema/vtjkysely PERUSSANOMA 1.xsd"
+            ),
             "Asiakasinfo": {
                 "InfoS": "07.04.2022 09:08",
                 "InfoR": "07.04.2022 09:08",
