@@ -95,8 +95,8 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
 
     def get_userinfo_from_graph_api(self, graph_api_access_token: str):
         """
-        Makes a call to https://docs.microsoft.com/en-us/graph/api/user-get to get more information
-        about the logged in user.
+        Makes a call to https://docs.microsoft.com/en-us/graph/api/user-get to get more
+        information about the logged in user.
 
         :returns dictionary of user's requested properties
         """

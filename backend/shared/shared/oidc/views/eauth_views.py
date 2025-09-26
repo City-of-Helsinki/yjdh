@@ -13,7 +13,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import HTTPError
 
-from shared.helsinki_profile.exceptions import HelsinkiProfileException
+from shared.helsinki_profile.exceptions import HelsinkiProfileError
 from shared.helsinki_profile.hp_client import HelsinkiProfileClient
 from shared.oidc.utils import (
     get_checksum_header,
@@ -28,8 +28,8 @@ class EauthAuthenticationRequestView(View):
     """
     Eauth client authentication HTTP endpoint.
 
-    See [backend/README.md](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/README.md) for details
-    about the auth flow.
+    See [backend/README.md](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/README.md)
+    for details about the auth flow.
 
     Docs that describe the flow (only in Finnish):
     https://palveluhallinta.suomi.fi/fi/tuki/artikkelit/592d774503f6d100018db5dd
@@ -48,7 +48,10 @@ class EauthAuthenticationRequestView(View):
         "https://palveluhallinta.suomi.fi/fi/tuki/artikkelit/592d774503f6d100018db5dd
         """
         request_id = uuid4()
-        path = f"/service/ypa/user/register/{settings.EAUTHORIZATIONS_CLIENT_ID}/{person_id}?requestId={request_id}"
+        path = (
+            f"/service/ypa/user/register/{settings.EAUTHORIZATIONS_CLIENT_ID}"
+            f"/{person_id}?requestId={request_id}"
+        )
 
         checksum_header = get_checksum_header(path)
 
@@ -65,9 +68,9 @@ class EauthAuthenticationRequestView(View):
         """
         Eauth client authentication initialization HTTP endpoint.
 
-        NOTE: We should avoid raising exceptions from the method, because it results in user's auth flow
-        ending on Django's 500 error page. We should instead call `self.login_failure()` to redirect the
-        user to the login error page in the UI.
+        NOTE: We should avoid raising exceptions from the method, because it results in
+        user's auth flow ending on Django's 500 error page. We should instead call
+        `self.login_failure()` to redirect the user to the login error page in the UI.
         """
 
         suomifi_enabled = getattr(settings, "NEXT_PUBLIC_ENABLE_SUOMIFI", False)
@@ -80,7 +83,6 @@ class EauthAuthenticationRequestView(View):
         else:
             if not request.session.get("oidc_access_token"):
                 return self.login_failure()
-            print("session:", request.session.__dict__)
 
             user_info = get_userinfo(request)
             user_ssn = user_info.get("national_id_num")
@@ -92,12 +94,7 @@ class EauthAuthenticationRequestView(View):
                     profile = HelsinkiProfileClient().get_profile(
                         request.session.get("oidc_access_token")
                     )
-                except HelsinkiProfileException as e:
-                    print(
-                        "Reading nationalIdentificationNumber from Helsinki Profile API"
-                        " failed: ",
-                        e,
-                    )
+                except HelsinkiProfileError as e:
                     logger.warning(
                         "Reading nationalIdentificationNumber from Helsinki Profile"
                         f" API failed: {str(e)}"
