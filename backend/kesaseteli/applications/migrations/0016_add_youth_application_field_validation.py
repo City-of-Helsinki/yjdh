@@ -74,7 +74,9 @@ class Migration(migrations.Migration):
                 blank=True,
                 db_index=True,
                 encrypted_field_name="encrypted_social_security_number",
-                hash_key="ee235e39ebc238035a6264c063dd829d4b6d2270604b57ee1f463e676ec44669",
+                hash_key=(
+                    "ee235e39ebc238035a6264c063dd829d4b6d2270604b57ee1f463e676ec44669"
+                ),
                 max_length=66,
                 null=True,
                 validators=[common.utils.validate_finnish_social_security_number],
@@ -140,7 +142,9 @@ class Migration(migrations.Migration):
                 blank=True,
                 db_index=True,
                 encrypted_field_name="encrypted_social_security_number",
-                hash_key="ee235e39ebc238035a6264c063dd829d4b6d2270604b57ee1f463e676ec44669",
+                hash_key=(
+                    "ee235e39ebc238035a6264c063dd829d4b6d2270604b57ee1f463e676ec44669"
+                ),
                 max_length=66,
                 null=True,
                 validators=[common.utils.validate_finnish_social_security_number],

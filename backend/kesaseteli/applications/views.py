@@ -114,7 +114,9 @@ class EmployerApplicationExcelDownloadView(TemplateView):
                 serializer=serializer,
                 batch_size=settings.EXCEL_DOWNLOAD_BATCH_SIZE,
             ),
-            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            content_type=(
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            ),
         )
         response["Content-Disposition"] = "attachment; filename={}".format(
             get_xlsx_filename(columns)
@@ -266,7 +268,9 @@ class YouthApplicationExcelExportViewSet(AuditLoggingModelViewSet):
                     serializer=self.serializer,
                     batch_size=settings.EXCEL_DOWNLOAD_BATCH_SIZE,
                 ),
-                content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                content_type=(
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                ),
             )
             response["Content-Disposition"] = (
                 f"attachment; filename={self.xlsx_filename}"

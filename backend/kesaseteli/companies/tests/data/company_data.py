@@ -68,63 +68,81 @@ DUMMY_YTJ_RESPONSE = {
                     "registrationDate": "2021-01-01",
                     "typeOfRegistration": "TA",
                     "entryCodes": ["TASE"],
-                    "detailsUri": "http://avoindata.prh.fi/opendata/tr/v1/publicnotices/2020/55730X",
+                    "detailsUri": (
+                        "http://avoindata.prh.fi/opendata/tr/v1/publicnotices/2020/55730X"
+                    ),
                 },
                 {
                     "recordNumber": "2020/290401",
                     "registrationDate": "2020-06-15",
                     "typeOfRegistration": "M",
                     "entryCodes": [""],
-                    "detailsUri": "http://avoindata.prh.fi/opendata/tr/v1/publicnotices/2020/290401",
+                    "detailsUri": (
+                        "http://avoindata.prh.fi/opendata/tr/v1/publicnotices/2020/290401"
+                    ),
                 },
                 {
                     "recordNumber": "2019/53986T",
                     "registrationDate": "2019-12-05",
                     "typeOfRegistration": "TA",
                     "entryCodes": ["TASE"],
-                    "detailsUri": "http://avoindata.prh.fi/opendata/tr/v1/publicnotices/2019/53986T",
+                    "detailsUri": (
+                        "http://avoindata.prh.fi/opendata/tr/v1/publicnotices/2019/53986T"
+                    ),
                 },
                 {
                     "recordNumber": "2019/250695",
                     "registrationDate": "2019-07-09",
                     "typeOfRegistration": "M",
                     "entryCodes": ["HAL"],
-                    "detailsUri": "http://avoindata.prh.fi/opendata/tr/v1/publicnotices/2019/250695",
+                    "detailsUri": (
+                        "http://avoindata.prh.fi/opendata/tr/v1/publicnotices/2019/250695"
+                    ),
                 },
                 {
                     "recordNumber": "2018/50210V",
                     "registrationDate": "2018-10-19",
                     "typeOfRegistration": "TA",
                     "entryCodes": ["TASE"],
-                    "detailsUri": "http://avoindata.prh.fi/opendata/tr/v1/publicnotices/2018/50210V",
+                    "detailsUri": (
+                        "http://avoindata.prh.fi/opendata/tr/v1/publicnotices/2018/50210V"
+                    ),
                 },
                 {
                     "recordNumber": "2017/46683V",
                     "registrationDate": "2017-10-21",
                     "typeOfRegistration": "TA",
                     "entryCodes": ["TASE"],
-                    "detailsUri": "http://avoindata.prh.fi/opendata/tr/v1/publicnotices/2017/46683V",
+                    "detailsUri": (
+                        "http://avoindata.prh.fi/opendata/tr/v1/publicnotices/2017/46683V"
+                    ),
                 },
                 {
                     "recordNumber": "2016/86280V",
                     "registrationDate": "2016-11-03",
                     "typeOfRegistration": "TA",
                     "entryCodes": ["TASE"],
-                    "detailsUri": "http://avoindata.prh.fi/opendata/tr/v1/publicnotices/2016/86280V",
+                    "detailsUri": (
+                        "http://avoindata.prh.fi/opendata/tr/v1/publicnotices/2016/86280V"
+                    ),
                 },
                 {
                     "recordNumber": "2015/739492",
                     "registrationDate": "2015-11-04",
                     "typeOfRegistration": "M",
                     "entryCodes": ["TILTAR"],
-                    "detailsUri": "http://avoindata.prh.fi/opendata/tr/v1/publicnotices/2015/739492",
+                    "detailsUri": (
+                        "http://avoindata.prh.fi/opendata/tr/v1/publicnotices/2015/739492"
+                    ),
                 },
                 {
                     "recordNumber": "2015/84509U",
                     "registrationDate": "2015-10-08",
                     "typeOfRegistration": "TA",
                     "entryCodes": ["TASE"],
-                    "detailsUri": "http://avoindata.prh.fi/opendata/tr/v1/publicnotices/2015/84509U",
+                    "detailsUri": (
+                        "http://avoindata.prh.fi/opendata/tr/v1/publicnotices/2015/84509U"
+                    ),
                 },
             ],
             "registeredOffices": [
@@ -630,7 +648,9 @@ DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE = {
                     "endDate": None,
                     "statusDate": "2008-07-21",
                     "language": "SE",
-                    "description": "För överlåtelse av nyttjanderätten till en fastighet",
+                    "description": (
+                        "För överlåtelse av nyttjanderätten till en fastighet"
+                    ),
                 },
                 {
                     "authority": 1,
@@ -640,7 +660,10 @@ DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE = {
                     "endDate": None,
                     "statusDate": "2008-07-21",
                     "language": "EN",
-                    "description": "VAT-obliged for the transfer of rights to use immovable property",
+                    "description": (
+                        "VAT-obliged for the transfer of rights to use immovable"
+                        " property"
+                    ),
                 },
                 {
                     "authority": 1,

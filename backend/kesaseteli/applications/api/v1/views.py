@@ -173,8 +173,10 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         if not youth_application.can_set_additional_info:
             return Response(
                 data={
-                    "detail": _("Invalid status %(status)s for setting additional info")
-                    % {"status": youth_application.status}
+                    "detail": (
+                        _("Invalid status %(status)s for setting additional info")
+                        % {"status": youth_application.status}
+                    )
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
@@ -207,7 +209,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             )
         except ValidationError as e:
             LOGGER.error(
-                f"Youth application additional info rejected because of "
+                "Youth application additional info rejected because of "
                 f"validation error. Validation error codes: {str(e.get_codes())}"
             )
             raise
@@ -324,7 +326,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
                 serializer.is_valid(raise_exception=True)
             except ValidationError as e:
                 LOGGER.error(
-                    f"Youth application was not changed to accepted state because of "
+                    "Youth application was not changed to accepted state because of "
                     f"validation error. Validation error codes: {str(e.get_codes())}"
                 )
                 raise
@@ -372,7 +374,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
                 serializer.is_valid(raise_exception=True)
             except ValidationError as e:
                 LOGGER.error(
-                    f"Youth application was not changed to rejected state because of "
+                    "Youth application was not changed to rejected state because of "
                     f"validation error. Validation error codes: {str(e.get_codes())}"
                 )
                 raise
@@ -469,7 +471,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         response_status = status.HTTP_400_BAD_REQUEST
         response_data = reason.json()
         LOGGER.info(
-            f"Youth application submission rejected. "
+            "Youth application submission rejected. "
             f"Return HTTP status code: {response_status}. "
             f"YouthApplicationRejectedReason: {response_data.get('code')}."
         )
@@ -579,7 +581,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             )
         except ValidationError as e:
             LOGGER.error(
-                f"Youth application submission rejected because of validation error. "
+                "Youth application submission rejected because of validation error. "
                 f"Validation error codes: {str(e.get_codes())}"
             )
             raise

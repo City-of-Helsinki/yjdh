@@ -212,8 +212,8 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         max_length=64,
         verbose_name=_("non-vtj home municipality"),
         help_text=_(
-            "Home municipality of person who has no permanent Finnish personal identity code, "
-            "and thus no data obtainable through the VTJ integration"
+            "Home municipality of person who has no permanent Finnish personal identity"
+            " code, and thus no data obtainable through the VTJ integration"
         ),
     )
     school = models.CharField(
@@ -1006,7 +1006,8 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         Employer summer voucher application end date as a localized string
         """
         return pgettext(
-            "Employer summer voucher application end date in youth summer voucher email (d.m.y)",
+            "Employer summer voucher application end date in youth summer voucher email"
+            " (d.m.y)",
             "30.11.%(year)d",
         ) % {"year": self.year}
 
@@ -1067,12 +1068,16 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
                 "email": self.youth_application.email,
                 "year": self.year,
                 "voucher_value_with_euro_sign": self.voucher_value_with_euro_sign,
-                "summer_job_period_localized_string": self.summer_job_period_localized_string,
+                "summer_job_period_localized_string": (
+                    self.summer_job_period_localized_string
+                ),
                 "employer_summer_voucher_application_end_date_localized_string": (
                     self.employer_summer_voucher_application_end_date_localized_string
                 ),
                 "min_work_hours": self.min_work_hours,
-                "min_work_compensation_with_euro_sign": self.min_work_compensation_with_euro_sign,
+                "min_work_compensation_with_euro_sign": (
+                    self.min_work_compensation_with_euro_sign
+                ),
             }
             return send_mail_with_error_logging(
                 subject=self.email_subject(language),

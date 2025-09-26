@@ -560,11 +560,15 @@ SAML_CONFIG = {
                         "lang": "fi",
                     },
                     {
-                        "text": "https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/",
+                        "text": (
+                            "https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/"
+                        ),
                         "lang": "sv",
                     },
                     {
-                        "text": "https://nuorten.hel.fi/en/studies-and-work/the-summer-job-voucher/",
+                        "text": (
+                            "https://nuorten.hel.fi/en/studies-and-work/the-summer-job-voucher/"
+                        ),
                         "lang": "en",
                     },
                 ],

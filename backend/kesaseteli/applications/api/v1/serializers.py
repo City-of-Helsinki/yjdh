@@ -67,7 +67,8 @@ class EmployerApplicationStatusValidator:
                 raise serializers.ValidationError(
                     format_lazy(
                         _(
-                            "EmployerApplication state transition not allowed: {status} to {value}"
+                            "EmployerApplication state transition not allowed: {status}"
+                            " to {value}"
                         ),
                         status=application.status,
                         value=value,

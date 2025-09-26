@@ -58,7 +58,9 @@ class Migration(migrations.Migration):
             name="encrypted_original_vtj_json",
             field=encrypted_fields.fields.EncryptedCharField(
                 blank=True,
-                help_text="VTJ JSON used for automatic processing of new youth application",
+                help_text=(
+                    "VTJ JSON used for automatic processing of new youth application"
+                ),
                 max_length=1048576,
                 null=True,
                 validators=[shared.common.validators.validate_optional_json],

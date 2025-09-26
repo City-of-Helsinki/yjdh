@@ -117,7 +117,8 @@ def get_or_create_company_using_organization_roles(request: HttpRequest) -> Comp
             raise NotFound(detail="Could not handle the response from YTJ API")
         except RequestException:
             LOGGER.warning(
-                f"YTJ API is under heavy load or no company found with the given business id: {business_id}"
+                "YTJ API is under heavy load or no company found with the given"
+                f" business id: {business_id}"
             )
             name = organization_roles.get("name")
             company = get_or_create_company_with_name_and_business_id(name, business_id)
