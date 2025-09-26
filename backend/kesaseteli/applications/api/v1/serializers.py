@@ -59,7 +59,8 @@ class EmployerApplicationStatusValidator:
 
     def __call__(self, value, serializer_field):
         if application := serializer_field.parent.instance:
-            # In case it's an update operation, validate with the current status in database
+            # In case it's an update operation, validate with the current status in
+            # database
             if (
                 value != application.status
                 and value not in self.APPLICATION_STATUS_TRANSITIONS[application.status]
@@ -146,7 +147,8 @@ class AttachmentSerializer(serializers.ModelSerializer):
             if not self._is_valid_pdf(data["attachment_file"]):
                 raise serializers.ValidationError(_("Not a valid pdf file"))
         elif not self._is_valid_image(data["attachment_file"]):
-            # only pdf and image files are listed in ATTACHMENT_CONTENT_TYPE_CHOICES, so if we get here,
+            # only pdf and image files are listed in ATTACHMENT_CONTENT_TYPE_CHOICES, so
+            # if we get here,
             # the content type is an image file
             raise serializers.ValidationError(_("Not a valid image file"))
         return data

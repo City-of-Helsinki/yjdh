@@ -171,8 +171,10 @@ class AttachmentType(models.TextChoices):
 
 
 class SummerVoucherExceptionReason(models.TextChoices):
-    # TODO: Replace this hard coded enum class with a model where the controllers can add the exceptions themselves.
-    # These exceptions can change yearly and thus should be dynamically editable by the controllers.
+    # TODO: Replace this hard coded enum class with a model where the controllers can
+    # add the exceptions themselves.
+    # These exceptions can change yearly and thus should be dynamically editable by the
+    # controllers.
     PRIMARY_TARGET_GROUP = "primary_target_group", _("primary target group")
     SECONDARY_TARGET_GROUP = "secondary_target_group", _("secondary target group")
 

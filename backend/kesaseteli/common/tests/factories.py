@@ -435,7 +435,8 @@ class AbstractNonVtjYouthApplicationFactory(AbstractYouthApplicationFactory):
     These youth applications don't have a social security number or VTJ data.
     """
 
-    # Non-VTJ youth applications always have empty social security number and no VTJ data:
+    # Non-VTJ youth applications always have empty social security number and no VTJ
+    # data:
     social_security_number = ""
     encrypted_original_vtj_json = None
     encrypted_handler_vtj_json = None

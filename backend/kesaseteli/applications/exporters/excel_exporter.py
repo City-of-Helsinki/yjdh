@@ -95,7 +95,8 @@ REMOVABLE_TALPA_FIELD_TITLES = [
 
 
 FIELDS = [
-    # Field title, field value, field names in summer voucher model, column width, background color
+    # Field title, field value, field names in summer voucher model, column width,
+    # background color
     ExcelField(ORDER_FIELD_TITLE, "", [], 15, "white"),  # Specially handled
     ExcelField(
         RECEIVED_DATE_FIELD_TITLE, "%s", ["submitted_at"], 15, "white"
@@ -313,7 +314,8 @@ def get_attachment_uri(
     elif attachment_type == "Palkkalaskelma":
         attachment_type = "payslip"
 
-    # Get attachment of type `attachment_type` and use the OFFSET and LIMIT to get only the n'th entry
+    # Get attachment of type `attachment_type` and use the OFFSET and LIMIT to get only
+    # the n'th entry
     # where n is `attachment_number`.
     attachment = (
         value.filter(attachment_type=attachment_type)
