@@ -1,11 +1,9 @@
 ipython
 langdetect
 pip-tools==7.4.1
-pre-commit
 pytest
 pytest-cov
 pytest-django
 pytest-freezegun
 requests-mock
-ruff==0.13.1
 werkzeug
