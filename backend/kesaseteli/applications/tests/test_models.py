@@ -108,7 +108,7 @@ def test_employer_summer_voucher_last_submitted_at(year):
 def test_youth_summer_voucher_get_last_used_serial_number():
     assert YouthSummerVoucher.objects.count() == 0
     assert YouthSummerVoucher.get_last_used_serial_number() is None
-    for ordinal_number in range(1, 10):
+    for _ in range(1, 10):
         summer_voucher = AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
         assert YouthSummerVoucher.get_last_used_serial_number() is not None
         assert (
@@ -255,7 +255,7 @@ def test_youth_summer_voucher_sequentiality_complex_transaction_nesting():
     assert YouthSummerVoucher.objects.count() == 0
 
     def create_youth_summer_vouchers(count: int):
-        for i in range(count):
+        for _ in range(count):
             AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
 
     create_youth_summer_vouchers(count=1)

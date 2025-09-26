@@ -247,7 +247,7 @@ def test_youth_application_encrypted_fields():
 def test_youth_application_serializer_fields():
     """
     Test that YouthApplicationSerializer's fields are all handled and
-    categorized into required/optional/write-only/read-only partitions. Also
+    categorized into required/soptional/write-only/read-only partitions. Also
     test that handler views' show all fields except write-only fields.
 
     If this test breaks then update the following:
@@ -1247,7 +1247,9 @@ def test_youth_application_post_valid_random_data(  # noqa: C901
                 json.loads(created_app.encrypted_handler_vtj_json), dict
             )
         else:
-            assert False, f"Please add manual check for field {manually_checked_field}"
+            raise AssertionError(
+                f"Please add manual check for field {manually_checked_field}"
+            )
 
     for required_field in required_fields:
         assert getattr(created_app, required_field) == data[required_field], (

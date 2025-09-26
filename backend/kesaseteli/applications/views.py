@@ -36,8 +36,9 @@ from shared.audit_log.viewsets import AuditLoggingModelViewSet
 class EmployerApplicationExcelDownloadView(TemplateView):
     """
     TODO: This should be removed after the actual controller UI is implemented.
-    This is a temporary view implemented by Django for MVP purposes. Basically it provides
-    a very simple view for the controllers to export the applications as Excel files.
+    This is a temporary view implemented by Django for MVP purposes. Basically it
+    provides a very simple view for the controllers to export the applications as Excel
+    files.
     """
 
     template_name = "application_excel_download.html"

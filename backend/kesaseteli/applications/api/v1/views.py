@@ -428,7 +428,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
                     f"Activated youth application {youth_application.pk}: "
                     "Youth application was accepted automatically using data from VTJ"
                 )
-                was_email_sent = youth_application.youth_summer_voucher.send_youth_summer_voucher_email(
+                was_email_sent = youth_application.youth_summer_voucher.send_youth_summer_voucher_email(  # noqa: E501
                     language=youth_application.language
                 )
                 if not was_email_sent:
@@ -489,7 +489,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             email = serializer.validated_data["email"]
             social_security_number = serializer.validated_data["social_security_number"]
 
-            if YouthApplication.objects.is_email_or_social_security_number_active_this_year(
+            if YouthApplication.objects.is_email_or_social_security_number_active_this_year(  # noqa: E501
                 email, social_security_number
             ):
                 return self.error_response_with_logging(
@@ -541,7 +541,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
 
                 if not request_additional_info:
                     if (
-                        not youth_application.is_social_security_number_valid_according_to_vtj
+                        not youth_application.is_social_security_number_valid_according_to_vtj  # noqa: E501
                         or youth_application.is_applicant_dead_according_to_vtj
                     ):
                         transaction.set_rollback(True)

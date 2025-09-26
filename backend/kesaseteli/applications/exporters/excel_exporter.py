@@ -359,7 +359,7 @@ def generate_data_row(
     is_template: bool = False,
 ) -> list:
     result = []
-    for column_number, field in enumerate(fields):
+    for field in fields:
         if field.title == ORDER_FIELD_TITLE:
             cell_value = summer_voucher.row_number
         elif field.title == RECEIVED_DATE_FIELD_TITLE:

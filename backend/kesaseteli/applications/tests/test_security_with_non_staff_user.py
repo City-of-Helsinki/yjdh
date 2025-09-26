@@ -592,7 +592,7 @@ def test_employer_application_list_non_viewable_statuses(
     user2_company1_attachment = create_attachment(user2, company1, application_status)
     user2_company2_attachment = create_attachment(user2, company2, application_status)
 
-    for user, client, company, attachment in [
+    for _user, client, company, _attachment in [
         (user1, user1_client, company1, user1_company1_attachment),
         (user1, user1_client, company2, user1_company2_attachment),
         (user2, user2_client, company1, user2_company1_attachment),
