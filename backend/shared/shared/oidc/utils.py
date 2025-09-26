@@ -29,8 +29,8 @@ def refresh_hki_tokens(request: HttpRequest) -> dict:
 def get_checksum_header(path: str) -> str:
     """
     suomi.fi has a custom checksum that needs to be added for the requests.
-    Docs (only in Finnish):
-    Search for "4.3 Tarkistesumman laskeminen" and :
+
+    Docs (only in Finnish): Search for "4.3 Tarkistesumman laskeminen" and :
     https://palveluhallinta.suomi.fi/fi/tuki/artikkelit/5a781dc75cb4f10dde9735e4
     """
     timestamp = timezone.now().isoformat()
@@ -70,8 +70,9 @@ def request_organization_roles(request: HttpRequest) -> dict:
 def get_organization_roles(request: HttpRequest) -> dict:
     """
     Docs (only in Finnish):
-    Search for "Taulukossa 14"
-    https://palveluhallinta.suomi.fi/fi/tuki/artikkelit/592d774503f6d100018db5dd
+
+    Search for "Taulukossa 1
+    "https://palveluhallinta.suomi.fi/fi/tuki/artikkelit/592d774503f6d100018db5dd
     """
     org_roles = request.session.get("organization_roles")
 
@@ -111,7 +112,9 @@ def store_token_info_in_session(request: HttpRequest, token_info: dict, prefix="
 
 
 def store_token_info_in_oidc_session(request: HttpRequest, token_info: dict) -> dict:
-    """Store token info in the session and return the values as dict."""
+    """
+    Store token info in the session and return the values as dict.
+    """
     return store_token_info_in_session(request, token_info, "oidc")
 
 
@@ -119,7 +122,9 @@ def store_token_info_in_eauth_session(
     request: HttpRequest,
     token_info: dict,
 ) -> dict:
-    """Store token info in the session and return the values as dict."""
+    """
+    Store token info in the session and return the values as dict.
+    """
     return store_token_info_in_session(request, token_info, "eauth")
 
 

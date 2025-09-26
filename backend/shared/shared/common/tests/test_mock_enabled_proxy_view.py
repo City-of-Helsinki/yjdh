@@ -23,8 +23,8 @@ class BaseTestView(View):
         cls, called_method_name: str, request, *args, **kwargs
     ) -> ViewCallInfo:
         """
-        Return class name, called method name, request, positional arguments and
-        keyword arguments for testing purposes.
+        Return class name, called method name, request, positional arguments
+        and keyword arguments for testing purposes.
         """
         return ViewCallInfo(cls.__name__, called_method_name, request, args, kwargs)
 

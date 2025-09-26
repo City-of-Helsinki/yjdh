@@ -1,2 +1,4 @@
 class HelsinkiProfileException(Exception):
-    """Common class for exceptions raised by `HelsinkiProfileClient`"""
+    """
+    Common class for exceptions raised by `HelsinkiProfileClient`
+    """

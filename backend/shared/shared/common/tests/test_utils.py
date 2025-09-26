@@ -195,8 +195,9 @@ def test_valid_create_finnish_social_security_number(
 )
 def test_valid_consecutive_create_finnish_social_security_number(birthdate: date):
     """
-    Testing consecutive social security numbers for validity to ensure all their parts
-    are calculated correctly, including the checksum (i.e. the last character).
+    Testing consecutive social security numbers for validity to ensure all
+    their parts are calculated correctly, including the checksum (i.e. the last
+    character).
     """
     for century_variant in range(6):
         for individual_number in range(2, 900):

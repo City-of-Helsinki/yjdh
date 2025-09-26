@@ -65,9 +65,11 @@ class ServiceBusClient:
         cls, service_bus_data: dict
     ) -> dict:
         """
-        Get the required company fields from YTJ data. All data will be in Finnish
-        Might throw ValueError if the data is not in correct format or there is a case
-        that hasn't been covered in the code
+        Get the required company fields from YTJ data.
+
+        All data will be in Finnish Might throw ValueError if the data is not
+        in correct format or there is a case that hasn't been covered in the
+        code
         """
 
         try:

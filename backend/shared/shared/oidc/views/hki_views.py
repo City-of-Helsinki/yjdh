@@ -25,7 +25,9 @@ logger = logging.getLogger(__name__)
 
 
 class HelsinkiOIDCAuthenticationRequestView(OIDCAuthenticationRequestView):
-    """Override OIDC client authentication request get method"""
+    """
+    Override OIDC client authentication request get method.
+    """
 
     def get(self, request):
         lang = request.GET.get("lang")
@@ -48,7 +50,9 @@ class HelsinkiOIDCAuthenticationRequestView(OIDCAuthenticationRequestView):
 
 
 class HelsinkiOIDCAuthenticationCallbackView(OIDCAuthenticationCallbackView):
-    """Override OIDC client authentication callback login success method"""
+    """
+    Override OIDC client authentication callback login success method.
+    """
 
     def login_success(self):
         super().login_success()
@@ -67,7 +71,9 @@ class HelsinkiOIDCAuthenticationCallbackView(OIDCAuthenticationCallbackView):
 class HelsinkiOIDCLogoutView(View):
     """
     Initiate logout process with Keycloak.
-    Use GET request like e.g. Django auth logout does."""
+
+    Use GET request like e.g. Django auth logout does.
+    """
 
     http_method_names = ["get"]
 
@@ -92,7 +98,10 @@ class HelsinkiOIDCLogoutView(View):
 
 
 class HelsinkiOIDCLogoutCallbackView(View):
-    """This callback is called after the suomi.fi logout has been performed at the city profile"""
+    """
+    This callback is called after the suomi.fi logout has been performed at the
+    city profile.
+    """
 
     http_method_names = ["get"]
 
@@ -107,7 +116,9 @@ class HelsinkiOIDCLogoutCallbackView(View):
 
 
 class HelsinkiOIDCUserInfoView(View):
-    """Gets the userinfo from OP"""
+    """
+    Gets the userinfo from OP.
+    """
 
     http_method_names = ["get"]
 
@@ -150,7 +161,7 @@ class HelsinkiOIDCUserInfoView(View):
 
 class HelsinkiOIDCBackchannelLogoutView(View):
     """
-    Backchannel logout endpoint that can be called by helsinki profiili
+    Backchannel logout endpoint that can be called by helsinki profiili.
 
     # noqa
     Docs: https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/1209040912/SSO+session+handling#About-backchannel-logout-requests

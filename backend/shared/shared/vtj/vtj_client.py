@@ -8,7 +8,8 @@ from django.http import HttpRequest
 
 class VTJClient:
     """
-    Client for VTJ / Väestötietojärjestelmä i.e. Finnish Population Information System.
+    Client for VTJ / Väestötietojärjestelmä i.e. Finnish Population Information
+    System.
 
     https://dvv.fi/en/population-information-system
     """

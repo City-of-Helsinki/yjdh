@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 class EauthAuthenticationRequestView(View):
     """
-    Eauth client authentication HTTP endpoint
+    Eauth client authentication HTTP endpoint.
 
     See [backend/README.md](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/README.md) for details
     about the auth flow.
@@ -43,8 +43,9 @@ class EauthAuthenticationRequestView(View):
     def register_user(self, person_id):
         """
         Docs of this method (only in Finnish):
-        Search for "Web API -session aloitus eli rekisteröintipyyntö"
-        https://palveluhallinta.suomi.fi/fi/tuki/artikkelit/592d774503f6d100018db5dd
+
+        Search for "Web API -session aloitus eli rekisteröintipyynt
+        "https://palveluhallinta.suomi.fi/fi/tuki/artikkelit/592d774503f6d100018db5dd
         """
         request_id = uuid4()
         path = f"/service/ypa/user/register/{settings.EAUTHORIZATIONS_CLIENT_ID}/{person_id}?requestId={request_id}"
@@ -61,7 +62,8 @@ class EauthAuthenticationRequestView(View):
         return response.json()
 
     def get(self, request):
-        """Eauth client authentication initialization HTTP endpoint
+        """
+        Eauth client authentication initialization HTTP endpoint.
 
         NOTE: We should avoid raising exceptions from the method, because it results in user's auth flow
         ending on Django's 500 error page. We should instead call `self.login_failure()` to redirect the
@@ -142,7 +144,9 @@ class EauthAuthenticationRequestView(View):
 
 
 class EauthAuthenticationCallbackView(View):
-    """Eauth client callback HTTP endpoint"""
+    """
+    Eauth client callback HTTP endpoint.
+    """
 
     http_method_names = ["get"]
 
@@ -165,7 +169,9 @@ class EauthAuthenticationCallbackView(View):
         return HttpResponseRedirect(url)
 
     def get_token_info(self, code):
-        """Return token object as a dictionary."""
+        """
+        Return token object as a dictionary.
+        """
         auth_header = HTTPBasicAuth(
             settings.EAUTHORIZATIONS_CLIENT_ID,
             settings.EAUTHORIZATIONS_API_OAUTH_SECRET,
@@ -195,7 +201,9 @@ class EauthAuthenticationCallbackView(View):
 
     @method_decorator(ensure_csrf_cookie)
     def get(self, request):
-        """Eauth client authentication callback HTTP endpoint"""
+        """
+        Eauth client authentication callback HTTP endpoint.
+        """
         if request.GET.get("error"):
             if request.user.is_authenticated:
                 auth.logout(request)

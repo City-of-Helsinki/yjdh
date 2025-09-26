@@ -9,7 +9,9 @@ from shared.common.tests.factories import HelsinkiProfileUserFactory
 
 
 class MockLogoutView(View):
-    """Mocked user logout"""
+    """
+    Mocked user logout.
+    """
 
     http_method_names = ["get", "post"]
 
@@ -27,7 +29,9 @@ class MockLogoutView(View):
 
 
 class MockLogoutCallbackView(View):
-    """Mocked user logout callback URL"""
+    """
+    Mocked user logout callback URL.
+    """
 
     http_method_names = ["get"]
 
@@ -36,7 +40,9 @@ class MockLogoutCallbackView(View):
 
 
 class MockUserInfoView(View):
-    """Get mocked userinfo of the logged in user"""
+    """
+    Get mocked userinfo of the logged in user.
+    """
 
     http_method_names = ["get"]
 
@@ -54,7 +60,9 @@ class MockUserInfoView(View):
 
 
 class MockAuthenticationRequestView(View):
-    """Mocked OIDC client authentication HTTP endpoint"""
+    """
+    Mocked OIDC client authentication HTTP endpoint.
+    """
 
     http_method_names = ["get"]
 

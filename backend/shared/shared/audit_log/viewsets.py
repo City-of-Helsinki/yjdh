@@ -86,10 +86,12 @@ class AuditLoggingModelViewSet(ModelViewSet):
         self, target: Optional[Model] = None, additional_information: str = ""
     ):
         """
-        This context manager will run the managed code in a transaction and writes
-        a new audit log entry in the same transaction. If an exception is raised,
-        the transaction will be rolled back. If the user has no permission to perform
-        the given action, a "FORBIDDEN" audit log event will be recorded.
+        This context manager will run the managed code in a transaction and
+        writes a new audit log entry in the same transaction.
+
+        If an exception is raised, the transaction will be rolled back. If the
+        user has no permission to perform the given action, a "FORBIDDEN" audit
+        log event will be recorded.
         """
         actor = copy(self._get_actor())  # May be destroyed if actor is also the target
         actor_backend = self._get_actor_backend()

@@ -38,8 +38,9 @@ _CENTURY_CHAR_TO_CENTURY_NUMBER = {
 
 def any_of_q_filter(**kwargs):
     """
-    Return Q filters combined with | i.e. match any of the given keyword arguments.
-    Return an always false Q filter if no keyword arguments are given.
+    Return Q filters combined with | i.e. match any of the given keyword
+    arguments. Return an always false Q filter if no keyword arguments are
+    given.
 
     NOTE: Supports "not__" prefix to invert a particular Q expression i.e. ~Q().
 
@@ -82,9 +83,9 @@ class MatchesAnyOfQuerySet(QuerySet):
 
     def matches_any_of(self, **kwargs):
         """
-        Do any of the given expressions match? If none match or there are no expressions
-        then return an empty queryset. If there is some match then return the queryset
-        with the objects that matched.
+        Do any of the given expressions match? If none match or there are no
+        expressions then return an empty queryset. If there is some match then
+        return the queryset with the objects that matched.
 
         NOTE: Supports "not__" prefix to invert a particular expression.
 
@@ -103,7 +104,8 @@ def redirect_to_login_using_request(
     request, login_url=None, redirect_field_name=REDIRECT_FIELD_NAME
 ) -> HttpResponseRedirect:
     """
-    Redirect to login page similarly as in django.contrib.auth.decorators.user_passes_test.
+    Redirect to login page similarly as in
+    django.contrib.auth.decorators.user_passes_test.
 
     See user_passes_test for reference:
     https://github.com/django/django/blob/3.2.4/django/contrib/auth/decorators.py#L22-L33
@@ -127,8 +129,8 @@ def social_security_number_birthdate(social_security_number) -> date:
     """
     Calculate birthdate based on the given Finnish social security number.
 
-    :raises stdnum.exceptions.ValidationError: If social_security_number is not a valid
-                                               Finnish social security number.
+    :raises stdnum.exceptions.ValidationError: If social_security_number is not
+        a valid Finnish social security number.
     :return: Birthdate calculated from the social_security_number.
     """
     compacted_social_security_number = compact_finnish_social_security_number(
