@@ -87,8 +87,10 @@ class YRTTIClient:
         association_name_info = cls._get_active_association_name(
             yrtti_data["AssociationNameInfo"]
         )
-        # There might be a list of addresses, but it is impossible to identify which one is the primary address from
-        # the data so we just select the first one. Most of the time there is only 1 address
+        # There might be a list of addresses, but it is impossible to identify which one
+        # is the primary address from
+        # the data so we just select the first one. Most of the time there is only 1
+        # address
         address = yrtti_data["Address"][0]
         company_data = {
             "name": association_name_info["AssociationName"],
@@ -128,7 +130,8 @@ class YRTTIClient:
 
     @classmethod
     def _get_active_association_name(cls, name_info: list) -> dict:
-        # If active Finnish name found, return it, otherwise return the first active name
+        # If active Finnish name found, return it, otherwise return the first active
+        # name
         target_language_names = [
             name
             for name in name_info

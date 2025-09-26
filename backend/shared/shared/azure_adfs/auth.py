@@ -154,7 +154,8 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
         # 400 = 'something' is wrong in our request
         if response.status_code == 400:
             if response.json().get("error_description", "").startswith("AADSTS50076"):
-                # This error description indicates that multi factor authentication is required.
+                # This error description indicates that multi factor authentication is
+                # required.
                 raise MFARequired
             LOGGER.error(
                 "ADFS (OBO) server returned an error: %s",
@@ -208,7 +209,8 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
         except ConfigLoadError:
             return
 
-        # If there's no token or code, we pass control to the next authentication backend
+        # If there's no token or code, we pass control to the next authentication
+        # backend
         if authorization_code is None or authorization_code == "":
             return
 
