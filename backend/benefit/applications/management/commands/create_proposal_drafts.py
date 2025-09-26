@@ -11,7 +11,7 @@ class Command(BaseCommand):
         total_created = 0
         for application in applications:
             try:
-                application.decision_proposal_draft
+                application.decision_proposal_draft  # noqa
             except:  # noqa
                 AhjoDecisionProposalDraft.objects.create(
                     application=application,

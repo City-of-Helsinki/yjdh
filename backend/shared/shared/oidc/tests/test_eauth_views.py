@@ -37,8 +37,8 @@ def test_get_checksum_header():
     checksum = get_checksum_header(path)
 
     assert (
-        checksum
-        == "ed4b7ae7 2017-02-09T10:29:42.090000+00:00 GeRKoGmGd0RFk33s2vNHutJf/TrEdwSM2Vb7qWXLESY="
+        checksum == "ed4b7ae7 2017-02-09T10:29:42.090000+00:00"
+        " GeRKoGmGd0RFk33s2vNHutJf/TrEdwSM2Vb7qWXLESY="
     )
 
 

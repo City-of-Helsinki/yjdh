@@ -26,32 +26,35 @@ POSTAL_CODE_REGEX_VALIDATOR = RegexValidator(POSTAL_CODE_REGEX)
 
 def validate_phone_number(phone_number) -> None:
     """
-    Function wrapper for PHONE_NUMBER_REGEX_VALIDATOR. If used as a validator in a
-    Django model's field this does not hardcode the underlying regular expression into
-    the migration nor into the model.
+    Function wrapper for PHONE_NUMBER_REGEX_VALIDATOR. If used as a validator
+    in a Django model's field this does not hardcode the underlying regular
+    expression into the migration nor into the model.
 
-    Raise ValidationError if the given value doesn't pass PHONE_NUMBER_REGEX_VALIDATOR.
+    Raise ValidationError if the given value doesn't pass
+    PHONE_NUMBER_REGEX_VALIDATOR.
     """
     PHONE_NUMBER_REGEX_VALIDATOR(phone_number)
 
 
 def validate_postcode(postcode) -> None:
     """
-    Function wrapper for POSTAL_CODE_REGEX_VALIDATOR. If used as a validator in a
-    Django model's field this does not hardcode the underlying regular expression into
-    the migration nor into the model.
+    Function wrapper for POSTAL_CODE_REGEX_VALIDATOR. If used as a validator in
+    a Django model's field this does not hardcode the underlying regular
+    expression into the migration nor into the model.
 
-    Raise ValidationError if the given value doesn't pass POSTAL_CODE_REGEX_VALIDATOR.
+    Raise ValidationError if the given value doesn't pass
+    POSTAL_CODE_REGEX_VALIDATOR.
     """
     POSTAL_CODE_REGEX_VALIDATOR(postcode)
 
 
 def validate_name(name) -> None:
     """
-    Validates name to be a non-empty string with no trailing or leading whitespace.
+    Validates name to be a non-empty string with no trailing or leading
+    whitespace.
 
-    Raise ValidationError if the given value is not a non-empty string with no trailing
-    or leading whitespace.
+    Raise ValidationError if the given value is not a non-empty string with no
+    trailing or leading whitespace.
     """
     if not (isinstance(name, str) and name == name.strip() and name.strip()):
         raise ValidationError(
@@ -61,7 +64,8 @@ def validate_name(name) -> None:
 
 def validate_json(value) -> None:
     """
-    Raise ValidationError if the given value can not be interpreted as valid JSON.
+    Raise ValidationError if the given value can not be interpreted as valid
+    JSON.
     """
     try:
         json.loads(value)
@@ -71,8 +75,8 @@ def validate_json(value) -> None:
 
 def validate_optional_json(value) -> None:
     """
-    Raise a ValidationError if the given value is not None, an empty string or can not
-    be interpreted as valid JSON.
+    Raise a ValidationError if the given value is not None, an empty string or
+    can not be interpreted as valid JSON.
     """
     if value is not None and value != "":
         validate_json(value)
@@ -85,17 +89,18 @@ def validate_unique_comma_separated_choices(
     allow_blank: bool,
 ) -> None:
     """
-    Validate values_string as unique comma separated choices from choices_class.
+    Validate values_string as unique comma separated choices from
+    choices_class.
 
     :param values_string: Input string containing the comma separated choices
     :param choices_class: Type, not an instance, of class derived from Choices
     :param allow_null: Is values_string allowed to be None?
     :param allow_blank: Is values_string allowed to be an empty string i.e. ""?
-
-    :raises ValidationError: If values_string is None and allow_null isn't True, or if
-    values_string is an empty string and allow_blank isn't True, otherwise if
-    values_string can't be split into parts on commas, or if the split parts aren't
-    unique, or if the split parts aren't values from choices_class.values.
+    :raises ValidationError: If values_string is None and allow_null isn't
+        True, or if values_string is an empty string and allow_blank isn't
+        True, otherwise if values_string can't be split into parts on commas,
+        or if the split parts aren't unique, or if the split parts aren't
+        values from choices_class.values.
     """
     if values_string is None:
         if allow_null:

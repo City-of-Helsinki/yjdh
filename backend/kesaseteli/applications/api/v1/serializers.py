@@ -59,7 +59,8 @@ class EmployerApplicationStatusValidator:
 
     def __call__(self, value, serializer_field):
         if application := serializer_field.parent.instance:
-            # In case it's an update operation, validate with the current status in database
+            # In case it's an update operation, validate with the current status in
+            # database
             if (
                 value != application.status
                 and value not in self.APPLICATION_STATUS_TRANSITIONS[application.status]
@@ -67,7 +68,8 @@ class EmployerApplicationStatusValidator:
                 raise serializers.ValidationError(
                     format_lazy(
                         _(
-                            "EmployerApplication state transition not allowed: {status} to {value}"
+                            "EmployerApplication state transition not allowed: {status}"
+                            " to {value}"
                         ),
                         status=application.status,
                         value=value,
@@ -113,8 +115,8 @@ class AttachmentSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """
-        Perform rudimentary validation of file content to guard against accidentally uploading
-        invalid files.
+        Perform rudimentary validation of file content to guard against
+        accidentally uploading invalid files.
         """
 
         if (
@@ -145,7 +147,8 @@ class AttachmentSerializer(serializers.ModelSerializer):
             if not self._is_valid_pdf(data["attachment_file"]):
                 raise serializers.ValidationError(_("Not a valid pdf file"))
         elif not self._is_valid_image(data["attachment_file"]):
-            # only pdf and image files are listed in ATTACHMENT_CONTENT_TYPE_CHOICES, so if we get here,
+            # only pdf and image files are listed in ATTACHMENT_CONTENT_TYPE_CHOICES, so
+            # if we get here,
             # the content type is an image file
             raise serializers.ValidationError(_("Not a valid image file"))
         return data
@@ -358,9 +361,9 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
 
         for idx, summer_voucher_item in enumerate(serializer.validated_data):
             summer_voucher_item["application_id"] = application.pk
-            summer_voucher_item[
-                "ordering"
-            ] = idx  # use the ordering defined in the JSON sent by the client
+            summer_voucher_item["ordering"] = (
+                idx  # use the ordering defined in the JSON sent by the client
+            )
         serializer.save()
 
     def validate(self, data):
@@ -409,8 +412,8 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
     def _validate_attachments(self):
         """
         The requirements for attachments are the minimum requirements.
-        * Sometimes, a multi-page document might be uploaded as a set of jpg files, and the backend
-          would not know that it's meant to be a single document.
+        * Sometimes, a multi-page document might be uploaded as a set of jpg files, and
+          the backend would not know that it's meant to be a single document.
         * This validator makes sure that there is at least one of each attachment type.
         """
         for summer_voucher in self.instance.summer_vouchers.all():
@@ -546,7 +549,8 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
 
     def get_encrypted_char_field_as_json(self, obj, field_name):
         """
-        Return EncryptedCharField as JSON object, converting None & empty string to {}.
+        Return EncryptedCharField as JSON object, converting None & empty
+        string to {}.
         """
         if not hasattr(obj, field_name):
             raise ValueError(f"Invalid field name {field_name}")

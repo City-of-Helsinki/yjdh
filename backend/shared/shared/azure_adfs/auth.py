@@ -14,18 +14,19 @@ LOGGER = logging.getLogger(__name__)
 
 def adfs_login_group_name():
     """
-    Name of the user group that signifies that the user has logged in using ADFS i.e.
-    HelsinkiAdfsAuthCodeBackend at some point
+    Name of the user group that signifies that the user has logged in using
+    ADFS i.e. HelsinkiAdfsAuthCodeBackend at some point.
 
     :return: Value of settings.ADFS_LOGIN_GROUP_NAME if it exists, otherwise
-             "ADFS login"
+        "ADFS login"
     """
     return getattr(django_settings, "ADFS_LOGIN_GROUP_NAME", "ADFS login")
 
 
 def is_adfs_login(user) -> bool:
     """
-    Has user logged in using ADFS i.e. HelsinkiAdfsAuthCodeBackend at some point?
+    Has user logged in using ADFS i.e. HelsinkiAdfsAuthCodeBackend at some
+    point?
 
     .. warning::
        Return value of True does NOT mean that user is currently logged in and active
@@ -42,8 +43,8 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
         self, user_oid: str, graph_api_access_token: str
     ):
         """
-        Fetches user groups from MS Graph API, validates the group names and adds
-        "adfs-" prefix for them.
+        Fetches user groups from MS Graph API, validates the group names and
+        adds "adfs-" prefix for them.
 
         :returns A list of group names
         """
@@ -79,7 +80,8 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
         self, user, user_oid: str, graph_api_access_token: str
     ):
         """
-        This method is derived from `django_auth_adfs.backend.AdfsBaseBackend.update_user_groups`.
+        This method is derived from
+        `django_auth_adfs.backend.AdfsBaseBackend.update_user_groups`.
         """
         groups = self.get_member_objects_from_graph_api(
             user_oid, graph_api_access_token
@@ -93,8 +95,8 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
 
     def get_userinfo_from_graph_api(self, graph_api_access_token: str):
         """
-        Makes a call to https://docs.microsoft.com/en-us/graph/api/user-get to get more information
-        about the logged in user.
+        Makes a call to https://docs.microsoft.com/en-us/graph/api/user-get to get more
+        information about the logged in user.
 
         :returns dictionary of user's requested properties
         """
@@ -125,11 +127,12 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
 
     def get_graph_api_access_token(self, access_token):
         """
-        Handles the Microsoft On-Behalf-Of flow to fetch an access token that can be
-        used with Microsoft Graph API. We will use the v2.0 enpoint to fetch this
-        token.
-        This method is derived from `django_auth_adfs.backend.AdfsBaseBackend.exchange_auth_code` but the
-        data is changed according to the OBO flow and the token endpiont is changed to v2.0.
+        Handles the Microsoft On-Behalf-Of flow to fetch an access token that
+        can be used with Microsoft Graph API. We will use the v2.0 enpoint to
+        fetch this token. This method is derived from
+        `django_auth_adfs.backend.AdfsBaseBackend.exchange_auth_code` but the
+        data is changed according to the OBO flow and the token endpiont is
+        changed to v2.0.
 
         Docs: https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow
         """
@@ -154,7 +157,8 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
         # 400 = 'something' is wrong in our request
         if response.status_code == 400:
             if response.json().get("error_description", "").startswith("AADSTS50076"):
-                # This error description indicates that multi factor authentication is required.
+                # This error description indicates that multi factor authentication is
+                # required.
                 raise MFARequired
             LOGGER.error(
                 "ADFS (OBO) server returned an error: %s",
@@ -195,10 +199,10 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
 
     def authenticate(self, request=None, authorization_code=None, **kwargs):
         """
-        Override the authenticate method to fetch the user groups from Microsoft Graph API
-        instead of getting them from the claims.
-        This is done because of the limited size of the (JWT) access token that sometimes
-        cannot fit all of the groups in the claims.
+        Override the authenticate method to fetch the user groups from
+        Microsoft Graph API instead of getting them from the claims. This is
+        done because of the limited size of the (JWT) access token that
+        sometimes cannot fit all of the groups in the claims.
 
         Docs: https://docs.microsoft.com/en-us/azure/active-directory/develop/id-tokens#groups-overage-claim
         """
@@ -208,7 +212,8 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
         except ConfigLoadError:
             return
 
-        # If there's no token or code, we pass control to the next authentication backend
+        # If there's no token or code, we pass control to the next authentication
+        # backend
         if authorization_code is None or authorization_code == "":
             return
 

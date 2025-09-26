@@ -13,7 +13,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import HTTPError
 
-from shared.helsinki_profile.exceptions import HelsinkiProfileException
+from shared.helsinki_profile.exceptions import HelsinkiProfileError
 from shared.helsinki_profile.hp_client import HelsinkiProfileClient
 from shared.oidc.utils import (
     get_checksum_header,
@@ -26,10 +26,10 @@ logger = logging.getLogger(__name__)
 
 class EauthAuthenticationRequestView(View):
     """
-    Eauth client authentication HTTP endpoint
+    Eauth client authentication HTTP endpoint.
 
-    See [backend/README.md](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/README.md) for details
-    about the auth flow.
+    See [backend/README.md](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/README.md)
+    for details about the auth flow.
 
     Docs that describe the flow (only in Finnish):
     https://palveluhallinta.suomi.fi/fi/tuki/artikkelit/592d774503f6d100018db5dd
@@ -43,11 +43,15 @@ class EauthAuthenticationRequestView(View):
     def register_user(self, person_id):
         """
         Docs of this method (only in Finnish):
-        Search for "Web API -session aloitus eli rekisteröintipyyntö"
-        https://palveluhallinta.suomi.fi/fi/tuki/artikkelit/592d774503f6d100018db5dd
+
+        Search for "Web API -session aloitus eli rekisteröintipyynt
+        "https://palveluhallinta.suomi.fi/fi/tuki/artikkelit/592d774503f6d100018db5dd
         """
         request_id = uuid4()
-        path = f"/service/ypa/user/register/{settings.EAUTHORIZATIONS_CLIENT_ID}/{person_id}?requestId={request_id}"
+        path = (
+            f"/service/ypa/user/register/{settings.EAUTHORIZATIONS_CLIENT_ID}"
+            f"/{person_id}?requestId={request_id}"
+        )
 
         checksum_header = get_checksum_header(path)
 
@@ -61,11 +65,12 @@ class EauthAuthenticationRequestView(View):
         return response.json()
 
     def get(self, request):
-        """Eauth client authentication initialization HTTP endpoint
+        """
+        Eauth client authentication initialization HTTP endpoint.
 
-        NOTE: We should avoid raising exceptions from the method, because it results in user's auth flow
-        ending on Django's 500 error page. We should instead call `self.login_failure()` to redirect the
-        user to the login error page in the UI.
+        NOTE: We should avoid raising exceptions from the method, because it results in
+        user's auth flow ending on Django's 500 error page. We should instead call
+        `self.login_failure()` to redirect the user to the login error page in the UI.
         """
 
         suomifi_enabled = getattr(settings, "NEXT_PUBLIC_ENABLE_SUOMIFI", False)
@@ -78,31 +83,29 @@ class EauthAuthenticationRequestView(View):
         else:
             if not request.session.get("oidc_access_token"):
                 return self.login_failure()
-            print("session:", request.session.__dict__)
 
             user_info = get_userinfo(request)
             user_ssn = user_info.get("national_id_num")
 
-            # When authenticating via Tunnistamo, we need to call Helsinki Profile GraphQL API
+            # When authenticating via Tunnistamo, we need to call Helsinki Profile
+            # GraphQL API
             if user_ssn is None:
                 try:
                     profile = HelsinkiProfileClient().get_profile(
                         request.session.get("oidc_access_token")
                     )
-                except HelsinkiProfileException as e:
-                    print(
-                        "Reading nationalIdentificationNumber from Helsinki Profile API failed: ",
-                        e,
-                    )
+                except HelsinkiProfileError as e:
                     logger.warning(
-                        f"Reading nationalIdentificationNumber from Helsinki Profile API failed: {str(e)}"
+                        "Reading nationalIdentificationNumber from Helsinki Profile"
+                        f" API failed: {str(e)}"
                     )
                     return self.login_failure()
                 user_ssn = profile["user_ssn"]
 
         if user_ssn is None:
             logger.warning(
-                "Cannot use eauthorizations API due to missing nationalIdentificationNumber"
+                "Cannot use eauthorizations API due to missing"
+                " nationalIdentificationNumber"
             )
             return self.login_failure()
 
@@ -118,9 +121,11 @@ class EauthAuthenticationRequestView(View):
         params = {
             "client_id": settings.EAUTHORIZATIONS_CLIENT_ID,
             "response_type": "code",
-            "redirect_uri": request.build_absolute_uri(
-                reverse("eauth_authentication_callback")
-            ).replace("http://", "https://"),
+            "redirect_uri": (
+                request.build_absolute_uri(
+                    reverse("eauth_authentication_callback")
+                ).replace("http://", "https://")
+            ),
             "user": user_id,
         }
 
@@ -136,7 +141,9 @@ class EauthAuthenticationRequestView(View):
 
 
 class EauthAuthenticationCallbackView(View):
-    """Eauth client callback HTTP endpoint"""
+    """
+    Eauth client callback HTTP endpoint.
+    """
 
     http_method_names = ["get"]
 
@@ -159,7 +166,9 @@ class EauthAuthenticationCallbackView(View):
         return HttpResponseRedirect(url)
 
     def get_token_info(self, code):
-        """Return token object as a dictionary."""
+        """
+        Return token object as a dictionary.
+        """
         auth_header = HTTPBasicAuth(
             settings.EAUTHORIZATIONS_CLIENT_ID,
             settings.EAUTHORIZATIONS_API_OAUTH_SECRET,
@@ -170,9 +179,11 @@ class EauthAuthenticationCallbackView(View):
         params = {
             "code": code,
             "grant_type": "authorization_code",
-            "redirect_uri": self.request.build_absolute_uri(
-                reverse("eauth_authentication_callback")
-            ).replace("http://", "https://"),
+            "redirect_uri": (
+                self.request.build_absolute_uri(
+                    reverse("eauth_authentication_callback")
+                ).replace("http://", "https://")
+            ),
         }
         query = urlencode(params)
 
@@ -187,7 +198,9 @@ class EauthAuthenticationCallbackView(View):
 
     @method_decorator(ensure_csrf_cookie)
     def get(self, request):
-        """Eauth client authentication callback HTTP endpoint"""
+        """
+        Eauth client authentication callback HTTP endpoint.
+        """
         if request.GET.get("error"):
             if request.user.is_authenticated:
                 auth.logout(request)

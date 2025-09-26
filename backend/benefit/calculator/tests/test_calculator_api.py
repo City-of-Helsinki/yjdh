@@ -178,7 +178,8 @@ def test_modify_calculation(handler_api_client, handling_application):
     assert handling_application.calculation
     handling_application.pay_subsidies.all().delete()
     data["calculation"]["monthly_pay"] = "1234.56"
-    # also modify pay_subsidies. Although multiple objects are modified, calculate() should only
+    # also modify pay_subsidies. Although multiple objects are modified, calculate()
+    # should only
     # be called once.
     data["pay_subsidies"] = [
         {
@@ -573,9 +574,9 @@ def test_ignore_pay_subsidy_dates_when_on_manual_calculator(
     data["calculation"]["start_date"] = str(handling_application.start_date)
     data["calculation"]["end_date"] = str(handling_application.end_date)
     data["calculation"]["override_monthly_benefit_amount"] = "100.00"
-    data["calculation"][
-        "override_monthly_benefit_amount_comment"
-    ] = "This is a comment."
+    data["calculation"]["override_monthly_benefit_amount_comment"] = (
+        "This is a comment."
+    )
 
     _set_two_pay_subsidies_with_empty_dates(data)
 

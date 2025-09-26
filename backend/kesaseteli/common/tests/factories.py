@@ -9,15 +9,15 @@ from django.utils import timezone
 from django.utils.timezone import get_current_timezone
 
 from applications.enums import (
-    AdditionalInfoUserReason,
     ATTACHMENT_CONTENT_TYPE_CHOICES,
+    AdditionalInfoUserReason,
     AttachmentType,
     EmployerApplicationStatus,
-    get_supported_languages,
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,
     VtjTestCase,
     YouthApplicationStatus,
+    get_supported_languages,
 )
 from applications.models import (
     Attachment,
@@ -435,7 +435,8 @@ class AbstractNonVtjYouthApplicationFactory(AbstractYouthApplicationFactory):
     These youth applications don't have a social security number or VTJ data.
     """
 
-    # Non-VTJ youth applications always have empty social security number and no VTJ data:
+    # Non-VTJ youth applications always have empty social security number and no VTJ
+    # data:
     social_security_number = ""
     encrypted_original_vtj_json = None
     encrypted_handler_vtj_json = None
@@ -480,7 +481,8 @@ class AbstractNonVtjYouthApplicationFactory(AbstractYouthApplicationFactory):
 
 class AcceptableNonVtjYouthApplicationFactory(AbstractNonVtjYouthApplicationFactory):
     """
-    A youth application created using YouthApplicationViewSet.create_without_ssn endpoint.
+    A youth application created using
+    YouthApplicationViewSet.create_without_ssn endpoint.
     """
 
     status = YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value
@@ -488,8 +490,8 @@ class AcceptableNonVtjYouthApplicationFactory(AbstractNonVtjYouthApplicationFact
 
 class AcceptedNonVtjYouthApplicationFactory(AbstractNonVtjYouthApplicationFactory):
     """
-    A youth application created using YouthApplicationViewSet.create_without_ssn endpoint
-    and then accepted.
+    A youth application created using
+    YouthApplicationViewSet.create_without_ssn endpoint and then accepted.
     """
 
     status = YouthApplicationStatus.ACCEPTED.value
@@ -497,8 +499,8 @@ class AcceptedNonVtjYouthApplicationFactory(AbstractNonVtjYouthApplicationFactor
 
 class RejectedNonVtjYouthApplicationFactory(AbstractNonVtjYouthApplicationFactory):
     """
-    A youth application created using YouthApplicationViewSet.create_without_ssn endpoint
-    and then rejected.
+    A youth application created using
+    YouthApplicationViewSet.create_without_ssn endpoint and then rejected.
     """
 
     status = YouthApplicationStatus.REJECTED.value

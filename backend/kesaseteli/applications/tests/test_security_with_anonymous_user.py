@@ -57,9 +57,9 @@ def test_company_forbidden_to_anonymous_user(client, company):
 @pytest.mark.django_db
 def test_youth_application_status_openly_accessible_to_anonymous_user(client):
     """
-    Test that youth application's status endpoint is openly accessible to anonymous
-    users and returns only the single queried youth application's status and nothing
-    else.
+    Test that youth application's status endpoint is openly accessible to
+    anonymous users and returns only the single queried youth application's
+    status and nothing else.
 
     NOTE:
         The youth application's status endpoint is open to everyone and can be used to
@@ -83,8 +83,8 @@ def test_youth_application_status_openly_accessible_to_anonymous_user(client):
 @pytest.mark.django_db
 def test_youth_applications_list_get_method_not_allowed_to_anonymous_user(client):
     """
-    Test that using GET on youth applications' list endpoint returns method not allowed
-    to anonymous users.
+    Test that using GET on youth applications' list endpoint returns method not
+    allowed to anonymous users.
     """
     list_url = reverse("v1:youthapplication-list")
     response = client.get(list_url, headers=HEADERS_ACCEPT_APPLICATION_JSON)
@@ -103,12 +103,15 @@ def test_api_root_get_forbidden_to_anonymous_user(client):
     api_root_url = reverse("v1:api-root")
     response = client.get(api_root_url, headers=HEADERS_ACCEPT_APPLICATION_JSON)
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    assert response.data == {
-        "detail": ErrorDetail(
-            string="Autentikaatiotunnuksia ei annettu.",  # Default server language is Finnish
-            code="not_authenticated",
-        )
-    }
+    assert (
+        response.data
+        == {
+            "detail": ErrorDetail(
+                string="Autentikaatiotunnuksia ei annettu.",  # Default server language is Finnish
+                code="not_authenticated",
+            )
+        }
+    )
     assert isinstance(response.accepted_renderer, JSONRenderer)
     assert response.wsgi_request.user.is_anonymous
 
@@ -119,8 +122,8 @@ def test_youth_application_fetch_employee_data_get_method_not_allowed_to_anonymo
     client,
 ):
     """
-    Test that using GET on youth application's fetch_employee_data endpoint returns
-    method not allowed to anonymous users.
+    Test that using GET on youth application's fetch_employee_data endpoint
+    returns method not allowed to anonymous users.
     """
     url = reverse("v1:youthapplication-fetch-employee-data")
     response = client.get(url, headers=HEADERS_ACCEPT_APPLICATION_JSON)
@@ -170,8 +173,8 @@ def test_youth_application_create_without_ssn_get_method_not_allowed_to_anonymou
     client,
 ):
     """
-    Test that using GET on youth application's create_without_ssn endpoint returns
-    method not allowed to anonymous users.
+    Test that using GET on youth application's create_without_ssn endpoint
+    returns method not allowed to anonymous users.
     """
     url = reverse("v1:youthapplication-create-without-ssn")
     response = client.get(url, headers=HEADERS_ACCEPT_APPLICATION_JSON)
@@ -230,7 +233,8 @@ def test_not_acceptable_response_to_anonymous_user_requesting_html_from_endpoint
 ):
     """
     Test that endpoints return 406 Not Acceptable response to anonymous user
-    when asking for HTML type response (i.e. request header's "Accept" is "text/html").
+    when asking for HTML type response (i.e. request header's "Accept" is
+    "text/html").
     """
     response = client.generic(
         method=method,
@@ -238,12 +242,15 @@ def test_not_acceptable_response_to_anonymous_user_requesting_html_from_endpoint
         headers={"Accept": "text/html"},
     )
     assert response.status_code == status.HTTP_406_NOT_ACCEPTABLE
-    assert response.data == {
-        "detail": ErrorDetail(
-            string="Ei voitu vastata pyynnön Accept-otsakkeen mukaisesti.",  # Default server language is Finnish
-            code="not_acceptable",
-        ),
-    }
+    assert (
+        response.data
+        == {
+            "detail": ErrorDetail(
+                string="Ei voitu vastata pyynnön Accept-otsakkeen mukaisesti.",  # Default server language is Finnish
+                code="not_acceptable",
+            ),
+        }
+    )
     assert response.content == b"" or json.loads(response.content.decode("utf-8")) == {
         "detail": "Ei voitu vastata pyynnön Accept-otsakkeen mukaisesti."
     }

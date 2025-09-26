@@ -1,7 +1,7 @@
 import logging
 import re
 from datetime import date, timedelta
-from decimal import Decimal, ROUND_DOWN
+from decimal import ROUND_DOWN, Decimal
 from typing import List
 
 from dateutil.relativedelta import relativedelta
@@ -15,11 +15,13 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
-from django_filters import DateFromToRangeFilter, rest_framework as filters
+from django_filters import DateFromToRangeFilter
+from django_filters import rest_framework as filters
 from django_filters.widgets import CSVWidget
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema, OpenApiParameter
-from rest_framework import filters as drf_filters, status
+from drf_spectacular.utils import OpenApiParameter, extend_schema
+from rest_framework import filters as drf_filters
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import MultiPartParser
@@ -90,8 +92,10 @@ class BaseApplicationFilter(filters.FilterSet):
         widget=CSVWidget,
         choices=ApplicationStatus.choices,
         help_text=(
-            "Filter by application status. Multiple statuses may be specified as a"
-            " comma-separated list, such as 'status=draft,received'",
+            (
+                "Filter by application status. Multiple statuses may be specified as a"
+                " comma-separated list, such as 'status=draft,received'"
+            ),
         ),
     )
     archived_for_applicant = filters.BooleanFilter(
@@ -148,7 +152,8 @@ class ApplicantApplicationFilter(BaseApplicationFilter):
 
 
 class HandlerApplicationFilter(BaseApplicationFilter):
-    # the date when application was last set to either REJECTED, ACCEPTED or CANCELLED status
+    # the date when application was last set to either REJECTED, ACCEPTED or CANCELLED
+    # status
     handled_at = DateFromToRangeFilter(method="filter_handled_at")
 
     def filter_handled_at(self, queryset, name, value):
@@ -193,8 +198,10 @@ class HandlerApplicationAlterationFilter(filters.FilterSet):
         widget=CSVWidget,
         choices=ApplicationAlterationState.choices,
         help_text=(
-            "Filter by alteration state. Multiple states may be specified as a"
-            " comma-separated list, such as 'state=handled,cancelled'",
+            (
+                "Filter by alteration state. Multiple states may be specified as a"
+                " comma-separated list, such as 'state=handled,cancelled'"
+            ),
         ),
     )
 
@@ -251,13 +258,14 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         """
         Convenience action for the frontends that by default excludes the fields that are not normally
         needed in application listing pages.
-        """
+        """  # noqa: E501
         context = self.get_serializer_context()
         qs = self._get_simplified_queryset(request, context)
         serializer = self.serializer_class(qs, many=True, context=context)
         data = serializer.data
 
-        # Sorting by encrypted fields has to be done after the data has been retrieved and decrypted
+        # Sorting by encrypted fields has to be done after the data has been retrieved
+        # and decrypted
         if request.query_params.get("order_by") in ["employee_name"]:
             data = sorted(
                 data,
@@ -340,7 +348,8 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
             if should_filter_archived:
                 qs = qs.filter(archived=should_filter_archived)
             else:
-                # Applications with second instalment are considered archived but should be included in main views
+                # Applications with second instalment are considered archived but should
+                # be included in main views
                 qs = qs.filter(
                     Q(archived=should_filter_archived)
                     | Q(pk__in=self._get_application_pks_with_instalments())
@@ -428,7 +437,7 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
                 del v["id"]
         else:
             de_minimis_aid_set = []
-        """
+        """  # noqa: E501
         de_minimis_aid_set = []
         return Response(
             {
@@ -501,7 +510,8 @@ class HandlerApplicationAlterationViewSet(BaseApplicationAlterationViewSet):
         )
 
         # If the alteration has been handled, the only allowed edit is to cancel it.
-        # If the alteration has been cancelled, it cannot be modified in any way anymore.
+        # If the alteration has been cancelled, it cannot be modified in any way
+        # anymore.
         if current_state == ApplicationAlterationState.CANCELLED or (
             current_state == ApplicationAlterationState.HANDLED and forbidden_if_handled
         ):
@@ -532,7 +542,8 @@ class HandlerApplicationAlterationViewSet(BaseApplicationAlterationViewSet):
         alteration.recovery_start_date = request.data.get("recovery_start_date")
 
         alteration.save()
-        # CsvService requires a queryset, so we need to create a queryset with the alteration
+        # CsvService requires a queryset, so we need to create a queryset with the
+        # alteration
         queryset = ApplicationAlteration.objects.filter(
             id__in=[alteration.id],
         )
@@ -549,7 +560,8 @@ class HandlerApplicationAlterationViewSet(BaseApplicationAlterationViewSet):
             )
         except ObjectDoesNotExist:
             raise ImproperlyConfigured(
-                "application_alteration_fields fields not found in the ahjo_settings table"
+                "application_alteration_fields fields not found in the ahjo_settings"
+                " table"
             )
 
     def _alterations_csv_response(
@@ -558,7 +570,7 @@ class HandlerApplicationAlterationViewSet(BaseApplicationAlterationViewSet):
         config: AlterationCsvConfigurableFields,
         user: User,
     ) -> StreamingHttpResponse:
-        """Generate a response with a CSV file containing application alteration data."""
+        """Generate a response with a CSV file containing application alteration data."""  # noqa: E501
         csv_service = ApplicationAlterationCsvService(queryset, config, user)
 
         response = HttpResponse(
@@ -590,7 +602,8 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
     filterset_class = ApplicantApplicationFilter
 
     def _annotate_unread_messages_count(self, qs):
-        # since there other annotations added elsewhere, use subquery to avoid wrong results.
+        # since there other annotations added elsewhere, use subquery to avoid wrong
+        # results.
         # also, using a subquery is more performant
         return qs.annotate(
             unread_messages_count=SubqueryCount(
@@ -747,14 +760,15 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
 
     def get_queryset(self):
         # The default ordering in the handling views:
-        # * In the "received" table, ordering should be by the send time, most recent first
+        # * In the "received" table, ordering should be by the send time, most recent
+        #   first
         # * In the "handling" table, ordering should be by the calculation modification
         #   time, most recent first
         # * In the archive page, ordering should be by handled_at, most recent first.
         # All these goals are achieved by ordering by first handled_at, then
         # calculation.modified_at.
-        # * in the "received" and "handling" table, no application has handled_at set yet,
-        #   so applications will compare as equals
+        # * in the "received" and "handling" table, no application has handled_at set
+        #   yet, so applications will compare as equals
         # * For received applications, the send time is the same as calculation
         #   modification time
         return self._annotate_unread_messages_count(
@@ -898,8 +912,8 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
 
             if to_status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
                 # Create an automatic message for the applicant
-                # self.instance.additional_information_requested_at is not updated at this point as
-                # it's a queryset annotation, so need to refresh
+                # self.instance.additional_information_requested_at is not updated at
+                # this point as it's a queryset annotation, so need to refresh
                 application.additional_information_requested_at = (
                     Application.objects.get(
                         pk=application.pk
@@ -933,14 +947,15 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         """
         Create a new application batch out of the existing applications in the given status
         that are not yet assigned to a batch.
-        """
+        """  # noqa: E501
         queryset = self.get_queryset().filter(status=status, batch__isnull=True)
         status_map = {
             ApplicationStatus.ACCEPTED: ApplicationBatchStatus.DECIDED_ACCEPTED,
             ApplicationStatus.REJECTED: ApplicationBatchStatus.DECIDED_REJECTED,
         }
         if status not in status_map:
-            assert False, "Internal error, should not happen"
+            raise AssertionError("Internal error, should not happen")
+
         application_ids = [application.pk for application in queryset]
         if queryset:
             batch = ApplicationBatch.objects.create(

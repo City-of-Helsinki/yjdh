@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -31,7 +31,7 @@ class DecisionProposalTemplateSectionList(APIView):
     """
     View to list the decision proposal templates with placeholders replaced by actual application data.
     * Only handlers are able to access this view.
-    """
+    """  # noqa: E501
 
     permission_classes = [BFIsHandler]
 
@@ -45,7 +45,7 @@ class DecisionProposalTemplateSectionList(APIView):
                 location=OpenApiParameter.PATH,
             ),
         ],
-        description=("API for querying decision proposal templates"),
+        description="API for querying decision proposal templates",
         request=DecisionProposalTemplateSectionSerializer,
     )
     def get(self, request, format=None) -> Response:
@@ -102,7 +102,8 @@ class DecisionProposalTemplateSectionList(APIView):
         ),
     ],
     description=(
-        "API for listing and creating decision texts. Only handlers are able to access this view."
+        "API for listing and creating decision texts. Only handlers are able to access"
+        " this view."
     ),
     request=DecisionTextSerializer,
 )
@@ -180,8 +181,11 @@ class DecisionProposalDraftUpdate(APIView):
             decision_part = data.get("decision_text")
             justification_part = data.get("justification_text")
             ahjo_text = AhjoDecisionText.objects.filter(application=application)
-            decision_text = f'<section id="paatos"><h1>{_("Päätös")}</h1>{decision_part}</section>\
-<section id="paatoksenperustelut"><h1>{_("Päätöksen perustelut")}</h1>{justification_part}</section>'
+            decision_text = (
+                "<section"
+                f' id="paatos"><h1>{_("Päätös")}</h1>{decision_part}</section><section'
+                f' id="paatoksenperustelut"><h1>{_("Päätöksen perustelut")}</h1>{justification_part}</section>'  # noqa: E501
+            )
 
             available_decision_makers = AhjoSetting.objects.get(
                 name="ahjo_decision_maker"

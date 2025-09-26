@@ -2,15 +2,15 @@ import requests
 from django.conf import settings
 from requests import RequestException
 
-from shared.helsinki_profile.exceptions import HelsinkiProfileException
+from shared.helsinki_profile.exceptions import HelsinkiProfileError
 
 
 class HelsinkiProfileClient:
     """
-    Client for reading data from the Helsinki Profile GraphQL API
+    Client for reading data from the Helsinki Profile GraphQL API.
 
-    See [backend/README.md](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/README.md) for details
-    about the auth flow.
+    See [backend/README.md](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/README.md)
+    for details about the auth flow.
 
     https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/6172606574/Full+Helsinki-profile+with+citizen+profile+and+API+authorization+support+features
     """
@@ -24,18 +24,16 @@ class HelsinkiProfileClient:
                 settings.HELSINKI_PROFILE_SCOPE,
             ]
         ):
-            raise HelsinkiProfileException(
-                "HelsinkiProfileClient settings not configured."
-            )
+            raise HelsinkiProfileError("HelsinkiProfileClient settings not configured.")
 
     def get_profile(self, oidc_access_token):
         """
         Reads user's profile from the API.
 
-        Currently only reads the `nationalIdentificationNumber`, but can easily be modified to read
-        other data if needed.
+        Currently only reads the `nationalIdentificationNumber`, but can easily be
+        modified to read other data if needed.
 
-        :raises HelsinkiProfileException if profile cannot be succesfully read
+        :raises HelsinkiProfileError if profile cannot be succesfully read
 
         :return dict with queried values (value may be `None`)
         """
@@ -48,7 +46,8 @@ class HelsinkiProfileClient:
 
         try:
             payload = {
-                "query": """
+                "query": (
+                    """
                     query myProfile {
                         myProfile {
                             verifiedPersonalInformation {
@@ -56,7 +55,8 @@ class HelsinkiProfileClient:
                             }
                         }
                     }
-                """,
+                """
+                ),
             }
             response = requests.post(
                 settings.HELSINKI_PROFILE_API_URL,
@@ -67,14 +67,12 @@ class HelsinkiProfileClient:
             )
             response.raise_for_status()
         except RequestException as e:
-            raise HelsinkiProfileException(str(e))
+            raise HelsinkiProfileError(str(e))
 
         profile_data = response.json()
 
         if "errors" in profile_data:
-            raise HelsinkiProfileException(
-                f"GraphQL error: {str(profile_data['errors'])}"
-            )
+            raise HelsinkiProfileError(f"GraphQL error: {str(profile_data['errors'])}")
 
         national_identification_number = (
             profile_data.get("data", {})
@@ -87,7 +85,7 @@ class HelsinkiProfileClient:
 
     def get_api_access_token(self, oidc_access_token):
         """
-        Exchanges OIDC access token for API access token using Tunnistamo
+        Exchanges OIDC access token for API access token using Tunnistamo.
         """
         try:
             response = requests.get(
@@ -98,17 +96,19 @@ class HelsinkiProfileClient:
             response.raise_for_status()
             data = response.json()
         except RequestException as e:
-            raise HelsinkiProfileException(str(e))
+            raise HelsinkiProfileError(str(e))
 
         if settings.HELSINKI_PROFILE_SCOPE not in data:
-            raise HelsinkiProfileException(
-                "Could not obtain API access token, check setting HELSINKI_PROFILE_SCOPE"
+            raise HelsinkiProfileError(
+                "Could not obtain API access token, check setting"
+                " HELSINKI_PROFILE_SCOPE"
             )
         return data[settings.HELSINKI_PROFILE_SCOPE]
 
     def get_api_access_token_tunnistus(self, oidc_access_token):
         """
-        Exchanges OIDC access token for API access token using Tunnistus Keycloak
+        Exchanges OIDC access token for API access token using Tunnistus
+        Keycloak.
         """
 
         if "test" in settings.HELSINKI_PROFILE_API_URL:
@@ -136,10 +136,11 @@ class HelsinkiProfileClient:
             data = response.json()
 
         except RequestException as e:
-            raise HelsinkiProfileException(str(e))
+            raise HelsinkiProfileError(str(e))
 
         if settings.HELSINKI_PROFILE_SCOPE not in data:
-            raise HelsinkiProfileException(
-                "Could not obtain API access token, check setting HELSINKI_PROFILE_SCOPE"
+            raise HelsinkiProfileError(
+                "Could not obtain API access token, check setting"
+                " HELSINKI_PROFILE_SCOPE"
             )
         return data[settings.HELSINKI_PROFILE_SCOPE]

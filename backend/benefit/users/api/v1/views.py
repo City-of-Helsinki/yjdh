@@ -57,7 +57,7 @@ class UserOptionsView(APIView):
 
 
 class UserUuidGDPRAPIView(GDPRAPIView):
-    """GDPR API view that is used from Helsinki profile to query and delete user data."""
+    """GDPR API view that is used from Helsinki profile to query and delete user data."""  # noqa: E501
 
     permission_classes = [BFGDPRScopesPermission]
     authentication_classes = [HelsinkiProfileApiTokenAuthentication]

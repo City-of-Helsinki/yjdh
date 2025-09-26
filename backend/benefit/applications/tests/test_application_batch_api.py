@@ -315,10 +315,12 @@ def test_batch_status_change(
 
 def test_batch_too_many_drafts(application_batch):
     # Create a second batch to get to two batch limit
-    ApplicationBatchFactory(
-        status=ApplicationBatchStatus.DRAFT,
-        proposal_for_decision=ApplicationStatus.REJECTED,
-    ),
+    (
+        ApplicationBatchFactory(
+            status=ApplicationBatchStatus.DRAFT,
+            proposal_for_decision=ApplicationStatus.REJECTED,
+        ),
+    )
 
     # Create a batch with different status and try putting it in draft
     batch_with_status_change = ApplicationBatchFactory(
@@ -777,7 +779,8 @@ def test_application_delete(handler_api_client, application_batch):
 
 @patch("applications.api.v1.application_batch_views.export_application_batch")
 def test_application_batch_export(mock_export, handler_api_client, application_batch):
-    # Mock export pdf function to reduce test time, the unittest for the export feature will be run separately
+    # Mock export pdf function to reduce test time, the unittest for the export feature
+    # will be run separately
     mock_export.return_value = {}
     # Export invalid batch
     application_batch.status = ApplicationBatchStatus.SENT_TO_TALPA

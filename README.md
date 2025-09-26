@@ -15,7 +15,7 @@ This monorepo contains code for three different employment services:
   * Handler
 
 * **TET Job Search** - retired and can be found in [here](https://github.com/City-of-Helsinki/yjdh/tree/ab8b87d5466badb37dccb968830ddbb2a51ec170)
-  * Backend 
+  * Backend
   * Youth
   * Admin
 
@@ -59,7 +59,7 @@ More information in [Confluence](https://helsinkisolutionoffice.atlassian.net/wi
 3. Make additional changes & commit, e.g. `git commit -m "feat: new feature frontend"`
 4. Open a pull request, for example with title `HL-123: New feature`
 5. After PR checks are passed and PR is approved, merge with squash merge (set commit message to e.g. `feat: new feature`) or rebase and merge
-6. Release Please opens release PR with a title similar to this: `chore(main): release benefit-backend 1.1.1`  
+6. Release Please opens release PR with a title similar to this: `chore(main): release benefit-backend 1.1.1`
 7. Merge release pull request to `main`. This creates a versioned release tag (e.g. `benefit-backend: v1.1.1`) that triggers staging and production deploy (Deploys still must be approved from Azure DevOps).
 
 ## Setting up git hooks
@@ -141,12 +141,24 @@ YJDH-Benefit provides two services for applying and for handling the application
 1. If github action deploy fail with error like this in your pull-request:
 
 ```text
-  Error: rendered manifests contain a resource that already exists. 
-  Unable to continue with install: Service "yjdh-135-send-localization-param-to-suomifi-yjdh-ks-service" 
-  in namespace "yjdh-yjdh-135-send-localization-param-to-suomifi-227" exists and cannot be 
-  imported into the current release: invalid ownership metadata; annotation validation error: 
-  key "meta.helm.sh/release-name" must equal "yjdh-135-send-localization-par-review-yjdh-ks-bknd": 
+  Error: rendered manifests contain a resource that already exists.
+  Unable to continue with install: Service "yjdh-135-send-localization-param-to-suomifi-yjdh-ks-service"
+  in namespace "yjdh-yjdh-135-send-localization-param-to-suomifi-227" exists and cannot be
+  imported into the current release: invalid ownership metadata; annotation validation error:
+  key "meta.helm.sh/release-name" must equal "yjdh-135-send-localization-par-review-yjdh-ks-bknd":
   current value is "yjdh-135-send-localization-par-review-yjdh-ks-empl"
 ```
 
 The reason for this is that your pr's branch name is too long. You have to rename it and create a new pr. See instructions at [StackOverflow](https://stackoverflow.com/questions/30590083/how-do-i-rename-both-a-git-local-and-remote-branch-name).
+
+
+### Git blame ignore refs
+
+Project includes a `.git-blame-ignore-revs` file for ignoring certain commits from `git blame`.
+This can be useful for ignoring e.g. formatting commits, so that it is more clear from `git blame`
+where the actual code change came from. Configure your git to use it for this project with the
+following command:
+
+```shell
+git config blame.ignoreRevsFile .git-blame-ignore-revs
+```

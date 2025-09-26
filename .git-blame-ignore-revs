@@ -1,0 +1,28 @@
+# style(benefit): apply ruff format
+5b557933b1a275d60f9ad8a449a93fa7ca37e9fe
+# style(benefit): break long strings with black and reformat with ruff
+57d5aa102229bdefd4ca845f08afc40f5b57e1c6
+# style(benefit): reflow comments
+152aa1f10be35e93314edf2ed200f384d400e291
+# style(benefit): add noqa to all E501
+039f8f60d9e1ada9c0e6fd525ba33abde42565b7
+# style(benefit): add noqa to all T201
+1a9141dff51f0fd3e35a4477bfa3510b69672c31
+
+# style(kesaseteli): apply ruff format
+83fbeeccd762ad1db105d82f030617c70504e740
+# style(kesaseteli): split long strings with black
+87a9956457afce87acb910ff07cf6313efbd3735
+# style(kesaseteli): split long comments
+e8730817bd9aa5f97cbf7b2823f9563526520118
+# style(kesaseteli): apply docformatter
+d1710d68062def0a1c43be362d5948e7ea088249
+
+# style(shared): apply ruff format
+c850e2d19f40cabbe43f8cf331e7bf642e3099f6
+# style(shared): split long strings with black
+6f84683833b9fab8d4e586f88a15a40012aa7fee
+# style(shared): split long comments
+b16a7329fc75c71353e0cfa5701a39047bd85ddd
+# style(shared): apply docformatter
+931546951c1adb4c5d3a262c190bd332ae58604f

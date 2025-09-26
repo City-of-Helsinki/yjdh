@@ -23,7 +23,7 @@ def check_csv_cell_list_lines_generator(
             assert isinstance(column, (str, int, decimal.Decimal, datetime.date))
 
     header_row = rows[0]
-    assert header_row == [column.heading for column in csv_export.CSV_COLUMNS]
+    assert header_row == [column.heading for column in csv_export.csv_columns]
 
 
 def check_csv_string_lines_generator(
@@ -46,7 +46,7 @@ def check_csv_string_lines_generator(
     assert (
         header_row
         == csv_export.CSV_DELIMITER.join(
-            (f'"{column.heading}"' for column in csv_export.CSV_COLUMNS)
+            (f'"{column.heading}"' for column in csv_export.csv_columns)
         )
         + default_csv_dialect.lineterminator
     )

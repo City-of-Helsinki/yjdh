@@ -62,7 +62,8 @@ class TalpaCallbackView(APIView):
         )
         if not applications.exists() and application_numbers:
             LOGGER.error(
-                f"No applications found with numbers: {application_numbers} for update after TALPA download"
+                f"No applications found with numbers: {application_numbers} for update"
+                " after TALPA download"
             )
             return None
         return applications
@@ -76,7 +77,8 @@ class TalpaCallbackView(APIView):
 
         if not applications.exists() and application_numbers:
             LOGGER.error(
-                f"No applications found with numbers: {application_numbers} for update after TALPA download"
+                f"No applications found with numbers: {application_numbers} for update"
+                " after TALPA download"
             )
             return []
         return applications
@@ -109,7 +111,7 @@ class TalpaCallbackView(APIView):
 
     @transaction.atomic
     def _handle_failed_applications(self, application_numbers: list, ip_address: str):
-        """Update applications and related batch which could not be processed with status REJECTED_BY_TALPA"""
+        """Update applications and related batch which could not be processed with status REJECTED_BY_TALPA"""  # noqa: E501
 
         if settings.PAYMENT_INSTALMENTS_ENABLED:
             applications = self._get_applications_and_instalments(application_numbers)
@@ -118,7 +120,9 @@ class TalpaCallbackView(APIView):
                 applications=applications,
                 instalment_status=InstalmentStatus.ERROR_IN_TALPA,
                 ip_address=ip_address,
-                log_message="there was an error and the instalment was not read by TALPA",
+                log_message=(
+                    "there was an error and the instalment was not read by TALPA"
+                ),
                 is_success=False,
             )
         else:
@@ -143,7 +147,7 @@ class TalpaCallbackView(APIView):
     ):
         """Update applications and related batch with given statuses and log the event.
         This will be deprecated after the instalments feature is enabled for all applications.
-        """
+        """  # noqa: E501
         for application in applications:
             application.talpa_status = application_talpa_status
             application.archived = is_archived
@@ -169,7 +173,7 @@ class TalpaCallbackView(APIView):
         If the instalments  1/1 or 2/2, e.g the final instalment,
         update the application status, batch status to SENT_TO_TALPA.
         Always set the application as archived after the first instalment is succesfully sent to talpa.
-        """
+        """  # noqa: E501
         for application in applications:
             try:
                 instalment = application.calculation.instalments.get(
@@ -182,12 +186,13 @@ class TalpaCallbackView(APIView):
                 instalment.save()
             except ObjectDoesNotExist:
                 LOGGER.error(
-                    f"Valid payable Instalment not found for application {application.application_number}"
+                    "Valid payable Instalment not found for application"
+                    f" {application.application_number}"
                 )
             except MultipleObjectsReturned:
                 LOGGER.error(
-                    f"Multiple payable Instalments found for application \
-{application.application_number}, there should be only one"
+                    "Multiple payable Instalments found for application"
+                    f" {application.application_number}, there should be only one"
                 )
 
             if is_success:
@@ -199,8 +204,11 @@ class TalpaCallbackView(APIView):
                     ip_address=ip_address,
                     application_talpa_status=ApplicationTalpaStatus.PARTIALLY_SENT_TO_TALPA,
                     batch_status=ApplicationBatchStatus.PARTIALLY_SENT_TO_TALPA,
-                    log_message=f"instalment {instalment.instalment_number}/{application.number_of_instalments} \
-was read by TALPA and marked as paid",
+                    log_message=(
+                        "instalment"
+                        f" {instalment.instalment_number}/{application.number_of_instalments}"  # noqa: E501
+                        " was read by TALPA and marked as paid"
+                    ),
                     is_archived=True,
                 )
 

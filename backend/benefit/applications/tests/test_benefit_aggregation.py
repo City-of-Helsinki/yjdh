@@ -25,7 +25,8 @@ NO_WARNINGS = None
 
 
 @pytest.mark.parametrize(
-    "previous_benefits, benefit_type, apprenticeship_program, expected_warning, months_used, months_remaining",
+    "previous_benefits, benefit_type, apprenticeship_program, expected_warning,"
+    " months_used, months_remaining",
     [
         (
             [
@@ -268,7 +269,8 @@ NO_WARNINGS = None
             6,
             6,
         ),
-        # 24-month gap in past benefits so the benefit from 2017-2018 is not included and application is valid
+        # 24-month gap in past benefits so the benefit from 2017-2018 is not included
+        # and application is valid
         (
             [
                 (
@@ -320,10 +322,12 @@ def test_application_with_previously_accepted_applications_and_previous_benefits
     months_remaining,
     expected_warning,
 ):
-    # the type of the previous benefit and the apprenticeship_program value do not matter when
+    # the type of the previous benefit and the apprenticeship_program value do not
+    # matter when
     # calculating the remaining available benefit time (Teams discussion)
     past_benefit_type_iterator = itertools.cycle([True, False])
-    # also, the apprenticeship_program setting in _past_ benefits does not matter to calculation, so
+    # also, the apprenticeship_program setting in _past_ benefits does not matter to
+    # calculation, so
     # alternate it to produce more testable combinations
     past_apprenticeship_iterator = itertools.cycle([True, False])
     for class_name, previous_start_date, previous_end_date in previous_benefits:
@@ -353,7 +357,7 @@ def test_application_with_previously_accepted_applications_and_previous_benefits
                 end_date=date.fromisoformat(previous_end_date),
             )
         else:
-            assert False, "unexpected"
+            raise AssertionError("unexpected")
 
     handling_application.apprenticeship_program = apprenticeship_program
     handling_application.pay_subsidy_granted = PaySubsidyGranted.GRANTED

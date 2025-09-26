@@ -98,10 +98,10 @@ def test_get_date_range_end_with_days360_combinations():
     if os.getenv("DAYS_360_FULL_TEST") == "1":
         # The nested loops test a huge number of combinations. Takes a long time to run,
         # only run this while debugging.
-        day_offsets = range(0, 100)  # offset from 2022-01-01
-        months_range = range(0, 1200)
+        day_offsets = range(100)  # offset from 2022-01-01
+        months_range = range(1200)
     else:
-        print(
+        print(  # noqa: T201
             "DAYS_360_FULL_TEST not set, test only a few combinations to make sure the"
             " test code doesn't rot"
         )
@@ -109,7 +109,7 @@ def test_get_date_range_end_with_days360_combinations():
         months_range = range(0, 1200, 100)
 
     for initial_day_offset in day_offsets:
-        print(f"initial_day_offset={initial_day_offset}")
+        print(f"initial_day_offset={initial_day_offset}")  # noqa: T201
         for months in [decimal.Decimal(m) / 100 for m in months_range]:
             start_date = date(2022, 1, 1) + relativedelta(days=initial_day_offset)
             end_date = get_date_range_end_with_days360(start_date, months)
@@ -138,7 +138,10 @@ def test_get_date_range_end_with_days360_combinations():
 @pytest.mark.django_db
 def test_hash_file():
     # Create a dummy file with known content
-    dummy_file_content = b"Ea ullamco aliqua amet ut deserunt. Excepteur aliqua non excepteur pariatur exercitation."
+    dummy_file_content = (
+        b"Ea ullamco aliqua amet ut deserunt. Excepteur aliqua non excepteur pariatur"
+        b" exercitation."
+    )
     dummy_file = SimpleUploadedFile("dummy.txt", dummy_file_content)
     expected_hash = hashlib.sha256(dummy_file_content).hexdigest()
 

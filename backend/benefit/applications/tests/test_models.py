@@ -85,7 +85,8 @@ def test_application_batch_ahjo_decision(application_batch, status, expected_res
         ApplicationBatchStatus.DECIDED_ACCEPTED,
         ApplicationBatchStatus.DECIDED_REJECTED,
     ]:
-        # need to create a new batch because factory has already created valid fields using ApplicationBatchFactory
+        # need to create a new batch because factory has already created valid fields
+        # using ApplicationBatchFactory
         application_batch.delete()
         application_batch = BaseApplicationBatchFactory(
             status=ApplicationBatchStatus.DRAFT,
@@ -125,7 +126,8 @@ def test_application_batch_modified(application_batch, status, expected_result):
         ApplicationBatchStatus.DECIDED_ACCEPTED,
         ApplicationBatchStatus.DECIDED_REJECTED,
     ]:
-        # need to create a new batch because factory has already created valid fields using ApplicationBatchFactory
+        # need to create a new batch because factory has already created valid fields
+        # using ApplicationBatchFactory
         application_batch.delete()
         application_batch = BaseApplicationBatchFactory(
             status=ApplicationBatchStatus.DRAFT,

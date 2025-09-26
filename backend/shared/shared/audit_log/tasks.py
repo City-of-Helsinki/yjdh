@@ -25,7 +25,8 @@ def send_audit_log_to_elastic_search() -> int:
         and settings.ELASTICSEARCH_PASSWORD
     ):
         LOGGER.warning(
-            "Trying to send audit log to Elasticsearch without proper configuration, process skipped"
+            "Trying to send audit log to Elasticsearch without proper configuration,"
+            " process skipped"
         )
         return 0
     es = Elasticsearch(
@@ -62,8 +63,8 @@ def send_audit_log_to_elastic_search() -> int:
 
 def clear_audit_log_entries(days_to_keep=30) -> int:
     """
-    Delete AuditLogEntry entries that have been sent to Elasticsearch and are older than
-    `days_to_keep` days.
+    Delete AuditLogEntry entries that have been sent to Elasticsearch and are
+    older than `days_to_keep` days.
 
     :return: The number of deleted AuditLogEntry objects
     """

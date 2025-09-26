@@ -1,6 +1,5 @@
 from django.db import migrations, transaction
 
-
 REAL_SCHOOL_LIST = [
     "Aleksis Kiven peruskoulu",
     "Apollon yhteiskoulu",
@@ -91,7 +90,6 @@ def set_real_schools(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0014_set_default_schools"),
     ]

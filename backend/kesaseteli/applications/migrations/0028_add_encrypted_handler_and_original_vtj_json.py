@@ -1,5 +1,6 @@
-from django.db import migrations, transaction
 import encrypted_fields.fields
+from django.db import migrations, transaction
+
 import shared.common.validators
 
 
@@ -35,7 +36,6 @@ def backward_migrate_encrypted_vtj_json_fields(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0027_add_additional_info"),
     ]
@@ -58,7 +58,9 @@ class Migration(migrations.Migration):
             name="encrypted_original_vtj_json",
             field=encrypted_fields.fields.EncryptedCharField(
                 blank=True,
-                help_text="VTJ JSON used for automatic processing of new youth application",
+                help_text=(
+                    "VTJ JSON used for automatic processing of new youth application"
+                ),
                 max_length=1048576,
                 null=True,
                 validators=[shared.common.validators.validate_optional_json],

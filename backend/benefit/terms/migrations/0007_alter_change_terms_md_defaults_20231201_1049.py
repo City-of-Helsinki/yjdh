@@ -4,25 +4,30 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('terms', '0006_alter_pdf_terms_not_required'),
+        ("terms", "0006_alter_pdf_terms_not_required"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='terms',
-            name='terms_md_en',
-            field=models.TextField(blank=True, default='', verbose_name='English terms (md)'),
+            model_name="terms",
+            name="terms_md_en",
+            field=models.TextField(
+                blank=True, default="", verbose_name="English terms (md)"
+            ),
         ),
         migrations.AlterField(
-            model_name='terms',
-            name='terms_md_fi',
-            field=models.TextField(blank=True, default='', verbose_name='Finnish terms (md)'),
+            model_name="terms",
+            name="terms_md_fi",
+            field=models.TextField(
+                blank=True, default="", verbose_name="Finnish terms (md)"
+            ),
         ),
         migrations.AlterField(
-            model_name='terms',
-            name='terms_md_sv',
-            field=models.TextField(blank=True, default='', verbose_name='Swedish terms (md)'),
+            model_name="terms",
+            name="terms_md_sv",
+            field=models.TextField(
+                blank=True, default="", verbose_name="Swedish terms (md)"
+            ),
         ),
     ]

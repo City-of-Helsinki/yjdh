@@ -181,7 +181,7 @@ def unauthenticated_api_client():
 
 @pytest.fixture
 def school_list():
-    TEST_SCHOOL_NAMES = [
+    test_school_names = [
         "Aleksis Kiven peruskoulu",
         "Apollon yhteiskoulu",
         "Arabian peruskoulu",
@@ -261,6 +261,6 @@ def school_list():
         "Östersundom skola",
     ]
     School.objects.bulk_create(
-        objs=[School(name=name) for name in TEST_SCHOOL_NAMES],
+        objs=[School(name=name) for name in test_school_names],
         ignore_conflicts=True,  # Ignore conflicts if a school with name already exists
     )

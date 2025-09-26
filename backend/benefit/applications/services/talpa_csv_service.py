@@ -22,7 +22,7 @@ class TalpaCsvService(ApplicationsCsvService):
     def get_relevant_instalment_amount(
         self, application: Application
     ) -> decimal.Decimal:
-        """Return the actual payable amount of the currently accepted and due instalment"""
+        """Return the actual payable amount of the currently accepted and due instalment"""  # noqa: E501
         # TODO remove this flag when the feature is enabled ready for production
         if settings.PAYMENT_INSTALMENTS_ENABLED:
             try:
@@ -33,18 +33,19 @@ class TalpaCsvService(ApplicationsCsvService):
                 return instalment.amount_after_recoveries
             except ObjectDoesNotExist:
                 LOGGER.error(
-                    f"Valid payable Instalment not found for application {application.application_number}"
+                    "Valid payable Instalment not found for application"
+                    f" {application.application_number}"
                 )
             except MultipleObjectsReturned:
                 LOGGER.error(
-                    f"Multiple payable Instalments found for application \
-{application.application_number}, there should be only one"
+                    "Multiple payable Instalments found for application"
+                    f" {application.application_number}, there should be only one"
                 )
         else:
             return application.calculation.calculated_benefit_amount
 
     @property
-    def CSV_COLUMNS(self):
+    def csv_columns(self):
         columns = [
             CsvColumn("Hakemusnumero", "application_number"),
             CsvColumn("Työnantajan tyyppi", get_organization_type),

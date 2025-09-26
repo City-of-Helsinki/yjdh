@@ -4,15 +4,20 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('applications', '0061_auto_20240312_1150'),
+        ("applications", "0061_auto_20240312_1150"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='applicationalteration',
-            name='recovery_amount',
-            field=models.DecimalField(blank=True, decimal_places=2, max_digits=8, null=True, verbose_name='amount of unwarranted benefit to be collected'),
+            model_name="applicationalteration",
+            name="recovery_amount",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=2,
+                max_digits=8,
+                null=True,
+                verbose_name="amount of unwarranted benefit to be collected",
+            ),
         ),
     ]

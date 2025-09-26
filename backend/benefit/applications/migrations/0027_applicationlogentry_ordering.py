@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0026_alter_applicationbatch_status"),
     ]

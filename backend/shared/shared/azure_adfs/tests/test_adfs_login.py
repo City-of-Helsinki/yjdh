@@ -9,8 +9,8 @@ from django.test import override_settings
 from django.urls import reverse
 
 from shared.azure_adfs.auth import (
-    adfs_login_group_name,
     HelsinkiAdfsAuthCodeBackend,
+    adfs_login_group_name,
     is_adfs_login,
     provider_config,
 )
@@ -92,7 +92,9 @@ def test_update_userinfo_from_graph_api(requests_mock, user):
     auth_backend = HelsinkiAdfsAuthCodeBackend()
 
     user_get_response = {
-        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users(givenName,surname)/$entity",
+        "@odata.context": (
+            "https://graph.microsoft.com/v1.0/$metadata#users(givenName,surname)/$entity"
+        ),
         "givenName": "Ad",
         "surname": "Tester",
     }
@@ -152,7 +154,8 @@ def test_authenticate(
     user,
 ):
     auth_backend = HelsinkiAdfsAuthCodeBackend()
-    # if helsinkibenefit fixture django_db_setup has been done, then the group has been already created
+    # if helsinkibenefit fixture django_db_setup has been done, then the group has been
+    # already created
     Group.objects.get_or_create(name=settings.HANDLERS_GROUP_NAME)
     with mock.patch("shared.azure_adfs.auth.provider_config"):
         with mock.patch.multiple(

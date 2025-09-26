@@ -95,7 +95,8 @@ REMOVABLE_TALPA_FIELD_TITLES = [
 
 
 FIELDS = [
-    # Field title, field value, field names in summer voucher model, column width, background color
+    # Field title, field value, field names in summer voucher model, column width,
+    # background color
     ExcelField(ORDER_FIELD_TITLE, "", [], 15, "white"),  # Specially handled
     ExcelField(
         RECEIVED_DATE_FIELD_TITLE, "%s", ["submitted_at"], 15, "white"
@@ -277,7 +278,9 @@ def get_exportable_fields(columns: ExcelColumns):
 
 def get_xlsx_filename(columns: ExcelColumns) -> str:
     """
-    Get the name of the excel file. Example filename:
+    Get the name of the excel file.
+
+    Example filename:
     talpa-kesasetelihakemukset_2021-01-01_23-59-59.xlsx
     """
     local_datetime_now_as_str = timezone.localtime(timezone.now()).strftime(
@@ -313,7 +316,8 @@ def get_attachment_uri(
     elif attachment_type == "Palkkalaskelma":
         attachment_type = "payslip"
 
-    # Get attachment of type `attachment_type` and use the OFFSET and LIMIT to get only the n'th entry
+    # Get attachment of type `attachment_type` and use the OFFSET and LIMIT to get only
+    # the n'th entry
     # where n is `attachment_number`.
     attachment = (
         value.filter(attachment_type=attachment_type)
@@ -355,7 +359,7 @@ def generate_data_row(
     is_template: bool = False,
 ) -> list:
     result = []
-    for column_number, field in enumerate(fields):
+    for field in fields:
         if field.title == ORDER_FIELD_TITLE:
             cell_value = summer_voucher.row_number
         elif field.title == RECEIVED_DATE_FIELD_TITLE:
@@ -419,8 +423,9 @@ def populate_workbook(
     is_template: bool = False,
 ):
     """
-    Fill the workbook with information from the summer vouchers queryset. Field names and values are
-    fetched from the FIELDS tuple.
+    Fill the workbook with information from the summer vouchers queryset.
+
+    Field names and values are fetched from the FIELDS tuple.
     """
     ws = wb.add_worksheet(name=str(_("Setelit")))
     wrapped_cell_format = wb.add_format()

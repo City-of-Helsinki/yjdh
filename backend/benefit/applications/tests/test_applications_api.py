@@ -293,13 +293,15 @@ def test_applications_filter_archived_for_applicant(
         DecidedApplicationFactory(application_number=123450),
         # Batch processed and decided 15 days ago, should appear on archive page
         DecidedApplicationFactory(application_number=123451, batch=old_batch),
-        # Batch processed and decided 15 days ago and archived for handlers, should still appear on archive page
+        # Batch processed and decided 15 days ago and archived for handlers, should
+        # still appear on archive page
         DecidedApplicationFactory(
             application_number=123452, batch=old_batch, archived=True
         ),
         # Batch processed and decided two days ago, should appear on main page
         DecidedApplicationFactory(application_number=123453, batch=recent_batch),
-        # Batch decided 15 days ago but not yet fully processed, should appear on main page
+        # Batch decided 15 days ago but not yet fully processed, should appear on main
+        # page
         DecidedApplicationFactory(application_number=123454, batch=pending_batch),
         # Fresh application not yet decided, should appear on main page
         ReceivedApplicationFactory(application_number=123455),
@@ -609,9 +611,9 @@ def test_application_post_invalid_data(
     data["applicant_language"] = None  # non-null required
     data["company_bank_account_number"] = "FI91 4008 0282 0002 02"  # invalid number
 
-    data[
-        "company_contact_person_phone_number"
-    ] = "+359505658789"  # Invalid country code
+    data["company_contact_person_phone_number"] = (
+        "+359505658789"  # Invalid country code
+    )
 
     api_client.defaults["HTTP_ACCEPT_LANGUAGE"] = language
     response = api_client.post(
@@ -776,9 +778,9 @@ def test_application_put_read_only_fields(api_client, application):
 def test_application_put_invalid_data(api_client, application):
     data = ApplicantApplicationSerializer(application).data
     data["de_minimis_aid_set"][0]["amount"] = "300001.00"  # value too high
-    data[
-        "status"
-    ] = ApplicationStatus.ACCEPTED  # invalid value when transitioning from draft
+    data["status"] = (
+        ApplicationStatus.ACCEPTED
+    )  # invalid value when transitioning from draft
     data["bases"] = ["something_completely_different"]  # invalid value
     data["applicant_language"] = None  # non-null required
     response = api_client.put(
@@ -1723,7 +1725,8 @@ def _upload_pdf(
 def _add_pdf_attachment(
     request, application, attachment_type=AttachmentType.EMPLOYMENT_CONTRACT
 ):
-    # add attachment, bypassing validation, so attachment can be added even if application
+    # add attachment, bypassing validation, so attachment can be added even if
+    # application
     # state does not allow it
     with open(_pdf_file_path(request), "rb") as valid_pdf_file:
         file_upload = SimpleUploadedFile(VALID_PDF_FILE, valid_pdf_file.read())
@@ -2137,7 +2140,8 @@ def test_application_number(api_client, application):
     new_application.delete()
     assert Application.objects.count() == 1
 
-    # Next application should not have old application_number if the previous one was deleted
+    # Next application should not have old application_number if the previous one was
+    # deleted
     next_application = ApplicationFactory()
     assert Application.objects.count() == 2
     assert next_application.application_number == application.application_number + 2
@@ -2435,7 +2439,7 @@ def test_require_additional_information(handler_api_client, application, mailout
         {"status": ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED},
     )
     assert response.status_code == 200
-    print(response.__dict__)
+    print(response.__dict__)  # noqa: T201
 
     assert application.messages.count() == 1
     assert (

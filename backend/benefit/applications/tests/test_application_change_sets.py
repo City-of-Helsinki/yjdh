@@ -40,7 +40,9 @@ def _flatten_dict(d, parent_key="", sep="."):
 
 handler_edit_payloads = [
     {
-        "change_reason": "Change employee first & last name, company contact's phone number",
+        "change_reason": (
+            "Change employee first & last name, company contact's phone number"
+        ),
         "company_contact_person_phone_number": "+35850000000",
         "employee": {
             "first_name": "Firstname1",
@@ -262,7 +264,8 @@ def test_application_history_change_sets(
         "changes"
     ]
 
-    # Just split from the head of changes - we don't want to check handler's changes again
+    # Just split from the head of changes - we don't want to check handler's changes
+    # again
     # Plus one for the attachment change
     applicant_changes = changes[0 : len(applicant_edit_payloads) + 1]
 

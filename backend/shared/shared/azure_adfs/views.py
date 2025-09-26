@@ -74,6 +74,7 @@ class HelsinkiOAuth2CallbackView(OAuth2CallbackView):
         else:
             error_message = "Login failed."
         LOGGER.error(
-            f"Invalid login. Status code: {response.status_code}. Error message: {error_message}."
+            f"Invalid login. Status code: {response.status_code}. Error message:"
+            f" {error_message}."
         )
         return redirect(settings.ADFS_LOGIN_REDIRECT_URL_FAILURE)

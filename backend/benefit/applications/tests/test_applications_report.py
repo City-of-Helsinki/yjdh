@@ -140,7 +140,10 @@ def _create_applications_for_export():
 
 
 @pytest.mark.skip(
-    reason="This test fails in deploy pipeline - DETAIL:  Key (username)=(masonzachary_a45eb8) already exists."
+    reason=(
+        "This test fails in deploy pipeline - DETAIL:  Key"
+        " (username)=(masonzachary_a45eb8) already exists."
+    )
 )
 def test_applications_csv_export_new_applications(handler_api_client):
     (
@@ -181,11 +184,13 @@ def test_applications_csv_export_new_applications(handler_api_client):
     assert set(
         [
             a.pk
-            for a in ApplicationBatch.objects.filter(
-                proposal_for_decision=AhjoDecision.DECIDED_ACCEPTED
+            for a in (
+                ApplicationBatch.objects.filter(
+                    proposal_for_decision=AhjoDecision.DECIDED_ACCEPTED
+                )
+                .first()
+                .applications.all()
             )
-            .first()
-            .applications.all()
         ]
     ) == {application1.pk, application2.pk}
 
@@ -409,9 +414,9 @@ def test_power_bi_report_csv_output(application_powerbi_csv_service):
 
     # Assert that each column header matches
     for index, header in enumerate(expected_headers):
-        assert (
-            csv_lines[0][index] == header
-        ), f"Expected {header} but got {csv_lines[0][index]}"
+        assert csv_lines[0][index] == header, (
+            f"Expected {header} but got {csv_lines[0][index]}"
+        )
 
     applications = application_powerbi_csv_service.get_applications()
 
@@ -592,7 +597,7 @@ def test_write_application_alterations_csv_file(
     application_alteration_csv_service.write_csv_file(output_file)
     with open(output_file, encoding="utf-8") as f:
         contents = f.read()
-        print(contents)
+        print(contents)  # noqa: T201
         assert str(alteration.recovery_amount) in contents
 
 
@@ -692,7 +697,7 @@ def test_applications_csv_output(applications_csv_service):  # noqa: C901
         assert application.ahjo_rows[0].start_date == application.calculation.start_date
         assert application.ahjo_rows[0].end_date == application.calculation.end_date
 
-    csv_columns = iter(applications_csv_service.CSV_COLUMNS)
+    csv_columns = iter(applications_csv_service.csv_columns)
     next(csv_columns, None)  # Skip the first element
 
     for idx, col in enumerate(csv_columns, start=1):
@@ -832,7 +837,8 @@ def test_applications_csv_two_ahjo_rows(
     assert csv_lines[2][1] == f'"{format_datetime(application.submitted_at)}"'
     assert int(csv_lines[2][2]) == 2
 
-    # the content of columns "Siirrettävä Ahjo-rivi / xxx" and "Hakemusrivi" change, rest of the lines are equal
+    # the content of columns "Siirrettävä Ahjo-rivi / xxx" and "Hakemusrivi" change,
+    # rest of the lines are equal
     current_ahjo_row_start = csv_lines[0].index('"Siirrettävä Ahjo-rivi / tyyppi"')
     current_ahjo_row_end = csv_lines[0].index(
         '"Siirrettävä Ahjo-rivi / päättymispäivä"'

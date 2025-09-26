@@ -14,16 +14,16 @@ from applications.enums import (
     PaySubsidyGranted,
 )
 from applications.models import (
+    APPLICATION_LANGUAGE_CHOICES,
+    ATTACHMENT_CONTENT_TYPE_CHOICES,
     AhjoDecision,
     AhjoDecisionProposalDraft,
     AhjoDecisionText,
     Application,
-    APPLICATION_LANGUAGE_CHOICES,
     ApplicationAlteration,
     ApplicationBasis,
     ApplicationBatch,
     Attachment,
-    ATTACHMENT_CONTENT_TYPE_CHOICES,
     AttachmentType,
     DecisionProposalTemplateSection,
     DeMinimisAid,
@@ -214,10 +214,6 @@ class ReceivedApplicationFactory(ApplicationWithAttachmentFactory):
     status = ApplicationStatus.RECEIVED
     applicant_terms_approval = factory.RelatedFactory(
         "terms.tests.factories.ApplicantTermsApprovalFactory",
-        factory_related_name="application",
-    )
-    calculation = factory.RelatedFactory(
-        "calculator.tests.factories.CalculationFactory",
         factory_related_name="application",
     )
 

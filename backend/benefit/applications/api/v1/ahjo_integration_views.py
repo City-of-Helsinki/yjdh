@@ -6,7 +6,7 @@ from django.db import transaction
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -18,13 +18,15 @@ from applications.api.v1.serializers.ahjo_callback import (
     AhjoDecisionCallbackSerializer,
 )
 from applications.enums import (
+    DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE,
     AhjoCallBackStatus,
     AhjoDecisionUpdateType,
     AhjoRequestType,
-    AhjoStatus as AhjoStatusEnum,
     ApplicationBatchStatus,
     ApplicationStatus,
-    DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE,
+)
+from applications.enums import (
+    AhjoStatus as AhjoStatusEnum,
 )
 from applications.models import AhjoStatus, Application, ApplicationBatch, Attachment
 from applications.services.ahjo.exceptions import AhjoCallbackError
@@ -48,7 +50,9 @@ class AhjoApplicationView(APIView):
                 location=OpenApiParameter.PATH,
             )
         ],
-        description="Sends a delete / cancel case request to Ahjo for given application.",
+        description=(
+            "Sends a delete / cancel case request to Ahjo for given application."
+        ),
     )
     def delete(self, request, *args, **kwargs):
         application_id = self.kwargs["uuid"]
@@ -61,7 +65,10 @@ class AhjoApplicationView(APIView):
         ):
             return Response(
                 {
-                    "message": "Cannot delete because a decision proposal has been sent to Ahjo"
+                    "message": (
+                        "Cannot delete because a decision proposal has been sent to"
+                        " Ahjo"
+                    )
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
@@ -103,8 +110,10 @@ class AhjoAttachmentView(APIView):
             "",  # Optional user backend
             Operation.READ,
             attachment,
-            additional_information=f"attachment {attachment.attachment_file} \
-of type {attachment.attachment_type} was sent to AHJO!",
+            additional_information=(
+                f"attachment {attachment.attachment_file} of type"
+                f" {attachment.attachment_type} was sent to AHJO!"
+            ),
         )
         attachment.downloaded_by_ahjo = datetime.now(timezone.utc)
         attachment.save()
@@ -115,9 +124,9 @@ of type {attachment.attachment_type} was sent to AHJO!",
         file_handle = attachment.attachment_file.open()
         response = FileResponse(file_handle, content_type=attachment.content_type)
         response["Content-Length"] = attachment.attachment_file.size
-        response[
-            "Content-Disposition"
-        ] = f"attachment; filename={attachment.attachment_file.name}"
+        response["Content-Disposition"] = (
+            f"attachment; filename={attachment.attachment_file.name}"
+        )
         return response
 
 
@@ -186,9 +195,11 @@ class AhjoCallbackView(APIView):
         request_type: AhjoRequestType,
     ) -> str:
         """Return a string with information about the received callback."""
-        return f"Application {application.application_number}: \
-        received a callback for request_type {request_type} \
-        with request id: {callback_data['requestId']}, full callback data: {callback_data}"
+        return (
+            f"Application {application.application_number}:         received a callback"
+            f" for request_type {request_type}         with request id:"
+            f" {callback_data['requestId']}, full callback data: {callback_data}"
+        )
 
     @transaction.atomic
     def handle_success_callback(
@@ -289,7 +300,7 @@ class AhjoCallbackView(APIView):
         """Update the application with the case id (diaarinumero) and case guid from the Ahjo callback data.
         If the application has attachments with a matching hash value, save the version series id for each attachment.
         Create a new single-application ApplicationBatch for the application and set the batch_id for the application.
-        """
+        """  # noqa: E501
         if callback_data["caseGuid"]:
             application.ahjo_case_guid = callback_data["caseGuid"]
         if callback_data["caseId"]:
@@ -337,10 +348,12 @@ class AhjoCallbackView(APIView):
                 attachment.save()
 
     def handle_decision_proposal_success(self, application: Application):
-        # do anything that needs to be done when Ahjo has received a decision proposal request
+        # do anything that needs to be done when Ahjo has received a decision proposal
+        # request
         if not application.batch:
             raise AhjoCallbackError(
-                f"Application {application.id} has no batch when Ahjo has received a decision proposal request"
+                f"Application {application.id} has no batch when Ahjo has received a"
+                " decision proposal request"
             )
         batch = application.batch
         batch.status = ApplicationBatchStatus.AWAITING_AHJO_DECISION
@@ -353,14 +366,16 @@ class AhjoCallbackView(APIView):
         request_type: AhjoRequestType,
     ):
         LOGGER.error(
-            f"Received unsuccessful callback for {request_type} for application {application.id} \
-                with request_id {callback_data['requestId']}, callback data: {callback_data}"
+            f"Received unsuccessful callback for {request_type} for application"
+            f" {application.id}                 with request_id"
+            f" {callback_data['requestId']}, callback data: {callback_data}"
         )
         for cb_record in callback_data.get("records", []):
             if cb_record.get("status") == AhjoCallBackStatus.FAILURE:
                 LOGGER.error(
-                    f"Ahjo reports failure with record, hash value {cb_record['hashValue']} \
-                        and fileURI {cb_record['fileURI']}"
+                    "Ahjo reports failure with record, hash value"
+                    f" {cb_record['hashValue']}                         and fileURI"
+                    f" {cb_record['fileURI']}"
                 )
 
 
@@ -401,8 +416,11 @@ class AhjoDecisionCallbackView(APIView):
                     "",
                     Operation.UPDATE,
                     application,
-                    additional_information=f"Decision proposal callback of type: {update_type} was received \
-                    from Ahjo for application {application.application_number}",
+                    additional_information=(
+                        f"Decision proposal callback of type: {update_type} was"
+                        " received                     from Ahjo for application"
+                        f" {application.application_number}"
+                    ),
                 )
             except Application.DoesNotExist:
                 # Ahjo needs a 200 OK response even if an application is not found

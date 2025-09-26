@@ -8,8 +8,8 @@ from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 
 from applications.models import AhjoSetting
 from applications.services.ahjo.exceptions import (
-    AhjoTokenExpiredException,
-    AhjoTokenRetrievalException,
+    AhjoTokenExpiredError,
+    AhjoTokenRetrievalError,
 )
 
 AUTH_TOKEN_GRANT_TYPE = "authorization_code"
@@ -64,7 +64,7 @@ class AhjoConnector:
         """Retrieve the initial access token from Ahjo API using the auth code,
         this is only used when getting and setting the initial token manually.
         If the initial token fails for some reason, a new ahjo_code must be saved into django.
-        """
+        """  # noqa: E501
         try:
             auth_code = AhjoSetting.objects.get(name="ahjo_code")
 
@@ -82,7 +82,7 @@ class AhjoConnector:
     def refresh_token(self) -> AhjoToken:
         """Refresh access token from Ahjo API using the refresh token of an existing token.
         This should be used by, for example, a cron job to keep the token up to date.
-        """
+        """  # noqa: E501
         token = self.get_token_from_db()
 
         if not token.refresh_token:
@@ -104,7 +104,7 @@ class AhjoConnector:
                 self.token_url, headers=self.headers, data=payload, timeout=self.timeout
             )
         except requests.exceptions.RequestException as e:
-            raise AhjoTokenRetrievalException(
+            raise AhjoTokenRetrievalError(
                 f"Failed to get or refresh token from Ahjo: {e}"
             )
 
@@ -122,8 +122,9 @@ class AhjoConnector:
 
             return self.create_token(token_from_api)
         else:
-            raise AhjoTokenRetrievalException(
-                f"Failed to retrieve or refresh token: {response.status_code} {response.content.decode()}"
+            raise AhjoTokenRetrievalError(
+                f"Failed to retrieve or refresh token: {response.status_code}"
+                f" {response.content.decode()}"
             )
 
     def get_token_from_db(self) -> Union[AhjoToken, None]:
@@ -137,7 +138,7 @@ class AhjoConnector:
                 created_at=token.created_at,
             )
             if ahjo_token.has_expired():
-                raise AhjoTokenExpiredException(
+                raise AhjoTokenExpiredError(
                     f"Ahjo access token has expired in {ahjo_token.expiry_datetime()}"
                 )
             return ahjo_token
@@ -156,7 +157,8 @@ class AhjoConnector:
             "expires_in": token.expires_in,
         }
 
-        # Delete old access token if it exists, so that only one token is stored and there will be
+        # Delete old access token if it exists, so that only one token is stored and
+        # there will be
         # no need to calculate the expiry time of the token from the modified_at field
         AhjoSetting.objects.filter(name="ahjo_access_token").delete()
 

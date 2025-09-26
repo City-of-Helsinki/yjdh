@@ -89,7 +89,7 @@ def test_talpa_csv_output(
     )
     # BOM at the beginning of the file
     assert csv_lines[0][0] == '\ufeff"Hakemusnumero"'
-    csv_columns = iter(talpa_applications_csv_service_with_one_application.CSV_COLUMNS)
+    csv_columns = iter(talpa_applications_csv_service_with_one_application.csv_columns)
     next(csv_columns, None)  # Skip the first element
 
     for idx, col in enumerate(csv_columns, start=1):

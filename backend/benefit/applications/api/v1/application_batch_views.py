@@ -12,7 +12,8 @@ from django.utils.translation import gettext_lazy as _
 from django_filters import rest_framework as filters
 from django_filters.widgets import CSVWidget
 from drf_spectacular.utils import extend_schema
-from rest_framework import filters as drf_filters, status
+from rest_framework import filters as drf_filters
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -47,8 +48,10 @@ class ApplicationBatchFilter(filters.FilterSet):
         widget=CSVWidget,
         choices=ApplicationBatchStatus.choices,
         help_text=(
-            "Filter by application batch status. Multiple statuses may be specified as"
-            " a comma-separated list, such as 'status=draft,decided'",
+            (
+                "Filter by application batch status. Multiple statuses may be specified"
+                " as a comma-separated list, such as 'status=draft,decided'"
+            ),
         ),
     )
 
@@ -227,7 +230,9 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
                 Operation.READ,
                 a,
                 ip_address=ip_address,
-                additional_information="application csv data was downloaded by TALPA robot",
+                additional_information=(
+                    "application csv data was downloaded by TALPA robot"
+                ),
             )
 
         return response
@@ -238,7 +243,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         """
         Assign one or more applications to a batch. If there's no batch for given app status,
         create one as a draft and assign all applications to it.
-        """
+        """  # noqa: E501
         app_status = request.data["status"]
         app_ids = request.data["application_ids"]
 
@@ -251,7 +256,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
 
         if (
             app_status not in [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED]
-            or type(app_ids) != list
+            or type(app_ids) is not list
         ):
             return Response(
                 {"detail": "Status or application id is not valid"},
@@ -286,7 +291,10 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         else:
             return Response(
                 {
-                    "detail": "Unable to create a new batch or merge application to existing one."
+                    "detail": (
+                        "Unable to create a new batch or merge application to existing"
+                        " one."
+                    )
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
@@ -326,7 +334,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
     def status(self, request, pk=None):
         """
         Assign a new status for batch: as pending for Ahjo proposal or switch back to draft
-        """
+        """  # noqa: E501
         new_status = request.data["status"]
 
         if _unallowed_status_change(new_status):

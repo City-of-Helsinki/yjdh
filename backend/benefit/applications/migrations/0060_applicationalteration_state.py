@@ -4,15 +4,22 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('applications', '0059_applicationalteration'),
+        ("applications", "0059_applicationalteration"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='applicationalteration',
-            name='state',
-            field=models.TextField(choices=[('received', 'Received'), ('opened', 'Opened'), ('handled', 'Handled')], default='received', verbose_name='state of alteration'),
+            model_name="applicationalteration",
+            name="state",
+            field=models.TextField(
+                choices=[
+                    ("received", "Received"),
+                    ("opened", "Opened"),
+                    ("handled", "Handled"),
+                ],
+                default="received",
+                verbose_name="state of alteration",
+            ),
         ),
     ]

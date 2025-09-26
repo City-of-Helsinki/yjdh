@@ -12,7 +12,9 @@ def get_token_claims():
     return {
         "iat": 1613023879,
         "jti": "85d6778d-3fed-4988-95c1-10443a5e981f",
-        "iss": "https://helsinki-profile-keycloak-dev.agw.arodevtest.hel.fi/auth/realms/helsinki-tunnistus",
+        "iss": (
+            "https://helsinki-profile-keycloak-dev.agw.arodevtest.hel.fi/auth/realms/helsinki-tunnistus"
+        ),
         "aud": "tunnistamo",
         "sub": "e9dbc682-2d93-4b5e-a472-6ee0ebe79fc7",
         "typ": "Logout",

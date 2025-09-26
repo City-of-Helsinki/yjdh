@@ -19,31 +19,35 @@ def has_whitespace(value):
 
 def is_uppercase(value):
     """
-    Is the value all uppercase? Returns True also if there are no alphabetic characters.
+    Is the value all uppercase?
+
+    Returns True also if there are no alphabetic characters.
     """
     return value == value.upper()
 
 
 def normalize_for_string_comparison(text):
     """
-    Normalize text for string comparison. Converts None to an empty string, strips
-    leading and trailing whitespace, and makes result case-insensitive by folding case.
+    Normalize text for string comparison.
+
+    Converts None to an empty string, strips leading and trailing whitespace,
+    and makes result case-insensitive by folding case.
     """
     return "" if text is None else str(text).strip().casefold()
 
 
 def are_same_texts(a, b) -> bool:
     """
-    Are the two given values same when compared after first normalizing them using
-    normalize_for_string_comparison?
+    Are the two given values same when compared after first normalizing them
+    using normalize_for_string_comparison?
     """
     return normalize_for_string_comparison(a) == normalize_for_string_comparison(b)
 
 
 def are_same_text_lists(a, b) -> bool:
     """
-    Are the two given value lists same when compared after first normalizing their
-    values using normalize_for_string_comparison?
+    Are the two given value lists same when compared after first normalizing
+    their values using normalize_for_string_comparison?
     """
     return list(map(normalize_for_string_comparison, a)) == list(
         map(normalize_for_string_comparison, b)
@@ -61,7 +65,8 @@ def send_mail_with_error_logging(
     images: Optional[List[MIMEImage]] = None,
 ) -> bool:
     """
-    Send email with given parameters and log given error message in case of failure.
+    Send email with given parameters and log given error message in case of
+    failure.
 
     :param subject: Email subject
     :param message: Plain text email body
@@ -69,12 +74,12 @@ def send_mail_with_error_logging(
     :param recipient_list: List of email recipients
     :param error_message: Error message to be logged in case of failure
     :param bcc: Send a hidden copy of the message to the list of recipients
-    :param html_message: Optional html message. If provided the resulting email will be
-                         a multipart/alternative email with message as the text/plain
-                         content type and html_message as the text/html content type.
-    :param images: Optional attachable images. Must also provide html_message if any
-                   images are provided. If provided will change mail's mixed_subtype to
-                   related.
+    :param html_message: Optional html message. If provided the resulting email
+        will be a multipart/alternative email with message as the text/plain
+        content type and html_message as the text/html content type.
+    :param images: Optional attachable images. Must also provide html_message
+        if any images are provided. If provided will change mail's
+        mixed_subtype to related.
     :return: True if email was sent, otherwise False.
     """
     connection = get_connection(fail_silently=True)
@@ -96,8 +101,8 @@ def send_mail_with_error_logging(
 
 def validate_finnish_social_security_number(value):
     """
-    Raise a ValidationError if the given value is not an uppercase Finnish social
-    security number with no whitespace.
+    Raise a ValidationError if the given value is not an uppercase Finnish
+    social security number with no whitespace.
     """
     if (
         not is_valid_finnish_social_security_number(value)
@@ -115,8 +120,8 @@ def validate_finnish_social_security_number(value):
 
 def validate_optional_finnish_social_security_number(value):
     """
-    Raise a ValidationError if the given value is not None, an empty string or an
-    uppercase Finnish social security number with no whitespace.
+    Raise a ValidationError if the given value is not None, an empty string or
+    an uppercase Finnish social security number with no whitespace.
     """
     if value is not None and value != "":
         validate_finnish_social_security_number(value)

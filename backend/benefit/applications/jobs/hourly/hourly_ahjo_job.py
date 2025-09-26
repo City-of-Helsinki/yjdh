@@ -7,7 +7,7 @@ from applications.enums import AhjoRequestType
 """
 A hourly job to refresh the Ahjo access token via the refresh token saved in the Django database.
 If the Ahjo automation is enabled, the job will also send requests to Ahjo to get decision details.
-"""
+"""  # noqa: E501
 
 
 class Job(HourlyJob):

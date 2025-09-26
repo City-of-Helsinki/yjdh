@@ -1,6 +1,5 @@
 from django.db import migrations, transaction
 
-
 DEFAULT_SCHOOL_LIST = [
     "Aleksis Kiven peruskoulu",
     "Arabian peruskoulu",
@@ -122,7 +121,6 @@ def set_default_schools(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0013_school"),
     ]

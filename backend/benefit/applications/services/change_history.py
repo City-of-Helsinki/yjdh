@@ -55,7 +55,8 @@ def _get_change_set_base(new_record: ModelChange):
         "user": {
             "staff": getattr(new_record.history_user, "is_staff", False),
             "name": (
-                f"{new_record.history_user.first_name} {new_record.history_user.last_name[0]}."
+                f"{new_record.history_user.first_name}"
+                f" {new_record.history_user.last_name[0]}."
                 if new_record.history_user
                 and new_record.history_user.first_name
                 and new_record.history_user.last_name
@@ -75,11 +76,11 @@ def _filter_and_format_changes(
     return list(
         map(
             lambda change: _format_change_dict(change, relation_name),
-            filter(  # Only accept those changes that are within the threshold delta_time and/or not excluded field
+            filter(  # Only accept those changes that are within the threshold delta_time and/or not excluded field  # noqa: E501
                 lambda change: not _is_history_change_excluded(change, excluded_fields)
                 and (
                     delta_time
-                    is None  # We'll ignore this check for application changes as delta_time's not present
+                    is None  # We'll ignore this check for application changes as delta_time's not present  # noqa: E501
                     or 0 <= delta_time <= look_up_for_application_save_in_seconds
                 ),
                 changes,
@@ -139,7 +140,7 @@ def get_application_change_history(application: Application) -> list:
 
     application_diffs = []
 
-    for i in range(0, len(application_history) - 1):
+    for i in range(len(application_history) - 1):
         diff = application_history[i].diff_against(application_history[i + 1])
         application_diffs.append(diff)
 
@@ -154,7 +155,7 @@ def get_application_change_history(application: Application) -> list:
 
     employee_history = application.employee.history.filter(employee_q_objects)
     employee_diffs = []
-    for i in range(0, len(employee_history) - 1):
+    for i in range(len(employee_history) - 1):
         diff = employee_history[i].diff_against(employee_history[i + 1])
         employee_diffs.append(diff)
 

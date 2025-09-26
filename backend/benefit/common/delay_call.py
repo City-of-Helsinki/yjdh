@@ -33,7 +33,7 @@ def call_now_or_later(func, duplicate_check=None):
 def _call_all_pending():
     if _get_pending_calls() is None:
         raise Exception("This function must be used only with update_at_end")
-    for k, func in list(_get_pending_calls().items()):
+    for func in list(_get_pending_calls().values()):
         func()
     _get_pending_calls().clear()
 
@@ -46,7 +46,8 @@ def do_delayed_calls_at_end():
     #     ...
     if _get_pending_calls() is not None:
         raise Exception(
-            "Nested update_at_end not supported - need to use contextlib.ContextDecorator"
+            "Nested update_at_end not supported - need to use"
+            " contextlib.ContextDecorator"
         )
     _local.pending_calls = collections.OrderedDict()
     try:

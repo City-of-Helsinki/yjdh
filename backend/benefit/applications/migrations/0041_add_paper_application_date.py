@@ -4,20 +4,23 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('applications', '0040_pay_subsidy_types'),
+        ("applications", "0040_pay_subsidy_types"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='application',
-            name='paper_application_date',
-            field=models.DateField(blank=True, null=True, verbose_name='paper application date'),
+            model_name="application",
+            name="paper_application_date",
+            field=models.DateField(
+                blank=True, null=True, verbose_name="paper application date"
+            ),
         ),
         migrations.AddField(
-            model_name='historicalapplication',
-            name='paper_application_date',
-            field=models.DateField(blank=True, null=True, verbose_name='paper application date'),
+            model_name="historicalapplication",
+            name="paper_application_date",
+            field=models.DateField(
+                blank=True, null=True, verbose_name="paper application date"
+            ),
         ),
     ]

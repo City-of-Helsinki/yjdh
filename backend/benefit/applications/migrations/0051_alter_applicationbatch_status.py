@@ -4,15 +4,32 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('applications', '0050_add_rejected_by_talpa_status'),
+        ("applications", "0050_add_rejected_by_talpa_status"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='applicationbatch',
-            name='status',
-            field=models.CharField(choices=[('draft', 'Draft'), ('exported_ahjo_report', 'Ahjo report created, not yet sent to AHJO'), ('awaiting_ahjo_decision', 'Sent to Ahjo, decision pending'), ('accepted', 'Accepted in Ahjo'), ('rejected', 'Rejected in Ahjo'), ('returned', 'Returned from Ahjo without decision'), ('sent_to_talpa', 'Sent to Talpa'), ('completed', 'Processing is completed'), ('rejected_by_talpa', 'Rejected by Talpa')], default='draft', max_length=64, verbose_name='status of batch'),
+            model_name="applicationbatch",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("draft", "Draft"),
+                    (
+                        "exported_ahjo_report",
+                        "Ahjo report created, not yet sent to AHJO",
+                    ),
+                    ("awaiting_ahjo_decision", "Sent to Ahjo, decision pending"),
+                    ("accepted", "Accepted in Ahjo"),
+                    ("rejected", "Rejected in Ahjo"),
+                    ("returned", "Returned from Ahjo without decision"),
+                    ("sent_to_talpa", "Sent to Talpa"),
+                    ("completed", "Processing is completed"),
+                    ("rejected_by_talpa", "Rejected by Talpa"),
+                ],
+                default="draft",
+                max_length=64,
+                verbose_name="status of batch",
+            ),
         ),
     ]

@@ -13,20 +13,27 @@ from messages.automatic_messages import (
 )
 
 APPLICATION_ABOUT_TO_BE_DELETED_MESSAGE = _(
-    "Your application {id} will be deleted soon. If you want to continue the application process, please do so by "
-    "{application_deletion_date}, otherwise the application will deleted permanently."
+    "Your application {id} will be deleted soon. If you want to continue the"
+    " application process, please do so by {application_deletion_date}, otherwise the"
+    " application will deleted permanently."
 )
 
 
 class Command(BaseCommand):
-    help = "Query draft applications that are close to the deletion date and send a notification to the applicant"
+    help = (
+        "Query draft applications that are close to the deletion date and send a"
+        " notification to the applicant"
+    )
 
     def add_arguments(self, parser):
         parser.add_argument(
             "--notify",
             type=int,
             default=14,
-            help="The number of days before the deletion date and when to notify the applicant",
+            help=(
+                "The number of days before the deletion date and when to notify the"
+                " applicant"
+            ),
         )
 
         parser.add_argument(
@@ -41,13 +48,14 @@ class Command(BaseCommand):
             options["notify"], options["keep"]
         )
         self.stdout.write(
-            f"Notified users of {number_of_notified_applications} applications about upcoming application deletion"
+            f"Notified users of {number_of_notified_applications} applications about"
+            " upcoming application deletion"
         )
 
 
 def notify_applications(days_to_deletion: int, days_to_keep: int) -> int:
     """Query applications that are close to the deletion date and send a notification to the applicant.
-    Returns the number of notified applications."""
+    Returns the number of notified applications."""  # noqa: E501
 
     draft_scope_in_days = days_to_keep - days_to_deletion
     applications_to_notify = Application.objects.filter(
@@ -68,7 +76,7 @@ def get_draft_notice_email_notification_subject():
 
 
 def _send_notification_mail(application: Application, days_to_keep: int) -> int:
-    """Send a notification mail to the applicant about the upcoming application deletion"""
+    """Send a notification mail to the applicant about the upcoming application deletion"""  # noqa: E501
     application_deletion_date = (
         application.modified_at + timedelta(days=(days_to_keep))
     ).strftime("%d.%m.%Y")

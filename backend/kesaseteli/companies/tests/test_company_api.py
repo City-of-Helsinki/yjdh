@@ -22,7 +22,9 @@ def get_company_api_url():
 def set_up_mock_requests(
     ytj_response: dict, business_details_response: dict, requests_mock
 ):
-    """Set up the mock responses."""
+    """
+    Set up the mock responses.
+    """
     business_id = ytj_response["results"][0]["businessId"]
     ytj_url = f"{settings.YTJ_BASE_URL}/{business_id}"
     business_details_url = ytj_response["results"][0]["bisDetailsUri"]

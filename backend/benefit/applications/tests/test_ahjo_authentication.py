@@ -8,7 +8,8 @@ from applications.models import AhjoSetting
 from applications.services.ahjo_authentication import (
     AhjoConnector,
     AhjoToken,
-    AhjoTokenExpiredException,
+    AhjoTokenExpiredError,
+    AhjoTokenRetrievalError,
 )
 
 TOKEN_EXPIRY_SECONDS = 30000
@@ -124,7 +125,7 @@ def test_refresh_expired_token(ahjo_connector, ahjo_setting, token_response):
             json=token_response,
         )
 
-    with pytest.raises(AhjoTokenExpiredException):
+    with pytest.raises(AhjoTokenExpiredError):
         ahjo_connector.refresh_token()
 
 
@@ -144,7 +145,7 @@ def test_do_token_request(ahjo_connector: AhjoConnector, token_response):
 
         # Test with failed request
         m.post("https://johdontyopoytahyte.hel.fi/ids4/connect/token", status_code=400)
-        with pytest.raises(Exception):
+        with pytest.raises(AhjoTokenRetrievalError):
             ahjo_connector.do_token_request({})
 
 

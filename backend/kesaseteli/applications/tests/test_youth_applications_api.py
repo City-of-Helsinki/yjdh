@@ -24,9 +24,9 @@ from rest_framework.reverse import reverse
 from applications.api.v1.serializers import YouthApplicationSerializer
 from applications.enums import (
     AdditionalInfoUserReason,
-    get_supported_languages,
     YouthApplicationRejectedReason,
     YouthApplicationStatus,
+    get_supported_languages,
 )
 from applications.models import YouthApplication, YouthSummerVoucher
 from applications.tests.data.mock_vtj import (
@@ -36,6 +36,8 @@ from applications.tests.data.mock_vtj import (
 from common.permissions import HandlerPermission
 from common.tests.conftest import (
     api_client,
+)
+from common.tests.conftest import (
     unauthenticated_api_client as unauth_api_client,
 )
 from common.tests.factories import (
@@ -52,6 +54,7 @@ from common.tests.factories import (
 )
 from common.tests.utils import get_random_social_security_number_for_year
 from common.urls import (
+    RedirectTo,
     get_accept_url,
     get_activation_url,
     get_additional_info_url,
@@ -59,7 +62,6 @@ from common.urls import (
     get_detail_url,
     get_list_url,
     get_processing_url,
-    RedirectTo,
     reverse_youth_application_action,
 )
 from shared.audit_log.models import AuditLogEntry
@@ -244,9 +246,9 @@ def test_youth_application_encrypted_fields():
 
 def test_youth_application_serializer_fields():
     """
-    Test that YouthApplicationSerializer's fields are all handled and categorized
-    into required/optional/write-only/read-only partitions. Also test that handler
-    views' show all fields except write-only fields.
+    Test that YouthApplicationSerializer's fields are all handled and
+    categorized into required/soptional/write-only/read-only partitions. Also
+    test that handler views' show all fields except write-only fields.
 
     If this test breaks then update the following:
      - get_required_fields()
@@ -1245,12 +1247,14 @@ def test_youth_application_post_valid_random_data(  # noqa: C901
                 json.loads(created_app.encrypted_handler_vtj_json), dict
             )
         else:
-            assert False, f"Please add manual check for field {manually_checked_field}"
+            raise AssertionError(
+                f"Please add manual check for field {manually_checked_field}"
+            )
 
     for required_field in required_fields:
-        assert (
-            getattr(created_app, required_field) == data[required_field]
-        ), f"{required_field} created youth application attribute incorrect"
+        assert getattr(created_app, required_field) == data[required_field], (
+            f"{required_field} created youth application attribute incorrect"
+        )
 
     for optional_field in optional_fields:
         assert getattr(created_app, optional_field) == data.get(
@@ -2460,8 +2464,8 @@ def test_youth_applications_set_excess_additional_info(
     expected_status_code,
 ):
     """
-    Test that providing excess POST data when setting additional info for a youth
-    application does not matter and does not change anything.
+    Test that providing excess POST data when setting additional info for a
+    youth application does not matter and does not change anything.
     """
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
     settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj

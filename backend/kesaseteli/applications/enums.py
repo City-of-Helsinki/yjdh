@@ -19,7 +19,7 @@ APPLICATION_LANGUAGE_CHOICES = (
 
 def get_supported_languages() -> Tuple[str]:
     """
-    Get tuple of supported languages
+    Get tuple of supported languages.
 
     :return: Tuple of the supported languages' codes, e.g. ('fi', 'sv', 'en')
     """
@@ -28,7 +28,7 @@ def get_supported_languages() -> Tuple[str]:
 
 class ExcelColumns(models.TextChoices):
     """
-    Excel export output column set choices
+    Excel export output column set choices.
     """
 
     REPORTING = "reporting", _("Reporting")
@@ -38,11 +38,13 @@ class ExcelColumns(models.TextChoices):
 class EmployerApplicationStatus(models.TextChoices):
     DRAFT = "draft", _("Draft")
     SUBMITTED = "submitted", _("Submitted")
-    ADDITIONAL_INFORMATION_REQUESTED = "additional_information_requested", _(
-        "Additional information requested"
+    ADDITIONAL_INFORMATION_REQUESTED = (
+        "additional_information_requested",
+        _("Additional information requested"),
     )
-    ADDITIONAL_INFORMATION_PROVIDED = "additional_information_provided", _(
-        "Additional information provided"
+    ADDITIONAL_INFORMATION_PROVIDED = (
+        "additional_information_provided",
+        _("Additional information provided"),
     )
     ACCEPTED = "accepted", _("Accepted")
     REJECTED = "rejected", _("Rejected")
@@ -51,14 +53,17 @@ class EmployerApplicationStatus(models.TextChoices):
 
 class YouthApplicationStatus(models.TextChoices):
     SUBMITTED = "submitted", _("Submitted")
-    AWAITING_MANUAL_PROCESSING = "awaiting_manual_processing", _(
-        "Awaiting manual processing"
+    AWAITING_MANUAL_PROCESSING = (
+        "awaiting_manual_processing",
+        _("Awaiting manual processing"),
     )
-    ADDITIONAL_INFORMATION_REQUESTED = "additional_information_requested", _(
-        "Additional information requested"
+    ADDITIONAL_INFORMATION_REQUESTED = (
+        "additional_information_requested",
+        _("Additional information requested"),
     )
-    ADDITIONAL_INFORMATION_PROVIDED = "additional_information_provided", _(
-        "Additional information provided"
+    ADDITIONAL_INFORMATION_PROVIDED = (
+        "additional_information_provided",
+        _("Additional information provided"),
     )
     ACCEPTED = "accepted", _("Accepted")
     REJECTED = "rejected", _("Rejected")
@@ -66,7 +71,8 @@ class YouthApplicationStatus(models.TextChoices):
     @staticmethod
     def active_values():
         """
-        Youth application statuses for youth application that have been activated.
+        Youth application statuses for youth application that have been
+        activated.
         """
         return [
             YouthApplicationStatus.AWAITING_MANUAL_PROCESSING.value,
@@ -79,7 +85,8 @@ class YouthApplicationStatus(models.TextChoices):
     @staticmethod
     def can_have_additional_info_values():
         """
-        Youth application statuses in which additional info may have been provided.
+        Youth application statuses in which additional info may have been
+        provided.
         """
         return [
             YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
@@ -90,7 +97,8 @@ class YouthApplicationStatus(models.TextChoices):
     @staticmethod
     def must_have_additional_info_values():
         """
-        Youth application statuses in which additional info must have been provided.
+        Youth application statuses in which additional info must have been
+        provided.
         """
         return [
             YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
@@ -99,7 +107,8 @@ class YouthApplicationStatus(models.TextChoices):
     @staticmethod
     def acceptable_values():
         """
-        Youth application statuses from which the youth application can be accepted.
+        Youth application statuses from which the youth application can be
+        accepted.
         """
         return [
             YouthApplicationStatus.AWAITING_MANUAL_PROCESSING.value,
@@ -109,7 +118,8 @@ class YouthApplicationStatus(models.TextChoices):
     @staticmethod
     def rejectable_values():
         """
-        Youth application statuses from which the youth application can be rejected.
+        Youth application statuses from which the youth application can be
+        rejected.
         """
         return [
             YouthApplicationStatus.AWAITING_MANUAL_PROCESSING.value,
@@ -120,7 +130,8 @@ class YouthApplicationStatus(models.TextChoices):
     @staticmethod
     def handled_values():
         """
-        Youth application statuses which have been handled and require a handler.
+        Youth application statuses which have been handled and require a
+        handler.
         """
         return [YouthApplicationStatus.ACCEPTED, YouthApplicationStatus.REJECTED]
 
@@ -146,13 +157,15 @@ class YouthApplicationStatus(models.TextChoices):
 
 
 class AdditionalInfoUserReason(models.TextChoices):
-    STUDENT_IN_HELSINKI_BUT_NOT_RESIDENT = "student_in_helsinki_but_not_resident", _(
-        "Student in Helsinki but not resident"
+    STUDENT_IN_HELSINKI_BUT_NOT_RESIDENT = (
+        "student_in_helsinki_but_not_resident",
+        _("Student in Helsinki but not resident"),
     )
     MOVING_TO_HELSINKI = "moving_to_helsinki", _("Moving to Helsinki")
     UNDERAGE_OR_OVERAGE = "underage_or_overage", _("Underage or overage")
-    PERSONAL_INFO_DIFFERS_FROM_VTJ = "personal_info_differs_from_vtj", _(
-        "Personal info differs from VTJ"
+    PERSONAL_INFO_DIFFERS_FROM_VTJ = (
+        "personal_info_differs_from_vtj",
+        _("Personal info differs from VTJ"),
     )
     UNLISTED_SCHOOL = "unlisted_school", _("Unlisted school")
     OTHER = "other", _("Other")
@@ -164,8 +177,10 @@ class AttachmentType(models.TextChoices):
 
 
 class SummerVoucherExceptionReason(models.TextChoices):
-    # TODO: Replace this hard coded enum class with a model where the controllers can add the exceptions themselves.
-    # These exceptions can change yearly and thus should be dynamically editable by the controllers.
+    # TODO: Replace this hard coded enum class with a model where the controllers can
+    # add the exceptions themselves.
+    # These exceptions can change yearly and thus should be dynamically editable by the
+    # controllers.
     PRIMARY_TARGET_GROUP = "primary_target_group", _("primary target group")
     SECONDARY_TARGET_GROUP = "secondary_target_group", _("secondary target group")
 

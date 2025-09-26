@@ -35,8 +35,8 @@ class HandlerPermission(BasePermission):
         Queryset of the users who have permission to act as handlers for youth
         applications / youth summer vouchers.
 
-        :return: All users if NEXT_PUBLIC_MOCK_FLAG setting is set, otherwise active
-                 users who are staff or superuser users.
+        :return: All users if NEXT_PUBLIC_MOCK_FLAG setting is set, otherwise
+            active users who are staff or superuser users.
         """
         if settings.NEXT_PUBLIC_MOCK_FLAG:
             return get_user_model().objects.all()
@@ -48,11 +48,11 @@ class HandlerPermission(BasePermission):
     @staticmethod
     def has_user_permission(user):
         """
-        Does the user have permission to act as a handler for youth applications / youth
-        summer vouchers?
+        Does the user have permission to act as a handler for youth
+        applications / youth summer vouchers?
 
-        :return: True if NEXT_PUBLIC_MOCK_FLAG setting is set, or user is an active
-                 staff or superuser user, otherwise False.
+        :return: True if NEXT_PUBLIC_MOCK_FLAG setting is set, or user is an
+            active staff or superuser user, otherwise False.
         """
         if settings.NEXT_PUBLIC_MOCK_FLAG:
             return True
@@ -63,7 +63,7 @@ class HandlerPermission(BasePermission):
         """
         Does the request's user have permission to the given view?
 
-        :return: True if NEXT_PUBLIC_MOCK_FLAG setting is set, or request has an active
-                 staff or superuser user, otherwise False.
+        :return: True if NEXT_PUBLIC_MOCK_FLAG setting is set, or request has
+            an active staff or superuser user, otherwise False.
         """
         return HandlerPermission.has_user_permission(request.user)

@@ -12,7 +12,7 @@ from applications.tests.data.mock_vtj import (
 
 def get_jsonpath_matches(jsonpath_expression, json_data) -> list:
     """
-    Get matching values from JSON data using JSONPath expression
+    Get matching values from JSON data using JSONPath expression.
     """
     return [
         match.value for match in jsonpath_ng.parse(jsonpath_expression).find(json_data)

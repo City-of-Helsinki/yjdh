@@ -10,13 +10,13 @@ from encrypted_fields.fields import EncryptedCharField, SearchField
 from simple_history.models import HistoricalRecords
 
 from applications.enums import ApplicationAlterationState
-from applications.models import Application, PAY_SUBSIDY_PERCENT_CHOICES
+from applications.models import PAY_SUBSIDY_PERCENT_CHOICES, Application
 from calculator.enums import DescriptionType, InstalmentStatus, RowType
 from common.exceptions import BenefitAPIException
 from common.utils import (
+    DurationMixin,
     date_range_overlap,
     duration_in_months,
-    DurationMixin,
     nested_getattr,
     to_decimal,
 )
@@ -58,7 +58,7 @@ class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
     The fields in Calculation is editable by handler. The value entered by applicant is stored in Application
 
     For additional descriptions of the fields, see the API documentation (serializers.py)
-    """
+    """  # noqa: E501
 
     handler = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -170,8 +170,8 @@ class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
         # 1. Fill the fields of this Calculation based on the data that the applicant
         #    entered in the Application. The handlers are supposed to edit the values
         #    in Calculation, so the data entered by applicant stays intact.
-        # 2. reset pay subsidy objects according to the applicant's input. One exception,
-        # default value for start_time and end_time will be null
+        # 2. reset pay subsidy objects according to the applicant's input. One
+        #    exception, default value for start_time and end_time will be null
 
         for (
             source_field_name,
@@ -193,7 +193,7 @@ class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
         and possibly other attributes, such as date of the application.
 
         The calculator object should not be changed while calculation is ongoing.
-        """
+        """  # noqa: E501
         from calculator.rules import HelsinkiBenefitCalculator
 
         if self.calculator is None:
@@ -201,7 +201,7 @@ class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
         return self.calculator
 
     def calculate(self, override_status=False):
-        """Do the calculation again. Override status is used to force the calculation when cloning an application"""
+        """Do the calculation again. Override status is used to force the calculation when cloning an application"""  # noqa: E501
 
         try:
             return self.init_calculator().calculate(override_status=override_status)
@@ -273,7 +273,7 @@ class PaySubsidy(UUIDModel, TimeStampedModel, DurationMixin):
         * they have the equal values in these fields: application, pay_subsidy_percent, work_time_percent,
           disability_or_illness
         * the date ranges either overlap or are adjacent to each other
-        """
+        """  # noqa: E501
         if len(pay_subsidies) == 0:
             return []
         pay_subsidies.sort(key=operator.attrgetter("start_date"))
@@ -303,9 +303,9 @@ class PaySubsidy(UUIDModel, TimeStampedModel, DurationMixin):
                     )
                 )
             else:
-                assert (
-                    ret[-1].application == subsidy.application
-                ), "Should only process PaySubsidies with the same application"
+                assert ret[-1].application == subsidy.application, (
+                    "Should only process PaySubsidies with the same application"
+                )
                 # it's a compatible PaySubsidy, just merge it with the previous one
                 ret[-1].start_date = min(ret[-1].start_date, subsidy.start_date)
                 ret[-1].end_date = max(ret[-1].end_date, subsidy.end_date)
@@ -518,8 +518,8 @@ class DateRangeDescriptionRow(CalculationRow):
 
         if start_date and end_date and prefix_text:
             self.description_fi_template = (
-                f'{prefix_text} {format_date(start_date, locale="fi_FI")} - '
-                f'{format_date(end_date, locale="fi_FI")} '
+                f"{prefix_text} {format_date(start_date, locale='fi_FI')} - "
+                f"{format_date(end_date, locale='fi_FI')} "
                 f"({to_decimal(duration_in_months(start_date, end_date), 2)} kk)"
             )
         super().__init__(*args, **kwargs)
@@ -578,7 +578,7 @@ class PaySubsidyMonthlyRow(CalculationRow):
     * 100% pay subsidy has been granted for 6 months
     * Pay subsidy is calcuated using formula:
       min(2020, (monthly_pay / work_time_fraction * 0.65) * 1.23
-    """
+    """  # noqa: E501
     MAX_WORK_TIME_FRACTION_FOR_FULL_PAY_SUBSIDY = decimal.Decimal("0.65")
     GROSS_WAGE_COEFFICIENT_FOR_FULL_PAY_SUBSIDY = decimal.Decimal("1.23")
 
@@ -590,11 +590,12 @@ class PaySubsidyMonthlyRow(CalculationRow):
     def calculate_amount(self):
         """
         1.7.2023 voimaantulevan lain mukaan lomarahaa ja sivukuluja ei oteta enää huomioon palkkatuen määrää laskiessa
-        """
+        """  # noqa: E501
         assert self.max_subsidy is not None
         assert self.pay_subsidy is not None
 
-        # for calculations, use a fraction in [0,1] range instead of a percent in [0,100] range
+        # for calculations, use a fraction in [0,1] range instead of a percent in
+        # [0,100] range
         work_time_fraction = self.pay_subsidy.get_work_time_percent() * decimal.Decimal(
             "0.01"
         )
@@ -710,9 +711,9 @@ class TotalRowMixin:
             .order_by("-ordering")
             .first()
         )
-        assert (
-            row is not None
-        ), "Application logic error - misconstructed application rows"
+        assert row is not None, (
+            "Application logic error - misconstructed application rows"
+        )
         return row.amount
 
 
@@ -837,7 +838,7 @@ class ManualOverrideTotalRow(CalculationRow):
 class Instalment(UUIDModel, TimeStampedModel):
     """
     Instalment model for Helsinki benefit grantend benefits that are paid in (two )instalments
-    """
+    """  # noqa: E501
 
     calculation = models.ForeignKey(
         Calculation,
@@ -860,8 +861,9 @@ class Instalment(UUIDModel, TimeStampedModel):
         decimal_places=2,
         editable=False,
         verbose_name=_(
-            "To be set only ONCE when final amount is sent to Talpa. The set value should be defined by 'amount' "
-            "field that is reduced by handled ApplicationAlteration recoveries at the time of Talpa robot visit."
+            "To be set only ONCE when final amount is sent to Talpa. The set value"
+            " should be defined by 'amount' field that is reduced by handled"
+            " ApplicationAlteration recoveries at the time of Talpa robot visit."
         ),
         blank=True,
         null=True,
@@ -904,10 +906,12 @@ class Instalment(UUIDModel, TimeStampedModel):
         )
 
     def __str__(self):
-        return f"Instalment of {self.amount}€, \
-number {self.instalment_number}/{self.calculation.instalments.count()} \
-for application {self.calculation.application.application_number}, \
-due in {self.due_date}, status: {self.status}."
+        return (
+            f"Instalment of {self.amount}€, number"
+            f" {self.instalment_number}/{self.calculation.instalments.count()} for"
+            f" application {self.calculation.application.application_number}, due in"
+            f" {self.due_date}, status: {self.status}."
+        )
 
     class Meta:
         db_table = "bf_calculator_instalment"

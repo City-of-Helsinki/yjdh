@@ -10,13 +10,16 @@ from saml2.metadata import entity_descriptor
 @method_decorator(csrf_exempt, name="dispatch")
 class SuomiFiAssertionConsumerServiceView(AssertionConsumerServiceView):
     """
-    Store user's national identification number into session instead of any User model.
+    Store user's national identification number into session instead of any
+    User model.
     """
 
     def post_login_hook(
         self, request: HttpRequest, user: settings.AUTH_USER_MODEL, session_info: dict
     ) -> None:
-        """Pick national identification number from ava and put it to the session."""
+        """
+        Pick national identification number from ava and put it to the session.
+        """
         ava = session_info.get("ava", {})
 
         if user_ssn := ava.get("nationalIdentificationNumber"):
@@ -29,8 +32,8 @@ class SuomiFiAssertionConsumerServiceView(AssertionConsumerServiceView):
 
 class SuomiFiMetadataView(MetadataView):
     """
-    Returns an XML with the SAML 2.0 metadata for this SP as
-    configured in the settings.py file.
+    Returns an XML with the SAML 2.0 metadata for this SP as configured in the
+    settings.py file.
     """
 
     def get(self, request, *args, **kwargs):

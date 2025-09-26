@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 
 from applications.services.ahjo_authentication import (
     AhjoConnector,
-    AhjoTokenRetrievalException,
+    AhjoTokenRetrievalError,
 )
 
 
@@ -20,4 +20,4 @@ class Command(BaseCommand):
             token = ahjo_connector.refresh_token()
             self.stdout.write(f"Ahjo token refreshed, new access token: {token}")
         except Exception as e:
-            raise AhjoTokenRetrievalException(f"Failed to refresh Ahjo token: {e}")
+            raise AhjoTokenRetrievalError(f"Failed to refresh Ahjo token: {e}")

@@ -14,9 +14,9 @@ from lxml.etree import XMLSchema, XMLSchemaParseError, XMLSyntaxError
 
 from applications.enums import ApplicationStatus
 from applications.models import (
+    APPLICATION_LANGUAGE_CHOICES,
     AhjoDecisionText,
     Application,
-    APPLICATION_LANGUAGE_CHOICES,
 )
 from calculator.enums import RowType
 from calculator.models import Calculation, CalculationRow
@@ -70,17 +70,20 @@ class AhjoXMLBuilder:
             return True  # Return True if no exception was raised
         except XMLSchemaParseError as e:
             LOGGER.error(
-                f"Decision proposal XML Schema Error for application {self.application.application_number}: {e}"
+                "Decision proposal XML Schema Error for application"
+                f" {self.application.application_number}: {e}"
             )
             raise
         except XMLSyntaxError as e:
             LOGGER.error(
-                f"Decision proposal XML Syntax Error for application {self.application.application_number}: {e}"
+                "Decision proposal XML Syntax Error for application"
+                f" {self.application.application_number}: {e}"
             )
             raise
         except etree.DocumentInvalid as e:
             LOGGER.error(
-                f"Decision proposal Validation Error for application {self.application.application_number}: {e}"
+                "Decision proposal Validation Error for application"
+                f" {self.application.application_number}: {e}"
             )
             raise
 
@@ -149,7 +152,10 @@ class AhjoSecretXMLBuilder(AhjoXMLBuilder):
     def _get_period_rows_for_xml(
         self,
         calculation: Calculation,
-    ) -> Tuple[CalculationRow, List[CalculationRow],]:
+    ) -> Tuple[
+        CalculationRow,
+        List[CalculationRow],
+    ]:
         total_amount_row = calculation.rows.filter(
             row_type=RowType.HELSINKI_BENEFIT_TOTAL_EUR
         ).first()
@@ -172,7 +178,7 @@ class AhjoSecretXMLBuilder(AhjoXMLBuilder):
         there will be multiple pairs of sub total rows and a corresponding monthly eur rows.
         Here we prepare the calculation rows per payment period by looping through the calculation rows
         and parsing the data into a list of BenefitPeriodRows.
-        """
+        """  # noqa: E501
         calculation_rows_for_xml = []
 
         for idx, r in enumerate(calculation_rows):
@@ -202,7 +208,7 @@ class AhjoSecretXMLBuilder(AhjoXMLBuilder):
     ) -> List[BenefitPeriodRow]:
         """In the case where there is only one benefit period,
         we combine the monthly eur row and the salary benefit total row into a single BenefitPeriodRow.
-        """
+        """  # noqa: E501
         calculation_rows_for_xml = []
         calculation_rows_for_xml.append(
             BenefitPeriodRow(
@@ -233,7 +239,8 @@ class AhjoSecretXMLBuilder(AhjoXMLBuilder):
         total_amount_row, calculation_rows = self._get_period_rows_for_xml(
             self.application.calculation
         )
-        # If there is only one period, we can combine the monthly eur row and the total row into a single row
+        # If there is only one period, we can combine the monthly eur row and the total
+        # row into a single row
         if (
             len(calculation_rows) == 1
             and calculation_rows[0].row_type == RowType.HELSINKI_BENEFIT_MONTHLY_EUR
@@ -252,4 +259,7 @@ class AhjoSecretXMLBuilder(AhjoXMLBuilder):
 
     def generate_xml_file_name(self) -> str:
         date_str = self.application.created_at.strftime("%d.%m.%Y")
-        return f"Hakemus {date_str} päätöksen liite {self.application.application_number}.xml"
+        return (
+            f"Hakemus {date_str} päätöksen liite"
+            f" {self.application.application_number}.xml"
+        )

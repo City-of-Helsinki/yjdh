@@ -1,7 +1,7 @@
 import pytest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
-from django.test import override_settings, RequestFactory
+from django.test import RequestFactory, override_settings
 
 from common.permissions import HandlerPermission
 from shared.common.tests.factories import UserFactory

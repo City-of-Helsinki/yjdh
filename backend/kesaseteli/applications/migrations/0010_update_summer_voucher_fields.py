@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("applications", "0009_add_application_user"),
     ]
@@ -146,7 +145,10 @@ class Migration(migrations.Migration):
             field=models.CharField(
                 blank=True,
                 choices=[("yes", "yes"), ("no", "no"), ("maybe", "maybe")],
-                help_text="Whether the employee would have been hired without a summer voucher.",
+                help_text=(
+                    "Whether the employee would have been hired without a summer"
+                    " voucher."
+                ),
                 max_length=32,
                 null=True,
                 verbose_name="hired without voucher assessment",
@@ -231,7 +233,10 @@ class Migration(migrations.Migration):
             field=models.CharField(
                 blank=True,
                 choices=[("yes", "yes"), ("no", "no"), ("maybe", "maybe")],
-                help_text="Whether the employee would have been hired without a summer voucher.",
+                help_text=(
+                    "Whether the employee would have been hired without a summer"
+                    " voucher."
+                ),
                 max_length=32,
                 null=True,
                 verbose_name="hired without voucher assessment",

@@ -67,8 +67,12 @@ MAP = {
         # Limited personal information + eIDAS
         "http://eidas.europa.eu/attributes/naturalperson/CurrentGivenName": "FirstName",
         # eIDAS
-        "http://eidas.europa.eu/attributes/naturalperson/CurrentFamilyName": "FamilyName",
-        "http://eidas.europa.eu/attributes/naturalperson/PersonIdentifier": "PersonIdentifier",
+        "http://eidas.europa.eu/attributes/naturalperson/CurrentFamilyName": (
+            "FamilyName"
+        ),
+        "http://eidas.europa.eu/attributes/naturalperson/PersonIdentifier": (
+            "PersonIdentifier"
+        ),
         "http://eidas.europa.eu/attributes/naturalperson/DateOfBirth": "DateOfBirth",
     },
     "to": {
@@ -81,8 +85,12 @@ MAP = {
         # Limited personal information + eIDAS
         "FirstName": "http://eidas.europa.eu/attributes/naturalperson/CurrentGivenName",
         # eIDAS
-        "FamilyName": "http://eidas.europa.eu/attributes/naturalperson/CurrentFamilyName",
-        "PersonIdentifier": "http://eidas.europa.eu/attributes/naturalperson/PersonIdentifier",
+        "FamilyName": (
+            "http://eidas.europa.eu/attributes/naturalperson/CurrentFamilyName"
+        ),
+        "PersonIdentifier": (
+            "http://eidas.europa.eu/attributes/naturalperson/PersonIdentifier"
+        ),
         "DateOfBirth": "http://eidas.europa.eu/attributes/naturalperson/DateOfBirth",
     },
 }

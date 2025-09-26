@@ -12,8 +12,10 @@ from django.utils import timezone
 from applications.enums import (
     AhjoDecision,
     AhjoRequestType,
-    AhjoStatus as AhjoStatusEnum,
     ApplicationStatus,
+)
+from applications.enums import (
+    AhjoStatus as AhjoStatusEnum,
 )
 from applications.models import AhjoSetting, AhjoStatus, Application, Attachment
 from applications.services.ahjo.response_handler import (
@@ -90,8 +92,8 @@ def test_delete_cancelled_applications_older_than_30_days(cancelled_to_delete):
 
     # Assert that the correct number of applications were deleted
     assert (
-        f"Deleted {total_applications - remaining_applications.count()} applications with status {[status]}"
-        in out.getvalue()
+        f"Deleted {total_applications - remaining_applications.count()} applications"
+        f" with status {[status]}" in out.getvalue()
     )
 
 
@@ -135,8 +137,8 @@ def test_delete_draft_applications_older_than_180_days(
 
     # Assert that the correct number of applications were deleted
     assert (
-        f"Deleted {total_applications - remaining_applications.count()} applications with status {[status]}"
-        in out.getvalue()
+        f"Deleted {total_applications - remaining_applications.count()} applications"
+        f" with status {[status]}" in out.getvalue()
     )
 
 
@@ -150,8 +152,8 @@ def test_user_is_notified_of_upcoming_application_deletion(drafts_about_to_be_de
     )
 
     assert (
-        f"Notified users of {drafts_about_to_be_deleted.count()} applications about upcoming application deletion"
-        in out.getvalue()
+        f"Notified users of {drafts_about_to_be_deleted.count()} applications about"
+        " upcoming application deletion" in out.getvalue()
     )
 
 
@@ -210,9 +212,10 @@ def test_send_ahjo_requests(
     application_with_ahjo_decision,
 ):
     AhjoSetting.objects.create(name="ahjo_code", data={"code": "12345"})
-    with patch(patch_db_function) as mock_get_applications, patch(
-        patch_request
-    ) as mock_send_request:
+    with (
+        patch(patch_db_function) as mock_get_applications,
+        patch(patch_request) as mock_send_request,
+    ):
         mock_get_token.return_value = MagicMock(AhjoToken)
         number_to_send = 5
 
@@ -221,7 +224,8 @@ def test_send_ahjo_requests(
 
         if request_type == AhjoRequestType.GET_DECISION_DETAILS:
             mock_response = ahjo_decision_detail_response
-            # Set the decision date to the current date in the same format as in the response
+            # Set the decision date to the current date in the same format as in the
+            # response
             date_str = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
             mock_response[0]["DateDecision"] = date_str
             application.batch_id = batch_for_decision_details.id
@@ -256,7 +260,7 @@ def test_send_ahjo_requests(
             stdout=out,
         )
 
-        print(out.getvalue())
+        print(out.getvalue())  # noqa: T201
 
         assert (
             f"Sending {request_type} request to Ahjo for {number_to_send} applications"
@@ -264,8 +268,8 @@ def test_send_ahjo_requests(
         )
 
         assert (
-            f"Sent {request_type} requests for {number_to_send} application(s): {app_numbers} to Ahjo"
-            in out.getvalue()
+            f"Sent {request_type} requests for {number_to_send} application(s):"
+            f" {app_numbers} to Ahjo" in out.getvalue()
         )
 
         if request_type == AhjoRequestType.GET_DECISION_DETAILS:

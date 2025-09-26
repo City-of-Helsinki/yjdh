@@ -9,6 +9,8 @@ from rest_framework.authtoken.models import Token
 
 from applications.enums import (
     AhjoStatus as AhjoStatusEnum,
+)
+from applications.enums import (
     ApplicationAlterationType,
     ApplicationBatchStatus,
     ApplicationOrigin,
@@ -93,7 +95,7 @@ def clear_applications():
 def run_seed(number):
     """Delete all existing applications and create applications for all statuses,
     with cancelled applications being modified 30 days ago and drafts being modified 180 and 166 days ago
-    """
+    """  # noqa: E501
 
     def _create_batch(
         status: ApplicationBatchStatus, proposal_for_decision: ApplicationStatus
@@ -102,7 +104,8 @@ def run_seed(number):
             status=status, proposal_for_decision=proposal_for_decision
         )
 
-        # Need to delete a few applications that are made for the batch for testing purposes
+        # Need to delete a few applications that are made for the batch for testing
+        # purposes
         Application.objects.filter(batch=batch).delete()
 
         apps = []
@@ -220,8 +223,8 @@ def _past_datetime(days: int) -> datetime:
 
 
 def _create_templates():
-    AcceptedDecisionProposalFactory(),
-    DeniedDecisionProposalFactory(),
+    (AcceptedDecisionProposalFactory(),)
+    (DeniedDecisionProposalFactory(),)
 
 
 def _create_dummy_ahjo_user_and_token():

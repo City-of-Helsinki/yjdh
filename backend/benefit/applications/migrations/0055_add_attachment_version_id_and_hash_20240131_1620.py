@@ -4,30 +4,29 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('applications', '0054_alter_historicalattachment_attachment_type'),
+        ("applications", "0054_alter_historicalattachment_attachment_type"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='attachment',
-            name='ahjo_hash_value',
+            model_name="attachment",
+            name="ahjo_hash_value",
             field=models.CharField(blank=True, max_length=64, null=True),
         ),
         migrations.AddField(
-            model_name='attachment',
-            name='ahjo_version_series_id',
+            model_name="attachment",
+            name="ahjo_version_series_id",
             field=models.CharField(blank=True, max_length=64, null=True),
         ),
         migrations.AddField(
-            model_name='historicalattachment',
-            name='ahjo_hash_value',
+            model_name="historicalattachment",
+            name="ahjo_hash_value",
             field=models.CharField(blank=True, max_length=64, null=True),
         ),
         migrations.AddField(
-            model_name='historicalattachment',
-            name='ahjo_version_series_id',
+            model_name="historicalattachment",
+            name="ahjo_version_series_id",
             field=models.CharField(blank=True, max_length=64, null=True),
         ),
     ]

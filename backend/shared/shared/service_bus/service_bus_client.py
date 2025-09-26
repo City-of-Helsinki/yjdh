@@ -65,9 +65,11 @@ class ServiceBusClient:
         cls, service_bus_data: dict
     ) -> dict:
         """
-        Get the required company fields from YTJ data. All data will be in Finnish
-        Might throw ValueError if the data is not in correct format or there is a case
-        that hasn't been covered in the code
+        Get the required company fields from YTJ data.
+
+        All data will be in Finnish Might throw ValueError if the data is not
+        in correct format or there is a case that hasn't been covered in the
+        code
         """
 
         try:
@@ -106,7 +108,8 @@ class ServiceBusClient:
     def _get_industry(cls, business_line_json: dict) -> str:
         # The BusinessLine value is a code, which is not human-readable.
         # We'll try to get the description of the code in Finnish
-        # In suomi.fi test env, some companies do not have this data, so assuming production
+        # In suomi.fi test env, some companies do not have this data, so assuming
+        # production
         # env might have companies with missing data, too
         try:
             code_description = business_line_json["Type"]["Descriptions"][

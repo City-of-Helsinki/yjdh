@@ -6,8 +6,8 @@ from django.views import View
 
 class MockEnabledProxyView:
     """
-    A view that changes on-the-fly between the real and mocked view based on the current
-    value of NEXT_PUBLIC_MOCK_FLAG.
+    A view that changes on-the-fly between the real and mocked view based on
+    the current value of NEXT_PUBLIC_MOCK_FLAG.
 
     An instance of this class tries to act like
     mock_view_class.as_view(**initkwargs) when NEXT_PUBLIC_MOCK_FLAG setting is set,
@@ -29,10 +29,12 @@ class MockEnabledProxyView:
         Initialize the real view to real_view_class.as_view(**initkwargs) and
         mock view to mock_view_class.as_view(**initkwargs).
 
-        :param real_view_class: Type of View class to use when mocking is turned off
-        :param mock_view_class: Type of View class to use when mocking is turned on
-        :param initkwargs: The keyword arguments passed to real_view_class.as_view and
-                           mock_view_class.as_view functions
+        :param real_view_class: Type of View class to use when mocking is
+            turned off
+        :param mock_view_class: Type of View class to use when mocking is
+            turned on
+        :param initkwargs: The keyword arguments passed to
+            real_view_class.as_view and mock_view_class.as_view functions
         """
         self.__real_view = real_view_class.as_view(**initkwargs)
         self.__mock_view = mock_view_class.as_view(**initkwargs)
@@ -40,22 +42,25 @@ class MockEnabledProxyView:
     @property
     def __view(self):
         """
-        The underlying view initialized using <ViewClass>.as_view(**initkwargs) based
-        on the current value of NEXT_PUBLIC_MOCK_FLAG setting.
+        The underlying view initialized using <ViewClass>.as_view(**initkwargs)
+        based on the current value of NEXT_PUBLIC_MOCK_FLAG setting.
 
-        :return: mock_view_class.as_view(**initkwargs) if NEXT_PUBLIC_MOCK_FLAG setting
-                 exists and is truthy, otherwise real_view_class.as_view(**initkwargs)
+        :return: mock_view_class.as_view(**initkwargs) if NEXT_PUBLIC_MOCK_FLAG
+            setting exists and is truthy, otherwise
+            real_view_class.as_view(**initkwargs)
         """
         is_mocked = getattr(settings, "NEXT_PUBLIC_MOCK_FLAG", False)
         return self.__mock_view if is_mocked else self.__real_view
 
     def __getattr__(self, name):
         """
-        Read all attributes not found in this instance from the underlying view.
+        Read all attributes not found in this instance from the underlying
+        view.
 
-        This is needed because django.views.generic.base.View.as_view returns a function
-        which has attributes written into it, e.g. view_class and view_initkwargs, and
-        they need to be accessible directly through this instance.
+        This is needed because django.views.generic.base.View.as_view returns a
+        function which has attributes written into it, e.g. view_class and
+        view_initkwargs, and they need to be accessible directly through this
+        instance.
         """
         return getattr(self.__view, name)
 
@@ -63,8 +68,9 @@ class MockEnabledProxyView:
         """
         Redirect all calls made to this instance to the underlying view.
 
-        This is needed because django.views.generic.base.View.as_view returns a function
-        which can be called like function(request, *args, **kwargs) and calling it with
-        the passed parameters needs to be doable directly through this instance.
+        This is needed because django.views.generic.base.View.as_view returns a
+        function which can be called like function(request, *args, **kwargs)
+        and calling it with the passed parameters needs to be doable directly
+        through this instance.
         """
         return self.__view.__call__(*args, **kwargs)

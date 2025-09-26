@@ -16,13 +16,15 @@ from messages.models import Message, MessageType
 LOGGER = logging.getLogger(__name__)
 
 APPLICATION_REOPENED_MESSAGE = _(
-    "Your application has been opened for editing. Please make the corrections and send application again by "
-    "{additional_information_needed_by}, otherwise the application cannot be processed."
+    "Your application has been opened for editing. Please make the corrections and send"
+    " application again by {additional_information_needed_by}, otherwise the"
+    " application cannot be processed."
 )
 
 
 def get_default_email_notification_subject():
-    # force evaluation of lazy string so that the messages in local memory queue remain translated
+    # force evaluation of lazy string so that the messages in local memory queue remain
+    # translated
     # correctly during unit tests
     return str(
         _("You have received a new message regarding your Helsinki benefit application")
@@ -37,8 +39,10 @@ def _message_notification_email_body(application):
     if submitted_at := application.submitted_at:
         submitted_at_fmt = submitted_at.strftime("%d.%m.%Y")
     else:
-        # this should never happen in practice, as the applicants are not allowed to send messages
-        # while application remains draft, and the handlers don't see non-submitted applications
+        # this should never happen in practice, as the applicants are not allowed to
+        # send messages
+        # while application remains draft, and the handlers don't see non-submitted
+        # applications
         # at all.
         submitted_at_fmt = "n/a"
     return str(
@@ -88,19 +92,22 @@ def send_email_to_applicant(
     if not application.company_contact_person_email:
         # company_contact_person_email is a required field for submitted applications
         LOGGER.warning(
-            f"Application {application} does not have company_contact_person_email - unexpected"
+            f"Application {application} does not have company_contact_person_email -"
+            " unexpected"
         )
         return 0
 
     with translation.override(application.applicant_language):
         try:
             return send_mail(
-                subject=subject
-                if subject
-                else get_default_email_notification_subject(),
-                message=text_message
-                if text_message
-                else _message_notification_email_body(application),
+                subject=(
+                    subject if subject else get_default_email_notification_subject()
+                ),
+                message=(
+                    text_message
+                    if text_message
+                    else _message_notification_email_body(application)
+                ),
                 html_message=html_message or None,
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[application.company_contact_person_email],
@@ -111,10 +118,8 @@ def send_email_to_applicant(
             if "@" in application.company_contact_person_email:
                 email_domain = application.company_contact_person_email.split("@")[1]
             capture_message(
-                (
-                    f"SMTPException while sending email to xxx@{email_domain}, "
-                    f"application number {application.application_number}"
-                ),
+                f"SMTPException while sending email to xxx@{email_domain}, "
+                f"application number {application.application_number}",
                 "error",
             )
             return 0
@@ -127,7 +132,7 @@ def send_application_reopened_message(
     :param user: The handler who is setting the application to ADDITIONAL_INFORMATION_REQUESTED status
     :param application: The application being reopened
     :param additional_information_needed_by: The date by which the applicant must provide the additional information
-    """
+    """  # noqa: E501
 
     formatted_info_needed_by = additional_information_needed_by.strftime("%d.%m.%Y")
 

@@ -54,14 +54,14 @@ def test_clean_inactive_youth_applications_older_than_week():
     ).exists(), "Inactive applications should have been cleaned"
 
     for application in inactive_applications_created_less_than_week_ago:
-        assert YouthApplication.objects.filter(
-            pk=application.id
-        ).exists(), "Newer inactive applications should still exist"
+        assert YouthApplication.objects.filter(pk=application.id).exists(), (
+            "Newer inactive applications should still exist"
+        )
 
     for application in active_applications_created_week_ago:
-        assert YouthApplication.objects.filter(
-            pk=application.id
-        ).exists(), "Active applications should still exist"
+        assert YouthApplication.objects.filter(pk=application.id).exists(), (
+            "Active applications should still exist"
+        )
 
 
 @pytest.mark.django_db
@@ -95,19 +95,19 @@ def test_clean_rejected_youth_applications_older_than_year():
     ).exists(), "Rejected application older than year should have been cleaned"
 
     for application in rejected_applications_created_less_than_year_ago:
-        assert YouthApplication.objects.filter(
-            pk=application.id
-        ).exists(), "Newer rejected applications should still exist"
+        assert YouthApplication.objects.filter(pk=application.id).exists(), (
+            "Newer rejected applications should still exist"
+        )
 
     for application in unhandled_applications_created_year_ago:
-        assert YouthApplication.objects.filter(
-            pk=application.id
-        ).exists(), "Unhandled applications should still exist"
+        assert YouthApplication.objects.filter(pk=application.id).exists(), (
+            "Unhandled applications should still exist"
+        )
 
     for application in accepted_applications_created_year_ago:
-        assert YouthApplication.objects.filter(
-            pk=application.id
-        ).exists(), "Accepted applications should still exist"
+        assert YouthApplication.objects.filter(pk=application.id).exists(), (
+            "Accepted applications should still exist"
+        )
 
 
 @pytest.mark.django_db
@@ -160,11 +160,11 @@ def test_clean_all_youth_applications_older_than_five_years():
     ).exists(), "Old summer vouchers should have been cleaned"
 
     for application in applications_created_less_than_five_years_ago:
-        assert YouthApplication.objects.filter(
-            pk=application.id
-        ).exists(), "Newer applications should still exist"
+        assert YouthApplication.objects.filter(pk=application.id).exists(), (
+            "Newer applications should still exist"
+        )
 
     for summer_voucher in summer_vouchers_created_less_than_five_years_ago:
-        assert YouthSummerVoucher.objects.filter(
-            pk=summer_voucher.id
-        ).exists(), "Newer summer vouchers should still exist"
+        assert YouthSummerVoucher.objects.filter(pk=summer_voucher.id).exists(), (
+            "Newer summer vouchers should still exist"
+        )

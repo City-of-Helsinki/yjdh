@@ -13,7 +13,7 @@ def test_get_decision_maker_ahjo_setting_for_applicant(api_client):
     assert response.status_code == 403
 
 
-@pytest.mark.parametrize("setting_name", [("ahjo_decision_maker"), ("ahjo_signer")])
+@pytest.mark.parametrize("setting_name", ["ahjo_decision_maker", "ahjo_signer"])
 def test_get_ahjo_setting_for_handler(
     handler_api_client, decision_maker_settings, setting_name, signer_settings
 ):

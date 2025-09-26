@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('applications', '0037_reviewstate'),
+        ("applications", "0037_reviewstate"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='reviewstate',
-            name='approval',
-            field=models.BooleanField(default=False, verbose_name='approval'),
+            model_name="reviewstate",
+            name="approval",
+            field=models.BooleanField(default=False, verbose_name="approval"),
         ),
     ]

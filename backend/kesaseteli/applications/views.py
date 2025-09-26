@@ -36,8 +36,9 @@ from shared.audit_log.viewsets import AuditLoggingModelViewSet
 class EmployerApplicationExcelDownloadView(TemplateView):
     """
     TODO: This should be removed after the actual controller UI is implemented.
-    This is a temporary view implemented by Django for MVP purposes. Basically it provides
-    a very simple view for the controllers to export the applications as Excel files.
+    This is a temporary view implemented by Django for MVP purposes. Basically it
+    provides a very simple view for the controllers to export the applications as Excel
+    files.
     """
 
     template_name = "application_excel_download.html"
@@ -114,7 +115,9 @@ class EmployerApplicationExcelDownloadView(TemplateView):
                 serializer=serializer,
                 batch_size=settings.EXCEL_DOWNLOAD_BATCH_SIZE,
             ),
-            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            content_type=(
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            ),
         )
         response["Content-Disposition"] = "attachment; filename={}".format(
             get_xlsx_filename(columns)
@@ -137,8 +140,11 @@ class EmployerApplicationExcelDownloadView(TemplateView):
         self, columns: ExcelColumns
     ) -> Union[StreamingHttpResponse, HttpResponseRedirect]:
         """
-        Export unhandled applications and redirect back to the excel download page.
-        The user will see a new xlsx file generated in the generated files list.
+        Export unhandled applications and redirect back to the excel download
+        page.
+
+        The user will see a new xlsx file generated in the generated files
+        list.
         """
         queryset_without_pks = self.base_queryset().filter(
             is_exported=False,
@@ -170,9 +176,12 @@ class EmployerApplicationExcelDownloadView(TemplateView):
         self, columns: ExcelColumns, year: int
     ) -> Union[StreamingHttpResponse, HttpResponseRedirect]:
         """
-        Export all applications from the given year to xlsx file and download the file.
-        The file is returned as a response, thus automatically downloaded. The generated
-        xlsx file will not be saved on disk and will not be shown on the xlsx files list.
+        Export all applications from the given year to xlsx file and download
+        the file.
+
+        The file is returned as a response, thus automatically downloaded. The
+        generated xlsx file will not be saved on disk and will not be shown on
+        the xlsx files list.
         """
         queryset = (
             self.base_queryset()
@@ -266,11 +275,13 @@ class YouthApplicationExcelExportViewSet(AuditLoggingModelViewSet):
                     serializer=self.serializer,
                     batch_size=settings.EXCEL_DOWNLOAD_BATCH_SIZE,
                 ),
-                content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                content_type=(
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                ),
             )
-            response[
-                "Content-Disposition"
-            ] = f"attachment; filename={self.xlsx_filename}"
+            response["Content-Disposition"] = (
+                f"attachment; filename={self.xlsx_filename}"
+            )
             return response
 
     @property

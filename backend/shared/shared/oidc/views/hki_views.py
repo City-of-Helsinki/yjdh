@@ -25,7 +25,9 @@ logger = logging.getLogger(__name__)
 
 
 class HelsinkiOIDCAuthenticationRequestView(OIDCAuthenticationRequestView):
-    """Override OIDC client authentication request get method"""
+    """
+    Override OIDC client authentication request get method.
+    """
 
     def get(self, request):
         lang = request.GET.get("lang")
@@ -48,7 +50,9 @@ class HelsinkiOIDCAuthenticationRequestView(OIDCAuthenticationRequestView):
 
 
 class HelsinkiOIDCAuthenticationCallbackView(OIDCAuthenticationCallbackView):
-    """Override OIDC client authentication callback login success method"""
+    """
+    Override OIDC client authentication callback login success method.
+    """
 
     def login_success(self):
         super().login_success()
@@ -67,7 +71,9 @@ class HelsinkiOIDCAuthenticationCallbackView(OIDCAuthenticationCallbackView):
 class HelsinkiOIDCLogoutView(View):
     """
     Initiate logout process with Keycloak.
-    Use GET request like e.g. Django auth logout does."""
+
+    Use GET request like e.g. Django auth logout does.
+    """
 
     http_method_names = ["get"]
 
@@ -92,20 +98,27 @@ class HelsinkiOIDCLogoutView(View):
 
 
 class HelsinkiOIDCLogoutCallbackView(View):
-    """This callback is called after the suomi.fi logout has been performed at the city profile"""
+    """
+    This callback is called after the suomi.fi logout has been performed at the
+    city profile.
+    """
 
     http_method_names = ["get"]
 
     def get(self, request):
-        # As of 2021-12, the city profile does not provide any error/status codes along with the
-        # callback. If such parameters are added in the future, we would handle them here.
+        # As of 2021-12, the city profile does not provide any error/status codes along
+        # with the
+        # callback. If such parameters are added in the future, we would handle them
+        # here.
         # Now we just assume that the logout has been done successfully and redirect to
         # the logout landing URL in the frontend.
         return HttpResponseRedirect(settings.LOGOUT_REDIRECT_URL)
 
 
 class HelsinkiOIDCUserInfoView(View):
-    """Gets the userinfo from OP"""
+    """
+    Gets the userinfo from OP.
+    """
 
     http_method_names = ["get"]
 
@@ -148,7 +161,7 @@ class HelsinkiOIDCUserInfoView(View):
 
 class HelsinkiOIDCBackchannelLogoutView(View):
     """
-    Backchannel logout endpoint that can be called by helsinki profiili
+    Backchannel logout endpoint that can be called by helsinki profiili.
 
     # noqa
     Docs: https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/1209040912/SSO+session+handling#About-backchannel-logout-requests
@@ -205,7 +218,8 @@ class HelsinkiOIDCBackchannelLogoutView(View):
                 # In the rare case that two user accounts have the same email address,
                 # bail. Randomly selecting one seems really wrong.
                 logger.error(
-                    f"Login failed: Multiple users found with the given 'sub' claim: {claims.get('sub', None)}"
+                    "Login failed: Multiple users found with the given 'sub' claim:"
+                    f" {claims.get('sub', None)}"
                 )
                 return HttpResponse(
                     "Multiple users found with the given 'sub' claim",

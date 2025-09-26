@@ -13,7 +13,8 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from fuzzywuzzy import fuzz
-from rest_framework import filters as drf_filters, status
+from rest_framework import filters as drf_filters
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -328,7 +329,7 @@ def _query_by_application_number(
                 Q(year_of_birth=f"{year_prefix}{year_suffix}")
                 | Q(
                     year_of_birth="1900"
-                )  # A few ArchivalApplication do not have birth year and is marked as 1900
+                )  # A few ArchivalApplication do not have birth year and is marked as 1900  # noqa: E501
             ),
         ),
     }
@@ -400,7 +401,7 @@ def _query_and_respond_to_numbers(
 ):
     """
     Perform simple LIKE query for application number, AHJO case ID and company business ID
-    """
+    """  # noqa: E501
     applications = application_queryset.filter(
         Q(company__business_id__icontains=search_query_str)
         | Q(ahjo_case_id__icontains=search_query_str)
@@ -464,7 +465,8 @@ def _perform_in_memory_search(
     else:
         detected_pattern = f"{SearchPattern.COMPANY} {SearchPattern.IN_MEMORY}"
 
-    # Try fuzzy matching with high threshold. If zero matches, try lower score and finally try substring matching
+    # Try fuzzy matching with high threshold. If zero matches, try lower score and
+    # finally try substring matching
     in_memory_results = _fuzzy_matching(data, in_memory_filter_str, 80)
     if not in_memory_results["data"]:
         in_memory_results = _fuzzy_matching(data, in_memory_filter_str, 70)
@@ -475,7 +477,7 @@ def _perform_in_memory_search(
         )
         detected_pattern += "-fallback"
 
-    return {**in_memory_results, **{"detected_pattern": detected_pattern}}
+    return {**in_memory_results, "detected_pattern": detected_pattern}
 
 
 def _query_for_company_name(

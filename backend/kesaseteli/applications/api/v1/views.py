@@ -173,8 +173,10 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         if not youth_application.can_set_additional_info:
             return Response(
                 data={
-                    "detail": _("Invalid status %(status)s for setting additional info")
-                    % {"status": youth_application.status}
+                    "detail": (
+                        _("Invalid status %(status)s for setting additional info")
+                        % {"status": youth_application.status}
+                    )
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
@@ -207,7 +209,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             )
         except ValidationError as e:
             LOGGER.error(
-                f"Youth application additional info rejected because of "
+                "Youth application additional info rejected because of "
                 f"validation error. Validation error codes: {str(e.get_codes())}"
             )
             raise
@@ -217,8 +219,9 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     @action(methods=["post"], detail=False)
     def fetch_employee_data(self, request, *args, **kwargs) -> HttpResponse:
         """
-        Fetch employee data to a particular EmployerSummerVoucher using the employee's
-        name and their YouthSummerVoucher's summer_voucher_serial_number
+        Fetch employee data to a particular EmployerSummerVoucher using the
+        employee's name and their YouthSummerVoucher's
+        summer_voucher_serial_number.
         """
         if not request.user.is_authenticated:
             return Response(status=status.HTTP_403_FORBIDDEN)
@@ -324,7 +327,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
                 serializer.is_valid(raise_exception=True)
             except ValidationError as e:
                 LOGGER.error(
-                    f"Youth application was not changed to accepted state because of "
+                    "Youth application was not changed to accepted state because of "
                     f"validation error. Validation error codes: {str(e.get_codes())}"
                 )
                 raise
@@ -372,7 +375,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
                 serializer.is_valid(raise_exception=True)
             except ValidationError as e:
                 LOGGER.error(
-                    f"Youth application was not changed to rejected state because of "
+                    "Youth application was not changed to rejected state because of "
                     f"validation error. Validation error codes: {str(e.get_codes())}"
                 )
                 raise
@@ -425,7 +428,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
                     f"Activated youth application {youth_application.pk}: "
                     "Youth application was accepted automatically using data from VTJ"
                 )
-                was_email_sent = youth_application.youth_summer_voucher.send_youth_summer_voucher_email(
+                was_email_sent = youth_application.youth_summer_voucher.send_youth_summer_voucher_email(  # noqa: E501
                     language=youth_application.language
                 )
                 if not was_email_sent:
@@ -469,7 +472,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         response_status = status.HTTP_400_BAD_REQUEST
         response_data = reason.json()
         LOGGER.info(
-            f"Youth application submission rejected. "
+            "Youth application submission rejected. "
             f"Return HTTP status code: {response_status}. "
             f"YouthApplicationRejectedReason: {response_data.get('code')}."
         )
@@ -486,7 +489,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             email = serializer.validated_data["email"]
             social_security_number = serializer.validated_data["social_security_number"]
 
-            if YouthApplication.objects.is_email_or_social_security_number_active_this_year(
+            if YouthApplication.objects.is_email_or_social_security_number_active_this_year(  # noqa: E501
                 email, social_security_number
             ):
                 return self.error_response_with_logging(
@@ -538,7 +541,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
 
                 if not request_additional_info:
                     if (
-                        not youth_application.is_social_security_number_valid_according_to_vtj
+                        not youth_application.is_social_security_number_valid_according_to_vtj  # noqa: E501
                         or youth_application.is_applicant_dead_according_to_vtj
                     ):
                         transaction.set_rollback(True)
@@ -579,7 +582,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             )
         except ValidationError as e:
             LOGGER.error(
-                f"Youth application submission rejected because of validation error. "
+                "Youth application submission rejected because of validation error. "
                 f"Validation error codes: {str(e.get_codes())}"
             )
             raise
@@ -645,8 +648,9 @@ class EmployerApplicationViewSet(AuditLoggingModelViewSet):
     def get_queryset(self):
         """
         Fetch all DRAFT status applications of the user & company.
-        Should inlcude only 1 application since we don't allow creation of multiple
-        DRAFT applications per user & company.
+
+        Should inlcude only 1 application since we don't allow creation of
+        multiple DRAFT applications per user & company.
         """
         queryset = (
             super()
@@ -698,7 +702,8 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
 
     def get_queryset(self):
         """
-        Fetch summer vouchers of DRAFT status applications of the user & company.
+        Fetch summer vouchers of DRAFT status applications of the user &
+        company.
         """
         queryset = (
             super()
@@ -744,7 +749,7 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
     )
     def post_attachment(self, request, *args, **kwargs):
         """
-        Upload a single file as attachment
+        Upload a single file as attachment.
         """
         obj = self.get_object()
 
@@ -779,7 +784,7 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
 
         if request.method == "GET":
             """
-            Read a single attachment as file
+            Read a single attachment as file.
             """
             attachment = obj.attachments.filter(pk=attachment_pk).first()
             if not attachment or not attachment.attachment_file:
@@ -795,7 +800,7 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
 
         elif request.method == "DELETE":
             """
-            Delete a single attachment as file
+            Delete a single attachment as file.
             """
             if obj.application.status not in ALLOWED_APPLICATION_UPDATE_STATUSES:
                 raise ValidationError(

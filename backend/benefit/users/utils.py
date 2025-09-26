@@ -29,9 +29,10 @@ def get_company_from_request(request):
                 business_id=business_id
             )  # unique constraint ensures at most one is returned
         except Company.DoesNotExist:
-            # In case we cannot find the Company in DB, try to query it from 3rd party source
-            # This should cover the case when first applicant of company log in because their company
-            # hasn't been created yet
+            # In case we cannot find the Company in DB, try to query it from 3rd party
+            # source
+            # This should cover the case when first applicant of company log in because
+            # their company hasn't been created yet
             return get_or_create_organisation_with_business_id(business_id)
     else:
         return None

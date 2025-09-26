@@ -120,7 +120,8 @@ def test_approve_terms_success(
     mock_get_organisation_roles_and_create_company,
 ):
     if previously_approved:
-        # Handle case where user has previously approved terms, but new terms are now in effect.
+        # Handle case where user has previously approved terms, but new terms are now in
+        # effect.
         previous_terms = TermsFactory(
             effective_from=terms_of_service.effective_from - timedelta(days=10)
         )

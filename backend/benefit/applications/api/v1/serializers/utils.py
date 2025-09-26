@@ -6,7 +6,7 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
     A ModelSerializer that takes an additional `fields` argument that
     controls which fields should be displayed and exclude_fields parameter argument that controls
     which fields should not be displayed.
-    """
+    """  # noqa: E501
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -23,4 +23,4 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
 class ReadOnlySerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        setattr(self.Meta, "read_only_fields", [*self.fields])
+        self.Meta.read_only_fields = [*self.fields]

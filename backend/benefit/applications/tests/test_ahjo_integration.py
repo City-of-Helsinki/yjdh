@@ -14,16 +14,18 @@ from django.utils import timezone
 
 from applications.api.v1.ahjo_integration_views import AhjoAttachmentView
 from applications.enums import (
+    DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE,
     AhjoCallBackStatus,
     AhjoDecisionUpdateType,
     AhjoRequestType,
-    AhjoStatus as AhjoStatusEnum,
     ApplicationBatchStatus,
     ApplicationStatus,
     ApplicationTalpaStatus,
     AttachmentType,
     BenefitType,
-    DEFAULT_AHJO_CALLBACK_ERROR_MESSAGE,
+)
+from applications.enums import (
+    AhjoStatus as AhjoStatusEnum,
 )
 from applications.models import (
     AhjoDecisionText,
@@ -38,14 +40,14 @@ from applications.services.ahjo_application_service import (
 )
 from applications.services.ahjo_integration import (
     ACCEPTED_TITLE,
-    export_application_batch,
+    REJECTED_TITLE,
     ExportFileInfo,
+    export_application_batch,
     generate_application_attachment,
     generate_composed_files,
     generate_single_approved_file,
     generate_single_declined_file,
     get_application_for_ahjo,
-    REJECTED_TITLE,
 )
 from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
 from calculator.models import Calculation
@@ -273,7 +275,8 @@ def test_export_application_batch(application_batch):
 def test_multiple_benefit_per_application(mock_pdf_convert):
     mock_pdf_convert.return_value = {}
     # Test case data and expected results collected from
-    # calculator/tests/Helsinki-lisa laskurin testitapaukset.xlsx/ Sheet Palkan Helsinki-lisä / Column E
+    # calculator/tests/Helsinki-lisa laskurin testitapaukset.xlsx/ Sheet Palkan
+    # Helsinki-lisä / Column E
     application = ApplicationFactory(
         association_has_business_activities=True,
         company__company_form="ry",
@@ -310,7 +313,7 @@ def test_multiple_benefit_per_application(mock_pdf_convert):
     assert (
         html.count(application.ahjo_application_number) == 2
     )  # Make sure there are two rows in the report
-    print(html)
+    print(html)  # noqa: T201
     _assert_html_content(
         html,
         (
@@ -591,7 +594,10 @@ def test_subscribe_to_decisions_callback_success(
                 {
                     "id": "INVALID_RECORD_TYPE",
                     "message": "Asiakirjan tyyppi ei ole sallittu.",
-                    "context": "(Tähän tulisi tietoa virheen esiintymispaikasta jos mahdollista antaa.)",
+                    "context": (
+                        "(Tähän tulisi tietoa virheen esiintymispaikasta jos"
+                        " mahdollista antaa.)"
+                    ),
                 }
             ],
         ),
@@ -602,7 +608,10 @@ def test_subscribe_to_decisions_callback_success(
                 {
                     "id": "INVALID_RECORD_TYPE",
                     "message": "Asiakirjan tyyppi ei ole sallittu.",
-                    "context": "(Tähän tulisi tietoa virheen esiintymispaikasta jos mahdollista antaa.)",
+                    "context": (
+                        "(Tähän tulisi tietoa virheen esiintymispaikasta jos"
+                        " mahdollista antaa.)"
+                    ),
                 }
             ],
         ),
@@ -738,7 +747,10 @@ def test_ahjo_callback_raises_error_without_batch(
     response = ahjo_client.post(url, **auth_headers, data=ahjo_callback_payload)
     assert response.status_code == 500
     assert response.data == {
-        "error": f"Application {decided_application.id} has no batch when Ahjo has received a decision proposal request"
+        "error": (
+            f"Application {decided_application.id} has no batch when Ahjo has received"
+            " a decision proposal request"
+        )
     }
 
 
@@ -1127,7 +1139,8 @@ def test_get_applications_for_open_case_request(
         for a in attachments:
             assert a.attachment_type in wanted_open_case_attachments
             assert a.attachment_type not in unwanted_open_case_attachments
-    # only handled_applications should be returned as their last  AhjoStatus is SUBMITTED_BUT_NOT_SENT_TO_AHJO
+    # only handled_applications should be returned as their last  AhjoStatus is
+    # SUBMITTED_BUT_NOT_SENT_TO_AHJO
     # and their application status is HANDLING
     assert applications_for_open_case.count() == len(wanted_applications_for_open_case)
 
@@ -1173,7 +1186,7 @@ def test_get_applications_for_update_request(
         AhjoRequestType.UPDATE_APPLICATION, retry_failed_older_than_hours
     )
     for application in multiple_applications_with_ahjo_case_id:
-        print(application.ahjo_status.latest().status)
+        print(application.ahjo_status.latest().status)  # noqa: T201
 
     applications_for_ahjo_update = Application.objects.get_by_statuses(**parameters)
 
@@ -1426,7 +1439,8 @@ def test_get_applications_for_ahjo_decision_proposal_request(
 
 
 @pytest.mark.parametrize(
-    "application_status, latest_ahjo_status, talpa_status, retry_failed_older_than_hours, wanted_count",
+    "application_status, latest_ahjo_status, talpa_status,"
+    " retry_failed_older_than_hours, wanted_count",
     [
         (
             ApplicationStatus.ACCEPTED,

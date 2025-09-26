@@ -2,7 +2,8 @@ import logging
 
 import filetype
 from django.conf import settings
-from django.forms import ImageField, ValidationError as DjangoFormsValidationError
+from django.forms import ImageField
+from django.forms import ValidationError as DjangoFormsValidationError
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -12,10 +13,10 @@ from rest_framework.reverse import reverse
 from applications.enums import ApplicationStatus
 from applications.models import Attachment
 from applications.services.clamav import (
-    clamav_client,
     ClamAvServiceUnavailableException,
-    FileInfectedException,
-    FileScanException,
+    FileInfectedError,
+    FileScanError,
+    clamav_client,
 )
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
 from users.utils import get_request_user_from_context
@@ -106,7 +107,8 @@ class AttachmentSerializer(serializers.ModelSerializer):
             if not self._is_valid_pdf(data["attachment_file"]):
                 raise serializers.ValidationError(_("Not a valid pdf file"))
         elif not self._is_valid_image(data["attachment_file"]):
-            # only pdf and image files are listed in ATTACHMENT_CONTENT_TYPE_CHOICES, so if we get here,
+            # only pdf and image files are listed in ATTACHMENT_CONTENT_TYPE_CHOICES, so
+            # if we get here,
             # the content type is an image file
             raise serializers.ValidationError(_("Not a valid image file"))
         return data
@@ -132,15 +134,15 @@ class AttachmentSerializer(serializers.ModelSerializer):
     def _scan_with_clamav(self, file):
         try:
             clamav_client.scan(file.name, file.file)
-        except FileScanException as fse:
+        except FileScanError as fse:
             log.error(f"File '{fse.file_name}' scanning failed")
             raise ClamAvServiceUnavailableException()
-        except FileInfectedException as fie:
+        except FileInfectedError as fie:
             log.error(f"File '{fie.file_name}' infected, viruses: {fie.viruses}")
             translation_text = _("File is infected with")
             raise serializers.ValidationError(
                 {
-                    "non_field_errors": f'{translation_text} {", ".join(fie.viruses)}',
+                    "non_field_errors": f"{translation_text} {', '.join(fie.viruses)}",
                     "key": "malware",
                 },
             )

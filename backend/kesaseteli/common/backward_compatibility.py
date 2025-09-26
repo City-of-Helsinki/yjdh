@@ -8,10 +8,10 @@ def convert_to_django_4_2_csrf_trusted_origin(
     target_schemes: Tuple[str] = DEFAULT_TARGET_SCHEMES,
 ) -> List[str]:
     """
-    Convert the input CSRF trusted origin from Django 3.2 -> 4.2 format
-    using the given target schemes, if not already in Django 4.2 format. If the
-    origin is already in Django 4.2 format, return it as it is. Also if the origin
-    is empty, then return an empty list.
+    Convert the input CSRF trusted origin from Django 3.2 -> 4.2 format using
+    the given target schemes, if not already in Django 4.2 format. If the
+    origin is already in Django 4.2 format, return it as it is. Also if the
+    origin is empty, then return an empty list.
 
     Django 3.2 and 4.2 CSRF_TRUSTED_ORIGINS documentations:
       - https://docs.djangoproject.com/en/3.2/ref/settings/#csrf-trusted-origins
@@ -37,9 +37,10 @@ def convert_to_django_4_2_csrf_trusted_origins(
     target_schemes: Tuple[str] = DEFAULT_TARGET_SCHEMES,
 ):
     """
-    Convert the input CSRF_TRUSTED_ORIGINS setting from Django 3.2 -> 4.2 format
-    using the given target schemes, if not already in Django 4.2 format. If any
-    of the origins are already in Django 4.2 format, return them as they are.
+    Convert the input CSRF_TRUSTED_ORIGINS setting from Django 3.2 -> 4.2
+    format using the given target schemes, if not already in Django 4.2 format.
+    If any of the origins are already in Django 4.2 format, return them as they
+    are.
 
     Django 3.2 and 4.2 CSRF_TRUSTED_ORIGINS documentations:
       - https://docs.djangoproject.com/en/3.2/ref/settings/#csrf-trusted-origins

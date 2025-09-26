@@ -6,13 +6,13 @@ from openpyxl.utils import get_column_letter
 
 from applications.enums import ApplicationStatus, BenefitType
 from applications.tests.factories import ApplicationFactory
-from calculator.models import Calculation, STATE_AID_MAX_PERCENTAGE_CHOICES
+from calculator.models import STATE_AID_MAX_PERCENTAGE_CHOICES, Calculation
 from calculator.tests.factories import PaySubsidyFactory, TrainingCompensationFactory
 from common.utils import nested_setattr, to_decimal
 from helsinkibenefit.tests.conftest import *  # noqa
 
 
-class CaseNotFound(Exception):
+class CaseNotFoundError(Exception):
     pass
 
 
@@ -55,7 +55,7 @@ class SalaryBenefitExcelTest(ExcelTestCase):
         self._setup_db_objects()
         self._load_values_from_excel()
         if self.expected_results.calculated_benefit_amount is None:
-            raise CaseNotFound
+            raise CaseNotFoundError
         self._save_initial_state()
 
     def _setup_expected_results(self):
@@ -135,14 +135,14 @@ class SalaryBenefitExcelTest(ExcelTestCase):
                 value = self.value_conversion_table[value]
             elif target.endswith("_date"):
                 value = self.convert_date(value)
-            elif target.endswith("percent") or target.endswith("percentage"):
+            elif target.endswith(("percent", "percentage")):
                 if value is not None:
                     value = to_decimal(value * 100, decimal_places=2)
             elif isinstance(target, float):
                 if value is not None:
                     value = to_decimal(value, decimal_places=2)
 
-            print(
+            print(  # noqa: T201
                 f"{get_column_letter(self.column_idx)} {target}={value} ({type(value)}"
             )
             nested_setattr(self, target, value)
@@ -208,7 +208,7 @@ class SalaryBenefitExcelTest(ExcelTestCase):
 
     def _verify_results(self):
         for row in self.application.calculation.rows.all():
-            print(row)
+            print(row)  # noqa: T201
         assert (
             self.application.calculation.calculated_benefit_amount
             == self.expected_results.calculated_benefit_amount
@@ -265,7 +265,7 @@ class EmployeeBenefitExcelTest(SalaryBenefitExcelTest):
 
     def _verify_results(self):
         for row in self.application.calculation.rows.all():
-            print(row)
+            print(row)  # noqa: T201
         assert (
             self.application.calculation.calculated_benefit_amount
             == self.expected_results.calculated_benefit_amount
@@ -291,7 +291,7 @@ def test_cases_from_excel(request, api_client):
         ):
             continue
         test_sheet = wb[sheet_name]
-        print(f"sheet {sheet_name}")
+        print(f"sheet {sheet_name}")  # noqa: T201
         run_sheet(test_handler_class, test_sheet)
 
 
@@ -313,5 +313,5 @@ def run_sheet(test_handler_class, test_sheet):
                     pdb.post_mortem()
             else:
                 test.run_test()
-    except CaseNotFound:  # no tests
+    except CaseNotFoundError:  # no tests
         assert col_idx > 4  # all sheets should have at least some tests

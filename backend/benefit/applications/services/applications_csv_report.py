@@ -32,7 +32,7 @@ def get_export_notes(application):
     """
     Report situations where the data does not fit in the fixed number of CSV columns.
     These cases should not happen, but if they do, then it's important to have some kind of notification about it.
-    """
+    """  # noqa: E501
     notes = []
     if (
         application.de_minimis_aid_set.count()
@@ -102,7 +102,7 @@ class ApplicationsCsvService(CsvExportBase):
 
     For easier processing, if an application would need two Ahjo rows, the two rows are produced in the output.
 
-    """
+    """  # noqa: E501
 
     def __init__(self, applications, prune_sensitive_data=False):
         self.applications = applications
@@ -112,7 +112,7 @@ class ApplicationsCsvService(CsvExportBase):
     def query_instalment_by_number(
         self, application: Application, number: int
     ) -> Instalment:
-        """Return the actual payable amount of the currently accepted and due instalment"""
+        """Return the actual payable amount of the currently accepted and due instalment"""  # noqa: E501
         try:
             instalment = application.calculation.instalments.get(
                 instalment_number=number,
@@ -120,12 +120,13 @@ class ApplicationsCsvService(CsvExportBase):
             return instalment
         except ObjectDoesNotExist:
             LOGGER.info(
-                f"Valid payable Instalment not found for application {application.application_number}"
+                "Valid payable Instalment not found for application"
+                f" {application.application_number}"
             )
         except MultipleObjectsReturned:
             LOGGER.error(
-                f"Multiple payable Instalments found for application \
-    {application.application_number}, there should be only one"
+                "Multiple payable Instalments found for application    "
+                f" {application.application_number}, there should be only one"
             )
 
     def get_instalment_1_amount(self, application: Application) -> decimal.Decimal:
@@ -172,7 +173,7 @@ class ApplicationsCsvService(CsvExportBase):
             return ""
 
     @property
-    def CSV_COLUMNS(self) -> List[CsvColumn]:
+    def csv_columns(self) -> List[CsvColumn]:
         calculated_benefit_amount = "calculation.calculated_benefit_amount"
 
         columns = [
@@ -332,9 +333,10 @@ class ApplicationsCsvService(CsvExportBase):
                 "Tarkastajan sähköposti, P2P", "batch.p2p_inspector_email"
             ),
             csv_default_column("Hyväksyjän nimi P2P", "batch.p2p_checker_name"),
-            # In case there are multiple rows per application, always have the nth ahjo row
-            # in the same column.
-            # The row data here comes from calculation.ahjo_rows[application_row_idx - 1]
+            # In case there are multiple rows per application, always have the nth ahjo
+            # row in the same column.
+            # The row data here comes from
+            # calculation.ahjo_rows[application_row_idx - 1]
             CsvColumn(
                 "Siirrettävä Ahjo-rivi / tyyppi",
                 current_ahjo_row_field_getter("row_type"),
@@ -489,14 +491,14 @@ class ApplicationsCsvService(CsvExportBase):
     def get_row_items(self):
         with translation.override("fi"):
             for application in self.get_applications():
-                for application_row_idx, unused in enumerate(
+                for application_row_idx, _ in enumerate(
                     application.ahjo_rows or [None]
                 ):
                     # The CSV output is easier to process in PowerBI
                     # if the rows belonging to the same application are numbered.
-                    # application_row_idx is also used for storing the "current" ahjo row.
-                    # application_row_idx starts at 1, which must be taken into account
-                    # when indexing application.ahjo_rows
+                    # application_row_idx is also used for storing the "current" ahjo
+                    # row. application_row_idx starts at 1, which must be taken into
+                    # account when indexing application.ahjo_rows
                     application.application_row_idx = application_row_idx + 1
                     yield application
 

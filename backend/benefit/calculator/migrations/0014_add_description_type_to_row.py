@@ -4,20 +4,37 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('calculator', '0013_alter_paysubsidy_percentages'),
+        ("calculator", "0013_alter_paysubsidy_percentages"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='calculationrow',
-            name='description_type',
-            field=models.CharField(blank=True, choices=[('date', 'Basic date range description'), ('date_total', 'Date range description for total row'), ('deduction', 'Deduction description')], max_length=64, null=True),
+            model_name="calculationrow",
+            name="description_type",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("date", "Basic date range description"),
+                    ("date_total", "Date range description for total row"),
+                    ("deduction", "Deduction description"),
+                ],
+                max_length=64,
+                null=True,
+            ),
         ),
         migrations.AddField(
-            model_name='historicalcalculationrow',
-            name='description_type',
-            field=models.CharField(blank=True, choices=[('date', 'Basic date range description'), ('date_total', 'Date range description for total row'), ('deduction', 'Deduction description')], max_length=64, null=True),
+            model_name="historicalcalculationrow",
+            name="description_type",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("date", "Basic date range description"),
+                    ("date_total", "Date range description for total row"),
+                    ("deduction", "Deduction description"),
+                ],
+                max_length=64,
+                null=True,
+            ),
         ),
     ]

@@ -11,8 +11,8 @@ from rest_framework import status
 
 from applications.enums import (
     AdditionalInfoUserReason,
-    get_supported_languages,
     YouthApplicationStatus,
+    get_supported_languages,
 )
 from applications.models import YouthApplication
 from applications.tests.data.mock_vtj import mock_vtj_person_id_query_not_found_content

@@ -17,9 +17,9 @@ from common.utils import date_range_overlap, duration_in_months, pairwise
 @dataclass
 class FormerBenefitInfo:
     warnings: List[str] = field(default_factory=list)
-    months_used: Optional[
-        Decimal
-    ] = None  # None is used if employee info is not entered yet
+    months_used: Optional[Decimal] = (
+        None  # None is used if employee info is not entered yet
+    )
     months_remaining: Optional[Decimal] = None  # None means that there is no limit
 
 
@@ -36,10 +36,10 @@ def get_former_benefit_info(
     apprenticeship_program,
 ):
     # the application field values are separate parameters, because validation is done
-    # before assigning values, and if a new Application is being created, an Application doesn't yet exist when
-    # the rest framework does the validation.
-    # The Application parameter is only used to ensure that the application being validated isn't validated
-    # against itself.
+    # before assigning values, and if a new Application is being created, an Application
+    # doesn't yet exist when the rest framework does the validation.
+    # The Application parameter is only used to ensure that the application being
+    # validated isn't validated against itself.
 
     former_benefit_info = FormerBenefitInfo()
 
@@ -60,7 +60,8 @@ def get_former_benefit_info(
         benefit.duration_in_months for benefit in recent_benefits
     )
     if apprenticeship_program:
-        # Kanslia Helsinki-lisä Teams discussion 2021-12-09: there's no upper limit defined for
+        # Kanslia Helsinki-lisä Teams discussion 2021-12-09: there's no upper limit
+        # defined for
         # sequentially granted apprenticeship benefits
         former_benefit_info.months_remaining = None
     else:
@@ -129,7 +130,7 @@ def _get_benefits_relevant_for_validation(past_benefits, start_date):
 
     :return: A new list, containing only those entries that are relevant for validating a new application
     starting on start_date.
-    """
+    """  # noqa: E501
     if not past_benefits:
         return []
     most_recent_benefit = past_benefits[0]
@@ -137,15 +138,15 @@ def _get_benefits_relevant_for_validation(past_benefits, start_date):
         most_recent_benefit.end_date
         < start_date - relativedelta(months=BENEFIT_WAITING_PERIOD_MONTHS)
     ):
-        # at least BENEFIT_WAITING_PERIOD_MONTHS elapsed since a Helsinki benefit was granted
-        # for this employee last time.
+        # at least BENEFIT_WAITING_PERIOD_MONTHS elapsed since a Helsinki benefit was
+        # granted for this employee last time.
         return []
 
     # scroll back previous benefits until we find a gap of BENEFIT_WAITING_PERIOD_MONTHS
     applicable_benefits = [most_recent_benefit]
     for old_benefit, older_benefit in pairwise(past_benefits):
-        # on the first round of loop, old_benefit == most_recent_benefit, which already is in
-        # applicable_benefits
+        # on the first round of loop, old_benefit == most_recent_benefit, which already
+        # is in applicable_benefits
         if (
             older_benefit.end_date + relativedelta(months=BENEFIT_WAITING_PERIOD_MONTHS)
             < old_benefit.start_date
@@ -164,7 +165,8 @@ def _get_benefit_overlap_warnings(past_benefits, start_date, end_date):
             warnings.append(
                 format_lazy(
                     _(
-                        "There's already an accepted application with overlapping date range"
+                        "There's already an accepted application with overlapping date"
+                        " range"
                     ),
                     start_date=benefit.start_date,
                     end_date=benefit.end_date,

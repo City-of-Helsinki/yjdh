@@ -1,7 +1,8 @@
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
-from rest_framework import filters as drf_filters, status
+from rest_framework import filters as drf_filters
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -28,7 +29,9 @@ class PreviousBenefitFilter(filters.FilterSet):
 
 
 @extend_schema(
-    description="API for create/read/update/delete operations on PreviousBenefit objects"
+    description=(
+        "API for create/read/update/delete operations on PreviousBenefit objects"
+    )
 )
 class PreviousBenefitViewSet(AuditLoggingModelViewSet):
     queryset = PreviousBenefit.objects.all()

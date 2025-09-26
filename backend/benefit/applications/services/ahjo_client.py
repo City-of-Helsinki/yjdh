@@ -8,15 +8,16 @@ import requests
 from django.conf import settings
 from django.urls import reverse
 
-from applications.enums import AhjoRequestType, AhjoStatus as AhjoStatusEnum
+from applications.enums import AhjoRequestType
+from applications.enums import AhjoStatus as AhjoStatusEnum
 from applications.models import AhjoSetting, AhjoStatus, Application
 from applications.services.ahjo.enums import AhjoSettingName
 from applications.services.ahjo.exceptions import (
-    AhjoApiClientException,
-    InvalidAhjoTokenException,
+    AhjoApiClientError,
+    InvalidAhjoTokenError,
     MissingAhjoCaseIdError,
     MissingHandlerIdError,
-    MissingOrganizationIdentifier,
+    MissingOrganizationIdentifierError,
 )
 from applications.services.ahjo_authentication import AhjoToken
 from applications.services.ahjo_error_writer import AhjoErrorWriter, AhjoFormattedError
@@ -44,7 +45,8 @@ class AhjoRequest:
     def api_url(self) -> str:
         if not self.application.calculation.handler.ad_username:
             raise MissingHandlerIdError(
-                f"Application {self.application.id} handler does not have an ad_username"
+                f"Application {self.application.id} handler does not have an"
+                " ad_username"
             )
         if not self.application.ahjo_case_id:
             raise MissingAhjoCaseIdError("Application does not have an Ahjo case id")
@@ -64,7 +66,8 @@ class AhjoOpenCaseRequest(AhjoRequest):
     def api_url(self) -> str:
         if not self.application.calculation.handler.ad_username:
             raise MissingHandlerIdError(
-                f"Application {self.application.id} handler does not have an ad_username"
+                f"Application {self.application.id} handler does not have an"
+                " ad_username"
             )
         return f"{self.url_base}{API_CASES_BASE}"
 
@@ -108,13 +111,14 @@ class AhjoDeleteCaseRequest(AhjoRequest):
     def api_url(self) -> str:
         if not self.application.calculation.handler.ad_username:
             raise MissingHandlerIdError(
-                f"Application {self.application.id} handler does not have an ad_username"
+                f"Application {self.application.id} handler does not have an"
+                " ad_username"
             )
         if not self.application.ahjo_case_id:
             raise MissingAhjoCaseIdError("Application does not have an Ahjo case id")
         url = f"{self.url_base}{API_CASES_BASE}/{self.application.ahjo_case_id}"
         draftsman_id = self.application.calculation.handler.ad_username
-        return f"{url}?draftsmanid={draftsman_id}&reason={self.reason}&apireqlang={self.lang}"
+        return f"{url}?draftsmanid={draftsman_id}&reason={self.reason}&apireqlang={self.lang}"  # noqa: E501
 
 
 @dataclass
@@ -156,7 +160,7 @@ class AhjoDecisionMakerRequest(AhjoRequest):
                 name=AhjoSettingName.DECISION_MAKER_ORG_ID
             ).data["id"]
         except AhjoSetting.DoesNotExist:
-            raise MissingOrganizationIdentifier(
+            raise MissingOrganizationIdentifierError(
                 "No organization identifier found in the database."
             )
 
@@ -177,7 +181,8 @@ class AhjoSignerRequest(AhjoRequest):
             if not setting.data:
                 raise ValueError("Signer organization identifier list is empty")
 
-            # If data is string or other type, you might want to validate it's actually a list
+            # If data is string or other type, you might want to validate it's actually
+            # a list
             if not isinstance(setting.data, list):
                 raise ValueError("Signer organization identifier must be a list")
 
@@ -222,11 +227,9 @@ class AhjoApiClient:
     @ahjo_token.setter
     def ahjo_token(self, token: AhjoToken) -> None:
         if not isinstance(token, AhjoToken):
-            raise InvalidAhjoTokenException(
-                "Invalid token, not an instance of AhjoToken"
-            )
+            raise InvalidAhjoTokenError("Invalid token, not an instance of AhjoToken")
         if not token.access_token or not token.expires_in or not token.refresh_token:
-            raise InvalidAhjoTokenException("Invalid token, token is missing data")
+            raise InvalidAhjoTokenError("Invalid token, token is missing data")
         self._ahjo_token = token
 
     def prepare_ahjo_headers(self) -> dict:
@@ -235,7 +238,7 @@ class AhjoApiClient:
         If the request is a subscription request, the headers are prepared \
         without a callback address in the JSON payload and the Accept and X-CallbackURL headers \
         are not needed.
-        """
+        """  # noqa: E501
 
         headers_dict = {
             "Authorization": f"Bearer {self.ahjo_token.access_token}",
@@ -287,7 +290,8 @@ class AhjoApiClient:
                 timeout=self._timeout,
                 data=data,
             )
-            # Create new ahjo status or update the last ahjo_status if a similar status exists,
+            # Create new ahjo status or update the last ahjo_status if a similar status
+            # exists,
             # which means that this is a retry
             if hasattr(self._request, "result_status") and self._request.result_status:
                 AhjoStatus.objects.update_or_create(
@@ -309,14 +313,20 @@ class AhjoApiClient:
                 else:
                     return self._request.application, response.json()
         except MissingHandlerIdError as e:
-            error_message = f"Missing handler id for application {self.request.application.application_number}: {e}"
+            error_message = (
+                "Missing handler id for application"
+                f" {self.request.application.application_number}: {e}"
+            )
             LOGGER.error(error_message)
             self.write_error_to_ahjo_status(
                 context=error_message,
                 message_to_handler="Hakemuksen käsittelijältä puuttuu AD-tunnus.",
             )
         except MissingAhjoCaseIdError as e:
-            error_message = f"Missing Ahjo case id for application {self.request.application.application_number}: {e}"
+            error_message = (
+                "Missing Ahjo case id for application"
+                f" {self.request.application.application_number}: {e}"
+            )
             LOGGER.error(error_message)
             self.write_error_to_ahjo_status(
                 context=error_message,
@@ -333,7 +343,7 @@ class AhjoApiClient:
                 message_to_handler="Ahjo-pyynnössä tapahtui verkkoyhteysvirhe.",
             )
             LOGGER.error(error_message)
-        except AhjoApiClientException as e:
+        except AhjoApiClientError as e:
             LOGGER.error(
                 f"An error occurred while sending {self._request} to Ahjo: {e}"
             )
@@ -361,7 +371,9 @@ class AhjoApiClient:
             error_message += f"{error_json}"
             self.write_error_to_ahjo_status(
                 context=error_json,
-                message_to_handler="Ahjo palautti validaatiovirheen tai muun HTTP-virheen.",
+                message_to_handler=(
+                    "Ahjo palautti validaatiovirheen tai muun HTTP-virheen."
+                ),
             )
 
         LOGGER.error(error_message)
@@ -371,13 +383,15 @@ class AhjoApiClient:
         e: Union[requests.exceptions.HTTPError, requests.exceptions.RequestException],
         application_number: Union[int, None] = None,
     ) -> str:
-        return f"A HTTP or network error occurred while sending {self.request} for application \
-    {application_number} to Ahjo: {e}"
+        return (
+            f"A HTTP or network error occurred while sending {self.request} for"
+            f" application     {application_number} to Ahjo: {e}"
+        )
 
     def write_error_to_ahjo_status(self, context: str, message_to_handler: str) -> None:
         """Write the error message to the Ahjo status of the application for all requests that have an application.
         The DecisionMaker request does not have an application, so it does not have an Ahjo status.
-        """
+        """  # noqa: E501
         if self.request.has_application:
             AhjoErrorWriter.write_to_validation_error(
                 AhjoFormattedError(

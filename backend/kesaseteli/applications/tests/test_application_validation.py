@@ -7,7 +7,7 @@ from applications.api.v1.serializers import (
     YouthApplicationSerializer,
 )
 from applications.enums import AttachmentType, EmployerApplicationStatus
-from applications.models import School, validate_name, YouthApplication
+from applications.models import School, YouthApplication, validate_name
 from applications.tests.test_applications_api import get_detail_url
 from shared.common.tests.names import INVALID_NAMES, VALID_NAMES
 
@@ -96,12 +96,17 @@ def test_validate_name_with_invalid_unlisted_school(name):
         #     EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
         #     200,
         # ),
-        # (EmployerApplicationStatus.SUBMITTED, EmployerApplicationStatus.ACCEPTED, 200),
-        # (EmployerApplicationStatus.SUBMITTED, EmployerApplicationStatus.REJECTED, 200),
-        # (EmployerApplicationStatus.SUBMITTED, EmployerApplicationStatus.DELETED_BY_CUSTOMER, 200),
+        # (EmployerApplicationStatus.SUBMITTED, EmployerApplicationStatus.ACCEPTED,
+        # 200),
+        # (EmployerApplicationStatus.SUBMITTED, EmployerApplicationStatus.REJECTED,
+        # 200),
+        # (EmployerApplicationStatus.SUBMITTED,
+        # EmployerApplicationStatus.DELETED_BY_CUSTOMER, 200),
         # (EmployerApplicationStatus.SUBMITTED, EmployerApplicationStatus.DRAFT, 400),
-        # (EmployerApplicationStatus.ACCEPTED, EmployerApplicationStatus.SUBMITTED, 400),
-        # (EmployerApplicationStatus.DELETED_BY_CUSTOMER, EmployerApplicationStatus.ACCEPTED, 400),
+        # (EmployerApplicationStatus.ACCEPTED, EmployerApplicationStatus.SUBMITTED,
+        # 400),
+        # (EmployerApplicationStatus.DELETED_BY_CUSTOMER,
+        # EmployerApplicationStatus.ACCEPTED, 400),
         # (EmployerApplicationStatus.REJECTED, EmployerApplicationStatus.DRAFT, 400),
     ],
 )

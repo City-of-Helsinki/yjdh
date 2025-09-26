@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 
 class UserFactory(factory.django.DjangoModelFactory):
     """
-    Create a Django user with a unique username
+    Create a Django user with a unique username.
     """
 
     first_name = factory.Faker("first_name")
@@ -26,7 +26,7 @@ class UserFactory(factory.django.DjangoModelFactory):
 
 class DuplicateAllowingUserFactory(UserFactory):
     """
-    Create or get a Django user with a possibly duplicated username
+    Create or get a Django user with a possibly duplicated username.
     """
 
     class Meta:

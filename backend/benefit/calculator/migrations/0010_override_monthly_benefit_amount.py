@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("calculator", "0009_work_time_percent_to_decimal"),
     ]
@@ -46,7 +45,10 @@ class Migration(migrations.Migration):
                 decimal_places=2,
                 max_digits=7,
                 null=True,
-                verbose_name="monthly amount of the benefit manually entered by the application handler",
+                verbose_name=(
+                    "monthly amount of the benefit manually entered by the application"
+                    " handler"
+                ),
             ),
         ),
         migrations.AddField(
@@ -57,7 +59,10 @@ class Migration(migrations.Migration):
                 decimal_places=2,
                 max_digits=7,
                 null=True,
-                verbose_name="monthly amount of the benefit manually entered by the application handler",
+                verbose_name=(
+                    "monthly amount of the benefit manually entered by the application"
+                    " handler"
+                ),
             ),
         ),
     ]

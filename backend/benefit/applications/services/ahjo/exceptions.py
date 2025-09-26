@@ -4,8 +4,6 @@ from applications.models import AhjoStatus
 class DecisionProposalError(Exception):
     """Custom exception for errors in the sending of decision proposals."""
 
-    pass
-
 
 class DecisionProposalAlreadyAcceptedError(DecisionProposalError):
     """
@@ -22,63 +20,49 @@ class DecisionProposalAlreadyAcceptedError(DecisionProposalError):
         super().__init__(self.message)
 
 
-class AhjoApiClientException(Exception):
+class AhjoApiClientError(Exception):
     """
     Raised when an error occurs in the AhjoApiClient.
     """
 
-    pass
 
-
-class MissingAhjoCaseIdError(AhjoApiClientException):
+class MissingAhjoCaseIdError(AhjoApiClientError):
     """
     Raised when a Ahjo request that requires a case id is missing the case id.
     """
 
-    pass
 
-
-class MissingHandlerIdError(AhjoApiClientException):
+class MissingHandlerIdError(AhjoApiClientError):
     """
     Raised when a Ahjo request that requires a handler id is missing the handler id.
     """
 
-    pass
 
-
-class MissingOrganizationIdentifier(Exception):
+class MissingOrganizationIdentifierError(Exception):
     """
     Raised when an organization identifier is missing from AhjoSettings in the database.
     """
 
-    pass
 
-
-class AhjoTokenExpiredException(Exception):
+class AhjoTokenExpiredError(Exception):
     """
     Raised when the Ahjo token has expired. The token should be re-configured manually, see instructions at:
     https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/8687517756/Siirto+yll+pitoon#Ahjo-autentikaatio-tokenin-haku-ja-asettaminen-manuaalisesti.
-    """
-
-    pass
+    """  # noqa: E501
 
 
-class AhjoTokenRetrievalException(Exception):
+class AhjoTokenRetrievalError(Exception):
     """
     Raised when the Ahjo token has expired or it could not be otherwise refreshed automatically.
     The token should be re-configured manually, see instructions at:
     https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/8687517756/Siirto+yll+pitoon#Ahjo-autentikaatio-tokenin-haku-ja-asettaminen-manuaalisesti.
-    """
-
-    pass
+    """  # noqa: E501
 
 
-class InvalidAhjoTokenException(Exception):
+class InvalidAhjoTokenError(Exception):
     """
     Raised when the Ahjo token is missing data or is otherwise invalid.
     """
-
-    pass
 
 
 class AhjoCallbackError(Exception):
@@ -86,20 +70,14 @@ class AhjoCallbackError(Exception):
     Raised when an error occurs in the Ahjo callback.
     """
 
-    pass
-
 
 class AhjoDecisionError(Exception):
     """
     Raised when an error occurs in substituting application data into the decision text.
     """
 
-    pass
-
 
 class AhjoDecisionDetailsParsingError(Exception):
     """
     Raised when an error occurs in parsing the decision details after a details query to Ahjo.
-    """
-
-    pass
+    """  # noqa: E501

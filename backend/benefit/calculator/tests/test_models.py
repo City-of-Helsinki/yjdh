@@ -94,10 +94,8 @@ def test_pay_subsidy_maximum(handling_application, pay_subsidy_percent, max_subs
 
 
 @pytest.mark.parametrize(
-    (
-        "benefit_type,start_date,end_date,state_aid_max_percentage,"
-        "pay_subsidy_start_date,pay_subsidy_end_date,can_calculate"
-    ),
+    "benefit_type,start_date,end_date,state_aid_max_percentage,"
+    "pay_subsidy_start_date,pay_subsidy_end_date,can_calculate",
     [
         (
             BenefitType.SALARY_BENEFIT,

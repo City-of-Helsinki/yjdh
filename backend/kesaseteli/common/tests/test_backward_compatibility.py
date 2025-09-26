@@ -11,7 +11,7 @@ from common.backward_compatibility import (
 @pytest.mark.parametrize("origin", ["", None])
 def test_convert_to_django_4_2_csrf_trusted_origin_falsy(origin):
     """
-    Test convert_to_django_4_2_csrf_trusted_origin with falsy inputs
+    Test convert_to_django_4_2_csrf_trusted_origin with falsy inputs.
     """
     assert convert_to_django_4_2_csrf_trusted_origin(origin) == []
 
@@ -28,8 +28,8 @@ def test_convert_to_django_4_2_csrf_trusted_origin_falsy(origin):
 )
 def test_convert_to_django_4_2_csrf_trusted_origin_changed(origin, expected_output):
     """
-    Test convert_to_django_4_2_csrf_trusted_origin with Django 4.2 incompatible origins
-    i.e. those that need to be changed.
+    Test convert_to_django_4_2_csrf_trusted_origin with Django 4.2 incompatible
+    origins i.e. those that need to be changed.
     """
     assert expected_output != [origin]
     assert convert_to_django_4_2_csrf_trusted_origin(origin) == expected_output
@@ -45,8 +45,8 @@ def test_convert_to_django_4_2_csrf_trusted_origin_changed(origin, expected_outp
 )
 def test_convert_to_django_4_2_csrf_trusted_origin_already_compatible(origin):
     """
-    Test convert_to_django_4_2_csrf_trusted_origin with Django 4.2 compatible origins
-    i.e. those that do not need to be changed.
+    Test convert_to_django_4_2_csrf_trusted_origin with Django 4.2 compatible
+    origins i.e. those that do not need to be changed.
     """
     assert convert_to_django_4_2_csrf_trusted_origin(origin) == [origin]
 
@@ -74,7 +74,7 @@ def test_convert_to_django_4_2_csrf_trusted_origin_already_compatible(origin):
 )
 def test_convert_to_django_4_2_csrf_trusted_origins(origins, expected_output):
     """
-    Test convert_to_django_4_2_csrf_trusted_origins with varying origins
+    Test convert_to_django_4_2_csrf_trusted_origins with varying origins.
     """
     assert convert_to_django_4_2_csrf_trusted_origins(origins) == expected_output
 
@@ -114,7 +114,8 @@ def test_convert_to_django_4_2_csrf_trusted_origins_with_schemes(
     origins, schemes, expected_output
 ):
     """
-    Test convert_to_django_4_2_csrf_trusted_origins with varying origins & schemes
+    Test convert_to_django_4_2_csrf_trusted_origins with varying origins &
+    schemes.
     """
     assert (
         convert_to_django_4_2_csrf_trusted_origins(origins, schemes) == expected_output
@@ -124,7 +125,7 @@ def test_convert_to_django_4_2_csrf_trusted_origins_with_schemes(
 def test_convert_to_django_4_2_csrf_trusted_origins_call():
     """
     Test that convert_to_django_4_2_csrf_trusted_origins calls
-    convert_to_django_4_2_csrf_trusted_origin
+    convert_to_django_4_2_csrf_trusted_origin.
     """
     with mock.patch(
         "common.backward_compatibility.convert_to_django_4_2_csrf_trusted_origin"
