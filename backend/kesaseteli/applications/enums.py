@@ -19,7 +19,7 @@ APPLICATION_LANGUAGE_CHOICES = (
 
 def get_supported_languages() -> Tuple[str]:
     """
-    Get tuple of supported languages
+    Get tuple of supported languages.
 
     :return: Tuple of the supported languages' codes, e.g. ('fi', 'sv', 'en')
     """
@@ -28,7 +28,7 @@ def get_supported_languages() -> Tuple[str]:
 
 class ExcelColumns(models.TextChoices):
     """
-    Excel export output column set choices
+    Excel export output column set choices.
     """
 
     REPORTING = "reporting", _("Reporting")
@@ -71,7 +71,8 @@ class YouthApplicationStatus(models.TextChoices):
     @staticmethod
     def active_values():
         """
-        Youth application statuses for youth application that have been activated.
+        Youth application statuses for youth application that have been
+        activated.
         """
         return [
             YouthApplicationStatus.AWAITING_MANUAL_PROCESSING.value,
@@ -84,7 +85,8 @@ class YouthApplicationStatus(models.TextChoices):
     @staticmethod
     def can_have_additional_info_values():
         """
-        Youth application statuses in which additional info may have been provided.
+        Youth application statuses in which additional info may have been
+        provided.
         """
         return [
             YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
@@ -95,7 +97,8 @@ class YouthApplicationStatus(models.TextChoices):
     @staticmethod
     def must_have_additional_info_values():
         """
-        Youth application statuses in which additional info must have been provided.
+        Youth application statuses in which additional info must have been
+        provided.
         """
         return [
             YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
@@ -104,7 +107,8 @@ class YouthApplicationStatus(models.TextChoices):
     @staticmethod
     def acceptable_values():
         """
-        Youth application statuses from which the youth application can be accepted.
+        Youth application statuses from which the youth application can be
+        accepted.
         """
         return [
             YouthApplicationStatus.AWAITING_MANUAL_PROCESSING.value,
@@ -114,7 +118,8 @@ class YouthApplicationStatus(models.TextChoices):
     @staticmethod
     def rejectable_values():
         """
-        Youth application statuses from which the youth application can be rejected.
+        Youth application statuses from which the youth application can be
+        rejected.
         """
         return [
             YouthApplicationStatus.AWAITING_MANUAL_PROCESSING.value,
@@ -125,7 +130,8 @@ class YouthApplicationStatus(models.TextChoices):
     @staticmethod
     def handled_values():
         """
-        Youth application statuses which have been handled and require a handler.
+        Youth application statuses which have been handled and require a
+        handler.
         """
         return [YouthApplicationStatus.ACCEPTED, YouthApplicationStatus.REJECTED]
 

@@ -10,7 +10,8 @@ from shared.common.tests.utils import create_finnish_social_security_number
 
 def get_random_social_security_number_for_year(year: int) -> str:
     """
-    Create a random non-temporary Finnish social security number for the given year
+    Create a random non-temporary Finnish social security number for the given
+    year.
     """
     start_of_year: datetime = datetime(year=year, month=1, day=1, tzinfo=timezone.utc)
     return create_finnish_social_security_number(
@@ -28,8 +29,9 @@ def get_random_social_security_number_for_year(year: int) -> str:
 
 def set_company_business_id_to_client(company: Company, client: Client) -> None:
     """
-    Set company's business ID to client's session so the given company is fetched when
-    calling companies.services.get_or_create_company_using_organization_roles
+    Set company's business ID to client's session so the given company is
+    fetched when calling
+    companies.services.get_or_create_company_using_organization_roles.
     """
     session = client.session
     session.update({"organization_roles": {"identifier": company.business_id}})

@@ -28,7 +28,8 @@ def has_employer_application_permission(
     request: HttpRequest, employer_application: EmployerApplication
 ) -> bool:
     """
-    Allow access only for DRAFT status employer applications of the user & company.
+    Allow access only for DRAFT status employer applications of the user &
+    company.
     """
     user = request.user
 

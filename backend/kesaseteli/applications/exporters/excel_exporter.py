@@ -278,7 +278,9 @@ def get_exportable_fields(columns: ExcelColumns):
 
 def get_xlsx_filename(columns: ExcelColumns) -> str:
     """
-    Get the name of the excel file. Example filename:
+    Get the name of the excel file.
+
+    Example filename:
     talpa-kesasetelihakemukset_2021-01-01_23-59-59.xlsx
     """
     local_datetime_now_as_str = timezone.localtime(timezone.now()).strftime(
@@ -421,8 +423,9 @@ def populate_workbook(
     is_template: bool = False,
 ):
     """
-    Fill the workbook with information from the summer vouchers queryset. Field names and values are
-    fetched from the FIELDS tuple.
+    Fill the workbook with information from the summer vouchers queryset.
+
+    Field names and values are fetched from the FIELDS tuple.
     """
     ws = wb.add_worksheet(name=str(_("Setelit")))
     wrapped_cell_format = wb.add_format()

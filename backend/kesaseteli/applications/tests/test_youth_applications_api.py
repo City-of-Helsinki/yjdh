@@ -246,9 +246,9 @@ def test_youth_application_encrypted_fields():
 
 def test_youth_application_serializer_fields():
     """
-    Test that YouthApplicationSerializer's fields are all handled and categorized
-    into required/optional/write-only/read-only partitions. Also test that handler
-    views' show all fields except write-only fields.
+    Test that YouthApplicationSerializer's fields are all handled and
+    categorized into required/optional/write-only/read-only partitions. Also
+    test that handler views' show all fields except write-only fields.
 
     If this test breaks then update the following:
      - get_required_fields()
@@ -2462,8 +2462,8 @@ def test_youth_applications_set_excess_additional_info(
     expected_status_code,
 ):
     """
-    Test that providing excess POST data when setting additional info for a youth
-    application does not matter and does not change anything.
+    Test that providing excess POST data when setting additional info for a
+    youth application does not matter and does not change anything.
     """
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
     settings.NEXT_PUBLIC_DISABLE_VTJ = disable_vtj

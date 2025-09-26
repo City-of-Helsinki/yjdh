@@ -192,7 +192,8 @@ def test_excel_download_writes_audit_log(
     staff_client, download_url, expected_audit_log_additional_information
 ):
     """
-    Test that audit log is written when downloading employer summer voucher Excel files.
+    Test that audit log is written when downloading employer summer voucher
+    Excel files.
 
     NOTE:
         Tested values MAY NEED UPDATING when audit logging is added to the endpoint!
