@@ -9,6 +9,7 @@ from rest_framework.reverse import reverse
 def handler_403_url():
     """
     Get handlers' 403 (i.e. Forbidden) URL.
+
     :return: URL for handlers' 403 page.
     """
     return urljoin(settings.HANDLER_URL, "/fi/403")
@@ -16,8 +17,11 @@ def handler_403_url():
 
 def handler_create_application_without_ssn_url():
     """
-    Get handlers' URL "create youth application without social security number" page URL.
-    :return: URL for handlers' "create youth application without social security number" page.
+    Get handlers' URL "create youth application without social security number"
+    page URL.
+
+    :return: URL for handlers' "create youth application without social
+        security number" page.
     """
     return urljoin(settings.HANDLER_URL, "/create-application-without-ssn")
 
@@ -25,6 +29,7 @@ def handler_create_application_without_ssn_url():
 def handler_youth_application_processing_url(youth_application_pk):
     """
     Get handlers' youth application processing URL.
+
     :param youth_application_pk: Youth application's primary key.
     :return: URL for processing the youth application.
     """
@@ -34,16 +39,20 @@ def handler_youth_application_processing_url(youth_application_pk):
 def get_list_url():
     """
     Get youth application list URL.
+
     :return: URL for youth application list. Can be used for posting new youth
-             applications.
+        applications.
     """
     return reverse("v1:youthapplication-list")
 
 
 def get_create_without_ssn_url():
     """
-    Get backend's URL for creating a youth application without social security number.
-    :return: Backend's URL for creating a youth application without social security number.
+    Get backend's URL for creating a youth application without social security
+    number.
+
+    :return: Backend's URL for creating a youth application without social
+        security number.
     """
     return reverse("v1:youthapplication-create-without-ssn")
 
@@ -51,8 +60,9 @@ def get_create_without_ssn_url():
 def reverse_youth_application_action(action, pk):
     """
     Reverse youth application's action URL.
-    :param action: Action to reverse, e.g. "accept", "activate", "additional-info",
-                   "detail", "process", "reject"
+
+    :param action: Action to reverse, e.g. "accept", "activate", "additional-
+        info", "detail", "process", "reject"
     :param pk: Youth application's primary key.
     :return: URL for the given youth application's given action.
     """
@@ -62,6 +72,7 @@ def reverse_youth_application_action(action, pk):
 def get_activation_url(pk):
     """
     Get youth application's activation URL.
+
     :param pk: Youth application's primary key.
     :return: URL for activating the youth application.
     """
@@ -71,6 +82,7 @@ def get_activation_url(pk):
 def get_detail_url(pk):
     """
     Get youth application's detail info URL.
+
     :param pk: Youth application's primary key.
     :return: URL for viewing the youth application's detail info.
     """
@@ -79,7 +91,9 @@ def get_detail_url(pk):
 
 def get_processing_url(pk):
     """
-    Get youth application's processing URL in the backend, not in the handlers' UI.
+    Get youth application's processing URL in the backend, not in the handlers'
+    UI.
+
     :param pk: Youth application's primary key.
     :return: URL for processing the youth application.
     """
@@ -89,6 +103,7 @@ def get_processing_url(pk):
 def get_accept_url(pk):
     """
     Get youth application's accept URL.
+
     :param pk: Youth application's primary key.
     :return: URL for accepting the youth application.
     """
@@ -98,6 +113,7 @@ def get_accept_url(pk):
 def get_additional_info_url(pk):
     """
     Get youth application's additional info URL.
+
     :param pk: Youth application's primary key.
     :return: URL for providing additional info for the youth application.
     """
@@ -107,6 +123,7 @@ def get_additional_info_url(pk):
 def get_reject_url(pk):
     """
     Get youth application's reject URL.
+
     :param pk: Youth application's primary key.
     :return: URL for rejecting the youth application.
     """
@@ -116,8 +133,10 @@ def get_reject_url(pk):
 def get_django_adfs_login_url(redirect_url):
     """
     Get Django ADFS login URL.
+
     :param redirect_url: URL to redirect to after successful login.
-    :return: URL for Django ADFS login with the redirect URL as the "next" parameter.
+    :return: URL for Django ADFS login with the redirect URL as the "next"
+        parameter.
     """
     return "{login_url}?{redirect_field_name}={redirect_url}".format(
         login_url=reverse("django_auth_adfs:login"),
@@ -144,9 +163,10 @@ class RedirectTo(Enum):
     def get_redirect_url(redirect_to, youth_application_action, youth_application_pk):
         """
         Get redirect URL based on the given redirect enum value.
+
         :param redirect_to: Enum value for redirecting to different URLs.
-        :param youth_application_action: Action to reverse, e.g. "accept", "activate",
-                                         "additional-info", "detail", "process", "reject"
+        :param youth_application_action: Action to reverse, e.g. "accept",
+            "activate", "additional-info", "detail", "process", "reject"
         :param youth_application_pk: Youth application's primary key.
         :return: URL for the given redirect enum value.
         """

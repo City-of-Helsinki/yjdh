@@ -219,8 +219,9 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     @action(methods=["post"], detail=False)
     def fetch_employee_data(self, request, *args, **kwargs) -> HttpResponse:
         """
-        Fetch employee data to a particular EmployerSummerVoucher using the employee's
-        name and their YouthSummerVoucher's summer_voucher_serial_number
+        Fetch employee data to a particular EmployerSummerVoucher using the
+        employee's name and their YouthSummerVoucher's
+        summer_voucher_serial_number.
         """
         if not request.user.is_authenticated:
             return Response(status=status.HTTP_403_FORBIDDEN)
@@ -647,8 +648,9 @@ class EmployerApplicationViewSet(AuditLoggingModelViewSet):
     def get_queryset(self):
         """
         Fetch all DRAFT status applications of the user & company.
-        Should inlcude only 1 application since we don't allow creation of multiple
-        DRAFT applications per user & company.
+
+        Should inlcude only 1 application since we don't allow creation of
+        multiple DRAFT applications per user & company.
         """
         queryset = (
             super()
@@ -700,7 +702,8 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
 
     def get_queryset(self):
         """
-        Fetch summer vouchers of DRAFT status applications of the user & company.
+        Fetch summer vouchers of DRAFT status applications of the user &
+        company.
         """
         queryset = (
             super()
@@ -746,7 +749,7 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
     )
     def post_attachment(self, request, *args, **kwargs):
         """
-        Upload a single file as attachment
+        Upload a single file as attachment.
         """
         obj = self.get_object()
 
@@ -781,7 +784,7 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
 
         if request.method == "GET":
             """
-            Read a single attachment as file
+            Read a single attachment as file.
             """
             attachment = obj.attachments.filter(pk=attachment_pk).first()
             if not attachment or not attachment.attachment_file:
@@ -797,7 +800,7 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
 
         elif request.method == "DELETE":
             """
-            Delete a single attachment as file
+            Delete a single attachment as file.
             """
             if obj.application.status not in ALLOWED_APPLICATION_UPDATE_STATUSES:
                 raise ValidationError(

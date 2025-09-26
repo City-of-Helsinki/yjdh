@@ -33,7 +33,7 @@ def _get_email_template_image_file(image_name: str) -> bytes:
 
 def create_test_employer_summer_vouchers(year) -> List[EmployerSummerVoucher]:
     """
-    Create EmployerSummerVouchers for given year sorted by last_submitted_at
+    Create EmployerSummerVouchers for given year sorted by last_submitted_at.
     """
     vouchers: List[EmployerSummerVoucher] = []
     for created_at, last_submitted_at_list, attachment_count in [
@@ -84,7 +84,7 @@ def create_test_employer_summer_vouchers(year) -> List[EmployerSummerVoucher]:
 @pytest.mark.parametrize("year", [2021, 2022])
 def test_employer_summer_voucher_last_submitted_at(year):
     """
-    Test EmployerSummerVoucher instances' last_submitted_at property
+    Test EmployerSummerVoucher instances' last_submitted_at property.
     """
     vouchers = create_test_employer_summer_vouchers(year=year)
 

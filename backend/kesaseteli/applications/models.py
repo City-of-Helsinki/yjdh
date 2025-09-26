@@ -79,7 +79,7 @@ class School(TimeStampedModel, UUIDModel):
 class YouthApplicationQuerySet(MatchesAnyOfQuerySet, models.QuerySet):
     def _active_q_filter(self) -> Q:
         """
-        Return Q filter for active youth applications
+        Return Q filter for active youth applications.
         """
         return Q(receipt_confirmed_at__isnull=False)
 
@@ -91,7 +91,8 @@ class YouthApplicationQuerySet(MatchesAnyOfQuerySet, models.QuerySet):
 
     def matches_email_or_social_security_number(self, email, social_security_number):
         """
-        Return youth applications that match given email or social security number
+        Return youth applications that match given email or social security
+        number.
         """
         return self.matches_any_of(
             email=email, social_security_number=social_security_number
@@ -99,43 +100,43 @@ class YouthApplicationQuerySet(MatchesAnyOfQuerySet, models.QuerySet):
 
     def expired(self):
         """
-        Return youth applications that are expired
+        Return youth applications that are expired.
         """
         return self.filter(~self._unexpired_q_filter())
 
     def unexpired(self):
         """
-        Return youth applications that are unexpired
+        Return youth applications that are unexpired.
         """
         return self.filter(self._unexpired_q_filter())
 
     def unexpired_or_active(self):
         """
-        Return youth applications that are unexpired or active
+        Return youth applications that are unexpired or active.
         """
         return self.filter(self._unexpired_q_filter() | self._active_q_filter())
 
     def active(self):
         """
-        Return active youth applications
+        Return active youth applications.
         """
         return self.filter(self._active_q_filter())
 
     def non_rejected(self):
         """
-        Return non-rejected youth applications
+        Return non-rejected youth applications.
         """
         return self.exclude(status=YouthApplicationStatus.REJECTED.value)
 
     def accepted(self):
         """
-        Return accepted youth applications
+        Return accepted youth applications.
         """
         return self.filter(status=YouthApplicationStatus.ACCEPTED.value)
 
     def created_this_year(self):
         """
-        Return youth applications created this year
+        Return youth applications created this year.
         """
         return self.filter(created_at__year=timezone.localdate().year)
 
@@ -143,12 +144,13 @@ class YouthApplicationQuerySet(MatchesAnyOfQuerySet, models.QuerySet):
         self, email, social_security_number
     ) -> bool:
         """
-        Is there an active non-rejected youth application created this year present in
-        this queryset that uses the given email and/or social security number?
+        Is there an active non-rejected youth application created this year
+        present in this queryset that uses the given email and/or social
+        security number?
 
-        :return: True if there is at least one active non-rejected youth application
-                 created this year present in this queryset that uses the given email
-                 and/or social security number, otherwise False.
+        :return: True if there is at least one active non-rejected youth
+            application created this year present in this queryset that uses
+            the given email and/or social security number, otherwise False.
         """
         return (
             self.matches_email_or_social_security_number(email, social_security_number)
@@ -160,12 +162,12 @@ class YouthApplicationQuerySet(MatchesAnyOfQuerySet, models.QuerySet):
 
     def is_email_used_this_year(self, email) -> bool:
         """
-        Is the given email used by an unexpired non-rejected or active non-rejected
-        youth application created this year present in this queryset?
+        Is the given email used by an unexpired non-rejected or active non-
+        rejected youth application created this year present in this queryset?
 
-        :return: True if the given email is used by an unexpired non-rejected or active
-                 non-rejected youth application created this year present in this
-                 queryset, otherwise False.
+        :return: True if the given email is used by an unexpired non-rejected
+            or active non-rejected youth application created this year present
+            in this queryset, otherwise False.
         """
         return (
             self.filter(email=email)
@@ -311,7 +313,8 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     @property
     def vtj_test_case(self) -> str:
         """
-        If last name is found in VtjTestCase.values then return it, otherwise return "".
+        If last name is found in VtjTestCase.values then return it, otherwise
+        return "".
         """
         for vtj_test_case in VtjTestCase.values:
             if are_same_texts(self.last_name, vtj_test_case):
@@ -489,8 +492,8 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
 
     def send_additional_info_request_email(self, request, language) -> bool:
         """
-        Send youth application's additional info request email with given language to
-        the applicant.
+        Send youth application's additional info request email with given
+        language to the applicant.
 
         :param request: Request used for generating the activation link
         :param language: The language to be used in the email
@@ -511,7 +514,8 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
 
     def send_activation_email(self, request, language) -> bool:
         """
-        Send youth application's activation email with given language to the applicant.
+        Send youth application's activation email with given language to the
+        applicant.
 
         :param request: Request used for generating the activation link
         :param language: The activation email language to be used
@@ -583,12 +587,13 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         automatic_handling,
     ):
         """
-        Handle the youth application by setting the status, encrypted_handler_vtj_json,
-        handler and handled_at.
+        Handle the youth application by setting the status,
+        encrypted_handler_vtj_json, handler and handled_at.
 
         :param status: The target status
         :type status: YouthApplicationStatus
-        :param encrypted_handler_vtj_json: The VTJ JSON the handler used for handling
+        :param encrypted_handler_vtj_json: The VTJ JSON the handler used for
+            handling
         :type encrypted_handler_vtj_json: str
         :param handler: Handler user
         :type handler: None | AnonymousUser | User
@@ -643,8 +648,8 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     @transaction.atomic
     def accept_automatically(self) -> bool:
         """
-        Accept this youth application automatically without handler if possible.
-        Create related YouthSummerVoucher if changed to accepted.
+        Accept this youth application automatically without handler if
+        possible. Create related YouthSummerVoucher if changed to accepted.
 
         :return: self.is_accepted
         """
@@ -670,8 +675,9 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     @transaction.atomic
     def accept_manually(self, handler, encrypted_handler_vtj_json) -> bool:
         """
-        Accept this youth application manually using given handler user and handler VTJ
-        JSON if possible. Create related YouthSummerVoucher if changed to accepted.
+        Accept this youth application manually using given handler user and
+        handler VTJ JSON if possible. Create related YouthSummerVoucher if
+        changed to accepted.
 
         :return: self.is_accepted
         """
@@ -709,8 +715,8 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     @transaction.atomic
     def reject(self, handler, encrypted_handler_vtj_json) -> bool:
         """
-        Reject youth application using given handler user and handler VTJ JSON if
-        possible.
+        Reject youth application using given handler user and handler VTJ JSON
+        if possible.
 
         :return: self.is_rejected
         """
@@ -728,8 +734,8 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     @property
     def birthdate(self) -> date:
         """
-        Applicant's birthdate based on their social security number,
-        or on their provided birthdate through other means as a fallback.
+        Applicant's birthdate based on their social security number, or on
+        their provided birthdate through other means as a fallback.
         """
         return (
             social_security_number_birthdate(self.social_security_number)
@@ -740,15 +746,17 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     @property
     def is_9th_grader_age(self) -> bool:
         """
-        If applicant's age correct for a ninth grader ("9. luokkalainen" in Finnish)?
+        If applicant's age correct for a ninth grader ("9.
+
+        luokkalainen" in Finnish)?
         """
         return (self.created_at.year - self.birthdate.year) == 16  # e.g. 2022 - 2006
 
     @property
     def is_upper_secondary_education_1st_year_student_age(self) -> bool:
         """
-        If applicant's age correct for an upper secondary education first year student
-        ("Toisen asteen ensimmäisen vuoden opiskelija" in Finnish)?
+        If applicant's age correct for an upper secondary education first year
+        student ("Toisen asteen ensimmäisen vuoden opiskelija" in Finnish)?
         """
         return (self.created_at.year - self.birthdate.year) == 17  # e.g. 2022 - 2005
 
@@ -818,11 +826,12 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     @property
     def need_additional_info(self) -> bool:
         """
-        Does the youth application initially need additional info to be processed?
+        Does the youth application initially need additional info to be
+        processed?
 
-        :return: True if youth application initially needs additional info be processed,
-                 otherwise False. Note that this value does NOT change based on whether
-                 additional info has been provided or not.
+        :return: True if youth application initially needs additional info be
+            processed, otherwise False. Note that this value does NOT change
+            based on whether additional info has been provided or not.
         """
         return (
             settings.NEXT_PUBLIC_DISABLE_VTJ
@@ -857,9 +866,11 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         self, additional_info_user_reasons, additional_info_description
     ):
         """
-        Sets additional_info_user_reasons and additional_info_description to given
-        values, status to YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
-        additional_info_provided_at to current time and saves the youth application.
+        Sets additional_info_user_reasons and additional_info_description to
+        given values, status to
+        YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+        additional_info_provided_at to current time and saves the youth
+        application.
         """
         self.additional_info_provided_at = timezone.now()
         self.additional_info_user_reasons = additional_info_user_reasons
@@ -959,7 +970,7 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     @staticmethod
     def _value_with_euro_sign(value_in_euros: int) -> str:
         """
-        Given value with euro sign
+        Given value with euro sign.
 
         Example:
             _value_with_euro_sign(350) -> "350€" with Finnish translation active
@@ -972,28 +983,28 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     @staticmethod
     def voucher_value_in_euros_in_year(year: int) -> int:
         """
-        Voucher value in euros in given year
+        Voucher value in euros in given year.
         """
         return 325 if year < 2024 else 350
 
     @property
     def voucher_value_in_euros(self) -> int:
         """
-        Voucher value in euros in youth summer voucher's year
+        Voucher value in euros in youth summer voucher's year.
         """
         return YouthSummerVoucher.voucher_value_in_euros_in_year(self.year)
 
     @property
     def voucher_value_with_euro_sign(self) -> str:
         """
-        Voucher value with euro sign in youth summer voucher's year
+        Voucher value with euro sign in youth summer voucher's year.
         """
         return self._value_with_euro_sign(self.voucher_value_in_euros)
 
     @property
     def summer_job_period_localized_string(self) -> str:
         """
-        Summer job period as a string
+        Summer job period as a string.
         """
         return pgettext(
             "Summer job period in youth summer voucher email (d.m.–d.m.y)",
@@ -1003,7 +1014,7 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     @property
     def employer_summer_voucher_application_end_date_localized_string(self) -> str:
         """
-        Employer summer voucher application end date as a localized string
+        Employer summer voucher application end date as a localized string.
         """
         return pgettext(
             "Employer summer voucher application end date in youth summer voucher email"
@@ -1014,21 +1025,22 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     @property
     def min_work_hours(self) -> int:
         """
-        Minimum work hours for summer job in youth summer voucher's year
+        Minimum work hours for summer job in youth summer voucher's year.
         """
         return 60
 
     @staticmethod
     def min_work_compensation_in_euros_in_year(year: int) -> int:
         """
-        Minimum work compensation for summer job in euros in given year
+        Minimum work compensation for summer job in euros in given year.
         """
         return 400 if year < 2024 else 500
 
     @property
     def min_work_compensation_in_euros(self) -> int:
         """
-        Minimum work compensation for summer job in euros in youth summer voucher's year
+        Minimum work compensation for summer job in euros in youth summer
+        voucher's year.
         """
         return YouthSummerVoucher.min_work_compensation_in_euros_in_year(self.year)
 
@@ -1036,7 +1048,7 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     def min_work_compensation_with_euro_sign(self) -> str:
         """
         Minimum work compensation for summer job with euro sign in youth summer
-        voucher's year
+        voucher's year.
         """
         return self._value_with_euro_sign(self.min_work_compensation_in_euros)
 
@@ -1306,7 +1318,7 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
 
 class Attachment(UUIDModel, TimeStampedModel):
     """
-    created_at field from TimeStampedModel provides the upload timestamp
+    created_at field from TimeStampedModel provides the upload timestamp.
     """
 
     summer_voucher = models.ForeignKey(

@@ -8,12 +8,13 @@ def validate_additional_info_user_reasons(
     input_reasons_list, allow_empty_list=True
 ) -> None:
     """
-    Validate input_reasons_list as a list of unique values from AdditionalInfoUserReason.
-    The list may be empty only if allow_empty_list is True.
+    Validate input_reasons_list as a list of unique values from
+    AdditionalInfoUserReason. The list may be empty only if allow_empty_list is
+    True.
 
-    :raises ValidationError: If input_reasons_list is not a list of unique values from
-                             AdditionalInfoUserReason, or if allow_empty_list is False
-                             and input_reasons_list is an empty list.
+    :raises ValidationError: If input_reasons_list is not a list of unique
+        values from AdditionalInfoUserReason, or if allow_empty_list is False
+        and input_reasons_list is an empty list.
     """
     if not isinstance(input_reasons_list, list):
         raise ValidationError(

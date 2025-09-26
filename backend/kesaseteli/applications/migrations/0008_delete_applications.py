@@ -10,9 +10,11 @@ def delete_applications(apps, schema_editor):
 
 class Migration(migrations.Migration):
     """
-    Delete applications since the next migration (0009_add_application_user) will add the user ForeignKey for
-    the appilcations and it is not possible to set a reasonable default value for that. Delete all applications
-    since there is no use form them without an user.
+    Delete applications since the next migration (0009_add_application_user)
+    will add the user ForeignKey for the appilcations and it is not possible to
+    set a reasonable default value for that.
+
+    Delete all applications since there is no use form them without an user.
     """
 
     dependencies = [

@@ -14,8 +14,8 @@ OTHER_MUNICIPALITY = Municipality(890, "Utsjoki", "Utsjoki", "99990")
 
 def mock_vtj_person_id_query_not_found_content(**kwargs) -> str:
     """
-    Mock VTJ person's ID query's (i.e. henkilön tunnuskysely in Finnish) result content
-    when no data is found.
+    Mock VTJ person's ID query's (i.e. henkilön tunnuskysely in Finnish) result
+    content when no data is found.
 
     :param kwargs: Keyword arguments to add or override values in result
 
@@ -37,8 +37,8 @@ def mock_vtj_person_id_query_found_content(
     is_home_municipality_helsinki: bool,
 ) -> str:
     """
-    Mock VTJ person's ID query's (i.e. henkilön tunnuskysely in Finnish) result content
-    when data is found.
+    Mock VTJ person's ID query's (i.e. henkilön tunnuskysely in Finnish) result
+    content when data is found.
 
     Endpoint: /api/HenkilonTunnuskysely
     """

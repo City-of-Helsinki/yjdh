@@ -115,8 +115,8 @@ class AttachmentSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """
-        Perform rudimentary validation of file content to guard against accidentally uploading
-        invalid files.
+        Perform rudimentary validation of file content to guard against
+        accidentally uploading invalid files.
         """
 
         if (
@@ -549,7 +549,8 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
 
     def get_encrypted_char_field_as_json(self, obj, field_name):
         """
-        Return EncryptedCharField as JSON object, converting None & empty string to {}.
+        Return EncryptedCharField as JSON object, converting None & empty
+        string to {}.
         """
         if not hasattr(obj, field_name):
             raise ValueError(f"Invalid field name {field_name}")

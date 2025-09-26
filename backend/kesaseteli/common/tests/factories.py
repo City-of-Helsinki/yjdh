@@ -481,7 +481,8 @@ class AbstractNonVtjYouthApplicationFactory(AbstractYouthApplicationFactory):
 
 class AcceptableNonVtjYouthApplicationFactory(AbstractNonVtjYouthApplicationFactory):
     """
-    A youth application created using YouthApplicationViewSet.create_without_ssn endpoint.
+    A youth application created using
+    YouthApplicationViewSet.create_without_ssn endpoint.
     """
 
     status = YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value
@@ -489,8 +490,8 @@ class AcceptableNonVtjYouthApplicationFactory(AbstractNonVtjYouthApplicationFact
 
 class AcceptedNonVtjYouthApplicationFactory(AbstractNonVtjYouthApplicationFactory):
     """
-    A youth application created using YouthApplicationViewSet.create_without_ssn endpoint
-    and then accepted.
+    A youth application created using
+    YouthApplicationViewSet.create_without_ssn endpoint and then accepted.
     """
 
     status = YouthApplicationStatus.ACCEPTED.value
@@ -498,8 +499,8 @@ class AcceptedNonVtjYouthApplicationFactory(AbstractNonVtjYouthApplicationFactor
 
 class RejectedNonVtjYouthApplicationFactory(AbstractNonVtjYouthApplicationFactory):
     """
-    A youth application created using YouthApplicationViewSet.create_without_ssn endpoint
-    and then rejected.
+    A youth application created using
+    YouthApplicationViewSet.create_without_ssn endpoint and then rejected.
     """
 
     status = YouthApplicationStatus.REJECTED.value

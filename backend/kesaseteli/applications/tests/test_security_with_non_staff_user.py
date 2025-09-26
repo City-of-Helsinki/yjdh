@@ -34,13 +34,15 @@ def create_attachment(
     user: User, company: Company, status: EmployerApplicationStatus
 ) -> Attachment:
     """
-    Create an attachment with an employer summer voucher and employer application.
+    Create an attachment with an employer summer voucher and employer
+    application.
 
-    Refresh the attachment, employer summer voucher and employer application from
-    database to ensure that the data is up to date.
+    Refresh the attachment, employer summer voucher and employer application
+    from database to ensure that the data is up to date.
 
-    :return: Attachment that has an employer summer voucher and employer application.
-             The employer application has the given user, company and status.
+    :return: Attachment that has an employer summer voucher and employer
+        application. The employer application has the given user, company and
+        status.
     """
     result = AttachmentFactory(
         summer_voucher=EmployerSummerVoucherFactory(
@@ -71,8 +73,9 @@ def test_employer_application_list_viewable_statuses(
     application_status: EmployerApplicationStatus,
 ):
     """
-    Test that the employer application list endpoint returns draft and submitted
-    employer applications but only those that are the user's and use the user's company.
+    Test that the employer application list endpoint returns draft and
+    submitted employer applications but only those that are the user's and use
+    the user's company.
     """
     user1, user2 = UserFactory.create_batch(size=2)
     user1_client = force_login_user(user1)
@@ -113,8 +116,9 @@ def test_employer_application_detail_viewable_statuses(
     application_status: EmployerApplicationStatus,
 ):
     """
-    Test that the employer application detail endpoint returns draft and submitted
-    employer applications but only those that are the user's and use the user's company.
+    Test that the employer application detail endpoint returns draft and
+    submitted employer applications but only those that are the user's and use
+    the user's company.
     """
     user1, user2 = UserFactory.create_batch(size=2)
     user1_client = force_login_user(user1)
@@ -172,9 +176,9 @@ def test_employer_summer_voucher_handle_attachment_viewable_statuses(
     application_status: EmployerApplicationStatus,
 ):
     """
-    Test that the employer summer voucher's handle attachment endpoint returns draft and
-    submitted employer applications' attachments but only those that are the user's and
-    use the user's company.
+    Test that the employer summer voucher's handle attachment endpoint returns
+    draft and submitted employer applications' attachments but only those that
+    are the user's and use the user's company.
     """
     user1, user2 = UserFactory.create_batch(size=2)
     user1_client = force_login_user(user1)
@@ -240,9 +244,9 @@ def test_employer_summer_voucher_handle_attachment_non_viewable_statuses(
     application_status: EmployerApplicationStatus,
 ):
     """
-    Test that the employer summer voucher's handle attachment endpoint doesn't return
-    any attachments that are connected to an employer application which is neither a
-    draft nor submitted.
+    Test that the employer summer voucher's handle attachment endpoint doesn't
+    return any attachments that are connected to an employer application which
+    is neither a draft nor submitted.
     """
     user1, user2 = UserFactory.create_batch(size=2)
     user1_client = force_login_user(user1)
@@ -295,9 +299,9 @@ def test_employer_summer_voucher_handle_attachment_non_viewable_statuses(
 @pytest.mark.django_db
 def test_employer_summer_voucher_handle_attachment_delete_draft():
     """
-    Test that the employer summer voucher's handle attachment endpoint can be used to
-    delete draft employer applications' attachments but only those that are the user's
-    and use the user's company.
+    Test that the employer summer voucher's handle attachment endpoint can be
+    used to delete draft employer applications' attachments but only those that
+    are the user's and use the user's company.
     """
     application_status = EmployerApplicationStatus.DRAFT
     user1, user2 = UserFactory.create_batch(size=2)
@@ -361,9 +365,9 @@ def test_employer_summer_voucher_handle_attachment_delete_draft():
 @pytest.mark.django_db
 def test_employer_summer_voucher_handle_attachment_delete_submitted():
     """
-    Test that the employer summer voucher's handle attachment endpoint can not be used
-    to delete submitted employer applications' attachments at all, not the user's and
-    the user's company's nor anyone else's.
+    Test that the employer summer voucher's handle attachment endpoint can not
+    be used to delete submitted employer applications' attachments at all, not
+    the user's and the user's company's nor anyone else's.
     """
     application_status = EmployerApplicationStatus.SUBMITTED
     user1, user2 = UserFactory.create_batch(size=2)
@@ -430,9 +434,9 @@ def test_employer_summer_voucher_handle_attachment_delete_non_viewable_statuses(
     application_status: EmployerApplicationStatus,
 ):
     """
-    Test that the employer summer voucher's handle attachment endpoint can't be used to
-    delete any attachments that are connected to an employer application which is
-    neither a draft nor submitted.
+    Test that the employer summer voucher's handle attachment endpoint can't be
+    used to delete any attachments that are connected to an employer
+    application which is neither a draft nor submitted.
     """
     user1, user2 = UserFactory.create_batch(size=2)
     user1_client = force_login_user(user1)
@@ -488,8 +492,8 @@ def test_employer_summer_voucher_handle_attachment_unallowed_methods(
     application_status: EmployerApplicationStatus,
 ):
     """
-    Test that the employer summer voucher's handle attachment endpoint doesn't allow
-    HTTP methods patch, post and put.
+    Test that the employer summer voucher's handle attachment endpoint doesn't
+    allow HTTP methods patch, post and put.
     """
     user = UserFactory()
     company = CompanyFactory()
@@ -515,8 +519,8 @@ def test_employer_summer_voucher_post_attachment_unallowed_methods(
     application_status: EmployerApplicationStatus,
 ):
     """
-    Test that the employer summer voucher's post attachment endpoint doesn't allow
-    HTTP methods delete, get, patch and put.
+    Test that the employer summer voucher's post attachment endpoint doesn't
+    allow HTTP methods delete, get, patch and put.
     """
     user = UserFactory()
     company = CompanyFactory()
@@ -540,8 +544,8 @@ def test_employer_summer_voucher_detail_unallowed_methods(
     application_status: EmployerApplicationStatus,
 ):
     """
-    Test that the employer summer voucher detail endpoint doesn't allow HTTP methods
-    delete, get, patch, post and put.
+    Test that the employer summer voucher detail endpoint doesn't allow HTTP
+    methods delete, get, patch, post and put.
     """
     user = UserFactory()
     company = CompanyFactory()
@@ -574,8 +578,8 @@ def test_employer_application_list_non_viewable_statuses(
     application_status: EmployerApplicationStatus,
 ):
     """
-    Test that the employer application list endpoint doesn't return any employer
-    applications at all for statuses that are not draft or submitted.
+    Test that the employer application list endpoint doesn't return any
+    employer applications at all for statuses that are not draft or submitted.
     """
     user1, user2 = UserFactory.create_batch(size=2)
     user1_client = force_login_user(user1)
@@ -616,8 +620,8 @@ def test_employer_application_detail_non_viewable_statuses(
     application_status: EmployerApplicationStatus,
 ):
     """
-    Test that the employer application detail endpoint doesn't return any employer
-    applications at all for statuses that are not draft or submitted.
+    Test that the employer application detail endpoint doesn't return any
+    employer applications at all for statuses that are not draft or submitted.
     """
     user1, user2 = UserFactory.create_batch(size=2)
     user1_client = force_login_user(user1)
@@ -667,8 +671,8 @@ def test_employer_application_list_unallowed_methods(
     user_client,
 ):
     """
-    Test that the employer application list endpoint doesn't allow HTTP methods delete,
-    patch and put.
+    Test that the employer application list endpoint doesn't allow HTTP methods
+    delete, patch and put.
     """
     url = reverse("v1:employerapplication-list")
     assert user_client.delete(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
@@ -683,8 +687,8 @@ def test_employer_application_detail_unallowed_methods(
     application_status: EmployerApplicationStatus,
 ):
     """
-    Test that the employer application detail endpoint doesn't allow HTTP methods delete
-    and post.
+    Test that the employer application detail endpoint doesn't allow HTTP
+    methods delete and post.
     """
     user = UserFactory()
     company = CompanyFactory()
@@ -725,8 +729,8 @@ def test_youth_application_list_unallowed_methods(
     user_client,
 ):
     """
-    Test that the youth application list endpoint doesn't allow HTTP methods delete,
-    get, patch and put.
+    Test that the youth application list endpoint doesn't allow HTTP methods
+    delete, get, patch and put.
     """
     url = reverse("v1:youthapplication-list")
     assert user_client.delete(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
@@ -739,7 +743,8 @@ def test_youth_application_list_unallowed_methods(
 @pytest.mark.django_db
 def test_youth_application_list_empty_post(user_client):
     """
-    Test that an empty post to youth application list endpoint results in a bad request.
+    Test that an empty post to youth application list endpoint results in a bad
+    request.
     """
     response = user_client.post(reverse("v1:youthapplication-list"))
     assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -755,8 +760,8 @@ def test_youth_application_list_empty_post(user_client):
 @pytest.mark.django_db
 def test_youth_application_list_valid_post(user_client):
     """
-    Test that a valid post request to the youth application list endpoint creates a new
-    youth application and only returns its ID and nothing else.
+    Test that a valid post request to the youth application list endpoint
+    creates a new youth application and only returns its ID and nothing else.
     """
 
     list_url = reverse("v1:youthapplication-list")
@@ -811,8 +816,8 @@ def test_employer_summer_voucher_list_unallowed_methods(
     user_client,
 ):
     """
-    Test that the employer summer voucher list endpoint doesn't allow HTTP methods
-    delete, get, patch, post and put.
+    Test that the employer summer voucher list endpoint doesn't allow HTTP
+    methods delete, get, patch, post and put.
     """
     url = reverse("v1:employersummervoucher-list")
     assert user_client.delete(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
@@ -839,9 +844,9 @@ def test_school_list_openly_accessible_to_non_staff_user(user_client):
 @pytest.mark.django_db
 def test_company_openly_accessible_to_non_staff_user(user_client):
     """
-    Test that the company endpoint is openly accessible to non-staff users and that it
-    returns the business ID, city, company form, ID, industry, name, postcode and street
-    address of the company and nothing else.
+    Test that the company endpoint is openly accessible to non-staff users and
+    that it returns the business ID, city, company form, ID, industry, name,
+    postcode and street address of the company and nothing else.
 
     NOTE:
         Any company's information can be queried by any non-staff user through this
@@ -882,7 +887,8 @@ def test_youth_application_accept_patch_redirect_to_forbidden_page(
     user_client, application_status
 ):
     """
-    Test that youth application accept endpoint using patch redirects to forbidden page.
+    Test that youth application accept endpoint using patch redirects to
+    forbidden page.
     """
     application = YouthApplicationFactory(status=application_status)
     accept_url = reverse("v1:youthapplication-accept", kwargs={"pk": application.id})
@@ -896,8 +902,8 @@ def test_youth_application_accept_patch_redirect_to_forbidden_page(
 @pytest.mark.parametrize("application_status", YouthApplicationStatus.values)
 def test_youth_application_accept_unallowed_methods(user_client, application_status):
     """
-    Test that youth application accept endpoint doesn't allow HTTP methods delete, get,
-    post and put.
+    Test that youth application accept endpoint doesn't allow HTTP methods
+    delete, get, post and put.
     """
     application = YouthApplicationFactory(status=application_status)
     url = reverse("v1:youthapplication-accept", kwargs={"pk": application.id})
@@ -914,7 +920,8 @@ def test_youth_application_reject_patch_redirect_to_forbidden_page(
     user_client, application_status
 ):
     """
-    Test that youth application reject endpoint using patch redirects to forbidden page.
+    Test that youth application reject endpoint using patch redirects to
+    forbidden page.
     """
     application = YouthApplicationFactory(status=application_status)
     reject_url = reverse("v1:youthapplication-reject", kwargs={"pk": application.id})
@@ -928,8 +935,8 @@ def test_youth_application_reject_patch_redirect_to_forbidden_page(
 @pytest.mark.parametrize("application_status", YouthApplicationStatus.values)
 def test_youth_application_reject_unallowed_methods(user_client, application_status):
     """
-    Test that youth application reject endpoint doesn't allow HTTP methods delete, get,
-    post and put.
+    Test that youth application reject endpoint doesn't allow HTTP methods
+    delete, get, post and put.
     """
     application = YouthApplicationFactory(status=application_status)
     url = reverse("v1:youthapplication-reject", kwargs={"pk": application.id})
@@ -943,9 +950,9 @@ def test_youth_application_reject_unallowed_methods(user_client, application_sta
 @pytest.mark.django_db
 def test_youth_application_status_openly_accessible_to_non_staff_user(user_client):
     """
-    Test that youth application's status endpoint is openly accessible to non-staff
-    users and returns only the single queried youth application's status and nothing
-    else.
+    Test that youth application's status endpoint is openly accessible to non-
+    staff users and returns only the single queried youth application's status
+    and nothing else.
 
     NOTE:
         The youth application's status endpoint is open to everyone and can be used to
@@ -969,7 +976,8 @@ def test_youth_application_detail_redirect_to_forbidden_page(
     user_client, youth_application
 ):
     """
-    Test that youth application detail endpoint using get redirects to forbidden page.
+    Test that youth application detail endpoint using get redirects to
+    forbidden page.
     """
     detail_url = reverse(
         "v1:youthapplication-detail", kwargs={"pk": youth_application.id}
@@ -983,8 +991,8 @@ def test_youth_application_detail_redirect_to_forbidden_page(
 @pytest.mark.django_db
 def test_youth_application_detail_unallowed_methods(user_client, youth_application):
     """
-    Test that youth application's detail endpoint doesn't allow HTTP methods delete,
-    patch, post and put.
+    Test that youth application's detail endpoint doesn't allow HTTP methods
+    delete, patch, post and put.
     """
     url = reverse("v1:youthapplication-detail", kwargs={"pk": youth_application.id})
     assert user_client.delete(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
@@ -1001,8 +1009,8 @@ def test_youth_application_activate_expired(
     make_youth_application_activation_link_expired,
 ):
     """
-    Test that youth application's activate endpoint redirects to expired page if the
-    youth application has expired.
+    Test that youth application's activate endpoint redirects to expired page
+    if the youth application has expired.
     """
     activate_url = reverse(
         "v1:youthapplication-activate", kwargs={"pk": inactive_youth_application.id}
@@ -1024,8 +1032,8 @@ def test_youth_application_activate_need_additional_info(
     make_youth_application_activation_link_unexpired,
 ):
     """
-    Test that youth application's activate endpoint redirects to additional information
-    page if additional information is required.
+    Test that youth application's activate endpoint redirects to additional
+    information page if additional information is required.
     """
     app = InactiveNeedAdditionalInfoYouthApplicationFactory()
     activate_url = reverse("v1:youthapplication-activate", kwargs={"pk": app.id})
@@ -1046,8 +1054,8 @@ def test_youth_application_activate_automatically_acceptable(
     make_youth_application_activation_link_unexpired,
 ):
     """
-    Test that youth application's activate endpoint redirects to accepted page if youth
-    application is automatically accepted.
+    Test that youth application's activate endpoint redirects to accepted page
+    if youth application is automatically accepted.
     """
     app = InactiveNoNeedAdditionalInfoYouthApplicationFactory()
     activate_url = reverse("v1:youthapplication-activate", kwargs={"pk": app.id})
@@ -1062,7 +1070,8 @@ def test_youth_application_process_redirect_to_forbidden_page(
     user_client, youth_application
 ):
     """
-    Test that youth application process endpoint using get redirects to forbidden page.
+    Test that youth application process endpoint using get redirects to
+    forbidden page.
     """
     process_url = reverse(
         "v1:youthapplication-process", kwargs={"pk": youth_application.id}
@@ -1076,8 +1085,8 @@ def test_youth_application_process_redirect_to_forbidden_page(
 @pytest.mark.django_db
 def test_youth_application_process_unallowed_methods(user_client, youth_application):
     """
-    Test that youth application's process endpoint doesn't allow HTTP methods delete,
-    patch, post and put.
+    Test that youth application's process endpoint doesn't allow HTTP methods
+    delete, patch, post and put.
     """
     url = reverse("v1:youthapplication-process", kwargs={"pk": youth_application.id})
     assert user_client.delete(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
@@ -1092,8 +1101,8 @@ def test_youth_application_additional_info_unallowed_methods(
     user_client, youth_application
 ):
     """
-    Test that youth application's additional info endpoint doesn't allow HTTP methods
-    delete, get, patch and put.
+    Test that youth application's additional info endpoint doesn't allow HTTP
+    methods delete, get, patch and put.
     """
     url = reverse(
         "v1:youthapplication-additional-info", kwargs={"pk": youth_application.id}
@@ -1108,8 +1117,8 @@ def test_youth_application_additional_info_unallowed_methods(
 @pytest.mark.django_db
 def test_youth_application_additional_info_empty_post(user_client):
     """
-    Test that an empty post to youth application's additional info endpoint results in a
-    bad request.
+    Test that an empty post to youth application's additional info endpoint
+    results in a bad request.
     """
     app = AdditionalInfoRequestedYouthApplicationFactory()
     url = reverse("v1:youthapplication-additional-info", kwargs={"pk": app.id})
@@ -1120,8 +1129,8 @@ def test_youth_application_additional_info_empty_post(user_client):
 @pytest.mark.django_db
 def test_youth_application_additional_info_valid_post(user_client):
     """
-    Test that a valid post to the additional info endpoint creates new additional
-    information and returns the additional_info_user_reasons and
+    Test that a valid post to the additional info endpoint creates new
+    additional information and returns the additional_info_user_reasons and
     additional_info_description fields but nothing else.
     """
     app = AdditionalInfoRequestedYouthApplicationFactory()

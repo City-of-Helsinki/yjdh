@@ -18,8 +18,8 @@ def get_or_create_company_using_company_data(
     company_data: dict, ytj_data: dict
 ) -> Company:
     """
-    Get or create a company instance using a dict of the company data and attach the ytj_data json
-    for the instance.
+    Get or create a company instance using a dict of the company data and
+    attach the ytj_data json for the instance.
     """
     company, _ = Company.objects.get_or_create(
         **company_data, defaults={"ytj_json": ytj_data}
@@ -44,8 +44,8 @@ def get_or_create_company_with_name_and_business_id(
     business_id: str,
 ) -> Company:
     """
-    Get or create a company instance using a dict of the company data and attach the ytj_data json
-    for the instance.
+    Get or create a company instance using a dict of the company data and
+    attach the ytj_data json for the instance.
     """
     company, _ = Company.objects.get_or_create(
         name=name,
@@ -83,7 +83,8 @@ def handle_mock_company(request: HttpRequest):
 
 def get_or_create_company_using_organization_roles(request: HttpRequest) -> Company:
     """
-    The flow will execute only step 1 or steps 2-5 if company does not exist in db.
+    The flow will execute only step 1 or steps 2-5 if company does not exist in
+    db.
 
     Steps:
     1. If mock flag is set, create a mock company and store dummy organization_roles in session.

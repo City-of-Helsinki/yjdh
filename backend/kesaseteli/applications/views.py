@@ -139,8 +139,11 @@ class EmployerApplicationExcelDownloadView(TemplateView):
         self, columns: ExcelColumns
     ) -> Union[StreamingHttpResponse, HttpResponseRedirect]:
         """
-        Export unhandled applications and redirect back to the excel download page.
-        The user will see a new xlsx file generated in the generated files list.
+        Export unhandled applications and redirect back to the excel download
+        page.
+
+        The user will see a new xlsx file generated in the generated files
+        list.
         """
         queryset_without_pks = self.base_queryset().filter(
             is_exported=False,
@@ -172,9 +175,12 @@ class EmployerApplicationExcelDownloadView(TemplateView):
         self, columns: ExcelColumns, year: int
     ) -> Union[StreamingHttpResponse, HttpResponseRedirect]:
         """
-        Export all applications from the given year to xlsx file and download the file.
-        The file is returned as a response, thus automatically downloaded. The generated
-        xlsx file will not be saved on disk and will not be shown on the xlsx files list.
+        Export all applications from the given year to xlsx file and download
+        the file.
+
+        The file is returned as a response, thus automatically downloaded. The
+        generated xlsx file will not be saved on disk and will not be shown on
+        the xlsx files list.
         """
         queryset = (
             self.base_queryset()
