@@ -85,7 +85,8 @@ env = environ.Env(
     AZURE_ACCOUNT_KEY=(str, ""),
     AZURE_CONTAINER=(str, ""),
     AUDIT_LOG_ORIGIN=(str, ""),
-    # Random 32 bytes AES key, for testing purpose only, DO NOT use it value in staging/production
+    # Random 32 bytes AES key, for testing purpose only, DO NOT use it value in
+    # staging/production
     # Always override this value from env variables
     ENCRYPTION_KEY=(
         str,
@@ -653,7 +654,8 @@ if SUOMIFI_CERT and SUOMIFI_KEY:
     )
 
 if SUOMIFI_TEST:
-    # Test authentication method which is only available in the customer testing environment
+    # Test authentication method which is only available in the customer testing
+    # environment
     SAML_CONFIG["entity_attributes"][0]["values"].append(
         "urn:oid:1.2.246.517.3002.110.999"
     )
