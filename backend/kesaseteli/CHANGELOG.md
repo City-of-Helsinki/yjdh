@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.4](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.10.3...kesaseteli-backend-v1.10.4) (2025-09-27)
+
+
+### Bug Fixes
+
+* Postgres database to use database url + password combination ([7e539d0](https://github.com/City-of-Helsinki/yjdh/commit/7e539d0a4872f194d414c24da4386475fcf1e7b3))
+
 ## [1.10.3](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.10.2...kesaseteli-backend-v1.10.3) (2025-09-16)
 
 
