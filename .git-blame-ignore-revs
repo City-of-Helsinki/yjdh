@@ -26,3 +26,6 @@ c850e2d19f40cabbe43f8cf331e7bf642e3099f6
 b16a7329fc75c71353e0cfa5701a39047bd85ddd
 # style(shared): apply docformatter
 931546951c1adb4c5d3a262c190bd332ae58604f
+
+# style(kesaseteli): apply order-by-type = false
+7255990d4800d34b53811bfddd840906aad1b385
