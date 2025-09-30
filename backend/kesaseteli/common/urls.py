@@ -1,4 +1,4 @@
-from enum import Enum, auto
+from enum import auto, Enum
 from urllib.parse import urljoin
 
 from django.conf import settings
