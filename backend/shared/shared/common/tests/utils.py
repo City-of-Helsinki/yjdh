@@ -18,20 +18,30 @@ def create_finnish_social_security_number(
         (century_variant % available_century_characters) is the value being
         used.
     :param individual_number: Integer value where 2 <= individual_number <= 999
-    :return: Finnish social security number in format <ddmmyyciiis> where dd =
-        day of birth with leading zeroes, mm = month of birth with leading
-        zeroes, yy = year of birth modulo 100 with leading zeroes, c = century
-        of birth, where c is "+" = 1800, "-" = 1900 if (century_variant % 6) ==
-        0, "Y" = 1900 if (century_variant % 6) == 1, "X" = 1900 if
-        (century_variant % 6) == 2, "W" = 1900 if (century_variant % 6) == 3,
-        "V" = 1900 if (century_variant % 6) == 4, "U" = 1900 if
-        (century_variant % 6) == 5, "A" = 2000 if (century_variant % 6) == 0,
-        "B" = 2000 if (century_variant % 6) == 1, "C" = 2000 if
-        (century_variant % 6) == 2, "D" = 2000 if (century_variant % 6) == 3,
-        "E" = 2000 if (century_variant % 6) == 4, "F" = 2000 if
-        (century_variant % 6) == 5, iii = individual number in range 2–999 with
-        leading zeroes, s = checksum value calculated from <ddmmyyiii>.
-    :raises ValueError: if not (1800 <= birthdate.year <= 2099)
+    :return: Finnish social security number in format ``<ddmmyyciiis>``.
+
+        Format parts:
+            - ``dd`` = day of birth with leading zeroes
+            - ``mm`` = month of birth with leading zeroes
+            - ``yy`` = year of birth modulo 100 with leading zeroes
+            - ``c`` = century of birth, chosen as follows::
+
+                  "+" = 1800
+                  "-" = 1900 if (century_variant % 6) == 0
+                  "Y" = 1900 if (century_variant % 6) == 1
+                  "X" = 1900 if (century_variant % 6) == 2
+                  "W" = 1900 if (century_variant % 6) == 3
+                  "V" = 1900 if (century_variant % 6) == 4
+                  "U" = 1900 if (century_variant % 6) == 5
+                  "A" = 2000 if (century_variant % 6) == 0
+                  "B" = 2000 if (century_variant % 6) == 1
+                  "C" = 2000 if (century_variant % 6) == 2
+                  "D" = 2000 if (century_variant % 6) == 3
+                  "E" = 2000 if (century_variant % 6) == 4
+                  "F" = 2000 if (century_variant % 6) == 5
+
+            - ``iii`` = individual number in range 2–999 with leading zeroes
+            - ``s`` = checksum value calculated from ``<ddmmyyiii>``    :raises ValueError: if not (1800 <= birthdate.year <= 2099)
     :raises ValueError: if century_variant < 0
     :raises ValueError: if not (2 <= individual_number <= 999)
     """
