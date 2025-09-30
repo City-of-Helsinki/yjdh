@@ -30,3 +30,11 @@ repos:
     rev: v0.10.0
     hooks:
       - id: shellcheck
+  - repo: local
+    hooks:
+    - id: lint-staged
+      name: (Frontend) Run lint-staged with lerna
+      entry: "./.husky/pre-commit"
+      language: system
+      types: [file]
+      require_serial: true
