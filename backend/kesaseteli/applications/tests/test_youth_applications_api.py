@@ -24,9 +24,9 @@ from rest_framework.reverse import reverse
 from applications.api.v1.serializers import YouthApplicationSerializer
 from applications.enums import (
     AdditionalInfoUserReason,
+    get_supported_languages,
     YouthApplicationRejectedReason,
     YouthApplicationStatus,
-    get_supported_languages,
 )
 from applications.models import YouthApplication, YouthSummerVoucher
 from applications.tests.data.mock_vtj import (
@@ -54,7 +54,6 @@ from common.tests.factories import (
 )
 from common.tests.utils import get_random_social_security_number_for_year
 from common.urls import (
-    RedirectTo,
     get_accept_url,
     get_activation_url,
     get_additional_info_url,
@@ -62,6 +61,7 @@ from common.urls import (
     get_detail_url,
     get_list_url,
     get_processing_url,
+    RedirectTo,
     reverse_youth_application_action,
 )
 from shared.audit_log.models import AuditLogEntry

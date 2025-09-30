@@ -9,15 +9,15 @@ from django.utils import timezone
 from django.utils.timezone import get_current_timezone
 
 from applications.enums import (
-    ATTACHMENT_CONTENT_TYPE_CHOICES,
     AdditionalInfoUserReason,
+    ATTACHMENT_CONTENT_TYPE_CHOICES,
     AttachmentType,
     EmployerApplicationStatus,
+    get_supported_languages,
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,
     VtjTestCase,
     YouthApplicationStatus,
-    get_supported_languages,
 )
 from applications.models import (
     Attachment,
