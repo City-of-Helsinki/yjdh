@@ -16,7 +16,7 @@
     "@sentry/browser": "^7.16.0",
     "@sentry/nextjs": "^7.16.0",
     "@socialgouv/matomo-next": "^1.9.2",
-    "axios": "^0.30.0",
+    "axios": "^0.30.2",
     "cors": "^2.8.5",
     "date-fns": "^2.22.1",
     "dotenv": "^16.0.0",
