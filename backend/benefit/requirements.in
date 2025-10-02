@@ -12,7 +12,7 @@ django-sql-utils
 django-storages[azure]
 django_auth_adfs
 djangorestframework
-django~=4.2.24
+django~=4.2.25
 drf-nested-routers
 drf-spectacular
 elasticsearch~=7.17 # TODO: remove and update to 8.x when elasticsearch servers are updated to elasticsearch 8
