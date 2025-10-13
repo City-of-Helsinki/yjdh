@@ -42,7 +42,7 @@ from messages.views import (
     HandlerNoteViewSet,
 )
 from terms.api.v1.views import ApproveTermsOfServiceView
-from users.api.v1.views import CurrentUserView, UserOptionsView, UserUuidGDPRAPIView
+from users.api.v1.views import CurrentUserView, UserOptionsView
 
 router = routers.DefaultRouter()
 router.register(
@@ -133,7 +133,7 @@ urlpatterns = [
         AhjoApplicationView.as_view(),
         name="ahjo_application_url",
     ),
-    path("gdpr-api/v1/user/<uuid:uuid>", UserUuidGDPRAPIView.as_view(), name="gdpr_v1"),
+    path("gdpr-api/", include("helsinki_gdpr.urls")),
     path("v1/", include((router.urls, "v1"), namespace="v1")),
     path("v1/", include(applicant_app_router.urls)),
     path("v1/", include(handler_app_router.urls)),

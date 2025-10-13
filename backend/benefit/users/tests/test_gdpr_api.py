@@ -68,7 +68,9 @@ def test_get_profile_data_from_gdpr_api(gdpr_api_client, requests_mock):
         ],
     }
     gdpr_api_client.credentials(HTTP_AUTHORIZATION=auth_header)
-    response = gdpr_api_client.get(reverse("gdpr_v1", kwargs={"uuid": user.username}))
+    response = gdpr_api_client.get(
+        reverse("helsinki_gdpr:gdpr_v1", kwargs={"pk": user.username})
+    )
     assert response.status_code == 200
     assert response.json() == valid_response
 
@@ -80,7 +82,7 @@ def test_delete_profile_data_from_gdpr_api(gdpr_api_client, requests_mock):
     )
     gdpr_api_client.credentials(HTTP_AUTHORIZATION=auth_header)
     response = gdpr_api_client.delete(
-        reverse("gdpr_v1", kwargs={"uuid": user.username})
+        reverse("helsinki_gdpr:gdpr_v1", kwargs={"pk": user.username})
     )
     assert response.status_code == 204
     with pytest.raises(User.DoesNotExist):
@@ -89,11 +91,13 @@ def test_delete_profile_data_from_gdpr_api(gdpr_api_client, requests_mock):
 
 def test_gdpr_api_requires_authentication(gdpr_api_client):
     user = HelsinkiProfileUserFactory()
-    response = gdpr_api_client.get(reverse("gdpr_v1", kwargs={"uuid": user.username}))
+    response = gdpr_api_client.get(
+        reverse("helsinki_gdpr:gdpr_v1", kwargs={"pk": user.username})
+    )
     assert response.status_code == 401
 
     response = gdpr_api_client.delete(
-        reverse("gdpr_v1", kwargs={"uuid": user.username})
+        reverse("helsinki_gdpr:gdpr_v1", kwargs={"pk": user.username})
     )
     assert response.status_code == 401
 
@@ -109,11 +113,11 @@ def test_user_can_only_access_their_own_profile(gdpr_api_client, requests_mock):
 
     another_user = HelsinkiProfileUserFactory()
     response = gdpr_api_client.get(
-        reverse("gdpr_v1", kwargs={"uuid": another_user.username})
+        reverse("helsinki_gdpr:gdpr_v1", kwargs={"pk": another_user.username})
     )
     assert response.status_code == 403
 
     response = gdpr_api_client.delete(
-        reverse("gdpr_v1", kwargs={"uuid": another_user.username})
+        reverse("helsinki_gdpr:gdpr_v1", kwargs={"pk": another_user.username})
     )
     assert response.status_code == 403
