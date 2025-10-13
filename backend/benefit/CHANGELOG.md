@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.9.7](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.9.6...benefit-backend-v2.9.7) (2025-10-13)
+
+
+### Dependencies
+
+* **benefit:** Drop ruff and pre-commit from requirements-dev ([716fe6f](https://github.com/City-of-Helsinki/yjdh/commit/716fe6f782e2b377ffb4ef9e3c110f652a00cbcb))
+* **benefit:** Replace black, flake8 and isort with ruff ([798acbc](https://github.com/City-of-Helsinki/yjdh/commit/798acbc55bfa846017b3b257fd97ef57f90ea587))
+* **deps:** Bump django from 4.2.24 to 4.2.25 in /backend/benefit ([0b5d76c](https://github.com/City-of-Helsinki/yjdh/commit/0b5d76c8323817747b0554a979adf8f57797cd70))
+* Replace black, flake8 and isort with ruff in pre-commit ([6f7c1f1](https://github.com/City-of-Helsinki/yjdh/commit/6f7c1f1fd955a2d1230abf6b98ee93d9f09bbaab))
+
+
+### Documentation
+
+* **benefit:** Update documentation on code format ([e6cdef1](https://github.com/City-of-Helsinki/yjdh/commit/e6cdef1b40919dd1a9b96ef957090889829ca318))
+
 ## [2.9.6](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.9.5...benefit-backend-v2.9.6) (2025-09-25)
 
 
