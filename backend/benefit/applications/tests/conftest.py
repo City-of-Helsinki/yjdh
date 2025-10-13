@@ -1,7 +1,7 @@
 import os
 import random
 import uuid
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 
 import factory
 import pytest
@@ -1293,5 +1293,5 @@ def non_expired_token():
         access_token="access_token",
         refresh_token="refresh_token",
         expires_in=30000,
-        created_at=datetime.now(timezone.utc),
+        created_at=timezone.now(),
     )

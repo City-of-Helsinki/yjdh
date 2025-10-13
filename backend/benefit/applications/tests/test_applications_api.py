@@ -4,7 +4,8 @@ import os
 import re
 import tempfile
 import uuid
-from datetime import date, datetime, timezone
+from datetime import date, datetime
+from datetime import timezone as tz
 from decimal import Decimal
 from unittest import mock
 
@@ -49,13 +50,10 @@ from applications.tests.factories import (
 from applications.tests.test_alteration_api import _create_application_alteration
 from calculator.models import Calculation
 from calculator.tests.conftest import fill_empty_calculation_fields
-from common.tests.conftest import *  # noqa
 from common.tests.conftest import get_client_user
 from common.utils import duration_in_months
-from companies.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
-from helsinkibenefit.tests.conftest import *  # noqa
 from messages.automatic_messages import (
     get_additional_information_email_notification_subject,
 )
@@ -64,7 +62,6 @@ from messages.tests.factories import MessageFactory
 from shared.audit_log import models as audit_models
 from shared.service_bus.enums import YtjOrganizationCode
 from terms.models import TermsOfServiceApproval
-from terms.tests.conftest import *  # noqa
 
 
 @pytest.fixture(autouse=True)
@@ -507,7 +504,7 @@ def test_application_post_success(api_client, application):
         == data["company_contact_person_phone_number"]
     )
     assert datetime.fromisoformat(data["created_at"]) == datetime(
-        2021, 6, 4, tzinfo=timezone.utc
+        2021, 6, 4, tzinfo=tz.utc
     )
     assert new_application.application_step == data["application_step"]
     assert {v.identifier for v in new_application.bases.all()} == {
@@ -1286,7 +1283,7 @@ def test_application_status_change_as_applicant(
         assert application.log_entries.all().first().to_status == to_status
         if to_status == ApplicationStatus.RECEIVED:
             assert response.data["submitted_at"] == datetime.now().replace(
-                tzinfo=timezone.utc
+                tzinfo=tz.utc
             )
         else:
             assert response.data["submitted_at"] is None
@@ -1397,9 +1394,7 @@ def test_application_status_change_as_handler(
             assert (
                 response.data["latest_decision_comment"] == expected_log_entry_comment
             )
-            assert response.data["handled_at"] == datetime.now().replace(
-                tzinfo=timezone.utc
-            )
+            assert response.data["handled_at"] == datetime.now().replace(tzinfo=tz.utc)
         else:
             assert response.data["latest_decision_comment"] is None
             assert response.data["handled_at"] is None
@@ -1570,7 +1565,7 @@ def test_application_modified_at_draft(api_client, application):
     application.status = ApplicationStatus.DRAFT
     application.save()
     data = ApplicantApplicationSerializer(application).data
-    assert data["modified_at"] == datetime(2021, 6, 4, tzinfo=timezone.utc)
+    assert data["modified_at"] == datetime(2021, 6, 4, tzinfo=tz.utc)
 
 
 @pytest.mark.parametrize(
@@ -2230,7 +2225,7 @@ def test_application_status_last_changed_at(api_client, handling_application):
     response = api_client.get(get_detail_url(handling_application))
     assert response.status_code == 200
     assert response.data["status_last_changed_at"] == datetime(
-        2021, 12, 1, tzinfo=timezone.utc
+        2021, 12, 1, tzinfo=tz.utc
     )
 
 
@@ -2462,7 +2457,7 @@ def _create_random_applications():
     for _ in range(5):
         for class_name, status in combos:
             application = class_name()
-            random_datetime = f.past_datetime(tzinfo=timezone.utc)
+            random_datetime = f.past_datetime(tzinfo=tz.utc)
             application.log_entries.filter(to_status=status).update(
                 created_at=random_datetime
             )
