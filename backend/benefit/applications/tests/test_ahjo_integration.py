@@ -52,7 +52,6 @@ from applications.services.ahjo_integration import (
 from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
 from calculator.models import Calculation
 from calculator.tests.factories import PaySubsidyFactory
-from common.tests.conftest import reseed
 from common.utils import hash_file
 from companies.tests.factories import CompanyFactory
 from helsinkibenefit.tests.conftest import *  # noqa
@@ -239,9 +238,7 @@ def test_generate_composed_template_html(mock_pdf_convert):
     )
 
 
-# Test flaking if no reseed is used
 def test_export_application_batch(application_batch):
-    reseed(12345)
     application_batch.applications.add(
         DecidedApplicationFactory.create(
             status=ApplicationStatus.ACCEPTED,
@@ -249,12 +246,10 @@ def test_export_application_batch(application_batch):
         )
     )
 
-    reseed(23456)
     application_batch.applications.add(
         DecidedApplicationFactory.create(status=ApplicationStatus.REJECTED)
     )
 
-    reseed(34567)
     application_batch.applications.add(
         DecidedApplicationFactory.create(status=ApplicationStatus.CANCELLED)
     )
@@ -268,7 +263,6 @@ def test_export_application_batch(application_batch):
         ).count()
         + 4
     )
-    reseed(777)
 
 
 @patch("applications.services.ahjo_integration.pdfkit.from_string")
