@@ -1,5 +1,4 @@
 import json
-from uuid import uuid4
 
 import pytest
 from django.http import HttpResponseRedirect
@@ -20,6 +19,8 @@ from common.urls import get_django_adfs_login_url
 
 # Headers to be used in requests to accept only application/json responses
 HEADERS_ACCEPT_APPLICATION_JSON = {"Accept": "application/json"}
+
+TEST_UUID4 = "70bb2f7b-4427-4609-b80f-44054729243b"
 
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
@@ -220,7 +221,7 @@ def test_youth_application_create_without_ssn_post_redirects_anonymous_user_to_l
         reverse("v1:youthapplication-list"),
         reverse("v1:youthapplication-create-without-ssn"),
         reverse("v1:youthapplication-fetch-employee-data"),
-        reverse("v1:youthapplication-status", kwargs={"pk": uuid4()}),
+        reverse("v1:youthapplication-status", kwargs={"pk": TEST_UUID4}),
     ],
 )
 @pytest.mark.parametrize(
