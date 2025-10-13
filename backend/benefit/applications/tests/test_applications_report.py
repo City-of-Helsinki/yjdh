@@ -29,16 +29,11 @@ from applications.tests.common import (
     check_csv_cell_list_lines_generator,
     check_csv_string_lines_generator,
 )
-from applications.tests.conftest import *  # noqa
 from applications.tests.conftest import split_lines_at_semicolon
 from applications.tests.factories import DecidedApplicationFactory, DeMinimisAidFactory
 from calculator.enums import InstalmentStatus
 from calculator.models import Instalment
 from calculator.tests.factories import PaySubsidyFactory
-from common.tests.conftest import *  # noqa
-from companies.tests.conftest import *  # noqa
-from helsinkibenefit.tests.conftest import *  # noqa
-from terms.tests.conftest import *  # noqa
 
 
 @pytest.fixture(autouse=True)

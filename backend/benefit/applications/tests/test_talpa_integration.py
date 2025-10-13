@@ -1,8 +1,9 @@
 import decimal
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
 
 import pytest
 from django.urls import reverse
+from django.utils import timezone
 
 from applications.enums import (
     ApplicationBatchStatus,
@@ -14,12 +15,9 @@ from applications.tests.common import (
     check_csv_cell_list_lines_generator,
     check_csv_string_lines_generator,
 )
-from applications.tests.conftest import *  # noqa
 from applications.tests.conftest import split_lines_at_semicolon
 from calculator.enums import InstalmentStatus
 from calculator.models import Instalment
-from common.tests.conftest import *  # noqa
-from helsinkibenefit.tests.conftest import *  # noqa
 from shared.audit_log.models import AuditLogEntry
 
 
@@ -71,7 +69,7 @@ def test_talpa_csv_output(
     if instalments_enabled:
         for i in range(number_of_instalments):
             status = InstalmentStatus.ACCEPTED
-            due_date = datetime.now(timezone.utc).date()
+            due_date = timezone.now().date()
             if i == 1:
                 status = InstalmentStatus.WAITING
                 due_date = timezone.now() + timedelta(days=181)
@@ -161,7 +159,7 @@ def test_talpa_csv_decimal(
             amount_paid=decimal.Decimal("123.45"),
             instalment_number=1,
             status=InstalmentStatus.ACCEPTED,
-            due_date=datetime.now(timezone.utc).date(),
+            due_date=timezone.now().date(),
         )
     else:
         application.calculation.calculated_benefit_amount = decimal.Decimal("123.45")
@@ -177,7 +175,7 @@ def test_talpa_csv_date(talpa_applications_csv_service_with_one_application):
     application = (
         talpa_applications_csv_service_with_one_application.get_applications().first()
     )
-    now = datetime.now(timezone.utc)
+    now = timezone.now()
     application.batch.decision_date = now
     application.batch.save()
     csv_lines = split_lines_at_semicolon(
@@ -250,7 +248,7 @@ def test_talpa_callback_success(
     if instalments_enabled:
         for i in range(number_of_instalments):
             status = InstalmentStatus.ACCEPTED
-            due_date = datetime.now(timezone.utc).date()
+            due_date = timezone.now().date()
             if i == 1:
                 status = InstalmentStatus.WAITING
                 due_date = timezone.now() + timedelta(days=181)
@@ -368,7 +366,7 @@ def test_talpa_callback_rejected_application(
 
     if instalments_enabled:
         for i in range(number_of_instalments):
-            due_date = datetime.now(timezone.utc).date()
+            due_date = timezone.now().date()
             if i == 1:
                 due_date = timezone.now() + timedelta(days=181)
 
@@ -441,7 +439,7 @@ def test_talpa_csv_applications_query(
             amount=decimal.Decimal("123.45"),
             instalment_number=1,
             status=InstalmentStatus.ACCEPTED,
-            due_date=datetime.now(timezone.utc).date(),
+            due_date=timezone.now().date(),
         )
         app.status = application_status
 
