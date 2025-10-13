@@ -514,15 +514,15 @@ def _delete_attachments(application: Application):
 
 
 def pytest_sessionfinish(session, exitstatus):
-    # Delete all files in the media folder
-    files_in_media = os.listdir(settings.MEDIA_ROOT)
-    number_of_files = len(files_in_media)
-    for file in files_in_media:
-        try:
+    try:
+        # Delete all files in the media folder
+        files_in_media = os.listdir(settings.MEDIA_ROOT)
+        number_of_files = len(files_in_media)
+        for file in files_in_media:
             os.remove(os.path.join(settings.MEDIA_ROOT, file))
-        except OSError as e:
-            print(f"Error while deleting file in media folder: {e}")  # noqa: T201
-    print(f"\nTests finished, deleted {number_of_files} files in the media folder")  # noqa: T201
+        print(f"\nTests finished, deleted {number_of_files} files in the media folder")  # noqa: T201
+    except OSError as e:
+        print(f"Error while deleting file in media folder: {e}")  # noqa: T201
 
 
 @pytest.fixture
