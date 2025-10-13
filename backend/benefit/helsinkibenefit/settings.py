@@ -546,7 +546,10 @@ HANDLERS_GROUP_NAME = "Application handlers"
 
 GDPR_API_QUERY_SCOPE = env("GDPR_API_QUERY_SCOPE")
 GDPR_API_DELETE_SCOPE = env("GDPR_API_DELETE_SCOPE")
+GDPR_API_DELETER = "helsinkibenefit.gdpr.deleter"
 GDPR_API_MODEL = "users.User"
+GDPR_API_MODEL_LOOKUP = "username"
+GDPR_API_USER_PROVIDER = "helsinkibenefit.gdpr.get_user"
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.
