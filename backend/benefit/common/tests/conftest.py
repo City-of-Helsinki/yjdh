@@ -5,7 +5,6 @@ import factory.random
 import pytest
 from django.contrib.auth.models import Permission
 from django.utils.translation import activate
-from freezegun import freeze_time
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
 
@@ -25,8 +24,6 @@ def setup_test_environment(settings):
     settings.DISABLE_TOS_APPROVAL_CHECK = False
     settings.NEXT_PUBLIC_MOCK_FLAG = False
     activate("en")
-    with freeze_time("2021-06-04"):
-        yield
 
 
 @pytest.fixture
