@@ -464,7 +464,9 @@ def test_application_submitted_at(
 
 
 @pytest.mark.django_db
-def test_application_template(api_client):
+def test_application_template(
+    api_client, mock_get_organisation_roles_and_create_company
+):
     response = api_client.get(
         reverse("v1:applicant-application-get-application-template")
     )
@@ -2422,7 +2424,9 @@ def test_application_pdf_print(api_client, application):
 
 
 @pytest.mark.django_db
-def test_application_pdf_print_denied(api_client, anonymous_client):
+def test_application_pdf_print_denied(
+    api_client, anonymous_client, mock_get_organisation_roles_and_create_company
+):
     settings.NEXT_PUBLIC_MOCK_FLAG = False  # noqa
 
     application = DecidedApplicationFactory()
