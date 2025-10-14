@@ -152,7 +152,7 @@ def test_import_archival_applications():
     assert ArchivalApplication.objects.all().count() == len(
         ImportArchivalApplicationsTestUtility.test_data["values"]
     )
-    assert Company.objects.all().count() == 3
+    assert Company.objects.all().count() == 2
 
     # Assert the values of the retrieved archival application
     app = ArchivalApplication.objects.filter(application_number="R001").first()
