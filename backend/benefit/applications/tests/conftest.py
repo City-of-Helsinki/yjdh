@@ -421,7 +421,7 @@ def ahjo_open_case_top_level_dict(decided_application):
 
     return {
         "Title": "a" * 512,
-        "Acquired": application.created_at.isoformat(),
+        "Acquired": application.created_at.isoformat("T", "seconds"),
         "ClassificationCode": "02 05 01 00",
         "ClassificationTitle": "Kunnan myöntämät avustukset",
         "Language": language,
