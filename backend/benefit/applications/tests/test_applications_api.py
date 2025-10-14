@@ -2206,7 +2206,7 @@ def test_application_number(api_client, application):
 
 
 @pytest.mark.django_db
-def test_application_api_before_accept_tos(api_client, application):
+def test_application_api_before_accept_tos(api_client, application, terms_of_service):
     # Clear user TOS approval
     TermsOfServiceApproval.objects.all().delete()
 
