@@ -36,14 +36,6 @@ from calculator.models import Instalment
 from calculator.tests.factories import PaySubsidyFactory
 
 
-@pytest.fixture(autouse=True)
-def run_before_and_after_tests():
-    from applications.tests.before_after import before_test_reseed
-
-    before_test_reseed([])
-    yield
-
-
 def get_filenames_grouped_by_extension_from_zip(
     archive: ZipFile,
 ) -> Dict[str, List[str]]:
@@ -134,6 +126,7 @@ def _create_applications_for_export():
     return (application1, application2, application3, application4)
 
 
+@pytest.mark.django_db
 @pytest.mark.skip(
     reason=(
         "This test fails in deploy pipeline - DETAIL:  Key"
@@ -208,6 +201,7 @@ def test_applications_csv_export_new_applications(handler_api_client):
     assert ApplicationBatch.objects.all().count() == 2
 
 
+@pytest.mark.django_db
 def test_application_alteration_csv_export(
     application_alteration, handler_api_client, decided_application
 ):
@@ -350,6 +344,7 @@ def test_applications_csv_export_with_date_range(handler_api_client):
     )
 
 
+@pytest.mark.django_db
 def test_sensitive_data_removed_csv_output(sanitized_csv_service_with_one_application):
     csv_lines = split_lines_at_semicolon(
         sanitized_csv_service_with_one_application.get_csv_string()
@@ -366,6 +361,7 @@ def test_sensitive_data_removed_csv_output(sanitized_csv_service_with_one_applic
         assert col_heading not in csv_lines[0]
 
 
+@pytest.mark.django_db
 def test_power_bi_report_csv_output(application_powerbi_csv_service):
     csv_lines = split_lines_at_semicolon(
         application_powerbi_csv_service.get_csv_string()
@@ -472,6 +468,7 @@ def test_power_bi_report_csv_output(application_powerbi_csv_service):
         )
 
 
+@pytest.mark.django_db
 def test_application_alteration_csv_output(
     application_alteration_csv_service, settings
 ):
@@ -584,6 +581,7 @@ def test_application_alteration_csv_output(
     )
 
 
+@pytest.mark.django_db
 def test_write_application_alterations_csv_file(
     application_alteration_csv_service, tmp_path
 ):
@@ -603,6 +601,7 @@ def test_write_application_alterations_csv_file(
         (True,),
     ],
 )
+@pytest.mark.django_db
 def test_talpa_applications_csv_output(
     talpa_applications_csv_service_with_one_application, instalments_enabled, settings
 ):
@@ -677,6 +676,7 @@ def test_talpa_applications_csv_output(
     assert csv_lines[1][17] == f'"{application.batch.p2p_checker_name}"'
 
 
+@pytest.mark.django_db
 def test_applications_csv_output(applications_csv_service):  # noqa: C901
     csv_lines = split_lines_at_semicolon(applications_csv_service.get_csv_string())
     assert csv_lines[0][0] == '\ufeff"Hakemusnumero"'
@@ -780,18 +780,21 @@ def test_applications_csv_output(applications_csv_service):  # noqa: C901
             )
 
 
+@pytest.mark.django_db
 def test_applications_csv_cell_list_lines_generator(applications_csv_service):
     check_csv_cell_list_lines_generator(
         applications_csv_service, expected_row_count_with_header=3
     )
 
 
+@pytest.mark.django_db
 def test_applications_csv_string_lines_generator(applications_csv_service):
     check_csv_string_lines_generator(
         applications_csv_service, expected_row_count_with_header=3
     )
 
 
+@pytest.mark.django_db
 def test_applications_csv_two_ahjo_rows(
     applications_csv_service_with_one_application, tmp_path
 ):
@@ -912,6 +915,7 @@ def test_applications_csv_two_ahjo_rows(
     )
 
 
+@pytest.mark.django_db
 def test_applications_csv_too_many_de_minimis_aids(
     applications_csv_service_with_one_application,
 ):
@@ -924,6 +928,7 @@ def test_applications_csv_too_many_de_minimis_aids(
     assert csv_lines[1][-1] == '"osa de minimis -tuista puuttuu raportilta"'
 
 
+@pytest.mark.django_db
 def test_applications_csv_too_many_pay_subsidies(
     applications_csv_service_with_one_application,
 ):
@@ -967,6 +972,7 @@ def test_applications_csv_too_many_pay_subsidies(
     )
 
 
+@pytest.mark.django_db
 def test_applications_csv_non_ascii_characters(
     applications_csv_service_with_one_application,
 ):
@@ -980,6 +986,7 @@ def test_applications_csv_non_ascii_characters(
     assert csv_lines[1][12] == '"test äöÄÖtest"'  # string is quoted
 
 
+@pytest.mark.django_db
 def test_applications_csv_delimiter(applications_csv_service_with_one_application):
     application = applications_csv_service_with_one_application.get_applications()[0]
     application.company_name = "test;12"
@@ -999,6 +1006,7 @@ def test_applications_csv_missing_data(applications_csv_with_no_applications):
     assert csv_lines[1][0] == '"Ei löytynyt ehdot täyttäviä hakemuksia"'
 
 
+@pytest.mark.django_db
 def test_applications_csv_monthly_amount_override(
     applications_csv_service_with_one_application,
 ):
@@ -1025,6 +1033,7 @@ def test_applications_csv_monthly_amount_override(
     assert csv_lines[1][current_total_col] == "200.00"
 
 
+@pytest.mark.django_db
 def test_write_applications_csv_file(applications_csv_service, tmp_path):
     application = applications_csv_service.get_applications()[0]
     application.company_name = "test äöÄÖtest"

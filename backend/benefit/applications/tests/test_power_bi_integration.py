@@ -1,9 +1,11 @@
 import csv
 from io import StringIO
 
+import pytest
 from django.urls import reverse
 
 
+@pytest.mark.django_db
 def test_get_power_bi_data(power_bi_client, decided_application_with_decision_date):
     batch = decided_application_with_decision_date.batch
     url = (

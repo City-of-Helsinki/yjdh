@@ -5,6 +5,7 @@ from rest_framework.reverse import reverse
 # settings_route = reverse("ahjo-setting-detail", args=[name_value])
 
 
+@pytest.mark.django_db
 def test_get_decision_maker_ahjo_setting_for_applicant(api_client):
     response = api_client.get(
         reverse("ahjo-setting-detail", args=["ahjo_decision_maker"])

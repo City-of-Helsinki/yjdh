@@ -6,7 +6,6 @@ import pytest
 from django.contrib.auth.models import Permission
 from django.utils.translation import activate
 from freezegun import freeze_time
-from langdetect import DetectorFactory
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
 
@@ -25,9 +24,6 @@ def setup_test_environment(settings):
     settings.LANGUAGE_CODE = "fi"
     settings.DISABLE_TOS_APPROVAL_CHECK = False
     settings.NEXT_PUBLIC_MOCK_FLAG = False
-    factory.random.reseed_random("777")
-    DetectorFactory.seed = 0
-    random.seed(777)
     activate("en")
     with freeze_time("2021-06-04"):
         yield

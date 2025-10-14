@@ -64,14 +64,6 @@ from shared.service_bus.enums import YtjOrganizationCode
 from terms.models import TermsOfServiceApproval
 
 
-@pytest.fixture(autouse=True)
-def run_before_and_after_tests():
-    from applications.tests.before_after import before_test_reseed
-
-    before_test_reseed(["test_application_history_change_sets_for_handler"])
-    yield
-
-
 def get_detail_url(application):
     return reverse("v1:applicant-application-detail", kwargs={"pk": application.id})
 
@@ -89,6 +81,7 @@ def get_handler_detail_url(application):
         "v1:handler-application-simplified-application-list",
     ],
 )
+@pytest.mark.django_db
 def test_applications_unauthenticated(anonymous_client, application, view_name):
     response = anonymous_client.get(reverse(view_name))
     assert response.status_code == 403
@@ -108,6 +101,7 @@ def test_applications_unauthenticated(anonymous_client, application, view_name):
         "v1:applicant-application-simplified-application-list",
     ],
 )
+@pytest.mark.django_db
 def test_applications_unauthorized(
     api_client,
     anonymous_application,
@@ -119,12 +113,14 @@ def test_applications_unauthorized(
     assert response.status_code == 200
 
 
+@pytest.mark.django_db
 def test_applications_list(api_client, application):
     response = api_client.get(reverse("v1:applicant-application-list"))
     assert len(response.data) == 1
     assert response.status_code == 200
 
 
+@pytest.mark.django_db
 def test_applications_list_with_filter(api_client, application):
     application.status = ApplicationStatus.DRAFT
     application.save()
@@ -144,6 +140,7 @@ def test_applications_list_with_filter(api_client, application):
     assert response.status_code == 200
 
 
+@pytest.mark.django_db
 def test_applications_filter_by_batch(
     handler_api_client, application_batch, application
 ):
@@ -154,6 +151,7 @@ def test_applications_filter_by_batch(
     assert response.status_code == 200
 
 
+@pytest.mark.django_db
 def test_applications_filter_by_ssn(api_client, application, association_application):
     assert (
         application.employee.social_security_number
@@ -169,6 +167,7 @@ def test_applications_filter_by_ssn(api_client, application, association_applica
     assert response.status_code == 200
 
 
+@pytest.mark.django_db
 def test_applications_filter_by_employee_first_name(api_client, application):
     url = (
         reverse("v1:applicant-application-list")
@@ -180,6 +179,7 @@ def test_applications_filter_by_employee_first_name(api_client, application):
     assert response.status_code == 200
 
 
+@pytest.mark.django_db
 def test_applications_filter_by_employee_last_name(api_client, application):
     url = (
         reverse("v1:applicant-application-list")
@@ -191,6 +191,7 @@ def test_applications_filter_by_employee_last_name(api_client, application):
     assert response.status_code == 200
 
 
+@pytest.mark.django_db
 def test_applications_filter_by_application_number(
     handler_api_client, received_application
 ):
@@ -207,6 +208,7 @@ def test_applications_filter_by_application_number(
     assert response.status_code == 200
 
 
+@pytest.mark.django_db
 def test_applications_simple_list_as_handler(handler_api_client, received_application):
     response = handler_api_client.get(
         reverse("v1:handler-application-simplified-application-list")
@@ -220,6 +222,7 @@ def test_applications_simple_list_as_handler(handler_api_client, received_applic
         assert key in response.data[0]
 
 
+@pytest.mark.django_db
 def test_applications_simple_list_as_applicant(api_client, received_application):
     response = api_client.get(
         reverse("v1:applicant-application-simplified-application-list")
@@ -244,6 +247,7 @@ def test_applications_simple_list_as_applicant(api_client, received_application)
         ("status", "last_modified_at", "employee"),
     ],
 )
+@pytest.mark.django_db
 def test_applications_simple_list_exclude_more(
     handler_api_client, received_application, exclude_fields
 ):
@@ -254,6 +258,7 @@ def test_applications_simple_list_exclude_more(
     assert response.status_code == 200
 
 
+@pytest.mark.django_db
 def test_applications_simple_list_filter(
     handler_api_client, received_application, handling_application
 ):
@@ -268,6 +273,7 @@ def test_applications_simple_list_filter(
     assert response.status_code == 200
 
 
+@pytest.mark.django_db
 def test_applications_filter_archived_for_applicant(
     api_client, mock_get_organisation_roles_and_create_company
 ):
@@ -331,6 +337,7 @@ def test_applications_filter_archived_for_applicant(
 
 
 @pytest.mark.parametrize("url_func", [get_detail_url, get_handler_detail_url])
+@pytest.mark.django_db
 def test_application_single_read_unauthenticated(
     anonymous_client, application, url_func
 ):
@@ -338,6 +345,7 @@ def test_application_single_read_unauthenticated(
     assert response.status_code == 403
 
 
+@pytest.mark.django_db
 def test_application_single_read_unauthorized(
     api_client, anonymous_application, mock_get_organisation_roles_and_create_company
 ):
@@ -360,6 +368,7 @@ def test_application_single_read_unauthorized(
         (ApplicationStatus.CANCELLED, ApplicationStatus.CANCELLED),
     ],
 )
+@pytest.mark.django_db
 def test_application_single_read_without_ahjo_decision_as_applicant(
     api_client, application, actual_status, visible_status
 ):
@@ -394,6 +403,7 @@ def test_application_single_read_without_ahjo_decision_as_applicant(
         (ApplicationStatus.REJECTED, ApplicationStatus.REJECTED),
     ],
 )
+@pytest.mark.django_db
 def test_application_single_read_with_ahjo_decision_as_applicant(
     api_client, application, actual_status, visible_status
 ):
@@ -427,6 +437,7 @@ def test_application_single_read_with_ahjo_decision_as_applicant(
         (ApplicationStatus.CANCELLED, 200),
     ],
 )
+@pytest.mark.django_db
 def test_application_single_read_as_handler(
     handler_api_client, application, status, expected_result
 ):
@@ -440,6 +451,7 @@ def test_application_single_read_as_handler(
         assert "batch" in response.data
 
 
+@pytest.mark.django_db
 def test_application_submitted_at(
     api_client, application, received_application, handling_application
 ):
@@ -451,6 +463,7 @@ def test_application_submitted_at(
     assert response.data["submitted_at"].isoformat() == "2021-06-04T00:00:00+00:00"
 
 
+@pytest.mark.django_db
 def test_application_template(api_client):
     response = api_client.get(
         reverse("v1:applicant-application-get-application-template")
@@ -460,6 +473,7 @@ def test_application_template(api_client):
     )  # as of 2021-06-16, just a dummy implementation exists
 
 
+@pytest.mark.django_db
 def test_application_post_success_unauthenticated(anonymous_client, application):
     data = ApplicantApplicationSerializer(application).data
     application.delete()
@@ -480,6 +494,7 @@ def test_application_post_success_unauthenticated(anonymous_client, application)
     assert audit_event["target"]["type"] == "Application"
 
 
+@pytest.mark.django_db
 def test_application_post_success(api_client, application):
     """
     Create a new application
@@ -533,6 +548,7 @@ def test_application_post_success(api_client, application):
     assert audit_event["operation"] == "CREATE"
 
 
+@pytest.mark.django_db
 def test_application_post_unfinished(api_client, application):
     """
     Create a new application with partial information
@@ -594,6 +610,7 @@ def test_application_post_unfinished(api_client, application):
         ("sv", "Felaktigt IBAN-kontonummer"),
     ],
 )
+@pytest.mark.django_db
 def test_application_post_invalid_data(
     api_client, application, language, company_bank_account_number_validation_error
 ):
@@ -634,6 +651,7 @@ def test_application_post_invalid_data(
     assert len(response.data["de_minimis_aid_set"]) == 2
 
 
+@pytest.mark.django_db
 def test_application_post_invalid_employee_data(api_client, application):
     data = ApplicantApplicationSerializer(application).data
     application.delete()
@@ -671,6 +689,7 @@ def test_application_post_invalid_employee_data(api_client, application):
     )  # Check if the error still there
 
 
+@pytest.mark.django_db
 def test_application_put_edit_fields_unauthenticated(anonymous_client, application):
     data = ApplicantApplicationSerializer(application).data
     data["company_contact_person_phone_number"] = "+358505658789"
@@ -681,6 +700,7 @@ def test_application_put_edit_fields_unauthenticated(anonymous_client, applicati
     assert response.status_code == 403
 
 
+@pytest.mark.django_db
 def test_application_put_edit_fields_unauthorized(
     api_client, anonymous_application, mock_get_organisation_roles_and_create_company
 ):
@@ -699,6 +719,7 @@ def test_application_put_edit_fields_unauthorized(
     assert audit_event["operation"] == "UPDATE"
 
 
+@pytest.mark.django_db
 def test_application_put_edit_fields(api_client, application):
     """
     modify existing application
@@ -723,6 +744,7 @@ def test_application_put_edit_fields(api_client, application):
     assert audit_event["operation"] == "UPDATE"
 
 
+@pytest.mark.django_db
 def test_application_put_edit_employee(api_client, application):
     """
     modify existing application
@@ -741,6 +763,7 @@ def test_application_put_edit_employee(api_client, application):
     assert old_employee_pk == application.employee.pk
 
 
+@pytest.mark.django_db
 def test_application_put_read_only_fields(api_client, application):
     """
     company info that is retrieved from official (YTJ or other) sources is not editable by applicant/handler
@@ -772,6 +795,7 @@ def test_application_put_read_only_fields(api_client, application):
     )
 
 
+@pytest.mark.django_db
 def test_application_put_invalid_data(api_client, application):
     data = ApplicantApplicationSerializer(application).data
     data["de_minimis_aid_set"][0]["amount"] = "300001.00"  # value too high
@@ -795,6 +819,7 @@ def test_application_put_invalid_data(api_client, application):
     assert len(response.data["de_minimis_aid_set"]) == 2
 
 
+@pytest.mark.django_db
 def test_application_replace_de_minimis_aid(api_client, application):
     data = ApplicantApplicationSerializer(application).data
 
@@ -819,6 +844,7 @@ def test_application_replace_de_minimis_aid(api_client, application):
     assert new_data["de_minimis_aid_set"] == data["de_minimis_aid_set"]
 
 
+@pytest.mark.django_db
 def test_application_edit_de_minimis_aid(api_client, application):
     data = ApplicantApplicationSerializer(application).data
 
@@ -839,6 +865,7 @@ def test_application_edit_de_minimis_aid(api_client, application):
     assert response.data["de_minimis_aid_set"][1]["ordering"] == 1
 
 
+@pytest.mark.django_db
 def test_application_delete_de_minimis_aid(api_client, application):
     data = ApplicantApplicationSerializer(application).data
 
@@ -853,6 +880,7 @@ def test_application_delete_de_minimis_aid(api_client, application):
     assert response.data["de_minimis_aid_set"] == []
 
 
+@pytest.mark.django_db
 def test_application_edit_de_minimis_aid_too_high(api_client, application):
     data = ApplicantApplicationSerializer(application).data
 
@@ -872,6 +900,7 @@ def test_application_edit_de_minimis_aid_too_high(api_client, application):
     assert previous_aid == data_after["de_minimis_aid_set"]
 
 
+@pytest.mark.django_db
 def test_application_edit_benefit_type_business(api_client, application):
     data = ApplicantApplicationSerializer(application).data
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
@@ -890,6 +919,7 @@ def test_application_edit_benefit_type_business(api_client, application):
     }
 
 
+@pytest.mark.django_db
 def test_application_edit_benefit_type_business_no_pay_subsidy(api_client, application):
     data = ApplicantApplicationSerializer(application).data
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
@@ -908,6 +938,7 @@ def test_application_edit_benefit_type_business_no_pay_subsidy(api_client, appli
     }
 
 
+@pytest.mark.django_db
 def test_application_edit_benefit_type_business_association(
     api_client, association_application, mock_get_organisation_roles_and_create_company
 ):
@@ -936,6 +967,7 @@ def test_application_edit_benefit_type_business_association(
     }
 
 
+@pytest.mark.django_db
 def test_application_edit_benefit_type_business_association_with_apprenticeship(
     api_client, association_application
 ):
@@ -957,6 +989,7 @@ def test_application_edit_benefit_type_business_association_with_apprenticeship(
     }
 
 
+@pytest.mark.django_db
 def test_application_edit_benefit_type_non_business(
     api_client, association_application
 ):
@@ -974,6 +1007,7 @@ def test_application_edit_benefit_type_non_business(
     ]
 
 
+@pytest.mark.django_db
 def test_application_edit_benefit_type_non_business_invalid(
     api_client, association_application
 ):
@@ -990,6 +1024,7 @@ def test_application_edit_benefit_type_non_business_invalid(
     assert response.status_code == 400
 
 
+@pytest.mark.django_db
 def test_association_immediate_manager_check_valid(api_client, association_application):
     data = ApplicantApplicationSerializer(association_application).data
     data["association_immediate_manager_check"] = True  # valid value for associations
@@ -1040,6 +1075,7 @@ def test_application_delete(api_client, application):
         ),  # past year is allowed, as the application is not submitted
     ],
 )
+@pytest.mark.django_db
 def test_application_date_range(
     api_client, application, benefit_type, start_date, end_date, status_code
 ):
@@ -1084,6 +1120,7 @@ def test_application_date_range(
         ),  # start_date in next year (relative to freeze_time date)
     ],
 )
+@pytest.mark.django_db
 def test_application_date_range_on_submit(
     request, api_client, application, start_date, end_date, status_code
 ):
@@ -1108,6 +1145,7 @@ def test_application_date_range_on_submit(
     assert submit_response.status_code == status_code
 
 
+@pytest.mark.django_db
 def test_application_has_default_ahjo_status_after_submit(
     request, api_client, application
 ):
@@ -1137,6 +1175,7 @@ def test_application_has_default_ahjo_status_after_submit(
         (YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT, False, [], None, 200),
     ],
 )
+@pytest.mark.django_db
 def test_submit_application_without_de_minimis_aid(
     request,
     api_client,
@@ -1189,6 +1228,7 @@ def test_submit_application_without_de_minimis_aid(
         (PaySubsidyGranted.NOT_GRANTED, True, 200, 400),
     ],
 )
+@pytest.mark.django_db
 def test_apprenticeship_program_validation_on_submit(
     request,
     api_client,
@@ -1247,6 +1287,7 @@ def test_apprenticeship_program_validation_on_submit(
         (ApplicationStatus.REJECTED, ApplicationStatus.DRAFT, 400),
     ],
 )
+@pytest.mark.django_db
 def test_application_status_change_as_applicant(
     request, api_client, application, from_status, to_status, expected_code
 ):
@@ -1321,6 +1362,7 @@ def test_application_status_change_as_applicant(
     ],
 )
 @pytest.mark.parametrize("log_entry_comment", [None, "", "comment"])
+@pytest.mark.django_db
 @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
 def test_application_status_change_as_handler(
     request,
@@ -1402,6 +1444,7 @@ def test_application_status_change_as_handler(
         assert application.log_entries.all().count() == 0
 
 
+@pytest.mark.django_db
 def test_application_accept(
     request,
     handler_api_client,
@@ -1444,6 +1487,7 @@ def test_application_accept(
         ("KISSA123", True, True),
     ],
 )
+@pytest.mark.django_db
 def test_application_with_batch_back_to_handling(
     request,
     handler_api_client,
@@ -1494,6 +1538,7 @@ def test_application_with_batch_back_to_handling(
         (ApplicationStatus.HANDLING, ApplicationStatus.CANCELLED, True),
     ],
 )
+@pytest.mark.django_db
 def test_application_status_change_as_handler_auto_assign_handler(
     request, handler_api_client, application, from_status, to_status, auto_assign
 ):
@@ -1558,6 +1603,7 @@ def add_attachments_to_application(request, application, is_handler_application=
         _add_pdf_attachment(request, application, AttachmentType.FULL_APPLICATION)
 
 
+@pytest.mark.django_db
 def test_application_modified_at_draft(api_client, application):
     """
     DRAFT application's last_modified_at is visible to applicant
@@ -1578,6 +1624,7 @@ def test_application_modified_at_draft(api_client, application):
         ApplicationStatus.REJECTED,
     ],
 )
+@pytest.mark.django_db
 def test_application_modified_at_non_draft(api_client, application, status):
     """
     non-DRAFT application's last_modified_at is not visible to applicant
@@ -1600,6 +1647,7 @@ def test_application_modified_at_non_draft(api_client, application, status):
         (PaySubsidyGranted.GRANTED, 50, 1, 400),  # invalid percent
     ],
 )
+@pytest.mark.django_db
 def test_application_pay_subsidy(
     api_client,
     application,
@@ -1622,6 +1670,7 @@ def test_application_pay_subsidy(
         assert BenefitType.SALARY_BENEFIT in response.data["available_benefit_types"]
 
 
+@pytest.mark.django_db
 def test_attachment_upload_too_big(api_client, application, settings):
     settings.ENABLE_CLAMAV = False
     application.status = ApplicationStatus.DRAFT
@@ -1649,6 +1698,7 @@ def test_attachment_upload_too_big(api_client, application, settings):
     assert len(application.attachments.all()) == 0
 
 
+@pytest.mark.django_db
 def test_attachment_upload_and_delete(api_client, application, settings):
     settings.ENABLE_CLAMAV = False
     image = Image.new("RGB", (100, 100))
@@ -1777,6 +1827,7 @@ def test_attachment_delete_unauthorized(
         (ApplicationStatus.REJECTED, 403),
     ],
 )
+@pytest.mark.django_db
 def test_attachment_delete(request, api_client, application, status, expected_code):
     application.status = status
     application.save()
@@ -1806,6 +1857,7 @@ def test_attachment_delete(request, api_client, application, status, expected_co
         (ApplicationStatus.REJECTED, 403),
     ],
 )
+@pytest.mark.django_db
 def test_pdf_attachment_upload_and_download_as_applicant(
     request, api_client, application, status, upload_result, settings
 ):
@@ -1842,6 +1894,7 @@ def test_pdf_attachment_upload_and_download_as_applicant(
         (ApplicationStatus.REJECTED, 403),
     ],
 )
+@pytest.mark.django_db
 def test_pdf_attachment_upload_and_download_as_handler(
     request, handler_api_client, application, status, upload_result, settings
 ):
@@ -1906,6 +1959,7 @@ def test_attachment_download_unauthorized(
         ApplicationStatus.REJECTED,
     ],
 )
+@pytest.mark.django_db
 def test_attachment_upload_invalid_status(request, api_client, application, status):
     application.status = status
     application.save()
@@ -1915,6 +1969,7 @@ def test_attachment_upload_invalid_status(request, api_client, application, stat
 
 
 @pytest.mark.parametrize("extension", ["pdf", "png", "jpg"])
+@pytest.mark.django_db
 def test_invalid_attachment_upload(api_client, application, extension, settings):
     settings.ENABLE_CLAMAV = False
     tmp_file = tempfile.NamedTemporaryFile(suffix=f".{extension}")
@@ -1936,6 +1991,7 @@ def test_invalid_attachment_upload(api_client, application, extension, settings)
     assert len(application.attachments.all()) == 0
 
 
+@pytest.mark.django_db
 def test_too_many_attachments(request, api_client, application, settings):
     settings.ENABLE_CLAMAV = False
     for _ in range(AttachmentSerializer.MAX_ATTACHMENTS_PER_APPLICATION):
@@ -1950,6 +2006,7 @@ def test_too_many_attachments(request, api_client, application, settings):
     )
 
 
+@pytest.mark.django_db
 def test_attachment_requirements(
     api_client, application, mock_get_organisation_roles_and_create_company
 ):
@@ -1980,6 +2037,7 @@ def _submit_application(api_client, application):
         )
 
 
+@pytest.mark.django_db
 def test_attachment_validation(request, api_client, application, settings):
     settings.ENABLE_CLAMAV = False
     application.benefit_type = BenefitType.EMPLOYMENT_BENEFIT
@@ -2022,6 +2080,7 @@ def test_attachment_validation(request, api_client, application, settings):
     assert application.status == ApplicationStatus.RECEIVED
 
 
+@pytest.mark.django_db
 def test_purge_extra_attachments(request, api_client, application, settings):
     settings.ENABLE_CLAMAV = False
     application.benefit_type = BenefitType.SALARY_BENEFIT
@@ -2053,6 +2112,7 @@ def test_purge_extra_attachments(request, api_client, application, settings):
     assert application.attachments.count() == 6
 
 
+@pytest.mark.django_db
 def test_employee_consent_upload(request, api_client, application, settings):
     settings.ENABLE_CLAMAV = False
     application.benefit_type = BenefitType.EMPLOYMENT_BENEFIT
@@ -2121,6 +2181,7 @@ def test_employee_consent_upload(request, api_client, application, settings):
     assert application.status == ApplicationStatus.RECEIVED
 
 
+@pytest.mark.django_db
 def test_application_number(api_client, application):
     assert Application.objects.count() == 1
 
@@ -2142,6 +2203,7 @@ def test_application_number(api_client, application):
     assert next_application.application_number == application.application_number + 2
 
 
+@pytest.mark.django_db
 def test_application_api_before_accept_tos(api_client, application):
     # Clear user TOS approval
     TermsOfServiceApproval.objects.all().delete()
@@ -2197,6 +2259,7 @@ def test_application_api_before_accept_tos(api_client, application):
     )
 
 
+@pytest.mark.django_db
 def test_application_additional_information_needed_by(api_client, handling_application):
     response = api_client.get(get_detail_url(handling_application))
     assert response.status_code == 200
@@ -2215,6 +2278,7 @@ def test_application_additional_information_needed_by(api_client, handling_appli
     assert response.data["additional_information_needed_by"] == date(2021, 12, 8)
 
 
+@pytest.mark.django_db
 def test_application_status_last_changed_at(api_client, handling_application):
     with freeze_time("2021-12-01"):
         ApplicationLogEntry.objects.create(
@@ -2229,6 +2293,7 @@ def test_application_status_last_changed_at(api_client, handling_application):
     )
 
 
+@pytest.mark.django_db
 def test_handler_application_default_ordering(handler_api_client):
     _create_random_applications()
 
@@ -2263,6 +2328,7 @@ def test_handler_application_default_ordering(handler_api_client):
     assert expected_application_ids == returned_application_ids
 
 
+@pytest.mark.django_db
 def test_handler_application_order_by(handler_api_client):
     _create_random_applications()
     key = "application_number"
@@ -2298,6 +2364,7 @@ def test_handler_application_order_by(handler_api_client):
     assert expected_application_values == returned_application_values
 
 
+@pytest.mark.django_db
 def test_handler_application_exlude_batched(handler_api_client):
     batch = ApplicationBatchFactory()
     apps = [DecidedApplicationFactory(), DecidedApplicationFactory()]
@@ -2318,6 +2385,7 @@ def test_handler_application_exlude_batched(handler_api_client):
     assert len(response.data) == 1
 
 
+@pytest.mark.django_db
 def test_handler_application_filter_archived(handler_api_client):
     apps = [
         DecidedApplicationFactory(),
@@ -2342,6 +2410,7 @@ def test_handler_application_filter_archived(handler_api_client):
     assert response.data[0]["archived"]
 
 
+@pytest.mark.django_db
 def test_application_pdf_print(api_client, application):
     settings.NEXT_PUBLIC_MOCK_FLAG = False  # noqa
 
@@ -2352,6 +2421,7 @@ def test_application_pdf_print(api_client, application):
     assert response.status_code == 200
 
 
+@pytest.mark.django_db
 def test_application_pdf_print_denied(api_client, anonymous_client):
     settings.NEXT_PUBLIC_MOCK_FLAG = False  # noqa
 
@@ -2371,6 +2441,7 @@ def test_application_pdf_print_denied(api_client, anonymous_client):
     assert response.status_code == 403
 
 
+@pytest.mark.django_db
 def test_application_alterations(api_client, handler_api_client, application):
     cancelled_alteration = _create_application_alteration(application)
     cancelled_alteration.state = ApplicationAlterationState.CANCELLED
@@ -2398,6 +2469,7 @@ def test_application_alterations(api_client, handler_api_client, application):
     assert len(response.data["alterations"]) == 3
 
 
+@pytest.mark.django_db
 def test_applications_with_unread_messages(api_client, handler_api_client, application):
     response = api_client.get(
         reverse("v1:handler-application-with-unread-messages"),
@@ -2423,6 +2495,7 @@ def test_applications_with_unread_messages(api_client, handler_api_client, appli
     assert len(response.data) == 0
 
 
+@pytest.mark.django_db
 def test_require_additional_information(handler_api_client, application, mailoutbox):
     application.status = ApplicationStatus.HANDLING
     application.save()

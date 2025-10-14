@@ -1,5 +1,6 @@
 from datetime import date
 
+import pytest
 from django.core.management import call_command
 
 from applications.models import ArchivalApplication
@@ -142,6 +143,7 @@ class ImportArchivalApplicationsTestUtility:
             company.save()
 
 
+@pytest.mark.django_db
 def test_import_archival_applications():
     assert ArchivalApplication.objects.all().count() == 0
     ImportArchivalApplicationsTestUtility.create_companies_for_archival_applications()

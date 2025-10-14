@@ -65,14 +65,6 @@ DE_MINIMIS_AID_PARTIAL_TEXT = (
 )
 
 
-@pytest.fixture(autouse=True)
-def run_before_and_after_tests():
-    from applications.tests.before_after import before_test_reseed
-
-    before_test_reseed([])
-    yield
-
-
 def _assert_html_content(html, include_keys=(), excluded_keys=()):
     for k in include_keys:
         assert k in html
@@ -101,6 +93,7 @@ def _assert_html_content(html, include_keys=(), excluded_keys=()):
         (YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT, "oy", True),
     ],
 )
+@pytest.mark.django_db
 @patch("applications.services.ahjo_integration.pdfkit.from_string")
 def test_generate_single_approved_template_html(
     mock_pdf_convert,
@@ -143,6 +136,7 @@ def test_generate_single_approved_template_html(
     ) == should_show_de_minimis_aid_footer
 
 
+@pytest.mark.django_db
 @patch("applications.services.ahjo_integration.pdfkit.from_string")
 def test_generate_single_declined_template_html(mock_pdf_convert):
     mock_pdf_convert.return_value = {}
@@ -173,6 +167,7 @@ def test_generate_single_declined_template_html(mock_pdf_convert):
     )
 
 
+@pytest.mark.django_db
 @patch("applications.services.ahjo_integration.pdfkit.from_string")
 def test_generate_composed_template_html(mock_pdf_convert):
     mock_pdf_convert.return_value = {}
@@ -238,6 +233,7 @@ def test_generate_composed_template_html(mock_pdf_convert):
     )
 
 
+@pytest.mark.django_db
 def test_export_application_batch(application_batch):
     application_batch.applications.add(
         DecidedApplicationFactory.create(
@@ -265,6 +261,7 @@ def test_export_application_batch(application_batch):
     )
 
 
+@pytest.mark.django_db
 @patch("applications.services.ahjo_integration.pdfkit.from_string")
 def test_multiple_benefit_per_application(mock_pdf_convert):
     mock_pdf_convert.return_value = {}
@@ -323,6 +320,7 @@ def test_multiple_benefit_per_application(mock_pdf_convert):
     )
 
 
+@pytest.mark.django_db
 def test_prepare_ahjo_file_response(decided_application):
     attachment = decided_application.attachments.first()
     response = AhjoAttachmentView._prepare_file_response(attachment)
@@ -342,6 +340,7 @@ def attachment(decided_application):
     return decided_application.attachments.first()
 
 
+@pytest.mark.django_db
 def test_get_attachment_success(ahjo_client, attachment, ahjo_user_token, settings):
     settings.NEXT_PUBLIC_MOCK_FLAG = True
     url = reverse("ahjo_attachment_url", kwargs={"uuid": attachment.id})
@@ -359,6 +358,7 @@ def test_get_attachment_success(ahjo_client, attachment, ahjo_user_token, settin
     )
 
 
+@pytest.mark.django_db
 def test_get_attachment_not_found(ahjo_client, ahjo_user_token, settings):
     settings.NEXT_PUBLIC_MOCK_FLAG = True
     id = uuid.uuid4()
@@ -370,6 +370,7 @@ def test_get_attachment_not_found(ahjo_client, ahjo_user_token, settings):
     assert response.status_code == 404
 
 
+@pytest.mark.django_db
 def test_get_attachment_unauthorized_wrong_or_missing_credentials(
     anonymous_client, attachment, settings
 ):
@@ -387,6 +388,7 @@ def test_get_attachment_unauthorized_wrong_or_missing_credentials(
     assert response.status_code == 401
 
 
+@pytest.mark.django_db
 def test_get_attachment_unauthorized_ip_not_allowed(
     ahjo_client, ahjo_user_token, attachment, settings
 ):
@@ -546,6 +548,7 @@ def test_ahjo_callback_success(
         (AhjoDecisionUpdateType.REMOVED, AhjoStatusEnum.REMOVED_IN_AHJO),
     ],
 )
+@pytest.mark.django_db
 def test_subscribe_to_decisions_callback_success(
     ahjo_client,
     ahjo_user_token,
@@ -674,6 +677,7 @@ def test_ahjo_callback_failure(
         (AhjoRequestType.DELETE_APPLICATION,),
     ],
 )
+@pytest.mark.django_db
 def test_ahjo_callback_unauthorized_wrong_or_missing_credentials(
     anonymous_client, decided_application, settings, request_type
 ):
@@ -700,6 +704,7 @@ def test_ahjo_callback_unauthorized_wrong_or_missing_credentials(
         (AhjoRequestType.DELETE_APPLICATION,),
     ],
 )
+@pytest.mark.django_db
 def test_ahjo_callback_unauthorized_ip_not_allowed(
     ahjo_client, ahjo_user_token, decided_application, settings, request_type
 ):
@@ -714,6 +719,7 @@ def test_ahjo_callback_unauthorized_ip_not_allowed(
     assert response.status_code == 403
 
 
+@pytest.mark.django_db
 def test_ahjo_callback_raises_error_without_batch(
     ahjo_callback_payload, decided_application, ahjo_client, ahjo_user_token, settings
 ):
@@ -990,6 +996,7 @@ def test_generate_ahjo_secret_decision_text_xml(decided_application):
         ),
     ],
 )
+@pytest.mark.django_db
 def test_ahjo_query_parameter_resolver(
     ahjo_request_type, query_parameters, retry_failed_older_than_hours
 ):
@@ -1206,6 +1213,7 @@ def test_get_applications_for_update_request(
         (ApplicationStatus.RECEIVED, AhjoStatusEnum.DELETE_REQUEST_SENT, 1),
     ],
 )
+@pytest.mark.django_db
 def test_get_applications_for_delete_request(
     handling_application,
     application_status,
@@ -1595,6 +1603,7 @@ def test_retry_get_applications_for_ahjo_decision_proposal_request(
         ),
     ],
 )
+@pytest.mark.django_db
 def test_get_applications_for_ahjo_details_request(
     decided_application,
     application_status,
@@ -1622,6 +1631,7 @@ def test_get_applications_for_ahjo_details_request(
         (ApplicationStatus.REJECTED, AhjoStatusEnum.DECISION_DETAILS_REQUEST_SENT, 1),
     ],
 )
+@pytest.mark.django_db
 def test_retry_get_applications_for_ahjo_details_request(
     application_with_ahjo_case_id,
     application_status,

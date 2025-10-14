@@ -12,6 +12,7 @@ from applications.api.v1.serializers.application import (
     "application_serializer",
     [ApplicantApplicationSerializer, HandlerApplicationSerializer],
 )
+@pytest.mark.django_db
 def test_logged_in_user_is_admin_with_anonymous_user(
     settings,
     anonymous_client,
@@ -27,6 +28,7 @@ def test_logged_in_user_is_admin_with_anonymous_user(
     "application_serializer",
     [ApplicantApplicationSerializer, HandlerApplicationSerializer],
 )
+@pytest.mark.django_db
 def test_get_logged_in_user_company_with_anonymous_user(
     settings,
     anonymous_client,

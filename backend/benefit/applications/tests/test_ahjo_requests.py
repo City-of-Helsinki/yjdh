@@ -61,6 +61,7 @@ def ahjo_open_case_request(application_with_ahjo_case_id):
         ),
     ],
 )
+@pytest.mark.django_db
 def test_ahjo_requests_without_application(
     ahjo_request_class,
     request_type,
@@ -153,6 +154,7 @@ def test_ahjo_requests_without_application(
         ),
     ],
 )
+@pytest.mark.django_db
 def test_ahjo_application_requests(
     ahjo_request_class,
     application_with_ahjo_case_id,
@@ -296,6 +298,7 @@ def test_ahjo_application_requests(
         ),
     ],
 )
+@pytest.mark.django_db
 @patch("applications.services.ahjo_client.LOGGER")
 def test_requests_exceptions(
     mock_logger,

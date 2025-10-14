@@ -11,12 +11,14 @@ from terms.tests.conftest import *  # noqa
 from terms.tests.factories import TermsFactory
 
 
+@pytest.mark.django_db
 def test_terms_model(applicant_terms):
     assert Terms.objects.count() == 1
     assert applicant_terms.applicant_consents.count() == 2
     assert applicant_terms.terms_pdf_fi is not None
 
 
+@pytest.mark.django_db
 def test_terms_editable(applicant_terms):
     applicant_terms.effective_from = None
     assert applicant_terms.is_editable
@@ -28,6 +30,7 @@ def test_terms_editable(applicant_terms):
     assert not applicant_terms.is_editable
 
 
+@pytest.mark.django_db
 def test_applicant_terms_approval(applicant_terms_approval):
     assert applicant_terms_approval.terms is not None
     assert applicant_terms_approval.terms.applicant_consents.count() == 2
@@ -35,6 +38,7 @@ def test_applicant_terms_approval(applicant_terms_approval):
     assert applicant_terms_approval.terms is not None
 
 
+@pytest.mark.django_db
 def test_terms_duplicate_effective_from():
     # terms_type, effective_from are unique together
     TermsFactory(effective_from=date.today(), terms_type=TermsType.APPLICANT_TERMS)
@@ -46,6 +50,7 @@ def test_terms_duplicate_effective_from():
     TermsFactory(effective_from=date.today(), terms_type=TermsType.TERMS_OF_SERVICE)
 
 
+@pytest.mark.django_db
 def test_current_terms(applicant_terms):
     # effective_from is None
     applicant_terms.effective_from = None

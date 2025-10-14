@@ -1,6 +1,7 @@
 import uuid
 from datetime import date, datetime
 
+import pytest
 from freezegun import freeze_time
 from freezegun.api import FakeDate
 from rest_framework.reverse import reverse
@@ -194,6 +195,7 @@ employee_fields = {
 }
 
 
+@pytest.mark.django_db
 def test_application_full_clone(api_client, handler_api_client, settings):
     settings.PAYMENT_INSTALMENTS_ENABLED = True
     application = _set_up_decided_application()

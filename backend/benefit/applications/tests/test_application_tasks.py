@@ -25,6 +25,7 @@ from applications.services.ahjo_authentication import AhjoToken
 from applications.tests.factories import CancelledApplicationFactory
 
 
+@pytest.mark.django_db
 def test_seed_applications_with_arguments(set_debug_to_true):
     amount = 4
     statuses = ApplicationStatus.values
@@ -52,6 +53,7 @@ def test_seed_is_not_allowed_when_debug_is_false(set_debug_to_false):
     )
 
 
+@pytest.mark.django_db
 def test_delete_cancelled_applications_older_than_30_days(cancelled_to_delete):
     out = StringIO()
     status = ApplicationStatus.CANCELLED
@@ -97,6 +99,7 @@ def test_delete_cancelled_applications_older_than_30_days(cancelled_to_delete):
     )
 
 
+@pytest.mark.django_db
 def test_delete_draft_applications_older_than_180_days(
     drafts_to_delete, drafts_to_keep
 ):
@@ -142,6 +145,7 @@ def test_delete_draft_applications_older_than_180_days(
     )
 
 
+@pytest.mark.django_db
 def test_user_is_notified_of_upcoming_application_deletion(drafts_about_to_be_deleted):
     out = StringIO()
     call_command(

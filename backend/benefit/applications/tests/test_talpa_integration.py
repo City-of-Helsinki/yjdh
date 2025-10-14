@@ -21,6 +21,7 @@ from calculator.models import Instalment
 from shared.audit_log.models import AuditLogEntry
 
 
+@pytest.mark.django_db
 def test_talpa_lines(applications_csv_service):
     csv_lines = list(applications_csv_service.get_csv_cell_list_lines_generator())
     assert applications_csv_service.applications.count() == 2
@@ -34,12 +35,14 @@ def test_talpa_lines(applications_csv_service):
     )
 
 
+@pytest.mark.django_db
 def test_talpa_csv_cell_list_lines_generator(talpa_applications_csv_service):
     check_csv_cell_list_lines_generator(
         talpa_applications_csv_service, expected_row_count_with_header=3
     )
 
 
+@pytest.mark.django_db
 def test_talpa_csv_string_lines_generator(talpa_applications_csv_service):
     check_csv_string_lines_generator(
         talpa_applications_csv_service, expected_row_count_with_header=3
@@ -54,6 +57,7 @@ def test_talpa_csv_string_lines_generator(talpa_applications_csv_service):
         (True, 2),
     ],
 )
+@pytest.mark.django_db
 def test_talpa_csv_output(
     talpa_applications_csv_service_with_one_application,
     instalments_enabled,
@@ -109,6 +113,7 @@ def test_talpa_csv_output(
         )
 
 
+@pytest.mark.django_db
 def test_talpa_csv_non_ascii_characters(
     talpa_applications_csv_service_with_one_application,
 ):
@@ -123,6 +128,7 @@ def test_talpa_csv_non_ascii_characters(
     assert csv_lines[1][3] == '"test äöÄÖtest"'  # string is quoted
 
 
+@pytest.mark.django_db
 def test_talpa_csv_delimiter(talpa_applications_csv_service_with_one_application):
     application = (
         talpa_applications_csv_service_with_one_application.applications.first()
@@ -142,6 +148,7 @@ def test_talpa_csv_delimiter(talpa_applications_csv_service_with_one_application
         (True,),
     ],
 )
+@pytest.mark.django_db
 def test_talpa_csv_decimal(
     talpa_applications_csv_service_with_one_application,
     settings,
@@ -171,6 +178,7 @@ def test_talpa_csv_decimal(
     assert csv_lines[1][8] == "123.45"
 
 
+@pytest.mark.django_db
 def test_talpa_csv_date(talpa_applications_csv_service_with_one_application):
     application = (
         talpa_applications_csv_service_with_one_application.get_applications().first()
@@ -184,6 +192,7 @@ def test_talpa_csv_date(talpa_applications_csv_service_with_one_application):
     assert csv_lines[1][12] == f'"{now.strftime("%Y-%m-%d")}"'
 
 
+@pytest.mark.django_db
 def test_write_talpa_csv_file(
     talpa_applications_csv_service_with_one_application, tmp_path
 ):
@@ -200,6 +209,7 @@ def test_write_talpa_csv_file(
         assert "äöÄÖtest" in contents
 
 
+@pytest.mark.django_db
 def test_talpa_callback_is_disabled(
     talpa_client,
     settings,
@@ -426,6 +436,7 @@ def test_talpa_callback_rejected_application(
         (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED),
     ],
 )
+@pytest.mark.django_db
 def test_talpa_csv_applications_query(
     multiple_decided_applications, application_status, settings
 ):

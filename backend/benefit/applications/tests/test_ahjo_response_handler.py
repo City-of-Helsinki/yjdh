@@ -180,6 +180,7 @@ def test_save_ahjo_settings_database_error(setting_name, test_data):
             AhjoResponseHandler._save_ahjo_setting(setting_name, test_data)
 
 
+@pytest.mark.django_db
 def test_parse_details_from_decision_response(
     ahjo_decision_detail_response, application_with_ahjo_decision
 ):
@@ -227,6 +228,7 @@ def test_parse_details_from_decision_response(
         ),
     ],
 )
+@pytest.mark.django_db
 def test_handle_details_request_success(
     ahjo_decision_detail_response,
     decided_application_with_decision_date,

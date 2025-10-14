@@ -1,3 +1,4 @@
+import pytest
 from django.core.management import call_command
 
 from applications.api.v1.serializers.application import HandlerApplicationSerializer
@@ -33,6 +34,7 @@ data_for_application = {
 }
 
 
+@pytest.mark.django_db
 def test_decision_proposal_drafting():
     # Create a new application, set the other one as cancelled
     application = ReceivedApplicationFactory(application_number=100002)
