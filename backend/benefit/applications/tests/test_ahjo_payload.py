@@ -430,7 +430,7 @@ def test_prepare_update_application_payload(decided_application):
             {
                 "Title": f"{title}",
                 "Type": AhjoRecordType.APPLICATION,
-                "Acquired": application.submitted_at.isoformat(),
+                "Acquired": application.submitted_at.isoformat("T", "seconds"),
                 "PublicityClass": "Salassa pidettävä",
                 "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
                 "Language": "fi",
