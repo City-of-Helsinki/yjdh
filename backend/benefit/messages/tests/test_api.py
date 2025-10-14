@@ -56,7 +56,10 @@ def test_list_message_unauthenticated(
 )
 @pytest.mark.django_db
 def test_list_message_unauthorized(
-    api_client, anonymous_handling_application, view_name
+    api_client,
+    anonymous_handling_application,
+    view_name,
+    mock_get_organisation_roles_and_create_company,
 ):
     if view_name == "applicant-message-list":
         # Cannot see application they doesn't belong to
