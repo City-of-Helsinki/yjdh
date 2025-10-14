@@ -5,6 +5,7 @@ from applications.api.v1.serializers.application import (
     BaseApplicationSerializer,
     HandlerApplicationSerializer,
 )
+from companies.tests.factories import CompanyFactory
 
 
 @pytest.mark.parametrize("next_public_mock_flag", [False, True])
@@ -35,6 +36,7 @@ def test_get_logged_in_user_company_with_anonymous_user(
     next_public_mock_flag: bool,
     application_serializer: BaseApplicationSerializer,
 ):
+    CompanyFactory()
     settings.NEXT_PUBLIC_MOCK_FLAG = next_public_mock_flag
     assert (
         application_serializer().get_logged_in_user_company() is not None
