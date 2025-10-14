@@ -706,6 +706,8 @@ def test_application_calculation_rows_id_exists(
     [(2, False), (1, True)],
 )
 @pytest.mark.django_db
+# Doesn't work without freezing time as otherwise first instalment limit is not reached
+@pytest.mark.freeze_time("2024-01-01")
 def test_application_calculation_instalments(
     handling_application, settings, number_of_instalments, has_subsidies
 ):

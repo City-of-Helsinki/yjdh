@@ -452,6 +452,7 @@ def test_application_single_read_as_handler(
 
 
 @pytest.mark.django_db
+@pytest.mark.freeze_time("2021-06-04")
 def test_application_submitted_at(
     api_client, application, received_application, handling_application
 ):
@@ -497,6 +498,7 @@ def test_application_post_success_unauthenticated(anonymous_client, application)
 
 
 @pytest.mark.django_db
+@pytest.mark.freeze_time("2021-06-04")
 def test_application_post_success(api_client, application):
     """
     Create a new application
@@ -1123,6 +1125,7 @@ def test_application_date_range(
     ],
 )
 @pytest.mark.django_db
+@pytest.mark.freeze_time("2023-01-01")
 def test_application_date_range_on_submit(
     request, api_client, application, start_date, end_date, status_code
 ):
@@ -1290,6 +1293,7 @@ def test_apprenticeship_program_validation_on_submit(
     ],
 )
 @pytest.mark.django_db
+@pytest.mark.freeze_time
 def test_application_status_change_as_applicant(
     request, api_client, application, from_status, to_status, expected_code
 ):
@@ -1365,6 +1369,7 @@ def test_application_status_change_as_applicant(
 )
 @pytest.mark.parametrize("log_entry_comment", [None, "", "comment"])
 @pytest.mark.django_db
+@pytest.mark.freeze_time
 @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
 def test_application_status_change_as_handler(
     request,
@@ -1606,6 +1611,7 @@ def add_attachments_to_application(request, application, is_handler_application=
 
 
 @pytest.mark.django_db
+@pytest.mark.freeze_time("2021-06-04")
 def test_application_modified_at_draft(api_client, application):
     """
     DRAFT application's last_modified_at is visible to applicant
@@ -2281,6 +2287,7 @@ def test_application_additional_information_needed_by(api_client, handling_appli
 
 
 @pytest.mark.django_db
+@pytest.mark.freeze_time("2021-11-01")
 def test_application_status_last_changed_at(api_client, handling_application):
     with freeze_time("2021-12-01"):
         ApplicationLogEntry.objects.create(
@@ -2500,6 +2507,7 @@ def test_applications_with_unread_messages(api_client, handler_api_client, appli
 
 
 @pytest.mark.django_db
+@pytest.mark.freeze_time("2021-06-04")
 def test_require_additional_information(handler_api_client, application, mailoutbox):
     application.status = ApplicationStatus.HANDLING
     application.applicant_language = "en"
