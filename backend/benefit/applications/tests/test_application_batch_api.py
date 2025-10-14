@@ -5,9 +5,9 @@ from datetime import date, datetime
 from unittest.mock import patch
 
 import pytest
-import pytz
 from dateutil.relativedelta import relativedelta
 from django.http import HttpResponse
+from django.utils import timezone
 from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers.application import ApplicationBatchSerializer
@@ -467,6 +467,7 @@ def test_get_application_with_ahjo_decision(
     assert response.data["batch"]["status"] == batch_status
 
 
+@pytest.mark.freeze_time
 def test_application_post_success(handler_api_client, application_batch):
     """
     Create a new application batch
@@ -493,9 +494,7 @@ def test_application_post_success(handler_api_client, application_batch):
 
     new_application_batch = ApplicationBatch.objects.all().first()
     assert new_application_batch.decision_maker_title == data["decision_maker_title"]
-    assert datetime.fromisoformat(data["created_at"]) == datetime(
-        2021, 6, 4, tzinfo=pytz.UTC
-    )
+    assert datetime.fromisoformat(data["created_at"]) == timezone.now()
 
 
 def test_application_post_success_with_applications(
