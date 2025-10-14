@@ -547,7 +547,9 @@ def test_delete_message(
 def test_applications_list_with_message_count(
     api_client, handling_application, handler_api_client
 ):
-    msg = MessageFactory(application=handling_application)
+    msg = MessageFactory(
+        application=handling_application, message_type=MessageType.HANDLER_MESSAGE
+    )
     response = api_client.get(reverse("v1:applicant-application-list"))
     assert len(response.data) == 1
     assert response.status_code == 200
