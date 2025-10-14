@@ -2502,6 +2502,7 @@ def test_applications_with_unread_messages(api_client, handler_api_client, appli
 @pytest.mark.django_db
 def test_require_additional_information(handler_api_client, application, mailoutbox):
     application.status = ApplicationStatus.HANDLING
+    application.applicant_language = "en"
     application.save()
     response = handler_api_client.patch(
         reverse(
