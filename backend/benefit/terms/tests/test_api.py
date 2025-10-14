@@ -15,6 +15,7 @@ from terms.enums import TermsType
 from terms.tests.factories import ApplicantTermsApprovalFactory, TermsFactory
 
 
+@pytest.mark.django_db
 def test_applicant_terms_in_effect(api_client, application, accept_tos):
     """
     Test that the API returns the correct Terms and ApplicantConsents in the applicant_terms_in_effect field.
@@ -64,6 +65,7 @@ def test_applicant_terms_in_effect(api_client, application, accept_tos):
     ],
 )
 @pytest.mark.parametrize("previously_approved", [False, True])
+@pytest.mark.django_db
 def test_approve_terms_success(
     api_client,
     request,
@@ -127,6 +129,7 @@ def test_approve_terms_success(
         (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, ApplicationStatus.HANDLING),
     ],
 )
+@pytest.mark.django_db
 def test_approve_wrong_terms(api_client, request, application, from_status, to_status):
     # current terms
     TermsFactory(effective_from=date.today(), terms_type=TermsType.APPLICANT_TERMS)
@@ -168,6 +171,7 @@ def test_approve_wrong_terms(api_client, request, application, from_status, to_s
         (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, ApplicationStatus.HANDLING),
     ],
 )
+@pytest.mark.django_db
 def test_approve_no_terms(api_client, request, application, from_status, to_status):
     # current terms
     TermsFactory(effective_from=date.today(), terms_type=TermsType.APPLICANT_TERMS)
@@ -198,6 +202,7 @@ def test_approve_no_terms(api_client, request, application, from_status, to_stat
         ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
     ],
 )
+@pytest.mark.django_db
 def test_approve_terms_missing_consent(
     api_client, request, application, applicant_terms, status
 ):
@@ -234,6 +239,7 @@ def test_approve_terms_missing_consent(
         ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
     ],
 )
+@pytest.mark.django_db
 def test_approve_terms_too_many_consents(
     api_client, request, application, applicant_terms, status
 ):
@@ -274,6 +280,7 @@ def test_approve_terms_too_many_consents(
         ),
     ],
 )
+@pytest.mark.django_db
 def test_approve_terms_ignored_when_not_submitting_application(
     api_client, request, application, applicant_terms, from_status, to_status
 ):

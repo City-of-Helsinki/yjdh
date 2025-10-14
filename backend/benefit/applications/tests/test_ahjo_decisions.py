@@ -11,6 +11,7 @@ from applications.services.ahjo_decision_service import (
 )
 
 
+@pytest.mark.django_db
 def test_replace_accepted_decision_template_placeholders(
     decided_application, accepted_ahjo_decision_section
 ):
@@ -27,6 +28,7 @@ def test_replace_accepted_decision_template_placeholders(
     assert f"{wanted_start_date} - {wanted_end_date}" in replaced_template
 
 
+@pytest.mark.django_db
 def test_replace_denied_decision_template_placeholders(
     decided_application, denied_ahjo_decision_section
 ):
@@ -39,6 +41,7 @@ def test_replace_denied_decision_template_placeholders(
     assert decided_application.company.name in replaced_template
 
 
+@pytest.mark.django_db
 def test_anonymous_client_cannot_access_templates(
     anonymous_client, decided_application
 ):
@@ -56,6 +59,7 @@ def test_anonymous_client_cannot_access_templates(
         (DecisionType.DENIED,),
     ],
 )
+@pytest.mark.django_db
 def test_handler_gets_the_template_sections(
     decided_application, handler_api_client, decision_type
 ):
@@ -82,6 +86,7 @@ def get_decisions_detail_url(application_id: uuid, decision_text_id: uuid) -> st
     )
 
 
+@pytest.mark.django_db
 def test_decision_text_api_unauthenticated(anonymous_client, decided_application):
     url = get_decisions_list_url(decided_application.id)
     response = anonymous_client.post(url)
@@ -136,6 +141,7 @@ def test_decision_text_api_post(
         (DecisionType.DENIED, "sv", 400),
     ],
 )
+@pytest.mark.django_db
 def test_decision_text_api_without_decision_maker_data(
     decided_application,
     handler_api_client,
@@ -211,6 +217,7 @@ def test_decision_text_serializer_validation_errors(decision_type, language):
     assert serializer.errors["decision_maker_id"] == ["This field is required."]
 
 
+@pytest.mark.django_db
 def test_decision_text_api_get(decided_application, handler_api_client):
     url = get_decisions_list_url(decided_application.id)
     decision_text = AhjoDecisionText.objects.create(
@@ -226,6 +233,7 @@ def test_decision_text_api_get(decided_application, handler_api_client):
     assert response.data["language"] == decision_text.language
 
 
+@pytest.mark.django_db
 def test_decision_text_api_put(
     decided_application, handler_api_client, fake_decisionmakers, fake_signers
 ):

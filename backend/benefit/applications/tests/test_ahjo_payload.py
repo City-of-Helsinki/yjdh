@@ -106,6 +106,7 @@ def test_ahjo_base_record_title_str():
     assert result == expected
 
 
+@pytest.mark.django_db
 def test_prepare_case_title(decided_application):
     application = decided_application
     wanted_title = (
@@ -146,6 +147,7 @@ def test_truncate_string_to_limit(
         ("a" * 256, 512, 512),
     ],
 )
+@pytest.mark.django_db
 def test_prepare_final_case_title_truncate(
     decided_application, company_name, limit, expected_length
 ):
@@ -197,6 +199,7 @@ def test_prepare_final_case_title_truncate(
         ),
     ],
 )
+@pytest.mark.django_db
 def test_prepare_record_title(
     title_class,
     decided_application,
@@ -233,6 +236,7 @@ def test_prepare_record_title(
     assert wanted_title == got
 
 
+@pytest.mark.django_db
 def test_prepare_record_title_for_attachment(decided_application):
     application = Application.objects.get(pk=decided_application.pk)
 
@@ -245,6 +249,7 @@ def test_prepare_record_title_for_attachment(decided_application):
     assert wanted_title == got
 
 
+@pytest.mark.django_db
 def test_prepare_application_record(
     decided_application, ahjo_payload_record_for_application
 ):
@@ -261,6 +266,7 @@ def test_prepare_application_record(
     assert ahjo_payload_record_for_application == record
 
 
+@pytest.mark.django_db
 def test_prepare_attachment_record(
     decided_application, ahjo_payload_record_for_attachment
 ):
@@ -277,6 +283,7 @@ def test_prepare_attachment_record(
     assert ahjo_payload_record_for_attachment == record
 
 
+@pytest.mark.django_db
 def test_prepare_attachment_update_record(
     decided_application,
     ahjo_payload_record_for_attachment_update,
@@ -296,6 +303,7 @@ def test_prepare_attachment_update_record(
     assert ahjo_payload_record_for_attachment_update == record
 
 
+@pytest.mark.django_db
 def test_prepare_record_document_dict(decided_application, settings):
     settings.DEBUG = True
     settings.API_BASE_URL = "http://test.com"
@@ -316,6 +324,7 @@ def test_prepare_record_document_dict(decided_application, settings):
     assert want == got
 
 
+@pytest.mark.django_db
 def test_prepare_case_records(decided_application, settings):
     settings.DEBUG = True
     application = Application.objects.get(pk=decided_application.pk)
@@ -380,6 +389,7 @@ def test_prepare_case_records(decided_application, settings):
     assert want == got
 
 
+@pytest.mark.django_db
 def test_prepare_top_level_dict(decided_application, ahjo_open_case_top_level_dict):
     application = Application.objects.get(pk=decided_application.pk)
     long_title = "a" * 512
@@ -392,6 +402,7 @@ def test_prepare_top_level_dict(decided_application, ahjo_open_case_top_level_di
     assert ahjo_open_case_top_level_dict == got
 
 
+@pytest.mark.django_db
 def test_prepare_update_application_payload(decided_application):
     application = Application.objects.get(pk=decided_application.pk)
 
@@ -453,6 +464,7 @@ def test_prepare_update_application_payload(decided_application):
         ("en", "fi"),
     ],
 )
+@pytest.mark.django_db
 def test_resolve_payload_language(
     decided_application, applicant_language, expected_payload_language
 ):
@@ -463,6 +475,7 @@ def test_resolve_payload_language(
     assert expected_payload_language == got
 
 
+@pytest.mark.django_db
 def test_prepare_decision_proposal_payload(application_with_ahjo_decision):
     application = application_with_ahjo_decision
     handler = application.calculation.handler

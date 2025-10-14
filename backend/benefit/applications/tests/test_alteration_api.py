@@ -10,6 +10,7 @@ from applications.models import ApplicationAlteration
 from companies.tests.factories import CompanyFactory
 
 
+@pytest.mark.django_db
 def test_application_alteration_create_terminated(api_client, application):
     pk = application.id
 
@@ -27,6 +28,7 @@ def test_application_alteration_create_terminated(api_client, application):
     assert response.status_code == 201
 
 
+@pytest.mark.django_db
 def test_application_alteration_create_suspended(api_client, application):
     pk = application.id
 
@@ -45,6 +47,7 @@ def test_application_alteration_create_suspended(api_client, application):
     assert response.status_code == 201
 
 
+@pytest.mark.django_db
 def test_application_alteration_create_missing_resume_date(api_client, application):
     pk = application.id
 
@@ -64,6 +67,7 @@ def test_application_alteration_create_missing_resume_date(api_client, applicati
     assert len(response.data["non_field_errors"]) == 1
 
 
+@pytest.mark.django_db
 def test_application_alteration_create_missing_einvoice_fields(api_client, application):
     pk = application.id
 
@@ -83,6 +87,7 @@ def test_application_alteration_create_missing_einvoice_fields(api_client, appli
     assert len(response.data["non_field_errors"]) == 3
 
 
+@pytest.mark.django_db
 def test_application_alteration_create_missing_contact_person_name(
     api_client, application
 ):
@@ -104,6 +109,7 @@ def test_application_alteration_create_missing_contact_person_name(
     assert len(response.data.keys()) == 1
 
 
+@pytest.mark.django_db
 def test_application_alteration_create_use_einvoice(api_client, application):
     pk = application.id
 
@@ -124,6 +130,7 @@ def test_application_alteration_create_use_einvoice(api_client, application):
     assert response.status_code == 201
 
 
+@pytest.mark.django_db
 def test_application_alteration_create_outside_application_date_range(
     api_client, application
 ):
@@ -173,6 +180,7 @@ def test_application_alteration_create_outside_application_date_range(
     assert "non_field_errors" in response.data
 
 
+@pytest.mark.django_db
 def test_application_alteration_create_reversed_suspension_dates(
     api_client, application
 ):
@@ -195,6 +203,7 @@ def test_application_alteration_create_reversed_suspension_dates(
     assert len(response.data["non_field_errors"]) == 1
 
 
+@pytest.mark.django_db
 def test_application_alteration_create_overlapping_alteration(api_client, application):
     pk = application.id
 
@@ -268,6 +277,7 @@ def test_application_alteration_create_overlapping_alteration(api_client, applic
     assert len(response.data["non_field_errors"]) == 1
 
 
+@pytest.mark.django_db
 def test_application_alteration_create_non_overlapping_alteration(
     api_client, application
 ):
@@ -309,6 +319,7 @@ def test_application_alteration_create_non_overlapping_alteration(
     assert response.status_code == 201
 
 
+@pytest.mark.django_db
 def test_application_alteration_create_forbidden_anonymous(
     anonymous_client, application
 ):
@@ -328,6 +339,7 @@ def test_application_alteration_create_forbidden_anonymous(
     assert response.status_code == 403
 
 
+@pytest.mark.django_db
 def test_application_alteration_create_forbidden_another_company(
     api_client, application
 ):
@@ -351,6 +363,7 @@ def test_application_alteration_create_forbidden_another_company(
     assert response.status_code == 403
 
 
+@pytest.mark.django_db
 def test_application_alteration_forbidden_applicant_in_handler_api(
     api_client, application
 ):
@@ -389,6 +402,7 @@ def test_application_alteration_forbidden_handler_in_applicant_api(
     assert response.status_code == 403
 
 
+@pytest.mark.django_db
 def test_application_alteration_create_ignored_fields_applicant(
     api_client,
     application,
@@ -454,6 +468,7 @@ def test_application_alteration_create_ignored_fields_handler(
     assert response.data["recovery_amount"] == "4000.00"
 
 
+@pytest.mark.django_db
 def test_application_alteration_patch_applicant(api_client, application):
     pk = application.id
     response = api_client.post(
@@ -594,6 +609,7 @@ def test_application_alteration_patch_allowed_edit_states_handler(
         (ApplicationAlterationState.CANCELLED, 403),
     ],
 )
+@pytest.mark.django_db
 def test_application_alteration_patch_allowed_edit_states_applicant(
     api_client, application, initial_state, result
 ):
@@ -610,6 +626,7 @@ def test_application_alteration_patch_allowed_edit_states_applicant(
     assert response.status_code == result
 
 
+@pytest.mark.django_db
 def test_application_alteration_patch_forbidden_another_company(
     api_client, application
 ):
@@ -637,6 +654,7 @@ def test_application_alteration_patch_forbidden_another_company(
         (ApplicationAlterationState.CANCELLED, 403),
     ],
 )
+@pytest.mark.django_db
 def test_application_alteration_allowed_delete_states_applicant(
     api_client, application, initial_state, result
 ):
@@ -674,6 +692,7 @@ def test_application_alteration_delete_handler(
     assert response.status_code == result
 
 
+@pytest.mark.django_db
 def test_application_alteration_delete_forbidden_another_company(
     api_client, application
 ):
@@ -689,6 +708,7 @@ def test_application_alteration_delete_forbidden_another_company(
     assert response.status_code == 403
 
 
+@pytest.mark.django_db
 def test_application_alteration_patch_forbidden_applicant_get_requests(
     api_client, application
 ):

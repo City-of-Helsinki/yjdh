@@ -15,6 +15,7 @@ from common.utils import duration_in_months
 from helsinkibenefit.tests.conftest import *  # noqa
 
 
+@pytest.mark.django_db
 def test_calculation_model(calculation):
     assert Calculation.objects.count() == 1
     assert calculation.application
@@ -28,21 +29,25 @@ def test_calculation_model(calculation):
     assert calculation.duration_in_months_rounded is None
 
 
+@pytest.mark.django_db
 def test_pay_subsidy(pay_subsidy):
     assert PaySubsidy.objects.count() == 1
     assert pay_subsidy.application
 
 
+@pytest.mark.django_db
 def test_training_compensation(training_compensation):
     assert TrainingCompensation.objects.count() == 1
     assert training_compensation.application
 
 
+@pytest.mark.django_db
 def test_previous_benefit(previous_benefit):
     assert PreviousBenefit.objects.count() == 1
     assert previous_benefit.company
 
 
+@pytest.mark.django_db
 def test_create_for_application(application):
     application.status = ApplicationStatus.RECEIVED
     calculation = Calculation.objects.create_for_application(application)
@@ -50,6 +55,7 @@ def test_create_for_application(application):
     assert calculation.monthly_pay == application.employee.monthly_pay
 
 
+@pytest.mark.django_db
 def test_create_for_application_with_pay_subsidies(application):
     application.status = ApplicationStatus.RECEIVED
     application.pay_subsidy_granted = True
@@ -67,6 +73,7 @@ def test_create_for_application_with_pay_subsidies(application):
         assert pay_subsidy.disability_or_illness is False
 
 
+@pytest.mark.django_db
 def test_create_for_application_fail(received_application):
     # calculation already exists
     with pytest.raises(BenefitAPIException):
@@ -76,6 +83,7 @@ def test_create_for_application_fail(received_application):
 @pytest.mark.parametrize(
     "pay_subsidy_percent, max_subsidy", [(70, 1770), (50, 1260), (100, 2020)]
 )
+@pytest.mark.django_db
 def test_pay_subsidy_maximum(handling_application, pay_subsidy_percent, max_subsidy):
     assert handling_application.pay_subsidies.count() == 1
     handling_application.pay_subsidies.all().update(
@@ -216,6 +224,7 @@ def test_pay_subsidy_maximum(handling_application, pay_subsidy_percent, max_subs
         ),
     ],
 )
+@pytest.mark.django_db
 def test_calculation_required_fields(
     handling_application,
     benefit_type,

@@ -1,6 +1,7 @@
 import datetime
 import os
 
+import pytest
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 
@@ -279,6 +280,7 @@ SHEETS_TO_TEST = [
 ]
 
 
+@pytest.mark.django_db
 def test_cases_from_excel(request, api_client):
     excel_file_name = os.path.join(
         request.fspath.dirname, "Helsinki-lisa laskurin testitapaukset.xlsx"

@@ -6,7 +6,6 @@ from datetime import date, timedelta
 import factory
 import pytest
 from django.conf import settings
-from django.db import connection
 from django.utils import timezone
 
 from applications.enums import (
@@ -64,14 +63,6 @@ from shared.common.tests.factories import UserFactory
 from shared.service_bus.enums import YtjOrganizationCode
 from terms.tests.conftest import *  # noqa
 from terms.tests.factories import TermsOfServiceApprovalFactory
-
-
-@pytest.fixture(scope="session", autouse=True)
-def django_db_setup(django_db_setup, django_db_blocker):
-    """Test session DB setup."""
-    with django_db_blocker.unblock():
-        with connection.cursor() as cursor:
-            cursor.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
 
 
 @pytest.fixture
@@ -328,11 +319,6 @@ def draft_notification_date():
 def drafts_about_to_be_deleted(draft_notification_date, draft_applications):
     draft_applications.update(modified_at=draft_notification_date)
     yield draft_applications
-
-
-@pytest.fixture(autouse=True)
-def auto_accept_tos(autouse_django_db, accept_tos):
-    return accept_tos
 
 
 @pytest.fixture()

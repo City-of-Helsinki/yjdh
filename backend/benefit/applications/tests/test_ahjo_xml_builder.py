@@ -105,6 +105,7 @@ def test_generate_public_xml_string(accepted_ahjo_decision_text, public_xml_buil
     assert wanted_decision_text in xml_content
 
 
+@pytest.mark.django_db
 def test_public_xml_file_name(decided_application, public_xml_builder):
     application = decided_application
     xml_file_name = public_xml_builder.generate_xml_file_name()
@@ -124,6 +125,7 @@ def test_public_xml_file_name(decided_application, public_xml_builder):
         ApplicationStatus.REJECTED,
     ],
 )
+@pytest.mark.django_db
 def test_secret_xml_decision_string(
     application_status, decided_application, secret_xml_builder
 ):
@@ -181,6 +183,7 @@ def test_secret_xml_decision_string(
     assert all([replacement in xml_string for replacement in wanted_replacements])
 
 
+@pytest.mark.django_db
 def test_secret_xml_file_name(decided_application, secret_xml_builder):
     application = decided_application
     xml_file_name = secret_xml_builder.generate_xml_file_name()
@@ -211,6 +214,7 @@ def test_get_period_rows_for_xml(
     assert monthly_row_1 in calculation_rows
 
 
+@pytest.mark.django_db
 def test_prepare_multiple_period_rows(
     secret_xml_builder, monthly_row_1, sub_total_row_1, monthly_row_2, sub_total_row_2
 ):
@@ -230,6 +234,7 @@ def test_prepare_multiple_period_rows(
     assert period_rows[1].total_amount == int(sub_total_row_2.amount)
 
 
+@pytest.mark.django_db
 def test_prepare_single_period_row(secret_xml_builder, monthly_row_1, total_eur_row):
     period_rows = secret_xml_builder._prepare_single_period_row(
         monthly_row_1, total_eur_row
@@ -242,6 +247,7 @@ def test_prepare_single_period_row(secret_xml_builder, monthly_row_1, total_eur_
     assert period_rows[0].total_amount == int(total_eur_row.amount)
 
 
+@pytest.mark.django_db
 def test_get_context_for_secret_xml_for_rejected_application(
     decided_application, secret_xml_builder
 ):
@@ -257,6 +263,7 @@ def test_get_context_for_secret_xml_for_rejected_application(
     assert "total_amount_row" not in context
 
 
+@pytest.mark.django_db
 def test_get_context_for_secret_xml_with_single_period(
     decided_application, monthly_row_1, total_eur_row, secret_xml_builder
 ):
@@ -278,6 +285,7 @@ def test_get_context_for_secret_xml_with_single_period(
     assert context["total_amount_row"].amount == int(total_eur_row.amount)
 
 
+@pytest.mark.django_db
 def test_get_context_for_secret_xml_with_multiple_periods(
     calculation,
     decided_application,

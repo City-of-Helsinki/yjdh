@@ -18,6 +18,7 @@ def get_current_user_url():
     return "/v1/users/me/"
 
 
+@pytest.mark.django_db
 def test_terms_of_service_in_effect_pdf(
     api_client, mock_get_organisation_roles_and_create_company
 ):
@@ -60,6 +61,7 @@ def test_terms_of_service_in_effect_pdf(
     assert response.status_code == 200
 
 
+@pytest.mark.django_db
 def test_terms_of_service_in_effect_md(
     api_client, mock_get_organisation_roles_and_create_company
 ):
@@ -112,6 +114,7 @@ Lorem ipsum dolor sit amet"""
     assert response.status_code == 200
 
 
+@pytest.mark.django_db
 @pytest.mark.parametrize("previously_approved", [False, True])
 def test_approve_terms_success(
     api_client,
@@ -155,6 +158,7 @@ def test_approve_terms_success(
     }
 
 
+@pytest.mark.django_db
 def test_approve_wrong_terms(
     api_client, mock_get_organisation_roles_and_create_company
 ):
@@ -182,6 +186,7 @@ def test_approve_wrong_terms(
     )
 
 
+@pytest.mark.django_db
 def test_approve_no_terms(api_client, mock_get_organisation_roles_and_create_company):
     # current terms
     TermsFactory(effective_from=date.today(), terms_type=TermsType.TERMS_OF_SERVICE)
@@ -193,6 +198,7 @@ def test_approve_no_terms(api_client, mock_get_organisation_roles_and_create_com
     assert response.data.keys() == {"terms", "selected_applicant_consents"}
 
 
+@pytest.mark.django_db
 def test_approve_terms_missing_consent(
     api_client, terms_of_service, mock_get_organisation_roles_and_create_company
 ):
@@ -213,6 +219,7 @@ def test_approve_terms_missing_consent(
     )
 
 
+@pytest.mark.django_db
 def test_approve_terms_too_many_consents(
     api_client,
     terms_of_service,
@@ -236,6 +243,7 @@ def test_approve_terms_too_many_consents(
     )
 
 
+@pytest.mark.django_db
 def test_validate_tos_approval_by_session(
     api_client,
     terms_of_service,

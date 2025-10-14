@@ -24,14 +24,6 @@ from applications.tests.faker import get_faker
 from applications.tests.test_applications_api import get_handler_detail_url
 
 
-@pytest.fixture(autouse=True)
-def run_before_and_after_tests():
-    from applications.tests.before_after import before_test_reseed
-
-    before_test_reseed([])
-    yield
-
-
 def get_valid_batch_completion_data():
     return {
         "decision_maker_title": get_faker().job(),
@@ -96,16 +88,19 @@ def get_batch_detail_url(application_batch, uri=""):
     )
 
 
+@pytest.mark.django_db
 def test_get_application_batch_unauthenticated(anonymous_client, application_batch):
     response = anonymous_client.get(get_batch_detail_url(application_batch))
     assert response.status_code == 403
 
 
+@pytest.mark.django_db
 def test_get_application_batch_as_applicant(api_client, application_batch):
     response = api_client.get(get_batch_detail_url(application_batch))
     assert response.status_code == 403
 
 
+@pytest.mark.django_db
 def test_get_application_batch(handler_api_client, application_batch):
     response = handler_api_client.get(get_batch_detail_url(application_batch))
     assert response.status_code == 200
@@ -313,6 +308,7 @@ def test_batch_status_change(
         assert response.data["status"] == changed_status
 
 
+@pytest.mark.django_db
 def test_batch_too_many_drafts(application_batch):
     # Create a second batch to get to two batch limit
     (
@@ -821,6 +817,7 @@ def test_application_batch_export(mock_export, handler_api_client, application_b
     assert response.status_code == 400
 
 
+@pytest.mark.django_db
 def test_application_batches_talpa_export(
     anonymous_client, application_batch, settings
 ):
@@ -857,6 +854,7 @@ def test_application_batches_talpa_export(
     assert response.status_code == 200
 
 
+@pytest.mark.django_db
 def test_application_instalments_talpa_export(anonymous_client, settings):
     settings.PAYMENT_INSTALMENTS_ENABLED = True
     url = reverse("v1:applicationbatch-talpa-export-batch")

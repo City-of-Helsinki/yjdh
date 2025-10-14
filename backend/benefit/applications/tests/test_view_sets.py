@@ -7,6 +7,7 @@ from applications.models import Application
 
 
 @pytest.mark.parametrize("next_public_mock_flag", [False, True])
+@pytest.mark.django_db
 def test_applicant_application_view_set_get_queryset_with_anonymous_user(
     settings,
     next_public_mock_flag: bool,

@@ -20,6 +20,7 @@ from helsinkibenefit.tests.conftest import *  # noqa
         (date(2022, 1, 1), date(2022, 12, 31), 100, 1200),
     ],
 )
+@pytest.mark.django_db
 def test_override_monthly_benefit_amount(
     handling_application,
     start_date,

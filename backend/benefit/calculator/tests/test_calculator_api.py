@@ -92,6 +92,7 @@ def test_application_retrieve_calculation_as_handler(
     ) == to_decimal(duration_in_months(pay_subsidy.start_date, pay_subsidy.end_date), 2)
 
 
+@pytest.mark.django_db
 def test_application_try_retrieve_calculation_as_applicant(api_client, application):
     response = api_client.get(get_detail_url(application))
     assert "calculation" not in response.data
@@ -100,6 +101,7 @@ def test_application_try_retrieve_calculation_as_applicant(api_client, applicati
     assert response.status_code == 200
 
 
+@pytest.mark.django_db
 def test_application_create_calculation_on_submit(
     request,
     api_client,
@@ -703,6 +705,7 @@ def test_application_calculation_rows_id_exists(
     "number_of_instalments, has_subsidies",
     [(2, False), (1, True)],
 )
+@pytest.mark.django_db
 def test_application_calculation_instalments(
     handling_application, settings, number_of_instalments, has_subsidies
 ):

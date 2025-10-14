@@ -73,6 +73,7 @@ def test_is_configured(ahjo_connector):
     assert ahjo_connector.is_configured() is False
 
 
+@pytest.mark.django_db
 def test_get_new_token(ahjo_connector, ahjo_code, token_response):
     # Test with valid auth code
     with requests_mock.Mocker() as m:
@@ -94,6 +95,7 @@ def test_get_new_token(ahjo_connector, ahjo_code, token_response):
         ahjo_connector.get_initial_token()
 
 
+@pytest.mark.django_db
 def test_refresh_token(ahjo_connector, ahjo_setting, token_response):
     # Test with valid refresh token
 
@@ -115,6 +117,7 @@ def test_refresh_token(ahjo_connector, ahjo_setting, token_response):
         ahjo_connector.refresh_token()
 
 
+@pytest.mark.django_db
 def test_refresh_expired_token(ahjo_connector, ahjo_setting, token_response):
     # Test with valid refresh token
     ahjo_setting.created_at = datetime.now(timezone.utc) - timedelta(hours=22)
@@ -129,6 +132,7 @@ def test_refresh_expired_token(ahjo_connector, ahjo_setting, token_response):
         ahjo_connector.refresh_token()
 
 
+@pytest.mark.django_db
 def test_do_token_request(ahjo_connector: AhjoConnector, token_response):
     # Test with successful request
 
@@ -149,6 +153,7 @@ def test_do_token_request(ahjo_connector: AhjoConnector, token_response):
             ahjo_connector.do_token_request({})
 
 
+@pytest.mark.django_db
 def test_get_token_from_db(ahjo_connector: AhjoConnector, ahjo_setting):
     token = ahjo_connector.get_token_from_db()
     assert isinstance(token, AhjoToken)
@@ -172,6 +177,7 @@ def test_check_if_token_is_expired(expired_token, non_expired_token):
     assert non_expired_token.has_expired() is False
 
 
+@pytest.mark.django_db
 def test_create_token(ahjo_connector: AhjoConnector, non_expired_token):
     # Test with new token
     token_to_create = AhjoToken(

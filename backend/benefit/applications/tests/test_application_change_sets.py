@@ -2,6 +2,7 @@ from datetime import timedelta
 from unittest import mock
 
 import faker
+import pytest
 from freezegun import freeze_time
 from rest_framework.reverse import reverse
 
@@ -185,6 +186,7 @@ def check_applicant_changes(applicant_edit_payloads, changes, application):
     assert len(changes) == len(applicant_edit_payloads)
 
 
+@pytest.mark.django_db
 def test_application_history_change_sets(
     request, handler_api_client, api_client, application
 ):

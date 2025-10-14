@@ -12,17 +12,20 @@ from applications.tests.test_application_batch_api import (
 from helsinkibenefit.tests.conftest import *  # noqa
 
 
+@pytest.mark.django_db
 def test_application_model(application):
     assert Application.objects.count() == 1
     assert application.employee
 
 
+@pytest.mark.django_db
 def test_employee_model(employee):
     assert Employee.objects.count() == 1
     assert Application.objects.count() == 1
     assert employee.application
 
 
+@pytest.mark.django_db
 def test_application_batch(application_batch):
     assert ApplicationBatch.objects.count() == 1
     assert application_batch.applications.count() == 2
@@ -38,6 +41,7 @@ def test_application_batch(application_batch):
         (ApplicationBatchStatus.DECIDED_REJECTED, AhjoDecision.DECIDED_REJECTED),
     ],
 )
+@pytest.mark.django_db
 def test_application_batch_update_after_details_request(
     application_with_ahjo_decision,
     batch_status,
@@ -79,6 +83,7 @@ def test_application_batch_update_after_details_request(
         (ApplicationBatchStatus.COMPLETED, AhjoDecision.DECIDED_ACCEPTED),
     ],
 )
+@pytest.mark.django_db
 def test_application_batch_ahjo_decision(application_batch, status, expected_result):
     application_batch.status = status
     if status in [
@@ -120,6 +125,7 @@ def test_application_batch_ahjo_decision(application_batch, status, expected_res
         (ApplicationBatchStatus.COMPLETED, False),
     ],
 )
+@pytest.mark.django_db
 def test_application_batch_modified(application_batch, status, expected_result):
     application_batch.status = status
     if status in [
@@ -144,6 +150,7 @@ def test_application_batch_modified(application_batch, status, expected_result):
     assert application_batch.applications_can_be_modified == expected_result
 
 
+@pytest.mark.django_db
 def test_application_address(application):
     application.official_company_city = "official city"
     application.alternative_company_city = "alternative city"
@@ -172,6 +179,7 @@ def test_application_address(application):
     )
 
 
+@pytest.mark.django_db
 def test_encrypted_searchable_social_security_number(employee):
     # test exact ssn searches on the hashed field
     assert employee.social_security_number

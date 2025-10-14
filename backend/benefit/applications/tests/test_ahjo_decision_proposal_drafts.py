@@ -106,6 +106,7 @@ def _prepare_calculation(application):
         ),
     ],
 )
+@pytest.mark.django_db
 def test_decision_proposal_drafting(
     application,
     handler_api_client,

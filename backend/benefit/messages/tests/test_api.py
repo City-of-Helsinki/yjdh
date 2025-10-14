@@ -36,6 +36,7 @@ SAMPLE_MESSAGE_PAYLOAD = {
         "handler-note-list",
     ],
 )
+@pytest.mark.django_db
 def test_list_message_unauthenticated(
     anonymous_client, handling_application, view_name
 ):
@@ -53,6 +54,7 @@ def test_list_message_unauthenticated(
         "handler-note-list",
     ],
 )
+@pytest.mark.django_db
 def test_list_message_unauthorized(
     api_client, anonymous_handling_application, view_name
 ):
@@ -81,6 +83,7 @@ def test_list_message_unauthorized(
         "handler-message-list",
     ],
 )
+@pytest.mark.django_db
 def test_list_messages(
     api_client,
     handler_api_client,
@@ -144,6 +147,7 @@ def test_list_notes(handler_api_client, handling_application):
         "handler-note-list",
     ],
 )
+@pytest.mark.django_db
 def test_create_message_unauthenticated(
     anonymous_client, handling_application, view_name
 ):
@@ -162,6 +166,7 @@ def test_create_message_unauthenticated(
         "handler-note-list",
     ],
 )
+@pytest.mark.django_db
 def test_create_message_unauthorized(api_client, handling_application, view_name):
     handling_application.company = CompanyFactory()
     handling_application.save()
@@ -178,6 +183,7 @@ def test_create_message_unauthorized(api_client, handling_application, view_name
     assert result.status_code == 403
 
 
+@pytest.mark.django_db
 def test_create_applicant_message_invalid(
     api_client, application, mock_get_organisation_roles_and_create_company
 ):
@@ -250,6 +256,7 @@ def test_create_handler_message_invalid(handler_api_client, handling_application
         (ApplicationStatus.CANCELLED, False, 400),
     ],
 )
+@pytest.mark.django_db
 def test_applicant_send_first_message(
     api_client,
     handling_application,
@@ -283,6 +290,7 @@ def test_applicant_send_first_message(
         ("handler-note-list", MessageType.NOTE, None),
     ],
 )
+@pytest.mark.django_db
 @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
 def test_create_message(
     api_client,
@@ -355,6 +363,7 @@ def test_create_message(
         "handler-note-detail",
     ],
 )
+@pytest.mark.django_db
 def test_update_message_unauthenticated(
     anonymous_client, anonymous_handling_application, view_name
 ):
@@ -380,6 +389,7 @@ def test_update_message_unauthenticated(
         ("handler-note-detail", MessageType.NOTE),
     ],
 )
+@pytest.mark.django_db
 def test_update_message_unauthorized(
     api_client,
     handler_api_client,
@@ -415,6 +425,7 @@ def test_update_message_unauthorized(
         )
 
 
+@pytest.mark.django_db
 def test_update_message_not_allowed(
     api_client,
     handler_api_client,
@@ -447,6 +458,7 @@ def test_update_message_not_allowed(
         "handler-note-detail",
     ],
 )
+@pytest.mark.django_db
 def test_delete_message_unauthenticated(
     anonymous_client, handling_application, view_name
 ):
@@ -467,6 +479,7 @@ def test_delete_message_unauthenticated(
         "handler-message-detail",
     ],
 )
+@pytest.mark.django_db
 def test_delete_message_unauthorized(
     api_client,
     handler_api_client,
@@ -502,6 +515,7 @@ def test_delete_message_unauthorized(
         assert result.status_code == 403
 
 
+@pytest.mark.django_db
 def test_delete_message(
     api_client,
     mock_get_organisation_roles_and_create_company,
@@ -526,6 +540,7 @@ def test_delete_message(
     assert Message.objects.count() == 0
 
 
+@pytest.mark.django_db
 def test_applications_list_with_message_count(
     api_client, handling_application, handler_api_client
 ):
@@ -563,6 +578,7 @@ def test_applications_list_with_message_count(
     assert response.data["unread_messages_count"] == 0
 
 
+@pytest.mark.django_db
 def test_list_messages_read_receipt_applicant(
     api_client,
     handling_application,
@@ -658,6 +674,7 @@ def test_list_messages_read_receipt_handler(
     )
 
 
+@pytest.mark.django_db
 def test_applications_list_with_message_count_multiple_messages(
     api_client, handling_application, handler_api_client
 ):

@@ -1,8 +1,10 @@
+import pytest
 from rest_framework.reverse import reverse
 
 from common.tests.conftest import get_client_user
 
 
+@pytest.mark.django_db
 def test_applications_unauthorized(api_client, application):
     response = api_client.get(reverse("users-me"))
     user = get_client_user(api_client)

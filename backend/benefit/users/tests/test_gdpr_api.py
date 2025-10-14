@@ -52,6 +52,7 @@ def get_api_token_for_user_with_scopes(user, scopes: list, requests_mock):
     return auth_header
 
 
+@pytest.mark.django_db
 def test_get_profile_data_from_gdpr_api(gdpr_api_client, requests_mock):
     user = HelsinkiProfileUserFactory()
     auth_header = get_api_token_for_user_with_scopes(
@@ -75,6 +76,7 @@ def test_get_profile_data_from_gdpr_api(gdpr_api_client, requests_mock):
     assert response.json() == valid_response
 
 
+@pytest.mark.django_db
 def test_delete_profile_data_from_gdpr_api(gdpr_api_client, requests_mock):
     user = HelsinkiProfileUserFactory()
     auth_header = get_api_token_for_user_with_scopes(
@@ -89,6 +91,7 @@ def test_delete_profile_data_from_gdpr_api(gdpr_api_client, requests_mock):
         User.objects.get(username=user.username)
 
 
+@pytest.mark.django_db
 def test_gdpr_api_requires_authentication(gdpr_api_client):
     user = HelsinkiProfileUserFactory()
     response = gdpr_api_client.get(
@@ -102,6 +105,7 @@ def test_gdpr_api_requires_authentication(gdpr_api_client):
     assert response.status_code == 401
 
 
+@pytest.mark.django_db
 def test_user_can_only_access_their_own_profile(gdpr_api_client, requests_mock):
     user = HelsinkiProfileUserFactory()
     auth_header = get_api_token_for_user_with_scopes(

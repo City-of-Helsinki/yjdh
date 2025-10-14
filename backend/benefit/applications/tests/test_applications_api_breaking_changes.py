@@ -27,6 +27,7 @@ from helsinkibenefit.tests.conftest import *  # noqa
         ),
     ],
 )
+@pytest.mark.django_db
 def test_application_break_association_business_activities(
     api_client,
     association_application,
@@ -55,6 +56,7 @@ def test_application_break_association_business_activities(
     assert association_application.association_has_business_activities is False
 
 
+@pytest.mark.django_db
 def test_application_break_de_minimis_aid(api_client, association_application):
     association_application.benefit_type = BenefitType.SALARY_BENEFIT
     association_application.association_has_business_activities = True
@@ -82,6 +84,7 @@ def test_application_break_de_minimis_aid(api_client, association_application):
     assert association_application.association_has_business_activities is False
 
 
+@pytest.mark.django_db
 def test_application_break_pay_subsidy_no_business_activities(
     api_client, association_application
 ):
@@ -111,6 +114,7 @@ def test_application_break_pay_subsidy_no_business_activities(
     assert association_application.pay_subsidy_granted == PaySubsidyGranted.NOT_GRANTED
 
 
+@pytest.mark.django_db
 def test_application_break_pay_subsidy_with_business_activities(
     api_client, association_application
 ):
