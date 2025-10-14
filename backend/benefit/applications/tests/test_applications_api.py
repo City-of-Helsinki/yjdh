@@ -1164,6 +1164,7 @@ def test_application_has_default_ahjo_status_after_submit(
     )
     application.refresh_from_db()
     submit_response = _submit_application(api_client, application)
+    assert submit_response.status_code == 200
     assert (
         submit_response.data["ahjo_status"] == AhjoStatus.SUBMITTED_BUT_NOT_SENT_TO_AHJO
     )
