@@ -187,6 +187,8 @@ def check_applicant_changes(applicant_edit_payloads, changes, application):
 
 
 @pytest.mark.django_db
+# Freeze so de minimis has reasonable granted_at
+@pytest.mark.freeze_time("2023-01-01")
 def test_application_history_change_sets(
     request, handler_api_client, api_client, application
 ):
@@ -200,7 +202,6 @@ def test_application_history_change_sets(
             get_handler_detail_url(application),
             payload,
         )
-
     assert response.status_code == 200
 
     application.refresh_from_db()
