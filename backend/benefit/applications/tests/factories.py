@@ -129,7 +129,8 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     benefit_type = BenefitType.EMPLOYMENT_BENEFIT
     start_date = factory.Faker(
         "date_between_dates",
-        date_start=date(date.today().year, 1, 1),
+        # Start must not be more than 4 months old or validation errors might happen
+        date_start=date.today() - timedelta(days=90),
         date_end=date.today() + timedelta(days=100),
     )
     end_date = factory.LazyAttribute(
