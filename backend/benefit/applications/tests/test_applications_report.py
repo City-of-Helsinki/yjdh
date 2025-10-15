@@ -50,6 +50,7 @@ def _test_csv(
     csv_lines: List[List[str]],
     expected_application_numbers: List[int],
     expected_without_quotes: bool = False,
+    expected_with_bom: bool = False,
 ) -> None:
     # print(expected_without_quotes)
     if expected_without_quotes:
@@ -58,6 +59,9 @@ def _test_csv(
     else:
         not_found_message = '"Ei löytynyt ehdot täyttäviä hakemuksia"'
         application_number = '"Hakemusnumero"'
+
+    if expected_with_bom:
+        application_number = f"\ufeff{application_number}"
 
     if not expected_application_numbers:
         assert len(csv_lines) == 2
@@ -84,6 +88,7 @@ def _get_csv(
     expected_application_numbers: List[int],
     from_zip: bool = False,
     expected_without_quotes: bool = False,
+    expected_with_bom: bool = False,
 ) -> List[List[str]]:
     response = handler_api_client.get(url)
     assert response.status_code == 200
@@ -94,7 +99,12 @@ def _get_csv(
         assert isinstance(response, StreamingHttpResponse)
         csv_content: bytes = response.getvalue()
     csv_lines = split_lines_at_semicolon(csv_content.decode("utf-8"))
-    _test_csv(csv_lines, expected_application_numbers, expected_without_quotes)
+    _test_csv(
+        csv_lines,
+        expected_application_numbers=expected_application_numbers,
+        expected_without_quotes=expected_without_quotes,
+        expected_with_bom=expected_with_bom,
+    )
     return csv_lines
 
 
@@ -127,12 +137,6 @@ def _create_applications_for_export():
 
 
 @pytest.mark.django_db
-@pytest.mark.skip(
-    reason=(
-        "This test fails in deploy pipeline - DETAIL:  Key"
-        " (username)=(masonzachary_a45eb8) already exists."
-    )
-)
 def test_applications_csv_export_new_applications(handler_api_client):
     (
         application1,
@@ -148,6 +152,7 @@ def test_applications_csv_export_new_applications(handler_api_client):
         + "export_new_rejected_applications_csv_pdf/",
         [application3.application_number],
         from_zip=True,
+        expected_with_bom=True,
     )
     assert ApplicationBatch.objects.all().count() == 1
     assert ApplicationBatch.objects.all().first().applications.count() == 1
@@ -167,6 +172,7 @@ def test_applications_csv_export_new_applications(handler_api_client):
         [application1.application_number, application2.application_number],
         from_zip=True,
         expected_without_quotes=True,
+        expected_with_bom=True,
     )
     assert ApplicationBatch.objects.all().count() == 2
     assert set(
@@ -189,6 +195,7 @@ def test_applications_csv_export_new_applications(handler_api_client):
         + "export_new_rejected_applications_csv_pdf/",
         [],
         from_zip=True,
+        expected_with_bom=True,
     )
     _get_csv(
         handler_api_client,
@@ -197,6 +204,7 @@ def test_applications_csv_export_new_applications(handler_api_client):
         [],
         from_zip=True,
         expected_without_quotes=True,
+        expected_with_bom=True,
     )
     assert ApplicationBatch.objects.all().count() == 2
 
