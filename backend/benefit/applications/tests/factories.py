@@ -161,6 +161,7 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Application
+        skip_postgeneration_save = True
 
 
 attachment_factory_string = "applications.tests.factories.AttachmentFactory"
@@ -230,6 +231,7 @@ class ReceivedApplicationFactory(ApplicationWithAttachmentFactory):
         self.calculation = Calculation.objects.create_for_application(self, **kwargs)
         self.calculation.init_calculator()
         self.calculation.calculate()
+        self.save()
 
 
 class HandlingApplicationFactory(ReceivedApplicationFactory):
@@ -371,6 +373,7 @@ class BaseApplicationBatchFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = ApplicationBatch
+        skip_postgeneration_save = True
 
 
 class ApplicationBatchFactory(BaseApplicationBatchFactory):

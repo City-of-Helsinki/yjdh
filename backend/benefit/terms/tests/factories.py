@@ -49,6 +49,7 @@ class TermsFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Terms
+        skip_postgeneration_save = True
 
 
 class AbstractTermsApprovalFactory(factory.django.DjangoModelFactory):
@@ -72,6 +73,7 @@ class AbstractTermsApprovalFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = AbstractTermsApproval
         abstract = True
+        skip_postgeneration_save = True
 
 
 class ApplicantTermsApprovalFactory(AbstractTermsApprovalFactory):
