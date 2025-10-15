@@ -345,7 +345,7 @@ class EmployeeFactory(factory.django.DjangoModelFactory):
         "random_element", elements=[v[0] for v in APPLICATION_LANGUAGE_CHOICES]
     )
     job_title = factory.Faker("job", locale="fi_FI")
-    monthly_pay = factory.Faker("random_int", max=5000)
+    monthly_pay = factory.Faker("random_int", min=1, max=5000)
     vacation_money = factory.Faker("random_int", max=5000)
     other_expenses = factory.Faker("random_int", max=5000)
     working_hours = factory.Faker("random_int", min=18, max=40)
