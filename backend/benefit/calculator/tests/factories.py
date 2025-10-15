@@ -120,6 +120,7 @@ class CalculationFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Calculation
+        skip_postgeneration_save = True
 
 
 class PreviousBenefitFactory(factory.django.DjangoModelFactory):
