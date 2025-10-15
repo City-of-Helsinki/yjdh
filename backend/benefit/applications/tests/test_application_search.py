@@ -4,6 +4,7 @@ from urllib.parse import urlencode
 import pytest
 from dateutil.relativedelta import relativedelta
 from django.core.management import call_command
+from django.utils import timezone
 from rest_framework.reverse import reverse
 
 from applications.api.v1.search_views import SearchPattern, SubsidyInEffect
@@ -252,7 +253,7 @@ def test_search_filter_years_since_decision(
     handler_api_client, q, detected_pattern, archived, application, years_since_decision
 ):
     application = setup_application_data(application, archived)
-    application.batch.decision_date = datetime.now() - relativedelta(years=3)
+    application.batch.decision_date = timezone.now() - relativedelta(years=3)
     application.batch.save()
 
     params = urlencode(
@@ -263,8 +264,8 @@ def test_search_filter_years_since_decision(
             "archival": True,
         }
     )
-
     response = handler_api_client.get(f"{api_url}?{params}")
+
     data = response.json()
     assert response.status_code == 200
     assert len(data["matches"]) > 0
@@ -272,7 +273,7 @@ def test_search_filter_years_since_decision(
     assert data["matches"][0]["application_number"] == application.application_number
 
     # Decision date is one day over three years
-    application.batch.decision_date = datetime.now() - relativedelta(years=3, days=1)
+    application.batch.decision_date = timezone.now() - relativedelta(years=3, days=1)
     application.batch.save()
     response = handler_api_client.get(f"{api_url}?{params}")
     data = response.json()

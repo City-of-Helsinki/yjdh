@@ -4,6 +4,7 @@ import pytest
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.utils import timezone
 from helusers.settings import api_token_auth_settings
 from jose import jwt
 
@@ -29,7 +30,7 @@ def get_api_token_for_user_with_scopes(user, scopes: list, requests_mock):
 
     keys = {"keys": [rsa_key.public_key_jwk]}
 
-    now = datetime.datetime.now()
+    now = timezone.now()
     expire = now + datetime.timedelta(days=14)
 
     jwt_data = {
