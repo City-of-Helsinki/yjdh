@@ -1,5 +1,4 @@
 import re
-from datetime import datetime
 from typing import Union
 
 from dateutil.relativedelta import relativedelta
@@ -11,6 +10,7 @@ from django.contrib.postgres.search import (
 )
 from django.db import models
 from django.db.models import Q
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from fuzzywuzzy import fuzz
 from rest_framework import filters as drf_filters
@@ -113,13 +113,13 @@ def _prepare_application_queryset(archived, subsidy_in_effect, years_since_decis
     if subsidy_in_effect and subsidy_in_effect == SubsidyInEffect.NOW:
         queryset = queryset.filter(
             status=ApplicationStatus.ACCEPTED,
-            calculation__start_date__lte=datetime.now(),
-            calculation__end_date__gte=datetime.now(),
+            calculation__start_date__lte=timezone.now(),
+            calculation__end_date__gte=timezone.now(),
         )
     elif subsidy_in_effect and subsidy_in_effect.isnumeric():
         queryset = queryset.filter(
             status=ApplicationStatus.ACCEPTED,
-            calculation__end_date__gte=datetime.now().date()
+            calculation__end_date__gte=timezone.now().date()
             - relativedelta(years=int(subsidy_in_effect)),
         )
     if years_since_decision:
@@ -127,12 +127,12 @@ def _prepare_application_queryset(archived, subsidy_in_effect, years_since_decis
             Q(
                 status=ApplicationStatus.ACCEPTED,
                 batch__isnull=False,
-                batch__decision_date__gte=datetime.now()
+                batch__decision_date__gte=timezone.now()
                 - relativedelta(years=years_since_decision),
             )
             | Q(
                 status=ApplicationStatus.REJECTED,
-                handled_at__gte=datetime.now()
+                handled_at__gte=timezone.now()
                 - relativedelta(years=years_since_decision),
             ),
         )
@@ -143,17 +143,17 @@ def _prepare_archival_application_queryset(subsidy_in_effect, years_since_decisi
     queryset = ArchivalApplication.objects
     if subsidy_in_effect and subsidy_in_effect == SubsidyInEffect.NOW:
         return queryset.filter(
-            start_date__lte=datetime.now(),
-            end_date__gte=datetime.now(),
+            start_date__lte=timezone.now(),
+            end_date__gte=timezone.now(),
         )
     elif subsidy_in_effect:
         return queryset.filter(
-            end_date__gte=datetime.now().date()
+            end_date__gte=timezone.now().date()
             - relativedelta(years=int(subsidy_in_effect))
         )
     elif years_since_decision:
         return queryset.filter(
-            end_date__gte=datetime.now().date()
+            end_date__gte=timezone.now().date()
             - relativedelta(years=int(years_since_decision))
         )
     return queryset.all()
