@@ -8,6 +8,6 @@ pip-tools
 pytest
 pytest-cov
 pytest-django
-pytest-freezegun
+pytest-freezer
 requests-mock
 werkzeug
