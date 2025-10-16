@@ -73,6 +73,7 @@ def test_logout_callback_view(requests_mock, user_client, user):
 @override_settings(
     OIDC_OP_USER_ENDPOINT="http://example.com/userinfo/",
     NEXT_PUBLIC_MOCK_FLAG=False,
+    NEXT_PUBLIC_ENABLE_SUOMIFI=False,
 )
 def test_userinfo_view(requests_mock, user_client, user):
     userinfo = {
@@ -105,6 +106,7 @@ def test_userinfo_view(requests_mock, user_client, user):
 @override_settings(
     OIDC_OP_USER_ENDPOINT="http://example.com/userinfo/",
     NEXT_PUBLIC_MOCK_FLAG=False,
+    NEXT_PUBLIC_ENABLE_SUOMIFI=False,
 )
 def test_userinfo_view_without_oidc_info(user_client):
     session = user_client.session
@@ -127,6 +129,7 @@ def test_userinfo_view_without_oidc_info(user_client):
 @override_settings(
     OIDC_OP_USER_ENDPOINT="http://example.com/userinfo/",
     NEXT_PUBLIC_MOCK_FLAG=False,
+    NEXT_PUBLIC_ENABLE_SUOMIFI=False,
 )
 def test_userinfo_view_with_userinfo_returning_401(requests_mock, user_client, user):
     matcher = re.compile(re.escape(settings.OIDC_OP_USER_ENDPOINT))
