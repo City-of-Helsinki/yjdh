@@ -219,9 +219,16 @@ def test_adfs_callback(
     assert "_auth_user_id" in client.session
 
 
+# FIXME: This test does not work if NEXT_PUBLIC_ENABLE_SUOMIF=True
+#        when bringing up the backend. Overriding this setting here
+#        does not help, because there's conditional logic being done
+#        based on the setting's value elsewhere that does not get
+#        rerun when changing the setting in this test.
 @pytest.mark.django_db
 @override_settings(
-    NEXT_PUBLIC_MOCK_FLAG=False, ADFS_LOGIN_REDIRECT_URL="http://example.com"
+    NEXT_PUBLIC_MOCK_FLAG=False,
+    ADFS_LOGIN_REDIRECT_URL="http://example.com",
+    NEXT_PUBLIC_ENABLE_SUOMIFI=False,
 )
 @pytest.mark.parametrize(
     "original_redirect_url",

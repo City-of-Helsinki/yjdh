@@ -76,6 +76,7 @@ def test_get_organization_roles(session_request, requests_mock):
     EAUTHORIZATIONS_CLIENT_ID="test",
     EAUTHORIZATIONS_CLIENT_SECRET="test",
     NEXT_PUBLIC_MOCK_FLAG=False,
+    NEXT_PUBLIC_ENABLE_SUOMIFI=False,
 )
 def test_eauth_authentication_init_view(requests_mock, user_client, user):
     register_user_info = {
