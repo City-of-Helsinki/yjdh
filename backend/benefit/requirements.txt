@@ -14,7 +14,7 @@ attrs==25.3.0
     # via
     #   jsonschema
     #   referencing
-authlib==1.6.4
+authlib==1.6.5
     # via drf-oidc-auth
 azure-core==1.35.1
     # via
