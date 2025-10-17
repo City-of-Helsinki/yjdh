@@ -346,7 +346,7 @@ def test_prepare_case_records(decided_application, settings):
         {
             "Title": f"{OpenCaseRecordTitle(application=application)}",
             "Type": AhjoRecordType.APPLICATION,
-            "Acquired": fake_summary.created_at.isoformat("T", "seconds"),
+            "Acquired": application.created_at.isoformat("T", "seconds"),
             "PublicityClass": "Salassa pidettävä",
             "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
             "Language": "fi",
