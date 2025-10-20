@@ -174,15 +174,20 @@ def test_generate_composed_template_html(mock_pdf_convert):
     accepted_app_1 = DecidedApplicationFactory(
         status=ApplicationStatus.ACCEPTED,
         start_date=date.today(),
+        employee__first_name="app_1_employee_first_name",
+        employee__last_name="app_1_employee_last_name",
     )
     accepted_app_1.calculation.calculated_benefit_amount = 1000
     accepted_app_1.calculation.save()
     accepted_app_2 = DecidedApplicationFactory(
         status=ApplicationStatus.ACCEPTED,
         start_date=date.today(),
+        employee__first_name="app_2_employee_first_name",
+        employee__last_name="app_2_employee_last_name",
     )
     accepted_app_2.calculation.calculated_benefit_amount = 1000
     accepted_app_2.calculation.save()
+
     rejected_app_1 = DecidedApplicationFactory(
         status=ApplicationStatus.REJECTED, start_date=date.today()
     )
