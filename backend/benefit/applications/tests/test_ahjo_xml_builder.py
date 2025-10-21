@@ -141,41 +141,43 @@ def test_secret_xml_decision_string(
         end_date=calculation.end_date,
     )
 
+    application_number = f"<td>{str(decided_application.application_number)}</td>"
+    company_name = f"<td>{decided_application.company.name}</td>"
+    business_id = f"<td>{decided_application.company.business_id}</td>"
+    employee_name = (
+        f"<td>{decided_application.employee.first_name} "
+        f"{decided_application.employee.last_name}</td>"
+    )
+    date_span = (
+        f"<td>{row.start_date.strftime('%d.%m.%Y')} -"
+        f" {row.end_date.strftime('%d.%m.%Y')}</td>"
+    )
+    row_amount = f">{str(int(row.amount))} €<"
+    benefit_amount = f">{str(int(calculation.calculated_benefit_amount))} €<"
+
     if application_status == ApplicationStatus.ACCEPTED:
         xml_string = secret_xml_builder.generate_xml()
 
         wanted_replacements = [
-            str(decided_application.application_number),
-            decided_application.company.name,
-            decided_application.company.business_id,
-            decided_application.employee.last_name,
-            decided_application.employee.first_name,
-            (
-                f"{row.start_date.strftime('%d.%m.%Y')} -"
-                f" {row.end_date.strftime('%d.%m.%Y')}"
-            ),
-            str(int(row.amount)),
-            str(int(calculation.calculated_benefit_amount)),
+            application_number,
+            company_name,
+            business_id,
+            employee_name,
+            date_span,
+            row_amount,
+            benefit_amount,
         ]
 
     elif application_status == ApplicationStatus.REJECTED:
         xml_string = secret_xml_builder.generate_xml()
 
         wanted_replacements = [
-            str(decided_application.application_number),
-            decided_application.company.name,
-            decided_application.company.business_id,
-            decided_application.employee.last_name,
-            decided_application.employee.first_name,
+            application_number,
+            company_name,
+            business_id,
+            employee_name,
         ]
-        unwanted_replacements = [
-            (
-                f"{row.start_date.strftime('%d.%m.%Y')} -"
-                f" {row.end_date.strftime('%d.%m.%Y')}"
-            ),
-            str(int(row.amount)),
-            str(int(calculation.calculated_benefit_amount)),
-        ]
+        unwanted_replacements = [date_span, row_amount, benefit_amount]
         assert all(
             [replacement not in xml_string for replacement in unwanted_replacements]
         )
