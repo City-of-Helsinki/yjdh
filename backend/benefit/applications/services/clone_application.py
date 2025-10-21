@@ -187,9 +187,6 @@ def _clone_handler_data(application_base, cloned_application):
         override_monthly_benefit_amount_comment=calculation_base.override_monthly_benefit_amount_comment,
     )
 
-    cloned_application.calculation.calculate(override_status=True)
-    cloned_application.calculation.save()
-
     for compensation in application_base.training_compensations.all():
         compensation.pk = None
         compensation.application = cloned_application
@@ -201,6 +198,9 @@ def _clone_handler_data(application_base, cloned_application):
         pay_subsidy.pk = None
         pay_subsidy.application = cloned_application
         pay_subsidy.save()
+
+    cloned_application.calculation.calculate(override_status=True)
+    cloned_application.calculation.save()
 
     cloned_application.status = ApplicationStatus.RECEIVED
     ApplicationLogEntry.objects.create(
