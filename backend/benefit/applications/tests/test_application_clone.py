@@ -196,6 +196,7 @@ employee_fields = {
 
 
 @pytest.mark.django_db
+@pytest.mark.freeze_time("2024-10-22")
 def test_application_full_clone(api_client, handler_api_client, settings):
     settings.PAYMENT_INSTALMENTS_ENABLED = True
     application = _set_up_decided_application()
