@@ -338,7 +338,7 @@ class EmployeeFactory(factory.django.DjangoModelFactory):
     first_name = factory.Faker("first_name", locale="fi_FI")
     last_name = factory.Faker("last_name", locale="fi_FI")
     social_security_number = factory.Faker("ssn", locale="fi_FI")
-    phone_number = factory.Sequence(lambda n: f"050-10000{n}")
+    phone_number = factory.Sequence(lambda n: f"050-10{n + 1000}")
     email = factory.Faker("email", locale="fi_FI")
 
     employee_language = factory.Faker(
