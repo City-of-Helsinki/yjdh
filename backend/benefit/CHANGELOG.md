@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.9.8](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.9.7...benefit-backend-v2.9.8) (2025-10-22)
+
+
+### Bug Fixes
+
+* **benefit:** Issue calculation issue when cloning application ([6d7cc6b](https://github.com/City-of-Helsinki/yjdh/commit/6d7cc6bc20cd2ccd772291fd9f1a9c76f2e70215))
+* **benefit:** Use timezone.now instead of datetime.now ([6d5c171](https://github.com/City-of-Helsinki/yjdh/commit/6d5c171bece4def79b518c5418233ae089c7b0d7))
+* Partially revert commit a451240ba808cabebd5150977c2b3058f938ee34 ([3942f5e](https://github.com/City-of-Helsinki/yjdh/commit/3942f5e7dbd07d4577a9f00d3c062e05e32cc859))
+* Simplify GDPR API ([c4bf419](https://github.com/City-of-Helsinki/yjdh/commit/c4bf41924f791cdec8a2910dd1688698ff04b007))
+* Update SENTRY variable names ([022daac](https://github.com/City-of-Helsinki/yjdh/commit/022daaca41c1450ee253d575fd83ef2854b757d8))
+
+
+### Dependencies
+
+* **benefit:** Migrate from pytest-freezegun to pytest-freezer ([dfe046f](https://github.com/City-of-Helsinki/yjdh/commit/dfe046f60ed76928ff53f4a0c95fc7bde3ef3469))
+* **benefit:** Upgrade to Django 5.2 ([45b35bc](https://github.com/City-of-Helsinki/yjdh/commit/45b35bc01eebbdae3c877f1ebf68dc362c67fac8))
+* **deps:** Bump authlib from 1.6.4 to 1.6.5 in /backend/benefit ([38ac77e](https://github.com/City-of-Helsinki/yjdh/commit/38ac77e86f4a2b4bc10a7f8786b8fd53fcf96a4d))
+* **deps:** Bump django from 5.2.6 to 5.2.7 in /backend/benefit ([13ec26e](https://github.com/City-of-Helsinki/yjdh/commit/13ec26e51c444d3bafcc08aaa8510a2acf9448d5))
+
 ## [2.9.7](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.9.6...benefit-backend-v2.9.7) (2025-10-13)
 
 
