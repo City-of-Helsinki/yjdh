@@ -3,7 +3,7 @@ services:
   postgres:
     build:
       context: ./backend
-      dockerfile: ./docker/finnish_postgres.Dockerfile
+      dockerfile: ./docker/finnish_postgres_13.Dockerfile
     platform: linux/amd64
     restart: on-failure
     environment:
