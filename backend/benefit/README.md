@@ -17,8 +17,8 @@ i.e. "Mock both applicant and handler logins (Applicant uses OIDC, handler uses 
 
 Prerequisites:
 
-- PostgreSQL 12
-- Python 3.8
+- PostgreSQL 17
+- Python 3.12
 
 ### Installing Python requirements
 
