@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.5.3](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v1.5.2...kesaseteli-employer-v1.5.3) (2025-11-01)
+
+
+### Bug Fixes
+
+* Axios dependencies ([ab6edd6](https://github.com/City-of-Helsinki/yjdh/commit/ab6edd69a2fa7826bf8621e55824ab57fa5811a7))
+* Linter error ([c100fea](https://github.com/City-of-Helsinki/yjdh/commit/c100feae76a6b765e3be075d6a92f0d23fdfbd20))
+* Update axios ([6563e30](https://github.com/City-of-Helsinki/yjdh/commit/6563e301a7249dbfdef95955383a9f33aa71e4d5))
+
 ## [1.5.2](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v1.5.1...kesaseteli-employer-v1.5.2) (2025-06-30)
 
 
