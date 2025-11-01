@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.2](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v1.4.1...kesaseteli-handler-v1.4.2) (2025-11-01)
+
+
+### Bug Fixes
+
+* Axios dependencies ([ab6edd6](https://github.com/City-of-Helsinki/yjdh/commit/ab6edd69a2fa7826bf8621e55824ab57fa5811a7))
+* Update axios ([6563e30](https://github.com/City-of-Helsinki/yjdh/commit/6563e301a7249dbfdef95955383a9f33aa71e4d5))
+
 ## [1.4.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v1.4.0...kesaseteli-handler-v1.4.1) (2025-06-23)
 
 
