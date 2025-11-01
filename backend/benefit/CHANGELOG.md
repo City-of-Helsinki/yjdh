@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.9](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.9.8...benefit-backend-v2.9.9) (2025-11-01)
+
+
+### Documentation
+
+* **benefit:** Update README ([af37309](https://github.com/City-of-Helsinki/yjdh/commit/af373095717f3d8dc964fc7b79844143b18f2751))
+
 ## [2.9.8](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.9.7...benefit-backend-v2.9.8) (2025-10-22)
 
 
