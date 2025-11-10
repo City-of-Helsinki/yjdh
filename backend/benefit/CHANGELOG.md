@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.9.9](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.9.8...benefit-backend-v2.9.9) (2025-11-10)
+
+
+### Dependencies
+
+* **deps:** Bump django from 5.2.7 to 5.2.8 in /backend/benefit ([6794e08](https://github.com/City-of-Helsinki/yjdh/commit/6794e081acb1e8446a4ab21b410c3da0c624f3c0))
+
+
+### Documentation
+
+* **benefit:** Update README ([af37309](https://github.com/City-of-Helsinki/yjdh/commit/af373095717f3d8dc964fc7b79844143b18f2751))
+
 ## [2.9.8](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.9.7...benefit-backend-v2.9.8) (2025-10-22)
 
 
