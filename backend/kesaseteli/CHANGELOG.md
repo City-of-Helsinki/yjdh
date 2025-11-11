@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.10.4](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.10.3...kesaseteli-backend-v1.10.4) (2025-11-11)
+
+
+### Bug Fixes
+
+* Postgres database to use database url + password combination ([7e539d0](https://github.com/City-of-Helsinki/yjdh/commit/7e539d0a4872f194d414c24da4386475fcf1e7b3))
+* **tests:** Fix Kesäseteli test case failing when run in parallel ([990a063](https://github.com/City-of-Helsinki/yjdh/commit/990a063e2e28cef3d4e2d8e9ff19c586a6e3173c))
+
+
+### Dependencies
+
+* **deps:** Bump django from 4.2.24 to 4.2.25 in /backend/kesaseteli ([3d71553](https://github.com/City-of-Helsinki/yjdh/commit/3d71553d4984451c0a6544bb6fcc52b5fa097989))
+* **deps:** Bump django from 4.2.25 to 4.2.26 in /backend/kesaseteli ([3f67ff6](https://github.com/City-of-Helsinki/yjdh/commit/3f67ff63fbd5c651353adbd1975ee7ca8ec176cb))
+* **kesaseteli:** Replace black, flake8 and isort with ruff ([aeb2e07](https://github.com/City-of-Helsinki/yjdh/commit/aeb2e07ee5c135be9bc742b9e1c5a99b6e523244))
+* Replace black, flake8 and isort with ruff in pre-commit ([6f7c1f1](https://github.com/City-of-Helsinki/yjdh/commit/6f7c1f1fd955a2d1230abf6b98ee93d9f09bbaab))
+
+
+### Documentation
+
+* **kesaseteli:** Update documentation on code format ([06ac65a](https://github.com/City-of-Helsinki/yjdh/commit/06ac65a1a61d816be54c2feb17b404224fd1a930))
+* **kesaseteli:** Update README ([9be0852](https://github.com/City-of-Helsinki/yjdh/commit/9be0852db143ee201b860062b22ff667c31f5f2a))
+
 ## [1.10.3](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.10.2...kesaseteli-backend-v1.10.3) (2025-09-16)
 
 
