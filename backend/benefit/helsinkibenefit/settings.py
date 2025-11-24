@@ -5,6 +5,7 @@ import sentry_sdk
 from corsheaders.defaults import default_headers
 from django.utils.translation import gettext_lazy as _
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.types import SamplingContext
 
 from shared.service_bus.enums import YtjOrganizationCode
 
@@ -39,13 +40,16 @@ env = environ.Env(
     MAIL_MAILGUN_DOMAIN=(str, ""),
     MAIL_MAILGUN_API=(str, ""),
     SENTRY_DSN=(str, ""),
-    SENTRY_ENVIRONMENT=(str, ""),
+    SENTRY_ENVIRONMENT=(str, "local"),
+    SENTRY_PROFILE_SESSION_SAMPLE_RATE=(float, None),
+    SENTRY_RELEASE=(str, None),
+    SENTRY_TRACES_SAMPLE_RATE=(float, None),
+    SENTRY_TRACES_IGNORE_PATHS=(list, ["/healthz", "/readiness"]),
     SENTRY_ATTACH_STACKTRACE=(bool, False),
     SENTRY_MAX_BREADCRUMBS=(int, 0),
     SENTRY_MAX_REQUEST_BODY_SIZE=(str, "never"),
     SENTRY_SEND_DEFAULT_PII=(bool, False),
     SENTRY_INCLUDE_LOCAL_VARIABLES=(bool, False),
-    SENTRY_RELEASE=(str, ""),
     CORS_ALLOWED_ORIGINS=(list, []),
     CORS_ALLOW_ALL_ORIGINS=(bool, False),
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
@@ -222,17 +226,40 @@ if env("DATABASE_PASSWORD"):
 
 CACHES = {"default": env.cache()}
 
-sentry_sdk.init(
-    attach_stacktrace=env.bool("SENTRY_ATTACH_STACKTRACE"),
-    max_breadcrumbs=env.int("SENTRY_MAX_BREADCRUMBS"),
-    max_request_body_size=env.str("SENTRY_MAX_REQUEST_BODY_SIZE"),
-    send_default_pii=env.bool("SENTRY_SEND_DEFAULT_PII"),
-    include_local_variables=env.bool("SENTRY_INCLUDE_LOCAL_VARIABLES"),
-    dsn=env.str("SENTRY_DSN"),
-    release=env.str("SENTRY_RELEASE"),
-    environment=env.str("SENTRY_ENVIRONMENT"),
-    integrations=[DjangoIntegration()],
-)
+# Sentry configuration
+SENTRY_TRACES_SAMPLE_RATE = env("SENTRY_TRACES_SAMPLE_RATE")
+SENTRY_TRACES_IGNORE_PATHS = env.list("SENTRY_TRACES_IGNORE_PATHS")
+
+
+def sentry_traces_sampler(sampling_context: SamplingContext) -> float:
+    # Respect parent sampling decision if one exists. Recommended by Sentry.
+    if (parent_sampled := sampling_context.get("parent_sampled")) is not None:
+        return float(parent_sampled)
+
+    # Exclude health check endpoints from tracing
+    path = sampling_context.get("wsgi_environ", {}).get("PATH_INFO", "")
+    if path.rstrip("/") in SENTRY_TRACES_IGNORE_PATHS:
+        return 0
+
+    # Use configured sample rate for all other requests
+    return SENTRY_TRACES_SAMPLE_RATE or 0
+
+
+if env("SENTRY_DSN"):
+    sentry_sdk.init(
+        attach_stacktrace=env.bool("SENTRY_ATTACH_STACKTRACE"),
+        max_breadcrumbs=env.int("SENTRY_MAX_BREADCRUMBS"),
+        max_request_body_size=env.str("SENTRY_MAX_REQUEST_BODY_SIZE"),
+        send_default_pii=env.bool("SENTRY_SEND_DEFAULT_PII"),
+        include_local_variables=env.bool("SENTRY_INCLUDE_LOCAL_VARIABLES"),
+        dsn=env("SENTRY_DSN"),
+        environment=env("SENTRY_ENVIRONMENT"),
+        release=env("SENTRY_RELEASE"),
+        integrations=[DjangoIntegration()],
+        traces_sampler=sentry_traces_sampler,
+        profile_session_sample_rate=env("SENTRY_PROFILE_SESSION_SAMPLE_RATE"),
+        profile_lifecycle="trace",
+    )
 
 MEDIA_ROOT = env("MEDIA_ROOT")
 STATIC_ROOT = env("STATIC_ROOT")
