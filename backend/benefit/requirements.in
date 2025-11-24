@@ -33,5 +33,5 @@ python-stdnum>=1.19
 python-Levenshtein
 pyyaml
 requests
-sentry-sdk
+sentry-sdk[django]
 uritemplate
