@@ -29,6 +29,9 @@ RUN dnf update -y \
     && pip install --no-cache-dir -r /app/requirements-prod.txt \
     && uwsgi --build-plugin /app/.prod/escape_json.c \
     && mv /app/escape_json_plugin.so /app/.prod/escape_json_plugin.so \
+    && mkdir -p /usr/local/lib/uwsgi/plugins \
+    && uwsgi --build-plugin https://github.com/City-of-Helsinki/uwsgi-sentry \
+    && mv sentry_plugin.so /usr/local/lib/uwsgi/plugins/ \
     && dnf remove -y gcc cyrus-sasl-devel openssl-devel
 
 # Install wkhtmltopdf and it's deps from CentOS9 repo and binary
