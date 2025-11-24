@@ -24,5 +24,6 @@ extend-per-file-ignores = { "*/migrations/*" = ["E501"], "*/tests/*" = ["E501"] 
 [tool.ruff.lint.isort]
 known-first-party = ["shared"]
 
-[tool.pip-tools]
+[tool.pip-tools.compile]
 strip-extras = true
+allow-unsafe = true
