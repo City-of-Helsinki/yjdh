@@ -245,14 +245,16 @@ def sentry_traces_sampler(sampling_context: SamplingContext) -> float:
     return SENTRY_TRACES_SAMPLE_RATE or 0
 
 
-if env("SENTRY_DSN"):
+SENTRY_DSN = env("SENTRY_DSN")
+
+if SENTRY_DSN:
     sentry_sdk.init(
         attach_stacktrace=env.bool("SENTRY_ATTACH_STACKTRACE"),
         max_breadcrumbs=env.int("SENTRY_MAX_BREADCRUMBS"),
         max_request_body_size=env.str("SENTRY_MAX_REQUEST_BODY_SIZE"),
         send_default_pii=env.bool("SENTRY_SEND_DEFAULT_PII"),
         include_local_variables=env.bool("SENTRY_INCLUDE_LOCAL_VARIABLES"),
-        dsn=env("SENTRY_DSN"),
+        dsn=SENTRY_DSN,
         environment=env("SENTRY_ENVIRONMENT"),
         release=env("SENTRY_RELEASE"),
         integrations=[DjangoIntegration()],
