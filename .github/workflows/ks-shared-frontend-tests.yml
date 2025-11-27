@@ -14,5 +14,6 @@ jobs:
     secrets: inherit
     with:
       node-version: 22.x
+      working-directory: ./frontend
       app-directory: ./frontend/kesaseteli/shared
       skip-build: true
