@@ -15,4 +15,4 @@ jobs:
     with:
       node-version: 22.x
       working-directory: ./frontend/kesaseteli/youth
-      extra-commands: cd ./frontend/kesaseteli/youth && echo 'NEXTJS_DISABLE_SENTRY=true' >> .env
+      extra-commands: echo 'NEXTJS_DISABLE_SENTRY=true' >> .env

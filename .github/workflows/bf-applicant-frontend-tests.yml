@@ -15,4 +15,4 @@ jobs:
     with:
       node-version: 22.x
       working-directory: ./frontend/benefit/applicant
-      extra-commands: cd ./frontend/benefit/applicant && echo 'NEXTJS_DISABLE_SENTRY=true' >> .env
+      extra-commands: echo 'NEXTJS_DISABLE_SENTRY=true' >> .env
