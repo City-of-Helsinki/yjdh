@@ -10,9 +10,9 @@ on:
 
 jobs:
   common:
-    uses: ./.github/workflows/ci-node.yml
+    uses: ./.github/workflows/ci-node2.yml
     secrets: inherit
     with:
       node-version: 22.x
-      app-directory: ./frontend/kesaseteli/youth
+      working-directory: ./frontend/kesaseteli/youth
       extra-commands: cd ./frontend/kesaseteli/youth && echo 'NEXTJS_DISABLE_SENTRY=true' >> .env

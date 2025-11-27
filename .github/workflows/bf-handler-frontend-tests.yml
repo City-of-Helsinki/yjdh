@@ -10,9 +10,9 @@ on:
 
 jobs:
   common:
-    uses: ./.github/workflows/ci-node.yml
+    uses: ./.github/workflows/ci-node2.yml
     secrets: inherit
     with:
       node-version: 22.x
-      app-directory: ./frontend/benefit/handler
-      extra-commands: cd ./frontend/benefit/handler && echo 'NEXTJS_DISABLE_SENTRY=true' >> .env
+      working-directory: ./frontend/benefit/handler
+      extra-commands: echo 'NEXTJS_DISABLE_SENTRY=true' >> .env
