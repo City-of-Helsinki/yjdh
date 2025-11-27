@@ -10,8 +10,9 @@ on:
 
 jobs:
   common:
-    uses: ./.github/workflows/ci-node-shared.yml
+    uses: ./.github/workflows/ci-node2.yml
     secrets: inherit
     with:
       node-version: 22.x
       app-directory: ./frontend/benefit/shared
+      skip-build: true
