@@ -32,6 +32,45 @@ const checkIsServerReady = (response) => {
 
   server.disable('x-powered-by');
 
+  server.use((req, res, next) => {
+    if (
+      !process.env.NEXT_PUBLIC_CSP_POLICY &&
+      !process.env.NEXT_PUBLIC_CSP_REPORT_URI
+    ) {
+      return next();
+    }
+
+    // Skip CSP for health checks, API routes, and static assets
+    if (
+      req.path === '/healthz' ||
+      req.path === '/readiness' ||
+      req.path.startsWith('/_next/') ||
+      req.path.startsWith('/api/') ||
+      req.path.endsWith('.ico') ||
+      req.path.endsWith('.png') ||
+      req.path.endsWith('.jpg') ||
+      req.path.endsWith('.svg')
+    ) {
+      return next();
+    }
+
+    if (process.env.NEXT_PUBLIC_CSP_POLICY) {
+      res.setHeader(
+        'Content-Security-Policy',
+        process.env.NEXT_PUBLIC_CSP_POLICY
+      );
+    }
+
+    if (process.env.NEXT_PUBLIC_CSP_REPORT_URI) {
+      res.setHeader(
+        'Reporting-Endpoints',
+        `csp-endpoint=${process.env.NEXT_PUBLIC_CSP_REPORT_URI}`
+      );
+    }
+
+    next();
+  });
+
   server.get('/healthz', (req, res) => {
     checkIsServerReady(res);
   });
