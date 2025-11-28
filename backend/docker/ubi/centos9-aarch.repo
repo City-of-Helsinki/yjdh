@@ -1,6 +1,0 @@
-[CentOS-9]
-name=CentOS-9
-baseurl=https://mirror.stream.centos.org/9-stream/AppStream/aarch64/os/
-enabled=1
-gpgcheck=1
-gpgkey=https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official
