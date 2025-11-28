@@ -55,10 +55,11 @@ const checkIsServerReady = (response) => {
     }
 
     if (process.env.NEXT_PUBLIC_CSP_POLICY) {
-      res.setHeader(
-        'Content-Security-Policy',
-        process.env.NEXT_PUBLIC_CSP_POLICY
-      );
+      const cspPolicy = process.env.NEXT_PUBLIC_CSP_POLICY.replace(/\n/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      res.setHeader('Content-Security-Policy', cspPolicy);
     }
 
     if (process.env.NEXT_PUBLIC_CSP_REPORT_URI) {

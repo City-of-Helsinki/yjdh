@@ -109,54 +109,49 @@ const nextConfig = (override) => ({
 
 let config = nextConfig;
 
-let cloudSentryConfig = {};
-
 const cloudSentryEnabled =
   process.env?.NEXT_PUBLIC_SENTRY_ENVIRONMENT &&
   process.env?.NEXT_PUBLIC_SENTRY_DSN &&
   process.env?.NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE &&
   process.env?.NEXT_PUBLIC_SENTRY_TRACE_PROPAGATION_TARGETS &&
-  process.env?.NEXT_PUBLIC_SENTRY_REPLAYS_SESSION_SAMPLE_RATE &&
-  process.env?.NEXT_PUBLIC_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE
+  (process.env?.NEXT_PUBLIC_SENTRY_REPLAYS_SESSION_SAMPLE_RATE !== undefined) &&
+  (process.env?.NEXT_PUBLIC_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE !== undefined)
 
+console.warn(`${pc.yellow('notice')}- Cloud Sentry enabled: ${cloudSentryEnabled}`);
 if (cloudSentryEnabled) {
-  cloudSentryConfig = {
-    // For all available options, see:
-    // https://www.npmjs.com/package/@sentry/webpack-plugin#options
-    project: process.env?.SENTRY_PROJECT,
-
-    // Only print logs for uploading source maps in CI
-    silent: !process.env?.CI,
-    // For all available options, see:
-    // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
-
-    // Upload a larger set of source maps for prettier stack traces (increases build time)
-    widenClientFileUpload: true,
-    // Routes browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers (increases server load)
-    tunnelRoute: '/monitoring',
-
-    reactComponentAnnotation: {
-      enabled: true,
-    },
-  }
+  console.warn(`${pc.yellow('notice')}- Cloud Sentry variables detected:`, {
+    SENTRY_ENVIRONMENT: process.env?.NEXT_PUBLIC_SENTRY_ENVIRONMENT,
+    SENTRY_DSN: process.env?.NEXT_PUBLIC_SENTRY_DSN ? 'SET' : 'NOT SET',
+    SENTRY_TRACES_SAMPLE_RATE: process.env?.NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE,
+    SENTRY_TRACE_PROPAGATION_TARGETS: process.env?.NEXT_PUBLIC_SENTRY_TRACE_PROPAGATION_TARGETS,
+    SENTRY_REPLAYS_SESSION_SAMPLE_RATE: process.env?.NEXT_PUBLIC_SENTRY_REPLAYS_SESSION_SAMPLE_RATE,
+    SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE: process.env?.NEXT_PUBLIC_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE,
+  });
 }
 
 if (!NEXTJS_DISABLE_SENTRY) {
   console.warn(`${pc.yellow('notice')}- Sentry is enabled (NEXTJS_DISABLE_SENTRY)`);
   // @ts-ignore because sentry does not match nextjs current definitions
   config = withSentryConfig(config, {
-    // Additional config options for the Sentry Webpack plugin. Keep in mind that
-    // the following options are set automatically, and overriding them is not
-    // recommended:
-    //   release, url, org, project, authToken, configFile, stripPrefix,
-    //   urlPrefix, include, ignore
     // For all available options, see:
-    // https://github.com/getsentry/sentry-webpack-plugin#options.
-    // silent: isProd, // Suppresses all logs
-    dryRun: NEXTJS_SENTRY_UPLOAD_DRY_RUN,
-    disableLogger: !NEXTJS_SENTRY_DEBUG,
-    ...cloudSentryConfig
-  },);
+    // https://www.npmjs.com/package/@sentry/webpack-plugin#options
+
+    ...(process.env?.SENTRY_PROJECT ? { project: process.env.SENTRY_PROJECT } : {}),
+    ...(cloudSentryEnabled ? {
+      // Only print logs for uploading source maps in CI
+      silent: !process.env.CI,
+      // Upload a larger set of source maps for prettier stack traces (increases build time)
+      widenClientFileUpload: true,
+      // Automatically tree-shake Sentry logger statements to reduce bundle size
+      disableLogger: true,
+      reactComponentAnnotation: {
+        enabled: true,
+      },
+    } : {
+      dryRun: NEXTJS_SENTRY_UPLOAD_DRY_RUN,
+      disableLogger: !NEXTJS_SENTRY_DEBUG,
+    }),
+  });
 } else {
   console.warn(`${pc.yellow('notice')}- Sentry is disabled (NEXTJS_DISABLE_SENTRY)`);
 }
