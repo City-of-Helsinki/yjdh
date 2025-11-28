@@ -1,3 +1,3 @@
-import sentryConfig from 'shared/sentry-config';
+import sentryConfig from '@frontend/benefit-shared/src/config/sentry-config';
 
 sentryConfig();

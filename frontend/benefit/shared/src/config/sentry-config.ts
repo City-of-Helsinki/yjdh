@@ -1,12 +1,15 @@
+/* eslint-disable simple-import-sort/imports */
+import type { BrowserOptions } from '@sentry/nextjs';
 import * as Sentry from '@sentry/nextjs';
-import { sentryConfigSettings } from 'shared/sentry-config';
+/* eslint-enable simple-import-sort/imports */
 
-export default function sentryConfig() {
-  Sentry.init({
-    ...sentryConfigSettings,
+export default function sentryConfig(): void {
+  const config: Partial<BrowserOptions> = {
     dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
     environment: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT,
     release: process.env.NEXT_PUBLIC_RELEASE,
+    attachStacktrace: true,
+    maxBreadcrumbs: 100,
     integrations: [
       Sentry.browserTracingIntegration(),
       Sentry.replayIntegration(),
@@ -23,5 +26,7 @@ export default function sentryConfig() {
     replaysOnErrorSampleRate: parseFloat(
       process.env.NEXT_PUBLIC_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE || '0'
     ),
-  });
+  };
+
+  Sentry.init(config);
 }
