@@ -2,6 +2,8 @@
 FROM registry.access.redhat.com/ubi9/python-312 AS appbase
 # ==============================
 ARG SENTRY_RELEASE
+# Branch or tag used to pull python-uwsgi-common.
+ARG UWSGI_COMMON_REF=main
 
 USER root
 WORKDIR /app
@@ -10,7 +12,6 @@ RUN mkdir /entrypoint
 
 COPY --chown=default:root benefit/requirements.txt /app/requirements.txt
 COPY --chown=default:root benefit/requirements-prod.txt /app/requirements-prod.txt
-COPY --chown=default:root benefit/.prod/escape_json.c /app/.prod/escape_json.c
 COPY --chown=default:root shared /shared/
 
 RUN dnf update -y \
@@ -27,13 +28,21 @@ RUN dnf update -y \
     && pip install -U pip setuptools wheel \
     && pip install --no-cache-dir -r /app/requirements.txt \
     && pip install --no-cache-dir -r /app/requirements-prod.txt \
-    && uwsgi --build-plugin /app/.prod/escape_json.c \
-    && mv /app/escape_json_plugin.so /app/.prod/escape_json_plugin.so \
     && mkdir -p /usr/local/lib/uwsgi/plugins \
     && uwsgi --build-plugin https://github.com/City-of-Helsinki/uwsgi-sentry \
     && mv sentry_plugin.so /usr/local/lib/uwsgi/plugins/ \
-    && dnf remove -y gcc cyrus-sasl-devel openssl-devel \
     && dnf clean all
+
+# Build and copy specific python-uwsgi-common files.
+ADD https://github.com/City-of-Helsinki/python-uwsgi-common/archive/${UWSGI_COMMON_REF}.tar.gz /usr/src/
+RUN mkdir -p /usr/src/python-uwsgi-common && \
+    tar --strip-components=1 -xzf /usr/src/${UWSGI_COMMON_REF}.tar.gz -C /usr/src/python-uwsgi-common && \
+    cp /usr/src/python-uwsgi-common/uwsgi-base.ini /app && \
+    uwsgi --build-plugin /usr/src/python-uwsgi-common && \
+    rm -rf /usr/src/${UWSGI_COMMON_REF}.tar.gz && \
+    rm -rf /usr/src/python-uwsgi-common && \
+    dnf remove -y gcc cyrus-sasl-devel openssl-devel && \
+    dnf clean all
 
 # Install wkhtmltopdf and it's deps from CentOS9 repo and binary
 # Note that the wkhtmltopdf used is compiled for x86-64, so the platform should
