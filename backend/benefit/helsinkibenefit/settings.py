@@ -320,6 +320,7 @@ INSTALLED_APPS = [
     "mozilla_django_oidc",
     "django_auth_adfs",
     "helusers.apps.HelusersConfig",
+    "logger_extra",
 ]
 
 AUTH_USER_MODEL = "users.User"
@@ -328,6 +329,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "logger_extra.middleware.XRequestIdMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -391,8 +393,29 @@ ENABLE_SEND_AUDIT_LOG = env("ENABLE_SEND_AUDIT_LOG")
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "handlers": {"console": {"class": "logging.StreamHandler"}},
-    "loggers": {"django": {"handlers": ["console"], "level": "INFO"}},
+    "filters": {
+        "context": {
+            "()": "logger_extra.filter.LoggerContextFilter",
+        }
+    },
+    "formatters": {
+        "json": {
+            "()": "logger_extra.formatter.JSONFormatter",
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "json",
+            "filters": ["context"],
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
+    },
 }
 
 REST_FRAMEWORK = {

@@ -60,6 +60,7 @@ django==5.2.8
     #   django-filter
     #   django-helusers
     #   django-localflavor
+    #   django-logger-extra
     #   django-phonenumber-field
     #   django-searchable-encrypted-fields
     #   django-simple-history
@@ -91,6 +92,8 @@ django-filter==25.2
 django-helusers==0.14.4
     # via helsinki-profile-gdpr-api
 django-localflavor==5.0
+    # via -r requirements.in
+django-logger-extra==1.1.0
     # via -r requirements.in
 django-phonenumber-field==8.3.0
     # via -r requirements.in
