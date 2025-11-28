@@ -18,9 +18,11 @@ services:
     container_name: benefit-db
 
   backend:
+    # NOTE: platform is set because of wkhtmltopdf download in the Dockerfile
+    platform: linux/amd64
     build:
       context: ./backend
-      dockerfile: ./docker/benefit-ubi-arm.Dockerfile
+      dockerfile: ./docker/benefit.Dockerfile
       target: development
     env_file:
       - .env.benefit-backend

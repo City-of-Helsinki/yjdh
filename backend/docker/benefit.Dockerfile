@@ -29,10 +29,15 @@ RUN dnf update -y \
     && pip install --no-cache-dir -r /app/requirements-prod.txt \
     && uwsgi --build-plugin /app/.prod/escape_json.c \
     && mv /app/escape_json_plugin.so /app/.prod/escape_json_plugin.so \
+    && mkdir -p /usr/local/lib/uwsgi/plugins \
+    && uwsgi --build-plugin https://github.com/City-of-Helsinki/uwsgi-sentry \
+    && mv sentry_plugin.so /usr/local/lib/uwsgi/plugins/ \
     && dnf remove -y gcc cyrus-sasl-devel openssl-devel \
     && dnf clean all
 
 # Install wkhtmltopdf and it's deps from CentOS9 repo and binary
+# Note that the wkhtmltopdf used is compiled for x86-64, so the platform should
+# be set accordingly in the compose file.
 COPY --chown=default:root docker/ubi/centos9.repo /etc/yum.repos.d/centos9.repo
 RUN rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official \
     && dnf install -y xorg-x11-server-Xvfb compat-openssl11 \
