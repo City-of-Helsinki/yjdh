@@ -117,7 +117,6 @@ const cloudSentryEnabled =
   (process.env?.NEXT_PUBLIC_SENTRY_REPLAYS_SESSION_SAMPLE_RATE !== undefined) &&
   (process.env?.NEXT_PUBLIC_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE !== undefined)
 
-console.warn(`${pc.yellow('notice')}- Cloud Sentry enabled: ${cloudSentryEnabled}`);
 if (cloudSentryEnabled) {
   console.warn(`${pc.yellow('notice')}- Cloud Sentry variables detected:`, {
     SENTRY_ENVIRONMENT: process.env?.NEXT_PUBLIC_SENTRY_ENVIRONMENT,
@@ -135,8 +134,6 @@ if (!NEXTJS_DISABLE_SENTRY) {
   config = withSentryConfig(config, {
     // For all available options, see:
     // https://www.npmjs.com/package/@sentry/webpack-plugin#options
-
-    ...(process.env?.SENTRY_PROJECT ? { project: process.env.SENTRY_PROJECT } : {}),
     ...(cloudSentryEnabled ? {
       // Only print logs for uploading source maps in CI
       silent: !process.env.CI,
