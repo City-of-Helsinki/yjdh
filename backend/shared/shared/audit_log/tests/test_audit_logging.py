@@ -14,6 +14,12 @@ from shared.audit_log.tasks import (
     send_audit_log_to_elastic_search,
 )
 
+
+@pytest.fixture(autouse=True)
+def disable_resilient_logger(settings):
+    del settings.RESILIENT_LOGGER
+
+
 _common_fields = {
     "audit_event": {
         "origin": "TEST_SERVICE",

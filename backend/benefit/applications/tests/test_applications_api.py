@@ -16,6 +16,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import override_settings
 from freezegun import freeze_time
 from PIL import Image
+from resilient_logger.models import ResilientLogEntry
 from rest_framework.reverse import reverse
 
 from applications.api.v1.application_views import BaseApplicationViewSet
@@ -59,7 +60,6 @@ from messages.automatic_messages import (
 )
 from messages.models import Message, MessageType
 from messages.tests.factories import MessageFactory
-from shared.audit_log import models as audit_models
 from shared.service_bus.enums import YtjOrganizationCode
 from terms.models import TermsOfServiceApproval
 
@@ -85,13 +85,14 @@ def get_handler_detail_url(application):
 def test_applications_unauthenticated(anonymous_client, application, view_name):
     response = anonymous_client.get(reverse(view_name))
     assert response.status_code == 403
-    audit_event = (
-        audit_models.AuditLogEntry.objects.all().first().message["audit_event"]
-    )
-    assert audit_event["status"] == "FORBIDDEN"
-    assert audit_event["operation"] == "READ"
-    assert audit_event["target"]["id"] == ""
-    assert audit_event["target"]["type"] == "Application"
+
+    log_entry = ResilientLogEntry.objects.first()
+
+    assert log_entry.context["operation"] == "READ"
+    assert log_entry.context["status"] == "FORBIDDEN"
+    assert log_entry.message == "FORBIDDEN"
+    assert log_entry.context["target"]["id"] == ""
+    assert log_entry.context["target"]["type"] == "Application"
 
 
 @pytest.mark.parametrize(
@@ -488,13 +489,14 @@ def test_application_post_success_unauthenticated(anonymous_client, application)
         data,
     )
     assert response.status_code == 403
-    audit_event = (
-        audit_models.AuditLogEntry.objects.all().first().message["audit_event"]
-    )
-    assert audit_event["status"] == "FORBIDDEN"
-    assert audit_event["operation"] == "CREATE"
-    assert audit_event["target"]["id"] == ""
-    assert audit_event["target"]["type"] == "Application"
+
+    log_entry = ResilientLogEntry.objects.first()
+
+    assert log_entry.context["operation"] == "CREATE"
+    assert log_entry.context["status"] == "FORBIDDEN"
+    assert log_entry.message == "FORBIDDEN"
+    assert log_entry.context["target"]["id"] == ""
+    assert log_entry.context["target"]["type"] == "Application"
 
 
 @pytest.mark.django_db
@@ -545,11 +547,15 @@ def test_application_post_success(api_client, application):
     assert new_application.official_company_postcode == new_application.company.postcode
     assert new_application.official_company_city == new_application.company.city
 
-    audit_event = audit_models.AuditLogEntry.objects.last().message["audit_event"]
+    log_entry = ResilientLogEntry.objects.first()
 
-    assert audit_event["status"] == "SUCCESS"
-    assert audit_event["target"]["id"] == str(Application.objects.all().first().id)
-    assert audit_event["operation"] == "CREATE"
+    assert log_entry.context["operation"] == "CREATE"
+    assert log_entry.context["status"] == "SUCCESS"
+    assert log_entry.message == "SUCCESS"
+    assert log_entry.context["target"]["id"] == str(
+        Application.objects.all().first().id
+    )
+    assert log_entry.context["target"]["type"] == "Application"
 
 
 @pytest.mark.django_db
@@ -715,12 +721,14 @@ def test_application_put_edit_fields_unauthorized(
         data,
     )
     assert response.status_code == 404
-    audit_event = (
-        audit_models.AuditLogEntry.objects.all().first().message["audit_event"]
-    )
-    assert audit_event["status"] == "FORBIDDEN"
-    assert audit_event["target"]["id"] == str(anonymous_application.id)
-    assert audit_event["operation"] == "UPDATE"
+
+    log_entry = ResilientLogEntry.objects.first()
+
+    assert log_entry.context["operation"] == "UPDATE"
+    assert log_entry.context["status"] == "FORBIDDEN"
+    assert log_entry.message == "FORBIDDEN"
+    assert log_entry.context["target"]["id"] == str(anonymous_application.id)
+    assert log_entry.context["target"]["type"] == "Application"
 
 
 @pytest.mark.django_db
@@ -741,11 +749,13 @@ def test_application_put_edit_fields(api_client, application):
     application.refresh_from_db()
     assert application.company_contact_person_phone_number == "0505658789"
 
-    audit_event = audit_models.AuditLogEntry.objects.last().message["audit_event"]
+    log_entry = ResilientLogEntry.objects.first()
 
-    assert audit_event["status"] == "SUCCESS"
-    assert audit_event["target"]["id"] == str(application.id)
-    assert audit_event["operation"] == "UPDATE"
+    assert log_entry.context["operation"] == "UPDATE"
+    assert log_entry.context["status"] == "SUCCESS"
+    assert log_entry.message == "SUCCESS"
+    assert log_entry.context["target"]["id"] == str(application.id)
+    assert log_entry.context["target"]["type"] == "Application"
 
 
 @pytest.mark.django_db

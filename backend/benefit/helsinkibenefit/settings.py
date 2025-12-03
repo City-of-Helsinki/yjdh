@@ -123,6 +123,11 @@ env = environ.Env(
     AZURE_URL_EXPIRATION_SECS=(int, 900),
     MINIMUM_WORKING_HOURS_PER_WEEK=(int, 18),
     AUDIT_LOG_ORIGIN=(str, "helsinki-benefit-api"),
+    AUDIT_LOG_ENV=(str, ""),
+    AUDIT_LOG_ES_URL=(str, ""),
+    AUDIT_LOG_ES_INDEX=(str, "helsinki_benefit_audit_log"),
+    AUDIT_LOG_ES_USERNAME=(str, ""),
+    AUDIT_LOG_ES_PASSWORD=(str, ""),
     ELASTICSEARCH_APP_AUDIT_LOG_INDEX=(str, "helsinki_benefit_audit_log"),
     ELASTICSEARCH_HOST=(str, ""),
     ELASTICSEARCH_PORT=(int, 9200),
@@ -321,6 +326,7 @@ INSTALLED_APPS = [
     "django_auth_adfs",
     "helusers.apps.HelusersConfig",
     "logger_extra",
+    "resilient_logger",
 ]
 
 AUTH_USER_MODEL = "users.User"
@@ -389,6 +395,31 @@ ELASTICSEARCH_PORT = env("ELASTICSEARCH_PORT")
 ELASTICSEARCH_USERNAME = env("ELASTICSEARCH_USERNAME")
 ELASTICSEARCH_PASSWORD = env("ELASTICSEARCH_PASSWORD")
 ENABLE_SEND_AUDIT_LOG = env("ENABLE_SEND_AUDIT_LOG")
+
+# Resilient logger configuration
+RESILIENT_LOGGER = {
+    "origin": AUDIT_LOG_ORIGIN,
+    "environment": env("AUDIT_LOG_ENV"),
+    "sources": [
+        {
+            "class": "resilient_logger.sources.ResilientLogSource",
+        }
+    ],
+    "targets": [
+        {
+            "class": "resilient_logger.targets.ElasticsearchLogTarget",
+            "es_url": env("AUDIT_LOG_ES_URL"),
+            "es_username": env("AUDIT_LOG_ES_USERNAME"),
+            "es_password": env("AUDIT_LOG_ES_PASSWORD"),
+            "es_index": env("AUDIT_LOG_ES_INDEX"),
+            "required": True,
+        }
+    ],
+    "batch_limit": 5000,
+    "chunk_size": 500,
+    "submit_unsent_entries": True,
+    "clear_sent_entries": True,
+}
 
 LOGGING = {
     "version": 1,

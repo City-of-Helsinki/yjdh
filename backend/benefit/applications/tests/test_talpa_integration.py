@@ -4,6 +4,7 @@ from datetime import timedelta
 import pytest
 from django.urls import reverse
 from django.utils import timezone
+from resilient_logger.models import ResilientLogEntry
 
 from applications.enums import (
     ApplicationBatchStatus,
@@ -18,7 +19,6 @@ from applications.tests.common import (
 from applications.tests.conftest import split_lines_at_semicolon
 from calculator.enums import InstalmentStatus
 from calculator.models import Instalment
-from shared.audit_log.models import AuditLogEntry
 
 
 @pytest.mark.django_db
@@ -289,12 +289,13 @@ def test_talpa_callback_success(
     assert response.status_code == 200
     assert response.data == {"message": "Callback received"}
 
-    audit_log_entry = AuditLogEntry.objects.latest("created_at")
+    log_entry = ResilientLogEntry.objects.latest("created_at")
 
-    assert (
-        audit_log_entry.message["audit_event"]["target"]["id"]
-        == f"{decided_application.id}"
-    )
+    assert log_entry.context["operation"] == "READ"
+    assert log_entry.context["status"] == "SUCCESS"
+    assert log_entry.message == "SUCCESS"
+    assert log_entry.context["target"]["id"] == f"{decided_application.id}"
+    assert log_entry.context["target"]["type"] == "Application"
 
     decided_application.refresh_from_db()
 
