@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.10.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.9.9...benefit-backend-v2.10.0) (2025-12-03)
+
+
+### Features
+
+* Add benefit backend sentry logging for uWSGI ([5449910](https://github.com/City-of-Helsinki/yjdh/commit/5449910a17ab203640bfe1a04564320ede440928))
+* **benefit:** Add django-logger-extra ([908709c](https://github.com/City-of-Helsinki/yjdh/commit/908709cb9c63859c0cec1d4da4d4e20bcf807e03))
+* **benefit:** Use common uwsgi configurations ([94c9979](https://github.com/City-of-Helsinki/yjdh/commit/94c9979308dc2b6ad96518b9a395c32a11a3e51b))
+* **sentry:** Update benefit backend sentry config ([cc3a217](https://github.com/City-of-Helsinki/yjdh/commit/cc3a2177bb421e11383c039f3052bf2707c5a1fa))
+
+
+### Dependencies
+
+* Update benefit backend packages ([e8f6a65](https://github.com/City-of-Helsinki/yjdh/commit/e8f6a6580672a1ae1a4b413b49896376a939d0b3))
+
 ## [2.9.9](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.9.8...benefit-backend-v2.9.9) (2025-11-10)
 
 
