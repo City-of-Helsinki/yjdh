@@ -7,6 +7,7 @@ django-filter
 django-localflavor
 django-logger-extra
 django-phonenumber-field[phonenumbers]
+django-resilient-logger
 django-searchable-encrypted-fields
 django-simple-history
 django-sql-utils
