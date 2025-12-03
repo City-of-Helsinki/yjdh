@@ -13,7 +13,7 @@ django-sql-utils
 django-storages[azure]
 django_auth_adfs
 djangorestframework
-django~=5.2.8
+django~=5.2.9
 drf-nested-routers
 drf-spectacular
 elasticsearch~=8.19
