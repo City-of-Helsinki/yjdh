@@ -1,5 +1,24 @@
 # Changelog
 
+## [4.11.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.10.1...benefit-handler-v4.11.0) (2025-12-04)
+
+
+### Features
+
+* **benefit:** Enable cloud sentry Ref: HL-1631 HL-1635 ([9c2884d](https://github.com/City-of-Helsinki/yjdh/commit/9c2884d4c5d01c4d0c7d03977bd34f5ffb5509e2))
+
+
+### Bug Fixes
+
+* **benefit:** Benefit handler install @sentry/nextjs Ref: HL-1631 ([9e4b5b5](https://github.com/City-of-Helsinki/yjdh/commit/9e4b5b5c1fe78080e45428150c61650c1a03ed0e))
+* **benefit:** Cloud sentry config fixes Ref: HL-1631 ([9e4b5b5](https://github.com/City-of-Helsinki/yjdh/commit/9e4b5b5c1fe78080e45428150c61650c1a03ed0e))
+* **benefit:** Cloud sentry migration fixes Ref: HL-1631 ([9e4b5b5](https://github.com/City-of-Helsinki/yjdh/commit/9e4b5b5c1fe78080e45428150c61650c1a03ed0e))
+* **benefit:** Import benefit shared sentry config Ref: HL-1631 ([9e4b5b5](https://github.com/City-of-Helsinki/yjdh/commit/9e4b5b5c1fe78080e45428150c61650c1a03ed0e))
+* **benefit:** Parse CSP policy correctly Ref: HL-1631 ([9e4b5b5](https://github.com/City-of-Helsinki/yjdh/commit/9e4b5b5c1fe78080e45428150c61650c1a03ed0e))
+* **benefit:** Sentry-config lint issue Ref: HL-1631 ([9e4b5b5](https://github.com/City-of-Helsinki/yjdh/commit/9e4b5b5c1fe78080e45428150c61650c1a03ed0e))
+* **benefit:** Separate cloud sentry config Ref: HL-1631 ([9e4b5b5](https://github.com/City-of-Helsinki/yjdh/commit/9e4b5b5c1fe78080e45428150c61650c1a03ed0e))
+* **testcafe:** Use --disable-features=LocalNetworkAccessChecks ([1ef2407](https://github.com/City-of-Helsinki/yjdh/commit/1ef24070639929c35aba69133908206829616837))
+
 ## [4.10.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.10.0...benefit-handler-v4.10.1) (2025-06-23)
 
 
