@@ -7,60 +7,12 @@ on:
     paths:
       - ".github/workflows/ks-youth-frontend-tests.yml"
   workflow_dispatch:
-defaults:
-  run:
-    working-directory: ./frontend/kesaseteli/youth
-jobs:
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3
-        with:
-          node-version: "22"
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - uses: actions/cache@v3
-        id: yarn-cache
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-      - name: Install dependencies
-        run: yarn --prefer-offline --frozen-lockfile --check-files
-      - name: Run linter
-        run: yarn lint
-      - name: Run tests
-        run: yarn test:coverage
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
 
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3
-        with:
-          node-version: "22"
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - uses: actions/cache@v3
-        id: yarn-cache
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-      - name: Install dependencies
-        run: yarn --prefer-offline --frozen-lockfile --check-files
-      - name: Check that building dev application works
-        env:
-          NEXTJS_DISABLE_SENTRY: true
-        run: yarn build
+jobs:
+  common:
+    uses: City-of-Helsinki/.github/.github/workflows/ci-node.yml@main
+    secrets: inherit
+    with:
+      node-version: 22.x
+      working-directory: ./frontend/kesaseteli/youth
+      extra-commands: echo 'NEXTJS_DISABLE_SENTRY=true' >> .env
