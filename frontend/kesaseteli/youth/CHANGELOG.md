@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.6.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v1.5.2...kesaseteli-youth-v1.6.0) (2025-12-06)
+
+
+### Features
+
+* **benefit:** Enable cloud sentry Ref: HL-1631 HL-1635 ([9c2884d](https://github.com/City-of-Helsinki/yjdh/commit/9c2884d4c5d01c4d0c7d03977bd34f5ffb5509e2))
+
+
+### Bug Fixes
+
+* Axios dependencies ([ab6edd6](https://github.com/City-of-Helsinki/yjdh/commit/ab6edd69a2fa7826bf8621e55824ab57fa5811a7))
+* **testcafe:** Use --disable-features=LocalNetworkAccessChecks ([1ef2407](https://github.com/City-of-Helsinki/yjdh/commit/1ef24070639929c35aba69133908206829616837))
+* Update axios ([6563e30](https://github.com/City-of-Helsinki/yjdh/commit/6563e301a7249dbfdef95955383a9f33aa71e4d5))
+
 ## [1.5.2](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v1.5.1...kesaseteli-youth-v1.5.2) (2025-06-30)
 
 
