@@ -8,6 +8,7 @@ import {
 } from 'benefit/handler/hooks/applicationHandling/useHandlingStepper';
 import { useRouterNavigation } from 'benefit/handler/hooks/applicationHandling/useRouterNavigation';
 import useCloneApplicationMutation from 'benefit/handler/hooks/useCloneApplicationMutation';
+import { Application as HandlerApplication } from 'benefit/handler/types/application';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import {
@@ -87,7 +88,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
     data,
     mutate: updateApplication,
     isError,
-  } = useDecisionProposalDraftMutation(application);
+  } = useDecisionProposalDraftMutation(application as HandlerApplication);
 
   const [isSavingAndClosing, setIsSavingAndClosing] = React.useState(false);
 
@@ -427,7 +428,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
         />
       )}
       <Sidebar
-        application={application}
+        application={application as HandlerApplication}
         isOpen={isMessagesDrawerVisible}
         onClose={toggleMessagesDrawerVisibility}
         customItemsMessages={[
