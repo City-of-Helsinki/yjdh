@@ -1,10 +1,5 @@
 import { useTranslation } from 'next-i18next';
-import {
-  FieldError,
-  get,
-  RegisterOptions,
-  useFormContext,
-} from 'react-hook-form';
+import { get, RegisterOptions, useFormContext } from 'react-hook-form';
 import Id from 'shared/types/id';
 
 type InputProps<T> = {
@@ -21,7 +16,7 @@ const useRegisterInput = <T>(
   const { formState } = useFormContext<T>();
 
   const getErrorText = (id: Id<T>): string | undefined => {
-    const error = get(formState.errors, id) as FieldError | undefined;
+    const error = get(formState.errors, id);
     const errorType = error?.type;
     return errorType ? t(`common:errors.${errorType}`) : undefined;
   };

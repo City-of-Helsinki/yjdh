@@ -16,6 +16,7 @@ import { $CustomNotesActions } from 'benefit/handler/components/applicationRevie
 import Sidebar from 'benefit/handler/components/sidebar/Sidebar';
 import { DEFAULT_MINIMUM_RECOVERY_AMOUNT } from 'benefit/handler/constants';
 import { useRouterNavigation } from 'benefit/handler/hooks/applicationHandling/useRouterNavigation';
+import { Application as HandlerApplication } from 'benefit/handler/types/application';
 import {
   Application,
   ApplicationAlteration,
@@ -318,7 +319,7 @@ const AlterationHandlingForm = ({
       <Sidebar
         isOpen={isMessagesDrawerVisible}
         messagesReadOnly
-        application={application}
+        application={application as HandlerApplication}
         onClose={() => toggleMessagesDrawerVisibility(false)}
         customItemsNotes={[
           <$CustomNotesActions key="showToHandlerOnly">

@@ -51,10 +51,10 @@ const nextConfig = (override) => ({
   outputFileTracingRoot: require('path').join(__dirname, '../../'),
   typescript: {
     /** Do not run TypeScript during production builds (`next build`). */
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: NEXTJS_IGNORE_TYPECHECK,
   },
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: NEXTJS_IGNORE_ESLINT,
   },
   transpilePackages: ['@frontend'],
   webpack: (config) => {
