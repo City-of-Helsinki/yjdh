@@ -21,7 +21,12 @@ const EmployeeErrorNotification: React.FC<Props> = ({
       <ul>
         {errorFields.map((field) => {
           const fieldPath = getEmploymentFieldPath(index, field);
-          return <ErrorNotificationRow key={fieldPath} fieldPath={fieldPath} />;
+          return (
+            <ErrorNotificationRow
+              key={String(fieldPath)}
+              fieldPath={fieldPath}
+            />
+          );
         })}
       </ul>
     </$GridCell>

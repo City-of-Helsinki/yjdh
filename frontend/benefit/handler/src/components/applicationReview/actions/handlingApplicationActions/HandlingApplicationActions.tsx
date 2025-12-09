@@ -1,4 +1,5 @@
 import Sidebar from 'benefit/handler/components/sidebar/Sidebar';
+import { Application as HandlerApplication } from 'benefit/handler/types/application';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import {
@@ -159,7 +160,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
       )}
       <Sidebar
         isOpen={isMessagesDrawerVisible}
-        application={application}
+        application={application as HandlerApplication}
         onClose={toggleMessagesDrawerVisibility}
         customItemsMessages={[
           canBeOpenedForEdit ? (

@@ -29,7 +29,22 @@ module.exports = {
       },
     },
     {
-      files: ['**/__tests__/**', '*.testcafe.ts'],
+      files: [
+        '**/__tests__/**',
+        '*.testcafe.ts',
+        '**/hooks/**/*.ts',
+        '**/hooks/**/*.tsx',
+        '**/form/**/*.tsx',
+        '**/forms/**/*.tsx',
+        '**/*Form*.tsx',
+        '**/*Input*.tsx',
+        '**/*ErrorSummary*.tsx',
+        '**/*ErrorNotification*.tsx',
+        '**/pages/**/*.tsx',
+        '**/*Accordion*.tsx',
+        '**/*Button*.tsx',
+        '**/*Selection*.tsx',
+      ],
       rules: {
         'testing-library/render-result-naming-convention': 'off',
         'jest/expect-expect': 'off',
@@ -38,6 +53,13 @@ module.exports = {
         'no-secrets/no-secrets': 'off',
         'no-await-in-loop': 'off',
         'no-restricted-syntax': 0,
+        // Disable unsafe rules for react-hook-form which inherently uses any types
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-return': 'off',
+        '@typescript-eslint/no-unsafe-argument': 'off',
+        '@typescript-eslint/restrict-template-expressions': 'off',
       },
     }
   ],

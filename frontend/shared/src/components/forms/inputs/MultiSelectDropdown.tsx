@@ -56,7 +56,7 @@ const MultiSelectDropdown = <T, O extends Option>({
             {...field}
             multiselect
             value={value as O[]}
-            id={id}
+            id={id as string}
             required={required}
             label={label}
             defaultValue={initialValue}
