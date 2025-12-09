@@ -46,14 +46,14 @@ const Dropdown = <T, O extends Option>({
     <$GridCell {...$gridCellProps}>
       <Controller
         name={id}
-        data-testid={id}
+        data-testid={id as string}
         control={control}
         rules={registerOptions}
         render={({ field: { ref, value, ...field } }) => (
           <DropdownInput<O>
             {...field}
             value={value as O}
-            id={id}
+            id={id as string}
             required={required}
             label={label}
             defaultValue={initialValue}
