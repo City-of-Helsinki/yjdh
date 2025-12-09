@@ -44,20 +44,17 @@ if (NEXTJS_SENTRY_DEBUG) {
 const nextConfig = (override) => ({
   productionBrowserSourceMaps: !disableSourceMaps,
   poweredByHeader: false,
-  swcMinify: true,
   compiler: {
     styledComponents: true,
   },
-  experimental: {
-    externalDir: true,
-  },
   output: 'standalone',
+  outputFileTracingRoot: require('path').join(__dirname, '../../'),
   typescript: {
     /** Do not run TypeScript during production builds (`next build`). */
-    ignoreBuildErrors: NEXTJS_IGNORE_TYPECHECK,
+    ignoreBuildErrors: true,
   },
   eslint: {
-    ignoreDuringBuilds: NEXTJS_IGNORE_ESLINT,
+    ignoreDuringBuilds: true,
   },
   transpilePackages: ['@frontend'],
   webpack: (config) => {
@@ -113,10 +110,6 @@ const nextConfig = (override) => ({
     APP_VERSION: packageJson.version,
     BUILD_TIME: new Date().toISOString(),
   },
-  serverRuntimeConfig: {
-    // to bypass https://github.com/zeit/next.js/issues/8251
-    PROJECT_ROOT: __dirname,
-  },
   ...override,
 });
 
@@ -163,6 +156,10 @@ if (!NEXTJS_DISABLE_SENTRY) {
       dryRun: NEXTJS_SENTRY_UPLOAD_DRY_RUN,
       disableLogger: !NEXTJS_SENTRY_DEBUG,
     }),
+  }, {
+    // Suppress the warning about clientTraceMetadata
+    hideSourceMaps: false,
+    disableLogger: false,
   });
 } else {
   console.warn(`${pc.yellow('notice')}- Sentry is disabled (NEXTJS_DISABLE_SENTRY)`);

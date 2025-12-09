@@ -51,9 +51,9 @@ const SelectionGroup = <T,>({
         render={({ field: { ref, value, ...fieldProps } }) => (
           <$SelectionGroup
             {...fieldProps}
-            id={id}
-            data-testid={id}
-            name={id}
+            id={id as string}
+            data-testid={id as string}
+            name={id as string}
             required={Boolean(label && registerOptions?.required)}
             direction={direction}
             errorText={errorText}
