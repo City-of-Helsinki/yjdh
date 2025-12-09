@@ -4,13 +4,19 @@ Get initials from full name
 import { isString } from 'shared/utils/type-guards';
 
 export const getInitials = (name: string): string => {
-  const match = name.match(/(?<=^|\s)(\p{L})/gu);
+  // Split by spaces and get first character of each word
+  const words = name.trim().split(/\s+/);
 
-  if (match) {
-    return match.slice(0, 2).join('').toUpperCase();
-  }
+  // Filter out empty strings and get first letter of first two words
+  const initials = words
+    .filter((word) => word.length > 0)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join('')
+    .toUpperCase();
 
-  return '?';
+  // Return ? if no valid initials found or only numbers
+  return initials && /[A-ZÀ-ÖØ-öø-ÿ]/.test(initials) ? initials : '?';
 };
 
 export const capitalize = (s: string): string =>

@@ -1,7 +1,7 @@
 // Matomo analytics utility compatible with Next.js 15
 declare global {
   interface Window {
-    _paq: any[];
+    _paq: [string, ...unknown[]][];
   }
 }
 

@@ -10,7 +10,6 @@ import {
   ORGANIZATION_TYPES,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
-import { Step1 } from 'benefit-shared/types/application';
 import { TFunction } from 'next-i18next';
 import {
   ADDRESS_REGEX,
@@ -27,7 +26,8 @@ import { getValidationSchema as getDeminimisValidationSchema } from '../../deMin
 export const getValidationSchema = (
   organizationType: string | undefined,
   t: TFunction
-): Yup.SchemaOf<Step1> =>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): Yup.ObjectSchema<any> =>
   Yup.object().shape({
     [APPLICATION_FIELDS_STEP1_KEYS.USE_ALTERNATIVE_ADDRESS]: Yup.boolean(),
     [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_DEPARTMENT]: Yup.string()
