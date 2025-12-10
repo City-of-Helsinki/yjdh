@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.11.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.11.0...benefit-handler-v4.11.1) (2025-12-10)
+
+
+### Dependencies
+
+* **benefit:** Upgrade @sentry/nextjs @sentry/browser to latest ([6cea0cf](https://github.com/City-of-Helsinki/yjdh/commit/6cea0cf8f45659a2e338f514c5d5bf719f53733a))
+
 ## [4.11.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.10.1...benefit-handler-v4.11.0) (2025-12-04)
 
 
