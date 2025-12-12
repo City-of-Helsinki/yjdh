@@ -766,3 +766,23 @@ def test_application_calculation_instalments(
         due_date = instalment_2.due_date
         future_date = timezone.now() + timedelta(days=181)
         assert due_date == future_date.date()
+
+def test_override_monthly_benefit_amount_max_validation(
+    handler_api_client, handling_application
+):
+    """Test that override_monthly_benefit_amount cannot exceed 1500€"""
+    data = HandlerApplicationSerializer(handling_application).data
+    data["calculation"]["start_date"] = str(handling_application.start_date)
+    data["calculation"]["end_date"] = str(handling_application.end_date)
+    data["calculation"]["override_monthly_benefit_amount"] = "1600.00"
+    data["calculation"]["override_monthly_benefit_amount_comment"] = (
+        "Trying to exceed maximum"
+    )
+
+    response = handler_api_client.put(
+        get_handler_detail_url(handling_application),
+        data,
+    )
+    assert response.status_code == 400
+    assert "calculation" in response.data
+    assert "override_monthly_benefit_amount" in response.data["calculation"]

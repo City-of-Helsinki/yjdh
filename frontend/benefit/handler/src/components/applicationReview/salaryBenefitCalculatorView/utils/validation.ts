@@ -49,7 +49,7 @@ export const getManualValidationSchema = (
 ): Yup.SchemaOf<CalculationCommon> =>
   getValidationSchema(t).shape({
     [CALCULATION_SALARY_KEYS.OVERRIDE_MONTHLY_BENEFIT_AMOUNT]:
-      validateNumberField(0, 800, {
+      validateNumberField(0, 1500, {
         required: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
         typeError: t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID),
       }),
