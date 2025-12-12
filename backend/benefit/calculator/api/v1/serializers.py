@@ -1,6 +1,7 @@
 from typing import Union
 
 from dateutil.relativedelta import relativedelta
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
@@ -116,6 +117,7 @@ class CalculationSerializer(serializers.ModelSerializer):
         max_digits=Calculation.override_monthly_benefit_amount.field.max_digits,
         decimal_places=Calculation.override_monthly_benefit_amount.field.decimal_places,
         min_value=0,
+        max_value=settings.SALARY_BENEFIT_NEW_MAX,
         help_text="manually override the monthly benefit amount",
     )
 
