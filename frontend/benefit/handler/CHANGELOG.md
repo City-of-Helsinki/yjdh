@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.12.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.11.1...benefit-handler-v4.12.0) (2025-12-15)
+
+
+### Features
+
+* Increase max override monthly benefit ([68431a5](https://github.com/City-of-Helsinki/yjdh/commit/68431a5ebad0e60f901a55bc749e37a72e1555df))
+
 ## [4.11.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.11.0...benefit-handler-v4.11.1) (2025-12-10)
 
 
