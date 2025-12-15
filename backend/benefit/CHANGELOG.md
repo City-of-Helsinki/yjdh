@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.11.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.10.1...benefit-backend-v2.11.0) (2025-12-15)
+
+
+### Features
+
+* Increase max override monthly benefit ([68431a5](https://github.com/City-of-Helsinki/yjdh/commit/68431a5ebad0e60f901a55bc749e37a72e1555df))
+
 ## [2.10.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.10.0...benefit-backend-v2.10.1) (2025-12-04)
 
 
