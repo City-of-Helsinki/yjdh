@@ -158,3 +158,4 @@ nohup.out
 
 # do not include testcafe videos
 1.mp4
+.vscode
