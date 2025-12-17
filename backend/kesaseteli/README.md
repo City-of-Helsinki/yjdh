@@ -10,6 +10,8 @@ Prerequisites:
 * Run `pip install -r requirements.txt`
 * Run `pip install -r requirements-dev.txt` (development requirements)
 
+**Known issues:** `psycopg2` installation often fails on macOS. Try to install it with `brew install postgresql` and then run `pip install psycopg2`, or for a more permanent but not so good solution, try `pip install psycopg2-binary`.
+
 ### Database
 
 To setup a database compatible with default database settings:
@@ -25,7 +27,9 @@ Allow user to create test database
 
 ### Daily running
 
-* Create `.env.kesaseteli` file: `touch .env.kesaseteli`
+* Create `.env.kesaseteli` file: `touch .env.kesaseteli`. An example can be found from monorepo root directory in `.env.kesaseteli.example`.
+    * **NOTE:** The env file should be found in the root directory of the developed Django app (`backend/kesaseteli/.env.kesaseteli`). You can also use symlink to the env file.
+    * **INFO:** If you want to run only the database from a Docker container, remember to configure `DATABASE_URL` so that it points to the database (e.g. `DATABASE_URL=postgresql://postgres:postgres@localhost:5432/kesaseteli`).
 * Set the `DEBUG` environment variable to `1`.
 * Run `python manage.py migrate`
 * Run `python manage.py compilemessages`
