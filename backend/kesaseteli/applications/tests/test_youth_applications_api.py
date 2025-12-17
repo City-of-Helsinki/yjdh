@@ -776,7 +776,7 @@ def test_youth_applications_activate_unexpired_inactive__vtj_enabled(
     assert response.status_code == status.HTTP_302_FOUND
     app.refresh_from_db()
 
-    if is_alive and is_helsinkian and applicant_age == 16:
+    if is_alive and is_helsinkian and applicant_age in [16, 17]:
         assert response.url == app.accepted_page_url()
         assert app.status == YouthApplicationStatus.ACCEPTED
     else:

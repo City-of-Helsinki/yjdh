@@ -118,6 +118,7 @@ export const fakeSchools: string[] = [
   'Östersundom skola',
 ];
 
+const targetGroupAges = [16, 17] as const;
 const ninethGraderYear = new Date().getFullYear() - 16;
 const upperSecondaryEducation1stYearStudentYear = new Date().getFullYear() - 17;
 
@@ -150,8 +151,11 @@ export const fakeNinethGraderSSN = (): string => fakeSSN(ninethGraderYear);
 export const fakeUpperSecondaryEducation1stYearStudentSSN = (): string =>
   fakeSSN(upperSecondaryEducation1stYearStudentYear);
 
-export const fakeYouthTargetGroupAgeSSN = (): string =>
-  fakeSSN(ninethGraderYear);
+export const fakeYouthTargetGroupAgeSSN = (): string => {
+  const age = faker.random.arrayElement(targetGroupAges);
+  const yearOfBirth = new Date().getFullYear() - age;
+  return fakeSSN(yearOfBirth);
+};
 
 type TargetGroupData = {
   social_security_number: string;
