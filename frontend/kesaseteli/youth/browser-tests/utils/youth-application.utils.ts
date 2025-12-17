@@ -75,7 +75,7 @@ export const autoAcceptedApplication = (
   override?: DeepPartial<YouthApplication>
 ): YouthApplication =>
   fakeYouthApplication({
-    ...is9thGraderAge(),
+    ...isYouthTargetGroupAge(),
     ...livesInHelsinki,
     ...override,
   });

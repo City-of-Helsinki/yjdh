@@ -362,7 +362,9 @@ def determine_need_additional_info_vtj_json(youth_application):
 
 
 def determine_target_group_social_security_number(youth_application):
-    return get_random_social_security_number_for_year(date.today().year - 16)
+    return get_random_social_security_number_for_year(
+        date.today().year - random.choice([16, 17])
+    )
 
 
 @factory.django.mute_signals(post_save)

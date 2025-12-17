@@ -808,7 +808,10 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
 
     @property
     def is_applicant_in_target_group(self) -> bool:
-        return self.is_9th_grader_age and self.is_helsinkian
+        return self.is_helsinkian and (
+            self.is_9th_grader_age
+            or self.is_upper_secondary_education_1st_year_student_age
+        )
 
     @property
     def can_accept_automatically(self) -> bool:
