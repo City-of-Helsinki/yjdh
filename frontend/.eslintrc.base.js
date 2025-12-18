@@ -14,6 +14,7 @@ module.exports = {
     'no-void': 'off',
     'react/function-component-definition': 'off',
     'testing-library/await-async-query': 'off',
+    'no-underscore-dangle': ['error', { allow: ['_paq'] }],
     "@typescript-eslint/no-misused-promises": [
       "error",
       {
