@@ -25,12 +25,13 @@ export function initMatomo(config: MatomoConfig): void {
   } = config;
 
   window._paq = window._paq || [];
-  window._paq.push(['trackPageView']);
-  window._paq.push(['enableLinkTracking']);
+  window._paq.push(['trackPageView'], ['enableLinkTracking']);
 
   const u = url.endsWith('/') ? url : `${url}/`;
-  window._paq.push(['setTrackerUrl', `${u}${phpTrackerFile}`]);
-  window._paq.push(['setSiteId', siteId]);
+  window._paq.push(
+    ['setTrackerUrl', `${u}${phpTrackerFile}`],
+    ['setSiteId', siteId]
+  );
 
   const script = document.createElement('script');
   script.type = 'text/javascript';
@@ -38,7 +39,7 @@ export function initMatomo(config: MatomoConfig): void {
   script.defer = true;
   script.src = `${u}${jsTrackerFile}`;
 
-  const firstScript = document.getElementsByTagName('script')[0];
+  const firstScript = document.querySelectorAll('script')[0];
   firstScript.parentNode?.insertBefore(script, firstScript);
 }
 
