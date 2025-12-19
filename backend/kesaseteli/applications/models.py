@@ -19,7 +19,6 @@ from django.utils.translation import gettext, pgettext
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
 from localflavor.generic.models import IBANField
-from requests.exceptions import ReadTimeout
 
 from applications.api.v1.validators import validate_additional_info_user_reasons
 from applications.enums import (
@@ -31,10 +30,6 @@ from applications.enums import (
     SummerVoucherExceptionReason,
     VtjTestCase,
     YouthApplicationStatus,
-)
-from applications.tests.data.mock_vtj import (
-    mock_vtj_person_id_query_found_content,
-    mock_vtj_person_id_query_not_found_content,
 )
 from common.permissions import HandlerPermission
 from common.urls import handler_youth_application_processing_url
@@ -55,7 +50,7 @@ from shared.common.validators import (
 )
 from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
 from shared.models.mixins import LockForUpdateMixin
-from shared.vtj.vtj_client import VTJClient
+from shared.vtj.vtj_client import get_vtj_client, VTJClient
 
 
 class School(TimeStampedModel, UUIDModel):
@@ -321,52 +316,20 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
                 return vtj_test_case
         return ""
 
-    @staticmethod
-    def get_mocked_vtj_json_for_vtj_test_case(
-        vtj_test_case, first_name, last_name, social_security_number
-    ):
-        if vtj_test_case == VtjTestCase.NOT_FOUND.value:
-            return mock_vtj_person_id_query_not_found_content()
-        elif vtj_test_case == VtjTestCase.NO_ANSWER.value:
+    def fetch_vtj_json(self, end_user: str, client: Optional[VTJClient] = None):
+        vtj_client = client or get_vtj_client()
+        if not vtj_client:
             return None
-        else:
-            return mock_vtj_person_id_query_found_content(
-                first_name=first_name,
-                last_name=(
-                    "VTJ-palvelun palauttama eri sukunimi"
-                    if vtj_test_case == VtjTestCase.WRONG_LAST_NAME.value
-                    else last_name
-                ),
-                social_security_number=social_security_number,
-                is_alive=vtj_test_case != VtjTestCase.DEAD.value,
-                is_home_municipality_helsinki=(
-                    vtj_test_case == VtjTestCase.HOME_MUNICIPALITY_HELSINKI.value
-                ),
-            )
-
-    def fetch_vtj_json(self, end_user: str):
-        if settings.NEXT_PUBLIC_DISABLE_VTJ:
-            # Not fetching data because VTJ integration is disabled and not mocked
-            return None
-        elif settings.NEXT_PUBLIC_MOCK_FLAG:
-            # VTJ integration enabled and mocked
-            if self.is_vtj_test_case:
-                if self.vtj_test_case == VtjTestCase.NO_ANSWER.value:
-                    raise ReadTimeout()
-                else:
-                    return YouthApplication.get_mocked_vtj_json_for_vtj_test_case(
-                        vtj_test_case=self.vtj_test_case,
-                        first_name=self.first_name,
-                        last_name=self.last_name,
-                        social_security_number=self.social_security_number,
-                    )
-            else:
-                return mock_vtj_person_id_query_not_found_content()
-        else:
-            # VTJ integration is enabled and not mocked
-            return json.dumps(
-                VTJClient().get_personal_info(self.social_security_number, end_user)
-            )
+        data = vtj_client.get_personal_info(
+            self.social_security_number,
+            end_user,
+            is_vtj_test_case=self.is_vtj_test_case,
+        )
+        # If it's already a string (mocked), return it directly
+        if isinstance(data, str):
+            return data
+        # If it's a dict (real client), dump it to JSON
+        return json.dumps(data) if data else None
 
     def _vtj_values(self, jsonpath_expression) -> list:
         try:

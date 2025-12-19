@@ -1,3 +1,8 @@
+from applications.enums import VtjTestCase
+from applications.tests.data.mock_vtj import (
+    mock_vtj_person_id_query_found_content,
+    mock_vtj_person_id_query_not_found_content,
+)
 import uuid
 from typing import Tuple
 
@@ -69,3 +74,55 @@ class VTJClient:
         )
         response.raise_for_status()
         return response.json()
+
+
+class VTJClientMock(VTJClient):
+
+    @staticmethod
+    def get_mocked_vtj_json_for_vtj_test_case(
+        vtj_test_case, first_name, last_name, social_security_number
+    ):
+        if vtj_test_case == VtjTestCase.NOT_FOUND.value:
+            return mock_vtj_person_id_query_not_found_content()
+        elif vtj_test_case == VtjTestCase.NO_ANSWER.value:
+            return None
+        else:
+            return mock_vtj_person_id_query_found_content(
+                first_name=first_name,
+                last_name=(
+                    "VTJ-palvelun palauttama eri sukunimi"
+                    if vtj_test_case == VtjTestCase.WRONG_LAST_NAME.value
+                    else last_name
+                ),
+                social_security_number=social_security_number,
+                is_alive=vtj_test_case != VtjTestCase.DEAD.value,
+                is_home_municipality_helsinki=(
+                    vtj_test_case == VtjTestCase.HOME_MUNICIPALITY_HELSINKI.value
+                ),
+            )
+
+    def get_personal_info(self, social_security_number, end_user: str, is_vtj_test_case: bool = False, **kwargs) -> dict:
+        # VTJ integration enabled and mocked
+        if is_vtj_test_case:
+            if self.vtj_test_case == VtjTestCase.NO_ANSWER.value:
+                raise ReadTimeout()
+            else:
+                return VTJClientMock.get_mocked_vtj_json_for_vtj_test_case(
+                    vtj_test_case=self.vtj_test_case,
+                    first_name=self.first_name,
+                    last_name=self.last_name,
+                    social_security_number=self.social_security_number,
+                )
+        return mock_vtj_person_id_query_not_found_content()
+        
+def get_vtj_client():
+    """
+    Centralized place to decide which client to use based on environment.
+    """
+    if settings.NEXT_PUBLIC_DISABLE_VTJ:
+        return None
+        
+    if settings.NEXT_PUBLIC_MOCK_FLAG:
+        return VTJClientMock()
+        
+    return VTJClient()

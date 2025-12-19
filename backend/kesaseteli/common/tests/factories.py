@@ -38,6 +38,7 @@ from shared.common.tests.factories import (
     DuplicateAllowingUserFactory,
     HandlerUserFactory,
 )
+from shared.vtj.vtj_client import VTJClientMock
 
 
 class CompanyFactory(SaveAfterPostGenerationMixin, factory.django.DjangoModelFactory):
@@ -333,7 +334,7 @@ def determine_vtj_json_for_vtj_test_case(youth_application):
     if vtj_test_case not in VtjTestCase.values:
         raise ValueError(f"Invalid VtjTestCase value {vtj_test_case}")
 
-    return YouthApplication.get_mocked_vtj_json_for_vtj_test_case(
+    return VTJClientMock.get_mocked_vtj_json_for_vtj_test_case(
         vtj_test_case=vtj_test_case,
         first_name=youth_application.first_name,
         last_name=youth_application.last_name,
