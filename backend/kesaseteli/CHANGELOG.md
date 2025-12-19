@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.11.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.10.5...kesaseteli-backend-v1.11.0) (2025-12-19)
+
+
+### Features
+
+* **kesaseteli:** Set school list for year 2026 ([90f200f](https://github.com/City-of-Helsinki/yjdh/commit/90f200fba5565329d137fb940885b5eb68e22b89))
+* **kesaseteli:** Update target group ages from 16 → 16/17 for year 2026 ([a59ac5e](https://github.com/City-of-Helsinki/yjdh/commit/a59ac5ead84407896c45c8035df6c98bf16a3f45))
+
 ## [1.10.5](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.10.4...kesaseteli-backend-v1.10.5) (2025-12-05)
 
 
