@@ -7,7 +7,7 @@ type Props = LinkProps & { children: React.ReactNode };
  * See more: https://github.com/i18next/react-i18next/issues/1090#issuecomment-884927848
  */
 const LinkText: React.FC<Props> = ({ href, children, ...rest }: Props) => (
-  <Link {...rest} href={href ?? ''}>
+  <Link {...rest} href={href ?? ''} legacyBehavior>
     <a>{children}</a>
   </Link>
 );
