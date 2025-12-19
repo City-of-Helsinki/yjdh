@@ -37,6 +37,8 @@ Allow user to create test database
 
 The project is now running at [localhost:8000](https://localhost:8000)
 
+**INFO:** Test data for development purposes can be generated with factories that are also used in tests.
+
 ### Updating translations
 
 In `backend/kesaseteli/`:
