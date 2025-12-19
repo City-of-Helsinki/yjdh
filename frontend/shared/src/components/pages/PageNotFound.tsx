@@ -13,7 +13,7 @@ const PageNotFound: React.FC = () => {
         <Trans
           i18nKey="common:404Page.pageNotFoundContent"
           components={{
-            lnk: <LinkText href="/">{}</LinkText>,
+            lnk: <LinkText href="/">{''}</LinkText>,
           }}
         />
       }
