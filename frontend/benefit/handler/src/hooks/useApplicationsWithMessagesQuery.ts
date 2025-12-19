@@ -3,6 +3,7 @@ import { ApplicationData } from 'benefit-shared/types/application';
 import { useTranslation } from 'next-i18next';
 import { useQuery, UseQueryResult } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
+import useAuth from 'shared/hooks/useAuth';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 const useApplicationMessagesQuery = (): UseQueryResult<
@@ -11,6 +12,7 @@ const useApplicationMessagesQuery = (): UseQueryResult<
 > => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
+  const { isAuthenticated } = useAuth();
 
   const handleError = (): void => {
     showErrorToast(
@@ -33,6 +35,7 @@ const useApplicationMessagesQuery = (): UseQueryResult<
       return handleResponse(res);
     },
     {
+      enabled: isAuthenticated,
       refetchInterval: 1225 * 1000,
       onError: () => handleError(),
     }
