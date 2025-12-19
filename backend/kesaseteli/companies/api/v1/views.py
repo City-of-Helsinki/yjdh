@@ -16,7 +16,18 @@ class GetCompanyView(APIView):
     """
 
     @transaction.atomic
-    def get_mock(self, request: HttpRequest, format: str = None) -> Response:
+    def get(self, request: HttpRequest, format: str = None) -> Response:
+        company = get_or_create_company_using_organization_roles(request)
+
+        company_data = CompanySerializer(company).data
+
+        return Response(company_data)
+
+
+class GetCompanyMockView(GetCompanyView):
+
+    @transaction.atomic
+    def get(self, request: HttpRequest, format: str = None) -> Response:
         # This mocked get method will be used for testing purposes for the frontend.
         session_id = request.META.get("HTTP_SESSION_ID")
         if session_id == "-1":
@@ -28,16 +39,5 @@ class GetCompanyView(APIView):
         else:
             company = Company(**DUMMY_COMPANY_DATA)
             company_data = CompanySerializer(company).data
-
-        return Response(company_data)
-
-    @transaction.atomic
-    def get(self, request: HttpRequest, format: str = None) -> Response:
-        if settings.NEXT_PUBLIC_MOCK_FLAG:
-            return self.get_mock(request, format)
-
-        company = get_or_create_company_using_organization_roles(request)
-
-        company_data = CompanySerializer(company).data
 
         return Response(company_data)
