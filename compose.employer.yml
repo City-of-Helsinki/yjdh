@@ -4,7 +4,7 @@ services:
     build:
       context: ./backend
       dockerfile: ./docker/finnish_postgres_13.Dockerfile
-    platform: linux/amd64
+    
     restart: on-failure
     environment:
       POSTGRES_USER: kesaseteli
@@ -23,7 +23,7 @@ services:
       context: ./backend
       dockerfile: ./docker/kesaseteli.Dockerfile
       target: development
-    platform: linux/amd64
+    
     env_file:
       - .env.kesaseteli
     environment:
@@ -45,7 +45,7 @@ services:
       args:
         PROJECT: kesaseteli
         FOLDER: employer
-    platform: linux/amd64
+    
     volumes:
       - ./frontend:/app
       # Don't volume map these dirs to avoid ownership/permission issues:
@@ -69,7 +69,7 @@ services:
       - employer
     build:
       context: ./localdevelopment/employer/nginx
-    platform: linux/amd64
+    
     container_name: kesaseteli-employer-local-proxy
     volumes:
       - ./localdevelopment/employer/nginx/:/etc/nginx/
