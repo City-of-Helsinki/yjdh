@@ -38,8 +38,7 @@ const useApplicationWithoutSsnFormField = <
     '') as ApplicationWithoutSsnFieldName;
   const defaultLabel = useGetApplicationWithoutSsnFormFieldLabel(fieldName);
 
-  const getError = (): FieldError | undefined =>
-    get(formState.errors, id) as FieldError | undefined;
+  const getError = (): FieldError | undefined => get(formState.errors, id);
 
   return {
     control,
