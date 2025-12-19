@@ -363,7 +363,12 @@ def generate_data_row(
         if field.title == ORDER_FIELD_TITLE:
             cell_value = summer_voucher.row_number
         elif field.title == RECEIVED_DATE_FIELD_TITLE:
-            cell_value = summer_voucher.submitted_at.astimezone().strftime("%d/%m/%Y")
+            submitted_at = getattr(summer_voucher, "submitted_at", None)
+            cell_value = (
+                submitted_at.astimezone().strftime("%d/%m/%Y")
+                if submitted_at
+                else ""
+            )
         else:
             attr_names = field.model_fields
             values = []
