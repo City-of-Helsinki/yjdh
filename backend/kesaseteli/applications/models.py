@@ -323,7 +323,10 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         data = vtj_client.get_personal_info(
             self.social_security_number,
             end_user,
+            first_name=self.first_name,
+            last_name=self.last_name,
             is_vtj_test_case=self.is_vtj_test_case,
+            vtj_test_case=self.vtj_test_case,
         )
         # If it's already a string (mocked), return it directly
         if isinstance(data, str):

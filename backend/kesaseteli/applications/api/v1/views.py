@@ -56,7 +56,7 @@ from applications.models import (
 from common.decorators import enforce_handler_view_adfs_login
 from common.permissions import HandlerPermission
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
-from shared.vtj.vtj_client import VTJClient
+from shared.vtj.vtj_client import get_vtj_client
 
 LOGGER = logging.getLogger(__name__)
 
@@ -144,6 +144,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     @transaction.atomic
     @enforce_handler_view_adfs_login
     def retrieve(self, request, *args, **kwargs):
+        vtj_client = get_vtj_client()
         youth_application: YouthApplication = self.get_object().lock_for_update()
         # Update unhandled youth applications' encrypted_handler_vtj_json so
         # handlers can accept/reject using it
@@ -153,7 +154,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         ):
             youth_application.encrypted_handler_vtj_json = (
                 youth_application.fetch_vtj_json(
-                    end_user=VTJClient.get_end_user(request)
+                    end_user=vtj_client.get_end_user(request) if vtj_client else None
                 )
             )
             youth_application.save(update_fields=["encrypted_handler_vtj_json"])

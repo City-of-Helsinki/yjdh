@@ -10,7 +10,7 @@ from applications.views import (
     EmployerApplicationExcelDownloadView,
     YouthApplicationExcelExportViewSet,
 )
-from companies.api.v1.views import GetCompanyView, GetCompanyMockView
+from companies.api.v1.views import GetCompanyMockView, GetCompanyView
 from shared.suomi_fi.views import (
     SuomiFiAssertionConsumerServiceView,
     SuomiFiMetadataView,
@@ -24,7 +24,9 @@ router.register(
 )
 
 # Determine which class to use based on the environment
-GetCompanyViewClass = GetCompanyMockView if settings.NEXT_PUBLIC_MOCK_FLAG else GetCompanyView
+GetCompanyViewClass = (
+    GetCompanyMockView if settings.NEXT_PUBLIC_MOCK_FLAG is True else GetCompanyView
+)
 
 urlpatterns = [
     path("v1/", include((router.urls, "v1"), namespace="v1")),

@@ -9,7 +9,9 @@ from typing import Tuple
 import requests
 from django.conf import settings
 from django.http import HttpRequest
+import logging
 
+logger = logging.getLogger(__name__)
 
 class VTJClient:
     """
@@ -78,9 +80,13 @@ class VTJClient:
 
 class VTJClientMock(VTJClient):
 
+    def __init__(self):
+        logger.info("Using a mocked VTJ client.")
+
+
     @staticmethod
     def get_mocked_vtj_json_for_vtj_test_case(
-        vtj_test_case, first_name, last_name, social_security_number
+        vtj_test_case: str, first_name: str, last_name: str, social_security_number: str
     ):
         if vtj_test_case == VtjTestCase.NOT_FOUND.value:
             return mock_vtj_person_id_query_not_found_content()
@@ -101,17 +107,17 @@ class VTJClientMock(VTJClient):
                 ),
             )
 
-    def get_personal_info(self, social_security_number, end_user: str, is_vtj_test_case: bool = False, **kwargs) -> dict:
+    def get_personal_info(self, social_security_number, end_user: str, first_name: str = "", last_name: str = "", is_vtj_test_case: bool = False, vtj_test_case: str = "", **kwargs) -> dict:
         # VTJ integration enabled and mocked
         if is_vtj_test_case:
-            if self.vtj_test_case == VtjTestCase.NO_ANSWER.value:
+            if vtj_test_case == VtjTestCase.NO_ANSWER.value:
                 raise ReadTimeout()
             else:
                 return VTJClientMock.get_mocked_vtj_json_for_vtj_test_case(
-                    vtj_test_case=self.vtj_test_case,
-                    first_name=self.first_name,
-                    last_name=self.last_name,
-                    social_security_number=self.social_security_number,
+                    vtj_test_case=vtj_test_case,
+                    first_name=first_name,
+                    last_name=last_name,
+                    social_security_number=social_security_number,
                 )
         return mock_vtj_person_id_query_not_found_content()
         

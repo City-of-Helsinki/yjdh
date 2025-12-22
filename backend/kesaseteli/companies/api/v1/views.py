@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.db import transaction
 from django.http import HttpRequest
 from rest_framework.response import Response
@@ -25,6 +24,9 @@ class GetCompanyView(APIView):
 
 
 class GetCompanyMockView(GetCompanyView):
+    """
+    A mocked API View to retrieve company info.
+    """
 
     @transaction.atomic
     def get(self, request: HttpRequest, format: str = None) -> Response:

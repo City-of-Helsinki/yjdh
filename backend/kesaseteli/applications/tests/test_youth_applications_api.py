@@ -600,7 +600,7 @@ def test_youth_applications_detail_update_encrypted_handler_vtj_json(
 
 
 @pytest.mark.django_db
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
+@override_settings(NEXT_PUBLIC_DISABLE_VTJ=False, NEXT_PUBLIC_MOCK_FLAG=True)
 @pytest.mark.parametrize(
     "username,user_pk,expected_end_user",
     [
@@ -719,6 +719,7 @@ def test_youth_applications_activate_unexpired_inactive_with_rejection(
 
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_DISABLE_VTJ=False)
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
 @pytest.mark.parametrize("application_year", [2022, 2023, 2024])
 @pytest.mark.parametrize("applicant_age", [15, 16, 17, 18])
 @pytest.mark.parametrize("is_helsinkian", [False, True])
