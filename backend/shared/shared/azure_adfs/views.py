@@ -3,6 +3,7 @@ from urllib.parse import parse_qs, urlparse
 
 from django.conf import settings
 from django.shortcuts import redirect
+from django.utils.http import url_has_allowed_host_and_scheme
 from django_auth_adfs.views import OAuth2CallbackView
 
 LOGGER = logging.getLogger(__name__)
@@ -65,8 +66,48 @@ class HelsinkiOAuth2CallbackView(OAuth2CallbackView):
                 return response  # Redirect to multi-factor authentication endpoint
             if request.session.pop("USE_ORIGINAL_REDIRECT_URL", False):
                 return response  # Redirect to the original redirect URL
-            else:
-                return redirect(settings.ADFS_LOGIN_REDIRECT_URL)
+
+            # 1. Check for manual 'next' parameter in GET request.
+            # This is primarily for flows where the 'next' parameter is explicitly
+            # passed to the callback URL (e.g. from the Admin login or testing).
+            next_url = request.GET.get("next")
+            if next_url and url_has_allowed_host_and_scheme(
+                url=next_url,
+                allowed_hosts={request.get_host()},
+                require_https=request.is_secure(),
+            ):
+                return redirect(next_url)
+
+            # 2. Check the URL determined by django-auth-adfs.
+            # django-auth-adfs calculates the redirect URL (put into response.url) based
+            # on:
+            # - The 'next' parameter allowed by the 'state' (if authentication
+            #   succeeded)
+            # - Or falls back to settings.LOGIN_REDIRECT_URL.
+            #
+            # We want to respect the 'next' parameter if it was present (e.g. user was
+            # going to /admin/). However, if it defaulted to LOGIN_REDIRECT_URL
+            # (locally configured as "/"), we want to override that default with our
+            # specific ADFS_LOGIN_REDIRECT_URL parameter.
+            #
+            # We validate response.url to ensure it is safe before redirecting.
+            default_login_redirect_url = getattr(
+                settings, "LOGIN_REDIRECT_URL", "/accounts/profile/"
+            )
+            if (
+                url_has_allowed_host_and_scheme(
+                    url=response.url,
+                    allowed_hosts={request.get_host()},
+                    require_https=request.is_secure(),
+                )
+                and response.url != default_login_redirect_url
+            ):
+                return response
+
+            # 3. Fallback to ADFS specific redirect URL.
+            # If no 'next' param was found and django-auth-adfs used the default
+            # LOGIN_REDIRECT_URL, we redirect to the specific ADFS landing page.
+            return redirect(settings.ADFS_LOGIN_REDIRECT_URL)
         elif response.status_code == 400:
             error_message = "No authorization code was provided."
         elif response.status_code == 403:
