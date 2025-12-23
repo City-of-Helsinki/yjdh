@@ -7,6 +7,8 @@ from django.conf import settings
 from django.contrib.auth.models import Group
 from django.test import override_settings
 from django.urls import reverse
+from django.shortcuts import redirect
+
 
 from shared.azure_adfs.auth import (
     HelsinkiAdfsAuthCodeBackend,
@@ -284,3 +286,136 @@ def test_adfs_callback_no_code(
     assert response.status_code == 302
     assert response.url == settings.ADFS_LOGIN_REDIRECT_URL_FAILURE
     assert "_auth_user_id" not in client.session
+
+
+@pytest.mark.django_db
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=False,
+    ADFS_LOGIN_REDIRECT_URL="http://example.com",
+    LOGIN_REDIRECT_URL="http://example.com",  # Default redirect
+)
+def test_adfs_callback_deep_link(
+    client,
+    requests_mock,
+    user,
+):
+    """
+    Test that the callback redirects to the specific deep link provided in the 'next' parameter
+    (via 'state') if it is different from the default LOGIN_REDIRECT_URL.
+    """
+    deep_link = "/some/deep/link/"
+    
+    with mock.patch("shared.azure_adfs.auth.provider_config"):
+        with mock.patch.multiple(
+            "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
+            exchange_auth_code=mock.MagicMock(),
+            validate_access_token=mock.MagicMock(return_value={"oid": "test"}),
+            process_access_token=mock.MagicMock(return_value=user),
+            get_graph_api_access_token=mock.MagicMock(),
+            update_user_groups_from_graph_api=mock.MagicMock(),
+            update_userinfo_from_graph_api=mock.MagicMock(),
+        ):
+            # Simulate the state parameter containing the deep link
+            # The library decodes 'state' to 'next' internally.
+            # We mock the internal behavior by mocking how the view extracts 'next'.
+            # However, looking at the view code (views.py):
+            # response = super().get(request) returns a redirect to the 'next' url found in state.
+            
+            # Since we can't easily make super().get() behave exactly as we want without
+            # complex mocking of the underlying library's state logic, we can verify
+            # the logic by ensuring our view respects the return value of super().get()
+            # when it points to a deep link.
+            
+            # We will mock the super().get() to return a redirect to our deep link.
+            with mock.patch("django_auth_adfs.views.OAuth2CallbackView.get") as mock_super_get:
+                mock_response = redirect(deep_link)
+                mock_super_get.return_value = mock_response
+                
+                callback_url = f"{reverse('django_auth_adfs:callback')}?code=test&state=coded_state"
+                response = client.get(callback_url)
+
+    assert response.status_code == 302
+    assert response.url == deep_link
+
+
+@pytest.mark.django_db
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=False,
+    ADFS_LOGIN_REDIRECT_URL="http://example.com/adfs-default",
+    LOGIN_REDIRECT_URL="http://example.com/login-default",
+)
+def test_adfs_callback_admin_link(
+    client,
+    requests_mock,
+    user,
+):
+    """
+    Test that the callback redirects to the admin site if the target URL starts with /admin.
+    """
+    admin_link = "/admin/some/model/"
+    
+    with mock.patch("shared.azure_adfs.auth.provider_config"):
+        with mock.patch.multiple(
+            "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
+            exchange_auth_code=mock.MagicMock(),
+            validate_access_token=mock.MagicMock(return_value={"oid": "test"}),
+            process_access_token=mock.MagicMock(return_value=user),
+            get_graph_api_access_token=mock.MagicMock(),
+            update_user_groups_from_graph_api=mock.MagicMock(),
+            update_userinfo_from_graph_api=mock.MagicMock(),
+        ):
+            with mock.patch("django_auth_adfs.views.OAuth2CallbackView.get") as mock_super_get:
+                mock_response = redirect(admin_link)
+                mock_super_get.return_value = mock_response
+                
+                callback_url = f"{reverse('django_auth_adfs:callback')}?code=test&state=coded_state"
+                response = client.get(callback_url)
+
+    assert response.status_code == 302
+    assert response.url == admin_link
+
+@pytest.mark.django_db
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=False,
+    ADFS_LOGIN_REDIRECT_URL="http://example.com/adfs-default",
+    LOGIN_REDIRECT_URL="http://example.com/login-default",
+)
+@pytest.mark.parametrize(
+    "target_url",
+    [
+        "/",
+        "http://example.com/login-default",
+    ],
+)
+def test_adfs_callback_fallback(
+    client,
+    requests_mock,
+    user,
+    target_url,
+):
+    """
+    Test that the callback falls back to ADFS_LOGIN_REDIRECT_URL if the target URL
+    is just slash (root) or the default LOGIN_REDIRECT_URL.
+    """
+    with mock.patch("shared.azure_adfs.auth.provider_config"):
+        with mock.patch.multiple(
+            "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
+            exchange_auth_code=mock.MagicMock(),
+            validate_access_token=mock.MagicMock(return_value={"oid": "test"}),
+            process_access_token=mock.MagicMock(return_value=user),
+            get_graph_api_access_token=mock.MagicMock(),
+            update_user_groups_from_graph_api=mock.MagicMock(),
+            update_userinfo_from_graph_api=mock.MagicMock(),
+        ):
+            with mock.patch(
+                "django_auth_adfs.views.OAuth2CallbackView.get"
+            ) as mock_super_get:
+                mock_super_get.return_value = redirect(target_url)
+
+                callback_url = (
+                    f"{reverse('django_auth_adfs:callback')}?code=test&state=coded_state"
+                )
+                response = client.get(callback_url)
+
+    assert response.status_code == 302
+    assert response.url == "http://example.com/adfs-default"
