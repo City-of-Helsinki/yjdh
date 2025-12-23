@@ -39,8 +39,46 @@ def test_callback_view(settings, client):
 def test_logout_view(user_client):
     logout_url = reverse("django_auth_adfs:logout")
     response = user_client.get(logout_url)
-    assert response.status_code == 302
     assert response.headers["Location"] == urljoin(
         settings.ADFS_LOGIN_REDIRECT_URL, "?logout=true"
     )
     assert "_adfs_user_id" not in user_client.session
+
+
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
+def test_login_view_with_next(client):
+    next_url = "/some/path"
+    login_url = reverse("django_auth_adfs:login") + f"?next={next_url}"
+    response = client.get(login_url)
+    assert response.status_code == 302
+    assert f"next={next_url}" in response.url
+
+
+@pytest.mark.django_db
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=True,
+    ADFS_LOGIN_REDIRECT_URL="http://example.com/login",
+)
+def test_callback_view_with_next(settings, client):
+    next_url = "/some/path"
+    url = f"{callback_url}&next={next_url}"
+    response = client.get(url)
+    user = get_user_model().objects.get(id=client.session.get("_adfs_user_id"))
+    assert user.is_authenticated
+    assert response.status_code == 302
+    assert response.url == next_url
+
+
+@pytest.mark.django_db
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=True,
+    ADFS_LOGIN_REDIRECT_URL="http://example.com/login",
+)
+def test_callback_view_with_unsafe_next(settings, client):
+    next_url = "http://evil.com"
+    url = f"{callback_url}&next={next_url}"
+    response = client.get(url)
+    user = get_user_model().objects.get(id=client.session.get("_adfs_user_id"))
+    assert user.is_authenticated
+    assert response.status_code == 302
+    assert response.url == settings.ADFS_LOGIN_REDIRECT_URL
