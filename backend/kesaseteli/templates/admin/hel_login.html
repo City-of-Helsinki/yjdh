@@ -1,0 +1,22 @@
+{% extends "admin/login.html" %}
+{% load i18n %}
+
+{% block content %}
+<p>{% translate 'Log in with Helsinki account:' %}</p>
+<div class="submit-row">
+    <a href="{% url 'django_auth_adfs:login' %}{% if next %}?next={{ next }}{% endif %}">
+        <button id="helsinki-login-btn" class="button" type="button">
+            {% translate 'Log in with AD'%}
+        </button>
+    </a>
+</div>
+
+<hr style="margin: 2em 0;" />
+
+<p>
+    {% translate 'If you have separate admin accounts, log in with your username and password.' %}
+</p>
+
+{{ block.super }}
+
+{% endblock %}
