@@ -4,6 +4,7 @@ from urllib.parse import urljoin
 from django.conf import settings
 from django.contrib import auth
 from django.shortcuts import redirect
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import View
 from factory.faker import faker
 
@@ -14,7 +15,11 @@ LOGGER = logging.getLogger(__name__)
 
 class MockOAuth2LoginView(View):
     def get(self, request):
-        return redirect("/oauth2/callback?code=mock_adfs_code")
+        next_url = request.GET.get("next")
+        callback_url = "/oauth2/callback?code=mock_adfs_code"
+        if next_url:
+            callback_url += f"&next={next_url}"
+        return redirect(callback_url)
 
 
 class MockOAuth2CallbackView(View):
@@ -30,7 +35,17 @@ class MockOAuth2CallbackView(View):
                 backend="django.contrib.auth.backends.ModelBackend",  # type: ignore
             )
             request.session["_adfs_user_id"] = str(user.id)
-        return redirect(settings.ADFS_LOGIN_REDIRECT_URL)
+
+        next_url = request.GET.get("next")
+        if next_url and url_has_allowed_host_and_scheme(
+            url=next_url,
+            allowed_hosts={request.get_host()},
+            require_https=request.is_secure(),
+        ):
+            redirect_url = next_url
+        else:
+            redirect_url = settings.ADFS_LOGIN_REDIRECT_URL
+        return redirect(redirect_url)
 
 
 class MockOAuth2LogoutView(View):
