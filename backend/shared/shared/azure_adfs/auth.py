@@ -60,6 +60,7 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
             url,
             json=data,
             headers=headers,
+            timeout=settings.TIMEOUT,
         )
         response.raise_for_status()
 
@@ -111,7 +112,10 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
         }
 
         response = requests.get(
-            url, headers=headers, params=f"$select={','.join(properties)}"
+            url,
+            headers=headers,
+            params=f"$select={','.join(properties)}",
+            timeout=settings.TIMEOUT,
         )
 
         response.raise_for_status()
