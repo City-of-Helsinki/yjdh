@@ -61,6 +61,7 @@ if settings.NEXT_PUBLIC_ENABLE_SUOMIFI:
 
 
 if settings.ENABLE_ADMIN:
+    admin.site.login_template = "admin/hel_login.html"
     urlpatterns.append(path("admin/", admin.site.urls))
 
 
