@@ -1,0 +1,9 @@
+{% extends "admin/login.html" %}
+{% load i18n %}
+
+{% block content %}
+    {{ block.super }}
+    <div class="submit-row">
+        <a href="{% url 'django_auth_adfs:login' %}?next=/admin/">{% translate 'Log in with AD' %}</a>
+    </div>
+{% endblock %}
