@@ -3,6 +3,7 @@ from urllib.parse import parse_qs, urlparse
 
 from django.conf import settings
 from django.shortcuts import redirect
+from django.utils.encoding import iri_to_uri
 from django.utils.http import url_has_allowed_host_and_scheme
 from django_auth_adfs.views import OAuth2CallbackView
 
@@ -10,10 +11,16 @@ LOGGER = logging.getLogger(__name__)
 
 
 class HelsinkiOAuth2CallbackView(OAuth2CallbackView):
+    """
+    Custom OAuth2 Callback view that prioritizes specific landing pages
+    for clients while preserving deep links for Admin/Staff.
+    """
+
     @classmethod
     def is_response_adfs_authorization_redirect(cls, response):
         """
-        Is the response a redirect to ADFS authorization URL?
+        Detects if the library is initiating a Multi-Factor Authentication (MFA)
+        redirect back to ADFS. Is the response a redirect to ADFS authorization URL?
 
         NOTE: This is not a foolproof method of detecting if the redirect is to ADFS
         authorization URL. The detection depends on the query parameters being set by
@@ -43,79 +50,73 @@ class HelsinkiOAuth2CallbackView(OAuth2CallbackView):
                     "state",
                 }
             )
-            and url_query_parameters["response_type"] == ["code"]
+            and url_query_parameters.get("response_type") == ["code"]
         )
 
     def get(self, request):
         """
-        Override GET method to use custom redirect urls.
+        Processes the ADFS callback and determines the final redirect destination.
         """
+        # 1. Let the parent class handle the token exchange.
+        # It will set response.url based on the 'state' parameter
+        # (the original 'next' URL).
         response = super().get(request)
 
         if response.status_code == 302:
-            # OAuth2CallbackView.get may return two types of redirects:
-            # 1. Multi-factor authentication redirect:
-            # https://github.com/snok/django-auth-adfs/blob/1.7.0/django_auth_adfs/views.py#L38
-            # 2. After login page redirect:
-            # https://github.com/snok/django-auth-adfs/blob/1.7.0/django_auth_adfs/views.py#L56
+            # Check if this is an MFA redirect back to ADFS; if so, don't interfere.
             if self.is_response_adfs_authorization_redirect(response):
-                # NOTE: This code path has not been tested.
-                # Previously if the super class returned a multi-factor authentication
-                # redirect the user was not redirected to it but to the URL specified
-                # by settings.ADFS_LOGIN_REDIRECT_URL.
-                return response  # Redirect to multi-factor authentication endpoint
-            if request.session.pop("USE_ORIGINAL_REDIRECT_URL", False):
-                return response  # Redirect to the original redirect URL
-
-            # 1. Check for manual 'next' parameter in GET request.
-            # This is primarily for flows where the 'next' parameter is explicitly
-            # passed to the callback URL (e.g. from the Admin login or testing).
-            next_url = request.GET.get("next")
-            if next_url and url_has_allowed_host_and_scheme(
-                url=next_url,
-                allowed_hosts={request.get_host()},
-                require_https=request.is_secure(),
-            ):
-                return redirect(next_url)
-
-            # 2. Check the URL determined by django-auth-adfs.
-            # django-auth-adfs calculates the redirect URL (put into response.url) based
-            # on:
-            # - The 'next' parameter allowed by the 'state' (if authentication
-            #   succeeded)
-            # - Or falls back to settings.LOGIN_REDIRECT_URL.
-            #
-            # We want to respect the 'next' parameter if it was present (e.g. user was
-            # going to /admin/). However, if it defaulted to LOGIN_REDIRECT_URL
-            # (locally configured as "/"), we want to override that default with our
-            # specific ADFS_LOGIN_REDIRECT_URL parameter.
-            #
-            # We validate response.url to ensure it is safe before redirecting.
-            default_login_redirect_url = getattr(
-                settings, "LOGIN_REDIRECT_URL", "/accounts/profile/"
-            )
-            if (
-                url_has_allowed_host_and_scheme(
-                    url=response.url,
-                    allowed_hosts={request.get_host()},
-                    require_https=request.is_secure(),
-                )
-                and response.url != default_login_redirect_url
-            ):
                 return response
 
-            # 3. Fallback to ADFS specific redirect URL.
-            # If no 'next' param was found and django-auth-adfs used the default
-            # LOGIN_REDIRECT_URL, we redirect to the specific ADFS landing page.
+            # Check for any custom session flags to skip our custom logic
+            if request.session.pop("USE_ORIGINAL_REDIRECT_URL", False):
+                return response
+
+            # 2. Extract and sanitize the target URL provided by the library
+            target_url = response.url
+
+            # Security: Ensure the URL is safe for our domain
+            is_safe = url_has_allowed_host_and_scheme(
+                url=target_url,
+                allowed_hosts={request.get_host()},
+                require_https=request.is_secure(),
+            )
+
+            if is_safe:
+                # We want to honor 'next' only if it points to Admin
+                # OR if it is a specific deep-link that isn't just the default home.
+
+                # Fetch default landing from settings (usually "/" or
+                # "/accounts/profile/")
+                default_login_url = getattr(settings, "LOGIN_REDIRECT_URL", "/")
+
+                # Logic: If it's the admin site, always allow the redirect.
+                is_admin_path = target_url.startswith("/admin")
+
+                # Logic: Is the user trying to reach a specific page?
+                # (e.g. they aren't just hitting the default landing page)
+                is_specific_destination = (
+                    target_url != default_login_url
+                    and target_url != "/"
+                    and target_url != ""
+                )
+
+                if is_admin_path or is_specific_destination:
+                    # Return the original response with the deep-link
+                    response.url = iri_to_uri(target_url)
+                    return response
+
+            # 3. Fallback: Force regular client login to the Export Downloads page.
             return redirect(settings.ADFS_LOGIN_REDIRECT_URL)
-        elif response.status_code == 400:
-            error_message = "No authorization code was provided."
-        elif response.status_code == 403:
-            error_message = "Your account is disabled."
-        else:
-            error_message = "Login failed."
+
+        # 4. Error Handling
+        error_map = {
+            400: "No authorization code was provided.",
+            403: "Your account is disabled.",
+        }
+        error_message = error_map.get(response.status_code, "Login failed.")
+
         LOGGER.error(
-            f"Invalid login. Status code: {response.status_code}. Error message:"
-            f" {error_message}."
+            f"Invalid login. Status code: {response.status_code}. "
+            f"Error: {error_message}"
         )
         return redirect(settings.ADFS_LOGIN_REDIRECT_URL_FAILURE)
