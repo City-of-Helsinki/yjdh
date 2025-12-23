@@ -201,6 +201,22 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
                     # Removal is possible if user has been a handler but is no more
                     user.groups.remove(handler_group)
 
+    def update_is_staff(self, user):
+        """
+        Updates the is_staff field of the user based on the groups that the user
+        is a member of.
+        """
+        # Users with groups that are defined in ADFS_CONTROLLER_GROUP_UUIDS
+        # should be allowed the staff status so that they can access the
+        # controller UI.
+        controller_group_uuids = [
+            f"adfs-{group_uuid}"
+            for group_uuid in getattr(
+                django_settings, "ADFS_CONTROLLER_GROUP_UUIDS", []
+            )
+        ]
+        user.is_staff = user.groups.filter(name__in=controller_group_uuids).exists()
+
     def authenticate(self, request=None, authorization_code=None, **kwargs):
         """
         Override the authenticate method to fetch the user groups from
@@ -234,15 +250,12 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
         )
         self.update_userinfo_from_graph_api(user, graph_api_access_token)
 
-        # Users with groups that are defined in ADFS_CONTROLLER_GROUP_UUIDS
-        # should be allowed the staff status so that they can access the
-        # controller UI.
-        controller_group_uuids = [
-            f"adfs-{group_uuid}"
-            for group_uuid in django_settings.ADFS_CONTROLLER_GROUP_UUIDS
-        ]
-        user.is_staff = user.groups.filter(name__in=controller_group_uuids).exists()
-        user.save()
+        # NOTE: Using update_is_staff here means you cannot manually promote a user to
+        # staff if they log in via ADFS, as their status will be revoked immediately
+        # if they aren't in the AD controller group.
+        self.update_is_staff(user)
         self.assign_local_groups(user)
+
+        user.save()
 
         return user
