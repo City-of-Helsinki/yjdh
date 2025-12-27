@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.13.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.12.0...benefit-handler-v4.13.0) (2025-12-27)
+
+
+### Features
+
+* Use common ci wokflow for frontend HL-1637 ([#3778](https://github.com/City-of-Helsinki/yjdh/issues/3778)) ([c5dbf70](https://github.com/City-of-Helsinki/yjdh/commit/c5dbf7011bef2042f69d515908a45e571d74bf25))
+
 ## [4.12.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.11.1...benefit-handler-v4.12.0) (2025-12-15)
 
 
