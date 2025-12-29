@@ -18,6 +18,7 @@ import {
   fakeYouthTargetGroupAge,
   fakeYouthTargetGroupAgeSSN,
 } from 'kesaseteli-shared/__tests__/utils/fake-objects';
+import { TARGET_GROUP_AGES } from 'kesaseteli-shared/constants/target-group-ages';
 import {
   YOUTH_APPLICATION_STATUS_COMPLETED,
   YOUTH_APPLICATION_STATUS_HANDLER_CANNOT_PROCEED,
@@ -253,16 +254,11 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         });
         const indexPageApi = await getIndexPageApi(application);
         await indexPageApi.expectations.pageIsLoaded();
-        if (age === 16) {
-          indexPageApi.expectations.vtjErrorMessageIsNotPresent(
-            'notInTargetAgeGroup',
-            { age }
-          );
+        const params = ['notInTargetAgeGroup', { age }] as const;
+        if (TARGET_GROUP_AGES.includes(age)) {
+          indexPageApi.expectations.vtjErrorMessageIsNotPresent(...params);
         } else {
-          await indexPageApi.expectations.vtjErrorMessageIsPresent(
-            'notInTargetAgeGroup',
-            { age }
-          );
+          await indexPageApi.expectations.vtjErrorMessageIsPresent(...params);
         }
       });
     }

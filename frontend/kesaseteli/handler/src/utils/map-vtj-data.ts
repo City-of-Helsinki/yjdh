@@ -1,4 +1,5 @@
 import { FinnishSSN } from 'finnish-ssn';
+import { TARGET_GROUP_AGES } from 'kesaseteli-shared/constants/target-group-ages';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import VtjAddress from 'kesaseteli-shared/types/vtj-address';
 import { isWithinInterval } from 'shared/utils/date.utils';
@@ -64,7 +65,7 @@ export const mapVtjData = (application: ActivatedYouthApplication): VtjInfo => {
     vtjData.Henkilo.Henkilotunnus['#text']
   );
   const age = new Date().getFullYear() - dateOfBirth.getFullYear();
-  const notInTargetAgeGroup = age !== 16;
+  const notInTargetAgeGroup = !TARGET_GROUP_AGES.includes(age);
 
   const isDead = vtjData.Henkilo.Kuolintiedot.Kuollut === '1';
   return {
