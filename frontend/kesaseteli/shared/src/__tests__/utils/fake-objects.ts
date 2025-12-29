@@ -15,6 +15,7 @@ import merge from 'lodash/merge';
  *  https://github.com/DevExpress/testcafe/issues/4144
  */
 import { ADDITIONAL_INFO_REASON_TYPE } from '../../constants/additional-info-reason-type';
+import { TARGET_GROUP_AGES } from '../../constants/target-group-ages';
 import YOUTH_APPLICATION_FIELDS from '../../constants/youth-application-fields';
 import ActivatedYouthApplication from '../../types/activated-youth-application';
 import AdditionalInfoApplication from '../../types/additional-info-application';
@@ -118,7 +119,6 @@ export const fakeSchools: string[] = [
   'Östersundom skola',
 ];
 
-const targetGroupAges = [16, 17] as const;
 const ninethGraderYear = new Date().getFullYear() - 16;
 const upperSecondaryEducation1stYearStudentYear = new Date().getFullYear() - 17;
 
@@ -152,7 +152,7 @@ export const fakeUpperSecondaryEducation1stYearStudentSSN = (): string =>
   fakeSSN(upperSecondaryEducation1stYearStudentYear);
 
 export const fakeYouthTargetGroupAgeSSN = (): string => {
-  const age = faker.random.arrayElement(targetGroupAges);
+  const age = faker.random.arrayElement(TARGET_GROUP_AGES);
   const yearOfBirth = new Date().getFullYear() - age;
   return fakeSSN(yearOfBirth);
 };
