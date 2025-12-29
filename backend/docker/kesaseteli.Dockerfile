@@ -1,5 +1,5 @@
 # ==============================
-FROM registry.access.redhat.com/ubi9/python-39 AS appbase
+FROM registry.access.redhat.com/ubi9/python-312 AS appbase
 # ==============================
 
 USER root

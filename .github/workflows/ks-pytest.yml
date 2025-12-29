@@ -45,10 +45,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install libpq-dev gettext xmlsec1 libsasl2-dev libssl-dev
 
-      - name: Setup Python 3.9
+      - name: Setup Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: 3.9
+          python-version: 3.12
           cache: pip
 
       - name: Cache pip packages
