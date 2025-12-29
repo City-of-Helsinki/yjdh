@@ -261,7 +261,7 @@ if NEXT_PUBLIC_ENABLE_SUOMIFI:
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        "DIRS": [parent_dir("shared/templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
