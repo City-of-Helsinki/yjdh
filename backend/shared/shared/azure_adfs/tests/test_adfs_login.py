@@ -160,14 +160,14 @@ def test_authenticate(
     with mock.patch("shared.azure_adfs.auth.provider_config"):
         with mock.patch.multiple(
             "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
-            exchange_auth_code=mock.MagicMock,
+            exchange_auth_code=mock.MagicMock(),
             validate_access_token=mock.MagicMock(return_value={"oid": "test"}),
             process_access_token=mock.MagicMock(return_value=user),
-            get_graph_api_access_token=mock.MagicMock,
+            get_graph_api_access_token=mock.MagicMock(),
             get_member_objects_from_graph_api=mock.MagicMock(
                 return_value=["adfs-testgroup"]
             ),
-            update_userinfo_from_graph_api=mock.MagicMock,
+            update_userinfo_from_graph_api=mock.MagicMock(),
         ):
             auth_user = auth_backend.authenticate(authorization_code="test")
 
@@ -204,12 +204,12 @@ def test_adfs_callback(
     with mock.patch("shared.azure_adfs.auth.provider_config"):
         with mock.patch.multiple(
             "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
-            exchange_auth_code=mock.MagicMock,
+            exchange_auth_code=mock.MagicMock(),
             validate_access_token=mock.MagicMock(return_value={"oid": "test"}),
             process_access_token=mock.MagicMock(return_value=user),
-            get_graph_api_access_token=mock.MagicMock,
-            update_user_groups_from_graph_api=mock.MagicMock,
-            update_userinfo_from_graph_api=mock.MagicMock,
+            get_graph_api_access_token=mock.MagicMock(),
+            update_user_groups_from_graph_api=mock.MagicMock(),
+            update_userinfo_from_graph_api=mock.MagicMock(),
         ):
             callback_url = f"{reverse('django_auth_adfs:callback')}?code=test"
             response = client.get(callback_url)
@@ -219,11 +219,6 @@ def test_adfs_callback(
     assert "_auth_user_id" in client.session
 
 
-# FIXME: This test does not work if NEXT_PUBLIC_ENABLE_SUOMIF=True
-#        when bringing up the backend. Overriding this setting here
-#        does not help, because there's conditional logic being done
-#        based on the setting's value elsewhere that does not get
-#        rerun when changing the setting in this test.
 @pytest.mark.django_db
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
@@ -243,6 +238,18 @@ def test_adfs_callback_original_redirect(
     user,
     original_redirect_url,
 ):
+    # FIXME: This test does not work if NEXT_PUBLIC_ENABLE_SUOMIFI=True
+    #        when bringing up the backend. Overriding the setting for this
+    #        test does not help, because there's conditional logic being done
+    #        based on the setting's value elsewhere (e.g. changing
+    #        AUTHENTICATION_BACKENDS list) that does not get rerun when
+    #        changing the setting in this test. As a workaround disabling
+    #        this test when HelsinkiOIDCAuthenticationBackend is not used.
+    if "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend" not in settings.AUTHENTICATION_BACKENDS:
+        pytest.xfail(
+            "Test is expected to fail if HelsinkiOIDCAuthenticationBackend is disabled"
+        )
+
     with mock.patch(
         "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend.authenticate",
         return_value=user,

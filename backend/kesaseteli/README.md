@@ -3,7 +3,7 @@
 Prerequisites:
 
 * PostgreSQL 13
-* Python 3.9
+* Python 3.12
 
 ### Installing Python requirements
 
