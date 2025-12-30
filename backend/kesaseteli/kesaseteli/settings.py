@@ -215,6 +215,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 INSTALLED_APPS = [
     "django.contrib.auth",
+    "django.contrib.admin",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -231,13 +232,12 @@ INSTALLED_APPS = [
     # local apps
     "applications",
     "companies",
+    "staff_admin_permissions.apps.StaffAdminPermissionsConfig",
 ]
 
 if NEXT_PUBLIC_ENABLE_SUOMIFI:
     INSTALLED_APPS.append("djangosaml2")
 
-if ENABLE_ADMIN:
-    INSTALLED_APPS.append("django.contrib.admin")
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -688,3 +688,8 @@ if os.path.exists(local_settings_path):
     with open(local_settings_path) as fp:
         code = compile(fp.read(), local_settings_path, "exec")
     exec(code, globals(), locals())
+
+
+AUTO_ASSIGN_ADMIN_TO_STAFF = env.bool(
+    "AUTO_ASSIGN_ADMIN_TO_STAFF", default=DEBUG and NEXT_PUBLIC_MOCK_FLAG
+)
