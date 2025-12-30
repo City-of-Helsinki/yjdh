@@ -8,8 +8,8 @@ django-searchable-encrypted-fields
 django-sequences
 django-simple-history
 django-storages[azure]
+django==5.1.15  # FIXME: pinned to avoid nonsensical resolutions that allow 5.2 even with django~=5.1!
 djangorestframework
-django~=4.2
 elasticsearch~=7.17  # TODO: remove and update to 8.x when elasticsearch servers are updated to elasticsearch 8
 factory-boy
 filetype

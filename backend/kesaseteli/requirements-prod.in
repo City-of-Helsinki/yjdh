@@ -1,2 +1,4 @@
+# NOTE: You need to comment out "-e file:../shared" in requirements.txt when running pip-compile.
+# Otherwise, you might get an "Unnamed requirements are not allowed as constraints" error.
 -c requirements.txt
 uwsgi

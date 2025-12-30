@@ -1,13 +1,10 @@
 # NOTE: You need to comment out "-e file:../shared" in requirements.txt when running pip-compile.
 # Otherwise, you might get an "Unnamed requirements are not allowed as constraints" error.
 -c requirements.txt
-
-# This needs to be kept in sync with .pre-commit-config.yaml in the root of the repository.
-ruff==0.13.1
-
 langdetect
 openpyxl
-pip-tools
+pip-tools>=7.5.2  # So pip-compile works with pip >=25.3, see https://github.com/jazzband/pip-tools/pull/2253
+pre-commit
 pytest
 pytest-cov
 pytest-django
@@ -15,4 +12,3 @@ pytest-freezegun
 pytest-xdist[psutil]
 requests-mock
 werkzeug
-pre-commit
