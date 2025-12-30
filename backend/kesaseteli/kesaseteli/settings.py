@@ -210,7 +210,6 @@ LANGUAGE_CODE = "fi"
 LANGUAGES = (("fi", _("Finnish")), ("en", _("English")), ("sv", _("Swedish")))
 TIME_ZONE = "Europe/Helsinki"
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
@@ -668,8 +667,14 @@ if SUOMIFI_TEST:
 FIELD_ENCRYPTION_KEYS = [ENCRYPTION_KEY]
 
 # Django storages
-DEFAULT_FILE_STORAGE = env("DEFAULT_FILE_STORAGE")
-
+STORAGES = {
+    "default": {
+        "BACKEND": env("DEFAULT_FILE_STORAGE"),
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
 AZURE_ACCOUNT_NAME = env("AZURE_ACCOUNT_NAME")
 AZURE_ACCOUNT_KEY = env("AZURE_ACCOUNT_KEY")
 AZURE_CONTAINER = env("AZURE_CONTAINER")
