@@ -8,7 +8,7 @@ pre-commit
 pytest
 pytest-cov
 pytest-django
-pytest-freezegun
+pytest-freezer
 pytest-xdist[psutil]
 requests-mock
 werkzeug

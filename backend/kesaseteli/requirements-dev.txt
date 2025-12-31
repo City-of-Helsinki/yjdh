@@ -29,7 +29,7 @@ execnet==2.1.2
 filelock==3.20.1
     # via virtualenv
 freezegun==1.5.5
-    # via pytest-freezegun
+    # via pytest-freezer
 identify==2.6.15
     # via pre-commit
 idna==3.11
@@ -75,13 +75,13 @@ pytest==9.0.2
     #   -r requirements-dev.in
     #   pytest-cov
     #   pytest-django
-    #   pytest-freezegun
+    #   pytest-freezer
     #   pytest-xdist
 pytest-cov==7.0.0
     # via -r requirements-dev.in
 pytest-django==4.11.1
     # via -r requirements-dev.in
-pytest-freezegun==0.4.2
+pytest-freezer==0.4.9
     # via -r requirements-dev.in
 pytest-xdist[psutil]==3.8.0
     # via -r requirements-dev.in
