@@ -28,6 +28,11 @@ urlpatterns = [
     path("v1/company/", GetCompanyView.as_view(), name="company"),
     path("v1/schools/", application_views.SchoolListView.as_view(), name="school-list"),
     path(
+        "v1/target_groups/",
+        application_views.TargetGroupListView.as_view(),
+        name="target-group-list",
+    ),
+    path(
         "v1/summer_voucher_configuration/",
         application_views.SummerVoucherConfigurationViewSet.as_view(),
         name="summer-voucher-configuration",
