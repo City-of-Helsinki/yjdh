@@ -21,6 +21,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_UPDATE_STATUSES,
@@ -54,6 +55,7 @@ from applications.models import (
     SummerVoucherConfiguration,
     YouthApplication,
 )
+from applications.target_groups import AbstractTargetGroup
 from common.decorators import enforce_handler_view_adfs_login
 from common.permissions import HandlerPermission
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
@@ -114,6 +116,20 @@ class SchoolListView(ListAPIView):
     def get_permissions(self):
         permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
+
+
+class TargetGroupListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, format=None):
+        data = [
+            {
+                "id": cls().identifier,
+                "name": cls().name,
+            }
+            for cls in AbstractTargetGroup.__subclasses__()
+        ]
+        return Response(data)
 
 
 class YouthApplicationViewSet(AuditLoggingModelViewSet):
