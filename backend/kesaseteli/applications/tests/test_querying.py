@@ -9,7 +9,7 @@ from django.utils import timezone
 from freezegun import freeze_time
 
 from applications.models import YouthApplication
-from common.tests.factories import YouthApplicationFactory
+from common.tests.factories import YouthApplicationFactory, YouthSummerVoucherFactory
 
 
 def get_two_test_emails():
@@ -245,3 +245,49 @@ def test_youth_application_query_set_matches_any_of(api_client):
     ).values_list("pk", flat=True)
 
     assert sorted(matched_pks) == sorted(expected_matched_pks)
+
+
+@pytest.mark.django_db
+def test_youth_application_query_set_filter_by_voucher_and_fuzzy_name(api_client):
+    # Create a base application and voucher
+    voucher_number = 12345
+    last_name = "Doe"
+
+    # Create the application with the specific last name and voucher number
+    voucher = YouthSummerVoucherFactory(
+        summer_voucher_serial_number=voucher_number,
+        youth_application__last_name=last_name
+    )
+    app_correct = voucher.youth_application
+
+    # Test cases
+    test_cases = [
+        # (employee_name_query, expected_match)
+        ("Doe", True),           # Exact match
+        ("doe", True),           # Case-insensitive exact match
+        ("John Doe", True),      # Ends with " " + last_name
+        ("john doe", True),      # Case-insensitive ends with
+        ("Doe John", True),      # Starts with last_name + " "
+        ("doe john", True),      # Case-insensitive starts with
+        ("John Doe Mary", False),# Contains but neither starts nor ends with pattern
+        ("Does", False),         # Partial match check
+        ("Do", False),           # Partial match check
+        ("Odoe", False),         # Partial match check
+        ("Doeo", False),         # Partial match check
+        ("Doe", True),
+    ]
+
+    for employee_name, expected_to_find in test_cases:
+        qs = YouthApplication.objects.filter_by_voucher_and_fuzzy_name(
+            voucher_number=voucher_number,
+            employee_name=employee_name
+        )
+        found = qs.filter(pk=app_correct.pk).exists()
+        assert found == expected_to_find, f"Failed for name '{employee_name}'. Expected {expected_to_find}, got {found}"
+
+    # Verify wrong voucher number doesn't match even if name is correct
+    qs_wrong_voucher = YouthApplication.objects.filter_by_voucher_and_fuzzy_name(
+        voucher_number=99999,
+        employee_name="Doe"
+    )
+    assert not qs_wrong_voucher.exists()

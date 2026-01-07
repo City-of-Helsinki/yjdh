@@ -240,34 +240,8 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         if employer_summer_vouchers.count() != 1:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        youth_applications = (
-            self.queryset.accepted()
-            .filter(youth_summer_voucher__summer_voucher_serial_number=voucher_number)
-            .annotate(
-                employee_name=models.Value(
-                    employee_name, output_field=models.CharField()
-                )
-            )
-            .annotate(
-                last_name_with_leading_space=Concat(
-                    models.Value(" "), "last_name", output_field=models.CharField()
-                )
-            )
-            .annotate(
-                last_name_with_trailing_space=Concat(
-                    "last_name", models.Value(" "), output_field=models.CharField()
-                )
-            )
-            # If last_name is "Doe" then it matches e.g.
-            # employee_name "John Doe", "Doe John", "Doe", "Mary Doe", "Doe Mary":
-            #
-            # NOTE: The trailing and leading spaces are needed in order not to match
-            # e.g. last_name of "Korhonen" with employee_name of "N" or "Nen".
-            .filter(
-                Q(employee_name__iexact=F("last_name"))
-                | Q(employee_name__istartswith=F("last_name_with_trailing_space"))
-                | Q(employee_name__iendswith=F("last_name_with_leading_space"))
-            )
+        youth_applications = self.queryset.accepted().filter_by_voucher_and_fuzzy_name(
+            voucher_number=voucher_number, employee_name=employee_name
         )
         if not youth_applications.exists():
             with self.record_action(
