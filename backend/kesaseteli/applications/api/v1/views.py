@@ -256,7 +256,15 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             ):
                 return Response(status=status.HTTP_404_NOT_FOUND)
         elif youth_applications.count() > 1:
-            return Response(status=status.HTTP_409_CONFLICT)  # Should never happen
+            # Should never happen
+            LOGGER.error(
+                "YouthApplicationViewSet.fetch_employee_data called with "
+                f'employer_summer_voucher_id="{employer_summer_voucher_id}", '
+                f'employee_name="{employee_name}" and '
+                f"summer_voucher_serial_number={voucher_number} "
+                "(POST used with CSRF as a GET). Found multiple matches. There should never be multiple matches!"
+            )
+            return Response(status=status.HTTP_409_CONFLICT)
         youth_application: YouthApplication = youth_applications.first()
 
         with self.record_action(
