@@ -11,7 +11,8 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models, transaction
-from django.db.models import Q
+from django.db.models import F, Q
+from django.db.models.functions import Concat
 from django.template.loader import get_template
 from django.urls import reverse
 from django.utils import timezone, translation
@@ -175,6 +176,42 @@ class YouthApplicationQuerySet(MatchesAnyOfQuerySet, models.QuerySet):
             .unexpired_or_active()
             .non_rejected()
             .exists()
+        )
+
+    def filter_by_voucher_and_fuzzy_name(self, voucher_number, employee_name):
+        """
+        Filter youth applications by summer voucher serial number and fuzzy match
+        employee name with the applicant's last name.
+        """
+        return (
+            self.filter(
+                youth_summer_voucher__summer_voucher_serial_number=voucher_number
+            )
+            .annotate(
+                employee_name_val=models.Value(
+                    employee_name, output_field=models.CharField()
+                )
+            )
+            .annotate(
+                last_name_with_leading_space=Concat(
+                    models.Value(" "), "last_name", output_field=models.CharField()
+                )
+            )
+            .annotate(
+                last_name_with_trailing_space=Concat(
+                    "last_name", models.Value(" "), output_field=models.CharField()
+                )
+            )
+            # If last_name is "Doe" then it matches e.g.
+            # employee_name "John Doe", "Doe John", "Doe", "Mary Doe", "Doe Mary":
+            #
+            # NOTE: The trailing and leading spaces are needed in order not to match
+            # e.g. last_name of "Korhonen" with employee_name of "N" or "Nen".
+            .filter(
+                Q(employee_name_val__iexact=F("last_name"))
+                | Q(employee_name_val__istartswith=F("last_name_with_trailing_space"))
+                | Q(employee_name_val__iendswith=F("last_name_with_leading_space"))
+            )
         )
 
 
