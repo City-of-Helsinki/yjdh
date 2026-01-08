@@ -15,7 +15,6 @@ from applications.enums import (
     EmployerApplicationStatus,
     get_supported_languages,
     HiredWithoutVoucherAssessment,
-    SummerVoucherExceptionReason,
     VtjTestCase,
     YouthApplicationStatus,
 )
@@ -26,6 +25,7 @@ from applications.models import (
     YouthApplication,
     YouthSummerVoucher,
 )
+from applications.target_groups import get_target_group_choices
 from applications.tests.data.mock_vtj import (
     mock_vtj_person_id_query_found_content,
     mock_vtj_person_id_query_not_found_content,
@@ -73,7 +73,8 @@ class EmployerSummerVoucherFactory(
 ):
     summer_voucher_serial_number = factory.Faker("md5")
     target_group = factory.Faker(
-        "random_element", elements=SummerVoucherExceptionReason.values
+        "random_element",
+        elements=[id for id, _ in get_target_group_choices()],
     )
 
     employee_name = factory.Faker("name")

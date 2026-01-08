@@ -233,6 +233,7 @@ INSTALLED_APPS = [
     "applications",
     "companies",
     "staff_admin_permissions.apps.StaffAdminPermissionsConfig",
+    "django.contrib.postgres",
 ]
 
 if NEXT_PUBLIC_ENABLE_SUOMIFI:
@@ -693,3 +694,8 @@ if os.path.exists(local_settings_path):
 AUTO_ASSIGN_ADMIN_TO_STAFF = env.bool(
     "AUTO_ASSIGN_ADMIN_TO_STAFF", default=DEBUG and NEXT_PUBLIC_MOCK_FLAG
 )
+
+# Summer Voucher default / fallback configurations
+SUMMER_VOUCHER_DEFAULT_VOUCHER_VALUE = 325
+SUMMER_VOUCHER_DEFAULT_MIN_WORK_COMPENSATION = 400
+SUMMER_VOUCHER_DEFAULT_MIN_WORK_HOURS = 60

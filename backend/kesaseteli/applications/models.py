@@ -1,4 +1,5 @@
 import json
+import logging
 from datetime import date, datetime, timedelta
 from email.mime.image import MIMEImage
 from pathlib import Path
@@ -8,6 +9,7 @@ from urllib.parse import quote, urljoin
 import jsonpath_ng
 import sequences
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models, transaction
@@ -29,10 +31,10 @@ from applications.enums import (
     AttachmentType,
     EmployerApplicationStatus,
     HiredWithoutVoucherAssessment,
-    SummerVoucherExceptionReason,
     VtjTestCase,
     YouthApplicationStatus,
 )
+from applications.target_groups import get_target_group_choices
 from applications.tests.data.mock_vtj import (
     mock_vtj_person_id_query_found_content,
     mock_vtj_person_id_query_not_found_content,
@@ -58,6 +60,8 @@ from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUI
 from shared.models.mixins import LockForUpdateMixin
 from shared.vtj.vtj_client import VTJClient
 
+LOGGER = logging.getLogger(__name__)
+
 
 class School(TimeStampedModel, UUIDModel):
     """
@@ -75,6 +79,37 @@ class School(TimeStampedModel, UUIDModel):
         verbose_name = _("school")
         verbose_name_plural = _("schools")
         ordering = ["name"]
+
+
+class SummerVoucherConfiguration(TimeStampedModel, UUIDModel):
+    year = models.IntegerField(
+        unique=True, verbose_name=_("year"), validators=[MinValueValidator(2020)]
+    )
+    target_group = ArrayField(
+        models.CharField(
+            max_length=256,
+            choices=get_target_group_choices(),
+        ),
+        verbose_name=_("target group"),
+        blank=False,
+    )
+    voucher_value_in_euros = models.PositiveIntegerField(
+        verbose_name=_("voucher value in euros"),
+    )
+    min_work_compensation_in_euros = models.PositiveIntegerField(
+        verbose_name=_("minimum work compensation in euros"),
+    )
+    min_work_hours = models.PositiveIntegerField(
+        verbose_name=_("minimum work hours"),
+    )
+
+    def __str__(self):
+        return f"{self.year} ({', '.join(self.target_group)})"
+
+    class Meta:
+        verbose_name = _("summer voucher configuration")
+        verbose_name_plural = _("summer voucher configurations")
+        ordering = ["-year"]
 
 
 class YouthApplicationQuerySet(MatchesAnyOfQuerySet, models.QuerySet):
@@ -653,9 +688,15 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
 
     @transaction.atomic  # Needed for django-sequences serial number handling
     def create_youth_summer_voucher(self) -> "YouthSummerVoucher":
+        from applications.services import TargetGroupValidationService
+
+        service = TargetGroupValidationService()
+        target_group = service.get_associated_target_group(self)
+
         return YouthSummerVoucher.objects.create(
             youth_application=self,
             summer_voucher_serial_number=YouthSummerVoucher.get_next_serial_number(),
+            target_group=target_group or "",
         )
 
     @property
@@ -845,10 +886,10 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
 
     @property
     def is_applicant_in_target_group(self) -> bool:
-        return self.is_helsinkian and (
-            self.is_9th_grader_age
-            or self.is_upper_secondary_education_1st_year_student_age
-        )
+        from applications.services import TargetGroupValidationService
+
+        service = TargetGroupValidationService()
+        return service.is_applicant_in_target_group(self)
 
     @property
     def can_accept_automatically(self) -> bool:
@@ -957,7 +998,7 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         blank=True,
         verbose_name=_("summer voucher target group"),
         help_text=_("Summer voucher's target group type"),
-        choices=SummerVoucherExceptionReason.choices,
+        choices=get_target_group_choices(),
     )
 
     @staticmethod
@@ -1025,7 +1066,17 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         """
         Voucher value in euros in given year.
         """
-        return 325 if year < 2024 else 350
+        try:
+            return SummerVoucherConfiguration.objects.get(
+                year=year
+            ).voucher_value_in_euros
+        except SummerVoucherConfiguration.DoesNotExist:
+            # TODO: Should a missing config be an error? Where should it be raised?
+            LOGGER.warning(
+                "No SummerVoucherConfiguration found for year %s",
+                year,
+            )
+            return settings.SUMMER_VOUCHER_DEFAULT_VOUCHER_VALUE
 
     @property
     def voucher_value_in_euros(self) -> int:
@@ -1066,15 +1117,35 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     def min_work_hours(self) -> int:
         """
         Minimum work hours for summer job in youth summer voucher's year.
+        If configuration is missing for the year, returns default from settings.
         """
-        return 60
+        try:
+            return SummerVoucherConfiguration.objects.get(year=self.year).min_work_hours
+        except SummerVoucherConfiguration.DoesNotExist:
+            # TODO: Should a missing config be an error? Where should it be raised?
+            LOGGER.warning(
+                "No SummerVoucherConfiguration found for year %s",
+                self.year,
+            )
+            return settings.SUMMER_VOUCHER_DEFAULT_MIN_WORK_HOURS
 
     @staticmethod
     def min_work_compensation_in_euros_in_year(year: int) -> int:
         """
         Minimum work compensation for summer job in euros in given year.
+        If configuration is missing for the year, returns default from settings.
         """
-        return 400 if year < 2024 else 500
+        try:
+            return SummerVoucherConfiguration.objects.get(
+                year=year
+            ).min_work_compensation_in_euros
+        except SummerVoucherConfiguration.DoesNotExist:
+            # TODO: Should a missing config be an error? Where should it be raised?
+            LOGGER.warning(
+                "No SummerVoucherConfiguration found for year %s",
+                year,
+            )
+            return settings.SUMMER_VOUCHER_DEFAULT_MIN_WORK_COMPENSATION
 
     @property
     def min_work_compensation_in_euros(self) -> int:
@@ -1241,7 +1312,7 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         blank=True,
         verbose_name=_("summer voucher target group"),
         help_text=_("Summer voucher's target group type"),
-        choices=SummerVoucherExceptionReason.choices,
+        choices=get_target_group_choices(),
     )
 
     employee_name = models.CharField(
