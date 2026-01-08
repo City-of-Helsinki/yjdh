@@ -93,15 +93,17 @@ class SummerVoucherConfigurationAdmin(admin.ModelAdmin):
 class SchoolAdmin(admin.ModelAdmin):
     list_display = [
         "name",
+        "alias",
         "created_at",
         "modified_at",
     ]
     list_filter = [
         "created_at",
         "modified_at",
+        ("alias", admin.EmptyFieldListFilter),
     ]
     date_hierarchy = "created_at"
-    search_fields = ["name"]
+    search_fields = ["name", "alias"]
 
 
 if apps.is_installed("django.contrib.admin"):

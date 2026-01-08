@@ -72,7 +72,18 @@ class School(TimeStampedModel, UUIDModel):
         max_length=256, unique=True, db_index=True, validators=[validate_name]
     )
 
+    alias = models.CharField(
+        max_length=256,
+        blank=True,
+        null=True,
+        help_text=_(
+            "Alias or secondary name for the school. Used internally e.g. in reports."
+        ),
+    )
+
     def __str__(self):
+        if self.alias:
+            return f"{self.name} ({self.alias})"
         return self.name
 
     class Meta:
