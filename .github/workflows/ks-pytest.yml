@@ -19,7 +19,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:13
+        image: postgres:17
         ports:
           - 5432:5432
         options: >-
