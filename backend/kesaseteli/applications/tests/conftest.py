@@ -10,6 +10,8 @@ from django.conf import settings
 from django.urls import clear_url_caches
 from langdetect import DetectorFactory
 
+from applications.target_groups import get_target_group_choices
+from applications.tests.factories import SummerVoucherConfigurationFactory
 from common.tests.conftest import *  # noqa
 
 
@@ -48,3 +50,17 @@ def enable_admin_urls(settings):
         importlib.reload(sys.modules["kesaseteli.urls"])
 
     clear_url_caches()
+
+
+@pytest.fixture(autouse=True)
+def seed_default_configuration_for_tests(db):
+    target_groups = [identifier for identifier, _ in get_target_group_choices()]
+    # Create config for years 2021-2027 to cover most test cases
+    for year in range(2021, 2028):
+        SummerVoucherConfigurationFactory(
+            year=year,
+            target_group=target_groups,
+            voucher_value_in_euros=325 if year < 2024 else 350,
+            min_work_compensation_in_euros=400 if year < 2024 else 500,
+            min_work_hours=60,
+        )
