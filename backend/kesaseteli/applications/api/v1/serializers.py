@@ -22,8 +22,10 @@ from applications.models import (
     EmployerApplication,
     EmployerSummerVoucher,
     School,
+    SummerVoucherConfiguration,
     YouthApplication,
 )
+from applications.target_groups import get_target_group_class
 from common.permissions import HandlerPermission
 from companies.api.v1.serializers import CompanySerializer
 from companies.services import get_or_create_company_using_organization_roles
@@ -444,6 +446,29 @@ class SchoolSerializer(serializers.ModelSerializer):
         model = School
         fields = ["name"]
         read_only_fields = ["name"]
+
+
+class SummerVoucherConfigurationSerializer(serializers.ModelSerializer):
+    target_group_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SummerVoucherConfiguration
+        fields = [
+            "year",
+            "voucher_value_in_euros",
+            "min_work_compensation_in_euros",
+            "min_work_hours",
+            "target_group_name",
+            "target_group",
+        ]
+
+    def get_target_group_name(self, obj):
+        names = []
+        for identifier in obj.target_group:
+            target_class = get_target_group_class(identifier)
+            if target_class:
+                names.append(str(target_class().name))
+        return ", ".join(names)
 
 
 class YouthApplicationSerializer(serializers.ModelSerializer):

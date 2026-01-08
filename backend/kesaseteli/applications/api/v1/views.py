@@ -4,9 +4,8 @@ from functools import cached_property
 
 from django.conf import settings
 from django.core import exceptions
-from django.db import models, transaction
-from django.db.models import F, Func, Q
-from django.db.models.functions import Concat
+from django.db import transaction
+from django.db.models import F, Func
 from django.db.utils import ProgrammingError
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
@@ -36,6 +35,7 @@ from applications.api.v1.serializers import (
     EmployerSummerVoucherSerializer,
     NonVtjYouthApplicationSerializer,
     SchoolSerializer,
+    SummerVoucherConfigurationSerializer,
     YouthApplicationAdditionalInfoSerializer,
     YouthApplicationHandlingSerializer,
     YouthApplicationSerializer,
@@ -51,6 +51,7 @@ from applications.models import (
     EmployerApplication,
     EmployerSummerVoucher,
     School,
+    SummerVoucherConfiguration,
     YouthApplication,
 )
 from common.decorators import enforce_handler_view_adfs_login
@@ -262,7 +263,8 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
                 f'employer_summer_voucher_id="{employer_summer_voucher_id}", '
                 f'employee_name="{employee_name}" and '
                 f"summer_voucher_serial_number={voucher_number} "
-                "(POST used with CSRF as a GET). Found multiple matches. There should never be multiple matches!"
+                "(POST used with CSRF as a GET). Found multiple matches. "
+                "There should never be multiple matches!"
             )
             return Response(status=status.HTTP_409_CONFLICT)
         youth_application: YouthApplication = youth_applications.first()
@@ -805,3 +807,14 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
                 )
             instance.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class SummerVoucherConfigurationViewSet(ListAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = SummerVoucherConfigurationSerializer
+    queryset = SummerVoucherConfiguration.objects.all()
+
+    def get_queryset(self):
+        # We only want to return configuration for current and future years, or all.
+        # But commonly we just want to expose all configs so frontend can handle logic.
+        return super().get_queryset()
