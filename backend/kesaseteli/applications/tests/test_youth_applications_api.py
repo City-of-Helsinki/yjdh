@@ -13,6 +13,7 @@ import pytest
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.models import AnonymousUser
 from django.core import mail
+from django.template import Context, Template
 from django.test import override_settings
 from django.utils import timezone, translation
 from django.utils.html import strip_tags
@@ -24,11 +25,16 @@ from rest_framework.reverse import reverse
 from applications.api.v1.serializers import YouthApplicationSerializer
 from applications.enums import (
     AdditionalInfoUserReason,
+    EmailTemplateType,
     get_supported_languages,
     YouthApplicationRejectedReason,
     YouthApplicationStatus,
 )
-from applications.models import YouthApplication, YouthSummerVoucher
+from applications.models import (
+    EmailTemplate,
+    YouthApplication,
+    YouthSummerVoucher,
+)
 from applications.tests.data.mock_vtj import (
     mock_vtj_person_id_query_found_content,
     mock_vtj_person_id_query_not_found_content,
@@ -1462,9 +1468,10 @@ def test_youth_application_activation_email_sending(
         mock_fetch_vtj_json.assert_called_once()
     assert len(mail.outbox) == start_mail_count + 1
     activation_email = mail.outbox[-1]
-    assert activation_email.subject == YouthApplication.activation_email_subject(
-        language=language
-    )
+    expected_subject = EmailTemplate.objects.get(
+        type=EmailTemplateType.ACTIVATION, language=language
+    ).subject
+    assert activation_email.subject == expected_subject
     assert activation_email.from_email == "Test sender <testsender@hel.fi>"
     assert activation_email.to == [youth_application.email]
 
@@ -1491,10 +1498,10 @@ def test_youth_application_additional_info_request_email_sending(api_client, lan
         mock_fetch_vtj_json.assert_called_once()
     assert len(mail.outbox) == start_mail_count + 1
     additional_info_request_email = mail.outbox[-1]
-    assert (
-        additional_info_request_email.subject
-        == YouthApplication.additional_info_request_email_subject(language=language)
-    )
+    expected_subject = EmailTemplate.objects.get(
+        type=EmailTemplateType.ADDITIONAL_INFO_REQUEST, language=language
+    ).subject
+    assert additional_info_request_email.subject == expected_subject
     assert additional_info_request_email.from_email == "Test sender <testsender@hel.fi>"
     assert additional_info_request_email.to == [youth_application.email]
 
@@ -1559,7 +1566,18 @@ def test_youth_application_processing_email_sending_after_additional_info(
     )
     assert len(mail.outbox) == start_mail_count + 1
     processing_email = mail.outbox[-1]
-    assert processing_email.subject == youth_application.processing_email_subject()
+    template = EmailTemplate.objects.get(
+        type=EmailTemplateType.PROCESSING, language=youth_application.language
+    )
+    expected_subject = Template(template.subject).render(
+        Context(
+            {
+                "first_name": youth_application.first_name,
+                "last_name": youth_application.last_name,
+            }
+        )
+    )
+    assert processing_email.subject == expected_subject
     assert processing_email.from_email == "Test sender <testsender@hel.fi>"
     assert processing_email.to == ["Test handler <testhandler@hel.fi>"]
 
@@ -1651,12 +1669,13 @@ def test_youth_summer_voucher_email_sending(api_client, language):
     )
     assert len(mail.outbox) == start_mail_count + 1
     youth_summer_voucher_email = mail.outbox[-1]
-    assert (
-        youth_summer_voucher_email.subject
-        == acceptable_youth_application.youth_summer_voucher.email_subject(
-            language=language
-        )
+    template = EmailTemplate.objects.get(
+        type=EmailTemplateType.YOUTH_SUMMER_VOUCHER, language=language
     )
+    expected_subject = Template(template.subject).render(
+        Context({"year": acceptable_youth_application.youth_summer_voucher.year})
+    )
+    assert youth_summer_voucher_email.subject == expected_subject
     assert youth_summer_voucher_email.from_email == "Test sender <testsender@hel.fi>"
     assert youth_summer_voucher_email.to == [acceptable_youth_application.email]
     assert youth_summer_voucher_email.bcc == ["Test handler <testhandler@hel.fi>"]

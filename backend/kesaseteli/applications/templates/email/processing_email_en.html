@@ -1,0 +1,22 @@
+Youth Summer Voucher Application: {{ first_name }} {{ last_name }}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <p>The following person has applied for a summer voucher:</p>
+    <p>
+        {{ first_name }} {{ last_name }}<br>
+        Postcode: {{ postcode }}<br>
+        School: {{ school }}<br>
+        Phone number: {{ phone_number }}<br>
+        Email address: {{ email }}
+    </p>
+    <p><a href="{{ processing_link }}">{{ processing_link }}</a></p>
+</body>
+
+</html>

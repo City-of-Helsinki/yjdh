@@ -10,6 +10,7 @@ from django.conf import settings
 from django.urls import clear_url_caches
 from langdetect import DetectorFactory
 
+from applications.services import EmailTemplateService
 from applications.target_groups import get_target_group_choices
 from applications.tests.factories import SummerVoucherConfigurationFactory
 from common.tests.conftest import *  # noqa
@@ -64,3 +65,8 @@ def seed_default_configuration_for_tests(db):
             min_work_compensation_in_euros=400 if year < 2024 else 500,
             min_work_hours=60,
         )
+
+
+@pytest.fixture(autouse=True)
+def seed_email_templates(db):
+    EmailTemplateService.ensure_templates_exist()

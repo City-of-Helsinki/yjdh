@@ -206,3 +206,13 @@ class VtjTestCase(models.TextChoices):
     @staticmethod
     def first_name():
         return "VTJ-testi"
+
+
+class EmailTemplateType(models.TextChoices):
+    ACTIVATION = "activation", _("Activation")
+    ADDITIONAL_INFO_REQUEST = (
+        "additional_info_request",
+        _("Additional information request"),
+    )
+    PROCESSING = "processing", _("Processing")
+    YOUTH_SUMMER_VOUCHER = "youth_summer_voucher", _("Youth summer voucher")
