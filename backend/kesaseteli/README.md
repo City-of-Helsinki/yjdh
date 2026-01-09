@@ -33,6 +33,8 @@ Allow user to create test database
 * Set the `DEBUG` environment variable to `1`.
 * Run `python manage.py migrate`
 * Run `python manage.py compilemessages`
+* Run `python manage.py ensure_email_templates` (populates email templates)
+* Run `python manage.py setup_admin_permissions` (sets up admin permissions)
 * Run `python manage.py runserver 0:8000`
 
 The project is now running at [localhost:8000](https://localhost:8000)
@@ -96,3 +98,8 @@ env variables / settings are provided by Azure blob storage:
 - `AZURE_ACCOUNT_NAME`
 - `AZURE_ACCOUNT_KEY`
 - `AZURE_CONTAINER`
+
+## Documentation
+
+-   [Applications Module](applications/README.md): Documentation for Summer Voucher Configuration, Email Templates, Target Groups, and School Management.
+-   [Staff Admin Permissions](staff_admin_permissions/README.md): Documentation for handling staff user permissions and AD group mappings.
