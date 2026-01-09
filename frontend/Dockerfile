@@ -109,7 +109,7 @@ RUN rm -rf $PROJECT/$FOLDER/node_modules \
            node_modules
 
 # Install production dependencies
-RUN --mount=type=cache,target=/app/.yarn_cache,sharing=locked YARN_CACHE_FOLDER=/app/.yarn_cache yarn install --production --check-files --ignore-scripts --prefer-offline && yarn cache clean --force
+RUN --mount=type=cache,target=/app/.yarn_cache,sharing=locked YARN_CACHE_FOLDER=/app/.yarn_cache yarn install --production --check-files --frozen-lockfile --ignore-scripts --prefer-offline && yarn cache clean --force
 
 # Change ownership to default:root to ensure accessibility
 RUN chown -R default:root /app
