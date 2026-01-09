@@ -15,11 +15,10 @@ from django.core.validators import MinValueValidator
 from django.db import models, transaction
 from django.db.models import F, Q
 from django.db.models.functions import Concat
-from django.template.loader import get_template
 from django.urls import reverse
 from django.utils import timezone, translation
-from django.utils.translation import gettext, pgettext
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import pgettext
 from encrypted_fields.fields import EncryptedCharField, SearchField
 from localflavor.generic.models import IBANField
 from requests.exceptions import ReadTimeout
@@ -29,6 +28,7 @@ from applications.enums import (
     APPLICATION_LANGUAGE_CHOICES,
     ATTACHMENT_CONTENT_TYPE_CHOICES,
     AttachmentType,
+    EmailTemplateType,
     EmployerApplicationStatus,
     HiredWithoutVoucherAssessment,
     VtjTestCase,
@@ -39,12 +39,13 @@ from applications.tests.data.mock_vtj import (
     mock_vtj_person_id_query_found_content,
     mock_vtj_person_id_query_not_found_content,
 )
+from applications.validators import validate_template_syntax
 from common.permissions import HandlerPermission
 from common.urls import handler_youth_application_processing_url
 from common.utils import (
     are_same_text_lists,
     are_same_texts,
-    send_mail_with_error_logging,
+    html_to_text,
     validate_optional_finnish_social_security_number,
 )
 from companies.models import Company
@@ -513,64 +514,6 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             >= settings.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS
         )
 
-    @staticmethod
-    def activation_email_subject(language):
-        with translation.override(language):
-            return gettext("Aktivoi Kesäseteli")
-
-    @staticmethod
-    def _activation_email_message(language, activation_link):
-        with translation.override(language):
-            return gettext(
-                "Aktivoi Kesäsetelisi vahvistamalla sähköpostiosoitteesi "
-                "klikkaamalla alla olevaa linkkiä:\n\n"
-                "%(activation_link)s\n\n"
-                "Ystävällisin terveisin, Kesäseteli-tiimi"
-            ) % {"activation_link": activation_link}
-
-    @staticmethod
-    def additional_info_request_email_subject(language):
-        with translation.override(language):
-            return gettext("Lisätietopyyntö")
-
-    @staticmethod
-    def _additional_info_request_email_message(language, activation_link):
-        with translation.override(language):
-            return gettext(
-                "Täydennäthän kesäsetelihakemuksesi tietoja alla olevasta linkistä:\n\n"
-                "%(activation_link)s\n\n"
-                "Kiitos! Ystävällisin terveisin, Kesäseteli-tiimi"
-            ) % {"activation_link": activation_link}
-
-    def processing_email_subject(self):
-        with translation.override("fi"):
-            return gettext("Nuoren kesäsetelihakemus: %(first_name)s %(last_name)s") % {
-                "first_name": self.first_name,
-                "last_name": self.last_name,
-            }
-
-    def _processing_email_message(self, processing_link):
-        with translation.override("fi"):
-            return gettext(
-                "Seuraava henkilö on pyytänyt Kesäseteliä:\n"
-                "\n"
-                "%(first_name)s %(last_name)s\n"
-                "Postinumero: %(postcode)s\n"
-                "Koulu: %(school)s\n"
-                "Puhelinnumero: %(phone_number)s\n"
-                "Sähköposti: %(email)s\n"
-                "\n"
-                "%(processing_link)s"
-            ) % {
-                "first_name": self.first_name,
-                "last_name": self.last_name,
-                "postcode": self.postcode,
-                "school": self.school,
-                "phone_number": self.phone_number,
-                "email": self.email,
-                "processing_link": processing_link,
-            }
-
     def send_additional_info_request_email(self, request, language) -> bool:
         """
         Send youth application's additional info request email with given
@@ -580,13 +523,12 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         :param language: The language to be used in the email
         :return: True if email was sent, otherwise False.
         """
-        return send_mail_with_error_logging(
-            subject=YouthApplication.additional_info_request_email_subject(language),
-            message=YouthApplication._additional_info_request_email_message(
-                language=language,
-                activation_link=self._activation_link(request),
-            ),
-            from_email=settings.DEFAULT_FROM_EMAIL,
+        from applications.services import EmailTemplateService
+
+        return EmailTemplateService.send_email_from_db_template(
+            template_type=EmailTemplateType.ADDITIONAL_INFO_REQUEST,
+            language=language,
+            context={"activation_link": self._activation_link(request)},
             recipient_list=[self.email],
             error_message=_(
                 "Unable to send youth application's additional info request email"
@@ -602,13 +544,12 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         :param language: The activation email language to be used
         :return: True if email was sent, otherwise False.
         """
-        return send_mail_with_error_logging(
-            subject=YouthApplication.activation_email_subject(language),
-            message=YouthApplication._activation_email_message(
-                language=language,
-                activation_link=self._activation_link(request),
-            ),
-            from_email=settings.DEFAULT_FROM_EMAIL,
+        from applications.services import EmailTemplateService
+
+        return EmailTemplateService.send_email_from_db_template(
+            template_type=EmailTemplateType.ACTIVATION,
+            language=language,
+            context={"activation_link": self._activation_link(request)},
             recipient_list=[self.email],
             error_message=_("Unable to send youth application's activation email"),
         )
@@ -620,10 +561,20 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         :param request: Request used for generating the processing link
         :return: True if email was sent, otherwise False.
         """
-        return send_mail_with_error_logging(
-            subject=self.processing_email_subject(),
-            message=self._processing_email_message(self._processing_link(request)),
-            from_email=settings.DEFAULT_FROM_EMAIL,
+        from applications.services import EmailTemplateService
+
+        return EmailTemplateService.send_email_from_db_template(
+            template_type=EmailTemplateType.PROCESSING,
+            language="fi",
+            context={
+                "first_name": self.first_name,
+                "last_name": self.last_name,
+                "postcode": self.postcode,
+                "school": self.school,
+                "phone_number": self.phone_number,
+                "email": self.email,
+                "processing_link": self._processing_link(request),
+            },
             recipient_list=[settings.HANDLER_EMAIL],
             error_message=_(
                 "Unable to send youth application's processing email to handler"
@@ -1025,10 +976,6 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     def year(self) -> int:
         return self.youth_application.created_at.year
 
-    def email_subject(self, language):
-        with translation.override(language):
-            return gettext("Vuoden %(year)s Kesäsetelisi") % {"year": self.year}
-
     @staticmethod
     def _template_image(filename, content_id) -> MIMEImage:
         source_folder = Path(__file__).resolve().parent / "templates" / "images"
@@ -1217,16 +1164,15 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
                     self.min_work_compensation_with_euro_sign
                 ),
             }
-            return send_mail_with_error_logging(
-                subject=self.email_subject(language),
-                message=get_template("youth_summer_voucher_email.txt").render(context),
-                from_email=settings.DEFAULT_FROM_EMAIL,
+            from applications.services import EmailTemplateService
+
+            return EmailTemplateService.send_email_from_db_template(
+                template_type=EmailTemplateType.YOUTH_SUMMER_VOUCHER,
+                language=language,
+                context=context,
                 recipient_list=recipient_list,
                 bcc=bcc,
                 error_message=_("Unable to send youth summer voucher email"),
-                html_message=get_template("youth_summer_voucher_email.html").render(
-                    context
-                ),
                 images=[
                     self.helsinki_logo(language=language),
                     self.youth_summer_voucher_logo(language=language),
@@ -1473,3 +1419,45 @@ class Attachment(UUIDModel, TimeStampedModel):
         verbose_name = _("attachment")
         verbose_name_plural = _("attachments")
         ordering = ["-summer_voucher__created_at", "attachment_type", "-created_at"]
+
+
+class EmailTemplate(TimeStampedModel, UUIDModel):
+    type = models.CharField(
+        max_length=64,
+        verbose_name=_("template type"),
+        choices=EmailTemplateType.choices,
+    )
+    language = models.CharField(
+        max_length=2,
+        verbose_name=_("language"),
+        choices=APPLICATION_LANGUAGE_CHOICES,
+    )
+    subject = models.CharField(
+        max_length=255,
+        verbose_name=_("subject"),
+        validators=[validate_template_syntax],
+    )
+    html_body = models.TextField(
+        verbose_name=_("HTML body"),
+        validators=[validate_template_syntax],
+    )
+    text_body = models.TextField(
+        verbose_name=_("text body"),
+        blank=True,
+        help_text=_("Text body will be auto-generated from HTML body."),
+        validators=[validate_template_syntax],
+    )
+
+    class Meta:
+        verbose_name = _("email template")
+        verbose_name_plural = _("email templates")
+        unique_together = ("type", "language")
+        ordering = ["type", "language"]
+
+    def __str__(self):
+        return f"{self.get_type_display()} ({self.get_language_display()})"
+
+    def save(self, *args, **kwargs):
+        # Always regenerate text body from HTML body
+        self.text_body = html_to_text(self.html_body)
+        super().save(*args, **kwargs)
