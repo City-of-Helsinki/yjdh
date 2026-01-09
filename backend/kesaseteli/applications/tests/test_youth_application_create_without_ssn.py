@@ -398,7 +398,8 @@ def test_valid_post_sends_finnish_plaintext_only_processing_email(
             get_processing_url(pk=response.json()["id"])
         )
     )
-    assert processing_email.alternatives == []  # No HTML version
+    assert len(processing_email.alternatives) == 1
+    assert processing_email.alternatives[0][1] == "text/html"
     assert processing_email.attachments == []
 
 

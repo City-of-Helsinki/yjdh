@@ -5,6 +5,28 @@ from django.core.exceptions import ValidationError
 
 from applications.api.v1.validators import validate_additional_info_user_reasons
 from applications.enums import AdditionalInfoUserReason
+from applications.validators import validate_template_syntax
+
+
+@pytest.mark.parametrize(
+    "template_string,expect_error",
+    [
+        ("Hello, world!", False),
+        ("Hello, {{ name }}!", False),
+        ("Hello, {% if name %}{{ name }}{% endif %}!", False),
+        ("Hello, {% if name %}{{ name }}", True),  # Unclosed if
+        (
+            "{% block content %}",
+            True,
+        ),  # Block without endblock (depends on context, but usually safe)
+    ],
+)
+def test_validate_template_syntax(template_string, expect_error):
+    if expect_error:
+        with pytest.raises(ValidationError):
+            validate_template_syntax(template_string)
+    else:
+        validate_template_syntax(template_string)
 
 
 @pytest.mark.parametrize(
