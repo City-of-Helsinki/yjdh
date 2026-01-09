@@ -1,0 +1,23 @@
+Nuoren kesäsetelihakemus: {{ first_name }} {{ last_name }}
+
+<!DOCTYPE html>
+<html lang="fi">
+
+<head>
+    <title>Nuoren kesäsetelihakemus</title>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <p>Seuraava henkilö on pyytänyt Kesäseteliä:</p>
+    <p>
+        {{ first_name }} {{ last_name }}<br>
+        Postinumero: {{ postcode }}<br>
+        Koulu: {{ school }}<br>
+        Puhelinnumero: {{ phone_number }}<br>
+        Sähköposti: {{ email }}
+    </p>
+    <p><a href="{{ processing_link }}">{{ processing_link }}</a></p>
+</body>
+
+</html>

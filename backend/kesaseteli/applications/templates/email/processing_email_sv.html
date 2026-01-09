@@ -1,0 +1,23 @@
+Ansökan om sommarsedel för ungdomar: {{ first_name }} {{ last_name }}
+
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <title>Ansökan om sommarsedel för ungdomar</title>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <p>Följande person har ansökt om en sommarsedel:</p>
+    <p>
+        {{ first_name }} {{ last_name }}<br>
+        Postnummer: {{ postcode }}<br>
+        Skola: {{ school }}<br>
+        Telefonnummer: {{ phone_number }}<br>
+        E-postadress: {{ email }}
+    </p>
+    <p><a href="{{ processing_link }}">{{ processing_link }}</a></p>
+</body>
+
+</html>

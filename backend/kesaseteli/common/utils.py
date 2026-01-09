@@ -1,4 +1,5 @@
 import logging
+import re
 from datetime import date
 from email.mime.image import MIMEImage
 from typing import List, Optional
@@ -6,6 +7,7 @@ from typing import List, Optional
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.utils import translation
+from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
 from stdnum.fi.hetu import is_valid as is_valid_finnish_social_security_number
 
@@ -148,3 +150,25 @@ def getattr_nested(obj, attrs: list):
             with translation.override("fi"):
                 value = getattr(obj, f"get_{attr}_display")()
         return value
+
+
+def html_to_text(html: str) -> str:
+    """
+    Convert HTML to text, removing the <head> section and normalizing whitespace.
+
+    - Removes <head>...</head> content (including title).
+    - Uses django.utils.html.strip_tags to remove other tags.
+    - Trims each line.
+    - Collapses 3 or more consecutive newlines into 2.
+    """
+    # Remove head section to avoid title text and leading whitespace
+    html_content = re.sub(
+        r"<head>.*?</head>", "", html, flags=re.DOTALL | re.IGNORECASE
+    )
+    text_content = strip_tags(html_content)
+
+    # Clean up lines
+    text_body = "\n".join(line.strip() for line in text_content.splitlines()).strip()
+
+    # Collapse excessive newlines (3 or more becomes 2)
+    return re.sub(r"\n{3,}", "\n\n", text_body)

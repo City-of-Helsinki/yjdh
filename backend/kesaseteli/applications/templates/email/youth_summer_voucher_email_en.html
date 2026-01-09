@@ -1,0 +1,101 @@
+Your {{ year }} Summer Job Voucher
+
+<!DOCTYPE html>
+<html lang="{{ language }}">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your {{ year }} Summer Job Voucher</title>
+</head>
+
+<body style="font-family: Arial, Helvetica, sans-serif;">
+    <table style="background-color:#f7f7f7;color:#191919;max-width:800px">
+        <caption>
+            Your Summer Job Voucher and instructions for its use
+        </caption>
+
+        <tr style="background-color:#e1f6ea;margin:0 0 0 0;padding:0 0 0 0">
+            <td colspan="2">
+                <img alt="Helsinki, Summer Job Voucher, {{ voucher_value_with_euro_sign }}"
+                    src="cid:youth_summer_voucher_logo">
+            </td>
+        </tr>
+
+        <tr style="background-color:#e1f6ea;margin-left:1em;margin-right:1em;padding-bottom:1em">
+            <td colspan="2">
+                <h2>Here is your Summer Job Voucher</h2>
+                <p>
+                    Here is your personal Summer Job Voucher.
+                    Check out the Summer Job Voucher website, which includes information about using the Summer Job
+                    Voucher, summer job hunting and jobs available.
+                    Kind regards, the Summer Job Voucher Team
+                </p>
+                <p>
+                    <strong>{{ first_name }} {{ last_name }}</strong><br />
+                    <strong>Summer Job Voucher number:</strong> {{ summer_voucher_serial_number }}<br />
+                    <strong>Summer Job Voucher’s amount:</strong> {{ voucher_value_with_euro_sign }}<br />
+                    <strong>Postal code:</strong> {{ postcode }}<br />
+                    <strong>School:</strong> {{ school }}<br />
+                    <strong>Phone number:</strong> {{ phone_number }}<br />
+                    <strong>Email address:</strong> {{ email }}<br />
+                </p>
+            </td>
+        </tr>
+
+        <tr style="padding-top:1em;margin-left:1em;margin-right:1em">
+            <td colspan="2">
+                <h2>Instructions for job-seekers</h2>
+                <p>
+                    The summer job voucher helps you find a summer job: last year, common job titles included those of a
+                    summer camp instructor, shelf stacker, restaurant helper, garden worker, childminder, web content
+                    producer and kiosk salesperson.
+                    Rarer summer jobs included game developing, audio editing and assisting at a leather workshop!
+                </p>
+                <p>
+                    When you have found a summer job and signed an employment contract, you can forward this email to
+                    the employer or give them the above Summer Job Voucher number.
+                </p>
+                <p>
+                    <strong>Working days and pay:</strong>
+                <ul>
+                    <li>Minimum requirement is {{ min_work_hours }} hours for minimum of {{ min_work_compensation_with_euro_sign }} 
+                        (for {{ min_work_hours }} working hours) salary if not
+                        the collective agreement state otherwise. On that the employer pays normal employer’s
+                        contributions, holiday compensation and if needed evening etc supplements.</li>
+                </ul>
+                </p>
+                <p>
+                    <a href="https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/for-summer-job-seekers/"
+                        style="color:#3675e5;text-decoration:underline">Read more</a>
+                </p>
+                <hr />
+                <h2>Instructions for employers</h2>
+                <p>
+                    The City of Helsinki will provide a reimbursement of {{ voucher_value_with_euro_sign }} to each
+                    employer who employed a young person with the summer job voucher between {{ summer_job_period_localized_string }}. 
+                    The reimbursement has to be applied before {{ employer_summer_voucher_application_end_date_localized_string }} 
+                    from the link found at the Summer Job Voucher´s webpage.
+                </p>
+                <p>
+                    Other terms of use can be read here:
+                    <a href="https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/for-employers/"
+                        style="color:#3675e5;text-decoration:underline">Read more</a>
+                </p>
+                <hr />
+            </td>
+        </tr>
+
+        <tr style="margin-left:1em;margin-right:1em">
+            <td style="text-align:left;margin-right:0">
+                <img alt="Helsinki" src="cid:helsinki_logo">
+            </td>
+            <td style="text-align:right;margin-left:0">
+                <a href="https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/"
+                    style="color:#191919;text-decoration:underline">nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/</a>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
