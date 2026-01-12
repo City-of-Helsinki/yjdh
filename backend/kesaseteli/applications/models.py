@@ -650,8 +650,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     def create_youth_summer_voucher(self) -> "YouthSummerVoucher":
         from applications.services import TargetGroupValidationService
 
-        service = TargetGroupValidationService()
-        target_group = service.get_associated_target_group(self)
+        target_group = TargetGroupValidationService.get_associated_target_group(self)
 
         return YouthSummerVoucher.objects.create(
             youth_application=self,
@@ -848,8 +847,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     def is_applicant_in_target_group(self) -> bool:
         from applications.services import TargetGroupValidationService
 
-        service = TargetGroupValidationService()
-        return service.is_applicant_in_target_group(self)
+        return TargetGroupValidationService.is_applicant_in_target_group(self)
 
     @property
     def can_accept_automatically(self) -> bool:
