@@ -103,3 +103,7 @@ env variables / settings are provided by Azure blob storage:
 
 -   [Applications Module](applications/README.md): Documentation for Summer Voucher Configuration, Email Templates, Target Groups, and School Management.
 -   [Staff Admin Permissions](staff_admin_permissions/README.md): Documentation for handling staff user permissions and AD group mappings.
+
+### Summer Voucher Configuration
+
+A `SummerVoucherConfiguration` for the current year is **required** for creating new `YouthApplication`s. If no configuration exists for the current year, the API will reject creation requests with a 400 Bad Request error.
