@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.18.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.17.1...benefit-applicant-v3.18.0) (2026-01-12)
+
+
+### Features
+
+* Use common ci wokflow for frontend HL-1637 ([#3778](https://github.com/City-of-Helsinki/yjdh/issues/3778)) ([c5dbf70](https://github.com/City-of-Helsinki/yjdh/commit/c5dbf7011bef2042f69d515908a45e571d74bf25))
+
 ## [3.17.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.17.0...benefit-applicant-v3.17.1) (2025-12-10)
 
 
