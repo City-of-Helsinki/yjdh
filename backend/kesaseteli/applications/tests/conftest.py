@@ -1,10 +1,13 @@
+import importlib
 import os
 import random
+import sys
 from datetime import timedelta
 
 import factory.random
 import pytest
 from django.conf import settings
+from django.urls import clear_url_caches
 from langdetect import DetectorFactory
 
 from common.tests.conftest import *  # noqa
@@ -34,3 +37,14 @@ def make_youth_application_activation_link_unexpired(settings):
     settings.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS = int(
         timedelta(days=365 * 100).total_seconds()
     )
+
+
+@pytest.fixture(autouse=True)
+def enable_admin_urls(settings):
+    settings.ENABLE_ADMIN = True
+
+    # Reload urls to pick up the new setting
+    if "kesaseteli.urls" in sys.modules:
+        importlib.reload(sys.modules["kesaseteli.urls"])
+
+    clear_url_caches()
