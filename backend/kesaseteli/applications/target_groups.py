@@ -55,6 +55,14 @@ class AbstractTargetGroup(ABC):
         Unique identifier for the target group (saved in database).
         """
 
+    @property
+    @abstractmethod
+    def description(self) -> str:
+        """
+        Description of the target group. Used to explain the target group to
+        the user in the admin panel.
+        """
+
     @abstractmethod
     def is_valid(self, application: "YouthApplication") -> bool:
         """
@@ -86,22 +94,20 @@ def get_target_group_choices() -> List[Tuple[str, str]]:
 class NinthGraderTargetGroup(AbstractTargetGroup):
     name = _("9. luokkalainen")
     identifier = "primary_target_group"
+    description = _("9th graders: 16 years old, MUST live in Helsinki.")
 
     def is_valid(self, application: "YouthApplication") -> bool:
         """
         9th graders: 16 years old, MUST live in Helsinki.
         """
-        # Age check: 16 years old
-        if self.get_age_by_year(application) != 16:
-            return False
-
-        # Municipality check: Must live in Helsinki
-        return application.is_helsinkian
+        # 16 years old and lives in Helsinki
+        return self.get_age_by_year(application) == 16 and application.is_helsinkian
 
 
 class UpperSecondaryFirstYearTargetGroup(AbstractTargetGroup):
     name = _("Toisen asteen ensimmäisen vuoden opiskelija")
     identifier = "secondary_target_group"
+    description = _("Upper secondary 1st year: 17 years old, MUST live in Helsinki.")
 
     def is_valid(self, application: "YouthApplication") -> bool:
         """
@@ -111,12 +117,8 @@ class UpperSecondaryFirstYearTargetGroup(AbstractTargetGroup):
         School attendance in Helsinki for non-residents requires manual check,
         so is_valid returns False here).
         """
-        # Age check: 17 years old
-        if self.get_age_by_year(application) != 17:
-            return False
-
-        # Municipality check: Must live in Helsinki
-        return application.is_helsinkian
+        # 17 years old and lives in Helsinki
+        return self.get_age_by_year(application) == 17 and application.is_helsinkian
 
 
 def get_target_group_class(identifier: str) -> type[AbstractTargetGroup] | None:

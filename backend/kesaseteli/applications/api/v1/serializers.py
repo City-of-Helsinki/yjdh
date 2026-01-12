@@ -450,6 +450,7 @@ class SchoolSerializer(serializers.ModelSerializer):
 
 class SummerVoucherConfigurationSerializer(serializers.ModelSerializer):
     target_group_name = serializers.SerializerMethodField()
+    target_group_description = serializers.SerializerMethodField()
 
     class Meta:
         model = SummerVoucherConfiguration
@@ -459,6 +460,7 @@ class SummerVoucherConfigurationSerializer(serializers.ModelSerializer):
             "min_work_compensation_in_euros",
             "min_work_hours",
             "target_group_name",
+            "target_group_description",
             "target_group",
         ]
 
@@ -469,6 +471,22 @@ class SummerVoucherConfigurationSerializer(serializers.ModelSerializer):
             if target_class:
                 names.append(str(target_class().name))
         return ", ".join(names)
+
+    def get_target_group_description(self, obj):
+        """
+        Return a dictionary mapping target group names to their descriptions.
+
+        Example:
+            {
+                "9. luokkalainen": "9th graders: 16 years old, MUST live in Helsinki."
+            }
+        """
+        descriptions = {}
+        for identifier in obj.target_group:
+            target_class = get_target_group_class(identifier)
+            if target_class:
+                descriptions[str(target_class().name)] = str(target_class().description)
+        return descriptions
 
 
 class YouthApplicationSerializer(serializers.ModelSerializer):
@@ -499,9 +517,7 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
                 year=timezone.now().year
             ).exists():
                 raise serializers.ValidationError(
-                    _(
-                        "Summer voucher configuration for the current year does not exist"
-                    )
+                    _("Summer voucher configuration for current year does not exist")
                 )
 
         return data
@@ -691,9 +707,7 @@ class NonVtjYouthApplicationSerializer(serializers.ModelSerializer):
                 year=timezone.now().year
             ).exists():
                 raise serializers.ValidationError(
-                    _(
-                        "Summer voucher configuration for the current year does not exist"
-                    )
+                    _("Summer voucher configuration for current year does not exist")
                 )
 
         return data
