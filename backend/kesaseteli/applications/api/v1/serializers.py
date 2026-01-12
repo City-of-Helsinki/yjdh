@@ -484,8 +484,26 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, data):
+        """
+        Validate data.
+
+        NOTE:
+            - Checks that a SummerVoucherConfiguration exists for the current year.
+            - This check is only performed during creation (self.instance is None).
+        """
         data = super().validate(data)
         self.validate_social_security_number(data.get("social_security_number", None))
+
+        if self.instance is None:  # Creation only
+            if not SummerVoucherConfiguration.objects.filter(
+                year=timezone.now().year
+            ).exists():
+                raise serializers.ValidationError(
+                    _(
+                        "Summer voucher configuration for the current year does not exist"
+                    )
+                )
+
         return data
 
     def to_internal_value(self, data):
@@ -654,12 +672,30 @@ class NonVtjYouthApplicationSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, data):
+        """
+        Validate data.
+
+        NOTE:
+            - Checks that a SummerVoucherConfiguration exists for the current year.
+            - This check is only performed during creation (self.instance is None).
+        """
         data = super().validate(data)
         self.validate_additional_info_description(
             data.get("additional_info_description", None)
         )
         self.validate_language(data.get("language", None))
         self.validate_non_vtj_birthdate(data.get("non_vtj_birthdate", None))
+
+        if self.instance is None:  # Creation only
+            if not SummerVoucherConfiguration.objects.filter(
+                year=timezone.now().year
+            ).exists():
+                raise serializers.ValidationError(
+                    _(
+                        "Summer voucher configuration for the current year does not exist"
+                    )
+                )
+
         return data
 
     def to_internal_value(self, data):
