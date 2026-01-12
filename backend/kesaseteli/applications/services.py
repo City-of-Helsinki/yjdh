@@ -20,9 +20,8 @@ LOGGER = logging.getLogger(__name__)
 
 
 class TargetGroupValidationService:
-    def get_associated_target_group(
-        self, application: "YouthApplication"
-    ) -> str | None:
+    @staticmethod
+    def get_associated_target_group(application: "YouthApplication") -> str | None:
         """
         Return the identifier of the first matching target group if the applicant
         belongs to any of the enabled target groups for the application's year.
@@ -52,12 +51,16 @@ class TargetGroupValidationService:
 
         return None
 
-    def is_applicant_in_target_group(self, application: "YouthApplication") -> bool:
+    @staticmethod
+    def is_applicant_in_target_group(application: "YouthApplication") -> bool:
         """
         Check if the applicant belongs to any of the enabled target groups for the
         application's year.
         """
-        return self.get_associated_target_group(application) is not None
+        return (
+            TargetGroupValidationService.get_associated_target_group(application)
+            is not None
+        )
 
 
 class EmailTemplateService:
