@@ -596,13 +596,23 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def create_without_ssn(self, request, *args, **kwargs) -> HttpResponse:
         """
         Create a YouthApplication without a social security number.
+
+        NOTE:
+            - Handles request.data conversion from QueryDict to dict to ensure
+              JSONField (additional_info_user_reasons) values are handled correctly
+              as lists, preventing "Invalid JSON" validation errors.
         """
         try:
             data = request.data.copy()
+            if hasattr(data, "dict"):
+                data = data.dict()
+
             data["is_unlisted_school"] = True
             data["receipt_confirmed_at"] = timezone.now()
             data["additional_info_provided_at"] = timezone.now()
-            data["additional_info_user_reasons"] = [AdditionalInfoUserReason.OTHER]
+            data["additional_info_user_reasons"] = [
+                AdditionalInfoUserReason.OTHER.value
+            ]
             data["status"] = YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED
             data["creator"] = request.user.id
             data["handler"] = None
