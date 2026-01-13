@@ -12,7 +12,7 @@ asgiref==3.11.0
     #   django-cors-headers
 asttokens==3.0.1
     # via stack-data
-azure-core==1.37.0
+azure-core==1.38.0
     # via
     #   azure-storage-blob
     #   django-storages
