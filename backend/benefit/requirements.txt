@@ -16,7 +16,7 @@ attrs==25.4.0
     #   referencing
 authlib==1.6.5
     # via drf-oidc-auth
-azure-core==1.36.0
+azure-core==1.38.0
     # via
     #   azure-storage-blob
     #   django-storages
