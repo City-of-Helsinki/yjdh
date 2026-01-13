@@ -8,10 +8,17 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import path, reverse
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
 
-from applications.models import EmailTemplate, School, SummerVoucherConfiguration
+from applications.models import (
+    EmailTemplate,
+    School,
+    SummerVoucherConfiguration,
+    YouthApplication,
+    YouthSummerVoucher,
+)
 from applications.services import EmailTemplateService
 from applications.target_groups import get_target_group_choices
 
@@ -250,7 +257,172 @@ class EmailTemplateAdmin(admin.ModelAdmin):
         )
 
 
+class SchoolFilter(admin.SimpleListFilter):
+    title = _("school")
+    parameter_name = "school"
+
+    def lookups(self, request, model_admin):
+        schools = School.objects.values_list("name", flat=True).order_by("name")
+        return [(school, school) for school in schools]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(school=self.value())
+        return queryset
+
+
+class IsValidSchoolFilter(admin.SimpleListFilter):
+    title = _("is in school list")
+    parameter_name = "is_valid_school"
+
+    def lookups(self, request, model_admin):
+        return (
+            ("yes", _("Yes")),
+            ("no", _("No")),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == "yes":
+            return queryset.filter(
+                school__in=School.objects.values_list("name", flat=True)
+            )
+        if self.value() == "no":
+            return queryset.exclude(
+                school__in=School.objects.values_list("name", flat=True)
+            )
+        return queryset
+
+
+class YouthApplicationAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "first_name",
+        "last_name",
+        "masked_social_security_number",
+        "school",
+        "is_valid_school",
+        "status",
+        "created_at",
+        "modified_at",
+    ]
+    list_filter = [
+        "created_at",
+        "modified_at",
+        "status",
+        IsValidSchoolFilter,
+        SchoolFilter,
+    ]
+    date_hierarchy = "created_at"
+    search_fields = [
+        "id",
+        "first_name",
+        "last_name",
+        "school",
+    ]
+
+    # A custom field to list contact info fields
+    # This is used to determine which fields should be readonly
+    contact_info_fields = [
+        "first_name",
+        "last_name",
+        "email",
+        "phone_number",
+        "postcode",
+        "school",
+        "is_unlisted_school",
+        "language",
+    ]
+
+    def is_valid_school(self, obj):
+        return School.objects.filter(name=obj.school).exists()
+
+    is_valid_school.boolean = True
+    # The school list changes in time, so we can test only whether the value is
+    # currently in school list.
+    is_valid_school.short_description = _("is in current school list")
+
+    def masked_social_security_number(self, obj):
+        """Mask social security number for display."""
+        if obj.social_security_number:
+            return "******" + obj.social_security_number[-4:]
+        return ""
+
+    masked_social_security_number.short_description = _("social security number")
+
+    def get_readonly_fields(self, request, obj=None):
+        """Make contact info fields readonly."""
+        if obj:
+            return [
+                f.name
+                for f in self.model._meta.fields
+                if f.name not in self.contact_info_fields
+            ]
+        return super().get_readonly_fields(request, obj)
+
+    def has_add_permission(self, request):
+        """Disable adding new applications."""
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        """Disable deleting applications."""
+        return False
+
+
+class YouthSummerVoucherAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "summer_voucher_serial_number",
+        "target_group",
+        "youth_application_link",
+        "masked_social_security_number",
+        "youth_application__email",
+        "youth_application__phone_number",
+        "created_at",
+        "modified_at",
+    ]
+    list_filter = [
+        "target_group",
+        "created_at",
+        "modified_at",
+    ]
+    date_hierarchy = "created_at"
+    search_fields = [
+        "youth_application__first_name",
+        "youth_application__last_name",
+        "youth_application__email",
+        "youth_application__phone_number",
+        "summer_voucher_serial_number",
+        "id",
+    ]
+    autocomplete_fields = [
+        "youth_application",
+    ]
+
+    def queryset(self, request):
+        return super().queryset(request).select_related("youth_application")
+
+    def masked_social_security_number(self, obj):
+        """Mask social security number for display."""
+        if obj.youth_application.social_security_number:
+            return "******" + obj.youth_application.social_security_number[-4:]
+        return ""
+
+    masked_social_security_number.short_description = _("social security number")
+
+    def youth_application_link(self, obj):
+        url = reverse(
+            "admin:applications_youthapplication_change",
+            args=[obj.youth_application.id],
+        )
+        link_text = obj.youth_application.name or obj.youth_application.email
+        return mark_safe(f'<a href="{url}">{link_text}</a>')
+
+    youth_application_link.short_description = _("youth application")
+
+
 if apps.is_installed("django.contrib.admin"):
     admin.site.register(SummerVoucherConfiguration, SummerVoucherConfigurationAdmin)
     admin.site.register(School, SchoolAdmin)
     admin.site.register(EmailTemplate, EmailTemplateAdmin)
+    admin.site.register(YouthApplication, YouthApplicationAdmin)
+    admin.site.register(YouthSummerVoucher, YouthSummerVoucherAdmin)
