@@ -19,3 +19,11 @@ class Company(UUIDModel):
     city = models.CharField(max_length=256, blank=True, verbose_name=_("city"))
 
     ytj_json = models.JSONField(blank=True, null=True, verbose_name=_("ytj json"))
+
+    class Meta:
+        verbose_name = _("company")
+        verbose_name_plural = _("companies")
+        ordering = ["name"]
+
+    def __str__(self):
+        return f"{self.name} ({self.business_id})"
