@@ -1,4 +1,5 @@
 import logging
+from itertools import chain
 
 from django import forms
 from django.apps import apps
@@ -14,6 +15,8 @@ from django.utils.translation import ngettext
 
 from applications.models import (
     EmailTemplate,
+    EmployerApplication,
+    EmployerSummerVoucher,
     School,
     SummerVoucherConfiguration,
     YouthApplication,
@@ -299,9 +302,9 @@ class YouthApplicationAdmin(admin.ModelAdmin):
         "first_name",
         "last_name",
         "masked_social_security_number",
+        "status",
         "school",
         "is_valid_school",
-        "status",
         "created_at",
         "modified_at",
     ]
@@ -420,9 +423,152 @@ class YouthSummerVoucherAdmin(admin.ModelAdmin):
     youth_application_link.short_description = _("youth application")
 
 
+class EmployerApplicationAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "company__name",
+        "status",
+        "user__first_name",
+        "user__last_name",
+        "created_at",
+        "modified_at",
+    ]
+    list_filter = [
+        "status",
+        "created_at",
+        "modified_at",
+    ]
+    date_hierarchy = "created_at"
+    search_fields = [
+        "company__name",
+        "id",
+        "user__first_name",
+        "user__last_name",
+    ]
+    autocomplete_fields = ["company", "user"]
+    readonly_fields = [
+        "company",
+        "user",
+        "created_at",
+        "modified_at",
+    ]
+
+    def has_add_permission(self, request):
+        """Disable adding new applications."""
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        """Disable deleting applications."""
+        return False
+
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .select_related("company")
+            .select_related("user")
+        )
+
+
+class EmployerSummerVoucherAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "summer_voucher_serial_number",
+        "target_group",
+        "application__company__name",
+        "created_at",
+        "modified_at",
+    ]
+    list_filter = [
+        "target_group",
+        "created_at",
+        "modified_at",
+    ]
+    date_hierarchy = "created_at"
+    search_fields = [
+        "summer_voucher_serial_number",
+        "id",
+        "application__company__name",
+    ]
+    autocomplete_fields = ["application"]
+    readonly_fields = [
+        "summer_voucher_serial_number",
+        "target_group",
+        "application",
+        "masked_employee_ssn",
+        "created_at",
+        "modified_at",
+    ]
+    exclude = ["employee_ssn"]
+
+    # custom property to list employee related fields.
+    employee_fields = [
+        "masked_employee_ssn",
+        "employee_name",
+        "employee_school",
+        "employee_phone_number",
+        "employee_home_city",
+        "employee_postcode",
+    ]
+    # custom property to list timestamp base model fields
+    time_fields = ["created_at", "modified_at"]
+
+    def get_fieldsets(self, request, obj=None):
+        """
+        Custom fieldsets to group fields.
+
+        This method groups fields into three sections:
+        1. First section: All fields that are not excluded, employee related,
+        or timestamp related.
+        2. Employee section: All employee related fields.
+        3. Timestamp section: All timestamp related fields.
+        """
+        admin_fields = self.get_fields(request, obj)
+        first_section_fields = [
+            field
+            for field in admin_fields
+            if field
+            not in list(chain(self.exclude, self.employee_fields, self.time_fields))
+        ]
+        return [
+            (
+                None,
+                {"fields": first_section_fields},
+            ),
+            (_("Employee"), {"fields": self.employee_fields}),
+            (_("Timestamps"), {"fields": self.time_fields}),
+        ]
+
+    def has_add_permission(self, request):
+        """Disable adding new employer summer vouchers."""
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        """Disable deleting employer summer vouchers."""
+        return False
+
+    def queryset(self, request):
+        return (
+            super()
+            .queryset(request)
+            .select_related("application")
+            .select_related("application__company")
+        )
+
+    def masked_employee_ssn(self, obj):
+        """Mask employee social security number for display."""
+        if obj.employee_ssn:
+            return "******" + obj.employee_ssn[-4:]
+        return ""
+
+    masked_employee_ssn.short_description = _("employee social security number")
+
+
 if apps.is_installed("django.contrib.admin"):
     admin.site.register(SummerVoucherConfiguration, SummerVoucherConfigurationAdmin)
     admin.site.register(School, SchoolAdmin)
     admin.site.register(EmailTemplate, EmailTemplateAdmin)
     admin.site.register(YouthApplication, YouthApplicationAdmin)
     admin.site.register(YouthSummerVoucher, YouthSummerVoucherAdmin)
+    admin.site.register(EmployerApplication, EmployerApplicationAdmin)
+    admin.site.register(EmployerSummerVoucher, EmployerSummerVoucherAdmin)
