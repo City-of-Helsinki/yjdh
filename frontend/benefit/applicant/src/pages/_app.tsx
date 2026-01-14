@@ -4,7 +4,6 @@ import 'benefit-shared/styles/app.css';
 import 'hds-design-tokens';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-import init from '@socialgouv/matomo-next';
 import AuthProvider from 'benefit/applicant/auth/AuthProvider';
 import Layout from 'benefit/applicant/components/layout/Layout';
 import AppContextProvider from 'benefit/applicant/context/AppContextProvider';
@@ -24,6 +23,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import BaseApp from 'shared/components/app/BaseApp';
 import isServerSide from 'shared/server/is-server-side';
+import { initMatomo, trackPageView } from 'shared/utils/matomo';
 
 import { ROUTES } from '../constants';
 
@@ -49,8 +49,7 @@ const App: React.FC<AppProps> = (appProps) => {
 
   useEffect(() => {
     if (MATOMO_ENABLED === 'true' && MATOMO_URL && MATOMO_SITE_ID) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      init({
+      initMatomo({
         jsTrackerFile: MATOMO_JS_TRACKER_FILE,
         phpTrackerFile: MATOMO_PHP_TRACKER_FILE,
         url: MATOMO_URL,
@@ -58,6 +57,13 @@ const App: React.FC<AppProps> = (appProps) => {
       });
     }
   }, []);
+
+  // Track page views on route changes
+  useEffect(() => {
+    if (MATOMO_ENABLED === 'true') {
+      trackPageView();
+    }
+  }, [router.asPath]);
 
   const showCookieBanner =
     process.env.NEXT_PUBLIC_SHOW_COOKIE_BANNER === '1' &&
