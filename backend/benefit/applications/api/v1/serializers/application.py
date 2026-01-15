@@ -981,15 +981,15 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
     ):
         if status == ApplicationStatus.DRAFT:
             return
+
         if (
-            pay_subsidy_granted == PaySubsidyGranted.NOT_GRANTED
-            and apprenticeship_program not in [None, False]
+            pay_subsidy_granted in [PaySubsidyGranted.NOT_GRANTED]
+            and apprenticeship_program is None
         ):
             raise serializers.ValidationError(
                 {
                     "apprenticeship_program": _(
-                        "Apprenticeship program can not be selected if there is no"
-                        " granted pay subsidy"
+                        "Apprenticeship program has to be yes or no"
                     )
                 }
             )
