@@ -97,7 +97,12 @@ env variables / settings are provided by Azure blob storage:
 
 - `AZURE_ACCOUNT_NAME`
 - `AZURE_ACCOUNT_KEY`
-- `AZURE_CONTAINER`
+
+## Environment Variables
+
+| Variable | Description |
+| :--- | :--- |
+| `PASSWORD_LOGIN_DISABLED` | A boolean value. If set to True, disables username/password login in the admin site. Default is False. |
 
 ## Documentation
 

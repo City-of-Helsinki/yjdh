@@ -215,7 +215,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 INSTALLED_APPS = [
     "django.contrib.auth",
-    "django.contrib.admin",
+    "kesaseteli.admin_site.KesaseteliAdminConfig",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -699,3 +699,5 @@ AUTO_ASSIGN_ADMIN_TO_STAFF = env.bool(
 SUMMER_VOUCHER_DEFAULT_VOUCHER_VALUE = 350
 SUMMER_VOUCHER_DEFAULT_MIN_WORK_COMPENSATION = 500
 SUMMER_VOUCHER_DEFAULT_MIN_WORK_HOURS = 60
+
+PASSWORD_LOGIN_DISABLED = env.bool("PASSWORD_LOGIN_DISABLED", default=False)
