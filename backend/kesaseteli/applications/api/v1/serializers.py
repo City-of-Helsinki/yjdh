@@ -22,8 +22,10 @@ from applications.models import (
     EmployerApplication,
     EmployerSummerVoucher,
     School,
+    SummerVoucherConfiguration,
     YouthApplication,
 )
+from applications.target_groups import get_target_group_class
 from common.permissions import HandlerPermission
 from companies.api.v1.serializers import CompanySerializer
 from companies.services import get_or_create_company_using_organization_roles
@@ -446,6 +448,47 @@ class SchoolSerializer(serializers.ModelSerializer):
         read_only_fields = ["name"]
 
 
+class SummerVoucherConfigurationSerializer(serializers.ModelSerializer):
+    target_group_name = serializers.SerializerMethodField()
+    target_group_description = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SummerVoucherConfiguration
+        fields = [
+            "year",
+            "voucher_value_in_euros",
+            "min_work_compensation_in_euros",
+            "min_work_hours",
+            "target_group_name",
+            "target_group_description",
+            "target_group",
+        ]
+
+    def get_target_group_name(self, obj):
+        names = []
+        for identifier in obj.target_group:
+            target_class = get_target_group_class(identifier)
+            if target_class:
+                names.append(str(target_class().name))
+        return ", ".join(names)
+
+    def get_target_group_description(self, obj):
+        """
+        Return a dictionary mapping target group names to their descriptions.
+
+        Example:
+            {
+                "9. luokkalainen": "9th graders: 16 years old, MUST live in Helsinki."
+            }
+        """
+        descriptions = {}
+        for identifier in obj.target_group:
+            target_class = get_target_group_class(identifier)
+            if target_class:
+                descriptions[str(target_class().name)] = str(target_class().description)
+        return descriptions
+
+
 class YouthApplicationSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         self.hide_vtj_data = kwargs.pop("hide_vtj_data", False)
@@ -459,8 +502,24 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, data):
+        """
+        Validate data.
+
+        NOTE:
+            - Checks that a SummerVoucherConfiguration exists for the current year.
+            - This check is only performed during creation (self.instance is None).
+        """
         data = super().validate(data)
         self.validate_social_security_number(data.get("social_security_number", None))
+
+        if self.instance is None:  # Creation only
+            if not SummerVoucherConfiguration.objects.filter(
+                year=timezone.now().year
+            ).exists():
+                raise serializers.ValidationError(
+                    _("Summer voucher configuration for current year does not exist")
+                )
+
         return data
 
     def to_internal_value(self, data):
@@ -629,12 +688,28 @@ class NonVtjYouthApplicationSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, data):
+        """
+        Validate data.
+
+        NOTE:
+            - Checks that a SummerVoucherConfiguration exists for the current year.
+            - This check is only performed during creation (self.instance is None).
+        """
         data = super().validate(data)
         self.validate_additional_info_description(
             data.get("additional_info_description", None)
         )
         self.validate_language(data.get("language", None))
         self.validate_non_vtj_birthdate(data.get("non_vtj_birthdate", None))
+
+        if self.instance is None:  # Creation only
+            if not SummerVoucherConfiguration.objects.filter(
+                year=timezone.now().year
+            ).exists():
+                raise serializers.ValidationError(
+                    _("Summer voucher configuration for current year does not exist")
+                )
+
         return data
 
     def to_internal_value(self, data):

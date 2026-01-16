@@ -4,9 +4,8 @@ from functools import cached_property
 
 from django.conf import settings
 from django.core import exceptions
-from django.db import models, transaction
-from django.db.models import F, Func, Q
-from django.db.models.functions import Concat
+from django.db import transaction
+from django.db.models import F, Func
 from django.db.utils import ProgrammingError
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
@@ -22,6 +21,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_UPDATE_STATUSES,
@@ -36,6 +36,7 @@ from applications.api.v1.serializers import (
     EmployerSummerVoucherSerializer,
     NonVtjYouthApplicationSerializer,
     SchoolSerializer,
+    SummerVoucherConfigurationSerializer,
     YouthApplicationAdditionalInfoSerializer,
     YouthApplicationHandlingSerializer,
     YouthApplicationSerializer,
@@ -51,8 +52,10 @@ from applications.models import (
     EmployerApplication,
     EmployerSummerVoucher,
     School,
+    SummerVoucherConfiguration,
     YouthApplication,
 )
+from applications.target_groups import AbstractTargetGroup
 from common.decorators import enforce_handler_view_adfs_login
 from common.permissions import HandlerPermission
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
@@ -113,6 +116,20 @@ class SchoolListView(ListAPIView):
     def get_permissions(self):
         permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
+
+
+class TargetGroupListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, format=None):
+        data = [
+            {
+                "id": cls().identifier,
+                "name": cls().name,
+            }
+            for cls in AbstractTargetGroup.__subclasses__()
+        ]
+        return Response(data)
 
 
 class YouthApplicationViewSet(AuditLoggingModelViewSet):
@@ -240,34 +257,8 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         if employer_summer_vouchers.count() != 1:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        youth_applications = (
-            self.queryset.accepted()
-            .filter(youth_summer_voucher__summer_voucher_serial_number=voucher_number)
-            .annotate(
-                employee_name=models.Value(
-                    employee_name, output_field=models.CharField()
-                )
-            )
-            .annotate(
-                last_name_with_leading_space=Concat(
-                    models.Value(" "), "last_name", output_field=models.CharField()
-                )
-            )
-            .annotate(
-                last_name_with_trailing_space=Concat(
-                    "last_name", models.Value(" "), output_field=models.CharField()
-                )
-            )
-            # If last_name is "Doe" then it matches e.g.
-            # employee_name "John Doe", "Doe John", "Doe", "Mary Doe", "Doe Mary":
-            #
-            # NOTE: The trailing and leading spaces are needed in order not to match
-            # e.g. last_name of "Korhonen" with employee_name of "N" or "Nen".
-            .filter(
-                Q(employee_name__iexact=F("last_name"))
-                | Q(employee_name__istartswith=F("last_name_with_trailing_space"))
-                | Q(employee_name__iendswith=F("last_name_with_leading_space"))
-            )
+        youth_applications = self.queryset.accepted().filter_by_voucher_and_fuzzy_name(
+            voucher_number=voucher_number, employee_name=employee_name
         )
         if not youth_applications.exists():
             with self.record_action(
@@ -282,7 +273,19 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             ):
                 return Response(status=status.HTTP_404_NOT_FOUND)
         elif youth_applications.count() > 1:
-            return Response(status=status.HTTP_409_CONFLICT)  # Should never happen
+            # Should never happen
+            with self.record_action(
+                target=YouthApplication,
+                additional_information=(
+                    "YouthApplicationViewSet.fetch_employee_data called with "
+                    f'employer_summer_voucher_id="{employer_summer_voucher_id}", '
+                    f'employee_name="{employee_name}" and '
+                    f"summer_voucher_serial_number={voucher_number} "
+                    "(POST used with CSRF as a GET). Found multiple matches. "
+                    "There should never be multiple matches!"
+                ),
+            ):
+                return Response(status=status.HTTP_409_CONFLICT)
         youth_application: YouthApplication = youth_applications.first()
 
         with self.record_action(
@@ -593,13 +596,23 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def create_without_ssn(self, request, *args, **kwargs) -> HttpResponse:
         """
         Create a YouthApplication without a social security number.
+
+        NOTE:
+            - Handles request.data conversion from QueryDict to dict to ensure
+              JSONField (additional_info_user_reasons) values are handled correctly
+              as lists, preventing "Invalid JSON" validation errors.
         """
         try:
             data = request.data.copy()
+            if hasattr(data, "dict"):
+                data = data.dict()
+
             data["is_unlisted_school"] = True
             data["receipt_confirmed_at"] = timezone.now()
             data["additional_info_provided_at"] = timezone.now()
-            data["additional_info_user_reasons"] = [AdditionalInfoUserReason.OTHER]
+            data["additional_info_user_reasons"] = [
+                AdditionalInfoUserReason.OTHER.value
+            ]
             data["status"] = YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED
             data["creator"] = request.user.id
             data["handler"] = None
@@ -823,3 +836,14 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
                 )
             instance.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class SummerVoucherConfigurationViewSet(ListAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = SummerVoucherConfigurationSerializer
+    queryset = SummerVoucherConfiguration.objects.all()
+
+    def get_queryset(self):
+        # We only want to return configuration for current and future years, or all.
+        # But commonly we just want to expose all configs so frontend can handle logic.
+        return super().get_queryset()

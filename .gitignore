@@ -137,6 +137,10 @@ dmypy.json
 **/.idea/**
 *.iml
 
+# antigravity
+.antigravityignore
+.agent/**
+
 node_modules
 
 # Local generated certs

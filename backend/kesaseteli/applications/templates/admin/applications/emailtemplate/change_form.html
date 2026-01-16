@@ -1,0 +1,13 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block object-tools-items %}
+    {{ block.super }}
+    {% if original %}
+    <li>
+        <a href="{% url 'admin:applications_emailtemplate_preview' original.pk %}" target="_blank" class="historylink">
+            {% trans "Preview" %}
+        </a>
+    </li>
+    {% endif %}
+{% endblock %}

@@ -11,12 +11,13 @@
     </a>
 </div>
 
-<hr style="margin: 2em 0;" />
 
+{% if not password_login_disabled %}
+<hr style="margin: 2em 0;" />
 <p>
     {% translate 'If you have separate admin accounts, log in with your username and password.' %}
 </p>
-
 {{ block.super }}
+{% endif %}
 
 {% endblock %}

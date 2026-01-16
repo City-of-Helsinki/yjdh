@@ -104,6 +104,7 @@ env = environ.Env(
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
     ENABLE_SEND_AUDIT_LOG=(bool, False),
     ENABLE_ADMIN=(bool, False),
+    PASSWORD_LOGIN_DISABLED=(bool, False),
     DB_PREFIX=(str, ""),
     EMAIL_USE_TLS=(bool, False),
     EMAIL_HOST=(str, "relay.hel.fi"),
@@ -155,6 +156,7 @@ if DEBUG and not SECRET_KEY:
 ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
 SOCIAL_SECURITY_NUMBER_HASH_KEY = env.str("SOCIAL_SECURITY_NUMBER_HASH_KEY")
 ENABLE_ADMIN = env.bool("ENABLE_ADMIN")
+PASSWORD_LOGIN_DISABLED = env.bool("PASSWORD_LOGIN_DISABLED")
 NEXT_PUBLIC_DISABLE_VTJ = env.bool("NEXT_PUBLIC_DISABLE_VTJ")
 VTJ_PERSONAL_ID_QUERY_URL = env.str("VTJ_PERSONAL_ID_QUERY_URL")
 VTJ_USERNAME = env.str("VTJ_USERNAME")
@@ -215,7 +217,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 INSTALLED_APPS = [
     "django.contrib.auth",
-    "django.contrib.admin",
+    "kesaseteli.admin_site.KesaseteliAdminConfig",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -233,6 +235,7 @@ INSTALLED_APPS = [
     "applications",
     "companies",
     "staff_admin_permissions.apps.StaffAdminPermissionsConfig",
+    "django.contrib.postgres",
 ]
 
 if NEXT_PUBLIC_ENABLE_SUOMIFI:
@@ -693,3 +696,8 @@ if os.path.exists(local_settings_path):
 AUTO_ASSIGN_ADMIN_TO_STAFF = env.bool(
     "AUTO_ASSIGN_ADMIN_TO_STAFF", default=DEBUG and NEXT_PUBLIC_MOCK_FLAG
 )
+
+# Summer Voucher default / fallback configurations
+SUMMER_VOUCHER_DEFAULT_VOUCHER_VALUE = 350
+SUMMER_VOUCHER_DEFAULT_MIN_WORK_COMPENSATION = 500
+SUMMER_VOUCHER_DEFAULT_MIN_WORK_HOURS = 60

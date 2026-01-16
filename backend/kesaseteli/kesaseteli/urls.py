@@ -27,6 +27,16 @@ urlpatterns = [
     path("v1/", include((router.urls, "v1"), namespace="v1")),
     path("v1/company/", GetCompanyView.as_view(), name="company"),
     path("v1/schools/", application_views.SchoolListView.as_view(), name="school-list"),
+    path(
+        "v1/target_groups/",
+        application_views.TargetGroupListView.as_view(),
+        name="target-group-list",
+    ),
+    path(
+        "v1/summer_voucher_configuration/",
+        application_views.SummerVoucherConfigurationViewSet.as_view(),
+        name="summer-voucher-configuration",
+    ),
     path("oidc/", include("shared.oidc.urls")),
     path("oauth2/", include("shared.azure_adfs.urls")),
     path(
@@ -61,7 +71,6 @@ if settings.NEXT_PUBLIC_ENABLE_SUOMIFI:
 
 
 if settings.ENABLE_ADMIN:
-    admin.site.login_template = "admin/hel_login.html"
     urlpatterns.append(path("admin/", admin.site.urls))
 
 
