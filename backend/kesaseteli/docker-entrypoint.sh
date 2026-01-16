@@ -41,6 +41,17 @@ if [[ "$CREATE_SUPERUSER" = "1" ]]; then
     fi
 fi
 
+# Create Summer Voucher Configuration if requested
+if [[ "$CREATE_SUMMERVOUCHER_CONFIGURATION_2026" = "1" ]]; then
+    echo "Creating Summer Voucher Configuration for 2026..."
+    ./manage.py create_summervoucher_configuration --year 2026 || true
+fi
+
+if [[ "$CREATE_SUMMERVOUCHER_CONFIGURATION_CURRENT_YEAR" = "1" ]]; then
+    echo "Creating Summer Voucher Configuration for current year..."
+    ./manage.py create_summervoucher_configuration || true
+fi
+
 # Start server
 if [[ "$#" -gt 0 ]]; then
     "$@"
