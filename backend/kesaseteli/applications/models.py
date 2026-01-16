@@ -1251,8 +1251,8 @@ class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
     )
 
     class Meta:
-        verbose_name = _("application")
-        verbose_name_plural = _("applications")
+        verbose_name = _("employer application")
+        verbose_name_plural = _("employer applications")
         ordering = ["-created_at"]
 
 
@@ -1261,7 +1261,7 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         EmployerApplication,
         on_delete=models.CASCADE,
         related_name="summer_vouchers",
-        verbose_name=_("application"),
+        verbose_name=_("employer application"),
     )
     summer_voucher_serial_number = models.CharField(
         max_length=256, blank=True, verbose_name=_("summer voucher id")
@@ -1381,8 +1381,8 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
             )
 
     class Meta:
-        verbose_name = _("summer voucher")
-        verbose_name_plural = _("summer vouchers")
+        verbose_name = _("employer summer voucher")
+        verbose_name_plural = _("employer summer vouchers")
         ordering = ["-application__created_at", "ordering"]
 
 
@@ -1393,7 +1393,7 @@ class Attachment(UUIDModel, TimeStampedModel):
 
     summer_voucher = models.ForeignKey(
         EmployerSummerVoucher,
-        verbose_name=_("summer voucher"),
+        verbose_name=_("employer summer voucher"),
         related_name="attachments",
         on_delete=models.CASCADE,
     )
