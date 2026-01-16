@@ -1782,8 +1782,7 @@ def test_youth_summer_voucher_email_html_content(api_client, language):
     EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
 )
 @pytest.mark.parametrize("language", get_supported_languages())
-def test_youth_summer_voucher_email_plaintext_content(api_client, language, settings):
-    settings.NEXT_PUBLIC_MOCK_FLAG = True
+def test_youth_summer_voucher_email_plaintext_content(api_client, language):
     acceptable_youth_application = AcceptableYouthApplicationFactory(language=language)
     api_client.patch(
         get_accept_url(acceptable_youth_application.pk),
