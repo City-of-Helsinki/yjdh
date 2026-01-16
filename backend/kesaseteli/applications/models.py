@@ -1196,8 +1196,23 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         related_name="summer_vouchers",
         verbose_name=_("application"),
     )
-    summer_voucher_serial_number = models.CharField(
-        max_length=256, blank=True, verbose_name=_("summer voucher id")
+    summer_voucher_serial_number = models.ForeignKey(
+        YouthSummerVoucher,
+        to_field="summer_voucher_serial_number",
+        on_delete=models.SET_NULL,
+        verbose_name=_("youth summer voucher serial number"),
+        null=True,
+    )
+    _obsolete_unclean_serial_number = models.CharField(
+        max_length=256,
+        blank=True,
+        verbose_name=_("obsolete unclean summer voucher serial number"),
+        help_text=_(
+            "Old obsolete unclean summer_voucher_serial_number values "
+            "before data migration in early 2026. Any leftovers with non-empty values "
+            "are such that were not real actual summer_voucher_serial_number values at "
+            "the time of migration. Can be used for manual data cleaning."
+        ),
     )
     target_group = models.CharField(
         max_length=256,
