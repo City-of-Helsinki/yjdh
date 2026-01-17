@@ -1,5 +1,35 @@
 # Changelog
 
+## [1.12.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.11.0...kesaseteli-backend-v1.12.0) (2026-01-17)
+
+
+### Features
+
+* **kesaseteli,admin:** Login to admin site with ADFS ([9808a43](https://github.com/City-of-Helsinki/yjdh/commit/9808a43fd04435e9e9e5ab6a5cff0bc8bfdb3159))
+* **kesaseteli,admin:** Tools for semi automated admin management ([a861f35](https://github.com/City-of-Helsinki/yjdh/commit/a861f35cae5423640903d75494e15c45537e9418))
+* **kesaseteli:** Upgrade from PostgreSQL 13 → 17 ([91e03f1](https://github.com/City-of-Helsinki/yjdh/commit/91e03f11c1d35f0848d7d3c751845c1529bf5ebc))
+* Update remaining pyproject.toml files to use ruff with python 3.12 ([f2c02a8](https://github.com/City-of-Helsinki/yjdh/commit/f2c02a84ef619522f93a2afcf94bb1e57c75d73d))
+* Upgrade to Python 3.12 in shared backend and in kesaseteli ([e622132](https://github.com/City-of-Helsinki/yjdh/commit/e622132b4db15738a39ecc678386c7f9711348ab))
+
+
+### Bug Fixes
+
+* Null pointer exception in excel exporter ([339403b](https://github.com/City-of-Helsinki/yjdh/commit/339403b00aa354d22665e6805e613d1b702142ee))
+
+
+### Dependencies
+
+* **deps:** Bump azure-core in /backend/kesaseteli ([a3ed2fd](https://github.com/City-of-Helsinki/yjdh/commit/a3ed2fd3e0478458dee323e1927c20fc9996fce9))
+* **kesaseteli:** Replace old pytest-freezegun with newer pytest-freezer ([7b023be](https://github.com/City-of-Helsinki/yjdh/commit/7b023bed1f703764f1ce061b1229c0ace1d27db9))
+* **kesaseteli:** Upgrade backend packages, use django 5.1 ([e16ca81](https://github.com/City-of-Helsinki/yjdh/commit/e16ca8173fdb9725502d8f97a8b89ff0b98f5c6f))
+* **kesaseteli:** Upgrade pip-tools to 7.5.2 so it works with pip 25.3 ([0ae06bc](https://github.com/City-of-Helsinki/yjdh/commit/0ae06bc3301cce5fcf91731afe4c1d483070f829))
+
+
+### Documentation
+
+* Add note about about test data generation ([a8fe0b4](https://github.com/City-of-Helsinki/yjdh/commit/a8fe0b4acfb6074cea1459098c1c66cf119a3a1e))
+* **env:** Add DATABASE_URL environment variable in env example ([b8041f1](https://github.com/City-of-Helsinki/yjdh/commit/b8041f19a9b65d97acd51fd1818b49f04a3e3f17))
+
 ## [1.11.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.10.5...kesaseteli-backend-v1.11.0) (2025-12-19)
 
 
