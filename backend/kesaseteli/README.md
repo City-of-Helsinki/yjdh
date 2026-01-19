@@ -103,6 +103,10 @@ env variables / settings are provided by Azure blob storage:
 | Variable | Description |
 | :--- | :--- |
 | `PASSWORD_LOGIN_DISABLED` | A boolean value. If set to True, disables username/password login in the admin site. Default is False. |
+| `NEXT_PUBLIC_MOCK_FLAG` | A boolean value. If set to True, many aspects of the application are mocked, e.g. ADFS login which is used by the admin site. Default is False. |
+| `NEXT_PUBLIC_DISABLE_VTJ` | A boolean value. If set to True, VTJ client usage is disabled. Default is False. |
+| `CREATE_SUMMERVOUCHER_CONFIGURATION_CURRENT_YEAR` | A boolean value. If set to True, creates a new `SummerVoucherConfiguration` for the current year. Default is False. |
+| `CREATE_SUMMERVOUCHER_CONFIGURATION_2026` | A boolean value. If set to True, creates a new `SummerVoucherConfiguration` for the year 2026. Default is False. |
 
 ## Documentation
 
@@ -112,3 +116,28 @@ env variables / settings are provided by Azure blob storage:
 ### Summer Voucher Configuration
 
 A `SummerVoucherConfiguration` for the current year is **required** for creating new `YouthApplication`s. If no configuration exists for the current year, the API will reject creation requests with a 400 Bad Request error.
+
+
+### Management Commands
+
+#### Create Summer Voucher Configuration
+
+`python manage.py create_summervoucher_configuration`
+
+Creates a new `SummerVoucherConfiguration` for the specified year.
+
+**Arguments:**
+
+*   `--year`: Year for the configuration (default: current year)
+*   `--voucher-value`: Voucher value in euros (default: 350)
+*   `--min-work-compensation`: Minimum work compensation in euros (default: 500)
+*   `--min-work-hours`: Minimum work hours (default: 60)
+*   `--target-groups`: List of target group identifiers (default: all)
+*   `--force`: Force creation by overwriting existing configuration if it exists
+
+**Docker Entrypoint:**
+
+The `docker-entrypoint.sh` script can automatically run this command on startup using environment variables:
+
+*   `CREATE_SUMMERVOUCHER_CONFIGURATION_CURRENT_YEAR=1`: Creates configuration for the current year.
+*   `CREATE_SUMMERVOUCHER_CONFIGURATION_2026=1`: Creates configuration for the year 2026.
