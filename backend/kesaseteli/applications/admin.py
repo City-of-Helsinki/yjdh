@@ -24,6 +24,7 @@ from applications.models import (
 )
 from applications.services import EmailTemplateService
 from applications.target_groups import get_target_group_choices
+from common.utils import mask_social_security_number
 
 TARGET_GROUP_CHOICES_DICT = dict(get_target_group_choices())
 
@@ -346,9 +347,7 @@ class YouthApplicationAdmin(admin.ModelAdmin):
 
     def masked_social_security_number(self, obj):
         """Mask social security number for display."""
-        if obj.social_security_number:
-            return "******" + obj.social_security_number[-4:]
-        return ""
+        return mask_social_security_number(obj.social_security_number)
 
     masked_social_security_number.short_description = _("social security number")
 
@@ -406,9 +405,7 @@ class YouthSummerVoucherAdmin(admin.ModelAdmin):
 
     def masked_social_security_number(self, obj):
         """Mask social security number for display."""
-        if obj.youth_application.social_security_number:
-            return "******" + obj.youth_application.social_security_number[-4:]
-        return ""
+        return mask_social_security_number(obj.youth_application.social_security_number)
 
     masked_social_security_number.short_description = _("social security number")
 
@@ -557,9 +554,7 @@ class EmployerSummerVoucherAdmin(admin.ModelAdmin):
 
     def masked_employee_ssn(self, obj):
         """Mask employee social security number for display."""
-        if obj.employee_ssn:
-            return "******" + obj.employee_ssn[-4:]
-        return ""
+        return mask_social_security_number(obj.employee_ssn)
 
     masked_employee_ssn.short_description = _("employee social security number")
 

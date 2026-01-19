@@ -172,3 +172,15 @@ def html_to_text(html: str) -> str:
 
     # Collapse excessive newlines (3 or more becomes 2)
     return re.sub(r"\n{3,}", "\n\n", text_body)
+
+
+def mask_social_security_number(social_security_number: Optional[str]) -> str:
+    """
+    Masks the first part of the social security number,
+    leaving only the last 4 characters visible.
+
+    Example: 010101-1234 -> ******1234
+    """
+    if social_security_number:
+        return "******" + social_security_number[-4:]
+    return ""
