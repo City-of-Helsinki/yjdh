@@ -33,12 +33,14 @@ class Step2 extends WizardStep {
     ),
   });
 
+  /*
   private paidSubsidyDefault = this.findRadioLabelWithGroupText(
     this.translations.applications.sections.employee.fields.paySubsidyGranted
       .label,
     this.translations.applications.sections.employee.fields.paySubsidyGranted
       .paySubsidyDefault
   );
+   */
 
   private apprenticeshipProgramFalse = this.findRadioLabelWithGroupText(
     this.translations.applications.sections.employee.fields
