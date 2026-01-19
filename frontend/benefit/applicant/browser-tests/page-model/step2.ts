@@ -33,14 +33,12 @@ class Step2 extends WizardStep {
     ),
   });
 
-  /*
   private paidSubsidyDefault = this.findRadioLabelWithGroupText(
     this.translations.applications.sections.employee.fields.paySubsidyGranted
       .label,
     this.translations.applications.sections.employee.fields.paySubsidyGranted
       .paySubsidyDefault
   );
-   */
 
   private apprenticeshipProgramFalse = this.findRadioLabelWithGroupText(
     this.translations.applications.sections.employee.fields
@@ -122,6 +120,14 @@ class Step2 extends WizardStep {
     apprenticeshipProgram: boolean
   ): Promise<void> {
     await this.clickSelectRadioButton(this.paidSubsidyDefault);
+    if (apprenticeshipProgram) {
+      await this.clickSelectRadioButton(this.apprenticeshipProgramTrue);
+      return;
+    }
+    await this.clickSelectRadioButton(this.apprenticeshipProgramFalse);
+  }
+
+  public async fillApprenticeshipProgram(apprenticeshipProgram: boolean): Promise<void> {
     if (apprenticeshipProgram) {
       await this.clickSelectRadioButton(this.apprenticeshipProgramTrue);
       return;
