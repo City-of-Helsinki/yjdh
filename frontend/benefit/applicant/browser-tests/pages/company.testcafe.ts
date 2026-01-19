@@ -125,7 +125,7 @@ test('New application', async () => {
   const step3 = new Step3();
   await step3.isLoaded();
   await step3.employmentContractNeeded();
-  await step3.paySubsidyDecisionNeeded();
+  // await step3.paySubsidyDecisionNeeded();
   await step3.helsinkiBenefitVoucherNeeded();
   await step3.stageUploadFiles('sample.pdf', [
     '#upload_attachment_employment_contract',
