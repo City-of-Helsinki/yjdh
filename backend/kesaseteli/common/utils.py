@@ -148,3 +148,15 @@ def getattr_nested(obj, attrs: list):
             with translation.override("fi"):
                 value = getattr(obj, f"get_{attr}_display")()
         return value
+
+
+def mask_social_security_number(social_security_number: Optional[str]) -> str:
+    """
+    Masks the first part of the social security number,
+    leaving only the last 4 characters visible.
+
+    Example: 010101-1234 -> ******1234
+    """
+    if social_security_number:
+        return "******" + social_security_number[-4:]
+    return ""
