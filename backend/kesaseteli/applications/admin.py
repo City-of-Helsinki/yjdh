@@ -399,6 +399,7 @@ class YouthSummerVoucherAdmin(admin.ModelAdmin):
     autocomplete_fields = [
         "youth_application",
     ]
+    actions = ["resend_voucher"]
 
     def queryset(self, request):
         return super().queryset(request).select_related("youth_application")
@@ -418,6 +419,42 @@ class YouthSummerVoucherAdmin(admin.ModelAdmin):
         return mark_safe(f'<a href="{url}">{link_text}</a>')
 
     youth_application_link.short_description = _("youth application")
+
+    @admin.action(
+        description=_("Resend summer voucher to selected applicants and to the handler")
+    )
+    def resend_voucher(self, request, queryset):
+        sent_count = 0
+        failed_count = 0
+        for youth_summer_voucher in queryset:
+            if youth_summer_voucher.send_youth_summer_voucher_email(
+                language=youth_summer_voucher.youth_application.language
+            ):
+                sent_count += 1
+            else:
+                failed_count += 1
+
+        if sent_count > 0:
+            self.message_user(
+                request,
+                ngettext(
+                    "Resent summer voucher to {count} applicant.",
+                    "Resent summer voucher to {count} applicants.",
+                    sent_count,
+                ).format(count=sent_count),
+                level=logging.INFO,
+            )
+
+        if failed_count > 0:
+            self.message_user(
+                request,
+                ngettext(
+                    "Failed to resend summer voucher to {count} applicant.",
+                    "Failed to resend summer voucher to {count} applicants.",
+                    failed_count,
+                ).format(count=failed_count),
+                level=logging.ERROR,
+            )
 
 
 class EmployerApplicationAdmin(admin.ModelAdmin):

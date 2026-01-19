@@ -118,3 +118,19 @@ Frontend clients can retrieve the list of available schools using the following 
 -   **URL**: `/v1/schools/`
 -   **Method**: `GET`
 -   **Description**: Returns a list of all schools, sorted by name using Finnish collation rules.
+
+## Youth Summer Vouchers
+
+The `YouthSummerVoucher` model represents the actual voucher assigned to a youth applicant.
+
+### Resend Summer Voucher
+
+In cases where a youth needs their voucher email resent (e.g., accidental deletion or email delivery issues), administrators can trigger a resend from the admin interface.
+
+1.  Navigate to **Applications** > **Youth Summer Vouchers**.
+2.  Select the vouchers you wish to resend using the checkboxes.
+3.  Choose **"Resend summer voucher to selected applicants and to the handler"** from the **Action** dropdown menu.
+4.  Click **Go**.
+
+The system will attempt to resend the voucher email to the youth's email address and report the number of successful and failed attempts.
+
