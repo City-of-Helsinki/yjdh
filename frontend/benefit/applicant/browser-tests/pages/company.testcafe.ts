@@ -115,7 +115,8 @@ test('New application', async () => {
     form.employee.otherExpenses,
     form.employee.vacationMoney
   );
-  await step2.fillPaidSubsidyGrant(true);
+  // await step2.fillPaidSubsidyGrant(true);
+  await step2.fillApprenticeshipProgram(true);
 
   await step2.fillBenefitPeriod(form.employee.startDate, form.employee.endDate);
 
