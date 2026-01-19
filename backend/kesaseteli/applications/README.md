@@ -32,6 +32,11 @@ The `SummerVoucherConfiguration` model stores annual configuration settings for 
 
 This configuration is managed via the Django Admin interface and is used to validate incoming applications.
 
+NOTE: The `SummerVoucherConfiguration` model is also initialized via a management command. This is done automatically via the docker entrypoint script.
+
+```shell
+python manage.py create_summervoucher_configuration
+```
 
 ### Target Groups Management
 
