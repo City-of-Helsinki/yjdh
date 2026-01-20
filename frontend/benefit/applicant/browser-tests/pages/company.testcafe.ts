@@ -129,7 +129,6 @@ test('New application', async () => {
   await step3.helsinkiBenefitVoucherNeeded();
   await step3.stageUploadFiles('sample.pdf', [
     '#upload_attachment_employment_contract',
-    '#upload_attachment_pay_subsidy_decision',
     '#upload_attachment_education_contract',
     '#upload_attachment_helsinki_benefit_voucher',
   ]);
