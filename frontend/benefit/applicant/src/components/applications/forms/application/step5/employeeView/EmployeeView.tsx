@@ -199,38 +199,6 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                   {formatFloatToCurrency(data.employee?.otherExpenses)}
                 </$ApplicationDetailValue>
               </$ApplicationDetailRow>
-              {data.paySubsidyGranted && (
-                <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
-                  <$ApplicationDetailRow data-testid="application-field-paySubsidyGranted">
-                    <$ApplicationDetailLabel>
-                      {t(
-                        `${translationsBase}.employee.fields.paySubsidyGranted.labelShort`
-                      )}
-                    </$ApplicationDetailLabel>
-                    <$ApplicationDetailValue>
-                      {t(
-                        `${translationsBase}.employee.fields.paySubsidyGranted.${paySubsidyTranslation(
-                          data.paySubsidyGranted
-                        )}`
-                      )}
-                    </$ApplicationDetailValue>
-                  </$ApplicationDetailRow>
-                  <$ApplicationDetailRow data-testid="application-field-apprenticeshipProgram">
-                    <$ApplicationDetailLabel>
-                      {t(
-                        `${translationsBase}.employee.fields.apprenticeshipProgram.label`
-                      )}
-                    </$ApplicationDetailLabel>
-                    <$ApplicationDetailValue>
-                      {t(
-                        `${translationsBase}.employee.fields.apprenticeshipProgram.${
-                          data.apprenticeshipProgram ? 'yes' : 'no'
-                        }`
-                      )}
-                    </$ApplicationDetailValue>
-                  </$ApplicationDetailRow>
-                </$ApplicationDetailWrapper>
-              )}
             </$ApplicationDetailWrapper>
           </$GridCell>
         </SummarySection>
@@ -251,6 +219,22 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
             </$ApplicationDetailLabel>
             <$ApplicationDetailValue>
               {convertToUIDateFormat(data.endDate) || '-'}
+            </$ApplicationDetailValue>
+          </$ApplicationDetailRow>
+        </$ApplicationDetailWrapper>
+        <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
+          <$ApplicationDetailRow data-testid="application-field-apprenticeshipProgram">
+            <$ApplicationDetailLabel>
+              {t(
+                `${translationsBase}.employee.fields.apprenticeshipProgram.label`
+              )}
+            </$ApplicationDetailLabel>
+            <$ApplicationDetailValue>
+              {t(
+                `${translationsBase}.employee.fields.apprenticeshipProgram.${
+                  data.apprenticeshipProgram ? 'yes' : 'no'
+                }`
+              )}
             </$ApplicationDetailValue>
           </$ApplicationDetailRow>
         </$ApplicationDetailWrapper>
