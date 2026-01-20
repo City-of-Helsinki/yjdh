@@ -222,13 +222,10 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
             </$ApplicationDetailValue>
           </$ApplicationDetailRow>
         </$ApplicationDetailWrapper>
-        <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
+      </SummarySection>
+      <SummarySection header={t(`${translationsBase}.employee.fields.apprenticeshipProgram.label`)}>
+        <$ApplicationDetailWrapper>
           <$ApplicationDetailRow data-testid="application-field-apprenticeshipProgram">
-            <$ApplicationDetailLabel>
-              {t(
-                `${translationsBase}.employee.fields.apprenticeshipProgram.label`
-              )}
-            </$ApplicationDetailLabel>
             <$ApplicationDetailValue>
               {t(
                 `${translationsBase}.employee.fields.apprenticeshipProgram.${
