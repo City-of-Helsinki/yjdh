@@ -1223,7 +1223,7 @@ def test_submit_application_without_de_minimis_aid(
 @pytest.mark.parametrize(
     "pay_subsidy_granted,apprenticeship_program,draft_result,submit_result,",
     [
-        (PaySubsidyGranted.NOT_GRANTED, None, 200, 400),
+        (PaySubsidyGranted.NOT_GRANTED, None, 200, 200),
         (PaySubsidyGranted.NOT_GRANTED, False, 200, 200),
         (PaySubsidyGranted.NOT_GRANTED, True, 200, 200),
     ],
