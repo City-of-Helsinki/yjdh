@@ -576,7 +576,9 @@ class EmployerApplicationAdmin(admin.ModelAdmin):
 class EmployerSummerVoucherAdmin(admin.ModelAdmin):
     list_display = [
         "id",
-        "summer_voucher_serial_number",
+        "youth_summer_voucher_id",
+        "_obsolete_unclean_serial_number",
+        "has_migrated_obsolete_serial_number",
         "target_group",
         "application__company__name",
         "created_at",
@@ -584,18 +586,23 @@ class EmployerSummerVoucherAdmin(admin.ModelAdmin):
     ]
     list_filter = [
         "target_group",
+        ("youth_summer_voucher_id", admin.EmptyFieldListFilter),
+        ("_obsolete_unclean_serial_number", admin.EmptyFieldListFilter),
         "created_at",
         "modified_at",
     ]
     date_hierarchy = "created_at"
     search_fields = [
-        "summer_voucher_serial_number",
+        "youth_summer_voucher__summer_voucher_serial_number",
+        "_obsolete_unclean_serial_number",
         "id",
         "application__company__name",
     ]
-    autocomplete_fields = ["application"]
+    autocomplete_fields = [
+        "application",
+        "youth_summer_voucher",
+    ]
     readonly_fields = [
-        "summer_voucher_serial_number",
         "target_group",
         "application",
         "masked_employee_ssn",
@@ -656,7 +663,23 @@ class EmployerSummerVoucherAdmin(admin.ModelAdmin):
             .queryset(request)
             .select_related("application")
             .select_related("application__company")
+            .select_related("youth_summer_voucher")
         )
+
+    def has_migrated_obsolete_serial_number(self, obj):
+        old_serial = obj._obsolete_unclean_serial_number.strip()
+        # Either the old serial is empty, or it matches the current
+        # youth summer voucher ID
+        return not old_serial or (
+            old_serial.isdigit()
+            and obj.youth_summer_voucher
+            and int(old_serial) == obj.youth_summer_voucher.summer_voucher_serial_number
+        )
+
+    has_migrated_obsolete_serial_number.boolean = True  # i.e. True/False icon
+    has_migrated_obsolete_serial_number.short_description = _(
+        "Has obsolete serial number been migrated?"
+    )
 
     def masked_employee_ssn(self, obj):
         """Mask employee social security number for display."""

@@ -24,10 +24,10 @@ const useEmploymentQuery = (): UseMutationResult<
       employee_name,
       summer_voucher_serial_number,
     }: EmploymentArgs) =>
-      !(
-        employer_summer_voucher_id ||
-        employee_name ||
-        summer_voucher_serial_number
+      (
+        !employer_summer_voucher_id ||
+        !employee_name ||
+        !summer_voucher_serial_number
       )
         ? Promise.reject(
             new Error('Missing employeeName, voucherId or voucherSerialNumber')

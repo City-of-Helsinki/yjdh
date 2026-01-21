@@ -209,6 +209,13 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
         many=True,
         help_text="Attachments of the application (read-only)",
     )
+    # Backward compatibility field for frontend using
+    # EmployerSummerVoucher summer_voucher_serial_number property and its setter:
+    summer_voucher_serial_number = serializers.CharField(
+        max_length=256,
+        allow_blank=True,
+        required=False,
+    )
 
     class Meta:
         model = EmployerSummerVoucher

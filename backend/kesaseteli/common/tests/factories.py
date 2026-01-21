@@ -71,7 +71,12 @@ class AttachmentFactory(
 class EmployerSummerVoucherFactory(
     SaveAfterPostGenerationMixin, factory.django.DjangoModelFactory
 ):
-    summer_voucher_serial_number = factory.Faker("md5")
+    application = factory.SubFactory(
+        "common.tests.factories.EmployerApplicationFactory"
+    )
+    youth_summer_voucher = factory.SubFactory(
+        "common.tests.factories.YouthSummerVoucherFactory"
+    )
     target_group = factory.Faker(
         "random_element",
         elements=[id for id, _ in get_target_group_choices()],

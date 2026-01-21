@@ -11,6 +11,7 @@ from applications.models import EmployerApplication
 from common.tests.factories import (
     EmployerApplicationFactory,
     EmployerSummerVoucherFactory,
+    YouthSummerVoucherFactory,
 )
 from shared.audit_log.models import AuditLogEntry
 
@@ -140,7 +141,14 @@ def test_add_empty_summer_voucher(api_client, application):
 def test_update_summer_voucher(api_client, application, summer_voucher):
     data = EmployerApplicationSerializer(application).data
     summer_voucher_id = summer_voucher.id
-    data["summer_vouchers"][0]["summer_voucher_serial_number"] = "test"
+    new_youth_summer_voucher = YouthSummerVoucherFactory()
+    assert (
+        summer_voucher.youth_summer_voucher_id
+        != new_youth_summer_voucher.summer_voucher_serial_number
+    )
+    data["summer_vouchers"][0]["summer_voucher_serial_number"] = str(
+        new_youth_summer_voucher.summer_voucher_serial_number
+    )
 
     response = api_client.put(
         get_detail_url(application),
@@ -148,9 +156,14 @@ def test_update_summer_voucher(api_client, application, summer_voucher):
     )
 
     assert response.status_code == 200
-    assert response.data["summer_vouchers"][0]["summer_voucher_serial_number"] == "test"
+    assert response.data["summer_vouchers"][0]["summer_voucher_serial_number"] == str(
+        new_youth_summer_voucher.summer_voucher_serial_number
+    )
     # Make sure that the summer voucher ID stays the same
     assert response.data["summer_vouchers"][0]["id"] == str(summer_voucher_id)
+    # Make sure the EmployerSummerVoucher is linked to the new YouthSummerVoucher
+    summer_voucher.refresh_from_db()
+    assert summer_voucher.youth_summer_voucher == new_youth_summer_voucher
 
 
 @pytest.mark.django_db

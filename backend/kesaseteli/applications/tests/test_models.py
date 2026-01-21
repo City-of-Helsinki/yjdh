@@ -104,6 +104,124 @@ def test_employer_summer_voucher_last_submitted_at(year):
     assert vouchers[12].last_submitted_at == utc_datetime(year, 9, 2)
 
 
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "obsolete_serial_number", ["", "Testing", "Even more ABC123 testing!"]
+)
+def test_employer_summer_voucher_summer_voucher_serial_number_property(
+    obsolete_serial_number,
+):
+    """
+    Test that EmployerSummerVoucher.summer_voucher_serial_number property
+    returns the linked YouthSummerVoucher's summer_voucher_serial_number as
+    string, or if it doesn't exist falls back to _obsolete_unclean_serial_number.
+    """
+    employer_voucher = EmployerSummerVoucherFactory(
+        _obsolete_unclean_serial_number=obsolete_serial_number
+    )
+    assert employer_voucher.youth_summer_voucher is not None
+    assert (
+        employer_voucher.youth_summer_voucher.summer_voucher_serial_number is not None
+    )
+    # Serial number should be the linked youth summer voucher's serial number as string
+    assert employer_voucher.summer_voucher_serial_number == str(
+        employer_voucher.youth_summer_voucher.summer_voucher_serial_number
+    )
+    # Serial number should fall back to _obsolete_unclean_serial_number
+    # if no linked youth summer voucher
+    employer_voucher.youth_summer_voucher = None
+    assert employer_voucher.summer_voucher_serial_number == obsolete_serial_number
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "serial_number",
+    [
+        None,
+        "",
+        "  ",
+        "12345",
+        "00001",
+        "99999",
+        "  1234    ",
+        -1,
+        1,
+        12345,
+        99999,
+    ],
+)
+def test_employer_summer_voucher_summer_voucher_serial_number_setter_without_match(
+    serial_number: str | int | None,
+):
+    """
+    Test the EmployerSummerVoucher.summer_voucher_serial_number property's setter
+    when there is no matching YouthSummerVoucher.
+    """
+    # Clear existing vouchers for a clean slate
+    EmployerSummerVoucher.objects.all().delete()
+    YouthSummerVoucher.objects.all().delete()
+
+    employer_voucher = EmployerSummerVoucherFactory(
+        _obsolete_unclean_serial_number="", youth_summer_voucher=None
+    )
+
+    # When there are no YouthSummerVoucher objects at all, setting any
+    # serial number should result in no linked youth summer voucher
+    assert not YouthSummerVoucher.objects.exists()
+    employer_voucher.summer_voucher_serial_number = serial_number
+    assert employer_voucher.summer_voucher_serial_number == ""
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "input_serial_number",
+    [
+        "12345",
+        "00001",
+        "99999",
+        "  1234    ",
+        1,
+        12345,
+        99999,
+    ],
+)
+def test_employer_summer_voucher_summer_voucher_serial_number_setter_with_match(
+    input_serial_number: str | int,
+):
+    """
+    Test the EmployerSummerVoucher.summer_voucher_serial_number property's setter
+    when there is a matching YouthSummerVoucher.
+    """
+    # Clear existing vouchers for a clean slate
+    EmployerSummerVoucher.objects.all().delete()
+    YouthSummerVoucher.objects.all().delete()
+
+    expected_serial_number = int(input_serial_number)
+    YouthSummerVoucherFactory(summer_voucher_serial_number=expected_serial_number)
+    employer_voucher = EmployerSummerVoucherFactory(
+        _obsolete_unclean_serial_number="", youth_summer_voucher=None
+    )
+
+    assert employer_voucher.summer_voucher_serial_number == ""
+    employer_voucher.summer_voucher_serial_number = input_serial_number
+    assert employer_voucher.summer_voucher_serial_number == str(expected_serial_number)
+    assert employer_voucher.youth_summer_voucher_id == expected_serial_number
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("serial_number", [[1], (1,), {2}, {1: 2}, 1.0, True])
+def test_employer_summer_voucher_summer_voucher_serial_number_setter_exception(
+    serial_number,
+):
+    """
+    Test that EmployerSummerVoucher.summer_voucher_serial_number property's setter
+    raises a TypeError if the input is of invalid type.
+    """
+    employer_voucher = EmployerSummerVoucherFactory()
+    with pytest.raises(TypeError):
+        employer_voucher.summer_voucher_serial_number = serial_number
+
+
 @pytest.mark.django_db(transaction=True, reset_sequences=True)
 def test_youth_summer_voucher_get_last_used_serial_number():
     assert YouthSummerVoucher.objects.count() == 0
