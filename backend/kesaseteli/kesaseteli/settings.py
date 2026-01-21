@@ -104,6 +104,8 @@ env = environ.Env(
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
     ENABLE_SEND_AUDIT_LOG=(bool, False),
     ENABLE_ADMIN=(bool, False),
+    # Configuration for the staff admin group name (ADFS group). Default is None.
+    AD_ADMIN_GROUP_NAME=(str, None),
     PASSWORD_LOGIN_DISABLED=(bool, False),
     DB_PREFIX=(str, ""),
     EMAIL_USE_TLS=(bool, False),
@@ -156,6 +158,7 @@ if DEBUG and not SECRET_KEY:
 ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
 SOCIAL_SECURITY_NUMBER_HASH_KEY = env.str("SOCIAL_SECURITY_NUMBER_HASH_KEY")
 ENABLE_ADMIN = env.bool("ENABLE_ADMIN")
+AD_ADMIN_GROUP_NAME = env.str("AD_ADMIN_GROUP_NAME")
 PASSWORD_LOGIN_DISABLED = env.bool("PASSWORD_LOGIN_DISABLED")
 NEXT_PUBLIC_DISABLE_VTJ = env.bool("NEXT_PUBLIC_DISABLE_VTJ")
 VTJ_PERSONAL_ID_QUERY_URL = env.str("VTJ_PERSONAL_ID_QUERY_URL")
@@ -696,6 +699,7 @@ if os.path.exists(local_settings_path):
 AUTO_ASSIGN_ADMIN_TO_STAFF = env.bool(
     "AUTO_ASSIGN_ADMIN_TO_STAFF", default=DEBUG and NEXT_PUBLIC_MOCK_FLAG
 )
+
 
 # Summer Voucher default / fallback configurations
 SUMMER_VOUCHER_DEFAULT_VOUCHER_VALUE = 350

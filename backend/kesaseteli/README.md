@@ -107,6 +107,7 @@ env variables / settings are provided by Azure blob storage:
 | `NEXT_PUBLIC_DISABLE_VTJ` | A boolean value. If set to True, VTJ client usage is disabled. Default is False. |
 | `CREATE_SUMMERVOUCHER_CONFIGURATION_CURRENT_YEAR` | A boolean value. If set to True, creates a new `SummerVoucherConfiguration` for the current year. Default is False. |
 | `CREATE_SUMMERVOUCHER_CONFIGURATION_2026` | A boolean value. If set to True, creates a new `SummerVoucherConfiguration` for the year 2026. Default is False. |
+| `AD_ADMIN_GROUP_NAME` | The name of the AD group that maps to Django admin permissions. Default is None (feature disabled). |
 
 ## Documentation
 
