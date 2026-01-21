@@ -18,6 +18,8 @@ export type TextInputProps = {
   helperFormat?: string;
   onChange?: (value: string) => void;
   autoComplete?: AutoComplete;
+  disabled?: boolean;
+  readOnly?: boolean;
 } & GridCellProps;
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -25,9 +27,6 @@ const TextInput: React.FC<TextInputProps> = ({
   validation = {},
   type = 'text',
   helperFormat,
-  placeholder,
-  onChange,
-  autoComplete,
   ...$gridCellProps
 }) => {
   const { t } = useTranslation();
@@ -55,12 +54,9 @@ const TextInput: React.FC<TextInputProps> = ({
       registerOptions={{ ...validation }}
       type={type}
       id={id}
-      placeholder={placeholder}
       initialValue={getValue()}
       errorText={errorText()}
       label={t(`common:application.form.inputs.${fieldName}`)}
-      onChange={onChange}
-      autoComplete={autoComplete}
       {...$gridCellProps}
     />
   );

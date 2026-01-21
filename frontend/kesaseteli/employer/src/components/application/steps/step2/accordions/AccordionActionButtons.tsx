@@ -13,9 +13,16 @@ import Employment from 'shared/types/employment';
 type Props = {
   index: number;
   onSave: () => void;
+  disableSave?: boolean;
+  disableRemove?: boolean;
 };
 
-const AccordionActionButtons: React.FC<Props> = ({ index, onSave }: Props) => {
+const AccordionActionButtons: React.FC<Props> = ({
+  index,
+  onSave,
+  disableSave,
+  disableRemove,
+}: Props) => {
   const { t } = useTranslation();
   const {
     formState: { isSubmitting },
@@ -44,18 +51,20 @@ const AccordionActionButtons: React.FC<Props> = ({ index, onSave }: Props) => {
 
   return (
     <>
-      <$GridCell justifySelf="start">
-        <Button
-          variant="secondary"
-          theme="black"
-          data-testid={`update-employment-${index}`}
-          onClick={validate}
-          disabled={updateApplicationQuery.isLoading || isSubmitting}
-        >
-          {t(`common:application.step2.save_employment`)}
-        </Button>
-      </$GridCell>
-      {!onlyOneEmployment && (
+      {!disableSave && (
+        <$GridCell justifySelf="start">
+          <Button
+            variant="secondary"
+            theme="black"
+            data-testid={`update-employment-${index}`}
+            onClick={validate}
+            disabled={updateApplicationQuery.isLoading || isSubmitting}
+          >
+            {t(`common:application.step2.save_employment`)}
+          </Button>
+        </$GridCell>
+      )}
+      {!disableRemove && !onlyOneEmployment && (
         <$GridCell justifySelf="end">
           <Button
             variant="supplementary"

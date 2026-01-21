@@ -35,14 +35,18 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
   const { t } = useTranslation();
   const { getValues, reset } = useFormContext<Application>();
   const { fetchEmployment, applicationQuery } = useApplicationApi();
+  const [isEmployeeDataFetched, setIsEmployeeDataFetched] =
+    useState<boolean>(false);
   const [isFetchEmployeeDataEnabled, setIsFetchEmployeeDataEnabled] =
     useState<boolean>(false);
 
   const enableFetchEmployeeDataButton = useCallback(() => {
     const formDataVoucher = getValues().summer_vouchers[index];
+    const integerStringRegex = /^\s*\d+\s*$/; // Allow leading and trailing whitespace
     setIsFetchEmployeeDataEnabled(
       formDataVoucher.employee_name.length > 0 &&
-        formDataVoucher.summer_voucher_serial_number.length > 0
+        typeof formDataVoucher.summer_voucher_serial_number === 'string' &&
+        integerStringRegex.test(formDataVoucher.summer_voucher_serial_number)
     );
   }, [getValues, index]);
 
@@ -53,6 +57,7 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
   const handleGetEmployeeData = useCallback(() => {
     const handleReset = (): void => {
       reset(applicationQuery.data);
+      setIsEmployeeDataFetched(true);
     };
 
     fetchEmployment(getValues(), index, handleReset);
@@ -99,145 +104,157 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
       onToggle={handleToggle}
       headerBackgroundColor={headerBackgroundColor}
     >
-      <$AccordionFormSection
-        columns={2}
-        withoutDivider
-        gridActions={
-          <Button
-            onClick={handleGetEmployeeData}
-            disabled={!isFetchEmployeeDataEnabled}
-            variant="secondary"
-            theme="black"
-          >
-            {t('common:application.step2.fetch_employment')}
-          </Button>
-        }
-      >
+      <$AccordionFormSection columns={2} withoutDivider>
         <TextInput
           id={getId('employee_name')}
           validation={{ required: true, maxLength: 256 }}
           onChange={enableFetchEmployeeDataButton}
           autoComplete="off"
+          readOnly={isEmployeeDataFetched}
         />
         <TextInput
           id={getId('summer_voucher_serial_number')}
           validation={{ required: true, maxLength: 64 }}
           onChange={enableFetchEmployeeDataButton}
           autoComplete="off"
+          readOnly={isEmployeeDataFetched}
         />
-        <TextInput
-          id={getId('employee_ssn')}
-          validation={{
-            required: true,
-            maxLength: 32,
-          }}
-          autoComplete="off"
-        />
-        <SelectionGroup
-          id={getId('target_group')}
-          validation={{
-            required: true,
-          }}
-          values={EMPLOYEE_EXCEPTION_REASON}
-          $colSpan={2}
-        />
-        <FormSectionDivider $colSpan={2} />
-        <TextInput
-          id={getId('employee_home_city')}
-          validation={{ required: true, pattern: CITY_REGEX, maxLength: 256 }}
-        />
-        <TextInput
-          id={getId('employee_postcode')}
-          type="number"
-          validation={{
-            required: true,
-            pattern: POSTAL_CODE_REGEX,
-            maxLength: 256,
-          }}
-          autoComplete="off"
-        />
-        <TextInput
-          id={getId('employee_phone_number')}
-          validation={{ required: true, maxLength: 64 }}
-          autoComplete="off"
-        />
-        <TextInput
-          id={getId('employment_postcode')}
-          type="number"
-          validation={{
-            required: true,
-            pattern: POSTAL_CODE_REGEX,
-            maxLength: 256,
-          }}
-        />
-        <FormSectionDivider $colSpan={2} />
-        <TextInput
-          id={getId('employee_school')}
-          validation={{ required: true, maxLength: 256 }}
-        />
-        <FormSectionDivider $colSpan={2} />
-        <FormSectionHeading
-          header={t('common:application.step2.attachments_section')}
-          size="s"
-          $colSpan={2}
-        />
-        <AttachmentInput
-          index={index}
-          id={getId('employment_contract')}
-          required
-        />
-        <AttachmentInput index={index} id={getId('payslip')} required />
-        <FormSectionDivider $colSpan={2} />
-        <FormSectionHeading
-          header={t('common:application.step2.employment_section')}
-          size="s"
-          $colSpan={2}
-        />
-        <DateInput
-          id={getId('employment_start_date')}
-          validation={{ required: true }}
-        />
-        <DateInput
-          id={getId('employment_end_date')}
-          validation={{ required: true }}
-        />
-        <TextInput
-          id={getId('employment_work_hours')}
-          type="decimal"
-          validation={{
-            required: true,
-            maxLength: 18,
-            pattern: getDecimalNumberRegex(2),
-          }}
-          helperFormat="######.##"
-        />
-        <TextInput
-          $rowSpan={3}
-          id={getId('employment_description')}
-          type="textArea"
-          placeholder={t(
-            'common:application.step2.employment_description_placeholder'
-          )}
-          autoComplete="off"
-        />
-        <TextInput
-          id={getId('employment_salary_paid')}
-          validation={{
-            required: true,
-            maxLength: 18,
-            pattern: getDecimalNumberRegex(2),
-          }}
-          type="decimal"
-          helperFormat="######.##"
-        />
-        <SelectionGroup
-          id={getId('hired_without_voucher_assessment')}
-          validation={{
-            required: true,
-          }}
-          values={EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT}
-        />
-        <AccordionActionButtons index={index} onSave={closeAccordion} />
+        {!isEmployeeDataFetched && (
+          <Button
+            onClick={handleGetEmployeeData}
+            disabled={!isFetchEmployeeDataEnabled}
+            variant="primary"
+            theme="black"
+          >
+            {t('common:application.step2.fetch_employment')}
+          </Button>
+        )}
+        {isEmployeeDataFetched && (
+          <>
+            <TextInput
+              id={getId('employee_ssn')}
+              validation={{
+                required: true,
+                maxLength: 32,
+              }}
+              autoComplete="off"
+              readOnly
+            />
+            <SelectionGroup
+              id={getId('target_group')}
+              validation={{
+                required: true,
+              }}
+              values={EMPLOYEE_EXCEPTION_REASON}
+              $colSpan={2}
+            />
+            <FormSectionDivider $colSpan={2} />
+            <TextInput
+              id={getId('employee_home_city')}
+              validation={{
+                required: true,
+                pattern: CITY_REGEX,
+                maxLength: 256,
+              }}
+            />
+            <TextInput
+              id={getId('employee_postcode')}
+              type="number"
+              validation={{
+                required: true,
+                pattern: POSTAL_CODE_REGEX,
+                maxLength: 256,
+              }}
+              autoComplete="off"
+            />
+            <TextInput
+              id={getId('employee_phone_number')}
+              validation={{ required: true, maxLength: 64 }}
+              autoComplete="off"
+            />
+            <TextInput
+              id={getId('employment_postcode')}
+              type="number"
+              validation={{
+                required: true,
+                pattern: POSTAL_CODE_REGEX,
+                maxLength: 256,
+              }}
+            />
+            <FormSectionDivider $colSpan={2} />
+            <TextInput
+              id={getId('employee_school')}
+              validation={{ required: true, maxLength: 256 }}
+            />
+            <FormSectionDivider $colSpan={2} />
+            <FormSectionHeading
+              header={t('common:application.step2.attachments_section')}
+              size="s"
+              $colSpan={2}
+            />
+            <AttachmentInput
+              index={index}
+              id={getId('employment_contract')}
+              required
+            />
+            <AttachmentInput index={index} id={getId('payslip')} required />
+            <FormSectionDivider $colSpan={2} />
+            <FormSectionHeading
+              header={t('common:application.step2.employment_section')}
+              size="s"
+              $colSpan={2}
+            />
+            <DateInput
+              id={getId('employment_start_date')}
+              validation={{ required: true }}
+            />
+            <DateInput
+              id={getId('employment_end_date')}
+              validation={{ required: true }}
+            />
+            <TextInput
+              id={getId('employment_work_hours')}
+              type="decimal"
+              validation={{
+                required: true,
+                maxLength: 18,
+                pattern: getDecimalNumberRegex(2),
+              }}
+              helperFormat="######.##"
+            />
+            <TextInput
+              $rowSpan={3}
+              id={getId('employment_description')}
+              type="textArea"
+              placeholder={t(
+                'common:application.step2.employment_description_placeholder'
+              )}
+              autoComplete="off"
+            />
+            <TextInput
+              id={getId('employment_salary_paid')}
+              validation={{
+                required: true,
+                maxLength: 18,
+                pattern: getDecimalNumberRegex(2),
+              }}
+              type="decimal"
+              helperFormat="######.##"
+            />
+            <SelectionGroup
+              id={getId('hired_without_voucher_assessment')}
+              validation={{
+                required: true,
+              }}
+              values={EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT}
+            />
+            <AccordionActionButtons
+              index={index}
+              disableSave={!isEmployeeDataFetched}
+              onSave={closeAccordion}
+            />
+          </>
+        )}
       </$AccordionFormSection>
     </$Accordion>
   );
