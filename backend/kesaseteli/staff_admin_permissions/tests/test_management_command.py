@@ -6,8 +6,6 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.management import call_command
 
-from staff_admin_permissions.constants import ADMIN_GROUP_NAME
-
 
 @pytest.mark.django_db
 def test_setup_admin_permissions_command(settings):
@@ -17,8 +15,9 @@ def test_setup_admin_permissions_command(settings):
     2. Assigns permissions to it.
     """
     settings.AUTO_ASSIGN_ADMIN_TO_STAFF = True
+    settings.AD_ADMIN_GROUP_NAME = "kesaseteli-admin"
     # Ensure group doesn't exist initially
-    Group.objects.filter(name=ADMIN_GROUP_NAME).delete()
+    Group.objects.filter(name=settings.AD_ADMIN_GROUP_NAME).delete()
 
     user_model = get_user_model()
 
@@ -36,9 +35,9 @@ def test_setup_admin_permissions_command(settings):
             call_command("setup_admin_permissions")
 
     # Verify group exists
-    assert Group.objects.filter(name=ADMIN_GROUP_NAME).exists()
+    assert Group.objects.filter(name=settings.AD_ADMIN_GROUP_NAME).exists()
 
-    admins_group = Group.objects.get(name=ADMIN_GROUP_NAME)
+    admins_group = Group.objects.get(name=settings.AD_ADMIN_GROUP_NAME)
     # Since we mocked registry to only have User, we check User permissions
     assert admins_group.permissions.count() > 0
 
