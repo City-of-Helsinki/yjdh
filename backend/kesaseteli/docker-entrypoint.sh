@@ -52,6 +52,12 @@ if [[ "$CREATE_SUMMERVOUCHER_CONFIGURATION_CURRENT_YEAR" = "1" ]]; then
     ./manage.py create_summervoucher_configuration || true
 fi
 
+# Ensure Email Templates exist if requested
+if [[ "$ENSURE_EMAIL_TEMPLATES" = "1" ]]; then
+    echo "Ensuring EmailTemplates exist..."
+    ./manage.py ensure_email_templates || true
+fi
+
 # Start server
 if [[ "$#" -gt 0 ]]; then
     "$@"
