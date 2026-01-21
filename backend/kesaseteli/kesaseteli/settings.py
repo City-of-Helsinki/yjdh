@@ -362,7 +362,7 @@ SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = "None"
 
 AUTHENTICATION_BACKENDS = [
-    "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
+    "kesaseteli.authentication.KesaseteliAdfsBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
 
@@ -424,6 +424,10 @@ ADFS_LOGIN_REDIRECT_URL = env.str("ADFS_LOGIN_REDIRECT_URL")
 ADFS_LOGIN_REDIRECT_URL_FAILURE = env.str("ADFS_LOGIN_REDIRECT_URL_FAILURE")
 
 ADFS_CONTROLLER_GROUP_UUIDS = env.list("ADFS_CONTROLLER_GROUP_UUIDS")
+
+ADFS_SYSTEM_USER_GROUP_NAMES = env.list("ADFS_SYSTEM_USER_GROUP_NAMES", default=[])
+if AD_ADMIN_GROUP_NAME and AD_ADMIN_GROUP_NAME not in ADFS_SYSTEM_USER_GROUP_NAMES:
+    ADFS_SYSTEM_USER_GROUP_NAMES.append(AD_ADMIN_GROUP_NAME)
 
 
 # Suomi.fi (djangosaml2)
