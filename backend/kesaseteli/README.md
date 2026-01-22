@@ -98,6 +98,60 @@ env variables / settings are provided by Azure blob storage:
 - `AZURE_ACCOUNT_NAME`
 - `AZURE_ACCOUNT_KEY`
 
+## Authentication Methods Overview
+
+This section outlines the authentication mechanisms used across the three user interfaces and five environment types (Review, Dev, Test, Stage, and Production).
+
+### Authentication by User Interface
+
+| UI Name | Target Audience | Auth Method | Notes |
+| :--- | :--- | :--- | :--- |
+| **Youth** | Individual Applicants | **None** | Relies on backend SSN/VTJ validation. |
+| **Employer** | Business Users | **Suomi.fi / OIDC** | SAML, except in review env, where it's OpenID Connect. |
+| **Handler** | Internal Staff | **ADFS** | Authenticates via ADFS through the API. |
+
+### Detailed Environment Logic
+
+#### Youth UI
+The Youth UI does not implement a login flow. To ensure data integrity:
+* Applications are sent to the API.
+* The API validates the Social Security Number (SSN).
+* Personal data is fetched from **VTJ** (Population Information System).
+
+#### Employer UI
+Authentication for employers depends on the environment configuration, primarily managed by the `NEXT_PUBLIC_ENABLE_SUOMIFI` variable.
+
+* **Standard Environments (Dev, Test, Stage, Production):**
+    * `NEXT_PUBLIC_ENABLE_SUOMIFI=true`
+    * Authenticates via **Suomi.fi** through the API's **SAML** endpoint.
+    * **Certificate Requirements:** `SUOMIFI_CERT` and `SUOMIFI_KEY` environment variables are required.
+* **Review Environments (Pull Requests):**
+    * `NEXT_PUBLIC_ENABLE_SUOMIFI=false`
+    * Uses `HelsinkiOIDCAuthenticationBackend`.
+    * **OIDC Provider:** `https://tunnistus.test.hel.ninja/auth/realms/helsinki-tunnistus`
+    * **Note:** This configuration is used because Review environments require dynamic URLs, which are difficult to manage with Suomi.fi's static SAML requirements. It also facilitates easier automated browser testing.
+
+#### Handler UI
+The Handler UI uses **ADFS** (Active Directory Federation Services) for all environments. The authentication is brokered through the API.
+See [Staff Admin Permissions](staff_admin_permissions/README.md) for details on how ADFS groups map to Django admin permissions.
+
+#### Mock Mode
+When `NEXT_PUBLIC_MOCK_FLAG=true` (typically in local development):
+*   **Employer UI**: Bypasses Suomi.fi/OIDC and uses a simulated login.
+*   **Handler UI**: Bypasses ADFS and uses a simulated login.
+*   **Youth UI**: Skips VTJ queries and uses mock data.
+
+### Authentication Matrix
+
+| Environment | Youth | Employer Auth Method | Handler Auth |
+| :--- | :--- | :--- | :--- |
+| **Review (PR)** | Open | **Helsinki OIDC** | ADFS |
+| **Dev** | Open | **Suomi.fi (SAML)** | ADFS |
+| **Test** | Open | **Suomi.fi (SAML)** | ADFS |
+| **Stage** | Open | **Suomi.fi (SAML)** | ADFS |
+| **Production** | Open | **Suomi.fi (SAML)** | ADFS |
+
+
 ## Environment Variables
 
 | Variable | Description |
