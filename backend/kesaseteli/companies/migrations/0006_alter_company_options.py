@@ -4,14 +4,17 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('companies', '0005_remove_company_eauth_profile'),
+        ("companies", "0005_remove_company_eauth_profile"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='company',
-            options={'ordering': ['name'], 'verbose_name': 'company', 'verbose_name_plural': 'companies'},
+            name="company",
+            options={
+                "ordering": ["name"],
+                "verbose_name": "company",
+                "verbose_name_plural": "companies",
+            },
         ),
     ]
