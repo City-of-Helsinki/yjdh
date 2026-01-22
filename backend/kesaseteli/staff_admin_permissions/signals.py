@@ -52,5 +52,6 @@ def assign_admins_group(sender, instance, created, **kwargs):
             )
         except Group.DoesNotExist:
             LOGGER.warning(
-                f"'{settings.AD_ADMIN_GROUP_NAME}' group does not exist. Skipping group assignment."
+                f"'{settings.AD_ADMIN_GROUP_NAME}' group does not exist. "
+                "Skipping group assignment."
             )
