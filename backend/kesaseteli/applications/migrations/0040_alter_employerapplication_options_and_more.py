@@ -5,41 +5,76 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('applications', '0039_emailtemplate'),
+        ("applications", "0039_emailtemplate"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='employerapplication',
-            options={'ordering': ['-created_at'], 'verbose_name': 'employer application', 'verbose_name_plural': 'employer applications'},
+            name="employerapplication",
+            options={
+                "ordering": ["-created_at"],
+                "verbose_name": "employer application",
+                "verbose_name_plural": "employer applications",
+            },
         ),
         migrations.AlterModelOptions(
-            name='employersummervoucher',
-            options={'ordering': ['-application__created_at', 'ordering'], 'verbose_name': 'employer summer voucher', 'verbose_name_plural': 'employer summer vouchers'},
+            name="employersummervoucher",
+            options={
+                "ordering": ["-application__created_at", "ordering"],
+                "verbose_name": "employer summer voucher",
+                "verbose_name_plural": "employer summer vouchers",
+            },
         ),
         migrations.AlterModelOptions(
-            name='historicalemployerapplication',
-            options={'get_latest_by': ('history_date', 'history_id'), 'ordering': ('-history_date', '-history_id'), 'verbose_name': 'historical employer application', 'verbose_name_plural': 'historical employer applications'},
+            name="historicalemployerapplication",
+            options={
+                "get_latest_by": ("history_date", "history_id"),
+                "ordering": ("-history_date", "-history_id"),
+                "verbose_name": "historical employer application",
+                "verbose_name_plural": "historical employer applications",
+            },
         ),
         migrations.AlterModelOptions(
-            name='historicalemployersummervoucher',
-            options={'get_latest_by': ('history_date', 'history_id'), 'ordering': ('-history_date', '-history_id'), 'verbose_name': 'historical employer summer voucher', 'verbose_name_plural': 'historical employer summer vouchers'},
+            name="historicalemployersummervoucher",
+            options={
+                "get_latest_by": ("history_date", "history_id"),
+                "ordering": ("-history_date", "-history_id"),
+                "verbose_name": "historical employer summer voucher",
+                "verbose_name_plural": "historical employer summer vouchers",
+            },
         ),
         migrations.AlterField(
-            model_name='attachment',
-            name='summer_voucher',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='attachments', to='applications.employersummervoucher', verbose_name='employer summer voucher'),
+            model_name="attachment",
+            name="summer_voucher",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="attachments",
+                to="applications.employersummervoucher",
+                verbose_name="employer summer voucher",
+            ),
         ),
         migrations.AlterField(
-            model_name='employersummervoucher',
-            name='application',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='summer_vouchers', to='applications.employerapplication', verbose_name='employer application'),
+            model_name="employersummervoucher",
+            name="application",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="summer_vouchers",
+                to="applications.employerapplication",
+                verbose_name="employer application",
+            ),
         ),
         migrations.AlterField(
-            model_name='historicalemployersummervoucher',
-            name='application',
-            field=models.ForeignKey(blank=True, db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='applications.employerapplication', verbose_name='employer application'),
+            model_name="historicalemployersummervoucher",
+            name="application",
+            field=models.ForeignKey(
+                blank=True,
+                db_constraint=False,
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="+",
+                to="applications.employerapplication",
+                verbose_name="employer application",
+            ),
         ),
     ]
