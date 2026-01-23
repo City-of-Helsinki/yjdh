@@ -5,6 +5,7 @@ from django import forms
 from django.apps import apps
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.admin import helpers
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import path, reverse
@@ -13,6 +14,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
 
+from applications.admin_forms import SchoolImportForm
 from applications.models import (
     EmailTemplate,
     EmployerApplication,
@@ -22,7 +24,7 @@ from applications.models import (
     YouthApplication,
     YouthSummerVoucher,
 )
-from applications.services import EmailTemplateService
+from applications.services import EmailTemplateService, SchoolService
 from applications.target_groups import get_target_group_choices
 from common.utils import mask_social_security_number
 
@@ -116,6 +118,73 @@ class SchoolAdmin(admin.ModelAdmin):
     ]
     date_hierarchy = "created_at"
     search_fields = ["name"]
+    change_list_template = "admin/applications/school/change_list.html"
+    readonly_fields = [
+        "created_at",
+        "modified_at",
+    ]
+
+    def get_urls(self):
+        urls = super().get_urls()
+        my_urls = [
+            path(
+                "import-schools/",
+                self.admin_site.admin_view(self.import_schools_view),
+                name="applications_school_import",
+            ),
+        ]
+        return my_urls + urls
+
+    def import_schools_view(self, request):
+        """
+        A custom view in the admin interface for importing schools from a textarea.
+        """
+        if not self.has_add_permission(request):
+            return HttpResponseRedirect(reverse("admin:index"))
+
+        if request.method == "POST":
+            form = SchoolImportForm(request.POST)
+            if form.is_valid():
+                # Handle textarea input
+                names_text = form.cleaned_data.get("school_names")
+                school_names = names_text.splitlines() if names_text else []
+                created_count, existing_count = SchoolService.import_schools(
+                    school_names
+                )
+
+                self.message_user(
+                    request,
+                    ngettext(
+                        "Imported {created_count} new school. "
+                        "{existing_count} already existed.",
+                        "Imported {created_count} new schools. "
+                        "{existing_count} already existed.",
+                        created_count,
+                    ).format(
+                        created_count=created_count, existing_count=existing_count
+                    ),
+                )
+                return HttpResponseRedirect(
+                    reverse("admin:applications_school_changelist")
+                )
+        else:
+            form = SchoolImportForm()
+
+        admin_form = helpers.AdminForm(
+            form,
+            [(None, {"fields": ["school_names"]})],
+            {},
+            [],
+            model_admin=self,
+        )
+
+        context = {
+            **self.admin_site.each_context(request),
+            "opts": self.model._meta,
+            "adminform": admin_form,
+            "title": _("Import Schools"),
+        }
+        return render(request, "admin/applications/school/import_form.html", context)
 
 
 class EmailTemplateAdmin(admin.ModelAdmin):

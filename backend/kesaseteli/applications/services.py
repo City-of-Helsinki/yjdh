@@ -9,7 +9,7 @@ from django.template.loader import get_template
 import applications.target_groups
 from applications.enums import APPLICATION_LANGUAGE_CHOICES, EmailTemplateType
 from applications.mock_context_service import MockContextService
-from applications.models import EmailTemplate, SummerVoucherConfiguration
+from applications.models import EmailTemplate, School, SummerVoucherConfiguration
 from common.utils import send_mail_with_error_logging
 
 if TYPE_CHECKING:
@@ -203,3 +203,24 @@ class EmailTemplateService:
             html_message=html_body,
             images=images,
         )
+
+
+class SchoolService:
+    @staticmethod
+    def import_schools(school_names: list[str]) -> tuple[int, int]:
+        """
+        Import schools from a list of names.
+        Returns a tuple of (created_count, existing_count).
+        """
+        created_count = 0
+        existing_count = 0
+
+        for name in school_names:
+            name = name.strip()
+            if name:
+                _school, created = School.objects.get_or_create(name=name)
+                if created:
+                    created_count += 1
+                else:
+                    existing_count += 1
+        return created_count, existing_count

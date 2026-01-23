@@ -116,6 +116,17 @@ The `School` model stores the list of schools available for selection in youth a
 -   Filter schools by creation and modification dates.
 -   Add or remove schools as needed.
 
+### Import Schools
+
+Administrators with sufficient permissions (add permission for School model) can bulk import schools via the Admin interface.
+
+1.  Navigate to **Applications** > **Schools**.
+2.  Click the **"Import Schools"** button.
+3.  Enter the names of the schools in the text area, one per line.
+4.  Click **Import**.
+
+The system will skip any schools that already exist in the database (matching by exact name) and only create new ones.
+
 ### API Endpoint
 
 Frontend clients can retrieve the list of available schools using the following endpoint:

@@ -1,0 +1,23 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+    &rsaquo; <a href="{% url 'admin:app_list' app_label='applications' %}">{% trans 'Applications' %}</a>
+    &rsaquo; <a href="{% url 'admin:applications_school_changelist' %}">{% trans 'Schools' %}</a>
+    &rsaquo; {% trans 'Import Schools' %}
+</div>
+{% endblock %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    {% for fieldset in adminform %}
+    {% include "admin/includes/fieldset.html" %}
+    {% endfor %}
+    <div class="submit-row">
+        <input type="submit" value="{% trans 'Import' %}" class="default" name="_save">
+    </div>
+</form>
+{% endblock %}
