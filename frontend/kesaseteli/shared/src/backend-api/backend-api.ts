@@ -23,6 +23,7 @@ export const BackendEndpoint = {
     '/v1/youthapplications/create-without-ssn/',
   EMPLOYMENT: '/v1/youthapplications/fetch_employee_data/',
   SCHOOLS: '/v1/schools/',
+  SUMMER_VOUCHER_CONFIGURATION: '/v1/summer_voucher_configuration/',
   ...(isRealIntegrationsEnabled() && isSuomiFiEnabled()
     ? suomiFiEndpoint
     : helsinkiProfileEndpoint),
