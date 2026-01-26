@@ -50,6 +50,8 @@
   },
   "youthApplication": {
     "title": "Registrera dig och få din personlig Sommarsedel",
+    "applicationNotOpen": "Ansökan om sommarsedel är inte öppen för tillfället.",
+    "applicationNotOpenText": "<bold>Ansökan om sommarsedel är inte öppen för tillfället.</bold> Se <lnk href=\"https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/\">här</lnk> för mer information.",
     "paragraph_1": "Det är roligt och enkelt att tjäna egna pengar!\nSommarsedeln är personlig och värd 350 euro för arbetsgivaren.",
     "form": {
       "title": "Information om Sommarsedeln",

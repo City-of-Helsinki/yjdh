@@ -50,6 +50,8 @@
   },
   "youthApplication": {
     "title": "Rekisteröidy ja saat henkilökohtaisen Kesäsetelin käyttöösi",
+    "applicationNotOpen": "Kesäsetelihaku ei ole tällä hetkellä käynnissä.",
+    "applicationNotOpenText": "<bold>Kesäsetelihaku ei ole tällä hetkellä käynnissä.</bold> Katso lisätietoja <lnk href=\"https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/\">tästä</lnk>.",
     "paragraph_1": "Oman rahan tienaaminen on hauskaa ja helppoa! Kesäseteli on henkilökohtainen ja sen arvo on työnantajalle 350 euroa.",
     "form": {
       "title": "Kesäsetelin tiedot",

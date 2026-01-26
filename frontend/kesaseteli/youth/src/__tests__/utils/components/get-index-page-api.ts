@@ -148,6 +148,32 @@ const getIndexPageApi = (lang?: Language) => {
         });
         expect(forceSubmitLink).not.toBeInTheDocument();
       },
+      async applicationIsNotOpen(): Promise<void> {
+        await screen.findByRole('heading', {
+          name: translations.youthApplication.applicationNotOpen,
+        });
+
+        // HDS Notification has a 'region' role with aria-label which defaults to type label if not provided.
+        // But simpler to find by text content partial match or containment.
+        // The text content should contain the start of the message.
+        // The Trans component splits the text, so exact match might be tricky.
+        const notification = await screen.findByRole('region', {
+          name: /notification/i,
+        });
+
+        // Check for the link
+        const link = await screen.findByRole('link', {
+          name: /tästä|täältä|här|here/i, // Covering likely link texts across languages or falling back to a broad match
+        });
+        expect(link).toBeInTheDocument();
+        expect(link).toHaveAttribute(
+          'href',
+          translations.footer.informationLink
+        );
+
+        // Verify link is within the notification (optional but good)
+        expect(notification).toContainElement(link);
+      },
     },
     actions: {
       async typeInput(key: YouthFormFields, value: string): Promise<void> {

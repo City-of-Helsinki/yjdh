@@ -50,6 +50,8 @@
   },
   "youthApplication": {
     "title": "Sign up to receive your personal Summer Job Voucher",
+    "applicationNotOpen": "Summer voucher application is not currently open.",
+    "applicationNotOpenText": "<bold>Summer voucher application is not currently open.</bold> Please check for more information from <lnk href=\"https://nuorten.hel.fi/en/studies-and-work/the-summer-job-voucher/\">here</lnk>.",
     "paragraph_1": "Earning your own money is fun and easy! The Summer Job Voucher is personal and worth 350€ for the employer.",
     "form": {
       "title": "Summer Job Voucher information",
