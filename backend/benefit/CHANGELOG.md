@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.11.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.11.0...benefit-backend-v2.11.1) (2026-01-28)
+
+
+### Dependencies
+
+* **deps:** Bump authlib from 1.6.5 to 1.6.6 in /backend/benefit ([935e3a8](https://github.com/City-of-Helsinki/yjdh/commit/935e3a8e9288cc2296486036e169c4a75138b9f4))
+* **deps:** Bump azure-core from 1.36.0 to 1.38.0 in /backend/benefit ([a99fe4d](https://github.com/City-of-Helsinki/yjdh/commit/a99fe4db23b9968fed8ba8a79044e8d3409e029b))
+* **deps:** Bump pyasn1 from 0.6.1 to 0.6.2 in /backend/benefit ([0278ac7](https://github.com/City-of-Helsinki/yjdh/commit/0278ac7bd3df4f48ca24ed9bf58aaf044c8cae2b))
+
 ## [2.11.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.10.1...benefit-backend-v2.11.0) (2025-12-15)
 
 
