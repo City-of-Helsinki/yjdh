@@ -32,21 +32,9 @@ export const getValidationSchema = (
   t: TFunction
 ) =>
   Yup.object().shape({
-    [APPLICATION_FIELDS_STEP2_KEYS.PAY_SUBSIDY_GRANTED]: Yup.mixed()
-      .oneOf([...Object.values(PAY_SUBSIDY_GRANTED)])
-      .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELDS_STEP2_KEYS.APPRENTICESHIP_PROGRAM]: Yup.boolean()
       .nullable()
-      .when(APPLICATION_FIELDS_STEP2_KEYS.PAY_SUBSIDY_GRANTED, {
-        is: (subsidyType: PAY_SUBSIDY_GRANTED): boolean =>
-          [
-            PAY_SUBSIDY_GRANTED.GRANTED,
-            PAY_SUBSIDY_GRANTED.GRANTED_AGED,
-          ].includes(subsidyType),
-        then: Yup.boolean()
-          .nullable()
-          .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-      }),
+      .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELDS_STEP2_KEYS.START_DATE]: Yup.string()
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED))
       .test({
