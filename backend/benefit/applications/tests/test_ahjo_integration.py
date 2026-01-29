@@ -704,9 +704,9 @@ def test_ahjo_callback_unauthorized_wrong_or_missing_credentials(
 @pytest.mark.parametrize(
     "request_type",
     [
-        (AhjoRequestType.OPEN_CASE,),
-        (AhjoRequestType.UPDATE_APPLICATION,),
-        (AhjoRequestType.DELETE_APPLICATION,),
+        AhjoRequestType.OPEN_CASE,
+        AhjoRequestType.UPDATE_APPLICATION,
+        AhjoRequestType.DELETE_APPLICATION,
     ],
 )
 @pytest.mark.django_db
