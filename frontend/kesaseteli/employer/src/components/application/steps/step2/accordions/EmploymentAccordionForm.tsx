@@ -4,16 +4,14 @@ import DateInput from 'kesaseteli/employer/components/application/form/DateInput
 import SelectionGroup from 'kesaseteli/employer/components/application/form/SelectionGroup';
 import TextInput from 'kesaseteli/employer/components/application/form/TextInput';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import useTargetGroupsQuery from 'kesaseteli/employer/hooks/backend/useTargetGroupsQuery';
 import { useTranslation } from 'next-i18next';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import FormSectionDivider from 'shared/components/forms/section/FormSectionDivider';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
 import { CITY_REGEX, POSTAL_CODE_REGEX } from 'shared/constants';
-import {
-  EMPLOYEE_EXCEPTION_REASON,
-  EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT,
-} from 'shared/constants/employee-constants';
+import { EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT } from 'shared/constants/employee-constants';
 import Application from 'shared/types/application';
 import { getDecimalNumberRegex } from 'shared/utils/regex.utils';
 
@@ -94,6 +92,11 @@ const EmploymentAccordionForm: React.FC = () => {
     useFetchEmployeeDataButtonState();
   const { isEmployeeDataFetched, handleGetEmployeeData } =
     useFetchEmployeeData();
+  const { data: targetGroups } = useTargetGroupsQuery();
+
+  const targetGroupValues = targetGroups?.map((tg) => tg.id) || [];
+  const getTargetGroupLabel = (value: string): string =>
+    targetGroups?.find((tg) => tg.id === value)?.name || '';
 
   return (
     <$AccordionFormSection columns={2} withoutDivider>
@@ -137,7 +140,8 @@ const EmploymentAccordionForm: React.FC = () => {
             validation={{
               required: true,
             }}
-            values={EMPLOYEE_EXCEPTION_REASON}
+            values={targetGroupValues}
+            getValueText={getTargetGroupLabel}
             $colSpan={2}
           />
           <FormSectionDivider $colSpan={2} />
