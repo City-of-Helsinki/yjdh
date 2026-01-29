@@ -36,3 +36,4 @@ pyyaml
 requests
 sentry-sdk[django]
 uritemplate
+uwsgi
