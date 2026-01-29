@@ -17,6 +17,7 @@ const NEXTJS_DISABLE_SENTRY = trueEnv.includes(process.env?.NEXTJS_DISABLE_SENTR
 const NEXTJS_SENTRY_UPLOAD_DRY_RUN = trueEnv.includes(process.env?.NEXTJS_SENTRY_UPLOAD_DRY_RUN ?? 'false');
 const NEXTJS_SENTRY_DEBUG = trueEnv.includes(process.env?.NEXTJS_SENTRY_DEBUG ?? 'false');
 const NEXTJS_SENTRY_TRACING = trueEnv.includes(process.env?.NEXTJS_SENTRY_TRACING ?? 'false');
+const WATCHPACK_POLLING = trueEnv.includes(process.env?.WATCHPACK_POLLING ?? 'false');
 
 // Get the app context ...
 let appName;
@@ -90,6 +91,22 @@ const nextConfig = (override) => ({
           filename: 'static/chunks/[name].[hash][ext]',
         },
       });
+    }
+
+    // Enable file watching using polling if WATCHPACK_POLLING is enabled.
+    // This makes hot reload work in Docker on e.g. Windows using data on
+    // host filesystem. NOTE: Enabling Turbopack makes this not work!
+    if (WATCHPACK_POLLING) {
+      config.watchOptions = {
+        ...config.watchOptions,
+        // https://webpack.js.org/configuration/watch/#watchoptions
+        poll: 1000, // Check for changes every second
+        aggregateTimeout: 300, // Delay 0.3s before rebuilding to group changes
+        ignored: ['**/node_modules', '**/.git', '**/.next'],
+      };
+      console.info('Polling enabled for webpack file watching');
+    } else {
+      console.info('Using native file watching for webpack');
     }
 
     return config;
