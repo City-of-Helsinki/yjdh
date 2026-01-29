@@ -64,6 +64,15 @@ ENV NODE_OPTIONS="--max_old_space_size=2048"
 
 ARG PROJECT
 ARG FOLDER
+
+# Enable Turbopack for faster dev builds, see https://nextjs.org/docs/14/architecture/turbopack
+#
+# Next.js internally checks !!process.env.TURBOPACK in router-server.ts (not documented API),
+# see https://github.com/vercel/next.js/blob/v14.2.32/packages/next/src/server/lib/router-server.ts#L135
+# To disable, set TURBOPACK="" (empty string). Note: "0" or "false" won't work due to !! coercion
+ARG TURBOPACK=1
+ENV TURBOPACK=${TURBOPACK}
+
 # Enable hot reload by default by polling for file changes.
 #
 # NOTE: Can be disabled by setting WATCHPACK_POLLING=false
@@ -79,7 +88,6 @@ WORKDIR /app
 COPY --chown=default:default . .
 
 ENV NEXT_TELEMETRY_DISABLED 1
-ENV TURBOPACK 1
 
 # Bake package.json start command into the image
 ENV DEV_START "yarn --cwd $PROJECT/$FOLDER dev"
