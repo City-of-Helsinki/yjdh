@@ -11,7 +11,6 @@ WORKDIR /app
 RUN mkdir /entrypoint
 
 COPY --chown=default:root benefit/requirements.txt /app/requirements.txt
-COPY --chown=default:root benefit/requirements-prod.txt /app/requirements-prod.txt
 COPY --chown=default:root shared /shared/
 
 RUN dnf update -y \
@@ -27,7 +26,6 @@ RUN dnf update -y \
        openssl-devel \
     && pip install -U pip setuptools wheel \
     && pip install --no-cache-dir -r /app/requirements.txt \
-    && pip install --no-cache-dir -r /app/requirements-prod.txt \
     && mkdir -p /usr/local/lib/uwsgi/plugins \
     && uwsgi --build-plugin https://github.com/City-of-Helsinki/uwsgi-sentry \
     && mv sentry_plugin.so /usr/local/lib/uwsgi/plugins/ \

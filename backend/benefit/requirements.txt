@@ -265,5 +265,7 @@ urllib3==2.5.0
     #   elastic-transport
     #   requests
     #   sentry-sdk
+uwsgi==2.0.31
+    # via -r requirements.in
 xmlschema==2.5.1
     # via pysaml2
