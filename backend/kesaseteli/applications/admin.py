@@ -579,13 +579,13 @@ class EmployerSummerVoucherAdmin(admin.ModelAdmin):
         "youth_summer_voucher_id",
         "_obsolete_unclean_serial_number",
         "has_migrated_obsolete_serial_number",
-        "target_group",
+        "target_group_display",
         "application__company__name",
         "created_at",
         "modified_at",
     ]
     list_filter = [
-        "target_group",
+        "youth_summer_voucher__target_group",
         ("youth_summer_voucher_id", admin.EmptyFieldListFilter),
         ("_obsolete_unclean_serial_number", admin.EmptyFieldListFilter),
         "created_at",
@@ -603,7 +603,7 @@ class EmployerSummerVoucherAdmin(admin.ModelAdmin):
         "youth_summer_voucher",
     ]
     readonly_fields = [
-        "target_group",
+        "target_group_display",
         "application",
         "masked_employee_ssn",
         "created_at",
@@ -622,6 +622,12 @@ class EmployerSummerVoucherAdmin(admin.ModelAdmin):
     ]
     # custom property to list timestamp base model fields
     time_fields = ["created_at", "modified_at"]
+
+    @admin.display(
+        description=_("target group"), ordering="youth_summer_voucher__target_group"
+    )
+    def target_group_display(self, obj):
+        return obj.get_target_group_display()
 
     def get_fieldsets(self, request, obj=None):
         """

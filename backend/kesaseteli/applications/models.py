@@ -1291,13 +1291,25 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
             "and as fallback summer_voucher_serial_number values in historical data."
         ),
     )
-    target_group = models.CharField(
-        max_length=256,
-        blank=True,
-        verbose_name=_("summer voucher target group"),
-        help_text=_("Summer voucher's target group type"),
-        choices=get_target_group_choices(),
-    )
+
+    @property
+    def target_group(self):
+        """
+        Get the target group of the youth summer voucher.
+        NOTE: This is mostly for backward compatibility with the old target_group field.
+        """
+        return (
+            self.youth_summer_voucher.target_group if self.youth_summer_voucher else ""
+        )
+
+    # Mimicking Django's standard API. ChoiceField's magic is gone
+    # since target_group is now migrated to a custom property.
+    def get_target_group_display(self):
+        return (
+            self.youth_summer_voucher.get_target_group_display()
+            if self.youth_summer_voucher
+            else ""
+        )
 
     employee_name = models.CharField(
         max_length=256,

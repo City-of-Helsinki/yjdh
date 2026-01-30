@@ -77,10 +77,6 @@ class EmployerSummerVoucherFactory(
     youth_summer_voucher = factory.SubFactory(
         "common.tests.factories.YouthSummerVoucherFactory"
     )
-    target_group = factory.Faker(
-        "random_element",
-        elements=[id for id, _ in get_target_group_choices()],
-    )
 
     employee_name = factory.Faker("name")
     employee_school = factory.Faker("lexify", text="????? School")
@@ -664,7 +660,10 @@ class YouthSummerVoucherFactory(
     summer_voucher_serial_number = factory.Faker(
         "pyint", min_value=1, max_value=(2**63) - 1
     )
-    target_group = ""
+    target_group = factory.Faker(
+        "random_element",
+        elements=[id for id, _ in get_target_group_choices()],
+    )
 
     class Meta:
         model = YouthSummerVoucher
