@@ -1,4 +1,5 @@
 import json
+import logging
 from datetime import date, datetime
 from typing import Optional, Union
 
@@ -25,10 +26,15 @@ from applications.models import (
     SummerVoucherConfiguration,
     YouthApplication,
 )
-from applications.target_groups import get_target_group_class
+from applications.target_groups import (
+    get_target_group_choices,
+    get_target_group_class,
+)
 from common.permissions import HandlerPermission
 from companies.api.v1.serializers import CompanySerializer
 from companies.services import get_or_create_company_using_organization_roles
+
+LOGGER = logging.getLogger(__name__)
 
 
 class EmployerApplicationStatusValidator:
@@ -217,6 +223,10 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
         required=False,
     )
 
+    target_group = serializers.ChoiceField(
+        choices=get_target_group_choices(), required=False
+    )
+
     class Meta:
         model = EmployerSummerVoucher
         fields = [
@@ -244,27 +254,6 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
         ]
         list_serializer_class = EmployerSummerVoucherListSerializer
 
-    def validate(self, data):
-        data = super().validate(data)
-        self._validate_non_draft_required_fields(data)
-        return data
-
-    REQUIRED_FIELDS_FOR_SUBMITTED_SUMMER_VOUCHERS = [
-        "summer_voucher_serial_number",
-        "employee_name",
-        "employee_school",
-        "employee_ssn",
-        "employee_phone_number",
-        "employee_home_city",
-        "employee_postcode",
-        "employment_postcode",
-        "employment_start_date",
-        "employment_end_date",
-        "employment_work_hours",
-        "employment_salary_paid",
-        "hired_without_voucher_assessment",
-    ]
-
     def _validate_non_draft_required_fields(self, data):
         status = (
             self.parent.parent.initial_data.get("status") if self.parent.parent else ""
@@ -285,6 +274,59 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
                         )
                     }
                 )
+
+    def _update_target_group(self, instance: EmployerSummerVoucher, target_group: str):
+        """
+        Update the target_group of the youth voucher if it exists.
+
+        TODO: This method should be removed if in the future the target_group field is
+        fully automatically updated or only youth sets the target_group.
+        """
+        if target_group and instance.youth_summer_voucher:
+            instance.youth_summer_voucher.target_group = target_group
+            instance.youth_summer_voucher.save(update_fields=["target_group"])
+        elif target_group:
+            LOGGER.warning(
+                "Discarding target group set for employer summer voucher "
+                f"{instance.id} without youth voucher."
+            )
+
+    def create(self, validated_data: dict):
+        target_group = validated_data.pop("target_group", None)
+        instance = super().create(validated_data)
+        # TODO: remove this when the target_group field is fully automatically updated
+        # or only youth sets the target_group
+        self._update_target_group(instance, target_group)
+        return instance
+
+    def update(self, instance: EmployerSummerVoucher, validated_data: dict):
+        target_group = validated_data.pop("target_group", None)
+        instance = super().update(instance, validated_data)
+        # TODO: remove this when the target_group field is fully automatically updated
+        # or only youth sets the target_group
+        self._update_target_group(instance, target_group)
+        return instance
+
+    def validate(self, data):
+        data = super().validate(data)
+        self._validate_non_draft_required_fields(data)
+        return data
+
+    REQUIRED_FIELDS_FOR_SUBMITTED_SUMMER_VOUCHERS = [
+        "summer_voucher_serial_number",
+        "employee_name",
+        "employee_school",
+        "employee_ssn",
+        "employee_phone_number",
+        "employee_home_city",
+        "employee_postcode",
+        "employment_postcode",
+        "employment_start_date",
+        "employment_end_date",
+        "employment_work_hours",
+        "employment_salary_paid",
+        "hired_without_voucher_assessment",
+    ]
 
 
 class EmployerApplicationSerializer(serializers.ModelSerializer):

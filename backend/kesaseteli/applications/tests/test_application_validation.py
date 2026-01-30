@@ -188,9 +188,6 @@ def test_application_status_change_with_missing_summer_voucher_data(
     payslip_attachment,
     missing_field,
 ):
-    summer_voucher.target_group = ""
-    summer_voucher.save()
-
     from_status = EmployerApplicationStatus.DRAFT
     to_status = EmployerApplicationStatus.SUBMITTED
 
