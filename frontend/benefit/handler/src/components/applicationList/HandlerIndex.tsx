@@ -89,7 +89,7 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
 
   const getTabCountInstalments = (): number =>
     list.filter(
-      (app: ApplicationListItemData) => app.secondInstalment && isInPayment(app)
+      (app: ApplicationListItemData) => app.secondInstalment && isPendingInstalment(app)
     ).length;
 
   const getTabCountInPayment = (): number =>
