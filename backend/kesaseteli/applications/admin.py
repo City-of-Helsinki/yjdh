@@ -431,11 +431,23 @@ class YouthApplicationAdmin(admin.ModelAdmin):
         return super().get_readonly_fields(request, obj)
 
     def has_add_permission(self, request):
-        """Disable adding new applications."""
+        """
+        Disable adding new applications.
+        Only superusers can add new applications.
+        """
+        user = request.user
+        if user.is_superuser:
+            return True
         return False
 
     def has_delete_permission(self, request, obj=None):
-        """Disable deleting applications."""
+        """
+        Disable deleting applications.
+        Only superusers can delete applications.
+        """
+        user = request.user
+        if user.is_superuser:
+            return True
         return False
 
 
@@ -557,11 +569,23 @@ class EmployerApplicationAdmin(admin.ModelAdmin):
     ]
 
     def has_add_permission(self, request):
-        """Disable adding new applications."""
+        """
+        Disable adding new applications.
+        Only superusers can add new applications.
+        """
+        user = request.user
+        if user.is_superuser:
+            return True
         return False
 
     def has_delete_permission(self, request, obj=None):
-        """Disable deleting applications."""
+        """
+        Disable deleting applications.
+        Only superusers can delete applications.
+        """
+        user = request.user
+        if user.is_superuser:
+            return True
         return False
 
     def get_queryset(self, request):
@@ -656,11 +680,23 @@ class EmployerSummerVoucherAdmin(admin.ModelAdmin):
         ]
 
     def has_add_permission(self, request):
-        """Disable adding new employer summer vouchers."""
+        """
+        Disable adding new employer summer vouchers.
+        Only superusers can add new employer summer vouchers.
+        """
+        user = request.user
+        if user.is_superuser:
+            return True
         return False
 
     def has_delete_permission(self, request, obj=None):
-        """Disable deleting employer summer vouchers."""
+        """
+        Disable deleting employer summer vouchers.
+        Only superusers can delete employer summer vouchers.
+        """
+        user = request.user
+        if user.is_superuser:
+            return True
         return False
 
     def queryset(self, request):
