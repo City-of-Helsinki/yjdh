@@ -31,7 +31,11 @@
     "thankyouMessageLabel": "Ansökan har lämnats in.",
     "thankyouMessageContent": "Vi kontaktar dig om vi behöver mer information för att behandla din ansökan. Du kan nu logga ut och stänga denna sida.",
     "createNewApplication": "Gör en ny ansökan",
-    "title": "Ansökan {{submitted_at}}"
+    "title": "Ansökan {{submitted_at}}",
+    "header": "Ansökan om sommarsedel har skickats!",
+    "success_message": "Information om arbetstagaren {{name}} har sparats.",
+    "add_another": "Gör en ny ansökan",
+    "sign_out": "Logga ut"
   },
   "application": {
     "new": "Ny ansökan",
@@ -41,7 +45,7 @@
     "wizardStepButton": "Gå till steg",
     "tooltipShowInfo": "Visa information",
     "step1": {
-      "name": "Arbetsgivare",
+      "name": "Arbetsgivare och anställning",
       "header": "1. Arbetsgivarens uppgifter",
       "tooltip": "Skriv in dina uppgifter i formuläret. Fortsätt med att klicka på Spara och fortsätt. Du kan återvända för att redigera uppgifterna också i följande skede.",
       "companyInfoGrid": {
@@ -54,27 +58,27 @@
           "postcode": "Post nummer",
           "city": "Kommun"
         }
+      },
+      "employment_section": {
+        "name": "Sammanfattning",
+        "header": "2. Utredning om anställningshållande",
+        "employment": "Anställning",
+        "tooltip": "Skriv i formuläret sommararbetarens uppgifter samt Sommarsedelns serienummer. Börja med att ange den ungas namn och sommarsedelns serienummer, varefter du kan hämta uppgifterna genom att trycka på \"Hämta uppgifter med arbetstagarens namn och sommarsedelns serienummer\". Du kan återvända för att redigera uppgifterna också i följande skede.",
+        "attachments_section": "Obligatoriska bilagor",
+        "employment_section": "Beskrivning av arbetsförhållandet",
+        "employment_description_placeholder": "Skriv här vilka arbetsuppgifter den unga gjorde.",
+        "add_employment": "Lägg till en ny anställning",
+        "save_employment": "Spara informationen",
+        "remove_employment": "Ta bort uppgifterna",
+        "fetch_employment": "Hämta uppgifter med arbetstagarens namn och sommarsedelns serienummer",
+        "fetch_employment_error_title": "Fel uppstod!",
+        "fetch_employment_error_message": "Kunde inte hämta arbetstagarens uppgifter.",
+        "fetch_employment_not_found_error_message": "Arbetstagarens information hittades inte."
       }
     },
     "step2": {
-      "name": "Arbetsanställning",
-      "header": "2. Utredning om anställningshållande",
-      "employment": "Anställning",
-      "tooltip": "Skriv i formuläret sommararbetarens uppgifter samt Sommarsedelns serienummer. Du kan återvända för att redigera uppgifterna också i följande skede.",
-      "attachments_section": "Obligatoriska bilagor",
-      "employment_section": "Beskrivning av arbetsförhållandet",
-      "employment_description_placeholder": "Skriv här vilka arbetsuppgifter den unga gjorde.",
-      "add_employment": "Lägg till en ny anställning",
-      "save_employment": "Spara informationen",
-      "remove_employment": "Ta bort uppgifterna",
-      "fetch_employment": "Hämta uppgifter med arbetstagarens namn och sommarsedelns serienummer",
-      "fetch_employment_error_title": "Fel uppstod!",
-      "fetch_employment_error_message": "Kunde inte hämta arbetstagarens uppgifter.",
-      "fetch_employment_not_found_error_message": "Arbetstagarens information hittades inte."
-    },
-    "step3": {
-      "name": "Skicka",
-      "header": "3. Kontrollera och skicka",
+      "name": "Sammanfattning",
+      "header": "2. Kontrollera och skicka",
       "employerTitle": "Arbetsgivarens uppgifter",
       "employmentTitle": "Utredning om den unga personens anställningsrhållande",
       "tooltip": "Här ser du dina uppgifter och bilagor. Kontrollera, att allt stämmer och tryck “skicka ansökan”. Om du vill korrigera något, klicka på ”gå tillbaka”."

@@ -16,6 +16,8 @@ import {
 type Props = {
   validation: RegisterOptions<ApplicationFormData>;
   id: ApplicationFieldPath;
+  readOnly?: boolean;
+  disabled?: boolean;
 } & GridCellProps;
 
 const convertDateForBackend = (dateString: string): string | undefined => {
@@ -26,6 +28,8 @@ const convertDateForBackend = (dateString: string): string | undefined => {
 const DateInput = ({
   id,
   validation,
+  readOnly = false,
+  disabled = false,
   ...$gridCellProps
 }: Props): ReturnType<typeof HdsDateInput> => {
   const { t } = useTranslation();
@@ -76,6 +80,8 @@ const DateInput = ({
         clearErrors();
         setValue(value);
       }}
+      readOnly={readOnly}
+      disabled={disabled}
       {...$gridCellProps}
     />
   );

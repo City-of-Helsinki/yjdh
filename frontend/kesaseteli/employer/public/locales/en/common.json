@@ -31,7 +31,11 @@
     "thankyouMessageLabel": "The application has been submitted.",
     "thankyouMessageContent": "We will contact you if we need more information to process your application. You can now log out and close this page.",
     "createNewApplication": "Create new application",
-    "title": "Application {{submitted_at}}"
+    "title": "Application {{submitted_at}}",
+    "header": "Summer voucher application sent successfully! ",
+    "success_message": "Employee {{name}} information has been saved.",
+    "add_another": "Add another",
+    "sign_out": "Sign out"
   },
   "application": {
     "new": "Application",
@@ -41,7 +45,7 @@
     "wizardStepButton": "Go to step",
     "tooltipShowInfo": "Show information",
     "step1": {
-      "name": "Employer",
+      "name": "Employer and employment",
       "header": "1. Details of the employer",
       "tooltip": "Write your information in the form. Click Save and continue to move forward. You can return to the data also at the next stage.",
       "companyInfoGrid": {
@@ -54,27 +58,27 @@
           "postcode": "Post code",
           "city": "Municipality"
         }
+      },
+      "employment_section": {
+        "name": "Summary",
+        "header": "2. Employments reports",
+        "employment": "Employment",
+        "tooltip": "Enter the summer worker’s information and the serial number of the Summer Job Voucher in the form. Start by entering the employee’s name and the Summer Job Voucher’s serial number, after which you can fetch the information by pressing \"Fetch information using the employee’s name and Summer Job Voucher serial number\". You can also return to edit the information at the next stage.",
+        "attachments_section": "Mandatory attachments",
+        "employment_section": "Description of the employment",
+        "employment_description_placeholder": "Describe the the work tasks of the employee.",
+        "add_employment": "Add a new employment",
+        "save_employment": "Save the information",
+        "remove_employment": "Delete the information",
+        "fetch_employment": "Load information using employee name and summer job voucher serial number",
+        "fetch_employment_error_title": "Error occured!",
+        "fetch_employment_error_message": "Could not fetch the info of the employee.",
+        "fetch_employment_not_found_error_message": "Employee's information was not found."
       }
     },
     "step2": {
-      "name": "Employment",
-      "header": "2. Employments reports",
-      "employment": "Employment",
-      "tooltip": "Write in the form the information of the summer worker and the serial number of the Summer Job Voucher. You can return to the data also at the next stage.",
-      "attachments_section": "Mandatory attachments",
-      "employment_section": "Description of the employment",
-      "employment_description_placeholder": "Describe the the work tasks of the employee.",
-      "add_employment": "Add a new employment",
-      "save_employment": "Save the information",
-      "remove_employment": "Delete the information",
-      "fetch_employment": "Load information using employee name and summer job voucher serial number",
-      "fetch_employment_error_title": "Error occured!",
-      "fetch_employment_error_message": "Could not fetch the info of the employee.",
-      "fetch_employment_not_found_error_message": "Employee's information was not found."
-    },
-    "step3": {
-      "name": "Send",
-      "header": "3. Check and send",
+      "name": "Summary",
+      "header": "2. Check and send",
       "employerTitle": "Details of the employer",
       "employmentTitle": "Description of the young person’s employment",
       "tooltip": "Here you can see your information and attachments. Check that, all information is accurate and press “send the application”. If you want to correct something, press “return back”."

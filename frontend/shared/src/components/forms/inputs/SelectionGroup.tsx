@@ -15,6 +15,7 @@ type Props<T> = Omit<InputProps<T>, 'label'> & {
   direction?: SelectionGroupProps['direction'];
   values: readonly string[];
   getValueText: (value: string) => string;
+  disabled?: boolean;
 } & GridCellProps;
 
 const SelectionGroup = <T,>({
@@ -27,6 +28,7 @@ const SelectionGroup = <T,>({
   label,
   errorText,
   getValueText,
+  disabled = false,
   ...$gridCellProps
 }: Props<T>): React.ReactElement<T> => {
   const { control } = useFormContext<T>();
@@ -58,6 +60,7 @@ const SelectionGroup = <T,>({
             direction={direction}
             errorText={errorText}
             label={label}
+            disabled={disabled}
           >
             {values.map((val) => (
               <RadioButton

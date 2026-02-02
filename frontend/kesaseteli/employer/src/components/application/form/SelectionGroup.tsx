@@ -19,6 +19,7 @@ type Props<V extends readonly string[]> = {
   values: V;
   onChange?: (value?: string) => void;
   getValueText?: (value: string) => string;
+  disabled?: boolean;
 } & GridCellProps;
 
 const SelectionGroup = <V extends readonly string[]>({
@@ -28,6 +29,7 @@ const SelectionGroup = <V extends readonly string[]>({
   values,
   onChange = noop,
   getValueText: getValueTextProp,
+  disabled = false,
   ...$gridCellProps
 }: Props<V>): ReturnType<typeof HdsSelectionGroup> => {
   const { t } = useTranslation();
@@ -71,6 +73,7 @@ const SelectionGroup = <V extends readonly string[]>({
       label={t(`common:application.form.inputs.${fieldName}`)}
       onChange={handleChange}
       getValueText={getValueText}
+      disabled={disabled}
       {...$gridCellProps}
     />
   );
