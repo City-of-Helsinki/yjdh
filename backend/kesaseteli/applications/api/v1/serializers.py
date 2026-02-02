@@ -224,7 +224,10 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
     )
 
     target_group = serializers.ChoiceField(
-        choices=get_target_group_choices(), required=False
+        choices=get_target_group_choices(),
+        required=False,
+        allow_blank=True,
+        allow_null=True,
     )
 
     class Meta:
@@ -275,7 +278,9 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
                     }
                 )
 
-    def _update_target_group(self, instance: EmployerSummerVoucher, target_group: str):
+    def _update_target_group(
+        self, instance: EmployerSummerVoucher, target_group: Optional[str]
+    ):
         """
         Update the target_group of the youth voucher if it exists.
 
