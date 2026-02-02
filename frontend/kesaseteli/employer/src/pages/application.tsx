@@ -1,6 +1,5 @@
-import Step1Employer from 'kesaseteli/employer/components/application/steps/step1/Step1Employer';
-import Step2Employments from 'kesaseteli/employer/components/application/steps/step2/Step2Employments';
-import Step3Summary from 'kesaseteli/employer/components/application/steps/step3/Step3Summary';
+import Step1EmployerAndEmployment from 'kesaseteli/employer/components/application/steps/step1/Step1EmployerAndEmployment';
+import Step2Summary from 'kesaseteli/employer/components/application/steps/step2/Step2Summary';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useStepStorage from 'kesaseteli/employer/hooks/wizard/useStepStorage';
 import { GetStaticProps, NextPage } from 'next';
@@ -39,15 +38,15 @@ const ApplicationPage: NextPage = () => {
           </title>
         </Head>
         <ApplicationWizard initialStep={initialStep}>
-          <Step1Employer />
-          <Step2Employments />
-          <Step3Summary />
+          <Step1EmployerAndEmployment />
+          <Step2Summary />
         </ApplicationWizard>
       </Container>
     );
   }
   return <PageLoadingSpinner />;
 };
+
 
 export const getStaticProps: GetStaticProps =
   getServerSideTranslations('common');
