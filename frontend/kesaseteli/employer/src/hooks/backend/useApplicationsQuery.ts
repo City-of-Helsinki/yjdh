@@ -10,6 +10,8 @@ const useApplicationsQuery = <T = Application[]>(
     select: select
       ? (applications: Application[]) => select(applications)
       : undefined,
+    staleTime: Infinity,
+    retryDelay: 3000,
     onError: useErrorHandler(),
   });
 export default useApplicationsQuery;

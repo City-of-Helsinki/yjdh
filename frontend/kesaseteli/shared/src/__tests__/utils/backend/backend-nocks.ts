@@ -119,8 +119,5 @@ export const expectToSaveApplication = (
   applicationToSave: Application
 ): nock.Scope =>
   nock(getBackendDomain())
-    .put(`${BackendEndpoint.EMPLOYER_APPLICATIONS}${applicationToSave.id}/`, {
-      ...applicationToSave,
-      status: 'draft',
-    } as DraftApplication)
+    .put(`${BackendEndpoint.EMPLOYER_APPLICATIONS}${applicationToSave.id}/`, applicationToSave)
     .reply(200, applicationToSave, { 'Access-Control-Allow-Origin': '*' });

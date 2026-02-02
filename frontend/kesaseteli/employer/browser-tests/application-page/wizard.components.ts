@@ -27,11 +27,7 @@ export const getWizardComponents = async (t: TestController) => {
       }),
     step2Button: () =>
       screen.findByRole('button', {
-        name: /^siirry hakemuksen vaiheeseen 2\. selvitys työsuhteesta/i,
-      }),
-    step3Button: () =>
-      screen.findByRole('button', {
-        name: /siirry hakemuksen vaiheeseen 3\. tarkistus ja lähettäminen/i,
+        name: /^siirry hakemuksen vaiheeseen 2\. tarkistus ja lähettäminen/i,
       }),
   };
   const expectations = {
@@ -55,9 +51,6 @@ export const getWizardComponents = async (t: TestController) => {
     },
     clickGoToStep2Button() {
       return t.click(selectors.step2Button());
-    },
-    clickGoToStep3Button() {
-      return t.click(selectors.step3Button());
     },
   };
 

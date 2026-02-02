@@ -18,13 +18,15 @@ type Props = {
   index: number;
   id: ApplicationFieldPath;
   required?: boolean;
+  disabled?: boolean;
+  readOnly?: boolean;
 };
 
 const validate = (
   val: FieldPathValue<ApplicationFormData, ApplicationFieldPath>
 ): boolean => !isEmpty(val);
 
-const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
+const AttachmentInput: React.FC<Props> = ({ index, id, required, disabled, readOnly }) => {
   const { t } = useTranslation();
 
   const {
@@ -144,6 +146,9 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
     `common:application.form.helpers.${attachmentType}`
   )} ${t('common:application.form.helpers.attachments')}`;
 
+  if (disabled || readOnly) {
+    return <div>{message}</div>
+  }
   if (applicationQuery.isSuccess) {
     return (
       <AttachmentsListBase
@@ -169,6 +174,7 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
       />
     );
   }
+
   return <PageLoadingSpinner />;
 };
 
