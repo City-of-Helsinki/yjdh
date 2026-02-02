@@ -312,7 +312,6 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
     def _get_application_pks_with_instalments(self) -> List[int]:
         return Application.objects.filter(
             status=ApplicationStatus.ACCEPTED,
-            calculation__instalments__due_date__gte=timezone.now().date(),
             calculation__instalments__instalment_number=2,
             calculation__instalments__status__in=[
                 InstalmentStatus.ACCEPTED,
