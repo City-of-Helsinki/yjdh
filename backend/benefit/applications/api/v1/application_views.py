@@ -312,14 +312,11 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
     def _get_application_pks_with_instalments(self) -> List[int]:
         return Application.objects.filter(
             status=ApplicationStatus.ACCEPTED,
-            calculation__instalments__due_date__gte=timezone.now().date(),
             calculation__instalments__instalment_number=2,
-            calculation__instalments__status__in=[
-                InstalmentStatus.ACCEPTED,
-                InstalmentStatus.ERROR_IN_TALPA,
-                InstalmentStatus.WAITING,
-            ],
-        )
+            calculation__instalments__status__in=[InstalmentStatus.ACCEPTED,
+                                                  InstalmentStatus.ERROR_IN_TALPA,
+                                                  InstalmentStatus.WAITING, ],
+                                          )
 
     def _get_simplified_queryset(self, request, context) -> QuerySet:
         qs = self.filter_queryset(self.get_queryset())
@@ -346,12 +343,12 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         if hasattr(user, "is_handler") and user.is_handler():
             should_filter_archived = request.query_params.get("filter_archived") == "1"
             if should_filter_archived:
-                qs = qs.filter(archived=should_filter_archived)
+                qs = qs.filter(archived=True)
             else:
                 # Applications with second instalment are considered archived but should
                 # be included in main views
                 qs = qs.filter(
-                    Q(archived=should_filter_archived)
+                    Q(archived=False)
                     | Q(pk__in=self._get_application_pks_with_instalments())
                 )
 
