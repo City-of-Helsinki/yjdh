@@ -445,12 +445,3 @@ def hash_file(file: File) -> str:
 
         # Return the hexadecimal representation of the hash
     return sha256.hexdigest()
-
-
-def get_request_ip_address(request: HttpRequest) -> str | None:
-    """Get the IP address of a request"""
-    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
-    if x_forwarded_for:
-        return x_forwarded_for.split(",")[0]
-
-    return request.META.get("REMOTE_ADDR", None)
