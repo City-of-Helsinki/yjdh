@@ -18,11 +18,11 @@ export const getSummaryComponents = async (t: TestController) => {
   const within = withinContext(t);
 
   const employerSectionSelector = (): Selector =>
-    screen.findByRole('region', { name: /^työnantajan tiedot/i });
+    screen.findByTestId('employer-section');
   const findEmployerField = (id: string) =>
     within(employerSectionSelector()).findByTestId(id);
   const employmentSectionSelector = (): Selector =>
-    screen.findByRole('region', { name: /^selvitys työsuhteesta/i });
+    screen.findByTestId('employment-section');
   const findEmploymentField = (id: string) =>
     within(employmentSectionSelector()).findByTestId(id);
 

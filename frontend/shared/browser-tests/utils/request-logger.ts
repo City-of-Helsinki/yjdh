@@ -3,7 +3,7 @@ import { RequestLogger } from 'testcafe';
 import { isValidJsonString } from '../../src/utils/regex.utils';
 
 const requestLogger = RequestLogger(
-  { url: /^https:\/\/(?:(?!_next).)*$/, isAjax: true },
+  { url: /^https?:\/\/(?:(?!_next).)*$/, isAjax: true },
   {
     logRequestHeaders: true,
     logResponseHeaders: true,
@@ -20,9 +20,8 @@ const getShortenedHeadersString = (
   const headersJson =
     typeof headers === 'string' ? headers : JSON.stringify(headers, null, 2);
   if (headersJson?.length > 5000) {
-    return `${headersJson.slice(0, 5000)}...${
-      headers === 'string' ? '' : '\n}'
-    }`;
+    return `${headersJson.slice(0, 5000)}...${headers === 'string' ? '' : '\n}'
+      }`;
   }
   return headersJson;
 };

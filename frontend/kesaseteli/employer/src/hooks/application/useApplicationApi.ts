@@ -26,7 +26,7 @@ export type ApplicationApi<T> = {
   >;
   updateApplication: (
     application: DraftApplication,
-    onSuccess?: () => void | Promise<void>
+    onSuccess?: (app: Application) => void | Promise<void>
   ) => void;
   sendApplication: (
     application: Application,
@@ -35,17 +35,17 @@ export type ApplicationApi<T> = {
   fetchEmployment: (
     application: DraftApplication,
     employmentIndex: number,
-    onSuccess?: () => void | Promise<void>
+    onSuccess?: (app: Application) => void | Promise<void>
   ) => void;
   addEmployment: (
     application: DraftApplication,
-    onSuccess?: () => void | Promise<void>
-  ) => void;
+    onSuccess?: (app: Application) => void | Promise<void>
+  ) => Promise<void>;
   updateEmployment: (
     application: DraftApplication,
     index: number,
     employment: EmploymentBase,
-    onSuccess?: () => void | Promise<void>
+    onSuccess?: (app: Application) => void | Promise<void>
   ) => void;
   removeEmployment: (
     application: DraftApplication,
@@ -85,35 +85,39 @@ const useApplicationApi = <T = Application>(
       error.response.data &&
       typeof error.response.data === 'object'
     ) {
-      Object.keys(error.response.data as Record<string, unknown>).forEach((field) =>
-        setBackendValidationError(field as keyof T, {
-          type: 'pattern',
-        })
+      Object.keys(error.response.data as Record<string, unknown>).forEach(
+        (field) =>
+          setBackendValidationError(field as keyof T, {
+            type: 'pattern',
+          })
       );
     } else {
       onError(error);
     }
   };
 
-  const addEmployment: ApplicationApi<T>['addEmployment'] = (
+  const addEmployment: ApplicationApi<T>['addEmployment'] = async (
     draftApplication: DraftApplication,
-    onSuccess: (application: DraftApplication) => void = noop
+    onSuccess: (application: Application) => void = noop
   ) => {
     const summer_vouchers = [...(draftApplication.summer_vouchers ?? []), {}];
-    return updateApplicationQuery.mutate(
-      { ...draftApplication, status: 'draft', summer_vouchers },
-      {
-        onSuccess: () => onSuccess(draftApplication),
-        onError: handleUpdateError,
-      }
-    );
+    try {
+      const result = await updateApplicationQuery.mutateAsync({
+        ...draftApplication,
+        status: 'draft',
+        summer_vouchers,
+      });
+      onSuccess(result);
+    } catch (error) {
+      handleUpdateError(error);
+    }
   };
 
   const updateEmployment: ApplicationApi<T>['updateEmployment'] = (
     draftApplication: DraftApplication,
     index: number,
     employment: EmploymentBase,
-    onSuccess: (application: DraftApplication) => void = noop
+    onSuccess: (application: Application) => void = noop
   ) => {
     const summer_vouchers = [...(draftApplication.summer_vouchers ?? [])];
     if (summer_vouchers.length > index) {
@@ -123,7 +127,7 @@ const useApplicationApi = <T = Application>(
     return updateApplicationQuery.mutate(
       { ...draftApplication, status: 'draft', summer_vouchers },
       {
-        onSuccess: () => onSuccess(draftApplication),
+        onSuccess: (data) => onSuccess(data),
         onError: handleUpdateError,
       }
     );
@@ -144,12 +148,14 @@ const useApplicationApi = <T = Application>(
       },
       {
         onSuccess: (data) => {
-          const {employer_summer_voucher_id, ...updatedData} = data;
+          const { employer_summer_voucher_id, ...updatedData } = data;
           updateEmployment(
             draftApplication,
             employmentIndex,
             updatedData,
-            onSuccess
+            (app) => {
+              void onSuccess(app);
+            }
           );
         },
         onError: (error: unknown) => {
@@ -157,16 +163,18 @@ const useApplicationApi = <T = Application>(
             // Not found error
             showErrorToast(
               t('common:application.step2.fetch_employment_error_title'),
-              t('common:application.step2.fetch_employment_not_found_error_message')
-            )
+              t(
+                'common:application.step2.fetch_employment_not_found_error_message'
+              )
+            );
           } else {
             // General error
             showErrorToast(
               t('common:application.step2.fetch_employment_error_title'),
               t('common:application.step2.fetch_employment_error_message')
-            )
+            );
           }
-        }
+        },
       }
     );
   };

@@ -27,7 +27,9 @@ const ApplicationForm: React.FC<Props> = ({ title, step, children }: Props) => {
   if (applicationQuery.isSuccess) {
     return (
       <FormProvider {...methods}>
-        <form aria-label={title}>{children}</form>
+        <form id="employer-application-form" aria-label={title}>
+          {children}
+        </form>
       </FormProvider>
     );
   }

@@ -6,13 +6,18 @@ import requestLogger, {
 } from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
-import TestController from 'testcafe';
 
 import getEmployerTranslationsApi from '../../src/__tests__/utils/i18n/get-employer-translations-api';
 import { loginAndfillApplication } from '../actions/application.actions';
 import { doEmployerLogin } from '../actions/employer-header.actions';
 import { getThankYouPageComponents } from '../thankyou-page/thank-you.components';
 import { getFrontendUrl, getUrlUtils } from '../utils/url.utils';
+import {
+  attachmentsMock,
+  fetchEmployeeDataMock,
+  MOCKED_EMPLOYEE_DATA,
+  targetGroupsMock,
+} from './application.mocks';
 import { getStep1Components } from './step1.components';
 import { getWizardComponents } from './wizard.components';
 
@@ -23,7 +28,13 @@ const url = getFrontendUrl('/');
 
 fixture('Application')
   .page(url)
-  .requestHooks(requestLogger, new HttpRequestHook(url, getBackendDomain()))
+  .requestHooks(
+    requestLogger,
+    new HttpRequestHook(url, getBackendDomain()),
+    fetchEmployeeDataMock,
+    targetGroupsMock,
+    attachmentsMock
+  )
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     urlUtils = getUrlUtils(t);
@@ -31,7 +42,7 @@ fixture('Application')
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console
-    console.log(filterLoggedRequests(requestLogger))
+    console.log(JSON.stringify(filterLoggedRequests(requestLogger), null, 2))
   );
 
 if (isRealIntegrationsEnabled()) {
@@ -40,7 +51,7 @@ if (isRealIntegrationsEnabled()) {
       user,
       id: applicationId,
       ...application
-    } = await loginAndfillApplication(t, 1);
+    } = await loginAndfillApplication(t, 1, MOCKED_EMPLOYEE_DATA);
     const header = new Header(getEmployerTranslationsApi());
     await header.isLoaded();
     await header.clickLogoutButton();
@@ -50,30 +61,26 @@ if (isRealIntegrationsEnabled()) {
   });
 } else {
   test('Fills up employer form and retrieves its data when reloading page', async (t: TestController) => {
-    const { id: applicationId, ...step1FormData } =
-      await loginAndfillApplication(t, 1);
+    const { id: applicationId, ...applicationData } =
+      await loginAndfillApplication(t, 1, MOCKED_EMPLOYEE_DATA);
     const wizard = await getWizardComponents(t);
     await wizard.expectations.isPresent();
+    await wizard.actions.clickGoToStep1Button();
     await urlUtils.actions.refreshPage();
-    await wizard.actions.clickGoToPreviousStepButton();
     const step1Form = await step1Components.form();
     await step1Form.expectations.isPresent();
     await urlUtils.actions.refreshPage();
     await step1Form.expectations.isPresent();
-    await step1Form.expectations.isFulFilledWith(step1FormData);
+    await step1Form.expectations.isFulFilledWith(applicationData);
     await urlUtils.expectations.urlChangedToApplicationPage(applicationId);
   });
 }
 
-// FIXME: Fix the test case after requiring EmployerSummerVoucher to be linked to a YouthSummerVoucher.
-//        Related to the changes made in https://helsinkisolutionoffice.atlassian.net/browse/YJDH-789
-test.skip('can fill and send application and create another', async (t: TestController) => {
-  const application = await loginAndfillApplication(t);
+test('can fill and send application and create another', async (t: TestController) => {
+  const application = await loginAndfillApplication(t, 2, MOCKED_EMPLOYEE_DATA);
   const thankYouPage = getThankYouPageComponents(t);
   await thankYouPage.header();
-  const summaryComponent = await thankYouPage.summaryComponent();
-  await summaryComponent.expectations.isCompanyDataPresent(application.company);
-  await summaryComponent.expectations.isFulFilledWith(application);
+  // Thank you page doesn't have summary - just verify "add another" button works
   const createNewApplicationButton =
     await thankYouPage.createNewApplicationButton();
   await createNewApplicationButton.actions.clickButton();

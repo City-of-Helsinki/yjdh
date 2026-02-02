@@ -36,7 +36,7 @@ const createQueryClient = (): QueryClient =>
             BackendEndPoints.some((endpoint) => url.startsWith(endpoint))
           ) {
             const { data } = await createAxios().get<T>(
-              `${getBackendDomain()}${url.toLowerCase()}`
+              `${getBackendDomain()}${url}`
             );
             return data;
           }

@@ -21,6 +21,8 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
     setError,
     formState: { isSubmitting },
   } = useFormContext<Application>();
+
+
   const {
     isFirstStep,
     isLastStep,
@@ -35,7 +37,11 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
   const handleSuccess = React.useCallback(
     (validatedApplication: Application) => {
       if (!isLastStep) {
-        return updateApplication(validatedApplication, () => goToNextStep());
+        return updateApplication(validatedApplication, () => {
+          // eslint-disable-next-line no-console
+          console.debug('ActionButtons: goToNextStep called');
+          void goToNextStep();
+        });
       }
       return sendApplication(validatedApplication, onAfterLastStep);
     },
@@ -49,12 +55,17 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
   );
 
   const handleInvalid = React.useCallback(
-    () => clearStepHistory(),
+    (errors: unknown) => {
+      // eslint-disable-next-line no-console
+      console.debug('ActionButtons: handleInvalid called', errors);
+      clearStepHistory();
+    },
     [clearStepHistory]
   );
 
   const isLoading =
     isSubmitting || updateApplicationQuery.isLoading || isWizardLoading;
+
   return (
     <$ButtonSection columns={isFirstStep ? 1 : 2} withoutDivider>
       {!isFirstStep && (
@@ -77,7 +88,11 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
           theme="coat"
           data-testid="next-button"
           iconRight={<IconArrowRight />}
-          onClick={handleSubmit(handleSuccess, handleInvalid)}
+          onClick={(e) => {
+            // eslint-disable-next-line no-console
+            console.debug('ActionButtons: handleSubmit called');
+            void handleSubmit(handleSuccess, handleInvalid)(e);
+          }}
           loadingText={t(`common:application.loading`)}
           isLoading={isLoading}
           disabled={isLoading}
@@ -87,7 +102,7 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
             : t(`common:application.buttons.next`)}
         </Button>
       </$GridCell>
-    </$ButtonSection>
+    </$ButtonSection >
   );
 };
 
