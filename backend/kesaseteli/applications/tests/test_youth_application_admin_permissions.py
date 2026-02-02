@@ -4,6 +4,7 @@ from django.contrib.admin.sites import AdminSite
 from applications.admin import YouthApplicationAdmin
 from applications.models import YouthApplication
 from common.tests.factories import YouthApplicationFactory
+from shared.common.tests.factories import DuplicateAllowingUserFactory
 
 
 @pytest.fixture
@@ -12,8 +13,17 @@ def youth_application_admin():
 
 
 @pytest.mark.django_db
-def test_has_add_permission(youth_application_admin):
-    assert youth_application_admin.has_add_permission(None) is False
+def test_has_add_permission(youth_application_admin, rf):
+    # Just any request will do
+    request = rf.get("/")
+
+    # Test with normal user
+    request.user = DuplicateAllowingUserFactory()
+    assert youth_application_admin.has_add_permission(request) is False
+
+    # Test with superuser
+    request.user = DuplicateAllowingUserFactory(is_superuser=True)
+    assert youth_application_admin.has_add_permission(request) is True
 
 
 @pytest.mark.django_db
