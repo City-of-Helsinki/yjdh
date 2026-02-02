@@ -27,6 +27,7 @@ type Employment = {
   summer_voucher_serial_number: string;
   employment_start_date?: string; // yyyy-MM-dd
   employment_end_date?: string; // yyyy-MM-dd
+  job_type?: string;
   employment_work_hours?: number;
   employment_salary_paid?: number;
   employment_description?: string;

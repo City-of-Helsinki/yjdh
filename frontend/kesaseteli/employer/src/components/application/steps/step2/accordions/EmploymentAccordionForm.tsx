@@ -11,7 +11,7 @@ import { useFormContext } from 'react-hook-form';
 import FormSectionDivider from 'shared/components/forms/section/FormSectionDivider';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
 import { CITY_REGEX, POSTAL_CODE_REGEX } from 'shared/constants';
-import { EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT } from 'shared/constants/employee-constants';
+import { EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT, JOB_TYPE } from 'shared/constants/employee-constants';
 import Application from 'shared/types/application';
 import { getDecimalNumberRegex } from 'shared/utils/regex.utils';
 
@@ -80,6 +80,7 @@ const useFetchEmployeeData = (): {
     handleGetEmployeeData,
   };
 };
+
 
 const EmploymentAccordionForm: React.FC = () => {
   const { t } = useTranslation();
@@ -217,6 +218,13 @@ const EmploymentAccordionForm: React.FC = () => {
               pattern: getDecimalNumberRegex(2),
             }}
             helperFormat="######.##"
+          />
+          <SelectionGroup
+            id={getId('job_type')}
+            validation={{
+              required: true,
+            }}
+            values={JOB_TYPE}
           />
           <TextInput
             $rowSpan={3}

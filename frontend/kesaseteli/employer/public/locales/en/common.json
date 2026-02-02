@@ -89,6 +89,22 @@
           "primary_target_group": "9th grader or TUVA grader",
           "secondary_target_group": "Other age group"
         },
+        "organization_type": {
+          "company": "Company",
+          "association": "Association",
+          "parish": "Parish",
+          "other": "Other"
+        },
+        "job_type": {
+          "sports_and_leisure": "Sports and leisure time",
+          "maintenance_and_construction": "Maintenance and construction",
+          "restaurant_and_cafe": "Restaurant and cafe sector",
+          "retail": "Retail sector",
+          "office_and_media": "Office and media work",
+          "gardening_and_agriculture": "Gardening and agricultural work",
+          "service": "Service sector",
+          "other": "Other"
+        },
         "hired_without_voucher_assessment": {
           "yes": "Yes",
           "no": "No",

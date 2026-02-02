@@ -31,6 +31,8 @@ from applications.enums import (
     EmailTemplateType,
     EmployerApplicationStatus,
     HiredWithoutVoucherAssessment,
+    JobType,
+    OrganizationType,
     VtjTestCase,
     YouthApplicationStatus,
 )
@@ -1214,6 +1216,13 @@ class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
         verbose_name=_("bank account number"),
         blank=True,
     )
+    organization_type = models.CharField(
+        max_length=64,
+        verbose_name=_("organization type"),
+        blank=True,
+        help_text=_("Company's organization type"),
+        choices=OrganizationType.choices,
+    )
 
     # contact information
     contact_person_name = models.CharField(
@@ -1379,6 +1388,12 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
             "Whether the employee would have been hired without a summer voucher."
         ),
         choices=HiredWithoutVoucherAssessment.choices,
+    )
+    job_type = models.CharField(
+        max_length=64,
+        verbose_name=_("job type"),
+        blank=True,
+        choices=JobType.choices,
     )
 
     is_exported = models.BooleanField(

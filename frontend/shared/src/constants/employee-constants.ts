@@ -8,3 +8,21 @@ export const EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT = [
   'no',
   'maybe',
 ] as const;
+
+export const ORGANIZATION_TYPE = [
+  'company',
+  'association',
+  'parish',
+  'other',
+] as const;
+
+export const JOB_TYPE = [
+  'sports_and_leisure',
+  'maintenance_and_construction',
+  'restaurant_and_cafe',
+  'retail',
+  'office_and_media',
+  'gardening_and_agriculture',
+  'service',
+  'other',
+] as const;

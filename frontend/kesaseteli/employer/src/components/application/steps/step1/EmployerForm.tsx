@@ -6,6 +6,9 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { EMAIL_REGEX } from 'shared/constants';
+import SelectionGroup from "kesaseteli/employer/components/application/form/SelectionGroup";
+import { ORGANIZATION_TYPE } from "shared/constants/employee-constants";
+
 
 const EmployerForm: React.FC = () => {
   const { t } = useTranslation();
@@ -20,6 +23,13 @@ const EmployerForm: React.FC = () => {
       <CompanyInfoGrid />
       <EmployerErrorSummary />
       <FormSection columns={2}>
+        <SelectionGroup
+          id="organization_type"
+          validation={{
+            required: true,
+          }}
+          values={ORGANIZATION_TYPE}
+        />
         <TextInput
           id="contact_person_name"
           validation={{ required: true, maxLength: 256 }}

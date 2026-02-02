@@ -89,6 +89,22 @@
           "primary_target_group": "Niondeklassist eller TUVAklassist",
           "secondary_target_group": "Annan åldersgrupp"
         },
+        "organization_type": {
+          "company": "Företag",
+          "association": "Förening",
+          "parish": "Församling",
+          "other": "Annat"
+        },
+        "job_type": {
+          "sports_and_leisure": "Sport och fritid",
+          "maintenance_and_construction": "Underhåll och byggande",
+          "restaurant_and_cafe": "Restaurang och café",
+          "retail": "Detaljhandel",
+          "office_and_media": "Kontor och media",
+          "gardening_and_agriculture": "Trädgårdsarbete och jordbruk",
+          "service": "Tjänster",
+          "other": "Annat"
+        },
         "hired_without_voucher_assessment": {
           "yes": "Jo",
           "no": "Nej",
