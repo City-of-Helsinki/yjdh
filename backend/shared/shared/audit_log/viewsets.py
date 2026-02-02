@@ -13,6 +13,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation, Status
+from shared.audit_log.utils import get_remote_address
 
 User = get_user_model()
 
@@ -38,7 +39,7 @@ class AuditLoggingModelViewSet(ModelViewSet):
             self._get_operation(),
             self._get_target(),
             Status.FORBIDDEN,
-            ip_address=self._get_ip_address(),
+            ip_address=get_remote_address(self.request),
         )
 
     def update(self, request, *args, **kwargs):
@@ -104,7 +105,7 @@ class AuditLoggingModelViewSet(ModelViewSet):
                     actor_backend,
                     operation,
                     target or self._get_target(),
-                    ip_address=self._get_ip_address(),
+                    ip_address=get_remote_address(self.request),
                     additional_information=additional_information,
                 )
         except (NotAuthenticated, PermissionDenied):
@@ -114,7 +115,7 @@ class AuditLoggingModelViewSet(ModelViewSet):
                 operation,
                 target or self._get_target(),
                 Status.FORBIDDEN,
-                ip_address=self._get_ip_address(),
+                ip_address=get_remote_address(self.request),
                 additional_information=additional_information,
             )
             raise
@@ -148,11 +149,3 @@ class AuditLoggingModelViewSet(ModelViewSet):
 
     def _unfiltered_queryset(self):
         return self.get_queryset().model.objects.all()
-
-    def _get_ip_address(self) -> str:
-        x_forwarded_for = self.request.META.get("HTTP_X_FORWARDED_FOR")
-        if x_forwarded_for:
-            ip = x_forwarded_for.split(",")[0]
-        else:
-            ip = self.request.META.get("REMOTE_ADDR")
-        return ip

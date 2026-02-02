@@ -16,9 +16,9 @@ from applications.enums import ApplicationBatchStatus, ApplicationTalpaStatus
 from applications.models import Application
 from calculator.enums import InstalmentStatus
 from common.authentications import RobotBasicAuthentication
-from common.utils import get_request_ip_address
 from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation
+from shared.audit_log.utils import get_remote_address
 
 LOGGER = logging.getLogger(__name__)
 
@@ -45,7 +45,7 @@ class TalpaCallbackView(APIView):
 
     def process_callback(self, data, request):
         if data["status"] in ["Success", "Failure"]:
-            ip_address = get_request_ip_address(request)
+            ip_address = get_remote_address(request)
             self._handle_successful_applications(
                 data["successful_applications"],
                 ip_address,
