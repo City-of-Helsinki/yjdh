@@ -49,7 +49,8 @@ from applications.tests.factories import (
     ReceivedApplicationFactory,
 )
 from applications.tests.test_alteration_api import _create_application_alteration
-from calculator.models import Calculation
+from calculator.enums import InstalmentStatus
+from calculator.models import Calculation, Instalment
 from calculator.tests.conftest import fill_empty_calculation_fields
 from common.tests.conftest import get_client_user
 from common.utils import duration_in_months
@@ -70,6 +71,41 @@ def get_detail_url(application):
 
 def get_handler_detail_url(application):
     return reverse("v1:handler-application-detail", kwargs={"pk": application.id})
+
+@pytest.mark.django_db
+def test_applications_second_instalment_fetched(handler_api_client, application):
+    application.status = ApplicationStatus.ACCEPTED
+    application.save()
+    application.calculation = Calculation(
+        application=application,
+        monthly_pay=1234,
+        vacation_money=123,
+        other_expenses=321,
+        start_date=datetime.now() - relativedelta(days=30),
+        end_date=datetime.now(),
+        state_aid_max_percentage=0,
+        calculated_benefit_amount=0,
+        override_monthly_benefit_amount=None,
+    )
+    application.calculation.save()
+    for i in range(2):
+        due_date = date.today() - relativedelta(months=5)
+        status = InstalmentStatus.PAID
+        if i==1:
+            status = InstalmentStatus.WAITING
+            due_date = date.today() - relativedelta(months=1)
+        Instalment.objects.create(
+            calculation=application.calculation,
+            amount=1000,
+            instalment_number=i+1,
+            status=status,
+            due_date=due_date,
+        )
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list")
+    )
+    assert len(response.data) == 1
+    assert response.status_code == 200
 
 
 @pytest.mark.parametrize(
