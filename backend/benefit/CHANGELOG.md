@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.12.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.11.1...benefit-backend-v2.12.0) (2026-02-03)
+
+
+### Features
+
+* Use resilient logger ([4959beb](https://github.com/City-of-Helsinki/yjdh/commit/4959beb4a9f54ff240d5210e666c431e68d333e7))
+
+
+### Bug Fixes
+
+* Parse IP address without the port number ([e769fdd](https://github.com/City-of-Helsinki/yjdh/commit/e769fdd4fc6da472f485f95f0951df8fb5f7e553))
+
+
+### Dependencies
+
+* **benefit:** Move uwsgi to main requirements ([1badb72](https://github.com/City-of-Helsinki/yjdh/commit/1badb72e4dbdf1f918dfd5e6807b5a8f4cdd6b1f))
+
 ## [2.11.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.11.0...benefit-backend-v2.11.1) (2026-01-28)
 
 
