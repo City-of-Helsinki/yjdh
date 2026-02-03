@@ -7,7 +7,9 @@ from shared.models.abstract_models import UUIDModel
 
 class Company(UUIDModel):
     name = models.CharField(max_length=256, verbose_name=_("name"))
-    business_id = models.CharField(max_length=64, verbose_name=_("business id"))
+    business_id = models.CharField(
+        max_length=64, unique=True, verbose_name=_("business id")
+    )
     company_form = models.CharField(
         max_length=64, blank=True, verbose_name=_("company form")
     )
