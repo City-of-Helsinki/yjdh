@@ -56,7 +56,7 @@ def test_get_mock_company_not_found_from_ytj(api_client):
     for field in [
         f
         for f in Company._meta.fields
-        if f.name not in ["id", "name", "business_id", "ytj_json"]
+        if f.name not in ["id", "name", "business_id", "organization_type", "ytj_json"]
     ]:
         assert response.data[field.name] == ""
 
@@ -154,7 +154,7 @@ def test_get_company_not_found_from_ytj(api_client, requests_mock, user):
     for field in [
         f
         for f in Company._meta.fields
-        if f.name not in ["id", "name", "business_id", "ytj_json"]
+        if f.name not in ["id", "name", "business_id", "organization_type", "ytj_json"]
     ]:
         assert response.data[field.name] == ""
 

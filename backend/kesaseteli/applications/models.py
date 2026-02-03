@@ -31,6 +31,7 @@ from applications.enums import (
     EmailTemplateType,
     EmployerApplicationStatus,
     HiredWithoutVoucherAssessment,
+    JobType,
     VtjTestCase,
     YouthApplicationStatus,
 )
@@ -1369,6 +1370,12 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     )
     employment_description = models.TextField(
         verbose_name=_("employment description"), blank=True
+    )
+    job_type = models.CharField(
+        max_length=64,
+        verbose_name=_("job type"),
+        blank=True,
+        choices=JobType.choices,
     )
     hired_without_voucher_assessment = models.CharField(
         max_length=32,

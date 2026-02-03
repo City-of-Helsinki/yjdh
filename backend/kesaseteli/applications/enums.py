@@ -176,6 +176,30 @@ class AttachmentType(models.TextChoices):
     PAYSLIP = "payslip", _("payslip")
 
 
+class OrganizationType(models.TextChoices):
+    COMPANY = "company", _("Company")
+    ASSOCIATION = "association", _("Association")
+    PARISH = "parish", _("Parish")
+    OTHER = "other", _("Other")
+
+
+class JobType(models.TextChoices):
+    SPORTS_AND_LEISURE = "sports_and_leisure", _("Sports and leisure")
+    MAINTENANCE_AND_CONSTRUCTION = (
+        "maintenance_and_construction",
+        _("Maintenance and construction"),
+    )
+    RESTAURANT_AND_CAFE = "restaurant_and_cafe", _("Restaurant and cafe sector")
+    RETAIL = "retail", _("Retail sector")
+    OFFICE_AND_MEDIA = "office_and_media", _("Office and media")
+    GARDENING_AND_AGRICULTURE = (
+        "gardening_and_agriculture",
+        _("Gardening and agricultural work"),
+    )
+    SERVICE = "service", _("Service sector")
+    OTHER = "other", _("Other")
+
+
 class HiredWithoutVoucherAssessment(models.TextChoices):
     YES = "yes", _("yes")
     NO = "no", _("no")
