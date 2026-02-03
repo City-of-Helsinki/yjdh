@@ -1,10 +1,13 @@
 import requests
 from django.conf import settings
 
+from shared.ytj.exceptions import YTJNotFoundError
+from shared.ytj.ytj_dataclasses import YTJCompany
+
 
 class YTJClient:
     """
-    https://avoindata.prh.fi/
+    https://avoindata.prh.fi/opendata-ytj-api/v3/
     """
 
     def __init__(self):
@@ -21,50 +24,31 @@ class YTJClient:
         """
         Get the required company fields from YTJ data.
         """
-        # Address of type 1 is the visiting address
-        company_address = next(
-            (x for x in ytj_data["addresses"] if x["type"] == 1), None
-        )
+        if not ytj_data or "companies" not in ytj_data or not ytj_data["companies"]:
+            raise YTJNotFoundError("No companies found in YTJ data")
 
-        if not company_address:
-            # A fallback if address of type 1 does not exist
-            company_address = next(
-                (x for x in ytj_data["addresses"] if x["type"] == 2), None
-            )
+        # Parse first company
+        company = YTJCompany.from_json(ytj_data["companies"][0])
 
-        if not company_address:
-            raise ValueError("Company address missing from YTJ data")
-
-        # Get the Finnish name of the business line
-        company_industry = next(
-            (x for x in ytj_data["businessLines"] if x["language"] == "FI"), None
-        )
-
-        if not company_industry:
-            raise ValueError("Company industry missing from YTJ data")
-
-        company_data = {
-            "name": ytj_data["name"],
-            "business_id": ytj_data["businessId"],
-            "company_form": ytj_data["companyForm"],
-            "industry": company_industry["name"],
-            "street_address": company_address["street"],
-            "postcode": company_address["postCode"],
-            "city": company_address["city"],
+        return {
+            "name": company.name,
+            "business_id": company.business_id_value,
+            "company_form": company.company_form,
+            "industry": company.industry,
+            **company.address,
         }
 
-        return company_data
-
     def get_company_info_with_business_id(self, business_id: str, **kwargs) -> dict:
-        company_info_url = f"{settings.YTJ_BASE_URL}/{business_id}"
+        # V3 uses query parameters
+        company_info_url = f"{settings.YTJ_BASE_URL}/companies"
+        params = {"businessId": business_id}
+        kwargs.update({"params": params})
 
         ytj_data = self._get(company_info_url, **kwargs)
 
-        company_result = ytj_data["results"][0]
-        business_details = self._get(company_result["bisDetailsUri"])
+        if not ytj_data.get("companies"):
+            raise YTJNotFoundError(
+                f"No company found in YTJ for business ID: {business_id}"
+            )
 
-        company_result["businessLines"] = business_details["results"][0][
-            "businessLines"
-        ]
-
-        return company_result
+        return ytj_data
