@@ -16,6 +16,8 @@ from shared.suomi_fi.views import (
     SuomiFiMetadataView,
 )
 
+from .auth_views import KesaseteliADFSLogoutCallbackView, KesaseteliADFSLogoutView
+
 router = routers.DefaultRouter()
 router.register(r"employerapplications", application_views.EmployerApplicationViewSet)
 router.register(r"youthapplications", application_views.YouthApplicationViewSet)
@@ -38,6 +40,12 @@ urlpatterns = [
         name="summer-voucher-configuration",
     ),
     path("oidc/", include("shared.oidc.urls")),
+    path(
+        "oauth2/logout/callback",
+        KesaseteliADFSLogoutCallbackView.as_view(),
+        name="adfs_logout_callback",
+    ),
+    path("oauth2/logout/", KesaseteliADFSLogoutView.as_view(), name="adfs_logout"),
     path("oauth2/", include("shared.azure_adfs.urls")),
     path(
         "excel-download/",
