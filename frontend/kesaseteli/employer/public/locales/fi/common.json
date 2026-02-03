@@ -89,6 +89,22 @@
           "primary_target_group": "9. luokkalainen tai TUVA-luokkalainen",
           "secondary_target_group": "Jokin muu ikäryhmä"
         },
+        "organization_type": {
+          "company": "Yritys",
+          "association": "Yhdistys",
+          "parish": "Seurakunta",
+          "other": "Muu"
+        },
+        "job_type": {
+          "sports_and_leisure": "Liikunta- ja vapaa-aika",
+          "maintenance_and_construction": "Huolto- ja rakennustehtävät",
+          "restaurant_and_cafe": "Ravintola- ja kahvila-ala",
+          "retail": "Kaupan ala",
+          "office_and_media": "Toimisto- ja mediatyö",
+          "gardening_and_agriculture": "Puutarha- ja maataloustyö",
+          "service": "Palveluala",
+          "other": "Muu"
+        },
         "hired_without_voucher_assessment": {
           "yes": "Kyllä",
           "no": "En",
@@ -96,6 +112,8 @@
         }
       },
       "inputs": {
+        "organization_type": "Organisaatiotyyppi",
+        "job_type": "Työtehtävien pääluokka",
         "contact_person_name": "Yhteyshenkilön nimi",
         "contact_person_email": "Yhteyshenkilön sähköposti",
         "street_address": "Työpaikan lähiosoite",
