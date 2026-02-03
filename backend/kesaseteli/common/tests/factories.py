@@ -15,6 +15,8 @@ from applications.enums import (
     EmployerApplicationStatus,
     get_supported_languages,
     HiredWithoutVoucherAssessment,
+    JobType,
+    OrganizationType,
     VtjTestCase,
     YouthApplicationStatus,
 )
@@ -49,6 +51,9 @@ class CompanyFactory(SaveAfterPostGenerationMixin, factory.django.DjangoModelFac
     street_address = factory.Faker("street_address")
     postcode = factory.Faker("postcode")
     city = factory.Faker("city")
+    organization_type = factory.Faker(
+        "random_element", elements=OrganizationType.values
+    )
     ytj_json = factory.Faker("json")
 
     class Meta:
@@ -101,6 +106,7 @@ class EmployerSummerVoucherFactory(
         "pydecimal", left_digits=4, right_digits=2, min_value=1
     )
     employment_description = factory.Faker("sentence")
+    job_type = factory.Faker("random_element", elements=JobType.values)
     hired_without_voucher_assessment = factory.Faker(
         "random_element", elements=HiredWithoutVoucherAssessment.values
     )
