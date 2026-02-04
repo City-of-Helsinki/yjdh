@@ -733,7 +733,6 @@ def test_youth_applications_activate_unexpired_inactive_with_rejection(
 def test_youth_applications_activate_unexpired_inactive__vtj_enabled(
     api_client,
     make_youth_application_activation_link_unexpired,
-    settings,
     application_year,
     applicant_age,
     is_helsinkian,
