@@ -1,5 +1,6 @@
 import pytest
 from django.test import override_settings
+from freezegun import freeze_time
 from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers import (
@@ -428,3 +429,97 @@ def test_applications_view_permissions(api_client, application, submitted_applic
     assert response.status_code == 200
     assert any(x["id"] == str(application.id) for x in response.data)
     assert any(x["id"] == str(submitted_application.id) for x in response.data)
+
+
+@pytest.mark.django_db
+def test_pagination_is_disabled_with_default_settings(
+    api_client, company, user, settings
+):
+    """Test that pagination is disabled with the default settings."""
+    assert settings.REST_FRAMEWORK.get("PAGE_SIZE") is None
+    EmployerApplicationFactory.create_batch(
+        company=company, user=user, status=EmployerApplicationStatus.DRAFT, size=10
+    )
+
+    response = api_client.get(get_list_url())
+
+    assert response.status_code == 200
+    assert len(response.data) == 10
+    assert "count" not in response.data
+    assert isinstance(response.data, list)
+
+
+@pytest.mark.django_db
+def test_pagination_with_small_limit(api_client, company, user):
+    """Test pagination with small limit using LimitOffsetPagination."""
+    EmployerApplicationFactory.create_batch(
+        company=company, user=user, status=EmployerApplicationStatus.DRAFT, size=5
+    )
+
+    response = api_client.get(get_list_url(), {"limit": 2})
+
+    assert response.status_code == 200
+    assert response.data["count"] == 5
+    assert len(response.data["results"]) == 2
+    assert response.data["next"] is not None
+    assert response.data["previous"] is None
+
+    # Test offset parameter
+    response = api_client.get(get_list_url(), {"limit": 2, "offset": 2})
+    assert response.status_code == 200
+    assert len(response.data["results"]) == 2
+    assert response.data["next"] is not None
+    assert response.data["previous"] is not None
+
+    # Test last page
+    response = api_client.get(get_list_url(), {"limit": 2, "offset": 4})
+    assert response.status_code == 200
+    assert len(response.data["results"]) == 1
+    assert response.data["next"] is None
+    assert response.data["previous"] is not None
+
+
+@pytest.mark.django_db
+def test_pagination_with_large_limit(api_client, company, user):
+    """Test pagination with large limit returns all results in single page."""
+    EmployerApplicationFactory.create_batch(
+        company=company, user=user, status=EmployerApplicationStatus.SUBMITTED, size=50
+    )
+
+    response = api_client.get(get_list_url(), {"limit": 100})
+
+    assert response.status_code == 200
+    assert response.data["count"] == 50
+    assert len(response.data["results"]) == 50
+    assert response.data["next"] is None
+    assert response.data["previous"] is None
+
+
+@pytest.mark.django_db
+def test_applications_ordering_by_created_at(api_client, company, user):
+    """Test that employer applications are ordered by -created_at (newest first)."""
+    # Create applications in non-chronological order to verify ordering works
+    with freeze_time("2024-01-01 11:00:00"):
+        app_middle = EmployerApplicationFactory(
+            company=company, user=user, status=EmployerApplicationStatus.SUBMITTED
+        )
+
+    with freeze_time("2024-01-01 12:00:00"):
+        app_newest = EmployerApplicationFactory(
+            company=company, user=user, status=EmployerApplicationStatus.DRAFT
+        )
+
+    with freeze_time("2024-01-01 10:00:00"):
+        app_oldest = EmployerApplicationFactory(
+            company=company, user=user, status=EmployerApplicationStatus.DRAFT
+        )
+
+    response = api_client.get(get_list_url(), {"limit": 10})
+
+    assert response.status_code == 200
+    assert response.data["count"] == 3
+    results = response.data["results"]
+
+    assert str(results[0]["id"]) == str(app_newest.id)
+    assert str(results[1]["id"]) == str(app_middle.id)
+    assert str(results[2]["id"]) == str(app_oldest.id)

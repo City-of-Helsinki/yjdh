@@ -1257,7 +1257,7 @@ class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
     class Meta:
         verbose_name = _("employer application")
         verbose_name_plural = _("employer applications")
-        ordering = ["-created_at"]
+        ordering = ["-created_at", "id"]
 
 
 class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
