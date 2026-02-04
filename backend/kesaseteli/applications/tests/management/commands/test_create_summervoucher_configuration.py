@@ -62,6 +62,78 @@ def test_create_summervoucher_configuration_defaults():
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize(
+    "voucher_value_in_euros,min_work_compensation_in_euros,min_work_hours",
+    [
+        (375, 550, 70),
+        (500, 825, 100),
+    ],
+)
+def test_create_summervoucher_configuration_numeric_defaults_are_from_settings(
+    voucher_value_in_euros, min_work_compensation_in_euros, min_work_hours, settings
+):
+    """
+    Test that the defaults for the numeric voucher value, minimum work compensation
+    and minimum work hours are taken from the following settings when creating the
+    configuration:
+    - SUMMER_VOUCHER_DEFAULT_VOUCHER_VALUE
+    - SUMMER_VOUCHER_DEFAULT_MIN_WORK_COMPENSATION
+    - SUMMER_VOUCHER_DEFAULT_MIN_WORK_HOURS
+    """
+    settings.SUMMER_VOUCHER_DEFAULT_VOUCHER_VALUE = voucher_value_in_euros
+    settings.SUMMER_VOUCHER_DEFAULT_MIN_WORK_COMPENSATION = (
+        min_work_compensation_in_euros
+    )
+    settings.SUMMER_VOUCHER_DEFAULT_MIN_WORK_HOURS = min_work_hours
+
+    # Remove seeded configuration
+    SummerVoucherConfiguration.objects.filter(year=2024).delete()
+
+    out = StringIO()
+    call_command("create_summervoucher_configuration", "--year", "2024", stdout=out)
+
+    config = SummerVoucherConfiguration.objects.get(year=2024)
+    assert config.voucher_value_in_euros == voucher_value_in_euros
+    assert config.min_work_compensation_in_euros == min_work_compensation_in_euros
+    assert config.min_work_hours == min_work_hours
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "target_groups,expected_result",
+    [
+        (["all"], [choice[0] for choice in get_target_group_choices()]),
+        (
+            ["hki_15", "all", "hki_18"],
+            [choice[0] for choice in get_target_group_choices()],
+        ),
+        (["primary_target_group"], ["primary_target_group"]),
+        (
+            ["hki_15", "primary_target_group", "hki_18"],
+            ["hki_15", "primary_target_group", "hki_18"],
+        ),
+    ],
+)
+def test_create_summervoucher_configuration_target_group_default_is_from_settings(
+    target_groups, expected_result, settings
+):
+    """
+    Test that the default target groups are parsed from
+    SUMMER_VOUCHER_DEFAULT_TARGET_GROUPS settings
+    """
+    settings.SUMMER_VOUCHER_DEFAULT_TARGET_GROUPS = target_groups
+
+    # Remove seeded configuration
+    SummerVoucherConfiguration.objects.filter(year=2024).delete()
+
+    out = StringIO()
+    call_command("create_summervoucher_configuration", "--year", "2024", stdout=out)
+
+    config = SummerVoucherConfiguration.objects.get(year=2024)
+    assert config.target_group == expected_result
+
+
+@pytest.mark.django_db
 def test_create_summervoucher_configuration_custom_args():
     # Remove seeded configuration
     SummerVoucherConfiguration.objects.filter(year=2025).delete()

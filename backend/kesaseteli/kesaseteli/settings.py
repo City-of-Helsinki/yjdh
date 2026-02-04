@@ -11,6 +11,10 @@ from django.utils.translation import gettext_lazy as _
 from saml2.sigver import get_xmlsec_binary
 from sentry_sdk.integrations.django import DjangoIntegration
 
+from applications.target_groups import (
+    NinthGraderTargetGroup,
+    UpperSecondaryFirstYearTargetGroup,
+)
 from common.backward_compatibility import convert_to_django_4_2_csrf_trusted_origins
 from shared.suomi_fi.utils import get_contact_person_configuration
 
@@ -702,6 +706,10 @@ AUTO_ASSIGN_ADMIN_TO_STAFF = env.bool(
 
 
 # Summer Voucher default / fallback configurations
+SUMMER_VOUCHER_DEFAULT_TARGET_GROUPS = [
+    NinthGraderTargetGroup.identifier,
+    UpperSecondaryFirstYearTargetGroup.identifier,
+]
 SUMMER_VOUCHER_DEFAULT_VOUCHER_VALUE = 350
 SUMMER_VOUCHER_DEFAULT_MIN_WORK_COMPENSATION = 500
 SUMMER_VOUCHER_DEFAULT_MIN_WORK_HOURS = 60

@@ -187,7 +187,7 @@ Creates a new `SummerVoucherConfiguration` for the specified year.
 *   `--voucher-value`: Voucher value in euros (default: 350)
 *   `--min-work-compensation`: Minimum work compensation in euros (default: 500)
 *   `--min-work-hours`: Minimum work hours (default: 60)
-*   `--target-groups`: List of target group identifiers (default: all)
+*   `--target-groups`: List of target group identifiers (default: "primary_target_group,secondary_target_group")
 *   `--force`: Force creation by overwriting existing configuration if it exists
 
 **Docker Entrypoint:**

@@ -49,11 +49,12 @@ class Command(BaseCommand):
         parser.add_argument(
             "--target-groups",
             nargs="+",
-            default=None,
+            default=settings.SUMMER_VOUCHER_DEFAULT_TARGET_GROUPS,
             help=(
                 "List of target group identifiers. The options are: "
-                f"{', '.join(AVAILABLE_TARGET_GROUPS)} (default: all)"
-                "(default: all)"
+                f"{', '.join(AVAILABLE_TARGET_GROUPS)} "
+                f"(default: {settings.SUMMER_VOUCHER_DEFAULT_TARGET_GROUPS}). "
+                "Use 'all' to select all target groups."
             ),
         )
         parser.add_argument(
@@ -67,7 +68,7 @@ class Command(BaseCommand):
         force = options["force"]
 
         target_groups = options["target_groups"]
-        if target_groups is None:
+        if "all" in target_groups:
             target_groups = AVAILABLE_TARGET_GROUPS
 
         voucher_value = options["voucher_value"]
