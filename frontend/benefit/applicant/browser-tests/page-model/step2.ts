@@ -127,6 +127,14 @@ class Step2 extends WizardStep {
     await this.clickSelectRadioButton(this.apprenticeshipProgramFalse);
   }
 
+  public async fillApprenticeshipProgram(apprenticeshipProgram: boolean): Promise<void> {
+    if (apprenticeshipProgram) {
+      await this.clickSelectRadioButton(this.apprenticeshipProgramTrue);
+      return;
+    }
+    await this.clickSelectRadioButton(this.apprenticeshipProgramFalse);
+  }
+
   public async fillBenefitPeriod(
     startDate: string,
     endDate: string
