@@ -10,6 +10,7 @@ class CompanySerializer(serializers.ModelSerializer):
             "id",
             "name",
             "business_id",
+            "organization_type",
             "company_form",
             "industry",
             "street_address",

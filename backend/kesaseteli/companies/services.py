@@ -9,6 +9,7 @@ from common.tests.factories import CompanyFactory
 from companies.models import Company
 from companies.tests.data.company_data import DUMMY_ORG_ROLES
 from shared.oidc.utils import get_organization_roles
+from shared.ytj.exceptions import YTJNotFoundError, YTJParseError
 from shared.ytj.ytj_client import YTJClient
 
 LOGGER = logging.getLogger(__name__)
@@ -21,9 +22,15 @@ def get_or_create_company_using_company_data(
     Get or create a company instance using a dict of the company data and
     attach the ytj_data json for the instance.
     """
-    company, _ = Company.objects.get_or_create(
+    company, created = Company.objects.get_or_create(
         **company_data, defaults={"ytj_json": ytj_data}
     )
+    if created:
+        LOGGER.info(
+            f"Created company {company.name} ({company.business_id}) using YTJ data"
+        )
+    else:
+        LOGGER.info(f"Found company {company.name} ({company.business_id})")
     return company
 
 
@@ -44,9 +51,13 @@ def get_or_create_company_with_name_and_business_id(
     business_id: str,
 ) -> Company:
     """
-    Get or create a company instance using a dict of the company data and
-    attach the ytj_data json for the instance.
+    Get or create a company instance using the company name and business_id.
+    This is used as a fallback when YTJ data is not available.
     """
+    LOGGER.info(
+        f"Creating/getting company {name} ({business_id}) "
+        "using fallback method (no YTJ data)"
+    )
     company, _ = Company.objects.get_or_create(
         name=name,
         business_id=business_id,
@@ -78,6 +89,10 @@ def handle_mock_company(request: HttpRequest):
         if not company:
             company = create_mock_company_and_store_org_roles_in_session(request)
 
+    LOGGER.info(
+        f"Using mock company data: {company.name} ({company.business_id}). "
+        f"Organization roles: {org_roles}"
+    )
     return company
 
 
@@ -105,7 +120,10 @@ def get_or_create_company_using_organization_roles(request: HttpRequest) -> Comp
 
     try:
         organization_roles = get_organization_roles(request)
-    except RequestException:
+    except RequestException as e:
+        LOGGER.error(
+            f"Unable to fetch organization roles from eauthorizations API: {e}"
+        )
         raise NotFound(
             detail="Unable to fetch organization roles from eauthorizations API"
         )
@@ -117,13 +135,15 @@ def get_or_create_company_using_organization_roles(request: HttpRequest) -> Comp
     if not company:
         try:
             company = get_or_create_company_from_ytj_api(business_id)
-        except ValueError:
+        except YTJNotFoundError as e:
+            LOGGER.warning(f"YTJ API error for business_id {business_id}: {str(e)}")
             raise NotFound(detail="Could not handle the response from YTJ API")
-        except RequestException:
-            LOGGER.warning(
-                "YTJ API is under heavy load or no company found with the given"
-                f" business id: {business_id}"
-            )
+        except RequestException as e:
+            LOGGER.error(f"YTJ API connection error for business_id {business_id}: {e}")
+            name = organization_roles.get("name")
+            company = get_or_create_company_with_name_and_business_id(name, business_id)
+        except YTJParseError as e:
+            LOGGER.error(f"YTJ API parsing error for business_id {business_id}: {e}")
             name = organization_roles.get("name")
             company = get_or_create_company_with_name_and_business_id(name, business_id)
 

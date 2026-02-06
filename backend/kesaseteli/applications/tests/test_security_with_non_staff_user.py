@@ -862,6 +862,7 @@ def test_company_openly_accessible_to_non_staff_user(user_client):
         street_address="Test street 1",
         postcode="00100",
         city="Test city",
+        organization_type="company",
     )
     set_company_business_id_to_client(company, user_client)
 
@@ -877,6 +878,7 @@ def test_company_openly_accessible_to_non_staff_user(user_client):
         "name": "Test company",
         "postcode": "00100",
         "street_address": "Test street 1",
+        "organization_type": "company",
     }
 
 
