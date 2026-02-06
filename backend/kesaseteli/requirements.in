@@ -3,6 +3,7 @@ django-auth-adfs
 django-cors-headers
 django-environ
 django-extensions
+django-filter
 django-localflavor
 django-searchable-encrypted-fields
 django-sequences

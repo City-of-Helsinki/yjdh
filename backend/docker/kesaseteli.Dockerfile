@@ -12,6 +12,9 @@ COPY --chown=default:root kesaseteli/requirements-prod.txt /app/requirements-pro
 COPY --chown=default:root kesaseteli/.prod/escape_json.c /app/.prod/escape_json.c
 COPY --chown=default:root shared /shared/
 
+# WORKAROUND: pip 25.3 used until https://github.com/jazzband/pip-tools/issues/2319 really works.
+# Otherwise "AttributeError: 'PackageFinder' object has no attribute 'allow_all_prereleases'"
+# can happen when using pip-tools / pip-compile in development.
 RUN dnf update -y \
     && dnf install -y \
            git \
@@ -23,7 +26,7 @@ RUN dnf update -y \
            xmlsec1-openssl \
            cyrus-sasl-devel \
            openssl-devel \
-    && pip install -U pip setuptools wheel \
+    && pip install -U pip==25.3 setuptools wheel \
     && pip install --no-cache-dir -r /app/requirements.txt \
     && pip install --no-cache-dir -r /app/requirements-prod.txt \
     && uwsgi --build-plugin /app/.prod/escape_json.c \
