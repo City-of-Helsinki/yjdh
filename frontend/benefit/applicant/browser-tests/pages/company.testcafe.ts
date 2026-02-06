@@ -115,7 +115,8 @@ test('New application', async () => {
     form.employee.otherExpenses,
     form.employee.vacationMoney
   );
-  await step2.fillPaidSubsidyGrant(true);
+  // await step2.fillPaidSubsidyGrant(true);
+  await step2.fillApprenticeshipProgram(true);
 
   await step2.fillBenefitPeriod(form.employee.startDate, form.employee.endDate);
 
@@ -124,11 +125,10 @@ test('New application', async () => {
   const step3 = new Step3();
   await step3.isLoaded();
   await step3.employmentContractNeeded();
-  await step3.paySubsidyDecisionNeeded();
+  // await step3.paySubsidyDecisionNeeded();
   await step3.helsinkiBenefitVoucherNeeded();
   await step3.stageUploadFiles('sample.pdf', [
     '#upload_attachment_employment_contract',
-    '#upload_attachment_pay_subsidy_decision',
     '#upload_attachment_education_contract',
     '#upload_attachment_helsinki_benefit_voucher',
   ]);

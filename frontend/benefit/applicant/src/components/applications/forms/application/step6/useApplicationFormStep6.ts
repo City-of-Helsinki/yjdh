@@ -93,10 +93,9 @@ const useApplicationFormStep6 = (
                 (consent) => consent.id
               ),
           },
-          apprenticeshipProgram:
-            application?.paySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
-              ? null
-              : application?.apprenticeshipProgram,
+          apprenticeshipProgram: application?.apprenticeshipProgram,
+          paySubsidyGranted: PAY_SUBSIDY_GRANTED.NOT_GRANTED,
+          paySubsidyPercent: null, // Has to be set to null for validation
           trainingCompensations: application?.apprenticeshipProgram
             ? application?.trainingCompensations
             : [],

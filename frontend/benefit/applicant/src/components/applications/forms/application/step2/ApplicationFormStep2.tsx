@@ -6,7 +6,6 @@ import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import {
   BENEFIT_TYPES,
   ORGANIZATION_TYPES,
-  PAY_SUBSIDY_GRANTED,
 } from 'benefit-shared/constants';
 import { DateInput, SelectionGroup, TextInput } from 'hds-react';
 import React from 'react';
@@ -345,125 +344,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
       </FormSection>
       <FormSection
         headerLevel="h2"
-        header={t(`${translationsBase}.heading2`)}
-        tooltip={t(`${translationsBase}.tooltips.heading2`)}
-      >
-        <$GridCell $colSpan={12}>
-          <SelectionGroup
-            id={fields.paySubsidyGranted.name}
-            label={fields.paySubsidyGranted.label}
-            direction="vertical"
-            errorText={getErrorMessage(fields.paySubsidyGranted.name)}
-          >
-            <$RadioButton
-              id={`${fields.paySubsidyGranted.name}Default`}
-              name={fields.paySubsidyGranted.name}
-              value={PAY_SUBSIDY_GRANTED.GRANTED}
-              label={t(
-                `${translationsBase}.fields.${fields.paySubsidyGranted.name}.paySubsidyDefault`
-              )}
-              onBlur={formik.handleBlur}
-              onChange={() => {
-                formik.setFieldValue(
-                  fields.paySubsidyGranted.name,
-                  PAY_SUBSIDY_GRANTED.GRANTED
-                );
-              }}
-              checked={
-                formik.values.paySubsidyGranted === PAY_SUBSIDY_GRANTED.GRANTED
-              }
-            />
-            <$RadioButton
-              id={`${fields.paySubsidyGranted.name}Aged`}
-              name={fields.paySubsidyGranted.name}
-              value={PAY_SUBSIDY_GRANTED.GRANTED_AGED}
-              label={t(
-                `${translationsBase}.fields.${fields.paySubsidyGranted.name}.paySubsidyAged`
-              )}
-              onBlur={formik.handleBlur}
-              onChange={() => {
-                formik.setFieldValue(
-                  fields.paySubsidyGranted.name,
-                  PAY_SUBSIDY_GRANTED.GRANTED_AGED
-                );
-              }}
-              checked={
-                formik.values.paySubsidyGranted ===
-                PAY_SUBSIDY_GRANTED.GRANTED_AGED
-              }
-            />
-            <$RadioButton
-              id={`${fields.paySubsidyGranted.name}None`}
-              name={fields.paySubsidyGranted.name}
-              value={PAY_SUBSIDY_GRANTED.NOT_GRANTED}
-              label={t(
-                `${translationsBase}.fields.${fields.paySubsidyGranted.name}.paySubsidyNone`
-              )}
-              onBlur={formik.handleBlur}
-              onChange={() => {
-                formik.setFieldValue(
-                  fields.paySubsidyGranted.name,
-                  PAY_SUBSIDY_GRANTED.NOT_GRANTED
-                );
-              }}
-              checked={
-                formik.values.paySubsidyGranted ===
-                PAY_SUBSIDY_GRANTED.NOT_GRANTED
-              }
-            />
-          </SelectionGroup>
-        </$GridCell>
-        {[
-          PAY_SUBSIDY_GRANTED.GRANTED,
-          PAY_SUBSIDY_GRANTED.GRANTED_AGED,
-        ].includes(formik.values.paySubsidyGranted) && (
-          <$GridCell $colSpan={12}>
-            <$SubFieldContainer>
-              <SelectionGroup
-                label={fields.apprenticeshipProgram.label}
-                id={fields.apprenticeshipProgram.name}
-                direction="vertical"
-                required
-                errorText={getErrorMessage(fields.apprenticeshipProgram.name)}
-              >
-                <$RadioButton
-                  id={`${fields.apprenticeshipProgram.name}False`}
-                  name={fields.apprenticeshipProgram.name}
-                  value="false"
-                  label={t(
-                    `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.no`
-                  )}
-                  onChange={() => {
-                    formik.setFieldValue(
-                      fields.apprenticeshipProgram.name,
-                      false
-                    );
-                  }}
-                  checked={formik.values.apprenticeshipProgram === false}
-                />
-                <$RadioButton
-                  id={`${fields.apprenticeshipProgram.name}True`}
-                  name={fields.apprenticeshipProgram.name}
-                  value="true"
-                  label={t(
-                    `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.yes`
-                  )}
-                  onChange={() => {
-                    formik.setFieldValue(
-                      fields.apprenticeshipProgram.name,
-                      true
-                    );
-                  }}
-                  checked={formik.values.apprenticeshipProgram === true}
-                />
-              </SelectionGroup>
-            </$SubFieldContainer>
-          </$GridCell>
-        )}
-      </FormSection>
-
-      <FormSection
-        headerLevel="h2"
         header={t(`${translationsBase}.heading4`)}
         paddingBottom
         columns={32}
@@ -518,6 +398,50 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             maxDate={maxEndDate}
             required
           />
+        </$GridCell>
+        <$GridCell $colSpan={32}>
+          <$SubHeader weight="400">
+          </$SubHeader>
+        </$GridCell>
+        <$GridCell $colSpan={32}>
+          <SelectionGroup
+            label={fields.apprenticeshipProgram.label}
+            id={fields.apprenticeshipProgram.name}
+            direction="vertical"
+            required
+            errorText={getErrorMessage(fields.apprenticeshipProgram.name)}
+          >
+            <$RadioButton
+              id={`${fields.apprenticeshipProgram.name}False`}
+              name={fields.apprenticeshipProgram.name}
+              value="false"
+              label={t(
+                `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.no`
+              )}
+              onChange={() => {
+                formik.setFieldValue(
+                  fields.apprenticeshipProgram.name,
+                  false
+                );
+              }}
+              checked={formik.values.apprenticeshipProgram === false}
+            />
+            <$RadioButton
+              id={`${fields.apprenticeshipProgram.name}True`}
+              name={fields.apprenticeshipProgram.name}
+              value="true"
+              label={t(
+                `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.yes`
+              )}
+              onChange={() => {
+                formik.setFieldValue(
+                  fields.apprenticeshipProgram.name,
+                  true
+                );
+              }}
+              checked={formik.values.apprenticeshipProgram === true}
+            />
+          </SelectionGroup>
         </$GridCell>
         {!!formik.values.apprenticeshipProgram && (
           <$GridCell
