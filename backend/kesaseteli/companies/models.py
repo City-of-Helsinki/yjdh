@@ -2,10 +2,10 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from applications.enums import OrganizationType
-from shared.models.abstract_models import UUIDModel
+from shared.models.abstract_models import TimeStampedModel, UUIDModel
 
 
-class Company(UUIDModel):
+class Company(UUIDModel, TimeStampedModel):
     name = models.CharField(max_length=256, verbose_name=_("name"))
     business_id = models.CharField(
         max_length=64, unique=True, verbose_name=_("business id")
