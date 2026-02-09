@@ -4,6 +4,7 @@ from functools import cached_property
 
 from django.conf import settings
 from django.core import exceptions
+from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.db.models import F, Func
 from django.db.utils import ProgrammingError
@@ -14,6 +15,7 @@ from django.utils.decorators import method_decorator
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
+from django_filters import rest_framework as filters
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -654,23 +656,98 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             raise
 
 
+class EmployerApplicationFilter(filters.FilterSet):
+    """
+    Filtering & sorting support for EmployerApplicationViewSet
+    """
+
+    only_mine = filters.BooleanFilter(method="filter_only_mine")
+    status = filters.MultipleChoiceFilter(choices=EmployerApplicationStatus.choices)
+    created_at = filters.DateTimeFromToRangeFilter()
+    modified_at = filters.DateTimeFromToRangeFilter()
+    ordering = filters.OrderingFilter(
+        # (Model field name, parameter name) tuples:
+        fields=[
+            # Present model field names directly as the query parameters:
+            (field_name, field_name)
+            for field_name in [
+                "company__business_id",
+                "company__name",
+                "company_id",
+                "created_at",
+                "id",
+                "modified_at",
+                "status",
+                "user__first_name",
+                "user__last_name",
+                "user_id",
+            ]
+        ]
+    )
+
+    def _filter_by_user(self, queryset):
+        """
+        Filter queryset by the current user, if they're authenticated,
+        otherwise return empty queryset.
+        """
+        user = self.request.user
+        if user and user.is_authenticated:
+            return queryset.filter(user=user)
+        return queryset.none()
+
+    def filter_only_mine(self, queryset, name, value):
+        """
+        Filter to show only current user's employer applications
+        """
+        if value:
+            return self._filter_by_user(queryset)
+        return queryset
+
+    @property
+    def qs(self):
+        """
+        Queryset property overridden to apply only_mine filter by default
+        when not provided or empty.
+        """
+        parent_qs = super().qs
+
+        # Apply only_mine filter by default when not provided or empty
+        if self.data.get("only_mine") in (None, ""):
+            return self._filter_by_user(parent_qs)
+
+        return parent_qs
+
+    class Meta:
+        model = EmployerApplication
+        _timestamp_field_lookups = [
+            f"{prefix}{filter}"
+            for prefix in ["", "year__", "date__"]
+            for filter in ["gte", "lte", "gt", "lt", "exact"]
+        ]
+        fields = {
+            "company__business_id": ["exact", "in"],
+            "company_id": ["exact", "in"],
+            "created_at": _timestamp_field_lookups,
+            "modified_at": _timestamp_field_lookups,
+            "status": ["exact", "in"],
+            "user_id": ["exact", "in"],
+        }
+
+
 class EmployerApplicationViewSet(AuditLoggingModelViewSet):
     queryset = EmployerApplication.objects.all()
     serializer_class = EmployerApplicationSerializer
     permission_classes = [IsAuthenticated, EmployerApplicationPermission]
     pagination_class = LimitOffsetPagination
+    filter_backends = [filters.DjangoFilterBackend]
+    filterset_class = EmployerApplicationFilter
 
     def get_queryset(self):
-        """
-        Fetch all DRAFT status applications of the user & company.
-
-        Should inlcude only 1 application since we don't allow creation of
-        multiple DRAFT applications per user & company.
-        """
         queryset = (
             super()
             .get_queryset()
             .select_related("company")
+            .select_related("user")
             .prefetch_related("summer_vouchers")
         )
 
@@ -682,7 +759,6 @@ class EmployerApplicationViewSet(AuditLoggingModelViewSet):
 
         return queryset.filter(
             company=user_company,
-            user=user,
             status__in=ALLOWED_APPLICATION_VIEW_STATUSES,
         )
 
@@ -690,8 +766,13 @@ class EmployerApplicationViewSet(AuditLoggingModelViewSet):
         """
         Allow only 1 (DRAFT) application per user & company.
         """
-        if self.get_queryset().filter(status=EmployerApplicationStatus.DRAFT).exists():
+        if (
+            self.get_queryset()
+            .filter(status=EmployerApplicationStatus.DRAFT, user=request.user)
+            .exists()
+        ):
             raise ValidationError("Company & user can have only one draft application")
+
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
@@ -701,6 +782,9 @@ class EmployerApplicationViewSet(AuditLoggingModelViewSet):
         instance = self.get_object()
         if instance.status not in ALLOWED_APPLICATION_UPDATE_STATUSES:
             raise ValidationError("Only DRAFT applications can be updated")
+        if request.user != instance.user:
+            raise PermissionDenied("Only application creator can update it")
+
         return super().update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
@@ -717,8 +801,8 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
 
     def get_queryset(self):
         """
-        Fetch summer vouchers of DRAFT status applications of the user &
-        company.
+        Fetch summer vouchers of DRAFT/SUBMITTED status applications
+        of the user's company.
         """
         queryset = (
             super()
@@ -728,7 +812,7 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
         )
 
         user = self.request.user
-        if user.is_staff:
+        if user.is_staff or user.is_superuser:
             return queryset
         elif user.is_anonymous:
             return queryset.none()
@@ -737,7 +821,6 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
 
         return queryset.filter(
             application__company=user_company,
-            application__user=user,
             application__status__in=ALLOWED_APPLICATION_VIEW_STATUSES,
         )
 
@@ -772,6 +855,8 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
             raise ValidationError(
                 "Attachments can be uploaded only for DRAFT applications"
             )
+        if obj.application.user != request.user:
+            raise PermissionDenied("Only application creator can post attachment to it")
 
         # Validate request data
         serializer = AttachmentSerializer(
@@ -821,15 +906,19 @@ class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
                 raise ValidationError(
                     "Attachments can be deleted only for DRAFT applications"
                 )
+            if obj.application.user != request.user:
+                raise PermissionDenied(
+                    "Only application creator can delete attachment from it"
+                )
 
             if (
                 obj.application.status
                 not in AttachmentSerializer.ATTACHMENT_MODIFICATION_ALLOWED_STATUSES
             ):
-                return Response(
-                    {"detail": _("Operation not allowed for this application status.")},
-                    status=status.HTTP_403_FORBIDDEN,
+                raise PermissionDenied(
+                    "Operation not allowed for this application status."
                 )
+
             try:
                 instance = obj.attachments.get(id=attachment_pk)
             except exceptions.ObjectDoesNotExist:

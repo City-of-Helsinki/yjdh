@@ -351,6 +351,8 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
         model = EmployerApplication
         fields = [
             "id",
+            "created_at",
+            "modified_at",
             "status",
             "street_address",
             "bank_account_number",
@@ -367,7 +369,7 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
             "language",
             "submitted_at",
         ]
-        read_only_fields = ["user"]
+        read_only_fields = ["created_at", "modified_at", "user"]
 
     @transaction.atomic
     def update(self, instance, validated_data):
