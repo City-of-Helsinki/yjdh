@@ -1258,6 +1258,11 @@ class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
         verbose_name = _("employer application")
         verbose_name_plural = _("employer applications")
         ordering = ["-created_at", "id"]
+        indexes = [
+            models.Index(fields=["created_at"], name="employer_app_created_at_idx"),
+            models.Index(fields=["modified_at"], name="employer_app_modified_at_idx"),
+            models.Index(fields=["status"], name="employer_app_status_idx"),
+        ]
 
 
 class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
