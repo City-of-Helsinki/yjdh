@@ -28,23 +28,16 @@ def has_employer_application_permission(
     request: HttpRequest, employer_application: EmployerApplication
 ) -> bool:
     """
-    Allow access only for DRAFT status employer applications of the user &
-    company.
+    Allow access only to DRAFT status employer applications of the user's company.
     """
-    user = request.user
-
-    if user.is_staff or user.is_superuser:
-        return True
-
-    user_company = get_user_company(request)
-
-    if (
-        employer_application.company == user_company
-        and employer_application.user == user
-        and employer_application.status in ALLOWED_APPLICATION_VIEW_STATUSES
-    ):
-        return True
-    return False
+    return (
+        request.user.is_staff
+        or request.user.is_superuser
+        or (
+            employer_application.company == get_user_company(request)
+            and employer_application.status in ALLOWED_APPLICATION_VIEW_STATUSES
+        )
+    )
 
 
 class EmployerApplicationPermission(BasePermission):
