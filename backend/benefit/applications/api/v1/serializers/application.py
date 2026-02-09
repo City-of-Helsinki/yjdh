@@ -850,6 +850,16 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
     def _validate_pay_subsidy(
         self, pay_subsidy_granted, pay_subsidy_percent, additional_pay_subsidy_percent
     ):
+        if (pay_subsidy_granted is not None and
+            pay_subsidy_granted != PaySubsidyGranted.NOT_GRANTED):
+            raise serializers.ValidationError(
+                {
+                    "pay_subsidy_granted": _(
+                        "This application cannot have granted pay subsidy"
+                    )
+                }
+            )
+
         if pay_subsidy_granted == PaySubsidyGranted.NOT_GRANTED:
             for key in ["pay_subsidy_percent", "additional_pay_subsidy_percent"]:
                 if locals()[key] is not None:
@@ -906,13 +916,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         else:
             raise AssertionError("unreachable")
 
-        # if pay_subsidy_granted is selected, then the applicant needs to also select if
-        # it's an apprenticeship_program or not
-        if data["pay_subsidy_granted"] in [
-            PaySubsidyGranted.GRANTED_AGED,
-            PaySubsidyGranted.GRANTED,
-        ]:
-            required_fields.append("apprenticeship_program")
+        # Apprenticeship program must be True or False
+        required_fields.append("apprenticeship_program")
 
         for field_name in required_fields:
             if data[field_name] in [None, "", []]:
@@ -985,20 +990,6 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         if apprenticeship_program is None:
             raise serializers.ValidationError(
                 {"apprenticeship_program": _("This field is required")}
-            )
-
-        if (
-            pay_subsidy_granted
-            in [PaySubsidyGranted.GRANTED_AGED, PaySubsidyGranted.GRANTED]
-            and apprenticeship_program is None
-        ):
-            raise serializers.ValidationError(
-                {
-                    "apprenticeship_program": _(
-                        "Apprenticeship program has to be yes or no if there is a"
-                        " granted pay subsidy"
-                    )
-                }
             )
 
     def get_latest_ahjo_status(self, obj) -> Union[str, None]:
