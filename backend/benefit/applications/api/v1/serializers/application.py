@@ -850,16 +850,6 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
     def _validate_pay_subsidy(
         self, pay_subsidy_granted, pay_subsidy_percent, additional_pay_subsidy_percent
     ):
-        if (pay_subsidy_granted is not None and
-            pay_subsidy_granted != PaySubsidyGranted.NOT_GRANTED):
-            raise serializers.ValidationError(
-                {
-                    "pay_subsidy_granted": _(
-                        "This application cannot have granted pay subsidy"
-                    )
-                }
-            )
-
         if pay_subsidy_granted == PaySubsidyGranted.NOT_GRANTED:
             for key in ["pay_subsidy_percent", "additional_pay_subsidy_percent"]:
                 if locals()[key] is not None:
