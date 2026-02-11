@@ -3,6 +3,16 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
 
+<style>
+    .excel-table td, .excel-table th {
+        padding: 1rem;
+    }
+    .excel-table form {
+        width: 100%;
+        margin-bottom: 0;
+    }
+</style>
+
 <div class="container">
     {% if error %}
     <div class="alert alert-danger" role="alert">
@@ -14,68 +24,112 @@
         <a href="{{ handler_create_application_without_ssn_url }}" class="btn btn-link btn-md">
             {% trans 'Luo hakemus ilman henkilötunnusta' %}
         </a>
-        <a href="{% url 'logout' %}" class="btn btn-info btn-md">{% trans 'Kirjaudu ulos' %}</a>
+        <a href="{% url 'logout' %}" class="btn btn-info btn-md">
+            {% trans 'Kirjaudu ulos' %}
+        </a>
     </div>
 
-    <h1>Lataa Excel tiedostoja</h1>
+    <h1 class="mb-3">{% trans 'Lataa Excel-tiedostoja' %}</h1>
 
     <br />
-    <h2>Työnantajien kesäsetelihakemukset:</h2>
-    <br />
+    <h2 class="mb-4">{% trans 'Työnantajien kesäsetelihakemukset' %}</h2>
 
-    <p>
-        {% trans 'Luo uusi excel tiedosto kaikista järjestelmän käsittelemättömistä hakemuksista. Kun hakemus lisätään
-        käsittelemättömien hakemusten excel tiedostoon, se merkataan järjestelmässä "käsitellyiksi" eikä sitä tuoda enää
-        seuraavaan käsittelemättömien hakemusten exceliin.' %}
+    <p class="ms-4">
+        {% blocktranslate %}
+        <strong>HUOM</strong>:
+        Kun hakemus on merkitty käsitellyksi, se ei enää tule käsittelemättömien Excel-latauksiin!
+        {% endblocktranslate %}
     </p>
-    <div class="col-xs-6">
-        <a href="{% url 'excel-download' %}?download=unhandled&columns=reporting" class="btn btn-primary btn-lg active"
-            role="button" aria-pressed="true">{% trans 'Lataa raportointi-Excel käsittelemättömistä hakemuksista' %}</a>
-    </div>
-    <br />
-    <div class="col-xs-6">
-        <a href="{% url 'excel-download' %}?download=unhandled&columns=talpa" class="btn btn-primary btn-lg active"
-            role="button" aria-pressed="true">{% trans 'Lataa Talpa-Excel käsittelemättömistä hakemuksista' %}</a>
-    </div>
-    <hr />
-    <p>
-        {% trans 'Luo uusi excel tiedosto kaikista järjestelmän tämän vuoden hakemuksista. Tiedosto sisältää myös kaikki
-        käsitellyt hakemukset.' %}
-    </p>
-    <div class="col-xs-6">
-        <a href="{% url 'excel-download' %}?download=annual&columns=reporting" class="btn btn-secondary btn-lg active"
-            role="button" aria-pressed="true">{% trans 'Lataa raportointi-Excel kaikista tämän vuoden hakemuksista'
-            %}</a>
-    </div>
-    <br />
-    <div class="col-xs-6">
-        <a href="{% url 'excel-download' %}?download=annual&columns=talpa" class="btn btn-secondary btn-lg active"
-            role="button" aria-pressed="true">{% trans 'Lataa Talpa-Excel kaikista tämän vuoden hakemuksista' %}</a>
-    </div>
-    <hr />
-    <p>
-        {% trans 'Luo uusi excel tiedosto kaikista järjestelmän viime vuoden hakemuksista. Tiedosto sisältää myös kaikki
-        käsitellyt hakemukset.' %}
-    </p>
-    <div class="col-xs-6">
-        <a href="{% url 'excel-download' %}?download=annual-previous&columns=reporting"
-            class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">{% trans 'Lataa raportointi-Excel
-            kaikista viime vuoden hakemuksista' %}</a>
-    </div>
-    <br />
-    <div class="col-xs-6">
-        <a href="{% url 'excel-download' %}?download=annual-previous&columns=talpa"
-            class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">{% trans 'Lataa Talpa-Excel
-            kaikista viime vuoden hakemuksista' %}</a>
-    </div>
 
-    <br />
-    <h2>Nuorten kesäsetelihakemukset:</h2>
-    <br />
+    <table class="table table-bordered table-auto excel-table ms-4" style="width: auto;">
+        <thead class="table-primary">
+            <tr>
+                <th>{% trans 'Työnantajien hakemukset' %}</th>
+                <th class="text-center">{% trans 'Raportointi-Excel' %}</th>
+                <th class="text-center">{% trans 'Talpa-Excel' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    {% trans 'Käsittelemättömät' %}
+                </td>
 
-    <div class="col-xs-6">
-        <a href="{% url 'youth-excel-download' %}" class="btn btn-secondary btn-lg active" role="button"
-            aria-pressed="true">{% trans 'Lataa Excel kaikista nuorten vahvistetuista kesäsetelihakemuksista' %}</a>
+                <td>
+                    <form method="get" action="{% url 'excel-download' %}">
+                        <input type="hidden" name="download" value="unhandled">
+                        <input type="hidden" name="columns" value="reporting">
+                        <button type="submit" class="btn btn-primary btn-lg active w-100" aria-pressed="true">
+                            {% trans 'Lataa ja merkitse käsitellyiksi' %}
+                        </button>
+                    </form>
+                </td>
+                <td>
+                    <form method="get" action="{% url 'excel-download' %}">
+                        <input type="hidden" name="download" value="unhandled">
+                        <input type="hidden" name="columns" value="talpa">
+                        <button type="submit" class="btn btn-primary btn-lg active w-100" aria-pressed="true">
+                            {% trans 'Lataa ja merkitse käsitellyiksi' %}
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {% trans 'Kaikki tämän vuoden (myös käsitellyt)' %}
+                </td>
+                <td class="text-center">
+                    <form method="get" action="{% url 'excel-download' %}">
+                        <input type="hidden" name="download" value="annual">
+                        <input type="hidden" name="columns" value="reporting">
+                        <button type="submit" class="btn btn-secondary btn-lg active w-100" aria-pressed="true">
+                            {% trans 'Lataa' %}
+                        </button>
+                    </form>
+                </td>
+                <td class="text-center">
+                    <form method="get" action="{% url 'excel-download' %}">
+                        <input type="hidden" name="download" value="annual">
+                        <input type="hidden" name="columns" value="talpa">
+                        <button type="submit" class="btn btn-secondary btn-lg active w-100" aria-pressed="true">
+                            {% trans 'Lataa' %}
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {% trans 'Kaikki viime vuoden (myös käsitellyt)' %}
+                </td>
+                <td class="text-center">
+                    <form method="get" action="{% url 'excel-download' %}">
+                        <input type="hidden" name="download" value="annual-previous">
+                        <input type="hidden" name="columns" value="reporting">
+                        <button type="submit" class="btn btn-secondary btn-lg active w-100" aria-pressed="true">
+                            {% trans 'Lataa' %}
+                        </button>
+                    </form>
+                </td>
+                <td class="text-center">
+                    <form method="get" action="{% url 'excel-download' %}">
+                        <input type="hidden" name="download" value="annual-previous">
+                        <input type="hidden" name="columns" value="talpa">
+                        <button type="submit" class="btn btn-secondary btn-lg active w-100" aria-pressed="true">
+                            {% trans 'Lataa' %}
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 class="mb-4 mt-5">{% trans 'Nuorten kesäsetelihakemukset' %}</h2>
+
+    <div class="col-xs-6 ms-4 mb-4">
+        <form method="get" action="{% url 'youth-excel-download' %}">
+            <button type="submit" class="btn btn-secondary btn-lg active" aria-pressed="true">
+                {% trans 'Lataa kaikki nuorten vahvistetut kesäsetelihakemukset' %}
+            </button>
+        </form>
     </div>
-
 </div>
