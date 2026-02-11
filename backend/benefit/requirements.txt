@@ -183,7 +183,7 @@ pdfkit==1.0.0
     # via -r requirements.in
 phonenumbers==9.0.19
     # via django-phonenumber-field
-pillow==12.0.0
+pillow==12.1.1
     # via -r requirements.in
 psycopg2==2.9.11
     # via -r requirements.in
