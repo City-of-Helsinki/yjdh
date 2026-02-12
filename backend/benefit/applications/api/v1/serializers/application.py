@@ -977,10 +977,10 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         if status == ApplicationStatus.DRAFT:
             return
 
-        if apprenticeship_program is None:
-            raise serializers.ValidationError(
-                {"apprenticeship_program": _("This field is required")}
-            )
+        #if apprenticeship_program is None:
+        #    raise serializers.ValidationError(
+        #        {"apprenticeship_program": _("This field is required")}
+        #    )
 
     def get_latest_ahjo_status(self, obj) -> Union[str, None]:
         """Get the latest Ahjo status text for the application"""
