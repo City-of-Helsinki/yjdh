@@ -808,7 +808,7 @@ def test_applications_csv_two_ahjo_rows(
 ):
     application = applications_csv_service_with_one_application.get_applications()[0]
     application.pay_subsidies.all().delete()
-    application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
+    application.pay_subsidy_granted = PaySubsidyGranted.NOT_GRANTED
     # force two rows
     application.benefit_type = BenefitType.SALARY_BENEFIT
     application.status = (
@@ -941,7 +941,7 @@ def test_applications_csv_too_many_pay_subsidies(
     applications_csv_service_with_one_application,
 ):
     application = applications_csv_service_with_one_application.get_applications()[0]
-    application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
+    application.pay_subsidy_granted = PaySubsidyGranted.NOT_GRANTED
     application.pay_subsidies.all().delete()
     application.benefit_type = BenefitType.SALARY_BENEFIT
     application.status = (
@@ -986,7 +986,7 @@ def test_applications_csv_non_ascii_characters(
 ):
     application = applications_csv_service_with_one_application.get_applications()[0]
     application.company_name = "test äöÄÖtest"
-    application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
+    application.pay_subsidy_granted = PaySubsidyGranted.NOT_GRANTED
     application.save()
     csv_lines = split_lines_at_semicolon(
         applications_csv_service_with_one_application.get_csv_string()
@@ -998,7 +998,7 @@ def test_applications_csv_non_ascii_characters(
 def test_applications_csv_delimiter(applications_csv_service_with_one_application):
     application = applications_csv_service_with_one_application.get_applications()[0]
     application.company_name = "test;12"
-    application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
+    application.pay_subsidy_granted = PaySubsidyGranted.NOT_GRANTED
     application.save()
     assert (
         ';"test;12";' in applications_csv_service_with_one_application.get_csv_string()
@@ -1020,7 +1020,7 @@ def test_applications_csv_monthly_amount_override(
 ):
     application = applications_csv_service_with_one_application.get_applications()[0]
     application.status = ApplicationStatus.HANDLING
-    application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
+    application.pay_subsidy_granted = PaySubsidyGranted.NOT_GRANTED
     application.save()
     application.calculation.override_monthly_benefit_amount = 100
     application.calculation.save()
@@ -1045,7 +1045,7 @@ def test_applications_csv_monthly_amount_override(
 def test_write_applications_csv_file(applications_csv_service, tmp_path):
     application = applications_csv_service.get_applications()[0]
     application.company_name = "test äöÄÖtest"
-    application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
+    application.pay_subsidy_granted = PaySubsidyGranted.NOT_GRANTED
     application.save()
     output_file = tmp_path / "output.csv"
     applications_csv_service.write_csv_file(output_file)

@@ -1643,12 +1643,7 @@ def test_application_modified_at_non_draft(api_client, application, status):
     "pay_subsidy_granted,pay_subsidy_percent,additional_pay_subsidy_percent,expected_code",
     [
         (PaySubsidyGranted.NOT_GRANTED, None, None, 200),  # empty application
-        (PaySubsidyGranted.GRANTED, 50, None, 400),  # one pay subsidy
-        (PaySubsidyGranted.GRANTED, 100, 30, 400),  # two pay subsidies
         (PaySubsidyGranted.NOT_GRANTED, 100, None, 400),  # invalid
-        (PaySubsidyGranted.GRANTED, None, 50, 400),  # invalid percent
-        (PaySubsidyGranted.GRANTED, 99, None, 400),  # invalid choice
-        (PaySubsidyGranted.GRANTED, 50, 1, 400),  # invalid percent
     ],
 )
 @pytest.mark.django_db

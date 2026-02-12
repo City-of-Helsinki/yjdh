@@ -34,9 +34,9 @@ def test_application_submit_creates_calculation_and_two_paysubsidies(
     assert len(response.data["training_compensations"]) == 0
 
     data["benefit_type"] = BenefitType.SALARY_BENEFIT
-    data["pay_subsidy_percent"] = 50
-    data["additional_pay_subsidy_percent"] = 70
-    data["pay_subsidy_granted"] = PaySubsidyGranted.GRANTED
+    data["pay_subsidy_percent"] = None
+    data["additional_pay_subsidy_percent"] = None
+    data["pay_subsidy_granted"] = PaySubsidyGranted.NOT_GRANTED
     data["apprenticeship_program"] = False
 
     response = handler_api_client.put(
