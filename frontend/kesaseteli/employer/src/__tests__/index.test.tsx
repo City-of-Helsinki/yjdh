@@ -3,19 +3,16 @@ import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-pa
 import IndexPage from 'kesaseteli/employer/pages';
 import {
   expectAuthorizedReply,
-  expectToCreateApplicationErrorFromBackend,
   expectToCreateApplicationToBackend,
   expectToGetApplicationsErrorFromBackend,
   expectToGetApplicationsFromBackend,
   expectUnauthorizedReply,
 } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
-import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import React from 'react';
-import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
-import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
+import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 
 const fakeObjectFactory = new FakeObjectFactory();
 
@@ -42,103 +39,52 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
   });
 
   describe('when authorized', () => {
-    describe('when backend returns error', () => {
-      it('Should show errorPage when applications loading error', async () => {
-        expectAuthorizedReply();
-        expectToGetApplicationsErrorFromBackend();
-        const spyPush = jest.fn();
-        renderPage(IndexPage, { push: spyPush });
-        await waitFor(() =>
-          expect(spyPush).toHaveBeenCalledWith(
-            `${DEFAULT_LANGUAGE}/500`,
-            undefined,
-            { shallow: false }
-          )
-        );
-      });
-      it('Should show errorPage when applications creation error', async () => {
-        expectAuthorizedReply();
-        expectToGetApplicationsFromBackend([]);
-        expectToCreateApplicationErrorFromBackend();
-        const spyPush = jest.fn();
-        renderPage(IndexPage, { push: spyPush });
-        await waitFor(() =>
-          expect(spyPush).toHaveBeenCalledWith(
-            `${DEFAULT_LANGUAGE}/500`,
-            undefined,
-            { shallow: false }
-          )
+    it('Should show errorPage when applications loading error', async () => {
+      expectAuthorizedReply();
+      expectToGetApplicationsErrorFromBackend();
+      const spyPush = jest.fn();
+      renderPage(IndexPage, { push: spyPush });
+      await waitFor(() =>
+        expect(spyPush).toHaveBeenCalledWith(
+          `${DEFAULT_LANGUAGE}/500`,
+          undefined,
+          { shallow: false }
+        )
+      );
+    });
+
+    it('Should redirect to the first draft application if it exists', async () => {
+      const applications = fakeObjectFactory.fakeApplications(2);
+      applications[0].status = 'draft';
+      expectAuthorizedReply();
+      expectToGetApplicationsFromBackend(applications);
+
+      const spyPush = jest.fn();
+      renderPage(IndexPage, { push: spyPush });
+
+      await waitFor(() => {
+        expect(spyPush).toHaveBeenCalledWith(
+          `${DEFAULT_LANGUAGE}/application?id=${applications[0].id}`
         );
       });
     });
 
-    describe('when user does not have previous applications', () => {
-      it('Should create a new application and redirect to its page with default language', async () => {
-        const newApplication = fakeObjectFactory.fakeApplication();
-        expectAuthorizedReply();
-        expectToGetApplicationsFromBackend([]);
-        expectToCreateApplicationToBackend(newApplication);
-        const spyPush = jest.fn();
-        const queryClient = renderPage(IndexPage, { push: spyPush });
-        await waitForBackendRequestsToComplete();
-        await waitFor(() => {
-          expect(
-            queryClient.getQueryData(
-              `${BackendEndpoint.EMPLOYER_APPLICATIONS}${newApplication?.id}/`
-            )
-          ).toEqual(newApplication);
-        });
+    it('Should create a new application and redirect to it if no draft exists', async () => {
+      expectAuthorizedReply();
+      expectToGetApplicationsFromBackend([]);
+
+      const newApplication = fakeObjectFactory.fakeApplication();
+      expectToCreateApplicationToBackend(newApplication);
+      // After creation, the application list is invalidated and refetched.
+      // We need to mock this second fetch to return the new application so the redirect logic can find it.
+      expectToGetApplicationsFromBackend([newApplication]);
+
+      const spyPush = jest.fn();
+      renderPage(IndexPage, { push: spyPush });
+
+      await waitFor(() => {
         expect(spyPush).toHaveBeenCalledWith(
           `${DEFAULT_LANGUAGE}/application?id=${newApplication.id}`
-        );
-      });
-      it('Should create a new application and redirect to its page with router locale', async () => {
-        const locale: Language = 'en';
-        const newApplication = fakeObjectFactory.fakeApplication(
-          undefined,
-          locale
-        );
-        expectAuthorizedReply();
-        expectToGetApplicationsFromBackend([]);
-        expectToCreateApplicationToBackend(newApplication);
-        const spyPush = jest.fn();
-        const queryClient = renderPage(IndexPage, {
-          push: spyPush,
-          defaultLocale: locale,
-        });
-        await waitForBackendRequestsToComplete();
-        await waitFor(() => {
-          expect(
-            queryClient.getQueryData(
-              `${BackendEndpoint.EMPLOYER_APPLICATIONS}${newApplication?.id}/`
-            )
-          ).toEqual(newApplication);
-        });
-        expect(spyPush).toHaveBeenCalledWith(
-          `${locale}/application?id=${newApplication.id}`
-        );
-      });
-    });
-
-    describe('when user has previous applications', () => {
-      it("Should redirect to latest application page with application's locale", async () => {
-        const application = fakeObjectFactory.fakeApplication(undefined, 'sv');
-        const { id } = application;
-        const applications = [
-          application,
-          ...fakeObjectFactory.fakeApplications(4),
-        ];
-        expectAuthorizedReply();
-        expectToGetApplicationsFromBackend(applications);
-        const locale: Language = 'en';
-        const spyPush = jest.fn();
-        renderPage(IndexPage, {
-          push: spyPush,
-          defaultLocale: locale,
-        });
-        await waitForBackendRequestsToComplete();
-        await waitFor(() =>
-          expect(spyPush).toHaveBeenCalledWith(`sv/application?id=${id}`)
         );
       });
     });

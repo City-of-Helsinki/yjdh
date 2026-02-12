@@ -26,7 +26,7 @@ export type ApplicationApi<T> = {
   >;
   updateApplication: (
     application: DraftApplication,
-    onSuccess?: () => void | Promise<void>
+    onSuccess?: (app: Application) => void | Promise<void>
   ) => void;
   sendApplication: (
     application: Application,
@@ -39,8 +39,8 @@ export type ApplicationApi<T> = {
   ) => void;
   addEmployment: (
     application: DraftApplication,
-    onSuccess?: () => void | Promise<void>
-  ) => void;
+    onSuccess?: (app: Application) => void | Promise<void>
+  ) => Promise<void>;
   updateEmployment: (
     application: DraftApplication,
     index: number,
@@ -95,18 +95,19 @@ const useApplicationApi = <T = Application>(
     }
   };
 
-  const addEmployment: ApplicationApi<T>['addEmployment'] = (
+  const addEmployment: ApplicationApi<T>['addEmployment'] = async (
     draftApplication: DraftApplication,
-    onSuccess: (application: DraftApplication) => void = noop
+    onSuccess: (application: Application) => void = noop
   ) => {
     const summer_vouchers = [...(draftApplication.summer_vouchers ?? []), {}];
-    return updateApplicationQuery.mutate(
-      { ...draftApplication, status: 'draft', summer_vouchers },
-      {
-        onSuccess: () => onSuccess(draftApplication),
-        onError: handleUpdateError,
-      }
-    );
+    try {
+      const result = await updateApplicationQuery.mutateAsync(
+        { ...draftApplication, status: 'draft', summer_vouchers },
+      );
+      onSuccess(result);
+    } catch (error) {
+      handleUpdateError(error);
+    }
   };
 
   const updateEmployment: ApplicationApi<T>['updateEmployment'] = (
@@ -144,7 +145,7 @@ const useApplicationApi = <T = Application>(
       },
       {
         onSuccess: (data) => {
-          const {employer_summer_voucher_id, ...updatedData} = data;
+          const { employer_summer_voucher_id, ...updatedData } = data;
           updateEmployment(
             draftApplication,
             employmentIndex,

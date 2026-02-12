@@ -37,6 +37,8 @@ const DateInput = <T,>({
   initialValue,
   errorText,
   label,
+  disabled = false,
+  readOnly = false,
   ...$gridCellProps
 }: Props<T>): React.ReactElement<T> => {
   const locale = useLocale();
@@ -78,6 +80,8 @@ const DateInput = <T,>({
         label={label}
         invalid={Boolean(errorText)}
         aria-invalid={Boolean(errorText)}
+        disabled={disabled}
+        readOnly={readOnly}
       />
     </$GridCell>
   );
