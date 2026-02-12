@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.12.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.12.0...benefit-backend-v2.12.1) (2026-02-12)
+
+
+### Dependencies
+
+* Bump pillow from 12.0.0 to 12.1.1 in /backend/benefit ([44a6847](https://github.com/City-of-Helsinki/yjdh/commit/44a6847f04b7485787a9e6ce8dcfca16cb07e3dd))
+
 ## [2.12.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.11.1...benefit-backend-v2.12.0) (2026-02-03)
 
 
