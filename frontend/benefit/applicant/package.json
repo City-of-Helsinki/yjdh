@@ -22,7 +22,7 @@
     "@sentry/browser": "^10.27.0",
     "@sentry/nextjs": "^10.27.0",
     "@socialgouv/matomo-next": "^1.9.2",
-    "axios": "^1.8.2",
+    "axios": "^1.13.5",
     "camelcase-keys": "^7.0.2",
     "date-fns": "^2.24.0",
     "dotenv": "^16.0.0",
