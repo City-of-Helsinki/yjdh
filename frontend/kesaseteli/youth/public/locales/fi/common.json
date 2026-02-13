@@ -6,6 +6,9 @@
     "menuToggleAriaLabel": "Valikko",
     "languageMenuButtonAriaLabel": "Valitse kieli"
   },
+  "cookieSettingsPage": {
+    "title": "Nuorten kesäseteli — Evästeasetukset"
+  },
   "errorPage": {
     "title": "Tapahtui odottamaton virhe",
     "message": "Jokin meni pieleen. Sivun uudelleenlataaminen saattaa auttaa.",
@@ -28,6 +31,7 @@
     "contactUsLink": "https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/ota-yhteytta/",
     "accessibilityStatement": "Saavutettavuusseloste",
     "accessibilityStatementLink": "https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/kesaseteli-saavutettavuusseloste/",
+    "cookieSettings": "Evästeasetukset",
     "information": "Tietoa palvelusta",
     "informationLink": "https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/"
   },

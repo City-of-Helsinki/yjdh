@@ -8,6 +8,9 @@
     "menuToggleAriaLabel": "Menyn",
     "languageMenuButtonAriaLabel": "Ändra språk"
   },
+  "cookieSettingsPage": {
+    "title": "Sommarsedeln — Cookie-inställningar"
+  },
   "errorPage": {
     "title": "Ett oförväntat fel skedde",
     "message": "Något gick fel. Det kan hjälpa, ladda upp sidan på nytt.",
@@ -173,6 +176,7 @@
     "allRightsReservedText": "Med ensamrätt",
     "accessibilityStatement": "Tillgänglighetsutlåtande",
     "accessibilityStatementLink": "https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/sommarsedelns-tillganglighetsutlatande/",
+    "cookieSettings": "Cookie-inställningar",
     "information": "Information om servicen",
     "informationLink": "https://kesaseteli.fi/sv/",
     "backToTop": "Tillbaka till toppen"

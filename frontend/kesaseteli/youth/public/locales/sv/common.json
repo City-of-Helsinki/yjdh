@@ -6,6 +6,9 @@
     "menuToggleAriaLabel": "Menyn",
     "languageMenuButtonAriaLabel": "Ändra språk"
   },
+  "cookieSettingsPage": {
+    "title": "Sommarsedel för unga — Cookie-inställningar"
+  },
   "errorPage": {
     "title": "Ett oförväntat fel skedde",
     "message": "Något gick fel. Det kan hjälpa, ladda upp sidan på nytt.",
@@ -28,6 +31,7 @@
     "contactUsLink": "https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/ta-kontakt/",
     "accessibilityStatement": "Tillgänglighetsutlåtande",
     "accessibilityStatementLink": "https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/sommarsedelns-tillganglighetsutlatande/",
+    "cookieSettings": "Cookie-inställningar",
     "information": "Information om servicen",
     "informationLink": "https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/"
   },

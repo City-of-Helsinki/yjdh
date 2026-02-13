@@ -8,6 +8,9 @@
     "menuToggleAriaLabel": "Menu",
     "languageMenuButtonAriaLabel": "Select language"
   },
+  "cookieSettingsPage": {
+    "title": "Summer job voucher — Cookie settings"
+  },
   "errorPage": {
     "title": "An unexpected error occured",
     "message": "Something went wrong. Refreshing the page might help.",
@@ -173,6 +176,7 @@
     "allRightsReservedText": "All rights reserved",
     "accessibilityStatement": "Accessibility statement",
     "accessibilityStatementLink": "https://nuorten.hel.fi/en/studies-and-work/the-summer-job-voucher/summer-job-voucher-accessibility-statement/",
+    "cookieSettings": "Cookie settings",
     "information": "Information on the service",
     "informationLink": "https://kesaseteli.fi/en/",
     "backToTop": "Back to top"

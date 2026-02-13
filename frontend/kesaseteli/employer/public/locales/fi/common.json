@@ -8,6 +8,9 @@
     "menuToggleAriaLabel": "Valikko",
     "languageMenuButtonAriaLabel": "Valitse kieli"
   },
+  "cookieSettingsPage": {
+    "title": "Kesäseteli — Evästeasetukset"
+  },
   "errorPage": {
     "title": "Tapahtui odottamaton virhe",
     "message": "Jokin meni pieleen. Sivun uudelleenlataaminen saattaa auttaa.",
@@ -173,6 +176,7 @@
     "allRightsReservedText": "Kaikki oikeudet pidätetään",
     "accessibilityStatement": "Saavutettavuusseloste",
     "accessibilityStatementLink": "https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/kesaseteli-saavutettavuusseloste/",
+    "cookieSettings": "Evästeasetukset",
     "information": "Tietoa palvelusta",
     "informationLink": "https://kesaseteli.fi/",
     "backToTop": "Takaisin ylös"
