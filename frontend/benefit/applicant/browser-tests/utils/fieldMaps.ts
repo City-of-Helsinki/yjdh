@@ -82,7 +82,7 @@ export const mapRequiredForm = (
     testId: 'application-field-otherExpenses',
     value: formatFloatToCurrency(form.employee.otherExpenses),
   },
-  { testId: 'application-field-paySubsidyGranted', value: 'Palkkatuki' },
+  //{ testId: 'application-field-paySubsidyGranted', value: 'Palkkatuki' },
   { testId: 'application-field-apprenticeshipProgram', value: null },
   { testId: 'application-field-startDate', value: form.employee.startDate },
   { testId: 'application-field-endDate', value: form.employee.endDate },

@@ -1462,7 +1462,7 @@
       "pay_subsidy_granted": "not_granted",
       "pay_subsidy_percent": null,
       "additional_pay_subsidy_percent": null,
-      "apprenticeship_program": null,
+      "apprenticeship_program": false,
       "archived": false,
       "application_step": "step_6",
       "benefit_type": "salary_benefit",
