@@ -650,7 +650,7 @@
     "heading": "Muistitko nämä ennen hakulomakkeen täyttämistä?",
     "body": "Tarvitset hakemuksen liitteeksi työllistettävän allekirjoituksen henkilötietojen käsittelystä, allekirjoitetun työsopimuksen, mahdollisesti Helsinki-lisä -kortin.",
     "downloadButton": {
-      "href": "https://stplattaprod.blob.core.windows.net/tyoyrittaminen5ce88prod/Helsinki-lisä_tiedoksianto.pdf",
+      "href": "/employee_consent_fi.pdf",
       "label": "Lataa tiedoksianto työllistettävän henkilötietojen käsittelystä"
     },
     "moreDetailsLink": {
