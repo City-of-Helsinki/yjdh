@@ -63,6 +63,11 @@ const FooterSection: React.FC = () => {
             href={t('common:footer.accessibilityStatementLink')}
             label={t('common:footer.accessibilityStatement')}
           />
+          <Footer.Link
+            as="a"
+            href={`/${locale}/cookie-settings`}
+            label={t('common:cookieSettings')}
+          />
         </Footer.Base>
       </Footer>
     </$FooterWrapper>

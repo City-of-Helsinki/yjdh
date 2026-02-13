@@ -3,9 +3,12 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 
 import { $FooterWrapper } from './Footer.sc';
+import useLocale from 'shared/hooks/useLocale';
 
 const FooterSection: React.FC = () => {
   const { t } = useTranslation();
+  const locale = useLocale();
+
   return (
     <$FooterWrapper>
       <Footer title={t('common:appName')} theme="dark">
@@ -30,6 +33,11 @@ const FooterSection: React.FC = () => {
             target="_blank"
             href={t('common:footer.accessibilityStatementLink')}
             label={t('common:footer.accessibilityStatement')}
+          />
+          <Footer.Link
+            as="a"
+            href={`/${locale}/cookie-settings`}
+            label={t('common:cookieSettings')}
           />
         </Footer.Base>
       </Footer>

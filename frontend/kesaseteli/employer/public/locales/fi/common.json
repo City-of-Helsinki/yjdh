@@ -1,5 +1,6 @@
 {
   "appName": "Kesäseteli",
+  "cookieSettings": "Evästeasetukset",
   "header": {
     "loginLabel": "Kirjaudu palveluun",
     "logoutLabel": "Kirjaudu ulos",
