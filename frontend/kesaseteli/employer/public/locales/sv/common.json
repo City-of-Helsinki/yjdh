@@ -1,5 +1,6 @@
 {
   "appName": "Sommarsedeln",
+  "cookieSettings": "Cookie-inställningar",
   "header": {
     "loginLabel": "Logga in i tjänsten",
     "logoutLabel": "Logga ut",
