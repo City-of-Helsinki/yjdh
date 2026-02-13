@@ -13,11 +13,12 @@ import User from 'shared/types/user';
 const useUserQuery = <T = User>({
   refetchInterval,
   select,
+  enabled = true,
 }: UseQueryOptions<T> = {}): UseQueryResult<T> => {
   const isRouting = useIsRouting();
   const goToPage = useGoToPage();
   return useQuery(BackendEndpoint.USER as QueryKey, {
-    enabled: !isRouting,
+    enabled: !!enabled && !isRouting,
     onError: useErrorHandler({
       onServerError: () => goToPage('/login?error=true'),
     }),

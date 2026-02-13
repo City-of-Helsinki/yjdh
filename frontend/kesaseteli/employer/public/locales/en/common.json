@@ -1,5 +1,6 @@
 {
   "appName": "Summer job voucher",
+  "cookieSettings": "Cookie settings",
   "header": {
     "loginLabel": "Sign in to the service",
     "logoutLabel": "Log out",
