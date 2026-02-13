@@ -5,9 +5,6 @@ const { withSentryConfig } = require('@sentry/nextjs');
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 const pc = require('picocolors');
 const packageJson = require('./package.json');
-const { parsed: env } = require('dotenv').config({
-  path: '.env.kesaseteli',
-});
 
 const trueEnv = ['true', '1', 'yes'];
 
@@ -115,7 +112,6 @@ const nextConfig = (override) => ({
     APP_NAME: packageJson.name,
     APP_VERSION: packageJson.version,
     BUILD_TIME: new Date().toISOString(),
-    ...env,
   },
   serverRuntimeConfig: {
     // to bypass https://github.com/zeit/next.js/issues/8251
