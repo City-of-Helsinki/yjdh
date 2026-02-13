@@ -80,12 +80,13 @@ YJDH-Kesäseteli service for employers to fulfill employee applications
 
 1. Run `yarn` to install necessary packages
 
-2. Copy the contents of `.env.kesaseteli.example` to `.env.kesaseteli` and modify it if needed.
+2. Copy the contents of `.env.kesaseteli-backend.example` to `.env.kesaseteli-backend` and modify it if needed.
+3. Copy the contents of `.env.kesaseteli-employer.example` to `.env.kesaseteli-employer` and modify it if needed.
 
-3. Run `yarn employer up` or, if you want to rebuild, then `yarn employer up --build`
-  - The Frontend is now running at [localhost:3000](https://localhost:3000)
+4. Run `yarn employer up` or, if you want to rebuild, then `yarn employer up --build`
+  - The employer frontend is now running at [localhost:3000](https://localhost:3000)
   - The backend is now running at [localhost:8000](https://localhost:8000)
-4. If services fail to get up, `yarn clean` or `docker system prune --all` might help.
+5. If services fail to get up, `yarn clean` or `docker system prune --all` might help.
 
 ## Kesäseteli youth
 
@@ -95,12 +96,13 @@ YJDH-Kesäseteli service for young people to send kesäseteli applications
 
 1. Run `yarn` to install necessary packages
 
-2. Copy the contents of `.env.kesaseteli.example` to `.env.kesaseteli` and modify it if needed.
+2. Copy the contents of `.env.kesaseteli-backend.example` to `.env.kesaseteli-backend` and modify it if needed.
+3. Copy the contents of `.env.kesaseteli-youth.example` to `.env.kesaseteli-youth` and modify it if needed.
 
-3. Run `yarn youth up` or, if you want to rebuild, then `yarn youth up --build`
-  - The Frontend is now running at [localhost:3100](https://localhost:3100)
+4. Run `yarn youth up` or, if you want to rebuild, then `yarn youth up --build`
+  - The youth frontend is now running at [localhost:3100](https://localhost:3100)
   - The backend is now running at [localhost:8000](https://localhost:8000)
-4. If services fail to get up, `yarn clean` might help.
+5. If services fail to get up, `yarn clean` might help.
 
 ## Kesäseteli handler
 
@@ -110,13 +112,14 @@ YJDH-Kesäseteli service for young people to send kesäseteli applications
 
 1. Run `yarn` to install necessary packages
 
-2. Copy the contents of `.env.kesaseteli.example` to `.env.kesaseteli` and modify it if needed.
+2. Copy the contents of `.env.kesaseteli-backend.example` to `.env.kesaseteli-backend` and modify it if needed.
+3. Copy the contents of `.env.kesaseteli-handler.example` to `.env.kesaseteli-handler` and modify it if needed.
 
-3. Run `yarn handler up` or, if you want to rebuild, then `yarn handler up --build`
-  - The Frontend is now running at [localhost:3200](https://localhost:3200)
+4. Run `yarn handler up` or, if you want to rebuild, then `yarn handler up --build`
+  - The handler frontend is now running at [localhost:3200](https://localhost:3200)
   - The backend is now running at [localhost:8000](https://localhost:8000)
 
-4. If services fail to get up, `yarn clean` might help.
+5. If services fail to get up, `yarn clean` might help.
 
 ## Benefit
 
