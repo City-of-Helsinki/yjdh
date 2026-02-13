@@ -249,7 +249,7 @@ six==1.17.0
     # via
     #   ecdsa
     #   python-dateutil
-sqlparse==0.5.3
+sqlparse==0.5.4
     # via
     #   django
     #   django-sql-utils
