@@ -23,7 +23,7 @@ services:
       dockerfile: ./docker/kesaseteli.Dockerfile
       target: development
     env_file:
-      - .env.kesaseteli
+      - .env.kesaseteli-backend
     environment:
       DATABASE_URL: postgres://kesaseteli:kesaseteli@kesaseteli-db/kesaseteli
       DATABASE_HOST: kesaseteli-db.helsinki
@@ -53,7 +53,7 @@ services:
       - /app/kesaseteli/youth/node_modules
       - /app/kesaseteli/youth/.next
     env_file:
-      - .env.kesaseteli
+      - .env.kesaseteli-youth
     environment:
       - WATCHPACK_POLLING=${WATCHPACK_POLLING:-true}
       - PORT=3100
@@ -77,7 +77,7 @@ services:
       - /app/kesaseteli/handler/node_modules
       - /app/kesaseteli/handler/.next
     env_file:
-      - .env.kesaseteli
+      - .env.kesaseteli-handler
     environment:
       - WATCHPACK_POLLING=${WATCHPACK_POLLING:-true}
       - PORT=3200
