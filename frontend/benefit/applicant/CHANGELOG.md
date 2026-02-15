@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.18.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.18.0...benefit-applicant-v3.18.1) (2026-02-15)
+
+
+### Bug Fixes
+
+* **benefit:** Update prerequisites reminder ([b4bf83e](https://github.com/City-of-Helsinki/yjdh/commit/b4bf83edac4bef61c4d580b9a0424e0ba8478d54))
+* **benefit:** Updated links to About the service ([33087c0](https://github.com/City-of-Helsinki/yjdh/commit/33087c09208a7d230b2ba2e7d996ab5b0ac6e399))
+
 ## [3.18.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.17.1...benefit-applicant-v3.18.0) (2026-01-12)
 
 
