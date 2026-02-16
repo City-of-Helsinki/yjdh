@@ -51,31 +51,16 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
           attachmentType={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
           required
         />
-        {[
-          PAY_SUBSIDY_GRANTED.GRANTED,
-          PAY_SUBSIDY_GRANTED.GRANTED_AGED,
-        ].includes(paySubsidyGranted) && (
-          <>
-            {apprenticeshipProgram && (
-              <AttachmentsList
-                as="li"
-                attachments={attachments}
-                attachmentType={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
-                required
-              />
-            )}
+        <>
+          {apprenticeshipProgram && (
             <AttachmentsList
               as="li"
               attachments={attachments}
-              attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
-              attachmentTypeTranslationKey={translationKeyForPaySubsidyAttachement(
-                paySubsidyGranted
-              )}
-              showMessage={showSubsidyMessage}
+              attachmentType={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
               required
             />
-          </>
-        )}
+          )}
+        </>
         <AttachmentsList
           as="li"
           attachments={attachments}
