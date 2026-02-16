@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.12.2](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.12.1...benefit-backend-v2.12.2) (2026-02-16)
+
+
+### Bug Fixes
+
+* **benefit:** Application disappears from "Maksuerät" tab ([cd790cd](https://github.com/City-of-Helsinki/yjdh/commit/cd790cd2aa4f926bae9993971a1194795ad936e9))
+
 ## [2.12.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.12.0...benefit-backend-v2.12.1) (2026-02-12)
 
 
