@@ -118,7 +118,7 @@ parso==0.8.5
     # via jedi
 pexpect==4.9.0
     # via ipython
-pillow==12.0.0
+pillow==12.1.1
     # via -r requirements.in
 ply==3.11
     # via jsonpath-ng
