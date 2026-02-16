@@ -40,7 +40,7 @@ const EmployerForm: React.FC = () => {
           id="street_address"
           validation={{ required: true, maxLength: 256 }}
         />
-        <IbanInput />
+        <IbanInput id="bank_account_number" />
       </FormSection>
     </>
   );
