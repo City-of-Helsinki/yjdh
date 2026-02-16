@@ -15,7 +15,7 @@ from helsinkibenefit.tests.conftest import *  # noqa
     [
         (
             BenefitType.SALARY_BENEFIT,
-            PaySubsidyGranted.GRANTED,
+            PaySubsidyGranted.NOT_GRANTED,
             None,
             BenefitType.SALARY_BENEFIT,
         ),
@@ -60,7 +60,7 @@ def test_application_break_association_business_activities(
 def test_application_break_de_minimis_aid(api_client, association_application):
     association_application.benefit_type = BenefitType.SALARY_BENEFIT
     association_application.association_has_business_activities = True
-    association_application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
+    association_application.pay_subsidy_granted = PaySubsidyGranted.NOT_GRANTED
     association_application.pay_subsidy_percent = None
     association_application.de_minimis_aid = True
     association_application.save()
@@ -92,7 +92,7 @@ def test_application_break_pay_subsidy_no_business_activities(
     # when association does not have business activities
     association_application.benefit_type = BenefitType.SALARY_BENEFIT
     association_application.association_has_business_activities = False
-    association_application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
+    association_application.pay_subsidy_granted = PaySubsidyGranted.NOT_GRANTED
     association_application.pay_subsidy_percent = None
     association_application.save()
 
@@ -122,8 +122,8 @@ def test_application_break_pay_subsidy_with_business_activities(
     # when association has business activities
     association_application.benefit_type = BenefitType.SALARY_BENEFIT
     association_application.association_has_business_activities = True
-    association_application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
-    association_application.pay_subsidy_percent = 50
+    association_application.pay_subsidy_granted = PaySubsidyGranted.NOT_GRANTED
+    association_application.pay_subsidy_percent = None
     association_application.de_minimis_aid = True
     association_application.save()
     association_application.de_minimis_aid_set.create(

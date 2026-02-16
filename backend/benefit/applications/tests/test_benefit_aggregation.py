@@ -334,7 +334,7 @@ def test_application_with_previously_accepted_applications_and_previous_benefits
         # previous, already granted benefits for the same employee+company
         if class_name == Application:
             decided_application = DecidedApplicationFactory(
-                pay_subsidy_granted=PaySubsidyGranted.GRANTED
+                pay_subsidy_granted=PaySubsidyGranted.NOT_GRANTED
             )
             decided_application.benefit_type = next(past_benefit_type_iterator)
             decided_application.apprenticeship_program = next(
@@ -360,7 +360,7 @@ def test_application_with_previously_accepted_applications_and_previous_benefits
             raise AssertionError("unexpected")
 
     handling_application.apprenticeship_program = apprenticeship_program
-    handling_application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
+    handling_application.pay_subsidy_granted = PaySubsidyGranted.NOT_GRANTED
 
     handling_application.start_date = date(2021, 1, 1)
     handling_application.calculation.start_date = date(2021, 1, 1)
@@ -401,8 +401,8 @@ def test_application_with_previously_accepted_applications_and_previous_benefits
     data["benefit_type"] = benefit_type
     data["start_date"] = date(2021, 7, 1)
     data["end_date"] = date(2021, 12, 31)
-    data["pay_subsidy_granted"] = PaySubsidyGranted.GRANTED
-    data["pay_subsidy_percent"] = 50
+    data["pay_subsidy_granted"] = PaySubsidyGranted.NOT_GRANTED
+    data["pay_subsidy_percent"] = None
 
     with translation.override("en"):
         response = handler_api_client.put(
