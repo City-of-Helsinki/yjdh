@@ -650,7 +650,7 @@
     "heading": "Kom du ihåg dessa innan du fyllde i ansökan om Helsingforstillägget?",
     "body": "Du behöver bifoga till  den som anställs underskrift på behandlingen av personuppgifter, ett undertecknat arbetsavtal och eventuellt ett  Helsingforstillägg-kortet.",
     "downloadButton": {
-      "href": "https://stplattaprod.blob.core.windows.net/tyoyrittaminen5ce88prod/Helsinki-lisa_tiedoksianto_2024_sv.pdf",
+      "href": "/employee_consent_sv.pdf",
       "label": "Ladda ner meddelandet om behandlingen av personuppgifter"
     },
     "moreDetailsLink": {
