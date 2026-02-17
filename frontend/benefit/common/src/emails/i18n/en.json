@@ -47,10 +47,35 @@
       "text": "If you have any questions, please send us a message via the Helsinki benefit e-service."
     }
   },
+  "payslipRequired": {
+  "headerText": "Payment of the second installment of the Helsinki benefit requires measures",
+    "heading": "Payment of the second installment of the Helsinki benefit requires measures",
+    "bodyText": "We have granted you the Helsinki benefit for hiring an employee. The Helsinki benefit is paid in two installments. As a recipient of the subsidy, you are obliged to notify us of the salary paid to the employee. To receive the second installment of the Helsinki benefit, the employer must submit:",
+    "requiredText": "A payslip or a bank transfer receipt of the paid salary.",
+    "helper": {
+      "text": "You can easily submit the information using",
+      "link": {
+        "title": "the Helsinki benefit online service",
+        "url": "https://helsinkilisa.hel.fi/en/login"
+      }
+    },
+    "delivery": {
+      "request": "Log in and submit the required attachment",
+      "alternative": "",
+      "secureTitle1": "If you have not used the online service, you can submit the attachment using the secure connection via",
+      "secureTitle2": "(Link takes you to an external service). Mark",
+      "secureTitle3": "as the recipient.",
+      "secureText": "https://securemail.hel.fi/",
+      "secureLink": "https://securemail.hel.fi/",
+      "emailAddress": "helsinkilisa@hel.fi"
+    }
+  },
   "application": {
     "applicationDetails": "Application details",
     "applicationNumber": "Application number",
     "createdAt": "Application submission date",
+    "beneficiary": "Beneficiary",
+    "benefitPeriod": "Grant period",
     "status": {
       "title": "Application status",
       "unfinished": "Unfinished",

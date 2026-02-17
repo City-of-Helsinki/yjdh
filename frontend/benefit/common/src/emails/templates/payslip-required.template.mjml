@@ -1,0 +1,80 @@
+<mjml>
+  <mj-head>
+    <mj-include path="partials/base.css" type="css" />
+    <mj-include path="partials/attributes.mjml" />
+    <mj-title>${payslipRequired.headerText}</mj-title>
+  </mj-head>
+  <mj-body>
+    <mj-section background-color="#D8D8D8" padding-bottom="10px" padding-top="10px">
+      <mj-column>
+        <mj-text font-size="15px">${payslipRequired.headerText}</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-include path="partials/header-service.mjml" />
+
+    <mj-section background-color="#fff" padding-bottom="0px">
+      <mj-column>
+        <mj-text padding-bottom="20px" padding-top="10px">${general.greeting}</mj-text>
+        <mj-text>
+          <p>${payslipRequired.bodyText}</p>
+          <p>${payslipRequired.requiredText}</p>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding-top="10px">
+      <mj-column>
+        <mj-text>${payslipRequired.helper.text} <a href="${payslipRequired.helper.link.url}">${payslipRequired.helper.link.title}</a></mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding-bottom="0px">
+      <mj-column>
+        <mj-text line-height="100%">${general.bestRegards1}</mj-text>
+        <mj-text line-height="100%">${general.bestRegards2}</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding-bottom="0px">
+      <mj-column>
+        <mj-text font-weight="600" font-size="18px">${application.applicationDetails}</mj-text>
+        <mj-table font-size="15px">
+          <tr style="border-top: 1px solid #ecedee; border-bottom: 1px solid #ecedee; text-align: left">
+            <td style="padding: 15px 0">${application.applicationNumber}</td>
+            <td style="padding: 15px 0; text-align: right">{{ application.application_number }}</td>
+          </tr>
+          <tr style="border-top: 1px solid #ecedee; border-bottom: 1px solid #ecedee; text-align: left">
+            <td style="padding: 15px 0">${application.beneficiary}</td>
+            <td style="padding: 15px 0; text-align: right">{{ application.company_name }}</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #ecedee">
+            <td style="padding: 15px 0">${application.benefitPeriod}</td>
+            <td style="padding: 15px 0; text-align: right">
+              <span style="background: #fef4d4; padding: 7px 14px">{{ application.start_date }}-{{ application.end_date }}</span>
+            </td>
+          </tr>
+        </mj-table>
+      </mj-column>
+    </mj-section>
+
+    <mj-section>
+      <mj-column>
+        <mj-text>
+          ${payslipRequired.delivery.request}
+        </mj-text>
+        <mj-text>
+          ${payslipRequired.delivery.alternative}
+        </mj-text>
+        <mj-text>
+          ${payslipRequired.delivery.secureTitle1}&nbsp;<a href="${payslipRequired.delivery.secureLink}">${payslipRequired.delivery.secureText}</a>&nbsp;
+          ${payslipRequired.delivery.secureTitle2}&nbsp;${payslipRequired.delivery.emailAddress}&nbsp;${payslipRequired.delivery.secureTitle3}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-include path="partials/automaticReplyDisclaimer.mjml" />
+
+    <mj-include path="partials/footer.mjml" />
+  </mj-body>
+</mjml>
