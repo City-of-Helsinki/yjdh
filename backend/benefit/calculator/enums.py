@@ -42,3 +42,6 @@ class InstalmentStatus(models.TextChoices):
     CANCELLED = "cancelled", _("Cancelled")
     ERROR_IN_TALPA = "error_in_talpa", _("Error in TALPA")
     COMPLETED = "completed", _("Completed")
+    REQUESTED = "requested", _("Requested")
+    RESPONDED = "responded", _("Responded")
+    PENDING = "pending", _("Pending")
