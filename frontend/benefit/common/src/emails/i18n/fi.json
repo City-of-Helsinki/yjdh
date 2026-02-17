@@ -47,10 +47,35 @@
       "text": "Mikäli sinulla herää kysyttävää, lähetä meille viesti Helsinki-lisän asiointipalvelun kautta."
     }
   },
+  "payslipRequired": {
+    "headerText": "Myönnetyn Helsinki-lisän toisen erän maksu edellyttää toimenpiteitä",
+    "heading": "Myönnetyn Helsinki-lisän toisen erän maksu edellyttää toimenpiteitä",
+    "bodyText": "Myönsimme teille Helsinki-lisää työntekijän palkkaamiseen. Helsinki-lisä maksetaan kahdessa erässä. Tuen saajana olet velvollinen ilmoittamaan meille työsuhteeseen maksetun palkan. Saadakseen toisen Helsinki-lisän maksuerän työnantajan on toimitettava:",
+    "requiredText": "Palkkakuitti tai pankinsuoritustosite maksetusta palkasta.",
+    "helper": {
+      "text": "Ilmoittaminen hoituu helposti",
+      "link": {
+        "title": "asiointipalvelussa",
+        "url": "https://helsinkilisa.hel.fi/fi/login"
+      }
+    },
+    "delivery": {
+      "request": "Kirjaudu ja/tai toimita tarvittava liite",
+      "alternative": "Jos et ole käyttänyt asiointipalvelua, niin voit toimittaa liitteen turvasähköpostilla",
+      "secureTitle1": "Lähetä liite",
+      "secureTitle2": "suojatun yhteyden kautta osoitteeseen",
+      "secureTitle3": "",
+      "secureText": "suojattu sähköposti (linkki ulkoiseen palveluun)",
+      "secureLink": "https://suojattusahkoposti.hel.fi/",
+      "emailAddress": "helsinkilisa@hel.fi"
+    }
+  },
   "application": {
     "applicationDetails": "Hakemuksen tiedot",
     "applicationNumber": "Hakemusnumero",
     "createdAt": "Hakemuksen lähetyspäivä",
+    "beneficiary": "Tuen saaja",
+    "benefitPeriod": "Tukiaika",
     "status": {
       "title": "Hakemuksen tila",
       "unfinished": "Keskeneräinen",
