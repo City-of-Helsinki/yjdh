@@ -9,6 +9,7 @@ Run as a cronjob every day to
 - get decision maker from Ahjo
 - get signer
 - check if applicants should be notified about ending benefits
+- request payslip after 5 months
 """
 
 

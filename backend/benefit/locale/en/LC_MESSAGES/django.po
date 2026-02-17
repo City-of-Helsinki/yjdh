@@ -1564,3 +1564,6 @@ msgstr ""
 
 msgid "terms of service approvals"
 msgstr ""
+
+msgid "Payment of the second installment of the Helsinki benefit requires measures"
+msgstr "Payment of the second installment of the Helsinki benefit requires measures"

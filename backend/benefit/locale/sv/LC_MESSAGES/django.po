@@ -1644,6 +1644,9 @@ msgstr "godkännande av villkoren för tjänsten"
 msgid "terms of service approvals"
 msgstr "godkännanden av villkoren för tjänsten"
 
+msgid "Payment of the second installment of the Helsinki benefit requires measures"
+msgstr "Utbetalning av den andra raten av det beviljade Helsingforstillägget kräver åtgärder "
+
 #, fuzzy
 #~| msgid "Delivery address"
 #~ msgid "e-invoice address"
