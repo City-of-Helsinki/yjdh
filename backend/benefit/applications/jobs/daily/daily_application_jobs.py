@@ -4,10 +4,11 @@ from django_extensions.management.jobs import DailyJob
 from applications.enums import ApplicationStatus
 
 """
-Daily job to delete cancelled applications.
-
-Run as a cronjob every day to delete applications that have
-been in the cancelled state for more than 30 days.
+Run as a cronjob every day to
+- check if drafts should be deleted
+- get decision maker from Ahjo
+- get signer
+- check if applicants should be notified about ending benefits
 """
 
 
@@ -32,3 +33,4 @@ class Job(DailyJob):
         call_command("get_decision_maker")
         call_command("get_signer")
         call_command("check_and_notify_ending_benefits", notify=30)
+        call_command("request_payslip", notify=150)
