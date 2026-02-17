@@ -34,7 +34,7 @@ const TemporaryAhjoModeSwitch: React.FC = () => {
       variant="supplementary"
       size="small"
     >
-      Ahjo-kokeilu
+      Ahjo-integraatio
       <br />
       {isNewAhjoMode ? 'on päällä' : 'on pois päältä'}
     </Button>

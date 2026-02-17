@@ -227,7 +227,10 @@
           "waiting": "Odottaa",
           "completed": "Maksettu",
           "error_in_talpa": "Virhe maksussa",
-          "paid": "Merkitty maksetuksi manuaalisesti"
+          "paid": "Merkitty maksetuksi manuaalisesti",
+          "requested": "Pyydetty",
+          "responded": "Vastattu",
+          "pending": "Kesken"
         },
         "calculationEndDate": "Viim. tukipäivä",
         "calculatedBenefitAmount": "Tukisumma",

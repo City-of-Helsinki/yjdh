@@ -246,4 +246,7 @@ export enum INSTALMENT_STATUSES {
   CANCELLED = 'cancelled',
   ERROR_IN_TALPA = 'error_in_talpa',
   COMPLETED = 'completed',
+  REQUESTED = 'requested',
+  RESPONDED = 'responded',
+  PENDING = 'pending'
 }

@@ -1,8 +1,4 @@
-import {
-  APPLICATION_STATUSES,
-  INSTALMENT_STATUSES,
-  TALPA_STATUSES,
-} from 'benefit-shared/constants';
+import {APPLICATION_STATUSES, INSTALMENT_STATUSES, TALPA_STATUSES,} from 'benefit-shared/constants';
 import theme from 'shared/styles/theme';
 
 export const getTagStyleForStatus = (
@@ -85,6 +81,21 @@ export const getInstalmentTagStyleForStatus = (
 
     case INSTALMENT_STATUSES.COMPLETED:
       background = theme.colors.success;
+      text = theme.colors.white;
+      break;
+
+    case INSTALMENT_STATUSES.REQUESTED:
+      background = theme.colors.info;
+      text = theme.colors.white;
+      break;
+
+    case INSTALMENT_STATUSES.RESPONDED:
+      background = theme.colors.summerMediumLight;
+      text = theme.colors.black;
+      break;
+
+    case INSTALMENT_STATUSES.PENDING:
+      background = theme.colors.suomenlinna;
       text = theme.colors.white;
       break;
 
