@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.13.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.13.0...benefit-handler-v4.13.1) (2026-02-17)
+
+
+### Bug Fixes
+
+* **benefit:** Applications show up on wrong tab ([bcadd21](https://github.com/City-of-Helsinki/yjdh/commit/bcadd21d18bfc6c2c82a688e684d1c6f9fc308c9))
+* **benefit:** Number of applications is zero ([282f1ad](https://github.com/City-of-Helsinki/yjdh/commit/282f1ad00d61da42319e5bc34800b2474a4fab77))
+
 ## [4.13.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.12.0...benefit-handler-v4.13.0) (2026-01-12)
 
 
