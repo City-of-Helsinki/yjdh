@@ -9,6 +9,9 @@ class InstalmentStatusValidator(StatusTransitionValidator):
         InstalmentStatus.WAITING: (
             InstalmentStatus.ACCEPTED,
             InstalmentStatus.CANCELLED,
+            InstalmentStatus.REQUESTED,
+            InstalmentStatus.RESPONDED,
+            InstalmentStatus.PENDING,
         ),
         InstalmentStatus.ACCEPTED: (
             InstalmentStatus.WAITING,
@@ -25,4 +28,17 @@ class InstalmentStatusValidator(StatusTransitionValidator):
             InstalmentStatus.COMPLETED,
         ),
         InstalmentStatus.COMPLETED: (),
+        InstalmentStatus.REQUESTED: (
+            InstalmentStatus.RESPONDED,
+            InstalmentStatus.CANCELLED,
+        ),
+        InstalmentStatus.RESPONDED: (
+            InstalmentStatus.ACCEPTED,
+            InstalmentStatus.CANCELLED,
+            InstalmentStatus.PENDING,
+        ),
+        InstalmentStatus.PENDING: (
+            InstalmentStatus.CANCELLED,
+            InstalmentStatus.ACCEPTED,
+        ),
     }
