@@ -63,21 +63,15 @@ def notify_applications(days_to_notify: int) -> int:
 
 
 def get_benefit_notice_email_notification_subject():
-    return str(_("You need to send the employee's payslip"))
+    return str(_("Payment of the second installment of the Helsinki benefit requires measures"))
 
 
 def _send_notification_mail(application: Application, days_to_notify: int) -> int:
-    """Send a notification mail to the applicant about the upcoming checkpoint"""  # noqa: E501
+    """Send a notification mail to the applicant about the upcoming checkpoint"""
 
     context = get_email_template_context(application)
-    notification_date = (application.start_date + timedelta(days=days_to_notify))
-    context["benefit_company_name"] = application.company_name
-    context["benefit_start_date"] = application.start_date.strftime("%d.%m.%Y")
-    context["benefit_checkpoint_date"] = notification_date.strftime("%d.%m.%Y")
-    context["benefit_end_date"] = application.end_date.strftime("%d.%m.%Y")
-
     subject = get_benefit_notice_email_notification_subject()
-    message = render_email_template(context, "benefit-request-payslip", "txt")
-    html_message = render_email_template(context, "benefit-request-payslip", "html")
+    message = render_email_template(context, "payslip-required", "txt")
+    html_message = render_email_template(context, "payslip-required", "html")
 
     return send_email_to_applicant(application, subject, message, html_message)
