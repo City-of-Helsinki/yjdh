@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.12.3](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.12.2...benefit-backend-v2.12.3) (2026-02-18)
+
+
+### Dependencies
+
+* **deps:** Bump sqlparse from 0.5.3 to 0.5.4 in /backend/benefit ([f49d7c3](https://github.com/City-of-Helsinki/yjdh/commit/f49d7c3bcdf52e186f1c70e2cf2085c7541e0666))
+
 ## [2.12.2](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.12.1...benefit-backend-v2.12.2) (2026-02-16)
 
 
