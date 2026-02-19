@@ -1,7 +1,8 @@
 import type { SuomiFiData } from '@frontend/shared/browser-tests/actions/login-action';
 import FakeObjectFactory from '@frontend/shared/src/__tests__/utils/FakeObjectFactory';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
-import type Application from '@frontend/shared/src/types/application';
+import Application from '@frontend/shared/src/types/application';
+import Employment from '@frontend/shared/src/types/employment';
 import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
 import TestController from 'testcafe';
 
@@ -60,25 +61,40 @@ export const fillEmploymentDetails = async (
     );
     await step1Form.actions.clickFetchEmployeeDataButton();
     await step1Form.expectations.isEmploymentFieldsEnabled();
+    await step1Form.expectations.isSsnFieldReadOnly();
 
     if (expectedPreFill) {
       await step1Form.expectations.isEmploymentFulfilledWith(expectedPreFill);
     }
 
-    await step1Form.actions.fillSsn(employment.employee_ssn ?? '');
-    const targetGroupKey = employment.target_group ?? 'secondary_target_group';
+    const {
+      employee_ssn,
+      target_group,
+      employee_home_city,
+      employee_postcode,
+      employee_phone_number,
+      employment_postcode,
+      employee_school,
+      employment_start_date,
+      employment_end_date,
+      employment_work_hours,
+      employment_description,
+      employment_salary_paid,
+      hired_without_voucher_assessment,
+    } = employment;
+
+    if (!expectedPreFill?.employee_ssn) {
+      await step1Form.actions.fillSsn(employee_ssn ?? '');
+    }
+    const targetGroupKey = target_group ?? 'secondary_target_group';
     await step1Form.actions.selectTargetGroup(targetGroupKey);
-    await step1Form.actions.fillHomeCity(employment.employee_home_city ?? '');
-    await step1Form.actions.fillPostcode(
-      String(employment.employee_postcode ?? '')
-    );
-    await step1Form.actions.fillPhoneNumber(
-      employment.employee_phone_number ?? ''
-    );
+    await step1Form.actions.fillHomeCity(employee_home_city ?? '');
+    await step1Form.actions.fillPostcode(String(employee_postcode ?? ''));
+    await step1Form.actions.fillPhoneNumber(employee_phone_number ?? '');
     await step1Form.actions.fillEmploymentPostcode(
-      String(employment.employment_postcode ?? '')
+      String(employment_postcode ?? '')
     );
-    await step1Form.actions.fillSchool(employment.employee_school ?? '');
+    await step1Form.actions.fillSchool(employee_school ?? '');
 
     await step1Form.actions.addEmploymentContractAttachment([
       'sample1.pdf',
@@ -94,22 +110,16 @@ export const fillEmploymentDetails = async (
     ]);
 
     await step1Form.actions.fillStartDate(
-      convertToUIDateFormat(employment.employment_start_date)
+      convertToUIDateFormat(employment_start_date)
     );
     await step1Form.actions.fillEndDate(
-      convertToUIDateFormat(employment.employment_end_date)
+      convertToUIDateFormat(employment_end_date)
     );
-    await step1Form.actions.fillWorkHours(
-      String(employment.employment_work_hours ?? '')
-    );
-    await step1Form.actions.fillDescription(
-      employment.employment_description ?? ''
-    );
-    await step1Form.actions.fillSalary(
-      String(employment.employment_salary_paid ?? '')
-    );
+    await step1Form.actions.fillWorkHours(String(employment_work_hours ?? ''));
+    await step1Form.actions.fillDescription(employment_description ?? '');
+    await step1Form.actions.fillSalary(String(employment_salary_paid ?? ''));
     await step1Form.actions.selectHiredWithoutVoucherAssessment(
-      employment.hired_without_voucher_assessment ?? 'maybe'
+      hired_without_voucher_assessment ?? 'maybe'
     );
   }
 };
@@ -148,6 +158,13 @@ export const loginAndfillApplication = async (
     'fi',
     applicationId
   );
+
+  if (expectedPreFill && application.summer_vouchers.length > 0) {
+    application.summer_vouchers[0] = {
+      ...application.summer_vouchers[0],
+      ...expectedPreFill,
+    } as unknown as Employment;
+  }
 
   // if there is existing draft application on step 2, then move to step 1.
   await wizard.actions.clickGoToStep1Button();
