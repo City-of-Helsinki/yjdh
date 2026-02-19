@@ -4,9 +4,9 @@
 #
 #    pip-compile requirements-dev.in
 #
-build==1.3.0
+build==1.4.0
     # via pip-tools
-certifi==2025.11.12
+certifi==2026.1.4
     # via
     #   -c requirements.txt
     #   requests
@@ -18,7 +18,7 @@ charset-normalizer==3.4.4
     #   requests
 click==8.3.1
     # via pip-tools
-coverage[toml]==7.13.1
+coverage[toml]==7.13.4
     # via pytest-cov
 distlib==0.4.0
     # via virtualenv
@@ -26,11 +26,11 @@ et-xmlfile==2.0.0
     # via openpyxl
 execnet==2.1.2
     # via pytest-xdist
-filelock==3.20.1
+filelock==3.24.3
     # via virtualenv
 freezegun==1.5.5
     # via pytest-freezer
-identify==2.6.15
+identify==2.6.16
     # via pre-commit
 idna==3.11
     # via
@@ -46,13 +46,14 @@ nodeenv==1.10.0
     # via pre-commit
 openpyxl==3.1.5
     # via -r requirements-dev.in
-packaging==25.0
+packaging==26.0
     # via
     #   build
     #   pytest
-pip-tools==7.5.2
+    #   wheel
+pip-tools==7.5.3
     # via -r requirements-dev.in
-platformdirs==4.5.1
+platformdirs==4.9.2
     # via virtualenv
 pluggy==1.6.0
     # via
@@ -60,7 +61,7 @@ pluggy==1.6.0
     #   pytest-cov
 pre-commit==4.5.1
     # via -r requirements-dev.in
-psutil==7.2.1
+psutil==7.2.2
     # via pytest-xdist
 pygments==2.19.2
     # via
@@ -79,7 +80,7 @@ pytest==9.0.2
     #   pytest-xdist
 pytest-cov==7.0.0
     # via -r requirements-dev.in
-pytest-django==4.11.1
+pytest-django==4.12.0
     # via -r requirements-dev.in
 pytest-freezer==0.4.9
     # via -r requirements-dev.in
@@ -102,15 +103,15 @@ six==1.17.0
     #   -c requirements.txt
     #   langdetect
     #   python-dateutil
-urllib3==1.26.20
+urllib3==2.6.3
     # via
     #   -c requirements.txt
     #   requests
-virtualenv==20.35.4
+virtualenv==20.38.0
     # via pre-commit
-werkzeug==3.1.4
+werkzeug==3.1.5
     # via -r requirements-dev.in
-wheel==0.45.1
+wheel==0.46.3
     # via pip-tools
 
 # The following packages are considered to be unsafe in a requirements file:
