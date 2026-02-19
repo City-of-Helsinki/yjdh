@@ -92,7 +92,9 @@
       "selectionGroups": {
         "target_group": {
           "primary_target_group": "Niondeklassist eller TUVAklassist",
-          "secondary_target_group": "Annan åldersgrupp"
+          "secondary_target_group": "Annan åldersgrupp",
+          "hki_18": "Andra stadiets andra årets studerande",
+          "hki_15": "Åttandeklassist"
         },
         "organization_type": {
           "company": "Företag",
@@ -141,6 +143,7 @@
         "employment_description": "Beskrivning av arbetsuppgifter",
         "employment_salary_paid": "Utbetalt lönebelopp (€)",
         "hired_without_voucher_assessment": "Skulle du ha anställt en ung sommarjobbare utan Sommarsedeln?",
+        "summer_vouchers": "Sommarsedlar",
         "termsAndConditions": "Jag har läst och godkänner <a>användningsvillkor</a>."
       },
       "helpers": {
@@ -166,7 +169,8 @@
         "WrongBBANFormat": "Kontrollera kontonumret",
         "ChecksumNotNumber": "Kontrollera kontonumret",
         "WrongIBANChecksum": "Kontrollera kontonumret",
-        "WrongAccountBankBranchChecksum": "Kontrollera kontonumret"
+        "WrongAccountBankBranchChecksum": "Kontrollera kontonumret",
+        "undefined": "Uppgifter fattas eller är ofullständiga"
       },
       "notification": {
         "title": "Fyll i de uppgifter som fattas eller är felaktiga"

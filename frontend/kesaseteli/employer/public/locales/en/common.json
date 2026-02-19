@@ -92,7 +92,9 @@
       "selectionGroups": {
         "target_group": {
           "primary_target_group": "9th grader or TUVA grader",
-          "secondary_target_group": "Other age group"
+          "secondary_target_group": "Other age group",
+          "hki_18": "Second-year upper secondary school student",
+          "hki_15": "8th grader"
         },
         "organization_type": {
           "company": "Company",
@@ -141,6 +143,7 @@
         "employment_description": "Employment description",
         "employment_salary_paid": "Salary paid (€)",
         "hired_without_voucher_assessment": "Would you have employed without the Summer Job Voucher?",
+        "summer_vouchers": "Summer vouchers",
         "termsAndConditions": "I have read and accept the <a>terms of service</a>."
       },
       "helpers": {
@@ -166,7 +169,8 @@
         "WrongBBANFormat": "Check the account number",
         "ChecksumNotNumber": "Check the account number",
         "WrongIBANChecksum": "Check the account number",
-        "WrongAccountBankBranchChecksum": "Check the account number"
+        "WrongAccountBankBranchChecksum": "Check the account number",
+        "undefined": "Information is missing or is incorrect"
       },
       "notification": {
         "title": "Fill in the missing or incorrect information"
