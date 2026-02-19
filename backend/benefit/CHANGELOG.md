@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.12.4](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.12.3...benefit-backend-v2.12.4) (2026-02-19)
+
+
+### Bug Fixes
+
+* **benefit:** Fixed the apprenticeship validation ([18b7acb](https://github.com/City-of-Helsinki/yjdh/commit/18b7acb27e2d87187734aa1e2ab08225ca0ba4b9))
+* **benefit:** Fixed the tests ([d72253d](https://github.com/City-of-Helsinki/yjdh/commit/d72253d6d5b1932c0e460461ab45067acd4ce25a))
+
 ## [2.12.3](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.12.2...benefit-backend-v2.12.3) (2026-02-18)
 
 
