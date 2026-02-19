@@ -39,6 +39,7 @@ const MultiSelectDropdown = <T, O extends Option>({
   const { t } = useTranslation();
   const { control } = useFormContext<T>();
   const required = Boolean(registerOptions.required);
+  const inputId = String(id);
   const DropdownInput = React.useMemo(
     () => (type === 'select' ? Select : Combobox),
     [type]
@@ -48,7 +49,7 @@ const MultiSelectDropdown = <T, O extends Option>({
     <$GridCell {...$gridCellProps}>
       <Controller
         name={id}
-        data-testid={id}
+        data-testid={inputId}
         control={control}
         rules={registerOptions}
         render={({ field: { ref, value, ...field } }) => (
@@ -56,7 +57,7 @@ const MultiSelectDropdown = <T, O extends Option>({
             {...field}
             multiselect
             value={value as O[]}
-            id={id as string}
+            id={inputId}
             required={required}
             label={label}
             defaultValue={initialValue}
@@ -74,7 +75,7 @@ const MultiSelectDropdown = <T, O extends Option>({
         )}
       />
       {errorText && (
-        <FieldErrorMessage data-testid={`${id as string}-error`}>
+        <FieldErrorMessage data-testid={`${inputId}-error`}>
           {errorText}
         </FieldErrorMessage>
       )}
