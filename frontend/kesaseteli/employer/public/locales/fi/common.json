@@ -92,7 +92,9 @@
       "selectionGroups": {
         "target_group": {
           "primary_target_group": "9. luokkalainen tai TUVA-luokkalainen",
-          "secondary_target_group": "Jokin muu ikäryhmä"
+          "secondary_target_group": "Jokin muu ikäryhmä",
+          "hki_18": "Toisen asteen toisen vuoden opiskelija",
+          "hki_15": "8. luokkalainen"
         },
         "organization_type": {
           "company": "Yritys",
@@ -141,6 +143,7 @@
         "employment_description": "Kuvaus työtehtävistä",
         "employment_salary_paid": "Maksettu palkka (€)",
         "hired_without_voucher_assessment": "Olisitko palkannut nuoren ilman kesäseteliä?",
+        "summer_vouchers": "Kesäsetelit",
         "termsAndConditions": "Olen lukenut palvelun <a>käyttöehdot</a> ja hyväksyn ne."
       },
       "helpers": {
@@ -166,7 +169,8 @@
         "WrongBBANFormat": "Tarkista tilinumero",
         "ChecksumNotNumber": "Tarkista tilinumero",
         "WrongIBANChecksum": "Tarkista tilinumero",
-        "WrongAccountBankBranchChecksum": "Tarkista tilinumero"
+        "WrongAccountBankBranchChecksum": "Tarkista tilinumero",
+        "undefined": "Tieto puuttuu tai on virheellinen"
       },
       "notification": {
         "title": "Täytä puuttuvat tai virheelliset tiedot"

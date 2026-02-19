@@ -162,16 +162,16 @@ const useApplicationApi = <T = Application>(
           if (Axios.isAxiosError(error) && error.response.status === 404) {
             // Not found error
             showErrorToast(
-              t('common:application.step2.fetch_employment_error_title'),
+              t('common:application.step1.employment_section.fetch_employment_error_title'),
               t(
-                'common:application.step2.fetch_employment_not_found_error_message'
+                'common:application.step1.employment_section.fetch_employment_not_found_error_message'
               )
             );
           } else {
             // General error
             showErrorToast(
-              t('common:application.step2.fetch_employment_error_title'),
-              t('common:application.step2.fetch_employment_error_message')
+              t('common:application.step1.employment_section.fetch_employment_error_title'),
+              t('common:application.step1.employment_section.fetch_employment_error_message')
             );
           }
         },
