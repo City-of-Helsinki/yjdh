@@ -148,7 +148,7 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
     return (
       <AttachmentsListBase
         buttonRef={ref}
-        name={id}
+        name={id as string}
         title={t(
           `common:applications.sections.attachments.types.${attachmentType}.title`
         )}

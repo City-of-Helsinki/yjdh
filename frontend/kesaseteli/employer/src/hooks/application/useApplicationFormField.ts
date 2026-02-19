@@ -59,8 +59,7 @@ const useApplicationFormField = <V extends Value>(
     '') as ApplicationFieldName;
   const defaultLabel = useGetApplicationFormFieldLabel(fieldName);
 
-  const getError = (): FieldError | undefined =>
-    get(formState.errors, id) as FieldError | undefined;
+  const getError = (): FieldError | undefined => get(formState.errors, id);
 
   return {
     control,
