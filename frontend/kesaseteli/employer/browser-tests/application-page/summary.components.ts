@@ -154,8 +154,11 @@ export const getSummaryComponents = async (t: TestController) => {
         };
 
         const header = selectors.employmentHeading();
-        await expectElementHasValue(header, employment.employee_name);
-        await expectElementHasValue(header, employment.employee_ssn);
+        await t
+          .expect(header.textContent)
+          .contains(employment.employee_name ?? '', await getErrorMessage(t))
+          .expect(header.textContent)
+          .contains(employment.employee_ssn ?? '', await getErrorMessage(t));
         await expectTargetGroupHasValue('target_group');
         await expectEmploymentFieldhasValue('employee_postcode');
         await expectEmploymentFieldhasValue('employee_home_city');

@@ -42,8 +42,8 @@ const useFetchEmployeeDataButtonState = (
     const integerStringRegex = /^\s*\d+\s*$/; // Allow leading and trailing whitespace
     setIsFetchEmployeeDataEnabled(
       (formDataVoucher.employee_name?.length ?? 0) > 0 &&
-      typeof formDataVoucher.summer_voucher_serial_number === 'string' &&
-      integerStringRegex.test(formDataVoucher.summer_voucher_serial_number)
+        typeof formDataVoucher.summer_voucher_serial_number === 'string' &&
+        integerStringRegex.test(formDataVoucher.summer_voucher_serial_number)
     );
   }, [getValues, index]);
 
@@ -68,8 +68,7 @@ const useFetchEmployeeData = (
   handleGetEmployeeData: () => void;
 } => {
   const { getValues, reset, control } = useFormContext<Application>();
-  const { fetchEmployment, updateApplication } =
-    useApplicationApi();
+  const { fetchEmployment, updateApplication } = useApplicationApi();
 
   // Use dedicated state instead of deriving from form values
   // This prevents the state from becoming false during form reset
@@ -106,13 +105,7 @@ const useFetchEmployeeData = (
     } else {
       updateApplication(currentValues, (app) => performFetch(app));
     }
-  }, [
-    getValues,
-    fetchEmployment,
-    index,
-    reset,
-    updateApplication,
-  ]);
+  }, [getValues, fetchEmployment, index, reset, updateApplication]);
 
   return {
     isEmployeeDataFetched,
@@ -184,6 +177,7 @@ const EmploymentForm: React.FC<Props> = ({ index }) => {
           }}
           autoComplete="off"
           disabled={disableEmploymentFields}
+          readOnly={isEmployeeDataFetched}
         />
         <SelectionGroup
           id={getId('target_group')}
@@ -240,7 +234,9 @@ const EmploymentForm: React.FC<Props> = ({ index }) => {
         />
         <FormSectionDivider $colSpan={2} />
         <FormSectionHeading
-          header={t('common:application.step1.employment_section.attachments_section')}
+          header={t(
+            'common:application.step1.employment_section.attachments_section'
+          )}
           size="s"
           $colSpan={2}
         />
@@ -258,7 +254,9 @@ const EmploymentForm: React.FC<Props> = ({ index }) => {
         />
         <FormSectionDivider $colSpan={2} />
         <FormSectionHeading
-          header={t('common:application.step1.employment_section.employment_section')}
+          header={t(
+            'common:application.step1.employment_section.employment_section'
+          )}
           size="s"
           $colSpan={2}
         />
