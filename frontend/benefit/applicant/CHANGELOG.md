@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.19.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.18.1...benefit-applicant-v3.19.0) (2026-02-19)
+
+
+### Features
+
+* **benefit:** Applicant ui to reflect 2026 changes ([8385550](https://github.com/City-of-Helsinki/yjdh/commit/8385550db89c9106ae48fedbe78321123e15c962))
+
+
+### Bug Fixes
+
+* **benefit:** Removed commented out code ([7a9393a](https://github.com/City-of-Helsinki/yjdh/commit/7a9393ade4875e22eeb34c49991dd200f7586209))
+
 ## [3.18.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.18.0...benefit-applicant-v3.18.1) (2026-02-16)
 
 
