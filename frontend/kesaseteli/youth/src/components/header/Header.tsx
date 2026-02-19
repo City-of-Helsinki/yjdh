@@ -4,9 +4,11 @@ import React from 'react';
 import BaseHeader from 'shared/components/header/Header';
 import { SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 import { OptionType } from 'shared/types/common';
+import useLocale from 'shared/hooks/useLocale';
 
 const Header: React.FC = () => {
   const { t } = useTranslation();
+  const locale = useLocale();
   const router = useRouter();
   const { asPath } = router;
 
@@ -31,6 +33,7 @@ const Header: React.FC = () => {
   return (
     <BaseHeader
       title={t('common:appName')}
+      titleUrl={`/${locale}`}
       skipToContentLabel={t('common:header.linkSkipToContent')}
       menuToggleAriaLabel={t('common:header.menuToggleAriaLabel')}
       languages={languageOptions}
