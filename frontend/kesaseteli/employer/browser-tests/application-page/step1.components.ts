@@ -191,6 +191,11 @@ export const getStep1Components = (t: TestController) => {
           .expect(Selector('[data-testid*="target_group-"]').exists)
           .ok('Target groups did not load in time', { timeout: 10_000 });
       },
+      async isSsnFieldReadOnly() {
+        await t
+          .expect(selectors.ssnInput().hasAttribute('readonly'))
+          .ok(await getErrorMessage(t));
+      },
       async isFulFilledWith({
         contact_person_name,
         contact_person_email,
