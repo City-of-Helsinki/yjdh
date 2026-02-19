@@ -6,19 +6,19 @@
 #
 -e file:../shared
     # via -r requirements.in
-asgiref==3.11.0
+asgiref==3.11.1
     # via
     #   django
     #   django-cors-headers
 asttokens==3.0.1
     # via stack-data
-azure-core==1.38.0
+azure-core==1.38.2
     # via
     #   azure-storage-blob
     #   django-storages
-azure-storage-blob==12.27.1
+azure-storage-blob==12.28.0
     # via django-storages
-certifi==2025.11.12
+certifi==2026.1.4
     # via
     #   elasticsearch
     #   requests
@@ -40,7 +40,7 @@ defusedxml==0.7.1
     # via
     #   djangosaml2
     #   pysaml2
-django==5.1.15
+django==5.2.11
     # via
     #   -r requirements.in
     #   django-auth-adfs
@@ -56,19 +56,19 @@ django==5.1.15
     #   djangosaml2
     #   mozilla-django-oidc
     #   yjdh-backend-shared
-django-auth-adfs==1.15.1
+django-auth-adfs==1.16.0
     # via
     #   -r requirements.in
     #   yjdh-backend-shared
 django-cors-headers==4.9.0
     # via -r requirements.in
-django-environ==0.12.0
+django-environ==0.13.0
     # via -r requirements.in
 django-extensions==4.1
     # via
     #   -r requirements.in
     #   yjdh-backend-shared
-django-filter==25.1
+django-filter==25.2
     # via -r requirements.in
 django-localflavor==5.0
     # via -r requirements.in
@@ -82,9 +82,9 @@ django-storages[azure]==1.14.6
     # via -r requirements.in
 djangorestframework==3.16.1
     # via -r requirements.in
-djangosaml2==1.11.1
+djangosaml2==1.12.0
     # via yjdh-backend-shared
-elasticsearch==7.17.12
+elasticsearch==7.17.13
     # via -r requirements.in
 elementpath==4.8.0
     # via xmlschema
@@ -92,13 +92,13 @@ executing==2.2.1
     # via stack-data
 factory-boy==3.3.3
     # via -r requirements.in
-faker==40.1.0
+faker==40.4.0
     # via factory-boy
 filetype==1.2.0
     # via -r requirements.in
 idna==3.11
     # via requests
-ipython==9.8.0
+ipython==9.10.0
     # via -r requirements.in
 ipython-pygments-lexers==1.1.1
     # via ipython
@@ -114,7 +114,7 @@ mozilla-django-oidc==5.0.2
     # via
     #   -r requirements.in
     #   yjdh-backend-shared
-parso==0.8.5
+parso==0.8.6
     # via jedi
 pexpect==4.9.0
     # via ipython
@@ -130,7 +130,7 @@ ptyprocess==0.7.0
     # via pexpect
 pure-eval==0.2.3
     # via stack-data
-pycparser==2.23
+pycparser==3.0
     # via cffi
 pycryptodome==3.23.0
     # via django-searchable-encrypted-fields
@@ -138,7 +138,7 @@ pygments==2.19.2
     # via
     #   ipython
     #   ipython-pygments-lexers
-pyjwt==2.10.1
+pyjwt==2.11.0
     # via
     #   django-auth-adfs
     #   mozilla-django-oidc
@@ -148,7 +148,7 @@ pysaml2==7.5.4
     # via djangosaml2
 python-dateutil==2.9.0.post0
     # via pysaml2
-python-stdnum==2.1
+python-stdnum==2.2
     # via
     #   -r requirements.in
     #   django-localflavor
@@ -159,7 +159,7 @@ requests==2.32.5
     #   django-auth-adfs
     #   mozilla-django-oidc
     #   pysaml2
-sentry-sdk==2.48.0
+sentry-sdk==2.53.0
     # via -r requirements.in
 six==1.17.0
     # via python-dateutil
@@ -175,15 +175,13 @@ typing-extensions==4.15.0
     # via
     #   azure-core
     #   azure-storage-blob
-tzdata==2025.3
-    # via faker
-urllib3==1.26.20
+urllib3==2.6.3
     # via
     #   django-auth-adfs
     #   elasticsearch
     #   requests
     #   sentry-sdk
-wcwidth==0.2.14
+wcwidth==0.6.0
     # via prompt-toolkit
 xlsx-streaming==2.0.1
     # via -r requirements.in
