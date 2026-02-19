@@ -128,13 +128,6 @@ env = environ.Env(
     AUDIT_LOG_ES_INDEX=(str, "helsinki_benefit_audit_log"),
     AUDIT_LOG_ES_USERNAME=(str, ""),
     AUDIT_LOG_ES_PASSWORD=(str, ""),
-    ELASTICSEARCH_APP_AUDIT_LOG_INDEX=(str, "helsinki_benefit_audit_log"),
-    ELASTICSEARCH_HOST=(str, ""),
-    ELASTICSEARCH_PORT=(int, 9200),
-    ELASTICSEARCH_USERNAME=(str, ""),
-    ELASTICSEARCH_PASSWORD=(str, ""),
-    CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
-    ENABLE_SEND_AUDIT_LOG=(bool, False),
     EMAIL_USE_TLS=(bool, False),
     EMAIL_HOST=(str, "relay.hel.fi"),
     EMAIL_HOST_USER=(str, ""),
@@ -386,17 +379,12 @@ CSRF_COOKIE_NAME = env.str("CSRF_COOKIE_NAME")
 CSRF_COOKIE_SECURE = True
 CSRF_USE_SESSIONS = True
 
-# Audit logging
-AUDIT_LOG_ORIGIN = env.str("AUDIT_LOG_ORIGIN")
-CLEAR_AUDIT_LOG_ENTRIES = env.bool("CLEAR_AUDIT_LOG_ENTRIES")
-ELASTICSEARCH_APP_AUDIT_LOG_INDEX = env("ELASTICSEARCH_APP_AUDIT_LOG_INDEX")
-ELASTICSEARCH_HOST = env("ELASTICSEARCH_HOST")
-ELASTICSEARCH_PORT = env("ELASTICSEARCH_PORT")
-ELASTICSEARCH_USERNAME = env("ELASTICSEARCH_USERNAME")
-ELASTICSEARCH_PASSWORD = env("ELASTICSEARCH_PASSWORD")
-ENABLE_SEND_AUDIT_LOG = env("ENABLE_SEND_AUDIT_LOG")
+# Disable shared audit logging
+AUDIT_LOG_ORIGIN = env("AUDIT_LOG_ORIGIN")
+CLEAR_AUDIT_LOG_ENTRIES = False
+ENABLE_SEND_AUDIT_LOG = False
 
-# Resilient logger configuration
+
 RESILIENT_LOGGER = {
     "origin": AUDIT_LOG_ORIGIN,
     "environment": env("AUDIT_LOG_ENV"),
@@ -420,6 +408,14 @@ RESILIENT_LOGGER = {
     "submit_unsent_entries": True,
     "clear_sent_entries": True,
 }
+
+# These settings are required by shared tests
+ELASTICSEARCH_APP_AUDIT_LOG_INDEX = "not-used"
+ELASTICSEARCH_HOST = "not-used"
+ELASTICSEARCH_PORT = 1234
+ELASTICSEARCH_USERNAME = "not-used"
+ELASTICSEARCH_PASSWORD = "not-used"
+
 
 LOGGING = {
     "version": 1,
