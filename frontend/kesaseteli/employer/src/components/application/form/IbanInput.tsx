@@ -39,9 +39,7 @@ const IbanInput: React.FC<IbanInputProps> = ({ id, ...$gridCellProps }) => {
     if (!valid) {
       setErrorText(
         t(
-          `common:application.form.errors.${
-            ValidationErrorsIBAN[errorCodes[0]]
-          }`
+          `common:application.form.errors.${ValidationErrorsIBAN[errorCodes[0]]}`
         )
       );
       return false;
