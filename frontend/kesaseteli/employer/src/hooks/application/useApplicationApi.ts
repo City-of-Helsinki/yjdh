@@ -2,6 +2,7 @@ import Axios from 'axios';
 import useApplicationQuery from 'kesaseteli/employer/hooks/backend/useApplicationQuery';
 import useEmploymentQuery from 'kesaseteli/employer/hooks/backend/useEmploymentQuery';
 import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/backend/useUpdateApplicationQuery';
+import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
 import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import noop from 'lodash/noop';
@@ -162,7 +163,9 @@ const useApplicationApi = <T = Application>(
           if (Axios.isAxiosError(error) && error.response.status === 404) {
             // Not found error
             showErrorToast(
-              t('common:application.step1.employment_section.fetch_employment_error_title'),
+              t(
+                'common:application.step1.employment_section.fetch_employment_error_title'
+              ),
               t(
                 'common:application.step1.employment_section.fetch_employment_not_found_error_message'
               )
@@ -170,8 +173,12 @@ const useApplicationApi = <T = Application>(
           } else {
             // General error
             showErrorToast(
-              t('common:application.step1.employment_section.fetch_employment_error_title'),
-              t('common:application.step1.employment_section.fetch_employment_error_message')
+              t(
+                'common:application.step1.employment_section.fetch_employment_error_title'
+              ),
+              t(
+                'common:application.step1.employment_section.fetch_employment_error_message'
+              )
             );
           }
         },
@@ -203,7 +210,26 @@ const useApplicationApi = <T = Application>(
     updateApplicationQuery.mutate(
       { ...draftApplication, status: 'draft' },
       {
-        onSuccess,
+        onSuccess: (updatedApplication) => {
+          (updatedApplication.summer_vouchers ?? []).forEach(
+            (voucher, index) => {
+              const formVoucher = draftApplication.summer_vouchers?.[index];
+              if (voucher.id && formVoucher) {
+                ApplicationPersistenceService.storeVoucherSupplement(
+                  voucher.id,
+                  {
+                    target_group: formVoucher.target_group,
+                    employment_start_date: formVoucher.employment_start_date,
+                    employment_end_date: formVoucher.employment_end_date,
+                    hired_without_voucher_assessment:
+                      formVoucher.hired_without_voucher_assessment,
+                  }
+                );
+              }
+            }
+          );
+          void onSuccess(updatedApplication);
+        },
         onError: handleUpdateError,
       }
     );
@@ -217,6 +243,7 @@ const useApplicationApi = <T = Application>(
       {
         onSuccess: () => {
           clearLocalStorage(`application-${completeApplication.id}`);
+          ApplicationPersistenceService.clearAll();
           void queryClient.invalidateQueries(
             BackendEndpoint.EMPLOYER_APPLICATIONS
           );
