@@ -70,7 +70,7 @@ const DateInput = <T,>({
         name={id}
         required={Boolean(registerOptions?.required)}
         initialMonth={new Date()}
-        defaultValue={initialValue}
+        value={initialValue}
         language={locale}
         // for some reason date picker causes error "Warning: An update to ForwardRef inside a test was not wrapped in act" in tests.
         // Date picker is not needed for tests so it's disabled for them.
