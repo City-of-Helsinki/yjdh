@@ -14,29 +14,37 @@ def employer_summer_voucher_admin():
 @pytest.mark.django_db
 def test_masked_employee_ssn(employer_summer_voucher_admin):
     # Test with valid SSN
-    voucher = EmployerSummerVoucherFactory.build(employee_ssn="010101-1234")
+    voucher = EmployerSummerVoucherFactory.build(
+        youth_summer_voucher__youth_application__social_security_number="010101-1234"
+    )
     assert employer_summer_voucher_admin.masked_employee_ssn(voucher) == "******1234"
 
     # Test with another valid SSN
-    voucher = EmployerSummerVoucherFactory.build(employee_ssn="311299A9876")
+    voucher = EmployerSummerVoucherFactory.build(
+        youth_summer_voucher__youth_application__social_security_number="311299A9876"
+    )
     assert employer_summer_voucher_admin.masked_employee_ssn(voucher) == "******9876"
 
 
 @pytest.mark.django_db
 def test_masked_employee_ssn_empty(employer_summer_voucher_admin):
     # Test with empty SSN
-    voucher = EmployerSummerVoucherFactory.build(employee_ssn="")
+    voucher = EmployerSummerVoucherFactory.build(
+        youth_summer_voucher__youth_application__social_security_number=""
+    )
     assert employer_summer_voucher_admin.masked_employee_ssn(voucher) == ""
 
     # Test with None SSN
-    voucher = EmployerSummerVoucherFactory.build(employee_ssn=None)
+    voucher = EmployerSummerVoucherFactory.build(youth_summer_voucher=None)
     assert employer_summer_voucher_admin.masked_employee_ssn(voucher) == ""
 
 
 @pytest.mark.django_db
 def test_masked_employee_ssn_short(employer_summer_voucher_admin):
     # Test with short SSN
-    voucher = EmployerSummerVoucherFactory.build(employee_ssn="123")
+    voucher = EmployerSummerVoucherFactory.build(
+        youth_summer_voucher__youth_application__social_security_number="123"
+    )
     assert employer_summer_voucher_admin.masked_employee_ssn(voucher) == "******123"
 
 

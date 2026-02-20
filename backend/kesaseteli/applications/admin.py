@@ -392,6 +392,9 @@ class YouthApplicationAdmin(admin.ModelAdmin):
         "last_name",
         "school",
     ]
+    exclude = [
+        "social_security_number",
+    ]
 
     # A custom field to list contact info fields
     # This is used to determine which fields should be readonly
@@ -426,7 +429,7 @@ class YouthApplicationAdmin(admin.ModelAdmin):
             return [
                 f.name
                 for f in self.model._meta.fields
-                if f.name not in self.contact_info_fields
+                if f.name not in self.exclude and f.name not in self.contact_info_fields
             ]
         return super().get_readonly_fields(request, obj)
 
@@ -630,6 +633,10 @@ class EmployerSummerVoucherAdmin(admin.ModelAdmin):
         "target_group_display",
         "application",
         "masked_employee_ssn",
+        "employee_name",
+        "employee_school",
+        "employee_home_city",
+        "employee_postcode",
         "created_at",
         "modified_at",
     ]

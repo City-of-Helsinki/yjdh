@@ -254,6 +254,11 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = [
             "ordering",
+            "employee_name",
+            "employee_school",
+            "employee_ssn",
+            "employee_home_city",
+            "employee_postcode",
         ]
         list_serializer_class = EmployerSummerVoucherListSerializer
 
@@ -319,12 +324,7 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
 
     REQUIRED_FIELDS_FOR_SUBMITTED_SUMMER_VOUCHERS = [
         "summer_voucher_serial_number",
-        "employee_name",
-        "employee_school",
-        "employee_ssn",
         "employee_phone_number",
-        "employee_home_city",
-        "employee_postcode",
         "employment_postcode",
         "employment_start_date",
         "employment_end_date",

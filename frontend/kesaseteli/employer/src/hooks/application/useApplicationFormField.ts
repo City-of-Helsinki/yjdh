@@ -88,7 +88,6 @@ const useApplicationFormField = <V extends Value>(
         return message;
       }
       switch (fieldName) {
-        case 'target_group':
         case 'hired_without_voucher_assessment':
           return t(`common:application.form.errors.selectionGroups`);
 
