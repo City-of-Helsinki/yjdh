@@ -42,6 +42,8 @@ const EmploymentSummary: React.FC<Props> = ({ index }) => {
           data-testid={`employee-heading-${index}`}
         />
         <EmploymentFieldSummary fieldName="target_group" index={index}>
+          {/* TODO: Remove Target Group as it is not a necessary field in employers UI. 
+          Remove also the translations. */}
           {t(
             `common:application.form.selectionGroups.target_group.${
               target_group ?? ''
@@ -69,7 +71,7 @@ const EmploymentSummary: React.FC<Props> = ({ index }) => {
           {getAttachmentsSummary(payslip)}
         </EmploymentFieldSummary>
         <EmploymentFieldSummary fieldName="employment_start_date" index={index}>
-          {t('common:application.step2.employment')}:{' '}
+          {t('common:application.step1.employment_section.employment')}:{' '}
           {convertToUIDateFormat(employment_start_date)} -{' '}
           {convertToUIDateFormat(employment_end_date)}
         </EmploymentFieldSummary>

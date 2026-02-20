@@ -1,3 +1,4 @@
+import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
 import {
   BackendEndpoint,
   getBackendUrl,
@@ -7,10 +8,10 @@ import React from 'react';
 
 const useLogout = (): (() => Promise<boolean>) => {
   const router = useRouter();
-  return React.useCallback(
-    () => router.push(getBackendUrl(BackendEndpoint.LOGOUT)),
-    [router]
-  );
+  return React.useCallback(async () => {
+    ApplicationPersistenceService.clearAll();
+    return router.push(getBackendUrl(BackendEndpoint.LOGOUT));
+  }, [router]);
 };
 
 export default useLogout;

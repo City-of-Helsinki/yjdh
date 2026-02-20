@@ -37,6 +37,8 @@ const DateInput = <T,>({
   initialValue,
   errorText,
   label,
+  disabled = false,
+  readOnly = false,
   ...$gridCellProps
 }: Props<T>): React.ReactElement<T> => {
   const locale = useLocale();
@@ -68,7 +70,7 @@ const DateInput = <T,>({
         name={id}
         required={Boolean(registerOptions?.required)}
         initialMonth={new Date()}
-        defaultValue={initialValue}
+        value={initialValue}
         language={locale}
         // for some reason date picker causes error "Warning: An update to ForwardRef inside a test was not wrapped in act" in tests.
         // Date picker is not needed for tests so it's disabled for them.
@@ -78,6 +80,8 @@ const DateInput = <T,>({
         label={label}
         invalid={Boolean(errorText)}
         aria-invalid={Boolean(errorText)}
+        disabled={disabled}
+        readOnly={readOnly}
       />
     </$GridCell>
   );

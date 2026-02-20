@@ -1,27 +1,41 @@
 import ApplicationForm from 'kesaseteli/employer/components/application/ApplicationForm';
 import ActionButtons from 'kesaseteli/employer/components/application/form/ActionButtons';
-import Checkbox from 'kesaseteli/employer/components/application/form/Checkbox';
 import ApplicationSummary from 'kesaseteli/employer/components/application/summary/ApplicationSummary';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
-import useGoToPage from 'shared/hooks/useGoToPage';
+import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
+import useWizard from 'shared/hooks/useWizard';
 
-const Step3Summary: React.FC = () => {
+import Checkbox from '../../form/Checkbox';
+
+const Step2Summary: React.FC = () => {
   const { t } = useTranslation();
-  const goToPage = useGoToPage();
-  const { applicationId } = useApplicationApi();
-  const goToThankYouPage = React.useCallback(() => {
-    if (applicationId) {
-      goToPage(`/thankyou?id=${applicationId}`);
+  const { applicationQuery } = useApplicationApi();
+  const { goToStep } = useWizard();
+
+  const vouchers = React.useMemo(
+    () => applicationQuery.data?.summer_vouchers || [],
+    [applicationQuery.data?.summer_vouchers]
+  );
+  const lastVoucher = vouchers[vouchers.length - 1];
+
+  React.useEffect(() => {
+    if (applicationQuery.isSuccess && vouchers.length === 0) {
+      goToStep(0);
     }
-  }, [applicationId, goToPage]);
-  const title = t('common:application.step3.header');
-  const tooltip = t('common:application.step3.tooltip');
+  }, [applicationQuery.isSuccess, vouchers.length, goToStep]);
+
+  const title = t('common:application.step2.header');
+
+  if (vouchers.length === 0) {
+    return <PageLoadingSpinner />; // Avoid rendering empty summary while redirecting
+  }
+
   return (
-    <ApplicationForm title={title} step={3}>
-      <ApplicationSummary header={title} tooltip={tooltip} />
+    <ApplicationForm title={title} step={2}>
+      <ApplicationSummary header={title} filterVoucherId={lastVoucher?.id} />
       <FormSection columns={1}>
         <Checkbox
           id="termsAndConditions"
@@ -46,8 +60,9 @@ const Step3Summary: React.FC = () => {
           }
         />
       </FormSection>
-      <ActionButtons onAfterLastStep={goToThankYouPage} />
+      <ActionButtons />
     </ApplicationForm>
   );
 };
-export default Step3Summary;
+
+export default Step2Summary;

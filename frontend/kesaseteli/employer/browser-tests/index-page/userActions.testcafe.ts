@@ -5,6 +5,7 @@ import requestLogger, {
   filterLoggedRequests,
 } from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 
 import getEmployerTranslationsApi from '../../src/__tests__/utils/i18n/get-employer-translations-api';
 import { doEmployerLogin } from '../actions/employer-header.actions';
@@ -23,13 +24,15 @@ fixture('Frontpage')
     // eslint-disable-next-line no-console
     console.log(filterLoggedRequests(requestLogger))
   );
-// skipped until logout is fixed when mock flag is on.
-test.skip('user can authenticate and logout', async (t) => {
-  await doEmployerLogin(t, 'fi');
-  const header = new Header(translationsApi);
-  await header.clickLogoutButton();
-  await header.userIsLoggedOut();
-});
+
+if (isRealIntegrationsEnabled()) {
+  test('user can authenticate and logout', async (t) => {
+    await doEmployerLogin(t, 'fi');
+    const header = new Header(translationsApi);
+    await header.clickLogoutButton();
+    await header.userIsLoggedOut();
+  });
+}
 
 test('can change to languages', async () => {
   const header = new Header(translationsApi);

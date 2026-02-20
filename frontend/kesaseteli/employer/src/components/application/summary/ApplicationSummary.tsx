@@ -15,8 +15,10 @@ import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 type Props = {
   header?: FormSectionProps['header'];
   tooltip?: FormSectionProps['tooltip'];
+  filterVoucherId?: string; // Optional: Show only voucher with this ID (useful for summary step)
 };
-const ApplicationSummary: React.FC<Props> = ({ header, tooltip }) => {
+
+const ApplicationSummary: React.FC<Props> = ({ header, tooltip, filterVoucherId }) => {
   const { t } = useTranslation();
   const { applicationQuery } = useApplicationApi();
   if (applicationQuery.isSuccess) {
@@ -30,16 +32,21 @@ const ApplicationSummary: React.FC<Props> = ({ header, tooltip }) => {
       summer_vouchers,
     } = applicationQuery.data;
 
+    const visibleVouchers = filterVoucherId
+      ? summer_vouchers.filter(v => v.id === filterVoucherId)
+      : summer_vouchers;
+
     return (
       <div data-testid="application-summary">
         <FormSection
           header={header}
           tooltip={tooltip}
           columns={1}
-          aria-label={t('common:application.step3.employerTitle')}
+          aria-label={t('common:application.step2.employerTitle')}
+          data-testid="employer-section"
         >
           <FormSectionHeading
-            header={t('common:application.step3.employerTitle')}
+            header={t('common:application.step2.employerTitle')}
             size="m"
           />
           <FormSectionHeading
@@ -86,17 +93,24 @@ const ApplicationSummary: React.FC<Props> = ({ header, tooltip }) => {
           </$ApplicationSummaryField>
         </FormSection>
         <FormSection
-          header={t('common:application.step3.employmentTitle')}
+          header={t('common:application.step2.employmentTitle')}
           size="m"
           columns={1}
           withoutDivider
+          data-testid="employment-section"
         >
-          {summer_vouchers.map((employment, index) => (
-            <React.Fragment key={employment.id}>
-              <EmploymentSummary index={index} />
-              <$Hr />
-            </React.Fragment>
-          ))}
+          {visibleVouchers.map((employment) => {
+            // Find original index for EmploymentSummary if needed? 
+            // EmploymentSummary takes `index` prop to access `summer_vouchers[index]`.
+            // So we need to find the REAL index of this voucher in the original array.
+            const realIndex = summer_vouchers.findIndex(v => v.id === employment.id);
+            return (
+              <React.Fragment key={employment.id}>
+                <EmploymentSummary index={realIndex} />
+                <$Hr />
+              </React.Fragment>
+            );
+          })}
         </FormSection>
       </div>
     );
@@ -105,3 +119,4 @@ const ApplicationSummary: React.FC<Props> = ({ header, tooltip }) => {
 };
 
 export default ApplicationSummary;
+

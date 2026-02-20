@@ -8,7 +8,10 @@ const FooterSection: React.FC = () => {
   const { t } = useTranslation();
   return (
     <$FooterWrapper>
-      <Footer title={t('common:appName')} theme="dark">
+      <Footer
+        title={t('common:appName')}
+        theme="dark"
+      >
         <Footer.Base
           copyrightHolder={t('common:footer.copyrightText')}
           copyrightText={t('common:footer.allRightsReservedText')}

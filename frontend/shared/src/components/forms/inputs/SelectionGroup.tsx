@@ -15,6 +15,7 @@ type Props<T> = Omit<InputProps<T>, 'label'> & {
   direction?: SelectionGroupProps['direction'];
   values: readonly string[];
   getValueText: (value: string) => string;
+  disabled?: boolean;
 } & GridCellProps;
 
 const SelectionGroup = <T,>({
@@ -27,18 +28,10 @@ const SelectionGroup = <T,>({
   label,
   errorText,
   getValueText,
+  disabled = false,
   ...$gridCellProps
 }: Props<T>): React.ReactElement<T> => {
   const { control } = useFormContext<T>();
-  const [selectedValue, setSelectedValue] = React.useState(initialValue);
-
-  const handleChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChange(event.target.value);
-      setSelectedValue(event.target.value);
-    },
-    [setSelectedValue, onChange]
-  );
 
   const idString = id as string;
 
@@ -48,16 +41,15 @@ const SelectionGroup = <T,>({
         name={id}
         rules={registerOptions}
         control={control}
-        render={({ field: { ref, value, ...fieldProps } }) => (
+        render={({ field: { onChange: controllerOnChange, value, ref } }) => (
           <$SelectionGroup
-            {...fieldProps}
-            id={id}
-            data-testid={id}
-            name={id}
-            required={Boolean(label && registerOptions?.required)}
+            id={idString}
+            data-testid={idString}
             direction={direction}
             errorText={errorText}
             label={label}
+            disabled={disabled}
+            required={Boolean(label && registerOptions?.required)}
           >
             {values.map((val) => (
               <RadioButton
@@ -66,8 +58,13 @@ const SelectionGroup = <T,>({
                 data-testid={`${idString}-${val}`}
                 label={getValueText(val)}
                 value={val}
-                onChange={handleChange}
-                checked={val === selectedValue}
+                onChange={(event) => {
+                  controllerOnChange(event.target.value);
+                  onChange(event.target.value);
+                }}
+                checked={val === value}
+                ref={ref}
+                disabled={disabled}
               />
             ))}
           </$SelectionGroup>

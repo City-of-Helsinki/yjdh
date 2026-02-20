@@ -18,11 +18,11 @@ export const getSummaryComponents = async (t: TestController) => {
   const within = withinContext(t);
 
   const employerSectionSelector = (): Selector =>
-    screen.findByRole('region', { name: /^työnantajan tiedot/i });
+    screen.findByTestId('employer-section');
   const findEmployerField = (id: string) =>
     within(employerSectionSelector()).findByTestId(id);
   const employmentSectionSelector = (): Selector =>
-    screen.findByRole('region', { name: /^selvitys työsuhteesta/i });
+    screen.findByTestId('employment-section');
   const findEmploymentField = (id: string) =>
     within(employmentSectionSelector()).findByTestId(id);
 
@@ -154,8 +154,11 @@ export const getSummaryComponents = async (t: TestController) => {
         };
 
         const header = selectors.employmentHeading();
-        await expectElementHasValue(header, employment.employee_name);
-        await expectElementHasValue(header, employment.employee_ssn);
+        await t
+          .expect(header.textContent)
+          .contains(employment.employee_name ?? '', await getErrorMessage(t))
+          .expect(header.textContent)
+          .contains(employment.employee_ssn ?? '', await getErrorMessage(t));
         await expectTargetGroupHasValue('target_group');
         await expectEmploymentFieldhasValue('employee_postcode');
         await expectEmploymentFieldhasValue('employee_home_city');
