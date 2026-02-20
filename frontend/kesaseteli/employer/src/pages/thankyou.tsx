@@ -1,5 +1,7 @@
 import { Button, IconCheckCircleFill } from 'hds-react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
+import { extractEmployerFields } from 'kesaseteli/employer/utils/application.utils';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import { useTranslation } from 'next-i18next';
@@ -45,12 +47,19 @@ const ThankYouPage: NextPage = () => {
   const goToPage = useGoToPage();
   const logout = useLogout();
 
-
-
   const createNewApplicationClick = React.useCallback((): void => {
+    if (applicationQuery.isSuccess && applicationQuery.data) {
+      const employerData = extractEmployerFields(applicationQuery.data);
+      ApplicationPersistenceService.storeEmployerData(employerData);
+    }
     queryClient.clear();
     goToPage('/');
-  }, [queryClient, goToPage]);
+  }, [
+    queryClient,
+    goToPage,
+    applicationQuery.isSuccess,
+    applicationQuery.data,
+  ]);
 
   const handleSignOut = (): void => {
     void logout();

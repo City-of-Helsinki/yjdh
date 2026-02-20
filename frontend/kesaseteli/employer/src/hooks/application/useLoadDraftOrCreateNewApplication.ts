@@ -1,8 +1,11 @@
 import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
+import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { UseMutationResult,useQueryClient } from 'react-query';
+import { UseMutationResult, useQueryClient } from 'react-query';
+import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useLocale from 'shared/hooks/useLocale';
 import Application from 'shared/types/application';
@@ -16,7 +19,8 @@ export const useCreateApplication = (): {
   const language = useLocale();
   const queryClient = useQueryClient();
   const createApplicationQuery = useCreateApplicationQuery();
-  const onError = useErrorHandler();
+  const errorHandler = useErrorHandler();
+  const { axios, handleResponse } = useBackendAPI();
 
   const goToApplicationPage = React.useCallback(
     (application: Application): void => {
@@ -30,10 +34,34 @@ export const useCreateApplication = (): {
   const createApplication = React.useCallback(
     () =>
       createApplicationQuery.mutate(undefined, {
-        onError,
-        onSuccess: goToApplicationPage,
+        onError: errorHandler,
+        onSuccess: (newApplication) => {
+          const prefilledData = ApplicationPersistenceService.getEmployerData();
+          if (prefilledData && newApplication.id) {
+            void handleResponse<Application>(
+              axios.put(
+                `${BackendEndpoint.EMPLOYER_APPLICATIONS}${newApplication.id}/`,
+                { ...newApplication, ...prefilledData, status: 'draft' }
+              )
+            )
+              .then((updatedApplication) => {
+                ApplicationPersistenceService.clearAll();
+                goToApplicationPage(updatedApplication);
+                return null;
+              })
+              .catch(errorHandler);
+          } else {
+            goToApplicationPage(newApplication);
+          }
+        },
       }),
-    [createApplicationQuery, onError, goToApplicationPage]
+    [
+      createApplicationQuery,
+      errorHandler,
+      goToApplicationPage,
+      axios,
+      handleResponse,
+    ]
   );
 
   return {
