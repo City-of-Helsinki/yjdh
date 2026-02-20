@@ -16,14 +16,14 @@ export const getFormApplication = (
   ...backendApplication,
   summer_vouchers: (backendApplication.summer_vouchers ?? []).map(
     (employment) =>
-      ({
-        ...employment,
-        employment_contract: getAttachmentsByType(
-          employment.attachments ?? [],
-          'employment_contract'
-        ),
-        payslip: getAttachmentsByType(employment.attachments ?? [], 'payslip'),
-      } as Employment)
+    ({
+      ...employment,
+      employment_contract: getAttachmentsByType(
+        employment.attachments ?? [],
+        'employment_contract'
+      ),
+      payslip: getAttachmentsByType(employment.attachments ?? [], 'payslip'),
+    } as Employment)
   ),
 });
 
@@ -36,3 +36,5 @@ export const getFullNameListing = (
   firstName: string | undefined,
   lastName: string | undefined
 ): string => [lastName, firstName].join(', ').trim();
+
+
