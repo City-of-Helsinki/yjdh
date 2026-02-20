@@ -47,7 +47,6 @@ def test_get_readonly_fields(youth_application_admin):
 
     # Check that other fields are readonly
     # Just checking a few key ones to verify the logic
-    assert "social_security_number" in readonly_fields
     assert "encrypted_social_security_number" in readonly_fields
     assert "status" in readonly_fields
     assert "created_at" in readonly_fields

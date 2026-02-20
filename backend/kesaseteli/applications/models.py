@@ -1265,7 +1265,23 @@ class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
         ]
 
 
+class EmployerSummerVoucherQuerySet(models.QuerySet):
+    def select_youth_voucher(self):
+        return self.select_related(
+            "youth_summer_voucher", "youth_summer_voucher__youth_application"
+        )
+
+
+class EmployerSummerVoucherManager(models.Manager):
+    def get_queryset(self):
+        return EmployerSummerVoucherQuerySet(
+            self.model, using=self._db
+        ).select_youth_voucher()
+
+
 class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
+    objects = EmployerSummerVoucherManager()
+
     application = models.ForeignKey(
         EmployerApplication,
         on_delete=models.CASCADE,
@@ -1298,55 +1314,51 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         ),
     )
 
-    @property
-    def target_group(self):
-        """
-        Get the target group of the youth summer voucher.
-        NOTE: This is mostly for backward compatibility with the old target_group field.
-        """
-        return (
-            self.youth_summer_voucher.target_group if self.youth_summer_voucher else ""
-        )
-
-    # Mimicking Django's standard API. ChoiceField's magic is gone
-    # since target_group is now migrated to a custom property.
-    def get_target_group_display(self):
-        return (
-            self.youth_summer_voucher.get_target_group_display()
-            if self.youth_summer_voucher
-            else ""
-        )
-
-    employee_name = models.CharField(
-        max_length=256,
-        blank=True,
-        verbose_name=_("employee name"),
-    )
-    employee_school = models.CharField(
-        max_length=256,
-        blank=True,
-        verbose_name=_("employee school"),
-    )
-    employee_ssn = EncryptedCharField(
-        max_length=32,
-        blank=True,
-        verbose_name=_("employee social security number"),
-    )
     employee_phone_number = models.CharField(
         max_length=64,
         blank=True,
         verbose_name=_("employee phone number"),
     )
-    employee_home_city = models.CharField(
-        max_length=256,
-        blank=True,
-        verbose_name=_("employee home city"),
-    )
-    employee_postcode = models.CharField(
-        max_length=256,
-        blank=True,
-        verbose_name=_("employee postcode"),
-    )
+
+    @property
+    def employee_name(self) -> str:
+        return (
+            self.youth_summer_voucher.youth_application.name
+            if self.youth_summer_voucher
+            else ""
+        )
+
+    @property
+    def employee_school(self) -> str:
+        return (
+            self.youth_summer_voucher.youth_application.school
+            if self.youth_summer_voucher
+            else ""
+        )
+
+    @property
+    def employee_ssn(self) -> str:
+        return (
+            self.youth_summer_voucher.youth_application.social_security_number
+            if self.youth_summer_voucher
+            else ""
+        )
+
+    @property
+    def employee_home_city(self) -> str:
+        return (
+            self.youth_summer_voucher.youth_application.home_municipality
+            if self.youth_summer_voucher
+            else ""
+        )
+
+    @property
+    def employee_postcode(self) -> str:
+        return (
+            self.youth_summer_voucher.youth_application.postcode
+            if self.youth_summer_voucher
+            else ""
+        )
 
     employment_postcode = models.CharField(
         max_length=256,
@@ -1400,6 +1412,25 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     )
 
     ordering = models.IntegerField(default=0)
+
+    @property
+    def target_group(self):
+        """
+        Get the target group of the youth summer voucher.
+        NOTE: This is mostly for backward compatibility with the old target_group field.
+        """
+        return (
+            self.youth_summer_voucher.target_group if self.youth_summer_voucher else ""
+        )
+
+    # Mimicking Django's standard API. ChoiceField's magic is gone
+    # since target_group is now migrated to a custom property.
+    def get_target_group_display(self):
+        return (
+            self.youth_summer_voucher.get_target_group_display()
+            if self.youth_summer_voucher
+            else ""
+        )
 
     @property
     def summer_voucher_serial_number(self) -> str:

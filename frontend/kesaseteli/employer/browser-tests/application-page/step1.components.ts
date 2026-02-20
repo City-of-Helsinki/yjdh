@@ -107,20 +107,6 @@ export const getStep1Components = (t: TestController) => {
         name: /^henkilötunnus/i,
       });
     },
-    targetGroupInput(value: string) {
-      // Target the label instead of the input to avoid overlap issues
-      return Selector(`label[for="summer_vouchers.0.target_group-${value}"]`);
-    },
-    homeCityInput() {
-      return withinForm().findByRole('textbox', {
-        name: /^kotipaikka/i,
-      });
-    },
-    postcodeInput() {
-      return withinForm().findByRole('spinbutton', {
-        name: /^postinumero/i,
-      });
-    },
     phoneNumberInput() {
       return withinForm().findByRole('textbox', {
         name: /^puhelinnumero/i,
@@ -129,11 +115,6 @@ export const getStep1Components = (t: TestController) => {
     employmentPostcodeInput() {
       return withinForm().findByRole('spinbutton', {
         name: /^työn suorituspaikan postinumero/i,
-      });
-    },
-    schoolInput() {
-      return withinForm().findByRole('textbox', {
-        name: /^koulun nimi/i,
       });
     },
     employmentContractAttachmentInput: () =>
@@ -188,10 +169,6 @@ export const getStep1Components = (t: TestController) => {
       await t
         .expect(selectors.ssnInput().hasAttribute('disabled'))
         .notOk(await getErrorMessage(t));
-      // Wait for at least one target group to appear to ensure dynamic content is loaded
-      await t
-        .expect(Selector('[data-testid*="target_group-"]').exists)
-        .ok('Target groups did not load in time', { timeout: 10_000 });
     },
     async isSsnFieldReadOnly() {
       await t
@@ -228,13 +205,9 @@ export const getStep1Components = (t: TestController) => {
     async isEmploymentFulfilledWith({
       employee_ssn,
       employee_phone_number,
-      employee_postcode,
-      employee_school,
     }: {
       employee_ssn?: string;
       employee_phone_number?: string;
-      employee_postcode?: string | number;
-      employee_school?: string;
     }) {
       await t.expect(formSelector().exists).ok(await getErrorMessage(t));
       if (employee_ssn) {
@@ -247,36 +220,16 @@ export const getStep1Components = (t: TestController) => {
           .expect(selectors.phoneNumberInput().value)
           .eql(employee_phone_number, await getErrorMessage(t));
       }
-      if (employee_postcode) {
-        await t
-          .expect(selectors.postcodeInput().value)
-          .eql(String(employee_postcode), await getErrorMessage(t));
-      }
-      if (employee_school) {
-        await t
-          .expect(selectors.schoolInput().value)
-          .eql(employee_school, await getErrorMessage(t));
-      }
     },
     async isEmploymentSupplementFulfilledWith({
-      target_group,
       employment_start_date,
       employment_end_date,
       hired_without_voucher_assessment,
     }: {
-      target_group?: string;
       employment_start_date?: string;
       employment_end_date?: string;
       hired_without_voucher_assessment?: string;
     }) {
-      if (target_group) {
-        await t
-          .expect(
-            Selector(`input#summer_vouchers\\.0\\.target_group-${target_group}`)
-              .checked
-          )
-          .ok(await getErrorMessage(t));
-      }
       if (employment_start_date) {
         await t
           .expect(selectors.startDateInput().value)
@@ -386,29 +339,6 @@ export const getStep1Components = (t: TestController) => {
         ssn
       );
     },
-    async selectTargetGroup(name: string) {
-      const selector = selectors.targetGroupInput(name);
-      await t
-        .expect(selector.exists)
-        .ok(await getErrorMessage(t), { timeout: 10_000 });
-      await t.click(selector);
-    },
-    fillHomeCity(city: string) {
-      return fillInput(
-        t,
-        'summer_vouchers.0.employee_home_city',
-        selectors.homeCityInput(),
-        city
-      );
-    },
-    fillPostcode(postcode: string) {
-      return fillInput(
-        t,
-        'summer_vouchers.0.employee_postcode',
-        selectors.postcodeInput(),
-        postcode
-      );
-    },
     fillPhoneNumber(phone: string) {
       return fillInput(
         t,
@@ -423,14 +353,6 @@ export const getStep1Components = (t: TestController) => {
         'summer_vouchers.0.employment_postcode',
         selectors.employmentPostcodeInput(),
         postcode
-      );
-    },
-    fillSchool(school: string) {
-      return fillInput(
-        t,
-        'summer_vouchers.0.employee_school',
-        selectors.schoolInput(),
-        school
       );
     },
     addEmploymentContractAttachment,

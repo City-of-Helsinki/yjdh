@@ -10,7 +10,7 @@ import get from 'lodash/get';
 import translations from '../../public/locales/fi/common.json';
 
 export const getSelectionGroupTranslation = (
-  type: 'target_group' | 'hired_without_voucher_assessment',
+  type: 'hired_without_voucher_assessment',
   value: EmploymentExceptionReason | EmployeeHiredWithoutVoucherAssessment
 ): string =>
   get(
