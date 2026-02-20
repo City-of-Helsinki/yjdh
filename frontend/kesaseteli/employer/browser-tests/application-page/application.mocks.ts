@@ -15,16 +15,14 @@ export const MOCKED_EMPLOYEE_DATA = {
   employee_home_city: 'Helsinki',
   employee_postcode: '00100',
   employee_school: 'Testikoulu',
-  target_group: 'secondary_target_group',
 };
 
 /**
- * Cache for serial numbers and target groups that the backend doesn't reliably return.
+ * Cache for serial numbers and employee names that the backend doesn't reliably return.
  * The backend has bugs where these fields are lost in responses, so we store them
  * from requests and restore them in responses to make tests work.
  */
-const serialNumberFixes = new Map<string, string>();
-const targetGroupFixes = new Map<string, string>();
+const voucherFixCache = new Map<string, { serialNumber?: string; employeeName?: string }>();
 
 
 /**
@@ -66,9 +64,9 @@ const handleFetchEmployeeData = (req: MockRequest, res: MockResponse): void => {
     res.headers['access-control-allow-credentials'] = 'true';
     res.statusCode = 200;
     res.setBody({
+      ...MOCKED_EMPLOYEE_DATA,
       employer_summer_voucher_id: body.employer_summer_voucher_id,
       employee_name: body.employee_name,
-      ...MOCKED_EMPLOYEE_DATA,
     });
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -80,11 +78,12 @@ const handleFetchEmployeeData = (req: MockRequest, res: MockResponse): void => {
 const cacheVoucherFixes = (vouchers?: VoucherData[]): void => {
   if (!vouchers) return;
   vouchers.forEach((v) => {
-    if (v.id && v.summer_voucher_serial_number) {
-      serialNumberFixes.set(v.id, v.summer_voucher_serial_number);
-    }
-    if (v.id && v.target_group) {
-      targetGroupFixes.set(v.id, v.target_group);
+    if (v.id) {
+      const existing = voucherFixCache.get(v.id) || {};
+      voucherFixCache.set(v.id, {
+        serialNumber: v.summer_voucher_serial_number || existing.serialNumber,
+        employeeName: v.employee_name || existing.employeeName,
+      });
     }
   });
 };
@@ -93,26 +92,27 @@ const restoreVoucherData = (
   v: VoucherData,
   requestVoucher?: VoucherData
 ): VoucherData => {
+  const cached = voucherFixCache.get(v.id);
   const restoredSerialNumber =
     v.summer_voucher_serial_number ||
     requestVoucher?.summer_voucher_serial_number ||
-    serialNumberFixes.get(v.id);
-  const restoredTargetGroup =
-    v.target_group ||
-    requestVoucher?.target_group ||
-    targetGroupFixes.get(v.id);
+    cached?.serialNumber;
+  const restoredEmployeeName =
+    v.employee_name || requestVoucher?.employee_name || cached?.employeeName;
 
-  if (v.id && restoredSerialNumber) {
-    serialNumberFixes.set(v.id, restoredSerialNumber);
-  }
-  if (v.id && restoredTargetGroup) {
-    targetGroupFixes.set(v.id, restoredTargetGroup);
+
+  if (v.id && (restoredSerialNumber || restoredEmployeeName)) {
+    voucherFixCache.set(v.id, {
+      serialNumber: restoredSerialNumber,
+      employeeName: restoredEmployeeName,
+    });
   }
 
   return {
     ...v,
+    ...MOCKED_EMPLOYEE_DATA,
     summer_voucher_serial_number: restoredSerialNumber || '',
-    target_group: restoredTargetGroup || '',
+    employee_name: restoredEmployeeName,
   };
 };
 
@@ -206,38 +206,6 @@ export const fetchEmployeeDataMock = RequestMock()
     method: 'GET',
   })
   .respond(handleEmployerApplicationsGet);
-
-// Proxy target_groups requests to the real backend
-export const targetGroupsMock = RequestMock()
-  .onRequestTo({
-    url: /target_groups/,
-    method: 'GET',
-  })
-  .respond(
-    async (req: MockRequest, res: MockResponse) => {
-      // eslint-disable-next-line no-console
-      console.log('MOCK GET target_groups hit:', req.url);
-      try {
-        const response = await axios.get(req.url, {
-          headers: req.headers,
-        });
-        res.headers = getTestCafeHeaders(response.headers);
-        res.statusCode = response.status;
-        res.setBody(response.data as object);
-      } catch (error: unknown) {
-        if (axios.isAxiosError(error)) {
-          // eslint-disable-next-line no-console
-          console.error('Proxy GET target_groups failed', error);
-          res.statusCode = error.response?.status || 500;
-          res.setBody((error.response?.data as object) || {});
-        } else {
-          res.statusCode = 500;
-        }
-      }
-    },
-    200,
-    { 'access-control-allow-origin': '*' }
-  );
 
 export const attachmentsMock = RequestMock()
   .onRequestTo({

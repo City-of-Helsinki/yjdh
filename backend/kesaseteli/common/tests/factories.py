@@ -83,12 +83,7 @@ class EmployerSummerVoucherFactory(
         "common.tests.factories.YouthSummerVoucherFactory"
     )
 
-    employee_name = factory.Faker("name")
-    employee_school = factory.Faker("lexify", text="????? School")
-    employee_ssn = factory.Faker("bothify", text="######-###?")
     employee_phone_number = factory.Faker("phone_number")
-    employee_home_city = factory.Faker("city")
-    employee_postcode = factory.Faker("postcode")
 
     employment_postcode = factory.Faker("postcode")
     employment_start_date = factory.Faker(
