@@ -69,12 +69,8 @@ export const fillEmploymentDetails = async (
 
     const {
       employee_ssn,
-      target_group,
-      employee_home_city,
-      employee_postcode,
       employee_phone_number,
       employment_postcode,
-      employee_school,
       employment_start_date,
       employment_end_date,
       employment_work_hours,
@@ -86,15 +82,10 @@ export const fillEmploymentDetails = async (
     if (!expectedPreFill?.employee_ssn) {
       await step1Form.actions.fillSsn(employee_ssn ?? '');
     }
-    const targetGroupKey = target_group ?? 'secondary_target_group';
-    await step1Form.actions.selectTargetGroup(targetGroupKey);
-    await step1Form.actions.fillHomeCity(employee_home_city ?? '');
-    await step1Form.actions.fillPostcode(String(employee_postcode ?? ''));
     await step1Form.actions.fillPhoneNumber(employee_phone_number ?? '');
     await step1Form.actions.fillEmploymentPostcode(
       String(employment_postcode ?? '')
     );
-    await step1Form.actions.fillSchool(employee_school ?? '');
 
     await step1Form.actions.addEmploymentContractAttachment([
       'sample1.pdf',
@@ -144,8 +135,6 @@ export const loginAndfillApplication = async (
   expectedPreFill?: {
     employee_ssn?: string;
     employee_phone_number?: string;
-    employee_postcode?: string | number;
-    employee_school?: string;
   }
 ): Promise<UserAndApplicationData> => {
   const urlUtils = getUrlUtils(t);
