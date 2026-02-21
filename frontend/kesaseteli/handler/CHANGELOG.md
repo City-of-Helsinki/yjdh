@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v1.5.0...kesaseteli-handler-v1.6.0) (2026-02-21)
+
+
+### Features
+
+* **ks,backend,frontend:** Use .env.kesaseteli-&lt;app&gt; files ([246be9b](https://github.com/City-of-Helsinki/yjdh/commit/246be9bbfeebc2119238adbaca0d6eff07c27bac))
+
 ## [1.5.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v1.4.1...kesaseteli-handler-v1.5.0) (2025-12-30)
 
 
