@@ -160,6 +160,8 @@ const useApplicationApi = <T = Application>(
           );
         },
         onError: (error: unknown) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
           if (Axios.isAxiosError(error) && error.response.status === 404) {
             // Not found error
             showErrorToast(

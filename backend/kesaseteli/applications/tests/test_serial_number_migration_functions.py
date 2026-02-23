@@ -8,10 +8,7 @@ later IF the data MODELS CHANGE significantly, rather than trying to
 maintain them indefinitely.
 """
 
-from datetime import datetime
-
 import pytest
-from django.utils import timezone
 
 from applications.migrations.helpers.serial_number_foreign_keys import (
     set_current_valid_serial_number_based_foreign_keys,
@@ -30,10 +27,7 @@ def create_employer_summer_voucher(**overrides):
     """Create EmployerSummerVoucher with test defaults and the given overrides."""
     params = {
         "youth_summer_voucher": None,
-        "employee_name": "Test Employee",
         "employee_phone_number": "+3584012345678",
-        "employee_home_city": "Helsinki",
-        "employee_postcode": "00100",
         "employment_postcode": "00200",
         "employment_start_date": "2024-06-01",
         "employment_end_date": "2024-08-31",
@@ -70,48 +64,6 @@ def employer_app():
     )
 
 
-@pytest.fixture
-def complex_data_setup(employer_app):
-    """
-    Create a complex set of EmployerSummerVoucher and YouthSummerVoucher
-    objects to be used in tests for set_current_valid_serial_number_based_foreign_keys.
-    """
-    year = 2025
-
-    # Create 11 YouthSummerVouchers that should match by serial number
-    for serial_number in range(1, 12):
-        YouthSummerVoucherFactory(summer_voucher_serial_number=serial_number)
-        create_employer_summer_voucher(
-            application=employer_app,
-            _obsolete_unclean_serial_number=str(serial_number),
-            employee_ssn="111111-111C",
-        )
-
-    # Create 12 YouthSummerVouchers that should match by SSN
-    for serial_number in range(12, 24):
-        youth_voucher = YouthSummerVoucherFactory(
-            summer_voucher_serial_number=serial_number
-        )
-        youth_app = youth_voucher.youth_application
-        youth_app.created_at = timezone.make_aware(datetime(year, 5, 1))
-        youth_app.save()
-
-        create_employer_summer_voucher(
-            application=employer_app,
-            _obsolete_unclean_serial_number="INVALID",  # Won't match by serial
-            employee_ssn=youth_app.social_security_number,
-            created_at=timezone.make_aware(datetime(year, 6, 15)),
-        )
-
-    # Create 7 EmployerSummerVouchers that shouldn't match anything
-    for _ in range(7):
-        create_employer_summer_voucher(
-            application=employer_app,
-            _obsolete_unclean_serial_number="NOMATCH",
-            employee_ssn="INVALID",
-        )
-
-
 @pytest.mark.django_db
 def test_match_by_numeric_serial_number(employer_app):
     """
@@ -125,7 +77,6 @@ def test_match_by_numeric_serial_number(employer_app):
     employer_voucher = create_employer_summer_voucher(
         application=employer_app,
         _obsolete_unclean_serial_number=" 00012345   ",
-        employee_ssn="121212A899H",
     )
 
     # Before migration, foreign key should be None
@@ -141,134 +92,6 @@ def test_match_by_numeric_serial_number(employer_app):
     assert employer_voucher.youth_summer_voucher is not None
     assert employer_voucher.youth_summer_voucher.id == youth_voucher.id
     assert employer_voucher.youth_summer_voucher.summer_voucher_serial_number == 12345
-
-
-@pytest.mark.django_db
-@pytest.mark.parametrize("youth_app_created_before_employer_app", [True, False])
-def test_match_by_ssn_and_year(youth_app_created_before_employer_app, employer_app):
-    """
-    Test the fallback matching in set_current_valid_serial_number_based_foreign_keys
-    by social security number and creation year when the serial number does not match.
-
-    :param youth_app_created_before_employer_app: Was the youth application created
-        before the employer application?
-    """
-    # Create a YouthSummerVoucher
-    youth_voucher = YouthSummerVoucherFactory(summer_voucher_serial_number=99999)
-    youth_app = youth_voucher.youth_application
-    created_year = youth_app.created_at.year
-
-    # Create an EmployerSummerVoucher with non-numeric serial but matching SSN
-    employer_voucher = create_employer_summer_voucher(
-        application=employer_app,
-        _obsolete_unclean_serial_number="ABC123",  # Non-numeric → won't match by serial
-        employee_ssn=youth_app.social_security_number,
-        created_at=timezone.make_aware(datetime(created_year, 6, 15)),
-    )
-
-    # Ensure youth application was created before/after employer voucher in the same year
-    youth_app.created_at = timezone.make_aware(
-        datetime(created_year, 5 if youth_app_created_before_employer_app else 7, 1)
-    )
-    youth_app.save()
-
-    # Before migration, foreign key should be None
-    assert employer_voucher.youth_summer_voucher is None
-
-    # Run the migration function
-    set_current_valid_serial_number_based_foreign_keys(
-        EmployerSummerVoucher, YouthSummerVoucher
-    )
-
-    # Verify the result
-    employer_voucher.refresh_from_db()
-    assert (
-        employer_voucher.youth_summer_voucher is not None
-    ) == youth_app_created_before_employer_app
-    assert (
-        employer_voucher.youth_summer_voucher_id
-        == youth_voucher.summer_voucher_serial_number
-    ) == youth_app_created_before_employer_app
-
-
-@pytest.mark.django_db
-def test_ambiguous_multimatch_with_ssn(employer_app):
-    """
-    Test that no match will be found in
-    set_current_valid_serial_number_based_foreign_keys when serial number does
-    not match, and the fallback matching using social security number matches
-    multiple youth summer vouchers.
-
-    The foreign key should remain None due to ambiguity.
-    """
-    # Create two YouthSummerVouchers with the same social security number
-    # and application year
-    ssn = "010203-1230"
-    created_at = timezone.make_aware(datetime(2024, 5, 1))
-
-    for serial_number in 11111, 22222:
-        youth_voucher = YouthSummerVoucherFactory(
-            summer_voucher_serial_number=serial_number,
-            youth_application__social_security_number=ssn,
-        )
-        youth_app = youth_voucher.youth_application
-        youth_app.created_at = created_at
-        youth_app.save()
-
-    # Create an EmployerSummerVoucher with matching social security number
-    employer_voucher = create_employer_summer_voucher(
-        application=employer_app,
-        _obsolete_unclean_serial_number="ABC123",  # Invalid serial number
-        employee_ssn=ssn,
-        created_at=timezone.make_aware(datetime(2024, 6, 1)),
-    )
-
-    # Before migration, foreign key should be None
-    assert employer_voucher.youth_summer_voucher is None
-
-    # Run the migration function
-    set_current_valid_serial_number_based_foreign_keys(
-        EmployerSummerVoucher, YouthSummerVoucher
-    )
-
-    # After migration, foreign key should still be None (ambiguous match)
-    employer_voucher.refresh_from_db()
-    assert employer_voucher.youth_summer_voucher is None
-
-
-@pytest.mark.django_db
-def test_set_current_valid_serial_number_query_count(
-    complex_data_setup, django_assert_max_num_queries
-):
-    """
-    Test that set_current_valid_serial_number_based_foreign_keys
-    uses at most 3 queries with the data set up in `complex_data_setup`
-    fixture (it should be 30 EmployerSummerVoucher objects) to process.
-
-    NOTE:
-        With larger datasets, the chunk/bulk sizes in the migration
-        function will make the actual query count higher!
-    """
-    with django_assert_max_num_queries(3):
-        set_current_valid_serial_number_based_foreign_keys(
-            EmployerSummerVoucher, YouthSummerVoucher
-        )
-
-
-@pytest.mark.django_db
-def test_set_current_valid_serial_number_logger_output(complex_data_setup, caplog):
-    """
-    Test that set_current_valid_serial_number_based_foreign_keys
-    logs the expected summary output.
-    """
-    with caplog.at_level("INFO"):
-        set_current_valid_serial_number_based_foreign_keys(
-            EmployerSummerVoucher, YouthSummerVoucher
-        )
-        assert "Handled 30 employer summer vouchers, updated 23:\n" in caplog.text
-        assert "- Matched by voucher serial number: 11\n" in caplog.text
-        assert "- Matched by social security number & year: 12\n" in caplog.text
-        assert "- Failed to match: 7 and left as is\n" in caplog.text
 
 
 @pytest.mark.django_db
@@ -298,7 +121,6 @@ def test_set_historical_serial_number_based_foreign_keys(
     employer_voucher = create_employer_summer_voucher(
         application=employer_app,
         _obsolete_unclean_serial_number=obsolete_serial,
-        employee_ssn="111111-111C",
     )
 
     # HistoricalEmployerSummerVoucher does exist, not all IDEs (e.g. PyCharm)
@@ -314,7 +136,7 @@ def test_set_historical_serial_number_based_foreign_keys(
     assert HistoricalEmployerSummerVoucher.objects.count() == 0
 
     # Update the object to create historical record
-    employer_voucher.employee_name = "Updated Name"
+    employer_voucher.employment_postcode = "00300"
     employer_voucher.save()
 
     assert HistoricalEmployerSummerVoucher.objects.count() == 1

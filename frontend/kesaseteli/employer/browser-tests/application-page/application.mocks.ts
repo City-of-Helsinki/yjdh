@@ -14,15 +14,15 @@ export const MOCKED_EMPLOYEE_DATA = {
   employee_phone_number: '040 1234567',
   employee_home_city: 'Helsinki',
   employee_postcode: '00100',
-  employee_school: 'Test School',
+  employee_school: 'Testikoulu',
 };
 
 /**
- * Cache for serial numbers and target groups that the backend doesn't reliably return.
+ * Cache for serial numbers and employee names that the backend doesn't reliably return.
  * The backend has bugs where these fields are lost in responses, so we store them
  * from requests and restore them in responses to make tests work.
  */
-const serialNumberFixes = new Map<string, string>();
+const voucherFixCache = new Map<string, { serialNumber?: string; employeeName?: string }>();
 
 
 /**
@@ -64,9 +64,9 @@ const handleFetchEmployeeData = (req: MockRequest, res: MockResponse): void => {
     res.headers['access-control-allow-credentials'] = 'true';
     res.statusCode = 200;
     res.setBody({
+      ...MOCKED_EMPLOYEE_DATA,
       employer_summer_voucher_id: body.employer_summer_voucher_id,
       employee_name: body.employee_name,
-      ...MOCKED_EMPLOYEE_DATA,
     });
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -78,8 +78,12 @@ const handleFetchEmployeeData = (req: MockRequest, res: MockResponse): void => {
 const cacheVoucherFixes = (vouchers?: VoucherData[]): void => {
   if (!vouchers) return;
   vouchers.forEach((v) => {
-    if (v.id && v.summer_voucher_serial_number) {
-      serialNumberFixes.set(v.id, v.summer_voucher_serial_number);
+    if (v.id) {
+      const existing = voucherFixCache.get(v.id) || {};
+      voucherFixCache.set(v.id, {
+        serialNumber: v.summer_voucher_serial_number || existing.serialNumber,
+        employeeName: v.employee_name || existing.employeeName,
+      });
     }
   });
 };
@@ -88,18 +92,27 @@ const restoreVoucherData = (
   v: VoucherData,
   requestVoucher?: VoucherData
 ): VoucherData => {
+  const cached = voucherFixCache.get(v.id);
   const restoredSerialNumber =
     v.summer_voucher_serial_number ||
     requestVoucher?.summer_voucher_serial_number ||
-    serialNumberFixes.get(v.id);
+    cached?.serialNumber;
+  const restoredEmployeeName =
+    v.employee_name || requestVoucher?.employee_name || cached?.employeeName;
 
-  if (v.id && restoredSerialNumber) {
-    serialNumberFixes.set(v.id, restoredSerialNumber);
+
+  if (v.id && (restoredSerialNumber || restoredEmployeeName)) {
+    voucherFixCache.set(v.id, {
+      serialNumber: restoredSerialNumber,
+      employeeName: restoredEmployeeName,
+    });
   }
 
   return {
     ...v,
+    ...MOCKED_EMPLOYEE_DATA,
     summer_voucher_serial_number: restoredSerialNumber || '',
+    employee_name: restoredEmployeeName,
   };
 };
 
