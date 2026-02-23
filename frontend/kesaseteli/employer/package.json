@@ -20,17 +20,17 @@
   "dependencies": {
     "@frontend/kesaseteli-shared": "*",
     "@frontend/shared": "*",
-    "@sentry/browser": "^7.16.0",
-    "@sentry/nextjs": "^7.16.0",
+    "@sentry/browser": "^8.40.0",
+    "@sentry/nextjs": "^8.40.0",
     "axios": "^0.30.2",
     "dotenv": "^16.0.0",
     "hds-design-tokens": "^3.11.0",
     "hds-react": "^3.11.0",
     "ibantools": "^4.1.5",
     "lodash": "^4.17.21",
-    "next": "14.2.32",
+    "next": "^15.1.0",
     "next-compose-plugins": "^2.2.1",
-    "next-i18next": "^13.0.3",
+    "next-i18next": "^15.3.0",
     "next-router-mock": "0.9.12",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -45,6 +45,6 @@
   },
   "devDependencies": {
     "eslint-config-adjunct": "^4.11.1",
-    "typescript": "^4.6.3"
+    "typescript": "^5.9.3"
   }
 }

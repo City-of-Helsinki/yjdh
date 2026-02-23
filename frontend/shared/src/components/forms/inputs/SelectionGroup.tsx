@@ -31,6 +31,7 @@ const SelectionGroup = <T,>({
 }: Props<T>): React.ReactElement<T> => {
   const { control } = useFormContext<T>();
   const [selectedValue, setSelectedValue] = React.useState(initialValue);
+  const inputId = String(id);
 
   const handleChange = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,8 +40,6 @@ const SelectionGroup = <T,>({
     },
     [setSelectedValue, onChange]
   );
-
-  const idString = id as string;
 
   return (
     <$GridCell {...$gridCellProps}>
@@ -51,9 +50,9 @@ const SelectionGroup = <T,>({
         render={({ field: { ref, value, ...fieldProps } }) => (
           <$SelectionGroup
             {...fieldProps}
-            id={id}
-            data-testid={id}
-            name={id}
+            id={inputId}
+            data-testid={inputId}
+            name={inputId}
             required={Boolean(label && registerOptions?.required)}
             direction={direction}
             errorText={errorText}
@@ -61,9 +60,9 @@ const SelectionGroup = <T,>({
           >
             {values.map((val) => (
               <RadioButton
-                key={`${idString}-${val}`}
-                id={`${idString}-${val}`}
-                data-testid={`${idString}-${val}`}
+                key={`${inputId}-${val}`}
+                id={`${inputId}-${val}`}
+                data-testid={`${inputId}-${val}`}
                 label={getValueText(val)}
                 value={val}
                 onChange={handleChange}

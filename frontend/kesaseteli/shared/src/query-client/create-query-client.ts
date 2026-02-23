@@ -7,15 +7,24 @@ import { QueryClient, QueryFunctionContext, QueryKey } from 'react-query';
 import { getLastCookieValue } from 'shared/cookies/get-last-cookie-value';
 import { isString } from 'shared/utils/type-guards';
 
-const createAxios = (): AxiosInstance =>
-  Axios.create({
+const createAxios = (): AxiosInstance => {
+  const config: Record<string, unknown> = {
     baseURL: getBackendDomain(),
     headers: {
       'Content-Type': 'application/json',
       'X-CSRFToken': getLastCookieValue('yjdhcsrftoken'),
     },
     withCredentials: true,
-  });
+  };
+
+  // Force http adapter in test environment for nock compatibility
+  // Axios 1.x defaults to fetch adapter which nock doesn't intercept
+  if (process.env.NODE_ENV === 'test') {
+    config.adapter = ['http', 'xhr', 'fetch'];
+  }
+
+  return Axios.create(config);
+};
 
 const createQueryClient = (): QueryClient =>
   new QueryClient({

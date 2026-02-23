@@ -2,6 +2,7 @@ import AlterationAccordionItem from 'benefit/handler/components/applicationRevie
 import DecisionCalculationAccordion from 'benefit/handler/components/applicationReview/handlingView/DecisionCalculationAccordion';
 import { HANDLED_STATUSES, ROUTES } from 'benefit/handler/constants';
 import ReviewStateContext from 'benefit/handler/context/ReviewStateContext';
+import { Application as HandlerApplication } from 'benefit/handler/types/application';
 import DecisionSummary from 'benefit-shared/components/decisionSummary/DecisionSummary';
 import StatusIcon from 'benefit-shared/components/statusIcon/StatusIcon';
 import {
@@ -166,47 +167,49 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
           }
         />
         {application.applicationOrigin === APPLICATION_ORIGINS.HANDLER && (
-          <PaperView data={application} />
+          <PaperView data={application as HandlerApplication} />
         )}
-        <CompanyInfoView data={application} />
-        <ContactPersonView data={application} />
-        <DeminimisView data={application} />
-        <CoOperationNegotiationsView data={application} />
+        <CompanyInfoView data={application as HandlerApplication} />
+        <ContactPersonView data={application as HandlerApplication} />
+        <DeminimisView data={application as HandlerApplication} />
+        <CoOperationNegotiationsView data={application as HandlerApplication} />
         <EmployeeView
-          data={application}
+          data={application as HandlerApplication}
           handleUpload={handleUpload}
           isUploading={isUploading}
         />
         <EmploymentView
-          data={application}
+          data={application as HandlerApplication}
           handleUpload={handleUpload}
           isUploading={isUploading}
         />
-        <BenefitView data={application} />
+        <BenefitView data={application as HandlerApplication} />
         <ConsentView
-          data={application}
+          data={application as HandlerApplication}
           handleUpload={handleUpload}
           isUploading={isUploading}
         />
         {application.status === APPLICATION_STATUSES.HANDLING && (
           <>
             <SalaryBenefitCalculatorView
-              application={application}
+              application={application as HandlerApplication}
               isRecalculationRequired={isRecalculationRequired}
               setIsRecalculationRequired={setIsRecalculationRequired}
               setCalculationErrors={setCalculationErrors}
               calculationsErrors={calculationsErrors}
             />
-            <ApplicationProcessingView data={application} />
+            <ApplicationProcessingView
+              data={application as HandlerApplication}
+            />
           </>
         )}
         {application.status &&
           HANDLED_STATUSES.includes(application.status) && (
-            <HandledView data={application} />
+            <HandledView data={application as HandlerApplication} />
           )}
         {application.archived &&
           application.status === APPLICATION_STATUSES.ACCEPTED && (
-            <ArchivedView data={application} />
+            <ArchivedView data={application as HandlerApplication} />
           )}
       </Container>
     </ReviewStateContext.Provider>
