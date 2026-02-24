@@ -3,6 +3,7 @@ const next = require('next');
 const https = require('https');
 const fs = require('fs');
 const port = process.env.PORT || 3000;
+const { version: packageVersion } = require(process.cwd() + '/package.json');
 const app = next({ dev: process.env.NODE_ENV !== 'production' });
 const handle = app.getRequestHandler();
 
@@ -77,7 +78,17 @@ const checkIsServerReady = (response) => {
   });
 
   server.get('/readiness', (req, res) => {
-    checkIsServerReady(res);
+    if (!serverIsReady) {
+      return res.status(503).send(RESPONSES.SERVER_IS_NOT_READY);
+    }
+
+    if (!process.env.NEXT_PUBLIC_RELEASE) {
+      return res.send(RESPONSES.OK);
+    }
+
+    const release = process.env.NEXT_PUBLIC_RELEASE;
+
+    return res.json({ status: 'ok', release, packageVersion });
   });
 
   server.get('*', (req, res) => handle(req, res));
