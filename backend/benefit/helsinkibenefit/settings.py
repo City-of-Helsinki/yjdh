@@ -409,14 +409,6 @@ RESILIENT_LOGGER = {
     "clear_sent_entries": True,
 }
 
-# These settings are required by shared tests
-ELASTICSEARCH_APP_AUDIT_LOG_INDEX = "not-used"
-ELASTICSEARCH_HOST = "not-used"
-ELASTICSEARCH_PORT = 1234
-ELASTICSEARCH_USERNAME = "not-used"
-ELASTICSEARCH_PASSWORD = "not-used"
-
-
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
