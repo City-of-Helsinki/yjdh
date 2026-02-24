@@ -1,5 +1,6 @@
 {
   "appName": "Sommarsedeln",
+  "cookieSettings": "Cookie-inställningar",
   "header": {
     "loginLabel": "Logga in i tjänsten",
     "logoutLabel": "Logga ut",
@@ -66,7 +67,7 @@
       "add_employment": "Lägg till en ny anställning",
       "save_employment": "Spara informationen",
       "remove_employment": "Ta bort uppgifterna",
-      "fetch_employment": "Hämta uppgifter",
+      "fetch_employment": "Hämta uppgifter med arbetstagarens namn och sommarsedelns serienummer",
       "fetch_employment_error_title": "Fel uppstod!",
       "fetch_employment_error_message": "Kunde inte hämta arbetstagarens uppgifter.",
       "fetch_employment_not_found_error_message": "Arbetstagarens information hittades inte."
@@ -89,6 +90,22 @@
           "primary_target_group": "Niondeklassist eller TUVAklassist",
           "secondary_target_group": "Annan åldersgrupp"
         },
+        "organization_type": {
+          "company": "Företag",
+          "association": "Förening",
+          "parish": "Församling",
+          "other": "Annat"
+        },
+        "job_type": {
+          "sports_and_leisure": "Sport och fritid",
+          "maintenance_and_construction": "Underhåll och byggande",
+          "restaurant_and_cafe": "Restaurang och café",
+          "retail": "Detaljhandel",
+          "office_and_media": "Kontor och media",
+          "gardening_and_agriculture": "Trädgårdsarbete och jordbruk",
+          "service": "Tjänster",
+          "other": "Annat"
+        },
         "hired_without_voucher_assessment": {
           "yes": "Jo",
           "no": "Nej",
@@ -96,6 +113,8 @@
         }
       },
       "inputs": {
+        "organization_type": "Organisationstyp",
+        "job_type": "Huvudkategori av arbetsuppgifter",
         "contact_person_name": "Kontakt personens namn",
         "contact_person_email": "Kontakt personens epost",
         "street_address": "Arbetsplatsens gatuadress",

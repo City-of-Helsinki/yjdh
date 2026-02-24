@@ -75,7 +75,7 @@ def test_employer_application_list_viewable_statuses(
     """
     Test that the employer application list endpoint returns draft and
     submitted employer applications but only those that are the user's and use
-    the user's company.
+    the user's company by default.
     """
     user1, user2 = UserFactory.create_batch(size=2)
     user1_client = force_login_user(user1)
@@ -101,6 +101,63 @@ def test_employer_application_list_viewable_statuses(
         assert response.data[0]["id"] == str(attachment.summer_voucher.application.id)
         assert response.data[0]["user"] == user.id
         assert response.data[0]["company"]["id"] == str(company.id)
+
+
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.parametrize(
+    "application_status",
+    [
+        EmployerApplicationStatus.DRAFT,
+        EmployerApplicationStatus.SUBMITTED,
+    ],
+)
+@pytest.mark.django_db
+def test_employer_application_list_viewable_statuses_not_only_mine(
+    application_status: EmployerApplicationStatus,
+):
+    """
+    Test that the employer application list endpoint returns draft and
+    submitted employer applications for the user's company, including
+    other users' employer applications for the company, if only_mine=false.
+    """
+    user1, user2, extra_user = UserFactory.create_batch(size=3)
+    user1_client = force_login_user(user1)
+    user2_client = force_login_user(user2)
+
+    company1, company2, extra_company = CompanyFactory.create_batch(size=3)
+
+    company1_attachments = (
+        create_attachment(user1, company1, application_status),
+        create_attachment(user2, company1, application_status),
+    )
+    company2_attachments = (
+        create_attachment(user1, company2, application_status),
+        create_attachment(user2, company2, application_status),
+    )
+    # Attachments that should not be returned as they're not connected to company1 or company2:
+    _extra_company_attachments = (
+        create_attachment(user1, extra_company, application_status),
+        create_attachment(user2, extra_company, application_status),
+        create_attachment(extra_user, extra_company, application_status),
+    )
+
+    for client, company, attachments in [
+        (user1_client, company1, company1_attachments),
+        (user1_client, company2, company2_attachments),
+        (user2_client, company1, company1_attachments),
+        (user2_client, company2, company2_attachments),
+    ]:
+        set_company_business_id_to_client(company, client)
+        response = client.get(
+            reverse("v1:employerapplication-list"), query_params={"only_mine": "false"}
+        )
+        assert response.status_code == status.HTTP_200_OK
+        assert len(response.data) == 2
+        assert {x["user"] for x in response.data} == {user1.id, user2.id}
+        assert {x["company"]["id"] for x in response.data} == {str(company.id)}
+        assert {x["id"] for x in response.data} == {
+            str(attachment.summer_voucher.application.id) for attachment in attachments
+        }
 
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
@@ -177,19 +234,25 @@ def test_employer_summer_voucher_handle_attachment_viewable_statuses(
 ):
     """
     Test that the employer summer voucher's handle attachment endpoint returns
-    draft and submitted employer applications' attachments but only those that
-    are the user's and use the user's company.
+    draft and submitted employer applications' attachments only for the user's company.
     """
-    user1, user2 = UserFactory.create_batch(size=2)
+    user1, user2, extra_user = UserFactory.create_batch(size=3)
     user1_client = force_login_user(user1)
     user2_client = force_login_user(user2)
 
-    company1, company2 = CompanyFactory.create_batch(size=2)
+    company1, company2, extra_company = CompanyFactory.create_batch(size=3)
 
     user1_company1_attachment = create_attachment(user1, company1, application_status)
     user1_company2_attachment = create_attachment(user1, company2, application_status)
     user2_company1_attachment = create_attachment(user2, company1, application_status)
     user2_company2_attachment = create_attachment(user2, company2, application_status)
+
+    # Attachments that should not be returned as they're not connected to company1 or company2:
+    extra_attachments = (
+        create_attachment(user1, extra_company, application_status),
+        create_attachment(user2, extra_company, application_status),
+        create_attachment(extra_user, extra_company, application_status),
+    )
 
     def get_attachment(client: Client, attachment: Attachment):
         return client.get(
@@ -202,30 +265,46 @@ def test_employer_summer_voucher_handle_attachment_viewable_statuses(
             )
         )
 
-    # The status code 200s are the ones that match both the user and the company:
+    # The status code 200s are the ones that match the user's company:
     set_company_business_id_to_client(company1, user1_client)
     assert get_attachment(user1_client, user1_company1_attachment).status_code == 200
     assert get_attachment(user1_client, user1_company2_attachment).status_code == 404
-    assert get_attachment(user1_client, user2_company1_attachment).status_code == 404
+    assert get_attachment(user1_client, user2_company1_attachment).status_code == 200
     assert get_attachment(user1_client, user2_company2_attachment).status_code == 404
+    assert all(
+        get_attachment(user1_client, attachment).status_code == 404
+        for attachment in extra_attachments
+    )
 
     set_company_business_id_to_client(company1, user2_client)
-    assert get_attachment(user2_client, user1_company1_attachment).status_code == 404
+    assert get_attachment(user2_client, user1_company1_attachment).status_code == 200
     assert get_attachment(user2_client, user1_company2_attachment).status_code == 404
     assert get_attachment(user2_client, user2_company1_attachment).status_code == 200
     assert get_attachment(user2_client, user2_company2_attachment).status_code == 404
+    assert all(
+        get_attachment(user2_client, attachment).status_code == 404
+        for attachment in extra_attachments
+    )
 
     set_company_business_id_to_client(company2, user1_client)
     assert get_attachment(user1_client, user1_company1_attachment).status_code == 404
     assert get_attachment(user1_client, user1_company2_attachment).status_code == 200
     assert get_attachment(user1_client, user2_company1_attachment).status_code == 404
-    assert get_attachment(user1_client, user2_company2_attachment).status_code == 404
+    assert get_attachment(user1_client, user2_company2_attachment).status_code == 200
+    assert all(
+        get_attachment(user1_client, attachment).status_code == 404
+        for attachment in extra_attachments
+    )
 
     set_company_business_id_to_client(company2, user2_client)
     assert get_attachment(user2_client, user1_company1_attachment).status_code == 404
-    assert get_attachment(user2_client, user1_company2_attachment).status_code == 404
+    assert get_attachment(user2_client, user1_company2_attachment).status_code == 200
     assert get_attachment(user2_client, user2_company1_attachment).status_code == 404
     assert get_attachment(user2_client, user2_company2_attachment).status_code == 200
+    assert all(
+        get_attachment(user2_client, attachment).status_code == 404
+        for attachment in extra_attachments
+    )
 
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
@@ -326,25 +405,25 @@ def test_employer_summer_voucher_handle_attachment_delete_draft():
             )
         )
 
-    # Unallowed deletions
+    # Seen but unallowed deletions (=403), and not seen cases (=404):
     set_company_business_id_to_client(company1, user1_client)
     assert del_attachment(user1_client, user1_company2_attachment).status_code == 404
-    assert del_attachment(user1_client, user2_company1_attachment).status_code == 404
+    assert del_attachment(user1_client, user2_company1_attachment).status_code == 403
     assert del_attachment(user1_client, user2_company2_attachment).status_code == 404
 
     set_company_business_id_to_client(company1, user2_client)
-    assert del_attachment(user2_client, user1_company1_attachment).status_code == 404
+    assert del_attachment(user2_client, user1_company1_attachment).status_code == 403
     assert del_attachment(user2_client, user1_company2_attachment).status_code == 404
     assert del_attachment(user2_client, user2_company2_attachment).status_code == 404
 
     set_company_business_id_to_client(company2, user1_client)
     assert del_attachment(user1_client, user1_company1_attachment).status_code == 404
     assert del_attachment(user1_client, user2_company1_attachment).status_code == 404
-    assert del_attachment(user1_client, user2_company2_attachment).status_code == 404
+    assert del_attachment(user1_client, user2_company2_attachment).status_code == 403
 
     set_company_business_id_to_client(company2, user2_client)
     assert del_attachment(user2_client, user1_company1_attachment).status_code == 404
-    assert del_attachment(user2_client, user1_company2_attachment).status_code == 404
+    assert del_attachment(user2_client, user1_company2_attachment).status_code == 403
     assert del_attachment(user2_client, user2_company1_attachment).status_code == 404
 
     # Allowed deletions
@@ -392,15 +471,15 @@ def test_employer_summer_voucher_handle_attachment_delete_submitted():
             )
         )
 
-    # The status code 400s are the ones that match both the user and the company:
+    # The status code 400s are the ones that match the user's company:
     set_company_business_id_to_client(company1, user1_client)
     assert del_attachment(user1_client, user1_company1_attachment).status_code == 400
     assert del_attachment(user1_client, user1_company2_attachment).status_code == 404
-    assert del_attachment(user1_client, user2_company1_attachment).status_code == 404
+    assert del_attachment(user1_client, user2_company1_attachment).status_code == 400
     assert del_attachment(user1_client, user2_company2_attachment).status_code == 404
 
     set_company_business_id_to_client(company1, user2_client)
-    assert del_attachment(user2_client, user1_company1_attachment).status_code == 404
+    assert del_attachment(user2_client, user1_company1_attachment).status_code == 400
     assert del_attachment(user2_client, user1_company2_attachment).status_code == 404
     assert del_attachment(user2_client, user2_company1_attachment).status_code == 400
     assert del_attachment(user2_client, user2_company2_attachment).status_code == 404
@@ -409,11 +488,11 @@ def test_employer_summer_voucher_handle_attachment_delete_submitted():
     assert del_attachment(user1_client, user1_company1_attachment).status_code == 404
     assert del_attachment(user1_client, user1_company2_attachment).status_code == 400
     assert del_attachment(user1_client, user2_company1_attachment).status_code == 404
-    assert del_attachment(user1_client, user2_company2_attachment).status_code == 404
+    assert del_attachment(user1_client, user2_company2_attachment).status_code == 400
 
     set_company_business_id_to_client(company2, user2_client)
     assert del_attachment(user2_client, user1_company1_attachment).status_code == 404
-    assert del_attachment(user2_client, user1_company2_attachment).status_code == 404
+    assert del_attachment(user2_client, user1_company2_attachment).status_code == 400
     assert del_attachment(user2_client, user2_company1_attachment).status_code == 404
     assert del_attachment(user2_client, user2_company2_attachment).status_code == 400
 
@@ -862,6 +941,7 @@ def test_company_openly_accessible_to_non_staff_user(user_client):
         street_address="Test street 1",
         postcode="00100",
         city="Test city",
+        organization_type="company",
     )
     set_company_business_id_to_client(company, user_client)
 
@@ -877,6 +957,7 @@ def test_company_openly_accessible_to_non_staff_user(user_client):
         "name": "Test company",
         "postcode": "00100",
         "street_address": "Test street 1",
+        "organization_type": "company",
     }
 
 

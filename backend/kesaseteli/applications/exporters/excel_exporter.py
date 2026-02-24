@@ -39,6 +39,7 @@ WORK_HOURS_FIELD_TITLE = _("Työtunnit")
 INVOICER_EMAIL_FIELD_TITLE = _("Laskuttajan sähköposti")
 INVOICER_NAME_FIELD_TITLE = _("Laskuttajan nimi")
 INVOICER_PHONE_NUMBER_FIELD_TITLE = _("Laskuttajan Puhelin")
+VOUCHER_NUMBER_FIELD_TITLE = _("Setelin numero")
 
 REMOVABLE_REPORTING_FIELD_TITLES = [
     _("Y-tunnus"),
@@ -105,7 +106,7 @@ FIELDS = [
         APPLICATION_LANGUAGE_FIELD_TITLE, "%s", ["application__language"], 15, "white"
     ),
     ExcelField(
-        _("Setelin numero"), "%s", ["summer_voucher_serial_number"], 30, "white"
+        VOUCHER_NUMBER_FIELD_TITLE, "%s", ["summer_voucher_serial_number"], 30, "white"
     ),
     ExcelField(
         SPECIAL_CASE_FIELD_TITLE,
@@ -365,9 +366,7 @@ def generate_data_row(
         elif field.title == RECEIVED_DATE_FIELD_TITLE:
             submitted_at = getattr(summer_voucher, "submitted_at", None)
             cell_value = (
-                submitted_at.astimezone().strftime("%d/%m/%Y")
-                if submitted_at
-                else ""
+                submitted_at.astimezone().strftime("%d/%m/%Y") if submitted_at else ""
             )
         else:
             attr_names = field.model_fields

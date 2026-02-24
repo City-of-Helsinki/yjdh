@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timezone
 from typing import Callable, Optional, Union
 
@@ -6,6 +7,14 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.db.models import Model
 from django.db.models.base import ModelBase
+
+try:
+    from resilient_logger.sources.resilient_log_source import (
+        ResilientLogSource,
+        StructuredResilientLogEntryData,
+    )
+except ImportError:
+    pass
 
 from shared.audit_log.enums import Operation, Role, Status
 from shared.audit_log.mappings import DJANGO_BACKEND_MAPPING
@@ -90,9 +99,24 @@ def log(
     ):
         _add_changes(target, message)
 
-    AuditLogEntry.objects.create(
-        message=message,
-    )
+    # Use resilient logger if configured
+    if getattr(settings, "RESILIENT_LOGGER", None):
+        _create_resilient_log_entry(
+            user_id=user_id,
+            role=role,
+            ip_address=ip_address,
+            provider=provider,
+            operation=operation,
+            target=target,
+            status=status,
+            additional_information=additional_information,
+            message=message,
+        )
+    else:
+        # Fallback to legacy audit log
+        AuditLogEntry.objects.create(
+            message=message,
+        )
 
 
 def _add_changes(target: Union[Model, ModelBase], message: dict) -> None:
@@ -141,3 +165,56 @@ def _get_target_type(target: Union[Model, ModelBase]) -> Optional[str]:
         if isinstance(target, Model)
         else str(target.__name__)
     )
+
+
+def _create_resilient_log_entry(
+    user_id: str,
+    role: Role,
+    ip_address: str,
+    provider: str,
+    operation: Operation,
+    target: Union[Model, ModelBase],
+    status: Status,
+    additional_information: str,
+    message: dict,
+):
+    """Create a resilient log entry using the structured format."""
+    target_type = _get_target_type(target)
+    target_id = _get_target_id(target)
+
+    extra = {
+        "status": str(status.value),
+    }
+
+    # Add changes if they exist in the message
+    if (
+        "target" in message.get("audit_event", {})
+        and "changes" in message["audit_event"]["target"]
+    ):
+        extra["changes"] = message["audit_event"]["target"]["changes"]
+
+    # Add additional information if provided
+    if additional_information:
+        extra["additional_information"] = additional_information
+
+    # Add provider if available
+    if provider:
+        extra["provider"] = provider
+
+    entry = StructuredResilientLogEntryData(
+        level=logging.NOTSET,
+        message=str(status.value),
+        actor={
+            "user_id": user_id if user_id else None,
+            "role": str(role.value),
+            "ip_address": ip_address if ip_address else None,
+        },
+        operation=str(operation.value),
+        target={
+            "id": target_id,
+            "type": target_type,
+        },
+        extra=extra,
+    )
+
+    ResilientLogSource.bulk_create_structured([entry])

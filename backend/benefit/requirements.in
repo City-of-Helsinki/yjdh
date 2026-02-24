@@ -7,13 +7,14 @@ django-filter
 django-localflavor
 django-logger-extra
 django-phonenumber-field[phonenumbers]
+django-resilient-logger
 django-searchable-encrypted-fields
 django-simple-history
 django-sql-utils
 django-storages[azure]
 django_auth_adfs
 djangorestframework
-django~=5.2.9
+django~=5.2.11
 drf-nested-routers
 drf-spectacular
 elasticsearch~=8.19
@@ -36,3 +37,4 @@ pyyaml
 requests
 sentry-sdk[django]
 uritemplate
+uwsgi

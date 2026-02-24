@@ -1,5 +1,60 @@
 # Changelog
 
+## [2.12.4](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.12.3...benefit-backend-v2.12.4) (2026-02-19)
+
+
+### Bug Fixes
+
+* **benefit:** Fixed the apprenticeship validation ([18b7acb](https://github.com/City-of-Helsinki/yjdh/commit/18b7acb27e2d87187734aa1e2ab08225ca0ba4b9))
+* **benefit:** Fixed the tests ([d72253d](https://github.com/City-of-Helsinki/yjdh/commit/d72253d6d5b1932c0e460461ab45067acd4ce25a))
+
+## [2.12.3](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.12.2...benefit-backend-v2.12.3) (2026-02-18)
+
+
+### Dependencies
+
+* **deps:** Bump sqlparse from 0.5.3 to 0.5.4 in /backend/benefit ([f49d7c3](https://github.com/City-of-Helsinki/yjdh/commit/f49d7c3bcdf52e186f1c70e2cf2085c7541e0666))
+
+## [2.12.2](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.12.1...benefit-backend-v2.12.2) (2026-02-16)
+
+
+### Bug Fixes
+
+* **benefit:** Application disappears from "Maksuerät" tab ([cd790cd](https://github.com/City-of-Helsinki/yjdh/commit/cd790cd2aa4f926bae9993971a1194795ad936e9))
+
+## [2.12.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.12.0...benefit-backend-v2.12.1) (2026-02-12)
+
+
+### Dependencies
+
+* Bump pillow from 12.0.0 to 12.1.1 in /backend/benefit ([44a6847](https://github.com/City-of-Helsinki/yjdh/commit/44a6847f04b7485787a9e6ce8dcfca16cb07e3dd))
+
+## [2.12.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.11.1...benefit-backend-v2.12.0) (2026-02-03)
+
+
+### Features
+
+* Use resilient logger ([4959beb](https://github.com/City-of-Helsinki/yjdh/commit/4959beb4a9f54ff240d5210e666c431e68d333e7))
+
+
+### Bug Fixes
+
+* Parse IP address without the port number ([e769fdd](https://github.com/City-of-Helsinki/yjdh/commit/e769fdd4fc6da472f485f95f0951df8fb5f7e553))
+
+
+### Dependencies
+
+* **benefit:** Move uwsgi to main requirements ([1badb72](https://github.com/City-of-Helsinki/yjdh/commit/1badb72e4dbdf1f918dfd5e6807b5a8f4cdd6b1f))
+
+## [2.11.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.11.0...benefit-backend-v2.11.1) (2026-01-28)
+
+
+### Dependencies
+
+* **deps:** Bump authlib from 1.6.5 to 1.6.6 in /backend/benefit ([935e3a8](https://github.com/City-of-Helsinki/yjdh/commit/935e3a8e9288cc2296486036e169c4a75138b9f4))
+* **deps:** Bump azure-core from 1.36.0 to 1.38.0 in /backend/benefit ([a99fe4d](https://github.com/City-of-Helsinki/yjdh/commit/a99fe4db23b9968fed8ba8a79044e8d3409e029b))
+* **deps:** Bump pyasn1 from 0.6.1 to 0.6.2 in /backend/benefit ([0278ac7](https://github.com/City-of-Helsinki/yjdh/commit/0278ac7bd3df4f48ca24ed9bf58aaf044c8cae2b))
+
 ## [2.11.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.10.1...benefit-backend-v2.11.0) (2025-12-15)
 
 

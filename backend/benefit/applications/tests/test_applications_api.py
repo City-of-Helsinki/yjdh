@@ -17,6 +17,7 @@ from django.core.management import call_command
 from django.test import override_settings
 from freezegun import freeze_time
 from PIL import Image
+from resilient_logger.models import ResilientLogEntry
 from rest_framework.reverse import reverse
 
 from applications.api.v1.application_views import BaseApplicationViewSet
@@ -51,7 +52,7 @@ from applications.tests.factories import (
 )
 from applications.tests.test_alteration_api import _create_application_alteration
 from calculator.enums import InstalmentStatus
-from calculator.models import Calculation
+from calculator.models import Calculation, Instalment
 from calculator.tests.conftest import fill_empty_calculation_fields
 from calculator.tests.factories import InstalmentFactory
 from common.tests.conftest import get_client_user
@@ -63,7 +64,6 @@ from messages.automatic_messages import (
 )
 from messages.models import Message, MessageType
 from messages.tests.factories import MessageFactory
-from shared.audit_log import models as audit_models
 from shared.service_bus.enums import YtjOrganizationCode
 from terms.models import TermsOfServiceApproval
 
@@ -75,6 +75,41 @@ def get_detail_url(application):
 
 def get_handler_detail_url(application):
     return reverse("v1:handler-application-detail", kwargs={"pk": application.id})
+
+@pytest.mark.django_db
+def test_applications_second_instalment_fetched(handler_api_client, application):
+    application.status = ApplicationStatus.ACCEPTED
+    application.save()
+    application.calculation = Calculation(
+        application=application,
+        monthly_pay=1234,
+        vacation_money=123,
+        other_expenses=321,
+        start_date=datetime.now() - relativedelta(days=30),
+        end_date=datetime.now(),
+        state_aid_max_percentage=0,
+        calculated_benefit_amount=0,
+        override_monthly_benefit_amount=None,
+    )
+    application.calculation.save()
+    for i in range(2):
+        due_date = date.today() - relativedelta(months=5)
+        status = InstalmentStatus.PAID
+        if i==1:
+            status = InstalmentStatus.WAITING
+            due_date = date.today() - relativedelta(months=1)
+        Instalment.objects.create(
+            calculation=application.calculation,
+            amount=1000,
+            instalment_number=i+1,
+            status=status,
+            due_date=due_date,
+        )
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list")
+    )
+    assert len(response.data) == 1
+    assert response.status_code == 200
 
 
 @pytest.mark.parametrize(
@@ -90,13 +125,14 @@ def get_handler_detail_url(application):
 def test_applications_unauthenticated(anonymous_client, application, view_name):
     response = anonymous_client.get(reverse(view_name))
     assert response.status_code == 403
-    audit_event = (
-        audit_models.AuditLogEntry.objects.all().first().message["audit_event"]
-    )
-    assert audit_event["status"] == "FORBIDDEN"
-    assert audit_event["operation"] == "READ"
-    assert audit_event["target"]["id"] == ""
-    assert audit_event["target"]["type"] == "Application"
+
+    log_entry = ResilientLogEntry.objects.first()
+
+    assert log_entry.context["operation"] == "READ"
+    assert log_entry.context["status"] == "FORBIDDEN"
+    assert log_entry.message == "FORBIDDEN"
+    assert log_entry.context["target"]["id"] == ""
+    assert log_entry.context["target"]["type"] == "Application"
 
 
 @pytest.mark.parametrize(
@@ -493,13 +529,14 @@ def test_application_post_success_unauthenticated(anonymous_client, application)
         data,
     )
     assert response.status_code == 403
-    audit_event = (
-        audit_models.AuditLogEntry.objects.all().first().message["audit_event"]
-    )
-    assert audit_event["status"] == "FORBIDDEN"
-    assert audit_event["operation"] == "CREATE"
-    assert audit_event["target"]["id"] == ""
-    assert audit_event["target"]["type"] == "Application"
+
+    log_entry = ResilientLogEntry.objects.first()
+
+    assert log_entry.context["operation"] == "CREATE"
+    assert log_entry.context["status"] == "FORBIDDEN"
+    assert log_entry.message == "FORBIDDEN"
+    assert log_entry.context["target"]["id"] == ""
+    assert log_entry.context["target"]["type"] == "Application"
 
 
 @pytest.mark.django_db
@@ -550,11 +587,15 @@ def test_application_post_success(api_client, application):
     assert new_application.official_company_postcode == new_application.company.postcode
     assert new_application.official_company_city == new_application.company.city
 
-    audit_event = audit_models.AuditLogEntry.objects.last().message["audit_event"]
+    log_entry = ResilientLogEntry.objects.first()
 
-    assert audit_event["status"] == "SUCCESS"
-    assert audit_event["target"]["id"] == str(Application.objects.all().first().id)
-    assert audit_event["operation"] == "CREATE"
+    assert log_entry.context["operation"] == "CREATE"
+    assert log_entry.context["status"] == "SUCCESS"
+    assert log_entry.message == "SUCCESS"
+    assert log_entry.context["target"]["id"] == str(
+        Application.objects.all().first().id
+    )
+    assert log_entry.context["target"]["type"] == "Application"
 
 
 @pytest.mark.django_db
@@ -720,12 +761,14 @@ def test_application_put_edit_fields_unauthorized(
         data,
     )
     assert response.status_code == 404
-    audit_event = (
-        audit_models.AuditLogEntry.objects.all().first().message["audit_event"]
-    )
-    assert audit_event["status"] == "FORBIDDEN"
-    assert audit_event["target"]["id"] == str(anonymous_application.id)
-    assert audit_event["operation"] == "UPDATE"
+
+    log_entry = ResilientLogEntry.objects.first()
+
+    assert log_entry.context["operation"] == "UPDATE"
+    assert log_entry.context["status"] == "FORBIDDEN"
+    assert log_entry.message == "FORBIDDEN"
+    assert log_entry.context["target"]["id"] == str(anonymous_application.id)
+    assert log_entry.context["target"]["type"] == "Application"
 
 
 @pytest.mark.django_db
@@ -746,11 +789,13 @@ def test_application_put_edit_fields(api_client, application):
     application.refresh_from_db()
     assert application.company_contact_person_phone_number == "0505658789"
 
-    audit_event = audit_models.AuditLogEntry.objects.last().message["audit_event"]
+    log_entry = ResilientLogEntry.objects.first()
 
-    assert audit_event["status"] == "SUCCESS"
-    assert audit_event["target"]["id"] == str(application.id)
-    assert audit_event["operation"] == "UPDATE"
+    assert log_entry.context["operation"] == "UPDATE"
+    assert log_entry.context["status"] == "SUCCESS"
+    assert log_entry.message == "SUCCESS"
+    assert log_entry.context["target"]["id"] == str(application.id)
+    assert log_entry.context["target"]["type"] == "Application"
 
 
 @pytest.mark.django_db
@@ -914,8 +959,8 @@ def test_application_edit_benefit_type_business(api_client, application):
     data = ApplicantApplicationSerializer(application).data
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
     data["apprenticeship_program"] = False
-    data["pay_subsidy_granted"] = PaySubsidyGranted.GRANTED
-    data["pay_subsidy_percent"] = 50
+    data["pay_subsidy_granted"] = PaySubsidyGranted.NOT_GRANTED
+    data["pay_subsidy_percent"] = None
     response = api_client.put(
         get_detail_url(application),
         data,
@@ -961,8 +1006,8 @@ def test_application_edit_benefit_type_business_association(
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
     data["association_has_business_activities"] = True
     data["apprenticeship_program"] = False
-    data["pay_subsidy_granted"] = PaySubsidyGranted.GRANTED
-    data["pay_subsidy_percent"] = 50
+    data["pay_subsidy_granted"] = PaySubsidyGranted.NOT_GRANTED
+    data["pay_subsidy_percent"] = None
 
     response = api_client.put(
         get_detail_url(association_application),
@@ -984,8 +1029,8 @@ def test_application_edit_benefit_type_business_association_with_apprenticeship(
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
     data["association_has_business_activities"] = True
     data["apprenticeship_program"] = True
-    data["pay_subsidy_granted"] = PaySubsidyGranted.GRANTED
-    data["pay_subsidy_percent"] = 50
+    data["pay_subsidy_granted"] = PaySubsidyGranted.NOT_GRANTED
+    data["pay_subsidy_percent"] = None
 
     response = api_client.put(
         get_detail_url(association_application),
@@ -1002,8 +1047,8 @@ def test_application_edit_benefit_type_business_association_with_apprenticeship(
 def test_application_edit_benefit_type_non_business(
     api_client, association_application
 ):
-    association_application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
-    association_application.pay_subsidy_percent = 50
+    association_application.pay_subsidy_granted = PaySubsidyGranted.NOT_GRANTED
+    association_application.pay_subsidy_percent = None
     association_application.save()
     data = ApplicantApplicationSerializer(association_application).data
     response = api_client.put(
@@ -1020,8 +1065,8 @@ def test_application_edit_benefit_type_non_business(
 def test_application_edit_benefit_type_non_business_invalid(
     api_client, association_application
 ):
-    association_application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
-    association_application.pay_subsidy_percent = 50
+    association_application.pay_subsidy_granted = PaySubsidyGranted.NOT_GRANTED
+    association_application.pay_subsidy_percent = None
     association_application.save()
     data = ApplicantApplicationSerializer(association_application).data
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
@@ -1096,8 +1141,8 @@ def test_application_date_range(
     data["benefit_type"] = benefit_type
     data["start_date"] = start_date
     data["end_date"] = end_date
-    data["pay_subsidy_granted"] = PaySubsidyGranted.GRANTED
-    data["pay_subsidy_percent"] = 50
+    data["pay_subsidy_granted"] = PaySubsidyGranted.NOT_GRANTED
+    data["pay_subsidy_percent"] = None
 
     response = api_client.put(
         get_detail_url(application),
@@ -1206,8 +1251,8 @@ def test_submit_application_without_de_minimis_aid(
     data["benefit_type"] = BenefitType.SALARY_BENEFIT
     data["de_minimis_aid"] = de_minimis_aid
     data["de_minimis_aid_set"] = de_minimis_aid_set
-    data["pay_subsidy_percent"] = "50"
-    data["pay_subsidy_granted"] = PaySubsidyGranted.GRANTED
+    data["pay_subsidy_percent"] = None
+    data["pay_subsidy_granted"] = PaySubsidyGranted.NOT_GRANTED
     data["apprenticeship_program"] = False
     data["association_has_business_activities"] = association_has_business_activities
     if company_form_code == YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT:
@@ -1228,15 +1273,9 @@ def test_submit_application_without_de_minimis_aid(
 @pytest.mark.parametrize(
     "pay_subsidy_granted,apprenticeship_program,draft_result,submit_result,",
     [
-        (PaySubsidyGranted.GRANTED, True, 200, 200),
-        (PaySubsidyGranted.GRANTED, False, 200, 200),
-        (PaySubsidyGranted.GRANTED, None, 200, 400),
-        (PaySubsidyGranted.GRANTED_AGED, True, 200, 200),
-        (PaySubsidyGranted.GRANTED_AGED, False, 200, 200),
-        (PaySubsidyGranted.GRANTED_AGED, None, 200, 400),
         (PaySubsidyGranted.NOT_GRANTED, None, 200, 200),
         (PaySubsidyGranted.NOT_GRANTED, False, 200, 200),
-        (PaySubsidyGranted.NOT_GRANTED, True, 200, 400),
+        (PaySubsidyGranted.NOT_GRANTED, True, 200, 200),
     ],
 )
 @pytest.mark.django_db
@@ -1653,12 +1692,7 @@ def test_application_modified_at_non_draft(api_client, application, status):
     "pay_subsidy_granted,pay_subsidy_percent,additional_pay_subsidy_percent,expected_code",
     [
         (PaySubsidyGranted.NOT_GRANTED, None, None, 200),  # empty application
-        (PaySubsidyGranted.GRANTED, 50, None, 200),  # one pay subsidy
-        (PaySubsidyGranted.GRANTED, 100, 30, 400),  # two pay subsidies
         (PaySubsidyGranted.NOT_GRANTED, 100, None, 400),  # invalid
-        (PaySubsidyGranted.GRANTED, None, 50, 400),  # invalid percent
-        (PaySubsidyGranted.GRANTED, 99, None, 400),  # invalid choice
-        (PaySubsidyGranted.GRANTED, 50, 1, 400),  # invalid percent
     ],
 )
 @pytest.mark.django_db
@@ -2025,8 +2059,8 @@ def test_attachment_requirements(
     api_client, application, mock_get_organisation_roles_and_create_company
 ):
     application.benefit_type = BenefitType.EMPLOYMENT_BENEFIT
-    application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
-    application.pay_subsidy_percent = 50
+    application.pay_subsidy_granted = PaySubsidyGranted.NOT_GRANTED
+    application.pay_subsidy_percent = None
     application.apprenticeship_program = False
     application.company = mock_get_organisation_roles_and_create_company
     application.save()
@@ -2034,7 +2068,6 @@ def test_attachment_requirements(
     assert json.loads(json.dumps(response.data["attachment_requirements"])) == [
         ["employment_contract", "required"],
         ["helsinki_benefit_voucher", "optional"],
-        ["pay_subsidy_decision", "required"],
     ]
 
 
@@ -2055,8 +2088,8 @@ def _submit_application(api_client, application):
 def test_attachment_validation(request, api_client, application, settings):
     settings.ENABLE_CLAMAV = False
     application.benefit_type = BenefitType.EMPLOYMENT_BENEFIT
-    application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
-    application.pay_subsidy_percent = 50
+    application.pay_subsidy_granted = PaySubsidyGranted.NOT_GRANTED
+    application.pay_subsidy_percent = None
     application.apprenticeship_program = False
     application.save()
 
@@ -2075,40 +2108,26 @@ def test_attachment_validation(request, api_client, application, settings):
     )
     assert response.status_code == 201
     response = _submit_application(api_client, application)
-    assert str(response.data[0]) == "Application does not have required attachments"
-
-    application.refresh_from_db()
-    assert application.status == ApplicationStatus.DRAFT
-
-    # add last required attachment
-    response = _upload_pdf(
-        request,
-        api_client,
-        application,
-        attachment_type=AttachmentType.PAY_SUBSIDY_DECISION,
-    )
-    assert response.status_code == 201
-    response = _submit_application(api_client, application)
     assert response.status_code == 200
+
     application.refresh_from_db()
     assert application.status == ApplicationStatus.RECEIVED
-
 
 @pytest.mark.django_db
 def test_purge_extra_attachments(request, api_client, application, settings):
     settings.ENABLE_CLAMAV = False
     application.benefit_type = BenefitType.SALARY_BENEFIT
-    application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
-    application.pay_subsidy_percent = 50
+    application.pay_subsidy_granted = PaySubsidyGranted.NOT_GRANTED
+    application.pay_subsidy_percent = None
     application.apprenticeship_program = False
     application.save()
 
     lots_of_attachments = [
         AttachmentType.EMPLOYMENT_CONTRACT,
-        AttachmentType.PAY_SUBSIDY_DECISION,
+        AttachmentType.PAY_SUBSIDY_DECISION, # extra
         AttachmentType.COMMISSION_CONTRACT,  # extra
         AttachmentType.EMPLOYMENT_CONTRACT,
-        AttachmentType.PAY_SUBSIDY_DECISION,
+        AttachmentType.PAY_SUBSIDY_DECISION, # extra
         AttachmentType.COMMISSION_CONTRACT,  # extra
         AttachmentType.HELSINKI_BENEFIT_VOUCHER,
         AttachmentType.EDUCATION_CONTRACT,  # extra
@@ -2123,15 +2142,15 @@ def test_purge_extra_attachments(request, api_client, application, settings):
 
     response = _submit_application(api_client, application)
     assert response.status_code == 200
-    assert application.attachments.count() == 6
+    assert application.attachments.count() == 4
 
 
 @pytest.mark.django_db
 def test_employee_consent_upload(request, api_client, application, settings):
     settings.ENABLE_CLAMAV = False
     application.benefit_type = BenefitType.EMPLOYMENT_BENEFIT
-    application.pay_subsidy_granted = PaySubsidyGranted.GRANTED
-    application.pay_subsidy_percent = 50
+    application.pay_subsidy_granted = PaySubsidyGranted.NOT_GRANTED
+    application.pay_subsidy_percent = None
     application.apprenticeship_program = False
     application.save()
 

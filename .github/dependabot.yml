@@ -74,7 +74,9 @@ updates:
       prefix: "deps"
     open-pull-requests-limit: 0
   - package-ecosystem: "pip"
-    directory: "backend/"
+    directories:
+      - "/backend/benefit"
+      - "/backend/kesaseteli"
     schedule:
       interval: "daily"
     commit-message:

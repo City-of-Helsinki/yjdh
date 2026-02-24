@@ -91,6 +91,19 @@ def get_target_group_choices() -> List[Tuple[str, str]]:
     ]
 
 
+class EighthGraderTargetGroup(AbstractTargetGroup):
+    name = _("8. luokkalainen")
+    identifier = "hki_15"
+    description = _("8th graders: 15 years old, MUST live in Helsinki.")
+
+    def is_valid(self, application: "YouthApplication") -> bool:
+        """
+        8th graders: 15 years old, MUST live in Helsinki.
+        """
+        # 15 years old and lives in Helsinki
+        return self.get_age_by_year(application) == 15 and application.is_helsinkian
+
+
 class NinthGraderTargetGroup(AbstractTargetGroup):
     name = _("9. luokkalainen")
     identifier = "primary_target_group"
@@ -119,6 +132,19 @@ class UpperSecondaryFirstYearTargetGroup(AbstractTargetGroup):
         """
         # 17 years old and lives in Helsinki
         return self.get_age_by_year(application) == 17 and application.is_helsinkian
+
+
+class UpperSecondarySecondYearTargetGroup(AbstractTargetGroup):
+    name = _("Toisen asteen toisen vuoden opiskelija")
+    identifier = "hki_18"
+    description = _("Upper secondary 2nd year: 18 years old, MUST live in Helsinki.")
+
+    def is_valid(self, application: "YouthApplication") -> bool:
+        """
+        Upper secondary 2nd year: 18 years old, MUST live in Helsinki.
+        """
+        # 18 years old and lives in Helsinki
+        return self.get_age_by_year(application) == 18 and application.is_helsinkian
 
 
 def get_target_group_class(identifier: str) -> type[AbstractTargetGroup] | None:

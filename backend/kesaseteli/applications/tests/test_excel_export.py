@@ -41,6 +41,7 @@ from applications.exporters.excel_exporter import (
     SALARY_PAID_FIELD_TITLE,
     SPECIAL_CASE_FIELD_TITLE,
     SUM_FIELD_TITLE,
+    VOUCHER_NUMBER_FIELD_TITLE,
     WORK_HOURS_FIELD_TITLE,
 )
 from applications.models import EmployerSummerVoucher, YouthApplication
@@ -346,6 +347,8 @@ def test_excel_view_download_content(  # noqa: C901
                 and not voucher.application.is_separate_invoicer
             ):
                 assert output_column.value == "", excel_field.title
+            elif excel_field.title == VOUCHER_NUMBER_FIELD_TITLE:
+                assert output_column.value == voucher.summer_voucher_serial_number
             elif excel_field.model_fields == []:
                 assert output_column.value == excel_field.value
             else:

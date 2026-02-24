@@ -137,7 +137,7 @@ class FakeObjectFactory {
         'no',
         'maybe',
       ]),
-      summer_voucher_serial_number: faker.internet.password(10),
+      summer_voucher_serial_number: faker.random.number({min: 1, max: 9_999_999}).toString(),
       attachments: [
         ...this.fakeAttachments('payslip'),
         ...this.fakeAttachments('employment_contract'),

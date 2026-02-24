@@ -11,6 +11,10 @@ from django.utils.translation import gettext_lazy as _
 from saml2.sigver import get_xmlsec_binary
 from sentry_sdk.integrations.django import DjangoIntegration
 
+from applications.target_groups import (
+    NinthGraderTargetGroup,
+    UpperSecondaryFirstYearTargetGroup,
+)
 from common.backward_compatibility import convert_to_django_4_2_csrf_trusted_origins
 from shared.suomi_fi.utils import get_contact_person_configuration
 
@@ -22,7 +26,7 @@ if os.path.isdir(parent_dir("etc")):
     env_file = parent_dir("etc/env")
     default_var_root = environ.Path(parent_dir("var"))
 else:
-    env_file = checkout_dir(".env.kesaseteli")
+    env_file = checkout_dir(".env.kesaseteli-backend")
     default_var_root = environ.Path(checkout_dir("var"))
 
 env = environ.Env(
@@ -58,7 +62,7 @@ env = environ.Env(
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
     CSRF_TRUSTED_ORIGINS=(list, []),
     CSRF_COOKIE_NAME=(str, "yjdhcsrftoken"),
-    YTJ_BASE_URL=(str, "http://avoindata.prh.fi/opendata/tr/v1"),
+    YTJ_BASE_URL=(str, "https://avoindata.prh.fi/opendata-ytj-api/v3"),
     YTJ_TIMEOUT=(int, 30),
     NEXT_PUBLIC_MOCK_FLAG=(bool, False),
     SESSION_COOKIE_AGE=(int, 60 * 60 * 2),
@@ -104,6 +108,8 @@ env = environ.Env(
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
     ENABLE_SEND_AUDIT_LOG=(bool, False),
     ENABLE_ADMIN=(bool, False),
+    # Configuration for the staff admin group name (ADFS group). Default is None.
+    AD_ADMIN_GROUP_NAME=(str, None),
     PASSWORD_LOGIN_DISABLED=(bool, False),
     DB_PREFIX=(str, ""),
     EMAIL_USE_TLS=(bool, False),
@@ -156,6 +162,7 @@ if DEBUG and not SECRET_KEY:
 ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
 SOCIAL_SECURITY_NUMBER_HASH_KEY = env.str("SOCIAL_SECURITY_NUMBER_HASH_KEY")
 ENABLE_ADMIN = env.bool("ENABLE_ADMIN")
+AD_ADMIN_GROUP_NAME = env.str("AD_ADMIN_GROUP_NAME")
 PASSWORD_LOGIN_DISABLED = env.bool("PASSWORD_LOGIN_DISABLED")
 NEXT_PUBLIC_DISABLE_VTJ = env.bool("NEXT_PUBLIC_DISABLE_VTJ")
 VTJ_PERSONAL_ID_QUERY_URL = env.str("VTJ_PERSONAL_ID_QUERY_URL")
@@ -697,7 +704,12 @@ AUTO_ASSIGN_ADMIN_TO_STAFF = env.bool(
     "AUTO_ASSIGN_ADMIN_TO_STAFF", default=DEBUG and NEXT_PUBLIC_MOCK_FLAG
 )
 
+
 # Summer Voucher default / fallback configurations
+SUMMER_VOUCHER_DEFAULT_TARGET_GROUPS = [
+    NinthGraderTargetGroup.identifier,
+    UpperSecondaryFirstYearTargetGroup.identifier,
+]
 SUMMER_VOUCHER_DEFAULT_VOUCHER_VALUE = 350
 SUMMER_VOUCHER_DEFAULT_MIN_WORK_COMPENSATION = 500
 SUMMER_VOUCHER_DEFAULT_MIN_WORK_HOURS = 60

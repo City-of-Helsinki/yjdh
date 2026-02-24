@@ -27,8 +27,8 @@ Allow user to create test database
 
 ### Daily running
 
-* Create `.env.kesaseteli` file: `touch .env.kesaseteli`. An example can be found from monorepo root directory in `.env.kesaseteli.example`.
-    * **NOTE:** The env file should be found in the root directory of the developed Django app (`backend/kesaseteli/.env.kesaseteli`). You can also use symlink to the env file.
+* Create `.env.kesaseteli-backend` file: `touch .env.kesaseteli-backend`. An example can be found from monorepo root directory in `.env.kesaseteli-backend.example`.
+    * **NOTE:** The env file should be found in the root directory of the developed Django app (`backend/kesaseteli/.env.kesaseteli-backend`). You can also use symlink to the env file.
     * **INFO:** If you want to run only the database from a Docker container, remember to configure `DATABASE_URL` so that it points to the database (e.g. `DATABASE_URL=postgresql://postgres:postgres@localhost:5432/kesaseteli`).
 * Set the `DEBUG` environment variable to `1`.
 * Run `python manage.py migrate`
@@ -98,6 +98,60 @@ env variables / settings are provided by Azure blob storage:
 - `AZURE_ACCOUNT_NAME`
 - `AZURE_ACCOUNT_KEY`
 
+## Authentication Methods Overview
+
+This section outlines the authentication mechanisms used across the three user interfaces and five environment types (Review, Dev, Test, Stage, and Production).
+
+### Authentication by User Interface
+
+| UI Name | Target Audience | Auth Method | Notes |
+| :--- | :--- | :--- | :--- |
+| **Youth** | Individual Applicants | **None** | Relies on backend SSN/VTJ validation. |
+| **Employer** | Business Users | **Suomi.fi / OIDC** | SAML, except in review env, where it's OpenID Connect. |
+| **Handler** | Internal Staff | **ADFS** | Authenticates via ADFS through the API. |
+
+### Detailed Environment Logic
+
+#### Youth UI
+The Youth UI does not implement a login flow. To ensure data integrity:
+* Applications are sent to the API.
+* The API validates the Social Security Number (SSN).
+* Personal data is fetched from **VTJ** (Population Information System).
+
+#### Employer UI
+Authentication for employers depends on the environment configuration, primarily managed by the `NEXT_PUBLIC_ENABLE_SUOMIFI` variable.
+
+* **Standard Environments (Dev, Test, Stage, Production):**
+    * `NEXT_PUBLIC_ENABLE_SUOMIFI=true`
+    * Authenticates via **Suomi.fi** through the API's **SAML** endpoint.
+    * **Certificate Requirements:** `SUOMIFI_CERT` and `SUOMIFI_KEY` environment variables are required.
+* **Review Environments (Pull Requests):**
+    * `NEXT_PUBLIC_ENABLE_SUOMIFI=false`
+    * Uses `HelsinkiOIDCAuthenticationBackend`.
+    * **OIDC Provider:** `https://tunnistus.test.hel.ninja/auth/realms/helsinki-tunnistus`
+    * **Note:** This configuration is used because Review environments require dynamic URLs, which are difficult to manage with Suomi.fi's static SAML requirements. It also facilitates easier automated browser testing.
+
+#### Handler UI
+The Handler UI uses **ADFS** (Active Directory Federation Services) for all environments. The authentication is brokered through the API.
+See [Staff Admin Permissions](staff_admin_permissions/README.md) for details on how ADFS groups map to Django admin permissions.
+
+#### Mock Mode
+When `NEXT_PUBLIC_MOCK_FLAG=true` (typically in local development):
+*   **Employer UI**: Bypasses Suomi.fi/OIDC and uses a simulated login.
+*   **Handler UI**: Bypasses ADFS and uses a simulated login.
+*   **Youth UI**: Skips VTJ queries and uses mock data.
+
+### Authentication Matrix
+
+| Environment | Youth | Employer Auth Method | Handler Auth |
+| :--- | :--- | :--- | :--- |
+| **Review (PR)** | Open | **Helsinki OIDC** | ADFS |
+| **Dev** | Open | **Suomi.fi (SAML)** | ADFS |
+| **Test** | Open | **Suomi.fi (SAML)** | ADFS |
+| **Stage** | Open | **Suomi.fi (SAML)** | ADFS |
+| **Production** | Open | **Suomi.fi (SAML)** | ADFS |
+
+
 ## Environment Variables
 
 | Variable | Description |
@@ -107,6 +161,7 @@ env variables / settings are provided by Azure blob storage:
 | `NEXT_PUBLIC_DISABLE_VTJ` | A boolean value. If set to True, VTJ client usage is disabled. Default is False. |
 | `CREATE_SUMMERVOUCHER_CONFIGURATION_CURRENT_YEAR` | A boolean value. If set to True, creates a new `SummerVoucherConfiguration` for the current year. Default is False. |
 | `CREATE_SUMMERVOUCHER_CONFIGURATION_2026` | A boolean value. If set to True, creates a new `SummerVoucherConfiguration` for the year 2026. Default is False. |
+| `AD_ADMIN_GROUP_NAME` | The name of the AD group that maps to Django admin permissions. Default is None (feature disabled). |
 
 ## Documentation
 
@@ -132,7 +187,7 @@ Creates a new `SummerVoucherConfiguration` for the specified year.
 *   `--voucher-value`: Voucher value in euros (default: 350)
 *   `--min-work-compensation`: Minimum work compensation in euros (default: 500)
 *   `--min-work-hours`: Minimum work hours (default: 60)
-*   `--target-groups`: List of target group identifiers (default: all)
+*   `--target-groups`: List of target group identifiers (default: "primary_target_group,secondary_target_group")
 *   `--force`: Force creation by overwriting existing configuration if it exists
 
 **Docker Entrypoint:**

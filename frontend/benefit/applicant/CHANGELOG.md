@@ -1,5 +1,28 @@
 # Changelog
 
+## [3.19.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.18.1...benefit-applicant-v3.19.0) (2026-02-19)
+
+
+### Features
+
+* **benefit:** Applicant ui to reflect 2026 changes ([8385550](https://github.com/City-of-Helsinki/yjdh/commit/8385550db89c9106ae48fedbe78321123e15c962))
+
+
+### Bug Fixes
+
+* **benefit:** Removed commented out code ([7a9393a](https://github.com/City-of-Helsinki/yjdh/commit/7a9393ade4875e22eeb34c49991dd200f7586209))
+
+## [3.18.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.18.0...benefit-applicant-v3.18.1) (2026-02-16)
+
+
+### Bug Fixes
+
+* **benefit:** Fix broken employee consent pdf links ([637a2b4](https://github.com/City-of-Helsinki/yjdh/commit/637a2b4b72ce98f4339d20d38cc91b95af59ac43))
+* **benefit:** Fix broken employee consent pdf links ([43829c5](https://github.com/City-of-Helsinki/yjdh/commit/43829c54345e9afcf8b0d7e425b096d941fd89b9))
+* **benefit:** Fix broken employee consent pdf links ([6d9a113](https://github.com/City-of-Helsinki/yjdh/commit/6d9a113eac1f9f66cba55a2ddc666bade1bb6113))
+* **benefit:** Update prerequisites reminder ([b4bf83e](https://github.com/City-of-Helsinki/yjdh/commit/b4bf83edac4bef61c4d580b9a0424e0ba8478d54))
+* **benefit:** Updated links to About the service ([33087c0](https://github.com/City-of-Helsinki/yjdh/commit/33087c09208a7d230b2ba2e7d996ab5b0ac6e399))
+
 ## [3.18.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.17.1...benefit-applicant-v3.18.0) (2026-01-12)
 
 

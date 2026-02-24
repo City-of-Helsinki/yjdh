@@ -587,7 +587,7 @@
     "accessibilityStatement": "Saavutettavuusseloste",
     "aboutTheService": "Tietoa palvelusta",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/tietoa-hel-fista/saavutettavuus/saavutettavuusselosteet",
-    "aboutTheServiceLink": "https://www.hel.fi/fi/yritykset-ja-tyo/tyonantajat/taloudelliset-tuet/tyonantajan-helsinki-lisa",
+    "aboutTheServiceLink": "https://www.hel.fi/helsinki-lisa",
     "cookieSettings": "Evästeasetukset",
     "backToTop": "Takaisin ylös"
   },
@@ -648,9 +648,9 @@
   },
   "prerequisiteReminder": {
     "heading": "Muistitko nämä ennen hakulomakkeen täyttämistä?",
-    "body": "Tarvitset hakemuksen liitteiksi työllistettävän allekirjoituksen henkilötietojen käsittelystä, allekirjoitetun työsopimuksen, sekä jonkin seuraavista: palkkatukipäätös, 55 vuotta täyttäneiden työllistämistukipäätös tai Helsinki-lisä -kortti.",
+    "body": "Tarvitset hakemuksen liitteeksi työllistettävän allekirjoituksen henkilötietojen käsittelystä, allekirjoitetun työsopimuksen, mahdollisesti Helsinki-lisä -kortin.",
     "downloadButton": {
-      "href": "https://stplattaprod.blob.core.windows.net/tyoyrittaminen5ce88prod/Helsinki-lisä_tiedoksianto.pdf",
+      "href": "/employee_consent_fi.pdf",
       "label": "Lataa tiedoksianto työllistettävän henkilötietojen käsittelystä"
     },
     "moreDetailsLink": {

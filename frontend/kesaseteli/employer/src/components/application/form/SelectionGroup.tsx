@@ -18,6 +18,7 @@ type Props<V extends readonly string[]> = {
   direction?: SelectionGroupProps['direction'];
   values: V;
   onChange?: (value?: string) => void;
+  getValueText?: (value: string) => string;
 } & GridCellProps;
 
 const SelectionGroup = <V extends readonly string[]>({
@@ -26,6 +27,7 @@ const SelectionGroup = <V extends readonly string[]>({
   direction,
   values,
   onChange = noop,
+  getValueText: getValueTextProp,
   ...$gridCellProps
 }: Props<V>): ReturnType<typeof HdsSelectionGroup> => {
   const { t } = useTranslation();
@@ -48,8 +50,10 @@ const SelectionGroup = <V extends readonly string[]>({
   );
   const getValueText = React.useCallback(
     (value: string): string =>
-      t(`common:application.form.selectionGroups.${fieldName}.${value}`),
-    [t, fieldName]
+      getValueTextProp
+        ? getValueTextProp(value)
+        : t(`common:application.form.selectionGroups.${fieldName}.${value}`),
+    [t, fieldName, getValueTextProp]
   );
 
   return (

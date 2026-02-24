@@ -42,6 +42,23 @@ export const expectToGetSchoolsFromBackend = (): nock.Scope =>
     .get(BackendEndpoint.SCHOOLS)
     .reply(200, fakeSchools, { 'Access-Control-Allow-Origin': '*' });
 
+export const expectToGetSummerVoucherConfigurationFromBackend = (
+  configuration = [
+    {
+      year: new Date().getFullYear(),
+      voucher_value_in_euros: 350,
+      min_work_compensation_in_euros: 400,
+      min_work_hours: 60,
+      target_group_name: 'test',
+      target_group_description: {},
+      target_group: ['test'],
+    },
+  ]
+): nock.Scope =>
+  nock(getBackendDomain())
+    .get(BackendEndpoint.SUMMER_VOUCHER_CONFIGURATION)
+    .reply(200, configuration, { 'Access-Control-Allow-Origin': '*' });
+
 export const expectToGetSchoolsErrorFromBackend = (
   errorCode: 400 | 404 | 500
 ): nock.Scope => {

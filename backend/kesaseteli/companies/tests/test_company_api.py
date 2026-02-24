@@ -10,7 +10,6 @@ from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from companies.tests.data.company_data import (
     DUMMY_COMPANY_DATA,
-    DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE,
     DUMMY_YTJ_RESPONSE,
 )
 
@@ -19,18 +18,11 @@ def get_company_api_url():
     return "/v1/company/"
 
 
-def set_up_mock_requests(
-    ytj_response: dict, business_details_response: dict, requests_mock
-):
+def set_up_mock_requests(ytj_response: dict, requests_mock):
     """
     Set up the mock responses.
     """
-    business_id = ytj_response["results"][0]["businessId"]
-    ytj_url = f"{settings.YTJ_BASE_URL}/{business_id}"
-    business_details_url = ytj_response["results"][0]["bisDetailsUri"]
-
-    requests_mock.get(ytj_url, json=ytj_response)
-    requests_mock.get(business_details_url, json=business_details_response)
+    requests_mock.get(f"{settings.YTJ_BASE_URL}/companies", json=ytj_response)
 
 
 @pytest.mark.django_db
@@ -56,9 +48,10 @@ def test_get_mock_company_not_found_from_ytj(api_client):
     for field in [
         f
         for f in Company._meta.fields
-        if f.name not in ["id", "name", "business_id", "ytj_json"]
+        if f.name
+        not in ["id", "name", "business_id", "ytj_json", "created_at", "modified_at"]
     ]:
-        assert response.data[field.name] == ""
+        assert response.data.get(field.name, "") == ""
 
 
 @pytest.mark.django_db
@@ -68,7 +61,7 @@ def test_get_mock_company_not_found_from_ytj(api_client):
     EAUTHORIZATIONS_CLIENT_ID="test",
     EAUTHORIZATIONS_CLIENT_SECRET="test",
 )
-def test_get_company_organization_roles_error(api_client, requests_mock, user):
+def test_get_company_organization_roles_error(api_client, requests_mock, user, caplog):
     session = api_client.session
     session.pop("organization_roles")
     session.save()
@@ -83,12 +76,13 @@ def test_get_company_organization_roles_error(api_client, requests_mock, user):
         response.data["detail"]
         == "Unable to fetch organization roles from eauthorizations API"
     )
+    assert "Unable to fetch organization roles from eauthorizations API" in caplog.text
 
 
 @pytest.mark.django_db
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
-    YTJ_BASE_URL="http://example.com",
+    YTJ_BASE_URL="http://example.com/v3",
 )
 def test_get_company_from_ytj(api_client, requests_mock):
     session = api_client.session
@@ -97,9 +91,7 @@ def test_get_company_from_ytj(api_client, requests_mock):
 
     Company.objects.all().delete()
 
-    set_up_mock_requests(
-        DUMMY_YTJ_RESPONSE, DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE, requests_mock
-    )
+    set_up_mock_requests(DUMMY_YTJ_RESPONSE, requests_mock)
 
     org_roles_json = {
         "name": "Activenakusteri Oy",
@@ -120,7 +112,8 @@ def test_get_company_from_ytj(api_client, requests_mock):
 
     assert response.data == company_data
     assert (
-        response.data["business_id"] == DUMMY_YTJ_RESPONSE["results"][0]["businessId"]
+        response.data["business_id"]
+        == DUMMY_YTJ_RESPONSE["companies"][0]["businessId"]["value"]
     )
     for field in ["company_form", "industry", "street_address", "postcode", "city"]:
         assert response.data[field]
@@ -129,7 +122,7 @@ def test_get_company_from_ytj(api_client, requests_mock):
 @pytest.mark.django_db
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
-    YTJ_BASE_URL="http://example.com",
+    YTJ_BASE_URL="http://example.com/v3",
 )
 def test_get_company_not_found_from_ytj(api_client, requests_mock, user):
     matcher = re.compile(re.escape(settings.YTJ_BASE_URL))
@@ -154,23 +147,23 @@ def test_get_company_not_found_from_ytj(api_client, requests_mock, user):
     for field in [
         f
         for f in Company._meta.fields
-        if f.name not in ["id", "name", "business_id", "ytj_json"]
+        if f.name
+        not in ["id", "name", "business_id", "ytj_json", "created_at", "modified_at"]
     ]:
-        assert response.data[field.name] == ""
+        assert response.data.get(field.name, "") == ""
 
 
 @pytest.mark.django_db
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
-    YTJ_BASE_URL="http://example.com",
+    YTJ_BASE_URL="http://example.com/v3",
 )
-def test_get_company_from_ytj_invalid_response(api_client, requests_mock, user):
+def test_get_company_from_ytj_invalid_response(api_client, requests_mock, user, caplog):
     ytj_reponse = copy.deepcopy(DUMMY_YTJ_RESPONSE)
-    ytj_reponse["results"][0]["addresses"] = []
+    # Simulate invalid data: empty companies list or no addresses
+    ytj_reponse["companies"][0]["addresses"] = []
 
-    set_up_mock_requests(
-        ytj_reponse, DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE, requests_mock
-    )
+    set_up_mock_requests(ytj_reponse, requests_mock)
 
     org_roles_json = {
         "name": "Activenakusteri Oy",
@@ -184,5 +177,15 @@ def test_get_company_from_ytj_invalid_response(api_client, requests_mock, user):
     ):
         response = api_client.get(get_company_api_url())
 
-    assert response.status_code == 404
-    assert response.data["detail"] == "Could not handle the response from YTJ API"
+    assert response.status_code == 200
+    assert response.data["name"] == org_roles_json["name"]
+    assert response.data["business_id"] == org_roles_json["identifier"]
+    assert "YTJ API parsing error for business_id" in caplog.text
+
+    for field in [
+        f
+        for f in Company._meta.fields
+        if f.name
+        not in ["id", "name", "business_id", "ytj_json", "created_at", "modified_at"]
+    ]:
+        assert response.data.get(field.name, "") == ""

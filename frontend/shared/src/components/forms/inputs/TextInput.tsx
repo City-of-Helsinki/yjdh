@@ -45,6 +45,8 @@ const TextInput = <T,>({
   registerOptions = {},
   onChange,
   autoComplete,
+  disabled,
+  readOnly,
   ...rest
 }: TextInputProps<T>): React.ReactElement<T> => {
   const { $colSpan, $rowSpan, $colStart, alignSelf, justifySelf } = rest;
@@ -102,6 +104,8 @@ const TextInput = <T,>({
         invalid={Boolean(errorText)}
         aria-invalid={Boolean(errorText)}
         autoComplete={autoComplete}
+        disabled={disabled}
+        readOnly={readOnly}
       />
     </$GridCell>
   );

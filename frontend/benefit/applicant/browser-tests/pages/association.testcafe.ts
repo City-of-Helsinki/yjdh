@@ -51,7 +51,8 @@ test.skip('New application', async () => {
   await step2.isLoaded();
 
   await step2.fillEmployeeInfo('Truu', 'Koos', '121148-8060');
-  await step2.fillPaidSubsidyGrant(false);
+  await step2.fillApprenticeshipProgram(false);
+
   const currentYear: number = new Date().getFullYear();
   await step2.fillBenefitPeriod(
     `1.3.${currentYear}`,
@@ -70,7 +71,6 @@ test.skip('New application', async () => {
   const step3 = new Step3();
   await step3.isLoaded();
   await step3.employmentContractNeeded();
-  await step3.paySubsidyDecisionNeeded();
   await step3.helsinkiBenefitVoucherNeeded();
 
   await step3.clickDeleteApplication();

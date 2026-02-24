@@ -32,6 +32,11 @@ The `SummerVoucherConfiguration` model stores annual configuration settings for 
 
 This configuration is managed via the Django Admin interface and is used to validate incoming applications.
 
+NOTE: The `SummerVoucherConfiguration` model is also initialized via a management command. This is done automatically via the docker entrypoint script.
+
+```shell
+python manage.py create_summervoucher_configuration
+```
 
 ### Target Groups Management
 
@@ -111,6 +116,17 @@ The `School` model stores the list of schools available for selection in youth a
 -   Filter schools by creation and modification dates.
 -   Add or remove schools as needed.
 
+### Import Schools
+
+Administrators with sufficient permissions (add permission for School model) can bulk import schools via the Admin interface.
+
+1.  Navigate to **Applications** > **Schools**.
+2.  Click the **"Import Schools"** button.
+3.  Enter the names of the schools in the text area, one per line.
+4.  Click **Import**.
+
+The system will skip any schools that already exist in the database (matching by exact name) and only create new ones.
+
 ### API Endpoint
 
 Frontend clients can retrieve the list of available schools using the following endpoint:
@@ -118,3 +134,19 @@ Frontend clients can retrieve the list of available schools using the following 
 -   **URL**: `/v1/schools/`
 -   **Method**: `GET`
 -   **Description**: Returns a list of all schools, sorted by name using Finnish collation rules.
+
+## Youth Summer Vouchers
+
+The `YouthSummerVoucher` model represents the actual voucher assigned to a youth applicant.
+
+### Resend Summer Voucher
+
+In cases where a youth needs their voucher email resent (e.g., accidental deletion or email delivery issues), administrators can trigger a resend from the admin interface.
+
+1.  Navigate to **Applications** > **Youth Summer Vouchers**.
+2.  Select the vouchers you wish to resend using the checkboxes.
+3.  Choose **"Resend summer voucher to selected applicants and to the handler"** from the **Action** dropdown menu.
+4.  Click **Go**.
+
+The system will attempt to resend the voucher email to the youth's email address and report the number of successful and failed attempts.
+

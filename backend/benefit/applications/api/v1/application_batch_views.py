@@ -34,9 +34,9 @@ from applications.services.talpa_csv_service import TalpaCsvService
 from calculator.enums import InstalmentStatus
 from common.authentications import RobotBasicAuthentication
 from common.permissions import BFIsHandler
-from common.utils import get_request_ip_address
 from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation
+from shared.audit_log.utils import get_remote_address
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
 LOGGER = logging.getLogger(__name__)
@@ -221,7 +221,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
             filename=file_name
         )
 
-        ip_address = get_request_ip_address(request)
+        ip_address = get_remote_address(request)
 
         for a in applications_for_csv:
             audit_logging.log(

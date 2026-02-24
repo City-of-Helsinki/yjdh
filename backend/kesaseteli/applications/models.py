@@ -31,6 +31,7 @@ from applications.enums import (
     EmailTemplateType,
     EmployerApplicationStatus,
     HiredWithoutVoucherAssessment,
+    JobType,
     VtjTestCase,
     YouthApplicationStatus,
 )
@@ -1177,6 +1178,9 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
                 ],
             )
 
+    def __str__(self):
+        return str(self.summer_voucher_serial_number)
+
     class Meta:
         verbose_name = _("youth summer voucher")
         verbose_name_plural = _("youth summer vouchers")
@@ -1251,9 +1255,14 @@ class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
     )
 
     class Meta:
-        verbose_name = _("application")
-        verbose_name_plural = _("applications")
-        ordering = ["-created_at"]
+        verbose_name = _("employer application")
+        verbose_name_plural = _("employer applications")
+        ordering = ["-created_at", "id"]
+        indexes = [
+            models.Index(fields=["created_at"], name="employer_app_created_at_idx"),
+            models.Index(fields=["modified_at"], name="employer_app_modified_at_idx"),
+            models.Index(fields=["status"], name="employer_app_status_idx"),
+        ]
 
 
 class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
@@ -1261,18 +1270,52 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         EmployerApplication,
         on_delete=models.CASCADE,
         related_name="summer_vouchers",
-        verbose_name=_("application"),
+        verbose_name=_("employer application"),
     )
-    summer_voucher_serial_number = models.CharField(
-        max_length=256, blank=True, verbose_name=_("summer voucher id")
+    youth_summer_voucher = models.ForeignKey(
+        # ForeignKey instead of OneToOneField because of historical duplicates.
+        YouthSummerVoucher,
+        # Prevent deleting the linked youth summer voucher because
+        # it is the basis for the possible compensation given to the employer.
+        # If it must be deleted, the employer summer voucher has to be deleted first.
+        on_delete=models.PROTECT,
+        related_name="employer_summer_vouchers",
+        verbose_name=_("youth summer voucher"),
+        db_column="summer_voucher_serial_number",  # Name db column for clarity
+        # Link to YouthSummerVoucher.summer_voucher_serial_number, not primary key:
+        to_field="summer_voucher_serial_number",
+        null=True,  # Allow null only because of historical data having null
+        blank=True,  # So form validation will allow entry of an empty value (→null)
     )
-    target_group = models.CharField(
+    _obsolete_unclean_serial_number = models.CharField(
         max_length=256,
         blank=True,
-        verbose_name=_("summer voucher target group"),
-        help_text=_("Summer voucher's target group type"),
-        choices=get_target_group_choices(),
+        verbose_name=_("obsolete unclean summer voucher serial number"),
+        help_text=_(
+            "Old obsolete unclean summer_voucher_serial_number values "
+            "before data migration in early 2026. Can be used for manual data cleaning "
+            "and as fallback summer_voucher_serial_number values in historical data."
+        ),
     )
+
+    @property
+    def target_group(self):
+        """
+        Get the target group of the youth summer voucher.
+        NOTE: This is mostly for backward compatibility with the old target_group field.
+        """
+        return (
+            self.youth_summer_voucher.target_group if self.youth_summer_voucher else ""
+        )
+
+    # Mimicking Django's standard API. ChoiceField's magic is gone
+    # since target_group is now migrated to a custom property.
+    def get_target_group_display(self):
+        return (
+            self.youth_summer_voucher.get_target_group_display()
+            if self.youth_summer_voucher
+            else ""
+        )
 
     employee_name = models.CharField(
         max_length=256,
@@ -1333,6 +1376,12 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     employment_description = models.TextField(
         verbose_name=_("employment description"), blank=True
     )
+    job_type = models.CharField(
+        max_length=64,
+        verbose_name=_("job type"),
+        blank=True,
+        choices=JobType.choices,
+    )
     hired_without_voucher_assessment = models.CharField(
         max_length=32,
         verbose_name=_("hired without voucher assessment"),
@@ -1351,6 +1400,53 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     )
 
     ordering = models.IntegerField(default=0)
+
+    @property
+    def summer_voucher_serial_number(self) -> str:
+        """
+        Backward compatibility for reading summer_voucher_serial_number
+        when it was a CharField, now reads from the real foreign key relation
+        to YouthSummerVoucher.
+
+        :return: Value of youth_summer_voucher_id as a string, if it is not None,
+            otherwise the value of _obsolete_unclean_serial_number (This may be
+            non-empty string in historical data, but should be empty string in
+            newer data).
+        """
+        if self.youth_summer_voucher_id is None:
+            # Fallback to obsolete unclean serial number for historical data,
+            # and for newer data this should be an empty string.
+            return self._obsolete_unclean_serial_number
+        return str(self.youth_summer_voucher_id)
+
+    @summer_voucher_serial_number.setter
+    def summer_voucher_serial_number(self, value) -> None:
+        """
+        Backward compatibility setter for setting summer_voucher_serial_number
+        like when it was a CharField (also supports int and None),
+        but now sets the real foreign key relation based on the given value.
+
+        Sets youth_summer_voucher to the YouthSummerVoucher instance found
+        with the given summer_voucher_serial_number value converted to int.
+
+        If no match is found, or value is None or not convertible to int,
+        sets youth_summer_voucher to None.
+
+        :param value: Value to set the youth_summer_voucher_id foreign key to.
+        :raises TypeError: if value is not str, int or None
+        """
+        # Explicitly disallow bool, which is a subclass of int
+        if not isinstance(value, (str, int, type(None))) or isinstance(value, bool):
+            raise TypeError(
+                f"summer_voucher_serial_number must be str/int/None, not {type(value)}"
+            )
+        try:
+            self.youth_summer_voucher = YouthSummerVoucher.objects.get(
+                summer_voucher_serial_number=int(value)
+            )
+        except (ValueError, TypeError, YouthSummerVoucher.DoesNotExist):
+            # Not convertible to int or no matching YouthSummerVoucher found.
+            self.youth_summer_voucher = None
 
     @property
     def value_in_euros(self) -> int:
@@ -1381,8 +1477,8 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
             )
 
     class Meta:
-        verbose_name = _("summer voucher")
-        verbose_name_plural = _("summer vouchers")
+        verbose_name = _("employer summer voucher")
+        verbose_name_plural = _("employer summer vouchers")
         ordering = ["-application__created_at", "ordering"]
 
 
@@ -1393,7 +1489,7 @@ class Attachment(UUIDModel, TimeStampedModel):
 
     summer_voucher = models.ForeignKey(
         EmployerSummerVoucher,
-        verbose_name=_("summer voucher"),
+        verbose_name=_("employer summer voucher"),
         related_name="attachments",
         on_delete=models.CASCADE,
     )

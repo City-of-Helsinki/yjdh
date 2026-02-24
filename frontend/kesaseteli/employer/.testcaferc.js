@@ -1,3 +1,3 @@
 const baseConfig = require('../../.testcaferc.base.js');
 
-module.exports = baseConfig('../../../.env.kesaseteli');
+module.exports = baseConfig('../../../.env.kesaseteli-employer');

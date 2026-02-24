@@ -33,6 +33,7 @@ const isBatchStatusHandlingComplete = (batchStatus: BATCH_STATUSES): boolean =>
     BATCH_STATUSES.SENT_TO_TALPA,
     BATCH_STATUSES.COMPLETED,
     BATCH_STATUSES.REJECTED_BY_TALPA,
+    BATCH_STATUSES.PARTIALLY_SENT_TO_TALPA,
   ].includes(batchStatus);
 
 export const isAcceptedOrRejected = (status: APPLICATION_STATUSES): boolean =>
@@ -89,7 +90,7 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
 
   const getTabCountInstalments = (): number =>
     list.filter(
-      (app: ApplicationListItemData) => app.secondInstalment && isInPayment(app)
+      (app: ApplicationListItemData) => app.secondInstalment && isPendingInstalment(app)
     ).length;
 
   const getTabCountInPayment = (): number =>

@@ -1,5 +1,6 @@
 {
   "appName": "Summer job voucher",
+  "cookieSettings": "Cookie settings",
   "header": {
     "loginLabel": "Sign in to the service",
     "logoutLabel": "Log out",
@@ -66,7 +67,7 @@
       "add_employment": "Add a new employment",
       "save_employment": "Save the information",
       "remove_employment": "Delete the information",
-      "fetch_employment": "Load information",
+      "fetch_employment": "Load information using employee name and summer job voucher serial number",
       "fetch_employment_error_title": "Error occured!",
       "fetch_employment_error_message": "Could not fetch the info of the employee.",
       "fetch_employment_not_found_error_message": "Employee's information was not found."
@@ -89,6 +90,22 @@
           "primary_target_group": "9th grader or TUVA grader",
           "secondary_target_group": "Other age group"
         },
+        "organization_type": {
+          "company": "Company",
+          "association": "Association",
+          "parish": "Parish",
+          "other": "Other"
+        },
+        "job_type": {
+          "sports_and_leisure": "Sports and leisure time",
+          "maintenance_and_construction": "Maintenance and construction",
+          "restaurant_and_cafe": "Restaurant and cafe sector",
+          "retail": "Retail sector",
+          "office_and_media": "Office and media work",
+          "gardening_and_agriculture": "Gardening and agricultural work",
+          "service": "Service sector",
+          "other": "Other"
+        },
         "hired_without_voucher_assessment": {
           "yes": "Yes",
           "no": "No",
@@ -96,6 +113,8 @@
         }
       },
       "inputs": {
+        "organization_type": "Organization type",
+        "job_type": "Main category of work tasks",
         "contact_person_name": "Name of the contact person",
         "contact_person_email": "Email of the contact person",
         "street_address": "Company street address",

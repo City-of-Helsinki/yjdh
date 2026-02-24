@@ -46,6 +46,7 @@ django==5.1.15
     #   django-auth-adfs
     #   django-cors-headers
     #   django-extensions
+    #   django-filter
     #   django-localflavor
     #   django-searchable-encrypted-fields
     #   django-sequences
@@ -67,6 +68,8 @@ django-extensions==4.1
     # via
     #   -r requirements.in
     #   yjdh-backend-shared
+django-filter==25.1
+    # via -r requirements.in
 django-localflavor==5.0
     # via -r requirements.in
 django-searchable-encrypted-fields==0.2.1
@@ -115,7 +118,7 @@ parso==0.8.5
     # via jedi
 pexpect==4.9.0
     # via ipython
-pillow==12.0.0
+pillow==12.1.1
     # via -r requirements.in
 ply==3.11
     # via jsonpath-ng

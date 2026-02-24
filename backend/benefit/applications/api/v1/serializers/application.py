@@ -981,32 +981,6 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
     ):
         if status == ApplicationStatus.DRAFT:
             return
-        if (
-            pay_subsidy_granted == PaySubsidyGranted.NOT_GRANTED
-            and apprenticeship_program not in [None, False]
-        ):
-            raise serializers.ValidationError(
-                {
-                    "apprenticeship_program": _(
-                        "Apprenticeship program can not be selected if there is no"
-                        " granted pay subsidy"
-                    )
-                }
-            )
-
-        if (
-            pay_subsidy_granted
-            in [PaySubsidyGranted.GRANTED_AGED, PaySubsidyGranted.GRANTED]
-            and apprenticeship_program is None
-        ):
-            raise serializers.ValidationError(
-                {
-                    "apprenticeship_program": _(
-                        "Apprenticeship program has to be yes or no if there is a"
-                        " granted pay subsidy"
-                    )
-                }
-            )
 
     def get_latest_ahjo_status(self, obj) -> Union[str, None]:
         """Get the latest Ahjo status text for the application"""

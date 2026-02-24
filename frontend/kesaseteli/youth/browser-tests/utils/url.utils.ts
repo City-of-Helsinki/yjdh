@@ -9,13 +9,6 @@ const goBack = ClientFunction(() => window.history.back());
 export const getFrontendUrl = (path = ''): string =>
   getUrl(process.env.YOUTH_URL ?? 'https://localhost:3100', path);
 
-export const goToHandlerUrl = async (
-  t: TestController,
-  path = ''
-): Promise<void> => {
-  await goToUrl(t, process.env.HANDLER_URL ?? 'https://localhost:3200', path);
-};
-
 export const goToBackendUrl = async (
   t: TestController,
   path = ''

@@ -7,9 +7,11 @@ import React from 'react';
 import BaseHeader from 'shared/components/header/Header';
 import { Language, SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 import { OptionType } from 'shared/types/common';
+import useLocale from 'shared/hooks/useLocale';
 
 const Header: React.FC = () => {
   const { t } = useTranslation();
+  const locale = useLocale();
   const router = useRouter();
   const { asPath } = router;
 
@@ -32,7 +34,10 @@ const Header: React.FC = () => {
   );
 
   const login = useLogin();
-  const userQuery = useUserQuery();
+  const userQuery = useUserQuery({
+    // Allow cookie settings page to be accessed without login:
+    enabled: !asPath?.includes('/cookie-settings'),
+  });
   const logout = useLogout();
 
   const isLoginPage = asPath?.includes('/login');
@@ -40,6 +45,7 @@ const Header: React.FC = () => {
   return (
     <BaseHeader
       title={t('common:appName')}
+      titleUrl={`/${locale}`}
       skipToContentLabel={t('common:header.linkSkipToContent')}
       menuToggleAriaLabel={t('common:header.menuToggleAriaLabel')}
       languages={languageOptions}

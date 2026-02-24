@@ -1,12 +1,11 @@
 import logging
 
 from django.apps import apps
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.models import Group, Permission
 from django.core.management.base import BaseCommand
 from django.db import transaction
-
-from staff_admin_permissions.constants import ADMIN_GROUP_NAME
 
 LOGGER = logging.getLogger(__name__)
 
@@ -18,14 +17,24 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **options):
+        if not settings.AD_ADMIN_GROUP_NAME:
+            self.stdout.write(
+                self.style.WARNING(
+                    "AD_ADMIN_GROUP_NAME is not set. Skipping admin group setup."
+                )
+            )
+            return
+
         with transaction.atomic():
-            group, created = Group.objects.get_or_create(name=ADMIN_GROUP_NAME)
+            group, created = Group.objects.get_or_create(
+                name=settings.AD_ADMIN_GROUP_NAME
+            )
             action = "Created" if created else "Updated"
 
             if not apps.is_installed("django.contrib.admin"):
                 msg = (
-                    f"{action} group '{ADMIN_GROUP_NAME}', but 'django.contrib.admin' "
-                    "is not installed. Skipping permission setup."
+                    f"{action} group '{settings.AD_ADMIN_GROUP_NAME}', but "
+                    "django.contrib.admin is not installed. Skipping permission setup."
                 )
                 LOGGER.warning(msg)
                 self.stdout.write(self.style.WARNING(msg))
@@ -49,8 +58,8 @@ class Command(BaseCommand):
             group.permissions.set(permissions_to_add)
 
             msg = (
-                f"{action} group '{ADMIN_GROUP_NAME}' with {len(permissions_to_add)} "
-                "permissions."
+                f"{action} group '{settings.AD_ADMIN_GROUP_NAME}' with "
+                f"{len(permissions_to_add)} permissions."
             )
             LOGGER.info(msg)
             self.stdout.write(self.style.SUCCESS(msg))
