@@ -27,7 +27,12 @@ const EmploymentsErrorNotification: React.FC = () => {
     ? t(`common:application.form.errors.employmentsRequired`)
     : t(`common:application.form.notification.title`);
 
-  if (!errors || (isValid && !isEmptyList) || !isSubmitted) {
+  if (
+    !errors ||
+    Object.keys(errors).length === 0 ||
+    (isValid && !isEmptyList) ||
+    !isSubmitted
+  ) {
     return null;
   }
   return (

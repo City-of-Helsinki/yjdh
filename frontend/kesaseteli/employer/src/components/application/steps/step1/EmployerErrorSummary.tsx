@@ -16,7 +16,12 @@ const EmployerErrorSummary: React.FC = () => {
   const isJustSubmitted =
     usePreviousValue(formState.isSubmitting) && formState.isSubmitted;
 
-  if (!formState.errors || formState.isValid || !formState.isSubmitted) {
+  if (
+    !formState.errors ||
+    Object.keys(formState.errors).length === 0 ||
+    formState.isValid ||
+    !formState.isSubmitted
+  ) {
     return null;
   }
 
