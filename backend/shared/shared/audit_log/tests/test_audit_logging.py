@@ -308,6 +308,11 @@ def test_log_user_with_backend(user, fixed_datetime):
 
 @pytest.mark.django_db
 @override_settings(
+    ELASTICSEARCH_APP_AUDIT_LOG_INDEX="e_index",
+    ELASTICSEARCH_HOST="example.com",
+    ELASTICSEARCH_PORT=1234,
+    ELASTICSEARCH_USERNAME=None,  # username missing
+    ELASTICSEARCH_PASSWORD="e_password",
     ENABLE_SEND_AUDIT_LOG=True,
 )
 def test_send_audit_log_missing_configuration(user, fixed_datetime):
@@ -333,6 +338,7 @@ def test_send_audit_log_missing_configuration(user, fixed_datetime):
 )
 @pytest.mark.django_db
 @override_settings(
+    ELASTICSEARCH_APP_AUDIT_LOG_INDEX="e_index",
     ELASTICSEARCH_HOST="example.com",
     ELASTICSEARCH_PORT=1234,
     ELASTICSEARCH_USERNAME="e_user",
