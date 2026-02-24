@@ -14,6 +14,7 @@ import pytest
 
 from dateutil.relativedelta import relativedelta
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.management import call_command
 from django.test import override_settings
 from freezegun import freeze_time
 from PIL import Image
@@ -34,6 +35,7 @@ from applications.enums import (
     AhjoStatus,
     ApplicationAlterationState,
     ApplicationBatchStatus,
+    ApplicationOrigin,
     ApplicationStatus,
     ApplicationStep,
     AttachmentType,
@@ -54,6 +56,7 @@ from applications.tests.test_alteration_api import _create_application_alteratio
 from calculator.enums import InstalmentStatus
 from calculator.models import Calculation, Instalment
 from calculator.tests.conftest import fill_empty_calculation_fields
+from calculator.tests.factories import InstalmentFactory
 from common.tests.conftest import get_client_user
 from common.utils import duration_in_months
 from companies.tests.factories import CompanyFactory
@@ -65,6 +68,8 @@ from messages.models import Message, MessageType
 from messages.tests.factories import MessageFactory
 from shared.service_bus.enums import YtjOrganizationCode
 from terms.models import TermsOfServiceApproval
+
+from applications.management.commands.request_payslip import notify_applications
 
 def get_detail_url(application):
     return reverse("v1:applicant-application-detail", kwargs={"pk": application.id})
@@ -2109,6 +2114,7 @@ def test_attachment_validation(request, api_client, application, settings):
     application.refresh_from_db()
     assert application.status == ApplicationStatus.RECEIVED
 
+
 @pytest.mark.django_db
 def test_purge_extra_attachments(request, api_client, application, settings):
     settings.ENABLE_CLAMAV = False
@@ -2553,6 +2559,46 @@ def test_require_additional_information(handler_api_client, application, mailout
         get_additional_information_email_notification_subject() in mailoutbox[0].subject
     )
 
+@mock.patch(
+    "applications.management.commands.request_payslip.send_email_to_applicant",
+    return_value=1,
+)
+@mock.patch(
+    "applications.management.commands.request_payslip.get_email_template_context",
+    return_value={},
+)
+@mock.patch(
+    "applications.management.commands.request_payslip.render_email_template",
+    side_effect=["txt-body", "html-body"],
+)
+@pytest.mark.freeze_time("2026-02-15")
+def test_request_payslip_sends_email_for_matching_application(
+    render_email_template_mock,
+    get_email_template_context_mock,
+    send_email_to_applicant_mock,
+):
+    days_to_notify = 150
+    target_date = (date.today() - relativedelta(days=days_to_notify)).date()
+    app = DecidedApplicationFactory(
+        application_origin=ApplicationOrigin.APPLICANT,
+        status=ApplicationStatus.ACCEPTED,
+        start_date=target_date,
+    )
+    count = notify_applications(days_to_notify)
+
+    assert count == 1
+    assert render_email_template_mock.call_count == 2
+    assert get_email_template_context_mock.call_count == 2
+    send_email_to_applicant_mock.assert_called_once()
+
+    args, _kwargs = send_email_to_applicant_mock.call_args
+    assert args[0].id == app.id
+    assert (
+        args[1]
+        == "Payment of the second installment of the Helsinki benefit requires measures"
+    )
+    assert args[2] == "txt-body"
+    assert args[3] == "html-body"
 
 def _create_random_applications():
     f = faker.Faker()
