@@ -317,6 +317,9 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
                 InstalmentStatus.ACCEPTED,
                 InstalmentStatus.ERROR_IN_TALPA,
                 InstalmentStatus.WAITING,
+                InstalmentStatus.REQUESTED,
+                InstalmentStatus.RESPONDED,
+                InstalmentStatus.PENDING,
             ],
         )
 
