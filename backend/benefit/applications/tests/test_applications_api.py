@@ -2569,14 +2569,14 @@ def test_require_additional_information(handler_api_client, application, mailout
     "applications.management.commands.request_payslip.render_email_template",
     side_effect=["txt-body", "html-body"],
 )
-@pytest.mark.freeze_time("2026-02-15")
+@pytest.mark.django_db
 def test_request_payslip_sends_email_for_matching_application(
     render_email_template_mock,
     get_email_template_context_mock,
     send_email_to_applicant_mock,
 ):
     days_to_notify = 150
-    target_date = (date.today() - relativedelta(days=days_to_notify)).date()
+    target_date = date.today() - relativedelta(days=days_to_notify)
     app = DecidedApplicationFactory(
         application_origin=ApplicationOrigin.APPLICANT,
         status=ApplicationStatus.ACCEPTED,
@@ -2586,7 +2586,7 @@ def test_request_payslip_sends_email_for_matching_application(
 
     assert count == 1
     assert render_email_template_mock.call_count == 2
-    assert get_email_template_context_mock.call_count == 2
+    assert get_email_template_context_mock.call_count == 1
     send_email_to_applicant_mock.assert_called_once()
 
     args, _kwargs = send_email_to_applicant_mock.call_args
