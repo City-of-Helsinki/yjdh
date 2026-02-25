@@ -15,7 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "@frontend/shared": "*",
-    "axios": "^0.30.3",
+    "axios": "^1.13.5",
     "finnish-ssn": "^2.1.2",
     "react-query": "^3.34.0"
   },

@@ -1,7 +1,13 @@
-import axios, { AxiosResponseHeaders } from 'axios';
+import axios from 'axios';
 import { RequestMock } from 'testcafe';
 
-import { MockRequest, MockResponse } from '../types';
+import {
+  HeadersInput,
+  isAxiosHeaders,
+  MockRequest,
+  MockResponse,
+  VoucherData,
+} from '../types';
 
 export const MOCKED_EMPLOYEE_DATA = {
   employee_ssn: '010101-123U',
@@ -20,24 +26,27 @@ export const MOCKED_EMPLOYEE_DATA = {
 const serialNumberFixes = new Map<string, string>();
 const targetGroupFixes = new Map<string, string>();
 
-interface VoucherData {
-  id: string;
-  summer_voucher_serial_number?: string;
-  target_group?: string;
-}
 
 /**
  * Converts Axios headers to TestCafe's Record<string, string> format.
  */
 const getTestCafeHeaders = (
-  axiosHeaders: AxiosResponseHeaders
+  axiosHeaders: HeadersInput
 ): Record<string, string> => {
   const result: Record<string, string> = {};
-  Object.entries(axiosHeaders).forEach(([key, value]) => {
+  if (!axiosHeaders) return result;
+
+  const headersObj = isAxiosHeaders(axiosHeaders)
+    ? axiosHeaders.toJSON()
+    : axiosHeaders;
+
+  Object.entries(headersObj).forEach(([key, value]) => {
     if (typeof value === 'string') {
       result[key] = value;
     } else if (Array.isArray(value)) {
       result[key] = value.join(', ');
+    } else if (value !== null && value !== undefined) {
+      result[key] = String(value);
     }
   });
   return result;
