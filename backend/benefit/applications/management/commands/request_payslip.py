@@ -56,10 +56,11 @@ def notify_applications(days_to_notify: int) -> int:
         alteration_set__isnull=True,
     )
 
+    sent_mail_count = 0
     for application in applications_to_notify:
-        _send_notification_mail(application, days_to_notify)
+        sent_mail_count+=_send_notification_mail(application, days_to_notify)
 
-    return applications_to_notify.count()
+    return sent_mail_count
 
 
 def get_benefit_notice_email_notification_subject():
