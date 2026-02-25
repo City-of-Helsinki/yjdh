@@ -1,9 +1,9 @@
 import { Footer, Logo, logoFiDark } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import useLocale from 'shared/hooks/useLocale';
 
 import { $FooterWrapper } from './Footer.sc';
-import useLocale from 'shared/hooks/useLocale';
 
 const FooterSection: React.FC = () => {
   const { t } = useTranslation();
