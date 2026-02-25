@@ -3,6 +3,7 @@ import ApplicationPersistenceService from 'kesaseteli/employer/services/Applicat
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import Application from 'shared/types/application';
+import Employment from 'shared/types/employment';
 import { getFormApplication } from 'shared/utils/application.utils';
 
 const useResetApplicationFormValuesEffect = ({
@@ -12,14 +13,21 @@ const useResetApplicationFormValuesEffect = ({
   React.useEffect(() => {
     if (applicationQuery.isSuccess && applicationQuery.data) {
       const application = getFormApplication(applicationQuery.data);
-      application.summer_vouchers = (application.summer_vouchers ?? []).map(
-        (voucher) => {
-          const supplement = ApplicationPersistenceService.getVoucherSupplement(
-            voucher.id
-          );
-          return supplement ? { ...voucher, ...supplement } : voucher;
-        }
-      );
+      const vouchers = application.summer_vouchers ?? [];
+      if (vouchers.length === 0) {
+        vouchers.push({
+          summer_voucher_serial_number: '',
+          attachments: [],
+          employment_contract: [],
+          payslip: [],
+        } as Employment);
+      }
+      application.summer_vouchers = vouchers.map((voucher) => {
+        const supplement = ApplicationPersistenceService.getVoucherSupplement(
+          voucher.id
+        );
+        return supplement ? { ...voucher, ...supplement } : voucher;
+      });
       reset(application);
     }
   }, [reset, applicationQuery.isSuccess, applicationQuery.data]);
