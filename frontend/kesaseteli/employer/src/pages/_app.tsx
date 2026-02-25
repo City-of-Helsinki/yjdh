@@ -5,16 +5,16 @@ import AuthProvider from 'kesaseteli/employer/auth/AuthProvider';
 import Footer from 'kesaseteli/employer/components/footer/Footer';
 import Header from 'kesaseteli/employer/components/header/Header';
 import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
+import { COOKIE_CONSENT_SITE_NAME } from 'kesaseteli-shared/constants/cookie-consent';
+import useMatomo from 'kesaseteli-shared/hooks/useMatomo';
 import createQueryClient from 'kesaseteli-shared/query-client/create-query-client';
 import { AppProps } from 'next/app';
-import { appWithTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import { appWithTranslation } from 'next-i18next';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import BaseApp from 'shared/components/app/BaseApp';
-import useMatomo from 'kesaseteli-shared/hooks/useMatomo';
-import { COOKIE_CONSENT_SITE_NAME } from 'kesaseteli-shared/constants/cookie-consent';
 
 const CookieConsent = dynamic(
   () => import('kesaseteli-shared/components/cookieConsent/CookieConsent'),
