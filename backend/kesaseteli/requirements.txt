@@ -122,6 +122,8 @@ pillow==12.1.1
     # via -r requirements.in
 ply==3.11
     # via jsonpath-ng
+polyleven==0.11.0
+    # via -r requirements.in
 prompt-toolkit==3.0.52
     # via ipython
 psycopg2==2.9.11

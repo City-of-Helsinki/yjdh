@@ -57,9 +57,11 @@ from applications.models import (
     School,
     SummerVoucherConfiguration,
     YouthApplication,
+    YouthSummerVoucher,
 )
 from applications.target_groups import AbstractTargetGroup
 from common.decorators import enforce_handler_view_adfs_login
+from common.fuzzy_matching import is_last_name_fuzzy_match_in_full_name
 from common.permissions import HandlerPermission
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
 from shared.vtj.vtj_client import VTJClient
@@ -260,10 +262,18 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         if employer_summer_vouchers.count() != 1:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        youth_applications = self.queryset.accepted().filter_by_voucher_and_fuzzy_name(
-            voucher_number=voucher_number, employee_name=employee_name
-        )
-        if not youth_applications.exists():
+        try:
+            youth_summer_voucher = YouthSummerVoucher.objects.get(
+                summer_voucher_serial_number=voucher_number
+            )
+        except YouthSummerVoucher.DoesNotExist:
+            youth_application = None
+        else:
+            youth_application = youth_summer_voucher.youth_application
+
+        if not youth_application or not is_last_name_fuzzy_match_in_full_name(
+            last_name=youth_application.last_name, full_name=employee_name
+        ):
             with self.record_action(
                 target=YouthApplication,
                 additional_information=(
@@ -275,21 +285,6 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
                 ),
             ):
                 return Response(status=status.HTTP_404_NOT_FOUND)
-        elif youth_applications.count() > 1:
-            # Should never happen
-            with self.record_action(
-                target=YouthApplication,
-                additional_information=(
-                    "YouthApplicationViewSet.fetch_employee_data called with "
-                    f'employer_summer_voucher_id="{employer_summer_voucher_id}", '
-                    f'employee_name="{employee_name}" and '
-                    f"summer_voucher_serial_number={voucher_number} "
-                    "(POST used with CSRF as a GET). Found multiple matches. "
-                    "There should never be multiple matches!"
-                ),
-            ):
-                return Response(status=status.HTTP_409_CONFLICT)
-        youth_application: YouthApplication = youth_applications.first()
 
         with self.record_action(
             target=youth_application,
