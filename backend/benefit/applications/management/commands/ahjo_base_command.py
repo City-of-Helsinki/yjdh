@@ -27,7 +27,7 @@ class AhjoRequestBaseClass(BaseCommand):
 
     def handle(self, *args, **options):
         if self.request_type is None:
-            raise NotImplementedError("request_type must be set in subclass")
+            raise NotImplementedError(   "request_type must be set in subclass")
 
         ahjo_auth_token = self.get_token()
         if not ahjo_auth_token:
