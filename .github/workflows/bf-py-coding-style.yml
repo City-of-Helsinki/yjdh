@@ -1,14 +1,11 @@
 name: (BF) Python coding style
 
 on:
-  push:
-    branches: [main]
   pull_request:
     paths:
     - '.github/workflows/bf-py-coding-style.yml'
     - 'backend/benefit/**'
     - 'backend/shared/**'
-  workflow_dispatch:
 
 env:
   DEBUG: 1
@@ -20,15 +17,14 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref }}
+        fetch-depth: 0
     - name: Setup Python 3.12
       uses: actions/setup-python@v5
       with:
         python-version: '3.12'
-    - name: Run pre-commit (benefit)
+    - name: Run pre-commit
       uses: pre-commit/action@v3.0.1
       with:
-        extra_args: --files backend/benefit/**
-    - name: Run pre-commit (shared)
-      uses: pre-commit/action@v3.0.1
-      with:
-        extra_args: --files backend/shared/**
+        extra_args: --from-ref origin/${{ github.base_ref }} --to-ref HEAD
