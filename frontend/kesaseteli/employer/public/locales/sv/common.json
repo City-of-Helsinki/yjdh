@@ -37,6 +37,14 @@
     "add_another": "Gör en ny ansökan",
     "sign_out": "Logga ut"
   },
+  "dashboard": {
+    "header": "Sommarsedeln - Arbetsgivarportal",
+    "welcome": "Välkommen till sommarsedelns arbetsgivarportal. Här kan du följa statusen på dina ansökningar och göra nya ansökningar.",
+    "info": "Läs mer om tjänsten <lnk href=\"https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/\" target=\"_blank\" rel=\"noopener noreferrer\">här</lnk>.",
+    "noApplications": "Inga tidigare ansökningar.",
+    "createApplicationGuidance": "Här kan du skapa en ny ansökan för att ansöka om sommarsedel.",
+    "previousApplications": "Tidigare ansökningar om sommarsedel"
+  },
   "application": {
     "new": "Ny ansökan",
     "common_error": "Ett oförväntat fel skedde",
@@ -143,6 +151,8 @@
         "employment_description": "Beskrivning av arbetsuppgifter",
         "employment_salary_paid": "Utbetalt lönebelopp (€)",
         "hired_without_voucher_assessment": "Skulle du ha anställt en ung sommarjobbare utan Sommarsedeln?",
+        "modified_at": "Senast uppdaterad",
+        "status": "Status",
         "summer_vouchers": "Sommarsedlar",
         "termsAndConditions": "Jag har läst och godkänner <a>användningsvillkor</a>."
       },
@@ -228,6 +238,15 @@
         "add": "Bifoga bilaga",
         "remove": "Ta bort filen"
       }
+    },
+    "statuses": {
+      "draft": "Utkast",
+      "submitted": "Skickad",
+      "additional_information_requested": "Ytterligare information begärd",
+      "additional_information_provided": "Ytterligare information lämnad",
+      "accepted": "Accepterad",
+      "rejected": "Avvisad",
+      "deleted_by_customer": "Raderad"
     }
   }
 }

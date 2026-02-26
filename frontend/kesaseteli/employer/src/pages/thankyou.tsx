@@ -1,5 +1,6 @@
 import { Button, IconCheckCircleFill } from 'hds-react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
 import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
 import { extractEmployerFields } from 'kesaseteli/employer/utils/application.utils';
 import { GetStaticProps, NextPage } from 'next';
@@ -9,6 +10,7 @@ import React from 'react';
 import { useQueryClient } from 'react-query';
 import Container from 'shared/components/container/Container';
 import withAuth from 'shared/components/hocs/withAuth';
+import { $Header, $Heading } from 'shared/components/layout/Layout.sc';
 import { $Notification } from 'shared/components/notification/Notification.sc';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useGoToPage from 'shared/hooks/useGoToPage';
@@ -95,7 +97,9 @@ const ThankYouPage: NextPage = () => {
         </$Notification>
         <SuccessContainer>
           <SuccessIcon />
-          <h1>{t('common:thankyouPage.header')}</h1>
+          <$Header>
+            <$Heading>{t('common:thankyouPage.header')}</$Heading>
+          </$Header>
           <p>
             {t('common:thankyouPage.success_message', {
               name: employeeName,
