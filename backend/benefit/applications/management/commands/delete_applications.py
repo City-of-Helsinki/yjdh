@@ -26,7 +26,7 @@ class Command(BaseCommand):
             "--keep",
             type=int,
             default=30,
-            help="The number of days to keep the applications",
+            help = "The number of days to keep the applications"
         )
 
         parser.add_argument(
