@@ -40,12 +40,7 @@ export const fillEmployerDetails = async (
 export const fillEmploymentDetails = async (
   t: TestController,
   application: Application,
-  expectedPreFill?: {
-    employee_ssn?: string;
-    employee_phone_number?: string;
-    employee_postcode?: string | number;
-    employee_school?: string;
-  }
+  expectedPreFill?: Partial<Employment>
   // eslint-disable-next-line sonarjs/cognitive-complexity
 ): Promise<void> => {
   const step1 = getStep1Components(t);
@@ -127,12 +122,7 @@ export const fillEmploymentDetails = async (
 export const fillStep1Form = async (
   t: TestController,
   application: Application,
-  expectedPreFill?: {
-    employee_ssn?: string;
-    employee_phone_number?: string;
-    employee_postcode?: string | number;
-    employee_school?: string;
-  }
+  expectedPreFill?: Partial<Employment>
 ): Promise<void> => {
   await fillEmployerDetails(t, application);
   await fillEmploymentDetails(t, application, expectedPreFill);
@@ -141,12 +131,7 @@ export const fillStep1Form = async (
 export const loginAndfillApplication = async (
   t: TestController,
   toStep = 2,
-  expectedPreFill?: {
-    employee_ssn?: string;
-    employee_phone_number?: string;
-    employee_postcode?: string | number;
-    employee_school?: string;
-  }
+  expectedPreFill?: Partial<Employment>
 ): Promise<UserAndApplicationData> => {
   const urlUtils = getUrlUtils(t);
   const suomiFiData = await doEmployerLogin(t);
@@ -198,3 +183,4 @@ export const loginAndfillApplication = async (
   }
   return { ...application, ...suomiFiData };
 };
+

@@ -14,10 +14,22 @@ export const MOCKED_EMPLOYEE_DATA = {
   employee_ssn: '010101-123U',
   employee_phone_number: '040 1234567',
   employee_home_city: 'Helsinki',
-  employee_postcode: '00100',
+  employee_postcode: '00100', // using string for postcode to preserve padding
   employee_school: 'Testikoulu',
   target_group: 'secondary_target_group',
-};
+} as unknown as Partial<Employment>;
+
+export const FULLY_MOCKED_FORM_DATA = {
+  ...MOCKED_EMPLOYEE_DATA,
+  employee_name: 'Iines Insinööri',
+  employment_postcode: '00100', // using string for postcode to preserve padding
+  employment_start_date: '2026-06-01',
+  employment_end_date: '2026-08-31',
+  employment_work_hours: 30,
+  employment_description: 'Ekspertti töissä',
+  employment_salary_paid: 1200,
+  hired_without_voucher_assessment: 'yes',
+} as unknown as Partial<Employment>;
 
 /**
  * Cache for serial numbers and target groups that the backend doesn't reliably return.
@@ -53,12 +65,13 @@ const getTestCafeHeaders = (
   return result;
 };
 
-const handleFetchEmployeeData = (req: MockRequest, res: MockResponse): void => {
+const getHandleFetchEmployeeData = (mockData: Partial<Employment>) => (req: MockRequest, res: MockResponse): void => {
   try {
     const body = JSON.parse(req.body.toString()) as {
       employer_summer_voucher_id: string;
       employee_name: string;
     };
+
     // Manual CORS headers needed because this endpoint doesn't exist on backend
     res.headers['content-type'] = 'application/json';
     res.headers['access-control-allow-origin'] = req.headers.origin || '*';
@@ -67,7 +80,7 @@ const handleFetchEmployeeData = (req: MockRequest, res: MockResponse): void => {
     res.setBody({
       employer_summer_voucher_id: body.employer_summer_voucher_id,
       employee_name: body.employee_name,
-      ...MOCKED_EMPLOYEE_DATA,
+      ...mockData,
     });
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -185,9 +198,9 @@ const handleEmployerApplicationsGet = async (
 };
 
 
-export const fetchEmployeeDataMock = RequestMock()
+export const getFetchEmployeeDataMock: (mockData: Partial<Employment>) => RequestMock = (mockData: Partial<Employment> = MOCKED_EMPLOYEE_DATA) => RequestMock()
   .onRequestTo({ url: /fetch_employee_data/, method: 'POST' })
-  .respond(handleFetchEmployeeData)
+  .respond(getHandleFetchEmployeeData(mockData))
   .onRequestTo({
     url: /employerapplications\/[\da-f-]+\/$/,
     method: 'PUT',
