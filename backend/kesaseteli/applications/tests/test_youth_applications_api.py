@@ -52,6 +52,7 @@ from common.tests.factories import (
     AdditionalInfoProvidedYouthApplicationFactory,
     AdditionalInfoRequestedYouthApplicationFactory,
     AwaitingManualProcessingYouthApplicationFactory,
+    EmployerSummerVoucherFactory,
     InactiveNeedAdditionalInfoYouthApplicationFactory,
     InactiveNoNeedAdditionalInfoYouthApplicationFactory,
     InactiveYouthApplicationFactory,
@@ -2761,3 +2762,45 @@ def test_youth_applications_set_partial_additional_info(
     assert source_app.additional_info_description == old_additional_info_description
     assert source_app.additional_info_provided_at == old_additional_info_provided_at
     assert source_app.modified_at == old_modified_at
+
+
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.django_db
+@pytest.mark.parametrize("last_name", ["Peter", "Åberg"])
+@pytest.mark.parametrize("employee_name", ["Ann López", "Marika Ääninen"])
+def test_youth_application_fetch_employee_data_uses_fuzzy_match(
+    user_client, last_name, employee_name
+):
+    """
+    Test that fetch_employee_data endpoint calls is_last_name_fuzzy_match_in_full_name
+    function with the youth application's last_name and employer summer voucher's
+    employee name, and that the function's return value changes the returned status code.
+    """
+    employer_summer_voucher = EmployerSummerVoucherFactory(
+        youth_summer_voucher__youth_application__last_name=last_name,
+        employee_name=employee_name,
+    )
+    serial_number = (
+        employer_summer_voucher.youth_summer_voucher.summer_voucher_serial_number
+    )
+    url = reverse("v1:youthapplication-fetch-employee-data")
+    data = {
+        "employer_summer_voucher_id": str(employer_summer_voucher.id),
+        "employee_name": employer_summer_voucher.employee_name,
+        "summer_voucher_serial_number": serial_number,
+    }
+    mock_path = "applications.api.v1.views.is_last_name_fuzzy_match_in_full_name"
+
+    with mock.patch(mock_path, return_value=True) as mock_fuzzy_match_true:
+        response = user_client.post(url, data)
+        mock_fuzzy_match_true.assert_called_once_with(
+            last_name=last_name, full_name=employee_name
+        )
+        assert response.status_code == status.HTTP_200_OK
+
+    with mock.patch(mock_path, return_value=False) as mock_fuzzy_match_false:
+        response = user_client.post(url, data)
+        mock_fuzzy_match_false.assert_called_once_with(
+            last_name=last_name, full_name=employee_name
+        )
+        assert response.status_code == status.HTTP_404_NOT_FOUND
