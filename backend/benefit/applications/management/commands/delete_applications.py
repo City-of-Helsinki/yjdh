@@ -31,7 +31,7 @@ class Command(BaseCommand):
 
         parser.add_argument(
             "--status",
-            type=str,
+            type= str,
             nargs="+",  # Allow multiple statuses
             help=(
                 "The statuses of the applications to delete. pass multiple statuses"
