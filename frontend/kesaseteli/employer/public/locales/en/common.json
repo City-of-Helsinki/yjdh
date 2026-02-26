@@ -37,6 +37,14 @@
     "add_another": "Add another",
     "sign_out": "Sign out"
   },
+  "dashboard": {
+    "header": "Summer job voucher - Employer portal",
+    "welcome": "Welcome to the employer portal for summer job vouchers. Here you can track the status of your applications and make new ones.",
+    "info": "Read more about the service <lnk href=\"https://nuorten.hel.fi/en/studies-and-work/the-summer-job-voucher/\" target=\"_blank\" rel=\"noopener noreferrer\">here</lnk>.",
+    "noApplications": "No previous applications.",
+    "createApplicationGuidance": "Here you can create a new application to request a summer voucher.",
+    "previousApplications": "Previous summer job voucher applications"
+  },
   "application": {
     "new": "Application",
     "common_error": "An unexpected error occurred: ",
@@ -143,6 +151,8 @@
         "employment_description": "Employment description",
         "employment_salary_paid": "Salary paid (€)",
         "hired_without_voucher_assessment": "Would you have employed without the Summer Job Voucher?",
+        "modified_at": "Last updated",
+        "status": "Status",
         "summer_vouchers": "Summer vouchers",
         "termsAndConditions": "I have read and accept the <a>terms of service</a>."
       },
@@ -228,6 +238,15 @@
         "add": "Add attachment",
         "remove": "Remove file"
       }
+    },
+    "statuses": {
+      "draft": "Draft",
+      "submitted": "Submitted",
+      "additional_information_requested": "Additional information requested",
+      "additional_information_provided": "Additional information provided",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "deleted_by_customer": "Deleted"
     }
   }
 }

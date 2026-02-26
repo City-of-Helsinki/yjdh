@@ -7,10 +7,12 @@ import requestLogger, {
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
+import { Selector } from 'testcafe';
 
 import getEmployerTranslationsApi from '../../src/__tests__/utils/i18n/get-employer-translations-api';
 import { loginAndfillApplication } from '../actions/application.actions';
 import { doEmployerLogin } from '../actions/employer-header.actions';
+import { getDashboardComponents } from '../index-page/dashboard.components';
 import { getThankYouPageComponents } from '../thankyou-page/thank-you.components';
 import { getFrontendUrl, getUrlUtils } from '../utils/url.utils';
 import {
@@ -85,7 +87,19 @@ test('can fill and send application and create another with pre-filled employer 
 
   const createNewApplicationButton =
     await thankYouPage.createNewApplicationButton();
+  // This navigates back to the Dashboard (thank-you page calls goToPage('/'))
   await createNewApplicationButton.actions.clickButton();
+
+  // Wait for Dashboard, then click "Create New Application" to create a second app
+  const dashboard = getDashboardComponents(t);
+  await dashboard.expectations.isLoaded();
+
+  // Verify the previously submitted application is listed in the applications table
+  await dashboard.expectations.hasApplication(
+    application.summer_vouchers[0].employee_name ?? ''
+  );
+
+  await dashboard.actions.clickCreateNewApplication();
 
   const wizard = await getWizardComponents(t);
   await wizard.expectations.isPresent();

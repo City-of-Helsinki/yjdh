@@ -4,7 +4,7 @@ import Container from 'shared/components/container/Container';
 import WizardStepper from 'shared/components/stepper/WizardStepper';
 import Wizard from 'shared/components/wizard/Wizard';
 
-import { $Header, $HeaderItem, $Heading } from './ApplicationWizard.sc';
+import { $Header, $HeaderItem, $Heading } from 'shared/components/layout/Layout.sc';
 
 type WizardProps = {
   initialStep?: number;

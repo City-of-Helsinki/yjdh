@@ -37,6 +37,14 @@
     "add_another": "Tee uusi hakemus",
     "sign_out": "Kirjaudu ulos"
   },
+  "dashboard": {
+    "header": "Kesäseteli - Työnantajaportaali",
+    "welcome": "Tervetuloa kesäsetelin työnantajaportaaliin. Tästä voit seurata hakemustesi tilaa ja tehdä uusia hakemuksia.",
+    "info": "Lue lisää palvelusta <lnk href=\"https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/\" target=\"_blank\" rel=\"noopener noreferrer\">täältä</lnk>.",
+    "noApplications": "Ei aiempia hakemuksia.",
+    "createApplicationGuidance": "Tästä voit luoda uuden hakemuksen kesäsetelin hakemiseksi.",
+    "previousApplications": "Aiemmat kesäsetelihakemukset"
+  },
   "application": {
     "new": "Uusi hakemus",
     "common_error": "Tapahtui odottamaton virhe",
@@ -143,6 +151,8 @@
         "employment_description": "Kuvaus työtehtävistä",
         "employment_salary_paid": "Maksettu palkka (€)",
         "hired_without_voucher_assessment": "Olisitko palkannut nuoren ilman kesäseteliä?",
+        "modified_at": "Viimeksi päivitetty",
+        "status": "Tila",
         "summer_vouchers": "Kesäsetelit",
         "termsAndConditions": "Olen lukenut palvelun <a>käyttöehdot</a> ja hyväksyn ne."
       },
@@ -228,6 +238,15 @@
         "add": "Liitä tiedosto",
         "remove": "Poista tiedosto"
       }
+    },
+    "statuses": {
+      "draft": "Luonnos",
+      "submitted": "Lähetetty",
+      "additional_information_requested": "Lisätietoja pyydetty",
+      "additional_information_provided": "Lisätietoja toimitettu",
+      "accepted": "Hyväksytty",
+      "rejected": "Hylätty",
+      "deleted_by_customer": "Poistettu"
     }
   }
 }

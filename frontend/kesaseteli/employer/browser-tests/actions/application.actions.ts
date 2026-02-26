@@ -4,11 +4,11 @@ import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integr
 import Application from '@frontend/shared/src/types/application';
 import Employment from '@frontend/shared/src/types/employment';
 import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
-import TestController from 'testcafe';
 
 import { getStep1Components } from '../application-page/step1.components';
 import { getStep2Components } from '../application-page/step2.components';
 import { getWizardComponents } from '../application-page/wizard.components';
+import { getDashboardComponents } from '../index-page/dashboard.components';
 import { getUrlUtils } from '../utils/url.utils';
 import { doEmployerLogin } from './employer-header.actions';
 
@@ -150,6 +150,10 @@ export const loginAndfillApplication = async (
 ): Promise<UserAndApplicationData> => {
   const urlUtils = getUrlUtils(t);
   const suomiFiData = await doEmployerLogin(t);
+  const dashboard = getDashboardComponents(t);
+  await dashboard.expectations.isLoaded();
+  await dashboard.actions.clickCreateNewApplication();
+
   const wizard = await getWizardComponents(t);
   const applicationId =
     await urlUtils.expectations.urlChangedToApplicationPage();

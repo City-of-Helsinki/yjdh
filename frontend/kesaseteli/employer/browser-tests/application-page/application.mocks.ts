@@ -1,4 +1,5 @@
-import axios from 'axios';
+import Employment from '@frontend/shared/src/types/employment';
+import axios, { AxiosResponseHeaders } from 'axios';
 import { RequestMock } from 'testcafe';
 
 import {
@@ -53,8 +54,6 @@ const getTestCafeHeaders = (
 };
 
 const handleFetchEmployeeData = (req: MockRequest, res: MockResponse): void => {
-  // eslint-disable-next-line no-console
-  console.log('MOCK POST fetch_employee_data hit:', req.url);
   try {
     const body = JSON.parse(req.body.toString()) as {
       employer_summer_voucher_id: string;
@@ -120,8 +119,6 @@ const handleEmployerApplicationsPut = async (
   req: MockRequest,
   res: MockResponse
 ): Promise<void> => {
-  // eslint-disable-next-line no-console
-  console.log('MOCK PUT employerapplications hit:', req.url);
   try {
     const body = JSON.parse(req.body.toString()) as {
       summer_vouchers?: VoucherData[];
@@ -143,13 +140,11 @@ const handleEmployerApplicationsPut = async (
       );
     }
 
-    res.headers = getTestCafeHeaders(response.headers);
+    res.headers = getTestCafeHeaders(response.headers as AxiosResponseHeaders);
     res.statusCode = response.status;
     res.setBody(responseBody as object);
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
-      // eslint-disable-next-line no-console
-      console.error('Proxy PUT failed', error, error.response?.data);
       res.statusCode = error.response?.status || 500;
       res.setBody((error.response?.data as object) || {});
     } else {
@@ -162,8 +157,6 @@ const handleEmployerApplicationsGet = async (
   req: MockRequest,
   res: MockResponse
 ): Promise<void> => {
-  // eslint-disable-next-line no-console
-  console.log('MOCK GET employerapplications hit:', req.url);
   try {
     const response = await axios.get<{ summer_vouchers?: VoucherData[] }>(
       req.url,
@@ -178,13 +171,11 @@ const handleEmployerApplicationsGet = async (
       );
     }
 
-    res.headers = getTestCafeHeaders(response.headers);
+    res.headers = getTestCafeHeaders(response.headers as AxiosResponseHeaders);
     res.statusCode = response.status;
     res.setBody(responseBody as object);
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
-      // eslint-disable-next-line no-console
-      console.error('Proxy GET failed', error, error.response?.data);
       res.statusCode = error.response?.status || 500;
       res.setBody((error.response?.data as object) || {});
     } else {
@@ -192,6 +183,7 @@ const handleEmployerApplicationsGet = async (
     }
   }
 };
+
 
 export const fetchEmployeeDataMock = RequestMock()
   .onRequestTo({ url: /fetch_employee_data/, method: 'POST' })
@@ -215,19 +207,17 @@ export const targetGroupsMock = RequestMock()
   })
   .respond(
     async (req: MockRequest, res: MockResponse) => {
-      // eslint-disable-next-line no-console
-      console.log('MOCK GET target_groups hit:', req.url);
       try {
         const response = await axios.get(req.url, {
           headers: req.headers,
         });
-        res.headers = getTestCafeHeaders(response.headers);
+        res.headers = getTestCafeHeaders(
+          response.headers as AxiosResponseHeaders
+        );
         res.statusCode = response.status;
         res.setBody(response.data as object);
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
-          // eslint-disable-next-line no-console
-          console.error('Proxy GET target_groups failed', error);
           res.statusCode = error.response?.status || 500;
           res.setBody((error.response?.data as object) || {});
         } else {
@@ -246,20 +236,18 @@ export const attachmentsMock = RequestMock()
   })
   .respond(
     async (req: MockRequest, res: MockResponse) => {
-      // eslint-disable-next-line no-console
-      console.log('MOCK POST attachments hit:', req.url);
       try {
         // Proxy to real backend so attachments are actually stored
         const response = await axios.post(req.url, req.body, {
           headers: req.headers,
         });
-        res.headers = getTestCafeHeaders(response.headers);
+        res.headers = getTestCafeHeaders(
+          response.headers as AxiosResponseHeaders
+        );
         res.statusCode = response.status;
         res.setBody(response.data as object);
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
-          // eslint-disable-next-line no-console
-          console.error('Proxy POST attachments failed', error);
           res.statusCode = error.response?.status || 500;
           res.setBody((error.response?.data as object) || {});
         } else {
