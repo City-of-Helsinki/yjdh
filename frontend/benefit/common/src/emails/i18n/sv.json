@@ -47,10 +47,35 @@
       "text": "Om du har frågor, skicka oss ett meddelande genom e-tjänst för sysselsättning Helsingforstillägg."
     }
   },
+  "payslipRequired": {
+    "headerText": "Utbetalning av den andra raten av det beviljade Helsingforstillägget kräver åtgärder",
+    "heading": "Utbetalning av den andra raten av det beviljade Helsingforstillägget kräver åtgärder",
+    "bodyText": "Vi har beviljat dig Helsingforstillägg för anställning av en arbetstagare. Helsingforstillägget betalas ut i två rater. Som mottagare av stödet är du skyldig att meddela oss den lön som betalats ut för anställningsförhållandet. För att få den andra raten av Helsingforstillägget måste arbetsgivaren skicka in:",
+    "requiredText": "En lönespecifikation eller ett kvitto på banköverföring för den utbetalda lönen.",
+    "helper": {
+      "text": "Du kan enkelt sköta ärendet i",
+      "link": {
+        "title": "onlinetjänsten",
+        "url": "https://helsinkilisa.hel.fi/sv/login",
+      }
+    },
+    "delivery": {
+      "request": "Logga in och/eller skicka in den nödvändiga bilagan",
+      "alternative": "Om du inte har använt onlinetjänsten kan du skicka in bilagan via säker e-post",
+      "secureTitle1": "Skicka bilagan vi",
+      "secureTitle2": "(Länk leder till en extern tjänst) via en säker anslutning till",
+      "secureTitle3": "",
+      "secureText": "säker e-post",
+      "secureLink": "https://suojattusahkoposti.hel.fi/",
+      "emailAddress": "helsinkilisa@hel.fi"
+    }
+  },
   "application": {
     "applicationDetails": "Uppgifter om ansökningen",
     "applicationNumber": "Ansökningsnummer",
     "createdAt": "Datum då ansökningen skickades",
+    "beneficiary": "Förmånstagare",
+    "benefitPeriod": "Stödperiod",
     "status": {
       "title": "Ansökningsstatus",
       "unfinished": "Oavslutat",

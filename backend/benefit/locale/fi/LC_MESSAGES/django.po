@@ -1619,6 +1619,9 @@ msgstr "palveluehtojen hyväksyntä"
 msgid "terms of service approvals"
 msgstr "palveluehtojen hyväksynnät"
 
+msgid "Payment of the second installment of the Helsinki benefit requires measures"
+msgstr "Myönnetyn Helsinki-lisän toisen erän maksu edellyttää toimenpiteitä"
+
 #~ msgid "e-invoice address"
 #~ msgstr "Verkkolaskuosoite"
 
