@@ -56,6 +56,7 @@ from common.tests.factories import (
     YouthApplicationFactory,
 )
 from common.urls import handler_403_url
+from common.utils import getattr_nested
 from shared.audit_log.models import AuditLogEntry
 
 
@@ -352,11 +353,13 @@ def test_excel_view_download_content(  # noqa: C901
             elif excel_field.model_fields == []:
                 assert output_column.value == excel_field.value
             else:
-                query = EmployerSummerVoucher.objects.filter(pk=voucher.pk)
-                values_tuple = query.values_list(*excel_field.model_fields)[0]
-                assert output_column.value == excel_field.value % values_tuple, (
-                    excel_field.title
+                values_tuple = tuple(
+                    getattr_nested(voucher, attr_str.split("__"))
+                    for attr_str in excel_field.model_fields
                 )
+                assert str(output_column.value) == str(
+                    excel_field.value % values_tuple
+                ), excel_field.title
 
 
 @pytest.mark.django_db

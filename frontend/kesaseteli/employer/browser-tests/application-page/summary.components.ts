@@ -127,7 +127,7 @@ export const getSummaryComponents = async (t: TestController) => {
           );
 
         const expectTargetGroupHasValue = (
-          field: 'target_group' | 'hired_without_voucher_assessment'
+          field: 'hired_without_voucher_assessment'
         ) => {
           const value = employment[field];
           if (!value) {
@@ -159,15 +159,10 @@ export const getSummaryComponents = async (t: TestController) => {
           .contains(employment.employee_name ?? '', await getErrorMessage(t))
           .expect(header.textContent)
           .contains(employment.employee_ssn ?? '', await getErrorMessage(t));
-        await expectTargetGroupHasValue('target_group');
-        await expectEmploymentFieldhasValue('employee_postcode');
-        await expectEmploymentFieldhasValue('employee_home_city');
         await expectEmploymentFieldhasValue('employee_phone_number');
         await expectEmploymentFieldhasValue('employment_postcode');
-        await expectEmploymentFieldhasValue('employee_school');
         await expectAttachments('employment_contract');
         await expectAttachments('payslip');
-        await expectEmploymentFieldhasValue('employee_school');
         const { employment_start_date, employment_end_date } = employment;
         const dateRange = [employment_start_date, employment_end_date]
           .map((date) => convertToUIDateFormat(date))

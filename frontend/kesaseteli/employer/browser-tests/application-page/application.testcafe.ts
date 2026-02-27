@@ -17,7 +17,6 @@ import {
   attachmentsMock,
   fetchEmployeeDataMock,
   MOCKED_EMPLOYEE_DATA,
-  targetGroupsMock,
 } from './application.mocks';
 import { getStep1Components } from './step1.components';
 import { getStep2Components } from './step2.components';
@@ -34,7 +33,6 @@ fixture('Application')
     requestLogger,
     new HttpRequestHook(url, getBackendDomain()),
     fetchEmployeeDataMock,
-    targetGroupsMock,
     attachmentsMock
   )
   .beforeEach(async (t) => {
@@ -118,7 +116,6 @@ test('Fills up employer form and preserves data when navigating back and forth',
     application.summer_vouchers[0]
   );
   await step1Form.expectations.isEmploymentSupplementFulfilledWith({
-    target_group: application.summer_vouchers[0].target_group,
     employment_start_date: convertToUIDateFormat(
       application.summer_vouchers[0].employment_start_date
     ),

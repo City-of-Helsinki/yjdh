@@ -5,14 +5,13 @@ import SelectionGroup from 'kesaseteli/employer/components/application/form/Sele
 import type { TextInputProps } from 'kesaseteli/employer/components/application/form/TextInput';
 import TextInput from 'kesaseteli/employer/components/application/form/TextInput';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
-import useTargetGroupsQuery from 'kesaseteli/employer/hooks/backend/useTargetGroupsQuery';
 import { useTranslation } from 'next-i18next';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import FormSection from 'shared/components/forms/section/FormSection';
 import FormSectionDivider from 'shared/components/forms/section/FormSectionDivider';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
-import { CITY_REGEX, POSTAL_CODE_REGEX } from 'shared/constants';
+import { POSTAL_CODE_REGEX } from 'shared/constants';
 import { EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT } from 'shared/constants/employee-constants';
 import Application from 'shared/types/application';
 import DraftApplication from 'shared/types/draft-application';
@@ -124,11 +123,6 @@ const EmploymentForm: React.FC<Props> = ({ index }) => {
     useFetchEmployeeDataButtonState(index);
   const { isEmployeeDataFetched, handleGetEmployeeData } =
     useFetchEmployeeData(index);
-  const { data: targetGroups } = useTargetGroupsQuery();
-
-  const targetGroupValues = targetGroups?.map((tg) => tg.id) || [];
-  const getTargetGroupLabel = (value: string): string =>
-    targetGroups?.find((tg) => tg.id === value)?.name || '';
 
   const getId = (field: keyof Employment): TextInputProps['id'] =>
     `summer_vouchers.${index}.${field}`;
@@ -179,37 +173,7 @@ const EmploymentForm: React.FC<Props> = ({ index }) => {
           disabled={disableEmploymentFields}
           readOnly={isEmployeeDataFetched}
         />
-        <SelectionGroup
-          id={getId('target_group')}
-          validation={{
-            required: true,
-          }}
-          values={targetGroupValues}
-          getValueText={getTargetGroupLabel}
-          $colSpan={2}
-          disabled={disableEmploymentFields}
-        />
-        <FormSectionDivider $colSpan={2} />
-        <TextInput
-          id={getId('employee_home_city')}
-          validation={{
-            required: true,
-            pattern: CITY_REGEX,
-            maxLength: 256,
-          }}
-          disabled={disableEmploymentFields}
-        />
-        <TextInput
-          id={getId('employee_postcode')}
-          type="number"
-          validation={{
-            required: true,
-            pattern: POSTAL_CODE_REGEX,
-            maxLength: 256,
-          }}
-          autoComplete="off"
-          disabled={disableEmploymentFields}
-        />
+
         <TextInput
           id={getId('employee_phone_number')}
           validation={{ required: true, maxLength: 64 }}
@@ -224,12 +188,6 @@ const EmploymentForm: React.FC<Props> = ({ index }) => {
             pattern: POSTAL_CODE_REGEX,
             maxLength: 256,
           }}
-          disabled={disableEmploymentFields}
-        />
-        <FormSectionDivider $colSpan={2} />
-        <TextInput
-          id={getId('employee_school')}
-          validation={{ required: true, maxLength: 256 }}
           disabled={disableEmploymentFields}
         />
         <FormSectionDivider $colSpan={2} />

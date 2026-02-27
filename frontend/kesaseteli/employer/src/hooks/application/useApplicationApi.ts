@@ -160,6 +160,8 @@ const useApplicationApi = <T = Application>(
           );
         },
         onError: (error: unknown) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
           if (Axios.isAxiosError(error) && error.response.status === 404) {
             // Not found error
             showErrorToast(
@@ -218,7 +220,6 @@ const useApplicationApi = <T = Application>(
                 ApplicationPersistenceService.storeVoucherSupplement(
                   voucher.id,
                   {
-                    target_group: formVoucher.target_group,
                     employment_start_date: formVoucher.employment_start_date,
                     employment_end_date: formVoucher.employment_end_date,
                     hired_without_voucher_assessment:
