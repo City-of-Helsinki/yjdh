@@ -29,7 +29,10 @@ export const getThankYouPageComponents = (t: TestController) => {
 
   const createNewApplicationButton = async () => {
     const selectors = {
-      button: () => screen.findByRole('button', { name: /^tee uusi hakemus/i }),
+      button: () =>
+        screen.findByRole('button', {
+          name: /tee uusi hakemus|create another application|gör en ny ansökan/i,
+        }),
     };
     const expectations = {
       async isPresent() {
@@ -47,9 +50,34 @@ export const getThankYouPageComponents = (t: TestController) => {
       actions,
     };
   };
+  const returnToDashboardButton = async () => {
+    const selectors = {
+      button: () =>
+        screen.findByRole('button', {
+          name: /palaa etusivulle|return to dashboard|tillbaka till framsidan/i,
+        }),
+    };
+    const expectations = {
+      async isPresent() {
+        await t.expect(selectors.button().exists).ok(await getErrorMessage(t));
+      },
+    };
+    const actions = {
+      async clickButton() {
+        return t.click(selectors.button());
+      },
+    };
+    return {
+      selectors,
+      expectations,
+      actions,
+    };
+  };
+
   return {
     header,
     summaryComponent,
     createNewApplicationButton,
+    returnToDashboardButton,
   };
 };

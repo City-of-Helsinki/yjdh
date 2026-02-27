@@ -35,7 +35,7 @@
     "header": "Summer voucher application sent successfully! ",
     "success_message": "Employee {{name}} information has been saved.",
     "add_another": "Add another",
-    "sign_out": "Sign out"
+    "return_to_dashboard": "Return to dashboard"
   },
   "dashboard": {
     "header": "Summer job voucher - Employer portal",
