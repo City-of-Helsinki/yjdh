@@ -9,6 +9,10 @@
     "menuToggleAriaLabel": "Menyn",
     "languageMenuButtonAriaLabel": "Ändra språk"
   },
+  "dialog": {
+    "cancel": "Avbryt",
+    "confirm": "Bekräfta"
+  },
   "errorPage": {
     "title": "Ett oförväntat fel skedde",
     "message": "Något gick fel. Det kan hjälpa, ladda upp sidan på nytt.",
@@ -94,7 +98,11 @@
     "buttons": {
       "previous": "Tillbaka",
       "next": "Spara och fortsätt",
-      "last": "Skicka ansökan"
+      "last": "Skicka ansökan",
+      "cancel": "Avbryt",
+      "cancel_confirmation_title": "Är du säker på att du vill avbryta ifyllandet av ansökan?",
+      "cancel_confirmation_description": "All information som har fyllts i hittills kommer att raderas och du kommer att flyttas tillbaka till framsidan.",
+      "leave_confirmation": "Vill du lämna sidan? Osparade ändringar kan gå förlorade."
     },
     "form": {
       "selectionGroups": {

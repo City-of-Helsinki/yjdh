@@ -1,6 +1,7 @@
 import {
   getErrorMessage,
   screenContext,
+  withinContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import TestController from 'testcafe';
 
@@ -21,6 +22,20 @@ export const getWizardComponents = async (t: TestController) => {
       screen.findByRole('button', {
         name: /^lähetä hakemus/i,
       }),
+    cancelButton: () =>
+      screen.findByRole('button', {
+        name: /keskeytä|cancel|avbryt/i,
+      }),
+    confirmationDialog: () =>
+      screen.findByRole('dialog', {
+        name: /haluatko varmasti keskeyttää hakemuksen täyttämisen\?|are you sure you want to cancel the application\?|är du säker på att du vill avbryta ifyllandet av ansökan\?/i,
+      }),
+    confirmCancelButton: () => {
+      const dialog = selectors.confirmationDialog();
+      return withinContext(t)(dialog).findByRole('button', {
+        name: /keskeytä|cancel|avbryt/i,
+      });
+    },
     step1Button: () =>
       screen.findByRole('button', {
         name: /^siirry hakemuksen vaiheeseen 1\. työnantajan tiedot/i,
@@ -53,6 +68,12 @@ export const getWizardComponents = async (t: TestController) => {
     },
     clickGoToStep2Button() {
       return t.click(selectors.step2Button());
+    },
+    clickCancelButton() {
+      return t.click(selectors.cancelButton());
+    },
+    clickConfirmCancelButton() {
+      return t.click(selectors.confirmCancelButton());
     },
   };
 

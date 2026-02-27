@@ -9,6 +9,10 @@
     "menuToggleAriaLabel": "Valikko",
     "languageMenuButtonAriaLabel": "Valitse kieli"
   },
+  "dialog": {
+    "cancel": "Peruuta",
+    "confirm": "Vahvista"
+  },
   "errorPage": {
     "title": "Tapahtui odottamaton virhe",
     "message": "Jokin meni pieleen. Sivun uudelleenlataaminen saattaa auttaa.",
@@ -94,7 +98,11 @@
     "buttons": {
       "previous": "Palaa edelliseen",
       "next": "Tallenna ja jatka",
-      "last": "Lähetä hakemus"
+      "last": "Lähetä hakemus",
+      "cancel": "Keskeytä",
+      "cancel_confirmation_title": "Haluatko varmasti keskeyttää hakemuksen täyttämisen?",
+      "cancel_confirmation_description": "Kaikki tähän mennessä täytetyt tiedot poistetaan ja sinut siirretään takaisin etusivulle.",
+      "leave_confirmation": "Haluatko poistua sivulta? Tallentamattomat muutokset saatetaan menettää."
     },
     "form": {
       "selectionGroups": {

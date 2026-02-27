@@ -43,6 +43,11 @@ export const getUrlUtils = (t: TestController) => {
         .expect(getCurrentPathname())
         .eql(`/${locale}/login`, await getErrorMessage(t));
     },
+    async urlChangedToLandingPage(locale: Language = 'fi') {
+      await t
+        .expect(getCurrentPathname())
+        .eql(`/${locale}`, await getErrorMessage(t));
+    },
     async urlChangedToApplicationPage(expectedApplicationId?: string) {
       const applicationId = (await getUrlParam('id')) ?? undefined;
       if (!applicationId) {

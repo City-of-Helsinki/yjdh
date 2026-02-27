@@ -9,6 +9,10 @@
     "menuToggleAriaLabel": "Menu",
     "languageMenuButtonAriaLabel": "Select language"
   },
+  "dialog": {
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
   "errorPage": {
     "title": "An unexpected error occured",
     "message": "Something went wrong. Refreshing the page might help.",
@@ -94,7 +98,11 @@
     "buttons": {
       "previous": "Return",
       "next": "Save and continue",
-      "last": "Send the application"
+      "last": "Send the application",
+      "cancel": "Cancel",
+      "cancel_confirmation_title": "Are you sure you want to cancel the application?",
+      "cancel_confirmation_description": "All information entered so far will be deleted and you will be returned to the front page.",
+      "leave_confirmation": "Do you want to leave the page? Unsaved changes may be lost."
     },
     "form": {
       "selectionGroups": {

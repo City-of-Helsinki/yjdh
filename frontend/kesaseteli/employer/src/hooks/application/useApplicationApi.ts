@@ -1,5 +1,6 @@
 import Axios from 'axios';
 import useApplicationQuery from 'kesaseteli/employer/hooks/backend/useApplicationQuery';
+import useDeleteApplicationQuery from 'kesaseteli/employer/hooks/backend/useDeleteApplicationQuery';
 import useEmploymentQuery from 'kesaseteli/employer/hooks/backend/useEmploymentQuery';
 import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/backend/useUpdateApplicationQuery';
 import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
@@ -53,6 +54,7 @@ export type ApplicationApi<T> = {
     index: number,
     onSuccess?: () => void | Promise<void>
   ) => void;
+  deleteApplication: (onSuccess?: () => void | Promise<void>) => void;
 };
 
 export type Params = {
@@ -77,6 +79,7 @@ const useApplicationApi = <T = Application>(
 
   const applicationQuery = useApplicationQuery<T>(applicationId, select);
   const updateApplicationQuery = useUpdateApplicationQuery(applicationId);
+  const deleteApplicationQuery = useDeleteApplicationQuery();
 
   const handleUpdateError = (error: unknown): void => {
     if (
@@ -253,6 +256,25 @@ const useApplicationApi = <T = Application>(
       }
     );
 
+  const deleteApplication: ApplicationApi<T>['deleteApplication'] = (
+    onSuccess = noop
+  ) => {
+    if (applicationId) {
+      return deleteApplicationQuery.mutate(applicationId, {
+        onSuccess: () => {
+          clearLocalStorage(`application-${applicationId}`);
+          ApplicationPersistenceService.clearAll();
+          void queryClient.invalidateQueries(
+            BackendEndpoint.EMPLOYER_APPLICATIONS
+          );
+          return onSuccess();
+        },
+        onError,
+      });
+    }
+    return onSuccess();
+  };
+
   return {
     isRouterLoading,
     applicationId,
@@ -264,6 +286,7 @@ const useApplicationApi = <T = Application>(
     addEmployment,
     updateEmployment,
     removeEmployment,
+    deleteApplication,
   };
 };
 

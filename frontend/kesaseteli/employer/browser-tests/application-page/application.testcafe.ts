@@ -43,6 +43,7 @@ fixture('Application')
     clearDataToPrintOnFailure(t);
     urlUtils = getUrlUtils(t);
     step1Components = getStep1Components(t);
+    await t.setNativeDialogHandler(() => true);
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console
@@ -146,5 +147,48 @@ test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
       hired_without_voucher_assessment:
         application.summer_vouchers[0].hired_without_voucher_assessment,
     });
+  }
+);
+
+test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
+  'can cancel application filling',
+  async (t: TestController) => {
+    await loginAndfillApplication(t, 1, FULLY_MOCKED_FORM_DATA);
+    const wizard = await getWizardComponents(t);
+
+    await wizard.actions.clickCancelButton();
+
+    // Verify confirmation modal exists
+    await t.expect(wizard.selectors.confirmationDialog().exists).ok();
+
+    await wizard.actions.clickConfirmCancelButton();
+
+    // Verify redirect to dashboard
+    const dashboard = getDashboardComponents(t);
+    await dashboard.expectations.isLoaded();
+    await urlUtils.expectations.urlChangedToLandingPage();
+  }
+);
+
+test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
+  'warns when navigating away from wizard',
+  async (t: TestController) => {
+    await loginAndfillApplication(t, 1, FULLY_MOCKED_FORM_DATA);
+
+    // Setup native dialog handler to confirm the navigation
+    await t.setNativeDialogHandler(() => true);
+
+    const header = new Header(getEmployerTranslationsApi());
+    await header.isLoaded();
+
+    // Click on the app name in header to navigate away
+    // Based on BaseHeader implementation in shared, the title is a link
+    const appTitle = Selector('a').withText(/kesäseteli/i);
+    await t.click(appTitle);
+
+    // Verify redirect to dashboard (after confirming dialog)
+    const dashboard = getDashboardComponents(t);
+    await dashboard.expectations.isLoaded();
+    await urlUtils.expectations.urlChangedToLandingPage();
   }
 );

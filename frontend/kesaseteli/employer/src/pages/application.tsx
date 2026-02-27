@@ -9,6 +9,7 @@ import ApplicationWizard from 'shared/components/application-wizard/ApplicationW
 import withAuth from 'shared/components/hocs/withAuth';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useGoToPage from 'shared/hooks/useGoToPage';
+import useLeaveConfirm from 'shared/hooks/useLeaveConfirm';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
 const ApplicationPage: NextPage = () => {
@@ -17,6 +18,11 @@ const ApplicationPage: NextPage = () => {
     useApplicationApi();
   const [initialStep] = useStepStorage('current');
   const goToPage = useGoToPage();
+
+  useLeaveConfirm(
+    Boolean(applicationId),
+    t('common:application.buttons.leave_confirmation')
+  );
 
   if (!isRouterLoading && !applicationId) {
     goToPage('/', 'replace');
