@@ -261,10 +261,27 @@ def test_application_create_mock(api_client, company):
 
 
 @pytest.mark.django_db
-def test_application_delete_not_allowed(api_client, application):
+def test_application_delete_success(api_client, application):
     response = api_client.delete(get_detail_url(application))
 
-    assert response.status_code == 405
+    assert response.status_code == 204
+    assert EmployerApplication.objects.count() == 0
+
+
+@pytest.mark.django_db
+def test_application_delete_submitted_not_allowed(api_client, submitted_application):
+    response = api_client.delete(get_detail_url(submitted_application))
+
+    assert response.status_code == 400
+    assert "Only DRAFT applications can be deleted" in response.data
+
+
+@pytest.mark.django_db
+def test_application_delete_other_user_not_allowed(api_client, application):
+    other_app = EmployerApplicationFactory()
+    response = api_client.delete(get_detail_url(other_app))
+
+    assert response.status_code == 404
 
 
 @pytest.mark.django_db
@@ -324,6 +341,30 @@ def test_application_update_writes_audit_log(api_client, user, application):
         "id": response.data["id"],
         "type": "EmployerApplication",
         "changes": ["invoicer_name changed from test1 to test2"],
+    }
+    assert audit_event["status"] == "SUCCESS"
+
+
+@pytest.mark.django_db
+@override_settings(
+    AUDIT_LOG_ORIGIN="TEST_SERVICE",
+)
+def test_application_delete_writes_audit_log(api_client, user, application):
+    response = api_client.delete(get_detail_url(application))
+
+    assert response.status_code == 204
+
+    audit_event = AuditLogEntry.objects.first().message["audit_event"]
+    assert audit_event["actor"] == {
+        "ip_address": "127.0.0.1",
+        "role": "USER",
+        "user_id": str(user.pk),
+        "provider": "",
+    }
+    assert audit_event["operation"] == "DELETE"
+    assert audit_event["target"] == {
+        "id": str(application.id),
+        "type": "EmployerApplication",
     }
     assert audit_event["status"] == "SUCCESS"
 
