@@ -4,7 +4,10 @@ import Header from '@frontend/shared/browser-tests/page-models/Header';
 import requestLogger, {
   filterLoggedRequests,
 } from '@frontend/shared/browser-tests/utils/request-logger';
-import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import {
+  clearDataToPrintOnFailure,
+  getErrorMessage,
+} from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
 import { Selector } from 'testcafe';
@@ -37,10 +40,14 @@ fixture('Application')
     new HttpRequestHook(url, getBackendDomain()),
     attachmentsMock
   )
+  .skipJsErrors({
+    message: /abort route change/i,
+  })
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     urlUtils = getUrlUtils(t);
     step1Components = getStep1Components(t);
+    await t.setNativeDialogHandler(() => true);
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console
@@ -143,5 +150,77 @@ test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
       hired_without_voucher_assessment:
         application.summer_vouchers[0].hired_without_voucher_assessment,
     });
+  }
+);
+
+test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
+  'can cancel application filling',
+  async (t: TestController) => {
+    await loginAndfillApplication(t, 1, FULLY_MOCKED_FORM_DATA);
+    const wizard = await getWizardComponents(t);
+
+    await wizard.actions.clickCancelButton();
+
+    // Verify confirmation modal exists
+    await t.expect(wizard.selectors.confirmationDialog().exists).ok();
+
+    await wizard.actions.clickConfirmCancelButton();
+
+    // Verify redirect to dashboard
+    const dashboard = getDashboardComponents(t);
+    await dashboard.expectations.isLoaded();
+    await urlUtils.expectations.urlChangedToLandingPage();
+  }
+);
+
+test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
+  'warns when navigating away from wizard',
+  async (t: TestController) => {
+    await loginAndfillApplication(t, 1, FULLY_MOCKED_FORM_DATA);
+
+    const wizard = await getWizardComponents(t);
+    const header = new Header(getEmployerTranslationsApi());
+    await header.isLoaded();
+
+    // eslint-disable-next-line scanjs-rules/call_eval
+    const appUrl = (await t.eval(() => window.location.href)) as string;
+
+    // Verify NO warning when navigating away from a clean form
+    const appTitle = Selector('a').withText(/kesäseteli/i);
+    await t.click(appTitle);
+    await t.expect(wizard.selectors.confirmationDialog().exists).notOk();
+
+    // Go back to application (restores to step 2 from localStorage)
+    await t.navigateTo(appUrl);
+    // Navigate back to step 1 where the employer form inputs are
+    const wizardOnReturn = await getWizardComponents(t);
+    await wizardOnReturn.actions.clickGoToStep1Button();
+    // Re-initialize step 1 components
+    const freshStep1 = getStep1Components(t);
+    const freshForm = await freshStep1.form();
+
+    const contactPersonNameInput = freshForm.selectors.contactPersonNameInput();
+    // Wait for the step 1 form to be fully loaded and interactive
+    await t
+      .expect(contactPersonNameInput.exists)
+      .ok(await getErrorMessage(t), { timeout: 20_000 })
+      .expect(contactPersonNameInput.visible)
+      .ok(await getErrorMessage(t), { timeout: 20_000 });
+
+    await freshForm.actions.fillContactPersonName('Changed Name');
+
+    // Click on the app name in header to navigate away (form is dirty)
+    await t.click(appTitle);
+
+    // Verify confirmation modal exists
+    await t.expect(wizard.selectors.confirmationDialog().exists).ok();
+
+    // Confirm navigation
+    await wizard.actions.clickConfirmCancelButton();
+
+    // Verify redirect to dashboard
+    const dashboard = getDashboardComponents(t);
+    await dashboard.expectations.isLoaded();
+    await urlUtils.expectations.urlChangedToLandingPage();
   }
 );

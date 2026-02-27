@@ -15,6 +15,9 @@ import React from 'react';
 import { QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import BaseApp from 'shared/components/app/BaseApp';
+import ConfirmDialog from 'shared/components/confirm-dialog/ConfirmDialog';
+import Portal from 'shared/components/confirm-dialog/Portal';
+import { DialogContextProvider } from 'shared/contexts/DialogContext';
 
 const CookieConsent = dynamic(
   () => import('kesaseteli-shared/components/cookieConsent/CookieConsent'),
@@ -28,10 +31,15 @@ const App: React.FC<AppProps> = (appProps) => {
     <BackendAPIProvider baseURL={getBackendDomain()}>
       <QueryClientProvider client={createQueryClient()}>
         <AuthProvider>
-          {isMatomoConfigured && (
-            <CookieConsent siteName={COOKIE_CONSENT_SITE_NAME} />
-          )}
-          <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
+          <DialogContextProvider>
+            {isMatomoConfigured && (
+              <CookieConsent siteName={COOKIE_CONSENT_SITE_NAME} />
+            )}
+            <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
+            <Portal>
+              <ConfirmDialog />
+            </Portal>
+          </DialogContextProvider>
         </AuthProvider>
       </QueryClientProvider>
     </BackendAPIProvider>

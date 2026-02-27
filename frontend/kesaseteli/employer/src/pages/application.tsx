@@ -3,7 +3,6 @@ import Step2Summary from 'kesaseteli/employer/components/application/steps/step2
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useStepStorage from 'kesaseteli/employer/hooks/wizard/useStepStorage';
 import { GetStaticProps, NextPage } from 'next';
-import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import ApplicationWizard from 'shared/components/application-wizard/ApplicationWizard';
 import withAuth from 'shared/components/hocs/withAuth';
@@ -12,7 +11,6 @@ import useGoToPage from 'shared/hooks/useGoToPage';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
 const ApplicationPage: NextPage = () => {
-  const { t } = useTranslation();
   const { applicationId, isRouterLoading, applicationQuery } =
     useApplicationApi();
   const [initialStep] = useStepStorage('current');
@@ -37,7 +35,6 @@ const ApplicationPage: NextPage = () => {
   }
   return <PageLoadingSpinner />;
 };
-
 
 export const getStaticProps: GetStaticProps =
   getServerSideTranslations('common');
