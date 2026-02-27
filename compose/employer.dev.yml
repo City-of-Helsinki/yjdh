@@ -1,0 +1,24 @@
+include:
+  - employer.yml
+services:
+  backend:
+    build:
+      target: development
+    volumes:
+      - ../backend/kesaseteli:/app
+      - ../backend/shared:/shared
+      - ../backend/kesaseteli/media:/var/media
+  employer:
+    build:
+      target: development
+    volumes:
+      - ../frontend:/app
+      # Don't volume map these dirs to avoid ownership/permission issues:
+      - /app/node_modules
+      - /app/.next
+      - /app/shared/node_modules
+      - /app/shared/.next
+      - /app/kesaseteli/employer/node_modules
+      - /app/kesaseteli/employer/.next
+    environment:
+      - WATCHPACK_POLLING=${WATCHPACK_POLLING:-true}

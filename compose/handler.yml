@@ -1,0 +1,44 @@
+include:
+  - base.kesaseteli.yml
+services:
+  youth:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile-localdevelopment
+      args:
+        PROJECT: kesaseteli
+        FOLDER: youth
+    env_file:
+      - ../.env.kesaseteli-youth
+    environment:
+      - PORT=3100
+    container_name: kesaseteli-youth
+
+  handler:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile-localdevelopment
+      args:
+        PROJECT: kesaseteli
+        FOLDER: handler
+    env_file:
+      - ../.env.kesaseteli-handler
+    environment:
+      - PORT=3200
+    container_name: kesaseteli-handler
+
+  local-proxy:
+    depends_on:
+      - postgres
+      - backend
+      - handler
+      - youth
+    build:
+      context: ../localdevelopment/handler/nginx
+    container_name: kesaseteli-handler-local-proxy
+    volumes:
+      - ../localdevelopment/handler/nginx/:/etc/nginx/
+    ports:
+      - 127.0.0.1:8000:8000
+      - 127.0.0.1:3100:3100
+      - 127.0.0.1:3200:3200
