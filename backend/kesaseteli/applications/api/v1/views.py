@@ -788,7 +788,16 @@ class EmployerApplicationViewSet(AuditLoggingModelViewSet):
         return super().update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        """
+        Allow to delete only DRAFT status applications.
+        """
+        instance = self.get_object()
+        if instance.status not in ALLOWED_APPLICATION_UPDATE_STATUSES:
+            raise ValidationError("Only DRAFT applications can be deleted")
+        if request.user != instance.user:
+            raise PermissionDenied("Only application creator can delete it")
+
+        return super().destroy(request, *args, **kwargs)
 
 
 class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
