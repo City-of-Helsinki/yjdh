@@ -9,6 +9,7 @@ window.addEventListener('error', (e) => {
     [
       'ResizeObserver loop completed with undelivered notifications.',
       'ResizeObserver loop limit exceeded',
+      'Abort route change. Please ignore this error.',
       /* add more if needed */
     ].includes(e.message)
   ) {

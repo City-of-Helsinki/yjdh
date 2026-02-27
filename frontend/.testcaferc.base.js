@@ -48,6 +48,9 @@ module.exports = (envPath) => {
         customCompilerModulePath: path.join(__dirname, '/node_modules/typescript'),
       },
     },
+    skipJsErrors: {
+      message: /Abort route change. Please ignore this error./,
+    },
     retryTestPages: true,
     hostname: 'localhost',
     assertionTimeout: timeoutValues.assertionTimeout * 1000,
