@@ -17,8 +17,6 @@ import useGoToPage from 'shared/hooks/useGoToPage';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import styled from 'styled-components';
 
-import useLogout from '../hooks/backend/useLogout';
-
 const SuccessContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -47,24 +45,29 @@ const ThankYouPage: NextPage = () => {
     useApplicationApi();
   const queryClient = useQueryClient();
   const goToPage = useGoToPage();
-  const logout = useLogout();
+  const createApplicationQuery = useCreateApplicationQuery();
 
   const createNewApplicationClick = React.useCallback((): void => {
     if (applicationQuery.isSuccess && applicationQuery.data) {
       const employerData = extractEmployerFields(applicationQuery.data);
       ApplicationPersistenceService.storeEmployerData(employerData);
     }
-    queryClient.clear();
-    goToPage('/');
+    createApplicationQuery.mutate(undefined, {
+      onSuccess: (data) => {
+        queryClient.clear();
+        goToPage(`/application?id=${data.id}`);
+      },
+    });
   }, [
+    createApplicationQuery,
     queryClient,
     goToPage,
     applicationQuery.isSuccess,
     applicationQuery.data,
   ]);
 
-  const handleSignOut = (): void => {
-    void logout();
+  const returnToDashboard = (): void => {
+    goToPage('/');
   };
 
   if (!isRouterLoading && !applicationId) {
@@ -84,8 +87,9 @@ const ThankYouPage: NextPage = () => {
       <Container>
         <Head>
           <title>
-            {t(`common:thankyouPage.thankyouMessageLabel`)} |{' '}
-            {t(`common:appName`)}
+            {`${t('common:thankyouPage.thankyouMessageLabel')} | ${t(
+              'common:appName'
+            )}`}
           </title>
         </Head>
         <$Notification
@@ -106,11 +110,15 @@ const ThankYouPage: NextPage = () => {
             })}
           </p>
           <ButtonContainer>
-            <Button onClick={createNewApplicationClick} variant="secondary">
+            <Button
+              onClick={createNewApplicationClick}
+              variant="secondary"
+              isLoading={createApplicationQuery.isLoading}
+            >
               {t('common:thankyouPage.add_another')}
             </Button>
-            <Button onClick={handleSignOut} variant="primary">
-              {t('common:thankyouPage.sign_out')}
+            <Button onClick={returnToDashboard} variant="primary">
+              {t('common:thankyouPage.return_to_dashboard')}
             </Button>
           </ButtonContainer>
         </SuccessContainer>

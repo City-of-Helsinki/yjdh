@@ -64,9 +64,9 @@ if (isRealIntegrationsEnabled()) {
     await step1Form.expectations.isFulFilledWith(application);
   });
 } else {
-  test
-    .requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))
-    ('Fills up employer form and retrieves its data when reloading page', async (t: TestController) => {
+  test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
+    'Fills up employer form and retrieves its data when reloading page',
+    async (t: TestController) => {
       const { id: applicationId, ...applicationData } =
         await loginAndfillApplication(t, 1, FULLY_MOCKED_FORM_DATA);
       const wizard = await getWizardComponents(t);
@@ -79,31 +79,24 @@ if (isRealIntegrationsEnabled()) {
       await step1Form.expectations.isPresent();
       await step1Form.expectations.isFulFilledWith(applicationData);
       await urlUtils.expectations.urlChangedToApplicationPage(applicationId);
-    });
+    }
+  );
 }
 
-test
-  .requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))
-  ('can fill and send application and create another with pre-filled employer data', async (t: TestController) => {
-    const application = await loginAndfillApplication(t, 2, FULLY_MOCKED_FORM_DATA);
+test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
+  'can fill and send application and create another with pre-filled employer data',
+  async (t: TestController) => {
+    const application = await loginAndfillApplication(
+      t,
+      2,
+      FULLY_MOCKED_FORM_DATA
+    );
     const thankYouPage = getThankYouPageComponents(t);
     await thankYouPage.header();
 
     const createNewApplicationButton =
       await thankYouPage.createNewApplicationButton();
-    // This navigates back to the Dashboard (thank-you page calls goToPage('/'))
     await createNewApplicationButton.actions.clickButton();
-
-    // Wait for Dashboard, then click "Create New Application" to create a second app
-    const dashboard = getDashboardComponents(t);
-    await dashboard.expectations.isLoaded();
-
-    // Verify the previously submitted application is listed in the applications table
-    await dashboard.expectations.hasApplication(
-      application.summer_vouchers[0].employee_name ?? ''
-    );
-
-    await dashboard.actions.clickCreateNewApplication();
 
     const wizard = await getWizardComponents(t);
     await wizard.expectations.isPresent();
@@ -115,12 +108,17 @@ test
     // Verify employment details are EMPTY for the new application
     await t.expect(step1Form.selectors.employeeNameInput().value).eql('');
     await t.expect(step1Form.selectors.serialNumberInput().value).eql('');
-  });
+  }
+);
 
-test
-  .requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))
-  ('Fills up employer form and preserves data when navigating back and forth', async (t: TestController) => {
-    const application = await loginAndfillApplication(t, 1, FULLY_MOCKED_FORM_DATA);
+test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
+  'Fills up employer form and preserves data when navigating back and forth',
+  async (t: TestController) => {
+    const application = await loginAndfillApplication(
+      t,
+      1,
+      FULLY_MOCKED_FORM_DATA
+    );
     const wizard = await getWizardComponents(t);
     await wizard.expectations.isPresent();
 
@@ -148,4 +146,5 @@ test
       hired_without_voucher_assessment:
         application.summer_vouchers[0].hired_without_voucher_assessment,
     });
-  });
+  }
+);

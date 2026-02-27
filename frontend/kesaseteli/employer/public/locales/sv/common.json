@@ -35,7 +35,7 @@
     "header": "Ansökan om sommarsedel har skickats!",
     "success_message": "Information om arbetstagaren {{name}} har sparats.",
     "add_another": "Gör en ny ansökan",
-    "sign_out": "Logga ut"
+    "return_to_dashboard": "Tillbaka till framsidan"
   },
   "dashboard": {
     "header": "Sommarsedeln - Arbetsgivarportal",
