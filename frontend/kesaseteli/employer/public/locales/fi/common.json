@@ -35,7 +35,7 @@
     "header": "Kesäseteli hakemus lähetetty onnistuneesti!",
     "success_message": "Työntekijän {{name}} tiedot on tallennettu.",
     "add_another": "Tee uusi hakemus",
-    "sign_out": "Kirjaudu ulos"
+    "return_to_dashboard": "Palaa etusivulle"
   },
   "dashboard": {
     "header": "Kesäseteli - Työnantajaportaali",
