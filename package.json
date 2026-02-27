@@ -10,6 +10,7 @@
     "// clean: stop and remove docker containers and database volume": "",
     "clean": "docker compose -f compose/handler.dev.yml down --remove-orphans; docker compose -f compose/employer.dev.yml down --remove-orphans; docker compose -f compose.benefit.yml down --remove-orphans; docker rm -f $(docker ps -a -q); docker volume rm $(docker volume ls -q);",
     "// partial docker compose commands per service, dont use these straight. Use <service>:up, <service>:build or <service>:rebuild instead ": "",
+    "benefit": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker compose -f compose.benefit.yml",
     "employer": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker compose -f compose/employer.dev.yml",
     "employer:linux": "cross-env COMPOSE_HTTP_TIMEOUT=200 UID=$(id -u) GID=$(id -g) docker compose -f compose/employer.dev.yml -f compose/linux.yml",
     "handler": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker compose -f compose/handler.dev.yml",
