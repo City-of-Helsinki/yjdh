@@ -51,18 +51,28 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
       submitButtonVariant: 'danger',
     });
     if (isConfirmed) {
+      const { setLeaveConfirmBypassed } = await import(
+        'shared/hooks/useLeaveConfirm'
+      );
+      setLeaveConfirmBypassed(true);
       deleteApplication(() => goToPage('/'));
     }
   }, [confirm, deleteApplication, goToPage, t]);
 
   const handleSuccess = React.useCallback(
-    (validatedApplication: Application) => {
+    async (validatedApplication: Application) => {
       if (!isLastStep) {
         return updateApplication(validatedApplication, () => {
           // eslint-disable-next-line no-console
           console.debug('ActionButtons: goToNextStep called');
           void goToNextStep();
         });
+      }
+      if (isLastStep) {
+        const { setLeaveConfirmBypassed } = await import(
+          'shared/hooks/useLeaveConfirm'
+        );
+        setLeaveConfirmBypassed(true);
       }
       return sendApplication(validatedApplication, onAfterLastStep);
     },

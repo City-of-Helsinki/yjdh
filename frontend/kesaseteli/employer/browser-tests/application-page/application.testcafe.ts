@@ -175,9 +175,6 @@ test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
   async (t: TestController) => {
     await loginAndfillApplication(t, 1, FULLY_MOCKED_FORM_DATA);
 
-    // Setup native dialog handler to confirm the navigation
-    await t.setNativeDialogHandler(() => true);
-
     const header = new Header(getEmployerTranslationsApi());
     await header.isLoaded();
 
@@ -186,7 +183,14 @@ test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
     const appTitle = Selector('a').withText(/kesäseteli/i);
     await t.click(appTitle);
 
-    // Verify redirect to dashboard (after confirming dialog)
+    const wizard = await getWizardComponents(t);
+    // Verify confirmation modal exists
+    await t.expect(wizard.selectors.confirmationDialog().exists).ok();
+
+    // Confirm navigation
+    await wizard.actions.clickConfirmCancelButton();
+
+    // Verify redirect to dashboard
     const dashboard = getDashboardComponents(t);
     await dashboard.expectations.isLoaded();
     await urlUtils.expectations.urlChangedToLandingPage();

@@ -20,7 +20,7 @@ const ApplicationPage: NextPage = () => {
   const goToPage = useGoToPage();
 
   useLeaveConfirm(
-    Boolean(applicationId),
+    Boolean(applicationId) && applicationQuery.data?.status === 'draft',
     t('common:application.buttons.leave_confirmation')
   );
 

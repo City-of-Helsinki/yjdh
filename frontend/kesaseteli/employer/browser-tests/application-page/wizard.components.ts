@@ -28,12 +28,12 @@ export const getWizardComponents = async (t: TestController) => {
       }),
     confirmationDialog: () =>
       screen.findByRole('dialog', {
-        name: /haluatko varmasti keskeyttää hakemuksen täyttämisen\?|are you sure you want to cancel the application\?|är du säker på att du vill avbryta ifyllandet av ansökan\?/i,
+        name: /haluatko varmasti keskeyttää hakemuksen täyttämisen\?|are you sure you want to cancel the application\?|är du säker på att du vill avbryta ifyllandet av ansökan\?|haluatko poistua sivulta\?|do you want to leave the page\?|vill du lämna sidan\?/i,
       }),
     confirmCancelButton: () => {
       const dialog = selectors.confirmationDialog();
       return withinContext(t)(dialog).findByRole('button', {
-        name: /keskeytä|cancel|avbryt/i,
+        name: /keskeytä|cancel|avbryt|vahvista|confirm|bekräfta/i,
       });
     },
     step1Button: () =>
