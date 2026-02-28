@@ -26,12 +26,12 @@ class Command(BaseCommand):
             "--keep",
             type=int,
             default=30,
-            help="The number of days to keep the applications",
+            help = "The number of days to keep the applications"
         )
 
         parser.add_argument(
             "--status",
-            type=str,
+            type= str,
             nargs="+",  # Allow multiple statuses
             help=(
                 "The statuses of the applications to delete. pass multiple statuses"
