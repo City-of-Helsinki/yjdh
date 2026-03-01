@@ -1,5 +1,78 @@
 # Changelog
 
+## [1.12.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.11.0...kesaseteli-backend-v1.12.0) (2026-03-01)
+
+
+### Features
+
+* **kesaseteli,admin:** Add custom admin site for context management ([3721d49](https://github.com/City-of-Helsinki/yjdh/commit/3721d49fb38e6494d91b3518da0bde104a985091))
+* **kesaseteli,admin:** Admin employer applications and vouchers ([ab9ed4b](https://github.com/City-of-Helsinki/yjdh/commit/ab9ed4bf66c38bca98c64fdec975243cb7fc6196))
+* **kesaseteli,admin:** Admin youth applications and summer vouchers ([9a3a4bb](https://github.com/City-of-Helsinki/yjdh/commit/9a3a4bbb6386feed93ccc2de4c782f2594b59cf9))
+* **kesaseteli,admin:** Import schools ([8849897](https://github.com/City-of-Helsinki/yjdh/commit/8849897b9dc645cb6a136bfa26864909adfad3b4))
+* **kesaseteli,admin:** Login to admin site with ADFS ([9808a43](https://github.com/City-of-Helsinki/yjdh/commit/9808a43fd04435e9e9e5ab6a5cff0bc8bfdb3159))
+* **kesaseteli,admin:** More features in school admin page ([2612cea](https://github.com/City-of-Helsinki/yjdh/commit/2612cea70ebc655bbd2345192252a3b67928ab4a))
+* **kesaseteli,admin:** Register organisation to admin site ([cf3f359](https://github.com/City-of-Helsinki/yjdh/commit/cf3f3595d34191a688e7eb01b82299a7ff4195e6))
+* **kesaseteli,admin:** Resend youth summer vouchers ([cb7d6ca](https://github.com/City-of-Helsinki/yjdh/commit/cb7d6ca2a79682bc45b96ed163e433aed261f518))
+* **kesaseteli,admin:** Tools for semi automated admin management ([a861f35](https://github.com/City-of-Helsinki/yjdh/commit/a861f35cae5423640903d75494e15c45537e9418))
+* **kesaseteli:** Add API endpoint for summer voucher configuration ([f305951](https://github.com/City-of-Helsinki/yjdh/commit/f305951fa67f1b03e5801127eb3758fbdc5375aa))
+* **kesaseteli:** Add API endpoint to list available target groups ([7a2f104](https://github.com/City-of-Helsinki/yjdh/commit/7a2f1048880c7bcdb2623c18fc44ce7bd2b6e451))
+* **kesaseteli:** Add description property to target group ([b73084a](https://github.com/City-of-Helsinki/yjdh/commit/b73084ac3a74bc20552a6c2c11f1e4789d4cf462))
+* **kesaseteli:** Change verbose name for employer appl. and voucher ([0235932](https://github.com/City-of-Helsinki/yjdh/commit/02359324d34471341a0145f279faa5db8e24c2b8))
+* **kesaseteli:** Docker-entrypoint to create summer voucher config ([99cfad6](https://github.com/City-of-Helsinki/yjdh/commit/99cfad6d29171df751aa7203c0505e7bdca50077))
+* **kesaseteli:** Migrate summer voucher serial numbers to foreign keys ([fa61eed](https://github.com/City-of-Helsinki/yjdh/commit/fa61eedf7bff950f069488c064a62f8ff050f77c))
+* **kesaseteli:** Mngmt.cmd. to create summer voucher config instance ([3cdaa45](https://github.com/City-of-Helsinki/yjdh/commit/3cdaa45dd225444d1d164653e52f4f17775d478e))
+* **kesaseteli:** Models and base files for email templates ([ca19e0c](https://github.com/City-of-Helsinki/yjdh/commit/ca19e0c040cecde96c8439e77622d69cd4e038e5))
+* **kesaseteli:** Reject appl. if no summer voucher config for year ([584c4b9](https://github.com/City-of-Helsinki/yjdh/commit/584c4b90be2df94f9ddaa6e7f5d31e08eb95f950))
+* **kesaseteli:** Summer voucher configuration ([d9cd7b0](https://github.com/City-of-Helsinki/yjdh/commit/d9cd7b06576a19747f6c4462f4cc76bc5fec8c6f))
+* **kesaseteli:** Upgrade from PostgreSQL 13 → 17 ([91e03f1](https://github.com/City-of-Helsinki/yjdh/commit/91e03f11c1d35f0848d7d3c751845c1529bf5ebc))
+* **kesaseteli:** Upgrade YTJ client to use v3 endpoint ([e688f74](https://github.com/City-of-Helsinki/yjdh/commit/e688f748d2f9e4a435a38f056ace7f23e5421c9f))
+* **ks,admin:** Full permissions for superuser ([43dde8f](https://github.com/City-of-Helsinki/yjdh/commit/43dde8f7e9d3ebdadc6da4542093858c58694bfc))
+* **ks,backend,frontend:** Use .env.kesaseteli-&lt;app&gt; files ([246be9b](https://github.com/City-of-Helsinki/yjdh/commit/246be9bbfeebc2119238adbaca0d6eff07c27bac))
+* **ks,backend:** Add & populate Company.created_at & modified_at fields ([7b8a302](https://github.com/City-of-Helsinki/yjdh/commit/7b8a302b9173aa686d862391c9a50b3a569cd598))
+* **ks,backend:** Add 15, 18 y.o. Helsinkian target groups, not defaults ([eec29b8](https://github.com/City-of-Helsinki/yjdh/commit/eec29b834f7e02fa5161570c9cd445829b42d561))
+* **ks,backend:** Add django-filter package ([520577c](https://github.com/City-of-Helsinki/yjdh/commit/520577c3bb3d11885e3335e10d41d65a8a0b3369))
+* **ks,backend:** Add EmployerApplicationViewSet limit+offset pagination ([4953152](https://github.com/City-of-Helsinki/yjdh/commit/495315209dce8af64ed412a07d27b9b101792b9a))
+* **ks,backend:** Add OrganizationType enum & Company.organization_type ([861a801](https://github.com/City-of-Helsinki/yjdh/commit/861a8013594a0475faf08dff3c1b19f23844f356))
+* **ks,backend:** Allow filtering & ordering EmployerApplicationViewSet ([bc70a4b](https://github.com/City-of-Helsinki/yjdh/commit/bc70a4b0879162940eba50e5fd3554cd181ad4ad))
+* **ks,backend:** Index Company.name for search & ordering performance ([530697e](https://github.com/City-of-Helsinki/yjdh/commit/530697e6f0c5b6617635dd289dff301084fa377a))
+* **ks,backend:** Index EmployerApplication timestamps & status field ([83b0455](https://github.com/City-of-Helsinki/yjdh/commit/83b0455ad796eb64f63912d6674f72da0dd52605))
+* **ks,backend:** Make Company.business_id unique ([bdb8f27](https://github.com/City-of-Helsinki/yjdh/commit/bdb8f27ea2bd47d146abb6c6e78f2d73ff786b26))
+* **ks,backend:** Upgrade Django 5.1→5.2 and all packages ([ac8059e](https://github.com/City-of-Helsinki/yjdh/commit/ac8059eb8e17579449dcc2fd58b3b30c9e123fa4))
+* **ks:** Remove target_group field from employer summer voucher ([31909cc](https://github.com/City-of-Helsinki/yjdh/commit/31909cc074667f034a836fc52e07d6face2a3137))
+* **shared,admin:** Login form can be hidden if context disables it ([a9ec357](https://github.com/City-of-Helsinki/yjdh/commit/a9ec35726ee945d7819247699d1a3e0ecd5f6b72))
+* Update remaining pyproject.toml files to use ruff with python 3.12 ([f2c02a8](https://github.com/City-of-Helsinki/yjdh/commit/f2c02a84ef619522f93a2afcf94bb1e57c75d73d))
+* Upgrade to Python 3.12 in shared backend and in kesaseteli ([e622132](https://github.com/City-of-Helsinki/yjdh/commit/e622132b4db15738a39ecc678386c7f9711348ab))
+
+
+### Bug Fixes
+
+* **kesaseteli:** Add fixture to enable admin site on every unit test ([1c59891](https://github.com/City-of-Helsinki/yjdh/commit/1c598915583fac57d19520ca9e3d848a3894e7c7))
+* **kesaseteli:** Add organization_type to organisation serializer ([6dbe5e0](https://github.com/City-of-Helsinki/yjdh/commit/6dbe5e0fe2806539752e8f357a5a2d0f65771190))
+* **ks,backend:** Make excel-download page better UI-wise ([5f36438](https://github.com/City-of-Helsinki/yjdh/commit/5f36438d2bbe9902e67777d0f9dd1da9daae823e))
+* **ks,backend:** Update migrations after merging of PR [#3871](https://github.com/City-of-Helsinki/yjdh/issues/3871) ([5e09a54](https://github.com/City-of-Helsinki/yjdh/commit/5e09a548fd1dc5edea4f2e86516e4c67fb2d4cd5))
+* **ks:** Employer application should allow empty target group ([ddef4d4](https://github.com/City-of-Helsinki/yjdh/commit/ddef4d41c5f4db3e111e68aa97ddbe0199747737))
+* Null pointer exception in excel exporter ([339403b](https://github.com/City-of-Helsinki/yjdh/commit/339403b00aa354d22665e6805e613d1b702142ee))
+
+
+### Dependencies
+
+* **deps:** Bump azure-core in /backend/kesaseteli ([a3ed2fd](https://github.com/City-of-Helsinki/yjdh/commit/a3ed2fd3e0478458dee323e1927c20fc9996fce9))
+* **deps:** Bump pillow from 12.0.0 to 12.1.1 in /backend/kesaseteli ([46ec9b2](https://github.com/City-of-Helsinki/yjdh/commit/46ec9b23af81898139aa0c5cfb49c2faae8c96ab))
+* **kesaseteli:** Replace old pytest-freezegun with newer pytest-freezer ([7b023be](https://github.com/City-of-Helsinki/yjdh/commit/7b023bed1f703764f1ce061b1229c0ace1d27db9))
+* **kesaseteli:** Upgrade backend packages, use django 5.1 ([e16ca81](https://github.com/City-of-Helsinki/yjdh/commit/e16ca8173fdb9725502d8f97a8b89ff0b98f5c6f))
+* **kesaseteli:** Upgrade pip-tools to 7.5.2 so it works with pip 25.3 ([0ae06bc](https://github.com/City-of-Helsinki/yjdh/commit/0ae06bc3301cce5fcf91731afe4c1d483070f829))
+
+
+### Documentation
+
+* Add note about about test data generation ([a8fe0b4](https://github.com/City-of-Helsinki/yjdh/commit/a8fe0b4acfb6074cea1459098c1c66cf119a3a1e))
+* **env:** Add DATABASE_URL environment variable in env example ([b8041f1](https://github.com/City-of-Helsinki/yjdh/commit/b8041f19a9b65d97acd51fd1818b49f04a3e3f17))
+* **kesaseteli:** Application endpoints and ADFS configuration ([e275325](https://github.com/City-of-Helsinki/yjdh/commit/e275325eb9fe886b8e9fd85ee2f02603294c03d6))
+* **kesaseteli:** Document authentication methods by UI ([6226900](https://github.com/City-of-Helsinki/yjdh/commit/6226900f675bcc736291a0149aeb19d71e97e8d9))
+* **kesaseteli:** Improve summer voucher config docs ([a3fc7f5](https://github.com/City-of-Helsinki/yjdh/commit/a3fc7f571d952c43e1aab84c646c9b9d0a68f50d))
+* **kesaseteli:** Management command documentation ([e81f712](https://github.com/City-of-Helsinki/yjdh/commit/e81f712483c0c43ab6176023294a2f6c531d0d49))
+* **kesaseteli:** Yearly configuration and email templates management ([cf7df28](https://github.com/City-of-Helsinki/yjdh/commit/cf7df28de337d1c3cefc95986f79e60592d20c07))
+
 ## [1.11.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.10.5...kesaseteli-backend-v1.11.0) (2025-12-19)
 
 
