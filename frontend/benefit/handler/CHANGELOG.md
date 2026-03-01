@@ -1,5 +1,22 @@
 # Changelog
 
+## [4.14.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.13.1...benefit-handler-v4.14.0) (2026-03-01)
+
+
+### Features
+
+* **benefit:** New states for instalments ([124ab1f](https://github.com/City-of-Helsinki/yjdh/commit/124ab1ffa9eabec36f5528d3aee2285a0ae6624d))
+
+
+### Bug Fixes
+
+* **frontend,all:** Fix use of env vars in /frontend/next.config.js ([2094a07](https://github.com/City-of-Helsinki/yjdh/commit/2094a077c86b575721cf106258494fededcbaad7))
+
+
+### Dependencies
+
+* Update axios versions ([#3907](https://github.com/City-of-Helsinki/yjdh/issues/3907)) ([ea68ee2](https://github.com/City-of-Helsinki/yjdh/commit/ea68ee2d060637682659fd42d0df67f7cd9bfad8))
+
 ## [4.13.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.13.0...benefit-handler-v4.13.1) (2026-02-17)
 
 
