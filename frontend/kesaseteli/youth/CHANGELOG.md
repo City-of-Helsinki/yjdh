@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.6.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v1.5.2...kesaseteli-youth-v1.6.0) (2026-03-01)
+
+
+### Features
+
+* **benefit:** Enable cloud sentry Ref: HL-1631 HL-1635 ([9c2884d](https://github.com/City-of-Helsinki/yjdh/commit/9c2884d4c5d01c4d0c7d03977bd34f5ffb5509e2))
+* **kesaseteli:** Update target group ages from 16 → 16/17 for year 2026 ([a59ac5e](https://github.com/City-of-Helsinki/yjdh/commit/a59ac5ead84407896c45c8035df6c98bf16a3f45))
+* **ks,backend,frontend:** Prune & augment env example files ([d1e232a](https://github.com/City-of-Helsinki/yjdh/commit/d1e232a9bae6b41e8bb3549caae6b0f240938d60))
+* **ks,backend,frontend:** Use .env.kesaseteli-&lt;app&gt; files ([246be9b](https://github.com/City-of-Helsinki/yjdh/commit/246be9bbfeebc2119238adbaca0d6eff07c27bac))
+* **ks,frontend:** Add matomo & cookie consent to employer & youth UIs ([4be9366](https://github.com/City-of-Helsinki/yjdh/commit/4be936621bd5e75e8e841d7f4ec651d6842d6697))
+* **ks,youth:** Application not open when config not available ([7267b98](https://github.com/City-of-Helsinki/yjdh/commit/7267b985bba59a1f9e52f39b3b743177292c8bfe))
+* Use common ci wokflow for frontend HL-1637 ([#3778](https://github.com/City-of-Helsinki/yjdh/issues/3778)) ([c5dbf70](https://github.com/City-of-Helsinki/yjdh/commit/c5dbf7011bef2042f69d515908a45e571d74bf25))
+
+
+### Bug Fixes
+
+* Axios dependencies ([ab6edd6](https://github.com/City-of-Helsinki/yjdh/commit/ab6edd69a2fa7826bf8621e55824ab57fa5811a7))
+* **benefit:** Cleanup next.config.js Ref: HL-1631 ([ad077c3](https://github.com/City-of-Helsinki/yjdh/commit/ad077c361f7fd00b91ee8ad097ea194d4cb62ec9))
+* **frontend,all:** Fix use of env vars in /frontend/next.config.js ([2094a07](https://github.com/City-of-Helsinki/yjdh/commit/2094a077c86b575721cf106258494fededcbaad7))
+* **ks,shared:** Update axios for consistency and fix Nock test setup ([dec1979](https://github.com/City-of-Helsinki/yjdh/commit/dec19798c171cc6bcfbe3866f24d74525c9f1692))
+* **testcafe:** Use --disable-features=LocalNetworkAccessChecks ([1ef2407](https://github.com/City-of-Helsinki/yjdh/commit/1ef24070639929c35aba69133908206829616837))
+* Update axios ([6563e30](https://github.com/City-of-Helsinki/yjdh/commit/6563e301a7249dbfdef95955383a9f33aa71e4d5))
+
+
+### Dependencies
+
+* Update axios versions ([#3907](https://github.com/City-of-Helsinki/yjdh/issues/3907)) ([ea68ee2](https://github.com/City-of-Helsinki/yjdh/commit/ea68ee2d060637682659fd42d0df67f7cd9bfad8))
+
 ## [1.5.2](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v1.5.1...kesaseteli-youth-v1.5.2) (2025-06-30)
 
 
