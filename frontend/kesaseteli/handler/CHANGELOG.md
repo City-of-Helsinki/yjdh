@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.6.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v1.5.0...kesaseteli-handler-v1.6.0) (2026-03-01)
+
+
+### Features
+
+* **ks,backend,frontend:** Use .env.kesaseteli-&lt;app&gt; files ([246be9b](https://github.com/City-of-Helsinki/yjdh/commit/246be9bbfeebc2119238adbaca0d6eff07c27bac))
+
+
+### Bug Fixes
+
+* **frontend,all:** Fix use of env vars in /frontend/next.config.js ([2094a07](https://github.com/City-of-Helsinki/yjdh/commit/2094a077c86b575721cf106258494fededcbaad7))
+* **ks,shared:** Update axios for consistency and fix Nock test setup ([dec1979](https://github.com/City-of-Helsinki/yjdh/commit/dec19798c171cc6bcfbe3866f24d74525c9f1692))
+
+
+### Dependencies
+
+* Update axios versions ([#3907](https://github.com/City-of-Helsinki/yjdh/issues/3907)) ([ea68ee2](https://github.com/City-of-Helsinki/yjdh/commit/ea68ee2d060637682659fd42d0df67f7cd9bfad8))
+
 ## [1.5.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v1.4.1...kesaseteli-handler-v1.5.0) (2025-12-30)
 
 
