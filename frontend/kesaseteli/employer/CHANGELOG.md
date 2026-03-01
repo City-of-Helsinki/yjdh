@@ -1,5 +1,40 @@
 # Changelog
 
+## [1.6.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v1.5.2...kesaseteli-employer-v1.6.0) (2026-03-01)
+
+
+### Features
+
+* **benefit:** Enable cloud sentry Ref: HL-1631 HL-1635 ([9c2884d](https://github.com/City-of-Helsinki/yjdh/commit/9c2884d4c5d01c4d0c7d03977bd34f5ffb5509e2))
+* **kesaseteli:** Migrate summer voucher serial numbers to foreign keys ([fa61eed](https://github.com/City-of-Helsinki/yjdh/commit/fa61eedf7bff950f069488c064a62f8ff050f77c))
+* **ks,backend,frontend:** Use .env.kesaseteli-&lt;app&gt; files ([246be9b](https://github.com/City-of-Helsinki/yjdh/commit/246be9bbfeebc2119238adbaca0d6eff07c27bac))
+* **ks,employer:** Fetch target group options to form from API ([46af5ca](https://github.com/City-of-Helsinki/yjdh/commit/46af5ca85d5fb6dbf51cf36075e86fe86f66ca83))
+* **ks,employer:** Session storage for wizard values ([8523c5a](https://github.com/City-of-Helsinki/yjdh/commit/8523c5a70d468e70c154723576d3ebe038e76f3e))
+* **ks,employer:** Single form wizard form flow ([31604ce](https://github.com/City-of-Helsinki/yjdh/commit/31604ceadad8f9b7afce37e9a0e97d22ae5eaccd))
+* **ks,frontend:** Add matomo & cookie consent to employer & youth UIs ([4be9366](https://github.com/City-of-Helsinki/yjdh/commit/4be936621bd5e75e8e841d7f4ec651d6842d6697))
+* **ks,frontend:** Add translations for organization type & job type ([e89e4dc](https://github.com/City-of-Helsinki/yjdh/commit/e89e4dc8a09a5c41eeb33c3e078c9d9b4de714f3))
+* Use common ci wokflow for frontend HL-1637 ([#3778](https://github.com/City-of-Helsinki/yjdh/issues/3778)) ([c5dbf70](https://github.com/City-of-Helsinki/yjdh/commit/c5dbf7011bef2042f69d515908a45e571d74bf25))
+
+
+### Bug Fixes
+
+* Axios dependencies ([ab6edd6](https://github.com/City-of-Helsinki/yjdh/commit/ab6edd69a2fa7826bf8621e55824ab57fa5811a7))
+* **benefit:** Cleanup next.config.js Ref: HL-1631 ([ad077c3](https://github.com/City-of-Helsinki/yjdh/commit/ad077c361f7fd00b91ee8ad097ea194d4cb62ec9))
+* **frontend,all:** Fix use of env vars in /frontend/next.config.js ([2094a07](https://github.com/City-of-Helsinki/yjdh/commit/2094a077c86b575721cf106258494fededcbaad7))
+* **ks,employer:** Init list of vouchers with an empty one ([ff1fc5e](https://github.com/City-of-Helsinki/yjdh/commit/ff1fc5ee36cd0a01714afe473e7ac8fec9eb4dbc))
+* **ks,employer:** Leave SSN field as read only after data is fetched ([03a5e21](https://github.com/City-of-Helsinki/yjdh/commit/03a5e218115798cfe8df450056a57f7a59f8dcd3))
+* **ks,employer:** Notification flashing briefly ([5548e78](https://github.com/City-of-Helsinki/yjdh/commit/5548e78c24f5f505da3dc39344c7ef196020ef5c))
+* **ks,employer:** Translations ([71832e7](https://github.com/City-of-Helsinki/yjdh/commit/71832e7380309506d76693ba7c2ad2dd9aed337a))
+* **ks,shared:** Update axios for consistency and fix Nock test setup ([dec1979](https://github.com/City-of-Helsinki/yjdh/commit/dec19798c171cc6bcfbe3866f24d74525c9f1692))
+* Linter error ([c100fea](https://github.com/City-of-Helsinki/yjdh/commit/c100feae76a6b765e3be075d6a92f0d23fdfbd20))
+* **testcafe:** Use --disable-features=LocalNetworkAccessChecks ([1ef2407](https://github.com/City-of-Helsinki/yjdh/commit/1ef24070639929c35aba69133908206829616837))
+* Update axios ([6563e30](https://github.com/City-of-Helsinki/yjdh/commit/6563e301a7249dbfdef95955383a9f33aa71e4d5))
+
+
+### Dependencies
+
+* Update axios versions ([#3907](https://github.com/City-of-Helsinki/yjdh/issues/3907)) ([ea68ee2](https://github.com/City-of-Helsinki/yjdh/commit/ea68ee2d060637682659fd42d0df67f7cd9bfad8))
+
 ## [1.5.2](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v1.5.1...kesaseteli-employer-v1.5.2) (2025-06-30)
 
 
