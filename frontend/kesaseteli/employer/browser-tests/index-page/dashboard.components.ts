@@ -4,7 +4,7 @@ export const getDashboardComponents = (t: TestController) => {
     const screen = screenContext(t);
     const selectors = {
         dashboardTitle() {
-            return screen.findByRole('heading', { name: /kesäseteli - työnantajaportaali/i });
+            return screen.findByRole('heading', { name: /työnantajan kesäsetelihakemukset/i });
         },
         createNewApplicationButton() {
             return screen.findByRole('button', { name: /(luo|tee) uusi hakemus/i });

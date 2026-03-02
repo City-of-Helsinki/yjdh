@@ -4,9 +4,15 @@ import useErrorHandler from 'shared/hooks/useErrorHandler';
 import Application from 'shared/types/application';
 
 const useApplicationsQuery = <T = Application[]>(
+  onlyMine?: boolean,
   select?: (applications: Application[]) => T
-): UseQueryResult<T> =>
-  useQuery(BackendEndpoint.EMPLOYER_APPLICATIONS, {
+): UseQueryResult<T> => {
+  const queryKey =
+    onlyMine !== undefined
+      ? `${BackendEndpoint.EMPLOYER_APPLICATIONS}?only_mine=${String(onlyMine)}`
+      : BackendEndpoint.EMPLOYER_APPLICATIONS;
+
+  return useQuery(queryKey, {
     select: select
       ? (applications: Application[]) => select(applications)
       : undefined,
@@ -14,4 +20,5 @@ const useApplicationsQuery = <T = Application[]>(
     retryDelay: 3000,
     onError: useErrorHandler(),
   });
+};
 export default useApplicationsQuery;

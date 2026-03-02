@@ -82,6 +82,7 @@ export const expectToGetApplicationsFromBackend = (
 ): nock.Scope =>
   nock(getBackendDomain())
     .get(`${BackendEndpoint.EMPLOYER_APPLICATIONS}`)
+    .query({ only_mine: false })
     .reply(200, applications, { 'Access-Control-Allow-Origin': '*' });
 
 export const expectToGetApplicationsErrorFromBackend = (
@@ -90,6 +91,7 @@ export const expectToGetApplicationsErrorFromBackend = (
   consoleSpy = jest.spyOn(console, 'error').mockImplementation();
   return nock(getBackendDomain())
     .get(`${BackendEndpoint.EMPLOYER_APPLICATIONS}`)
+    .query({ only_mine: false })
     .times(times)
     .replyWithError(
       '500: This is a load applications test error. Please ignore this error message.'

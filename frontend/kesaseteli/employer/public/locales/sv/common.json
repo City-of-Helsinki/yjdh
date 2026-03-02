@@ -42,12 +42,20 @@
     "return_to_dashboard": "Tillbaka till framsidan"
   },
   "dashboard": {
-    "header": "Sommarsedeln - Arbetsgivarportal",
-    "welcome": "Välkommen till sommarsedelns arbetsgivarportal. Här kan du följa statusen på dina ansökningar och göra nya ansökningar.",
+    "header": "Arbetsgivarens sommarsedel ansökningar",
+    "welcome": "Välkommen till arbetsgivarnas gränssnitt för Sommarsedeln-tjänsten. Här kan du följa statusen på dina ansökningar och göra nya ansökningar.",
     "info": "Läs mer om tjänsten <lnk href=\"https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/\" target=\"_blank\" rel=\"noopener noreferrer\">här</lnk>.",
     "noApplications": "Inga tidigare ansökningar.",
     "createApplicationGuidance": "Här kan du skapa en ny ansökan för att ansöka om sommarsedel.",
-    "previousApplications": "Tidigare ansökningar om sommarsedel"
+    "previousApplications": "Tidigare ansökningar om sommarsedel",
+    "organisationName": "Du agerar på uppdrag av {{name}}.",
+    "filterBar": {
+      "label": "Egna ansökningar",
+      "ariaLabel": "Filter för egna ansökningar",
+      "tooltipLabel": "Filter",
+      "tooltipText": "På: Visa bara mina ansökningar. Av: Visa organisationens ansökningar.",
+      "tooltipButtonLabel": "Öppna instruktioner för ansökningsfilter"
+    }
   },
   "application": {
     "new": "Ny ansökan",

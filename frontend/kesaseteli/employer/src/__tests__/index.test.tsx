@@ -62,9 +62,9 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
       renderPage(IndexPage);
 
       await waitFor(() => {
-        expect(screen.getByText('Kesäseteli - Työnantajaportaali')).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Työnantajan kesäsetelihakemukset' })).toBeInTheDocument();
       });
-      expect(screen.getByText('Aiemmat kesäsetelihakemukset')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Aiemmat kesäsetelihakemukset' })).toBeInTheDocument();
     });
 
     it('Should render the dashboard when no applications exist', async () => {
@@ -74,7 +74,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
       renderPage(IndexPage);
 
       await waitFor(() => {
-        expect(screen.getByText('Kesäseteli - Työnantajaportaali')).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Työnantajan kesäsetelihakemukset' })).toBeInTheDocument();
       });
       expect(screen.getByText('Ei aiempia hakemuksia.')).toBeInTheDocument();
     });

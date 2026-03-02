@@ -10,7 +10,12 @@ import useLocale from 'shared/hooks/useLocale';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
 const EmployerIndex: NextPage = () => {
-  const { data: applications, isLoading, error } = useApplicationsQuery();
+  const [showOnlyMine, setShowOnlyMine] = React.useState(false);
+  const {
+    data: applications,
+    isLoading,
+    error,
+  } = useApplicationsQuery(showOnlyMine);
   const router = useRouter();
   const locale = useLocale();
 
@@ -29,13 +34,33 @@ const EmployerIndex: NextPage = () => {
       ...voucher,
       applicationId: app.id,
       applicationStatus: app.status,
-      modified_at: (app as typeof app & { modified_at?: string }).modified_at || app.submitted_at || '',
+      modified_at:
+        (app as typeof app & { modified_at?: string }).modified_at ||
+        app.submitted_at ||
+        '',
     }))
   );
 
-  const draftApplicationId = applications.find((app) => app.status === 'draft')?.id;
+  const draftApplication = applications.find((app) => app.status === 'draft');
 
-  return <Dashboard vouchers={vouchers} draftApplicationId={draftApplicationId} />;
+  // TODO: Get organisation name from auth information.
+  // Problem is that company name is not in the auth information when auth is mocked.
+  // Could be `applications[0]?.company?.name`, but it's not created yet when logged in;
+  const organisationName = undefined;
+
+  const onToggleOnlyMine = () => {
+    setShowOnlyMine((prev) => !prev);
+  };
+
+  return (
+    <Dashboard
+      vouchers={vouchers}
+      draftApplicationId={draftApplication?.id}
+      showOnlyMine={showOnlyMine}
+      onToggleOnlyMine={onToggleOnlyMine}
+      organisationName={organisationName}
+    />
+  );
 };
 
 export const getStaticProps: GetStaticProps =

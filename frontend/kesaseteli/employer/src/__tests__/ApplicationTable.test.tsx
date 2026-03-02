@@ -25,10 +25,14 @@ const mockVouchers: DashboardVoucher[] = [
   } as Partial<DashboardVoucher> as DashboardVoucher,
 ];
 
-const renderWithTheme = (vouchers: DashboardVoucher[]): RenderResult =>
+const renderWithTheme = (
+  vouchers: DashboardVoucher[],
+  showOnlyMine = false,
+  onToggleOnlyMine: () => void = jest.fn()
+): RenderResult =>
   render(
     <ThemeProvider theme={theme}>
-      <ApplicationTable vouchers={vouchers} />
+      <ApplicationTable vouchers={vouchers} showOnlyMine={showOnlyMine} onToggleOnlyMine={onToggleOnlyMine} />
     </ThemeProvider>
   );
 

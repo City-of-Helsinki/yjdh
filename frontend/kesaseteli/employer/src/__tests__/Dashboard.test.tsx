@@ -34,13 +34,26 @@ const mockVouchers: DashboardVoucher[] = [
 
 const [voucher1] = mockVouchers;
 
-const renderWithProviders = (vouchers: DashboardVoucher[]): RenderResult => {
+type RenderOptions = {
+  vouchers?: DashboardVoucher[];
+  organisationName?: string;
+};
+
+const renderWithProviders = ({
+  vouchers = [],
+  organisationName,
+}: RenderOptions = {}): RenderResult => {
   const queryClient = new QueryClient();
   return render(
     <BackendAPIProvider baseURL={getBackendDomain()}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
-          <Dashboard vouchers={vouchers} />
+          <Dashboard
+            vouchers={vouchers}
+            showOnlyMine={false}
+            onToggleOnlyMine={jest.fn()}
+            organisationName={organisationName}
+          />
         </ThemeProvider>
       </QueryClientProvider>
     </BackendAPIProvider>
@@ -49,29 +62,29 @@ const renderWithProviders = (vouchers: DashboardVoucher[]): RenderResult => {
 
 describe('Dashboard', () => {
   it('renders the dashboard title and intro text', () => {
-    renderWithProviders([]);
+    renderWithProviders();
     expect(
-      screen.getByText('Kesäseteli - Työnantajaportaali')
+      screen.getByRole('heading', { name: 'Työnantajan kesäsetelihakemukset' })
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/Tervetuloa kesäsetelin työnantajaportaaliin/)
+      screen.getByText(/Tervetuloa Kesäseteli -palvelun työnantajien käyttöliittymään/)
     ).toBeInTheDocument();
   });
 
   it('renders the create application button', () => {
-    renderWithProviders([]);
+    renderWithProviders();
     expect(
       screen.getByRole('button', { name: /tee uusi hakemus/i })
     ).toBeInTheDocument();
   });
 
   it('renders "Ei aiempia hakemuksia" when list is empty', () => {
-    renderWithProviders([]);
+    renderWithProviders();
     expect(screen.getByText(/ei aiempia hakemuksia/i)).toBeInTheDocument();
   });
 
   it('renders vouchers in the table', () => {
-    renderWithProviders(mockVouchers);
+    renderWithProviders({ vouchers: mockVouchers });
     expect(screen.getByText(voucher1.employee_name)).toBeInTheDocument();
     expect(
       screen.getByText(voucher1.summer_voucher_serial_number)
@@ -81,5 +94,19 @@ describe('Dashboard', () => {
     ).toBeInTheDocument();
     // Status label renders the i18n translation
     expect(screen.getByText('Lähetetty')).toBeInTheDocument();
+  });
+
+  it('renders the organisation name text when organisationName prop is provided', () => {
+    renderWithProviders({ organisationName: 'Testiyritys Oy' });
+    expect(
+      screen.getByText('Asioit organisaation Testiyritys Oy puolesta.')
+    ).toBeInTheDocument();
+  });
+
+  it('does not render the organisation name element when organisationName is not provided', () => {
+    renderWithProviders();
+    expect(
+      screen.queryByText(/asioit organisaation/i)
+    ).not.toBeInTheDocument();
   });
 });
