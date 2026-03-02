@@ -42,12 +42,20 @@
     "return_to_dashboard": "Palaa etusivulle"
   },
   "dashboard": {
-    "header": "Kesäseteli - Työnantajaportaali",
-    "welcome": "Tervetuloa kesäsetelin työnantajaportaaliin. Tästä voit seurata hakemustesi tilaa ja tehdä uusia hakemuksia.",
+    "header": "Työnantajan kesäsetelihakemukset",
+    "welcome": "Tervetuloa Kesäseteli -palvelun työnantajien käyttöliittymään. Tästä voit seurata hakemustesi tilaa ja tehdä uusia hakemuksia.",
     "info": "Lue lisää palvelusta <lnk href=\"https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/\" target=\"_blank\" rel=\"noopener noreferrer\">täältä</lnk>.",
     "noApplications": "Ei aiempia hakemuksia.",
     "createApplicationGuidance": "Tästä voit luoda uuden hakemuksen kesäsetelin hakemiseksi.",
-    "previousApplications": "Aiemmat kesäsetelihakemukset"
+    "previousApplications": "Aiemmat kesäsetelihakemukset",
+    "organisationName": "Asioit organisaation {{name}} puolesta.",
+    "filterBar": {
+      "label": "Omat hakemukset",
+      "ariaLabel": "Omat hakemukset -suodatin",
+      "tooltipLabel": "Suodatin",
+      "tooltipText": "Aktivoitu: Näytä vain omat hakemukset. Pois: Näytä organisaation hakemukset.",
+      "tooltipButtonLabel": "Avaa hakemukset-suodattimen ohjeistus"
+    }
   },
   "application": {
     "new": "Uusi hakemus",

@@ -42,12 +42,20 @@
     "return_to_dashboard": "Return to dashboard"
   },
   "dashboard": {
-    "header": "Summer job voucher - Employer portal",
-    "welcome": "Welcome to the employer portal for summer job vouchers. Here you can track the status of your applications and make new ones.",
+    "header": "Employer summer voucher applications",
+    "welcome": "Welcome to the employer interface of the Summer Job Voucher service. Here you can track the status of your applications and make new ones.",
     "info": "Read more about the service <lnk href=\"https://nuorten.hel.fi/en/studies-and-work/the-summer-job-voucher/\" target=\"_blank\" rel=\"noopener noreferrer\">here</lnk>.",
     "noApplications": "No previous applications.",
     "createApplicationGuidance": "Here you can create a new application to request a summer voucher.",
-    "previousApplications": "Previous summer job voucher applications"
+    "previousApplications": "Previous summer job voucher applications",
+    "organisationName": "You are acting on behalf of {{name}}.",
+    "filterBar": {
+      "label": "My applications",
+      "ariaLabel": "My applications filter",
+      "tooltipLabel": "Filter",
+      "tooltipText": "On: Show only my applications. Off: Show organisation applications.",
+      "tooltipButtonLabel": "Open applications filter instructions"
+    }
   },
   "application": {
     "new": "Application",

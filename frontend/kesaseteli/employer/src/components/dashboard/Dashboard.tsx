@@ -24,6 +24,12 @@ const $HeaderGrid = styled.div`
   }
 `;
 
+const $OrganisationName = styled.div`
+  font-size: ${(props) => props.theme.fontSize.body.l};
+  line-height: 1.5;
+  font-weight: bold;
+`;
+
 const $IntroText = styled.div`
   font-size: ${(props) => props.theme.fontSize.body.l};
   line-height: 1.5;
@@ -43,9 +49,18 @@ const $ButtonContainer = styled.div`
 type Props = {
   vouchers: DashboardVoucher[];
   draftApplicationId?: string;
+  showOnlyMine: boolean;
+  onToggleOnlyMine: () => void;
+  organisationName?: string;
 };
 
-const Dashboard: React.FC<Props> = ({ vouchers, draftApplicationId }) => {
+const Dashboard: React.FC<Props> = ({
+  vouchers,
+  draftApplicationId,
+  showOnlyMine,
+  onToggleOnlyMine,
+  organisationName,
+}) => {
   const { t } = useTranslation('common');
   const locale = useLocale();
   const router = useRouter();
@@ -74,6 +89,12 @@ const Dashboard: React.FC<Props> = ({ vouchers, draftApplicationId }) => {
       <$Header>
         <$Heading>{t('common:dashboard.header')}</$Heading>
       </$Header>
+
+      {organisationName && (
+        <$OrganisationName>
+          <p>{t('common:dashboard.organisationName', { name: organisationName })}</p>
+        </$OrganisationName>
+      )}
 
       <$HeaderGrid>
         <$IntroText>
@@ -107,9 +128,14 @@ const Dashboard: React.FC<Props> = ({ vouchers, draftApplicationId }) => {
       </$HeaderGrid>
 
       <h2>{t('common:dashboard.previousApplications')}</h2>
-      <ApplicationTable vouchers={vouchers} />
+      <ApplicationTable
+        vouchers={vouchers}
+        showOnlyMine={showOnlyMine}
+        onToggleOnlyMine={onToggleOnlyMine}
+      />
     </Container>
   );
 };
 
 export default Dashboard;
+
