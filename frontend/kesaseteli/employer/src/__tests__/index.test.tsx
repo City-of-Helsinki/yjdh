@@ -5,6 +5,7 @@ import {
   expectAuthorizedReply,
   expectToGetApplicationsErrorFromBackend,
   expectToGetApplicationsFromBackend,
+  expectToGetCompanyFromBackend,
   expectUnauthorizedReply,
 } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
@@ -30,9 +31,13 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
     renderPage(IndexPage, { push: spyPush });
     await waitFor(
       () =>
-        expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/login`, undefined, {
-          shallow: false,
-        }),
+        expect(spyPush).toHaveBeenCalledWith(
+          `${DEFAULT_LANGUAGE}/login`,
+          undefined,
+          {
+            shallow: false,
+          }
+        ),
       { timeout: 5000 }
     );
   });
@@ -40,6 +45,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
   describe('when authorized', () => {
     it('Should show errorPage when applications loading error', async () => {
       expectAuthorizedReply();
+      expectToGetCompanyFromBackend();
       expectToGetApplicationsErrorFromBackend();
       const spyPush = jest.fn();
       renderPage(IndexPage, { push: spyPush });
@@ -57,26 +63,52 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
     it('Should render the dashboard when applications exist', async () => {
       const applications = fakeObjectFactory.fakeApplications(2);
       expectAuthorizedReply();
+      expectToGetCompanyFromBackend();
       expectToGetApplicationsFromBackend(applications);
 
       renderPage(IndexPage);
 
       await waitFor(() => {
-        expect(screen.getByRole('heading', { name: 'Työnantajan kesäsetelihakemukset' })).toBeInTheDocument();
+        expect(
+          screen.getByRole('heading', {
+            name: 'Työnantajan kesäsetelihakemukset',
+          })
+        ).toBeInTheDocument();
       });
-      expect(screen.getByRole('heading', { name: 'Aiemmat kesäsetelihakemukset' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: 'Aiemmat kesäsetelihakemukset' })
+      ).toBeInTheDocument();
     });
 
     it('Should render the dashboard when no applications exist', async () => {
       expectAuthorizedReply();
+      expectToGetCompanyFromBackend();
       expectToGetApplicationsFromBackend([]);
 
       renderPage(IndexPage);
 
       await waitFor(() => {
-        expect(screen.getByRole('heading', { name: 'Työnantajan kesäsetelihakemukset' })).toBeInTheDocument();
+        expect(
+          screen.getByRole('heading', {
+            name: 'Työnantajan kesäsetelihakemukset',
+          })
+        ).toBeInTheDocument();
       });
       expect(screen.getByText('Ei aiempia hakemuksia.')).toBeInTheDocument();
+    });
+
+    it('Should render the organisation name from the company endpoint', async () => {
+      expectAuthorizedReply();
+      expectToGetCompanyFromBackend({ name: 'Firma Oy' });
+      expectToGetApplicationsFromBackend([]);
+
+      renderPage(IndexPage);
+
+      await waitFor(() => {
+        expect(
+          screen.getByText('Asioit organisaation Firma Oy puolesta.')
+        ).toBeInTheDocument();
+      });
     });
   });
 });
