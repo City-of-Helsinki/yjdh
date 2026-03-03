@@ -52,7 +52,9 @@ const useLeaveConfirm = (unsavedChanges: boolean, message: string): void => {
         if (isConfirmed) {
           // 3. User said YES: set the flag and manually push the route
           isConfirmedRef.current = true;
-          void Router.push(url);
+          Router.push(url).catch(() => {
+            isConfirmedRef.current = false;
+          });
         }
         return null;
       });
@@ -113,7 +115,9 @@ const useLeaveConfirm = (unsavedChanges: boolean, message: string): void => {
           }).then((isConfirmed) => {
             if (isConfirmed) {
               isConfirmedRef.current = true;
-              void Router.push(path);
+              Router.push(path).catch(() => {
+                isConfirmedRef.current = false;
+              });
             }
             return null;
           });
