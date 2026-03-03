@@ -76,6 +76,7 @@ const useLoadDraftOrCreateNewApplication = (): void => {
     useCreateApplication();
 
   const draftApplicationQuery = useApplicationsQuery<Application | undefined>(
+    undefined,
     (applications) => applications.find((app) => app.status === 'draft')
   );
 

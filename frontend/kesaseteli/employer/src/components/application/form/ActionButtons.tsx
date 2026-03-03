@@ -6,8 +6,8 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import useConfirm from 'shared/hooks/useConfirm';
-import { setLeaveConfirmBypassed } from 'shared/hooks/useLeaveConfirm';
 import useGoToPage from 'shared/hooks/useGoToPage';
+import { setLeaveConfirmBypassed } from 'shared/hooks/useLeaveConfirm';
 import useWizard from 'shared/hooks/useWizard';
 import Application from 'shared/types/application-form-data';
 
