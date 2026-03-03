@@ -234,7 +234,27 @@ docker exec -it benefit-backend bash
 
 ## Publishing with Release Please & Git workflow
 
-This project uses [Conventional Commits](https://www.conventionalcommits.org/) and [Release Please](https://github.com/googleapis/release-please) for versioning and release automation. For details, see the official docs; for Helsinki-specific release and deployment conventions, see the documentation provided by your team or organisation.
+[Release Please](https://github.com/googleapis/release-please) is used to automate release and release tag creation. Release Please creates release pull requests when the `main` branch has new commits after the last release, with commit messages prefixed with specific [Conventional Commits](https://www.conventionalcommits.org/) types (`feat:`, `fix:` or `deps:`). More info about types [here](https://github.com/googleapis/release-please#releasable-units). Release PR might also already exist (if not merged before). Merging release PR creates appropriate release tag which triggers staging + production deploy. Refer to the [Release Please docs](https://github.com/googleapis/release-please).
+
+More information in [Confluence](https://helsinkisolutionoffice.atlassian.net/wiki/spaces/DD/pages/8278966368/Releases+with+release-please).
+
+### Basics
+
+* Merge to `main` branch triggers dev + test deploys. Merging release pull requests created by Release Please triggers staging + production deploys.
+* Use [Conventional Commits](https://www.conventionalcommits.org/)
+* Merge with merge commit is disabled on pull requests as it doesn't play well with Release Please. Release Please documentation recommends using squash merge, so keep PR's small enough so that squashing makes sense. Rebase and merge also works if PR is large. More info about merge methods in [GitHub docs](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/about-merge-methods-on-github).
+* Pull request title should include Jira handle (for Jira integration to work)
+* Release Please figures out how much to increase the version number based on commit messages. Look [SemVer](https://semver.org/) and [Release Please docs](https://github.com/googleapis/release-please#how-should-i-write-my-commits).
+
+### Example workflow
+
+1. Branch off from `main` to feature branch named after Jira handle, e.g. `git checkout -b hl-123-new-feature`
+2. Do your changes & commit using Conventional Commits, e.g. `git commit -m "feat: new feature backend"`
+3. Make additional changes & commit, e.g. `git commit -m "feat: new feature frontend"`
+4. Open a pull request, for example with title `HL-123: New feature`
+5. After PR checks are passed and PR is approved, merge with squash merge (set commit message to e.g. `feat: new feature`) or rebase and merge
+6. Release Please opens release PR with a title similar to this: `chore(main): release benefit-backend 1.1.1`
+7. Merge release pull request to `main`. This creates a versioned release tag (e.g. `benefit-backend: v1.1.1`) that triggers staging and production deploy (Deploys still must be approved from Azure DevOps).
 
 ## Setting up git hooks
 
