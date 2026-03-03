@@ -14,6 +14,7 @@ class InstalmentStatusValidator(StatusTransitionValidator):
         InstalmentStatus.ACCEPTED: (
             InstalmentStatus.WAITING,
             InstalmentStatus.PAID,
+            InstalmentStatus.PENDING,
         ),
         InstalmentStatus.ERROR_IN_TALPA: (
             InstalmentStatus.WAITING,

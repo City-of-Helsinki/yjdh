@@ -288,23 +288,28 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
             closeButtonLabelText="Close info dialog"
           >
             <Dialog.Header
+              id="instalment-change-date-title"
               title={t('common:instalments.dialog.changeInstalmentDate.heading')}
             />
             <Dialog.Content>
               <DateInput
+                id="intstalment-change-date-dateinput"
                 label="Viimeinen työpäivä"
                 helperText={t('common:instalments.dialog.changeInstalmentDate.helperText')}
                 onChange={setInstalmentNewDate}
-                maxValue={convertToUIDateFormat(selectedInstalment?.dueDate)}
                 value={instalmentNewDate}
                 required
               />
             </Dialog.Content>
             <Dialog.ActionButtons>
-              <Button onClick={() => setIsInstalmentChangeDateModalShown(false)}>
+              <Button
+                id="instalment-change-date-cancel-button"
+                onClick={() => setIsInstalmentChangeDateModalShown(false)}>
                 {t(`common:instalments.dialog.changeInstalmentDate.buttons.cancel`)}
               </Button>
-              <Button onClick={() => onSubmitChangeDate()}>
+              <Button
+                id="instalment-change-date-confirm-button"
+                onClick={() => onSubmitChangeDate()}>
                 {t(`common:instalments.dialog.changeInstalmentDate.buttons.confirm`)}
               </Button>
             </Dialog.ActionButtons>
