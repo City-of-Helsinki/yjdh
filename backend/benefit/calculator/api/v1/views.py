@@ -5,6 +5,7 @@ from rest_framework import filters as drf_filters
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from datetime import datetime
 
 from applications.enums import ApplicationBatchStatus, ApplicationTalpaStatus
 from calculator.api.v1.serializers import (
@@ -51,16 +52,28 @@ class InstalmentView(APIView):
 
     def patch(self, request, instalment_id):
         instalment = get_object_or_404(Instalment, pk=instalment_id)
-        instalment_status = request.data["status"]
-        serializer = InstalmentSerializer(
-            instalment, data={"status": instalment_status}, partial=True
-        )
-        if serializer.is_valid():
+        serializer = None
+        instalment_status = None
+
+        if "status" in request.data:
+            instalment_status = request.data["status"]
+            serializer = InstalmentSerializer(
+                instalment, data={"status": instalment_status}, partial=True
+            )
+        elif "due_date" in request.data:
+            instalment_due_date = datetime.strptime(request.data["due_date"],"%d.%m.%Y").date()
+            serializer = InstalmentSerializer(
+                instalment, data={"due_date": instalment_due_date}, partial=True
+            )
+        else:
+            return Response(_("Invalid request"), status=status.HTTP_400_BAD_REQUEST)
+
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             application = instalment.calculation.application
             instalment_count = instalment.calculation.instalments.count()
 
-            if instalment.instalment_number == 1:
+            if instalment.instalment_number == 1 and instalment_status is not None:
                 if instalment_status == InstalmentStatus.ACCEPTED:
                     application.talpa_status = (
                         ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA
@@ -86,7 +99,7 @@ class InstalmentView(APIView):
                     application.save()
                     application.batch.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
-            if instalment.instalment_number == 2:
+            if instalment.instalment_number == 2 and instalment_status is not None:
                 first_instalment = instalment.calculation.instalments.get(
                     instalment_number=1
                 )
@@ -98,4 +111,5 @@ class InstalmentView(APIView):
                     application.save()
                     return Response(serializer.data, status=status.HTTP_200_OK)
                 return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

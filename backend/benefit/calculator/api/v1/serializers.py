@@ -65,7 +65,6 @@ class InstalmentSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = [
             "id",
-            "due_date",
             "instalment_number",
             "calculation",
             "amount",
@@ -81,6 +80,24 @@ class InstalmentSerializer(serializers.ModelSerializer):
             )
 
         return status
+
+    def validate_due_date(self, due_date):
+        if due_date > self.instance.due_date:
+            raise serializers.ValidationError(
+                {"due_date": _("New due date must be before the current due date")}
+            )
+
+        calculation = self.instance.calculation
+        instalment_1_qs = Instalment.objects.filter(calculation=calculation,
+                                                    instalment_number=1)
+        if instalment_1_qs:
+            instalment_1 = instalment_1_qs.first()
+            if instalment_1.due_date >= due_date:
+                raise serializers.ValidationError(
+                    {"due_date": _("Due date cannot be before first instalment due date")}
+                )
+
+        return due_date
 
     status = serializers.ChoiceField(
         validators=[InstalmentStatusValidator()],

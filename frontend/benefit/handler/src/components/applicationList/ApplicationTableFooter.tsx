@@ -21,6 +21,7 @@ interface TableFooterProps {
     status: INSTALMENT_STATUSES;
   }) => void;
   setIsInstalmentCancelModalShown: (show: boolean) => void;
+  setIsInstalmentChangeDateModalShown: (show: boolean) => void;
 }
 
 const ApplicationTableFooter: React.FC<TableFooterProps> = ({
@@ -31,6 +32,7 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
   translationsBase,
   changeInstalmentStatus,
   setIsInstalmentCancelModalShown,
+  setIsInstalmentChangeDateModalShown
 }) => {
   const { t } = useTranslation();
 
@@ -71,7 +73,8 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
       <$Wrapper>
         <$Column>
           {/* Waiting Status Buttons */}
-          {selectedInstalment.status === INSTALMENT_STATUSES.WAITING && (
+          {(selectedInstalment.status === INSTALMENT_STATUSES.WAITING ||
+            selectedInstalment.status === INSTALMENT_STATUSES.RESPONDED) && (
             <>
               <InstalmentButton
                 isLoading={isLoading}
@@ -87,8 +90,16 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
               >
                 {t(`${translationsBase}.actions.cancel`)}
               </InstalmentButton>
+              <InstalmentButton
+                isLoading={isLoading}
+                isLoadingStatusChange={isLoadingStatusChange}
+                onClick={() => handleStatusChange(INSTALMENT_STATUSES.PENDING) }>
+                {t(`${translationsBase}.actions.pending`)}
+              </InstalmentButton>
             </>
           )}
+
+
 
           {/* Error in Talpa Buttons */}
           {selectedInstalment.status === INSTALMENT_STATUSES.ERROR_IN_TALPA && (
@@ -110,9 +121,36 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
             </>
           )}
 
-          {/* Return Button for Accepted/Cancelled Statuses */}
           {[
             INSTALMENT_STATUSES.ACCEPTED,
+          ].includes(selectedInstalment?.status as INSTALMENT_STATUSES) && (
+            <>
+              <InstalmentButton
+                isLoading={isLoading}
+                isLoadingStatusChange={isLoadingStatusChange}
+                onClick={() => handleStatusChange(INSTALMENT_STATUSES.PENDING)}
+              >
+                {t(`${translationsBase}.actions.pending`)}
+              </InstalmentButton>
+              <InstalmentButton
+                isLoading={isLoading}
+                isLoadingStatusChange={isLoadingStatusChange}
+                onClick={() => setIsInstalmentCancelModalShown(true)}
+              >
+                {t(`${translationsBase}.actions.cancel`)}
+              </InstalmentButton>
+              <InstalmentButton
+                isLoading={isLoading}
+                isLoadingStatusChange={isLoadingStatusChange}
+                onClick={() => setIsInstalmentChangeDateModalShown(true)}
+              >
+                {t(`${translationsBase}.actions.change_date`)}
+              </InstalmentButton>
+            </>
+          )}
+
+          {/* Return Button for Accepted/Cancelled Statuses */}
+          {[
             INSTALMENT_STATUSES.CANCELLED,
           ].includes(selectedInstalment?.status as INSTALMENT_STATUSES) && (
             <InstalmentButton
@@ -123,6 +161,30 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
               {t(`${translationsBase}.actions.return`)}
             </InstalmentButton>
           )}
+
+          {[
+            INSTALMENT_STATUSES.REQUESTED,
+            INSTALMENT_STATUSES.PENDING
+          ].includes(selectedInstalment?.status as INSTALMENT_STATUSES) && (
+            <>
+              <InstalmentButton
+                isLoading={isLoading}
+                isLoadingStatusChange={isLoadingStatusChange}
+                onClick={() => handleStatusChange(INSTALMENT_STATUSES.ACCEPTED)}
+              >
+                {t(`${translationsBase}.actions.confirm`)}
+              </InstalmentButton>
+              <InstalmentButton
+                isLoading={isLoading}
+                isLoadingStatusChange={isLoadingStatusChange}
+                onClick={() => setIsInstalmentCancelModalShown(true)}
+              >
+                {t(`${translationsBase}.actions.cancel`)}
+              </InstalmentButton>
+            </>
+          )}
+
+
         </$Column>
       </$Wrapper>
     </$TableFooter>
