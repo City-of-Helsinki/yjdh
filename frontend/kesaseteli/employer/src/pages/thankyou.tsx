@@ -13,8 +13,8 @@ import withAuth from 'shared/components/hocs/withAuth';
 import { $Header, $Heading } from 'shared/components/layout/Layout.sc';
 import { $Notification } from 'shared/components/notification/Notification.sc';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
-import useGoToPage from 'shared/hooks/useGoToPage';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
+import useGoToPage from 'shared/hooks/useGoToPage';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import styled from 'styled-components';
 
@@ -67,6 +67,7 @@ const ThankYouPage: NextPage = () => {
     goToPage,
     applicationQuery.isSuccess,
     applicationQuery.data,
+    errorHandler,
   ]);
 
   const returnToDashboard = (): void => {

@@ -46,9 +46,9 @@ const EmployerIndex: NextPage = () => {
   // TODO: Get organisation name from auth information.
   // Problem is that company name is not in the auth information when auth is mocked.
   // Could be `applications[0]?.company?.name`, but it's not created yet when logged in;
-  const organisationName = undefined;
+  const organisationName: string | undefined = undefined;
 
-  const onToggleOnlyMine = () => {
+  const onToggleOnlyMine = (): void => {
     setShowOnlyMine((prev) => !prev);
   };
 

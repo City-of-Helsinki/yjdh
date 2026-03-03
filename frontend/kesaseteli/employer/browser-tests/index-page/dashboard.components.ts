@@ -1,4 +1,5 @@
 import { screenContext } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import TestController from 'testcafe';
 
 export const getDashboardComponents = (t: TestController) => {
     const screen = screenContext(t);
