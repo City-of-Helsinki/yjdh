@@ -14,6 +14,7 @@ import { $Header, $Heading } from 'shared/components/layout/Layout.sc';
 import { $Notification } from 'shared/components/notification/Notification.sc';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useGoToPage from 'shared/hooks/useGoToPage';
+import useErrorHandler from 'shared/hooks/useErrorHandler';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import styled from 'styled-components';
 
@@ -46,6 +47,7 @@ const ThankYouPage: NextPage = () => {
   const queryClient = useQueryClient();
   const goToPage = useGoToPage();
   const createApplicationQuery = useCreateApplicationQuery();
+  const errorHandler = useErrorHandler();
 
   const createNewApplicationClick = React.useCallback((): void => {
     if (applicationQuery.isSuccess && applicationQuery.data) {
@@ -53,6 +55,7 @@ const ThankYouPage: NextPage = () => {
       ApplicationPersistenceService.storeEmployerData(employerData);
     }
     createApplicationQuery.mutate(undefined, {
+      onError: errorHandler,
       onSuccess: (data) => {
         queryClient.clear();
         goToPage(`/application?id=${data.id}`);
