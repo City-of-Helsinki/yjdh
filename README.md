@@ -2,6 +2,23 @@
 
 Yhteisöjen ja järjestöjen digitaalinen Helsinki (= YJDH).
 
+## Table of contents
+
+* [About YJDH](#about-yjdh)
+* [Service environments (Kesäseteli)](#service-environments-kesäseteli)
+* [Requirements](#requirements)
+* [Get started](#get-started)
+* [Testing](#testing)
+* [Local troubleshooting](#local-troubleshooting)
+* [Publishing with Release Please & Git workflow](#publishing-with-release-please--git-workflow)
+* [Setting up git hooks](#setting-up-git-hooks)
+* [Kesäseteli employer](#kesäseteli-employer)
+* [Kesäseteli youth](#kesäseteli-youth)
+* [Kesäseteli handler](#kesäseteli-handler)
+* [Benefit](#benefit)
+* [Maintaining and known issues](#maintaining-and-known-issues)
+* [Git blame ignore refs](#git-blame-ignore-refs)
+
 ## About YJDH
 
 **What is it?** A monorepo containing code for employment and benefit services used by the City of Helsinki.
