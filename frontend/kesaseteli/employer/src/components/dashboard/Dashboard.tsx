@@ -8,6 +8,7 @@ import React from 'react';
 import Container from 'shared/components/container/Container';
 import { $Header, $Heading } from 'shared/components/layout/Layout.sc';
 import LinkText from 'shared/components/link-text/LinkText';
+import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useLocale from 'shared/hooks/useLocale';
 import styled from 'styled-components';
 
@@ -65,6 +66,7 @@ const Dashboard: React.FC<Props> = ({
   const locale = useLocale();
   const router = useRouter();
   const createApplicationQuery = useCreateApplicationQuery();
+  const errorHandler = useErrorHandler();
 
   const handleCreateNew = (): void => {
     // If a draft already exists, navigate to it (backend allows only 1 draft per company/user)
@@ -73,6 +75,7 @@ const Dashboard: React.FC<Props> = ({
       return;
     }
     createApplicationQuery.mutate(undefined, {
+      onError: errorHandler,
       onSuccess: (data) => {
         void router.push(`/${locale}/application?id=${data.id}`);
       },
@@ -82,9 +85,7 @@ const Dashboard: React.FC<Props> = ({
   return (
     <Container>
       <Head>
-        <title>
-          {t('common:appName')}
-        </title>
+        <title>{t('common:appName')}</title>
       </Head>
       <$Header>
         <$Heading>{t('common:dashboard.header')}</$Heading>
@@ -92,15 +93,15 @@ const Dashboard: React.FC<Props> = ({
 
       {organisationName && (
         <$OrganisationName>
-          <p>{t('common:dashboard.organisationName', { name: organisationName })}</p>
+          <p>
+            {t('common:dashboard.organisationName', { name: organisationName })}
+          </p>
         </$OrganisationName>
       )}
 
       <$HeaderGrid>
         <$IntroText>
-          <p>
-            {t('common:dashboard.welcome')}
-          </p>
+          <p>{t('common:dashboard.welcome')}</p>
           <p>
             <Trans
               i18nKey="common:dashboard.info"
@@ -111,7 +112,8 @@ const Dashboard: React.FC<Props> = ({
                 // @ts-ignore ts(2741) link href and text will be set / overridden with values from translation.
                 lnk: <LinkText />,
               }}
-            >_
+            >
+              _
             </Trans>
           </p>
         </$IntroText>
@@ -138,4 +140,3 @@ const Dashboard: React.FC<Props> = ({
 };
 
 export default Dashboard;
-
