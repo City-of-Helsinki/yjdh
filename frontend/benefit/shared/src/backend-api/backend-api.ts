@@ -58,6 +58,8 @@ export const HandlerEndpoint = {
     `${handlerApplicationsBase(id)}require_additional_information/`,
   HANDLER_INSTALMENT_STATUS_TRANSITION: (id: string) =>
     `${handlerInstalmentBase(id)}`,
+  HANDLER_INSTALMENT_CHANGE_DATE: (id: string) =>
+    `${handlerInstalmentBase(id)}`
 } as const;
 
 const applicationsBase = (id: string): string =>

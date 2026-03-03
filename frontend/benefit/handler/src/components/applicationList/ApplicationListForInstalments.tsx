@@ -1,4 +1,4 @@
-import { ROUTES } from 'benefit/handler/constants';
+import { APPLICATION_LIST_TABS, ROUTES } from 'benefit/handler/constants';
 import useInstalmentStatusTransition from 'benefit/handler/hooks/useInstalmentStatusTransition';
 import {
   ApplicationListTableColumns,
@@ -11,7 +11,7 @@ import {
   INSTALMENT_STATUSES,
 } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
-import { IconErrorFill, Table, Tag } from 'hds-react';
+import { IconErrorFill, Table, Tag, Dialog, DateInput, Button } from 'hds-react';
 import noop from 'lodash/noop';
 import { TFunction } from 'next-i18next';
 import * as React from 'react';
@@ -39,6 +39,7 @@ import {
 } from './ApplicationList.sc';
 import ApplicationTableFooter from './ApplicationTableFooter';
 import { useApplicationList } from './useApplicationList';
+import useInstalmentDateChange from "benefit/handler/hooks/useInstalmentDateChange";
 
 export interface ApplicationListProps {
   heading: string;
@@ -55,7 +56,7 @@ const buildApplicationUrl = (
     return `${ROUTES.APPLICATION_FORM_NEW}?id=${id}`;
   }
 
-  const applicationUrl = `${ROUTES.APPLICATION}?id=${id}`;
+  const applicationUrl = `${ROUTES.APPLICATION}?id=${id}&returnTab=${APPLICATION_LIST_TABS.SECOND_INSTALMENTS}`;
   if (openDrawer) {
     return `${applicationUrl}&openDrawer=1`;
   }
@@ -82,10 +83,14 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
   const { t, translationsBase, getHeader } = useApplicationList();
   const theme = useTheme();
   const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
+  const [instalmentNewDate, setInstalmentNewDate] = React.useState(undefined);
   const [isInstalmentCancelModalShown, setIsInstalmentCancelModalShown] =
+    React.useState(false);
+  const [isInstalmentChangeDateModalShown, setIsInstalmentChangeDateModalShown] =
     React.useState(false);
   const { mutate: changeInstalmentStatus, isLoading: isLoadingStatusChange } =
     useInstalmentStatusTransition();
+  const { mutate: changeInstalmentDate } = useInstalmentDateChange();
 
   const columns = React.useMemo(() => {
     const cols: ApplicationListTableColumns[] = [
@@ -213,6 +218,14 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
     setIsInstalmentCancelModalShown(false);
   };
 
+  const onSubmitChangeDate = (): void => {
+    changeInstalmentDate({
+      id: selectedInstalment?.id,
+      dueDate: instalmentNewDate
+    })
+    setIsInstalmentChangeDateModalShown(false);
+  };
+
   return (
     <$InstalmentList data-testid="instalment-list">
       {list.length > 0 ? (
@@ -238,6 +251,7 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
               translationsBase={translationsBase}
               changeInstalmentStatus={changeInstalmentStatus}
               setIsInstalmentCancelModalShown={setIsInstalmentCancelModalShown}
+              setIsInstalmentChangeDateModalShown={setIsInstalmentChangeDateModalShown}
             />
           )}
           <Modal
@@ -263,6 +277,36 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
               />
             }
           />
+          <Dialog
+            id="instalment-change-date"
+            aria-labelledby="instalment-change-date-title"
+            aria-describedby="instalment-change-date-description"
+            isOpen={isInstalmentChangeDateModalShown}
+            close={close}
+            closeButtonLabelText="Close info dialog"
+          >
+            <Dialog.Header
+              title={t('common:instalments.dialog.changeInstalmentDate.heading')}
+            />
+            <Dialog.Content>
+              <DateInput
+                label="Viimeinen työpäivä"
+                helperText={t('common:instalments.dialog.changeInstalmentDate.helperText')}
+                onChange={setInstalmentNewDate}
+                maxValue={convertToUIDateFormat(selectedInstalment?.dueDate)}
+                value={instalmentNewDate}
+                required
+              />
+            </Dialog.Content>
+            <Dialog.ActionButtons>
+              <Button onClick={() => setIsInstalmentChangeDateModalShown(false)}>
+                {t(`common:instalments.dialog.changeInstalmentDate.buttons.cancel`)}
+              </Button>
+              <Button onClick={() => onSubmitChangeDate()}>
+                {t(`common:instalments.dialog.changeInstalmentDate.buttons.confirm`)}
+              </Button>
+            </Dialog.ActionButtons>
+          </Dialog>
         </>
       ) : (
         <$EmptyHeading>

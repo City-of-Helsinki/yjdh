@@ -287,10 +287,12 @@
         "return": "Palauta",
         "confirm": "Hyväksy",
         "cancel": "Peru",
+        "pending": "Odottaa",
         "finish": "Siirrä arkistoon",
         "return_as_waiting": "Palauta odottamaan",
         "return_as_accepted": "Palauta hyväksytyksi",
-        "mark_as_paid": "Merkitse maksetuksi"
+        "mark_as_paid": "Merkitse maksetuksi",
+        "change_date": "Muuta eräpäivää"
       }
     },
     "pageHeaders": {
@@ -1900,6 +1902,14 @@
       "cancelInstalment": {
         "heading": "Maksuerän peruutus",
         "text": "Oletko varma, että haluat peruuttaa {{sum}} suuruisen maksuerän hakemukselle {{details}}?"
+      },
+      "changeInstalmentDate": {
+        "heading": "Eräpäivän muutos",
+        "helperText": "Kiirjoita päivämäärä muodossa P.K.VVVV",
+        "buttons": {
+          "cancel": "Peruuta",
+          "confirm": "Vahvista"
+        }
       }
     }
   }
