@@ -257,7 +257,8 @@ Follow the [Quick start](#quick-start) section above to set up your environment 
 Then run `yarn employer up` or, if you want to rebuild, then `yarn employer up --build`
   - The employer frontend is now running at [localhost:3000](https://localhost:3000)
   - The backend is now running at [localhost:8000](https://localhost:8000)
-5. If services fail to get up, `yarn clean` or `docker system prune --all` might help.
+
+If services fail to get up, `yarn clean` or `docker system prune --all` might help.
 
 ## Kesäseteli youth
 
@@ -270,7 +271,8 @@ Follow the [Quick start](#quick-start) section above to set up your environment 
 Then run `yarn youth up` or, if you want to rebuild, then `yarn youth up --build`
   - The youth frontend is now running at [localhost:3100](https://localhost:3100)
   - The backend is now running at [localhost:8000](https://localhost:8000)
-5. If services fail to get up, `yarn clean` might help.
+
+If services fail to get up, `yarn clean` might help.
 
 ## Kesäseteli handler
 
@@ -284,7 +286,7 @@ Then run `yarn handler up` or, if you want to rebuild, then `yarn handler up --b
   - The handler frontend is now running at [localhost:3200](https://localhost:3200)
   - The backend is now running at [localhost:8000](https://localhost:8000)
 
-5. If services fail to get up, `yarn clean` might help.
+If services fail to get up, `yarn clean` might help.
 
 ## Benefit
 
