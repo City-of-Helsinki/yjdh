@@ -14,6 +14,7 @@ const helsinkiProfileEndpoint = {
 
 export const BackendEndpoint = {
   ADDITIONAL_INFO: '/v1/additional_info/',
+  COMPANY: '/v1/company/',
   EMPLOYER_APPLICATIONS: '/v1/employerapplications/',
   EMPLOYER_SUMMER_VOUCHERS: '/v1/employersummervouchers/',
   ATTACHMENTS: '/attachments/',

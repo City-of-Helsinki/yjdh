@@ -7,6 +7,7 @@ import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/compone
 import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 import type Application from 'shared/types/application';
+import type Company from 'shared/types/company';
 import type DraftApplication from 'shared/types/draft-application';
 
 const fakeObjectFactory = new FakeObjectFactory();
@@ -121,5 +122,27 @@ export const expectToSaveApplication = (
   applicationToSave: Application
 ): nock.Scope =>
   nock(getBackendDomain())
-    .put(`${BackendEndpoint.EMPLOYER_APPLICATIONS}${applicationToSave.id}/`, applicationToSave)
+    .put(
+      `${BackendEndpoint.EMPLOYER_APPLICATIONS}${applicationToSave.id}/`,
+      applicationToSave
+    )
     .reply(200, applicationToSave, { 'Access-Control-Allow-Origin': '*' });
+
+export const expectToGetCompanyFromBackend = (
+  company: Partial<Company> = {}
+): nock.Scope => {
+  const defaultCompany: Company = {
+    id: 'test-company-id',
+    name: 'Test Company Oy',
+    business_id: '1234567-8',
+    industry: 'Testing',
+    company_form: 'Osakeyhtiö',
+    street_address: 'Testikatu 1',
+    postcode: '00100',
+    city: 'Helsinki',
+    ...company,
+  };
+  return nock(getBackendDomain())
+    .get(BackendEndpoint.COMPANY)
+    .reply(200, defaultCompany, { 'Access-Control-Allow-Origin': '*' });
+};

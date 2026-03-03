@@ -1,5 +1,6 @@
 import Dashboard from 'kesaseteli/employer/components/dashboard/Dashboard';
 import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
+import useCompanyQuery from 'kesaseteli/employer/hooks/backend/useCompanyQuery';
 import { DashboardVoucher } from 'kesaseteli/employer/types/types';
 import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
@@ -16,6 +17,7 @@ const EmployerIndex: NextPage = () => {
     isLoading,
     error,
   } = useApplicationsQuery(showOnlyMine);
+  const { data: company } = useCompanyQuery();
   const router = useRouter();
   const locale = useLocale();
 
@@ -43,10 +45,7 @@ const EmployerIndex: NextPage = () => {
 
   const draftApplication = applications.find((app) => app.status === 'draft');
 
-  // TODO: Get organisation name from auth information.
-  // Problem is that company name is not in the auth information when auth is mocked.
-  // Could be `applications[0]?.company?.name`, but it's not created yet when logged in;
-  const organisationName: string | undefined = undefined;
+  const organisationName: string | undefined = company?.name;
 
   const onToggleOnlyMine = (): void => {
     setShowOnlyMine((prev) => !prev);
