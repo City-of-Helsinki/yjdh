@@ -25,7 +25,6 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
     formState: { isSubmitting },
   } = useFormContext<Application>();
 
-
   const {
     isFirstStep,
     isLastStep,
@@ -68,10 +67,10 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
           void goToNextStep();
         });
       }
-      if (isLastStep) {
+      return sendApplication(validatedApplication, () => {
+        onAfterLastStep();
         setLeaveConfirmBypassed(true);
-      }
-      return sendApplication(validatedApplication, onAfterLastStep);
+      });
     },
     [
       isLastStep,
