@@ -1,0 +1,23 @@
+{% comment %} NEVER MAKE MODIFICATIONS TO THIS GENERATED FILE DIRECTLY, ALL MODIFICATIONS SHOULD BE DONE TO MJML TEMPLATE FILES! {% endcomment %}Payment of the second installment of the Helsinki benefit requires measures
+Payment of the second installment of the Helsinki benefit requires measures
+
+Hello!
+
+We have granted you the Helsinki benefit for hiring an employee. The Helsinki benefit is paid in two installments. As a recipient of the subsidy, you are obliged to notify us of the salary paid to the employee. To receive the second installment of the Helsinki benefit, the employer must submit:
+A payslip or a bank transfer receipt of the paid salary.
+
+You can easily submit the information using https://helsinkilisa.hel.fi/en/login
+
+Best regards,
+The Helsinki benefit team
+
+Application details
+Application number {{ application.application_number }}
+Beneficiary {{ application.company_name }}
+Grant period {{ application.start_date }}-{{ application.end_date }}
+
+Log in and submit the required attachment
+
+
+If you have not used the online service, you can submit the attachment using the secure connection via https://securemail.hel.fi/
+(Link takes you to an external service). Mark {payslipRequired.delivery.emailAddress} as the recipient.
