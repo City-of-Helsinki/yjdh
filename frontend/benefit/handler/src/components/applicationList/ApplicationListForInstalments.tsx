@@ -83,10 +83,10 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
   const { t, translationsBase, getHeader } = useApplicationList();
   const theme = useTheme();
   const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
-  const [instalmentNewDate, setInstalmentNewDate] = React.useState(undefined);
+  const [instalmentNewDate, setInstalmentNewDate] = React.useState(convertToUIDateFormat('2025-01-25') ?? '');
   const [isInstalmentCancelModalShown, setIsInstalmentCancelModalShown] =
     React.useState(false);
-  const [isInstalmentChangeDateModalShown, setIsInstalmentChangeDateModalShown] =
+  const [isInstalmentChangeDateDialogShown, setIsInstalmentChangeDateDialogShown] =
     React.useState(false);
   const { mutate: changeInstalmentStatus, isLoading: isLoadingStatusChange } =
     useInstalmentStatusTransition();
@@ -223,7 +223,12 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
       id: selectedInstalment?.id,
       dueDate: instalmentNewDate
     })
-    setIsInstalmentChangeDateModalShown(false);
+    setIsInstalmentChangeDateDialogShown(false);
+  };
+
+  const onOpenChangeDateDialog = (): void => {
+    setInstalmentNewDate(convertToUIDateFormat(selectedInstalment?.dueDate));   // ← seed with current due date
+    setIsInstalmentChangeDateDialogShown(true);
   };
 
   return (
@@ -251,7 +256,7 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
               translationsBase={translationsBase}
               changeInstalmentStatus={changeInstalmentStatus}
               setIsInstalmentCancelModalShown={setIsInstalmentCancelModalShown}
-              setIsInstalmentChangeDateModalShown={setIsInstalmentChangeDateModalShown}
+              setIsInstalmentChangeDateDialogShown={onOpenChangeDateDialog}
             />
           )}
           <Modal
@@ -281,8 +286,8 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
             id="instalment-change-date"
             aria-labelledby="instalment-change-date-title"
             aria-describedby="instalment-change-date-description"
-            isOpen={isInstalmentChangeDateModalShown}
-            close={close}
+            isOpen={isInstalmentChangeDateDialogShown}
+            close={() => setIsInstalmentChangeDateDialogShown(false)}
             closeButtonLabelText="Close info dialog"
           >
             <Dialog.Header
@@ -291,10 +296,10 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
             />
             <Dialog.Content>
               <DateInput
-                id="intstalment-change-date-dateinput"
+                id="instalment-change-date-dateinput"
                 label="Viimeinen työpäivä"
                 helperText={t('common:instalments.dialog.changeInstalmentDate.helperText')}
-                onChange={setInstalmentNewDate}
+                onChange={(value:string) => setInstalmentNewDate(value)}
                 value={instalmentNewDate}
                 required
               />
@@ -302,7 +307,7 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
             <Dialog.ActionButtons>
               <Button
                 id="instalment-change-date-cancel-button"
-                onClick={() => setIsInstalmentChangeDateModalShown(false)}>
+                onClick={() => setIsInstalmentChangeDateDialogShown(false)}>
                 {t(`common:instalments.dialog.changeInstalmentDate.buttons.cancel`)}
               </Button>
               <Button
