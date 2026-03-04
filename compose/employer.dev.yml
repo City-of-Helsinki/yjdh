@@ -1,8 +1,5 @@
 services:
   backend:
-    extends:
-      service: backend
-      file: ./base.kesaseteli.yml
     build:
       target: development
     volumes:
@@ -10,9 +7,6 @@ services:
       - ../backend/shared:/shared
       - ../backend/kesaseteli/media:/var/media
   employer:
-    extends:
-      service: employer
-      file: ./employer.yml
     build:
       target: development
     volumes:
