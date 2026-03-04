@@ -21,7 +21,7 @@ interface TableFooterProps {
     status: INSTALMENT_STATUSES;
   }) => void;
   setIsInstalmentCancelModalShown: (show: boolean) => void;
-  setIsInstalmentChangeDateModalShown: (show: boolean) => void;
+  setIsInstalmentChangeDateDialogShown: (show: boolean) => void;
 }
 
 const ApplicationTableFooter: React.FC<TableFooterProps> = ({
@@ -32,7 +32,7 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
   translationsBase,
   changeInstalmentStatus,
   setIsInstalmentCancelModalShown,
-  setIsInstalmentChangeDateModalShown
+  setIsInstalmentChangeDateDialogShown
 }) => {
   const { t } = useTranslation();
 
@@ -142,7 +142,7 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
               <InstalmentButton
                 isLoading={isLoading}
                 isLoadingStatusChange={isLoadingStatusChange}
-                onClick={() => setIsInstalmentChangeDateModalShown(true)}
+                onClick={() => setIsInstalmentChangeDateDialogShown(true)}
               >
                 {t(`${translationsBase}.actions.change_date`)}
               </InstalmentButton>
