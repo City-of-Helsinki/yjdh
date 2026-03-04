@@ -62,7 +62,7 @@ def notify_applications(days_to_notify: int) -> int:
     for application in applications_to_notify:
         sent_mail_count += _send_notification_mail(application)
         # Change the instalment status to REQUESTED
-        instalment_2_qs = Instalment.filter(
+        instalment_2_qs = Instalment.objects.filter(
             application=application, instalment_number=2
         )
         if instalment_2_qs:
@@ -73,13 +73,17 @@ def notify_applications(days_to_notify: int) -> int:
     return sent_mail_count
 
 
+def get_benefit_notice_email_notification_subject():
+    return str(
+        _("Payment of the second installment of the Helsinki benefit requires measures")
+    )
+
+
 def _send_notification_mail(application: Application) -> int:
     """Send a notification mail to the applicant about the upcoming checkpoint"""
 
     context = get_email_template_context(application)
-    subject = str(
-        _("Payment of the second installment of the Helsinki benefit requires measures")
-    )
+    subject = get_benefit_notice_email_notification_subject()
     message = render_email_template(context, "payslip-required", "txt")
     html_message = render_email_template(context, "payslip-required", "html")
 
