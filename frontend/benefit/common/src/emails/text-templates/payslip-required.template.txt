@@ -1,0 +1,23 @@
+${payslipRequired.headerText}
+${payslipRequired.headerText}
+
+${general.greeting}
+
+${payslipRequired.bodyText}
+${payslipRequired.requiredText}
+
+${payslipRequired.helper.text} ${payslipRequired.helper.link.url}
+
+${general.bestRegards1}
+${general.bestRegards2}
+
+${application.applicationDetails}
+${application.applicationNumber} {{ application.application_number }}
+${application.beneficiary} {{ application.company_name }}
+${application.benefitPeriod} {{ application.start_date }}-{{ application.end_date }}
+
+${payslipRequired.delivery.request}
+
+${payslipRequired.delivery.alternative}
+${payslipRequired.delivery.secureTitle1} ${payslipRequired.delivery.secureLink}
+${payslipRequired.delivery.secureTitle2} {payslipRequired.delivery.emailAddress} ${payslipRequired.delivery.secureTitle3}
