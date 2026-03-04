@@ -1,5 +1,3 @@
-include:
-  - base.kesaseteli.yml
 services:
   employer:
     build:
