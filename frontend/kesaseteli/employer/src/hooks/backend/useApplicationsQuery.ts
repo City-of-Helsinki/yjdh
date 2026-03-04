@@ -1,5 +1,6 @@
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import { useQuery, UseQueryResult } from 'react-query';
+import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import Application from 'shared/types/application';
 
@@ -7,18 +8,27 @@ const useApplicationsQuery = <T = Application[]>(
   onlyMine?: boolean,
   select?: (applications: Application[]) => T
 ): UseQueryResult<T> => {
-  const queryKey =
-    onlyMine !== undefined
-      ? `${BackendEndpoint.EMPLOYER_APPLICATIONS}?only_mine=${String(onlyMine)}`
-      : BackendEndpoint.EMPLOYER_APPLICATIONS;
+  const { axios, handleResponse } = useBackendAPI();
 
-  return useQuery(queryKey, {
-    select: select
-      ? (applications: Application[]) => select(applications)
-      : undefined,
-    staleTime: Infinity,
-    retryDelay: 3000,
-    onError: useErrorHandler(),
-  });
+  return useQuery(
+    [BackendEndpoint.EMPLOYER_APPLICATIONS, { onlyMine }],
+    () =>
+      handleResponse<Application[]>(
+        axios.get(BackendEndpoint.EMPLOYER_APPLICATIONS, {
+          params: {
+            only_mine: onlyMine,
+          },
+        })
+      ),
+    {
+      select: select
+        ? (applications: Application[]) => select(applications)
+        : undefined,
+      staleTime: Infinity,
+      retryDelay: 3000,
+      onError: useErrorHandler(),
+    }
+  );
 };
+
 export default useApplicationsQuery;
