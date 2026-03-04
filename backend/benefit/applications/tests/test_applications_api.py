@@ -13,7 +13,6 @@ import faker
 import pytest
 from dateutil.relativedelta import relativedelta
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.core.management import call_command
 from django.test import override_settings
 from freezegun import freeze_time
 from PIL import Image
@@ -41,6 +40,7 @@ from applications.enums import (
     OrganizationType,
     PaySubsidyGranted,
 )
+from applications.management.commands.request_payslip import notify_applications
 from applications.models import Application, ApplicationLogEntry, Attachment, Employee
 from applications.tests.conftest import *  # noqa
 from applications.tests.factories import (
@@ -54,7 +54,6 @@ from applications.tests.test_alteration_api import _create_application_alteratio
 from calculator.enums import InstalmentStatus
 from calculator.models import Calculation, Instalment
 from calculator.tests.conftest import fill_empty_calculation_fields
-from calculator.tests.factories import InstalmentFactory
 from common.tests.conftest import get_client_user
 from common.utils import duration_in_months
 from companies.tests.factories import CompanyFactory
@@ -67,7 +66,6 @@ from messages.tests.factories import MessageFactory
 from shared.service_bus.enums import YtjOrganizationCode
 from terms.models import TermsOfServiceApproval
 
-from applications.management.commands.request_payslip import notify_applications
 
 def get_detail_url(application):
     return reverse("v1:applicant-application-detail", kwargs={"pk": application.id})
@@ -75,6 +73,7 @@ def get_detail_url(application):
 
 def get_handler_detail_url(application):
     return reverse("v1:handler-application-detail", kwargs={"pk": application.id})
+
 
 @pytest.mark.django_db
 def test_applications_second_instalment_fetched(handler_api_client, application):
@@ -95,13 +94,13 @@ def test_applications_second_instalment_fetched(handler_api_client, application)
     for i in range(2):
         due_date = date.today() - relativedelta(months=5)
         status = InstalmentStatus.PAID
-        if i==1:
+        if i == 1:
             status = InstalmentStatus.WAITING
             due_date = date.today() - relativedelta(months=1)
         Instalment.objects.create(
             calculation=application.calculation,
             amount=1000,
-            instalment_number=i+1,
+            instalment_number=i + 1,
             status=status,
             due_date=due_date,
         )
@@ -2113,6 +2112,7 @@ def test_attachment_validation(request, api_client, application, settings):
     application.refresh_from_db()
     assert application.status == ApplicationStatus.RECEIVED
 
+
 @pytest.mark.django_db
 def test_purge_extra_attachments(request, api_client, application, settings):
     settings.ENABLE_CLAMAV = False
@@ -2124,10 +2124,10 @@ def test_purge_extra_attachments(request, api_client, application, settings):
 
     lots_of_attachments = [
         AttachmentType.EMPLOYMENT_CONTRACT,
-        AttachmentType.PAY_SUBSIDY_DECISION, # extra
+        AttachmentType.PAY_SUBSIDY_DECISION,  # extra
         AttachmentType.COMMISSION_CONTRACT,  # extra
         AttachmentType.EMPLOYMENT_CONTRACT,
-        AttachmentType.PAY_SUBSIDY_DECISION, # extra
+        AttachmentType.PAY_SUBSIDY_DECISION,  # extra
         AttachmentType.COMMISSION_CONTRACT,  # extra
         AttachmentType.HELSINKI_BENEFIT_VOUCHER,
         AttachmentType.EDUCATION_CONTRACT,  # extra
@@ -2557,24 +2557,20 @@ def test_require_additional_information(handler_api_client, application, mailout
         get_additional_information_email_notification_subject() in mailoutbox[0].subject
     )
 
-@mock.patch(
-    "applications.management.commands.request_payslip.send_email_to_applicant",
-    return_value=1,
-)
-@mock.patch(
-    "applications.management.commands.request_payslip.get_email_template_context",
-    return_value={},
-)
-@mock.patch(
-    "applications.management.commands.request_payslip.render_email_template",
-    side_effect=["txt-body", "html-body"],
-)
+
 @pytest.mark.django_db
-def test_request_payslip_sends_email_for_matching_application(
-    render_email_template_mock,
-    get_email_template_context_mock,
-    send_email_to_applicant_mock,
-):
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+def test_send_notification_mail(mailoutbox):
+    """
+    Call _send_notification_mail directly (via request_payslip command) and verify
+    that exactly one email lands in the Django outbox with the expected subject and
+    recipient.
+    """
+    from applications.management.commands.request_payslip import (
+        _send_notification_mail,
+        get_benefit_notice_email_notification_subject,
+    )
+
     days_to_notify = 150
     target_date = date.today() - relativedelta(days=days_to_notify)
     app = DecidedApplicationFactory(
@@ -2582,21 +2578,94 @@ def test_request_payslip_sends_email_for_matching_application(
         status=ApplicationStatus.ACCEPTED,
         start_date=target_date,
     )
+
+    result = _send_notification_mail(app)
+
+    # send_email_to_applicant returns 1 on success
+    assert result == 1
+
+    # exactly one message must be in the outbox
+    assert len(mailoutbox) == 1
+
+    mail = mailoutbox[0]
+
+    # subject must match the localised subject helper
+    expected_subject = get_benefit_notice_email_notification_subject()
+    assert expected_subject in mail.subject
+
+    # must be addressed to the applicant's contact e-mail
+    assert app.company_contact_person_email in mail.to
+
+    # body must be non-empty (rendered from the payslip-required template)
+    assert mail.body
+
+
+@pytest.mark.django_db
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+@mock.patch(
+    "applications.management.commands.request_payslip._send_notification_mail",
+    return_value=1,
+)
+def test_notify_applications_one_application(mock_send_notification_mail):
+    """
+    One matching application
+    notify_applications() should call _send_notification_mail once for each
+    matching application and return the correct count.
+    The Django outbox remains empty because _send_notification_mail is mocked.
+    """
+
+    days_to_notify = 150
+    target_date = date.today() - relativedelta(days=days_to_notify)
+
+    app = DecidedApplicationFactory(
+        application_origin=ApplicationOrigin.APPLICANT,
+        status=ApplicationStatus.ACCEPTED,
+        start_date=target_date,
+    )
+
     count = notify_applications(days_to_notify)
 
-    assert count == 1
-    assert render_email_template_mock.call_count == 2
-    assert get_email_template_context_mock.call_count == 1
-    send_email_to_applicant_mock.assert_called_once()
+    # _send_notification_mail must have been called exactly once, with the
+    # matching application and the days_to_notify value
+    mock_send_notification_mail.assert_called_once_with(app, days_to_notify)
 
-    args, _kwargs = send_email_to_applicant_mock.call_args
-    assert args[0].id == app.id
-    assert (
-        args[1]
-        == "Payment of the second installment of the Helsinki benefit requires measures"
+    # notify_applications must return the sum of _send_notification_mail return values
+    assert count == 1
+
+
+@pytest.mark.django_db
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+@mock.patch(
+    "applications.management.commands.request_payslip._send_notification_mail",
+    return_value=1,
+)
+def test_notify_applications_no_applications(mock_send_notification_mail):
+    """
+    No mails to send - no matching applications
+    notify_applications() should call _send_notification_mail once for each
+    matching application and return the correct count.
+    The Django outbox remains empty because _send_notification_mail is mocked.
+    """
+
+    days_to_notify = 150
+    target_date = date.today()  # Benefit start date today, no mail to send
+
+    app = DecidedApplicationFactory(
+        application_origin=ApplicationOrigin.APPLICANT,
+        status=ApplicationStatus.ACCEPTED,
+        start_date=target_date,
     )
-    assert args[2] == "txt-body"
-    assert args[3] == "html-body"
+
+    count = notify_applications(days_to_notify)
+
+    # _send_notification_mail must noy have been called
+    # matching application and the days_to_notify value
+    with pytest.raises(AssertionError):
+        mock_send_notification_mail.assert_called_with(app, days_to_notify)
+
+    # notify_applications must return the sum of _send_notification_mail return values
+    assert count == 0
+
 
 def _create_random_applications():
     f = faker.Faker()
