@@ -13,8 +13,15 @@ const EMPTY_VOUCHER: Employment = {
   payslip: [],
 } as Employment;
 
+const createEmptyVoucher = (): Employment => ({
+  ...EMPTY_VOUCHER,
+  attachments: [],
+  employment_contract: [],
+  payslip: [],
+});
+
 const ensureVoucherExists = (vouchers: Employment[]): Employment[] =>
-  vouchers.length > 0 ? vouchers : [EMPTY_VOUCHER];
+  vouchers.length > 0 ? vouchers : [createEmptyVoucher()];
 
 const mergeVoucherSupplements = (vouchers: Employment[]): Employment[] =>
   vouchers.map((voucher) => {
