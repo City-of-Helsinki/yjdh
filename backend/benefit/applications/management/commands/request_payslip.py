@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import timedelta
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -6,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 
 from applications.enums import ApplicationOrigin, ApplicationStatus
 from applications.models import Application
+from calculator.enums import InstalmentStatus
+from calculator.models import Instalment
 from messages.automatic_messages import (
     get_email_template_context,
     render_email_template,
@@ -46,7 +48,7 @@ class Command(BaseCommand):
 def notify_applications(days_to_notify: int) -> int:
     """Query applications that are close to the benefit checkpoint date
     and not have any alterations. Send a notification to the applicant.
-    Returns the number of notified applications."""  # noqa: E501
+    Returns the number of notified applications."""
 
     target_date = timezone.now() - timedelta(days=days_to_notify)
     applications_to_notify = Application.objects.filter(
@@ -58,20 +60,26 @@ def notify_applications(days_to_notify: int) -> int:
 
     sent_mail_count = 0
     for application in applications_to_notify:
-        sent_mail_count+=_send_notification_mail(application, days_to_notify)
+        sent_mail_count += _send_notification_mail(application)
+        # Change the instalment status to REQUESTED
+        instalment_2_qs = Instalment.filter(
+            application=application, instalment_number=2
+        )
+        if instalment_2_qs:
+            instalment_2 = instalment_2_qs[0]
+            instalment_2.status = InstalmentStatus.REQUESTED
+            instalment_2.save()
 
     return sent_mail_count
 
 
-def get_benefit_notice_email_notification_subject():
-    return str(_("Payment of the second installment of the Helsinki benefit requires measures"))
-
-
-def _send_notification_mail(application: Application, days_to_notify: int) -> int:
+def _send_notification_mail(application: Application) -> int:
     """Send a notification mail to the applicant about the upcoming checkpoint"""
 
     context = get_email_template_context(application)
-    subject = get_benefit_notice_email_notification_subject()
+    subject = str(
+        _("Payment of the second installment of the Helsinki benefit requires measures")
+    )
     message = render_email_template(context, "payslip-required", "txt")
     html_message = render_email_template(context, "payslip-required", "html")
 
