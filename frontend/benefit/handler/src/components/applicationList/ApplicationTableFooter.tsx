@@ -74,14 +74,15 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
         <$Column>
           {/* Waiting Status Buttons */}
           {(selectedInstalment.status === INSTALMENT_STATUSES.WAITING ||
-            selectedInstalment.status === INSTALMENT_STATUSES.RESPONDED) && (
+            selectedInstalment.status === INSTALMENT_STATUSES.RESPONDED ||
+            selectedInstalment.status === INSTALMENT_STATUSES.REQUESTED) && (
             <>
               <InstalmentButton
                 isLoading={isLoading}
                 isLoadingStatusChange={isLoadingStatusChange}
                 onClick={() => handleStatusChange(INSTALMENT_STATUSES.ACCEPTED)}
               >
-                {t(`${translationsBase}.actions.confirm`)}
+                {t(`${translationsBase}.actions.confirmInstalment`)}
               </InstalmentButton>
               <InstalmentButton
                 isLoading={isLoading}
@@ -128,16 +129,9 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
               <InstalmentButton
                 isLoading={isLoading}
                 isLoadingStatusChange={isLoadingStatusChange}
-                onClick={() => handleStatusChange(INSTALMENT_STATUSES.PENDING)}
+                onClick={() => handleStatusChange(INSTALMENT_STATUSES.WAITING)}
               >
-                {t(`${translationsBase}.actions.pending`)}
-              </InstalmentButton>
-              <InstalmentButton
-                isLoading={isLoading}
-                isLoadingStatusChange={isLoadingStatusChange}
-                onClick={() => setIsInstalmentCancelModalShown(true)}
-              >
-                {t(`${translationsBase}.actions.cancel`)}
+                {t(`${translationsBase}.actions.return`)}
               </InstalmentButton>
               <InstalmentButton
                 isLoading={isLoading}
@@ -163,7 +157,6 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
           )}
 
           {[
-            INSTALMENT_STATUSES.REQUESTED,
             INSTALMENT_STATUSES.PENDING
           ].includes(selectedInstalment?.status as INSTALMENT_STATUSES) && (
             <>
@@ -172,7 +165,7 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
                 isLoadingStatusChange={isLoadingStatusChange}
                 onClick={() => handleStatusChange(INSTALMENT_STATUSES.ACCEPTED)}
               >
-                {t(`${translationsBase}.actions.confirm`)}
+                {t(`${translationsBase}.actions.confirmInstalment`)}
               </InstalmentButton>
               <InstalmentButton
                 isLoading={isLoading}

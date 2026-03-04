@@ -158,6 +158,10 @@
         "errorTitle": "Liitteessä havaittu haittaohjelma"
       }
     },
+    "newDate": {
+      "label": "Päivämäärä on virheellinen",
+      "text": "Päivämäärässä oli virhe."
+    },
     "notFound": {
       "title": "Pahoittelut, sivua ei löytynyt.",
       "text": "Virhe 404: Hakemasi sivun osoite on voinut muuttua tai sivu on poistettu."
@@ -286,6 +290,7 @@
         "addToBatch": "Lisää valitut koontiin",
         "return": "Palauta",
         "confirm": "Hyväksy",
+        "confirmInstalment": "Hyväksy maksuerä",
         "cancel": "Peru",
         "pending": "Kesken",
         "finish": "Siirrä arkistoon",

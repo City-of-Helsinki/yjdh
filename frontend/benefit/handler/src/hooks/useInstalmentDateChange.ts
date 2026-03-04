@@ -31,8 +31,8 @@ const useInstalmentDateChange = (): UseMutationResult<null, Error, Payload> => {
       },
       onError: (error: AxiosError<Error, Record<string, string[]>>) => {
         showErrorToast(
-          t('common:error.generic.label'),
-          t('common:error.generic.text')
+          t('common:error.newDate.label'),
+          t('common:error.newDate.text')
         );
         // eslint-disable-next-line no-console
         console.log(error);
