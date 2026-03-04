@@ -30,10 +30,7 @@ const useCreateApplicationQuery = (): UseMutationResult<
             newApplication
           );
           void queryClient.invalidateQueries(
-            BackendEndpoint.EMPLOYER_APPLICATIONS,
-            {
-              exact: true,
-            }
+            BackendEndpoint.EMPLOYER_APPLICATIONS
           );
         } else {
           throw new Error('Missing id');
