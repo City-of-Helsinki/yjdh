@@ -1,7 +1,8 @@
-include:
-  - handler.yml
 services:
   backend:
+    extends:
+      service: backend
+      file: ./base.kesaseteli.yml
     build:
       target: development
     volumes:
@@ -9,6 +10,9 @@ services:
       - ../backend/shared:/shared
       - ../backend/kesaseteli/media:/var/media
   youth:
+    extends:
+      service: youth
+      file: ./handler.yml
     build:
       target: development
     volumes:
@@ -23,6 +27,9 @@ services:
     environment:
       - WATCHPACK_POLLING=${WATCHPACK_POLLING:-true}
   handler:
+    extends:
+      service: handler
+      file: ./handler.yml
     build:
       target: development
     volumes:
