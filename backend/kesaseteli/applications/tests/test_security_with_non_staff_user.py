@@ -762,12 +762,12 @@ def test_employer_application_list_unallowed_methods(
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize("application_status", EmployerApplicationStatus.values)
 @pytest.mark.django_db
-def test_employer_application_detail_unallowed_methods(
+def test_employer_application_detail_partially_unallowed_methods(
     application_status: EmployerApplicationStatus,
 ):
     """
-    Test that the employer application detail endpoint doesn't allow HTTP
-    methods delete and post.
+    Test that the employer application detail endpoint only allows the delete
+    method for drafts and doesn't allow the post method at all.
     """
     user = UserFactory()
     company = CompanyFactory()
