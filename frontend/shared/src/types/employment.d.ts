@@ -15,7 +15,7 @@ export type EmploymentBase = {
   employee_ssn?: string;
   employee_phone_number?: string;
   employee_home_city?: string;
-  employee_postcode?: number;
+  employee_postcode?: string;
   employee_school?: string;
 };
 
@@ -23,7 +23,7 @@ type Employment = {
   id: string;
   target_group?: EmploymentExceptionReason;
   employee_name?: string;
-  employment_postcode?: number;
+  employment_postcode?: string;
   summer_voucher_serial_number: string;
   employment_start_date?: string; // yyyy-MM-dd
   employment_end_date?: string; // yyyy-MM-dd
