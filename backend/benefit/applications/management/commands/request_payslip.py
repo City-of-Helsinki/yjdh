@@ -63,7 +63,7 @@ def notify_applications(days_to_notify: int) -> int:
         sent_mail_count += _send_notification_mail(application)
         # Change the instalment status to REQUESTED
         instalment_2_qs = Instalment.objects.filter(
-            application=application, instalment_number=2
+            calculation=application.calculation, instalment_number=2
         )
         if instalment_2_qs:
             instalment_2 = instalment_2_qs[0]
