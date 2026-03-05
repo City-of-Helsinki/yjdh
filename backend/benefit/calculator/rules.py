@@ -3,6 +3,7 @@ import datetime
 import decimal
 import logging
 
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
@@ -202,7 +203,7 @@ class HelsinkiBenefitCalculator:
             (
                 2,
                 second_instalment_amount,
-                timezone.now() + datetime.timedelta(days=181),
+                timezone.now() + relativedelta(months=6),
                 InstalmentStatus.WAITING,
             ),
         ]
