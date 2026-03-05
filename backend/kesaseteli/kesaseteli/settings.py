@@ -280,14 +280,10 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "simple_history.middleware.HistoryRequestMiddleware",
 ]
 
 if NEXT_PUBLIC_ENABLE_SUOMIFI:
-    MIDDLEWARE.insert(
-        MIDDLEWARE.index("simple_history.middleware.HistoryRequestMiddleware"),
-        "djangosaml2.middleware.SamlSessionMiddleware",
-    )
+    MIDDLEWARE.append("djangosaml2.middleware.SamlSessionMiddleware")
 
 TEMPLATES = [
     {
