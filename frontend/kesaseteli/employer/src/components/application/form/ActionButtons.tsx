@@ -38,6 +38,7 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
     sendApplication,
     deleteApplication,
     updateApplicationQuery,
+    deleteApplicationQuery,
   } = useApplicationApi({ setBackendValidationError: setError });
 
   const { confirm } = useConfirm();
@@ -91,7 +92,10 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
   );
 
   const isLoading =
-    isSubmitting || updateApplicationQuery.isLoading || isWizardLoading;
+    isSubmitting ||
+    updateApplicationQuery.isLoading ||
+    deleteApplicationQuery.isLoading ||
+    isWizardLoading;
 
   return (
     <$ButtonSection columns={3} withoutDivider>
