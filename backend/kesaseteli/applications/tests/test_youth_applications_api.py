@@ -2778,7 +2778,6 @@ def test_youth_application_fetch_employee_data_uses_fuzzy_match(
     """
     employer_summer_voucher = EmployerSummerVoucherFactory(
         youth_summer_voucher__youth_application__last_name=last_name,
-        employee_name=employee_name,
     )
     serial_number = (
         employer_summer_voucher.youth_summer_voucher.summer_voucher_serial_number
@@ -2786,7 +2785,7 @@ def test_youth_application_fetch_employee_data_uses_fuzzy_match(
     url = reverse("v1:youthapplication-fetch-employee-data")
     data = {
         "employer_summer_voucher_id": str(employer_summer_voucher.id),
-        "employee_name": employer_summer_voucher.employee_name,
+        "employee_name": employee_name,
         "summer_voucher_serial_number": serial_number,
     }
     mock_path = "applications.api.v1.views.is_last_name_fuzzy_match_in_full_name"
