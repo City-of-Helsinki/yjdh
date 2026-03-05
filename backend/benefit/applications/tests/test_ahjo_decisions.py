@@ -16,6 +16,7 @@ from applications.services.ahjo_decision_service import (
 def test_replace_accepted_decision_template_placeholders(
     decided_application, accepted_ahjo_decision_section
 ):
+    # Tests that the placeholders are replaced with the correct values
     replaced_template = replace_decision_template_placeholders(
         accepted_ahjo_decision_section.template_decision_text,
         accepted_ahjo_decision_section.decision_type,
