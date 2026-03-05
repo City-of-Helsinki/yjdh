@@ -269,7 +269,7 @@ def test_excel_view_download_content(  # noqa: C901
     def employer_summer_voucher_sorting_key(voucher: EmployerSummerVoucher):
         # Sorting key should be the same as what is used to order by queryset results
         # in Excel download, see EmployerApplicationExcelDownloadView
-        return voucher.last_submitted_at, voucher.created_at, voucher.pk
+        return voucher.submitted_at, voucher.created_at, voucher.pk
 
     vouchers: List[EmployerSummerVoucher] = sorted(
         create_test_employer_summer_vouchers(year=2021),
@@ -307,7 +307,7 @@ def test_excel_view_download_content(  # noqa: C901
             elif excel_field.title == RECEIVED_DATE_FIELD_TITLE:
                 assert (
                     output_column.value
-                    == voucher.last_submitted_at.astimezone().strftime("%d/%m/%Y")
+                    == voucher.submitted_at.astimezone().strftime("%d/%m/%Y")
                 )
             elif excel_field.title == APPLICATION_LANGUAGE_FIELD_TITLE:
                 assert output_column.value == voucher.application.get_language_display()

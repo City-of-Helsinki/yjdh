@@ -52,7 +52,6 @@ django==5.2.13
     #   django-localflavor
     #   django-searchable-encrypted-fields
     #   django-sequences
-    #   django-simple-history
     #   django-storages
     #   djangorestframework
     #   djangosaml2
@@ -83,8 +82,6 @@ django-localflavor==5.0
 django-searchable-encrypted-fields==0.2.1
     # via -r requirements.in
 django-sequences==3.0
-    # via -r requirements.in
-django-simple-history==3.11.0
     # via -r requirements.in
 django-storages[azure]==1.14.6
     # via -r requirements.in

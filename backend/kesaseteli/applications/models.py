@@ -57,7 +57,7 @@ from shared.common.validators import (
     validate_phone_number,
     validate_postcode,
 )
-from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
+from shared.models.abstract_models import TimeStampedModel, UUIDModel
 from shared.models.mixins import LockForUpdateMixin
 from shared.vtj.vtj_client import VTJClient
 
@@ -899,7 +899,7 @@ class YouthSummerVoucherManager(models.Manager):
         ).select_youth_application()
 
 
-class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
+class YouthSummerVoucher(TimeStampedModel, UUIDModel):
     objects = YouthSummerVoucherManager()
 
     _SERIAL_NUMBER_SEQUENCE_NAME = "youth_summer_voucher_serial_numbers"
@@ -1151,7 +1151,7 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         ordering = ["summer_voucher_serial_number"]
 
 
-class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
+class EmployerApplication(TimeStampedModel, UUIDModel):
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
@@ -1169,6 +1169,11 @@ class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
         verbose_name=_("status"),
         choices=EmployerApplicationStatus.choices,
         default=EmployerApplicationStatus.DRAFT,
+    )
+    submitted_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_("timestamp when employer application was submitted"),
     )
     street_address = models.CharField(
         max_length=256,
@@ -1243,7 +1248,7 @@ class EmployerSummerVoucherManager(models.Manager):
         ).select_youth_voucher()
 
 
-class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
+class EmployerSummerVoucher(TimeStampedModel, UUIDModel):
     objects = EmployerSummerVoucherManager()
 
     application = models.ForeignKey(
@@ -1455,21 +1460,8 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
             return YouthSummerVoucher.voucher_value_in_euros_in_year(year)
 
     @property
-    def last_submitted_at(self) -> Optional[datetime]:
-        if (
-            last_submitted_history_entry := self.history.filter(
-                pk=self.pk, application__status=EmployerApplicationStatus.SUBMITTED
-            )
-            .order_by("-modified_at")
-            .first()
-        ):
-            return last_submitted_history_entry.modified_at
-        else:
-            return (
-                self.modified_at
-                if self.application.status == EmployerApplicationStatus.SUBMITTED
-                else None
-            )
+    def submitted_at(self) -> Optional[datetime]:
+        return self.application.submitted_at
 
     class Meta:
         verbose_name = _("employer summer voucher")
