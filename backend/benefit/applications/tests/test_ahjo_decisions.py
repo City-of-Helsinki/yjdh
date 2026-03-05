@@ -7,6 +7,7 @@ from applications.api.v1.serializers.decision_text import DecisionTextSerializer
 from applications.enums import DecisionType
 from applications.models import AhjoDecisionText
 from applications.services.ahjo_decision_service import (
+    _get_instalment_variables,
     replace_decision_template_placeholders,
 )
 
@@ -26,6 +27,15 @@ def test_replace_accepted_decision_template_placeholders(
     wanted_start_date = decided_application.calculation.start_date.strftime("%d.%m.%Y")
     wanted_end_date = decided_application.calculation.end_date.strftime("%d.%m.%Y")
     assert f"{wanted_start_date} - {wanted_end_date}" in replaced_template
+
+    instalment_variables = _get_instalment_variables(decided_application)
+    range_1, sum_1 = instalment_variables[0]
+    range_2, sum_2 = instalment_variables[1]
+
+    assert range_1 in replaced_template
+    assert range_2 in replaced_template
+    assert (str(sum_1) + " euroa") in replaced_template
+    assert (str(sum_2) + " euroa") in replaced_template
 
 
 @pytest.mark.django_db
