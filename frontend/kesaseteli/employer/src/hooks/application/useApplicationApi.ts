@@ -26,6 +26,7 @@ export type ApplicationApi<T> = {
     unknown,
     DraftApplication
   >;
+  deleteApplicationQuery: UseMutationResult<void, unknown, string>;
   updateApplication: (
     application: DraftApplication,
     onSuccess?: (app: Application) => void | Promise<void>
@@ -281,6 +282,7 @@ const useApplicationApi = <T = Application>(
     applicationId,
     applicationQuery,
     updateApplicationQuery,
+    deleteApplicationQuery,
     updateApplication,
     sendApplication,
     fetchEmployment,
