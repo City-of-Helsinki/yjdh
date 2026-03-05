@@ -23,7 +23,7 @@ const EmployerIndex: NextPage = () => {
 
   React.useEffect(() => {
     if (error) {
-      void router.push(`${locale}/500`, undefined, { shallow: false });
+      void router.push(`/${locale}/500`, undefined, { shallow: false });
     }
   }, [error, router, locale]);
 
