@@ -8,7 +8,7 @@ from typing import List, Union
 import xlsx_streaming
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import F, OuterRef, QuerySet, Subquery, Window
+from django.db.models import F, QuerySet, Window
 from django.db.models.functions import RowNumber
 from django.http import HttpResponse, HttpResponseRedirect, StreamingHttpResponse
 from django.shortcuts import render
@@ -53,9 +53,6 @@ class EmployerApplicationExcelDownloadView(TemplateView):
 
     @staticmethod
     def base_queryset(filter_pks=None) -> QuerySet[EmployerSummerVoucher]:
-        newest_submitted = EmployerSummerVoucher.history.filter(
-            id=OuterRef("id"), application__status=EmployerApplicationStatus.SUBMITTED
-        ).order_by("-modified_at")
         base_queryset = EmployerSummerVoucher.objects
         if filter_pks:
             base_queryset = base_queryset.filter(pk__in=filter_pks)
@@ -64,15 +61,14 @@ class EmployerApplicationExcelDownloadView(TemplateView):
                 "application", "application__company", "application__user"
             )
             .prefetch_related("attachments")
-            .annotate(submitted_at=Subquery(newest_submitted.values("modified_at")[:1]))
             # Use created_at and primary key as the secondary and tertiary ordering
             # parameters to force a predictable although slightly arbitrary ordering for
-            # queryset rows with identical submitted_at values.
-            .order_by("submitted_at", "created_at", "pk")
+            # queryset rows with identical application__submitted_at values.
+            .order_by("application__submitted_at", "created_at", "pk")
             .annotate(
                 row_number=Window(
                     expression=RowNumber(),
-                    order_by=[F("submitted_at"), F("created_at"), F("pk")],
+                    order_by=[F("application__submitted_at"), F("created_at"), F("pk")],
                 )
             )
         )

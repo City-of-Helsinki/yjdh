@@ -114,12 +114,19 @@ class EmployerSummerVoucherFactory(
         model = EmployerSummerVoucher
 
 
+def determine_submitted_at(employer_application):
+    if employer_application.status != EmployerApplicationStatus.DRAFT:
+        return get_faker().date_time(tzinfo=get_current_timezone())
+    return None
+
+
 class EmployerApplicationFactory(
     SaveAfterPostGenerationMixin, factory.django.DjangoModelFactory
 ):
     company = factory.SubFactory(CompanyFactory)
     user = factory.SubFactory(DuplicateAllowingUserFactory)
     status = factory.Faker("random_element", elements=EmployerApplicationStatus.values)
+    submitted_at = factory.LazyAttribute(determine_submitted_at)
     street_address = factory.Faker("street_address")
     bank_account_number = factory.Faker("iban")
     contact_person_name = factory.Faker("name")

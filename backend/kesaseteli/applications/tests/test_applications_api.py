@@ -2,6 +2,7 @@ import pytest
 from auditlog.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.test import override_settings
+from django.utils import timezone
 from freezegun import freeze_time
 from rest_framework.reverse import reverse
 
@@ -16,6 +17,7 @@ from common.tests.factories import (
     EmployerSummerVoucherFactory,
     YouthSummerVoucherFactory,
 )
+from shared.common.tests.utils import utc_datetime
 
 
 def get_list_url():
@@ -91,6 +93,27 @@ def test_application_patch(api_client, application):
 
     application.refresh_from_db()
     assert application.status == EmployerApplicationStatus.SUBMITTED
+
+
+@pytest.mark.django_db
+def test_submitted_at_is_set_on_draft_to_submitted_transition(api_client, application):
+    """
+    Test that application's submitted_at is set on DRAFT → SUBMITTED status transition.
+    """
+    application.refresh_from_db()
+    assert application.status == EmployerApplicationStatus.DRAFT
+    assert application.submitted_at is None
+
+    submission_time = timezone.now()
+    with freeze_time(submission_time):
+        data = {"status": EmployerApplicationStatus.SUBMITTED.value}
+        response = api_client.patch(get_detail_url(application), data)
+
+    assert response.status_code == 200
+    application.refresh_from_db()
+    assert application.status == EmployerApplicationStatus.SUBMITTED
+    assert application.submitted_at is not None
+    assert application.submitted_at == submission_time
 
 
 @pytest.mark.django_db
@@ -339,6 +362,123 @@ def test_application_update_writes_audit_log(api_client, application):
 
 
 @pytest.mark.django_db
+@override_settings(AUDIT_LOG_ORIGIN="TEST_SERVICE")
+def test_application_update_writes_multichange_audit_log(api_client, application):
+    application.invoicer_name = "old name"
+    application.is_separate_invoicer = True
+    application.contact_person_email = "old@example.org"
+    application.save()
+
+    data = EmployerApplicationSerializer(application).data
+    data["invoicer_name"] = "new name"
+    data["is_separate_invoicer"] = False
+    data["contact_person_email"] = "new@example.org"
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+
+    assert response.status_code == 200
+    assert response.data["invoicer_name"] == "new name"
+    assert response.data["is_separate_invoicer"] is False
+    assert response.data["contact_person_email"] == "new@example.org"
+
+    audit_event = LogEntry.objects.first()
+    assert audit_event.remote_addr == "127.0.0.1"
+    assert audit_event.actor_id == response.wsgi_request.user.id
+    assert audit_event.actor_email == response.wsgi_request.user.email
+    assert audit_event.action == LogEntry.Action.UPDATE
+    assert audit_event.object_pk == response.data["id"]
+    assert audit_event.content_type == ContentType.objects.get(
+        app_label="applications", model="employerapplication"
+    )
+    assert audit_event.changes == {
+        "contact_person_email": ["old@example.org", "new@example.org"],
+        "invoicer_name": ["old name", "new name"],
+        "is_separate_invoicer": ["True", "False"],
+    }
+
+
+@pytest.mark.django_db
+@override_settings(AUDIT_LOG_ORIGIN="TEST_SERVICE")
+def test_application_update_audit_log_excludes_summer_vouchers(api_client, application):
+    """
+    The summer_vouchers list does not appear in the audit log changes.
+
+    NOTE!
+        This is DOCUMENTING the BEHAVIOR of how EmployerApplication audit logging works.
+        CHANGE IF NEEDED (e.g. if summer vouchers are started to be logged here)!
+    """
+    application.invoicer_name = "old name"
+    application.save()
+
+    data = EmployerApplicationSerializer(application).data
+    orig_summer_voucher_count = len(data["summer_vouchers"])
+    data["invoicer_name"] = "new name"
+    data["summer_vouchers"].append(
+        {
+            "summer_voucher_serial_number": "",
+            "employment_postcode": "00100",
+            "employment_start_date": "2026-06-01",
+            "employment_end_date": "2026-08-31",
+            "employment_work_hours": "37.5",
+            "employment_salary_paid": "1000.00",
+            "employment_description": "",
+            "hired_without_voucher_assessment": None,
+            "employee_phone_number": "+358 50 1234567890",
+        }
+    )
+    response = api_client.put(get_detail_url(application), data)
+
+    assert response.status_code == 200
+    assert len(response.data["summer_vouchers"]) == orig_summer_voucher_count + 1
+
+    audit_event = LogEntry.objects.first()
+
+    # Only the invoicer_name change is shown, no summer_vouchers changes:
+    assert audit_event.changes == {
+        "invoicer_name": ["old name", "new name"],
+    }
+
+
+@pytest.mark.django_db
+@override_settings(AUDIT_LOG_ORIGIN="TEST_SERVICE")
+def test_application_submitting_audit_logs_status_and_submitted_at_changes(
+    api_client, application
+):
+    """
+    Test that submitting application with DRAFT → SUBMITTED status change
+    audit logs the "status" and "submitted_at" field changes.
+    """
+    application.refresh_from_db()
+    assert application.status == EmployerApplicationStatus.DRAFT
+    assert application.submitted_at is None
+
+    old_audit_log_entry_count = LogEntry.objects.count()
+    frozen_datetime = utc_datetime(2025, 6, 20, 12, 0, 0)
+    with freeze_time(frozen_datetime):
+        response = api_client.patch(
+            get_detail_url(application), {"status": EmployerApplicationStatus.SUBMITTED}
+        )
+
+    assert response.status_code == 200
+    application.refresh_from_db()
+    assert application.submitted_at == frozen_datetime
+
+    assert LogEntry.objects.count() == old_audit_log_entry_count + 1
+    audit_event = LogEntry.objects.filter(
+        object_pk=application.id,
+        action=LogEntry.Action.UPDATE,
+        timestamp=frozen_datetime,
+    ).first()
+
+    assert audit_event.changes == {
+        "status": ["draft", "submitted"],
+        "submitted_at": ["None", "2025-06-20 12:00:00"],
+    }
+
+
+@pytest.mark.django_db
 @override_settings(
     AUDIT_LOG_ORIGIN="TEST_SERVICE",
 )
@@ -356,6 +496,36 @@ def test_application_delete_writes_audit_log(api_client, application):
     assert audit_event.content_type == ContentType.objects.get_for_model(
         EmployerApplication
     )
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "status",
+    [
+        status
+        for status in EmployerApplicationStatus.values
+        if status != EmployerApplicationStatus.DRAFT
+    ],
+)
+def test_application_non_draft_creation_failure(api_client, company, status):
+    """
+    EmployerApplication should not be creatable with non-DRAFT status.
+    """
+    response = api_client.post(get_list_url(), {"status": status})
+    # WARNING! DO NOT CHANGE without adding code to set submitted_at on non-DRAFT creation!
+    assert response.status_code == 400
+    assert "Initial status of application must be draft" in str(response.data)
+
+
+@pytest.mark.django_db
+def test_application_draft_creation_success(api_client, company):
+    """
+    EmployerApplication should be creatable with DRAFT status.
+    """
+    response = api_client.post(
+        get_list_url(), {"status": EmployerApplicationStatus.DRAFT}
+    )
+    assert response.status_code == 201
 
 
 @pytest.mark.django_db
