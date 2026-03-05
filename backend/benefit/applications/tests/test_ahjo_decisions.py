@@ -28,7 +28,11 @@ def test_replace_accepted_decision_template_placeholders(
     wanted_end_date = decided_application.calculation.end_date.strftime("%d.%m.%Y")
     assert f"{wanted_start_date} - {wanted_end_date}" in replaced_template
 
-    instalment_variables = _get_instalment_variables(decided_application)
+    instalment_variables = _get_instalment_variables(
+        decided_application,
+        decided_application.start_date,
+        decided_application.end_date,
+    )
     range_1, sum_1 = instalment_variables[0]
     range_2, sum_2 = instalment_variables[1]
 
