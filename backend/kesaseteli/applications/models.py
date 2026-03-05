@@ -57,7 +57,7 @@ from shared.common.validators import (
     validate_phone_number,
     validate_postcode,
 )
-from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
+from shared.models.abstract_models import TimeStampedModel, UUIDModel
 from shared.models.mixins import LockForUpdateMixin
 from shared.vtj.vtj_client import VTJClient
 
@@ -891,7 +891,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         ordering = ["-created_at"]
 
 
-class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
+class YouthSummerVoucher(TimeStampedModel, UUIDModel):
     _SERIAL_NUMBER_SEQUENCE_NAME = "youth_summer_voucher_serial_numbers"
     SERIAL_NUMBER_SEQUENCE_INITIAL_VALUE = 1
 
@@ -1141,7 +1141,7 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         ordering = ["summer_voucher_serial_number"]
 
 
-class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
+class EmployerApplication(TimeStampedModel, UUIDModel):
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
@@ -1233,7 +1233,7 @@ class EmployerSummerVoucherManager(models.Manager):
         ).select_youth_voucher()
 
 
-class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
+class EmployerSummerVoucher(TimeStampedModel, UUIDModel):
     objects = EmployerSummerVoucherManager()
 
     application = models.ForeignKey(
