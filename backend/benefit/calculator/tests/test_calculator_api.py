@@ -5,6 +5,7 @@ from unittest import mock
 
 import factory
 import pytest
+from dateutil.relativedelta import relativedelta
 from django.utils import timezone
 
 from applications.api.v1.serializers.application import (
@@ -764,8 +765,9 @@ def test_application_calculation_instalments(
         assert instalment_2.status == InstalmentStatus.WAITING
 
         due_date = instalment_2.due_date
-        future_date = timezone.now() + timedelta(days=181)
+        future_date = timezone.now() + relativedelta(months=6)
         assert due_date == future_date.date()
+
 
 def test_override_monthly_benefit_amount_max_validation(
     handler_api_client, handling_application
