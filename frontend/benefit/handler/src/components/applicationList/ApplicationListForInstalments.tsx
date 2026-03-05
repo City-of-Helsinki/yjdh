@@ -19,6 +19,7 @@ import LoadingSkeleton from 'react-loading-skeleton';
 import Modal from 'shared/components/modal/Modal';
 import { $Link } from 'shared/components/table/Table.sc';
 import {
+  convertToBackendDateFormat,
   convertToUIDateFormat,
   sortFinnishDate,
 } from 'shared/utils/date.utils';
@@ -223,7 +224,7 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
   const onSubmitChangeDate = (): void => {
     changeInstalmentDate({
       id: selectedInstalment?.id,
-      dueDate: instalmentNewDate
+      dueDate: convertToBackendDateFormat(instalmentNewDate)
     })
     setIsInstalmentChangeDateDialogShown(false);
   };
@@ -301,6 +302,7 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
                 id="instalment-change-date-dateinput"
                 label="Viimeinen työpäivä"
                 helperText={t('common:instalments.dialog.changeInstalmentDate.helperText')}
+                language="fi"
                 onChange={(value:string) => setInstalmentNewDate(value)}
                 value={instalmentNewDate}
                 required
