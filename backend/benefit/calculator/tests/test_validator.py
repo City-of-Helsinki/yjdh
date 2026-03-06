@@ -54,9 +54,9 @@ def test_instalment_status_transitions(from_status, to_status):
 @pytest.mark.parametrize(
     "to_date, expected_due_date, expected_status_code",
     [
-        ("25.3.2026", "25.03.2026", 200),   # Valid date change
-        ("1.2.2026", "15.05.2026", 400),    # Date cannot be before first instalment due date; unchanged
-        ("30.6.2026", "15.05.2026", 400),   # Date cannot be after current due date; unchanged
+        ("2026-03-26", "25.03.2026", 200),   # Valid date change
+        ("2026-01-01", "15.05.2026", 400),    # Date cannot be before first instalment due date; unchanged
+        ("2026-06-30", "15.05.2026", 400),   # Date cannot be after current due date; unchanged
     ],
 )
 @pytest.mark.django_db
