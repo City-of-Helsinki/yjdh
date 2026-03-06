@@ -20,4 +20,4 @@ ${payslipRequired.delivery.request}
 
 ${payslipRequired.delivery.alternative}
 ${payslipRequired.delivery.secureTitle1} ${payslipRequired.delivery.secureLink}
-${payslipRequired.delivery.secureTitle2} {payslipRequired.delivery.emailAddress} ${payslipRequired.delivery.secureTitle3}
+${payslipRequired.delivery.secureTitle2} ${payslipRequired.delivery.emailAddress} ${payslipRequired.delivery.secureTitle3}

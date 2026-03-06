@@ -20,4 +20,4 @@ Log in and submit the required attachment
 
 
 If you have not used the online service, you can submit the attachment using the secure connection via https://securemail.hel.fi/
-(Link takes you to an external service). Mark {payslipRequired.delivery.emailAddress} as the recipient.
+(Link takes you to an external service). Mark helsinkilisa@hel.fi as the recipient.

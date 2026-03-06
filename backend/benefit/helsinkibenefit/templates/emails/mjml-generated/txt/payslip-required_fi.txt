@@ -20,4 +20,4 @@ Kirjaudu ja/tai toimita tarvittava liite
 
 Jos et ole käyttänyt asiointipalvelua, niin voit toimittaa liitteen turvasähköpostilla
 Lähetä liite https://suojattusahkoposti.hel.fi/
-suojatun yhteyden kautta osoitteeseen {payslipRequired.delivery.emailAddress}
+suojatun yhteyden kautta osoitteeseen helsinkilisa@hel.fi
