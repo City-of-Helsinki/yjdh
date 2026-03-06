@@ -1,12 +1,13 @@
-from django.utils.translation import gettext_lazy as _
+from datetime import datetime
+
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext_lazy as _
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from rest_framework import filters as drf_filters
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from datetime import datetime
 
 from applications.enums import ApplicationBatchStatus, ApplicationTalpaStatus
 from calculator.api.v1.serializers import (
@@ -63,9 +64,13 @@ class InstalmentView(APIView):
             )
         elif "due_date" in request.data:
             try:
-                instalment_due_date = datetime.strptime(request.data["due_date"],"%Y-%m-%d").date()
+                instalment_due_date = datetime.strptime(
+                    request.data["due_date"], "%Y-%m-%d"
+                ).date()
             except ValueError:
-                return Response(_("Invalid date format"), status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    _("Invalid date format"), status=status.HTTP_400_BAD_REQUEST
+                )
             serializer = InstalmentSerializer(
                 instalment, data={"due_date": instalment_due_date}, partial=True
             )
@@ -89,7 +94,9 @@ class InstalmentView(APIView):
                             application.talpa_status = (
                                 ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
                             )
-                            application.batch.status = ApplicationBatchStatus.SENT_TO_TALPA
+                            application.batch.status = (
+                                ApplicationBatchStatus.SENT_TO_TALPA
+                            )
                         else:
                             application.talpa_status = (
                                 ApplicationTalpaStatus.PARTIALLY_SENT_TO_TALPA
