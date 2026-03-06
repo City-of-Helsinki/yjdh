@@ -10,7 +10,7 @@ import {
 import { Application, ApplicationData } from 'benefit-shared/types/application';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
-import { useEffect } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import hdsToast from 'shared/components/toast/Toast';
 import { stringToFloatValue } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
@@ -29,7 +29,8 @@ type ExtendedComponentProps = {
 
 const useApplicationFormStep5 = (
   application: Application,
-  setIsSubmittedApplication: React.Dispatch<React.SetStateAction<boolean>>
+  setIsSubmittedApplication: Dispatch<SetStateAction<boolean>>,
+  setIsResubmission?: Dispatch<SetStateAction<boolean>>
 ): ExtendedComponentProps => {
   const translationsBase = 'common:applications.sections';
   const { t } = useTranslation();
@@ -90,6 +91,9 @@ const useApplicationFormStep5 = (
   };
 
   const handleSubmit = (): void => {
+    if (setIsResubmission) {
+      setIsResubmission(application.status !== APPLICATION_STATUSES.DRAFT);
+    }
     const submitFields = isSubmit
       ? {
           status:
