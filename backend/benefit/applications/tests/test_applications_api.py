@@ -2751,6 +2751,11 @@ def test_send_request_payslip_mail(mailoutbox):
     )
     assert html_content is not None
 
+    # Verify that required fields are in the HTML message
+    assert app.company_name in mail.body
+    assert app.start_date.strftime("%d.%m.%Y") in mail.body
+    assert app.end_date.strftime("%d.%m.%Y") in mail.body
+
 
 @pytest.mark.django_db
 @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")

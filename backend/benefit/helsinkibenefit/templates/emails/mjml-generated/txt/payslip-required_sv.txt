@@ -20,4 +20,4 @@ Logga in och/eller skicka in den nödvändiga bilagan
 
 Om du inte har använt onlinetjänsten kan du skicka in bilagan via säker e-post
 Skicka bilagan vi https://suojattusahkoposti.hel.fi/
-(Länk leder till en extern tjänst) via en säker anslutning till {payslipRequired.delivery.emailAddress}
+(Länk leder till en extern tjänst) via en säker anslutning till helsinkilisa@hel.fi
