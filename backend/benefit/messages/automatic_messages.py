@@ -66,6 +66,9 @@ def get_email_template_context(application: Application):
         "application": {
             "created_at": application.created_at,
             "application_number": application.application_number,
+            "company_name": application.company_name,
+            "start_date": application.start_date,
+            "end_date": application.end_date,
         },
         "language": application.applicant_language,
     }
