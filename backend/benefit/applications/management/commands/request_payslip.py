@@ -45,7 +45,7 @@ def notify_applications(days_to_notify: int) -> int:
     and not have any alterations. Send a notification to the applicant.
     Returns the number of notified applications."""
 
-    target_date = timezone.now() - timedelta(days=days_to_notify)
+    target_date = timezone.now().date() - timedelta(days=days_to_notify)
     applications_to_notify = Application.objects.filter(
         application_origin=ApplicationOrigin.APPLICANT,
         status=ApplicationStatus.ACCEPTED,
