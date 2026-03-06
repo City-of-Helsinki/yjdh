@@ -14,11 +14,12 @@ import { useApplicationFormStep6 } from './useApplicationFormStep6';
 
 type ExtendedProps = {
   setIsSubmittedApplication: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsResubmission?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const ApplicationFormStep6: React.FC<
   DynamicFormStepComponentProps & ExtendedProps
-> = ({ data, setIsSubmittedApplication }) => {
+> = ({ data, setIsSubmittedApplication, setIsResubmission }) => {
   const {
     t,
     handleSubmit,
@@ -32,7 +33,7 @@ const ApplicationFormStep6: React.FC<
     checkedArray,
     applicantTermsInEffectUrl,
     applicantTermsInEffectMd,
-  } = useApplicationFormStep6(data, setIsSubmittedApplication);
+  } = useApplicationFormStep6(data, setIsSubmittedApplication, setIsResubmission);
 
   return (
     <form onSubmit={handleSubmit} noValidate>

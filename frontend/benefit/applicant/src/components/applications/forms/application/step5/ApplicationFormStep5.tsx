@@ -27,11 +27,12 @@ import { useApplicationFormStep5 } from './useApplicationFormStep5';
 type ExtendedProps = {
   isReadOnly?: boolean;
   setIsSubmittedApplication?: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsResubmission?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const ApplicationFormStep5: React.FC<
   DynamicFormStepComponentProps & ExtendedProps
-> = ({ data, isReadOnly, setIsSubmittedApplication }) => {
+> = ({ data, isReadOnly, setIsSubmittedApplication, setIsResubmission }) => {
   const {
     t,
     handleBack,
@@ -42,7 +43,7 @@ const ApplicationFormStep5: React.FC<
     handleClose,
     translationsBase,
     isSubmit,
-  } = useApplicationFormStep5(data, setIsSubmittedApplication);
+  } = useApplicationFormStep5(data, setIsSubmittedApplication, setIsResubmission);
 
   const {
     data: clonedData,

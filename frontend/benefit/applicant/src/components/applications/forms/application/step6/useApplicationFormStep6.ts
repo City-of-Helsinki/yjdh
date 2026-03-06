@@ -36,7 +36,8 @@ type ExtendedComponentProps = {
 
 const useApplicationFormStep6 = (
   application: Application,
-  setIsSubmittedApplication: React.Dispatch<React.SetStateAction<boolean>>
+  setIsSubmittedApplication: React.Dispatch<React.SetStateAction<boolean>>,
+  setIsResubmission?: React.Dispatch<React.SetStateAction<boolean>>
 ): ExtendedComponentProps => {
   const translationsBase = 'common:applications.sections.send';
   const { t } = useTranslation();
@@ -82,6 +83,9 @@ const useApplicationFormStep6 = (
     errorsArray[consentIndex] ? t(VALIDATION_MESSAGE_KEYS.REQUIRED) : '';
 
   const handleSubmit = (): void => {
+    if (setIsResubmission) {
+      setIsResubmission(application.status !== APPLICATION_STATUSES.DRAFT);
+    }
     if (!getErrors()) {
       const currentApplicationData = snakecaseKeys(
         {
