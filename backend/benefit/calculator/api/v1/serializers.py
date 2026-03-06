@@ -82,11 +82,13 @@ class InstalmentSerializer(serializers.ModelSerializer):
         return status
 
     def validate_due_date(self, due_date):
+        if self.instance.instalment_number == 1:
+            return due_date
+
         if due_date > self.instance.due_date:
             raise serializers.ValidationError(
                 {"due_date": _("New due date must be before the current due date")}
             )
-
         calculation = self.instance.calculation
         instalment_1_qs = Instalment.objects.filter(calculation=calculation,
                                                     instalment_number=1)
