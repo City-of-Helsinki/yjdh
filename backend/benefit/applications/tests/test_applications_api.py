@@ -2704,6 +2704,62 @@ def test_notify_applications_matching_unmatching(mock_send_notification_mail):
     assert mock_send_notification_mail.call_count == 5
 
 
+@pytest.mark.django_db
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+def test_send_request_payslip_mail(mailoutbox):
+    """
+    Test _send_notification_mail function to verify that it sends an email
+    with correct subject, recipient, and template when notifying applicant
+    about the benefit checkpoint.
+    """
+    from applications.management.commands.request_payslip import (
+        _send_notification_mail,
+        get_benefit_notice_email_notification_subject,
+    )
+
+    # Create a test application that would be eligible for notification
+    days_to_notify = 150
+    target_date = date.today() - relativedelta(days=days_to_notify)
+    app = DecidedApplicationFactory(
+        application_origin=ApplicationOrigin.APPLICANT,
+        status=ApplicationStatus.ACCEPTED,
+        start_date=target_date,
+    )
+
+    # Call the function under test
+    result = _send_notification_mail(app)
+
+    # Verify the function returns 1 on success (from send_email_to_applicant)
+    assert result == 1
+
+    # Verify exactly one email was sent
+    assert len(mailoutbox) == 1
+
+    mail = mailoutbox[0]
+
+    # Verify the email subject matches expected subject
+    expected_subject = get_benefit_notice_email_notification_subject()
+    assert expected_subject in mail.subject
+
+    # Verify email is addressed to the applicant's contact email
+    assert app.company_contact_person_email in mail.to
+
+    # Verify email body is non-empty (should contain rendered template content)
+    assert mail.body
+
+    # Verify HTML message is also present
+    assert mail.alternatives
+    html_content = next(
+        (
+            content
+            for content, content_type in mail.alternatives
+            if content_type == "text/html"
+        ),
+        None,
+    )
+    assert html_content is not None
+
+
 def _create_random_applications():
     f = faker.Faker()
     combos = [
