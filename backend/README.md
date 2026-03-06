@@ -4,12 +4,19 @@ Refer to [top level README](https://github.com/City-of-Helsinki/yjdh/blob/main/R
 
 [kesaseteli/README.md](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/kesaseteli/README.md) or [benefit/README.md](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/benefit/README.md) contain more information about the local setup.
 
+## Running tests in Docker
+
+From the repository root you can run backend tests inside the same containers used for development:
+
+* **Kesäseteli:** `docker compose -f compose/employer.dev.yml run --rm backend pytest`
+* **Benefit:** `docker compose -f compose.benefit.yml run --rm backend pytest`
+
 Django updated to version 4.2 during May 2024, as security support for 3.2 ends 30.4.2024. Django 4.2 will stop receiving security updates 30.4.2026.
 
 ## Authentication in YJDH
 
 The authentication setups used by YJDH projects are described in this document. The emphasis is on
-short descriptions of the concrete flows with pointers to code.  
+short descriptions of the concrete flows with pointers to code.
 
 ### Suomi.fi
 
@@ -45,7 +52,7 @@ The login process now continues to obtain user's company. After successful compl
 * The callback view redirects the user to view [eauth_authentication_init](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/shared/shared/oidc/urls.py#L85)
 * Endpoint `settings.OIDC_OP_USER_ENDPOINT` is called to obtain user's national identification number
   * The data is present only for Tunnistus service
-  * For Tunnistamo, we need to 
+  * For Tunnistamo, we need to
     * call `settings.TUNNISTAMO_API_TOKENS_ENDPOINT` to [exchange OIDC access token for API access token](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/shared/shared/helsinki_profile/hp_client.py#L67)
     * call `settings.HELSINKI_PROFILE_API_URL` with the access token [to get the national identification number](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/shared/shared/helsinki_profile/hp_client.py#L24)
 * [register_user](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/shared/shared/oidc/views/eauth_views.py#L38) is called to initiate the process
@@ -53,7 +60,7 @@ The login process now continues to obtain user's company. After successful compl
 * The user is redirected to the eauthorizations service at `settings.EAUTHORIZATIONS_BASE_URL` to redirect the user to select the company
 * The eauthorizations service redirects to view [eauth_authentication_callback](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/shared/shared/oidc/urls.py#L88)
   * This callback URL needs to be configured by DVV (e.g. https://localhost:8000/oidc/eauthorizations/callback/)
-  * If there are errors, the user is logged out of Django and sent to login failed page 
+  * If there are errors, the user is logged out of Django and sent to login failed page
   * The callback request is verified agains the eauthorizations service
   * The view sets `organization_roles` and redirects the user back to UI
 
