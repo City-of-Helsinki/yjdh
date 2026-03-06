@@ -71,7 +71,7 @@ This monorepo contains code for three different employment services:
 Before starting, ensure you have the following installed:
 
 * Docker@^19.03.0 (or higher)
-* Docker Compose 2.20.0 or higher
+* Docker Compose@^2.20.0 (or higher)
 * NodeJS `>=22.13.1 <23.11.0`
 * Yarn@^1.22
 
@@ -173,14 +173,14 @@ Backend tests run inside Docker containers using the same setup as development.
 From repository root:
 
 **Windows:**
-* **Kesäseteli:** `docker compose -f compose.employer.yml run --rm backend pytest`
+* **Kesäseteli:** `docker compose -f compose/employer.dev.yml run --rm backend pytest`
 * **Benefit:** `docker compose -f compose.benefit.yml run --rm backend pytest`
 
 **Linux (recommended for proper permissions):**
-* **Kesäseteli:** `UID=$(id -u) GID=$(id -g) docker compose -f compose.employer.yml run --rm backend pytest`
+* **Kesäseteli:** `UID=$(id -u) GID=$(id -g) docker compose -f compose/employer.dev.yml -f compose/linux.yml run --rm backend pytest`
 * **Benefit:** `UID=$(id -u) GID=$(id -g) docker compose -f compose.benefit.yml run --rm backend pytest`
 
-**Note:** On Linux, the UID/GID prefix ensures the container runs with your user's UID/GID, preventing permission issues. If `compose.linux.yml` exists in your setup, add `-f compose.linux.yml` to the command.
+**Note:** On Linux, the UID/GID prefix ensures the container runs with your user's UID/GID, preventing permission issues. Add `-f compose/linux.yml` to the command when using Kesäseteli compose files.
 
 **Note:** Instead of prefixing every command with `UID=$(id -u) GID=$(id -g)`, you can export them once: in your shell for a session (`export UID GID` after setting them), with [direnv](https://direnv.net/) in the project directory, or in `.bashrc`/`.zshrc` (or similar).
 
@@ -202,7 +202,7 @@ From repository root:
 
 ## Local troubleshooting
 
-**On Linux:** Use the `:linux` script variants (e.g. `yarn employer:linux up`) when starting the stack, and for backend tests use the `UID/GID` prefix and add `-f compose.linux.yml`. See [Backend tests](#backend-tests) and [Quick start](#quick-start).
+**On Linux:** Use the `:linux` script variants (e.g. `yarn employer:linux up`) when starting the stack, and for backend tests use the `UID/GID` prefix and add `-f compose/linux.yml`. See [Backend tests](#backend-tests) and [Quick start](#quick-start).
 
 #### 502 Bad Gateway in frontend
 
@@ -222,7 +222,7 @@ To get a bash shell inside a running container:
 
 ```bash
 # Kesäseteli backend
-docker compose -f compose.employer.yml exec backend bash
+docker compose -f compose/employer.dev.yml exec backend bash
 
 # Benefit backend
 docker compose -f compose.benefit.yml exec backend bash
