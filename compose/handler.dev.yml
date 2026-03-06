@@ -1,0 +1,38 @@
+include:
+  - handler.yml
+services:
+  backend:
+    build:
+      target: development
+    volumes:
+      - ../backend/kesaseteli:/app
+      - ../backend/shared:/shared
+      - ../backend/kesaseteli/media:/var/media
+  youth:
+    build:
+      target: development
+    volumes:
+      - ../frontend:/app
+      # Don't volume map these dirs to avoid ownership/permission issues:
+      - /app/node_modules
+      - /app/.next
+      - /app/shared/node_modules
+      - /app/shared/.next
+      - /app/kesaseteli/youth/node_modules
+      - /app/kesaseteli/youth/.next
+    environment:
+      - WATCHPACK_POLLING=${WATCHPACK_POLLING:-true}
+  handler:
+    build:
+      target: development
+    volumes:
+      - ../frontend:/app
+      # Don't volume map these dirs to avoid ownership/permission issues:
+      - /app/node_modules
+      - /app/.next
+      - /app/shared/node_modules
+      - /app/shared/.next
+      - /app/kesaseteli/handler/node_modules
+      - /app/kesaseteli/handler/.next
+    environment:
+      - WATCHPACK_POLLING=${WATCHPACK_POLLING:-true}

@@ -1,0 +1,29 @@
+include:
+  - base.kesaseteli.yml
+services:
+  employer:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile-localdevelopment
+      args:
+        PROJECT: kesaseteli
+        FOLDER: employer
+    env_file:
+      - ../.env.kesaseteli-employer
+    environment:
+      - PORT=3000
+    container_name: kesaseteli-employer
+
+  local-proxy:
+    depends_on:
+      - postgres
+      - backend
+      - employer
+    build:
+      context: ../localdevelopment/employer/nginx
+    container_name: kesaseteli-employer-local-proxy
+    volumes:
+      - ../localdevelopment/employer/nginx/:/etc/nginx/
+    ports:
+      - 127.0.0.1:8000:8000
+      - 127.0.0.1:3000:3000

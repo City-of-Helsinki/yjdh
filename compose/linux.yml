@@ -1,0 +1,7 @@
+# For Linux/WSL: run backend as host user so bind mounts are writable.
+# When using this file with docker compose, set UID and GID (e.g. UID=$(id -u)
+# GID=$(id -g)). The yarn *:linux scripts (employer:linux, handler:linux, youth:linux)
+# set these for you automatically.
+services:
+  backend:
+    user: "${UID:?set UID}:${GID:?set GID}"
