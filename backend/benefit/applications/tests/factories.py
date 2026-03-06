@@ -405,7 +405,9 @@ käytettäväksi työllistetyn helsinkiläisen työllistämiseksi $total_amount 
 <p>Helsinki-lisään on varattu talousarviossa Helsingin kaupungin Työllisyyspalveluille \
 vuosittain budjetoitu määräraha. Avustuksen kustannukset maksetaan \
 kaupungin Työllisyyspalveluille osoitetusta määrärahasta talousarvion \
-erikseen määritellyltä kohdalta. Työnantajan Helsinki-lisä on aina harkinnanvarainen.</p>
+erikseen määritellyltä kohdalta. Työnantajan Helsinki-lisä on aina harkinnanvarainen.</p>\
+<p>Tuki maksetaan kahdessa erässä. Ensimmäinen erä $benefit_instalment1_sum euroa ajalle $benefit_instalment1_range \
+ja toinen erä $benefit_instalment2_sum euroa ajalle $benefit_instalment2_range. </p>
 """
 
     template_justification_text = """<p>Helsingin kaupunginhallituksen elinkeinojaosto on 11.9.2023 § 30 päättänyt \
