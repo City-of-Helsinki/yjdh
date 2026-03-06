@@ -20,6 +20,15 @@ export const useRouterNavigation = (
   const statusToTabId = React.useCallback(():
     | APPLICATION_LIST_TABS
     | number => {
+
+    const returnTabRaw = router.query?.returnTab;
+    const returnTab =
+      typeof returnTabRaw === 'string' ? parseInt(returnTabRaw, 10) : NaN;
+
+    if (!Number.isNaN(returnTab)) {
+      return returnTab
+    }
+
     if (batchStatus === BATCH_STATUSES.DECIDED_ACCEPTED) {
       return APPLICATION_LIST_TABS.IN_PAYMENT;
     }
@@ -46,7 +55,7 @@ export const useRouterNavigation = (
       default:
         return 0;
     }
-  }, [status, batchStatus]);
+  }, [status, batchStatus, router.query]);
 
   /**
    * Get the previous location from the session storage. If not available or split fails, fallback to the root.
