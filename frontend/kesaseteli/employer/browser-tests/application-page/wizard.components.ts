@@ -1,6 +1,7 @@
 import {
   getErrorMessage,
   screenContext,
+  withinContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import TestController from 'testcafe';
 
@@ -21,6 +22,18 @@ export const getWizardComponents = async (t: TestController) => {
       screen.findByRole('button', {
         name: /^lähetä hakemus/i,
       }),
+    cancelButton: () =>
+      screen.findByRole('button', {
+        name: /keskeytä|cancel|avbryt/i,
+      }),
+    confirmationDialog: () =>
+      screen.findByRole('dialog', {
+        name: /haluatko poistua sivulta\?|do you want to leave the page\?|vill du lämna sidan\?/i,
+      }),
+    confirmCancelButton: () => {
+      const dialog = selectors.confirmationDialog();
+      return withinContext(t)(dialog).findByTestId('modalSubmit');
+    },
     step1Button: () =>
       screen.findByRole('button', {
         name: /^siirry hakemuksen vaiheeseen 1\. työnantajan tiedot/i,
@@ -32,7 +45,9 @@ export const getWizardComponents = async (t: TestController) => {
   };
   const expectations = {
     async isPresent() {
-      await t.expect(selectors.header().exists).ok(await getErrorMessage(t));
+      await t
+        .expect(selectors.header().exists)
+        .ok(await getErrorMessage(t), { timeout: 40_000 });
     },
   };
 
@@ -51,6 +66,12 @@ export const getWizardComponents = async (t: TestController) => {
     },
     clickGoToStep2Button() {
       return t.click(selectors.step2Button());
+    },
+    clickCancelButton() {
+      return t.click(selectors.cancelButton());
+    },
+    clickConfirmCancelButton() {
+      return t.click(selectors.confirmCancelButton());
     },
   };
 

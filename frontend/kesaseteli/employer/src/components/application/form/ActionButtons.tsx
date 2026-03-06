@@ -1,10 +1,13 @@
-import { Button, IconArrowLeft, IconArrowRight } from 'hds-react';
+import { Button, IconArrowLeft, IconArrowRight, IconCross } from 'hds-react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import useConfirm from 'shared/hooks/useConfirm';
+import useGoToPage from 'shared/hooks/useGoToPage';
+import { setLeaveConfirmBypassed } from 'shared/hooks/useLeaveConfirm';
 import useWizard from 'shared/hooks/useWizard';
 import Application from 'shared/types/application-form-data';
 
@@ -22,7 +25,6 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
     formState: { isSubmitting },
   } = useFormContext<Application>();
 
-
   const {
     isFirstStep,
     isLastStep,
@@ -31,11 +33,34 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
     clearStepHistory,
     isLoading: isWizardLoading,
   } = useWizard();
-  const { updateApplication, sendApplication, updateApplicationQuery } =
-    useApplicationApi({ setBackendValidationError: setError });
+  const {
+    updateApplication,
+    sendApplication,
+    deleteApplication,
+    updateApplicationQuery,
+    deleteApplicationQuery,
+  } = useApplicationApi({ setBackendValidationError: setError });
+
+  const { confirm } = useConfirm();
+  const goToPage = useGoToPage();
+
+  const handleCancel = React.useCallback(async () => {
+    const isConfirmed = await confirm({
+      header: t('common:application.buttons.leave_confirmation'),
+      content: t('common:application.buttons.leave_confirmation_description'),
+      submitButtonLabel: t('common:application.buttons.discard'),
+      submitButtonVariant: 'danger',
+    });
+    if (isConfirmed) {
+      deleteApplication(() => {
+        setLeaveConfirmBypassed(true);
+        goToPage('/');
+      });
+    }
+  }, [confirm, deleteApplication, goToPage, t]);
 
   const handleSuccess = React.useCallback(
-    (validatedApplication: Application) => {
+    async (validatedApplication: Application) => {
       if (!isLastStep) {
         return updateApplication(validatedApplication, () => {
           // eslint-disable-next-line no-console
@@ -43,7 +68,10 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
           void goToNextStep();
         });
       }
-      return sendApplication(validatedApplication, onAfterLastStep);
+      return sendApplication(validatedApplication, () => {
+        onAfterLastStep();
+        setLeaveConfirmBypassed(true);
+      });
     },
     [
       isLastStep,
@@ -64,12 +92,28 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
   );
 
   const isLoading =
-    isSubmitting || updateApplicationQuery.isLoading || isWizardLoading;
+    isSubmitting ||
+    updateApplicationQuery.isLoading ||
+    deleteApplicationQuery.isLoading ||
+    isWizardLoading;
 
   return (
-    <$ButtonSection columns={isFirstStep ? 1 : 2} withoutDivider>
-      {!isFirstStep && (
-        <$GridCell justifySelf="start">
+    <$ButtonSection columns={3} withoutDivider>
+      <$GridCell justifySelf="start">
+        <Button
+          variant="supplementary"
+          theme="black"
+          data-testid="cancel-button"
+          iconLeft={<IconCross />}
+          onClick={handleCancel}
+          isLoading={isLoading}
+          disabled={isLoading}
+        >
+          {t(`common:application.buttons.cancel`)}
+        </Button>
+      </$GridCell>
+      <$GridCell justifySelf="center">
+        {!isFirstStep && (
           <Button
             variant="secondary"
             theme="black"
@@ -81,8 +125,8 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
           >
             {t(`common:application.buttons.previous`)}
           </Button>
-        </$GridCell>
-      )}
+        )}
+      </$GridCell>
       <$GridCell justifySelf="end">
         <Button
           theme="coat"
@@ -102,7 +146,7 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
             : t(`common:application.buttons.next`)}
         </Button>
       </$GridCell>
-    </$ButtonSection >
+    </$ButtonSection>
   );
 };
 

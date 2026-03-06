@@ -762,12 +762,12 @@ def test_employer_application_list_unallowed_methods(
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize("application_status", EmployerApplicationStatus.values)
 @pytest.mark.django_db
-def test_employer_application_detail_unallowed_methods(
+def test_employer_application_detail_partially_unallowed_methods(
     application_status: EmployerApplicationStatus,
 ):
     """
-    Test that the employer application detail endpoint doesn't allow HTTP
-    methods delete and post.
+    Test that the employer application detail endpoint only allows the delete
+    method for drafts and doesn't allow the post method at all.
     """
     user = UserFactory()
     company = CompanyFactory()
@@ -776,7 +776,12 @@ def test_employer_application_detail_unallowed_methods(
     application = attachment.summer_voucher.application
     url = reverse("v1:employerapplication-detail", kwargs={"pk": application.id})
     set_company_business_id_to_client(company, user_client)
-    assert user_client.delete(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+    if application_status == EmployerApplicationStatus.DRAFT:
+        assert user_client.delete(url).status_code == status.HTTP_204_NO_CONTENT
+    elif application_status == EmployerApplicationStatus.SUBMITTED:
+        assert user_client.delete(url).status_code == status.HTTP_400_BAD_REQUEST
+    else:
+        assert user_client.delete(url).status_code == status.HTTP_404_NOT_FOUND
     assert user_client.post(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 

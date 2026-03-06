@@ -4,11 +4,11 @@ import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integr
 import Application from '@frontend/shared/src/types/application';
 import Employment from '@frontend/shared/src/types/employment';
 import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
-import TestController from 'testcafe';
 
 import { getStep1Components } from '../application-page/step1.components';
 import { getStep2Components } from '../application-page/step2.components';
 import { getWizardComponents } from '../application-page/wizard.components';
+import { getDashboardComponents } from '../index-page/dashboard.components';
 import { getUrlUtils } from '../utils/url.utils';
 import { doEmployerLogin } from './employer-header.actions';
 
@@ -40,12 +40,7 @@ export const fillEmployerDetails = async (
 export const fillEmploymentDetails = async (
   t: TestController,
   application: Application,
-  expectedPreFill?: {
-    employee_ssn?: string;
-    employee_phone_number?: string;
-    employee_postcode?: string | number;
-    employee_school?: string;
-  }
+  expectedPreFill?: Partial<Employment>
   // eslint-disable-next-line sonarjs/cognitive-complexity
 ): Promise<void> => {
   const step1 = getStep1Components(t);
@@ -118,12 +113,7 @@ export const fillEmploymentDetails = async (
 export const fillStep1Form = async (
   t: TestController,
   application: Application,
-  expectedPreFill?: {
-    employee_ssn?: string;
-    employee_phone_number?: string;
-    employee_postcode?: string | number;
-    employee_school?: string;
-  }
+  expectedPreFill?: Partial<Employment>
 ): Promise<void> => {
   await fillEmployerDetails(t, application);
   await fillEmploymentDetails(t, application, expectedPreFill);
@@ -132,13 +122,14 @@ export const fillStep1Form = async (
 export const loginAndfillApplication = async (
   t: TestController,
   toStep = 2,
-  expectedPreFill?: {
-    employee_ssn?: string;
-    employee_phone_number?: string;
-  }
+  expectedPreFill?: Partial<Employment>
 ): Promise<UserAndApplicationData> => {
   const urlUtils = getUrlUtils(t);
   const suomiFiData = await doEmployerLogin(t);
+  const dashboard = getDashboardComponents(t);
+  await dashboard.expectations.isLoaded();
+  await dashboard.actions.clickCreateNewApplication();
+
   const wizard = await getWizardComponents(t);
   const applicationId =
     await urlUtils.expectations.urlChangedToApplicationPage();
@@ -183,3 +174,4 @@ export const loginAndfillApplication = async (
   }
   return { ...application, ...suomiFiData };
 };
+

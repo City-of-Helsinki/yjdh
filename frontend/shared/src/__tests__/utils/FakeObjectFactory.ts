@@ -119,8 +119,12 @@ class FakeObjectFactory {
       employee_home_city: faker.address
         .cityName()
         .replace(/[^ A-Za-zÄÅÖäåö-]/g, ''),
-      employee_postcode: faker.datatype.number({ min: 10_000, max: 99_999 }),
-      employment_postcode: faker.datatype.number({ min: 10_000, max: 99_999 }),
+      employee_postcode: faker.datatype
+        .number({ min: 10_000, max: 99_999 })
+        .toString(),
+      employment_postcode: faker.datatype
+        .number({ min: 10_000, max: 99_999 })
+        .toString(),
       employment_start_date: convertToBackendDateFormat(faker.date.past()),
       employment_end_date: convertToBackendDateFormat(faker.date.future()),
       employment_work_hours: faker.datatype.number({
@@ -138,7 +142,9 @@ class FakeObjectFactory {
         'no',
         'maybe',
       ]),
-      summer_voucher_serial_number: faker.datatype.number({ min: 1, max: 9_999_999 }).toString(),
+      summer_voucher_serial_number: faker.datatype
+        .number({ min: 1, max: 9_999_999 })
+        .toString(),
       attachments: [
         ...this.fakeAttachments('payslip'),
         ...this.fakeAttachments('employment_contract'),

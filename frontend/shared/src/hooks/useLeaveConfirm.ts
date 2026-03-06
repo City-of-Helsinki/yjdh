@@ -1,33 +1,143 @@
 import Router from 'next/router';
-import { useEffect } from 'react';
+import { useTranslation } from 'next-i18next';
+import { useEffect, useRef } from 'react';
+import useConfirm from 'shared/hooks/useConfirm';
+
+export const leaveConfirmStore = {
+  isBypassed: false,
+};
+
+export const setLeaveConfirmBypassed = (bypassed: boolean): void => {
+  leaveConfirmStore.isBypassed = bypassed;
+};
 
 const useLeaveConfirm = (unsavedChanges: boolean, message: string): void => {
+  const { confirm } = useConfirm();
+  const { t } = useTranslation();
+
+  // Ref to track if we should allow the next navigation attempt
+  const isConfirmedRef = useRef(false);
+
+  // Reset the global bypass on initial mount of the form
   useEffect(() => {
-    const routeChangeStart = (url: string): void => {
-      // eslint-disable-next-line no-alert
-      if (Router.asPath !== url && unsavedChanges && !window.confirm(message)) {
-        Router.events.emit('routeChangeError');
-        // eslint-disable-next-line @typescript-eslint/no-throw-literal
-        throw 'Abort route change. Please ignore this error.';
+    leaveConfirmStore.isBypassed = false;
+  }, []);
+
+  useEffect(() => {
+    const handleRouteChange = (url: string): void => {
+      // If we've already confirmed OR there are no changes OR bypassed, let them through
+      if (
+        !unsavedChanges ||
+        isConfirmedRef.current ||
+        leaveConfirmStore.isBypassed
+      ) {
+        return;
       }
+
+      // If the URL is exactly the same, don't trigger (prevents loops)
+      if (Router.asPath === url) {
+        return;
+      }
+
+      // 1. Tell Next.js to stop the current navigation
+      Router.events.emit('routeChangeError');
+
+      // 2. Open the custom confirmation modal
+      void confirm({
+        header: message,
+        submitButtonLabel: t('common:dialog.confirm'),
+        submitButtonVariant: 'danger',
+        content: t('common:application.buttons.leave_confirmation_description'),
+      }).then((isConfirmed) => {
+        if (isConfirmed) {
+          // 3. User said YES: set the flag and manually push the route
+          isConfirmedRef.current = true;
+          Router.push(url).catch(() => {
+            isConfirmedRef.current = false;
+          });
+        }
+        return null;
+      });
+
+      // 4. Throw the actual error to cancel the initial 'routeChangeStart'
+      // eslint-disable-next-line @typescript-eslint/no-throw-literal
+      throw 'Abort route change. Please ignore this error.';
     };
 
-    const beforeunload = (e: Event): string | null => {
-      if (unsavedChanges) {
+    const handleBeforeUnload = (e: BeforeUnloadEvent): string | null => {
+      if (
+        unsavedChanges &&
+        !isConfirmedRef.current &&
+        !leaveConfirmStore.isBypassed
+      ) {
         e.preventDefault();
-        return message;
+        // Modern browsers ignore the return string and show a generic message
+        // eslint-disable-next-line no-return-assign, no-param-reassign
+        return (e.returnValue = message);
       }
       return null;
     };
 
-    window.addEventListener('beforeunload', beforeunload);
-    Router.events.on('routeChangeStart', routeChangeStart);
+    const handleGlobalClick = (e: MouseEvent): void => {
+      if (
+        !unsavedChanges ||
+        isConfirmedRef.current ||
+        leaveConfirmStore.isBypassed
+      ) {
+        return;
+      }
+
+      const target = e.target as HTMLElement;
+      const anchor = target.closest('a');
+
+      if (!anchor || !anchor.href) {
+        return;
+      }
+
+      const url = new URL(anchor.href, window.location.href);
+      const isInternal = url.origin === window.location.origin;
+
+      if (
+        isInternal &&
+        !anchor.hasAttribute('download') &&
+        anchor.target !== '_blank'
+      ) {
+        const path = url.pathname + url.search + url.hash;
+        if (Router.asPath !== path) {
+          e.preventDefault();
+          void confirm({
+            header: message,
+            submitButtonLabel: t('common:application.buttons.discard'),
+            submitButtonVariant: 'danger',
+            content: t(
+              'common:application.buttons.leave_confirmation_description'
+            ),
+          }).then((isConfirmed) => {
+            if (isConfirmed) {
+              isConfirmedRef.current = true;
+              Router.push(path).catch(() => {
+                isConfirmedRef.current = false;
+              });
+            }
+            return null;
+          });
+        }
+      }
+    };
+
+    // Subscriptions
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('click', handleGlobalClick, true);
+    Router.events.on('routeChangeStart', handleRouteChange);
 
     return () => {
-      window.removeEventListener('beforeunload', beforeunload);
-      Router.events.off('routeChangeStart', routeChangeStart);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('click', handleGlobalClick, true);
+      Router.events.off('routeChangeStart', handleRouteChange);
+      // Reset the ref on unmount
+      isConfirmedRef.current = false;
     };
-  }, [message, unsavedChanges]);
+  }, [unsavedChanges, message, confirm, t]);
 };
 
 export default useLeaveConfirm;

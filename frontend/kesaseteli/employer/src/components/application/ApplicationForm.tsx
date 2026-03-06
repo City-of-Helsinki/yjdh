@@ -1,9 +1,11 @@
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useResetApplicationFormValuesEffect from 'kesaseteli/employer/hooks/application/useResetApplicationFormValuesEffect';
 import useSaveCurrentStepEffect from 'kesaseteli/employer/hooks/wizard/useSaveCurrentStepEffect';
+import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
+import useLeaveConfirm from 'shared/hooks/useLeaveConfirm';
 import Application from 'shared/types/application-form-data';
 
 type Props = {
@@ -13,13 +15,25 @@ type Props = {
 };
 
 const ApplicationForm: React.FC<Props> = ({ title, step, children }: Props) => {
-  const { applicationQuery } = useApplicationApi();
+  const { t } = useTranslation();
+  const { applicationQuery, applicationId } = useApplicationApi();
 
   const methods = useForm<Application>({
     mode: 'onBlur',
     reValidateMode: 'onChange',
     criteriaMode: 'all',
   });
+
+  const hasDirtyDraftApplication =
+    methods.formState.isDirty &&
+    Boolean(applicationId) &&
+    applicationQuery.data?.status === 'draft';
+
+  useLeaveConfirm(
+    hasDirtyDraftApplication,
+    t('common:application.buttons.leave_confirmation')
+  );
+
   useResetApplicationFormValuesEffect(methods);
 
   useSaveCurrentStepEffect(step);

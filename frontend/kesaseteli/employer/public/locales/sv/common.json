@@ -9,6 +9,10 @@
     "menuToggleAriaLabel": "Menyn",
     "languageMenuButtonAriaLabel": "Ändra språk"
   },
+  "dialog": {
+    "cancel": "Avbryt",
+    "confirm": "Bekräfta"
+  },
   "errorPage": {
     "title": "Ett oförväntat fel skedde",
     "message": "Något gick fel. Det kan hjälpa, ladda upp sidan på nytt.",
@@ -35,7 +39,23 @@
     "header": "Ansökan om sommarsedel har skickats!",
     "success_message": "Information om arbetstagaren {{name}} har sparats.",
     "add_another": "Gör en ny ansökan",
-    "sign_out": "Logga ut"
+    "return_to_dashboard": "Tillbaka till framsidan"
+  },
+  "dashboard": {
+    "header": "Arbetsgivarens sommarsedel ansökningar",
+    "welcome": "Välkommen till arbetsgivarnas gränssnitt för Sommarsedeln-tjänsten. Här kan du följa statusen på dina ansökningar och göra nya ansökningar.",
+    "info": "Läs mer om tjänsten <lnk href=\"https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/\" target=\"_blank\" rel=\"noopener noreferrer\">här</lnk>.",
+    "noApplications": "Inga tidigare ansökningar.",
+    "createApplicationGuidance": "Här kan du skapa en ny ansökan för att ansöka om sommarsedel.",
+    "previousApplications": "Tidigare ansökningar om sommarsedel",
+    "organisationName": "Du agerar på uppdrag av {{name}}.",
+    "filterBar": {
+      "label": "Egna ansökningar",
+      "ariaLabel": "Filter för egna ansökningar",
+      "tooltipLabel": "Filter",
+      "tooltipText": "På: Visa bara mina ansökningar. Av: Visa organisationens ansökningar.",
+      "tooltipButtonLabel": "Öppna instruktioner för ansökningsfilter"
+    }
   },
   "application": {
     "new": "Ny ansökan",
@@ -86,7 +106,13 @@
     "buttons": {
       "previous": "Tillbaka",
       "next": "Spara och fortsätt",
-      "last": "Skicka ansökan"
+      "last": "Skicka ansökan",
+      "cancel": "Avbryt",
+      "discard": "Släng ändringar",
+      "cancel_confirmation_title": "Är du säker på att du vill avbryta ifyllandet av ansökan?",
+      "cancel_confirmation_description": "All information som har fyllts i hittills kommer att raderas och du kommer att flyttas tillbaka till framsidan.",
+      "leave_confirmation": "Vill du lämna sidan?",
+      "leave_confirmation_description": "Osparade ändringar kan gå förlorade."
     },
     "form": {
       "selectionGroups": {
@@ -143,6 +169,8 @@
         "employment_description": "Beskrivning av arbetsuppgifter",
         "employment_salary_paid": "Utbetalt lönebelopp (€)",
         "hired_without_voucher_assessment": "Skulle du ha anställt en ung sommarjobbare utan Sommarsedeln?",
+        "modified_at": "Senast uppdaterad",
+        "status": "Status",
         "summer_vouchers": "Sommarsedlar",
         "termsAndConditions": "Jag har läst och godkänner <a>användningsvillkor</a>."
       },
@@ -228,6 +256,15 @@
         "add": "Bifoga bilaga",
         "remove": "Ta bort filen"
       }
+    },
+    "statuses": {
+      "draft": "Utkast",
+      "submitted": "Skickad",
+      "additional_information_requested": "Ytterligare information begärd",
+      "additional_information_provided": "Ytterligare information lämnad",
+      "accepted": "Accepterad",
+      "rejected": "Avvisad",
+      "deleted_by_customer": "Raderad"
     }
   }
 }
