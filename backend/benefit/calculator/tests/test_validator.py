@@ -1,14 +1,14 @@
-import pytest
-
-from unittest.mock import MagicMock
-from rest_framework import serializers
 from datetime import datetime
+from unittest.mock import MagicMock
 
-from calculator.enums import InstalmentStatus
+import pytest
+from rest_framework import serializers
+
 from calculator.api.v1.validators import InstalmentStatusValidator
-
-from calculator.models import Calculation, Instalment
+from calculator.enums import InstalmentStatus
+from calculator.models import Instalment
 from calculator.tests.factories import CalculationFactory
+
 
 @pytest.mark.parametrize(
     "from_status, to_status",
@@ -54,13 +54,23 @@ def test_instalment_status_transitions(from_status, to_status):
 @pytest.mark.parametrize(
     "to_date, expected_due_date, expected_status_code",
     [
-        ("2026-03-26", "25.03.2026", 200),   # Valid date change
-        ("2026-01-01", "15.05.2026", 400),    # Date cannot be before first instalment due date; unchanged
-        ("2026-06-30", "15.05.2026", 400),   # Date cannot be after current due date; unchanged
+        ("2026-03-26", "25.03.2026", 200),  # Valid date change
+        (
+            "2026-01-01",
+            "15.05.2026",
+            400,
+        ),  # Date cannot be before first instalment due date; unchanged
+        (
+            "2026-06-30",
+            "15.05.2026",
+            400,
+        ),  # Date cannot be after current due date; unchanged
     ],
 )
 @pytest.mark.django_db
-def test_instalment_date_change(to_date, expected_due_date, expected_status_code, handler_api_client):
+def test_instalment_date_change(
+    to_date, expected_due_date, expected_status_code, handler_api_client
+):
     """Test date changes for instalments."""
     calculation = CalculationFactory()
     calculation.save()
