@@ -25,6 +25,8 @@ type ExtendedComponentProps = {
   isLoading: boolean;
   isSubmittedApplication: boolean;
   setIsSubmittedApplication: React.Dispatch<React.SetStateAction<boolean>>;
+  isResubmission: boolean;
+  setIsResubmission: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const isApplicationLoaded = (id: number | string, status: string): boolean =>
@@ -39,6 +41,7 @@ const usePageContent = (): ExtendedComponentProps => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmittedApplication, setIsSubmittedApplication] =
     useState<boolean>(false);
+  const [isResubmission, setIsResubmission] = useState<boolean>(false);
 
   // query param used in edit mode. id from context used for updating newly created application
   const {
@@ -139,6 +142,8 @@ const usePageContent = (): ExtendedComponentProps => {
     isReadOnly,
     setIsSubmittedApplication,
     isSubmittedApplication,
+    isResubmission,
+    setIsResubmission,
   };
 };
 

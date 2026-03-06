@@ -71,6 +71,8 @@ const PageContent: React.FC = () => {
     isReadOnly,
     isSubmittedApplication,
     setIsSubmittedApplication,
+    isResubmission,
+    setIsResubmission,
   } = usePageContent();
 
   const theme = useTheme();
@@ -153,7 +155,7 @@ const PageContent: React.FC = () => {
   if (isSubmittedApplication) {
     return (
       <>
-      {application.status === APPLICATION_STATUSES.HANDLING ? (
+      {isResubmission ? (
         <NotificationView
           applicationId={application.id}
           title={t('common:notifications.applicationReSubmitted.label')}
@@ -361,12 +363,14 @@ const PageContent: React.FC = () => {
       {currentStep === 5 && (
         <ApplicationFormStep5
           setIsSubmittedApplication={setIsSubmittedApplication}
+          setIsResubmission={setIsResubmission}
           data={application}
         />
       )}
       {currentStep === 6 && (
         <ApplicationFormStep6
           setIsSubmittedApplication={setIsSubmittedApplication}
+          setIsResubmission={setIsResubmission}
           data={application}
         />
       )}
