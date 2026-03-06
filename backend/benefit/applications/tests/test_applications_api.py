@@ -14,6 +14,7 @@ import pytest
 
 from dateutil.relativedelta import relativedelta
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.management import call_command
 from django.test import override_settings
 from freezegun import freeze_time
 from PIL import Image
@@ -34,6 +35,7 @@ from applications.enums import (
     AhjoStatus,
     ApplicationAlterationState,
     ApplicationBatchStatus,
+    ApplicationOrigin,
     ApplicationStatus,
     ApplicationStep,
     AttachmentType,
@@ -41,6 +43,7 @@ from applications.enums import (
     OrganizationType,
     PaySubsidyGranted,
 )
+from applications.management.commands.request_payslip import notify_applications
 from applications.models import Application, ApplicationLogEntry, Attachment, Employee
 from applications.tests.conftest import *  # noqa
 from applications.tests.factories import (
@@ -72,6 +75,7 @@ def get_detail_url(application):
 def get_handler_detail_url(application):
     return reverse("v1:handler-application-detail", kwargs={"pk": application.id})
 
+
 @pytest.mark.django_db
 def test_applications_second_instalment_fetched(handler_api_client, application):
     application.status = ApplicationStatus.ACCEPTED
@@ -91,13 +95,13 @@ def test_applications_second_instalment_fetched(handler_api_client, application)
     for i in range(2):
         due_date = date.today() - relativedelta(months=5)
         status = InstalmentStatus.PAID
-        if i==1:
+        if i == 1:
             status = InstalmentStatus.WAITING
             due_date = date.today() - relativedelta(months=1)
         Instalment.objects.create(
             calculation=application.calculation,
             amount=1000,
-            instalment_number=i+1,
+            instalment_number=i + 1,
             status=status,
             due_date=due_date,
         )
@@ -2109,6 +2113,7 @@ def test_attachment_validation(request, api_client, application, settings):
     application.refresh_from_db()
     assert application.status == ApplicationStatus.RECEIVED
 
+
 @pytest.mark.django_db
 def test_purge_extra_attachments(request, api_client, application, settings):
     settings.ENABLE_CLAMAV = False
@@ -2120,10 +2125,10 @@ def test_purge_extra_attachments(request, api_client, application, settings):
 
     lots_of_attachments = [
         AttachmentType.EMPLOYMENT_CONTRACT,
-        AttachmentType.PAY_SUBSIDY_DECISION, # extra
+        AttachmentType.PAY_SUBSIDY_DECISION,  # extra
         AttachmentType.COMMISSION_CONTRACT,  # extra
         AttachmentType.EMPLOYMENT_CONTRACT,
-        AttachmentType.PAY_SUBSIDY_DECISION, # extra
+        AttachmentType.PAY_SUBSIDY_DECISION,  # extra
         AttachmentType.COMMISSION_CONTRACT,  # extra
         AttachmentType.HELSINKI_BENEFIT_VOUCHER,
         AttachmentType.EDUCATION_CONTRACT,  # extra
@@ -2552,6 +2557,384 @@ def test_require_additional_information(handler_api_client, application, mailout
     assert (
         get_additional_information_email_notification_subject() in mailoutbox[0].subject
     )
+
+
+@pytest.mark.django_db
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+@mock.patch(
+    "applications.management.commands.request_payslip._send_notification_mail",
+    return_value=1,
+)
+def test_notify_applications_one_application(mock_send_notification_mail):
+    """
+    One matching application
+    notify_applications() should call _send_notification_mail once for each
+    matching application and return the correct count.
+    The Django outbox remains empty because _send_notification_mail is mocked.
+    """
+
+    days_to_notify = 150
+    target_date = date.today() - relativedelta(days=days_to_notify)
+
+    app = DecidedApplicationFactory(
+        application_origin=ApplicationOrigin.APPLICANT,
+        status=ApplicationStatus.ACCEPTED,
+        start_date=target_date,
+    )
+    Instalment.objects.create(
+        calculation=app.calculation,
+        amount=1000,
+        instalment_number=2,
+        status=InstalmentStatus.WAITING,
+        due_date=target_date + relativedelta(months=6),
+    )
+
+    count = notify_applications(days_to_notify)
+
+    # _send_notification_mail must have been called exactly once, with the
+    # matching application
+    mock_send_notification_mail.assert_called_once_with(app)
+
+    # notify_applications must return the sum of _send_notification_mail return values
+    assert count == 1
+
+
+@pytest.mark.django_db
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+@mock.patch(
+    "applications.management.commands.request_payslip._send_notification_mail",
+    return_value=0,
+)
+def test_notify_applications_no_applications(mock_send_notification_mail):
+    """
+    No mails to send - no matching applications
+    notify_applications() should not call _send_notification_mail
+    """
+
+    days_to_notify = 150
+
+    app = DecidedApplicationFactory(
+        application_origin=ApplicationOrigin.APPLICANT,
+        status=ApplicationStatus.ACCEPTED,
+        start_date=date.today(),
+    )
+    Instalment.objects.create(
+        calculation=app.calculation,
+        amount=1000,
+        instalment_number=2,
+        status=InstalmentStatus.WAITING,
+        due_date=date.today() + relativedelta(months=6),
+    )
+
+    count = notify_applications(days_to_notify)
+
+    # _send_notification_mail must not have been called
+    # matching application
+    with pytest.raises(AssertionError):
+        mock_send_notification_mail.assert_called_with(app)
+
+    # notify_applications must return the sum of _send_notification_mail return values
+    assert count == 0
+
+
+@pytest.mark.django_db
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+@mock.patch(
+    "applications.management.commands.request_payslip._send_notification_mail",
+    return_value=1,
+)
+def test_notify_applications_matching_unmatching(mock_send_notification_mail):
+    """
+    Five mails to send. Five matching, five unmatching applications.
+    notify_applications() should call _send_notification_mail once for each
+    matching application and return the correct count.
+    Correct number of mails to send = 5.
+    The Django outbox remains empty because _send_notification_mail is mocked.
+    """
+
+    days_to_notify = 150
+    target_date = date.today() - relativedelta(days=150)
+
+    for _ in range(5):
+        app = DecidedApplicationFactory(
+            application_origin=ApplicationOrigin.APPLICANT,
+            status=ApplicationStatus.ACCEPTED,
+            start_date=target_date,
+        )
+        Instalment.objects.create(
+            calculation=app.calculation,
+            amount=1000,
+            instalment_number=2,
+            status=InstalmentStatus.WAITING,
+            due_date=target_date + relativedelta(months=6),
+        )
+    for i in range(5):
+        app = DecidedApplicationFactory(
+            application_origin=ApplicationOrigin.APPLICANT,
+            status=ApplicationStatus.ACCEPTED,
+            start_date=date.today() + relativedelta(days=i),
+        )
+        Instalment.objects.create(
+            calculation=app.calculation,
+            amount=1000,
+            instalment_number=2,
+            status=InstalmentStatus.WAITING,
+            due_date=target_date + relativedelta(months=6),
+        )
+
+    count = notify_applications(days_to_notify)
+
+    # notify_applications must return the sum of _send_notification_mail return values
+    assert count == 5
+    assert mock_send_notification_mail.call_count == 5
+
+
+@pytest.mark.django_db
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+def test_send_request_payslip_mail(mailoutbox):
+    """
+    Test _send_notification_mail function to verify that it sends an email
+    with correct subject, recipient, and template when notifying applicant
+    about the benefit checkpoint.
+    """
+    from applications.management.commands.request_payslip import (
+        _send_notification_mail,
+        get_benefit_notice_email_notification_subject,
+    )
+
+    # Create a test application that would be eligible for notification
+    days_to_notify = 150
+    target_date = date.today() - relativedelta(days=days_to_notify)
+    app = DecidedApplicationFactory(
+        application_origin=ApplicationOrigin.APPLICANT,
+        status=ApplicationStatus.ACCEPTED,
+        start_date=target_date,
+    )
+    Instalment.objects.create(
+        calculation=app.calculation,
+        amount=1000,
+        instalment_number=2,
+        status=InstalmentStatus.WAITING,
+        due_date=target_date + relativedelta(months=6),
+    )
+
+    # Call the function under test
+    result = _send_notification_mail(app)
+
+    # Verify the function returns 1 on success (from send_email_to_applicant)
+    assert result == 1
+
+    # Verify exactly one email was sent
+    assert len(mailoutbox) == 1
+
+    mail = mailoutbox[0]
+
+    # Verify the email subject matches expected subject
+    expected_subject = get_benefit_notice_email_notification_subject()
+    assert expected_subject in mail.subject
+
+    # Verify email is addressed to the applicant's contact email
+    assert app.company_contact_person_email in mail.to
+
+    # Verify email body is non-empty (should contain rendered template content)
+    assert mail.body
+
+    # Verify HTML message is also present
+    assert mail.alternatives
+    html_content = next(
+        (
+            content
+            for content, content_type in mail.alternatives
+            if content_type == "text/html"
+        ),
+        None,
+    )
+    assert html_content is not None
+
+    # Verify that required fields are in the HTML message
+    assert app.company_name in mail.body
+    assert app.start_date.strftime("%d.%m.%Y") in mail.body
+    assert app.end_date.strftime("%d.%m.%Y") in mail.body
+
+
+@pytest.mark.django_db
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+def test_request_payslip_command_integration(mailoutbox):
+    """
+    Integration test for the request_payslip management command.
+    Tests the complete workflow from command execution to email delivery
+    and instalment status updates.
+    """
+    days_to_notify = 150
+    target_date = date.today() - relativedelta(days=days_to_notify)
+
+    # Create applications that should be notified
+    matching_apps = []
+    for _ in range(3):
+        app = DecidedApplicationFactory(
+            application_origin=ApplicationOrigin.APPLICANT,
+            status=ApplicationStatus.ACCEPTED,
+            start_date=target_date,
+        )
+        # Create second instalment for each application
+        Instalment.objects.create(
+            calculation=app.calculation,
+            amount=1000,
+            instalment_number=2,
+            status=InstalmentStatus.WAITING,
+            due_date=target_date + relativedelta(months=6),
+        )
+        matching_apps.append(app)
+
+    # Create applications that should NOT be notified (different dates, statuses, etc.)
+    non_matching_apps = []
+
+    # Wrong start date
+    non_matching_app_1 = DecidedApplicationFactory(
+        application_origin=ApplicationOrigin.APPLICANT,
+        status=ApplicationStatus.ACCEPTED,
+        start_date=date.today() - relativedelta(days=100),
+    )
+    Instalment.objects.create(
+        calculation=non_matching_app_1.calculation,
+        amount=1000,
+        instalment_number=2,
+        status=InstalmentStatus.WAITING,
+        due_date=target_date + relativedelta(months=6),
+    )
+    non_matching_apps.append(non_matching_app_1)
+
+    # Wrong status
+    non_matching_app_2 = DecidedApplicationFactory(
+        application_origin=ApplicationOrigin.APPLICANT,
+        status=ApplicationStatus.REJECTED,
+        start_date=target_date,
+    )
+    Instalment.objects.create(
+        calculation=non_matching_app_2.calculation,
+        amount=1000,
+        instalment_number=2,
+        status=InstalmentStatus.WAITING,
+        due_date=target_date + relativedelta(months=6),
+    )
+    non_matching_apps.append(non_matching_app_2)
+
+    # Wrong instalment status
+    wrong_instalment = DecidedApplicationFactory(
+        application_origin=ApplicationOrigin.APPLICANT,
+        status=ApplicationStatus.ACCEPTED,
+        start_date=target_date,
+    )
+    Instalment.objects.create(
+        calculation=wrong_instalment.calculation,
+        amount=1000,
+        instalment_number=2,
+        status=InstalmentStatus.CANCELLED,
+        due_date=target_date + relativedelta(months=6),
+    )
+    non_matching_apps.append(wrong_instalment)
+
+    # Execute the management command with custom notify parameter
+    call_command("request_payslip", "--notify", days_to_notify)
+
+    # Verify emails were sent only for matching applications
+    assert len(mailoutbox) == 3
+
+    # Check that all emails have correct recipients
+    email_recipients = {mail.to[0] for mail in mailoutbox}
+    expected_recipients = {app.company_contact_person_email for app in matching_apps}
+    assert email_recipients == expected_recipients
+
+    # Verify email content for the first email
+    mail = mailoutbox[0]
+    from applications.management.commands.request_payslip import (
+        get_benefit_notice_email_notification_subject,
+    )
+
+    expected_subject = get_benefit_notice_email_notification_subject()
+    assert expected_subject in mail.subject
+    assert mail.body  # Non-empty body
+    assert mail.alternatives  # HTML version present
+
+    # Verify that second instalments were updated to REQUESTED status
+    for app in matching_apps:
+        second_instalment = Instalment.objects.get(
+            calculation=app.calculation, instalment_number=2
+        )
+        assert second_instalment.status == InstalmentStatus.REQUESTED
+
+    # Verify that non-matching applications were not affected
+    for app in non_matching_apps:
+        # These applications shouldn't have their instalments updated
+        # (if they have any second instalments)
+        second_instalments = Instalment.objects.filter(
+            calculation=app.calculation, instalment_number=2
+        )
+        for instalment in second_instalments:
+            assert instalment.status != InstalmentStatus.REQUESTED
+
+
+@pytest.mark.django_db
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+def test_request_payslip_command_default_notify_days(mailoutbox):
+    """
+    Test that the command uses the default notify days (150) when no parameter is provided.
+    """
+
+    # Create application with default target date (150 days ago)
+    target_date = date.today() - relativedelta(days=150)
+    app = DecidedApplicationFactory(
+        application_origin=ApplicationOrigin.APPLICANT,
+        status=ApplicationStatus.ACCEPTED,
+        start_date=target_date,
+    )
+    Instalment.objects.create(
+        calculation=app.calculation,
+        amount=1000,
+        instalment_number=2,
+        status=InstalmentStatus.WAITING,
+        due_date=target_date + relativedelta(months=6),
+    )
+
+    # Execute command without --notify parameter (should use default 150)
+    call_command("request_payslip")
+
+    # Verify email was sent
+    assert len(mailoutbox) == 1
+    assert app.company_contact_person_email in mailoutbox[0].to
+
+
+@pytest.mark.django_db
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+def test_request_payslip_command_output_message(capsys):
+    """
+    Test that the command outputs the correct summary message.
+    """
+    days_to_notify = 180
+    target_date = date.today() - relativedelta(days=days_to_notify)
+
+    # Create 2 matching applications
+    for _ in range(2):
+        app = DecidedApplicationFactory(
+            application_origin=ApplicationOrigin.APPLICANT,
+            status=ApplicationStatus.ACCEPTED,
+            start_date=target_date,
+        )
+        Instalment.objects.create(
+            calculation=app.calculation,
+            amount=1000,
+            instalment_number=2,
+            status=InstalmentStatus.WAITING,
+            due_date=target_date + relativedelta(months=6),
+        )
+
+    # Execute the command
+    call_command("request_payslip", "--notify", days_to_notify)
+
+    # Capture stdout and verify the summary message
+    captured = capsys.readouterr()
+    expected_message = "Notified users of 2 applications about benefit checkpoint"
+    assert expected_message in captured.out
 
 
 def _create_random_applications():

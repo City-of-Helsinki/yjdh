@@ -60,12 +60,19 @@ def _message_notification_email_body(application):
 
 def get_email_template_context(application: Application):
     year = datetime.date.today().year
+    start_date = (
+        application.start_date.strftime("%d.%m.%Y") if application.start_date else ""
+    )
+    end_date = application.end_date.strftime("%d.%m.%Y") if application.end_date else ""
 
     return {
         "current_year": year,
         "application": {
             "created_at": application.created_at,
             "application_number": application.application_number,
+            "company_name": application.company_name,
+            "start_date": start_date,
+            "end_date": end_date,
         },
         "language": application.applicant_language,
     }

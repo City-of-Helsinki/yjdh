@@ -1,0 +1,23 @@
+{% comment %} NEVER MAKE MODIFICATIONS TO THIS GENERATED FILE DIRECTLY, ALL MODIFICATIONS SHOULD BE DONE TO MJML TEMPLATE FILES! {% endcomment %}Utbetalning av den andra raten av det beviljade Helsingforstillägget kräver åtgärder
+Utbetalning av den andra raten av det beviljade Helsingforstillägget kräver åtgärder
+
+Hej!
+
+Vi har beviljat dig Helsingforstillägg för anställning av en arbetstagare. Helsingforstillägget betalas ut i två rater. Som mottagare av stödet är du skyldig att meddela oss den lön som betalats ut för anställningsförhållandet. För att få den andra raten av Helsingforstillägget måste arbetsgivaren skicka in:
+En lönespecifikation eller ett kvitto på banköverföring för den utbetalda lönen.
+
+Du kan enkelt sköta ärendet i https://helsinkilisa.hel.fi/sv/login
+
+Med vänliga hälsningar
+teamet för Helsingforstillägget
+
+Uppgifter om ansökningen
+Ansökningsnummer {{ application.application_number }}
+Förmånstagare {{ application.company_name }}
+Stödperiod {{ application.start_date }}-{{ application.end_date }}
+
+Logga in och/eller skicka in den nödvändiga bilagan
+
+Om du inte har använt onlinetjänsten kan du skicka in bilagan via säker e-post
+Skicka bilagan vi https://suojattusahkoposti.hel.fi/
+(Länk leder till en extern tjänst) via en säker anslutning till helsinkilisa@hel.fi
