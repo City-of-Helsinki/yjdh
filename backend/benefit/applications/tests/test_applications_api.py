@@ -2627,8 +2627,8 @@ def test_notify_applications_one_application(mock_send_notification_mail):
     count = notify_applications(days_to_notify)
 
     # _send_notification_mail must have been called exactly once, with the
-    # matching application and the days_to_notify value
-    mock_send_notification_mail.assert_called_once_with(app, days_to_notify)
+    # matching application
+    mock_send_notification_mail.assert_called_once_with(app)
 
     # notify_applications must return the sum of _send_notification_mail return values
     assert count == 1
@@ -2643,9 +2643,7 @@ def test_notify_applications_one_application(mock_send_notification_mail):
 def test_notify_applications_no_applications(mock_send_notification_mail):
     """
     No mails to send - no matching applications
-    notify_applications() should call _send_notification_mail once for each
-    matching application and return the correct count.
-    The Django outbox remains empty because _send_notification_mail is mocked.
+    notify_applications() should not call _send_notification_mail
     """
 
     days_to_notify = 150
@@ -2659,13 +2657,51 @@ def test_notify_applications_no_applications(mock_send_notification_mail):
 
     count = notify_applications(days_to_notify)
 
-    # _send_notification_mail must noy have been called
-    # matching application and the days_to_notify value
+    # _send_notification_mail must not have been called
+    # matching application
     with pytest.raises(AssertionError):
-        mock_send_notification_mail.assert_called_with(app, days_to_notify)
+        mock_send_notification_mail.assert_called_with(app)
 
     # notify_applications must return the sum of _send_notification_mail return values
     assert count == 0
+
+
+@pytest.mark.django_db
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+@mock.patch(
+    "applications.management.commands.request_payslip._send_notification_mail",
+    return_value=1,
+)
+def test_notify_applications_matching_unmatching(mock_send_notification_mail):
+    """
+    Five mails to send. Five matching, five unmatching applications.
+    notify_applications() should call _send_notification_mail once for each
+    matching application and return the correct count.
+    Correct number of mails to send = 5.
+    The Django outbox remains empty because _send_notification_mail is mocked.
+    """
+
+    days_to_notify = 150
+    target_date = date.today() - relativedelta(days=150)
+
+    for _i in range(5):
+        DecidedApplicationFactory(
+            application_origin=ApplicationOrigin.APPLICANT,
+            status=ApplicationStatus.ACCEPTED,
+            start_date=target_date,
+        )
+    for i in range(5):
+        DecidedApplicationFactory(
+            application_origin=ApplicationOrigin.APPLICANT,
+            status=ApplicationStatus.ACCEPTED,
+            start_date=date.today() + relativedelta(days=i),
+        )
+
+    count = notify_applications(days_to_notify)
+
+    # notify_applications must return the sum of _send_notification_mail return values
+    assert count == 5
+    assert mock_send_notification_mail.call_count == 5
 
 
 def _create_random_applications():
