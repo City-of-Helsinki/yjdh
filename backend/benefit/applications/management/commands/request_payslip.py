@@ -14,11 +14,6 @@ from messages.automatic_messages import (
     send_email_to_applicant,
 )
 
-BENEFIT_CHECKPOINT_IS_UPCOMING_MESSAGE = _(
-    "Your application's {application_number} checkpoint is upcoming, at"
-    " {benefit_checkpoint_date}."
-)
-
 
 class Command(BaseCommand):
     help = (
