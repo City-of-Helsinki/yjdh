@@ -8,7 +8,7 @@ Refer to [top level README](https://github.com/City-of-Helsinki/yjdh/blob/main/R
 
 From the repository root you can run backend tests inside the same containers used for development:
 
-* **Kesäseteli:** `docker compose -f compose.employer.yml run --rm backend pytest`
+* **Kesäseteli:** `docker compose -f compose/employer.dev.yml run --rm backend pytest`
 * **Benefit:** `docker compose -f compose.benefit.yml run --rm backend pytest`
 
 Django updated to version 4.2 during May 2024, as security support for 3.2 ends 30.4.2024. Django 4.2 will stop receiving security updates 30.4.2026.
